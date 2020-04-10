@@ -4,7 +4,11 @@ https://ut99.org/viewtopic.php?t=5985
 
 https://www.dx-revision.com/dxtutorials/constructor/tutorials.htm
 
+randomize exp requirements, randomize item spawns (weapons, ammo, healing bots, crates, explosive barrels, enemies)
 
+charisma setting that disables random dialog options with low charisma?
+
+randomize passwords
 
 https://forums.epicgames.com/unreal-tournament-3/unreal-tournament-3-programming-unrealscript/176322-decompile-u-files
 
