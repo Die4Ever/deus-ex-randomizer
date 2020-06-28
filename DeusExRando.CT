@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CheatTable CheatEngineTableVersion="31">
   <Forms>
-    <UDF1 Class="TCEForm" Encoding="Ascii85">rBqFC):ZrzlQtjQm@3(5mnj#dae+Zjmud(ruGK0wR.;jjF5o6[o2X7*9CuAQ?@_/T95@6.2.vv.1F,,y+)!#Rxa4^5[/f$oe+OAK1EJBNcW90{-5zCe^nbg(t*Ib!;,dz:6ryR!@^:*1X[Ro_=g:bXr/+yKI0/MReFUbD:v=pD8gHV2hx#_o=BF=%Xkz3/I}?^1!q,t0YFsWxwoq+@IH!qS21.DpFSNB?t]L=AKhavjzC3/.a(g^(,chr_LF}]Wds6h;nkt^PMtFR_0$;[KNN%$mM7+8=1WG9:l?6qmwqFQ6uT[a6gpB7$a9/]m2V.VhnKPlxVfj%!wuV5495XI9CBidEraaWpUYXdV3GYxsnQ8i?O_U/@?oUIe1WaR,wkZh@,7;oDG#:A7(5SEd7LY2lM;ovspHSuY6v%wEnuBSF]}_F+lm%OT4sns-+mBTM0=0IUN5/*sA!kuCO;4(1F)J-y77;yfwol^vf(,7[)5u3x)Fh:;t@!Yim.=g8tH4vxH0qFCx%t:2zfHpk0bi{$0:*u7I-(l_Rp2RT8Wy2T4u0saBX1pvlo+1?Rp2RT8s/DoIVElxcx51?Su]Qw7U(h(G/H)CZ*Z,LDN;]6E}D60.3/$xWMzvb$P%_L#K^!Qz5KeV]lzYu(S-U6-_Hu/$}t1A[HE4c@C)e$[8pZ*JyLBZf92*/QkM5u(F)Syuz/v0X%F;toQbK+$Bsx4bA@QgO)WSLnzuW@OtjlDq*SO]S!HBbKJ]soIJ=!Bkd=L]*c)hoApRF$b%ZS8;kN.9SOspr4Nl(%gTl=^;S?;(%1=!}@E$81w$jV^($]YlmgT]lb2(FoUklc{GNI*;JA8CIBhGGTEDuiO*gvYnT8^fS$@yMVZoYV}wAPxjF%(OUYl98[1@</UDF1>
+    <UDF1 Class="TCEForm" Encoding="Ascii85">rBqFC):ZrzlQtjwk[HFhGUb9aF0iE9rP[hDYqg4vRcir;3%JSKCaPl;$6Z@F^2l%S2M(l_!i@h004GkGwPFZ}OP/G$-{ia!+ROxp5E{G4N9Lf[=l2x#U!8T[;IIC1^$4ZAAsUB5_5}Y?M@qU1(R}]{=S+rVX}5#;BXE7drh2zhdlLmB*W2zF3r_JFsIj{YcBe%mpkkG8TaAk-WJ}$xObABpf,!c-L2g3pWKv-v@#iS;=CaB*XIGcqw^7!@%EbP{yq_94-6}Z!X$_o3iU,[ogiyNQb]Xhb0uU(rpinwYm9(Fg:y_0KloS;sJBtTtpmR7Rm]/D#.__Zx/cZY;)ifNuxhY96fR06_q5UGT!;DL6!nkSrq*D)pS@L!(O9G{bN{7xW2yIK7Efx:1lP!!JOlFWMvnOk2@-rjDdk$neSWdyTL-7KZbH./Mu7EfXaO]x?r2#B7w43teX/zV(j,2V9bxMfSpG1TthV8R;IupR%l6obr8=@vp/_@/M$VnjJy9zu7b*yRO#=8K7[N@O62;52^:IG?p!wK@zt@!X%-LMFo3-CjC#k;]hAu$AztH4uGH[U022u9q3cm/KtJQ?+jbM$ho8#[t5Z*eJ6DH5ZW%%j+/.3-I#q=OH:AWPo15YsW3]]L9/@-*vhozbdkeQ%$vD)isD,BY%RFC)fN=mH?qdZPL+^gsvXOHtlm6{!XX!wjgu*E=:Vcp.{sA3HKY(gB,+EQ!)v)Y)DL:Ca-TA*BX)EvsO5:}Lgdg%?_*lCr6-hn4?aB?[RPuPQ;8@mT!UK(%]$-v%e@+k11DbNMvvN#$o!,IgMTW=SiH^b$_IE0/,tqq(@5*7OGk-ZY?$93MTtJ0o7*ov{DLO[YzA3{]s,-%^r2^c-d8bEP#[8Ebv^LNzwBq2B</UDF1>
   </Forms>
   <CheatEntries>
     <CheatEntry>
       <ID>63</ID>
       <Description>"computers"</Description>
-      <LastState Value="1654" RealAddress="05F85738"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -23,7 +22,6 @@
     <CheatEntry>
       <ID>64</ID>
       <Description>"demolition"</Description>
-      <LastState Value="687" RealAddress="05F84F38"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -39,7 +37,6 @@
     <CheatEntry>
       <ID>69</ID>
       <Description>"electronics"</Description>
-      <LastState Value="2435" RealAddress="061F7738"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -55,7 +52,6 @@
     <CheatEntry>
       <ID>65</ID>
       <Description>"environmental"</Description>
-      <LastState Value="1194" RealAddress="05F87738"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -71,7 +67,6 @@
     <CheatEntry>
       <ID>62</ID>
       <Description>"heavy weapons"</Description>
-      <LastState Value="426" RealAddress="05F84B38"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -87,7 +82,6 @@
     <CheatEntry>
       <ID>68</ID>
       <Description>"lockpicking"</Description>
-      <LastState Value="2024" RealAddress="061F7B38"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -103,7 +97,6 @@
     <CheatEntry>
       <ID>73</ID>
       <Description>"lowtech weapons"</Description>
-      <LastState Value="2320" RealAddress="05F84338"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -117,7 +110,6 @@
     <CheatEntry>
       <ID>66</ID>
       <Description>"medicine"</Description>
-      <LastState Value="586" RealAddress="05F80B38"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -133,7 +125,6 @@
     <CheatEntry>
       <ID>72</ID>
       <Description>"pistols"</Description>
-      <LastState Value="1976" RealAddress="061FA338"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -149,7 +140,6 @@
     <CheatEntry>
       <ID>70</ID>
       <Description>"rifles"</Description>
-      <LastState Value="1125" RealAddress="05F83F38"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -165,7 +155,6 @@
     <CheatEntry>
       <ID>67</ID>
       <Description>"swimming"</Description>
-      <LastState Value="520" RealAddress="05F80F38"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -181,7 +170,6 @@
     <CheatEntry>
       <ID>76</ID>
       <Description>"start points"</Description>
-      <LastState Value="5000" RealAddress="047CA3BC"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
