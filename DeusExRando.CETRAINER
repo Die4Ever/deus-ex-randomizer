@@ -7,7 +7,7 @@
     <CheatEntry>
       <ID>63</ID>
       <Description>"computers"</Description>
-      <LastState Value="21535" RealAddress="0B9A5B38"/>
+      <LastState Value="1654" RealAddress="05F85738"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -23,7 +23,7 @@
     <CheatEntry>
       <ID>64</ID>
       <Description>"demolition"</Description>
-      <LastState Value="5110" RealAddress="0B9A5338"/>
+      <LastState Value="687" RealAddress="05F84F38"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -39,7 +39,7 @@
     <CheatEntry>
       <ID>69</ID>
       <Description>"electronics"</Description>
-      <LastState Value="14143" RealAddress="0BC37B38"/>
+      <LastState Value="2435" RealAddress="061F7738"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -55,7 +55,7 @@
     <CheatEntry>
       <ID>65</ID>
       <Description>"environmental"</Description>
-      <LastState Value="13" RealAddress="0B9A7B38"/>
+      <LastState Value="1194" RealAddress="05F87738"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -71,7 +71,7 @@
     <CheatEntry>
       <ID>62</ID>
       <Description>"heavy weapons"</Description>
-      <LastState Value="1" RealAddress="0B9A4F38"/>
+      <LastState Value="426" RealAddress="05F84B38"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -87,7 +87,7 @@
     <CheatEntry>
       <ID>68</ID>
       <Description>"lockpicking"</Description>
-      <LastState Value="6915" RealAddress="0BC37F38"/>
+      <LastState Value="2024" RealAddress="061F7B38"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -103,7 +103,7 @@
     <CheatEntry>
       <ID>73</ID>
       <Description>"lowtech weapons"</Description>
-      <LastState Value="2107" RealAddress="0B9A4738"/>
+      <LastState Value="2320" RealAddress="05F84338"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -117,7 +117,7 @@
     <CheatEntry>
       <ID>66</ID>
       <Description>"medicine"</Description>
-      <LastState Value="131" RealAddress="0B9A0F38"/>
+      <LastState Value="586" RealAddress="05F80B38"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -133,7 +133,7 @@
     <CheatEntry>
       <ID>72</ID>
       <Description>"pistols"</Description>
-      <LastState Value="14532" RealAddress="0BC3A738"/>
+      <LastState Value="1976" RealAddress="061FA338"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -149,7 +149,7 @@
     <CheatEntry>
       <ID>70</ID>
       <Description>"rifles"</Description>
-      <LastState Value="22079" RealAddress="0B9A4338"/>
+      <LastState Value="1125" RealAddress="05F83F38"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -163,38 +163,9 @@
       </Offsets>
     </CheatEntry>
     <CheatEntry>
-      <ID>14</ID>
-      <Description>"old skill points"</Description>
-      <LastState Value="1929391360" Activated="1" RealAddress="00057A97"/>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+0002702C</Address>
-      <Offsets>
-        <Offset>9BC</Offset>
-        <Offset>30</Offset>
-        <Offset>38C</Offset>
-        <Offset>A64</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>61</ID>
-      <Description>"old start points"</Description>
-      <LastState Value="9999" Activated="1" RealAddress="0970A3BC"/>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>9BC</Offset>
-        <Offset>ED4</Offset>
-        <Offset>13C</Offset>
-        <Offset>5C</Offset>
-        <Offset>18</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
       <ID>67</ID>
       <Description>"swimming"</Description>
-      <LastState Value="6616" RealAddress="0B9A1338"/>
+      <LastState Value="520" RealAddress="05F80F38"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -210,7 +181,7 @@
     <CheatEntry>
       <ID>76</ID>
       <Description>"start points"</Description>
-      <LastState Value="9999" RealAddress="0970A3BC"/>
+      <LastState Value="5000" RealAddress="047CA3BC"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
