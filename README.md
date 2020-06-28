@@ -1,5 +1,8 @@
 # deus-ex-randomizer
 
+Currently this is VERY SIMPLE. It ONLY modifies the number of points required for upgrading skills. This is a Cheat Engine script, so you'll need to install Cheat Engine and run the DeusExRando.CETRAINER file.
+
+
 https://ut99.org/viewtopic.php?t=5985
 
 https://www.dx-revision.com/dxtutorials/constructor/tutorials.htm
