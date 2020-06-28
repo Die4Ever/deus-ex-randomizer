@@ -5,458 +5,167 @@
   </Forms>
   <CheatEntries>
     <CheatEntry>
-      <ID>5</ID>
-      <Description>"computer1"</Description>
+      <ID>63</ID>
+      <Description>"computers"</Description>
+      <LastState Value="21535" RealAddress="0B9A5B38"/>
       <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
+      <Address>"DeusEx.DLL"+0002702C</Address>
+      <Offsets>
+        <Offset>F38</Offset>
+        <Offset>ED4</Offset>
+        <Offset>424</Offset>
+        <Offset>4D4</Offset>
+        <Offset>28</Offset>
+        <Offset>98</Offset>
+        <Offset>38</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>64</ID>
+      <Description>"demolition"</Description>
+      <LastState Value="5110" RealAddress="0B9A5338"/>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
         <Offset>738</Offset>
-        <Offset>324</Offset>
+        <Offset>9D4</Offset>
+        <Offset>824</Offset>
         <Offset>4D4</Offset>
-        <Offset>18</Offset>
-        <Offset>68</Offset>
+        <Offset>28</Offset>
+        <Offset>98</Offset>
         <Offset>38</Offset>
-        <Offset>920</Offset>
       </Offsets>
     </CheatEntry>
     <CheatEntry>
-      <ID>6</ID>
-      <Description>"computer2"</Description>
+      <ID>69</ID>
+      <Description>"electronics"</Description>
+      <LastState Value="14143" RealAddress="0BC37B38"/>
       <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
+      <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
-        <Offset>73C</Offset>
-        <Offset>324</Offset>
+        <Offset>B38</Offset>
         <Offset>4D4</Offset>
-        <Offset>18</Offset>
-        <Offset>68</Offset>
-        <Offset>38</Offset>
-        <Offset>920</Offset>
+        <Offset>8A0</Offset>
+        <Offset>4BC</Offset>
+        <Offset>AC</Offset>
+        <Offset>A84</Offset>
+        <Offset>10</Offset>
       </Offsets>
     </CheatEntry>
     <CheatEntry>
-      <ID>7</ID>
-      <Description>"computer3"</Description>
+      <ID>65</ID>
+      <Description>"environmental"</Description>
+      <LastState Value="13" RealAddress="0B9A7B38"/>
       <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>740</Offset>
-        <Offset>324</Offset>
-        <Offset>4D4</Offset>
-        <Offset>18</Offset>
-        <Offset>68</Offset>
-        <Offset>38</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>49</ID>
-      <Description>"demo1"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>338</Offset>
-        <Offset>4D4</Offset>
-        <Offset>32C</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>50</ID>
-      <Description>"demo2"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>33C</Offset>
-        <Offset>4D4</Offset>
-        <Offset>32C</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>51</ID>
-      <Description>"demo3"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>340</Offset>
-        <Offset>4D4</Offset>
-        <Offset>32C</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>25</ID>
-      <Description>"elec1"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
+      <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
         <Offset>338</Offset>
         <Offset>ED4</Offset>
-        <Offset>190</Offset>
-        <Offset>D8</Offset>
-        <Offset>C8</Offset>
-        <Offset>38</Offset>
-        <Offset>920</Offset>
+        <Offset>B80</Offset>
+        <Offset>4D4</Offset>
+        <Offset>118</Offset>
+        <Offset>A84</Offset>
+        <Offset>10</Offset>
       </Offsets>
     </CheatEntry>
     <CheatEntry>
-      <ID>27</ID>
-      <Description>"elec2"</Description>
+      <ID>62</ID>
+      <Description>"heavy weapons"</Description>
+      <LastState Value="1" RealAddress="0B9A4F38"/>
       <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
+      <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
-        <Offset>33C</Offset>
+        <Offset>338</Offset>
         <Offset>ED4</Offset>
-        <Offset>190</Offset>
-        <Offset>D8</Offset>
-        <Offset>C8</Offset>
+        <Offset>424</Offset>
+        <Offset>4D4</Offset>
+        <Offset>28</Offset>
+        <Offset>98</Offset>
         <Offset>38</Offset>
-        <Offset>920</Offset>
       </Offsets>
     </CheatEntry>
     <CheatEntry>
-      <ID>28</ID>
-      <Description>"elec3"</Description>
+      <ID>68</ID>
+      <Description>"lockpicking"</Description>
+      <LastState Value="6915" RealAddress="0BC37F38"/>
       <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>340</Offset>
-        <Offset>ED4</Offset>
-        <Offset>190</Offset>
-        <Offset>D8</Offset>
-        <Offset>C8</Offset>
-        <Offset>38</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>17</ID>
-      <Description>"env1"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
+      <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
         <Offset>F38</Offset>
-        <Offset>C4</Offset>
-        <Offset>910</Offset>
-        <Offset>18</Offset>
-        <Offset>68</Offset>
-        <Offset>38</Offset>
-        <Offset>920</Offset>
+        <Offset>4D4</Offset>
+        <Offset>9B4</Offset>
+        <Offset>4BC</Offset>
+        <Offset>AC</Offset>
+        <Offset>A84</Offset>
+        <Offset>10</Offset>
       </Offsets>
     </CheatEntry>
     <CheatEntry>
-      <ID>18</ID>
-      <Description>"env2"</Description>
+      <ID>73</ID>
+      <Description>"lowtech weapons"</Description>
+      <LastState Value="2107" RealAddress="0B9A4738"/>
       <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
+      <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
-        <Offset>F3C</Offset>
-        <Offset>C4</Offset>
-        <Offset>910</Offset>
-        <Offset>18</Offset>
-        <Offset>68</Offset>
+        <Offset>B38</Offset>
+        <Offset>4D4</Offset>
+        <Offset>28</Offset>
+        <Offset>98</Offset>
         <Offset>38</Offset>
-        <Offset>920</Offset>
       </Offsets>
     </CheatEntry>
     <CheatEntry>
-      <ID>19</ID>
-      <Description>"env3"</Description>
+      <ID>66</ID>
+      <Description>"medicine"</Description>
+      <LastState Value="131" RealAddress="0B9A0F38"/>
       <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
+      <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
-        <Offset>F40</Offset>
-        <Offset>C4</Offset>
-        <Offset>910</Offset>
-        <Offset>18</Offset>
-        <Offset>68</Offset>
-        <Offset>38</Offset>
-        <Offset>920</Offset>
+        <Offset>338</Offset>
+        <Offset>9D4</Offset>
+        <Offset>BAC</Offset>
+        <Offset>4D4</Offset>
+        <Offset>118</Offset>
+        <Offset>A84</Offset>
+        <Offset>10</Offset>
       </Offsets>
     </CheatEntry>
     <CheatEntry>
-      <ID>39</ID>
-      <Description>"heavy1"</Description>
+      <ID>72</ID>
+      <Description>"pistols"</Description>
+      <LastState Value="14532" RealAddress="0BC3A738"/>
       <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
+      <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
         <Offset>F38</Offset>
+        <Offset>ED4</Offset>
         <Offset>9D4</Offset>
+        <Offset>7A4</Offset>
+        <Offset>4BC</Offset>
         <Offset>118</Offset>
-        <Offset>78</Offset>
-        <Offset>8</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
+        <Offset>38</Offset>
       </Offsets>
     </CheatEntry>
     <CheatEntry>
-      <ID>40</ID>
-      <Description>"heavy2"</Description>
+      <ID>70</ID>
+      <Description>"rifles"</Description>
+      <LastState Value="22079" RealAddress="0B9A4338"/>
       <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>F3C</Offset>
-        <Offset>9D4</Offset>
-        <Offset>118</Offset>
-        <Offset>78</Offset>
-        <Offset>8</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>41</ID>
-      <Description>"heavy3"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>F40</Offset>
-        <Offset>9D4</Offset>
-        <Offset>118</Offset>
-        <Offset>78</Offset>
-        <Offset>8</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>26</ID>
-      <Description>"lock1"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
+      <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
         <Offset>738</Offset>
-        <Offset>ED4</Offset>
-        <Offset>190</Offset>
-        <Offset>D8</Offset>
-        <Offset>C8</Offset>
+        <Offset>4D4</Offset>
+        <Offset>0</Offset>
+        <Offset>4BC</Offset>
+        <Offset>28</Offset>
+        <Offset>98</Offset>
         <Offset>38</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>29</ID>
-      <Description>"lock2"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>73C</Offset>
-        <Offset>ED4</Offset>
-        <Offset>190</Offset>
-        <Offset>D8</Offset>
-        <Offset>C8</Offset>
-        <Offset>38</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>30</ID>
-      <Description>"lock3"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>740</Offset>
-        <Offset>ED4</Offset>
-        <Offset>190</Offset>
-        <Offset>D8</Offset>
-        <Offset>C8</Offset>
-        <Offset>38</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>38</ID>
-      <Description>"lowtech1"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>F38</Offset>
-        <Offset>144</Offset>
-        <Offset>790</Offset>
-        <Offset>A28</Offset>
-        <Offset>18</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>42</ID>
-      <Description>"lowtech2"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>F3C</Offset>
-        <Offset>144</Offset>
-        <Offset>790</Offset>
-        <Offset>A28</Offset>
-        <Offset>18</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>43</ID>
-      <Description>"lowtech3"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>F40</Offset>
-        <Offset>144</Offset>
-        <Offset>790</Offset>
-        <Offset>A28</Offset>
-        <Offset>18</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>46</ID>
-      <Description>"medi1"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>338</Offset>
-        <Offset>4D4</Offset>
-        <Offset>33C</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>47</ID>
-      <Description>"medi2"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>33C</Offset>
-        <Offset>4D4</Offset>
-        <Offset>33C</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>48</ID>
-      <Description>"medi3"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>340</Offset>
-        <Offset>4D4</Offset>
-        <Offset>33C</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>57</ID>
-      <Description>"pistol1"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>338</Offset>
-        <Offset>4D4</Offset>
-        <Offset>320</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>58</ID>
-      <Description>"pistol2"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>33C</Offset>
-        <Offset>4D4</Offset>
-        <Offset>320</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>59</ID>
-      <Description>"pistol3"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>340</Offset>
-        <Offset>4D4</Offset>
-        <Offset>320</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>54</ID>
-      <Description>"rifle1"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>338</Offset>
-        <Offset>4D4</Offset>
-        <Offset>324</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>55</ID>
-      <Description>"rifle2"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>33C</Offset>
-        <Offset>4D4</Offset>
-        <Offset>324</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>56</ID>
-      <Description>"rifle3"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>340</Offset>
-        <Offset>4D4</Offset>
-        <Offset>324</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
       </Offsets>
     </CheatEntry>
     <CheatEntry>
       <ID>14</ID>
-      <Description>"skill points"</Description>
+      <Description>"old skill points"</Description>
+      <LastState Value="1929391360" Activated="1" RealAddress="00057A97"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+0002702C</Address>
       <Offsets>
@@ -467,53 +176,9 @@
       </Offsets>
     </CheatEntry>
     <CheatEntry>
-      <ID>20</ID>
-      <Description>"swim1"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>738</Offset>
-        <Offset>4D4</Offset>
-        <Offset>33C</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>21</ID>
-      <Description>"swim2"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>73C</Offset>
-        <Offset>4D4</Offset>
-        <Offset>33C</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
-      <ID>22</ID>
-      <Description>"swim3"</Description>
-      <VariableType>4 Bytes</VariableType>
-      <Address>"DeusEx.DLL"+00039B7C</Address>
-      <Offsets>
-        <Offset>740</Offset>
-        <Offset>4D4</Offset>
-        <Offset>33C</Offset>
-        <Offset>9CC</Offset>
-        <Offset>13C</Offset>
-        <Offset>108</Offset>
-        <Offset>920</Offset>
-      </Offsets>
-    </CheatEntry>
-    <CheatEntry>
       <ID>61</ID>
-      <Description>"start points"</Description>
+      <Description>"old start points"</Description>
+      <LastState Value="9999" Activated="1" RealAddress="0970A3BC"/>
       <VariableType>4 Bytes</VariableType>
       <Address>"DeusEx.DLL"+00039B7C</Address>
       <Offsets>
@@ -526,27 +191,79 @@
         <Offset>920</Offset>
       </Offsets>
     </CheatEntry>
+    <CheatEntry>
+      <ID>67</ID>
+      <Description>"swimming"</Description>
+      <LastState Value="6616" RealAddress="0B9A1338"/>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"DeusEx.DLL"+0002702C</Address>
+      <Offsets>
+        <Offset>738</Offset>
+        <Offset>9D4</Offset>
+        <Offset>BAC</Offset>
+        <Offset>4D4</Offset>
+        <Offset>118</Offset>
+        <Offset>A84</Offset>
+        <Offset>10</Offset>
+      </Offsets>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>76</ID>
+      <Description>"start points"</Description>
+      <LastState Value="9999" RealAddress="0970A3BC"/>
+      <VariableType>4 Bytes</VariableType>
+      <Address>"DeusEx.DLL"+0002702C</Address>
+      <Offsets>
+        <Offset>9BC</Offset>
+        <Offset>ED4</Offset>
+        <Offset>9FC</Offset>
+        <Offset>4BC</Offset>
+        <Offset>28</Offset>
+        <Offset>98</Offset>
+        <Offset>38</Offset>
+      </Offsets>
+    </CheatEntry>
   </CheatEntries>
   <UserdefinedSymbols/>
   <LuaScript>addresslist=getAddressList()
 getAutoAttachList().add("DeusEx.exe")
-local default_min = 50
+getAutoAttachList().add("deusex.exe")
+local default_min = 25
 local default_max = 200
 local values = {}
-values["start points"] = { min=100, max=100 }
-values["skill points"] = { min=100, max=100}
 
-function RandomizeValue(i)
-         local addr = i.getCurrentAddress()
-         local props = GetValueProps(i.Description)
-         local oldvalue = readInteger(addr)
+function IsSkill(name)
+         return name ~= "start points" and name ~= "skill points" and name ~= "old skill points" and name ~= "old start points"
+end
+
+function RandomizeValue(a)
+         name = a.Description
+         if a.Active == true then
+            print("skipping " .. name .. " because it's activated/frozen")
+            -- https://wiki.cheatengine.org/index.php?title=Lua:Class:MemoryRecord
+            return
+         end
+         local props = GetValueProps(name)
          local min = props.min / 100
          local max = props.max / 100
          local percent = min + math.random() * ( max-min )
-         local value = oldvalue * percent
-         value = math.floor(value)
-         print("Changing " .. i.Description .. " (" .. addr .. ") from " .. oldvalue .. " to " .. value .. " (" .. (percent*100) .. "%)")
-         writeInteger(addr, value)
+
+         for i=0, 2, 1 do
+             name = a.Description
+             local addr = a.getCurrentAddress()
+             addr = addr + ( i * 4 )
+             local oldvalue = readInteger(addr)
+             local value = oldvalue * percent
+             value = math.floor(value)
+             if IsSkill(name) then
+                name = name .. " " .. (i+1)
+             end
+             print("Changing " .. name .. " (" .. addr .. ") from " .. oldvalue .. " to " .. value .. " (" .. (percent*100) .. "%)")
+             writeInteger(addr, value)
+             if not IsSkill(name) then
+                break
+             end
+         end
 end
 
 function UDF1_CEButton1Click(sender)
@@ -571,7 +288,11 @@ function GetValueProps(name)
          if values[name] ~= nil then
             return values[name]
          else
-             values[name] = { min = default_min, max = default_max }
+             if IsSkill(name) then
+                values[name] = { min = default_min, max = default_max }
+             else
+                 values[name] = { min = 100, max = 100 }
+             end
              return values[name]
          end
 end
@@ -583,7 +304,9 @@ UDF1.Min.Position = 50
 UDF1.Max.Position = 200
 for i=0, addresslist.getCount()-1 , 1 do
     addr = addresslist.getMemoryRecord(i)
-    UDF1.values.Items.Add(addr.Description)
+    if addr.Active==false then
+       UDF1.values.Items.Add(addr.Description)
+    end
 end
 
 UDF1.Show()
@@ -621,7 +344,7 @@ function MinMaxChange(sender)
             for i=0, addresslist.getCount()-1 , 1 do
                 addr = addresslist.getMemoryRecord(i)
                 name = addr.Description
-                if name ~= "start points" and name ~= "skill points" then
+                if IsSkill(name) then
                    UpdateProp(sender, name)
                 end
             end
