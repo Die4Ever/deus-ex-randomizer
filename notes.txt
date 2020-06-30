@@ -1,3 +1,5 @@
+Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
+
 https://ut99.org/viewtopic.php?t=5985
 
 https://www.dx-revision.com/dxtutorials/constructor/tutorials.htm
