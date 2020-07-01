@@ -274,9 +274,25 @@ function SwapAll(name classname)
 function Swap(Actor a, Actor b)
 {
     local vector newloc;
-    newloc = b.Location;
-    b.SetLocation(a.Location);
+    local rotator newrot;
+
+    if( Pawn(a.Owner)!=None || Pawn(b.Owner)!=None )
+    {
+        //don't mess with the positions of items inside someone's inventory, this breaks stuff
+        return;
+    }
+
+    newloc = b.Location + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1);
+    newrot = b.Rotation;
+
+    b.SetLocation(a.Location + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1) );
+    b.SetRotation(a.Rotation);
+
     a.SetLocation(newloc);
+    a.SetRotation(newrot);
+
+    //a.SetPhysics(PHYS_Falling);
+    //b.SetPhysics(PHYS_Falling);
 }
 
 defaultproperties
