@@ -214,10 +214,12 @@ function Rando()
     local DeusExCarcass c;
     local Weapon inv;
 
-    Player.ClientMessage("randomizing "$Caps(dxInfo.mapName)$"");
+    if(Player != None) Player.ClientMessage("randomizing "$Caps(dxInfo.mapName)$"");
 
     SwapAll('Inventory');
     SwapAll('Containers');
+
+    RandomizeAugCannisters();
 
     /*foreach AllActors(class'ScriptedPawn', p)
     {
@@ -240,7 +242,7 @@ function Rando()
         c.AddInventory(inv);
     }*/
 
-    Player.ClientMessage("done randomizing "$Caps(dxInfo.mapName)$"");
+    if(Player != None) Player.ClientMessage("done randomizing "$Caps(dxInfo.mapName)$"");
 }
 
 function SwapAll(name classname)
@@ -250,18 +252,21 @@ function SwapAll(name classname)
     num=0;
     foreach AllActors(class'Actor', a )
     {
-        if( ! a.IsA(classname) ) continue;
+        if( SkipActor(a, classname) ) continue;
         num++;
     }
 
     foreach AllActors(class'Actor', a )
     {
-        if( ! a.IsA(classname) ) continue;
+        if( SkipActor(a, classname) ) continue;
+
         i=0;
         slot=Rand(num-1);
+        //if(Player != None) Player.ClientMessage(""$a.Class$"");
         foreach AllActors(class'Actor', b )
         {
-            if( ! b.IsA(classname) ) continue;
+            if( SkipActor(b, classname) ) continue;
+
             if(i==slot) {
                 Swap(a, b);
                 break;
@@ -271,16 +276,15 @@ function SwapAll(name classname)
     }
 }
 
+function bool SkipActor(Actor a, name classname)
+{
+    return ( ! a.IsA(classname) ) || ( Pawn(a.Owner) != None ) || a.bStatic || a.bHidden;
+}
+
 function Swap(Actor a, Actor b)
 {
     local vector newloc;
     local rotator newrot;
-
-    if( Pawn(a.Owner)!=None || Pawn(b.Owner)!=None )
-    {
-        //don't mess with the positions of items inside someone's inventory, this breaks stuff
-        return;
-    }
 
     newloc = b.Location + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1);
     newrot = b.Rotation;
@@ -293,6 +297,40 @@ function Swap(Actor a, Actor b)
 
     //a.SetPhysics(PHYS_Falling);
     //b.SetPhysics(PHYS_Falling);
+}
+
+function RandomizeAugCannisters()
+{
+    local AugmentationCannister a;
+    local int augIndex;
+    local int numAugs;
+
+    if( Player == None ) return;
+
+    numAugs=0;
+
+    for(augIndex=0; augIndex<arrayCount(Player.AugmentationSystem.augClasses); augIndex++)
+    {
+        if (Player.AugmentationSystem.augClasses[augIndex] != None)
+        {
+            numAugs=augIndex+1;
+        }
+    }
+
+    foreach AllActors(class'AugmentationCannister', a)
+    {
+        a.AddAugs[0] = PickRandomAug(numAugs);
+        a.AddAugs[1] = PickRandomAug(numAugs);
+        //Player.ClientMessage("0: " $a.AddAugs[0]$ ", 1: " $a.AddAugs[1]$ "");
+    }
+}
+
+function Name PickRandomAug(int numAugs)
+{
+    local int slot;
+    slot = Rand(numAugs-1);
+    //Player.ClientMessage("slot: "$slot$"");
+    return Player.AugmentationSystem.augClasses[slot].Name;
 }
 
 defaultproperties
