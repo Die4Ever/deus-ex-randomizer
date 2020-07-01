@@ -214,6 +214,9 @@ function Rando()
     local DeusExCarcass c;
     local Weapon inv;
 
+    Player.SkillPointsAvail = 0;
+    Player.SkillPointsTotal = 0;
+
     if(Player != None) Player.ClientMessage("randomizing "$Caps(dxInfo.mapName)$"");
 
     SwapAll('Inventory');
