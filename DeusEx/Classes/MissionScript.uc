@@ -104,19 +104,17 @@ function FirstFrame()
 		}
 	}
 
-    flagName = Player.rootWindow.StringToName("M"$dxInfo.MissionNumber$"MissionStart");
+	// print the mission startup text only once per map
+	flagName = Player.rootWindow.StringToName("M"$Caps(dxInfo.mapName)$"_StartupText");
 	if (!flags.GetBool(flagName))
 	{
         Rando();
-    }
-
-	// print the mission startup text only once per map
-	flagName = Player.rootWindow.StringToName("M"$Caps(dxInfo.mapName)$"_StartupText");
-	if (!flags.GetBool(flagName) && (dxInfo.startupMessage[0] != ""))
-	{
-		for (i=0; i<ArrayCount(dxInfo.startupMessage); i++)
-			DeusExRootWindow(Player.rootWindow).hud.startDisplay.AddMessage(dxInfo.startupMessage[i]);
-		DeusExRootWindow(Player.rootWindow).hud.startDisplay.StartMessage();
+        if (dxInfo.startupMessage[0] != "")
+        {
+    		for (i=0; i<ArrayCount(dxInfo.startupMessage); i++)
+	    		DeusExRootWindow(Player.rootWindow).hud.startDisplay.AddMessage(dxInfo.startupMessage[i]);
+		    DeusExRootWindow(Player.rootWindow).hud.startDisplay.StartMessage();
+        }
 		flags.SetBool(flagName, True);
 	}
 
@@ -216,6 +214,8 @@ function Rando()
     local DeusExCarcass c;
     local Weapon inv;
 
+    Player.ClientMessage("randomizing "$Caps(dxInfo.mapName)$"");
+
     SwapAll('Inventory');
     SwapAll('Containers');
 
@@ -239,6 +239,8 @@ function Rando()
         inv = spawn(class'WeaponAssaultGun', self);
         c.AddInventory(inv);
     }*/
+
+    Player.ClientMessage("done randomizing "$Caps(dxInfo.mapName)$"");
 }
 
 function SwapAll(name classname)

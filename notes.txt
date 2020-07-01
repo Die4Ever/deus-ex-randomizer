@@ -1,5 +1,10 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
+unrealscript gui:
+seed, skill cost %s, starting points, ammo %, lockpick %, multitool %, money %, bioelectric cells %, health%, base movement speed %? falling damage %? passcodes and passwords
+can I improve ladders just make them super sticky and press jump to get off?
+starting level?
+
 https://ut99.org/viewtopic.php?t=5985
 
 https://www.dx-revision.com/dxtutorials/constructor/tutorials.htm
