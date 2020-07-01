@@ -321,7 +321,7 @@ function RandomizeAugCannisters()
     {
         a.AddAugs[0] = PickRandomAug(numAugs);
         a.AddAugs[1] = PickRandomAug(numAugs);
-        Player.ClientMessage("0: " $a.AddAugs[0]$ ", 1: " $a.AddAugs[1]$ "");
+        //Player.ClientMessage("0: " $a.AddAugs[0]$ ", 1: " $a.AddAugs[1]$ "");
     }
 }
 
@@ -329,7 +329,7 @@ function Name PickRandomAug(int numAugs)
 {
     local int slot;
     slot = Rand(numAugs-1);
-    Player.ClientMessage("slot: "$slot$"");
+    //Player.ClientMessage("slot: "$slot$"");
     return Player.AugmentationSystem.augClasses[slot].Name;
 }
 
