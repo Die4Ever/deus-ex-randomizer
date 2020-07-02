@@ -213,11 +213,28 @@ function Rando()
     local ScriptedPawn p;
     local DeusExCarcass c;
     local Weapon inv;
+    local Tree t;
 
     //Player.SkillPointsAvail = 0;
     //Player.SkillPointsTotal = 0;
 
-    if(Player != None) Player.ClientMessage("randomizing "$Caps(dxInfo.mapName)$"");
+    if(Player != None) Player.ClientMessage("randomizing "$dxInfo.mapName$"");
+
+    if( Level.AmbientBrightness<100 ) Level.AmbientBrightness += 1;
+
+    if( self.Class == class'MissionIntro' )
+    { // extra randomization in the intro for the lolz
+        foreach AllActors(class'Tree', t)
+        { // exclude 80% of trees from the SwapAll by temporarily hiding them
+            if( FRand()<0.8 ) t.bHidden = true;
+        }
+        SwapAll('Actor');
+        foreach AllActors(class'Tree', t)
+        {
+            t.bHidden = false;
+        }
+        return;
+    }
 
     SwapAll('Inventory');
     SwapAll('Containers');
@@ -245,7 +262,7 @@ function Rando()
         c.AddInventory(inv);
     }*/
 
-    if(Player != None) Player.ClientMessage("done randomizing "$Caps(dxInfo.mapName)$"");
+    if(Player != None) Player.ClientMessage("done randomizing "$dxInfo.mapName$"");
 }
 
 function SwapAll(name classname)
