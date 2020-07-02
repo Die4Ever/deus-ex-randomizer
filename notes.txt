@@ -1,5 +1,17 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
+X start with running speed aug, at max level? max level is too OP
+X don't give 2 of the same aug in a canister
+rename test function
+organize the fixes for individual levels
+X fix skill cost generation
+X log statements
+X don't swap actor with itself
+maybe set the seed inside the foreach AllActors loop to keep it more stable?
+need a function for GiveRandomItem()
+need a function for CloneNanoKey() (based on Engine.Pickup.SpawnCopy? no, that's for respawning items)
+need to figure out how to modify conversations, datacubes, emails...
+
 ambrosia in battery park, maybe I should never move ambrosia?
 key to bathroom in mole tunnel 03_NYC_MolePeople seems to be the only way to progress? maybe modify the properties on the door to make it breakable and lockpickable?
 there are no items to swap with past the door, but it maybe be possible for the key to be attempted to be placed in a bad area? maybe I should copy the key into the NSF leader's inventory so you can always kill him for it? or can I modify his dialog so that he just gives you the key?
