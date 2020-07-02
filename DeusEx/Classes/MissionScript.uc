@@ -16,6 +16,8 @@ var DeusExPlayer Player;
 var FlagBase flags;
 var string localURL;
 var DeusExLevelInfo dxInfo;
+var int seed;
+var int newseed;
 
 // ----------------------------------------------------------------------
 // PostPostBeginPlay()
@@ -25,6 +27,8 @@ var DeusExLevelInfo dxInfo;
 
 function PostPostBeginPlay()
 {
+    local name flagName;
+
 	// start the script
 	SetTimer(checkTime, True);
 }
@@ -155,14 +159,31 @@ function PreTravel()
 
 function Timer()
 {
+    local FlagBase f;
+    local name flagName;
+
 	// make sure our flags are initialized correctly
 	if (flags == None)
 	{
+        f = DeusExPlayer(GetPlayerPawn()).FlagBase;
+        flagName = 'Rando_seed';
+        if( self.Class == class'MissionIntro' )
+        {
+            f.SetInt(flagName, Rand(10000000),, 999);
+        }
+        seed = f.GetInt(flagName);
+
 		InitStateMachine();
 
 		// Don't want to do this if the user just loaded a savegame
 		if ((player != None) && (flags.GetBool('PlayerTraveling')))
 			FirstFrame();
+        
+        if( seed > 0 )
+        {
+            f.SetInt(flagName, seed,, 999);
+        }
+        test();
 	}
 }
 
@@ -215,10 +236,12 @@ function Rando()
     local Weapon inv;
     local Tree t;
 
+    SetSeed(seed + ( dxInfo.MissionNumber * 107 ) + Len(dxInfo.mapName) );//need to hash the map name string better, maybe use this http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/crc32.html
+
     //Player.SkillPointsAvail = 0;
     //Player.SkillPointsTotal = 0;
 
-    if(Player != None) Player.ClientMessage("randomizing "$dxInfo.mapName$"");
+    if(Player != None) Player.ClientMessage("randomizing "$dxInfo.mapName$" using seed " $ seed);
 
     if( Level.AmbientBrightness<100 ) Level.AmbientBrightness += 1;
 
@@ -226,7 +249,7 @@ function Rando()
     { // extra randomization in the intro for the lolz
         foreach AllActors(class'Tree', t)
         { // exclude 80% of trees from the SwapAll by temporarily hiding them
-            if( FRand()<0.8 ) t.bHidden = true;
+            if( Rng(100)<80 ) t.bHidden = true;
         }
         SwapAll('Actor');
         foreach AllActors(class'Tree', t)
@@ -262,7 +285,7 @@ function Rando()
         c.AddInventory(inv);
     }*/
 
-    if(Player != None) Player.ClientMessage("done randomizing "$dxInfo.mapName$"");
+    if(Player != None) Player.ClientMessage("done randomizing "$dxInfo.mapName);
 }
 
 function SwapAll(name classname)
@@ -281,8 +304,8 @@ function SwapAll(name classname)
         if( SkipActor(a, classname) ) continue;
 
         i=0;
-        slot=Rand(num-1);
-        //if(Player != None) Player.ClientMessage(""$a.Class$"");
+        slot=Rng(num-1);
+        //if(Player != None) Player.ClientMessage("" $ a.Class);
         foreach AllActors(class'Actor', b )
         {
             if( SkipActor(b, classname) ) continue;
@@ -298,13 +321,15 @@ function SwapAll(name classname)
 
 function bool SkipActor(Actor a, name classname)
 {
-    return ( ! a.IsA(classname) ) || ( Pawn(a.Owner) != None ) || a.bStatic || a.bHidden;
+    return ( ! a.IsA(classname) ) || ( Pawn(a.Owner) != None ) || a.bStatic || a.bHidden || a.IsA('BarrelAmbrosia') || a.IsA('BarrelVirus');
 }
 
 function Swap(Actor a, Actor b)
 {
     local vector newloc;
     local rotator newrot;
+
+    //if(Player != None) Player.ClientMessage("swapping "$a.Class$" and "$b.Class);
 
     newloc = b.Location + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1);
     newrot = b.Rotation;
@@ -341,16 +366,84 @@ function RandomizeAugCannisters()
     {
         a.AddAugs[0] = PickRandomAug(numAugs);
         a.AddAugs[1] = PickRandomAug(numAugs);
-        //Player.ClientMessage("0: " $a.AddAugs[0]$ ", 1: " $a.AddAugs[1]$ "");
+        //Player.ClientMessage("0: " $ a.AddAugs[0] $ ", 1: " $ a.AddAugs[1]);
     }
 }
 
 function Name PickRandomAug(int numAugs)
 {
     local int slot;
-    slot = Rand(numAugs-1);
-    //Player.ClientMessage("slot: "$slot$"");
+    slot = Rng(numAugs-1);
+    //Player.ClientMessage("slot: "$slot);
     return Player.AugmentationSystem.augClasses[slot].Name;
+}
+
+function test()
+{
+    local DeusExMover d;
+    local Terrorist t;
+    local NanoKey key;
+
+    return;// disabled for now
+
+    Player.ClientMessage("test");
+    RandoSkills();
+
+    if( dxInfo.mapName == "03_NYC_MolePeople" )
+    {
+        foreach AllActors(class'DeusExMover', d)
+        {
+            if( d.Name == 'DeusExMover65' ) {
+                Player.ClientMessage("found DeusExMover65");
+                d.bPickable = true;
+                d.bBreakable = true;
+                Player.ClientMessage("fixed DeusExMover65");
+            }
+        }
+        
+        foreach AllActors(class'Terrorist', t)
+        {
+            if( t.name == 'Terrorist33' )
+            {
+                key = spawn(class'NanoKey', self);
+                key.KeyID = 'MoleRestroomKey';
+                t.AddInventory(key);
+            }
+        }
+    }
+}
+
+function RandoSkills()
+{
+    local Skill aSkill;
+    local int i;
+
+    SetSeed(seed);
+
+    aSkill = Player.SkillSystem.FirstSkill;
+	while(aSkill != None)
+	{
+        for(i=0; i<arrayCount(aSkill.Cost); i++)
+        {
+    		aSkill.Cost[i] = Rng(3000);
+        }
+		aSkill = aSkill.next;
+	}
+}
+
+function int SetSeed(int s)
+{
+    newseed = s;
+}
+
+function int Rng(int max)
+{
+    local int gen1, gen2;
+    gen2 = 2147483643;
+    gen1 = gen2/2;
+    newseed = gen1 * newseed * 5 + gen2 + (newseed/5) * 3;
+    newseed = abs(newseed);
+    return newseed % max;
 }
 
 defaultproperties

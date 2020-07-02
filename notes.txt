@@ -1,5 +1,12 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
+ambrosia in battery park, maybe I should never move ambrosia?
+key to bathroom in mole tunnel 03_NYC_MolePeople seems to be the only way to progress? maybe modify the properties on the door to make it breakable and lockpickable?
+there are no items to swap with past the door, but it maybe be possible for the key to be attempted to be placed in a bad area? maybe I should copy the key into the NSF leader's inventory so you can always kill him for it? or can I modify his dialog so that he just gives you the key?
+the key name is NanoKey0, KeyID is MoleRestroomKey, the door name is DeusExMover65
+
+I can use this for string hashing http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/crc32.html
+
 maybe I can rewrite this as a mutator?
 
 unrealscript gui:
