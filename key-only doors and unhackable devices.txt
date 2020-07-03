@@ -1,0 +1,196 @@
+DeusEx.log	544	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: UNhatchdoor in 01_NYC_UNATCOIsland
+DeusEx.log	545	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey1, KeyID: ruin_key in 01_NYC_UNATCOIsland
+DeusEx.log	546	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey2, KeyID: UN_maindoor in 01_NYC_UNATCOIsland
+DeusEx.log	962	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: UNhatchdoor in 01_NYC_UNATCOIsland
+DeusEx.log	963	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey3, KeyID: ruin_key in 01_NYC_UNATCOIsland
+DeusEx.log	964	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey4, KeyID: UN_maindoor in 01_NYC_UNATCOIsland
+DeusEx.log	1290	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey2, KeyID: UNcloset in 01_NYC_UNATCOHQ
+DeusEx.log	1291	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: UNOfficeDoorKey in 01_NYC_UNATCOHQ
+DeusEx.log	1292	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: UNOfficeDoorKey in 01_NYC_UNATCOHQ
+DeusEx.log	1293	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey3, KeyID: JaimeClosetKey in 01_NYC_UNATCOHQ
+DeusEx.log	1294	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey4, KeyID: UNOfficeDoorKey in 01_NYC_UNATCOHQ
+DeusEx.log	1295	ScriptLog: DXRando found unhackable device class: DeusEx.RetinalScanner, tag: RetinalScanner, name: RetinalScanner1 in 01_NYC_UNATCOHQ
+DeusEx.log	1347	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: KioskDoors in 02_NYC_BatteryPark
+DeusEx.log	1348	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey3, KeyID: KioskDoors in 02_NYC_BatteryPark
+DeusEx.log	1349	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey5, KeyID: CCSafe in 02_NYC_BatteryPark
+DeusEx.log	1401	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: DeusExMover, name: DeusExMover16 in 02_NYC_Street with KeyIDNeeded: SewerKey
+DeusEx.log	1402	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: DeusExMover, name: DeusExMover11 in 02_NYC_Street with KeyIDNeeded: SewerKey
+DeusEx.log	1403	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey6, KeyID: Apartment in 02_NYC_Street
+DeusEx.log	1404	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey7, KeyID: StreetWarehouse in 02_NYC_Street
+DeusEx.log	1405	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey8, KeyID: WarehouseAccess in 02_NYC_Street
+DeusEx.log	1445	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: CrackRoom in 02_NYC_Hotel
+DeusEx.log	1538	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey9, KeyID: Cabinet in 02_NYC_FreeClinic
+DeusEx.log	1539	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey10, KeyID: Cabinet in 02_NYC_FreeClinic
+DeusEx.log	1540	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey11, KeyID: Cabinet in 02_NYC_FreeClinic
+DeusEx.log	1541	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey12, KeyID: Cabinet in 02_NYC_FreeClinic
+DeusEx.log	1591	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey13, KeyID: SewerKey in 02_NYC_Smug
+DeusEx.log	1675	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: WarehouseBasementStorage in 02_NYC_Warehouse
+DeusEx.log	1676	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey14, KeyID: WarehouseFrontDoor in 02_NYC_Warehouse
+DeusEx.log	1770	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: Manderley_Office, name: DeusExMover10 in 03_NYC_UNATCOHQ with KeyIDNeeded: ManderleyOfficeDoor
+DeusEx.log	1771	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey2, KeyID: UNcloset in 03_NYC_UNATCOHQ
+DeusEx.log	1772	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: ManderleyOfficeDoor in 03_NYC_UNATCOHQ
+DeusEx.log	1773	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey15, KeyID: ManderleyOfficeDoor in 03_NYC_UNATCOHQ
+DeusEx.log	1774	ScriptLog: DXRando found unhackable device class: DeusEx.RetinalScanner, tag: RetinalScanner, name: RetinalScanner1 in 03_NYC_UNATCOHQ
+DeusEx.log	1834	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: KioskDoors in 03_NYC_BatteryPark
+DeusEx.log	1931	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: DeusExMover, name: DeusExMover65 in 03_NYC_MolePeople with KeyIDNeeded: MoleRestroomKey
+DeusEx.log	1932	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: MoleRestroomKey in 03_NYC_MolePeople
+DeusEx.log	1981	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey17, KeyID: HeliSecurityRoom in 03_NYC_AirfieldHeliBase
+DeusEx.log	1982	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey18, KeyID: Sewerdoor in 03_NYC_AirfieldHeliBase
+DeusEx.log	2022	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: DeusExMover, name: DeusExMover1 in 03_NYC_Airfield with KeyIDNeeded: eastgate
+DeusEx.log	2023	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: DeusExMover, name: DeusExMover16 in 03_NYC_Airfield with KeyIDNeeded: eastgate
+DeusEx.log	2024	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: eastgate in 03_NYC_Airfield
+DeusEx.log	2025	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: Dormitory in 03_NYC_Airfield
+DeusEx.log	2026	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey19, KeyID: eastgate in 03_NYC_Airfield
+DeusEx.log	2027	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey20, KeyID: securitytower in 03_NYC_Airfield
+DeusEx.log	2028	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey21, KeyID: securitytower in 03_NYC_Airfield
+DeusEx.log	2029	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey22, KeyID: securitytower in 03_NYC_Airfield
+DeusEx.log	2030	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey23, KeyID: securitytower in 03_NYC_Airfield
+DeusEx.log	2031	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey24, KeyID: securitytower in 03_NYC_Airfield
+DeusEx.log	2032	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey25, KeyID: securitytower in 03_NYC_Airfield
+DeusEx.log	2033	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey26, KeyID: securitytower in 03_NYC_Airfield
+DeusEx.log	2034	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey27, KeyID: securitytower in 03_NYC_Airfield
+DeusEx.log	2125	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: lebedevdoor in 03_NYC_747
+DeusEx.log	2224	ScriptLog: DXRando found unhackable device class: DeusEx.RetinalScanner, tag: RetinalScanner, name: RetinalScanner1 in 04_NYC_UNATCOHQ
+DeusEx.log	2281	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad2, tag: Keypad2, name: Keypad0 in 04_NYC_Street
+DeusEx.log	2497	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: BasementDoor in 04_NYC_NSFHQ
+DeusEx.log	2629	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey28, KeyID: Cabinet in 05_NYC_UNATCOMJ12lab
+DeusEx.log	2630	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad3, tag: Keypad3, name: Keypad11 in 05_NYC_UNATCOMJ12lab
+DeusEx.log	2676	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: levelone, name: DeusExMover29 in 05_NYC_UNATCOHQ with KeyIDNeeded: levelone
+DeusEx.log	2677	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey29, KeyID: levelone in 05_NYC_UNATCOHQ
+DeusEx.log	2678	ScriptLog: DXRando found unhackable device class: DeusEx.RetinalScanner, tag: RetinalScanner, name: RetinalScanner1 in 05_NYC_UNATCOHQ
+DeusEx.log	2783	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: DeusExMover, name: DeusExMover20 in 06_HongKong_Helibase with KeyIDNeeded: control_door01
+DeusEx.log	2784	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: DeusExMover, name: DeusExMover21 in 06_HongKong_Helibase with KeyIDNeeded: control_door01
+DeusEx.log	2785	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: ordinance_door, name: DeusExMover24 in 06_HongKong_Helibase with KeyIDNeeded: Ordinance_bay
+DeusEx.log	2786	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey00, name: NanoKey0, KeyID: control_door01 in 06_HongKong_Helibase
+DeusEx.log	2787	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: LockerMasterKey in 06_HongKong_Helibase
+DeusEx.log	2788	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey2, KeyID: Ordinance_bay in 06_HongKong_Helibase
+DeusEx.log	2789	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey3, KeyID: Ordinance_bay in 06_HongKong_Helibase
+DeusEx.log	2838	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: compound_gate, name: DeusExMover0 in 06_HongKong_WanChai_Market with KeyIDNeeded: CompoundGate
+DeusEx.log	2839	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: compound_gate, name: DeusExMover1 in 06_HongKong_WanChai_Market with KeyIDNeeded: CompoundGate
+DeusEx.log	2840	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: Keypad1, name: Keypad6 in 06_HongKong_WanChai_Market
+DeusEx.log	2841	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: GateKeypad, name: Keypad8 in 06_HongKong_WanChai_Market
+DeusEx.log	2842	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: Keypad1, name: Keypad3 in 06_HongKong_WanChai_Market
+DeusEx.log	2843	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: BasementKeypad, name: Keypad0 in 06_HongKong_WanChai_Market
+DeusEx.log	2844	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: DummyKeypad01, name: Keypad4 in 06_HongKong_WanChai_Market
+DeusEx.log	2845	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: DummyKeypad01, name: Keypad9 in 06_HongKong_WanChai_Market
+DeusEx.log	2879	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: compound_gate, name: DeusExMover0 in 06_HongKong_WanChai_Market with KeyIDNeeded: CompoundGate
+DeusEx.log	2880	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: compound_gate, name: DeusExMover1 in 06_HongKong_WanChai_Market with KeyIDNeeded: CompoundGate
+DeusEx.log	2881	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: Keypad1, name: Keypad6 in 06_HongKong_WanChai_Market
+DeusEx.log	2882	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: GateKeypad, name: Keypad8 in 06_HongKong_WanChai_Market
+DeusEx.log	2883	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: Keypad1, name: Keypad3 in 06_HongKong_WanChai_Market
+DeusEx.log	2884	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: BasementKeypad, name: Keypad0 in 06_HongKong_WanChai_Market
+DeusEx.log	2885	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: DummyKeypad01, name: Keypad4 in 06_HongKong_WanChai_Market
+DeusEx.log	2886	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: DummyKeypad01, name: Keypad9 in 06_HongKong_WanChai_Market
+DeusEx.log	2983	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: DeusExMover, name: DeusExMover44 in 06_HongKong_WanChai_Street with KeyIDNeeded: JocksKey
+DeusEx.log	2984	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: JocksKey in 06_HongKong_WanChai_Street
+DeusEx.log	2985	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad2, tag: Keypad2, name: Keypad6 in 06_HongKong_WanChai_Street
+DeusEx.log	3086	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: JocksKey in 06_HongKong_TongBase
+DeusEx.log	3134	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: Keypad1, name: Keypad1 in 06_HongKong_VersaLife
+DeusEx.log	3188	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: SubjectDoors, name: DeusExMover15 in 06_HongKong_MJ12lab with KeyIDNeeded: SubjectDoors
+DeusEx.log	3189	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: SubjectDoors1, name: DeusExMover16 in 06_HongKong_MJ12lab with KeyIDNeeded: SubjectDoors
+DeusEx.log	3190	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: SubjectDoors2, name: DeusExMover17 in 06_HongKong_MJ12lab with KeyIDNeeded: SubjectDoors
+DeusEx.log	3191	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: GreyDoors, name: DeusExMover22 in 06_HongKong_MJ12lab with KeyIDNeeded: SubjectDoors
+DeusEx.log	3192	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: GreyDoors, name: DeusExMover23 in 06_HongKong_MJ12lab with KeyIDNeeded: SubjectDoors
+DeusEx.log	3193	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: SubjectDoors2, name: DeusExMover31 in 06_HongKong_MJ12lab with KeyIDNeeded: SubjectDoors
+DeusEx.log	3194	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: SubjectDoors1, name: DeusExMover32 in 06_HongKong_MJ12lab with KeyIDNeeded: SubjectDoors
+DeusEx.log	3195	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: GreyDoors, name: DeusExMover35 in 06_HongKong_MJ12lab with KeyIDNeeded: SubjectDoors
+DeusEx.log	3196	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: GreyDoors, name: DeusExMover36 in 06_HongKong_MJ12lab with KeyIDNeeded: SubjectDoors
+DeusEx.log	3197	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: SubjectDoors in 06_HongKong_MJ12lab
+DeusEx.log	3198	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: Magnetic_Chamber in 06_HongKong_MJ12lab
+DeusEx.log	3199	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad3, tag: Keypad3, name: Keypad0 in 06_HongKong_MJ12lab
+DeusEx.log	3302	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: VirusUploaded, name: DeusExMover9 in 06_HongKong_Storage with KeyIDNeeded: NanoContainmentDoor
+DeusEx.log	3303	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: NanoContainmentDoor in 06_HongKong_Storage
+DeusEx.log	3395	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: CrackRoom in 08_NYC_Hotel
+DeusEx.log	3621	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: FrontGate, name: DeusExMover89 in 09_NYC_Dockyard with KeyIDNeeded: MainGate
+DeusEx.log	3622	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: WeaponWarehouse in 09_NYC_Dockyard
+DeusEx.log	3623	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: SupplyRoom, name: NanoKey1, KeyID: None in 09_NYC_Dockyard
+DeusEx.log	3624	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey2, KeyID: CommandersOffice in 09_NYC_Dockyard
+DeusEx.log	3625	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey3, KeyID: WeaponLocker in 09_NYC_Dockyard
+DeusEx.log	3626	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey4, KeyID: SemiKey in 09_NYC_Dockyard
+DeusEx.log	3627	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey30, KeyID: MainGate in 09_NYC_Dockyard
+DeusEx.log	3628	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey31, KeyID: MainGate in 09_NYC_Dockyard
+DeusEx.log	3629	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey32, KeyID: MainGate in 09_NYC_Dockyard
+DeusEx.log	3797	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: ShipRamp, name: DeusExMover171 in 09_NYC_Ship with KeyIDNeeded: ShipRamp
+DeusEx.log	3798	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: DeusExMover, name: DeusExMover7 in 09_NYC_Ship with KeyIDNeeded: EngineRoomDoor
+DeusEx.log	3799	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: BelowDecks in 09_NYC_Ship
+DeusEx.log	3800	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: EngineRoomDoor in 09_NYC_Ship
+DeusEx.log	3801	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey2, KeyID: EngineRoomDoor in 09_NYC_Ship
+DeusEx.log	3849	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: HeliBayDoorLock in 09_NYC_ShipBelow
+DeusEx.log	3850	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey33, KeyID: Locker1 in 09_NYC_ShipBelow
+DeusEx.log	3851	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey34, KeyID: Locker2 in 09_NYC_ShipBelow
+DeusEx.log	3942	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: paris_blastdoor, name: DeusExMover6 in 10_Paris_Catacombs with KeyIDNeeded: paris_blastdoor
+DeusEx.log	3943	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: paris_blastdoor, name: DeusExMover13 in 10_Paris_Catacombs with KeyIDNeeded: paris_blastdoor
+DeusEx.log	3944	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: ug_warehousedoors, name: DeusExMover7 in 10_Paris_Catacombs with KeyIDNeeded: ug_warehousedoors
+DeusEx.log	3945	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: ug_warehousedoors, name: DeusExMover10 in 10_Paris_Catacombs with KeyIDNeeded: ug_warehousedoors
+DeusEx.log	3946	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: ug_warehousedoors in 10_Paris_Catacombs
+DeusEx.log	3947	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: cata_officedoor, name: NanoKey7, KeyID: cata_officedoor in 10_Paris_Catacombs
+DeusEx.log	3948	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey35, KeyID: catdoor in 10_Paris_Catacombs
+DeusEx.log	3996	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: catacombs_blastdoorC, name: DeusExMover2 in 10_Paris_Catacombs_tunnels with KeyIDNeeded: catacombs_blastdoor
+DeusEx.log	3997	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: catacombs_blastdoorB, name: DeusExMover4 in 10_Paris_Catacombs_tunnels with KeyIDNeeded: catacombs_blastdoor
+DeusEx.log	3998	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: catacombs_blastdoor02, name: DeusExMover5 in 10_Paris_Catacombs_tunnels with KeyIDNeeded: catacombs_blastdoor02
+DeusEx.log	3999	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: catacombs_blastdoor02 in 10_Paris_Catacombs_tunnels
+DeusEx.log	4000	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: catacombs_blastdoor in 10_Paris_Catacombs_tunnels
+DeusEx.log	4001	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey36, KeyID: catacombs_blastdoor in 10_Paris_Catacombs_tunnels
+DeusEx.log	4045	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: hotel_roomdoor in 10_Paris_Metro
+DeusEx.log	4094	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: club_maindoors in 10_Paris_Club
+DeusEx.log	4095	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: club_maindoors in 10_Paris_Club
+DeusEx.log	4096	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey37, KeyID: club_maindoors in 10_Paris_Club
+DeusEx.log	4139	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: everettsignal, name: DeusExMover10 in 10_Paris_Chateau with KeyIDNeeded: Crypt_door
+DeusEx.log	4140	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: everettsignal, name: DeusExMover11 in 10_Paris_Chateau with KeyIDNeeded: Crypt_door
+DeusEx.log	4141	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: duclare_chateau, name: NanoKey0, KeyID: duclare_chateau in 10_Paris_Chateau
+DeusEx.log	4142	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: beth_room in 10_Paris_Chateau
+DeusEx.log	4143	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey2, KeyID: nico_room in 10_Paris_Chateau
+DeusEx.log	4144	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey3, KeyID: beth_room in 10_Paris_Chateau
+DeusEx.log	4145	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey4, KeyID: nico_room in 10_Paris_Chateau
+DeusEx.log	4146	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey38, KeyID: Crypt_door in 10_Paris_Chateau
+DeusEx.log	4190	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey2, KeyID: cathedralgatekey in 11_Paris_Cathedral
+DeusEx.log	4191	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: cath_maindoorkey, name: NanoKey3, KeyID: cath_maindoors in 11_Paris_Cathedral
+DeusEx.log	4192	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: cath_maindoorkey, name: NanoKey4, KeyID: cath_maindoors in 11_Paris_Cathedral
+DeusEx.log	4193	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: cath_maindoors, name: NanoKey5, KeyID: cath_maindoors in 11_Paris_Cathedral
+DeusEx.log	4288	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: morganhelibaydoor, name: DeusExMover6 in 11_Paris_Everett with KeyIDNeeded: morganhelibaydoor
+DeusEx.log	4289	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: morganmirror in 11_Paris_Everett
+DeusEx.log	4290	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: fishtankdoor in 11_Paris_Everett
+DeusEx.log	4291	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey39, KeyID: morganhelibaydoor in 11_Paris_Everett
+DeusEx.log	4357	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: door_controlroom, name: DeusExMover24 in 12_Vandenberg_cmd with KeyIDNeeded: control_room_door
+DeusEx.log	4358	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: door_controlroom, name: DeusExMover11 in 12_Vandenberg_cmd with KeyIDNeeded: control_room
+DeusEx.log	4359	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: door_controlroom, name: DeusExMover12 in 12_Vandenberg_cmd with KeyIDNeeded: control_room
+DeusEx.log	4360	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey40, KeyID: Tunnel_access1 in 12_Vandenberg_cmd
+DeusEx.log	4450	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: DeusExMover, name: DeusExMover0 in 12_vandenberg_computer with KeyIDNeeded: Lab02
+DeusEx.log	4451	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: door_controlroom, name: DeusExMover11 in 12_vandenberg_computer with KeyIDNeeded: control_room_door
+DeusEx.log	4452	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: door_controlroom, name: DeusExMover12 in 12_vandenberg_computer with KeyIDNeeded: control_room_door
+DeusEx.log	4453	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: Lab02 in 12_vandenberg_computer
+DeusEx.log	4498	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: DeusExMover, name: DeusExMover4 in 12_vandenberg_gas with KeyIDNeeded: maintenancekey
+DeusEx.log	4499	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: garage_entrance in 12_vandenberg_gas
+DeusEx.log	4500	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: pipe in 12_vandenberg_gas
+DeusEx.log	4501	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey41, KeyID: pipe in 12_vandenberg_gas
+DeusEx.log	4502	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey42, KeyID: pipe in 12_vandenberg_gas
+DeusEx.log	4503	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey43, KeyID: garage_entrance in 12_vandenberg_gas
+DeusEx.log	4504	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey44, KeyID: None in 12_vandenberg_gas
+DeusEx.log	4544	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: door_pod1, name: DeusExMover2 in 14_Vandenberg_sub with KeyIDNeeded: Sub_base
+DeusEx.log	4545	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: door_base, name: DeusExMover8 in 14_Vandenberg_sub with KeyIDNeeded: Sub_base
+DeusEx.log	4546	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: Sub_base in 14_Vandenberg_sub
+DeusEx.log	4547	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: shed in 14_Vandenberg_sub
+DeusEx.log	4548	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: None, name: NanoKey45, KeyID: Sub_base in 14_Vandenberg_sub
+DeusEx.log	4602	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: DeusExMover, name: DeusExMover49 in 14_OceanLab_Lab with KeyIDNeeded: Glab
+DeusEx.log	4603	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: Glab in 14_OceanLab_Lab
+DeusEx.log	4604	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: storage in 14_OceanLab_Lab
+DeusEx.log	4605	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey2, KeyID: crewkey in 14_OceanLab_Lab
+DeusEx.log	4698	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: truck in 14_OceanLab_silo
+DeusEx.log	4699	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey8, KeyID: woodgate in 14_OceanLab_silo
+DeusEx.log	4700	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad3, tag: Keypad3, name: Keypad0 in 14_OceanLab_silo
+DeusEx.log	4749	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: tower in 15_Area51_bunker
+DeusEx.log	4750	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey1, KeyID: storage in 15_Area51_bunker
+DeusEx.log	4805	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: Factory in 15_Area51_entrance
+DeusEx.log	4806	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad3, tag: Keypad3, name: Keypad1 in 15_Area51_entrance
+DeusEx.log	4845	ScriptLog: DXRando found key class: DeusEx.NanoKey, tag: NanoKey, name: NanoKey0, KeyID: door_lower in 15_Area51_final
+DeusEx.log	4846	ScriptLog: DXRando found unhackable device class: DeusEx.Keypad1, tag: Keypad1, name: Keypad4 in 15_Area51_final
+DeusEx.log	4887	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: SubjectDoors1, name: DeusExMover16 in 15_Area51_page with KeyIDNeeded: SubjectDoors
+DeusEx.log	4888	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: GreyDoors, name: DeusExMover22 in 15_Area51_page with KeyIDNeeded: SubjectDoors
+DeusEx.log	4889	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: GreyDoors, name: DeusExMover23 in 15_Area51_page with KeyIDNeeded: SubjectDoors
+DeusEx.log	4890	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: SubjectDoors1, name: DeusExMover32 in 15_Area51_page with KeyIDNeeded: SubjectDoors
+DeusEx.log	4891	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: GreyDoors, name: DeusExMover35 in 15_Area51_page with KeyIDNeeded: SubjectDoors
+DeusEx.log	4892	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: GreyDoors, name: DeusExMover36 in 15_Area51_page with KeyIDNeeded: SubjectDoors
+DeusEx.log	4893	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: radiation_exit, name: DeusExMover80 in 15_Area51_page with KeyIDNeeded: SubjectDoors
+DeusEx.log	4894	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: radiation_exit, name: DeusExMover81 in 15_Area51_page with KeyIDNeeded: SubjectDoors
+DeusEx.log	4895	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: exitdoor, name: DeusExMover82 in 15_Area51_page with KeyIDNeeded: SubjectDoors
+DeusEx.log	4896	ScriptLog: DXRando found unpickable and unbreakable door class: DeusEx.DeusExMover, tag: exitdoor, name: DeusExMover83 in 15_Area51_page with KeyIDNeeded: SubjectDoors
