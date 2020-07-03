@@ -391,11 +391,30 @@ function test()
     local DeusExMover d;
     local Terrorist t;
     local NanoKey key;
+    local HackableDevices h;
 
     //return;// disabled for now
 
-    log("test");
+    //log("test");
     RandoSkills();
+
+    foreach AllActors(class'DeusExMover', d)
+    {
+        if( d.bPickable == false && d.bBreakable == false && (d.KeyIDNeeded$"") != "None" ) {
+            log("DXRando found unpickable and unbreakable door class: " $ d.Class $ ", tag: " $ d.Tag $ ", name: " $ d.Name $ " in " $ dxInfo.mapName $ " with KeyIDNeeded: " $ d.KeyIDNeeded);
+        }
+    }
+
+    foreach AllActors(class'NanoKey', key)
+    {
+        log("DXRando found key class: " $ key.Class $ ", tag: " $ key.Tag $ ", name: " $ key.Name $ ", KeyID: " $ key.KeyID $ " in " $ dxInfo.mapName);
+    }
+
+    foreach AllActors(class'HackableDevices', h)
+    {
+        if( h.bHackable == false )
+            log("DXRando found unhackable device class: " $ h.Class $ ", tag: " $ h.Tag $ ", name: " $ h.Name $ " in " $ dxInfo.mapName);
+    }
 
     if( dxInfo.mapName == "03_NYC_MolePeople" )
     {
