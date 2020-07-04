@@ -165,11 +165,12 @@ function Timer()
 	// make sure our flags are initialized correctly
 	if (flags == None)
 	{
+        //load seed flag from the new game before the intro deletes all flags
         f = DeusExPlayer(GetPlayerPawn()).FlagBase;
         flagName = 'Rando_seed';
         seed = f.GetInt(flagName);
-        if( self.Class == class'MissionIntro' )
-            f.SetInt(flagName, seed,, 999);
+        //if( self.Class == class'MissionIntro' )
+        //    f.SetInt(flagName, seed,, 999);
 
 		InitStateMachine();
 
@@ -177,10 +178,11 @@ function Timer()
 		if ((player != None) && (flags.GetBool('PlayerTraveling')))
 			FirstFrame();
         
+        //save the seed flag again after the intro deletes all flags
         if( self.Class == class'MissionIntro' )
             f.SetInt(flagName, seed,, 999);
 
-        test();
+        RandoEnter();
 	}
 }
 
@@ -231,13 +233,9 @@ function Rando()
     local ScriptedPawn p;
     local DeusExCarcass c;
     local Weapon inv;
-    local Tree t;
     local Augmentation anAug;
 
     SetSeed(seed + ( dxInfo.MissionNumber * 107 ) + Len(dxInfo.mapName) );//need to hash the map name string better, maybe use this http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/crc32.html
-
-    //Player.SkillPointsAvail = 0;
-    //Player.SkillPointsTotal = 0;
 
     log("randomizing "$dxInfo.mapName$" using seed " $ seed);
 
@@ -245,15 +243,7 @@ function Rando()
 
     if( self.Class == class'MissionIntro' )
     { // extra randomization in the intro for the lolz
-        foreach AllActors(class'Tree', t)
-        { // exclude 80% of trees from the SwapAll by temporarily hiding them
-            if( Rng(100)<80 ) t.bHidden = true;
-        }
-        SwapAll('Actor');
-        foreach AllActors(class'Tree', t)
-        {
-            t.bHidden = false;
-        }
+        RandomizeIntro();
         return;
     }
 
@@ -267,6 +257,10 @@ function Rando()
     SwapAll('Containers');
 
     RandomizeAugCannisters();
+    ReduceAmmo(0.8);
+    //ReduceSpawns('Inventory', 0);//no items, even for enemies
+    ReduceSpawns('Multitool', 50);
+    ReduceSpawns('Lockpick', 50);
 
     /*foreach AllActors(class'ScriptedPawn', p)
     {
@@ -309,7 +303,6 @@ function SwapAll(name classname)
 
         i=0;
         slot=Rng(num-1);
-        //if(Player != None) Player.ClientMessage("" $ a.Class);
         foreach AllActors(class'Actor', b )
         {
             if( SkipActor(b, classname) ) continue;
@@ -323,9 +316,16 @@ function SwapAll(name classname)
     }
 }
 
+function bool CarriedItem(Actor a)
+{
+    return a.Owner != None && a.Owner.IsA('Pawn');
+    //return ! (a.Owner == None || a.Owner.IsA('Conatiners') || a.Owner.IsA('Carcass') );
+}
+
 function bool SkipActor(Actor a, name classname)
 {
-    return ( ! a.IsA(classname) ) || ( Pawn(a.Owner) != None ) || a.bStatic || a.bHidden || a.IsA('BarrelAmbrosia') || a.IsA('BarrelVirus');
+    //( Pawn(a.Owner) != None )
+    return ( ! a.IsA(classname) ) || ( a.Owner != None ) || a.bStatic || a.bHidden || a.IsA('BarrelAmbrosia') || a.IsA('BarrelVirus');
 }
 
 function Swap(Actor a, Actor b)
@@ -386,7 +386,84 @@ function Name PickRandomAug(int numAugs)
     return Player.AugmentationSystem.augClasses[slot].Name;
 }
 
-function test()
+function ReduceAmmo(float mult)
+{
+    local Weapon w;
+    local Ammo a;
+
+    foreach AllActors(class'Weapon', w)
+    {
+        if( w.PickupAmmoCount > 0 )
+            w.PickupAmmoCount = Clamp(w.PickupAmmoCount * mult, 1, 99999);
+    }
+
+    foreach AllActors(class'Ammo', a)
+    {
+        if( a.AmmoAmount > 0 && ( ! CarriedItem(a) ) )
+            a.AmmoAmount = Clamp(a.AmmoAmount * mult, 1, 99999);
+    }
+}
+
+function ReduceSpawns(name classname, int percent)
+{
+    local Actor a;
+    local Containers d;
+
+    foreach AllActors(class'Actor', a)
+    {
+        //if( SkipActor(a, classname) ) continue;
+        if( a == Player ) continue;
+        if( a.Owner == Player ) continue;
+        if( ! a.IsA(classname) ) continue;
+
+        if( Rng(100) >= percent )
+        {
+	        DestroyActor( a );
+        }
+    }
+
+    foreach AllActors(class'Containers', d)
+    {
+        log("DXRando found Decoration " $ d.Name $ " with Contents: " $ d.Contents $ ", looking for " $ classname);
+        if( Rng(100) >= percent ) {
+            if( ClassIsA( d.Contents, classname) ) d.Contents = d.Content2;
+            if( ClassIsA( d.Contents, classname) ) d.Content2 = d.Content3;
+            if( ClassIsA( d.Contents, classname) ) d.Content3 = None;
+        }
+    }
+}
+
+function bool ClassIsA(class<actor> class, name classname)
+{
+    // there must be a better way to do this...
+    local actor a;
+    local bool ret;
+    if(class == None) return ret;
+
+    //return class<classname>(class) != None;
+
+    a = Spawn(class);
+    ret = a.IsA(classname);
+    a.Destroy();
+    return ret;
+}
+
+function RandomizeIntro()
+{
+    local Tree t;
+
+    foreach AllActors(class'Tree', t)
+    { // exclude 80% of trees from the SwapAll by temporarily hiding them
+        if( Rng(100) < 80 ) t.bHidden = true;
+    }
+    SwapAll('Actor');
+    foreach AllActors(class'Tree', t)
+    {
+        t.bHidden = false;
+    }
+}
+
+function RandoEnter()
 {
     local DeusExMover d;
     local Terrorist t;
@@ -402,6 +479,12 @@ function test()
     {
         if( d.bPickable == false && d.bBreakable == false && (d.KeyIDNeeded$"") != "None" ) {
             log("DXRando found unpickable and unbreakable door class: " $ d.Class $ ", tag: " $ d.Tag $ ", name: " $ d.Name $ " in " $ dxInfo.mapName $ " with KeyIDNeeded: " $ d.KeyIDNeeded);
+            d.bPickable = true;
+            d.bBreakable = true;
+            d.minDamageThreshold = 50;
+            d.lockStrength = 1;
+            d.doorStrength = 1;
+            d.initiallockStrength = 1;
         }
     }
 
@@ -412,11 +495,15 @@ function test()
 
     foreach AllActors(class'HackableDevices', h)
     {
-        if( h.bHackable == false )
+        if( h.bHackable == false ) {
             log("DXRando found unhackable device class: " $ h.Class $ ", tag: " $ h.Tag $ ", name: " $ h.Name $ " in " $ dxInfo.mapName);
+            h.bHackable = true;
+            h.hackStrength = 1;
+            h.initialhackStrength = 1;
+        }
     }
 
-    if( dxInfo.mapName == "03_NYC_MolePeople" )
+    /*if( dxInfo.mapName == "03_NYC_MolePeople" )
     {
         foreach AllActors(class'DeusExMover', d)
         {
@@ -437,7 +524,7 @@ function test()
                 t.AddInventory(key);
             }
         }
-    }
+    }*/
 }
 
 function RandoSkills()
@@ -459,6 +546,29 @@ function RandoSkills()
         }
 		aSkill = aSkill.next;
 	}
+}
+
+function bool DestroyActor( Actor d )
+{
+	// If this item is in an inventory chain, unlink it.
+	//local actor Link;
+    local Decoration downer;
+
+    if( d.IsA('Inventory') && d.Owner != None && d.Owner.IsA('Pawn') )
+    {
+        Pawn(d.Owner).DeleteInventory( Inventory(d) );
+    }
+    /*else if( d.IsA('Inventory') && d.Owner != None && d.Owner.IsA('Decoration') ) {
+        downer = Decoration(d.Owner);
+        log("DXRando DestroyActor " $ downer.Name);
+        if( downer.contents == d.Class ) downer.contents = downer.content2;
+        if( downer.content2 == d.Class ) downer.content2 = downer.content3;
+        if( downer.content3 == d.Class ) downer.content3 = None;
+
+        Inventory(d).SetOwner(None);
+    }*/
+    return d.Destroy();
+    //d.bHidden = True;
 }
 
 function int SetSeed(int s)

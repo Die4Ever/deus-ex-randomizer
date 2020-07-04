@@ -2,7 +2,8 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 
 X start with running speed aug, at max level? max level is too OP
 X don't give 2 of the same aug in a canister
-rename test function
+x rename test function
+fix pistol starting level?
 organize the fixes for individual levels
 X fix skill cost generation
 X log statements
@@ -19,6 +20,9 @@ ambient lighting adjustment, AI hearing and vision adjustment, enemy health
 fix aug randomization
 rando dragoon's tooth sword? nerf it?
 copy Physics property when swapping?
+    -actor class also has these:
+        var const Actor           Base;          // Moving brush actor we're standing on.
+        var const PointRegion     Region;        // Region this actor is in.
 exploded corpses drop keys?
 bIsItemGoal?
 should NanoKeys have buoyancy?
@@ -46,6 +50,8 @@ unrealscript gui:
 seed, skill cost %s, starting points, ammo %, lockpick %, multitool %, money %, bioelectric cells %, health%, base movement speed %? falling damage %? passcodes and passwords
 can I improve ladders just make them super sticky and press jump to get off?
 starting level?
+
+http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/unrealscript.html
 
 https://ut99.org/viewtopic.php?t=5985
 
