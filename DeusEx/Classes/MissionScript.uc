@@ -173,11 +173,8 @@ function Timer()
 	{
         CrcInit();
         //load seed flag from the new game before the intro deletes all flags
-        f = DeusExPlayer(GetPlayerPawn()).FlagBase;
-        flagName = 'Rando_seed';
-        seed = f.GetInt(flagName);
-        //if( self.Class == class'MissionIntro' )
-        //    f.SetInt(flagName, seed,, 999);
+        flags = DeusExPlayer(GetPlayerPawn()).FlagBase;
+        LoadSeed();
 
 		InitStateMachine();
 
@@ -187,7 +184,7 @@ function Timer()
         
         //save the seed flag again after the intro deletes all flags
         if( self.Class == class'MissionIntro' )
-            f.SetInt(flagName, seed,, 999);
+            SaveSeed(seed);
 
         RandoEnter();
 	}
@@ -235,6 +232,17 @@ function SpawnPoint GetSpawnPoint(Name spawnTag, optional bool bRandom)
 	}
 
 	return aPoint;
+}
+
+function LoadSeed()
+{
+    seed = flags.GetInt('Rando_seed');
+}
+
+function SaveSeed(int newseed)
+{
+    seed=newseed;
+    flags.SetInt('Rando_seed', seed,, 999);
 }
 
 function Rando()

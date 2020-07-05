@@ -14,12 +14,11 @@ function CopySkills()
     local MissionNewGame ms;
 
     ms = player.Spawn(class'MissionNewGame');
-    ms.seed = Rand(10000000);
-    Player.FlagBase.SetInt('Rando_seed', ms.seed,, 999);
     ms.Player = player;
+    ms.flags = player.FlagBase;
+    ms.LoadSeed();
     ms.RandoSkills();
     ms.Destroy();
-    ms = None;
 
 	skillIndex = 0;
 
