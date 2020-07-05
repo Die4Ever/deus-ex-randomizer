@@ -16,7 +16,7 @@ function CopySkills()
     ms = player.Spawn(class'MissionNewGame');
     ms.Player = player;
     ms.flags = player.FlagBase;
-    ms.LoadSeed();
+    ms.LoadFlags();
     ms.RandoSkills();
     ms.Destroy();
 

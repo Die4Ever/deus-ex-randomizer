@@ -6,9 +6,9 @@ function RandoSkills()
     Super.RandoSkills();
 }
 
-function SaveFlags(DeusExPlayer newplayer, int newseed)
+/*function SaveFlags(DeusExPlayer newplayer)
 {
     player = newplayer;
     flags = Player.FlagBase;
-    SaveSeed(newseed);
-}
+    SaveSeed(seed);
+}*/

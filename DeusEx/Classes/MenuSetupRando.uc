@@ -20,6 +20,7 @@ var MenuUIEditWindow editAmmo;
 var MenuUIEditWindow editMultitools;
 var MenuUIEditWindow editLockpicks;
 var MenuUIEditWindow editBioCells;
+var MenuUIEditWindow editSpeedLevel;
 
 event InitWindow()
 {
@@ -51,7 +52,7 @@ function CreateControls()
 
     row = 0;
 	editSeed = CreateEdit(row++, "Seed", "1234567890");
-    editBrightness = CreateEdit(row++, "Brightness +", "1234567890", "5");
+    editBrightness = CreateSlider(row++, "Brightness +", 5, 0, 25);
 
     btnRandoKeys.values[0] = "Off";
     btnRandoKeys.values[1] = "Smart";
@@ -60,25 +61,26 @@ function CreateControls()
     btnRandoDoors.values[0] = "Unchanged";
     btnRandoDoors.values[1] = "Destructible";
     btnRandoDoors.values[2] = "Pickable";
-    btnRandoDoors.values[3] = "Either";
-    btnRandoDoors.values[4] = "Both";
+    //btnRandoDoors.values[3] = "Either";
+    btnRandoDoors.values[3] = "Both";
     RandoDoors = CreateEnum(row++, "Key-Only Doors", btnRandoDoors);
 
     btnRandoDevices.values[0] = "Unchanged";
-    btnRandoDevices.values[1] = "Some Hackable";
-    btnRandoDevices.values[2] = "All Hackable";
+    //btnRandoDevices.values[1] = "Some Hackable";
+    btnRandoDevices.values[1] = "All Hackable";
     RandoDevices = CreateEnum(row++, "Electronic Devices", btnRandoDevices);
 
     btnRandoPasswords.values[0] = "Randomized";
     btnRandoPasswords.values[1] = "Unchanged";
     RandoPasswords = CreateEnum(row++, "Passwords", btnRandoPasswords);
 
-    editMinSkill = CreateEdit(row++, "Minimum Skill Cost %", "1234567890", "25");
-    editMaxSkill = CreateEdit(row++, "Maximum Skill Cost %", "1234567890", "400");
-    editAmmo = CreateEdit(row++, "Ammo Drops %", "1234567890", "80");
-    editMultitools = CreateEdit(row++, "Multitools Drops %", "1234567890", "70");
-    editLockpicks = CreateEdit(row++, "Lockpicks Drops %", "1234567890", "70");
-    editBioCells = CreateEdit(row++, "Bioelectric Cells Drops %", "1234567890", "80");
+    editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", 25, 0, 500);
+    editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", 400, 0, 500);
+    editAmmo = CreateSlider(row++, "Ammo Drops %", 80, 0);
+    editMultitools = CreateSlider(row++, "Multitools Drops %", 70);
+    editLockpicks = CreateSlider(row++, "Lockpicks Drops %", 70);
+    editBioCells = CreateSlider(row++, "Bioelectric Cells Drops %", 80);
+    editSpeedLevel = CreateSlider(row++, "Speed Aug Level", 1, 0, 3);
 }
 
 function vector GetCoords(int row, int col)
@@ -102,7 +104,7 @@ function CreateLabel(int row, string label)
     winLabel.SetFont(Font'FontTiny');
 }
 
-function MenuUIEditWindow CreateEdit(int row, string label, string filterString, optional string text )
+function MenuUIEditWindow CreateEdit(int row, string label, string filterString, optional string deflt )
 {
     local MenuUIEditWindow edit;
     local vector coords;
@@ -112,11 +114,45 @@ function MenuUIEditWindow CreateEdit(int row, string label, string filterString,
     coords = GetCoords(row, 1);
 	edit = CreateMenuEditWindow(coords.x, coords.y, 126, 10, winClient);
 
-	edit.SetText(text);
+	edit.SetText(deflt);
     edit.SetFilter(filterString);
 	//edit.SetSensitivity(False);
 
     return edit;
+}
+
+function MenuUIEditWindow CreateSlider(int row, string label, optional int deflt, optional int min, optional int max )
+{
+    return CreateEdit(row, label, "1234567890", string(deflt));
+    /*local MenuUISliderButtonWindow slider;
+    local vector coords;
+    local int numTicks;
+    local int i;
+    local int mult;
+
+    if(max==0) max=100;
+    if( (max-min) < 80 ) mult=1;
+    else mult=5;
+    numTicks=(max - min)/mult + 1;
+
+    CreateLabel(row, label);
+
+    coords = GetCoords(row, 1);
+    slider = MenuUISliderButtonWindow(winClient.NewChild(Class'MenuUISliderButtonWindow'));
+    slider.SetPos(coords.x, coords.y);
+	slider.SetTicks(numTicks, min, max);
+    slider.winSlider.SetValue(deflt);
+    for(i=0; i<numTicks; i++) {
+        slider.winSlider.SetEnumeration(i, string(i*mult)$"%" );
+    }
+    //slider.winScaleManager.SetWidth(126);
+    //slider.winSlider.SetScaleTexture(slider.defaultScaleTexture, 50, 21, 8, 8);
+    //slider.winScaleManager.StretchScaleField(true);
+    //slider.winSlider.EnableStretchedScale(true);
+    //slider.winSlider.SetWidth(50);
+    slider.winSlider.SetScaleTexture(slider.defaultScaleTexture, 50, 21, 8, 8);
+
+    return slider;*/
 }
 
 function MenuUIActionButtonWindow CreateBtn(int row, string label, string text)
@@ -205,10 +241,20 @@ function ResetToDefaults()
 	editSeed.SetText("");
 }
 
+function int GetSliderValue(MenuUIEditWindow w)
+{
+    return int(w.GetText());
+}
+
+function string GetEnumValue(int e)
+{
+    return enums[e].values[enums[e].value];
+}
+
 function ProcessAction(String actionKey)
 {
 	local int seed;
-    local string sseed;
+    local string sseed, keys, doors, devices, passwords;
     local MissionNewGame ms;
 
 	if (actionKey == "NEXT")
@@ -217,8 +263,50 @@ function ProcessAction(String actionKey)
         if( sseed == "" ) seed = Rand(10000000);
         else seed = int(sseed);
 
+        keys = GetEnumValue(RandoKeys);
+        doors = GetEnumValue(RandoDoors);
+        devices = GetEnumValue(RandoDevices);
+        passwords = GetEnumValue(RandoPasswords);
+
         ms = player.Spawn(class'MissionNewGame');
-        ms.SaveFlags(player, seed);
+        ms.seed = seed;
+        log("DXRando setting seed to "$seed);
+        ms.brightness = GetSliderValue(editBrightness);
+        ms.minskill = GetSliderValue(editMinSkill);
+        ms.maxskill = GetSliderValue(editMaxSkill);
+        ms.ammo = GetSliderValue(editAmmo);
+        ms.multitools = GetSliderValue(editMultitools);
+        ms.lockpicks = GetSliderValue(editLockpicks);
+        ms.biocells = GetSliderValue(editBioCells);
+        ms.speedlevel = GetSliderValue(editSpeedLevel);
+
+        if( keys == "Off" ) ms.keysrando = 0;
+        else if( keys == "Dumb" ) ms.keysrando = 1;
+        else if( keys == "Smart" ) ms.keysrando = 2;
+        else if( keys == "Copy" ) ms.keysrando = 3;
+
+        if( doors == "Unchanged" ) {}
+        else if( doors == "Destructible" ) ms.doorsdestructible = 100;
+        else if( doors == "Pickable" ) ms.doorspickable = 100;
+        else if( doors == "Either" ) {
+            ms.doorsdestructible = 50;
+            ms.doorspickable = 50;
+        }
+        else if( doors == "Both" ) {
+            ms.doorsdestructible = 100;
+            ms.doorspickable = 100;
+        }
+
+        if( devices == "Unchanged" ) ms.deviceshackable = 0;
+        else if( devices == "Some Hackable" ) ms.deviceshackable = 50;
+        else if( devices == "All Hackable" ) ms.deviceshackable = 100;
+
+        if( passwords == "Randomized" ) ms.passwordsrandomized = 100;
+        else if( passwords == "Unchanged" ) ms.passwordsrandomized = 0;
+
+        ms.player = player;
+        ms.flags = player.FlagBase;
+        ms.SaveFlags();
         ms.Destroy();
         InvokeNewGameScreen(combatDifficulty);
 	}
