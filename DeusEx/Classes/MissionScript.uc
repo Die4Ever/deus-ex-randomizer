@@ -18,6 +18,12 @@ var string localURL;
 var DeusExLevelInfo dxInfo;
 var int seed;
 var int newseed;
+var string oldpasswords[128];
+var string newpasswords[128];
+var int passStart;
+var int passEnd;
+var DeusExNote lastCheckedNote;
+var private int CrcTable[256]; // for string hashing to do more stable seeding
 
 // ----------------------------------------------------------------------
 // PostPostBeginPlay()
@@ -165,6 +171,7 @@ function Timer()
 	// make sure our flags are initialized correctly
 	if (flags == None)
 	{
+        CrcInit();
         //load seed flag from the new game before the intro deletes all flags
         f = DeusExPlayer(GetPlayerPawn()).FlagBase;
         flagName = 'Rando_seed';
@@ -184,6 +191,8 @@ function Timer()
 
         RandoEnter();
 	}
+
+    CheckNotes();
 }
 
 // ----------------------------------------------------------------------
@@ -235,11 +244,11 @@ function Rando()
     local Weapon inv;
     local Augmentation anAug;
 
-    SetSeed(seed + ( dxInfo.MissionNumber * 107 ) + Len(dxInfo.mapName) );//need to hash the map name string better, maybe use this http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/crc32.html
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName) );
 
     log("randomizing "$dxInfo.mapName$" using seed " $ seed);
 
-    if( Level.AmbientBrightness<100 ) Level.AmbientBrightness += 1;
+    if( Level.AmbientBrightness<100 ) Level.AmbientBrightness += 5;
 
     if( self.Class == class'MissionIntro' )
     { // extra randomization in the intro for the lolz
@@ -250,17 +259,20 @@ function Rando()
     if( self.Class == class'Mission01' && localURL == "01_NYC_UNATCOISLAND" )
     {
         anAug = Player.AugmentationSystem.GivePlayerAugmentation(class'AugSpeed');
-        //anAug.CurrentLevel = 1;//anAug.MaxLevel;
+        //anAug.CurrentLevel = anAug.MaxLevel;
     }
 
+    MoveNanoKeys();
     SwapAll('Inventory');
     SwapAll('Containers');
 
     RandomizeAugCannisters();
     ReduceAmmo(0.8);
     //ReduceSpawns('Inventory', 0);//no items, even for enemies
-    ReduceSpawns('Multitool', 50);
-    ReduceSpawns('Lockpick', 50);
+    ReduceSpawns('Multitool', 70);
+    ReduceSpawns('Lockpick', 70);
+
+    RandoPasswords(); //run this at the end cause it modifies the seed
 
     /*foreach AllActors(class'ScriptedPawn', p)
     {
@@ -316,6 +328,47 @@ function SwapAll(name classname)
     }
 }
 
+function MoveNanoKeys()
+{
+    local Inventory a;
+    local NanoKey k;
+    local DeusExMover d;
+    local int num, i, slot;
+    local float doorDist, newDist;
+    num=0;
+
+    foreach AllActors(class'NanoKey', k )
+    {
+        doorDist=99999;
+        foreach AllActors(class'DeusExMover', d)
+        {
+            if( d.KeyIDNeeded == k.KeyID ) {
+                doorDist = VSize( d.Location - Player.Location );
+                break;
+            }
+        }
+        i=0;
+        num=0;
+        foreach RadiusActors(class'Inventory', a, doorDist, Player.Location )
+        {
+            if( SkipActor(a, 'Inventory') ) continue;
+            num++;
+        }
+        slot=Rng(num-1);
+        i=0;
+        foreach RadiusActors(class'Inventory', a, doorDist, Player.Location )
+        {
+            if( SkipActor(a, 'Inventory') ) continue;
+
+            if(i==slot) {
+                Swap(k, a);
+                break;
+            }
+            i++;
+        }
+    }
+}
+
 function bool CarriedItem(Actor a)
 {
     return a.Owner != None && a.Owner.IsA('Pawn');
@@ -325,13 +378,16 @@ function bool CarriedItem(Actor a)
 function bool SkipActor(Actor a, name classname)
 {
     //( Pawn(a.Owner) != None )
-    return ( ! a.IsA(classname) ) || ( a.Owner != None ) || a.bStatic || a.bHidden || a.IsA('BarrelAmbrosia') || a.IsA('BarrelVirus');
+    return ( ! a.IsA(classname) ) || ( a.Owner != None ) || a.bStatic || a.bHidden || a.IsA('BarrelAmbrosia') || a.IsA('BarrelVirus') || a.IsA('NanoKey');
 }
 
 function Swap(Actor a, Actor b)
 {
     local vector newloc;
     local rotator newrot;
+    local bool success;
+    local EPhysics aphysics;
+    local Actor abase;
 
     if( a == b ) return;
 
@@ -340,14 +396,24 @@ function Swap(Actor a, Actor b)
     newloc = b.Location + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1);
     newrot = b.Rotation;
 
-    b.SetLocation(a.Location + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1) );
+    success = b.SetLocation(a.Location + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1) );
     b.SetRotation(a.Rotation);
 
-    a.SetLocation(newloc);
+    if( success == false )
+        Player.ClientMessage("failed to move " $ b.Class $ " into location of " $ a.Class);
+
+    success = a.SetLocation(newloc);
     a.SetRotation(newrot);
 
-    //a.SetPhysics(PHYS_Falling);
-    //b.SetPhysics(PHYS_Falling);
+    if( success == false )
+        Player.ClientMessage("failed to move " $ a.Class $ " into location of " $ b.Class);
+
+    aphysics = a.Physics;
+    a.SetPhysics(b.Physics);
+    b.SetPhysics(aphysics);
+    abase = a.Base;
+    a.SetBase(b.Base);
+    b.SetBase(abase);
 }
 
 function RandomizeAugCannisters()
@@ -364,6 +430,7 @@ function RandomizeAugCannisters()
     {
         if (Player.AugmentationSystem.augClasses[augIndex] != None)
         {
+            //log("augIndex " $ augIndex $ ": " $ Player.AugmentationSystem.augClasses[augIndex].Name $ " bHasIt: " $ Player.AugmentationSystem.FindAugmentation(Player.AugmentationSystem.augClasses[augIndex]).bHasIt );
             numAugs=augIndex+1;
         }
     }
@@ -382,7 +449,11 @@ function RandomizeAugCannisters()
 function Name PickRandomAug(int numAugs)
 {
     local int slot;
-    slot = Rng(numAugs-1);
+    slot = Rng(numAugs-5)+1;// exclude the 4 augs you start with, 0 is AugSpeed
+    if ( slot >= 11 ) slot++;// skip AugIFF
+    if ( slot >= 12 ) slot++;// skip AugLight
+    if (slot >= 18 ) slot++;// skip AugDatalink
+    //Player.ClientMessage("Picked Aug " $ Player.AugmentationSystem.augClasses[slot].Name);
     return Player.AugmentationSystem.augClasses[slot].Name;
 }
 
@@ -446,6 +517,170 @@ function bool ClassIsA(class<actor> class, name classname)
     ret = a.IsA(classname);
     a.Destroy();
     return ret;
+}
+
+function RandoPasswords()
+{
+    local Computers c;
+    local Keypad k;
+    local ATM a;
+    local int i;
+
+    foreach AllActors(class'Computers', c)
+    {
+        for (i=0; i<ArrayCount(c.userList); i++)
+        {
+            if (c.userList[i].password == "")
+                continue;
+
+            ChangeComputerPassword(c, i);
+        }
+    }
+
+    foreach AllActors(class'Keypad', k)
+    {
+        ChangeKeypadPasscode(k);
+    }
+
+    foreach AllActors(class'ATM', a)
+    {
+        for (i=0; i<ArrayCount(a.userList); i++)
+        {
+            if(a.userList[i].PIN == "")
+                continue;
+
+            ChangeATMPIN(a, i);
+        }
+    }
+}
+
+function ChangeComputerPassword(Computers c, int i)
+{
+    local string oldpassword;
+    local string newpassword;
+    local int j;
+
+    oldpassword = c.userList[i].password;
+
+    for (j=0; j<ArrayCount(oldpasswords); j++)
+    {
+        if( oldpassword == oldpasswords[j] ) {
+            c.userList[i].password = newpasswords[j];
+            return;
+        }
+    }
+    newpassword = GeneratePassword(oldpassword);
+    c.userList[i].password = newpassword;
+    ReplacePassword(oldpassword, newpassword);
+}
+
+function ChangeKeypadPasscode(Keypad k)
+{
+    local string oldpassword;
+    local string newpassword;
+    local int j;
+
+    oldpassword = k.validCode;
+
+    for (j=0; j<ArrayCount(oldpasswords); j++)
+    {
+        if( oldpassword == oldpasswords[j] ) {
+            k.validCode = newpasswords[j];
+            return;
+        }
+    }
+
+    newpassword = GeneratePasscode(oldpassword);
+    k.validCode = newpassword;
+    ReplacePassword(oldpassword, newpassword);
+}
+
+function ChangeATMPIN(ATM a, int i)
+{
+    local string oldpassword;
+    local string newpassword;
+    local int j;
+
+    oldpassword = a.userList[i].PIN;
+
+    for (j=0; j<ArrayCount(oldpasswords); j++)
+    {
+        if( oldpassword == oldpasswords[j] ) {
+            a.userList[i].PIN = newpasswords[j];
+            return;
+        }
+    }
+    newpassword = GeneratePasscode(oldpassword);
+    a.userList[i].PIN = newpassword;
+    ReplacePassword(oldpassword, newpassword);
+}
+
+function ReplacePassword(string oldpassword, string newpassword)
+{ // do I even need passStart?
+    local DeusExNote note;
+
+    oldpasswords[passEnd] = oldpassword;
+    newpasswords[passEnd] = newpassword;
+    passEnd = (passEnd+1) % ArrayCount(oldpasswords);
+    if(passEnd == passStart) passStart = (passStart+1) % ArrayCount(oldpasswords);
+    //Player.ClientMessage("replaced password " $ oldpassword $ " with " $ newpassword);
+
+    note = Player.FirstNote;
+
+	while( note != None )
+	{
+        if( InStr(note.text, oldpassword) != -1 )
+        {
+            //Player.ClientMessage("found note " $ note.text $ ", with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
+            note.text = ReplaceText( note.text, oldpassword, newpassword );
+            //note.text = note.text $ " also test";
+        }
+		note = note.next;
+	}
+}
+
+function CheckNotes()
+{ // this could get slow, need to keep a lastCheckedNote
+    local DeusExNote note;
+    local int i;
+
+	note = Player.FirstNote;
+		
+	while( note != lastCheckedNote )
+	{
+        for (i=0; i<ArrayCount(oldpasswords); i++)
+        {
+            if( oldpasswords[i] == "" ) continue;
+            if( InStr(note.text, oldpasswords[i]) == -1 ) continue;
+            //Player.ClientMessage("found note " $ note.text $ ", with password " $ oldpasswords[i] $ ", replacing with newpassword " $ newpasswords[i]);
+            note.text = ReplaceText( note.text, oldpasswords[i], newpasswords[i] );
+            //note.text = note.text $ " also test";
+        }
+        lastCheckedNote = note;
+		note = note.next;
+	}
+}
+
+function string GeneratePassword(string oldpassword)
+{
+    local string out;
+    local int i;
+    local int c;
+    SetSeed( seed + Crc(oldpassword) );
+    for(i=0; i<5; i++) {
+        // 0-9 is 48-57, 97-122 is a-z
+        c = Rng(36) + 48;
+        if ( c > 57 ) c += 40;
+        out = out $ Chr(c);
+    }
+    return out;
+}
+
+function string GeneratePasscode(string oldpasscode)
+{
+    SetSeed( seed + Crc(oldpasscode) );
+    // a number from 1000 to 9999, easily avoids leading 0s
+    return (Rng(8999) + 1000) $ "";
 }
 
 function RandomizeIntro()
@@ -571,6 +806,21 @@ function bool DestroyActor( Actor d )
     //d.bHidden = True;
 }
 
+static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With)
+{
+    local int i;
+    local string Output;
+    
+    i = InStr(Text, Replace);
+    while (i != -1) {   
+        Output = Output $ Left(Text, i) $ With;
+        Text = Mid(Text, i + Len(Replace)); 
+        i = InStr(Text, Replace);
+    }
+    Output = Output $ Text;
+    return Output;
+}
+
 function int SetSeed(int s)
 {
     newseed = s;
@@ -583,8 +833,56 @@ function int Rng(int max)
     gen1 = gen2/2;
     newseed = gen1 * newseed * 5 + gen2 + (newseed/5) * 3;
     newseed = abs(newseed);
-    return newseed % max;
+    return (newseed >> 8) % max;
 }
+
+
+// ============================================================================
+// CrcInit
+//
+// Initializes CrcTable and prepares it for use with Crc.
+// ============================================================================
+
+final function CrcInit() {
+
+  const CrcPolynomial = 0xedb88320;
+
+  local int CrcValue;
+  local int IndexBit;
+  local int IndexEntry;
+  
+  for (IndexEntry = 0; IndexEntry < 256; IndexEntry++) {
+    CrcValue = IndexEntry;
+
+    for (IndexBit = 8; IndexBit > 0; IndexBit--)
+      if ((CrcValue & 1) != 0)
+        CrcValue = (CrcValue >>> 1) ^ CrcPolynomial;
+      else
+        CrcValue = CrcValue >>> 1;
+    
+    CrcTable[IndexEntry] = CrcValue;
+    }
+  }
+
+
+// ============================================================================
+// Crc
+//
+// Calculates and returns a checksum of the given string. Call CrcInit before.
+// ============================================================================
+
+final function int Crc(coerce string Text) {
+
+  local int CrcValue;
+  local int IndexChar;
+  
+  CrcValue = 0xffffffff;
+  
+  for (IndexChar = 0; IndexChar < Len(Text); IndexChar++)
+    CrcValue = (CrcValue >>> 8) ^ CrcTable[Asc(Mid(Text, IndexChar, 1)) ^ (CrcValue & 0xff)];
+
+  return CrcValue;
+  }
 
 defaultproperties
 {
