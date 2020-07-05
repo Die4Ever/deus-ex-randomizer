@@ -262,7 +262,7 @@ function LoadFlags()
     gibsdropkeys = flags.GetInt('Rando_gibsdropkeys');
 
     if(flagsversion < 1) {
-        log("upgrading flags from v"$flagsversion);
+        log("DXRando upgrading flags from v"$flagsversion);
         brightness = 5;
         minskill = 25;
         maxskill = 400;
@@ -312,11 +312,11 @@ function Rando()
 
     SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName) );
 
-    log("randomizing "$dxInfo.mapName$" using seed " $ seed);
+    log("DXRando randomizing "$dxInfo.mapName$" using seed " $ seed);
 
-    log("brightness was " $ int(Level.AmbientBrightness) $ "(+" $ brightness $ ")");
+    log("DXRando brightness was " $ int(Level.AmbientBrightness) $ "(+" $ brightness $ ")");
     if( Level.AmbientBrightness<150 ) Level.AmbientBrightness += brightness;
-    log("now brightness is " $ int(Level.AmbientBrightness));
+    log("DXRando now brightness is " $ int(Level.AmbientBrightness));
 
     if( self.Class == class'MissionIntro' || self.Class == class'MissionEndgame' )
     { // extra randomization in the intro for the lolz
@@ -341,7 +341,7 @@ function Rando()
     ReduceSpawns('Lockpick', lockpicks);
     ReduceSpawns('BioelectricCell', biocells);
 
-    RandoPasswords(passwordsrandomized); //run this at the end cause it modifies the seed
+    RandoPasswords(passwordsrandomized);
 
     /*foreach AllActors(class'ScriptedPawn', p)
     {
@@ -364,13 +364,15 @@ function Rando()
         c.AddInventory(inv);
     }*/
 
-    log("done randomizing "$dxInfo.mapName);
+    log("DXRando done randomizing "$dxInfo.mapName);
 }
 
 function SwapAll(name classname)
 {
     local Actor a, b;
     local int num, i, slot;
+
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "SwapAll " $ classname) );
     num=0;
     foreach AllActors(class'Actor', a )
     {
@@ -408,6 +410,8 @@ function MoveNanoKeys(int mode)
 
     // 0=off, 1=dumb, 2=smart, 3=copies
     if( mode == 0 ) return;
+
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "MoveNanoKeys") );
 
     foreach AllActors(class'NanoKey', k )
     {
@@ -463,7 +467,7 @@ function Swap(Actor a, Actor b)
 
     if( a == b ) return;
 
-    log("swapping "$a.Class$" and "$b.Class);
+    log("DXRando swapping "$a.Class$" and "$b.Class);
 
     newloc = b.Location + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1);
     newrot = b.Rotation;
@@ -505,13 +509,15 @@ function RandomizeAugCannisters()
 
     if( Player == None ) return;
 
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "RandomizeAugCannisters") );
+
     numAugs=0;
 
     for(augIndex=0; augIndex<arrayCount(Player.AugmentationSystem.augClasses); augIndex++)
     {
         if (Player.AugmentationSystem.augClasses[augIndex] != None)
         {
-            //log("augIndex " $ augIndex $ ": " $ Player.AugmentationSystem.augClasses[augIndex].Name $ " bHasIt: " $ Player.AugmentationSystem.FindAugmentation(Player.AugmentationSystem.augClasses[augIndex]).bHasIt );
+            //log("DXRando augIndex " $ augIndex $ ": " $ Player.AugmentationSystem.augClasses[augIndex].Name $ " bHasIt: " $ Player.AugmentationSystem.FindAugmentation(Player.AugmentationSystem.augClasses[augIndex]).bHasIt );
             numAugs=augIndex+1;
         }
     }
@@ -545,6 +551,7 @@ function ReduceAmmo(float mult)
     local Ammo a;
 
     log("DXRando ReduceAmmo "$mult);
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "ReduceAmmo") );
 
     if( mult ~= 1 ) return;
 
@@ -569,6 +576,8 @@ function ReduceSpawns(name classname, int percent)
 
     if( percent >= 100 ) return;
 
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "ReduceSpawns " $ classname) );
+
     foreach AllActors(class'Actor', a)
     {
         //if( SkipActor(a, classname) ) continue;
@@ -590,6 +599,8 @@ function ReduceSpawnsInContainers(name classname, int percent)
     local Containers d;
 
     if( percent >= 100 ) return;
+
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "ReduceSpawnsInContainers " $ classname) );
 
     foreach AllActors(class'Containers', d)
     {
@@ -724,7 +735,7 @@ function ReplacePassword(string oldpassword, string newpassword)
     passEnd = (passEnd+1) % ArrayCount(oldpasswords);
     if(passEnd == passStart) passStart = (passStart+1) % ArrayCount(oldpasswords);
     //Player.ClientMessage("replaced password " $ oldpassword $ " with " $ newpassword);
-    log("replaced password " $ oldpassword $ " with " $ newpassword);
+    log("DXRando replaced password " $ oldpassword $ " with " $ newpassword);
 
     note = Player.FirstNote;
 
@@ -763,7 +774,7 @@ function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
     if( InStr( Caps(note.text), Caps(oldpassword) ) == -1 ) return;
 
     Player.ClientMessage("Note updated");
-    log("found note " $ note.text $ ", with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
+    log("DXRando found note " $ note.text $ ", with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
     note.text = ReplaceText( note.text, oldpassword, newpassword );
     //note.text = note.text $ " also test";
 }
@@ -814,7 +825,7 @@ function RandoEnter()
 
     //return;// disabled for now
 
-    //log("test");
+    //log("DXRando test");
     RandoSkills();
 
     foreach AllActors(class'DeusExMover', d)
@@ -878,7 +889,7 @@ function RandoSkills()
     local int i;
     local int percent;
 
-    log("randomizing skills with seed " $ seed);
+    log("DXRando randomizing skills with seed " $ seed);
     SetSeed(seed);
 
     if( minskill > maxskill ) maxskill = minskill;

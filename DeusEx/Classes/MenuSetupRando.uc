@@ -76,7 +76,7 @@ function CreateControls()
 
     editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", 25, 0, 500);
     editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", 400, 0, 500);
-    editAmmo = CreateSlider(row++, "Ammo Drops %", 80, 0);
+    editAmmo = CreateSlider(row++, "Ammo Drops %", 100);
     editMultitools = CreateSlider(row++, "Multitools Drops %", 70);
     editLockpicks = CreateSlider(row++, "Lockpicks Drops %", 70);
     editBioCells = CreateSlider(row++, "Bioelectric Cells Drops %", 80);
