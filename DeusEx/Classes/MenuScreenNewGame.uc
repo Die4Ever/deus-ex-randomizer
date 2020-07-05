@@ -550,6 +550,11 @@ function CopySkills()
     Player.FlagBase.SetInt('Rando_seed', ms.seed,, 999);
     ms.Player = player;
     ms.RandoSkills();
+    ms.Destroy();
+    ms = None;
+
+    //player.SkillPointsAvail = 0;
+	//player.SkillPointsTotal = 0;
 
 	skillIndex = 0;
 
@@ -557,10 +562,12 @@ function CopySkills()
 	while(aSkill != None)
 	{
 		localSkills[skillIndex] = player.Spawn(aSkill.Class);
-        localSkills[skillIndex].CurrentLevel = 0;
         localSkills[skillIndex].Cost[0] = aSkill.Cost[0];
         localSkills[skillIndex].Cost[1] = aSkill.Cost[1];
         localSkills[skillIndex].Cost[2] = aSkill.Cost[2];
+
+        //if( aSkill.Class == class'SkillWeaponPistol' )
+        //    player.SkillPointsAvail -= aSkill.Cost[0];
 		skillIndex++;
 		aSkill = aSkill.next;
 	}

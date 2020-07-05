@@ -3,7 +3,7 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 X start with running speed aug, at max level? max level is too OP
 X don't give 2 of the same aug in a canister
 x rename test function
-fix pistol starting level?
+x fix pistol starting level?
 organize the fixes for individual levels
 X fix skill cost generation
 X log statements
@@ -14,15 +14,23 @@ need a function for CloneNanoKey() (based on Engine.Pickup.SpawnCopy? no, that's
 need to figure out how to modify conversations, datacubes, emails...
 should meme up the endings too
 
+x DeusExPlayer has function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, optional bool bShowInLog )
+x     could use a timer in the MissionScript to check for new notes?
+
 options for keys randomization = none, dumb, smart, copy (smart would be based on distance compared to the door, should it factor X and Z distance more than Y distance so it favors it being on the same floor?)
 all doors destructible, pickable, either, both
 ambient lighting adjustment, AI hearing and vision adjustment, enemy health
-fix aug randomization
+x fix aug randomization
 rando dragoon's tooth sword? nerf it?
 copy Physics property when swapping?
     -actor class also has these:
         var const Actor           Base;          // Moving brush actor we're standing on.
+        native(298) final function SetBase( actor NewBase );
         var const PointRegion     Region;        // Region this actor is in.
+        var(Collision) const bool bCollideActors;   // Collides with other actors.
+        var(Collision) bool       bCollideWorld;    // Collides with the world.
+        var(Collision) bool       bBlockActors;	    // Blocks other nonplayer actors.
+        var(Collision) bool       bBlockPlayers;    // Blocks other player actors.
 exploded corpses drop keys?
 bIsItemGoal?
 should NanoKeys have buoyancy?
@@ -42,7 +50,7 @@ airfield barracks 03_NYC_Airfield KeyID eastgate, DeusExMover1
 
 Chateau DuClare sounds like it has some required keys?
 
-I can use this for string hashing http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/crc32.html
+x I can use this for string hashing http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/crc32.html
 
 maybe I can rewrite this as a mutator?
 
