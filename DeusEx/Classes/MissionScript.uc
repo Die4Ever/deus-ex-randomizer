@@ -250,7 +250,7 @@ function Rando()
 
     if( Level.AmbientBrightness<100 ) Level.AmbientBrightness += 5;
 
-    if( self.Class == class'MissionIntro' )
+    if( self.Class == class'MissionIntro' || self.Class == class'MissionEndgame' )
     { // extra randomization in the intro for the lolz
         RandomizeIntro();
         return;
@@ -687,7 +687,7 @@ function string GeneratePassword(string oldpassword)
     for(i=0; i<5; i++) {
         // 0-9 is 48-57, 97-122 is a-z
         c = Rng(36) + 48;
-        if ( c > 57 ) c += 40;
+        if ( c > 57 ) c += 39;
         out = out $ Chr(c);
     }
     return out;
