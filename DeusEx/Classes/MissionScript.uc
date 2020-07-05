@@ -804,15 +804,33 @@ function string GeneratePasscode(string oldpasscode)
 function RandomizeIntro()
 {
     local Tree t;
+    local DeusExMover m;
+    local BreakableGlass g;
 
     foreach AllActors(class'Tree', t)
     { // exclude 80% of trees from the SwapAll by temporarily hiding them
         if( Rng(100) < 80 ) t.bHidden = true;
     }
+    foreach AllActors(class'DeusExMover', m)
+    {
+        m.bHidden = true;
+    }
+    foreach AllActors(class'BreakableGlass', g)
+    {
+        g.bHidden = true;
+    }
     SwapAll('Actor');
     foreach AllActors(class'Tree', t)
     {
         t.bHidden = false;
+    }
+    foreach AllActors(class'DeusExMover', m)
+    {
+        m.bHidden = false;
+    }
+    foreach AllActors(class'BreakableGlass', g)
+    {
+        g.bHidden = false;
     }
 }
 
