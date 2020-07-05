@@ -385,9 +385,9 @@ function Swap(Actor a, Actor b)
 {
     local vector newloc;
     local rotator newrot;
-    local bool success;
-    local EPhysics aphysics;
-    local Actor abase;
+    local bool asuccess, bsuccess;
+    local EPhysics aphysics, bphysics;
+    local Actor abase, bbase;
 
     if( a == b ) return;
 
@@ -396,24 +396,33 @@ function Swap(Actor a, Actor b)
     newloc = b.Location + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1);
     newrot = b.Rotation;
 
-    success = b.SetLocation(a.Location + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1) );
+    bsuccess = b.SetLocation(a.Location + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1) );
     b.SetRotation(a.Rotation);
 
-    if( success == false )
-        Player.ClientMessage("failed to move " $ b.Class $ " into location of " $ a.Class);
+    if( bsuccess == false )
+        log("DXRando failed to move " $ b.Class $ " into location of " $ a.Class);
 
-    success = a.SetLocation(newloc);
+    asuccess = a.SetLocation(newloc);
     a.SetRotation(newrot);
 
-    if( success == false )
-        Player.ClientMessage("failed to move " $ a.Class $ " into location of " $ b.Class);
+    if( asuccess == false )
+        log("DXRando failed to move " $ a.Class $ " into location of " $ b.Class);
 
     aphysics = a.Physics;
-    a.SetPhysics(b.Physics);
-    b.SetPhysics(aphysics);
+    bphysics = b.Physics;
     abase = a.Base;
-    a.SetBase(b.Base);
-    b.SetBase(abase);
+    bbase = b.Base;
+
+    if(asuccess)
+    {
+        a.SetPhysics(bphysics);
+        a.SetBase(bbase);
+    }
+    if(bsuccess)
+    {
+        b.SetPhysics(aphysics);
+        b.SetBase(abase);
+    }
 }
 
 function RandomizeAugCannisters()
@@ -454,6 +463,7 @@ function Name PickRandomAug(int numAugs)
     if ( slot >= 12 ) slot++;// skip AugLight
     if (slot >= 18 ) slot++;// skip AugDatalink
     //Player.ClientMessage("Picked Aug " $ Player.AugmentationSystem.augClasses[slot].Name);
+    log("DXRando Picked Aug " $ Player.AugmentationSystem.augClasses[slot].Name);
     return Player.AugmentationSystem.augClasses[slot].Name;
 }
 
@@ -495,7 +505,7 @@ function ReduceSpawns(name classname, int percent)
 
     foreach AllActors(class'Containers', d)
     {
-        log("DXRando found Decoration " $ d.Name $ " with Contents: " $ d.Contents $ ", looking for " $ classname);
+        //log("DXRando found Decoration " $ d.Name $ " with Contents: " $ d.Contents $ ", looking for " $ classname);
         if( Rng(100) >= percent ) {
             if( ClassIsA( d.Contents, classname) ) d.Contents = d.Content2;
             if( ClassIsA( d.Contents, classname) ) d.Content2 = d.Content3;
@@ -624,6 +634,7 @@ function ReplacePassword(string oldpassword, string newpassword)
     passEnd = (passEnd+1) % ArrayCount(oldpasswords);
     if(passEnd == passStart) passStart = (passStart+1) % ArrayCount(oldpasswords);
     //Player.ClientMessage("replaced password " $ oldpassword $ " with " $ newpassword);
+    log("replaced password " $ oldpassword $ " with " $ newpassword);
 
     note = Player.FirstNote;
 
@@ -631,9 +642,7 @@ function ReplacePassword(string oldpassword, string newpassword)
 	{
         if( InStr(note.text, oldpassword) != -1 )
         {
-            //Player.ClientMessage("found note " $ note.text $ ", with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
-            note.text = ReplaceText( note.text, oldpassword, newpassword );
-            //note.text = note.text $ " also test";
+            UpdateNote(note, oldpassword, newpassword);
         }
 		note = note.next;
 	}
@@ -646,19 +655,27 @@ function CheckNotes()
 
 	note = Player.FirstNote;
 		
-	while( note != lastCheckedNote )
+	while( note != lastCheckedNote && note != None )
 	{
         for (i=0; i<ArrayCount(oldpasswords); i++)
         {
-            if( oldpasswords[i] == "" ) continue;
-            if( InStr(note.text, oldpasswords[i]) == -1 ) continue;
-            //Player.ClientMessage("found note " $ note.text $ ", with password " $ oldpasswords[i] $ ", replacing with newpassword " $ newpasswords[i]);
-            note.text = ReplaceText( note.text, oldpasswords[i], newpasswords[i] );
-            //note.text = note.text $ " also test";
+            UpdateNote(note, oldpasswords[i], newpasswords[i]);
         }
-        lastCheckedNote = note;
 		note = note.next;
 	}
+    lastCheckedNote = Player.FirstNote;
+}
+
+function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
+{
+    if( oldpassword == "" ) return;
+    if( note.text == "") return;
+    if( InStr( Caps(note.text), Caps(oldpassword) ) == -1 ) return;
+
+    Player.ClientMessage("Note updated");
+    log("found note " $ note.text $ ", with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
+    note.text = ReplaceText( note.text, oldpassword, newpassword );
+    //note.text = note.text $ " also test";
 }
 
 function string GeneratePassword(string oldpassword)
@@ -809,13 +826,15 @@ function bool DestroyActor( Actor d )
 static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With)
 {
     local int i;
-    local string Output;
+    local string Output, capsReplace;
+
+    capsReplace = Caps(Replace);
     
-    i = InStr(Text, Replace);
-    while (i != -1) {   
+    i = InStr( Caps(Text), capsReplace );
+    while (i != -1) {
         Output = Output $ Left(Text, i) $ With;
         Text = Mid(Text, i + Len(Replace)); 
-        i = InStr(Text, Replace);
+        i = InStr( Caps(Text), capsReplace);
     }
     Output = Output $ Text;
     return Output;
