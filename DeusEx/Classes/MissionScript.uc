@@ -2,7 +2,6 @@
 // MissionScript.
 //=============================================================================
 class MissionScript extends Info
-	transient
 	abstract;
 
 //
@@ -17,6 +16,7 @@ var FlagBase flags;
 var string localURL;
 var DeusExLevelInfo dxInfo;
 var int newseed;
+
 var string oldpasswords[128];
 var string newpasswords[128];
 var int passStart;
@@ -30,7 +30,7 @@ var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, s
 var int keysrando;//0=off, 1=dumb, 2=smart, 3=copies
 var int doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
 
-var private int CrcTable[256]; // for string hashing to do more stable seeding
+var transient private int CrcTable[256]; // for string hashing to do more stable seeding
 
 // ----------------------------------------------------------------------
 // PostPostBeginPlay()
@@ -756,7 +756,9 @@ function CheckNotes()
     local int i;
 
 	note = Player.FirstNote;
-		
+
+    log("DXRando CheckNotes(), passEnd is " $ passEnd $", passStart is " $ passStart);
+
 	while( note != lastCheckedNote && note != None )
 	{
         for (i=0; i<ArrayCount(oldpasswords); i++)
@@ -844,7 +846,19 @@ function RandoEnter()
     local NanoKey key;
     local HackableDevices h;
 
-    //return;// disabled for now
+    local Computers c;
+    local int i;
+
+    foreach AllActors(class'Computers', c)
+    {
+        for (i=0; i<ArrayCount(c.userList); i++)
+        {
+            if (c.userList[i].password == "")
+                continue;
+
+            log("DXRando RandoEnter found computer password: " $ c.userList[i].password);
+        }
+    }
 
     //log("DXRando test");
     RandoSkills();
