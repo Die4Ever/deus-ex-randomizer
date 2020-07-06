@@ -26,7 +26,7 @@ var DeusExNote lastCheckedNote;
 //rando flags
 var int seed;
 var int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
-var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, speedlevel;
+var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
 var int keysrando;//0=off, 1=dumb, 2=smart, 3=copies
 var int doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
 
@@ -253,6 +253,7 @@ function LoadFlags()
     multitools = flags.GetInt('Rando_multitools');
     lockpicks = flags.GetInt('Rando_lockpicks');
     biocells = flags.GetInt('Rando_biocells');
+    medkits = flags.GetInt('Rando_medkits');
     speedlevel = flags.GetInt('Rando_speedlevel');
     keysrando = flags.GetInt('Rando_keys');
     doorspickable = flags.GetInt('Rando_doorspickable');
@@ -277,13 +278,16 @@ function LoadFlags()
         deviceshackable = 100;
         passwordsrandomized = 100;
         gibsdropkeys = 1;
+    }
+    if(flagsversion < 2) {
+        medkits = 80;
         SaveFlags();
     }
 }
 
 function SaveFlags()
 {
-    flagsversion = 1;
+    flagsversion = 2;
     flags.SetInt('Rando_seed', seed,, 999);
 
     flags.SetInt('Rando_version', flagsversion,, 999);
@@ -294,6 +298,7 @@ function SaveFlags()
     flags.SetInt('Rando_multitools', multitools,, 999);
     flags.SetInt('Rando_lockpicks', lockpicks,, 999);
     flags.SetInt('Rando_biocells', biocells,, 999);
+    flags.SetInt('Rando_medkits', medkits,, 999);
     flags.SetInt('Rando_speedlevel', speedlevel,, 999);
     flags.SetInt('Rando_keys', keysrando,, 999);
     flags.SetInt('Rando_doorspickable', doorspickable,, 999);
@@ -341,6 +346,7 @@ function Rando()
     ReduceSpawns('Multitool', multitools);
     ReduceSpawns('Lockpick', lockpicks);
     ReduceSpawns('BioelectricCell', biocells);
+    ReduceSpawns('MedKit', medkits);
 
     RandoPasswords(passwordsrandomized);
 

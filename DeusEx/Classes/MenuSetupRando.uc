@@ -20,6 +20,7 @@ var MenuUIEditWindow editAmmo;
 var MenuUIEditWindow editMultitools;
 var MenuUIEditWindow editLockpicks;
 var MenuUIEditWindow editBioCells;
+var MenuUIEditWindow editMedkits;
 var MenuUIEditWindow editSpeedLevel;
 
 event InitWindow()
@@ -80,6 +81,7 @@ function CreateControls()
     editMultitools = CreateSlider(row++, "Multitools Drops %", 70);
     editLockpicks = CreateSlider(row++, "Lockpicks Drops %", 70);
     editBioCells = CreateSlider(row++, "Bioelectric Cells Drops %", 80);
+    editMedkits = CreateSlider(row++, "Medkit Drops %", 80);
     editSpeedLevel = CreateSlider(row++, "Speed Aug Level", 1, 0, 3);
 }
 
@@ -278,6 +280,7 @@ function ProcessAction(String actionKey)
         ms.multitools = GetSliderValue(editMultitools);
         ms.lockpicks = GetSliderValue(editLockpicks);
         ms.biocells = GetSliderValue(editBioCells);
+        ms.medkits = GetSliderValue(editMedkits);
         ms.speedlevel = GetSliderValue(editSpeedLevel);
 
         if( keys == "Off" ) ms.keysrando = 0;
