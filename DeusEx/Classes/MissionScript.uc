@@ -542,44 +542,36 @@ function Swap(Actor a, Actor b)
 function RandomizeAugCannisters()
 {
     local AugmentationCannister a;
-    local int augIndex;
-    local int numAugs;
 
     if( Player == None ) return;
 
     SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "RandomizeAugCannisters") );
 
-    numAugs=0;
-
-    for(augIndex=0; augIndex<arrayCount(Player.AugmentationSystem.augClasses); augIndex++)
-    {
-        if (Player.AugmentationSystem.augClasses[augIndex] != None)
-        {
-            //log("DXRando augIndex " $ augIndex $ ": " $ Player.AugmentationSystem.augClasses[augIndex].Name $ " bHasIt: " $ Player.AugmentationSystem.FindAugmentation(Player.AugmentationSystem.augClasses[augIndex]).bHasIt );
-            numAugs=augIndex+1;
-        }
-    }
-
     foreach AllActors(class'AugmentationCannister', a)
     {
-        a.AddAugs[0] = PickRandomAug(numAugs);
+        a.AddAugs[0] = PickRandomAug();
         a.AddAugs[1] = a.AddAugs[0];
         while( a.AddAugs[1] == a.AddAugs[0] )
         {
-            a.AddAugs[1] = PickRandomAug(numAugs);
+            a.AddAugs[1] = PickRandomAug();
         }
     }
 }
 
-function Name PickRandomAug(int numAugs)
+function Name PickRandomAug()
 {
     local int slot;
-    slot = Rng(numAugs-5)+1;// exclude the 4 augs you start with, 0 is AugSpeed
+    local int skipAugSpeed;
+    local int numAugs;
+    numAugs=21;
+    if( speedlevel > 0 )
+        skipAugSpeed=1;
+    slot = Rng(numAugs-3-skipAugSpeed) + skipAugSpeed;// exclude the 4 augs you start with, 0 is AugSpeed
     if ( slot >= 11 ) slot++;// skip AugIFF
     if ( slot >= 12 ) slot++;// skip AugLight
     if (slot >= 18 ) slot++;// skip AugDatalink
     //Player.ClientMessage("Picked Aug " $ Player.AugmentationSystem.augClasses[slot].Name);
-    log("DXRando Picked Aug " $ Player.AugmentationSystem.augClasses[slot].Name);
+    log("DXRando Picked Aug "$ slot $"/"$numAugs$" " $ Player.AugmentationSystem.augClasses[slot].Name);
     return Player.AugmentationSystem.augClasses[slot].Name;
 }
 

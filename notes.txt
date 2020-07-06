@@ -12,17 +12,17 @@ maybe set the seed inside the foreach AllActors loop to keep it more stable?
 need a function for GiveRandomItem()
 need a function for CloneNanoKey() (based on Engine.Pickup.SpawnCopy? no, that's for respawning items)
 need to figure out how to modify conversations, datacubes, emails...
-should meme up the endings too
+x should meme up the endings too
 
 x DeusExPlayer has function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, optional bool bShowInLog )
 x     could use a timer in the MissionScript to check for new notes?
 
 options for keys randomization = none, dumb, smart, copy (smart would be based on distance compared to the door, should it factor X and Z distance more than Y distance so it favors it being on the same floor?)
-all doors destructible, pickable, either, both
+x all doors destructible, pickable, either, both
 ambient lighting adjustment, AI hearing and vision adjustment, enemy health
 x fix aug randomization
 rando dragoon's tooth sword? nerf it?
-copy Physics property when swapping?
+x copy Physics property when swapping?
     -actor class also has these:
         var const Actor           Base;          // Moving brush actor we're standing on.
         native(298) final function SetBase( actor NewBase );
