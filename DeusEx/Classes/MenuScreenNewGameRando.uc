@@ -1,5 +1,16 @@
 class MenuScreenNewGameRando extends MenuScreenNewGame;
 
+var MissionNewGame ms;
+
+function SetMs(MissionNewGame m)
+{
+    ms=m;
+    CopySkills();
+	PopulateSkillsList();	
+	UpdateSkillPoints();
+	EnableButtons();
+}
+
 // ----------------------------------------------------------------------
 // CopySkills()
 //
@@ -11,14 +22,9 @@ function CopySkills()
 {
 	local Skill aSkill;
 	local int skillIndex;
-    local MissionNewGame ms;
-
-    ms = player.Spawn(class'MissionNewGame');
-    ms.Player = player;
-    ms.flags = player.FlagBase;
-    ms.LoadFlags();
-    ms.RandoSkills();
-    ms.Destroy();
+    
+    if(ms!=None)
+        ms.RandoSkills();
 
 	skillIndex = 0;
 
@@ -33,6 +39,13 @@ function CopySkills()
 		skillIndex++;
 		aSkill = aSkill.next;
 	}
+}
+
+function SaveSettings()
+{
+    Super.SaveSettings();
+    ms.SaveFlags();
+    ms.Destroy();
 }
 
 defaultproperties

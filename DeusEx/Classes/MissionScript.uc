@@ -314,9 +314,10 @@ function Rando()
 
     log("DXRando randomizing "$dxInfo.mapName$" using seed " $ seed);
 
-    log("DXRando brightness was " $ int(Level.AmbientBrightness) $ "(+" $ brightness $ ")");
+    //log("DXRando brightness was " $ int(Level.AmbientBrightness) $ "(+" $ brightness $ ")");
     if( Level.AmbientBrightness<150 ) Level.AmbientBrightness += brightness;
-    log("DXRando now brightness is " $ int(Level.AmbientBrightness));
+    //if( Level.Brightness<150 ) Level.Brightness += brightness;
+    //log("DXRando now brightness is " $ int(Level.AmbientBrightness));
 
     if( self.Class == class'MissionIntro' || self.Class == class'MissionEndgame' )
     { // extra randomization in the intro for the lolz
@@ -327,7 +328,7 @@ function Rando()
     if( self.Class == class'Mission01' && localURL == "01_NYC_UNATCOISLAND" && speedlevel>0 )
     {
         anAug = Player.AugmentationSystem.GivePlayerAugmentation(class'AugSpeed');
-        anAug.CurrentLevel = speedlevel-1;
+        anAug.CurrentLevel = min(speedlevel-1, anAug.MaxLevel);
     }
 
     MoveNanoKeys(keysrando);
@@ -399,13 +400,28 @@ function SwapAll(name classname)
     }
 }
 
+function vector AbsEach(vector v)
+{// not a real thing in math? but it's convenient
+    v.X = abs(v.X);
+    v.Y = abs(v.Y);
+    v.Z = abs(v.Z);
+    return v;
+}
+
+function bool AnyGreater(vector a, vector b)
+{
+    return a.X > b.X || a.Y > b.Y || a.Z > b.Z;
+}
+
 function MoveNanoKeys(int mode)
 {
     local Inventory a;
     local NanoKey k;
     local DeusExMover d;
     local int num, i, slot;
-    local float doorDist, newDist;
+    local vector doorloc, distkey, distdoor;
+    //local float distkey, distkeyZ, distdoor, distdoorZ;
+
     num=0;
 
     // 0=off, 1=dumb, 2=smart, 3=copies
@@ -415,28 +431,37 @@ function MoveNanoKeys(int mode)
 
     foreach AllActors(class'NanoKey', k )
     {
-        doorDist=99999;
+        if ( SkipActorBase(k) ) continue;
+
+        doorloc = vect(99999, 99999, 99999);
         foreach AllActors(class'DeusExMover', d)
         {
             if( d.KeyIDNeeded == k.KeyID ) {
-                doorDist = VSize( d.Location - Player.Location );
+                doorloc = d.Location;
                 break;
             }
         }
         i=0;
         num=0;
-        foreach RadiusActors(class'Inventory', a, doorDist, Player.Location )
+        foreach AllActors(class'Inventory', a)
         {
             if( SkipActor(a, 'Inventory') ) continue;
+            distkey = AbsEach(a.Location - k.Location);
+            distdoor = AbsEach(a.Location - doorloc);
+            if ( AnyGreater( distkey, distdoor ) ) continue;
             num++;
         }
         slot=Rng(num-1);
         i=0;
-        foreach RadiusActors(class'Inventory', a, doorDist, Player.Location )
+        foreach AllActors(class'Inventory', a)
         {
             if( SkipActor(a, 'Inventory') ) continue;
+            distkey = AbsEach(a.Location - k.Location);
+            distdoor = AbsEach(a.Location - doorloc);
+            if ( AnyGreater( distkey, distdoor ) ) continue;
 
             if(i==slot) {
+                log("DXRando swapping key "$k.KeyID$" (distdoor "$distdoor$", distkey "$distkey$") with "$a.Class);
                 Swap(k, a);
                 break;
             }
@@ -451,10 +476,19 @@ function bool CarriedItem(Actor a)
     //return ! (a.Owner == None || a.Owner.IsA('Conatiners') || a.Owner.IsA('Carcass') );
 }
 
+function bool SkipActorBase(Actor a)
+{
+    if( (a.Owner != None) || a.bStatic || a.bHidden )
+        return true;
+    if( a.Base != None )
+        return a.Base.IsA('ScriptedPawn');
+    return false;
+}
+
 function bool SkipActor(Actor a, name classname)
 {
     //( Pawn(a.Owner) != None )
-    return ( ! a.IsA(classname) ) || ( a.Owner != None ) || a.bStatic || a.bHidden || a.IsA('BarrelAmbrosia') || a.IsA('BarrelVirus') || a.IsA('NanoKey');
+    return SkipActorBase(a) || ( ! a.IsA(classname) ) || a.IsA('BarrelAmbrosia') || a.IsA('BarrelVirus') || a.IsA('NanoKey');
 }
 
 function Swap(Actor a, Actor b)
@@ -467,7 +501,11 @@ function Swap(Actor a, Actor b)
 
     if( a == b ) return;
 
-    log("DXRando swapping "$a.Class$" and "$b.Class);
+    log("DXRando swapping "$a.Class$":"$a.Name$" ("$a.Location.X$", "$a.Location.Y$", "$a.Location.Z$") and "$b.Class$":"$b.Name$" ("$b.Location.X$", "$b.Location.Y$", "$b.Location.Z$")");
+    if( a.Base != None )
+        log("DXRando "$a.Name$" has base "$a.Base.Class$":"$a.Base.Name);
+    if( b.Base != None )
+        log("DXRando "$b.Name$" has base "$b.Base.Class$":"$b.Base.Name);
 
     newloc = b.Location + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1);
     newrot = b.Rotation;
@@ -757,7 +795,7 @@ function CheckNotes()
 
 	note = Player.FirstNote;
 
-    log("DXRando CheckNotes(), passEnd is " $ passEnd $", passStart is " $ passStart);
+    //log("DXRando CheckNotes(), passEnd is " $ passEnd $", passStart is " $ passStart);
 
 	while( note != lastCheckedNote && note != None )
 	{

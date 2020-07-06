@@ -100,8 +100,8 @@ function CreateLabel(int row, string label)
     local MenuUILabelWindow winLabel;
     local vector coords;
     coords = GetCoords(row, 0);
-	CreateMenuLabel( coords.x, coords.y+4, label, winClient);
-    winLabel.SetFont(Font'FontTiny');
+	winLabel = CreateMenuLabel( coords.x, coords.y+4, label, winClient);
+    //winLabel.SetFont(Font'FontTiny');
 }
 
 function MenuUIEditWindow CreateEdit(int row, string label, string filterString, optional string deflt )
@@ -167,7 +167,7 @@ function MenuUIActionButtonWindow CreateBtn(int row, string label, string text)
     btn.SetButtonText(text);
 	btn.SetPos(coords.x, coords.y);
 	btn.SetWidth(126);
-    btn.SetFont(Font'FontTiny');
+    //btn.SetFont(Font'FontTiny');
 
     return btn;
 }
@@ -306,20 +306,22 @@ function ProcessAction(String actionKey)
 
         ms.player = player;
         ms.flags = player.FlagBase;
-        ms.SaveFlags();
-        ms.Destroy();
-        InvokeNewGameScreen(combatDifficulty);
+        //ms.SaveFlags();
+        //ms.Destroy();
+        InvokeNewGameScreen(combatDifficulty, ms);
 	}
 }
 
-function InvokeNewGameScreen(float difficulty)
+function InvokeNewGameScreen(float difficulty, MissionNewGame ms)
 {
 	local MenuScreenNewGameRando newGame;
 
 	newGame = MenuScreenNewGameRando(root.InvokeMenuScreen(Class'MenuScreenNewGameRando'));
 
-	if (newGame != None)
+	if (newGame != None) {
 		newGame.SetDifficulty(difficulty);
+        newGame.SetMs(ms);
+    }
 }
 
 /*function SaveSettings()
