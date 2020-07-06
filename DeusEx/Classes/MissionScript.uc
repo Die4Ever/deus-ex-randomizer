@@ -778,7 +778,6 @@ function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
     log("DXRando found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
     //log("DXRando note text: " $ note.text);
 
-    //return;
     note.text = ReplaceText( note.text, oldpassword, newpassword );
     //note.text = note.text $ " also test";
 }
