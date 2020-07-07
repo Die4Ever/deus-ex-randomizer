@@ -40,8 +40,6 @@ var transient private int CrcTable[256]; // for string hashing to do more stable
 
 function PostPostBeginPlay()
 {
-    local name flagName;
-
 	// start the script
 	SetTimer(checkTime, True);
 }
@@ -125,7 +123,6 @@ function FirstFrame()
 	flagName = Player.rootWindow.StringToName("M"$Caps(dxInfo.mapName)$"_StartupText");
 	if (!flags.GetBool(flagName))
 	{
-        Rando();
         if (dxInfo.startupMessage[0] != "")
         {
     		for (i=0; i<ArrayCount(dxInfo.startupMessage); i++)
@@ -172,15 +169,15 @@ function PreTravel()
 
 function Timer()
 {
-    local FlagBase f;
     local name flagName;
 
+    log("DXRando Timer()");
 	// make sure our flags are initialized correctly
 	if (flags == None)
 	{
+        log("DXRando Timer() flags == None");
         CrcInit();
         //load seed flag from the new game before the intro deletes all flags
-        flags = DeusExPlayer(GetPlayerPawn()).FlagBase;
         LoadFlags();
 
 		InitStateMachine();
@@ -193,6 +190,13 @@ function Timer()
         if( self.Class == class'MissionIntro' )
             SaveFlags();
 
+        log("DXRando flagName: M"$Caps(dxInfo.mapName)$"_RZ");
+        flagName = Player.rootWindow.StringToName("M"$Caps(dxInfo.mapName)$"_RZ");
+        if (!flags.GetBool(flagName))
+        {
+            Rando();
+            flags.SetBool(flagName, True);
+        }
         RandoEnter();
 	}
 
@@ -243,24 +247,27 @@ function SpawnPoint GetSpawnPoint(Name spawnTag, optional bool bRandom)
 
 function LoadFlags()
 {
-    seed = flags.GetInt('Rando_seed');
+    local FlagBase f;
+    f = DeusExPlayer(GetPlayerPawn()).FlagBase;
+    log("DXRando LoadFlags()");
+    seed = f.GetInt('Rando_seed');
 
-    flagsversion = flags.GetInt('Rando_version');
-    brightness = flags.GetInt('Rando_brightness');
-    minskill = flags.GetInt('Rando_minskill');
-    maxskill = flags.GetInt('Rando_maxskill');
-    ammo = flags.GetInt('Rando_ammo');
-    multitools = flags.GetInt('Rando_multitools');
-    lockpicks = flags.GetInt('Rando_lockpicks');
-    biocells = flags.GetInt('Rando_biocells');
-    medkits = flags.GetInt('Rando_medkits');
-    speedlevel = flags.GetInt('Rando_speedlevel');
-    keysrando = flags.GetInt('Rando_keys');
-    doorspickable = flags.GetInt('Rando_doorspickable');
-    doorsdestructible = flags.GetInt('Rando_doorsdestructible');
-    deviceshackable = flags.GetInt('Rando_deviceshackable');
-    passwordsrandomized = flags.GetInt('Rando_passwordsrandomized');
-    gibsdropkeys = flags.GetInt('Rando_gibsdropkeys');
+    flagsversion = f.GetInt('Rando_version');
+    brightness = f.GetInt('Rando_brightness');
+    minskill = f.GetInt('Rando_minskill');
+    maxskill = f.GetInt('Rando_maxskill');
+    ammo = f.GetInt('Rando_ammo');
+    multitools = f.GetInt('Rando_multitools');
+    lockpicks = f.GetInt('Rando_lockpicks');
+    biocells = f.GetInt('Rando_biocells');
+    medkits = f.GetInt('Rando_medkits');
+    speedlevel = f.GetInt('Rando_speedlevel');
+    keysrando = f.GetInt('Rando_keys');
+    doorspickable = f.GetInt('Rando_doorspickable');
+    doorsdestructible = f.GetInt('Rando_doorsdestructible');
+    deviceshackable = f.GetInt('Rando_deviceshackable');
+    passwordsrandomized = f.GetInt('Rando_passwordsrandomized');
+    gibsdropkeys = f.GetInt('Rando_gibsdropkeys');
 
     if(flagsversion < 1) {
         log("DXRando upgrading flags from v"$flagsversion);
@@ -287,25 +294,28 @@ function LoadFlags()
 
 function SaveFlags()
 {
+    local FlagBase f;
+    f = DeusExPlayer(GetPlayerPawn()).FlagBase;
+    log("DXRando SaveFlags()");
     flagsversion = 2;
-    flags.SetInt('Rando_seed', seed,, 999);
+    f.SetInt('Rando_seed', seed,, 999);
 
-    flags.SetInt('Rando_version', flagsversion,, 999);
-    flags.SetInt('Rando_brightness', brightness,, 999);
-    flags.SetInt('Rando_minskill', minskill,, 999);
-    flags.SetInt('Rando_maxskill', maxskill,, 999);
-    flags.SetInt('Rando_ammo', ammo,, 999);
-    flags.SetInt('Rando_multitools', multitools,, 999);
-    flags.SetInt('Rando_lockpicks', lockpicks,, 999);
-    flags.SetInt('Rando_biocells', biocells,, 999);
-    flags.SetInt('Rando_medkits', medkits,, 999);
-    flags.SetInt('Rando_speedlevel', speedlevel,, 999);
-    flags.SetInt('Rando_keys', keysrando,, 999);
-    flags.SetInt('Rando_doorspickable', doorspickable,, 999);
-    flags.SetInt('Rando_doorsdestructible', doorsdestructible,, 999);
-    flags.SetInt('Rando_deviceshackable', deviceshackable,, 999);
-    flags.SetInt('Rando_passwordsrandomized', passwordsrandomized,, 999);
-    flags.SetInt('Rando_gibsdropkeys', gibsdropkeys,, 999);
+    f.SetInt('Rando_version', flagsversion,, 999);
+    f.SetInt('Rando_brightness', brightness,, 999);
+    f.SetInt('Rando_minskill', minskill,, 999);
+    f.SetInt('Rando_maxskill', maxskill,, 999);
+    f.SetInt('Rando_ammo', ammo,, 999);
+    f.SetInt('Rando_multitools', multitools,, 999);
+    f.SetInt('Rando_lockpicks', lockpicks,, 999);
+    f.SetInt('Rando_biocells', biocells,, 999);
+    f.SetInt('Rando_medkits', medkits,, 999);
+    f.SetInt('Rando_speedlevel', speedlevel,, 999);
+    f.SetInt('Rando_keys', keysrando,, 999);
+    f.SetInt('Rando_doorspickable', doorspickable,, 999);
+    f.SetInt('Rando_doorsdestructible', doorsdestructible,, 999);
+    f.SetInt('Rando_deviceshackable', deviceshackable,, 999);
+    f.SetInt('Rando_passwordsrandomized', passwordsrandomized,, 999);
+    f.SetInt('Rando_gibsdropkeys', gibsdropkeys,, 999);
 }
 
 function Rando()
@@ -885,6 +895,8 @@ function RandoEnter()
     local Computers c;
     local int i;
 
+    log("DXRando RandoEnter()");
+
     foreach AllActors(class'Computers', c)
     {
         for (i=0; i<ArrayCount(c.userList); i++)
@@ -896,7 +908,6 @@ function RandoEnter()
         }
     }
 
-    //log("DXRando test");
     RandoSkills();
 
     foreach AllActors(class'DeusExMover', d)
