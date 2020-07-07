@@ -1,20 +1,10 @@
-//=============================================================================
-// MissionScript.
-//=============================================================================
-class MissionScript extends Info
-	abstract;
+class DXRando extends Info;
 
-//
-// State machine for each mission
-// All flags set by this mission controller script should be
-// prefixed with MS_ for consistency
-//
-
-var float checkTime;
 var DeusExPlayer Player;
 var FlagBase flags;
-var string localURL;
 var DeusExLevelInfo dxInfo;
+var string localURL;
+
 var int newseed;
 
 var string oldpasswords[128];
@@ -32,217 +22,62 @@ var int doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, 
 
 var transient private int CrcTable[256]; // for string hashing to do more stable seeding
 
-// ----------------------------------------------------------------------
-// PostPostBeginPlay()
-//
-// Set the timer
-// ----------------------------------------------------------------------
+
+function SetdxInfo(DeusExLevelInfo i)
+{
+    dxInfo = i;
+    localURL = Caps(dxInfo.mapName);
+    log("DXRando SetdxInfo got localURL: " $ localURL);
+}
 
 function PostPostBeginPlay()
 {
-	// start the script
-	SetTimer(checkTime, True);
+    local name flagName;
+
+    if( localURL == "DX" || localURL == "" ) {
+        log("DXRando PostPostBeginPlay returning because localURL == " $ localURL);
+        return;
+    }
+
+    log("DXRando PostPostBeginPlay has localURL == " $ localURL);
+    Player = DeusExPlayer(GetPlayerPawn());
+    if( Player == None ) {
+        log("DXRando PostPostBeginPlay() didn't find player?");
+        SetTimer(0.1, False);
+        return;
+    }
+    flags = Player.FlagBase;
+    CrcInit();
+    LoadFlags();
+
+    //save the seed flag again after the intro deletes all flags
+    if( localURL == "INTRO" )
+        SaveFlags();
+
+    flagName = Player.rootWindow.StringToName("M"$localURL$"_Randomized");
+    if (!flags.GetBool(flagName))
+    {
+        Rando();
+        flags.SetBool(flagName, True);
+    }
+    RandoEnter();
+
+    SetTimer(1.0, True);
 }
-
-// ----------------------------------------------------------------------
-// InitStateMachine()
-//
-// Get the player's flag base, get the map name, and set the player
-// ----------------------------------------------------------------------
-
-function InitStateMachine()
-{
-	local DeusExLevelInfo info;
-
-	Player = DeusExPlayer(GetPlayerPawn());
-
-	foreach AllActors(class'DeusExLevelInfo', info)
-		dxInfo = info;
-
-	if (Player != None)
-	{
-		flags = Player.FlagBase;
-
-		// Get the mission number by extracting it from the
-		// DeusExLevelInfo and then delete any expired flags.
-		//
-		// Also set the default mission expiration so flags
-		// expire in the next mission unless explicitly set
-		// differently when the flag is created.
-
-		if (flags != None)
-		{
-			// Don't delete expired flags if we just loaded
-			// a savegame
-			if (flags.GetBool('PlayerTraveling'))
-				flags.DeleteExpiredFlags(dxInfo.MissionNumber);
-
-			flags.SetDefaultExpiration(dxInfo.MissionNumber + 1);
-
-			localURL = Caps(dxInfo.mapName);
-
-			log("**** InitStateMachine() -"@player@"started mission state machine for"@localURL);
-		}
-		else
-		{
-			log("**** InitStateMachine() - flagBase not set - mission state machine NOT initialized!");
-		}
-	}
-	else
-	{
-		log("**** InitStateMachine() - player not set - mission state machine NOT initialized!");
-	}
-}
-
-// ----------------------------------------------------------------------
-// FirstFrame()
-// 
-// Stuff to check at first frame
-// ----------------------------------------------------------------------
-
-function FirstFrame()
-{
-	local name flagName;
-	local ScriptedPawn P;
-	local int i;
-
-	flags.DeleteFlag('PlayerTraveling', FLAG_Bool);
-
-	// Check to see which NPCs should be dead from prevous missions
-	foreach AllActors(class'ScriptedPawn', P)
-	{
-		if (P.bImportant)
-		{
-			flagName = Player.rootWindow.StringToName(P.BindName$"_Dead");
-			if (flags.GetBool(flagName))
-				P.Destroy();
-		}
-	}
-
-	// print the mission startup text only once per map
-	flagName = Player.rootWindow.StringToName("M"$Caps(dxInfo.mapName)$"_StartupText");
-	if (!flags.GetBool(flagName))
-	{
-        if (dxInfo.startupMessage[0] != "")
-        {
-    		for (i=0; i<ArrayCount(dxInfo.startupMessage); i++)
-	    		DeusExRootWindow(Player.rootWindow).hud.startDisplay.AddMessage(dxInfo.startupMessage[i]);
-		    DeusExRootWindow(Player.rootWindow).hud.startDisplay.StartMessage();
-        }
-		flags.SetBool(flagName, True);
-	}
-
-	flagName = Player.rootWindow.StringToName("M"$dxInfo.MissionNumber$"MissionStart");
-	if (!flags.GetBool(flagName))
-	{
-		// Remove completed Primary goals and all Secondary goals
-		Player.ResetGoals();
-
-		// Remove any Conversation History.
-		Player.ResetConversationHistory();
-
-		// Set this flag so we only get in here once per mission.
-		flags.SetBool(flagName, True);
-	}
-}
-
-// ----------------------------------------------------------------------
-// PreTravel()
-// 
-// Set flags upon exit of a certain map
-// ----------------------------------------------------------------------
 
 function PreTravel()
 {
 	// turn off the timer
 	SetTimer(0, False);
-
-	// zero the flags so FirstFrame() gets executed at load
-	flags = None;
 }
-
-// ----------------------------------------------------------------------
-// Timer()
-//
-// Main state machine for the mission
-// ----------------------------------------------------------------------
 
 function Timer()
 {
-    local name flagName;
-
-    log("DXRando Timer()");
-	// make sure our flags are initialized correctly
-	if (flags == None)
-	{
-        log("DXRando Timer() flags == None");
-        CrcInit();
-        //load seed flag from the new game before the intro deletes all flags
-        LoadFlags();
-
-		InitStateMachine();
-
-		// Don't want to do this if the user just loaded a savegame
-		if ((player != None) && (flags.GetBool('PlayerTraveling')))
-			FirstFrame();
-        
-        //save the seed flag again after the intro deletes all flags
-        if( self.Class == class'MissionIntro' )
-            SaveFlags();
-
-        log("DXRando flagName: M"$Caps(dxInfo.mapName)$"_RZ");
-        flagName = Player.rootWindow.StringToName("M"$Caps(dxInfo.mapName)$"_RZ");
-        if (!flags.GetBool(flagName))
-        {
-            Rando();
-            flags.SetBool(flagName, True);
-        }
-        RandoEnter();
-	}
-
+    if( Player == None ) {
+        PostPostBeginPlay();
+        return;
+    }
     CheckNotes();
-}
-
-// ----------------------------------------------------------------------
-// GetPatrolPoint()
-// ----------------------------------------------------------------------
-
-function PatrolPoint GetPatrolPoint(Name patrolTag, optional bool bRandom)
-{
-	local PatrolPoint aPoint;
-
-	aPoint = None;
-
-	foreach AllActors(class'PatrolPoint', aPoint, patrolTag)
-	{
-		if (bRandom && (FRand() < 0.5))
-			break;
-		else
-			break;
-	}
-
-	return aPoint;
-}
-
-// ----------------------------------------------------------------------
-// GetSpawnPoint()
-// ----------------------------------------------------------------------
-
-function SpawnPoint GetSpawnPoint(Name spawnTag, optional bool bRandom)
-{
-	local SpawnPoint aPoint;
-
-	aPoint = None;
-
-	foreach AllActors(class'SpawnPoint', aPoint, spawnTag)
-	{
-		if (bRandom && (FRand() < 0.5))
-			break;
-		else
-			break;
-	}
-
-	return aPoint;
 }
 
 function LoadFlags()
@@ -325,22 +160,22 @@ function Rando()
     local Weapon inv;
     local Augmentation anAug;
 
-    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName) );
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL) );
 
-    log("DXRando randomizing "$dxInfo.mapName$" using seed " $ seed);
+    log("DXRando randomizing "$localURL$" using seed " $ seed);
 
     //log("DXRando brightness was " $ int(Level.AmbientBrightness) $ "(+" $ brightness $ ")");
     if( Level.AmbientBrightness<150 ) Level.AmbientBrightness += brightness;
     //if( Level.Brightness<150 ) Level.Brightness += brightness;
     //log("DXRando now brightness is " $ int(Level.AmbientBrightness));
 
-    if( self.Class == class'MissionIntro' || self.Class == class'MissionEndgame' )
-    { // extra randomization in the intro for the lolz
+    if( localURL == "INTRO" || localURL == "ENDGAME1" || localURL == "ENDGAME2" || localURL == "ENDGAME3" || localURL == "ENDGAME4" || localURL == "00_TRAINING" )
+    { // extra randomization in the intro for the lolz, ENDGAME4 doesn't have a DeusExLevelInfo object though, so it doesn't get randomized :(
         RandomizeIntro();
         return;
     }
 
-    if( self.Class == class'Mission01' && localURL == "01_NYC_UNATCOISLAND" && speedlevel>0 )
+    if( localURL == "01_NYC_UNATCOISLAND" && speedlevel>0 )
     {
         anAug = Player.AugmentationSystem.GivePlayerAugmentation(class'AugSpeed');
         anAug.CurrentLevel = min(speedlevel-1, anAug.MaxLevel);
@@ -348,7 +183,8 @@ function Rando()
 
     MoveNanoKeys(keysrando);
     SwapAll('Inventory');
-    SwapAll('Containers');
+    if( localURL != "12_VANDENBERG_TUNNELS" ) // I think this map is a corrupt file? the map editor crashes in it too
+        SwapAll('Containers');
 
     RandomizeAugCannisters();
     ReduceAmmo( float(ammo)/100.0 );
@@ -381,15 +217,16 @@ function Rando()
         c.AddInventory(inv);
     }*/
 
-    log("DXRando done randomizing "$dxInfo.mapName);
+    log("DXRando done randomizing "$localURL);
 }
 
 function SwapAll(name classname)
 {
     local Actor a, b;
     local int num, i, slot;
+    local int j;
 
-    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "SwapAll " $ classname) );
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL $ "SwapAll " $ classname) );
     num=0;
     foreach AllActors(class'Actor', a )
     {
@@ -397,17 +234,24 @@ function SwapAll(name classname)
         num++;
     }
 
+    j=0;
     foreach AllActors(class'Actor', a )
     {
         if( SkipActor(a, classname) ) continue;
 
+        j++;
         i=0;
         slot=Rng(num-1);
+        log("DXRando SwapAll "$ActorToString(a)$" j == "$j$", slot "$slot$"/"$num);
         foreach AllActors(class'Actor', b )
         {
             if( SkipActor(b, classname) ) continue;
 
             if(i==slot) {
+                /*if(j>2) {
+                    log( "DXRando SwapAll was about to swap "$ActorToString(a)$" and "$ActorToString(b) );
+                    return;
+                }*/
                 Swap(a, b);
                 break;
             }
@@ -443,7 +287,7 @@ function MoveNanoKeys(int mode)
     // 0=off, 1=dumb, 2=smart, 3=copies
     if( mode == 0 ) return;
 
-    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "MoveNanoKeys") );
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL $ "MoveNanoKeys") );
 
     foreach AllActors(class'NanoKey', k )
     {
@@ -518,9 +362,9 @@ function Swap(Actor a, Actor b)
     if( a == b ) return;
 
     log("DXRando swapping "$a.Class$":"$a.Name$" ("$a.Location.X$", "$a.Location.Y$", "$a.Location.Z$") and "$b.Class$":"$b.Name$" ("$b.Location.X$", "$b.Location.Y$", "$b.Location.Z$")");
-    if( a.Base != None )
+    if( a.Base != None && a.Base != b.Base )
         log("DXRando "$a.Name$" has base "$a.Base.Class$":"$a.Base.Name);
-    if( b.Base != None )
+    if( b.Base != None  && a.Base != b.Base )
         log("DXRando "$b.Name$" has base "$b.Base.Class$":"$b.Base.Name);
 
     newloc = b.Location + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1);
@@ -543,16 +387,16 @@ function Swap(Actor a, Actor b)
     abase = a.Base;
     bbase = b.Base;
 
-    if(asuccess)
+    /*if(asuccess)
     {
         a.SetPhysics(bphysics);
-        a.SetBase(bbase);
+        if(abase != bbase) a.SetBase(bbase);
     }
     if(bsuccess)
     {
         b.SetPhysics(aphysics);
-        b.SetBase(abase);
-    }
+        if(abase != bbase) b.SetBase(abase);
+    }*/
 }
 
 function RandomizeAugCannisters()
@@ -561,7 +405,7 @@ function RandomizeAugCannisters()
 
     if( Player == None ) return;
 
-    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "RandomizeAugCannisters") );
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL $ "RandomizeAugCannisters") );
 
     foreach AllActors(class'AugmentationCannister', a)
     {
@@ -597,7 +441,7 @@ function ReduceAmmo(float mult)
     local Ammo a;
 
     log("DXRando ReduceAmmo "$mult);
-    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "ReduceAmmo") );
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL $ "ReduceAmmo") );
 
     if( mult ~= 1 ) return;
 
@@ -622,7 +466,7 @@ function ReduceSpawns(name classname, int percent)
 
     if( percent >= 100 ) return;
 
-    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "ReduceSpawns " $ classname) );
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL $ "ReduceSpawns " $ classname) );
 
     foreach AllActors(class'Actor', a)
     {
@@ -646,7 +490,7 @@ function ReduceSpawnsInContainers(name classname, int percent)
 
     if( percent >= 100 ) return;
 
-    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ dxInfo.mapName $ "ReduceSpawnsInContainers " $ classname) );
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL $ "ReduceSpawnsInContainers " $ classname) );
 
     foreach AllActors(class'Containers', d)
     {
@@ -928,13 +772,13 @@ function RandoEnter()
 
     foreach AllActors(class'NanoKey', key)
     {
-        log("DXRando found key class: " $ key.Class $ ", tag: " $ key.Tag $ ", name: " $ key.Name $ ", KeyID: " $ key.KeyID $ " in " $ dxInfo.mapName);
+        log("DXRando found key class: " $ key.Class $ ", tag: " $ key.Tag $ ", name: " $ key.Name $ ", KeyID: " $ key.KeyID $ " in " $ localURL);
     }
 
     foreach AllActors(class'HackableDevices', h)
     {
         if( h.bHackable == false && deviceshackable > 0 ) {
-            log("DXRando found unhackable device class: " $ h.Class $ ", tag: " $ h.Tag $ ", name: " $ h.Name $ " in " $ dxInfo.mapName);
+            log("DXRando found unhackable device class: " $ h.Class $ ", tag: " $ h.Tag $ ", name: " $ h.Name $ " in " $ localURL);
             h.bHackable = true;
             h.hackStrength = 1;
             h.initialhackStrength = 1;
@@ -980,6 +824,7 @@ function RandoSkills()
 	while(aSkill != None)
 	{
         percent = Rng(maxskill - minskill) + minskill;
+        log("DXRando RandoSkills percent: "$percent$", min: "$minskill$", max: "$maxskill);
         for(i=0; i<arrayCount(aSkill.Cost); i++)
         {
     		aSkill.Cost[i] = aSkill.default.Cost[i] * percent / 100;
@@ -1011,6 +856,11 @@ function bool DestroyActor( Actor d )
     //d.bHidden = True;
 }
 
+function string ActorToString( Actor a )
+{
+    return a.Class.Name$":"$a.Name$"("$a.Location$")";
+}
+
 static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With)
 {
     local int i;
@@ -1040,7 +890,7 @@ function int Rng(int max)
     gen1 = gen2/2;
     newseed = gen1 * newseed * 5 + gen2 + (newseed/5) * 3;
     newseed = abs(newseed);
-    return (newseed >> 8) % max;
+    return (newseed >>> 8) % max;
 }
 
 
@@ -1052,24 +902,26 @@ function int Rng(int max)
 
 final function CrcInit() {
 
-  const CrcPolynomial = 0xedb88320;
+    const CrcPolynomial = 0xedb88320;
 
-  local int CrcValue;
-  local int IndexBit;
-  local int IndexEntry;
-  
+    local int CrcValue;
+    local int IndexBit;
+    local int IndexEntry;
+
   for (IndexEntry = 0; IndexEntry < 256; IndexEntry++) {
-    CrcValue = IndexEntry;
+        CrcValue = IndexEntry;
 
-    for (IndexBit = 8; IndexBit > 0; IndexBit--)
-      if ((CrcValue & 1) != 0)
-        CrcValue = (CrcValue >>> 1) ^ CrcPolynomial;
-      else
-        CrcValue = CrcValue >>> 1;
-    
-    CrcTable[IndexEntry] = CrcValue;
+        for (IndexBit = 8; IndexBit > 0; IndexBit--)
+        {
+            if ((CrcValue & 1) != 0)
+                CrcValue = (CrcValue >>> 1) ^ CrcPolynomial;
+            else
+                CrcValue = CrcValue >>> 1;
+        }
+        
+        CrcTable[IndexEntry] = CrcValue;
     }
-  }
+}
 
 
 // ============================================================================
@@ -1080,19 +932,18 @@ final function CrcInit() {
 
 final function int Crc(coerce string Text) {
 
-  local int CrcValue;
-  local int IndexChar;
-  
-  CrcValue = 0xffffffff;
-  
-  for (IndexChar = 0; IndexChar < Len(Text); IndexChar++)
-    CrcValue = (CrcValue >>> 8) ^ CrcTable[Asc(Mid(Text, IndexChar, 1)) ^ (CrcValue & 0xff)];
+    local int CrcValue;
+    local int IndexChar;
 
-  return CrcValue;
-  }
+    CrcValue = 0xffffffff;
+
+    for (IndexChar = 0; IndexChar < Len(Text); IndexChar++)
+        CrcValue = (CrcValue >>> 8) ^ CrcTable[Asc(Mid(Text, IndexChar, 1)) ^ (CrcValue & 0xff)];
+
+    return CrcValue;
+}
 
 defaultproperties
 {
-     checkTime=1.000000
-     localURL="NOTHING"
+    bAlwaysRelevant=True
 }

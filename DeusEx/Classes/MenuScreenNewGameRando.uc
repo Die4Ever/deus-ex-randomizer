@@ -1,12 +1,12 @@
 class MenuScreenNewGameRando extends MenuScreenNewGame;
 
-var MissionNewGame ms;
+var DXRando dxr;
 
-function SetMs(MissionNewGame m)
+function SetDxr(DXRando d)
 {
-    ms=m;
+    dxr=d;
     CopySkills();
-	PopulateSkillsList();	
+	PopulateSkillsList();
 	UpdateSkillPoints();
 	EnableButtons();
 }
@@ -23,8 +23,8 @@ function CopySkills()
 	local Skill aSkill;
 	local int skillIndex;
     
-    if(ms!=None)
-        ms.RandoSkills();
+    if(dxr!=None)
+        dxr.RandoSkills();
 
 	skillIndex = 0;
 
@@ -44,8 +44,11 @@ function CopySkills()
 function SaveSettings()
 {
     Super.SaveSettings();
-    ms.SaveFlags();
-    ms.Destroy();
+    dxr.SaveFlags();
+    dxr.Destroy();
+
+    foreach player.AllActors(class'DXRando', dxr)
+        dxr.Destroy();
 }
 
 defaultproperties
