@@ -49,10 +49,6 @@ function PostPostBeginPlay()
     CrcInit();
     LoadFlags();
 
-    //save the seed flag again after the intro deletes all flags
-    if( localURL == "INTRO" )
-        SaveFlags();
-
     flagName = Player.rootWindow.StringToName("M"$localURL$"_Randomized");
     if (!flags.GetBool(flagName))
     {
@@ -76,32 +72,34 @@ function Timer()
         PostPostBeginPlay();
         return;
     }
+    if( flags.GetInt('Rando_version') == 0 ) {
+        log("DXRando flags got deleted, saving again");//the intro deletes all flags
+        SaveFlags();
+    }
     CheckNotes();
 }
 
 function LoadFlags()
 {
-    local FlagBase f;
-    f = DeusExPlayer(GetPlayerPawn()).FlagBase;
     log("DXRando LoadFlags()");
-    seed = f.GetInt('Rando_seed');
+    seed = flags.GetInt('Rando_seed');
 
-    flagsversion = f.GetInt('Rando_version');
-    brightness = f.GetInt('Rando_brightness');
-    minskill = f.GetInt('Rando_minskill');
-    maxskill = f.GetInt('Rando_maxskill');
-    ammo = f.GetInt('Rando_ammo');
-    multitools = f.GetInt('Rando_multitools');
-    lockpicks = f.GetInt('Rando_lockpicks');
-    biocells = f.GetInt('Rando_biocells');
-    medkits = f.GetInt('Rando_medkits');
-    speedlevel = f.GetInt('Rando_speedlevel');
-    keysrando = f.GetInt('Rando_keys');
-    doorspickable = f.GetInt('Rando_doorspickable');
-    doorsdestructible = f.GetInt('Rando_doorsdestructible');
-    deviceshackable = f.GetInt('Rando_deviceshackable');
-    passwordsrandomized = f.GetInt('Rando_passwordsrandomized');
-    gibsdropkeys = f.GetInt('Rando_gibsdropkeys');
+    flagsversion = flags.GetInt('Rando_version');
+    brightness = flags.GetInt('Rando_brightness');
+    minskill = flags.GetInt('Rando_minskill');
+    maxskill = flags.GetInt('Rando_maxskill');
+    ammo = flags.GetInt('Rando_ammo');
+    multitools = flags.GetInt('Rando_multitools');
+    lockpicks = flags.GetInt('Rando_lockpicks');
+    biocells = flags.GetInt('Rando_biocells');
+    medkits = flags.GetInt('Rando_medkits');
+    speedlevel = flags.GetInt('Rando_speedlevel');
+    keysrando = flags.GetInt('Rando_keys');
+    doorspickable = flags.GetInt('Rando_doorspickable');
+    doorsdestructible = flags.GetInt('Rando_doorsdestructible');
+    deviceshackable = flags.GetInt('Rando_deviceshackable');
+    passwordsrandomized = flags.GetInt('Rando_passwordsrandomized');
+    gibsdropkeys = flags.GetInt('Rando_gibsdropkeys');
 
     if(flagsversion < 1) {
         log("DXRando upgrading flags from v"$flagsversion);
@@ -128,28 +126,26 @@ function LoadFlags()
 
 function SaveFlags()
 {
-    local FlagBase f;
-    f = DeusExPlayer(GetPlayerPawn()).FlagBase;
     log("DXRando SaveFlags()");
     InitVersion();
-    f.SetInt('Rando_seed', seed,, 999);
+    flags.SetInt('Rando_seed', seed,, 999);
 
-    f.SetInt('Rando_version', flagsversion,, 999);
-    f.SetInt('Rando_brightness', brightness,, 999);
-    f.SetInt('Rando_minskill', minskill,, 999);
-    f.SetInt('Rando_maxskill', maxskill,, 999);
-    f.SetInt('Rando_ammo', ammo,, 999);
-    f.SetInt('Rando_multitools', multitools,, 999);
-    f.SetInt('Rando_lockpicks', lockpicks,, 999);
-    f.SetInt('Rando_biocells', biocells,, 999);
-    f.SetInt('Rando_medkits', medkits,, 999);
-    f.SetInt('Rando_speedlevel', speedlevel,, 999);
-    f.SetInt('Rando_keys', keysrando,, 999);
-    f.SetInt('Rando_doorspickable', doorspickable,, 999);
-    f.SetInt('Rando_doorsdestructible', doorsdestructible,, 999);
-    f.SetInt('Rando_deviceshackable', deviceshackable,, 999);
-    f.SetInt('Rando_passwordsrandomized', passwordsrandomized,, 999);
-    f.SetInt('Rando_gibsdropkeys', gibsdropkeys,, 999);
+    flags.SetInt('Rando_version', flagsversion,, 999);
+    flags.SetInt('Rando_brightness', brightness,, 999);
+    flags.SetInt('Rando_minskill', minskill,, 999);
+    flags.SetInt('Rando_maxskill', maxskill,, 999);
+    flags.SetInt('Rando_ammo', ammo,, 999);
+    flags.SetInt('Rando_multitools', multitools,, 999);
+    flags.SetInt('Rando_lockpicks', lockpicks,, 999);
+    flags.SetInt('Rando_biocells', biocells,, 999);
+    flags.SetInt('Rando_medkits', medkits,, 999);
+    flags.SetInt('Rando_speedlevel', speedlevel,, 999);
+    flags.SetInt('Rando_keys', keysrando,, 999);
+    flags.SetInt('Rando_doorspickable', doorspickable,, 999);
+    flags.SetInt('Rando_doorsdestructible', doorsdestructible,, 999);
+    flags.SetInt('Rando_deviceshackable', deviceshackable,, 999);
+    flags.SetInt('Rando_passwordsrandomized', passwordsrandomized,, 999);
+    flags.SetInt('Rando_gibsdropkeys', gibsdropkeys,, 999);
 }
 
 function InitVersion()
@@ -168,10 +164,8 @@ function Rando()
 
     log("DXRando randomizing "$localURL$" using seed " $ seed);
 
-    //log("DXRando brightness was " $ int(Level.AmbientBrightness) $ "(+" $ brightness $ ")");
     if( Level.AmbientBrightness<150 ) Level.AmbientBrightness += brightness;
-    //if( Level.Brightness<150 ) Level.Brightness += brightness;
-    //log("DXRando now brightness is " $ int(Level.AmbientBrightness));
+    //if( Level.Brightness<150 ) Level.Brightness += brightness;//Level.Brightness is way more extreme than AmbientBrightness, maybe still useful though?
 
     if( localURL == "INTRO" || localURL == "ENDGAME1" || localURL == "ENDGAME2" || localURL == "ENDGAME3" || localURL == "ENDGAME4" || localURL == "00_TRAINING" )
     { // extra randomization in the intro for the lolz, ENDGAME4 doesn't have a DeusExLevelInfo object though, so it doesn't get randomized :(
@@ -185,16 +179,12 @@ function Rando()
         anAug.CurrentLevel = min(speedlevel-1, anAug.MaxLevel);
     }
 
-    if( localURL == "12_VANDENBERG_TUNNELS" )
-        FixActors();
-
     MoveNanoKeys(keysrando);
     SwapAll('Inventory');
     SwapAll('Containers');
 
     RandomizeAugCannisters();
     ReduceAmmo( float(ammo)/100.0 );
-    //ReduceSpawns('Inventory', 0);//no items, even for enemies
     ReduceSpawns('Multitool', multitools);
     ReduceSpawns('Lockpick', lockpicks);
     ReduceSpawns('BioelectricCell', biocells);
@@ -202,49 +192,13 @@ function Rando()
 
     RandoPasswords(passwordsrandomized);
 
-    /*foreach AllActors(class'ScriptedPawn', p)
-    {
-        if( p.bIsPlayer ) continue;
-        inv = spawn(class'WeaponAssaultGun');
-        inv.GiveTo(p);
-        inv.SetBase(p);
-
-        inv.AmmoType = spawn(inv.AmmoName);
-        inv.AmmoType.InitialState='Idle2';
-        inv.AmmoType.GiveTo(p);
-        inv.AmmoType.SetBase(p);
-
-        p.SetupWeapon(false);
-    }*/
-
-    /*foreach AllActors(class'DeusExCarcass', c)
-    {
-        inv = spawn(class'WeaponAssaultGun', self);
-        c.AddInventory(inv);
-    }*/
-
     log("DXRando done randomizing "$localURL);
-}
-
-function FixActors()
-{
-    local Containers c;
-    foreach AllActors(class'Containers', c) {
-        c.SetCollision(false, false, false);
-    }
-    foreach AllActors(class'Containers', c) {
-        c.SetLocation(c.Location);
-    }
-    foreach AllActors(class'Containers', c) {
-        c.SetCollision(true, true, true);
-    }
 }
 
 function SwapAll(name classname)
 {
     local Actor a, b;
     local int num, i, slot;
-    local int j;
 
     SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL $ "SwapAll " $ classname) );
     num=0;
@@ -254,24 +208,17 @@ function SwapAll(name classname)
         num++;
     }
 
-    j=0;
     foreach AllActors(class'Actor', a )
     {
         if( SkipActor(a, classname) ) continue;
 
-        j++;
         i=0;
         slot=Rng(num-1);
-        //log("DXRando SwapAll "$ActorToString(a)$" j == "$j$", slot "$slot$"/"$num);
         foreach AllActors(class'Actor', b )
         {
             if( SkipActor(b, classname) ) continue;
 
             if(i==slot) {
-                /*if(j>2) {
-                    log( "DXRando SwapAll was about to swap "$ActorToString(a)$" and "$ActorToString(b) );
-                    return;
-                }*/
                 Swap(a, b);
                 break;
             }
@@ -300,7 +247,6 @@ function MoveNanoKeys(int mode)
     local DeusExMover d;
     local int num, i, slot;
     local vector doorloc, distkey, distdoor;
-    //local float distkey, distkeyZ, distdoor, distdoorZ;
 
     num=0;
 
@@ -351,9 +297,8 @@ function MoveNanoKeys(int mode)
 }
 
 function bool CarriedItem(Actor a)
-{
+{// I need to check Engine.Inventory.bCarriedItem
     return a.Owner != None && a.Owner.IsA('Pawn');
-    //return ! (a.Owner == None || a.Owner.IsA('Conatiners') || a.Owner.IsA('Carcass') );
 }
 
 function bool SkipActorBase(Actor a)
@@ -367,7 +312,6 @@ function bool SkipActorBase(Actor a)
 
 function bool SkipActor(Actor a, name classname)
 {
-    //( Pawn(a.Owner) != None )
     return SkipActorBase(a) || ( ! a.IsA(classname) ) || a.IsA('BarrelAmbrosia') || a.IsA('BarrelVirus') || a.IsA('NanoKey');
 }
 
@@ -457,11 +401,10 @@ function Name PickRandomAug()
     numAugs=21;
     if( speedlevel > 0 )
         skipAugSpeed=1;
-    slot = Rng(numAugs-3-skipAugSpeed) + skipAugSpeed;// exclude the 4 augs you start with, 0 is AugSpeed
+    slot = Rng(numAugs-3-skipAugSpeed) + skipAugSpeed;// exclude the 3 or 4 augs you start with, 0 is AugSpeed
     if ( slot >= 11 ) slot++;// skip AugIFF
     if ( slot >= 12 ) slot++;// skip AugLight
     if (slot >= 18 ) slot++;// skip AugDatalink
-    //Player.ClientMessage("Picked Aug " $ Player.AugmentationSystem.augClasses[slot].Name);
     log("DXRando Picked Aug "$ slot $"/"$numAugs$" " $ Player.AugmentationSystem.augClasses[slot].Name);
     return Player.AugmentationSystem.augClasses[slot].Name;
 }
@@ -672,7 +615,7 @@ function ReplacePassword(string oldpassword, string newpassword)
 }
 
 function CheckNotes()
-{ // this could get slow, need to keep a lastCheckedNote
+{
     local DeusExNote note;
     local int i;
 
@@ -699,10 +642,8 @@ function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
 
     Player.ClientMessage("Note updated");
     log("DXRando found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
-    //log("DXRando note text: " $ note.text);
 
     note.text = ReplaceText( note.text, oldpassword, newpassword );
-    //note.text = note.text $ " also test";
 }
 
 function string GeneratePassword(string oldpassword)
@@ -803,41 +744,18 @@ function RandoEnter()
 
     foreach AllActors(class'NanoKey', key)
     {
-        log("DXRando found key class: " $ key.Class $ ", tag: " $ key.Tag $ ", name: " $ key.Name $ ", KeyID: " $ key.KeyID $ " in " $ localURL);
+        log("DXRando found key class: " $ ActorToString(key) $ ", tag: " $ key.Tag $ ", KeyID: " $ key.KeyID $ " in " $ localURL);
     }
 
     foreach AllActors(class'HackableDevices', h)
     {
         if( h.bHackable == false && deviceshackable > 0 ) {
-            log("DXRando found unhackable device class: " $ h.Class $ ", tag: " $ h.Tag $ ", name: " $ h.Name $ " in " $ localURL);
+            log("DXRando found unhackable device class: " $ ActorToString(h) $ ", tag: " $ h.Tag $ " in " $ localURL);
             h.bHackable = true;
             h.hackStrength = 1;
             h.initialhackStrength = 1;
         }
     }
-
-    /*if( dxInfo.mapName == "03_NYC_MolePeople" )
-    {
-        foreach AllActors(class'DeusExMover', d)
-        {
-            if( d.Name == 'DeusExMover65' ) {
-                Player.ClientMessage("found DeusExMover65");
-                d.bPickable = true;
-                d.bBreakable = true;
-                Player.ClientMessage("fixed DeusExMover65");
-            }
-        }
-        
-        foreach AllActors(class'Terrorist', t)
-        {
-            if( t.name == 'Terrorist33' )
-            {
-                key = spawn(class'NanoKey', self);
-                key.KeyID = 'MoleRestroomKey';
-                t.AddInventory(key);
-            }
-        }
-    }*/
 }
 
 function RandoSkills()
@@ -867,24 +785,13 @@ function RandoSkills()
 function bool DestroyActor( Actor d )
 {
 	// If this item is in an inventory chain, unlink it.
-	//local actor Link;
     local Decoration downer;
 
     if( d.IsA('Inventory') && d.Owner != None && d.Owner.IsA('Pawn') )
     {
         Pawn(d.Owner).DeleteInventory( Inventory(d) );
     }
-    /*else if( d.IsA('Inventory') && d.Owner != None && d.Owner.IsA('Decoration') ) {
-        downer = Decoration(d.Owner);
-        log("DXRando DestroyActor " $ downer.Name);
-        if( downer.contents == d.Class ) downer.contents = downer.content2;
-        if( downer.content2 == d.Class ) downer.content2 = downer.content3;
-        if( downer.content3 == d.Class ) downer.content3 = None;
-
-        Inventory(d).SetOwner(None);
-    }*/
     return d.Destroy();
-    //d.bHidden = True;
 }
 
 function string ActorToString( Actor a )
@@ -930,7 +837,7 @@ function int Rng(int max)
 
 
 // ============================================================================
-// CrcInit
+// CrcInit https://web.archive.org/web/20181105143221/http://unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/crc32.html
 //
 // Initializes CrcTable and prepares it for use with Crc.
 // ============================================================================
