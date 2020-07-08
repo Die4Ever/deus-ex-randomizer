@@ -45,6 +45,7 @@ function PostPostBeginPlay()
         SetTimer(0.1, False);
         return;
     }
+    log("DXRando found Player "$ActorToString(Player));
     flags = Player.FlagBase;
     CrcInit();
     LoadFlags();
@@ -62,8 +63,12 @@ function PostPostBeginPlay()
 
 function PreTravel()
 {
+    log("DXRando PreTravel()");
 	// turn off the timer
 	SetTimer(0, False);
+
+    flags=None;
+    Player=None;
 }
 
 function Timer()
