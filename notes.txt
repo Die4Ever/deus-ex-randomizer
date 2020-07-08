@@ -1,5 +1,9 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
+autosave
+- MenuScreenSaveGame
+- DeusExSaveInfo
+
 X start with running speed aug, at max level? max level is too OP
 X don't give 2 of the same aug in a canister
 x rename test function
