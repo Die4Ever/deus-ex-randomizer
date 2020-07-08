@@ -271,6 +271,7 @@ function ProcessAction(String actionKey)
         passwords = GetEnumValue(RandoPasswords);
 
         dxr = player.Spawn(class'DXRando');
+        dxr.InitVersion();
         dxr.seed = seed;
         log("DXRando setting seed to "$seed);
         dxr.brightness = GetSliderValue(editBrightness);
@@ -380,7 +381,7 @@ defaultproperties
     actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel)
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     actionButtons(2)=(Action=AB_Reset)
-    Title="DX Rando v1.0 Options"
+    Title="DX Rando v1.1 Options"
     ClientWidth=672
     ClientHeight=357
     bUsesHelpWindow=False

@@ -1,9 +1,10 @@
 class DXRando extends Info;
 
-var DeusExPlayer Player;
-var FlagBase flags;
-var DeusExLevelInfo dxInfo;
-var string localURL;
+var transient DeusExPlayer Player;
+var transient FlagBase flags;
+var transient DeusExLevelInfo dxInfo;
+var transient string localURL;
+var transient DeusExNote lastCheckedNote;
 
 var int newseed;
 
@@ -11,7 +12,6 @@ var string oldpasswords[128];
 var string newpasswords[128];
 var int passStart;
 var int passEnd;
-var DeusExNote lastCheckedNote;
 
 //rando flags
 var int seed;
@@ -21,7 +21,6 @@ var int keysrando;//0=off, 1=dumb, 2=smart, 3=copies
 var int doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
 
 var transient private int CrcTable[256]; // for string hashing to do more stable seeding
-
 
 function SetdxInfo(DeusExLevelInfo i)
 {
@@ -132,7 +131,7 @@ function SaveFlags()
     local FlagBase f;
     f = DeusExPlayer(GetPlayerPawn()).FlagBase;
     log("DXRando SaveFlags()");
-    flagsversion = 2;
+    InitVersion();
     f.SetInt('Rando_seed', seed,, 999);
 
     f.SetInt('Rando_version', flagsversion,, 999);
@@ -151,6 +150,11 @@ function SaveFlags()
     f.SetInt('Rando_deviceshackable', deviceshackable,, 999);
     f.SetInt('Rando_passwordsrandomized', passwordsrandomized,, 999);
     f.SetInt('Rando_gibsdropkeys', gibsdropkeys,, 999);
+}
+
+function InitVersion()
+{
+    flagsversion = 2;
 }
 
 function Rando()
@@ -181,10 +185,12 @@ function Rando()
         anAug.CurrentLevel = min(speedlevel-1, anAug.MaxLevel);
     }
 
+    if( localURL == "12_VANDENBERG_TUNNELS" )
+        FixActors();
+
     MoveNanoKeys(keysrando);
     SwapAll('Inventory');
-    if( localURL != "12_VANDENBERG_TUNNELS" ) // I think this map is a corrupt file? the map editor crashes in it too
-        SwapAll('Containers');
+    SwapAll('Containers');
 
     RandomizeAugCannisters();
     ReduceAmmo( float(ammo)/100.0 );
@@ -220,6 +226,20 @@ function Rando()
     log("DXRando done randomizing "$localURL);
 }
 
+function FixActors()
+{
+    local Containers c;
+    foreach AllActors(class'Containers', c) {
+        c.SetCollision(false, false, false);
+    }
+    foreach AllActors(class'Containers', c) {
+        c.SetLocation(c.Location);
+    }
+    foreach AllActors(class'Containers', c) {
+        c.SetCollision(true, true, true);
+    }
+}
+
 function SwapAll(name classname)
 {
     local Actor a, b;
@@ -242,7 +262,7 @@ function SwapAll(name classname)
         j++;
         i=0;
         slot=Rng(num-1);
-        log("DXRando SwapAll "$ActorToString(a)$" j == "$j$", slot "$slot$"/"$num);
+        //log("DXRando SwapAll "$ActorToString(a)$" j == "$j$", slot "$slot$"/"$num);
         foreach AllActors(class'Actor', b )
         {
             if( SkipActor(b, classname) ) continue;
@@ -338,7 +358,7 @@ function bool CarriedItem(Actor a)
 
 function bool SkipActorBase(Actor a)
 {
-    if( (a.Owner != None) || a.bStatic || a.bHidden )
+    if( (a.Owner != None) || a.bStatic || a.bHidden || a.bMovable==False )
         return true;
     if( a.Base != None )
         return a.Base.IsA('ScriptedPawn');
@@ -358,14 +378,22 @@ function Swap(Actor a, Actor b)
     local bool asuccess, bsuccess;
     local EPhysics aphysics, bphysics;
     local Actor abase, bbase;
+    local bool AbCollideActors, AbBlockActors, AbBlockPlayers, BbCollideActors, BbBlockActors, BbBlockPlayers;
 
     if( a == b ) return;
 
-    log("DXRando swapping "$a.Class$":"$a.Name$" ("$a.Location.X$", "$a.Location.Y$", "$a.Location.Z$") and "$b.Class$":"$b.Name$" ("$b.Location.X$", "$b.Location.Y$", "$b.Location.Z$")");
-    if( a.Base != None && a.Base != b.Base )
-        log("DXRando "$a.Name$" has base "$a.Base.Class$":"$a.Base.Name);
-    if( b.Base != None  && a.Base != b.Base )
-        log("DXRando "$b.Name$" has base "$b.Base.Class$":"$b.Base.Name);
+    log("DXRando swapping "$ActorToString(a)$" and "$ActorToString(b));
+
+    // https://docs.unrealengine.com/udk/Two/ActorVariables.html#Advanced
+    // native(262) final function SetCollision( optional bool NewColActors, optional bool NewBlockActors, optional bool NewBlockPlayers );
+    AbCollideActors = a.bCollideActors;
+    AbBlockActors = a.bBlockActors;
+    AbBlockPlayers = a.bBlockPlayers;
+    BbCollideActors = b.bCollideActors;
+    BbBlockActors = b.bBlockActors;
+    BbBlockPlayers = b.bBlockPlayers;
+    a.SetCollision(false, false, false);
+    b.SetCollision(false, false, false);
 
     newloc = b.Location + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1);
     newrot = b.Rotation;
@@ -374,20 +402,20 @@ function Swap(Actor a, Actor b)
     b.SetRotation(a.Rotation);
 
     if( bsuccess == false )
-        log("DXRando failed to move " $ b.Class $ " into location of " $ a.Class);
+        log("DXRando failed to move " $ ActorToString(b) $ " into location of " $ ActorToString(a) );
 
     asuccess = a.SetLocation(newloc);
     a.SetRotation(newrot);
 
     if( asuccess == false )
-        log("DXRando failed to move " $ a.Class $ " into location of " $ b.Class);
+        log("DXRando failed to move " $ ActorToString(a) $ " into location of " $ ActorToString(b) );
 
     aphysics = a.Physics;
     bphysics = b.Physics;
     abase = a.Base;
     bbase = b.Base;
 
-    /*if(asuccess)
+    if(asuccess)
     {
         a.SetPhysics(bphysics);
         if(abase != bbase) a.SetBase(bbase);
@@ -396,7 +424,10 @@ function Swap(Actor a, Actor b)
     {
         b.SetPhysics(aphysics);
         if(abase != bbase) b.SetBase(abase);
-    }*/
+    }
+
+    a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
+    b.SetCollision(BbCollideActors, BbBlockActors, BbBlockPlayers);
 }
 
 function RandomizeAugCannisters()
@@ -858,7 +889,11 @@ function bool DestroyActor( Actor d )
 
 function string ActorToString( Actor a )
 {
-    return a.Class.Name$":"$a.Name$"("$a.Location$")";
+    local string out;
+    out = a.Class.Name$":"$a.Name$"("$a.Location$")";
+    if( a.Base != None && a.Base.Class!=class'LevelInfo' )
+        out = out $ "(Base:"$a.Base.Class$":"$a.Base.Name$")";
+    return out;
 }
 
 static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With)
