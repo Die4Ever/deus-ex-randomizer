@@ -107,7 +107,6 @@ function LoadFlags()
     gibsdropkeys = flags.GetInt('Rando_gibsdropkeys');
 
     if(flagsversion < 1) {
-        log("DXRando upgrading flags from v"$flagsversion);
         brightness = 5;
         minskill = 25;
         maxskill = 400;
@@ -124,6 +123,7 @@ function LoadFlags()
         gibsdropkeys = 1;
     }
     if(flagsversion < 2) {
+        log("DXRando upgrading flags from v"$flagsversion);
         medkits = 80;
         SaveFlags();
     }
