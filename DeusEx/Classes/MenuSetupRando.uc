@@ -76,7 +76,7 @@ function CreateControls()
     RandoPasswords = CreateEnum(row++, "Passwords", btnRandoPasswords);
 
     editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", 25, 0, 500);
-    editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", 400, 0, 500);
+    editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", 300, 0, 500);
     editAmmo = CreateSlider(row++, "Ammo Drops %", 100);
     editMultitools = CreateSlider(row++, "Multitools Drops %", 70);
     editLockpicks = CreateSlider(row++, "Lockpicks Drops %", 70);
@@ -257,7 +257,7 @@ function ProcessAction(String actionKey)
 {
 	local int seed;
     local string sseed, keys, doors, devices, passwords;
-    local MissionNewGame ms;
+    local DXRando dxr;
 
 	if (actionKey == "NEXT")
 	{
@@ -270,52 +270,51 @@ function ProcessAction(String actionKey)
         devices = GetEnumValue(RandoDevices);
         passwords = GetEnumValue(RandoPasswords);
 
-        ms = player.Spawn(class'MissionNewGame');
-        ms.seed = seed;
+        dxr = player.Spawn(class'DXRando');
+        dxr.InitVersion();
+        dxr.seed = seed;
         log("DXRando setting seed to "$seed);
-        ms.brightness = GetSliderValue(editBrightness);
-        ms.minskill = GetSliderValue(editMinSkill);
-        ms.maxskill = GetSliderValue(editMaxSkill);
-        ms.ammo = GetSliderValue(editAmmo);
-        ms.multitools = GetSliderValue(editMultitools);
-        ms.lockpicks = GetSliderValue(editLockpicks);
-        ms.biocells = GetSliderValue(editBioCells);
-        ms.medkits = GetSliderValue(editMedkits);
-        ms.speedlevel = GetSliderValue(editSpeedLevel);
+        dxr.brightness = GetSliderValue(editBrightness);
+        dxr.minskill = GetSliderValue(editMinSkill);
+        dxr.maxskill = GetSliderValue(editMaxSkill);
+        dxr.ammo = GetSliderValue(editAmmo);
+        dxr.multitools = GetSliderValue(editMultitools);
+        dxr.lockpicks = GetSliderValue(editLockpicks);
+        dxr.biocells = GetSliderValue(editBioCells);
+        dxr.medkits = GetSliderValue(editMedkits);
+        dxr.speedlevel = GetSliderValue(editSpeedLevel);
 
-        if( keys == "Off" ) ms.keysrando = 0;
-        else if( keys == "Dumb" ) ms.keysrando = 1;
-        else if( keys == "Smart" ) ms.keysrando = 2;
-        else if( keys == "Copy" ) ms.keysrando = 3;
+        if( keys == "Off" ) dxr.keysrando = 0;
+        else if( keys == "Dumb" ) dxr.keysrando = 1;
+        else if( keys == "Smart" ) dxr.keysrando = 2;
+        else if( keys == "Copy" ) dxr.keysrando = 3;
 
         if( doors == "Unchanged" ) {}
-        else if( doors == "Destructible" ) ms.doorsdestructible = 100;
-        else if( doors == "Pickable" ) ms.doorspickable = 100;
+        else if( doors == "Destructible" ) dxr.doorsdestructible = 100;
+        else if( doors == "Pickable" ) dxr.doorspickable = 100;
         else if( doors == "Either" ) {
-            ms.doorsdestructible = 50;
-            ms.doorspickable = 50;
+            dxr.doorsdestructible = 50;
+            dxr.doorspickable = 50;
         }
         else if( doors == "Both" ) {
-            ms.doorsdestructible = 100;
-            ms.doorspickable = 100;
+            dxr.doorsdestructible = 100;
+            dxr.doorspickable = 100;
         }
 
-        if( devices == "Unchanged" ) ms.deviceshackable = 0;
-        else if( devices == "Some Hackable" ) ms.deviceshackable = 50;
-        else if( devices == "All Hackable" ) ms.deviceshackable = 100;
+        if( devices == "Unchanged" ) dxr.deviceshackable = 0;
+        else if( devices == "Some Hackable" ) dxr.deviceshackable = 50;
+        else if( devices == "All Hackable" ) dxr.deviceshackable = 100;
 
-        if( passwords == "Randomized" ) ms.passwordsrandomized = 100;
-        else if( passwords == "Unchanged" ) ms.passwordsrandomized = 0;
+        if( passwords == "Randomized" ) dxr.passwordsrandomized = 100;
+        else if( passwords == "Unchanged" ) dxr.passwordsrandomized = 0;
 
-        ms.player = player;
-        ms.flags = player.FlagBase;
-        //ms.SaveFlags();
-        //ms.Destroy();
-        InvokeNewGameScreen(combatDifficulty, ms);
+        dxr.player = player;
+        dxr.flags = player.FlagBase;
+        InvokeNewGameScreen(combatDifficulty, dxr);
 	}
 }
 
-function InvokeNewGameScreen(float difficulty, MissionNewGame ms)
+function InvokeNewGameScreen(float difficulty, DXRando dxr)
 {
 	local MenuScreenNewGameRando newGame;
 
@@ -323,7 +322,7 @@ function InvokeNewGameScreen(float difficulty, MissionNewGame ms)
 
 	if (newGame != None) {
 		newGame.SetDifficulty(difficulty);
-        newGame.SetMs(ms);
+        newGame.SetDxr(dxr);
     }
 }
 
@@ -380,7 +379,7 @@ defaultproperties
     actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel)
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     actionButtons(2)=(Action=AB_Reset)
-    Title="DX Rando v1.0 Options"
+    Title="DX Rando v1.1 Options"
     ClientWidth=672
     ClientHeight=357
     bUsesHelpWindow=False

@@ -1,5 +1,17 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
+for v1.2========================
+fix password generation for 14_VANDENBERG_SUB
+- do longest passwords first for safe replacements
+- don't randomize passwords that are less than 3 characters long?
+
+print out the flags when loading
+
+autosave
+- MenuScreenSaveGame
+- DeusExSaveInfo
+=============================
+
 X start with running speed aug, at max level? max level is too OP
 X don't give 2 of the same aug in a canister
 x rename test function
@@ -86,3 +98,25 @@ https://ut99.org/viewtopic.php?t=6273
 http://unreal.ut-files.com/3DEditing/Tutorials/unrealwiki-offline/ut-package-tool.html
 
 https://www.dx-revision.com/dxtutorials/tack/
+
+
+    /*foreach AllActors(class'ScriptedPawn', p)
+    {
+        if( p.bIsPlayer ) continue;
+        inv = spawn(class'WeaponAssaultGun');
+        inv.GiveTo(p);
+        inv.SetBase(p);
+
+        inv.AmmoType = spawn(inv.AmmoName);
+        inv.AmmoType.InitialState='Idle2';
+        inv.AmmoType.GiveTo(p);
+        inv.AmmoType.SetBase(p);
+
+        p.SetupWeapon(false);
+    }*/
+
+    /*foreach AllActors(class'DeusExCarcass', c)
+    {
+        inv = spawn(class'WeaponAssaultGun', self);
+        c.AddInventory(inv);
+    }*/
