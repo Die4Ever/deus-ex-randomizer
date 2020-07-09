@@ -76,7 +76,7 @@ function CreateControls()
     RandoPasswords = CreateEnum(row++, "Passwords", btnRandoPasswords);
 
     editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", 25, 0, 500);
-    editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", 400, 0, 500);
+    editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", 300, 0, 500);
     editAmmo = CreateSlider(row++, "Ammo Drops %", 100);
     editMultitools = CreateSlider(row++, "Multitools Drops %", 70);
     editLockpicks = CreateSlider(row++, "Lockpicks Drops %", 70);
@@ -310,8 +310,6 @@ function ProcessAction(String actionKey)
 
         dxr.player = player;
         dxr.flags = player.FlagBase;
-        //dxr.SaveFlags();
-        //dxr.Destroy();
         InvokeNewGameScreen(combatDifficulty, dxr);
 	}
 }

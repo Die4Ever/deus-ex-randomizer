@@ -27,11 +27,14 @@ function SetdxInfo(DeusExLevelInfo i)
     dxInfo = i;
     localURL = Caps(dxInfo.mapName);
     log("DXRando SetdxInfo got localURL: " $ localURL);
+    PostPostBeginPlay();
 }
 
 function PostPostBeginPlay()
 {
     local name flagName;
+
+    Super.PostPostBeginPlay();
 
     if( localURL == "DX" || localURL == "" ) {
         log("DXRando PostPostBeginPlay returning because localURL == " $ localURL);
@@ -54,7 +57,7 @@ function PostPostBeginPlay()
     if (!flags.GetBool(flagName))
     {
         Rando();
-        flags.SetBool(flagName, True);
+        flags.SetBool(flagName, True,, 999);
     }
     RandoEnter();
 
@@ -109,7 +112,7 @@ function LoadFlags()
     if(flagsversion < 1) {
         brightness = 5;
         minskill = 25;
-        maxskill = 400;
+        maxskill = 300;
         ammo = 80;
         multitools = 70;
         lockpicks = 70;
@@ -549,6 +552,8 @@ function ChangeComputerPassword(Computers c, int i)
             return;
         }
     }
+
+    //if( Len(oldpassword) <3 ) return;
     newpassword = GeneratePassword(oldpassword);
     c.userList[i].password = newpassword;
     ReplacePassword(oldpassword, newpassword);
@@ -570,6 +575,7 @@ function ChangeKeypadPasscode(Keypad k)
         }
     }
 
+    //if( Len(oldpassword) <3 ) return;
     newpassword = GeneratePasscode(oldpassword);
     k.validCode = newpassword;
     ReplacePassword(oldpassword, newpassword);
@@ -590,6 +596,8 @@ function ChangeATMPIN(ATM a, int i)
             return;
         }
     }
+
+    //if( Len(oldpassword) <3 ) return;
     newpassword = GeneratePasscode(oldpassword);
     a.userList[i].PIN = newpassword;
     ReplacePassword(oldpassword, newpassword);
@@ -714,6 +722,7 @@ function RandoEnter()
     local HackableDevices h;
 
     local Computers c;
+    local Keypad k;
     local int i;
 
     log("DXRando RandoEnter()");
@@ -727,6 +736,11 @@ function RandoEnter()
 
             log("DXRando RandoEnter found computer password: " $ c.userList[i].password);
         }
+    }
+
+    foreach AllActors(class'Keypad', k)
+    {
+        log("DXRando RandoEnter found Keypad with code: " $ k.validCode );
     }
 
     RandoSkills();
