@@ -130,6 +130,13 @@ function LoadFlags()
         medkits = 80;
         SaveFlags();
     }
+
+    log("DXRando LoadFlags - "
+        $ "seed: "$seed$", flagsversion: "$flagsversion$", brightness: "$brightness$", minskill: "$minskill$", maxskill: "$maxskill$", ammo: "$ammo
+        $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
+        $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
+        $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
+    );
 }
 
 function SaveFlags()
@@ -553,7 +560,7 @@ function ChangeComputerPassword(Computers c, int i)
         }
     }
 
-    //if( Len(oldpassword) <3 ) return;
+    if( Len(oldpassword) <3 ) return;
     newpassword = GeneratePassword(oldpassword);
     c.userList[i].password = newpassword;
     ReplacePassword(oldpassword, newpassword);
@@ -575,7 +582,7 @@ function ChangeKeypadPasscode(Keypad k)
         }
     }
 
-    //if( Len(oldpassword) <3 ) return;
+    if( Len(oldpassword) <3 ) return;
     newpassword = GeneratePasscode(oldpassword);
     k.validCode = newpassword;
     ReplacePassword(oldpassword, newpassword);
@@ -597,7 +604,7 @@ function ChangeATMPIN(ATM a, int i)
         }
     }
 
-    //if( Len(oldpassword) <3 ) return;
+    if( Len(oldpassword) <3 ) return;
     newpassword = GeneratePasscode(oldpassword);
     a.userList[i].PIN = newpassword;
     ReplacePassword(oldpassword, newpassword);
@@ -723,9 +730,21 @@ function RandoEnter()
 
     local Computers c;
     local Keypad k;
+    local Keypoint kp;
     local int i;
 
     log("DXRando RandoEnter()");
+
+    /*
+    if( removeinvisiblewalls == 1 ) {
+        foreach AllActors(class'Engine.Keypoint', kp)
+        {
+            if( kp.bBlockPlayers ) {
+                log("DXRando found invisible wall "$ActorToString(kp));
+                kp.bBlockPlayers=false;
+            }
+        }
+    }*/
 
     foreach AllActors(class'Computers', c)
     {

@@ -1,75 +1,73 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
 for v1.2========================
+
+start randomizing enemies? only add enemies?
+
 fix password generation for 14_VANDENBERG_SUB
-- do longest passwords first for safe replacements
-- don't randomize passwords that are less than 3 characters long?
+- do longest passwords first for safe replacements (actually no point, cause they can come in different orders as levels load and notes get found)
+- check if the match on the password is touching a letter or number
+- does every note that references a password have a tag? I should log it
 
 print out the flags when loading
 
 autosave
 - MenuScreenSaveGame
 - DeusExSaveInfo
+
+NavigationPoint (children: PathNode, PatrolPoint, AmbushPoint, InventorySpot) for extra positions where items can be placed?
+    - Pawn class - native(518) final function Actor FindPathTo(vector aPoint, optional bool bSinglePath, 
+												optional bool bClearPaths);
+    - Pawn class - native(517) final function Actor FindPathToward(actor anActor, optional bool bSinglePath, 
+												optional bool bClearPaths);
+    I can use FindPath to determine if I can do a key swap? find path from key to path in question, walk through the NavigationPoints and see if the door is in between any of them?
+    -what does this do? native(525) final function NavigationPoint FindRandomDest(optional bool bClearPaths);
+        -FindRandomDest - This returns a random node on the navigation network. This can be good for creating a state where the character roams the world.
+    -I could find all the NavigationPoints within a small radius of the door, and whichever ones are farther from the key than the door is are bad points that should indicate a failed path finding
+        -should this be done in a preparation loop, or while doing the pathfinding?
+    
+can I randomize the location of datacubes? would be hard without being able to check the text inside them, could just detect all the possible devices/computers with codes and make sure it's safe for all of them
+    
+native(533) final function bool CanSee(actor Other);
+
+Keypoint, the base class of invisible actors which mark things.
+    -LocationID - marks and names an area in a zone
+
+// WarpZoneInfo. For making disjoint spaces appear as if they were connected;
+// supports both in-level warp zones and cross-level warp zones.
+
+I can use helper classes that inherit from Object instead of Actor
 =============================
 
-X start with running speed aug, at max level? max level is too OP
-X don't give 2 of the same aug in a canister
-x rename test function
-x fix pistol starting level?
-organize the fixes for individual levels
-X fix skill cost generation
-X log statements
-X don't swap actor with itself
-maybe set the seed inside the foreach AllActors loop to keep it more stable?
 need a function for GiveRandomItem()
 need a function for CloneNanoKey() (based on Engine.Pickup.SpawnCopy? no, that's for respawning items)
 need to figure out how to modify conversations, datacubes, emails...
-x should meme up the endings too
+x should meme up the endings too (more?)
 
-x DeusExPlayer has function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, optional bool bShowInLog )
-x     could use a timer in the MissionScript to check for new notes?
-
-options for keys randomization = none, dumb, smart, copy (smart would be based on distance compared to the door, should it factor X and Z distance more than Y distance so it favors it being on the same floor?)
-x all doors destructible, pickable, either, both
-ambient lighting adjustment, AI hearing and vision adjustment, enemy health
-x fix aug randomization
+AI hearing and vision adjustment, enemy health
 rando dragoon's tooth sword? nerf it?
-x copy Physics property when swapping?
-    -actor class also has these:
-        var const Actor           Base;          // Moving brush actor we're standing on.
-        native(298) final function SetBase( actor NewBase );
-        var const PointRegion     Region;        // Region this actor is in.
-        var(Collision) const bool bCollideActors;   // Collides with other actors.
-        var(Collision) bool       bCollideWorld;    // Collides with the world.
-        var(Collision) bool       bBlockActors;	    // Blocks other nonplayer actors.
-        var(Collision) bool       bBlockPlayers;    // Blocks other player actors.
+actor class also has these:
+    var const Actor           Base;          // Moving brush actor we're standing on.
+    native(298) final function SetBase( actor NewBase );
+    var const PointRegion     Region;        // Region this actor is in.
+    var(Collision) const bool bCollideActors;   // Collides with other actors.
+    var(Collision) bool       bCollideWorld;    // Collides with the world.
+    var(Collision) bool       bBlockActors;	    // Blocks other nonplayer actors.
+    var(Collision) bool       bBlockPlayers;    // Blocks other player actors.
+
 exploded corpses drop keys?
 bIsItemGoal?
 should NanoKeys have buoyancy?
 what does minDamageThreshold do for doors? important doors shouldn't be breakable by the dragoon's tooth
 -cameras have a minDamageThreshold of 50
 
-ambrosia in battery park, maybe I should never move ambrosia?
-key to bathroom in mole tunnel 03_NYC_MolePeople seems to be the only way to progress? maybe modify the properties on the door to make it breakable and lockpickable?
-there are no items to swap with past the door, but it maybe be possible for the key to be attempted to be placed in a bad area? maybe I should copy the key into the NSF leader's inventory so you can always kill him for it? or can I modify his dialog so that he just gives you the key?
-the key name is NanoKey0, KeyID is MoleRestroomKey, the door name is DeusExMover65
-
-airfield barracks 03_NYC_Airfield KeyID eastgate, DeusExMover1
-(walkthrough says this, so maybe I just got unlucky blowing up too many dudes, need to drop keys out of exploded bodies
-"There is a control box here with a button that will open the door. Use an East Gate Nano key to open it (it's INF/INF), which you can get in the shack by the bay (where you came in if you swam) or from one of the many guards about. Some of them have security keys, and other have gate keys.")
-
-06_HongKong_Helibase required key KeyID control_door01, DeusExMover21
-
-Chateau DuClare sounds like it has some required keys?
-
 x I can use this for string hashing http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/crc32.html
 
 maybe I can rewrite this as a mutator?
 
-unrealscript gui:
-seed, skill cost %s, starting points, ammo %, lockpick %, multitool %, money %, bioelectric cells %, health%, base movement speed %? falling damage %? passcodes and passwords
-can I improve ladders just make them super sticky and press jump to get off?
-starting level?
+https://docs.unrealengine.com/udk/Two/UnrealScriptReference.html
+
+https://web.archive.org/web/20190407081013/http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/unrealscript.html
 
 http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/unrealscript.html
 
@@ -77,11 +75,7 @@ https://ut99.org/viewtopic.php?t=5985
 
 https://www.dx-revision.com/dxtutorials/constructor/tutorials.htm
 
-randomize exp requirements, randomize item spawns (weapons, ammo, healing bots, crates, explosive barrels, enemies)
-
 charisma setting that disables random dialog options with low charisma?
-
-randomize passwords
 
 https://forums.epicgames.com/unreal-tournament-3/unreal-tournament-3-programming-unrealscript/176322-decompile-u-files
 
