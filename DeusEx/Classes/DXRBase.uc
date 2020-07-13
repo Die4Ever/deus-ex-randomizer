@@ -4,23 +4,23 @@ var transient DXRando dxr;
 
 function Init(DXRando tdxr)
 {
-    log("DXRando "$Class$".Init()");
+    l(".Init()");
     dxr = tdxr;
 }
 
 function FirstEntry()
 {
-    log("DXRando "$Class$".FirstEntry()");
+    l(".FirstEntry()");
 }
 
 function AnyEntry()
 {
-    log("DXRando "$Class$".AnyEntry()");
+    l(".AnyEntry()");
 }
 
 function ReEntry()
 {
-    log("DXRando "$Class$".ReEntry()");
+    l(".ReEntry()");
 }
 
 function PreTravel()
