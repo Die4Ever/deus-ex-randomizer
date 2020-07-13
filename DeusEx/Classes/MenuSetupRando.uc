@@ -282,55 +282,56 @@ function ProcessAction(String actionKey)
         passwords = GetEnumValue(RandoPasswords);
 
         dxr = player.Spawn(class'DXRando');
-        dxr.InitVersion();
-        dxr.seed = seed;
+        dxr.player = player;
+        dxr.LoadFlagsModule();
+        dxr.flags.InitVersion();
+        dxr.flags.seed = seed;
         log("DXRando setting seed to "$seed);
-        dxr.brightness = GetSliderValue(editBrightness);
-        dxr.minskill = GetSliderValue(editMinSkill);
-        dxr.maxskill = GetSliderValue(editMaxSkill);
-        dxr.ammo = GetSliderValue(editAmmo);
-        dxr.multitools = GetSliderValue(editMultitools);
-        dxr.lockpicks = GetSliderValue(editLockpicks);
-        dxr.biocells = GetSliderValue(editBioCells);
-        dxr.medkits = GetSliderValue(editMedkits);
-        dxr.speedlevel = GetSliderValue(editSpeedLevel);
+        dxr.flags.brightness = GetSliderValue(editBrightness);
+        dxr.flags.minskill = GetSliderValue(editMinSkill);
+        dxr.flags.maxskill = GetSliderValue(editMaxSkill);
+        dxr.flags.ammo = GetSliderValue(editAmmo);
+        dxr.flags.multitools = GetSliderValue(editMultitools);
+        dxr.flags.lockpicks = GetSliderValue(editLockpicks);
+        dxr.flags.biocells = GetSliderValue(editBioCells);
+        dxr.flags.medkits = GetSliderValue(editMedkits);
+        dxr.flags.speedlevel = GetSliderValue(editSpeedLevel);
 
-        if( keys == "Off" ) dxr.keysrando = 0;
-        else if( keys == "Dumb" ) dxr.keysrando = 1;
-        else if( keys == "Smart" ) dxr.keysrando = 2;
-        else if( keys == "Copy" ) dxr.keysrando = 3;
+        if( keys == "Off" ) dxr.flags.keysrando = 0;
+        else if( keys == "Dumb" ) dxr.flags.keysrando = 1;
+        else if( keys == "Smart" ) dxr.flags.keysrando = 2;
+        else if( keys == "Copy" ) dxr.flags.keysrando = 3;
 
         if( doors == "Unchanged" ) {}
-        else if( doors == "Destructible" ) dxr.doorsdestructible = 100;
-        else if( doors == "Pickable" ) dxr.doorspickable = 100;
+        else if( doors == "Destructible" ) dxr.flags.doorsdestructible = 100;
+        else if( doors == "Pickable" ) dxr.flags.doorspickable = 100;
         else if( doors == "Either" ) {
-            dxr.doorsdestructible = 50;
-            dxr.doorspickable = 50;
+            dxr.flags.doorsdestructible = 50;
+            dxr.flags.doorspickable = 50;
         }
         else if( doors == "Both" ) {
-            dxr.doorsdestructible = 100;
-            dxr.doorspickable = 100;
+            dxr.flags.doorsdestructible = 100;
+            dxr.flags.doorspickable = 100;
         }
 
-        if( devices == "Unchanged" ) dxr.deviceshackable = 0;
-        else if( devices == "Some Hackable" ) dxr.deviceshackable = 50;
-        else if( devices == "All Hackable" ) dxr.deviceshackable = 100;
+        if( devices == "Unchanged" ) dxr.flags.deviceshackable = 0;
+        else if( devices == "Some Hackable" ) dxr.flags.deviceshackable = 50;
+        else if( devices == "All Hackable" ) dxr.flags.deviceshackable = 100;
 
-        if( passwords == "Randomized" ) dxr.passwordsrandomized = 100;
-        else if( passwords == "Unchanged" ) dxr.passwordsrandomized = 0;
+        if( passwords == "Randomized" ) dxr.flags.passwordsrandomized = 100;
+        else if( passwords == "Unchanged" ) dxr.flags.passwordsrandomized = 0;
 
-        dxr.enemiesrandomized = GetSliderValue(editEnemyRando);
+        dxr.flags.enemiesrandomized = GetSliderValue(editEnemyRando);
         autosavevalue = GetEnumValue(Autosave);
-        if( autosavevalue == "Off" ) dxr.autosave = 0;
-        else if( autosavevalue == "First Entry" ) dxr.autosave = 1;
-        else if( autosavevalue == "Every Entry" ) dxr.autosave = 2;
+        if( autosavevalue == "Off" ) dxr.flags.autosave = 0;
+        else if( autosavevalue == "First Entry" ) dxr.flags.autosave = 1;
+        else if( autosavevalue == "Every Entry" ) dxr.flags.autosave = 2;
 
         inviswalls = GetEnumValue(RemoveInvisWalls);
-        if( inviswalls == "Off" ) dxr.removeinvisiblewalls = 0;
-        else if( inviswalls == "On" ) dxr.removeinvisiblewalls = 1;
+        if( inviswalls == "Off" ) dxr.flags.removeinvisiblewalls = 0;
+        else if( inviswalls == "On" ) dxr.flags.removeinvisiblewalls = 1;
 
-        dxr.player = player;
-        dxr.flags = player.FlagBase;
+        //dxr.flags.flags = player.FlagBase;
         InvokeNewGameScreen(combatDifficulty, dxr);
 	}
 }
