@@ -1,7 +1,5 @@
 class DXRActorsBase extends DXRBase;
 
-var transient EPhysics aphysics, bphysics;
-
 function SwapAll(name classname)
 {
     local Actor a, b;
@@ -73,6 +71,7 @@ function Swap(Actor a, Actor b)
     local bool asuccess, bsuccess;
     local Actor abase, bbase;
     local bool AbCollideActors, AbBlockActors, AbBlockPlayers, BbCollideActors, BbBlockActors, BbBlockPlayers;
+    local EPhysics aphysics, bphysics;
 
     if( a == b ) return;
 
