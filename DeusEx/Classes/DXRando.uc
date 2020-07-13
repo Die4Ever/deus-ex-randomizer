@@ -19,6 +19,10 @@ var int flagsversion;//if you load an old game with a newer version of the rando
 var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
 var int keysrando;//0=off, 1=dumb, 2=smart, 3=copies
 var int doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
+var int autosave;//0=off, 1=first time entering level, 2=every loading screen
+var int removeinvisiblewalls, enemiesrandomized;
+
+var transient bool bNeedSave;
 
 var transient private int CrcTable[256]; // for string hashing to do more stable seeding
 
@@ -33,6 +37,7 @@ function SetdxInfo(DeusExLevelInfo i)
 function PostPostBeginPlay()
 {
     local name flagName;
+    local bool firstTime;
 
     Super.PostPostBeginPlay();
 
@@ -56,10 +61,11 @@ function PostPostBeginPlay()
     flagName = Player.rootWindow.StringToName("M"$localURL$"_Randomized");
     if (!flags.GetBool(flagName))
     {
+        firstTime = True;
         Rando();
         flags.SetBool(flagName, True,, 999);
     }
-    RandoEnter();
+    RandoEnter(firstTime);
 
     SetTimer(1.0, True);
 }
@@ -85,6 +91,9 @@ function Timer()
         SaveFlags();
     }
     CheckNotes();
+
+    if( bNeedSave )
+        doAutosave();
 }
 
 function LoadFlags()
@@ -108,6 +117,9 @@ function LoadFlags()
     deviceshackable = flags.GetInt('Rando_deviceshackable');
     passwordsrandomized = flags.GetInt('Rando_passwordsrandomized');
     gibsdropkeys = flags.GetInt('Rando_gibsdropkeys');
+    autosave = flags.GetInt('Rando_autosave');
+    removeinvisiblewalls = flags.GetInt('Rando_removeinvisiblewalls');
+    enemiesrandomized = flags.GetInt('Rando_enemiesrandomized');
 
     if(flagsversion < 1) {
         brightness = 5;
@@ -126,8 +138,13 @@ function LoadFlags()
         gibsdropkeys = 1;
     }
     if(flagsversion < 2) {
-        log("DXRando upgrading flags from v"$flagsversion);
         medkits = 80;
+    }
+    if(flagsversion <3 ) {
+        log("DXRando upgrading flags from v"$flagsversion);
+        autosave = 1;
+        removeinvisiblewalls = 0;
+        enemiesrandomized = 50;
         SaveFlags();
     }
 
@@ -136,6 +153,7 @@ function LoadFlags()
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
+        $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized
     );
 }
 
@@ -161,11 +179,14 @@ function SaveFlags()
     flags.SetInt('Rando_deviceshackable', deviceshackable,, 999);
     flags.SetInt('Rando_passwordsrandomized', passwordsrandomized,, 999);
     flags.SetInt('Rando_gibsdropkeys', gibsdropkeys,, 999);
+    flags.SetInt('Rando_autosave', autosave,, 999);
+    flags.SetInt('Rando_removeinvisiblewalls', removeinvisiblewalls,, 999);
+    flags.SetInt('Rando_enemiesrandomized', enemiesrandomized,, 999);
 }
 
 function InitVersion()
 {
-    flagsversion = 2;
+    flagsversion = 3;
 }
 
 function Rando()
@@ -189,7 +210,7 @@ function Rando()
     }
 
     if( localURL == "01_NYC_UNATCOISLAND" && speedlevel>0 )
-    {
+    {// change this so it looks if the player has the augmentation already, instead of checking the map name
         anAug = Player.AugmentationSystem.GivePlayerAugmentation(class'AugSpeed');
         anAug.CurrentLevel = min(speedlevel-1, anAug.MaxLevel);
     }
@@ -206,6 +227,8 @@ function Rando()
     ReduceSpawns('MedKit', medkits);
 
     RandoPasswords(passwordsrandomized);
+
+    RandoEnemies(enemiesrandomized);
 
     log("DXRando done randomizing "$localURL);
 }
@@ -688,6 +711,67 @@ function string GeneratePasscode(string oldpasscode)
     return (Rng(8999) + 1000) $ "";
 }
 
+function RandoEnemies(int percent)
+{
+    local int num, i;
+    local ScriptedPawn p;
+
+    log("DXRando RandoEnemies "$percent);
+
+    SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL $ "RandoEnemies") );
+
+    foreach AllActors(class'ScriptedPawn', p)
+    {
+        if( SkipActor(p, 'ScriptedPawn') ) continue;
+        if( p.bImportant || p.bInvincible ) continue;
+        if( IsInitialEnemy(p) == False ) continue;
+        if( Rng(100) >= percent ) continue;
+        //num++;
+        CloneScriptedPawn(p);
+    }
+}
+
+function bool IsInitialEnemy(ScriptedPawn p)
+{
+    local int i;
+
+    return p.GetPawnAllianceType(Player) == ALLIANCE_Hostile;
+
+    /*for(i=0; i<ArrayCount(p.InitialAlliances); i++)
+    {
+        if( p.InitialAlliances[i].AllianceName == 'Player' ) {
+            if( p.InitialAlliances[i].AllianceLevel < 0 ) return True;
+            else return False;
+        }
+    }
+
+    return False;*/
+}
+
+function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedPawn> newclass)
+{
+    local int i;
+    local ScriptedPawn n;
+    if( newclass == None ) newclass = p.class;
+    n = Spawn(newclass,,,p.Location + vect(100, 50, 0));
+    n.SetLocation(p.Location+vect(100,50,0));
+    log("DXRando cloning "$ActorToString(p)$" into class "$newclass$" got "$ActorToString(n));
+
+    n.Alliance = p.Alliance;
+    for(i=0; i<ArrayCount(n.InitialAlliances); i++ )
+    {
+        n.InitialAlliances[i] = p.InitialAlliances[i];
+    }
+    for(i=0; i<ArrayCount(n.InitialInventory); i++ )
+    {
+        n.InitialInventory[i] = p.InitialInventory[i];
+    }
+    //Orders = 'Patrolling', Engine.PatrolPoint with Nextpatrol?
+    //bReactAlarm, bReactCarcass, bReactDistress, bReactFutz, bReactLoudNoise, bReactPresence, bReactProjectiles, bReactShot
+    //bFearAlarm, bFearCarcass, bFearDistress, bFearHacking, bFearIndirectInjury, bFearInjury, bFearProjectiles, bFearShot, bFearWeapon
+    return n;
+}
+
 function RandomizeIntro()
 {
     local Tree t;
@@ -721,7 +805,7 @@ function RandomizeIntro()
     }
 }
 
-function RandoEnter()
+function RandoEnter(bool firstTime)
 {
     local DeusExMover d;
     local Terrorist t;
@@ -735,7 +819,6 @@ function RandoEnter()
 
     log("DXRando RandoEnter()");
 
-    /*
     if( removeinvisiblewalls == 1 ) {
         foreach AllActors(class'Engine.Keypoint', kp)
         {
@@ -744,7 +827,7 @@ function RandoEnter()
                 kp.bBlockPlayers=false;
             }
         }
-    }*/
+    }
 
     foreach AllActors(class'Computers', c)
     {
@@ -794,6 +877,13 @@ function RandoEnter()
             h.initialhackStrength = 1;
         }
     }
+
+    if( (autosave==2 && flags.GetBool('PlayerTraveling') && localURL != "INTRO" )
+        ||
+        ( firstTime && autosave==1 && localURL != "INTRO" )
+    ) {
+        bNeedSave=true;
+    }
 }
 
 function RandoSkills()
@@ -818,6 +908,25 @@ function RandoSkills()
         }
 		aSkill = aSkill.next;
 	}
+}
+
+function doAutosave()
+{
+    local string saveName;
+
+    //copied from DeusExPlayer QuickSave()
+    if (
+        ((dxInfo != None) && (dxInfo.MissionNumber < 0)) || 
+        ((Player.IsInState('Dying')) || (Player.IsInState('Paralyzed')) || (Player.IsInState('Interpolating'))) || 
+        (Player.dataLinkPlay != None) || (Level.Netmode != NM_Standalone)
+    ){
+        log("DXRando doAutosave() not saving");
+        return;
+	}
+
+    saveName = "DXR " $ seed $ ": " $ dxInfo.MissionLocation;
+    Player.SaveGame(0, saveName);
+    bNeedSave = false;
 }
 
 function bool DestroyActor( Actor d )

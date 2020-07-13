@@ -10,7 +10,7 @@ struct EnumBtn {
 };
 
 var EnumBtn enums[32];
-var int RandoKeys, RandoDoors, RandoDevices, RandoPasswords;
+var int RandoKeys, RandoDoors, RandoDevices, RandoPasswords, Autosave, RemoveInvisWalls;
 
 var MenuUIEditWindow editSeed;
 var MenuUIEditWindow editBrightness;
@@ -22,6 +22,7 @@ var MenuUIEditWindow editLockpicks;
 var MenuUIEditWindow editBioCells;
 var MenuUIEditWindow editMedkits;
 var MenuUIEditWindow editSpeedLevel;
+var MenuUIEditWindow editEnemyRando;
 
 event InitWindow()
 {
@@ -48,11 +49,18 @@ event DestroyWindow()
 function CreateControls()
 {
     local int row;
-    local EnumBtn btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords;
+    local EnumBtn btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords, btnAutosave;
 	Super.CreateControls();
 
     row = 0;
 	editSeed = CreateEdit(row++, "Seed", "1234567890");
+
+    btnAutosave.values[0] = "First Entry";
+    btnAutosave.values[1] = "Every Entry";
+    //btnAutosave.values[0] = "Off";
+    btnAutosave.values[2] = "Off";
+    Autosave = CreateEnum(row++, "Autosave", btnAutosave);
+
     editBrightness = CreateSlider(row++, "Brightness +", 5, 0, 25);
 
     btnRandoKeys.values[0] = "Off";
@@ -75,6 +83,7 @@ function CreateControls()
     btnRandoPasswords.values[1] = "Unchanged";
     RandoPasswords = CreateEnum(row++, "Passwords", btnRandoPasswords);
 
+    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", 99, 0, 100);
     editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", 25, 0, 500);
     editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", 300, 0, 500);
     editAmmo = CreateSlider(row++, "Ammo Drops %", 100);
@@ -82,7 +91,9 @@ function CreateControls()
     editLockpicks = CreateSlider(row++, "Lockpicks Drops %", 70);
     editBioCells = CreateSlider(row++, "Bioelectric Cells Drops %", 80);
     editMedkits = CreateSlider(row++, "Medkit Drops %", 80);
-    editSpeedLevel = CreateSlider(row++, "Speed Aug Level", 1, 0, 3);
+    editSpeedLevel = CreateSlider(row++, "Speed Aug Level", 199, 0, 3);
+
+    RemoveInvisWalls = CreateEnum(row++, "Remove Invisible Walls");
 }
 
 function vector GetCoords(int row, int col)
@@ -174,7 +185,7 @@ function MenuUIActionButtonWindow CreateBtn(int row, string label, string text)
     return btn;
 }
 
-function int CreateEnum(int row, string label, EnumBtn e)
+function int CreateEnum(int row, string label, optional EnumBtn e)
 {
     local int i;
     e.value=0;
@@ -256,7 +267,7 @@ function string GetEnumValue(int e)
 function ProcessAction(String actionKey)
 {
 	local int seed;
-    local string sseed, keys, doors, devices, passwords;
+    local string sseed, keys, doors, devices, passwords, autosavevalue, inviswalls;
     local DXRando dxr;
 
 	if (actionKey == "NEXT")
@@ -307,6 +318,16 @@ function ProcessAction(String actionKey)
 
         if( passwords == "Randomized" ) dxr.passwordsrandomized = 100;
         else if( passwords == "Unchanged" ) dxr.passwordsrandomized = 0;
+
+        dxr.enemiesrandomized = GetSliderValue(editEnemyRando);
+        autosavevalue = GetEnumValue(Autosave);
+        if( autosavevalue == "Off" ) dxr.autosave = 0;
+        else if( autosavevalue == "First Entry" ) dxr.autosave = 1;
+        else if( autosavevalue == "Every Entry" ) dxr.autosave = 2;
+
+        inviswalls = GetEnumValue(RemoveInvisWalls);
+        if( inviswalls == "Off" ) dxr.removeinvisiblewalls = 0;
+        else if( inviswalls == "On" ) dxr.removeinvisiblewalls = 1;
 
         dxr.player = player;
         dxr.flags = player.FlagBase;
