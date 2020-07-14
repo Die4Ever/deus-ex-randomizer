@@ -41,33 +41,59 @@ event Destroyed()
     Super.Destroyed();
 }
 
-/*function Destroy()
-{
-    l(".Destroy()");
-    dxr = None;
-    Super.Destroy();
-}*/
-
 function SetSeed(string name)
 {
-    if( dxr == None ) {
-        log(class $ " has no dxr");
-        return;
-    }
     dxr.SetSeed( dxr.Crc(dxr.seed $ "MS_" $ dxr.dxInfo.MissionNumber $ dxr.localURL $ name) );
 }
 
 function int rng(int max)
 {
-    if( dxr == None ) {
-        log(class $ " has no dxr");
-        return 0;
-    }
     return dxr.rng(max);
 }
 
 function l(string message)
 {
-    if( dxr == None ) log(class $ " has no dxr");
     log(class @ message);
+}
+
+function int RunTests()
+{
+    l(".RunTests()");
+    return 0;
+}
+
+function int test(bool result, string testname)
+{
+    if(result == true) {
+        l("pass: "$testname);
+        return 0;
+    }
+    else {
+        l("fail: "$testname);
+        return 1;
+    }
+}
+
+function int testint(int result, int expected, string testname)
+{
+    if(result == expected) {
+        l("pass: "$testname$": got "$result);
+        return 0;
+    }
+    else {
+        l("fail: "$testname$": got "$result$", expected "$expected);
+        return 1;
+    }
+}
+
+function int teststring(string result, string expected, string testname)
+{
+    if(result == expected) {
+        l("pass: "$testname$": got "$result);
+        return 0;
+    }
+    else {
+        l("fail: "$testname$": got "$result$", expected "$expected);
+        return 1;
+    }
 }

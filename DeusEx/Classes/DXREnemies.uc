@@ -49,7 +49,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     local ScriptedPawn n;
     local float radius;
     local vector loc;
-    //return None;
+
     if( p == None ) {
         l("p == None?");
         return None;
@@ -62,7 +62,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
         l("failed to clone "$ActorToString(p)$" into class "$newclass$" into "$loc);
         return None;
     }
-    //n.SetLocation(loc);
+
     l("cloning "$ActorToString(p)$" into class "$newclass$" got "$ActorToString(n));
 
     n.Alliance = p.Alliance;

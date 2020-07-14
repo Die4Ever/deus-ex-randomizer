@@ -132,7 +132,7 @@ function InitVersion()
 
 static function string VersionString()
 {
-    return "v1.2";
+    return "v1.2 Alpha";
 }
 
 function MaxRando()

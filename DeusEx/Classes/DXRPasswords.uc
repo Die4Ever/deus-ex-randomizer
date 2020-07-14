@@ -156,10 +156,7 @@ function ReplacePassword(string oldpassword, string newpassword)
 
 	while( note != None )
 	{
-        if( InStr( Caps(note.text), Caps(oldpassword) ) != -1 )
-        {
-            UpdateNote(note, oldpassword, newpassword);
-        }
+        UpdateNote(note, oldpassword, newpassword);
 		note = note.next;
 	}
 }
@@ -189,12 +186,12 @@ function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
 {
     if( oldpassword == "" ) return;
     if( note.text == "") return;
-    if( InStr( Caps(note.text), Caps(oldpassword) ) == -1 ) return;
+    if( WordInStr( Caps(note.text), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return;
 
     dxr.Player.ClientMessage("Note updated");
     l("found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
-    note.text = ReplaceText( note.text, oldpassword, newpassword );
+    note.text = ReplaceText( note.text, oldpassword, newpassword, true );
 }
 
 function string GeneratePassword(string oldpassword)
@@ -219,21 +216,59 @@ function string GeneratePasscode(string oldpasscode)
     return (rng(8999) + 1000) $ "";
 }
 
-static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With)
+static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With, optional bool word)
 {
-    local int i;
+    local int i, replace_len;
     local string Output, capsReplace;
 
+    replace_len = Len(Replace);
     capsReplace = Caps(Replace);
     
-    i = InStr( Caps(Text), capsReplace );
+    i = WordInStr( Caps(Text), capsReplace, replace_len, word );
     while (i != -1) {
         Output = Output $ Left(Text, i) $ With;
-        Text = Mid(Text, i + Len(Replace)); 
-        i = InStr( Caps(Text), capsReplace);
+        Text = Mid(Text, i + replace_len); 
+        i = WordInStr( Caps(Text), capsReplace, replace_len, word);
     }
     Output = Output $ Text;
     return Output;
+}
+
+static final function int WordInStr(coerce string Text, coerce string Replace, int replace_len, optional bool word)
+{
+    local int i, e;
+    i = InStr(Text, Replace);
+    if(word==false || i==-1) return i;
+
+    if(i>0) {
+        if( IsAlphaNumeric(Text, i-1) ) {
+            e = WordInStr(Mid(Text, i+1), Replace, replace_len, word);
+            if( e <= 0 ) return -1;
+            return i+1+e;
+        }
+    }
+    e = i + replace_len;
+    if( e < Len(Text) ) {
+        if( IsAlphaNumeric(Text, e) ) {
+            e = WordInStr(Mid(Text, i+1), Replace, replace_len, word);
+            if( e <= 0 ) return -1;
+            return i+1+e;
+        }
+    }
+    return i;
+}
+
+static final function bool IsAlphaNumeric(coerce string Text, int index)
+{
+    local int c;
+    c = Asc(Mid(Text, index, 1));
+    if( c>=48 && c<=57) // 0-9
+        return true;
+    if( c>=65 && c<=90) // A-Z
+        return true;
+    if( c>=97 && c<=122) // a-z
+        return true;
+    return false;
 }
 
 function LogAll()
@@ -257,4 +292,21 @@ function LogAll()
             l("found computer password: " $ c.userList[i].password);
         }
     }
+}
+
+function int RunTests()
+{
+    local int results;
+    results = Super.RunTests();
+
+    results += testint( WordInStr("THIS IS A TEST", "IS", 2 ), 2, "WordInStr match" );
+    results += testint( WordInStr("THIS IS A TEST", "IS", 2, true ), 5, "WordInStr 2nd match" );
+    results += testint( WordInStr("THISIS A TEST", "IS", 2, true ), -1, "WordInStr 2nd match not word" );
+    results += testint( WordInStr("MJ12", "12", 2, true ), -1, "WordInStr not word" );
+    results += testint( WordInStr("MJ 12", "12", 2, true ), 3, "WordInStr match at end" );
+
+    results += teststring( ReplaceText("MJ12 12 12345", "12", "12345", true), "MJ12 12345 12345", "ReplaceText 1" );
+    results += teststring( ReplaceText("MJ12 12 12345", "45", "12345", true), "MJ12 12 12345", "ReplaceText 2" );
+
+    return results;
 }

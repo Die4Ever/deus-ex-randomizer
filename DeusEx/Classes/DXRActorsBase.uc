@@ -160,16 +160,15 @@ function string ActorToString( Actor a )
 }
 
 function SetActorScale(Actor a, float scale)
-{//also adjust height
+{
     local bool AbCollideActors, AbBlockActors, AbBlockPlayers;
     local Vector newloc;
-    //l("setting scale for "$ActorToString(a)$" to "$scale);
+    
     AbCollideActors = a.bCollideActors;
     AbBlockActors = a.bBlockActors;
     AbBlockPlayers = a.bBlockPlayers;
     a.SetCollision(false, false, false);
     newloc = a.Location + ( (a.CollisionHeight*scale - a.CollisionHeight*a.DrawScale) * vect(0,0,1) );
-    //newloc = a.Location + (a.CollisionHeight*a.DrawScale - a.CollisionHeight*scale) * vect(0,0,1);
     a.SetCollisionSize(a.CollisionRadius, a.CollisionHeight / a.DrawScale * scale);
     a.DrawScale = scale;
     a.SetLocation(newloc);

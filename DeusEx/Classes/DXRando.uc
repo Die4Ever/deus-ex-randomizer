@@ -64,9 +64,10 @@ function PostPostBeginPlay()
     SetTimer(1.0, True);
 }
 
-function LoadFlagsModule()
+function DXRFlags LoadFlagsModule()
 {
     flags = DXRFlags(LoadModule(class'DXRFlags'));
+    return flags;
 }
 
 function DXRBase LoadModule(class<DXRBase> moduleclass)
@@ -77,7 +78,7 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
     m = FindModule(moduleclass);
     if( m != None ) {
         log("DXRando found already loaded module "$moduleclass);
-        if(m.dxr == None) m.Init(Self);
+        if(m.dxr != Self) m.Init(Self);
         return m;
     }
 
@@ -103,6 +104,8 @@ function LoadModules()
     LoadModule(class'DXRPasswords');
     LoadModule(class'DXRAugmentations');
     LoadModule(class'DXRReduceItems');
+
+    RunTests();
 }
 
 function DXRBase FindModule(class<DXRBase> moduleclass)
@@ -131,14 +134,6 @@ function DXRBase FindModule(class<DXRBase> moduleclass)
 function ClearModules()
 {
     local DXRBase m;
-    /*local int i;
-    for(i=0; i<ArrayCount(modules); i++) {
-        if( modules[i] != None )
-            modules[i].dxr = None;
-        modules[i] = None;
-    }*/
-    //foreach AllActors(class'DXRBase', m)
-        //m.Destroy();
     num_modules=0;
     flags=None;
 }
@@ -302,6 +297,18 @@ final function int Crc(coerce string Text) {
         CrcValue = (CrcValue >>> 8) ^ CrcTable[Asc(Mid(Text, IndexChar, 1)) ^ (CrcValue & 0xff)];
 
     return CrcValue;
+}
+
+function RunTests()
+{
+    local int i, results;
+    for(i=0; i<num_modules; i++) {
+        results = modules[i].RunTests();
+        if( results > 0 )
+            log( modules[i] $ " failed "$results$" tests!" );
+        else
+            log( modules[i] $ " passed tests!" );
+    }
 }
 
 defaultproperties
