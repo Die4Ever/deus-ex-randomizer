@@ -19,6 +19,7 @@ function RandomizeIntro()
     local Tree t;
     local DeusExMover m;
     local BreakableGlass g;
+    local Actor a;
 
     SetSeed("RandomizeIntro");
     
@@ -35,6 +36,12 @@ function RandomizeIntro()
         g.bHidden = true;
     }
     SwapAll('Actor');
+    foreach AllActors(class'Actor', a)
+    {
+        SetActorScale(a, float(rng(1500))/1000 + 0.3);
+        a.Fatness = rng(50) + 100;
+    }
+
     foreach AllActors(class'Tree', t)
     {
         t.bHidden = false;

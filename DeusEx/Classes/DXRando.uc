@@ -46,14 +46,12 @@ function PostPostBeginPlay()
         return;
     }
     log("DXRando found Player "$Player);
+    ClearModules();
     LoadFlagsModule();
     CrcInit();
     flags.LoadFlags();
 
-    if( num_modules == 1 ) {
-        LoadModules();
-    } else
-        log("DXRando num_modules == "$num_modules$"???");
+    LoadModules();
 
     flagName = Player.rootWindow.StringToName("M"$localURL$"_Randomized");
     if (!flags.flags.GetBool(flagName))
@@ -79,11 +77,12 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
     m = FindModule(moduleclass);
     if( m != None ) {
         log("DXRando found already loaded module "$moduleclass);
+        if(m.dxr == None) m.Init(Self);
         return m;
     }
 
     //m = new(None) moduleclass;
-    m = Spawn(moduleclass);
+    m = Spawn(moduleclass, None);
     if ( m == None ) {
         log("DXRando failed to load module "$moduleclass);
         return None;
@@ -108,24 +107,47 @@ function LoadModules()
 
 function DXRBase FindModule(class<DXRBase> moduleclass)
 {
+    local DXRBase m;
     local int i;
     for(i=0; i<num_modules; i++)
-        if( modules[i].Class == moduleclass )
-            return modules[i];
+        if( modules[i] != None )
+            if( modules[i].Class == moduleclass )
+                return modules[i];
+
+    foreach AllActors(class'DXRBase', m)
+    {
+        if( m.Class == moduleclass ) {
+            m.Init(Self);
+            modules[num_modules] = m;
+            num_modules++;
+            return m;
+        }
+    }
 
     log("DXRando failed to find module "$moduleclass);
     return None;
 }
 
+function ClearModules()
+{
+    local DXRBase m;
+    /*local int i;
+    for(i=0; i<ArrayCount(modules); i++) {
+        if( modules[i] != None )
+            modules[i].dxr = None;
+        modules[i] = None;
+    }*/
+    //foreach AllActors(class'DXRBase', m)
+        //m.Destroy();
+    num_modules=0;
+    flags=None;
+}
+
 event Destroyed()
 {
     local int i;
-    for(i=0; i < ArrayCount(modules); i++)
-    {
-        //if( modules[i] != None )
-            //modules[i].Destroy();
-        modules[i] = None;
-    }
+    log("DXRando.Destroyed()");
+
     num_modules = 0;
     flags = None;
     Player = None;
@@ -139,13 +161,7 @@ function PreTravel()
 	// turn off the timer
 	SetTimer(0, False);
 
-    for(i=0; i<num_modules; i++) {
-        modules[i].PreTravel();
-        modules[i].dxr = None;
-        modules[i].Destroy();
-    }
-
-    flags=None;
+    ClearModules();
     Player=None;
 }
 
@@ -219,7 +235,7 @@ function doAutosave()
 	}
 
     saveName = "DXR " $ seed $ ": " $ dxInfo.MissionLocation;
-    Player.SaveGame(0, saveName);
+    Player.SaveGame(-1, saveName);
     bNeedSave = false;
 }
 

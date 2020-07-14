@@ -50,7 +50,11 @@ function CreateControls()
 {
     local int row;
     local EnumBtn btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords, btnAutosave;
+    local DXRFlags flags;
 	Super.CreateControls();
+
+    Title = "DX Rando "$ class'DXRFlags'.static.VersionString() $" Options";
+    SetTitle(Title);
 
     row = 0;
 	editSeed = CreateEdit(row++, "Seed", "1234567890");
@@ -286,6 +290,7 @@ function ProcessAction(String actionKey)
         dxr.LoadFlagsModule();
         dxr.flags.InitVersion();
         dxr.flags.seed = seed;
+        dxr.seed = seed;
         log("DXRando setting seed to "$seed);
         dxr.flags.brightness = GetSliderValue(editBrightness);
         dxr.flags.minskill = GetSliderValue(editMinSkill);
@@ -401,7 +406,7 @@ defaultproperties
     actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel)
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     actionButtons(2)=(Action=AB_Reset)
-    Title="DX Rando v1.1 Options"
+    Title="DX Rando Options"
     ClientWidth=672
     ClientHeight=357
     bUsesHelpWindow=False

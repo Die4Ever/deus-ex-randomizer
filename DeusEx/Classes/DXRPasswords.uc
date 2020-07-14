@@ -2,10 +2,10 @@ class DXRPasswords extends DXRActorsBase;
 
 var transient DeusExNote lastCheckedNote;
 
-var string oldpasswords[128];
-var string newpasswords[128];
-var int passStart;
-var int passEnd;
+var travel string oldpasswords[128];
+var travel string newpasswords[128];
+var travel int passStart;
+var travel int passEnd;
 
 function FirstEntry()
 {

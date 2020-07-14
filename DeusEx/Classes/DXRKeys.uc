@@ -8,9 +8,27 @@ function FirstEntry()
 
 function AnyEntry()
 {
+    local NanoKey k;
     Super.AnyEntry();
     AdjustRestrictions(dxr.flags.doorspickable, dxr.flags.doorsdestructible, dxr.flags.deviceshackable, dxr.flags.removeinvisiblewalls);
+
+    /*foreach AllActors(class'NanoKey', k )
+    {
+        if ( SkipActorBase(k) ) continue;
+        SetActorScale(k, 1.3);
+    }*/
 }
+/*
+function Timer()
+{
+    local NanoKey k;
+    Super.Timer();
+    foreach AllActors(class'NanoKey', k )
+    {
+        //if ( SkipActorBase(k) ) continue;
+        SetActorScale(k, 1.3);
+    }
+}*/
 
 function MoveNanoKeys(int mode)
 {
@@ -30,6 +48,8 @@ function MoveNanoKeys(int mode)
     foreach AllActors(class'NanoKey', k )
     {
         if ( SkipActorBase(k) ) continue;
+
+        SetActorScale(k, 1.3);
 
         doorloc = vect(99999, 99999, 99999);
         foreach AllActors(class'DeusExMover', d)

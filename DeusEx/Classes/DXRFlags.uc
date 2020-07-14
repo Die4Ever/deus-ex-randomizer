@@ -81,6 +81,7 @@ function LoadFlags()
     }
 
     LogFlags("LoadFlags");
+    dxr.Player.ClientMessage("Deus Ex Randomizer "$VersionString()$" seed "$seed);
 }
 
 function SaveFlags()
@@ -129,7 +130,11 @@ function InitVersion()
     flagsversion = 3;
 }
 
-function string VersionString()
+static function string VersionString()
 {
     return "v1.2";
+}
+
+function MaxRando()
+{
 }

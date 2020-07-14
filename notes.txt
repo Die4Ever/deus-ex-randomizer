@@ -2,6 +2,8 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 
 for v1.2========================
 
+I think passwords might not be remembered across levels
+
 start randomizing enemies? only add enemies?
 
 fix password generation for 14_VANDENBERG_SUB
