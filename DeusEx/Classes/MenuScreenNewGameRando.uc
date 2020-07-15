@@ -24,7 +24,7 @@ function CopySkills()
 	local int skillIndex;
     
     if(dxr!=None)
-        dxr.RandoSkills();
+        DXRSkills(dxr.LoadModule(class'DXRSkills')).RandoSkills();
 
 	skillIndex = 0;
 
@@ -44,7 +44,7 @@ function CopySkills()
 function SaveSettings()
 {
     Super.SaveSettings();
-    dxr.SaveFlags();
+    dxr.flags.SaveFlags();
     dxr.Destroy();
 
     foreach player.AllActors(class'DXRando', dxr)
