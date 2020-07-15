@@ -67,35 +67,35 @@ function CreateControls()
 
     editBrightness = CreateSlider(row++, "Brightness +", 5, 0, 25);
 
-    btnRandoKeys.values[0] = "Off";
-    btnRandoKeys.values[1] = "Smart";
+    btnRandoKeys.values[0] = "On";
+    btnRandoKeys.values[1] = "Off";
     RandoKeys = CreateEnum(row++, "Key Randomization", btnRandoKeys);
 
-    btnRandoDoors.values[0] = "Unchanged";
+    btnRandoDoors.values[0] = "Both";
     btnRandoDoors.values[1] = "Destructible";
     btnRandoDoors.values[2] = "Pickable";
     //btnRandoDoors.values[3] = "Either";
-    btnRandoDoors.values[3] = "Both";
+    btnRandoDoors.values[3] = "Unchanged";
     RandoDoors = CreateEnum(row++, "Key-Only Doors", btnRandoDoors);
 
-    btnRandoDevices.values[0] = "Unchanged";
+    btnRandoDevices.values[0] = "All Hackable";
     //btnRandoDevices.values[1] = "Some Hackable";
-    btnRandoDevices.values[1] = "All Hackable";
+    btnRandoDevices.values[1] = "Unchanged";
     RandoDevices = CreateEnum(row++, "Electronic Devices", btnRandoDevices);
 
     btnRandoPasswords.values[0] = "Randomized";
     btnRandoPasswords.values[1] = "Unchanged";
     RandoPasswords = CreateEnum(row++, "Passwords", btnRandoPasswords);
 
-    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", 99, 0, 100);
+    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", 50, 0, 100);
     editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", 25, 0, 500);
     editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", 300, 0, 500);
-    editAmmo = CreateSlider(row++, "Ammo Drops %", 100);
-    editMultitools = CreateSlider(row++, "Multitools Drops %", 70);
-    editLockpicks = CreateSlider(row++, "Lockpicks Drops %", 70);
+    editAmmo = CreateSlider(row++, "Ammo Drops %", 80);
+    editMultitools = CreateSlider(row++, "Multitools Drops %", 80);
+    editLockpicks = CreateSlider(row++, "Lockpicks Drops %", 80);
     editBioCells = CreateSlider(row++, "Bioelectric Cells Drops %", 80);
     editMedkits = CreateSlider(row++, "Medkit Drops %", 80);
-    editSpeedLevel = CreateSlider(row++, "Speed Aug Level", 199, 0, 3);
+    editSpeedLevel = CreateSlider(row++, "Speed Aug Level", 1, 0, 3);
 
     RemoveInvisWalls = CreateEnum(row++, "Remove Invisible Walls");
 }
@@ -304,7 +304,7 @@ function ProcessAction(String actionKey)
 
         if( keys == "Off" ) dxr.flags.keysrando = 0;
         else if( keys == "Dumb" ) dxr.flags.keysrando = 1;
-        else if( keys == "Smart" ) dxr.flags.keysrando = 2;
+        else if( keys == "On" ) dxr.flags.keysrando = 2;
         else if( keys == "Copy" ) dxr.flags.keysrando = 3;
 
         if( doors == "Unchanged" ) {}

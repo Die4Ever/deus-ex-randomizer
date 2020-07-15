@@ -2,8 +2,8 @@ class DXRPasswords extends DXRActorsBase;
 
 var transient DeusExNote lastCheckedNote;
 
-var travel string oldpasswords[128];
-var travel string newpasswords[128];
+var travel string oldpasswords[64];
+var travel string newpasswords[64];
 var travel int passStart;
 var travel int passEnd;
 
@@ -11,6 +11,7 @@ function FirstEntry()
 {
     Super.FirstEntry();
 
+    lastCheckedNote = None;
     RandoPasswords(dxr.flags.passwordsrandomized);
     MakeAllHackable(dxr.flags.deviceshackable);
 }
@@ -19,6 +20,7 @@ function AnyEntry()
 {
     Super.AnyEntry();
 
+    lastCheckedNote = None;
     LogAll();
 }
 
@@ -90,7 +92,7 @@ function ChangeComputerPassword(Computers c, int i)
         }
     }
 
-    if( Len(oldpassword) <3 ) return;
+    //if( Len(oldpassword) <3 ) return;
     newpassword = GeneratePassword(oldpassword);
     c.userList[i].password = newpassword;
     ReplacePassword(oldpassword, newpassword);
@@ -112,7 +114,7 @@ function ChangeKeypadPasscode(Keypad k)
         }
     }
 
-    if( Len(oldpassword) <3 ) return;
+    //if( Len(oldpassword) <3 ) return;
     newpassword = GeneratePasscode(oldpassword);
     k.validCode = newpassword;
     ReplacePassword(oldpassword, newpassword);
@@ -134,7 +136,7 @@ function ChangeATMPIN(ATM a, int i)
         }
     }
 
-    if( Len(oldpassword) <3 ) return;
+    //if( Len(oldpassword) <3 ) return;
     newpassword = GeneratePasscode(oldpassword);
     a.userList[i].PIN = newpassword;
     ReplacePassword(oldpassword, newpassword);
@@ -276,6 +278,8 @@ function LogAll()
     local Computers c;
     local Keypad k;
     local int i;
+
+    l("passEnd is " $ passEnd $", passStart is " $ passStart);
 
     foreach AllActors(class'Keypad', k)
     {
