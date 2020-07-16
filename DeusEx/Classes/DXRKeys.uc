@@ -29,7 +29,7 @@ function MoveNanoKeys(int mode)
 
     num=0;
 
-    // 0=off, 1=dumb, 2=smart, 3=copies
+    // 0=off, 1=dumb, 2=on (old smart), 3=copies
     if( mode == 0 ) return;
 
     SetSeed( "MoveNanoKeys" );

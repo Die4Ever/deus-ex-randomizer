@@ -6,7 +6,7 @@ var FlagBase flags;
 var int seed;
 var int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
 var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
-var int keysrando;//0=off, 1=dumb, 2=smart, 3=copies
+var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies
 var int doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
 var int autosave;//0=off, 1=first time entering level, 2=every loading screen
 var int removeinvisiblewalls, enemiesrandomized;
@@ -54,6 +54,7 @@ function LoadFlags()
     enemiesrandomized = flags.GetInt('Rando_enemiesrandomized');
 
     if(flagsversion < 1) {
+        //should this pick a random seed?
         brightness = 5;
         minskill = 25;
         maxskill = 300;
@@ -132,7 +133,7 @@ function InitVersion()
 
 static function string VersionString()
 {
-    return "v1.2 Alpha";
+    return "v1.2 Beta";
 }
 
 function MaxRando()

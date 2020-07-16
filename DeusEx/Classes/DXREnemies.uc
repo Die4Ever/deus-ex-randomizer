@@ -8,7 +8,7 @@ function FirstEntry()
 
 function RandoEnemies(int percent)
 {
-    local int num, i;
+    local int i;
     local ScriptedPawn p;
 
     l("RandoEnemies "$percent);
@@ -21,7 +21,6 @@ function RandoEnemies(int percent)
         if( p.bImportant || p.bInvincible ) continue;
         if( IsInitialEnemy(p) == False ) continue;
         if( rng(100) >= percent ) continue;
-        //num++;
         CloneScriptedPawn(p);
     }
 }
@@ -31,16 +30,6 @@ function bool IsInitialEnemy(ScriptedPawn p)
     local int i;
 
     return p.GetPawnAllianceType(dxr.Player) == ALLIANCE_Hostile;
-
-    /*for(i=0; i<ArrayCount(p.InitialAlliances); i++)
-    {
-        if( p.InitialAlliances[i].AllianceName == 'Player' ) {
-            if( p.InitialAlliances[i].AllianceLevel < 0 ) return True;
-            else return False;
-        }
-    }
-
-    return False;*/
 }
 
 function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedPawn> newclass)

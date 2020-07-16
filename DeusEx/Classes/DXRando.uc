@@ -227,7 +227,7 @@ function doAutosave()
     ){
         log("DXRando doAutosave() not saving");
         return;
-	}
+    }
 
     saveName = "DXR " $ seed $ ": " $ dxInfo.MissionLocation;
     Player.SaveGame(-1, saveName);

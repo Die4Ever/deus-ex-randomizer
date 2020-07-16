@@ -68,7 +68,7 @@ function MakeAllHackable(int deviceshackable)
     foreach AllActors(class'HackableDevices', h)
     {
         if( h.bHackable == false && deviceshackable > 0 ) {
-            l("found unhackable device class: " $ ActorToString(h) $ ", tag: " $ h.Tag $ " in " $ dxr.localURL);
+            l("found unhackable device: " $ ActorToString(h) $ ", tag: " $ h.Tag $ " in " $ dxr.localURL);
             h.bHackable = true;
             h.hackStrength = 1;
             h.initialhackStrength = 1;
@@ -148,10 +148,8 @@ function ReplacePassword(string oldpassword, string newpassword)
 
     oldpasswords[passEnd] = oldpassword;
     newpasswords[passEnd] = newpassword;
-    //l("replaced password " $ oldpassword $ " with " $ newpassword $ ", passEnd was " $ passEnd $", passStart was " $ passStart);
     passEnd = (passEnd+1) % ArrayCount(oldpasswords);
     if(passEnd == passStart) passStart = (passStart+1) % ArrayCount(oldpasswords);
-    //Player.ClientMessage("replaced password " $ oldpassword $ " with " $ newpassword);
     l("replaced password " $ oldpassword $ " with " $ newpassword $ ", passEnd is " $ passEnd $", passStart is " $ passStart);
 
     note = dxr.Player.FirstNote;
@@ -170,8 +168,6 @@ function Timer()
 
     Super.Timer();
 	note = dxr.Player.FirstNote;
-
-    //l("Timer(), passEnd is " $ passEnd $", passStart is " $ passStart);
 
 	while( note != lastCheckedNote && note != None )
 	{
@@ -213,9 +209,9 @@ function string GeneratePassword(string oldpassword)
 
 function string GeneratePasscode(string oldpasscode)
 {
-    dxr.SetSeed( dxr.seed + dxr.Crc(oldpasscode) );
-    // a number from 1000 to 9999, easily avoids leading 0s
-    return (rng(8999) + 1000) $ "";
+    dxr.SetSeed( dxr.seed + dxr.Crc(oldpasscode) );//manually set the seed to avoid using the level name in the seed
+    // a number from 1000 to 9999, easily avoids leading 0s (modulus 9000 means max of 8999, maybe I should add 1 to the max inside the function)
+    return (rng(9000) + 1000) $ "";
 }
 
 static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With, optional bool word)
