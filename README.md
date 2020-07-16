@@ -9,3 +9,5 @@ Currently in v1.2, DXRando randomizes the exp costs for skills, changing the loc
 ![options](https://i.imgur.com/X8EBYMO.png)
 
 For the randomized passwords, you can copy-paste from the Goals/Notes screen.
+
+Check out the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
