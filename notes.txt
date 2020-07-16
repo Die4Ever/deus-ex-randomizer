@@ -1,19 +1,12 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
-for v1.2========================
-
-start randomizing enemies? only add enemies?
-
-fix password generation for 14_VANDENBERG_SUB
-- do longest passwords first for safe replacements (actually no point, cause they can come in different orders as levels load and notes get found)
-- check if the match on the password is touching a letter or number
-- does every note that references a password have a tag? I should log it
-
-print out the flags when loading
-
-autosave
-- MenuScreenSaveGame
-- DeusExSaveInfo
+for v1.3========================
+add more tests? I should maybe make tests only run once per launch, maybe like on localURL == "DX"
+better way for MoveNanoKeys to handle not finding a door, using the keyloc as the initial doorloc means the distance will never be greater
+give randomized enemies randomized patrol routes
+I can make more stuff data-driven
+    -config to enable/disable modules? modules in a separate package?
+    -DXRReduceItems could receive arguments/config for which classes of items to reduce and what %
 
 NavigationPoint (children: PathNode, PatrolPoint, AmbushPoint, InventorySpot) for extra positions where items can be placed?
     - Pawn class - native(518) final function Actor FindPathTo(vector aPoint, optional bool bSinglePath, 
@@ -36,7 +29,19 @@ Keypoint, the base class of invisible actors which mark things.
 // WarpZoneInfo. For making disjoint spaces appear as if they were connected;
 // supports both in-level warp zones and cross-level warp zones.
 
-I can use helper classes that inherit from Object instead of Actor
+for v1.2========================
+
+x start randomizing enemies? only add enemies?
+
+x fix password generation for 14_VANDENBERG_SUB
+x- check if the match on the password is touching a letter or number
+
+x print out the flags when loading
+
+x autosave
+- MenuScreenSaveGame
+- DeusExSaveInfo
+
 =============================
 
 need a function for GiveRandomItem()
