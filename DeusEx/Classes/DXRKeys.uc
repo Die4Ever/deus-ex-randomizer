@@ -3,7 +3,18 @@ class DXRKeys extends DXRActorsBase;
 function FirstEntry()
 {
     Super.FirstEntry();
-    MoveNanoKeys(dxr.flags.keysrando);
+    if( dxr.flags.keysrando == 4 ) {
+        //MoveNanoKeys4();
+        SetTimer(0.75, False);
+    }
+    else
+        MoveNanoKeys(dxr.flags.keysrando);
+}
+
+function Timer()
+{
+    Super.Timer();
+    MoveNanoKeys4();
 }
 
 function AnyEntry()
@@ -75,6 +86,60 @@ function MoveNanoKeys(int mode)
             i++;
         }
     }
+}
+
+function MoveNanoKeys4()
+{
+    local NanoKey k;
+    local DeusExMover d, door;
+    local Inventory a;
+    local int num, i, slot;
+
+    SetSeed( "MoveNanoKeys" );
+
+    foreach AllActors(class'NanoKey', k )
+    {
+        if ( SkipActorBase(k) ) continue;
+
+        SetActorScale(k, 1.3);
+
+        d=None;
+        foreach AllActors(class'DeusExMover', d)
+        {
+            if( d.KeyIDNeeded == k.KeyID ) {
+                door = d;
+                break;
+            }
+        }
+
+        i=0;
+        num=0;
+        foreach AllActors(class'Inventory', a)
+        {//maybe this should just build an array so it doesn't have to pathfind everything twice
+            if( SkipActor(a, 'Inventory') ) continue;
+            if( PlayerCanPath(k, a, door) == False ) continue;
+            num++;
+        }
+        slot=rng(num-1);
+        i=0;
+        foreach AllActors(class'Inventory', a)
+        {
+            if( SkipActor(a, 'Inventory') ) continue;
+            if( PlayerCanPath(k, a, door) == False ) continue;
+
+            if(i==slot) {
+                l("swapping key "$k.KeyID$" with "$a.Class);
+                Swap(k, a);
+                break;
+            }
+            i++;
+        }
+    }
+}
+
+function Vector FindNewKeyLocation(Actor k)
+{
+
 }
 
 function AdjustRestrictions(int doorspickable, int doorsdestructible, int deviceshackable, int removeinvisiblewalls)

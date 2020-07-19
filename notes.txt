@@ -1,23 +1,58 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
 for v1.3========================
-add more tests? I should maybe make tests only run once per launch, maybe like on localURL == "DX"
+x figure out why the camera is too high in some parts of the intro?
+x DXRFlags should set defaults before loading flags and reading from the MenuScreenSaveGame
+    x-can also make it load the flagsversion first and then only load flags that exist for the version
+x default seed max is only 10,000,000, increase it to 2,000,000,000
+x fix ClassIsA
+add more tests? I should maybe make tests only run once per launch, maybe like on localURL == "DX" maybe the training area or liberty island cause some tests will need a world?
+    -tests for ClassIsA, skill randomization, augs...
 better way for MoveNanoKeys to handle not finding a door, using the keyloc as the initial doorloc means the distance will never be greater
-give randomized enemies randomized patrol routes
+    -might also want to handle multiple doors...
 I can make more stuff data-driven
     -config to enable/disable modules? modules in a separate package?
     -DXRReduceItems could receive arguments/config for which classes of items to reduce and what %
 
 NavigationPoint (children: PathNode, PatrolPoint, AmbushPoint, InventorySpot) for extra positions where items can be placed?
+
+    - https://docs.unrealengine.com/udk/Three/CharactersTechnicalGuide.html#Pawns%20and%20Possession
     - Pawn class - native(518) final function Actor FindPathTo(vector aPoint, optional bool bSinglePath, 
 												optional bool bClearPaths);
+    - FindPathTo [aPoint] [MaxPathLength] [bReturnPartial] - This calculates a path to the navigation node closest to the given destination and returns the next node along that path.
+
     - Pawn class - native(517) final function Actor FindPathToward(actor anActor, optional bool bSinglePath, 
 												optional bool bClearPaths);
+    - FindPathToward [anActor] [bWeightDetours] [MaxPathLength] [bReturnPartial] - This calculates a path to the navigation node closest to the given actor and returns the next node along that path.
+    PointReachable [aPoint] - This returns whether the specified location is directly reachable given the Pawn’s movement capabilities. This function can be expensive and should be avoided in favor of ActorReachable() if possible.
+    ActorReachable [anActor] - This returns whether the specified Actor is directly reachable given the Pawn’s movement capabilities. Though potentially more optimized than PointReachable(), this function also can be expensive and should be used sparingly.
     I can use FindPath to determine if I can do a key swap? find path from key to path in question, walk through the NavigationPoints and see if the door is in between any of them?
     -what does this do? native(525) final function NavigationPoint FindRandomDest(optional bool bClearPaths);
         -FindRandomDest - This returns a random node on the navigation network. This can be good for creating a state where the character roams the world.
     -I could find all the NavigationPoints within a small radius of the door, and whichever ones are farther from the key than the door is are bad points that should indicate a failed path finding
         -should this be done in a preparation loop, or while doing the pathfinding?
+
+native(724) final function bool GetBoundingBox(out vector MinVect, out vector MaxVect,
+                                               optional bool bExact,
+                                               optional vector testLocation,
+                                               optional rotator testRotation);
+
+//
+// Trace a line and see what it collides with first.
+// Takes this actor's collision properties into account.
+// Returns first hit actor, Level if hit level, or None if hit nothing.
+//
+native(277) final function Actor Trace
+(
+	out vector      HitLocation,
+	out vector      HitNormal,
+	vector          TraceEnd,
+	optional vector TraceStart,
+	optional bool   bTraceActors,
+	optional vector Extent
+);
+
+TraceActors loop doesn't seem useful
     
 can I randomize the location of datacubes? would be hard without being able to check the text inside them, could just detect all the possible devices/computers with codes and make sure it's safe for all of them
     
@@ -28,6 +63,8 @@ Keypoint, the base class of invisible actors which mark things.
 
 // WarpZoneInfo. For making disjoint spaces appear as if they were connected;
 // supports both in-level warp zones and cross-level warp zones.
+
+track times per mission and overall (RTA or IGT?)
 
 for v1.2========================
 

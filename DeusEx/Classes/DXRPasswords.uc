@@ -22,6 +22,7 @@ function AnyEntry()
 
     lastCheckedNote = None;
     LogAll();
+    SetTimer(1.0, True);
 }
 
 function RandoPasswords(int mode)

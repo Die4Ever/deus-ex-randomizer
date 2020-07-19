@@ -67,8 +67,9 @@ function CreateControls()
 
     editBrightness = CreateSlider(row++, "Brightness +", 5, 0, 25);
 
-    btnRandoKeys.values[0] = "On";
-    btnRandoKeys.values[1] = "Off";
+    btnRandoKeys.values[0] = "Smart";
+    btnRandoKeys.values[1] = "On";
+    btnRandoKeys.values[2] = "Off";
     RandoKeys = CreateEnum(row++, "Key Randomization", btnRandoKeys);
 
     btnRandoDoors.values[0] = "Both";
@@ -277,8 +278,6 @@ function ProcessAction(String actionKey)
 	if (actionKey == "NEXT")
 	{
 		sseed = editSeed.GetText();
-        if( sseed == "" ) seed = Rand(10000000);
-        else seed = int(sseed);
 
         keys = GetEnumValue(RandoKeys);
         doors = GetEnumValue(RandoDoors);
@@ -288,9 +287,12 @@ function ProcessAction(String actionKey)
         dxr = player.Spawn(class'DXRando');
         dxr.player = player;
         dxr.LoadFlagsModule();
-        dxr.flags.InitVersion();
-        dxr.flags.seed = seed;
-        dxr.seed = seed;
+        dxr.flags.InitDefaults();
+        if( sseed != "" ) {
+            seed = int(sseed);
+            dxr.flags.seed = seed;
+            dxr.seed = seed;
+        }
         log("DXRando setting seed to "$seed);
         dxr.flags.brightness = GetSliderValue(editBrightness);
         dxr.flags.minskill = GetSliderValue(editMinSkill);
@@ -306,6 +308,7 @@ function ProcessAction(String actionKey)
         else if( keys == "Dumb" ) dxr.flags.keysrando = 1;
         else if( keys == "On" ) dxr.flags.keysrando = 2;
         else if( keys == "Copy" ) dxr.flags.keysrando = 3;
+        else if( keys == "Smart" ) dxr.flags.keysrando = 4;
 
         if( doors == "Unchanged" ) {}
         else if( doors == "Destructible" ) dxr.flags.doorsdestructible = 100;

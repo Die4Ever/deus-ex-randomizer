@@ -5,10 +5,10 @@ function FirstEntry()
     Super.FirstEntry();
 
     ReduceAmmo( float(dxr.flags.ammo)/100.0 );
-    ReduceSpawns('Multitool', dxr.flags.multitools);
-    ReduceSpawns('Lockpick', dxr.flags.lockpicks);
-    ReduceSpawns('BioelectricCell', dxr.flags.biocells);
-    ReduceSpawns('MedKit', dxr.flags.medkits);
+    ReduceSpawns(class'Multitool', dxr.flags.multitools);
+    ReduceSpawns(class'Lockpick', dxr.flags.lockpicks);
+    ReduceSpawns(class'BioelectricCell', dxr.flags.biocells);
+    ReduceSpawns(class'MedKit', dxr.flags.medkits);
 }
 
 function ReduceAmmo(float mult)
@@ -33,10 +33,10 @@ function ReduceAmmo(float mult)
             a.AmmoAmount = Clamp(float(a.AmmoAmount) * mult, 0, 99999);
     }
 
-    ReduceSpawnsInContainers('Ammo', int(mult*100.0) );
+    ReduceSpawnsInContainers(class'Ammo', int(mult*100.0) );
 }
 
-function ReduceSpawns(name classname, int percent)
+function ReduceSpawns(class<Actor> classname, int percent)
 {
     local Actor a;
 
@@ -46,10 +46,10 @@ function ReduceSpawns(name classname, int percent)
 
     foreach AllActors(class'Actor', a)
     {
-        //if( SkipActor(a, classname) ) continue;
+        //if( SkipActor(a, classname.name) ) continue;
         if( a == dxr.Player ) continue;
         if( a.Owner == dxr.Player ) continue;
-        if( ! a.IsA(classname) ) continue;
+        if( ! a.IsA(classname.name) ) continue;
 
         if( rng(100) >= percent )
         {
@@ -60,17 +60,17 @@ function ReduceSpawns(name classname, int percent)
     ReduceSpawnsInContainers(classname, percent);
 }
 
-function ReduceSpawnsInContainers(name classname, int percent)
+function ReduceSpawnsInContainers(class<Actor> classname, int percent)
 {
     local Containers d;
 
     if( percent >= 100 ) return;
 
-    SetSeed( "ReduceSpawnsInContainers " $ classname );
+    SetSeed( "ReduceSpawnsInContainers " $ classname.Name );
 
     foreach AllActors(class'Containers', d)
     {
-        //l("found Decoration " $ d.Name $ " with Contents: " $ d.Contents $ ", looking for " $ classname);
+        //l("found Decoration " $ d.Name $ " with Contents: " $ d.Contents $ ", looking for " $ classname.Name);
         if( rng(100) >= percent ) {
             if( ClassIsA( d.Contents, classname) ) d.Contents = d.Content2;
             if( ClassIsA( d.Contents, classname) ) d.Content2 = d.Content3;

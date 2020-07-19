@@ -38,6 +38,7 @@ function RandomizeIntro()
     SwapAll('Actor');
     foreach AllActors(class'Actor', a)
     {
+        if( a.bHidden ) continue;
         SetActorScale(a, float(rng(1500))/1000 + 0.3);
         a.Fatness = rng(50) + 100;
     }
