@@ -167,11 +167,6 @@ function bool PositionIsSafe(Vector oldloc, Actor test, Vector newloc)
 
     test.GetBoundingBox(MinVect, MaxVect);
     TestPoint = (MinVect+MaxVect)/2;
-    /*a = AbsEach(oldloc - MinVect);
-    b = AbsEach(oldloc - MaxVect);
-    if( a.X < b.X ) TestPoint.X = b.X;
-    if( a.Y < b.Y ) TestPoint.Y = b.Y;
-    if( a.Z < b.Z ) TestPoint.Z = b.Z;*/
 
     distold = VSize(newloc - oldloc);
     disttest = VSize(newloc - TestPoint);

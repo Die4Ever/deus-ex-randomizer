@@ -7,6 +7,26 @@ var travel string newpasswords[64];
 var travel int passStart;
 var travel int passEnd;
 
+function Timer()
+{
+    local DeusExNote note;
+    local int i;
+
+    Super.Timer();
+
+	note = dxr.Player.FirstNote;
+
+	while( note != lastCheckedNote && note != None )
+	{
+        for (i=0; i<ArrayCount(oldpasswords); i++)
+        {
+            UpdateNote(note, oldpasswords[i], newpasswords[i]);
+        }
+		note = note.next;
+	}
+    lastCheckedNote = dxr.Player.FirstNote;
+}
+
 function FirstEntry()
 {
     Super.FirstEntry();
@@ -160,25 +180,6 @@ function ReplacePassword(string oldpassword, string newpassword)
         UpdateNote(note, oldpassword, newpassword);
 		note = note.next;
 	}
-}
-
-function Timer()
-{
-    local DeusExNote note;
-    local int i;
-
-    Super.Timer();
-	note = dxr.Player.FirstNote;
-
-	while( note != lastCheckedNote && note != None )
-	{
-        for (i=0; i<ArrayCount(oldpasswords); i++)
-        {
-            UpdateNote(note, oldpasswords[i], newpasswords[i]);
-        }
-		note = note.next;
-	}
-    lastCheckedNote = dxr.Player.FirstNote;
 }
 
 function UpdateNote(DeusExNote note, string oldpassword, string newpassword)

@@ -28,7 +28,7 @@ function PreTravel()
 {
     l(".PreTravel()");
     dxr = None;
-    Self.Destroy();
+    SetTimer(0, False);
 }
 
 function Timer()

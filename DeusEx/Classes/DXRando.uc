@@ -1,8 +1,7 @@
 class DXRando extends Info;
 
 var transient DeusExPlayer Player;
-//var transient FlagBase flags;
-var DXRFlags flags;
+var transient DXRFlags flags;
 var transient DeusExLevelInfo dxInfo;
 var transient string localURL;
 
@@ -15,8 +14,8 @@ var transient bool bNeedSave;
 
 var transient private int CrcTable[256]; // for string hashing to do more stable seeding
 
-var DXRBase modules[16];
-var int num_modules;
+var transient DXRBase modules[16];
+var transient int num_modules;
 
 function SetdxInfo(DeusExLevelInfo i)
 {
@@ -46,22 +45,22 @@ function PostPostBeginPlay()
         return;
     }
     log("DXRando found Player "$Player);
+    CrcInit();
     ClearModules();
     LoadFlagsModule();
-    CrcInit();
     flags.LoadFlags();
 
     LoadModules();
 
     flagName = Player.rootWindow.StringToName("M"$localURL$"_Randomized");
-    if (!flags.flags.GetBool(flagName))
+    if (!flags.f.GetBool(flagName))
     {
         firstTime = True;
-        flags.flags.SetBool(flagName, True,, 999);
+        flags.f.SetBool(flagName, True,, 999);
     }
     RandoEnter(firstTime);
 
-    SetTimer(1.0, True);
+    //SetTimer(1.0, True);
 }
 
 function DXRFlags LoadFlagsModule()
@@ -203,7 +202,7 @@ function RandoEnter(bool firstTime)
         modules[i].AnyEntry();
     }
 
-    if( (flags.autosave==2 && flags.flags.GetBool('PlayerTraveling') && localURL != "INTRO" )
+    if( (flags.autosave==2 && flags.f.GetBool('PlayerTraveling') && localURL != "INTRO" )
         ||
         ( firstTime && flags.autosave==1 && localURL != "INTRO" )
     ) {

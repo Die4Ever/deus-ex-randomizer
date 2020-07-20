@@ -1,6 +1,6 @@
 class DXRFlags extends DXRBase;
 
-var FlagBase flags;
+var transient FlagBase f;
 
 //rando flags
 var int seed;
@@ -11,18 +11,25 @@ var int doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, 
 var int autosave;//0=off, 1=first time entering level, 2=every loading screen
 var int removeinvisiblewalls, enemiesrandomized;
 
+function PreTravel()
+{
+    Super.PreTravel();
+    f = None;
+    Self.Destroy();// for some reason, "f = tdxr.Player.FlagBase;" inside the Init function crashes if I don't do this, not sure why
+}
+
 function Init(DXRando tdxr)
 {
     Super.Init(tdxr);
-
-    flags = dxr.Player.FlagBase;
+    f = tdxr.Player.FlagBase;
     SetTimer(1.0, True);
 }
 
 function Timer()
 {
     Super.Timer();
-    if( flags.GetInt('Rando_version') == 0 ) {
+
+    if( f.GetInt('Rando_version') == 0 ) {
         l("flags got deleted, saving again");//the intro deletes all flags
         SaveFlags();
     }
@@ -59,35 +66,36 @@ function LoadFlags()
 {
     local int stored_version;
     l("LoadFlags()");
+
     InitDefaults();
 
-    stored_version = flags.GetInt('Rando_version');
+    stored_version = f.GetInt('Rando_version');
 
     if( stored_version >= 1 ) {
-        seed = flags.GetInt('Rando_seed');
+        seed = f.GetInt('Rando_seed');
         dxr.seed = seed;
-        brightness = flags.GetInt('Rando_brightness');
-        minskill = flags.GetInt('Rando_minskill');
-        maxskill = flags.GetInt('Rando_maxskill');
-        ammo = flags.GetInt('Rando_ammo');
-        multitools = flags.GetInt('Rando_multitools');
-        lockpicks = flags.GetInt('Rando_lockpicks');
-        biocells = flags.GetInt('Rando_biocells');
-        speedlevel = flags.GetInt('Rando_speedlevel');
-        keysrando = flags.GetInt('Rando_keys');
-        doorspickable = flags.GetInt('Rando_doorspickable');
-        doorsdestructible = flags.GetInt('Rando_doorsdestructible');
-        deviceshackable = flags.GetInt('Rando_deviceshackable');
-        passwordsrandomized = flags.GetInt('Rando_passwordsrandomized');
-        gibsdropkeys = flags.GetInt('Rando_gibsdropkeys');
+        brightness = f.GetInt('Rando_brightness');
+        minskill = f.GetInt('Rando_minskill');
+        maxskill = f.GetInt('Rando_maxskill');
+        ammo = f.GetInt('Rando_ammo');
+        multitools = f.GetInt('Rando_multitools');
+        lockpicks = f.GetInt('Rando_lockpicks');
+        biocells = f.GetInt('Rando_biocells');
+        speedlevel = f.GetInt('Rando_speedlevel');
+        keysrando = f.GetInt('Rando_keys');
+        doorspickable = f.GetInt('Rando_doorspickable');
+        doorsdestructible = f.GetInt('Rando_doorsdestructible');
+        deviceshackable = f.GetInt('Rando_deviceshackable');
+        passwordsrandomized = f.GetInt('Rando_passwordsrandomized');
+        gibsdropkeys = f.GetInt('Rando_gibsdropkeys');
     }
     if( stored_version >= 2 ) {
-        medkits = flags.GetInt('Rando_medkits');
+        medkits = f.GetInt('Rando_medkits');
     }
     if( stored_version >= 3 ) {
-        autosave = flags.GetInt('Rando_autosave');
-        removeinvisiblewalls = flags.GetInt('Rando_removeinvisiblewalls');
-        enemiesrandomized = flags.GetInt('Rando_enemiesrandomized');
+        autosave = f.GetInt('Rando_autosave');
+        removeinvisiblewalls = f.GetInt('Rando_removeinvisiblewalls');
+        enemiesrandomized = f.GetInt('Rando_enemiesrandomized');
     }
 
     if(stored_version < flagsversion ) {
@@ -102,29 +110,30 @@ function LoadFlags()
 function SaveFlags()
 {
     l("SaveFlags()");
+
     InitVersion();
-    flags.SetInt('Rando_seed', seed,, 999);
+    f.SetInt('Rando_seed', seed,, 999);
     dxr.seed = seed;
 
-    flags.SetInt('Rando_version', flagsversion,, 999);
-    flags.SetInt('Rando_brightness', brightness,, 999);
-    flags.SetInt('Rando_minskill', minskill,, 999);
-    flags.SetInt('Rando_maxskill', maxskill,, 999);
-    flags.SetInt('Rando_ammo', ammo,, 999);
-    flags.SetInt('Rando_multitools', multitools,, 999);
-    flags.SetInt('Rando_lockpicks', lockpicks,, 999);
-    flags.SetInt('Rando_biocells', biocells,, 999);
-    flags.SetInt('Rando_medkits', medkits,, 999);
-    flags.SetInt('Rando_speedlevel', speedlevel,, 999);
-    flags.SetInt('Rando_keys', keysrando,, 999);
-    flags.SetInt('Rando_doorspickable', doorspickable,, 999);
-    flags.SetInt('Rando_doorsdestructible', doorsdestructible,, 999);
-    flags.SetInt('Rando_deviceshackable', deviceshackable,, 999);
-    flags.SetInt('Rando_passwordsrandomized', passwordsrandomized,, 999);
-    flags.SetInt('Rando_gibsdropkeys', gibsdropkeys,, 999);
-    flags.SetInt('Rando_autosave', autosave,, 999);
-    flags.SetInt('Rando_removeinvisiblewalls', removeinvisiblewalls,, 999);
-    flags.SetInt('Rando_enemiesrandomized', enemiesrandomized,, 999);
+    f.SetInt('Rando_version', flagsversion,, 999);
+    f.SetInt('Rando_brightness', brightness,, 999);
+    f.SetInt('Rando_minskill', minskill,, 999);
+    f.SetInt('Rando_maxskill', maxskill,, 999);
+    f.SetInt('Rando_ammo', ammo,, 999);
+    f.SetInt('Rando_multitools', multitools,, 999);
+    f.SetInt('Rando_lockpicks', lockpicks,, 999);
+    f.SetInt('Rando_biocells', biocells,, 999);
+    f.SetInt('Rando_medkits', medkits,, 999);
+    f.SetInt('Rando_speedlevel', speedlevel,, 999);
+    f.SetInt('Rando_keys', keysrando,, 999);
+    f.SetInt('Rando_doorspickable', doorspickable,, 999);
+    f.SetInt('Rando_doorsdestructible', doorsdestructible,, 999);
+    f.SetInt('Rando_deviceshackable', deviceshackable,, 999);
+    f.SetInt('Rando_passwordsrandomized', passwordsrandomized,, 999);
+    f.SetInt('Rando_gibsdropkeys', gibsdropkeys,, 999);
+    f.SetInt('Rando_autosave', autosave,, 999);
+    f.SetInt('Rando_removeinvisiblewalls', removeinvisiblewalls,, 999);
+    f.SetInt('Rando_enemiesrandomized', enemiesrandomized,, 999);
 
     LogFlags("SaveFlags");
 }
