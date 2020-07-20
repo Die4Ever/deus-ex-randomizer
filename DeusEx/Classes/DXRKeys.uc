@@ -3,18 +3,10 @@ class DXRKeys extends DXRActorsBase;
 function FirstEntry()
 {
     Super.FirstEntry();
-    if( dxr.flags.keysrando == 4 ) {
-        //MoveNanoKeys4();
-        SetTimer(0.75, False);
-    }
-    else
-        MoveNanoKeys(dxr.flags.keysrando);
-}
-
-function Timer()
-{
-    Super.Timer();
-    MoveNanoKeys4();
+    if( dxr.flags.keysrando == 4 )
+        MoveNanoKeys4();
+    else if( dxr.flags.keysrando == 2 )
+        MoveNanoKeys();
 }
 
 function AnyEntry()
@@ -30,7 +22,7 @@ function AnyEntry()
     }
 }
 
-function MoveNanoKeys(int mode)
+function MoveNanoKeys()
 {
     local Inventory a;
     local NanoKey k;
@@ -39,9 +31,6 @@ function MoveNanoKeys(int mode)
     local vector doorloc, distkey, distdoor;
 
     num=0;
-
-    // 0=off, 1=dumb, 2=on (old smart), 3=copies
-    if( mode == 0 ) return;
 
     SetSeed( "MoveNanoKeys" );
 
@@ -90,12 +79,11 @@ function MoveNanoKeys(int mode)
 
 function MoveNanoKeys4()
 {
-    local NanoKey k;
-    local DeusExMover d, door;
     local Inventory a;
+    local NanoKey k;
+    local DeusExMover d;
     local int num, i, slot;
-
-    SetSeed( "MoveNanoKeys" );
+    local vector doorloc, distkey, distdoor;
 
     foreach AllActors(class'NanoKey', k )
     {
@@ -103,32 +91,24 @@ function MoveNanoKeys4()
 
         SetActorScale(k, 1.3);
 
-        d=None;
-        foreach AllActors(class'DeusExMover', d)
-        {
-            if( d.KeyIDNeeded == k.KeyID ) {
-                door = d;
-                break;
-            }
-        }
-
         i=0;
         num=0;
         foreach AllActors(class'Inventory', a)
-        {//maybe this should just build an array so it doesn't have to pathfind everything twice
+        {
             if( SkipActor(a, 'Inventory') ) continue;
-            if( PlayerCanPath(k, a, door) == False ) continue;
+            if( KeyPositionGood(k, a.Location) == False ) continue;
             num++;
         }
+
         slot=rng(num-1);
         i=0;
         foreach AllActors(class'Inventory', a)
         {
             if( SkipActor(a, 'Inventory') ) continue;
-            if( PlayerCanPath(k, a, door) == False ) continue;
+            if( KeyPositionGood(k, a.Location) == False ) continue;
 
             if(i==slot) {
-                l("swapping key "$k.KeyID$" with "$a.Class);
+                l("swapping key "$k.KeyID$" (distdoor "$distdoor$", distkey "$distkey$") with "$a.Class);
                 Swap(k, a);
                 break;
             }
@@ -137,9 +117,16 @@ function MoveNanoKeys4()
     }
 }
 
-function Vector FindNewKeyLocation(Actor k)
+function bool KeyPositionGood(NanoKey k, vector newpos)
 {
+    local DeusExMover d;
 
+    foreach AllActors(class'DeusExMover', d)
+    {
+        if( d.KeyIDNeeded != k.KeyID ) continue;
+        if( PositionIsSafe(k.Location, d, newpos) == False ) return False;
+    }
+    return True;
 }
 
 function AdjustRestrictions(int doorspickable, int doorsdestructible, int deviceshackable, int removeinvisiblewalls)

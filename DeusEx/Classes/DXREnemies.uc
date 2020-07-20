@@ -12,10 +12,16 @@ function RandoEnemies(int percent)
     local ScriptedPawn p;
     local ScriptedPawn n;
     local ScriptedPawn newsp;
+    local Pawn pawn;
 
     l("RandoEnemies "$percent);
 
     SetSeed( "RandoEnemies" );
+
+    foreach AllActors(class'Pawn', pawn)
+    {// even hidden and important pawns?
+        RandomizeSize(pawn);
+    }
 
     foreach AllActors(class'ScriptedPawn', p)
     {
@@ -55,7 +61,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
     chance(15, r);// else keep the same class
 
     n = CloneScriptedPawn(base, newclass);
-    if( rng(100) < percent ) RandomizeSP(n, percent);
+    if( n != None && rng(100) < percent ) RandomizeSP(n, percent);
     return n;
 }
 
@@ -127,6 +133,8 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     n.Orders = 'Wandering';
     n.HomeTag = 'Start';
 
+    RandomizeSize(n);
+
     return n;
 }
 
@@ -176,6 +184,13 @@ function RandomizeSP(ScriptedPawn p, int percent)
     }
 
     p.SetupWeapon(false);
+}
+
+function RandomizeSize(Actor a)
+{
+    //l("RandomizeSize "$a$", DrawScale=="$a.DrawScale$", Fatness=="$a.Fatness);
+    SetActorScale(a, float(rng(200))/1000 + 0.9);
+    a.Fatness = rng(20) + 120;
 }
 
 function GiveRandomPatrol(ScriptedPawn p)
