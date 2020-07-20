@@ -1,16 +1,5 @@
 class DXRActorsBase extends DXRBase;
 
-function PreTravel()
-{
-    Self.Destroy();
-    Super.PreTravel();
-}
-
-event Destroyed()
-{
-    Super.Destroyed();
-}
-
 function SwapAll(name classname)
 {
     local Actor a, b;

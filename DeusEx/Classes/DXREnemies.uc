@@ -192,34 +192,3 @@ function RandomizeSize(Actor a)
     SetActorScale(a, float(rng(200))/1000 + 0.9);
     a.Fatness = rng(20) + 120;
 }
-
-function GiveRandomPatrol(ScriptedPawn p)
-{
-    local NavigationPoint np;
-    local DXRPatrolPoint pp;
-    local int num, i, slot, a;
-
-    if( p == None ) {
-        l("p == None?");
-        return;
-    }
-
-    foreach RadiusActors(class'NavigationPoint', np, 1000, p.Location) {
-        num++;
-    }
-
-    for( a=0; a<3; a++ ) {
-        slot=rng(num-1);
-        i=0;
-        foreach RadiusActors(class'NavigationPoint', np, 1000, p.Location) {
-            i++;
-            if(i==slot) {
-                pp = Spawn(class'DXRPatrolPoint',, dxr.Player.rootWindow.StringToName( p.Name$"_patrol_"$a ) , np.Location);
-                pp.Nextpatrol = dxr.Player.rootWindow.StringToName( p.Name$"_patrol_"$(a+1) );
-                break;
-            }
-        }
-    }
-
-    p.SetOrders('Patrolling', dxr.Player.rootWindow.StringToName( p.Name$"_patrol_0" ) );
-}
