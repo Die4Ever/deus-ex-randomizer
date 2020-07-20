@@ -123,22 +123,6 @@ function Swap(Actor a, Actor b)
     b.SetCollision(BbCollideActors, BbBlockActors, BbBlockPlayers);
 }
 
-function bool ClassIsA(class<actor> class, class<Actor> testclass)
-{
-    return ClassIsChildOf( testclass, class );
-    // there must be a better way to do this... native(258) static final function bool ClassIsChildOf( class TestClass, class ParentClass );
-    /*local actor a;
-    local bool ret;
-    if(class == None) return ret;
-
-    //return class<testclass>(class) != None;
-
-    a = Spawn(class);
-    ret = a.IsA(testclass);
-    a.Destroy();
-    return ret;*/
-}
-
 function bool DestroyActor( Actor d )
 {
 	// If this item is in an inventory chain, unlink it.

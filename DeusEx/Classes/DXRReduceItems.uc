@@ -72,9 +72,9 @@ function ReduceSpawnsInContainers(class<Actor> classname, int percent)
     {
         //l("found Decoration " $ d.Name $ " with Contents: " $ d.Contents $ ", looking for " $ classname.Name);
         if( rng(100) >= percent ) {
-            if( ClassIsA( d.Contents, classname) ) d.Contents = d.Content2;
-            if( ClassIsA( d.Contents, classname) ) d.Content2 = d.Content3;
-            if( ClassIsA( d.Contents, classname) ) d.Content3 = None;
+            if( ClassIsChildOf( classname, d.Contents) ) d.Contents = d.Content2;
+            if( ClassIsChildOf( classname, d.Contents) ) d.Content2 = d.Content3;
+            if( ClassIsChildOf( classname, d.Contents) ) d.Content3 = None;
         }
     }
 }

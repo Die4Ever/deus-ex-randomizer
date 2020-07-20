@@ -102,13 +102,6 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     {
         n.InitialAlliances[i] = p.InitialAlliances[i];
     }
-
-    /*if( newclass == p.Class ) {
-        for(i=0; i<ArrayCount(n.InitialInventory); i++ )
-        {
-            n.InitialInventory[i] = p.InitialInventory[i];
-        }
-    }*/
     
     inv = p.Inventory;
     while( inv != None ) {
@@ -146,8 +139,6 @@ function RandomizeSP(ScriptedPawn p, int percent)
 
     if( p == None ) return;
 
-    //p.Orders = 'Wandering';
-    //p.HomeTag = 'Start';
     p.SurprisePeriod *= float(rng(100)/100)+0.3;
 
     if( HumanMilitary(p) == None && HumanThug(p) == None && HumanCivilian(p) == None ) return; // only give random weapons to humans
@@ -170,7 +161,6 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( chance(5, r) ) wclass = class'WeaponSawedOffShotgun';
     if( chance(5, r) ) wclass = class'WeaponShuriken';
     if( chance(10, r) ) wclass = class'WeaponPistol';
-    //if( chance(5, r) ) wclass = class'WeaponSword';
 
     w = Spawn(wclass, p);
     w.GiveTo(p);
@@ -188,7 +178,6 @@ function RandomizeSP(ScriptedPawn p, int percent)
 
 function RandomizeSize(Actor a)
 {
-    //l("RandomizeSize "$a$", DrawScale=="$a.DrawScale$", Fatness=="$a.Fatness);
     SetActorScale(a, float(rng(200))/1000 + 0.9);
     a.Fatness = rng(20) + 120;
 }

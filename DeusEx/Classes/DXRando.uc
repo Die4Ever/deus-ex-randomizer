@@ -168,10 +168,6 @@ function Timer()
         return;
     }
 
-    /*for(i=0; i<num_modules; i++) {
-        modules[i].Timer();
-    }*/
-
     if( bNeedSave )
         doAutosave();
 }
