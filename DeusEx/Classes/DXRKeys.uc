@@ -81,9 +81,7 @@ function MoveNanoKeys4()
 {
     local Inventory a;
     local NanoKey k;
-    local DeusExMover d;
     local int num, i, slot;
-    local vector doorloc, distkey, distdoor;
 
     foreach AllActors(class'NanoKey', k )
     {
@@ -108,7 +106,7 @@ function MoveNanoKeys4()
             if( KeyPositionGood(k, a.Location) == False ) continue;
 
             if(i==slot) {
-                l("swapping key "$k.KeyID$" (distdoor "$distdoor$", distkey "$distkey$") with "$a.Class);
+                l("swapping key "$k.KeyID$" with "$a.Class);
                 Swap(k, a);
                 break;
             }

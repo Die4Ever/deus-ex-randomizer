@@ -60,7 +60,7 @@ function PostPostBeginPlay()
     }
     RandoEnter(firstTime);
 
-    //SetTimer(1.0, True);
+    SetTimer(1.0, True);
 }
 
 function DXRFlags LoadFlagsModule()
@@ -98,10 +98,10 @@ function LoadModules()
 {
     LoadModule(class'DXRKeys');
     LoadModule(class'DXREnemies');
-    LoadModule(class'DXRSwapItems');
     LoadModule(class'DXRSkills');
     LoadModule(class'DXRPasswords');
     LoadModule(class'DXRAugmentations');
+    LoadModule(class'DXRSwapItems');
     LoadModule(class'DXRReduceItems');
 
     RunTests();

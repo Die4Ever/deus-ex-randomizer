@@ -1,18 +1,17 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
 for v1.3========================
-x figure out why the camera is too high in some parts of the intro?
-x DXRFlags should set defaults before loading flags and reading from the MenuScreenSaveGame
-    x-can also make it load the flagsversion first and then only load flags that exist for the version
-x default seed max is only 10,000,000, increase it to 2,000,000,000
-x fix ClassIsA
+tooltips in the GUI? the controls screen does it, MenuUIWindow uses the FocusEnteredDescendant event and FocusLeftDescendant
+
 add more tests? I should maybe make tests only run once per launch, maybe like on localURL == "DX" maybe the training area or liberty island cause some tests will need a world?
     -tests for ClassIsA, skill randomization, augs...
-better way for MoveNanoKeys to handle not finding a door, using the keyloc as the initial doorloc means the distance will never be greater
-    -might also want to handle multiple doors...
+
 I can make more stuff data-driven
     -config to enable/disable modules? modules in a separate package?
     -DXRReduceItems could receive arguments/config for which classes of items to reduce and what %
+    -each module should be in charge of their own flags and flagnames?
+
+split up the Swap function, support multiple classes for SwapAll? or just support NavigationPoints?
 
 NavigationPoint (children: PathNode, PatrolPoint, AmbushPoint, InventorySpot) for extra positions where items can be placed?
 
@@ -53,9 +52,7 @@ native(277) final function Actor Trace
 );
 
 TraceActors loop doesn't seem useful
-    
-can I randomize the location of datacubes? would be hard without being able to check the text inside them, could just detect all the possible devices/computers with codes and make sure it's safe for all of them
-    
+
 native(533) final function bool CanSee(actor Other);
 
 Keypoint, the base class of invisible actors which mark things.
@@ -78,6 +75,7 @@ x print out the flags when loading
 x autosave
 - MenuScreenSaveGame
 - DeusExSaveInfo
+can I randomize computer skill requirements? I can randomize the EAccessLevel, but it doesn't do anything? gonna need my class injector to make this clean
 
 =============================
 

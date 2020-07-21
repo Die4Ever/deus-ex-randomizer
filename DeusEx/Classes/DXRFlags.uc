@@ -9,7 +9,7 @@ var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, m
 var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
 var int doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
 var int autosave;//0=off, 1=first time entering level, 2=every loading screen
-var int removeinvisiblewalls, enemiesrandomized;
+var int removeinvisiblewalls, enemiesrandomized, infodevices;
 
 function PreTravel()
 {
@@ -60,6 +60,7 @@ function InitDefaults()
     autosave = 1;
     removeinvisiblewalls = 0;
     enemiesrandomized = 50;
+    infodevices = 0;
 }
 
 function LoadFlags()
@@ -96,6 +97,7 @@ function LoadFlags()
         autosave = f.GetInt('Rando_autosave');
         removeinvisiblewalls = f.GetInt('Rando_removeinvisiblewalls');
         enemiesrandomized = f.GetInt('Rando_enemiesrandomized');
+        infodevices = f.GetInt('Rando_infodevices');
     }
 
     if(stored_version < flagsversion ) {
@@ -134,6 +136,7 @@ function SaveFlags()
     f.SetInt('Rando_autosave', autosave,, 999);
     f.SetInt('Rando_removeinvisiblewalls', removeinvisiblewalls,, 999);
     f.SetInt('Rando_enemiesrandomized', enemiesrandomized,, 999);
+    f.SetInt('Rando_infodevices', infodevices,, 999);
 
     LogFlags("SaveFlags");
 }
@@ -145,7 +148,7 @@ function LogFlags(string prefix)
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
-        $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized
+        $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", infodevices: "$infodevices
     );
 }
 
@@ -161,4 +164,5 @@ static function string VersionString()
 
 function MaxRando()
 {
+    //should have a chance to make some skills completely unattainable, like 999999 cost? would this also have to be an option in the GUI or can it be exclusive to MaxRando?
 }

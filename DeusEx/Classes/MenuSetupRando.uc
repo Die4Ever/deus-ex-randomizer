@@ -10,7 +10,7 @@ struct EnumBtn {
 };
 
 var EnumBtn enums[32];
-var int RandoKeys, RandoDoors, RandoDevices, RandoPasswords, Autosave, RemoveInvisWalls;
+var int RandoKeys, RandoDoors, RandoDevices, RandoPasswords, Autosave, RemoveInvisWalls, RandoInfoDevices;
 
 var MenuUIEditWindow editSeed;
 var MenuUIEditWindow editBrightness;
@@ -49,7 +49,7 @@ event DestroyWindow()
 function CreateControls()
 {
     local int row;
-    local EnumBtn btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords, btnAutosave;
+    local EnumBtn btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords, btnAutosave, btnInfoDevs;
     local DXRFlags flags;
 	Super.CreateControls();
 
@@ -88,7 +88,11 @@ function CreateControls()
     btnRandoPasswords.values[1] = "Unchanged";
     RandoPasswords = CreateEnum(row++, "Passwords", btnRandoPasswords);
 
-    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", 50, 0, 100);
+    btnInfoDevs.values[0] = "Unchanged";
+    btnInfoDevs.values[1] = "Randomized";
+    RandoInfoDevices = CreateEnum(row++, "Datacubes", btnInfoDevs);
+
+    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", 30, 0, 100);
     editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", 25, 0, 500);
     editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", 300, 0, 500);
     editAmmo = CreateSlider(row++, "Ammo Drops %", 80);
@@ -272,7 +276,7 @@ function string GetEnumValue(int e)
 function ProcessAction(String actionKey)
 {
 	local int seed;
-    local string sseed, keys, doors, devices, passwords, autosavevalue, inviswalls;
+    local string sseed, keys, doors, devices, passwords, autosavevalue, inviswalls, infodevs;
     local DXRando dxr;
 
 	if (actionKey == "NEXT")
@@ -283,6 +287,7 @@ function ProcessAction(String actionKey)
         doors = GetEnumValue(RandoDoors);
         devices = GetEnumValue(RandoDevices);
         passwords = GetEnumValue(RandoPasswords);
+        infodevs = GetEnumValue(RandoInfoDevices);
 
         dxr = player.Spawn(class'DXRando');
         dxr.player = player;
@@ -338,6 +343,9 @@ function ProcessAction(String actionKey)
         inviswalls = GetEnumValue(RemoveInvisWalls);
         if( inviswalls == "Off" ) dxr.flags.removeinvisiblewalls = 0;
         else if( inviswalls == "On" ) dxr.flags.removeinvisiblewalls = 1;
+
+        if( infodevs == "Unchanged" ) dxr.flags.infodevices = 0;
+        else if( infodevs == "Randomized" ) dxr.flags.infodevices = 100;
 
         //dxr.flags.flags = player.FlagBase;
         InvokeNewGameScreen(combatDifficulty, dxr);
