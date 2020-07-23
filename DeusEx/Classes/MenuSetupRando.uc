@@ -105,8 +105,8 @@ function CreateControls()
     btnRandoPasswords.values[1] = "Unchanged";
     RandoPasswords = CreateEnum(row++, "Passwords", "Forces you to look for passwords and passcodes.", btnRandoPasswords);
 
-    btnInfoDevs.values[0] = "Unchanged";
-    btnInfoDevs.values[1] = "Randomized";
+    btnInfoDevs.values[0] = "Randomized";
+    btnInfoDevs.values[1] = "Unchanged";
     RandoInfoDevices = CreateEnum(row++, "Datacubes", "Moves datacubes and other information objects around the map.", btnInfoDevs);
 
     editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 30, 0, 100);

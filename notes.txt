@@ -1,8 +1,8 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
-for v1.3========================
+for v1.4========================
 tooltips in the GUI? the controls screen does it, MenuUIWindow uses the FocusEnteredDescendant event and FocusLeftDescendant
-
+rename MenuSetupRando.uc to DXRMenuSetup.uc and MenuScreenNewGameRando to DXRMenuScreenNewGame so they're grouped together with the other files
 add more tests? I should maybe make tests only run once per launch, maybe like on localURL == "DX" maybe the training area or liberty island cause some tests will need a world?
     -tests for ClassIsA, skill randomization, augs...
 
