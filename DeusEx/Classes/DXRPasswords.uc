@@ -7,12 +7,33 @@ var travel string newpasswords[64];
 var travel int passStart;
 var travel int passEnd;
 
+function Timer()
+{
+    local DeusExNote note;
+    local int i;
+
+    Super.Timer();
+
+    note = dxr.Player.FirstNote;
+
+    while( note != lastCheckedNote && note != None )
+    {
+        for (i=0; i<ArrayCount(oldpasswords); i++)
+        {
+            UpdateNote(note, oldpasswords[i], newpasswords[i]);
+        }
+        note = note.next;
+    }
+    lastCheckedNote = dxr.Player.FirstNote;
+}
+
 function FirstEntry()
 {
     Super.FirstEntry();
 
     lastCheckedNote = None;
     RandoPasswords(dxr.flags.passwordsrandomized);
+    RandoInfoDevs(dxr.flags.infodevices);
     MakeAllHackable(dxr.flags.deviceshackable);
 }
 
@@ -22,6 +43,7 @@ function AnyEntry()
 
     lastCheckedNote = None;
     LogAll();
+    SetTimer(1.0, True);
 }
 
 function RandoPasswords(int mode)
@@ -57,6 +79,57 @@ function RandoPasswords(int mode)
                 continue;
 
             ChangeATMPIN(a, i);
+        }
+    }
+}
+
+function RandoInfoDevs(int percent)
+{
+    local InformationDevices id;
+    local Inventory inv;
+    local int i, num, slot;
+    local int hasPass[64];
+    local DeusExTextParser parser;
+
+    if(percent == 0) return;
+
+    foreach AllActors(class'InformationDevices', id)
+    {
+        if( rng(100) > percent ) continue;
+        
+        for(i=0; i<ArrayCount(hasPass); i++)
+            hasPass[i]=0;
+        
+        if ( id.textTag != '' ) {
+            parser = new(None) Class'DeusExTextParser';
+            if( parser.OpenText(id.textTag, id.TextPackage) ) {
+                ProcessText(parser, hasPass);
+                parser.CloseText();
+            }
+            CriticalDelete(parser);
+        }
+        i=0;
+        num=0;
+        foreach AllActors(class'Inventory', inv)
+        {
+            if( SkipActor(inv, 'Inventory') ) continue;
+            if( InfoPositionGood(id, inv.Location, hasPass) == False ) continue;
+            num++;
+        }
+
+        slot=rng(num-1);
+        i=0;
+        foreach AllActors(class'Inventory', inv)
+        {
+            if( SkipActor(inv, 'Inventory') ) continue;
+            if( InfoPositionGood(id, inv.Location, hasPass) == False ) continue;
+
+            if(i==slot) {
+                l("swapping infodevice "$ActorToString(id)$" with "$inv.Class);
+                Swap(id, inv);
+                break;
+            }
+            i++;
         }
     }
 }
@@ -154,30 +227,11 @@ function ReplacePassword(string oldpassword, string newpassword)
 
     note = dxr.Player.FirstNote;
 
-	while( note != None )
-	{
+    while( note != None )
+    {
         UpdateNote(note, oldpassword, newpassword);
-		note = note.next;
-	}
-}
-
-function Timer()
-{
-    local DeusExNote note;
-    local int i;
-
-    Super.Timer();
-	note = dxr.Player.FirstNote;
-
-	while( note != lastCheckedNote && note != None )
-	{
-        for (i=0; i<ArrayCount(oldpasswords); i++)
-        {
-            UpdateNote(note, oldpasswords[i], newpasswords[i]);
-        }
-		note = note.next;
-	}
-    lastCheckedNote = dxr.Player.FirstNote;
+        note = note.next;
+    }
 }
 
 function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
@@ -292,6 +346,102 @@ function LogAll()
             l("found computer password: " $ c.userList[i].password);
         }
     }
+}
+
+function ProcessText(DeusExTextParser parser, out int hasPass[64])
+{
+    local string text;
+    local int i;
+    local byte tag;
+
+    while(parser.ProcessText()) {
+        tag = parser.GetTag();
+        if( tag != 0 ) continue;
+
+        text = Caps(parser.GetText());
+        if( Len(text) == 0 ) continue;
+
+        for(i=0; i<passEnd; i++) {
+            if( Len(oldpasswords[i]) == 0 ) continue;
+            if( WordInStr( text, Caps(oldpasswords[i]), Len(oldpasswords[i]), true ) != -1 ) {
+                hasPass[i] = 1;
+                //l("hasPass["$i$"] = 1;");
+            }
+        }
+    }
+}
+
+function bool CheckComputerPosition(InformationDevices id, Computers c, vector newpos, int hasPass[64])
+{
+    local int a, i;
+
+    if( PositionIsSafe(id.Location, c, newpos) ) return True;// don't even need to check the passwords
+
+    for (i=0; i<ArrayCount(c.userList); i++)
+    {
+        if (c.userList[i].password == "")
+            continue;
+        
+        for (a=0; a<passEnd; a++) {
+            if( hasPass[a]==1 && c.userList[i].password == newpasswords[a] ) {
+                return False;
+            }
+        }
+    }
+    return True;
+}
+
+function bool CheckKeypadPosition(InformationDevices id, Keypad k, vector newpos, int hasPass[64])
+{
+    local int i;
+
+    if( PositionIsSafe(id.Location, k, newpos) ) return True;// don't even need to check the passwords
+    if ( k.validCode == "" ) return True;
+
+    for (i=0; i<passEnd; i++) {
+        if( hasPass[i]==1 && k.validCode == newpasswords[i] ) {
+            return False;
+        }
+    }
+    return True;
+}
+
+function bool InfoPositionGood(InformationDevices id, vector newpos, int hasPass[64])
+{
+    local Computers c;
+    local Keypad k;
+    local int a, i;
+
+    if ( id.textTag == '' ) {
+        //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning True, no textTag");
+        return True;
+    }
+
+    a=0;
+    for(i=0; i<passEnd; i++) {
+        a+=hasPass[i];
+    }
+    if( a==0 ) {
+        //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning True, hasPass is empty");
+        return True;
+    }// else l("InfoPositionGood("$ActorToString(id)$", "$newpos$") found hasPass "$a);
+
+    foreach AllActors(class'Computers', c)
+    {
+        if( CheckComputerPosition(id, c, newpos, hasPass) == False ) {
+            //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning False, found computer "$ActorToString(c));
+            return False;
+        }
+    }
+    foreach AllActors(class'Keypad', k)
+    {
+        if( CheckKeypadPosition(id, k, newpos, hasPass) == False ) {
+            //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning False, found keypad "$ActorToString(k));
+            return False;
+        }
+    }
+    //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning True");
+    return True;
 }
 
 function int RunTests()

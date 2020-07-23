@@ -3,7 +3,10 @@ class DXRKeys extends DXRActorsBase;
 function FirstEntry()
 {
     Super.FirstEntry();
-    MoveNanoKeys(dxr.flags.keysrando);
+    if( dxr.flags.keysrando == 4 )
+        MoveNanoKeys4();
+    else if( dxr.flags.keysrando == 2 )
+        MoveNanoKeys();
 }
 
 function AnyEntry()
@@ -19,7 +22,7 @@ function AnyEntry()
     }
 }
 
-function MoveNanoKeys(int mode)
+function MoveNanoKeys()
 {
     local Inventory a;
     local NanoKey k;
@@ -28,9 +31,6 @@ function MoveNanoKeys(int mode)
     local vector doorloc, distkey, distdoor;
 
     num=0;
-
-    // 0=off, 1=dumb, 2=on (old smart), 3=copies
-    if( mode == 0 ) return;
 
     SetSeed( "MoveNanoKeys" );
 
@@ -75,6 +75,56 @@ function MoveNanoKeys(int mode)
             i++;
         }
     }
+}
+
+function MoveNanoKeys4()
+{
+    local Inventory a;
+    local NanoKey k;
+    local int num, i, slot;
+
+    foreach AllActors(class'NanoKey', k )
+    {
+        if ( SkipActorBase(k) ) continue;
+
+        SetActorScale(k, 1.3);
+
+        i=0;
+        num=0;
+        foreach AllActors(class'Inventory', a)
+        {
+            if( SkipActor(a, 'Inventory') ) continue;
+            if( KeyPositionGood(k, a.Location) == False ) continue;
+            num++;
+        }
+
+        slot=rng(num-1);
+        i=0;
+        foreach AllActors(class'Inventory', a)
+        {
+            if( SkipActor(a, 'Inventory') ) continue;
+            if( KeyPositionGood(k, a.Location) == False ) continue;
+
+            if(i==slot) {
+                l("swapping key "$k.KeyID$" with "$a.Class);
+                Swap(k, a);
+                break;
+            }
+            i++;
+        }
+    }
+}
+
+function bool KeyPositionGood(NanoKey k, vector newpos)
+{
+    local DeusExMover d;
+
+    foreach AllActors(class'DeusExMover', d)
+    {
+        if( d.KeyIDNeeded != k.KeyID ) continue;
+        if( PositionIsSafe(k.Location, d, newpos) == False ) return False;
+    }
+    return True;
 }
 
 function AdjustRestrictions(int doorspickable, int doorsdestructible, int deviceshackable, int removeinvisiblewalls)

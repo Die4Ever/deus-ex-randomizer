@@ -123,21 +123,6 @@ function Swap(Actor a, Actor b)
     b.SetCollision(BbCollideActors, BbBlockActors, BbBlockPlayers);
 }
 
-function bool ClassIsA(class<actor> class, name classname)
-{
-    // there must be a better way to do this... native(258) static final function bool ClassIsChildOf( class TestClass, class ParentClass );
-    local actor a;
-    local bool ret;
-    if(class == None) return ret;
-
-    //return class<classname>(class) != None;
-
-    a = Spawn(class);
-    ret = a.IsA(classname);
-    a.Destroy();
-    return ret;
-}
-
 function bool DestroyActor( Actor d )
 {
 	// If this item is in an inventory chain, unlink it.
@@ -175,3 +160,23 @@ function SetActorScale(Actor a, float scale)
     a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
 }
 
+function bool PositionIsSafe(Vector oldloc, Actor test, Vector newloc)
+{// https://github.com/Die4Ever/deus-ex-randomizer/wiki#smarter-key-randomization
+    local Vector MinVect, MaxVect, TestPoint, distsold, diststest, distsoldtest, a, b;
+    local float distold, disttest;
+
+    test.GetBoundingBox(MinVect, MaxVect);
+    TestPoint = (MinVect+MaxVect)/2;
+
+    distold = VSize(newloc - oldloc);
+    disttest = VSize(newloc - TestPoint);
+
+    if( distold > disttest ) return False;
+
+    distsoldtest = AbsEach(oldloc - TestPoint);
+    distsold = AbsEach(newloc - oldloc) - distsoldtest;
+    diststest = AbsEach(newloc - TestPoint);
+    if ( AnyGreater( distsold, diststest ) ) return False;
+    
+    return True;
+}

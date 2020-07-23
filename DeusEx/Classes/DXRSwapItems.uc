@@ -24,8 +24,8 @@ function RandomizeIntro()
     SetSeed("RandomizeIntro");
     
     foreach AllActors(class'Tree', t)
-    { // exclude 80% of trees from the SwapAll by temporarily hiding them
-        if( rng(100) < 80 ) t.bHidden = true;
+    { // exclude 90% of trees from the SwapAll by temporarily hiding them
+        if( rng(100) < 90 ) t.bHidden = true;
     }
     foreach AllActors(class'DeusExMover', m)
     {
@@ -38,8 +38,9 @@ function RandomizeIntro()
     SwapAll('Actor');
     foreach AllActors(class'Actor', a)
     {
+        if( a.bHidden ) continue;
         SetActorScale(a, float(rng(1500))/1000 + 0.3);
-        a.Fatness = rng(50) + 100;
+        a.Fatness = rng(50) + 105;
     }
 
     foreach AllActors(class'Tree', t)
