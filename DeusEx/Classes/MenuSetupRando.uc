@@ -33,21 +33,21 @@ var String helptexts[64];
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 
-	ResetToDefaults();
+    ResetToDefaults();
 
-	// Need to do this because of the edit control used for 
-	// saving games.
-	SetMouseFocusMode(MFOCUS_Click);
+    // Need to do this because of the edit control used for 
+    // saving games.
+    SetMouseFocusMode(MFOCUS_Click);
 
     InitHelp();
-	Show();
-	SetFocusWindow(editSeed);
-	editSeed.SetSelectedArea(0, Len(editSeed.GetText()));
-	combatDifficulty = player.Default.CombatDifficulty;
+    Show();
+    SetFocusWindow(editSeed);
+    editSeed.SetSelectedArea(0, Len(editSeed.GetText()));
+    combatDifficulty = player.Default.CombatDifficulty;
 
-	StyleChanged();
+    StyleChanged();
 }
 
 function InitHelp()
@@ -56,7 +56,7 @@ function InitHelp()
     local vector coords;
     bHelpAlwaysOn = True;
     coords = _GetCoords(9, 0);
-	winHelp = CreateMenuLabel( coords.x, coords.y+4, "", winClient);
+    winHelp = CreateMenuLabel( coords.x, coords.y+4, "", winClient);
 }
 
 event DestroyWindow()
@@ -68,13 +68,13 @@ function CreateControls()
     local int row;
     local EnumBtn btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords, btnAutosave, btnInfoDevs;
     local DXRFlags flags;
-	Super.CreateControls();
+    Super.CreateControls();
 
     Title = "DX Rando "$ class'DXRFlags'.static.VersionString() $" Options";
     SetTitle(Title);
 
     row = 0;
-	editSeed = CreateEdit(row++, "Seed", "Enter a seed if you want to play the same game again.", "1234567890");
+    editSeed = CreateEdit(row++, "Seed", "Enter a seed if you want to play the same game again.", "1234567890");
 
     btnAutosave.values[0] = "First Entry";
     btnAutosave.values[1] = "Every Entry";
@@ -87,7 +87,7 @@ function CreateControls()
     btnRandoKeys.values[0] = "Smart";
     btnRandoKeys.values[1] = "On";
     btnRandoKeys.values[2] = "Off";
-    RandoKeys = CreateEnum(row++, "Key Randomization", "Move keys are the map.", btnRandoKeys);
+    RandoKeys = CreateEnum(row++, "Key Randomization", "Move keys around the map.", btnRandoKeys);
 
     btnRandoDoors.values[0] = "Both";
     btnRandoDoors.values[1] = "Destructible";
@@ -124,7 +124,6 @@ function CreateControls()
 
 function vector GetCoords(int row, int col)
 {
-    local vector v;
     if( row >= 9 ) {
         row -= 9;
         col += 2;
@@ -145,12 +144,7 @@ function MenuUILabelWindow CreateLabel(int row, string label)
     local MenuUILabelWindow winLabel;
     local vector coords;
     coords = GetCoords(row, 0);
-	winLabel = CreateMenuLabel( coords.x, coords.y+4, label, winClient);
-    //winLabel.SetFont(Font'FontTiny');
-
-    /*wnds[numwnds] = winLabel;
-    helptexts[numwnds] = label;
-    numwnds++;*/
+    winLabel = CreateMenuLabel( coords.x, coords.y+4, label, winClient);
     return winLabel;
 }
 
@@ -162,11 +156,11 @@ function MenuUIEditWindow CreateEdit(int row, string label, string helptext, str
     CreateLabel(row, label);
 
     coords = GetCoords(row, 1);
-	edit = CreateMenuEditWindow(coords.x, coords.y, 126, 10, winClient);
+    edit = CreateMenuEditWindow(coords.x, coords.y, 126, 10, winClient);
 
-	edit.SetText(deflt);
+    edit.SetText(deflt);
     edit.SetFilter(filterString);
-	//edit.SetSensitivity(False);
+    //edit.SetSensitivity(False);
 
     wnds[numwnds] = edit;
     helptexts[numwnds] = helptext;
@@ -194,7 +188,7 @@ function MenuUIEditWindow CreateSlider(int row, string label, string helptext, o
     coords = GetCoords(row, 1);
     slider = MenuUISliderButtonWindow(winClient.NewChild(Class'MenuUISliderButtonWindow'));
     slider.SetPos(coords.x, coords.y);
-	slider.SetTicks(numTicks, min, max);
+    slider.SetTicks(numTicks, min, max);
     slider.winSlider.SetValue(deflt);
     for(i=0; i<numTicks; i++) {
         slider.winSlider.SetEnumeration(i, string(i*mult)$"%" );
@@ -219,8 +213,8 @@ function MenuUIActionButtonWindow CreateBtn(int row, string label, string helpte
     coords = GetCoords(row, 1);
     btn = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
     btn.SetButtonText(text);
-	btn.SetPos(coords.x, coords.y);
-	btn.SetWidth(126);
+    btn.SetPos(coords.x, coords.y);
+    btn.SetWidth(126);
     //btn.SetFont(Font'FontTiny');
 
     wnds[numwnds] = btn;
@@ -252,18 +246,18 @@ function int CreateEnum(int row, string label, string helptext, optional EnumBtn
 
 function bool ButtonActivated( Window buttonPressed )
 {
-	local bool bHandled;
-	bHandled = True;
+    local bool bHandled;
+    bHandled = True;
 
     if( CheckClickEnum(buttonPressed) ) { }
     else {
         bHandled = False;
     }
 
-	if ( !bHandled )
-		bHandled = Super.ButtonActivated(buttonPressed);
+    if ( !bHandled )
+        bHandled = Super.ButtonActivated(buttonPressed);
 
-	return bHandled;
+    return bHandled;
 }
 
 function bool CheckClickEnum( Window buttonPressed )
@@ -296,7 +290,7 @@ function EnumBtn ClickEnum(EnumBtn e)
 
 function ResetToDefaults()
 {
-	editSeed.SetText("");
+    editSeed.SetText("");
 }
 
 function int GetSliderValue(MenuUIEditWindow w)
@@ -311,13 +305,13 @@ function string GetEnumValue(int e)
 
 function ProcessAction(String actionKey)
 {
-	local int seed;
+    local int seed;
     local string sseed, keys, doors, devices, passwords, autosavevalue, inviswalls, infodevs;
     local DXRando dxr;
 
-	if (actionKey == "NEXT")
-	{
-		sseed = editSeed.GetText();
+    if (actionKey == "NEXT")
+    {
+        sseed = editSeed.GetText();
 
         keys = GetEnumValue(RandoKeys);
         doors = GetEnumValue(RandoDoors);
@@ -385,67 +379,67 @@ function ProcessAction(String actionKey)
 
         //dxr.flags.flags = player.FlagBase;
         InvokeNewGameScreen(combatDifficulty, dxr);
-	}
+    }
 }
 
 function InvokeNewGameScreen(float difficulty, DXRando dxr)
 {
-	local MenuScreenNewGameRando newGame;
+    local MenuScreenNewGameRando newGame;
 
-	newGame = MenuScreenNewGameRando(root.InvokeMenuScreen(Class'MenuScreenNewGameRando'));
+    newGame = MenuScreenNewGameRando(root.InvokeMenuScreen(Class'MenuScreenNewGameRando'));
 
-	if (newGame != None) {
-		newGame.SetDifficulty(difficulty);
+    if (newGame != None) {
+        newGame.SetDifficulty(difficulty);
         newGame.SetDxr(dxr);
     }
 }
 
 /*function SaveSettings()
 {
-	editSeed.GetText();
+    editSeed.GetText();
 }*/
 
 function CancelScreen()
 {
-	Super.CancelScreen();
+    Super.CancelScreen();
 }
 
 event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 {
-	// Destroy the msgbox!  
-	root.PopWindow();
+    // Destroy the msgbox!  
+    root.PopWindow();
 
-	editSeed.SetText("");
-	editSeed.MoveInsertionPoint(MOVEINSERT_End);
-	editSeed.SetSelectedArea(0, Len(editSeed.GetText()));
-	SetFocusWindow(editSeed);
+    editSeed.SetText("");
+    editSeed.MoveInsertionPoint(MOVEINSERT_End);
+    editSeed.SetSelectedArea(0, Len(editSeed.GetText()));
+    SetFocusWindow(editSeed);
 
-	return True;
+    return True;
 }
 
 event StyleChanged()
 {
-	local ColorTheme theme;
-	local Color colButtonFace;
+    local ColorTheme theme;
+    local Color colButtonFace;
 
-	Super.StyleChanged();
+    Super.StyleChanged();
 
-	theme = player.ThemeManager.GetCurrentMenuColorTheme();
+    theme = player.ThemeManager.GetCurrentMenuColorTheme();
 
     // check MenuScreenAdjustColorsExample?
 
-	// Title colors
-	colButtonFace = theme.GetColorFromName('MenuColor_ButtonFace');
+    // Title colors
+    colButtonFace = theme.GetColorFromName('MenuColor_ButtonFace');
 
-	/*btnLeftArrow.SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
-	                             colButtonFace, colButtonFace, colButtonFace);
-	btnRightArrow.SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
-	                              colButtonFace, colButtonFace, colButtonFace);*/
+    /*btnLeftArrow.SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
+                                 colButtonFace, colButtonFace, colButtonFace);
+    btnRightArrow.SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
+                                  colButtonFace, colButtonFace, colButtonFace);*/
 }
 
 function SetDifficulty(float newDifficulty)
 {
-	combatDifficulty = newDifficulty;
+    combatDifficulty = newDifficulty;
 }
 
 // ----------------------------------------------------------------------
@@ -471,10 +465,10 @@ event FocusEnteredDescendant(Window enterWindow)
 
 event FocusLeftDescendant(Window leaveWindow)
 {
-	if ((winHelp != None) && (!bHelpAlwaysOn))
-		winHelp.Hide();
+    if ((winHelp != None) && (!bHelpAlwaysOn))
+        winHelp.Hide();
 
-	currentChoice = None;
+    currentChoice = None;
 }
 
 defaultproperties

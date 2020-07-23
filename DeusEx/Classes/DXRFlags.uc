@@ -22,7 +22,6 @@ function Init(DXRando tdxr)
 {
     Super.Init(tdxr);
     f = tdxr.Player.FlagBase;
-    SetTimer(1.0, True);
 }
 
 function Timer()
@@ -107,6 +106,7 @@ function LoadFlags()
 
     LogFlags("LoadFlags");
     dxr.Player.ClientMessage("Deus Ex Randomizer "$VersionString()$" seed "$seed);
+    SetTimer(1.0, True);
 }
 
 function SaveFlags()

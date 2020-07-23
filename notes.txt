@@ -10,6 +10,7 @@ I can make more stuff data-driven
     -config to enable/disable modules? modules in a separate package?
     -DXRReduceItems could receive arguments/config for which classes of items to reduce and what %
     -each module should be in charge of their own flags and flagnames?
+    -config value for enabling tests
 
 split up the Swap function, support multiple classes for SwapAll? or just support NavigationPoints?
 

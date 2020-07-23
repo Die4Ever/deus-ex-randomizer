@@ -14,16 +14,16 @@ function Timer()
 
     Super.Timer();
 
-	note = dxr.Player.FirstNote;
+    note = dxr.Player.FirstNote;
 
-	while( note != lastCheckedNote && note != None )
-	{
+    while( note != lastCheckedNote && note != None )
+    {
         for (i=0; i<ArrayCount(oldpasswords); i++)
         {
             UpdateNote(note, oldpasswords[i], newpasswords[i]);
         }
-		note = note.next;
-	}
+        note = note.next;
+    }
     lastCheckedNote = dxr.Player.FirstNote;
 }
 
@@ -227,11 +227,11 @@ function ReplacePassword(string oldpassword, string newpassword)
 
     note = dxr.Player.FirstNote;
 
-	while( note != None )
-	{
+    while( note != None )
+    {
         UpdateNote(note, oldpassword, newpassword);
-		note = note.next;
-	}
+        note = note.next;
+    }
 }
 
 function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
@@ -328,10 +328,6 @@ function LogAll()
     local Computers c;
     local Keypad k;
     local int i;
-    local DeusExTextParser parser;
-    local InformationDevices id;
-    local string text;
-    local byte tag;
 
     l("passEnd is " $ passEnd $", passStart is " $ passStart);
 
@@ -377,18 +373,9 @@ function ProcessText(DeusExTextParser parser, out int hasPass[64])
 
 function bool CheckComputerPosition(InformationDevices id, Computers c, vector newpos, int hasPass[64])
 {
-    local int a, i, num;
+    local int a, i;
 
     if( PositionIsSafe(id.Location, c, newpos) ) return True;// don't even need to check the passwords
-
-    for (i=0; i<ArrayCount(c.userList); i++)
-    {
-        if (c.userList[i].password == "")
-            continue;
-        num++;
-    }
-    if ( num == 0 ) return True;
-    if ( id.textTag == '' ) return False;
 
     for (i=0; i<ArrayCount(c.userList); i++)
     {
@@ -410,7 +397,6 @@ function bool CheckKeypadPosition(InformationDevices id, Keypad k, vector newpos
 
     if( PositionIsSafe(id.Location, k, newpos) ) return True;// don't even need to check the passwords
     if ( k.validCode == "" ) return True;
-    if ( id.textTag == '' ) return False;
 
     for (i=0; i<passEnd; i++) {
         if( hasPass[i]==1 && k.validCode == newpasswords[i] ) {
@@ -425,7 +411,6 @@ function bool InfoPositionGood(InformationDevices id, vector newpos, int hasPass
     local Computers c;
     local Keypad k;
     local int a, i;
-    local DeusExTextParser parser;
 
     if ( id.textTag == '' ) {
         //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning True, no textTag");
