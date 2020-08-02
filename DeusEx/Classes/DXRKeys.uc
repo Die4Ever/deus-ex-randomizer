@@ -134,7 +134,8 @@ function AdjustRestrictions(int doorspickable, int doorsdestructible, int device
 
     foreach AllActors(class'DeusExMover', d)
     {
-        if( (d.KeyIDNeeded$"") == "None" || d.bPickable || d.bBreakable ) continue;
+        //if( (d.KeyIDNeeded$"") == "None" || d.bPickable || d.bBreakable ) continue;
+        if( d.bPickable || d.bBreakable ) continue;
 
         if( d.bPickable == false && doorspickable > 0 ) {
             d.bPickable = true;
@@ -143,7 +144,7 @@ function AdjustRestrictions(int doorspickable, int doorsdestructible, int device
         }
         if( d.bBreakable == false && doorsdestructible > 0 ) {
             d.bBreakable = true;
-            d.minDamageThreshold = 50;
+            d.minDamageThreshold = 75;
             d.doorStrength = 1;
         }
     }

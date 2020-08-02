@@ -1,4 +1,4 @@
-class MenuSetupRando expands MenuUIScreenWindow;
+class DXRMenuSetupRando expands MenuUIScreenWindow;
 
 var MenuUIInfoButtonWindow winNameBorder;
 var float combatDifficulty;
@@ -94,7 +94,7 @@ function CreateControls()
     btnRandoDoors.values[2] = "Pickable";
     //btnRandoDoors.values[3] = "Either";
     btnRandoDoors.values[3] = "Unchanged";
-    RandoDoors = CreateEnum(row++, "Key-Only Doors", "Provide additional options to get through doors.", btnRandoDoors);
+    RandoDoors = CreateEnum(row++, "Undefeatable Doors", "Provide additional options to get through doors.", btnRandoDoors);
 
     btnRandoDevices.values[0] = "All Hackable";
     //btnRandoDevices.values[1] = "Some Hackable";
@@ -384,9 +384,9 @@ function ProcessAction(String actionKey)
 
 function InvokeNewGameScreen(float difficulty, DXRando dxr)
 {
-    local MenuScreenNewGameRando newGame;
+    local DXRMenuScreenNewGame newGame;
 
-    newGame = MenuScreenNewGameRando(root.InvokeMenuScreen(Class'MenuScreenNewGameRando'));
+    newGame = DXRMenuScreenNewGame(root.InvokeMenuScreen(Class'DXRMenuScreenNewGame'));
 
     if (newGame != None) {
         newGame.SetDifficulty(difficulty);

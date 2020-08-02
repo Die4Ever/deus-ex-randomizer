@@ -57,9 +57,9 @@ function ProcessCustomMenuButton(string key)
 
 function InvokeNewGameScreen(float difficulty)
 {
-	local MenuSetupRando newGame;
+	local DXRMenuSetupRando newGame;
 
-	newGame = MenuSetupRando(root.InvokeMenuScreen(Class'MenuSetupRando'));
+	newGame = DXRMenuSetupRando(root.InvokeMenuScreen(Class'DXRMenuSetupRando'));
 
 	if (newGame != None)
 		newGame.SetDifficulty(difficulty);

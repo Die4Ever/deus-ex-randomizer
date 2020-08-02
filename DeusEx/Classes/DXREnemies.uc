@@ -4,6 +4,20 @@ function FirstEntry()
 {
     Super.FirstEntry();
     RandoEnemies(dxr.flags.enemiesrandomized);
+    if( dxr.localURL == "INTRO" || dxr.localURL == "ENDGAME1" || dxr.localURL == "ENDGAME2" || dxr.localURL == "ENDGAME3" || dxr.localURL == "ENDGAME4" || dxr.localURL == "00_TRAINING" )
+    { // extra randomization in the intro for the lolz, ENDGAME4 doesn't have a DeusExLevelInfo object though, so it doesn't get randomized :(
+        RandomizeIntro();
+        return;
+    }
+}
+
+function RandomizeIntro()
+{
+    local Pawn pawn;
+    foreach AllActors(class'Pawn', pawn)
+    {// even hidden pawns?
+        RandomizeSize(pawn);
+    }
 }
 
 function RandoEnemies(int percent)
@@ -19,7 +33,9 @@ function RandoEnemies(int percent)
     SetSeed( "RandoEnemies" );
 
     foreach AllActors(class'Pawn', pawn)
-    {// even hidden and important pawns?
+    {// even hidden pawns?
+        p = ScriptedPawn(pawn);
+        if( p != None && p.bImportant ) continue;
         RandomizeSize(pawn);
     }
 
