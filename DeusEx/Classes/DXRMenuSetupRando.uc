@@ -94,7 +94,7 @@ function CreateControls()
     btnRandoDoors.values[2] = "Pickable";
     //btnRandoDoors.values[3] = "Either";
     btnRandoDoors.values[3] = "Unchanged";
-    RandoDoors = CreateEnum(row++, "Undefeatable Doors", "Provide additional options to get through doors.", btnRandoDoors);
+    RandoDoors = CreateEnum(row++, "Undefeatable Doors", "Provide additional options to get through doors that normally can't be destroyed or lockpicked.", btnRandoDoors);
 
     btnRandoDevices.values[0] = "All Hackable";
     //btnRandoDevices.values[1] = "Some Hackable";

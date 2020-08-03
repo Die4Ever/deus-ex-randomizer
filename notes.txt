@@ -1,6 +1,8 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
 for v1.4========================
+I should probably abs when setting seed, Crc returns negative numbers
+
 use minDamageThreshold of 60 for doors, it's what the seals in the ship use, door at the top of paris start is 75 though
 -50 can be broken by master sniper, 60 can still be broken with dragoon's tooth sword, max low tech skill, and max combat strength aug, 75 cannot
 -not just key-only doors, but all doors?
