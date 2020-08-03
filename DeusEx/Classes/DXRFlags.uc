@@ -169,13 +169,17 @@ function MaxRando()
 
 function int RunTests()
 {
-    local int results;
+    local int results, i;
     results = Super.RunTests();
 
     //this Crc function returns negative numbers
     results += testint( dxr.Crc("a bomb!"), -1813716842, "Crc32 test");
     results += testint( dxr.Crc("1723"), -441943723, "Crc32 test");
     results += testint( dxr.Crc("do you have a single fact to back that up"), -1473827402, "Crc32 test");
+
+    SetSeed("smashthestate");
+    for(i=0;i<10;i++)
+        test( rng(100)>=0, "rng(100) >= 0");
 
     return results;
 }
