@@ -24,13 +24,13 @@ function ReduceAmmo(float mult)
     foreach AllActors(class'Weapon', w)
     {
         if( w.PickupAmmoCount > 0 )
-            w.PickupAmmoCount = Clamp(float(w.PickupAmmoCount) * mult, 0, 99999);
+            w.PickupAmmoCount = Clamp(float(w.PickupAmmoCount) * mult, 1, 1000);
     }
 
     foreach AllActors(class'Ammo', a)
     {
         if( a.AmmoAmount > 0 && ( ! CarriedItem(a) ) )
-            a.AmmoAmount = Clamp(float(a.AmmoAmount) * mult, 0, 99999);
+            a.AmmoAmount = Clamp(float(a.AmmoAmount) * mult, 1, 1000);
     }
 
     ReduceSpawnsInContainers(class'Ammo', int(mult*100.0) );

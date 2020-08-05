@@ -412,6 +412,8 @@ function bool InfoPositionGood(InformationDevices id, vector newpos, int hasPass
     local Keypad k;
     local int a, i;
 
+    if( VSize( id.Location - newpos ) > 5000 ) return False;
+
     if ( id.textTag == '' ) {
         //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning True, no textTag");
         return True;

@@ -20,6 +20,7 @@ function RandomizeIntro()
     local DeusExMover m;
     local BreakableGlass g;
     local Actor a;
+    //local CameraPoint c;
 
     SetSeed("RandomizeIntro");
     
@@ -55,4 +56,14 @@ function RandomizeIntro()
     {
         g.bHidden = false;
     }
+
+    /*foreach AllActors(class'CameraPoint', c)
+    {
+        c.bHidden = false;
+    }
+    SwapAll('CameraPoint');
+    foreach AllActors(class'CameraPoint', c)
+    {
+        c.bHidden = true;
+    }*/
 }

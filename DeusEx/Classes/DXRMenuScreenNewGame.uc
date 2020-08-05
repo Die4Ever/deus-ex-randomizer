@@ -1,4 +1,4 @@
-class MenuScreenNewGameRando extends MenuScreenNewGame;
+class DXRMenuScreenNewGame extends MenuScreenNewGame;
 
 var DXRando dxr;
 

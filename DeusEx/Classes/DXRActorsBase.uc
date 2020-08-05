@@ -75,7 +75,8 @@ function Swap(Actor a, Actor b)
 
     if( a == b ) return;
 
-    l("swapping "$ActorToString(a)$" and "$ActorToString(b));
+    //l("swapping "$ActorToString(a)$" and "$ActorToString(b));
+    l("swapping "$ActorToString(a)$" and "$ActorToString(b)$" distance == " $ VSize(a.Location - b.Location) );
 
     // https://docs.unrealengine.com/udk/Two/ActorVariables.html#Advanced
     // native(262) final function SetCollision( optional bool NewColActors, optional bool NewBlockActors, optional bool NewBlockPlayers );
@@ -160,23 +161,39 @@ function SetActorScale(Actor a, float scale)
     a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
 }
 
-function bool PositionIsSafe(Vector oldloc, Actor test, Vector newloc)
-{// https://github.com/Die4Ever/deus-ex-randomizer/wiki#smarter-key-randomization
-    local Vector MinVect, MaxVect, TestPoint, distsold, diststest, distsoldtest, a, b;
-    local float distold, disttest;
+function Vector GetCenter(Actor test)
+{
+    local Vector MinVect, MaxVect;
 
     test.GetBoundingBox(MinVect, MaxVect);
-    TestPoint = (MinVect+MaxVect)/2;
+    return (MinVect+MaxVect)/2;
+}
+
+function bool _PositionIsSafeOctant(Vector oldloc, Vector TestPoint, Vector newloc)
+{
+    local Vector distsold, diststest, distsoldtest;
+    //l("results += testbool( _PositionIsSafeOctant(vect("$oldloc$"), vect("$ TestPoint $"), vect("$newloc$")), truefalse, \"test\");");
+    distsoldtest = AbsEach(oldloc - TestPoint);
+    distsold = AbsEach(newloc - oldloc) - (distsoldtest*0.999);
+    diststest = AbsEach(newloc - TestPoint);
+    if ( AnyGreater( distsold, diststest ) ) return False;
+    return True;
+}
+
+function bool PositionIsSafe(Vector oldloc, Actor test, Vector newloc)
+{// https://github.com/Die4Ever/deus-ex-randomizer/wiki#smarter-key-randomization
+    local Vector TestPoint;
+    local float distold, disttest;
+
+    TestPoint = GetCenter(test);
 
     distold = VSize(newloc - oldloc);
     disttest = VSize(newloc - TestPoint);
 
-    if( distold > disttest ) return False;
+    return _PositionIsSafeOctant(oldloc, TestPoint, newloc);
+}
 
-    distsoldtest = AbsEach(oldloc - TestPoint);
-    distsold = AbsEach(newloc - oldloc) - distsoldtest;
-    diststest = AbsEach(newloc - TestPoint);
-    if ( AnyGreater( distsold, diststest ) ) return False;
-    
-    return True;
+function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
+{// https://github.com/Die4Ever/deus-ex-randomizer/wiki#smarter-key-randomization
+    return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }

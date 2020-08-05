@@ -1,8 +1,17 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
 for v1.4========================
-tooltips in the GUI? the controls screen does it, MenuUIWindow uses the FocusEnteredDescendant event and FocusLeftDescendant
-rename MenuSetupRando.uc to DXRMenuSetup.uc and MenuScreenNewGameRando to DXRMenuScreenNewGame so they're grouped together with the other files
+x use minDamageThreshold of 60 for doors, it's what the seals in the ship use, door at the top of paris start is 75 though
+x -50 can be broken by master sniper, 60 can still be broken with dragoon's tooth sword, max low tech skill, and max combat strength aug, 75 cannot
+  -not just key-only doors or undefeatible doors, but all doors?
+
+randomly remove medbots and repair bots
+can/should I make it possible to not transmit the NSF signal at 04_NYC?
+check if I'm copying the bHidden flag for cloning enemies and keys
+
+x tooltips in the GUI? the controls screen does it, MenuUIWindow uses the FocusEnteredDescendant event and FocusLeftDescendant
+x rename MenuSetupRando.uc to DXRMenuSetup.uc and MenuScreenNewGameRando to DXRMenuScreenNewGame so they're grouped together with the other files
+
 add more tests? I should maybe make tests only run once per launch, maybe like on localURL == "DX" maybe the training area or liberty island cause some tests will need a world?
     -tests for ClassIsA, skill randomization, augs...
 
@@ -11,6 +20,7 @@ I can make more stuff data-driven
     -DXRReduceItems could receive arguments/config for which classes of items to reduce and what %
     -each module should be in charge of their own flags and flagnames?
     -config value for enabling tests
+    -I can display a crc hash of the configs and flags as a clientmessage, like how the seed is shown
 
 split up the Swap function, support multiple classes for SwapAll? or just support NavigationPoints?
 

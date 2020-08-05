@@ -89,6 +89,18 @@ function int test(bool result, string testname)
     }
 }
 
+function int testbool(bool result, bool expected, string testname)
+{
+    if(result == expected) {
+        l("pass: "$testname$": got "$result);
+        return 0;
+    }
+    else {
+        l("fail: "$testname$": got "$result$", expected "$expected);
+        return 1;
+    }
+}
+
 function int testint(int result, int expected, string testname)
 {
     if(result == expected) {

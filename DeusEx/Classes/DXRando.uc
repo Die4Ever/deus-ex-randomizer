@@ -126,7 +126,7 @@ function DXRBase FindModule(class<DXRBase> moduleclass)
         }
     }
 
-    log("DXRando failed to find module "$moduleclass);
+    log("DXRando didn't find module "$moduleclass);
     return None;
 }
 
@@ -299,8 +299,10 @@ function RunTests()
     local int i, results;
     for(i=0; i<num_modules; i++) {
         results = modules[i].RunTests();
-        if( results > 0 )
-            log( modules[i] $ " failed "$results$" tests!" );
+        if( results > 0 ) {
+            log( modules[i] @ results $ " tests failed!" );
+            Player.ClientMessage( modules[i].Class @ results $ " tests failed!" );
+        }
         else
             log( modules[i] $ " passed tests!" );
     }

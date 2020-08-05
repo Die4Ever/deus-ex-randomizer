@@ -159,10 +159,27 @@ function InitVersion()
 
 static function string VersionString()
 {
-    return "v1.3 Beta";
+    return "v1.3";
 }
 
 function MaxRando()
 {
     //should have a chance to make some skills completely unattainable, like 999999 cost? would this also have to be an option in the GUI or can it be exclusive to MaxRando?
+}
+
+function int RunTests()
+{
+    local int results, i;
+    results = Super.RunTests();
+
+    //this Crc function returns negative numbers
+    results += testint( dxr.Crc("a bomb!"), -1813716842, "Crc32 test");
+    results += testint( dxr.Crc("1723"), -441943723, "Crc32 test");
+    results += testint( dxr.Crc("do you have a single fact to back that up"), -1473827402, "Crc32 test");
+
+    SetSeed("smashthestate");
+    for(i=0;i<10;i++)
+        test( rng(100)>=0, "rng(100) >= 0");
+
+    return results;
 }
