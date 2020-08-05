@@ -20,6 +20,7 @@ function RandoEnemies(int percent)
 
     foreach AllActors(class'Pawn', pawn)
     {// even hidden pawns?
+        if( pawn.bHidden ) continue;
         p = ScriptedPawn(pawn);
         if( p != None && p.bImportant ) continue;
         RandomizeSize(pawn);
