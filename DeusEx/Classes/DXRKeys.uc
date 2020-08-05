@@ -122,7 +122,7 @@ function bool KeyPositionGood(NanoKey k, vector newpos)
     local float dist;
     
     dist = VSize( k.Location - newpos );
-    //if( dist > 5000 ) return False;
+    if( dist > 5000 ) return False;
 
     foreach AllActors(class'DeusExMover', d)
     {
@@ -131,7 +131,7 @@ function bool KeyPositionGood(NanoKey k, vector newpos)
         {
             //if( PositionIsSafeLenient(k.Location, d, newpos) == False ) return False;
         }
-        else if( PositionIsSafeLenient(k.Location, d, newpos) == False ) return False;
+        else if( PositionIsSafe(k.Location, d, newpos) == False ) return False;
     }
     //l("KeyPositionGood ("$ActorToString(k)$", "$newpos$") returning True with distance: "$dist);
     return True;
