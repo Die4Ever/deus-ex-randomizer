@@ -213,12 +213,19 @@ function RandoEnter(bool firstTime)
 function doAutosave()
 {
     local string saveName;
+	local DataLinkPlay interruptedDL;
+	
+	if( Player.dataLinkPlay != None ) {
+		Player.dataLinkPlay.AbortDataLink();
+		interruptedDL = Player.dataLinkPlay;
+		Player.dataLinkPlay = None;
+	}
 
     //copied from DeusExPlayer QuickSave()
     if (
         ((dxInfo != None) && (dxInfo.MissionNumber < 0)) || 
         ((Player.IsInState('Dying')) || (Player.IsInState('Paralyzed')) || (Player.IsInState('Interpolating'))) || 
-        (Player.dataLinkPlay != None) || (Level.Netmode != NM_Standalone)
+        (Player.dataLinkPlay != None) || (Level.Netmode != NM_Standalone) || (Player.InConversation())
     ){
         log("DXRando doAutosave() not saving");
         return;
@@ -227,6 +234,10 @@ function doAutosave()
     saveName = "DXR " $ seed $ ": " $ dxInfo.MissionLocation;
     Player.SaveGame(-1, saveName);
     bNeedSave = false;
+	if( interruptedDL != None ) {
+		Player.dataLinkPlay = interruptedDL;
+		Player.ResumeDataLinks();
+	}
 }
 
 function int SetSeed(int s)

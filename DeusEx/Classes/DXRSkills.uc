@@ -1,8 +1,8 @@
 class DXRSkills extends DXRBase;
 
-function FirstEntry()
+function AnyEntry()
 {
-    Super.FirstEntry();
+    Super.AnyEntry();
     RandoSkills();
 }
 
