@@ -20,7 +20,7 @@ function RandoSkills()
     aSkill = dxr.Player.SkillSystem.FirstSkill;
 	while(aSkill != None)
 	{
-        percent = rng(dxr.flags.maxskill - dxr.flags.minskill) + dxr.flags.minskill;
+        percent = rng(dxr.flags.maxskill - dxr.flags.minskill + 1) + dxr.flags.minskill;
         l("percent: "$percent$", min: "$dxr.flags.minskill$", max: "$dxr.flags.maxskill);
         for(i=0; i<arrayCount(aSkill.Cost); i++)
         {

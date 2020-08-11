@@ -67,6 +67,9 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 
     chance(26, r);// else keep the same class
 
+    if( rng(2)==0 && newclass == None && IsHuman(base) == False ) return None;
+    // or maybe rng(100) >= percent
+
     n = CloneScriptedPawn(base, newclass);
     if( n != None ) RandomizeSP(n, percent);
     //else RandomizeSize(n);
