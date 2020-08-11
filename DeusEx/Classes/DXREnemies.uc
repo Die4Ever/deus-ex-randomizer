@@ -48,23 +48,28 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
     local ScriptedPawn n;
     local int r;
     r = initchance();
-    if( chance(5, r) ) newclass = class'Gray';
-    if( chance(5, r) ) newclass = class'Karkian';
-    if( chance(10, r) ) newclass = class'Greasel';
-    if( chance(5, r) ) newclass = class'MilitaryBot';
-    if( chance(10, r) ) newclass = class'SpiderBot';
-    if( chance(5, r) ) newclass = class'SpiderBot2';
     if( chance(10, r) ) newclass = class'ThugMale';
     if( chance(10, r) ) newclass = class'ThugMale2';
     if( chance(10, r) ) newclass = class'ThugMale3';
-    if( chance(5, r) ) newclass = class'SecurityBot2';
-    if( chance(5, r) ) newclass = class'SecurityBot3';
-    if( chance(5, r) ) newclass = class'SecurityBot4';
 
-    chance(15, r);// else keep the same class
+    //creatures
+    if( chance(8, r) ) newclass = class'Greasel';
+    if( chance(4, r) ) newclass = class'Gray';
+    if( chance(4, r) ) newclass = class'Karkian';
+
+    //bots
+    if( chance(8, r) ) newclass = class'SpiderBot';
+    if( chance(4, r) ) newclass = class'MilitaryBot';
+    if( chance(4, r) ) newclass = class'SpiderBot2';
+    if( chance(4, r) ) newclass = class'SecurityBot2';
+    if( chance(4, r) ) newclass = class'SecurityBot3';
+    if( chance(4, r) ) newclass = class'SecurityBot4';
+
+    chance(26, r);// else keep the same class
 
     n = CloneScriptedPawn(base, newclass);
-    if( n != None && rng(100) < percent ) RandomizeSP(n, percent);
+    if( n != None ) RandomizeSP(n, percent);
+    //else RandomizeSize(n);
     return n;
 }
 
@@ -144,26 +149,26 @@ function RandomizeSP(ScriptedPawn p, int percent)
 
     p.SurprisePeriod *= float(rng(100)/100)+0.3;
 
-    if( HumanMilitary(p) == None && HumanThug(p) == None && HumanCivilian(p) == None ) return; // only give random weapons to humans
+    if( IsHuman(p) == False ) return; // only give random weapons to humans
 
     r = initchance();
-    if( chance(5, r) ) wclass = class'WeaponGEPGun';
-    if( chance(10, r) ) wclass = class'WeaponAssaultGun';
+    if( chance(11, r) ) wclass = class'WeaponPistol';
+    if( chance(11, r) ) wclass = class'WeaponAssaultGun';
+    if( chance(11, r) ) wclass = class'WeaponMiniCrossbow';
+    if( chance(4, r) ) wclass = class'WeaponGEPGun';
     if( chance(5, r) ) wclass = class'WeaponAssaultShotgun';
     if( chance(5, r) ) wclass = class'WeaponEMPGrenade';
-    if( chance(5, r) ) wclass = class'WeaponFlamethrower';
+    if( chance(4, r) ) wclass = class'WeaponFlamethrower';
     if( chance(5, r) ) wclass = class'WeaponGasGrenade';
     if( chance(5, r) ) wclass = class'WeaponHideAGun';
     if( chance(5, r) ) wclass = class'WeaponLAM';
-    if( chance(5, r) ) wclass = class'WeaponLAW';
-    if( chance(10, r) ) wclass = class'WeaponMiniCrossbow';
+    if( chance(4, r) ) wclass = class'WeaponLAW';
     if( chance(5, r) ) wclass = class'WeaponNanoVirusGrenade';
     if( chance(5, r) ) wclass = class'WeaponPepperGun';
     if( chance(5, r) ) wclass = class'WeaponPlasmaRifle';
     if( chance(5, r) ) wclass = class'WeaponRifle';
     if( chance(5, r) ) wclass = class'WeaponSawedOffShotgun';
     if( chance(5, r) ) wclass = class'WeaponShuriken';
-    if( chance(10, r) ) wclass = class'WeaponPistol';
 
     w = Spawn(wclass, p);
     w.GiveTo(p);
@@ -176,7 +181,35 @@ function RandomizeSP(ScriptedPawn p, int percent)
         w.AmmoType.SetBase(p);
     }
 
+    GiveRandomMeleeWeapon(p);
+
     p.SetupWeapon(false);
+}
+
+function GiveRandomMeleeWeapon(ScriptedPawn p)
+{
+    local class<Weapon> wclass;
+    local Weapon w;
+    local int r;
+
+    if
+    (
+        HasItem(p, class'WeaponBaton')
+        || HasItem(p, class'WeaponCombatKnife')
+        || HasItem(p, class'WeaponCrowbar')
+        || HasItem(p, class'WeaponSword')
+    )
+        return;
+
+    r = initchance();
+    if( chance(25, r) ) wclass = class'WeaponBaton';
+    if( chance(25, r) ) wclass = class'WeaponCombatKnife';
+    if( chance(25, r) ) wclass = class'WeaponCrowbar';
+    if( chance(25, r) ) wclass = class'WeaponSword';
+
+    w = Spawn(wclass, p);
+    w.GiveTo(p);
+    w.SetBase(p);
 }
 
 function RandomizeSize(Actor a)

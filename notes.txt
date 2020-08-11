@@ -5,6 +5,12 @@ x use minDamageThreshold of 60 for doors, it's what the seals in the ship use, d
 x -50 can be broken by master sniper, 60 can still be broken with dragoon's tooth sword, max low tech skill, and max combat strength aug, 75 cannot
   -not just key-only doors or undefeatible doors, but all doors?
 
+I could make an AugSkill class to turn any skill into an augmentation (might need dummy child classes just due to the way the augmentation manager works)
+    -look AugAqualung as an example, could easily adjust the player's skill level in state Active Begin and function Deactivate()
+    -energy cost could be based on the cost of the original skill
+    -use the augmentation level to give skill levels
+    -might be OP if one player gets lucky and finds the hacking augmentation in a race
+
 randomly remove medbots and repair bots
 can/should I make it possible to not transmit the NSF signal at 04_NYC?
 check if I'm copying the bHidden flag for cloning enemies and keys
