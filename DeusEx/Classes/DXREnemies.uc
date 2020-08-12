@@ -67,7 +67,8 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 
     chance(26, r);// else keep the same class
 
-    if( rng(2)==0 && newclass == None && IsHuman(base) == False ) return None;
+    // this reduces the likelihood of cloning non-humans, starting with a conservative 10% reduction
+    if( rng(10)==0 && newclass == None && IsHuman(base) == False ) return None;
     // or maybe rng(100) >= percent
 
     n = CloneScriptedPawn(base, newclass);
