@@ -44,9 +44,9 @@ function InitDefaults()
     brightness = 5;
     minskill = 25;
     maxskill = 300;
-    ammo = 80;
-    multitools = 70;
-    lockpicks = 70;
+    ammo = 90;
+    multitools = 80;
+    lockpicks = 80;
     biocells = 80;
     speedlevel = 1;
     keysrando = 4;
@@ -55,10 +55,10 @@ function InitDefaults()
     deviceshackable = 100;
     passwordsrandomized = 100;
     gibsdropkeys = 1;
-    medkits = 80;
+    medkits = 90;
     autosave = 1;
     removeinvisiblewalls = 0;
-    enemiesrandomized = 50;
+    enemiesrandomized = 25;
     infodevices = 0;
 }
 
@@ -159,7 +159,7 @@ function InitVersion()
 
 static function string VersionString()
 {
-    return "v1.3.1";
+    return "v1.3.2";
 }
 
 function MaxRando()

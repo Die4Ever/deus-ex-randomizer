@@ -109,14 +109,14 @@ function CreateControls()
     btnInfoDevs.values[1] = "Unchanged";
     RandoInfoDevices = CreateEnum(row++, "Datacubes", "Moves datacubes and other information objects around the map.", btnInfoDevs);
 
-    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 30, 0, 100);
+    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 25, 0, 100);
     editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", "Minimum cost for skills in percentage of the original cost.", 25, 0, 500);
     editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", "Maximum cost for skills in percentage of the original cost.", 300, 0, 500);
-    editAmmo = CreateSlider(row++, "Ammo Drops %", "Make ammo more scarce.", 80);
+    editAmmo = CreateSlider(row++, "Ammo Drops %", "Make ammo more scarce.", 90);
     editMultitools = CreateSlider(row++, "Multitools Drops %", "Make multitools more scarce.", 80);
     editLockpicks = CreateSlider(row++, "Lockpicks Drops %", "Make lockpicks more scarce.", 80);
     editBioCells = CreateSlider(row++, "Bioelectric Cells Drops %", "Make bioelectric cells more scarce.", 80);
-    editMedkits = CreateSlider(row++, "Medkit Drops %", "Make medkits more scarce.", 80);
+    editMedkits = CreateSlider(row++, "Medkit Drops %", "Make medkits more scarce.", 90);
     editSpeedLevel = CreateSlider(row++, "Speed Aug Level", "Start the game with the Speed Enhancement augmentation.", 1, 0, 3);
 
     RemoveInvisWalls = CreateEnum(row++, "Remove Invisible Walls", "Allows you to get around some areas where it looks like you should be able to.");

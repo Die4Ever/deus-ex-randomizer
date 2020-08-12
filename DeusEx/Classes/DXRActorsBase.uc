@@ -50,6 +50,25 @@ function bool CarriedItem(Actor a)
     return a.Owner != None && a.Owner.IsA('Pawn');
 }
 
+function bool IsHuman(Actor a)
+{
+    return HumanMilitary(a) != None || HumanThug(a) != None || HumanCivilian(a) != None;
+}
+
+function bool HasItem(ScriptedPawn p, class c)
+{
+    local int i;
+    
+    for (i=0; i<ArrayCount(p.InitialInventory); i++)
+	{
+		if ((p.InitialInventory[i].Inventory != None) && (p.InitialInventory[i].Count > 0))
+		{
+            if( p.InitialInventory[i].Inventory.Class == c ) return True;
+        }
+    }
+    return p.FindInventoryType(c) != None;
+}
+
 function bool SkipActorBase(Actor a)
 {
     if( (a.Owner != None) || a.bStatic || a.bHidden || a.bMovable==False )
