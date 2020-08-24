@@ -25,6 +25,7 @@ function RandomizeAugCannisters()
 
     foreach AllActors(class'AugmentationCannister', a)
     {
+        if( a.Owner == dxr.Player ) continue;
         a.AddAugs[0] = PickRandomAug();
         a.AddAugs[1] = a.AddAugs[0];
         while( a.AddAugs[1] == a.AddAugs[0] )
