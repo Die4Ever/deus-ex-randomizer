@@ -103,6 +103,7 @@ function LoadModules()
     LoadModule(class'DXRAugmentations');
     LoadModule(class'DXRSwapItems');
     LoadModule(class'DXRReduceItems');
+    LoadModule(class'DXRFixup');
 
     RunTests();
 }
