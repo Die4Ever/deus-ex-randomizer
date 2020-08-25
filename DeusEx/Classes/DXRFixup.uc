@@ -63,24 +63,17 @@ function AnyEntry()
     
 }
 
-function ReEntry()
-{
-    Super.ReEntry();
-    doFixup();
-}
-
 function doFixup()
 {
     local Actor a;
     local ScriptedPawn p;
-    local name flagName;
     local bool boolFlag;
+    local bool recruitedFlag;
     
     switch(dxr.localURL)
     {
         case "06_HONGKONG_TONGBASE":
-            flagName = dxr.Player.rootWindow.StringToName("QuickLetPlayerIn");
-            boolFlag = dxr.Player.flagBase.GetBool(flagName);
+            boolFlag = dxr.Player.flagBase.GetBool('QuickLetPlayerIn');
             foreach AllActors(class'Actor', a)
             {
                 switch(string(a.Tag))
@@ -89,27 +82,34 @@ function doFixup()
                         ScriptedPawn(a).ChangeAlly(dxr.Player.Alliance,1,False);
                         break;
                         
-                    case "TracerTong":
-                    case "AlexJacobson":
-                    case "JaimeReyes":                        
+                    case "TracerTong":                      
                         if ( boolFlag == True )
                         {
-                            ScriptedPawn(a).bInWorld=True;
-                            a.bHidden = False;
-                            a.bBlockPlayers = True;
-                            a.BindName = string(a.Tag);  //Re-enables conversations with them.
-                            l("BindName reset to "$a.BindName);
-                            ScriptedPawn(a).ConBindEvents();                        
+                            ScriptedPawn(a).EnterWorld();                    
                         } else {
-                            ScriptedPawn(a).bInWorld=False;
-                            a.bHidden = True;
-                            a.bBlockPlayers = False;
-                            l("BindName was "$a.BindName);
-                            a.BindName = "";  //Disables conversations with them.
+                            ScriptedPawn(a).LeaveWorld();
+                        }
+                        break;
+                    case "AlexJacobson":
+                        recruitedFlag = dxr.Player.flagBase.GetBool('JacobsonRecruited');
+                        if ( boolFlag == True && recruitedFlag == True)
+                        {
+                            ScriptedPawn(a).EnterWorld();                    
+                        } else {
+                            ScriptedPawn(a).LeaveWorld();
+                        }
+                        break;
+                    case "JaimeReyes":
+                        recruitedFlag = dxr.Player.flagBase.GetBool('JaimeRecruited');
+                        if ( boolFlag == True && recruitedFlag == True)
+                        {
+                            ScriptedPawn(a).EnterWorld();                    
+                        } else {
+                            ScriptedPawn(a).LeaveWorld();
                         }
                         break;
                     case "Operation1":
-                        DataLinkTrigger(a).checkFlag = flagName;
+                        DataLinkTrigger(a).checkFlag = 'QuickLetPlayerIn';
                         break;
                     case "TurnOnTheKillSwitch":
                         if (boolFlag == True)
