@@ -6,9 +6,9 @@ function SetDxr(DXRando d)
 {
     dxr=d;
     CopySkills();
-	PopulateSkillsList();
-	UpdateSkillPoints();
-	EnableButtons();
+    PopulateSkillsList();
+    UpdateSkillPoints();
+    EnableButtons();
 }
 
 // ----------------------------------------------------------------------
@@ -20,25 +20,25 @@ function SetDxr(DXRando d)
 
 function CopySkills()
 {
-	local Skill aSkill;
-	local int skillIndex;
+    local Skill aSkill;
+    local int skillIndex;
     
     if(dxr!=None)
         DXRSkills(dxr.LoadModule(class'DXRSkills')).RandoSkills();
 
-	skillIndex = 0;
+    skillIndex = 0;
 
-	aSkill = player.SkillSystem.FirstSkill;
-	while(aSkill != None)
-	{
-		localSkills[skillIndex] = player.Spawn(aSkill.Class);
+    aSkill = player.SkillSystem.FirstSkill;
+    while(aSkill != None)
+    {
+        localSkills[skillIndex] = player.Spawn(aSkill.Class);
         localSkills[skillIndex].Cost[0] = aSkill.Cost[0];
         localSkills[skillIndex].Cost[1] = aSkill.Cost[1];
         localSkills[skillIndex].Cost[2] = aSkill.Cost[2];
 
-		skillIndex++;
-		aSkill = aSkill.next;
-	}
+        skillIndex++;
+        aSkill = aSkill.next;
+    }
 }
 
 function SaveSettings()

@@ -53,7 +53,7 @@ function ReduceSpawns(class<Actor> classname, int percent)
 
         if( rng(100) >= percent )
         {
-	        DestroyActor( a );
+            DestroyActor( a );
         }
     }
 

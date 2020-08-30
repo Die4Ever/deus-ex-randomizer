@@ -2,7 +2,7 @@
 // DeusExLevelInfo
 //=============================================================================
 class DeusExLevelInfo extends Info
-	native;
+    native;
 
 var() String				MapName;
 var() String				MapAuthor;
@@ -17,27 +17,27 @@ var() String				ConversationPackage;  // DEUS_EX STM -- added so SDK users will 
 
 function SpawnScript()
 {
-	local MissionScript scr;
+    local MissionScript scr;
     local DXRando dxr;
-	local bool bFound;
+    local bool bFound;
 
-	// check to see if this script has already been spawned
-	if (Script != None)
-	{
-		bFound = False;
-		foreach AllActors(class'MissionScript', scr)
-			bFound = True;
+    // check to see if this script has already been spawned
+    if (Script != None)
+    {
+        bFound = False;
+        foreach AllActors(class'MissionScript', scr)
+            bFound = True;
 
-		if (!bFound)
-		{
-			if (Spawn(Script) == None)
-				log("DeusExLevelInfo - WARNING! - Could not spawn mission script '"$Script$"'");
-			else
-				log("DeusExLevelInfo - Spawned new mission script '"$Script$"'");
-		}
-		else
-			log("DeusExLevelInfo - WARNING! - Already found mission script '"$Script$"'");
-	}
+        if (!bFound)
+        {
+            if (Spawn(Script) == None)
+                log("DeusExLevelInfo - WARNING! - Could not spawn mission script '"$Script$"'");
+            else
+                log("DeusExLevelInfo - Spawned new mission script '"$Script$"'");
+        }
+        else
+            log("DeusExLevelInfo - WARNING! - Already found mission script '"$Script$"'");
+    }
 
     bFound = False;
     foreach AllActors(class'DXRando', dxr)
@@ -51,9 +51,9 @@ function SpawnScript()
 
 function PostBeginPlay()
 {
-	Super.PostBeginPlay();
+    Super.PostBeginPlay();
 
-	SpawnScript();
+    SpawnScript();
 }
 
 defaultproperties

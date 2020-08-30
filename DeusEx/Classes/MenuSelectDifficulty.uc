@@ -12,7 +12,7 @@ class MenuSelectDifficulty expands MenuUIMenuWindow;
 
 event InitWindow()
 {
-	Super.InitWindow();
+    Super.InitWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -21,8 +21,8 @@ event InitWindow()
 
 event WindowReady()
 {
-	// Set focus to the Medium button
-	SetFocusWindow(winButtons[1]);
+    // Set focus to the Medium button
+    SetFocusWindow(winButtons[1]);
 }
 
 // ----------------------------------------------------------------------
@@ -31,24 +31,24 @@ event WindowReady()
 
 function ProcessCustomMenuButton(string key)
 {
-	switch(key)
-	{
-		case "EASY":
-			InvokeNewGameScreen(1.0);
-			break;
+    switch(key)
+    {
+        case "EASY":
+            InvokeNewGameScreen(1.0);
+            break;
 
-		case "MEDIUM":
-			InvokeNewGameScreen(1.5);
-			break;
+        case "MEDIUM":
+            InvokeNewGameScreen(1.5);
+            break;
 
-		case "HARD":
-			InvokeNewGameScreen(2.0);
-			break;
+        case "HARD":
+            InvokeNewGameScreen(2.0);
+            break;
 
-		case "REALISTIC":
-			InvokeNewGameScreen(4.0);
-			break;
-	}
+        case "REALISTIC":
+            InvokeNewGameScreen(4.0);
+            break;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -57,12 +57,12 @@ function ProcessCustomMenuButton(string key)
 
 function InvokeNewGameScreen(float difficulty)
 {
-	local DXRMenuSetupRando newGame;
+    local DXRMenuSetupRando newGame;
 
-	newGame = DXRMenuSetupRando(root.InvokeMenuScreen(Class'DXRMenuSetupRando'));
+    newGame = DXRMenuSetupRando(root.InvokeMenuScreen(Class'DXRMenuSetupRando'));
 
-	if (newGame != None)
-		newGame.SetDifficulty(difficulty);
+    if (newGame != None)
+        newGame.SetDifficulty(difficulty);
 }
 
 // ----------------------------------------------------------------------

@@ -6,11 +6,11 @@ function FirstEntry()
 
     Super.FirstEntry();
 
-	anAug = dxr.Player.AugmentationSystem.FindAugmentation(class'AugSpeed');
-	if(anAug == None)
-		return; // shouldn't happen, but you never know!
+    anAug = dxr.Player.AugmentationSystem.FindAugmentation(class'AugSpeed');
+    if(anAug == None)
+        return; // shouldn't happen, but you never know!
 
-	if( anAug.bHasIt == False && dxr.flags.speedlevel>0 )
+    if( anAug.bHasIt == False && dxr.flags.speedlevel>0 )
     {
         anAug = dxr.Player.AugmentationSystem.GivePlayerAugmentation(class'AugSpeed');
         anAug.CurrentLevel = min(dxr.flags.speedlevel-1, anAug.MaxLevel);

@@ -60,9 +60,9 @@ function bool HasItem(ScriptedPawn p, class c)
     local int i;
     
     for (i=0; i<ArrayCount(p.InitialInventory); i++)
-	{
-		if ((p.InitialInventory[i].Inventory != None) && (p.InitialInventory[i].Count > 0))
-		{
+    {
+        if ((p.InitialInventory[i].Inventory != None) && (p.InitialInventory[i].Count > 0))
+        {
             if( p.InitialInventory[i].Inventory.Class == c ) return True;
         }
     }
@@ -145,7 +145,7 @@ function Swap(Actor a, Actor b)
 
 function bool DestroyActor( Actor d )
 {
-	// If this item is in an inventory chain, unlink it.
+    // If this item is in an inventory chain, unlink it.
     local Decoration downer;
 
     if( d.IsA('Inventory') && d.Owner != None && d.Owner.IsA('Pawn') )

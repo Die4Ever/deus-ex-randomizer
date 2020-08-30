@@ -145,8 +145,8 @@ function PreTravel()
 {
     local int i;
     log("DXRando PreTravel()");
-	// turn off the timer
-	SetTimer(0, False);
+    // turn off the timer
+    SetTimer(0, False);
 
     ClearModules();
     Player=None;

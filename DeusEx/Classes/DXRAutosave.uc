@@ -30,15 +30,15 @@ function Timer()
 function doAutosave()
 {
     local string saveName;
-	local DataLinkPlay interruptedDL;
+    local DataLinkPlay interruptedDL;
     local int saveSlot;
     local int lastMission;
-	
-	if( dxr.Player.dataLinkPlay != None ) {
-		dxr.Player.dataLinkPlay.AbortDataLink();
-		interruptedDL = dxr.Player.dataLinkPlay;
-		dxr.Player.dataLinkPlay = None;
-	}
+    
+    if( dxr.Player.dataLinkPlay != None ) {
+        dxr.Player.dataLinkPlay.AbortDataLink();
+        interruptedDL = dxr.Player.dataLinkPlay;
+        dxr.Player.dataLinkPlay = None;
+    }
 
     //copied from DeusExPlayer QuickSave()
     if (
@@ -60,10 +60,10 @@ function doAutosave()
     saveName = "DXR " $ dxr.seed $ ": " $ dxr.dxInfo.MissionLocation;
     dxr.Player.SaveGame(saveSlot, saveName);
     bNeedSave = false;
-	if( interruptedDL != None ) {
-		dxr.Player.dataLinkPlay = interruptedDL;
-		dxr.Player.ResumeDataLinks();
-	}
+    if( interruptedDL != None ) {
+        dxr.Player.dataLinkPlay = interruptedDL;
+        dxr.Player.ResumeDataLinks();
+    }
 
     SetTimer(0, False);
 }
