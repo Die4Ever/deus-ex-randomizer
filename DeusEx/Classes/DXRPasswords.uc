@@ -81,6 +81,21 @@ function RandoPasswords(int mode)
             ChangeATMPIN(a, i);
         }
     }
+
+    FixCodes();
+}
+
+function FixCodes()
+{
+    local string newpassword;
+    if( dxr.localURL == "02_NYC_HOTEL" ) {
+        newpassword = GeneratePasscode("4321");
+        ReplacePassword("count back from 4", newpassword);
+    }
+    if( dxr.localURL == "15_AREA51_PAGE" ) {
+        newpassword = GeneratePasscode("7243");
+        ReplacePassword("724", Left(newpassword, 3) );
+    }
 }
 
 function RandoInfoDevs(int percent)

@@ -2,10 +2,26 @@ class DXRFixup expands DXRBase;
 
 function FirstEntry()
 {
+    Super.FirstEntry();
+
+    Level.AmbientBrightness += dxr.flags.brightness;
+
+    if( dxr.dxInfo.missionNumber == 6 )
+        HongKong_FirstEntry();
+}
+
+function AnyEntry()
+{
+    Super.AnyEntry();
+    
+    if( dxr.dxInfo.missionNumber == 6 )
+        HongKong_AnyEntry();
+}
+
+function HongKong_FirstEntry()
+{
     local Actor a;
     local ScriptedPawn p;
-
-    Super.FirstEntry();
     
     switch(dxr.localURL)
     {
@@ -55,15 +71,7 @@ function FirstEntry()
     }
 }
 
-function AnyEntry()
-{
-    Super.AnyEntry();
-    
-    doFixup();
-    
-}
-
-function doFixup()
+function HongKong_AnyEntry()
 {
     local Actor a;
     local ScriptedPawn p;

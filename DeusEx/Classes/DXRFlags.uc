@@ -105,7 +105,7 @@ function LoadFlags()
     }
 
     LogFlags("LoadFlags");
-    dxr.Player.ClientMessage("Deus Ex Randomizer "$VersionString()$" seed "$seed);
+    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ " flags: " $ abs(dxr.Crc(StringifyFlags())) );
     SetTimer(1.0, True);
 }
 
@@ -143,13 +143,16 @@ function SaveFlags()
 
 function LogFlags(string prefix)
 {
-    l(prefix$" - "
-        $ "seed: "$seed$", flagsversion: "$flagsversion$", brightness: "$brightness$", minskill: "$minskill$", maxskill: "$maxskill$", ammo: "$ammo
+    l(prefix$" - " $ StringifyFlags() );
+}
+
+function string StringifyFlags()
+{
+    return "seed: "$seed$", flagsversion: "$flagsversion$", brightness: "$brightness$", minskill: "$minskill$", maxskill: "$maxskill$", ammo: "$ammo
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
-        $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", infodevices: "$infodevices
-    );
+        $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", infodevices: "$infodevices;
 }
 
 function InitVersion()
@@ -159,7 +162,7 @@ function InitVersion()
 
 static function string VersionString()
 {
-    return "v1.3.2";
+    return "v1.3.3";
 }
 
 function MaxRando()

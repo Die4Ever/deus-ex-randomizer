@@ -6,8 +6,12 @@ function FirstEntry()
 
     Super.FirstEntry();
 
-    if( dxr.localURL == "01_NYC_UNATCOISLAND" && dxr.flags.speedlevel>0 )
-    {// change this so it looks if the player has the augmentation already, instead of checking the map name
+	anAug = dxr.Player.AugmentationSystem.FindAugmentation(class'AugSpeed');
+	if(anAug == None)
+		return; // shouldn't happen, but you never know!
+
+	if( anAug.bHasIt == False && dxr.flags.speedlevel>0 )
+    {
         anAug = dxr.Player.AugmentationSystem.GivePlayerAugmentation(class'AugSpeed');
         anAug.CurrentLevel = min(dxr.flags.speedlevel-1, anAug.MaxLevel);
     }
