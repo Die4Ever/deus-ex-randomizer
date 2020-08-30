@@ -14,8 +14,21 @@ function AnyEntry()
 {
     Super.AnyEntry();
 
+    FixUnbreakableCrates();
+
     if( dxr.dxInfo.missionNumber == 6 )
         HongKong_AnyEntry();
+}
+
+function FixUnbreakableCrates()
+{
+    local CrateUnbreakableLarge c;
+    foreach AllActors(class'CrateUnbreakableLarge', c) {
+        if( c.bInvincible ) {
+            c.bInvincible = False;
+            c.HitPoints = 2000;
+        }
+    }
 }
 
 function HongKong_FirstEntry()
