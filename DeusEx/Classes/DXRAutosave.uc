@@ -18,7 +18,8 @@ function ReEntry()
 
 function AnyEntry()
 {
-    SetTimer(1.0, True);
+    if( bNeedSave )
+        SetTimer(1.0, True);
 }
 
 function Timer()

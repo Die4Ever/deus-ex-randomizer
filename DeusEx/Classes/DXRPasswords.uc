@@ -278,9 +278,27 @@ function string GeneratePassword(string oldpassword)
 
 function string GeneratePasscode(string oldpasscode)
 {
+    local string newpasscode;
+    local int maximum;
+    local int oldpasslength;
+    local int i;
+
+    oldpasslength = Len(oldpasscode);
+    maximum = 1;
+    //rng does a modulo based on the maximum, so it needs to be one larger than what we actually want
+    //10 for single digit gives 1-9, 100 for double gives 1-99, etc...
+    for(i=0;i<oldpasslength;i++) {
+        maximum = maximum * 10;
+    }    
+    
     dxr.SetSeed( dxr.seed + dxr.Crc(oldpasscode) );//manually set the seed to avoid using the level name in the seed
-    // a number from 1000 to 9999, easily avoids leading 0s (modulus 9000 means max of 8999, maybe I should add 1 to the max inside the function)
-    return (rng(9000) + 1000) $ "";
+    newpasscode = rng(maximum) $ "";
+
+    //If the new passcode is shorter than the old one, we need to add some leading zeroes until it matches
+    while (Len(newpasscode) < oldpasslength) {
+        newpasscode = "0" $ newpasscode;
+    }
+    return newpasscode;
 }
 
 static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With, optional bool word)

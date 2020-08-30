@@ -1,4 +1,5 @@
-class DXRando extends Info;
+class DXRando extends Info
+    transient;
 
 var transient DeusExPlayer Player;
 var transient DXRFlags flags;

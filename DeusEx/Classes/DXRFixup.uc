@@ -13,7 +13,7 @@ function FirstEntry()
 function AnyEntry()
 {
     Super.AnyEntry();
-    
+
     if( dxr.dxInfo.missionNumber == 6 )
         HongKong_AnyEntry();
 }
@@ -22,7 +22,9 @@ function HongKong_FirstEntry()
 {
     local Actor a;
     local ScriptedPawn p;
-    
+
+    l("HongKong_FirstEntry()");
+
     switch(dxr.localURL)
     {
         case "06_HONGKONG_TONGBASE":
@@ -77,7 +79,9 @@ function HongKong_AnyEntry()
     local ScriptedPawn p;
     local bool boolFlag;
     local bool recruitedFlag;
-    
+
+    l("HongKong_AnyEntry()");
+
     switch(dxr.localURL)
     {
         case "06_HONGKONG_TONGBASE":
