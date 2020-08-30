@@ -3,16 +3,20 @@ class DXRFixup expands DXRBase;
 function FirstEntry()
 {
     Super.FirstEntry();
+    l( "mission " $ dxr.dxInfo.missionNumber $ " FirstEntry()");
 
     Level.AmbientBrightness += dxr.flags.brightness;
 
     if( dxr.dxInfo.missionNumber == 6 )
         HongKong_FirstEntry();
+    if( dxr.dxInfo.missionNumber == 12 )
+        Vandenberg_FirstEntry();
 }
 
 function AnyEntry()
 {
     Super.AnyEntry();
+    l( "mission " $ dxr.dxInfo.missionNumber $ " AnyEntry()");
 
     FixUnbreakableCrates();
 
@@ -31,12 +35,31 @@ function FixUnbreakableCrates()
     }
 }
 
+function Vandenberg_FirstEntry()
+{
+    local ElevatorMover e;
+    local Button1 b;
+
+    switch(dxr.localURL)
+    {
+        case "12_VANDENBERG_TUNNELS":
+            foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
+                e.BumpType = BT_PlayerBump;
+                e.BumpEvent = 'SC_Door3_opened';
+            }
+            foreach AllActors(class'Button1', b) {
+                if( b.Event == 'Top' || b.Event == 'middle' || b.Event == 'Bottom' ) {
+                    AddDelay(b, 5);
+                }
+            }
+            break;
+    }
+}
+
 function HongKong_FirstEntry()
 {
     local Actor a;
     local ScriptedPawn p;
-
-    l("HongKong_FirstEntry()");
 
     switch(dxr.localURL)
     {
@@ -92,8 +115,6 @@ function HongKong_AnyEntry()
     local ScriptedPawn p;
     local bool boolFlag;
     local bool recruitedFlag;
-
-    l("HongKong_AnyEntry()");
 
     switch(dxr.localURL)
     {
@@ -172,6 +193,17 @@ function HongKong_AnyEntry()
         default:
             break;
     }
+}
+
+function AddDelay(Actor trigger, float time)
+{
+    local Dispatcher d;
+    local name tagname;
+    tagname = dxr.Player.rootWindow.StringToName( "dxr_delay_" $ trigger.Event );
+    d = Spawn(class'Dispatcher', trigger, tagname);
+    d.OutEvents[0] = trigger.Event;
+    d.OutDelays[0] = time;
+    trigger.Event = d.Tag;
 }
 
 defaultproperties
