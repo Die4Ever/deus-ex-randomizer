@@ -11,6 +11,7 @@ function AnyEntry()
     local Actor a;
     local Rotator r;
     local Vector v;
+    local Class<Actor> newActorClass;
     Super.AnyEntry();
 
     switch(dxr.localURL)
@@ -20,7 +21,9 @@ function AnyEntry()
             l("Memeing up "$ dxr.localURL);
             foreach AllActors(class'DXLogo', logo)
             {                
-                a = ReplaceActor(logo, GetRandomActorClass() );
+                newActorClass = GetRandomActorClass();
+                l("DXLogo replaced with "$newActorClass);
+                a = ReplaceActor(logo, newActorClass );
                 
                 //Get it spinning just right
                 rotating = a;
@@ -40,14 +43,18 @@ function AnyEntry()
 
             foreach AllActors(class'IonStormLogo', islogo)
             {
-                a = ReplaceActor(islogo, GetRandomActorClass() );
+                newActorClass = GetRandomActorClass();
+                l("IonStormLogo replaced with "$newActorClass);
+                a = ReplaceActor(islogo, newActorClass );
                 a.SetPhysics(PHYS_None);
                 a.DrawScale *= 2.0;
             }
 
             foreach AllActors(class'EidosLogo', elogo)
             {
-                a = ReplaceActor(elogo, GetRandomActorClass() );
+                newActorClass = GetRandomActorClass();
+                l("EidosLogo replaced with "$newActorClass);
+                a = ReplaceActor(elogo, newActorClass );
                 a.SetPhysics(PHYS_None);
                 a.DrawScale *= 2.0;
             }
@@ -159,7 +166,7 @@ function class<Actor> GetRandomActorClass()
 {
     local int r, i;
 
-    r = rng(577);
+    r = rng(519);
 
     if ( r == i++ ) return class'AcousticSensor';
     if ( r == i++ ) return class'AdaptiveArmor';
@@ -178,18 +185,18 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'AmmoDartFlare';
     if ( r == i++ ) return class'AmmoDartPoison';
     if ( r == i++ ) return class'AmmoEMPGrenade';
-    if ( r == i++ ) return class'AmmoGasGrenade';
-    if ( r == i++ ) return class'AmmoGraySpit';
-    if ( r == i++ ) return class'AmmoGreaselSpit';
-    if ( r == i++ ) return class'AmmoLAM';
-    if ( r == i++ ) return class'AmmoNanoVirusGrenade';
+    //if ( r == i++ ) return class'AmmoGasGrenade';
+    //if ( r == i++ ) return class'AmmoGraySpit';
+    //if ( r == i++ ) return class'AmmoGreaselSpit';
+    //if ( r == i++ ) return class'AmmoLAM';
+    //if ( r == i++ ) return class'AmmoNanoVirusGrenade';
     if ( r == i++ ) return class'AmmoNapalm';
-    if ( r == i++ ) return class'AmmoNone';
+    //if ( r == i++ ) return class'AmmoNone';
     if ( r == i++ ) return class'AmmoPepper';
     if ( r == i++ ) return class'AmmoPlasma';
     if ( r == i++ ) return class'AmmoRocket';
     if ( r == i++ ) return class'AmmoRocketMini';
-    if ( r == i++ ) return class'AmmoRocketRobot';
+    //if ( r == i++ ) return class'AmmoRocketRobot';
     if ( r == i++ ) return class'AmmoRocketWP';
     if ( r == i++ ) return class'AmmoSabot';
     if ( r == i++ ) return class'AmmoShell';
@@ -300,7 +307,7 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'DartFlare';
     if ( r == i++ ) return class'DartPoison';
     if ( r == i++ ) return class'DataCube';
-    if ( r == i++ ) return class'DataVaultImage';
+    //if ( r == i++ ) return class'DataVaultImage';
     if ( r == i++ ) return class'DentonClone';
     if ( r == i++ ) return class'Doberman';
     if ( r == i++ ) return class'DobermanCarcass';
@@ -331,7 +338,7 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'FlagPole';
     if ( r == i++ ) return class'Flare';
     if ( r == i++ ) return class'Flask';
-    if ( r == i++ ) return class'FleshFragment';
+    //if ( r == i++ ) return class'FleshFragment';
     if ( r == i++ ) return class'Flowers';
     if ( r == i++ ) return class'Fly';
     if ( r == i++ ) return class'FordSchick';
@@ -341,7 +348,7 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'GasGrenade';
     if ( r == i++ ) return class'GilbertRenton';
     if ( r == i++ ) return class'GilbertRentonCarcass';
-    if ( r == i++ ) return class'GlassFragment';
+    //if ( r == i++ ) return class'GlassFragment';
     if ( r == i++ ) return class'GordonQuick';
     if ( r == i++ ) return class'GordonQuickCarcass';
     if ( r == i++ ) return class'Gray';
@@ -355,7 +362,7 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'HarleyFilben';
     if ( r == i++ ) return class'HarleyFilbenCarcass';
     if ( r == i++ ) return class'HazMatSuit';
-    if ( r == i++ ) return class'HECannister20mm';
+    //if ( r == i++ ) return class'HECannister20mm';
     if ( r == i++ ) return class'HKBirdcage';
     if ( r == i++ ) return class'HKBuddha';
     if ( r == i++ ) return class'HKChair';
@@ -377,42 +384,42 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'Hooker2Carcass';
     if ( r == i++ ) return class'HowardStrong';
     if ( r == i++ ) return class'HowardStrongCarcass';
-    if ( r == i++ ) return class'Image01_GunFireSensor';
-    if ( r == i++ ) return class'Image01_LibertyIsland';
-    if ( r == i++ ) return class'Image01_TerroristCommander';
-    if ( r == i++ ) return class'Image02_Ambrosia_Flyer';
-    if ( r == i++ ) return class'Image02_BobPage_ManOfYear';
-    if ( r == i++ ) return class'Image02_NYC_Warehouse';
-    if ( r == i++ ) return class'Image03_747Diagram';
-    if ( r == i++ ) return class'Image03_NYC_Airfield';
-    if ( r == i++ ) return class'Image03_WaltonSimons';
-    if ( r == i++ ) return class'Image04_NSFHeadquarters';
-    if ( r == i++ ) return class'Image04_UNATCONotice';
-    if ( r == i++ ) return class'Image05_GreaselDisection';
-    if ( r == i++ ) return class'Image05_NYC_MJ12Lab';
-    if ( r == i++ ) return class'Image06_HK_Market';
-    if ( r == i++ ) return class'Image06_HK_MJ12Helipad';
-    if ( r == i++ ) return class'Image06_HK_MJ12Lab';
-    if ( r == i++ ) return class'Image06_HK_Versalife';
-    if ( r == i++ ) return class'Image06_HK_WanChai';
-    if ( r == i++ ) return class'Image08_JoeGreenMIBMJ12';
-    if ( r == i++ ) return class'Image09_NYC_Ship_Bottom';
-    if ( r == i++ ) return class'Image09_NYC_Ship_Top';
-    if ( r == i++ ) return class'Image10_Paris_Catacombs';
-    if ( r == i++ ) return class'Image10_Paris_CatacombsTunnels';
-    if ( r == i++ ) return class'Image10_Paris_Metro';
-    if ( r == i++ ) return class'Image11_Paris_Cathedral';
-    if ( r == i++ ) return class'Image11_Paris_CathedralEntrance';
-    if ( r == i++ ) return class'Image12_Tiffany_HostagePic';
-    if ( r == i++ ) return class'Image12_Vandenberg_Command';
-    if ( r == i++ ) return class'Image12_Vandenberg_Sub';
-    if ( r == i++ ) return class'Image14_OceanLab';
-    if ( r == i++ ) return class'Image14_Schematic';
-    if ( r == i++ ) return class'Image15_Area51Bunker';
-    if ( r == i++ ) return class'Image15_Area51_Sector3';
-    if ( r == i++ ) return class'Image15_Area51_Sector4';
-    if ( r == i++ ) return class'Image15_BlueFusionDevice';
-    if ( r == i++ ) return class'Image15_GrayDisection';
+    //if ( r == i++ ) return class'Image01_GunFireSensor';
+    //if ( r == i++ ) return class'Image01_LibertyIsland';
+    //if ( r == i++ ) return class'Image01_TerroristCommander';
+    //if ( r == i++ ) return class'Image02_Ambrosia_Flyer';
+    //if ( r == i++ ) return class'Image02_BobPage_ManOfYear';
+    //if ( r == i++ ) return class'Image02_NYC_Warehouse';
+    //if ( r == i++ ) return class'Image03_747Diagram';
+    //if ( r == i++ ) return class'Image03_NYC_Airfield';
+    //if ( r == i++ ) return class'Image03_WaltonSimons';
+    //if ( r == i++ ) return class'Image04_NSFHeadquarters';
+    //if ( r == i++ ) return class'Image04_UNATCONotice';
+    //if ( r == i++ ) return class'Image05_GreaselDisection';
+    //if ( r == i++ ) return class'Image05_NYC_MJ12Lab';
+    //if ( r == i++ ) return class'Image06_HK_Market';
+    //if ( r == i++ ) return class'Image06_HK_MJ12Helipad';
+    //if ( r == i++ ) return class'Image06_HK_MJ12Lab';
+    //if ( r == i++ ) return class'Image06_HK_Versalife';
+    //if ( r == i++ ) return class'Image06_HK_WanChai';
+    //if ( r == i++ ) return class'Image08_JoeGreenMIBMJ12';
+    //if ( r == i++ ) return class'Image09_NYC_Ship_Bottom';
+    //if ( r == i++ ) return class'Image09_NYC_Ship_Top';
+    //if ( r == i++ ) return class'Image10_Paris_Catacombs';
+    //if ( r == i++ ) return class'Image10_Paris_CatacombsTunnels';
+    //if ( r == i++ ) return class'Image10_Paris_Metro';
+    //if ( r == i++ ) return class'Image11_Paris_Cathedral';
+    //if ( r == i++ ) return class'Image11_Paris_CathedralEntrance';
+    //if ( r == i++ ) return class'Image12_Tiffany_HostagePic';
+    //if ( r == i++ ) return class'Image12_Vandenberg_Command';
+    //if ( r == i++ ) return class'Image12_Vandenberg_Sub';
+    //if ( r == i++ ) return class'Image14_OceanLab';
+    //if ( r == i++ ) return class'Image14_Schematic';
+    //if ( r == i++ ) return class'Image15_Area51Bunker';
+    //if ( r == i++ ) return class'Image15_Area51_Sector3';
+    //if ( r == i++ ) return class'Image15_Area51_Sector4';
+    //if ( r == i++ ) return class'Image15_BlueFusionDevice';
+    //if ( r == i++ ) return class'Image15_GrayDisection';
     if ( r == i++ ) return class'IonStormLogo';
     if ( r == i++ ) return class'JaimeReyes';
     if ( r == i++ ) return class'JaimeReyesCarcass';
@@ -444,7 +451,7 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'Keypad1';
     if ( r == i++ ) return class'Keypad2';
     if ( r == i++ ) return class'Keypad3';
-    if ( r == i++ ) return class'LAM';
+    //if ( r == i++ ) return class'LAM';
     if ( r == i++ ) return class'Lamp1';
     if ( r == i++ ) return class'Lamp2';
     if ( r == i++ ) return class'Lamp3';
@@ -483,7 +490,7 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'MechanicCarcass';
     if ( r == i++ ) return class'MedicalBot';
     if ( r == i++ ) return class'MedKit';
-    if ( r == i++ ) return class'MetalFragment';
+    //if ( r == i++ ) return class'MetalFragment';
     if ( r == i++ ) return class'MIB';
     if ( r == i++ ) return class'MIBCarcass';
     if ( r == i++ ) return class'MichaelHamner';
@@ -498,9 +505,9 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'Moon';
     if ( r == i++ ) return class'MorganEverett';
     if ( r == i++ ) return class'MorganEverettCarcass';
-    if ( r == i++ ) return class'mpmj12';
-    if ( r == i++ ) return class'mpnsf';
-    if ( r == i++ ) return class'Mpunatco';
+    //if ( r == i++ ) return class'mpmj12';
+    //if ( r == i++ ) return class'mpnsf';
+    //if ( r == i++ ) return class'Mpunatco';
     if ( r == i++ ) return class'Multitool';
     if ( r == i++ ) return class'Mutt';
     if ( r == i++ ) return class'MuttCarcass';
@@ -524,7 +531,7 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'Pan2';
     if ( r == i++ ) return class'Pan3';
     if ( r == i++ ) return class'Pan4';
-    if ( r == i++ ) return class'PaperFragment';
+    //if ( r == i++ ) return class'PaperFragment';
     if ( r == i++ ) return class'PaulDenton';
     if ( r == i++ ) return class'PaulDentonCarcass';
     if ( r == i++ ) return class'PhilipMead';
@@ -538,12 +545,12 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'Plant2';
     if ( r == i++ ) return class'Plant3';
     if ( r == i++ ) return class'PlasmaBolt';
-    if ( r == i++ ) return class'PlasticFragment';
+    //if ( r == i++ ) return class'PlasticFragment';
     if ( r == i++ ) return class'Poolball';
     if ( r == i++ ) return class'PoolTableLight';
     if ( r == i++ ) return class'Pot1';
     if ( r == i++ ) return class'Pot2';
-    if ( r == i++ ) return class'POVCorpse';
+    //if ( r == i++ ) return class'POVCorpse';
     if ( r == i++ ) return class'RachelMead';
     if ( r == i++ ) return class'RachelMeadCarcass';
     if ( r == i++ ) return class'Rat';
@@ -596,7 +603,7 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'SignFloor';
     if ( r == i++ ) return class'Smuggler';
     if ( r == i++ ) return class'SmugglerCarcass';
-    if ( r == i++ ) return class'snipertracer';
+    //if ( r == i++ ) return class'snipertracer';
     if ( r == i++ ) return class'Sodacan';
     if ( r == i++ ) return class'Soldier';
     if ( r == i++ ) return class'SoldierCarcass';
@@ -628,7 +635,7 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'TobyAtanweCarcass';
     if ( r == i++ ) return class'Toilet';
     if ( r == i++ ) return class'Toilet2';
-    if ( r == i++ ) return class'Tracer';
+    //if ( r == i++ ) return class'Tracer';
     if ( r == i++ ) return class'TracerTong';
     if ( r == i++ ) return class'TracerTongCarcass';
     if ( r == i++ ) return class'TrafficLight';
@@ -737,7 +744,7 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'WIB';
     if ( r == i++ ) return class'WIBCarcass';
     if ( r == i++ ) return class'WineBottle';
-    if ( r == i++ ) return class'WoodFragment';
+    //if ( r == i++ ) return class'WoodFragment';
 }
 
 defaultproperties
