@@ -1,4 +1,5 @@
-class DXRando extends Info;
+class DXRando extends Info
+    transient;
 
 var transient DeusExPlayer Player;
 var transient DXRFlags flags;
@@ -27,9 +28,6 @@ function SetdxInfo(DeusExLevelInfo i)
 
 function PostPostBeginPlay()
 {
-    local name flagName;
-    local bool firstTime;
-
     Super.PostPostBeginPlay();
 
     if( localURL == "DX" || localURL == "" ) {
@@ -52,13 +50,7 @@ function PostPostBeginPlay()
 
     LoadModules();
 
-    flagName = Player.rootWindow.StringToName("M"$localURL$"_Randomized");
-    if (!flags.f.GetBool(flagName))
-    {
-        firstTime = True;
-        flags.f.SetBool(flagName, True,, 999);
-    }
-    RandoEnter(firstTime);
+    RandoEnter();
 
     SetTimer(1.0, True);
 }
@@ -103,7 +95,9 @@ function LoadModules()
     LoadModule(class'DXRAugmentations');
     LoadModule(class'DXRSwapItems');
     LoadModule(class'DXRReduceItems');
+    LoadModule(class'DXRNames');
     LoadModule(class'DXRFixup');
+    LoadModule(class'DXRAutosave');
 
     RunTests();
 }
@@ -153,8 +147,8 @@ function PreTravel()
 {
     local int i;
     log("DXRando PreTravel()");
-	// turn off the timer
-	SetTimer(0, False);
+    // turn off the timer
+    SetTimer(0, False);
 
     ClearModules();
     Player=None;
@@ -167,14 +161,20 @@ function Timer()
         PostPostBeginPlay();
         return;
     }
-
-    if( bNeedSave )
-        doAutosave();
 }
 
-function RandoEnter(bool firstTime)
+function RandoEnter()
 {
     local int i;
+    local bool firstTime;
+    local name flagName;
+
+    flagName = Player.rootWindow.StringToName("M"$localURL$"_Randomized");
+    if (!flags.f.GetBool(flagName))
+    {
+        firstTime = True;
+        flags.f.SetBool(flagName, True,, 999);
+    }
 
     log("DXRando RandoEnter() firstTime: "$firstTime);
     
@@ -183,8 +183,6 @@ function RandoEnter(bool firstTime)
         SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL) );
 
         log("DXRando randomizing "$localURL$" using seed " $ seed);
-
-        if( Level.AmbientBrightness<150 ) Level.AmbientBrightness += flags.brightness;
 
         for(i=0; i<num_modules; i++) {
             modules[i].FirstEntry();
@@ -202,43 +200,6 @@ function RandoEnter(bool firstTime)
     for(i=0; i<num_modules; i++) {
         modules[i].AnyEntry();
     }
-
-    if( (flags.autosave==2 && flags.f.GetBool('PlayerTraveling') && localURL != "INTRO" )
-        ||
-        ( firstTime && flags.autosave==1 && localURL != "INTRO" )
-    ) {
-        bNeedSave=true;
-    }
-}
-
-function doAutosave()
-{
-    local string saveName;
-	local DataLinkPlay interruptedDL;
-	
-	if( Player.dataLinkPlay != None ) {
-		Player.dataLinkPlay.AbortDataLink();
-		interruptedDL = Player.dataLinkPlay;
-		Player.dataLinkPlay = None;
-	}
-
-    //copied from DeusExPlayer QuickSave()
-    if (
-        ((dxInfo != None) && (dxInfo.MissionNumber < 0)) || 
-        ((Player.IsInState('Dying')) || (Player.IsInState('Paralyzed')) || (Player.IsInState('Interpolating'))) || 
-        (Player.dataLinkPlay != None) || (Level.Netmode != NM_Standalone) || (Player.InConversation())
-    ){
-        log("DXRando doAutosave() not saving");
-        return;
-    }
-
-    saveName = "DXR " $ seed $ ": " $ dxInfo.MissionLocation;
-    Player.SaveGame(-1, saveName);
-    bNeedSave = false;
-	if( interruptedDL != None ) {
-		Player.dataLinkPlay = interruptedDL;
-		Player.ResumeDataLinks();
-	}
 }
 
 function int SetSeed(int s)

@@ -146,6 +146,13 @@ function AdjustRestrictions(int doorspickable, int doorsdestructible, int device
     {
         if( d.KeyIDNeeded != 'None' ) l("found door with KeyIDNeeded == " $ d.KeyIDNeeded);
         //if( d.KeyIDNeeded == 'None' || d.bPickable || d.bBreakable ) continue;
+
+        if( d.bHighlight == false ) {
+            d.bPickable = false;
+            d.bLocked = true;
+            d.bHighlight = true;
+            continue;
+        }
         if( d.bPickable || d.bBreakable ) continue;
 
         if( d.bPickable == false && doorspickable > 0 ) {

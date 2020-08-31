@@ -2,11 +2,93 @@ class DXRFixup expands DXRBase;
 
 function FirstEntry()
 {
+    Super.FirstEntry();
+    l( "mission " $ dxr.dxInfo.missionNumber $ " FirstEntry()");
+
+    Level.AmbientBrightness += dxr.flags.brightness;
+
+    if( dxr.dxInfo.missionNumber == 6 )
+        HongKong_FirstEntry();
+    if( dxr.dxInfo.missionNumber == 12 )
+        Vandenberg_FirstEntry();
+}
+
+function AnyEntry()
+{
+    Super.AnyEntry();
+    l( "mission " $ dxr.dxInfo.missionNumber $ " AnyEntry()");
+
+    FixUnbreakableCrates();
+
+    if( dxr.dxInfo.missionNumber == 6 )
+        HongKong_AnyEntry();
+}
+
+function FixUnbreakableCrates()
+{
+    local CrateUnbreakableLarge c;
+    foreach AllActors(class'CrateUnbreakableLarge', c) {
+        if( c.bInvincible ) {
+            c.bInvincible = False;
+            c.HitPoints = 2000;
+        }
+    }
+}
+
+function Vandenberg_FirstEntry()
+{
+    local ElevatorMover e;
+    local Button1 b;
+    local Dispatcher d;
+    local LogicTrigger lt;
+
+    switch(dxr.localURL)
+    {
+        case "12_VANDENBERG_CMD":
+            foreach AllActors(class'Dispatcher', d)
+            {
+                switch(d.Tag)
+                {
+                    case 'overload2':
+                        d.tag = 'overload2disp';
+                        lt = Spawn(class'LogicTrigger',,,d.Location);
+                        lt.Tag = 'overload2';
+                        lt.Event = 'overload2disp';
+                        lt.inGroup1 = 'sec_switch2';
+                        lt.inGroup2 = 'sec_switch2';
+                        lt.OneShot = True;
+                        break;
+                    case 'overload1':
+                        d.tag = 'overload1disp';
+                        lt = Spawn(class'LogicTrigger',,,d.Location);
+                        lt.Tag = 'overload1';
+                        lt.Event = 'overload1disp';
+                        lt.inGroup1 = 'sec_switch1';
+                        lt.inGroup2 = 'sec_switch1';
+                        lt.OneShot = True;
+                        break;
+                }
+            }
+            break;
+        case "12_VANDENBERG_TUNNELS":
+            foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
+                e.BumpType = BT_PlayerBump;
+                e.BumpEvent = 'SC_Door3_opened';
+            }
+            foreach AllActors(class'Button1', b) {
+                if( b.Event == 'Top' || b.Event == 'middle' || b.Event == 'Bottom' ) {
+                    AddDelay(b, 5);
+                }
+            }
+            break;
+    }
+}
+
+function HongKong_FirstEntry()
+{
     local Actor a;
     local ScriptedPawn p;
 
-    Super.FirstEntry();
-    
     switch(dxr.localURL)
     {
         case "06_HONGKONG_TONGBASE":
@@ -55,21 +137,13 @@ function FirstEntry()
     }
 }
 
-function AnyEntry()
-{
-    Super.AnyEntry();
-    
-    doFixup();
-    
-}
-
-function doFixup()
+function HongKong_AnyEntry()
 {
     local Actor a;
     local ScriptedPawn p;
     local bool boolFlag;
     local bool recruitedFlag;
-    
+
     switch(dxr.localURL)
     {
         case "06_HONGKONG_TONGBASE":
@@ -147,6 +221,17 @@ function doFixup()
         default:
             break;
     }
+}
+
+function AddDelay(Actor trigger, float time)
+{
+    local Dispatcher d;
+    local name tagname;
+    tagname = dxr.Player.rootWindow.StringToName( "dxr_delay_" $ trigger.Event );
+    d = Spawn(class'Dispatcher', trigger, tagname);
+    d.OutEvents[0] = trigger.Event;
+    d.OutDelays[0] = time;
+    trigger.Event = d.Tag;
 }
 
 defaultproperties

@@ -202,6 +202,7 @@ function GiveRandomMeleeWeapon(ScriptedPawn p)
         || HasItem(p, class'WeaponCombatKnife')
         || HasItem(p, class'WeaponCrowbar')
         || HasItem(p, class'WeaponSword')
+        || HasItem(p, class'WeaponNanoSword')
     )
         return;
 
