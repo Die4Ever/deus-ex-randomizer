@@ -160,7 +160,6 @@ function Actor ReplaceActor(Actor oldactor, class<Actor> newclass)
     local Actor a;
     local float scalefactor;
     local float largestDim;
-    local Vector v;
 
     a = Spawn(newclass,,,oldactor.Location);
 
@@ -174,8 +173,7 @@ function Actor ReplaceActor(Actor oldactor, class<Actor> newclass)
     a.DrawScale = scalefactor;
     
     //Get it at the right height
-    v.Z = -(a.CollisionHeight/2);
-    a.move(v);
+    a.move(a.PrePivot);
     oldactor.bHidden = true;
     oldactor.Destroy();
 
@@ -242,4 +240,8 @@ function bool PositionIsSafe(Vector oldloc, Actor test, Vector newloc)
 function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
 {// https://github.com/Die4Ever/deus-ex-randomizer/wiki#smarter-key-randomization
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
+}
+
+defaultproperties
+{
 }

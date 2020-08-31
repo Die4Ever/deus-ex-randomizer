@@ -19,7 +19,7 @@ function AnyEntry()
         case "DX":
             l("Memeing up "$ dxr.localURL);
             foreach AllActors(class'DXLogo', logo)
-            {
+            {                
                 a = ReplaceActor(logo, GetRandomActorClass() );
                 
                 //Get it spinning just right
@@ -54,7 +54,7 @@ function AnyEntry()
             
             foreach AllActors(class'ElectricityEmitter', elec)
             {
-                v.Z = 60;
+                v.Z = 70;
                 elec.move(v);
             }
             break;
@@ -738,4 +738,8 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'WIBCarcass';
     if ( r == i++ ) return class'WineBottle';
     if ( r == i++ ) return class'WoodFragment';
+}
+
+defaultproperties
+{
 }
