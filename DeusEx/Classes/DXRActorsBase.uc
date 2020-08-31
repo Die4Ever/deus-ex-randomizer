@@ -155,6 +155,33 @@ function bool DestroyActor( Actor d )
     return d.Destroy();
 }
 
+function Actor ReplaceActor(Actor oldactor, class<Actor> newclass)
+{
+    local Actor a;
+    local float scalefactor;
+    local float largestDim;
+    local Vector v;
+
+    a = Spawn(newclass,,,oldactor.Location);
+
+    //Get the scaling to match
+    if (a.CollisionRadius > a.CollisionHeight) {
+        largestDim = a.CollisionRadius;
+    } else {
+        largestDim = a.CollisionHeight;
+    }
+    scalefactor = oldactor.CollisionHeight/largestDim;
+    a.DrawScale = scalefactor;
+    
+    //Get it at the right height
+    v.Z = -(a.CollisionHeight/2);
+    a.move(v);
+    oldactor.bHidden = true;
+    oldactor.Destroy();
+
+    return a;
+}
+
 function string ActorToString( Actor a )
 {
     local string out;

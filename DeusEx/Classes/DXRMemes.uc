@@ -1,14 +1,16 @@
 class DXRMemes extends DXRActorsBase;
 
+var Actor rotating;
+
 function AnyEntry()
 {
     local DXLogo logo;
+    local IonStormLogo islogo;
+    local EidosLogo elogo;
     local ElectricityEmitter elec;
     local Actor a;
     local Rotator r;
     local Vector v;
-    local float scalefactor;
-    local float largestDim;
     Super.AnyEntry();
 
     switch(dxr.localURL)
@@ -18,10 +20,11 @@ function AnyEntry()
             l("Memeing up "$ dxr.localURL);
             foreach AllActors(class'DXLogo', logo)
             {
-                a = Spawn(GetRandomActorClass(),,,logo.Location);
+                a = ReplaceActor(logo, GetRandomActorClass() );
                 
                 //Get it spinning just right
-                a.SetPhysics(PHYS_Rotating);
+                rotating = a;
+                a.SetPhysics(PHYS_None);
                 a.bFixedRotationDir = True;
                 a.bRotateToDesired = False;
                 r.Pitch = 2500;
@@ -29,24 +32,24 @@ function AnyEntry()
                 r.Roll = 0;
                 a.RotationRate = r;
                 
-                //Get the scaling to match
-                if (a.CollisionRadius > a.CollisionHeight) {
-                    largestDim = a.CollisionRadius;
-                } else {
-                    largestDim = a.CollisionHeight;
-                }
-                scalefactor = logo.CollisionHeight/largestDim;
-                a.DrawScale = scalefactor;
-                
-                
-                //Get it at the right height
-                v.Z = -(a.CollisionHeight/2);
-                a.move(v);
-                
                 //Get rid of any ambient sounds it may make
                 a.AmbientSound = None;
                 
-                logo.Destroy();
+                GotoState('RotatingState');
+            }
+
+            foreach AllActors(class'IonStormLogo', islogo)
+            {
+                a = ReplaceActor(islogo, GetRandomActorClass() );
+                a.SetPhysics(PHYS_None);
+                a.DrawScale *= 2.0;
+            }
+
+            foreach AllActors(class'EidosLogo', elogo)
+            {
+                a = ReplaceActor(elogo, GetRandomActorClass() );
+                a.SetPhysics(PHYS_None);
+                a.DrawScale *= 2.0;
             }
             
             foreach AllActors(class'ElectricityEmitter', elec)
@@ -66,6 +69,18 @@ function AnyEntry()
             l("Memeing up "$ dxr.localURL);
             RandomizeIntro();
             break;
+    }
+}
+
+state() RotatingState {
+    event Tick(float deltaTime)
+    {
+        local Rotator r;
+        r = rotating.Rotation;
+        r.Pitch += float(rotating.RotationRate.Pitch) * deltaTime;
+        r.Yaw += float(rotating.RotationRate.Yaw) * deltaTime;
+        r.Roll += float(rotating.RotationRate.Roll) * deltaTime;
+        rotating.SetRotation(r);
     }
 }
 
