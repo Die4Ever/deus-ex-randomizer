@@ -20,9 +20,7 @@ function AnyEntry()
 
     FixUnbreakableCrates();
 
-    if (dxr.dxInfo.missionNumber == -1 || dxr.dxInfo.missionNumber==-2)
-        Intro_AnyEntry();
-    else if( dxr.dxInfo.missionNumber == 6 )
+    if( dxr.dxInfo.missionNumber == 6 )
         HongKong_AnyEntry();
 }
 
@@ -136,101 +134,6 @@ function HongKong_FirstEntry()
             break;
         default:
             break;
-    }
-}
-
-
-//Not every Actor seems to actually rotate, so I've handpicked
-//a selection of fun items to replace the logo
-function class<Actor> RandomLogoItem()
-{
-    local int r;
-    local class<Actor> newclass;
-    
-    r = initchance();
-
-    if( chance(5,r) ) newclass = class'Van';
-    if( chance(5,r) ) newclass = class'DentonClone';
-    if( chance(5,r) ) newclass = class'LuciusDeBeers';
-    if( chance(5,r) ) newclass = class'RoadBlock';
-    if( chance(5,r) ) newclass = class'Trophy';
-    if( chance(5,r) ) newclass = class'Toilet';
-    if( chance(5,r) ) newclass = class'AttackHelicopter';
-    if( chance(5,r) ) newclass = class'MiniSub';
-    if( chance(5,r) ) newclass = class'Trashbag';
-    if( chance(5,r) ) newclass = class'HKBuddha';
-    if( chance(5,r) ) newclass = class'ChairLeather';
-    if( chance(5,r) ) newclass = class'Mailbox';
-    if( chance(5,r) ) newclass = class'TrashCan1';
-    if( chance(5,r) ) newclass = class'JCDentonMaleCarcass';
-    if( chance(5,r) ) newclass = class'Flask';
-    if( chance(5,r) ) newclass = class'Tree1';
-    if( chance(5,r) ) newclass = class'BarrelAmbrosia';
-    if( chance(5,r) ) newclass = class'KarkianCarcass';
-    if( chance(5,r) ) newclass = class'VendingMachine';
-    if( chance(5,r) ) newclass = class'BobPageAugmented';
-    
-    
-    return newclass;
-}
-
-function Intro_AnyEntry()
-{
-    local DXLogo logo;
-    local ElectricityEmitter elec;
-    local Actor a;
-    local Rotator r;
-    local Vector v;
-    local float scalefactor;
-    local float largestDim;
-    
-    l("Intro AnyEntry()");
-    
-
-    switch(dxr.localURL)
-    {
-        case "DXONLY":
-        case "DX":
-            l("Map is "$ dxr.localURL);
-            foreach AllActors(class'DXLogo', logo)
-            {
-                a = Spawn(RandomLogoItem(),,,logo.Location);
-                
-                //Get it spinning just right
-                a.SetPhysics(PHYS_Rotating);
-                a.bFixedRotationDir = True;
-                a.bRotateToDesired = False;
-                r.Pitch = 2500;
-                r.Yaw = 5000;
-                r.Roll = 0;
-                a.RotationRate = r;
-                
-                //Get the scaling to match
-                if (a.CollisionRadius > a.CollisionHeight) {
-                    largestDim = a.CollisionRadius;
-                } else {
-                    largestDim = a.CollisionHeight;
-                }
-                scalefactor = logo.CollisionHeight/largestDim;
-                a.DrawScale = scalefactor;
-                
-                
-                //Get it at the right height
-                v.Z = -(a.CollisionHeight/2);
-                a.move(v);
-                
-                //Get rid of any ambient sounds it may make
-                a.AmbientSound = None;
-                
-                logo.Destroy();
-            }
-            
-            foreach AllActors(class'ElectricityEmitter', elec)
-            {
-                v.Z = 60;
-                elec.move(v);
-            }
-        break;
     }
 }
 

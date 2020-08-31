@@ -98,6 +98,7 @@ function LoadModules()
     LoadModule(class'DXRNames');
     LoadModule(class'DXRFixup');
     LoadModule(class'DXRAutosave');
+    LoadModule(class'DXRMemes');
 
     RunTests();
 }
