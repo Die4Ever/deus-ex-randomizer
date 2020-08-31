@@ -20,7 +20,7 @@ function AnyEntry()
 
     FixUnbreakableCrates();
 
-    if (dxr.dxInfo.missionNumber == -1)
+    if (dxr.dxInfo.missionNumber == -1 || dxr.dxInfo.missionNumber==-2)
         Intro_AnyEntry();
     else if( dxr.dxInfo.missionNumber == 6 )
         HongKong_AnyEntry();
@@ -184,10 +184,14 @@ function Intro_AnyEntry()
     local float scalefactor;
     local float largestDim;
     
+    l("Intro AnyEntry()");
+    
 
     switch(dxr.localURL)
     {
         case "DXONLY":
+        case "DX":
+            l("Map is "$ dxr.localURL);
             foreach AllActors(class'DXLogo', logo)
             {
                 a = Spawn(RandomLogoItem(),,,logo.Location);

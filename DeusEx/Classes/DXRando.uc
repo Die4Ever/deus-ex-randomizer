@@ -30,7 +30,7 @@ function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
 
-    if( localURL == "DX" || localURL == "" ) {
+    if( localURL == "" ) {
         log("DXRando PostPostBeginPlay returning because localURL == " $ localURL);
         return;
     }
@@ -283,5 +283,5 @@ function RunTests()
 
 defaultproperties
 {
-    bAlwaysRelevant=True
+     bAlwaysRelevant=True
 }
