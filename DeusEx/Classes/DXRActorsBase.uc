@@ -160,7 +160,6 @@ function Actor ReplaceActor(Actor oldactor, class<Actor> newclass)
     local Actor a;
     local float scalefactor;
     local float largestDim;
-    local Inventory i;
 
     a = Spawn(newclass,,,oldactor.Location);
 
@@ -175,8 +174,12 @@ function Actor ReplaceActor(Actor oldactor, class<Actor> newclass)
     //DrawScale doesn't work right for Inventory objects
     a.DrawScale = scalefactor;
     if (a.IsA('Inventory')) {
-        i = Inventory(a);
-        i.PickupViewScale = scalefactor;
+        Inventory(a).PickupViewScale = scalefactor;
+    }
+    
+    //Floating decorations don't rotate
+    if (a.IsA('DeusExDecoration')) {
+        DeusExDecoration(a).bFloating = False;
     }
     
     //Get it at the right height

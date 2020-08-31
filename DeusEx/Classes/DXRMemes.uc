@@ -48,6 +48,8 @@ function AnyEntry()
                 a = ReplaceActor(islogo, newActorClass );
                 a.SetPhysics(PHYS_None);
                 a.DrawScale *= 2.0;
+                //Get rid of any ambient sounds it may make
+                a.AmbientSound = None;
             }
 
             foreach AllActors(class'EidosLogo', elogo)
@@ -57,6 +59,8 @@ function AnyEntry()
                 a = ReplaceActor(elogo, newActorClass );
                 a.SetPhysics(PHYS_None);
                 a.DrawScale *= 2.0;
+                //Get rid of any ambient sounds it may make
+                a.AmbientSound = None;
             }
             
             foreach AllActors(class'ElectricityEmitter', elec)
@@ -88,6 +92,13 @@ state() RotatingState {
         r.Yaw += float(rotating.RotationRate.Yaw) * deltaTime;
         r.Roll += float(rotating.RotationRate.Roll) * deltaTime;
         rotating.SetRotation(r);
+        
+        //This is a bit kludgy, HangingDecoration
+        //override the rotation behaviour.
+        //Worth it for the meme though
+        if (rotating.IsA('HangingDecoration')) {
+            HangingDecoration(rotating).origRot = r;
+        }
     }
 }
 
@@ -165,7 +176,7 @@ function bool is_valid(string s, class<Object> o)
 function class<Actor> GetRandomActorClass()
 {
     local int r, i;
-
+        
     r = rng(519);
 
     if ( r == i++ ) return class'AcousticSensor';
