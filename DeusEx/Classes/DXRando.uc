@@ -95,6 +95,7 @@ function LoadModules()
     LoadModule(class'DXRAugmentations');
     LoadModule(class'DXRSwapItems');
     LoadModule(class'DXRReduceItems');
+    LoadModule(class'DXRNames');
     LoadModule(class'DXRFixup');
     LoadModule(class'DXRAutosave');
 
