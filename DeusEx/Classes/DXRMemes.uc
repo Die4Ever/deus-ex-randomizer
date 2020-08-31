@@ -2,6 +2,24 @@ class DXRMemes extends DXRActorsBase;
 
 var Actor rotating;
 
+function RandomDancing(Actor a)
+{
+    local int r;
+    
+    if (IsHuman(a)) {
+        l("Current orders are " $ ScriptedPawn(a).Orders);
+        if (ScriptedPawn(a).Orders == 'Standing' || 
+            ScriptedPawn(a).Orders == 'Sitting' ||
+            ScriptedPawn(a).Orders == '') {
+            if (a.HasAnim('Dance')){
+                r = initchance();
+                if (chance(25,r))  ScriptedPawn(a).SetOrders('Dancing'); //25%
+                chance(75,r); //75% chance of just staying in the same state
+            }
+        }
+    }
+}
+
 function AnyEntry()
 {
     local DXLogo logo;
@@ -25,6 +43,13 @@ function AnyEntry()
                 l("DXLogo replaced with "$newActorClass);
                 a = ReplaceActor(logo, newActorClass );
                 
+                if (IsHuman(a)){
+                    ScriptedPawn(a).SetOrders('Standing');
+                }
+                
+                //Maybe make them dance?
+                RandomDancing(a);
+                
                 //Get it spinning just right
                 rotating = a;
                 a.SetPhysics(PHYS_None);
@@ -46,6 +71,12 @@ function AnyEntry()
                 newActorClass = GetRandomActorClass();
                 l("IonStormLogo replaced with "$newActorClass);
                 a = ReplaceActor(islogo, newActorClass );
+                if (IsHuman(a)){
+                    ScriptedPawn(a).SetOrders('Standing');
+                }
+                //Maybe make them dance?
+                RandomDancing(a);
+                
                 a.SetPhysics(PHYS_None);
                 a.DrawScale *= 2.0;
                 //Get rid of any ambient sounds it may make
@@ -57,6 +88,12 @@ function AnyEntry()
                 newActorClass = GetRandomActorClass();
                 l("EidosLogo replaced with "$newActorClass);
                 a = ReplaceActor(elogo, newActorClass );
+                if (IsHuman(a)){
+                    ScriptedPawn(a).SetOrders('Standing');
+                }
+                //Maybe make them dance?
+                RandomDancing(a);
+                
                 a.SetPhysics(PHYS_None);
                 a.DrawScale *= 2.0;
                 //Get rid of any ambient sounds it may make
@@ -81,6 +118,18 @@ function AnyEntry()
             RandomizeIntro();
             break;
     }
+}
+
+function FirstEntry()
+{
+    local ScriptedPawn sp;
+    
+    foreach AllActors(class'ScriptedPawn',sp)
+    {
+        //Make people dance across the world
+        RandomDancing(sp);
+    }
+
 }
 
 state() RotatingState {
@@ -176,8 +225,8 @@ function bool is_valid(string s, class<Object> o)
 function class<Actor> GetRandomActorClass()
 {
     local int r, i;
-        
-    r = rng(519);
+
+    r = rng(501);
 
     if ( r == i++ ) return class'AcousticSensor';
     if ( r == i++ ) return class'AdaptiveArmor';
@@ -342,7 +391,7 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'Female4';
     if ( r == i++ ) return class'Female4Carcass';
     if ( r == i++ ) return class'FireExtinguisher';
-    if ( r == i++ ) return class'FirePlug';
+    //if ( r == i++ ) return class'FirePlug';
     if ( r == i++ ) return class'Fish';
     if ( r == i++ ) return class'Fish2';
     if ( r == i++ ) return class'Fishes';
@@ -685,26 +734,26 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'WeaponAssaultGun';
     if ( r == i++ ) return class'WeaponAssaultShotgun';
     if ( r == i++ ) return class'WeaponBaton';
-    if ( r == i++ ) return class'WeaponCatScratch';
+    //if ( r == i++ ) return class'WeaponCatScratch';
     if ( r == i++ ) return class'WeaponCombatKnife';
     if ( r == i++ ) return class'WeaponCrowbar';
-    if ( r == i++ ) return class'WeaponDogBite';
+    //if ( r == i++ ) return class'WeaponDogBite';
     if ( r == i++ ) return class'WeaponEMPGrenade';
     if ( r == i++ ) return class'WeaponFlamethrower';
     if ( r == i++ ) return class'WeaponGasGrenade';
     if ( r == i++ ) return class'WeaponGEPGun';
-    if ( r == i++ ) return class'WeaponGraySpit';
-    if ( r == i++ ) return class'WeaponGraySwipe';
-    if ( r == i++ ) return class'WeaponGreaselSpit';
+    //if ( r == i++ ) return class'WeaponGraySpit';
+    //if ( r == i++ ) return class'WeaponGraySwipe';
+    //if ( r == i++ ) return class'WeaponGreaselSpit';
     if ( r == i++ ) return class'WeaponHideAGun';
-    if ( r == i++ ) return class'WeaponKarkianBite';
-    if ( r == i++ ) return class'WeaponKarkianBump';
+    //if ( r == i++ ) return class'WeaponKarkianBite';
+    //if ( r == i++ ) return class'WeaponKarkianBump';
     if ( r == i++ ) return class'WeaponLAM';
     if ( r == i++ ) return class'WeaponLAW';
     if ( r == i++ ) return class'WeaponMiniCrossbow';
-    if ( r == i++ ) return class'WeaponMJ12Commando';
-    if ( r == i++ ) return class'WeaponMJ12Rocket';
-    if ( r == i++ ) return class'WeaponMod';
+    //if ( r == i++ ) return class'WeaponMJ12Commando';
+    //if ( r == i++ ) return class'WeaponMJ12Rocket';
+    //if ( r == i++ ) return class'WeaponMod';
     if ( r == i++ ) return class'WeaponModAccuracy';
     if ( r == i++ ) return class'WeaponModClip';
     if ( r == i++ ) return class'WeaponModLaser';
@@ -715,20 +764,20 @@ function class<Actor> GetRandomActorClass()
     if ( r == i++ ) return class'WeaponModSilencer';
     if ( r == i++ ) return class'WeaponNanoSword';
     if ( r == i++ ) return class'WeaponNanoVirusGrenade';
-    if ( r == i++ ) return class'WeaponNPCMelee';
-    if ( r == i++ ) return class'WeaponNPCRanged';
+    //if ( r == i++ ) return class'WeaponNPCMelee';
+    //if ( r == i++ ) return class'WeaponNPCRanged';
     if ( r == i++ ) return class'WeaponPepperGun';
     if ( r == i++ ) return class'WeaponPistol';
     if ( r == i++ ) return class'WeaponPlasmaRifle';
     if ( r == i++ ) return class'WeaponProd';
-    if ( r == i++ ) return class'WeaponRatBite';
+    //if ( r == i++ ) return class'WeaponRatBite';
     if ( r == i++ ) return class'WeaponRifle';
-    if ( r == i++ ) return class'WeaponRobotMachinegun';
-    if ( r == i++ ) return class'WeaponRobotRocket';
+    //if ( r == i++ ) return class'WeaponRobotMachinegun';
+    //if ( r == i++ ) return class'WeaponRobotRocket';
     if ( r == i++ ) return class'WeaponSawedOffShotgun';
     if ( r == i++ ) return class'WeaponShuriken';
-    if ( r == i++ ) return class'WeaponSpiderBot';
-    if ( r == i++ ) return class'WeaponSpiderBot2';
+    //if ( r == i++ ) return class'WeaponSpiderBot';
+    //if ( r == i++ ) return class'WeaponSpiderBot2';
     if ( r == i++ ) return class'WeaponStealthPistol';
     if ( r == i++ ) return class'WeaponSword';
     if ( r == i++ ) return class'WHBenchEast';
