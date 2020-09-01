@@ -71,6 +71,8 @@ function bool HasItem(ScriptedPawn p, class c)
 
 function bool SkipActorBase(Actor a)
 {
+    if( a == dxr.Player.carriedDecoration )
+        return true;
     if( (a.Owner != None) || a.bStatic || a.bHidden || a.bMovable==False )
         return true;
     if( a.Base != None )
