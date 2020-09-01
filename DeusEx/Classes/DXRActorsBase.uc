@@ -47,6 +47,8 @@ function bool AnyGreater(vector a, vector b)
 
 function bool CarriedItem(Actor a)
 {// I need to check Engine.Inventory.bCarriedItem
+    if( a == dxr.Player.carriedDecoration )
+        return true;
     return a.Owner != None && a.Owner.IsA('Pawn');
 }
 
