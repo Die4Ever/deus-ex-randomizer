@@ -4,14 +4,14 @@ var transient bool bNeedSave;
 
 function FirstEntry()
 {
-    if( dxr.dxInfo != None && dxr.flags.autosave > 0 ) {
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.flags.autosave > 0 ) {
         bNeedSave=true;
     }
 }
 
 function ReEntry()
 {
-    if( dxr.dxInfo != None && dxr.flags.autosave==2 && dxr.flags.f.GetBool('PlayerTraveling') ) {
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.flags.autosave==2 && dxr.flags.f.GetBool('PlayerTraveling') ) {
         bNeedSave=true;
     }
 }

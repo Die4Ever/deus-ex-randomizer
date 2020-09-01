@@ -15,8 +15,23 @@ function FirstEntry()
 
 function AnyEntry()
 {
+    local DXRScopeView scope;
+    local DeusExRootWindow win;
+
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber $ " AnyEntry()");
+
+    win = DeusExRootWindow(dxr.Player.rootWindow);
+    if ( win.scopeView.IsA('DXRScopeView') == false ) {
+        //scope = new class'DXRScopeView';
+        //scope.InitWindowWithPlayer(dxr.Player);
+
+        scope = DXRScopeView(win.NewChild(Class'DXRScopeView', False));
+        scope.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
+
+        scope.Lower();
+        win.scopeView = scope;
+    }
 
     FixUnbreakableCrates();
 
