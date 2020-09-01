@@ -4,17 +4,13 @@ var Actor rotating;
 
 function RandomDancing(Actor a)
 {
-    local int r;
-    
     if (IsHuman(a)) {
         l("Current orders are " $ ScriptedPawn(a).Orders);
         if (ScriptedPawn(a).Orders == 'Standing' || 
             ScriptedPawn(a).Orders == 'Sitting' ||
             ScriptedPawn(a).Orders == '') {
             if (a.HasAnim('Dance')){
-                r = initchance();
-                if (chance(25,r))  ScriptedPawn(a).SetOrders('Dancing'); //25%
-                chance(75,r); //75% chance of just staying in the same state
+                if (chance_single(dxr.flags.dancingpercent))  ScriptedPawn(a).SetOrders('Dancing');
             }
         }
     }
@@ -147,6 +143,9 @@ state() RotatingState {
         //Worth it for the meme though
         if (rotating.IsA('HangingDecoration')) {
             HangingDecoration(rotating).origRot = r;
+        }
+        if (rotating.IsA('DeusExProjectile')) {
+            DeusExProjectile(rotating).bStuck = true;
         }
     }
 }

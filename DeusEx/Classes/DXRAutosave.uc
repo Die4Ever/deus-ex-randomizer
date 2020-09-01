@@ -4,14 +4,14 @@ var transient bool bNeedSave;
 
 function FirstEntry()
 {
-    if( dxr.flags.autosave > 0 ) {
+    if( dxr.dxInfo != None && dxr.flags.autosave > 0 ) {
         bNeedSave=true;
     }
 }
 
 function ReEntry()
 {
-    if( dxr.flags.autosave==2 && dxr.flags.f.GetBool('PlayerTraveling') ) {
+    if( dxr.dxInfo != None && dxr.flags.autosave==2 && dxr.flags.f.GetBool('PlayerTraveling') ) {
         bNeedSave=true;
     }
 }
@@ -43,7 +43,7 @@ function doAutosave()
 
     //copied from DeusExPlayer QuickSave()
     if (
-        ((dxr.dxInfo == None) && (dxr.dxInfo.MissionNumber < 0)) || 
+        (dxr.dxInfo == None) || (dxr.dxInfo.MissionNumber < 0) || 
         ((dxr.Player.IsInState('Dying')) || (dxr.Player.IsInState('Paralyzed')) || (dxr.Player.IsInState('Interpolating'))) || 
         (dxr.Player.dataLinkPlay != None) || (dxr.Level.Netmode != NM_Standalone) || (dxr.Player.InConversation())
     ){

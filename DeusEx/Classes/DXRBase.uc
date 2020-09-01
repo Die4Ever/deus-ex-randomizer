@@ -66,6 +66,11 @@ function bool chance(int percent, int r)
     return r>= (overallchances-percent) && r< overallchances;
 }
 
+function bool chance_single(int percent)
+{
+    return rng(100) < percent;
+}
+
 function l(string message)
 {
     log(class @ message);

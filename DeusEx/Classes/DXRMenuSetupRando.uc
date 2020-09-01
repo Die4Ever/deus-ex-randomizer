@@ -23,6 +23,7 @@ var MenuUIEditWindow editBioCells;
 var MenuUIEditWindow editMedkits;
 var MenuUIEditWindow editSpeedLevel;
 var MenuUIEditWindow editEnemyRando;
+var MenuUIEditWindow editDancingPercent;
 
 var MenuUILabelWindow winHelp;
 var bool bHelpAlwaysOn;
@@ -33,6 +34,10 @@ var String helptexts[64];
 
 event InitWindow()
 {
+    local vector coords;
+    coords = _GetCoords(11, 4);
+    ClientWidth = coords.X;
+    ClientHeight = coords.Y;
     Super.InitWindow();
 
     ResetToDefaults();
@@ -55,7 +60,7 @@ function InitHelp()
     local MenuUILabelWindow winLabel;
     local vector coords;
     bHelpAlwaysOn = True;
-    coords = _GetCoords(9, 0);
+    coords = _GetCoords(10, 0);
     winHelp = CreateMenuLabel( coords.x, coords.y+4, "", winClient);
 }
 
@@ -120,12 +125,14 @@ function CreateControls()
     editSpeedLevel = CreateSlider(row++, "Speed Aug Level", "Start the game with the Speed Enhancement augmentation.", 1, 0, 3);
 
     RemoveInvisWalls = CreateEnum(row++, "Remove Invisible Walls", "Allows you to get around some areas where it looks like you should be able to.");
+
+    editDancingPercent = CreateSlider(row++, "Dancing %", "How many characters should be dancing.", 25, 0, 100);
 }
 
 function vector GetCoords(int row, int col)
 {
-    if( row >= 9 ) {
-        row -= 9;
+    if( row >= 10 ) {
+        row -= 10;
         col += 2;
     }
     return _GetCoords(row, col);
@@ -338,6 +345,7 @@ function ProcessAction(String actionKey)
         dxr.flags.biocells = GetSliderValue(editBioCells);
         dxr.flags.medkits = GetSliderValue(editMedkits);
         dxr.flags.speedlevel = GetSliderValue(editSpeedLevel);
+        dxr.flags.dancingpercent = GetSliderValue(editDancingPercent);
 
         if( keys == "Off" ) dxr.flags.keysrando = 0;
         else if( keys == "Dumb" ) dxr.flags.keysrando = 1;
