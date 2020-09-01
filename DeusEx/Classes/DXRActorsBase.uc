@@ -155,12 +155,14 @@ function bool DestroyActor( Actor d )
     return d.Destroy();
 }
 
-function Actor ReplaceActor(Actor oldactor, class<Actor> newclass)
+function Actor ReplaceActor(Actor oldactor, string newclassstring)
 {
     local Actor a;
+    local class<Actor> newclass;
     local float scalefactor;
     local float largestDim;
 
+    newclass = class<Actor>(DynamicLoadObject(newclassstring, class'class'));
     a = Spawn(newclass,,,oldactor.Location);
 
     //Get the scaling to match
