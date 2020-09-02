@@ -19,7 +19,7 @@ function AnyEntry()
     l( "mission " $ dxr.dxInfo.missionNumber $ " AnyEntry()");
 
     BuffScopes();
-    FixUnbreakableCrates();
+    FixUnbreakableObjects();
 
     if( dxr.dxInfo.missionNumber == 6 )
         HongKong_AnyEntry();
@@ -39,13 +39,20 @@ function BuffScopes()
     }
 }
 
-function FixUnbreakableCrates()
+function FixUnbreakableObjects()
 {
     local CrateUnbreakableLarge c;
+    local BarrelFire b;
     foreach AllActors(class'CrateUnbreakableLarge', c) {
         if( c.bInvincible ) {
             c.bInvincible = False;
             c.HitPoints = 2000;
+        }
+    }
+    foreach AllActors(class'BarrelFire', b) {
+        if( b.bInvincible ) {
+            b.bInvincible = False;
+            b.HitPoints = 50;
         }
     }
 }
