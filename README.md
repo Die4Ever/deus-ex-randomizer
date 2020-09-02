@@ -5,7 +5,7 @@ Copy the DeusEx.u file into your `Deus Ex\System\` folder, which is probably `C:
 Recommended to use it with Kentie's Deus Exe Launcher, or Han's Launcher
 
 Currently in v1.3.3.7, DXRando randomizes
-* adding and changing characters, and giving them random names and making some of them dance
+* adding and changing characters, giving them random names and making some of them dance
 * changing the locations of items/boxes/NanoKeys around the map
 * passwords and passcodes
 * the locations of datacubes
