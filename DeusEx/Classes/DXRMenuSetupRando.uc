@@ -23,6 +23,7 @@ var MenuUIEditWindow editBioCells;
 var MenuUIEditWindow editMedkits;
 var MenuUIEditWindow editSpeedLevel;
 var MenuUIEditWindow editEnemyRando;
+var MenuUIEditWindow editDancingPercent;
 
 var MenuUILabelWindow winHelp;
 var bool bHelpAlwaysOn;
@@ -33,6 +34,10 @@ var String helptexts[64];
 
 event InitWindow()
 {
+    local vector coords;
+    coords = _GetCoords(11, 4);
+    ClientWidth = coords.X;
+    ClientHeight = coords.Y;
     Super.InitWindow();
 
     ResetToDefaults();
@@ -55,7 +60,7 @@ function InitHelp()
     local MenuUILabelWindow winLabel;
     local vector coords;
     bHelpAlwaysOn = True;
-    coords = _GetCoords(9, 0);
+    coords = _GetCoords(10, 0);
     winHelp = CreateMenuLabel( coords.x, coords.y+4, "", winClient);
 }
 
@@ -84,9 +89,9 @@ function CreateControls()
 
     editBrightness = CreateSlider(row++, "Brightness +", "Increase the brightness of dark areas.", 5, 0, 25);
 
-    btnRandoKeys.values[0] = "Smart";
-    btnRandoKeys.values[1] = "On";
-    btnRandoKeys.values[2] = "Off";
+    btnRandoKeys.values[0] = "On";
+    //btnRandoKeys.values[1] = "On";
+    btnRandoKeys.values[1] = "Off";
     RandoKeys = CreateEnum(row++, "Key Randomization", "Move keys around the map.", btnRandoKeys);
 
     btnRandoDoors.values[0] = "Both";
@@ -109,9 +114,10 @@ function CreateControls()
     btnInfoDevs.values[1] = "Unchanged";
     RandoInfoDevices = CreateEnum(row++, "Datacubes", "Moves datacubes and other information objects around the map.", btnInfoDevs);
 
-    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 25, 0, 100);
     editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", "Minimum cost for skills in percentage of the original cost.", 25, 0, 500);
     editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", "Maximum cost for skills in percentage of the original cost.", 300, 0, 500);
+
+    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 25, 0, 100);
     editAmmo = CreateSlider(row++, "Ammo Drops %", "Make ammo more scarce.", 90);
     editMultitools = CreateSlider(row++, "Multitools Drops %", "Make multitools more scarce.", 80);
     editLockpicks = CreateSlider(row++, "Lockpicks Drops %", "Make lockpicks more scarce.", 80);
@@ -120,12 +126,14 @@ function CreateControls()
     editSpeedLevel = CreateSlider(row++, "Speed Aug Level", "Start the game with the Speed Enhancement augmentation.", 1, 0, 3);
 
     RemoveInvisWalls = CreateEnum(row++, "Remove Invisible Walls", "Allows you to get around some areas where it looks like you should be able to.");
+
+    editDancingPercent = CreateSlider(row++, "Dancing %", "How many characters should be dancing.", 25, 0, 100);
 }
 
 function vector GetCoords(int row, int col)
 {
-    if( row >= 9 ) {
-        row -= 9;
+    if( row >= 10 ) {
+        row -= 10;
         col += 2;
     }
     return _GetCoords(row, col);
@@ -338,6 +346,7 @@ function ProcessAction(String actionKey)
         dxr.flags.biocells = GetSliderValue(editBioCells);
         dxr.flags.medkits = GetSliderValue(editMedkits);
         dxr.flags.speedlevel = GetSliderValue(editSpeedLevel);
+        dxr.flags.dancingpercent = GetSliderValue(editDancingPercent);
 
         if( keys == "Off" ) dxr.flags.keysrando = 0;
         else if( keys == "Dumb" ) dxr.flags.keysrando = 1;
@@ -345,9 +354,18 @@ function ProcessAction(String actionKey)
         else if( keys == "Copy" ) dxr.flags.keysrando = 3;
         else if( keys == "Smart" ) dxr.flags.keysrando = 4;
 
-        if( doors == "Unchanged" ) {}
-        else if( doors == "Destructible" ) dxr.flags.doorsdestructible = 100;
-        else if( doors == "Pickable" ) dxr.flags.doorspickable = 100;
+        if( doors == "Unchanged" ) {
+            dxr.flags.doorsdestructible = 0;
+            dxr.flags.doorspickable = 0;
+        }
+        else if( doors == "Destructible" ) {
+            dxr.flags.doorsdestructible = 100;
+            dxr.flags.doorspickable = 0;
+        }
+        else if( doors == "Pickable" ) {
+            dxr.flags.doorspickable = 100;
+            dxr.flags.doorsdestructible = 0;
+        }
         else if( doors == "Either" ) {
             dxr.flags.doorsdestructible = 50;
             dxr.flags.doorspickable = 50;

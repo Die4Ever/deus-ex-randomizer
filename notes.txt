@@ -1,6 +1,11 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
 for v1.4========================
+https://github.com/Die4Ever/deus-ex-randomizer/milestone/1
+
+nah said:
+"also ULevel::SpawnPlayActor also exposed a bNoColissionFail parameter, which is really handy/needed when you wanna replace any actors. some otherwise fail to spawn"
+
 x use minDamageThreshold of 60 for doors, it's what the seals in the ship use, door at the top of paris start is 75 though
 x -50 can be broken by master sniper, 60 can still be broken with dragoon's tooth sword, max low tech skill, and max combat strength aug, 75 cannot
   -not just key-only doors or undefeatible doors, but all doors?
@@ -79,6 +84,40 @@ Keypoint, the base class of invisible actors which mark things.
 // supports both in-level warp zones and cross-level warp zones.
 
 track times per mission and overall (RTA or IGT?)
+
+for v1.3.3.7====================
+
+to generate the list of all actors, I used windows command prompt dir /B to list the files
+I used this website to do quick regexes https://www.regexpal.com/?fam=97259
+paste in the list output by dir /B then use this match regex
+^(.*)\.uc$
+then use this substitution regex
+is_valid("$1", class'$1');
+
+run the outputted code in Deus Ex with this function
+
+function bool is_valid(string s, class<Object> o)
+{
+    local class<Actor> a;
+    a = class<Actor>(o);
+    if ( a == None ) return false;
+    if ( a.default.bHidden ) return false;
+    if ( a.default.Mesh == None ) return false;
+    if ( a.default.DrawType != DT_Mesh ) return false;
+    if ( a.default.Style != STY_Normal ) return false;
+
+    log( "if ( r == i++ ) return class'" $ s $ "';" );
+    i++;
+    return true;
+}
+
+then paste the log output back into the website using this match regex
+^(ScriptLog: )(.*)$
+and this substitution regex
+$2
+
+the output from that will fill the meat of the GetRandomActorClass function
+
 
 for v1.2========================
 

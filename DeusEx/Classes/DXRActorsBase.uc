@@ -47,6 +47,8 @@ function bool AnyGreater(vector a, vector b)
 
 function bool CarriedItem(Actor a)
 {// I need to check Engine.Inventory.bCarriedItem
+    if( a == dxr.Player.carriedDecoration )
+        return true;
     return a.Owner != None && a.Owner.IsA('Pawn');
 }
 
@@ -71,6 +73,8 @@ function bool HasItem(ScriptedPawn p, class c)
 
 function bool SkipActorBase(Actor a)
 {
+    if( a == dxr.Player.carriedDecoration )
+        return true;
     if( (a.Owner != None) || a.bStatic || a.bHidden || a.bMovable==False )
         return true;
     if( a.Base != None )
@@ -155,6 +159,43 @@ function bool DestroyActor( Actor d )
     return d.Destroy();
 }
 
+function Actor ReplaceActor(Actor oldactor, string newclassstring)
+{
+    local Actor a;
+    local class<Actor> newclass;
+    local float scalefactor;
+    local float largestDim;
+
+    newclass = class<Actor>(DynamicLoadObject(newclassstring, class'class'));
+    a = Spawn(newclass,,,oldactor.Location);
+
+    //Get the scaling to match
+    if (a.CollisionRadius > a.CollisionHeight) {
+        largestDim = a.CollisionRadius;
+    } else {
+        largestDim = a.CollisionHeight;
+    }
+    scalefactor = oldactor.CollisionHeight/largestDim;
+    
+    //DrawScale doesn't work right for Inventory objects
+    a.DrawScale = scalefactor;
+    if (a.IsA('Inventory')) {
+        Inventory(a).PickupViewScale = scalefactor;
+    }
+    
+    //Floating decorations don't rotate
+    if (a.IsA('DeusExDecoration')) {
+        DeusExDecoration(a).bFloating = False;
+    }
+    
+    //Get it at the right height
+    a.move(a.PrePivot);
+    oldactor.bHidden = true;
+    oldactor.Destroy();
+
+    return a;
+}
+
 function string ActorToString( Actor a )
 {
     local string out;
@@ -215,4 +256,8 @@ function bool PositionIsSafe(Vector oldloc, Actor test, Vector newloc)
 function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
 {// https://github.com/Die4Ever/deus-ex-randomizer/wiki#smarter-key-randomization
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
+}
+
+defaultproperties
+{
 }

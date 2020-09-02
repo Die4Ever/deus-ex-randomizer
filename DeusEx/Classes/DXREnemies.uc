@@ -219,6 +219,20 @@ function GiveRandomMeleeWeapon(ScriptedPawn p)
 
 function RandomizeSize(Actor a)
 {
+    local Decoration carried;
+    local DeusExPlayer p;
+
+    p = DeusExPlayer(a);
+    if( p != None && p.carriedDecoration != None ) {
+        carried = p.carriedDecoration;
+        p.DropDecoration();
+        carried.SetPhysics(PHYS_None);
+    }
     SetActorScale(a, float(rng(200))/1000 + 0.9);
     a.Fatness = rng(20) + 120;
+
+    if( carried != None ) {
+        p.carriedDecoration = carried;
+        p.PutCarriedDecorationInHand();
+    }
 }

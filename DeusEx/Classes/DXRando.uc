@@ -30,7 +30,7 @@ function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
 
-    if( localURL == "DX" || localURL == "" ) {
+    if( localURL == "" ) {
         log("DXRando PostPostBeginPlay returning because localURL == " $ localURL);
         return;
     }
@@ -98,6 +98,7 @@ function LoadModules()
     LoadModule(class'DXRNames');
     LoadModule(class'DXRFixup');
     LoadModule(class'DXRAutosave');
+    LoadModule(class'DXRMemes');
 
     RunTests();
 }
@@ -283,5 +284,5 @@ function RunTests()
 
 defaultproperties
 {
-    bAlwaysRelevant=True
+     bAlwaysRelevant=True
 }

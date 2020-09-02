@@ -6,10 +6,10 @@ function FirstEntry()
     l( "mission " $ dxr.dxInfo.missionNumber $ " FirstEntry()");
 
     Level.AmbientBrightness += dxr.flags.brightness;
-
+    
     if( dxr.dxInfo.missionNumber == 6 )
         HongKong_FirstEntry();
-    if( dxr.dxInfo.missionNumber == 12 )
+    else if( dxr.dxInfo.missionNumber == 12 )
         Vandenberg_FirstEntry();
 }
 
@@ -18,10 +18,25 @@ function AnyEntry()
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber $ " AnyEntry()");
 
+    BuffScopes();
     FixUnbreakableCrates();
 
     if( dxr.dxInfo.missionNumber == 6 )
         HongKong_AnyEntry();
+}
+
+function BuffScopes()
+{
+    local DXRScopeView scope;
+    local DeusExRootWindow win;
+
+    win = DeusExRootWindow(dxr.Player.rootWindow);
+    if ( win.scopeView.IsA('DXRScopeView') == false ) {
+        scope = DXRScopeView(win.NewChild(Class'DXRScopeView', False));
+        scope.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
+        scope.Lower();
+        win.scopeView = scope;
+    }
 }
 
 function FixUnbreakableCrates()

@@ -12,7 +12,7 @@ function FirstEntry()
     {
         if( p.bImportant ) continue;
         
-        p.UnfamiliarName = RandomName();
+        p.UnfamiliarName = RandomName(p);
         p.FamiliarName = p.UnfamiliarName;
     }
 
@@ -24,7 +24,20 @@ function FirstEntry()
     }
 }
 
-function string RandomName()
+function string RandomName(optional Actor a)
+{
+    if ( a != None && a.IsA('Robot') ) {
+        return Caps(RandomNamePart(2,4)) $ "-" $ rng(1000);
+    }
+
+    if( rng(2) == 0 ) {
+        return RandomNamePart(2, 4) @ RandomNamePart(2, 4);
+    }
+
+    return RandomNamePart(2, 6);
+}
+
+function string RandomNamePart(int min, int max)
 {
     local string n;
     local bool vowel;
@@ -38,7 +51,7 @@ function string RandomName()
     num_vowels = Len(vowels);
     num_cons = Len(cons);
 
-    length = rng(4)+2;
+    length = rng(max-min+1)+min;
     if( rng(2) == 0 ) vowel = true;
 
     for( i=0; i < length; i++ ) {

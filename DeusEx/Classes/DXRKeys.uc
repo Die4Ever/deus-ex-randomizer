@@ -147,12 +147,14 @@ function AdjustRestrictions(int doorspickable, int doorsdestructible, int device
         if( d.KeyIDNeeded != 'None' ) l("found door with KeyIDNeeded == " $ d.KeyIDNeeded);
         //if( d.KeyIDNeeded == 'None' || d.bPickable || d.bBreakable ) continue;
 
-        if( d.bHighlight == false ) {
+        /*if( d.bHighlight == false || d.bFrobbable == false ) {
             d.bPickable = false;
+            l( ""$ d.Brush);
             d.bLocked = true;
             d.bHighlight = true;
-            continue;
-        }
+            d.bFrobbable = true;
+            continue; // will make this more adjustable in v1.4 with new flags https://github.com/Die4Ever/deus-ex-randomizer/issues/28
+        }*/
         if( d.bPickable || d.bBreakable ) continue;
 
         if( d.bPickable == false && doorspickable > 0 ) {
