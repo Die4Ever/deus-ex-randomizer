@@ -89,9 +89,9 @@ function CreateControls()
 
     editBrightness = CreateSlider(row++, "Brightness +", "Increase the brightness of dark areas.", 5, 0, 25);
 
-    btnRandoKeys.values[0] = "Smart";
-    btnRandoKeys.values[1] = "On";
-    btnRandoKeys.values[2] = "Off";
+    btnRandoKeys.values[0] = "On";
+    //btnRandoKeys.values[1] = "On";
+    btnRandoKeys.values[1] = "Off";
     RandoKeys = CreateEnum(row++, "Key Randomization", "Move keys around the map.", btnRandoKeys);
 
     btnRandoDoors.values[0] = "Both";
@@ -353,9 +353,18 @@ function ProcessAction(String actionKey)
         else if( keys == "Copy" ) dxr.flags.keysrando = 3;
         else if( keys == "Smart" ) dxr.flags.keysrando = 4;
 
-        if( doors == "Unchanged" ) {}
-        else if( doors == "Destructible" ) dxr.flags.doorsdestructible = 100;
-        else if( doors == "Pickable" ) dxr.flags.doorspickable = 100;
+        if( doors == "Unchanged" ) {
+            dxr.flags.doorsdestructible = 0;
+            dxr.flags.doorspickable = 0;
+        }
+        else if( doors == "Destructible" ) {
+            dxr.flags.doorsdestructible = 100;
+            dxr.flags.doorspickable = 0;
+        }
+        else if( doors == "Pickable" ) {
+            dxr.flags.doorspickable = 100;
+            dxr.flags.doorsdestructible = 0;
+        }
         else if( doors == "Either" ) {
             dxr.flags.doorsdestructible = 50;
             dxr.flags.doorspickable = 50;
