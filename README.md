@@ -20,11 +20,10 @@ There are also settings for
 * autosave
 * removing invisible walls
 
-![options](https://i.imgur.com/aOSBVWt.png)
+![options](https://i.imgur.com/WpTpFio.png)
 
 For the randomized passwords, you can copy-paste from the Goals/Notes screen.
 
 Check out the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
 
 Join the Randomizer Central Discord for discussion https://discord.gg/ybMj3vs
-wwww
