@@ -22,7 +22,9 @@ function PreTravel()
 function Init(DXRando tdxr)
 {
     Super.Init(tdxr);
+    tdxr.flags = Self;
     f = tdxr.Player.FlagBase;
+    InitVersion();
 }
 
 function Timer()

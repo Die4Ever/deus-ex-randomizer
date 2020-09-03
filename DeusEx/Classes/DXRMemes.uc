@@ -131,6 +131,7 @@ state() RotatingState {
     event Tick(float deltaTime)
     {
         local Rotator r;
+        if( rotating == None ) return;
         r = rotating.Rotation;
         r.Pitch += float(rotating.RotationRate.Pitch) * deltaTime;
         r.Yaw += float(rotating.RotationRate.Yaw) * deltaTime;
