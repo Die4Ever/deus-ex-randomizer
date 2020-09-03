@@ -1,5 +1,4 @@
-class DXRando extends Info
-    transient;
+class DXRando extends Info config(DXRando) transient;
 
 var transient DeusExPlayer Player;
 var transient DXRFlags flags;
@@ -7,16 +6,15 @@ var transient DeusExLevelInfo dxInfo;
 var transient string localURL;
 
 var int newseed;
-
-//rando flags
 var int seed;
-
-var transient bool bNeedSave;
 
 var transient private int CrcTable[256]; // for string hashing to do more stable seeding
 
-var transient DXRBase modules[16];
+var transient DXRBase modules[32];
 var transient int num_modules;
+
+var config class<DXRBase> modules_to_load[32];
+var config int config_version;
 
 function SetdxInfo(DeusExLevelInfo i)
 {
@@ -47,12 +45,38 @@ function PostPostBeginPlay()
     ClearModules();
     LoadFlagsModule();
     flags.LoadFlags();
-
+    CheckConfig();
     LoadModules();
 
     RandoEnter();
 
     SetTimer(1.0, True);
+}
+
+function CheckConfig()
+{
+    local int i;
+    if( config_version == 0 ) {
+        for(i=0; i < ArrayCount(modules_to_load); i++) {
+            modules_to_load[i] = None;
+        }
+        i=0;
+        modules_to_load[i++] = class'DXRKeys';
+        modules_to_load[i++] = class'DXREnemies';
+        modules_to_load[i++] = class'DXRSkills';
+        modules_to_load[i++] = class'DXRPasswords';
+        modules_to_load[i++] = class'DXRAugmentations';
+        modules_to_load[i++] = class'DXRSwapItems';
+        modules_to_load[i++] = class'DXRReduceItems';
+        modules_to_load[i++] = class'DXRNames';
+        modules_to_load[i++] = class'DXRFixup';
+        modules_to_load[i++] = class'DXRAutosave';
+        modules_to_load[i++] = class'DXRMemes';
+    }
+    if( config_version < flags.flagsversion ) {
+        config_version = flags.flagsversion;
+        SaveConfig();
+    }
 }
 
 function DXRFlags LoadFlagsModule()
@@ -88,18 +112,11 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
 
 function LoadModules()
 {
-    LoadModule(class'DXRKeys');
-    LoadModule(class'DXREnemies');
-    LoadModule(class'DXRSkills');
-    LoadModule(class'DXRPasswords');
-    LoadModule(class'DXRAugmentations');
-    LoadModule(class'DXRSwapItems');
-    LoadModule(class'DXRReduceItems');
-    LoadModule(class'DXRNames');
-    LoadModule(class'DXRFixup');
-    LoadModule(class'DXRAutosave');
-    LoadModule(class'DXRMemes');
-
+    local int i;
+    for( i=0; i < ArrayCount( modules_to_load ); i++ ) {
+        if( modules_to_load[i] == None ) continue;
+        LoadModule(modules_to_load[i]);
+    }
     RunTests();
 }
 
