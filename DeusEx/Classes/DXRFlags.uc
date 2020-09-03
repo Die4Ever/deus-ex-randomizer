@@ -1,4 +1,4 @@
-class DXRFlags extends DXRBase config(DXRando) transient;
+class DXRFlags extends DXRBase transient;
 
 var transient FlagBase f;
 
@@ -11,8 +11,6 @@ var int doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, 
 var int autosave;//0=off, 1=first time entering level, 2=every loading screen
 var int removeinvisiblewalls, enemiesrandomized, infodevices;
 var int dancingpercent;
-
-var config int config_version;
 
 function PreTravel()
 {
@@ -71,10 +69,7 @@ function CheckConfig()
 {
     if( config_version == 0 ) {
     }
-    if( config_version < flagsversion ) {
-        config_version = flagsversion;
-        SaveConfig();
-    }
+    Super.CheckConfig();
 }
 
 function LoadFlags()
@@ -183,7 +178,12 @@ function int FlagsHash()
 
 function InitVersion()
 {
-    flagsversion = 3;
+    flagsversion = VersionNumber();
+}
+
+static function int VersionNumber()
+{
+    return 3;
 }
 
 static function string VersionString()

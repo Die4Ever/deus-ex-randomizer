@@ -1,12 +1,22 @@
-class DXRBase extends Info;
+class DXRBase extends Info config(DXRando);
 
 var transient DXRando dxr;
 var transient int overallchances;
+var config int config_version;
 
 function Init(DXRando tdxr)
 {
     l(".Init()");
     dxr = tdxr;
+    CheckConfig();
+}
+
+function CheckConfig()
+{
+    if( config_version < dxr.flags.flagsversion ) {
+        config_version = dxr.flags.flagsversion;
+        SaveConfig();
+    }
 }
 
 function FirstEntry()
@@ -54,7 +64,7 @@ function int rng(int max)
 
 function int initchance()
 {
-    if(overallchances > 0 && overallchances < 100) l("initchance() overallchances == "$overallchances);
+    if(overallchances > 0 && overallchances < 100) l("WARNING: initchance() overallchances == "$overallchances);
     overallchances=0;
     return rng(100);
 }
@@ -62,7 +72,16 @@ function int initchance()
 function bool chance(int percent, int r)
 {
     overallchances+=percent;
-    if(overallchances>100) l("chance("$percent$", "$r$") overallchances == "$overallchances);
+    if(overallchances>100) l("WARNING: chance("$percent$", "$r$") overallchances == "$overallchances);
+    return r>= (overallchances-percent) && r< overallchances;
+}
+
+function bool chance_remaining(int r)
+{
+    local int percent;
+    percent = 100 - overallchances;
+    overallchances+=percent;
+    if(overallchances>100) l("WARNING: chance_remaining("$r$") percent == "$percent$"%, overallchances == "$overallchances);
     return r>= (overallchances-percent) && r< overallchances;
 }
 

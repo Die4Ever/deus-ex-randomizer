@@ -195,7 +195,7 @@ function RandoEnter()
     }
 
     l("RandoEnter() firstTime: "$firstTime);
-    
+
     if ( firstTime == true )
     {
         SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL) );
