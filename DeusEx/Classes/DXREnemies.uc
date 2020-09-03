@@ -1,5 +1,112 @@
 class DXREnemies extends DXRActorsBase;
 
+var config int chance_clone_nonhumans;
+
+struct RandomWeaponStruct { var class<Weapon> type; var int chance; };
+var config RandomWeaponStruct randommelee[8];
+var config RandomWeaponStruct randomweapons[32];
+
+struct RandomEnemyStruct { var class<ScriptedPawn> type; var int chance; };
+var config RandomEnemyStruct randomenemies[32];
+
+var config name defaultOrders;
+
+function CheckConfig()
+{
+    local int i;
+    if( config_version == 0 ) {
+        chance_clone_nonhumans = 90;
+
+        for(i=0; i < ArrayCount(randommelee); i++ ) {
+            randommelee[i].type = None;
+            randommelee[i].chance = 0;
+        }
+        for(i=0; i < ArrayCount(randomenemies); i++ ) {
+            randomenemies[i].type = None;
+            randomenemies[i].chance = 0;
+            randomenemies[i].type = None;
+            randomenemies[i].chance = 0;
+        }
+
+        i=0;
+        randomenemies[i].type = class'ThugMale';
+        randomenemies[i++].chance = 10;
+        randomenemies[i].type = class'ThugMale2';
+        randomenemies[i++].chance = 10;
+        randomenemies[i].type = class'ThugMale3';
+        randomenemies[i++].chance = 10;
+        randomenemies[i].type = class'Greasel';
+        randomenemies[i++].chance = 8;
+        randomenemies[i].type = class'Gray';
+        randomenemies[i++].chance = 4;
+        randomenemies[i].type = class'Karkian';
+        randomenemies[i++].chance = 4;
+        randomenemies[i].type = class'SpiderBot';
+        randomenemies[i++].chance = 8;
+        randomenemies[i].type = class'MilitaryBot';
+        randomenemies[i++].chance = 4;
+        randomenemies[i].type = class'SpiderBot2';
+        randomenemies[i++].chance = 4;
+        randomenemies[i].type = class'SecurityBot2';
+        randomenemies[i++].chance = 4;
+        randomenemies[i].type = class'SecurityBot3';
+        randomenemies[i++].chance = 4;
+        randomenemies[i].type = class'SecurityBot4';
+        randomenemies[i++].chance = 4;
+
+        i=0;
+        randomweapons[i].type = class'WeaponPistol';
+        randomweapons[i++].chance = 11;
+        randomweapons[i].type = class'WeaponAssaultGun';
+        randomweapons[i++].chance = 11;
+        randomweapons[i].type = class'WeaponMiniCrossbow';
+        randomweapons[i++].chance = 11;
+        randomweapons[i].type = class'WeaponGEPGun';
+        randomweapons[i++].chance = 4;
+        randomweapons[i].type = class'WeaponAssaultShotgun';
+        randomweapons[i++].chance = 5;
+        randomweapons[i].type = class'WeaponEMPGrenade';
+        randomweapons[i++].chance = 5;
+        randomweapons[i].type = class'WeaponFlamethrower';
+        randomweapons[i++].chance = 4;
+        randomweapons[i].type = class'WeaponGasGrenade';
+        randomweapons[i++].chance = 5;
+        randomweapons[i].type = class'WeaponHideAGun';
+        randomweapons[i++].chance = 5;
+        randomweapons[i].type = class'WeaponLAM';
+        randomweapons[i++].chance = 5;
+        randomweapons[i].type = class'WeaponLAW';
+        randomweapons[i++].chance = 4;
+        randomweapons[i].type = class'WeaponNanoVirusGrenade';
+        randomweapons[i++].chance = 5;
+        randomweapons[i].type = class'WeaponPepperGun';
+        randomweapons[i++].chance = 5;
+        randomweapons[i].type = class'WeaponPlasmaRifle';
+        randomweapons[i++].chance = 5;
+        randomweapons[i].type = class'WeaponRifle';
+        randomweapons[i++].chance = 5;
+        randomweapons[i].type = class'WeaponRifle';
+        randomweapons[i++].chance = 5;
+        randomweapons[i].type = class'WeaponSawedOffShotgun';
+        randomweapons[i++].chance = 5;
+        randomweapons[i].type = class'WeaponShuriken';
+        randomweapons[i++].chance = 5;
+
+        i=0;
+        randommelee[i].type = class'WeaponBaton';
+        randommelee[i++].chance = 25;
+        randommelee[i].type = class'WeaponCombatKnife';
+        randommelee[i++].chance = 25;
+        randommelee[i].type = class'WeaponCrowbar';
+        randommelee[i++].chance = 25;
+        randommelee[i].type = class'WeaponSword';
+        randommelee[i++].chance = 25;
+
+        defaultOrders = 'Wandering';
+    }
+    Super.CheckConfig();
+}
+
 function FirstEntry()
 {
     Super.FirstEntry();
@@ -46,30 +153,15 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 {
     local class<ScriptedPawn> newclass;
     local ScriptedPawn n;
-    local int r;
+    local int r, i;
     r = initchance();
-    if( chance(10, r) ) newclass = class'ThugMale';
-    if( chance(10, r) ) newclass = class'ThugMale2';
-    if( chance(10, r) ) newclass = class'ThugMale3';
+    for(i=0; i < ArrayCount(randomenemies); i++ ) {
+        if( chance( randomenemies[i].chance, r ) ) newclass = randomenemies[i].type;
+    }
 
-    //creatures
-    if( chance(8, r) ) newclass = class'Greasel';
-    if( chance(4, r) ) newclass = class'Gray';
-    if( chance(4, r) ) newclass = class'Karkian';
+    chance_remaining(r);// else keep the same class
 
-    //bots
-    if( chance(8, r) ) newclass = class'SpiderBot';
-    if( chance(4, r) ) newclass = class'MilitaryBot';
-    if( chance(4, r) ) newclass = class'SpiderBot2';
-    if( chance(4, r) ) newclass = class'SecurityBot2';
-    if( chance(4, r) ) newclass = class'SecurityBot3';
-    if( chance(4, r) ) newclass = class'SecurityBot4';
-
-    chance(26, r);// else keep the same class
-
-    // this reduces the likelihood of cloning non-humans, starting with a conservative 10% reduction
-    if( rng(10)==0 && newclass == None && IsHuman(base) == False ) return None;
-    // or maybe rng(100) >= percent
+    if( chance_single(chance_clone_nonhumans)==False && newclass == None && IsHuman(base) == False ) return None;
 
     n = CloneScriptedPawn(base, newclass);
     if( n != None ) RandomizeSP(n, percent);
@@ -135,7 +227,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     //bReactAlarm, bReactCarcass, bReactDistress, bReactFutz, bReactLoudNoise, bReactPresence, bReactProjectiles, bReactShot
     //bFearAlarm, bFearCarcass, bFearDistress, bFearHacking, bFearIndirectInjury, bFearInjury, bFearProjectiles, bFearShot, bFearWeapon
 
-    n.Orders = 'Wandering';
+    n.Orders = defaultOrders;
     n.HomeTag = 'Start';
 
     RandomizeSize(n);
@@ -147,7 +239,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
 {
     local class<Weapon> wclass;
     local Weapon w;
-    local int r;
+    local int r, i;
 
     if( p == None ) return;
 
@@ -156,23 +248,9 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( IsHuman(p) == False ) return; // only give random weapons to humans
 
     r = initchance();
-    if( chance(11, r) ) wclass = class'WeaponPistol';
-    if( chance(11, r) ) wclass = class'WeaponAssaultGun';
-    if( chance(11, r) ) wclass = class'WeaponMiniCrossbow';
-    if( chance(4, r) ) wclass = class'WeaponGEPGun';
-    if( chance(5, r) ) wclass = class'WeaponAssaultShotgun';
-    if( chance(5, r) ) wclass = class'WeaponEMPGrenade';
-    if( chance(4, r) ) wclass = class'WeaponFlamethrower';
-    if( chance(5, r) ) wclass = class'WeaponGasGrenade';
-    if( chance(5, r) ) wclass = class'WeaponHideAGun';
-    if( chance(5, r) ) wclass = class'WeaponLAM';
-    if( chance(4, r) ) wclass = class'WeaponLAW';
-    if( chance(5, r) ) wclass = class'WeaponNanoVirusGrenade';
-    if( chance(5, r) ) wclass = class'WeaponPepperGun';
-    if( chance(5, r) ) wclass = class'WeaponPlasmaRifle';
-    if( chance(5, r) ) wclass = class'WeaponRifle';
-    if( chance(5, r) ) wclass = class'WeaponSawedOffShotgun';
-    if( chance(5, r) ) wclass = class'WeaponShuriken';
+    for(i=0; i < ArrayCount(randomweapons); i++ ) {
+        if( chance( randomweapons[i].chance, r ) ) wclass = randomweapons[i].type;
+    }
 
     w = Spawn(wclass, p);
     w.GiveTo(p);
@@ -194,7 +272,7 @@ function GiveRandomMeleeWeapon(ScriptedPawn p)
 {
     local class<Weapon> wclass;
     local Weapon w;
-    local int r;
+    local int r, i;
 
     if
     (
@@ -207,10 +285,15 @@ function GiveRandomMeleeWeapon(ScriptedPawn p)
         return;
 
     r = initchance();
-    if( chance(25, r) ) wclass = class'WeaponBaton';
-    if( chance(25, r) ) wclass = class'WeaponCombatKnife';
-    if( chance(25, r) ) wclass = class'WeaponCrowbar';
-    if( chance(25, r) ) wclass = class'WeaponSword';
+    for(i=0; i < ArrayCount(randomweapons); i++ ) {
+        if( randommelee[i].type == None ) continue;
+        if( chance( randommelee[i].chance, r ) ) wclass = randommelee[i].type;
+
+        if( HasItem(p, randommelee[i].type) ) {
+            chance_remaining(r);
+            return;
+        }
+    }
 
     w = Spawn(wclass, p);
     w.GiveTo(p);

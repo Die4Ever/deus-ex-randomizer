@@ -95,6 +95,14 @@ function l(string message)
     log(message, class.name);
 }
 
+function err(string message)
+{
+    log(message, class.name);
+    if(dxr != None && dxr.Player != None) {
+        dxr.Player.ClientMessage( Class @ message );
+    }
+}
+
 function int RunTests()
 {
     l(".RunTests()");
@@ -108,7 +116,7 @@ function int test(bool result, string testname)
         return 0;
     }
     else {
-        l("fail: "$testname);
+        err("fail: "$testname);
         return 1;
     }
 }
@@ -120,7 +128,7 @@ function int testbool(bool result, bool expected, string testname)
         return 0;
     }
     else {
-        l("fail: "$testname$": got "$result$", expected "$expected);
+        err("fail: "$testname$": got "$result$", expected "$expected);
         return 1;
     }
 }
@@ -132,7 +140,7 @@ function int testint(int result, int expected, string testname)
         return 0;
     }
     else {
-        l("fail: "$testname$": got "$result$", expected "$expected);
+        err("fail: "$testname$": got "$result$", expected "$expected);
         return 1;
     }
 }
@@ -144,7 +152,7 @@ function int teststring(string result, string expected, string testname)
         return 0;
     }
     else {
-        l("fail: "$testname$": got "$result$", expected "$expected);
+        err("fail: "$testname$": got "$result$", expected "$expected);
         return 1;
     }
 }
