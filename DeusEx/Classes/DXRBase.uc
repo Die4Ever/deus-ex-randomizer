@@ -73,7 +73,7 @@ function bool chance_single(int percent)
 
 function l(string message)
 {
-    log(class @ message);
+    log(message, class.name);
 }
 
 function int RunTests()
