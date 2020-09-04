@@ -1,6 +1,7 @@
 class DXREnemies extends DXRActorsBase;
 
 var config int chance_clone_nonhumans;
+var config int enemy_multiplier;
 
 struct RandomWeaponStruct { var class<Weapon> type; var int chance; };
 var config RandomWeaponStruct randommelees[8];
@@ -16,6 +17,7 @@ function CheckConfig()
     local int i;
     if( config_version == 0 ) {
         chance_clone_nonhumans = 70;
+        enemy_multiplier = 1;
 
         for(i=0; i < ArrayCount(randommelees); i++ ) {
             randommelees[i].type = None;
@@ -142,8 +144,10 @@ function RandoEnemies(int percent)
 
         if( rng(100) >= percent ) continue;
 
-        n = RandomEnemy(p, percent);
-        if( newsp == None ) newsp = n;
+        for(i = rng(enemy_multiplier); i >= 0; i--) {
+            n = RandomEnemy(p, percent);
+            if( newsp == None ) newsp = n;
+        }
     }
 }
 
@@ -179,7 +183,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     local int i;
     local ScriptedPawn n;
     local float radius;
-    local vector loc;
+    local vector loc, loc_offset;
     local Inventory inv;
     local NanoKey k1, k2;
 
@@ -189,7 +193,12 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     }
     if( newclass == None ) newclass = p.class;
     radius = p.CollisionRadius;
-    loc = p.Location + (radius*vect(3, 1, 0));
+    loc_offset = vect( 3, 3, 0);
+    loc_offset.X = float(rng(30000))/10000.0 * Sqrt(float(enemy_multiplier));
+    loc_offset.Y = float(rng(30000))/10000.0 * Sqrt(float(enemy_multiplier));
+    if( rng(2) == 0 ) loc_offset.X *= -1;
+    if( rng(2) == 0 ) loc_offset.Y *= -1;
+    loc = p.Location + (radius*loc_offset);
     // find a different location?
     n = Spawn(newclass,,, loc );
     if( n == None ) {
@@ -241,7 +250,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
 
     if( p == None ) return;
 
-    p.SurprisePeriod *= float(rng(100)/100)+0.3;
+    p.SurprisePeriod *= float(rng(100)/100)+0.4;
 
     if( IsHuman(p) == False ) return; // only give random weapons to humans
 
