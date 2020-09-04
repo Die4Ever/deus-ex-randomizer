@@ -54,7 +54,9 @@ function FirstEntry()
     Level.AmbientBrightness += dxr.flags.brightness;
     OverwriteDecorations();
     
-    if( dxr.dxInfo.missionNumber == 6 )
+    if (dxr.dxInfo.missionNumber == 2)
+        NYC1_FirstEntry();
+    else if( dxr.dxInfo.missionNumber == 6 )
         HongKong_FirstEntry();
     else if( dxr.dxInfo.missionNumber == 12 )
         Vandenberg_FirstEntry();
@@ -102,6 +104,21 @@ function OverwriteDecorations()
             d.explosionDamage = DecorationsOverwrites[i].explosionDamage;
             d.explosionRadius = DecorationsOverwrites[i].explosionRadius;
         }
+    }
+}
+
+function NYC1_FirstEntry()
+{
+    local NYPoliceBoat b;
+    
+    switch (dxr.localURL)
+    {
+        case "02_NYC_BATTERYPARK":
+            foreach AllActors(class'NYPoliceBoat',b) {
+                b.BindName = "NYPoliceBoat";
+                b.ConBindEvents();
+            }
+            break;
     }
 }
 
