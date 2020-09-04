@@ -20,11 +20,15 @@ function SetDxr(DXRando d)
 
 function CopySkills()
 {
+    local DXRSkills dxrs;
     local Skill aSkill;
     local int skillIndex;
     
-    if(dxr!=None)
-        DXRSkills(dxr.LoadModule(class'DXRSkills')).RandoSkills();
+    if(dxr!=None) {
+        dxrs = DXRSkills(dxr.FindModule(class'DXRSkills'));
+        if( dxrs != None )
+            dxrs.RandoSkills();
+    }
 
     skillIndex = 0;
 

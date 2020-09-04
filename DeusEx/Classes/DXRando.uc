@@ -56,10 +56,15 @@ function PostPostBeginPlay()
 function CheckConfig()
 {
     local int i;
+    //force modules to be referenced so they will get compiled, even if we don't want them to be loaded by default
+    local DXRNoStory compile1;
+    local DXRTestAllMaps compile2;
+
     if( config_version == 0 ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = None;
         }
+
         i=0;
         modules_to_load[i++] = class'DXRKeys';
         modules_to_load[i++] = class'DXREnemies';
