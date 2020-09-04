@@ -32,19 +32,21 @@ var int numwnds;
 var Window wnds[64];
 var String helptexts[64];
 
-var transient DXRando dxr;
 var config int config_version;
+
+var config int num_rows;
+var config int num_cols;
 
 event InitWindow()
 {
     local vector coords;
-    coords = _GetCoords(11, 4);
+
+    CheckConfig();
+
+    coords = _GetCoords(num_rows, num_cols);
     ClientWidth = coords.X;
     ClientHeight = coords.Y;
     Super.InitWindow();
-
-    dxr = InitDxr();
-    CheckConfig();
 
     ResetToDefaults();
 
@@ -63,8 +65,7 @@ event InitWindow()
 
 function DXRando InitDxr()
 {
-    if( dxr != None ) return dxr;
-
+    local DXRando dxr;
     dxr = player.Spawn(class'DXRando');
     dxr.player = player;
     dxr.LoadFlagsModule();
@@ -74,8 +75,12 @@ function DXRando InitDxr()
 
 function CheckConfig()
 {
-    if( config_version < dxr.flags.flagsversion ) {
-        config_version = dxr.flags.flagsversion;
+    if( config_version == 0 ) {
+        num_rows = 11;
+        num_cols = 4;
+    }
+    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        config_version = class'DXRFlags'.static.VersionNumber();
         SaveConfig();
     }
 }
@@ -85,7 +90,7 @@ function InitHelp()
     local MenuUILabelWindow winLabel;
     local vector coords;
     bHelpAlwaysOn = True;
-    coords = _GetCoords(10, 0);
+    coords = _GetCoords(num_rows-1, 0);
     winHelp = CreateMenuLabel( coords.x, coords.y+4, "", winClient);
 }
 
@@ -97,9 +102,7 @@ function CreateControls()
 {
     local int row;
     local EnumBtn btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords, btnAutosave, btnInfoDevs;
-    local DXRFlags f;
     Super.CreateControls();
-    f = dxr.flags;
 
     Title = "DX Rando "$ class'DXRFlags'.static.VersionString() $" Options";
     SetTitle(Title);
@@ -158,8 +161,8 @@ function CreateControls()
 
 function vector GetCoords(int row, int col)
 {
-    if( row >= 10 ) {
-        row -= 10;
+    if( row >= num_rows-1 ) {
+        row -= num_rows-1;
         col += 2;
     }
     return _GetCoords(row, col);
@@ -339,12 +342,14 @@ function string GetEnumValue(int e)
 
 function ProcessAction(String actionKey)
 {
+    local DXRando dxr;
     local DXRFlags f;
     local int seed;
     local string sseed, keys, doors, devices, passwords, autosavevalue, inviswalls, infodevs;
 
     if (actionKey == "NEXT")
     {
+        dxr = InitDxr();
         f = dxr.flags;
         sseed = editSeed.GetText();
 
@@ -420,11 +425,11 @@ function ProcessAction(String actionKey)
         else if( infodevs == "Randomized" ) f.infodevices = 100;
 
         //f.flags = player.FlagBase;
-        InvokeNewGameScreen(combatDifficulty);
+        InvokeNewGameScreen(combatDifficulty, dxr);
     }
 }
 
-function InvokeNewGameScreen(float difficulty)
+function InvokeNewGameScreen(float difficulty, DXRando dxr)
 {
     local DXRMenuScreenNewGame newGame;
 
@@ -515,7 +520,7 @@ event FocusLeftDescendant(Window leaveWindow)
 
 defaultproperties
 {
-    actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel)
+    actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel,Text="|&Back")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     //actionButtons(2)=(Action=AB_Reset)
     Title="DX Rando Options"

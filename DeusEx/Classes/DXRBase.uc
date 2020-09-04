@@ -13,8 +13,8 @@ function Init(DXRando tdxr)
 
 function CheckConfig()
 {
-    if( config_version < dxr.flags.flagsversion ) {
-        config_version = dxr.flags.flagsversion;
+    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        config_version = class'DXRFlags'.static.VersionNumber();
         SaveConfig();
     }
 }

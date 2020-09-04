@@ -35,8 +35,9 @@ function RandoSkills()
     local int i, m;
     local int percent;
     local float f;
+    local SkillCostMultiplier scm;
 
-    l("randomizing skills with seed " $ dxr.seed);
+    l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.minskill$", max: "$dxr.flags.maxskill);
     dxr.SetSeed(dxr.seed);
 
     if( dxr.flags.minskill > dxr.flags.maxskill ) dxr.flags.maxskill = dxr.flags.minskill;
@@ -45,13 +46,15 @@ function RandoSkills()
     while(aSkill != None)
     {
         percent = rng(dxr.flags.maxskill - dxr.flags.minskill + 1) + dxr.flags.minskill;
-        l("percent: "$percent$", min: "$dxr.flags.minskill$", max: "$dxr.flags.maxskill);
+        l( aSkill $ " percent: "$percent$"%");
         for(i=0; i<arrayCount(aSkill.Cost); i++)
         {
             f = float(aSkill.default.Cost[i]) * float(percent) / 100.0;
             for(m=0; m < ArrayCount(SkillCostMultipliers); m++) {
-                if( aSkill.IsA(SkillCostMultipliers[m].type.name) && i+1 >= SkillCostMultipliers[m].minLevel && i < SkillCostMultipliers[m].maxLevel ) {
-                    f *= float(SkillCostMultipliers[m].percent) / 100.0;
+                scm = SkillCostMultipliers[m];
+                if( scm.type == None ) continue;
+                if( aSkill.IsA(scm.type.name) && i+1 >= scm.minLevel && i < scm.maxLevel ) {
+                    f *= float(scm.percent) / 100.0;
                 }
             }
             aSkill.Cost[i] = int(f);
