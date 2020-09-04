@@ -190,7 +190,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return "v1.3.3.7";
+    return "v1.3.4 Beta";
 }
 
 function MaxRando()
