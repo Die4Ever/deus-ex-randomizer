@@ -8,7 +8,7 @@ function CheckConfig()
     local int i, t;
     if( config_version == 0 && skipactor_types[0] == None ) {
         for(i=0; i < ArrayCount(skipactor_types); i++) {
-            skipactor_types[0] = None;
+            skipactor_types[i] = None;
         }
         i=0;
         skipactor_types[i++] = class'BarrelAmbrosia';

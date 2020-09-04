@@ -10,6 +10,7 @@ struct DecorationsOverwrite {
     var bool bExplosive;
     var int explosionDamage;
     var float explosionRadius;
+    var bool bPushable;
 };
 
 var config DecorationsOverwrite DecorationsOverwrites[16];
@@ -31,6 +32,7 @@ function CheckConfig()
         DecorationsOverwrites[i].bExplosive = DecorationsOverwrites[i].type.default.bExplosive;
         DecorationsOverwrites[i].explosionDamage = DecorationsOverwrites[i].type.default.explosionDamage;
         DecorationsOverwrites[i].explosionRadius = DecorationsOverwrites[i].type.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = DecorationsOverwrites[i].type.default.bPushable;
         i++;
 
         DecorationsOverwrites[i].type = class'BarrelFire';
@@ -42,6 +44,7 @@ function CheckConfig()
         DecorationsOverwrites[i].bExplosive = DecorationsOverwrites[i].type.default.bExplosive;
         DecorationsOverwrites[i].explosionDamage = DecorationsOverwrites[i].type.default.explosionDamage;
         DecorationsOverwrites[i].explosionRadius = DecorationsOverwrites[i].type.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = DecorationsOverwrites[i].type.default.bPushable;
     }
     Super.CheckConfig();
 }
@@ -103,6 +106,7 @@ function OverwriteDecorations()
             d.bExplosive = DecorationsOverwrites[i].bExplosive;
             d.explosionDamage = DecorationsOverwrites[i].explosionDamage;
             d.explosionRadius = DecorationsOverwrites[i].explosionRadius;
+            d.bPushable = DecorationsOverwrites[i].bPushable;
         }
     }
 }

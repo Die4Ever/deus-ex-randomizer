@@ -73,8 +73,8 @@ function CheckConfig()
         modules_to_load[i++] = class'DXRAutosave';
         modules_to_load[i++] = class'DXRMemes';
     }
-    if( config_version < flags.flagsversion ) {
-        config_version = flags.flagsversion;
+    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        config_version = class'DXRFlags'.static.VersionNumber();
         SaveConfig();
     }
 }

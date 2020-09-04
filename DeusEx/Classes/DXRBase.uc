@@ -80,9 +80,7 @@ function bool chance_remaining(int r)
 {
     local int percent;
     percent = 100 - overallchances;
-    overallchances+=percent;
-    if(overallchances>100) l("WARNING: chance_remaining("$r$") percent == "$percent$"%, overallchances == "$overallchances);
-    return r>= (overallchances-percent) && r< overallchances;
+    return chance(percent, r);
 }
 
 function bool chance_single(int percent)
@@ -97,7 +95,7 @@ function l(string message)
 
 function err(string message)
 {
-    log(message, class.name);
+    log("ERROR: " $ message, class.name);
     if(dxr != None && dxr.Player != None) {
         dxr.Player.ClientMessage( Class @ message );
     }
