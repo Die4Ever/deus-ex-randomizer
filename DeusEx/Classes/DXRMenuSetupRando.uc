@@ -349,8 +349,8 @@ function ProcessAction(String actionKey)
         dxr.flags.dancingpercent = GetSliderValue(editDancingPercent);
 
         if( keys == "Off" ) dxr.flags.keysrando = 0;
-        else if( keys == "Dumb" ) dxr.flags.keysrando = 1;
-        else if( keys == "On" ) dxr.flags.keysrando = 2;
+        else if( keys == "Dumb" ) dxr.flags.keysrando = 2;
+        else if( keys == "On" ) dxr.flags.keysrando = 4;
         else if( keys == "Copy" ) dxr.flags.keysrando = 3;
         else if( keys == "Smart" ) dxr.flags.keysrando = 4;
 
