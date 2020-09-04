@@ -1,5 +1,33 @@
 class DXRActorsBase extends DXRBase;
 
+var globalconfig class<Actor> skipactor_types[6];
+
+function CheckConfig()
+{
+    local class<Actor> temp_skipactor_types[6];
+    local int i, t;
+    if( config_version == 0 && skipactor_types[0] == None ) {
+        for(i=0; i < ArrayCount(skipactor_types); i++) {
+            skipactor_types[0] = None;
+        }
+        i=0;
+        skipactor_types[i++] = class'BarrelAmbrosia';
+        skipactor_types[i++] = class'BarrelVirus';
+        skipactor_types[i++] = class'NanoKey';
+    }
+    Super.CheckConfig();
+
+    //sort skipactor_types so that we only need to check until the first None
+    t=0;
+    for(i=0; i < ArrayCount(skipactor_types); i++) {
+        if( skipactor_types[i] != None )
+            temp_skipactor_types[t++] = skipactor_types[i];
+    }
+    for(i=0; i < ArrayCount(skipactor_types); i++) {
+        skipactor_types[i] = temp_skipactor_types[i];
+    }
+}
+
 function SwapAll(name classname)
 {
     local Actor a, b;
@@ -84,7 +112,15 @@ function bool SkipActorBase(Actor a)
 
 function bool SkipActor(Actor a, name classname)
 {
-    return SkipActorBase(a) || ( ! a.IsA(classname) ) || a.IsA('BarrelAmbrosia') || a.IsA('BarrelVirus') || a.IsA('NanoKey');
+    local int i;
+    if( SkipActorBase(a) || ( ! a.IsA(classname) ) ) {
+        return true;
+    }
+    for(i=0; i < ArrayCount(skipactor_types); i++) {
+        if(skipactor_types[i] == None) break;
+        if( a.IsA(skipactor_types[i].name) ) return true;
+    }
+    return false;
 }
 
 function Swap(Actor a, Actor b)

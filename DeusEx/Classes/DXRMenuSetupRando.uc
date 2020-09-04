@@ -517,7 +517,7 @@ defaultproperties
 {
     actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel)
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
-    actionButtons(2)=(Action=AB_Reset)
+    //actionButtons(2)=(Action=AB_Reset)
     Title="DX Rando Options"
     ClientWidth=672
     ClientHeight=357
