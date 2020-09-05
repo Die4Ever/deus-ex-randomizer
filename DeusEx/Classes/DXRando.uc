@@ -60,6 +60,7 @@ function CheckConfig()
     local DXRNoStory compile1;
     local DXRTestAllMaps compile2;
     local DXREntranceRando compile3;
+    local DXRKillBobPage compile4;
 
     if( config_version == 0 ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
