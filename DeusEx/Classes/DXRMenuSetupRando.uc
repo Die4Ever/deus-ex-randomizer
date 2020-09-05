@@ -1,4 +1,4 @@
-class DXRMenuSetupRando expands MenuUIScreenWindow;
+class DXRMenuSetupRando expands MenuUIScreenWindow config(DXRando);
 
 var MenuUIInfoButtonWindow winNameBorder;
 var float combatDifficulty;
@@ -32,10 +32,18 @@ var int numwnds;
 var Window wnds[64];
 var String helptexts[64];
 
+var config int config_version;
+
+var config int num_rows;
+var config int num_cols;
+
 event InitWindow()
 {
     local vector coords;
-    coords = _GetCoords(11, 4);
+
+    CheckConfig();
+
+    coords = _GetCoords(num_rows, num_cols);
     ClientWidth = coords.X;
     ClientHeight = coords.Y;
     Super.InitWindow();
@@ -55,12 +63,34 @@ event InitWindow()
     StyleChanged();
 }
 
+function DXRando InitDxr()
+{
+    local DXRando dxr;
+    dxr = player.Spawn(class'DXRando');
+    dxr.player = player;
+    dxr.LoadFlagsModule();
+    dxr.flags.InitDefaults();
+    return dxr;
+}
+
+function CheckConfig()
+{
+    if( config_version == 0 ) {
+        num_rows = 11;
+        num_cols = 4;
+    }
+    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        config_version = class'DXRFlags'.static.VersionNumber();
+        SaveConfig();
+    }
+}
+
 function InitHelp()
 {
     local MenuUILabelWindow winLabel;
     local vector coords;
     bHelpAlwaysOn = True;
-    coords = _GetCoords(10, 0);
+    coords = _GetCoords(num_rows-1, 0);
     winHelp = CreateMenuLabel( coords.x, coords.y+4, "", winClient);
 }
 
@@ -72,7 +102,6 @@ function CreateControls()
 {
     local int row;
     local EnumBtn btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords, btnAutosave, btnInfoDevs;
-    local DXRFlags flags;
     Super.CreateControls();
 
     Title = "DX Rando "$ class'DXRFlags'.static.VersionString() $" Options";
@@ -132,8 +161,8 @@ function CreateControls()
 
 function vector GetCoords(int row, int col)
 {
-    if( row >= 10 ) {
-        row -= 10;
+    if( row >= num_rows-1 ) {
+        row -= num_rows-1;
         col += 2;
     }
     return _GetCoords(row, col);
@@ -313,12 +342,15 @@ function string GetEnumValue(int e)
 
 function ProcessAction(String actionKey)
 {
+    local DXRando dxr;
+    local DXRFlags f;
     local int seed;
     local string sseed, keys, doors, devices, passwords, autosavevalue, inviswalls, infodevs;
-    local DXRando dxr;
 
     if (actionKey == "NEXT")
     {
+        dxr = InitDxr();
+        f = dxr.flags;
         sseed = editSeed.GetText();
 
         keys = GetEnumValue(RandoKeys);
@@ -327,75 +359,72 @@ function ProcessAction(String actionKey)
         passwords = GetEnumValue(RandoPasswords);
         infodevs = GetEnumValue(RandoInfoDevices);
 
-        dxr = player.Spawn(class'DXRando');
-        dxr.player = player;
-        dxr.LoadFlagsModule();
-        dxr.flags.InitDefaults();
+        f.InitDefaults();
         if( sseed != "" ) {
             seed = int(sseed);
-            dxr.flags.seed = seed;
+            f.seed = seed;
             dxr.seed = seed;
         }
         log("DXRando setting seed to "$seed);
-        dxr.flags.brightness = GetSliderValue(editBrightness);
-        dxr.flags.minskill = GetSliderValue(editMinSkill);
-        dxr.flags.maxskill = GetSliderValue(editMaxSkill);
-        dxr.flags.ammo = GetSliderValue(editAmmo);
-        dxr.flags.multitools = GetSliderValue(editMultitools);
-        dxr.flags.lockpicks = GetSliderValue(editLockpicks);
-        dxr.flags.biocells = GetSliderValue(editBioCells);
-        dxr.flags.medkits = GetSliderValue(editMedkits);
-        dxr.flags.speedlevel = GetSliderValue(editSpeedLevel);
-        dxr.flags.dancingpercent = GetSliderValue(editDancingPercent);
+        f.brightness = GetSliderValue(editBrightness);
+        f.minskill = GetSliderValue(editMinSkill);
+        f.maxskill = GetSliderValue(editMaxSkill);
+        f.ammo = GetSliderValue(editAmmo);
+        f.multitools = GetSliderValue(editMultitools);
+        f.lockpicks = GetSliderValue(editLockpicks);
+        f.biocells = GetSliderValue(editBioCells);
+        f.medkits = GetSliderValue(editMedkits);
+        f.speedlevel = GetSliderValue(editSpeedLevel);
+        f.dancingpercent = GetSliderValue(editDancingPercent);
 
-        if( keys == "Off" ) dxr.flags.keysrando = 0;
-        else if( keys == "Dumb" ) dxr.flags.keysrando = 2;
-        else if( keys == "On" ) dxr.flags.keysrando = 4;
-        else if( keys == "Copy" ) dxr.flags.keysrando = 3;
-        else if( keys == "Smart" ) dxr.flags.keysrando = 4;
+        if( keys == "Off" ) f.keysrando = 0;
+        else if( keys == "Dumb" ) f.keysrando = 2;
+        else if( keys == "On" ) f.keysrando = 4;
+        else if( keys == "Copy" ) f.keysrando = 3;
+        else if( keys == "Smart" ) f.keysrando = 4;
 
         if( doors == "Unchanged" ) {
-            dxr.flags.doorsdestructible = 0;
-            dxr.flags.doorspickable = 0;
+            f.doorsdestructible = 0;
+            f.doorspickable = 0;
         }
         else if( doors == "Destructible" ) {
-            dxr.flags.doorsdestructible = 100;
-            dxr.flags.doorspickable = 0;
+            f.doorsdestructible = 100;
+            f.doorspickable = 0;
         }
         else if( doors == "Pickable" ) {
-            dxr.flags.doorspickable = 100;
-            dxr.flags.doorsdestructible = 0;
+            f.doorspickable = 100;
+            f.doorsdestructible = 0;
         }
         else if( doors == "Either" ) {
-            dxr.flags.doorsdestructible = 50;
-            dxr.flags.doorspickable = 50;
+            f.doorsdestructible = 50;
+            f.doorspickable = 50;
         }
         else if( doors == "Both" ) {
-            dxr.flags.doorsdestructible = 100;
-            dxr.flags.doorspickable = 100;
+            f.doorsdestructible = 100;
+            f.doorspickable = 100;
         }
 
-        if( devices == "Unchanged" ) dxr.flags.deviceshackable = 0;
-        else if( devices == "Some Hackable" ) dxr.flags.deviceshackable = 50;
-        else if( devices == "All Hackable" ) dxr.flags.deviceshackable = 100;
+        if( devices == "Unchanged" ) f.deviceshackable = 0;
+        else if( devices == "Some Hackable" ) f.deviceshackable = 50;
+        else if( devices == "All Hackable" ) f.deviceshackable = 100;
 
-        if( passwords == "Randomized" ) dxr.flags.passwordsrandomized = 100;
-        else if( passwords == "Unchanged" ) dxr.flags.passwordsrandomized = 0;
+        if( passwords == "Randomized" ) f.passwordsrandomized = 100;
+        else if( passwords == "Unchanged" ) f.passwordsrandomized = 0;
 
-        dxr.flags.enemiesrandomized = GetSliderValue(editEnemyRando);
+        f.enemiesrandomized = GetSliderValue(editEnemyRando);
         autosavevalue = GetEnumValue(Autosave);
-        if( autosavevalue == "Off" ) dxr.flags.autosave = 0;
-        else if( autosavevalue == "First Entry" ) dxr.flags.autosave = 1;
-        else if( autosavevalue == "Every Entry" ) dxr.flags.autosave = 2;
+        if( autosavevalue == "Off" ) f.autosave = 0;
+        else if( autosavevalue == "First Entry" ) f.autosave = 1;
+        else if( autosavevalue == "Every Entry" ) f.autosave = 2;
 
         inviswalls = GetEnumValue(RemoveInvisWalls);
-        if( inviswalls == "Off" ) dxr.flags.removeinvisiblewalls = 0;
-        else if( inviswalls == "On" ) dxr.flags.removeinvisiblewalls = 1;
+        if( inviswalls == "Off" ) f.removeinvisiblewalls = 0;
+        else if( inviswalls == "On" ) f.removeinvisiblewalls = 1;
 
-        if( infodevs == "Unchanged" ) dxr.flags.infodevices = 0;
-        else if( infodevs == "Randomized" ) dxr.flags.infodevices = 100;
+        if( infodevs == "Unchanged" ) f.infodevices = 0;
+        else if( infodevs == "Randomized" ) f.infodevices = 100;
 
-        //dxr.flags.flags = player.FlagBase;
+        //f.flags = player.FlagBase;
         InvokeNewGameScreen(combatDifficulty, dxr);
     }
 }
@@ -491,9 +520,9 @@ event FocusLeftDescendant(Window leaveWindow)
 
 defaultproperties
 {
-    actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel)
+    actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel,Text="|&Back")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
-    actionButtons(2)=(Action=AB_Reset)
+    //actionButtons(2)=(Action=AB_Reset)
     Title="DX Rando Options"
     ClientWidth=672
     ClientHeight=357

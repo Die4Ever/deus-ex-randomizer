@@ -1,12 +1,22 @@
-class DXRBase extends Info;
+class DXRBase extends Info config(DXRando);
 
 var transient DXRando dxr;
 var transient int overallchances;
+var config int config_version;
 
 function Init(DXRando tdxr)
 {
     l(".Init()");
     dxr = tdxr;
+    CheckConfig();
+}
+
+function CheckConfig()
+{
+    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        config_version = class'DXRFlags'.static.VersionNumber();
+        SaveConfig();
+    }
 }
 
 function FirstEntry()
@@ -54,7 +64,7 @@ function int rng(int max)
 
 function int initchance()
 {
-    if(overallchances > 0 && overallchances < 100) l("initchance() overallchances == "$overallchances);
+    if(overallchances > 0 && overallchances < 100) l("WARNING: initchance() overallchances == "$overallchances);
     overallchances=0;
     return rng(100);
 }
@@ -62,8 +72,15 @@ function int initchance()
 function bool chance(int percent, int r)
 {
     overallchances+=percent;
-    if(overallchances>100) l("chance("$percent$", "$r$") overallchances == "$overallchances);
+    if(overallchances>100) l("WARNING: chance("$percent$", "$r$") overallchances == "$overallchances);
     return r>= (overallchances-percent) && r< overallchances;
+}
+
+function bool chance_remaining(int r)
+{
+    local int percent;
+    percent = 100 - overallchances;
+    return chance(percent, r);
 }
 
 function bool chance_single(int percent)
@@ -73,7 +90,15 @@ function bool chance_single(int percent)
 
 function l(string message)
 {
-    log(class @ message);
+    log(message, class.name);
+}
+
+function err(string message)
+{
+    log("ERROR: " $ message, class.name);
+    if(dxr != None && dxr.Player != None) {
+        dxr.Player.ClientMessage( Class @ message );
+    }
 }
 
 function int RunTests()
@@ -89,7 +114,7 @@ function int test(bool result, string testname)
         return 0;
     }
     else {
-        l("fail: "$testname);
+        err("fail: "$testname);
         return 1;
     }
 }
@@ -101,7 +126,7 @@ function int testbool(bool result, bool expected, string testname)
         return 0;
     }
     else {
-        l("fail: "$testname$": got "$result$", expected "$expected);
+        err("fail: "$testname$": got "$result$", expected "$expected);
         return 1;
     }
 }
@@ -113,7 +138,7 @@ function int testint(int result, int expected, string testname)
         return 0;
     }
     else {
-        l("fail: "$testname$": got "$result$", expected "$expected);
+        err("fail: "$testname$": got "$result$", expected "$expected);
         return 1;
     }
 }
@@ -125,7 +150,7 @@ function int teststring(string result, string expected, string testname)
         return 0;
     }
     else {
-        l("fail: "$testname$": got "$result$", expected "$expected);
+        err("fail: "$testname$": got "$result$", expected "$expected);
         return 1;
     }
 }

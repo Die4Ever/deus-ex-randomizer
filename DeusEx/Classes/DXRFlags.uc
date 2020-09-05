@@ -1,4 +1,4 @@
-class DXRFlags extends DXRBase;
+class DXRFlags extends DXRBase transient;
 
 var transient FlagBase f;
 
@@ -23,6 +23,7 @@ function Init(DXRando tdxr)
 {
     Super.Init(tdxr);
     f = tdxr.Player.FlagBase;
+    InitVersion();
 }
 
 function Timer()
@@ -38,6 +39,7 @@ function Timer()
 function InitDefaults()
 {
     InitVersion();
+    CheckConfig();
     dxr.CrcInit();
     seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );
     seed = abs(seed) % 1000000;
@@ -62,6 +64,13 @@ function InitDefaults()
     enemiesrandomized = 25;
     infodevices = 0;
     dancingpercent = 25;
+}
+
+function CheckConfig()
+{
+    if( config_version == 0 ) {
+    }
+    Super.CheckConfig();
 }
 
 function LoadFlags()
@@ -170,12 +179,17 @@ function int FlagsHash()
 
 function InitVersion()
 {
-    flagsversion = 3;
+    flagsversion = VersionNumber();
+}
+
+static function int VersionNumber()
+{
+    return 3;
 }
 
 static function string VersionString()
 {
-    return "v1.3.3.7";
+    return "v1.3.4 Beta";
 }
 
 function MaxRando()

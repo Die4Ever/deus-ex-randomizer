@@ -1,5 +1,4 @@
-class DXRando extends Info
-    transient;
+class DXRando extends Info config(DXRando) transient;
 
 var transient DeusExPlayer Player;
 var transient DXRFlags flags;
@@ -7,22 +6,21 @@ var transient DeusExLevelInfo dxInfo;
 var transient string localURL;
 
 var int newseed;
-
-//rando flags
 var int seed;
-
-var transient bool bNeedSave;
 
 var transient private int CrcTable[256]; // for string hashing to do more stable seeding
 
-var transient DXRBase modules[16];
+var transient DXRBase modules[32];
 var transient int num_modules;
+
+var config class<DXRBase> modules_to_load[31];// 1 less than the modules array, because we always load the DXRFlags module
+var config int config_version;
 
 function SetdxInfo(DeusExLevelInfo i)
 {
     dxInfo = i;
     localURL = Caps(dxInfo.mapName);
-    log("DXRando SetdxInfo got localURL: " $ localURL);
+    l("SetdxInfo got localURL: " $ localURL);
     PostPostBeginPlay();
 }
 
@@ -31,28 +29,61 @@ function PostPostBeginPlay()
     Super.PostPostBeginPlay();
 
     if( localURL == "" ) {
-        log("DXRando PostPostBeginPlay returning because localURL == " $ localURL);
+        l("PostPostBeginPlay returning because localURL == " $ localURL);
         return;
     }
 
-    log("DXRando PostPostBeginPlay has localURL == " $ localURL);
+    l("PostPostBeginPlay has localURL == " $ localURL);
     Player = DeusExPlayer(GetPlayerPawn());
     if( Player == None ) {
-        log("DXRando PostPostBeginPlay() didn't find player?");
+        l("PostPostBeginPlay() didn't find player?");
         SetTimer(0.1, False);
         return;
     }
-    log("DXRando found Player "$Player);
+    l("found Player "$Player);
     CrcInit();
     ClearModules();
     LoadFlagsModule();
     flags.LoadFlags();
-
+    CheckConfig();
     LoadModules();
 
     RandoEnter();
 
     SetTimer(1.0, True);
+}
+
+function CheckConfig()
+{
+    local int i;
+    //force modules to be referenced so they will get compiled, even if we don't want them to be loaded by default
+    local DXRNoStory compile1;
+    local DXRTestAllMaps compile2;
+    local DXREntranceRando compile3;
+    local DXRKillBobPage compile4;
+
+    if( config_version == 0 ) {
+        for(i=0; i < ArrayCount(modules_to_load); i++) {
+            modules_to_load[i] = None;
+        }
+
+        i=0;
+        modules_to_load[i++] = class'DXRKeys';
+        modules_to_load[i++] = class'DXREnemies';
+        modules_to_load[i++] = class'DXRSkills';
+        modules_to_load[i++] = class'DXRPasswords';
+        modules_to_load[i++] = class'DXRAugmentations';
+        modules_to_load[i++] = class'DXRSwapItems';
+        modules_to_load[i++] = class'DXRReduceItems';
+        modules_to_load[i++] = class'DXRNames';
+        modules_to_load[i++] = class'DXRFixup';
+        modules_to_load[i++] = class'DXRAutosave';
+        modules_to_load[i++] = class'DXRMemes';
+    }
+    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        config_version = class'DXRFlags'.static.VersionNumber();
+        SaveConfig();
+    }
 }
 
 function DXRFlags LoadFlagsModule()
@@ -64,11 +95,11 @@ function DXRFlags LoadFlagsModule()
 function DXRBase LoadModule(class<DXRBase> moduleclass)
 {
     local DXRBase m;
-    log("DXRando loading module "$moduleclass);
+    l("loading module "$moduleclass);
 
     m = FindModule(moduleclass);
     if( m != None ) {
-        log("DXRando found already loaded module "$moduleclass);
+        l("found already loaded module "$moduleclass);
         if(m.dxr != Self) m.Init(Self);
         return m;
     }
@@ -76,30 +107,23 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
     //m = new(None) moduleclass;
     m = Spawn(moduleclass, None);
     if ( m == None ) {
-        log("DXRando failed to load module "$moduleclass);
+        l("failed to load module "$moduleclass);
         return None;
     }
     m.Init(Self);
     modules[num_modules] = m;
     num_modules++;
-    log("DXRando finished loading module "$moduleclass);
+    l("finished loading module "$moduleclass);
     return m;
 }
 
 function LoadModules()
 {
-    LoadModule(class'DXRKeys');
-    LoadModule(class'DXREnemies');
-    LoadModule(class'DXRSkills');
-    LoadModule(class'DXRPasswords');
-    LoadModule(class'DXRAugmentations');
-    LoadModule(class'DXRSwapItems');
-    LoadModule(class'DXRReduceItems');
-    LoadModule(class'DXRNames');
-    LoadModule(class'DXRFixup');
-    LoadModule(class'DXRAutosave');
-    LoadModule(class'DXRMemes');
-
+    local int i;
+    for( i=0; i < ArrayCount( modules_to_load ); i++ ) {
+        if( modules_to_load[i] == None ) continue;
+        LoadModule(modules_to_load[i]);
+    }
     RunTests();
 }
 
@@ -122,7 +146,7 @@ function DXRBase FindModule(class<DXRBase> moduleclass)
         }
     }
 
-    log("DXRando didn't find module "$moduleclass);
+    l("didn't find module "$moduleclass);
     return None;
 }
 
@@ -136,7 +160,7 @@ function ClearModules()
 event Destroyed()
 {
     local int i;
-    log("DXRando.Destroyed()");
+    l("Destroyed()");
 
     num_modules = 0;
     flags = None;
@@ -147,7 +171,7 @@ event Destroyed()
 function PreTravel()
 {
     local int i;
-    log("DXRando PreTravel()");
+    l("PreTravel()");
     // turn off the timer
     SetTimer(0, False);
 
@@ -177,19 +201,19 @@ function RandoEnter()
         flags.f.SetBool(flagName, True,, 999);
     }
 
-    log("DXRando RandoEnter() firstTime: "$firstTime);
-    
+    l("RandoEnter() firstTime: "$firstTime);
+
     if ( firstTime == true )
     {
         SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL) );
 
-        log("DXRando randomizing "$localURL$" using seed " $ seed);
+        l("randomizing "$localURL$" using seed " $ seed);
 
         for(i=0; i<num_modules; i++) {
             modules[i].FirstEntry();
         }
 
-        log("DXRando done randomizing "$localURL);
+        l("done randomizing "$localURL);
     }
     else
     {
@@ -268,17 +292,22 @@ final function int Crc(coerce string Text) {
     return CrcValue;
 }
 
+function l(string message)
+{
+    log(message, class.name);
+}
+
 function RunTests()
 {
     local int i, results;
     for(i=0; i<num_modules; i++) {
         results = modules[i].RunTests();
         if( results > 0 ) {
-            log( modules[i] @ results $ " tests failed!" );
+            l( modules[i] @ results $ " tests failed!" );
             Player.ClientMessage( modules[i].Class @ results $ " tests failed!" );
         }
         else
-            log( modules[i] $ " passed tests!" );
+            l( modules[i] $ " passed tests!" );
     }
 }
 

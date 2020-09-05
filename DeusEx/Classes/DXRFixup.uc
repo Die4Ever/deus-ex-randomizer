@@ -1,13 +1,65 @@
 class DXRFixup expands DXRBase;
 
+struct DecorationsOverwrite {
+    var class<DeusExDecoration> type;
+    var bool bInvincible;
+    var int HitPoints;
+    var int minDamageThreshold;
+    var bool bFlammable;
+    var float Flammability; // how long does the object burn?
+    var bool bExplosive;
+    var int explosionDamage;
+    var float explosionRadius;
+    var bool bPushable;
+};
+
+var config DecorationsOverwrite DecorationsOverwrites[16];
+
+function CheckConfig()
+{
+    local int i;
+    if( config_version == 0 ) {
+        for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
+            DecorationsOverwrites[i].type = None;
+        }
+        i=0;
+        DecorationsOverwrites[i].type = class'CrateUnbreakableLarge';
+        DecorationsOverwrites[i].bInvincible = false;
+        DecorationsOverwrites[i].HitPoints = 2000;
+        DecorationsOverwrites[i].minDamageThreshold = 0;
+        DecorationsOverwrites[i].bFlammable = DecorationsOverwrites[i].type.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = DecorationsOverwrites[i].type.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = DecorationsOverwrites[i].type.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = DecorationsOverwrites[i].type.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = DecorationsOverwrites[i].type.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = DecorationsOverwrites[i].type.default.bPushable;
+        i++;
+
+        DecorationsOverwrites[i].type = class'BarrelFire';
+        DecorationsOverwrites[i].bInvincible = false;
+        DecorationsOverwrites[i].HitPoints = 50;
+        DecorationsOverwrites[i].minDamageThreshold = 0;
+        DecorationsOverwrites[i].bFlammable = DecorationsOverwrites[i].type.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = DecorationsOverwrites[i].type.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = DecorationsOverwrites[i].type.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = DecorationsOverwrites[i].type.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = DecorationsOverwrites[i].type.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = DecorationsOverwrites[i].type.default.bPushable;
+    }
+    Super.CheckConfig();
+}
+
 function FirstEntry()
 {
     Super.FirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber $ " FirstEntry()");
 
     Level.AmbientBrightness += dxr.flags.brightness;
+    OverwriteDecorations();
     
-    if( dxr.dxInfo.missionNumber == 6 )
+    if (dxr.dxInfo.missionNumber == 2)
+        NYC1_FirstEntry();
+    else if( dxr.dxInfo.missionNumber == 6 )
         HongKong_FirstEntry();
     else if( dxr.dxInfo.missionNumber == 12 )
         Vandenberg_FirstEntry();
@@ -19,7 +71,6 @@ function AnyEntry()
     l( "mission " $ dxr.dxInfo.missionNumber $ " AnyEntry()");
 
     BuffScopes();
-    FixUnbreakableCrates();
 
     if( dxr.dxInfo.missionNumber == 6 )
         HongKong_AnyEntry();
@@ -39,14 +90,39 @@ function BuffScopes()
     }
 }
 
-function FixUnbreakableCrates()
+function OverwriteDecorations()
 {
-    local CrateUnbreakableLarge c;
-    foreach AllActors(class'CrateUnbreakableLarge', c) {
-        if( c.bInvincible ) {
-            c.bInvincible = False;
-            c.HitPoints = 2000;
+    local DeusExDecoration d;
+    local int i;
+    for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
+        if(DecorationsOverwrites[i].type == None) continue;
+        foreach AllActors(class'DeusExDecoration', d) {
+            if( d.IsA(DecorationsOverwrites[i].type.name) == false ) continue;
+            d.bInvincible = DecorationsOverwrites[i].bInvincible;
+            d.HitPoints = DecorationsOverwrites[i].HitPoints;
+            d.minDamageThreshold = DecorationsOverwrites[i].minDamageThreshold;
+            d.bFlammable = DecorationsOverwrites[i].bFlammable;
+            d.Flammability = DecorationsOverwrites[i].Flammability;
+            d.bExplosive = DecorationsOverwrites[i].bExplosive;
+            d.explosionDamage = DecorationsOverwrites[i].explosionDamage;
+            d.explosionRadius = DecorationsOverwrites[i].explosionRadius;
+            d.bPushable = DecorationsOverwrites[i].bPushable;
         }
+    }
+}
+
+function NYC1_FirstEntry()
+{
+    local NYPoliceBoat b;
+    
+    switch (dxr.localURL)
+    {
+        case "02_NYC_BATTERYPARK":
+            foreach AllActors(class'NYPoliceBoat',b) {
+                b.BindName = "NYPoliceBoat";
+                b.ConBindEvents();
+            }
+            break;
     }
 }
 
