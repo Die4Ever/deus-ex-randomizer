@@ -59,6 +59,8 @@ function FirstEntry()
     
     if (dxr.dxInfo.missionNumber == 2)
         NYC1_FirstEntry();
+    else if (dxr.dxInfo.missionNumber == 3)
+        Airfield_FirstEntry();
     else if( dxr.dxInfo.missionNumber == 6 )
         HongKong_FirstEntry();
     else if( dxr.dxInfo.missionNumber == 12 )
@@ -122,6 +124,51 @@ function NYC1_FirstEntry()
                 b.BindName = "NYPoliceBoat";
                 b.ConBindEvents();
             }
+            break;
+    }
+}
+
+function Airfield_FirstEntry()
+{
+    local Mover m;
+    local Switch2 s;
+    local vector loc;
+    local rotator rotate;
+    
+    switch (dxr.localURL)
+    {
+        case "03_NYC_AirfieldHeliBase":
+            foreach AllActors(class'Mover',m) {
+                if (m.Tag == 'BasementDoorOpen')
+                {
+                    m.Event = 'BasementFloor';
+                }
+                else if (m.Tag == 'GroundDoorOpen')
+                {
+                    m.Event = 'GroundLevel';
+                }
+            }
+            break;
+        case "03_NYC_BROOKLYNBRIDGESTATION":
+            //Put a button behind the hidden bathroom door
+            //Mostly for entrance rando, but just in case
+            loc.X = -1672.1;
+            loc.Y = -1319.913574;
+            loc.Z = 130.813538;
+            rotate.Yaw=32767;
+            s = Spawn(class'Switch2',,,loc,rotate);
+            s.Event = 'MoleHideoutOpened';
+            s.bCollideWorld=False;
+            
+            //I think the rotation must happen after spawning
+            //Which means that I can't actually directly spawn
+            //It right against the wall.
+            //Once spawned, move it tight against the wall.
+            loc.X=4;
+            loc.Y=0;
+            loc.Z=0;
+            s.move(loc);
+            
             break;
     }
 }

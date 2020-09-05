@@ -3,9 +3,6 @@
 //=============================================================================
 class DXREntranceRando expands DXRBase;
 
-var int curMission;
-
-
 //Defines an edge of a map where you can transfer between maps
 //Via Teleporter or MapExit
 //In the main game, all of them have an inbound point and an outbound one
@@ -38,15 +35,6 @@ var int numConns;
 
 var MapTransfer xfers[50];
 var int numXfers;
-
-function Init(DXRando txdr)
-{
-    Super.Init(txdr);
-    
-    curMission = txdr.flags.f.GetInt('Rando_Entrance_CurMission');
-    txdr.flags.f.SetBool('Rando_Entrance_Enabled',True);
-    
-}
 
 
 function int GetNextTransferIdx()
@@ -86,33 +74,53 @@ function int GetUnusedTransferByOffset(int offset)
     return -1;
 }
 
+function int GetNumXfersByMap(string mapname)
+{
+    local int i;
+    local int count;
+    
+    count = 0;
+    
+    for (i=0;i<numXfers;i++)
+    {
+        if (xfers[i].mapname == mapname)
+        {
+            count++;
+        }
+    }
+    
+    return count;
+}
+
+function bool IsDeadEnd(string mapname)
+{
+    return GetNumXfersByMap(mapname)==1;
+}
+
+function bool CanSelfConnect(string mapname)
+{
+    return GetNumXfersByMap(mapname)>2;
+}
+
 function bool IsConnectionValid(int missionNum, MapTransfer a, MapTransfer b)
 {
+
+    if ( IsDeadEnd(a.mapname) && IsDeadEnd(b.mapname) )
+    {
+        return False;
+    }
+    
+    if ( a.mapname == b.mapname)
+    {
+        if ( !CanSelfConnect(a.mapname))
+        {
+            return False;
+        }
+    }
+
     switch(missionNum)
     {
         case 2:
-            if (a.mapname == "02_NYC_BatteryPark")
-            {
-                if (b.mapname == "02_NYC_FreeClinic")
-                {
-                    return False;
-                }
-            }
-            else if (b.mapname == "02_NYC_BatteryPark")
-            {
-                if (a.mapname == "02_NYC_FreeClinic")
-                {
-                    return False;
-                }
-            }         
-            else if (a.mapname == b.mapname)
-            {
-                //We allow this on street
-                if (a.mapname!="02_NYC_Street")
-                {
-                    return False;
-                }
-            }
             break;
     
     }
@@ -253,12 +261,6 @@ function bool ValidateConnections()
         }
     }
     
-    l("Can visit "$visitable$" maps");
-    for (i=0;i<visitable;i++)
-    {
-        l(canvisit[i]);
-    }
-    
     //Theoretically I should probably actually check to see if the maps match,
     //but this is fairly safe...
     return visitable == numMaps;
@@ -317,147 +319,68 @@ function GenerateConnections(int missionNum)
         numConns = connsMade;
         isValid = ValidateConnections();
     }
-    numConns = connsMade;
 
+}
+
+function AddXfer(string mapname, string inTag, string outTag)
+{
+    xfers[numXfers].mapname = mapname;
+    xfers[numXfers].inTag = inTag;
+    xfers[numXfers].outTag = outTag;
+    xfers[numXfers].used = False;
+    
+    numXfers++;
 }
 
 function RandoMission2()
 {
-    //This is just because I am too lazy to retype the map name a lot of times
-    local string mapName;
     
-    numXfers = 24;
-    
-    mapName = "02_NYC_BatteryPark";
-    xfers[0].mapname = mapname;
-    xfers[0].inTag = "ToBatteryPark";
-    xfers[0].outTag = "ToStreet";
-    xfers[0].used = False;
-
-    mapName = "02_NYC_Bar";
-    xfers[1].mapname = mapname;
-    xfers[1].inTag = "ToBarBackEntrance";
-    xfers[1].outTag = "FromBarBackEntrance";
-    xfers[1].used = False;
-
-    xfers[2].mapname = mapname;
-    xfers[2].inTag = "ToBarFrontEntrance";
-    xfers[2].outTag = "FromBarFrontEntrance";
-    xfers[2].used = False;
-
-    mapName = "02_NYC_FreeClinic";
-    xfers[3].mapname = mapname;
-    xfers[3].inTag = "FromStreet";
-    xfers[3].outTag = "FromClinic";
-    xfers[3].used = False;
-
-    mapName = "02_NYC_Hotel";
-    xfers[4].mapname = mapname;
-    xfers[4].inTag = "ToHotelBedroom";
-    xfers[4].outTag = "BedroomWindow";
-    xfers[4].used = False;
-
-    xfers[5].mapname = mapname;
-    xfers[5].inTag = "ToHotelFrontDoor";
-    xfers[5].outTag = "FromHotelFrontDoor";
-    xfers[5].used = False;
-
-    mapName = "02_NYC_Smug";
-    xfers[6].mapname = mapname;
-    xfers[6].inTag = "ToSmugFrontDoor";
-    xfers[6].outTag = "FromSmugFrontDoor";
-    xfers[6].used = False;
-
-    xfers[7].mapname = mapname;
-    xfers[7].inTag = "ToSmugBackDoor";
-    xfers[7].outTag = "FromSmugBackDoor";
-    xfers[7].used = False;
-
-    mapName = "02_NYC_Underground";
-    xfers[8].mapname = mapname;
-    xfers[8].inTag = "ToNYCUndergroundSewer2";
-    xfers[8].outTag = "FromNYCUndergroundSewer2";
-    xfers[8].used = False;
-
-    xfers[9].mapname = mapname;
-    xfers[9].inTag = "ToNYCSump";
-    xfers[9].outTag = "FromNYCSump";
-    xfers[9].used = False;
-
-    mapName = "02_NYC_Warehouse";
-    xfers[10].mapname = mapname;
-    xfers[10].inTag = "ToRoofTop";
-    xfers[10].outTag = "FromRoofTop";
-    xfers[10].used = False;
-
-    xfers[11].mapname = mapname;
-    xfers[11].inTag = "ToWarehouseAlley";
-    xfers[11].outTag = "FromWarehouseAlley";
-    xfers[11].used = False;
-
-    mapName = "02_NYC_Street";
-    xfers[12].mapname = mapname;
-    xfers[12].inTag = "ToStreet";
-    xfers[12].outTag = "ToBatteryPark";
-    xfers[12].used = False;
-
-    xfers[13].mapname = mapname;
-    xfers[13].inTag = "FromSmugBackDoor";
-    xfers[13].outTag = "ToSmugBackDoor";
-    xfers[13].used = False;
-
-    xfers[14].mapname = mapname;
-    xfers[14].inTag = "FromSmugFrontDoor";
-    xfers[14].outTag = "ToSmugFrontDoor";
-    xfers[14].used = False;
-
-    xfers[15].mapname = mapname;
-    xfers[15].inTag = "FromBarBackEntrance";
-    xfers[15].outTag = "ToBarBackEntrance";
-    xfers[15].used = False;
-
-    xfers[16].mapname = mapname;
-    xfers[16].inTag = "FromBarFrontEntrance";
-    xfers[16].outTag = "ToBarFrontEntrance";
-    xfers[16].used = False;
-
-    xfers[17].mapname = mapname;
-    xfers[17].inTag = "FromHotelFrontDoor";
-    xfers[17].outTag = "ToHotelFrontDoor";
-    xfers[17].used = False;
-
-    xfers[18].mapname = mapname;
-    xfers[18].inTag = "FromClinic";
-    xfers[18].outTag = "FromStreet";
-    xfers[18].used = False;
-
-    xfers[19].mapname = mapname;
-    xfers[19].inTag = "BedroomWindow";
-    xfers[19].outTag = "ToHotelBedroom";
-    xfers[19].used = False;
-
-    xfers[20].mapname = mapname;
-    xfers[20].inTag = "FromWarehouseAlley";
-    xfers[20].outTag = "ToWarehouseAlley";
-    xfers[20].used = False;
-
-    xfers[21].mapname = mapname;
-    xfers[21].inTag = "FromRoofTop";
-    xfers[21].outTag = "ToRoofTop";
-    xfers[21].used = False;
-
-    xfers[22].mapname = mapname;
-    xfers[22].inTag = "FromNYCUndergroundSewer2";
-    xfers[22].outTag = "ToNYCUndergroundSewer2";
-    xfers[22].used = False;
-
-    xfers[23].mapname = mapname;
-    xfers[23].inTag = "FromNYCSump";
-    xfers[23].outTag = "ToNYCSump";
-    xfers[23].used = False;
-
-
+    AddXfer("02_NYC_BatteryPark","ToBatteryPark","ToStreet");
+    AddXfer("02_NYC_Bar","ToBarBackEntrance","FromBarBackEntrance");
+    AddXfer("02_NYC_Bar","ToBarFrontEntrance","FromBarFrontEntrance");
+    AddXfer("02_NYC_FreeClinic","FromStreet","FromClinic");
+    AddXfer("02_NYC_Hotel","ToHotelBedroom","BedroomWindow");
+    AddXfer("02_NYC_Hotel","ToHotelFrontDoor","FromHotelFrontDoor");
+    AddXfer("02_NYC_Smug","ToSmugFrontDoor","FromSmugFrontDoor");
+    AddXfer("02_NYC_Smug","ToSmugBackDoor","FromSmugBackDoor");
+    AddXfer("02_NYC_Underground","ToNYCUndergroundSewer2","FromNYCUndergroundSewer2");
+    AddXfer("02_NYC_Underground","ToNYCSump","FromNYCSump");
+    AddXfer("02_NYC_Warehouse","ToRoofTop","FromRoofTop");
+    AddXfer("02_NYC_Warehouse","ToWarehouseAlley","FromWarehouseAlley");
+    AddXfer("02_NYC_Street","ToStreet","ToBatteryPark");
+    AddXfer("02_NYC_Street","FromSmugBackDoor","ToSmugBackDoor");
+    AddXfer("02_NYC_Street","FromSmugFrontDoor","ToSmugFrontDoor");
+    AddXfer("02_NYC_Street","FromBarBackEntrance","ToBarBackEntrance");
+    AddXfer("02_NYC_Street","FromBarFrontEntrance","ToBarFrontEntrance");
+    AddXfer("02_NYC_Street","FromHotelFrontDoor","ToHotelFrontDoor");
+    AddXfer("02_NYC_Street","FromClinic","FromStreet");
+    AddXfer("02_NYC_Street","BedroomWindow","ToHotelBedroom");
+    AddXfer("02_NYC_Street","FromWarehouseAlley","ToWarehouseAlley");
+    AddXfer("02_NYC_Street","FromRoofTop","ToRoofTop");
+    AddXfer("02_NYC_Street","FromNYCUndergroundSewer2","ToNYCUndergroundSewer2");
+    AddXfer("02_NYC_Street","FromNYCSump","ToNYCSump");    
+        
     GenerateConnections(2);
+}
+
+function RandoMission3()
+{
+    AddXfer("03_NYC_BatteryPark","BBSExit","FromNYCStreets");
+    AddXfer("03_NYC_BrooklynBridgeStation","FromNYCStreets","BBSExit");
+    AddXfer("03_NYC_BrooklynBridgeStation","MoleExit","MoleEnt");
+    AddXfer("03_NYC_MolePeople","SewerExit","SewerEnt");
+    AddXfer("03_NYC_MolePeople","MoleEnt","MoleExit");
+    AddXfer("03_NYC_AirfieldHeliBase","SewerEnt","SewerExit");
+    AddXfer("03_NYC_AirfieldHeliBase","BHElevatorEnt","BHElevatorExit");
+    AddXfer("03_NYC_AirfieldHeliBase","FromOcean","ToOcean");
+    AddXfer("03_NYC_Airfield","HangarExit","HangarEnt");
+    AddXfer("03_NYC_Airfield","BHElevatorExit","BHElevatorEnt");
+    AddXfer("03_NYC_Airfield","ToOcean","FromOcean");
+    AddXfer("03_NYC_Hangar","HangarEnt","HangarExit");
+    AddXfer("03_NYC_Hangar","747PassExit","747PassEnt");
+    AddXfer("03_NYC_747","747PassEnt","747PassExit");
+    
+    GenerateConnections(3);
 }
 
 function EntranceRando(int missionNum)
@@ -471,6 +394,7 @@ function EntranceRando(int missionNum)
             RandoMission2();
             break;
         case 3:
+            RandoMission3();
             break;
         case 4:
             break;
@@ -568,18 +492,10 @@ function FirstEntry()
 {
     
     Super.FirstEntry();
-    
-    curMission = dxr.flags.f.GetInt('Rando_Entrance_CurMission');
-    
-    if (dxr.flags.f.GetBool('Rando_Entrance_Enabled'))
-    {
-        curMission = dxr.dxInfo.missionNumber;
-        dxr.flags.f.SetInt('Rando_Entrance_CurMission',curMission,,999);
-        
-        //Randomize entrances for this mission
-        EntranceRando(curMission);
-        
-    }
+            
+    //Randomize entrances for this mission
+    EntranceRando(dxr.dxInfo.missionNumber);
+
 }
 
 defaultproperties
