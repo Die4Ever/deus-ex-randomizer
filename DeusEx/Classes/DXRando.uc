@@ -59,6 +59,7 @@ function CheckConfig()
     //force modules to be referenced so they will get compiled, even if we don't want them to be loaded by default
     local DXRNoStory compile1;
     local DXRTestAllMaps compile2;
+    local DXREntranceRando compile3;
 
     if( config_version == 0 ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
