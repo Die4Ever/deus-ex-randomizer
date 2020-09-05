@@ -13,7 +13,7 @@ var transient private int CrcTable[256]; // for string hashing to do more stable
 var transient DXRBase modules[32];
 var transient int num_modules;
 
-var config class<DXRBase> modules_to_load[32];
+var config class<DXRBase> modules_to_load[31];// 1 less than the modules array, because we always load the DXRFlags module
 var config int config_version;
 
 function SetdxInfo(DeusExLevelInfo i)
