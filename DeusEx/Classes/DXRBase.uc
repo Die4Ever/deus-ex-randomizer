@@ -52,7 +52,7 @@ event Destroyed()
     Super.Destroyed();
 }
 
-function SetSeed(string name)
+function SetSeed(coerce string name)
 {
     dxr.SetSeed( dxr.Crc(dxr.seed $ "MS_" $ dxr.dxInfo.MissionNumber $ dxr.localURL $ name) );
 }

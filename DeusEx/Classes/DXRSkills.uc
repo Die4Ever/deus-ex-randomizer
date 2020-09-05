@@ -46,7 +46,7 @@ function RandoSkills()
     while(aSkill != None)
     {
         percent = rng(dxr.flags.maxskill - dxr.flags.minskill + 1) + dxr.flags.minskill;
-        l( aSkill $ " percent: "$percent$"%");
+        l( aSkill.Class.Name $ " percent: "$percent$"%");
         for(i=0; i<arrayCount(aSkill.Cost); i++)
         {
             f = float(aSkill.default.Cost[i]) * float(percent) / 100.0;

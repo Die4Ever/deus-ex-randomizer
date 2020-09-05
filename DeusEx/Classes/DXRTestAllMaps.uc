@@ -134,6 +134,28 @@ static function int GetMissionNumber(string map)
     return mission;
 }
 
+static function string PickRandomMap(DXRando dxr)
+{
+    local string maps[128];
+    local int i, numMaps, slot;
+
+    GetAllMaps(maps);
+    for(i=0; i < ArrayCount(maps); i++) {
+        if( maps[i] != "" ) numMaps++;
+    }
+
+    slot = dxr.rng(numMaps);
+    numMaps=0;
+
+    for(i=0; i < ArrayCount(maps); i++) {
+        if( numMaps==slot && maps[i] != "" ) {
+            return maps[i];
+        }
+        if( maps[i] != "" ) numMaps++;
+    }
+    return "";
+}
+
 function int RunTests()
 {
     local int results;
@@ -141,6 +163,7 @@ function int RunTests()
 
     results += testint( GetMissionNumber("06_HongKong_WanChai_Underworld") , 6, "GetMissionNumber(\"06_HongKong_WanChai_Underworld\")" );
     results += testint( GetMissionNumber("15_Area51_Final") , 15, "GetMissionNumber(\"15_Area51_Final\")" );
+    results += test( PickRandomMap(dxr) != "", "PickRandomMap" );
 
     return results;
 }
