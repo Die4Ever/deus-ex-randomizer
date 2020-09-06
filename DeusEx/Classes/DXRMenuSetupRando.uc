@@ -5,12 +5,12 @@ var float combatDifficulty;
 
 struct EnumBtn {
     var MenuUIActionButtonWindow btn;
-    var string values[16];
+    var string values[32];
     var int value;
 };
 
 var EnumBtn enums[32];
-var int RandoKeys, RandoDoors, RandoDevices, RandoPasswords, Autosave, RemoveInvisWalls, RandoInfoDevices;
+var int GameMode, RandoKeys, RandoDoors, RandoDevices, RandoPasswords, Autosave, RemoveInvisWalls, RandoInfoDevices;
 
 var MenuUIEditWindow editSeed;
 var MenuUIEditWindow editBrightness;
@@ -36,6 +36,11 @@ var config int config_version;
 
 var config int num_rows;
 var config int num_cols;
+var config int col_width_even;
+var config int col_width_odd;
+var config int row_height;
+var config int padding_width;
+var config int padding_height;
 
 event InitWindow()
 {
@@ -76,8 +81,6 @@ function DXRando InitDxr()
 function CheckConfig()
 {
     if( config_version == 0 ) {
-        num_rows = 11;
-        num_cols = 4;
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         config_version = class'DXRFlags'.static.VersionNumber();
@@ -100,8 +103,9 @@ event DestroyWindow()
 
 function CreateControls()
 {
+    local int i;
     local int row;
-    local EnumBtn btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords, btnAutosave, btnInfoDevs;
+    local EnumBtn btnGameMode, btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords, btnAutosave, btnInfoDevs;
     Super.CreateControls();
 
     Title = "DX Rando "$ class'DXRFlags'.static.VersionString() $" Options";
@@ -109,6 +113,15 @@ function CreateControls()
 
     row = 0;
     editSeed = CreateEdit(row++, "Seed", "Enter a seed if you want to play the same game again.", "1234567890");
+
+    i=0;
+    btnGameMode.values[i++] = "Original Story";
+    btnGameMode.values[i++] = "Original Story, Rearranged Levels";
+    btnGameMode.values[i++] = "Kill Bob Page";
+    btnGameMode.values[i++] = "How About Some Soy Food?";
+    btnGameMode.values[i++] = "Horde Mode";//defending the paris cathedral could be really cool
+    btnGameMode.values[i++] = "Stick With the Prod";
+    GameMode = CreateEnum(row++, "", "Choose a game mode!", btnGameMode);
 
     btnAutosave.values[0] = "First Entry";
     btnAutosave.values[1] = "Every Entry";
@@ -123,12 +136,25 @@ function CreateControls()
     btnRandoKeys.values[1] = "Off";
     RandoKeys = CreateEnum(row++, "Key Randomization", "Move keys around the map.", btnRandoKeys);
 
-    btnRandoDoors.values[0] = "Both";
-    btnRandoDoors.values[1] = "Destructible";
-    btnRandoDoors.values[2] = "Pickable";
-    //btnRandoDoors.values[3] = "Either";
-    btnRandoDoors.values[3] = "Unchanged";
-    RandoDoors = CreateEnum(row++, "Undefeatable Doors", "Provide additional options to get through doors that normally can't be destroyed or lockpicked.", btnRandoDoors);
+    i=0;
+    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible & Pickable";
+    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible";
+    btnRandoDoors.values[i++] = "Undefeatable Doors Pickable";
+    //btnRandoDoors.values[i++] = "Undefeatable Doors Destructible or Pickable";
+    btnRandoDoors.values[i++] = "Doors Unchanged";
+    /*btnRandoDoors.values[i++] = "Key-Only Doors Destructible & Pickable";
+    btnRandoDoors.values[i++] = "Key-Only Doors Destructible";
+    btnRandoDoors.values[i++] = "Key-Only Doors Pickable";
+    btnRandoDoors.values[i++] = "Key-Only Doors Destructible or Pickable";*/
+    /*btnRandoDoors.values[i++] = "All Doors Destructible & Pickable";
+    btnRandoDoors.values[i++] = "All Doors Destructible";
+    btnRandoDoors.values[i++] = "All Doors Pickable";
+    btnRandoDoors.values[i++] = "All Doors Destructible or Pickable";*/
+    /*btnRandoDoors.values[i++] = "Some Doors Destructible & Pickable";
+    btnRandoDoors.values[i++] = "Some Doors Destructible";
+    btnRandoDoors.values[i++] = "Some Doors Pickable";
+    btnRandoDoors.values[i++] = "Some Doors Destructible or Pickable";*/
+    RandoDoors = CreateEnum(row++, "", "Additional options to get through doors that normally can't be destroyed or lockpicked.", btnRandoDoors);
 
     btnRandoDevices.values[0] = "All Hackable";
     //btnRandoDevices.values[1] = "Some Hackable";
@@ -161,7 +187,7 @@ function CreateControls()
 
 function vector GetCoords(int row, int col)
 {
-    if( row >= num_rows-1 ) {
+    while( row >= num_rows-1 ) {
         row -= num_rows-1;
         col += 2;
     }
@@ -171,9 +197,28 @@ function vector GetCoords(int row, int col)
 function vector _GetCoords(int row, int col)
 {
     local vector v;
-    v.x = col * 168 + 21;
-    v.y = row * 34 + 17;
+    v.x = _GetX(col);// col * col_width + col*padding_width + padding_width;
+    v.y = row * row_height + row*padding_height + padding_height;
     return v;
+}
+
+function int _GetX(int col)
+{
+    local int width;
+    width = col_width_even + col_width_odd;
+    width *= col/2;
+    width += int(col%2) * col_width_odd;//I use col_width_odd here because it's 0-indexed
+    width += padding_width*col + padding_width;
+    return width;
+}
+
+function int GetWidth(int row, int col, int cols)
+{
+    while( row >= num_rows-1 ) {
+        row -= num_rows-1;
+        col += 2;
+    }
+    return _GetX(col+cols) - _GetX(col) - padding_width;
 }
 
 function MenuUILabelWindow CreateLabel(int row, string label)
@@ -193,7 +238,7 @@ function MenuUIEditWindow CreateEdit(int row, string label, string helptext, str
     CreateLabel(row, label);
 
     coords = GetCoords(row, 1);
-    edit = CreateMenuEditWindow(coords.x, coords.y, 126, 10, winClient);
+    edit = CreateMenuEditWindow(coords.x, coords.y, GetWidth(row, 1, 1), 10, winClient);
 
     edit.SetText(deflt);
     edit.SetFilter(filterString);
@@ -230,7 +275,7 @@ function MenuUIEditWindow CreateSlider(int row, string label, string helptext, o
     for(i=0; i<numTicks; i++) {
         slider.winSlider.SetEnumeration(i, string(i*mult)$"%" );
     }
-    //slider.winScaleManager.SetWidth(126);
+    //slider.winScaleManager.SetWidth(GetWidth(row, 1, 1));
     //slider.winSlider.SetScaleTexture(slider.defaultScaleTexture, 50, 21, 8, 8);
     //slider.winScaleManager.StretchScaleField(true);
     //slider.winSlider.EnableStretchedScale(true);
@@ -245,13 +290,20 @@ function MenuUIActionButtonWindow CreateBtn(int row, string label, string helpte
     local MenuUIActionButtonWindow btn;
     local vector coords;
 
-    CreateLabel(row, label);
+    if( label != "" ) CreateLabel(row, label);
 
-    coords = GetCoords(row, 1);
     btn = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
     btn.SetButtonText(text);
-    btn.SetPos(coords.x, coords.y);
-    btn.SetWidth(126);
+    if( label == "" ) {
+        coords = GetCoords(row, 0);
+        btn.SetPos(coords.x, coords.y);
+        btn.SetWidth(GetWidth(row, 0, 2));
+    }
+    else {
+        coords = GetCoords(row, 1);
+        btn.SetPos(coords.x, coords.y);
+        btn.SetWidth(GetWidth(row, 1, 1));
+    }
     //btn.SetFont(Font'FontTiny');
 
     wnds[numwnds] = btn;
@@ -264,10 +316,12 @@ function MenuUIActionButtonWindow CreateBtn(int row, string label, string helpte
 function int CreateEnum(int row, string label, string helptext, optional EnumBtn e)
 {
     local int i;
-    e.value=0;
     if(e.values[0] == "") {
         e.values[0] = "Off";
         e.values[1] = "On";
+    }
+    for( e.value=0; e.value < ArrayCount(e.values); e.value++ ) {
+        if(e.values[e.value] != "") break;
     }
     e.btn = CreateBtn(row, label, helptext, e.values[e.value]);
 
@@ -315,11 +369,10 @@ function bool CheckClickEnum( Window buttonPressed )
 function EnumBtn ClickEnum(EnumBtn e)
 {
     e.value++;
-    if( e.value >= ArrayCount(e.values) ) {
-        e.value=0;
-    }
-    else if( e.values[e.value] == "" ) {
-        e.value=0;
+    e.value = e.value % ArrayCount(e.values);
+    while( e.values[e.value] == "" ) {
+        e.value++;
+        e.value = e.value % ArrayCount(e.values);
     }
     e.btn.SetButtonText(e.values[e.value]);
     return e;
@@ -383,23 +436,23 @@ function ProcessAction(String actionKey)
         else if( keys == "Copy" ) f.keysrando = 3;
         else if( keys == "Smart" ) f.keysrando = 4;
 
-        if( doors == "Unchanged" ) {
+        if( doors == "Doors Unchanged" ) {
             f.doorsdestructible = 0;
             f.doorspickable = 0;
         }
-        else if( doors == "Destructible" ) {
+        else if( doors == "Undefeatable Doors Destructible" ) {
             f.doorsdestructible = 100;
             f.doorspickable = 0;
         }
-        else if( doors == "Pickable" ) {
+        else if( doors == "Undefeatable Doors Pickable" ) {
             f.doorspickable = 100;
             f.doorsdestructible = 0;
         }
-        else if( doors == "Either" ) {
+        else if( doors == "Undefeatable Doors Destructible or Pickable" ) {
             f.doorsdestructible = 50;
             f.doorspickable = 50;
         }
-        else if( doors == "Both" ) {
+        else if( doors == "Undefeatable Doors Destructible & Pickable" ) {
             f.doorsdestructible = 100;
             f.doorspickable = 100;
         }
@@ -520,6 +573,13 @@ event FocusLeftDescendant(Window leaveWindow)
 
 defaultproperties
 {
+    num_rows=12
+    num_cols=4
+    col_width_odd=160
+    col_width_even=140
+    row_height=20
+    padding_width=20
+    padding_height=10
     actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel,Text="|&Back")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     //actionButtons(2)=(Action=AB_Reset)
