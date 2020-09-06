@@ -55,7 +55,7 @@ function FirstEntry()
     scale = mission_scaling[mission];
 
     ReduceAmmo(class'Ammo', float(dxr.flags.ammo*scale)/100.0/100.0);
-    SetMaxAmmo( class'Ammo', dxr.flags.ammo );
+    SetMaxAmmo( class'Ammo', dxr.flags.ammo*scale/100 );
 
     ReduceSpawns(class'Multitool', dxr.flags.multitools*scale/100);
     ReduceSpawns(class'Lockpick', dxr.flags.lockpicks*scale/100);
