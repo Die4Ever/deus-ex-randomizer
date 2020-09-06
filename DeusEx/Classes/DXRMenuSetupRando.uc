@@ -116,7 +116,7 @@ function CreateControls()
     btnAutosave.values[2] = "Off";
     Autosave = CreateEnum(row++, "Autosave", "Saves the game in case you die!", btnAutosave);
 
-    editBrightness = CreateSlider(row++, "Brightness +", "Increase the brightness of dark areas.", 5, 0, 25);
+    editBrightness = CreateSlider(row++, "Brightness +", "Increase the brightness of dark areas.", 10, 0, 100);
 
     btnRandoKeys.values[0] = "On";
     //btnRandoKeys.values[1] = "On";
