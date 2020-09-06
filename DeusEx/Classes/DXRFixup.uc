@@ -54,7 +54,7 @@ function FirstEntry()
     Super.FirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber $ " FirstEntry()");
 
-    Level.AmbientBrightness += dxr.flags.brightness;
+    IncreaseBrightness(dxr.flags.brightness);
     OverwriteDecorations();
     
     if (dxr.dxInfo.missionNumber == 2)
@@ -76,6 +76,19 @@ function AnyEntry()
 
     if( dxr.dxInfo.missionNumber == 6 )
         HongKong_AnyEntry();
+}
+
+function IncreaseBrightness(int brightness)
+{
+    local ZoneInfo z;
+    if(brightness <= 0) return;
+
+    Level.AmbientBrightness = Clamp( int(Level.AmbientBrightness) + brightness, 0, 255 );
+    //Level.Brightness += float(brightness)/100.0;
+    foreach AllActors(class'ZoneInfo', z) {
+        if( z == Level ) continue;
+        z.AmbientBrightness = Clamp( int(z.AmbientBrightness) + brightness, 0, 255 );
+    }
 }
 
 function BuffScopes()
