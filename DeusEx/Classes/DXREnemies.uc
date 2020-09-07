@@ -144,7 +144,7 @@ function RandoEnemies(int percent)
 
         if( rng(100) >= percent ) continue;
 
-        for(i = rng(enemy_multiplier); i >= 0; i--) {
+        for(i = rng(enemy_multiplier+percent/100); i >= 0; i--) {
             n = RandomEnemy(p, percent);
             if( newsp == None ) newsp = n;
         }
@@ -193,14 +193,16 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     }
     if( newclass == None ) newclass = p.class;
     radius = p.CollisionRadius;
-    loc_offset = vect( 3, 3, 0);
-    loc_offset.X = float(rng(30000))/10000.0 * Sqrt(float(enemy_multiplier));
-    loc_offset.Y = float(rng(30000))/10000.0 * Sqrt(float(enemy_multiplier));
-    if( rng(2) == 0 ) loc_offset.X *= -1;
-    if( rng(2) == 0 ) loc_offset.Y *= -1;
-    loc = p.Location + (radius*loc_offset);
-    // find a different location?
-    n = Spawn(newclass,,, loc );
+    loc_offset = vect( 3, 3, 5);
+    for(i=0; i<10; i++) {
+        loc_offset.X = float(rng(50000))/10000.0 * Sqrt(float(enemy_multiplier));
+        loc_offset.Y = float(rng(50000))/10000.0 * Sqrt(float(enemy_multiplier));
+        if( rng(2) == 0 ) loc_offset.X *= -1;
+        if( rng(2) == 0 ) loc_offset.Y *= -1;
+        loc = p.Location + (radius*loc_offset);
+        n = Spawn(newclass,,, loc );
+        if( n != None ) break;
+    }
     if( n == None ) {
         l("failed to clone "$ActorToString(p)$" into class "$newclass$" into "$loc);
         return None;
