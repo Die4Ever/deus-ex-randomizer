@@ -22,7 +22,7 @@ function CheckConfig()
     t=0;
     for(i=0; i < ArrayCount(skipactor_types); i++) {
         if( skipactor_types[i] != "" )
-            _skipactor_types[t++] = GetClassFromString(skipactor_types[i]);
+            _skipactor_types[t++] = GetClassFromString(skipactor_types[i], class'Actor');
     }
 }
 

@@ -1,19 +1,19 @@
 class DXRReduceItems extends DXRActorsBase;
 
 struct sReduceAmmo {
-    var class<Ammo> type;
+    var string type;
     var int percent;
 };
 struct sReduceItem {
-    var class<Actor> type;
+    var string type;
     var int percent;
 };
 struct sSetMax {
-    var class<DeusExPickup> type;
+    var string type;
     var int percent;
 };
 struct sMaxAmmo {
-    var class<Ammo> type;
+    var string type;
     var int percent;
 };
 
@@ -31,16 +31,16 @@ function CheckConfig()
             mission_scaling[i] = 100;
         }
         for(i=0; i < ArrayCount(ammo_reductions); i++) {
-            ammo_reductions[i].type = None;
+            ammo_reductions[i].type = "";
         }
         for(i=0; i < ArrayCount(reduce_items); i++) {
-            reduce_items[i].type = None;
+            reduce_items[i].type = "";
         }
         for(i=0; i < ArrayCount(max_copies); i++) {
-            max_copies[i].type = None;
+            max_copies[i].type = "";
         }
         for(i=0; i < ArrayCount(max_ammo); i++) {
-            max_ammo[i].type = None;
+            max_ammo[i].type = "";
         }
     }
     Super.CheckConfig();
@@ -49,50 +49,48 @@ function CheckConfig()
 function FirstEntry()
 {
     local int i, mission, scale;
+    local class<Actor> c;
     Super.FirstEntry();
 
     mission = Clamp(dxr.dxInfo.missionNumber, 0, ArrayCount(mission_scaling)-1);
     scale = mission_scaling[mission];
 
     ReduceAmmo(class'Ammo', float(dxr.flags.ammo*scale)/100.0/100.0);
-    SetMaxAmmo( class'Ammo', dxr.flags.ammo*scale/100 );
 
     ReduceSpawns(class'Multitool', dxr.flags.multitools*scale/100);
     ReduceSpawns(class'Lockpick', dxr.flags.lockpicks*scale/100);
     ReduceSpawns(class'BioelectricCell', dxr.flags.biocells*scale/100);
     ReduceSpawns(class'MedKit', dxr.flags.medkits*scale/100);
 
-    SetMaxCopies(class'Multitool', dxr.flags.multitools*scale/100);
-    SetMaxCopies(class'Lockpick', dxr.flags.lockpicks*scale/100);
-    SetMaxCopies(class'BioelectricCell', dxr.flags.biocells*scale/100);
-    SetMaxCopies(class'MedKit', dxr.flags.medkits*scale/100);
-
     for(i=0; i < ArrayCount(ammo_reductions); i++) {
-        if( ammo_reductions[i].type == None ) continue;
-        ReduceAmmo(ammo_reductions[i].type, float(ammo_reductions[i].percent*scale)/100.0/100.0 );
+        if( ammo_reductions[i].type == "" ) continue;
+        c = GetClassFromString( ammo_reductions[i].type, class'Ammo' );
+        ReduceAmmo(class<Ammo>(c), float(ammo_reductions[i].percent*scale)/100.0/100.0 );
     }
     for(i=0; i < ArrayCount(reduce_items); i++) {
-        if( reduce_items[i].type == None ) continue;
-        ReduceSpawns(reduce_items[i].type, reduce_items[i].percent*scale/100 );
+        if( reduce_items[i].type == "" ) continue;
+        c = GetClassFromString( reduce_items[i].type, class'Actor' );
+        ReduceSpawns(c, reduce_items[i].percent*scale/100 );
     }
-    for(i=0; i < ArrayCount(max_copies); i++) {
-        if( max_copies[i].type == None ) continue;
-        SetMaxCopies( max_copies[i].type, max_copies[i].percent*scale/100 );
-    }
-    for(i=0; i < ArrayCount(max_ammo); i++) {
-        if( max_ammo[i].type == None ) continue;
-        SetMaxAmmo( max_ammo[i].type, max_ammo[i].percent*scale/100 );
-    }
+    SetAllMaxCopies(scale);
     SetTimer(1.0, true);
 }
 
 function Timer()
 {
-    local int i, mission, scale;
+    local int mission, scale;
     Super.Timer();
 
     mission = Clamp(dxr.dxInfo.missionNumber, 0, ArrayCount(mission_scaling)-1);
     scale = mission_scaling[mission];
+    SetAllMaxCopies(scale);
+}
+
+function SetAllMaxCopies(int scale)
+{
+    local int i;
+    local class<Actor> c;
+    SetMaxAmmo( class'Ammo', dxr.flags.ammo*scale/100 );
 
     SetMaxCopies(class'Multitool', dxr.flags.multitools*scale/100 );
     SetMaxCopies(class'Lockpick', dxr.flags.lockpicks*scale/100 );
@@ -100,12 +98,14 @@ function Timer()
     SetMaxCopies(class'MedKit', dxr.flags.medkits*scale/100 );
 
     for(i=0; i < ArrayCount(max_copies); i++) {
-        if( max_copies[i].type == None ) continue;
-        SetMaxCopies( max_copies[i].type, max_copies[i].percent*scale/100 );
+        if( max_copies[i].type == "" ) continue;
+        c = GetClassFromString( max_copies[i].type, class'DeusExPickup' );
+        SetMaxCopies( class<DeusExPickup>(c), max_copies[i].percent*scale/100 );
     }
     for(i=0; i < ArrayCount(max_ammo); i++) {
-        if( max_ammo[i].type == None ) continue;
-        SetMaxAmmo( max_ammo[i].type, max_ammo[i].percent*scale/100 );
+        if( max_ammo[i].type == "" ) continue;
+        c = GetClassFromString( max_ammo[i].type, class'Ammo' );
+        SetMaxAmmo( class<Ammo>(c), max_ammo[i].percent*scale/100 );
     }
 }
 
@@ -178,19 +178,18 @@ function ReduceSpawnsInContainers(class<Actor> classname, int percent)
 
     foreach AllActors(class'Containers', d)
     {
-        //l("found Decoration " $ d.Name $ " with Contents: " $ d.Contents $ ", looking for " $ classname.Name);
         if( rng(100) >= percent ) {
-            if( ClassIsChildOf( classname, d.Contents) ) {
-                l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing contents "$d.Contents);
-                d.Contents = d.Content2;
+            if( ClassIsChildOf( d.Content3, classname) ) {
+                l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing content3 "$d.Content3);
+                d.Content3 = None;
             }
-            if( ClassIsChildOf( classname, d.Contents) ) {
-                l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing contents "$d.Content2);
+            if( ClassIsChildOf( d.Content2, classname) ) {
+                l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing content2 "$d.Content2);
                 d.Content2 = d.Content3;
             }
-            if( ClassIsChildOf( classname, d.Contents) ) {
-                l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing contents "$d.Content3);
-                d.Content3 = None;
+            if( ClassIsChildOf( d.Contents, classname) ) {
+                l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing contents "$d.Contents);
+                d.Contents = d.Content2;
             }
         }
     }

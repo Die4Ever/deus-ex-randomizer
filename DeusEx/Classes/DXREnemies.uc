@@ -20,6 +20,7 @@ var config name defaultOrders;
 function CheckConfig()
 {
     local int i;
+    local class<Actor> a;
     if( config_version == 0 ) {
         chance_clone_nonhumans = 70;
         enemy_multiplier = 1;
@@ -77,26 +78,23 @@ function CheckConfig()
 
     for(i=0; i < ArrayCount(randommelees); i++) {
         if( randommelees[i].type != "" ) {
-            _randommelees[i].type = class<Weapon>(GetClassFromString(randommelees[i].type));
+            a = GetClassFromString(randommelees[i].type, class'Weapon');
+            _randommelees[i].type = class<Weapon>(a);
             _randommelees[i].chance = randommelees[i].chance;
-            if( _randommelees[i].type == None )
-                err("failed to load randommelees["$i$"] " $ randommelees[i].type $ ", are you sure it's a subclass of Weapon?");
         }
     }
     for(i=0; i < ArrayCount(randomweapons); i++) {
         if( randomweapons[i].type != "" ) {
-            _randomweapons[i].type = class<Weapon>(GetClassFromString(randomweapons[i].type));
+            a = GetClassFromString(randomweapons[i].type, class'Weapon');
+            _randomweapons[i].type = class<Weapon>(a);
             _randomweapons[i].chance = randomweapons[i].chance;
-            if( _randomweapons[i].type == None )
-                err("failed to load randomweapons["$i$"] " $ randomweapons[i].type $ ", are you sure it's a subclass of Weapon?");
         }
     }
     for(i=0; i < ArrayCount(randomenemies); i++) {
         if( randomenemies[i].type != "" ) {
-            _randomenemies[i].type = class<ScriptedPawn>(GetClassFromString(randomenemies[i].type));
+            a = GetClassFromString(randomenemies[i].type, class'ScriptedPawn');
+            _randomenemies[i].type = class<ScriptedPawn>(a);
             _randomenemies[i].chance = randomenemies[i].chance;
-            if( _randomenemies[i].type == None )
-                err("failed to load randomenemies["$i$"] " $ randomenemies[i].type $ ", are you sure it's a subclass of ScriptedPawn?");
         }
     }
 }

@@ -1,6 +1,6 @@
 class DXRKillBobPage expands DXRBase;
 
-var config class<ScriptedPawn> BobPageClass;
+var config string BobPageClass;
 var config float minDistance;// minimum distance away from any Teleporter, or PlayerStart
 var config string endgamemap;
 var ScriptedPawn BobPage;
@@ -8,7 +8,7 @@ var ScriptedPawn BobPage;
 function CheckConfig()
 {
     if( config_version == 0 ) {
-        BobPageClass = class'BobPage';
+        BobPageClass = "BobPage";
         minDistance = 5000;
         endgamemap = "99_Endgame4.dx";
     }
@@ -40,7 +40,7 @@ function FirstEntry()
     foreach AllActors(class'NavigationPoint', p) {
         if( IsGoodBossLocation(p.Location) == false ) continue;
         if( num == slot ) {
-            BobPage = Spawn(BobPageClass,,, p.Location );
+            BobPage = Spawn( class<ScriptedPawn>(GetClassFromString(BobPageClass, class'ScriptedPawn')),,, p.Location );
             BobPage.bImportant = true;
             BobPage.BindName = "EndGameBoss";
             break;

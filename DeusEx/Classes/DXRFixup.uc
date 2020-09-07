@@ -1,7 +1,7 @@
 class DXRFixup expands DXRBase;
 
 struct DecorationsOverwrite {
-    var class<DeusExDecoration> type;
+    var string type;
     var bool bInvincible;
     var int HitPoints;
     var int minDamageThreshold;
@@ -18,33 +18,36 @@ var config DecorationsOverwrite DecorationsOverwrites[16];
 function CheckConfig()
 {
     local int i;
+    local class<DeusExDecoration> c;
     if( config_version == 0 ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
-            DecorationsOverwrites[i].type = None;
+            DecorationsOverwrites[i].type = "";
         }
         i=0;
-        DecorationsOverwrites[i].type = class'CrateUnbreakableLarge';
+        DecorationsOverwrites[i].type = "CrateUnbreakableLarge";
         DecorationsOverwrites[i].bInvincible = false;
         DecorationsOverwrites[i].HitPoints = 2000;
         DecorationsOverwrites[i].minDamageThreshold = 0;
-        DecorationsOverwrites[i].bFlammable = DecorationsOverwrites[i].type.default.bFlammable;
-        DecorationsOverwrites[i].Flammability = DecorationsOverwrites[i].type.default.Flammability;
-        DecorationsOverwrites[i].bExplosive = DecorationsOverwrites[i].type.default.bExplosive;
-        DecorationsOverwrites[i].explosionDamage = DecorationsOverwrites[i].type.default.explosionDamage;
-        DecorationsOverwrites[i].explosionRadius = DecorationsOverwrites[i].type.default.explosionRadius;
-        DecorationsOverwrites[i].bPushable = DecorationsOverwrites[i].type.default.bPushable;
+        c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+        DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = c.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = c.default.bPushable;
         i++;
 
-        DecorationsOverwrites[i].type = class'BarrelFire';
+        DecorationsOverwrites[i].type = "BarrelFire";
         DecorationsOverwrites[i].bInvincible = false;
         DecorationsOverwrites[i].HitPoints = 50;
         DecorationsOverwrites[i].minDamageThreshold = 0;
-        DecorationsOverwrites[i].bFlammable = DecorationsOverwrites[i].type.default.bFlammable;
-        DecorationsOverwrites[i].Flammability = DecorationsOverwrites[i].type.default.Flammability;
-        DecorationsOverwrites[i].bExplosive = DecorationsOverwrites[i].type.default.bExplosive;
-        DecorationsOverwrites[i].explosionDamage = DecorationsOverwrites[i].type.default.explosionDamage;
-        DecorationsOverwrites[i].explosionRadius = DecorationsOverwrites[i].type.default.explosionRadius;
-        DecorationsOverwrites[i].bPushable = DecorationsOverwrites[i].type.default.bPushable;
+        c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+        DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = c.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = c.default.bPushable;
     }
     Super.CheckConfig();
 }
@@ -108,11 +111,13 @@ function BuffScopes()
 function OverwriteDecorations()
 {
     local DeusExDecoration d;
+    local class<Actor> a;
     local int i;
     for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
-        if(DecorationsOverwrites[i].type == None) continue;
+        if(DecorationsOverwrites[i].type == "") continue;
         foreach AllActors(class'DeusExDecoration', d) {
-            if( d.IsA(DecorationsOverwrites[i].type.name) == false ) continue;
+            a = GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration');
+            if( d.IsA( a.name) == false ) continue;
             d.bInvincible = DecorationsOverwrites[i].bInvincible;
             d.HitPoints = DecorationsOverwrites[i].HitPoints;
             d.minDamageThreshold = DecorationsOverwrites[i].minDamageThreshold;

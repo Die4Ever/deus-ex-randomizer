@@ -1,7 +1,7 @@
 class DXRSkills extends DXRBase;
 
 struct SkillCostMultiplier {
-    var class<Skill> type;//you can use Class'DeusEx.Skill' to make it apply to all skills
+    var string type;//you can use "Skill" to make it apply to all skills
     var int percent;//percent to multiply, stacks
     var int minLevel;//the first skill level this adjustment will apply to
     var int maxLevel;//the highest skill level this adjustment will apply to
@@ -14,7 +14,7 @@ function CheckConfig()
     local int i;
     if( config_version == 0 ) {
         for(i=0; i < ArrayCount(SkillCostMultipliers); i++) {
-            SkillCostMultipliers[i].type = None;
+            SkillCostMultipliers[i].type = "";
             SkillCostMultipliers[i].percent = 100;
             SkillCostMultipliers[i].minLevel = 1;
             SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
@@ -36,6 +36,7 @@ function RandoSkills()
     local int percent;
     local float f;
     local SkillCostMultiplier scm;
+    local class<Skill> c;
 
     l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.minskill$", max: "$dxr.flags.maxskill);
     dxr.SetSeed(dxr.seed);
@@ -52,8 +53,9 @@ function RandoSkills()
             f = float(aSkill.default.Cost[i]) * float(percent) / 100.0;
             for(m=0; m < ArrayCount(SkillCostMultipliers); m++) {
                 scm = SkillCostMultipliers[m];
-                if( scm.type == None ) continue;
-                if( aSkill.IsA(scm.type.name) && i+1 >= scm.minLevel && i < scm.maxLevel ) {
+                if( scm.type == "" ) continue;
+                c = class<Skill>(GetClassFromString(scm.type, class'Skill'));
+                if( aSkill.IsA(c.name) && i+1 >= scm.minLevel && i < scm.maxLevel ) {
                     f *= float(scm.percent) / 100.0;
                 }
             }

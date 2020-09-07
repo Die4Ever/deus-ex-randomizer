@@ -89,12 +89,19 @@ function bool chance_single(int percent)
     return rng(100) < percent;
 }
 
-function class<Actor> GetClassFromString(string classstring)
+function class<Actor> GetClassFromString(string classstring, class<Actor> c)
 {
     local class<Actor> a;
-    a = class<Actor>(DynamicLoadObject("DeusEx."$classstring, class'class'));
-    if( a == None )
+    if( InStr(classstring, ".") == -1 )
+        classstring = "DeusEx." $ classstring;
+    a = class<Actor>(DynamicLoadObject(classstring, class'class'));
+    if( a == None ) {
         err("failed to load class "$classstring);
+    }
+    else if( ClassIsChildOf(a, c) == false ) {
+        err(classstring $ " is not a subclass of " $ c.name);
+        return None;
+    }
     return a;
 }
 
