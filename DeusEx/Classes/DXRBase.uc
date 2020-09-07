@@ -14,6 +14,7 @@ function Init(DXRando tdxr)
 function CheckConfig()
 {
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        l("upgrading config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
         config_version = class'DXRFlags'.static.VersionNumber();
         SaveConfig();
     }
@@ -86,6 +87,15 @@ function bool chance_remaining(int r)
 function bool chance_single(int percent)
 {
     return rng(100) < percent;
+}
+
+function class<Actor> GetClassFromString(string classstring)
+{
+    local class<Actor> a;
+    a = class<Actor>(DynamicLoadObject("DeusEx."$classstring, class'class'));
+    if( a == None )
+        err("failed to load class "$classstring);
+    return a;
 }
 
 function l(string message)
