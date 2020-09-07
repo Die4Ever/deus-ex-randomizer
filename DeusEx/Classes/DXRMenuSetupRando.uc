@@ -114,47 +114,47 @@ function CreateControls()
     row = 0;
     editSeed = CreateEdit(row++, "Seed", "Enter a seed if you want to play the same game again.", "1234567890");
 
-    i=0;
-    btnGameMode.values[i++] = "Original Story";
-    btnGameMode.values[i++] = "Original Story, Rearranged Levels";
-    btnGameMode.values[i++] = "Kill Bob Page";
-    btnGameMode.values[i++] = "How About Some Soy Food?";
-    btnGameMode.values[i++] = "Horde Mode";//defending the paris cathedral could be really cool
-    btnGameMode.values[i++] = "Stick With the Prod";
-    GameMode = CreateEnum(row++, "", "Choose a game mode!", btnGameMode);
-
     btnAutosave.values[0] = "First Entry";
     btnAutosave.values[1] = "Every Entry";
     //btnAutosave.values[0] = "Off";
     btnAutosave.values[2] = "Off";
     Autosave = CreateEnum(row++, "Autosave", "Saves the game in case you die!", btnAutosave);
 
-    editBrightness = CreateSlider(row++, "Brightness +", "Increase the brightness of dark areas.", 10, 0, 100);
+    editBrightness = CreateSlider(row++, "Brightness (0-255) +", "Increase the brightness of dark areas.", 10, 0, 255);
+
+    i=0;
+    btnGameMode.values[i++] = "Original Story";
+    btnGameMode.values[i++] = "Original Story, Rearranged Levels (Beta)";
+    /*btnGameMode.values[i++] = "Kill Bob Page";
+    btnGameMode.values[i++] = "How About Some Soy Food?";
+    btnGameMode.values[i++] = "Horde Mode";//defending the paris cathedral could be really cool
+    btnGameMode.values[i++] = "Stick With the Prod";*/
+    GameMode = CreateEnum(row++, "", "Choose a game mode!", btnGameMode);
+
+    i=0;
+    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible & Pickable";
+    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible or Pickable";
+    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible";
+    btnRandoDoors.values[i++] = "Undefeatable Doors Pickable";
+    btnRandoDoors.values[i++] = "Doors Unchanged";
+    btnRandoDoors.values[i++] = "Key-Only Doors Destructible & Pickable";
+    btnRandoDoors.values[i++] = "Key-Only Doors Destructible or Pickable";
+    btnRandoDoors.values[i++] = "Key-Only Doors Destructible";
+    btnRandoDoors.values[i++] = "Key-Only Doors Pickable";
+    /*btnRandoDoors.values[i++] = "All Doors Destructible & Pickable";
+    btnRandoDoors.values[i++] = "All Doors Destructible or Pickable";
+    btnRandoDoors.values[i++] = "All Doors Destructible";
+    btnRandoDoors.values[i++] = "All Doors Pickable";*/
+    btnRandoDoors.values[i++] = "Some Doors Destructible & Pickable";
+    btnRandoDoors.values[i++] = "Some Doors Destructible or Pickable";
+    btnRandoDoors.values[i++] = "Some Doors Destructible";
+    btnRandoDoors.values[i++] = "Some Doors Pickable";
+    RandoDoors = CreateEnum(row++, "", "Additional options to get through doors that normally can't be destroyed or lockpicked.", btnRandoDoors);
 
     btnRandoKeys.values[0] = "On";
     //btnRandoKeys.values[1] = "On";
     btnRandoKeys.values[1] = "Off";
     RandoKeys = CreateEnum(row++, "Key Randomization", "Move keys around the map.", btnRandoKeys);
-
-    i=0;
-    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible";
-    btnRandoDoors.values[i++] = "Undefeatable Doors Pickable";
-    //btnRandoDoors.values[i++] = "Undefeatable Doors Destructible or Pickable";
-    btnRandoDoors.values[i++] = "Doors Unchanged";
-    /*btnRandoDoors.values[i++] = "Key-Only Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "Key-Only Doors Destructible";
-    btnRandoDoors.values[i++] = "Key-Only Doors Pickable";
-    btnRandoDoors.values[i++] = "Key-Only Doors Destructible or Pickable";*/
-    /*btnRandoDoors.values[i++] = "All Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "All Doors Destructible";
-    btnRandoDoors.values[i++] = "All Doors Pickable";
-    btnRandoDoors.values[i++] = "All Doors Destructible or Pickable";*/
-    /*btnRandoDoors.values[i++] = "Some Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "Some Doors Destructible";
-    btnRandoDoors.values[i++] = "Some Doors Pickable";
-    btnRandoDoors.values[i++] = "Some Doors Destructible or Pickable";*/
-    RandoDoors = CreateEnum(row++, "", "Additional options to get through doors that normally can't be destroyed or lockpicked.", btnRandoDoors);
 
     btnRandoDevices.values[0] = "All Hackable";
     //btnRandoDevices.values[1] = "Some Hackable";
@@ -172,7 +172,7 @@ function CreateControls()
     editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", "Minimum cost for skills in percentage of the original cost.", 25, 0, 500);
     editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", "Maximum cost for skills in percentage of the original cost.", 300, 0, 500);
 
-    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 25, 0, 100);
+    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 35, 0, 100);
     editAmmo = CreateSlider(row++, "Ammo Drops %", "Make ammo more scarce.", 90);
     editMultitools = CreateSlider(row++, "Multitools Drops %", "Make multitools more scarce.", 80);
     editLockpicks = CreateSlider(row++, "Lockpicks Drops %", "Make lockpicks more scarce.", 80);
@@ -398,7 +398,9 @@ function ProcessAction(String actionKey)
     local DXRando dxr;
     local DXRFlags f;
     local int seed;
-    local string sseed, keys, doors, devices, passwords, autosavevalue, inviswalls, infodevs;
+    local string sseed, sgamemode, keys, doors, devices, passwords, autosavevalue, inviswalls, infodevs;
+    local int undefeatabledoors, keyonlydoors, alldoors, highlightabledoors;
+    local int doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
     if (actionKey == "NEXT")
     {
@@ -406,6 +408,7 @@ function ProcessAction(String actionKey)
         f = dxr.flags;
         sseed = editSeed.GetText();
 
+        sgamemode = GetEnumValue(GameMode);
         keys = GetEnumValue(RandoKeys);
         doors = GetEnumValue(RandoDoors);
         devices = GetEnumValue(RandoDevices);
@@ -430,31 +433,109 @@ function ProcessAction(String actionKey)
         f.speedlevel = GetSliderValue(editSpeedLevel);
         f.dancingpercent = GetSliderValue(editDancingPercent);
 
+        if( sgamemode == "Original Story" )
+            f.gamemode = 0;
+        else if( sgamemode == "Original Story, Rearranged Levels (Beta)" )
+            f.gamemode = 1;
+
         if( keys == "Off" ) f.keysrando = 0;
         else if( keys == "Dumb" ) f.keysrando = 2;
         else if( keys == "On" ) f.keysrando = 4;
         else if( keys == "Copy" ) f.keysrando = 3;
         else if( keys == "Smart" ) f.keysrando = 4;
 
+        undefeatabledoors = 1*256;
+        alldoors = 2*256;
+        keyonlydoors = 3*256;
+        highlightabledoors = 4*256;
+        doormutuallyinclusive = 1;
+        doorindependent = 2;
+        doormutuallyexclusive = 3;
+
         if( doors == "Doors Unchanged" ) {
+            f.doorsmode = 0;
             f.doorsdestructible = 0;
             f.doorspickable = 0;
         }
         else if( doors == "Undefeatable Doors Destructible" ) {
+            f.doorsmode = undefeatabledoors+doorindependent;
             f.doorsdestructible = 100;
             f.doorspickable = 0;
         }
         else if( doors == "Undefeatable Doors Pickable" ) {
+            f.doorsmode = undefeatabledoors+doorindependent;
             f.doorspickable = 100;
             f.doorsdestructible = 0;
         }
         else if( doors == "Undefeatable Doors Destructible or Pickable" ) {
+            f.doorsmode = undefeatabledoors+doormutuallyexclusive;
             f.doorsdestructible = 50;
             f.doorspickable = 50;
         }
         else if( doors == "Undefeatable Doors Destructible & Pickable" ) {
+            f.doorsmode = undefeatabledoors+doormutuallyinclusive;
             f.doorsdestructible = 100;
             f.doorspickable = 100;
+        }
+        else if( doors == "Key-Only Doors Destructible" ) {
+            f.doorsmode = keyonlydoors+doorindependent;
+            f.doorsdestructible = 100;
+            f.doorspickable = 0;
+        }
+        else if( doors == "Key-Only Doors Pickable" ) {
+            f.doorsmode = keyonlydoors+doorindependent;
+            f.doorspickable = 100;
+            f.doorsdestructible = 0;
+        }
+        else if( doors == "Key-Only Doors Destructible or Pickable" ) {
+            f.doorsmode = keyonlydoors+doormutuallyexclusive;
+            f.doorsdestructible = 50;
+            f.doorspickable = 50;
+        }
+        else if( doors == "Key-Only Doors Destructible & Pickable" ) {
+            f.doorsmode = keyonlydoors+doormutuallyinclusive;
+            f.doorsdestructible = 100;
+            f.doorspickable = 100;
+        }
+        else if( doors == "All Doors Destructible" ) {
+            f.doorsmode = alldoors+doorindependent;
+            f.doorsdestructible = 100;
+            f.doorspickable = 0;
+        }
+        else if( doors == "All Doors Pickable" ) {
+            f.doorsmode = alldoors+doorindependent;
+            f.doorspickable = 100;
+            f.doorsdestructible = 0;
+        }
+        else if( doors == "All Doors Destructible or Pickable" ) {
+            f.doorsmode = alldoors+doormutuallyexclusive;
+            f.doorsdestructible = 50;
+            f.doorspickable = 50;
+        }
+        else if( doors == "All Doors Destructible & Pickable" ) {
+            f.doorsmode = alldoors+doormutuallyinclusive;
+            f.doorsdestructible = 100;
+            f.doorspickable = 100;
+        }
+        else if( doors == "Some Doors Destructible" ) {
+            f.doorsmode = highlightabledoors+doorindependent;
+            f.doorsdestructible = 50;
+            f.doorspickable = 0;
+        }
+        else if( doors == "Some Doors Pickable" ) {
+            f.doorsmode = highlightabledoors+doorindependent;
+            f.doorspickable = 50;
+            f.doorsdestructible = 0;
+        }
+        else if( doors == "Some Doors Destructible or Pickable" ) {
+            f.doorsmode = highlightabledoors+doormutuallyexclusive;
+            f.doorsdestructible = 25;
+            f.doorspickable = 25;
+        }
+        else if( doors == "Some Doors Destructible & Pickable" ) {
+            f.doorsmode = highlightabledoors+doormutuallyinclusive;
+            f.doorsdestructible = 50;
+            f.doorspickable = 50;
         }
 
         if( devices == "Unchanged" ) f.deviceshackable = 0;

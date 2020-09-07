@@ -33,15 +33,15 @@ function CheckConfig()
         AddRandomEnemyType(class'ThugMale', 10);
         AddRandomEnemyType(class'ThugMale2', 10);
         AddRandomEnemyType(class'ThugMale3', 10);
-        AddRandomEnemyType(class'Greasel', 8);
-        AddRandomEnemyType(class'Gray', 4);
-        AddRandomEnemyType(class'Karkian', 4);
-        AddRandomEnemyType(class'SpiderBot', 8);
-        AddRandomEnemyType(class'MilitaryBot', 4);
-        AddRandomEnemyType(class'SpiderBot2', 4);
-        AddRandomEnemyType(class'SecurityBot2', 4);
-        AddRandomEnemyType(class'SecurityBot3', 4);
-        AddRandomEnemyType(class'SecurityBot4', 4);
+        AddRandomEnemyType(class'Greasel', 6);
+        AddRandomEnemyType(class'Gray', 3);
+        AddRandomEnemyType(class'Karkian', 3);
+        AddRandomEnemyType(class'SpiderBot', 6);
+        AddRandomEnemyType(class'MilitaryBot', 3);
+        AddRandomEnemyType(class'SpiderBot2', 3);
+        AddRandomEnemyType(class'SecurityBot2', 3);
+        AddRandomEnemyType(class'SecurityBot3', 3);
+        AddRandomEnemyType(class'SecurityBot4', 3);
 
         AddRandomWeapon(class'WeaponPistol', 11);
         AddRandomWeapon(class'WeaponAssaultGun', 11);
@@ -324,4 +324,28 @@ function RandomizeSize(Actor a)
         p.carriedDecoration = carried;
         p.PutCarriedDecorationInHand();
     }
+}
+
+function int RunTests()
+{
+    local int results, i, total;
+    results = Super.RunTests();
+
+    total=0;
+    for(i=0; i < ArrayCount(randomenemies); i++ ) {
+        total += randomenemies[i].chance;
+    }
+    results += test( total <= 100, "config randomenemies chances, check total "$total);
+    total=0;
+    for(i=0; i < ArrayCount(randomweapons); i++ ) {
+        total += randomweapons[i].chance;
+    }
+    results += test( total <= 100, "config randomweapons chances, check total "$total);
+    total=0;
+    for(i=0; i < ArrayCount(randommelees); i++ ) {
+        total += randommelees[i].chance;
+    }
+    results += test( total <= 100, "config randommelees chances, check total "$total);
+
+    return results;
 }

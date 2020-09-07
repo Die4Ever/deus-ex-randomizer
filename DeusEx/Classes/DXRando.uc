@@ -79,6 +79,7 @@ function CheckConfig()
         modules_to_load[i++] = class'DXRFixup';
         modules_to_load[i++] = class'DXRAutosave';
         modules_to_load[i++] = class'DXRMemes';
+        modules_to_load[i++] = class'DXREntranceRando';
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         config_version = class'DXRFlags'.static.VersionNumber();

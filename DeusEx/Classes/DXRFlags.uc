@@ -5,9 +5,10 @@ var transient FlagBase f;
 //rando flags
 var int seed;
 var int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
+var int gamemode;//0=original, 1=rearranged
 var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
 var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
-var int doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
+var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
 var int autosave;//0=off, 1=first time entering level, 2=every loading screen
 var int removeinvisiblewalls, enemiesrandomized, infodevices;
 var int dancingpercent;
@@ -44,6 +45,7 @@ function InitDefaults()
     seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );
     seed = abs(seed) % 1000000;
     dxr.seed = seed;
+    gamemode = 0;
     brightness = 5;
     minskill = 25;
     maxskill = 300;
@@ -53,6 +55,7 @@ function InitDefaults()
     biocells = 80;
     speedlevel = 1;
     keysrando = 4;
+    doorsmode = 1;
     doorspickable = 100;
     doorsdestructible = 100;
     deviceshackable = 100;
@@ -110,6 +113,10 @@ function LoadFlags()
         infodevices = f.GetInt('Rando_infodevices');
         dancingpercent = f.GetInt('Rando_dancingpercent');
     }
+    if( stored_version >= 4 ) {
+        doorsmode = f.GetInt('Rando_doorsmode');
+        gamemode = f.GetInt('Rando_gamemode');
+    }
 
     if(stored_version < flagsversion ) {
         l("upgraded flags from v"$stored_version);
@@ -117,7 +124,7 @@ function LoadFlags()
     }
 
     LogFlags("LoadFlags");
-    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", flags: " $ FlagsHash() );
+    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed );// $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", flags: " $ FlagsHash() );
     SetTimer(1.0, True);
 }
 
@@ -130,6 +137,7 @@ function SaveFlags()
     dxr.seed = seed;
 
     f.SetInt('Rando_version', flagsversion,, 999);
+    f.SetInt('Rando_gamemode', gamemode,, 999);
     f.SetInt('Rando_brightness', brightness,, 999);
     f.SetInt('Rando_minskill', minskill,, 999);
     f.SetInt('Rando_maxskill', maxskill,, 999);
@@ -140,6 +148,7 @@ function SaveFlags()
     f.SetInt('Rando_medkits', medkits,, 999);
     f.SetInt('Rando_speedlevel', speedlevel,, 999);
     f.SetInt('Rando_keys', keysrando,, 999);
+    f.SetInt('Rando_doorsmode', doorsmode,, 999);
     f.SetInt('Rando_doorspickable', doorspickable,, 999);
     f.SetInt('Rando_doorsdestructible', doorsdestructible,, 999);
     f.SetInt('Rando_deviceshackable', deviceshackable,, 999);
@@ -161,9 +170,9 @@ function LogFlags(string prefix)
 
 function string StringifyFlags()
 {
-    return "flagsversion: "$flagsversion$", brightness: "$brightness$", minskill: "$minskill$", maxskill: "$maxskill$", ammo: "$ammo
+    return "flagsversion: "$flagsversion$", gamemode: "$gamemode$", brightness: "$brightness$", minskill: "$minskill$", maxskill: "$maxskill$", ammo: "$ammo
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
-        $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
+        $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
         $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", infodevices: "$infodevices
         $ ", dancingpercent: "$dancingpercent;
@@ -184,12 +193,12 @@ function InitVersion()
 
 static function int VersionNumber()
 {
-    return 3;
+    return 4;
 }
 
 static function string VersionString()
 {
-    return "v1.3.4 Beta";
+    return "v1.4 Beta";
 }
 
 function MaxRando()

@@ -13,7 +13,7 @@ function AnyEntry()
 {
     local NanoKey k;
     Super.AnyEntry();
-    AdjustRestrictions(dxr.flags.doorspickable, dxr.flags.doorsdestructible, dxr.flags.deviceshackable, dxr.flags.removeinvisiblewalls);
+    AdjustRestrictions(dxr.flags.doorsmode, dxr.flags.doorspickable, dxr.flags.doorsdestructible, dxr.flags.deviceshackable, dxr.flags.removeinvisiblewalls);
 
     foreach AllActors(class'NanoKey', k )
     {
@@ -137,36 +137,25 @@ function bool KeyPositionGood(NanoKey k, vector newpos)
     return True;
 }
 
-function AdjustRestrictions(int doorspickable, int doorsdestructible, int deviceshackable, int removeinvisiblewalls)
+function AdjustRestrictions(int doorsmode, int doorspickable, int doorsdestructible, int deviceshackable, int removeinvisiblewalls)
 {
-    local DeusExMover d;
     local Keypoint kp;
 
-    foreach AllActors(class'DeusExMover', d)
-    {
-        if( d.KeyIDNeeded != 'None' ) l("found door with KeyIDNeeded == " $ d.KeyIDNeeded);
-        //if( d.KeyIDNeeded == 'None' || d.bPickable || d.bBreakable ) continue;
-
-        /*if( d.bHighlight == false || d.bFrobbable == false ) {
-            d.bPickable = false;
-            l( ""$ d.Brush);
-            d.bLocked = true;
-            d.bHighlight = true;
-            d.bFrobbable = true;
-            continue; // will make this more adjustable in v1.4 with new flags https://github.com/Die4Ever/deus-ex-randomizer/issues/28
-        }*/
-        if( d.bPickable || d.bBreakable ) continue;
-
-        if( d.bPickable == false && doorspickable > 0 ) {
-            d.bPickable = true;
-            d.lockStrength = 1;
-            d.initiallockStrength = 1;
-        }
-        if( d.bBreakable == false && doorsdestructible > 0 ) {
-            d.bBreakable = true;
-            d.minDamageThreshold = 75;
-            d.doorStrength = 1;
-        }
+    switch( (doorsmode/256) ) {
+        case 1:
+            AdjustUndefeatableDoors(doorsmode%256, doorspickable, doorsdestructible);
+            break;
+        case 2:
+            AdjustAllDoors(doorsmode%256, doorspickable, doorsdestructible);
+            break;
+        case 3:
+            AdjustKeyOnlyDoors(doorsmode%256, doorspickable, doorsdestructible);
+            break;
+        case 4:
+            AdjustHighlightableDoors(doorsmode%256, doorspickable, doorsdestructible);
+            break;
+        default:
+            break;
     }
 
     if( removeinvisiblewalls == 1 ) {
@@ -177,6 +166,109 @@ function AdjustRestrictions(int doorspickable, int doorsdestructible, int device
                 kp.bBlockPlayers=false;
             }
         }
+    }
+}
+
+function AdjustUndefeatableDoors(int exclusivitymode, int doorspickable, int doorsdestructible)
+{
+    local DeusExMover d;
+
+    foreach AllActors(class'DeusExMover', d)
+    {
+        if( d.bPickable || d.bBreakable ) continue;
+        AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
+    }
+}
+
+function AdjustAllDoors(int exclusivitymode, int doorspickable, int doorsdestructible)
+{
+    local DeusExMover d;
+
+    foreach AllActors(class'DeusExMover', d)
+    {
+        if( d.bHighlight == false || d.bFrobbable == false ) {
+            d.bPickable = false;
+            d.bLocked = true;
+            d.bHighlight = true;
+            d.bFrobbable = true;
+        }
+        AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
+    }
+}
+
+function AdjustKeyOnlyDoors(int exclusivitymode, int doorspickable, int doorsdestructible)
+{
+    local DeusExMover d;
+
+    foreach AllActors(class'DeusExMover', d)
+    {
+        if( d.KeyIDNeeded == 'None' || d.bPickable || d.bBreakable ) continue;
+        AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
+    }
+}
+
+function AdjustHighlightableDoors(int exclusivitymode, int doorspickable, int doorsdestructible)
+{
+    local DeusExMover d;
+
+    foreach AllActors(class'DeusExMover', d)
+    {
+        if( d.bHighlight == false || d.bFrobbable == false ) continue;
+        AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
+    }
+}
+
+function AdjustDoor(DeusExMover d, int exclusivitymode, int doorspickable, int doorsdestructible)
+{
+    local int r;
+    switch(exclusivitymode) {
+        // mutually inclusive (they always go together)
+        case 1:
+            if( chance_single( (doorspickable + doorsdestructible) / 2 ) ) {
+                MakePickable(d);
+                MakeDestructible(d);
+            }
+            break;
+        // independent
+        case 2:
+            if( chance_single(doorspickable) ) {
+                MakePickable(d);
+            }
+            if( chance_single(doorsdestructible) ) {
+                MakeDestructible(d);
+            }
+            break;
+        // mutually exclusive
+        case 3:
+            r = initchance();
+            if( chance(doorspickable, r) ) {
+                MakePickable(d);
+            }
+            if( chance(doorsdestructible, r) ) {
+                MakeDestructible(d);
+            }
+            chance_remaining(r);
+            break;
+        default:
+            break;
+    }
+}
+
+function MakePickable(DeusExMover d)
+{
+    if( d.bPickable == false ) {
+        d.bPickable = true;
+        d.lockStrength = 1;
+        d.initiallockStrength = 1;
+    }
+}
+
+function MakeDestructible(DeusExMover d)
+{
+    if( d.bBreakable == false ) {
+        d.bBreakable = true;
+        d.minDamageThreshold = 75;
+        d.doorStrength = 1;
     }
 }
 

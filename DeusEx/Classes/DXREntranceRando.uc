@@ -492,7 +492,9 @@ function FirstEntry()
 {
     
     Super.FirstEntry();
-            
+
+    if( dxr.flags.gamemode != 1 ) return;
+    
     //Randomize entrances for this mission
     EntranceRando(dxr.dxInfo.missionNumber);
 

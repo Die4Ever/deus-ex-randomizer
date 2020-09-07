@@ -1,8 +1,8 @@
 # deus-ex-randomizer
 
-Copy the DeusEx.u file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
+Copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`)
 
-Recommended to use it with Kentie's Deus Exe Launcher, or Han's Launcher
+Recommended to use it with Kentie's Deus Exe Launcher, or Han's Launcher.
 
 Currently in v1.3.3.7, DXRando randomizes
 * adding and changing characters, giving them random names and making some of them dance
@@ -20,6 +20,7 @@ There are also settings for
 * autosave
 * removing invisible walls
 
+When you start a new game, you will see this settings screen
 ![options](https://i.imgur.com/WpTpFio.png)
 
 For the randomized passwords, you can copy-paste from the Goals/Notes screen.
