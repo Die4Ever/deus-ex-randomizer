@@ -255,6 +255,52 @@ function SetActorScale(Actor a, float scale)
     a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
 }
 
+function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist)
+{
+    local PathNode p;
+    local int i, num, slot;
+    local float dist;
+
+    if( maxdist <= mindist )
+        maxdist = 9999999;
+
+    foreach AllActors(class'PathNode', p) {
+        dist = VSize(p.Location-target);
+        if( dist < mindist ) continue;
+        if( dist > maxdist ) continue;
+        num++;
+    }
+    slot = rng(num);
+    foreach AllActors(class'PathNode', p) {
+        dist = VSize(p.Location-target);
+        if( dist < mindist ) continue;
+        if( dist > maxdist ) continue;
+        if(i==slot) {
+            return p.Location;
+        }
+        i++;
+    }
+}
+
+function vector GetCloserPosition(vector target, vector current)
+{
+    local PathNode p;
+    local float dist, maxdist, farthest_dist, dist_move;
+    local vector farthest;
+
+    maxdist = VSize(target-current);
+    farthest = current;
+    foreach AllActors(class'PathNode', p) {
+        dist = VSize(target-p.Location);
+        dist_move = VSize(p.Location-current);//make sure the distance that we're moving is shorter than the distance to the target (aka move forwards, not to the opposite side)
+        if( dist > farthest_dist && dist < maxdist && dist > maxdist/2 && dist > dist_move ) {
+            farthest_dist = dist;
+            farthest = p.Location;
+        }
+    }
+    return farthest;
+}
+
 function Vector GetCenter(Actor test)
 {
     local Vector MinVect, MaxVect;

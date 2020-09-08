@@ -80,6 +80,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRAutosave";
         modules_to_load[i++] = "DXRMemes";
         modules_to_load[i++] = "DXREntranceRando";
+        modules_to_load[i++] = "DXRHordeMode";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         config_version = class'DXRFlags'.static.VersionNumber();

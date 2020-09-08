@@ -63,6 +63,11 @@ function int rng(int max)
     return dxr.rng(max);
 }
 
+function static int staticrng(DXRando dxr, int max)
+{
+    return dxr.rng(max);
+}
+
 function int initchance()
 {
     if(overallchances > 0 && overallchances < 100) l("WARNING: initchance() overallchances == "$overallchances);

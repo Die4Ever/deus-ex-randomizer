@@ -4,7 +4,7 @@ var config int chance_clone_nonhumans;
 var config int enemy_multiplier;
 
 struct RandomWeaponStruct { var string type; var int chance; };
-struct _RandomWeaponStruct { var class<Weapon> type; var int chance; };
+struct _RandomWeaponStruct { var class<DeusExWeapon> type; var int chance; };
 var config RandomWeaponStruct randommelees[8];
 var _RandomWeaponStruct _randommelees[8];
 var config RandomWeaponStruct randomweapons[32];
@@ -78,15 +78,15 @@ function CheckConfig()
 
     for(i=0; i < ArrayCount(randommelees); i++) {
         if( randommelees[i].type != "" ) {
-            a = GetClassFromString(randommelees[i].type, class'Weapon');
-            _randommelees[i].type = class<Weapon>(a);
+            a = GetClassFromString(randommelees[i].type, class'DeusExWeapon');
+            _randommelees[i].type = class<DeusExWeapon>(a);
             _randommelees[i].chance = randommelees[i].chance;
         }
     }
     for(i=0; i < ArrayCount(randomweapons); i++) {
         if( randomweapons[i].type != "" ) {
-            a = GetClassFromString(randomweapons[i].type, class'Weapon');
-            _randomweapons[i].type = class<Weapon>(a);
+            a = GetClassFromString(randomweapons[i].type, class'DeusExWeapon');
+            _randomweapons[i].type = class<DeusExWeapon>(a);
             _randomweapons[i].chance = randomweapons[i].chance;
         }
     }
@@ -266,6 +266,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
 
     n.Orders = defaultOrders;
     n.HomeTag = 'Start';
+    n.InitializeInventory();
 
     RandomizeSize(n);
 
@@ -274,16 +275,24 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
 
 function RandomizeSP(ScriptedPawn p, int percent)
 {
-    local class<Weapon> wclass;
-    local Weapon w;
-    local int r, i;
-
     if( p == None ) return;
 
     p.SurprisePeriod *= float(rng(100)/100)+0.4;
 
     if( IsHuman(p) == False ) return; // only give random weapons to humans
+    if( p.IsA('MJ12Commando') ) return;
 
+    GiveRandomWeapon(p);
+    GiveRandomMeleeWeapon(p);
+    p.SetupWeapon(false);
+}
+
+function GiveRandomWeapon(Pawn p)
+{
+    local class<DeusExWeapon> wclass;
+    local Ammo a;
+    local DeusExWeapon w;
+    local int r, i;
     r = initchance();
     for(i=0; i < ArrayCount(_randomweapons); i++ ) {
         if( chance( _randomweapons[i].chance, r ) ) wclass = _randomweapons[i].type;
@@ -294,30 +303,38 @@ function RandomizeSP(ScriptedPawn p, int percent)
     w.SetBase(p);
 
     if( w.AmmoName != None ) {
-        w.AmmoType = spawn(w.AmmoName);
+        a = spawn(w.AmmoName);
+        w.AmmoType = a;
         w.AmmoType.InitialState='Idle2';
         w.AmmoType.GiveTo(p);
         w.AmmoType.SetBase(p);
     }
 
-    GiveRandomMeleeWeapon(p);
-
-    p.SetupWeapon(false);
+    for(i=0; i < ArrayCount(w.AmmoNames); i++) {
+        if(rng(3) == 0 && w.AmmoNames[i] != None) {
+            a = spawn(w.AmmoNames[i]);
+            a.GiveTo(p);
+            a.SetBase(p);
+        }
+    }
 }
 
-function GiveRandomMeleeWeapon(ScriptedPawn p)
+function GiveRandomMeleeWeapon(Pawn p)
 {
+    local ScriptedPawn sp;
     local class<Weapon> wclass;
     local Weapon w;
     local int r, i;
 
+    sp = ScriptedPawn(p);
     if
-    (
-        HasItem(p, class'WeaponBaton')
-        || HasItem(p, class'WeaponCombatKnife')
-        || HasItem(p, class'WeaponCrowbar')
-        || HasItem(p, class'WeaponSword')
-        || HasItem(p, class'WeaponNanoSword')
+    ( sp != None &&
+        ( HasItem(sp, class'WeaponBaton')
+        || HasItem(sp, class'WeaponCombatKnife')
+        || HasItem(sp, class'WeaponCrowbar')
+        || HasItem(sp, class'WeaponSword')
+        || HasItem(sp, class'WeaponNanoSword')
+        )
     )
         return;
 
@@ -326,7 +343,7 @@ function GiveRandomMeleeWeapon(ScriptedPawn p)
         if( _randommelees[i].type == None ) continue;
         if( chance( _randommelees[i].chance, r ) ) wclass = _randommelees[i].type;
 
-        if( HasItem(p, _randommelees[i].type) ) {
+        if( sp != None && HasItem(sp, _randommelees[i].type) ) {
             chance_remaining(r);
             return;
         }

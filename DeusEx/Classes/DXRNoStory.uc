@@ -2,10 +2,14 @@ class DXRNoStory expands DXRBase;
 
 function AnyEntry()
 {
+    Super.AnyEntry();
+    RemoveStory();
+}
+
+function RemoveStory()
+{
     local ScriptedPawn a;
     local DataLinkTrigger d;
-    Super.AnyEntry();
-
     foreach AllActors(class'ScriptedPawn', a) {
         if( a.BindName == "" ) continue;
         a.BindName = "";

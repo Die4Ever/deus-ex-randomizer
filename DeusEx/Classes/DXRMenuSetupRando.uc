@@ -125,6 +125,7 @@ function CreateControls()
     i=0;
     btnGameMode.values[i++] = "Original Story";
     btnGameMode.values[i++] = "Original Story, Rearranged Levels (Beta)";
+    btnGameMode.values[i++] = "Horde Mode (Beta)";
     /*btnGameMode.values[i++] = "Kill Bob Page";
     btnGameMode.values[i++] = "How About Some Soy Food?";
     btnGameMode.values[i++] = "Horde Mode";//defending the paris cathedral could be really cool
@@ -437,6 +438,8 @@ function ProcessAction(String actionKey)
             f.gamemode = 0;
         else if( sgamemode == "Original Story, Rearranged Levels (Beta)" )
             f.gamemode = 1;
+        else if( sgamemode == "Horde Mode (Beta)" )
+            f.gamemode = 2;
 
         if( keys == "Off" ) f.keysrando = 0;
         else if( keys == "Dumb" ) f.keysrando = 2;
