@@ -13,8 +13,8 @@ var config int skill_points_award;
 var config int early_end_wave_timer;
 var config int early_end_wave_enemies;
 var config int items_per_wave;
-var config int enemies_per_wave;
-var config int enemies_first_wave;
+var config float enemies_per_wave;
+var config float enemies_first_wave;
 
 struct EnemyChances {
     var string type;
@@ -30,22 +30,22 @@ struct ItemChances {
     var string type;
     var int chance;
 };
-var config ItemChances items[16];
+var config ItemChances items[32];
 
 function CheckConfig()
 {
     local int i;
     if( config_version == 0 ) {
-        time_between_waves = 65;
+        time_between_waves = 95;
         time_before_damage = 180;
-        damage_timer = 5;
+        damage_timer = 10;
         time_before_teleport_enemies = 30;
         early_end_wave_timer = 240;
         early_end_wave_enemies = 5;
-        popin_dist = 1500.0;
+        popin_dist = 2000.0;
         skill_points_award = 2500;
-        items_per_wave = 20;
-        enemies_per_wave = 2;
+        items_per_wave = 25;
+        enemies_per_wave = 1.5;
         enemies_first_wave = 2;
         for(i=0; i < ArrayCount(enemies); i++) {
             enemies[i].type = "";
@@ -73,7 +73,7 @@ function CheckConfig()
         enemies[i].type = "MJ12Commando";
         enemies[i].chance = 5;
         enemies[i].minWave = 3;
-        enemies[i].difficulty = 2;
+        enemies[i].difficulty = 2.5;
         i++;
         enemies[i].type = "MJ12Troop";
         enemies[i].chance = 5;
@@ -85,7 +85,7 @@ function CheckConfig()
         enemies[i].minWave = 4;
         enemies[i].difficulty = 2;
         /*i++;
-        enemies[i].type = "WIB";
+        enemies[i].type = "WIB";//bugged animations?
         enemies[i].chance = 2;
         enemies[i].minWave = 4;
         enemies[i].difficulty = 2;*/
@@ -93,7 +93,7 @@ function CheckConfig()
         enemies[i].type = "SpiderBot2";
         enemies[i].chance = 2;
         enemies[i].minWave = 5;
-        enemies[i].difficulty = 2;
+        enemies[i].difficulty = 2.5;
         i++;
         enemies[i].type = "MilitaryBot";
         enemies[i].chance = 1;
@@ -117,16 +117,16 @@ function CheckConfig()
 
         i=0;
         items[i].type = "BioelectricCell";
-        items[i].chance = 14;
+        items[i].chance = 10;
         i++;
         items[i].type = "CrateExplosiveSmall";
-        items[i].chance = 14;
+        items[i].chance = 9;
         i++;
         items[i].type = "Barrel1";
-        items[i].chance = 14;
+        items[i].chance = 10;
         i++;
         items[i].type = "WeaponGasGrenade";
-        items[i].chance = 7;
+        items[i].chance = 6;
         i++;
         items[i].type = "WeaponLAM";
         items[i].chance = 6;
@@ -138,29 +138,38 @@ function CheckConfig()
         items[i].chance = 6;
         i++;
         items[i].type = "FireExtinguisher";
-        items[i].chance = 5;
+        items[i].chance = 6;
         i++;
         items[i].type = "Ammo10mm";
-        items[i].chance = 6;
+        items[i].chance = 7;
         i++;
         items[i].type = "Ammo762mm";
-        items[i].chance = 6;
+        items[i].chance = 7;
         i++;
         items[i].type = "AmmoShell";
-        items[i].chance = 6;
-        // and 10% more...
+        items[i].chance = 7;
+        i++;
+        items[i].type = "Ammo3006";
+        items[i].chance = 2;
+        i++;
+        items[i].type = "AmmoRocket";
+        items[i].chance = 1;
+        i++;
+        items[i].type = "AmmoDartPoison";
+        items[i].chance = 1;
+        // and 16% more...
         i++;
         items[i].type = "AugmentationCannister";
-        items[i].chance = 3;
+        items[i].chance = 5;
         i++;
         items[i].type = "MedicalBot";
-        items[i].chance = 3;
+        items[i].chance = 5;
         i++;
         items[i].type = "MedKit";
-        items[i].chance = 2;
+        items[i].chance = 3;
         i++;
         items[i].type = "AugmentationUpgradeCannister";
-        items[i].chance = 2;
+        items[i].chance = 3;
     }
     Super.CheckConfig();
 
@@ -231,6 +240,16 @@ function AnyEntry()
             || d.Name == 'BreakableGlass3'
         ) d.bBreakable = false;
     }
+    foreach AllActors(class'DeusExMover', d, 'DeusExMover') {
+        if (
+            d.Name == 'DeusExMover8'
+            || d.Name == 'DeusExMover9'
+        ) {
+            d.bBreakable = false;
+            d.bPickable = false;
+            d.bLocked = true;
+        }
+    }
     SetTimer(1.0, true);
 
     GenerateItems();
@@ -238,6 +257,14 @@ function AnyEntry()
 
 function Timer()
 {
+    if( dxr.player.Health <= 0 ) {
+        dxr.player.ShowHud(true);
+        l("You died on wave "$wave);
+        dxr.player.ClientMessage("You died on wave "$wave);
+        //SetTimer(0, false);
+        return;
+    }
+
     if( in_wave )
         InWaveTick();
     else
@@ -264,6 +291,9 @@ function InWaveTick()
     }
 
     if( numScriptedPawns == 0 || ( time_in_wave > early_end_wave_timer && numScriptedPawns <= early_end_wave_enemies ) ) {
+        if( numScriptedPawns > 0 ) {
+            dxr.player.ClientMessage("Moving on. Warning: there are still "$numScriptedPawns$" enemies!");
+        }
         EndWave();
         return;
     }
@@ -271,13 +301,13 @@ function InWaveTick()
     time_in_wave++;
     NotifyPlayerPawns(numScriptedPawns);
 
-    if( time_in_wave > time_before_damage && time_in_wave%damage_timer == 0 ) {
+    if( time_in_wave >= time_before_damage && time_in_wave%damage_timer == 0 ) {
         dxr.player.TakeDamage(1, dxr.player, dxr.player.Location, vect(0,0,0), 'Shocked');
         PlaySound(sound'ProdFire');
         PlaySound(sound'MalePainSmall');
     }
-    else if( time_in_wave <= time_before_damage && time_in_wave+5 > time_before_damage ) {
-        dxr.player.ClientMessage( (time_before_damage-time_in_wave) $ " seconds until shocking.");
+    else {
+        NotifyPlayerTimer(time_before_damage-time_in_wave, (time_before_damage-time_in_wave) $ " seconds until shocking.");
     }
     if( time_in_wave > time_before_teleport_enemies ) {
         ComeCloser();
@@ -355,6 +385,19 @@ function ComeCloser()
     }
 }
 
+function NotifyPlayerTimer(int time, string text)
+{
+    if(time<0) return;
+
+    if(
+        ( time % 30 == 0 )
+        || (time < 60 && time % 10 == 0)
+        || (time <= 10)
+    ) {
+        dxr.player.ClientMessage(text);
+    }
+}
+
 function NotifyPlayerPawns(int numScriptedPawns)
 {
     if( numScriptedPawns > 10 ) return;
@@ -365,15 +408,7 @@ function NotifyPlayerPawns(int numScriptedPawns)
 
 function NotifyPlayerTime()
 {
-    if(time_to_next_wave<0) return;
-
-    if(
-        (time_to_next_wave >= 60 && time_to_next_wave % 60 == 0)
-        || (time_to_next_wave < 60 && time_to_next_wave % 10 == 0)
-        || (time_to_next_wave <= 10)
-    ) {
-        dxr.player.ClientMessage("Wave "$ (wave+1) $" in " $ time_to_next_wave $ " seconds.");
-    }
+    NotifyPlayerTimer(time_to_next_wave, "Wave "$ (wave+1) $" in " $ time_to_next_wave $ " seconds.");
 }
 
 function GenerateEnemies()
@@ -388,11 +423,11 @@ function GenerateEnemies()
         return;
     }
 
-    numEnemies = (wave-1)*enemies_per_wave+enemies_first_wave;
-    maxdifficulty = float(numEnemies);
-    for(i=0; i<numEnemies*2 || difficulty < 0.1 ; i++) {
+    maxdifficulty = float(wave-1)*enemies_per_wave + enemies_first_wave;
+    numEnemies = int(maxdifficulty*2);
+    for(i=0; i<numEnemies || difficulty < 0.1 ; i++) {
         difficulty += GenerateEnemy(dxre);
-        if( i>=numEnemies && difficulty > maxdifficulty ) break;
+        if( difficulty > maxdifficulty ) break;
     }
 }
 
@@ -530,4 +565,23 @@ function GenerateItem()
         barrel.SkinColor = SC_Poison;
         barrel.BeginPlay();
     }
+}
+
+function int RunTests()
+{
+    local int results, i, total;
+    results = Super.RunTests();
+
+    total=0;
+    for(i=0; i < ArrayCount(enemies); i++ ) {
+        total += enemies[i].chance;
+    }
+    results += test( total <= 100, "config enemies chances, check total "$total);
+    total=0;
+    for(i=0; i < ArrayCount(items); i++ ) {
+        total += items[i].chance;
+    }
+    results += testint( total, 100, "config items chances, check total adds up to 100%");
+
+    return results;
 }

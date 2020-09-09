@@ -83,15 +83,19 @@ function bool IsHuman(Actor a)
     return HumanMilitary(a) != None || HumanThug(a) != None || HumanCivilian(a) != None;
 }
 
-function bool HasItem(ScriptedPawn p, class c)
+function bool HasItem(Pawn p, class c)
 {
+    local ScriptedPawn sp;
     local int i;
+    sp = ScriptedPawn(p);
     
-    for (i=0; i<ArrayCount(p.InitialInventory); i++)
-    {
-        if ((p.InitialInventory[i].Inventory != None) && (p.InitialInventory[i].Count > 0))
+    if( sp != None ) {
+        for (i=0; i<ArrayCount(sp.InitialInventory); i++)
         {
-            if( p.InitialInventory[i].Inventory.Class == c ) return True;
+            if ((sp.InitialInventory[i].Inventory != None) && (sp.InitialInventory[i].Count > 0))
+            {
+                if( sp.InitialInventory[i].Inventory.Class == c ) return True;
+            }
         }
     }
     return p.FindInventoryType(c) != None;

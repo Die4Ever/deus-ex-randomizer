@@ -298,6 +298,9 @@ function GiveRandomWeapon(Pawn p)
         if( chance( _randomweapons[i].chance, r ) ) wclass = _randomweapons[i].type;
     }
 
+    if( HasItem(p, wclass) )
+        return;
+
     w = Spawn(wclass, p);
     w.GiveTo(p);
     w.SetBase(p);
@@ -321,19 +324,17 @@ function GiveRandomWeapon(Pawn p)
 
 function GiveRandomMeleeWeapon(Pawn p)
 {
-    local ScriptedPawn sp;
     local class<Weapon> wclass;
     local Weapon w;
     local int r, i;
 
-    sp = ScriptedPawn(p);
     if
-    ( sp != None &&
-        ( HasItem(sp, class'WeaponBaton')
-        || HasItem(sp, class'WeaponCombatKnife')
-        || HasItem(sp, class'WeaponCrowbar')
-        || HasItem(sp, class'WeaponSword')
-        || HasItem(sp, class'WeaponNanoSword')
+    (
+        ( HasItem(p, class'WeaponBaton')
+        || HasItem(p, class'WeaponCombatKnife')
+        || HasItem(p, class'WeaponCrowbar')
+        || HasItem(p, class'WeaponSword')
+        || HasItem(p, class'WeaponNanoSword')
         )
     )
         return;
@@ -343,7 +344,7 @@ function GiveRandomMeleeWeapon(Pawn p)
         if( _randommelees[i].type == None ) continue;
         if( chance( _randommelees[i].chance, r ) ) wclass = _randommelees[i].type;
 
-        if( sp != None && HasItem(sp, _randommelees[i].type) ) {
+        if( HasItem(p, _randommelees[i].type) ) {
             chance_remaining(r);
             return;
         }
