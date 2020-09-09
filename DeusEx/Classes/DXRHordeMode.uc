@@ -13,8 +13,8 @@ var config int skill_points_award;
 var config int early_end_wave_timer;
 var config int early_end_wave_enemies;
 var config int items_per_wave;
-var config float enemies_per_wave;
-var config float enemies_first_wave;
+var config float difficulty_per_wave;
+var config float difficulty_first_wave;
 
 struct EnemyChances {
     var string type;
@@ -45,8 +45,8 @@ function CheckConfig()
         popin_dist = 2000.0;
         skill_points_award = 2500;
         items_per_wave = 25;
-        enemies_per_wave = 1.5;
-        enemies_first_wave = 2;
+        difficulty_per_wave = 1.5;
+        difficulty_first_wave = 2;
         for(i=0; i < ArrayCount(enemies); i++) {
             enemies[i].type = "";
             enemies[i].chance = 0;
@@ -423,7 +423,7 @@ function GenerateEnemies()
         return;
     }
 
-    maxdifficulty = float(wave-1)*enemies_per_wave + enemies_first_wave;
+    maxdifficulty = float(wave-1)*difficulty_per_wave + difficulty_first_wave;
     numEnemies = int(maxdifficulty*2);
     for(i=0; i<numEnemies || difficulty < 0.1 ; i++) {
         difficulty += GenerateEnemy(dxre);
@@ -526,28 +526,28 @@ function GenerateItem()
     local vector loc;
     local AugmentationCannister aug;
     local Barrel1 barrel;
+    local DeusExMover d;
     r = initchance();
     for(i=0; i < ArrayCount(items); i++) {
         if( chance(items[i].chance, r) ) c = GetClassFromString(items[i].type, class'Actor');
     }
     foreach AllActors(class'Actor', a) {
-        if( a.class == c ) {
-            num++;
-            if( num > items_per_wave ) {
-                l("already have too many of "$c.name);
-                loc = GetRandomPosition();
-                loc.X += float(rng(50000))/50000.0 * 50.0;
-                loc.Y += float(rng(50000))/50000.0 * 50.0;
-                a.SetLocation(loc);
-            }
-            if( num > items_per_wave*2 )
-                return;
+        if( a.class != c ) continue;
+        
+        num++;
+        if( num > items_per_wave ) {
+            loc = GetRandomItemPosition();
+            a.SetLocation(loc);
         }
+        if( num > items_per_wave*2 )
+            break;
+    }
+    if( num > items_per_wave*2 ) {
+        l("already have too many of "$c.name);
+        return;
     }
     for(i=0; i<10 && a == None; i++) {
-        loc = GetRandomPosition();
-        loc.X += float(rng(50000))/50000.0 * 50.0;
-        loc.Y += float(rng(50000))/50000.0 * 50.0;
+        loc = GetRandomItemPosition();
         a = Spawn(c,,, loc);
     }
     if(c==None) {
@@ -565,6 +565,25 @@ function GenerateItem()
         barrel.SkinColor = SC_Poison;
         barrel.BeginPlay();
     }
+}
+
+function vector GetRandomItemPosition()
+{
+    local DeusExMover d;
+    local vector loc;
+    local int i;
+
+    for(i=0; i<10; i++) {
+        loc = GetRandomPosition();
+        loc.X += float(rng(50000))/50000.0 * 50.0;
+        loc.Y += float(rng(50000))/50000.0 * 50.0;
+        d = None;
+        foreach RadiusActors(class'DeusExMover', d, 200.0, loc) {
+        }
+        if( d == None ) return loc;
+    }
+
+    return loc;
 }
 
 function int RunTests()
