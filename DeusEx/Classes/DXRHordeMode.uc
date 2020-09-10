@@ -39,10 +39,10 @@ function CheckConfig()
         time_between_waves = 95;
         time_before_damage = 180;
         damage_timer = 10;
-        time_before_teleport_enemies = 30;
+        time_before_teleport_enemies = 3;
         early_end_wave_timer = 240;
         early_end_wave_enemies = 5;
-        popin_dist = 2000.0;
+        popin_dist = 1800.0;
         skill_points_award = 2500;
         items_per_wave = 25;
         difficulty_per_wave = 1.5;
@@ -400,15 +400,21 @@ function NotifyPlayerTimer(int time, string text)
 
 function NotifyPlayerPawns(int numScriptedPawns)
 {
-    if( numScriptedPawns > 10 ) return;
+    //if( numScriptedPawns > 10 ) return;
     if( time_in_wave % 3 != 0 ) return;
 
-    dxr.player.ClientMessage(numScriptedPawns $ " enemies remaining.");
+    if( numScriptedPawns == 1 )
+        dxr.player.ClientMessage("Wave "$wave$": " $ numScriptedPawns $ " enemy remaining.");
+    else
+        dxr.player.ClientMessage("Wave "$wave$": " $ numScriptedPawns $ " enemies remaining.");
 }
 
 function NotifyPlayerTime()
 {
-    NotifyPlayerTimer(time_to_next_wave, "Wave "$ (wave+1) $" in " $ time_to_next_wave $ " seconds.");
+    if( time_to_next_wave == 1 )
+        NotifyPlayerTimer(time_to_next_wave, "Wave "$ (wave+1) $" in " $ time_to_next_wave $ " second.");
+    else
+        NotifyPlayerTimer(time_to_next_wave, "Wave "$ (wave+1) $" in " $ time_to_next_wave $ " seconds.");
 }
 
 function GenerateEnemies()
@@ -456,8 +462,8 @@ function float GenerateEnemy(DXREnemies dxre)
     p = None;
     for(i=0; i < 10 && p == None; i++ ) {
         loc = GetRandomPosition(dxr.player.Location, popin_dist, popin_dist*10);
-        loc.X += float(rng(50000))/50000.0 * 50.0;
-        loc.Y += float(rng(50000))/50000.0 * 50.0;
+        loc.X += float(rng(50000))/50000.0 * 100.0 - 50.0;
+        loc.Y += float(rng(50000))/50000.0 * 100.0 - 50.0;
         p = Spawn(c,,, loc );
     }
     if(p==None) {
@@ -533,16 +539,16 @@ function GenerateItem()
     }
     foreach AllActors(class'Actor', a) {
         if( a.class != c ) continue;
-        
+
         num++;
-        if( num > items_per_wave ) {
+        if( num > items_per_wave/2 ) {
             loc = GetRandomItemPosition();
             a.SetLocation(loc);
         }
-        if( num > items_per_wave*2 )
+        if( num > items_per_wave )
             break;
     }
-    if( num > items_per_wave*2 ) {
+    if( num > items_per_wave ) {
         l("already have too many of "$c.name);
         return;
     }
@@ -575,15 +581,16 @@ function vector GetRandomItemPosition()
 
     for(i=0; i<10; i++) {
         loc = GetRandomPosition();
-        loc.X += float(rng(50000))/50000.0 * 50.0;
-        loc.Y += float(rng(50000))/50000.0 * 50.0;
+        loc.X += float(rng(50000))/50000.0 * 100.0 - 50.0;
+        loc.Y += float(rng(50000))/50000.0 * 100.0 - 50.0;
         d = None;
         foreach RadiusActors(class'DeusExMover', d, 200.0, loc) {
+            break;
         }
         if( d == None ) return loc;
     }
 
-    return loc;
+    return vect(0,0,0);
 }
 
 function int RunTests()
