@@ -60,14 +60,23 @@ function FirstEntry()
     IncreaseBrightness(dxr.flags.brightness);
     OverwriteDecorations();
     
-    if (dxr.dxInfo.missionNumber == 2)
-        NYC1_FirstEntry();
-    else if (dxr.dxInfo.missionNumber == 3)
-        Airfield_FirstEntry();
-    else if( dxr.dxInfo.missionNumber == 6 )
-        HongKong_FirstEntry();
-    else if( dxr.dxInfo.missionNumber == 12 )
-        Vandenberg_FirstEntry();
+    switch(dxr.dxInfo.missionNumber) {
+        case 2:
+            NYC1_FirstEntry();
+            break;
+        case 3:
+            Airfield_FirstEntry();
+            break;
+        case 6:
+            HongKong_FirstEntry();
+            break;
+        case 12:
+            Vandenberg_FirstEntry();
+            break;
+        case 15:
+            Area51_FirstEntry();
+            break;
+    }
 }
 
 function AnyEntry()
@@ -375,6 +384,19 @@ function HongKong_AnyEntry()
 
             break;
         default:
+            break;
+    }
+}
+
+function Area51_FirstEntry()
+{
+    local DeusExMover d;
+    switch(dxr.localURL)
+    {
+        case "15_AREA51_FINAL":
+            foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
+                d.move(vect(0, 0, -1));
+            }
             break;
     }
 }
