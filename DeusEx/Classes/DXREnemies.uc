@@ -267,6 +267,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     n.Orders = defaultOrders;
     n.HomeTag = 'Start';
     n.InitializeInventory();
+    n.InitializeAlliances();
 
     RandomizeSize(n);
 

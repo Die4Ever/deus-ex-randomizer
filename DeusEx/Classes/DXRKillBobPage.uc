@@ -21,11 +21,15 @@ function FirstEntry()
     local NavigationPoint p;
     local int i ,slot, num;
     local string map;
+
     Super.FirstEntry();
+
+    if( dxr.flags.gamemode != 3 ) return;
 
     dxr.SetSeed( dxr.seed + dxr.Crc(Class.Name) );
 
     map = class'DXRTestAllMaps'.static.PickRandomMap(dxr);
+    //map = "01_NYC_UNATCOISLAND";
     l("Bob Page map " $ map);
     if( Caps(map) != Caps(dxr.localURL) )
         return;
@@ -54,9 +58,13 @@ function FirstEntry()
 function Timer()
 {
     Super.Timer();
-    if( dxr.flags.f.GetBool('EndGameBoss_Dead') ) {
+    if( BobPage == None || BobPage.health <= 0 ) {
         dxr.player.ConsoleCommand("open " $ endgamemap);
     }
+    /*if( dxr.flags.f.GetBool('EndGameBoss_Dead') ) {
+        l("EndGameBoss_Dead BobPage == " $ BobPage);
+        dxr.player.ConsoleCommand("open " $ endgamemap);
+    }*/
 }
 
 function bool IsGoodBossLocation(vector loc)

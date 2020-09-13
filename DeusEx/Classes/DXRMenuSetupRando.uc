@@ -23,6 +23,7 @@ var MenuUIEditWindow editBioCells;
 var MenuUIEditWindow editMedkits;
 var MenuUIEditWindow editSpeedLevel;
 var MenuUIEditWindow editEnemyRando;
+var MenuUIEditWindow editEnemyRespawn;
 var MenuUIEditWindow editDancingPercent;
 
 var MenuUILabelWindow winHelp;
@@ -174,6 +175,7 @@ function CreateControls()
     editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", "Maximum cost for skills in percentage of the original cost.", 300, 0, 500);
 
     editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 35, 0, 100);
+    editEnemyRespawn = CreateSlider(row++, "Enemy Respawn Seconds", "How many seconds for enemies to respawn. Leave blank or 0 to disable", 0, 0, 100);
     editAmmo = CreateSlider(row++, "Ammo Drops %", "Make ammo more scarce.", 90);
     editMultitools = CreateSlider(row++, "Multitools Drops %", "Make multitools more scarce.", 80);
     editLockpicks = CreateSlider(row++, "Lockpicks Drops %", "Make lockpicks more scarce.", 80);
@@ -549,6 +551,7 @@ function ProcessAction(String actionKey)
         else if( passwords == "Unchanged" ) f.passwordsrandomized = 0;
 
         f.enemiesrandomized = GetSliderValue(editEnemyRando);
+        f.enemyrespawn = GetSliderValue(editEnemyRespawn);
         autosavevalue = GetEnumValue(Autosave);
         if( autosavevalue == "Off" ) f.autosave = 0;
         else if( autosavevalue == "First Entry" ) f.autosave = 1;

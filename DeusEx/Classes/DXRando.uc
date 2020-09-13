@@ -81,6 +81,8 @@ function CheckConfig()
         modules_to_load[i++] = "DXRMemes";
         modules_to_load[i++] = "DXREntranceRando";
         modules_to_load[i++] = "DXRHordeMode";
+        modules_to_load[i++] = "DXRKillBobPage";
+        modules_to_load[i++] = "DXREnemyRespawn";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         config_version = class'DXRFlags'.static.VersionNumber();

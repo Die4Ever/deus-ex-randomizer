@@ -5,12 +5,12 @@ var transient FlagBase f;
 //rando flags
 var int seed;
 var int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
-var int gamemode;//0=original, 1=rearranged
+var int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page
 var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
 var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
 var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
 var int autosave;//0=off, 1=first time entering level, 2=every loading screen
-var int removeinvisiblewalls, enemiesrandomized, infodevices;
+var int removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices;
 var int dancingpercent;
 
 function PreTravel()
@@ -65,6 +65,7 @@ function InitDefaults()
     autosave = 1;
     removeinvisiblewalls = 0;
     enemiesrandomized = 25;
+    enemyrespawn = 0;
     infodevices = 0;
     dancingpercent = 25;
 }
@@ -116,6 +117,7 @@ function LoadFlags()
     if( stored_version >= 4 ) {
         doorsmode = f.GetInt('Rando_doorsmode');
         gamemode = f.GetInt('Rando_gamemode');
+        enemyrespawn = f.GetInt('Rando_enemyrespawn');
     }
 
     if(stored_version < flagsversion ) {
@@ -157,6 +159,7 @@ function SaveFlags()
     f.SetInt('Rando_autosave', autosave,, 999);
     f.SetInt('Rando_removeinvisiblewalls', removeinvisiblewalls,, 999);
     f.SetInt('Rando_enemiesrandomized', enemiesrandomized,, 999);
+    f.SetInt('Rando_enemyrespawn', enemyrespawn,, 999);
     f.SetInt('Rando_infodevices', infodevices,, 999);
     f.SetInt('Rando_dancingpercent', dancingpercent,, 999);
 
@@ -174,7 +177,7 @@ function string StringifyFlags()
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
-        $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", infodevices: "$infodevices
+        $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", enemyrespawn: "$enemyrespawn$", infodevices: "$infodevices
         $ ", dancingpercent: "$dancingpercent;
 }
 
