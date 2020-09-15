@@ -172,7 +172,7 @@ function RandoEnemies(int percent)
 
         if( rng(100) >= percent ) continue;
 
-        for(i = rng(enemy_multiplier+percent/100); i >= 0; i--) {
+        for(i = rng(enemy_multiplier*100+percent)/100; i >= 0; i--) {
             n = RandomEnemy(p, percent);
             if( newsp == None ) newsp = n;
         }
@@ -223,10 +223,8 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     radius = p.CollisionRadius;
     loc_offset = vect( 3, 3, 5);
     for(i=0; i<10; i++) {
-        loc_offset.X = float(rng(50000))/10000.0 * Sqrt(float(enemy_multiplier));
-        loc_offset.Y = float(rng(50000))/10000.0 * Sqrt(float(enemy_multiplier));
-        if( rng(2) == 0 ) loc_offset.X *= -1;
-        if( rng(2) == 0 ) loc_offset.Y *= -1;
+        loc_offset.X = rngfn() * 5 * Sqrt(float(enemy_multiplier));
+        loc_offset.Y = rngfn() * 5 * Sqrt(float(enemy_multiplier));
         loc = p.Location + (radius*loc_offset);
         n = Spawn(newclass,,, loc );
         if( n != None ) break;
@@ -329,14 +327,12 @@ function GiveRandomMeleeWeapon(Pawn p)
     local Weapon w;
     local int r, i;
 
-    if
-    (
-        ( HasItem(p, class'WeaponBaton')
+    if(
+        HasItem(p, class'WeaponBaton')
         || HasItem(p, class'WeaponCombatKnife')
         || HasItem(p, class'WeaponCrowbar')
         || HasItem(p, class'WeaponSword')
         || HasItem(p, class'WeaponNanoSword')
-        )
     )
         return;
 

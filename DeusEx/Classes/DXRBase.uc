@@ -63,6 +63,16 @@ function int rng(int max)
     return dxr.rng(max);
 }
 
+function float rngf()
+{// 0 to 1.0
+    return float(dxr.rng(1000001))/1000000.0;
+}
+
+function float rngfn()
+{// -1.0 to 1.0
+    return rngf() * 2.0 - 1.0;
+}
+
 function static int staticrng(DXRando dxr, int max)
 {
     return dxr.rng(max);

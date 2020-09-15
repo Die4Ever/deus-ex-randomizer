@@ -19,6 +19,7 @@ function FirstEntry()
 {
     local MapExit exit;
     local NavigationPoint p;
+    //local NYPoliceBoat b;
     local int i ,slot, num;
     local string map;
 
@@ -55,6 +56,25 @@ function FirstEntry()
     SetTimer(1.0, true);
 }
 
+function AnyEntry()
+{
+    Super.AnyEntry();
+
+    if( dxr.flags.gamemode != 3 ) return;
+    
+    switch(dxr.dxInfo.missionNumber) {
+        case 1:
+            LibertyIsland_OpenWorld();
+            break;
+        case 2:
+            NYC1_OpenWorld();
+            break;
+        case 3:
+            NYC2_OpenWorld();
+            break;
+    }
+}
+
 function Timer()
 {
     Super.Timer();
@@ -84,4 +104,43 @@ function bool IsGoodBossLocation(vector loc)
     }
 
     return true;
+}
+
+function LibertyIsland_OpenWorld()
+{
+    switch (dxr.localURL)
+    {
+        case "01_NYC_UNATCOISLAND":
+            dxr.flags.f.SetBool('M02Briefing_Played', True,, 999);
+            break;
+    }
+}
+
+function NYC1_OpenWorld()
+{
+    local BlackHelicopter h;
+    switch (dxr.localURL)
+    {
+        case "02_NYC_WAREHOUSE":
+            foreach AllActors(class'BlackHelicopter', h) {
+                //h.bHidden = false;
+                h.EnterWorld();
+            }
+            break;
+    }
+}
+
+function NYC2_OpenWorld()
+{
+    local BlackHelicopter h;
+    switch(dxr.localURL)
+    {
+        case "03_NYC_UNATCOISLAND":
+            dxr.flags.f.SetBool('ManderleyDebriefing02_Played', True,, 999);
+            break;
+        case "03_NYC_AIRFIELD":
+            foreach AllActors(class'BlackHelicopter', h)
+				h.EnterWorld();
+            break;
+    }
 }

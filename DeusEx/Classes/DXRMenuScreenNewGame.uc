@@ -47,14 +47,18 @@ function CopySkills()
 
 function SaveSettings()
 {
+    local Inventory i;
+
+    foreach player.AllActors(class'Inventory', i) {
+        i.Destroy();
+    }
+
     Super.SaveSettings();
+
     dxr.flags.SaveFlags();
     dxr.Destroy();
-
     foreach player.AllActors(class'DXRando', dxr)
         dxr.Destroy();
-
-    //we should clear out the player's inventory and other stuff here? the original game seems to have a bug if you do a new game while still on liberty island
 }
 
 defaultproperties

@@ -42,6 +42,13 @@ function FirstEntry()
     foreach AllActors(class'ScriptedPawn', p) {
         if( p.IsA('Animal') && !p.IsA('Greasel') && !p.IsA('Karkian') && !p.IsA('Gray') && !p.IsA('Doberman') ) continue;
         if( p.bImportant || p.bInvincible || p.bHidden ) continue;
+
+        if( i >= ArrayCount(enemies) ) {
+            err("exceeded size of enemies array! "$i);
+            i++;
+            continue;
+        }
+
         enemies[i].c = p.class;
         enemies[i].sp = p;
         enemies[i].loc = p.Location;

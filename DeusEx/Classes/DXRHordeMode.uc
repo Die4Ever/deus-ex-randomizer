@@ -201,6 +201,7 @@ function AnyEntry()
     if( dxre == None ) {
         err("Could not find DXREnemies! This is required for Horde Mode.");
     }
+
     dxre.GiveRandomWeapon(dxr.Player);
     dxre.GiveRandomWeapon(dxr.Player);
     dxre.GiveRandomMeleeWeapon(dxr.Player);
@@ -371,14 +372,14 @@ function ComeCloser()
         dist = VSize(dxr.player.Location-p.Location);
         if( (time_in_wave+i) % 3 == 0 && p.CanSee(dxr.player) == false && dist > maxdist ) {
             loc = GetCloserPosition(dxr.player.Location, p.Location);
-            loc.X += float(rng(50000))/50000.0 * 50.0;
-            loc.Y += float(rng(50000))/50000.0 * 50.0;
+            loc.X += rngfn() * 50;
+            loc.Y += rngfn() * 50;
             p.SetLocation( loc );
         }
         else if( (time_in_wave+i) % 7 == 0 && p.CanSee(dxr.player) == false && dist > maxdist*2 ) {
             loc = GetRandomPosition(dxr.player.Location, maxdist, dist);
-            loc.X += float(rng(50000))/50000.0 * 50.0;
-            loc.Y += float(rng(50000))/50000.0 * 50.0;
+            loc.X += rngfn() * 50;
+            loc.Y += rngfn() * 50;
             p.SetLocation(loc);
         }
         i++;
@@ -462,8 +463,8 @@ function float GenerateEnemy(DXREnemies dxre)
     p = None;
     for(i=0; i < 10 && p == None; i++ ) {
         loc = GetRandomPosition(dxr.player.Location, popin_dist, popin_dist*10);
-        loc.X += float(rng(50000))/50000.0 * 100.0 - 50.0;
-        loc.Y += float(rng(50000))/50000.0 * 100.0 - 50.0;
+        loc.X += rngfn() * 50;
+        loc.Y += rngfn() * 50;
         p = Spawn(c,,, loc );
     }
     if(p==None) {
@@ -581,8 +582,8 @@ function vector GetRandomItemPosition()
 
     for(i=0; i<10; i++) {
         loc = GetRandomPosition();
-        loc.X += float(rng(50000))/50000.0 * 100.0 - 50.0;
-        loc.Y += float(rng(50000))/50000.0 * 100.0 - 50.0;
+        loc.X += rngfn() * 50;
+        loc.Y += rngfn() * 50;
         d = None;
         foreach RadiusActors(class'DeusExMover', d, 200.0, loc) {
             break;
