@@ -41,7 +41,7 @@ struct BanConnection
     var string map_a;
     var string map_b;
 };
-var config BanConnection BannedConnections[64];
+var config BanConnection BannedConnections[32];
 
 function CheckConfig()
 {
