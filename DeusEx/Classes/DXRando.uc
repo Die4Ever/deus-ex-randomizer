@@ -309,6 +309,7 @@ function RunTests()
     for(i=0; i<num_modules; i++) {
         results = modules[i].RunTests();
         if( results > 0 ) {
+            player.ShowHud(true);
             l( modules[i] @ results $ " tests failed!" );
             Player.ClientMessage( modules[i].Class @ results $ " tests failed!" );
         }

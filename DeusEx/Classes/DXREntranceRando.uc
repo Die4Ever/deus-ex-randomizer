@@ -413,6 +413,7 @@ function RandoMission3()
 function EntranceRando(int missionNum)
 {   
     numConns = 0;
+    numXfers = 0;
     dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") + missionNum );
 
     switch(missionNum)
@@ -518,7 +519,7 @@ function FirstEntry()
 
 function int RunTests()
 {
-    local int results;
+    local int results, i;
     results = Super.RunTests();
 
     numXfers = 0;
@@ -562,15 +563,14 @@ function int RunTests()
     GenerateConnections(3);
     results += testbool(ValidateConnections(), true, "AddDoubleXfer validation");
 
-    numXfers = 0;
-    RandoMission2();
-    results += testbool(ValidateConnections(), true, "RandoMission2 validation");
+    for(i=0; i <= 100; i++) {
+        EntranceRando(i);
+        if( numXfers > 0 )
+            results += testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation");
+    }
 
     numXfers = 0;
-    RandoMission3();
-    results += testbool(ValidateConnections(), true, "RandoMission3 validation");
-
-    numXfers = 0;
+    numConns = 0;
 
     return results;
 }
