@@ -52,6 +52,9 @@ function SaveSettings()
     foreach player.AllActors(class'Inventory', i) {
         i.Destroy();
     }
+    player.RestoreAllHealth();
+    if (DeusExRootWindow(player.rootWindow) != None)
+        DeusExRootWindow(player.rootWindow).ResetFlags();
 
     Super.SaveSettings();
 

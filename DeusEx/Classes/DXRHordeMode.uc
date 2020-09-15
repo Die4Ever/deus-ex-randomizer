@@ -330,11 +330,18 @@ function StartWave()
     local MedicalBot mb;
     local DeusExCarcass c;
     local int num_carcasses;
+    local int num_items;
+    local Inventory item;
     foreach AllActors(class'MedicalBot', mb) {
         mb.TakeDamage(10000, mb, mb.Location, vect(0,0,0), 'Exploded');
     }
     foreach AllActors(class'DeusExCarcass', c) {
-        if( c.Inventory == None ) c.Destroy();//TakeDamage(10000, None, c.Location, vect(0,0,0), 'Exploded');
+        num_items = 0;
+        for( item = c.Inventory; item != None; item = item.Inventory) {
+            if( ! IsMeleeWeapon(item) )
+                num_items++;
+        }
+        if( num_items == 0 ) c.Destroy();//TakeDamage(10000, None, c.Location, vect(0,0,0), 'Exploded');
         else num_carcasses++;
     }
     if( num_carcasses > 50 ) {
@@ -585,7 +592,7 @@ function vector GetRandomItemPosition()
         loc.X += rngfn() * 50;
         loc.Y += rngfn() * 50;
         d = None;
-        foreach RadiusActors(class'DeusExMover', d, 200.0, loc) {
+        foreach RadiusActors(class'DeusExMover', d, 150.0, loc) {
             break;
         }
         if( d == None ) return loc;

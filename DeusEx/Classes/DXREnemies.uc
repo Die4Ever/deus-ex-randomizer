@@ -327,13 +327,7 @@ function GiveRandomMeleeWeapon(Pawn p)
     local Weapon w;
     local int r, i;
 
-    if(
-        HasItem(p, class'WeaponBaton')
-        || HasItem(p, class'WeaponCombatKnife')
-        || HasItem(p, class'WeaponCrowbar')
-        || HasItem(p, class'WeaponSword')
-        || HasItem(p, class'WeaponNanoSword')
-    )
+    if(HasMeleeWeapon(p))
         return;
 
     r = initchance();

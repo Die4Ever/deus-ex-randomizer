@@ -101,6 +101,24 @@ function bool HasItem(Pawn p, class c)
     return p.FindInventoryType(c) != None;
 }
 
+function bool HasMeleeWeapon(Pawn p)
+{
+    return HasItem(p, class'WeaponBaton')
+        || HasItem(p, class'WeaponCombatKnife')
+        || HasItem(p, class'WeaponCrowbar')
+        || HasItem(p, class'WeaponSword')
+        || HasItem(p, class'WeaponNanoSword');
+}
+
+function bool IsMeleeWeapon(Inventory item)
+{
+    return item.IsA('WeaponBaton')
+        || item.IsA('WeaponCombatKnife')
+        || item.IsA('WeaponCrowbar')
+        || item.IsA('WeaponSword')
+        || item.IsA('WeaponNanoSword');
+}
+
 function bool SkipActorBase(Actor a)
 {
     if( a == dxr.Player.carriedDecoration )
