@@ -10,25 +10,25 @@ class DXREntranceRando expands DXRBase;
 //One has the tag set.
 struct MapTransfer
 {
-    var() config string mapname;
-    var() config string inTag;
-    var() config string outTag;
-    var() config bool used;
+    var() string mapname;
+    var() string inTag;
+    var() string outTag;
+    var() bool used;
 };
 
 //Defines a connection between two MapTransfer points
 struct Connection
 {
-    var() config MapTransfer a;
-    var() config MapTransfer b;
+    var() MapTransfer a;
+    var() MapTransfer b;
 };
 
 //This structure is used for rando validation
 struct MapConnection
 {
-    var() config string mapname;
-    var() config int    numDests;
-    var() config string dest[15]; //List of maps that can be reached from this one
+    var() string mapname;
+    var() int    numDests;
+    var() string dest[15]; //List of maps that can be reached from this one
 };
 var Connection conns[50];
 var int numConns;
@@ -36,6 +36,30 @@ var int numConns;
 var MapTransfer xfers[50];
 var int numXfers;
 
+struct BanConnection
+{
+    var string map_a;
+    var string map_b;
+};
+var config BanConnection BannedConnections[64];
+
+function CheckConfig()
+{
+    local int i;
+    if( config_version == 0 ) {
+        for(i=0; i < ArrayCount(BannedConnections); i++) {
+            BannedConnections[i].map_a = "";
+            BannedConnections[i].map_b = "";
+        }
+    }
+    else {
+        for(i=0; i < ArrayCount(BannedConnections); i++) {
+            BannedConnections[i].map_a = Caps(BannedConnections[i].map_a);
+            BannedConnections[i].map_b = Caps(BannedConnections[i].map_b);
+        }
+    }
+    Super.CheckConfig();
+}
 
 function int GetNextTransferIdx()
 {
@@ -104,6 +128,7 @@ function bool CanSelfConnect(string mapname)
 
 function bool IsConnectionValid(int missionNum, MapTransfer a, MapTransfer b)
 {
+    local int i;
 
     if ( IsDeadEnd(a.mapname) && IsDeadEnd(b.mapname) )
     {
@@ -118,11 +143,14 @@ function bool IsConnectionValid(int missionNum, MapTransfer a, MapTransfer b)
         }
     }
 
-    switch(missionNum)
-    {
-        case 2:
-            break;
-    
+    for(i=0; i < ArrayCount(BannedConnections); i++) {
+        if( 
+            (a.mapname == BannedConnections[i].map_a && b.mapname == BannedConnections[i].map_b)
+            ||
+            (b.mapname == BannedConnections[i].map_a && a.mapname == BannedConnections[i].map_b)
+        ) {
+            return false;
+        }
     }
     
     return True;
@@ -134,86 +162,21 @@ function bool ValidateConnections()
     local MapConnection mapdests[15];
     local int numMaps;
     local int numPasses;
-    local int i,j,k,p;
-    local string curMapName;
+    local int i,j,k;
     local bool foundMap;
-    local int mapidx;
     
     local string canvisit[15];
     local int visitable;
     
     local bool canVisitMap;
-    local bool canVisitDest;
     
     numPasses = numConns;
-    curMapName = "";
-    
-    numMaps = 0;
-    
-    //Get all the map names
-    for (i=0;i<numXfers;i++)
-    {
-        if (xfers[i].mapname !=curMapName)
-        {
-            mapdests[numMaps].mapname = xfers[i].mapname;
-            mapdests[numMaps].numDests = 0;
-            curMapName = xfers[i].mapname;
-            numMaps++;
-        }
-    }
+    numMaps = GetAllMapNames(mapdests);
     
     //Determine what maps can be visited from each map
     for (i=0;i<numConns;i++)
     {
-        //Check if b.mapname is in the destinations of a.mapname
-        mapidx=0;
-        for (j=0;j<numMaps;j++)
-        {
-            if (mapdests[j].mapname == conns[i].a.mapname)
-            {
-                mapidx=j;
-                break;
-            }
-        }
-        foundMap = False;
-        for (j=0;j<mapdests[mapidx].numDests;j++)
-        {
-            if(mapdests[mapidx].dest[j]==conns[i].b.mapname)
-            {
-                foundMap = True;
-            }
-        }
-        
-        if (!foundMap)
-        {
-            mapdests[mapidx].dest[mapdests[mapidx].numDests] = conns[i].b.mapname;
-            mapdests[mapidx].numDests++;
-        }
-        
-        //Check if a.mapname is in the destinations of b.mapname
-        mapidx=0;
-        for (j=0;j<numMaps;j++)
-        {
-            if (mapdests[j].mapname == conns[i].b.mapname)
-            {
-                mapidx=j;
-                break;
-            }
-        }
-        foundMap = False;
-        for (j=0;j<mapdests[mapidx].numDests;j++)
-        {
-            if(mapdests[mapidx].dest[j]==conns[i].a.mapname)
-            {
-                foundMap = True;
-            }
-        }
-        
-        if (!foundMap)
-        {
-            mapdests[mapidx].dest[mapdests[mapidx].numDests] = conns[i].a.mapname;
-            mapdests[mapidx].numDests++;
-        }
+        MarkMapsConnected(mapdests, numMaps, conns[i].a.mapname, conns[i].b.mapname);
     }
     
     //Start finding out what maps we can visit
@@ -221,7 +184,8 @@ function bool ValidateConnections()
     canvisit[visitable]=mapdests[0].mapname;
     visitable++;
     
-    for( i=0;i<numPasses;i++){
+    for( i=0;i<numPasses;i++)
+    {
         for ( j=0;j<numMaps;j++)
         {
             //See if map can be visited
@@ -237,26 +201,7 @@ function bool ValidateConnections()
             //If map can be visited, go through all the places it can go
             if (canVisitMap)
             {
-                for (k=0;k<mapdests[j].numDests;k++)
-                {
-                    //If any of those destinations are not in the places we can visit, add them
-                    canVisitDest = False;
-                    for (p=0;p<visitable;p++)
-                    {
-                        if ( canvisit[p]==mapdests[j].dest[k] )
-                        {
-                            canVisitDest = True;
-                        }
-                    }
-                    if (canVisitDest == False)
-                    {
-                        canvisit[visitable] = mapdests[j].dest[k];
-                        visitable++;
-                    }
-                    
-
-                }
-            
+                MarkMapDestinationsVisitible(mapdests[j], canvisit, visitable);
             }
         }
     }
@@ -264,10 +209,114 @@ function bool ValidateConnections()
     //Theoretically I should probably actually check to see if the maps match,
     //but this is fairly safe...
     return visitable == numMaps;
+}
+
+function int GetAllMapNames(out MapConnection mapdests[15])
+{
+    local int i, j, numMaps;
+    local bool found;
+    for (i=0;i<numXfers;i++)
+    {
+        found=false;
+        for(j=0; j<numMaps; j++) {
+            if( xfers[i].mapname == mapdests[j].mapname ) {
+                found=true;
+                break;
+            }
+        }
+        if (found == false)
+        {
+            mapdests[numMaps].mapname = xfers[i].mapname;
+            mapdests[numMaps].numDests = 0;
+            numMaps++;
+        }
+    }
+    return numMaps;
+}
+
+function MarkMapsConnected(out MapConnection mapdests[15], int numMaps, string map_a, string map_b)
+{
+    local int mapidx;
+    mapidx = FindMapDestinations(mapdests, numMaps, map_a);
+    if(mapidx == -1) {
+        err("failed MarkMapsConnected("$numMaps$", "$map_a$", "$map_b$") find A");
+        return;
+    }
+    AddDestination( mapdests[mapidx], map_b);
     
+    mapidx = FindMapDestinations(mapdests, numMaps, map_b);
+    if(mapidx == -1) {
+        err("failed MarkMapsConnected("$numMaps$", "$map_a$", "$map_b$") find B");
+        return;
+    }
+    AddDestination( mapdests[mapidx], map_a);
+}
+
+function int FindMapDestinations(MapConnection mapdests[15], int numMaps, string mapname)
+{
+    local int i;
+    for (i=0;i<numMaps;i++)
+    {
+        if (mapdests[i].mapname == mapname)
+        {
+            return i;
+        }
+    }
+    err("failed to FindMapDestinations for "$mapname);
+    return -1;
+}
+
+function AddDestination( out MapConnection map, string mapname )
+{
+    local int i;
+    for(i=0; i < map.numDests; i++) {
+        if( map.dest[i] == mapname ) {
+            return;
+        }
+    }
+    map.dest[map.numDests] = mapname;
+    map.numDests++;
+}
+
+function MarkMapDestinationsVisitible(MapConnection m, out string canvisit[15], out int visitable)
+{
+    local int k, p;
+    local bool canVisitDest;
+
+    for (k=0;k<m.numDests;k++)
+    {
+        //If any of those destinations are not in the places we can visit, add them
+        canVisitDest = False;
+        for (p=0;p<visitable;p++)
+        {
+            if ( canvisit[p]==m.dest[k] )
+            {
+                canVisitDest = True;
+            }
+        }
+        if (canVisitDest == False)
+        {
+            canvisit[visitable] = m.dest[k];
+            visitable++;
+        }
+    }
 }
 
 function GenerateConnections(int missionNum)
+{
+    local int attempts;
+    local bool isValid;
+    isValid = False;
+    for(attempts=0; attempts<100; attempts++)
+    {
+        _GenerateConnections(missionNum);
+        if(ValidateConnections())
+            return;
+    }
+    err("GenerateConnections("$missionNum$") failed after "$attempts$" attempts!");
+}
+
+function _GenerateConnections(int missionNum)
 {
     local int xfersUsed;
     local int connsMade;
@@ -276,55 +325,47 @@ function GenerateConnections(int missionNum)
     local int destIdx;
     local int maxAttempts;
     local int i;
-    local bool isValid;
-    
-    isValid = False;
     
     maxAttempts = 10;
     
-    while (!isValid)
+    for(i=0;i<numXfers;i++)
     {
-        for(i=0;i<numXfers;i++)
-        {
-            xfers[i].used = False;
-        }
-        xfersUsed = 0;
-        connsMade = 0;
-    
-        while (xfersUsed < numXfers)
-        {
-            nextAvailIdx = GetNextTransferIdx();
-            conns[connsMade].a = xfers[nextAvailIdx];
-        
-            xfers[nextAvailIdx].used = True;
-            xfersUsed++;
-        
-            //Get a random unused transfer
-            for (i=0;i<maxAttempts;i++)
-            {
-                destOffset = rng(numXfers-xfersUsed);
-                destIdx = GetUnusedTransferByOffset(destOffset);
-            
-                if (IsConnectionValid(missionNum,xfers[nextAvailIdx],xfers[destIdx]))
-                {
-                    break;
-                }
-            }
-            xfers[destIdx].used = True;
-            xfersUsed++;
-        
-            conns[connsMade].b = xfers[destIdx];
-            connsMade++;
-        }
-        numConns = connsMade;
-        isValid = ValidateConnections();
+        xfers[i].used = False;
     }
+    xfersUsed = 0;
+    connsMade = 0;
 
+    while (xfersUsed < numXfers)
+    {
+        nextAvailIdx = GetNextTransferIdx();
+        conns[connsMade].a = xfers[nextAvailIdx];
+    
+        xfers[nextAvailIdx].used = True;
+        xfersUsed++;
+    
+        //Get a random unused transfer
+        for (i=0;i<maxAttempts;i++)
+        {
+            destOffset = rng(numXfers-xfersUsed);
+            destIdx = GetUnusedTransferByOffset(destOffset);
+        
+            if (IsConnectionValid(missionNum,xfers[nextAvailIdx],xfers[destIdx]))
+            {
+                break;
+            }
+        }
+        xfers[destIdx].used = True;
+        xfersUsed++;
+    
+        conns[connsMade].b = xfers[destIdx];
+        connsMade++;
+    }
+    numConns = connsMade;
 }
 
 function AddXfer(string mapname, string inTag, string outTag)
 {
-    xfers[numXfers].mapname = mapname;
+    xfers[numXfers].mapname = Caps(mapname);
     xfers[numXfers].inTag = inTag;
     xfers[numXfers].outTag = outTag;
     xfers[numXfers].used = False;
@@ -332,53 +373,48 @@ function AddXfer(string mapname, string inTag, string outTag)
     numXfers++;
 }
 
+function AddDoubleXfer(string mapname_a, string inTag, string mapname_b, string outTag)
+{
+    xfers[numXfers].mapname = Caps(mapname_a);
+    xfers[numXfers].inTag = inTag;
+    xfers[numXfers].outTag = outTag;
+    xfers[numXfers].used = False;
+    numXfers++;
+
+    xfers[numXfers].mapname = Caps(mapname_b);
+    xfers[numXfers].inTag = outTag;
+    xfers[numXfers].outTag = inTag;
+    xfers[numXfers].used = False;
+    numXfers++;
+}
+
 function RandoMission2()
 {
-    
-    AddXfer("02_NYC_BatteryPark","ToBatteryPark","ToStreet");
-    AddXfer("02_NYC_Bar","ToBarBackEntrance","FromBarBackEntrance");
-    AddXfer("02_NYC_Bar","ToBarFrontEntrance","FromBarFrontEntrance");
-    AddXfer("02_NYC_FreeClinic","FromStreet","FromClinic");
-    AddXfer("02_NYC_Hotel","ToHotelBedroom","BedroomWindow");
-    AddXfer("02_NYC_Hotel","ToHotelFrontDoor","FromHotelFrontDoor");
-    AddXfer("02_NYC_Smug","ToSmugFrontDoor","FromSmugFrontDoor");
-    AddXfer("02_NYC_Smug","ToSmugBackDoor","FromSmugBackDoor");
-    AddXfer("02_NYC_Underground","ToNYCUndergroundSewer2","FromNYCUndergroundSewer2");
-    AddXfer("02_NYC_Underground","ToNYCSump","FromNYCSump");
-    AddXfer("02_NYC_Warehouse","ToRoofTop","FromRoofTop");
-    AddXfer("02_NYC_Warehouse","ToWarehouseAlley","FromWarehouseAlley");
-    AddXfer("02_NYC_Street","ToStreet","ToBatteryPark");
-    AddXfer("02_NYC_Street","FromSmugBackDoor","ToSmugBackDoor");
-    AddXfer("02_NYC_Street","FromSmugFrontDoor","ToSmugFrontDoor");
-    AddXfer("02_NYC_Street","FromBarBackEntrance","ToBarBackEntrance");
-    AddXfer("02_NYC_Street","FromBarFrontEntrance","ToBarFrontEntrance");
-    AddXfer("02_NYC_Street","FromHotelFrontDoor","ToHotelFrontDoor");
-    AddXfer("02_NYC_Street","FromClinic","FromStreet");
-    AddXfer("02_NYC_Street","BedroomWindow","ToHotelBedroom");
-    AddXfer("02_NYC_Street","FromWarehouseAlley","ToWarehouseAlley");
-    AddXfer("02_NYC_Street","FromRoofTop","ToRoofTop");
-    AddXfer("02_NYC_Street","FromNYCUndergroundSewer2","ToNYCUndergroundSewer2");
-    AddXfer("02_NYC_Street","FromNYCSump","ToNYCSump");    
+    AddDoubleXfer("02_NYC_BatteryPark","ToBatteryPark","02_NYC_Street", "ToStreet");
+    AddDoubleXfer("02_NYC_Bar","ToBarBackEntrance","02_NYC_Street","FromBarBackEntrance");
+    AddDoubleXfer("02_NYC_Bar","ToBarFrontEntrance","02_NYC_Street","FromBarFrontEntrance");
+    AddDoubleXfer("02_NYC_FreeClinic","FromStreet","02_NYC_Street","FromClinic");
+    AddDoubleXfer("02_NYC_Hotel","ToHotelBedroom","02_NYC_Street","BedroomWindow");
+    AddDoubleXfer("02_NYC_Hotel","ToHotelFrontDoor","02_NYC_Street","FromHotelFrontDoor");
+    AddDoubleXfer("02_NYC_Smug","ToSmugFrontDoor","02_NYC_Street","FromSmugFrontDoor");
+    AddDoubleXfer("02_NYC_Smug","ToSmugBackDoor","02_NYC_Street","FromSmugBackDoor");
+    AddDoubleXfer("02_NYC_Underground","ToNYCUndergroundSewer2","02_NYC_Street","FromNYCUndergroundSewer2");
+    AddDoubleXfer("02_NYC_Underground","ToNYCSump","02_NYC_Street","FromNYCSump");
+    AddDoubleXfer("02_NYC_Warehouse","ToRoofTop","02_NYC_Street","FromRoofTop");
+    AddDoubleXfer("02_NYC_Warehouse","ToWarehouseAlley","02_NYC_Street","FromWarehouseAlley");
         
     GenerateConnections(2);
 }
 
 function RandoMission3()
 {
-    AddXfer("03_NYC_BatteryPark","BBSExit","FromNYCStreets");
-    AddXfer("03_NYC_BrooklynBridgeStation","FromNYCStreets","BBSExit");
-    AddXfer("03_NYC_BrooklynBridgeStation","MoleExit","MoleEnt");
-    AddXfer("03_NYC_MolePeople","SewerExit","SewerEnt");
-    AddXfer("03_NYC_MolePeople","MoleEnt","MoleExit");
-    AddXfer("03_NYC_AirfieldHeliBase","SewerEnt","SewerExit");
-    AddXfer("03_NYC_AirfieldHeliBase","BHElevatorEnt","BHElevatorExit");
-    AddXfer("03_NYC_AirfieldHeliBase","FromOcean","ToOcean");
-    AddXfer("03_NYC_Airfield","HangarExit","HangarEnt");
-    AddXfer("03_NYC_Airfield","BHElevatorExit","BHElevatorEnt");
-    AddXfer("03_NYC_Airfield","ToOcean","FromOcean");
-    AddXfer("03_NYC_Hangar","HangarEnt","HangarExit");
-    AddXfer("03_NYC_Hangar","747PassExit","747PassEnt");
-    AddXfer("03_NYC_747","747PassEnt","747PassExit");
+    AddDoubleXfer("03_NYC_BatteryPark","BBSExit","03_NYC_BrooklynBridgeStation","FromNYCStreets");
+    AddDoubleXfer("03_NYC_BrooklynBridgeStation","MoleExit","03_NYC_MolePeople","MoleEnt");
+    AddDoubleXfer("03_NYC_MolePeople","SewerExit","03_NYC_AirfieldHeliBase","SewerEnt");
+    AddDoubleXfer("03_NYC_AirfieldHeliBase","BHElevatorEnt","03_NYC_Airfield","BHElevatorExit");
+    AddDoubleXfer("03_NYC_AirfieldHeliBase","FromOcean","03_NYC_Airfield","ToOcean");
+    AddDoubleXfer("03_NYC_Airfield","HangarExit","03_NYC_Hangar","HangarEnt");
+    AddDoubleXfer("03_NYC_Hangar","747PassExit","03_NYC_747","747PassEnt");
     
     GenerateConnections(3);
 }
@@ -386,8 +422,8 @@ function RandoMission3()
 function EntranceRando(int missionNum)
 {   
     numConns = 0;
-    dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") );
-     
+    dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") + missionNum );
+
     switch(missionNum)
     {
         case 2:
@@ -428,64 +464,53 @@ function ApplyEntranceRando()
 
     foreach AllActors(class'Teleporter',t)
     {
-       //Figure out if the teleporter needs to be changed
-       
-       //Only teleporters with the default tag are actually going somewhere
-       if (t.URL != "")
-       {
-           hashPos = InStr(t.URL,"#");
-           destTag = Mid(t.URL,hashPos+1); //Mid includes the character at the offset provided
-           for (i = 0;i<numConns;i++)
-           {
-               if (Caps(conns[i].a.mapname) == dxr.localURL && destTag == conns[i].a.outTag)
-               {
-                   l("Found teleporter with URL "$t.URL);
-                   t.URL = conns[i].b.mapname$"#"$conns[i].b.inTag;
-                   l("Changed teleporter URL to "$t.URL);
-
-                   break;
-               }
-               else if (Caps(conns[i].b.mapname) == dxr.localURL && destTag == conns[i].b.outTag)
-               {
-                   l("Found teleporter with URL "$t.URL);
-                   t.URL = conns[i].a.mapname$"#"$conns[i].a.inTag;
-                   l("Changed teleporter URL to "$t.URL);
-                   break;
-
-               }
-
-           }
-
-       }
-       
-       
+        AdjustTeleporter(t);
     }
     
     foreach AllActors(class'MapExit',m)
     {
-        //Figure out if the map exit needs to be changed
-        hashPos = InStr(m.DestMap,"#");
-        destTag = Mid(m.DestMap,hashPos+1); //Mid includes the character at the offset provided
-        for (i = 0;i<numConns;i++)
-        {
-            if (Caps(conns[i].a.mapname) == dxr.localURL && destTag == conns[i].a.outTag)
-            {
-                l("Found MapExit with URL "$m.DestMap);
-                m.DestMap = conns[i].b.mapname$"#"$conns[i].b.inTag;
-                l("Changed MapExit URL to "$m.DestMap);
-                break;
-            }
-            else if (Caps(conns[i].b.mapname) == dxr.localURL && destTag == conns[i].b.outTag)
-            {
-                l("Found MapExit with URL "$m.DestMap);
-                m.DestMap = conns[i].a.mapname$"#"$conns[i].a.inTag;
-                l("Changed MapExit URL to "$m.DestMap);
-                break;
-            }
-
-        }
+        AdjustTeleporter(m);
     }
     
+}
+
+function AdjustTeleporter(NavigationPoint p)
+{
+    local Teleporter t;
+    local MapExit m;
+    local string newDest;
+    local string curDest;
+    local string destTag;
+    local int i;
+    local int hashPos;
+
+    t = Teleporter(p);
+    m = MapExit(p);
+    if( t != None ) curDest = t.URL;
+    else if( m != None ) curDest = m.DestMap;
+
+    if( curDest == "" ) return;
+
+    hashPos = InStr(curDest,"#");
+    destTag = Mid(curDest,hashPos+1);
+
+    for (i = 0;i<numConns;i++)
+    {
+        if (conns[i].a.mapname == dxr.localURL && destTag == conns[i].a.outTag)
+        {
+            newDest = conns[i].b.mapname$"#"$conns[i].b.inTag;
+        }
+        else if (conns[i].b.mapname == dxr.localURL && destTag == conns[i].b.outTag)
+        {
+            newDest = conns[i].a.mapname$"#"$conns[i].a.inTag;
+        }
+        else
+            continue;
+
+        if( t != None ) t.URL = newDest;
+        else if( m != None ) m.DestMap = newDest;
+        l("Found " $ p $ " with destination " $ curDest $ ", changed to " $ newDest);
+    }
 }
 
 function FirstEntry()
@@ -498,6 +523,65 @@ function FirstEntry()
     //Randomize entrances for this mission
     EntranceRando(dxr.dxInfo.missionNumber);
 
+}
+
+function int RunTests()
+{
+    local int results;
+    results = Super.RunTests();
+
+    numXfers = 0;
+
+    AddDoubleXfer("wanchai_market","to_tong","tong","from_wanchai");
+    AddDoubleXfer("wanchai_market","to_versalife","versalife","from_wanchai");
+    AddDoubleXfer("versalife","to_versalife2","versalife2","from_versalife");
+    
+    conns[0].a = xfers[0];
+    conns[0].b = xfers[1];
+    conns[1].a = xfers[1];
+    conns[1].b = xfers[0];
+    numConns = 2;
+    results += testbool(ValidateConnections(), false, "ValidateConnections test 1");
+
+    conns[0].a = xfers[0];
+    conns[0].b = xfers[1];
+    conns[1].a = xfers[2];
+    conns[1].b = xfers[3];
+    conns[2].a = xfers[4];
+    conns[2].b = xfers[5];
+    numConns = 3;
+    results += testbool(ValidateConnections(), true, "ValidateConnections test 2");
+
+    conns[0].a = xfers[5];
+    conns[0].b = xfers[4];
+    conns[1].a = xfers[3];
+    conns[1].b = xfers[2];
+    conns[2].a = xfers[1];
+    conns[2].b = xfers[0];
+    numConns = 3;
+    results += testbool(ValidateConnections(), true, "ValidateConnections test 3");
+
+    conns[0].a = xfers[0];
+    conns[0].b = xfers[1];
+    conns[1].a = xfers[4];
+    conns[1].b = xfers[5];
+    numConns = 2;
+    results += testbool(ValidateConnections(), false, "ValidateConnections island test");
+
+    GenerateConnections(3);
+    results += testbool(ValidateConnections(), true, "AddDoubleXfer validation");
+
+    numXfers = 0;
+    RandoMission2();
+    results += testbool(ValidateConnections(), true, "RandoMission2 validation");
+
+    numXfers = 0;
+    RandoMission3();
+    results += testbool(ValidateConnections(), true, "RandoMission3 validation");
+
+    numXfers = 0;
+
+    return results;
 }
 
 defaultproperties
