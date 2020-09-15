@@ -375,17 +375,8 @@ function AddXfer(string mapname, string inTag, string outTag)
 
 function AddDoubleXfer(string mapname_a, string inTag, string mapname_b, string outTag)
 {
-    xfers[numXfers].mapname = Caps(mapname_a);
-    xfers[numXfers].inTag = inTag;
-    xfers[numXfers].outTag = outTag;
-    xfers[numXfers].used = False;
-    numXfers++;
-
-    xfers[numXfers].mapname = Caps(mapname_b);
-    xfers[numXfers].inTag = outTag;
-    xfers[numXfers].outTag = inTag;
-    xfers[numXfers].used = False;
-    numXfers++;
+    AddXfer(mapname_a, inTag, outTag);
+    AddXfer(mapname_b, outTag, inTag);
 }
 
 function RandoMission2()
