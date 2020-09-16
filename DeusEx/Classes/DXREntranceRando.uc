@@ -51,6 +51,10 @@ function CheckConfig()
             BannedConnections[i].map_a = "";
             BannedConnections[i].map_b = "";
         }
+        BannedConnections[0].map_a = "02_NYC_BatteryPark";
+        BannedConnections[0].map_b = "02_NYC_Underground";
+        BannedConnections[1].map_a = "02_NYC_BatteryPark";
+        BannedConnections[1].map_b = "02_NYC_Warehouse";
     }
     else {
         for(i=0; i < ArrayCount(BannedConnections); i++) {
@@ -410,6 +414,42 @@ function RandoMission3()
     GenerateConnections(3);
 }
 
+function RandoMission4()
+{
+    AddDoubleXfer("04_NYC_BATTERYPARK","ToBatteryPark","04_NYC_Street","ToStreet");
+    AddDoubleXfer("04_NYC_STREET","FromSmugBackDoor","04_NYC_Smug","ToSmugBackDoor");
+    AddDoubleXfer("04_NYC_STREET","FromSmugFrontDoor","04_NYC_Smug","ToSmugFrontDoor");
+    AddDoubleXfer("04_NYC_STREET","FromBarBackEntrance","04_NYC_Bar","ToBarBackEntrance");
+    AddDoubleXfer("04_NYC_STREET","FromBarFrontEntrance","04_NYC_Bar","ToBarFrontEntrance");
+    AddDoubleXfer("04_NYC_STREET","FromHotelFrontDoor","04_NYC_Hotel","ToHotelFrontDoor");
+    AddDoubleXfer("04_NYC_STREET","BedroomWindow","04_NYC_Hotel","ToHotelBedroom");
+    AddDoubleXfer("04_NYC_STREET","FromNSFHQ","04_NYC_NSFHQ","ToNSFHQ");
+    AddDoubleXfer("04_NYC_STREET","FromNYCUndergroundSewer2","04_NYC_Underground","ToNYCUndergroundSewer2");
+    AddDoubleXfer("04_NYC_STREET","FromNYCSump","04_NYC_Underground","ToNYCSump");
+
+    GenerateConnections(4);
+}
+
+function RandoMission6()
+{
+    AddDoubleXfer("06_HONGKONG_HELIBASE","Helibase","06_HongKong_WanChai_Market","cargoup");
+    AddDoubleXfer("06_HONGKONG_MJ12LAB","cathedral","06_HongKong_VersaLife","secret");
+    AddDoubleXfer("06_HONGKONG_MJ12LAB","tubeend","06_HongKong_Storage","basement");
+    AddDoubleXfer("06_HONGKONG_STORAGE","waterpipe","06_HongKong_WanChai_Canal","canal");
+    AddDoubleXfer("06_HONGKONG_STORAGE","basement","06_HongKong_MJ12lab","tubeend");
+    //AddXfer("06_HongKong_Storage","BackDoor","06_HONGKONG_WANCHAI_GARAGE#Teleporter");//one way
+    AddDoubleXfer("06_HONGKONG_TONGBASE","lab","06_HongKong_WanChai_Market","compound");
+    AddDoubleXfer("06_HONGKONG_VERSALIFE","Lobby","06_HongKong_WanChai_Market","market");
+    AddDoubleXfer("06_HONGKONG_WANCHAI_CANAL","Street","06_HongKong_WanChai_Street","Canal");
+    AddDoubleXfer("06_HONGKONG_WANCHAI_CANAL","market01","06_HongKong_WanChai_Market","canal01");
+    AddDoubleXfer("06_HONGKONG_WANCHAI_CANAL","double","06_HongKong_WanChai_Market","chinahand");
+    AddDoubleXfer("06_HONGKONG_WANCHAI_GARAGE","market04","06_HongKong_WanChai_Market","garage01");
+    AddDoubleXfer("06_HONGKONG_WANCHAI_MARKET","canal03","06_HongKong_WanChai_Underworld","market03");
+    AddDoubleXfer("06_HongKong_WanChai_Street","alleyout","06_HongKong_WanChai_Canal","alleyin");
+
+    GenerateConnections(6);
+}
+
 function EntranceRando(int missionNum)
 {   
     numConns = 0;
@@ -425,8 +465,10 @@ function EntranceRando(int missionNum)
             RandoMission3();
             break;
         case 4:
+            RandoMission4();
             break;
         case 6:
+            RandoMission6();
             break;
         case 8:
             break;
