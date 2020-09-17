@@ -47,10 +47,19 @@ function CopySkills()
 
 function SaveSettings()
 {
+    local Inventory i;
+
+    foreach player.AllActors(class'Inventory', i) {
+        i.Destroy();
+    }
+    player.RestoreAllHealth();
+    if (DeusExRootWindow(player.rootWindow) != None)
+        DeusExRootWindow(player.rootWindow).ResetFlags();
+
     Super.SaveSettings();
+
     dxr.flags.SaveFlags();
     dxr.Destroy();
-
     foreach player.AllActors(class'DXRando', dxr)
         dxr.Destroy();
 }

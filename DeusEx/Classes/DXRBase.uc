@@ -14,6 +14,7 @@ function Init(DXRando tdxr)
 function CheckConfig()
 {
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        l("upgrading config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
         config_version = class'DXRFlags'.static.VersionNumber();
         SaveConfig();
     }
@@ -52,12 +53,27 @@ event Destroyed()
     Super.Destroyed();
 }
 
-function SetSeed(string name)
+function SetSeed(coerce string name)
 {
     dxr.SetSeed( dxr.Crc(dxr.seed $ "MS_" $ dxr.dxInfo.MissionNumber $ dxr.localURL $ name) );
 }
 
 function int rng(int max)
+{
+    return dxr.rng(max);
+}
+
+function float rngf()
+{// 0 to 1.0
+    return float(dxr.rng(1000001))/1000000.0;
+}
+
+function float rngfn()
+{// -1.0 to 1.0
+    return rngf() * 2.0 - 1.0;
+}
+
+function static int staticrng(DXRando dxr, int max)
 {
     return dxr.rng(max);
 }
@@ -86,6 +102,22 @@ function bool chance_remaining(int r)
 function bool chance_single(int percent)
 {
     return rng(100) < percent;
+}
+
+function class<Actor> GetClassFromString(string classstring, class<Actor> c)
+{
+    local class<Actor> a;
+    if( InStr(classstring, ".") == -1 )
+        classstring = "DeusEx." $ classstring;
+    a = class<Actor>(DynamicLoadObject(classstring, class'class'));
+    if( a == None ) {
+        err("failed to load class "$classstring);
+    }
+    else if( ClassIsChildOf(a, c) == false ) {
+        err(classstring $ " is not a subclass of " $ c.name);
+        return None;
+    }
+    return a;
 }
 
 function l(string message)

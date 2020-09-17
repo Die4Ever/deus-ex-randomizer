@@ -1,7 +1,7 @@
 class DXRFixup expands DXRBase;
 
 struct DecorationsOverwrite {
-    var class<DeusExDecoration> type;
+    var string type;
     var bool bInvincible;
     var int HitPoints;
     var int minDamageThreshold;
@@ -18,33 +18,36 @@ var config DecorationsOverwrite DecorationsOverwrites[16];
 function CheckConfig()
 {
     local int i;
-    if( config_version == 0 ) {
+    local class<DeusExDecoration> c;
+    if( config_version < 4 ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
-            DecorationsOverwrites[i].type = None;
+            DecorationsOverwrites[i].type = "";
         }
         i=0;
-        DecorationsOverwrites[i].type = class'CrateUnbreakableLarge';
+        DecorationsOverwrites[i].type = "CrateUnbreakableLarge";
         DecorationsOverwrites[i].bInvincible = false;
         DecorationsOverwrites[i].HitPoints = 2000;
         DecorationsOverwrites[i].minDamageThreshold = 0;
-        DecorationsOverwrites[i].bFlammable = DecorationsOverwrites[i].type.default.bFlammable;
-        DecorationsOverwrites[i].Flammability = DecorationsOverwrites[i].type.default.Flammability;
-        DecorationsOverwrites[i].bExplosive = DecorationsOverwrites[i].type.default.bExplosive;
-        DecorationsOverwrites[i].explosionDamage = DecorationsOverwrites[i].type.default.explosionDamage;
-        DecorationsOverwrites[i].explosionRadius = DecorationsOverwrites[i].type.default.explosionRadius;
-        DecorationsOverwrites[i].bPushable = DecorationsOverwrites[i].type.default.bPushable;
+        c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+        DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = c.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = c.default.bPushable;
         i++;
 
-        DecorationsOverwrites[i].type = class'BarrelFire';
+        DecorationsOverwrites[i].type = "BarrelFire";
         DecorationsOverwrites[i].bInvincible = false;
         DecorationsOverwrites[i].HitPoints = 50;
         DecorationsOverwrites[i].minDamageThreshold = 0;
-        DecorationsOverwrites[i].bFlammable = DecorationsOverwrites[i].type.default.bFlammable;
-        DecorationsOverwrites[i].Flammability = DecorationsOverwrites[i].type.default.Flammability;
-        DecorationsOverwrites[i].bExplosive = DecorationsOverwrites[i].type.default.bExplosive;
-        DecorationsOverwrites[i].explosionDamage = DecorationsOverwrites[i].type.default.explosionDamage;
-        DecorationsOverwrites[i].explosionRadius = DecorationsOverwrites[i].type.default.explosionRadius;
-        DecorationsOverwrites[i].bPushable = DecorationsOverwrites[i].type.default.bPushable;
+        c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+        DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = c.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = c.default.bPushable;
     }
     Super.CheckConfig();
 }
@@ -57,12 +60,23 @@ function FirstEntry()
     IncreaseBrightness(dxr.flags.brightness);
     OverwriteDecorations();
     
-    if (dxr.dxInfo.missionNumber == 2)
-        NYC1_FirstEntry();
-    else if( dxr.dxInfo.missionNumber == 6 )
-        HongKong_FirstEntry();
-    else if( dxr.dxInfo.missionNumber == 12 )
-        Vandenberg_FirstEntry();
+    switch(dxr.dxInfo.missionNumber) {
+        case 2:
+            NYC1_FirstEntry();
+            break;
+        case 3:
+            Airfield_FirstEntry();
+            break;
+        case 6:
+            HongKong_FirstEntry();
+            break;
+        case 12:
+            Vandenberg_FirstEntry();
+            break;
+        case 15:
+            Area51_FirstEntry();
+            break;
+    }
 }
 
 function AnyEntry()
@@ -106,11 +120,13 @@ function BuffScopes()
 function OverwriteDecorations()
 {
     local DeusExDecoration d;
+    local class<Actor> a;
     local int i;
     for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
-        if(DecorationsOverwrites[i].type == None) continue;
+        if(DecorationsOverwrites[i].type == "") continue;
         foreach AllActors(class'DeusExDecoration', d) {
-            if( d.IsA(DecorationsOverwrites[i].type.name) == false ) continue;
+            a = GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration');
+            if( d.IsA( a.name) == false ) continue;
             d.bInvincible = DecorationsOverwrites[i].bInvincible;
             d.HitPoints = DecorationsOverwrites[i].HitPoints;
             d.minDamageThreshold = DecorationsOverwrites[i].minDamageThreshold;
@@ -135,6 +151,51 @@ function NYC1_FirstEntry()
                 b.BindName = "NYPoliceBoat";
                 b.ConBindEvents();
             }
+            break;
+    }
+}
+
+function Airfield_FirstEntry()
+{
+    local Mover m;
+    local Switch2 s;
+    local vector loc;
+    local rotator rotate;
+    
+    switch (dxr.localURL)
+    {
+        case "03_NYC_AirfieldHeliBase":
+            foreach AllActors(class'Mover',m) {
+                if (m.Tag == 'BasementDoorOpen')
+                {
+                    m.Event = 'BasementFloor';
+                }
+                else if (m.Tag == 'GroundDoorOpen')
+                {
+                    m.Event = 'GroundLevel';
+                }
+            }
+            break;
+        case "03_NYC_BROOKLYNBRIDGESTATION":
+            //Put a button behind the hidden bathroom door
+            //Mostly for entrance rando, but just in case
+            loc.X = -1672.1;
+            loc.Y = -1319.913574;
+            loc.Z = 130.813538;
+            rotate.Yaw=32767;
+            s = Spawn(class'Switch2',,,loc,rotate);
+            s.Event = 'MoleHideoutOpened';
+            s.bCollideWorld=False;
+            
+            //I think the rotation must happen after spawning
+            //Which means that I can't actually directly spawn
+            //It right against the wall.
+            //Once spawned, move it tight against the wall.
+            loc.X=4;
+            loc.Y=0;
+            loc.Z=0;
+            s.move(loc);
+            
             break;
     }
 }
@@ -323,6 +384,19 @@ function HongKong_AnyEntry()
 
             break;
         default:
+            break;
+    }
+}
+
+function Area51_FirstEntry()
+{
+    local DeusExMover d;
+    switch(dxr.localURL)
+    {
+        case "15_AREA51_FINAL":
+            foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
+                d.move(vect(0, 0, -1));
+            }
             break;
     }
 }

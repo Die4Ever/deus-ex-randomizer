@@ -28,16 +28,21 @@ function RandomizeAugCannisters()
     foreach AllActors(class'AugmentationCannister', a)
     {
         if( a.Owner == dxr.Player ) continue;
-        a.AddAugs[0] = PickRandomAug();
-        a.AddAugs[1] = a.AddAugs[0];
-        while( a.AddAugs[1] == a.AddAugs[0] )
-        {
-            a.AddAugs[1] = PickRandomAug();
-        }
+        RandomizeAugCannister(dxr, a);
     }
 }
 
-function Name PickRandomAug()
+function static RandomizeAugCannister(DXRando dxr, AugmentationCannister a)
+{
+    a.AddAugs[0] = PickRandomAug(dxr);
+    a.AddAugs[1] = a.AddAugs[0];
+    while( a.AddAugs[1] == a.AddAugs[0] )
+    {
+        a.AddAugs[1] = PickRandomAug(dxr);
+    }
+}
+
+function static Name PickRandomAug(DXRando dxr)
 {
     local int slot;
     local int skipAugSpeed;
@@ -45,10 +50,10 @@ function Name PickRandomAug()
     numAugs=21;
     if( dxr.flags.speedlevel > 0 )
         skipAugSpeed=1;
-    slot = rng(numAugs-3-skipAugSpeed) + skipAugSpeed;// exclude the 3 or 4 augs you start with, 0 is AugSpeed
+    slot = staticrng(dxr, numAugs-3-skipAugSpeed) + skipAugSpeed;// exclude the 3 or 4 augs you start with, 0 is AugSpeed
     if ( slot >= 11 ) slot++;// skip AugIFF
     if ( slot >= 12 ) slot++;// skip AugLight
     if (slot >= 18 ) slot++;// skip AugDatalink
-    l("Picked Aug "$ slot $"/"$numAugs$" " $ dxr.Player.AugmentationSystem.augClasses[slot].Name);
+    log("Picked Aug "$ slot $"/"$numAugs$" " $ dxr.Player.AugmentationSystem.augClasses[slot].Name, 'DXRAugmentations');
     return dxr.Player.AugmentationSystem.augClasses[slot].Name;
 }

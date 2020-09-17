@@ -1,17 +1,17 @@
 class DXRSwapItems extends DXRActorsBase;
 
-var config class<Actor> swap_actors[16];
+var config string swap_actors[16];
 
 function CheckConfig()
 {
     local int i;
-    if( config_version == 0 ) {
+    if( config_version < 4 ) {
         for(i=0; i < ArrayCount(swap_actors); i++) {
-            swap_actors[i] = None;
+            swap_actors[i] = "";
         }
         i=0;
-        swap_actors[i++] = class'Inventory';
-        swap_actors[i++] = class'Containers';
+        swap_actors[i++] = "Engine.Inventory";
+        swap_actors[i++] = "Containers";
     }
     Super.CheckConfig();
 }
@@ -22,7 +22,7 @@ function FirstEntry()
     Super.FirstEntry();
 
     for(i=0; i < ArrayCount(swap_actors); i++) {
-        if( swap_actors[i] != None )
-            SwapAll(swap_actors[i].name);
+        if( swap_actors[i] != "" )
+            SwapAll(GetClassFromString(swap_actors[i], class'Actor').name);
     }
 }

@@ -1,30 +1,28 @@
 class DXRActorsBase extends DXRBase;
 
-var globalconfig class<Actor> skipactor_types[6];
+var globalconfig string skipactor_types[6];
+var class<Actor> _skipactor_types[6];
 
 function CheckConfig()
 {
     local class<Actor> temp_skipactor_types[6];
     local int i, t;
-    if( config_version == 0 && skipactor_types[0] == None ) {
+    if( config_version < 4 && skipactor_types[0] == "" ) {
         for(i=0; i < ArrayCount(skipactor_types); i++) {
-            skipactor_types[i] = None;
+            skipactor_types[i] = "";
         }
         i=0;
-        skipactor_types[i++] = class'BarrelAmbrosia';
-        skipactor_types[i++] = class'BarrelVirus';
-        skipactor_types[i++] = class'NanoKey';
+        skipactor_types[i++] = "BarrelAmbrosia";
+        skipactor_types[i++] = "BarrelVirus";
+        skipactor_types[i++] = "NanoKey";
     }
     Super.CheckConfig();
 
     //sort skipactor_types so that we only need to check until the first None
     t=0;
     for(i=0; i < ArrayCount(skipactor_types); i++) {
-        if( skipactor_types[i] != None )
-            temp_skipactor_types[t++] = skipactor_types[i];
-    }
-    for(i=0; i < ArrayCount(skipactor_types); i++) {
-        skipactor_types[i] = temp_skipactor_types[i];
+        if( skipactor_types[i] != "" )
+            _skipactor_types[t++] = GetClassFromString(skipactor_types[i], class'Actor');
     }
 }
 
@@ -85,18 +83,40 @@ function bool IsHuman(Actor a)
     return HumanMilitary(a) != None || HumanThug(a) != None || HumanCivilian(a) != None;
 }
 
-function bool HasItem(ScriptedPawn p, class c)
+function bool HasItem(Pawn p, class c)
 {
+    local ScriptedPawn sp;
     local int i;
+    sp = ScriptedPawn(p);
     
-    for (i=0; i<ArrayCount(p.InitialInventory); i++)
-    {
-        if ((p.InitialInventory[i].Inventory != None) && (p.InitialInventory[i].Count > 0))
+    if( sp != None ) {
+        for (i=0; i<ArrayCount(sp.InitialInventory); i++)
         {
-            if( p.InitialInventory[i].Inventory.Class == c ) return True;
+            if ((sp.InitialInventory[i].Inventory != None) && (sp.InitialInventory[i].Count > 0))
+            {
+                if( sp.InitialInventory[i].Inventory.Class == c ) return True;
+            }
         }
     }
     return p.FindInventoryType(c) != None;
+}
+
+function bool HasMeleeWeapon(Pawn p)
+{
+    return HasItem(p, class'WeaponBaton')
+        || HasItem(p, class'WeaponCombatKnife')
+        || HasItem(p, class'WeaponCrowbar')
+        || HasItem(p, class'WeaponSword')
+        || HasItem(p, class'WeaponNanoSword');
+}
+
+function bool IsMeleeWeapon(Inventory item)
+{
+    return item.IsA('WeaponBaton')
+        || item.IsA('WeaponCombatKnife')
+        || item.IsA('WeaponCrowbar')
+        || item.IsA('WeaponSword')
+        || item.IsA('WeaponNanoSword');
 }
 
 function bool SkipActorBase(Actor a)
@@ -116,9 +136,9 @@ function bool SkipActor(Actor a, name classname)
     if( SkipActorBase(a) || ( ! a.IsA(classname) ) ) {
         return true;
     }
-    for(i=0; i < ArrayCount(skipactor_types); i++) {
-        if(skipactor_types[i] == None) break;
-        if( a.IsA(skipactor_types[i].name) ) return true;
+    for(i=0; i < ArrayCount(_skipactor_types); i++) {
+        if(_skipactor_types[i] == None) break;
+        if( a.IsA(_skipactor_types[i].name) ) return true;
     }
     return false;
 }
@@ -255,6 +275,52 @@ function SetActorScale(Actor a, float scale)
     a.DrawScale = scale;
     a.SetLocation(newloc);
     a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
+}
+
+function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist)
+{
+    local PathNode p;
+    local int i, num, slot;
+    local float dist;
+
+    if( maxdist <= mindist )
+        maxdist = 9999999;
+
+    foreach AllActors(class'PathNode', p) {
+        dist = VSize(p.Location-target);
+        if( dist < mindist ) continue;
+        if( dist > maxdist ) continue;
+        num++;
+    }
+    slot = rng(num);
+    foreach AllActors(class'PathNode', p) {
+        dist = VSize(p.Location-target);
+        if( dist < mindist ) continue;
+        if( dist > maxdist ) continue;
+        if(i==slot) {
+            return p.Location;
+        }
+        i++;
+    }
+}
+
+function vector GetCloserPosition(vector target, vector current)
+{
+    local PathNode p;
+    local float dist, maxdist, farthest_dist, dist_move;
+    local vector farthest;
+
+    maxdist = VSize(target-current);
+    farthest = current;
+    foreach AllActors(class'PathNode', p) {
+        dist = VSize(target-p.Location);
+        dist_move = VSize(p.Location-current);//make sure the distance that we're moving is shorter than the distance to the target (aka move forwards, not to the opposite side)
+        if( dist > farthest_dist && dist < maxdist && dist > maxdist/2 && dist > dist_move ) {
+            farthest_dist = dist;
+            farthest = p.Location;
+        }
+    }
+    return farthest;
 }
 
 function Vector GetCenter(Actor test)

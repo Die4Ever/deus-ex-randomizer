@@ -13,7 +13,7 @@ var transient private int CrcTable[256]; // for string hashing to do more stable
 var transient DXRBase modules[32];
 var transient int num_modules;
 
-var config class<DXRBase> modules_to_load[31];// 1 less than the modules array, because we always load the DXRFlags module
+var config string modules_to_load[31];// 1 less than the modules array, because we always load the DXRFlags module
 var config int config_version;
 
 function SetdxInfo(DeusExLevelInfo i)
@@ -62,23 +62,27 @@ function CheckConfig()
     local DXREntranceRando compile3;
     local DXRKillBobPage compile4;
 
-    if( config_version == 0 ) {
+    if( config_version < 4 ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
-            modules_to_load[i] = None;
+            modules_to_load[i] = "";
         }
 
         i=0;
-        modules_to_load[i++] = class'DXRKeys';
-        modules_to_load[i++] = class'DXREnemies';
-        modules_to_load[i++] = class'DXRSkills';
-        modules_to_load[i++] = class'DXRPasswords';
-        modules_to_load[i++] = class'DXRAugmentations';
-        modules_to_load[i++] = class'DXRSwapItems';
-        modules_to_load[i++] = class'DXRReduceItems';
-        modules_to_load[i++] = class'DXRNames';
-        modules_to_load[i++] = class'DXRFixup';
-        modules_to_load[i++] = class'DXRAutosave';
-        modules_to_load[i++] = class'DXRMemes';
+        modules_to_load[i++] = "DXRKeys";
+        modules_to_load[i++] = "DXREnemies";
+        modules_to_load[i++] = "DXRSkills";
+        modules_to_load[i++] = "DXRPasswords";
+        modules_to_load[i++] = "DXRAugmentations";
+        modules_to_load[i++] = "DXRSwapItems";
+        modules_to_load[i++] = "DXRReduceItems";
+        modules_to_load[i++] = "DXRNames";
+        modules_to_load[i++] = "DXRFixup";
+        modules_to_load[i++] = "DXRAutosave";
+        modules_to_load[i++] = "DXRMemes";
+        modules_to_load[i++] = "DXREntranceRando";
+        modules_to_load[i++] = "DXRHordeMode";
+        modules_to_load[i++] = "DXRKillBobPage";
+        modules_to_load[i++] = "DXREnemyRespawn";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         config_version = class'DXRFlags'.static.VersionNumber();
@@ -120,9 +124,11 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
 function LoadModules()
 {
     local int i;
+    local class<Actor> c;
     for( i=0; i < ArrayCount( modules_to_load ); i++ ) {
-        if( modules_to_load[i] == None ) continue;
-        LoadModule(modules_to_load[i]);
+        if( modules_to_load[i] == "" ) continue;
+        c = flags.GetClassFromString(modules_to_load[i], class'DXRBase');
+        LoadModule( class<DXRBase>(c) );
     }
     RunTests();
 }
@@ -299,15 +305,25 @@ function l(string message)
 
 function RunTests()
 {
-    local int i, results;
+    local int i, results, failures;
     for(i=0; i<num_modules; i++) {
         results = modules[i].RunTests();
         if( results > 0 ) {
-            l( modules[i] @ results $ " tests failed!" );
-            Player.ClientMessage( modules[i].Class @ results $ " tests failed!" );
+            failures++;
+            player.ShowHud(true);
+            l( "ERROR: " $ modules[i] @ results $ " tests failed!" );
+            Player.ClientMessage( "ERROR: " $ modules[i].Class @ results $ " tests failed!" );
         }
         else
             l( modules[i] $ " passed tests!" );
+    }
+
+    if( failures == 0 ) {
+        l( "all tests passed!" );
+    } else {
+        player.ShowHud(true);
+        l( "ERROR: " $ failures $ " modules failed tests!" );
+        Player.ClientMessage( "ERROR: " $ failures $ " modules failed tests!" );
     }
 }
 

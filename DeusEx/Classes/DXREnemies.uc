@@ -3,79 +3,107 @@ class DXREnemies extends DXRActorsBase;
 var config int chance_clone_nonhumans;
 var config int enemy_multiplier;
 
-struct RandomWeaponStruct { var class<Weapon> type; var int chance; };
+struct RandomWeaponStruct { var string type; var int chance; };
+struct _RandomWeaponStruct { var class<DeusExWeapon> type; var int chance; };
 var config RandomWeaponStruct randommelees[8];
+var _RandomWeaponStruct _randommelees[8];
 var config RandomWeaponStruct randomweapons[32];
+var _RandomWeaponStruct _randomweapons[32];
 
-struct RandomEnemyStruct { var class<ScriptedPawn> type; var int chance; };
+struct RandomEnemyStruct { var string type; var int chance; };
+struct _RandomEnemyStruct { var class<ScriptedPawn> type; var int chance; };
 var config RandomEnemyStruct randomenemies[32];
+var _RandomEnemyStruct _randomenemies[32];
 
 var config name defaultOrders;
 
 function CheckConfig()
 {
     local int i;
-    if( config_version == 0 ) {
+    local class<Actor> a;
+    if( config_version < 4 ) {
         chance_clone_nonhumans = 70;
         enemy_multiplier = 1;
 
         for(i=0; i < ArrayCount(randommelees); i++ ) {
-            randommelees[i].type = None;
+            randommelees[i].type = "";
             randommelees[i].chance = 0;
         }
         for(i=0; i < ArrayCount(randomenemies); i++ ) {
-            randomenemies[i].type = None;
-            randomenemies[i].chance = 0;
-            randomenemies[i].type = None;
+            randomweapons[i].type = "";
+            randomweapons[i].chance = 0;
+            randomenemies[i].type = "";
             randomenemies[i].chance = 0;
         }
 
-        AddRandomEnemyType(class'ThugMale', 10);
-        AddRandomEnemyType(class'ThugMale2', 10);
-        AddRandomEnemyType(class'ThugMale3', 10);
-        AddRandomEnemyType(class'Greasel', 8);
-        AddRandomEnemyType(class'Gray', 4);
-        AddRandomEnemyType(class'Karkian', 4);
-        AddRandomEnemyType(class'SpiderBot', 8);
-        AddRandomEnemyType(class'MilitaryBot', 4);
-        AddRandomEnemyType(class'SpiderBot2', 4);
-        AddRandomEnemyType(class'SecurityBot2', 4);
-        AddRandomEnemyType(class'SecurityBot3', 4);
-        AddRandomEnemyType(class'SecurityBot4', 4);
+        AddRandomEnemyType("ThugMale", 10);
+        AddRandomEnemyType("ThugMale2", 10);
+        AddRandomEnemyType("ThugMale3", 10);
+        AddRandomEnemyType("Greasel", 6);
+        AddRandomEnemyType("Gray", 3);
+        AddRandomEnemyType("Karkian", 3);
+        AddRandomEnemyType("SpiderBot", 6);
+        AddRandomEnemyType("MilitaryBot", 3);
+        AddRandomEnemyType("SpiderBot2", 3);
+        AddRandomEnemyType("SecurityBot2", 3);
+        AddRandomEnemyType("SecurityBot3", 3);
+        AddRandomEnemyType("SecurityBot4", 3);
 
-        AddRandomWeapon(class'WeaponPistol', 11);
-        AddRandomWeapon(class'WeaponAssaultGun', 11);
-        AddRandomWeapon(class'WeaponMiniCrossbow', 11);
-        AddRandomWeapon(class'WeaponGEPGun', 4);
-        AddRandomWeapon(class'WeaponAssaultShotgun', 5);
-        AddRandomWeapon(class'WeaponEMPGrenade', 5);
-        AddRandomWeapon(class'WeaponFlamethrower', 4);
-        AddRandomWeapon(class'WeaponGasGrenade', 5);
-        AddRandomWeapon(class'WeaponHideAGun', 5);
-        AddRandomWeapon(class'WeaponLAM', 5);
-        AddRandomWeapon(class'WeaponLAW', 4);
-        AddRandomWeapon(class'WeaponNanoVirusGrenade', 5);
-        AddRandomWeapon(class'WeaponPepperGun', 5);
-        AddRandomWeapon(class'WeaponPlasmaRifle', 5);
-        AddRandomWeapon(class'WeaponRifle', 5);
-        AddRandomWeapon(class'WeaponSawedOffShotgun', 5);
-        AddRandomWeapon(class'WeaponShuriken', 5);
+        AddRandomWeapon("WeaponPistol", 11);
+        AddRandomWeapon("WeaponAssaultGun", 11);
+        AddRandomWeapon("WeaponMiniCrossbow", 11);
+        AddRandomWeapon("WeaponGEPGun", 4);
+        AddRandomWeapon("WeaponAssaultShotgun", 5);
+        AddRandomWeapon("WeaponEMPGrenade", 5);
+        AddRandomWeapon("WeaponFlamethrower", 4);
+        AddRandomWeapon("WeaponGasGrenade", 5);
+        AddRandomWeapon("WeaponHideAGun", 5);
+        AddRandomWeapon("WeaponLAM", 5);
+        AddRandomWeapon("WeaponLAW", 4);
+        AddRandomWeapon("WeaponNanoVirusGrenade", 5);
+        AddRandomWeapon("WeaponPepperGun", 5);
+        AddRandomWeapon("WeaponPlasmaRifle", 5);
+        AddRandomWeapon("WeaponRifle", 5);
+        AddRandomWeapon("WeaponSawedOffShotgun", 5);
+        AddRandomWeapon("WeaponShuriken", 5);
 
-        AddRandomMelee(class'WeaponBaton', 25);
-        AddRandomMelee(class'WeaponCombatKnife', 25);
-        AddRandomMelee(class'WeaponCrowbar', 25);
-        AddRandomMelee(class'WeaponSword', 25);
+        AddRandomMelee("WeaponBaton", 25);
+        AddRandomMelee("WeaponCombatKnife", 25);
+        AddRandomMelee("WeaponCrowbar", 25);
+        AddRandomMelee("WeaponSword", 25);
 
         defaultOrders = 'Wandering';
     }
     Super.CheckConfig();
+
+    for(i=0; i < ArrayCount(randommelees); i++) {
+        if( randommelees[i].type != "" ) {
+            a = GetClassFromString(randommelees[i].type, class'DeusExWeapon');
+            _randommelees[i].type = class<DeusExWeapon>(a);
+            _randommelees[i].chance = randommelees[i].chance;
+        }
+    }
+    for(i=0; i < ArrayCount(randomweapons); i++) {
+        if( randomweapons[i].type != "" ) {
+            a = GetClassFromString(randomweapons[i].type, class'DeusExWeapon');
+            _randomweapons[i].type = class<DeusExWeapon>(a);
+            _randomweapons[i].chance = randomweapons[i].chance;
+        }
+    }
+    for(i=0; i < ArrayCount(randomenemies); i++) {
+        if( randomenemies[i].type != "" ) {
+            a = GetClassFromString(randomenemies[i].type, class'ScriptedPawn');
+            _randomenemies[i].type = class<ScriptedPawn>(a);
+            _randomenemies[i].chance = randomenemies[i].chance;
+        }
+    }
 }
 
-function AddRandomWeapon(class<Weapon> t, int c)
+function AddRandomWeapon(string t, int c)
 {
     local int i;
     for(i=0; i < ArrayCount(randomweapons); i++) {
-        if( randomweapons[i].type == None ) {
+        if( randomweapons[i].type == "" ) {
             randomweapons[i].type = t;
             randomweapons[i].chance = c;
             return;
@@ -83,11 +111,11 @@ function AddRandomWeapon(class<Weapon> t, int c)
     }
 }
 
-function AddRandomMelee(class<Weapon> t, int c)
+function AddRandomMelee(string t, int c)
 {
     local int i;
     for(i=0; i < ArrayCount(randommelees); i++) {
-        if( randommelees[i].type == None ) {
+        if( randommelees[i].type == "" ) {
             randommelees[i].type = t;
             randommelees[i].chance = c;
             return;
@@ -95,11 +123,11 @@ function AddRandomMelee(class<Weapon> t, int c)
     }
 }
 
-function AddRandomEnemyType(class<ScriptedPawn> t, int c)
+function AddRandomEnemyType(string t, int c)
 {
     local int i;
     for(i=0; i < ArrayCount(randomenemies); i++) {
-        if( randomenemies[i].type == None ) {
+        if( randomenemies[i].type == "" ) {
             randomenemies[i].type = t;
             randomenemies[i].chance = c;
             return;
@@ -144,7 +172,7 @@ function RandoEnemies(int percent)
 
         if( rng(100) >= percent ) continue;
 
-        for(i = rng(enemy_multiplier); i >= 0; i--) {
+        for(i = rng(enemy_multiplier*100+percent)/100; i >= 0; i--) {
             n = RandomEnemy(p, percent);
             if( newsp == None ) newsp = n;
         }
@@ -157,8 +185,8 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
     local ScriptedPawn n;
     local int r, i;
     r = initchance();
-    for(i=0; i < ArrayCount(randomenemies); i++ ) {
-        if( chance( randomenemies[i].chance, r ) ) newclass = randomenemies[i].type;
+    for(i=0; i < ArrayCount(_randomenemies); i++ ) {
+        if( chance( _randomenemies[i].chance, r ) ) newclass = _randomenemies[i].type;
     }
 
     chance_remaining(r);// else keep the same class
@@ -193,14 +221,14 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     }
     if( newclass == None ) newclass = p.class;
     radius = p.CollisionRadius;
-    loc_offset = vect( 3, 3, 0);
-    loc_offset.X = float(rng(30000))/10000.0 * Sqrt(float(enemy_multiplier));
-    loc_offset.Y = float(rng(30000))/10000.0 * Sqrt(float(enemy_multiplier));
-    if( rng(2) == 0 ) loc_offset.X *= -1;
-    if( rng(2) == 0 ) loc_offset.Y *= -1;
-    loc = p.Location + (radius*loc_offset);
-    // find a different location?
-    n = Spawn(newclass,,, loc );
+    loc_offset = vect( 3, 3, 5);
+    for(i=0; i<10; i++) {
+        loc_offset.X = rngfn() * 5 * Sqrt(float(enemy_multiplier));
+        loc_offset.Y = rngfn() * 5 * Sqrt(float(enemy_multiplier));
+        loc = p.Location + (radius*loc_offset);
+        n = Spawn(newclass,,, loc );
+        if( n != None ) break;
+    }
     if( n == None ) {
         l("failed to clone "$ActorToString(p)$" into class "$newclass$" into "$loc);
         return None;
@@ -236,6 +264,8 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
 
     n.Orders = defaultOrders;
     n.HomeTag = 'Start';
+    n.InitializeInventory();
+    n.InitializeAlliances();
 
     RandomizeSize(n);
 
@@ -244,59 +274,68 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
 
 function RandomizeSP(ScriptedPawn p, int percent)
 {
-    local class<Weapon> wclass;
-    local Weapon w;
-    local int r, i;
-
     if( p == None ) return;
 
     p.SurprisePeriod *= float(rng(100)/100)+0.4;
 
     if( IsHuman(p) == False ) return; // only give random weapons to humans
+    if( p.IsA('MJ12Commando') ) return;
 
+    GiveRandomWeapon(p);
+    GiveRandomMeleeWeapon(p);
+    p.SetupWeapon(false);
+}
+
+function GiveRandomWeapon(Pawn p)
+{
+    local class<DeusExWeapon> wclass;
+    local Ammo a;
+    local DeusExWeapon w;
+    local int r, i;
     r = initchance();
-    for(i=0; i < ArrayCount(randomweapons); i++ ) {
-        if( chance( randomweapons[i].chance, r ) ) wclass = randomweapons[i].type;
+    for(i=0; i < ArrayCount(_randomweapons); i++ ) {
+        if( chance( _randomweapons[i].chance, r ) ) wclass = _randomweapons[i].type;
     }
+
+    if( HasItem(p, wclass) )
+        return;
 
     w = Spawn(wclass, p);
     w.GiveTo(p);
     w.SetBase(p);
 
     if( w.AmmoName != None ) {
-        w.AmmoType = spawn(w.AmmoName);
+        a = spawn(w.AmmoName);
+        w.AmmoType = a;
         w.AmmoType.InitialState='Idle2';
         w.AmmoType.GiveTo(p);
         w.AmmoType.SetBase(p);
     }
 
-    GiveRandomMeleeWeapon(p);
-
-    p.SetupWeapon(false);
+    for(i=0; i < ArrayCount(w.AmmoNames); i++) {
+        if(rng(3) == 0 && w.AmmoNames[i] != None) {
+            a = spawn(w.AmmoNames[i]);
+            a.GiveTo(p);
+            a.SetBase(p);
+        }
+    }
 }
 
-function GiveRandomMeleeWeapon(ScriptedPawn p)
+function GiveRandomMeleeWeapon(Pawn p)
 {
     local class<Weapon> wclass;
     local Weapon w;
     local int r, i;
 
-    if
-    (
-        HasItem(p, class'WeaponBaton')
-        || HasItem(p, class'WeaponCombatKnife')
-        || HasItem(p, class'WeaponCrowbar')
-        || HasItem(p, class'WeaponSword')
-        || HasItem(p, class'WeaponNanoSword')
-    )
+    if(HasMeleeWeapon(p))
         return;
 
     r = initchance();
-    for(i=0; i < ArrayCount(randommelees); i++ ) {
-        if( randommelees[i].type == None ) continue;
-        if( chance( randommelees[i].chance, r ) ) wclass = randommelees[i].type;
+    for(i=0; i < ArrayCount(_randommelees); i++ ) {
+        if( _randommelees[i].type == None ) continue;
+        if( chance( _randommelees[i].chance, r ) ) wclass = _randommelees[i].type;
 
-        if( HasItem(p, randommelees[i].type) ) {
+        if( HasItem(p, _randommelees[i].type) ) {
             chance_remaining(r);
             return;
         }
@@ -324,4 +363,28 @@ function RandomizeSize(Actor a)
         p.carriedDecoration = carried;
         p.PutCarriedDecorationInHand();
     }
+}
+
+function int RunTests()
+{
+    local int results, i, total;
+    results = Super.RunTests();
+
+    total=0;
+    for(i=0; i < ArrayCount(randomenemies); i++ ) {
+        total += randomenemies[i].chance;
+    }
+    results += test( total <= 100, "config randomenemies chances, check total "$total);
+    total=0;
+    for(i=0; i < ArrayCount(randomweapons); i++ ) {
+        total += randomweapons[i].chance;
+    }
+    results += test( total <= 100, "config randomweapons chances, check total "$total);
+    total=0;
+    for(i=0; i < ArrayCount(randommelees); i++ ) {
+        total += randommelees[i].chance;
+    }
+    results += test( total <= 100, "config randommelees chances, check total "$total);
+
+    return results;
 }
