@@ -305,15 +305,25 @@ function l(string message)
 
 function RunTests()
 {
-    local int i, results;
+    local int i, results, failures;
     for(i=0; i<num_modules; i++) {
         results = modules[i].RunTests();
         if( results > 0 ) {
-            l( modules[i] @ results $ " tests failed!" );
-            Player.ClientMessage( modules[i].Class @ results $ " tests failed!" );
+            failures++;
+            player.ShowHud(true);
+            l( "ERROR: " $ modules[i] @ results $ " tests failed!" );
+            Player.ClientMessage( "ERROR: " $ modules[i].Class @ results $ " tests failed!" );
         }
         else
             l( modules[i] $ " passed tests!" );
+    }
+
+    if( failures == 0 ) {
+        l( "all tests passed!" );
+    } else {
+        player.ShowHud(true);
+        l( "ERROR: " $ failures $ " modules failed tests!" );
+        Player.ClientMessage( "ERROR: " $ failures $ " modules failed tests!" );
     }
 }
 

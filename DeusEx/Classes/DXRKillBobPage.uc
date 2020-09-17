@@ -140,7 +140,7 @@ function NYC2_OpenWorld()
             break;
         case "03_NYC_AIRFIELD":
             foreach AllActors(class'BlackHelicopter', h)
-				h.EnterWorld();
+                h.EnterWorld();
             break;
     }
 }

@@ -15,6 +15,7 @@ var config int early_end_wave_enemies;
 var config int items_per_wave;
 var config float difficulty_per_wave;
 var config float difficulty_first_wave;
+var config int wine_bottles_per_enemy;
 
 struct EnemyChances {
     var string type;
@@ -47,6 +48,7 @@ function CheckConfig()
         items_per_wave = 25;
         difficulty_per_wave = 1.5;
         difficulty_first_wave = 2;
+        wine_bottles_per_enemy = 2;
         for(i=0; i < ArrayCount(enemies); i++) {
             enemies[i].type = "";
             enemies[i].chance = 0;
@@ -492,8 +494,9 @@ function float GenerateEnemy(DXREnemies dxre)
 
 function GiveRandomItems(ScriptedPawn p)
 {
-    local Inventory item;
+    local DeusExPickup item;
     item = Spawn(class'WineBottle', p);// this is how Paris works in real life, right?
+    item.numCopies = wine_bottles_per_enemy;
     item.GiveTo(p);
     item.SetBase(p);
 }
