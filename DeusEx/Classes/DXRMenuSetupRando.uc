@@ -134,14 +134,14 @@ function CreateControls()
     GameMode = CreateEnum(row++, "", "Choose a game mode!", btnGameMode);
 
     i=0;
-    btnRandoDoors.values[i++] = "Some Doors Destructible or Pickable";
-    btnRandoDoors.values[i++] = "Some Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "Some Doors Destructible";
-    btnRandoDoors.values[i++] = "Some Doors Pickable";
     btnRandoDoors.values[i++] = "Key-Only Doors Destructible or Pickable";
     btnRandoDoors.values[i++] = "Key-Only Doors Destructible & Pickable";
     btnRandoDoors.values[i++] = "Key-Only Doors Destructible";
     btnRandoDoors.values[i++] = "Key-Only Doors Pickable";
+    btnRandoDoors.values[i++] = "Some Doors Destructible or Pickable";
+    btnRandoDoors.values[i++] = "Some Doors Destructible & Pickable";
+    btnRandoDoors.values[i++] = "Some Doors Destructible";
+    btnRandoDoors.values[i++] = "Some Doors Pickable";
     btnRandoDoors.values[i++] = "Undefeatable Doors Destructible or Pickable";
     btnRandoDoors.values[i++] = "Undefeatable Doors Destructible & Pickable";
     btnRandoDoors.values[i++] = "Undefeatable Doors Destructible";
