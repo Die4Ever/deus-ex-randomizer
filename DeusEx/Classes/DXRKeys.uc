@@ -202,6 +202,7 @@ function AdjustKeyOnlyDoors(int exclusivitymode, int doorspickable, int doorsdes
 
     foreach AllActors(class'DeusExMover', d)
     {
+        if( d.bHighlight == false || d.bFrobbable == false ) continue;
         if( d.KeyIDNeeded == 'None' || d.bPickable || d.bBreakable ) continue;
         AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
     }

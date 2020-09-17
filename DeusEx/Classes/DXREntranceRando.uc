@@ -134,6 +134,11 @@ function bool IsConnectionValid(int missionNum, MapTransfer a, MapTransfer b)
 {
     local int i;
 
+    if( a.mapname == b.mapname && a.inTag == b.inTag && a.outTag == b.outTag ) {
+        err("IsConnectionValid got duplicate MapTransfers? mapname: " $ a.mapname $", inTag: " $ a.inTag $", outTag: " $a.outTag);
+        return False;
+    }
+
     if ( IsDeadEnd(a.mapname) && IsDeadEnd(b.mapname) )
     {
         return False;
@@ -212,6 +217,7 @@ function bool ValidateConnections()
     
     //Theoretically I should probably actually check to see if the maps match,
     //but this is fairly safe...
+    l("ValidateConnections visitable: " $ visitable $", numMaps: " $ numMaps);
     return visitable == numMaps;
 }
 
@@ -358,6 +364,9 @@ function _GenerateConnections(int missionNum)
                 break;
             }
         }
+        if( i >= maxAttempts ) {
+            err("failed to find valid connection");
+        }
         xfers[destIdx].used = True;
         xfersUsed++;
     
@@ -385,7 +394,7 @@ function AddDoubleXfer(string mapname_a, string inTag, string mapname_b, string 
 
 function RandoMission2()
 {
-    AddDoubleXfer("02_NYC_BatteryPark","ToBatteryPark","02_NYC_Street", "ToStreet");
+    //AddDoubleXfer("02_NYC_BatteryPark","ToBatteryPark","02_NYC_Street", "ToStreet");//maybe getting to the main hub area should be unchanged
     AddDoubleXfer("02_NYC_Bar","ToBarBackEntrance","02_NYC_Street","FromBarBackEntrance");
     AddDoubleXfer("02_NYC_Bar","ToBarFrontEntrance","02_NYC_Street","FromBarFrontEntrance");
     AddDoubleXfer("02_NYC_FreeClinic","FromStreet","02_NYC_Street","FromClinic");
@@ -480,9 +489,7 @@ function EntranceRando(int missionNum)
             break;
         case 15:
             break;
-    
     }
-    ApplyEntranceRando();
 }
 
 
@@ -549,14 +556,24 @@ function AdjustTeleporter(NavigationPoint p)
 
 function FirstEntry()
 {
-    
     Super.FirstEntry();
 
     if( dxr.flags.gamemode != 1 ) return;
     
     //Randomize entrances for this mission
     EntranceRando(dxr.dxInfo.missionNumber);
+    ApplyEntranceRando();
+}
 
+function LogConnections()
+{
+    local int i;
+    for (i = 0;i<numConns;i++)
+    {
+        l("conns["$i$"]:");
+        l( "    "$ conns[i].a.mapname $"#"$ conns[i].a.outTag $" goes to "$ conns[i].b.mapname $"#"$ conns[i].b.inTag );
+        l( "    "$ conns[i].b.mapname $"#"$ conns[i].b.outTag $" goes to "$ conns[i].a.mapname $"#"$ conns[i].a.inTag );
+    }
 }
 
 function int RunTests()
@@ -566,8 +583,8 @@ function int RunTests()
 
     numXfers = 0;
 
-    AddDoubleXfer("wanchai_market","to_tong","tong","from_wanchai");
-    AddDoubleXfer("wanchai_market","to_versalife","versalife","from_wanchai");
+    AddDoubleXfer("wanchai_market","to_tong","tong","tong_from_wanchai");
+    AddDoubleXfer("wanchai_market","to_versalife","versalife","versalife_from_wanchai");
     AddDoubleXfer("versalife","to_versalife2","versalife2","from_versalife");
     
     conns[0].a = xfers[0];
@@ -575,7 +592,13 @@ function int RunTests()
     conns[1].a = xfers[1];
     conns[1].b = xfers[0];
     numConns = 2;
+    LogConnections();
     results += testbool(ValidateConnections(), false, "ValidateConnections test 1");
+
+    //need tests for 2 things linking to the same teleporter, maps linking to themselves, short isolated loops, testing that all maps are reachable
+    //need to log the results
+    //I just got warehouse -> sewers -> bar -> warehouse
+    //also a weird one where walking the wrong way after teleporting took me somewhere else probably because both the in and out teleporter were tagged?
 
     conns[0].a = xfers[0];
     conns[0].b = xfers[1];
@@ -584,6 +607,7 @@ function int RunTests()
     conns[2].a = xfers[4];
     conns[2].b = xfers[5];
     numConns = 3;
+    LogConnections();
     results += testbool(ValidateConnections(), true, "ValidateConnections test 2");
 
     conns[0].a = xfers[5];
@@ -593,6 +617,7 @@ function int RunTests()
     conns[2].a = xfers[1];
     conns[2].b = xfers[0];
     numConns = 3;
+    LogConnections();
     results += testbool(ValidateConnections(), true, "ValidateConnections test 3");
 
     conns[0].a = xfers[0];
@@ -600,15 +625,21 @@ function int RunTests()
     conns[1].a = xfers[4];
     conns[1].b = xfers[5];
     numConns = 2;
+    LogConnections();
     results += testbool(ValidateConnections(), false, "ValidateConnections island test");
 
+    dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
     GenerateConnections(3);
+    LogConnections();
     results += testbool(ValidateConnections(), true, "AddDoubleXfer validation");
 
     for(i=0; i <= 100; i++) {
+        dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
         EntranceRando(i);
-        if( numXfers > 0 )
+        if( numXfers > 0 ) {
+            LogConnections();
             results += testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation");
+        }
     }
 
     numXfers = 0;

@@ -125,32 +125,32 @@ function CreateControls()
 
     i=0;
     btnGameMode.values[i++] = "Original Story";
-    btnGameMode.values[i++] = "Original Story, Rearranged Levels (Beta)";
     btnGameMode.values[i++] = "Horde Mode (Beta)";
-    btnGameMode.values[i++] = "Kill Bob Page (Beta)";
+    btnGameMode.values[i++] = "Original Story, Rearranged Levels (Alpha)";
+    //btnGameMode.values[i++] = "Kill Bob Page (Alpha)";
     /*btnGameMode.values[i++] = "How About Some Soy Food?";
     btnGameMode.values[i++] = "Horde Mode";//defending the paris cathedral could be really cool
     btnGameMode.values[i++] = "Stick With the Prod";*/
     GameMode = CreateEnum(row++, "", "Choose a game mode!", btnGameMode);
 
     i=0;
-    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible & Pickable";
+    btnRandoDoors.values[i++] = "Some Doors Destructible or Pickable";
+    btnRandoDoors.values[i++] = "Some Doors Destructible & Pickable";
+    btnRandoDoors.values[i++] = "Some Doors Destructible";
+    btnRandoDoors.values[i++] = "Some Doors Pickable";
+    btnRandoDoors.values[i++] = "Key-Only Doors Destructible or Pickable";
+    btnRandoDoors.values[i++] = "Key-Only Doors Destructible & Pickable";
+    btnRandoDoors.values[i++] = "Key-Only Doors Destructible";
+    btnRandoDoors.values[i++] = "Key-Only Doors Pickable";
     btnRandoDoors.values[i++] = "Undefeatable Doors Destructible or Pickable";
+    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible & Pickable";
     btnRandoDoors.values[i++] = "Undefeatable Doors Destructible";
     btnRandoDoors.values[i++] = "Undefeatable Doors Pickable";
     btnRandoDoors.values[i++] = "Doors Unchanged";
-    btnRandoDoors.values[i++] = "Key-Only Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "Key-Only Doors Destructible or Pickable";
-    btnRandoDoors.values[i++] = "Key-Only Doors Destructible";
-    btnRandoDoors.values[i++] = "Key-Only Doors Pickable";
     /*btnRandoDoors.values[i++] = "All Doors Destructible & Pickable";
     btnRandoDoors.values[i++] = "All Doors Destructible or Pickable";
     btnRandoDoors.values[i++] = "All Doors Destructible";
     btnRandoDoors.values[i++] = "All Doors Pickable";*/
-    btnRandoDoors.values[i++] = "Some Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "Some Doors Destructible or Pickable";
-    btnRandoDoors.values[i++] = "Some Doors Destructible";
-    btnRandoDoors.values[i++] = "Some Doors Pickable";
     RandoDoors = CreateEnum(row++, "", "Additional options to get through doors that normally can't be destroyed or lockpicked.", btnRandoDoors);
 
     btnRandoKeys.values[0] = "On";
@@ -438,7 +438,7 @@ function ProcessAction(String actionKey)
 
         if( sgamemode == "Original Story" )
             f.gamemode = 0;
-        else if( sgamemode == "Original Story, Rearranged Levels (Beta)" )
+        else if( sgamemode == "Original Story, Rearranged Levels (Alpha)" )
             f.gamemode = 1;
         else if( sgamemode == "Horde Mode (Beta)" )
             f.gamemode = 2;
