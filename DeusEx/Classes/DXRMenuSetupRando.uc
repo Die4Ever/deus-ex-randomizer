@@ -81,7 +81,7 @@ function DXRando InitDxr()
 
 function CheckConfig()
 {
-    if( config_version == 0 ) {
+    if( config_version < 4 ) {
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         config_version = class'DXRFlags'.static.VersionNumber();

@@ -72,7 +72,7 @@ function InitDefaults()
 
 function CheckConfig()
 {
-    if( config_version == 0 ) {
+    if( config_version < 4 ) {
     }
     Super.CheckConfig();
 }

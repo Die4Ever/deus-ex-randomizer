@@ -5,7 +5,7 @@ var config string swap_actors[16];
 function CheckConfig()
 {
     local int i;
-    if( config_version == 0 ) {
+    if( config_version < 4 ) {
         for(i=0; i < ArrayCount(swap_actors); i++) {
             swap_actors[i] = "";
         }

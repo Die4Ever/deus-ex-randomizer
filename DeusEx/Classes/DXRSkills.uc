@@ -12,7 +12,7 @@ var config SkillCostMultiplier SkillCostMultipliers[16];
 function CheckConfig()
 {
     local int i;
-    if( config_version == 0 ) {
+    if( config_version < 4 ) {
         for(i=0; i < ArrayCount(SkillCostMultipliers); i++) {
             SkillCostMultipliers[i].type = "";
             SkillCostMultipliers[i].percent = 100;

@@ -62,7 +62,7 @@ function CheckConfig()
     local DXREntranceRando compile3;
     local DXRKillBobPage compile4;
 
-    if( config_version == 0 ) {
+    if( config_version < 4 ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }

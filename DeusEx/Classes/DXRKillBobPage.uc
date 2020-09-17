@@ -7,7 +7,7 @@ var ScriptedPawn BobPage;
 
 function CheckConfig()
 {
-    if( config_version == 0 ) {
+    if( config_version < 4 ) {
         BobPageClass = "BobPage";
         minDistance = 5000;
         endgamemap = "99_Endgame4.dx";

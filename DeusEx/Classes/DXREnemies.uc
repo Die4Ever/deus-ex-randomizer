@@ -21,7 +21,7 @@ function CheckConfig()
 {
     local int i;
     local class<Actor> a;
-    if( config_version == 0 ) {
+    if( config_version < 4 ) {
         chance_clone_nonhumans = 70;
         enemy_multiplier = 1;
 

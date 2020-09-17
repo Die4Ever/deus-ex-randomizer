@@ -26,7 +26,7 @@ var config sMaxAmmo max_ammo[16];
 function CheckConfig()
 {
     local int i;
-    if( config_version == 0 ) {
+    if( config_version < 4 ) {
         for(i=0; i < ArrayCount(mission_scaling); i++) {
             mission_scaling[i] = 100;
         }

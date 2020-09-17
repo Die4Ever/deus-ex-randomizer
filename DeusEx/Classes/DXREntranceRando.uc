@@ -46,7 +46,7 @@ var config BanConnection BannedConnections[32];
 function CheckConfig()
 {
     local int i;
-    if( config_version == 0 ) {
+    if( config_version < 4 ) {
         for(i=0; i < ArrayCount(BannedConnections); i++) {
             BannedConnections[i].map_a = "";
             BannedConnections[i].map_b = "";
@@ -336,7 +336,7 @@ function _GenerateConnections(int missionNum)
     local int maxAttempts;
     local int i;
     
-    maxAttempts = 10;
+    maxAttempts = 20;
     
     for(i=0;i<numXfers;i++)
     {

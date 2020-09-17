@@ -36,7 +36,7 @@ var config ItemChances items[32];
 function CheckConfig()
 {
     local int i;
-    if( config_version == 0 ) {
+    if( config_version < 4 ) {
         time_between_waves = 95;
         time_before_damage = 180;
         damage_timer = 10;
