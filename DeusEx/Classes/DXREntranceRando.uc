@@ -563,6 +563,7 @@ function FirstEntry()
     //Randomize entrances for this mission
     EntranceRando(dxr.dxInfo.missionNumber);
     ApplyEntranceRando();
+    LogConnections();
 }
 
 function LogConnections()
@@ -581,6 +582,7 @@ function int RunTests()
     local int results, i;
     results = Super.RunTests();
 
+    if( dxr.flags.gamemode != 1 ) return results;
     numXfers = 0;
 
     AddDoubleXfer("wanchai_market","to_tong","tong","tong_from_wanchai");
