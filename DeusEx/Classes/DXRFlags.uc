@@ -121,7 +121,7 @@ function LoadFlags()
     }
 
     if(stored_version < flagsversion ) {
-        l("upgraded flags from v"$stored_version);
+        l("upgraded flags from "$stored_version$" to "$flagsversion);
         SaveFlags();
     }
 
@@ -194,14 +194,30 @@ function InitVersion()
     flagsversion = VersionNumber();
 }
 
+static function int VersionToInt(int major, int minor, int patch)
+{
+    local int ret;
+    ret = major*10000+minor*100+patch;
+    if( ret <= 10400 ) return minor;//v1.4 and earlier
+    return ret;
+}
+
+static function string VersionToString(int major, int minor, int patch)
+{
+    if( patch == 0 )
+        return "v" $ major $"."$ minor;
+    else
+        return "v" $ major $"."$ minor $"."$ patch;
+}
+
 static function int VersionNumber()
 {
-    return 4;
+    return VersionToInt(1, 4, 1);
 }
 
 static function string VersionString()
 {
-    return "v1.4";
+    return VersionToString(1, 4, 1);// $ " Beta";
 }
 
 function MaxRando()

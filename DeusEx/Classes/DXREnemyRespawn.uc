@@ -98,11 +98,11 @@ function AnyEntry()
 
     if( dxr.flags.enemyrespawn <= 0 ) return;
 
-    for(i=0; i < ArrayCount(enemies); i++) {
+    /*for(i=0; i < ArrayCount(enemies); i++) {
         if( enemies[i].sp == None || enemies[i].sp.health <= 0  ) {
             Respawn(enemies[i]);
         }
-    }
+    }*/
     SetTimer(1.0, true);
 }
 
@@ -130,8 +130,11 @@ function ScriptedPawn Respawn(out OriginalEnemy enemy)
     local ScriptedPawn p;
     local int i;
 
+    if( enemy.c == None ) return None;
     enemy.time_died = 0;
     p = Spawn(enemy.c,, enemy.tag, enemy.loc, enemy.rot);
+    if( p == None ) return None;
+
     enemy.sp = p;
     p.alliance = enemy.alliance;
     for(i=0; i < ArrayCount(p.InitialAlliances); i++) {

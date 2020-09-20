@@ -36,8 +36,8 @@ var config ItemChances items[32];
 function CheckConfig()
 {
     local int i;
-    if( config_version < 4 ) {
-        time_between_waves = 95;
+    if( config_version < class'DXRFlags'.static.VersionToInt(1, 4, 1) ) {
+        time_between_waves = 65;
         time_before_damage = 180;
         damage_timer = 10;
         time_before_teleport_enemies = 3;
@@ -119,7 +119,7 @@ function CheckConfig()
 
         i=0;
         items[i].type = "BioelectricCell";
-        items[i].chance = 10;
+        items[i].chance = 6;
         i++;
         items[i].type = "CrateExplosiveSmall";
         items[i].chance = 9;
@@ -128,16 +128,16 @@ function CheckConfig()
         items[i].chance = 10;
         i++;
         items[i].type = "WeaponGasGrenade";
-        items[i].chance = 6;
+        items[i].chance = 7;
         i++;
         items[i].type = "WeaponLAM";
-        items[i].chance = 6;
+        items[i].chance = 7;
         i++;
         items[i].type = "WeaponEMPGrenade";
-        items[i].chance = 6;
+        items[i].chance = 7;
         i++;
         items[i].type = "WeaponNanoVirusGrenade";
-        items[i].chance = 6;
+        items[i].chance = 7;
         i++;
         items[i].type = "FireExtinguisher";
         items[i].chance = 6;

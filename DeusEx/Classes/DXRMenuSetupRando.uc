@@ -115,8 +115,8 @@ function CreateControls()
     row = 0;
     editSeed = CreateEdit(row++, "Seed", "Enter a seed if you want to play the same game again.", "1234567890");
 
-    btnAutosave.values[0] = "First Entry";
-    btnAutosave.values[1] = "Every Entry";
+    btnAutosave.values[0] = "Every Entry";
+    btnAutosave.values[1] = "First Entry";
     //btnAutosave.values[0] = "Off";
     btnAutosave.values[2] = "Off";
     Autosave = CreateEnum(row++, "Autosave", "Saves the game in case you die!", btnAutosave);
@@ -175,7 +175,7 @@ function CreateControls()
     editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", "Maximum cost for skills in percentage of the original cost.", 300, 0, 500);
 
     editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 35, 0, 100);
-    editEnemyRespawn = CreateSlider(row++, "Enemy Respawn Seconds", "How many seconds for enemies to respawn. Leave blank or 0 to disable", 0, 0, 100);
+    editEnemyRespawn = CreateSlider(row++, "Enemy Respawn Seconds", "(Beta) How many seconds for enemies to respawn. Leave blank or 0 to disable", 0, 0, 100);
     editAmmo = CreateSlider(row++, "Ammo Drops %", "Make ammo more scarce.", 90);
     editMultitools = CreateSlider(row++, "Multitools Drops %", "Make multitools more scarce.", 80);
     editLockpicks = CreateSlider(row++, "Lockpicks Drops %", "Make lockpicks more scarce.", 80);

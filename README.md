@@ -15,7 +15,7 @@ Currently in v1.4, DXRando randomizes
 There are also settings for
 * new game modes!
     * Horde Mode is in beta and mostly I think it just needs balancing.
-    * Rearranged levels is in alpha and is incomplete.
+    * Rearranged Levels is in alpha and is incomplete.
 * making all doors that normally require a key also lockpickable/destructible
 * making all keypads hackable.
 * making enemies respawn
