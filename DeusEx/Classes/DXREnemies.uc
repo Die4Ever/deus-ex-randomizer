@@ -279,7 +279,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
     p.SurprisePeriod *= float(rng(100)/100)+0.4;
 
     if( IsHuman(p) == False ) return; // only give random weapons to humans
-    if( p.IsA('MJ12Commando') ) return;
+    if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
 
     GiveRandomWeapon(p);
     GiveRandomMeleeWeapon(p);

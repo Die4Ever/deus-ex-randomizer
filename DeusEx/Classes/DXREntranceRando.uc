@@ -592,7 +592,7 @@ function int RunTests()
     conns[1].a = xfers[1];
     conns[1].b = xfers[0];
     numConns = 2;
-    LogConnections();
+    //LogConnections();
     results += testbool(ValidateConnections(), false, "ValidateConnections test 1");
 
     //need tests for 2 things linking to the same teleporter, maps linking to themselves, short isolated loops, testing that all maps are reachable
@@ -607,7 +607,7 @@ function int RunTests()
     conns[2].a = xfers[4];
     conns[2].b = xfers[5];
     numConns = 3;
-    LogConnections();
+    //LogConnections();
     results += testbool(ValidateConnections(), true, "ValidateConnections test 2");
 
     conns[0].a = xfers[5];
@@ -617,7 +617,7 @@ function int RunTests()
     conns[2].a = xfers[1];
     conns[2].b = xfers[0];
     numConns = 3;
-    LogConnections();
+    //LogConnections();
     results += testbool(ValidateConnections(), true, "ValidateConnections test 3");
 
     conns[0].a = xfers[0];
@@ -625,19 +625,19 @@ function int RunTests()
     conns[1].a = xfers[4];
     conns[1].b = xfers[5];
     numConns = 2;
-    LogConnections();
+    //LogConnections();
     results += testbool(ValidateConnections(), false, "ValidateConnections island test");
 
     dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
     GenerateConnections(3);
-    LogConnections();
+    //LogConnections();
     results += testbool(ValidateConnections(), true, "AddDoubleXfer validation");
 
     for(i=0; i <= 100; i++) {
         dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
         EntranceRando(i);
         if( numXfers > 0 ) {
-            LogConnections();
+            //LogConnections();
             results += testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation");
         }
     }
