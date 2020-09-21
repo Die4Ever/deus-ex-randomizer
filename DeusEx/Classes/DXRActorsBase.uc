@@ -304,13 +304,14 @@ function vector GetRandomPosition(optional vector target, optional float mindist
     }
 }
 
-function vector GetCloserPosition(vector target, vector current)
+function vector GetCloserPosition(vector target, vector current, float maxdist)
 {
     local PathNode p;
-    local float dist, maxdist, farthest_dist, dist_move;
+    local float dist, farthest_dist, dist_move;
     local vector farthest;
 
-    maxdist = VSize(target-current);
+    if( maxdist == 0.0 || VSize(target-current) < maxdist )
+        maxdist = VSize(target-current);
     farthest = current;
     foreach AllActors(class'PathNode', p) {
         dist = VSize(target-p.Location);

@@ -1,22 +1,20 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
-for v1.4.1========================
+for v1.4.2========================
 teleporters have a bEnabled flag
 fix dupes like:
 DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKong_Storage#basement, changed to 06_HONGKONG_HELIBASE#Helibase
 DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKong_Storage#basement, changed to 06_HONGKONG_WANCHAI_CANAL#Street
 
-don't give WIB guns!
+you cannot climb out of 03_NYC_AirfieldHeliBase#FromOcean
+
+config for don't respawn classes
+config for horde mode map, starting position, DeusExMovers to make locked, actor classes to destroy (datalinks and stuff)
 
 for v1.4========================
-https://github.com/Die4Ever/deus-ex-randomizer/milestone/1
 
 nah said:
 "also ULevel::SpawnPlayActor also exposed a bNoColissionFail parameter, which is really handy/needed when you wanna replace any actors. some otherwise fail to spawn"
-
-x use minDamageThreshold of 60 for doors, it's what the seals in the ship use, door at the top of paris start is 75 though
-x -50 can be broken by master sniper, 60 can still be broken with dragoon's tooth sword, max low tech skill, and max combat strength aug, 75 cannot
-  -not just key-only doors or undefeatible doors, but all doors?
 
 I could make an AugSkill class to turn any skill into an augmentation (might need dummy child classes just due to the way the augmentation manager works)
     -look AugAqualung as an example, could easily adjust the player's skill level in state Active Begin and function Deactivate()
@@ -24,12 +22,7 @@ I could make an AugSkill class to turn any skill into an augmentation (might nee
     -use the augmentation level to give skill levels
     -might be OP if one player gets lucky and finds the hacking augmentation in a race
 
-randomly remove medbots and repair bots
-can/should I make it possible to not transmit the NSF signal at 04_NYC?
-check if I'm copying the bHidden flag for cloning enemies and keys
-
-x tooltips in the GUI? the controls screen does it, MenuUIWindow uses the FocusEnteredDescendant event and FocusLeftDescendant
-x rename MenuSetupRando.uc to DXRMenuSetup.uc and MenuScreenNewGameRando to DXRMenuScreenNewGame so they're grouped together with the other files
+randomly remove/move medbots and repair bots?
 
 add more tests? I should maybe make tests only run once per launch, maybe like on localURL == "DX" maybe the training area or liberty island cause some tests will need a world?
     -tests for ClassIsA, skill randomization, augs...
@@ -129,13 +122,6 @@ the output from that will fill the meat of the GetRandomActorClass function
 
 for v1.2========================
 
-x start randomizing enemies? only add enemies?
-
-x fix password generation for 14_VANDENBERG_SUB
-x- check if the match on the password is touching a letter or number
-
-x print out the flags when loading
-
 x autosave
 - MenuScreenSaveGame
 - DeusExSaveInfo
@@ -146,7 +132,6 @@ can I randomize computer skill requirements? I can randomize the EAccessLevel, b
 need a function for GiveRandomItem()
 need a function for CloneNanoKey() (based on Engine.Pickup.SpawnCopy? no, that's for respawning items)
 need to figure out how to modify conversations, datacubes, emails...
-x should meme up the endings too (more?)
 
 AI hearing and vision adjustment, enemy health
 rando dragoon's tooth sword? nerf it?
@@ -162,10 +147,6 @@ actor class also has these:
 exploded corpses drop keys?
 bIsItemGoal?
 should NanoKeys have buoyancy?
-what does minDamageThreshold do for doors? important doors shouldn't be breakable by the dragoon's tooth
--cameras have a minDamageThreshold of 50
-
-x I can use this for string hashing http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/crc32.html
 
 maybe I can rewrite this as a mutator?
 

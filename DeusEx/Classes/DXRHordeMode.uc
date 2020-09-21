@@ -16,6 +16,12 @@ var config int items_per_wave;
 var config float difficulty_per_wave;
 var config float difficulty_first_wave;
 var config int wine_bottles_per_enemy;
+var config name default_orders;
+var config name default_order_tag;
+var config string map_name;
+var config name remove_objects[12];
+var config name unlock_doors[8];
+var config name lock_doors[8];
 
 struct EnemyChances {
     var string type;
@@ -173,6 +179,32 @@ function CheckConfig()
         items[i].type = "AugmentationUpgradeCannister";
         items[i].chance = 3;
     }
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,2) ) {
+        map_name = "11_paris_cathedral";
+        default_orders = 'Attacking';
+        default_order_tag = '';
+
+        i=0;
+        remove_objects[i++] = 'MapExit';
+        remove_objects[i++] = 'ScriptedPawn';
+        remove_objects[i++] = 'DataLinkTrigger';
+        remove_objects[i++] = 'MapExit';
+        remove_objects[i++] = 'Teleporter';
+        remove_objects[i++] = 'SecurityCamera';
+        remove_objects[i++] = 'AutoTurret';
+
+        i=0;
+        lock_doors[i++] = 'BreakableGlass0';
+        lock_doors[i++] = 'BreakableGlass1';
+        lock_doors[i++] = 'BreakableGlass2';
+        lock_doors[i++] = 'BreakableGlass3';
+        lock_doors[i++] = 'DeusExMover8';
+        lock_doors[i++] = 'DeusExMover9';
+
+        i=0;
+        unlock_doors[i++] = 'DeusExMover19';
+    }
+    map_name = Caps(map_name);
     Super.CheckConfig();
 
     for(i=0; i < ArrayCount(enemies); i++) {
@@ -188,14 +220,15 @@ function AnyEntry()
     local DeusExMover d;
     local DXREnemies dxre;
     local Inventory item;
+    local int i;
 
     if( dxr.flags.gamemode != 2 ) return;
 
-    if( dxr.dxInfo.missionNumber>0 && dxr.localURL != "11_PARIS_CATHEDRAL" ) {
-        Level.Game.SendPlayer(dxr.player, "11_PARIS_CATHEDRAL");
+    if( dxr.dxInfo.missionNumber>0 && dxr.localURL != map_name ) {
+        Level.Game.SendPlayer(dxr.player, map_name);
         return;
     }
-    else if( dxr.localURL != "11_PARIS_CATHEDRAL" ) {
+    else if( dxr.localURL != map_name ) {
         return;
     }
 
@@ -213,7 +246,7 @@ function AnyEntry()
     item = Spawn(class'FireExtinguisher', dxr.player);
     item.GiveTo(dxr.player);
     item.SetBase(dxr.player);
-    dxr.Player.dataLinkPlay = Spawn(class'DataLinkPlay');//this prevents saving the game :)
+    dxr.Player.dataLinkPlay = Spawn(class'DataLinkPlay',, 'dummydatalink');//this prevents saving the game :)
 
     time_to_next_wave = time_between_waves;
 
@@ -221,38 +254,26 @@ function AnyEntry()
         t.bEnabled = false;// seems like teleporters are baked into the level's collision, so destroying them at runtime has no effect
     }
     foreach AllActors(class'Actor', a) {
-        if( a.IsA('MapExit')
-            || a.IsA('ScriptedPawn')
-            || a.IsA('DataLinkTrigger')
-            || a.IsA('MapExit')
-            || a.IsA('Teleporter')
-            || a.IsA('SecurityCamera')
-            || a.IsA('AutoTurret')
-        ){
-            a.Destroy();
+        for(i=0; i < ArrayCount(remove_objects); i++) {
+            if( a.IsA(remove_objects[i]) )
+                a.Destroy();
         }
     }
-    foreach AllActors(class'DeusExMover', d, 'cathedralgatekey') {
-        d.bLocked = false;
-    }
-    foreach AllActors(class'DeusExMover', d, 'BreakableGlass') {
-        if (
-            d.Name == 'BreakableGlass0'
-            || d.Name == 'BreakableGlass1'
-            || d.Name == 'BreakableGlass2'
-            || d.Name == 'BreakableGlass3'
-        ) d.bBreakable = false;
-    }
-    foreach AllActors(class'DeusExMover', d, 'DeusExMover') {
-        if (
-            d.Name == 'DeusExMover8'
-            || d.Name == 'DeusExMover9'
-        ) {
-            d.bBreakable = false;
-            d.bPickable = false;
-            d.bLocked = true;
+
+    foreach AllActors(class'DeusExMover', d) {
+        for(i=0; i < ArrayCount(unlock_doors); i++) {
+            if( d.Name == unlock_doors[i] )
+                d.bLocked = false;
+        }
+        for(i=0; i < ArrayCount(lock_doors); i++) {
+            if( d.Name == lock_doors[i] ) {
+                d.bBreakable = false;
+                d.bPickable = false;
+                d.bLocked = true;
+            }
         }
     }
+
     SetTimer(1.0, true);
 
     GenerateItems();
@@ -282,7 +303,7 @@ function InWaveTick()
 
     foreach AllActors(class'ScriptedPawn', p) {
         if( p.IsA('Animal') ) continue;
-        if( (time_in_wave+numScriptedPawns) % 5 == 0 ) p.SetOrders('Attacking');
+        if( (time_in_wave+numScriptedPawns) % 5 == 0 ) p.SetOrders(default_orders, default_order_tag);
         dist = VSize(p.Location-dxr.player.Location);
         if( dist > popin_dist ) {
             ratio = dist/popin_dist;
@@ -313,7 +334,7 @@ function InWaveTick()
         NotifyPlayerTimer(time_before_damage-time_in_wave, (time_before_damage-time_in_wave) $ " seconds until shocking.");
     }
     if( time_in_wave > time_before_teleport_enemies ) {
-        ComeCloser();
+        GetOverHere();
     }
 }
 
@@ -366,7 +387,7 @@ function EndWave()
     GenerateItems();
 }
 
-function ComeCloser()
+function GetOverHere()
 {
     local ScriptedPawn p;
     local int i, time_overdue;
@@ -379,13 +400,13 @@ function ComeCloser()
         if( p.IsA('Animal') ) continue;
 
         dist = VSize(dxr.player.Location-p.Location);
-        if( (time_in_wave+i) % 3 == 0 && p.CanSee(dxr.player) == false && dist > maxdist ) {
-            loc = GetCloserPosition(dxr.player.Location, p.Location);
+        if( (time_in_wave+i) % 7 == 0 && p.CanSee(dxr.player) == false && dist > maxdist ) {
+            loc = GetCloserPosition(dxr.player.Location, p.Location, maxdist*2);
             loc.X += rngfn() * 50;
             loc.Y += rngfn() * 50;
             p.SetLocation( loc );
         }
-        else if( (time_in_wave+i) % 7 == 0 && p.CanSee(dxr.player) == false && dist > maxdist*2 ) {
+        else if( (time_in_wave+i) % 13 == 0 && p.CanSee(dxr.player) == false && dist > maxdist*2 ) {
             loc = GetRandomPosition(dxr.player.Location, maxdist, dist);
             loc.X += rngfn() * 50;
             loc.Y += rngfn() * 50;
@@ -471,9 +492,9 @@ function float GenerateEnemy(DXREnemies dxre)
     }
     p = None;
     for(i=0; i < 10 && p == None; i++ ) {
-        loc = GetRandomPosition(dxr.player.Location, popin_dist, popin_dist*10);
-        loc.X += rngfn() * 50;
-        loc.Y += rngfn() * 50;
+        loc = GetRandomPosition(dxr.player.Location, popin_dist*0.8, popin_dist*2.5);
+        loc.X += rngfn() * 25;
+        loc.Y += rngfn() * 25;
         p = Spawn(c,,, loc );
     }
     if(p==None) {
@@ -484,7 +505,7 @@ function float GenerateEnemy(DXREnemies dxre)
     p.Intelligence = BRAINS_Human;
     p.MinHealth = 0;//never flee from battle
     SetAlliance(p);
-    p.SetOrders('Attacking');
+    p.SetOrders(default_orders, default_order_tag);
     dxre.RandomizeSP(p, 100);
     GiveRandomItems(p);
     p.InitializeInventory();
@@ -592,8 +613,8 @@ function vector GetRandomItemPosition()
 
     for(i=0; i<10; i++) {
         loc = GetRandomPosition();
-        loc.X += rngfn() * 50;
-        loc.Y += rngfn() * 50;
+        loc.X += rngfn() * 25;
+        loc.Y += rngfn() * 25;
         d = None;
         foreach RadiusActors(class'DeusExMover', d, 150.0, loc) {
             break;

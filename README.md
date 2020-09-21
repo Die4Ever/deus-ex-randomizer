@@ -4,6 +4,8 @@ Copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `
 
 Recommended to use it with [Kentie's Deus Exe Launcher](http://www.kentie.net/article/dxguide/), or [Han's Launcher](https://coding.hanfling.de/launch/#binaries). I play with OpenGL renderer because the Direct3D renderers have trouble on newer Nvidia drivers.
 
+The Deus Ex Speedup Fix mod allows you to disable the fps cap (the fps cap can cause stutters) https://steamcommunity.com/sharedfiles/filedetails/?id=2048525175 If you use that mod, then edit your `Documents\Deus Ex\System\DeusEx.ini` file and search for `FPSLimit=` and set it to 0 to manually remove the fps cap because I've noticed that Kentie's Launcher doesn't always do it correctly.
+
 Currently in v1.4, DXRando randomizes
 * adding and changing characters, giving them random names and making some of them dance
 * changing the locations of items/boxes/NanoKeys around the map
