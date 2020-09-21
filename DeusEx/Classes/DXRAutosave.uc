@@ -1,17 +1,18 @@
 class DXRAutosave extends DXRBase;
 
 var transient bool bNeedSave;
+var config float save_delay;
 
 function FirstEntry()
 {
-    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.flags.autosave > 0 ) {
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 99 && dxr.flags.autosave > 0 ) {
         bNeedSave=true;
     }
 }
 
 function ReEntry()
 {
-    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.flags.autosave==2 && dxr.flags.f.GetBool('PlayerTraveling') ) {
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 99 && dxr.flags.autosave==2 && dxr.flags.f.GetBool('PlayerTraveling') ) {
         bNeedSave=true;
     }
 }
@@ -19,7 +20,7 @@ function ReEntry()
 function AnyEntry()
 {
     if( bNeedSave )
-        SetTimer(1.0, True);
+        SetTimer(save_delay, True);
 }
 
 function Timer()
@@ -48,6 +49,7 @@ function doAutosave()
         (dxr.Player.dataLinkPlay != None) || (dxr.Level.Netmode != NM_Standalone) || (dxr.Player.InConversation())
     ){
         l("doAutosave() not saving");
+        SetTimer(1.0, True);
         return;
     }
 
@@ -63,8 +65,14 @@ function doAutosave()
     bNeedSave = false;
     if( interruptedDL != None ) {
         dxr.Player.dataLinkPlay = interruptedDL;
-        dxr.Player.ResumeDataLinks();
+        if( interruptedDL.tag != 'dummydatalink' )
+            dxr.Player.ResumeDataLinks();
     }
 
     SetTimer(0, False);
+}
+
+defaultproperties
+{
+    save_delay=1.5
 }

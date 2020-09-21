@@ -28,6 +28,7 @@ struct OriginalEnemy {
 };
 var OriginalEnemy enemies[128];
 var int time;
+var config name dont_respawn[8];
 
 function FirstEntry()
 {
@@ -40,53 +41,63 @@ function FirstEntry()
 
     time=0;
     foreach AllActors(class'ScriptedPawn', p) {
-        if( p.IsA('Animal') && !p.IsA('Greasel') && !p.IsA('Karkian') && !p.IsA('Gray') && !p.IsA('Doberman') ) continue;
-        if( p.bImportant || p.bInvincible || p.bHidden ) continue;
-
-        if( i >= ArrayCount(enemies) ) {
-            err("exceeded size of enemies array! "$i);
-            i++;
-            continue;
-        }
-
-        enemies[i].c = p.class;
-        enemies[i].sp = p;
-        enemies[i].loc = p.Location;
-        enemies[i].rot = p.Rotation;
-        enemies[i].alliance = p.alliance;
-        for(a=0; a < ArrayCount(p.InitialAlliances); a++) {
-            enemies[i].InitialAlliances[a].AllianceName = p.InitialAlliances[a].AllianceName;
-            enemies[i].InitialAlliances[a].AllianceLevel = p.InitialAlliances[a].AllianceLevel;
-            enemies[i].InitialAlliances[a].bPermanent = p.InitialAlliances[a].bPermanent;
-        }
-        for(a=0; a < ArrayCount(p.InitialInventory); a++) {
-            enemies[i].InitialInventory[a].Inventory = p.InitialInventory[a].Inventory;
-            enemies[i].InitialInventory[a].Count = p.InitialInventory[a].Count;
-        }
-        enemies[i].orders = p.orders;
-        enemies[i].ordertag = p.ordertag;
-        enemies[i].tag = p.tag;
-
-        enemies[i].bHateCarcass = p.bHateCarcass;
-        enemies[i].bHateDistress = p.bHateDistress;
-        enemies[i].bHateHacking = p.bHateHacking;
-        enemies[i].bHateIndirectInjury = p.bHateIndirectInjury;
-        enemies[i].bHateInjury = p.bHateInjury;
-        enemies[i].bHateShot = p.bHateShot;
-        enemies[i].bHateWeapon = p.bHateWeapon;
-        enemies[i].bFearCarcass = p.bFearCarcass;
-        enemies[i].bFearDistress = p.bFearDistress;
-        enemies[i].bFearHacking = p.bFearHacking;
-        enemies[i].bFearIndirectInjury = p.bFearIndirectInjury;
-        enemies[i].bFearInjury = p.bFearInjury;
-        enemies[i].bFearShot = p.bFearShot;
-        enemies[i].bFearWeapon = p.bFearWeapon;
-        enemies[i].bFearAlarm = p.bFearAlarm;
-        enemies[i].bFearProjectiles = p.bFearProjectiles;
-        i++;
+        SaveRespawn(p, i);
     }
 
     SetTimer(1.0, true);
+}
+
+function SaveRespawn(ScriptedPawn p, out int i)
+{
+    local int a;
+    if( p.IsA('Animal') && !p.IsA('Greasel') && !p.IsA('Karkian') && !p.IsA('Gray') && !p.IsA('Doberman') ) return;
+    if( p.bImportant || p.bInvincible || p.bHidden ) return;
+
+    for(a=0; a < ArrayCount(dont_respawn); a++) {
+        if( p.IsA(dont_respawn[a])) return;
+    }
+
+    if( i >= ArrayCount(enemies) ) {
+        err("exceeded size of enemies array! "$i);
+        i++;
+        return;
+    }
+
+    enemies[i].c = p.class;
+    enemies[i].sp = p;
+    enemies[i].loc = p.Location;
+    enemies[i].rot = p.Rotation;
+    enemies[i].alliance = p.alliance;
+    for(a=0; a < ArrayCount(p.InitialAlliances); a++) {
+        enemies[i].InitialAlliances[a].AllianceName = p.InitialAlliances[a].AllianceName;
+        enemies[i].InitialAlliances[a].AllianceLevel = p.InitialAlliances[a].AllianceLevel;
+        enemies[i].InitialAlliances[a].bPermanent = p.InitialAlliances[a].bPermanent;
+    }
+    for(a=0; a < ArrayCount(p.InitialInventory); a++) {
+        enemies[i].InitialInventory[a].Inventory = p.InitialInventory[a].Inventory;
+        enemies[i].InitialInventory[a].Count = p.InitialInventory[a].Count;
+    }
+    enemies[i].orders = p.orders;
+    enemies[i].ordertag = p.ordertag;
+    enemies[i].tag = p.tag;
+
+    enemies[i].bHateCarcass = p.bHateCarcass;
+    enemies[i].bHateDistress = p.bHateDistress;
+    enemies[i].bHateHacking = p.bHateHacking;
+    enemies[i].bHateIndirectInjury = p.bHateIndirectInjury;
+    enemies[i].bHateInjury = p.bHateInjury;
+    enemies[i].bHateShot = p.bHateShot;
+    enemies[i].bHateWeapon = p.bHateWeapon;
+    enemies[i].bFearCarcass = p.bFearCarcass;
+    enemies[i].bFearDistress = p.bFearDistress;
+    enemies[i].bFearHacking = p.bFearHacking;
+    enemies[i].bFearIndirectInjury = p.bFearIndirectInjury;
+    enemies[i].bFearInjury = p.bFearInjury;
+    enemies[i].bFearShot = p.bFearShot;
+    enemies[i].bFearWeapon = p.bFearWeapon;
+    enemies[i].bFearAlarm = p.bFearAlarm;
+    enemies[i].bFearProjectiles = p.bFearProjectiles;
+    i++;
 }
 
 function AnyEntry()
