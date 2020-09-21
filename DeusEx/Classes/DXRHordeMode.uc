@@ -22,6 +22,7 @@ var config string map_name;
 var config name remove_objects[12];
 var config name unlock_doors[8];
 var config name lock_doors[8];
+var config vector starting_location;
 
 struct EnemyChances {
     var string type;
@@ -181,6 +182,7 @@ function CheckConfig()
     }
     if( config_version < class'DXRFlags'.static.VersionToInt(1,4,2) ) {
         map_name = "11_paris_cathedral";
+        starting_location = vect(-3811.785156, 2170.053223, -774.903442);
         default_orders = 'Attacking';
         default_order_tag = '';
 
@@ -200,6 +202,7 @@ function CheckConfig()
         lock_doors[i++] = 'BreakableGlass3';
         lock_doors[i++] = 'DeusExMover8';
         lock_doors[i++] = 'DeusExMover9';
+        lock_doors[i++] = 'DeusExMover17';
 
         i=0;
         unlock_doors[i++] = 'DeusExMover19';
@@ -231,6 +234,8 @@ function AnyEntry()
     else if( dxr.localURL != map_name ) {
         return;
     }
+
+    dxr.Player.SetLocation(starting_location);
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
     if( dxre == None ) {

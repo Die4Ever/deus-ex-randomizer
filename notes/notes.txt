@@ -9,7 +9,6 @@ DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKon
 you cannot climb out of 03_NYC_AirfieldHeliBase#FromOcean
 
 config for don't respawn classes
-config for horde mode map, starting position, DeusExMovers to make locked, actor classes to destroy (datalinks and stuff)
 
 for v1.4========================
 
