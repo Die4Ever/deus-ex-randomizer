@@ -1,14 +1,13 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
-for v1.4.2========================
+for v1.4.3 ========================
 teleporters have a bEnabled flag
+write tests for repeated use of teleporters, and for denying one-way maps
 fix dupes like:
 DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKong_Storage#basement, changed to 06_HONGKONG_HELIBASE#Helibase
 DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKong_Storage#basement, changed to 06_HONGKONG_WANCHAI_CANAL#Street
 
 you cannot climb out of 03_NYC_AirfieldHeliBase#FromOcean
-
-config for don't respawn classes
 
 for v1.4========================
 

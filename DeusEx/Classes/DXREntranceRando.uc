@@ -127,6 +127,7 @@ function bool IsDeadEnd(string mapname)
 
 function bool CanSelfConnect(string mapname)
 {
+    return false;
     return GetNumXfersByMap(mapname)>2;
 }
 
@@ -187,6 +188,8 @@ function bool ValidateConnections()
     {
         MarkMapsConnected(mapdests, numMaps, conns[i].a.mapname, conns[i].b.mapname);
     }
+
+    if( DuplicateConnections() > 0 ) return false;
     
     //Start finding out what maps we can visit
     visitable = 0;
@@ -286,6 +289,39 @@ function AddDestination( out MapConnection map, string mapname )
     }
     map.dest[map.numDests] = mapname;
     map.numDests++;
+}
+
+function int DuplicateConnections()
+{
+    local int dupes, i, j;
+
+    for(i=0; i < numConns; i++) {
+        for(j=i+1; j < numConns; j++) {
+            if( CheckDuplicate(conns[i].a, conns[j].a)
+                || CheckDuplicate(conns[i].a, conns[j].b)
+                || CheckDuplicate(conns[i].b, conns[j].b)
+                || CheckDuplicate(conns[i].b, conns[j].a)
+            ) {
+                dupes++;
+            }
+        }
+    }
+    return dupes;
+}
+
+function bool CheckDuplicate(MapTransfer a, MapTransfer b)
+{
+    if( a.mapname != b.mapname ) return false;
+    if( a.inTag == b.inTag
+        || a.outTag == b.outTag
+        //|| a.outTag == b.inTag
+        //|| a.inTag == b.outTag
+    ) {
+        err("a: "$a.inTag$"/"$a.outTag);
+        err("b: "$b.inTag$"/"$b.outTag);
+        return true;
+    }
+    return false;
 }
 
 function MarkMapDestinationsVisitible(MapConnection m, out string canvisit[15], out int visitable)
@@ -445,7 +481,7 @@ function RandoMission6()
     AddDoubleXfer("06_HONGKONG_MJ12LAB","cathedral","06_HongKong_VersaLife","secret");
     AddDoubleXfer("06_HONGKONG_MJ12LAB","tubeend","06_HongKong_Storage","basement");
     AddDoubleXfer("06_HONGKONG_STORAGE","waterpipe","06_HongKong_WanChai_Canal","canal");
-    AddDoubleXfer("06_HONGKONG_STORAGE","basement","06_HongKong_MJ12lab","tubeend");
+    //AddDoubleXfer("06_HONGKONG_STORAGE","basement","06_HongKong_MJ12lab","tubeend");
     //AddXfer("06_HongKong_Storage","BackDoor","06_HONGKONG_WANCHAI_GARAGE#Teleporter");//one way
     AddDoubleXfer("06_HONGKONG_TONGBASE","lab","06_HongKong_WanChai_Market","compound");
     AddDoubleXfer("06_HONGKONG_VERSALIFE","Lobby","06_HongKong_WanChai_Market","market");
@@ -601,6 +637,7 @@ function int RunTests()
     //need to log the results
     //I just got warehouse -> sewers -> bar -> warehouse
     //also a weird one where walking the wrong way after teleporting took me somewhere else probably because both the in and out teleporter were tagged?
+    //need to support 1-way maps, and a test for it
 
     conns[0].a = xfers[0];
     conns[0].b = xfers[1];
@@ -629,6 +666,18 @@ function int RunTests()
     numConns = 2;
     //LogConnections();
     results += testbool(ValidateConnections(), false, "ValidateConnections island test");
+
+    conns[0].a = xfers[0];
+    conns[0].b = xfers[1];
+    conns[1].a = xfers[2];
+    conns[1].b = xfers[3];
+    conns[2].a = xfers[4];
+    conns[2].b = xfers[5];
+    conns[3].a = xfers[4];
+    conns[3].b = xfers[5];
+    numConns = 4;
+    //LogConnections();
+    results += testbool(ValidateConnections(), false, "ValidateConnections duplicate test");
 
     dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
     GenerateConnections(3);

@@ -304,7 +304,7 @@ function vector GetRandomPosition(optional vector target, optional float mindist
     }
 }
 
-function vector GetCloserPosition(vector target, vector current, float maxdist)
+function vector GetCloserPosition(vector target, vector current, optional float maxdist)
 {
     local PathNode p;
     local float dist, farthest_dist, dist_move;
