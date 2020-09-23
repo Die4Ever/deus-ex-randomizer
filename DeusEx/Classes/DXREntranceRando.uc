@@ -344,8 +344,8 @@ function bool CheckDuplicate(MapTransfer a, MapTransfer b)
         //|| a.outTag == b.inTag
         //|| a.inTag == b.outTag
     ) {
-        err("a: "$a.inTag$"/"$a.outTag);
-        err("b: "$b.inTag$"/"$b.outTag);
+        //err("a: "$a.inTag$"/"$a.outTag);
+        //err("b: "$b.inTag$"/"$b.outTag);
         return true;
     }
     return false;
@@ -428,7 +428,7 @@ function _GenerateConnections(int missionNum)
             }
         }
         if( i >= maxAttempts ) {
-            err("failed to find valid connection");
+            l("failed to find valid connection");
         }
         xfers[destIdx].used = True;
         xfersUsed++;
