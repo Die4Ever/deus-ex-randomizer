@@ -43,6 +43,10 @@ struct BanConnection
 };
 var config BanConnection BannedConnections[32];
 
+var config string dead_ends[32];
+
+var config int min_connections_selfconnect;
+
 function CheckConfig()
 {
     local int i;
@@ -56,11 +60,16 @@ function CheckConfig()
         BannedConnections[1].map_a = "02_NYC_BatteryPark";
         BannedConnections[1].map_b = "02_NYC_Warehouse";
     }
-    else {
-        for(i=0; i < ArrayCount(BannedConnections); i++) {
-            BannedConnections[i].map_a = Caps(BannedConnections[i].map_a);
-            BannedConnections[i].map_b = Caps(BannedConnections[i].map_b);
-        }
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,3) ) {
+        min_connections_selfconnect = 999;
+        dead_ends[0] = "03_NYC_AirfieldHeliBase#FromOcean";
+    }
+    for(i=0; i < ArrayCount(BannedConnections); i++) {
+        BannedConnections[i].map_a = Caps(BannedConnections[i].map_a);
+        BannedConnections[i].map_b = Caps(BannedConnections[i].map_b);
+    }
+    for(i=0; i < ArrayCount(dead_ends); i++) {
+        dead_ends[i] = Caps(dead_ends[i]);
     }
     Super.CheckConfig();
 }
@@ -120,14 +129,14 @@ function int GetNumXfersByMap(string mapname)
     return count;
 }
 
-function bool IsDeadEnd(string mapname)
+function bool IsDeadEndMap(string mapname)
 {
     return GetNumXfersByMap(mapname)==1;
 }
 
 function bool CanSelfConnect(string mapname)
 {
-    return GetNumXfersByMap(mapname)>2;
+    return GetNumXfersByMap(mapname) >= min_connections_selfconnect;
 }
 
 function bool IsConnectionValid(int missionNum, MapTransfer a, MapTransfer b)
@@ -139,7 +148,7 @@ function bool IsConnectionValid(int missionNum, MapTransfer a, MapTransfer b)
         return False;
     }
 
-    if ( IsDeadEnd(a.mapname) && IsDeadEnd(b.mapname) )
+    if ( IsDeadEndMap(a.mapname) && IsDeadEndMap(b.mapname) )
     {
         return False;
     }
@@ -182,10 +191,12 @@ function bool ValidateConnections()
     numPasses = numConns;
     numMaps = GetAllMapNames(mapdests);
     
+    if( DuplicateConnections() > 0 ) return false;
+
     //Determine what maps can be visited from each map
     for (i=0;i<numConns;i++)
     {
-        MarkMapsConnected(mapdests, numMaps, conns[i].a.mapname, conns[i].b.mapname);
+        MarkMapsConnected(mapdests, numMaps, conns[i].a, conns[i].b);
     }
     
     //Start finding out what maps we can visit
@@ -244,22 +255,41 @@ function int GetAllMapNames(out MapConnection mapdests[15])
     return numMaps;
 }
 
-function MarkMapsConnected(out MapConnection mapdests[15], int numMaps, string map_a, string map_b)
+function MarkMapsConnected(out MapConnection mapdests[15], int numMaps, MapTransfer a, MapTransfer b)
 {
     local int mapidx;
-    mapidx = FindMapDestinations(mapdests, numMaps, map_a);
-    if(mapidx == -1) {
-        err("failed MarkMapsConnected("$numMaps$", "$map_a$", "$map_b$") find A");
-        return;
+
+    if( IsDeadEndConnection(b) == false ) {
+        mapidx = FindMapDestinations(mapdests, numMaps, a.mapname);
+        if(mapidx == -1) {
+            err("failed MarkMapsConnected("$numMaps$", "$a.mapname$", "$b.mapname$") find A");
+            return;
+        }
+        AddDestination( mapdests[mapidx], b.mapname);
     }
-    AddDestination( mapdests[mapidx], map_b);
-    
-    mapidx = FindMapDestinations(mapdests, numMaps, map_b);
-    if(mapidx == -1) {
-        err("failed MarkMapsConnected("$numMaps$", "$map_a$", "$map_b$") find B");
-        return;
+
+    if( IsDeadEndConnection(a) == false ) {
+        mapidx = FindMapDestinations(mapdests, numMaps, b.mapname);
+        if(mapidx == -1) {
+            err("failed MarkMapsConnected("$numMaps$", "$a.mapname$", "$b.mapname$") find B");
+            return;
+        }
+        AddDestination( mapdests[mapidx], a.mapname);
     }
-    AddDestination( mapdests[mapidx], map_a);
+}
+
+function bool IsDeadEndConnection(MapTransfer m)
+{
+    local int i;
+    local string s;
+
+    s = Caps(m.mapname $"#"$ m.inTag);
+    for(i=0; i < ArrayCount(dead_ends); i++) {
+        if( s == dead_ends[i] ) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function int FindMapDestinations(MapConnection mapdests[15], int numMaps, string mapname)
@@ -286,6 +316,39 @@ function AddDestination( out MapConnection map, string mapname )
     }
     map.dest[map.numDests] = mapname;
     map.numDests++;
+}
+
+function int DuplicateConnections()
+{
+    local int dupes, i, j;
+
+    for(i=0; i < numConns; i++) {
+        for(j=i+1; j < numConns; j++) {
+            if( CheckDuplicate(conns[i].a, conns[j].a)
+                || CheckDuplicate(conns[i].a, conns[j].b)
+                || CheckDuplicate(conns[i].b, conns[j].b)
+                || CheckDuplicate(conns[i].b, conns[j].a)
+            ) {
+                dupes++;
+            }
+        }
+    }
+    return dupes;
+}
+
+function bool CheckDuplicate(MapTransfer a, MapTransfer b)
+{
+    if( a.mapname != b.mapname ) return false;
+    if( a.inTag == b.inTag
+        || a.outTag == b.outTag
+        //|| a.outTag == b.inTag
+        //|| a.inTag == b.outTag
+    ) {
+        //err("a: "$a.inTag$"/"$a.outTag);
+        //err("b: "$b.inTag$"/"$b.outTag);
+        return true;
+    }
+    return false;
 }
 
 function MarkMapDestinationsVisitible(MapConnection m, out string canvisit[15], out int visitable)
@@ -365,7 +428,7 @@ function _GenerateConnections(int missionNum)
             }
         }
         if( i >= maxAttempts ) {
-            err("failed to find valid connection");
+            l("failed to find valid connection");
         }
         xfers[destIdx].used = True;
         xfersUsed++;
@@ -406,7 +469,7 @@ function RandoMission2()
     AddDoubleXfer("02_NYC_Underground","ToNYCSump","02_NYC_Street","FromNYCSump");
     AddDoubleXfer("02_NYC_Warehouse","ToRoofTop","02_NYC_Street","FromRoofTop");
     AddDoubleXfer("02_NYC_Warehouse","ToWarehouseAlley","02_NYC_Street","FromWarehouseAlley");
-        
+
     GenerateConnections(2);
 }
 
@@ -445,7 +508,7 @@ function RandoMission6()
     AddDoubleXfer("06_HONGKONG_MJ12LAB","cathedral","06_HongKong_VersaLife","secret");
     AddDoubleXfer("06_HONGKONG_MJ12LAB","tubeend","06_HongKong_Storage","basement");
     AddDoubleXfer("06_HONGKONG_STORAGE","waterpipe","06_HongKong_WanChai_Canal","canal");
-    AddDoubleXfer("06_HONGKONG_STORAGE","basement","06_HongKong_MJ12lab","tubeend");
+    //AddDoubleXfer("06_HONGKONG_STORAGE","basement","06_HongKong_MJ12lab","tubeend");
     //AddXfer("06_HongKong_Storage","BackDoor","06_HONGKONG_WANCHAI_GARAGE#Teleporter");//one way
     AddDoubleXfer("06_HONGKONG_TONGBASE","lab","06_HongKong_WanChai_Market","compound");
     AddDoubleXfer("06_HONGKONG_VERSALIFE","Lobby","06_HongKong_WanChai_Market","market");
@@ -580,11 +643,18 @@ function LogConnections()
 function int RunTests()
 {
     local int results, i;
+    local string dead_end;
     results = Super.RunTests();
 
     if( dxr.flags.gamemode != 1 ) return results;
     numXfers = 0;
 
+    results += test(min_connections_selfconnect >= 3, "min_connections_selfconnect needs to be at least 3");
+
+    dead_end = dead_ends[0];
+    dead_ends[0] = "HELIPAD#HELIPAD_TO_WANCHAI";
+
+    AddDoubleXfer("helipad","helipad_to_wanchai","wanchai_market","wanchai_from_helipad");
     AddDoubleXfer("wanchai_market","to_tong","tong","tong_from_wanchai");
     AddDoubleXfer("wanchai_market","to_versalife","versalife","versalife_from_wanchai");
     AddDoubleXfer("versalife","to_versalife2","versalife2","from_versalife");
@@ -601,6 +671,7 @@ function int RunTests()
     //need to log the results
     //I just got warehouse -> sewers -> bar -> warehouse
     //also a weird one where walking the wrong way after teleporting took me somewhere else probably because both the in and out teleporter were tagged?
+    //need to support 1-way maps, and a test for it
 
     conns[0].a = xfers[0];
     conns[0].b = xfers[1];
@@ -608,19 +679,35 @@ function int RunTests()
     conns[1].b = xfers[3];
     conns[2].a = xfers[4];
     conns[2].b = xfers[5];
-    numConns = 3;
+    conns[3].a = xfers[6];
+    conns[3].b = xfers[7];
+    numConns = 4;
     //LogConnections();
     results += testbool(ValidateConnections(), true, "ValidateConnections test 2");
 
-    conns[0].a = xfers[5];
+    conns[0].a = xfers[0];
     conns[0].b = xfers[4];
     conns[1].a = xfers[3];
-    conns[1].b = xfers[2];
-    conns[2].a = xfers[1];
-    conns[2].b = xfers[0];
-    numConns = 3;
+    conns[1].b = xfers[5];
+    conns[2].a = xfers[7];
+    conns[2].b = xfers[2];
+    conns[3].a = xfers[6];
+    conns[3].b = xfers[1];
+    numConns = 4;
     //LogConnections();
     results += testbool(ValidateConnections(), true, "ValidateConnections test 3");
+
+    conns[0].a = xfers[7];
+    conns[0].b = xfers[0];
+    conns[1].a = xfers[6];
+    conns[1].b = xfers[5];
+    conns[2].a = xfers[4];
+    conns[2].b = xfers[3];
+    conns[1].a = xfers[2];
+    conns[1].b = xfers[1];
+    numConns = 4;
+    //LogConnections();
+    results += testbool(ValidateConnections(), false, "ValidateConnections dead_end test");
 
     conns[0].a = xfers[0];
     conns[0].b = xfers[1];
@@ -629,6 +716,18 @@ function int RunTests()
     numConns = 2;
     //LogConnections();
     results += testbool(ValidateConnections(), false, "ValidateConnections island test");
+
+    conns[0].a = xfers[0];
+    conns[0].b = xfers[1];
+    conns[1].a = xfers[2];
+    conns[1].b = xfers[3];
+    conns[2].a = xfers[4];
+    conns[2].b = xfers[5];
+    conns[3].a = xfers[4];
+    conns[3].b = xfers[5];
+    numConns = 4;
+    //LogConnections();
+    results += testbool(ValidateConnections(), false, "ValidateConnections duplicate test");
 
     dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
     GenerateConnections(3);
@@ -646,10 +745,12 @@ function int RunTests()
 
     numXfers = 0;
     numConns = 0;
+    dead_ends[0] = dead_end;
 
     return results;
 }
 
 defaultproperties
 {
+    min_connections_selfconnect=999
 }
