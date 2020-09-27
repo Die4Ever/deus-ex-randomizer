@@ -451,7 +451,7 @@ function AddXfer(string mapname, string inTag, string outTag)
 
 function AddDoubleXfer(string mapname_a, string inTag, string mapname_b, string outTag)
 {
-    AddXfer(mapname_a, inTag, outTag);
+    AddXfer(mapname_a, inTag, outTag);//we might need to also store mapname_b in the case of duplicate tags
     AddXfer(mapname_b, outTag, inTag);
 }
 
@@ -522,6 +522,82 @@ function RandoMission6()
     GenerateConnections(6);
 }
 
+function RandoMission8()
+{
+    AddDoubleXfer("08_NYC_BAR","ToBarFrontEntrance","08_NYC_Street","FromBarFrontEntrance");
+    AddDoubleXfer("08_NYC_BAR","ToBarBackEntrance","08_NYC_Street","FromBarBackEntrance");
+    AddDoubleXfer("08_NYC_FREECLINIC","FromStreet","08_NYC_Street","FromClinic");
+    AddDoubleXfer("08_NYC_HOTEL","ToHotelFrontDoor","08_NYC_Street","FromHotelFrontDoor");
+    AddDoubleXfer("08_NYC_HOTEL","ToHotelBedroom","08_NYC_Street","BedroomWindow");
+    AddDoubleXfer("08_NYC_SMUG","ToSmugFrontDoor","08_NYC_Street","FromSmugFrontDoor");
+    AddDoubleXfer("08_NYC_SMUG","ToSmugBackDoor","08_NYC_Street","FromSmugBackDoor");
+    AddDoubleXfer("08_NYC_UNDERGROUND","ToNYCSump","08_NYC_Street","FromNYCSump");
+    AddDoubleXfer("08_NYC_UNDERGROUND","ToNYCUndergroundSewer2","08_NYC_Street","FromNYCUndergroundSewer2");
+}
+
+function RandoMission9()
+{
+    AddDoubleXfer("09_NYC_DOCKYARD","ToDockyardSewer","09_NYC_Ship","FromDockyardSewer");
+    AddDoubleXfer("09_NYC_DOCKYARD","FromAircondDuct","09_NYC_ShipFan","ToAircondDuct");
+    AddDoubleXfer("09_NYC_DOCKYARD","ExitShip","09_NYC_Ship","EnterShip");
+    //AddDoubleXfer("09_NYC_DOCKYARD","","09_NYC_Graveyard","");
+    //AddDoubleXfer("09_NYC_GRAVEYARD","","10_Paris_Catacombs","");
+    AddDoubleXfer("09_NYC_SHIP","FromFanRoom","09_NYC_ShipFan","ToFanRoom");
+    AddDoubleXfer("09_NYC_SHIP","FromDuctRoom","09_NYC_ShipFan","ToDuctRoom");
+    AddDoubleXfer("09_NYC_SHIP","FromBelow","09_NYC_ShipBelow","FromAbove");
+}
+
+function RandoMission10()
+{
+    /*10_Paris_Catacombs.dx
+    10_Paris_Catacombs_Tunnels.dx
+    10_Paris_Chateau.dx
+    10_Paris_Club.dx
+    10_Paris_Metro.dx*/
+    AddDoubleXfer("10_PARIS_CATACOMBS","spiralstair","10_Paris_Catacombs_Tunnels","spiralstair");//same tag on both sides?
+    //AddDoubleXfer("10_PARIS_CATACOMBS_TUNNELS","","10_Paris_Metro","sewer");//one way?
+    AddDoubleXfer("10_PARIS_CHATEAU","Chateau_start","11_Paris_Cathedral","cathedralstart");
+    AddDoubleXfer("10_PARIS_CLUB","Paris_Club1","10_Paris_Metro","Paris_Metro1");
+    AddDoubleXfer("10_PARIS_CLUB","Paris_Club2","10_Paris_Metro","Paris_Metro2");
+    //AddDoubleXfer("10_PARIS_METRO","sewer","");
+    //AddDoubleXfer("10_PARIS_METRO","","10_Paris_Chateau");
+}
+
+function RandoMission11()
+{
+    //AddDoubleXfer("11_PARIS_CATHEDRAL","cathedralstart","");
+    AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
+    //AddDoubleXfer("11_PARIS_EVERETT","","12_Vandenberg_cmd");
+    AddDoubleXfer("11_PARIS_UNDERGROUND","Paris_Underground","11_Paris_Cathedral","Paris_Underground");
+}
+
+function RandoMission12()
+{
+    AddDoubleXfer("12_VANDENBERG_CMD","commstat","12_vandenberg_tunnels","start");
+    AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");
+    AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");//this might be dangerous because of the locked key-only door?
+    //AddDoubleXfer("12_VANDENBERG_CMD","","12_Vandenberg_gas","");
+    //AddDoubleXfer("12_VANDENBERG_GAS","gas_start","","");
+    //AddDoubleXfer("12_VANDENBERG_GAS","","14_Vandenberg_sub","");
+}
+
+function RandoMission14()
+{
+    AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC.dx ","UC");//strange formatting, some even have a space
+    AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub.dx","subbay");
+    //AddDoubleXfer("14_OCEANLAB_SILO","frontgate","","");
+    //AddDoubleXfer("14_OCEANLAB_SILO","","15_area51_bunker.dx ","bunker_start");
+    //AddDoubleXfer("14_Vandenberg_sub.dx","","14_Oceanlab_silo.dx ","frontgate");
+}
+
+function RandoMission15()
+{
+    //AddDoubleXfer("15_AREA51_BUNKER","commstat","","");
+    //AddDoubleXfer("15_AREA51_BUNKER","","15_Area51_entrance","start");
+    AddDoubleXfer("15_AREA51_FINAL","final_end","15_Area51_page","page_start");
+    //AddDoubleXfer("15_AREA51_FINAL","Start","");
+}
+
 function EntranceRando(int missionNum)
 {   
     numConns = 0;
@@ -543,14 +619,25 @@ function EntranceRando(int missionNum)
             RandoMission6();
             break;
         case 8:
+            RandoMission8();
             break;
         case 9:
+            RandoMission9();
             break;
         case 10:
+            RandoMission10();
+            break;
+        case 11:
+            RandoMission11();
             break;
         case 12:
+            RandoMission12();
+            break;
+        case 14:
+            RandoMission14();
             break;
         case 15:
+            RandoMission15();
             break;
     }
 }
@@ -737,7 +824,7 @@ function int RunTests()
     for(i=0; i <= 100; i++) {
         dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
         EntranceRando(i);
-        if( numXfers > 0 ) {
+        if( numXfers > 0 && numConns > 0 ) {
             //LogConnections();
             results += testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation");
         }

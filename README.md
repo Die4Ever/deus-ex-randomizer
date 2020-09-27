@@ -34,3 +34,5 @@ For the randomized passwords, you can copy-paste from the Goals/Notes screen.
 Check out the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
 
 Join the Randomizer Central Discord for discussion https://discord.gg/ybMj3vs or message me directly Die4Ever#6351
+
+If you want to play with the `DXRando.ini` config file (in your `Documents\Deus Ex\System\` folder), then you can look at the [wiki for reference](https://github.com/Die4Ever/deus-ex-randomizer/wiki/DXRando.ini-config)

@@ -212,12 +212,12 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 4, 3);
+    return VersionToInt(1, 4, 4);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 3);
+    return VersionToString(1, 4, 4);
 }
 
 function MaxRando()
