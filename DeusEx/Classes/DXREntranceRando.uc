@@ -549,11 +549,6 @@ function RandoMission9()
 
 function RandoMission10()
 {
-    /*10_Paris_Catacombs.dx
-    10_Paris_Catacombs_Tunnels.dx
-    10_Paris_Chateau.dx
-    10_Paris_Club.dx
-    10_Paris_Metro.dx*/
     AddDoubleXfer("10_PARIS_CATACOMBS","spiralstair","10_Paris_Catacombs_Tunnels","spiralstair");//same tag on both sides?
     //AddDoubleXfer("10_PARIS_CATACOMBS_TUNNELS","","10_Paris_Metro","sewer");//one way?
     AddDoubleXfer("10_PARIS_CHATEAU","Chateau_start","11_Paris_Cathedral","cathedralstart");

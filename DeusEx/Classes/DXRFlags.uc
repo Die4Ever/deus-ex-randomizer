@@ -126,7 +126,7 @@ function LoadFlags()
     }
 
     LogFlags("LoadFlags");
-    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed );// $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", flags: " $ FlagsHash() );
+    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", flags: " $ FlagsHash() );
     SetTimer(1.0, True);
 }
 
@@ -217,7 +217,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 4);
+    return VersionToString(1, 4, 4) $ " Beta";
 }
 
 function MaxRando()
