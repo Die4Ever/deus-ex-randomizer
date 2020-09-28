@@ -533,6 +533,8 @@ function RandoMission8()
     AddDoubleXfer("08_NYC_SMUG","ToSmugBackDoor","08_NYC_Street","FromSmugBackDoor");
     AddDoubleXfer("08_NYC_UNDERGROUND","ToNYCSump","08_NYC_Street","FromNYCSump");
     AddDoubleXfer("08_NYC_UNDERGROUND","ToNYCUndergroundSewer2","08_NYC_Street","FromNYCUndergroundSewer2");
+
+    GenerateConnections(8);
 }
 
 function RandoMission9()
@@ -545,6 +547,8 @@ function RandoMission9()
     AddDoubleXfer("09_NYC_SHIP","FromFanRoom","09_NYC_ShipFan","ToFanRoom");
     AddDoubleXfer("09_NYC_SHIP","FromDuctRoom","09_NYC_ShipFan","ToDuctRoom");
     AddDoubleXfer("09_NYC_SHIP","FromBelow","09_NYC_ShipBelow","FromAbove");
+
+    GenerateConnections(9);
 }
 
 function RandoMission10()
@@ -556,6 +560,8 @@ function RandoMission10()
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club2","10_Paris_Metro","Paris_Metro2");
     //AddDoubleXfer("10_PARIS_METRO","sewer","");
     //AddDoubleXfer("10_PARIS_METRO","","10_Paris_Chateau");
+
+    GenerateConnections(10);
 }
 
 function RandoMission11()
@@ -564,6 +570,8 @@ function RandoMission11()
     AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
     //AddDoubleXfer("11_PARIS_EVERETT","","12_Vandenberg_cmd");
     AddDoubleXfer("11_PARIS_UNDERGROUND","Paris_Underground","11_Paris_Cathedral","Paris_Underground");
+
+    GenerateConnections(11);
 }
 
 function RandoMission12()
@@ -574,6 +582,8 @@ function RandoMission12()
     //AddDoubleXfer("12_VANDENBERG_CMD","","12_Vandenberg_gas","");
     //AddDoubleXfer("12_VANDENBERG_GAS","gas_start","","");
     //AddDoubleXfer("12_VANDENBERG_GAS","","14_Vandenberg_sub","");
+
+    GenerateConnections(12);
 }
 
 function RandoMission14()
@@ -583,6 +593,8 @@ function RandoMission14()
     //AddDoubleXfer("14_OCEANLAB_SILO","frontgate","","");
     //AddDoubleXfer("14_OCEANLAB_SILO","","15_area51_bunker.dx ","bunker_start");
     //AddDoubleXfer("14_Vandenberg_sub.dx","","14_Oceanlab_silo.dx ","frontgate");
+
+    GenerateConnections(14);
 }
 
 function RandoMission15()
@@ -591,6 +603,8 @@ function RandoMission15()
     //AddDoubleXfer("15_AREA51_BUNKER","","15_Area51_entrance","start");
     AddDoubleXfer("15_AREA51_FINAL","final_end","15_Area51_page","page_start");
     //AddDoubleXfer("15_AREA51_FINAL","Start","");
+
+    GenerateConnections(15);
 }
 
 function EntranceRando(int missionNum)

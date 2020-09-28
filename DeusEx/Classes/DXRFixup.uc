@@ -35,11 +35,24 @@ function CheckConfig()
         DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
         DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
         DecorationsOverwrites[i].bPushable = c.default.bPushable;
-        i++;
 
+        i++;
         DecorationsOverwrites[i].type = "BarrelFire";
         DecorationsOverwrites[i].bInvincible = false;
         DecorationsOverwrites[i].HitPoints = 50;
+        DecorationsOverwrites[i].minDamageThreshold = 0;
+        c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+        DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = c.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = c.default.bPushable;
+
+        i++;
+        DecorationsOverwrites[i].type = "Van";
+        DecorationsOverwrites[i].bInvincible = false;
+        DecorationsOverwrites[i].HitPoints = 500;
         DecorationsOverwrites[i].minDamageThreshold = 0;
         c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
         DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
@@ -62,10 +75,13 @@ function FirstEntry()
     
     switch(dxr.dxInfo.missionNumber) {
         case 2:
-            NYC1_FirstEntry();
+            NYC_02_FirstEntry();
             break;
         case 3:
             Airfield_FirstEntry();
+            break;
+        case 4:
+            NYC_04_FirstEntry();
             break;
         case 6:
             HongKong_FirstEntry();
@@ -140,7 +156,7 @@ function OverwriteDecorations()
     }
 }
 
-function NYC1_FirstEntry()
+function NYC_02_FirstEntry()
 {
     local NYPoliceBoat b;
     
@@ -196,6 +212,18 @@ function Airfield_FirstEntry()
             loc.Z=0;
             s.move(loc);
             
+            break;
+    }
+}
+
+function NYC_04_FirstEntry()
+{
+    switch (dxr.localURL)
+    {
+        case "04_NYC_HOTEL":
+            if(dxr.Player.flagBase.GetBool('NSFSignalSent')) {
+                dxr.Player.flagBase.SetBool('PaulInjured_Played', true,, 5);
+            }
             break;
     }
 }
