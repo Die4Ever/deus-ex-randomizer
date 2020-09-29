@@ -561,6 +561,10 @@ function RandoMission10()
     //AddDoubleXfer("10_PARIS_METRO","sewer","");
     //AddDoubleXfer("10_PARIS_METRO","","10_Paris_Chateau");
 
+    //AddDoubleXfer("11_PARIS_CATHEDRAL","cathedralstart","");
+    AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
+    //AddDoubleXfer("11_PARIS_EVERETT","","12_Vandenberg_cmd");
+
     GenerateConnections(10);
 }
 
@@ -569,7 +573,6 @@ function RandoMission11()
     //AddDoubleXfer("11_PARIS_CATHEDRAL","cathedralstart","");
     AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
     //AddDoubleXfer("11_PARIS_EVERETT","","12_Vandenberg_cmd");
-    AddDoubleXfer("11_PARIS_UNDERGROUND","Paris_Underground","11_Paris_Cathedral","Paris_Underground");
 
     GenerateConnections(11);
 }
@@ -611,6 +614,7 @@ function EntranceRando(int missionNum)
 {   
     numConns = 0;
     numXfers = 0;
+    if( missionNum == 11 ) missionNum = 10;//combine 10 and 11
     dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") + missionNum );
 
     switch(missionNum)
@@ -633,7 +637,7 @@ function EntranceRando(int missionNum)
         case 9:
             RandoMission9();
             break;
-        case 10:
+        /*case 10:
             RandoMission10();
             break;
         case 11:
@@ -647,7 +651,7 @@ function EntranceRando(int missionNum)
             break;
         case 15:
             RandoMission15();
-            break;
+            break;*/
     }
 }
 

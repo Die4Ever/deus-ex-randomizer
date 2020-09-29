@@ -174,9 +174,6 @@ function NYC_02_FirstEntry()
 function Airfield_FirstEntry()
 {
     local Mover m;
-    local Switch2 s;
-    local vector loc;
-    local rotator rotate;
     
     switch (dxr.localURL)
     {
@@ -195,23 +192,7 @@ function Airfield_FirstEntry()
         case "03_NYC_BROOKLYNBRIDGESTATION":
             //Put a button behind the hidden bathroom door
             //Mostly for entrance rando, but just in case
-            loc.X = -1672.1;
-            loc.Y = -1319.913574;
-            loc.Z = 130.813538;
-            rotate.Yaw=32767;
-            s = Spawn(class'Switch2',,,loc,rotate);
-            s.Event = 'MoleHideoutOpened';
-            s.bCollideWorld=False;
-            
-            //I think the rotation must happen after spawning
-            //Which means that I can't actually directly spawn
-            //It right against the wall.
-            //Once spawned, move it tight against the wall.
-            loc.X=4;
-            loc.Y=0;
-            loc.Z=0;
-            s.move(loc);
-            
+            AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
             break;
     }
 }
@@ -425,6 +406,7 @@ function Area51_FirstEntry()
             foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
                 d.move(vect(0, 0, -1));
             }
+            AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
             break;
     }
 }
@@ -438,6 +420,16 @@ function AddDelay(Actor trigger, float time)
     d.OutEvents[0] = trigger.Event;
     d.OutDelays[0] = time;
     trigger.Event = d.Tag;
+}
+
+function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
+{
+    local Switch2 s;
+    s = Spawn(class'Switch2',,,loc,rotate);
+    s.Event = Event;
+    s.bCollideWorld=False;
+    s.SetLocation(loc);
+    return s;
 }
 
 defaultproperties
