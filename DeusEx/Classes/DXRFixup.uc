@@ -80,9 +80,6 @@ function FirstEntry()
         case 3:
             Airfield_FirstEntry();
             break;
-        case 4:
-            NYC_04_FirstEntry();
-            break;
         case 6:
             HongKong_FirstEntry();
             break;
@@ -102,8 +99,14 @@ function AnyEntry()
 
     BuffScopes();
 
-    if( dxr.dxInfo.missionNumber == 6 )
-        HongKong_AnyEntry();
+    switch(dxr.dxInfo.missionNumber) {
+        case 4:
+            NYC_04_AnyEntry();
+            break;
+        case 6:
+            HongKong_AnyEntry();
+            break;
+    }
 }
 
 function IncreaseBrightness(int brightness)
@@ -197,7 +200,7 @@ function Airfield_FirstEntry()
     }
 }
 
-function NYC_04_FirstEntry()
+function NYC_04_AnyEntry()
 {
     switch (dxr.localURL)
     {
