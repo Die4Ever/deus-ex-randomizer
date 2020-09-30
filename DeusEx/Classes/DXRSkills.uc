@@ -8,8 +8,6 @@ struct SkillCostMultiplier {
 };
 
 var config SkillCostMultiplier SkillCostMultipliers[16];
-var config int reroll_missions;
-var config bool independent_levels;
 
 function CheckConfig()
 {
@@ -21,10 +19,6 @@ function CheckConfig()
             SkillCostMultipliers[i].minLevel = 1;
             SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
         }
-    }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,4) ) {
-        independent_levels = false;
-        reroll_missions = 0;
     }
     Super.CheckConfig();
 }
@@ -44,12 +38,13 @@ function RandoSkills()
     local SkillCostMultiplier scm;
     local class<Skill> c;
 
-    l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.minskill$", max: "$dxr.flags.maxskill $", reroll_missions: "$reroll_missions $", independent_levels: "$independent_levels);
-    if( reroll_missions == 0 )
+    l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.minskill$", max: "$dxr.flags.maxskill $", reroll_missions: "$ dxr.flags.skills_reroll_missions $", independent_levels: "$ dxr.flags.skills_independent_levels );
+    if( dxr.flags.skills_reroll_missions == 0 )
         dxr.SetSeed(dxr.seed);
     else {
         if( dxr.dxInfo != None )
-            mission_group = dxr.dxInfo.missionNumber / reroll_missions;
+            mission_group = dxr.dxInfo.missionNumber;
+        mission_group = Clamp(mission_group, 1, 1000) / dxr.flags.skills_reroll_missions;
         i = dxr.Crc(dxr.seed $"M"$ mission_group);
         dxr.SetSeed( i );
     }
@@ -63,7 +58,7 @@ function RandoSkills()
         l( aSkill.Class.Name $ " percent: "$percent$"%");
         for(i=0; i<arrayCount(aSkill.Cost); i++)
         {
-            if( independent_levels ) {
+            if( dxr.flags.skills_independent_levels > 0 ) {
                 percent = rng(dxr.flags.maxskill - dxr.flags.minskill + 1) + dxr.flags.minskill;
                 l( aSkill.Class.Name $ " lvl: "$(i+1)$", percent: "$percent$"%");
             }
