@@ -15,20 +15,20 @@ function SetDxr(DXRando d)
 
 function ResetToDefaults()
 {
-	editName.SetText(player.TruePlayerName);
+    editName.SetText(player.TruePlayerName);
 
-	player.SkillPointsAvail = player.Default.SkillPointsAvail;
-	player.SkillPointsTotal = player.Default.SkillPointsTotal;
+    player.SkillPointsAvail = player.Default.SkillPointsAvail;
+    player.SkillPointsTotal = player.Default.SkillPointsTotal;
 
-	portraitIndex = 0;
-	btnPortrait.SetBackground(texPortraits[portraitIndex]);
+    portraitIndex = 0;
+    btnPortrait.SetBackground(texPortraits[portraitIndex]);
 
     if( flags.skills_disable_downgrades == 0 ) {
         CopySkills();
         PopulateSkillsList();	
         UpdateSkillPoints();
     }
-	EnableButtons();
+    EnableButtons();
 }
 
 function EnableButtons()
