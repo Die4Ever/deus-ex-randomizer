@@ -25,7 +25,7 @@ function ResetToDefaults()
 
     if( flags.skills_disable_downgrades == 0 ) {
         CopySkills();
-        PopulateSkillsList();	
+        PopulateSkillsList();
         UpdateSkillPoints();
     }
     EnableButtons();
