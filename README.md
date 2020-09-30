@@ -29,7 +29,7 @@ There are also settings for
 * removing invisible walls
 
 When you start a new game, you will see this settings screen
-![options](https://i.imgur.com/02GEJUY.png)
+![options](https://i.imgur.com/pCsJyR5.png)
 
 For the randomized passwords, you can copy-paste from the Goals/Notes screen.
 
