@@ -37,10 +37,7 @@ function EnableButtons()
     local int level;
     Super.EnableButtons();
 
-    //if( flags.disable_skill_downgrades )
-        //btnDowngrade.SetSensitivity( False );
-
-	if ( selectedSkill != None )
+    if ( selectedSkill != None )
         level = selectedSkill.GetCurrentLevel();
 
     allow_downgrade = level > 0;
