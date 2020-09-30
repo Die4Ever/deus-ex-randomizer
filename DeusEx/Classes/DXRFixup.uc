@@ -35,11 +35,24 @@ function CheckConfig()
         DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
         DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
         DecorationsOverwrites[i].bPushable = c.default.bPushable;
-        i++;
 
+        i++;
         DecorationsOverwrites[i].type = "BarrelFire";
         DecorationsOverwrites[i].bInvincible = false;
         DecorationsOverwrites[i].HitPoints = 50;
+        DecorationsOverwrites[i].minDamageThreshold = 0;
+        c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+        DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+        DecorationsOverwrites[i].Flammability = c.default.Flammability;
+        DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+        DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+        DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+        DecorationsOverwrites[i].bPushable = c.default.bPushable;
+
+        i++;
+        DecorationsOverwrites[i].type = "Van";
+        DecorationsOverwrites[i].bInvincible = false;
+        DecorationsOverwrites[i].HitPoints = 500;
         DecorationsOverwrites[i].minDamageThreshold = 0;
         c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
         DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
@@ -62,7 +75,7 @@ function FirstEntry()
     
     switch(dxr.dxInfo.missionNumber) {
         case 2:
-            NYC1_FirstEntry();
+            NYC_02_FirstEntry();
             break;
         case 3:
             Airfield_FirstEntry();
@@ -86,8 +99,14 @@ function AnyEntry()
 
     BuffScopes();
 
-    if( dxr.dxInfo.missionNumber == 6 )
-        HongKong_AnyEntry();
+    switch(dxr.dxInfo.missionNumber) {
+        case 4:
+            NYC_04_AnyEntry();
+            break;
+        case 6:
+            HongKong_AnyEntry();
+            break;
+    }
 }
 
 function IncreaseBrightness(int brightness)
@@ -140,7 +159,7 @@ function OverwriteDecorations()
     }
 }
 
-function NYC1_FirstEntry()
+function NYC_02_FirstEntry()
 {
     local NYPoliceBoat b;
     
@@ -158,9 +177,6 @@ function NYC1_FirstEntry()
 function Airfield_FirstEntry()
 {
     local Mover m;
-    local Switch2 s;
-    local vector loc;
-    local rotator rotate;
     
     switch (dxr.localURL)
     {
@@ -179,23 +195,19 @@ function Airfield_FirstEntry()
         case "03_NYC_BROOKLYNBRIDGESTATION":
             //Put a button behind the hidden bathroom door
             //Mostly for entrance rando, but just in case
-            loc.X = -1672.1;
-            loc.Y = -1319.913574;
-            loc.Z = 130.813538;
-            rotate.Yaw=32767;
-            s = Spawn(class'Switch2',,,loc,rotate);
-            s.Event = 'MoleHideoutOpened';
-            s.bCollideWorld=False;
-            
-            //I think the rotation must happen after spawning
-            //Which means that I can't actually directly spawn
-            //It right against the wall.
-            //Once spawned, move it tight against the wall.
-            loc.X=4;
-            loc.Y=0;
-            loc.Z=0;
-            s.move(loc);
-            
+            AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
+            break;
+    }
+}
+
+function NYC_04_AnyEntry()
+{
+    switch (dxr.localURL)
+    {
+        case "04_NYC_HOTEL":
+            if(dxr.Player.flagBase.GetBool('NSFSignalSent')) {
+                dxr.Player.flagBase.SetBool('PaulInjured_Played', true,, 5);
+            }
             break;
     }
 }
@@ -397,6 +409,7 @@ function Area51_FirstEntry()
             foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
                 d.move(vect(0, 0, -1));
             }
+            AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
             break;
     }
 }
@@ -410,6 +423,16 @@ function AddDelay(Actor trigger, float time)
     d.OutEvents[0] = trigger.Event;
     d.OutDelays[0] = time;
     trigger.Event = d.Tag;
+}
+
+function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
+{
+    local Switch2 s;
+    s = Spawn(class'Switch2',,,loc,rotate);
+    s.Event = Event;
+    s.bCollideWorld=False;
+    s.SetLocation(loc);
+    return s;
 }
 
 defaultproperties

@@ -10,7 +10,7 @@ struct EnumBtn {
 };
 
 var EnumBtn enums[32];
-var int GameMode, RandoKeys, RandoDoors, RandoDevices, RandoPasswords, Autosave, RemoveInvisWalls, RandoInfoDevices;
+var int GameMode, RandoKeys, RandoDoors, RandoDevices, RandoPasswords, Autosave, RemoveInvisWalls, RandoInfoDevices, SkillMode;
 
 var MenuUIEditWindow editSeed;
 var MenuUIEditWindow editBrightness;
@@ -106,7 +106,7 @@ function CreateControls()
 {
     local int i;
     local int row;
-    local EnumBtn btnGameMode, btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords, btnAutosave, btnInfoDevs;
+    local EnumBtn btnGameMode, btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords, btnAutosave, btnInfoDevs, btnSkillModes;
     Super.CreateControls();
 
     Title = "DX Rando "$ class'DXRFlags'.static.VersionString() $" Options";
@@ -171,11 +171,17 @@ function CreateControls()
     btnInfoDevs.values[1] = "Unchanged";
     RandoInfoDevices = CreateEnum(row++, "Datacubes", "Moves datacubes and other information objects around the map.", btnInfoDevs);
 
+    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 35, 0, 100);
+    editEnemyRespawn = CreateSlider(row++, "Enemy Respawn Seconds", "(Beta) How many seconds for enemies to respawn. Leave blank or 0 to disable", 0, 0, 100);
+
+    btnSkillModes.values[0] = "Normal Skill Randomization";
+    btnSkillModes.values[1] = "Blind Skill Randomization";
+    btnSkillModes.values[2] = "Blind Skills Every Mission";
+    btnSkillModes.values[3] = "Blind Skills Every 5 Missions";
+    SkillMode = CreateEnum(row++, "", "Adjust how skill cost randomization works.", btnSkillModes);
     editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", "Minimum cost for skills in percentage of the original cost.", 25, 0, 500);
     editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", "Maximum cost for skills in percentage of the original cost.", 300, 0, 500);
 
-    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 35, 0, 100);
-    editEnemyRespawn = CreateSlider(row++, "Enemy Respawn Seconds", "(Beta) How many seconds for enemies to respawn. Leave blank or 0 to disable", 0, 0, 100);
     editAmmo = CreateSlider(row++, "Ammo Drops %", "Make ammo more scarce.", 90);
     editMultitools = CreateSlider(row++, "Multitools Drops %", "Make multitools more scarce.", 80);
     editLockpicks = CreateSlider(row++, "Lockpicks Drops %", "Make lockpicks more scarce.", 80);
@@ -401,7 +407,7 @@ function ProcessAction(String actionKey)
     local DXRando dxr;
     local DXRFlags f;
     local int seed;
-    local string sseed, sgamemode, keys, doors, devices, passwords, autosavevalue, inviswalls, infodevs;
+    local string sseed, sgamemode, keys, doors, devices, passwords, autosavevalue, inviswalls, infodevs, sskillmode;
     local int undefeatabledoors, keyonlydoors, alldoors, highlightabledoors;
     local int doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
@@ -417,6 +423,7 @@ function ProcessAction(String actionKey)
         devices = GetEnumValue(RandoDevices);
         passwords = GetEnumValue(RandoPasswords);
         infodevs = GetEnumValue(RandoInfoDevices);
+        sskillmode = GetEnumValue(SkillMode);
 
         f.InitDefaults();
         if( sseed != "" ) {
@@ -450,6 +457,27 @@ function ProcessAction(String actionKey)
         else if( keys == "On" ) f.keysrando = 4;
         else if( keys == "Copy" ) f.keysrando = 3;
         else if( keys == "Smart" ) f.keysrando = 4;
+
+        if( sskillmode == "Normal Skill Randomization" ) {
+            f.skills_disable_downgrades = 0;
+            f.skills_reroll_missions = 0;
+            f.skills_independent_levels = 0;
+        }
+        else if( sskillmode == "Blind Skill Randomization" ) {
+            f.skills_disable_downgrades = 5;
+            f.skills_reroll_missions = 0;
+            f.skills_independent_levels = 100;
+        }
+        else if( sskillmode == "Blind Skills Every Mission" ) {
+            f.skills_disable_downgrades = 5;
+            f.skills_reroll_missions = 1;
+            f.skills_independent_levels = 0;
+        }
+        else if( sskillmode == "Blind Skills Every 5 Missions" ) {
+            f.skills_disable_downgrades = 5;
+            f.skills_reroll_missions = 5;
+            f.skills_independent_levels = 100;
+        }
 
         undefeatabledoors = 1*256;
         alldoors = 2*256;

@@ -1,14 +1,48 @@
 class DXRMenuScreenNewGame extends MenuScreenNewGame;
 
 var DXRando dxr;
+var DXRFlags flags;
 
 function SetDxr(DXRando d)
 {
     dxr=d;
+    flags = DXRFlags(dxr.FindModule(class'DXRFlags'));
     CopySkills();
     PopulateSkillsList();
     UpdateSkillPoints();
     EnableButtons();
+}
+
+function ResetToDefaults()
+{
+    editName.SetText(player.TruePlayerName);
+
+    player.SkillPointsAvail = player.Default.SkillPointsAvail;
+    player.SkillPointsTotal = player.Default.SkillPointsTotal;
+
+    portraitIndex = 0;
+    btnPortrait.SetBackground(texPortraits[portraitIndex]);
+
+    if( flags.skills_disable_downgrades == 0 ) {
+        CopySkills();
+        PopulateSkillsList();
+        UpdateSkillPoints();
+    }
+    EnableButtons();
+}
+
+function EnableButtons()
+{
+    local bool allow_downgrade;
+    local int level;
+    Super.EnableButtons();
+
+    if ( selectedSkill != None )
+        level = selectedSkill.GetCurrentLevel();
+
+    allow_downgrade = level > 0;
+    allow_downgrade = allow_downgrade && level > flags.skills_disable_downgrades;
+    btnDowngrade.EnableWindow(allow_downgrade);
 }
 
 // ----------------------------------------------------------------------

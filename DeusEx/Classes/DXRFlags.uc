@@ -12,6 +12,7 @@ var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsr
 var int autosave;//0=off, 1=first time entering level, 2=every loading screen
 var int removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices;
 var int dancingpercent;
+var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
 
 function PreTravel()
 {
@@ -68,6 +69,9 @@ function InitDefaults()
     enemyrespawn = 0;
     infodevices = 0;
     dancingpercent = 25;
+    skills_disable_downgrades = 0;
+    skills_reroll_missions = 0;
+    skills_independent_levels = 0;
 }
 
 function CheckConfig()
@@ -119,6 +123,11 @@ function LoadFlags()
         gamemode = f.GetInt('Rando_gamemode');
         enemyrespawn = f.GetInt('Rando_enemyrespawn');
     }
+    if( stored_version >= VersionToInt(1,4,4) ) {
+        skills_disable_downgrades = f.GetInt('Rando_skills_disable_downgrades');
+        skills_reroll_missions = f.GetInt('Rando_skills_reroll_missions');
+        skills_independent_levels = f.GetInt('Rando_skills_independent_levels');
+    }
 
     if(stored_version < flagsversion ) {
         l("upgraded flags from "$stored_version$" to "$flagsversion);
@@ -126,7 +135,7 @@ function LoadFlags()
     }
 
     LogFlags("LoadFlags");
-    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed );// $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", flags: " $ FlagsHash() );
+    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", flags: " $ FlagsHash() );
     SetTimer(1.0, True);
 }
 
@@ -162,6 +171,10 @@ function SaveFlags()
     f.SetInt('Rando_enemyrespawn', enemyrespawn,, 999);
     f.SetInt('Rando_infodevices', infodevices,, 999);
     f.SetInt('Rando_dancingpercent', dancingpercent,, 999);
+
+    f.SetInt('Rando_skills_disable_downgrades', skills_disable_downgrades,, 999);
+    f.SetInt('Rando_skills_reroll_missions', skills_reroll_missions,, 999);
+    f.SetInt('Rando_skills_independent_levels', skills_independent_levels,, 999);
 
     LogFlags("SaveFlags");
 }
@@ -212,12 +225,12 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 4, 3);
+    return VersionToInt(1, 4, 4);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 3);
+    return VersionToString(1, 4, 4);
 }
 
 function MaxRando()

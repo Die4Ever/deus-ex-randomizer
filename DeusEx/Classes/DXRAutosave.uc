@@ -54,15 +54,16 @@ function doAutosave()
     }
 
     saveSlot = -1;
+    saveName = "DXR " $ dxr.seed $ ": " $ dxr.dxInfo.MissionLocation;
     lastMission = dxr.flags.f.GetInt('Rando_lastmission');
     if( lastMission != 0 && dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber ) {
         saveSlot = 0;
+        saveName = "DXR " $ dxr.seed $ ", Mission " $ dxr.dxInfo.MissionNumber $ ": " $ dxr.dxInfo.MissionLocation;
     }
-    dxr.flags.f.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber);
+    dxr.flags.f.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber,, 999);
 
-    saveName = "DXR " $ dxr.seed $ ": " $ dxr.dxInfo.MissionLocation;
-    dxr.Player.SaveGame(saveSlot, saveName);
     bNeedSave = false;
+    dxr.Player.SaveGame(saveSlot, saveName);
     if( interruptedDL != None ) {
         dxr.Player.dataLinkPlay = interruptedDL;
         if( interruptedDL.tag != 'dummydatalink' )

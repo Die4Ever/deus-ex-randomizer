@@ -33,13 +33,21 @@ function RandoSkills()
 {
     local Skill aSkill;
     local int i, m;
-    local int percent;
+    local int percent, mission_group;
     local float f;
     local SkillCostMultiplier scm;
     local class<Skill> c;
 
-    l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.minskill$", max: "$dxr.flags.maxskill);
-    dxr.SetSeed(dxr.seed);
+    l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.minskill$", max: "$dxr.flags.maxskill $", reroll_missions: "$ dxr.flags.skills_reroll_missions $", independent_levels: "$ dxr.flags.skills_independent_levels );
+    if( dxr.flags.skills_reroll_missions == 0 )
+        dxr.SetSeed(dxr.seed);
+    else {
+        if( dxr.dxInfo != None )
+            mission_group = dxr.dxInfo.missionNumber;
+        mission_group = Clamp(mission_group, 1, 1000) / dxr.flags.skills_reroll_missions;
+        i = dxr.Crc(dxr.seed $"M"$ mission_group);
+        dxr.SetSeed( i );
+    }
 
     if( dxr.flags.minskill > dxr.flags.maxskill ) dxr.flags.maxskill = dxr.flags.minskill;
 
@@ -50,6 +58,11 @@ function RandoSkills()
         l( aSkill.Class.Name $ " percent: "$percent$"%");
         for(i=0; i<arrayCount(aSkill.Cost); i++)
         {
+            if( dxr.flags.skills_independent_levels > 0 ) {
+                percent = rng(dxr.flags.maxskill - dxr.flags.minskill + 1) + dxr.flags.minskill;
+                l( aSkill.Class.Name $ " lvl: "$(i+1)$", percent: "$percent$"%");
+            }
+
             f = float(aSkill.default.Cost[i]) * float(percent) / 100.0;
             for(m=0; m < ArrayCount(SkillCostMultipliers); m++) {
                 scm = SkillCostMultipliers[m];
