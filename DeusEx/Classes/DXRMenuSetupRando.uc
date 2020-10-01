@@ -171,7 +171,7 @@ function CreateControls()
     btnInfoDevs.values[1] = "Unchanged";
     RandoInfoDevices = CreateEnum(row++, "Datacubes", "Moves datacubes and other information objects around the map.", btnInfoDevs);
 
-    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 35, 0, 100);
+    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 30, 0, 100);
     editEnemyRespawn = CreateSlider(row++, "Enemy Respawn Seconds", "(Beta) How many seconds for enemies to respawn. Leave blank or 0 to disable", 0, 0, 100);
 
     btnSkillModes.values[0] = "Normal Skill Randomization";
@@ -430,8 +430,8 @@ function ProcessAction(String actionKey)
             seed = int(sseed);
             f.seed = seed;
             dxr.seed = seed;
+            log("DXRando setting seed to "$seed);
         }
-        log("DXRando setting seed to "$seed);
         f.brightness = GetSliderValue(editBrightness);
         f.minskill = GetSliderValue(editMinSkill);
         f.maxskill = GetSliderValue(editMaxSkill);

@@ -83,6 +83,12 @@ function bool IsHuman(Actor a)
     return HumanMilitary(a) != None || HumanThug(a) != None || HumanCivilian(a) != None;
 }
 
+function bool IsCritter(Actor a)
+{
+    if( Animal(a) == None ) return false;
+    return Doberman(a) == None && Gray(a) == None && Greasel(a) == None && Karkian(a) == None;
+}
+
 function bool HasItem(Pawn p, class c)
 {
     local ScriptedPawn sp;

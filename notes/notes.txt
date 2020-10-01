@@ -1,6 +1,6 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
-for v1.4.3 ========================
+for v1.5 ========================
 teleporters have a bEnabled flag
 write tests for repeated use of teleporters, and for denying one-way maps
 fix dupes like:
@@ -8,6 +8,45 @@ DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKon
 DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKong_Storage#basement, changed to 06_HONGKONG_WANCHAI_CANAL#Street
 
 you cannot climb out of 03_NYC_AirfieldHeliBase#FromOcean
+
+
+the code for attaching grenades to walls is interesting
+from DeusExWeapon.uc `simulated function bool NearWallCheck()`
+```
+    // trace out one foot in front of the pawn
+    StartTrace = Owner.Location;
+    EndTrace = StartTrace + Vector(Pawn(Owner).ViewRotation) * 32;
+
+    StartTrace.Z += Pawn(Owner).BaseEyeHeight;
+    EndTrace.Z += Pawn(Owner).BaseEyeHeight;
+
+    HitActor = Trace(HitLocation, HitNormal, EndTrace, StartTrace);
+    if ((HitActor == Level) || ((HitActor != None) && HitActor.IsA('Mover')))
+    {
+        placeLocation = HitLocation;
+        placeNormal = HitNormal;
+        placeMover = Mover(HitActor);
+        return True;
+    }
+```
+and then from `function PlaceGrenade()`
+```
+    gren = ThrownProjectile(spawn(ProjectileClass, Owner,, placeLocation, Rotator(placeNormal)));
+    if (gren != None)
+    {
+        gren.SetPhysics(PHYS_None);
+        gren.bBounce = False;
+        gren.bProximityTriggered = True;
+        gren.bStuck = True;
+        if (placeMover != None)
+            gren.SetBase(placeMover);
+
+        // up the damage based on the skill
+        // returned value from GetWeaponSkill is negative, so negate it to make it positive
+        // dmgX value ranges from 1.0 to 2.4 (max demo skill and max target aug)
+        dmgX = -2.0 * GetWeaponSkill() + 1.0;
+        gren.Damage *= dmgX;
+```
 
 for v1.4========================
 
