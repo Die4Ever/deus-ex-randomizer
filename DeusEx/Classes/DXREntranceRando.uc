@@ -60,9 +60,10 @@ function CheckConfig()
         BannedConnections[1].map_a = "02_NYC_BatteryPark";
         BannedConnections[1].map_b = "02_NYC_Warehouse";
     }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,3) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,5) ) {
         min_connections_selfconnect = 999;
         dead_ends[0] = "03_NYC_AirfieldHeliBase#FromOcean";
+        dead_ends[1] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
     }
     for(i=0; i < ArrayCount(BannedConnections); i++) {
         BannedConnections[i].map_a = Caps(BannedConnections[i].map_a);
@@ -442,8 +443,8 @@ function _GenerateConnections(int missionNum)
 function AddXfer(string mapname, string inTag, string outTag)
 {
     xfers[numXfers].mapname = Caps(mapname);
-    xfers[numXfers].inTag = inTag;
-    xfers[numXfers].outTag = outTag;
+    xfers[numXfers].inTag = Caps(inTag);
+    xfers[numXfers].outTag = Caps(outTag);
     xfers[numXfers].used = False;
     
     numXfers++;
@@ -696,7 +697,7 @@ function AdjustTeleporter(NavigationPoint p)
     if( curDest == "" ) return;
 
     hashPos = InStr(curDest,"#");
-    destTag = Mid(curDest,hashPos+1);
+    destTag = Caps(Mid(curDest,hashPos+1));
 
     for (i = 0;i<numConns;i++)
     {
@@ -773,8 +774,8 @@ function int RunTests()
     //also a weird one where walking the wrong way after teleporting took me somewhere else probably because both the in and out teleporter were tagged?
     //need to support 1-way maps, and a test for it
 
-    conns[0].a = xfers[0];
-    conns[0].b = xfers[1];
+    conns[0].a = xfers[1];//don't do the deadend first
+    conns[0].b = xfers[0];
     conns[1].a = xfers[2];
     conns[1].b = xfers[3];
     conns[2].a = xfers[4];
@@ -834,6 +835,8 @@ function int RunTests()
     //LogConnections();
     results += testbool(ValidateConnections(), true, "AddDoubleXfer validation");
 
+    dead_ends[0] = dead_end;
+
     for(i=0; i <= 100; i++) {
         dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
         EntranceRando(i);
@@ -845,7 +848,6 @@ function int RunTests()
 
     numXfers = 0;
     numConns = 0;
-    dead_ends[0] = dead_end;
 
     return results;
 }

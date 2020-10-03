@@ -3,6 +3,7 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 for v1.5 ========================
 teleporters have a bEnabled flag
 write tests for repeated use of teleporters, and for denying one-way maps
+need to test that a player can move back and forth through all maps, not just capable of visiting them all once, or getting stuck/softlocked in a dead-end
 fix dupes like:
 DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKong_Storage#basement, changed to 06_HONGKONG_HELIBASE#Helibase
 DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKong_Storage#basement, changed to 06_HONGKONG_WANCHAI_CANAL#Street
