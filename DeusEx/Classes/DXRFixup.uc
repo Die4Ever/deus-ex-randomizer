@@ -122,7 +122,7 @@ function Timer()
         case 8:
             if( dxr.Player.Song == None && Level.Song == None ) {
                 m = Music(DynamicLoadObject("NYCStreets2_Music.NYCStreets2_Music", class'Music'));
-                err("replacing "$dxr.Player.Song$":"$dxr.Player.SongSection$":"$dxr.Player.CdTrack$" with "$m);
+                //err("replacing "$dxr.Player.Song$":"$dxr.Player.SongSection$":"$dxr.Player.CdTrack$" with "$m);
                 UpdateDynamicMusic(m);
             }
             else if( Level.Song == None ) {
@@ -337,6 +337,11 @@ function HongKong_FirstEntry()
                     case "Breakintocompound":
                     case "LumpathPissed":
                         Trigger(a).bTriggerOnceOnly = False;
+                        break;
+                    case "Keypad3":
+                        if( a.Event == 'elevator_door' && HackableDevices(a) != None ) {
+                            HackableDevices(a).hackStrength = 0;
+                        }
                         break;
                     default:
                         break;

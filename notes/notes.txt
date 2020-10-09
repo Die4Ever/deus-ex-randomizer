@@ -1,5 +1,9 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
+16 units is 1 foot, from DeusExPlayer.uc:
+// check a 100 foot radius around me for combat
+if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
+
 for v1.5 ========================
 teleporters have a bEnabled flag
 write tests for repeated use of teleporters, and for denying one-way maps

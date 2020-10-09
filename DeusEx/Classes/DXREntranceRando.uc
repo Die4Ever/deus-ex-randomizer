@@ -33,6 +33,9 @@ struct MapConnection
 var Connection conns[50];
 var int numConns;
 
+var Connection fixed_conns[8];
+var int fixedConns;
+
 var MapTransfer xfers[50];
 var int numXfers;
 
@@ -237,6 +240,35 @@ function int GetAllMapNames(out MapConnection mapdests[15])
 {
     local int i, j, numMaps;
     local bool found;
+    for(i=0;i<fixedConns;i++) {
+        found=false;
+        for(j=0; j<numMaps; j++) {
+            if( fixed_conns[i].a.mapname == mapdests[j].mapname ) {
+                found=true;
+                break;
+            }
+        }
+        if (found == false)
+        {
+            mapdests[numMaps].mapname = fixed_conns[i].a.mapname;
+            mapdests[numMaps].numDests = 0;
+            numMaps++;
+        }
+
+        found=false;
+        for(j=0; j<numMaps; j++) {
+            if( fixed_conns[i].b.mapname == mapdests[j].mapname ) {
+                found=true;
+                break;
+            }
+        }
+        if (found == false)
+        {
+            mapdests[numMaps].mapname = fixed_conns[i].b.mapname;
+            mapdests[numMaps].numDests = 0;
+            numMaps++;
+        }
+    }
     for (i=0;i<numXfers;i++)
     {
         found=false;
@@ -409,6 +441,11 @@ function _GenerateConnections(int missionNum)
     xfersUsed = 0;
     connsMade = 0;
 
+    for(i=0; i < fixedConns; i++) {
+        conns[i] = fixed_conns[i];
+        connsMade++;
+    }
+
     while (xfersUsed < numXfers)
     {
         nextAvailIdx = GetNextTransferIdx();
@@ -456,9 +493,20 @@ function AddDoubleXfer(string mapname_a, string inTag, string mapname_b, string 
     AddXfer(mapname_b, outTag, inTag);
 }
 
+function AddFixedConn(string map_a, string inTag_a, string map_b, string outTag_a)
+{
+    fixed_conns[fixedConns].a.mapname = Caps(map_a);
+    fixed_conns[fixedConns].a.inTag = Caps(inTag_a);
+    fixed_conns[fixedConns].a.outTag = Caps(outTag_a);
+    fixed_conns[fixedConns].b.mapname = Caps(map_b);
+    fixed_conns[fixedConns].b.inTag = Caps(outTag_a);
+    fixed_conns[fixedConns].b.outTag = Caps(inTag_a);
+    fixedConns++;
+}
+
 function RandoMission2()
 {
-    //AddDoubleXfer("02_NYC_BatteryPark","ToBatteryPark","02_NYC_Street", "ToStreet");//maybe getting to the main hub area should be unchanged
+    AddFixedConn("02_NYC_BatteryPark","ToBatteryPark", "02_NYC_Street","ToStreet");
     AddDoubleXfer("02_NYC_Bar","ToBarBackEntrance","02_NYC_Street","FromBarBackEntrance");
     AddDoubleXfer("02_NYC_Bar","ToBarFrontEntrance","02_NYC_Street","FromBarFrontEntrance");
     AddDoubleXfer("02_NYC_FreeClinic","FromStreet","02_NYC_Street","FromClinic");
@@ -476,6 +524,7 @@ function RandoMission2()
 
 function RandoMission3()
 {
+    AddFixedConn("03_NYC_BatteryPark","x", "03_NYC_BatteryPark","x");//just make sure the traversal in ValidateConnections starts from the same place the player starts at
     AddDoubleXfer("03_NYC_BatteryPark","BBSExit","03_NYC_BrooklynBridgeStation","FromNYCStreets");
     AddDoubleXfer("03_NYC_BrooklynBridgeStation","MoleExit","03_NYC_MolePeople","MoleEnt");
     AddDoubleXfer("03_NYC_MolePeople","SewerExit","03_NYC_AirfieldHeliBase","SewerEnt");
@@ -489,6 +538,7 @@ function RandoMission3()
 
 function RandoMission4()
 {
+    AddFixedConn("04_NYC_Street","x", "04_NYC_Street","x");
     AddDoubleXfer("04_NYC_BATTERYPARK","ToBatteryPark","04_NYC_Street","ToStreet");
     AddDoubleXfer("04_NYC_STREET","FromSmugBackDoor","04_NYC_Smug","ToSmugBackDoor");
     AddDoubleXfer("04_NYC_STREET","FromSmugFrontDoor","04_NYC_Smug","ToSmugFrontDoor");
@@ -505,7 +555,7 @@ function RandoMission4()
 
 function RandoMission6()
 {
-    AddDoubleXfer("06_HONGKONG_HELIBASE","Helibase","06_HongKong_WanChai_Market","cargoup");
+    AddFixedConn("06_HONGKONG_HELIBASE","Helibase","06_HongKong_WanChai_Market","cargoup");
     AddDoubleXfer("06_HONGKONG_MJ12LAB","cathedral","06_HongKong_VersaLife","secret");
     AddDoubleXfer("06_HONGKONG_MJ12LAB","tubeend","06_HongKong_Storage","basement");
     AddDoubleXfer("06_HONGKONG_STORAGE","waterpipe","06_HongKong_WanChai_Canal","canal");
@@ -525,6 +575,7 @@ function RandoMission6()
 
 function RandoMission8()
 {
+    AddFixedConn("08_NYC_Street","x", "08_NYC_Street","x");
     AddDoubleXfer("08_NYC_BAR","ToBarFrontEntrance","08_NYC_Street","FromBarFrontEntrance");
     AddDoubleXfer("08_NYC_BAR","ToBarBackEntrance","08_NYC_Street","FromBarBackEntrance");
     AddDoubleXfer("08_NYC_FREECLINIC","FromStreet","08_NYC_Street","FromClinic");
@@ -540,6 +591,7 @@ function RandoMission8()
 
 function RandoMission9()
 {
+    AddFixedConn("09_NYC_DOCKYARD","x", "09_NYC_DOCKYARD","x");
     AddDoubleXfer("09_NYC_DOCKYARD","ToDockyardSewer","09_NYC_Ship","FromDockyardSewer");
     AddDoubleXfer("09_NYC_DOCKYARD","FromAircondDuct","09_NYC_ShipFan","ToAircondDuct");
     AddDoubleXfer("09_NYC_DOCKYARD","ExitShip","09_NYC_Ship","EnterShip");
@@ -615,6 +667,7 @@ function EntranceRando(int missionNum)
 {   
     numConns = 0;
     numXfers = 0;
+    fixedConns = 0;
     if( missionNum == 11 ) missionNum = 10;//combine 10 and 11
     dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") + missionNum );
 
@@ -848,6 +901,7 @@ function int RunTests()
 
     numXfers = 0;
     numConns = 0;
+    fixedConns = 0;
 
     return results;
 }
