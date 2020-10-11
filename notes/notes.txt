@@ -5,8 +5,14 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
 
 for v1.5 ========================
-maybe add a list of requiredMaps or unimportantMaps for DXREntranceRando?
+maybe add a list of unimportantMaps for DXREntranceRando? maybe chateau, freeclinic, nyc sewers, smuggler, gas station, graveyard?
+another issue with DXREntranceRando:
+    if I make a connection from paris metro to chateau, DXREntranceRando will ensure I can get to the metro to get to the chateau, but it won't realize that I also need to get to the club first
+    similarly, you go from 12_vandenberg_cmd to gas station, but you need to get to 12_vandenberg_computer first
+    might need a `string other_required_map` for each transfer?
 lots of doors that need buttons on the other side in mission 14, and maybe 12_vandenberg_tunnels could use that too instead of making it open on player bump
+paris and area51 have some one-way transfers that could maybe be fixed?
+maybe I can add in the transfers from the chopper, they're one-way MapExits but they should work
 teleporters have a bEnabled flag
 write tests for repeated use of teleporters, and for denying one-way maps
 need to test that a player can move back and forth through all maps, not just capable of visiting them all once, or getting stuck/softlocked in a dead-end
