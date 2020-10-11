@@ -442,9 +442,6 @@ function HongKong_AnyEntry()
 
 function NYC_08_AnyEntry()
 {
-    local LevelInfo l;
-    local Music m;
-
     SetTimer(1.0, True);
 }
 

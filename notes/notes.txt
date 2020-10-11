@@ -5,6 +5,8 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
 
 for v1.5 ========================
+maybe add a list of requiredMaps or unimportantMaps for DXREntranceRando?
+lots of doors that need buttons on the other side in mission 14, and maybe 12_vandenberg_tunnels could use that too instead of making it open on player bump
 teleporters have a bEnabled flag
 write tests for repeated use of teleporters, and for denying one-way maps
 need to test that a player can move back and forth through all maps, not just capable of visiting them all once, or getting stuck/softlocked in a dead-end
@@ -51,6 +53,43 @@ and then from `function PlaceGrenade()`
         // dmgX value ranges from 1.0 to 2.4 (max demo skill and max target aug)
         dmgX = -2.0 * GetWeaponSkill() + 1.0;
         gren.Damage *= dmgX;
+```
+
+experimental teleport to actor by name, probably better to make a subclass of Teleporter that sets a flag, and then in a DXR Module on AnyEntry read that flag and clear it
+```
+err( "GetLocalURL: " $ Level.GetLocalURL() );
+    err( "GetAddressURL: " $ Level.GetAddressURL() );
+
+    if(dxr.dxInfo.missionNumber == 1) {
+        foreach AllActors(class'Teleporter', t) {
+            //t.URL = "02_NYC_STREET#?toname=Teleporter19";
+            t.URL = "15_area51_entrance#?toname=Light73";
+        }
+    } else {
+        foreach AllActors(class'Teleporter', t) {
+            //t.URL = "02_NYC_STREET#?toname=Teleporter19";
+            if( t.URL != "" ) {
+                t.URL = t.URL $ "?toname=";//otherwise toname will stay for the rest of the game
+            }
+        }
+    }
+
+    tonamestring = Level.game.ParseOption( "?" $ Level.GetLocalURL(), "toname" );
+    err("tonamestring: " $ tonamestring);
+    if( InStr(tonamestring, "#") >=0 ) {
+        tonamestring = Left(tonamestring,InStr(tonamestring,"#"));
+    }
+    err("tonamestring: " $ tonamestring);
+    if( tonamestring != "" ) {
+        toname = dxr.Player.rootWindow.StringToName(tonamestring);
+        err("toname: " $ toname);
+        foreach AllActors(class'Actor', a) {
+            if( a.Name == toname ) {
+                err("found actor "$a);
+                dxr.Player.SetLocation(a.Location);
+            }
+        }
+    }
 ```
 
 for v1.4========================
