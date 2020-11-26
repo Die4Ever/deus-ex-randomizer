@@ -98,6 +98,7 @@ function AnyEntry()
     l( "mission " $ dxr.dxInfo.missionNumber $ " AnyEntry()");
 
     BuffScopes();
+    FixSamCarter();
 
     switch(dxr.dxInfo.missionNumber) {
         case 4:
@@ -141,6 +142,22 @@ function Timer()
                 dxr.Player.flagBase.SetBool('MS_Helicopter_Unhidden', True,, 9);
             }
             break;
+    }
+}
+
+function FixSamCarter()
+{
+    local SamCarter s;
+    foreach AllActors(class'SamCarter', s) {
+        s.bFearHacking = false;
+        s.bFearWeapon = false;
+        s.bFearShot = false;
+        s.bFearInjury = false;
+        s.bFearIndirectInjury = false;
+        s.bFearCarcass = false;
+        s.bFearDistress = false;
+        s.bFearAlarm = false;
+        s.bFearProjectiles = false;
     }
 }
 
