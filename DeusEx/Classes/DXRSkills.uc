@@ -8,6 +8,8 @@ struct SkillCostMultiplier {
 };
 
 var config SkillCostMultiplier SkillCostMultipliers[16];
+var config int banned_skill_chances;
+var config int banned_skill_level_chances;
 
 function CheckConfig()
 {
@@ -32,11 +34,8 @@ function AnyEntry()
 function RandoSkills()
 {
     local Skill aSkill;
-    local int i, m;
-    local int percent, mission_group;
-    local float f;
-    local SkillCostMultiplier scm;
-    local class<Skill> c;
+    local int i;
+    local int mission_group;
 
     l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.minskill$", max: "$dxr.flags.maxskill $", reroll_missions: "$ dxr.flags.skills_reroll_missions $", independent_levels: "$ dxr.flags.skills_independent_levels );
     if( dxr.flags.skills_reroll_missions == 0 )
@@ -54,26 +53,65 @@ function RandoSkills()
     aSkill = dxr.Player.SkillSystem.FirstSkill;
     while(aSkill != None)
     {
-        percent = rng(dxr.flags.maxskill - dxr.flags.minskill + 1) + dxr.flags.minskill;
-        l( aSkill.Class.Name $ " percent: "$percent$"%");
-        for(i=0; i<arrayCount(aSkill.Cost); i++)
-        {
-            if( dxr.flags.skills_independent_levels > 0 ) {
-                percent = rng(dxr.flags.maxskill - dxr.flags.minskill + 1) + dxr.flags.minskill;
-                l( aSkill.Class.Name $ " lvl: "$(i+1)$", percent: "$percent$"%");
-            }
-
-            f = float(aSkill.default.Cost[i]) * float(percent) / 100.0;
-            for(m=0; m < ArrayCount(SkillCostMultipliers); m++) {
-                scm = SkillCostMultipliers[m];
-                if( scm.type == "" ) continue;
-                c = class<Skill>(GetClassFromString(scm.type, class'Skill'));
-                if( aSkill.IsA(c.name) && i+1 >= scm.minLevel && i < scm.maxLevel ) {
-                    f *= float(scm.percent) / 100.0;
-                }
-            }
-            aSkill.Cost[i] = int(f);
-        }
+        RandoSkill(aSkill);
         aSkill = aSkill.next;
     }
+}
+
+function RandoSkill(Skill aSkill)
+{
+    local int percent, i;
+    local bool banned;
+
+    percent = rng(dxr.flags.maxskill - dxr.flags.minskill + 1) + dxr.flags.minskill;
+    banned = chance_single(banned_skill_chances);
+    l( aSkill.Class.Name $ " percent: "$percent$"%, banned: " $ banned );
+    for(i=0; i<arrayCount(aSkill.Cost); i++)
+    {
+        if( banned ) {
+            aSkill.Cost[i] = 99999;
+        } else {
+            RandoSkillLevel(aSkill, i, percent);
+        }
+    }
+}
+
+function RandoSkillLevel(Skill aSkill, int i, int parent_percent)
+{
+    local int percent, m;
+    local float f;
+    local SkillCostMultiplier scm;
+    local class<Skill> c;
+
+    if( chance_single(banned_skill_level_chances) ) {
+        l( aSkill.Class.Name $ " lvl: "$(i+1)$" is banned");
+        aSkill.Cost[i] = 99999;
+        return;
+    } 
+
+    if( dxr.flags.skills_independent_levels > 0 ) {
+        percent = rng(dxr.flags.maxskill - dxr.flags.minskill + 1) + dxr.flags.minskill;
+        l( aSkill.Class.Name $ " lvl: "$(i+1)$", percent: "$percent$"%");
+    } else {
+        percent = parent_percent;
+    }
+
+    f = float(aSkill.default.Cost[i]) * float(percent) / 100.0;
+    for(m=0; m < ArrayCount(SkillCostMultipliers); m++) {
+        scm = SkillCostMultipliers[m];
+        if( scm.type == "" ) continue;
+        c = class<Skill>(GetClassFromString(scm.type, class'Skill'));
+        if( aSkill.IsA(c.name) && i+1 >= scm.minLevel && i < scm.maxLevel ) {
+            f *= float(scm.percent) / 100.0;
+        }
+    }
+
+    f = Clamp(f, 0, 99999);
+    aSkill.Cost[i] = int(f);
+}
+
+defaultproperties
+{
+    banned_skill_chances=5
+    banned_skill_level_chances=5
 }
