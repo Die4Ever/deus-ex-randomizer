@@ -50,7 +50,7 @@ function FirstEntry()
 function SaveRespawn(ScriptedPawn p, out int i)
 {
     local int a;
-    if( p.IsA('Animal') && !p.IsA('Greasel') && !p.IsA('Karkian') && !p.IsA('Gray') && !p.IsA('Doberman') ) return;
+    if( IsCritter(p) ) return;
     if( p.bImportant || p.bInvincible || p.bHidden ) return;
 
     for(a=0; a < ArrayCount(dont_respawn); a++) {

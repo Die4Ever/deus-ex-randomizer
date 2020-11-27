@@ -207,6 +207,7 @@ function RandoEnemies(int percent)
         if( p == newsp ) break;
         if( SkipActor(p, 'ScriptedPawn') ) continue;
         if( p.bImportant || p.bInvincible ) continue;
+        if( IsCritter(p) ) continue;
         //if( IsInitialEnemy(p) == False ) continue;
 
         if( rng(100) < percent ) RandomizeSP(p, percent);
