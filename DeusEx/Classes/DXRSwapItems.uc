@@ -22,7 +22,10 @@ function FirstEntry()
     Super.FirstEntry();
 
     for(i=0; i < ArrayCount(swap_actors); i++) {
-        if( swap_actors[i] != "" )
+        if( swap_actors[i] != "" ) {
+            l("swapping swap_actors["$i$"]: "$swap_actors[i]);
             SwapAll(GetClassFromString(swap_actors[i], class'Actor').name);
+            l("done swapping swap_actors["$i$"]: "$swap_actors[i]);
+        }
     }
 }

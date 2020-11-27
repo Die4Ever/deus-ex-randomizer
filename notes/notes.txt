@@ -1,13 +1,102 @@
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
-for v1.4.3 ========================
+16 units is 1 foot, from DeusExPlayer.uc:
+// check a 100 foot radius around me for combat
+if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
+
+for v1.5 ========================
+maybe add a list of unimportantMaps for DXREntranceRando? maybe chateau, freeclinic, nyc sewers, smuggler, gas station, graveyard?
+another issue with DXREntranceRando:
+    if I make a connection from paris metro to chateau, DXREntranceRando will ensure I can get to the metro to get to the chateau, but it won't realize that I also need to get to the club first
+    similarly, you go from 12_vandenberg_cmd to gas station, but you need to get to 12_vandenberg_computer first
+    might need a `string other_required_map` for each transfer?
+lots of doors that need buttons on the other side in mission 14, and maybe 12_vandenberg_tunnels could use that too instead of making it open on player bump
+paris and area51 have some one-way transfers that could maybe be fixed?
+maybe I can add in the transfers from the chopper, they're one-way MapExits but they should work
 teleporters have a bEnabled flag
 write tests for repeated use of teleporters, and for denying one-way maps
+need to test that a player can move back and forth through all maps, not just capable of visiting them all once, or getting stuck/softlocked in a dead-end
 fix dupes like:
 DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKong_Storage#basement, changed to 06_HONGKONG_HELIBASE#Helibase
 DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKong_Storage#basement, changed to 06_HONGKONG_WANCHAI_CANAL#Street
 
 you cannot climb out of 03_NYC_AirfieldHeliBase#FromOcean
+
+
+the code for attaching grenades to walls is interesting
+from DeusExWeapon.uc `simulated function bool NearWallCheck()`
+```
+    // trace out one foot in front of the pawn
+    StartTrace = Owner.Location;
+    EndTrace = StartTrace + Vector(Pawn(Owner).ViewRotation) * 32;
+
+    StartTrace.Z += Pawn(Owner).BaseEyeHeight;
+    EndTrace.Z += Pawn(Owner).BaseEyeHeight;
+
+    HitActor = Trace(HitLocation, HitNormal, EndTrace, StartTrace);
+    if ((HitActor == Level) || ((HitActor != None) && HitActor.IsA('Mover')))
+    {
+        placeLocation = HitLocation;
+        placeNormal = HitNormal;
+        placeMover = Mover(HitActor);
+        return True;
+    }
+```
+and then from `function PlaceGrenade()`
+```
+    gren = ThrownProjectile(spawn(ProjectileClass, Owner,, placeLocation, Rotator(placeNormal)));
+    if (gren != None)
+    {
+        gren.SetPhysics(PHYS_None);
+        gren.bBounce = False;
+        gren.bProximityTriggered = True;
+        gren.bStuck = True;
+        if (placeMover != None)
+            gren.SetBase(placeMover);
+
+        // up the damage based on the skill
+        // returned value from GetWeaponSkill is negative, so negate it to make it positive
+        // dmgX value ranges from 1.0 to 2.4 (max demo skill and max target aug)
+        dmgX = -2.0 * GetWeaponSkill() + 1.0;
+        gren.Damage *= dmgX;
+```
+
+experimental teleport to actor by name, probably better to make a subclass of Teleporter that sets a flag, and then in a DXR Module on AnyEntry read that flag and clear it
+```
+err( "GetLocalURL: " $ Level.GetLocalURL() );
+    err( "GetAddressURL: " $ Level.GetAddressURL() );
+
+    if(dxr.dxInfo.missionNumber == 1) {
+        foreach AllActors(class'Teleporter', t) {
+            //t.URL = "02_NYC_STREET#?toname=Teleporter19";
+            t.URL = "15_area51_entrance#?toname=Light73";
+        }
+    } else {
+        foreach AllActors(class'Teleporter', t) {
+            //t.URL = "02_NYC_STREET#?toname=Teleporter19";
+            if( t.URL != "" ) {
+                t.URL = t.URL $ "?toname=";//otherwise toname will stay for the rest of the game
+            }
+        }
+    }
+
+    tonamestring = Level.game.ParseOption( "?" $ Level.GetLocalURL(), "toname" );
+    err("tonamestring: " $ tonamestring);
+    if( InStr(tonamestring, "#") >=0 ) {
+        tonamestring = Left(tonamestring,InStr(tonamestring,"#"));
+    }
+    err("tonamestring: " $ tonamestring);
+    if( tonamestring != "" ) {
+        toname = dxr.Player.rootWindow.StringToName(tonamestring);
+        err("toname: " $ toname);
+        foreach AllActors(class'Actor', a) {
+            if( a.Name == toname ) {
+                err("found actor "$a);
+                dxr.Player.SetLocation(a.Location);
+            }
+        }
+    }
+```
 
 for v1.4========================
 

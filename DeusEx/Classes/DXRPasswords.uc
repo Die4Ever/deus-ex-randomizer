@@ -258,7 +258,7 @@ function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
     dxr.Player.ClientMessage("Note updated");
     l("found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
-    note.text = ReplaceText( note.text, oldpassword, newpassword, true );
+    note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
 }
 
 function string GeneratePassword(string oldpassword)

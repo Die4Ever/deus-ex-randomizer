@@ -21,8 +21,8 @@ function CheckConfig()
 {
     local int i;
     local class<Actor> a;
-    if( config_version < 4 ) {
-        chance_clone_nonhumans = 70;
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,5) ) {
+        chance_clone_nonhumans = 60;
         enemy_multiplier = 1;
 
         for(i=0; i < ArrayCount(randommelees); i++ ) {
@@ -36,18 +36,18 @@ function CheckConfig()
             randomenemies[i].chance = 0;
         }
 
-        AddRandomEnemyType("ThugMale", 10);
-        AddRandomEnemyType("ThugMale2", 10);
-        AddRandomEnemyType("ThugMale3", 10);
-        AddRandomEnemyType("Greasel", 6);
-        AddRandomEnemyType("Gray", 3);
-        AddRandomEnemyType("Karkian", 3);
-        AddRandomEnemyType("SpiderBot", 6);
-        AddRandomEnemyType("MilitaryBot", 3);
-        AddRandomEnemyType("SpiderBot2", 3);
-        AddRandomEnemyType("SecurityBot2", 3);
-        AddRandomEnemyType("SecurityBot3", 3);
-        AddRandomEnemyType("SecurityBot4", 3);
+        AddRandomEnemyType("ThugMale", 14);
+        AddRandomEnemyType("ThugMale2", 14);
+        AddRandomEnemyType("ThugMale3", 14);
+        AddRandomEnemyType("Greasel", 5);
+        AddRandomEnemyType("Gray", 2);
+        AddRandomEnemyType("Karkian", 2);
+        AddRandomEnemyType("SpiderBot2", 2);//little spider
+        AddRandomEnemyType("MilitaryBot", 2);
+        AddRandomEnemyType("SpiderBot", 2);//big spider
+        AddRandomEnemyType("SecurityBot2", 2);//walker
+        AddRandomEnemyType("SecurityBot3", 2);//little guy from liberty island
+        AddRandomEnemyType("SecurityBot4", 2);//unused little guy
 
         AddRandomWeapon("WeaponPistol", 11);
         AddRandomWeapon("WeaponAssaultGun", 11);
@@ -139,6 +139,47 @@ function FirstEntry()
 {
     Super.FirstEntry();
     RandoEnemies(dxr.flags.enemiesrandomized);
+    //SwapScriptedPawns();
+}
+
+function SwapScriptedPawns()
+{
+    local ScriptedPawn a, b;
+    local int num, i, slot;
+
+    SetSeed( "SwapScriptedPawns" );
+    num=0;
+    foreach AllActors(class'ScriptedPawn', a )
+    {
+        if( a.bHidden || a.bStatic ) continue;
+        if( a.bImportant ) continue;
+        if( IsCritter(a) ) continue;
+        num++;
+    }
+
+    foreach AllActors(class'ScriptedPawn', a )
+    {
+        if( a.bHidden || a.bStatic ) continue;
+        if( a.bImportant ) continue;
+        if( IsCritter(a) ) continue;
+
+        i=0;
+        slot=rng(num-1);
+        foreach AllActors(class'ScriptedPawn', b )
+        {
+            if( b.bHidden || b.bStatic ) continue;
+            if( b.bImportant ) continue;
+            if( IsCritter(b) ) continue;
+
+            if(i==slot) {
+                a.Orders = defaultOrders;
+                b.Orders = defaultOrders;
+                Swap(a, b);
+                break;
+            }
+            i++;
+        }
+    }
 }
 
 function RandoEnemies(int percent)
@@ -166,6 +207,7 @@ function RandoEnemies(int percent)
         if( p == newsp ) break;
         if( SkipActor(p, 'ScriptedPawn') ) continue;
         if( p.bImportant || p.bInvincible ) continue;
+        if( IsCritter(p) ) continue;
         //if( IsInitialEnemy(p) == False ) continue;
 
         if( rng(100) < percent ) RandomizeSP(p, percent);

@@ -33,6 +33,9 @@ struct MapConnection
 var Connection conns[50];
 var int numConns;
 
+var Connection fixed_conns[8];
+var int numFixedConns;
+
 var MapTransfer xfers[50];
 var int numXfers;
 
@@ -60,9 +63,11 @@ function CheckConfig()
         BannedConnections[1].map_a = "02_NYC_BatteryPark";
         BannedConnections[1].map_b = "02_NYC_Warehouse";
     }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,3) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,5) ) {
         min_connections_selfconnect = 999;
         dead_ends[0] = "03_NYC_AirfieldHeliBase#FromOcean";
+        dead_ends[1] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
+        //dead_ends[2] = "12_VANDENBERG_CMD#storage";//it's actually backwards from this...
     }
     for(i=0; i < ArrayCount(BannedConnections); i++) {
         BannedConnections[i].map_a = Caps(BannedConnections[i].map_a);
@@ -236,6 +241,35 @@ function int GetAllMapNames(out MapConnection mapdests[15])
 {
     local int i, j, numMaps;
     local bool found;
+    for(i=0;i<numFixedConns;i++) {
+        found=false;
+        for(j=0; j<numMaps; j++) {
+            if( fixed_conns[i].a.mapname == mapdests[j].mapname ) {
+                found=true;
+                break;
+            }
+        }
+        if (found == false)
+        {
+            mapdests[numMaps].mapname = fixed_conns[i].a.mapname;
+            mapdests[numMaps].numDests = 0;
+            numMaps++;
+        }
+
+        found=false;
+        for(j=0; j<numMaps; j++) {
+            if( fixed_conns[i].b.mapname == mapdests[j].mapname ) {
+                found=true;
+                break;
+            }
+        }
+        if (found == false)
+        {
+            mapdests[numMaps].mapname = fixed_conns[i].b.mapname;
+            mapdests[numMaps].numDests = 0;
+            numMaps++;
+        }
+    }
     for (i=0;i<numXfers;i++)
     {
         found=false;
@@ -259,7 +293,7 @@ function MarkMapsConnected(out MapConnection mapdests[15], int numMaps, MapTrans
 {
     local int mapidx;
 
-    if( IsDeadEndConnection(b) == false ) {
+    if( IsDeadEndConnection(b, a) == false ) {
         mapidx = FindMapDestinations(mapdests, numMaps, a.mapname);
         if(mapidx == -1) {
             err("failed MarkMapsConnected("$numMaps$", "$a.mapname$", "$b.mapname$") find A");
@@ -268,7 +302,7 @@ function MarkMapsConnected(out MapConnection mapdests[15], int numMaps, MapTrans
         AddDestination( mapdests[mapidx], b.mapname);
     }
 
-    if( IsDeadEndConnection(a) == false ) {
+    if( IsDeadEndConnection(a, b) == false ) {
         mapidx = FindMapDestinations(mapdests, numMaps, b.mapname);
         if(mapidx == -1) {
             err("failed MarkMapsConnected("$numMaps$", "$a.mapname$", "$b.mapname$") find B");
@@ -278,11 +312,13 @@ function MarkMapsConnected(out MapConnection mapdests[15], int numMaps, MapTrans
     }
 }
 
-function bool IsDeadEndConnection(MapTransfer m)
+function bool IsDeadEndConnection(MapTransfer m, MapTransfer from)
 {
     local int i;
     local string s;
 
+    if(from.outTag == "") return true;
+    if(m.inTag == "") return true;
     s = Caps(m.mapname $"#"$ m.inTag);
     for(i=0; i < ArrayCount(dead_ends); i++) {
         if( s == dead_ends[i] ) {
@@ -341,11 +377,7 @@ function bool CheckDuplicate(MapTransfer a, MapTransfer b)
     if( a.mapname != b.mapname ) return false;
     if( a.inTag == b.inTag
         || a.outTag == b.outTag
-        //|| a.outTag == b.inTag
-        //|| a.inTag == b.outTag
     ) {
-        //err("a: "$a.inTag$"/"$a.outTag);
-        //err("b: "$b.inTag$"/"$b.outTag);
         return true;
     }
     return false;
@@ -408,6 +440,11 @@ function _GenerateConnections(int missionNum)
     xfersUsed = 0;
     connsMade = 0;
 
+    for(i=0; i < numFixedConns; i++) {
+        conns[i] = fixed_conns[i];
+        connsMade++;
+    }
+
     while (xfersUsed < numXfers)
     {
         nextAvailIdx = GetNextTransferIdx();
@@ -442,8 +479,8 @@ function _GenerateConnections(int missionNum)
 function AddXfer(string mapname, string inTag, string outTag)
 {
     xfers[numXfers].mapname = Caps(mapname);
-    xfers[numXfers].inTag = inTag;
-    xfers[numXfers].outTag = outTag;
+    xfers[numXfers].inTag = Caps(inTag);
+    xfers[numXfers].outTag = Caps(outTag);
     xfers[numXfers].used = False;
     
     numXfers++;
@@ -455,9 +492,20 @@ function AddDoubleXfer(string mapname_a, string inTag, string mapname_b, string 
     AddXfer(mapname_b, outTag, inTag);
 }
 
+function AddFixedConn(string map_a, string inTag_a, string map_b, string outTag_a)
+{
+    fixed_conns[numFixedConns].a.mapname = Caps(map_a);
+    fixed_conns[numFixedConns].a.inTag = Caps(inTag_a);
+    fixed_conns[numFixedConns].a.outTag = Caps(outTag_a);
+    fixed_conns[numFixedConns].b.mapname = Caps(map_b);
+    fixed_conns[numFixedConns].b.inTag = Caps(outTag_a);
+    fixed_conns[numFixedConns].b.outTag = Caps(inTag_a);
+    numFixedConns++;
+}
+
 function RandoMission2()
 {
-    //AddDoubleXfer("02_NYC_BatteryPark","ToBatteryPark","02_NYC_Street", "ToStreet");//maybe getting to the main hub area should be unchanged
+    AddFixedConn("02_NYC_BatteryPark","ToBatteryPark", "02_NYC_Street","ToStreet");
     AddDoubleXfer("02_NYC_Bar","ToBarBackEntrance","02_NYC_Street","FromBarBackEntrance");
     AddDoubleXfer("02_NYC_Bar","ToBarFrontEntrance","02_NYC_Street","FromBarFrontEntrance");
     AddDoubleXfer("02_NYC_FreeClinic","FromStreet","02_NYC_Street","FromClinic");
@@ -475,6 +523,7 @@ function RandoMission2()
 
 function RandoMission3()
 {
+    AddFixedConn("03_NYC_BatteryPark","x", "03_NYC_BatteryPark","x");//just make sure the traversal in ValidateConnections starts from the same place the player starts at
     AddDoubleXfer("03_NYC_BatteryPark","BBSExit","03_NYC_BrooklynBridgeStation","FromNYCStreets");
     AddDoubleXfer("03_NYC_BrooklynBridgeStation","MoleExit","03_NYC_MolePeople","MoleEnt");
     AddDoubleXfer("03_NYC_MolePeople","SewerExit","03_NYC_AirfieldHeliBase","SewerEnt");
@@ -488,6 +537,7 @@ function RandoMission3()
 
 function RandoMission4()
 {
+    AddFixedConn("04_NYC_Street","x", "04_NYC_Street","x");
     AddDoubleXfer("04_NYC_BATTERYPARK","ToBatteryPark","04_NYC_Street","ToStreet");
     AddDoubleXfer("04_NYC_STREET","FromSmugBackDoor","04_NYC_Smug","ToSmugBackDoor");
     AddDoubleXfer("04_NYC_STREET","FromSmugFrontDoor","04_NYC_Smug","ToSmugFrontDoor");
@@ -504,13 +554,13 @@ function RandoMission4()
 
 function RandoMission6()
 {
-    AddDoubleXfer("06_HONGKONG_HELIBASE","Helibase","06_HongKong_WanChai_Market","cargoup");
+    AddFixedConn("06_HONGKONG_HELIBASE","Helibase","06_HongKong_WanChai_Market","cargoup");
     AddDoubleXfer("06_HONGKONG_MJ12LAB","cathedral","06_HongKong_VersaLife","secret");
     AddDoubleXfer("06_HONGKONG_MJ12LAB","tubeend","06_HongKong_Storage","basement");
     AddDoubleXfer("06_HONGKONG_STORAGE","waterpipe","06_HongKong_WanChai_Canal","canal");
     //AddDoubleXfer("06_HONGKONG_STORAGE","basement","06_HongKong_MJ12lab","tubeend");
     //AddXfer("06_HongKong_Storage","BackDoor","06_HONGKONG_WANCHAI_GARAGE#Teleporter");//one way
-    AddDoubleXfer("06_HONGKONG_TONGBASE","lab","06_HongKong_WanChai_Market","compound");
+    AddFixedConn("06_HONGKONG_TONGBASE","lab","06_HongKong_WanChai_Market","compound");
     AddDoubleXfer("06_HONGKONG_VERSALIFE","Lobby","06_HongKong_WanChai_Market","market");
     AddDoubleXfer("06_HONGKONG_WANCHAI_CANAL","Street","06_HongKong_WanChai_Street","Canal");
     AddDoubleXfer("06_HONGKONG_WANCHAI_CANAL","market01","06_HongKong_WanChai_Market","canal01");
@@ -524,6 +574,7 @@ function RandoMission6()
 
 function RandoMission8()
 {
+    AddFixedConn("08_NYC_Street","x", "08_NYC_Street","x");
     AddDoubleXfer("08_NYC_BAR","ToBarFrontEntrance","08_NYC_Street","FromBarFrontEntrance");
     AddDoubleXfer("08_NYC_BAR","ToBarBackEntrance","08_NYC_Street","FromBarBackEntrance");
     AddDoubleXfer("08_NYC_FREECLINIC","FromStreet","08_NYC_Street","FromClinic");
@@ -539,6 +590,7 @@ function RandoMission8()
 
 function RandoMission9()
 {
+    AddFixedConn("09_NYC_DOCKYARD","x", "09_NYC_DOCKYARD","x");
     AddDoubleXfer("09_NYC_DOCKYARD","ToDockyardSewer","09_NYC_Ship","FromDockyardSewer");
     AddDoubleXfer("09_NYC_DOCKYARD","FromAircondDuct","09_NYC_ShipFan","ToAircondDuct");
     AddDoubleXfer("09_NYC_DOCKYARD","ExitShip","09_NYC_Ship","EnterShip");
@@ -553,15 +605,13 @@ function RandoMission9()
 
 function RandoMission10()
 {
+    AddFixedConn("10_PARIS_CATACOMBS","x", "10_PARIS_CATACOMBS","x");
     AddDoubleXfer("10_PARIS_CATACOMBS","spiralstair","10_Paris_Catacombs_Tunnels","spiralstair");//same tag on both sides?
-    //AddDoubleXfer("10_PARIS_CATACOMBS_TUNNELS","","10_Paris_Metro","sewer");//one way?
-    AddDoubleXfer("10_PARIS_CHATEAU","Chateau_start","11_Paris_Cathedral","cathedralstart");
+    AddFixedConn("10_PARIS_CATACOMBS_TUNNELS","","10_Paris_Metro","sewer");//one way
+    AddFixedConn("10_Paris_Metro","","10_PARIS_CHATEAU","x");//one way
+    AddDoubleXfer("10_PARIS_CHATEAU","","11_Paris_Cathedral","cathedralstart");//one way
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club1","10_Paris_Metro","Paris_Metro1");
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club2","10_Paris_Metro","Paris_Metro2");
-    //AddDoubleXfer("10_PARIS_METRO","sewer","");
-    //AddDoubleXfer("10_PARIS_METRO","","10_Paris_Chateau");
-
-    //AddDoubleXfer("11_PARIS_CATHEDRAL","cathedralstart","");
     AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
     //AddDoubleXfer("11_PARIS_EVERETT","","12_Vandenberg_cmd");
 
@@ -570,7 +620,7 @@ function RandoMission10()
 
 function RandoMission11()
 {
-    //AddDoubleXfer("11_PARIS_CATHEDRAL","cathedralstart","");
+    //AddFixedConn("11_PARIS_CATHEDRAL","x","11_PARIS_CATHEDRAL", "x");
     AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
     //AddDoubleXfer("11_PARIS_EVERETT","","12_Vandenberg_cmd");
 
@@ -579,6 +629,7 @@ function RandoMission11()
 
 function RandoMission12()
 {
+    AddFixedConn("12_VANDENBERG_CMD","x","12_VANDENBERG_CMD", "x");
     AddDoubleXfer("12_VANDENBERG_CMD","commstat","12_vandenberg_tunnels","start");
     AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");
     AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");//this might be dangerous because of the locked key-only door?
@@ -586,11 +637,20 @@ function RandoMission12()
     //AddDoubleXfer("12_VANDENBERG_GAS","gas_start","","");
     //AddDoubleXfer("12_VANDENBERG_GAS","","14_Vandenberg_sub","");
 
+    /*AddFixedConn("12_vandenberg_computer","x","14_Vandenberg_sub.dx", "x");//jock takes you to the gas station after 12_vandenberg_computer, then to vandenberg sub... this causes issues
+
+    AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC.dx ","UC");//strange formatting, some even have a space
+    AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub.dx","subbay");*/
+    //AddDoubleXfer("14_OCEANLAB_SILO","frontgate","","");
+    //AddDoubleXfer("14_OCEANLAB_SILO","","15_area51_bunker.dx ","bunker_start");
+    //AddDoubleXfer("14_Vandenberg_sub.dx","","14_Oceanlab_silo.dx ","frontgate");
+
     GenerateConnections(12);
 }
 
 function RandoMission14()
 {
+    AddFixedConn("14_Vandenberg_sub.dx","x","14_Vandenberg_sub.dx", "x");
     AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC.dx ","UC");//strange formatting, some even have a space
     AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub.dx","subbay");
     //AddDoubleXfer("14_OCEANLAB_SILO","frontgate","","");
@@ -602,8 +662,10 @@ function RandoMission14()
 
 function RandoMission15()
 {
+    AddFixedConn("15_AREA51_BUNKER","x","15_AREA51_BUNKER", "x");
     //AddDoubleXfer("15_AREA51_BUNKER","commstat","","");
-    //AddDoubleXfer("15_AREA51_BUNKER","","15_Area51_entrance","start");
+    AddDoubleXfer("15_AREA51_BUNKER","","15_Area51_entrance","start");
+    AddDoubleXfer("15_Area51_entrance","","15_AREA51_FINAL","start");
     AddDoubleXfer("15_AREA51_FINAL","final_end","15_Area51_page","page_start");
     //AddDoubleXfer("15_AREA51_FINAL","Start","");
 
@@ -614,7 +676,9 @@ function EntranceRando(int missionNum)
 {   
     numConns = 0;
     numXfers = 0;
+    numFixedConns = 0;
     if( missionNum == 11 ) missionNum = 10;//combine 10 and 11
+    //if( missionNum == 14 ) missionNum = 12;//combine vandenberg and oceanlab?
     dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") + missionNum );
 
     switch(missionNum)
@@ -637,7 +701,7 @@ function EntranceRando(int missionNum)
         case 9:
             RandoMission9();
             break;
-        /*case 10:
+        case 10:
             RandoMission10();
             break;
         case 11:
@@ -647,11 +711,11 @@ function EntranceRando(int missionNum)
             RandoMission12();
             break;
         case 14:
-            RandoMission14();
+            //RandoMission14();
             break;
         case 15:
             RandoMission15();
-            break;*/
+            break;
     }
 }
 
@@ -696,7 +760,7 @@ function AdjustTeleporter(NavigationPoint p)
     if( curDest == "" ) return;
 
     hashPos = InStr(curDest,"#");
-    destTag = Mid(curDest,hashPos+1);
+    destTag = Caps(Mid(curDest,hashPos+1));
 
     for (i = 0;i<numConns;i++)
     {
@@ -743,15 +807,39 @@ function LogConnections()
 function int RunTests()
 {
     local int results, i;
-    local string dead_end;
     results = Super.RunTests();
 
     if( dxr.flags.gamemode != 1 ) return results;
+
+    results += BasicTests();
+    results += OneWayTests();
+
+    for(i=0; i <= 100; i++) {
+        dxr.SetSeed( 123 + i + dxr.Crc("entrancerando") );
+        EntranceRando(i);
+        if( numXfers > 0 && numConns > 0 ) {
+            LogConnections();
+            results += testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation");
+        }
+    }
+
     numXfers = 0;
+    numConns = 0;
+    numFixedConns = 0;
+
+    return results;
+}
+
+function int BasicTests()
+{
+    local int results, i;
+    local string old_dead_end;
 
     results += test(min_connections_selfconnect >= 3, "min_connections_selfconnect needs to be at least 3");
 
-    dead_end = dead_ends[0];
+    numXfers = 0;
+    numFixedConns = 0;
+    old_dead_end = dead_ends[0];
     dead_ends[0] = "HELIPAD#HELIPAD_TO_WANCHAI";
 
     AddDoubleXfer("helipad","helipad_to_wanchai","wanchai_market","wanchai_from_helipad");
@@ -773,8 +861,8 @@ function int RunTests()
     //also a weird one where walking the wrong way after teleporting took me somewhere else probably because both the in and out teleporter were tagged?
     //need to support 1-way maps, and a test for it
 
-    conns[0].a = xfers[0];
-    conns[0].b = xfers[1];
+    conns[0].a = xfers[1];//don't do the deadend first
+    conns[0].b = xfers[0];
     conns[1].a = xfers[2];
     conns[1].b = xfers[3];
     conns[2].a = xfers[4];
@@ -832,20 +920,55 @@ function int RunTests()
     dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
     GenerateConnections(3);
     //LogConnections();
-    results += testbool(ValidateConnections(), true, "AddDoubleXfer validation");
+    results += testbool(ValidateConnections(), true, "GenerateConnections validation");
 
-    for(i=0; i <= 100; i++) {
-        dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
-        EntranceRando(i);
-        if( numXfers > 0 && numConns > 0 ) {
-            //LogConnections();
-            results += testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation");
-        }
-    }
+    dead_ends[0] = old_dead_end;
+
+    return results;
+}
+
+function int OneWayTests()
+{
+    local int results,i;
 
     numXfers = 0;
-    numConns = 0;
-    dead_ends[0] = dead_end;
+    numFixedConns = 0;
+    AddDoubleXfer("PARIS_CATACOMBS","spiralstair","Paris_Catacombs_Tunnels","spiralstair");
+    AddXfer("PARIS_CATACOMBS_TUNNELS","","sewer");
+    AddXfer("Paris_Metro","sewer","");
+    //AddDoubleXfer("PARIS_CLUB","Paris_Club1","Paris_Metro","Paris_Metro1");
+    //AddDoubleXfer("PARIS_CLUB","Paris_Club2","Paris_Metro","Paris_Metro2");
+    
+    conns[0].a = xfers[0];
+    conns[0].b = xfers[2];
+    conns[1].a = xfers[3];
+    conns[1].b = xfers[1];
+    numConns = 2;
+    LogConnections();
+    results += testbool(ValidateConnections(), false, "ValidateConnections one-way test 1");
+
+    conns[0].a = xfers[0];
+    conns[0].b = xfers[1];
+    conns[1].a = xfers[2];
+    conns[1].b = xfers[3];
+    numConns = 2;
+    LogConnections();
+    results += testbool(ValidateConnections(), true, "ValidateConnections one-way test 2");
+
+    dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
+    EntranceRando(10);
+    numConns=0;
+    for(i=0;i<numFixedConns;i++) {
+        conns[numConns] = fixed_conns[i];
+        numConns++;
+    }
+    for(i=0;i<numXfers;i+=2) {
+        conns[numConns].a = xfers[i];
+        conns[numConns].b = xfers[i+1];
+        numConns++;
+    }
+    LogConnections();
+    results += testbool(ValidateConnections(), true, "manual Paris validation");
 
     return results;
 }

@@ -182,7 +182,7 @@ function CreateControls()
     editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", "Minimum cost for skills in percentage of the original cost.", 25, 0, 500);
     editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", "Maximum cost for skills in percentage of the original cost.", 300, 0, 500);
 
-    editAmmo = CreateSlider(row++, "Ammo Drops %", "Make ammo more scarce.", 90);
+    editAmmo = CreateSlider(row++, "Ammo Drops %", "Make ammo more scarce.", 80);
     editMultitools = CreateSlider(row++, "Multitools Drops %", "Make multitools more scarce.", 80);
     editLockpicks = CreateSlider(row++, "Lockpicks Drops %", "Make lockpicks more scarce.", 80);
     editBioCells = CreateSlider(row++, "Bioelectric Cells Drops %", "Make bioelectric cells more scarce.", 80);
@@ -430,8 +430,8 @@ function ProcessAction(String actionKey)
             seed = int(sseed);
             f.seed = seed;
             dxr.seed = seed;
+            log("DXRando setting seed to "$seed);
         }
-        log("DXRando setting seed to "$seed);
         f.brightness = GetSliderValue(editBrightness);
         f.minskill = GetSliderValue(editMinSkill);
         f.maxskill = GetSliderValue(editMaxSkill);
