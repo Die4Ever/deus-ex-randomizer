@@ -2,54 +2,7 @@
 // MenuSelectDifficulty
 //=============================================================================
 
-class MenuSelectDifficulty expands MenuUIMenuWindow;
-
-// ----------------------------------------------------------------------
-// InitWindow()
-//
-// Initialize the Window
-// ----------------------------------------------------------------------
-
-event InitWindow()
-{
-    Super.InitWindow();
-}
-
-// ----------------------------------------------------------------------
-// WindowReady() 
-// ----------------------------------------------------------------------
-
-event WindowReady()
-{
-    // Set focus to the Medium button
-    SetFocusWindow(winButtons[1]);
-}
-
-// ----------------------------------------------------------------------
-// ProcessCustomMenuButton()
-// ----------------------------------------------------------------------
-
-function ProcessCustomMenuButton(string key)
-{
-    switch(key)
-    {
-        case "EASY":
-            InvokeNewGameScreen(1.0);
-            break;
-
-        case "MEDIUM":
-            InvokeNewGameScreen(1.5);
-            break;
-
-        case "HARD":
-            InvokeNewGameScreen(2.0);
-            break;
-
-        case "REALISTIC":
-            InvokeNewGameScreen(4.0);
-            break;
-    }
-}
+class DXRMenuSelectDifficulty injects MenuSelectDifficulty;
 
 // ----------------------------------------------------------------------
 // InvokeNewGameScreen()
