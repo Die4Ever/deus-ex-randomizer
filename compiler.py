@@ -82,14 +82,14 @@ def read_uc_file(file):
     classline = get_class_line(content_no_comments)
     # idk if there can be any keywords before the extends/expands keyword? but this regex allows for it
     # maybe a new keyword could be used since injects doesn't work for DeusExLevelInfo, maybe combines or something
-    injects = re.search(r'class\s+(\S+)\s+(.*\s+)??(((injects)|(extends)|(expands)|(overwrites))\s+([^\s;]+))?', content_no_comments, flags=re.IGNORECASE)
+    inheritance = re.search(r'class\s+(\S+)\s+(.*\s+)??(((injects)|(extends)|(expands)|(overwrites)|(merges))\s+([^\s;]+))?', classline, flags=re.IGNORECASE)
     classname = None
     operator = None
     baseclass = None
-    if injects is not None:
-        classname = injects.group(1)
-        operator = injects.group(4)
-        baseclass = injects.group(9)
+    if inheritance is not None:
+        classname = inheritance.group(1)
+        operator = inheritance.group(4)
+        baseclass = inheritance.group(10)
         # if baseclass is not None:
         #     print("classname: "+classname+", operator: "+operator+", baseclass: "+baseclass)
         # else:
@@ -108,11 +108,55 @@ def proc_file(file, files, injects=None):
     if f is None:
         return
     #print("namespace: " + f['namespace'] + ", filename: " + f['filename'] + ", file: " + f['file'] + "\nmd5: " + f['md5'] + "\n" + f['classline'] )
-    if f['operator'] == 'injects':
+    if f['operator'] == 'injects' or f['operator'] == 'merges':
         if f['baseclass'] not in injects:
             injects[f['namespace']+'.'+f['baseclass']] = [ ]
         injects[f['namespace']+'.'+f['baseclass']].append(f)
     files[f['qualifiedclass']] = f
+
+
+def apply_merge(a, b):
+    content = a['content']
+    content += "\n\n/* merged from "+b['classname']+" */\n\n"
+    b_content = b['content']
+    b_content = re.sub(b['classline'], "/* "+b['classline']+" */", b_content, count=1)
+    b_content_no_comments = strip_comments(b_content)
+
+    pattern_pre = r'(function\s+([^\(]+\s+)?)'
+    pattern_post = r'(\s*\()'
+    r = re.compile(pattern_pre+r'([^\s\(]+)'+pattern_post, flags=re.IGNORECASE)
+    for i in r.finditer(b_content_no_comments):
+        print( "merging found: " + repr(i.groups()) )
+        func = i.group(3)
+        #print("\nmerging found: "+func)
+        content = re.sub( \
+            pattern_pre + re.escape(func) + pattern_post, \
+            r'\1_'+func+r'\3', \
+            content, \
+            flags=re.IGNORECASE \
+        )
+    
+    return content + b_content
+
+
+def inject_into(f, injects):
+    classname = f['classname']
+    classline = f['classline']
+    comment = "/*=== was "+classname+" ===*/\n"
+    #print(f['qualifiedclass'] + ' has '+ str(len(injects[f['qualifiedclass']])) +' injections, renaming to Base'+f['classname'] )
+    classname = classname+'Base'
+    classline = re.sub('class '+f['classname'], comment + 'class '+classname, classline, count=1)
+    return classname, classline
+
+
+def inject_from(f, injects):
+    classname = f['classname']
+    classline = f['classline']
+    #print(f['qualifiedclass'] + ' injects into ' + f['baseclass'] )
+    comment = "/*=== was "+classname+" ===*/\n"
+    classname = f['baseclass']
+    classline = re.sub('class '+f['classname']+' injects '+f['baseclass'], comment + 'class '+classname+' extends '+f['baseclass']+'Base', classline, count=1)
+    return classname, classline
 
 
 def write_file(out, f, written, injects):
@@ -121,17 +165,21 @@ def write_file(out, f, written, injects):
     
     classname = f['classname']
     classline = f['classline']
+    qualifiedclass = f['qualifiedclass']
     content = f['content']
     
-    if f['qualifiedclass'] in injects:
-        #print(f['qualifiedclass'] + ' has '+ str(len(injects[f['qualifiedclass']])) +' injections, renaming to Base'+f['classname'] )
-        classname = classname+'Base'
-        classline = re.sub('class '+f['classname'], 'class '+classname, classline, count=1)
+    if qualifiedclass in injects:
+        if injects[qualifiedclass][0]['operator'] == 'merges':
+            content = apply_merge(f, injects[qualifiedclass][0])
+        else:
+            classname, classline = inject_into(f, injects)
     
     if f['operator'] == 'injects':
-        #print(f['qualifiedclass'] + ' injects into ' + f['baseclass'] )
-        classname = f['baseclass']
-        classline = re.sub('class '+f['classname']+' injects '+f['baseclass'], 'class '+classname+' extends '+f['baseclass']+'Base', classline, count=1)
+        classname, classline = inject_from(f, injects)
+
+    if f['operator'] == 'merges' or f['operator'] == 'overwrites':
+        print("not writing because inheritance operator is "+f['operator'])
+        return
 
     if classline != f['classline']:
         content = re.sub(f['classline'], classline, content, count=1)
@@ -153,6 +201,7 @@ def write_file(out, f, written, injects):
             return
 
     print("writing from: "+f['file']+" to: "+path)
+    print("")
     with open(path, 'w') as file:
         file.write(content)
     written[f['file']] = 1
@@ -228,3 +277,4 @@ if args.mods_paths is None:
 compile(args.source_path, args.mods_paths, args.out_dir)
 
 print("\n\nto run this again, use this command: (coming soon)")
+input("press enter to continue")
