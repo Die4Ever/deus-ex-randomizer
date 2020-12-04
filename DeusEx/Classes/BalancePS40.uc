@@ -10,6 +10,9 @@ function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed,
     if( proj != None ) {
         proj.Damage = default.HitDamage;
         proj.mpDamage = default.HitDamage;
+        proj.LightBrightness = 250;
+        proj.LightRadius = 20;
+        //proj.blastRadius = 257;
     }
 	return proj;
 }
