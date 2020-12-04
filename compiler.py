@@ -117,7 +117,7 @@ def proc_file(file, files, injects=None):
 
 def apply_merge(a, b):
     content = a['content']
-    content += "\n\n/* merged from "+b['classname']+" */\n\n"
+    content += "\n\n// === merged from "+b['classname']+"\n\n"
     b_content = b['content']
     b_content = re.sub(b['classline'], "/* "+b['classline']+" */", b_content, count=1)
     b_content_no_comments = strip_comments(b_content)
@@ -142,7 +142,7 @@ def apply_merge(a, b):
 def inject_into(f, injects):
     classname = f['classname']
     classline = f['classline']
-    comment = "/*=== was "+classname+" ===*/\n"
+    comment = "// === was "+classname+" ===\n"
     #print(f['qualifiedclass'] + ' has '+ str(len(injects[f['qualifiedclass']])) +' injections, renaming to Base'+f['classname'] )
     classname = classname+'Base'
     classline = re.sub('class '+f['classname'], comment + 'class '+classname, classline, count=1)
@@ -153,7 +153,7 @@ def inject_from(f, injects):
     classname = f['classname']
     classline = f['classline']
     #print(f['qualifiedclass'] + ' injects into ' + f['baseclass'] )
-    comment = "/*=== was "+classname+" ===*/\n"
+    comment = "// === was "+classname+" ===\n"
     classname = f['baseclass']
     classline = re.sub('class '+f['classname']+' injects '+f['baseclass'], comment + 'class '+classname+' extends '+f['baseclass']+'Base', classline, count=1)
     return classname, classline
