@@ -1,0 +1,1 @@
+class DXRPlayer merges DeusExPlayer;
