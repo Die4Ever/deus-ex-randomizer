@@ -5,7 +5,7 @@ var transient FlagBase f;
 //rando flags
 var int seed;
 var int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
-var int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page
+var int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +
 var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
 var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
 var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
@@ -226,12 +226,12 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 4, 5);
+    return VersionToInt(1, 4, 6);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 5) $ "";
+    return VersionToString(1, 4, 6) $ " Beta";
 }
 
 function MaxRando()

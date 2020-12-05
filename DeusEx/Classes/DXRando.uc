@@ -62,7 +62,7 @@ function CheckConfig()
     local DXREntranceRando compile3;
     local DXRKillBobPage compile4;
 
-    if( config_version < 4 ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,6) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -83,6 +83,8 @@ function CheckConfig()
         modules_to_load[i++] = "DXRHordeMode";
         modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
+        modules_to_load[i++] = "DXRBannedItems";
+        //modules_to_load[i++] = "DXRAddItems";// add a medbot to oceanlab?
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         config_version = class'DXRFlags'.static.VersionNumber();

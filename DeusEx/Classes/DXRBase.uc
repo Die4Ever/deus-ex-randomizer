@@ -111,12 +111,13 @@ function class<Actor> GetClassFromString(string classstring, class<Actor> c)
         classstring = "DeusEx." $ classstring;
     a = class<Actor>(DynamicLoadObject(classstring, class'class'));
     if( a == None ) {
-        err("failed to load class "$classstring);
+        err("GetClassFromString: failed to load class "$classstring);
     }
     else if( ClassIsChildOf(a, c) == false ) {
-        err(classstring $ " is not a subclass of " $ c.name);
+        err("GetClassFromString: " $ classstring $ " is not a subclass of " $ c.name);
         return None;
     }
+    //l("GetClassFromString: found " $ classstring);
     return a;
 }
 

@@ -128,9 +128,9 @@ function CreateControls()
     btnGameMode.values[i++] = "Horde Mode (Beta)";
     btnGameMode.values[i++] = "Original Story, Rearranged Levels (Alpha)";
     //btnGameMode.values[i++] = "Kill Bob Page (Alpha)";
-    /*btnGameMode.values[i++] = "How About Some Soy Food?";
-    btnGameMode.values[i++] = "Horde Mode";//defending the paris cathedral could be really cool
-    btnGameMode.values[i++] = "Stick With the Prod";*/
+    /*btnGameMode.values[i++] = "How About Some Soy Food?";*/
+    btnGameMode.values[i++] = "Stick With the Prod";
+    btnGameMode.values[i++] = "Stick With the Prod Plus";
     GameMode = CreateEnum(row++, "", "Choose a game mode!", btnGameMode);
 
     i=0;
@@ -451,6 +451,10 @@ function ProcessAction(String actionKey)
             f.gamemode = 2;
         else if( sgamemode == "Kill Bob Page (Beta)" )
             f.gamemode = 3;
+        else if( sgamemode == "Stick With the Prod" )
+            f.gamemode = 4;
+        else if( sgamemode == "Stick With the Prod Plus" )
+            f.gamemode = 5;
 
         if( keys == "Off" ) f.keysrando = 0;
         else if( keys == "Dumb" ) f.keysrando = 2;
