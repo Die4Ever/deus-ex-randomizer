@@ -159,8 +159,8 @@ function CreateControls()
     RandoKeys = CreateEnum(row++, "Key Randomization", "Move keys around the map.", btnRandoKeys);
 
     btnRandoDevices.values[0] = "All Hackable";
-    //btnRandoDevices.values[1] = "Some Hackable";
-    btnRandoDevices.values[1] = "Unchanged";
+    btnRandoDevices.values[1] = "Most Hackable";
+    btnRandoDevices.values[2] = "Unchanged";
     RandoDevices = CreateEnum(row++, "Electronic Devices", "Provide additional options for keypads and electronic panels.", btnRandoDevices);
 
     btnRandoPasswords.values[0] = "Randomized";
@@ -578,7 +578,7 @@ function ProcessAction(String actionKey)
         }
 
         if( devices == "Unchanged" ) f.deviceshackable = 0;
-        else if( devices == "Some Hackable" ) f.deviceshackable = 50;
+        else if( devices == "Most Hackable" ) f.deviceshackable = 50;// I figure the normally hackable ones, plus 50% of the previously unhackable ones, means most of them are now hackable?
         else if( devices == "All Hackable" ) f.deviceshackable = 100;
 
         if( passwords == "Randomized" ) f.passwordsrandomized = 100;

@@ -13,6 +13,6 @@ simulated function PreBeginPlay()
 
 defaultproperties
 {
-    maxCopies=20
+    maxCopies=5
     bCanHaveMultipleCopies=True
 }

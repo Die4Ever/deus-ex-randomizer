@@ -104,6 +104,9 @@ function AnyEntry()
         case 4:
             NYC_04_AnyEntry();
             break;
+        case 5:
+            UNATCO_05_AnyEntry();
+            break;
         case 6:
             HongKong_AnyEntry();
             break;
@@ -259,6 +262,19 @@ function NYC_04_AnyEntry()
         case "04_NYC_HOTEL":
             if(dxr.Player.flagBase.GetBool('NSFSignalSent')) {
                 dxr.Player.flagBase.SetBool('PaulInjured_Played', true,, 5);
+            }
+            break;
+    }
+}
+
+function UNATCO_05_AnyEntry()
+{
+    local DeusExMover d;
+    switch (dxr.localURL)
+    {
+        case "05_NYC_UNATCOHQ":
+            foreach AllActors(class'DeusExMover', d, 'supplydoor') {
+                class'DXRKeys'.static.MakeDestructible(d);//I need to move this into DXRKeys config
             }
             break;
     }

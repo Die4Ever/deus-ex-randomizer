@@ -1,5 +1,124 @@
 class DXRKeys extends DXRActorsBase;
 
+struct key_rule {
+    var string map;
+    var name key_id;
+    var vector min_pos;
+    var vector max_pos;
+    var bool allow;
+};
+var config key_rule keys_rules[32];
+
+struct door_fixes {
+    var string map;
+    var name tag;//what about doors that don't have tags? should I use name instead?
+    var bool bDestructible;
+    var float minDamageThreshold;
+    var float doorStrength;
+    var bool bPickable;
+    var float lockStrength;
+};
+
+function CheckConfig()
+{
+    local int i;
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,6) ) {
+        i=0;
+
+        keys_rules[i].map = "03_NYC_747";
+        keys_rules[i].key_id = 'lebedevdoor';
+        keys_rules[i].min_pos = vect(166, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].map = "10_Paris_Chateau";
+        keys_rules[i].key_id = 'duclare_chateau';
+        keys_rules[i].min_pos = vect(-99999, -99999, -125);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].map = "11_Paris_Cathedral";
+        keys_rules[i].key_id = 'cath_maindoors';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].map = "11_Paris_Cathedral";
+        keys_rules[i].key_id = 'cathedralgatekey';
+        keys_rules[i].min_pos = vect(-4907, 1802, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        //disallow the crew quarters
+        keys_rules[i].map = "14_oceanlab_lab";
+        keys_rules[i].key_id = 'crewkey';
+        keys_rules[i].min_pos = vect(-99999, 3034, -99999);
+        keys_rules[i].max_pos = vect(3633, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //disallow west (smaller X) of the flooded area
+        keys_rules[i].map = "14_oceanlab_lab";
+        keys_rules[i].key_id = 'crewkey';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(-414.152771, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //allow anything to the west (smaller X) of the crew quarters, except for the flooded area
+        keys_rules[i].map = "14_oceanlab_lab";
+        keys_rules[i].key_id = 'crewkey';
+        keys_rules[i].min_pos = vect(-414.152771, -99999, -99999);
+        keys_rules[i].max_pos = vect(4856, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        //disallow flooded area
+        keys_rules[i].map = "14_oceanlab_lab";
+        keys_rules[i].key_id = 'storage';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(-414.152771, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //disallow flooded area
+        keys_rules[i].map = "14_oceanlab_lab";
+        keys_rules[i].key_id = 'Glab';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(-414.152771, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //disallow storage closet
+        keys_rules[i].map = "14_oceanlab_lab";
+        keys_rules[i].key_id = 'storage';
+        keys_rules[i].min_pos = vect(528.007446, -99999, -1653.906006);
+        keys_rules[i].max_pos = vect(1047.852173, 436.867401, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //allow before greasel lab
+        keys_rules[i].map = "14_oceanlab_lab";
+        keys_rules[i].key_id = 'storage';
+        keys_rules[i].min_pos = vect(-414.152771, -99999, -99999);
+        keys_rules[i].max_pos = vect(1888, 1930.014771, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        // X < -414.152771 == flooded area...
+        // X > 528.007446, X < 1047.852173, Y < 436.867401, Z > -1653.906006 == storage closet
+        // 1888.000000, 544.000000, -1536.000000 == glabs door, X > -414.152771 && X < 1888 && Y < 1930.014771 == before greasel labs
+        // 4856.000000, 3515.999512, -1816.000000 == crew quarters door
+    }
+    for(i=0; i<ArrayCount(keys_rules); i++) {
+        keys_rules[i].map = Caps(keys_rules[i].map);
+    }
+    Super.CheckConfig();
+}
+
 function FirstEntry()
 {
     Super.FirstEntry();
@@ -88,6 +207,7 @@ function MoveNanoKeys4()
         if ( SkipActorBase(k) ) continue;
 
         SetActorScale(k, 1.3);
+        k.ItemName = k.ItemName $ " (" $ k.Description $ ")";
 
         i=0;
         num=0;
@@ -120,7 +240,19 @@ function bool KeyPositionGood(NanoKey k, vector newpos)
 {
     local DeusExMover d;
     local float dist;
-    
+    local int i, matches;
+
+    for(i=0; i<ArrayCount(keys_rules); i++) {
+        if( k.KeyID != keys_rules[i].key_id ) continue;
+        if( dxr.localURL != keys_rules[i].map ) continue;
+        //err("found it");
+        matches++;
+        if( AnyGreater( keys_rules[i].min_pos, newpos ) ) continue;//return ! keys_rules[i].allow;
+        if( AnyGreater( newpos, keys_rules[i].max_pos ) ) continue;//return ! keys_rules[i].allow;
+        return keys_rules[i].allow;
+    }
+    //if( matches > 0 ) return false;
+
     dist = VSize( k.Location - newpos );
     if( dist > 5000 ) return False;
 
@@ -255,8 +387,14 @@ function AdjustDoor(DeusExMover d, int exclusivitymode, int doorspickable, int d
     }
 }
 
-function MakePickable(DeusExMover d)
+static function MakePickable(DeusExMover d)
 {
+    if( d.bHighlight == false || d.bFrobbable == false ) {
+        d.bPickable = false;
+        d.bLocked = true;
+        d.bHighlight = true;
+        d.bFrobbable = true;
+    }
     if( d.bPickable == false ) {
         d.bPickable = true;
         d.lockStrength = 1;
@@ -264,8 +402,14 @@ function MakePickable(DeusExMover d)
     }
 }
 
-function MakeDestructible(DeusExMover d)
+static function MakeDestructible(DeusExMover d)
 {
+    if( d.bHighlight == false || d.bFrobbable == false ) {
+        d.bPickable = false;
+        d.bLocked = true;
+        d.bHighlight = true;
+        //d.bFrobbable = true;
+    }
     if( d.bBreakable == false ) {
         d.bBreakable = true;
         d.minDamageThreshold = 75;
