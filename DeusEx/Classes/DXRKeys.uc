@@ -248,6 +248,7 @@ function MoveNanoKeys()
 function MoveNanoKeys4()
 {
     local Inventory a;
+    local Containers c;
     local NanoKey k;
     local int num, i, slot;
 
@@ -266,6 +267,12 @@ function MoveNanoKeys4()
             if( KeyPositionGood(k, a.Location) == False ) continue;
             num++;
         }
+        /*foreach AllActors(class'Containers', c)
+        {
+            if( SkipActor(c, 'Containers') ) continue;
+            if( KeyPositionGood(k, c.Location) == False ) continue;
+            num++;
+        }*/
 
         slot=rng(num-1);
         i=0;
@@ -282,6 +289,19 @@ function MoveNanoKeys4()
             }
             i++;
         }
+        /*if(i==slot) continue;
+        foreach AllActors(class'Containers', c)
+        {
+            if( SkipActor(c, 'Containers') ) continue;
+            if( KeyPositionGood(k, c.Location) == False ) continue;
+
+            if(i==slot) {
+                l("swapping key "$k.KeyID$" with "$c.Class);
+                Swap(k, c);
+                break;
+            }
+            i++;
+        }*/
     }
 }
 
@@ -361,7 +381,7 @@ function ApplyDoorFixes()
         for(i=0; i<ArrayCount(door_fixes); i++) {
             if( door_fixes[i].tag != d.Tag ) continue;
             if( dxr.localURL != door_fixes[i].map ) continue;
-            
+
             if( door_fixes[i].bPickable ) MakePickable(d);
             d.bPickable = door_fixes[i].bPickable;
             d.lockStrength = door_fixes[i].lockStrength;
