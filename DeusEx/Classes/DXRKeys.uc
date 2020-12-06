@@ -9,15 +9,16 @@ struct key_rule {
 };
 var config key_rule keys_rules[32];
 
-struct door_fixes {
+struct door_fix {
     var string map;
     var name tag;//what about doors that don't have tags? should I use name instead?
-    var bool bDestructible;
+    var bool bBreakable;
     var float minDamageThreshold;
     var float doorStrength;
     var bool bPickable;
     var float lockStrength;
 };
+var config door_fix door_fixes[32];
 
 function CheckConfig()
 {
@@ -112,9 +113,57 @@ function CheckConfig()
         // X > 528.007446, X < 1047.852173, Y < 436.867401, Z > -1653.906006 == storage closet
         // 1888.000000, 544.000000, -1536.000000 == glabs door, X > -414.152771 && X < 1888 && Y < 1930.014771 == before greasel labs
         // 4856.000000, 3515.999512, -1816.000000 == crew quarters door
+
+        i=0;
+        door_fixes[i].map = "05_NYC_UNATCOHQ";
+        door_fixes[i].tag = 'supplydoor';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 75;
+        door_fixes[i].doorStrength = 1;
+        i++;
+
+        door_fixes[i].map = "15_area51_entrance";
+        door_fixes[i].tag = 'chamber1';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 75;
+        door_fixes[i].doorStrength = 1;
+        i++;
+        door_fixes[i].map = "15_area51_entrance";
+        door_fixes[i].tag = 'chamber2';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 75;
+        door_fixes[i].doorStrength = 1;
+        i++;
+        door_fixes[i].map = "15_area51_entrance";
+        door_fixes[i].tag = 'chamber3';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 75;
+        door_fixes[i].doorStrength = 1;
+        i++;
+        door_fixes[i].map = "15_area51_entrance";
+        door_fixes[i].tag = 'chamber4';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 75;
+        door_fixes[i].doorStrength = 1;
+        i++;
+        door_fixes[i].map = "15_area51_entrance";
+        door_fixes[i].tag = 'chamber5';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 75;
+        door_fixes[i].doorStrength = 1;
+        i++;
+        door_fixes[i].map = "15_area51_entrance";
+        door_fixes[i].tag = 'chamber6';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 75;
+        door_fixes[i].doorStrength = 1;
+        i++;
     }
     for(i=0; i<ArrayCount(keys_rules); i++) {
         keys_rules[i].map = Caps(keys_rules[i].map);
+    }
+    for(i=0; i<ArrayCount(door_fixes); i++) {
+        door_fixes[i].map = Caps(door_fixes[i].map);
     }
     Super.CheckConfig();
 }
@@ -297,6 +346,29 @@ function AdjustRestrictions(int doorsmode, int doorspickable, int doorsdestructi
                 l("found invisible wall "$ActorToString(kp));
                 kp.bBlockPlayers=false;
             }
+        }
+    }
+
+    ApplyDoorFixes();
+}
+
+function ApplyDoorFixes()
+{
+    local DeusExMover d;
+    local int i;
+
+    foreach AllActors(class'DeusExMover', d) {
+        for(i=0; i<ArrayCount(door_fixes); i++) {
+            if( door_fixes[i].tag != d.Tag ) continue;
+            if( dxr.localURL != door_fixes[i].map ) continue;
+            
+            if( door_fixes[i].bPickable ) MakePickable(d);
+            d.bPickable = door_fixes[i].bPickable;
+            d.lockStrength = door_fixes[i].lockStrength;
+            if( door_fixes[i].bBreakable ) MakeDestructible(d);
+            d.bBreakable = door_fixes[i].bBreakable;
+            d.minDamageThreshold = door_fixes[i].minDamageThreshold;
+            d.doorStrength = door_fixes[i].doorStrength;
         }
     }
 }
