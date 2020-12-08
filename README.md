@@ -18,7 +18,7 @@ Currently in v1.4.6, DXRando randomizes
 
 There are also settings for
 * new game modes!
-    * Stick With the Prod means the only weapon you get is the stun prod
+    * Stick With the Prod means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts
     * Horde Mode is in beta and mostly I think it just needs balancing.
     * Rearranged Levels is in alpha and is incomplete.
