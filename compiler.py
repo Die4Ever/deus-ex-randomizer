@@ -7,8 +7,6 @@ import json
 import subprocess
 import os.path
 from pathlib import Path
-import tempfile
-import hashlib
 
 pp = pprint.PrettyPrinter(indent=4)
 parser = argparse.ArgumentParser(description='Deus Ex Injecting Compiler')
@@ -42,12 +40,11 @@ def exists_dir(path):
 
 def strip_comments(content):
     content_no_comments = re.sub(r'//.*', ' ', content)
-    content_no_comments = re.sub(r'/\*.*\*/', ' ', content_no_comments, flags=re.DOTALL)
+    content_no_comments = re.sub(r'/\*.*?\*/', ' ', content_no_comments, flags=re.DOTALL)
     return content_no_comments
 
 
 def get_class_line(content):
-    #print(content_no_comments)
     classline = re.search( r'(class .+?;)', content, flags=re.IGNORECASE | re.DOTALL)
     if classline is not None:
         classline = classline.group(0)
@@ -67,21 +64,14 @@ def read_uc_file(file):
         return
     if not path[-1].endswith('.uc'):
         return
-
-    #if path[-1] != 'DXREnemyRespawn.uc':
-    #    return
-
+    
     content=None
     with open(file) as f:
         content = f.read()
-    
-    md5 = hashlib.md5(content.encode('utf-8')).hexdigest()
 
-    #print(file)
     content_no_comments = strip_comments(content)
     classline = get_class_line(content_no_comments)
     # idk if there can be any keywords before the extends/expands keyword? but this regex allows for it
-    # maybe a new keyword could be used since injects doesn't work for DeusExLevelInfo, maybe combines or something
     inheritance = re.search(r'class\s+(\S+)\s+(.*\s+)??(((injects)|(extends)|(expands)|(overwrites)|(merges))\s+([^\s;]+))?', classline, flags=re.IGNORECASE)
     classname = None
     operator = None
@@ -90,24 +80,19 @@ def read_uc_file(file):
         classname = inheritance.group(1)
         operator = inheritance.group(4)
         baseclass = inheritance.group(10)
-        # if baseclass is not None:
-        #     print("classname: "+classname+", operator: "+operator+", baseclass: "+baseclass)
-        # else:
-        #     print("classname: "+classname+", no inheritance")
     else:
         RuntimeError("couldn't read class definition")
     
     # maybe do some assertions on classnames, and verify that classname matches filename?
 
-    return {'path':path, 'namespace':namespace, 'filename':filename, 'file':file, 'content':content, 'md5':md5, \
-        'classline':classline, 'classname':classname, 'operator':operator, 'baseclass':baseclass, 'qualifiedclass':namespace+'.'+classname }
+    return {'path':path, 'namespace':namespace, 'filename':filename, 'file':file, 'content':content, 'classline':classline, \
+        'classname':classname, 'operator':operator, 'baseclass':baseclass, 'qualifiedclass':namespace+'.'+classname }
 
 
 def proc_file(file, files, injects=None):
     f = read_uc_file(file)
     if f is None:
         return
-    #print("namespace: " + f['namespace'] + ", filename: " + f['filename'] + ", file: " + f['file'] + "\nmd5: " + f['md5'] + "\n" + f['classline'] )
     if f['operator'] == 'injects' or f['operator'] == 'merges':
         if f['baseclass'] not in injects:
             injects[f['namespace']+'.'+f['baseclass']] = [ ]
@@ -128,7 +113,6 @@ def apply_merge(a, b):
     for i in r.finditer(b_content_no_comments):
         print( "merging found: " + repr(i.groups()) )
         func = i.group(3)
-        #print("\nmerging found: "+func)
         content = re.sub( \
             pattern_pre + re.escape(func) + pattern_post, \
             r'\1_'+func+r'\3', \
@@ -183,10 +167,8 @@ def write_file(out, f, written, injects):
 
     if classline != f['classline']:
         content = re.sub(f['classline'], classline, content, count=1)
-        #print(content)
         print("changing from: "+f['classline']+"\n---to: "+classline)
     
-    #print('writing '+f['file'])
     path = out + f['namespace'] + '/Classes/'
     if not exists_dir(path):
         os.makedirs(path, exist_ok=True)
@@ -220,8 +202,7 @@ def compile(source, mods, out):
         mods_files.append({})
         for file in insensitive_glob(mod+'*'):
             proc_file(file, mods_files[-1], injects)
-    
-    #print(json.dumps(mods_files, sort_keys=True, indent=4, default=str))
+
     print("\nwriting files...")
     for file in orig_files.values():
         write_file(out, file, written, injects)
@@ -235,12 +216,9 @@ def compile(source, mods, out):
 
     # can set a custom ini file ucc make INI=ProBob.ini https://www.oldunreal.com/wiki/index.php?title=Working_with_*.uc%27s
     # I can run automated tests like ucc Core.HelloWorld
-    #oldcwd = os.getcwd()
-    #os.chdir(out)
     if not exists_dir(out + '/DeusEx/Inc'):
         os.makedirs(out + '/DeusEx/Inc', exist_ok=True)
     calla([ out + '/System/ucc', 'make', '-h', '-NoBind', '-Silent' ])
-    #os.chdir(oldcwd)
 
 
 
@@ -269,7 +247,6 @@ if args.out_dir is None:
 
 
 pp.pprint(args)
-#input("continue?")
 if args.mods_paths is None:
     print("no mods specified! using local directory")
     args.mods_paths = [ './' ]
