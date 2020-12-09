@@ -66,6 +66,7 @@ function CheckConfig()
     Super.CheckConfig();
 
     for(i=0; i<ArrayCount(DecorationsOverwrites); i++) {
+        if( DecorationsOverwrites[i].type == "" ) continue;
         DecorationsOverwritesClasses[i] = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
     }
 }
