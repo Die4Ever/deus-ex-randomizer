@@ -21,7 +21,7 @@ function CheckConfig()
 {
     local int i;
     local class<Actor> a;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,5) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,6) ) {
         chance_clone_nonhumans = 60;
         enemy_multiplier = 1;
 
@@ -51,7 +51,7 @@ function CheckConfig()
 
         AddRandomWeapon("WeaponPistol", 11);
         AddRandomWeapon("WeaponAssaultGun", 11);
-        AddRandomWeapon("WeaponMiniCrossbow", 11);
+        AddRandomWeapon("WeaponMiniCrossbow", 10);
         AddRandomWeapon("WeaponGEPGun", 4);
         AddRandomWeapon("WeaponAssaultShotgun", 5);
         AddRandomWeapon("WeaponEMPGrenade", 5);
@@ -61,11 +61,12 @@ function CheckConfig()
         AddRandomWeapon("WeaponLAM", 5);
         AddRandomWeapon("WeaponLAW", 4);
         AddRandomWeapon("WeaponNanoVirusGrenade", 5);
-        AddRandomWeapon("WeaponPepperGun", 5);
+        AddRandomWeapon("WeaponPepperGun", 4);
         AddRandomWeapon("WeaponPlasmaRifle", 5);
         AddRandomWeapon("WeaponRifle", 5);
         AddRandomWeapon("WeaponSawedOffShotgun", 5);
         AddRandomWeapon("WeaponShuriken", 5);
+        AddRandomWeapon("WeaponProd", 2);
 
         AddRandomMelee("WeaponBaton", 25);
         AddRandomMelee("WeaponCombatKnife", 25);

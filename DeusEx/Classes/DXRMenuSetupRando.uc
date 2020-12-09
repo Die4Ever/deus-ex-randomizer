@@ -128,9 +128,9 @@ function CreateControls()
     btnGameMode.values[i++] = "Horde Mode (Beta)";
     btnGameMode.values[i++] = "Original Story, Rearranged Levels (Alpha)";
     //btnGameMode.values[i++] = "Kill Bob Page (Alpha)";
-    /*btnGameMode.values[i++] = "How About Some Soy Food?";
-    btnGameMode.values[i++] = "Horde Mode";//defending the paris cathedral could be really cool
-    btnGameMode.values[i++] = "Stick With the Prod";*/
+    /*btnGameMode.values[i++] = "How About Some Soy Food?";*/
+    btnGameMode.values[i++] = "Stick With the Prod";
+    btnGameMode.values[i++] = "Stick With the Prod Plus";
     GameMode = CreateEnum(row++, "", "Choose a game mode!", btnGameMode);
 
     i=0;
@@ -159,8 +159,8 @@ function CreateControls()
     RandoKeys = CreateEnum(row++, "Key Randomization", "Move keys around the map.", btnRandoKeys);
 
     btnRandoDevices.values[0] = "All Hackable";
-    //btnRandoDevices.values[1] = "Some Hackable";
-    btnRandoDevices.values[1] = "Unchanged";
+    btnRandoDevices.values[1] = "Most Hackable";
+    btnRandoDevices.values[2] = "Unchanged";
     RandoDevices = CreateEnum(row++, "Electronic Devices", "Provide additional options for keypads and electronic panels.", btnRandoDevices);
 
     btnRandoPasswords.values[0] = "Randomized";
@@ -451,6 +451,10 @@ function ProcessAction(String actionKey)
             f.gamemode = 2;
         else if( sgamemode == "Kill Bob Page (Beta)" )
             f.gamemode = 3;
+        else if( sgamemode == "Stick With the Prod" )
+            f.gamemode = 4;
+        else if( sgamemode == "Stick With the Prod Plus" )
+            f.gamemode = 5;
 
         if( keys == "Off" ) f.keysrando = 0;
         else if( keys == "Dumb" ) f.keysrando = 2;
@@ -574,7 +578,7 @@ function ProcessAction(String actionKey)
         }
 
         if( devices == "Unchanged" ) f.deviceshackable = 0;
-        else if( devices == "Some Hackable" ) f.deviceshackable = 50;
+        else if( devices == "Most Hackable" ) f.deviceshackable = 50;// I figure the normally hackable ones, plus 50% of the previously unhackable ones, means most of them are now hackable?
         else if( devices == "All Hackable" ) f.deviceshackable = 100;
 
         if( passwords == "Randomized" ) f.passwordsrandomized = 100;

@@ -5,6 +5,20 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
 
 for v1.5 ========================
+
+function bool MoveWithTriggers(Actor a, vector loc)
+{// I can use this to move the ambrosia barrel in 02_NYC_BATTERYPARK
+    local Trigger t;
+    local vector oldloc;
+
+    oldloc = a.Location;
+    if ( a.SetLocation(loc) == false ) return false;
+    foreach RadiusActors(class'Trigger', t, 16, oldloc) {
+        t.SetLocation(loc);
+    }
+    return true;
+}
+
 maybe add a list of unimportantMaps for DXREntranceRando? maybe chateau, freeclinic, nyc sewers, smuggler, gas station, graveyard?
 another issue with DXREntranceRando:
     if I make a connection from paris metro to chateau, DXREntranceRando will ensure I can get to the metro to get to the chateau, but it won't realize that I also need to get to the club first

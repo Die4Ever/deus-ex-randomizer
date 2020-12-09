@@ -153,9 +153,11 @@ function MakeAllHackable(int deviceshackable)
 {
     local HackableDevices h;
 
+    if( deviceshackable <= 0 ) return;
+
     foreach AllActors(class'HackableDevices', h)
     {
-        if( h.bHackable == false && deviceshackable > 0 ) {
+        if( h.bHackable == false && chance_single(deviceshackable) ) {
             l("found unhackable device: " $ ActorToString(h) $ ", tag: " $ h.Tag $ " in " $ dxr.localURL);
             h.bHackable = true;
             h.hackStrength = 1;

@@ -14,6 +14,7 @@ struct DecorationsOverwrite {
 };
 
 var config DecorationsOverwrite DecorationsOverwrites[16];
+var class<DeusExDecoration> DecorationsOverwritesClasses[16];
 
 function CheckConfig()
 {
@@ -63,6 +64,11 @@ function CheckConfig()
         DecorationsOverwrites[i].bPushable = c.default.bPushable;
     }
     Super.CheckConfig();
+
+    for(i=0; i<ArrayCount(DecorationsOverwrites); i++) {
+        if( DecorationsOverwrites[i].type == "" ) continue;
+        DecorationsOverwritesClasses[i] = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+    }
 }
 
 function FirstEntry()
@@ -191,13 +197,15 @@ function BuffScopes()
 function OverwriteDecorations()
 {
     local DeusExDecoration d;
-    local class<Actor> a;
     local int i;
-    for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
-        if(DecorationsOverwrites[i].type == "") continue;
-        foreach AllActors(class'DeusExDecoration', d) {
-            a = GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration');
-            if( d.IsA( a.name) == false ) continue;
+    foreach AllActors(class'DeusExDecoration', d) {
+        if( d.IsA('CrateBreakableMedCombat') || d.IsA('CrateBreakableMedGeneral') || d.IsA('CrateBreakableMedMedical') ) {
+            d.Mass = 35;
+            d.HitPoints = 1;
+        }
+        for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
+            if(DecorationsOverwritesClasses[i] == None) continue;
+            if( d.IsA(DecorationsOverwritesClasses[i].name) == false ) continue;
             d.bInvincible = DecorationsOverwrites[i].bInvincible;
             d.HitPoints = DecorationsOverwrites[i].HitPoints;
             d.minDamageThreshold = DecorationsOverwrites[i].minDamageThreshold;
