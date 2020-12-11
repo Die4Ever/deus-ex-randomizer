@@ -267,7 +267,7 @@ function string ActorToString( Actor a )
     return out;
 }
 
-function SetActorScale(Actor a, float scale)
+static function SetActorScale(Actor a, float scale)
 {
     local bool AbCollideActors, AbBlockActors, AbBlockPlayers;
     local Vector newloc;
