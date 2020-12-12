@@ -206,8 +206,6 @@ function MoveNanoKeys()
     {
         if ( SkipActorBase(k) ) continue;
 
-        SetActorScale(k, 1.3);
-
         doorloc = vect(99999, 99999, 99999);
         foreach AllActors(class'DeusExMover', d)
         {
@@ -255,9 +253,6 @@ function MoveNanoKeys4()
     foreach AllActors(class'NanoKey', k )
     {
         if ( SkipActorBase(k) ) continue;
-
-        SetActorScale(k, 1.3);
-        k.ItemName = k.ItemName $ " (" $ k.Description $ ")";
 
         i=0;
         num=0;

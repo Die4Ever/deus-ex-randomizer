@@ -257,6 +257,12 @@ function Airfield_FirstEntry()
             //Mostly for entrance rando, but just in case
             AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
             break;
+        case "03_NYC_MOLEPEOPLE":
+            foreach AllActors(class'Mover', m, 'DeusExMover') {
+                if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
+            }
+            AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
+            break;
     }
 }
 
