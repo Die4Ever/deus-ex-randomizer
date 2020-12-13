@@ -107,9 +107,9 @@ function BindControls(bool writing, optional string action)
 
     labels[id] = "";
     helptexts[id] = "What items are banned";
-    EnumOption(id, "No banned items", 0, writing);
-    EnumOption(id, "Stick With the Prod", 1, writing);
-    EnumOption(id, "Stick With the Prod Plus", 2, writing);
+    EnumOption(id, "No banned items", 0, writing, f.banneditems);
+    EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
+    EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
     id++;
 
     labels[id] = "Ammo Drops %";

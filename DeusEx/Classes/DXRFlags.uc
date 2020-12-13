@@ -6,6 +6,7 @@ var transient FlagBase f;
 var int seed;
 var int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
 var int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food
+var int banneditems;//0=none, 1=stick with the prod, 2=stick with the prod plus
 var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
 var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
 var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
@@ -59,6 +60,7 @@ function InitDefaults()
     seed = abs(seed) % 1000000;
     dxr.seed = seed;
     gamemode = 0;
+    banneditems = 0;
     brightness = 10;
     minskill = 25;
     maxskill = 300;
@@ -139,6 +141,12 @@ function LoadFlags()
         skills_disable_downgrades = f.GetInt('Rando_skills_disable_downgrades');
         skills_reroll_missions = f.GetInt('Rando_skills_reroll_missions');
         skills_independent_levels = f.GetInt('Rando_skills_independent_levels');
+
+        if( gamemode == 4 ) banneditems = 1;
+        if( gamemode == 5 ) banneditems = 2;
+    }
+    if( stored_version >= VersionToInt(1,4,7) ) {
+        banneditems = f.GetInt('Rando_banneditems');
     }
 
     if(stored_version < flagsversion ) {
@@ -161,6 +169,7 @@ function SaveFlags()
 
     f.SetInt('Rando_version', flagsversion,, 999);
     f.SetInt('Rando_gamemode', gamemode,, 999);
+    f.SetInt('Rando_banneditems', banneditems,, 999);
     f.SetInt('Rando_brightness', brightness,, 999);
     f.SetInt('Rando_minskill', minskill,, 999);
     f.SetInt('Rando_maxskill', maxskill,, 999);

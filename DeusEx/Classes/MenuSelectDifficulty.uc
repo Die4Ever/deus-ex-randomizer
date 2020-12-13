@@ -23,9 +23,10 @@ function BindControls(bool writing, optional string action)
     //EnumOption(id, "How About Some Soy Food?", 6, writing, f.gamemode);
     if( EnumOption(id, "Stick With the Prod", 4, writing, f.gamemode) ) {
         //also set the banneditems setting to 1
+        f.banneditems = 1;
     }
     if( EnumOption(id, "Stick With the Prod Plus", 5, writing, f.gamemode) ) {
-        //also set the banneditems setting to 2
+        f.banneditems = 2;
     }
     //EnumOption(id, "Max Rando", 7, writing, f.gamemode);
     id++;
