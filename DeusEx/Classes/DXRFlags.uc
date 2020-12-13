@@ -214,7 +214,7 @@ function LogFlags(string prefix)
 
 function string StringifyFlags()
 {
-    return "flagsversion: "$flagsversion$", gamemode: "$gamemode$", brightness: "$brightness $ ", ammo: " $ ammo
+    return "flagsversion: "$flagsversion$", gamemode: "$gamemode$", banneditems: "$banneditems$", brightness: "$brightness $ ", ammo: " $ ammo
         $ ", minskill: "$minskill$", maxskill: "$maxskill$", skills_disable_downgrades: " $ skills_disable_downgrades $ ", skills_reroll_missions: " $ skills_reroll_missions $ ", skills_independent_levels: " $ skills_independent_levels
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
@@ -254,12 +254,12 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 4, 6);
+    return VersionToInt(1, 4, 7);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 6) $ "";
+    return VersionToString(1, 4, 7) $ " Beta";
 }
 
 function MaxRando()
