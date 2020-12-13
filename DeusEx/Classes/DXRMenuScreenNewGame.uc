@@ -100,4 +100,5 @@ function SaveSettings()
 
 defaultproperties
 {
+    actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel)
 }

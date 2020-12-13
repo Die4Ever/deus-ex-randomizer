@@ -2,9 +2,14 @@ class DXRMenuSetupRando extends DXRMenuBase;
 
 var float combatDifficulty;
 
+event InitWindow()
+{
+}
+
 function BindControls(bool writing, optional string action)
 {
     local DXRFlags f;
+    local string doors_option, skills_option;
     Super.BindControls(writing, action);
     f = InitFlags();
 
@@ -13,27 +18,31 @@ function BindControls(bool writing, optional string action)
     Slider(id, f.brightness, 0, 255, writing);
     id++;
 
+    doors_option = f.doorsmode $ ";" $ f.doorsdestructible $ ";" $ f.doorspickable;
+
     labels[id] = "";
     helptexts[id] = "Additional options to get through doors that normally can't be destroyed or lockpicked.";
     //I could make this dual column? "Key-Only Doors" on the left and then "Breakable or Pickable" on the right? or should it be 2 rows?
-    EnumOption(id, "Key-Only Doors Breakable or Pickable", 0, writing);
-    /*btnRandoDoors.values[i++] = "Key-Only Doors Destructible or Pickable";
-    btnRandoDoors.values[i++] = "Key-Only Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "Key-Only Doors Destructible";
-    btnRandoDoors.values[i++] = "Key-Only Doors Pickable";
-    btnRandoDoors.values[i++] = "Some Doors Destructible or Pickable";
-    btnRandoDoors.values[i++] = "Some Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "Some Doors Destructible";
-    btnRandoDoors.values[i++] = "Some Doors Pickable";
-    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible or Pickable";
-    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible";
-    btnRandoDoors.values[i++] = "Undefeatable Doors Pickable";
-    btnRandoDoors.values[i++] = "Doors Unchanged";*/
-    /*btnRandoDoors.values[i++] = "All Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "All Doors Destructible or Pickable";
-    btnRandoDoors.values[i++] = "All Doors Destructible";
-    btnRandoDoors.values[i++] = "All Doors Pickable";*/
+    EnumOptionString(id, "Key-Only Doors Breakable or Pickable", (f.keyonlydoors+f.doormutuallyexclusive)$";50;50", writing, doors_option);
+    EnumOptionString(id, "Key-Only Doors Breakable & Pickable", (f.keyonlydoors+f.doormutuallyinclusive)$";100;100", writing, doors_option);
+    EnumOptionString(id, "Key-Only Doors Breakable", (f.keyonlydoors+f.doorindependent)$";100;0", writing, doors_option);
+    EnumOptionString(id, "Key-Only Doors Pickable", (f.keyonlydoors+f.doorindependent)$";0;100", writing, doors_option);
+    EnumOptionString(id, "Some Doors Breakable or Pickable", (f.keyonlydoors+f.doormutuallyexclusive)$";25;25", writing, doors_option);
+    EnumOptionString(id, "Some Doors Breakable & Pickable", (f.keyonlydoors+f.doormutuallyinclusive)$";50;50", writing, doors_option);
+    EnumOptionString(id, "Some Doors Breakable", (f.keyonlydoors+f.doorindependent)$";50;0", writing, doors_option);
+    EnumOptionString(id, "Some Doors Pickable", (f.keyonlydoors+f.doorindependent)$";0;50", writing, doors_option);
+    EnumOptionString(id, "Undefeatable Doors Breakable or Pickable", (f.undefeatabledoors+f.doormutuallyexclusive)$";50;50", writing, doors_option);
+    EnumOptionString(id, "Undefeatable Doors Breakable & Pickable", (f.undefeatabledoors+f.doormutuallyinclusive)$";100;100", writing, doors_option);
+    EnumOptionString(id, "Undefeatable Doors Breakable", (f.undefeatabledoors+f.doorindependent)$";100;0", writing, doors_option);
+    EnumOptionString(id, "Undefeatable Doors Pickable", (f.undefeatabledoors+f.doorindependent)$";0;100", writing, doors_option);
+    EnumOptionString(id, "Doors Unchanged", "0;0;0", writing, doors_option);
+    /*EnumOptionString(id, "All Doors Breakable & Pickable", (f.alldoors+f.doormutuallyexclusive)$";50;50", writing, doors_option);
+    EnumOptionString(id, "All Doors Breakable or Pickable", (f.alldoors+f.doormutuallyinclusive)$";100;100", writing, doors_option);
+    EnumOptionString(id, "All Doors Breakable", (f.alldoors+f.doorindependent)$";100;0", writing, doors_option);
+    EnumOptionString(id, "All Doors Pickable", (f.alldoors+f.doorindependent)$";0;100", writing, doors_option);*/
+    f.doorsmode = UnpackInt(doors_option);
+    f.doorsdestructible = UnpackInt(doors_option);
+    f.doorspickable = UnpackInt(doors_option);
     id++;
 
     labels[id] = "NanoKey Locations";
@@ -74,36 +83,16 @@ function BindControls(bool writing, optional string action)
     labels[id] = "";
     helptexts[id] = "Adjust how skill cost randomization works.";
     //would be nice to have a better way to indicate which option is initially selected here?
-    if( EnumOption(id, "Normal Skill Randomization", 0, writing) ) {
-        f.skills_disable_downgrades = 0;
-        f.skills_reroll_missions = 0;
-        f.skills_independent_levels = 0;
-    }
-    if( EnumOption(id, "Normal Skills Every Mission", 0, writing) ) {
-        f.skills_disable_downgrades = 0;
-        f.skills_reroll_missions = 1;
-        f.skills_independent_levels = 0;
-    }
-    if( EnumOption(id, "Normal Skills Every 5 Missions", 0, writing) ) {
-        f.skills_disable_downgrades = 0;
-        f.skills_reroll_missions = 5;
-        f.skills_independent_levels = 0;
-    }
-    if( EnumOption(id, "Blind Skill Randomization", 0, writing) ) {
-        f.skills_disable_downgrades = 5;
-        f.skills_reroll_missions = 0;
-        f.skills_independent_levels = 100;
-    }
-    if( EnumOption(id, "Blind Skills Every Mission", 0, writing) ) {
-        f.skills_disable_downgrades = 5;
-        f.skills_reroll_missions = 1;
-        f.skills_independent_levels = 100;
-    }
-    if( EnumOption(id, "Blind Skills Every 5 Missions", 0, writing) ) {
-        f.skills_disable_downgrades = 5;
-        f.skills_reroll_missions = 5;
-        f.skills_independent_levels = 100;
-    }
+    skills_option = f.skills_disable_downgrades $";"$ f.skills_reroll_missions $";"$ f.skills_independent_levels;
+    EnumOptionString(id, "Normal Skill Randomization", "0;0;0", writing, skills_option);
+    EnumOptionString(id, "Normal Skills Every Mission", "0;1;0", writing, skills_option);
+    EnumOptionString(id, "Normal Skills Every 5 Missions", "0;5;0", writing, skills_option);
+    EnumOptionString(id, "Blind Skill Randomization", "5;0;100", writing, skills_option);
+    EnumOptionString(id, "Blind Skills Every Mission", "5;1;100", writing, skills_option);
+    EnumOptionString(id, "Blind Skills Every 5 Missions", "5;5;100", writing, skills_option);
+    f.skills_disable_downgrades = UnpackInt(skills_option);
+    f.skills_reroll_missions = UnpackInt(skills_option);
+    f.skills_independent_levels = UnpackInt(skills_option);
     id++;
 
     labels[id] = "Minimum Skill Cost %";
@@ -144,6 +133,8 @@ function BindControls(bool writing, optional string action)
     labels[id] = "Dancing %";
     helptexts[id] = "How many characters should be dancing.";
     Slider(id, f.dancingpercent, 0, 100, writing);
+
+    if( action == "NEXT" ) InvokeNewGameScreen(combatDifficulty, InitDxr());
 }
 
 function DXRando InitDxr()
@@ -184,8 +175,8 @@ defaultproperties
     row_height=20
     padding_width=20
     padding_height=10
-    actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel,Text="|&Back")
-    actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
+    //actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel,Text="|&Back")
+    //actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     //actionButtons(2)=(Action=AB_Reset)
     Title="DX Rando Options"
     ClientWidth=672

@@ -14,6 +14,8 @@ var int removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices;
 var int dancingpercent;
 var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
 
+var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
+
 function PreTravel()
 {
     Super.PreTravel();
@@ -25,6 +27,7 @@ function Init(DXRando tdxr)
 {
     Super.Init(tdxr);
     f = tdxr.Player.FlagBase;
+    tdxr.seed = seed;
     InitVersion();
 }
 
@@ -43,11 +46,20 @@ function InitDefaults()
     InitVersion();
     CheckConfig();
     dxr.CrcInit();
+
+    undefeatabledoors = 1*256;
+    alldoors = 2*256;
+    keyonlydoors = 3*256;
+    highlightabledoors = 4*256;
+    doormutuallyinclusive = 1;
+    doorindependent = 2;
+    doormutuallyexclusive = 3;
+
     seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );
     seed = abs(seed) % 1000000;
     dxr.seed = seed;
     gamemode = 0;
-    brightness = 5;
+    brightness = 10;
     minskill = 25;
     maxskill = 300;
     ammo = 90;
@@ -56,9 +68,9 @@ function InitDefaults()
     biocells = 80;
     speedlevel = 1;
     keysrando = 4;
-    doorsmode = 1;
-    doorspickable = 100;
-    doorsdestructible = 100;
+    doorsmode = keyonlydoors + doormutuallyexclusive;
+    doorspickable = 50;
+    doorsdestructible = 50;
     deviceshackable = 100;
     passwordsrandomized = 100;
     gibsdropkeys = 1;

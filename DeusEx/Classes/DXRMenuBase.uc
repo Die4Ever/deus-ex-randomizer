@@ -30,9 +30,10 @@ var config int row_height;
 var config int padding_width;
 var config int padding_height;
 
-event InitWindow()
+event Init(DXRFlags f)
 {
     local vector coords;
+    flags = f;
 
     CheckConfig();
 
@@ -92,6 +93,39 @@ function bool EnumOption(int id, string label, int value, bool writing, optional
             enums[id].btn = CreateEnum(id, labels[id], helptexts[id], enums[id]);
             wnds[id] = enums[id].btn;
         }
+        if( output == value ) {
+            enums[id].btn.SetButtonText(label);
+            enums[id].value = i;
+        }
+    }
+    return false;
+}
+
+function bool EnumOptionString(int id, string label, string value, bool writing, optional out string output)
+{
+    local int i;
+
+    if( writing ) {
+        if( label == GetEnumValue(id) ) {
+            output = value;
+            return true;
+        }
+        return false;
+    } else {
+        for(i=0; i<ArrayCount(enums[id].values); i++) {
+            if( enums[id].values[i] == "" ) {
+                enums[id].values[i] = label;
+                break;
+            }
+        }
+        if ( enums[id].btn == None ) {
+            enums[id].btn = CreateEnum(id, labels[id], helptexts[id], enums[id]);
+            wnds[id] = enums[id].btn;
+        }
+        if( output == value ) {
+            enums[id].btn.SetButtonText(label);
+            enums[id].value = i;
+        }
     }
     return false;
 }
@@ -119,6 +153,22 @@ function int Slider(int id, out int value, int min, int max, bool writing)
         }
     }
     return value;
+}
+
+function int UnpackInt(out string s)
+{
+    local int i, ret, l;
+    l = Len(s);
+    for(i=0; i<l; i++) {
+        if( Mid(s, i, 1) == ";" ) {
+            ret = int(Left(s, i));
+            s = Mid(s, i+1);
+            return ret;
+        }
+    }
+    ret = int(s);
+    s="";
+    return ret;
 }
 
 function ProcessAction(String actionKey)
@@ -410,7 +460,7 @@ defaultproperties
     row_height=20
     padding_width=20
     padding_height=10
-    actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel,Text="|&Back")
+    actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel,Text="|&Back")
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     //actionButtons(2)=(Action=AB_Reset)
     Title="DX Rando Options"
