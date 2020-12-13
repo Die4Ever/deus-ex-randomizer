@@ -42,11 +42,19 @@ function Timer()
     }
 }
 
+function RollSeed()
+{
+    dxr.CrcInit();
+    seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );
+    seed = abs(seed) % 1000000;
+    dxr.seed = seed;
+}
+
 function InitDefaults()
 {
     InitVersion();
     CheckConfig();
-    dxr.CrcInit();
+    //dxr.CrcInit();
 
     undefeatabledoors = 1*256;
     alldoors = 2*256;
@@ -56,9 +64,8 @@ function InitDefaults()
     doorindependent = 2;
     doormutuallyexclusive = 3;
 
-    seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );
-    seed = abs(seed) % 1000000;
-    dxr.seed = seed;
+    seed = 0;
+    if( dxr != None ) RollSeed();
     gamemode = 0;
     banneditems = 0;
     brightness = 10;

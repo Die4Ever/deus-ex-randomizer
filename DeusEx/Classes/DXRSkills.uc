@@ -1,4 +1,4 @@
-class DXRSkills extends DXRBase;
+class DXRSkills extends DXRBase transient;
 
 struct SkillCostMultiplier {
     var string type;//you can use "Skill" to make it apply to all skills
@@ -28,12 +28,11 @@ function CheckConfig()
 function AnyEntry()
 {
     Super.AnyEntry();
-    RandoSkills();
+    RandoSkills(dxr.Player.SkillSystem.FirstSkill);
 }
 
-function RandoSkills()
+function RandoSkills(Skill aSkill)
 {
-    local Skill aSkill;
     local int i;
     local int mission_group;
 
@@ -50,7 +49,6 @@ function RandoSkills()
 
     if( dxr.flags.minskill > dxr.flags.maxskill ) dxr.flags.maxskill = dxr.flags.minskill;
 
-    aSkill = dxr.Player.SkillSystem.FirstSkill;
     while(aSkill != None)
     {
         RandoSkill(aSkill);

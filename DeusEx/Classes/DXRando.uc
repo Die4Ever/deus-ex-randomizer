@@ -27,6 +27,7 @@ function SetdxInfo(DeusExLevelInfo i)
 function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
+    CrcInit();
 
     if( localURL == "" ) {
         l("PostPostBeginPlay returning because localURL == " $ localURL);
@@ -41,7 +42,6 @@ function PostPostBeginPlay()
         return;
     }
     l("found Player "$Player);
-    CrcInit();
     ClearModules();
     LoadFlagsModule();
     flags.LoadFlags();
@@ -105,7 +105,7 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
 
     m = FindModule(moduleclass);
     if( m != None ) {
-        l("found already loaded module "$moduleclass);
+        l("found already loaded module "$m);
         if(m.dxr != Self) m.Init(Self);
         return m;
     }
@@ -119,7 +119,7 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
     m.Init(Self);
     modules[num_modules] = m;
     num_modules++;
-    l("finished loading module "$moduleclass);
+    l("finished loading module "$m);
     return m;
 }
 
@@ -147,6 +147,7 @@ function DXRBase FindModule(class<DXRBase> moduleclass)
     foreach AllActors(class'DXRBase', m)
     {
         if( m.Class == moduleclass ) {
+            l("FindModule("$moduleclass$") found "$m);
             m.Init(Self);
             modules[num_modules] = m;
             num_modules++;

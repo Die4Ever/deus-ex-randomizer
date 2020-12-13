@@ -4,6 +4,7 @@ var float combatDifficulty;
 
 event InitWindow()
 {
+    Super.InitWindow();
 }
 
 function BindControls(bool writing, optional string action)
@@ -107,7 +108,7 @@ function BindControls(bool writing, optional string action)
 
     labels[id] = "";
     helptexts[id] = "What items are banned";
-    EnumOption(id, "No banned items", 0, writing, f.banneditems);
+    EnumOption(id, "No items banned", 0, writing, f.banneditems);
     EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
     EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
     id++;
@@ -135,30 +136,6 @@ function BindControls(bool writing, optional string action)
     Slider(id, f.dancingpercent, 0, 100, writing);
 
     if( action == "NEXT" ) InvokeNewGameScreen(combatDifficulty, InitDxr());
-}
-
-function DXRando InitDxr()
-{
-    local DXRando dxr;
-    dxr = player.Spawn(class'DXRando');
-    dxr.player = player;
-    dxr.modules[0] = flags;
-    dxr.LoadFlagsModule();
-    if( flags == None ) dxr.flags.InitDefaults();
-    flags = dxr.flags;
-    return dxr;
-}
-
-function InvokeNewGameScreen(float difficulty, DXRando dxr)
-{
-    local DXRMenuScreenNewGame newGame;
-
-    newGame = DXRMenuScreenNewGame(root.InvokeMenuScreen(Class'DXRMenuScreenNewGame'));
-
-    if (newGame != None) {
-        newGame.SetDifficulty(difficulty);
-        newGame.SetDxr(dxr);
-    }
 }
 
 function SetDifficulty(float newDifficulty)

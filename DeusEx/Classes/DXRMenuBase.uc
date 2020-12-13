@@ -18,6 +18,7 @@ var Window wnds[64];
 var String labels[64];
 var String helptexts[64];
 
+var DXRando dxr;
 var DXRFlags flags;
 
 var config int config_version;
@@ -30,10 +31,11 @@ var config int row_height;
 var config int padding_width;
 var config int padding_height;
 
-event Init(DXRFlags f)
+event Init(DXRando d)
 {
     local vector coords;
-    flags = f;
+    dxr = d;
+    flags = dxr.flags;
 
     CheckConfig();
 
@@ -43,6 +45,7 @@ event Init(DXRFlags f)
     Super.InitWindow();
 
     ResetToDefaults();
+    BindControls(false);
 
     // Need to do this because of the edit control used for 
     // saving games.
@@ -60,6 +63,36 @@ function DXRFlags InitFlags()
     flags = player.Spawn(class'DXRFlags', None);
     flags.InitDefaults();
     return flags;
+}
+
+function DXRando InitDxr()
+{
+    if( dxr != None ) return dxr;
+    log("InitDxr has player "$player);
+    dxr = player.Spawn(class'DXRando', None);
+    log("InitDxr got "$dxr);
+    dxr.player = player;
+    InitFlags();
+    if( flags != None ) {
+        dxr.modules[0] = flags;
+        dxr.num_modules = 1;
+    }
+    dxr.LoadFlagsModule();
+    if( flags == None ) dxr.flags.InitDefaults();
+    flags = dxr.flags;
+    return dxr;
+}
+
+function InvokeNewGameScreen(float difficulty, DXRando dxr)
+{
+    local DXRMenuScreenNewGame newGame;
+
+    newGame = DXRMenuScreenNewGame(root.InvokeMenuScreen(Class'DXRMenuScreenNewGame'));
+
+    if (newGame != None) {
+        newGame.SetDifficulty(difficulty);
+        newGame.SetDxr(dxr);
+    }
 }
 
 function CheckConfig()
@@ -204,7 +237,8 @@ function CreateControls()
     Super.CreateControls();
     Title = "DX Rando "$ class'DXRFlags'.static.VersionString();
     SetTitle(Title);
-    BindControls(false);
+    //if(flags == None) return;
+    //BindControls(false);
 }
 
 function vector GetCoords(int row, int col)

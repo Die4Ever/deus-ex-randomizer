@@ -2,7 +2,9 @@ class MenuSelectDifficulty extends DXRMenuBase;
 
 event InitWindow()
 {
-    Init(InitFlags());
+    Super.InitWindow();
+    InitDxr();
+    Init(InitDxr());
 }
 
 function BindControls(bool writing, optional string action)
@@ -123,16 +125,19 @@ function BindControls(bool writing, optional string action)
     sseed = EditBox(id, "", "1234567890", writing);
     if( sseed != "" ) {
         f.seed = int(sseed);
-        //dxr.seed = f.seed;
+        dxr.seed = f.seed;
+    } else {
+        f.RollSeed();
     }
     id++;
 
     if(writing) {
-        NewGameSetup(difficulty, action != "ADVANCED");
+        if( action == "ADVANCED" ) NewGameSetup(difficulty);
+        else InvokeNewGameScreen(difficulty, InitDxr());
     }
 }
 
-function NewGameSetup(float difficulty, bool use_defaults)
+function NewGameSetup(float difficulty)
 {
     local DXRMenuSetupRando newGame;
 
@@ -140,8 +145,7 @@ function NewGameSetup(float difficulty, bool use_defaults)
 
     if (newGame != None) {
         newGame.SetDifficulty(difficulty);
-        newGame.Init(flags);
-        if( use_defaults ) newGame.ProcessAction("NEXT");
+        newGame.Init(dxr);
     }
 }
 
