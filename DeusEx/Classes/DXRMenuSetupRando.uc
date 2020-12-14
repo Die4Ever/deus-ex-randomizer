@@ -11,6 +11,7 @@ function BindControls(bool writing, optional string action)
 {
     local DXRFlags f;
     local string doors_option, skills_option;
+    local int iDifficulty;
     Super.BindControls(writing, action);
     f = InitFlags();
 
@@ -83,7 +84,6 @@ function BindControls(bool writing, optional string action)
 
     labels[id] = "";
     helptexts[id] = "Adjust how skill cost randomization works.";
-    //would be nice to have a better way to indicate which option is initially selected here?
     skills_option = f.skills_disable_downgrades $";"$ f.skills_reroll_missions $";"$ f.skills_independent_levels;
     EnumOptionString(id, "Normal Skill Randomization", "0;0;0", writing, skills_option);
     EnumOptionString(id, "Normal Skills Every Mission", "0;1;0", writing, skills_option);
@@ -106,6 +106,13 @@ function BindControls(bool writing, optional string action)
     Slider(id, f.maxskill, 0, 1000, writing);
     id++;
 
+    iDifficulty = int(combatDifficulty * 100.0);
+    labels[id] = "Combat Difficulty %";
+    helptexts[id] = "Multiply the damage the player takes. The original game uses 400% for realistic.";
+    Slider(id, iDifficulty, 0, 500, writing);
+    combatDifficulty = float(iDifficulty) / 100.0;
+    id++;
+
     labels[id] = "";
     helptexts[id] = "What items are banned";
     EnumOption(id, "No items banned", 0, writing, f.banneditems);
@@ -118,12 +125,24 @@ function BindControls(bool writing, optional string action)
     Slider(id, f.ammo, 0, 100, writing);
     id++;
 
-    labels[id] = "Utility Items Drops %";
-    helptexts[id] = "Make medkits, biocells, lockpicks, and multitools more scarce.";
+    labels[id] = "Multitools Drops %";
+    helptexts[id] = "Make multitools more scarce.";
+    Slider(id, f.multitools, 0, 100, writing);
+    id++;
+
+    labels[id] = "Lockpicks Drops %";
+    helptexts[id] = "Make lockpicks more scarce.";
+    Slider(id, f.lockpicks, 0, 100, writing);
+    id++;
+
+    labels[id] = "Bioelectric Cells Drops %";
+    helptexts[id] = "Make bioelectric cells more scarce.";
+    Slider(id, f.biocells, 0, 100, writing);
+    id++;
+
+    labels[id] = "Medkit Drops %";
+    helptexts[id] = "Make medkits more scarce.";
     Slider(id, f.medkits, 0, 100, writing);
-    f.biocells = f.medkits;
-    f.lockpicks = f.medkits;
-    f.multitools = f.medkits;
     id++;
 
     labels[id] = "Speed Aug Level";
@@ -152,9 +171,6 @@ defaultproperties
     row_height=20
     padding_width=20
     padding_height=10
-    //actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel,Text="|&Back")
-    //actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
-    //actionButtons(2)=(Action=AB_Reset)
     Title="DX Rando Options"
     ClientWidth=672
     ClientHeight=357

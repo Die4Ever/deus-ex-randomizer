@@ -158,8 +158,6 @@ defaultproperties
     row_height=20
     padding_width=20
     padding_height=10
-    //actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel,Text="|&Back")
-    //actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Advanced",Key="ADVANCED")
     Title="DX Rando Options"
     ClientWidth=672

@@ -6,6 +6,20 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 
 for v1.5 ========================
 
+can I use something like this to right click an enum to go backwards? from MenuUIChoice.uc
+function bool ButtonActivatedRight( Window buttonPressed )
+{
+	if (buttonPressed == btnAction)
+	{
+		CyclePreviousValue();
+		return True;
+	}
+	else
+	{
+		return Super.ButtonActivated(buttonPressed);
+	}
+}
+
 new game -> game mode choice -> difficulty? (max rando would skip difficulty choice? and maybe horde mode too?) -> rando options -> create character
 remove the option for removing invisible walls
 combine medkits/biocells/lockpicks/multitools into just items drop rate?

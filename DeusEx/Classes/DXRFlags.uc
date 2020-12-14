@@ -84,7 +84,7 @@ function InitDefaults()
     passwordsrandomized = 100;
     gibsdropkeys = 1;
     medkits = 90;
-    autosave = 1;
+    autosave = 2;
     removeinvisiblewalls = 0;
     enemiesrandomized = 25;
     enemyrespawn = 0;
