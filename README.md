@@ -34,6 +34,8 @@ For the randomized passwords, you can copy-paste from the Goals/Notes screen.
 
 I've also made some balance tweaks. Hacking computers now uses bioelectric energy. The healing aug gives less health. Level 1 of the speed aug has been buffed, but max level remains the same. Dragon's Tooth Sword now does much less damage, but if you aim for the head you can still kill most enemies in 1 hit. Spy Drone aug has improved speed and the emp blast now also does explosive damage. Fire extinguishers now stack in your inventory. Also the PS20 has been upgraded to the PS40 and does significantly more damage.
 
+### Installation Instructions
+
 Download the `DeusEx.u` file from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
 
 Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`)
