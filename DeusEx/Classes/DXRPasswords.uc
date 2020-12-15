@@ -27,6 +27,26 @@ function Timer()
     lastCheckedNote = dxr.Player.FirstNote;
 }
 
+function ProcessString(out string str)
+{
+    local int i;
+    for (i=0; i<ArrayCount(oldpasswords); i++)
+    {
+        UpdateString(str, oldpasswords[i], newpasswords[i]);
+    }
+}
+
+function UpdateString(out string str, string oldpassword, string newpassword)
+{
+    if( oldpassword == "" ) return;
+    if( str == "") return;
+    if( WordInStr( Caps(str), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return;
+
+    l("found string with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
+
+    str = ReplaceText( str, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
+}
+
 function FirstEntry()
 {
     Super.FirstEntry();

@@ -1,4 +1,4 @@
-class DXRFixup expands DXRBase;
+class DXRFixup expands DXRActorsBase;
 
 struct DecorationsOverwrite {
     var string type;
@@ -479,6 +479,7 @@ function NYC_08_AnyEntry()
 function Area51_FirstEntry()
 {
     local DeusExMover d;
+    local DataCube dc;
     switch(dxr.localURL)
     {
         case "15_AREA51_FINAL":
@@ -486,6 +487,16 @@ function Area51_FirstEntry()
                 d.move(vect(0, 0, -1));
             }
             AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
+            break;
+        case "15_AREA51_ENTRANCE":
+            dc = Spawn(class'DataCube',,, GetRandomPosition(), rot(0,0,0));
+            if( dc != None ) dc.plaintext = "My code is 6786";
+
+            dc = Spawn(class'DataCube',,, GetRandomPosition(), rot(0,0,0));
+            if( dc != None ) dc.plaintext = "My code is 3901";
+
+            dc = Spawn(class'DataCube',,, GetRandomPosition(), rot(0,0,0));
+            if( dc != None ) dc.plaintext = "My code is 4322";
             break;
     }
 }

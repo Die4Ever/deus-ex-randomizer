@@ -23,7 +23,7 @@ var config door_fix door_fixes[32];
 function CheckConfig()
 {
     local int i;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,6) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,7) ) {
         i=0;
 
         keys_rules[i].map = "03_NYC_747";
@@ -120,6 +120,8 @@ function CheckConfig()
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 75;
         door_fixes[i].doorStrength = 1;
+        door_fixes[i].bPickable = true;
+        door_fixes[i].lockStrength = 1;
         i++;
 
         door_fixes[i].map = "15_area51_entrance";
@@ -127,36 +129,48 @@ function CheckConfig()
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 75;
         door_fixes[i].doorStrength = 1;
+        door_fixes[i].bPickable = true;
+        door_fixes[i].lockStrength = 1;
         i++;
         door_fixes[i].map = "15_area51_entrance";
         door_fixes[i].tag = 'chamber2';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 75;
         door_fixes[i].doorStrength = 1;
+        door_fixes[i].bPickable = true;
+        door_fixes[i].lockStrength = 1;
         i++;
         door_fixes[i].map = "15_area51_entrance";
         door_fixes[i].tag = 'chamber3';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 75;
         door_fixes[i].doorStrength = 1;
+        door_fixes[i].bPickable = true;
+        door_fixes[i].lockStrength = 1;
         i++;
         door_fixes[i].map = "15_area51_entrance";
         door_fixes[i].tag = 'chamber4';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 75;
         door_fixes[i].doorStrength = 1;
+        door_fixes[i].bPickable = true;
+        door_fixes[i].lockStrength = 1;
         i++;
         door_fixes[i].map = "15_area51_entrance";
         door_fixes[i].tag = 'chamber5';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 75;
         door_fixes[i].doorStrength = 1;
+        door_fixes[i].bPickable = true;
+        door_fixes[i].lockStrength = 1;
         i++;
         door_fixes[i].map = "15_area51_entrance";
         door_fixes[i].tag = 'chamber6';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 75;
         door_fixes[i].doorStrength = 1;
+        door_fixes[i].bPickable = true;
+        door_fixes[i].lockStrength = 1;
         i++;
     }
     for(i=0; i<ArrayCount(keys_rules); i++) {

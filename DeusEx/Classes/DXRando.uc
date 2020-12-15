@@ -68,6 +68,8 @@ function CheckConfig()
         }
 
         i=0;
+        //modules_to_load[i++] = "DXRAddItems";
+        modules_to_load[i++] = "DXRFixup";
         modules_to_load[i++] = "DXRKeys";
         modules_to_load[i++] = "DXREnemies";
         modules_to_load[i++] = "DXRSkills";
@@ -76,7 +78,6 @@ function CheckConfig()
         modules_to_load[i++] = "DXRSwapItems";
         modules_to_load[i++] = "DXRReduceItems";
         modules_to_load[i++] = "DXRNames";
-        modules_to_load[i++] = "DXRFixup";
         modules_to_load[i++] = "DXRAutosave";
         modules_to_load[i++] = "DXRMemes";
         modules_to_load[i++] = "DXREntranceRando";
@@ -84,7 +85,6 @@ function CheckConfig()
         modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
         modules_to_load[i++] = "DXRBannedItems";
-        //modules_to_load[i++] = "DXRAddItems";// add a medbot to oceanlab?
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         config_version = class'DXRFlags'.static.VersionNumber();
