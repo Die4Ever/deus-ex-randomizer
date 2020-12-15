@@ -24,7 +24,6 @@ There are also settings for
 * reducing the drop rate for ammo, multitools, lockpicks, medkits, and bioelectric cells
 * starting the game with the running speed augmentation
 * autosave
-* removing invisible walls
 
 #### When you click New Game, you will see this settings screen:
 ![options](https://i.imgur.com/XYOCRo3.png)
