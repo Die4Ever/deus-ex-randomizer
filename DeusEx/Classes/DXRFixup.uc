@@ -155,15 +155,7 @@ function FixSamCarter()
 {
     local SamCarter s;
     foreach AllActors(class'SamCarter', s) {
-        s.bFearHacking = false;
-        s.bFearWeapon = false;
-        s.bFearShot = false;
-        s.bFearInjury = false;
-        s.bFearIndirectInjury = false;
-        s.bFearCarcass = false;
-        s.bFearDistress = false;
-        s.bFearAlarm = false;
-        s.bFearProjectiles = false;
+        RemoveFears(s);
     }
 }
 
@@ -473,7 +465,11 @@ function HongKong_AnyEntry()
 
 function NYC_08_AnyEntry()
 {
+    local StantonDowd s;
     SetTimer(1.0, True);
+    foreach AllActors(class'StantonDowd', s) {
+        RemoveFears(s);
+    }
 }
 
 function Area51_FirstEntry()
@@ -520,6 +516,19 @@ function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
     s.bCollideWorld=False;
     s.SetLocation(loc);
     return s;
+}
+
+function RemoveFears(ScriptedPawn p)
+{
+    p.bFearHacking = false;
+    p.bFearWeapon = false;
+    p.bFearShot = false;
+    p.bFearInjury = false;
+    p.bFearIndirectInjury = false;
+    p.bFearCarcass = false;
+    p.bFearDistress = false;
+    p.bFearAlarm = false;
+    p.bFearProjectiles = false;
 }
 
 // mostly copied from DeusExPlayer.uc

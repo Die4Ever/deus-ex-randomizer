@@ -20,6 +20,8 @@ function bool ButtonActivatedRight( Window buttonPressed )
 	}
 }
 
+do I need a button to get out of the ship lower deck?
+
 new game -> game mode choice -> difficulty? (max rando would skip difficulty choice? and maybe horde mode too?) -> rando options -> create character
 remove the option for removing invisible walls
 combine medkits/biocells/lockpicks/multitools into just items drop rate?
