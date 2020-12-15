@@ -1,5 +1,7 @@
 # Deus Ex Randomizer
 
+This is a mod for the original Deus Ex that takes everything and shuffles it all around to make it like a new game every time but with the same great story.
+
 ### Currently in v1.4.7, DXRando randomizes
 * adding and changing characters, giving them random names and making some of them dance
 * changing the locations of items/boxes/NanoKeys around the map
