@@ -1,6 +1,6 @@
 # Deus Ex Randomizer
 
-Currently in v1.4.7, DXRando randomizes
+### Currently in v1.4.7, DXRando randomizes
 * adding and changing characters, giving them random names and making some of them dance
 * changing the locations of items/boxes/NanoKeys around the map
 * passwords and passcodes (they get updated in your Goals/Notes screen)
@@ -24,10 +24,10 @@ There are also settings for
 * autosave
 * removing invisible walls
 
-When you click New Game, you will see this settings screen
+#### When you click New Game, you will see this settings screen:
 ![options](https://i.imgur.com/XYOCRo3.png)
 
-If you click Next then it will use default settings based on your difficulty choice. But if you click Advanced then you will see more settings
+#### If you click Next then it will use default settings based on your difficulty choice. But if you click Advanced then you will see these settings:
 ![advanced options](https://i.imgur.com/cNxR0UX.png)
 
 For the randomized passwords, you can copy-paste from the Goals/Notes screen.
