@@ -259,7 +259,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 7) $ " Beta";
+    return VersionToString(1, 4, 7) $ "";
 }
 
 function MaxRando()
