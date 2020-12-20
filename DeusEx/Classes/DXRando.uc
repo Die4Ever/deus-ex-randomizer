@@ -56,11 +56,6 @@ function PostPostBeginPlay()
 function CheckConfig()
 {
     local int i;
-    //force modules to be referenced so they will get compiled, even if we don't want them to be loaded by default
-    local DXRNoStory compile1;
-    local DXRTestAllMaps compile2;
-    local DXREntranceRando compile3;
-    local DXRKillBobPage compile4;
 
     if( config_version < class'DXRFlags'.static.VersionToInt(1,4,6) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
@@ -110,7 +105,6 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
         return m;
     }
 
-    //m = new(None) moduleclass;
     m = Spawn(moduleclass, None);
     if ( m == None ) {
         l("failed to load module "$moduleclass);
@@ -161,7 +155,6 @@ function DXRBase FindModule(class<DXRBase> moduleclass)
 
 function ClearModules()
 {
-    local DXRBase m;
     num_modules=0;
     flags=None;
 }
@@ -171,8 +164,7 @@ event Destroyed()
     local int i;
     l("Destroyed()");
 
-    num_modules = 0;
-    flags = None;
+    ClearModules();
     Player = None;
     Super.Destroyed();
 }
