@@ -1,4 +1,4 @@
-class DXRScopeView extends DeusExScopeView;
+class ScopeView injects DeusExScopeView;
 
 event DrawWindow(GC gc)
 {

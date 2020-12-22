@@ -103,7 +103,6 @@ function AnyEntry()
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber $ " AnyEntry()");
 
-    BuffScopes();
     FixSamCarter();
 
     switch(dxr.dxInfo.missionNumber) {
@@ -169,20 +168,6 @@ function IncreaseBrightness(int brightness)
     foreach AllActors(class'ZoneInfo', z) {
         if( z == Level ) continue;
         z.AmbientBrightness = Clamp( int(z.AmbientBrightness) + brightness, 0, 255 );
-    }
-}
-
-function BuffScopes()
-{
-    local DXRScopeView scope;
-    local DeusExRootWindow win;
-
-    win = DeusExRootWindow(dxr.Player.rootWindow);
-    if ( win.scopeView.IsA('DXRScopeView') == false ) {
-        scope = DXRScopeView(win.NewChild(Class'DXRScopeView', False));
-        scope.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
-        scope.Lower();
-        win.scopeView = scope;
     }
 }
 
