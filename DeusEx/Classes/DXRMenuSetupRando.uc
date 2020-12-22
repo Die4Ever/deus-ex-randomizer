@@ -1,695 +1,165 @@
-class DXRMenuSetupRando expands MenuUIScreenWindow config(DXRando);
+class DXRMenuSetupRando extends DXRMenuBase;
 
-var MenuUIInfoButtonWindow winNameBorder;
 var float combatDifficulty;
-
-struct EnumBtn {
-    var MenuUIActionButtonWindow btn;
-    var string values[32];
-    var int value;
-};
-
-var EnumBtn enums[32];
-var int GameMode, RandoKeys, RandoDoors, RandoDevices, RandoPasswords, Autosave, RemoveInvisWalls, RandoInfoDevices, SkillMode;
-
-var MenuUIEditWindow editSeed;
-var MenuUIEditWindow editBrightness;
-var MenuUIEditWindow editMinSkill;
-var MenuUIEditWindow editMaxSkill;
-var MenuUIEditWindow editAmmo;
-var MenuUIEditWindow editMultitools;
-var MenuUIEditWindow editLockpicks;
-var MenuUIEditWindow editBioCells;
-var MenuUIEditWindow editMedkits;
-var MenuUIEditWindow editSpeedLevel;
-var MenuUIEditWindow editEnemyRando;
-var MenuUIEditWindow editEnemyRespawn;
-var MenuUIEditWindow editDancingPercent;
-
-var MenuUILabelWindow winHelp;
-var bool bHelpAlwaysOn;
-
-var int numwnds;
-var Window wnds[64];
-var String helptexts[64];
-
-var config int config_version;
-
-var config int num_rows;
-var config int num_cols;
-var config int col_width_even;
-var config int col_width_odd;
-var config int row_height;
-var config int padding_width;
-var config int padding_height;
 
 event InitWindow()
 {
-    local vector coords;
-
-    CheckConfig();
-
-    coords = _GetCoords(num_rows, num_cols);
-    ClientWidth = coords.X;
-    ClientHeight = coords.Y;
     Super.InitWindow();
-
-    ResetToDefaults();
-
-    // Need to do this because of the edit control used for 
-    // saving games.
-    SetMouseFocusMode(MFOCUS_Click);
-
-    InitHelp();
-    Show();
-    SetFocusWindow(editSeed);
-    editSeed.SetSelectedArea(0, Len(editSeed.GetText()));
-    combatDifficulty = player.Default.CombatDifficulty;
-
-    StyleChanged();
 }
 
-function DXRando InitDxr()
+function BindControls(bool writing, optional string action)
 {
-    local DXRando dxr;
-    dxr = player.Spawn(class'DXRando');
-    dxr.player = player;
-    dxr.LoadFlagsModule();
-    dxr.flags.InitDefaults();
-    return dxr;
-}
-
-function CheckConfig()
-{
-    if( config_version < 4 ) {
-    }
-    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
-        config_version = class'DXRFlags'.static.VersionNumber();
-        SaveConfig();
-    }
-}
-
-function InitHelp()
-{
-    local MenuUILabelWindow winLabel;
-    local vector coords;
-    bHelpAlwaysOn = True;
-    coords = _GetCoords(num_rows-1, 0);
-    winHelp = CreateMenuLabel( coords.x, coords.y+4, "", winClient);
-}
-
-event DestroyWindow()
-{
-}
-
-function CreateControls()
-{
-    local int i;
-    local int row;
-    local EnumBtn btnGameMode, btnRandoKeys, btnRandoDoors, btnRandoDevices, btnRandoPasswords, btnAutosave, btnInfoDevs, btnSkillModes;
-    Super.CreateControls();
-
-    Title = "DX Rando "$ class'DXRFlags'.static.VersionString() $" Options";
-    SetTitle(Title);
-
-    row = 0;
-    editSeed = CreateEdit(row++, "Seed", "Enter a seed if you want to play the same game again.", "1234567890");
-
-    btnAutosave.values[0] = "Every Entry";
-    btnAutosave.values[1] = "First Entry";
-    //btnAutosave.values[0] = "Off";
-    btnAutosave.values[2] = "Off";
-    Autosave = CreateEnum(row++, "Autosave", "Saves the game in case you die!", btnAutosave);
-
-    editBrightness = CreateSlider(row++, "Brightness (0-255) +", "Increase the brightness of dark areas.", 10, 0, 255);
-
-    i=0;
-    btnGameMode.values[i++] = "Original Story";
-    btnGameMode.values[i++] = "Horde Mode (Beta)";
-    btnGameMode.values[i++] = "Original Story, Rearranged Levels (Alpha)";
-    //btnGameMode.values[i++] = "Kill Bob Page (Alpha)";
-    /*btnGameMode.values[i++] = "How About Some Soy Food?";*/
-    btnGameMode.values[i++] = "Stick With the Prod";
-    btnGameMode.values[i++] = "Stick With the Prod Plus";
-    GameMode = CreateEnum(row++, "", "Choose a game mode!", btnGameMode);
-
-    i=0;
-    btnRandoDoors.values[i++] = "Key-Only Doors Destructible or Pickable";
-    btnRandoDoors.values[i++] = "Key-Only Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "Key-Only Doors Destructible";
-    btnRandoDoors.values[i++] = "Key-Only Doors Pickable";
-    btnRandoDoors.values[i++] = "Some Doors Destructible or Pickable";
-    btnRandoDoors.values[i++] = "Some Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "Some Doors Destructible";
-    btnRandoDoors.values[i++] = "Some Doors Pickable";
-    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible or Pickable";
-    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "Undefeatable Doors Destructible";
-    btnRandoDoors.values[i++] = "Undefeatable Doors Pickable";
-    btnRandoDoors.values[i++] = "Doors Unchanged";
-    /*btnRandoDoors.values[i++] = "All Doors Destructible & Pickable";
-    btnRandoDoors.values[i++] = "All Doors Destructible or Pickable";
-    btnRandoDoors.values[i++] = "All Doors Destructible";
-    btnRandoDoors.values[i++] = "All Doors Pickable";*/
-    RandoDoors = CreateEnum(row++, "", "Additional options to get through doors that normally can't be destroyed or lockpicked.", btnRandoDoors);
-
-    btnRandoKeys.values[0] = "On";
-    //btnRandoKeys.values[1] = "On";
-    btnRandoKeys.values[1] = "Off";
-    RandoKeys = CreateEnum(row++, "Key Randomization", "Move keys around the map.", btnRandoKeys);
-
-    btnRandoDevices.values[0] = "All Hackable";
-    btnRandoDevices.values[1] = "Most Hackable";
-    btnRandoDevices.values[2] = "Unchanged";
-    RandoDevices = CreateEnum(row++, "Electronic Devices", "Provide additional options for keypads and electronic panels.", btnRandoDevices);
-
-    btnRandoPasswords.values[0] = "Randomized";
-    btnRandoPasswords.values[1] = "Unchanged";
-    RandoPasswords = CreateEnum(row++, "Passwords", "Forces you to look for passwords and passcodes.", btnRandoPasswords);
-
-    btnInfoDevs.values[0] = "Randomized";
-    btnInfoDevs.values[1] = "Unchanged";
-    RandoInfoDevices = CreateEnum(row++, "Datacubes", "Moves datacubes and other information objects around the map.", btnInfoDevs);
-
-    editEnemyRando = CreateSlider(row++, "Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.", 35, 0, 100);
-    editEnemyRespawn = CreateSlider(row++, "Enemy Respawn Seconds", "(Beta) How many seconds for enemies to respawn. Leave blank or 0 to disable", 0, 0, 100);
-
-    btnSkillModes.values[0] = "Normal Skill Randomization";
-    btnSkillModes.values[1] = "Blind Skill Randomization";
-    btnSkillModes.values[2] = "Blind Skills Every Mission";
-    btnSkillModes.values[3] = "Blind Skills Every 5 Missions";
-    SkillMode = CreateEnum(row++, "", "Adjust how skill cost randomization works.", btnSkillModes);
-    editMinSkill = CreateSlider(row++, "Minimum Skill Cost %", "Minimum cost for skills in percentage of the original cost.", 25, 0, 500);
-    editMaxSkill = CreateSlider(row++, "Maximum Skill Cost %", "Maximum cost for skills in percentage of the original cost.", 300, 0, 500);
-
-    editAmmo = CreateSlider(row++, "Ammo Drops %", "Make ammo more scarce.", 80);
-    editMultitools = CreateSlider(row++, "Multitools Drops %", "Make multitools more scarce.", 80);
-    editLockpicks = CreateSlider(row++, "Lockpicks Drops %", "Make lockpicks more scarce.", 80);
-    editBioCells = CreateSlider(row++, "Bioelectric Cells Drops %", "Make bioelectric cells more scarce.", 80);
-    editMedkits = CreateSlider(row++, "Medkit Drops %", "Make medkits more scarce.", 90);
-    editSpeedLevel = CreateSlider(row++, "Speed Aug Level", "Start the game with the Speed Enhancement augmentation.", 1, 0, 3);
-
-    RemoveInvisWalls = CreateEnum(row++, "Remove Invisible Walls", "Allows you to get around some areas where it looks like you should be able to.");
-
-    editDancingPercent = CreateSlider(row++, "Dancing %", "How many characters should be dancing.", 25, 0, 100);
-}
-
-function vector GetCoords(int row, int col)
-{
-    while( row >= num_rows-1 ) {
-        row -= num_rows-1;
-        col += 2;
-    }
-    return _GetCoords(row, col);
-}
-
-function vector _GetCoords(int row, int col)
-{
-    local vector v;
-    v.x = _GetX(col);// col * col_width + col*padding_width + padding_width;
-    v.y = row * row_height + row*padding_height + padding_height;
-    return v;
-}
-
-function int _GetX(int col)
-{
-    local int width;
-    width = col_width_even + col_width_odd;
-    width *= col/2;
-    width += int(col%2) * col_width_odd;//I use col_width_odd here because it's 0-indexed
-    width += padding_width*col + padding_width;
-    return width;
-}
-
-function int GetWidth(int row, int col, int cols)
-{
-    while( row >= num_rows-1 ) {
-        row -= num_rows-1;
-        col += 2;
-    }
-    return _GetX(col+cols) - _GetX(col) - padding_width;
-}
-
-function MenuUILabelWindow CreateLabel(int row, string label)
-{
-    local MenuUILabelWindow winLabel;
-    local vector coords;
-    coords = GetCoords(row, 0);
-    winLabel = CreateMenuLabel( coords.x, coords.y+4, label, winClient);
-    return winLabel;
-}
-
-function MenuUIEditWindow CreateEdit(int row, string label, string helptext, string filterString, optional string deflt )
-{
-    local MenuUIEditWindow edit;
-    local vector coords;
-
-    CreateLabel(row, label);
-
-    coords = GetCoords(row, 1);
-    edit = CreateMenuEditWindow(coords.x, coords.y, GetWidth(row, 1, 1), 10, winClient);
-
-    edit.SetText(deflt);
-    edit.SetFilter(filterString);
-    //edit.SetSensitivity(False);
-
-    wnds[numwnds] = edit;
-    helptexts[numwnds] = helptext;
-    numwnds++;
-
-    return edit;
-}
-
-function MenuUIEditWindow CreateSlider(int row, string label, string helptext, optional int deflt, optional int min, optional int max )
-{
-    return CreateEdit(row, label, helptext, "1234567890", string(deflt));
-    /*local MenuUISliderButtonWindow slider;
-    local vector coords;
-    local int numTicks;
-    local int i;
-    local int mult;
-
-    if(max==0) max=100;
-    if( (max-min) < 80 ) mult=1;
-    else mult=5;
-    numTicks=(max - min)/mult + 1;
-
-    CreateLabel(row, label);
-
-    coords = GetCoords(row, 1);
-    slider = MenuUISliderButtonWindow(winClient.NewChild(Class'MenuUISliderButtonWindow'));
-    slider.SetPos(coords.x, coords.y);
-    slider.SetTicks(numTicks, min, max);
-    slider.winSlider.SetValue(deflt);
-    for(i=0; i<numTicks; i++) {
-        slider.winSlider.SetEnumeration(i, string(i*mult)$"%" );
-    }
-    //slider.winScaleManager.SetWidth(GetWidth(row, 1, 1));
-    //slider.winSlider.SetScaleTexture(slider.defaultScaleTexture, 50, 21, 8, 8);
-    //slider.winScaleManager.StretchScaleField(true);
-    //slider.winSlider.EnableStretchedScale(true);
-    //slider.winSlider.SetWidth(50);
-    slider.winSlider.SetScaleTexture(slider.defaultScaleTexture, 50, 21, 8, 8);
-
-    return slider;*/
-}
-
-function MenuUIActionButtonWindow CreateBtn(int row, string label, string helptext, string text)
-{
-    local MenuUIActionButtonWindow btn;
-    local vector coords;
-
-    if( label != "" ) CreateLabel(row, label);
-
-    btn = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
-    btn.SetButtonText(text);
-    if( label == "" ) {
-        coords = GetCoords(row, 0);
-        btn.SetPos(coords.x, coords.y);
-        btn.SetWidth(GetWidth(row, 0, 2));
-    }
-    else {
-        coords = GetCoords(row, 1);
-        btn.SetPos(coords.x, coords.y);
-        btn.SetWidth(GetWidth(row, 1, 1));
-    }
-    //btn.SetFont(Font'FontTiny');
-
-    wnds[numwnds] = btn;
-    helptexts[numwnds] = helptext;
-    numwnds++;
-
-    return btn;
-}
-
-function int CreateEnum(int row, string label, string helptext, optional EnumBtn e)
-{
-    local int i;
-    if(e.values[0] == "") {
-        e.values[0] = "Off";
-        e.values[1] = "On";
-    }
-    for( e.value=0; e.value < ArrayCount(e.values); e.value++ ) {
-        if(e.values[e.value] != "") break;
-    }
-    e.btn = CreateBtn(row, label, helptext, e.values[e.value]);
-
-    for(i=0; i<ArrayCount(enums); i++)
-    {
-        if(enums[i].btn == None) {
-            enums[i] = e;
-            return i;
-            break;
-        }
-    }
-}
-
-function bool ButtonActivated( Window buttonPressed )
-{
-    local bool bHandled;
-    bHandled = True;
-
-    if( CheckClickEnum(buttonPressed) ) { }
-    else {
-        bHandled = False;
-    }
-
-    if ( !bHandled )
-        bHandled = Super.ButtonActivated(buttonPressed);
-
-    return bHandled;
-}
-
-function bool CheckClickEnum( Window buttonPressed )
-{
-    local EnumBtn e;
-    local int i;
-
-    for(i=0; i<ArrayCount(enums); i++) {
-        e=enums[i];
-        if( buttonPressed == e.btn ) {
-            enums[i] = ClickEnum(e);
-            return true;
-        }
-    }
-    return false;
-}
-
-function EnumBtn ClickEnum(EnumBtn e)
-{
-    e.value++;
-    e.value = e.value % ArrayCount(e.values);
-    while( e.values[e.value] == "" ) {
-        e.value++;
-        e.value = e.value % ArrayCount(e.values);
-    }
-    e.btn.SetButtonText(e.values[e.value]);
-    return e;
-}
-
-function ResetToDefaults()
-{
-    editSeed.SetText("");
-}
-
-function int GetSliderValue(MenuUIEditWindow w)
-{
-    return int(w.GetText());
-}
-
-function string GetEnumValue(int e)
-{
-    return enums[e].values[enums[e].value];
-}
-
-function ProcessAction(String actionKey)
-{
-    local DXRando dxr;
     local DXRFlags f;
-    local int seed;
-    local string sseed, sgamemode, keys, doors, devices, passwords, autosavevalue, inviswalls, infodevs, sskillmode;
-    local int undefeatabledoors, keyonlydoors, alldoors, highlightabledoors;
-    local int doormutuallyinclusive, doorindependent, doormutuallyexclusive;
+    local string doors_option, skills_option;
+    local int iDifficulty;
+    Super.BindControls(writing, action);
+    f = InitFlags();
 
-    if (actionKey == "NEXT")
-    {
-        dxr = InitDxr();
-        f = dxr.flags;
-        sseed = editSeed.GetText();
+    labels[id] = "Brightness (0-255) +";
+    helptexts[id] = "Increase the brightness of dark areas.";
+    Slider(id, f.brightness, 0, 255, writing);
+    id++;
 
-        sgamemode = GetEnumValue(GameMode);
-        keys = GetEnumValue(RandoKeys);
-        doors = GetEnumValue(RandoDoors);
-        devices = GetEnumValue(RandoDevices);
-        passwords = GetEnumValue(RandoPasswords);
-        infodevs = GetEnumValue(RandoInfoDevices);
-        sskillmode = GetEnumValue(SkillMode);
+    doors_option = f.doorsmode $ ";" $ f.doorsdestructible $ ";" $ f.doorspickable;
 
-        f.InitDefaults();
-        if( sseed != "" ) {
-            seed = int(sseed);
-            f.seed = seed;
-            dxr.seed = seed;
-            log("DXRando setting seed to "$seed);
-        }
-        f.brightness = GetSliderValue(editBrightness);
-        f.minskill = GetSliderValue(editMinSkill);
-        f.maxskill = GetSliderValue(editMaxSkill);
-        f.ammo = GetSliderValue(editAmmo);
-        f.multitools = GetSliderValue(editMultitools);
-        f.lockpicks = GetSliderValue(editLockpicks);
-        f.biocells = GetSliderValue(editBioCells);
-        f.medkits = GetSliderValue(editMedkits);
-        f.speedlevel = GetSliderValue(editSpeedLevel);
-        f.dancingpercent = GetSliderValue(editDancingPercent);
+    labels[id] = "";
+    helptexts[id] = "Additional options to get through doors that normally can't be destroyed or lockpicked.";
+    //I could make this dual column? "Key-Only Doors" on the left and then "Breakable or Pickable" on the right? or should it be 2 rows?
+    EnumOptionString(id, "Key-Only Doors Breakable or Pickable", (f.keyonlydoors+f.doormutuallyexclusive)$";50;50", writing, doors_option);
+    EnumOptionString(id, "Key-Only Doors Breakable & Pickable", (f.keyonlydoors+f.doormutuallyinclusive)$";100;100", writing, doors_option);
+    EnumOptionString(id, "Key-Only Doors Breakable", (f.keyonlydoors+f.doorindependent)$";100;0", writing, doors_option);
+    EnumOptionString(id, "Key-Only Doors Pickable", (f.keyonlydoors+f.doorindependent)$";0;100", writing, doors_option);
+    EnumOptionString(id, "Some Doors Breakable or Pickable", (f.keyonlydoors+f.doormutuallyexclusive)$";25;25", writing, doors_option);
+    EnumOptionString(id, "Some Doors Breakable & Pickable", (f.keyonlydoors+f.doormutuallyinclusive)$";50;50", writing, doors_option);
+    EnumOptionString(id, "Some Doors Breakable", (f.keyonlydoors+f.doorindependent)$";50;0", writing, doors_option);
+    EnumOptionString(id, "Some Doors Pickable", (f.keyonlydoors+f.doorindependent)$";0;50", writing, doors_option);
+    EnumOptionString(id, "Undefeatable Doors Breakable or Pickable", (f.undefeatabledoors+f.doormutuallyexclusive)$";50;50", writing, doors_option);
+    EnumOptionString(id, "Undefeatable Doors Breakable & Pickable", (f.undefeatabledoors+f.doormutuallyinclusive)$";100;100", writing, doors_option);
+    EnumOptionString(id, "Undefeatable Doors Breakable", (f.undefeatabledoors+f.doorindependent)$";100;0", writing, doors_option);
+    EnumOptionString(id, "Undefeatable Doors Pickable", (f.undefeatabledoors+f.doorindependent)$";0;100", writing, doors_option);
+    EnumOptionString(id, "Doors Unchanged", "0;0;0", writing, doors_option);
+    /*EnumOptionString(id, "All Doors Breakable & Pickable", (f.alldoors+f.doormutuallyexclusive)$";50;50", writing, doors_option);
+    EnumOptionString(id, "All Doors Breakable or Pickable", (f.alldoors+f.doormutuallyinclusive)$";100;100", writing, doors_option);
+    EnumOptionString(id, "All Doors Breakable", (f.alldoors+f.doorindependent)$";100;0", writing, doors_option);
+    EnumOptionString(id, "All Doors Pickable", (f.alldoors+f.doorindependent)$";0;100", writing, doors_option);*/
+    f.doorsmode = UnpackInt(doors_option);
+    f.doorsdestructible = UnpackInt(doors_option);
+    f.doorspickable = UnpackInt(doors_option);
+    id++;
 
-        if( sgamemode == "Original Story" )
-            f.gamemode = 0;
-        else if( sgamemode == "Original Story, Rearranged Levels (Alpha)" )
-            f.gamemode = 1;
-        else if( sgamemode == "Horde Mode (Beta)" )
-            f.gamemode = 2;
-        else if( sgamemode == "Kill Bob Page (Beta)" )
-            f.gamemode = 3;
-        else if( sgamemode == "Stick With the Prod" )
-            f.gamemode = 4;
-        else if( sgamemode == "Stick With the Prod Plus" )
-            f.gamemode = 5;
+    labels[id] = "NanoKey Locations";
+    helptexts[id] = "Move keys around the map.";
+    EnumOption(id, "Randomized", 4, writing, f.keysrando);
+    EnumOption(id, "Unchanged", 0, writing, f.keysrando);
+    id++;
 
-        if( keys == "Off" ) f.keysrando = 0;
-        else if( keys == "Dumb" ) f.keysrando = 2;
-        else if( keys == "On" ) f.keysrando = 4;
-        else if( keys == "Copy" ) f.keysrando = 3;
-        else if( keys == "Smart" ) f.keysrando = 4;
+    labels[id] = "Electronic Devices";
+    helptexts[id] = "Provide additional options for keypads and electronic panels.";
+    EnumOption(id, "All Hackable", 100, writing, f.deviceshackable);
+    EnumOption(id, "Some Hackable", 50, writing, f.deviceshackable);
+    EnumOption(id, "Unchanged", 0, writing, f.deviceshackable);
+    id++;
 
-        if( sskillmode == "Normal Skill Randomization" ) {
-            f.skills_disable_downgrades = 0;
-            f.skills_reroll_missions = 0;
-            f.skills_independent_levels = 0;
-        }
-        else if( sskillmode == "Blind Skill Randomization" ) {
-            f.skills_disable_downgrades = 5;
-            f.skills_reroll_missions = 0;
-            f.skills_independent_levels = 100;
-        }
-        else if( sskillmode == "Blind Skills Every Mission" ) {
-            f.skills_disable_downgrades = 5;
-            f.skills_reroll_missions = 1;
-            f.skills_independent_levels = 0;
-        }
-        else if( sskillmode == "Blind Skills Every 5 Missions" ) {
-            f.skills_disable_downgrades = 5;
-            f.skills_reroll_missions = 5;
-            f.skills_independent_levels = 100;
-        }
+    labels[id] = "Passwords";
+    helptexts[id] = "Forces you to look for passwords and passcodes.";
+    EnumOption(id, "Randomized", 100, writing, f.passwordsrandomized);
+    EnumOption(id, "Unchanged", 0, writing, f.passwordsrandomized);
+    id++;
 
-        undefeatabledoors = 1*256;
-        alldoors = 2*256;
-        keyonlydoors = 3*256;
-        highlightabledoors = 4*256;
-        doormutuallyinclusive = 1;
-        doorindependent = 2;
-        doormutuallyexclusive = 3;
+    labels[id] = "Datacubes Locations";
+    helptexts[id] = "Moves datacubes and other information objects around the map.";
+    EnumOption(id, "Randomized", 100, writing, f.infodevices);
+    EnumOption(id, "Unchanged", 0, writing, f.infodevices);
+    id++;
 
-        if( doors == "Doors Unchanged" ) {
-            f.doorsmode = 0;
-            f.doorsdestructible = 0;
-            f.doorspickable = 0;
-        }
-        else if( doors == "Undefeatable Doors Destructible" ) {
-            f.doorsmode = undefeatabledoors+doorindependent;
-            f.doorsdestructible = 100;
-            f.doorspickable = 0;
-        }
-        else if( doors == "Undefeatable Doors Pickable" ) {
-            f.doorsmode = undefeatabledoors+doorindependent;
-            f.doorspickable = 100;
-            f.doorsdestructible = 0;
-        }
-        else if( doors == "Undefeatable Doors Destructible or Pickable" ) {
-            f.doorsmode = undefeatabledoors+doormutuallyexclusive;
-            f.doorsdestructible = 50;
-            f.doorspickable = 50;
-        }
-        else if( doors == "Undefeatable Doors Destructible & Pickable" ) {
-            f.doorsmode = undefeatabledoors+doormutuallyinclusive;
-            f.doorsdestructible = 100;
-            f.doorspickable = 100;
-        }
-        else if( doors == "Key-Only Doors Destructible" ) {
-            f.doorsmode = keyonlydoors+doorindependent;
-            f.doorsdestructible = 100;
-            f.doorspickable = 0;
-        }
-        else if( doors == "Key-Only Doors Pickable" ) {
-            f.doorsmode = keyonlydoors+doorindependent;
-            f.doorspickable = 100;
-            f.doorsdestructible = 0;
-        }
-        else if( doors == "Key-Only Doors Destructible or Pickable" ) {
-            f.doorsmode = keyonlydoors+doormutuallyexclusive;
-            f.doorsdestructible = 50;
-            f.doorspickable = 50;
-        }
-        else if( doors == "Key-Only Doors Destructible & Pickable" ) {
-            f.doorsmode = keyonlydoors+doormutuallyinclusive;
-            f.doorsdestructible = 100;
-            f.doorspickable = 100;
-        }
-        else if( doors == "All Doors Destructible" ) {
-            f.doorsmode = alldoors+doorindependent;
-            f.doorsdestructible = 100;
-            f.doorspickable = 0;
-        }
-        else if( doors == "All Doors Pickable" ) {
-            f.doorsmode = alldoors+doorindependent;
-            f.doorspickable = 100;
-            f.doorsdestructible = 0;
-        }
-        else if( doors == "All Doors Destructible or Pickable" ) {
-            f.doorsmode = alldoors+doormutuallyexclusive;
-            f.doorsdestructible = 50;
-            f.doorspickable = 50;
-        }
-        else if( doors == "All Doors Destructible & Pickable" ) {
-            f.doorsmode = alldoors+doormutuallyinclusive;
-            f.doorsdestructible = 100;
-            f.doorspickable = 100;
-        }
-        else if( doors == "Some Doors Destructible" ) {
-            f.doorsmode = highlightabledoors+doorindependent;
-            f.doorsdestructible = 50;
-            f.doorspickable = 0;
-        }
-        else if( doors == "Some Doors Pickable" ) {
-            f.doorsmode = highlightabledoors+doorindependent;
-            f.doorspickable = 50;
-            f.doorsdestructible = 0;
-        }
-        else if( doors == "Some Doors Destructible or Pickable" ) {
-            f.doorsmode = highlightabledoors+doormutuallyexclusive;
-            f.doorsdestructible = 25;
-            f.doorspickable = 25;
-        }
-        else if( doors == "Some Doors Destructible & Pickable" ) {
-            f.doorsmode = highlightabledoors+doormutuallyinclusive;
-            f.doorsdestructible = 50;
-            f.doorspickable = 50;
-        }
+    labels[id] = "Enemy Randomization %";
+    helptexts[id] = "How many additional enemies to add and how much to randomize their weapons.";
+    Slider(id, f.enemiesrandomized, 0, 100, writing);
+    id++;
 
-        if( devices == "Unchanged" ) f.deviceshackable = 0;
-        else if( devices == "Most Hackable" ) f.deviceshackable = 50;// I figure the normally hackable ones, plus 50% of the previously unhackable ones, means most of them are now hackable?
-        else if( devices == "All Hackable" ) f.deviceshackable = 100;
+    labels[id] = "Enemy Respawn Seconds";
+    helptexts[id] = "(Beta) How many seconds for enemies to respawn. Leave blank or 0 to disable";
+    Slider(id, f.enemyrespawn, 0, 100, writing);
+    id++;
 
-        if( passwords == "Randomized" ) f.passwordsrandomized = 100;
-        else if( passwords == "Unchanged" ) f.passwordsrandomized = 0;
+    labels[id] = "";
+    helptexts[id] = "Adjust how skill cost randomization works.";
+    skills_option = f.skills_disable_downgrades $";"$ f.skills_reroll_missions $";"$ f.skills_independent_levels;
+    EnumOptionString(id, "Normal Skill Randomization", "0;0;0", writing, skills_option);
+    EnumOptionString(id, "Normal Skills Every Mission", "0;1;0", writing, skills_option);
+    EnumOptionString(id, "Normal Skills Every 5 Missions", "0;5;0", writing, skills_option);
+    EnumOptionString(id, "Blind Skill Randomization", "5;0;100", writing, skills_option);
+    EnumOptionString(id, "Blind Skills Every Mission", "5;1;100", writing, skills_option);
+    EnumOptionString(id, "Blind Skills Every 5 Missions", "5;5;100", writing, skills_option);
+    f.skills_disable_downgrades = UnpackInt(skills_option);
+    f.skills_reroll_missions = UnpackInt(skills_option);
+    f.skills_independent_levels = UnpackInt(skills_option);
+    id++;
 
-        f.enemiesrandomized = GetSliderValue(editEnemyRando);
-        f.enemyrespawn = GetSliderValue(editEnemyRespawn);
-        autosavevalue = GetEnumValue(Autosave);
-        if( autosavevalue == "Off" ) f.autosave = 0;
-        else if( autosavevalue == "First Entry" ) f.autosave = 1;
-        else if( autosavevalue == "Every Entry" ) f.autosave = 2;
+    labels[id] = "Minimum Skill Cost %";
+    helptexts[id] = "Minimum cost for skills in percentage of the original cost.";
+    Slider(id, f.minskill, 0, 1000, writing);
+    id++;
 
-        inviswalls = GetEnumValue(RemoveInvisWalls);
-        if( inviswalls == "Off" ) f.removeinvisiblewalls = 0;
-        else if( inviswalls == "On" ) f.removeinvisiblewalls = 1;
+    labels[id] = "Maximum Skill Cost %";
+    helptexts[id] = "Maximum cost for skills in percentage of the original cost.";
+    Slider(id, f.maxskill, 0, 1000, writing);
+    id++;
 
-        if( infodevs == "Unchanged" ) f.infodevices = 0;
-        else if( infodevs == "Randomized" ) f.infodevices = 100;
+    iDifficulty = int(combatDifficulty * 100.0);
+    labels[id] = "Combat Difficulty %";
+    helptexts[id] = "Multiply the damage the player takes. The original game uses 400% for realistic.";
+    Slider(id, iDifficulty, 0, 500, writing);
+    combatDifficulty = float(iDifficulty) / 100.0;
+    id++;
 
-        //f.flags = player.FlagBase;
-        InvokeNewGameScreen(combatDifficulty, dxr);
-    }
-}
+    labels[id] = "";
+    helptexts[id] = "What items are banned";
+    EnumOption(id, "No items banned", 0, writing, f.banneditems);
+    EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
+    EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
+    id++;
 
-function InvokeNewGameScreen(float difficulty, DXRando dxr)
-{
-    local DXRMenuScreenNewGame newGame;
+    labels[id] = "Ammo Drops %";
+    helptexts[id] = "Make ammo more scarce.";
+    Slider(id, f.ammo, 0, 100, writing);
+    id++;
 
-    newGame = DXRMenuScreenNewGame(root.InvokeMenuScreen(Class'DXRMenuScreenNewGame'));
+    labels[id] = "Multitools Drops %";
+    helptexts[id] = "Make multitools more scarce.";
+    Slider(id, f.multitools, 0, 100, writing);
+    id++;
 
-    if (newGame != None) {
-        newGame.SetDifficulty(difficulty);
-        newGame.SetDxr(dxr);
-    }
-}
+    labels[id] = "Lockpicks Drops %";
+    helptexts[id] = "Make lockpicks more scarce.";
+    Slider(id, f.lockpicks, 0, 100, writing);
+    id++;
 
-/*function SaveSettings()
-{
-    editSeed.GetText();
-}*/
+    labels[id] = "Bioelectric Cells Drops %";
+    helptexts[id] = "Make bioelectric cells more scarce.";
+    Slider(id, f.biocells, 0, 100, writing);
+    id++;
 
-function CancelScreen()
-{
-    Super.CancelScreen();
-}
+    labels[id] = "Medkit Drops %";
+    helptexts[id] = "Make medkits more scarce.";
+    Slider(id, f.medkits, 0, 100, writing);
+    id++;
 
-event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
-{
-    // Destroy the msgbox!  
-    root.PopWindow();
+    labels[id] = "Speed Aug Level";
+    helptexts[id] = "Start the game with the Speed Enhancement augmentation.";
+    Slider(id, f.speedlevel, 0, 3, writing);
+    id++;
 
-    editSeed.SetText("");
-    editSeed.MoveInsertionPoint(MOVEINSERT_End);
-    editSeed.SetSelectedArea(0, Len(editSeed.GetText()));
-    SetFocusWindow(editSeed);
+    labels[id] = "Dancing %";
+    helptexts[id] = "How many characters should be dancing.";
+    Slider(id, f.dancingpercent, 0, 100, writing);
 
-    return True;
-}
-
-event StyleChanged()
-{
-    local ColorTheme theme;
-    local Color colButtonFace;
-
-    Super.StyleChanged();
-
-    theme = player.ThemeManager.GetCurrentMenuColorTheme();
-
-    // check MenuScreenAdjustColorsExample?
-
-    // Title colors
-    colButtonFace = theme.GetColorFromName('MenuColor_ButtonFace');
-
-    /*btnLeftArrow.SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
-                                 colButtonFace, colButtonFace, colButtonFace);
-    btnRightArrow.SetButtonColors(colButtonFace, colButtonFace, colButtonFace,
-                                  colButtonFace, colButtonFace, colButtonFace);*/
+    if( action == "NEXT" ) InvokeNewGameScreen(combatDifficulty, InitDxr());
 }
 
 function SetDifficulty(float newDifficulty)
 {
     combatDifficulty = newDifficulty;
-}
-
-// ----------------------------------------------------------------------
-// FocusEnteredDescendant() : Called when a descendant window gets focus
-// ----------------------------------------------------------------------
-
-event FocusEnteredDescendant(Window enterWindow)
-{
-    local int i;
-    for(i=0;i<ArrayCount(wnds);i++) {
-        if( wnds[i] == enterWindow ) {
-            winHelp.Show();
-            winHelp.SetText(helptexts[i]);
-            return;
-        }
-    }
-}
-
-
-// ----------------------------------------------------------------------
-// FocusLeftDescendant() : Called when a descendant window loses focus
-// ----------------------------------------------------------------------
-
-event FocusLeftDescendant(Window leaveWindow)
-{
-    if ((winHelp != None) && (!bHelpAlwaysOn))
-        winHelp.Hide();
-
-    currentChoice = None;
 }
 
 defaultproperties
@@ -701,9 +171,6 @@ defaultproperties
     row_height=20
     padding_width=20
     padding_height=10
-    actionButtons(0)=(Align=HALIGN_Right,Action=AB_Cancel,Text="|&Back")
-    actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
-    //actionButtons(2)=(Action=AB_Reset)
     Title="DX Rando Options"
     ClientWidth=672
     ClientHeight=357

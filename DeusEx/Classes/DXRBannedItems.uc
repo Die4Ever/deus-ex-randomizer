@@ -98,13 +98,13 @@ function bool is_banned(_bans b, Inventory item)
 
 function bool ban(DeusExPlayer player, Inventory item)
 {
-    if( dxr.flags.gamemode == 4 ) {
+    if( dxr.flags.banneditems == 1 ) {
         if ( is_banned( _stick_with_the_prod, item) ) {
             player.ClientMessage(stick_with_the_prod_player_message);
             return true;
         }
     }
-    else if( dxr.flags.gamemode == 5 ) {
+    else if( dxr.flags.banneditems == 2 ) {
         if ( is_banned( _stick_with_the_prod_plus, item) ) {
             player.ClientMessage(stick_with_the_prod_plus_player_message);
             return true;

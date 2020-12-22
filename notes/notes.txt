@@ -6,6 +6,36 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 
 for v1.5 ========================
 
+can I use something like this to right click an enum to go backwards? from MenuUIChoice.uc
+function bool ButtonActivatedRight( Window buttonPressed )
+{
+	if (buttonPressed == btnAction)
+	{
+		CyclePreviousValue();
+		return True;
+	}
+	else
+	{
+		return Super.ButtonActivated(buttonPressed);
+	}
+}
+
+do I need a button to get out of the ship lower deck?
+
+new game -> game mode choice -> difficulty? (max rando would skip difficulty choice? and maybe horde mode too?) -> rando options -> create character
+remove the option for removing invisible walls
+combine medkits/biocells/lockpicks/multitools into just items drop rate?
+should SWtP mode be considered a game mode? or should banned items be a separate option?
+should I add an option for "normal skill rando every 5 missions"?
+
+difficulties:
+easy = 1.0 damage, 10% enemies, key-only doors breakable and pickable, all hackable, normal skill rando 25%-200%, level 3 speed?
+normal = 1.25 damage, 20% enemies, key-only doors breakable or pickable, all hackable, 80% ammo and items, normal skill rando 25%-300%, level 1 speed
+hard = 1.5 damage, 35% enemies, some doors breakable or pickable, most hackable, 70% ammo and items, blind skill rando every 5 missions 25%-300%, level 1 speed
+extreme = 2.0 damage, 50% enemies, some doors breakable or pickable, most hackable, 50% ammo and items, blind skill rando every 5 missions 25%-400%, level 1 speed
+
+should I show an input for the damage multiplier on the rando options page?
+
 function bool MoveWithTriggers(Actor a, vector loc)
 {// I can use this to move the ambrosia barrel in 02_NYC_BATTERYPARK
     local Trigger t;

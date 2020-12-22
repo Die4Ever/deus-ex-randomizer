@@ -89,10 +89,11 @@ def read_uc_file(file):
         'classname':classname, 'operator':operator, 'baseclass':baseclass, 'qualifiedclass':namespace+'.'+classname }
 
 
-def proc_file(file, files, injects=None):
+def proc_file(file, files, mod_name, injects=None):
     f = read_uc_file(file)
     if f is None:
         return
+    f['mod_name'] = mod_name
     if f['operator'] == 'injects' or f['operator'] == 'merges':
         if f['baseclass'] not in injects:
             injects[f['namespace']+'.'+f['baseclass']] = [ ]
@@ -102,7 +103,7 @@ def proc_file(file, files, injects=None):
 
 def apply_merge(a, b):
     content = a['content']
-    content += "\n\n// === merged from "+b['classname']+"\n\n"
+    content += "\n\n// === merged from "+b['mod_name']+'/'+b['classname']+"\n\n"
     b_content = b['content']
     b_content = re.sub(b['classline'], "/* "+b['classline']+" */", b_content, count=1)
     b_content_no_comments = strip_comments(b_content)
@@ -137,7 +138,7 @@ def inject_from(f, injects):
     classname = f['classname']
     classline = f['classline']
     #print(f['qualifiedclass'] + ' injects into ' + f['baseclass'] )
-    comment = "// === was "+classname+" ===\n"
+    comment = "// === was "+f['mod_name']+'/'+classname+" ===\n"
     classname = f['baseclass']
     classline = re.sub('class '+f['classname']+' injects '+f['baseclass'], comment + 'class '+classname+' extends '+f['baseclass']+'Base', classline, count=1)
     return classname, classline
@@ -196,12 +197,12 @@ def compile(source, mods, out):
     written = {}
 
     for file in insensitive_glob(source+'*'):
-        proc_file(file, orig_files)
+        proc_file(file, orig_files, 'original')
     
     for mod in mods:
         mods_files.append({})
         for file in insensitive_glob(mod+'*'):
-            proc_file(file, mods_files[-1], injects)
+            proc_file(file, mods_files[-1], mod, injects)
 
     print("\nwriting files...")
     for file in orig_files.values():

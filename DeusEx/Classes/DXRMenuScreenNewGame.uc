@@ -23,7 +23,7 @@ function ResetToDefaults()
     portraitIndex = 0;
     btnPortrait.SetBackground(texPortraits[portraitIndex]);
 
-    if( flags.skills_disable_downgrades == 0 ) {
+    if( flags != None && flags.skills_disable_downgrades == 0 ) {
         CopySkills();
         PopulateSkillsList();
         UpdateSkillPoints();
@@ -55,28 +55,22 @@ function EnableButtons()
 function CopySkills()
 {
     local DXRSkills dxrs;
-    local Skill aSkill;
-    local int skillIndex;
-    
+    local int i;
+
+    Super.CopySkills();
+
+    for(i=1; i<ArrayCount(localSkills); i++) {
+        localSkills[i-1].next = localSkills[i];
+    }
+
     if(dxr!=None) {
+        //dxrs = dxr.Spawn(class'DXRSkills', None);
+        //dxr.modules[dxr.num_modules] = dxrs;
+        //dxr.num_modules++;
         dxrs = DXRSkills(dxr.FindModule(class'DXRSkills'));
-        if( dxrs != None )
-            dxrs.RandoSkills();
     }
-
-    skillIndex = 0;
-
-    aSkill = player.SkillSystem.FirstSkill;
-    while(aSkill != None)
-    {
-        localSkills[skillIndex] = player.Spawn(aSkill.Class);
-        localSkills[skillIndex].Cost[0] = aSkill.Cost[0];
-        localSkills[skillIndex].Cost[1] = aSkill.Cost[1];
-        localSkills[skillIndex].Cost[2] = aSkill.Cost[2];
-
-        skillIndex++;
-        aSkill = aSkill.next;
-    }
+    if( dxrs != None )
+        dxrs.RandoSkills(localSkills[0]);
 }
 
 function SaveSettings()
@@ -100,4 +94,5 @@ function SaveSettings()
 
 defaultproperties
 {
+    actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel)
 }

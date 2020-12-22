@@ -5,7 +5,8 @@ var transient FlagBase f;
 //rando flags
 var int seed;
 var int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
-var int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +
+var int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food
+var int banneditems;//0=none, 1=stick with the prod, 2=stick with the prod plus
 var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
 var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
 var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
@@ -13,6 +14,8 @@ var int autosave;//0=off, 1=first time entering level, 2=every loading screen
 var int removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices;
 var int dancingpercent;
 var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
+
+var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
 function PreTravel()
 {
@@ -25,6 +28,7 @@ function Init(DXRando tdxr)
 {
     Super.Init(tdxr);
     f = tdxr.Player.FlagBase;
+    tdxr.seed = seed;
     InitVersion();
 }
 
@@ -38,16 +42,33 @@ function Timer()
     }
 }
 
-function InitDefaults()
+function RollSeed()
 {
-    InitVersion();
-    CheckConfig();
     dxr.CrcInit();
     seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );
     seed = abs(seed) % 1000000;
     dxr.seed = seed;
+}
+
+function InitDefaults()
+{
+    InitVersion();
+    CheckConfig();
+    //dxr.CrcInit();
+
+    undefeatabledoors = 1*256;
+    alldoors = 2*256;
+    keyonlydoors = 3*256;
+    highlightabledoors = 4*256;
+    doormutuallyinclusive = 1;
+    doorindependent = 2;
+    doormutuallyexclusive = 3;
+
+    seed = 0;
+    if( dxr != None ) RollSeed();
     gamemode = 0;
-    brightness = 5;
+    banneditems = 0;
+    brightness = 10;
     minskill = 25;
     maxskill = 300;
     ammo = 90;
@@ -56,14 +77,14 @@ function InitDefaults()
     biocells = 80;
     speedlevel = 1;
     keysrando = 4;
-    doorsmode = 1;
-    doorspickable = 100;
-    doorsdestructible = 100;
+    doorsmode = keyonlydoors + doormutuallyexclusive;
+    doorspickable = 50;
+    doorsdestructible = 50;
     deviceshackable = 100;
     passwordsrandomized = 100;
     gibsdropkeys = 1;
     medkits = 90;
-    autosave = 1;
+    autosave = 2;
     removeinvisiblewalls = 0;
     enemiesrandomized = 25;
     enemyrespawn = 0;
@@ -127,6 +148,12 @@ function LoadFlags()
         skills_disable_downgrades = f.GetInt('Rando_skills_disable_downgrades');
         skills_reroll_missions = f.GetInt('Rando_skills_reroll_missions');
         skills_independent_levels = f.GetInt('Rando_skills_independent_levels');
+
+        if( gamemode == 4 ) banneditems = 1;
+        if( gamemode == 5 ) banneditems = 2;
+    }
+    if( stored_version >= VersionToInt(1,4,7) ) {
+        banneditems = f.GetInt('Rando_banneditems');
     }
 
     if(stored_version < flagsversion ) {
@@ -149,6 +176,7 @@ function SaveFlags()
 
     f.SetInt('Rando_version', flagsversion,, 999);
     f.SetInt('Rando_gamemode', gamemode,, 999);
+    f.SetInt('Rando_banneditems', banneditems,, 999);
     f.SetInt('Rando_brightness', brightness,, 999);
     f.SetInt('Rando_minskill', minskill,, 999);
     f.SetInt('Rando_maxskill', maxskill,, 999);
@@ -186,7 +214,7 @@ function LogFlags(string prefix)
 
 function string StringifyFlags()
 {
-    return "flagsversion: "$flagsversion$", gamemode: "$gamemode$", brightness: "$brightness $ ", ammo: " $ ammo
+    return "flagsversion: "$flagsversion$", gamemode: "$gamemode$", banneditems: "$banneditems$", brightness: "$brightness $ ", ammo: " $ ammo
         $ ", minskill: "$minskill$", maxskill: "$maxskill$", skills_disable_downgrades: " $ skills_disable_downgrades $ ", skills_reroll_missions: " $ skills_reroll_missions $ ", skills_independent_levels: " $ skills_independent_levels
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
@@ -226,12 +254,12 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 4, 6);
+    return VersionToInt(1, 4, 7);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 6) $ "";
+    return VersionToString(1, 4, 7) $ "";
 }
 
 function MaxRando()

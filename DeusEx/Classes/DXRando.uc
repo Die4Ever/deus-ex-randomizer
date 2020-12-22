@@ -27,6 +27,7 @@ function SetdxInfo(DeusExLevelInfo i)
 function PostPostBeginPlay()
 {
     Super.PostPostBeginPlay();
+    CrcInit();
 
     if( localURL == "" ) {
         l("PostPostBeginPlay returning because localURL == " $ localURL);
@@ -41,7 +42,6 @@ function PostPostBeginPlay()
         return;
     }
     l("found Player "$Player);
-    CrcInit();
     ClearModules();
     LoadFlagsModule();
     flags.LoadFlags();
@@ -56,11 +56,6 @@ function PostPostBeginPlay()
 function CheckConfig()
 {
     local int i;
-    //force modules to be referenced so they will get compiled, even if we don't want them to be loaded by default
-    local DXRNoStory compile1;
-    local DXRTestAllMaps compile2;
-    local DXREntranceRando compile3;
-    local DXRKillBobPage compile4;
 
     if( config_version < class'DXRFlags'.static.VersionToInt(1,4,6) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
@@ -68,6 +63,8 @@ function CheckConfig()
         }
 
         i=0;
+        //modules_to_load[i++] = "DXRAddItems";
+        modules_to_load[i++] = "DXRFixup";
         modules_to_load[i++] = "DXRKeys";
         modules_to_load[i++] = "DXREnemies";
         modules_to_load[i++] = "DXRSkills";
@@ -76,7 +73,6 @@ function CheckConfig()
         modules_to_load[i++] = "DXRSwapItems";
         modules_to_load[i++] = "DXRReduceItems";
         modules_to_load[i++] = "DXRNames";
-        modules_to_load[i++] = "DXRFixup";
         modules_to_load[i++] = "DXRAutosave";
         modules_to_load[i++] = "DXRMemes";
         modules_to_load[i++] = "DXREntranceRando";
@@ -84,7 +80,6 @@ function CheckConfig()
         modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
         modules_to_load[i++] = "DXRBannedItems";
-        //modules_to_load[i++] = "DXRAddItems";// add a medbot to oceanlab?
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         config_version = class'DXRFlags'.static.VersionNumber();
@@ -105,12 +100,11 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
 
     m = FindModule(moduleclass);
     if( m != None ) {
-        l("found already loaded module "$moduleclass);
+        l("found already loaded module "$m);
         if(m.dxr != Self) m.Init(Self);
         return m;
     }
 
-    //m = new(None) moduleclass;
     m = Spawn(moduleclass, None);
     if ( m == None ) {
         l("failed to load module "$moduleclass);
@@ -119,7 +113,7 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
     m.Init(Self);
     modules[num_modules] = m;
     num_modules++;
-    l("finished loading module "$moduleclass);
+    l("finished loading module "$m);
     return m;
 }
 
@@ -147,6 +141,7 @@ function DXRBase FindModule(class<DXRBase> moduleclass)
     foreach AllActors(class'DXRBase', m)
     {
         if( m.Class == moduleclass ) {
+            l("FindModule("$moduleclass$") found "$m);
             m.Init(Self);
             modules[num_modules] = m;
             num_modules++;
@@ -160,7 +155,6 @@ function DXRBase FindModule(class<DXRBase> moduleclass)
 
 function ClearModules()
 {
-    local DXRBase m;
     num_modules=0;
     flags=None;
 }
@@ -170,8 +164,7 @@ event Destroyed()
     local int i;
     l("Destroyed()");
 
-    num_modules = 0;
-    flags = None;
+    ClearModules();
     Player = None;
     Super.Destroyed();
 }

@@ -1,4 +1,4 @@
-class DXRFixup expands DXRBase;
+class DXRFixup expands DXRActorsBase;
 
 struct DecorationsOverwrite {
     var string type;
@@ -103,7 +103,6 @@ function AnyEntry()
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber $ " AnyEntry()");
 
-    BuffScopes();
     FixSamCarter();
 
     switch(dxr.dxInfo.missionNumber) {
@@ -155,15 +154,7 @@ function FixSamCarter()
 {
     local SamCarter s;
     foreach AllActors(class'SamCarter', s) {
-        s.bFearHacking = false;
-        s.bFearWeapon = false;
-        s.bFearShot = false;
-        s.bFearInjury = false;
-        s.bFearIndirectInjury = false;
-        s.bFearCarcass = false;
-        s.bFearDistress = false;
-        s.bFearAlarm = false;
-        s.bFearProjectiles = false;
+        RemoveFears(s);
     }
 }
 
@@ -177,20 +168,6 @@ function IncreaseBrightness(int brightness)
     foreach AllActors(class'ZoneInfo', z) {
         if( z == Level ) continue;
         z.AmbientBrightness = Clamp( int(z.AmbientBrightness) + brightness, 0, 255 );
-    }
-}
-
-function BuffScopes()
-{
-    local DXRScopeView scope;
-    local DeusExRootWindow win;
-
-    win = DeusExRootWindow(dxr.Player.rootWindow);
-    if ( win.scopeView.IsA('DXRScopeView') == false ) {
-        scope = DXRScopeView(win.NewChild(Class'DXRScopeView', False));
-        scope.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
-        scope.Lower();
-        win.scopeView = scope;
     }
 }
 
@@ -256,6 +233,12 @@ function Airfield_FirstEntry()
             //Put a button behind the hidden bathroom door
             //Mostly for entrance rando, but just in case
             AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
+            break;
+        case "03_NYC_MOLEPEOPLE":
+            foreach AllActors(class'Mover', m, 'DeusExMover') {
+                if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
+            }
+            AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
             break;
     }
 }
@@ -467,12 +450,17 @@ function HongKong_AnyEntry()
 
 function NYC_08_AnyEntry()
 {
+    local StantonDowd s;
     SetTimer(1.0, True);
+    foreach AllActors(class'StantonDowd', s) {
+        RemoveFears(s);
+    }
 }
 
 function Area51_FirstEntry()
 {
     local DeusExMover d;
+    local DataCube dc;
     switch(dxr.localURL)
     {
         case "15_AREA51_FINAL":
@@ -480,6 +468,16 @@ function Area51_FirstEntry()
                 d.move(vect(0, 0, -1));
             }
             AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
+            break;
+        case "15_AREA51_ENTRANCE":
+            dc = Spawn(class'DataCube',,, GetRandomPosition(), rot(0,0,0));
+            if( dc != None ) dc.plaintext = "My code is 6786";
+
+            dc = Spawn(class'DataCube',,, GetRandomPosition(), rot(0,0,0));
+            if( dc != None ) dc.plaintext = "My code is 3901";
+
+            dc = Spawn(class'DataCube',,, GetRandomPosition(), rot(0,0,0));
+            if( dc != None ) dc.plaintext = "My code is 4322";
             break;
     }
 }
@@ -503,6 +501,19 @@ function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
     s.bCollideWorld=False;
     s.SetLocation(loc);
     return s;
+}
+
+function RemoveFears(ScriptedPawn p)
+{
+    p.bFearHacking = false;
+    p.bFearWeapon = false;
+    p.bFearShot = false;
+    p.bFearInjury = false;
+    p.bFearIndirectInjury = false;
+    p.bFearCarcass = false;
+    p.bFearDistress = false;
+    p.bFearAlarm = false;
+    p.bFearProjectiles = false;
 }
 
 // mostly copied from DeusExPlayer.uc
