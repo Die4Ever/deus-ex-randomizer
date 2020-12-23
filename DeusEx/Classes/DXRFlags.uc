@@ -214,7 +214,7 @@ function LogFlags(string prefix)
 
 function string StringifyFlags()
 {
-    return "flagsversion: "$flagsversion$", gamemode: "$gamemode$", banneditems: "$banneditems$", brightness: "$brightness $ ", ammo: " $ ammo
+    return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", banneditems: "$banneditems$", brightness: "$brightness $ ", ammo: " $ ammo
         $ ", minskill: "$minskill$", maxskill: "$maxskill$", skills_disable_downgrades: " $ skills_disable_downgrades $ ", skills_reroll_missions: " $ skills_reroll_missions $ ", skills_independent_levels: " $ skills_independent_levels
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
@@ -259,7 +259,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 7) $ "";
+    return VersionToString(1, 4, 8) $ " Alpha";
 }
 
 function MaxRando()
