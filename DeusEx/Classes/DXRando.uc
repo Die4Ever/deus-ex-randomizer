@@ -57,7 +57,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,6) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -80,6 +80,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
         modules_to_load[i++] = "DXRBannedItems";
+        modules_to_load[i++] = "DXRWeapons";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         config_version = class'DXRFlags'.static.VersionNumber();
