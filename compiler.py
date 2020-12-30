@@ -256,7 +256,11 @@ if args.mods_paths is None:
 
 rerun = ""
 while rerun == "":
-    compile(args.source_path, args.mods_paths, args.out_dir)
+    try:
+        compile(args.source_path, args.mods_paths, args.out_dir)
+    except Exception as e:
+        print('\n\ncompile error: ')
+        print(e)
     print("\n")
     rerun = input("press enter to compile again, otherwise type exit")
 

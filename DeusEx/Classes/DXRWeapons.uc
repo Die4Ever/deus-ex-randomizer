@@ -16,12 +16,12 @@ function RandoWeapon(DeusExWeapon w)
     //l("RandoWeapon("$w$")");
     dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoWeapon " $ w.class.name ) );
 
-    //f = float(w.default.HitDamage) * (rngf()+10.5);
-    //w.HitDamage = int(f);
-    w.HitDamage = 90001;
-    /*f = w.default.ShotTime * (rngf()+0.5);
+    f = float(w.default.HitDamage) * (rngf()+0.5);
+    w.HitDamage = int(f);
+    //w.HitDamage = 90001;
+    f = w.default.ShotTime * (rngf()+0.5);
     w.ShotTime = f;
-    f = w.default.ReloadTime * (rngf()+0.5);
+    /*f = w.default.ReloadTime * (rngf()+0.5);
     w.ReloadTime = f;
     f = float(w.default.MaxRange) * (rngf()+0.5);
     w.MaxRange = int(f);
