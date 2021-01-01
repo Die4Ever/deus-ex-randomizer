@@ -83,7 +83,8 @@ function RandoAug(Augmentation a)
     s = "(Values: ";
     for(i=0; i<ArrayCount(a.LevelValues); i++) {
         a.LevelValues[i] = a.default.LevelValues[i] * (rngf()+1.5)/2;
-        if( a.LevelValues[i] < min ) a.LevelValues[i] = min;
+        if( i>0 && a.default.LevelValues[i-1] < a.default.LevelValues[i] && a.LevelValues[i] < min ) a.LevelValues[i] = min;
+        else if( i>0 && a.default.LevelValues[i-1] > a.default.LevelValues[i] && a.LevelValues[i] > min ) a.LevelValues[i] = min;
         min = a.LevelValues[i];
         if( i>0 ) s = s $ ", ";
         s = s $ a.LevelValues[i];
