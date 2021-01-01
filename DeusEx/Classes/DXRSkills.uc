@@ -72,6 +72,26 @@ function RandoSkill(Skill aSkill)
             RandoSkillLevel(aSkill, i, percent);
         }
     }
+
+    RandoSkillLevelValues(aSkill);
+}
+
+function RandoSkillLevelValues(Skill a)
+{
+    local int i;
+    local float min;
+    local string s;
+
+    s = "(Values: ";
+    for(i=0; i<ArrayCount(a.LevelValues); i++) {
+        a.LevelValues[i] = a.default.LevelValues[i] * (rngf()+1.5)/2;
+        if( a.LevelValues[i] < min ) a.LevelValues[i] = min;
+        min = a.LevelValues[i];
+        if( i>0 ) s = s $ ", ";
+        s = s $ a.LevelValues[i];
+    }
+    s = s $ ")";
+    a.Description = a.Description $ "|n|n" $ s;
 }
 
 function RandoSkillLevel(Skill aSkill, int i, int parent_percent)

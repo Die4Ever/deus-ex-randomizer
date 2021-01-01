@@ -50,6 +50,10 @@ function static RandomizeAugCannister(DXRando dxr, AugmentationCannister a)
     {
         a.AddAugs[1] = PickRandomAug(dxr);
     }
+
+    if( a.AddAugs[0] == 'AugSpeed' || a.AddAugs[1] == 'AugSpeed' ) {
+        dxr.Player.ClientMessage("Speed Enhancement is in this area.");
+    }
 }
 
 function static Name PickRandomAug(DXRando dxr)
