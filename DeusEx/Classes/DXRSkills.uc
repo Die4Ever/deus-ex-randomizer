@@ -11,6 +11,9 @@ var config SkillCostMultiplier SkillCostMultipliers[16];
 var config int banned_skill_chances;
 var config int banned_skill_level_chances;
 
+var config float min_skill_str;
+var config float max_skill_str;
+
 function CheckConfig()
 {
     local int i;
@@ -21,6 +24,10 @@ function CheckConfig()
             SkillCostMultipliers[i].minLevel = 1;
             SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
         }
+    }
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+        min_skill_str = 0.5;
+        max_skill_str = 1.5;
     }
     Super.CheckConfig();
 }
@@ -78,20 +85,8 @@ function RandoSkill(Skill aSkill)
 
 function RandoSkillLevelValues(Skill a)
 {
-    local int i;
-    local float min;
     local string s;
-
-    s = "(Values: ";
-    for(i=0; i<ArrayCount(a.LevelValues); i++) {
-        a.LevelValues[i] = a.default.LevelValues[i] * (rngf()+1.5)/2;
-        if( i>0 && a.default.LevelValues[i-1] < a.default.LevelValues[i] && a.LevelValues[i] < min ) a.LevelValues[i] = min;
-        else if( i>0 && a.default.LevelValues[i-1] > a.default.LevelValues[i] && a.LevelValues[i] > min ) a.LevelValues[i] = min;
-        min = a.LevelValues[i];
-        if( i>0 ) s = s $ ", ";
-        s = s $ a.LevelValues[i];
-    }
-    s = s $ ")";
+    s = RandoLevelValues(a.LevelValues, a.default.LevelValues, min_skill_str, max_skill_str);
     a.Description = a.Description $ "|n|n" $ s;
 }
 

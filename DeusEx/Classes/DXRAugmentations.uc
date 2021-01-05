@@ -1,5 +1,17 @@
 class DXRAugmentations extends DXRBase;
 
+var config float min_aug_str;
+var config float max_aug_str;
+
+function CheckConfig()
+{
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+        min_aug_str = 0.5;
+        max_aug_str = 1.5;
+    }
+    Super.CheckConfig();
+}
+
 function FirstEntry()
 {
     local Augmentation anAug;
@@ -74,22 +86,8 @@ function static Name PickRandomAug(DXRando dxr)
 
 function RandoAug(Augmentation a)
 {
-    local int i;
-    local float min;
     local string s;
-
     dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoAug " $ a.class.name ) );
-
-    s = "(Values: ";
-    for(i=0; i<ArrayCount(a.LevelValues); i++) {
-        a.LevelValues[i] = a.default.LevelValues[i] * (rngf()+1.5)/2;
-        if( i>0 && a.default.LevelValues[i-1] < a.default.LevelValues[i] && a.LevelValues[i] < min ) a.LevelValues[i] = min;
-        else if( i>0 && a.default.LevelValues[i-1] > a.default.LevelValues[i] && a.LevelValues[i] > min ) a.LevelValues[i] = min;
-        min = a.LevelValues[i];
-        if( i>0 ) s = s $ ", ";
-        s = s $ a.LevelValues[i];
-    }
-    s = s $ ")";
-    a.EnergyRate = a.default.EnergyRate * (rngf()+1.5)/2;
+    s = RandoLevelValues(a.LevelValues, a.default.LevelValues, min_aug_str, max_aug_str);
     a.Description = a.Description $ "|n|n" $ s;
 }

@@ -257,6 +257,7 @@ if args.mods_paths is None:
 rerun = ""
 while rerun == "":
     try:
+        print("\ncompiling...")
         compile(args.source_path, args.mods_paths, args.out_dir)
     except Exception as e:
         print('\n\ncompile error: ')

@@ -1,5 +1,21 @@
 class DXRWeapons extends DXRBase;
 
+var config float min_weapon_dmg;
+var config float max_weapon_dmg;
+var config float min_weapon_shottime;
+var config float max_weapon_shottime;
+
+function CheckConfig()
+{
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+        min_weapon_dmg = 0.5;
+        max_weapon_dmg = 1.5;
+        min_weapon_shottime = 0.5;
+        max_weapon_shottime = 1.5;
+    }
+    Super.CheckConfig();
+}
+
 function AnyEntry()
 {
     local DeusExWeapon w;
@@ -12,15 +28,10 @@ function AnyEntry()
 
 function RandoWeapon(DeusExWeapon w)
 {
-    local float f;
-    //l("RandoWeapon("$w$")");
     dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoWeapon " $ w.class.name ) );
 
-    f = float(w.default.HitDamage) * (rngf()+0.5);
-    w.HitDamage = int(f);
-    //w.HitDamage = 90001;
-    f = w.default.ShotTime * (rngf()+0.5);
-    w.ShotTime = f;
+    w.HitDamage = rngrange(float(w.default.HitDamage), min_weapon_dmg, max_weapon_dmg);
+    w.ShotTime = rngrange(w.default.ShotTime, min_weapon_shottime, max_weapon_shottime);
     /*f = w.default.ReloadTime * (rngf()+0.5);
     w.ReloadTime = f;
     f = float(w.default.MaxRange) * (rngf()+0.5);
