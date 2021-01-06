@@ -81,6 +81,8 @@ function RandoHacks()
 {
     local HackableDevices h;
 
+    SetSeed( "RandoHacks" );
+
     foreach AllActors(class'HackableDevices', h) {
         if( h.bHackable ) {
             h.hackStrength = FClamp(rngrange(h.hackStrength, min_hack_adjust, max_hack_adjust), 0, 1);
@@ -196,6 +198,8 @@ function MakeAllHackable(int deviceshackable)
     local HackableDevices h;
 
     if( deviceshackable <= 0 ) return;
+
+    SetSeed( "MakeAllHackable" );
 
     foreach AllActors(class'HackableDevices', h)
     {

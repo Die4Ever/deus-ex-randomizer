@@ -218,6 +218,8 @@ function RandomizeDoors()
 {
     local DeusExMover d;
 
+    SetSeed( "RandomizeDoors" );
+
     foreach AllActors(class'DeusExMover', d) {
         if( d.bPickable ) {
             d.lockStrength = FClamp(rngrange(d.lockStrength, min_lock_adjust, max_lock_adjust), 0, 1);
@@ -287,6 +289,8 @@ function MoveNanoKeys4()
     local Containers c;
     local NanoKey k;
     local int num, i, slot;
+
+    SetSeed( "MoveNanoKeys4" );
 
     foreach AllActors(class'NanoKey', k )
     {
@@ -374,6 +378,7 @@ function bool KeyPositionGood(NanoKey k, vector newpos)
 function AdjustRestrictions(int doorsmode, int doorspickable, int doorsdestructible, int deviceshackable, int removeinvisiblewalls)
 {
     local Keypoint kp;
+    SetSeed( "AdjustRestrictions" );
 
     switch( (doorsmode/256) ) {
         case 1:

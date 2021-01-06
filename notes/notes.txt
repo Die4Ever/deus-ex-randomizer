@@ -19,7 +19,8 @@ else if (localURL == "10_PARIS_METRO")
 		}
 
 MapExit tag, DestMap
-10_paris_metro MapExit ChopperExit 10_Paris_Chateau
+10_paris_metro MapExit ChopperExit 10_Paris_Chateau (-825.793274, 1976.029297, 176.545380), (0,0,-10944)
+15_area51_final switch2 to 15_area51_entrance#elevator_shaft? (-5757.477539, -2082.639160, -1356.561035), (0,0,16384)
 
 can I use something like this to right click an enum to go backwards? from MenuUIChoice.uc
 function bool ButtonActivatedRight( Window buttonPressed )
