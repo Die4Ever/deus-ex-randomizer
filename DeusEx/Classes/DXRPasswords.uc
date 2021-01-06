@@ -6,6 +6,16 @@ var travel string oldpasswords[64];
 var travel string newpasswords[64];
 var travel int passStart;
 var travel int passEnd;
+var config float min_hack_adjust, max_hack_adjust;
+
+function CheckConfig()
+{
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+        min_hack_adjust = 0.5;
+        max_hack_adjust = 1.5;
+    }
+    Super.CheckConfig();
+}
 
 function Timer()
 {
@@ -54,6 +64,7 @@ function FirstEntry()
     lastCheckedNote = None;
     RandoPasswords(dxr.flags.passwordsrandomized);
     RandoInfoDevs(dxr.flags.infodevices);
+    RandoHacks();
     MakeAllHackable(dxr.flags.deviceshackable);
 }
 
@@ -64,6 +75,17 @@ function AnyEntry()
     lastCheckedNote = None;
     LogAll();
     SetTimer(1.0, True);
+}
+
+function RandoHacks()
+{
+    local HackableDevices h;
+
+    foreach AllActors(class'HackableDevices', h) {
+        if( h.bHackable ) {
+            h.hackStrength = FClamp(rngrange(h.hackStrength, min_hack_adjust, max_hack_adjust), 0, 1);
+        }
+    }
 }
 
 function RandoPasswords(int mode)

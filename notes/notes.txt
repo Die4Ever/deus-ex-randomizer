@@ -6,6 +6,21 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 
 for v1.5 ========================
 
+else if (localURL == "10_PARIS_METRO")
+	{
+		// unhide GuntherHermann
+		if (!flags.GetBool('MS_GuntherUnhidden') &&
+			flags.GetBool('JockReady_Played'))
+		{
+			foreach AllActors(class'GuntherHermann', gunther)
+				gunther.EnterWorld();
+
+			flags.SetBool('MS_GuntherUnhidden', True,, 11);
+		}
+
+MapExit tag, DestMap
+10_paris_metro MapExit ChopperExit 10_Paris_Chateau
+
 can I use something like this to right click an enum to go backwards? from MenuUIChoice.uc
 function bool ButtonActivatedRight( Window buttonPressed )
 {
