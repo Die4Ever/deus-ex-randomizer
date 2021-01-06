@@ -89,6 +89,9 @@ function FirstEntry()
         case 6:
             HongKong_FirstEntry();
             break;
+        case 9:
+            Shipyard_FirstEntry();
+            break;
         case 12:
             Vandenberg_FirstEntry();
             break;
@@ -362,6 +365,20 @@ function HongKong_FirstEntry()
     }
 }
 
+function Shipyard_FirstEntry()
+{
+    local DeusExMover m;
+    switch(dxr.localURL)
+    {
+        case "09_NYC_SHIP":
+            foreach AllActors(class'DeusExMover', m, 'DeusExMover') {
+                if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
+            }
+            AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
+            break;
+    }
+}
+
 function HongKong_AnyEntry()
 {
     local Actor a;
@@ -500,6 +517,7 @@ function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
     s.Event = Event;
     s.bCollideWorld=False;
     s.SetLocation(loc);
+    s.SetRotation(rotate);
     return s;
 }
 
