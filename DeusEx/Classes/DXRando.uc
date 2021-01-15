@@ -65,6 +65,7 @@ function CheckConfig()
         i=0;
         //modules_to_load[i++] = "DXRAddItems";
         modules_to_load[i++] = "DXRFixup";
+        modules_to_load[i++] = "DXRBacktracking";
         modules_to_load[i++] = "DXRKeys";
         modules_to_load[i++] = "DXREnemies";
         modules_to_load[i++] = "DXRSkills";

@@ -92,6 +92,9 @@ function FirstEntry()
         case 9:
             Shipyard_FirstEntry();
             break;
+        case 10:
+            Paris_FirstEntry();
+            break;
         case 12:
             Vandenberg_FirstEntry();
             break;
@@ -379,6 +382,17 @@ function Shipyard_FirstEntry()
     }
 }
 
+function Paris_FirstEntry()
+{
+    switch(dxr.localURL)
+    {
+        case "10_PARIS_CATACOMBS_TUNNELS":
+            AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
+            AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
+            break;
+    }
+}
+
 function HongKong_AnyEntry()
 {
     local Actor a;
@@ -480,6 +494,9 @@ function Area51_FirstEntry()
     local DataCube dc;
     switch(dxr.localURL)
     {
+        case "15_AREA51_BUNKER":
+            AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
+            break;
         case "15_AREA51_FINAL":
             foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
                 d.move(vect(0, 0, -1));
@@ -495,6 +512,19 @@ function Area51_FirstEntry()
 
             dc = Spawn(class'DataCube',,, GetRandomPosition(), rot(0,0,0));
             if( dc != None ) dc.plaintext = "My code is 4322";
+
+            foreach AllActors(class'DeusExMover', d, 'doors_lower') {
+                d.bLocked = false;
+                d.bHighlight = true;
+                d.bFrobbable = true;
+            }
+            break;
+        case "15_AREA51_FINAL":
+            foreach AllActors(class'DeusExMover', d, 'doors_lower') {
+                d.bLocked = false;
+                d.bHighlight = true;
+                d.bFrobbable = true;
+            }
             break;
     }
 }
@@ -512,8 +542,13 @@ function AddDelay(Actor trigger, float time)
 
 function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
 {
+    return _AddSwitch(Self, loc, rotate, Event);
+}
+
+static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate, name Event)
+{
     local Switch2 s;
-    s = Spawn(class'Switch2',,,loc,rotate);
+    s = a.Spawn(class'Switch2',,,loc,rotate);
     s.Event = Event;
     s.bCollideWorld=False;
     s.SetLocation(loc);
