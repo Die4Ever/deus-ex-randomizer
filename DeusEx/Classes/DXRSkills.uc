@@ -87,7 +87,8 @@ function RandoSkillLevelValues(Skill a)
 {
     local string s;
     s = RandoLevelValues(a.LevelValues, a.default.LevelValues, min_skill_str, max_skill_str);
-    a.Description = a.Description $ "|n|n" $ s;
+    if( InStr(a.Description, s) == -1 )
+        a.Description = a.Description $ "|n|n" $ s;
 }
 
 function RandoSkillLevel(Skill aSkill, int i, int parent_percent)

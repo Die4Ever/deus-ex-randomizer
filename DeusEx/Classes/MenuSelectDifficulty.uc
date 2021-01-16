@@ -19,8 +19,8 @@ function BindControls(bool writing, optional string action)
     labels[id] = "";
     helptexts[id] = "Choose a game mode!";
     EnumOption(id, "Original Story", 0, writing, f.gamemode);
+    EnumOption(id, "Original Story, Rearranged Levels (Beta)", 1, writing, f.gamemode);
     EnumOption(id, "Horde Mode (Beta)", 2, writing, f.gamemode);
-    EnumOption(id, "Original Story, Rearranged Levels (Alpha)", 1, writing, f.gamemode);
     //EnumOption(id, "Kill Bob Page (Alpha)", 3, writing, f.gamemode);
     //EnumOption(id, "How About Some Soy Food?", 6, writing, f.gamemode);
     if( EnumOption(id, "Stick With the Prod", 4, writing, f.gamemode) ) {
