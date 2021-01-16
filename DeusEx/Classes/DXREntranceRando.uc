@@ -46,17 +46,6 @@ struct BanConnection
 };
 var config BanConnection BannedConnections[32];
 
-/*struct AddConnection
-{
-    var string mapname;
-    var string dest;
-    var vector pos;
-    var rotator rot;
-    var string type;//chopper, button, teleporter?
-    var bool fixed;
-};
-var config AddConnection AddConnections[16];*/
-
 var config string dead_ends[32];
 
 var config int min_connections_selfconnect;

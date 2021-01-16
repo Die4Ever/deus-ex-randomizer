@@ -426,7 +426,7 @@ function HongKong_AnyEntry()
     local bool recruitedFlag;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
-    // or if flag Have_ROM, Gordon Quick should let you into the compound? or does this require MaxChenConvinced?
+    // or if flag Have_ROM, Gordon Quick should let you into the compound? requires Have_Evidence and MaxChenConvinced
 
     switch(dxr.localURL)
     {
