@@ -89,6 +89,12 @@ function FirstEntry()
         case 6:
             HongKong_FirstEntry();
             break;
+        case 9:
+            Shipyard_FirstEntry();
+            break;
+        case 10:
+            Paris_FirstEntry();
+            break;
         case 12:
             Vandenberg_FirstEntry();
             break;
@@ -214,11 +220,14 @@ function NYC_02_FirstEntry()
 function Airfield_FirstEntry()
 {
     local Mover m;
+    local Actor a;
+    local Trigger t;
     
     switch (dxr.localURL)
     {
         case "03_NYC_AirfieldHeliBase":
             foreach AllActors(class'Mover',m) {
+                // call the elevator at the end of the level when you open the appropriate door
                 if (m.Tag == 'BasementDoorOpen')
                 {
                     m.Event = 'BasementFloor';
@@ -228,6 +237,28 @@ function Airfield_FirstEntry()
                     m.Event = 'GroundLevel';
                 }
             }
+            foreach AllActors(class'Trigger', t) {
+                //disable the platforms that fall when you step on them
+                if( t.Name == 'Trigger0' || t.Name == 'Trigger1' ) {
+                    t.Event = '';
+                }
+            }
+            //stepping stone valves out of the water
+            _AddActor(Self, class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
+            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3105,-385,-210), rot(0,0,0));
+            SetActorScale(a, 1.3);
+
+            _AddActor(Self, class'Valve', vect(-3080,-395,-173), rot(0,0,16384));
+            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3080,-395,-173), rot(0,0,0));
+            SetActorScale(a, 1.3);
+
+            _AddActor(Self, class'Valve', vect(-3065,-405,-137), rot(0,0,16384));
+            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3065,-405,-137), rot(0,0,0));
+            SetActorScale(a, 1.3);
+
+            //crates to get back over the beginning of the level
+            _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
+            _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
             break;
         case "03_NYC_BROOKLYNBRIDGESTATION":
             //Put a button behind the hidden bathroom door
@@ -362,12 +393,40 @@ function HongKong_FirstEntry()
     }
 }
 
+function Shipyard_FirstEntry()
+{
+    local DeusExMover m;
+    switch(dxr.localURL)
+    {
+        case "09_NYC_SHIP":
+            foreach AllActors(class'DeusExMover', m, 'DeusExMover') {
+                if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
+            }
+            AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
+            break;
+    }
+}
+
+function Paris_FirstEntry()
+{
+    switch(dxr.localURL)
+    {
+        case "10_PARIS_CATACOMBS_TUNNELS":
+            AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
+            AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
+            break;
+    }
+}
+
 function HongKong_AnyEntry()
 {
     local Actor a;
     local ScriptedPawn p;
     local bool boolFlag;
     local bool recruitedFlag;
+
+    // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
+    // or if flag Have_ROM, Gordon Quick should let you into the compound? requires Have_Evidence and MaxChenConvinced
 
     switch(dxr.localURL)
     {
@@ -463,13 +522,22 @@ function Area51_FirstEntry()
     local DataCube dc;
     switch(dxr.localURL)
     {
+        case "15_AREA51_BUNKER":
+            AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
+            break;
         case "15_AREA51_FINAL":
             foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
                 d.move(vect(0, 0, -1));
             }
+            AddSwitch( vect(-5107.805176, -2530.276123, -1374.614258), rot(0, -16384, 0), 'blastdoor_final');
             AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
             break;
         case "15_AREA51_ENTRANCE":
+            foreach AllActors(class'DeusExMover', d, 'DeusExMover') {
+                if( d.Name == 'DeusExMover20' ) d.Tag = 'final_door';
+            }
+            AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');
+
             dc = Spawn(class'DataCube',,, GetRandomPosition(), rot(0,0,0));
             if( dc != None ) dc.plaintext = "My code is 6786";
 
@@ -478,6 +546,19 @@ function Area51_FirstEntry()
 
             dc = Spawn(class'DataCube',,, GetRandomPosition(), rot(0,0,0));
             if( dc != None ) dc.plaintext = "My code is 4322";
+
+            foreach AllActors(class'DeusExMover', d, 'doors_lower') {
+                d.bLocked = false;
+                d.bHighlight = true;
+                d.bFrobbable = true;
+            }
+            break;
+        case "15_AREA51_FINAL":
+            foreach AllActors(class'DeusExMover', d, 'doors_lower') {
+                d.bLocked = false;
+                d.bHighlight = true;
+                d.bFrobbable = true;
+            }
             break;
     }
 }
@@ -495,12 +576,28 @@ function AddDelay(Actor trigger, float time)
 
 function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
 {
-    local Switch2 s;
-    s = Spawn(class'Switch2',,,loc,rotate);
-    s.Event = Event;
-    s.bCollideWorld=False;
-    s.SetLocation(loc);
-    return s;
+    return _AddSwitch(Self, loc, rotate, Event);
+}
+
+static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate, name Event)
+{
+    local DeusExDecoration d;
+    d = DeusExDecoration( _AddActor(a, class'Switch2', loc, rotate) );
+    d.Event = Event;
+    return d;
+}
+
+static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rotate)
+{
+    local Actor d;
+    local bool oldCollideWorld;
+    d = a.Spawn(c,,, loc, rotate );
+    oldCollideWorld = d.bCollideWorld;
+    d.bCollideWorld = false;
+    d.SetLocation(loc);
+    d.SetRotation(rotate);
+    d.bCollideWorld = oldCollideWorld;
+    return d;
 }
 
 function RemoveFears(ScriptedPawn p)

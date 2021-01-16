@@ -65,9 +65,10 @@ function CheckConfig()
     }
     if( config_version < class'DXRFlags'.static.VersionToInt(1,4,5) ) {
         min_connections_selfconnect = 999;
-        dead_ends[0] = "03_NYC_AirfieldHeliBase#FromOcean";
-        dead_ends[1] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
-        //dead_ends[2] = "12_VANDENBERG_CMD#storage";//it's actually backwards from this...
+        i = 0;
+        //dead_ends[i++] = "03_NYC_AirfieldHeliBase#FromOcean";
+        dead_ends[i++] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
+        //dead_ends[i++] = "12_VANDENBERG_CMD#storage";//it's actually backwards from this...
     }
     for(i=0; i < ArrayCount(BannedConnections); i++) {
         BannedConnections[i].map_a = Caps(BannedConnections[i].map_a);
@@ -465,7 +466,8 @@ function _GenerateConnections(int missionNum)
             }
         }
         if( i >= maxAttempts ) {
-            l("failed to find valid connection");
+            l("failed to find valid connection for " $ xfers[nextAvailIdx].mapname $ "#" $ xfers[nextAvailIdx].inTag $ " / #" $ xfers[nextAvailIdx].outTag );
+            return;
         }
         xfers[destIdx].used = True;
         xfersUsed++;
@@ -607,12 +609,12 @@ function RandoMission10()
 {
     AddFixedConn("10_PARIS_CATACOMBS","x", "10_PARIS_CATACOMBS","x");
     AddDoubleXfer("10_PARIS_CATACOMBS","spiralstair","10_Paris_Catacombs_Tunnels","spiralstair");//same tag on both sides?
-    AddFixedConn("10_PARIS_CATACOMBS_TUNNELS","","10_Paris_Metro","sewer");//one way
+    AddFixedConn("10_PARIS_CATACOMBS_TUNNELS","?toname=AmbientSound10","10_Paris_Metro","sewer");//one way, I could maybe use separate teleporters for each side of the sewers to make more options?
     AddFixedConn("10_Paris_Metro","","10_PARIS_CHATEAU","x");//one way
-    AddDoubleXfer("10_PARIS_CHATEAU","","11_Paris_Cathedral","cathedralstart");//one way
+    //AddDoubleXfer("10_PARIS_CHATEAU","","11_Paris_Cathedral","cathedralstart");//one way
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club1","10_Paris_Metro","Paris_Metro1");
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club2","10_Paris_Metro","Paris_Metro2");
-    AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
+    //AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
     //AddDoubleXfer("11_PARIS_EVERETT","","12_Vandenberg_cmd");
 
     GenerateConnections(10);
@@ -629,10 +631,24 @@ function RandoMission11()
 
 function RandoMission12()
 {
+    local DeusExMover d;
+
     AddFixedConn("12_VANDENBERG_CMD","x","12_VANDENBERG_CMD", "x");
     AddDoubleXfer("12_VANDENBERG_CMD","commstat","12_vandenberg_tunnels","start");
     AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");
-    AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");//this might be dangerous because of the locked key-only door?
+    AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");
+
+    if( dxr.localURL == "12_VANDENBERG_CMD" ) {
+        foreach AllActors(class'DeusExMover', d) {
+            switch(d.Tag) {
+                case 'door_controlroom':
+                case 'security_tunnels':
+                    class'DXRKeys'.static.MakePickable(d);
+                    class'DXRKeys'.static.MakeDestructible(d);
+                    break;
+            }
+        }
+    }
     //AddDoubleXfer("12_VANDENBERG_CMD","","12_Vandenberg_gas","");
     //AddDoubleXfer("12_VANDENBERG_GAS","gas_start","","");
     //AddDoubleXfer("12_VANDENBERG_GAS","","14_Vandenberg_sub","");
@@ -664,8 +680,8 @@ function RandoMission15()
 {
     AddFixedConn("15_AREA51_BUNKER","x","15_AREA51_BUNKER", "x");
     //AddDoubleXfer("15_AREA51_BUNKER","commstat","","");
-    AddDoubleXfer("15_AREA51_BUNKER","","15_Area51_entrance","start");
-    AddDoubleXfer("15_Area51_entrance","","15_AREA51_FINAL","start");
+    AddDoubleXfer("15_AREA51_BUNKER","?toname=Light188","15_Area51_entrance","start");
+    AddDoubleXfer("15_Area51_entrance","?toname=Light73","15_AREA51_FINAL","start");
     AddDoubleXfer("15_AREA51_FINAL","final_end","15_Area51_page","page_start");
     //AddDoubleXfer("15_AREA51_FINAL","Start","");
 
@@ -677,7 +693,7 @@ function EntranceRando(int missionNum)
     numConns = 0;
     numXfers = 0;
     numFixedConns = 0;
-    if( missionNum == 11 ) missionNum = 10;//combine 10 and 11
+    //if( missionNum == 11 ) missionNum = 10;//combine paris 10 and 11
     //if( missionNum == 14 ) missionNum = 12;//combine vandenberg and oceanlab?
     dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") + missionNum );
 
@@ -705,7 +721,7 @@ function EntranceRando(int missionNum)
             RandoMission10();
             break;
         case 11:
-            RandoMission11();
+            //RandoMission11();
             break;
         case 12:
             RandoMission12();

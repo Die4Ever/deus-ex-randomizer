@@ -57,20 +57,21 @@ function CheckConfig()
 {
     local int i;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,6) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
 
         i=0;
+        modules_to_load[i++] = "DXRSwapItems";
         //modules_to_load[i++] = "DXRAddItems";
         modules_to_load[i++] = "DXRFixup";
+        modules_to_load[i++] = "DXRBacktracking";
         modules_to_load[i++] = "DXRKeys";
         modules_to_load[i++] = "DXREnemies";
         modules_to_load[i++] = "DXRSkills";
         modules_to_load[i++] = "DXRPasswords";
         modules_to_load[i++] = "DXRAugmentations";
-        modules_to_load[i++] = "DXRSwapItems";
         modules_to_load[i++] = "DXRReduceItems";
         modules_to_load[i++] = "DXRNames";
         modules_to_load[i++] = "DXRAutosave";
@@ -80,6 +81,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
         modules_to_load[i++] = "DXRBannedItems";
+        modules_to_load[i++] = "DXRWeapons";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         config_version = class'DXRFlags'.static.VersionNumber();

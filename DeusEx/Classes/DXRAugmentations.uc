@@ -1,5 +1,17 @@
 class DXRAugmentations extends DXRBase;
 
+var config float min_aug_str;
+var config float max_aug_str;
+
+function CheckConfig()
+{
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+        min_aug_str = 0.5;
+        max_aug_str = 1.5;
+    }
+    Super.CheckConfig();
+}
+
 function FirstEntry()
 {
     local Augmentation anAug;
@@ -15,6 +27,16 @@ function FirstEntry()
     }
 
     RandomizeAugCannisters();
+}
+
+function AnyEntry()
+{
+    local Augmentation a;
+    Super.AnyEntry();
+
+    foreach AllActors(class'Augmentation', a) {
+        RandoAug(a);
+    }
 }
 
 function RandomizeAugCannisters()
@@ -40,6 +62,10 @@ function static RandomizeAugCannister(DXRando dxr, AugmentationCannister a)
     {
         a.AddAugs[1] = PickRandomAug(dxr);
     }
+
+    if( a.AddAugs[0] == 'AugSpeed' || a.AddAugs[1] == 'AugSpeed' ) {
+        dxr.Player.ClientMessage("Speed Enhancement is in this area.");
+    }
 }
 
 function static Name PickRandomAug(DXRando dxr)
@@ -56,4 +82,14 @@ function static Name PickRandomAug(DXRando dxr)
     if (slot >= 18 ) slot++;// skip AugDatalink
     log("Picked Aug "$ slot $"/"$numAugs$" " $ dxr.Player.AugmentationSystem.augClasses[slot].Name, 'DXRAugmentations');
     return dxr.Player.AugmentationSystem.augClasses[slot].Name;
+}
+
+function RandoAug(Augmentation a)
+{
+    local string s;
+    if( AugSpeed(a) != None || AugLight(a) != None ) return;
+    dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoAug " $ a.class.name ) );
+    s = RandoLevelValues(a.LevelValues, a.default.LevelValues, min_aug_str, max_aug_str);
+    if( InStr(a.Description, s) == -1 )
+        a.Description = a.Description $ "|n|n" $ s;
 }

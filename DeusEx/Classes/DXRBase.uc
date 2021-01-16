@@ -73,6 +73,32 @@ function float rngfn()
     return rngf() * 2.0 - 1.0;
 }
 
+function float rngrange(float val, float min, float max)
+{
+    local float mult;
+    mult = max - min;
+    return val * (rngf() * mult + min);
+}
+
+function string RandoLevelValues(out float LevelValues[4], float DefaultLevelValues[4], float min, float max)
+{
+    local int i;
+    local float min_val;
+    local string s;
+
+    s = "(Values: ";
+    for(i=0; i<ArrayCount(LevelValues); i++) {
+        LevelValues[i] = rngrange(DefaultLevelValues[i], min, max);
+        if( i>0 && DefaultLevelValues[i-1] < DefaultLevelValues[i] && LevelValues[i] < min_val ) LevelValues[i] = min_val;
+        else if( i>0 && DefaultLevelValues[i-1] > DefaultLevelValues[i] && LevelValues[i] > min_val ) LevelValues[i] = min_val;
+        min_val = LevelValues[i];
+        if( i>0 ) s = s $ ", ";
+        s = s $ int(LevelValues[i]/DefaultLevelValues[i]*100.0) $ "%";
+    }
+    s = s $ ")";
+    return s;
+}
+
 function static int staticrng(DXRando dxr, int max)
 {
     return dxr.rng(max);

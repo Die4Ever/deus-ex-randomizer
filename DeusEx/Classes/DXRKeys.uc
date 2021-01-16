@@ -20,6 +20,8 @@ struct door_fix {
 };
 var config door_fix door_fixes[32];
 
+var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adjust;
+
 function CheckConfig()
 {
     local int i;
@@ -173,6 +175,12 @@ function CheckConfig()
         door_fixes[i].lockStrength = 1;
         i++;
     }
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+        min_lock_adjust = 0.5;
+        max_lock_adjust = 1.5;
+        min_door_adjust = 0.5;
+        max_door_adjust = 1.5;
+    }
     for(i=0; i<ArrayCount(keys_rules); i++) {
         keys_rules[i].map = Caps(keys_rules[i].map);
     }
@@ -189,6 +197,8 @@ function FirstEntry()
         MoveNanoKeys4();
     else if( dxr.flags.keysrando == 2 )
         MoveNanoKeys();
+
+    RandomizeDoors();
 }
 
 function AnyEntry()
@@ -201,6 +211,22 @@ function AnyEntry()
     {
         if ( SkipActorBase(k) ) continue;
         SetActorScale(k, 1.3);
+    }
+}
+
+function RandomizeDoors()
+{
+    local DeusExMover d;
+
+    SetSeed( "RandomizeDoors" );
+
+    foreach AllActors(class'DeusExMover', d) {
+        if( d.bPickable ) {
+            d.lockStrength = FClamp(rngrange(d.lockStrength, min_lock_adjust, max_lock_adjust), 0, 1);
+        }
+        if( d.bBreakable ) {
+            d.doorStrength = FClamp(rngrange(d.doorStrength, min_door_adjust, max_door_adjust), 0, 1);
+        }
     }
 }
 
@@ -263,6 +289,8 @@ function MoveNanoKeys4()
     local Containers c;
     local NanoKey k;
     local int num, i, slot;
+
+    SetSeed( "MoveNanoKeys4" );
 
     foreach AllActors(class'NanoKey', k )
     {
@@ -350,6 +378,7 @@ function bool KeyPositionGood(NanoKey k, vector newpos)
 function AdjustRestrictions(int doorsmode, int doorspickable, int doorsdestructible, int deviceshackable, int removeinvisiblewalls)
 {
     local Keypoint kp;
+    SetSeed( "AdjustRestrictions" );
 
     switch( (doorsmode/256) ) {
         case 1:

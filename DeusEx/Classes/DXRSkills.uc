@@ -11,6 +11,9 @@ var config SkillCostMultiplier SkillCostMultipliers[16];
 var config int banned_skill_chances;
 var config int banned_skill_level_chances;
 
+var config float min_skill_str;
+var config float max_skill_str;
+
 function CheckConfig()
 {
     local int i;
@@ -21,6 +24,10 @@ function CheckConfig()
             SkillCostMultipliers[i].minLevel = 1;
             SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
         }
+    }
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+        min_skill_str = 0.5;
+        max_skill_str = 1.5;
     }
     Super.CheckConfig();
 }
@@ -72,6 +79,16 @@ function RandoSkill(Skill aSkill)
             RandoSkillLevel(aSkill, i, percent);
         }
     }
+
+    RandoSkillLevelValues(aSkill);
+}
+
+function RandoSkillLevelValues(Skill a)
+{
+    local string s;
+    s = RandoLevelValues(a.LevelValues, a.default.LevelValues, min_skill_str, max_skill_str);
+    if( InStr(a.Description, s) == -1 )
+        a.Description = a.Description $ "|n|n" $ s;
 }
 
 function RandoSkillLevel(Skill aSkill, int i, int parent_percent)

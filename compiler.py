@@ -170,7 +170,7 @@ def write_file(out, f, written, injects):
         content = re.sub(f['classline'], classline, content, count=1)
         print("changing from: "+f['classline']+"\n---to: "+classline)
     
-    path = out + f['namespace'] + '/Classes/'
+    path = out + '/' + f['namespace'] + '/Classes/'
     if not exists_dir(path):
         os.makedirs(path, exist_ok=True)
     path += classname + '.uc'
@@ -196,7 +196,7 @@ def compile(source, mods, out):
     injects = {}
     written = {}
 
-    for file in insensitive_glob(source+'*'):
+    for file in insensitive_glob(source+'/*'):
         proc_file(file, orig_files, 'original')
     
     for mod in mods:
@@ -230,10 +230,10 @@ args = parser.parse_args()
 pp.pprint(args)
 
 if args.source_path is None:
-    args.source_path = input("Enter original game source code path (blank for default of C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup): ")
+    args.source_path = input("Enter original game source code path (blank for default of C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup/): ")
 
 if args.source_path is None or args.source_path == '':
-    args.source_path = "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup"
+    args.source_path = "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup/"
 
 while 1:
     f = input("Enter a mod path (or blank to continue): ")
@@ -244,15 +244,26 @@ while 1:
     args.mods_paths.append(f)
 
 if args.out_dir is None:
-    args.out_dir = "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex/"
+    args.out_dir = input("Enter output path (blank for default of C:/Program Files (x86)/Steam/steamapps/common/Deus Ex/): ")
 
+if args.out_dir is None or args.out_dir == '':
+    args.out_dir = "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex/"
 
 pp.pprint(args)
 if args.mods_paths is None:
     print("no mods specified! using local directory")
     args.mods_paths = [ './' ]
 
-compile(args.source_path, args.mods_paths, args.out_dir)
+rerun = ""
+while rerun == "":
+    try:
+        print("\ncompiling...")
+        compile(args.source_path, args.mods_paths, args.out_dir)
+    except Exception as e:
+        print('\n\ncompile error: ')
+        print(e)
+    print("\n")
+    rerun = input("press enter to compile again, otherwise type exit")
 
 print("\n\nto run this again, use this command: (coming soon)")
 input("press enter to continue")
