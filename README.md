@@ -29,7 +29,7 @@ There are also settings for
     * Horde Mode is in beta and mostly I think it just needs balancing.
     * Rearranged Levels is in beta, it changes what level each teleporter takes you to, but keeps it within the same mission.
 * making all or some of the doors that normally require a key also lockpickable and/or destructible
-* making all keypads hackable.
+* making all or some keypads hackable.
 * making enemies respawn
 * reducing the drop rate for ammo, multitools, lockpicks, medkits, and bioelectric cells
 * starting the game with the running speed augmentation
