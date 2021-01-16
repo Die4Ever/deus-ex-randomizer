@@ -1,4 +1,5 @@
 class DXRBacktracking extends DXRActorsBase;
+// backtracking specific fixes that might be too extreme for the more generic DXRFixup? or move the stuff from DXRFixup into here?
 
 function FirstEntry()
 {
@@ -17,7 +18,7 @@ function FirstEntry()
             dt = Spawn(class'DynamicTeleporter',,'sewers_backtrack',vect(1599.971558, -4694.342773, 13.399302));
             dt.URL = "10_PARIS_CATACOMBS_TUNNELS#?toname=AmbientSound10";
             dt.Radius = 160;
-            class'DXRFixup'.static._AddSwitch(Self, vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
+            AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
             break;
         case "15_AREA51_ENTRANCE":
             dt = Spawn(class'DynamicTeleporter',,,vect(4384.407715, -2483.292236, -41.900017));
@@ -56,4 +57,9 @@ function AnyEntry()
             }
         }
     }
+}
+
+function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
+{
+    return class'DXRFixup'.static._AddSwitch(Self, loc, rotate, Event);
 }

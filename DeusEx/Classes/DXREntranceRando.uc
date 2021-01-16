@@ -76,9 +76,10 @@ function CheckConfig()
     }
     if( config_version < class'DXRFlags'.static.VersionToInt(1,4,5) ) {
         min_connections_selfconnect = 999;
-        dead_ends[0] = "03_NYC_AirfieldHeliBase#FromOcean";
-        dead_ends[1] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
-        //dead_ends[2] = "12_VANDENBERG_CMD#storage";//it's actually backwards from this...
+        i = 0;
+        //dead_ends[i++] = "03_NYC_AirfieldHeliBase#FromOcean";
+        dead_ends[i++] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
+        //dead_ends[i++] = "12_VANDENBERG_CMD#storage";//it's actually backwards from this...
     }
     for(i=0; i < ArrayCount(BannedConnections); i++) {
         BannedConnections[i].map_a = Caps(BannedConnections[i].map_a);
@@ -476,7 +477,8 @@ function _GenerateConnections(int missionNum)
             }
         }
         if( i >= maxAttempts ) {
-            l("failed to find valid connection");
+            l("failed to find valid connection for " $ xfers[nextAvailIdx].mapname $ "#" $ xfers[nextAvailIdx].inTag $ " / #" $ xfers[nextAvailIdx].outTag );
+            return;
         }
         xfers[destIdx].used = True;
         xfersUsed++;

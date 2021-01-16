@@ -63,6 +63,7 @@ function CheckConfig()
         }
 
         i=0;
+        modules_to_load[i++] = "DXRSwapItems";
         //modules_to_load[i++] = "DXRAddItems";
         modules_to_load[i++] = "DXRFixup";
         modules_to_load[i++] = "DXRBacktracking";
@@ -71,7 +72,6 @@ function CheckConfig()
         modules_to_load[i++] = "DXRSkills";
         modules_to_load[i++] = "DXRPasswords";
         modules_to_load[i++] = "DXRAugmentations";
-        modules_to_load[i++] = "DXRSwapItems";
         modules_to_load[i++] = "DXRReduceItems";
         modules_to_load[i++] = "DXRNames";
         modules_to_load[i++] = "DXRAutosave";
