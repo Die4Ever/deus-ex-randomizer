@@ -176,7 +176,7 @@ function RandoInfoDevs(int percent)
             num++;
         }
 
-        slot=rng(num-1);
+        slot=rng(num);
         i=0;
         foreach AllActors(class'Inventory', inv)
         {

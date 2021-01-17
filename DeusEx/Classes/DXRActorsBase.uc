@@ -44,9 +44,10 @@ function SwapAll(name classname)
         if( SkipActor(a, classname) ) continue;
 
         i=0;
-        slot=rng(num-1);
+        slot=rng(num-1);// -1 because we skip ourself
         foreach AllActors(class'Actor', b )
         {
+            if( a == b ) continue;
             if( SkipActor(b, classname) ) continue;
 
             if(i==slot) {

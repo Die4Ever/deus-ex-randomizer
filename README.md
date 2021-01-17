@@ -19,7 +19,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 * what augmentations are in each canister
 * the strength and lockpick strength for doors
 * the hack strength for keypads
-* the strength of augmentations, skills
+* the strength of augmentations and skills
 * the damage and firing speed of weapons
 
 There are also settings for

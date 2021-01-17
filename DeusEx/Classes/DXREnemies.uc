@@ -165,9 +165,10 @@ function SwapScriptedPawns()
         if( IsCritter(a) ) continue;
 
         i=0;
-        slot=rng(num-1);
+        slot=rng(num-1);// -1 because we skip ourself
         foreach AllActors(class'ScriptedPawn', b )
         {
+            if( a == b ) continue;
             if( b.bHidden || b.bStatic ) continue;
             if( b.bImportant ) continue;
             if( IsCritter(b) ) continue;

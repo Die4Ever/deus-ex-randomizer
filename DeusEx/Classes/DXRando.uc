@@ -57,12 +57,13 @@ function CheckConfig()
 {
     local int i;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,9) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
 
         i=0;
+        modules_to_load[i++] = "DXRMissions";
         modules_to_load[i++] = "DXRSwapItems";
         //modules_to_load[i++] = "DXRAddItems";
         modules_to_load[i++] = "DXRFixup";

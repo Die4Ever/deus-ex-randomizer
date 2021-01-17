@@ -225,6 +225,14 @@ function Airfield_FirstEntry()
     
     switch (dxr.localURL)
     {
+        case "03_NYC_BATTERYPARK":
+            foreach AllActors(class'Actor', a) {
+                if( a.name == 'NanoKey0' ) {
+                    a.Destroy();
+                    break;
+                }
+            }
+            break;
         case "03_NYC_AirfieldHeliBase":
             foreach AllActors(class'Mover',m) {
                 // call the elevator at the end of the level when you open the appropriate door

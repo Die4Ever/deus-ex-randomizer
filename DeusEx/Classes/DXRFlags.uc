@@ -259,7 +259,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 8) $ "";
+    return VersionToString(1, 4, 9) $ " Alpha";
 }
 
 function MaxRando()
@@ -278,8 +278,11 @@ function int RunTests()
     results += testint( dxr.Crc("do you have a single fact to back that up"), -1473827402, "Crc32 test");
 
     SetSeed("smashthestate");
-    for(i=0;i<10;i++)
-        test( rng(100)>=0, "rng(100) >= 0");
+    results += testint( rng(1), 0, "rng(1) is 0");
+    for(i=0;i<10;i++) {
+        results += test( rng(100)>=0, "rng(100) >= 0");
+        results += test( rng(100)<100, "rng(100) < 100");
+    }
 
     return results;
 }
