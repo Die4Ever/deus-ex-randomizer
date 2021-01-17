@@ -89,20 +89,25 @@ function CheckConfig()
         goals[i].actor_name = 'Terrorist13';//need to make sure to get rid of his patrol orders
         i++;*/
 
-        goals[i].map_name = "03_NYC_BrooklynBridgeStation";
+        map = "03_NYC_BrooklynBridgeStation";
+        goals[i].map_name = map;
         goals[i].actor_name = 'ThugMale13';
         i++;
 
-        goals[i].map_name = "03_NYC_BrooklynBridgeStation";
+        goals[i].map_name = map;
         goals[i].actor_name = 'JunkieMale1';
         i++;
 
-        goals[i].map_name = "03_NYC_BrooklynBridgeStation";
+        goals[i].map_name = map;
         goals[i].actor_name = 'BumMale2';
         i++;
 
-        goals[i].map_name = "03_NYC_BrooklynBridgeStation";
+        goals[i].map_name = map;
         goals[i].actor_name = 'ThugMale3';
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'BumMale3';
         i++;
 
         /*goals[i].map_name = "04_NYC_NSFHQ";
@@ -217,6 +222,21 @@ function CheckConfig()
         important_locations[i].is_player_start = true;
         i++;
 
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(1082.374023, 1458.807617, 334.248260);//'PathNode68' outside of castle clinton
+        important_locations[i].is_player_start = true;
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-4340.930664, 2332.365234, 244.506165);//'Light174' under the vent
+        important_locations[i].is_player_start = true;
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-2968.101563, -1407.404419, 334.242554);//'PathNode0' in front of statue
+        important_locations[i].is_player_start = true;
+        i++;
+
         map = "03_nyc_airfield";
         important_locations[i].map_name = map;
         important_locations[i].location = vect(-2687.128662,2320.010986,63.774998);//'Terrorist13'
@@ -240,6 +260,19 @@ function CheckConfig()
 
         important_locations[i].map_name = map;
         important_locations[i].location = vect(-2978.629639,-2281.836670,415.774994);//'ThugMale3'
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-988.025696, -3381.119385, 111.600235);//'BumMale3'
+        important_locations[i].rotation = rot(0,-22608,0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(2893.466064, -4513.004395, 104.099274);//'SkillAwardTrigger0' near the pipes
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(1755.025391, -847.637695, 382.144287);//'PathNode20' upper level
         i++;
 
         important_locations[i].map_name = "04_NYC_NSFHQ";
