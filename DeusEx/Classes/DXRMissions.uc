@@ -124,15 +124,18 @@ function CheckConfig()
         goals[i].actor_name = 'BumMale3';
         i++;
 
-        /*goals[i].map_name = "04_NYC_NSFHQ";
+        map = "04_NYC_NSFHQ";
+        goals[i].map_name = map;
         goals[i].actor_name = 'ComputerPersonal3';
-        goals[i].group_radius = 16;
-        i++;*/
+        goals[i].allow_vanilla = true;
+        goals[i].physics = PHYS_None;
+        i++;
 
-        /*goals[i].map_name = "04_NYC_NSFHQ";
-        goals[i].actor_name = 'ComputerPersonal4';//or maybe keep it behind the door that ComputerPersonal3 opens?
-        goals[i].group_radius = 16;
-        i++;*/
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ComputerPersonal4';
+        goals[i].allow_vanilla = true;
+        goals[i].physics = PHYS_None;
+        i++;
 
         map = "09_nyc_graveyard";
         goals[i].map_name = map;
@@ -216,6 +219,7 @@ function CheckConfig()
         goals[i].actor_name = '';
         goals[i].group_radius = 0;
         i++;*/
+        //mission 4 the computers, should allow_vanilla, might need to take special care for Datacube0 and Datacube4, they already needed fixing anyways cause they were always in the same place
         //mission 5 I can move Paul, Jaime, Alex
         //mission 6 I can move the computer that stores the rom encoding, and opens the UC?
         //mission 8 stanton dowd, harley filben, joe greene
@@ -392,14 +396,34 @@ function CheckConfig()
 
         map = "04_NYC_NSFHQ";
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(187.265259,315.583862,1032.054199);//'ComputerPersonal3' computer to align dishes and open the door
-        important_locations[i].rotation = rot(0,16672,0);
+        important_locations[i].location = vect(-460.091187, 1011.083496, 551.367859);//near the medbot
+        important_locations[i].rotation = rot(0, 16672, 0);
         i++;
 
-        /*important_locations[i].map_name = map;
-        important_locations[i].location = vect(116.650787,400.400024,1032.054199);//'ComputerPersonal4' computer that sends the signal, probably can't risk putting 'ComputerPersonal3' back here
-        important_locations[i].rotation = rot(0,49384,0);
-        i++;*/
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(206.654617, 1340, 311.652832);//locked room
+        important_locations[i].rotation = rot(0, 0, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(381.117371, -696.875671, 63.615902);//next to repair bot
+        important_locations[i].rotation = rot(0, 32768, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(42.340145, 1104.667480, 73.610352);//break room
+        important_locations[i].rotation = rot(0, 0, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(1290.299927, 1385, -185);//basement counter
+        important_locations[i].rotation = rot(0, 16384, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-617.888855, 141.699875, -208);//basement table
+        important_locations[i].rotation = rot(0, 16384, 0);
+        i++;
 
         map = "09_nyc_graveyard";
         /*important_locations[i].map_name = map;
@@ -480,7 +504,7 @@ function FirstEntry()
 {
     local Actor a;
     local int i, k, start, slot, tries, num_ma, num_ps, num_gl;
-    local vector diff;
+    local vector loc, diff;
     local Actor movable_actors[32];
     //local float movable_actors_radius[32];
     local Goal local_goals[32];
@@ -565,15 +589,17 @@ function FirstEntry()
             i--;
             continue;
         }
+        loc = GetCenter(movable_actors[i]);
+        if( MoveActor(movable_actors[i], goal_locations[slot].location, goal_locations[slot].rotation, local_goals[i].physics) == false ) {
+            continue;
+        }
         if( local_goals[i].group_radius >= 0.1 ) {
-            foreach RadiusActors(class'Actor', a, local_goals[i].group_radius, GetCenter(movable_actors[i]) ) {
+            foreach RadiusActors(class'Actor', a, local_goals[i].group_radius, loc ) {
                 if( NavigationPoint(a) != None ) continue;
                 if( Light(a) != None ) continue;
                 MoveActor(a, a.location + diff, a.rotation, local_goals[i].physics);
             }
         }
-        //if current orders are patrolling, set orders to standing?
-        MoveActor(movable_actors[i], goal_locations[slot].location, goal_locations[slot].rotation, local_goals[i].physics);
 
         for(k=i+1; k<num_ma; k++) {
             if( local_goals[k].move_with_previous == false ) break;
@@ -591,19 +617,30 @@ function AnyEntry()
     Super.AnyEntry();
 }
 
-function MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
+function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
 {
     local ScriptedPawn sp;
+    local bool success, oldbCollideWorld;
 
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
-    a.SetLocation(loc);
+    oldbCollideWorld = a.bCollideWorld;
+    if(p == PHYS_None) a.bCollideWorld = false;
+    success = a.SetLocation(loc);
+    if( success == false ) {
+        a.bCollideWorld = oldbCollideWorld;
+        err("failed to move "$a$" to "$loc);
+        return false;
+    }
     a.SetRotation(rotation);
     a.SetPhysics(p);
+    if(p == PHYS_None) a.bCollideWorld = oldbCollideWorld;
 
     sp = ScriptedPawn(a);
     if( sp != None && sp.Orders == 'Patrolling' ) {
         sp.Orders = 'Wandering';
     }
+
+    return true;
 }
 
 //tests to ensure that there are more goal locations than movable actors

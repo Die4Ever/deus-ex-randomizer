@@ -41,6 +41,8 @@ function BindControls(bool writing, optional string action)
         f.doorsdestructible = 100;
         f.doorspickable = 100;
         f.deviceshackable = 100;
+        f.passwordsrandomized = 100;
+        f.infodevices = 100;
         f.enemiesrandomized = 20;
         f.skills_disable_downgrades = 0;
         f.skills_reroll_missions = 0;
@@ -60,6 +62,8 @@ function BindControls(bool writing, optional string action)
         f.doorsdestructible = 50;
         f.doorspickable = 50;
         f.deviceshackable = 100;
+        f.passwordsrandomized = 100;
+        f.infodevices = 100;
         f.enemiesrandomized = 35;
         f.skills_disable_downgrades = 0;
         f.skills_reroll_missions = 0;
@@ -79,6 +83,8 @@ function BindControls(bool writing, optional string action)
         f.doorsdestructible = 25;
         f.doorspickable = 25;
         f.deviceshackable = 50;
+        f.passwordsrandomized = 100;
+        f.infodevices = 100;
         f.enemiesrandomized = 50;
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
@@ -98,6 +104,8 @@ function BindControls(bool writing, optional string action)
         f.doorsdestructible = 25;
         f.doorspickable = 25;
         f.deviceshackable = 50;
+        f.passwordsrandomized = 100;
+        f.infodevices = 100;
         f.enemiesrandomized = 70;
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;

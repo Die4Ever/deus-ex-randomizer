@@ -165,7 +165,12 @@ function SwapScriptedPawns()
         if( IsCritter(a) ) continue;
 
         i=0;
-        slot=rng(num-1);// -1 because we skip ourself
+        slot=rng(num);// -1 because we skip ourself, but +1 for vanilla
+        if(slot==0) {
+            l("not swapping "$a);
+            continue;
+        }
+        slot--;
         foreach AllActors(class'ScriptedPawn', b )
         {
             if( a == b ) continue;

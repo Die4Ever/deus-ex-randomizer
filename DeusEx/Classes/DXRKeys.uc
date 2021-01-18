@@ -301,6 +301,7 @@ function MoveNanoKeys4()
         num=0;
         foreach AllActors(class'Inventory', a)
         {
+            if( a == k ) continue;
             if( SkipActor(a, 'Inventory') ) continue;
             if( KeyPositionGood(k, a.Location) == False ) continue;
             num++;
@@ -312,7 +313,12 @@ function MoveNanoKeys4()
             num++;
         }*/
 
-        slot=rng(num-1);// -1 because we skip ourself
+        slot=rng(num+1);// +1 for vanilla
+        if(slot==0) {
+            l("not swapping key "$k.KeyID);
+            continue;
+        }
+        slot--;
         i=0;
         l("key "$k.KeyID$" got num "$num);
         foreach AllActors(class'Inventory', a)
@@ -322,7 +328,7 @@ function MoveNanoKeys4()
             if( KeyPositionGood(k, a.Location) == False ) continue;
 
             if(i==slot) {
-                l("swapping key "$k.KeyID$" with "$a.Class);
+                l("swapping key "$k.KeyID$" with "$a);
                 Swap(k, a);
                 break;
             }
