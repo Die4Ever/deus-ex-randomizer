@@ -6,7 +6,7 @@ var config int config_version;
 
 function Init(DXRando tdxr)
 {
-    l(".Init()");
+    l(".Init() " $ tdxr.localURL);
     dxr = tdxr;
     CheckConfig();
 }
@@ -22,22 +22,22 @@ function CheckConfig()
 
 function FirstEntry()
 {
-    l(".FirstEntry()");
+    l(".FirstEntry() " $ dxr.localURL);
 }
 
 function AnyEntry()
 {
-    l(".AnyEntry()");
+    l(".AnyEntry() " $ dxr.localURL);
 }
 
 function ReEntry()
 {
-    l(".ReEntry()");
+    l(".ReEntry() " $ dxr.localURL);
 }
 
 function PreTravel()
 {
-    l(".PreTravel()");
+    l(".PreTravel() " $ dxr.localURL);
     dxr = None;
     SetTimer(0, False);
 }
@@ -48,7 +48,7 @@ function Timer()
 
 event Destroyed()
 {
-    l(".Destroyed()");
+    l(".Destroyed() " $ dxr.localURL);
     dxr = None;
     Super.Destroyed();
 }
@@ -162,7 +162,7 @@ function err(string message)
 
 function int RunTests()
 {
-    l(".RunTests()");
+    l(".RunTests() " $ dxr.localURL);
     return 0;
 }
 

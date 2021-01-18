@@ -1,4 +1,4 @@
-class DXRMissions extends DXRBase;
+class DXRMissions extends DXRActorsBase;
 
 //list of actors to remove
 //list of starting positions
@@ -17,16 +17,18 @@ struct ImportantLocation {
     var bool is_player_start;
     var bool is_goal_position;
 };
-var config ImportantLocation important_locations[64];
+var config ImportantLocation important_locations[100];
 
 struct Goal {
     var string map_name;
     var name actor_name;
     var float group_radius;
-    //var bool move_with_previous;//for chaining things together?
+    var EPhysics physics;
+    var bool move_with_previous;//for chaining things together?
+    var bool allow_vanilla;
     //var bool is_movable_actor;
 };
-var config Goal goals[50];
+var config Goal goals[64];
 
 var config bool allow_vanilla;
 
@@ -51,9 +53,16 @@ function CheckConfig()
         remove_actors[i].actor_name = 'AnnaNavarre0';//because she chases you down
         i++;
 
+        /*remove_actors[i].map_name = "09_NYC_GRAVEYARD";
+        remove_actors[i].actor_name = 'Barrel0';//barrel next to the transmitter thing, idk what it does but it explodes when I move it
+        i++;*/
+
         for(i=0; i<ArrayCount(goals); i++) {
             goals[i].map_name = "";
             goals[i].group_radius = 0;
+            goals[i].physics = PHYS_Falling;
+            goals[i].move_with_previous = false;
+            goals[i].allow_vanilla = false;
         }
         for(i=0; i<ArrayCount(important_locations); i++) {
             important_locations[i].is_player_start = false;
@@ -81,13 +90,18 @@ function CheckConfig()
 
         goals[i].map_name = map;
         goals[i].actor_name = 'BumMale4';
-        goals[i].group_radius = 200;//bring BumFemale2 with him?
         i++;
 
-        /*map = "03_nyc_airfield";
+        goals[i].map_name = map;
+        goals[i].actor_name = 'BumFemale2';
+        goals[i].move_with_previous = true;
+        i++;
+
+        map = "03_nyc_airfield";
         goals[i].map_name = map;
         goals[i].actor_name = 'Terrorist13';//need to make sure to get rid of his patrol orders
-        i++;*/
+        goals[i].allow_vanilla = true;
+        i++;
 
         map = "03_NYC_BrooklynBridgeStation";
         goals[i].map_name = map;
@@ -120,15 +134,92 @@ function CheckConfig()
         goals[i].group_radius = 16;
         i++;*/
 
-        /*goals[i].map_name = "";
+        map = "09_nyc_graveyard";
+        goals[i].map_name = map;
+        goals[i].actor_name = 'BreakableWall1';
+        goals[i].physics = PHYS_None;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'SkillAwardTrigger2';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'FlagTrigger0';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'TriggerLight0';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'TriggerLight1';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'TriggerLight2';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'AmbientSoundTriggered0';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        i++;
+
+        map = "09_nyc_shipbelow";
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DeusExMover40';//weld point
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 80;
+        goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DeusExMover16';//weld point
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 80;
+        goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DeusExMover33';//weld point
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 80;
+        goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DeusExMover31';//weld point
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 80;
+        goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DeusExMover32';//weld point
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 80;
+        goals[i].allow_vanilla = true;
+        i++;
+
+        /*goals[i].map_name = map;
         goals[i].actor_name = '';
         goals[i].group_radius = 0;
         i++;*/
         //mission 5 I can move Paul, Jaime, Alex
         //mission 6 I can move the computer that stores the rom encoding, and opens the UC?
         //mission 8 stanton dowd, harley filben, joe greene
-        //mission 9 I can kinda move the weld points lol
-        //11 gunther with the computer
+        //11 gunther with the computer, the fake mechanic
         //12 tiffany?
         //14 howard strong?
         //15 ?
@@ -239,8 +330,32 @@ function CheckConfig()
 
         map = "03_nyc_airfield";
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-2687.128662,2320.010986,63.774998);//'Terrorist13'
+        important_locations[i].location = vect(223.719452, 3689.905273, 15.100115);//'SpawnPoint9' by the gate to nowhere
         i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-2103.891113, 3689.706299, 15.091076);//'PathNode49' under security tower
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-2060.626465, -2013.138672, 15.090023);//'PathNode162' under security tower
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(729.454651, -4151.924805, 15.079981);//'PathNode118' under security tower
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(5215.076660, -4134.674316, 15.090023);//'PathNode188' under security tower
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(941.941895, 283.418152, 15.090023);//'PathNode81' big hanger door
+        i++;
+
+        /*important_locations[i].map_name = map;
+        important_locations[i].location = vect(-2687.128662,2320.010986,63.774998);//'Terrorist13'
+        i++;*/
 
         map = "03_NYC_BrooklynBridgeStation";
         important_locations[i].map_name = map;
@@ -275,15 +390,77 @@ function CheckConfig()
         important_locations[i].location = vect(1755.025391, -847.637695, 382.144287);//'PathNode20' upper level
         i++;
 
-        important_locations[i].map_name = "04_NYC_NSFHQ";
+        map = "04_NYC_NSFHQ";
+        important_locations[i].map_name = map;
         important_locations[i].location = vect(187.265259,315.583862,1032.054199);//'ComputerPersonal3' computer to align dishes and open the door
         important_locations[i].rotation = rot(0,16672,0);
         i++;
 
-        /*important_locations[i].map_name = "04_NYC_NSFHQ";
+        /*important_locations[i].map_name = map;
         important_locations[i].location = vect(116.650787,400.400024,1032.054199);//'ComputerPersonal4' computer that sends the signal, probably can't risk putting 'ComputerPersonal3' back here
         important_locations[i].rotation = rot(0,49384,0);
         i++;*/
+
+        map = "09_nyc_graveyard";
+        /*important_locations[i].map_name = map;
+        important_locations[i].location = vect(-1753.464600, -370.122009, -300);//''
+        i++;*/
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-283.503448, -787.867920, -184);//'PathNode108' in the tunnels
+        important_locations[i].rotation = rot(0, 0, -32768);
+        i++;
+
+        /*important_locations[i].map_name = map;
+        important_locations[i].location = vect();//''
+        important_locations[i].rotation = rot();
+        i++;*/
+
+        map = "09_nyc_shipbelow";
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-384.000000, 1024.000000, -272.000000);//first engine room
+        important_locations[i].rotation = rot(0, 49152, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-3296.000000, -1664.000000, -112.000000);//above bilge pumps room
+        important_locations[i].rotation = rot(0, 81920, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-2480.000000, -448.000000, -144.000000);//hallway above bilge pumps room
+        important_locations[i].rotation = rot(0, 32768, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-3952.000000, 768.000000, -416.000000);//electrical room
+        important_locations[i].rotation = rot(0, 0, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-5664.000000, -928.000000, -432.000000);//helipad room
+        important_locations[i].rotation = rot(0, 16384, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-4336.000000, -150, -176.000000);//storage closet
+        important_locations[i].rotation = rot(0, -16384, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-5152.000000, 1536.000000, -160.000000);//air control
+        important_locations[i].rotation = rot(0, -16384, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-3072.000000, 64.000000, 816.000000);//big fan
+        important_locations[i].rotation = rot(0, 0, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-320.000000, -784.000000, 32.000000);//engine control room
+        important_locations[i].rotation = rot(3800, 16384, 0);
+        i++;
     }
 
     for(i=0; i<ArrayCount(remove_actors); i++) {
@@ -305,7 +482,8 @@ function FirstEntry()
     local int i, k, start, slot, tries, num_ma, num_ps, num_gl;
     local vector diff;
     local Actor movable_actors[32];
-    local float movable_actors_radius[32];
+    //local float movable_actors_radius[32];
+    local Goal local_goals[32];
     local ImportantLocation player_starts[32];
     local ImportantLocation goal_locations[32];
 
@@ -325,6 +503,12 @@ function FirstEntry()
         }
     }
 
+    for(i=0; i<ArrayCount(goals); i++) {
+        if( dxr.localURL != goals[i].map_name ) continue;
+        local_goals[num_ma] = goals[i];
+        num_ma++;
+    }
+
     foreach AllActors(class'Actor', a) {
         for(i=0; i<ArrayCount(remove_actors); i++) {
             if( dxr.localURL != remove_actors[i].map_name ) continue;
@@ -335,13 +519,9 @@ function FirstEntry()
             }
         }
 
-        for(i=0; i<ArrayCount(goals); i++) {
-            if( dxr.localURL != goals[i].map_name ) continue;
-
-            if( a.name == goals[i].actor_name ) {
-                movable_actors[num_ma] = a;
-                movable_actors_radius[num_ma] = goals[i].group_radius;
-                num_ma++;
+        for(i=0; i<num_ma; i++) {
+            if( a.name == local_goals[i].actor_name ) {
+                movable_actors[i] = a;
             }
         }
     }
@@ -368,26 +548,38 @@ function FirstEntry()
     }
 
     for(i=0; i<num_ma && num_gl>0; i++) {
-        slot = rng(num_gl);
+        if( local_goals[i].move_with_previous == true ) continue;
+
+        if( allow_vanilla == true || local_goals[i].allow_vanilla == true ) {
+            slot = rng(num_gl+1);
+            if( slot == 0 ) continue;//don't do anything
+            slot--;
+        }
+        else slot = rng(num_gl);
+        l("moving goal: " $ movable_actors[i] );
+
         diff = goal_locations[slot].location - movable_actors[i].location;
-        if( allow_vanilla == false && num_gl > 1 && VSize(diff) < 16 && tries<100 ) {
+        if( allow_vanilla == false && local_goals[i].allow_vanilla == false && num_gl > 1 && VSize(diff) < 16 && tries<100 ) {
             tries++;
             l(movable_actors[i] $ ", vanilla not allowed, num_gl==" $ num_gl $ ", tries=="$tries);
             i--;
             continue;
         }
-        if( movable_actors_radius[i] >= 0.1 ) {
-            foreach RadiusActors(class'Actor', a, movable_actors_radius[i], movable_actors[i].location) {
+        if( local_goals[i].group_radius >= 0.1 ) {
+            foreach RadiusActors(class'Actor', a, local_goals[i].group_radius, GetCenter(movable_actors[i]) ) {
                 if( NavigationPoint(a) != None ) continue;
                 if( Light(a) != None ) continue;
-                a.SetLocation( a.location + diff );
-                a.SetPhysics(PHYS_Falling);
+                MoveActor(a, a.location + diff, a.rotation, local_goals[i].physics);
             }
         }
         //if current orders are patrolling, set orders to standing?
-        movable_actors[i].SetLocation(goal_locations[slot].location);
-        movable_actors[i].SetRotation(goal_locations[slot].rotation);
-        movable_actors[i].SetPhysics(PHYS_Falling);
+        MoveActor(movable_actors[i], goal_locations[slot].location, goal_locations[slot].rotation, local_goals[i].physics);
+
+        for(k=i+1; k<num_ma; k++) {
+            if( local_goals[k].move_with_previous == false ) break;
+            MoveActor(movable_actors[k], movable_actors[k].location + diff, goal_locations[slot].rotation, local_goals[k].physics);
+        }
+
         goal_locations[slot] = goal_locations[num_gl-1];
         num_gl--;
     }
@@ -397,6 +589,21 @@ function FirstEntry()
 function AnyEntry()
 {
     Super.AnyEntry();
+}
+
+function MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
+{
+    local ScriptedPawn sp;
+
+    l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
+    a.SetLocation(loc);
+    a.SetRotation(rotation);
+    a.SetPhysics(p);
+
+    sp = ScriptedPawn(a);
+    if( sp != None && sp.Orders == 'Patrolling' ) {
+        sp.Orders = 'Wandering';
+    }
 }
 
 //tests to ensure that there are more goal locations than movable actors
