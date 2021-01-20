@@ -28,7 +28,8 @@ function AnyEntry()
 
 function RandoWeapon(DeusExWeapon w)
 {
-    dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoWeapon " $ w.class.name ) );
+    local int oldseed;
+    oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoWeapon " $ w.class.name ) );
 
     w.HitDamage = rngrange(float(w.default.HitDamage), min_weapon_dmg, max_weapon_dmg);
     w.ShotTime = rngrange(w.default.ShotTime, min_weapon_shottime, max_weapon_shottime);
@@ -40,4 +41,5 @@ function RandoWeapon(DeusExWeapon w)
     w.AccurateRange = int(f);
     f = w.default.BaseAccuracy * (rngf()+0.5);
     w.BaseAccuracy = f;*/
+    dxr.SetSeed(oldseed);
 }

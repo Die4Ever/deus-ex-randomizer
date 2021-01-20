@@ -269,7 +269,7 @@ function MaxRando()
 
 function int RunTests()
 {
-    local int results, i;
+    local int results, i, t;
     results = Super.RunTests();
 
     //this Crc function returns negative numbers
@@ -280,9 +280,12 @@ function int RunTests()
     SetSeed("smashthestate");
     results += testint( rng(1), 0, "rng(1) is 0");
     for(i=0;i<10;i++) {
-        results += test( rng(100)>=0, "rng(100) >= 0");
-        results += test( rng(100)<100, "rng(100) < 100");
+        t=rng(100);
+        results += test( t >=0 && t < 100, "rng(100) got " $t$" >= 0 and < 100");
     }
+    dxr.SetSeed(-111);
+    i = rng(100);
+    results += test( rng(100) != i, "rng(100) != rng(100)");
 
     return results;
 }

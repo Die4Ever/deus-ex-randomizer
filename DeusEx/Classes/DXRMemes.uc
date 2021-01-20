@@ -230,7 +230,7 @@ function string _GetRandomActorClass()
 {
     local int r, i;
 
-    r = rng(501);
+    r = rng(500);
 
     if ( r == i++ ) return "AcousticSensor";
     if ( r == i++ ) return "AdaptiveArmor";
@@ -398,7 +398,7 @@ function string _GetRandomActorClass()
     //if ( r == i++ ) return "FirePlug";
     if ( r == i++ ) return "Fish";
     if ( r == i++ ) return "Fish2";
-    if ( r == i++ ) return "Fishes";
+    //if ( r == i++ ) return "Fishes";//Warning: SpawnActor failed because class Fishes is abstract
     if ( r == i++ ) return "FlagPole";
     if ( r == i++ ) return "Flare";
     if ( r == i++ ) return "Flask";

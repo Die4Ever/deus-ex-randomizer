@@ -233,7 +233,11 @@ function RandoEnter()
 
 function int SetSeed(int s)
 {
+    local int oldseed;
+    oldseed = newseed;
+    //log("SetSeed old seed == "$newseed$", new seed == "$s);
     newseed = s;
+    return oldseed;
 }
 
 function int rng(int max)

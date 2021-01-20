@@ -290,7 +290,7 @@ function vector GetRandomPosition(optional vector target, optional float mindist
     }
     if( num == 0 ) return target;
     slot = rng(num);
-    return temp[num].Location;
+    return temp[slot].Location;
 }
 
 function vector GetCloserPosition(vector target, vector current, optional float maxdist)

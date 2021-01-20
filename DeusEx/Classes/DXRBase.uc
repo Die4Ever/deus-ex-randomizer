@@ -6,7 +6,7 @@ var config int config_version;
 
 function Init(DXRando tdxr)
 {
-    l(".Init() " $ tdxr.localURL);
+    l(Self$".Init()");
     dxr = tdxr;
     CheckConfig();
 }
@@ -22,22 +22,22 @@ function CheckConfig()
 
 function FirstEntry()
 {
-    l(".FirstEntry() " $ dxr.localURL);
+    l(Self$".FirstEntry()");
 }
 
 function AnyEntry()
 {
-    l(".AnyEntry() " $ dxr.localURL);
+    l(Self$".AnyEntry()");
 }
 
 function ReEntry()
 {
-    l(".ReEntry() " $ dxr.localURL);
+    l(Self$".ReEntry()");
 }
 
 function PreTravel()
 {
-    l(".PreTravel() " $ dxr.localURL);
+    l(Self$".PreTravel()");
     dxr = None;
     SetTimer(0, False);
 }
@@ -48,14 +48,14 @@ function Timer()
 
 event Destroyed()
 {
-    l(".Destroyed() " $ dxr.localURL);
+    l(Self$".Destroyed()");
     dxr = None;
     Super.Destroyed();
 }
 
-function SetSeed(coerce string name)
+function int SetSeed(coerce string name)
 {
-    dxr.SetSeed( dxr.Crc(dxr.seed $ "MS_" $ dxr.dxInfo.MissionNumber $ dxr.localURL $ name) );
+    return dxr.SetSeed( dxr.Crc(dxr.seed $ "MS_" $ dxr.dxInfo.MissionNumber $ dxr.localURL $ name) );
 }
 
 function int rng(int max)
@@ -65,7 +65,10 @@ function int rng(int max)
 
 function float rngf()
 {// 0 to 1.0
-    return float(dxr.rng(1000001))/1000000.0;
+    local float f;
+    f = float(dxr.rng(100001))/100000.0;
+    //l("rngf() "$f);
+    return f;
 }
 
 function float rngfn()
