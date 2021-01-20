@@ -230,7 +230,7 @@ function string _GetRandomActorClass()
 {
     local int r, i;
 
-    r = rng(500);
+    r = rng(499);
 
     if ( r == i++ ) return "AcousticSensor";
     if ( r == i++ ) return "AdaptiveArmor";
