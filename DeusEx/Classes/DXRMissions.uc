@@ -81,15 +81,18 @@ function CheckConfig()
         goals[i].map_name = map;
         goals[i].actor_name = 'BarrelAmbrosia0';
         goals[i].group_radius = 160;
+        goals[i].allow_vanilla = true;
         i++;
 
         map = "03_nyc_batterypark";
         goals[i].map_name = map;
         goals[i].actor_name = 'HarleyFilben0';
+        goals[i].allow_vanilla = true;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'BumMale4';
+        goals[i].allow_vanilla = true;
         i++;
 
         goals[i].map_name = map;
@@ -106,22 +109,27 @@ function CheckConfig()
         map = "03_NYC_BrooklynBridgeStation";
         goals[i].map_name = map;
         goals[i].actor_name = 'ThugMale13';
+        goals[i].allow_vanilla = true;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'JunkieMale1';
+        goals[i].allow_vanilla = true;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'BumMale2';
+        goals[i].allow_vanilla = true;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'ThugMale3';
+        goals[i].allow_vanilla = true;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'BumMale3';
+        goals[i].allow_vanilla = true;
         i++;
 
         map = "04_NYC_NSFHQ";
@@ -137,10 +145,28 @@ function CheckConfig()
         goals[i].physics = PHYS_None;
         i++;
 
+        map = "05_NYC_UnatcoMJ12Lab";
+        goals[i].map_name = map;
+        goals[i].actor_name = 'PaulDenton0';
+        goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'PaulDentonCarcass0';
+        goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DataLinkTrigger6';
+        goals[i].allow_vanilla = true;
+        goals[i].move_with_previous = true;
+        i++;
+
         map = "09_nyc_graveyard";
         goals[i].map_name = map;
         goals[i].actor_name = 'BreakableWall1';
         goals[i].physics = PHYS_None;
+        goals[i].allow_vanilla = true;
         i++;
 
         goals[i].map_name = map;
@@ -219,13 +245,12 @@ function CheckConfig()
         goals[i].actor_name = '';
         goals[i].group_radius = 0;
         i++;*/
-        //mission 4 the computers, should allow_vanilla, might need to take special care for Datacube0 and Datacube4, they already needed fixing anyways cause they were always in the same place
-        //mission 5 I can move Paul, Jaime, Alex
-        //mission 6 I can move the computer that stores the rom encoding, and opens the UC?
-        //mission 8 stanton dowd, harley filben, joe greene
-        //11 gunther with the computer, the fake mechanic
-        //12 tiffany?
-        //14 howard strong?
+        //mission 5 I can move Paul, Jaime, Alex... I can put PaulDenton0/PaulDentonCarcass0 in the nanotech lab, robot maintenance, or armory? probably can't put him in sight of any enemies
+        //mission 6 I can move the computer that stores the rom encoding, and opens the UC (nowhere good to put it though)?
+        //mission 8 stanton dowd near smuggler's back door past the basketball court? in the alley where sandra was?
+        //11 gunther with the computer to vault, WiB's room, kitchen, barracks, chapel... the fake mechanic near lucius, morpheus, aquarium
+        //12 tiffany? in the bathroom or in the truck?
+        //14 howard strong? 
         //15 ?
 
         i=0;
@@ -425,20 +450,32 @@ function CheckConfig()
         important_locations[i].rotation = rot(0, 16384, 0);
         i++;
 
-        map = "09_nyc_graveyard";
+        map = "05_NYC_UnatcoMJ12Lab";
         /*important_locations[i].map_name = map;
-        important_locations[i].location = vect(-1753.464600, -370.122009, -300);//''
+        important_locations[i].location = vect(-4088.201172, 807.195679, -100.860603);//robot maintenance
+        important_locations[i].rotation = rot(0, 0, 0);
         i++;*/
 
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-8548.773438, 1074.370850, -20.860909);//armory
+        important_locations[i].rotation = rot(0, 0, 0);
+        i++;
+
+        map = "09_nyc_graveyard";
         important_locations[i].map_name = map;
         important_locations[i].location = vect(-283.503448, -787.867920, -184);//'PathNode108' in the tunnels
         important_locations[i].rotation = rot(0, 0, -32768);
         i++;
 
-        /*important_locations[i].map_name = map;
-        important_locations[i].location = vect();//''
-        important_locations[i].rotation = rot();
-        i++;*/
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-766.879333, 501.505676, -88.109619);//'BioelectricCell0' in the grave
+        important_locations[i].rotation = rot(0, 0, -32768);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-1530, 845, -107);//'PathNode96' in the other tunnels
+        important_locations[i].rotation = rot(0, 0, -32768);
+        i++;
 
         map = "09_nyc_shipbelow";
         important_locations[i].map_name = map;
@@ -637,8 +674,15 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
 
     sp = ScriptedPawn(a);
     if( sp != None && sp.Orders == 'Patrolling' ) {
-        sp.Orders = 'Wandering';
+        //sp.Orders = 'Wandering';
+        sp.SetOrders('Wandering');
     }
+    /*if( sp != None && sp.Orders == 'Standing' ) {
+        sp.SetOrders('Standing', 'Start', false);
+        //sp.InitializeHomeBase();
+    }*/
+    sp.HomeLoc = sp.Location;
+    sp.HomeRot = vector(sp.Rotation);
 
     return true;
 }

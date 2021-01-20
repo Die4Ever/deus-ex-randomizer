@@ -86,6 +86,8 @@ function FirstEntry()
         case 3:
             Airfield_FirstEntry();
             break;
+        case 5:
+            Jailbreak_FirstEntry();
         case 6:
             HongKong_FirstEntry();
             break;
@@ -278,6 +280,20 @@ function Airfield_FirstEntry()
                 if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
             }
             AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
+            break;
+    }
+}
+
+function Jailbreak_FirstEntry()
+{
+    local PaulDenton p;
+
+    switch (dxr.localURL)
+    {
+        case "05_NYC_UNATCOMJ12LAB":
+            foreach AllActors(class'PaulDenton', p) {
+                p.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
+            }
             break;
     }
 }

@@ -88,7 +88,7 @@ function InitDefaults()
     removeinvisiblewalls = 0;
     enemiesrandomized = 25;
     enemyrespawn = 0;
-    infodevices = 0;
+    infodevices = 100;
     dancingpercent = 25;
     skills_disable_downgrades = 0;
     skills_reroll_missions = 0;

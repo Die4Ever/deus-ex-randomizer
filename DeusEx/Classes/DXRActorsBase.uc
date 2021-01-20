@@ -309,6 +309,7 @@ function vector GetRandomPosition(optional vector target, optional float mindist
         }
         i++;
     }
+    return target;
 }
 
 function vector GetCloserPosition(vector target, vector current, optional float maxdist)
