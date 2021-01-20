@@ -4,6 +4,129 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 // check a 100 foot radius around me for combat
 if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
 
+for v1.6 programatically modify conversations ===================
+
+class DataLinkPlay injects DataLinkPlay;
+
+function PlaySpeech( int soundID )
+{
+    log("PlaySpeech("$soundID$")");
+    Super.PlaySpeech( 1 );
+}
+
+function EEventAction SetupEventSpeech( ConEventSpeech event, out String nextLabel )
+{
+    log("SetupEventSpeech: "$event.conSpeech.speech);
+	event.conSpeech.speech = "Prod with the prod!";
+
+    return Super.SetupEventSpeech(event, nextLabel);
+}
+
+
+//=============================================================================
+// ConWindow
+//
+// Used for non-interactive conversations displayed in first-person
+// mode.  This type of conversation can only display spoken text,
+// choices are -not- allowed.  
+//=============================================================================
+
+class ConWindow extends DeusExBaseWindow;
+
+function DisplayText(string text, Actor speakingActor)
+{
+	if (winSpeech == None ) 
+		CreateSpeechWindow();
+
+	winSpeech.SetSpeech(text, speakingActor);
+}
+
+function AppendText(string text)
+{
+	if (winSpeech == None ) 
+		CreateSpeechWindow();
+
+	winSpeech.AppendSpeech(text);
+}
+
+//=============================================================================
+// ConWindowActive
+//
+// Used for third-person, interactive conversations with the PC involved.
+//=============================================================================
+class ConWindowActive extends ConWindow;
+
+// ----------------------------------------------------------------------
+// DisplayChoice()
+//
+// Displays a choice, but sets up the button a little differently than 
+// when displaying normal conversation text
+// ----------------------------------------------------------------------
+
+function DisplayChoice( ConChoice choice )
+{
+	local ConChoiceWindow newButton;
+
+	newButton = CreateConButton( HALIGN_Left, colConTextChoice, colConTextFocus );
+	newButton.SetText( "~ " $ choice.choiceText );
+	newButton.SetUserObject( choice );
+
+	// These next two calls handle highlighting of the choice
+	newButton.SetButtonTextures(,Texture'Solid', Texture'Solid', Texture'Solid');
+	newButton.SetButtonColors(,colConTextChoice, colConTextChoice, colConTextChoice);
+
+	// Add the button
+	AddButton( newButton );
+}
+
+// ----------------------------------------------------------------------
+// DisplaySkillChoice()
+//
+// Displays a Skilled choice, a choice that's only visible if the user
+// has a particular skill at a certain skill level
+// ----------------------------------------------------------------------
+
+function DisplaySkillChoice( ConChoice choice )
+{
+	local ConChoiceWindow newButton;
+
+	newButton = CreateConButton( HALIGN_Left, colConTextSkill, colConTextFocus );
+	newButton.SetText( 	"~  " $ choice.choiceText $ "  (" $ choice.SkillNeeded $ ":" $ choice.SkillLevelNeeded $ ")" );
+	newButton.SetUserObject( choice );
+
+	// Add the button
+	AddButton( newButton );
+}
+
+class ConWindowSpeech extends AlignWindow;
+
+function SetSpeech(String newSpeech, optional Actor speakingActor)
+{
+	if (newSpeech == "")
+	{
+		txtSpeech.SetText("");
+		txtSpeech.Show(False);
+	}
+	else
+	{
+		txtSpeech.SetText(newSpeech);
+
+		// Use a different color for the player's text
+		if ((speakingActor != None) && (DeusExPlayer(speakingActor) != None))
+			txtSpeech.SetTextColor(colConTextPlayer);
+		else	
+			txtSpeech.SetTextColor(colConTextNormal);
+
+		txtSpeech.Show(True);
+	}
+}
+
+function AppendSpeech(String newSpeech)
+{
+	txtSpeech.AppendText(CR() $ CR() $ newSpeech);
+}
+
+
 for v1.5 ========================
 
 else if (localURL == "10_PARIS_METRO")

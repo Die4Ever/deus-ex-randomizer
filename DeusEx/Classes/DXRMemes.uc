@@ -174,13 +174,13 @@ function RandomizeIntro()
     }
     dxr.Player.bHidden = true;
     SwapAll('Actor');
-    dxr.Player.bHidden = false;
     foreach AllActors(class'Actor', a)
     {
         if( a.bHidden ) continue;
         SetActorScale(a, float(rng(1500))/1000 + 0.3);
         a.Fatness = rng(50) + 105;
     }
+    dxr.Player.bHidden = false;
 
     foreach AllActors(class'Tree', t)
     {
@@ -380,7 +380,7 @@ function string _GetRandomActorClass()
     if ( r == i++ ) return "DXLogo";
     if ( r == i++ ) return "DXText";
     if ( r == i++ ) return "Earth";
-    if ( r == i++ ) return "EidosLogo";
+    //if ( r == i++ ) return "EidosLogo";//Warning: SpawnActor failed because class EidosLogo has bStatic or bNoDelete
     if ( r == i++ ) return "EMPGrenade";
     if ( r == i++ ) return "Fan1";
     if ( r == i++ ) return "Fan1Vertical";
