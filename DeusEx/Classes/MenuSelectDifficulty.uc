@@ -181,7 +181,7 @@ function NewGameSetup(float difficulty)
 
 defaultproperties
 {
-    num_rows=5
+    num_rows=6
     num_cols=2
     col_width_odd=160
     col_width_even=220
