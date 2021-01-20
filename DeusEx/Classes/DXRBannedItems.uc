@@ -1,5 +1,5 @@
 class DXRBannedItems extends DXRBase;
-
+//maybe this stuff should be globalconfig so it could be statically requested?
 var config string stick_with_the_prod_player_message;
 var config string stick_with_the_prod_bans[10];
 var config string stick_with_the_prod_allows[10];

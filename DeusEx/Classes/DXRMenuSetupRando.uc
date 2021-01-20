@@ -113,13 +113,6 @@ function BindControls(bool writing, optional string action)
     combatDifficulty = float(iDifficulty) / 100.0;
     id++;
 
-    labels[id] = "";
-    helptexts[id] = "What items are banned";
-    EnumOption(id, "No items banned", 0, writing, f.banneditems);
-    EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
-    EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
-    id++;
-
     labels[id] = "Ammo Drops %";
     helptexts[id] = "Make ammo more scarce.";
     Slider(id, f.ammo, 0, 100, writing);

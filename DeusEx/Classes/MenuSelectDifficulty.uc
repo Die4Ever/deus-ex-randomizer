@@ -23,18 +23,32 @@ function BindControls(bool writing, optional string action)
     EnumOption(id, "Horde Mode (Beta)", 2, writing, f.gamemode);
     //EnumOption(id, "Kill Bob Page (Alpha)", 3, writing, f.gamemode);
     //EnumOption(id, "How About Some Soy Food?", 6, writing, f.gamemode);
-    if( EnumOption(id, "Stick With the Prod", 4, writing, f.gamemode) ) {
-        //also set the banneditems setting to 1
-        f.banneditems = 1;
-    }
-    if( EnumOption(id, "Stick With the Prod Plus", 5, writing, f.gamemode) ) {
-        f.banneditems = 2;
-    }
     //EnumOption(id, "Max Rando", 7, writing, f.gamemode);
     id++;
 
     labels[id] = "Difficulty";
     helptexts[id] = "Difficulty determines the default settings for the randomizer.";
+    if( (InStr(f.VersionString(), "Alpha")>=0 || InStr(f.VersionString(), "Beta")>=0) && EnumOption(id, "Super Easy QA", 1, writing) ) {
+        difficulty=0;
+        f.doorsmode = f.keyonlydoors + f.doormutuallyinclusive;
+        f.doorsdestructible = 100;
+        f.doorspickable = 100;
+        f.deviceshackable = 100;
+        f.passwordsrandomized = 100;
+        f.infodevices = 100;
+        f.enemiesrandomized = 20;
+        f.skills_disable_downgrades = 0;
+        f.skills_reroll_missions = 0;
+        f.skills_independent_levels = 0;
+        f.minskill = 0;
+        f.maxskill = 1;
+        f.ammo = 100;
+        f.medkits = 100;
+        f.biocells = f.medkits;
+        f.lockpicks = f.medkits;
+        f.multitools = f.medkits;
+        f.speedlevel = 4;
+    }
     if( EnumOption(id, "Easy", 1, writing) ) {
         difficulty=1;
         f.doorsmode = f.keyonlydoors + f.doormutuallyinclusive;
@@ -126,6 +140,14 @@ function BindControls(bool writing, optional string action)
     EnumOption(id, "Every Entry", 2, writing, f.autosave);
     EnumOption(id, "First Entry", 1, writing, f.autosave);
     EnumOption(id, "Off", 0, writing, f.autosave);
+    id++;
+
+    labels[id] = "";
+    helptexts[id] = "What items are banned";
+    EnumOption(id, "No items banned", 0, writing, f.banneditems);
+    EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
+    EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
+    //EnumOption(id, "Don't Give Me The GEP Gun", 3, writing, f.banneditems);//maybe I can request these from a function like class'DXRBannedItems'.static.GetBannedItemsDescription()
     id++;
 
     labels[id] = "Seed";

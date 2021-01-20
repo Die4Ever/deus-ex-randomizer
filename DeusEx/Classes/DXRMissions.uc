@@ -46,6 +46,14 @@ function CheckConfig()
         i++;
 
         remove_actors[i].map_name = "01_NYC_unatcoisland";
+        remove_actors[i].actor_name = 'DataLinkTrigger0';//find Paul
+        i++;
+
+        remove_actors[i].map_name = "01_NYC_unatcoisland";
+        remove_actors[i].actor_name = 'DataLinkTrigger2';//nsf everywhere? doesn't trigger unless you talk to paul
+        i++;
+
+        remove_actors[i].map_name = "01_NYC_unatcoisland";
         remove_actors[i].actor_name = 'DataLinkTrigger8';//the "don't leave without talking to Paul" datalink
         i++;
 
@@ -550,6 +558,10 @@ function FirstEntry()
 
     Super.FirstEntry();
     SetSeed( "DXRMissions" );
+
+    if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
+        dxr.player.energy = rngf()*75+25;
+    }
 
     for(i=0; i<ArrayCount(important_locations); i++) {
         if( dxr.localURL != important_locations[i].map_name ) continue;
