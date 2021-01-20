@@ -28,6 +28,7 @@ function CheckConfig()
 
 function SwapAll(name classname)
 {
+    local Actor temp[4096];
     local Actor a, b;
     local int num, i, slot;
 
@@ -36,26 +37,13 @@ function SwapAll(name classname)
     foreach AllActors(class'Actor', a )
     {
         if( SkipActor(a, classname) ) continue;
-        num++;
+        temp[num++] = a;
     }
 
-    foreach AllActors(class'Actor', a )
-    {
-        if( SkipActor(a, classname) ) continue;
-
-        i=0;
+    for(i=0; i<num; i++) {
         slot=rng(num-1);// -1 because we skip ourself
-        foreach AllActors(class'Actor', b )
-        {
-            if( a == b ) continue;
-            if( SkipActor(b, classname) ) continue;
-
-            if(i==slot) {
-                Swap(a, b);
-                break;
-            }
-            i++;
-        }
+        if(slot >= i) slot++;
+        Swap(temp[i], temp[slot]);
     }
 }
 
@@ -286,6 +274,7 @@ static function SetActorScale(Actor a, float scale)
 
 function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist)
 {
+    local PathNode temp[1024];
     local PathNode p;
     local int i, num, slot;
     local float dist;
@@ -297,19 +286,11 @@ function vector GetRandomPosition(optional vector target, optional float mindist
         dist = VSize(p.Location-target);
         if( dist < mindist ) continue;
         if( dist > maxdist ) continue;
-        num++;
+        temp[num++] = p;
     }
+    if( num == 0 ) return target;
     slot = rng(num);
-    foreach AllActors(class'PathNode', p) {
-        dist = VSize(p.Location-target);
-        if( dist < mindist ) continue;
-        if( dist > maxdist ) continue;
-        if(i==slot) {
-            return p.Location;
-        }
-        i++;
-    }
-    return target;
+    return temp[num].Location;
 }
 
 function vector GetCloserPosition(vector target, vector current, optional float maxdist)
