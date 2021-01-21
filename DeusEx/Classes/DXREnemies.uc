@@ -428,12 +428,12 @@ function int RunTests()
     for(i=0; i < ArrayCount(randomweapons); i++ ) {
         total += randomweapons[i].chance;
     }
-    results += test( total <= 100, "config randomweapons chances, check total "$total);
+    results += testint( total, 100, "config randomweapons chances, check total "$total);
     total=0;
     for(i=0; i < ArrayCount(randommelees); i++ ) {
         total += randommelees[i].chance;
     }
-    results += test( total <= 100, "config randommelees chances, check total "$total);
+    results += testint( total, 100, "config randommelees chances, check total "$total);
 
     return results;
 }

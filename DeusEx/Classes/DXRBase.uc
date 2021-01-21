@@ -96,7 +96,9 @@ function string RandoLevelValues(out float LevelValues[4], float DefaultLevelVal
         else if( i>0 && DefaultLevelValues[i-1] > DefaultLevelValues[i] && LevelValues[i] > min_val ) LevelValues[i] = min_val;
         min_val = LevelValues[i];
         if( i>0 ) s = s $ ", ";
-        s = s $ int(LevelValues[i]/DefaultLevelValues[i]*100.0) $ "%";
+
+        if( LevelValues[i] == DefaultLevelValues[i] ) s = s $ "100%";
+        else s = s $ int(LevelValues[i]/DefaultLevelValues[i]*100.0) $ "%";
     }
     s = s $ ")";
     return s;

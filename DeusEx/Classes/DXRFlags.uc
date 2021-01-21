@@ -14,6 +14,7 @@ var int autosave;//0=off, 1=first time entering level, 2=every loading screen
 var int removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices;
 var int dancingpercent;
 var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
+var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
 
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
@@ -93,6 +94,9 @@ function InitDefaults()
     skills_disable_downgrades = 0;
     skills_reroll_missions = 0;
     skills_independent_levels = 0;
+    startinglocations = 100;
+    goals = 100;
+    equipment = 1;
 }
 
 function CheckConfig()
@@ -155,6 +159,11 @@ function LoadFlags()
     if( stored_version >= VersionToInt(1,4,7) ) {
         banneditems = f.GetInt('Rando_banneditems');
     }
+    if( stored_version >= VersionToInt(1,4,9) ) {
+        startinglocations = f.GetInt('Rando_startinglocations');
+        goals = f.GetInt('Rando_goals');
+        equipment = f.GetInt('Rando_equipment');
+    }
 
     if(stored_version < flagsversion ) {
         l("upgraded flags from "$stored_version$" to "$flagsversion);
@@ -204,6 +213,10 @@ function SaveFlags()
     f.SetInt('Rando_skills_reroll_missions', skills_reroll_missions,, 999);
     f.SetInt('Rando_skills_independent_levels', skills_independent_levels,, 999);
 
+    f.SetInt('Rando_startinglocations', startinglocations,, 999);
+    f.SetInt('Rando_goals', goals,, 999);
+    f.SetInt('Rando_equipment', equipment,, 999);
+
     LogFlags("SaveFlags");
 }
 
@@ -220,7 +233,7 @@ function string StringifyFlags()
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
         $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", enemyrespawn: "$enemyrespawn$", infodevices: "$infodevices
-        $ ", dancingpercent: "$dancingpercent;
+        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent;
 }
 
 function int FlagsHash()
@@ -254,12 +267,12 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 4, 8);
+    return VersionToInt(1, 4, 9);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 9) $ " Alpha";
+    return VersionToString(1, 4, 9) $ " Beta";
 }
 
 function MaxRando()

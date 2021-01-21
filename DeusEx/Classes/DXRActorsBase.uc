@@ -47,7 +47,7 @@ function SwapAll(name classname)
     }
 }
 
-function vector AbsEach(vector v)
+static function vector AbsEach(vector v)
 {// not a real thing in math? but it's convenient
     v.X = abs(v.X);
     v.Y = abs(v.Y);
@@ -55,7 +55,7 @@ function vector AbsEach(vector v)
     return v;
 }
 
-function bool AnyGreater(vector a, vector b)
+static function bool AnyGreater(vector a, vector b)
 {
     return a.X > b.X || a.Y > b.Y || a.Z > b.Z;
 }
@@ -67,18 +67,18 @@ function bool CarriedItem(Actor a)
     return a.Owner != None && a.Owner.IsA('Pawn');
 }
 
-function bool IsHuman(Actor a)
+static function bool IsHuman(Actor a)
 {
     return HumanMilitary(a) != None || HumanThug(a) != None || HumanCivilian(a) != None;
 }
 
-function bool IsCritter(Actor a)
+static function bool IsCritter(Actor a)
 {
     if( Animal(a) == None ) return false;
     return Doberman(a) == None && Gray(a) == None && Greasel(a) == None && Karkian(a) == None;
 }
 
-function bool HasItem(Pawn p, class c)
+static function bool HasItem(Pawn p, class c)
 {
     local ScriptedPawn sp;
     local int i;
@@ -96,7 +96,7 @@ function bool HasItem(Pawn p, class c)
     return p.FindInventoryType(c) != None;
 }
 
-function bool HasMeleeWeapon(Pawn p)
+static function bool HasMeleeWeapon(Pawn p)
 {
     return HasItem(p, class'WeaponBaton')
         || HasItem(p, class'WeaponCombatKnife')
@@ -105,7 +105,7 @@ function bool HasMeleeWeapon(Pawn p)
         || HasItem(p, class'WeaponNanoSword');
 }
 
-function bool IsMeleeWeapon(Inventory item)
+static function bool IsMeleeWeapon(Inventory item)
 {
     return item.IsA('WeaponBaton')
         || item.IsA('WeaponCombatKnife')

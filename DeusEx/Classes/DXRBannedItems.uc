@@ -111,3 +111,37 @@ function bool ban(DeusExPlayer player, Inventory item)
         }
     }
 }
+
+function AddStartingEquipment(Pawn p)
+{
+    local class<DeusExWeapon> wclass;
+    local Ammo a;
+    local DeusExWeapon w;
+    local int i;
+
+    if( dxr.flags.banneditems == 1 || dxr.flags.banneditems == 2 ) {
+        wclass = class'WeaponProd';
+        if( class'DXRActorsBase'.static.HasItem(p, wclass) )
+            return;
+
+        w = p.Spawn(wclass, p);
+        w.GiveTo(p);
+        w.SetBase(p);
+
+        if( w.AmmoName != None ) {
+            a = p.spawn(w.AmmoName);
+            w.AmmoType = a;
+            w.AmmoType.InitialState='Idle2';
+            w.AmmoType.GiveTo(p);
+            w.AmmoType.SetBase(p);
+        }
+
+        for(i=0; i < ArrayCount(w.AmmoNames); i++) {
+            if(rng(3) == 0 && w.AmmoNames[i] != None) {
+                a = p.spawn(w.AmmoNames[i]);
+                a.GiveTo(p);
+                a.SetBase(p);
+            }
+        }
+    }
+}

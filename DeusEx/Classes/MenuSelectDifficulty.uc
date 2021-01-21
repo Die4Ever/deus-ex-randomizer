@@ -48,6 +48,9 @@ function BindControls(bool writing, optional string action)
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
         f.speedlevel = 4;
+        f.startinglocations = 100;
+        f.goals = 100;
+        f.equipment = 5;
     }
     if( EnumOption(id, "Easy", 1, writing) ) {
         difficulty=1;
@@ -69,6 +72,9 @@ function BindControls(bool writing, optional string action)
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
         f.speedlevel = 2;
+        f.startinglocations = 100;
+        f.goals = 100;
+        f.equipment = 2;
     }
     if( EnumOption(id, "Normal", 0, writing) ) {
         difficulty=1.25;
@@ -90,6 +96,9 @@ function BindControls(bool writing, optional string action)
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
         f.speedlevel = 1;
+        f.startinglocations = 100;
+        f.goals = 100;
+        f.equipment = 1;
     }
     if( EnumOption(id, "Hard", 2, writing) ) {
         difficulty=1.5;
@@ -111,6 +120,9 @@ function BindControls(bool writing, optional string action)
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
         f.speedlevel = 1;
+        f.startinglocations = 100;
+        f.goals = 100;
+        f.equipment = 1;
     }
     if( EnumOption(id, "Extreme", 3, writing) ) {
         difficulty=2;
@@ -132,6 +144,9 @@ function BindControls(bool writing, optional string action)
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
         f.speedlevel = 1;
+        f.startinglocations = 100;
+        f.goals = 100;
+        f.equipment = 1;
     }
     id++;
 
