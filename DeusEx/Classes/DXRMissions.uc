@@ -83,6 +83,10 @@ function CheckConfig()
             important_locations[i].is_goal_position = true;
             important_locations[i].rotation = rot(0,0,0);
         }
+        for(i=0; i < ArrayCount(randomitems); i++ ) {
+            randomitems[i].type = "";
+            randomitems[i].chance = 0;
+        }
 
         i=0;
 
@@ -255,14 +259,70 @@ function CheckConfig()
         goals[i].allow_vanilla = true;
         i++;
 
-        /*goals[i].map_name = map;
-        goals[i].actor_name = '';
-        goals[i].group_radius = 0;
+        map = "11_paris_cathedral";
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ComputerPersonal0';//
+        goals[i].allow_vanilla = true;
+        goals[i].physics = PHYS_None;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'GuntherHermann0';//
+        goals[i].move_with_previous = true;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'OrdersTrigger0';//
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'GoalCompleteTrigger0';//
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'SkillAwardTrigger3';//
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'FlagTrigger2';//
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DataLinkTrigger8';//
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
+        i++;
+
+        /*map = "11_paris_everett";
+        goals[i].map_name = map;
+        goals[i].actor_name = 'Mechanic0';//fake mechanic, Ray, talking to him early skips all the everett dialog
+        goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'OrdersTrigger3';//
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
         i++;*/
-        //mission 5 I can move Paul, Jaime, Alex... I can put PaulDenton0/PaulDentonCarcass0 in the nanotech lab, robot maintenance, or armory? probably can't put him in sight of any enemies
+
+        //mission 5 I can move Alex
         //mission 6 I can move the computer that stores the rom encoding, and opens the UC (nowhere good to put it though)?
         //mission 8 stanton dowd near smuggler's back door past the basketball court? in the alley where sandra was?
-        //11 gunther with the computer to vault, WiB's room, kitchen, barracks, chapel... the fake mechanic near lucius, morpheus, aquarium
+        //11 everett? the fake mechanic near lucius, morpheus, aquarium
         //12 tiffany? in the bathroom or in the truck?
         //14 howard strong? 
         //15 ?
@@ -537,10 +597,30 @@ function CheckConfig()
         important_locations[i].rotation = rot(3800, 16384, 0);
         i++;
 
-        for(i=0; i < ArrayCount(randomitems); i++ ) {
-            randomitems[i].type = "";
-            randomitems[i].chance = 0;
-        }
+        map = "11_paris_cathedral";
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(2990.853516, 30.971684, -392.498993);//barracks
+        important_locations[i].rotation = rot(0, 16384, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(1860.275635, -9.666374, -371.286804);//chapel
+        important_locations[i].rotation = rot(0, 16384, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(1511.325317, -3204.465088, -680.498413);//kitchen
+        important_locations[i].rotation = rot(0, 32768, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(3480.141602, -3180.397949, -704.496704);//vault
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(3527.593750, -1992.829834, -100.499969);//WiB room
+        important_locations[i].rotation = rot(0, -16384, 0);
+        i++;
 
         i=0;
 
@@ -613,9 +693,9 @@ function FirstEntry()
 {
     local Actor a;
     local int i, k, start, slot, tries, num_ma, num_ps, num_gl;
+    local bool success;
     local vector loc, diff;
     local Actor movable_actors[32];
-    //local float movable_actors_radius[32];
     local Goal local_goals[32];
     local ImportantLocation player_starts[32];
     local ImportantLocation goal_locations[32];
@@ -671,6 +751,7 @@ function FirstEntry()
     }
 
     if( dxr.flags.startinglocations > 0 && num_ps > 0 ) {
+        l("randomizing starting location, num_ps == "$num_ps);
         start = rng(num_ps);
         dxr.Player.SetLocation(player_starts[start].location);
         dxr.Player.SetRotation(player_starts[start].rotation);
@@ -686,6 +767,8 @@ function FirstEntry()
     }
 
     if( dxr.flags.goals == 0 ) return;
+
+    l("randomizing goals, num_ma=="$num_ma$", num_gl=="$num_gl);
 
     for(i=0; i<num_ma && num_gl>0; i++) {
         if( local_goals[i].move_with_previous == true ) continue;
@@ -713,13 +796,16 @@ function FirstEntry()
             foreach RadiusActors(class'Actor', a, local_goals[i].group_radius, loc ) {
                 if( NavigationPoint(a) != None ) continue;
                 if( Light(a) != None ) continue;
-                MoveActor(a, a.location + diff, a.rotation, local_goals[i].physics);
+                success = MoveActor(a, a.location + diff, a.rotation, local_goals[i].physics);
+                if( success == false ) MoveActor(a, goal_locations[slot].location, a.rotation, local_goals[i].physics);
             }
         }
 
         for(k=i+1; k<num_ma; k++) {
             if( local_goals[k].move_with_previous == false ) break;
-            MoveActor(movable_actors[k], movable_actors[k].location + diff, goal_locations[slot].rotation, local_goals[k].physics);
+            success = false;
+            if( local_goals[k].group_radius ~= 0.0 ) success = MoveActor(movable_actors[k], movable_actors[k].location + diff, goal_locations[slot].rotation, local_goals[k].physics);
+            if( success == false ) MoveActor(movable_actors[k], goal_locations[slot].location, goal_locations[slot].rotation, local_goals[k].physics);
         }
 
         goal_locations[slot] = goal_locations[num_gl-1];
@@ -752,16 +838,11 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     if(p == PHYS_None) a.bCollideWorld = oldbCollideWorld;
 
     sp = ScriptedPawn(a);
-    if( sp != None && sp.Orders == 'Patrolling' ) {
-        //sp.Orders = 'Wandering';
-        sp.SetOrders('Wandering');
+    if( sp != None ) {
+        if( sp.Orders == 'Patrolling' ) sp.SetOrders('Wandering');
+        sp.HomeLoc = sp.Location;
+        sp.HomeRot = vector(sp.Rotation);
     }
-    /*if( sp != None && sp.Orders == 'Standing' ) {
-        sp.SetOrders('Standing', 'Start', false);
-        //sp.InitializeHomeBase();
-    }*/
-    sp.HomeLoc = sp.Location;
-    sp.HomeRot = vector(sp.Rotation);
 
     return true;
 }
