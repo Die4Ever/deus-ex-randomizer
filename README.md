@@ -8,7 +8,9 @@ Download the `DeusEx.u` file from the releases page here https://github.com/Die4
 
 Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`)
 
-### Currently in v1.4.8, DXRando randomizes
+### Currently in v1.4.9, DXRando randomizes
+* locations of goals, NPCs, and some starting locations
+* starting equipment, bioelectric energy, and credits
 * adding and changing characters, giving them random names and making some of them dance
 * changing the locations of items/boxes/NanoKeys around the map
 * passwords and passcodes (they get updated in your Goals/Notes screen)
@@ -36,10 +38,10 @@ There are also settings for
 * autosave
 
 #### When you click New Game, you will see this settings screen:
-![options](https://i.imgur.com/XYOCRo3.png)
+![options](https://i.imgur.com/XjYEPPm.png)
 
 #### If you click Next then it will use default settings based on your difficulty choice. But if you click Advanced then you will see these settings:
-![advanced options](https://i.imgur.com/cNxR0UX.png)
+![advanced options](https://i.imgur.com/Jt1g4Ql.png)
 
 For the randomized passwords, you can copy-paste from the Goals/Notes screen.
 
