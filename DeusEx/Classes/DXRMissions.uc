@@ -10,15 +10,6 @@ struct RemoveActor {
 };
 var config RemoveActor remove_actors[32];
 
-struct ImportantLocation {
-    var string map_name;
-    var vector location;
-    var rotator rotation;
-    var bool is_player_start;
-    var bool is_goal_position;
-};
-var config ImportantLocation important_locations[100];
-
 struct Goal {
     var string map_name;
     var name actor_name;
@@ -28,7 +19,16 @@ struct Goal {
     var bool allow_vanilla;
     //var bool is_movable_actor;
 };
-var config Goal goals[64];
+var config Goal goals[100];
+
+struct ImportantLocation {
+    var string map_name;
+    var vector location;
+    var rotator rotation;
+    var bool is_player_start;
+    var bool is_goal_position;
+};
+var config ImportantLocation important_locations[128];
 
 var config bool allow_vanilla;
 
@@ -400,6 +400,25 @@ function CheckConfig()
         goals[i].group_radius = 1;
         i++;
 
+        map = "12_vandenberg_cmd";
+        goals[i].map_name = map;
+        goals[i].actor_name = 'Keypad0';//
+        goals[i].allow_vanilla = true;
+        goals[i].physics = PHYS_None;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'Keypad1';//
+        goals[i].allow_vanilla = true;
+        goals[i].physics = PHYS_None;
+        i++;
+
+        map = "14_oceanlab_silo";
+        goals[i].map_name = map;
+        goals[i].actor_name = 'HowardStrong0';//
+        goals[i].allow_vanilla = true;
+        i++;
+
         /*map = "11_paris_everett";
         goals[i].map_name = map;
         goals[i].actor_name = 'Mechanic0';//fake mechanic, Ray, talking to him early skips all the everett dialog
@@ -414,8 +433,7 @@ function CheckConfig()
 
         //mission 6 I can move the computer that opens the UC (nowhere good to put it though)?
         //11 everett? the fake mechanic near lucius, morpheus, aquarium
-        //12 maybe the 2 keypads in vandenberg cmd? tiffany? in the bathroom or in the truck?
-        //14 howard strong? 
+        //12 tiffany? in the bathroom or in the truck?
         //15 ?
 
         i=0;
@@ -767,6 +785,65 @@ function CheckConfig()
         important_locations[i].map_name = map;
         important_locations[i].location = vect(3527.593750, -1992.829834, -100.499969);//WiB room
         important_locations[i].rotation = rot(0, -16384, 0);
+        i++;
+
+        map = "12_vandenberg_cmd";
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(1895.174561, 1405.394287, -1656.404175);//hallway across from computer door
+        important_locations[i].rotation = rot(0, 32768, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(444.509338, 1503.229126, -1415.007568);//near elevator
+        important_locations[i].rotation = rot(0, -16384, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-288.769806, 1103.257813, -1984.334717);//near pipes
+        important_locations[i].rotation = rot(0, -16384, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-1276.664063, 1168.599854, -1685.868042);//globe
+        important_locations[i].rotation = rot(0, 16384, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(6750.350586, 7763.461426, -3092.699951);//exit helicopter
+        important_locations[i].rotation = rot(0, 0, 0);
+        important_locations[i].is_goal_position = false;
+        important_locations[i].is_player_start = true;
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-214.927200, 888.034485, -2043.409302);//near pipes
+        important_locations[i].rotation = rot(0, 0, 0);
+        important_locations[i].is_goal_position = false;
+        important_locations[i].is_player_start = true;
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-1879.828003, 1820.156006, -1777.113892);//globe
+        important_locations[i].rotation = rot(0, 0, 0);
+        important_locations[i].is_goal_position = false;
+        important_locations[i].is_player_start = true;
+        i++;
+
+        map = "14_oceanlab_silo";
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-264.838135, -6829.463379, 55.600639);//3rd floor
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-259.846710, -6848.406250, 326.598969);//4th floor
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-271.341187, -6832.150391, 535.596741);//5th floor
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-266.569397, -6868.054199, 775.592590);//6th floor
         i++;
 
         i=0;
