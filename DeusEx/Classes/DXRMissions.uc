@@ -180,6 +180,99 @@ function CheckConfig()
         goals[i].move_with_previous = true;
         i++;
 
+        map = "05_NYC_UnatcoHQ";
+        goals[i].map_name = map;
+        goals[i].actor_name = 'AlexJacobson0';
+        goals[i].allow_vanilla = true;
+        i++;
+
+        map = "06_hongkong_mj12lab";
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ComputerPersonal0';
+        goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DataLinkTrigger0';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DataLinkTrigger3';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DataLinkTrigger4';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DataLinkTrigger5';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DataLinkTrigger6';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DataLinkTrigger8';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'FlagTrigger0';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'FlagTrigger1';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'GoalCompleteTrigger0';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'SkillAwardTrigger10';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ComputerPersonal1';
+        goals[i].allow_vanilla = true;
+        i++;
+
+        /*map = "08_nyc_street";
+        goals[i].map_name = map;
+        goals[i].actor_name = 'StantonDowd0';
+        goals[i].allow_vanilla = true;
+        i++;*/
+
         map = "09_nyc_graveyard";
         goals[i].map_name = map;
         goals[i].actor_name = 'BreakableWall1';
@@ -319,11 +412,9 @@ function CheckConfig()
         goals[i].physics = PHYS_None;
         i++;*/
 
-        //mission 5 I can move Alex
-        //mission 6 I can move the computer that stores the rom encoding, and opens the UC (nowhere good to put it though)?
-        //mission 8 stanton dowd near smuggler's back door past the basketball court? in the alley where sandra was?
+        //mission 6 I can move the computer that opens the UC (nowhere good to put it though)?
         //11 everett? the fake mechanic near lucius, morpheus, aquarium
-        //12 tiffany? in the bathroom or in the truck?
+        //12 maybe the 2 keypads in vandenberg cmd? tiffany? in the bathroom or in the truck?
         //14 howard strong? 
         //15 ?
 
@@ -534,6 +625,62 @@ function CheckConfig()
         important_locations[i].location = vect(-8548.773438, 1074.370850, -20.860909);//armory
         important_locations[i].rotation = rot(0, 0, 0);
         i++;
+
+        map = "05_NYC_UnatcoHQ";
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-2478.156738, -1123.645874, -16.399887);//jail
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(121.921074, 287.711243, 39.599487);//bathroom
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(261.019775, -403.939575, 287.600586);//manderley's bathroom
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(718.820068, 1411.137451, 287.598999);//vending machines
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-666.268066, -460.813965, 463.598083);//office
+        i++;
+
+        map = "06_hongkong_mj12lab";
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-140.163544, 1705.130127, -583.495483);//barracks
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-1273.699951, 803.588745, -792.499512);//radioactive area
+        important_locations[i].rotation = rot(0, 16384, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-1712.699951, -809.700012, -744.500610);//labs
+        important_locations[i].rotation = rot(0, 16384, 0);
+        i++;
+
+        /*map = "08_nyc_street";
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(2850.863525, -873.754883, -720.404785);//smuggler front door
+        important_locations[i].rotation = rot(0, 32768, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(2608.952881, -2765.534912, -448.403107);//basketball court
+        important_locations[i].rotation = rot(0, 32768, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(3756.613525, -4264.618652, -528.401306);//smuggler back door
+        important_locations[i].rotation = rot(0, 16384, 0);
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-2372.936035, -568.257813, -464.395020);//alley
+        i++;*/
 
         map = "09_nyc_graveyard";
         important_locations[i].map_name = map;
