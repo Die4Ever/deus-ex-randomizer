@@ -48,7 +48,7 @@ function CheckConfig()
 
         i=0;
         remove_actors[i].map_name = "01_NYC_unatcoisland";
-        remove_actors[i].actor_name = 'PaulDenton0';//because he gives you EZ mode weapons
+        remove_actors[i].actor_name = 'OrdersTrigger2';//the order that makes Paul run to you
         i++;
 
         remove_actors[i].map_name = "01_NYC_unatcoisland";
@@ -63,13 +63,9 @@ function CheckConfig()
         remove_actors[i].actor_name = 'DataLinkTrigger8';//the "don't leave without talking to Paul" datalink
         i++;
 
-        remove_actors[i].map_name = "02_nyc_batterypark";
-        remove_actors[i].actor_name = 'AnnaNavarre0';//because she chases you down
-        i++;
-
-        /*remove_actors[i].map_name = "09_NYC_GRAVEYARD";
+        remove_actors[i].map_name = "09_NYC_GRAVEYARD";
         remove_actors[i].actor_name = 'Barrel0';//barrel next to the transmitter thing, idk what it does but it explodes when I move it
-        i++;*/
+        i++;
 
         for(i=0; i<ArrayCount(goals); i++) {
             goals[i].map_name = "";
@@ -945,6 +941,7 @@ function CheckConfig()
 function FirstEntry()
 {
     local Actor a;
+    local AnnaNavarre anna;
     local int i, k, start, slot, tries, num_ma, num_ps, num_gl;
     local bool success;
     local vector loc, diff;
@@ -956,7 +953,13 @@ function FirstEntry()
     Super.FirstEntry();
 
     if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
+        dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
         RandoStartingEquipment(dxr.player);
+    }
+    if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
+        foreach AllActors(class'AnnaNavarre', anna) {
+            anna.SetOrders('Standing');
+        }
     }
 
     SetSeed( "DXRMissions" );
