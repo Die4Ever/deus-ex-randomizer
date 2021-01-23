@@ -809,6 +809,13 @@ function CheckConfig()
         i++;
 
         important_locations[i].map_name = map;
+        important_locations[i].location = vect(657.233215, 2501.673096, -908.798096);//vanilla start
+        important_locations[i].rotation = rot(0, -16384, 0);
+        important_locations[i].is_goal_position = false;
+        important_locations[i].is_player_start = true;
+        i++;
+
+        important_locations[i].map_name = map;
         important_locations[i].location = vect(6750.350586, 7763.461426, -3092.699951);//exit helicopter
         important_locations[i].rotation = rot(0, 0, 0);
         important_locations[i].is_goal_position = false;
@@ -844,6 +851,28 @@ function CheckConfig()
 
         important_locations[i].map_name = map;
         important_locations[i].location = vect(-266.569397, -6868.054199, 775.592590);//6th floor
+        i++;
+
+        map = "15_area51_bunker";
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-1778.574707, 1741.028320, -213.732849);//vanilla start
+        important_locations[i].rotation = rot(0, -12416, 0);
+        important_locations[i].is_goal_position = false;
+        important_locations[i].is_player_start = true;
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-493.825836, 3099.697510, -512.897827);//crashed van
+        important_locations[i].rotation = rot(0, 0, 0);
+        important_locations[i].is_goal_position = false;
+        important_locations[i].is_player_start = true;
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(1137.405762, -2744.735107, -135.899963);//warehouse? MechanicCarcass
+        important_locations[i].rotation = rot(0, 0, 0);
+        important_locations[i].is_goal_position = false;
+        important_locations[i].is_player_start = true;
         i++;
 
         i=0;
