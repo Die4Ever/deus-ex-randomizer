@@ -1,9 +1,5 @@
 class DXRMissions extends DXRActorsBase;
 
-//list of actors to remove
-//list of starting positions
-//list of goals to move, with a minimum distance from starting postion? and a radius of triggers to pull with it? list of positions they can be placed in?
-
 struct RemoveActor {
     var string map_name;
     var name actor_name;
@@ -15,9 +11,8 @@ struct Goal {
     var name actor_name;
     var float group_radius;
     var EPhysics physics;
-    var bool move_with_previous;//for chaining things together?
+    var bool move_with_previous;//for chaining things together
     var bool allow_vanilla;
-    //var bool is_movable_actor;
 };
 var config Goal goals[100];
 
@@ -56,10 +51,6 @@ function CheckConfig()
         i++;
 
         remove_actors[i].map_name = "01_NYC_unatcoisland";
-        remove_actors[i].actor_name = 'DataLinkTrigger2';//nsf everywhere? doesn't trigger unless you talk to paul
-        i++;
-
-        remove_actors[i].map_name = "01_NYC_unatcoisland";
         remove_actors[i].actor_name = 'DataLinkTrigger8';//the "don't leave without talking to Paul" datalink
         i++;
 
@@ -75,6 +66,7 @@ function CheckConfig()
             goals[i].allow_vanilla = false;
         }
         for(i=0; i<ArrayCount(important_locations); i++) {
+            important_locations[i].map_name = "";
             important_locations[i].is_player_start = false;
             important_locations[i].is_goal_position = true;
             important_locations[i].rotation = rot(0,0,0);
@@ -139,7 +131,7 @@ function CheckConfig()
 
         map = "03_nyc_airfield";
         goals[i].map_name = map;
-        goals[i].actor_name = 'Terrorist13';//need to make sure to get rid of his patrol orders
+        goals[i].actor_name = 'Terrorist13';
         goals[i].allow_vanilla = true;
         i++;
 
@@ -585,10 +577,6 @@ function CheckConfig()
         important_locations[i].location = vect(941.941895, 283.418152, 15.090023);//'PathNode81' big hanger door
         i++;
 
-        /*important_locations[i].map_name = map;
-        important_locations[i].location = vect(-2687.128662,2320.010986,63.774998);//'Terrorist13'
-        i++;*/
-
         map = "03_NYC_BrooklynBridgeStation";
         important_locations[i].map_name = map;
         important_locations[i].location = vect(975.220337,1208.224854,111.775002);//'ThugMale13'
@@ -654,11 +642,6 @@ function CheckConfig()
         i++;
 
         map = "05_NYC_UnatcoMJ12Lab";
-        /*important_locations[i].map_name = map;
-        important_locations[i].location = vect(-4088.201172, 807.195679, -100.860603);//robot maintenance
-        important_locations[i].rotation = rot(0, 0, 0);
-        i++;*/
-
         important_locations[i].map_name = map;
         important_locations[i].location = vect(-8548.773438, 1074.370850, -20.860909);//armory
         important_locations[i].rotation = rot(0, 0, 0);
@@ -967,6 +950,7 @@ function FirstEntry()
     local Actor a;
     local AnnaNavarre anna;
     local int i, k, start, slot, tries, num_ma, num_ps, num_gl;
+    local float vanilla_distance;
     local bool success;
     local vector loc, diff;
     local Actor movable_actors[32];
@@ -975,6 +959,8 @@ function FirstEntry()
     local ImportantLocation goal_locations[32];
 
     Super.FirstEntry();
+
+    vanilla_distance = 16 * 20;// 20 feet
 
     if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
@@ -1043,7 +1029,7 @@ function FirstEntry()
 
         for(i=0; i<num_gl; i++) {
             diff = player_starts[start].location - goal_locations[i].location;
-            if( VSize(diff) < 16*20 ) {//20 feet
+            if( VSize(diff) < vanilla_distance ) {
                 l("player starting at ("$player_starts[start].location$"), removing location ("$goal_locations[i].location$")");
                 goal_locations[i] = goal_locations[num_gl-1];
                 num_gl--;
@@ -1061,9 +1047,9 @@ function FirstEntry()
 
         diff = vect(9999,9999,9999);
         if( start >= 0 ) diff = player_starts[start].location - movable_actors[i].location;
-        if( VSize(diff) > 16*20 && (allow_vanilla == true || local_goals[i].allow_vanilla == true) ) {
+        if( VSize(diff) > vanilla_distance && (allow_vanilla == true || local_goals[i].allow_vanilla == true) ) {
             slot = rng(num_gl+1);
-            if( slot == 0 ) continue;//don't do anything
+            if( slot == 0 ) continue;//don't do anything, keep it vanilla
             slot--;
         }
         else slot = rng(num_gl);
@@ -1101,11 +1087,6 @@ function FirstEntry()
         num_gl--;
     }
 
-}
-
-function AnyEntry()
-{
-    Super.AnyEntry();
 }
 
 function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
@@ -1147,7 +1128,7 @@ function RandoStartingEquipment(DeusExPlayer player)
     if( dxr.flags.equipment == 0 ) return;
 
     l("RandoStartingEquipment");
-    dxr.SetSeed( dxr.Crc(dxr.seed $ " RandoStartingEquipment") );//independent of map/mission?
+    dxr.SetSeed( dxr.Crc(dxr.seed $ " RandoStartingEquipment") );//independent of map/mission
 
     dxr.player.energy = rng(75)+25;
     dxr.player.Credits = rng(200);
@@ -1156,15 +1137,15 @@ function RandoStartingEquipment(DeusExPlayer player)
 
     item = player.Inventory;
     while(item != None)
-	{
-		anItem = item;
+    {
+        anItem = item;
         item = item.Inventory;
         if( NanoKeyRing(anItem) != None ) continue;
         if( dxre == None && DeusExWeapon(anItem) != None ) continue;
         if( dxre == None && Ammo(anItem) != None ) continue;
-		player.DeleteInventory(anItem);
-		anItem.Destroy();
-	}
+        player.DeleteInventory(anItem);
+        anItem.Destroy();
+    }
 
     dxrbanned = DXRBannedItems(dxr.FindModule(class'DXRBannedItems'));
     if( dxrbanned != None ) dxrbanned.AddStartingEquipment(player);
@@ -1191,6 +1172,7 @@ function _RandoStartingEquipment(DeusExPlayer player, DXREnemies dxre)
         if( chance( _randomitems[i].chance, r ) ) iclass = _randomitems[i].type;
     }
 
+    if( iclass == None ) return;
     item = Spawn(iclass);
     item.Frob(player, None);
 }
