@@ -94,8 +94,31 @@ function CheckConfig()
         map = "02_nyc_batterypark";
         goals[i].map_name = map;
         goals[i].actor_name = 'BarrelAmbrosia0';
-        goals[i].group_radius = 160;
         goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'SkillAwardTrigger0';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'GoalCompleteTrigger0';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'FlagTrigger1';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DataLinkTrigger1';
+        goals[i].physics = PHYS_None;
+        goals[i].move_with_previous = true;
         i++;
 
         map = "03_nyc_batterypark";
@@ -479,9 +502,10 @@ function CheckConfig()
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(507.282898,-1066.344604,-403.132751);//'BarrelAmbrosia0'
+        important_locations[i].location = vect(353.434570, -1123.060547, -416.488281);//'BarrelAmbrosia0'
         important_locations[i].rotation = rot(0,16536,0);
         important_locations[i].is_player_start = true;
+        important_locations[i].is_goal_position = false;
         i++;
 
         important_locations[i].map_name = map;
@@ -959,6 +983,10 @@ function FirstEntry()
     if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
         foreach AllActors(class'AnnaNavarre', anna) {
             anna.SetOrders('Standing');
+            anna.SetLocation( vect(1082.845703, 1807.538818, 335.101776) );
+            anna.SetRotation( rot(0, -16608, 0) );
+            anna.HomeLoc = anna.Location;
+            anna.HomeRot = vector(anna.Rotation);
         }
     }
 
@@ -1006,6 +1034,7 @@ function FirstEntry()
         num_ps++;
     }
 
+    start = -1;
     if( dxr.flags.startinglocations > 0 && num_ps > 0 ) {
         l("randomizing starting location, num_ps == "$num_ps);
         start = rng(num_ps);
@@ -1014,7 +1043,8 @@ function FirstEntry()
 
         for(i=0; i<num_gl; i++) {
             diff = player_starts[start].location - goal_locations[i].location;
-            if( VSize(diff) < 160 ) {
+            if( VSize(diff) < 16*20 ) {//20 feet
+                l("player starting at ("$player_starts[start].location$"), removing location ("$goal_locations[i].location$")");
                 goal_locations[i] = goal_locations[num_gl-1];
                 num_gl--;
                 i--;
@@ -1029,7 +1059,9 @@ function FirstEntry()
     for(i=0; i<num_ma && num_gl>0; i++) {
         if( local_goals[i].move_with_previous == true ) continue;
 
-        if( allow_vanilla == true || local_goals[i].allow_vanilla == true ) {
+        diff = vect(9999,9999,9999);
+        if( start >= 0 ) diff = player_starts[start].location - movable_actors[i].location;
+        if( VSize(diff) > 16*20 && (allow_vanilla == true || local_goals[i].allow_vanilla == true) ) {
             slot = rng(num_gl+1);
             if( slot == 0 ) continue;//don't do anything
             slot--;
@@ -1050,6 +1082,7 @@ function FirstEntry()
         }
         if( local_goals[i].group_radius >= 0.1 ) {
             foreach RadiusActors(class'Actor', a, local_goals[i].group_radius, loc ) {
+                if( a == dxr.Player ) continue;
                 if( NavigationPoint(a) != None ) continue;
                 if( Light(a) != None ) continue;
                 success = MoveActor(a, a.location + diff, a.rotation, local_goals[i].physics);
