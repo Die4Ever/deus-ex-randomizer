@@ -258,12 +258,12 @@ function Airfield_FirstEntry()
             a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3105,-385,-210), rot(0,0,0));
             SetActorScale(a, 1.3);
 
-            _AddActor(Self, class'Valve', vect(-3080,-395,-173), rot(0,0,16384));
-            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3080,-395,-173), rot(0,0,0));
+            _AddActor(Self, class'Valve', vect(-3080,-395,-170), rot(0,0,16384));
+            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3080,-395,-170), rot(0,0,0));
             SetActorScale(a, 1.3);
 
-            _AddActor(Self, class'Valve', vect(-3065,-405,-137), rot(0,0,16384));
-            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3065,-405,-137), rot(0,0,0));
+            _AddActor(Self, class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
+            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3065,-405,-130), rot(0,0,0));
             SetActorScale(a, 1.3);
 
             //crates to get back over the beginning of the level
