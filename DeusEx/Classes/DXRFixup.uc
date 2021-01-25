@@ -128,8 +128,10 @@ function AnyEntry()
 
 function Timer()
 {
+    local PaulDenton paul;
     local BlackHelicopter chopper;
     local Music m;
+    local int i;
     Super.Timer();
 
     switch(dxr.dxInfo.missionNumber) {
@@ -147,6 +149,23 @@ function Timer()
 
     switch(dxr.localURL)
     {
+        case "04_NYC_HOTEL":
+            if( dxr.player.flagBase.GetBool('M04RaidBegan') ) {
+                foreach AllActors(class'PaulDenton', paul) {
+                    paul.bInvincible = false;
+                    i = 400;
+                    paul.Health = i;
+                    paul.HealthArmLeft = i;
+                    paul.HealthArmRight = i;
+                    paul.HealthHead = i;
+                    paul.HealthLegLeft = i;
+                    paul.HealthLegRight = i;
+                    paul.HealthTorso = i;
+                    paul.ChangeAlly('Player', 1, true);
+                }
+                SetTimer(0, false);
+            }
+            break;
         case "08_NYC_STREET":
             if ( dxr.Player.flagBase.GetBool('StantonDowd_Played') )
             {
@@ -303,6 +322,7 @@ function NYC_04_AnyEntry()
     switch (dxr.localURL)
     {
         case "04_NYC_HOTEL":
+            SetTimer(1.0, True);
             if(dxr.Player.flagBase.GetBool('NSFSignalSent')) {
                 dxr.Player.flagBase.SetBool('PaulInjured_Played', true,, 5);
             }

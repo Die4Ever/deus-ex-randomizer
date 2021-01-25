@@ -168,11 +168,25 @@ function CheckConfig()
         goals[i].physics = PHYS_None;
         i++;
 
-        goals[i].map_name = map;
-        goals[i].actor_name = 'ComputerPersonal4';
+        /*goals[i].map_name = map;
+        goals[i].actor_name = 'ComputerPersonal4';//this computer behind the door is finicky because you can't be standing inside the FlagTriggers while the flag is being set, it won't retrigger to check, which is why the map has the triggers all over the place
         goals[i].allow_vanilla = true;
         goals[i].physics = PHYS_None;
         i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'FlagTrigger5';
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'DataLinkTrigger7';
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
+        i++;*/
 
         map = "05_NYC_UnatcoMJ12Lab";
         goals[i].map_name = map;
