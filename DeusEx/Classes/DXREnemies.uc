@@ -148,30 +148,46 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
 {
     local RepairBot r;
     local MedicalBot m;
+    local Datacube d;
 
     if( medbots > -1 ) {
         foreach AllActors(class'MedicalBot', m) {
             m.Destroy();
+        }
+        foreach AllActors(class'Datacube', d) {
+            if( d.textTag == '01_Datacube09' ) d.Destroy();
         }
     }
     if( repairbots > -1 ) {
         foreach AllActors(class'RepairBot', r) {
             r.Destroy();
         }
+        foreach AllActors(class'Datacube', d) {
+            if( d.textTag == '03_Datacube11' ) d.Destroy();
+        }
     }
 
+    SetSeed( "RandoMedBots" );
     if( chance_single(medbots) ) {
-        SpawnNewPawn(class'MedicalBot');
+        m = MedicalBot(SpawnNewActor(class'MedicalBot'));
+        d = Datacube(SpawnNewActor(class'Datacube', m.Location, 16*50, 16*200));//minimum 50 feet away, maximum 200 feet away
+        d.textTag = '01_Datacube09';
+        d.bAddToVault = false;
     }
+
+    SetSeed( "RandoRepairBots" );
     if( chance_single(repairbots) ) {
-        SpawnNewPawn(class'RepairBot');
+        r = RepairBot(SpawnNewActor(class'RepairBot'));
+        d = Datacube(SpawnNewActor(class'Datacube', m.Location, 16*50, 16*200));
+        d.textTag = '03_Datacube11';
+        d.bAddToVault = false;
     }
 }
 
-function Pawn SpawnNewPawn(class<Pawn> c)
+function Actor SpawnNewActor(class<Actor> c, optional vector target, optional float mindist, optional float maxdist)
 {
     local vector loc;
-    loc = GetRandomPosition();
+    loc = GetRandomPosition(target, mindist, maxdist);
     loc.X += rngfn() * 50;
     loc.Y += rngfn() * 50;
     return Spawn(c,,, loc );

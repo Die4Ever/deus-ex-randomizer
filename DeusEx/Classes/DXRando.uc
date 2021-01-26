@@ -69,7 +69,6 @@ function CheckConfig()
         modules_to_load[i++] = "DXRFixup";
         modules_to_load[i++] = "DXRBacktracking";
         modules_to_load[i++] = "DXRKeys";
-        modules_to_load[i++] = "DXREnemies";
         modules_to_load[i++] = "DXRSkills";
         modules_to_load[i++] = "DXRPasswords";
         modules_to_load[i++] = "DXRAugmentations";
@@ -77,6 +76,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRNames";
         modules_to_load[i++] = "DXRAutosave";
         modules_to_load[i++] = "DXRMemes";
+        modules_to_load[i++] = "DXREnemies";
         modules_to_load[i++] = "DXREntranceRando";
         modules_to_load[i++] = "DXRHordeMode";
         modules_to_load[i++] = "DXRKillBobPage";
