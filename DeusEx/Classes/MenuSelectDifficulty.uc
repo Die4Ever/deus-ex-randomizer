@@ -51,6 +51,8 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 5;
+        f.medbots = 100;
+        f.repairbots = 100;
     }
     if( EnumOption(id, "Easy", 1, writing) ) {
         difficulty=1;
@@ -75,6 +77,8 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 2;
+        f.medbots = 20;
+        f.repairbots = 20;
     }
     if( EnumOption(id, "Normal", 0, writing) ) {
         difficulty=1.25;
@@ -99,6 +103,8 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 1;
+        f.medbots = 15;
+        f.repairbots = 15;
     }
     if( EnumOption(id, "Hard", 2, writing) ) {
         difficulty=1.5;
@@ -123,6 +129,8 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 1;
+        f.medbots = 10;
+        f.repairbots = 10;
     }
     if( EnumOption(id, "Extreme", 3, writing) ) {
         difficulty=2;
@@ -147,6 +155,8 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 1;
+        f.medbots = 5;
+        f.repairbots = 5;
     }
     id++;
 

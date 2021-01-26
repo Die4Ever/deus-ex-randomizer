@@ -139,8 +139,42 @@ function AddRandomEnemyType(string t, int c)
 function FirstEntry()
 {
     Super.FirstEntry();
+    RandoMedBotsRepairBots(dxr.flags.medbots, dxr.flags.repairbots);
     RandoEnemies(dxr.flags.enemiesrandomized);
     //SwapScriptedPawns();
+}
+
+function RandoMedBotsRepairBots(int medbots, int repairbots)
+{
+    local RepairBot r;
+    local MedicalBot m;
+
+    if( medbots > -1 ) {
+        foreach AllActors(class'MedicalBot', m) {
+            m.Destroy();
+        }
+    }
+    if( repairbots > -1 ) {
+        foreach AllActors(class'RepairBot', r) {
+            r.Destroy();
+        }
+    }
+
+    if( chance_single(medbots) ) {
+        SpawnNewPawn(class'MedicalBot');
+    }
+    if( chance_single(repairbots) ) {
+        SpawnNewPawn(class'RepairBot');
+    }
+}
+
+function Pawn SpawnNewPawn(class<Pawn> c)
+{
+    local vector loc;
+    loc = GetRandomPosition();
+    loc.X += rngfn() * 50;
+    loc.Y += rngfn() * 50;
+    return Spawn(c,,, loc );
 }
 
 function SwapScriptedPawns()

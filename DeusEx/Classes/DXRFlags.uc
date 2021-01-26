@@ -15,6 +15,7 @@ var int removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices;
 var int dancingpercent;
 var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
 var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
+var int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
 
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
@@ -97,6 +98,8 @@ function InitDefaults()
     startinglocations = 100;
     goals = 100;
     equipment = 1;
+    medbots = 15;
+    repairbots = 15;
 }
 
 function CheckConfig()
@@ -163,6 +166,8 @@ function LoadFlags()
         startinglocations = f.GetInt('Rando_startinglocations');
         goals = f.GetInt('Rando_goals');
         equipment = f.GetInt('Rando_equipment');
+        medbots = f.GetInt('Rando_medbots');
+        repairbots = f.GetInt('Rando_repairbots');
     }
 
     if(stored_version < flagsversion ) {
@@ -217,6 +222,9 @@ function SaveFlags()
     f.SetInt('Rando_goals', goals,, 999);
     f.SetInt('Rando_equipment', equipment,, 999);
 
+    f.SetInt('Rando_medbots', medbots,, 999);
+    f.SetInt('Rando_repairbots', repairbots,, 999);
+
     LogFlags("SaveFlags");
 }
 
@@ -233,7 +241,7 @@ function string StringifyFlags()
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
         $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", enemyrespawn: "$enemyrespawn$", infodevices: "$infodevices
-        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent;
+        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots;
 }
 
 function int FlagsHash()

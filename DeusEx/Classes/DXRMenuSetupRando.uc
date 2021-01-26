@@ -164,6 +164,12 @@ function BindControls(bool writing, optional string action)
     f.goals = UnpackInt(locations_option);
     id++;
 
+    labels[id] = "Medbots and Repair bots";
+    helptexts[id] = "Percentage chance for a medbot or repair bot to spawn in a map (vanilla is about 14%)";
+    Slider(id, f.medbots, 0, 100, writing);
+    f.repairbots = f.medbots;
+    id++;
+
     if( action == "NEXT" ) InvokeNewGameScreen(combatDifficulty, InitDxr());
 }
 
