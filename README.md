@@ -10,6 +10,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 
 ### Currently in v1.4.9, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
+* medbots and repair bots
 * starting equipment, bioelectric energy, and credits
 * adding and changing characters, giving them random names and making some of them dance
 * changing the locations of items/boxes/NanoKeys around the map
@@ -38,10 +39,10 @@ There are also settings for
 * autosave
 
 #### When you click New Game, you will see this settings screen:
-![options](https://i.imgur.com/XjYEPPm.png)
+![options](https://i.imgur.com/J6lgK7V.png)
 
 #### If you click Next then it will use default settings based on your difficulty choice. But if you click Advanced then you will see these settings:
-![advanced options](https://i.imgur.com/Jt1g4Ql.png)
+![advanced options](https://i.imgur.com/MzLPXxA.png)
 
 For the randomized passwords, you can copy-paste from the Goals/Notes screen.
 
