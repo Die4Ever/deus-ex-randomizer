@@ -13,9 +13,8 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 * medbots and repair bots
 * starting equipment, bioelectric energy, and credits
 * adding and changing characters, giving them random names and making some of them dance
-* changing the locations of items/boxes/NanoKeys around the map
+* changing the locations of items/boxes/NanoKeys/datacubes around the map
 * passwords and passcodes (they get updated in your Goals/Notes screen)
-* the locations of datacubes
 * exp costs for skills
     * option for rerolling every mission
     * option for disabling the Downgrade button on the new game screen, to prevent looking ahead
@@ -27,10 +26,11 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 
 There are also settings for
 * new game modes!
+    * Rearranged Levels is in beta, it changes what level each teleporter takes you to, but keeps it within the same mission.
+    * Horde Mode is in beta and mostly I think it just needs balancing.
+* challenge modes!
     * Stick With the Prod means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts
-    * Horde Mode is in beta and mostly I think it just needs balancing.
-    * Rearranged Levels is in beta, it changes what level each teleporter takes you to, but keeps it within the same mission.
 * making all or some of the doors that normally require a key also lockpickable and/or destructible
 * making all or some keypads hackable.
 * making enemies respawn
