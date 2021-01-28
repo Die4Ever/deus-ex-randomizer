@@ -57,18 +57,18 @@ function CheckConfig()
 {
     local int i;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,9) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
 
         i=0;
+        modules_to_load[i++] = "DXRMissions";
         modules_to_load[i++] = "DXRSwapItems";
         //modules_to_load[i++] = "DXRAddItems";
         modules_to_load[i++] = "DXRFixup";
         modules_to_load[i++] = "DXRBacktracking";
         modules_to_load[i++] = "DXRKeys";
-        modules_to_load[i++] = "DXREnemies";
         modules_to_load[i++] = "DXRSkills";
         modules_to_load[i++] = "DXRPasswords";
         modules_to_load[i++] = "DXRAugmentations";
@@ -76,6 +76,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRNames";
         modules_to_load[i++] = "DXRAutosave";
         modules_to_load[i++] = "DXRMemes";
+        modules_to_load[i++] = "DXREnemies";
         modules_to_load[i++] = "DXREntranceRando";
         modules_to_load[i++] = "DXRHordeMode";
         modules_to_load[i++] = "DXRKillBobPage";
@@ -232,7 +233,11 @@ function RandoEnter()
 
 function int SetSeed(int s)
 {
+    local int oldseed;
+    oldseed = newseed;
+    //log("SetSeed old seed == "$newseed$", new seed == "$s);
     newseed = s;
+    return oldseed;
 }
 
 function int rng(int max)

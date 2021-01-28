@@ -86,10 +86,12 @@ function static Name PickRandomAug(DXRando dxr)
 
 function RandoAug(Augmentation a)
 {
+    local int oldseed;
     local string s;
     if( AugSpeed(a) != None || AugLight(a) != None ) return;
-    dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoAug " $ a.class.name ) );
+    oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoAug " $ a.class.name ) );
     s = RandoLevelValues(a.LevelValues, a.default.LevelValues, min_aug_str, max_aug_str);
     if( InStr(a.Description, s) == -1 )
         a.Description = a.Description $ "|n|n" $ s;
+    dxr.SetSeed(oldseed);
 }

@@ -174,13 +174,13 @@ function RandomizeIntro()
     }
     dxr.Player.bHidden = true;
     SwapAll('Actor');
-    dxr.Player.bHidden = false;
     foreach AllActors(class'Actor', a)
     {
         if( a.bHidden ) continue;
         SetActorScale(a, float(rng(1500))/1000 + 0.3);
         a.Fatness = rng(50) + 105;
     }
+    dxr.Player.bHidden = false;
 
     foreach AllActors(class'Tree', t)
     {
@@ -230,7 +230,7 @@ function string _GetRandomActorClass()
 {
     local int r, i;
 
-    r = rng(501);
+    r = rng(499);
 
     if ( r == i++ ) return "AcousticSensor";
     if ( r == i++ ) return "AdaptiveArmor";
@@ -380,7 +380,7 @@ function string _GetRandomActorClass()
     if ( r == i++ ) return "DXLogo";
     if ( r == i++ ) return "DXText";
     if ( r == i++ ) return "Earth";
-    if ( r == i++ ) return "EidosLogo";
+    //if ( r == i++ ) return "EidosLogo";//Warning: SpawnActor failed because class EidosLogo has bStatic or bNoDelete
     if ( r == i++ ) return "EMPGrenade";
     if ( r == i++ ) return "Fan1";
     if ( r == i++ ) return "Fan1Vertical";
@@ -398,7 +398,7 @@ function string _GetRandomActorClass()
     //if ( r == i++ ) return "FirePlug";
     if ( r == i++ ) return "Fish";
     if ( r == i++ ) return "Fish2";
-    if ( r == i++ ) return "Fishes";
+    //if ( r == i++ ) return "Fishes";//Warning: SpawnActor failed because class Fishes is abstract
     if ( r == i++ ) return "FlagPole";
     if ( r == i++ ) return "Flare";
     if ( r == i++ ) return "Flask";

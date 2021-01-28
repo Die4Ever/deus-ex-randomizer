@@ -86,6 +86,8 @@ function FirstEntry()
         case 3:
             Airfield_FirstEntry();
             break;
+        case 5:
+            Jailbreak_FirstEntry();
         case 6:
             HongKong_FirstEntry();
             break;
@@ -126,8 +128,10 @@ function AnyEntry()
 
 function Timer()
 {
+    local PaulDenton paul;
     local BlackHelicopter chopper;
     local Music m;
+    local int i;
     Super.Timer();
 
     switch(dxr.dxInfo.missionNumber) {
@@ -145,6 +149,23 @@ function Timer()
 
     switch(dxr.localURL)
     {
+        case "04_NYC_HOTEL":
+            if( dxr.player.flagBase.GetBool('M04RaidBegan') ) {
+                foreach AllActors(class'PaulDenton', paul) {
+                    paul.bInvincible = false;
+                    i = 400;
+                    paul.Health = i;
+                    paul.HealthArmLeft = i;
+                    paul.HealthArmRight = i;
+                    paul.HealthHead = i;
+                    paul.HealthLegLeft = i;
+                    paul.HealthLegRight = i;
+                    paul.HealthTorso = i;
+                    paul.ChangeAlly('Player', 1, true);
+                }
+                SetTimer(0, false);
+            }
+            break;
         case "08_NYC_STREET":
             if ( dxr.Player.flagBase.GetBool('StantonDowd_Played') )
             {
@@ -225,6 +246,14 @@ function Airfield_FirstEntry()
     
     switch (dxr.localURL)
     {
+        case "03_NYC_BATTERYPARK":
+            foreach AllActors(class'Actor', a) {
+                if( a.name == 'NanoKey0' ) {
+                    a.Destroy();
+                    break;
+                }
+            }
+            break;
         case "03_NYC_AirfieldHeliBase":
             foreach AllActors(class'Mover',m) {
                 // call the elevator at the end of the level when you open the appropriate door
@@ -248,12 +277,12 @@ function Airfield_FirstEntry()
             a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3105,-385,-210), rot(0,0,0));
             SetActorScale(a, 1.3);
 
-            _AddActor(Self, class'Valve', vect(-3080,-395,-173), rot(0,0,16384));
-            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3080,-395,-173), rot(0,0,0));
+            _AddActor(Self, class'Valve', vect(-3080,-395,-170), rot(0,0,16384));
+            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3080,-395,-170), rot(0,0,0));
             SetActorScale(a, 1.3);
 
-            _AddActor(Self, class'Valve', vect(-3065,-405,-137), rot(0,0,16384));
-            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3065,-405,-137), rot(0,0,0));
+            _AddActor(Self, class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
+            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3065,-405,-130), rot(0,0,0));
             SetActorScale(a, 1.3);
 
             //crates to get back over the beginning of the level
@@ -274,11 +303,26 @@ function Airfield_FirstEntry()
     }
 }
 
+function Jailbreak_FirstEntry()
+{
+    local PaulDenton p;
+
+    switch (dxr.localURL)
+    {
+        case "05_NYC_UNATCOMJ12LAB":
+            foreach AllActors(class'PaulDenton', p) {
+                p.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
+            }
+            break;
+    }
+}
+
 function NYC_04_AnyEntry()
 {
     switch (dxr.localURL)
     {
         case "04_NYC_HOTEL":
+            SetTimer(1.0, True);
             if(dxr.Player.flagBase.GetBool('NSFSignalSent')) {
                 dxr.Player.flagBase.SetBool('PaulInjured_Played', true,, 5);
             }

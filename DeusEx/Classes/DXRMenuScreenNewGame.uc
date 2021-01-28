@@ -60,15 +60,12 @@ function CopySkills()
     Super.CopySkills();
 
     for(i=1; i<ArrayCount(localSkills); i++) {
+        if( localSkills[i-1] == None ) break;
         localSkills[i-1].next = localSkills[i];
     }
 
-    if(dxr!=None) {
-        //dxrs = dxr.Spawn(class'DXRSkills', None);
-        //dxr.modules[dxr.num_modules] = dxrs;
-        //dxr.num_modules++;
+    if(dxr!=None)
         dxrs = DXRSkills(dxr.FindModule(class'DXRSkills'));
-    }
     if( dxrs != None )
         dxrs.RandoSkills(localSkills[0]);
 }

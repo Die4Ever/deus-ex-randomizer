@@ -14,6 +14,8 @@ var int autosave;//0=off, 1=first time entering level, 2=every loading screen
 var int removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices;
 var int dancingpercent;
 var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
+var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
+var int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
 
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
@@ -88,11 +90,16 @@ function InitDefaults()
     removeinvisiblewalls = 0;
     enemiesrandomized = 25;
     enemyrespawn = 0;
-    infodevices = 0;
+    infodevices = 100;
     dancingpercent = 25;
     skills_disable_downgrades = 0;
     skills_reroll_missions = 0;
     skills_independent_levels = 0;
+    startinglocations = 100;
+    goals = 100;
+    equipment = 1;
+    medbots = 15;
+    repairbots = 15;
 }
 
 function CheckConfig()
@@ -155,6 +162,13 @@ function LoadFlags()
     if( stored_version >= VersionToInt(1,4,7) ) {
         banneditems = f.GetInt('Rando_banneditems');
     }
+    if( stored_version >= VersionToInt(1,4,9) ) {
+        startinglocations = f.GetInt('Rando_startinglocations');
+        goals = f.GetInt('Rando_goals');
+        equipment = f.GetInt('Rando_equipment');
+        medbots = f.GetInt('Rando_medbots');
+        repairbots = f.GetInt('Rando_repairbots');
+    }
 
     if(stored_version < flagsversion ) {
         l("upgraded flags from "$stored_version$" to "$flagsversion);
@@ -204,6 +218,13 @@ function SaveFlags()
     f.SetInt('Rando_skills_reroll_missions', skills_reroll_missions,, 999);
     f.SetInt('Rando_skills_independent_levels', skills_independent_levels,, 999);
 
+    f.SetInt('Rando_startinglocations', startinglocations,, 999);
+    f.SetInt('Rando_goals', goals,, 999);
+    f.SetInt('Rando_equipment', equipment,, 999);
+
+    f.SetInt('Rando_medbots', medbots,, 999);
+    f.SetInt('Rando_repairbots', repairbots,, 999);
+
     LogFlags("SaveFlags");
 }
 
@@ -220,7 +241,7 @@ function string StringifyFlags()
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
         $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", enemyrespawn: "$enemyrespawn$", infodevices: "$infodevices
-        $ ", dancingpercent: "$dancingpercent;
+        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots;
 }
 
 function int FlagsHash()
@@ -254,12 +275,12 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 4, 8);
+    return VersionToInt(1, 4, 9);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 8) $ "";
+    return VersionToString(1, 4, 9) $ "";
 }
 
 function MaxRando()
@@ -269,7 +290,7 @@ function MaxRando()
 
 function int RunTests()
 {
-    local int results, i;
+    local int results, i, t;
     results = Super.RunTests();
 
     //this Crc function returns negative numbers
@@ -278,8 +299,14 @@ function int RunTests()
     results += testint( dxr.Crc("do you have a single fact to back that up"), -1473827402, "Crc32 test");
 
     SetSeed("smashthestate");
-    for(i=0;i<10;i++)
-        test( rng(100)>=0, "rng(100) >= 0");
+    results += testint( rng(1), 0, "rng(1) is 0");
+    for(i=0;i<10;i++) {
+        t=rng(100);
+        results += test( t >=0 && t < 100, "rng(100) got " $t$" >= 0 and < 100");
+    }
+    dxr.SetSeed(-111);
+    i = rng(100);
+    results += test( rng(100) != i, "rng(100) != rng(100)");
 
     return results;
 }

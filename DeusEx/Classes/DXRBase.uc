@@ -6,7 +6,7 @@ var config int config_version;
 
 function Init(DXRando tdxr)
 {
-    l(".Init()");
+    l(Self$".Init()");
     dxr = tdxr;
     CheckConfig();
 }
@@ -22,22 +22,22 @@ function CheckConfig()
 
 function FirstEntry()
 {
-    l(".FirstEntry()");
+    l(Self$".FirstEntry()");
 }
 
 function AnyEntry()
 {
-    l(".AnyEntry()");
+    l(Self$".AnyEntry()");
 }
 
 function ReEntry()
 {
-    l(".ReEntry()");
+    l(Self$".ReEntry()");
 }
 
 function PreTravel()
 {
-    l(".PreTravel()");
+    l(Self$".PreTravel()");
     dxr = None;
     SetTimer(0, False);
 }
@@ -48,14 +48,14 @@ function Timer()
 
 event Destroyed()
 {
-    l(".Destroyed()");
+    l(Self$".Destroyed()");
     dxr = None;
     Super.Destroyed();
 }
 
-function SetSeed(coerce string name)
+function int SetSeed(coerce string name)
 {
-    dxr.SetSeed( dxr.Crc(dxr.seed $ "MS_" $ dxr.dxInfo.MissionNumber $ dxr.localURL $ name) );
+    return dxr.SetSeed( dxr.Crc(dxr.seed $ "MS_" $ dxr.dxInfo.MissionNumber $ dxr.localURL $ name) );
 }
 
 function int rng(int max)
@@ -65,7 +65,10 @@ function int rng(int max)
 
 function float rngf()
 {// 0 to 1.0
-    return float(dxr.rng(1000001))/1000000.0;
+    local float f;
+    f = float(dxr.rng(100001))/100000.0;
+    //l("rngf() "$f);
+    return f;
 }
 
 function float rngfn()
@@ -93,7 +96,9 @@ function string RandoLevelValues(out float LevelValues[4], float DefaultLevelVal
         else if( i>0 && DefaultLevelValues[i-1] > DefaultLevelValues[i] && LevelValues[i] > min_val ) LevelValues[i] = min_val;
         min_val = LevelValues[i];
         if( i>0 ) s = s $ ", ";
-        s = s $ int(LevelValues[i]/DefaultLevelValues[i]*100.0) $ "%";
+
+        if( LevelValues[i] == DefaultLevelValues[i] ) s = s $ "100%";
+        else s = s $ int(LevelValues[i]/DefaultLevelValues[i]*100.0) $ "%";
     }
     s = s $ ")";
     return s;
@@ -162,7 +167,7 @@ function err(string message)
 
 function int RunTests()
 {
-    l(".RunTests()");
+    l(".RunTests() " $ dxr.localURL);
     return 0;
 }
 

@@ -150,6 +150,7 @@ function RandoInfoDevs(int percent)
     local int hasPass[64];
     local DeusExTextParser parser;
 
+    //l("RandoInfoDevs percent == "$percent);
     if(percent == 0) return;
 
     foreach AllActors(class'InformationDevices', id)
@@ -176,7 +177,13 @@ function RandoInfoDevs(int percent)
             num++;
         }
 
-        slot=rng(num-1);
+        l("datacube "$id$" got num "$num);
+        slot=rng(num+1);//+1 for the vanilla location
+        if(slot==0) {
+            l("not swapping infodevice "$ActorToString(id));
+            continue;
+        }
+        slot--;
         i=0;
         foreach AllActors(class'Inventory', inv)
         {
@@ -184,7 +191,7 @@ function RandoInfoDevs(int percent)
             if( InfoPositionGood(id, inv.Location, hasPass) == False ) continue;
 
             if(i==slot) {
-                l("swapping infodevice "$ActorToString(id)$" with "$inv.Class);
+                l("swapping infodevice "$ActorToString(id)$" with "$inv);
                 Swap(id, inv);
                 break;
             }

@@ -6,8 +6,12 @@ function PostBeginPlay()
     _PostBeginPlay();
 
     foreach AllActors(class'DXRWeapons', m) {
+        if(m.dxr == None) {
+            log("m.dxr == None for "$m$"?");
+            continue;
+        }
         m.RandoWeapon(self);
-        break;
+        return;
     }
 }
 

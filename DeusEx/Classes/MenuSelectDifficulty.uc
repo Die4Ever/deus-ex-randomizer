@@ -23,24 +23,45 @@ function BindControls(bool writing, optional string action)
     EnumOption(id, "Horde Mode (Beta)", 2, writing, f.gamemode);
     //EnumOption(id, "Kill Bob Page (Alpha)", 3, writing, f.gamemode);
     //EnumOption(id, "How About Some Soy Food?", 6, writing, f.gamemode);
-    if( EnumOption(id, "Stick With the Prod", 4, writing, f.gamemode) ) {
-        //also set the banneditems setting to 1
-        f.banneditems = 1;
-    }
-    if( EnumOption(id, "Stick With the Prod Plus", 5, writing, f.gamemode) ) {
-        f.banneditems = 2;
-    }
     //EnumOption(id, "Max Rando", 7, writing, f.gamemode);
     id++;
 
     labels[id] = "Difficulty";
     helptexts[id] = "Difficulty determines the default settings for the randomizer.";
+    if( (InStr(f.VersionString(), "Alpha")>=0 || InStr(f.VersionString(), "Beta")>=0) && EnumOption(id, "Super Easy QA", 1, writing) ) {
+        difficulty=0;
+        f.doorsmode = f.keyonlydoors + f.doormutuallyinclusive;
+        f.doorsdestructible = 100;
+        f.doorspickable = 100;
+        f.deviceshackable = 100;
+        f.passwordsrandomized = 100;
+        f.infodevices = 100;
+        f.enemiesrandomized = 20;
+        f.skills_disable_downgrades = 0;
+        f.skills_reroll_missions = 0;
+        f.skills_independent_levels = 0;
+        f.minskill = 0;
+        f.maxskill = 1;
+        f.ammo = 100;
+        f.medkits = 100;
+        f.biocells = f.medkits;
+        f.lockpicks = f.medkits;
+        f.multitools = f.medkits;
+        f.speedlevel = 4;
+        f.startinglocations = 100;
+        f.goals = 100;
+        f.equipment = 5;
+        f.medbots = 100;
+        f.repairbots = 100;
+    }
     if( EnumOption(id, "Easy", 1, writing) ) {
         difficulty=1;
         f.doorsmode = f.keyonlydoors + f.doormutuallyinclusive;
         f.doorsdestructible = 100;
         f.doorspickable = 100;
         f.deviceshackable = 100;
+        f.passwordsrandomized = 100;
+        f.infodevices = 100;
         f.enemiesrandomized = 20;
         f.skills_disable_downgrades = 0;
         f.skills_reroll_missions = 0;
@@ -53,6 +74,11 @@ function BindControls(bool writing, optional string action)
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
         f.speedlevel = 2;
+        f.startinglocations = 100;
+        f.goals = 100;
+        f.equipment = 2;
+        f.medbots = 20;
+        f.repairbots = 20;
     }
     if( EnumOption(id, "Normal", 0, writing) ) {
         difficulty=1.25;
@@ -60,6 +86,8 @@ function BindControls(bool writing, optional string action)
         f.doorsdestructible = 50;
         f.doorspickable = 50;
         f.deviceshackable = 100;
+        f.passwordsrandomized = 100;
+        f.infodevices = 100;
         f.enemiesrandomized = 35;
         f.skills_disable_downgrades = 0;
         f.skills_reroll_missions = 0;
@@ -72,6 +100,11 @@ function BindControls(bool writing, optional string action)
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
         f.speedlevel = 1;
+        f.startinglocations = 100;
+        f.goals = 100;
+        f.equipment = 1;
+        f.medbots = 15;
+        f.repairbots = 15;
     }
     if( EnumOption(id, "Hard", 2, writing) ) {
         difficulty=1.5;
@@ -79,6 +112,8 @@ function BindControls(bool writing, optional string action)
         f.doorsdestructible = 25;
         f.doorspickable = 25;
         f.deviceshackable = 50;
+        f.passwordsrandomized = 100;
+        f.infodevices = 100;
         f.enemiesrandomized = 50;
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
@@ -91,6 +126,11 @@ function BindControls(bool writing, optional string action)
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
         f.speedlevel = 1;
+        f.startinglocations = 100;
+        f.goals = 100;
+        f.equipment = 1;
+        f.medbots = 10;
+        f.repairbots = 10;
     }
     if( EnumOption(id, "Extreme", 3, writing) ) {
         difficulty=2;
@@ -98,6 +138,8 @@ function BindControls(bool writing, optional string action)
         f.doorsdestructible = 25;
         f.doorspickable = 25;
         f.deviceshackable = 50;
+        f.passwordsrandomized = 100;
+        f.infodevices = 100;
         f.enemiesrandomized = 70;
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
@@ -110,6 +152,11 @@ function BindControls(bool writing, optional string action)
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
         f.speedlevel = 1;
+        f.startinglocations = 100;
+        f.goals = 100;
+        f.equipment = 1;
+        f.medbots = 5;
+        f.repairbots = 5;
     }
     id++;
 
@@ -118,6 +165,14 @@ function BindControls(bool writing, optional string action)
     EnumOption(id, "Every Entry", 2, writing, f.autosave);
     EnumOption(id, "First Entry", 1, writing, f.autosave);
     EnumOption(id, "Off", 0, writing, f.autosave);
+    id++;
+
+    labels[id] = "";
+    helptexts[id] = "What items are banned";
+    EnumOption(id, "No items banned", 0, writing, f.banneditems);
+    EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
+    EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
+    //EnumOption(id, "Don't Give Me The GEP Gun", 3, writing, f.banneditems);//maybe I can request these from a function like class'DXRBannedItems'.static.GetBannedItemsDescription()
     id++;
 
     labels[id] = "Seed";
@@ -151,7 +206,7 @@ function NewGameSetup(float difficulty)
 
 defaultproperties
 {
-    num_rows=5
+    num_rows=6
     num_cols=2
     col_width_odd=160
     col_width_even=220

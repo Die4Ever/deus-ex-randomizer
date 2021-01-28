@@ -10,7 +10,7 @@ event InitWindow()
 function BindControls(bool writing, optional string action)
 {
     local DXRFlags f;
-    local string doors_option, skills_option;
+    local string doors_option, skills_option, locations_option;
     local int iDifficulty;
     Super.BindControls(writing, action);
     f = InitFlags();
@@ -113,13 +113,6 @@ function BindControls(bool writing, optional string action)
     combatDifficulty = float(iDifficulty) / 100.0;
     id++;
 
-    labels[id] = "";
-    helptexts[id] = "What items are banned";
-    EnumOption(id, "No items banned", 0, writing, f.banneditems);
-    EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
-    EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
-    id++;
-
     labels[id] = "Ammo Drops %";
     helptexts[id] = "Make ammo more scarce.";
     Slider(id, f.ammo, 0, 100, writing);
@@ -153,6 +146,29 @@ function BindControls(bool writing, optional string action)
     labels[id] = "Dancing %";
     helptexts[id] = "How many characters should be dancing.";
     Slider(id, f.dancingpercent, 0, 100, writing);
+    id++;
+
+    labels[id] = "Starting Equipment";
+    helptexts[id] = "How many random items you start with";
+    Slider(id, f.equipment, 0, 10, writing);
+    id++;
+
+    labels[id] = "";
+    locations_option = f.startinglocations $";"$ f.goals;
+    helptexts[id] = "Randomize goal locations, starting locations, or both";
+    EnumOptionString(id, "Randomize Goal and Starting Locations", "100;100", writing, locations_option);
+    EnumOptionString(id, "Randomize Starting Locations", "100;0", writing, locations_option);
+    EnumOptionString(id, "Randomize Goal Locations", "0;100", writing, locations_option);
+    EnumOptionString(id, "Unchanged Goal and Starting Locations", "0;0", writing, locations_option);
+    f.startinglocations = UnpackInt(locations_option);
+    f.goals = UnpackInt(locations_option);
+    id++;
+
+    labels[id] = "Medbots and Repair bots";
+    helptexts[id] = "Percentage chance for a medbot or repair bot to spawn in a map (vanilla is about 14%)";
+    Slider(id, f.medbots, 0, 100, writing);
+    f.repairbots = f.medbots;
+    id++;
 
     if( action == "NEXT" ) InvokeNewGameScreen(combatDifficulty, InitDxr());
 }

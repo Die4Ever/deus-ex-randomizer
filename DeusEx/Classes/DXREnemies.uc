@@ -139,8 +139,58 @@ function AddRandomEnemyType(string t, int c)
 function FirstEntry()
 {
     Super.FirstEntry();
+    RandoMedBotsRepairBots(dxr.flags.medbots, dxr.flags.repairbots);
     RandoEnemies(dxr.flags.enemiesrandomized);
     //SwapScriptedPawns();
+}
+
+function RandoMedBotsRepairBots(int medbots, int repairbots)
+{
+    local RepairBot r;
+    local MedicalBot m;
+    local Datacube d;
+
+    if( medbots > -1 ) {
+        foreach AllActors(class'MedicalBot', m) {
+            m.Destroy();
+        }
+        foreach AllActors(class'Datacube', d) {
+            if( d.textTag == '01_Datacube09' ) d.Destroy();
+        }
+    }
+    if( repairbots > -1 ) {
+        foreach AllActors(class'RepairBot', r) {
+            r.Destroy();
+        }
+        foreach AllActors(class'Datacube', d) {
+            if( d.textTag == '03_Datacube11' ) d.Destroy();
+        }
+    }
+
+    SetSeed( "RandoMedBots" );
+    if( chance_single(medbots) ) {
+        m = MedicalBot(SpawnNewActor(class'MedicalBot'));
+        d = Datacube(SpawnNewActor(class'Datacube', m.Location, 16*50, 16*200));//minimum 50 feet away, maximum 200 feet away
+        d.textTag = '01_Datacube09';
+        d.bAddToVault = false;
+    }
+
+    SetSeed( "RandoRepairBots" );
+    if( chance_single(repairbots) ) {
+        r = RepairBot(SpawnNewActor(class'RepairBot'));
+        d = Datacube(SpawnNewActor(class'Datacube', m.Location, 16*50, 16*200));
+        d.textTag = '03_Datacube11';
+        d.bAddToVault = false;
+    }
+}
+
+function Actor SpawnNewActor(class<Actor> c, optional vector target, optional float mindist, optional float maxdist)
+{
+    local vector loc;
+    loc = GetRandomPosition(target, mindist, maxdist);
+    loc.X += rngfn() * 50;
+    loc.Y += rngfn() * 50;
+    return Spawn(c,,, loc );
 }
 
 function SwapScriptedPawns()
@@ -165,9 +215,15 @@ function SwapScriptedPawns()
         if( IsCritter(a) ) continue;
 
         i=0;
-        slot=rng(num-1);
+        slot=rng(num);// -1 because we skip ourself, but +1 for vanilla
+        if(slot==0) {
+            l("not swapping "$a);
+            continue;
+        }
+        slot--;
         foreach AllActors(class'ScriptedPawn', b )
         {
+            if( a == b ) continue;
             if( b.bHidden || b.bStatic ) continue;
             if( b.bImportant ) continue;
             if( IsCritter(b) ) continue;
@@ -422,12 +478,12 @@ function int RunTests()
     for(i=0; i < ArrayCount(randomweapons); i++ ) {
         total += randomweapons[i].chance;
     }
-    results += test( total <= 100, "config randomweapons chances, check total "$total);
+    results += testint( total, 100, "config randomweapons chances, check total "$total);
     total=0;
     for(i=0; i < ArrayCount(randommelees); i++ ) {
         total += randommelees[i].chance;
     }
-    results += test( total <= 100, "config randommelees chances, check total "$total);
+    results += testint( total, 100, "config randommelees chances, check total "$total);
 
     return results;
 }

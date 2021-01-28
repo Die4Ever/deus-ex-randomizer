@@ -28,6 +28,7 @@ function CheckConfig()
 
 function SwapAll(name classname)
 {
+    local Actor temp[4096];
     local Actor a, b;
     local int num, i, slot;
 
@@ -36,29 +37,17 @@ function SwapAll(name classname)
     foreach AllActors(class'Actor', a )
     {
         if( SkipActor(a, classname) ) continue;
-        num++;
+        temp[num++] = a;
     }
 
-    foreach AllActors(class'Actor', a )
-    {
-        if( SkipActor(a, classname) ) continue;
-
-        i=0;
-        slot=rng(num-1);
-        foreach AllActors(class'Actor', b )
-        {
-            if( SkipActor(b, classname) ) continue;
-
-            if(i==slot) {
-                Swap(a, b);
-                break;
-            }
-            i++;
-        }
+    for(i=0; i<num; i++) {
+        slot=rng(num-1);// -1 because we skip ourself
+        if(slot >= i) slot++;
+        Swap(temp[i], temp[slot]);
     }
 }
 
-function vector AbsEach(vector v)
+static function vector AbsEach(vector v)
 {// not a real thing in math? but it's convenient
     v.X = abs(v.X);
     v.Y = abs(v.Y);
@@ -66,7 +55,7 @@ function vector AbsEach(vector v)
     return v;
 }
 
-function bool AnyGreater(vector a, vector b)
+static function bool AnyGreater(vector a, vector b)
 {
     return a.X > b.X || a.Y > b.Y || a.Z > b.Z;
 }
@@ -78,18 +67,18 @@ function bool CarriedItem(Actor a)
     return a.Owner != None && a.Owner.IsA('Pawn');
 }
 
-function bool IsHuman(Actor a)
+static function bool IsHuman(Actor a)
 {
     return HumanMilitary(a) != None || HumanThug(a) != None || HumanCivilian(a) != None;
 }
 
-function bool IsCritter(Actor a)
+static function bool IsCritter(Actor a)
 {
     if( Animal(a) == None ) return false;
     return Doberman(a) == None && Gray(a) == None && Greasel(a) == None && Karkian(a) == None;
 }
 
-function bool HasItem(Pawn p, class c)
+static function bool HasItem(Pawn p, class c)
 {
     local ScriptedPawn sp;
     local int i;
@@ -107,7 +96,7 @@ function bool HasItem(Pawn p, class c)
     return p.FindInventoryType(c) != None;
 }
 
-function bool HasMeleeWeapon(Pawn p)
+static function bool HasMeleeWeapon(Pawn p)
 {
     return HasItem(p, class'WeaponBaton')
         || HasItem(p, class'WeaponCombatKnife')
@@ -116,7 +105,7 @@ function bool HasMeleeWeapon(Pawn p)
         || HasItem(p, class'WeaponNanoSword');
 }
 
-function bool IsMeleeWeapon(Inventory item)
+static function bool IsMeleeWeapon(Inventory item)
 {
     return item.IsA('WeaponBaton')
         || item.IsA('WeaponCombatKnife')
@@ -285,6 +274,7 @@ static function SetActorScale(Actor a, float scale)
 
 function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist)
 {
+    local PathNode temp[1024];
     local PathNode p;
     local int i, num, slot;
     local float dist;
@@ -296,18 +286,11 @@ function vector GetRandomPosition(optional vector target, optional float mindist
         dist = VSize(p.Location-target);
         if( dist < mindist ) continue;
         if( dist > maxdist ) continue;
-        num++;
+        temp[num++] = p;
     }
+    if( num == 0 ) return target;
     slot = rng(num);
-    foreach AllActors(class'PathNode', p) {
-        dist = VSize(p.Location-target);
-        if( dist < mindist ) continue;
-        if( dist > maxdist ) continue;
-        if(i==slot) {
-            return p.Location;
-        }
-        i++;
-    }
+    return temp[slot].Location;
 }
 
 function vector GetCloserPosition(vector target, vector current, optional float maxdist)
