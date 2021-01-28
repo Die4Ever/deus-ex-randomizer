@@ -97,9 +97,8 @@ function InvokeNewGameScreen(float difficulty, DXRando dxr)
 
 function CheckConfig()
 {
-    if( config_version < 4 ) {
-    }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        log(Self$": upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
         config_version = class'DXRFlags'.static.VersionNumber();
         SaveConfig();
     }

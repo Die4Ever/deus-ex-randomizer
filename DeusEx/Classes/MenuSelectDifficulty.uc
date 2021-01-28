@@ -7,11 +7,28 @@ event InitWindow()
     Init(InitDxr());
 }
 
+function CheckConfig()
+{
+    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        num_rows=7;
+        num_cols=2;
+        col_width_odd=160;
+        col_width_even=220;
+        row_height=20;
+        padding_width=20;
+        padding_height=10;
+    }
+    Super.CheckConfig();
+}
+
 function BindControls(bool writing, optional string action)
 {
     local float difficulty;
     local DXRFlags f;
     local string sseed;
+    local Telemetry t;
+    local int temp;
+
     Super.BindControls(writing);
 
     f = InitFlags();
@@ -175,6 +192,20 @@ function BindControls(bool writing, optional string action)
     //EnumOption(id, "Don't Give Me The GEP Gun", 3, writing, f.banneditems);//maybe I can request these from a function like class'DXRBannedItems'.static.GetBannedItemsDescription()
     id++;
 
+    foreach f.AllActors(class'Telemetry', t) { break; }
+    if( t == None ) t = f.Spawn(class'Telemetry');
+    labels[id] = "Telemetry";
+    helptexts[id] = "Send error reports and logging";
+    temp = 0;
+    if( t.enabled ) temp = 1;
+    if( EnumOption(id, "Enabled", 1, writing, temp) ) {
+        t.set_enabled(true);
+    }
+    if( EnumOption(id, "Disabled", 0, writing, temp) ) {
+        t.set_enabled(false);
+    }
+    id++;
+
     labels[id] = "Seed";
     helptexts[id] = "Enter a seed if you want to play the same game again.";
     sseed = EditBox(id, "", "1234567890", writing);
@@ -206,13 +237,6 @@ function NewGameSetup(float difficulty)
 
 defaultproperties
 {
-    num_rows=6
-    num_cols=2
-    col_width_odd=160
-    col_width_even=220
-    row_height=20
-    padding_width=20
-    padding_height=10
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Advanced",Key="ADVANCED")
     Title="DX Rando Options"
     ClientWidth=672

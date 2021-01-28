@@ -7,6 +7,20 @@ event InitWindow()
     Super.InitWindow();
 }
 
+function CheckConfig()
+{
+    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        num_rows=12;
+        num_cols=4;
+        col_width_odd=160;
+        col_width_even=140;
+        row_height=20;
+        padding_width=20;
+        padding_height=10;
+    }
+    Super.CheckConfig();
+}
+
 function BindControls(bool writing, optional string action)
 {
     local DXRFlags f;

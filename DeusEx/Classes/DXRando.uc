@@ -41,7 +41,7 @@ function PostPostBeginPlay()
         SetTimer(0.1, False);
         return;
     }
-    l("found Player "$Player);
+    info("found Player "$Player);
     ClearModules();
     LoadFlagsModule();
     flags.LoadFlags();
@@ -85,6 +85,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRWeapons";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
         config_version = class'DXRFlags'.static.VersionNumber();
         SaveConfig();
     }
@@ -103,14 +104,14 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
 
     m = FindModule(moduleclass);
     if( m != None ) {
-        l("found already loaded module "$m);
+        info("found already loaded module "$m);
         if(m.dxr != Self) m.Init(Self);
         return m;
     }
 
     m = Spawn(moduleclass, None);
     if ( m == None ) {
-        l("failed to load module "$moduleclass);
+        warning("failed to load module "$moduleclass);
         return None;
     }
     m.Init(Self);
@@ -165,7 +166,7 @@ function ClearModules()
 event Destroyed()
 {
     local int i;
-    l("Destroyed()");
+    info("Destroyed()");
 
     ClearModules();
     Player = None;
@@ -175,7 +176,7 @@ event Destroyed()
 function PreTravel()
 {
     local int i;
-    l("PreTravel()");
+    info("PreTravel()");
     // turn off the timer
     SetTimer(0, False);
 
@@ -205,19 +206,19 @@ function RandoEnter()
         flags.f.SetBool(flagName, True,, 999);
     }
 
-    l("RandoEnter() firstTime: "$firstTime);
+    info("RandoEnter() firstTime: "$firstTime);
 
     if ( firstTime == true )
     {
         SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL) );
 
-        l("randomizing "$localURL$" using seed " $ seed);
+        info("randomizing "$localURL$" using seed " $ seed);
 
         for(i=0; i<num_modules; i++) {
             modules[i].FirstEntry();
         }
 
-        l("done randomizing "$localURL);
+        info("done randomizing "$localURL);
     }
     else
     {
@@ -305,6 +306,26 @@ function l(string message)
     log(message, class.name);
 }
 
+function info(string message)
+{
+    log("INFO: " $ message, class.name);
+    class'Telemetry'.static.SendLog(Self, "INFO", message);
+}
+
+function warning(string message)
+{
+    log("WARNING: " $ message, class.name);
+    class'Telemetry'.static.SendLog(Self, "WARNING", message);
+}
+
+function err(string message)
+{
+    log("ERROR: " $ message, class.name);
+    Player.ClientMessage( Class @ message );
+
+    class'Telemetry'.static.SendLog(Self, "ERROR", message);
+}
+
 function RunTests()
 {
     local int i, results, failures;
@@ -313,8 +334,7 @@ function RunTests()
         if( results > 0 ) {
             failures++;
             player.ShowHud(true);
-            l( "ERROR: " $ modules[i] @ results $ " tests failed!" );
-            Player.ClientMessage( "ERROR: " $ modules[i].Class @ results $ " tests failed!" );
+            err( "ERROR: " $ modules[i] @ results $ " tests failed!" );
         }
         else
             l( modules[i] $ " passed tests!" );
@@ -324,8 +344,7 @@ function RunTests()
         l( "all tests passed!" );
     } else {
         player.ShowHud(true);
-        l( "ERROR: " $ failures $ " modules failed tests!" );
-        Player.ClientMessage( "ERROR: " $ failures $ " modules failed tests!" );
+        err( "ERROR: " $ failures $ " modules failed tests!" );
     }
 }
 
