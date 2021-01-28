@@ -170,13 +170,13 @@ function Swap(Actor a, Actor b)
     b.SetRotation(a.Rotation);
 
     if( bsuccess == false )
-        l("failed to move " $ ActorToString(b) $ " into location of " $ ActorToString(a) );
+        warning("bsuccess failed to move " $ ActorToString(b) $ " into location of " $ ActorToString(a) );
 
     asuccess = a.SetLocation(newloc);
     a.SetRotation(newrot);
 
     if( asuccess == false )
-        l("failed to move " $ ActorToString(a) $ " into location of " $ ActorToString(b) );
+        warning("asuccess failed to move " $ ActorToString(a) $ " into location of " $ ActorToString(b) );
 
     aphysics = a.Physics;
     bphysics = b.Physics;
@@ -219,6 +219,10 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
 
     newclass = class<Actor>(DynamicLoadObject(newclassstring, class'class'));
     a = Spawn(newclass,,,oldactor.Location);
+
+    if( a == None ) {
+        warning("ReplaceActor("$oldactor$", "$newclassstring$"), failed to spawn in location "$oldactor.Location);
+    }
 
     //Get the scaling to match
     if (a.CollisionRadius > a.CollisionHeight) {
