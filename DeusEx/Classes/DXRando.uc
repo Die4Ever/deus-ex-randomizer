@@ -4,6 +4,7 @@ var transient DeusExPlayer Player;
 var transient DXRFlags flags;
 var transient DeusExLevelInfo dxInfo;
 var transient string localURL;
+var transient DXRandoCrowdControlLink CrowdControl;
 
 var int newseed;
 var int seed;
@@ -229,6 +230,10 @@ function RandoEnter()
     for(i=0; i<num_modules; i++) {
         modules[i].AnyEntry();
     }
+
+    CrowdControl = Spawn(class'DXRandoCrowdControlLink');
+    CrowdControl.Init(Self);
+
 }
 
 function int SetSeed(int s)
