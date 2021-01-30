@@ -14,7 +14,7 @@ function Init(DXRando tdxr)
 function CheckConfig()
 {
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
-        l("upgrading config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
+        info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
         config_version = class'DXRFlags'.static.VersionNumber();
         SaveConfig();
     }
@@ -111,7 +111,7 @@ function static int staticrng(DXRando dxr, int max)
 
 function int initchance()
 {
-    if(overallchances > 0 && overallchances < 100) l("WARNING: initchance() overallchances == "$overallchances);
+    if(overallchances > 0 && overallchances < 100) warning("initchance() overallchances == "$overallchances);
     overallchances=0;
     return rng(100);
 }
@@ -119,7 +119,7 @@ function int initchance()
 function bool chance(int percent, int r)
 {
     overallchances+=percent;
-    if(overallchances>100) l("WARNING: chance("$percent$", "$r$") overallchances == "$overallchances);
+    if(overallchances>100) warning("chance("$percent$", "$r$") overallchances == "$overallchances);
     return r>= (overallchances-percent) && r< overallchances;
 }
 
@@ -152,9 +152,26 @@ function class<Actor> GetClassFromString(string classstring, class<Actor> c)
     return a;
 }
 
+//consider this like debug or trace
 function l(string message)
 {
     log(message, class.name);
+
+    /*if( (InStr(class'DXRFlags'.static.VersionString(), "Alpha")>=0 || InStr(class'DXRFlags'.static.VersionString(), "Beta")>=0) ) {
+        class'Telemetry'.static.SendLog(Self, "DEBUG", message);
+    }*/
+}
+
+function info(string message)
+{
+    log("INFO: " $ message, class.name);
+    class'Telemetry'.static.SendLog(Self, "INFO", message);
+}
+
+function warning(string message)
+{
+    log("WARNING: " $ message, class.name);
+    class'Telemetry'.static.SendLog(Self, "WARNING", message);
 }
 
 function err(string message)
@@ -163,6 +180,8 @@ function err(string message)
     if(dxr != None && dxr.Player != None) {
         dxr.Player.ClientMessage( Class @ message );
     }
+
+    class'Telemetry'.static.SendLog(Self, "ERROR", message);
 }
 
 function int RunTests()

@@ -39,7 +39,7 @@ function Timer()
     Super.Timer();
 
     if( f.GetInt('Rando_version') == 0 ) {
-        l("flags got deleted, saving again");//the intro deletes all flags
+        info("flags got deleted, saving again");//the intro deletes all flags
         SaveFlags();
     }
 }
@@ -112,7 +112,7 @@ function CheckConfig()
 function LoadFlags()
 {
     local int stored_version;
-    l("LoadFlags()");
+    info("LoadFlags()");
 
     InitDefaults();
 
@@ -171,7 +171,7 @@ function LoadFlags()
     }
 
     if(stored_version < flagsversion ) {
-        l("upgraded flags from "$stored_version$" to "$flagsversion);
+        info("upgraded flags from "$stored_version$" to "$flagsversion);
         SaveFlags();
     }
 
@@ -230,7 +230,7 @@ function SaveFlags()
 
 function LogFlags(string prefix)
 {
-    l(prefix$" - " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", " $ StringifyFlags() );
+    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", " $ StringifyFlags() );
 }
 
 function string StringifyFlags()
@@ -280,7 +280,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 9) $ "";
+    return VersionToString(1, 5, 0) $ " Alpha";
 }
 
 function MaxRando()

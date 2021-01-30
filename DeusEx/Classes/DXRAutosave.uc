@@ -48,7 +48,7 @@ function doAutosave()
         ((dxr.Player.IsInState('Dying')) || (dxr.Player.IsInState('Paralyzed')) || (dxr.Player.IsInState('Interpolating'))) || 
         (dxr.Player.dataLinkPlay != None) || (dxr.Level.Netmode != NM_Standalone) || (dxr.Player.InConversation())
     ){
-        l("doAutosave() not saving");
+        info("doAutosave() not saving");
         SetTimer(1.0, True);
         return;
     }
@@ -71,6 +71,7 @@ function doAutosave()
     }
 
     SetTimer(0, False);
+    info("doAutosave() completed, save_delay: "$save_delay);
 }
 
 defaultproperties

@@ -262,9 +262,9 @@ function RandoEnemies(int percent)
     foreach AllActors(class'ScriptedPawn', p)
     {
         if( p == newsp ) break;
-        if( SkipActor(p, 'ScriptedPawn') ) continue;
         if( p.bImportant || p.bInvincible ) continue;
         if( IsCritter(p) ) continue;
+        if( SkipActor(p, 'ScriptedPawn') ) continue;
         //if( IsInitialEnemy(p) == False ) continue;
 
         if( rng(100) < percent ) RandomizeSP(p, percent);
@@ -293,6 +293,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
     if( chance_single(chance_clone_nonhumans)==False && newclass == None && IsHuman(base) == False ) return None;
 
     n = CloneScriptedPawn(base, newclass);
+    l("new RandomEnemy("$base$", "$percent$") == "$n);
     if( n != None ) RandomizeSP(n, percent);
     //else RandomizeSize(n);
     return n;
@@ -363,7 +364,6 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
 
     n.Orders = defaultOrders;
     n.HomeTag = 'Start';
-    n.InitializeInventory();
     n.InitializeAlliances();
 
     RandomizeSize(n);
@@ -375,6 +375,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
 {
     if( p == None ) return;
 
+    l("RandomizeSP("$p$", "$percent$")");
     p.SurprisePeriod *= float(rng(100)/100)+0.4;
 
     if( IsHuman(p) == False ) return; // only give random weapons to humans
@@ -400,11 +401,13 @@ function GiveRandomWeapon(Pawn p)
         return;
 
     w = Spawn(wclass, p);
+    l("GiveRandomWeapon("$p$") "$w);
     w.GiveTo(p);
     w.SetBase(p);
 
     if( w.AmmoName != None ) {
         a = spawn(w.AmmoName);
+        l("GiveRandomWeapon("$p$") ammo "$a);
         w.AmmoType = a;
         w.AmmoType.InitialState='Idle2';
         w.AmmoType.GiveTo(p);
@@ -414,6 +417,7 @@ function GiveRandomWeapon(Pawn p)
     for(i=0; i < ArrayCount(w.AmmoNames); i++) {
         if(rng(3) == 0 && w.AmmoNames[i] != None) {
             a = spawn(w.AmmoNames[i]);
+            l("GiveRandomWeapon("$p$") ammo "$a);
             a.GiveTo(p);
             a.SetBase(p);
         }
@@ -439,7 +443,9 @@ function GiveRandomMeleeWeapon(Pawn p)
             return;
         }
     }
+
     w = Spawn(wclass, p);
+    l("GiveRandomMeleeWeapon("$p$") "$w);
     w.GiveTo(p);
     w.SetBase(p);
 }
