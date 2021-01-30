@@ -7,14 +7,27 @@ var bool running;
 
 var config int config_version;
 var config bool enabled;
+var config string server;
+var config int cache_addr;
 
 function CheckConfig()
 {
+    if( server == "" ) {
+        server = "raycarro.com";
+        cache_addr = 0;
+    }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        server = "raycarro.com";
+        cache_addr = 0;
         log(Self$": upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
         config_version = class'DXRFlags'.static.VersionNumber();
         SaveConfig();
     }
+}
+
+function BeginPlay()
+{
+    CheckConfig();
 }
 
 function set_enabled(bool e)
@@ -24,10 +37,26 @@ function set_enabled(bool e)
     SaveConfig();
 }
 
+function GetAddrFromCache()
+{
+    ServerIpAddr.Addr = cache_addr;
+    log(Self$": got addr from cache " $ ServerIpAddr.Addr );
+}
+
+function Resolved( IpAddr Addr )
+{
+    if( cache_addr != Addr.Addr ) {//these should never be equal anyways in this function?
+        cache_addr = Addr.Addr;
+        SaveConfig();
+        log(Self$": cached addr " $ Addr.Addr);
+    }
+    Super.Resolved(Addr);
+}
+
 function Browse(string InAddress, string InURI, optional int InPort, optional int InTimeout)
 {
     if(server_host == "") server_host = InAddress;
-    log( Self$": Browse "$server_host$" with " $ Len(content[start]) $ " bytes, ServerIpAddr.Addr == " $ ServerIpAddr.Addr );
+    //log( Self$": Browse "$server_host$" with " $ Len(content[start]) $ " bytes, ServerIpAddr.Addr == " $ ServerIpAddr.Addr );
     running = true;
     Super.Browse(InAddress, InURI, InPort, InTimeout);
 }
@@ -70,14 +99,13 @@ function HTTPError(int Code)
 {
     log(Self$": HTTPError: " $ Code);
     Super.HTTPError(Code);
-    Done();
 }
 
 function HTTPReceivedData(string Data)
 {
-    //log(Self$": HTTPReceivedData: " $ Len(Data));
-    log(Self$": HTTPReceivedData: " $ Data);
-    Done();
+    if( InStr(Data,"ERROR") >= 0 || InStr(Data, "ok") == -1 ) {
+        log(Self$": HTTPReceivedData: " $ Data);
+    }
 }
 
 event Closed()
@@ -91,7 +119,6 @@ function SetError(int Code)
 {
     log(Self$": SetError: " $ Code);
     Super.SetError(Code);
-    //Done();
 }
 
 event Timer()
@@ -103,21 +130,19 @@ event Timer()
 function Done()
 {
     local int i;
-    local string addr;
     SetTimer(0, False);
     log(Self$": Done()");
-    addr = "raycarro.com";
     if( ServerIpAddr.Addr == 0 )
     {
-        log(Self$": never got server IP?");
-        addr = "144.217.91.214";
-        server_host = "raycarro.com";
+        log(Self$": ERROR: never got server IP! trying cached_addr");
+        GetAddrFromCache();
     }
     running = false;
+    if( ServerIpAddr.Addr == 0 ) return;
     i = Len(content[start]);
     if( i > 0 ) {
         log(Self$": coming back for "$i$" more!");
-        Browse(addr, "/dxrando/log.py", 80, 3);
+        Browse(server, "/dxrando/log.py", 80, 3);
     }
 }
 
@@ -130,7 +155,7 @@ function bool Queue(string message)
     if( slot == -1 ) return false;
     LF = Chr(10);
     content[slot] = content[slot] $ message $ LF;
-    if( running == false ) Browse("raycarro.com", "/dxrando/log.py", 80, 3);
+    if( running == false ) Browse(server, "/dxrando/log.py", 80, 3);
     return true;
 }
 

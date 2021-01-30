@@ -254,9 +254,9 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
 function string ActorToString( Actor a )
 {
     local string out;
-    out = a.Class.Name$":"$a.Name$"("$a.Location$")";
+    out = a.Name$"("$a.Location$")";
     if( a.Base != None && a.Base.Class!=class'LevelInfo' )
-        out = out $ "(Base:"$a.Base.Class$":"$a.Base.Name$")";
+        out = out $ "(Base:"$a.Base.Name$")";
     return out;
 }
 
@@ -278,7 +278,7 @@ static function SetActorScale(Actor a, float scale)
 
 function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist)
 {
-    local PathNode temp[1024];
+    local PathNode temp[4096];
     local PathNode p;
     local int i, num, slot;
     local float dist;
