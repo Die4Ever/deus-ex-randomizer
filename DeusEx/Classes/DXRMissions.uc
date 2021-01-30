@@ -1188,6 +1188,7 @@ function _RandoStartingEquipment(DeusExPlayer player, DXREnemies dxre)
 
     if( iclass == None ) return;
     item = Spawn(iclass);
+    item.SetLocation(player.Location);
     item.Frob(player, None);
 }
 

@@ -317,6 +317,69 @@ function vector GetCloserPosition(vector target, vector current, optional float 
     return farthest;
 }
 
+function vector NearestSurface(vector StartTrace, vector EndTrace)
+{
+    local Actor HitActor;
+    local vector HitLocation, HitNormal;
+
+    HitActor = Trace(HitLocation, HitNormal, EndTrace, StartTrace);
+    if ( HitActor == Level )
+        return HitLocation;
+    return StartTrace;
+}
+
+function vector NearestCeiling(vector StartTrace, float maxdist)
+{
+    local vector EndTrace;
+    EndTrace = StartTrace;
+    EndTrace.Z += maxdist;
+    return NearestSurface(StartTrace, EndTrace);
+}
+
+function vector NearestFloor(vector StartTrace, float maxdist)
+{
+    local vector EndTrace;
+    EndTrace = StartTrace;
+    EndTrace.Z += maxdist;
+    return NearestSurface(StartTrace, EndTrace);
+}
+
+function vector NearestWall(vector StartTrace, float maxdist)
+{
+    local vector EndTrace;
+    local vector walls[4];
+    local float closest_dist, dist;
+    local int i, closest;
+
+    EndTrace = StartTrace;
+    EndTrace.X += maxdist;
+    walls[i++] = NearestSurface(StartTrace, EndTrace);
+
+    EndTrace = StartTrace;
+    EndTrace.X -= maxdist;
+    walls[i++] = NearestSurface(StartTrace, EndTrace);
+
+    EndTrace = StartTrace;
+    EndTrace.Y += maxdist;
+    walls[i++] = NearestSurface(StartTrace, EndTrace);
+
+    EndTrace = StartTrace;
+    EndTrace.Y -= maxdist;
+    walls[i++] = NearestSurface(StartTrace, EndTrace);
+
+    closest_dist = maxdist+1;
+    for(i=0; i<ArrayCount(walls); i++) {
+        dist = VSize(walls[i] - StartTrace);
+        if( dist < closest_dist ) {
+            closest_dist = dist;
+            closest_dist = i;
+        }
+    }
+
+    if( closest_dist > maxdist ) return StartTrace;
+    return walls[closest];
+}
+
 function Vector GetCenter(Actor test)
 {
     local Vector MinVect, MaxVect;
