@@ -396,12 +396,17 @@ function GiveRandomWeapon(Pawn p)
     for(i=0; i < ArrayCount(_randomweapons); i++ ) {
         if( chance( _randomweapons[i].chance, r ) ) wclass = _randomweapons[i].type;
     }
+    chance_remaining(r);
 
     if( HasItem(p, wclass) )
         return;
 
+    if( wclass == None ) {
+        l("not giving a random weapon to "$p); return;
+    }
+
     w = Spawn(wclass, p);
-    l("GiveRandomWeapon("$p$") "$w);
+    l("GiveRandomWeapon("$p$") "$wclass$", "$w);
     w.GiveTo(p);
     w.SetBase(p);
 
@@ -417,7 +422,7 @@ function GiveRandomWeapon(Pawn p)
     for(i=0; i < ArrayCount(w.AmmoNames); i++) {
         if(rng(3) == 0 && w.AmmoNames[i] != None) {
             a = spawn(w.AmmoNames[i]);
-            l("GiveRandomWeapon("$p$") ammo "$a);
+            l("GiveRandomWeapon("$p$") alt ammo "$a);
             a.GiveTo(p);
             a.SetBase(p);
         }
