@@ -141,7 +141,30 @@ function FirstEntry()
     Super.FirstEntry();
     RandoMedBotsRepairBots(dxr.flags.medbots, dxr.flags.repairbots);
     RandoEnemies(dxr.flags.enemiesrandomized);
+    RandoTurrets(100);
     //SwapScriptedPawns();
+}
+
+function RandoTurrets(int percent)
+{
+    local AutoTurret t;
+    local vector loc;
+    local rotator rotation;
+    //loc = vect(2385.803223, -1919.652954, -4.299772);
+    loc = vect(2321.717041, -2045.296753, -159.436096);
+    loc = NearestCeiling(loc, 16*50);
+    rotation = rot(-32688, 0, 0);
+    t = SpawnTurret(loc, rotation);
+}
+
+function AutoTurret SpawnTurret(vector loc, rotator rotation)
+{
+    local AutoTurret t;
+    t = Spawn(class'AutoTurret',,, loc, rotation);
+    t.bActive = false;
+    t.bTrackPawnsOnly = false;
+    t.bTrackPlayersOnly = true;
+    return t;
 }
 
 function RandoMedBotsRepairBots(int medbots, int repairbots)

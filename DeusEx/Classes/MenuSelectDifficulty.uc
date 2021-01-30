@@ -194,7 +194,7 @@ function BindControls(bool writing, optional string action)
 
     foreach f.AllActors(class'Telemetry', t) { break; }
     if( t == None ) t = f.Spawn(class'Telemetry');
-    labels[id] = "Telemetry";
+    labels[id] = "Help us improve";
     helptexts[id] = "Send error reports and logging";
     temp = 0;
     if( t.enabled ) temp = 1;
