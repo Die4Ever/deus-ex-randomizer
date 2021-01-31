@@ -256,6 +256,134 @@ function MakeLamThrower (inventory anItem) {
     f.beltDescription = "LAMTHWR";
 }
 
+//"Why not just use "GivePlayerAugmentation", you ask.
+//While it works well to give the player an aug they don't
+//have, it won't actually upgrade their augs if they don't 
+//already have an aug upgrade canister in their inventory.
+//This can also return better status messages for crowd control
+function int GiveAug(Class<Augmentation> giveClass, string viewer) {
+    local Augmentation anAug;
+	local bool wasActive;
+	
+	// Checks to see if the player already has it.  If so, we want to 
+	// increase the level
+	anAug = dxr.Player.AugmentationSystem.FindAugmentation(giveClass);
+	
+	if (anAug == None) {
+	   PlayerMessage(viewer@"tried to give you an aug that doesn't exist?");
+	   return Failed; //Shouldn't happen
+	}
+	
+	if (anAug.bHasIt)
+	{
+	    //Upgrade scenario
+	    if (!(anAug.CurrentLevel < anAug.MaxLevel)) {
+		    PlayerMessage(viewer@"wanted to upgrade "$anAug.AugmentationName$" but it cannot be upgraded any further");
+			return Failed;
+		}
+	    wasActive = anAug.bIsActive;
+		if (anAug.bIsActive) {
+		   anAug.Deactivate();
+		}
+		
+		anAug.CurrentLevel++;
+		
+		//Since this upgrade wasn't player initiated, it would be nice to reactivate it again for them
+		if (wasActive) {
+		    anAug.Activate();
+		}
+		
+		PlayerMessage(viewer@"upgraded "$anAug.AugmentationName$" to level "$anAug.CurrentLevel+1);
+        return Success;
+	}
+	
+	if(dxr.Player.AugmentationSystem.AreSlotsFull(anAug)) {
+	    PlayerMessage(viewer@"wanted to give you "$anAug.AugmentationName$" but there is no room");
+		return Failed;
+	}
+	
+	anAug.bHasIt = True;
+	
+	if (anAug.bAlwaysActive)
+	{
+		anAug.bIsActive = True;
+		anAug.GotoState('Active');
+	}
+	else
+	{
+		anAug.bIsActive = False;
+	}	
+	
+	// Manage our AugLocs[] array
+	dxr.Player.AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount++;
+	
+	// Assign hot key to new aug 
+	// (must be after before augCount is incremented!)
+    anAug.HotKeyNum = dxr.Player.AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount + dxr.Player.AugmentationSystem.AugLocs[anAug.AugmentationLocation].KeyBase;
+
+
+	if ((!anAug.bAlwaysActive) && (dxr.Player.bHUDShowAllAugs))
+	    dxr.Player.AddAugmentationDisplay(anAug);	
+    PlayerMessage(viewer@"gave you the "$anAug.AugmentationName$" augmentation");
+    return Success;
+}
+
+//This just doesn't normally exist
+function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
+    local Augmentation anAug;
+	local bool wasActive;
+	
+	// Checks to see if the player already has it, so we can decrease the level,
+	// or remove it all together
+	anAug = dxr.Player.AugmentationSystem.FindAugmentation(giveClass);
+	
+	if (anAug == None) {
+	   PlayerMessage(viewer@"tried to remove an aug that doesn't exist?");
+	   return Failed; //Shouldn't happen
+	}
+	
+	if (!anAug.bHasIt)
+	{
+		PlayerMessage(viewer@"wanted to remove "$anAug.AugmentationName$" but you didn't have it");
+	    return Failed;	    
+	}
+	
+	if (anAug.CurrentLevel > 0) {
+	    //Downgrade scenario, has aug above base level
+	    
+	    wasActive = anAug.bIsActive;
+		if (anAug.bIsActive) {
+		   anAug.Deactivate();
+		}
+		
+		anAug.CurrentLevel--;
+		
+		//Since this downgrade wasn't player initiated, it would be nice to reactivate it again for them		
+		if (wasActive) {
+		    anAug.Activate();
+		}
+		
+		PlayerMessage(viewer@"downgraded "$anAug.AugmentationName$" to level "$anAug.CurrentLevel+1);
+        return Success;
+	}
+	
+	anAug.Deactivate();
+	anAug.bHasIt = False;
+	
+	// Manage our AugLocs[] array
+	dxr.Player.AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount--;
+	
+	//Icon lookup is BY HOTKEY, so make sure to remove the icon before the hotkey
+	dxr.Player.RemoveAugmentationDisplay(anAug);
+	// Assign hot key back to default
+    anAug.HotKeyNum = anAug.Default.HotKeyNum;
+
+	
+
+    PlayerMessage(viewer@"removed your "$anAug.AugmentationName$" augmentation");
+    return Success;
+}
+
 function int doCrowdControlEvent(string code, string viewer, int type) {
     local vector v;
     local rotator r;
@@ -468,6 +596,117 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 		case "give_aug_up":
 			GiveItem(class'AugmentationUpgradeCannister');
 			break;
+			
+		case "up_aqualung":
+		    return GiveAug(class'AugAqualung',viewer);
+			break;			
+		case "up_ballistic":
+		    return GiveAug(class'AugBallistic',viewer);
+			break;			
+		case "up_cloak":
+		    return GiveAug(class'AugCloak',viewer);
+			break;			
+		case "up_combat":
+		    return GiveAug(class'AugCombat',viewer);
+			break;			
+		case "up_defense":
+		    return GiveAug(class'AugDefense',viewer);
+			break;			
+		case "up_drone":
+		    return GiveAug(class'AugDrone',viewer);
+			break;			
+		case "up_emp":
+		    return GiveAug(class'AugEmp',viewer);
+			break;			
+		case "up_enviro":
+		    return GiveAug(class'AugEnviro',viewer);
+			break;			
+		case "up_healing":
+		    return GiveAug(class'AugHealing',viewer);
+			break;			
+		case "up_heartlung":
+		    return GiveAug(class'AugHeartLung',viewer);
+			break;			
+		case "up_muscle":
+		    return GiveAug(class'AugMuscle',viewer);
+			break;	
+		case "up_power":
+		    return GiveAug(class'AugPower',viewer);
+			break;			
+		case "up_radartrans":
+		    return GiveAug(class'AugRadarTrans',viewer);
+			break;			
+		case "up_shield":
+		    return GiveAug(class'AugShield',viewer);
+			break;			
+		case "up_speed":
+		    return GiveAug(class'AugSpeed',viewer);
+			break;			
+		case "up_stealth":
+		    return GiveAug(class'AugStealth',viewer);
+			break;			
+		case "up_target":
+		    return GiveAug(class'AugTarget',viewer);
+			break;			
+		case "up_vision":
+		    return GiveAug(class'AugVision',viewer);
+			break;
+
+		case "down_aqualung":
+		    return RemoveAug(class'AugAqualung',viewer);
+			break;			
+		case "down_ballistic":
+		    return RemoveAug(class'AugBallistic',viewer);
+			break;			
+		case "down_cloak":
+		    return RemoveAug(class'AugCloak',viewer);
+			break;			
+		case "down_combat":
+		    return RemoveAug(class'AugCombat',viewer);
+			break;			
+		case "down_defense":
+		    return RemoveAug(class'AugDefense',viewer);
+			break;			
+		case "down_drone":
+		    return RemoveAug(class'AugDrone',viewer);
+			break;			
+		case "down_emp":
+		    return RemoveAug(class'AugEmp',viewer);
+			break;			
+		case "down_enviro":
+		    return RemoveAug(class'AugEnviro',viewer);
+			break;			
+		case "down_healing":
+		    return RemoveAug(class'AugHealing',viewer);
+			break;			
+		case "down_heartlung":
+		    return RemoveAug(class'AugHeartLung',viewer);
+			break;			
+		case "down_muscle":
+		    return RemoveAug(class'AugMuscle',viewer);
+			break;	
+		case "down_power":
+		    return RemoveAug(class'AugPower',viewer);
+			break;			
+		case "down_radartrans":
+		    return RemoveAug(class'AugRadarTrans',viewer);
+			break;			
+		case "down_shield":
+		    return RemoveAug(class'AugShield',viewer);
+			break;			
+		case "down_speed":
+		    return RemoveAug(class'AugSpeed',viewer);
+			break;			
+		case "down_stealth":
+		    return RemoveAug(class'AugStealth',viewer);
+			break;			
+		case "down_target":
+		    return RemoveAug(class'AugTarget',viewer);
+			break;			
+		case "down_vision":
+		    return RemoveAug(class'AugVision',viewer);
+			break;		
+
 
 		case "send_player_to_random_point":
 		default:
