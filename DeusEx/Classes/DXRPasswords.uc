@@ -236,7 +236,7 @@ function ChangeComputerPassword(Computers c, int i)
     }
 
     //if( Len(oldpassword) <3 ) return;
-    newpassword = GeneratePassword(oldpassword);
+    newpassword = GeneratePassword(dxr, oldpassword);
     c.userList[i].password = newpassword;
     ReplacePassword(oldpassword, newpassword);
 }
@@ -316,7 +316,7 @@ function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
     note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
 }
 
-function string GeneratePassword(string oldpassword)
+static function string GeneratePassword(DXRando dxr, string oldpassword)
 {
     local string out;
     local int i;
@@ -324,7 +324,7 @@ function string GeneratePassword(string oldpassword)
     dxr.SetSeed( dxr.seed + dxr.Crc(oldpassword) );
     for(i=0; i<5; i++) {
         // 0-9 is 48-57, 97-122 is a-z
-        c = rng(36) + 48;
+        c = staticrng(dxr, 36) + 48;
         if ( c > 57 ) c += 39;
         out = out $ Chr(c);
     }

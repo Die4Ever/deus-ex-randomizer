@@ -16,6 +16,7 @@ var int dancingpercent;
 var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
 var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
 var int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
+var int turrets_move, turrets_add;
 
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
@@ -100,6 +101,8 @@ function InitDefaults()
     equipment = 1;
     medbots = 15;
     repairbots = 15;
+    turrets_move = 50;
+    turrets_add = 20;
 }
 
 function CheckConfig()
@@ -169,6 +172,10 @@ function LoadFlags()
         medbots = f.GetInt('Rando_medbots');
         repairbots = f.GetInt('Rando_repairbots');
     }
+    if( stored_version >= VersionToInt(1,5,0) ) {
+        turrets_move = f.GetInt('Rando_turrets_move');
+        turrets_add = f.GetInt('Rando_turrets_add');
+    }
 
     if(stored_version < flagsversion ) {
         info("upgraded flags from "$stored_version$" to "$flagsversion);
@@ -224,6 +231,8 @@ function SaveFlags()
 
     f.SetInt('Rando_medbots', medbots,, 999);
     f.SetInt('Rando_repairbots', repairbots,, 999);
+    f.SetInt('Rando_turrets_move', turrets_move,, 999);
+    f.SetInt('Rando_turrets_add', turrets_add,, 999);
 
     LogFlags("SaveFlags");
 }
@@ -241,7 +250,7 @@ function string StringifyFlags()
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
         $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", enemyrespawn: "$enemyrespawn$", infodevices: "$infodevices
-        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots;
+        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots$", turrets_move: "$turrets_move$", turrets_add: "$turrets_add;
 }
 
 function int FlagsHash()
@@ -275,7 +284,7 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 4, 9);
+    return VersionToInt(1, 5, 0);
 }
 
 static function string VersionString()

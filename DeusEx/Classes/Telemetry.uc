@@ -1,4 +1,4 @@
-class Telemetry extends UBrowserHTTPClient config(DXRando);
+class Telemetry extends UBrowserHTTPClient config(DXRando) transient;
 
 var string server_host;
 var string content[32];
@@ -125,6 +125,7 @@ event Timer()
 {
     log(Self$": Timer");
 	Super.Timer();
+    Done();
 }
 
 function Done()

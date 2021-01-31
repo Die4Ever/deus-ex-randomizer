@@ -141,30 +141,212 @@ function FirstEntry()
     Super.FirstEntry();
     RandoMedBotsRepairBots(dxr.flags.medbots, dxr.flags.repairbots);
     RandoEnemies(dxr.flags.enemiesrandomized);
-    RandoTurrets(100);
+    RandoTurrets(dxr.flags.turrets_move, dxr.flags.turrets_add);
     //SwapScriptedPawns();
 }
 
-function RandoTurrets(int percent)
+function RandoTurrets(int percent_move, int percent_add)
 {
     local AutoTurret t;
+    local SecurityCamera cam;
+    local ComputerSecurity c;
+    local int i, hostile_turrets;
     local vector loc;
-    local rotator rotation;
-    //loc = vect(2385.803223, -1919.652954, -4.299772);
-    loc = vect(2321.717041, -2045.296753, -159.436096);
-    loc = NearestCeiling(loc, 16*50);
-    rotation = rot(-32688, 0, 0);
-    t = SpawnTurret(loc, rotation);
+
+    SetSeed( "RandoTurrets move" );
+
+    foreach AllActors(class'AutoTurret', t) {
+        if( chance_single(percent_move) == false ) continue;
+
+        loc = GetRandomPosition(t.Location, 0, 16*200);
+        info("RandoTurret move "$t$" to near "$loc);
+        MoveTurret(t, loc);
+        cam = GetCameraForTurret(t);
+        if( cam != None ) MoveCamera(cam, loc);
+        if( t.bTrackPlayersOnly==true || t.bTrackPawnsOnly==false ) hostile_turrets++;
+    }
+
+    if( hostile_turrets == 0 ) return;
+
+    SetSeed( "RandoTurrets add" );
+
+    for(i=0; i <3 ; i++) {
+        if( chance_single(percent_add/3) == false ) continue;
+
+        loc = GetRandomPosition();
+        info("RandoTurret near "$loc);
+        t = SpawnTurret(loc);
+        cam = SpawnCamera(loc);
+        c = SpawnSecurityComputer(loc, t, cam);
+        loc = GetRandomPosition(loc, 16, 16*100);
+        SpawnDatacube(loc, c);
+    }
 }
 
-function AutoTurret SpawnTurret(vector loc, rotator rotation)
+function GetTurretLocation(out vector loc, out rotator rotation)
+{
+    loc = JitterPosition(loc);
+    NearestFloor(loc, 16*50, rotation);
+    NearestCeiling(loc, 16*50, rotation);
+    rotation.pitch -= 16384;
+}
+
+function MoveTurret(AutoTurret t, vector loc)
+{
+    local rotator rotation;
+    local Vector v1, v2;
+    local Rotator rot;
+
+    GetTurretLocation(loc, rotation);
+
+    t.SetLocation(loc);
+    t.SetRotation(rotation);
+
+    //to move AutoTurretGun, copied from AutoTurret.uc PreBeginPlay()
+    rot = t.Rotation;
+    rot.Pitch = 0;
+    rot.Roll = 0;
+    t.origRot = rot;
+    v1.X = 0;
+    v1.Y = 0;
+    v1.Z = t.CollisionHeight + t.gun.Default.CollisionHeight;
+    v2 = v1 >> t.Rotation;
+    v2 += t.Location;
+    t.gun.SetLocation(v2);
+    t.gun.SetBase(t);
+}
+
+function AutoTurret SpawnTurret(vector loc)
 {
     local AutoTurret t;
+    local rotator rotation;
+
+    GetTurretLocation(loc, rotation);
+
     t = Spawn(class'AutoTurret',,, loc, rotation);
+    if( t == None ) {
+        warning("SpawnTurret failed at "$loc);
+        return None;
+    }
+    t.Tag = t.Name;
     t.bActive = false;
     t.bTrackPawnsOnly = false;
     t.bTrackPlayersOnly = true;
+    info("SpawnTurret "$t$" done at ("$loc$"), ("$rotation$")");
     return t;
+}
+
+function SecurityCamera GetCameraForTurret(AutoTurret t)
+{
+    local ComputerSecurity comp;
+    local SecurityCamera cam;
+    local int i;
+
+    foreach AllActors(class'ComputerSecurity',comp)
+    {
+        for (i = 0; i < ArrayCount(comp.Views); i++)
+        {
+            if (comp.Views[i].turretTag == t.Tag)
+            {
+                foreach AllActors(class'SecurityCamera', cam, comp.Views[i].cameraTag) {
+                    return cam;
+                }
+            }
+        }
+    }
+    warning("GetCameraForTurret failed to find camera for turret "$t);
+    return None;
+}
+
+function GetCameraLocation(out vector loc, out rotator rotation)
+{
+    local bool found_ceiling;
+    local bool found_wall1;
+    local bool found_wall2;
+
+    loc = JitterPosition(loc);
+    NearestFloor(loc, 16*50, rotation, 16);
+    found_ceiling = NearestCeiling(loc, 16*50, rotation, 16);
+    found_wall1 = NearestWall(loc, 16*50, rotation, 10);
+    found_wall2 = NearestWall(loc, 16*50, rotation, 10, 16);
+    if( found_ceiling ) rotation.pitch -= 3568;
+}
+
+function MoveCamera(SecurityCamera c, vector loc)
+{
+    local rotator rotation;
+    
+    GetCameraLocation(loc, rotation);
+
+    c.SetLocation(loc);
+    c.SetRotation(rotation);
+}
+
+function SecurityCamera SpawnCamera(vector loc)
+{
+    local SecurityCamera c;
+    local rotator rotation;
+    
+    GetCameraLocation(loc, rotation);
+
+    c = Spawn(class'SecurityCamera',,, loc, rotation);
+    if( c == None ) {
+        warning("SpawnCamera failed at "$loc);
+        return None;
+    }
+    
+    c.Tag = c.Name;
+    c.bSwing = true;
+    c.bNoAlarm = false;//true means friendly
+    info("SpawnCamera "$c$" done at ("$loc$"), ("$rotation$")");
+    return c;
+}
+
+function ComputerSecurity SpawnSecurityComputer(vector loc, optional AutoTurret t, optional SecurityCamera cam)
+{
+    local ComputerSecurity c;
+    local vector v;
+    local rotator rotation;
+    local int i;
+    info("SpawnSecurityComputer near "$loc);
+
+    loc = JitterPosition(loc);
+    v = loc;
+    for(i=2;i<6;i++) {
+        loc = v;
+        NearestFloor(loc, 16*50, rotation, 16*i);
+        if( NearestWall(loc, 16*50, rotation, 2) ) break;
+    }
+
+    c = Spawn(class'ComputerSecurity',,, loc, rotation);
+    if( c == None ) {
+        warning("SpawnSecurityComputer failed at "$loc);
+        return None;
+    }
+    c.Views[0].CameraTag = cam.Tag;
+    c.Views[0].TurretTag = t.Tag;
+    c.UserList[0].userName = String(c.Name);
+    c.UserList[0].Password = class'DXRPasswords'.static.GeneratePassword(dxr, String(c.Name) );
+    info("SpawnSecurityComputer "$c$" done at ("$loc$"), ("$rotation$") with password: "$c.UserList[0].Password );
+    return c;
+}
+
+function Datacube SpawnDatacube(vector loc, ComputerSecurity c)
+{
+    local Datacube d;
+    local rotator rotation;
+
+    loc = JitterPosition(loc);
+    NearestFloor(loc, 16*50, rotation);
+
+    d = Spawn(class'Datacube',,, loc, rotation);
+    if( d == None ) {
+        warning("SpawnDatacube failed at "$loc);
+        return None;
+    }
+    d.plaintext = c.Name $ " password is " $ c.UserList[0].Password;
+    info("SpawnDatacube "$d$" done at ("$loc$"), ("$rotation$")");
+    return d;
 }
 
 function RandoMedBotsRepairBots(int medbots, int repairbots)
@@ -209,11 +391,12 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
 
 function Actor SpawnNewActor(class<Actor> c, optional vector target, optional float mindist, optional float maxdist)
 {
+    local Actor a;
     local vector loc;
-    loc = GetRandomPosition(target, mindist, maxdist);
-    loc.X += rngfn() * 50;
-    loc.Y += rngfn() * 50;
-    return Spawn(c,,, loc );
+    loc = GetRandomPositionFine(target, mindist, maxdist);
+    a = Spawn(c,,, loc );
+    if( a == None ) warning("SpawnNewActor "$c$" failed at "$loc);
+    return a;
 }
 
 function SwapScriptedPawns()

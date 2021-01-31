@@ -10,7 +10,7 @@ event InitWindow()
 function CheckConfig()
 {
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
-        num_rows=7;
+        num_rows=8;
         num_cols=2;
         col_width_odd=160;
         col_width_even=220;
@@ -70,6 +70,8 @@ function BindControls(bool writing, optional string action)
         f.equipment = 5;
         f.medbots = 100;
         f.repairbots = 100;
+        f.turrets_move = 100;
+        f.turrets_add = 50;
     }
     if( EnumOption(id, "Easy", 1, writing) ) {
         difficulty=1;
@@ -96,6 +98,8 @@ function BindControls(bool writing, optional string action)
         f.equipment = 2;
         f.medbots = 20;
         f.repairbots = 20;
+        f.turrets_move = 50;
+        f.turrets_add = 0;
     }
     if( EnumOption(id, "Normal", 0, writing) ) {
         difficulty=1.25;
@@ -122,6 +126,8 @@ function BindControls(bool writing, optional string action)
         f.equipment = 1;
         f.medbots = 15;
         f.repairbots = 15;
+        f.turrets_move = 50;
+        f.turrets_add = 20;
     }
     if( EnumOption(id, "Hard", 2, writing) ) {
         difficulty=1.5;
@@ -148,6 +154,8 @@ function BindControls(bool writing, optional string action)
         f.equipment = 1;
         f.medbots = 10;
         f.repairbots = 10;
+        f.turrets_move = 50;
+        f.turrets_add = 30;
     }
     if( EnumOption(id, "Extreme", 3, writing) ) {
         difficulty=2;
@@ -174,6 +182,8 @@ function BindControls(bool writing, optional string action)
         f.equipment = 1;
         f.medbots = 5;
         f.repairbots = 5;
+        f.turrets_move = 50;
+        f.turrets_add = 40;
     }
     id++;
 
@@ -204,6 +214,12 @@ function BindControls(bool writing, optional string action)
     if( EnumOption(id, "Disabled", 0, writing, temp) ) {
         t.set_enabled(false);
     }
+    id++;
+
+    labels[id] = "Crowd Control";
+    helptexts[id] = "Let your Twitch viewers troll you or help you!";
+    EnumOption(id, "Disabled", 0, writing);
+    EnumOption(id, "Enabled", 1, writing);
     id++;
 
     labels[id] = "Seed";

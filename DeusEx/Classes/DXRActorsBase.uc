@@ -297,6 +297,21 @@ function vector GetRandomPosition(optional vector target, optional float mindist
     return temp[slot].Location;
 }
 
+function vector JitterPosition(vector loc)
+{
+    loc.X += rngfn() * 80;//5 feet in any direction
+    loc.Y += rngfn() * 80;
+    return loc;
+}
+
+function vector GetRandomPositionFine(optional vector target, optional float mindist, optional float maxdist)
+{
+    local vector loc;
+    loc = GetRandomPosition(target, mindist, maxdist);
+    loc = JitterPosition(loc);
+    return loc;
+}
+
 function vector GetCloserPosition(vector target, vector current, optional float maxdist)
 {
     local PathNode p;
@@ -317,67 +332,107 @@ function vector GetCloserPosition(vector target, vector current, optional float 
     return farthest;
 }
 
-function vector NearestSurface(vector StartTrace, vector EndTrace)
+function bool NearestSurface(vector StartTrace, out vector EndTrace, optional out vector normal)
 {
     local Actor HitActor;
     local vector HitLocation, HitNormal;
 
     HitActor = Trace(HitLocation, HitNormal, EndTrace, StartTrace);
-    if ( HitActor == Level )
-        return HitLocation;
-    return StartTrace;
+    if ( HitActor == Level ) {
+        normal = HitNormal;
+        EndTrace = HitLocation;
+        return true;
+    }
+    warning("NearestSurface failed from ("$StartTrace$") to ("$EndTrace$")");
+    return false;
 }
 
-function vector NearestCeiling(vector StartTrace, float maxdist)
+function bool NearestCeiling(out vector StartTrace, float maxdist, out rotator rotation, optional float away_from_wall)
 {
-    local vector EndTrace;
+    local vector EndTrace, normal, MoveOffWall;
     EndTrace = StartTrace;
     EndTrace.Z += maxdist;
-    return NearestSurface(StartTrace, EndTrace);
+    if( NearestSurface(StartTrace, EndTrace, normal) == false ) {
+        warning("NearestCeiling ("$StartTrace$") failed");
+        return false;
+    }
+    rotation = Rotator(normal);
+    MoveOffWall.X = away_from_wall;
+    MoveOffWall.Y = away_from_wall;
+    MoveOffWall.Z = away_from_wall;
+    MoveOffWall *= normal;
+    StartTrace = EndTrace + MoveOffWall;
+    return true;
 }
 
-function vector NearestFloor(vector StartTrace, float maxdist)
+function bool NearestFloor(out vector StartTrace, float maxdist, out rotator rotation, optional float away_from_wall)
 {
-    local vector EndTrace;
+    local vector EndTrace, normal, MoveOffWall;
     EndTrace = StartTrace;
-    EndTrace.Z += maxdist;
-    return NearestSurface(StartTrace, EndTrace);
+    EndTrace.Z -= maxdist;
+    if( NearestSurface(StartTrace, EndTrace, normal) == false ) {
+        warning("NearestFloor ("$StartTrace$") failed");
+        return false;
+    }
+    rotation = Rotator(normal);
+    MoveOffWall.X = away_from_wall;
+    MoveOffWall.Y = away_from_wall;
+    MoveOffWall.Z = away_from_wall;
+    MoveOffWall *= normal;
+    StartTrace = EndTrace + MoveOffWall;
+    return true;
 }
 
-function vector NearestWall(vector StartTrace, float maxdist)
+function bool NearestWall(out vector StartTrace, float maxdist, out rotator rotation, optional float away_from_wall, optional float mindist)
 {
-    local vector EndTrace;
+    local vector MoveOffWall;
     local vector walls[4];
+    local vector normals[4];
+    local int successes[4];
     local float closest_dist, dist;
     local int i, closest;
 
-    EndTrace = StartTrace;
-    EndTrace.X += maxdist;
-    walls[i++] = NearestSurface(StartTrace, EndTrace);
+    walls[i] = StartTrace;
+    walls[i].X += maxdist;
+    successes[i] = int(NearestSurface(StartTrace, walls[i], normals[i]));
+    i++;
 
-    EndTrace = StartTrace;
-    EndTrace.X -= maxdist;
-    walls[i++] = NearestSurface(StartTrace, EndTrace);
+    walls[i] = StartTrace;
+    walls[i].X -= maxdist;
+    successes[i] = int(NearestSurface(StartTrace, walls[i], normals[i]));
+    i++;
 
-    EndTrace = StartTrace;
-    EndTrace.Y += maxdist;
-    walls[i++] = NearestSurface(StartTrace, EndTrace);
+    walls[i] = StartTrace;
+    walls[i].Y += maxdist;
+    successes[i] = int(NearestSurface(StartTrace, walls[i], normals[i]));
+    i++;
 
-    EndTrace = StartTrace;
-    EndTrace.Y -= maxdist;
-    walls[i++] = NearestSurface(StartTrace, EndTrace);
+    walls[i] = StartTrace;
+    walls[i].Y -= maxdist;
+    successes[i] = int(NearestSurface(StartTrace, walls[i], normals[i]));
+    i++;
 
     closest_dist = maxdist+1;
     for(i=0; i<ArrayCount(walls); i++) {
+        if( successes[i] == 0 ) continue;
         dist = VSize(walls[i] - StartTrace);
-        if( dist < closest_dist ) {
+        if( dist < closest_dist && dist >= mindist ) {
             closest_dist = dist;
-            closest_dist = i;
+            closest = i;
         }
     }
 
-    if( closest_dist > maxdist ) return StartTrace;
-    return walls[closest];
+    if( closest_dist > maxdist ) {
+        warning("NearestWall ("$StartTrace$") failed with mindist: "$mindist$", maxdist: "$maxdist);
+        return false;
+    }
+    rotation = Rotator(normals[closest]);
+    MoveOffWall.X = away_from_wall;
+    MoveOffWall.Y = away_from_wall;
+    MoveOffWall.Z = away_from_wall;
+    MoveOffWall *= normals[closest];
+    StartTrace = walls[closest] + MoveOffWall;
+    return true;
 }
 
 function Vector GetCenter(Actor test)
