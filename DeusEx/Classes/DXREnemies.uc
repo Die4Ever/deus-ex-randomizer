@@ -267,8 +267,8 @@ function GetCameraLocation(out vector loc, out rotator rotation)
     loc = JitterPosition(loc);
     NearestFloor(loc, 16*50, rotation, 16);
     found_ceiling = NearestCeiling(loc, 16*50, rotation, 16);
-    found_wall1 = NearestWall(loc, 16*50, rotation, 10);
-    found_wall2 = NearestWall(loc, 16*50, rotation, 10, 16);
+    found_wall1 = NearestWall(loc, 16*75, rotation, 10);
+    found_wall2 = NearestWall(loc, 16*75, rotation, 10, 16);
     if( found_ceiling ) rotation.pitch -= 3568;
 }
 
@@ -311,12 +311,8 @@ function ComputerSecurity SpawnSecurityComputer(vector loc, optional AutoTurret 
     info("SpawnSecurityComputer near "$loc);
 
     loc = JitterPosition(loc);
-    v = loc;
-    for(i=2;i<6;i++) {
-        loc = v;
-        NearestFloor(loc, 16*50, rotation, 16*i);
-        if( NearestWall(loc, 16*50, rotation, 2) ) break;
-    }
+    NearestFloor(loc, 16*50, rotation, 16*4);
+    NearestWallSearchZ(loc, 16*75, rotation, 16*3, 2);
 
     c = Spawn(class'ComputerSecurity',,, loc, rotation);
     if( c == None ) {

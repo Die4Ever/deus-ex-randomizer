@@ -343,7 +343,7 @@ function bool NearestSurface(vector StartTrace, out vector EndTrace, optional ou
         EndTrace = HitLocation;
         return true;
     }
-    warning("NearestSurface failed from ("$StartTrace$") to ("$EndTrace$")");
+    l("NearestSurface failed from ("$StartTrace$") to ("$EndTrace$")");
     return false;
 }
 
@@ -383,9 +383,8 @@ function bool NearestFloor(out vector StartTrace, float maxdist, out rotator rot
     return true;
 }
 
-function bool NearestWall(out vector StartTrace, float maxdist, out rotator rotation, optional float away_from_wall, optional float mindist)
+function bool _NearestWall(out vector StartTrace, float maxdist, out vector normal, optional float mindist)
 {
-    local vector MoveOffWall;
     local vector walls[4];
     local vector normals[4];
     local int successes[4];
@@ -423,7 +422,60 @@ function bool NearestWall(out vector StartTrace, float maxdist, out rotator rota
     }
 
     if( closest_dist > maxdist ) {
+        l("_NearestWall ("$StartTrace$") failed with mindist: "$mindist$", maxdist: "$maxdist);
+        return false;
+    }
+    normal = normals[closest];
+    StartTrace = walls[closest];
+    return true;
+}
+
+function bool NearestWall(out vector StartTrace, float maxdist, out rotator rotation, optional float away_from_wall, optional float mindist)
+{
+    local vector MoveOffWall, normal;
+    
+    if( _NearestWall(StartTrace, maxdist, normal, mindist) == false ) {
         warning("NearestWall ("$StartTrace$") failed with mindist: "$mindist$", maxdist: "$maxdist);
+        return false;
+    }
+    rotation = Rotator(normal);
+    MoveOffWall.X = away_from_wall;
+    MoveOffWall.Y = away_from_wall;
+    MoveOffWall.Z = away_from_wall;
+    MoveOffWall *= normal;
+    StartTrace += MoveOffWall;
+    return true;
+}
+
+function bool NearestWallSearchZ(out vector StartTrace, float maxdist, out rotator rotation, float z_range, optional float away_from_wall, optional float mindist)
+{
+    local vector MoveOffWall;
+    local vector walls[5];
+    local vector normals[5];
+    local int successes[5];
+    local float closest_dist, dist;
+    local int i, closest;
+    local float len;
+
+    len = Float(ArrayCount(walls)-1);
+    for(i=0; i<ArrayCount(walls); i++) {
+        walls[i] = StartTrace;
+        walls[i].Z += z_range * (Float(i) / len * 2.0 - 1.0);
+        successes[i] = int( _NearestWall(walls[i], maxdist, normals[i], mindist) );
+    }
+
+    closest_dist = maxdist+1;
+    for(i=0; i<ArrayCount(walls); i++) {
+        if( successes[i] == 0 ) continue;
+        dist = VSize(walls[i] - StartTrace);
+        if( dist < closest_dist && dist >= mindist ) {
+            closest_dist = dist;
+            closest = i;
+        }
+    }
+
+    if( closest_dist > maxdist ) {
+        warning("NearestWall2 ("$StartTrace$") failed with mindist: "$mindist$", maxdist: "$maxdist$", z_range: "$z_range);
         return false;
     }
     rotation = Rotator(normals[closest]);
