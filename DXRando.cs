@@ -6,7 +6,7 @@ using ConnectorType = CrowdControl.Common.ConnectorType;
 
 public class DXRando : SimpleTCPPack
 {
-    public override string Host => "127.0.0.1";
+    public override string Host => "0.0.0.0";
 
     public override ushort Port => 43384;
 

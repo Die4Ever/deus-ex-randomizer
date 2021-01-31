@@ -1,10 +1,9 @@
 //=============================================================================
 // DXRandoCrowdControlLink.
 //=============================================================================
-class DXRandoCrowdControlLink expands TcpLink config(DXRando);
+class DXRandoCrowdControlLink expands TcpLink;
 
-var config int config_version;
-var config bool enabled;
+var string crowd_control_addr;
 
 var transient DXRando dxr;
 var int ListenPort;
@@ -18,6 +17,7 @@ var int speedTimer;
 var int lamthrowerTimer;
 
 var float moveSpeedModifier;
+var string pendingMsg;
 
 const Success = 0;
 const Failed = 1;
@@ -38,15 +38,10 @@ const SpeedTimeDefault = 60;
 const LamThrowerTimeDefault = 60;
 
 
-function Init( DXRando tdxr)
+function Init( DXRando tdxr, string addr)
 {
-    dxr = tdxr;    
-
-    CheckConfig();
-
-    if (!enabled) {
-        return;
-    }
+    dxr = tdxr;   
+    crowd_control_addr = addr; 
 
     CleanupOnEnter();
 
@@ -56,22 +51,13 @@ function Init( DXRando tdxr)
         return;
     }   
 
-    Resolve("localhost");
+    Resolve(crowd_control_addr);
 
     reconnectTimer = ReconDefault;
     SetTimer(1,True);
 
 }
 
-function CheckConfig()
-{
-
-    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
-        log("INFO: upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
-        config_version = class'DXRFlags'.static.VersionNumber();
-        SaveConfig();
-    }
-}
 
 function CleanupOnEnter() {
 
@@ -101,7 +87,7 @@ function Timer() {
     if (!IsConnected()) {
         reconnectTimer-=1;
         if (reconnectTimer <= 0){
-            Resolve("localhost");
+            Resolve(crowd_control_addr);
         }
     }
 
@@ -151,6 +137,7 @@ function Timer() {
 }
 
 function bool isCrowdControl( string msg) {
+    local string tmp;
     //Validate if it looks json-like
     if (InStr(msg,"{")!=0){
         //dxr.Player.ClientMessage("Message doesn't start with curly");
@@ -180,7 +167,24 @@ function bool isCrowdControl( string msg) {
     //type field
     if (InStr(msg,"type")==-1){
         return False;
-    }    
+    }
+    
+    //Check to see if there are multiple messages stuck together
+    //By removing the outermost curly brackets, we can check to
+    //see if there are any more inside them (indicating one was
+    //closed and another one was opened within the same message
+    tmp = Mid(msg,1,Len(msg)-2);
+    //dxr.Player.ClientMessage("Removed outer curlies: "$tmp);
+    //Check for extra curly braces inside the outermost ones
+    if (InStr(tmp,"{")!=-1){
+        //dxr.Player.ClientMessage("Has extra internal open curly!");
+        return False;
+    }
+    
+    if (InStr(tmp,"}")!=-1){
+        //dxr.Player.ClientMessage("Has extra internal close curly!");
+        return False;    
+    }
 
     return True;
 }
@@ -492,8 +496,37 @@ function handleMessage( string msg) {
 }
 
 event ReceivedText ( string Text ) {
-    //dxr.Player.ClientMessage(Text);
+    //Text mode seems to just drop anything past a null terminator
+    //so if multiple messages are received back to back before
+    //we get around to reading it, any past the first may be
+    //discarded entirely
     handleMessage(Text);
+}
+
+//In the context of crowd control, this behaves the same as ReceivedText
+//This is because there are no linebreaks in the messages, they are just
+//null terminated
+event ReceivedLine ( string Text ) {
+    handleMessage(Text);
+}
+
+
+//This seems to just receive crazy garbage
+event ReceivedBinary(int count, byte B[255]) {
+    local int i;
+    for (i = 0; i < count; i++) {
+        if (B[i] == 0) {
+            //handleMessage(pendingMsg);
+            if (Len(pendingMsg)>0){
+            //dxr.Player.ClientMessage("got message (maybe): "$pendingMsg);
+            }
+            pendingMsg="";
+        } else {
+            pendingMsg = pendingMsg $ Chr(B[i]);
+            dxr.Player.ClientMessage(B[i]);
+        }
+    }
+    dxr.Player.ClientMessage("Count was "$count);
 }
 
 event Opened(){
@@ -531,6 +564,7 @@ function Resolved( IpAddr Addr )
     }
 
     LinkMode=MODE_Text;
+
 }
 function ResolveFailed()
 {

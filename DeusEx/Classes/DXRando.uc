@@ -4,7 +4,6 @@ var transient DeusExPlayer Player;
 var transient DXRFlags flags;
 var transient DeusExLevelInfo dxInfo;
 var transient string localURL;
-var transient DXRandoCrowdControlLink CrowdControl;
 
 var int newseed;
 var int seed;
@@ -84,6 +83,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXREnemyRespawn";
         modules_to_load[i++] = "DXRBannedItems";
         modules_to_load[i++] = "DXRWeapons";
+        modules_to_load[i++] = "DXRCrowdControl";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
@@ -231,9 +231,6 @@ function RandoEnter()
     for(i=0; i<num_modules; i++) {
         modules[i].AnyEntry();
     }
-
-    CrowdControl = Spawn(class'DXRandoCrowdControlLink');
-    CrowdControl.Init(Self);
 
 }
 
