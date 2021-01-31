@@ -27,6 +27,7 @@ function BindControls(bool writing, optional string action)
     local DXRFlags f;
     local string sseed;
     local Telemetry t;
+    local DXRCrowdControl cc;
     local int temp;
 
     Super.BindControls(writing);
@@ -204,10 +205,10 @@ function BindControls(bool writing, optional string action)
 
     foreach f.AllActors(class'Telemetry', t) { break; }
     if( t == None ) t = f.Spawn(class'Telemetry');
-    labels[id] = "Help us improve";
-    helptexts[id] = "Send error reports and logging";
     temp = 0;
     if( t.enabled ) temp = 1;
+    labels[id] = "Help us improve";
+    helptexts[id] = "Send error reports and logging";
     if( EnumOption(id, "Enabled", 1, writing, temp) ) {
         t.set_enabled(true);
     }
@@ -218,8 +219,8 @@ function BindControls(bool writing, optional string action)
 
     labels[id] = "Crowd Control";
     helptexts[id] = "Let your Twitch viewers troll you or help you!";
-    EnumOption(id, "Disabled", 0, writing);
-    EnumOption(id, "Enabled", 1, writing);
+    EnumOption(id, "Enabled", 1, writing, f.crowdcontrol);
+    EnumOption(id, "Disabled", 0, writing, f.crowdcontrol);
     id++;
 
     labels[id] = "Seed";

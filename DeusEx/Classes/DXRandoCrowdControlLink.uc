@@ -1,7 +1,7 @@
 //=============================================================================
 // DXRandoCrowdControlLink.
 //=============================================================================
-class DXRandoCrowdControlLink expands TcpLink;
+class DXRandoCrowdControlLink expands TcpLink transient;
 
 var string crowd_control_addr;
 
@@ -45,11 +45,11 @@ function Init( DXRando tdxr, string addr)
 
     CleanupOnEnter();
 
-    ListenPort=BindPort();
+    /*ListenPort=BindPort();
     if (ListenPort==0){
-        dxr.Player.ClientMessage("Failed to bind port for Crowd Control");
+        err("Failed to bind port for Crowd Control");
         return;
-    }   
+    }*/
 
     Resolve(crowd_control_addr);
 
@@ -78,7 +78,7 @@ function StopMatrixMode(optional bool silent) {
     }
 
     if (!silent) {
-        dxr.Player.ClientMessage("Your powers fade...");
+        PlayerMessage("Your powers fade...");
     }
 
 }
@@ -104,7 +104,7 @@ function Timer() {
         empTimer -= 1;
         if (empTimer <=0) {
             dxr.Player.bWarrenEMPField = false;
-            dxr.Player.ClientMessage("EMP Field has disappeared...");
+            PlayerMessage("EMP Field has disappeared...");
         }
     }
 
@@ -113,7 +113,7 @@ function Timer() {
         dxr.Player.JumpZ = 0;
         if (jumpTimer <= 0) {
             dxr.Player.JumpZ = dxr.Player.Default.JumpZ;
-            dxr.Player.ClientMessage("Your knees feel fine again.");
+            PlayerMessage("Your knees feel fine again.");
         }
     }
 
@@ -122,7 +122,7 @@ function Timer() {
         dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
         if (speedTimer <= 0) {
             dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;
-            dxr.Player.ClientMessage("Back to normal speed!");
+            PlayerMessage("Back to normal speed!");
         }
     }
 
@@ -130,7 +130,7 @@ function Timer() {
         lamthrowerTimer-=1;
         if (lamthrowerTimer <=0) {
             UndoLamThrowers();
-            dxr.Player.ClientMessage("Your flamethrower is boring again");
+            PlayerMessage("Your flamethrower is boring again");
         }
     }
 
@@ -140,12 +140,12 @@ function bool isCrowdControl( string msg) {
     local string tmp;
     //Validate if it looks json-like
     if (InStr(msg,"{")!=0){
-        //dxr.Player.ClientMessage("Message doesn't start with curly");
+        //PlayerMessage("Message doesn't start with curly");
         return False;
     }
     
     if (InStr(msg,"}")!=Len(msg)-1){
-        //dxr.Player.ClientMessage("Message doesn't end with curly");
+        //PlayerMessage("Message doesn't end with curly");
         return False;    
     }
     
@@ -174,15 +174,15 @@ function bool isCrowdControl( string msg) {
     //see if there are any more inside them (indicating one was
     //closed and another one was opened within the same message
     tmp = Mid(msg,1,Len(msg)-2);
-    //dxr.Player.ClientMessage("Removed outer curlies: "$tmp);
+    //PlayerMessage("Removed outer curlies: "$tmp);
     //Check for extra curly braces inside the outermost ones
     if (InStr(tmp,"{")!=-1){
-        //dxr.Player.ClientMessage("Has extra internal open curly!");
+        //PlayerMessage("Has extra internal open curly!");
         return False;
     }
     
     if (InStr(tmp,"}")!=-1){
-        //dxr.Player.ClientMessage("Has extra internal close curly!");
+        //PlayerMessage("Has extra internal close curly!");
         return False;    
     }
 
@@ -200,7 +200,7 @@ function sendReply(int id, int status) {
         respbyte[i]=Asc(Mid(resp,i,1));
     }
     
-    //dxr.Player.ClientMessage(resp);
+    //PlayerMessage(resp);
     SendBinary(Len(resp)+1,respbyte);
 }
 
@@ -229,7 +229,7 @@ function SkillPointsRemove(int numPoints) {
 	    (DeusExRootWindow(dxr.Player.rootWindow).hud != None) && 
 		(DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog != None))
 	{
-		dxr.Player.ClientMessage(Sprintf(dxr.Player.SkillPointsAward, -numPoints));
+		PlayerMessage(Sprintf(dxr.Player.SkillPointsAward, -numPoints));
 		DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog.PlayLogSound(Sound'LogSkillPoints');
 	}
 }
@@ -271,26 +271,26 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
     switch(code) {
 		case "poison":
 			dxr.Player.StartPoison(dxr.Player,5);
-			dxr.Player.ClientMessage(viewer@"poisoned you!");
+			PlayerMessage(viewer@"poisoned you!");
 			break;
 
 		case "kill":
 			dxr.Player.Died(dxr.Player,'CrowdControl',v);
-			dxr.Player.ClientMessage(viewer@"set off your killswitch!");
+			PlayerMessage(viewer@"set off your killswitch!");
 			dxr.Player.MultiplayerDeathMsg(dxr.Player,False,True,viewer,"triggering your kill switch");
 			break;
 
 		case "drop_lam":
 			r.Yaw = 16000;
 			Spawn(Class'LAM',,,dxr.Player.Location,r);
-			dxr.Player.ClientMessage(viewer@"dropped a LAM at your feet!");
+			PlayerMessage(viewer@"dropped a LAM at your feet!");
 			break;
 
 		case "glass_legs":
 			dxr.Player.HealthLegLeft=1;
 			dxr.Player.HealthLegRight=1;
 			dxr.Player.GenerateTotalHealth();
-			dxr.Player.ClientMessage(viewer@"gave you glass legs!");
+			PlayerMessage(viewer@"gave you glass legs!");
 			break;
 
 		case "give_health":
@@ -298,17 +298,17 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 				return TempFail;
 			}
 			dxr.Player.HealPlayer(50,False);
-			dxr.Player.ClientMessage(viewer@"gave you 50 health!");
+			PlayerMessage(viewer@"gave you 50 health!");
 			break;
 
 		case "set_fire":
 			dxr.Player.CatchFire(dxr.Player);
-			dxr.Player.ClientMessage(viewer@"set you on fire!");
+			PlayerMessage(viewer@"set you on fire!");
 			break;
 
 		case "give_medkit":
 			GiveItem(class'MedKit');
-			dxr.Player.ClientMessage(viewer@"gave you a medkit");
+			PlayerMessage(viewer@"gave you a medkit");
 			break;
 
 		case "full_heal":
@@ -316,7 +316,7 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 				return TempFail;
 			}
 			dxr.Player.RestoreAllHealth();
-			dxr.Player.ClientMessage(viewer@"fully healed you!");
+			PlayerMessage(viewer@"fully healed you!");
 			break;
 
 		case "disable_jump":
@@ -326,7 +326,7 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 
 			dxr.Player.JumpZ = 0;
 			jumpTimer = JumpTimeDefault;
-			dxr.Player.ClientMessage(viewer@"made your knees lock up.");
+			PlayerMessage(viewer@"made your knees lock up.");
 			break;
 
 		case "gotta_go_fast":
@@ -336,7 +336,7 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 			moveSpeedModifier = MoveSpeedMultiplier;
 			dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
 			speedTimer = SpeedTimeDefault;
-			dxr.Player.ClientMessage(viewer@"made you fast like Sonic!");
+			PlayerMessage(viewer@"made you fast like Sonic!");
 			break;
 
 		case "gotta_go_slow":
@@ -346,7 +346,7 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 			moveSpeedModifier = MoveSpeedDivisor;
 			dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
 			speedTimer = SpeedTimeDefault;
-			dxr.Player.ClientMessage(viewer@"made you slow like a snail!");
+			PlayerMessage(viewer@"made you slow like a snail!");
 			break;
 		case "drunk_mode":
 			if (dxr.Player.drugEffectTimer<30.0) {
@@ -354,7 +354,7 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 			} else {
 				return TempFail;
 			}
-			dxr.Player.ClientMessage(viewer@"got you tipsy!");
+			PlayerMessage(viewer@"got you tipsy!");
 			break;
 
 		case "drop_selected_item":
@@ -362,13 +362,13 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 			if (result == False) {
 				return TempFail;
 			}
-			dxr.Player.ClientMessage(viewer@"made you fumble your item");
+			PlayerMessage(viewer@"made you fumble your item");
 			break;
 
 		case "emp_field":
 			dxr.Player.bWarrenEMPField = true;
 			empTimer = EmpDefault;
-			dxr.Player.ClientMessage(viewer@"made electronics allergic to you");
+			PlayerMessage(viewer@"made electronics allergic to you");
 			break;
 
 		case "matrix":
@@ -378,7 +378,7 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 			}
 			dxr.Player.Matrix();
 			matrixModeTimer = MatrixTimeDefault;
-			dxr.Player.ClientMessage(viewer@"thinks you are The One...");
+			PlayerMessage(viewer@"thinks you are The One...");
 			break;
 			
 
@@ -389,28 +389,28 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 			}
 			//Copied from BioelectricCell
 
-			//dxr.Player.ClientMessage("Recharged 10 points");
+			//PlayerMessage("Recharged 10 points");
 		dxr.Player.PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
 
 		dxr.Player.Energy += 10;
 		if (dxr.Player.Energy > dxr.Player.EnergyMax)
 			dxr.Player.Energy = dxr.Player.EnergyMax;
 
-			dxr.Player.ClientMessage(viewer@"gave you 10 energy!");
+			PlayerMessage(viewer@"gave you 10 energy!");
 			break;
 
 	   case "give_biocell":
 			GiveItem(class'BioelectricCell');
-			dxr.Player.ClientMessage(viewer@"gave you a bioelectric cell!");
+			PlayerMessage(viewer@"gave you a bioelectric cell!");
 			break;
 
 		case "give_skillpoints":
-			dxr.Player.ClientMessage(viewer@"gave you skill points");
+			PlayerMessage(viewer@"gave you skill points");
 			dxr.Player.SkillPointsAdd(100);
 			break;
 
 		case "remove_skillpoints":
-			dxr.Player.ClientMessage(viewer@"took away skill points");
+			PlayerMessage(viewer@"took away skill points");
 			SkillPointsRemove(100);
 			break;
 
@@ -422,7 +422,7 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 
 			MakeLamThrower(anItem);
 			lamthrowerTimer = LamThrowerTimeDefault;
-			dxr.Player.ClientMessage(viewer@"turned your flamethrower into a LAM Thrower!");
+			PlayerMessage(viewer@"turned your flamethrower into a LAM Thrower!");
 			break;
 
 		case "give_flamethrower":
@@ -487,7 +487,7 @@ function handleMessage( string msg) {
 
     if (isCrowdControl(msg)) {
         //Yolo
-        //dxr.Player.ClientMessage("Looks pretty crowd control-y to me");
+        //PlayerMessage("Looks pretty crowd control-y to me");
         
         //Find ID
         loc1 = InStr(msg,"id");
@@ -497,7 +497,7 @@ function handleMessage( string msg) {
         length = loc2-loc1;
         tmpstr2 = Mid(tmpstr1,loc1+1,length);
         id = int(tmpstr2);
-        //dxr.Player.ClientMessage("Crowd Control ID = "$id);
+        //PlayerMessage("Crowd Control ID = "$id);
         
         //Find Code
         loc1 = InStr(msg,"code");
@@ -506,7 +506,7 @@ function handleMessage( string msg) {
         loc2= InStr(tmpstr1,",")-1;
         length = loc2-loc1;
         code = Mid(tmpstr1,loc1,length);
-        //dxr.Player.ClientMessage("Crowd Control Code = "$code);        
+        //PlayerMessage("Crowd Control Code = "$code);        
         
         //Find Viewer
         loc1 = InStr(msg,"viewer");
@@ -515,7 +515,7 @@ function handleMessage( string msg) {
         loc2= InStr(tmpstr1,",")-1;
         length = loc2-loc1;
         viewer = Mid(tmpstr1,loc1,length);
-        //dxr.Player.ClientMessage("Crowd Control Viewer = "$viewer);
+        //PlayerMessage("Crowd Control Viewer = "$viewer);
 
         //Find Type
         loc1 = InStr(msg,"type");
@@ -525,14 +525,14 @@ function handleMessage( string msg) {
         length = loc2-loc1;
         tmpstr2 = Mid(tmpstr1,loc1+1,length);
         type = int(tmpstr2);
-        //dxr.Player.ClientMessage("Crowd Control Type = "$type);     
+        //PlayerMessage("Crowd Control Type = "$type);     
         
         result = doCrowdControlEvent(code,viewer,type);
         
-        sendReply(id,result);   
+        sendReply(id,result);
         
     } else {
-        dxr.Player.ClientMessage("Got a weird message: "$msg);
+        err("Got a weird message: "$msg);
     }
 
 }
@@ -560,23 +560,23 @@ event ReceivedBinary(int count, byte B[255]) {
         if (B[i] == 0) {
             //handleMessage(pendingMsg);
             if (Len(pendingMsg)>0){
-            //dxr.Player.ClientMessage("got message (maybe): "$pendingMsg);
+            //PlayerMessage("got message (maybe): "$pendingMsg);
             }
             pendingMsg="";
         } else {
             pendingMsg = pendingMsg $ Chr(B[i]);
-            dxr.Player.ClientMessage(B[i]);
+            PlayerMessage("ReceivedBinary: " $ B[i]);
         }
     }
-    dxr.Player.ClientMessage("Count was "$count);
+    PlayerMessage("Count was "$count);
 }
 
 event Opened(){
-    dxr.Player.ClientMessage("Crowd Control connection opened");
+    PlayerMessage("Crowd Control connection opened");
 }
 
 event Closed(){
-    dxr.Player.ClientMessage("Crowd Control connection closed");
+    PlayerMessage("Crowd Control connection closed");
     ListenPort = 0;
     reconnectTimer = ReconDefault;
 }
@@ -591,7 +591,7 @@ function Resolved( IpAddr Addr )
     if (ListenPort == 0) {
         ListenPort=BindPort();
         if (ListenPort==0){
-            dxr.Player.ClientMessage("Failed to bind port for Crowd Control");
+            err("Failed to bind port for Crowd Control");
             reconnectTimer = ReconDefault;
             return;
         }   
@@ -599,7 +599,7 @@ function Resolved( IpAddr Addr )
 
     Addr.port=CrowdControlPort;
     if (False==Open(Addr)){
-        dxr.Player.ClientMessage("Could not connect to Crowd Control client");
+        err("Could not connect to Crowd Control client");
         reconnectTimer = ReconDefault;
         return;
 
@@ -610,6 +610,26 @@ function Resolved( IpAddr Addr )
 }
 function ResolveFailed()
 {
-    dxr.Player.ClientMessage("Could not resolve Crowd Control address");
+    err("Could not resolve Crowd Control address");
     reconnectTimer = ReconDefault;
+}
+
+function PlayerMessage(string msg)
+{
+    log(Self$": "$msg);
+    class'Telemetry'.static.SendLog(Self, "INFO", msg);
+    dxr.Player.ClientMessage(msg);
+}
+
+function err(string msg)
+{
+    log(Self$": ERROR: "$msg);
+    class'Telemetry'.static.SendLog(Self, "ERROR", msg);
+    dxr.Player.ClientMessage(msg);
+}
+
+function info(string msg)
+{
+    log(Self$": INFO: "$msg);
+    class'Telemetry'.static.SendLog(Self, "INFO", msg);
 }

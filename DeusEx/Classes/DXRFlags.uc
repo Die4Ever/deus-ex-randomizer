@@ -17,6 +17,7 @@ var int skills_disable_downgrades, skills_reroll_missions, skills_independent_le
 var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
 var int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
 var int turrets_move, turrets_add;
+var int crowdcontrol;
 
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
@@ -103,6 +104,7 @@ function InitDefaults()
     repairbots = 15;
     turrets_move = 50;
     turrets_add = 20;
+    crowdcontrol = 0;
 }
 
 function CheckConfig()
@@ -175,6 +177,7 @@ function LoadFlags()
     if( stored_version >= VersionToInt(1,5,0) ) {
         turrets_move = f.GetInt('Rando_turrets_move');
         turrets_add = f.GetInt('Rando_turrets_add');
+        crowdcontrol = f.GetInt('Rando_crowdcontrol');
     }
 
     if(stored_version < flagsversion ) {
@@ -233,6 +236,7 @@ function SaveFlags()
     f.SetInt('Rando_repairbots', repairbots,, 999);
     f.SetInt('Rando_turrets_move', turrets_move,, 999);
     f.SetInt('Rando_turrets_add', turrets_add,, 999);
+    f.SetInt('Rando_crowdcontrol', crowdcontrol,, 999);
 
     LogFlags("SaveFlags");
 }
@@ -250,7 +254,7 @@ function string StringifyFlags()
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
         $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", enemyrespawn: "$enemyrespawn$", infodevices: "$infodevices
-        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots$", turrets_move: "$turrets_move$", turrets_add: "$turrets_add;
+        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots$", turrets_move: "$turrets_move$", turrets_add: "$turrets_add$", crowdcontrol: "$crowdcontrol;
 }
 
 function int FlagsHash()
