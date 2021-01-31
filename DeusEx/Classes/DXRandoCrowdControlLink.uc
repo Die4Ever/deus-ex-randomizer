@@ -1,10 +1,9 @@
 //=============================================================================
 // DXRandoCrowdControlLink.
 //=============================================================================
-class DXRandoCrowdControlLink expands TcpLink config(DXRando);
+class DXRandoCrowdControlLink expands TcpLink;
 
-var config int config_version;
-var config bool enabled;
+var string crowd_control_addr;
 
 var transient DXRando dxr;
 var int ListenPort;
@@ -18,6 +17,7 @@ var int speedTimer;
 var int lamthrowerTimer;
 
 var float moveSpeedModifier;
+var string pendingMsg;
 
 const Success = 0;
 const Failed = 1;
@@ -38,15 +38,10 @@ const SpeedTimeDefault = 60;
 const LamThrowerTimeDefault = 60;
 
 
-function Init( DXRando tdxr)
+function Init( DXRando tdxr, string addr)
 {
-    dxr = tdxr;    
-
-    CheckConfig();
-
-    if (!enabled) {
-        return;
-    }
+    dxr = tdxr;   
+    crowd_control_addr = addr; 
 
     CleanupOnEnter();
 
@@ -56,22 +51,13 @@ function Init( DXRando tdxr)
         return;
     }   
 
-    Resolve("localhost");
+    Resolve(crowd_control_addr);
 
     reconnectTimer = ReconDefault;
     SetTimer(1,True);
 
 }
 
-function CheckConfig()
-{
-
-    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
-        log("INFO: upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
-        config_version = class'DXRFlags'.static.VersionNumber();
-        SaveConfig();
-    }
-}
 
 function CleanupOnEnter() {
 
@@ -101,7 +87,7 @@ function Timer() {
     if (!IsConnected()) {
         reconnectTimer-=1;
         if (reconnectTimer <= 0){
-            Resolve("localhost");
+            Resolve(crowd_control_addr);
         }
     }
 
@@ -151,6 +137,7 @@ function Timer() {
 }
 
 function bool isCrowdControl( string msg) {
+    local string tmp;
     //Validate if it looks json-like
     if (InStr(msg,"{")!=0){
         //dxr.Player.ClientMessage("Message doesn't start with curly");
@@ -180,7 +167,24 @@ function bool isCrowdControl( string msg) {
     //type field
     if (InStr(msg,"type")==-1){
         return False;
-    }    
+    }
+    
+    //Check to see if there are multiple messages stuck together
+    //By removing the outermost curly brackets, we can check to
+    //see if there are any more inside them (indicating one was
+    //closed and another one was opened within the same message
+    tmp = Mid(msg,1,Len(msg)-2);
+    //dxr.Player.ClientMessage("Removed outer curlies: "$tmp);
+    //Check for extra curly braces inside the outermost ones
+    if (InStr(tmp,"{")!=-1){
+        //dxr.Player.ClientMessage("Has extra internal open curly!");
+        return False;
+    }
+    
+    if (InStr(tmp,"}")!=-1){
+        //dxr.Player.ClientMessage("Has extra internal close curly!");
+        return False;    
+    }
 
     return True;
 }
@@ -264,168 +268,210 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
     r.Yaw = 0;
     r.Roll =0;
     
-    
-    if (code=="poison"){
-        dxr.Player.StartPoison(dxr.Player,5);
-        dxr.Player.ClientMessage(viewer@"poisoned you!");
+    switch(code) {
+		case "poison":
+			dxr.Player.StartPoison(dxr.Player,5);
+			dxr.Player.ClientMessage(viewer@"poisoned you!");
+			break;
 
-    } else if (code == "kill"){
-        dxr.Player.Died(dxr.Player,'CrowdControl',v);
-        dxr.Player.ClientMessage(viewer@"set off your killswitch!");
-        dxr.Player.MultiplayerDeathMsg(dxr.Player,False,True,viewer,"triggering your kill switch");
+		case "kill":
+			dxr.Player.Died(dxr.Player,'CrowdControl',v);
+			dxr.Player.ClientMessage(viewer@"set off your killswitch!");
+			dxr.Player.MultiplayerDeathMsg(dxr.Player,False,True,viewer,"triggering your kill switch");
+			break;
 
-    } else if (code == "drop_lam"){
-        r.Yaw = 16000;
-        Spawn(Class'LAM',,,dxr.Player.Location,r);
-        dxr.Player.ClientMessage(viewer@"dropped a LAM at your feet!");
+		case "drop_lam":
+			r.Yaw = 16000;
+			Spawn(Class'LAM',,,dxr.Player.Location,r);
+			dxr.Player.ClientMessage(viewer@"dropped a LAM at your feet!");
+			break;
 
-    } else if (code == "glass_legs") {
-        dxr.Player.HealthLegLeft=1;
-        dxr.Player.HealthLegRight=1;
-        dxr.Player.GenerateTotalHealth();
-        dxr.Player.ClientMessage(viewer@"gave you glass legs!");
+		case "glass_legs":
+			dxr.Player.HealthLegLeft=1;
+			dxr.Player.HealthLegRight=1;
+			dxr.Player.GenerateTotalHealth();
+			dxr.Player.ClientMessage(viewer@"gave you glass legs!");
+			break;
 
-    } else if (code == "give_health") {
-        if (dxr.Player.Health == 100) {
-            return TempFail;
-        }
-        dxr.Player.HealPlayer(50,False);
-        dxr.Player.ClientMessage(viewer@"gave you 50 health!");
+		case "give_health":
+			if (dxr.Player.Health == 100) {
+				return TempFail;
+			}
+			dxr.Player.HealPlayer(50,False);
+			dxr.Player.ClientMessage(viewer@"gave you 50 health!");
+			break;
 
-    } else if (code == "set_fire") {
-        dxr.Player.CatchFire(dxr.Player);
-        dxr.Player.ClientMessage(viewer@"set you on fire!");
+		case "set_fire":
+			dxr.Player.CatchFire(dxr.Player);
+			dxr.Player.ClientMessage(viewer@"set you on fire!");
+			break;
 
-    } else if (code == "give_medkit") {
-        GiveItem(class'MedKit');
-        dxr.Player.ClientMessage(viewer@"gave you a medkit");
+		case "give_medkit":
+			GiveItem(class'MedKit');
+			dxr.Player.ClientMessage(viewer@"gave you a medkit");
+			break;
 
-    } else if (code == "send_player_to_random_point") {
+		case "full_heal":
+			if (dxr.Player.Health == 100) {
+				return TempFail;
+			}
+			dxr.Player.RestoreAllHealth();
+			dxr.Player.ClientMessage(viewer@"fully healed you!");
+			break;
 
-    } else if (code == "full_heal") {
-        if (dxr.Player.Health == 100) {
-            return TempFail;
-        }
-        dxr.Player.RestoreAllHealth();
-        dxr.Player.ClientMessage(viewer@"fully healed you!");
+		case "disable_jump":
+			if (dxr.Player.JumpZ == 0) {
+				return TempFail;
+			}
 
-    } else if (code == "disable_jump") {
-        if (dxr.Player.JumpZ == 0) {
-            return TempFail;
-        }
+			dxr.Player.JumpZ = 0;
+			jumpTimer = JumpTimeDefault;
+			dxr.Player.ClientMessage(viewer@"made your knees lock up.");
+			break;
 
-        dxr.Player.JumpZ = 0;
-        jumpTimer = JumpTimeDefault;
-        dxr.Player.ClientMessage(viewer@"made your knees lock up.");
+		case "gotta_go_fast":
+			if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
+				return TempFail;
+			}
+			moveSpeedModifier = MoveSpeedMultiplier;
+			dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
+			speedTimer = SpeedTimeDefault;
+			dxr.Player.ClientMessage(viewer@"made you fast like Sonic!");
+			break;
 
-    } else if (code == "gotta_go_fast") {
-        if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
-            return TempFail;
-        }
-        moveSpeedModifier = MoveSpeedMultiplier;
-        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
-        speedTimer = SpeedTimeDefault;
-        dxr.Player.ClientMessage(viewer@"made you fast like Sonic!");
+		case "gotta_go_slow":
+			if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
+				return TempFail;
+			}
+			moveSpeedModifier = MoveSpeedDivisor;
+			dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
+			speedTimer = SpeedTimeDefault;
+			dxr.Player.ClientMessage(viewer@"made you slow like a snail!");
+			break;
+		case "drunk_mode":
+			if (dxr.Player.drugEffectTimer<30.0) {
+				dxr.Player.drugEffectTimer+=60.0;
+			} else {
+				return TempFail;
+			}
+			dxr.Player.ClientMessage(viewer@"got you tipsy!");
+			break;
 
-    } else if (code == "gotta_go_slow") {
-        if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
-            return TempFail;
-        }
-        moveSpeedModifier = MoveSpeedDivisor;
-        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
-        speedTimer = SpeedTimeDefault;
-        dxr.Player.ClientMessage(viewer@"made you slow like a snail!");
-    } else if (code == "drunk_mode") {
-        if (dxr.Player.drugEffectTimer<30.0) {
-            dxr.Player.drugEffectTimer+=60.0;
-        } else {
-            return TempFail;
-        }
-        dxr.Player.ClientMessage(viewer@"got you tipsy!");
+		case "drop_selected_item":
+			result = dxr.Player.DropItem();
+			if (result == False) {
+				return TempFail;
+			}
+			dxr.Player.ClientMessage(viewer@"made you fumble your item");
+			break;
 
-    } else if (code == "drop_selected_item") {
-        result = dxr.Player.DropItem();
-        if (result == False) {
-            return TempFail;
-        }
-        dxr.Player.ClientMessage(viewer@"made you fumble your item");
+		case "emp_field":
+			dxr.Player.bWarrenEMPField = true;
+			empTimer = EmpDefault;
+			dxr.Player.ClientMessage(viewer@"made electronics allergic to you");
+			break;
 
-    } else if (code == "emp_field") {
-        dxr.Player.bWarrenEMPField = true;
-        empTimer = EmpDefault;
-        dxr.Player.ClientMessage(viewer@"made electronics allergic to you");
+		case "matrix":
+			if (dxr.Player.Sprite!=None) {
+				//Matrix Mode already enabled
+				return TempFail;
+			}
+			dxr.Player.Matrix();
+			matrixModeTimer = MatrixTimeDefault;
+			dxr.Player.ClientMessage(viewer@"thinks you are The One...");
+			break;
+			
 
-    } else if (code == "matrix") {
-        if (dxr.Player.Sprite!=None) {
-            //Matrix Mode already enabled
-            return TempFail;
-        }
-        dxr.Player.Matrix();
-        matrixModeTimer = MatrixTimeDefault;
-        dxr.Player.ClientMessage(viewer@"thinks you are The One...");
-        
+		case "give_energy":
+			
+			if (dxr.Player.Energy == dxr.Player.EnergyMax) {
+				return TempFail;
+			}
+			//Copied from BioelectricCell
 
-    } else if (code == "give_energy") {
-        
-        if (dxr.Player.Energy == dxr.Player.EnergyMax) {
-            return TempFail;
-        }
-        //Copied from BioelectricCell
+			//dxr.Player.ClientMessage("Recharged 10 points");
+		dxr.Player.PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
 
-        //dxr.Player.ClientMessage("Recharged 10 points");
-	dxr.Player.PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
+		dxr.Player.Energy += 10;
+		if (dxr.Player.Energy > dxr.Player.EnergyMax)
+			dxr.Player.Energy = dxr.Player.EnergyMax;
 
-	dxr.Player.Energy += 10;
-	if (dxr.Player.Energy > dxr.Player.EnergyMax)
-		dxr.Player.Energy = dxr.Player.EnergyMax;
+			dxr.Player.ClientMessage(viewer@"gave you 10 energy!");
+			break;
 
-        dxr.Player.ClientMessage(viewer@"gave you 10 energy!");
+	   case "give_biocell":
+			GiveItem(class'BioelectricCell');
+			dxr.Player.ClientMessage(viewer@"gave you a bioelectric cell!");
+			break;
 
-    } else if (code == "give_biocell") {
-        GiveItem(class'BioelectricCell');
-        dxr.Player.ClientMessage(viewer@"gave you a bioelectric cell!");
+		case "give_skillpoints":
+			dxr.Player.ClientMessage(viewer@"gave you skill points");
+			dxr.Player.SkillPointsAdd(100);
+			break;
 
-    } else if (code == "give_skillpoints") {
-        dxr.Player.ClientMessage(viewer@"gave you skill points");
-        dxr.Player.SkillPointsAdd(100);
+		case "remove_skillpoints":
+			dxr.Player.ClientMessage(viewer@"took away skill points");
+			SkillPointsRemove(100);
+			break;
 
-    } else if (code == "remove_skillpoints") {
-        dxr.Player.ClientMessage(viewer@"took away skill points");
-        SkillPointsRemove(100);
+		case "lamthrower":
+			anItem = dxr.Player.FindInventoryType(class'WeaponFlamethrower');
+			if (anItem==None) {
+				return TempFail;
+			}
 
-    } else if (code == "lamthrower") {
-        anItem = dxr.Player.FindInventoryType(class'WeaponFlamethrower');
-        if (anItem==None) {
-            return TempFail;
-        }
+			MakeLamThrower(anItem);
+			lamthrowerTimer = LamThrowerTimeDefault;
+			dxr.Player.ClientMessage(viewer@"turned your flamethrower into a LAM Thrower!");
+			break;
 
-        MakeLamThrower(anItem);
-        lamthrowerTimer = LamThrowerTimeDefault;
-        dxr.Player.ClientMessage(viewer@"turned your flamethrower into a LAM Thrower!");
+		case "give_flamethrower":
+			GiveItem(class'WeaponFlamethrower');
+			break;
 
-    } else if (code == "give_flamethrower") {
-        GiveItem(class'WeaponFlamethrower');
-    } else if (code == "give_gep") {
-        GiveItem(class'WeaponGEPGun');
-    } else if (code == "give_dts") {
-        GiveItem(class'WeaponNanoSword');
-    } else if (code == "give_lam") {
-        GiveItem(class'WeaponLAM');
-    } else if (code == "give_emp") {
-        GiveItem(class'WeaponEMPGrenade');
-    } else if (code == "give_scrambler") {
-        GiveItem(class'WeaponNanoVirusGrenade');
-    } else if (code == "give_gas") {
-        GiveItem(class'WeaponGasGrenade');
-    } else if (code == "give_plasma") {
-        GiveItem(class'WeaponPlasmaRifle');
-    } else if (code == "give_law") {
-        GiveItem(class'WeaponLAW');
-    } else if (code == "give_aug_up") {
-        GiveItem(class'AugmentationUpgradeCannister');
+		case "give_gep":
+			GiveItem(class'WeaponGEPGun');
+			break;
 
-    } else {
-        return NotAvail;
+		case "give_dts":
+			GiveItem(class'WeaponNanoSword');
+			break;
+
+		case "give_lam":
+			GiveItem(class'WeaponLAM');
+			break;
+
+		case "give_emp":
+			GiveItem(class'WeaponEMPGrenade');
+			break;
+
+		case "give_scrambler":
+			GiveItem(class'WeaponNanoVirusGrenade');
+			break;
+
+		case "give_gas":
+			GiveItem(class'WeaponGasGrenade');
+			break;
+
+		case "give_plasma":
+			GiveItem(class'WeaponPlasmaRifle');
+			break;
+
+		case "give_law":
+			GiveItem(class'WeaponLAW');
+			break;
+
+		case "give_ps40":
+			GiveItem(class'WeaponHideAGun');
+			break;
+
+		case "give_aug_up":
+			GiveItem(class'AugmentationUpgradeCannister');
+			break;
+
+		case "send_player_to_random_point":
+		default:
+			return NotAvail;
     }
     return Success;
 }
@@ -492,8 +538,37 @@ function handleMessage( string msg) {
 }
 
 event ReceivedText ( string Text ) {
-    //dxr.Player.ClientMessage(Text);
+    //Text mode seems to just drop anything past a null terminator
+    //so if multiple messages are received back to back before
+    //we get around to reading it, any past the first may be
+    //discarded entirely
     handleMessage(Text);
+}
+
+//In the context of crowd control, this behaves the same as ReceivedText
+//This is because there are no linebreaks in the messages, they are just
+//null terminated
+event ReceivedLine ( string Text ) {
+    handleMessage(Text);
+}
+
+
+//This seems to just receive crazy garbage
+event ReceivedBinary(int count, byte B[255]) {
+    local int i;
+    for (i = 0; i < count; i++) {
+        if (B[i] == 0) {
+            //handleMessage(pendingMsg);
+            if (Len(pendingMsg)>0){
+            //dxr.Player.ClientMessage("got message (maybe): "$pendingMsg);
+            }
+            pendingMsg="";
+        } else {
+            pendingMsg = pendingMsg $ Chr(B[i]);
+            dxr.Player.ClientMessage(B[i]);
+        }
+    }
+    dxr.Player.ClientMessage("Count was "$count);
 }
 
 event Opened(){
@@ -531,6 +606,7 @@ function Resolved( IpAddr Addr )
     }
 
     LinkMode=MODE_Text;
+
 }
 function ResolveFailed()
 {
