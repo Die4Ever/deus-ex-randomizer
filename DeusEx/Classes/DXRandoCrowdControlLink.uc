@@ -461,6 +461,10 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 			GiveItem(class'WeaponLAW');
 			break;
 
+		case "give_ps40":
+			GiveItem(class'WeaponHideAGun');
+			break;
+
 		case "give_aug_up":
 			GiveItem(class'AugmentationUpgradeCannister');
 			break;

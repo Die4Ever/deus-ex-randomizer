@@ -46,6 +46,7 @@ public class DXRando : SimpleTCPPack
         new Effect("Give Gas Grenade","give_gas"),
         new Effect("Give Plasma Rifle","give_plasma"),
         new Effect("Give LAW","give_law"),
+		new Effect("Give PS40","give_ps40"),
         new Effect("Give Aug Upgrade Canister","give_aug_up"),
     };
 }
