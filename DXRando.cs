@@ -35,6 +35,7 @@ public class DXRando : SimpleTCPPack
         new Effect("Disable Jump (1 minute)", "disable_jump"),
         new Effect("Gotta go fast (1 minute)", "gotta_go_fast"),
         new Effect("Slow like snail (1 minute)", "gotta_go_slow"),
+        new Effect("Ice Physics! (1 minute)","ice_physics"),
         new Effect("Upgrade a Flamethrower to a LAMThrower (1 minute)", "lamthrower"),
 
         new Effect("Give Flamethrower","give_flamethrower"),

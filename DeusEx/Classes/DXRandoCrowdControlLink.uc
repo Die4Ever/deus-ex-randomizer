@@ -15,6 +15,7 @@ var int empTimer;
 var int jumpTimer;
 var int speedTimer;
 var int lamthrowerTimer;
+var int iceTimer;
 
 var float moveSpeedModifier;
 var string pendingMsg;
@@ -30,12 +31,17 @@ const MoveSpeedMultiplier = 10;
 const MoveSpeedDivisor = 0.25;
 const DefaultGroundSpeed = 320;
 
+//HK Canal freezer room has friction=1, but that doesn't
+//feel slippery enough to me
+const IceFriction = 0.25; //Standard friction is 8
+
 const ReconDefault = 5;
 const MatrixTimeDefault = 60;
 const EmpDefault = 15;
 const JumpTimeDefault = 60;
 const SpeedTimeDefault = 60;
 const LamThrowerTimeDefault = 60;
+const IceTimeDefault = 60;
 
 
 function Init( DXRando tdxr, string addr)
@@ -133,6 +139,14 @@ function Timer() {
             PlayerMessage("Your flamethrower is boring again");
         }
     }
+	
+	if (iceTimer>0) {
+		iceTimer-=1;
+		if (iceTimer<=0) {
+		    SetIcePhysics(False);
+			PlayerMessage("The ground thaws");
+		}
+	}
 
 }
 
@@ -382,6 +396,19 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
 
     PlayerMessage(viewer@"removed your "$anAug.AugmentationName$" augmentation");
     return Success;
+}
+
+function SetIcePhysics(bool enabled) {
+	local ZoneInfo Z;
+	ForEach AllActors(class'ZoneInfo', Z)
+	    if (enabled) {
+	        //I doubt the default is actually being used for anything, so I'll
+		    //take it and use it as my own personal info storage space
+	        Z.Default.ZoneGroundFriction = Z.ZoneGroundFriction;
+		    Z.ZoneGroundFriction = IceFriction;
+		} else {
+		    Z.ZoneGroundFriction = Z.Default.ZoneGroundFriction;	
+		}
 }
 
 function int doCrowdControlEvent(string code, string viewer, int type) {
@@ -705,7 +732,16 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 			break;			
 		case "down_vision":
 		    return RemoveAug(class'AugVision',viewer);
-			break;		
+			break;
+        
+        case "ice_physics":
+		    if (iceTimer!=0) {
+				return TempFail;
+			}
+		    PlayerMessage(viewer@"made the ground freeze!");
+		    SetIcePhysics(True);
+			iceTimer = IceTimeDefault;
+            break;		
 
 
 		case "send_player_to_random_point":
