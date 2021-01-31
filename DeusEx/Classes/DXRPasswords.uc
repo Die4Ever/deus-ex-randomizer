@@ -321,13 +321,15 @@ static function string GeneratePassword(DXRando dxr, string oldpassword)
     local string out;
     local int i;
     local int c;
-    dxr.SetSeed( dxr.seed + dxr.Crc(oldpassword) );
+    local int oldseed;
+    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(oldpassword) );
     for(i=0; i<5; i++) {
         // 0-9 is 48-57, 97-122 is a-z
         c = staticrng(dxr, 36) + 48;
         if ( c > 57 ) c += 39;
         out = out $ Chr(c);
     }
+    dxr.SetSeed(oldseed);
     return out;
 }
 
@@ -337,6 +339,7 @@ function string GeneratePasscode(string oldpasscode)
     local int maximum;
     local int oldpasslength;
     local int i;
+    local int oldseed;
 
     oldpasslength = Len(oldpasscode);
     maximum = 1;
@@ -346,8 +349,9 @@ function string GeneratePasscode(string oldpasscode)
         maximum = maximum * 10;
     }    
     
-    dxr.SetSeed( dxr.seed + dxr.Crc(oldpasscode) );//manually set the seed to avoid using the level name in the seed
+    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(oldpasscode) );//manually set the seed to avoid using the level name in the seed
     newpasscode = rng(maximum) $ "";
+    dxr.SetSeed(oldseed);
 
     //If the new passcode is shorter than the old one, we need to add some leading zeroes until it matches
     while (Len(newpasscode) < oldpasslength) {

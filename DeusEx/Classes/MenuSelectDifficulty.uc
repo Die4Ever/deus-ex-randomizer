@@ -205,8 +205,7 @@ function BindControls(bool writing, optional string action)
 
     foreach f.AllActors(class'Telemetry', t) { break; }
     if( t == None ) t = f.Spawn(class'Telemetry');
-    temp = 0;
-    if( t.enabled ) temp = 1;
+    temp = Int(t.enabled);
     labels[id] = "Help us improve";
     helptexts[id] = "Send error reports and logging";
     if( EnumOption(id, "Enabled", 1, writing, temp) ) {

@@ -170,7 +170,7 @@ function RandoTurrets(int percent_move, int percent_add)
 
     SetSeed( "RandoTurrets add" );
 
-    for(i=0; i <3 ; i++) {
+    for(i=0; i <3 ; i++) {//need to randomize hack strengths on these
         if( chance_single(percent_add/3) == false ) continue;
 
         loc = GetRandomPosition();

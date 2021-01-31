@@ -112,7 +112,7 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
 
     m = Spawn(moduleclass, None);
     if ( m == None ) {
-        warning("failed to load module "$moduleclass);
+        err("failed to load module "$moduleclass);
         return None;
     }
     m.Init(Self);
