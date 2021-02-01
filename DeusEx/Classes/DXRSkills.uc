@@ -42,6 +42,10 @@ function RandoSkills(Skill aSkill)
 {
     local int i;
     local int mission_group;
+    if( dxr == None ) {
+        warning("RandoSkills dxr is None");
+        return;
+    }
 
     l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.minskill$", max: "$dxr.flags.maxskill $", reroll_missions: "$ dxr.flags.skills_reroll_missions $", independent_levels: "$ dxr.flags.skills_independent_levels );
     if( dxr.flags.skills_reroll_missions == 0 )
@@ -67,6 +71,7 @@ function RandoSkill(Skill aSkill)
 {
     local int percent, i;
     local bool banned;
+    if( dxr == None ) return;
 
     percent = rng(dxr.flags.maxskill - dxr.flags.minskill + 1) + dxr.flags.minskill;
     banned = chance_single(banned_skill_chances);

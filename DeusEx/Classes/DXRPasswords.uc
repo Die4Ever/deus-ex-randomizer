@@ -23,6 +23,7 @@ function Timer()
     local int i;
 
     Super.Timer();
+    if( dxr == None ) return;
 
     note = dxr.Player.FirstNote;
 

@@ -29,6 +29,7 @@ function AnyEntry()
 function RandoWeapon(DeusExWeapon w)
 {
     local int oldseed;
+    if( dxr == None ) return;
     oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoWeapon " $ w.class.name ) );
 
     w.HitDamage = rngrange(float(w.default.HitDamage), min_weapon_dmg, max_weapon_dmg);

@@ -8,6 +8,8 @@ var config string stick_with_the_prod_plus_player_message;
 var config string stick_with_the_prod_plus_bans[10];
 var config string stick_with_the_prod_plus_allows[10];
 
+var int banneditems;//copy locally so we don't need to make this class transient and don't need to worry about re-entering and picking up an item before DXRando loads
+
 struct _bans
 {
     var class<Inventory> ban_types[10];
@@ -76,6 +78,12 @@ function CheckConfig()
     }
 }
 
+function AnyEntry()
+{
+    Super.AnyEntry();
+    banneditems = dxr.flags.banneditems;
+}
+
 function bool is_banned(_bans b, Inventory item)
 {
     local bool found_ban;
@@ -98,13 +106,13 @@ function bool is_banned(_bans b, Inventory item)
 
 function bool ban(DeusExPlayer player, Inventory item)
 {
-    if( dxr.flags.banneditems == 1 ) {
+    if( banneditems == 1 ) {
         if ( is_banned( _stick_with_the_prod, item) ) {
             player.ClientMessage(stick_with_the_prod_player_message);
             return true;
         }
     }
-    else if( dxr.flags.banneditems == 2 ) {
+    else if( banneditems == 2 ) {
         if ( is_banned( _stick_with_the_prod_plus, item) ) {
             player.ClientMessage(stick_with_the_prod_plus_player_message);
             return true;
@@ -119,7 +127,7 @@ function AddStartingEquipment(Pawn p)
     local DeusExWeapon w;
     local int i;
 
-    if( dxr.flags.banneditems == 1 || dxr.flags.banneditems == 2 ) {
+    if( banneditems == 1 || banneditems == 2 ) {
         wclass = class'WeaponProd';
         if( class'DXRActorsBase'.static.HasItem(p, wclass) )
             return;

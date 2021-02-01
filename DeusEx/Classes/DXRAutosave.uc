@@ -1,4 +1,4 @@
-class DXRAutosave extends DXRBase;
+class DXRAutosave extends DXRBase transient;
 
 var transient bool bNeedSave;
 var config float save_delay;
@@ -35,6 +35,12 @@ function doAutosave()
     local DataLinkPlay interruptedDL;
     local int saveSlot;
     local int lastMission;
+
+    if( dxr == None ) {
+        info("dxr == None, doAutosave() not saving yet");
+        SetTimer(1.0, True);
+        return;
+    }
     
     if( dxr.Player.dataLinkPlay != None ) {
         dxr.Player.dataLinkPlay.AbortDataLink();
@@ -48,7 +54,7 @@ function doAutosave()
         ((dxr.Player.IsInState('Dying')) || (dxr.Player.IsInState('Paralyzed')) || (dxr.Player.IsInState('Interpolating'))) || 
         (dxr.Player.dataLinkPlay != None) || (dxr.Level.Netmode != NM_Standalone) || (dxr.Player.InConversation())
     ){
-        info("doAutosave() not saving");
+        info("doAutosave() not saving yet");
         SetTimer(1.0, True);
         return;
     }

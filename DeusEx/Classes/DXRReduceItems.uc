@@ -80,6 +80,7 @@ function Timer()
 {
     local int mission, scale;
     Super.Timer();
+    if( dxr == None ) return;
 
     mission = Clamp(dxr.dxInfo.missionNumber, 0, ArrayCount(mission_scaling)-1);
     scale = mission_scaling[mission];
@@ -90,6 +91,7 @@ function SetAllMaxCopies(int scale)
 {
     local int i;
     local class<Actor> c;
+    if( dxr == None ) return;
     SetMaxAmmo( class'Ammo', dxr.flags.ammo*scale/100 );
 
     SetMaxCopies(class'Multitool', dxr.flags.multitools*scale/100 );

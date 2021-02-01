@@ -133,6 +133,7 @@ function Timer()
     local Music m;
     local int i;
     Super.Timer();
+    if( dxr == None ) return;
 
     switch(dxr.dxInfo.missionNumber) {
         case 8:

@@ -24,6 +24,10 @@ var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutua
 function PreTravel()
 {
     Super.PreTravel();
+    if( dxr != None && dxr.localURL == "INTRO" && f.GetInt('Rando_version') == 0 ) {
+        info("PreTravel "$dxr.localURL$" SaveFlags");
+        SaveFlags();
+    }
     f = None;
     Self.Destroy();// for some reason, "f = tdxr.Player.FlagBase;" inside the Init function crashes if I don't do this, not sure why
 }
@@ -122,6 +126,10 @@ function LoadFlags()
     InitDefaults();
 
     stored_version = f.GetInt('Rando_version');
+
+    if( stored_version == 0 && dxr.localURL != "DX" && dxr.localURL != "DXONLY" && dxr.localURL != "00_TRAINING" ) {
+        err(dxr.localURL$" failed to load flags! using default randomizer settings");
+    }
 
     if( stored_version >= 1 ) {
         seed = f.GetInt('Rando_seed');

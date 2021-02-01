@@ -121,6 +121,7 @@ function Timer()
 {
     local int i;
     Super.Timer();
+    if( dxr == None ) return;
 
     time++;
     for(i=0; i < ArrayCount(enemies); i++) {

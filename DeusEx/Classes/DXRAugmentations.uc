@@ -1,4 +1,4 @@
-class DXRAugmentations extends DXRBase;
+class DXRAugmentations extends DXRBase transient;
 
 var config float min_aug_str;
 var config float max_aug_str;
@@ -88,6 +88,7 @@ function RandoAug(Augmentation a)
 {
     local int oldseed;
     local string s;
+    if( dxr == None ) return;
     if( AugSpeed(a) != None || AugLight(a) != None ) return;
     oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoAug " $ a.class.name ) );
     s = RandoLevelValues(a.LevelValues, a.default.LevelValues, min_aug_str, max_aug_str);
