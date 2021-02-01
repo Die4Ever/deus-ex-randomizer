@@ -158,7 +158,7 @@ function RandoTurrets(int percent_move, int percent_add)
     foreach AllActors(class'AutoTurret', t) {
         if( chance_single(percent_move) == false ) continue;
 
-        loc = GetRandomPosition(t.Location, 0, 16*200);
+        loc = GetRandomPosition(t.Location, 0, 16*500);
         info("RandoTurret move "$t$" to near "$loc);
         MoveTurret(t, loc);
         cam = GetCameraForTurret(t);
@@ -174,7 +174,7 @@ function RandoTurrets(int percent_move, int percent_add)
         if( chance_single(percent_add/3) == false ) continue;
 
         loc = GetRandomPosition();
-        info("RandoTurret near "$loc);
+        info("RandoTurret add near "$loc);
         t = SpawnTurret(loc);
         cam = SpawnCamera(loc);
         c = SpawnSecurityComputer(loc, t, cam);
