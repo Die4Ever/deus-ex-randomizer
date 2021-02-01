@@ -39,6 +39,8 @@ public class DXRando : SimpleTCPPack
         new Effect("Go Third-Person (1 minute)","third_person"),
         new Effect("Take Double Damage (1 minute)","dmg_double"),
         new Effect("Take Half Damage (1 minute)","dmg_half"),
+        new Effect("Give 100 credits", "add_credits"),
+        new Effect("Remove 100 credits", "remove_credits"),        
         new Effect("Upgrade a Flamethrower to a LAMThrower (1 minute)", "lamthrower"),
 
         new Effect("Give Flamethrower","give_flamethrower"),
