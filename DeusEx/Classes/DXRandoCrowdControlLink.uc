@@ -16,6 +16,7 @@ var int jumpTimer;
 var int speedTimer;
 var int lamthrowerTimer;
 var int iceTimer;
+var int behindTimer;
 
 var float moveSpeedModifier;
 var string pendingMsg;
@@ -42,6 +43,7 @@ const JumpTimeDefault = 60;
 const SpeedTimeDefault = 60;
 const LamThrowerTimeDefault = 60;
 const IceTimeDefault = 60;
+const BehindTimeDefault = 60;
 
 
 function Init( DXRando tdxr, string addr)
@@ -81,6 +83,9 @@ function CleanupOnEnter() {
     
     //Clean up ice physics
     SetIcePhysics(False);
+    
+    //Clean up third-person view
+    dxr.Player.bBehindView=False;
     
 
 }
@@ -154,6 +159,14 @@ function Timer() {
 			PlayerMessage("The ground thaws");
 		}
 	}
+    
+    if (behindTimer>0) {
+        behindTimer -=1;
+        if (behindTimer<=0){
+            dxr.Player.bBehindView=False;
+            PlayerMessage("You re-enter your body");
+        }
+    }
 
 }
 
@@ -543,6 +556,14 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 			PlayerMessage(viewer@"thinks you are The One...");
 			break;
 			
+        case "third_person":
+            if (dxr.Player.bBehindView) {
+                return TempFail;
+            }
+            dxr.Player.bBehindView=True;
+            behindTimer = BehindTimeDefault;
+            PlayerMessage(viewer@"gave you an out of body experience");
+            break;
 
 		case "give_energy":
 			
