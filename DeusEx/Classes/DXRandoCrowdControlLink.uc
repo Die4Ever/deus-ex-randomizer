@@ -75,6 +75,13 @@ function CleanupOnEnter() {
 
     //Clean up move speed, since it seems to follow through levels
     dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;
+    
+    //Clean up LAM Throwers
+    UndoLamThrowers();
+    
+    //Clean up ice physics
+    SetIcePhysics(False);
+    
 
 }
 
