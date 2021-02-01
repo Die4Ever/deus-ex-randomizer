@@ -36,7 +36,9 @@ public class DXRando : SimpleTCPPack
         new Effect("Gotta go fast (1 minute)", "gotta_go_fast"),
         new Effect("Slow like snail (1 minute)", "gotta_go_slow"),
         new Effect("Ice Physics! (1 minute)","ice_physics"),
-		new Effect("Go Third-Person (1 minute)","third_person"),
+        new Effect("Go Third-Person (1 minute)","third_person"),
+        new Effect("Take Double Damage (1 minute)","dmg_double"),
+        new Effect("Take Half Damage (1 minute)","dmg_half"),
         new Effect("Upgrade a Flamethrower to a LAMThrower (1 minute)", "lamthrower"),
 
         new Effect("Give Flamethrower","give_flamethrower"),

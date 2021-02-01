@@ -17,6 +17,7 @@ var int speedTimer;
 var int lamthrowerTimer;
 var int iceTimer;
 var int behindTimer;
+var int difficultyTimer;
 
 var float moveSpeedModifier;
 var string pendingMsg;
@@ -44,6 +45,7 @@ const SpeedTimeDefault = 60;
 const LamThrowerTimeDefault = 60;
 const IceTimeDefault = 60;
 const BehindTimeDefault = 60;
+const DifficultyTimeDefault = 60;
 
 
 function Init( DXRando tdxr, string addr)
@@ -86,6 +88,9 @@ function CleanupOnEnter() {
     
     //Clean up third-person view
     dxr.Player.bBehindView=False;
+    
+    //Clean up damage multiplier
+    dxr.Player.MPDamageMult = 1.0;
     
 
 }
@@ -167,7 +172,14 @@ function Timer() {
             PlayerMessage("You re-enter your body");
         }
     }
-
+    
+    if (difficultyTimer>0) {
+        difficultyTimer -=1;
+        if (difficultyTimer<=0){
+            dxr.Player.MPDamageMult=1.0;
+            PlayerMessage("Your body returns to its normal toughness");
+        }
+    }
 }
 
 function bool isCrowdControl( string msg) {
@@ -431,6 +443,7 @@ function SetIcePhysics(bool enabled) {
 		}
 }
 
+
 function int doCrowdControlEvent(string code, string viewer, int type) {
     local vector v;
     local rotator r;
@@ -533,6 +546,9 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 			break;
 
 		case "drop_selected_item":
+            if (dxr.Player.InHand == None) {
+                return TempFail;
+            }
 			result = dxr.Player.DropItem();
 			if (result == False) {
 				return TempFail;
@@ -761,6 +777,21 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
 		case "down_vision":
 		    return RemoveAug(class'AugVision',viewer);
 			break;
+        
+        case "dmg_double":
+            if (difficultyTimer!=0) {
+                return TempFail;
+            }
+            dxr.Player.MPDamageMult=2.0;
+            PlayerMessage(viewer@"made your body extra squishy");
+            break;
+        case "dmg_half":
+            if (difficultyTimer!=0) {
+                return TempFail;
+            }
+            dxr.Player.MPDamageMult=0.5;
+            PlayerMessage(viewer@"made your body extra tough!");
+            break;
         
         case "ice_physics":
 		    if (iceTimer!=0) {
