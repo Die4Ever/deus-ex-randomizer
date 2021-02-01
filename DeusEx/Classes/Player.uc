@@ -100,6 +100,11 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
             newDamage *= augLevel;
     }
 
+    //Apply damage multiplier
+    //This gets tweaked from DXRandoCrowdControlLink, but will normally just be 1.0
+    newDamage*=MPDamageMult;
+
+
     //
     // Reduce or increase the damage based on the combat difficulty setting, do this before SetDamagePercent for the UI display
     // because we don't want to show 100% damage reduction but then do the minimum of 1 damage
