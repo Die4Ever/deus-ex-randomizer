@@ -9,6 +9,8 @@ var transient DXRando dxr;
 var int ListenPort;
 var IpAddr addr;
 
+var int ticker;
+
 var int reconnectTimer;
 var int matrixModeTimer;
 var int empTimer;
@@ -64,13 +66,19 @@ function Init( DXRando tdxr, string addr)
     Resolve(crowd_control_addr);
 
     reconnectTimer = ReconDefault;
-    SetTimer(1,True);
+    SetTimer(0.1,True);
 
 }
 
 
 function CleanupOnEnter() {
-
+    
+    //Initialize the pending message buffer
+    pendingMsg = "";
+    
+    //Initialize the ticker
+    ticker = 0;
+    
     //Clean up Matrix Mode if enabled
     StopMatrixMode(True);
 
@@ -107,12 +115,24 @@ function StopMatrixMode(optional bool silent) {
 }
 
 function Timer() {
+    
+    ticker++;
+    
+    if (IsConnected()) {
+        ManualReceiveBinary();
+    }
+
+    if (ticker%10 != 0) {
+        return;
+    }
+    //Everything below here runs once a second
+
     if (!IsConnected()) {
         reconnectTimer-=1;
         if (reconnectTimer <= 0){
             Resolve(crowd_control_addr);
         }
-    }
+    } 
 
     //Matrix Mode Timer
     if (matrixModeTimer>0) {
@@ -466,15 +486,12 @@ function SetIcePhysics(bool enabled) {
 
 function int doCrowdControlEvent(string code, string viewer, int type) {
     local vector v;
-    local rotator r;
     local inventory anItem;
     local bool result;
+    local Actor a;
     v.X=0;
     v.Y=0;
     v.Z=0;
-    r.Pitch = 0;
-    r.Yaw = 0;
-    r.Roll =0;
     
     switch(code) {
         case "poison":
@@ -489,8 +506,12 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
             break;
 
         case "drop_lam":
-            r.Yaw = 16000;
-            Spawn(Class'LAM',,,dxr.Player.Location,r);
+            //Spawned ThrownProjectiles won't beep if they don't have an owner,
+            //so make sure to set one here (the player)
+            a = Spawn(Class'LAM',dxr.Player,,dxr.Player.Location);
+            a.Velocity.X=0;
+            a.Velocity.Y=0;
+            a.Velocity.Z=0;
             PlayerMessage(viewer@"dropped a LAM at your feet!");
             break;
 
@@ -898,6 +919,30 @@ function handleMessage( string msg) {
 
 }
 
+//I cannot believe I had to manually write my own version of ReceivedBinary
+function ManualReceiveBinary() {
+    local byte B[255]; //I have to use a 255 length array even if I only want to read 1
+    local int count,i;
+    //PlayerMessage("Manually reading, have "$DataPending$" bytes pending");
+    
+    if (DataPending!=0) {
+        count = ReadBinary(255,B);
+        for (i = 0; i < count; i++) {
+            if (B[i] == 0) {
+                if (Len(pendingMsg)>0){
+                    //PlayerMessage(pendingMsg);
+                    handleMessage(pendingMsg);
+                }
+                pendingMsg="";
+            } else {
+                pendingMsg = pendingMsg $ Chr(B[i]);
+                //PlayerMessage("ReceivedBinary: " $ B[i]);
+            }
+        }
+    }
+    
+}
+
 event ReceivedText ( string Text ) {
     //Text mode seems to just drop anything past a null terminator
     //so if multiple messages are received back to back before
@@ -914,10 +959,11 @@ event ReceivedLine ( string Text ) {
 }
 
 
-//This seems to just receive crazy garbage
+//This seems to just receive crazy garbage and is completely broken.
 event ReceivedBinary(int count, byte B[255]) {
     local int i;
     for (i = 0; i < count; i++) {
+        //log("Got character val "$i+1$" = "$B[i]);
         if (B[i] == 0) {
             //handleMessage(pendingMsg);
             if (Len(pendingMsg)>0){
@@ -926,7 +972,7 @@ event ReceivedBinary(int count, byte B[255]) {
             pendingMsg="";
         } else {
             pendingMsg = pendingMsg $ Chr(B[i]);
-            PlayerMessage("ReceivedBinary: " $ B[i]);
+            //PlayerMessage("ReceivedBinary: " $ B[i]);
         }
     }
     PlayerMessage("Count was "$count);
@@ -966,7 +1012,11 @@ function Resolved( IpAddr Addr )
 
     }
 
-    LinkMode=MODE_Text;
+    //Using manual binary reading, which is handled by ManualReceiveBinary()
+    //This means that we can handle if multiple crowd control messages come in
+    //between reads.
+    LinkMode=MODE_Binary;
+    ReceiveMode = RMODE_Manual;
 
 }
 function ResolveFailed()
