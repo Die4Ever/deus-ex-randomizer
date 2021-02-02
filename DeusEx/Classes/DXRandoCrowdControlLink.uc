@@ -278,13 +278,10 @@ function GiveItem(class<Inventory> c) {
     local inventory anItem;
     anItem=Spawn(c);
     anItem.SetLocation(dxr.Player.Location);
-    
-    //Grenades apparently don't like HandleItemPickup, so we'll frob them
-    if (anItem.IsA('DeusExWeapon') && !IsGrenade(anItem)) {
-        dxr.Player.HandleItemPickup(anItem);
-    } else {
-        anItem.Frob(dxr.Player,None);
-    }
+
+    //The ultimate hack.  Nothing else was working, for whatever reason.
+    dxr.Player.FrobTarget = anItem;
+    dxr.Player.ParseRightClick();
 }
 
 function SkillPointsRemove(int numPoints) {
@@ -320,6 +317,50 @@ function MakeLamThrower (inventory anItem) {
     f = WeaponFlamethrower(anItem);
     f.ProjectileClass = class'LAM';
     f.beltDescription = "LAMTHWR";
+}
+
+function Class<Augmentation> getAugClass(string param) {
+    switch(param) {
+        case "aqualung":
+            return class'AugAqualung';
+        case "ballistic":
+            return class'AugBallistic';
+        case "cloak":
+            return class'AugCloak';
+        case "combat":
+            return class'AugCombat';
+        case "defense":
+            return class'AugDefense';
+        case "drone":
+            return class'AugDrone';
+        case "emp":
+            return class'AugEmp';
+        case "enviro":
+            return class'AugEnviro';
+        case "healing":
+            return class'AugHealing';
+        case "heartlung":
+            return class'AugHeartLung';
+        case "muscle":
+            return class'AugMuscle';
+        case "power":
+            return class'AugPower';
+        case "radartrans":
+            return class'AugRadarTrans';
+        case "shield":
+            return class'AugShield';
+        case "speed":
+            return class'AugSpeed';
+        case "stealth":
+            return class'AugStealth';
+        case "target":
+            return class'AugTarget';
+        case "vision":
+            return class'AugVision';
+        default:
+            return None;
+        
+    }
 }
 
 //"Why not just use "GivePlayerAugmentation", you ask.
@@ -484,7 +525,7 @@ function SetIcePhysics(bool enabled) {
 }
 
 
-function int doCrowdControlEvent(string code, string viewer, int type) {
+function int doCrowdControlEvent(string code, string param, string viewer, int type) {
     local vector v;
     local inventory anItem;
     local bool result;
@@ -505,14 +546,32 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
             dxr.Player.MultiplayerDeathMsg(dxr.Player,False,True,viewer,"triggering your kill switch");
             break;
 
-        case "drop_lam":
+        case "drop_grenade":
             //Spawned ThrownProjectiles won't beep if they don't have an owner,
             //so make sure to set one here (the player)
-            a = Spawn(Class'LAM',dxr.Player,,dxr.Player.Location);
+            switch(param){
+                case("g_lam"):
+                    a = Spawn(Class'LAM',dxr.Player,,dxr.Player.Location);
+                    PlayerMessage(viewer@"dropped a LAM at your feet!");
+                    break;
+                case("g_emp"):
+                    a = Spawn(Class'EMPGrenade',dxr.Player,,dxr.Player.Location);
+                    PlayerMessage(viewer@"dropped an EMP grenade at your feet!");
+                    break;
+                case("g_gas"):
+                    a = Spawn(Class'GasGrenade',dxr.Player,,dxr.Player.Location);
+                    PlayerMessage(viewer@"dropped a gas grenade at your feet!");
+                    break;
+                case("g_scrambler"):
+                    a = Spawn(Class'NanoVirusGrenade',dxr.Player,,dxr.Player.Location);
+                    PlayerMessage(viewer@"dropped a scramble grenade at your feet!");
+                    break;
+                default:
+                    return Failed;
+            }
             a.Velocity.X=0;
             a.Velocity.Y=0;
             a.Velocity.Z=0;
-            PlayerMessage(viewer@"dropped a LAM at your feet!");
             break;
 
         case "glass_legs":
@@ -526,8 +585,8 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
             if (dxr.Player.Health == 100) {
                 return TempFail;
             }
-            dxr.Player.HealPlayer(50,False);
-            PlayerMessage(viewer@"gave you 50 health!");
+            dxr.Player.HealPlayer(Int(param),False);
+            PlayerMessage(viewer@"gave you "$param$" health!");
             break;
 
         case "set_fire":
@@ -632,11 +691,11 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
             //PlayerMessage("Recharged 10 points");
             dxr.Player.PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
 
-            dxr.Player.Energy += 10;
-        if (dxr.Player.Energy > dxr.Player.EnergyMax)
-            dxr.Player.Energy = dxr.Player.EnergyMax;
+            dxr.Player.Energy += Int(param);
+            if (dxr.Player.Energy > dxr.Player.EnergyMax)
+                dxr.Player.Energy = dxr.Player.EnergyMax;
 
-            PlayerMessage(viewer@"gave you 10 energy!");
+            PlayerMessage(viewer@"gave you "$param$" energy!");
             break;
 
        case "give_biocell":
@@ -645,20 +704,20 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
             break;
 
         case "give_skillpoints":
-            PlayerMessage(viewer@"gave you skill points");
-            dxr.Player.SkillPointsAdd(100);
+            PlayerMessage(viewer@"gave you "$param$" skill points");
+            dxr.Player.SkillPointsAdd(Int(param));
             break;
 
         case "remove_skillpoints":
-            PlayerMessage(viewer@"took away skill points");
-            SkillPointsRemove(100);
+            PlayerMessage(viewer@"took away "$param$" skill points");
+            SkillPointsRemove(Int(param));
             break;
             
         case "add_credits":
-            return AddCredits(100,viewer);
+            return AddCredits(Int(param),viewer);
             break;
         case "remove_credits":
-            return AddCredits(-100,viewer);
+            return AddCredits(-Int(param),viewer);
             break;
 
         case "lamthrower":
@@ -672,159 +731,59 @@ function int doCrowdControlEvent(string code, string viewer, int type) {
             PlayerMessage(viewer@"turned your flamethrower into a LAM Thrower!");
             break;
 
-        case "give_flamethrower":
-            GiveItem(class'WeaponFlamethrower');
+        case "give_grenade":
+            switch(param){
+                case("g_lam"):
+                    GiveItem(Class'WeaponLAM');
+                    break;
+                case("g_emp"):
+                    GiveItem(Class'WeaponEMPGrenade');
+                    break;
+                case("g_gas"):
+                    GiveItem(Class'WeaponGasGrenade');
+                    break;
+                case("g_scrambler"):
+                    GiveItem(Class'WeaponNanoVirusGrenade');
+                    break;
+                default:
+                    return Failed;
+            }
             break;
-
-        case "give_gep":
-            GiveItem(class'WeaponGEPGun');
-            break;
-
-        case "give_dts":
-            GiveItem(class'WeaponNanoSword');
-            break;
-
-        case "give_lam":
-            GiveItem(class'WeaponLAM');
-            break;
-
-        case "give_emp":
-            GiveItem(class'WeaponEMPGrenade');
-            break;
-
-        case "give_scrambler":
-            GiveItem(class'WeaponNanoVirusGrenade');
-            break;
-
-        case "give_gas":
-            GiveItem(class'WeaponGasGrenade');
-            break;
-
-        case "give_plasma":
-            GiveItem(class'WeaponPlasmaRifle');
-            break;
-
-        case "give_law":
-            GiveItem(class'WeaponLAW');
+            
+        case "give_weapon":
+            switch(param){
+                case "flamethrower":
+                    GiveItem(class'WeaponFlamethrower');
+                    break;
+                case "gep":
+                    GiveItem(class'WeaponGEPGun');
+                    break;
+                case "dts":
+                    GiveItem(class'WeaponNanoSword');
+                    break;
+                case "plasma":
+                    GiveItem(class'WeaponPlasmaRifle');
+                    break;
+                case "law":
+                    GiveItem(class'WeaponLAW');
+                    break;
+                case "sniper":
+                    GiveItem(class'WeaponRifle');
+                    break;
+                default:
+                    return Failed;
+            }
             break;
 
         case "give_ps40":
             GiveItem(class'WeaponHideAGun');
             break;
 
-        case "give_aug_up":
-            GiveItem(class'AugmentationUpgradeCannister');
-            break;
-            
-        case "up_aqualung":
-            return GiveAug(class'AugAqualung',viewer);
-            break;          
-        case "up_ballistic":
-            return GiveAug(class'AugBallistic',viewer);
-            break;          
-        case "up_cloak":
-            return GiveAug(class'AugCloak',viewer);
-            break;          
-        case "up_combat":
-            return GiveAug(class'AugCombat',viewer);
-            break;          
-        case "up_defense":
-            return GiveAug(class'AugDefense',viewer);
-            break;          
-        case "up_drone":
-            return GiveAug(class'AugDrone',viewer);
-            break;          
-        case "up_emp":
-            return GiveAug(class'AugEmp',viewer);
-            break;          
-        case "up_enviro":
-            return GiveAug(class'AugEnviro',viewer);
-            break;          
-        case "up_healing":
-            return GiveAug(class'AugHealing',viewer);
-            break;          
-        case "up_heartlung":
-            return GiveAug(class'AugHeartLung',viewer);
-            break;          
-        case "up_muscle":
-            return GiveAug(class'AugMuscle',viewer);
-            break;  
-        case "up_power":
-            return GiveAug(class'AugPower',viewer);
-            break;          
-        case "up_radartrans":
-            return GiveAug(class'AugRadarTrans',viewer);
-            break;          
-        case "up_shield":
-            return GiveAug(class'AugShield',viewer);
-            break;          
-        case "up_speed":
-            return GiveAug(class'AugSpeed',viewer);
-            break;          
-        case "up_stealth":
-            return GiveAug(class'AugStealth',viewer);
-            break;          
-        case "up_target":
-            return GiveAug(class'AugTarget',viewer);
-            break;          
-        case "up_vision":
-            return GiveAug(class'AugVision',viewer);
-            break;
-
-        case "down_aqualung":
-            return RemoveAug(class'AugAqualung',viewer);
-            break;          
-        case "down_ballistic":
-            return RemoveAug(class'AugBallistic',viewer);
-            break;          
-        case "down_cloak":
-            return RemoveAug(class'AugCloak',viewer);
-            break;          
-        case "down_combat":
-            return RemoveAug(class'AugCombat',viewer);
-            break;          
-        case "down_defense":
-            return RemoveAug(class'AugDefense',viewer);
-            break;          
-        case "down_drone":
-            return RemoveAug(class'AugDrone',viewer);
-            break;          
-        case "down_emp":
-            return RemoveAug(class'AugEmp',viewer);
-            break;          
-        case "down_enviro":
-            return RemoveAug(class'AugEnviro',viewer);
-            break;          
-        case "down_healing":
-            return RemoveAug(class'AugHealing',viewer);
-            break;          
-        case "down_heartlung":
-            return RemoveAug(class'AugHeartLung',viewer);
-            break;          
-        case "down_muscle":
-            return RemoveAug(class'AugMuscle',viewer);
-            break;  
-        case "down_power":
-            return RemoveAug(class'AugPower',viewer);
-            break;          
-        case "down_radartrans":
-            return RemoveAug(class'AugRadarTrans',viewer);
-            break;          
-        case "down_shield":
-            return RemoveAug(class'AugShield',viewer);
-            break;          
-        case "down_speed":
-            return RemoveAug(class'AugSpeed',viewer);
-            break;          
-        case "down_stealth":
-            return RemoveAug(class'AugStealth',viewer);
-            break;          
-        case "down_target":
-            return RemoveAug(class'AugTarget',viewer);
-            break;          
-        case "down_vision":
-            return RemoveAug(class'AugVision',viewer);
-            break;
+        case "up_aug":
+            return GiveAug(getAugClass(param),viewer);         
+        
+        case "down_aug":
+            return RemoveAug(getAugClass(param),viewer);        
         
         case "dmg_double":
             if (difficultyTimer!=0) {
@@ -864,13 +823,14 @@ function handleMessage( string msg) {
     
     local int id,type;
     local string code,viewer;
+    local string param;
     
     local int result;
 
     if (isCrowdControl(msg)) {
         //Yolo
         //PlayerMessage("Looks pretty crowd control-y to me");
-        
+
         //Find ID
         loc1 = InStr(msg,"id");
         tmpstr1 = Mid(msg,loc1);
@@ -907,9 +867,30 @@ function handleMessage( string msg) {
         length = loc2-loc1;
         tmpstr2 = Mid(tmpstr1,loc1+1,length);
         type = int(tmpstr2);
-        //PlayerMessage("Crowd Control Type = "$type);     
+        //PlayerMessage("Crowd Control Type = "$type);
         
-        result = doCrowdControlEvent(code,viewer,type);
+        //Find Parameters (If present)
+        param = "";
+        loc1 = InStr(msg,"parameters");
+        if (loc1 != -1) {
+            //Have parameters
+            tmpstr1 = Mid(msg,loc1);
+            loc1 = InStr(tmpstr1,"[")+1;
+            loc2 = InStr(tmpstr1,"]");
+            length = loc2-loc1;
+            tmpstr2 = Mid(tmpstr1,loc1,length);
+            if (InStr(tmpstr2,Chr(34))!=-1) {
+                //If there are quotes, we will assume they are at start and end
+                //This is a bit dangerous, but whatever
+                tmpstr2 = Mid(tmpstr2,1,Len(tmpstr2)-2);
+            }
+            param = tmpstr2;
+            //PlayerMessage("Got param "$param);
+        }
+        
+        
+        
+        result = doCrowdControlEvent(code,param,viewer,type);
         
         sendReply(id,result);
         
