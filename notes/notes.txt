@@ -6,6 +6,7 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 
 for v1.6 programatically modify conversations ===================
 
+maybe remove/shorten some levels? or make them optional and in order to keep play time more consistent never do all or none of them
 class DataLinkPlay injects DataLinkPlay;
 
 function PlaySpeech( int soundID )
@@ -128,6 +129,9 @@ function AppendSpeech(String newSpeech)
 
 
 for v1.5 ========================
+
+fix "softlock" in 03_batterypark, maybe by adding an atm and datacube, or copying over the threatened bum from 02_street, putting a note on curly's body, hiding money and/or datacubes on the map...
+log.py should create a folder for each month
 
 else if (localURL == "10_PARIS_METRO")
 	{
@@ -417,6 +421,8 @@ https://web.archive.org/web/20190407081013/http://www.unrealtexture.com/Unreal/D
 https://web.archive.org/web/20201023054944/http://wiki.beyondunreal.com/Legacy:Compiler_Errors
 
 http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/unrealscript.html
+
+https://web.archive.org/web/20051025132508/http://mimesis.csc.ncsu.edu/Unreal/Syntax.htm
 
 https://ut99.org/viewtopic.php?t=5985
 

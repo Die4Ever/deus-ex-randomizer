@@ -208,11 +208,7 @@ function bool MoveCamera(SecurityCamera c, vector loc)
     local int i;
     local bool success;
     
-    for(i=0; i<3; i++) {
-        success = GetCameraLocation(loc, rotation);
-        if( success ) break;
-    }
-    if( success == false ) {
+    if( GetCameraLocation(loc, rotation) == false ) {
         warning("MoveCamera("$loc$") "$c$" failed to GetCameraLocation");
         return false;
     }
@@ -229,11 +225,7 @@ function SecurityCamera SpawnCamera(vector loc)
     local int i;
     local bool success;
 
-    for(i=0; i<3; i++) {
-        success = GetCameraLocation(loc, rotation);
-        if( success ) break;
-    }
-    if( success == false ) {
+    if( GetCameraLocation(loc, rotation) == false ) {
         warning("SpawnCamera("$loc$") failed to GetCameraLocation");
         return None;
     }
