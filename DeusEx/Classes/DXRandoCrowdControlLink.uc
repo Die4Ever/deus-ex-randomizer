@@ -11,6 +11,8 @@ var IpAddr addr;
 
 var int ticker;
 
+var bool anon;
+
 var int reconnectTimer;
 var int matrixModeTimer;
 var int empTimer;
@@ -49,12 +51,133 @@ const IceTimeDefault = 60;
 const BehindTimeDefault = 60;
 const DifficultyTimeDefault = 60;
 
+//JSON parsing states
+const KeyState = 1;
+const ValState = 2;
+const ArrayState = 3;
+const ArrayDoneState = 4;
 
-function Init( DXRando tdxr, string addr)
+
+
+struct JsonElement
+{
+    var string key;
+    var string value[5];
+    var int valCount;
+};
+
+struct JsonMsg
+{
+    var JsonElement e[20];
+    var int count;
+};
+
+function string StripQuotes (string msg) {
+    if (Mid(msg,0,1)==Chr(34)) {
+        if (Mid(msg,Len(Msg)-1,1)==Chr(34)) {
+            return Mid(msg,1,Len(msg)-2);
+        }
+    }        
+    return msg;
+}
+
+function JsonMsg ParseJson (string msg) {
+    
+    local bool msgDone;
+    local int i;
+    local string c;
+    local string buf;
+    
+    local int parsestate;
+    
+    local JsonMsg j;
+    
+    local bool elemDone;
+    
+    elemDone = False;
+    
+    parsestate = KeyState;
+    msgDone = False;
+    buf = "";
+    
+    for (i = 0; i < Len(msg) && !msgDone ; i++) {
+        c = Mid(msg,i,1); //Grab a single character
+        
+        switch (c) {
+            case ":":
+            case ",":
+              //Wrap up the current string that was being handled
+              //PlayerMessage(buf);
+              if (parsestate == KeyState) {
+                  j.e[j.count].key = StripQuotes(buf);
+                  parsestate = ValState;
+              } else if (parsestate == ValState) {
+                  j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                  j.e[j.count].valCount++;
+                  parsestate = KeyState;
+                  elemDone = True;
+              } else if (parsestate == ArrayState) {
+                  j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                  j.e[j.count].valCount++;
+              } else if (parsestate == ArrayDoneState){
+                  parseState = KeyState;
+              }
+            case "{":
+                buf = "";
+                break;
+            
+            case "}":
+                //PlayerMessage(buf);
+                if (parsestate == ValState) {
+                  j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                  j.e[j.count].valCount++;
+                  parsestate = KeyState;
+                  elemDone = True;
+                }
+                msgDone = True;
+                break;
+            
+            case "]":
+                if (parsestate == ArrayState) {
+                    j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                    j.e[j.count].valCount++;
+                    elemDone = True;
+                    parsestate = ArrayDoneState;
+                } else {
+                    buf = buf $ c;
+                }
+                break;
+            case "[":
+                if (parsestate == ValState){
+                    parsestate = ArrayState;
+                } else {
+                    buf = buf $ c;
+                }
+                break;
+            default:
+                //Build up the buffer
+                buf = buf $ c;
+                break;
+            
+        }
+        
+        if (elemDone) {
+          //PlayerMessage("Key: "$j.e[j.count].key$ "   Val: "$j.e[j.count].value[0]);
+          j.count++;
+          elemDone = False;          
+        }
+    }
+    
+    return j;
+    
+}
+
+function Init( DXRando tdxr, string addr, bool anonymous)
 {
     dxr = tdxr;   
     crowd_control_addr = addr; 
-
+    anon = anonymous;
+    
     CleanupOnEnter();
 
     /*ListenPort=BindPort();
@@ -732,6 +855,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             break;
 
         case "give_grenade":
+            PlayerMessage(viewer@"Gave you a grenade");
             switch(param){
                 case("g_lam"):
                     GiveItem(Class'WeaponLAM');
@@ -751,6 +875,8 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             break;
             
         case "give_weapon":
+            PlayerMessage(viewer@"Gave you a weapon");
+
             switch(param){
                 case "flamethrower":
                     GiveItem(class'WeaponFlamethrower');
@@ -776,6 +902,8 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             break;
 
         case "give_ps40":
+            PlayerMessage(viewer@"Gave you a PS40");
+
             GiveItem(class'WeaponHideAGun');
             break;
 
@@ -791,6 +919,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             }
             dxr.Player.MPDamageMult=2.0;
             PlayerMessage(viewer@"made your body extra squishy");
+            difficultyTimer = DifficultyTimeDefault;
             break;
         case "dmg_half":
             if (difficultyTimer!=0) {
@@ -798,6 +927,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             }
             dxr.Player.MPDamageMult=0.5;
             PlayerMessage(viewer@"made your body extra tough!");
+            difficultyTimer = DifficultyTimeDefault;
             break;
         
         case "ice_physics":
@@ -817,78 +947,51 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
     return Success;
 }
 
+
+
 function handleMessage( string msg) {
-    local int loc1,loc2,length;
-    local string tmpstr1,tmpstr2;
-    
+  
     local int id,type;
-    local string code,viewer;
-    local string param;
+    local string code,viewer,param;
     
     local int result;
+    
+    local JsonMsg jmsg;
+    local string val;
+    local int i;
 
     if (isCrowdControl(msg)) {
-        //Yolo
-        //PlayerMessage("Looks pretty crowd control-y to me");
-
-        //Find ID
-        loc1 = InStr(msg,"id");
-        tmpstr1 = Mid(msg,loc1);
-        loc1= InStr(tmpstr1,":");
-        loc2= InStr(tmpstr1,",");
-        length = loc2-loc1;
-        tmpstr2 = Mid(tmpstr1,loc1+1,length);
-        id = int(tmpstr2);
-        //PlayerMessage("Crowd Control ID = "$id);
+        jmsg=ParseJson(msg);
         
-        //Find Code
-        loc1 = InStr(msg,"code");
-        tmpstr1 = Mid(msg,loc1);
-        loc1= InStr(tmpstr1,":")+2;
-        loc2= InStr(tmpstr1,",")-1;
-        length = loc2-loc1;
-        code = Mid(tmpstr1,loc1,length);
-        //PlayerMessage("Crowd Control Code = "$code);        
-        
-        //Find Viewer
-        loc1 = InStr(msg,"viewer");
-        tmpstr1 = Mid(msg,loc1);
-        loc1= InStr(tmpstr1,":")+2;
-        loc2= InStr(tmpstr1,",")-1;
-        length = loc2-loc1;
-        viewer = Mid(tmpstr1,loc1,length);
-        //PlayerMessage("Crowd Control Viewer = "$viewer);
-
-        //Find Type
-        loc1 = InStr(msg,"type");
-        tmpstr1 = Mid(msg,loc1);
-        loc1= InStr(tmpstr1,":");
-        loc2= InStr(tmpstr1,"}");
-        length = loc2-loc1;
-        tmpstr2 = Mid(tmpstr1,loc1+1,length);
-        type = int(tmpstr2);
-        //PlayerMessage("Crowd Control Type = "$type);
-        
-        //Find Parameters (If present)
-        param = "";
-        loc1 = InStr(msg,"parameters");
-        if (loc1 != -1) {
-            //Have parameters
-            tmpstr1 = Mid(msg,loc1);
-            loc1 = InStr(tmpstr1,"[")+1;
-            loc2 = InStr(tmpstr1,"]");
-            length = loc2-loc1;
-            tmpstr2 = Mid(tmpstr1,loc1,length);
-            if (InStr(tmpstr2,Chr(34))!=-1) {
-                //If there are quotes, we will assume they are at start and end
-                //This is a bit dangerous, but whatever
-                tmpstr2 = Mid(tmpstr2,1,Len(tmpstr2)-2);
+        for (i=0;i<jmsg.count;i++) {
+            if (jmsg.e[i].valCount>0) {
+                val = jmsg.e[i].value[0];
+                //PlayerMessage("Key: "$jmsg.e[i].key);
+                switch (jmsg.e[i].key) {
+                    case "code":
+                        code = val;
+                        break;
+                    case "viewer":
+                        viewer = val;
+                        break;
+                    case "id":
+                        id = Int(val);
+                        break;
+                    case "type":
+                        type = Int(val);
+                        break;
+                    case "parameters":
+                        param = val;
+                        break;
+                }
             }
-            param = tmpstr2;
-            //PlayerMessage("Got param "$param);
         }
         
-        
+        //Streamers may not want names to show up in game
+        //so that they can avoid troll names, etc
+        if (anon) {
+            viewer = "Crowd Control";
+        }
         
         result = doCrowdControlEvent(code,param,viewer,type);
         

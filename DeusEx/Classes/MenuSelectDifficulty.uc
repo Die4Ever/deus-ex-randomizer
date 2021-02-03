@@ -218,7 +218,8 @@ function BindControls(bool writing, optional string action)
 
     labels[id] = "Crowd Control";
     helptexts[id] = "Let your Twitch viewers troll you or help you!";
-    EnumOption(id, "Enabled", 1, writing, f.crowdcontrol);
+    EnumOption(id, "Enabled (Anonymous)", 2, writing, f.crowdcontrol);
+    EnumOption(id, "Enabled (With Names)", 1, writing, f.crowdcontrol);
     EnumOption(id, "Disabled", 0, writing, f.crowdcontrol);
     id++;
 
