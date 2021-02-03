@@ -272,7 +272,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     }
     if( newclass == None ) newclass = p.class;
     radius = p.CollisionRadius + newclass.default.CollisionRadius;
-    loc_offset = vect(3, 3, 5);
+    loc_offset = vect(3, 3, 0);
     for(i=0; i<10; i++) {
         loc_offset.X = 1 + rngf() * 3 * Sqrt(float(enemy_multiplier+1));
         loc_offset.Y = 1 + rngf() * 3 * Sqrt(float(enemy_multiplier+1));
