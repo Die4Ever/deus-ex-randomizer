@@ -84,6 +84,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRBannedItems";
         modules_to_load[i++] = "DXRWeapons";
         modules_to_load[i++] = "DXRCrowdControl";
+        modules_to_load[i++] = "DXRMachines";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());

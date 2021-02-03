@@ -60,8 +60,8 @@ function BindControls(bool writing, optional string action)
         f.skills_independent_levels = 0;
         f.minskill = 0;
         f.maxskill = 1;
-        f.ammo = 100;
-        f.medkits = 100;
+        f.ammo = 90;
+        f.medkits = 90;
         f.biocells = f.medkits;
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
@@ -87,9 +87,9 @@ function BindControls(bool writing, optional string action)
         f.skills_reroll_missions = 0;
         f.skills_independent_levels = 0;
         f.minskill = 25;
-        f.maxskill = 200;
-        f.ammo = 100;
-        f.medkits = 100;
+        f.maxskill = 150;
+        f.ammo = 90;
+        f.medkits = 90;
         f.biocells = f.medkits;
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
@@ -97,10 +97,10 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 2;
-        f.medbots = 20;
-        f.repairbots = 20;
+        f.medbots = 25;
+        f.repairbots = 25;
         f.turrets_move = 50;
-        f.turrets_add = 0;
+        f.turrets_add = 30;
     }
     if( EnumOption(id, "Normal", 0, writing) ) {
         difficulty=1.25;
@@ -116,8 +116,8 @@ function BindControls(bool writing, optional string action)
         f.skills_independent_levels = 0;
         f.minskill = 25;
         f.maxskill = 300;
-        f.ammo = 80;
-        f.medkits = 80;
+        f.ammo = 70;
+        f.medkits = 70;
         f.biocells = f.medkits;
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
@@ -128,7 +128,7 @@ function BindControls(bool writing, optional string action)
         f.medbots = 15;
         f.repairbots = 15;
         f.turrets_move = 50;
-        f.turrets_add = 20;
+        f.turrets_add = 70;
     }
     if( EnumOption(id, "Hard", 2, writing) ) {
         difficulty=1.5;
@@ -144,8 +144,8 @@ function BindControls(bool writing, optional string action)
         f.skills_independent_levels = 100;
         f.minskill = 25;
         f.maxskill = 300;
-        f.ammo = 70;
-        f.medkits = 70;
+        f.ammo = 50;
+        f.medkits = 50;
         f.biocells = f.medkits;
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
@@ -156,7 +156,7 @@ function BindControls(bool writing, optional string action)
         f.medbots = 10;
         f.repairbots = 10;
         f.turrets_move = 50;
-        f.turrets_add = 30;
+        f.turrets_add = 120;
     }
     if( EnumOption(id, "Extreme", 3, writing) ) {
         difficulty=2;
@@ -166,14 +166,14 @@ function BindControls(bool writing, optional string action)
         f.deviceshackable = 50;
         f.passwordsrandomized = 100;
         f.infodevices = 100;
-        f.enemiesrandomized = 70;
+        f.enemiesrandomized = 60;
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
         f.skills_independent_levels = 100;
         f.minskill = 25;
         f.maxskill = 400;
-        f.ammo = 50;
-        f.medkits = 50;
+        f.ammo = 30;
+        f.medkits = 30;
         f.biocells = f.medkits;
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
@@ -184,7 +184,7 @@ function BindControls(bool writing, optional string action)
         f.medbots = 5;
         f.repairbots = 5;
         f.turrets_move = 50;
-        f.turrets_add = 40;
+        f.turrets_add = 200;
     }
     id++;
 
