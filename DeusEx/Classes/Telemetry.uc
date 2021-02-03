@@ -75,18 +75,18 @@ event Opened()
 
     //LinkMode = MODE_Binary;
     log(Self$": Opened, sending "$i$", LinkMode: "$LinkMode);
-	Enable('Tick');
-	if(ProxyServerAddress != "")
-		SendBufferedData("POST http://"$server_host$":"$string(ServerPort)$ServerURI$" HTTP/1.1"$CR$LF);
-	else
-		SendBufferedData("POST "$ServerURI$" HTTP/1.1"$CR$LF);
-	SendBufferedData("User-Agent: Unreal"$CR$LF);
-	SendBufferedData("Connection: close"$CR$LF);
+    Enable('Tick');
+    if(ProxyServerAddress != "")
+        SendBufferedData("POST http://"$server_host$":"$string(ServerPort)$ServerURI$" HTTP/1.1"$CR$LF);
+    else
+        SendBufferedData("POST "$ServerURI$" HTTP/1.1"$CR$LF);
+    SendBufferedData("User-Agent: Unreal"$CR$LF);
+    SendBufferedData("Connection: close"$CR$LF);
     SendBufferedData("Content-Length: "$i$CR$LF);
-	SendBufferedData("Host: "$server_host$":"$ServerPort$CR$LF$CR$LF);
+    SendBufferedData("Host: "$server_host$":"$ServerPort$CR$LF$CR$LF);
     SendBufferedData( c $ LF $ Chr(0) );
 
-	CurrentState = WaitingForHeader;
+    CurrentState = WaitingForHeader;
 }
 
 function int SendText( coerce string Str )
@@ -124,7 +124,7 @@ function SetError(int Code)
 event Timer()
 {
     log(Self$": Timer");
-	Super.Timer();
+    Super.Timer();
     Done();
 }
 

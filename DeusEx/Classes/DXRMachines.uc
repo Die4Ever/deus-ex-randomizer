@@ -1,6 +1,8 @@
 class DXRMachines extends DXRActorsBase;
 
 var config int max_turrets;
+var config int turret_move_min_distance;
+var config int turret_move_max_distance;
 var config int max_datacube_distance;
 var config int min_datacube_distance;
 var config int camera_swing_angle;
@@ -14,6 +16,8 @@ function CheckConfig()
     local class<Actor> a;
     if( config_version < class'DXRFlags'.static.VersionToInt(1,5,0) ) {
         max_turrets = 3;
+        turret_move_min_distance = 10*16;
+        turret_move_max_distance = 500*16;
         max_datacube_distance = 200*16;
         min_datacube_distance = 50*16;
         camera_swing_angle = 8192;
@@ -39,21 +43,19 @@ function RandoTurrets(int percent_move, int percent_add)
     local int i, hostile_turrets;
     local vector loc;
 
-    if( dxr.localURL != "01_NYC_UNATCOISLAND" ) return;
-
     SetSeed( "RandoTurrets move" );
 
     foreach AllActors(class'AutoTurret', t) {
         if( t.bTrackPlayersOnly==true || t.bTrackPawnsOnly==false ) hostile_turrets++;
         if( chance_single(percent_move) == false ) continue;
 
-        /*loc = GetRandomPosition(t.Location, 0, 16*500);
+        loc = GetRandomPosition(t.Location, turret_move_min_distance, turret_move_max_distance);
         info("RandoTurret move "$t$" to near "$loc);
         cam = GetCameraForTurret(t);
         if( cam != None ) {
             if( ! MoveCamera(cam, loc) ) continue;
         }
-        MoveTurret(t, loc);*/
+        MoveTurret(t, loc);
     }
 
     if( hostile_turrets == 0 ) return;

@@ -9,7 +9,7 @@ var config RemoveActor remove_actors[32];
 struct Goal {
     var string map_name;
     var name actor_name;
-    var float group_radius;
+    var float group_radius;//obsolete name, rename it to distance_multipler? only used with move_with_previous
     var EPhysics physics;
     var bool move_with_previous;//for chaining things together
     var bool allow_vanilla;
@@ -38,7 +38,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,9) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,0) ) {
         allow_vanilla = false;
 
         i=0;
@@ -345,36 +345,66 @@ function CheckConfig()
         goals[i].map_name = map;
         goals[i].actor_name = 'DeusExMover40';//weld point
         goals[i].physics = PHYS_None;
-        goals[i].group_radius = 80;
         goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ParticleGenerator10';//I don't think these work for some reason
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'DeusExMover16';//weld point
         goals[i].physics = PHYS_None;
-        goals[i].group_radius = 80;
         goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ParticleGenerator4';
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'DeusExMover33';//weld point
         goals[i].physics = PHYS_None;
-        goals[i].group_radius = 80;
         goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ParticleGenerator7';
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'DeusExMover31';//weld point
         goals[i].physics = PHYS_None;
-        goals[i].group_radius = 80;
         goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ParticleGenerator5';
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'DeusExMover32';//weld point
         goals[i].physics = PHYS_None;
-        goals[i].group_radius = 80;
         goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ParticleGenerator6';
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
         i++;
 
         map = "11_paris_cathedral";
@@ -1083,6 +1113,7 @@ function FirstEntry()
         if( local_goals[i].group_radius >= 0.1 ) {
             foreach RadiusActors(class'Actor', a, local_goals[i].group_radius, loc ) {
                 if( a == dxr.Player ) continue;
+                if( a.bStatic ) continue;
                 if( NavigationPoint(a) != None ) continue;
                 if( Light(a) != None ) continue;
                 success = MoveActor(a, a.location + diff, a.rotation, local_goals[i].physics);
