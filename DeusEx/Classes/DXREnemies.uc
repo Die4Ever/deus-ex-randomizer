@@ -217,9 +217,10 @@ function RandoEnemies(int percent)
         if( SkipActor(p, 'ScriptedPawn') ) continue;
         //if( IsInitialEnemy(p) == False ) continue;
 
-        if( rng(100) < percent ) RandomizeSP(p, percent);
+        if( HasItemSubclass(p, class'Weapon') == false ) continue;//don't randomize neutral npcs that don't already have weapons
+        if( chance_single(percent) ) RandomizeSP(p, percent);
 
-        if( rng(100) >= percent ) continue;
+        if( chance_single(percent) == false ) continue;
 
         for(i = rng(enemy_multiplier*100+percent)/100; i >= 0; i--) {
             n = RandomEnemy(p, percent);

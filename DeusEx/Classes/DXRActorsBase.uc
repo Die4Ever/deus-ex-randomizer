@@ -106,6 +106,29 @@ static function bool HasItem(Pawn p, class c)
     return p.FindInventoryType(c) != None;
 }
 
+static function bool HasItemSubclass(Pawn p, class<Inventory> c)
+{
+    local Inventory Inv;
+    local ScriptedPawn sp;
+    local int i;
+    sp = ScriptedPawn(p);
+    
+    if( sp != None ) {
+        for (i=0; i<ArrayCount(sp.InitialInventory); i++)
+        {
+            if ((sp.InitialInventory[i].Inventory != None) && (sp.InitialInventory[i].Count > 0))
+            {
+                if( ClassIsChildOf(sp.InitialInventory[i].Inventory.Class, c) ) return True;
+            }
+        }
+    }
+
+    for( Inv=p.Inventory; Inv!=None; Inv=Inv.Inventory )   
+		if ( ClassIsChildOf(Inv.class, c) )
+			return true;
+	return false;
+}
+
 static function bool HasMeleeWeapon(Pawn p)
 {
     return HasItem(p, class'WeaponBaton')
