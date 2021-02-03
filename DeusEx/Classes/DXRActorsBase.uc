@@ -247,14 +247,18 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
 {
     local Actor a;
     local class<Actor> newclass;
+    local vector loc;
     local float scalefactor;
     local float largestDim;
 
+    loc = oldactor.Location;
     newclass = class<Actor>(DynamicLoadObject(newclassstring, class'class'));
-    a = Spawn(newclass,,,oldactor.Location);
+    if( newclass.default.bStatic ) warning(newclassstring $ " defaults to bStatic, Spawn probably won't work");
+    a = Spawn(newclass,,,loc);
 
     if( a == None ) {
         warning("ReplaceActor("$oldactor$", "$newclassstring$"), failed to spawn in location "$oldactor.Location);
+        return None;
     }
 
     //Get the scaling to match

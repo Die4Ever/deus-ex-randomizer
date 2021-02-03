@@ -25,7 +25,6 @@ function AnyEntry()
     local Actor a;
     local Rotator r;
     local Vector v;
-    local string newActorClass;
     Super.AnyEntry();
 
     switch(dxr.localURL)
@@ -35,10 +34,7 @@ function AnyEntry()
             l("Memeing up "$ dxr.localURL);
             foreach AllActors(class'DXLogo', logo)
             {                
-                newActorClass = GetRandomActorClass();
-                l("DXLogo replaced with "$newActorClass);
-                a = ReplaceActor(logo, newActorClass );
-                
+                a = ReplaceWithRandomClass(logo);
                 if (IsHuman(a)){
                     ScriptedPawn(a).SetOrders('Standing');
                 }
@@ -64,9 +60,7 @@ function AnyEntry()
 
             foreach AllActors(class'IonStormLogo', islogo)
             {
-                newActorClass = GetRandomActorClass();
-                l("IonStormLogo replaced with "$newActorClass);
-                a = ReplaceActor(islogo, newActorClass );
+                a = ReplaceWithRandomClass(islogo);
                 if (IsHuman(a)){
                     ScriptedPawn(a).SetOrders('Standing');
                 }
@@ -81,9 +75,7 @@ function AnyEntry()
 
             foreach AllActors(class'EidosLogo', elogo)
             {
-                newActorClass = GetRandomActorClass();
-                l("EidosLogo replaced with "$newActorClass);
-                a = ReplaceActor(elogo, newActorClass );
+                a = ReplaceWithRandomClass(elogo);
                 if (IsHuman(a)){
                     ScriptedPawn(a).SetOrders('Standing');
                 }
@@ -219,6 +211,21 @@ function bool is_valid(string s, class<Object> o)
     log( "if ( r == i++ ) return class'" $ s $ "';" );
     //i++;//was a global variable in my code that outputted code...
     return true;
+}
+
+function Actor ReplaceWithRandomClass(Actor old)
+{
+    local Actor a;
+    local string newActorClass;
+    local int i;
+    for(i=0; i<10; i++) {
+        newActorClass = GetRandomActorClass();
+        l(old$" replaced with "$newActorClass);
+        a = ReplaceActor(old, newActorClass );
+        if( a != None ) return a;
+    }
+    warning("ReplaceWithRandomClass("$old$") failed");
+    return None;
 }
 
 function string GetRandomActorClass()
