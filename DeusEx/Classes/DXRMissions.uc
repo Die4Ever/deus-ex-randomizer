@@ -32,6 +32,9 @@ struct _RandomItemStruct { var class<Inventory> type; var int chance; };
 var config RandomItemStruct randomitems[16];
 var _RandomItemStruct _randomitems[16];
 
+var vector rando_start_loc;
+var bool b_rando_start;
+
 function CheckConfig()
 {
     local class<Actor> a;
@@ -1070,6 +1073,8 @@ function FirstEntry()
         start = rng(num_ps);
         dxr.Player.SetLocation(player_starts[start].location);
         dxr.Player.SetRotation(player_starts[start].rotation);
+        rando_start_loc = dxr.Player.Location;
+        b_rando_start = true;
 
         for(i=0; i<num_gl; i++) {
             diff = player_starts[start].location - goal_locations[i].location;
@@ -1221,6 +1226,35 @@ function _RandoStartingEquipment(DeusExPlayer player, DXREnemies dxre)
     item = Spawn(iclass);
     item.SetLocation(player.Location);
     item.Frob(player, None);
+}
+
+static function bool IsCloseToStart(DXRando dxr, vector loc)
+{
+    local PlayerStart ps;
+    local Teleporter t;
+    local float too_close, dist;
+    local DXRMissions m;
+    too_close = 60*16;
+
+    m = DXRMissions(dxr.FindModule(class'DXRMissions'));
+    if( m != None && m.b_rando_start ) {
+        if ( VSize(m.rando_start_loc - loc) < too_close ) return true;
+        else return false;
+    }
+    else {
+        foreach dxr.RadiusActors(class'PlayerStart', ps, too_close, loc) {
+            dist = VSize(loc-ps.location);
+            if( dist < too_close ) return true;
+        }
+    }
+
+    foreach dxr.RadiusActors(class'Teleporter', t, too_close, loc) {
+        if( t.Tag == '' ) continue;
+        dist = VSize(loc-ps.location);
+        if( dist < too_close ) return true;
+    }
+
+    return false;
 }
 
 //tests to ensure that there are more goal locations than movable actors for each map

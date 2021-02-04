@@ -21,8 +21,8 @@ function CheckConfig()
         max_datacube_distance = 200*16;
         min_datacube_distance = 50*16;
         camera_swing_angle = 8192;
-        camera_fov = 4096;
-        camera_range = 1024;
+        camera_fov = 5000;
+        camera_range = 2000;
         camera_ceiling_pitch = -3568;
     }
     Super.CheckConfig();
@@ -50,6 +50,10 @@ function RandoTurrets(int percent_move, int percent_add)
         if( chance_single(percent_move) == false ) continue;
 
         loc = GetRandomPosition(t.Location, turret_move_min_distance, turret_move_max_distance);
+        if( class'DXRMissions'.static.IsCloseToStart(dxr, loc) ) {
+            info("RandoTurret move "$loc$" is too close to start!");
+            continue;
+        }
         info("RandoTurret move "$t$" to near "$loc);
         cam = GetCameraForTurret(t);
         if( cam != None ) {
@@ -66,6 +70,10 @@ function RandoTurrets(int percent_move, int percent_add)
         if( chance_single(percent_add/max_turrets) == false ) continue;
 
         loc = GetRandomPosition();
+        if( class'DXRMissions'.static.IsCloseToStart(dxr, loc) ) {
+            info("RandoTurret add "$loc$" is too close to start!");
+            continue;
+        }
         info("RandoTurret add near "$loc);
         cam = SpawnCamera(loc);
         if( cam == None ) continue;

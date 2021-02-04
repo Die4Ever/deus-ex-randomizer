@@ -293,12 +293,15 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     }
     if( newclass == None ) newclass = p.class;
     radius = p.CollisionRadius + newclass.default.CollisionRadius;
-    loc_offset = vect(3, 3, 0);
     for(i=0; i<10; i++) {
         loc_offset.X = 1 + rngf() * 3 * Sqrt(float(enemy_multiplier+1));
         loc_offset.Y = 1 + rngf() * 3 * Sqrt(float(enemy_multiplier+1));
         if( chance_single(50) ) loc_offset *= -1;
         loc = p.Location + (radius*loc_offset);
+        if( class'DXRMissions'.static.IsCloseToStart(dxr, loc) ) {
+            info("CloneScriptedPawn "$loc$" is too close to start!");
+            continue;
+        }
         n = Spawn(newclass,,, loc );
         if( n != None ) break;
     }
@@ -306,9 +309,9 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
         l("failed to clone "$ActorToString(p)$" into class "$newclass$" into "$loc);
         return None;
     }
-
     l("cloning "$ActorToString(p)$" into class "$newclass$" got "$ActorToString(n));
 
+    if( p.BarkBindName != "" && n.BarkBindName == "" ) n.BarkBindName = p.BarkBindName;
     n.Alliance = p.Alliance;
     for(i=0; i<ArrayCount(n.InitialAlliances); i++ )
     {
