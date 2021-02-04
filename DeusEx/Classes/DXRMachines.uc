@@ -23,7 +23,7 @@ function CheckConfig()
         camera_swing_angle = 8192;
         camera_fov = 5000;
         camera_range = 2000;
-        camera_ceiling_pitch = -3568;
+        camera_ceiling_pitch = -4000;
     }
     Super.CheckConfig();
 }
@@ -206,7 +206,7 @@ function bool GetCameraLocation(out vector loc, out rotator rotation)
     rotation = Rotator(locnorm.norm);
 
     //if( found_ceiling ) rotation.pitch += camera_ceiling_pitch;
-    distrange.max = 16*10;
+    distrange.max = 16*30;
     if( NearestCeiling(locnorm, distrange, 16) ) rotation.pitch += camera_ceiling_pitch;
     loc = locnorm.loc;
     return true;
