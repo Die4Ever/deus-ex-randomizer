@@ -29,3 +29,19 @@ function CheckConfig()
     }
     Super.CheckConfig();
 }
+
+function int RunTests()
+{
+    local DXRandoCrowdControlLink t;
+    local int results;
+    results = Super.RunTests();
+
+    t = Spawn(class'DXRandoCrowdControlLink');
+    results += test( t!=None, "spawned "$t);
+    if( t != None ) {
+        results += t.RunTests(Self);
+        t.Destroy();
+    }
+
+    return results;
+}

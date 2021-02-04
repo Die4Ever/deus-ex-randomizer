@@ -131,7 +131,6 @@ function AppendSpeech(String newSpeech)
 for v1.5 ========================
 
 fix "softlock" in 03_batterypark, maybe by adding an atm and datacube, or copying over the threatened bum from 02_street, putting a note on curly's body, hiding money and/or datacubes on the map...
-log.py should create a folder for each month
 
 else if (localURL == "10_PARIS_METRO")
 	{

@@ -1128,3 +1128,70 @@ function info(string msg)
     log(Self$": INFO: "$msg);
     class'Telemetry'.static.SendLog(Self, "INFO", msg);
 }
+
+function int RunTests(DXRCrowdControl m)
+{
+    local int r, i;
+    local string msg;
+    local JsonMsg jmsg;
+    local int id,type;
+    local string code,viewer,param;
+
+    msg="";
+    r+=m.testbool( isCrowdControl(msg), false, "isCrowdControl "$msg);
+
+    msg="{}";
+    r+=m.testbool( isCrowdControl(msg), false, "isCrowdControl "$msg);
+
+    r+=TestMsg(m, 123, 1, "kill", "die4ever", "");
+    r+=TestMsg(m, 123, 1, "test with spaces", "die4ever", "");
+    //r+=TestMsg(m, 123, 1, "test:with:colons", "die4ever", "");
+    //r+=TestMsg(m, 123, 1, "test,with,commas", "die4ever", "");
+    r+=TestMsg(m, 123, 1, "kill", "die4ever", "parameter test");
+    r+=TestMsg(m, 123, 1, "drop_grenade", "die4ever", "g_scrambler");
+    return r;
+}
+
+function int TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer, string param)
+{
+    local int r, i, matches;
+    local string msg, val;
+    local JsonMsg jmsg;
+
+    //currently our json parsing doesn't work with spaces after the commas, this is something we probably won't need to fix but good to remember
+    msg="{\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":\""$param$"\"}";
+
+    r+=m.testbool( isCrowdControl(msg), true, "isCrowdControl: "$msg);
+
+    jmsg=ParseJson(msg);
+    for (i=0;i<jmsg.count;i++) {
+        if (jmsg.e[i].valCount>0) {
+            val = jmsg.e[i].value[0];
+            switch (jmsg.e[i].key) {
+                case "code":
+                    r+=m.teststring(val, code, "code");
+                    matches++;
+                    break;
+                case "viewer":
+                    r+=m.teststring(val, viewer, "viewer");
+                    matches++;
+                    break;
+                case "id":
+                    r+=m.testint(Int(val), id, "id");
+                    matches++;
+                    break;
+                case "type":
+                    r+=m.testint(Int(val), type, "type");
+                    matches++;
+                    break;
+                case "parameters":
+                    r+=m.teststring(val, param, "param");
+                    matches++;
+                    break;
+            }
+        }
+    }
+
+    r+=m.testint(matches, 5, "5 matches for msg: "$msg);
+    return r;
+}
