@@ -269,8 +269,12 @@ function ComputerSecurity SpawnSecurityComputer(vector loc, optional AutoTurret 
         warning("SpawnSecurityComputer failed at "$locnorm.loc);
         return None;
     }
-    c.Views[0].CameraTag = cam.Tag;
-    c.Views[0].TurretTag = t.Tag;
+    if( cam != None ) {
+        c.Views[0].CameraTag = cam.Tag;
+    }
+    if( t != None ) {
+        c.Views[0].TurretTag = t.Tag;
+    }
     c.UserList[0].userName = String(c.Name);
     c.UserList[0].Password = class'DXRPasswords'.static.GeneratePassword(dxr, String(c.Name) );
     info("SpawnSecurityComputer "$c$" done at ("$loc$"), ("$rotation$") with password: "$c.UserList[0].Password );

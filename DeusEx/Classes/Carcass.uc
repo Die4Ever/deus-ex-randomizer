@@ -10,7 +10,7 @@ function InitFor(Actor Other)
     Super.InitFor(Other);
 }
 
-function Destroyed()
+function DropKeys()
 {
     local Inventory item, nextItem;
 
@@ -23,6 +23,10 @@ function Destroyed()
         }
         item = nextItem;
     }
+}
 
-	Super.Destroyed();
+function Destroyed()
+{
+    DropKeys();
+    Super.Destroyed();
 }

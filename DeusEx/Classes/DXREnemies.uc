@@ -141,6 +141,27 @@ function FirstEntry()
     Super.FirstEntry();
     RandoEnemies(dxr.flags.enemiesrandomized);
     //SwapScriptedPawns();
+    RandoCarcasses();
+}
+
+function RandoCarcasses()
+{
+    local DeusExCarcass c;
+    local Inventory item, nextItem;
+
+    SetSeed( "RandoCarcasses" );
+
+    foreach AllActors(class'DeusExCarcass', c) {
+        item = c.Inventory;
+        while( item != None ) {
+            nextItem = item.Inventory;
+            if( chance_single(50) && !item.IsA('NanoKey') ) {
+                c.DeleteInventory(item);
+                item.Destroy();
+            }
+            item = nextItem;
+        }
+    }
 }
 
 function SwapScriptedPawns()
@@ -359,22 +380,27 @@ function GiveRandomWeapon(Pawn p)
 
     w = Spawn(wclass, p);
     l("GiveRandomWeapon("$p$") "$wclass$", "$w);
+    w.PickUpAmmoCount = Clamp(float(w.PickupAmmoCount) * float(dxr.flags.ammo) / 100.0, 1, 1000);
     w.GiveTo(p);
     w.SetBase(p);
 
     if( w.AmmoName != None ) {
         a = spawn(w.AmmoName);
-        l("GiveRandomWeapon("$p$") ammo "$a);
+        l("GiveRandomWeapon("$p$") ammo "$w.AmmoName$", "$a);
         w.AmmoType = a;
-        w.AmmoType.InitialState='Idle2';
-        w.AmmoType.GiveTo(p);
-        w.AmmoType.SetBase(p);
+        a.AmmoAmount = Clamp(float(a.AmmoAmount) * float(dxr.flags.ammo) / 100.0, 1, 1000);
+        a.BecomeItem();
+        a.GotoState('Idle2');
+        a.GiveTo(p);
+        a.SetBase(p);
     }
 
     for(i=0; i < ArrayCount(w.AmmoNames); i++) {
-        if(rng(3) == 0 && w.AmmoNames[i] != None) {
+        if(rng(3) == 0 && w.AmmoNames[i] != None && w.AmmoNames[i] != class'AmmoNone') {
             a = spawn(w.AmmoNames[i]);
-            l("GiveRandomWeapon("$p$") alt ammo "$a);
+            l("GiveRandomWeapon("$p$") alt ammo "$w.AmmoNames[i]$", "$a);
+            a.BecomeItem();
+            a.GotoState('Idle2');
             a.GiveTo(p);
             a.SetBase(p);
         }

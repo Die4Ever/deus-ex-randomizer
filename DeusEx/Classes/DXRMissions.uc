@@ -512,7 +512,7 @@ function CheckConfig()
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(2321.717041,-2045.296753,-159.436096);//'PathNode23' in jail with Gunther
+        important_locations[i].location = vect(2127.692139, -1774.869141, -149.140366);//'PathNode23' in jail with Gunther
         important_locations[i].is_player_start = true;
         important_locations[i].is_goal_position = true;
         i++;
@@ -520,7 +520,7 @@ function CheckConfig()
         important_locations[i].map_name = map;
         important_locations[i].location = vect(-2407.206787,205.915558,-128.899979);//'HidePoint6' little hut by nsf bot patrol
         important_locations[i].rotation = rot(0,30472,0);
-        important_locations[i].is_player_start = true;
+        important_locations[i].is_player_start = false;
         important_locations[i].is_goal_position = true;
         i++;
 

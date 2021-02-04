@@ -286,12 +286,17 @@ function MoveNanoKeys()
 
 function MoveNanoKeys4()
 {
+    local DeusExCarcass carc;
     local Inventory a;
     local Containers c;
     local NanoKey k;
     local int num, i, slot;
 
     SetSeed( "MoveNanoKeys4" );
+
+    foreach AllActors(class'DeusExCarcass', carc) {
+        carc.DropKeys();
+    }
 
     foreach AllActors(class'NanoKey', k )
     {
