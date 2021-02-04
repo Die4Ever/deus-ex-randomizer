@@ -181,11 +181,7 @@ function ScriptedPawn Respawn(out OriginalEnemy enemy)
     p.InitializeInventory();
     p.InitializeAlliances();
 
-    dxrn = DXRNames(dxr.FindModule(class'DXRNames'));
-    if( dxrn != None ) {
-        p.UnfamiliarName = dxrn.RandomName(p);
-        p.FamiliarName = p.UnfamiliarName;
-    }
+    class'DXRNames'.static.GiveRandomName(dxr, p);
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
     if( dxre != None ) {

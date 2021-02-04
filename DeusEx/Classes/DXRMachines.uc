@@ -8,6 +8,7 @@ var config int min_datacube_distance;
 var config int camera_swing_angle;
 var config int camera_fov;
 var config int camera_range;
+var config int camera_swing_period;
 var config int camera_ceiling_pitch;
 
 function CheckConfig()
@@ -23,6 +24,7 @@ function CheckConfig()
         camera_swing_angle = 8192;
         camera_fov = 5000;
         camera_range = 2000;
+        camera_swing_period = 8;
         camera_ceiling_pitch = -4000;
     }
     Super.CheckConfig();
@@ -250,6 +252,7 @@ function SecurityCamera SpawnCamera(vector loc)
     c.bSwing = true;
     c.bNoAlarm = false;//true means friendly
     c.swingAngle = camera_swing_angle;
+    c.swingPeriod = camera_swing_period;
     c.cameraFOV = camera_fov;
     c.cameraRange = camera_range;
     info("SpawnCamera "$c$" done at ("$loc$"), ("$rotation$")");
@@ -373,5 +376,6 @@ function Actor SpawnNewActor(class<Actor> c, optional vector target, optional fl
     loc = GetRandomPositionFine(target, mindist, maxdist);
     a = Spawn(c,,, loc );
     if( a == None ) warning("SpawnNewActor "$c$" failed at "$loc);
+    else if( ScriptedPawn(a) != None ) class'DXRNames'.static.GiveRandomName(dxr, ScriptedPawn(a) );
     return a;
 }

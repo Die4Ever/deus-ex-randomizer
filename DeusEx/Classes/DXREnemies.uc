@@ -311,7 +311,8 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     }
     l("cloning "$ActorToString(p)$" into class "$newclass$" got "$ActorToString(n));
 
-    if( p.BarkBindName != "" && n.BarkBindName == "" ) n.BarkBindName = p.BarkBindName;
+    if( IsHuman(p) && IsHuman(n) && p.BarkBindName != "" && n.BarkBindName == "" ) n.BarkBindName = p.BarkBindName;
+    class'DXRNames'.static.GiveRandomName(dxr, n);
     n.Alliance = p.Alliance;
     for(i=0; i<ArrayCount(n.InitialAlliances); i++ )
     {
