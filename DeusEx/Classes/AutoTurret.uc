@@ -93,3 +93,11 @@ function Fire()
     //		PlaySound(sound'DryFire', SLOT_None);
     //	}
 }
+
+state() Active
+{
+    function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
+	{
+        Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
+    }
+}

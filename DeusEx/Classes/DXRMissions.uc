@@ -533,6 +533,13 @@ function CheckConfig()
         important_locations[i].is_player_start = true;
         i++;
 
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(2980.058105, -669.242554, 1056.577271);//'PathNode875' top of the base of the statue
+        important_locations[i].rotation = rot(0,0,0);
+        important_locations[i].is_player_start = false;
+        important_locations[i].is_goal_position = true;
+        i++;
+
         map = "02_nyc_batterypark";
         important_locations[i].map_name = map;
         important_locations[i].location = vect(-4310.507813,2237.952637,189.843536);//'Light450' 
