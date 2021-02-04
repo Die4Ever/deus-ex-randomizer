@@ -81,6 +81,51 @@ function string StripQuotes (string msg) {
     return msg;
 }
 
+function string JsonStripSpaces(string msg) {
+    local int i;
+    local string c;
+    local string buf;
+    local bool inQuotes;
+    
+    inQuotes = False;
+    
+    for (i = 0; i < Len(msg) ; i++) {
+        c = Mid(msg,i,1); //Grab a single character
+        
+        if (c==" " && !inQuotes) {
+            continue;  //Don't add spaces to the buffer if we're outside quotes
+        } else if (c==Chr(34)) {
+            inQuotes = !inQuotes;
+        }
+        
+        buf = buf $ c;
+    }    
+    
+    return buf;
+}
+
+//Returns the appropriate character for whatever is after
+//the backslash, eg \c
+function string JsonGetEscapedChar(string c) {
+    switch(c){
+        case "b":
+            return Chr(8); //Backspace
+        case "f":
+            return Chr(12); //Form feed
+        case "n":
+            return Chr(10); //New line
+        case "r":
+            return Chr(13); //Carriage return
+        case "t":
+            return Chr(9); //Tab
+        case Chr(34): //Quotes
+        case Chr(92): //Backslash
+            return c;
+        default:
+            return "";
+    }
+}
+
 function JsonMsg ParseJson (string msg) {
     
     local bool msgDone;
@@ -89,6 +134,8 @@ function JsonMsg ParseJson (string msg) {
     local string buf;
     
     local int parsestate;
+    local bool inquotes;
+    local bool escape;
     
     local JsonMsg j;
     
@@ -97,68 +144,111 @@ function JsonMsg ParseJson (string msg) {
     elemDone = False;
     
     parsestate = KeyState;
+    inquotes = False;
+    escape = False;
     msgDone = False;
     buf = "";
+
+    //Strip any spaces outside of strings to standardize the input a bit
+    msg = JsonStripSpaces(msg);
     
     for (i = 0; i < Len(msg) && !msgDone ; i++) {
         c = Mid(msg,i,1); //Grab a single character
         
-        switch (c) {
-            case ":":
-            case ",":
-              //Wrap up the current string that was being handled
-              //PlayerMessage(buf);
-              if (parsestate == KeyState) {
-                  j.e[j.count].key = StripQuotes(buf);
-                  parsestate = ValState;
-              } else if (parsestate == ValState) {
-                  j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                  j.e[j.count].valCount++;
-                  parsestate = KeyState;
-                  elemDone = True;
-              } else if (parsestate == ArrayState) {
-                  j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                  j.e[j.count].valCount++;
-              } else if (parsestate == ArrayDoneState){
-                  parseState = KeyState;
-              }
-            case "{":
-                buf = "";
-                break;
-            
-            case "}":
-                //PlayerMessage(buf);
-                if (parsestate == ValState) {
-                  j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                  j.e[j.count].valCount++;
-                  parsestate = KeyState;
-                  elemDone = True;
-                }
-                msgDone = True;
-                break;
-            
-            case "]":
-                if (parsestate == ArrayState) {
-                    j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                    j.e[j.count].valCount++;
-                    elemDone = True;
-                    parsestate = ArrayDoneState;
-                } else {
+        if (!inQuotes) {
+            switch (c) {
+                case ":":
+                case ",":
+                  //Wrap up the current string that was being handled
+                  //PlayerMessage(buf);
+                  if (parsestate == KeyState) {
+                      j.e[j.count].key = StripQuotes(buf);
+                      parsestate = ValState;
+                  } else if (parsestate == ValState) {
+                      //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                      j.e[j.count].value[j.e[j.count].valCount]=buf;
+                      j.e[j.count].valCount++;
+                      parsestate = KeyState;
+                      elemDone = True;
+                  } else if (parsestate == ArrayState) {
+                      //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                      j.e[j.count].value[j.e[j.count].valCount]=buf;
+                      j.e[j.count].valCount++;
+                  } else if (parsestate == ArrayDoneState){
+                      parseState = KeyState;
+                  }
+                case "{":
+                    buf = "";
+                    break;
+                
+                case "}":
+                    //PlayerMessage(buf);
+                    if (parsestate == ValState) {
+                      //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                      j.e[j.count].value[j.e[j.count].valCount]=buf;
+                      j.e[j.count].valCount++;
+                      parsestate = KeyState;
+                      elemDone = True;
+                    }
+                    msgDone = True;
+                    break;
+                
+                case "]":
+                    if (parsestate == ArrayState) {
+                        //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                        j.e[j.count].value[j.e[j.count].valCount]=buf;
+                        j.e[j.count].valCount++;
+                        elemDone = True;
+                        parsestate = ArrayDoneState;
+                    } else {
+                        buf = buf $ c;
+                    }
+                    break;
+                case "[":
+                    if (parsestate == ValState){
+                        parsestate = ArrayState;
+                    } else {
+                        buf = buf $ c;
+                    }
+                    break;
+                case Chr(34): //Quotes
+                    inQuotes = !inQuotes;
+                    break;
+                default:
+                    //Build up the buffer
                     buf = buf $ c;
-                }
-                break;
-            case "[":
-                if (parsestate == ValState){
-                    parsestate = ArrayState;
-                } else {
-                    buf = buf $ c;
-                }
-                break;
-            default:
-                //Build up the buffer
-                buf = buf $ c;
-                break;
-            
+                    break;
+                
+            }
+        } else {
+            switch(c) {
+                case Chr(34): //Quotes
+                    if (escape) {
+                        escape = False;
+                        buf = buf $ JsonGetEscapedChar(c);                       
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                    break;
+                case Chr(92): //Backslash, escape character time
+                    if (escape) {
+                        //If there has already been one, then we need to turn it into the right char
+                        escape = False;
+                        buf = buf $ JsonGetEscapedChar(c);
+                    } else {
+                        escape = True;
+                    }
+                    break;
+                default:
+                    //Build up the buffer
+                    if (escape) {
+                        escape = False;
+                        buf = buf $ JsonGetEscapedChar(c);
+                    } else {
+                        buf = buf $ c;
+                    }
+                    break;                
+            }
         }
         
         if (elemDone) {
@@ -1145,10 +1235,14 @@ function int RunTests(DXRCrowdControl m)
 
     r+=TestMsg(m, 123, 1, "kill", "die4ever", "");
     r+=TestMsg(m, 123, 1, "test with spaces", "die4ever", "");
-    //r+=TestMsg(m, 123, 1, "test:with:colons", "die4ever", "");
-    //r+=TestMsg(m, 123, 1, "test,with,commas", "die4ever", "");
+    r+=TestMsg(m, 123, 1, "test:with:colons", "die4ever", "");
+    r+=TestMsg(m, 123, 1, "test,with,commas", "die4ever", "");
     r+=TestMsg(m, 123, 1, "kill", "die4ever", "parameter test");
     r+=TestMsg(m, 123, 1, "drop_grenade", "die4ever", "g_scrambler");
+    
+    //Need to do more work to validate escaped characters
+    //r+=TestMsg(m, 123, 1, "test\\\\with\\\\escaped\\\\backslashes", "die4ever", ""); //Note that we have to double escape so that the end result is a single escaped backslash
+
     return r;
 }
 
@@ -1158,7 +1252,6 @@ function int TestMsg(DXRCrowdControl m, int id, int type, string code, string vi
     local string msg, val;
     local JsonMsg jmsg;
 
-    //currently our json parsing doesn't work with spaces after the commas, this is something we probably won't need to fix but good to remember
     msg="{\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":\""$param$"\"}";
 
     r+=m.testbool( isCrowdControl(msg), true, "isCrowdControl: "$msg);
