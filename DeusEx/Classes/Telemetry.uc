@@ -9,6 +9,7 @@ var config int config_version;
 var config bool enabled;
 var config string server;
 var config int cache_addr;
+var config string notified_update;
 
 function CheckConfig()
 {
@@ -74,7 +75,7 @@ event Opened()
     i = Len(c);
 
     //LinkMode = MODE_Binary;
-    log(Self$": Opened, sending "$i$", LinkMode: "$LinkMode);
+    log(Self$": Opened, sending "$i$" to http://"$server_host$":"$string(ServerPort)$ServerURI$", LinkMode: "$LinkMode);
     Enable('Tick');
     if(ProxyServerAddress != "")
         SendBufferedData("POST http://"$server_host$":"$string(ServerPort)$ServerURI$" HTTP/1.1"$CR$LF);
@@ -106,6 +107,40 @@ function HTTPReceivedData(string Data)
     if( InStr(Data,"ERROR") >= 0 || InStr(Data, "ok") == -1 ) {
         log(Self$": HTTPReceivedData: " $ Data);
     }
+    NotifyUpdate(Data);
+}
+
+function NotifyUpdate(string data)
+{
+    local DeusExRootWindow r;
+    local DeusExHUD hud;
+    local DeusExPlayer p;
+    local int i;
+    local string update, url;
+
+    i = InStr(data," update available v");
+    if( i == -1 ) return;
+
+    update = Mid(data, i+1);
+    i = InStr(update, LF);
+    update = Left(update, i);
+    if( update == notified_update ) return;
+
+    p = DeusExPlayer(GetPlayerPawn());
+    if( p == None ) return;
+    r = DeusExRootWindow(p.rootWindow);
+    if( r == None ) return;
+    hud = r.hud;
+    if( hud == None ) return;
+    if( ! hud.IsVisible() ) return;
+
+    p.ClientMessage( update );
+    //url = "https://github.com/Die4Ever/deus-ex-randomizer/releases";
+    //p.ClientMessage(url);
+    //p.ConsoleCommand("start "$url);
+
+    notified_update = update;
+    SaveConfig();
 }
 
 event Closed()
@@ -128,6 +163,19 @@ event Timer()
     Done();
 }
 
+function string GetUrl()
+{
+    local string version;
+    local int i;
+    version = class'DXRFlags'.static.VersionString();
+    i = InStr(version, " ");
+    while( i != -1 ) {
+        version = Left(version, i) $ "%20" $ Mid(version, i+1);
+        i = InStr(version, " ");
+    }
+    return "/dxrando/log.py?version="$version;
+}
+
 function Done()
 {
     local int i;
@@ -143,7 +191,7 @@ function Done()
     i = Len(content[start]);
     if( i > 0 ) {
         log(Self$": coming back for "$i$" more!");
-        Browse(server, "/dxrando/log.py", 80, 3);
+        Browse(server, GetUrl(), 80, 3);
     }
 }
 
@@ -156,7 +204,7 @@ function bool Queue(string message)
     if( slot == -1 ) return false;
     LF = Chr(10);
     content[slot] = content[slot] $ message $ LF;
-    if( running == false ) Browse(server, "/dxrando/log.py", 80, 3);
+    if( running == false ) Browse(server, GetUrl(), 80, 3);
     return true;
 }
 
