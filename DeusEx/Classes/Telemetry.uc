@@ -9,7 +9,7 @@ var config int config_version;
 var config bool enabled;
 var config string server;
 var config int cache_addr;
-var config string notified_update;
+var config string last_notification;
 
 function CheckConfig()
 {
@@ -107,24 +107,25 @@ function HTTPReceivedData(string Data)
     if( InStr(Data,"ERROR") >= 0 || InStr(Data, "ok") == -1 ) {
         log(Self$": HTTPReceivedData: " $ Data);
     }
-    NotifyUpdate(Data);
+    CheckNotification(Data);
 }
 
-function NotifyUpdate(string data)
+function CheckNotification(string data)
 {
     local DeusExRootWindow r;
     local DeusExHUD hud;
     local DeusExPlayer p;
     local int i;
-    local string update, url;
+    local string update, url, marker;
 
-    i = InStr(data," update available v");
+    marker = " notification: ";
+    i = InStr(data, marker);
     if( i == -1 ) return;
 
-    update = Mid(data, i+1);
+    update = Mid(data, i+Len(marker) );
     i = InStr(update, LF);
     update = Left(update, i);
-    if( update == notified_update ) return;
+    if( update == last_notification ) return;
 
     p = DeusExPlayer(GetPlayerPawn());
     if( p == None ) return;
@@ -139,7 +140,7 @@ function NotifyUpdate(string data)
     //p.ClientMessage(url);
     //p.ConsoleCommand("start "$url);
 
-    notified_update = update;
+    last_notification = update;
     SaveConfig();
 }
 
