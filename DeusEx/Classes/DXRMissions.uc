@@ -599,10 +599,16 @@ function CheckConfig()
         important_locations[i].map_name = map;
         important_locations[i].location = vect(-4340.930664, 2332.365234, 244.506165);//'Light174' under the vent
         important_locations[i].is_player_start = true;
+        important_locations[i].is_goal_position = false;
         i++;
 
         important_locations[i].map_name = map;
         important_locations[i].location = vect(-2968.101563, -1407.404419, 334.242554);//'PathNode0' in front of statue
+        important_locations[i].is_player_start = true;
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-1079.890625, -3412.052002, 270.581390);//on the dock near vending machines
         important_locations[i].is_player_start = true;
         i++;
 
@@ -633,26 +639,26 @@ function CheckConfig()
 
         map = "03_NYC_BrooklynBridgeStation";
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(975.220337,1208.224854,111.775002);//'ThugMale13'
+        important_locations[i].location = vect(941.022522, 1098.468140,111.775002);//'ThugMale13'
         important_locations[i].rotation = rot(0,43128,0);
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-1248.503662,-2870.117432,109.675003);//'JunkieMale1'
+        important_locations[i].location = vect(-1250.199707, -2800.906738,109.675003);//'JunkieMale1'
         important_locations[i].rotation = rot(0,44456,0);
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(1003.048767,-2519.280762,111.775002);//'BumMale2'
+        important_locations[i].location = vect(1030.150635, -2417.651611,111.775002);//'BumMale2'
         important_locations[i].rotation = rot(0,13576,0);
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-2978.629639,-2281.836670,415.774994);//'ThugMale3'
+        important_locations[i].location = vect(-2978.763916, -2397.429443,415.774994);//'ThugMale3'
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-988.025696, -3381.119385, 111.600235);//'BumMale3'
+        important_locations[i].location = vect(-1038.972412, -3333.837646, 111.600235);//'BumMale3'
         important_locations[i].rotation = rot(0,-22608,0);
         i++;
 

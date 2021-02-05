@@ -20,12 +20,12 @@ function CheckConfig()
         turret_move_min_distance = 10*16;
         turret_move_max_distance = 500*16;
         max_datacube_distance = 200*16;
-        min_datacube_distance = 50*16;
+        min_datacube_distance = 75*16;
         camera_swing_angle = 8192;
-        camera_fov = 5000;
-        camera_range = 2000;
-        camera_swing_period = 8;
-        camera_ceiling_pitch = -4000;
+        camera_fov = 5000;//default is 4096
+        camera_range = 100*16;//default is 1024 aka 64 feet
+        camera_swing_period = 8;//seconds?
+        camera_ceiling_pitch = -4000;//the angle to look down when against a ceiling
     }
     Super.CheckConfig();
 }
@@ -152,6 +152,7 @@ function AutoTurret SpawnTurret(vector loc)
     t.bActive = false;
     t.bTrackPawnsOnly = false;
     t.bTrackPlayersOnly = true;
+    class'DXRPasswords'.static.RandoHackable(dxr, t.gun);
     info("SpawnTurret "$t$" done at ("$loc$"), ("$rotation$")");
     return t;
 }
@@ -255,6 +256,7 @@ function SecurityCamera SpawnCamera(vector loc)
     c.swingPeriod = camera_swing_period;
     c.cameraFOV = camera_fov;
     c.cameraRange = camera_range;
+    class'DXRPasswords'.static.RandoHackable(dxr, c);
     info("SpawnCamera "$c$" done at ("$loc$"), ("$rotation$")");
     return c;
 }

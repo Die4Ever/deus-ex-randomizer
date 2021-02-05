@@ -203,6 +203,7 @@ function SetMaxCopies(class<DeusExPickup> type, int percent)
     foreach AllActors(class'DeusExPickup', p) {
         if( ! p.IsA(type.name) ) continue;
         p.maxCopies = p.default.maxCopies * percent / 100;
+        if( p.NumCopies > p.maxCopies ) p.NumCopies = p.maxCopies;
     }
 }
 

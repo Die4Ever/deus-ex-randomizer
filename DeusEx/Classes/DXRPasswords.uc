@@ -85,9 +85,23 @@ function RandoHacks()
     SetSeed( "RandoHacks" );
 
     foreach AllActors(class'HackableDevices', h) {
-        if( h.bHackable ) {
-            h.hackStrength = FClamp(rngrange(h.hackStrength, min_hack_adjust, max_hack_adjust), 0, 1);
-        }
+        _RandoHackable(h);
+    }
+}
+
+function _RandoHackable(HackableDevices h)
+{
+    if( h.bHackable ) {
+        h.hackStrength = FClamp(rngrange(h.hackStrength, min_hack_adjust, max_hack_adjust), 0, 1);
+    }
+}
+
+static function RandoHackable(DXRando dxr, HackableDevices h)
+{
+    local DXRPasswords m;
+    m = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+    if( m != None ) {
+        m._RandoHackable(h);
     }
 }
 

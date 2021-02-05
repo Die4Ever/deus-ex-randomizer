@@ -110,7 +110,7 @@ function BindControls(bool writing, optional string action)
         f.deviceshackable = 100;
         f.passwordsrandomized = 100;
         f.infodevices = 100;
-        f.enemiesrandomized = 35;
+        f.enemiesrandomized = 30;
         f.skills_disable_downgrades = 0;
         f.skills_reroll_missions = 0;
         f.skills_independent_levels = 0;
@@ -138,7 +138,7 @@ function BindControls(bool writing, optional string action)
         f.deviceshackable = 50;
         f.passwordsrandomized = 100;
         f.infodevices = 100;
-        f.enemiesrandomized = 50;
+        f.enemiesrandomized = 40;
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
         f.skills_independent_levels = 100;
@@ -166,7 +166,7 @@ function BindControls(bool writing, optional string action)
         f.deviceshackable = 50;
         f.passwordsrandomized = 100;
         f.infodevices = 100;
-        f.enemiesrandomized = 60;
+        f.enemiesrandomized = 50;
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
         f.skills_independent_levels = 100;
