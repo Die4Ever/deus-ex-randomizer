@@ -760,6 +760,12 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             break;
 
         case "drop_grenade":
+        
+             //Don't drop grenades if you're in a conversation - It screws things up
+             if (dxr.Player.InConversation()) {
+                 return TempFail;
+             }
+        
             //Spawned ThrownProjectiles won't beep if they don't have an owner,
             //so make sure to set one here (the player)
             switch(param){
