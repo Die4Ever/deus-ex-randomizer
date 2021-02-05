@@ -152,6 +152,34 @@ function class<Actor> GetClassFromString(string classstring, class<Actor> c)
     return a;
 }
 
+
+//Based on function MessageBox from DeusExRootWindow
+//msgBoxMode = 0 or 1, 0 = Yes/No box, 1 = OK box
+//module will presumably be the module you are creating the message box for
+//id lets you provide an ID so you can identify where the response should go
+function CreateMessageBox( String msgTitle, String msgText, int msgBoxMode, bool hideCurrentScreen, 
+                           DXRBase module, int id){
+                           
+	local DXRMessageBoxWindow msgBox;
+
+	msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PushWindow(Class'DXRMessageBoxWindow', hideCurrentScreen ));
+	msgBox.SetTitle(msgTitle);
+	msgBox.SetMessageText(msgText);
+	msgBox.SetMode(msgBoxMode);
+	msgBox.SetCallback(module,id);
+    msgBox.SetDeferredKeyPress(True);
+}
+
+//Implement this in your DXRBase subclass to handle message boxes for your particular needs
+function MessageBoxClicked(int button, int callbackId){
+    DeusExRootWindow(dxr.Player.rootWindow).PopWindow();
+    //Implementations in subclasses just need to call Super to pop the window, then can handle the message however they want
+    //Buttons:
+    //Yes = 0
+    //No = 1
+    //OK = 2
+}
+
 //consider this like debug or trace
 function l(string message)
 {
