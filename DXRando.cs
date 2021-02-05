@@ -12,7 +12,7 @@ public class DXRando : SimpleTCPPack
 
     public DXRando(IPlayer player, Func<CrowdControlBlock, bool> responseHandler, Action<object> statusUpdateHandler) : base(player, responseHandler, statusUpdateHandler) { }
 
-    public override Game Game => new Game(54, "Deus Ex Randomizer", "dxrando", "PC", ConnectorType.SimpleTCPConnector);
+    public override Game Game => new Game(90, "Deus Ex Randomizer", "DeusEx", "PC", ConnectorType.SimpleTCPConnector);
 
     public override List<Effect> Effects => new List<Effect>
     {
