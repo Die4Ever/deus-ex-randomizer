@@ -19,14 +19,23 @@ function CheckConfig()
 
 function Timer()
 {
+    local DeusExGoal goal;
     local DeusExNote note;
     local int i;
 
     Super.Timer();
     if( dxr == None ) return;
 
-    note = dxr.Player.FirstNote;
+    goal = dxr.Player.FirstGoal;
+    while( goal != None ) {
+        for (i=0; i<ArrayCount(oldpasswords); i++)
+        {
+            UpdateGoal(goal, oldpasswords[i], newpasswords[i]);
+        }
+        goal = goal.next;
+    }
 
+    note = dxr.Player.FirstNote;
     while( note != lastCheckedNote && note != None )
     {
         for (i=0; i<ArrayCount(oldpasswords); i++)
@@ -302,6 +311,7 @@ function ChangeATMPIN(ATM a, int i)
 
 function ReplacePassword(string oldpassword, string newpassword)
 { // do I even need passStart?
+    local DeusExGoal goal;
     local DeusExNote note;
 
     oldpasswords[passEnd] = oldpassword;
@@ -310,13 +320,31 @@ function ReplacePassword(string oldpassword, string newpassword)
     if(passEnd == passStart) passStart = (passStart+1) % ArrayCount(oldpasswords);
     l("replaced password " $ oldpassword $ " with " $ newpassword $ ", passEnd is " $ passEnd $", passStart is " $ passStart);
 
-    note = dxr.Player.FirstNote;
+    goal = dxr.Player.FirstGoal;
+    while( goal != None ) {
+        UpdateGoal(goal, oldpassword, newpassword);
+        goal = goal.next;
+    }
 
+    note = dxr.Player.FirstNote;
     while( note != None )
     {
         UpdateNote(note, oldpassword, newpassword);
         note = note.next;
     }
+}
+
+function UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword)
+{
+    if( oldpassword == "" ) return;
+    if( goal.text == "") return;
+    if( goal.bCompleted ) return;
+    if( WordInStr( Caps(goal.text), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return;
+
+    dxr.Player.ClientMessage("Goal updated");
+    l("found goal with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
+
+    goal.text = ReplaceText( goal.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
 }
 
 function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
