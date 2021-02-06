@@ -44,6 +44,15 @@ function BindControls(bool writing, optional string action)
     //EnumOption(id, "Max Rando", 7, writing, f.gamemode);
     id++;
 
+    labels[id] = "";
+    helptexts[id] = "What items are banned";
+    EnumOption(id, "No items banned", 0, writing, f.banneditems);
+    EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
+    EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
+    //EnumOption(id, "Don't Give Me The GEP Gun", 3, writing, f.banneditems);//maybe I can request these from a function like class'DXRBannedItems'.static.GetBannedItemsDescription()
+    //EnumOption(id, "Ninja JC", 4, writing, f.banneditems);//throwing knives and sword
+    id++;
+
     labels[id] = "Difficulty";
     helptexts[id] = "Difficulty determines the default settings for the randomizer.";
     if( (InStr(f.VersionString(), "Alpha")>=0 || InStr(f.VersionString(), "Beta")>=0) && EnumOption(id, "Super Easy QA", 1, writing) ) {
@@ -195,13 +204,11 @@ function BindControls(bool writing, optional string action)
     EnumOption(id, "Off", 0, writing, f.autosave);
     id++;
 
-    labels[id] = "";
-    helptexts[id] = "What items are banned";
-    EnumOption(id, "No items banned", 0, writing, f.banneditems);
-    EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
-    EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
-    //EnumOption(id, "Don't Give Me The GEP Gun", 3, writing, f.banneditems);//maybe I can request these from a function like class'DXRBannedItems'.static.GetBannedItemsDescription()
-    //EnumOption(id, "Ninja JC", 4, writing, f.banneditems);//throwing knives and sword
+    labels[id] = "Crowd Control";
+    helptexts[id] = "Let your Twitch viewers troll you or help you!";
+    EnumOption(id, "Enabled (Anonymous)", 2, writing, f.crowdcontrol);
+    EnumOption(id, "Enabled (With Names)", 1, writing, f.crowdcontrol);
+    EnumOption(id, "Disabled", 0, writing, f.crowdcontrol);
     id++;
 
     foreach f.AllActors(class'DXRTelemetry', t) { break; }
@@ -216,13 +223,6 @@ function BindControls(bool writing, optional string action)
     if( EnumOption(id, "Disabled", 0, writing, temp) ) {
         t.set_enabled(false);
     }
-    id++;
-
-    labels[id] = "Crowd Control";
-    helptexts[id] = "Let your Twitch viewers troll you or help you!";
-    EnumOption(id, "Enabled (Anonymous)", 2, writing, f.crowdcontrol);
-    EnumOption(id, "Enabled (With Names)", 1, writing, f.crowdcontrol);
-    EnumOption(id, "Disabled", 0, writing, f.crowdcontrol);
     id++;
 
     labels[id] = "Seed";
