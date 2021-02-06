@@ -96,7 +96,7 @@ function CheckNotification(string data)
     i = InStr(notification_url, " ");
     if( i != -1 ) notification_url = Left(notification_url, i);
 
-    CreateMessageBox(title, message, 0, true, Self, 1);
+    CreateMessageBox(title, message, 0, Self, 1);
 }
 
 function MessageBoxClicked(int button, int callbackId){

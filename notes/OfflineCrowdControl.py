@@ -38,6 +38,7 @@ def randomAug():
 
 def pickEffect():
     effects = []
+
     effects.append(None)
     effects.append(None)
     effects.append(None)
@@ -152,7 +153,10 @@ def pickEffect():
     effects.append(("down_aug",randomAug()))
     effects.append(("down_aug",randomAug()))
 
-
+    effects.append(("ask_a_question",None))
+    effects.append(("ask_a_question",None))
+    effects.append(("ask_a_question",None))
+    effects.append(("ask_a_question",None))
 
     return random.choice(effects)
 

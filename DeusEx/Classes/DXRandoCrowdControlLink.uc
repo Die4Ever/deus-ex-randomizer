@@ -1,9 +1,11 @@
 //=============================================================================
 // DXRandoCrowdControlLink.
 //=============================================================================
-class DXRandoCrowdControlLink expands TcpLink transient;
+class DXRandoCrowdControlLink extends TcpLink transient;
 
 var string crowd_control_addr;
+
+var DXRCrowdControl ccModule;
 
 var transient DXRando dxr;
 var int ListenPort;
@@ -56,8 +58,6 @@ const KeyState = 1;
 const ValState = 2;
 const ArrayState = 3;
 const ArrayDoneState = 4;
-
-
 
 struct JsonElement
 {
@@ -262,19 +262,14 @@ function JsonMsg ParseJson (string msg) {
     
 }
 
-function Init( DXRando tdxr, string addr, bool anonymous)
+function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous)
 {
     dxr = tdxr;   
+    ccModule = cc;
     crowd_control_addr = addr; 
     anon = anonymous;
-    
+           
     CleanupOnEnter();
-
-    /*ListenPort=BindPort();
-    if (ListenPort==0){
-        err("Failed to bind port for Crowd Control");
-        return;
-    }*/
 
     Resolve(crowd_control_addr);
 
@@ -1060,7 +1055,14 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             SetIcePhysics(True);
             iceTimer = IceTimeDefault;
             break;      
-
+        
+        case "ask_a_question":
+        //Not yet implemented in the CrowdControl cs file
+            if (!InGame()) {
+                return TempFail;
+            }
+            AskRandomQuestion(viewer);
+            break;
 
         case "send_player_to_random_point":
         default:
@@ -1069,6 +1071,17 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
     return Success;
 }
 
+function AskRandomQuestion(String viewer) {
+    
+    local string question;
+    local string answers[3];
+    local int numAnswers;
+    
+    ccModule.getRandomQuestion(question,numAnswers,answers[0],answers[1],answers[2]);
+    
+    ccModule.CreateCustomMessageBox(viewer$" asks...",question,numAnswers,answers,ccModule,1,True);
+    
+}
 
 
 function handleMessage( string msg) {

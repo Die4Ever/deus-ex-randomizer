@@ -157,19 +157,38 @@ function class<Actor> GetClassFromString(string classstring, class<Actor> c)
 //msgBoxMode = 0 or 1, 0 = Yes/No box, 1 = OK box
 //module will presumably be the module you are creating the message box for
 //id lets you provide an ID so you can identify where the response should go
-function CreateMessageBox( String msgTitle, String msgText, int msgBoxMode, bool hideCurrentScreen, 
-                           DXRBase module, int id) {
+function CreateMessageBox( String msgTitle, String msgText, int msgBoxMode, 
+                           DXRBase module, int id, optional bool noPause) {
                            
     local DXRMessageBoxWindow msgBox;
 
     info(module$" CreateMessageBox "$msgTitle$" - "$msgText);
 
-    msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PushWindow(Class'DXRMessageBoxWindow', hideCurrentScreen ));
+    msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PushWindow(Class'DXRMessageBoxWindow', False, noPause ));
     msgBox.SetTitle(msgTitle);
     msgBox.SetMessageText(msgText);
     msgBox.SetMode(msgBoxMode);
     msgBox.SetCallback(module,id);
     msgBox.SetDeferredKeyPress(True);
+}
+
+//As above, except you can provide a list of button labels to use instead of Yes, no, or OK
+//You can only fit 3 buttons along a box, and the labels can't be too long.
+//7 Characters is about the label limit before the button box starts expanding.
+//You can likely fit about 34ish characters between all three labels before it looks bad
+function CreateCustomMessageBox (String msgTitle, String msgText, int numBtns, String buttonLabels[3],
+                                 DXRBase module, int id, optional bool noPause) {
+    local DXRMessageBoxWindow msgBox;
+
+    info(module$" CreateCustomMessageBox "$msgTitle$" - "$msgText);
+
+    msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PushWindow(Class'DXRMessageBoxWindow', False, noPause ));
+    msgBox.SetTitle(msgTitle);
+    msgBox.SetMessageText(msgText);
+    msgBox.SetCustomMode(numBtns,buttonLabels);
+    msgBox.SetCallback(module,id);
+    msgBox.SetDeferredKeyPress(True);
+
 }
 
 //Implement this in your DXRBase subclass to handle message boxes for your particular needs
@@ -182,19 +201,26 @@ function MessageBoxClicked(int button, int callbackId) {
         title = msgBox.winTitle.titleText;
         message = msgBox.winText.GetText();
     }
+    
+    if (msgBox.mbMode == 0 || msgBox.mbMode == 1) {
+        switch(button) {
+            case 0:
+                info("MessageBoxClicked Yes: "$title$" - "$message);
+                break;
+            case 1:
+                info("MessageBoxClicked No: "$title$" - "$message);
+                break;
+            case 2:
+                info("MessageBoxClicked OK: "$title$" - "$message);
+                break;
+        }
+    } else if (msgBox.mbMode == 2) {
+        //Custom mode
+        info("MessageBoxClicked "$msgBox.customBtn[button].buttonText$": "$title$" - "$message);
+    }
+    
     DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PopWindow());
 
-    switch(button) {
-        case 0:
-            info("MessageBoxClicked Yes: "$title$" - "$message);
-            break;
-        case 1:
-            info("MessageBoxClicked No: "$title$" - "$message);
-            break;
-        case 2:
-            info("MessageBoxClicked OK: "$title$" - "$message);
-            break;
-    }
     //Implementations in subclasses just need to call Super to pop the window, then can handle the message however they want
     //Buttons:
     //Yes = 0
