@@ -55,18 +55,19 @@ function ReceivedData(string data)
 
 function bool CanShowNotification()
 {
-    local DeusExRootWindow r;
-    local DeusExHUD hud;
+    /*local DeusExRootWindow r;
+    local DeusExHUD hud;*/
 
     if( dxr.localURL == "DX" || dxr.localURL == "DXONLY" ) return true;
 
-    if( dxr.Player == None ) return false;
+    /*if( dxr.Player == None ) return false;
     r = DeusExRootWindow(dxr.Player.rootWindow);
     if( r == None ) return false;
     hud = r.hud;
     if( hud == None ) return false;
     if( ! hud.IsVisible() ) return false;
-    return true;
+    return true;*/
+    return false;
 }
 
 function CheckNotification(string data)
