@@ -1,56 +1,15 @@
-class Telemetry extends UBrowserHTTPClient config(DXRando) transient;
+class Telemetry extends UBrowserHTTPClient transient;
+
+var DXRTelemetry module;
 
 var string server_host;
 var string content[32];
 var int start;
 var bool running;
 
-var config int config_version;
-var config bool enabled;
-var config string server;
-var config int cache_addr;
-var config string last_notification;
-
-function CheckConfig()
-{
-    if( server == "" ) {
-        server = "raycarro.com";
-        cache_addr = 0;
-    }
-    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
-        server = "raycarro.com";
-        cache_addr = 0;
-        log(Self$": upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
-        config_version = class'DXRFlags'.static.VersionNumber();
-        SaveConfig();
-    }
-}
-
-function BeginPlay()
-{
-    CheckConfig();
-}
-
-function set_enabled(bool e)
-{
-    log(Self$": set_enabled "$e);
-    enabled = e;
-    SaveConfig();
-}
-
-function GetAddrFromCache()
-{
-    ServerIpAddr.Addr = cache_addr;
-    log(Self$": got addr from cache " $ ServerIpAddr.Addr );
-}
-
 function Resolved( IpAddr Addr )
 {
-    if( cache_addr != Addr.Addr ) {//these should never be equal anyways in this function?
-        cache_addr = Addr.Addr;
-        SaveConfig();
-        log(Self$": cached addr " $ Addr.Addr);
-    }
+    module.CacheAddr(Addr.Addr);
     Super.Resolved(Addr);
 }
 
@@ -104,44 +63,7 @@ function HTTPError(int Code)
 
 function HTTPReceivedData(string Data)
 {
-    if( InStr(Data,"ERROR") >= 0 || InStr(Data, "ok") == -1 ) {
-        log(Self$": HTTPReceivedData: " $ Data);
-    }
-    CheckNotification(Data);
-}
-
-function CheckNotification(string data)
-{
-    local DeusExRootWindow r;
-    local DeusExHUD hud;
-    local DeusExPlayer p;
-    local int i;
-    local string update, url, marker;
-
-    marker = " notification: ";
-    i = InStr(data, marker);
-    if( i == -1 ) return;
-
-    update = Mid(data, i+Len(marker) );
-    i = InStr(update, LF);
-    update = Left(update, i);
-    if( update == last_notification ) return;
-
-    p = DeusExPlayer(GetPlayerPawn());
-    if( p == None ) return;
-    r = DeusExRootWindow(p.rootWindow);
-    if( r == None ) return;
-    hud = r.hud;
-    if( hud == None ) return;
-    if( ! hud.IsVisible() ) return;
-
-    p.ClientMessage( update );
-    //url = "https://github.com/Die4Ever/deus-ex-randomizer/releases";
-    //p.ClientMessage(url);
-    //p.ConsoleCommand("start "$url);
-
-    last_notification = update;
-    SaveConfig();
+    module.ReceivedData(Data);
 }
 
 event Closed()
@@ -185,27 +107,26 @@ function Done()
     if( ServerIpAddr.Addr == 0 )
     {
         log(Self$": ERROR: never got server IP! trying cached_addr");
-        GetAddrFromCache();
+        ServerIpAddr.Addr = module.GetAddrFromCache();
     }
     running = false;
     if( ServerIpAddr.Addr == 0 ) return;
     i = Len(content[start]);
     if( i > 0 ) {
         log(Self$": coming back for "$i$" more!");
-        Browse(server, GetUrl(), 80, 3);
+        Browse(module.server, GetUrl(), 80, 3);
     }
 }
 
 function bool Queue(string message)
 {
     local int slot;
-    if( enabled == false ) return true;//just get out of here
 
     slot = QueueSlot(Len(message));
     if( slot == -1 ) return false;
     LF = Chr(10);
     content[slot] = content[slot] $ message $ LF;
-    if( running == false ) Browse(server, GetUrl(), 80, 3);
+    if( running == false ) Browse(module.server, GetUrl(), 80, 3);
     return true;
 }
 
@@ -220,17 +141,4 @@ function int QueueSlot(int length)
     }
     log(Self$": failed to find a QueueSlot for "$length);
     return -1;
-}
-
-static function SendLog(Actor a, string LogLevel, string message)
-{
-    local Telemetry t;
-
-    message = LogLevel $ ": " $ a $ ": " $ message;
-
-    foreach a.AllActors(class'Telemetry', t) {
-        if( t.Queue(message) ) return;
-    }
-    t = a.Spawn(class'Telemetry');
-    t.Queue(message);
 }

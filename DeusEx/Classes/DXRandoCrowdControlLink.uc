@@ -1234,21 +1234,21 @@ function ResolveFailed()
 function PlayerMessage(string msg)
 {
     log(Self$": "$msg);
-    class'Telemetry'.static.SendLog(Self, "INFO", msg);
+    class'DXRTelemetry'.static.SendLog(dxr, Self, "INFO", msg);
     dxr.Player.ClientMessage(msg);
 }
 
 function err(string msg)
 {
     log(Self$": ERROR: "$msg);
-    class'Telemetry'.static.SendLog(Self, "ERROR", msg);
+    class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", msg);
     dxr.Player.ClientMessage(msg);
 }
 
 function info(string msg)
 {
     log(Self$": INFO: "$msg);
-    class'Telemetry'.static.SendLog(Self, "INFO", msg);
+    class'DXRTelemetry'.static.SendLog(dxr, Self, "INFO", msg);
 }
 
 function int RunTests(DXRCrowdControl m)

@@ -26,7 +26,7 @@ function BindControls(bool writing, optional string action)
     local float difficulty;
     local DXRFlags f;
     local string sseed;
-    local Telemetry t;
+    local DXRTelemetry t;
     local DXRCrowdControl cc;
     local int temp;
 
@@ -201,13 +201,15 @@ function BindControls(bool writing, optional string action)
     EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
     EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
     //EnumOption(id, "Don't Give Me The GEP Gun", 3, writing, f.banneditems);//maybe I can request these from a function like class'DXRBannedItems'.static.GetBannedItemsDescription()
+    //EnumOption(id, "Ninja JC", 4, writing, f.banneditems);//throwing knives and sword
     id++;
 
-    foreach f.AllActors(class'Telemetry', t) { break; }
-    if( t == None ) t = f.Spawn(class'Telemetry');
+    foreach f.AllActors(class'DXRTelemetry', t) { break; }
+    if( t == None ) t = f.Spawn(class'DXRTelemetry');
+    t.CheckConfig();
     temp = Int(t.enabled);
     labels[id] = "Help us improve";
-    helptexts[id] = "Send error reports and logging";
+    helptexts[id] = "Send error reports and get notified about updates!";
     if( EnumOption(id, "Enabled", 1, writing, temp) ) {
         t.set_enabled(true);
     }

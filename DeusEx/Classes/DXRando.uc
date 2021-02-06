@@ -85,6 +85,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRWeapons";
         modules_to_load[i++] = "DXRCrowdControl";
         modules_to_load[i++] = "DXRMachines";
+        modules_to_load[i++] = "DXRTelemetry";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
@@ -116,9 +117,9 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
         err("failed to load module "$moduleclass);
         return None;
     }
-    m.Init(Self);
     modules[num_modules] = m;
     num_modules++;
+    m.Init(Self);
     l("finished loading module "$m);
     return m;
 }
@@ -312,13 +313,13 @@ function l(string message)
 function info(string message)
 {
     log("INFO: " $ message, class.name);
-    class'Telemetry'.static.SendLog(Self, "INFO", message);
+    class'DXRTelemetry'.static.SendLog(Self, Self, "INFO", message);
 }
 
 function warning(string message)
 {
     log("WARNING: " $ message, class.name);
-    class'Telemetry'.static.SendLog(Self, "WARNING", message);
+    class'DXRTelemetry'.static.SendLog(Self, Self, "WARNING", message);
 }
 
 function err(string message)
@@ -326,7 +327,7 @@ function err(string message)
     log("ERROR: " $ message, class.name);
     Player.ClientMessage( Class @ message );
 
-    class'Telemetry'.static.SendLog(Self, "ERROR", message);
+    class'DXRTelemetry'.static.SendLog(Self, Self, "ERROR", message);
 }
 
 function RunTests()

@@ -158,21 +158,43 @@ function class<Actor> GetClassFromString(string classstring, class<Actor> c)
 //module will presumably be the module you are creating the message box for
 //id lets you provide an ID so you can identify where the response should go
 function CreateMessageBox( String msgTitle, String msgText, int msgBoxMode, bool hideCurrentScreen, 
-                           DXRBase module, int id){
+                           DXRBase module, int id) {
                            
-	local DXRMessageBoxWindow msgBox;
+    local DXRMessageBoxWindow msgBox;
 
-	msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PushWindow(Class'DXRMessageBoxWindow', hideCurrentScreen ));
-	msgBox.SetTitle(msgTitle);
-	msgBox.SetMessageText(msgText);
-	msgBox.SetMode(msgBoxMode);
-	msgBox.SetCallback(module,id);
+    info(module$" CreateMessageBox "$msgTitle$" - "$msgText);
+
+    msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PushWindow(Class'DXRMessageBoxWindow', hideCurrentScreen ));
+    msgBox.SetTitle(msgTitle);
+    msgBox.SetMessageText(msgText);
+    msgBox.SetMode(msgBoxMode);
+    msgBox.SetCallback(module,id);
     msgBox.SetDeferredKeyPress(True);
 }
 
 //Implement this in your DXRBase subclass to handle message boxes for your particular needs
-function MessageBoxClicked(int button, int callbackId){
-    DeusExRootWindow(dxr.Player.rootWindow).PopWindow();
+function MessageBoxClicked(int button, int callbackId) {
+    local DXRMessageBoxWindow msgBox;
+    local string title, message;
+
+    msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).GetTopWindow());
+    if( msgBox != None ) {
+        title = msgBox.winTitle.titleText;
+        message = msgBox.winText.GetText();
+    }
+    DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PopWindow());
+
+    switch(button) {
+        case 0:
+            info("MessageBoxClicked Yes: "$title$" - "$message);
+            break;
+        case 1:
+            info("MessageBoxClicked No: "$title$" - "$message);
+            break;
+        case 2:
+            info("MessageBoxClicked OK: "$title$" - "$message);
+            break;
+    }
     //Implementations in subclasses just need to call Super to pop the window, then can handle the message however they want
     //Buttons:
     //Yes = 0
@@ -193,13 +215,13 @@ function l(string message)
 function info(string message)
 {
     log("INFO: " $ message, class.name);
-    class'Telemetry'.static.SendLog(Self, "INFO", message);
+    class'DXRTelemetry'.static.SendLog(dxr, Self, "INFO", message);
 }
 
 function warning(string message)
 {
     log("WARNING: " $ message, class.name);
-    class'Telemetry'.static.SendLog(Self, "WARNING", message);
+    class'DXRTelemetry'.static.SendLog(dxr, Self, "WARNING", message);
 }
 
 function err(string message)
@@ -209,7 +231,7 @@ function err(string message)
         dxr.Player.ClientMessage( Class @ message );
     }
 
-    class'Telemetry'.static.SendLog(Self, "ERROR", message);
+    class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", message);
 }
 
 function int RunTests()

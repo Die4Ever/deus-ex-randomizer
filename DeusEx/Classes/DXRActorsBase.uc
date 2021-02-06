@@ -390,7 +390,7 @@ function bool NearestSurface(vector StartTrace, vector EndTrace, out LocationNor
     local Actor HitActor;
     local vector HitLocation, HitNormal;
 
-    HitActor = Trace(HitLocation, HitNormal, EndTrace, StartTrace);
+    HitActor = Trace(HitLocation, HitNormal, EndTrace, StartTrace, false);
     if( StartTrace == HitLocation ) {
         return false;
     }

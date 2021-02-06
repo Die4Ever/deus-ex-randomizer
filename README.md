@@ -41,10 +41,10 @@ There are also settings for
 * autosave
 
 #### When you click New Game, you will see this settings screen:
-![options](https://i.imgur.com/J6lgK7V.png)
+![options](https://i.imgur.com/mme4Tms.png)
 
 #### If you click Next then it will use default settings based on your difficulty choice. But if you click Advanced then you will see these settings:
-![advanced options](https://i.imgur.com/MzLPXxA.png)
+![advanced options](https://i.imgur.com/bKJmbFa.png)
 
 For the randomized passwords, you can copy-paste from the Goals/Notes screen.
 
@@ -52,8 +52,8 @@ I've also made some balance tweaks. Hacking computers now uses bioelectric energ
 
 ### Recommended tweaks for running Deus Ex on modern computers
 
-Recommended to use it with [Kentie's Deus Exe Launcher](http://www.kentie.net/article/dxguide/), or [Han's Launcher](https://coding.hanfling.de/launch/#binaries). Play with OpenGL renderer because the Direct3D renderers have trouble on newer Nvidia drivers unless you use the Deus Ex Speedup Fix mod. The Deus Ex Speedup Fix mod allows you to disable the fps cap (the fps cap in the game can cause stutters, but capping frame rate in nvidia control panel works perfectly) https://steamcommunity.com/sharedfiles/filedetails/?id=2048525175 If you use that mod, then edit your `Documents\Deus Ex\System\DeusEx.ini` file and search for `FPSLimit=` and set it to 0 to manually remove the fps cap because I've noticed that Kentie's Launcher doesn't always do it correctly. If you use the speedup fix then you'll probably want to use the Direct3D 10 or 11 renderer.
+Recommended to use it with [Kentie's Deus Exe Launcher](http://www.kentie.net/article/dxguide/), or [Han's Launcher](https://coding.hanfling.de/launch/#binaries). Play with OpenGL renderer because the Direct3D renderers have trouble on newer Nvidia drivers unless you use the [Deus Ex Speedup Fix mod](https://steamcommunity.com/sharedfiles/filedetails/?id=2048525175). The [Deus Ex Speedup Fix mod](https://steamcommunity.com/sharedfiles/filedetails/?id=2048525175) allows you to disable the fps cap (the fps cap in the game can cause stutters, but capping frame rate in nvidia control panel works perfectly) If you use that mod, then edit your `Documents\Deus Ex\System\DeusEx.ini` file and search for `FPSLimit=` and set it to 0 to manually remove the fps cap because I've noticed that Kentie's Launcher doesn't always do it correctly. If you use the speedup fix then you'll probably want to use the [Direct3D 10](https://kentie.net/article/d3d10drv/) or [Direct3D 11](https://kentie.net/article/d3d11drv/index.htm) renderer.
 
-Join the discord channel for discussion https://discord.gg/VHMvqD2v8z or message me directly Die4Ever#6351
+Join the [discord channel for discussion](https://discord.gg/VHMvqD2v8z) or message me directly Die4Ever#6351
 
 If you want to play with the `DXRando.ini` config file (in your `Documents\Deus Ex\System\` folder), then you can look at the [wiki for reference](https://github.com/Die4Ever/deus-ex-randomizer/wiki/DXRando.ini-config)
