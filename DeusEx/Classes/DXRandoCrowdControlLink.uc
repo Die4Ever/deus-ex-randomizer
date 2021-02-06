@@ -737,6 +737,23 @@ function SetIcePhysics(bool enabled) {
         }
 }
 
+//Returns true when you aren't in a menu, or in the intro, etc.
+function bool InGame() {
+    if (None == DeusExRootWindow(dxr.Player.rootWindow)) {
+        return False;
+    }
+    
+    if (None == DeusExRootWindow(dxr.Player.rootWindow).hud) {
+        return False;
+    }
+    
+    if (!DeusExRootWindow(dxr.Player.rootWindow).hud.isVisible()){
+        return False;
+    }
+    
+    return True;
+}
+
 
 function int doCrowdControlEvent(string code, string param, string viewer, int type) {
     local vector v;
@@ -749,6 +766,10 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
     
     switch(code) {
         case "poison":
+            if (!InGame()) {
+                return TempFail;
+            }
+        
             dxr.Player.StartPoison(dxr.Player,5);
             PlayerMessage(viewer@"poisoned you!");
             break;
@@ -760,7 +781,12 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             break;
 
         case "drop_grenade":
-        
+             
+             //Don't drop grenades if you're in the menu
+             if (!InGame()) {
+                 return TempFail;
+             }
+             
              //Don't drop grenades if you're in a conversation - It screws things up
              if (dxr.Player.InConversation()) {
                  return TempFail;
