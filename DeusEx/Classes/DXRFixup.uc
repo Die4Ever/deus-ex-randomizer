@@ -133,6 +133,7 @@ function Timer()
     local Music m;
     local int i;
     Super.Timer();
+    if( dxr == None ) return;
 
     switch(dxr.dxInfo.missionNumber) {
         case 8:
@@ -225,6 +226,8 @@ function OverwriteDecorations()
 
 function NYC_02_FirstEntry()
 {
+    local DeusExMover d;
+    local NanoKey k;
     local NYPoliceBoat b;
     
     switch (dxr.localURL)
@@ -234,6 +237,14 @@ function NYC_02_FirstEntry()
                 b.BindName = "NYPoliceBoat";
                 b.ConBindEvents();
             }
+            foreach AllActors(class'DeusExMover', d) {
+                if( d.Name == 'DeusExMover19' ) {
+                    d.KeyIDNeeded = 'ControlRoomDoor';
+                }
+            }
+            k = Spawn(class'NanoKey',,, vect(1574.209839, -238.380142, 339.215179));
+            k.KeyID = 'ControlRoomDoor';
+            k.Description = "Control Room Door Key";
             break;
     }
 }

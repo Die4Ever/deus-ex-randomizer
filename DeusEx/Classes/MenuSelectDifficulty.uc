@@ -7,11 +7,29 @@ event InitWindow()
     Init(InitDxr());
 }
 
+function CheckConfig()
+{
+    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        num_rows=8;
+        num_cols=2;
+        col_width_odd=160;
+        col_width_even=220;
+        row_height=20;
+        padding_width=20;
+        padding_height=10;
+    }
+    Super.CheckConfig();
+}
+
 function BindControls(bool writing, optional string action)
 {
     local float difficulty;
     local DXRFlags f;
     local string sseed;
+    local DXRTelemetry t;
+    local DXRCrowdControl cc;
+    local int temp;
+
     Super.BindControls(writing);
 
     f = InitFlags();
@@ -24,6 +42,15 @@ function BindControls(bool writing, optional string action)
     //EnumOption(id, "Kill Bob Page (Alpha)", 3, writing, f.gamemode);
     //EnumOption(id, "How About Some Soy Food?", 6, writing, f.gamemode);
     //EnumOption(id, "Max Rando", 7, writing, f.gamemode);
+    id++;
+
+    labels[id] = "";
+    helptexts[id] = "What items are banned";
+    EnumOption(id, "No items banned", 0, writing, f.banneditems);
+    EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
+    EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
+    //EnumOption(id, "Don't Give Me The GEP Gun", 3, writing, f.banneditems);//maybe I can request these from a function like class'DXRBannedItems'.static.GetBannedItemsDescription()
+    //EnumOption(id, "Ninja JC", 4, writing, f.banneditems);//throwing knives and sword
     id++;
 
     labels[id] = "Difficulty";
@@ -42,8 +69,8 @@ function BindControls(bool writing, optional string action)
         f.skills_independent_levels = 0;
         f.minskill = 0;
         f.maxskill = 1;
-        f.ammo = 100;
-        f.medkits = 100;
+        f.ammo = 90;
+        f.medkits = 90;
         f.biocells = f.medkits;
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
@@ -53,6 +80,8 @@ function BindControls(bool writing, optional string action)
         f.equipment = 5;
         f.medbots = 100;
         f.repairbots = 100;
+        f.turrets_move = 100;
+        f.turrets_add = 50;
     }
     if( EnumOption(id, "Easy", 1, writing) ) {
         difficulty=1;
@@ -67,9 +96,9 @@ function BindControls(bool writing, optional string action)
         f.skills_reroll_missions = 0;
         f.skills_independent_levels = 0;
         f.minskill = 25;
-        f.maxskill = 200;
-        f.ammo = 100;
-        f.medkits = 100;
+        f.maxskill = 150;
+        f.ammo = 90;
+        f.medkits = 90;
         f.biocells = f.medkits;
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;
@@ -77,8 +106,10 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 2;
-        f.medbots = 20;
-        f.repairbots = 20;
+        f.medbots = 25;
+        f.repairbots = 25;
+        f.turrets_move = 50;
+        f.turrets_add = 30;
     }
     if( EnumOption(id, "Normal", 0, writing) ) {
         difficulty=1.25;
@@ -88,36 +119,10 @@ function BindControls(bool writing, optional string action)
         f.deviceshackable = 100;
         f.passwordsrandomized = 100;
         f.infodevices = 100;
-        f.enemiesrandomized = 35;
+        f.enemiesrandomized = 30;
         f.skills_disable_downgrades = 0;
         f.skills_reroll_missions = 0;
         f.skills_independent_levels = 0;
-        f.minskill = 25;
-        f.maxskill = 300;
-        f.ammo = 80;
-        f.medkits = 80;
-        f.biocells = f.medkits;
-        f.lockpicks = f.medkits;
-        f.multitools = f.medkits;
-        f.speedlevel = 1;
-        f.startinglocations = 100;
-        f.goals = 100;
-        f.equipment = 1;
-        f.medbots = 15;
-        f.repairbots = 15;
-    }
-    if( EnumOption(id, "Hard", 2, writing) ) {
-        difficulty=1.5;
-        f.doorsmode = f.keyonlydoors + f.doormutuallyexclusive;
-        f.doorsdestructible = 25;
-        f.doorspickable = 25;
-        f.deviceshackable = 50;
-        f.passwordsrandomized = 100;
-        f.infodevices = 100;
-        f.enemiesrandomized = 50;
-        f.skills_disable_downgrades = 5;
-        f.skills_reroll_missions = 5;
-        f.skills_independent_levels = 100;
         f.minskill = 25;
         f.maxskill = 300;
         f.ammo = 70;
@@ -129,23 +134,25 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 1;
-        f.medbots = 10;
-        f.repairbots = 10;
+        f.medbots = 15;
+        f.repairbots = 15;
+        f.turrets_move = 50;
+        f.turrets_add = 70;
     }
-    if( EnumOption(id, "Extreme", 3, writing) ) {
-        difficulty=2;
+    if( EnumOption(id, "Hard", 2, writing) ) {
+        difficulty=1.5;
         f.doorsmode = f.keyonlydoors + f.doormutuallyexclusive;
         f.doorsdestructible = 25;
         f.doorspickable = 25;
         f.deviceshackable = 50;
         f.passwordsrandomized = 100;
         f.infodevices = 100;
-        f.enemiesrandomized = 70;
+        f.enemiesrandomized = 40;
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
         f.skills_independent_levels = 100;
         f.minskill = 25;
-        f.maxskill = 400;
+        f.maxskill = 300;
         f.ammo = 50;
         f.medkits = 50;
         f.biocells = f.medkits;
@@ -155,8 +162,38 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 1;
+        f.medbots = 10;
+        f.repairbots = 10;
+        f.turrets_move = 50;
+        f.turrets_add = 120;
+    }
+    if( EnumOption(id, "Extreme", 3, writing) ) {
+        difficulty=2;
+        f.doorsmode = f.keyonlydoors + f.doormutuallyexclusive;
+        f.doorsdestructible = 25;
+        f.doorspickable = 25;
+        f.deviceshackable = 50;
+        f.passwordsrandomized = 100;
+        f.infodevices = 100;
+        f.enemiesrandomized = 50;
+        f.skills_disable_downgrades = 5;
+        f.skills_reroll_missions = 5;
+        f.skills_independent_levels = 100;
+        f.minskill = 25;
+        f.maxskill = 400;
+        f.ammo = 30;
+        f.medkits = 30;
+        f.biocells = f.medkits;
+        f.lockpicks = f.medkits;
+        f.multitools = f.medkits;
+        f.speedlevel = 1;
+        f.startinglocations = 100;
+        f.goals = 100;
+        f.equipment = 1;
         f.medbots = 5;
         f.repairbots = 5;
+        f.turrets_move = 50;
+        f.turrets_add = 200;
     }
     id++;
 
@@ -167,12 +204,25 @@ function BindControls(bool writing, optional string action)
     EnumOption(id, "Off", 0, writing, f.autosave);
     id++;
 
-    labels[id] = "";
-    helptexts[id] = "What items are banned";
-    EnumOption(id, "No items banned", 0, writing, f.banneditems);
-    EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
-    EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
-    //EnumOption(id, "Don't Give Me The GEP Gun", 3, writing, f.banneditems);//maybe I can request these from a function like class'DXRBannedItems'.static.GetBannedItemsDescription()
+    labels[id] = "Crowd Control";
+    helptexts[id] = "Let your Twitch viewers troll you or help you!";
+    EnumOption(id, "Enabled (Anonymous)", 2, writing, f.crowdcontrol);
+    EnumOption(id, "Enabled (With Names)", 1, writing, f.crowdcontrol);
+    EnumOption(id, "Disabled", 0, writing, f.crowdcontrol);
+    id++;
+
+    foreach f.AllActors(class'DXRTelemetry', t) { break; }
+    if( t == None ) t = f.Spawn(class'DXRTelemetry');
+    t.CheckConfig();
+    temp = Int(t.enabled);
+    labels[id] = "Help us improve";
+    helptexts[id] = "Send error reports and get notified about updates!";
+    if( EnumOption(id, "Enabled", 1, writing, temp) ) {
+        t.set_enabled(true);
+    }
+    if( EnumOption(id, "Disabled", 0, writing, temp) ) {
+        t.set_enabled(false);
+    }
     id++;
 
     labels[id] = "Seed";
@@ -206,13 +256,6 @@ function NewGameSetup(float difficulty)
 
 defaultproperties
 {
-    num_rows=6
-    num_cols=2
-    col_width_odd=160
-    col_width_even=220
-    row_height=20
-    padding_width=20
-    padding_height=10
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Advanced",Key="ADVANCED")
     Title="DX Rando Options"
     ClientWidth=672

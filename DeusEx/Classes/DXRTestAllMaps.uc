@@ -22,6 +22,7 @@ function Timer()
     local int i;
     local bool found;
     Super.Timer();
+    if( dxr == None ) return;
 
     for(i=0; i < ArrayCount(maps); i++) {
         if( Caps(maps[i]) == Caps(dxr.localURL) ) {

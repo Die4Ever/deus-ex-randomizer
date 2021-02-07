@@ -14,7 +14,7 @@ function Init(DXRando tdxr)
 function CheckConfig()
 {
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
-        l("upgrading config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
+        info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
         config_version = class'DXRFlags'.static.VersionNumber();
         SaveConfig();
     }
@@ -111,7 +111,7 @@ function static int staticrng(DXRando dxr, int max)
 
 function int initchance()
 {
-    if(overallchances > 0 && overallchances < 100) l("WARNING: initchance() overallchances == "$overallchances);
+    if(overallchances > 0 && overallchances < 100) warning("initchance() overallchances == "$overallchances);
     overallchances=0;
     return rng(100);
 }
@@ -119,7 +119,7 @@ function int initchance()
 function bool chance(int percent, int r)
 {
     overallchances+=percent;
-    if(overallchances>100) l("WARNING: chance("$percent$", "$r$") overallchances == "$overallchances);
+    if(overallchances>100) warning("chance("$percent$", "$r$") overallchances == "$overallchances);
     return r>= (overallchances-percent) && r< overallchances;
 }
 
@@ -152,9 +152,102 @@ function class<Actor> GetClassFromString(string classstring, class<Actor> c)
     return a;
 }
 
+
+//Based on function MessageBox from DeusExRootWindow
+//msgBoxMode = 0 or 1, 0 = Yes/No box, 1 = OK box
+//module will presumably be the module you are creating the message box for
+//id lets you provide an ID so you can identify where the response should go
+function CreateMessageBox( String msgTitle, String msgText, int msgBoxMode, 
+                           DXRBase module, int id, optional bool noPause) {
+                           
+    local DXRMessageBoxWindow msgBox;
+
+    info(module$" CreateMessageBox "$msgTitle$" - "$msgText);
+
+    msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PushWindow(Class'DXRMessageBoxWindow', False, noPause ));
+    msgBox.SetTitle(msgTitle);
+    msgBox.SetMessageText(msgText);
+    msgBox.SetMode(msgBoxMode);
+    msgBox.SetCallback(module,id);
+    msgBox.SetDeferredKeyPress(True);
+}
+
+//As above, except you can provide a list of button labels to use instead of Yes, no, or OK
+//You can only fit 3 buttons along a box, and the labels can't be too long.
+//7 Characters is about the label limit before the button box starts expanding.
+//You can likely fit about 34ish characters between all three labels before it looks bad
+function CreateCustomMessageBox (String msgTitle, String msgText, int numBtns, String buttonLabels[3],
+                                 DXRBase module, int id, optional bool noPause) {
+    local DXRMessageBoxWindow msgBox;
+
+    info(module$" CreateCustomMessageBox "$msgTitle$" - "$msgText);
+
+    msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PushWindow(Class'DXRMessageBoxWindow', False, noPause ));
+    msgBox.SetTitle(msgTitle);
+    msgBox.SetMessageText(msgText);
+    msgBox.SetCustomMode(numBtns,buttonLabels);
+    msgBox.SetCallback(module,id);
+    msgBox.SetDeferredKeyPress(True);
+
+}
+
+//Implement this in your DXRBase subclass to handle message boxes for your particular needs
+function MessageBoxClicked(int button, int callbackId) {
+    local DXRMessageBoxWindow msgBox;
+    local string title, message;
+
+    msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).GetTopWindow());
+    if( msgBox != None ) {
+        title = msgBox.winTitle.titleText;
+        message = msgBox.winText.GetText();
+    }
+    
+    if (msgBox.mbMode == 0 || msgBox.mbMode == 1) {
+        switch(button) {
+            case 0:
+                info("MessageBoxClicked Yes: "$title$" - "$message);
+                break;
+            case 1:
+                info("MessageBoxClicked No: "$title$" - "$message);
+                break;
+            case 2:
+                info("MessageBoxClicked OK: "$title$" - "$message);
+                break;
+        }
+    } else if (msgBox.mbMode == 2) {
+        //Custom mode
+        info("MessageBoxClicked "$msgBox.customBtn[button].buttonText$": "$title$" - "$message);
+    }
+    
+    DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PopWindow());
+
+    //Implementations in subclasses just need to call Super to pop the window, then can handle the message however they want
+    //Buttons:
+    //Yes = 0
+    //No = 1
+    //OK = 2
+}
+
+//consider this like debug or trace
 function l(string message)
 {
     log(message, class.name);
+
+    /*if( (InStr(class'DXRFlags'.static.VersionString(), "Alpha")>=0 || InStr(class'DXRFlags'.static.VersionString(), "Beta")>=0) ) {
+        class'Telemetry'.static.SendLog(Self, "DEBUG", message);
+    }*/
+}
+
+function info(string message)
+{
+    log("INFO: " $ message, class.name);
+    class'DXRTelemetry'.static.SendLog(dxr, Self, "INFO", message);
+}
+
+function warning(string message)
+{
+    log("WARNING: " $ message, class.name);
+    class'DXRTelemetry'.static.SendLog(dxr, Self, "WARNING", message);
 }
 
 function err(string message)
@@ -163,6 +256,8 @@ function err(string message)
     if(dxr != None && dxr.Player != None) {
         dxr.Player.ClientMessage( Class @ message );
     }
+
+    class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", message);
 }
 
 function int RunTests()

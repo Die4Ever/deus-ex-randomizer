@@ -19,13 +19,24 @@ function CheckConfig()
 
 function Timer()
 {
+    local DeusExGoal goal;
     local DeusExNote note;
     local int i;
 
     Super.Timer();
+    if( dxr == None ) return;
+
+    goal = dxr.Player.FirstGoal;
+    while( goal != None ) {
+        for (i=0; i<ArrayCount(oldpasswords); i++)
+        {
+            if( oldpasswords[i] == "6282" )
+                UpdateGoal(goal, oldpasswords[i], newpasswords[i]);
+        }
+        goal = goal.next;
+    }
 
     note = dxr.Player.FirstNote;
-
     while( note != lastCheckedNote && note != None )
     {
         for (i=0; i<ArrayCount(oldpasswords); i++)
@@ -84,9 +95,23 @@ function RandoHacks()
     SetSeed( "RandoHacks" );
 
     foreach AllActors(class'HackableDevices', h) {
-        if( h.bHackable ) {
-            h.hackStrength = FClamp(rngrange(h.hackStrength, min_hack_adjust, max_hack_adjust), 0, 1);
-        }
+        _RandoHackable(h);
+    }
+}
+
+function _RandoHackable(HackableDevices h)
+{
+    if( h.bHackable ) {
+        h.hackStrength = FClamp(rngrange(h.hackStrength, min_hack_adjust, max_hack_adjust), 0, 1);
+    }
+}
+
+static function RandoHackable(DXRando dxr, HackableDevices h)
+{
+    local DXRPasswords m;
+    m = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+    if( m != None ) {
+        m._RandoHackable(h);
     }
 }
 
@@ -236,7 +261,7 @@ function ChangeComputerPassword(Computers c, int i)
     }
 
     //if( Len(oldpassword) <3 ) return;
-    newpassword = GeneratePassword(oldpassword);
+    newpassword = GeneratePassword(dxr, oldpassword);
     c.userList[i].password = newpassword;
     ReplacePassword(oldpassword, newpassword);
 }
@@ -287,6 +312,7 @@ function ChangeATMPIN(ATM a, int i)
 
 function ReplacePassword(string oldpassword, string newpassword)
 { // do I even need passStart?
+    local DeusExGoal goal;
     local DeusExNote note;
 
     oldpasswords[passEnd] = oldpassword;
@@ -295,13 +321,33 @@ function ReplacePassword(string oldpassword, string newpassword)
     if(passEnd == passStart) passStart = (passStart+1) % ArrayCount(oldpasswords);
     l("replaced password " $ oldpassword $ " with " $ newpassword $ ", passEnd is " $ passEnd $", passStart is " $ passStart);
 
-    note = dxr.Player.FirstNote;
+    if( oldpassword == "6282" ) {
+        goal = dxr.Player.FirstGoal;
+        while( goal != None ) {
+            UpdateGoal(goal, oldpassword, newpassword);
+            goal = goal.next;
+        }
+    }
 
+    note = dxr.Player.FirstNote;
     while( note != None )
     {
         UpdateNote(note, oldpassword, newpassword);
         note = note.next;
     }
+}
+
+function UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword)
+{
+    if( oldpassword == "" ) return;
+    if( goal.text == "") return;
+    if( goal.bCompleted ) return;
+    if( WordInStr( Caps(goal.text), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return;
+
+    dxr.Player.ClientMessage("Goal updated");
+    l("found goal with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
+
+    goal.text = ReplaceText( goal.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
 }
 
 function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
@@ -316,18 +362,20 @@ function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
     note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
 }
 
-function string GeneratePassword(string oldpassword)
+static function string GeneratePassword(DXRando dxr, string oldpassword)
 {
     local string out;
     local int i;
     local int c;
-    dxr.SetSeed( dxr.seed + dxr.Crc(oldpassword) );
+    local int oldseed;
+    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(oldpassword) );
     for(i=0; i<5; i++) {
         // 0-9 is 48-57, 97-122 is a-z
-        c = rng(36) + 48;
+        c = staticrng(dxr, 36) + 48;
         if ( c > 57 ) c += 39;
         out = out $ Chr(c);
     }
+    dxr.SetSeed(oldseed);
     return out;
 }
 
@@ -337,6 +385,7 @@ function string GeneratePasscode(string oldpasscode)
     local int maximum;
     local int oldpasslength;
     local int i;
+    local int oldseed;
 
     oldpasslength = Len(oldpasscode);
     maximum = 1;
@@ -346,8 +395,9 @@ function string GeneratePasscode(string oldpasscode)
         maximum = maximum * 10;
     }    
     
-    dxr.SetSeed( dxr.seed + dxr.Crc(oldpasscode) );//manually set the seed to avoid using the level name in the seed
+    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(oldpasscode) );//manually set the seed to avoid using the level name in the seed
     newpasscode = rng(maximum) $ "";
+    dxr.SetSeed(oldseed);
 
     //If the new passcode is shorter than the old one, we need to add some leading zeroes until it matches
     while (Len(newpasscode) < oldpasslength) {

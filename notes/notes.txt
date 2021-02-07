@@ -4,7 +4,35 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 // check a 100 foot radius around me for combat
 if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
 
-for v1.6 programatically modify conversations ===================
+for v1.6 programatically modify conversations? ===================
+
+UWindowHTMLTextArea
+ninja mode (maybe rename low tech skill to ninjitsu, and always run silent?
+fix "softlock" in 03_batterypark, maybe by adding an atm and datacube, or copying over the threatened bum from 02_street, putting a note on curly's body, hiding money and/or datacubes on the map...
+
+maybe add a list of unimportantMaps for DXREntranceRando? maybe chateau, freeclinic, nyc sewers, smuggler, gas station, graveyard?
+    in order to keep play time more consistent never do all or none of them?
+have different "Level Sets"
+
+should I add an option for "normal skill rando every 5 missions"?
+
+combine medkits/biocells/lockpicks/multitools into just items drop rate?
+
+can I use something like this to right click an enum to go backwards? from MenuUIChoice.uc
+function bool ButtonActivatedRight( Window buttonPressed )
+{
+	if (buttonPressed == btnAction)
+	{
+		CyclePreviousValue();
+		return True;
+	}
+	else
+	{
+		return Super.ButtonActivated(buttonPressed);
+	}
+}
+
+
 
 class DataLinkPlay injects DataLinkPlay;
 
@@ -129,147 +157,13 @@ function AppendSpeech(String newSpeech)
 
 for v1.5 ========================
 
-else if (localURL == "10_PARIS_METRO")
-	{
-		// unhide GuntherHermann
-		if (!flags.GetBool('MS_GuntherUnhidden') &&
-			flags.GetBool('JockReady_Played'))
-		{
-			foreach AllActors(class'GuntherHermann', gunther)
-				gunther.EnterWorld();
-
-			flags.SetBool('MS_GuntherUnhidden', True,, 11);
-		}
-
-MapExit tag, DestMap
-10_paris_metro MapExit ChopperExit 10_Paris_Chateau (-825.793274, 1976.029297, 176.545380), (0,0,-10944)
-15_area51_final switch2 to 15_area51_entrance#elevator_shaft? (-5757.477539, -2082.639160, -1356.561035), (0,0,16384)
-
-can I use something like this to right click an enum to go backwards? from MenuUIChoice.uc
-function bool ButtonActivatedRight( Window buttonPressed )
-{
-	if (buttonPressed == btnAction)
-	{
-		CyclePreviousValue();
-		return True;
-	}
-	else
-	{
-		return Super.ButtonActivated(buttonPressed);
-	}
-}
-
-new game -> game mode choice -> difficulty? (max rando would skip difficulty choice? and maybe horde mode too?) -> rando options -> create character
-combine medkits/biocells/lockpicks/multitools into just items drop rate?
-should I add an option for "normal skill rando every 5 missions"?
-
-```
-function bool MoveWithTriggers(Actor a, vector loc)
-{// I can use this to move the ambrosia barrel in 02_NYC_BATTERYPARK
-    local Trigger t;
-    local vector oldloc;
-
-    oldloc = a.Location;
-    if ( a.SetLocation(loc) == false ) return false;
-    foreach RadiusActors(class'Trigger', t, 16, oldloc) {
-        t.SetLocation(loc);
-    }
-    return true;
-}
-```
-
-maybe add a list of unimportantMaps for DXREntranceRando? maybe chateau, freeclinic, nyc sewers, smuggler, gas station, graveyard?
 another issue with DXREntranceRando:
     if I make a connection from paris metro to chateau, DXREntranceRando will ensure I can get to the metro to get to the chateau, but it won't realize that I also need to get to the club first
     similarly, you go from 12_vandenberg_cmd to gas station, but you need to get to 12_vandenberg_computer first before the chopper will appear
     might need a `string other_required_map` for each transfer?
 lots of doors that need buttons on the other side in mission 14, and maybe 12_vandenberg_tunnels could use that too instead of making it open on player bump
-paris and area51 have some one-way transfers that could maybe be fixed?
-maybe I can add in the transfers from the chopper, they're one-way MapExits but they should work
-teleporters have a bEnabled flag
 write tests for repeated use of teleporters, and for denying one-way maps
 need to test that a player can move back and forth through all maps, not just capable of visiting them all once, or getting stuck/softlocked in a dead-end
-fix dupes like:
-DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKong_Storage#basement, changed to 06_HONGKONG_HELIBASE#Helibase
-DXREntranceRando: Found 06_HONGKONG_MJ12LAB.MapExit0 with destination 06_HongKong_Storage#basement, changed to 06_HONGKONG_WANCHAI_CANAL#Street
-
-you cannot climb out of 03_NYC_AirfieldHeliBase#FromOcean
-
-
-the code for attaching grenades to walls is interesting
-from DeusExWeapon.uc `simulated function bool NearWallCheck()`
-```
-    // trace out one foot in front of the pawn
-    StartTrace = Owner.Location;
-    EndTrace = StartTrace + Vector(Pawn(Owner).ViewRotation) * 32;
-
-    StartTrace.Z += Pawn(Owner).BaseEyeHeight;
-    EndTrace.Z += Pawn(Owner).BaseEyeHeight;
-
-    HitActor = Trace(HitLocation, HitNormal, EndTrace, StartTrace);
-    if ((HitActor == Level) || ((HitActor != None) && HitActor.IsA('Mover')))
-    {
-        placeLocation = HitLocation;
-        placeNormal = HitNormal;
-        placeMover = Mover(HitActor);
-        return True;
-    }
-```
-and then from `function PlaceGrenade()`
-```
-    gren = ThrownProjectile(spawn(ProjectileClass, Owner,, placeLocation, Rotator(placeNormal)));
-    if (gren != None)
-    {
-        gren.SetPhysics(PHYS_None);
-        gren.bBounce = False;
-        gren.bProximityTriggered = True;
-        gren.bStuck = True;
-        if (placeMover != None)
-            gren.SetBase(placeMover);
-
-        // up the damage based on the skill
-        // returned value from GetWeaponSkill is negative, so negate it to make it positive
-        // dmgX value ranges from 1.0 to 2.4 (max demo skill and max target aug)
-        dmgX = -2.0 * GetWeaponSkill() + 1.0;
-        gren.Damage *= dmgX;
-```
-
-experimental teleport to actor by name, probably better to make a subclass of Teleporter that sets a flag, and then in a DXR Module on AnyEntry read that flag and clear it
-```
-err( "GetLocalURL: " $ Level.GetLocalURL() );
-    err( "GetAddressURL: " $ Level.GetAddressURL() );
-
-    if(dxr.dxInfo.missionNumber == 1) {
-        foreach AllActors(class'Teleporter', t) {
-            //t.URL = "02_NYC_STREET#?toname=Teleporter19";
-            t.URL = "15_area51_entrance#?toname=Light73";
-        }
-    } else {
-        foreach AllActors(class'Teleporter', t) {
-            //t.URL = "02_NYC_STREET#?toname=Teleporter19";
-            if( t.URL != "" ) {
-                t.URL = t.URL $ "?toname=";//otherwise toname will stay for the rest of the game
-            }
-        }
-    }
-
-    tonamestring = Level.game.ParseOption( "?" $ Level.GetLocalURL(), "toname" );
-    err("tonamestring: " $ tonamestring);
-    if( InStr(tonamestring, "#") >=0 ) {
-        tonamestring = Left(tonamestring,InStr(tonamestring,"#"));
-    }
-    err("tonamestring: " $ tonamestring);
-    if( tonamestring != "" ) {
-        toname = dxr.Player.rootWindow.StringToName(tonamestring);
-        err("toname: " $ toname);
-        foreach AllActors(class'Actor', a) {
-            if( a.Name == toname ) {
-                err("found actor "$a);
-                dxr.Player.SetLocation(a.Location);
-            }
-        }
-    }
-```
 
 for v1.4========================
 
@@ -281,20 +175,6 @@ I could make an AugSkill class to turn any skill into an augmentation (might nee
     -energy cost could be based on the cost of the original skill
     -use the augmentation level to give skill levels
     -might be OP if one player gets lucky and finds the hacking augmentation in a race
-
-randomly remove/move medbots and repair bots?
-
-add more tests? I should maybe make tests only run once per launch, maybe like on localURL == "DX" maybe the training area or liberty island cause some tests will need a world?
-    -tests for ClassIsA, skill randomization, augs...
-
-I can make more stuff data-driven
-    -config to enable/disable modules? modules in a separate package?
-    -DXRReduceItems could receive arguments/config for which classes of items to reduce and what %
-    -each module should be in charge of their own flags and flagnames?
-    -config value for enabling tests
-    -I can display a crc hash of the configs and flags as a clientmessage, like how the seed is shown
-
-split up the Swap function, support multiple classes for SwapAll? or just support NavigationPoints?
 
 NavigationPoint (children: PathNode, PatrolPoint, AmbushPoint, InventorySpot) for extra positions where items can be placed?
 
@@ -324,6 +204,7 @@ native(724) final function bool GetBoundingBox(out vector MinVect, out vector Ma
 // Takes this actor's collision properties into account.
 // Returns first hit actor, Level if hit level, or None if hit nothing.
 //
+https://docs.unrealengine.com/udk/Two/ActorFunctions.html#Trace
 native(277) final function Actor Trace
 (
 	out vector      HitLocation,
@@ -391,7 +272,7 @@ I could also randomize how long it takes to hack, if it's long enough then you'l
 =============================
 
 need a function for GiveRandomItem()
-need a function for CloneNanoKey() (based on Engine.Pickup.SpawnCopy? no, that's for respawning items)
+need a function for CloneNanoKey()
 need to figure out how to modify conversations
 
 AI hearing and vision adjustment, enemy health
@@ -404,7 +285,6 @@ actor class also has these:
     var(Collision) bool       bBlockActors;	    // Blocks other nonplayer actors.
     var(Collision) bool       bBlockPlayers;    // Blocks other player actors.
 
-exploded corpses drop keys?
 bIsItemGoal?
 should NanoKeys have buoyancy?
 
@@ -417,6 +297,8 @@ https://web.archive.org/web/20190407081013/http://www.unrealtexture.com/Unreal/D
 https://web.archive.org/web/20201023054944/http://wiki.beyondunreal.com/Legacy:Compiler_Errors
 
 http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/unrealscript.html
+
+https://web.archive.org/web/20051025132508/http://mimesis.csc.ncsu.edu/Unreal/Syntax.htm
 
 https://ut99.org/viewtopic.php?t=5985
 
@@ -440,24 +322,3 @@ http://unreal.ut-files.com/3DEditing/Tutorials/unrealwiki-offline/ut-package-too
 
 https://www.dx-revision.com/dxtutorials/tack/
 
-
-    /*foreach AllActors(class'ScriptedPawn', p)
-    {
-        if( p.bIsPlayer ) continue;
-        inv = spawn(class'WeaponAssaultGun');
-        inv.GiveTo(p);
-        inv.SetBase(p);
-
-        inv.AmmoType = spawn(inv.AmmoName);
-        inv.AmmoType.InitialState='Idle2';
-        inv.AmmoType.GiveTo(p);
-        inv.AmmoType.SetBase(p);
-
-        p.SetupWeapon(false);
-    }*/
-
-    /*foreach AllActors(class'DeusExCarcass', c)
-    {
-        inv = spawn(class'WeaponAssaultGun', self);
-        c.AddInventory(inv);
-    }*/

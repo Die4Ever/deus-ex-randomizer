@@ -139,58 +139,29 @@ function AddRandomEnemyType(string t, int c)
 function FirstEntry()
 {
     Super.FirstEntry();
-    RandoMedBotsRepairBots(dxr.flags.medbots, dxr.flags.repairbots);
     RandoEnemies(dxr.flags.enemiesrandomized);
     //SwapScriptedPawns();
+    RandoCarcasses();
 }
 
-function RandoMedBotsRepairBots(int medbots, int repairbots)
+function RandoCarcasses()
 {
-    local RepairBot r;
-    local MedicalBot m;
-    local Datacube d;
+    local DeusExCarcass c;
+    local Inventory item, nextItem;
 
-    if( medbots > -1 ) {
-        foreach AllActors(class'MedicalBot', m) {
-            m.Destroy();
-        }
-        foreach AllActors(class'Datacube', d) {
-            if( d.textTag == '01_Datacube09' ) d.Destroy();
-        }
-    }
-    if( repairbots > -1 ) {
-        foreach AllActors(class'RepairBot', r) {
-            r.Destroy();
-        }
-        foreach AllActors(class'Datacube', d) {
-            if( d.textTag == '03_Datacube11' ) d.Destroy();
+    SetSeed( "RandoCarcasses" );
+
+    foreach AllActors(class'DeusExCarcass', c) {
+        item = c.Inventory;
+        while( item != None ) {
+            nextItem = item.Inventory;
+            if( chance_single(50) && !item.IsA('NanoKey') ) {
+                c.DeleteInventory(item);
+                item.Destroy();
+            }
+            item = nextItem;
         }
     }
-
-    SetSeed( "RandoMedBots" );
-    if( chance_single(medbots) ) {
-        m = MedicalBot(SpawnNewActor(class'MedicalBot'));
-        d = Datacube(SpawnNewActor(class'Datacube', m.Location, 16*50, 16*200));//minimum 50 feet away, maximum 200 feet away
-        d.textTag = '01_Datacube09';
-        d.bAddToVault = false;
-    }
-
-    SetSeed( "RandoRepairBots" );
-    if( chance_single(repairbots) ) {
-        r = RepairBot(SpawnNewActor(class'RepairBot'));
-        d = Datacube(SpawnNewActor(class'Datacube', m.Location, 16*50, 16*200));
-        d.textTag = '03_Datacube11';
-        d.bAddToVault = false;
-    }
-}
-
-function Actor SpawnNewActor(class<Actor> c, optional vector target, optional float mindist, optional float maxdist)
-{
-    local vector loc;
-    loc = GetRandomPosition(target, mindist, maxdist);
-    loc.X += rngfn() * 50;
-    loc.Y += rngfn() * 50;
-    return Spawn(c,,, loc );
 }
 
 function SwapScriptedPawns()
@@ -262,14 +233,15 @@ function RandoEnemies(int percent)
     foreach AllActors(class'ScriptedPawn', p)
     {
         if( p == newsp ) break;
-        if( SkipActor(p, 'ScriptedPawn') ) continue;
         if( p.bImportant || p.bInvincible ) continue;
         if( IsCritter(p) ) continue;
+        if( SkipActor(p, 'ScriptedPawn') ) continue;
         //if( IsInitialEnemy(p) == False ) continue;
 
-        if( rng(100) < percent ) RandomizeSP(p, percent);
+        if( HasItemSubclass(p, class'Weapon') == false ) continue;//don't randomize neutral npcs that don't already have weapons
+        if( chance_single(percent) ) RandomizeSP(p, percent);
 
-        if( rng(100) >= percent ) continue;
+        if( chance_single(percent) == false ) continue;
 
         for(i = rng(enemy_multiplier*100+percent)/100; i >= 0; i--) {
             n = RandomEnemy(p, percent);
@@ -293,6 +265,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
     if( chance_single(chance_clone_nonhumans)==False && newclass == None && IsHuman(base) == False ) return None;
 
     n = CloneScriptedPawn(base, newclass);
+    l("new RandomEnemy("$base$", "$percent$") == "$n);
     if( n != None ) RandomizeSP(n, percent);
     //else RandomizeSize(n);
     return n;
@@ -319,12 +292,16 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
         return None;
     }
     if( newclass == None ) newclass = p.class;
-    radius = p.CollisionRadius;
-    loc_offset = vect( 3, 3, 5);
+    radius = p.CollisionRadius + newclass.default.CollisionRadius;
     for(i=0; i<10; i++) {
-        loc_offset.X = rngfn() * 5 * Sqrt(float(enemy_multiplier));
-        loc_offset.Y = rngfn() * 5 * Sqrt(float(enemy_multiplier));
+        loc_offset.X = 1 + rngf() * 3 * Sqrt(float(enemy_multiplier+1));
+        loc_offset.Y = 1 + rngf() * 3 * Sqrt(float(enemy_multiplier+1));
+        if( chance_single(50) ) loc_offset *= -1;
         loc = p.Location + (radius*loc_offset);
+        if( class'DXRMissions'.static.IsCloseToStart(dxr, loc) ) {
+            info("CloneScriptedPawn "$loc$" is too close to start!");
+            continue;
+        }
         n = Spawn(newclass,,, loc );
         if( n != None ) break;
     }
@@ -332,9 +309,10 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
         l("failed to clone "$ActorToString(p)$" into class "$newclass$" into "$loc);
         return None;
     }
-
     l("cloning "$ActorToString(p)$" into class "$newclass$" got "$ActorToString(n));
 
+    if( IsHuman(p) && IsHuman(n) && p.BarkBindName != "" && n.BarkBindName == "" ) n.BarkBindName = p.BarkBindName;
+    class'DXRNames'.static.GiveRandomName(dxr, n);
     n.Alliance = p.Alliance;
     for(i=0; i<ArrayCount(n.InitialAlliances); i++ )
     {
@@ -363,7 +341,6 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
 
     n.Orders = defaultOrders;
     n.HomeTag = 'Start';
-    n.InitializeInventory();
     n.InitializeAlliances();
 
     RandomizeSize(n);
@@ -375,6 +352,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
 {
     if( p == None ) return;
 
+    l("RandomizeSP("$p$", "$percent$")");
     p.SurprisePeriod *= float(rng(100)/100)+0.4;
 
     if( IsHuman(p) == False ) return; // only give random weapons to humans
@@ -395,25 +373,38 @@ function GiveRandomWeapon(Pawn p)
     for(i=0; i < ArrayCount(_randomweapons); i++ ) {
         if( chance( _randomweapons[i].chance, r ) ) wclass = _randomweapons[i].type;
     }
+    chance_remaining(r);
 
     if( HasItem(p, wclass) )
         return;
 
+    if( wclass == None ) {
+        l("not giving a random weapon to "$p); return;
+    }
+
     w = Spawn(wclass, p);
+    l("GiveRandomWeapon("$p$") "$wclass$", "$w);
+    w.PickUpAmmoCount = Clamp(float(w.PickupAmmoCount) * float(dxr.flags.ammo) / 100.0, 1, 1000);
     w.GiveTo(p);
     w.SetBase(p);
 
     if( w.AmmoName != None ) {
         a = spawn(w.AmmoName);
+        l("GiveRandomWeapon("$p$") ammo "$w.AmmoName$", "$a);
         w.AmmoType = a;
-        w.AmmoType.InitialState='Idle2';
-        w.AmmoType.GiveTo(p);
-        w.AmmoType.SetBase(p);
+        a.AmmoAmount = Clamp(float(a.AmmoAmount) * float(dxr.flags.ammo) / 100.0, 1, 1000);
+        a.BecomeItem();
+        a.GotoState('Idle2');
+        a.GiveTo(p);
+        a.SetBase(p);
     }
 
     for(i=0; i < ArrayCount(w.AmmoNames); i++) {
-        if(rng(3) == 0 && w.AmmoNames[i] != None) {
+        if(rng(3) == 0 && w.AmmoNames[i] != None && w.AmmoNames[i] != class'AmmoNone') {
             a = spawn(w.AmmoNames[i]);
+            l("GiveRandomWeapon("$p$") alt ammo "$w.AmmoNames[i]$", "$a);
+            a.BecomeItem();
+            a.GotoState('Idle2');
             a.GiveTo(p);
             a.SetBase(p);
         }
@@ -439,7 +430,9 @@ function GiveRandomMeleeWeapon(Pawn p)
             return;
         }
     }
+
     w = Spawn(wclass, p);
+    l("GiveRandomMeleeWeapon("$p$") "$w);
     w.GiveTo(p);
     w.SetBase(p);
 }

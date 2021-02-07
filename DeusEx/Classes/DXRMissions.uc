@@ -9,7 +9,7 @@ var config RemoveActor remove_actors[32];
 struct Goal {
     var string map_name;
     var name actor_name;
-    var float group_radius;
+    var float group_radius;//obsolete name, rename it to distance_multipler? only used with move_with_previous
     var EPhysics physics;
     var bool move_with_previous;//for chaining things together
     var bool allow_vanilla;
@@ -32,13 +32,16 @@ struct _RandomItemStruct { var class<Inventory> type; var int chance; };
 var config RandomItemStruct randomitems[16];
 var _RandomItemStruct _randomitems[16];
 
+var vector rando_start_loc;
+var bool b_rando_start;
+
 function CheckConfig()
 {
     local class<Actor> a;
     local int i;
     local string map;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,9) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,0) ) {
         allow_vanilla = false;
 
         i=0;
@@ -345,36 +348,66 @@ function CheckConfig()
         goals[i].map_name = map;
         goals[i].actor_name = 'DeusExMover40';//weld point
         goals[i].physics = PHYS_None;
-        goals[i].group_radius = 80;
         goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ParticleGenerator10';//I don't think these work for some reason
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'DeusExMover16';//weld point
         goals[i].physics = PHYS_None;
-        goals[i].group_radius = 80;
         goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ParticleGenerator4';
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'DeusExMover33';//weld point
         goals[i].physics = PHYS_None;
-        goals[i].group_radius = 80;
         goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ParticleGenerator7';
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'DeusExMover31';//weld point
         goals[i].physics = PHYS_None;
-        goals[i].group_radius = 80;
         goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ParticleGenerator5';
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
         i++;
 
         goals[i].map_name = map;
         goals[i].actor_name = 'DeusExMover32';//weld point
         goals[i].physics = PHYS_None;
-        goals[i].group_radius = 80;
         goals[i].allow_vanilla = true;
+        i++;
+
+        goals[i].map_name = map;
+        goals[i].actor_name = 'ParticleGenerator6';
+        goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
+        goals[i].group_radius = 1;
         i++;
 
         map = "11_paris_cathedral";
@@ -482,7 +515,7 @@ function CheckConfig()
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(2321.717041,-2045.296753,-159.436096);//'PathNode23' in jail with Gunther
+        important_locations[i].location = vect(2127.692139, -1774.869141, -149.140366);//'PathNode23' in jail with Gunther
         important_locations[i].is_player_start = true;
         important_locations[i].is_goal_position = true;
         i++;
@@ -490,7 +523,7 @@ function CheckConfig()
         important_locations[i].map_name = map;
         important_locations[i].location = vect(-2407.206787,205.915558,-128.899979);//'HidePoint6' little hut by nsf bot patrol
         important_locations[i].rotation = rot(0,30472,0);
-        important_locations[i].is_player_start = true;
+        important_locations[i].is_player_start = false;
         important_locations[i].is_goal_position = true;
         i++;
 
@@ -498,6 +531,13 @@ function CheckConfig()
         important_locations[i].location = vect(2931.230957,27.495235,2527.800049);//'TerroristCommander0'
         important_locations[i].rotation = rot(0,14832,0);
         important_locations[i].is_player_start = true;
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(2980.058105, -669.242554, 1056.577271);//'PathNode875' top of the base of the statue
+        important_locations[i].rotation = rot(0,0,0);
+        important_locations[i].is_player_start = false;
+        important_locations[i].is_goal_position = true;
         i++;
 
         map = "02_nyc_batterypark";
@@ -559,10 +599,16 @@ function CheckConfig()
         important_locations[i].map_name = map;
         important_locations[i].location = vect(-4340.930664, 2332.365234, 244.506165);//'Light174' under the vent
         important_locations[i].is_player_start = true;
+        important_locations[i].is_goal_position = false;
         i++;
 
         important_locations[i].map_name = map;
         important_locations[i].location = vect(-2968.101563, -1407.404419, 334.242554);//'PathNode0' in front of statue
+        important_locations[i].is_player_start = true;
+        i++;
+
+        important_locations[i].map_name = map;
+        important_locations[i].location = vect(-1079.890625, -3412.052002, 270.581390);//on the dock near vending machines
         important_locations[i].is_player_start = true;
         i++;
 
@@ -593,26 +639,26 @@ function CheckConfig()
 
         map = "03_NYC_BrooklynBridgeStation";
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(975.220337,1208.224854,111.775002);//'ThugMale13'
+        important_locations[i].location = vect(941.022522, 1098.468140,111.775002);//'ThugMale13'
         important_locations[i].rotation = rot(0,43128,0);
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-1248.503662,-2870.117432,109.675003);//'JunkieMale1'
+        important_locations[i].location = vect(-1250.199707, -2800.906738,109.675003);//'JunkieMale1'
         important_locations[i].rotation = rot(0,44456,0);
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(1003.048767,-2519.280762,111.775002);//'BumMale2'
+        important_locations[i].location = vect(1030.150635, -2417.651611,111.775002);//'BumMale2'
         important_locations[i].rotation = rot(0,13576,0);
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-2978.629639,-2281.836670,415.774994);//'ThugMale3'
+        important_locations[i].location = vect(-2978.763916, -2397.429443,415.774994);//'ThugMale3'
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-988.025696, -3381.119385, 111.600235);//'BumMale3'
+        important_locations[i].location = vect(-1038.972412, -3333.837646, 111.600235);//'BumMale3'
         important_locations[i].rotation = rot(0,-22608,0);
         i++;
 
@@ -1040,6 +1086,8 @@ function FirstEntry()
         start = rng(num_ps);
         dxr.Player.SetLocation(player_starts[start].location);
         dxr.Player.SetRotation(player_starts[start].rotation);
+        rando_start_loc = dxr.Player.Location;
+        b_rando_start = true;
 
         for(i=0; i<num_gl; i++) {
             diff = player_starts[start].location - goal_locations[i].location;
@@ -1083,6 +1131,7 @@ function FirstEntry()
         if( local_goals[i].group_radius >= 0.1 ) {
             foreach RadiusActors(class'Actor', a, local_goals[i].group_radius, loc ) {
                 if( a == dxr.Player ) continue;
+                if( a.bStatic ) continue;
                 if( NavigationPoint(a) != None ) continue;
                 if( Light(a) != None ) continue;
                 success = MoveActor(a, a.location + diff, a.rotation, local_goals[i].physics);
@@ -1188,7 +1237,37 @@ function _RandoStartingEquipment(DeusExPlayer player, DXREnemies dxre)
 
     if( iclass == None ) return;
     item = Spawn(iclass);
+    item.SetLocation(player.Location);
     item.Frob(player, None);
+}
+
+static function bool IsCloseToStart(DXRando dxr, vector loc)
+{
+    local PlayerStart ps;
+    local Teleporter t;
+    local float too_close, dist;
+    local DXRMissions m;
+    too_close = 60*16;
+
+    m = DXRMissions(dxr.FindModule(class'DXRMissions'));
+    if( m != None && m.b_rando_start ) {
+        if ( VSize(m.rando_start_loc - loc) < too_close ) return true;
+        else return false;
+    }
+    else {
+        foreach dxr.RadiusActors(class'PlayerStart', ps, too_close, loc) {
+            dist = VSize(loc-ps.location);
+            if( dist < too_close ) return true;
+        }
+    }
+
+    foreach dxr.RadiusActors(class'Teleporter', t, too_close, loc) {
+        if( t.Tag == '' ) continue;
+        dist = VSize(loc-ps.location);
+        if( dist < too_close ) return true;
+    }
+
+    return false;
 }
 
 //tests to ensure that there are more goal locations than movable actors for each map

@@ -16,12 +16,18 @@ var int dancingpercent;
 var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
 var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
 var int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
+var int turrets_move, turrets_add;
+var int crowdcontrol;
 
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
 function PreTravel()
 {
     Super.PreTravel();
+    if( dxr != None && dxr.localURL == "INTRO" && f.GetInt('Rando_version') == 0 ) {
+        info("PreTravel "$dxr.localURL$" SaveFlags");
+        SaveFlags();
+    }
     f = None;
     Self.Destroy();// for some reason, "f = tdxr.Player.FlagBase;" inside the Init function crashes if I don't do this, not sure why
 }
@@ -39,7 +45,7 @@ function Timer()
     Super.Timer();
 
     if( f.GetInt('Rando_version') == 0 ) {
-        l("flags got deleted, saving again");//the intro deletes all flags
+        info("flags got deleted, saving again");//the intro deletes all flags
         SaveFlags();
     }
 }
@@ -100,6 +106,9 @@ function InitDefaults()
     equipment = 1;
     medbots = 15;
     repairbots = 15;
+    turrets_move = 50;
+    turrets_add = 20;
+    crowdcontrol = 0;
 }
 
 function CheckConfig()
@@ -112,11 +121,15 @@ function CheckConfig()
 function LoadFlags()
 {
     local int stored_version;
-    l("LoadFlags()");
+    info("LoadFlags()");
 
     InitDefaults();
 
     stored_version = f.GetInt('Rando_version');
+
+    if( stored_version == 0 && dxr.localURL != "DX" && dxr.localURL != "DXONLY" && dxr.localURL != "00_TRAINING" ) {
+        err(dxr.localURL$" failed to load flags! using default randomizer settings");
+    }
 
     if( stored_version >= 1 ) {
         seed = f.GetInt('Rando_seed');
@@ -169,9 +182,14 @@ function LoadFlags()
         medbots = f.GetInt('Rando_medbots');
         repairbots = f.GetInt('Rando_repairbots');
     }
+    if( stored_version >= VersionToInt(1,5,0) ) {
+        turrets_move = f.GetInt('Rando_turrets_move');
+        turrets_add = f.GetInt('Rando_turrets_add');
+        crowdcontrol = f.GetInt('Rando_crowdcontrol');
+    }
 
     if(stored_version < flagsversion ) {
-        l("upgraded flags from "$stored_version$" to "$flagsversion);
+        info("upgraded flags from "$stored_version$" to "$flagsversion);
         SaveFlags();
     }
 
@@ -224,13 +242,16 @@ function SaveFlags()
 
     f.SetInt('Rando_medbots', medbots,, 999);
     f.SetInt('Rando_repairbots', repairbots,, 999);
+    f.SetInt('Rando_turrets_move', turrets_move,, 999);
+    f.SetInt('Rando_turrets_add', turrets_add,, 999);
+    f.SetInt('Rando_crowdcontrol', crowdcontrol,, 999);
 
     LogFlags("SaveFlags");
 }
 
 function LogFlags(string prefix)
 {
-    l(prefix$" - " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", " $ StringifyFlags() );
+    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", " $ StringifyFlags() );
 }
 
 function string StringifyFlags()
@@ -241,7 +262,7 @@ function string StringifyFlags()
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
         $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", enemyrespawn: "$enemyrespawn$", infodevices: "$infodevices
-        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots;
+        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots$", turrets_move: "$turrets_move$", turrets_add: "$turrets_add$", crowdcontrol: "$crowdcontrol;
 }
 
 function int FlagsHash()
@@ -275,12 +296,12 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 4, 9);
+    return VersionToInt(1, 5, 0);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 4, 9) $ "";
+    return VersionToString(1, 5, 0) $ "";
 }
 
 function MaxRando()

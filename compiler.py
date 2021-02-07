@@ -6,6 +6,7 @@ import glob
 import json
 import subprocess
 import os.path
+import shutil
 from pathlib import Path
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -102,9 +103,28 @@ def proc_file(file, files, mod_name, injects=None):
 
 
 def apply_merge(a, b):
-    content = a['content']
+    #Find variable definitions in b (file to be merged)
+    bVars=""
+    bRest=""
+    for line in b['content'].split("\n"):
+        if line.startswith("var "):
+            bVars+=line+"\n"
+        else:
+            bRest+=line+"\n"
+
+    if bVars!="":
+        firstVar = a['content'].find("var")
+        content = a['content'][:firstVar]
+        content+="//=======Start of variables merged from "+b['mod_name']+'/'+b['classname']+"=======\n"
+        content+=bVars
+        content+=  "//=======End of variables merged from "+b['mod_name']+'/'+b['classname']+"=========\n"
+        content += a['content'][firstVar:]
+
+    else:
+        content = a['content']
+
     content += "\n\n// === merged from "+b['mod_name']+'/'+b['classname']+"\n\n"
-    b_content = b['content']
+    b_content = bRest
     b_content = re.sub(b['classline'], "/* "+b['classline']+" */", b_content, count=1)
     b_content_no_comments = strip_comments(b_content)
 
@@ -189,6 +209,11 @@ def write_file(out, f, written, injects):
         file.write(content)
     written[f['file']] = 1
 
+def copyDeusExU(out):
+    if exists(out + '/System/DeusEx.u'):
+        print("DeusEx.u exists")
+        shutil.copy2(out + '/System/DeusEx.u',"./DeusEx.u")
+        print("DeusEx.u copied locally")
 
 def compile(source, mods, out):
     orig_files = {}
@@ -197,22 +222,27 @@ def compile(source, mods, out):
     written = {}
 
     for file in insensitive_glob(source+'/*'):
+        print("Processing file "+str(file))
         proc_file(file, orig_files, 'original')
     
     for mod in mods:
         mods_files.append({})
         for file in insensitive_glob(mod+'*'):
+            print("Processing mod file "+str(file))
             proc_file(file, mods_files[-1], mod, injects)
 
     print("\nwriting files...")
     for file in orig_files.values():
+        print("Writing file "+str(file['file']))
         write_file(out, file, written, injects)
     for mod in mods_files:
         for file in mod.values():
+            print("Writing mod file "+str(file['file']))
             write_file(out, file, written, injects)
     
     # now we need to delete DeusEx.u otherwise it won't get recompiled, might want to consider support for other packages too
     if exists(out + '/System/DeusEx.u'):
+        print("Removing old DeusEx.u")
         os.remove(out + '/System/DeusEx.u')
 
     # can set a custom ini file ucc make INI=ProBob.ini https://www.oldunreal.com/wiki/index.php?title=Working_with_*.uc%27s
@@ -226,6 +256,7 @@ def compile(source, mods, out):
 parser.add_argument('--source_path', help='Path to the original game source code')
 parser.add_argument('--mods_paths', nargs='*', help='List of mods folders')
 parser.add_argument('--out_dir', help='Where to write files to')
+parser.add_argument('--copy_local', action="store_true", help="Use this flag to make a local copy of DeusEx.u")
 args = parser.parse_args()
 pp.pprint(args)
 
@@ -259,6 +290,8 @@ while rerun == "":
     try:
         print("\ncompiling...")
         compile(args.source_path, args.mods_paths, args.out_dir)
+        if args.copy_local:
+            copyDeusExU(args.out_dir)
     except Exception as e:
         print('\n\ncompile error: ')
         print(e)

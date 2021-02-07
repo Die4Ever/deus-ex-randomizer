@@ -7,6 +7,20 @@ event InitWindow()
     Super.InitWindow();
 }
 
+function CheckConfig()
+{
+    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+        num_rows=13;
+        num_cols=4;
+        col_width_odd=160;
+        col_width_even=140;
+        row_height=20;
+        padding_width=20;
+        padding_height=10;
+    }
+    Super.CheckConfig();
+}
+
 function BindControls(bool writing, optional string action)
 {
     local DXRFlags f;
@@ -170,6 +184,16 @@ function BindControls(bool writing, optional string action)
     f.repairbots = f.medbots;
     id++;
 
+    labels[id] = "Move Turrets";
+    helptexts[id] = "Randomizes locations of turrets, cameras, and security computers for them.";
+    Slider(id, f.turrets_move, 0, 100, writing);
+    id++;
+
+    labels[id] = "Add Turrets";
+    helptexts[id] = "Randomly adds turrets, cameras, and security computers for them.";
+    Slider(id, f.turrets_add, 0, 100, writing);
+    id++;
+
     if( action == "NEXT" ) InvokeNewGameScreen(combatDifficulty, InitDxr());
 }
 
@@ -180,7 +204,7 @@ function SetDifficulty(float newDifficulty)
 
 defaultproperties
 {
-    num_rows=12
+    num_rows=13
     num_cols=4
     col_width_odd=160
     col_width_even=140
