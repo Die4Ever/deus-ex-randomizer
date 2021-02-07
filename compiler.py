@@ -250,6 +250,11 @@ def compile(source, mods, out):
     if not exists_dir(out + '/DeusEx/Inc'):
         os.makedirs(out + '/DeusEx/Inc', exist_ok=True)
     calla([ out + '/System/ucc', 'make', '-h', '-NoBind', '-Silent' ])
+    # now we can check UCC.log for success or just the existence of DeusEx.u
+    # copy DeusEx.ini to test.ini, change [Engine.Engine] DefaultServerGame to =DeusEx.DXRandoTests
+    # then we run this command
+    # ucc server ini=test.ini
+    # then we can check UCC.log for the test results or parse them from the stdout
 
 
 

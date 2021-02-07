@@ -35,7 +35,8 @@ function PostPostBeginPlay()
     }
 
     l("PostPostBeginPlay has localURL == " $ localURL);
-    Player = DeusExPlayer(GetPlayerPawn());
+    foreach AllActors(class'DeusExPlayer', Player) { break; }
+    //Player = DeusExPlayer(GetPlayerPawn());
     if( Player == None ) {
         l("PostPostBeginPlay() didn't find player?");
         SetTimer(0.1, False);
