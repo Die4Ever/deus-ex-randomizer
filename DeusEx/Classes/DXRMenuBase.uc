@@ -234,7 +234,7 @@ event DestroyWindow()
 function CreateControls()
 {
     Super.CreateControls();
-    Title = "DX Rando "$ class'DXRFlags'.static.VersionString();
+    Title = "Deus Ex Randomizer "$ class'DXRFlags'.static.VersionString();
     SetTitle(Title);
     //if(flags == None) return;
     //BindControls(false);

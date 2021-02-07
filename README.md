@@ -35,16 +35,16 @@ There are also settings for
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts
 * making all or some of the doors that normally require a key also lockpickable and/or destructible
 * making all or some keypads hackable.
-* making enemies respawn
 * reducing the drop rate for ammo, multitools, lockpicks, medkits, and bioelectric cells
-* starting the game with the running speed augmentation
 * autosave
+* making enemies respawn
+* starting the game with the running speed augmentation
 
 #### When you click New Game, you will see this settings screen:
-![options](https://i.imgur.com/iC6Vc2Z.png)
+![options](https://i.imgur.com/2QpVbGy.png)
 
 #### If you click Next then it will use default settings based on your difficulty choice. But if you click Advanced then you will see these settings:
-![advanced options](https://i.imgur.com/bKJmbFa.png)
+![advanced options](https://i.imgur.com/ABECGMK.png)
 
 For the randomized passwords, you can copy-paste from the Goals/Notes screen.
 
