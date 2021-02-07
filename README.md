@@ -11,7 +11,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 ### Currently in v1.5, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
-* adding and moving turrets, cameras, and security computers
+* adding and moving turrets, cameras, security computers, and datacubes for them
 * starting equipment, bioelectric energy, and credits
 * adding and changing characters, giving them random names and making some of them dance
 * changing the locations of items/boxes/NanoKeys/datacubes around the map
@@ -26,7 +26,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 * the damage and firing speed of weapons
 
 There are also settings for
-* Crowd Control! Let your viewers troll you or help you! https://crowdcontrol.live/
+* Crowd Control! Let your viewers troll you or help you! Check [their website](https://crowdcontrol.live/) for when they enable Deus Ex Randomizer
 * new game modes!
     * Rearranged Levels is in beta, it changes what level each teleporter takes you to, but keeps it within the same mission.
     * Horde Mode is in beta and mostly I think it just needs balancing.
