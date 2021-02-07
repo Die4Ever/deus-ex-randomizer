@@ -41,7 +41,7 @@ There are also settings for
 * autosave
 
 #### When you click New Game, you will see this settings screen:
-![options](https://i.imgur.com/mme4Tms.png)
+![options](https://i.imgur.com/iC6Vc2Z.png)
 
 #### If you click Next then it will use default settings based on your difficulty choice. But if you click Advanced then you will see these settings:
 ![advanced options](https://i.imgur.com/bKJmbFa.png)

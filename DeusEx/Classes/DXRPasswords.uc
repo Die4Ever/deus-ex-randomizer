@@ -30,7 +30,8 @@ function Timer()
     while( goal != None ) {
         for (i=0; i<ArrayCount(oldpasswords); i++)
         {
-            UpdateGoal(goal, oldpasswords[i], newpasswords[i]);
+            if( oldpasswords[i] == "6282" )
+                UpdateGoal(goal, oldpasswords[i], newpasswords[i]);
         }
         goal = goal.next;
     }
@@ -320,10 +321,12 @@ function ReplacePassword(string oldpassword, string newpassword)
     if(passEnd == passStart) passStart = (passStart+1) % ArrayCount(oldpasswords);
     l("replaced password " $ oldpassword $ " with " $ newpassword $ ", passEnd is " $ passEnd $", passStart is " $ passStart);
 
-    goal = dxr.Player.FirstGoal;
-    while( goal != None ) {
-        UpdateGoal(goal, oldpassword, newpassword);
-        goal = goal.next;
+    if( oldpassword == "6282" ) {
+        goal = dxr.Player.FirstGoal;
+        while( goal != None ) {
+            UpdateGoal(goal, oldpassword, newpassword);
+            goal = goal.next;
+        }
     }
 
     note = dxr.Player.FirstNote;
