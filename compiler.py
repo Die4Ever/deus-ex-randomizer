@@ -15,7 +15,7 @@ parser = argparse.ArgumentParser(description='Deus Ex Injecting Compiler')
 
 def calla(cmds):
     print("running "+repr(cmds))
-    subprocess.Popen(cmds).wait()
+    return subprocess.Popen(cmds).wait(timeout=3600)
 
 
 def insensitive_glob(pattern):
@@ -365,8 +365,8 @@ def compile(source, mods, out):
     # I can run automated tests like ucc Core.HelloWorld
     if not exists_dir(out + '/DeusEx/Inc'):
         os.makedirs(out + '/DeusEx/Inc', exist_ok=True)
-    calla([ out + '/System/ucc', 'make', '-h', '-NoBind', '-Silent' ])
-    # now we can check UCC.log for success or just the existence of DeusEx.u
+    # also we can check UCC.log for success or just the existence of DeusEx.u
+    return calla([ out + '/System/ucc', 'make', '-h', '-NoBind', '-Silent' ])
 
 
 
@@ -406,8 +406,9 @@ rerun = ""
 while rerun == "":
     try:
         print("\ncompiling...")
-        compile(args.source_path, args.mods_paths, args.out_dir)
-
+        compileResult = compile(args.source_path, args.mods_paths, args.out_dir)
+        if compileResult != 0:
+            raise RuntimeError("Compilation failed, returned: "+str(compileResult))
         testSuccess = runAutomatedTests(args.out_dir)
 
         if args.copy_local:
