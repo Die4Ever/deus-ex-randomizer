@@ -283,6 +283,8 @@ def runAutomatedTests(out):
                     startingTests.append(line.strip())
                 elif "WARNING:" in line:
                     warnings.append(line.strip())
+                elif "ERROR" in line:
+                    warnings.append(line.strip())
                 elif "Accessed None" in line:
                     warnings.append(line.strip())
 
@@ -311,6 +313,7 @@ def runAutomatedTests(out):
                 rc = True
             else:
                 print("len(startingTests) == "+str(len(startingTests))+", len(allTestsPassed) == "+str(len(allTestsPassed))+", len(allExtendedTestsPassed) == "+str(len(allExtendedTestsPassed)))
+                print("Failed to run tests!")
                 rc = False
 
             print("")
