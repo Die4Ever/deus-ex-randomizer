@@ -18,6 +18,8 @@ function PostBeginPlay()
     local PlayerPawn p;
     local string error, localURL;
 
+    SetTimer(0, false);
+
     p = Login("", "?Name=Player?Class=DeusEx.JCDentonMale", error, class'JCDentonMale');
     p.Possess();
     log(Self$" PostBeginPlay Login got error: "$error$", player: "$p, Name);
