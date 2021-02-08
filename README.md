@@ -27,6 +27,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 
 There are also settings for
 * Crowd Control! Let your viewers troll you or help you! Check [their website](https://crowdcontrol.live/) for when they enable Deus Ex Randomizer
+    * If you want to try some of the Crowd Control features without actually streaming, you can try the "OfflineCrowdControl.py" script to randomly send Crowd Control messages to your local game!  Requires Python 3.8 or above
 * new game modes!
     * Rearranged Levels is in beta, it changes what level each teleporter takes you to, but keeps it within the same mission.
     * Horde Mode is in beta and mostly I think it just needs balancing.
