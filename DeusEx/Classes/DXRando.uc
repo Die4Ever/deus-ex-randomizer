@@ -36,7 +36,6 @@ function PostPostBeginPlay()
 
     l("PostPostBeginPlay has localURL == " $ localURL);
     foreach AllActors(class'DeusExPlayer', Player) { break; }
-    //Player = DeusExPlayer(GetPlayerPawn());
     if( Player == None ) {
         l("PostPostBeginPlay() didn't find player?");
         SetTimer(0.1, False);
@@ -334,6 +333,7 @@ function err(string message)
 function RunTests()
 {
     local int i, results, failures;
+    l("starting RunTests()");
     for(i=0; i<num_modules; i++) {
         results = modules[i].RunTests();
         if( results > 0 ) {
@@ -347,6 +347,29 @@ function RunTests()
 
     if( failures == 0 ) {
         l( "all tests passed!" );
+    } else {
+        player.ShowHud(true);
+        err( "ERROR: " $ failures $ " modules failed tests!" );
+    }
+}
+
+function ExtendedTests()
+{
+    local int i, results, failures;
+    l("starting ExtendedTests()");
+    for(i=0; i<num_modules; i++) {
+        results = modules[i].ExtendedTests();
+        if( results > 0 ) {
+            failures++;
+            player.ShowHud(true);
+            err( "ERROR: " $ modules[i] @ results $ " tests failed!" );
+        }
+        else
+            l( modules[i] $ " passed tests!" );
+    }
+
+    if( failures == 0 ) {
+        l( "all extended tests passed!" );
     } else {
         player.ShowHud(true);
         err( "ERROR: " $ failures $ " modules failed tests!" );

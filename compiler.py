@@ -263,6 +263,10 @@ def runAutomatedTests(out):
 
             modulesTested = []
             failures = []
+            allTestsPassed = []
+            allExtendedTestsPassed = []
+            startingTests = []
+            warnings = []
             #Run through to find modules that ran tests and what failures there were
             for line in lines:
                 if "passed tests!" in line:
@@ -271,22 +275,43 @@ def runAutomatedTests(out):
                     modulesTested.append(line.strip())
                 elif "fail: " in line:
                     failures.append(line.strip())
+                elif "all tests passed!" in line:
+                    allTestsPassed.append(line.strip())
+                elif "all extended tests passed!" in line:
+                    allExtendedTestsPassed.append(line.strip())
+                elif "starting RunTests()" in line:
+                    startingTests.append(line.strip())
+                elif "WARNING:" in line:
+                    warnings.append(line.strip())
+                elif "Accessed None" in line:
+                    warnings.append(line.strip())
 
             for module in modulesTested:
                 print(module)
 
             print("")
 
+            if len(warnings) > 0:
+                print("Test Warnings:")
+                print("-----------------")
+                for warn in warnings:
+                    print(warn)
+                print("")
+
             if len(failures) > 0:
                 print("Test Failures:")
                 print("-----------------")
                 for fail in failures:
                     print(fail)
+                print("")
                 rc = False
 
-            else:
+            elif len(allTestsPassed) == len(startingTests) and len(allExtendedTestsPassed) > 0:
                 print("All tests passed!")
                 rc = True
+            else:
+                print("len(startingTests) == "+str(len(startingTests))+", len(allTestsPassed) == "+str(len(allTestsPassed))+", len(allExtendedTestsPassed) == "+str(len(allExtendedTestsPassed)))
+                rc = False
 
             print("")
             print("")

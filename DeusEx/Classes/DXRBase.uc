@@ -266,6 +266,12 @@ function int RunTests()
     return 0;
 }
 
+function int ExtendedTests()
+{// these are tests that depend on being in a real level
+    l(".ExtendedTests() " $ dxr.localURL);
+    return 0;
+}
+
 function int test(bool result, string testname)
 {
     if(result == true) {
