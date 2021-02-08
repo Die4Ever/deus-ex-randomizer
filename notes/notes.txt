@@ -6,6 +6,23 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 
 for v1.6 programatically modify conversations? ===================
 
+in Actor.uc
+// Probe messages.
+native(117) final function Enable( name ProbeFunc );
+native(118) final function Disable( name ProbeFunc );
+
+// Properties.
+native final function string GetPropertyText( string PropName );
+native final function SetPropertyText( string PropName, string PropValue );
+native static final function name GetEnum( object E, int i );
+
+// Configuration.
+native static final function string GetConfig( string ConfigSection, string ConfigKey);  // DEUS_EX CAC
+native(536) final function SaveConfig();
+native static final function StaticSaveConfig();
+native static final function ResetConfig();
+
+
 UWindowHTMLTextArea
 ninja mode (maybe rename low tech skill to ninjitsu, and always run silent?
 fix "softlock" in 03_batterypark, maybe by adding an atm and datacube, or copying over the threatened bum from 02_street, putting a note on curly's body, hiding money and/or datacubes on the map...

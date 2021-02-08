@@ -215,6 +215,122 @@ def copyDeusExU(out):
         shutil.copy2(out + '/System/DeusEx.u',"./DeusEx.u")
         print("DeusEx.u copied locally")
 
+def runAutomatedTests(out):
+    rc = False
+    if exists(out + '/System/DeusEx.ini'):
+        # copy DeusEx.ini to test.ini, change [Engine.Engine] DefaultServerGame to =DeusEx.DXRandoTests
+        f = open (out + '/System/DeusEx.ini','r')
+        lines = f.readlines()
+        f.close()
+
+        for i in range(0,len(lines)):
+            if "DefaultServerGame" in lines[i]:
+                lines[i] = "DefaultServerGame=DeusEx.DXRandoTests\n"
+
+        f = open(out + '/System/test.ini','w')
+        f.writelines(lines)
+        f.close()
+
+        
+        print("")
+        print("=====================================================")
+        print("             Starting Automated Tests")
+        print("=====================================================")
+        print("")
+        
+
+        # then we run this command
+        # ucc server ini=test.ini
+        calla([ out + '/System/ucc', 'server', 'ini=test.ini' ])
+        print("")
+        print("=====================================================")
+        print("             Automated Tests Finished")
+        print("=====================================================")
+        print("")
+
+        # then we can check UCC.log for the test results or parse them from the stdout
+
+        print("")
+        print("=====================================================")
+        print("                      Results")
+        print("=====================================================")
+        print("")
+        
+        if exists(out + '/System/ucc.log'):
+            f = open (out + '/System/ucc.log','r')
+            lines = f.readlines()
+            f.close()
+
+            modulesTested = []
+            failures = []
+            allTestsPassed = []
+            allExtendedTestsPassed = []
+            startingTests = []
+            warnings = []
+            #Run through to find modules that ran tests and what failures there were
+            for line in lines:
+                if "passed tests!" in line:
+                    modulesTested.append(line.strip())
+                elif "tests failed!" in line:
+                    modulesTested.append(line.strip())
+                elif "fail: " in line:
+                    failures.append(line.strip())
+                elif "all tests passed!" in line:
+                    allTestsPassed.append(line.strip())
+                elif "all extended tests passed!" in line:
+                    allExtendedTestsPassed.append(line.strip())
+                elif "starting RunTests()" in line:
+                    startingTests.append(line.strip())
+                elif "WARNING:" in line:
+                    warnings.append(line.strip())
+                elif "ERROR" in line:
+                    warnings.append(line.strip())
+                elif "Accessed None" in line:
+                    warnings.append(line.strip())
+
+            for module in modulesTested:
+                print(module)
+
+            print("")
+
+            if len(warnings) > 0:
+                print("Test Warnings:")
+                print("-----------------")
+                for warn in warnings:
+                    print(warn)
+                print("")
+
+            if len(failures) > 0:
+                print("Test Failures:")
+                print("-----------------")
+                for fail in failures:
+                    print(fail)
+                print("")
+                rc = False
+
+            elif len(allTestsPassed) == len(startingTests) and len(allExtendedTestsPassed) > 0:
+                print("All tests passed!")
+                rc = True
+            else:
+                print("len(startingTests) == "+str(len(startingTests))+", len(allTestsPassed) == "+str(len(allTestsPassed))+", len(allExtendedTestsPassed) == "+str(len(allExtendedTestsPassed)))
+                print("Failed to run tests!")
+                rc = False
+
+            print("")
+            print("")
+
+        else:
+            print("Couldn't find ucc.log - did the compilation actually happen?")
+            rc = False
+
+        
+    else:
+        print("DeusEx.ini does not exist in the system folder of the output dir!")
+        rc = False
+
+    return rc
+
+    
 def compile(source, mods, out):
     orig_files = {}
     mods_files = []
@@ -250,6 +366,7 @@ def compile(source, mods, out):
     if not exists_dir(out + '/DeusEx/Inc'):
         os.makedirs(out + '/DeusEx/Inc', exist_ok=True)
     calla([ out + '/System/ucc', 'make', '-h', '-NoBind', '-Silent' ])
+    # now we can check UCC.log for success or just the existence of DeusEx.u
 
 
 
@@ -290,8 +407,15 @@ while rerun == "":
     try:
         print("\ncompiling...")
         compile(args.source_path, args.mods_paths, args.out_dir)
+
+        testSuccess = runAutomatedTests(args.out_dir)
+
         if args.copy_local:
-            copyDeusExU(args.out_dir)
+            if testSuccess:
+                copyDeusExU(args.out_dir)
+            else:
+                print("Automated tests failed, DeusEx.u not copied locally")
+                
     except Exception as e:
         print('\n\ncompile error: ')
         print(e)
