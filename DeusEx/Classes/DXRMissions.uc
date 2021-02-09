@@ -1263,7 +1263,7 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
 
     foreach dxr.RadiusActors(class'Teleporter', t, too_close, loc) {
         if( t.Tag == '' ) continue;
-        dist = VSize(loc-ps.location);
+        dist = VSize(loc-t.location);
         if( dist < too_close ) return true;
     }
 
@@ -1271,16 +1271,14 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
 }
 
 //tests to ensure that there are more goal locations than movable actors for each map
-function int RunTests()
+function RunTests()
 {
-    local int results, i, total;
-    results = Super.RunTests();
+    local int i, total;
+    Super.RunTests();
 
     total=0;
     for(i=0; i < ArrayCount(randomitems); i++ ) {
         total += randomitems[i].chance;
     }
-    results += test( total <= 100, "config randomitems chances, check total "$total);
-
-    return results;
+    test( total <= 100, "config randomitems chances, check total "$total);
 }

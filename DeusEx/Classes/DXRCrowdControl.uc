@@ -47,7 +47,7 @@ function CheckConfig()
     if ( crowd_control_addr=="" ) {
         crowd_control_addr = "localhost";
     }
-    if (numStupidQuestions == 0) {
+    if (numStupidQuestions == 0 ) {
         InitStupidQuestions();
         StupidQuestionsToSave();
         SaveConfig();
@@ -56,7 +56,6 @@ function CheckConfig()
     Super.CheckConfig();
     
     SaveToStupidQuestions();
-
 }
 
 
@@ -232,8 +231,23 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
     numStupidQuestions++;
 
+    _StupidQuestions[numStupidQuestions].Question = "If you were on fire IRL, could you extinguish yourself with a urinal?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
 
+    _StupidQuestions[numStupidQuestions].Question = "If you were on fire IRL, could you extinguish yourself with a can of soda?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "No";
+    _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
+    numStupidQuestions++;
 
+    _StupidQuestions[numStupidQuestions].Question = "Aurora borealis at this time of year, at this time of day, in this part of the country, localized entirely within your kitchen?";
+    _StupidQuestions[numStupidQuestions].numAnswers = 2;
+    _StupidQuestions[numStupidQuestions].answers[0] = "Yes";
+    _StupidQuestions[numStupidQuestions].answers[1] = "YES!";
+    numStupidQuestions++;
 }
 
 
@@ -250,18 +264,15 @@ function getRandomQuestion(out string question, out int numAnswers,
     ansThree = _StupidQuestions[curStupidQuestion].answers[2];
 }
 
-function int RunTests()
+function RunTests()
 {
     local DXRandoCrowdControlLink t;
-    local int results;
-    results = Super.RunTests();
+    Super.RunTests();
 
     t = Spawn(class'DXRandoCrowdControlLink');
-    results += test( t!=None, "spawned "$t);
+    test( t!=None, "spawned "$t);
     if( t != None ) {
-        results += t.RunTests(Self);
+        t.RunTests(Self);
         t.Destroy();
     }
-
-    return results;
 }

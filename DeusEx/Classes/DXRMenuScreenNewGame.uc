@@ -87,6 +87,7 @@ function SaveSettings()
     dxr.Destroy();
     foreach player.AllActors(class'DXRando', dxr)
         dxr.Destroy();
+    player.ServerSetSloMo(1);//reset game speed to prevent crashes
 }
 
 defaultproperties

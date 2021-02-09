@@ -402,6 +402,14 @@ function bool NearestSurface(vector StartTrace, vector EndTrace, out LocationNor
     return false;
 }
 
+function float GetDistanceFromSurface(vector StartTrace, vector EndTrace)
+{
+    local LocationNormal locnorm;
+    locnorm.loc = EndTrace;
+    NearestSurface(StartTrace, EndTrace, locnorm);
+    return VSize( StartTrace - locnorm.loc );
+}
+
 function bool NearestCeiling(out LocationNormal out, FMinMax distrange, optional float away_from_wall)
 {
     local vector EndTrace, MoveOffWall;

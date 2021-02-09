@@ -457,26 +457,24 @@ function RandomizeSize(Actor a)
     }
 }
 
-function int RunTests()
+function RunTests()
 {
-    local int results, i, total;
-    results = Super.RunTests();
+    local int i, total;
+    Super.RunTests();
 
     total=0;
     for(i=0; i < ArrayCount(randomenemies); i++ ) {
         total += randomenemies[i].chance;
     }
-    results += test( total <= 100, "config randomenemies chances, check total "$total);
+    test( total <= 100, "config randomenemies chances, check total "$total);
     total=0;
     for(i=0; i < ArrayCount(randomweapons); i++ ) {
         total += randomweapons[i].chance;
     }
-    results += testint( total, 100, "config randomweapons chances, check total "$total);
+    testint( total, 100, "config randomweapons chances, check total "$total);
     total=0;
     for(i=0; i < ArrayCount(randommelees); i++ ) {
         total += randommelees[i].chance;
     }
-    results += testint( total, 100, "config randommelees chances, check total "$total);
-
-    return results;
+    testint( total, 100, "config randommelees chances, check total "$total);
 }

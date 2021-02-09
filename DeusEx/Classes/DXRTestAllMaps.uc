@@ -157,14 +157,11 @@ static function string PickRandomMap(DXRando dxr)
     return "";
 }
 
-function int RunTests()
+function RunTests()
 {
-    local int results;
-    results = Super.RunTests();
+    Super.RunTests();
 
-    results += testint( GetMissionNumber("06_HongKong_WanChai_Underworld") , 6, "GetMissionNumber(\"06_HongKong_WanChai_Underworld\")" );
-    results += testint( GetMissionNumber("15_Area51_Final") , 15, "GetMissionNumber(\"15_Area51_Final\")" );
-    results += test( PickRandomMap(dxr) != "", "PickRandomMap" );
-
-    return results;
+    testint( GetMissionNumber("06_HongKong_WanChai_Underworld") , 6, "GetMissionNumber(\"06_HongKong_WanChai_Underworld\")" );
+    testint( GetMissionNumber("15_Area51_Final") , 15, "GetMissionNumber(\"15_Area51_Final\")" );
+    test( PickRandomMap(dxr) != "", "PickRandomMap" );
 }
