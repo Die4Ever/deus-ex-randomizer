@@ -820,38 +820,36 @@ function LogConnections()
     }
 }
 
-function int RunTests()
+function RunTests()
 {
-    local int results, i;
-    results = Super.RunTests();
+    local int i;
+    Super.RunTests();
 
-    if( dxr.flags.gamemode != 1 ) return results;
+    if( dxr.flags.gamemode != 1 ) return;
 
-    results += BasicTests();
-    results += OneWayTests();
+    BasicTests();
+    OneWayTests();
 
     for(i=0; i <= 100; i++) {
         dxr.SetSeed( 123 + i + dxr.Crc("entrancerando") );
         EntranceRando(i);
         if( numXfers > 0 && numConns > 0 ) {
             LogConnections();
-            results += testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation");
+            testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation");
         }
     }
 
     numXfers = 0;
     numConns = 0;
     numFixedConns = 0;
-
-    return results;
 }
 
-function int BasicTests()
+function BasicTests()
 {
-    local int results, i;
+    local int i;
     local string old_dead_end;
 
-    results += test(min_connections_selfconnect >= 3, "min_connections_selfconnect needs to be at least 3");
+    test(min_connections_selfconnect >= 3, "min_connections_selfconnect needs to be at least 3");
 
     numXfers = 0;
     numFixedConns = 0;
@@ -869,7 +867,7 @@ function int BasicTests()
     conns[1].b = xfers[0];
     numConns = 2;
     //LogConnections();
-    results += testbool(ValidateConnections(), false, "ValidateConnections test 1");
+    testbool(ValidateConnections(), false, "ValidateConnections test 1");
 
     //need tests for 2 things linking to the same teleporter, maps linking to themselves, short isolated loops, testing that all maps are reachable
     //need to log the results
@@ -887,7 +885,7 @@ function int BasicTests()
     conns[3].b = xfers[7];
     numConns = 4;
     //LogConnections();
-    results += testbool(ValidateConnections(), true, "ValidateConnections test 2");
+    testbool(ValidateConnections(), true, "ValidateConnections test 2");
 
     conns[0].a = xfers[0];
     conns[0].b = xfers[4];
@@ -899,7 +897,7 @@ function int BasicTests()
     conns[3].b = xfers[1];
     numConns = 4;
     //LogConnections();
-    results += testbool(ValidateConnections(), true, "ValidateConnections test 3");
+    testbool(ValidateConnections(), true, "ValidateConnections test 3");
 
     conns[0].a = xfers[7];
     conns[0].b = xfers[0];
@@ -911,7 +909,7 @@ function int BasicTests()
     conns[1].b = xfers[1];
     numConns = 4;
     //LogConnections();
-    results += testbool(ValidateConnections(), false, "ValidateConnections dead_end test");
+    testbool(ValidateConnections(), false, "ValidateConnections dead_end test");
 
     conns[0].a = xfers[0];
     conns[0].b = xfers[1];
@@ -919,7 +917,7 @@ function int BasicTests()
     conns[1].b = xfers[5];
     numConns = 2;
     //LogConnections();
-    results += testbool(ValidateConnections(), false, "ValidateConnections island test");
+    testbool(ValidateConnections(), false, "ValidateConnections island test");
 
     conns[0].a = xfers[0];
     conns[0].b = xfers[1];
@@ -931,21 +929,19 @@ function int BasicTests()
     conns[3].b = xfers[5];
     numConns = 4;
     //LogConnections();
-    results += testbool(ValidateConnections(), false, "ValidateConnections duplicate test");
+    testbool(ValidateConnections(), false, "ValidateConnections duplicate test");
 
     dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
     GenerateConnections(3);
     //LogConnections();
-    results += testbool(ValidateConnections(), true, "GenerateConnections validation");
+    testbool(ValidateConnections(), true, "GenerateConnections validation");
 
     dead_ends[0] = old_dead_end;
-
-    return results;
 }
 
-function int OneWayTests()
+function OneWayTests()
 {
-    local int results,i;
+    local int i;
 
     numXfers = 0;
     numFixedConns = 0;
@@ -961,7 +957,7 @@ function int OneWayTests()
     conns[1].b = xfers[1];
     numConns = 2;
     LogConnections();
-    results += testbool(ValidateConnections(), false, "ValidateConnections one-way test 1");
+    testbool(ValidateConnections(), false, "ValidateConnections one-way test 1");
 
     conns[0].a = xfers[0];
     conns[0].b = xfers[1];
@@ -969,7 +965,7 @@ function int OneWayTests()
     conns[1].b = xfers[3];
     numConns = 2;
     LogConnections();
-    results += testbool(ValidateConnections(), true, "ValidateConnections one-way test 2");
+    testbool(ValidateConnections(), true, "ValidateConnections one-way test 2");
 
     dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
     EntranceRando(10);
@@ -984,9 +980,7 @@ function int OneWayTests()
         numConns++;
     }
     LogConnections();
-    results += testbool(ValidateConnections(), true, "manual Paris validation");
-
-    return results;
+    testbool(ValidateConnections(), true, "manual Paris validation");
 }
 
 defaultproperties

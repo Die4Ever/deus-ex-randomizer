@@ -4,6 +4,9 @@ var transient DXRando dxr;
 var transient int overallchances;
 var config int config_version;
 
+var transient int passes;
+var transient int fails;
+
 function Init(DXRando tdxr)
 {
     l(Self$".Init()");
@@ -260,62 +263,82 @@ function err(string message)
     class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", message);
 }
 
-function int RunTests()
+final function StartRunTests()
 {
     l(".RunTests() " $ dxr.localURL);
-    return 0;
+    passes = 0;
+    fails = 0;
+    RunTests();
 }
 
-function int ExtendedTests()
+function RunTests()
+{
+}
+
+final function StartExtendedTests()
 {// these are tests that depend on being in a real level
     l(".ExtendedTests() " $ dxr.localURL);
-    return 0;
+    passes = 0;
+    fails = 0;
+    ExtendedTests();
 }
 
-function int test(bool result, string testname)
+function ExtendedTests()
+{
+}
+
+function bool test(bool result, string testname)
 {
     if(result == true) {
         l("pass: "$testname);
-        return 0;
+        passes++;
+        return true;
     }
     else {
         err("fail: "$testname);
-        return 1;
+        fails++;
+        return false;
     }
 }
 
-function int testbool(bool result, bool expected, string testname)
+function bool testbool(bool result, bool expected, string testname)
 {
     if(result == expected) {
         l("pass: "$testname$": got "$result);
-        return 0;
+        passes++;
+        return true;
     }
     else {
         err("fail: "$testname$": got "$result$", expected "$expected);
-        return 1;
+        fails++;
+        return false;
     }
 }
 
-function int testint(int result, int expected, string testname)
+function bool testint(int result, int expected, string testname)
 {
     if(result == expected) {
         l("pass: "$testname$": got "$result);
-        return 0;
+        passes++;
+        return true;
     }
     else {
         err("fail: "$testname$": got "$result$", expected "$expected);
-        return 1;
+        fails++;
+        return false;
     }
 }
 
-function int teststring(string result, string expected, string testname)
+function bool teststring(string result, string expected, string testname)
 {
     if(result == expected) {
         l("pass: "$testname$": got "$result);
-        return 0;
+        passes++;
+        return true;
     }
     else {
         err("fail: "$testname$": got "$result$", expected "$expected);
-        return 1;
+        fails++;
+        return false;
     }
 }

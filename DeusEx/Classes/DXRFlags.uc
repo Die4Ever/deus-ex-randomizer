@@ -309,25 +309,23 @@ function MaxRando()
     //should have a chance to make some skills completely unattainable, like 999999 cost? would this also have to be an option in the GUI or can it be exclusive to MaxRando?
 }
 
-function int RunTests()
+function RunTests()
 {
-    local int results, i, t;
-    results = Super.RunTests();
+    local int i, t;
+    Super.RunTests();
 
     //this Crc function returns negative numbers
-    results += testint( dxr.Crc("a bomb!"), -1813716842, "Crc32 test");
-    results += testint( dxr.Crc("1723"), -441943723, "Crc32 test");
-    results += testint( dxr.Crc("do you have a single fact to back that up"), -1473827402, "Crc32 test");
+    testint( dxr.Crc("a bomb!"), -1813716842, "Crc32 test");
+    testint( dxr.Crc("1723"), -441943723, "Crc32 test");
+    testint( dxr.Crc("do you have a single fact to back that up"), -1473827402, "Crc32 test");
 
     SetSeed("smashthestate");
-    results += testint( rng(1), 0, "rng(1) is 0");
+    testint( rng(1), 0, "rng(1) is 0");
     for(i=0;i<10;i++) {
         t=rng(100);
-        results += test( t >=0 && t < 100, "rng(100) got " $t$" >= 0 and < 100");
+        test( t >=0 && t < 100, "rng(100) got " $t$" >= 0 and < 100");
     }
     dxr.SetSeed(-111);
     i = rng(100);
-    results += test( rng(100) != i, "rng(100) != rng(100)");
-
-    return results;
+    test( rng(100) != i, "rng(100) != rng(100)");
 }

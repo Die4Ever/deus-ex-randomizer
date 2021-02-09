@@ -332,14 +332,14 @@ function err(string message)
 
 function RunTests()
 {
-    local int i, results, failures;
+    local int i, failures;
     l("starting RunTests()");
     for(i=0; i<num_modules; i++) {
-        results = modules[i].RunTests();
-        if( results > 0 ) {
+        modules[i].StartRunTests();
+        if( modules[i].fails > 0 ) {
             failures++;
             player.ShowHud(true);
-            err( "ERROR: " $ modules[i] @ results $ " tests failed!" );
+            err( "ERROR: " $ modules[i] @ modules[i].fails $ " tests failed!" );
         }
         else
             l( modules[i] $ " passed tests!" );
@@ -355,14 +355,14 @@ function RunTests()
 
 function ExtendedTests()
 {
-    local int i, results, failures;
+    local int i, failures;
     l("starting ExtendedTests()");
     for(i=0; i<num_modules; i++) {
-        results = modules[i].ExtendedTests();
-        if( results > 0 ) {
+        modules[i].StartExtendedTests();
+        if( modules[i].fails > 0 ) {
             failures++;
             player.ShowHud(true);
-            err( "ERROR: " $ modules[i] @ results $ " tests failed!" );
+            err( "ERROR: " $ modules[i] @ modules[i].fails $ " tests failed!" );
         }
         else
             l( modules[i] $ " passed tests!" );

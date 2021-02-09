@@ -250,18 +250,15 @@ function getRandomQuestion(out string question, out int numAnswers,
     ansThree = _StupidQuestions[curStupidQuestion].answers[2];
 }
 
-function int RunTests()
+function RunTests()
 {
     local DXRandoCrowdControlLink t;
-    local int results;
-    results = Super.RunTests();
+    Super.RunTests();
 
     t = Spawn(class'DXRandoCrowdControlLink');
-    results += test( t!=None, "spawned "$t);
+    test( t!=None, "spawned "$t);
     if( t != None ) {
-        results += t.RunTests(Self);
+        t.RunTests(Self);
         t.Destroy();
     }
-
-    return results;
 }

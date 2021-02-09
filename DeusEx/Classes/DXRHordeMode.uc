@@ -630,21 +630,19 @@ function vector GetRandomItemPosition()
     return vect(0,0,0);
 }
 
-function int RunTests()
+function RunTests()
 {
-    local int results, i, total;
-    results = Super.RunTests();
+    local int i, total;
+    Super.RunTests();
 
     total=0;
     for(i=0; i < ArrayCount(enemies); i++ ) {
         total += enemies[i].chance;
     }
-    results += test( total <= 100, "config enemies chances, check total "$total);
+    test( total <= 100, "config enemies chances, check total "$total);
     total=0;
     for(i=0; i < ArrayCount(items); i++ ) {
         total += items[i].chance;
     }
-    results += testint( total, 100, "config items chances, check total adds up to 100%");
-
-    return results;
+    testint( total, 100, "config items chances, check total adds up to 100%");
 }

@@ -584,19 +584,16 @@ function bool InfoPositionGood(InformationDevices id, vector newpos, int hasPass
     return True;
 }
 
-function int RunTests()
+function RunTests()
 {
-    local int results;
-    results = Super.RunTests();
+    Super.RunTests();
 
-    results += testint( WordInStr("THIS IS A TEST", "IS", 2 ), 2, "WordInStr match" );
-    results += testint( WordInStr("THIS IS A TEST", "IS", 2, true ), 5, "WordInStr 2nd match" );
-    results += testint( WordInStr("THISIS A TEST", "IS", 2, true ), -1, "WordInStr 2nd match not word" );
-    results += testint( WordInStr("MJ12", "12", 2, true ), -1, "WordInStr not word" );
-    results += testint( WordInStr("MJ 12", "12", 2, true ), 3, "WordInStr match at end" );
+    testint( WordInStr("THIS IS A TEST", "IS", 2 ), 2, "WordInStr match" );
+    testint( WordInStr("THIS IS A TEST", "IS", 2, true ), 5, "WordInStr 2nd match" );
+    testint( WordInStr("THISIS A TEST", "IS", 2, true ), -1, "WordInStr 2nd match not word" );
+    testint( WordInStr("MJ12", "12", 2, true ), -1, "WordInStr not word" );
+    testint( WordInStr("MJ 12", "12", 2, true ), 3, "WordInStr match at end" );
 
-    results += teststring( ReplaceText("MJ12 12 12345", "12", "12345", true), "MJ12 12345 12345", "ReplaceText 1" );
-    results += teststring( ReplaceText("MJ12 12 12345", "45", "12345", true), "MJ12 12 12345", "ReplaceText 2" );
-
-    return results;
+    teststring( ReplaceText("MJ12 12 12345", "12", "12345", true), "MJ12 12345 12345", "ReplaceText 1" );
+    teststring( ReplaceText("MJ12 12 12345", "45", "12345", true), "MJ12 12 12345", "ReplaceText 2" );
 }
