@@ -825,8 +825,6 @@ function RunTests()
     local int i;
     Super.RunTests();
 
-    if( dxr.flags.gamemode != 1 ) return;
-
     BasicTests();
     OneWayTests();
 

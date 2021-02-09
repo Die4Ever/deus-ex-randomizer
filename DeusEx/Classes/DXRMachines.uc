@@ -183,7 +183,7 @@ function bool GetCameraLocation(out vector loc, out rotator rotation)
     local bool found_ceiling;
     local LocationNormal locnorm, ceiling, wall1;
     local vector norm, flipped_norm;
-    local rotator temp_rot;
+    local rotator temp_rot, temp_rot_flipped;
     local float dist, flipped_dist;
     local FMinMax distrange;
     locnorm.loc = loc;
@@ -217,9 +217,9 @@ function bool GetCameraLocation(out vector loc, out rotator rotation)
     if( found_ceiling ) temp_rot.pitch += camera_ceiling_pitch;
     norm = vector(temp_rot);
 
-    temp_rot = Rotator(flipped_norm);
-    if( found_ceiling ) temp_rot.pitch += camera_ceiling_pitch;
-    flipped_norm = vector(temp_rot);
+    temp_rot_flipped = Rotator(flipped_norm);
+    if( found_ceiling ) temp_rot_flipped.pitch += camera_ceiling_pitch;
+    flipped_norm = vector(temp_rot_flipped);
 
     dist = GetDistanceFromSurface( locnorm.loc, locnorm.loc+(norm*50) );
     flipped_dist = GetDistanceFromSurface( locnorm.loc, locnorm.loc+(flipped_norm*40) );
@@ -229,9 +229,11 @@ function bool GetCameraLocation(out vector loc, out rotator rotation)
     if( dist < flipped_dist ) {
         l("GetCameraLocation GetDistanceFromSurface facing wall! "$dist$", "$flipped_dist );
         norm = flipped_norm;
+        rotation = temp_rot_flipped;
+    } else {
+        rotation = temp_rot;
     }
 
-    rotation = Rotator(norm);
     loc = locnorm.loc;
     return true;
 }
@@ -409,8 +411,8 @@ function ExtendedTests()
     Super.ExtendedTests();
 
     teststring( dxr.localURL, "12_VANDENBERG_TUNNELS", "correct map for extended tests");
-    TestCameraPlacement( vect(-388.001404, 1347.872559, -2433.890137), false, 160, -3999, 8187 );
-    TestCameraPlacement( vect(900.931396, 1316.819946, -2347.568359), false, 160, -3999, 24571 );
+    TestCameraPlacement( vect(-388.001404, 1347.872559, -2433.890137), false, 160, -4000, 8191 );
+    TestCameraPlacement( vect(900.931396, 1316.819946, -2347.568359), false, 160, -4000, 24575 );
     TestCameraPlacement( vect(-1090.995483, 2757.317871, -2550.324463), false );
 
     foreach AllActors(class'Actor', a) {
