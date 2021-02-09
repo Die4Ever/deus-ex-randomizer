@@ -49,8 +49,6 @@ function PostPostBeginPlay()
     LoadModules();
 
     RandoEnter();
-
-    SetTimer(1.0, True);
 }
 
 function CheckConfig()

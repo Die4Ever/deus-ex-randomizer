@@ -1263,7 +1263,7 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
 
     foreach dxr.RadiusActors(class'Teleporter', t, too_close, loc) {
         if( t.Tag == '' ) continue;
-        dist = VSize(loc-ps.location);
+        dist = VSize(loc-t.location);
         if( dist < too_close ) return true;
     }
 

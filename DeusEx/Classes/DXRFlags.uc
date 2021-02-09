@@ -129,6 +129,7 @@ function LoadFlags()
 
     if( stored_version == 0 && dxr.localURL != "DX" && dxr.localURL != "DXONLY" && dxr.localURL != "00_TRAINING" ) {
         err(dxr.localURL$" failed to load flags! using default randomizer settings");
+        autosave = 0;//autosaving while slowmo is set to high speed crashes the game, maybe autosave should adjust its waittime by the slowmo speed
     }
 
     if( stored_version >= 1 ) {

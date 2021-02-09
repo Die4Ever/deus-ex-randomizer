@@ -74,7 +74,7 @@ function CheckConfig()
 function FirstEntry()
 {
     Super.FirstEntry();
-    l( "mission " $ dxr.dxInfo.missionNumber $ " FirstEntry()");
+    l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" FirstEntry()");
 
     IncreaseBrightness(dxr.flags.brightness);
     OverwriteDecorations();
@@ -109,7 +109,7 @@ function FirstEntry()
 function AnyEntry()
 {
     Super.AnyEntry();
-    l( "mission " $ dxr.dxInfo.missionNumber $ " AnyEntry()");
+    l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
     FixSamCarter();
 

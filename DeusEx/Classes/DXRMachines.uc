@@ -58,9 +58,8 @@ function RandoTurrets(int percent_move, int percent_add)
         }
         info("RandoTurret move "$t$" to near "$loc);
         cam = GetCameraForTurret(t);
-        if( cam != None ) {
-            if( ! MoveCamera(cam, loc) ) continue;
-        }
+        if( cam == None ) continue;
+        if( ! MoveCamera(cam, loc) ) continue;
         MoveTurret(t, loc);
     }
 
@@ -183,6 +182,9 @@ function bool GetCameraLocation(out vector loc, out rotator rotation)
 {
     local bool found_ceiling;
     local LocationNormal locnorm, ceiling, wall1;
+    local vector norm, flipped_norm;
+    local rotator temp_rot;
+    local float dist, flipped_dist;
     local FMinMax distrange;
     locnorm.loc = loc;
     distrange.min = 0.1;
@@ -205,12 +207,31 @@ function bool GetCameraLocation(out vector loc, out rotator rotation)
     distrange.max = 16*50;
     if( ! NearestCornerSearchZ(locnorm, distrange, wall1.norm, 16*3, ceiling.loc, 10) ) return false;
     
-    locnorm.norm = (locnorm.norm + wall1.norm) / 2;
-    rotation = Rotator(locnorm.norm);
+    norm = Normal((locnorm.norm + wall1.norm) / 2);
+    flipped_norm = Normal(norm*vect(-1,-1,1));
 
-    //if( found_ceiling ) rotation.pitch += camera_ceiling_pitch;
     distrange.max = 16*30;
-    if( NearestCeiling(locnorm, distrange, 16) ) rotation.pitch += camera_ceiling_pitch;
+    found_ceiling = NearestCeiling(locnorm, distrange, 16);
+
+    temp_rot = Rotator(norm);
+    if( found_ceiling ) temp_rot.pitch += camera_ceiling_pitch;
+    norm = vector(temp_rot);
+
+    temp_rot = Rotator(flipped_norm);
+    if( found_ceiling ) temp_rot.pitch += camera_ceiling_pitch;
+    flipped_norm = vector(temp_rot);
+
+    dist = GetDistanceFromSurface( locnorm.loc, locnorm.loc+(norm*50) );
+    flipped_dist = GetDistanceFromSurface( locnorm.loc, locnorm.loc+(flipped_norm*40) );
+    if( dist < 32 && flipped_dist < 32 ) {
+        return false;
+    }
+    if( dist < flipped_dist ) {
+        l("GetCameraLocation GetDistanceFromSurface facing wall! "$dist$", "$flipped_dist );
+        norm = flipped_norm;
+    }
+
+    rotation = Rotator(norm);
     loc = locnorm.loc;
     return true;
 }
@@ -380,4 +401,57 @@ function Actor SpawnNewActor(class<Actor> c, optional vector target, optional fl
     if( a == None ) warning("SpawnNewActor "$c$" failed at "$loc);
     else if( ScriptedPawn(a) != None ) class'DXRNames'.static.GiveRandomName(dxr, ScriptedPawn(a) );
     return a;
+}
+
+function ExtendedTests()
+{
+    local Actor a;
+    Super.ExtendedTests();
+
+    teststring( dxr.localURL, "12_VANDENBERG_TUNNELS", "correct map for extended tests");
+    TestCameraPlacement( vect(-388.001404, 1347.872559, -2433.890137), false, 160, -3999, 8187 );
+    TestCameraPlacement( vect(900.931396, 1316.819946, -2347.568359), false, 160, -3999, 24571 );
+    TestCameraPlacement( vect(-1090.995483, 2757.317871, -2550.324463), false );
+
+    foreach AllActors(class'Actor', a) {
+        log("testing camera positioning with "$a);
+        TestCameraPlacement( a.Location, true );
+    }
+}
+
+function TestCameraPlacement(vector from, bool none_ok, optional float max_dist, optional int expected_pitch, optional int expected_yaw)
+{
+    local bool success;
+    local vector loc;
+    local rotator rotation;
+    loc = from;
+
+    success = GetCameraLocation(loc, rotation);
+    if( none_ok && !success ) return;
+    test( success, "GetCameraLocation "$from);
+    if( ! success )
+        return;
+
+    l("GetCameraLocation got ("$loc$"), ("$rotation$")");
+    if( max_dist>0 || expected_pitch != 0 || expected_yaw != 0 ) {
+        _TestCameraPlacement(from, loc, rotation, max_dist, expected_pitch, expected_yaw);
+    }
+    TestFacingAwayFromWall(loc, rotation);
+}
+
+function _TestCameraPlacement(vector from, vector loc, rotator rotation, float max_dist, int expected_pitch, int expected_yaw)
+{
+    test( VSize(from-loc) < max_dist, "VSize(("$from$") - ("$loc$")) < "$max_dist);
+    testint( rotation.pitch, expected_pitch, "expected pitch");
+    testint( rotation.yaw, expected_yaw, "expected yaw");
+}
+
+function bool TestFacingAwayFromWall(vector loc, rotator rotation)
+{
+    local LocationNormal locnorm;
+    local float dist;
+    locnorm.loc = loc;
+    locnorm.norm = vector(rotation);
+    dist = GetDistanceFromSurface(loc, loc + (vector(rotation)*1600));
+    return test( dist > 32, "facing away from wall, ("$loc$") "$dist$" > 32, rotation: "$rotation);
 }
