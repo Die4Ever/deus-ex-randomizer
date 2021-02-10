@@ -26,9 +26,10 @@ function BindControls(bool writing, optional string action)
     local float difficulty;
     local DXRFlags f;
     local string sseed;
+    local DXRBannedItems banned;
     local DXRTelemetry t;
     local DXRCrowdControl cc;
-    local int temp;
+    local int temp, i;
 
     Super.BindControls(writing);
 
@@ -46,11 +47,15 @@ function BindControls(bool writing, optional string action)
 
     labels[id] = "";
     helptexts[id] = "What items are banned";
-    EnumOption(id, "No items banned", 0, writing, f.banneditems);
-    EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
-    EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
-    //EnumOption(id, "Don't Give Me The GEP Gun", 3, writing, f.banneditems);//maybe I can request these from a function like class'DXRBannedItems'.static.GetBannedItemsDescription()
-    //EnumOption(id, "Ninja JC", 4, writing, f.banneditems);//throwing knives and sword
+    foreach f.AllActors(class'DXRBannedItems', banned) { break; }
+    if( banned == None )
+        EnumOption(id, "No items banned", 0, writing, f.banneditems);
+    else {
+        for(i=0; i < 20; i++) {
+            if( banned.GetName(i) == "" ) continue;
+            EnumOption(id, banned.GetName(i), i, writing, f.banneditems);
+        }
+    }
     id++;
 
     labels[id] = "Difficulty";

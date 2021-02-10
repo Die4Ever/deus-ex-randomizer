@@ -155,6 +155,23 @@ function class<Actor> GetClassFromString(string classstring, class<Actor> c)
     return a;
 }
 
+static function string UnpackString(out string s)
+{
+    local int i, l;
+    local string ret;
+    l = Len(s);
+    for(i=0; i<l; i++) {
+        if( Mid(s, i, 1) == "," ) {
+            ret = Left(s, i);
+            s = Mid(s, i+1);
+            return ret;
+        }
+    }
+    ret = s;
+    s="";
+    return ret;
+}
+
 
 //Based on function MessageBox from DeusExRootWindow
 //msgBoxMode = 0 or 1, 0 = Yes/No box, 1 = OK box

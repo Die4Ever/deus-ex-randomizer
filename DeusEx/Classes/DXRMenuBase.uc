@@ -187,7 +187,7 @@ function int Slider(int id, out int value, int min, int max, bool writing)
     return value;
 }
 
-function int UnpackInt(out string s)
+static function int UnpackInt(out string s)
 {
     local int i, ret, l;
     l = Len(s);

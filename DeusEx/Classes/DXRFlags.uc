@@ -204,48 +204,48 @@ function SaveFlags()
     l("SaveFlags()");
 
     InitVersion();
-    f.SetInt('Rando_seed', seed,, 999);
+    f.SetInt('Rando_seed', seed);
     dxr.seed = seed;
 
-    f.SetInt('Rando_version', flagsversion,, 999);
-    f.SetInt('Rando_gamemode', gamemode,, 999);
-    f.SetInt('Rando_banneditems', banneditems,, 999);
-    f.SetInt('Rando_brightness', brightness,, 999);
-    f.SetInt('Rando_minskill', minskill,, 999);
-    f.SetInt('Rando_maxskill', maxskill,, 999);
-    f.SetInt('Rando_ammo', ammo,, 999);
-    f.SetInt('Rando_multitools', multitools,, 999);
-    f.SetInt('Rando_lockpicks', lockpicks,, 999);
-    f.SetInt('Rando_biocells', biocells,, 999);
-    f.SetInt('Rando_medkits', medkits,, 999);
-    f.SetInt('Rando_speedlevel', speedlevel,, 999);
-    f.SetInt('Rando_keys', keysrando,, 999);
-    f.SetInt('Rando_doorsmode', doorsmode,, 999);
-    f.SetInt('Rando_doorspickable', doorspickable,, 999);
-    f.SetInt('Rando_doorsdestructible', doorsdestructible,, 999);
-    f.SetInt('Rando_deviceshackable', deviceshackable,, 999);
-    f.SetInt('Rando_passwordsrandomized', passwordsrandomized,, 999);
-    f.SetInt('Rando_gibsdropkeys', gibsdropkeys,, 999);
-    f.SetInt('Rando_autosave', autosave,, 999);
-    f.SetInt('Rando_removeinvisiblewalls', removeinvisiblewalls,, 999);
-    f.SetInt('Rando_enemiesrandomized', enemiesrandomized,, 999);
-    f.SetInt('Rando_enemyrespawn', enemyrespawn,, 999);
-    f.SetInt('Rando_infodevices', infodevices,, 999);
-    f.SetInt('Rando_dancingpercent', dancingpercent,, 999);
+    f.SetInt('Rando_version', flagsversion);
+    f.SetInt('Rando_gamemode', gamemode);
+    f.SetInt('Rando_banneditems', banneditems);
+    f.SetInt('Rando_brightness', brightness);
+    f.SetInt('Rando_minskill', minskill);
+    f.SetInt('Rando_maxskill', maxskill);
+    f.SetInt('Rando_ammo', ammo);
+    f.SetInt('Rando_multitools', multitools);
+    f.SetInt('Rando_lockpicks', lockpicks);
+    f.SetInt('Rando_biocells', biocells);
+    f.SetInt('Rando_medkits', medkits);
+    f.SetInt('Rando_speedlevel', speedlevel);
+    f.SetInt('Rando_keys', keysrando);
+    f.SetInt('Rando_doorsmode', doorsmode);
+    f.SetInt('Rando_doorspickable', doorspickable);
+    f.SetInt('Rando_doorsdestructible', doorsdestructible);
+    f.SetInt('Rando_deviceshackable', deviceshackable);
+    f.SetInt('Rando_passwordsrandomized', passwordsrandomized);
+    f.SetInt('Rando_gibsdropkeys', gibsdropkeys);
+    f.SetInt('Rando_autosave', autosave);
+    f.SetInt('Rando_removeinvisiblewalls', removeinvisiblewalls);
+    f.SetInt('Rando_enemiesrandomized', enemiesrandomized);
+    f.SetInt('Rando_enemyrespawn', enemyrespawn);
+    f.SetInt('Rando_infodevices', infodevices);
+    f.SetInt('Rando_dancingpercent', dancingpercent);
 
-    f.SetInt('Rando_skills_disable_downgrades', skills_disable_downgrades,, 999);
-    f.SetInt('Rando_skills_reroll_missions', skills_reroll_missions,, 999);
-    f.SetInt('Rando_skills_independent_levels', skills_independent_levels,, 999);
+    f.SetInt('Rando_skills_disable_downgrades', skills_disable_downgrades);
+    f.SetInt('Rando_skills_reroll_missions', skills_reroll_missions);
+    f.SetInt('Rando_skills_independent_levels', skills_independent_levels);
 
-    f.SetInt('Rando_startinglocations', startinglocations,, 999);
-    f.SetInt('Rando_goals', goals,, 999);
-    f.SetInt('Rando_equipment', equipment,, 999);
+    f.SetInt('Rando_startinglocations', startinglocations);
+    f.SetInt('Rando_goals', goals);
+    f.SetInt('Rando_equipment', equipment);
 
-    f.SetInt('Rando_medbots', medbots,, 999);
-    f.SetInt('Rando_repairbots', repairbots,, 999);
-    f.SetInt('Rando_turrets_move', turrets_move,, 999);
-    f.SetInt('Rando_turrets_add', turrets_add,, 999);
-    f.SetInt('Rando_crowdcontrol', crowdcontrol,, 999);
+    f.SetInt('Rando_medbots', medbots);
+    f.SetInt('Rando_repairbots', repairbots);
+    f.SetInt('Rando_turrets_move', turrets_move);
+    f.SetInt('Rando_turrets_add', turrets_add);
+    f.SetInt('Rando_crowdcontrol', crowdcontrol);
 
     LogFlags("SaveFlags");
 }

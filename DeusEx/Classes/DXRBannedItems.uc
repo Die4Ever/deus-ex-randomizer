@@ -1,81 +1,144 @@
 class DXRBannedItems extends DXRBase;
-//maybe this stuff should be globalconfig so it could be statically requested?
-var config string stick_with_the_prod_player_message;
-var config string stick_with_the_prod_bans[10];
-var config string stick_with_the_prod_allows[10];
-
-var config string stick_with_the_prod_plus_player_message;
-var config string stick_with_the_prod_plus_bans[10];
-var config string stick_with_the_prod_plus_allows[10];
 
 var int banneditems;//copy locally so we don't need to make this class transient and don't need to worry about re-entering and picking up an item before DXRando loads
+
+struct bans
+{
+    var string name;
+    var string player_message;
+
+    var string bans;
+    var string allows;
+    var string starting_equipments;
+};
+var config bans item_sets[10];
 
 struct _bans
 {
     var class<Inventory> ban_types[10];
     var class<Inventory> allow_types[10];
+    var class<Inventory> starting_equipment[5];
 };
 
-var _bans _stick_with_the_prod;
-var _bans _stick_with_the_prod_plus;
+var _bans _item_sets[10];
 
 function CheckConfig()
 {
-    local int i;
+    local string temp;
+    local int i, s;
     local class<Actor> a;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,6) ) {
-        stick_with_the_prod_player_message = "Stick with the prod!";
-        stick_with_the_prod_plus_player_message = "Stick with the prod!";
-        for(i=0; i < ArrayCount(stick_with_the_prod_bans); i++ ) {
-            stick_with_the_prod_bans[i] = "";
-            stick_with_the_prod_plus_bans[i] = "";
-        }
-        for(i=0; i < ArrayCount(stick_with_the_prod_allows); i++ ) {
-            stick_with_the_prod_allows[i] = "";
-            stick_with_the_prod_plus_allows[i] = "";
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
+        config_version = 0;
+        for(i=0; i < ArrayCount(item_sets); i++) {
+            item_sets[i].name = "";
+            item_sets[i].player_message = "";
+            
+            item_sets[i].bans = "";
+            item_sets[i].allows = "";
+            item_sets[i].starting_equipments = "";
         }
 
-        stick_with_the_prod_bans[0] = "Engine.Weapon";
-        stick_with_the_prod_allows[0] = "WeaponProd";
+        item_sets[0].name = "No items banned";
 
-        stick_with_the_prod_plus_bans[0] = "Engine.Weapon";
-        stick_with_the_prod_plus_bans[1] = "AmmoDart";
-        i=0;
-        stick_with_the_prod_plus_allows[i++] = "WeaponProd";
-        stick_with_the_prod_plus_allows[i++] = "WeaponEMPGrenade";
-        stick_with_the_prod_plus_allows[i++] = "WeaponGasGrenade";
-        stick_with_the_prod_plus_allows[i++] = "WeaponMiniCrossbow";
-        stick_with_the_prod_plus_allows[i++] = "AmmoDartPoison";
-        stick_with_the_prod_plus_allows[i++] = "WeaponNanoVirusGrenade";
-        stick_with_the_prod_plus_allows[i++] = "WeaponPepperGun";
+        item_sets[1].name = "Stick With the Prod";
+        item_sets[1].player_message = "Stick with the prod!";
+        item_sets[1].bans = "Engine.Weapon";
+        item_sets[1].allows = "WeaponProd";
+        item_sets[1].starting_equipments = "WeaponProd";
+
+        item_sets[2].name = "Stick With the Prod Plus";
+        item_sets[2].player_message = "Stick with the prod!";
+        item_sets[2].bans = "Engine.Weapon,AmmoDart";
+        item_sets[2].allows = "WeaponProd,WeaponEMPGrenade,WeaponGasGrenade,WeaponMiniCrossbow,AmmoDartPoison,WeaponNanoVirusGrenade,WeaponPepperGun";
+        item_sets[2].starting_equipments = "WeaponProd";
+
+        item_sets[3].name = "Ninja JC";
+        item_sets[3].player_message = "I am Ninja";
+        item_sets[3].bans = "Engine.Weapon";
+        item_sets[3].allows = "WeaponSword,WeaponShuriken";
+        item_sets[3].starting_equipments = "WeaponShuriken,WeaponSword,AmmoShuriken,AmmoShuriken,AmmoShuriken";
+
+        item_sets[4].name = "Don't Give Me The GEP Gun";
+        item_sets[4].player_message = "Don't Give Me The GEP Gun";
+        item_sets[4].bans = "WeaponGEPGun";
     }
     Super.CheckConfig();
 
-    for(i=0; i < ArrayCount(stick_with_the_prod_bans); i++ ) {
-        if( stick_with_the_prod_bans[i] != "" ) {
-            a = GetClassFromString(stick_with_the_prod_bans[i], class'Inventory');
-            _stick_with_the_prod.ban_types[i] = class<Inventory>(a);
+    for(s=0; s < ArrayCount(item_sets); s++) {
+        temp = item_sets[s].bans;
+        while( temp != "" ) {
+            AddBan(s, UnpackString(temp) );
         }
-    }
-    for(i=0; i < ArrayCount(stick_with_the_prod_allows); i++ ) {
-        if( stick_with_the_prod_allows[i] != "" ) {
-            a = GetClassFromString(stick_with_the_prod_allows[i], class'Inventory');
-            _stick_with_the_prod.allow_types[i] = class<Inventory>(a);
+
+        temp = item_sets[s].allows;
+        while( temp != "" ) {
+            AddAllow(s, UnpackString(temp) );
+        }
+
+        temp = item_sets[s].starting_equipments;
+        while( temp != "" ) {
+            AddStart(s, UnpackString(temp) );
         }
     }
 
-    for(i=0; i < ArrayCount(stick_with_the_prod_plus_bans); i++ ) {
-        if( stick_with_the_prod_plus_bans[i] != "" ) {
-            a = GetClassFromString(stick_with_the_prod_plus_bans[i], class'Inventory');
-            _stick_with_the_prod_plus.ban_types[i] = class<Inventory>(a);
+    banneditems = dxr.flags.banneditems;
+}
+
+function AddBan(int s, string type)
+{
+    local class<Actor> a;
+    local int i;
+
+    if( type == "" ) return;
+
+    for(i=0; i < ArrayCount(_item_sets[s].ban_types); i++) {
+        if( _item_sets[s].ban_types[i] == None ) {
+            a = GetClassFromString(type, class'Inventory');
+            l("AddBan "$s$", "$i$", "$a);
+            _item_sets[s].ban_types[i] = class<Inventory>(a);
+            return;
         }
     }
-    for(i=0; i < ArrayCount(stick_with_the_prod_plus_allows); i++ ) {
-        if( stick_with_the_prod_plus_allows[i] != "" ) {
-            a = GetClassFromString(stick_with_the_prod_plus_allows[i], class'Inventory');
-            _stick_with_the_prod_plus.allow_types[i] = class<Inventory>(a);
+}
+
+function AddAllow(int s, string type)
+{
+    local class<Actor> a;
+    local int i;
+
+    if( type == "" ) return;
+    
+    for(i=0; i < ArrayCount(_item_sets[s].allow_types); i++) {
+        if( _item_sets[s].allow_types[i] == None ) {
+            a = GetClassFromString(type, class'Inventory');
+            l("AddAllow "$s$", "$i$", "$a);
+            _item_sets[s].allow_types[i] = class<Inventory>(a);
+            return;
         }
     }
+}
+
+function AddStart(int s, string type)
+{
+    local class<Actor> a;
+    local int i;
+
+    if( type == "" ) return;
+    
+    for(i=0; i < ArrayCount(_item_sets[s].starting_equipment); i++) {
+        if( _item_sets[s].starting_equipment[i] == None ) {
+            a = GetClassFromString(type, class'Inventory');
+            l("AddStart "$s$", "$i$", "$a);
+            _item_sets[s].starting_equipment[i] = class<Inventory>(a);
+            return;
+        }
+    }
+}
+
+function string GetName(int i)
+{
+    if( i < 0 || i >= ArrayCount(item_sets) ) return "";
+    return item_sets[i].name;
 }
 
 function AnyEntry()
@@ -86,16 +149,17 @@ function AnyEntry()
 
 function bool is_banned(_bans b, Inventory item)
 {
-    local bool found_ban;
     local int i;
 
     for(i=0; i < ArrayCount(b.allow_types); i++ ) {
+        //l("is_banned allow_types["$i$"] == "$b.allow_types[i]);
         if( b.allow_types[i] != None && item.IsA(b.allow_types[i].name) ) {
             return false;
         }
     }
 
     for(i=0; i < ArrayCount(b.ban_types); i++ ) {
+        //l("is_banned ban_types["$i$"] == "$b.ban_types[i]);
         if( b.ban_types[i] != None && item.IsA(b.ban_types[i].name) ) {
             return true;
         }
@@ -106,47 +170,60 @@ function bool is_banned(_bans b, Inventory item)
 
 function bool ban(DeusExPlayer player, Inventory item)
 {
-    if( banneditems == 1 ) {
-        if ( is_banned( _stick_with_the_prod, item) ) {
-            player.ClientMessage(stick_with_the_prod_player_message);
-            return true;
+    //l("is_banned( "$banneditems$", "$item$")");
+    if ( is_banned( _item_sets[banneditems], item) ) {
+        if( item_sets[banneditems].player_message != "" ) {
+            player.ClientMessage(item_sets[banneditems].player_message);
         }
+        l("is_banned( "$banneditems$", "$item$") true");
+        return true;
     }
-    else if( banneditems == 2 ) {
-        if ( is_banned( _stick_with_the_prod_plus, item) ) {
-            player.ClientMessage(stick_with_the_prod_plus_player_message);
-            return true;
-        }
-    }
+    err("is_banned( "$banneditems$", "$item$") false");
 }
 
 function AddStartingEquipment(Pawn p)
 {
-    local class<DeusExWeapon> wclass;
+    local class<Inventory> iclass;
+    local Inventory item;
     local Ammo a;
     local DeusExWeapon w;
-    local int i;
+    local int i, k;
 
-    if( banneditems == 1 || banneditems == 2 ) {
-        wclass = class'WeaponProd';
-        if( class'DXRActorsBase'.static.HasItem(p, wclass) )
-            return;
+    for(i=0; i < ArrayCount(_item_sets[banneditems].starting_equipment); i++) {
+        iclass = _item_sets[banneditems].starting_equipment[i];
+        l("AddStartingEquipment "$banneditems$", "$iclass);
+        if( iclass == None ) continue;
 
-        w = p.Spawn(wclass, p);
-        w.GiveTo(p);
-        w.SetBase(p);
+        if( class<DeusExAmmo>(iclass) == None && class'DXRActorsBase'.static.HasItem(p, iclass) )
+            continue;
 
+        l("AddStartingEquipment "$banneditems$", "$iclass);
+
+        item = p.Spawn(iclass, p);
+        a.InitialState='Idle2';
+        item.BecomeItem();
+        item.GotoState('Idle2');
+        item.GiveTo(p);
+        item.SetBase(p);
+
+        w = DeusExWeapon(item);
+        if( w == None ) continue;
         if( w.AmmoName != None ) {
             a = p.spawn(w.AmmoName);
             w.AmmoType = a;
-            w.AmmoType.InitialState='Idle2';
-            w.AmmoType.GiveTo(p);
-            w.AmmoType.SetBase(p);
+            a.InitialState='Idle2';
+            a.BecomeItem();
+            a.GotoState('Idle2');
+            a.GiveTo(p);
+            a.SetBase(p);
         }
 
-        for(i=0; i < ArrayCount(w.AmmoNames); i++) {
-            if(rng(3) == 0 && w.AmmoNames[i] != None) {
-                a = p.spawn(w.AmmoNames[i]);
+        for(k=0; k < ArrayCount(w.AmmoNames); k++) {
+            if(rng(3) == 0 && w.AmmoNames[k] != None) {
+                a = p.spawn(w.AmmoNames[k]);
+                a.InitialState='Idle2';
+                a.BecomeItem();
+                a.GotoState('Idle2');
                 a.GiveTo(p);
                 a.SetBase(p);
             }
