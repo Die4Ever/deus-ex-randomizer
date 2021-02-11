@@ -158,6 +158,12 @@ def pickEffect():
     effects.append(("ask_a_question",None))
     effects.append(("ask_a_question",None))
 
+    effects.append(("nudge",None))
+    effects.append(("nudge",None))
+    effects.append(("nudge",None))
+    effects.append(("nudge",None))
+
+
     return random.choice(effects)
 
 

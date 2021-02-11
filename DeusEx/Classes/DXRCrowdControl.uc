@@ -42,6 +42,16 @@ function Init(DXRando tdxr)
     } else info("crowd control disabled");
 }
 
+function AnyEntry() {
+    link.InitOnEnter();
+    Super.AnyEntry();
+}
+
+function PreTravel() {
+    link.CleanupOnExit();
+    Super.PreTravel();
+}
+
 function CheckConfig()
 {
     if ( crowd_control_addr=="" ) {

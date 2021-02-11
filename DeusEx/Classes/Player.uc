@@ -24,6 +24,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     local HazMatSuit suit;
     local BallisticArmor armor;
     local bool bReduced;
+    local float damageMult;
 
     bReduced = False;
     newDamage = Float(Damage);
@@ -102,7 +103,10 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     //Apply damage multiplier
     //This gets tweaked from DXRandoCrowdControlLink, but will normally just be 1.0
-    newDamage*=MPDamageMult;
+    damageMult = flagBase.GetFloat('cc_damageMult');
+    if (damageMult!=0) {
+        newDamage*=damageMult;
+    }
 
 
     //

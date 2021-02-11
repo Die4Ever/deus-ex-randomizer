@@ -16,16 +16,7 @@ var int ticker;
 var bool anon;
 
 var int reconnectTimer;
-var int matrixModeTimer;
-var int empTimer;
-var int jumpTimer;
-var int speedTimer;
-var int lamthrowerTimer;
-var int iceTimer;
-var int behindTimer;
-var int difficultyTimer;
 
-var float moveSpeedModifier;
 var string pendingMsg;
 
 const Success = 0;
@@ -268,8 +259,13 @@ function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous)
     ccModule = cc;
     crowd_control_addr = addr; 
     anon = anonymous;
-           
-    CleanupOnEnter();
+    
+    //Initialize the pending message buffer
+    pendingMsg = "";
+    
+    //Initialize the ticker
+    ticker = 0;
+
 
     Resolve(crowd_control_addr);
 
@@ -279,36 +275,68 @@ function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous)
 }
 
 
-function CleanupOnEnter() {
+//Gets called on every level entry
+//Some effects need to be reapplied on each level entry (eg. ice physics)
+//Make sure to do that here
+function InitOnEnter() {
+    local inventory anItem;
     
-    //Initialize the pending message buffer
-    pendingMsg = "";
+    if (getTimer('cc_MatrixModeTimer') > 0) {
+        StartMatrixMode();
+    } else {
+        StopMatrixMode(True);
+    }
     
-    //Initialize the ticker
-    ticker = 0;
-    
-    //Clean up Matrix Mode if enabled
-    StopMatrixMode(True);
+    dxr.Player.bWarrenEMPField = isTimerActive('cc_EmpTimer');
 
-    //Clean up EMP field if previously active
-    dxr.Player.bWarrenEMPField = false;
+    if (isTimerActive('cc_SpeedTimer')) {
+        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * dxr.Flags.f.GetInt('cc_moveSpeedModifier');        
+    } else {
+        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;        
+    }
+    
+    if (isTimerActive('cc_lamthrowerTimer')) {
+        anItem = dxr.Player.FindInventoryType(class'WeaponFlamethrower');
+        if (anItem!=None) {
+            MakeLamThrower(anItem);
+        }
+    } else {
+        UndoLamThrowers();        
+    }
+    
+    SetIcePhysics(isTimerActive('cc_iceTimer'));
+    
+    dxr.Player.bBehindView=isTimerActive('cc_behindTimer');
+    
+    if (0==dxr.Flags.f.GetFloat('cc_damageMult')) {
+        dxr.Flags.f.SetFloat('cc_damageMult',1.0);
+    }
+    if (!isTimerActive('cc_DifficultyTimer')) {
+        dxr.Flags.f.SetFloat('cc_damageMult',1.0);
+    }
+    
+    
 
-    //Clean up move speed, since it seems to follow through levels
-    dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;
-    
-    //Clean up LAM Throwers
-    UndoLamThrowers();
-    
-    //Clean up ice physics
-    SetIcePhysics(False);
-    
-    //Clean up third-person view
-    dxr.Player.bBehindView=False;
-    
-    //Clean up damage multiplier
-    dxr.Player.MPDamageMult = 1.0;
-    
+}
 
+//Effects should revert to default before exiting a level
+//so that they can be cleanly re-applied next time you enter
+function CleanupOnExit() {
+    StopMatrixMode(True);  //matrix
+    dxr.Player.bWarrenEMPField = false;  //emp
+    dxr.Player.JumpZ = dxr.Player.Default.JumpZ;  //disable_jump
+    dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;  //gotta_go_fast and gotta_go_slow
+    UndoLamThrowers(); //lamthrower
+    SetIcePhysics(False); //ice_physics
+    dxr.Player.bBehindView = False; //third_person
+
+}
+
+function StartMatrixMode() {
+	if (dxr.Player.Sprite == None)
+	{
+		dxr.Player.Matrix();
+	}
 }
 
 function StopMatrixMode(optional bool silent) {
@@ -320,6 +348,31 @@ function StopMatrixMode(optional bool silent) {
         PlayerMessage("Your powers fade...");
     }
 
+}
+
+function int getTimer(name timerName) {
+    return dxr.flags.f.GetInt(timerName);
+}
+
+function bool isTimerActive(name timerName) {
+    return (dxr.flags.f.GetInt(timerName) > 0);
+}
+
+function setTimerFlag(name timerName,int time) {
+    dxr.flags.f.SetInt(timerName,time);
+}
+
+//Timers only decrement while playing
+function bool decrementTimer(name timerName) {
+    local int time;
+    time = dxr.flags.f.GetInt(timerName);
+    if (time>0 && InGame()) {
+        time -= 1;
+        dxr.flags.f.SetInt(timerName,time);
+        
+        return (time == 0);
+    }
+    return false;
 }
 
 function Timer() {
@@ -343,70 +396,51 @@ function Timer() {
     } 
 
     //Matrix Mode Timer
-    if (matrixModeTimer>0) {
-        matrixModeTimer-=1;
-        if (matrixModeTimer == 0) {
-            StopMatrixMode();
-        }
+    if (decrementTimer('cc_MatrixModeTimer')) {
+        StopMatrixMode();
     }
 
     //EMP Field timer
-    if (empTimer>0) {
-        empTimer -= 1;
-        if (empTimer <=0) {
+    if (decrementTimer('cc_EmpTimer')) {
             dxr.Player.bWarrenEMPField = false;
-            PlayerMessage("EMP Field has disappeared...");
-        }
+            PlayerMessage("EMP Field has disappeared...");        
     }
 
-    if (jumpTimer>0) {
-        jumpTimer -= 1;
-        dxr.Player.JumpZ = 0;
-        if (jumpTimer <= 0) {
-            dxr.Player.JumpZ = dxr.Player.Default.JumpZ;
-            PlayerMessage("Your knees feel fine again.");
-        }
+    if (isTimerActive('cc_JumpTimer')) {
+        dxr.Player.JumpZ = 0;        
+    }
+    if (decrementTimer('cc_JumpTimer')) {
+        dxr.Player.JumpZ = dxr.Player.Default.JumpZ;
+        PlayerMessage("Your knees feel fine again.");
     }
 
-    if (speedTimer>0) {
-        speedTimer-=1;
-        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
-        if (speedTimer <= 0) {
-            dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;
-            PlayerMessage("Back to normal speed!");
-        }
+    if (isTimerActive('cc_SpeedTimer')) {
+        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * dxr.Flags.f.GetInt('cc_moveSpeedModifier');        
+    }
+    if (decrementTimer('cc_SpeedTimer')) {
+        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;
+        PlayerMessage("Back to normal speed!");
     }
 
-    if (lamthrowerTimer>0) {
-        lamthrowerTimer-=1;
-        if (lamthrowerTimer <=0) {
-            UndoLamThrowers();
-            PlayerMessage("Your flamethrower is boring again");
-        }
+    if (decrementTimer('cc_lamthrowerTimer')) {
+        UndoLamThrowers();
+        PlayerMessage("Your flamethrower is boring again");
+
     }
     
-    if (iceTimer>0) {
-        iceTimer-=1;
-        if (iceTimer<=0) {
-            SetIcePhysics(False);
-            PlayerMessage("The ground thaws");
-        }
+    if (decrementTimer('cc_iceTimer')) {
+        SetIcePhysics(False);
+        PlayerMessage("The ground thaws");
     }
     
-    if (behindTimer>0) {
-        behindTimer -=1;
-        if (behindTimer<=0){
-            dxr.Player.bBehindView=False;
-            PlayerMessage("You re-enter your body");
-        }
+    if (decrementTimer('cc_behindTimer')) {
+        dxr.Player.bBehindView=False;
+        PlayerMessage("You re-enter your body");
     }
     
-    if (difficultyTimer>0) {
-        difficultyTimer -=1;
-        if (difficultyTimer<=0){
-            dxr.Player.MPDamageMult=1.0;
-            PlayerMessage("Your body returns to its normal toughness");
-        }
+    if (decrementTimer('cc_DifficultyTimer')){
+        dxr.Flags.f.SetFloat('cc_damageMult',1.0);        
+        PlayerMessage("Your body returns to its normal toughness");
     }
 }
 
@@ -847,7 +881,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             }
 
             dxr.Player.JumpZ = 0;
-            jumpTimer = JumpTimeDefault;
+            setTimerFlag('cc_JumpTimer',JumpTimeDefault);
             PlayerMessage(viewer@"made your knees lock up.");
             break;
 
@@ -855,9 +889,9 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
                 return TempFail;
             }
-            moveSpeedModifier = MoveSpeedMultiplier;
-            dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
-            speedTimer = SpeedTimeDefault;
+            dxr.Flags.f.SetInt('cc_moveSpeedModifier',MoveSpeedMultiplier);
+            dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedMultiplier;
+            setTimerFlag('cc_SpeedTimer',SpeedTimeDefault);
             PlayerMessage(viewer@"made you fast like Sonic!");
             break;
 
@@ -865,9 +899,9 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
                 return TempFail;
             }
-            moveSpeedModifier = MoveSpeedDivisor;
-            dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
-            speedTimer = SpeedTimeDefault;
+            dxr.Flags.f.SetInt('cc_moveSpeedModifier',MoveSpeedDivisor);
+            dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedDivisor;
+            setTimerFlag('cc_SpeedTimer',SpeedTimeDefault);
             PlayerMessage(viewer@"made you slow like a snail!");
             break;
         case "drunk_mode":
@@ -892,7 +926,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
 
         case "emp_field":
             dxr.Player.bWarrenEMPField = true;
-            empTimer = EmpDefault;
+            setTimerFlag('cc_EmpTimer',EmpDefault);
             PlayerMessage(viewer@"made electronics allergic to you");
             break;
 
@@ -901,17 +935,17 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
                 //Matrix Mode already enabled
                 return TempFail;
             }
-            dxr.Player.Matrix();
-            matrixModeTimer = MatrixTimeDefault;
+            StartMatrixMode();
+            setTimerFlag('cc_MatrixModeTimer',MatrixTimeDefault);
             PlayerMessage(viewer@"thinks you are The One...");
             break;
             
         case "third_person":
-            if (dxr.Player.bBehindView) {
+            if (isTimerActive('cc_behindTimer')) {
                 return TempFail;
             }
             dxr.Player.bBehindView=True;
-            behindTimer = BehindTimeDefault;
+            setTimerFlag('cc_behindTimer',BehindTimeDefault);
             PlayerMessage(viewer@"gave you an out of body experience");
             break;
 
@@ -955,13 +989,17 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             break;
 
         case "lamthrower":
+            if (isTimerActive('cc_lamthrowerTimer')) {
+                return TempFail;
+            }
+            
             anItem = dxr.Player.FindInventoryType(class'WeaponFlamethrower');
             if (anItem==None) {
                 return TempFail;
             }
 
             MakeLamThrower(anItem);
-            lamthrowerTimer = LamThrowerTimeDefault;
+            setTimerFlag('cc_lamthrowerTimer',LamThrowerTimeDefault);
             PlayerMessage(viewer@"turned your flamethrower into a LAM Thrower!");
             break;
 
@@ -1025,29 +1063,31 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             return RemoveAug(getAugClass(param),viewer);        
         
         case "dmg_double":
-            if (difficultyTimer!=0) {
+            if (isTimerActive('cc_DifficultyTimer')) {
                 return TempFail;
             }
-            dxr.Player.MPDamageMult=2.0;
+            dxr.Flags.f.SetFloat('cc_damageMult',2.0);
+           
             PlayerMessage(viewer@"made your body extra squishy");
-            difficultyTimer = DifficultyTimeDefault;
+            setTimerFlag('cc_DifficultyTimer',DifficultyTimeDefault);
             break;
         case "dmg_half":
-            if (difficultyTimer!=0) {
+            if (isTimerActive('cc_DifficultyTimer')) {
                 return TempFail;
             }
-            dxr.Player.MPDamageMult=0.5;
+            dxr.Flags.f.SetFloat('cc_damageMult',0.5);
             PlayerMessage(viewer@"made your body extra tough!");
-            difficultyTimer = DifficultyTimeDefault;
+            setTimerFlag('cc_DifficultyTimer',DifficultyTimeDefault);
             break;
         
         case "ice_physics":
-            if (iceTimer!=0) {
+            if (isTimerActive('cc_iceTimer')) {
                 return TempFail;
             }
             PlayerMessage(viewer@"made the ground freeze!");
             SetIcePhysics(True);
-            iceTimer = IceTimeDefault;
+            setTimerFlag('cc_iceTimer',IceTimeDefault);
+
             break;      
         
         case "ask_a_question":
@@ -1058,11 +1098,38 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             AskRandomQuestion(viewer);
             break;
 
+        case "nudge":
+            if (!InGame()) {
+                return TempFail;
+            }
+
+            doNudge(viewer);
+            break;
+            
         case "send_player_to_random_point":
         default:
             return NotAvail;
     }
     return Success;
+}
+
+function doNudge(string viewer) {
+    local Rotator r;
+    local vector newAccel;
+    
+    newAccel.X = Rand(201)-100;
+    newAccel.Y = Rand(201)-100;
+    //newAccel.Z = Rand(31);
+    
+    //Not super happy with how this looks,
+    //Since you sort of just teleport to the new position
+    dxr.Player.MoveSmooth(newAccel);
+    
+    //Play an oof sound
+    dxr.Player.PlaySound(Sound'DeusExSounds.Player.MalePainSmall');
+    
+    PlayerMessage(viewer@"nudged you a little bit");
+
 }
 
 function AskRandomQuestion(String viewer) {
