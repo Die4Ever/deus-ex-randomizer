@@ -24,6 +24,7 @@ struct OriginalEnemy {
     var name tag;
     var bool bHateCarcass, bHateDistress, bHateHacking, bHateIndirectInjury, bHateInjury, bHateShot, bHateWeapon;
     var bool bFearCarcass, bFearDistress, bFearHacking, bFearIndirectInjury, bFearInjury, bFearShot, bFearWeapon, bFearAlarm, bFearProjectiles;
+    var bool bReactFutz, bReactPresence, bReactLoudNoise, bReactAlarm, bReactShot, bReactCarcass, bReactDistress, bReactProjectiles;
     var int time_died;
 };
 var OriginalEnemy enemies[128];
@@ -97,6 +98,15 @@ function SaveRespawn(ScriptedPawn p, out int i)
     enemies[i].bFearWeapon = p.bFearWeapon;
     enemies[i].bFearAlarm = p.bFearAlarm;
     enemies[i].bFearProjectiles = p.bFearProjectiles;
+
+    enemies[i].bReactFutz = p.bReactFutz;
+    enemies[i].bReactPresence = p.bReactPresence;
+    enemies[i].bReactLoudNoise = p.bReactLoudNoise;
+    enemies[i].bReactAlarm = p.bReactAlarm;
+    enemies[i].bReactShot = p.bReactShot;
+    enemies[i].bReactCarcass = p.bReactCarcass;
+    enemies[i].bReactDistress = p.bReactDistress;
+    enemies[i].bReactProjectiles = p.bReactProjectiles;
     i++;
 }
 
@@ -177,6 +187,15 @@ function ScriptedPawn Respawn(out OriginalEnemy enemy)
     p.bFearWeapon = enemy.bFearWeapon;
     p.bFearAlarm = enemy.bFearAlarm;
     p.bFearProjectiles = enemy.bFearProjectiles;
+
+    p.bReactFutz = enemy.bReactFutz;
+    p.bReactPresence = enemy.bReactPresence;
+    p.bReactLoudNoise = enemy.bReactLoudNoise;
+    p.bReactAlarm = enemy.bReactAlarm;
+    p.bReactShot = enemy.bReactShot;
+    p.bReactCarcass = enemy.bReactCarcass;
+    p.bReactDistress = enemy.bReactDistress;
+    p.bReactProjectiles = enemy.bReactProjectiles;
     
     p.InitializeInventory();
     p.InitializeAlliances();

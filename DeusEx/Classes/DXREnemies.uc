@@ -335,9 +335,31 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
         inv = inv.Inventory;
     }
 
-    //Orders = 'Patrolling', Engine.PatrolPoint with Nextpatrol?
-    //bReactAlarm, bReactCarcass, bReactDistress, bReactFutz, bReactLoudNoise, bReactPresence, bReactProjectiles, bReactShot
-    //bFearAlarm, bFearCarcass, bFearDistress, bFearHacking, bFearIndirectInjury, bFearInjury, bFearProjectiles, bFearShot, bFearWeapon
+    n.bHateCarcass = p.bHateCarcass;
+    n.bHateDistress = p.bHateDistress;
+    n.bHateHacking = p.bHateHacking;
+    n.bHateIndirectInjury = p.bHateIndirectInjury;
+    n.bHateInjury = p.bHateInjury;
+    n.bHateShot = p.bHateShot;
+    n.bHateWeapon = p.bHateWeapon;
+    n.bFearCarcass = p.bFearCarcass;
+    n.bFearDistress = p.bFearDistress;
+    n.bFearHacking = p.bFearHacking;
+    n.bFearIndirectInjury = p.bFearIndirectInjury;
+    n.bFearInjury = p.bFearInjury;
+    n.bFearShot = p.bFearShot;
+    n.bFearWeapon = p.bFearWeapon;
+    n.bFearAlarm = p.bFearAlarm;
+    n.bFearProjectiles = p.bFearProjectiles;
+
+    n.bReactFutz = p.bReactFutz;
+    n.bReactPresence = p.bReactPresence;
+    n.bReactLoudNoise = p.bReactLoudNoise;
+    n.bReactAlarm = p.bReactAlarm;
+    n.bReactShot = p.bReactShot;
+    n.bReactCarcass = p.bReactCarcass;
+    n.bReactDistress = p.bReactDistress;
+    n.bReactProjectiles = p.bReactProjectiles;
 
     n.Orders = defaultOrders;
     n.HomeTag = 'Start';
