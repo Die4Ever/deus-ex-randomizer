@@ -483,13 +483,7 @@ function bool IsGrenade(inventory i) {
 }
 
 function GiveItem(class<Inventory> c) {
-    local inventory anItem;
-    anItem=Spawn(c);
-    anItem.SetLocation(dxr.Player.Location);
-
-    //The ultimate hack.  Nothing else was working, for whatever reason.
-    dxr.Player.FrobTarget = anItem;
-    dxr.Player.ParseRightClick();
+    class'DXRActorsBase'.static.GiveItem(dxr.Player, c);
 }
 
 function SkillPointsRemove(int numPoints) {

@@ -26,7 +26,7 @@ function BindControls(bool writing, optional string action)
     local float difficulty;
     local DXRFlags f;
     local string sseed;
-    local DXRBannedItems banned;
+    local DXRLoadouts loadout;
     local DXRTelemetry t;
     local DXRCrowdControl cc;
     local int temp, i;
@@ -46,14 +46,14 @@ function BindControls(bool writing, optional string action)
     id++;
 
     labels[id] = "";
-    helptexts[id] = "What items are banned";
-    foreach f.AllActors(class'DXRBannedItems', banned) { break; }
-    if( banned == None )
-        EnumOption(id, "No items banned", 0, writing, f.banneditems);
+    helptexts[id] = "Which items and augs you start with and which are banned.";
+    foreach f.AllActors(class'DXRLoadouts', loadout) { break; }
+    if( loadout == None )
+        EnumOption(id, "Default Loadout", 0, writing, f.loadout);
     else {
         for(i=0; i < 20; i++) {
-            if( banned.GetName(i) == "" ) continue;
-            EnumOption(id, banned.GetName(i), i, writing, f.banneditems);
+            if( loadout.GetName(i) == "" ) continue;
+            EnumOption(id, loadout.GetName(i), i, writing, f.loadout);
         }
     }
     id++;
@@ -117,7 +117,7 @@ function BindControls(bool writing, optional string action)
         f.turrets_add = 30;
     }
     if( EnumOption(id, "Normal", 0, writing) ) {
-        difficulty=1.25;
+        difficulty=1.5;
         f.doorsmode = f.keyonlydoors + f.doormutuallyexclusive;
         f.doorsdestructible = 50;
         f.doorspickable = 50;
@@ -145,7 +145,7 @@ function BindControls(bool writing, optional string action)
         f.turrets_add = 70;
     }
     if( EnumOption(id, "Hard", 2, writing) ) {
-        difficulty=1.5;
+        difficulty=2;
         f.doorsmode = f.keyonlydoors + f.doormutuallyexclusive;
         f.doorsdestructible = 25;
         f.doorspickable = 25;
@@ -173,7 +173,7 @@ function BindControls(bool writing, optional string action)
         f.turrets_add = 120;
     }
     if( EnumOption(id, "Extreme", 3, writing) ) {
-        difficulty=2;
+        difficulty=3;
         f.doorsmode = f.keyonlydoors + f.doormutuallyexclusive;
         f.doorsdestructible = 25;
         f.doorspickable = 25;

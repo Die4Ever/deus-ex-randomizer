@@ -81,18 +81,27 @@ function float rngfn()
 
 function float rngrange(float val, float min, float max)
 {
-    local float mult;
+    local float mult, r, ret;
     mult = max - min;
-    return val * (rngf() * mult + min);
+    r = rngf();
+    ret = val * (r * mult + min);
+    //l("rngrange r: "$r$", mult: "$mult$", min: "$min$", max: "$max$", val: "$val$", return: "$ret);
+    return ret;
 }
 
 function string RandoLevelValues(out float LevelValues[4], float DefaultLevelValues[4], float min, float max)
 {
     local int i;
-    local float min_val;
-    local string s;
+    local float min_val, avg;
+    local string s, n;
 
-    s = "(Values: ";
+    for(i=0; i<ArrayCount(LevelValues); i++) {
+        avg += DefaultLevelValues[i];
+    }
+    avg /= float(ArrayCount(LevelValues));
+
+    s = "(Old v1.5 Values: ";
+    n = "(Raw Values: ";
     for(i=0; i<ArrayCount(LevelValues); i++) {
         LevelValues[i] = rngrange(DefaultLevelValues[i], min, max);
         if( i>0 && DefaultLevelValues[i-1] < DefaultLevelValues[i] && LevelValues[i] < min_val ) LevelValues[i] = min_val;
@@ -102,9 +111,13 @@ function string RandoLevelValues(out float LevelValues[4], float DefaultLevelVal
 
         if( LevelValues[i] == DefaultLevelValues[i] ) s = s $ "100%";
         else s = s $ int(LevelValues[i]/DefaultLevelValues[i]*100.0) $ "%";
+
+        n = n $ "|n";
+        n = n $ LevelValues[i] $ " / " $ DefaultLevelValues[i];
     }
     s = s $ ")";
-    return s;
+    n = n $ ")";
+    return s $ "|n|n" $ n;
 }
 
 function static int staticrng(DXRando dxr, int max)
@@ -336,6 +349,21 @@ function bool testint(int result, int expected, string testname)
 {
     if(result == expected) {
         l("pass: "$testname$": got "$result);
+        passes++;
+        return true;
+    }
+    else {
+        err("fail: "$testname$": got "$result$", expected "$expected);
+        fails++;
+        return false;
+    }
+}
+
+function bool testfloat(float result, float expected, string testname)
+{
+    if(result ~= expected) {
+        //print both because they might not be exaclty equal
+        l("pass: "$testname$": got "$result$", expected "$expected);
         passes++;
         return true;
     }

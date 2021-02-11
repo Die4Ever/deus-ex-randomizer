@@ -33,6 +33,11 @@ function RandoWeapon(DeusExWeapon w)
     oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoWeapon " $ w.class.name ) );
 
     w.HitDamage = rngrange(float(w.default.HitDamage), min_weapon_dmg, max_weapon_dmg);
+    if( WeaponHideAGun(w) == None && w.ProjectileClass != None ) {
+        //don't do this for the PS20/PS40 because it shares the PlasmaBolt projectile with the PlasmaRifle in a really dumb way, the PS40 code handles this itself
+        //I might move this logic into an injector into DeusExProjectile, maybe in BeginPlay it could check its owner and copy the HitDamage from there?
+        w.ProjectileClass.default.Damage = w.HitDamage;
+    }
     w.ShotTime = rngrange(w.default.ShotTime, min_weapon_shottime, max_weapon_shottime);
     /*f = w.default.ReloadTime * (rngf()+0.5);
     w.ReloadTime = f;

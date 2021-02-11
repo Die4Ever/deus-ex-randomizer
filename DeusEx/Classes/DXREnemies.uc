@@ -21,7 +21,7 @@ function CheckConfig()
 {
     local int i;
     local class<Actor> a;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,6) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
         chance_clone_nonhumans = 60;
         enemy_multiplier = 1;
 
@@ -49,9 +49,10 @@ function CheckConfig()
         AddRandomEnemyType("SecurityBot3", 2);//little guy from liberty island
         AddRandomEnemyType("SecurityBot4", 2);//unused little guy
 
-        AddRandomWeapon("WeaponPistol", 11);
-        AddRandomWeapon("WeaponAssaultGun", 11);
-        AddRandomWeapon("WeaponMiniCrossbow", 10);
+        AddRandomWeapon("WeaponShuriken", 12);
+        AddRandomWeapon("WeaponPistol", 10);
+        AddRandomWeapon("WeaponAssaultGun", 10);
+        AddRandomWeapon("WeaponMiniCrossbow", 5);
         AddRandomWeapon("WeaponGEPGun", 4);
         AddRandomWeapon("WeaponAssaultShotgun", 5);
         AddRandomWeapon("WeaponEMPGrenade", 5);
@@ -65,7 +66,6 @@ function CheckConfig()
         AddRandomWeapon("WeaponPlasmaRifle", 5);
         AddRandomWeapon("WeaponRifle", 5);
         AddRandomWeapon("WeaponSawedOffShotgun", 5);
-        AddRandomWeapon("WeaponShuriken", 5);
         AddRandomWeapon("WeaponProd", 2);
 
         AddRandomMelee("WeaponBaton", 25);
@@ -382,33 +382,7 @@ function GiveRandomWeapon(Pawn p)
         l("not giving a random weapon to "$p); return;
     }
 
-    w = Spawn(wclass, p);
-    l("GiveRandomWeapon("$p$") "$wclass$", "$w);
-    w.PickUpAmmoCount = Clamp(float(w.PickupAmmoCount) * float(dxr.flags.ammo) / 100.0, 1, 1000);
-    w.GiveTo(p);
-    w.SetBase(p);
-
-    if( w.AmmoName != None ) {
-        a = spawn(w.AmmoName);
-        l("GiveRandomWeapon("$p$") ammo "$w.AmmoName$", "$a);
-        w.AmmoType = a;
-        a.AmmoAmount = Clamp(float(a.AmmoAmount) * float(dxr.flags.ammo) / 100.0, 1, 1000);
-        a.BecomeItem();
-        a.GotoState('Idle2');
-        a.GiveTo(p);
-        a.SetBase(p);
-    }
-
-    for(i=0; i < ArrayCount(w.AmmoNames); i++) {
-        if(rng(3) == 0 && w.AmmoNames[i] != None && w.AmmoNames[i] != class'AmmoNone') {
-            a = spawn(w.AmmoNames[i]);
-            l("GiveRandomWeapon("$p$") alt ammo "$w.AmmoNames[i]$", "$a);
-            a.BecomeItem();
-            a.GotoState('Idle2');
-            a.GiveTo(p);
-            a.SetBase(p);
-        }
-    }
+    w = DeusExWeapon(GiveItem( p, wclass, true ));
 }
 
 function GiveRandomMeleeWeapon(Pawn p)
@@ -431,10 +405,7 @@ function GiveRandomMeleeWeapon(Pawn p)
         }
     }
 
-    w = Spawn(wclass, p);
-    l("GiveRandomMeleeWeapon("$p$") "$w);
-    w.GiveTo(p);
-    w.SetBase(p);
+    w = Weapon(GiveItem(p, wclass));
 }
 
 function RandomizeSize(Actor a)

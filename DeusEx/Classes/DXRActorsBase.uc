@@ -147,6 +147,45 @@ static function bool IsMeleeWeapon(Inventory item)
         || item.IsA('WeaponNanoSword');
 }
 
+static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional bool add_ammo)
+{
+    local inventory anItem;
+    local DeusExPlayer player;
+    local DeusExWeapon w;
+
+    if( class<Ammo>(iclass) != None ) {
+        anItem = p.FindInventoryType(iclass);
+        if( anItem != None ) {
+            Ammo(anItem).AmmoAmount += Class<Ammo>(iclass).default.AmmoAmount;
+            return anItem;
+        }
+    }
+
+    anItem = p.Spawn(iclass, p);
+    if( anItem == None ) return None;
+    anItem.InitialState='Idle2';
+    anItem.SetLocation(p.Location);
+    player = DeusExPlayer(p);
+    if( player != None ) {
+        player.FrobTarget = anItem;
+        player.ParseRightClick();
+    } else {
+        anItem.GiveTo(p);
+        anItem.SetBase(p);
+    }
+
+    w = DeusExWeapon(anItem);
+    if( add_ammo && w != None ) {
+        if ((w.AmmoType == None) && (w.AmmoName != None) &&
+            (w.AmmoName != Class'AmmoNone'))
+        {
+            w.AmmoType = DeusExAmmo(GiveItem(p, w.AmmoName));
+        }
+    }
+
+    return anItem;
+}
+
 function bool SkipActorBase(Actor a)
 {
     if( a == dxr.Player.carriedDecoration )

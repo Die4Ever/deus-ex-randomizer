@@ -18,14 +18,6 @@ function FirstEntry()
 
     Super.FirstEntry();
 
-    anAug = dxr.Player.AugmentationSystem.FindAugmentation(class'AugSpeed');
-
-    if( anAug != None && anAug.bHasIt == False && dxr.flags.speedlevel>0 )
-    {
-        anAug = dxr.Player.AugmentationSystem.GivePlayerAugmentation(class'AugSpeed');
-        anAug.CurrentLevel = min(dxr.flags.speedlevel-1, anAug.MaxLevel);
-    }
-
     RandomizeAugCannisters();
 }
 
@@ -36,6 +28,33 @@ function AnyEntry()
 
     foreach AllActors(class'Augmentation', a) {
         RandoAug(a);
+    }
+}
+
+static function AddAug(DeusExPlayer player, class<Augmentation> aclass, int level)
+{
+    local Augmentation anAug;
+    local AugmentationManager am;
+
+    am = player.AugmentationSystem;
+    anAug = am.FindAugmentation(aclass);
+    if( anAug == None ) {
+        for( anAug = am.FirstAug; anAug != None; anAug = anAug.next ) {
+            if( anAug.next == None ) {
+                anAug.next = am.Spawn(aclass, am);
+                anAug = anAug.next;
+                if( anAug != None )
+                    anAug.player = player;
+                break;
+            }
+        }
+    }
+
+    anAug = am.FindAugmentation(aclass);
+    if( anAug != None && anAug.bHasIt == False && level>0 )
+    {
+        anAug = am.GivePlayerAugmentation(aclass);
+        anAug.CurrentLevel = min(level-1, anAug.MaxLevel);
     }
 }
 
