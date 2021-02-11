@@ -52,19 +52,19 @@ function CheckConfig()
         item_sets[0].name = "Randomized Loadout with Running Speed";
 
         item_sets[1].name = "Stick With the Prod";
-        item_sets[1].player_message = "Stick with the prod!";
+        item_sets[1].player_message = "stick with the prod!";
         item_sets[1].bans = "Engine.Weapon";
         item_sets[1].allows = "WeaponProd";
         item_sets[1].starting_equipments = "WeaponProd,AmmoBattery,AmmoBattery,AmmoBattery";
 
         item_sets[2].name = "Stick With the Prod Plus";
-        item_sets[2].player_message = "Stick with the prod!";
+        item_sets[2].player_message = "stick with the prod!";
         item_sets[2].bans = "Engine.Weapon,AmmoDart";
         item_sets[2].allows = "WeaponProd,WeaponEMPGrenade,WeaponGasGrenade,WeaponMiniCrossbow,AmmoDartPoison,WeaponNanoVirusGrenade,WeaponPepperGun";
         item_sets[2].starting_equipments = "WeaponProd,AmmoBattery";
 
         item_sets[3].name = "Ninja JC";
-        item_sets[3].player_message = "I am Ninja";
+        item_sets[3].player_message = "I am Ninja!";
         item_sets[3].bans = "Engine.Weapon";
         item_sets[3].allows = "WeaponSword,WeaponShuriken";
         item_sets[3].starting_equipments = "WeaponShuriken,WeaponSword,AmmoShuriken,AmmoShuriken";
@@ -73,6 +73,18 @@ function CheckConfig()
         item_sets[4].name = "Don't Give Me The GEP Gun";
         item_sets[4].player_message = "Don't Give Me The GEP Gun";
         item_sets[4].bans = "WeaponGEPGun";
+
+        item_sets[5].name = "Freeman Mode";
+        item_sets[5].player_message = "Rather than offer you the illusion of free choice, I will take the liberty of choosing for you...";
+        item_sets[5].bans = "Engine.Weapon";
+        item_sets[5].allows = "WeaponCrowbar";
+        item_sets[5].starting_equipments = "WeaponCrowbar";
+
+        item_sets[6].name = "Grenades Only";
+        item_sets[6].player_message = "Grenades Only";
+        item_sets[6].bans = "Engine.Weapon";
+        item_sets[6].allows = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade";
+        item_sets[6].starting_equipments = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade";
 
         i=0;
 
