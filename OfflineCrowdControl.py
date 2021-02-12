@@ -163,6 +163,9 @@ def pickEffect():
     effects.append(("nudge",None))
     effects.append(("nudge",None))
 
+    effects.append(("swap_player_position",None))
+    effects.append(("swap_player_position",None))
+
 
     return random.choice(effects)
 

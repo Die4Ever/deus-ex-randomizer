@@ -1106,11 +1106,69 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             doNudge(viewer);
             break;
             
-        case "send_player_to_random_point":
+        case "swap_player_position":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (swapPlayer(viewer) == false) {
+                return Failed;
+            }
+            break;
         default:
             return NotAvail;
     }
     return Success;
+}
+
+function ScriptedPawn findOtherHuman() {
+    local int num;
+    local ScriptedPawn p;
+    local bool foundHuman;
+    num = Rand(100)+1; // I don't think there are any maps where there are more than 100 humans?
+    while (num!=0) {
+        foundHuman = false;
+        foreach AllActors(class'ScriptedPawn',p) {
+            if (class'DXRActorsBase'.static.IsHuman(p) && p!=dxr.Player && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
+                foundHuman = true;
+                num-=1;
+                if (num==0){
+                    return p;
+                }
+            }
+        }
+        
+        if (foundHuman == false){
+            return None;
+        }
+    }
+    
+    return None;
+}
+
+function bool swapPlayer(string viewer) {
+    local Actor a;
+    local DXRActorsBase dxrab;
+    
+    //We have no guarantee that there is a module loaded
+    //that is a DXRActorsBase with a Swap function, so
+    //let's just spawn one to use here.
+    dxrab = Spawn(class'DXRActorsBase');
+    
+    if (dxrab == None) {
+        return false;
+    }
+    
+    a = findOtherHuman();
+    
+    if (a == None) {
+        return false;
+    }
+    
+    dxrab.Swap(dxr.Player,a);
+    dxr.Player.ViewRotation = dxr.Player.Rotation;
+    PlayerMessage(viewer@"thought you would look better if you were where"@a.tag@"was");
+    
+    return true;
 }
 
 function doNudge(string viewer) {
