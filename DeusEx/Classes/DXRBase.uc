@@ -89,35 +89,48 @@ function float rngrange(float val, float min, float max)
     return ret;
 }
 
-function string RandoLevelValues(out float LevelValues[4], float DefaultLevelValues[4], float min, float max)
+function RandoLevelValues(Actor a, float min, float max, out string Desc)
 {
-    local int i;
-    local float min_val, avg;
-    local string s, n;
+    local Augmentation aug;
+    local Skill sk;
+    local string s, word;
+    local int i, len;
+    local float prev_d, d, v, min_val;
 
-    for(i=0; i<ArrayCount(LevelValues); i++) {
-        avg += DefaultLevelValues[i];
-    }
-    avg /= float(ArrayCount(LevelValues));
+    aug = Augmentation(a);
+    sk = Skill(a);
 
-    s = "(Old v1.5 Values: ";
-    n = "(Raw Values: ";
-    for(i=0; i<ArrayCount(LevelValues); i++) {
-        LevelValues[i] = rngrange(DefaultLevelValues[i], min, max);
-        if( i>0 && DefaultLevelValues[i-1] < DefaultLevelValues[i] && LevelValues[i] < min_val ) LevelValues[i] = min_val;
-        else if( i>0 && DefaultLevelValues[i-1] > DefaultLevelValues[i] && LevelValues[i] > min_val ) LevelValues[i] = min_val;
-        min_val = LevelValues[i];
+    if( aug != None ) len = ArrayCount(aug.LevelValues);
+    else if( sk != None ) len = ArrayCount(sk.LevelValues);
+
+    for(i=0; i < len; i++) {
+        if( aug != None ) d = aug.Default.LevelValues[i];
+        else if( sk != None ) d = sk.Default.LevelValues[i];
+
+        v = rngrange(d, min, max);
+        if( i>0 && prev_d < d && v < min_val ) v = min_val;
+        else if( i>0 && prev_d > d && v > min_val ) v = min_val;
+        min_val = v;
+
+        if( aug != None ) aug.LevelValues[i] = v;
+        else if( sk != None ) sk.LevelValues[i] = v;
+
         if( i>0 ) s = s $ ", ";
-
-        if( LevelValues[i] == DefaultLevelValues[i] ) s = s $ "100%";
-        else s = s $ int(LevelValues[i]/DefaultLevelValues[i]*100.0) $ "%";
-
-        n = n $ "|n";
-        n = n $ LevelValues[i] $ " / " $ DefaultLevelValues[i];
+        s = s $ DescriptionLevel(a, i, word);
+        prev_d = d;
     }
-    s = s $ ")";
-    n = n $ ")";
-    return s $ "|n|n" $ n;
+
+    s = "(" $ word $ ": " $ s $ ")";
+
+    if( InStr(Desc, s) == -1 )
+        Desc = Desc $ "|n|n" $ s;
+
+}
+
+function string DescriptionLevel(Actor a, int i, out string word)
+{
+    err("DXRBase DescriptionLevel failed for "$a);
+    return "err";
 }
 
 function static int staticrng(DXRando dxr, int max)

@@ -106,12 +106,78 @@ function static Name PickRandomAug(DXRando dxr)
 function RandoAug(Augmentation a)
 {
     local int oldseed;
-    local string s;
     if( dxr == None ) return;
-    if( AugSpeed(a) != None || AugLight(a) != None ) return;
+    if( AugSpeed(a) != None || AugLight(a) != None || AugHeartLung(a) != None || AugIFF(a) != None || AugDatalink(a) != None ) return;
     oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoAug " $ a.class.name ) );
-    s = RandoLevelValues(a.LevelValues, a.default.LevelValues, min_aug_str, max_aug_str);
-    if( InStr(a.Description, s) == -1 )
-        a.Description = a.Description $ "|n|n" $ s;
+
+    RandoLevelValues(a, min_aug_str, max_aug_str, a.Description);
+
     dxr.SetSeed(oldseed);
+}
+
+function string DescriptionLevel(Actor act, int i, out string word)
+{
+    local Augmentation a;
+    local float f;
+
+    a = Augmentation(act);
+    if( a == None ) {
+        err("DescriptionLevel failed for aug "$act);
+        return "err";
+    }
+
+    if( a.Class == class'AugAqualung') {
+        word = "Breath";
+        return int(a.LevelValues[i]) $" sec";
+    }
+    else if( a.Class == class'AugBallistic' || a.Class == class'AugCombat' || a.Class == class'AugEMP' || a.Class == class'AugEnviro' || a.Class == class'AugShield') {
+        word = "Damage";
+        return int(a.LevelValues[i] * 100.0) $"%";
+    }
+    else if( a.Class == class'AugCloak' || a.Class == class'AugRadarTrans') {
+        word = "Energy Use";
+        return int(a.EnergyRate * a.LevelValues[i]) $" per min";
+    }
+    else if( a.Class == class'AugDefense') {
+        word = "Distance";
+        return int(a.LevelValues[i] / 16.0) $" ft";
+    }
+    else if( a.Class == class'AugDrone') {
+        word = "Values";
+        return string(int(a.LevelValues[i]));
+    }
+    else if( a.Class == class'AugHealing') {
+        word = "Healing";
+        return int(a.LevelValues[i]) $ " HP";
+    }
+    else if( a.Class == class'AugMuscle') {
+        word = "Strength";
+        return int(a.LevelValues[i] * 100.0) $ "%";
+    }
+    else if( a.Class == class'AugPower') {
+        word = "Energy";
+        return int(a.LevelValues[i] * 100.0) $ "%";
+    }
+    else if( a.Class == class'AugSpeed') {
+        word = "Speed";
+        return int(a.LevelValues[i] * 100.0) $ "%";
+    }
+    else if( a.Class == class'AugStealth') {
+        word = "Noise";
+        return int(a.LevelValues[i] * 100.0) $ "%";
+    }
+    else if( a.Class == class'AugTarget') {
+        word = "Damage";
+        f = -2.0 * a.LevelValues[i] + 1.0;
+        return int(f * 100.0) $ "%";
+    }
+    else if( a.Class == class'AugVision') {
+        word = "Distance";
+        if(i<2) return "--";
+        return int(a.LevelValues[i] / 16.0) $" ft";
+    }
+    else {
+        err("SkillDescriptionLevel failed for skill "$a);
+        return "err";
+    }
 }

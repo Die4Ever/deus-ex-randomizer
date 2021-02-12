@@ -90,10 +90,51 @@ function RandoSkill(Skill aSkill)
 
 function RandoSkillLevelValues(Skill a)
 {
-    local string s;
-    s = RandoLevelValues(a.LevelValues, a.default.LevelValues, min_skill_str, max_skill_str);
-    if( InStr(a.Description, s) == -1 )
-        a.Description = a.Description $ "|n|n" $ s;
+    RandoLevelValues(a, min_skill_str, max_skill_str, a.Description);
+}
+
+function string DescriptionLevel(Actor act, int i, out string word)
+{
+    local Skill s;
+    local float f;
+    
+    s = Skill(act);
+    if( s == None ) {
+        err("DescriptionLevel failed for skill "$act);
+        return "err";
+    }
+
+    if( s.Class == class'SkillDemolition' || InStr(String(s.Class.Name), "SkillWeapon") == 0 ) {
+        word = "Damage";
+        f = -2.0 * s.LevelValues[i] + 1.0;
+        return int(f * 100.0) $ "%";
+    }
+    else if( s.Class == class'SkillLockpicking' || s.Class == class'SkillTech' ) {
+        word = "Efficiency";
+        return int(s.LevelValues[i] * 100.0) $ "%";
+    }
+    else if( s.Class == class'SkillEnviro' ) {
+        word = "Damage Reduction";
+        return int( 1.0 / s.LevelValues[i] * 0.66 * 100.0 ) $ "%";//hazmat is * 0.75, ballistic armor is * 0.5...
+    }
+    else if( s.Class == class'SkillMedicine') {
+        word = "Healing";
+        return int( s.LevelValues[i] * 30.0 ) $ " HP";
+    }
+    else if( s.Class == class'SkillComputer') {
+        word = "Hack Time";
+        if( i == 0 ) return "--";
+        f = 15.0 / (s.LevelValues[i] * 1.5);
+        return int(f) $ " sec";
+    }
+    else if( s.Class == class'SkillSwimming') {
+        word = "Swimming Speed";
+        return int(s.LevelValues[i] * 100.0) $ "%";
+    }
+    else {
+        err("DescriptionLevel failed for skill "$act);
+        return "err";
+    }
 }
 
 function RandoSkillLevel(Skill aSkill, int i, int parent_percent)
