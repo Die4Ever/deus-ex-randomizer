@@ -766,26 +766,29 @@ function SetFloatyPhysics(bool enabled) {
     floatgrav.Z = 0.15;
     
     ForEach AllActors(class'ZoneInfo', Z)
-        if (enabled) {
-            //I doubt the default is actually being used for anything, so I'll
-            //take it and use it as my own personal info storage space
-            Z.Default.ZoneGravity = Z.ZoneGravity;
-            Z.ZoneGravity = floatgrav;
-        } else {
-            Z.ZoneGravity = Z.Default.ZoneGravity;    
+        if (z.ZoneGravity == z.Default.ZoneGravity || z.ZoneGravity == floatgrav) {
+            if (enabled) {
+                //I doubt the default is actually being used for anything, so I'll
+                //take it and use it as my own personal info storage space
+                Z.ZoneGravity = floatgrav;
+            } else {
+                Z.ZoneGravity = Z.Default.ZoneGravity;    
+            }
         }
 }
 
 function SetIcePhysics(bool enabled) {
     local ZoneInfo Z;
     ForEach AllActors(class'ZoneInfo', Z)
-        if (enabled) {
-            //I doubt the default is actually being used for anything, so I'll
-            //take it and use it as my own personal info storage space
-            Z.Default.ZoneGroundFriction = Z.ZoneGroundFriction;
-            Z.ZoneGroundFriction = IceFriction;
-        } else {
-            Z.ZoneGroundFriction = Z.Default.ZoneGroundFriction;    
+        if (z.ZoneGroundFriction == z.Default.ZoneGroundFriction || z.ZoneGroundFriction == IceFriction) {
+            if (enabled) {
+                //I doubt the default is actually being used for anything, so I'll
+                //take it and use it as my own personal info storage space
+                Z.Default.ZoneGroundFriction = Z.ZoneGroundFriction;
+                Z.ZoneGroundFriction = IceFriction;
+            } else {
+                Z.ZoneGroundFriction = Z.Default.ZoneGroundFriction;    
+            }
         }
 }
 
