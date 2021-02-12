@@ -73,7 +73,7 @@ function RandoSkill(Skill aSkill)
     local bool banned;
     if( dxr == None ) return;
 
-    percent = rng(dxr.flags.maxskill - dxr.flags.minskill + 1) + dxr.flags.minskill;
+    percent = rngexp(dxr.flags.minskill, dxr.flags.maxskill, 2);
     banned = chance_single(banned_skill_chances);
     l( aSkill.Class.Name $ " percent: "$percent$"%, banned: " $ banned );
     for(i=0; i<arrayCount(aSkill.Cost); i++)
@@ -151,7 +151,7 @@ function RandoSkillLevel(Skill aSkill, int i, int parent_percent)
     } 
 
     if( dxr.flags.skills_independent_levels > 0 ) {
-        percent = rng(dxr.flags.maxskill - dxr.flags.minskill + 1) + dxr.flags.minskill;
+        percent = rngexp(dxr.flags.minskill, dxr.flags.maxskill, 2);
         l( aSkill.Class.Name $ " lvl: "$(i+1)$", percent: "$percent$"%");
     } else {
         percent = parent_percent;

@@ -333,3 +333,51 @@ function RunTests()
     i = rng(100);
     test( rng(100) != i, "rng(100) != rng(100)");
 }
+
+function ExtendedTests()
+{
+    local int i;
+    Super.ExtendedTests();
+
+    testfloat( pow(5.7,3), 5.7*5.7*5.7, "pow");
+
+    for(i=1;i<=5;i++)
+        TestRngExp(25, 300, 100, i);
+    for(i=1;i<=5;i++)
+        TestRngExp(50, 300, 100, i);
+    for(i=1;i<=5;i++)
+        TestRngExp(50, 400, 100, i);
+    for(i=1;i<=5;i++)
+        TestRngExp(25, 150, 100, i);
+}
+
+function TestRngExp(int minrange, int maxrange, int mid, float curve)
+{
+    local int min, max, avg, lows, highs, mids, times;
+    local int i, t;
+
+    times = 10000;
+    min=maxrange;
+    max=minrange;
+    highs=0;
+    lows=0;
+    mids=0;
+    for(i=0; i<times; i++) {
+        t=rngexp(minrange, maxrange, curve);
+        avg += t;
+        if(t<min) min=t;
+        if(t>max) max=t;
+        if(t<mid) lows++;
+        if(t>mid) highs++;
+        if(t==mid) mids++;
+    }
+    avg /= times;
+    test( min >= minrange, "exponential ^"$curve$" - min: "$min);
+    test( min < minrange+10, "exponential ^"$curve$" - min: "$min);
+    test( max <= maxrange, "exponential ^"$curve$" - max: "$max);
+    test( max > maxrange-10, "exponential ^"$curve$" - max: "$max);
+    test( avg < maxrange, "exponential ^"$curve$" - avg "$avg$" < maxrange "$maxrange);
+    test( avg > minrange, "exponential ^"$curve$" - avg "$avg$" > minrange "$minrange);
+    test( lows > times/10, "exponential ^"$curve$" - lows "$lows$" > times/8 "$(times/10));
+    test( highs > times/10, "exponential ^"$curve$" - highs "$highs$" > times/8 "$(times/10));
+}

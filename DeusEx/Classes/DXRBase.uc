@@ -89,6 +89,21 @@ function float rngrange(float val, float min, float max)
     return ret;
 }
 
+function float pow(float m, float e)
+{
+    return exp(e * loge(m) );
+}
+
+function int rngexp(int min, int max, float curve)
+{
+    local float fmin, fmax, frange, f;
+    fmin = pow(min, 1/curve);
+    fmax = pow(max+1, 1/curve);
+    frange = fmax-fmin;
+    f = rngf()*frange + fmin;
+    return int(pow(f, curve));
+}
+
 function RandoLevelValues(Actor a, float min, float max, out string Desc)
 {
     local Augmentation aug;

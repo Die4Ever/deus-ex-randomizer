@@ -111,8 +111,8 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 2;
-        f.medbots = 25;
-        f.repairbots = 25;
+        f.medbots = 35;
+        f.repairbots = 35;
         f.turrets_move = 50;
         f.turrets_add = 30;
     }
@@ -128,7 +128,7 @@ function BindControls(bool writing, optional string action)
         f.skills_disable_downgrades = 0;
         f.skills_reroll_missions = 0;
         f.skills_independent_levels = 0;
-        f.minskill = 25;
+        f.minskill = 50;
         f.maxskill = 300;
         f.ammo = 70;
         f.medkits = 70;
@@ -139,8 +139,8 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 1;
-        f.medbots = 15;
-        f.repairbots = 15;
+        f.medbots = 25;
+        f.repairbots = 25;
         f.turrets_move = 50;
         f.turrets_add = 70;
     }
@@ -156,19 +156,19 @@ function BindControls(bool writing, optional string action)
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
         f.skills_independent_levels = 100;
-        f.minskill = 25;
+        f.minskill = 50;
         f.maxskill = 300;
         f.ammo = 50;
-        f.medkits = 50;
-        f.biocells = f.medkits;
-        f.lockpicks = f.medkits;
-        f.multitools = f.medkits;
+        f.medkits = 60;
+        f.biocells = 50;
+        f.lockpicks = 50;
+        f.multitools = 50;
         f.speedlevel = 1;
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 1;
-        f.medbots = 10;
-        f.repairbots = 10;
+        f.medbots = 20;
+        f.repairbots = 20;
         f.turrets_move = 50;
         f.turrets_add = 120;
     }
@@ -184,19 +184,19 @@ function BindControls(bool writing, optional string action)
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
         f.skills_independent_levels = 100;
-        f.minskill = 25;
+        f.minskill = 50;
         f.maxskill = 400;
         f.ammo = 30;
-        f.medkits = 30;
-        f.biocells = f.medkits;
-        f.lockpicks = f.medkits;
-        f.multitools = f.medkits;
+        f.medkits = 50;
+        f.biocells = 30;
+        f.lockpicks = 30;
+        f.multitools = 30;
         f.speedlevel = 1;
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 1;
-        f.medbots = 5;
-        f.repairbots = 5;
+        f.medbots = 15;
+        f.repairbots = 15;
         f.turrets_move = 50;
         f.turrets_add = 200;
     }

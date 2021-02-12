@@ -43,7 +43,9 @@ function Init(DXRando tdxr)
 }
 
 function AnyEntry() {
-    link.InitOnEnter();
+    if( link != None ) {
+        link.InitOnEnter();
+    }
     Super.AnyEntry();
 }
 
