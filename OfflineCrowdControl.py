@@ -166,6 +166,8 @@ def pickEffect():
     effects.append(("swap_player_position",None))
     effects.append(("swap_player_position",None))
 
+    effects.append(("floaty_physics",None))
+
 
     return random.choice(effects)
 

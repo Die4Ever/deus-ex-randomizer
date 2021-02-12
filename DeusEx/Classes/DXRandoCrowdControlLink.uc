@@ -43,6 +43,8 @@ const LamThrowerTimeDefault = 60;
 const IceTimeDefault = 60;
 const BehindTimeDefault = 60;
 const DifficultyTimeDefault = 60;
+const FloatyTimeDefault = 60;
+
 
 //JSON parsing states
 const KeyState = 1;
@@ -306,6 +308,8 @@ function InitOnEnter() {
     
     SetIcePhysics(isTimerActive('cc_iceTimer'));
     
+    SetFloatyPhysics(isTimerActive('cc_floatyTimer'));
+    
     dxr.Player.bBehindView=isTimerActive('cc_behindTimer');
     
     if (0==dxr.Flags.f.GetFloat('cc_damageMult')) {
@@ -329,6 +333,7 @@ function CleanupOnExit() {
     UndoLamThrowers(); //lamthrower
     SetIcePhysics(False); //ice_physics
     dxr.Player.bBehindView = False; //third_person
+    SetFloatyPhysics(False);
 
 }
 
@@ -442,6 +447,12 @@ function Timer() {
         dxr.Flags.f.SetFloat('cc_damageMult',1.0);        
         PlayerMessage("Your body returns to its normal toughness");
     }
+    
+    if (decrementTimer('cc_floatyTimer')) {
+        SetFloatyPhysics(False);
+        PlayerMessage("You feel weighed down again");
+    }
+
 }
 
 function bool isCrowdControl( string msg) {
@@ -747,6 +758,24 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
     return Success;
 }
 
+function SetFloatyPhysics(bool enabled) {
+    local ZoneInfo Z;
+    local vector floatgrav;
+    floatgrav.X = 0;
+    floatgrav.Y = 0;
+    floatgrav.Z = 0.15;
+    
+    ForEach AllActors(class'ZoneInfo', Z)
+        if (enabled) {
+            //I doubt the default is actually being used for anything, so I'll
+            //take it and use it as my own personal info storage space
+            Z.Default.ZoneGravity = Z.ZoneGravity;
+            Z.ZoneGravity = floatgrav;
+        } else {
+            Z.ZoneGravity = Z.Default.ZoneGravity;    
+        }
+}
+
 function SetIcePhysics(bool enabled) {
     local ZoneInfo Z;
     ForEach AllActors(class'ZoneInfo', Z)
@@ -759,6 +788,7 @@ function SetIcePhysics(bool enabled) {
             Z.ZoneGroundFriction = Z.Default.ZoneGroundFriction;    
         }
 }
+
 
 //Returns true when you aren't in a menu, or in the intro, etc.
 function bool InGame() {
@@ -1099,6 +1129,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             break;
 
         case "nudge":
+        //Not yet implemented in the CrowdControl cs file
             if (!InGame()) {
                 return TempFail;
             }
@@ -1107,6 +1138,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             break;
             
         case "swap_player_position":
+        //Not yet implemented in the CrowdControl cs file
             if (!InGame()) {
                 return TempFail;
             }
@@ -1114,6 +1146,18 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
                 return Failed;
             }
             break;
+            
+        case "floaty_physics":
+        //Not yet implemented in the CrowdControl cs file
+            if (isTimerActive('cc_floatyTimer')) {
+                return TempFail;
+            }
+            PlayerMessage(viewer@"made you feel light as a feather");
+            SetFloatyPhysics(True);
+            setTimerFlag('cc_floatyTimer',FloatyTimeDefault);
+
+            break;   
+            
         default:
             return NotAvail;
     }
