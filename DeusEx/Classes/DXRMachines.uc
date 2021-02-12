@@ -311,9 +311,10 @@ function ComputerSecurity SpawnSecurityComputer(vector loc, optional AutoTurret 
     if( t != None ) {
         c.Views[0].TurretTag = t.Tag;
     }
-    c.UserList[0].userName = String(c.Name);
+    c.UserList[0].userName = class'DXRPasswords'.static.ReplaceText(String(c.Name), "ComputerSecurity", "Comp");
+    c.itemName = c.UserList[0].userName;
     c.UserList[0].Password = class'DXRPasswords'.static.GeneratePassword(dxr, String(c.Name) );
-    info("SpawnSecurityComputer "$c$" done at ("$loc$"), ("$rotation$") with password: "$c.UserList[0].Password );
+    info("SpawnSecurityComputer "$c.UserList[0].userName$" done at ("$loc$"), ("$rotation$") with password: "$c.UserList[0].Password );
     return c;
 }
 
@@ -334,7 +335,7 @@ function Datacube SpawnDatacube(vector loc, ComputerSecurity c)
         warning("SpawnDatacube failed at "$locnorm.loc);
         return None;
     }
-    d.plaintext = c.Name $ " password is " $ c.UserList[0].Password;
+    d.plaintext = c.UserList[0].userName $ " password is " $ c.UserList[0].Password;
     info("SpawnDatacube "$d$" done at ("$locnorm.loc$"), ("$locnorm.norm$")");
     return d;
 }
