@@ -107,7 +107,7 @@ function RandoAug(Augmentation a)
 {
     local int oldseed;
     if( dxr == None ) return;
-    if( AugSpeed(a) != None || AugLight(a) != None || AugHeartLung(a) != None || AugIFF(a) != None || AugDatalink(a) != None ) return;
+    if( AugSpeed(a) != None || AugLight(a) != None || AugHeartLung(a) != None || AugIFF(a) != None || AugDatalink(a) != None || AugNinja(a) != None ) return;
     oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoAug " $ a.class.name ) );
 
     RandoLevelValues(a, min_aug_str, max_aug_str, a.Description);
@@ -158,7 +158,7 @@ function string DescriptionLevel(Actor act, int i, out string word)
         word = "Energy";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
-    else if( a.Class == class'AugSpeed') {
+    else if( a.Class == class'AugSpeed' || a.Class == class'AugNinja') {
         word = "Speed";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }

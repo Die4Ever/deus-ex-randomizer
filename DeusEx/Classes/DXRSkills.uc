@@ -13,6 +13,7 @@ var config int banned_skill_level_chances;
 
 var config float min_skill_str;
 var config float max_skill_str;
+var config float skill_cost_curve;
 
 function CheckConfig()
 {
@@ -28,6 +29,9 @@ function CheckConfig()
     if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
         min_skill_str = 0.5;
         max_skill_str = 1.5;
+    }
+    if( skill_cost_curve ~= 0 || config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
+        skill_cost_curve = 2;
     }
     Super.CheckConfig();
 }
@@ -73,7 +77,7 @@ function RandoSkill(Skill aSkill)
     local bool banned;
     if( dxr == None ) return;
 
-    percent = rngexp(dxr.flags.minskill, dxr.flags.maxskill, 2);
+    percent = rngexp(dxr.flags.minskill, dxr.flags.maxskill, skill_cost_curve);
     banned = chance_single(banned_skill_chances);
     l( aSkill.Class.Name $ " percent: "$percent$"%, banned: " $ banned );
     for(i=0; i<arrayCount(aSkill.Cost); i++)
@@ -151,7 +155,7 @@ function RandoSkillLevel(Skill aSkill, int i, int parent_percent)
     } 
 
     if( dxr.flags.skills_independent_levels > 0 ) {
-        percent = rngexp(dxr.flags.minskill, dxr.flags.maxskill, 2);
+        percent = rngexp(dxr.flags.minskill, dxr.flags.maxskill, skill_cost_curve);
         l( aSkill.Class.Name $ " lvl: "$(i+1)$", percent: "$percent$"%");
     } else {
         percent = parent_percent;

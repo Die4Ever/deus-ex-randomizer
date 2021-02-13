@@ -37,6 +37,9 @@ function Deactivate()
     }
 
     Player.RunSilentValue = 1.0;
+    /*Player.RunSilentValue = 1.0 / (LevelValues[CurrentLevel] * LevelValues[CurrentLevel]);
+    if ( Player.RunSilentValue == -1.0 )
+        Player.RunSilentValue = 1.0;*/
 }
 
 defaultproperties

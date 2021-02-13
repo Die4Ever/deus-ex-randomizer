@@ -10,6 +10,29 @@ function bool AddInventory( inventory NewItem )
     return _AddInventory(NewItem);
 }
 
+function float GetCurrentGroundSpeed()
+{
+    local float augValue, speed;
+
+    // Remove this later and find who's causing this to Access None MB
+    if ( AugmentationSystem == None )
+        return 0;
+
+    augValue = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
+    if (augValue == -1.0)
+        augValue = AugmentationSystem.GetAugLevelValue(class'AugNinja');
+
+    if (augValue == -1.0)
+        augValue = 1.0;
+
+    if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
+        speed = Human(Self).mpGroundSpeed * augValue;
+    else
+        speed = Default.GroundSpeed * augValue;
+
+    return speed;
+}
+
 // ----------------------------------------------------------------------
 // DXReduceDamage()
 //
