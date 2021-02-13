@@ -811,7 +811,7 @@ function bool InGame() {
 }
 
 
-function int doCrowdControlEvent(string code, string param, string viewer, int type) {
+function int doCrowdControlEvent(string code, string param[5], string viewer, int type) {
     local vector v;
     local inventory anItem;
     local bool result;
@@ -850,7 +850,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
         
             //Spawned ThrownProjectiles won't beep if they don't have an owner,
             //so make sure to set one here (the player)
-            switch(param){
+            switch(param[0]){
                 case("g_lam"):
                     a = Spawn(Class'LAM',dxr.Player,,dxr.Player.Location);
                     PlayerMessage(viewer@"dropped a LAM at your feet!");
@@ -886,8 +886,8 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             if (dxr.Player.Health == 100) {
                 return TempFail;
             }
-            dxr.Player.HealPlayer(Int(param),False);
-            PlayerMessage(viewer@"gave you "$param$" health!");
+            dxr.Player.HealPlayer(Int(param[0]),False);
+            PlayerMessage(viewer@"gave you "$param[0]$" health!");
             break;
 
         case "set_fire":
@@ -992,11 +992,11 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             //PlayerMessage("Recharged 10 points");
             dxr.Player.PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
 
-            dxr.Player.Energy += Int(param);
+            dxr.Player.Energy += Int(param[0]);
             if (dxr.Player.Energy > dxr.Player.EnergyMax)
                 dxr.Player.Energy = dxr.Player.EnergyMax;
 
-            PlayerMessage(viewer@"gave you "$param$" energy!");
+            PlayerMessage(viewer@"gave you "$param[0]$" energy!");
             break;
 
        case "give_biocell":
@@ -1005,20 +1005,20 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             break;
 
         case "give_skillpoints":
-            PlayerMessage(viewer@"gave you "$param$" skill points");
-            dxr.Player.SkillPointsAdd(Int(param));
+            PlayerMessage(viewer@"gave you "$param[0]$" skill points");
+            dxr.Player.SkillPointsAdd(Int(param[0]));
             break;
 
         case "remove_skillpoints":
-            PlayerMessage(viewer@"took away "$param$" skill points");
-            SkillPointsRemove(Int(param));
+            PlayerMessage(viewer@"took away "$param[0]$" skill points");
+            SkillPointsRemove(Int(param[0]));
             break;
             
         case "add_credits":
-            return AddCredits(Int(param),viewer);
+            return AddCredits(Int(param[0]),viewer);
             break;
         case "remove_credits":
-            return AddCredits(-Int(param),viewer);
+            return AddCredits(-Int(param[0]),viewer);
             break;
 
         case "lamthrower":
@@ -1038,7 +1038,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
 
         case "give_grenade":
             PlayerMessage(viewer@"Gave you a grenade");
-            switch(param){
+            switch(param[0]){
                 case("g_lam"):
                     GiveItem(Class'WeaponLAM');
                     break;
@@ -1059,7 +1059,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
         case "give_weapon":
             PlayerMessage(viewer@"Gave you a weapon");
 
-            switch(param){
+            switch(param[0]){
                 case "flamethrower":
                     GiveItem(class'WeaponFlamethrower');
                     break;
@@ -1090,10 +1090,10 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             break;
 
         case "up_aug":
-            return GiveAug(getAugClass(param),viewer);         
+            return GiveAug(getAugClass(param[0]),viewer);         
         
         case "down_aug":
-            return RemoveAug(getAugClass(param),viewer);        
+            return RemoveAug(getAugClass(param[0]),viewer);        
         
         case "dmg_double":
             if (isTimerActive('cc_DifficultyTimer')) {
@@ -1160,10 +1160,44 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             setTimerFlag('cc_floatyTimer',FloatyTimeDefault);
 
             break;   
-            
+        
+        case "give_ammo":
+        //Not yet implemented in the CrowdControl cs file
+            return GiveAmmo(viewer,param[0],Int(param[1]));
+            break;
+        
         default:
             return NotAvail;
     }
+    return Success;
+}
+
+function int GiveAmmo(string viewer, string ammotype, int amount) {
+    local int i;
+    local class<DeusExAmmo> ammo;
+    
+    local string outMsg;
+    
+    outMsg = viewer@"gave you"@amount;
+    
+    if (amount == 1) {
+        outMsg = outMsg@"case of";
+    } else {
+        outMsg = outMsg@"cases of";
+    }
+    
+    ammo = class<DeusExAmmo>(ccModule.GetClassFromString(ammotype,class'DeusExAmmo'));
+    
+    outMsg = outMsg@ammo.Default.ItemName;
+    
+    if (ammo == None) {
+        return NotAvail;
+    }
+    
+    for (i=0;i<amount;i++) {
+        GiveItem(ammo);   
+    }
+    PlayerMessage(outMsg);
     return Success;
 }
 
@@ -1253,13 +1287,14 @@ function AskRandomQuestion(String viewer) {
 function handleMessage( string msg) {
   
     local int id,type;
-    local string code,viewer,param;
+    local string code,viewer;
+    local string param[5];
     
     local int result;
     
     local JsonMsg jmsg;
     local string val;
-    local int i;
+    local int i,j;
 
     if (isCrowdControl(msg)) {
         jmsg=ParseJson(msg);
@@ -1282,7 +1317,9 @@ function handleMessage( string msg) {
                         type = Int(val);
                         break;
                     case "parameters":
-                        param = val;
+                        for (j=0;j<5;j++) {
+                            param[j] = jmsg.e[i].value[j];
+                        }
                         break;
                 }
             }
@@ -1293,7 +1330,6 @@ function handleMessage( string msg) {
         if (anon) {
             viewer = "Crowd Control";
         }
-        
         result = doCrowdControlEvent(code,param,viewer,type);
         
         sendReply(id,result);

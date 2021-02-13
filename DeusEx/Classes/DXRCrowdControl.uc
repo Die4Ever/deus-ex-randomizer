@@ -50,7 +50,9 @@ function AnyEntry() {
 }
 
 function PreTravel() {
-    link.CleanupOnExit();
+    if( link != None ) {
+        link.CleanupOnExit();
+    }
     Super.PreTravel();
 }
 

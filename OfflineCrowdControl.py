@@ -8,7 +8,19 @@ import random
 def genMsg(code,param):
     msg = '{"id":1,"viewer":"Python","code":"'+code+'","type":1'
     if param:
-        msg+=',"parameters":['+param+']'
+        msg+=',"parameters":['
+        paramstr = ""
+        for p in param:
+            print(p)
+            if isinstance(p,int):
+                paramstr+=str(p)
+            elif isinstance(p,str):
+                paramstr+='"'+p+'"'
+            paramstr+=","
+        paramstr = paramstr[:-1]
+        print(paramstr)
+        msg+=paramstr
+        msg+=']'
     msg+='}\0'
 
     return msg
@@ -36,7 +48,28 @@ def randomAug():
 
     return random.choice(augs)
 
+def randomAmmo():
+    ammo = []
+    ammo.append('"Ammo10mm"')
+    ammo.append('"Ammo20mm"')
+    ammo.append('"Ammo762mm"')
+    ammo.append('"Ammo3006"')
+    ammo.append('"AmmoBattery"')
+    ammo.append('"AmmoDart"')
+    ammo.append('"AmmoDartFlare"')
+    ammo.append('"AmmoDartPoison"')
+    ammo.append('"AmmoNapalm"')
+    ammo.append('"AmmoPepper"')
+    ammo.append('"AmmoPlasma"')
+    ammo.append('"AmmoRocket"')
+    ammo.append('"AmmoRocketWP"')
+    ammo.append('"AmmoSabot"')
+    ammo.append('"AmmoShell"')
+
+    return random.choice(ammo)
+
 def pickEffect():
+
     effects = []
 
     effects.append(None)
@@ -54,22 +87,22 @@ def pickEffect():
     effects.append(("glass_legs",None))
 
 
-    effects.append(("give_health",str(random.randint(10,100))))
-    effects.append(("give_health",str(random.randint(10,100))))
-    effects.append(("give_health",str(random.randint(10,100))))
-    effects.append(("give_health",str(random.randint(10,100))))
-    effects.append(("give_health",str(random.randint(10,100))))
+    effects.append(("give_health",[str(random.randint(10,100))]))
+    effects.append(("give_health",[str(random.randint(10,100))]))
+    effects.append(("give_health",[str(random.randint(10,100))]))
+    effects.append(("give_health",[str(random.randint(10,100))]))
+    effects.append(("give_health",[str(random.randint(10,100))]))
 
     effects.append(("set_fire",None))
     
-    effects.append(("drop_grenade",'"g_lam"'))
-    effects.append(("drop_grenade",'"g_emp"'))
-    effects.append(("drop_grenade",'"g_gas"'))
-    effects.append(("drop_grenade",'"g_scrambler"'))
-    effects.append(("drop_grenade",'"g_lam"'))
-    effects.append(("drop_grenade",'"g_emp"'))
-    effects.append(("drop_grenade",'"g_gas"'))
-    effects.append(("drop_grenade",'"g_scrambler"'))
+    effects.append(("drop_grenade",['"g_lam"']))
+    effects.append(("drop_grenade",['"g_emp"']))
+    effects.append(("drop_grenade",['"g_gas"']))
+    effects.append(("drop_grenade",['"g_scrambler"']))
+    effects.append(("drop_grenade",['"g_lam"']))
+    effects.append(("drop_grenade",['"g_emp"']))
+    effects.append(("drop_grenade",['"g_gas"']))
+    effects.append(("drop_grenade",['"g_scrambler"']))
 
     effects.append(("give_medkit",None))
     effects.append(("give_medkit",None))
@@ -90,22 +123,22 @@ def pickEffect():
     effects.append(("matrix",None))
     effects.append(("emp_field",None))
 
-    effects.append(("give_energy",str(random.randint(10,100))))
-    effects.append(("give_energy",str(random.randint(10,100))))
-    effects.append(("give_energy",str(random.randint(10,100))))
-    effects.append(("give_energy",str(random.randint(10,100))))
-    effects.append(("give_energy",str(random.randint(10,100))))
+    effects.append(("give_energy",[str(random.randint(10,100))]))
+    effects.append(("give_energy",[str(random.randint(10,100))]))
+    effects.append(("give_energy",[str(random.randint(10,100))]))
+    effects.append(("give_energy",[str(random.randint(10,100))]))
+    effects.append(("give_energy",[str(random.randint(10,100))]))
 
     effects.append(("give_biocell",None))
     effects.append(("give_biocell",None))
     effects.append(("give_biocell",None))
     
-    effects.append(("give_skillpoints",str(random.randint(100,1000))))
-    effects.append(("give_skillpoints",str(random.randint(100,1000))))
-    effects.append(("give_skillpoints",str(random.randint(100,1000))))
+    effects.append(("give_skillpoints",[str(random.randint(100,1000))]))
+    effects.append(("give_skillpoints",[str(random.randint(100,1000))]))
+    effects.append(("give_skillpoints",[str(random.randint(100,1000))]))
 
-    effects.append(("remove_skillpoints",str(random.randint(100,1000))))
-    effects.append(("remove_skillpoints",str(random.randint(100,1000))))
+    effects.append(("remove_skillpoints",[str(random.randint(100,1000))]))
+    effects.append(("remove_skillpoints",[str(random.randint(100,1000))]))
 
     effects.append(("disable_jump",None))
     effects.append(("disable_jump",None))
@@ -135,11 +168,11 @@ def pickEffect():
     effects.append(("dmg_half",None))
     effects.append(("dmg_half",None))
 
-    effects.append(("add_credits",str(random.randint(100,1000))))
-    effects.append(("add_credits",str(random.randint(100,1000))))
+    effects.append(("add_credits",[str(random.randint(100,1000))]))
+    effects.append(("add_credits",[str(random.randint(100,1000))]))
 
-    effects.append(("remove_credits",str(random.randint(100,1000))))
-    effects.append(("remove_credits",str(random.randint(100,1000))))
+    effects.append(("remove_credits",[str(random.randint(100,1000))]))
+    effects.append(("remove_credits",[str(random.randint(100,1000))]))
 
     effects.append(("lamthrower",None))
     effects.append(("lamthrower",None))
@@ -148,10 +181,10 @@ def pickEffect():
     effects.append(("give_ps40",None))
     effects.append(("give_ps40",None))
 
-    effects.append(("up_aug",randomAug()))
-    effects.append(("up_aug",randomAug()))
-    effects.append(("down_aug",randomAug()))
-    effects.append(("down_aug",randomAug()))
+    effects.append(("up_aug",[randomAug()]))
+    effects.append(("up_aug",[randomAug()]))
+    effects.append(("down_aug",[randomAug()]))
+    effects.append(("down_aug",[randomAug()]))
 
     effects.append(("ask_a_question",None))
     effects.append(("ask_a_question",None))
@@ -168,6 +201,7 @@ def pickEffect():
 
     effects.append(("floaty_physics",None))
 
+    effects.append(("give_ammo",[randomAmmo(),random.randint(1,2)])
 
     return random.choice(effects)
 
