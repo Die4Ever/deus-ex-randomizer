@@ -30,7 +30,7 @@ function CheckConfig()
         min_skill_str = 0.5;
         max_skill_str = 1.5;
     }
-    if( skill_cost_curve ~= 0 || config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
         skill_cost_curve = 2;
     }
     Super.CheckConfig();

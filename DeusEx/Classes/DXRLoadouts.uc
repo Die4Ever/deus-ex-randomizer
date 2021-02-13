@@ -76,7 +76,7 @@ function CheckConfig()
         item_sets[3].bans = "Engine.Weapon";
         item_sets[3].allows = "WeaponSword,WeaponShuriken";
         item_sets[3].starting_equipments = "WeaponShuriken,WeaponSword,AmmoShuriken";
-        item_sets[3].starting_augs = "AugNinja";//combines (passive?) AugStealth and active AugSpeed?
+        item_sets[3].starting_augs = "AugNinja";//combines AugStealth and active AugSpeed
         item_sets[3].item_spawns = "WeaponShuriken,5,BioelectricCell,2";
 
         item_sets[4].name = "Don't Give Me the GEP Gun";

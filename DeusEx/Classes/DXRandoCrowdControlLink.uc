@@ -1202,42 +1202,22 @@ function int GiveAmmo(string viewer, string ammotype, int amount) {
 }
 
 function ScriptedPawn findOtherHuman() {
-    local int num;
+    local int num, i;
     local ScriptedPawn p;
-    local bool foundHuman;
-    num = Rand(100)+1; // I don't think there are any maps where there are more than 100 humans?
-    while (num!=0) {
-        foundHuman = false;
-        foreach AllActors(class'ScriptedPawn',p) {
-            if (class'DXRActorsBase'.static.IsHuman(p) && p!=dxr.Player && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
-                foundHuman = true;
-                num-=1;
-                if (num==0){
-                    return p;
-                }
-            }
-        }
-        
-        if (foundHuman == false){
-            return None;
+    local ScriptedPawn humans[512];
+
+    foreach AllActors(class'ScriptedPawn',p) {
+        if (class'DXRActorsBase'.static.IsHuman(p) && p!=dxr.Player && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
+            humans[num++] = p;
         }
     }
-    
-    return None;
+
+    if( num == 0 ) return None;
+    return humans[ Rand(num) ];
 }
 
 function bool swapPlayer(string viewer) {
     local Actor a;
-    local DXRActorsBase dxrab;
-    
-    //We have no guarantee that there is a module loaded
-    //that is a DXRActorsBase with a Swap function, so
-    //let's just spawn one to use here.
-    dxrab = Spawn(class'DXRActorsBase');
-    
-    if (dxrab == None) {
-        return false;
-    }
     
     a = findOtherHuman();
     
@@ -1245,7 +1225,7 @@ function bool swapPlayer(string viewer) {
         return false;
     }
     
-    dxrab.Swap(dxr.Player,a);
+    ccModule.Swap(dxr.Player,a);
     dxr.Player.ViewRotation = dxr.Player.Rotation;
     PlayerMessage(viewer@"thought you would look better if you were where"@a.tag@"was");
     

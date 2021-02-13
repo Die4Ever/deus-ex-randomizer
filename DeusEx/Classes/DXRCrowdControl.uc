@@ -1,4 +1,4 @@
-class DXRCrowdControl extends DXRBase;
+class DXRCrowdControl extends DXRActorsBase;
 
 //var config bool enabled;
 var config string crowd_control_addr;
