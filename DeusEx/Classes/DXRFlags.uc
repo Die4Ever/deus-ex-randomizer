@@ -331,6 +331,7 @@ function NewGamePlus()
     dxr.player.CombatDifficulty *= 1.2;
     minskill = minskill*1.2;// int *= float doesn't give as good accuracy as int = int*float
     maxskill = maxskill*1.2;
+    enemiesrandomized = enemiesrandomized*1.2;
     ammo = ammo*0.9;
     medkits = medkits*0.9;
     multitools = multitools*0.9;
