@@ -1470,9 +1470,7 @@ function RunTests(DXRCrowdControl m)
 {
     local int i;
     local string msg;
-    local JsonMsg jmsg;
-    local int id,type;
-    local string code,viewer,param;
+    local string params[5];
 
     msg="";
     m.testbool( isCrowdControl(msg), false, "isCrowdControl "$msg);
@@ -1480,24 +1478,45 @@ function RunTests(DXRCrowdControl m)
     msg="{}";
     m.testbool( isCrowdControl(msg), false, "isCrowdControl "$msg);
 
-    TestMsg(m, 123, 1, "kill", "die4ever", "");
-    TestMsg(m, 123, 1, "test with spaces", "die4ever", "");
-    TestMsg(m, 123, 1, "test:with:colons", "die4ever", "");
-    TestMsg(m, 123, 1, "test,with,commas", "die4ever", "");
-    TestMsg(m, 123, 1, "kill", "die4ever", "parameter test");
-    TestMsg(m, 123, 1, "drop_grenade", "die4ever", "g_scrambler");
+    TestMsg(m, 123, 1, "kill", "die4ever", params);
+    TestMsg(m, 123, 1, "test with spaces", "die4ever", params);
+    TestMsg(m, 123, 1, "test:with:colons", "die4ever", params);
+    TestMsg(m, 123, 1, "test,with,commas", "die4ever", params);
+    params[0] = "parameter test";
+    TestMsg(m, 123, 1, "kill", "die4ever", params);
+    params[0] = "g_scrambler";
+    TestMsg(m, 123, 1, "drop_grenade", "die4ever", params);
+    params[0] = "g_scrambler";
+    params[1] = "10";
+    TestMsg(m, 123, 1, "drop_grenade", "die4ever", params);
     
     //Need to do more work to validate escaped characters
     //TestMsg(m, 123, 1, "test\\\\with\\\\escaped\\\\backslashes", "die4ever", ""); //Note that we have to double escape so that the end result is a single escaped backslash
 }
 
-function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer, string param)
+function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer, string params[5])
 {
-    local int i, matches;
-    local string msg, val;
+    local int i, p, matches, num_params;
+    local string msg, val, params_string;
     local JsonMsg jmsg;
 
-    msg="{\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":\""$param$"\"}";
+    for(i=0; i < ArrayCount(params); i++) {
+        if( params[i] != "" ) num_params++;
+    }
+
+    if( num_params > 1 ) {
+        params_string = "[";
+        for(i=0; i < ArrayCount(params); i++) {
+            if( params[i] != "" )
+                params_string = params_string $ params[i] $ ",";
+        }
+        params_string = Left(params_string, Len(params_string)-1);//trim trailing comma
+        params_string = params_string $ "]";
+    }
+    else if ( num_params <= 1 )
+        params_string = "\""$params[0]$"\"";
+
+    msg="{\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$"}";
 
     m.testbool( isCrowdControl(msg), true, "isCrowdControl: "$msg);
 
@@ -1523,7 +1542,9 @@ function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer
                     matches++;
                     break;
                 case "parameters":
-                    m.teststring(val, param, "param");
+                    for(p=0; p<ArrayCount(params); p++) {
+                        m.teststring(jmsg.e[i].value[p], params[p], "param "$p);
+                    }
                     matches++;
                     break;
             }

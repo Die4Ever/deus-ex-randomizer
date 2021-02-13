@@ -4,6 +4,7 @@ function Timer()
 {
     if ( flags.GetInt('Rando_newgameplus_loops') <= 0 || !flags.GetBool('Intro_Played') ) {
         Super.Timer();
+        return;
     }
 
     if (flags.GetBool('Intro_Played'))

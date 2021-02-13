@@ -350,9 +350,7 @@ function NewGamePlus()
         {
             p.KeyRing.ClientRemoveAllKeys();
         }
-        //p.KeyRing = None;
     }
-    //p.CreateKeyRing();
     p.DeleteAllNotes();
     p.DeleteAllGoals();
     p.ResetConversationHistory();
@@ -395,8 +393,9 @@ function ExtendedTests()
     local int i;
     Super.ExtendedTests();
 
+    dxr.SetSeed(0451);
     testfloatrange( pow(9,4), 9*9*9*9, 0.001, "pow");
-    testfloat( pow(5.7,3), 5.7*5.7*5.7, "pow");
+    testfloatrange( pow(5.7,3), 5.7*5.7*5.7, 0.001, "pow");
 
     for(i=1;i<=5;i++)
         TestRngExp(25, 300, 100, i);

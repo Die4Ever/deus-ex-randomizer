@@ -94,14 +94,14 @@ function float pow(float m, float e)
     return exp(e * loge(m) );
 }
 
-function int rngexp(int min, int max, float curve)
+function float rngexp(float min, float max, float curve)
 {
-    local float fmin, fmax, frange, f;
-    fmin = pow(min, 1/curve);
-    fmax = pow(max+1, 1/curve);
-    frange = fmax-fmin;
-    f = rngf()*frange + fmin;
-    return int(pow(f, curve));
+    local float frange, f;
+    min = pow(min, 1/curve);
+    max = pow(max+1.0, 1/curve);
+    frange = max-min;
+    f = rngf()*frange + min;
+    return pow(f, curve);
 }
 
 function RandoLevelValues(Actor a, float min, float max, out string Desc)

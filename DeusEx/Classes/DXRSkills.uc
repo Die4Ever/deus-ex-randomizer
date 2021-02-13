@@ -73,7 +73,8 @@ function RandoSkills(Skill aSkill)
 
 function RandoSkill(Skill aSkill)
 {
-    local int percent, i;
+    local float percent;
+    local int i;
     local bool banned;
     if( dxr == None ) return;
 
@@ -141,9 +142,10 @@ function string DescriptionLevel(Actor act, int i, out string word)
     }
 }
 
-function RandoSkillLevel(Skill aSkill, int i, int parent_percent)
+function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
 {
-    local int percent, m;
+    local float percent;
+    local int m;
     local float f;
     local SkillCostMultiplier scm;
     local class<Skill> c;
@@ -161,7 +163,7 @@ function RandoSkillLevel(Skill aSkill, int i, int parent_percent)
         percent = parent_percent;
     }
 
-    f = float(aSkill.default.Cost[i]) * float(percent) / 100.0;
+    f = float(aSkill.default.Cost[i]) * percent / 100.0;
     for(m=0; m < ArrayCount(SkillCostMultipliers); m++) {
         scm = SkillCostMultipliers[m];
         if( scm.type == "" ) continue;

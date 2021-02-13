@@ -8,7 +8,6 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
 
     skill = GetWeaponSkill();
     mult = (-2.0 * skill) + 1.0;
-    //ShotTime=1/mult;
     p = DeusExProjectile(Super.ProjectileFire(ProjClass, ProjSpeed, bWarn));
     p.speed *= mult;
     p.Velocity *= mult;

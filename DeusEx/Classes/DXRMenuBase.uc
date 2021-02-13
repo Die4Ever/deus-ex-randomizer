@@ -401,7 +401,7 @@ function bool ButtonActivated( Window buttonPressed )
 
 function bool ButtonActivatedRight( Window buttonPressed )
 {
-	local bool bHandled;
+    local bool bHandled;
     bHandled = True;
 
     if( CheckClickEnum(buttonPressed, true) ) { }

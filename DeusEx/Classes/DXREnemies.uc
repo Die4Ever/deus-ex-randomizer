@@ -389,7 +389,6 @@ function GiveRandomWeapon(Pawn p)
 {
     local class<DeusExWeapon> wclass;
     local Ammo a;
-    local DeusExWeapon w;
     local int r, i;
     r = initchance();
     for(i=0; i < ArrayCount(_randomweapons); i++ ) {
@@ -404,13 +403,12 @@ function GiveRandomWeapon(Pawn p)
         l("not giving a random weapon to "$p); return;
     }
 
-    w = DeusExWeapon(GiveItem( p, wclass, true ));
+    GiveItem( p, wclass, true );
 }
 
 function GiveRandomMeleeWeapon(Pawn p)
 {
     local class<Weapon> wclass;
-    local Weapon w;
     local int r, i;
 
     if(HasMeleeWeapon(p))
@@ -427,7 +425,7 @@ function GiveRandomMeleeWeapon(Pawn p)
         }
     }
 
-    w = Weapon(GiveItem(p, wclass));
+    GiveItem(p, wclass);
 }
 
 function RandomizeSize(Actor a)
