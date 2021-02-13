@@ -310,7 +310,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 1) $ " Alpha";
+    return VersionToString(1, 5, 1) $ " Beta";
 }
 
 function MaxRando()
@@ -320,15 +320,17 @@ function MaxRando()
 
 function NewGamePlus()
 {
+    local DeusExPlayer p;
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
         LoadFlags();
     }
+    p = dxr.player;
 
     info("NewGamePlus()");
     seed++;
     newgameplus_loops++;
-    dxr.player.CombatDifficulty *= 1.2;
+    p.CombatDifficulty *= 1.2;
     minskill = minskill*1.2;// int *= float doesn't give as good accuracy as int = int*float
     maxskill = maxskill*1.2;
     enemiesrandomized = enemiesrandomized*1.2;
@@ -341,12 +343,30 @@ function NewGamePlus()
     repairbots = repairbots*0.9;
     turrets_add = turrets_add*1.2;
 
+    if (p.KeyRing != None)
+    {
+        p.KeyRing.RemoveAllKeys();
+        if ((Role == ROLE_Authority) && (Level.NetMode != NM_Standalone))
+        {
+            p.KeyRing.ClientRemoveAllKeys();
+        }
+        //p.KeyRing = None;
+    }
+    //p.CreateKeyRing();
+    p.DeleteAllNotes();
+    p.DeleteAllGoals();
+    p.ResetConversationHistory();
+    p.SetInHandPending(None);
+    p.SetInHand(None);
+    p.bInHandTransition = False;
+
     info("NewGamePlus() deleting all flags");
     f.DeleteAllFlags();
+    DeusExRootWindow(p.rootWindow).ResetFlags();
     info("NewGamePlus() deleted all flags");
     SaveFlags();
-    dxr.player.bStartNewGameAfterIntro = true;
-    Level.Game.SendPlayer(dxr.player, "00_intro");
+    p.bStartNewGameAfterIntro = true;
+    Level.Game.SendPlayer(p, "00_intro");
 }
 
 function RunTests()

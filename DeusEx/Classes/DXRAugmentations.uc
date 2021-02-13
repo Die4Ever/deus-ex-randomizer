@@ -177,7 +177,7 @@ function string DescriptionLevel(Actor act, int i, out string word)
         return int(a.LevelValues[i] / 16.0) $" ft";
     }
     else {
-        err("SkillDescriptionLevel failed for skill "$a);
+        err("DescriptionLevel failed for aug "$a);
         return "err";
     }
 }

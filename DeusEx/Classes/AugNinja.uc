@@ -49,7 +49,7 @@ defaultproperties
     smallIcon=Texture'DeusExUI.UserInterface.AugIconSpeedJump_Small'
     AugmentationName="Ninja"
     Description="I AM NINJA!"
-    MPInfo="When active, you move twice as fast and jump twice as high.  Energy Drain: Very High"
+    MPInfo="I AM NINJA!"
     LevelValues(0)=1.5
     LevelValues(1)=1.6
     LevelValues(2)=1.7
