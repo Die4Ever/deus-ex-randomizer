@@ -18,6 +18,7 @@ var int startinglocations, goals, equipment;//equipment is a multiplier on how m
 var int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
 var int turrets_move, turrets_add;
 var int crowdcontrol;
+var int newgameplus_loops;
 
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
@@ -80,6 +81,7 @@ function InitDefaults()
     minskill = 25;
     maxskill = 300;
     ammo = 90;
+    medkits = 90;
     multitools = 80;
     lockpicks = 80;
     biocells = 80;
@@ -91,7 +93,6 @@ function InitDefaults()
     deviceshackable = 100;
     passwordsrandomized = 100;
     gibsdropkeys = 1;
-    medkits = 90;
     autosave = 2;
     removeinvisiblewalls = 0;
     enemiesrandomized = 25;
@@ -109,6 +110,7 @@ function InitDefaults()
     turrets_move = 50;
     turrets_add = 20;
     crowdcontrol = 0;
+    newgameplus_loops = 0;
 }
 
 function CheckConfig()
@@ -190,6 +192,7 @@ function LoadFlags()
     }
     if( stored_version >= VersionToInt(1,5,1) ) {
         loadout = f.GetInt('Rando_loadout');
+        newgameplus_loops = f.GetInt('Rando_newgameplus_loops');
     }
 
     if(stored_version < flagsversion ) {
@@ -198,7 +201,7 @@ function LoadFlags()
     }
 
     LogFlags("LoadFlags");
-    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", flags: " $ FlagsHash() );
+    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
     SetTimer(1.0, True);
 }
 
@@ -249,6 +252,7 @@ function SaveFlags()
     f.SetInt('Rando_turrets_move', turrets_move);
     f.SetInt('Rando_turrets_add', turrets_add);
     f.SetInt('Rando_crowdcontrol', crowdcontrol);
+    f.SetInt('Rando_newgameplus_loops', newgameplus_loops);
 
     LogFlags("SaveFlags");
 }
@@ -260,7 +264,8 @@ function LogFlags(string prefix)
 
 function string StringifyFlags()
 {
-    return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", loadout: "$loadout$", brightness: "$brightness $ ", ammo: " $ ammo
+    return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", loadout: "$loadout
+        $ ", brightness: "$brightness $ ", newgameplus_loops: "$newgameplus_loops $ ", ammo: " $ ammo
         $ ", minskill: "$minskill$", maxskill: "$maxskill$", skills_disable_downgrades: " $ skills_disable_downgrades $ ", skills_reroll_missions: " $ skills_reroll_missions $ ", skills_independent_levels: " $ skills_independent_levels
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
@@ -313,6 +318,36 @@ function MaxRando()
     //should have a chance to make some skills completely unattainable, like 999999 cost? would this also have to be an option in the GUI or can it be exclusive to MaxRando?
 }
 
+function NewGamePlus()
+{
+    if( flagsversion == 0 ) {
+        warning("NewGamePlus() flagsversion == 0");
+        LoadFlags();
+    }
+
+    info("NewGamePlus()");
+    seed++;
+    newgameplus_loops++;
+    dxr.player.CombatDifficulty *= 1.2;
+    minskill = minskill*1.2;// int *= float doesn't give as good accuracy as int = int*float
+    maxskill = maxskill*1.2;
+    ammo = ammo*0.9;
+    medkits = medkits*0.9;
+    multitools = multitools*0.9;
+    lockpicks = lockpicks*0.9;
+    biocells = biocells*0.9;
+    medbots = medbots*0.9;
+    repairbots = repairbots*0.9;
+    turrets_add = turrets_add*1.2;
+
+    info("NewGamePlus() deleting all flags");
+    f.DeleteAllFlags();
+    info("NewGamePlus() deleted all flags");
+    SaveFlags();
+    dxr.player.bStartNewGameAfterIntro = true;
+    Level.Game.SendPlayer(dxr.player, "00_intro");
+}
+
 function RunTests()
 {
     local int i, t;
@@ -339,6 +374,7 @@ function ExtendedTests()
     local int i;
     Super.ExtendedTests();
 
+    testfloatrange( pow(9,4), 9*9*9*9, 0.001, "pow");
     testfloat( pow(5.7,3), 5.7*5.7*5.7, "pow");
 
     for(i=1;i<=5;i++)
@@ -372,9 +408,9 @@ function TestRngExp(int minrange, int maxrange, int mid, float curve)
         if(t==mid) mids++;
     }
     avg /= times;
-    test( min >= minrange, "exponential ^"$curve$" - min: "$min);
+    test( min >= minrange-1, "exponential ^"$curve$" - min: "$min);
     test( min < minrange+10, "exponential ^"$curve$" - min: "$min);
-    test( max <= maxrange, "exponential ^"$curve$" - max: "$max);
+    test( max <= maxrange+1, "exponential ^"$curve$" - max: "$max);
     test( max > maxrange-10, "exponential ^"$curve$" - max: "$max);
     test( avg < maxrange, "exponential ^"$curve$" - avg "$avg$" < maxrange "$maxrange);
     test( avg > minrange, "exponential ^"$curve$" - avg "$avg$" > minrange "$minrange);

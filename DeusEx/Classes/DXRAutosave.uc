@@ -5,14 +5,14 @@ var config float save_delay;
 
 function FirstEntry()
 {
-    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 99 && dxr.flags.autosave > 0 ) {
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave > 0 ) {
         bNeedSave=true;
     }
 }
 
 function ReEntry()
 {
-    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 99 && dxr.flags.autosave==2 && dxr.flags.f.GetBool('PlayerTraveling') ) {
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave==2 && dxr.flags.f.GetBool('PlayerTraveling') ) {
         bNeedSave=true;
     }
 }

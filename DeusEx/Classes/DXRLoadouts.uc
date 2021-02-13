@@ -11,15 +11,18 @@ struct loadouts
     var string allows;
     var string starting_equipments;
     var string starting_augs;
+    var string item_spawns;
 };
 var config loadouts item_sets[10];
 
 struct _loadouts
 {
-    var class<Inventory> ban_types[10];
-    var class<Inventory> allow_types[10];
-    var class<Inventory> starting_equipment[5];
+    var class<Inventory>    ban_types[10];
+    var class<Inventory>    allow_types[10];
+    var class<Inventory>    starting_equipment[5];
     var class<Augmentation> starting_augs[5];
+    var class<Actor>        item_spawns[5];
+    var int                 item_spawns_chances[5];
 };
 
 var _loadouts _item_sets[10];
@@ -29,12 +32,16 @@ struct _RandomItemStruct { var class<Inventory> type; var int chance; };
 var config RandomItemStruct randomitems[16];
 var _RandomItemStruct _randomitems[16];
 
+var config int mult_items_per_level;
+
 function CheckConfig()
 {
     local string temp;
     local int i, s;
     local class<Actor> a;
     if( config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
+        mult_items_per_level = 1;
+
         for(i=0; i < ArrayCount(item_sets); i++) {
             item_sets[i].name = "";
             item_sets[i].player_message = "";
@@ -43,6 +50,7 @@ function CheckConfig()
             item_sets[i].allows = "";
             item_sets[i].starting_equipments = "";
             item_sets[i].starting_augs = "AugSpeed";
+            item_sets[i].item_spawns = "";
         }
         for(i=0; i < ArrayCount(randomitems); i++ ) {
             randomitems[i].type = "";
@@ -67,8 +75,9 @@ function CheckConfig()
         item_sets[3].player_message = "I am Ninja!";
         item_sets[3].bans = "Engine.Weapon";
         item_sets[3].allows = "WeaponSword,WeaponShuriken";
-        item_sets[3].starting_equipments = "WeaponShuriken,WeaponSword,AmmoShuriken,AmmoShuriken";
+        item_sets[3].starting_equipments = "WeaponShuriken,WeaponSword,AmmoShuriken";
         item_sets[3].starting_augs = "AugNinja";//combines (passive?) AugStealth and active AugSpeed?
+        item_sets[3].item_spawns = "WeaponShuriken,2,BioelectricCell,2";
 
         item_sets[4].name = "Don't Give Me The GEP Gun";
         item_sets[4].player_message = "Don't Give Me The GEP Gun";
@@ -154,6 +163,11 @@ function CheckConfig()
         while( temp != "" ) {
             AddAug(s, UnpackString(temp) );
         }
+
+        temp = item_sets[s].item_spawns;
+        while( temp != "" ) {
+            AddItemSpawn(s, UnpackString(temp), int(UnpackString(temp)));
+        }
     }
 
     for(i=0; i < ArrayCount(randomitems); i++) {
@@ -231,6 +245,23 @@ function AddAug(int s, string type)
     }
 }
 
+function AddItemSpawn(int s, string type, int chances)
+{
+    local class<Actor> a;
+    local int i;
+
+    if( type == "" ) return;
+    
+    for(i=0; i < ArrayCount(_item_sets[s].allow_types); i++) {
+        if( _item_sets[s].item_spawns[i] == None ) {
+            a = GetClassFromString(type, class'Inventory');
+            _item_sets[s].item_spawns[i] = class<Inventory>(a);
+            _item_sets[s].item_spawns_chances[i] = chances;
+            return;
+        }
+    }
+}
+
 function string GetName(int i)
 {
     if( i < 0 || i >= ArrayCount(item_sets) ) return "";
@@ -276,9 +307,11 @@ function FirstEntry()
 {
     Super.FirstEntry();
 
-    if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
+    if( dxr.localURL == "01_NYC_UNATCOISLAND" && dxr.flags.newgameplus_loops == 0 ) {
         RandoStartingEquipment(dxr.player);
     }
+
+    SpawnItems();
 }
 
 function AddStartingEquipment(Pawn p)
@@ -361,6 +394,30 @@ function _RandoStartingEquipment(DeusExPlayer player, DXREnemies dxre)
 
     if( iclass == None ) return;
     GiveItem(player, iclass);
+}
+
+function SpawnItems()
+{
+    local vector loc;
+    local Actor a;
+    local class<Actor> aclass;
+    local int i, j, chance;
+    l("SpawnItems()");
+    SetSeed("SpawnItems()");
+
+    for(i=0;i<ArrayCount(_item_sets[loadout].item_spawns);i++) {
+        aclass = _item_sets[loadout].item_spawns[i];
+        if( aclass == None ) continue;
+        chance = _item_sets[loadout].item_spawns_chances[i];
+        if( chance <= 0 ) continue;
+
+        for(j=0;j<mult_items_per_level*chance*2;j++) {
+            if( chance_single(50) ) {
+                loc = GetRandomPositionFine();
+                a = Spawn(aclass,,, loc);
+            }
+        }
+    }
 }
 
 function RunTests()

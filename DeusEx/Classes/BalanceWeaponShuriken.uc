@@ -29,6 +29,7 @@ simulated function Tick(float deltaTime)
 
 defaultproperties
 {
+    PickupAmmoCount=20
     ShotTime=0.3
     ReloadCount=1
     HitDamage=20

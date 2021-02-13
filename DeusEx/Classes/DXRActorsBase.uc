@@ -375,8 +375,8 @@ function vector GetRandomPosition(optional vector target, optional float mindist
 
 function vector JitterPosition(vector loc)
 {
-    loc.X += rngfn() * 80;//5 feet in any direction
-    loc.Y += rngfn() * 80;
+    loc.X += rngfn() * 160.0;//10 feet in any direction
+    loc.Y += rngfn() * 160.0;
     return loc;
 }
 

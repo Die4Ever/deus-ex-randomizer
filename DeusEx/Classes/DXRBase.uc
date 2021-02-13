@@ -402,6 +402,23 @@ function bool testfloat(float result, float expected, string testname)
     }
 }
 
+function bool testfloatrange(float result, float expected, float range, string testname)
+{
+    local float diff;
+    diff = abs(result-expected);
+    if( diff <= range ) {
+        //print both because they might not be exaclty equal
+        l("pass: "$testname$": got "$result$", expected "$expected$", with range "$range);
+        passes++;
+        return true;
+    }
+    else {
+        err("fail: "$testname$": got "$result$", expected "$expected$", with range "$range);
+        fails++;
+        return false;
+    }
+}
+
 function bool teststring(string result, string expected, string testname)
 {
     if(result == expected) {

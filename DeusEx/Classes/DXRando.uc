@@ -219,7 +219,7 @@ function RandoEnter()
             modules[i].FirstEntry();
         }
 
-        info("done randomizing "$localURL);
+        info("done randomizing "$localURL$" using seed " $ seed);
     }
     else
     {
