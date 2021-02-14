@@ -37,5 +37,4 @@ defaultproperties
     maxRange=4000
     Speed=750.000000
     MaxSpeed=75000.000000
-    blood_mult=1
 }
