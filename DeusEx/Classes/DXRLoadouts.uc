@@ -63,7 +63,7 @@ function CheckConfig()
         item_sets[1].player_message = "stick with the prod!";
         item_sets[1].bans = "Engine.Weapon";
         item_sets[1].allows = "WeaponProd";
-        item_sets[1].starting_equipments = "WeaponProd,AmmoBattery,AmmoBattery,AmmoBattery";
+        item_sets[1].starting_equipments = "WeaponProd,AmmoBattery,AmmoBattery";
 
         item_sets[2].name = "Stick With the Prod Plus";
         item_sets[2].player_message = "stick with the prod!";

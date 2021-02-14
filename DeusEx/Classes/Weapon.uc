@@ -14,21 +14,19 @@ function PostBeginPlay()
 
 function SpawnBlood(Vector HitLocation, Vector HitNormal)
 {
-    _SpawnBlood(Self, HitLocation, HitNormal, blood_mult);
+    _SpawnBlood(HitLocation, HitNormal);
+    SpawnExtraBlood(Self, HitLocation, HitNormal, blood_mult);
 }
 
-static function _SpawnBlood(Actor this, Vector HitLocation, Vector HitNormal, float blood_mult)
+static function SpawnExtraBlood(Actor this, Vector HitLocation, Vector HitNormal, float mult)
 {
     local Actor a;
     local vector v;
-    local float mult;
     local int i;
 
     if ((DeusExMPGame(this.Level.Game) != None) && (!DeusExMPGame(this.Level.Game).bSpawnEffects))
         return;
 
-    mult = 1.0;
-    mult *= blood_mult;
     for (i=0; i < int(mult*2.0); i++)
     {
         v = VRand()*8.0*mult;
@@ -362,5 +360,5 @@ simulated function bool UpdateInfo(Object winObject)
 
 defaultproperties
 {
-    blood_mult=1
+    blood_mult=0
 }

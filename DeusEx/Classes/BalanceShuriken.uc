@@ -4,13 +4,14 @@ var float blood_mult;
 
 function SpawnBlood(Vector HitLocation, Vector HitNormal)
 {
-    class'DeusExWeapon'.static._SpawnBlood(Self, HitLocation, HitNormal, blood_mult);
+    Super.SpawnBlood(HitLocation, HitNormal);
+    class'DeusExWeapon'.static.SpawnExtraBlood(Self, HitLocation, HitNormal, blood_mult);
 }
 
 auto simulated state Flying
 {
-	simulated function ProcessTouch(Actor Other, Vector HitLocation)
-	{
+    simulated function ProcessTouch(Actor Other, Vector HitLocation)
+    {
         local DeusExPlayer player;
 
         Super.ProcessTouch(Other, HitLocation);
@@ -24,7 +25,7 @@ auto simulated state Flying
     }
 
     simulated function HitWall(vector HitNormal, actor Wall)
-	{
+    {
         Super.HitWall(HitNormal, Wall);
         SetCollisionSize(16, 16);
     }

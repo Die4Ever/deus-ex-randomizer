@@ -338,10 +338,10 @@ function CleanupOnExit() {
 }
 
 function StartMatrixMode() {
-	if (dxr.Player.Sprite == None)
-	{
-		dxr.Player.Matrix();
-	}
+    if (dxr.Player.Sprite == None)
+    {
+        dxr.Player.Matrix();
+    }
 }
 
 function StopMatrixMode(optional bool silent) {
