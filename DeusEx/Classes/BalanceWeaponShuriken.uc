@@ -15,7 +15,31 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
     return p;
 }
 
-simulated function Tick(float deltaTime)
+simulated function TweenDown()
+{
+    CheckSkill();
+    Super.TweenDown();
+}
+
+function TweenSelect()
+{
+    CheckSkill();
+    Super.TweenSelect();
+}
+
+function PlaySelect()
+{
+    CheckSkill();
+    Super.PlaySelect();
+}
+
+simulated function PlaySelectiveFiring()
+{
+    CheckSkill();
+    Super.PlaySelectiveFiring();
+}
+
+function CheckSkill()
 {
     local DeusExPlayer player;
     player = DeusExPlayer(Owner);
@@ -23,7 +47,6 @@ simulated function Tick(float deltaTime)
     if( player != None ) {
         ShotTime = default.ShotTime * (1+GetWeaponSkill());
     }
-    Super.Tick(deltaTime);
 }
 
 defaultproperties

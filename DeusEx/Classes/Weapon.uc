@@ -1,5 +1,7 @@
 class DXRWeapon merges DeusExWeapon abstract;
 
+var float blood_mult;
+
 function PostBeginPlay()
 {
     local DXRWeapons m;
@@ -7,6 +9,33 @@ function PostBeginPlay()
 
     foreach AllActors(class'DXRWeapons', m) {
         m.RandoWeapon(self);
+    }
+}
+
+function SpawnBlood(Vector HitLocation, Vector HitNormal)
+{
+    _SpawnBlood(Self, HitLocation, HitNormal, blood_mult);
+}
+
+static function _SpawnBlood(Actor this, Vector HitLocation, Vector HitNormal, float blood_mult)
+{
+    local Actor a;
+    local vector v;
+    local float mult;
+    local int i;
+
+    if ((DeusExMPGame(this.Level.Game) != None) && (!DeusExMPGame(this.Level.Game).bSpawnEffects))
+        return;
+
+    mult = 1.0;
+    mult *= blood_mult;
+    for (i=0; i < int(mult*2.0); i++)
+    {
+        v = VRand()*8.0*mult;
+        a = this.spawn(class'BloodSpurt',,,HitLocation+HitNormal+v);
+        a.DrawScale *= mult;
+        a = this.spawn(class'BloodDrop',,,HitLocation+HitNormal*4+v);
+        a.DrawScale *= mult;
     }
 }
 
@@ -329,4 +358,9 @@ simulated function bool UpdateInfo(Object winObject)
     }
 
     return True;
+}
+
+defaultproperties
+{
+    blood_mult=1
 }

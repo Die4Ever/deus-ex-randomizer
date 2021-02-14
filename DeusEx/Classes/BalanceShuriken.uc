@@ -1,25 +1,10 @@
 class BalanceShuriken injects Shuriken;
 
+var float blood_mult;
+
 function SpawnBlood(Vector HitLocation, Vector HitNormal)
 {
-    local Actor a;
-    local vector v;
-    local float mult;
-    local int i;
-
-    if ((DeusExMPGame(Level.Game) != None) && (!DeusExMPGame(Level.Game).bSpawnEffects))
-        return;
-
-    mult = Damage / default.Damage * 4;
-    mult = Loge(mult) / Loge(4);
-    for (i=0; i < int(mult*5.0); i++)
-    {
-        v = VRand()*8.0*mult;
-        a = spawn(class'BloodSpurt',,,HitLocation+HitNormal+v);
-        a.DrawScale *= mult;
-        a = spawn(class'BloodDrop',,,HitLocation+HitNormal*4+v);
-        a.DrawScale *= mult;
-    }
+    class'DeusExWeapon'.static._SpawnBlood(Self, HitLocation, HitNormal, blood_mult);
 }
 
 auto simulated state Flying
@@ -51,4 +36,5 @@ defaultproperties
     maxRange=4000
     Speed=750.000000
     MaxSpeed=75000.000000
+    blood_mult=1
 }

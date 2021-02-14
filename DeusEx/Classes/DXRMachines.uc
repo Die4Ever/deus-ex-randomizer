@@ -15,15 +15,15 @@ function CheckConfig()
 {
     local int i;
     local class<Actor> a;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,0) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
         max_turrets = 3;
         turret_move_min_distance = 10*16;
         turret_move_max_distance = 500*16;
         max_datacube_distance = 200*16;
         min_datacube_distance = 75*16;
         camera_swing_angle = 8192;
-        camera_fov = 5000;//default is 4096
-        camera_range = 100*16;//default is 1024 aka 64 feet
+        camera_fov = 6000;//default is 4096
+        camera_range = 150*16;//default is 1024 aka 64 feet
         camera_swing_period = 8;//seconds?
         camera_ceiling_pitch = -4000;//the angle to look down when against a ceiling
     }

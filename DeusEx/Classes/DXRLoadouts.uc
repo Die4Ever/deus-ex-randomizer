@@ -303,6 +303,33 @@ function bool ban(DeusExPlayer player, Inventory item)
     }
 }
 
+function AdjustWeapon(DeusExWeapon w)
+{
+    switch( item_sets[loadout].name ) {
+        case "Ninja JC":
+            NinjaAdjustWeapon(w);
+            break;
+    }
+}
+
+function NinjaAdjustWeapon(DeusExWeapon w)
+{
+    class'Shuriken'.default.blood_mult = 2;
+    switch(w.Class) {
+        case class'WeaponSword':
+            w.blood_mult = 2;
+            w.default.blood_mult = 2;
+            w.ShotTime=0;
+            w.default.ShotTime=0;
+            w.maxRange = 96;
+            w.default.maxRange = 96;
+        case class'WeaponNanoSword':
+            w.blood_mult = 2;
+            w.default.blood_mult = 2;
+            break;
+    }
+}
+
 function FirstEntry()
 {
     Super.FirstEntry();
