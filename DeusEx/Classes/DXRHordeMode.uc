@@ -242,17 +242,13 @@ function AnyEntry()
         err("Could not find DXREnemies! This is required for Horde Mode.");
     }
 
+    class'DXRAugmentations'.static.AddAug( dxr.player, class'AugSpeed', dxr.flags.speedlevel );
     dxre.GiveRandomWeapon(dxr.Player);
     dxre.GiveRandomWeapon(dxr.Player);
     dxre.GiveRandomMeleeWeapon(dxr.Player);
-    item = Spawn(class'Medkit', dxr.player);
-    item.GiveTo(dxr.player);
-    item.SetBase(dxr.player);
-    item = Spawn(class'FireExtinguisher', dxr.player);
-    item.GiveTo(dxr.player);
-    item.SetBase(dxr.player);
+    GiveItem(dxr.Player, class'Medkit');
+    GiveItem(dxr.Player, class'FireExtinguisher');
     dxr.Player.dataLinkPlay = Spawn(class'DataLinkPlay',, 'dummydatalink');//this prevents saving the game :)
-
     time_to_next_wave = time_between_waves;
 
     foreach AllActors(class'Teleporter', t) {
@@ -521,10 +517,9 @@ function float GenerateEnemy(DXREnemies dxre)
 function GiveRandomItems(ScriptedPawn p)
 {
     local DeusExPickup item;
-    item = Spawn(class'WineBottle', p);// this is how Paris works in real life, right?
+
+    item = DeusExPickup(GiveItem(p, class'WineBottle'));// this is how Paris works in real life, right?
     item.numCopies = wine_bottles_per_enemy;
-    item.GiveTo(p);
-    item.SetBase(p);
 }
 
 function SetAlliance(ScriptedPawn p)

@@ -66,3 +66,7 @@ function PreTravel()
         player.UpdateURL("barrel1_skin", string(SkinColor), false);
     }
 }
+
+auto state Active
+{
+}

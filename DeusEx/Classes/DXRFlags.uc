@@ -51,6 +51,12 @@ function Timer()
     }
 }
 
+function AnyEntry()
+{
+    Super.AnyEntry();
+    Timer();
+}
+
 function RollSeed()
 {
     dxr.CrcInit();
@@ -310,7 +316,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 1) $ " Beta";
+    return VersionToString(1, 5, 1) $ "";
 }
 
 function MaxRando()

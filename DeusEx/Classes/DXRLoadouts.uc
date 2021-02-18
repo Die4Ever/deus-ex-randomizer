@@ -57,7 +57,7 @@ function CheckConfig()
             randomitems[i].chance = 0;
         }
 
-        item_sets[0].name = "Randomized Loadout with Running Speed";
+        item_sets[0].name = "Randomized Starting Equipment";
 
         item_sets[1].name = "Stick With the Prod";
         item_sets[1].player_message = "stick with the prod!";
