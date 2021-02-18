@@ -8,7 +8,11 @@ Download the `DeusEx.u` file from the releases page here https://github.com/Die4
 
 Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`)
 
-### Currently in v1.5, DXRando randomizes
+### v1.5 Trailer
+
+[![v1.5 Trailer](https://img.youtube.com/vi/A0Li3XuBjGg/0.jpg)](https://www.youtube.com/watch?v=A0Li3XuBjGg)
+
+### Currently in v1.5.1, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
@@ -28,12 +32,17 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 There are also settings for
 * Crowd Control! Let your viewers troll you or help you! Check [their website](https://crowdcontrol.live/) for when they enable Deus Ex Randomizer
     * If you want to try some of the Crowd Control features without actually streaming, you can try the "OfflineCrowdControl.py" script to randomly send Crowd Control messages to your local game!  Requires Python 3.8 or above
+* New Game+ - after beating the game play it again keeping your items, skills, and augs, but with increased difficulty and a new seed
 * new game modes!
     * Rearranged Levels is in beta, it changes what level each teleporter takes you to, but keeps it within the same mission.
     * Horde Mode is in beta and mostly I think it just needs balancing.
-* challenge modes!
+* challenge mode loadouts!
     * Stick With the Prod means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts
+    * Ninja JC - the only weapons allowed are thowing knives and the sword, you get a Ninja Augmentation which gives you speed and stealth at the same time
+    * Don't Give Me the GEP Gun - bans the GEP gun
+    * Freeman Mode - only weapon allowed is the crowbar
+    * Grenades Only
 * making all or some of the doors that normally require a key also lockpickable and/or destructible
 * making all or some keypads hackable.
 * reducing the drop rate for ammo, multitools, lockpicks, medkits, and bioelectric cells
@@ -49,7 +58,7 @@ There are also settings for
 
 For the randomized passwords, you can copy-paste from the Goals/Notes screen.
 
-I've also made some balance tweaks. Hacking computers now uses bioelectric energy. The healing aug gives less health. Level 1 of the speed aug has been buffed, but max level remains the same. Dragon's Tooth Sword now does much less damage, but if you aim for the head you can still kill most enemies in 1 hit. Spy Drone aug has improved speed and the emp blast now also does explosive damage. Fire extinguishers now stack in your inventory. Also the PS20 has been upgraded to the PS40 and does significantly more damage. Paul is now mortal during the raid in mission 4, so you need to help him fight!
+I've also made some balance tweaks. Hacking computers now uses bioelectric energy. The healing aug gives less health. Level 1 of the speed aug has been buffed, but max level remains the same. Dragon's Tooth Sword now does much less damage, but if you aim for the head you can still kill most enemies in 1 hit. Thowing knives deal more damage, and their speed and range increase with your low tech skill. Spy Drone aug has improved speed and the emp blast now also does explosive damage. Fire extinguishers now stack in your inventory. Also the PS20 has been upgraded to the PS40 and does significantly more damage. Paul is now mortal during the raid in mission 4, so you need to help him fight!
 
 ### Recommended tweaks for running Deus Ex on modern computers
 

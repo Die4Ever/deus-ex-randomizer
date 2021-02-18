@@ -81,30 +81,71 @@ function float rngfn()
 
 function float rngrange(float val, float min, float max)
 {
-    local float mult;
+    local float mult, r, ret;
     mult = max - min;
-    return val * (rngf() * mult + min);
+    r = rngf();
+    ret = val * (r * mult + min);
+    //l("rngrange r: "$r$", mult: "$mult$", min: "$min$", max: "$max$", val: "$val$", return: "$ret);
+    return ret;
 }
 
-function string RandoLevelValues(out float LevelValues[4], float DefaultLevelValues[4], float min, float max)
+function float pow(float m, float e)
 {
-    local int i;
-    local float min_val;
-    local string s;
+    return exp(e * loge(m) );
+}
 
-    s = "(Values: ";
-    for(i=0; i<ArrayCount(LevelValues); i++) {
-        LevelValues[i] = rngrange(DefaultLevelValues[i], min, max);
-        if( i>0 && DefaultLevelValues[i-1] < DefaultLevelValues[i] && LevelValues[i] < min_val ) LevelValues[i] = min_val;
-        else if( i>0 && DefaultLevelValues[i-1] > DefaultLevelValues[i] && LevelValues[i] > min_val ) LevelValues[i] = min_val;
-        min_val = LevelValues[i];
+function float rngexp(float min, float max, float curve)
+{
+    local float frange, f;
+    min = pow(min, 1/curve);
+    max = pow(max+1.0, 1/curve);
+    frange = max-min;
+    f = rngf()*frange + min;
+    return pow(f, curve);
+}
+
+function RandoLevelValues(Actor a, float min, float max, out string Desc)
+{
+    local Augmentation aug;
+    local Skill sk;
+    local string s, word;
+    local int i, len;
+    local float prev_d, d, v, min_val;
+
+    aug = Augmentation(a);
+    sk = Skill(a);
+
+    if( aug != None ) len = ArrayCount(aug.LevelValues);
+    else if( sk != None ) len = ArrayCount(sk.LevelValues);
+
+    for(i=0; i < len; i++) {
+        if( aug != None ) d = aug.Default.LevelValues[i];
+        else if( sk != None ) d = sk.Default.LevelValues[i];
+
+        v = rngrange(d, min, max);
+        if( i>0 && prev_d < d && v < min_val ) v = min_val;
+        else if( i>0 && prev_d > d && v > min_val ) v = min_val;
+        min_val = v;
+
+        if( aug != None ) aug.LevelValues[i] = v;
+        else if( sk != None ) sk.LevelValues[i] = v;
+
         if( i>0 ) s = s $ ", ";
-
-        if( LevelValues[i] == DefaultLevelValues[i] ) s = s $ "100%";
-        else s = s $ int(LevelValues[i]/DefaultLevelValues[i]*100.0) $ "%";
+        s = s $ DescriptionLevel(a, i, word);
+        prev_d = d;
     }
-    s = s $ ")";
-    return s;
+
+    s = "(" $ word $ ": " $ s $ ")";
+
+    if( InStr(Desc, s) == -1 )
+        Desc = Desc $ "|n|n" $ s;
+
+}
+
+function string DescriptionLevel(Actor a, int i, out string word)
+{
+    err("DXRBase DescriptionLevel failed for "$a);
+    return "err";
 }
 
 function static int staticrng(DXRando dxr, int max)
@@ -153,6 +194,23 @@ function class<Actor> GetClassFromString(string classstring, class<Actor> c)
     }
     //l("GetClassFromString: found " $ classstring);
     return a;
+}
+
+static function string UnpackString(out string s)
+{
+    local int i, l;
+    local string ret;
+    l = Len(s);
+    for(i=0; i<l; i++) {
+        if( Mid(s, i, 1) == "," ) {
+            ret = Left(s, i);
+            s = Mid(s, i+1);
+            return ret;
+        }
+    }
+    ret = s;
+    s="";
+    return ret;
 }
 
 
@@ -324,6 +382,38 @@ function bool testint(int result, int expected, string testname)
     }
     else {
         err("fail: "$testname$": got "$result$", expected "$expected);
+        fails++;
+        return false;
+    }
+}
+
+function bool testfloat(float result, float expected, string testname)
+{
+    if(result ~= expected) {
+        //print both because they might not be exaclty equal
+        l("pass: "$testname$": got "$result$", expected "$expected);
+        passes++;
+        return true;
+    }
+    else {
+        err("fail: "$testname$": got "$result$", expected "$expected);
+        fails++;
+        return false;
+    }
+}
+
+function bool testfloatrange(float result, float expected, float range, string testname)
+{
+    local float diff;
+    diff = abs(result-expected);
+    if( diff <= range ) {
+        //print both because they might not be exaclty equal
+        l("pass: "$testname$": got "$result$", expected "$expected$", with range "$range);
+        passes++;
+        return true;
+    }
+    else {
+        err("fail: "$testname$": got "$result$", expected "$expected$", with range "$range);
         fails++;
         return false;
     }

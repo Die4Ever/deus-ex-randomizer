@@ -23,6 +23,16 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+function AnyEntry()
+{
+    local DeusExPlayer p;
+    Super.AnyEntry();
+    //info log player's health, item counts...?
+    p = dxr.player;
+    if( p == None ) return;
+    info("health: "$p.health$", HealthLegLeft: "$p.HealthLegLeft$", HealthLegRight: "$p.HealthLegRight$", HealthTorso: "$p.HealthTorso$", HealthHead: "$p.HealthHead$", HealthArmLeft: "$p.HealthArmLeft$", HealthArmRight: "$p.HealthArmRight);
+}
+
 function set_enabled(bool e)
 {
     log(Self$": set_enabled "$e);

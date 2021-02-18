@@ -27,11 +27,6 @@ var config ImportantLocation important_locations[128];
 
 var config bool allow_vanilla;
 
-struct RandomItemStruct { var string type; var int chance; };
-struct _RandomItemStruct { var class<Inventory> type; var int chance; };
-var config RandomItemStruct randomitems[16];
-var _RandomItemStruct _randomitems[16];
-
 var vector rando_start_loc;
 var bool b_rando_start;
 
@@ -73,10 +68,6 @@ function CheckConfig()
             important_locations[i].is_player_start = false;
             important_locations[i].is_goal_position = true;
             important_locations[i].rotation = rot(0,0,0);
-        }
-        for(i=0; i < ArrayCount(randomitems); i++ ) {
-            randomitems[i].type = "";
-            randomitems[i].chance = 0;
         }
 
         i=0;
@@ -937,52 +928,6 @@ function CheckConfig()
         important_locations[i].is_goal_position = false;
         important_locations[i].is_player_start = true;
         i++;
-
-        i=0;
-
-        randomitems[i].type = "Medkit";
-        randomitems[i].chance = 9;
-        i++;
-
-        randomitems[i].type = "Lockpick";
-        randomitems[i].chance = 9;
-        i++;
-
-        randomitems[i].type = "Multitool";
-        randomitems[i].chance = 9;
-        i++;
-
-        randomitems[i].type = "Flare";
-        randomitems[i].chance = 9;
-        i++;
-
-        randomitems[i].type = "FireExtinguisher";
-        randomitems[i].chance = 9;
-        i++;
-
-        randomitems[i].type = "SoyFood";
-        randomitems[i].chance = 9;
-        i++;
-
-        randomitems[i].type = "TechGoggles";
-        randomitems[i].chance = 9;
-        i++;
-
-        randomitems[i].type = "Binoculars";
-        randomitems[i].chance = 10;
-        i++;
-
-        randomitems[i].type = "BioelectricCell";
-        randomitems[i].chance = 9;
-        i++;
-
-        randomitems[i].type = "BallisticArmor";
-        randomitems[i].chance = 9;
-        i++;
-
-        randomitems[i].type = "WineBottle";
-        randomitems[i].chance = 9;
-        i++;
     }
 
     for(i=0; i<ArrayCount(remove_actors); i++) {
@@ -993,13 +938,6 @@ function CheckConfig()
     }
     for(i=0; i<ArrayCount(important_locations); i++) {
         important_locations[i].map_name = Caps(important_locations[i].map_name);
-    }
-    for(i=0; i < ArrayCount(randomitems); i++) {
-        if( randomitems[i].type != "" ) {
-            a = GetClassFromString(randomitems[i].type, class'Inventory');
-            _randomitems[i].type = class<Inventory>(a);
-            _randomitems[i].chance = randomitems[i].chance;
-        }
     }
 
     Super.CheckConfig();
@@ -1024,7 +962,6 @@ function FirstEntry()
 
     if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
-        RandoStartingEquipment(dxr.player);
     }
     if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
         foreach AllActors(class'AnnaNavarre', anna) {
@@ -1180,67 +1117,6 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     return true;
 }
 
-function RandoStartingEquipment(DeusExPlayer player)
-{
-    local Inventory item, anItem;
-    local class<Inventory> iclass;
-    local DXREnemies dxre;
-    local DXRBannedItems dxrbanned;
-    local int r, i;
-
-    if( dxr.flags.equipment == 0 ) return;
-
-    l("RandoStartingEquipment");
-    dxr.SetSeed( dxr.Crc(dxr.seed $ " RandoStartingEquipment") );//independent of map/mission
-
-    dxr.player.energy = rng(75)+25;
-    dxr.player.Credits = rng(200);
-
-    dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
-
-    item = player.Inventory;
-    while(item != None)
-    {
-        anItem = item;
-        item = item.Inventory;
-        if( NanoKeyRing(anItem) != None ) continue;
-        if( dxre == None && DeusExWeapon(anItem) != None ) continue;
-        if( dxre == None && Ammo(anItem) != None ) continue;
-        player.DeleteInventory(anItem);
-        anItem.Destroy();
-    }
-
-    dxrbanned = DXRBannedItems(dxr.FindModule(class'DXRBannedItems'));
-    if( dxrbanned != None ) dxrbanned.AddStartingEquipment(player);
-
-    for(i=0; i < dxr.flags.equipment; i++) {
-        _RandoStartingEquipment(player, dxre);
-    }
-}
-
-function _RandoStartingEquipment(DeusExPlayer player, DXREnemies dxre)
-{
-    local int i, r;
-    local Inventory item;
-    local class<Inventory> iclass;
-
-    if(dxre != None) {
-        dxre.GiveRandomWeapon(player);
-        dxre.GiveRandomMeleeWeapon(player);
-    }
-
-    r = initchance();
-    for(i=0; i < ArrayCount(_randomitems); i++ ) {
-        if( _randomitems[i].type == None ) continue;
-        if( chance( _randomitems[i].chance, r ) ) iclass = _randomitems[i].type;
-    }
-
-    if( iclass == None ) return;
-    item = Spawn(iclass);
-    item.SetLocation(player.Location);
-    item.Frob(player, None);
-}
-
 static function bool IsCloseToStart(DXRando dxr, vector loc)
 {
     local PlayerStart ps;
@@ -1275,10 +1151,4 @@ function RunTests()
 {
     local int i, total;
     Super.RunTests();
-
-    total=0;
-    for(i=0; i < ArrayCount(randomitems); i++ ) {
-        total += randomitems[i].chance;
-    }
-    test( total <= 100, "config randomitems chances, check total "$total);
 }

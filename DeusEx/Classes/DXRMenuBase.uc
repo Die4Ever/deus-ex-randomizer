@@ -187,7 +187,7 @@ function int Slider(int id, out int value, int min, int max, bool writing)
     return value;
 }
 
-function int UnpackInt(out string s)
+static function int UnpackInt(out string s)
 {
     local int i, ret, l;
     l = Len(s);
@@ -379,6 +379,7 @@ function MenuUIActionButtonWindow CreateEnum(int row, string label, string helpt
         if(e.values[e.value] != "") break;
     }
     e.btn = CreateBtn(row, label, helptext, e.values[e.value]);
+    e.btn.EnableRightMouseClick();
     return e.btn;
 }
 
@@ -398,7 +399,23 @@ function bool ButtonActivated( Window buttonPressed )
     return bHandled;
 }
 
-function bool CheckClickEnum( Window buttonPressed )
+function bool ButtonActivatedRight( Window buttonPressed )
+{
+    local bool bHandled;
+    bHandled = True;
+
+    if( CheckClickEnum(buttonPressed, true) ) { }
+    else {
+        bHandled = False;
+    }
+
+    if ( !bHandled )
+        bHandled = Super.ButtonActivated(buttonPressed);
+
+    return bHandled;
+}
+
+function bool CheckClickEnum( Window buttonPressed, optional bool rightClick )
 {
     local EnumBtn e;
     local int i;
@@ -406,7 +423,8 @@ function bool CheckClickEnum( Window buttonPressed )
     for(i=0; i<ArrayCount(enums); i++) {
         e=enums[i];
         if( buttonPressed == e.btn ) {
-            enums[i] = ClickEnum(e);
+            if( rightClick ) enums[i] = RightClickEnum(e);
+            else enums[i] = ClickEnum(e);
             return true;
         }
     }
@@ -420,6 +438,17 @@ function EnumBtn ClickEnum(EnumBtn e)
     while( e.values[e.value] == "" ) {
         e.value++;
         e.value = e.value % ArrayCount(e.values);
+    }
+    e.btn.SetButtonText(e.values[e.value]);
+    return e;
+}
+
+function EnumBtn RightClickEnum(EnumBtn e)
+{
+    e.value--;
+    if( e.value < 0 ) e.value = ArrayCount(e.values)-1;
+    while( e.values[e.value] == "" ) {
+        e.value--;
     }
     e.btn.SetButtonText(e.values[e.value]);
     return e;

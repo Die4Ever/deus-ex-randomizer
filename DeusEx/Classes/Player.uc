@@ -2,12 +2,127 @@ class DXRPlayer merges DeusExPlayer;
 
 function bool AddInventory( inventory NewItem )
 {
-    local DXRBannedItems ban_items;
+    local DXRLoadouts ban_items;
 
-    foreach AllActors(class'DXRBannedItems', ban_items) {
+    foreach AllActors(class'DXRLoadouts', ban_items) {
         if ( ban_items.ban(self, NewItem) ) return true;
     }
     return _AddInventory(NewItem);
+}
+
+function float GetCurrentGroundSpeed()
+{
+    local float augValue, speed;
+
+    // Remove this later and find who's causing this to Access None MB
+    if ( AugmentationSystem == None )
+        return 0;
+
+    augValue = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
+    if (augValue == -1.0)
+        augValue = AugmentationSystem.GetAugLevelValue(class'AugNinja');
+
+    if (augValue == -1.0)
+        augValue = 1.0;
+
+    if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
+        speed = Human(Self).mpGroundSpeed * augValue;
+    else
+        speed = Default.GroundSpeed * augValue;
+
+    return speed;
+}
+
+function DoJump( optional float F )
+{
+    local DeusExWeapon w;
+    local float scaleFactor, augLevel;
+
+    if ((CarriedDecoration != None) && (CarriedDecoration.Mass > 20))
+        return;
+    else if (bForceDuck || IsLeaning())
+        return;
+
+    if (Physics == PHYS_Walking)
+    {
+        if ( Role == ROLE_Authority )
+            PlaySound(JumpSound, SLOT_None, 1.5, true, 1200, 1.0 - 0.2*FRand() );
+        if ( (Level.Game != None) && (Level.Game.Difficulty > 0) )
+            MakeNoise(0.1 * Level.Game.Difficulty);
+        PlayInAir();
+
+        Velocity.Z = JumpZ;
+
+        if ( Level.NetMode != NM_Standalone )
+        {
+         if (AugmentationSystem == None)
+            augLevel = -1.0;
+         else			
+            augLevel = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
+            if( augLevel == -1.0 )
+                augLevel = AugmentationSystem.GetAugLevelValue(class'AugNinja');
+            w = DeusExWeapon(InHand);
+            if ((augLevel != -1.0) && ( w != None ) && ( w.Mass > 30.0))
+            {
+                scaleFactor = 1.0 - FClamp( ((w.Mass - 30.0)/55.0), 0.0, 0.5 );
+                Velocity.Z *= scaleFactor;
+            }
+        }
+        
+        // reduce the jump velocity if you are crouching
+//		if (bIsCrouching)
+//			Velocity.Z *= 0.9;
+
+        if ( Base != Level )
+            Velocity.Z += Base.Velocity.Z;
+        SetPhysics(PHYS_Falling);
+        if ( bCountJumps && (Role == ROLE_Authority) )
+            Inventory.OwnerJumped();
+    }
+}
+
+function Landed(vector HitNormal)
+{
+    local vector legLocation;
+    local int augLevel;
+    local float augReduce, dmg;
+
+    //Note - physics changes type to PHYS_Walking by default for landed pawns
+    PlayLanded(Velocity.Z);
+    if (Velocity.Z < -1.4 * JumpZ)
+    {
+        MakeNoise(-0.5 * Velocity.Z/(FMax(JumpZ, 150.0)));
+        if ((Velocity.Z < -700) && (ReducedDamageType != 'All'))
+            if ( Role == ROLE_Authority )
+            {
+                // check our jump augmentation and reduce falling damage if we have it
+                // jump augmentation doesn't exist anymore - use Speed instaed
+                // reduce an absolute amount of damage instead of a relative amount
+                augReduce = 0;
+                if (AugmentationSystem != None)
+                {
+                    augLevel = AugmentationSystem.GetClassLevel(class'AugSpeed');
+                    if( augLevel == -1.0 )
+                        augLevel = AugmentationSystem.GetClassLevel(class'AugNinja');
+                    if (augLevel >= 0)
+                        augReduce = 15 * (augLevel+1);
+                }
+
+                dmg = Max((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
+                legLocation = Location + vect(-1,0,-1);			// damage left leg
+                TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
+
+                legLocation = Location + vect(1,0,-1);			// damage right leg
+                TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
+
+                dmg = Max((-0.06 * (Velocity.Z + 700)) - augReduce, 0);
+                legLocation = Location + vect(0,0,1);			// damage torso
+                TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
+            }
+    }
+    else if ( (Level.Game != None) && (Level.Game.Difficulty > 1) && (Velocity.Z > 0.5 * JumpZ) )
+        MakeNoise(0.1 * Level.Game.Difficulty);				
+    bJustLanded = true;
 }
 
 // ----------------------------------------------------------------------
@@ -24,6 +139,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     local HazMatSuit suit;
     local BallisticArmor armor;
     local bool bReduced;
+    local float damageMult;
 
     bReduced = False;
     newDamage = Float(Damage);
@@ -102,7 +218,10 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     //Apply damage multiplier
     //This gets tweaked from DXRandoCrowdControlLink, but will normally just be 1.0
-    newDamage*=MPDamageMult;
+    damageMult = flagBase.GetFloat('cc_damageMult');
+    if (damageMult!=0) {
+        newDamage*=damageMult;
+    }
 
 
     //

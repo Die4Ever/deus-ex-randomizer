@@ -6,7 +6,7 @@ var transient FlagBase f;
 var int seed;
 var int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
 var int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food
-var int banneditems;//0=none, 1=stick with the prod, 2=stick with the prod plus
+var int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
 var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
 var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
 var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
@@ -18,6 +18,7 @@ var int startinglocations, goals, equipment;//equipment is a multiplier on how m
 var int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
 var int turrets_move, turrets_add;
 var int crowdcontrol;
+var int newgameplus_loops;
 
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
@@ -50,6 +51,12 @@ function Timer()
     }
 }
 
+function AnyEntry()
+{
+    Super.AnyEntry();
+    Timer();
+}
+
 function RollSeed()
 {
     dxr.CrcInit();
@@ -75,11 +82,12 @@ function InitDefaults()
     seed = 0;
     if( dxr != None ) RollSeed();
     gamemode = 0;
-    banneditems = 0;
+    loadout = 0;
     brightness = 10;
     minskill = 25;
     maxskill = 300;
     ammo = 90;
+    medkits = 90;
     multitools = 80;
     lockpicks = 80;
     biocells = 80;
@@ -91,7 +99,6 @@ function InitDefaults()
     deviceshackable = 100;
     passwordsrandomized = 100;
     gibsdropkeys = 1;
-    medkits = 90;
     autosave = 2;
     removeinvisiblewalls = 0;
     enemiesrandomized = 25;
@@ -109,6 +116,7 @@ function InitDefaults()
     turrets_move = 50;
     turrets_add = 20;
     crowdcontrol = 0;
+    newgameplus_loops = 0;
 }
 
 function CheckConfig()
@@ -170,11 +178,11 @@ function LoadFlags()
         skills_reroll_missions = f.GetInt('Rando_skills_reroll_missions');
         skills_independent_levels = f.GetInt('Rando_skills_independent_levels');
 
-        if( gamemode == 4 ) banneditems = 1;
-        if( gamemode == 5 ) banneditems = 2;
+        if( gamemode == 4 ) loadout = 1;
+        if( gamemode == 5 ) loadout = 2;
     }
     if( stored_version >= VersionToInt(1,4,7) ) {
-        banneditems = f.GetInt('Rando_banneditems');
+        loadout = f.GetInt('Rando_banneditems');
     }
     if( stored_version >= VersionToInt(1,4,9) ) {
         startinglocations = f.GetInt('Rando_startinglocations');
@@ -188,6 +196,10 @@ function LoadFlags()
         turrets_add = f.GetInt('Rando_turrets_add');
         crowdcontrol = f.GetInt('Rando_crowdcontrol');
     }
+    if( stored_version >= VersionToInt(1,5,1) ) {
+        loadout = f.GetInt('Rando_loadout');
+        newgameplus_loops = f.GetInt('Rando_newgameplus_loops');
+    }
 
     if(stored_version < flagsversion ) {
         info("upgraded flags from "$stored_version$" to "$flagsversion);
@@ -195,7 +207,7 @@ function LoadFlags()
     }
 
     LogFlags("LoadFlags");
-    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", flags: " $ FlagsHash() );
+    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
     SetTimer(1.0, True);
 }
 
@@ -204,48 +216,49 @@ function SaveFlags()
     l("SaveFlags()");
 
     InitVersion();
-    f.SetInt('Rando_seed', seed,, 999);
+    f.SetInt('Rando_seed', seed);
     dxr.seed = seed;
 
-    f.SetInt('Rando_version', flagsversion,, 999);
-    f.SetInt('Rando_gamemode', gamemode,, 999);
-    f.SetInt('Rando_banneditems', banneditems,, 999);
-    f.SetInt('Rando_brightness', brightness,, 999);
-    f.SetInt('Rando_minskill', minskill,, 999);
-    f.SetInt('Rando_maxskill', maxskill,, 999);
-    f.SetInt('Rando_ammo', ammo,, 999);
-    f.SetInt('Rando_multitools', multitools,, 999);
-    f.SetInt('Rando_lockpicks', lockpicks,, 999);
-    f.SetInt('Rando_biocells', biocells,, 999);
-    f.SetInt('Rando_medkits', medkits,, 999);
-    f.SetInt('Rando_speedlevel', speedlevel,, 999);
-    f.SetInt('Rando_keys', keysrando,, 999);
-    f.SetInt('Rando_doorsmode', doorsmode,, 999);
-    f.SetInt('Rando_doorspickable', doorspickable,, 999);
-    f.SetInt('Rando_doorsdestructible', doorsdestructible,, 999);
-    f.SetInt('Rando_deviceshackable', deviceshackable,, 999);
-    f.SetInt('Rando_passwordsrandomized', passwordsrandomized,, 999);
-    f.SetInt('Rando_gibsdropkeys', gibsdropkeys,, 999);
-    f.SetInt('Rando_autosave', autosave,, 999);
-    f.SetInt('Rando_removeinvisiblewalls', removeinvisiblewalls,, 999);
-    f.SetInt('Rando_enemiesrandomized', enemiesrandomized,, 999);
-    f.SetInt('Rando_enemyrespawn', enemyrespawn,, 999);
-    f.SetInt('Rando_infodevices', infodevices,, 999);
-    f.SetInt('Rando_dancingpercent', dancingpercent,, 999);
+    f.SetInt('Rando_version', flagsversion);
+    f.SetInt('Rando_gamemode', gamemode);
+    f.SetInt('Rando_loadout', loadout);
+    f.SetInt('Rando_brightness', brightness);
+    f.SetInt('Rando_minskill', minskill);
+    f.SetInt('Rando_maxskill', maxskill);
+    f.SetInt('Rando_ammo', ammo);
+    f.SetInt('Rando_multitools', multitools);
+    f.SetInt('Rando_lockpicks', lockpicks);
+    f.SetInt('Rando_biocells', biocells);
+    f.SetInt('Rando_medkits', medkits);
+    f.SetInt('Rando_speedlevel', speedlevel);
+    f.SetInt('Rando_keys', keysrando);
+    f.SetInt('Rando_doorsmode', doorsmode);
+    f.SetInt('Rando_doorspickable', doorspickable);
+    f.SetInt('Rando_doorsdestructible', doorsdestructible);
+    f.SetInt('Rando_deviceshackable', deviceshackable);
+    f.SetInt('Rando_passwordsrandomized', passwordsrandomized);
+    f.SetInt('Rando_gibsdropkeys', gibsdropkeys);
+    f.SetInt('Rando_autosave', autosave);
+    f.SetInt('Rando_removeinvisiblewalls', removeinvisiblewalls);
+    f.SetInt('Rando_enemiesrandomized', enemiesrandomized);
+    f.SetInt('Rando_enemyrespawn', enemyrespawn);
+    f.SetInt('Rando_infodevices', infodevices);
+    f.SetInt('Rando_dancingpercent', dancingpercent);
 
-    f.SetInt('Rando_skills_disable_downgrades', skills_disable_downgrades,, 999);
-    f.SetInt('Rando_skills_reroll_missions', skills_reroll_missions,, 999);
-    f.SetInt('Rando_skills_independent_levels', skills_independent_levels,, 999);
+    f.SetInt('Rando_skills_disable_downgrades', skills_disable_downgrades);
+    f.SetInt('Rando_skills_reroll_missions', skills_reroll_missions);
+    f.SetInt('Rando_skills_independent_levels', skills_independent_levels);
 
-    f.SetInt('Rando_startinglocations', startinglocations,, 999);
-    f.SetInt('Rando_goals', goals,, 999);
-    f.SetInt('Rando_equipment', equipment,, 999);
+    f.SetInt('Rando_startinglocations', startinglocations);
+    f.SetInt('Rando_goals', goals);
+    f.SetInt('Rando_equipment', equipment);
 
-    f.SetInt('Rando_medbots', medbots,, 999);
-    f.SetInt('Rando_repairbots', repairbots,, 999);
-    f.SetInt('Rando_turrets_move', turrets_move,, 999);
-    f.SetInt('Rando_turrets_add', turrets_add,, 999);
-    f.SetInt('Rando_crowdcontrol', crowdcontrol,, 999);
+    f.SetInt('Rando_medbots', medbots);
+    f.SetInt('Rando_repairbots', repairbots);
+    f.SetInt('Rando_turrets_move', turrets_move);
+    f.SetInt('Rando_turrets_add', turrets_add);
+    f.SetInt('Rando_crowdcontrol', crowdcontrol);
+    f.SetInt('Rando_newgameplus_loops', newgameplus_loops);
 
     LogFlags("SaveFlags");
 }
@@ -257,7 +270,8 @@ function LogFlags(string prefix)
 
 function string StringifyFlags()
 {
-    return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", banneditems: "$banneditems$", brightness: "$brightness $ ", ammo: " $ ammo
+    return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", loadout: "$loadout
+        $ ", brightness: "$brightness $ ", newgameplus_loops: "$newgameplus_loops $ ", ammo: " $ ammo
         $ ", minskill: "$minskill$", maxskill: "$maxskill$", skills_disable_downgrades: " $ skills_disable_downgrades $ ", skills_reroll_missions: " $ skills_reroll_missions $ ", skills_independent_levels: " $ skills_independent_levels
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
@@ -297,17 +311,66 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 5, 0);
+    return VersionToInt(1, 5, 1);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 0) $ "";
+    return VersionToString(1, 5, 1) $ "";
 }
 
 function MaxRando()
 {
     //should have a chance to make some skills completely unattainable, like 999999 cost? would this also have to be an option in the GUI or can it be exclusive to MaxRando?
+}
+
+function NewGamePlus()
+{
+    local DeusExPlayer p;
+    if( flagsversion == 0 ) {
+        warning("NewGamePlus() flagsversion == 0");
+        LoadFlags();
+    }
+    p = dxr.player;
+
+    info("NewGamePlus()");
+    seed++;
+    newgameplus_loops++;
+    p.CombatDifficulty *= 1.2;
+    minskill = minskill*1.2;// int *= float doesn't give as good accuracy as int = int*float
+    maxskill = maxskill*1.2;
+    enemiesrandomized = enemiesrandomized*1.2;
+    ammo = ammo*0.9;
+    medkits = medkits*0.9;
+    multitools = multitools*0.9;
+    lockpicks = lockpicks*0.9;
+    biocells = biocells*0.9;
+    medbots = medbots*0.9;
+    repairbots = repairbots*0.9;
+    turrets_add = turrets_add*1.2;
+
+    if (p.KeyRing != None)
+    {
+        p.KeyRing.RemoveAllKeys();
+        if ((Role == ROLE_Authority) && (Level.NetMode != NM_Standalone))
+        {
+            p.KeyRing.ClientRemoveAllKeys();
+        }
+    }
+    p.DeleteAllNotes();
+    p.DeleteAllGoals();
+    p.ResetConversationHistory();
+    p.SetInHandPending(None);
+    p.SetInHand(None);
+    p.bInHandTransition = False;
+
+    info("NewGamePlus() deleting all flags");
+    f.DeleteAllFlags();
+    DeusExRootWindow(p.rootWindow).ResetFlags();
+    info("NewGamePlus() deleted all flags");
+    SaveFlags();
+    p.bStartNewGameAfterIntro = true;
+    Level.Game.SendPlayer(p, "00_intro");
 }
 
 function RunTests()
@@ -329,4 +392,54 @@ function RunTests()
     dxr.SetSeed(-111);
     i = rng(100);
     test( rng(100) != i, "rng(100) != rng(100)");
+}
+
+function ExtendedTests()
+{
+    local int i;
+    Super.ExtendedTests();
+
+    dxr.SetSeed(0451);
+    testfloatrange( pow(9,4), 9*9*9*9, 0.001, "pow");
+    testfloatrange( pow(5.7,3), 5.7*5.7*5.7, 0.001, "pow");
+
+    for(i=1;i<=5;i++)
+        TestRngExp(25, 300, 100, i);
+    for(i=1;i<=5;i++)
+        TestRngExp(50, 300, 100, i);
+    for(i=1;i<=5;i++)
+        TestRngExp(50, 400, 100, i);
+    for(i=1;i<=5;i++)
+        TestRngExp(25, 150, 100, i);
+}
+
+function TestRngExp(int minrange, int maxrange, int mid, float curve)
+{
+    local int min, max, avg, lows, highs, mids, times;
+    local int i, t;
+
+    times = 10000;
+    min=maxrange;
+    max=minrange;
+    highs=0;
+    lows=0;
+    mids=0;
+    for(i=0; i<times; i++) {
+        t=rngexp(minrange, maxrange, curve);
+        avg += t;
+        if(t<min) min=t;
+        if(t>max) max=t;
+        if(t<mid) lows++;
+        if(t>mid) highs++;
+        if(t==mid) mids++;
+    }
+    avg /= times;
+    test( min >= minrange-1, "exponential ^"$curve$" - min: "$min);
+    test( min < minrange+10, "exponential ^"$curve$" - min: "$min);
+    test( max <= maxrange+1, "exponential ^"$curve$" - max: "$max);
+    test( max > maxrange-10, "exponential ^"$curve$" - max: "$max);
+    test( avg < maxrange, "exponential ^"$curve$" - avg "$avg$" < maxrange "$maxrange);
+    test( avg > minrange, "exponential ^"$curve$" - avg "$avg$" > minrange "$minrange);
+    test( lows > times/10, "exponential ^"$curve$" - lows "$lows$" > times/8 "$(times/10));
+    test( highs > times/10, "exponential ^"$curve$" - highs "$highs$" > times/8 "$(times/10));
 }

@@ -16,16 +16,7 @@ var int ticker;
 var bool anon;
 
 var int reconnectTimer;
-var int matrixModeTimer;
-var int empTimer;
-var int jumpTimer;
-var int speedTimer;
-var int lamthrowerTimer;
-var int iceTimer;
-var int behindTimer;
-var int difficultyTimer;
 
-var float moveSpeedModifier;
 var string pendingMsg;
 
 const Success = 0;
@@ -52,6 +43,8 @@ const LamThrowerTimeDefault = 60;
 const IceTimeDefault = 60;
 const BehindTimeDefault = 60;
 const DifficultyTimeDefault = 60;
+const FloatyTimeDefault = 60;
+
 
 //JSON parsing states
 const KeyState = 1;
@@ -268,8 +261,13 @@ function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous)
     ccModule = cc;
     crowd_control_addr = addr; 
     anon = anonymous;
-           
-    CleanupOnEnter();
+    
+    //Initialize the pending message buffer
+    pendingMsg = "";
+    
+    //Initialize the ticker
+    ticker = 0;
+
 
     Resolve(crowd_control_addr);
 
@@ -279,36 +277,71 @@ function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous)
 }
 
 
-function CleanupOnEnter() {
+//Gets called on every level entry
+//Some effects need to be reapplied on each level entry (eg. ice physics)
+//Make sure to do that here
+function InitOnEnter() {
+    local inventory anItem;
     
-    //Initialize the pending message buffer
-    pendingMsg = "";
+    if (getTimer('cc_MatrixModeTimer') > 0) {
+        StartMatrixMode();
+    } else {
+        StopMatrixMode(True);
+    }
     
-    //Initialize the ticker
-    ticker = 0;
-    
-    //Clean up Matrix Mode if enabled
-    StopMatrixMode(True);
+    dxr.Player.bWarrenEMPField = isTimerActive('cc_EmpTimer');
 
-    //Clean up EMP field if previously active
-    dxr.Player.bWarrenEMPField = false;
+    if (isTimerActive('cc_SpeedTimer')) {
+        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * dxr.Flags.f.GetInt('cc_moveSpeedModifier');        
+    } else {
+        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;        
+    }
+    
+    if (isTimerActive('cc_lamthrowerTimer')) {
+        anItem = dxr.Player.FindInventoryType(class'WeaponFlamethrower');
+        if (anItem!=None) {
+            MakeLamThrower(anItem);
+        }
+    } else {
+        UndoLamThrowers();        
+    }
+    
+    SetIcePhysics(isTimerActive('cc_iceTimer'));
+    
+    SetFloatyPhysics(isTimerActive('cc_floatyTimer'));
+    
+    dxr.Player.bBehindView=isTimerActive('cc_behindTimer');
+    
+    if (0==dxr.Flags.f.GetFloat('cc_damageMult')) {
+        dxr.Flags.f.SetFloat('cc_damageMult',1.0);
+    }
+    if (!isTimerActive('cc_DifficultyTimer')) {
+        dxr.Flags.f.SetFloat('cc_damageMult',1.0);
+    }
+    
+    
 
-    //Clean up move speed, since it seems to follow through levels
-    dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;
-    
-    //Clean up LAM Throwers
-    UndoLamThrowers();
-    
-    //Clean up ice physics
-    SetIcePhysics(False);
-    
-    //Clean up third-person view
-    dxr.Player.bBehindView=False;
-    
-    //Clean up damage multiplier
-    dxr.Player.MPDamageMult = 1.0;
-    
+}
 
+//Effects should revert to default before exiting a level
+//so that they can be cleanly re-applied next time you enter
+function CleanupOnExit() {
+    StopMatrixMode(True);  //matrix
+    dxr.Player.bWarrenEMPField = false;  //emp
+    dxr.Player.JumpZ = dxr.Player.Default.JumpZ;  //disable_jump
+    dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;  //gotta_go_fast and gotta_go_slow
+    UndoLamThrowers(); //lamthrower
+    SetIcePhysics(False); //ice_physics
+    dxr.Player.bBehindView = False; //third_person
+    SetFloatyPhysics(False);
+
+}
+
+function StartMatrixMode() {
+    if (dxr.Player.Sprite == None)
+    {
+        dxr.Player.Matrix();
+    }
 }
 
 function StopMatrixMode(optional bool silent) {
@@ -320,6 +353,31 @@ function StopMatrixMode(optional bool silent) {
         PlayerMessage("Your powers fade...");
     }
 
+}
+
+function int getTimer(name timerName) {
+    return dxr.flags.f.GetInt(timerName);
+}
+
+function bool isTimerActive(name timerName) {
+    return (dxr.flags.f.GetInt(timerName) > 0);
+}
+
+function setTimerFlag(name timerName,int time) {
+    dxr.flags.f.SetInt(timerName,time);
+}
+
+//Timers only decrement while playing
+function bool decrementTimer(name timerName) {
+    local int time;
+    time = dxr.flags.f.GetInt(timerName);
+    if (time>0 && InGame()) {
+        time -= 1;
+        dxr.flags.f.SetInt(timerName,time);
+        
+        return (time == 0);
+    }
+    return false;
 }
 
 function Timer() {
@@ -343,71 +401,58 @@ function Timer() {
     } 
 
     //Matrix Mode Timer
-    if (matrixModeTimer>0) {
-        matrixModeTimer-=1;
-        if (matrixModeTimer == 0) {
-            StopMatrixMode();
-        }
+    if (decrementTimer('cc_MatrixModeTimer')) {
+        StopMatrixMode();
     }
 
     //EMP Field timer
-    if (empTimer>0) {
-        empTimer -= 1;
-        if (empTimer <=0) {
+    if (decrementTimer('cc_EmpTimer')) {
             dxr.Player.bWarrenEMPField = false;
-            PlayerMessage("EMP Field has disappeared...");
-        }
+            PlayerMessage("EMP Field has disappeared...");        
     }
 
-    if (jumpTimer>0) {
-        jumpTimer -= 1;
-        dxr.Player.JumpZ = 0;
-        if (jumpTimer <= 0) {
-            dxr.Player.JumpZ = dxr.Player.Default.JumpZ;
-            PlayerMessage("Your knees feel fine again.");
-        }
+    if (isTimerActive('cc_JumpTimer')) {
+        dxr.Player.JumpZ = 0;        
+    }
+    if (decrementTimer('cc_JumpTimer')) {
+        dxr.Player.JumpZ = dxr.Player.Default.JumpZ;
+        PlayerMessage("Your knees feel fine again.");
     }
 
-    if (speedTimer>0) {
-        speedTimer-=1;
-        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
-        if (speedTimer <= 0) {
-            dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;
-            PlayerMessage("Back to normal speed!");
-        }
+    if (isTimerActive('cc_SpeedTimer')) {
+        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * dxr.Flags.f.GetInt('cc_moveSpeedModifier');        
+    }
+    if (decrementTimer('cc_SpeedTimer')) {
+        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;
+        PlayerMessage("Back to normal speed!");
     }
 
-    if (lamthrowerTimer>0) {
-        lamthrowerTimer-=1;
-        if (lamthrowerTimer <=0) {
-            UndoLamThrowers();
-            PlayerMessage("Your flamethrower is boring again");
-        }
+    if (decrementTimer('cc_lamthrowerTimer')) {
+        UndoLamThrowers();
+        PlayerMessage("Your flamethrower is boring again");
+
     }
     
-    if (iceTimer>0) {
-        iceTimer-=1;
-        if (iceTimer<=0) {
-            SetIcePhysics(False);
-            PlayerMessage("The ground thaws");
-        }
+    if (decrementTimer('cc_iceTimer')) {
+        SetIcePhysics(False);
+        PlayerMessage("The ground thaws");
     }
     
-    if (behindTimer>0) {
-        behindTimer -=1;
-        if (behindTimer<=0){
-            dxr.Player.bBehindView=False;
-            PlayerMessage("You re-enter your body");
-        }
+    if (decrementTimer('cc_behindTimer')) {
+        dxr.Player.bBehindView=False;
+        PlayerMessage("You re-enter your body");
     }
     
-    if (difficultyTimer>0) {
-        difficultyTimer -=1;
-        if (difficultyTimer<=0){
-            dxr.Player.MPDamageMult=1.0;
-            PlayerMessage("Your body returns to its normal toughness");
-        }
+    if (decrementTimer('cc_DifficultyTimer')){
+        dxr.Flags.f.SetFloat('cc_damageMult',1.0);        
+        PlayerMessage("Your body returns to its normal toughness");
     }
+    
+    if (decrementTimer('cc_floatyTimer')) {
+        SetFloatyPhysics(False);
+        PlayerMessage("You feel weighed down again");
+    }
+
 }
 
 function bool isCrowdControl( string msg) {
@@ -483,13 +528,7 @@ function bool IsGrenade(inventory i) {
 }
 
 function GiveItem(class<Inventory> c) {
-    local inventory anItem;
-    anItem=Spawn(c);
-    anItem.SetLocation(dxr.Player.Location);
-
-    //The ultimate hack.  Nothing else was working, for whatever reason.
-    dxr.Player.FrobTarget = anItem;
-    dxr.Player.ParseRightClick();
+    class'DXRActorsBase'.static.GiveItem(dxr.Player, c);
 }
 
 function SkillPointsRemove(int numPoints) {
@@ -719,18 +758,40 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
     return Success;
 }
 
+function SetFloatyPhysics(bool enabled) {
+    local ZoneInfo Z;
+    local vector floatgrav;
+    floatgrav.X = 0;
+    floatgrav.Y = 0;
+    floatgrav.Z = 0.15;
+    
+    ForEach AllActors(class'ZoneInfo', Z)
+        if (z.ZoneGravity == z.Default.ZoneGravity || z.ZoneGravity == floatgrav) {
+            if (enabled) {
+                //I doubt the default is actually being used for anything, so I'll
+                //take it and use it as my own personal info storage space
+                Z.ZoneGravity = floatgrav;
+            } else {
+                Z.ZoneGravity = Z.Default.ZoneGravity;    
+            }
+        }
+}
+
 function SetIcePhysics(bool enabled) {
     local ZoneInfo Z;
     ForEach AllActors(class'ZoneInfo', Z)
-        if (enabled) {
-            //I doubt the default is actually being used for anything, so I'll
-            //take it and use it as my own personal info storage space
-            Z.Default.ZoneGroundFriction = Z.ZoneGroundFriction;
-            Z.ZoneGroundFriction = IceFriction;
-        } else {
-            Z.ZoneGroundFriction = Z.Default.ZoneGroundFriction;    
+        if (z.ZoneGroundFriction == z.Default.ZoneGroundFriction || z.ZoneGroundFriction == IceFriction) {
+            if (enabled) {
+                //I doubt the default is actually being used for anything, so I'll
+                //take it and use it as my own personal info storage space
+                Z.Default.ZoneGroundFriction = Z.ZoneGroundFriction;
+                Z.ZoneGroundFriction = IceFriction;
+            } else {
+                Z.ZoneGroundFriction = Z.Default.ZoneGroundFriction;    
+            }
         }
 }
+
 
 //Returns true when you aren't in a menu, or in the intro, etc.
 function bool InGame() {
@@ -750,7 +811,7 @@ function bool InGame() {
 }
 
 
-function int doCrowdControlEvent(string code, string param, string viewer, int type) {
+function int doCrowdControlEvent(string code, string param[5], string viewer, int type) {
     local vector v;
     local inventory anItem;
     local bool result;
@@ -789,7 +850,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
         
             //Spawned ThrownProjectiles won't beep if they don't have an owner,
             //so make sure to set one here (the player)
-            switch(param){
+            switch(param[0]){
                 case("g_lam"):
                     a = Spawn(Class'LAM',dxr.Player,,dxr.Player.Location);
                     PlayerMessage(viewer@"dropped a LAM at your feet!");
@@ -825,8 +886,8 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             if (dxr.Player.Health == 100) {
                 return TempFail;
             }
-            dxr.Player.HealPlayer(Int(param),False);
-            PlayerMessage(viewer@"gave you "$param$" health!");
+            dxr.Player.HealPlayer(Int(param[0]),False);
+            PlayerMessage(viewer@"gave you "$param[0]$" health!");
             break;
 
         case "set_fire":
@@ -853,7 +914,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             }
 
             dxr.Player.JumpZ = 0;
-            jumpTimer = JumpTimeDefault;
+            setTimerFlag('cc_JumpTimer',JumpTimeDefault);
             PlayerMessage(viewer@"made your knees lock up.");
             break;
 
@@ -861,9 +922,9 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
                 return TempFail;
             }
-            moveSpeedModifier = MoveSpeedMultiplier;
-            dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
-            speedTimer = SpeedTimeDefault;
+            dxr.Flags.f.SetInt('cc_moveSpeedModifier',MoveSpeedMultiplier);
+            dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedMultiplier;
+            setTimerFlag('cc_SpeedTimer',SpeedTimeDefault);
             PlayerMessage(viewer@"made you fast like Sonic!");
             break;
 
@@ -871,9 +932,9 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
                 return TempFail;
             }
-            moveSpeedModifier = MoveSpeedDivisor;
-            dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedModifier;
-            speedTimer = SpeedTimeDefault;
+            dxr.Flags.f.SetInt('cc_moveSpeedModifier',MoveSpeedDivisor);
+            dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedDivisor;
+            setTimerFlag('cc_SpeedTimer',SpeedTimeDefault);
             PlayerMessage(viewer@"made you slow like a snail!");
             break;
         case "drunk_mode":
@@ -898,7 +959,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
 
         case "emp_field":
             dxr.Player.bWarrenEMPField = true;
-            empTimer = EmpDefault;
+            setTimerFlag('cc_EmpTimer',EmpDefault);
             PlayerMessage(viewer@"made electronics allergic to you");
             break;
 
@@ -907,17 +968,17 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
                 //Matrix Mode already enabled
                 return TempFail;
             }
-            dxr.Player.Matrix();
-            matrixModeTimer = MatrixTimeDefault;
+            StartMatrixMode();
+            setTimerFlag('cc_MatrixModeTimer',MatrixTimeDefault);
             PlayerMessage(viewer@"thinks you are The One...");
             break;
             
         case "third_person":
-            if (dxr.Player.bBehindView) {
+            if (isTimerActive('cc_behindTimer')) {
                 return TempFail;
             }
             dxr.Player.bBehindView=True;
-            behindTimer = BehindTimeDefault;
+            setTimerFlag('cc_behindTimer',BehindTimeDefault);
             PlayerMessage(viewer@"gave you an out of body experience");
             break;
 
@@ -931,11 +992,11 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             //PlayerMessage("Recharged 10 points");
             dxr.Player.PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
 
-            dxr.Player.Energy += Int(param);
+            dxr.Player.Energy += Int(param[0]);
             if (dxr.Player.Energy > dxr.Player.EnergyMax)
                 dxr.Player.Energy = dxr.Player.EnergyMax;
 
-            PlayerMessage(viewer@"gave you "$param$" energy!");
+            PlayerMessage(viewer@"gave you "$param[0]$" energy!");
             break;
 
        case "give_biocell":
@@ -944,36 +1005,40 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             break;
 
         case "give_skillpoints":
-            PlayerMessage(viewer@"gave you "$param$" skill points");
-            dxr.Player.SkillPointsAdd(Int(param));
+            PlayerMessage(viewer@"gave you "$param[0]$" skill points");
+            dxr.Player.SkillPointsAdd(Int(param[0]));
             break;
 
         case "remove_skillpoints":
-            PlayerMessage(viewer@"took away "$param$" skill points");
-            SkillPointsRemove(Int(param));
+            PlayerMessage(viewer@"took away "$param[0]$" skill points");
+            SkillPointsRemove(Int(param[0]));
             break;
             
         case "add_credits":
-            return AddCredits(Int(param),viewer);
+            return AddCredits(Int(param[0]),viewer);
             break;
         case "remove_credits":
-            return AddCredits(-Int(param),viewer);
+            return AddCredits(-Int(param[0]),viewer);
             break;
 
         case "lamthrower":
+            if (isTimerActive('cc_lamthrowerTimer')) {
+                return TempFail;
+            }
+            
             anItem = dxr.Player.FindInventoryType(class'WeaponFlamethrower');
             if (anItem==None) {
                 return TempFail;
             }
 
             MakeLamThrower(anItem);
-            lamthrowerTimer = LamThrowerTimeDefault;
+            setTimerFlag('cc_lamthrowerTimer',LamThrowerTimeDefault);
             PlayerMessage(viewer@"turned your flamethrower into a LAM Thrower!");
             break;
 
         case "give_grenade":
             PlayerMessage(viewer@"Gave you a grenade");
-            switch(param){
+            switch(param[0]){
                 case("g_lam"):
                     GiveItem(Class'WeaponLAM');
                     break;
@@ -994,7 +1059,7 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
         case "give_weapon":
             PlayerMessage(viewer@"Gave you a weapon");
 
-            switch(param){
+            switch(param[0]){
                 case "flamethrower":
                     GiveItem(class'WeaponFlamethrower');
                     break;
@@ -1025,35 +1090,37 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             break;
 
         case "up_aug":
-            return GiveAug(getAugClass(param),viewer);         
+            return GiveAug(getAugClass(param[0]),viewer);         
         
         case "down_aug":
-            return RemoveAug(getAugClass(param),viewer);        
+            return RemoveAug(getAugClass(param[0]),viewer);        
         
         case "dmg_double":
-            if (difficultyTimer!=0) {
+            if (isTimerActive('cc_DifficultyTimer')) {
                 return TempFail;
             }
-            dxr.Player.MPDamageMult=2.0;
+            dxr.Flags.f.SetFloat('cc_damageMult',2.0);
+           
             PlayerMessage(viewer@"made your body extra squishy");
-            difficultyTimer = DifficultyTimeDefault;
+            setTimerFlag('cc_DifficultyTimer',DifficultyTimeDefault);
             break;
         case "dmg_half":
-            if (difficultyTimer!=0) {
+            if (isTimerActive('cc_DifficultyTimer')) {
                 return TempFail;
             }
-            dxr.Player.MPDamageMult=0.5;
+            dxr.Flags.f.SetFloat('cc_damageMult',0.5);
             PlayerMessage(viewer@"made your body extra tough!");
-            difficultyTimer = DifficultyTimeDefault;
+            setTimerFlag('cc_DifficultyTimer',DifficultyTimeDefault);
             break;
         
         case "ice_physics":
-            if (iceTimer!=0) {
+            if (isTimerActive('cc_iceTimer')) {
                 return TempFail;
             }
             PlayerMessage(viewer@"made the ground freeze!");
             SetIcePhysics(True);
-            iceTimer = IceTimeDefault;
+            setTimerFlag('cc_iceTimer',IceTimeDefault);
+
             break;      
         
         case "ask_a_question":
@@ -1064,11 +1131,124 @@ function int doCrowdControlEvent(string code, string param, string viewer, int t
             AskRandomQuestion(viewer);
             break;
 
-        case "send_player_to_random_point":
+        case "nudge":
+        //Not yet implemented in the CrowdControl cs file
+            if (!InGame()) {
+                return TempFail;
+            }
+
+            doNudge(viewer);
+            break;
+            
+        case "swap_player_position":
+        //Not yet implemented in the CrowdControl cs file
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (swapPlayer(viewer) == false) {
+                return Failed;
+            }
+            break;
+            
+        case "floaty_physics":
+        //Not yet implemented in the CrowdControl cs file
+            if (isTimerActive('cc_floatyTimer')) {
+                return TempFail;
+            }
+            PlayerMessage(viewer@"made you feel light as a feather");
+            SetFloatyPhysics(True);
+            setTimerFlag('cc_floatyTimer',FloatyTimeDefault);
+
+            break;   
+        
+        case "give_ammo":
+        //Not yet implemented in the CrowdControl cs file
+            return GiveAmmo(viewer,param[0],Int(param[1]));
+            break;
+        
         default:
             return NotAvail;
     }
     return Success;
+}
+
+function int GiveAmmo(string viewer, string ammotype, int amount) {
+    local int i;
+    local class<DeusExAmmo> ammo;
+    
+    local string outMsg;
+    
+    outMsg = viewer@"gave you"@amount;
+    
+    if (amount == 1) {
+        outMsg = outMsg@"case of";
+    } else {
+        outMsg = outMsg@"cases of";
+    }
+    
+    ammo = class<DeusExAmmo>(ccModule.GetClassFromString(ammotype,class'DeusExAmmo'));
+    
+    outMsg = outMsg@ammo.Default.ItemName;
+    
+    if (ammo == None) {
+        return NotAvail;
+    }
+    
+    for (i=0;i<amount;i++) {
+        GiveItem(ammo);   
+    }
+    PlayerMessage(outMsg);
+    return Success;
+}
+
+function ScriptedPawn findOtherHuman() {
+    local int num, i;
+    local ScriptedPawn p;
+    local ScriptedPawn humans[512];
+
+    foreach AllActors(class'ScriptedPawn',p) {
+        if (class'DXRActorsBase'.static.IsHuman(p) && p!=dxr.Player && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
+            humans[num++] = p;
+        }
+    }
+
+    if( num == 0 ) return None;
+    return humans[ Rand(num) ];
+}
+
+function bool swapPlayer(string viewer) {
+    local Actor a;
+    
+    a = findOtherHuman();
+    
+    if (a == None) {
+        return false;
+    }
+    
+    ccModule.Swap(dxr.Player,a);
+    dxr.Player.ViewRotation = dxr.Player.Rotation;
+    PlayerMessage(viewer@"thought you would look better if you were where"@a.tag@"was");
+    
+    return true;
+}
+
+function doNudge(string viewer) {
+    local Rotator r;
+    local vector newAccel;
+    
+    newAccel.X = Rand(201)-100;
+    newAccel.Y = Rand(201)-100;
+    //newAccel.Z = Rand(31);
+    
+    //Not super happy with how this looks,
+    //Since you sort of just teleport to the new position
+    dxr.Player.MoveSmooth(newAccel);
+    
+    //Play an oof sound
+    dxr.Player.PlaySound(Sound'DeusExSounds.Player.MalePainSmall');
+    
+    PlayerMessage(viewer@"nudged you a little bit");
+
 }
 
 function AskRandomQuestion(String viewer) {
@@ -1087,13 +1267,14 @@ function AskRandomQuestion(String viewer) {
 function handleMessage( string msg) {
   
     local int id,type;
-    local string code,viewer,param;
+    local string code,viewer;
+    local string param[5];
     
     local int result;
     
     local JsonMsg jmsg;
     local string val;
-    local int i;
+    local int i,j;
 
     if (isCrowdControl(msg)) {
         jmsg=ParseJson(msg);
@@ -1116,7 +1297,9 @@ function handleMessage( string msg) {
                         type = Int(val);
                         break;
                     case "parameters":
-                        param = val;
+                        for (j=0;j<5;j++) {
+                            param[j] = jmsg.e[i].value[j];
+                        }
                         break;
                 }
             }
@@ -1127,7 +1310,6 @@ function handleMessage( string msg) {
         if (anon) {
             viewer = "Crowd Control";
         }
-        
         result = doCrowdControlEvent(code,param,viewer,type);
         
         sendReply(id,result);
@@ -1268,9 +1450,7 @@ function RunTests(DXRCrowdControl m)
 {
     local int i;
     local string msg;
-    local JsonMsg jmsg;
-    local int id,type;
-    local string code,viewer,param;
+    local string params[5];
 
     msg="";
     m.testbool( isCrowdControl(msg), false, "isCrowdControl "$msg);
@@ -1278,24 +1458,45 @@ function RunTests(DXRCrowdControl m)
     msg="{}";
     m.testbool( isCrowdControl(msg), false, "isCrowdControl "$msg);
 
-    TestMsg(m, 123, 1, "kill", "die4ever", "");
-    TestMsg(m, 123, 1, "test with spaces", "die4ever", "");
-    TestMsg(m, 123, 1, "test:with:colons", "die4ever", "");
-    TestMsg(m, 123, 1, "test,with,commas", "die4ever", "");
-    TestMsg(m, 123, 1, "kill", "die4ever", "parameter test");
-    TestMsg(m, 123, 1, "drop_grenade", "die4ever", "g_scrambler");
+    TestMsg(m, 123, 1, "kill", "die4ever", params);
+    TestMsg(m, 123, 1, "test with spaces", "die4ever", params);
+    TestMsg(m, 123, 1, "test:with:colons", "die4ever", params);
+    TestMsg(m, 123, 1, "test,with,commas", "die4ever", params);
+    params[0] = "parameter test";
+    TestMsg(m, 123, 1, "kill", "die4ever", params);
+    params[0] = "g_scrambler";
+    TestMsg(m, 123, 1, "drop_grenade", "die4ever", params);
+    params[0] = "g_scrambler";
+    params[1] = "10";
+    TestMsg(m, 123, 1, "drop_grenade", "die4ever", params);
     
     //Need to do more work to validate escaped characters
     //TestMsg(m, 123, 1, "test\\\\with\\\\escaped\\\\backslashes", "die4ever", ""); //Note that we have to double escape so that the end result is a single escaped backslash
 }
 
-function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer, string param)
+function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer, string params[5])
 {
-    local int i, matches;
-    local string msg, val;
+    local int i, p, matches, num_params;
+    local string msg, val, params_string;
     local JsonMsg jmsg;
 
-    msg="{\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":\""$param$"\"}";
+    for(i=0; i < ArrayCount(params); i++) {
+        if( params[i] != "" ) num_params++;
+    }
+
+    if( num_params > 1 ) {
+        params_string = "[";
+        for(i=0; i < ArrayCount(params); i++) {
+            if( params[i] != "" )
+                params_string = params_string $ params[i] $ ",";
+        }
+        params_string = Left(params_string, Len(params_string)-1);//trim trailing comma
+        params_string = params_string $ "]";
+    }
+    else if ( num_params <= 1 )
+        params_string = "\""$params[0]$"\"";
+
+    msg="{\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$"}";
 
     m.testbool( isCrowdControl(msg), true, "isCrowdControl: "$msg);
 
@@ -1321,7 +1522,9 @@ function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer
                     matches++;
                     break;
                 case "parameters":
-                    m.teststring(val, param, "param");
+                    for(p=0; p<ArrayCount(params); p++) {
+                        m.teststring(jmsg.e[i].value[p], params[p], "param "$p);
+                    }
                     matches++;
                     break;
             }

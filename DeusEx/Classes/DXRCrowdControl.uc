@@ -1,4 +1,4 @@
-class DXRCrowdControl extends DXRBase;
+class DXRCrowdControl extends DXRActorsBase;
 
 //var config bool enabled;
 var config string crowd_control_addr;
@@ -40,6 +40,20 @@ function Init(DXRando tdxr)
         }
         link.Init(tdxr,Self,crowd_control_addr,anon);
     } else info("crowd control disabled");
+}
+
+function AnyEntry() {
+    if( link != None ) {
+        link.InitOnEnter();
+    }
+    Super.AnyEntry();
+}
+
+function PreTravel() {
+    if( link != None ) {
+        link.CleanupOnExit();
+    }
+    Super.PreTravel();
 }
 
 function CheckConfig()

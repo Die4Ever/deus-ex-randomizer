@@ -26,9 +26,10 @@ function BindControls(bool writing, optional string action)
     local float difficulty;
     local DXRFlags f;
     local string sseed;
+    local DXRLoadouts loadout;
     local DXRTelemetry t;
     local DXRCrowdControl cc;
-    local int temp;
+    local int temp, i;
 
     Super.BindControls(writing);
 
@@ -45,12 +46,16 @@ function BindControls(bool writing, optional string action)
     id++;
 
     labels[id] = "";
-    helptexts[id] = "What items are banned";
-    EnumOption(id, "No items banned", 0, writing, f.banneditems);
-    EnumOption(id, "Stick With the Prod", 1, writing, f.banneditems);
-    EnumOption(id, "Stick With the Prod Plus", 2, writing, f.banneditems);
-    //EnumOption(id, "Don't Give Me The GEP Gun", 3, writing, f.banneditems);//maybe I can request these from a function like class'DXRBannedItems'.static.GetBannedItemsDescription()
-    //EnumOption(id, "Ninja JC", 4, writing, f.banneditems);//throwing knives and sword
+    helptexts[id] = "Which items and augs you start with and which are banned.";
+    foreach f.AllActors(class'DXRLoadouts', loadout) { break; }
+    if( loadout == None )
+        EnumOption(id, "Default Loadout", 0, writing, f.loadout);
+    else {
+        for(i=0; i < 20; i++) {
+            if( loadout.GetName(i) == "" ) continue;
+            EnumOption(id, loadout.GetName(i), i, writing, f.loadout);
+        }
+    }
     id++;
 
     labels[id] = "Difficulty";
@@ -106,13 +111,13 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 2;
-        f.medbots = 25;
-        f.repairbots = 25;
+        f.medbots = 35;
+        f.repairbots = 35;
         f.turrets_move = 50;
         f.turrets_add = 30;
     }
     if( EnumOption(id, "Normal", 0, writing) ) {
-        difficulty=1.25;
+        difficulty=1.5;
         f.doorsmode = f.keyonlydoors + f.doormutuallyexclusive;
         f.doorsdestructible = 50;
         f.doorspickable = 50;
@@ -123,7 +128,7 @@ function BindControls(bool writing, optional string action)
         f.skills_disable_downgrades = 0;
         f.skills_reroll_missions = 0;
         f.skills_independent_levels = 0;
-        f.minskill = 25;
+        f.minskill = 50;
         f.maxskill = 300;
         f.ammo = 70;
         f.medkits = 70;
@@ -134,13 +139,13 @@ function BindControls(bool writing, optional string action)
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 1;
-        f.medbots = 15;
-        f.repairbots = 15;
+        f.medbots = 25;
+        f.repairbots = 25;
         f.turrets_move = 50;
         f.turrets_add = 70;
     }
     if( EnumOption(id, "Hard", 2, writing) ) {
-        difficulty=1.5;
+        difficulty=2;
         f.doorsmode = f.keyonlydoors + f.doormutuallyexclusive;
         f.doorsdestructible = 25;
         f.doorspickable = 25;
@@ -151,24 +156,24 @@ function BindControls(bool writing, optional string action)
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
         f.skills_independent_levels = 100;
-        f.minskill = 25;
+        f.minskill = 50;
         f.maxskill = 300;
         f.ammo = 50;
-        f.medkits = 50;
-        f.biocells = f.medkits;
-        f.lockpicks = f.medkits;
-        f.multitools = f.medkits;
+        f.medkits = 60;
+        f.biocells = 50;
+        f.lockpicks = 50;
+        f.multitools = 50;
         f.speedlevel = 1;
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 1;
-        f.medbots = 10;
-        f.repairbots = 10;
+        f.medbots = 20;
+        f.repairbots = 20;
         f.turrets_move = 50;
         f.turrets_add = 120;
     }
     if( EnumOption(id, "Extreme", 3, writing) ) {
-        difficulty=2;
+        difficulty=3;
         f.doorsmode = f.keyonlydoors + f.doormutuallyexclusive;
         f.doorsdestructible = 25;
         f.doorspickable = 25;
@@ -179,19 +184,19 @@ function BindControls(bool writing, optional string action)
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
         f.skills_independent_levels = 100;
-        f.minskill = 25;
+        f.minskill = 50;
         f.maxskill = 400;
         f.ammo = 30;
-        f.medkits = 30;
-        f.biocells = f.medkits;
-        f.lockpicks = f.medkits;
-        f.multitools = f.medkits;
+        f.medkits = 50;
+        f.biocells = 30;
+        f.lockpicks = 30;
+        f.multitools = 30;
         f.speedlevel = 1;
         f.startinglocations = 100;
         f.goals = 100;
         f.equipment = 1;
-        f.medbots = 5;
-        f.repairbots = 5;
+        f.medbots = 15;
+        f.repairbots = 15;
         f.turrets_move = 50;
         f.turrets_add = 200;
     }
