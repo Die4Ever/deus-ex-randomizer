@@ -1,12 +1,21 @@
 class DXRPlayer injects Human;
 
+var DXRando dxr;
+var DXRLoadouts loadout;
+
+function DXRBase DXRFindModule(class<DXRBase> class)
+{
+    local DXRBase m;
+    if( dxr == None ) foreach AllActors(class'DXRando', dxr) { break; }
+    if( dxr != None ) m = dxr.FindModule(class);
+    return m;
+}
+
 function bool AddInventory( inventory NewItem )
 {
-    local DXRLoadouts ban_items;
+    if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
+    if ( loadout != None && loadout.ban(self, NewItem) ) return true;
 
-    foreach AllActors(class'DXRLoadouts', ban_items) {
-        if ( ban_items.ban(self, NewItem) ) return true;
-    }
     return Super.AddInventory(NewItem);
 }
 
