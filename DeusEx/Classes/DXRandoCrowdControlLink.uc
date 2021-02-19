@@ -12,6 +12,7 @@ var int ListenPort;
 var IpAddr addr;
 
 var int ticker;
+var int lavaTick;
 
 var bool anon;
 
@@ -44,7 +45,7 @@ const IceTimeDefault = 60;
 const BehindTimeDefault = 60;
 const DifficultyTimeDefault = 60;
 const FloatyTimeDefault = 60;
-
+const FloorLavaTimeDefault = 60;
 
 //JSON parsing states
 const KeyState = 1;
@@ -267,6 +268,8 @@ function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous)
     
     //Initialize the ticker
     ticker = 0;
+    
+    lavaTick = 0;
 
 
     Resolve(crowd_control_addr);
@@ -383,10 +386,15 @@ function bool decrementTimer(name timerName) {
 function Timer() {
     
     ticker++;
-    
     if (IsConnected()) {
         ManualReceiveBinary();
     }
+
+    //Lava floor logic
+    if (isTimerActive('cc_floorLavaTimer')){
+        floorIsLava();
+    }
+
 
     if (ticker%10 != 0) {
         return;
@@ -451,6 +459,10 @@ function Timer() {
     if (decrementTimer('cc_floatyTimer')) {
         SetFloatyPhysics(False);
         PlayerMessage("You feel weighed down again");
+    }
+    
+    if (decrementTimer('cc_floorLavaTimer')) {
+        PlayerMessage("The floor returns to normal temperatures");
     }
 
 }
@@ -1166,10 +1178,50 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             return GiveAmmo(viewer,param[0],Int(param[1]));
             break;
         
+        case "floor_is_lava":
+        //Not yet implemented in the CrowdControl cs file
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_floorLavaTimer')){
+                return TempFail;
+            }
+            PlayerMessage(viewer@"turned the floor into lava!");
+            lavaTick = 0;
+            setTimerFlag('cc_floorLavaTimer',FloorLavaTimeDefault);
+            
+            break;
+        
         default:
             return NotAvail;
     }
     return Success;
+}
+
+function floorIsLava() {
+    local vector v;
+    local vector loc;
+    loc.X = dxr.Player.Location.X;
+    loc.Y = dxr.Player.Location.Y;
+    loc.Z = dxr.Player.Location.Z - 1;
+    if ((dxr.Player.Base.IsA('LevelInfo') ||
+         dxr.Player.Base.IsA('Mover')) &&
+         Human(dxr.Player).bOnLadder==False)        {
+        lavaTick++;   
+        //PlayerMessage("Standing on Lava! "$lavaTick);        
+    } else {
+        lavaTick = 0;
+        //PlayerMessage("Not Lava "$dxr.Player.Base);
+        return;
+    }
+    
+    if ((lavaTick % 10)==0) { //If you stand on lava for 1 second
+        dxr.Player.TakeDamage(10,dxr.Player,loc,v,'Burned');
+    }
+    
+    if ((lavaTick % 50)==0) { //if you stand in lava for 5 seconds
+        dxr.Player.CatchFire(dxr.Player);
+    }
 }
 
 function int GiveAmmo(string viewer, string ammotype, int amount) {

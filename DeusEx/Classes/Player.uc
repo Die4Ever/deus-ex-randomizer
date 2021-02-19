@@ -2,6 +2,7 @@ class DXRPlayer injects Human;
 
 var DXRando dxr;
 var DXRLoadouts loadout;
+var bool bOnLadder;
 
 function DXRBase DXRFindModule(class<DXRBase> class)
 {
@@ -282,4 +283,14 @@ function CatchFire( Pawn burner )
     // set the burn timer, tick the burn every 4 seconds instead of 1 so that the player can actually survive it
     if(doSetTimer)
         SetTimer(4.0, True);
+}
+
+event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
+{
+
+	if ( Texture!=None && Texture.Outer!=None && Texture.Outer.Name=='Ladder' ){
+		bOnLadder = True;
+        //ClientMessage("Texture name: "$Texture.Name);
+	}else
+		bOnLadder = False;
 }

@@ -104,27 +104,37 @@ def proc_file(file, files, mod_name, injects=None):
 
 def apply_merge(a, b):
     #Find variable definitions in b (file to be merged)
-    bVars=""
-    bRest=""
+    bVars=[]
+    bRest=[]
     for line in b['content'].split("\n"):
         if line.startswith("var "):
-            bVars+=line+"\n"
+            bVars.append(line)
         else:
-            bRest+=line+"\n"
+            bRest.append(line)
 
     if bVars!="":
-        firstVar = a['content'].find("var")
-        content = a['content'][:firstVar]
-        content+="//=======Start of variables merged from "+b['mod_name']+'/'+b['classname']+"=======\n"
-        content+=bVars
-        content+=  "//=======End of variables merged from "+b['mod_name']+'/'+b['classname']+"=========\n"
-        content += a['content'][firstVar:]
+        merged = []
+        aContent = a['content'].split("\n")
+        lastVarLine = 0;
+
+        for line in aContent:
+            if line.strip().startswith("var "):
+                lastVarLine = aContent.index(line)
+
+        merged+=aContent[:lastVarLine+1]
+            
+        merged.append("//=======Start of variables merged from "+b['mod_name']+'/'+b['classname']+"=======")
+        merged+=bVars
+        merged.append("//=======End of variables merged from "+b['mod_name']+'/'+b['classname']+"=========")
+        merged+=aContent[lastVarLine+1:]
+
+        content="\n".join(merged)
 
     else:
         content = a['content']
 
     content += "\n\n// === merged from "+b['mod_name']+'/'+b['classname']+"\n\n"
-    b_content = bRest
+    b_content = "\n".join(bRest)
     b_content = re.sub(b['classline'], "/* "+b['classline']+" */", b_content, count=1)
     b_content_no_comments = strip_comments(b_content)
 
