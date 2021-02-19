@@ -55,6 +55,11 @@ function AnyEntry()
 {
     Super.AnyEntry();
     Timer();
+    /*l("AnyEntry() game: "$Level.Game);
+    if( Level.Game.Class == class'DeusExGameInfo' ) {
+        ConsoleCommand("start "$dxr.localURL$"?game=DeusEx.RandoGameInfo");
+    }
+    l("AnyEntry() after game: "$Level.Game);*/
 }
 
 function RollSeed()

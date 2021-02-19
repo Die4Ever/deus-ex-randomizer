@@ -1,4 +1,4 @@
-class DXRPlayer merges DeusExPlayer;
+class DXRPlayer injects Human;
 
 function bool AddInventory( inventory NewItem )
 {
@@ -7,7 +7,7 @@ function bool AddInventory( inventory NewItem )
     foreach AllActors(class'DXRLoadouts', ban_items) {
         if ( ban_items.ban(self, NewItem) ) return true;
     }
-    return _AddInventory(NewItem);
+    return Super.AddInventory(NewItem);
 }
 
 function float GetCurrentGroundSpeed()
@@ -26,7 +26,7 @@ function float GetCurrentGroundSpeed()
         augValue = 1.0;
 
     if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
-        speed = Human(Self).mpGroundSpeed * augValue;
+        speed = Self.mpGroundSpeed * augValue;
     else
         speed = Default.GroundSpeed * augValue;
 
@@ -268,7 +268,7 @@ function CatchFire( Pawn burner )
     if (bOnFire==false && Region.Zone.bWaterZone==false)
         doSetTimer = true;
 
-    _CatchFire(burner);
+    Super.CatchFire(burner);
 
     // set the burn timer, tick the burn every 4 seconds instead of 1 so that the player can actually survive it
     if(doSetTimer)
