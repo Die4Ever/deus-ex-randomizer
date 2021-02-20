@@ -14,7 +14,7 @@ function CheckConfig()
 function AnyEntry()
 {
     Super.AnyEntry();
-    SetTimer(0.2, True);
+    SetTimer(0.5, True);
 }
 
 function Timer()
@@ -30,7 +30,8 @@ function Timer()
             continue;
         }
         if( found == true && maps[i] != "" ) {
-            dxr.player.ConsoleCommand("open " $ maps[i]);
+            //dxr.player.ConsoleCommand("open " $ maps[i]);
+            Level.Game.SendPlayer(dxr.player, maps[i]);
             break;
         }
     }
@@ -131,7 +132,7 @@ static function int GetMissionNumber(string map)
     local int mission;
 
     mission = (Asc(map)-Asc("0")) * 10;
-    mission += (Asc(Mid(map,1,1))-Asc("0")) * 10;
+    mission += (Asc(Mid(map,1,1))-Asc("0"));
     return mission;
 }
 

@@ -51,10 +51,18 @@ function Timer()
     }
 }
 
+function FirstEntry()
+{
+    Super.FirstEntry();
+    Timer();
+    LogFlags("FirstEntry "$dxr.localURL);
+}
+
 function AnyEntry()
 {
     Super.AnyEntry();
     Timer();
+    LogFlags("AnyEntry "$dxr.localURL);
     /*l("AnyEntry() game: "$Level.Game);
     if( Level.Game.Class == class'DeusExGameInfo' ) {
         ConsoleCommand("start "$dxr.localURL$"?game=DeusEx.RandoGameInfo");

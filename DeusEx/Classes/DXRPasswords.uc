@@ -319,7 +319,7 @@ function ReplacePassword(string oldpassword, string newpassword)
     newpasswords[passEnd] = newpassword;
     passEnd = (passEnd+1) % ArrayCount(oldpasswords);
     if(passEnd == passStart) passStart = (passStart+1) % ArrayCount(oldpasswords);
-    l("replaced password " $ oldpassword $ " with " $ newpassword $ ", passEnd is " $ passEnd $", passStart is " $ passStart);
+    info("replaced password " $ oldpassword $ " with " $ newpassword $ ", passEnd is " $ passEnd $", passStart is " $ passStart);
 
     if( oldpassword == "6282" ) {
         goal = dxr.Player.FirstGoal;
