@@ -69,7 +69,6 @@ def randomAmmo():
     return random.choice(ammo)
 
 def pickEffect():
-    return("floor_is_lava",None)
     effects = []
 
     effects.append(None)
@@ -204,6 +203,11 @@ def pickEffect():
     effects.append(("floor_is_lava",None))
 
     effects.append(("give_ammo",[randomAmmo(),random.randint(1,2)]))
+
+    effects.append(("invert_mouse",None))
+    
+    effects.append(("invert_movement",None))
+
 
     return random.choice(effects)
 

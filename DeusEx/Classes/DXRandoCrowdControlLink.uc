@@ -46,6 +46,8 @@ const BehindTimeDefault = 60;
 const DifficultyTimeDefault = 60;
 const FloatyTimeDefault = 60;
 const FloorLavaTimeDefault = 60;
+const InvertMouseTimeDefault = 60;
+const InvertMovementTimeDefault = 60;
 
 //JSON parsing states
 const KeyState = 1;
@@ -322,6 +324,14 @@ function InitOnEnter() {
         dxr.Flags.f.SetFloat('cc_damageMult',1.0);
     }
     
+    if (isTimerActive('cc_invertMouseTimer')) {
+        dxr.Player.bInvertMouse = !dxr.Flags.f.GetBool('cc_InvertMouseDef');
+    }
+    
+    if (isTimerActive('cc_invertMovementTimer')) {
+        invertMovementControls();
+    }
+    
     
 
 }
@@ -337,6 +347,13 @@ function CleanupOnExit() {
     SetIcePhysics(False); //ice_physics
     dxr.Player.bBehindView = False; //third_person
     SetFloatyPhysics(False);
+    if (isTimerActive('cc_invertMouseTimer')) {
+        dxr.Player.bInvertMouse = dxr.Flags.f.GetBool('cc_InvertMouseDef');
+    }
+
+    if (isTimerActive('cc_invertMovementTimer')) {
+        invertMovementControls();
+    }
 
 }
 
@@ -463,6 +480,16 @@ function Timer() {
     
     if (decrementTimer('cc_floorLavaTimer')) {
         PlayerMessage("The floor returns to normal temperatures");
+    }
+    
+    if (decrementTimer('cc_invertMouseTimer')) {
+        PlayerMessage("Your mouse controls return to normal");
+        dxr.Player.bInvertMouse = dxr.Flags.f.GetBool('cc_InvertMouseDef');
+    }
+
+    if (decrementTimer('cc_invertMovementTimer')) {
+        PlayerMessage("Your movement controls return to normal");
+        invertMovementControls();
     }
 
 }
@@ -1191,11 +1218,97 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             setTimerFlag('cc_floorLavaTimer',FloorLavaTimeDefault);
             
             break;
+            
+        case "invert_mouse":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_invertMouseTimer')){
+                return TempFail;
+            }
+            PlayerMessage(viewer@"inverted your mouse!");
+            dxr.Flags.f.SetBool('cc_InvertMouseDef',dxr.Player.bInvertMouse);
+
+            dxr.Player.bInvertMouse = !dxr.Player.bInvertMouse;
+            setTimerFlag('cc_invertMouseTimer',InvertMouseTimeDefault);
+
+            break;
+            
+        case "invert_movement":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_invertMovementTimer')){
+                return TempFail;
+            }
+            PlayerMessage(viewer@"inverted your movement controls!");
+            
+            invertMovementControls();
+
+            setTimerFlag('cc_invertMovementTimer',InvertMovementTimeDefault);
+            break;
         
         default:
             return NotAvail;
     }
     return Success;
+}
+
+function invertMovementControls() {
+    local string fwdInputs[5];
+    local string backInputs[5];
+    local string leftInputs[5];
+    local string rightInputs[5];
+    
+    local int numFwd;
+    local int numBack;
+    local int numLeft;
+    local int numRight;
+    
+    local string KeyName;
+    local string Alias;
+    
+    local int i;
+    
+    for (i=0;i<255;i++) {
+        KeyName = dxr.Player.ConsoleCommand("KEYNAME "$i);
+        if (KeyName!="") {
+            Alias = dxr.Player.ConsoleCommand("KEYBINDING "$KeyName);
+            //PlayerMessage("Alias is "$Alias);
+            switch(Alias){
+                case "MoveForward":
+                    fwdInputs[numFwd] = KeyName;
+                    numFwd++;
+                    break;
+                case "MoveBackward":
+                    backInputs[numBack] = KeyName;
+                    numBack++;
+                    break;
+                case "StrafeLeft":
+                    leftInputs[numLeft] = KeyName;
+                    numLeft++;
+                    break;
+                case "StrafeRight":
+                    rightInputs[numRight] = KeyName;
+                    numRight++;
+                    break;
+            }
+        }
+    }
+    
+    for (i=0;i<numFwd;i++){
+        dxr.Player.ConsoleCommand("SET InputExt "$fwdInputs[i]$" MoveBackward");
+    }
+    for (i=0;i<numBack;i++){
+        dxr.Player.ConsoleCommand("SET InputExt "$backInputs[i]$" MoveForward");
+    }
+    for (i=0;i<numRight;i++){
+        dxr.Player.ConsoleCommand("SET InputExt "$rightInputs[i]$" StrafeLeft");
+    }
+    for (i=0;i<numLeft;i++){
+        dxr.Player.ConsoleCommand("SET InputExt "$leftInputs[i]$" StrafeRight");
+    }    
+    
 }
 
 function floorIsLava() {
