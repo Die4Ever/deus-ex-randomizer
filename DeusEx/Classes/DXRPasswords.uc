@@ -48,24 +48,34 @@ function Timer()
     lastCheckedNote = dxr.Player.FirstNote;
 }
 
-function ProcessString(out string str)
+function ProcessString(out string str, optional out string updated_passwords[16])
 {
-    local int i;
+    local int i, j;
+    for(j=0; j<ArrayCount(updated_passwords); j++) {
+        if( updated_passwords[j] == "" ) break;
+    }
     for (i=0; i<ArrayCount(oldpasswords); i++)
     {
-        UpdateString(str, oldpasswords[i], newpasswords[i]);
+        if( UpdateString(str, oldpasswords[i], newpasswords[i]) ) {
+            if( j >= ArrayCount(updated_passwords) ) {
+                warning("ProcessString "$oldpasswords[i]$" to "$newpasswords[i]$", j >= ArrayCount(updated_passwords)");
+                j=0;
+            }
+            updated_passwords[j++] = newpasswords[i];
+        }
     }
 }
 
-function UpdateString(out string str, string oldpassword, string newpassword)
+function bool UpdateString(out string str, string oldpassword, string newpassword)
 {
-    if( oldpassword == "" ) return;
-    if( str == "") return;
-    if( WordInStr( Caps(str), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return;
+    if( oldpassword == "" ) return false;
+    if( str == "") return false;
+    if( WordInStr( Caps(str), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return false;
 
-    l("found string with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
+    info("found string with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
     str = ReplaceText( str, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
+    return true;
 }
 
 function FirstEntry()
@@ -337,29 +347,33 @@ function ReplacePassword(string oldpassword, string newpassword)
     }
 }
 
-function UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword)
+function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword)
 {
-    if( oldpassword == "" ) return;
-    if( goal.text == "") return;
-    if( goal.bCompleted ) return;
-    if( WordInStr( Caps(goal.text), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return;
+    if( oldpassword == "" ) return false;
+    if( goal.text == "") return false;
+    if( goal.bCompleted ) return false;
+    if( WordInStr( Caps(goal.text), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return false;
 
     dxr.Player.ClientMessage("Goal updated");
-    l("found goal with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
+    info("found goal with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
     goal.text = ReplaceText( goal.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
+    return true;
 }
 
-function UpdateNote(DeusExNote note, string oldpassword, string newpassword)
+function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword)
 {
-    if( oldpassword == "" ) return;
-    if( note.text == "") return;
-    if( WordInStr( Caps(note.text), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return;
+    if( oldpassword == "" ) return false;
+    if( note.text == "") return false;
+    if( WordInStr( Caps(note.text), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return false;
+    if( note.HasEitherPassword(oldpassword, newpassword) ) return false;
 
     dxr.Player.ClientMessage("Note updated");
-    l("found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
+    info("found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
     note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
+    note.SetNewPassword(newpassword);
+    return true;
 }
 
 static function string GeneratePassword(DXRando dxr, string oldpassword)

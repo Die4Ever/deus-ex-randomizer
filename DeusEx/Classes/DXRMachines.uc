@@ -313,7 +313,7 @@ function ComputerSecurity SpawnSecurityComputer(vector loc, optional AutoTurret 
     }
     c.UserList[0].userName = class'DXRPasswords'.static.ReplaceText(String(c.Name), "ComputerSecurity", "Comp");
     c.itemName = c.UserList[0].userName;
-    c.UserList[0].Password = class'DXRPasswords'.static.GeneratePassword(dxr, String(c.Name) );
+    c.UserList[0].Password = class'DXRPasswords'.static.GeneratePassword(dxr, dxr.localURL @ String(c.Name) );
     info("SpawnSecurityComputer "$c.UserList[0].userName$" done at ("$loc$"), ("$rotation$") with password: "$c.UserList[0].Password );
     return c;
 }
