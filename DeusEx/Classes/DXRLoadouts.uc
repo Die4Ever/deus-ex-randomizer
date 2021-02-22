@@ -252,7 +252,7 @@ function AddItemSpawn(int s, string type, int chances)
 
     if( type == "" ) return;
     
-    for(i=0; i < ArrayCount(_item_sets[s].allow_types); i++) {
+    for(i=0; i < ArrayCount(_item_sets[s].item_spawns); i++) {
         if( _item_sets[s].item_spawns[i] == None ) {
             a = GetClassFromString(type, class'Inventory');
             _item_sets[s].item_spawns[i] = class<Inventory>(a);

@@ -204,7 +204,7 @@ function RandoEnter()
     if (!flags.f.GetBool(flagName))
     {
         firstTime = True;
-        flags.f.SetBool(flagName, True);
+        flags.f.SetBool(flagName, True,, 999);
     }
 
     info("RandoEnter() firstTime: "$firstTime);
