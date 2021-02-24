@@ -7,6 +7,7 @@ var travel string newpasswords[64];
 var travel int passStart;
 var travel int passEnd;
 var config float min_hack_adjust, max_hack_adjust;
+var transient int updated;
 
 function CheckConfig()
 {
@@ -46,6 +47,7 @@ function Timer()
         note = note.next;
     }
     lastCheckedNote = dxr.Player.FirstNote;
+    NotifyPlayerNotesUpdated();
 }
 
 function ProcessString(out string str, optional out string updated_passwords[16])
@@ -345,6 +347,17 @@ function ReplacePassword(string oldpassword, string newpassword)
         UpdateNote(note, oldpassword, newpassword);
         note = note.next;
     }
+
+    //NotifyPlayerNotesUpdated();
+}
+
+function NotifyPlayerNotesUpdated()
+{
+    if( updated == 1 )
+        dxr.Player.ClientMessage("Note updated");
+    else if( updated > 1 )
+        dxr.Player.ClientMessage("Notes updated");
+    updated = 0;
 }
 
 function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword)
@@ -368,7 +381,7 @@ function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword
     if( WordInStr( Caps(note.text), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return false;
     if( note.HasEitherPassword(oldpassword, newpassword) ) return false;
 
-    dxr.Player.ClientMessage("Note updated");
+    updated++;
     info("found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
     note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
@@ -479,13 +492,14 @@ function LogAll()
 {
     local Computers c;
     local Keypad k;
+    local ATM a;
     local int i;
 
     l("passEnd is " $ passEnd $", passStart is " $ passStart);
 
     foreach AllActors(class'Keypad', k)
     {
-        l("found Keypad with code: " $ k.validCode );
+        l("found "$k$" with code: " $ k.validCode );
     }
 
     foreach AllActors(class'Computers', c)
@@ -495,7 +509,17 @@ function LogAll()
             if (c.userList[i].password == "")
                 continue;
 
-            l("found computer password: " $ c.userList[i].password);
+            l("found "$c$" username: "$c.userList[i].username$", password: " $ c.userList[i].password);
+        }
+    }
+
+    foreach AllActors(class'ATM', a)
+    {
+        for( i=0; i<ArrayCount(a.userList); i++) {
+            if (a.userList[i].PIN == "")
+                continue;
+            
+            l("found "$a$" PIN: "$a.userList[i].PIN);
         }
     }
 }

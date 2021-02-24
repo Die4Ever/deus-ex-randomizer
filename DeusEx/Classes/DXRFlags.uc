@@ -324,12 +324,12 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 5, 1);
+    return VersionToInt(1, 5, 2);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 2) $ " Alpha";
+    return VersionToString(1, 5, 2) $ " Beta";
 }
 
 function MaxRando()
