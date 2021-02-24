@@ -30,7 +30,6 @@ function Timer()
             continue;
         }
         if( found == true && maps[i] != "" ) {
-            //dxr.player.ConsoleCommand("open " $ maps[i]);
             Level.Game.SendPlayer(dxr.player, maps[i]);
             break;
         }

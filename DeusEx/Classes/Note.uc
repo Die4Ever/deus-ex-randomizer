@@ -1,6 +1,8 @@
 class RandoNote injects DeusExNote;
 
 var travel string new_passwords[16];
+var travel int mission;
+var travel string level_name;
 
 function SetNewPassword(string password)
 {

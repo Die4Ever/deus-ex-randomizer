@@ -347,8 +347,6 @@ function ReplacePassword(string oldpassword, string newpassword)
         UpdateNote(note, oldpassword, newpassword);
         note = note.next;
     }
-
-    //NotifyPlayerNotesUpdated();
 }
 
 function NotifyPlayerNotesUpdated()

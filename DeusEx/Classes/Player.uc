@@ -20,6 +20,21 @@ function bool AddInventory( inventory NewItem )
     return Super.AddInventory(NewItem);
 }
 
+function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, optional bool bShowInLog )
+{
+    local DeusExLevelInfo info;
+	local DeusExNote newNote;
+    newNote = Super.AddNote(strNote, bUserNote, bShowInLog);
+
+    info = GetLevelInfo();
+	if (info != None) {
+        newNote.mission = info.MissionNumber;
+        newNote.level_name = Caps(info.mapName);
+        log("ERROR: new note mission: "$newNote.mission$", level name: "$newNote.level_name);
+    }
+    return newNote;
+}
+
 function float GetCurrentGroundSpeed()
 {
     local float augValue, speed;
