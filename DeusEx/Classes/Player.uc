@@ -1,13 +1,38 @@
-class DXRPlayer merges DeusExPlayer;
+class DXRPlayer injects Human;
+
+var DXRando dxr;
+var DXRLoadouts loadout;
+var bool bOnLadder;
+
+function DXRBase DXRFindModule(class<DXRBase> class)
+{
+    local DXRBase m;
+    if( dxr == None ) foreach AllActors(class'DXRando', dxr) { break; }
+    if( dxr != None ) m = dxr.FindModule(class);
+    return m;
+}
 
 function bool AddInventory( inventory NewItem )
 {
-    local DXRLoadouts ban_items;
+    if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
+    if ( loadout != None && loadout.ban(self, NewItem) ) return true;
 
-    foreach AllActors(class'DXRLoadouts', ban_items) {
-        if ( ban_items.ban(self, NewItem) ) return true;
+    return Super.AddInventory(NewItem);
+}
+
+function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, optional bool bShowInLog )
+{
+    local DeusExLevelInfo info;
+    local DeusExNote newNote;
+    newNote = Super.AddNote(strNote, bUserNote, bShowInLog);
+
+    info = GetLevelInfo();
+    if (info != None) {
+        newNote.mission = info.MissionNumber;
+        newNote.level_name = Caps(info.mapName);
+        log("ERROR: new note mission: "$newNote.mission$", level name: "$newNote.level_name);
     }
-    return _AddInventory(NewItem);
+    return newNote;
 }
 
 function float GetCurrentGroundSpeed()
@@ -25,8 +50,8 @@ function float GetCurrentGroundSpeed()
     if (augValue == -1.0)
         augValue = 1.0;
 
-    if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
-        speed = Human(Self).mpGroundSpeed * augValue;
+    if ( Level.NetMode != NM_Standalone )
+        speed = Self.mpGroundSpeed * augValue;
     else
         speed = Default.GroundSpeed * augValue;
 
@@ -268,9 +293,18 @@ function CatchFire( Pawn burner )
     if (bOnFire==false && Region.Zone.bWaterZone==false)
         doSetTimer = true;
 
-    _CatchFire(burner);
+    Super.CatchFire(burner);
 
     // set the burn timer, tick the burn every 4 seconds instead of 1 so that the player can actually survive it
     if(doSetTimer)
         SetTimer(4.0, True);
+}
+
+event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
+{
+    if ( Texture!=None && Texture.Outer!=None && Texture.Outer.Name=='Ladder' ) {
+        bOnLadder = True;
+    }
+    else
+        bOnLadder = False;
 }
