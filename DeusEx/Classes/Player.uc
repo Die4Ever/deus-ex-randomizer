@@ -23,11 +23,11 @@ function bool AddInventory( inventory NewItem )
 function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, optional bool bShowInLog )
 {
     local DeusExLevelInfo info;
-	local DeusExNote newNote;
+    local DeusExNote newNote;
     newNote = Super.AddNote(strNote, bUserNote, bShowInLog);
 
     info = GetLevelInfo();
-	if (info != None) {
+    if (info != None) {
         newNote.mission = info.MissionNumber;
         newNote.level_name = Caps(info.mapName);
         log("ERROR: new note mission: "$newNote.mission$", level name: "$newNote.level_name);
@@ -50,7 +50,7 @@ function float GetCurrentGroundSpeed()
     if (augValue == -1.0)
         augValue = 1.0;
 
-    if (( Level.NetMode != NM_Standalone ) && Self.IsA('Human') )
+    if ( Level.NetMode != NM_Standalone )
         speed = Self.mpGroundSpeed * augValue;
     else
         speed = Default.GroundSpeed * augValue;
@@ -302,10 +302,9 @@ function CatchFire( Pawn burner )
 
 event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
 {
-
-	if ( Texture!=None && Texture.Outer!=None && Texture.Outer.Name=='Ladder' ){
-		bOnLadder = True;
-        //ClientMessage("Texture name: "$Texture.Name);
-	}else
-		bOnLadder = False;
+    if ( Texture!=None && Texture.Outer!=None && Texture.Outer.Name=='Ladder' ) {
+        bOnLadder = True;
+    }
+    else
+        bOnLadder = False;
 }
