@@ -51,7 +51,7 @@ function RandoTurrets(int percent_move, int percent_add)
         if( t.bTrackPlayersOnly==true || t.bTrackPawnsOnly==false ) hostile_turrets++;
         if( chance_single(percent_move) == false ) continue;
 
-        loc = GetRandomPosition(t.Location, turret_move_min_distance, turret_move_max_distance);
+        loc = GetRandomPositionFine(t.Location, turret_move_min_distance, turret_move_max_distance);
         if( class'DXRMissions'.static.IsCloseToStart(dxr, loc) ) {
             info("RandoTurret move "$loc$" is too close to start!");
             continue;
@@ -70,7 +70,7 @@ function RandoTurrets(int percent_move, int percent_add)
     for(i=0; i < max_turrets ; i++) {
         if( chance_single(percent_add/max_turrets) == false ) continue;
 
-        loc = GetRandomPosition();
+        loc = GetRandomPositionFine();
         if( class'DXRMissions'.static.IsCloseToStart(dxr, loc) ) {
             info("RandoTurret add "$loc$" is too close to start!");
             continue;
@@ -336,7 +336,7 @@ function Datacube SpawnDatacube(vector loc, ComputerSecurity c)
         return None;
     }
     d.plaintext = c.UserList[0].userName $ " password is " $ c.UserList[0].Password;
-    info("SpawnDatacube "$d$" done at ("$locnorm.loc$"), ("$locnorm.norm$")");
+    info("SpawnDatacube "$d$" done at ("$locnorm.loc$"), ("$locnorm.norm$") with name: "$d.Name);
     return d;
 }
 

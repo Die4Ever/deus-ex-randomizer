@@ -35,21 +35,6 @@ should I add an option for "normal skill rando every 5 missions"?
 
 combine medkits/biocells/lockpicks/multitools into just items drop rate?
 
-can I use something like this to right click an enum to go backwards? from MenuUIChoice.uc
-function bool ButtonActivatedRight( Window buttonPressed )
-{
-	if (buttonPressed == btnAction)
-	{
-		CyclePreviousValue();
-		return True;
-	}
-	else
-	{
-		return Super.ButtonActivated(buttonPressed);
-	}
-}
-
-
 
 class DataLinkPlay injects DataLinkPlay;
 
