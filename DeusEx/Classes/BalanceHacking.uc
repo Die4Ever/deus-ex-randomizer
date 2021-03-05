@@ -6,6 +6,7 @@ function Tick(float deltaTime)
     if (bHacking)
     {
         p = DeusExPlayer(winTerm.compOwner.Owner);
+        if( p == None ) p = Player;// ATMs don't set the Owner
         if( p != None ) {
             p.Energy -= deltaTime * 3.0;
             if( p.Energy <= 0 ) {

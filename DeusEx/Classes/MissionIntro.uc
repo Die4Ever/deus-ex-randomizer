@@ -14,12 +14,13 @@ function Timer()
 {
     if( ran_first_frame == false ) {
         Level.Game.SetGameSpeed(0.05);
-        SetTimer(0.05, True);
+        SetTimer(0.075, True);
     }
     if( ran_first_frame == true && started_conv == false ) {
         Super.FirstFrame();
         started_conv = true;
         Level.Game.SetGameSpeed(1);
+        SetTimer(checkTime, True);
     }
     if ( flags.GetInt('Rando_newgameplus_loops') <= 0 || !flags.GetBool('Intro_Played') ) {
         Super.Timer();
