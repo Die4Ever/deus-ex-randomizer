@@ -324,7 +324,7 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 5, 2);
+    return VersionToInt(1, 5, 3);
 }
 
 static function string VersionString()

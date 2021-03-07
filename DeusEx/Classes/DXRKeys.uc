@@ -1,13 +1,6 @@
 class DXRKeys extends DXRActorsBase;
 
-struct key_rule {
-    var string map;
-    var name key_id;
-    var vector min_pos;
-    var vector max_pos;
-    var bool allow;
-};
-var config key_rule keys_rules[32];
+var config safe_rule keys_rules[32];
 
 struct door_fix {
     var string map;
@@ -25,32 +18,36 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,7) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,3) ) {
+
+        for(i=0; i<ArrayCount(keys_rules); i++) {
+            keys_rules[i].map = "";
+        }
         i=0;
 
         keys_rules[i].map = "03_NYC_747";
-        keys_rules[i].key_id = 'lebedevdoor';
+        keys_rules[i].item_name = 'lebedevdoor';
         keys_rules[i].min_pos = vect(166, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
 
         keys_rules[i].map = "10_Paris_Chateau";
-        keys_rules[i].key_id = 'duclare_chateau';
+        keys_rules[i].item_name = 'duclare_chateau';
         keys_rules[i].min_pos = vect(-99999, -99999, -125);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
 
         keys_rules[i].map = "11_Paris_Cathedral";
-        keys_rules[i].key_id = 'cath_maindoors';
+        keys_rules[i].item_name = 'cath_maindoors';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
 
         keys_rules[i].map = "11_Paris_Cathedral";
-        keys_rules[i].key_id = 'cathedralgatekey';
+        keys_rules[i].item_name = 'cathedralgatekey';
         keys_rules[i].min_pos = vect(-4907, 1802, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
@@ -58,7 +55,7 @@ function CheckConfig()
 
         //disallow the crew quarters
         keys_rules[i].map = "14_oceanlab_lab";
-        keys_rules[i].key_id = 'crewkey';
+        keys_rules[i].item_name = 'crewkey';
         keys_rules[i].min_pos = vect(-99999, 3034, -99999);
         keys_rules[i].max_pos = vect(3633, 99999, 99999);
         keys_rules[i].allow = false;
@@ -66,7 +63,7 @@ function CheckConfig()
 
         //disallow west (smaller X) of the flooded area
         keys_rules[i].map = "14_oceanlab_lab";
-        keys_rules[i].key_id = 'crewkey';
+        keys_rules[i].item_name = 'crewkey';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(-414.152771, 99999, 99999);
         keys_rules[i].allow = false;
@@ -74,7 +71,7 @@ function CheckConfig()
 
         //allow anything to the west (smaller X) of the crew quarters, except for the flooded area
         keys_rules[i].map = "14_oceanlab_lab";
-        keys_rules[i].key_id = 'crewkey';
+        keys_rules[i].item_name = 'crewkey';
         keys_rules[i].min_pos = vect(-414.152771, -99999, -99999);
         keys_rules[i].max_pos = vect(4856, 99999, 99999);
         keys_rules[i].allow = true;
@@ -82,7 +79,7 @@ function CheckConfig()
 
         //disallow flooded area
         keys_rules[i].map = "14_oceanlab_lab";
-        keys_rules[i].key_id = 'storage';
+        keys_rules[i].item_name = 'storage';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(-414.152771, 99999, 99999);
         keys_rules[i].allow = false;
@@ -90,7 +87,7 @@ function CheckConfig()
 
         //disallow flooded area
         keys_rules[i].map = "14_oceanlab_lab";
-        keys_rules[i].key_id = 'Glab';
+        keys_rules[i].item_name = 'Glab';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(-414.152771, 99999, 99999);
         keys_rules[i].allow = false;
@@ -98,7 +95,7 @@ function CheckConfig()
 
         //disallow storage closet
         keys_rules[i].map = "14_oceanlab_lab";
-        keys_rules[i].key_id = 'storage';
+        keys_rules[i].item_name = 'storage';
         keys_rules[i].min_pos = vect(528.007446, -99999, -1653.906006);
         keys_rules[i].max_pos = vect(1047.852173, 436.867401, 99999);
         keys_rules[i].allow = false;
@@ -106,7 +103,7 @@ function CheckConfig()
 
         //allow before greasel lab
         keys_rules[i].map = "14_oceanlab_lab";
-        keys_rules[i].key_id = 'storage';
+        keys_rules[i].item_name = 'storage';
         keys_rules[i].min_pos = vect(-414.152771, -99999, -99999);
         keys_rules[i].max_pos = vect(1888, 1930.014771, 99999);
         keys_rules[i].allow = true;
@@ -134,48 +131,22 @@ function CheckConfig()
         door_fixes[i].bPickable = true;
         door_fixes[i].lockStrength = 1;
         i++;
-        door_fixes[i].map = "15_area51_entrance";
+        door_fixes[i] = door_fixes[i-1];
         door_fixes[i].tag = 'chamber2';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 75;
-        door_fixes[i].doorStrength = 1;
-        door_fixes[i].bPickable = true;
-        door_fixes[i].lockStrength = 1;
         i++;
-        door_fixes[i].map = "15_area51_entrance";
+        door_fixes[i] = door_fixes[i-1];
         door_fixes[i].tag = 'chamber3';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 75;
-        door_fixes[i].doorStrength = 1;
-        door_fixes[i].bPickable = true;
-        door_fixes[i].lockStrength = 1;
         i++;
-        door_fixes[i].map = "15_area51_entrance";
+        door_fixes[i] = door_fixes[i-1];
         door_fixes[i].tag = 'chamber4';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 75;
-        door_fixes[i].doorStrength = 1;
-        door_fixes[i].bPickable = true;
-        door_fixes[i].lockStrength = 1;
         i++;
-        door_fixes[i].map = "15_area51_entrance";
+        door_fixes[i] = door_fixes[i-1];
         door_fixes[i].tag = 'chamber5';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 75;
-        door_fixes[i].doorStrength = 1;
-        door_fixes[i].bPickable = true;
-        door_fixes[i].lockStrength = 1;
         i++;
-        door_fixes[i].map = "15_area51_entrance";
+        door_fixes[i] = door_fixes[i-1];
         door_fixes[i].tag = 'chamber6';
-        door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 75;
-        door_fixes[i].doorStrength = 1;
-        door_fixes[i].bPickable = true;
-        door_fixes[i].lockStrength = 1;
         i++;
-    }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+
         min_lock_adjust = 0.5;
         max_lock_adjust = 1.5;
         min_door_adjust = 0.5;
@@ -359,18 +330,10 @@ function bool KeyPositionGood(NanoKey k, vector newpos)
 {
     local DeusExMover d;
     local float dist;
-    local int i, matches;
+    local int i;
 
-    for(i=0; i<ArrayCount(keys_rules); i++) {
-        if( k.KeyID != keys_rules[i].key_id ) continue;
-        if( dxr.localURL != keys_rules[i].map ) continue;
-        //err("found it");
-        matches++;
-        if( AnyGreater( keys_rules[i].min_pos, newpos ) ) continue;//return ! keys_rules[i].allow;
-        if( AnyGreater( newpos, keys_rules[i].max_pos ) ) continue;//return ! keys_rules[i].allow;
-        return keys_rules[i].allow;
-    }
-    //if( matches > 0 ) return false;
+    i = GetSafeRule( keys_rules, k.KeyID, newpos);
+    if( i != -1 ) return keys_rules[i].allow;
 
     dist = VSize( k.Location - newpos );
     if( dist > 5000 ) return False;

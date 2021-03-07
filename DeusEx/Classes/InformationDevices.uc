@@ -14,6 +14,7 @@ function CreateInfoWindow()
     local DeusExRootWindow rootWindow;
     local int i;
     local Name plaintextTag;
+    local string mapname;
 
     foreach AllActors(class'DXRPasswords', passwords) { break; }
 
@@ -30,7 +31,13 @@ function CreateInfoWindow()
         winText.SetText(vaultString);
         if (bAddToVault)
         {
-            plaintextTag = rootWindow.StringToName(GetURLMap()$"-"$Name);
+            mapname = Caps(GetURLMap());
+            while( true ) {
+                i = InStr(mapname, ".");
+                if( i == -1 ) break;
+                mapname = Left(mapname, i) $ "-" $ Mid(mapname, i+1);
+            }
+            plaintextTag = rootWindow.StringToName(mapname$"-"$Name);
             log(Self$": plaintextTag: "$plaintextTag);
             note = aReader.GetNote(plaintextTag);
             if (note == None)

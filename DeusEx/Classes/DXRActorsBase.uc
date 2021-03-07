@@ -13,6 +13,14 @@ struct FMinMax {
     var float max;
 };
 
+struct safe_rule {
+    var string map;
+    var name item_name;
+    var vector min_pos;
+    var vector max_pos;
+    var bool allow;
+};
+
 function CheckConfig()
 {
     local class<Actor> temp_skipactor_types[6];
@@ -637,6 +645,20 @@ function Vector GetCenter(Actor test)
 
     test.GetBoundingBox(MinVect, MaxVect);
     return (MinVect+MaxVect)/2;
+}
+
+function int GetSafeRule(safe_rule rules[32], name item_name, vector newpos)
+{
+    local int i;
+
+    for(i=0; i<ArrayCount(rules); i++) {
+        if( item_name != rules[i].item_name ) continue;
+        if( dxr.localURL != rules[i].map ) continue;
+        if( AnyGreater( rules[i].min_pos, newpos ) ) continue;
+        if( AnyGreater( newpos, rules[i].max_pos ) ) continue;
+        return i;
+    }
+    return -1;
 }
 
 function bool _PositionIsSafeOctant(Vector oldloc, Vector TestPoint, Vector newloc)
