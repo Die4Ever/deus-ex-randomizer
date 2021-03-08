@@ -70,7 +70,7 @@ function BindControls(bool writing, optional string action)
         f.infodevices = 100;
         f.enemiesrandomized = 20;
         f.skills_disable_downgrades = 0;
-        f.skills_reroll_missions = 0;
+        f.skills_reroll_missions = 1;
         f.skills_independent_levels = 0;
         f.minskill = 0;
         f.maxskill = 1;
@@ -98,7 +98,7 @@ function BindControls(bool writing, optional string action)
         f.infodevices = 100;
         f.enemiesrandomized = 20;
         f.skills_disable_downgrades = 0;
-        f.skills_reroll_missions = 0;
+        f.skills_reroll_missions = 5;
         f.skills_independent_levels = 0;
         f.minskill = 25;
         f.maxskill = 150;
@@ -126,7 +126,7 @@ function BindControls(bool writing, optional string action)
         f.infodevices = 100;
         f.enemiesrandomized = 30;
         f.skills_disable_downgrades = 0;
-        f.skills_reroll_missions = 0;
+        f.skills_reroll_missions = 5;
         f.skills_independent_levels = 0;
         f.minskill = 50;
         f.maxskill = 300;

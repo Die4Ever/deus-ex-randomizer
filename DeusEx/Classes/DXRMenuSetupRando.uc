@@ -101,9 +101,13 @@ function BindControls(bool writing, optional string action)
     skills_option = f.skills_disable_downgrades $";"$ f.skills_reroll_missions $";"$ f.skills_independent_levels;
     EnumOptionString(id, "Normal Skill Randomization", "0;0;0", writing, skills_option);
     EnumOptionString(id, "Normal Skills Every Mission", "0;1;0", writing, skills_option);
+    EnumOptionString(id, "Normal Skills Every 2 Missions", "0;2;0", writing, skills_option);
+    EnumOptionString(id, "Normal Skills Every 3 Missions", "0;3;0", writing, skills_option);
     EnumOptionString(id, "Normal Skills Every 5 Missions", "0;5;0", writing, skills_option);
     EnumOptionString(id, "Blind Skill Randomization", "5;0;100", writing, skills_option);
     EnumOptionString(id, "Blind Skills Every Mission", "5;1;100", writing, skills_option);
+    EnumOptionString(id, "Blind Skills Every 2 Missions", "5;2;100", writing, skills_option);
+    EnumOptionString(id, "Blind Skills Every 3 Missions", "5;3;100", writing, skills_option);
     EnumOptionString(id, "Blind Skills Every 5 Missions", "5;5;100", writing, skills_option);
     f.skills_disable_downgrades = UnpackInt(skills_option);
     f.skills_reroll_missions = UnpackInt(skills_option);
