@@ -398,9 +398,6 @@ function int getTimer(name timerName) {
 }
 
 function bool isTimerActive(name timerName) {
-    if(dxr==None) log("ERROR: dxr==None");
-    if(dxr.Player==None) log("ERROR: dxr.Player==None");
-    if(dxr.Player.FlagBase==None) log("ERROR: dxr.Player.FlagBase==None");
     return (dxr.Player.FlagBase.GetInt(timerName) > 0);
 }
 
