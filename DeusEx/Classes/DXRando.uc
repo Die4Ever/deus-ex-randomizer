@@ -164,27 +164,6 @@ function ClearModules()
     flags=None;
 }
 
-event Destroyed()
-{
-    local int i;
-    info("Destroyed()");
-
-    ClearModules();
-    Player = None;
-    Super.Destroyed();
-}
-
-function PreTravel()
-{
-    local int i;
-    info("PreTravel()");
-    // turn off the timer
-    SetTimer(0, False);
-
-    ClearModules();
-    Player=None;
-}
-
 function Timer()
 {
     local int i;

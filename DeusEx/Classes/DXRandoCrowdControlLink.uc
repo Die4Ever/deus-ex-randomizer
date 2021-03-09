@@ -33,7 +33,11 @@ const DefaultGroundSpeed = 320;
 
 //HK Canal freezer room has friction=1, but that doesn't
 //feel slippery enough to me
-const IceFriction = 0.25; //Standard friction is 8
+const IceFriction = 0.25;
+const NormalFriction = 8;
+var vector NormalGravity;
+var vector FloatGrav;
+var vector MoonGrav;
 
 const ReconDefault = 5;
 const MatrixTimeDefault = 60;
@@ -48,6 +52,20 @@ const FloatyTimeDefault = 60;
 const FloorLavaTimeDefault = 60;
 const InvertMouseTimeDefault = 60;
 const InvertMovementTimeDefault = 60;
+
+struct ZoneFriction
+{
+    var name zonename;
+    var float friction;
+};
+var transient ZoneFriction zone_frictions[128];
+
+struct ZoneGravity
+{
+    var name zonename;
+    var vector gravity;
+};
+var transient ZoneGravity zone_gravities[128];
 
 //JSON parsing states
 const KeyState = 1;
@@ -297,7 +315,7 @@ function InitOnEnter() {
     dxr.Player.bWarrenEMPField = isTimerActive('cc_EmpTimer');
 
     if (isTimerActive('cc_SpeedTimer')) {
-        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * dxr.Flags.f.GetInt('cc_moveSpeedModifier');        
+        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * dxr.Player.FlagBase.GetInt('cc_moveSpeedModifier');        
     } else {
         dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;        
     }
@@ -317,15 +335,15 @@ function InitOnEnter() {
     
     dxr.Player.bBehindView=isTimerActive('cc_behindTimer');
     
-    if (0==dxr.Flags.f.GetFloat('cc_damageMult')) {
-        dxr.Flags.f.SetFloat('cc_damageMult',1.0);
+    if (0==dxr.Player.FlagBase.GetFloat('cc_damageMult')) {
+        dxr.Player.FlagBase.SetFloat('cc_damageMult',1.0);
     }
     if (!isTimerActive('cc_DifficultyTimer')) {
-        dxr.Flags.f.SetFloat('cc_damageMult',1.0);
+        dxr.Player.FlagBase.SetFloat('cc_damageMult',1.0);
     }
     
     if (isTimerActive('cc_invertMouseTimer')) {
-        dxr.Player.bInvertMouse = !dxr.Flags.f.GetBool('cc_InvertMouseDef');
+        dxr.Player.bInvertMouse = !dxr.Player.FlagBase.GetBool('cc_InvertMouseDef');
     }
     
     if (isTimerActive('cc_invertMovementTimer')) {
@@ -348,7 +366,7 @@ function CleanupOnExit() {
     dxr.Player.bBehindView = False; //third_person
     SetFloatyPhysics(False);
     if (isTimerActive('cc_invertMouseTimer')) {
-        dxr.Player.bInvertMouse = dxr.Flags.f.GetBool('cc_InvertMouseDef');
+        dxr.Player.bInvertMouse = dxr.Player.FlagBase.GetBool('cc_InvertMouseDef');
     }
 
     if (isTimerActive('cc_invertMovementTimer')) {
@@ -376,24 +394,27 @@ function StopMatrixMode(optional bool silent) {
 }
 
 function int getTimer(name timerName) {
-    return dxr.flags.f.GetInt(timerName);
+    return dxr.Player.FlagBase.GetInt(timerName);
 }
 
 function bool isTimerActive(name timerName) {
-    return (dxr.flags.f.GetInt(timerName) > 0);
+    if(dxr==None) log("ERROR: dxr==None");
+    if(dxr.Player==None) log("ERROR: dxr.Player==None");
+    if(dxr.Player.FlagBase==None) log("ERROR: dxr.Player.FlagBase==None");
+    return (dxr.Player.FlagBase.GetInt(timerName) > 0);
 }
 
 function setTimerFlag(name timerName,int time) {
-    dxr.flags.f.SetInt(timerName,time);
+    dxr.Player.FlagBase.SetInt(timerName,time);
 }
 
 //Timers only decrement while playing
 function bool decrementTimer(name timerName) {
     local int time;
-    time = dxr.flags.f.GetInt(timerName);
+    time = dxr.Player.FlagBase.GetInt(timerName);
     if (time>0 && InGame()) {
         time -= 1;
-        dxr.flags.f.SetInt(timerName,time);
+        dxr.Player.FlagBase.SetInt(timerName,time);
         
         return (time == 0);
     }
@@ -445,7 +466,7 @@ function Timer() {
     }
 
     if (isTimerActive('cc_SpeedTimer')) {
-        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * dxr.Flags.f.GetInt('cc_moveSpeedModifier');        
+        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * dxr.Player.FlagBase.GetInt('cc_moveSpeedModifier');        
     }
     if (decrementTimer('cc_SpeedTimer')) {
         dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;
@@ -469,7 +490,7 @@ function Timer() {
     }
     
     if (decrementTimer('cc_DifficultyTimer')){
-        dxr.Flags.f.SetFloat('cc_damageMult',1.0);        
+        dxr.Player.FlagBase.SetFloat('cc_damageMult',1.0);        
         PlayerMessage("Your body returns to its normal toughness");
     }
     
@@ -484,7 +505,7 @@ function Timer() {
     
     if (decrementTimer('cc_invertMouseTimer')) {
         PlayerMessage("Your mouse controls return to normal");
-        dxr.Player.bInvertMouse = dxr.Flags.f.GetBool('cc_InvertMouseDef');
+        dxr.Player.bInvertMouse = dxr.Player.FlagBase.GetBool('cc_InvertMouseDef');
     }
 
     if (decrementTimer('cc_invertMovementTimer')) {
@@ -797,38 +818,98 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
     return Success;
 }
 
+
+function float GetDefaultZoneFriction(ZoneInfo z)
+{
+    local int i;
+    for(i=0; i<ArrayCount(zone_frictions); i++) {
+        if( z.name == zone_frictions[i].zonename )
+            return zone_frictions[i].friction;
+    }
+    return NormalFriction;
+}
+
+function SaveDefaultZoneFriction(ZoneInfo z)
+{
+    local int i;
+    if( z.ZoneGroundFriction ~= NormalFriction ) return;
+    for(i=0; i<ArrayCount(zone_frictions); i++) {
+        if( zone_frictions[i].zonename == '' || z.name == zone_frictions[i].zonename ) {
+            zone_frictions[i].zonename = z.name;
+            zone_frictions[i].friction = z.ZoneGroundFriction;
+            return;
+        }
+    }
+}
+
+function vector GetDefaultZoneGravity(ZoneInfo z)
+{
+    local int i;
+    for(i=0; i<ArrayCount(zone_gravities); i++) {
+        if( z.name == zone_gravities[i].zonename )
+            return zone_gravities[i].gravity;
+        if( zone_gravities[i].zonename == '' )
+            break;
+    }
+    return NormalGravity;
+}
+
+function SaveDefaultZoneGravity(ZoneInfo z)
+{
+    local int i;
+    if( z.ZoneGravity.X ~= NormalGravity.X && z.ZoneGravity.Y ~= NormalGravity.Y && z.ZoneGravity.Z ~= NormalGravity.Z ) return;
+    for(i=0; i<ArrayCount(zone_gravities); i++) {
+        if( z.name == zone_gravities[i].zonename )
+            return;
+        if( zone_gravities[i].zonename == '' ) {
+            zone_gravities[i].zonename = z.name;
+            zone_gravities[i].gravity = z.ZoneGravity;
+            return;
+        }
+    }
+}
+
 function SetFloatyPhysics(bool enabled) {
     local ZoneInfo Z;
-    local vector floatgrav;
-    floatgrav.X = 0;
-    floatgrav.Y = 0;
-    floatgrav.Z = 0.15;
-    
     ForEach AllActors(class'ZoneInfo', Z)
-        if (z.ZoneGravity == z.Default.ZoneGravity || z.ZoneGravity == floatgrav) {
-            if (enabled) {
-                //I doubt the default is actually being used for anything, so I'll
-                //take it and use it as my own personal info storage space
-                Z.ZoneGravity = floatgrav;
-            } else {
-                Z.ZoneGravity = Z.Default.ZoneGravity;    
-            }
+    {
+        log("SetFloatyPhysics "$Z$" gravity: "$Z.ZoneGravity);
+        if (enabled) {
+            SaveDefaultZoneGravity(Z);
+            Z.ZoneGravity = FloatGrav;
         }
+        else if ( (!enabled) && Z.ZoneGravity == FloatGrav ) {
+            Z.ZoneGravity = GetDefaultZoneGravity(Z);
+        }
+    }
+}
+
+function SetMoonPhysics(bool enabled) {
+    local ZoneInfo Z;
+    ForEach AllActors(class'ZoneInfo', Z)
+    {
+        log("SetFloatyPhysics "$Z$" gravity: "$Z.ZoneGravity);
+        if (enabled) {
+            SaveDefaultZoneGravity(Z);
+            Z.ZoneGravity = MoonGrav;
+        }
+        else if ( (!enabled) && Z.ZoneGravity == MoonGrav ) {
+            Z.ZoneGravity = GetDefaultZoneGravity(Z);
+        }
+    }
 }
 
 function SetIcePhysics(bool enabled) {
     local ZoneInfo Z;
-    ForEach AllActors(class'ZoneInfo', Z)
-        if (z.ZoneGroundFriction == z.Default.ZoneGroundFriction || z.ZoneGroundFriction == IceFriction) {
-            if (enabled) {
-                //I doubt the default is actually being used for anything, so I'll
-                //take it and use it as my own personal info storage space
-                Z.Default.ZoneGroundFriction = Z.ZoneGroundFriction;
-                Z.ZoneGroundFriction = IceFriction;
-            } else {
-                Z.ZoneGroundFriction = Z.Default.ZoneGroundFriction;    
-            }
+    ForEach AllActors(class'ZoneInfo', Z) {
+        if (enabled) {
+            SaveDefaultZoneFriction(Z);
+            Z.ZoneGroundFriction = IceFriction;
         }
+        else if ( (!enabled) && Z.ZoneGroundFriction == IceFriction ) {
+            Z.ZoneGroundFriction = GetDefaultZoneFriction(Z);
+        }
+    }
 }
 
 
@@ -853,6 +934,7 @@ function bool InGame() {
 function int doCrowdControlEvent(string code, string param[5], string viewer, int type) {
     local vector v;
     local inventory anItem;
+    local int i;
     local bool result;
     local Actor a;
     v.X=0;
@@ -961,7 +1043,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
                 return TempFail;
             }
-            dxr.Flags.f.SetInt('cc_moveSpeedModifier',MoveSpeedMultiplier);
+            dxr.Player.FlagBase.SetInt('cc_moveSpeedModifier',MoveSpeedMultiplier);
             dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedMultiplier;
             setTimerFlag('cc_SpeedTimer',SpeedTimeDefault);
             PlayerMessage(viewer@"made you fast like Sonic!");
@@ -971,7 +1053,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
                 return TempFail;
             }
-            dxr.Flags.f.SetInt('cc_moveSpeedModifier',MoveSpeedDivisor);
+            dxr.Player.FlagBase.SetInt('cc_moveSpeedModifier',MoveSpeedDivisor);
             dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedDivisor;
             setTimerFlag('cc_SpeedTimer',SpeedTimeDefault);
             PlayerMessage(viewer@"made you slow like a snail!");
@@ -1044,20 +1126,22 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "give_skillpoints":
-            PlayerMessage(viewer@"gave you "$param[0]$" skill points");
-            dxr.Player.SkillPointsAdd(Int(param[0]));
+            i = Int(param[0])*100;
+            PlayerMessage(viewer@"gave you "$i$" skill points");
+            dxr.Player.SkillPointsAdd(i);
             break;
 
         case "remove_skillpoints":
-            PlayerMessage(viewer@"took away "$param[0]$" skill points");
-            SkillPointsRemove(Int(param[0]));
+            i = Int(param[0])*100;
+            PlayerMessage(viewer@"took away "$i$" skill points");
+            SkillPointsRemove(i);
             break;
             
         case "add_credits":
-            return AddCredits(Int(param[0]),viewer);
+            return AddCredits(Int(param[0])*100,viewer);
             break;
         case "remove_credits":
-            return AddCredits(-Int(param[0]),viewer);
+            return AddCredits(-Int(param[0])*100,viewer);
             break;
 
         case "lamthrower":
@@ -1138,7 +1222,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_DifficultyTimer')) {
                 return TempFail;
             }
-            dxr.Flags.f.SetFloat('cc_damageMult',2.0);
+            dxr.Player.FlagBase.SetFloat('cc_damageMult',2.0);
            
             PlayerMessage(viewer@"made your body extra squishy");
             setTimerFlag('cc_DifficultyTimer',DifficultyTimeDefault);
@@ -1147,7 +1231,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_DifficultyTimer')) {
                 return TempFail;
             }
-            dxr.Flags.f.SetFloat('cc_damageMult',0.5);
+            dxr.Player.FlagBase.SetFloat('cc_damageMult',0.5);
             PlayerMessage(viewer@"made your body extra tough!");
             setTimerFlag('cc_DifficultyTimer',DifficultyTimeDefault);
             break;
@@ -1227,7 +1311,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             PlayerMessage(viewer@"inverted your mouse!");
-            dxr.Flags.f.SetBool('cc_InvertMouseDef',dxr.Player.bInvertMouse);
+            dxr.Player.FlagBase.SetBool('cc_InvertMouseDef',dxr.Player.bInvertMouse);
 
             dxr.Player.bInvertMouse = !dxr.Player.bInvertMouse;
             setTimerFlag('cc_invertMouseTimer',InvertMouseTimeDefault);
@@ -1697,4 +1781,11 @@ function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer
     }
 
     m.testint(matches, 5, "5 matches for msg: "$msg);
+}
+
+defaultproperties
+{
+    NormalGravity=vect(0,0,-950)
+    FloatGrav=vect(0,0,0.15)
+    MoonGrav=vect(0,0,-300)
 }
