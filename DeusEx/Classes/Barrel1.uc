@@ -2,7 +2,6 @@ class Barrel1 injects Barrel1;
 
 event TravelPreAccept()
 {
-    local string old_skin;
     Super.TravelPreAccept();
     if( HandleTravel() )
         BeginPlay();
@@ -10,7 +9,6 @@ event TravelPreAccept()
 
 function bool HandleTravel()
 {
-    local int old_skin;
     local DeusExPlayer player;
 
     foreach AllActors(class'DeusExPlayer', player) { break; }
