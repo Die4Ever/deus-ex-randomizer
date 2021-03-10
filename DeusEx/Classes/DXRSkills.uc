@@ -33,6 +33,26 @@ function CheckConfig()
     if( config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
         skill_cost_curve = 2;
     }
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,3) ) {
+        i=0;
+        SkillCostMultipliers[i].type = "SkillDemolition";
+        SkillCostMultipliers[i].percent = 80;
+        SkillCostMultipliers[i].minLevel = 1;
+        SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
+        i++;
+
+        SkillCostMultipliers[i].type = "SkillSwimming";
+        SkillCostMultipliers[i].percent = 80;
+        SkillCostMultipliers[i].minLevel = 1;
+        SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
+        i++;
+
+        SkillCostMultipliers[i].type = "SkillEnviro";
+        SkillCostMultipliers[i].percent = 80;
+        SkillCostMultipliers[i].minLevel = 1;
+        SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
+        i++;
+    }
     Super.CheckConfig();
 }
 

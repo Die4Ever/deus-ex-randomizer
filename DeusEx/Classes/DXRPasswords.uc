@@ -1,6 +1,7 @@
 class DXRPasswords extends DXRActorsBase;
 
 var transient DeusExNote lastCheckedNote;
+var config safe_rule datacubes_rules[32];
 
 var travel string oldpasswords[64];
 var travel string newpasswords[64];
@@ -11,9 +12,72 @@ var transient int updated;
 
 function CheckConfig()
 {
+    local int i;
     if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
+    }
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,3) ) {
+        i=0;
+
+        datacubes_rules[i].map = "04_NYC_NSFHQ";
+        datacubes_rules[i].item_name = 'DataCube0';//DataCube4 too?
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i] = datacubes_rules[i-1];
+        datacubes_rules[i].item_name = 'DataCube1';
+        i++;
+
+        datacubes_rules[i] = datacubes_rules[i-1];
+        datacubes_rules[i].item_name = 'DataCube3';
+        i++;
+
+        // DataCube0 and 2
+        datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
+        datacubes_rules[i].item_name = 'DataCube0';
+        datacubes_rules[i].min_pos = vect(3723, -1504, -907); //gunther room
+        datacubes_rules[i].max_pos = vect(5379, -399, -506);
+        datacubes_rules[i].allow = false;
+        i++;
+        datacubes_rules[i] = datacubes_rules[i-1];
+        datacubes_rules[i].item_name = 'DataCube2';
+        i++;
+
+        datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
+        datacubes_rules[i].item_name = 'DataCube0';// 0 and 2
+        datacubes_rules[i].min_pos = vect(3587, -812, -487); //before gunther room
+        datacubes_rules[i].max_pos = vect(4322, -124, 74);
+        datacubes_rules[i].allow = false;
+        i++;
+        datacubes_rules[i] = datacubes_rules[i-1];
+        datacubes_rules[i].item_name = 'DataCube2';
+        i++;
+
+        datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
+        datacubes_rules[i].item_name = 'DataCube0';// 0 and 2
+        datacubes_rules[i].min_pos = vect(3146, -1715, -85); //above before gunther room
+        datacubes_rules[i].max_pos = vect(3907, -1224, 434);
+        datacubes_rules[i].allow = false;
+        i++;
+        datacubes_rules[i] = datacubes_rules[i-1];
+        datacubes_rules[i].item_name = 'DataCube2';
+        i++;
+
+        datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
+        datacubes_rules[i].item_name = 'DataCube0';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        datacubes_rules[i] = datacubes_rules[i-1];
+        datacubes_rules[i].item_name = 'DataCube2';
+        i++;
+    }
+    for(i=0; i<ArrayCount(datacubes_rules); i++) {
+        datacubes_rules[i].map = Caps(datacubes_rules[i].map);
     }
     Super.CheckConfig();
 }
@@ -204,6 +268,9 @@ function RandoInfoDevs(int percent)
                 parser.CloseText();
             }
             CriticalDelete(parser);
+        }
+        if( id.plaintext != "" ) {
+            ProcessStringHasPass(id.plaintext, hasPass);
         }
         i=0;
         num=0;
@@ -545,6 +612,19 @@ function ProcessText(DeusExTextParser parser, out int hasPass[64])
     }
 }
 
+function ProcessStringHasPass(string text, out int hasPass[64])
+{
+    local int i;
+    text = Caps(text);
+    for(i=0; i<passEnd; i++) {
+        if( Len(oldpasswords[i]) == 0 ) continue;
+        if( WordInStr( text, Caps(oldpasswords[i]), Len(oldpasswords[i]), true ) != -1 ) {
+            hasPass[i] = 1;
+            //l("hasPass["$i$"] = 1;");
+        }
+    }
+}
+
 function bool CheckComputerPosition(InformationDevices id, Computers c, vector newpos, int hasPass[64])
 {
     local int a, i;
@@ -585,6 +665,9 @@ function bool InfoPositionGood(InformationDevices id, vector newpos, int hasPass
     local Computers c;
     local Keypad k;
     local int a, i;
+
+    i = GetSafeRule( datacubes_rules, id.name, newpos);
+    if( i != -1 ) return datacubes_rules[i].allow;
 
     if( VSize( id.Location - newpos ) > 5000 ) return False;
 

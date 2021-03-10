@@ -25,7 +25,7 @@ var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutua
 function PreTravel()
 {
     Super.PreTravel();
-    if( dxr != None && dxr.localURL == "INTRO" && f.GetInt('Rando_version') == 0 ) {
+    if( dxr != None && f.GetInt('Rando_version') == 0 ) {
         info("PreTravel "$dxr.localURL$" SaveFlags");
         SaveFlags();
     }
@@ -324,12 +324,12 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 5, 2);
+    return VersionToInt(1, 5, 3);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 2) $ "";
+    return VersionToString(1, 5, 3) $ "";
 }
 
 function MaxRando()

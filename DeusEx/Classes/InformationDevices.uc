@@ -13,23 +13,11 @@ function CreateInfoWindow()
     local DeusExNote note;
     local DeusExRootWindow rootWindow;
     local int i;
+    local Name plaintextTag;
+    local string mapname;
 
     foreach AllActors(class'DXRPasswords', passwords) { break; }
 
-    if (bAddToVault) note = aReader.GetNote(Name);
-    Super.CreateInfoWindow();
-    if ( bAddToVault && note == None && aReader.FirstNote.textTag == Name )
-    {
-        note = aReader.FirstNote;
-        for(i=0; i < ArrayCount(new_passwords) && i < ArrayCount(note.new_passwords); i++) {
-            note.new_passwords[i] = new_passwords[i];
-            new_passwords[i] = "";
-        }
-    }
-
-    if ( textTag != '' ) {
-        return;
-    }
     if( plaintext != "" ) {
         rootWindow = DeusExRootWindow(aReader.rootWindow);
         infoWindow = rootWindow.hud.ShowInfoWindow();
@@ -43,11 +31,19 @@ function CreateInfoWindow()
         winText.SetText(vaultString);
         if (bAddToVault)
         {
-            note = aReader.GetNote(Name);
+            mapname = Caps(GetURLMap());
+            while( true ) {
+                i = InStr(mapname, ".");
+                if( i == -1 ) break;
+                mapname = Left(mapname, i) $ "-" $ Mid(mapname, i+1);
+            }
+            plaintextTag = rootWindow.StringToName(mapname$"-"$Name);
+            log(Self$": plaintextTag: "$plaintextTag);
+            note = aReader.GetNote(plaintextTag);
             if (note == None)
             {
                 note = aReader.AddNote(vaultString,, True);
-                note.SetTextTag(Name);
+                note.SetTextTag(plaintextTag);
                 for(i=0; i < ArrayCount(new_passwords) && i < ArrayCount(note.new_passwords); i++) {
                     note.new_passwords[i] = new_passwords[i];
                     new_passwords[i] = "";
@@ -55,6 +51,18 @@ function CreateInfoWindow()
             }
         }
         vaultString = "";
+        return;
+    }
+
+    if (bAddToVault) note = aReader.GetNote(Name);
+    Super.CreateInfoWindow();
+    if ( bAddToVault && note == None && aReader.FirstNote.textTag == Name && textTag != '' )
+    {
+        note = aReader.FirstNote;
+        for(i=0; i < ArrayCount(new_passwords) && i < ArrayCount(note.new_passwords); i++) {
+            note.new_passwords[i] = new_passwords[i];
+            new_passwords[i] = "";
+        }
     }
 }
 

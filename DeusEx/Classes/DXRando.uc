@@ -21,27 +21,20 @@ function SetdxInfo(DeusExLevelInfo i)
     dxInfo = i;
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL);
-    PostPostBeginPlay();
+    Init();
 }
 
-function PostPostBeginPlay()
+function Init()
 {
-    Super.PostPostBeginPlay();
-    CrcInit();
-
-    if( localURL == "" ) {
-        l("PostPostBeginPlay returning because localURL == " $ localURL);
-        return;
-    }
-
-    l("PostPostBeginPlay has localURL == " $ localURL);
+    l("Init has localURL == " $ localURL);
     foreach AllActors(class'DeusExPlayer', Player) { break; }
     if( Player == None ) {
-        l("PostPostBeginPlay() didn't find player?");
-        SetTimer(0.1, False);
+        l("Init() didn't find player?");
+        SetTimer(0.001, False);
         return;
     }
-    info("found Player "$Player);
+    l("found Player "$Player);
+    CrcInit();
     ClearModules();
     LoadFlagsModule();
     flags.LoadFlags();
@@ -164,32 +157,11 @@ function ClearModules()
     flags=None;
 }
 
-event Destroyed()
-{
-    local int i;
-    info("Destroyed()");
-
-    ClearModules();
-    Player = None;
-    Super.Destroyed();
-}
-
-function PreTravel()
-{
-    local int i;
-    info("PreTravel()");
-    // turn off the timer
-    SetTimer(0, False);
-
-    ClearModules();
-    Player=None;
-}
-
 function Timer()
 {
     local int i;
     if( Player == None ) {
-        PostPostBeginPlay();
+        Init();
         return;
     }
 }

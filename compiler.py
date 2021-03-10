@@ -227,6 +227,8 @@ def copyDeusExU(out):
 
 def runAutomatedTests(out):
     rc = False
+    if exists(out + '/System/DXRando.ini'):
+        os.remove(out + '/System/DXRando.ini')
     if exists(out + '/System/DeusEx.ini'):
         # copy DeusEx.ini to test.ini, change [Engine.Engine] DefaultServerGame to =DeusEx.DXRandoTests
         f = open (out + '/System/DeusEx.ini','r')
@@ -252,6 +254,8 @@ def runAutomatedTests(out):
         # then we run this command
         # ucc server ini=test.ini
         calla([ out + '/System/ucc', 'server', 'ini=test.ini' ])
+        if exists(out + '/System/DXRando.ini'):
+            os.remove(out + '/System/DXRando.ini')
         print("")
         print("=====================================================")
         print("             Automated Tests Finished")

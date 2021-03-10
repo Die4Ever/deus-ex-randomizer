@@ -26,6 +26,44 @@ native static final function ResetConfig();
 UWindowHTMLTextArea
 ninja mode (maybe rename low tech skill to ninjitsu, and always run silent?
 fix "softlock" in 03_batterypark, maybe by adding an atm and datacube, or copying over the threatened bum from 02_street, putting a note on curly's body, hiding money and/or datacubes on the map...
+-filben wants 1000 credits!
+-using a vending machine takes 2 credits, so the vending machines in unatco mean -40 credits
+-manderley gives you a minimum of 500 credits, so you have a minimum of 460 credits and I need to give a minimum of 540 credits in 03_batterypark
+-hacking an atm gives less money, so I need to have more than 540 in the atm?
+	-hacked atm balance modifier - balanceModifier = winTerm.GetSkillLevel() * 0.5;
+	-which means level 1 gets half money
+-I can do 800 in the atm with a datacube for it, and 150 on the ground somewhere
+-will also need something if you kill curly, dropping a datacube would be cool
+-should I also make the phone booth breakable?
+-I can also try copying the AlleyBum and AlleyThug (maybe 3 thugs this time?) from 02 nyc streets, but I'm pretty sure I'll manually need to modify his ConListItems (sets flags AlleyBumRescued and PlayerKnowsUnderworldPassword)
+	// check to see if player rescued bum
+	if (!flags.GetBool('MS_ThugsDead'))
+	{
+		count = 0;
+
+		foreach AllActors(class'ThugMale2', thug2, 'AlleyThug')
+			count++;
+
+		// set the resuced flag if the bum is still alive
+		if (count == 0)
+		{
+			foreach AllActors(class'BumMale', bum, 'AlleyBum')
+				flags.SetBool('AlleyBumRescued', True,, 3);
+
+			flags.SetBool('MS_ThugsDead', True,, 3);
+		}
+	}
+
+	if (flags.GetBool('OverhearAlleyThug_Played') &&
+		!flags.GetBool('MS_ThugAttacks'))
+	{
+		foreach AllActors(class'Actor', A, 'ThugAttacks')
+			A.Trigger(Self, Player);
+
+		flags.SetBool('MS_ThugAttacks', True,, 3);
+	}
+
+
 
 maybe add a list of unimportantMaps for DXREntranceRando? maybe chateau, freeclinic, nyc sewers, smuggler, gas station, graveyard?
     in order to keep play time more consistent never do all or none of them?
@@ -34,21 +72,6 @@ have different "Level Sets"
 should I add an option for "normal skill rando every 5 missions"?
 
 combine medkits/biocells/lockpicks/multitools into just items drop rate?
-
-can I use something like this to right click an enum to go backwards? from MenuUIChoice.uc
-function bool ButtonActivatedRight( Window buttonPressed )
-{
-	if (buttonPressed == btnAction)
-	{
-		CyclePreviousValue();
-		return True;
-	}
-	else
-	{
-		return Super.ButtonActivated(buttonPressed);
-	}
-}
-
 
 
 class DataLinkPlay injects DataLinkPlay;

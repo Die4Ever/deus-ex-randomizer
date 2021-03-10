@@ -78,6 +78,7 @@ function FirstEntry()
 
     IncreaseBrightness(dxr.flags.brightness);
     OverwriteDecorations();
+    FixFlagTriggers();
     
     switch(dxr.dxInfo.missionNumber) {
         case 2:
@@ -224,6 +225,18 @@ function OverwriteDecorations()
     }
 }
 
+function FixFlagTriggers()
+{//the History Un-Eraser Button
+    local FlagTrigger f;
+
+    foreach AllActors(class'FlagTrigger', f) {
+        if( f.bSetFlag && f.flagExpiration == -1 ) {
+            f.flagExpiration = 999;
+            log(f @ f.FlagName @ f.flagValue $" changed expiration from -1 to 999");
+        }
+    }
+}
+
 function NYC_02_FirstEntry()
 {
     local DeusExMover d;
@@ -261,7 +274,9 @@ function Airfield_FirstEntry()
             foreach AllActors(class'Actor', a) {
                 if( a.name == 'NanoKey0' ) {
                     a.Destroy();
-                    break;
+                }
+                if( a.name == 'BookClosed2' ) {
+                    InformationDevices(a).bAddToVault = true;
                 }
             }
             break;
