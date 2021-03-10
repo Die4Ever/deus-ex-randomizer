@@ -25,7 +25,7 @@ var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutua
 function PreTravel()
 {
     Super.PreTravel();
-    if( dxr != None && dxr.localURL == "INTRO" && f.GetInt('Rando_version') == 0 ) {
+    if( dxr != None && f.GetInt('Rando_version') == 0 ) {
         info("PreTravel "$dxr.localURL$" SaveFlags");
         SaveFlags();
     }
