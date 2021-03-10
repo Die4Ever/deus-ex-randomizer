@@ -4,6 +4,8 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 // check a 100 foot radius around me for combat
 if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
 
+player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
+
 for v1.6 programatically modify conversations? ===================
 
 in Actor.uc
