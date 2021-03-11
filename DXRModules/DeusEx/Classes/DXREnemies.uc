@@ -166,7 +166,8 @@ function RandoCarcasses()
 
 function SwapScriptedPawns()
 {
-    local ScriptedPawn a, b;
+    local ScriptedPawn temp[1024];
+    local ScriptedPawn a;
     local int num, i, slot;
 
     SetSeed( "SwapScriptedPawns" );
@@ -176,37 +177,18 @@ function SwapScriptedPawns()
         if( a.bHidden || a.bStatic ) continue;
         if( a.bImportant ) continue;
         if( IsCritter(a) ) continue;
-        num++;
+        temp[num++] = a;
     }
 
-    foreach AllActors(class'ScriptedPawn', a )
-    {
-        if( a.bHidden || a.bStatic ) continue;
-        if( a.bImportant ) continue;
-        if( IsCritter(a) ) continue;
-
-        i=0;
+    for(i=0; i<num; i++) {
         slot=rng(num);// -1 because we skip ourself, but +1 for vanilla
         if(slot==0) {
-            l("not swapping "$a);
+            l("not swapping "$temp[i]);
             continue;
         }
         slot--;
-        foreach AllActors(class'ScriptedPawn', b )
-        {
-            if( a == b ) continue;
-            if( b.bHidden || b.bStatic ) continue;
-            if( b.bImportant ) continue;
-            if( IsCritter(b) ) continue;
-
-            if(i==slot) {
-                a.Orders = defaultOrders;
-                b.Orders = defaultOrders;
-                Swap(a, b);
-                break;
-            }
-            i++;
-        }
+        if(slot >= i) slot++;
+        Swap(temp[i], temp[slot]);
     }
 }
 

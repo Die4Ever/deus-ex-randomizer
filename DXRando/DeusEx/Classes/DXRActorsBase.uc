@@ -224,58 +224,40 @@ function Swap(Actor a, Actor b)
     local rotator newrot;
     local bool asuccess, bsuccess;
     local Actor abase, bbase;
-    local bool AbCollideActors, AbBlockActors, AbBlockPlayers, BbCollideActors, BbBlockActors, BbBlockPlayers;
     local EPhysics aphysics, bphysics;
 
     if( a == b ) return;
 
-    //l("swapping "$ActorToString(a)$" and "$ActorToString(b));
     l("swapping "$ActorToString(a)$" and "$ActorToString(b)$" distance == " $ VSize(a.Location - b.Location) );
 
-    // https://docs.unrealengine.com/udk/Two/ActorVariables.html#Advanced
-    // native(262) final function SetCollision( optional bool NewColActors, optional bool NewBlockActors, optional bool NewBlockPlayers );
-    AbCollideActors = a.bCollideActors;
-    AbBlockActors = a.bBlockActors;
-    AbBlockPlayers = a.bBlockPlayers;
-    BbCollideActors = b.bCollideActors;
-    BbBlockActors = b.bBlockActors;
-    BbBlockPlayers = b.bBlockPlayers;
-    a.SetCollision(false, false, false);
-    b.SetCollision(false, false, false);
-
-    newloc = b.Location + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1);
-    newrot = b.Rotation;
+    newloc = b.Location;
 
     bsuccess = b.SetLocation(a.Location + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1) );
-    b.SetRotation(a.Rotation);
-
-    if( bsuccess == false )
+    if( bsuccess == false ) {
         warning("bsuccess failed to move " $ ActorToString(b) $ " into location of " $ ActorToString(a) );
+        return;
+    }
 
-    asuccess = a.SetLocation(newloc);
-    a.SetRotation(newrot);
-
-    if( asuccess == false )
+    asuccess = a.SetLocation(newloc + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1));
+    if( asuccess == false ) {
         warning("asuccess failed to move " $ ActorToString(a) $ " into location of " $ ActorToString(b) );
+        b.SetLocation(newloc);
+        return;
+    }
+
+    newrot = b.Rotation;
+    b.SetRotation(a.Rotation);
+    a.SetRotation(newrot);
 
     aphysics = a.Physics;
     bphysics = b.Physics;
     abase = a.Base;
     bbase = b.Base;
 
-    if(asuccess)
-    {
-        a.SetPhysics(bphysics);
-        if(abase != bbase) a.SetBase(bbase);
-    }
-    if(bsuccess)
-    {
-        b.SetPhysics(aphysics);
-        if(abase != bbase) b.SetBase(abase);
-    }
-
-    a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
-    b.SetCollision(BbCollideActors, BbBlockActors, BbBlockPlayers);
+    a.SetPhysics(bphysics);
+    if(abase != bbase) a.SetBase(bbase);
+    b.SetPhysics(aphysics);
+    if(abase != bbase) b.SetBase(abase);
 }
 
 function bool DestroyActor( Actor d )
