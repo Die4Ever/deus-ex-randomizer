@@ -421,7 +421,8 @@ function RandomizeSize(Actor a)
         p.DropDecoration();
         carried.SetPhysics(PHYS_None);
     }
-    SetActorScale(a, float(rng(200))/1000 + 0.9);
+
+    SetActorScale(a, rngrange(1, 0.9, 1.1));
     a.Fatness = rng(20) + 120;
 
     if( carried != None ) {

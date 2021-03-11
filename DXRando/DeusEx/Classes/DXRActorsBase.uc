@@ -328,18 +328,12 @@ function string ActorToString( Actor a )
 
 static function SetActorScale(Actor a, float scale)
 {
-    local bool AbCollideActors, AbBlockActors, AbBlockPlayers;
     local Vector newloc;
-    
-    AbCollideActors = a.bCollideActors;
-    AbBlockActors = a.bBlockActors;
-    AbBlockPlayers = a.bBlockPlayers;
-    a.SetCollision(false, false, false);
+
     newloc = a.Location + ( (a.CollisionHeight*scale - a.CollisionHeight*a.DrawScale) * vect(0,0,1) );
+    a.SetLocation(newloc);
     a.SetCollisionSize(a.CollisionRadius, a.CollisionHeight / a.DrawScale * scale);
     a.DrawScale = scale;
-    a.SetLocation(newloc);
-    a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
 }
 
 function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist)
