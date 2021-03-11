@@ -426,7 +426,7 @@ function Timer() {
     }
 
     //Lava floor logic
-    if (isTimerActive('cc_floorLavaTimer')){
+    if (isTimerActive('cc_floorLavaTimer') && InGame()){
         floorIsLava();
     }
 
@@ -1198,6 +1198,46 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 case "sniper":
                     GiveItem(class'WeaponRifle');
                     break;
+                case "assaultgun":
+                    GiveItem(class'WeaponAssaultGun');
+                    break;
+                case "assaultshotgun":
+                    GiveItem(class'WeaponAssaultShotgun');
+                    break;
+                case "baton":
+                    GiveItem(class'WeaponBaton');
+                    break;
+                case "knife":
+                    GiveItem(class'WeaponCombatKnife');
+                    break;
+                case "crowbar":
+                    GiveItem(class'WeaponCrowbar');
+                    break;
+                case "crossbow":
+                    GiveItem(class'WeaponMiniCrossbow');
+                    break;
+                case "pepperspray":
+                    GiveItem(class'WeaponPepperGun');
+                    break;
+                case "pistol":
+                    GiveItem(class'WeaponPistol');
+                    break;
+                case "stealthpistol":
+                    GiveItem(class'WeaponStealthPistol');
+                    break;
+                case "prod":
+                    GiveItem(class'WeaponProd');
+                    break;
+                case "sawedoff":
+                    GiveItem(class'WeaponSawedOffShotgun');
+                    break;
+                case "shuriken":
+                    GiveItem(class'WeaponShuriken');
+                    break;
+                case "sword":
+                    GiveItem(class'WeaponSword');
+                    break;
+                
                 default:
                     return Failed;
             }
@@ -1244,7 +1284,6 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;      
         
         case "ask_a_question":
-        //Not yet implemented in the CrowdControl cs file
             if (!InGame()) {
                 return TempFail;
             }
@@ -1252,7 +1291,6 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "nudge":
-        //Not yet implemented in the CrowdControl cs file
             if (!InGame()) {
                 return TempFail;
             }
@@ -1261,7 +1299,6 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
             
         case "swap_player_position":
-        //Not yet implemented in the CrowdControl cs file
             if (!InGame()) {
                 return TempFail;
             }
@@ -1271,7 +1308,6 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
             
         case "floaty_physics":
-        //Not yet implemented in the CrowdControl cs file
             if (isTimerActive('cc_floatyTimer')) {
                 return TempFail;
             }
@@ -1282,12 +1318,10 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;   
         
         case "give_ammo":
-        //Not yet implemented in the CrowdControl cs file
             return GiveAmmo(viewer,param[0],Int(param[1]));
             break;
         
         case "floor_is_lava":
-        //Not yet implemented in the CrowdControl cs file
             if (!InGame()) {
                 return TempFail;
             }
@@ -1448,10 +1482,12 @@ function int GiveAmmo(string viewer, string ammotype, int amount) {
 }
 
 function ScriptedPawn findOtherHuman() {
-    local int num, i;
+    local int num;
     local ScriptedPawn p;
     local ScriptedPawn humans[512];
-
+    
+    num = 0;
+    
     foreach AllActors(class'ScriptedPawn',p) {
         if (class'DXRActorsBase'.static.IsHuman(p) && p!=dxr.Player && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
             humans[num++] = p;
