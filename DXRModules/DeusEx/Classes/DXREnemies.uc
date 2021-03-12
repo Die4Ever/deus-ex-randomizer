@@ -166,28 +166,30 @@ function RandoCarcasses()
 
 function SwapScriptedPawns()
 {
-    local ScriptedPawn temp[1024];
-    local ScriptedPawn a;
+    local Pawn temp[512];
+    local Pawn a;
     local int num, i, slot;
 
     SetSeed( "SwapScriptedPawns" );
     num=0;
-    foreach AllActors(class'ScriptedPawn', a )
+    foreach AllActors(class'Pawn', a )
     {
         if( a.bHidden || a.bStatic ) continue;
-        if( a.bImportant ) continue;
+        //if( a.bImportant ) continue;
         if( IsCritter(a) ) continue;
         temp[num++] = a;
     }
 
+    l("SwapScriptedPawns num: "$num);
     for(i=0; i<num; i++) {
         slot=rng(num);// -1 because we skip ourself, but +1 for vanilla
         if(slot==0) {
-            l("not swapping "$temp[i]);
+            l("not swapping "$ActorToString(temp[i]));
             continue;
         }
         slot--;
         if(slot >= i) slot++;
+        l("SwapScriptedPawns swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot]));
         Swap(temp[i], temp[slot]);
     }
 }

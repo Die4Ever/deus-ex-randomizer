@@ -218,31 +218,55 @@ function bool SkipActor(Actor a, name classname)
     return false;
 }
 
-function Swap(Actor a, Actor b)
+function bool SetActorLocation(Actor a, vector newloc)
 {
-    local vector newloc;
+    local ScriptedPawn p;
+
+    if( ! a.SetLocation(newloc) ) return false;
+
+    p = ScriptedPawn(a);
+    if( p != None && p.Orders == 'Patrolling' ) {
+        p.SetOrders('Wandering');
+        p.HomeTag = 'Start';
+        p.HomeLoc = p.Location;
+    }
+
+    return true;
+}
+
+function bool Swap(Actor a, Actor b)
+{
+    local vector newloc, oldloc;
     local rotator newrot;
     local bool asuccess, bsuccess;
     local Actor abase, bbase;
+    local bool AbCollideActors, AbBlockActors, AbBlockPlayers;
     local EPhysics aphysics, bphysics;
 
-    if( a == b ) return;
+    if( a == b ) return true;
 
     l("swapping "$ActorToString(a)$" and "$ActorToString(b)$" distance == " $ VSize(a.Location - b.Location) );
 
+    AbCollideActors = a.bCollideActors;
+    AbBlockActors = a.bBlockActors;
+    AbBlockPlayers = a.bBlockPlayers;
+    a.SetCollision(false, false, false);
+
+    oldloc = a.Location;
     newloc = b.Location;
 
-    bsuccess = b.SetLocation(a.Location + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1) );
+    bsuccess = SetActorLocation(b, oldloc + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1) );
+    a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
     if( bsuccess == false ) {
         warning("bsuccess failed to move " $ ActorToString(b) $ " into location of " $ ActorToString(a) );
-        return;
+        return false;
     }
 
-    asuccess = a.SetLocation(newloc + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1));
+    asuccess = SetActorLocation(a, newloc + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1));
     if( asuccess == false ) {
         warning("asuccess failed to move " $ ActorToString(a) $ " into location of " $ ActorToString(b) );
-        b.SetLocation(newloc);
-        return;
+        SetActorLocation(b, newloc);
+        return false;
     }
 
     newrot = b.Rotation;
@@ -258,6 +282,8 @@ function Swap(Actor a, Actor b)
     if(abase != bbase) a.SetBase(bbase);
     b.SetPhysics(aphysics);
     if(abase != bbase) b.SetBase(abase);
+
+    return true;
 }
 
 function bool DestroyActor( Actor d )
@@ -320,7 +346,7 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
 function string ActorToString( Actor a )
 {
     local string out;
-    out = a.Name$"("$a.Location$")";
+    out = a.Class.Name$"."$a.Name$"("$a.Location$")";
     if( a.Base != None && a.Base.Class!=class'LevelInfo' )
         out = out $ "(Base:"$a.Base.Name$")";
     return out;

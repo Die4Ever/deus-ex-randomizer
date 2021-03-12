@@ -1499,7 +1499,7 @@ function ScriptedPawn findOtherHuman() {
 }
 
 function bool swapPlayer(string viewer) {
-    local Actor a;
+    local ScriptedPawn a;
     
     a = findOtherHuman();
     
@@ -1509,7 +1509,7 @@ function bool swapPlayer(string viewer) {
     
     ccModule.Swap(dxr.Player,a);
     dxr.Player.ViewRotation = dxr.Player.Rotation;
-    PlayerMessage(viewer@"thought you would look better if you were where"@a.tag@"was");
+    PlayerMessage(viewer@"thought you would look better if you were where"@a.FamiliarName@"was");
     
     return true;
 }
