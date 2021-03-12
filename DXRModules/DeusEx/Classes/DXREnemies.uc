@@ -166,16 +166,16 @@ function RandoCarcasses()
 
 function SwapScriptedPawns()
 {
-    local Pawn temp[512];
-    local Pawn a;
+    local ScriptedPawn temp[512];
+    local ScriptedPawn a;
     local int num, i, slot;
 
     SetSeed( "SwapScriptedPawns" );
     num=0;
-    foreach AllActors(class'Pawn', a )
+    foreach AllActors(class'ScriptedPawn', a )
     {
         if( a.bHidden || a.bStatic ) continue;
-        //if( a.bImportant ) continue;
+        if( a.bImportant ) continue;
         if( IsCritter(a) ) continue;
         temp[num++] = a;
     }

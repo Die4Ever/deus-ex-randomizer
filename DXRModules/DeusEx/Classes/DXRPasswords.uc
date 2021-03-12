@@ -277,7 +277,7 @@ function RandoInfoDevs(int percent)
         num=0;
         foreach AllActors(class'Inventory', inv)
         {
-            if( SkipActorBase(inv) ) continue;
+            if( SkipActor(inv, 'Inventory') ) continue;
             if( InfoPositionGood(id, inv.Location, hasPass) == False ) continue;
             temp[num++] = inv;
         }
