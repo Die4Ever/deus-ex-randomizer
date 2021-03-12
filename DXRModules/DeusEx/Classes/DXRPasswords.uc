@@ -247,6 +247,7 @@ function RandoInfoDevs(int percent)
 {
     local InformationDevices id;
     local Inventory inv;
+    local Actor temp[1024];
     local int i, num, slot;
     local int hasPass[64];
     local DeusExTextParser parser;
@@ -272,14 +273,20 @@ function RandoInfoDevs(int percent)
         if( id.plaintext != "" ) {
             ProcessStringHasPass(id.plaintext, hasPass);
         }
-        i=0;
+
         num=0;
         foreach AllActors(class'Inventory', inv)
         {
             if( SkipActor(inv, 'Inventory') ) continue;
             if( InfoPositionGood(id, inv.Location, hasPass) == False ) continue;
-            num++;
+            temp[num++] = inv;
         }
+        /*foreach AllActors(class'Containers', c)
+        {
+            if( SkipActor(c, 'Containers') ) continue;
+            if( InfoPositionGood(id, c.Location, hasPass) == False ) continue;
+            temp[num++] = c;
+        }*/
 
         l("datacube "$id$" got num "$num);
         slot=rng(num+1);//+1 for the vanilla location
@@ -288,19 +295,8 @@ function RandoInfoDevs(int percent)
             continue;
         }
         slot--;
-        i=0;
-        foreach AllActors(class'Inventory', inv)
-        {
-            if( SkipActor(inv, 'Inventory') ) continue;
-            if( InfoPositionGood(id, inv.Location, hasPass) == False ) continue;
-
-            if(i==slot) {
-                l("swapping infodevice "$ActorToString(id)$" with "$inv);
-                Swap(id, inv);
-                break;
-            }
-            i++;
-        }
+        l("swapping infodevice "$ActorToString(id)$" with "$temp[slot]);
+        Swap(id, temp[slot]);
     }
 }
 

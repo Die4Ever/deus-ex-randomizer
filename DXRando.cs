@@ -30,8 +30,8 @@ public class DXRando : SimpleTCPPack
         new Effect("Give Player EMP Field (15 seconds)", "emp_field"),
         new Effect("Give Bioelectric Energy", "give_energy",new[]{"amount"}),
         new Effect("Give one Biocell", "give_biocell"),
-        new Effect("Give skill points", "give_skillpoints",new[]{"spslider"}),
-        new Effect("Remove skill points", "remove_skillpoints",new[]{"spslider"}),
+        new Effect("Give 100 skill points", "give_skillpoints",new[]{"spslider"}), //Updated text for second Crowd Control batch
+        new Effect("Remove 100 skill points", "remove_skillpoints",new[]{"spslider"}), //Updated text for second Crowd Control batch
         new Effect("Disable Jump (1 minute)", "disable_jump"),
         new Effect("Gotta go fast (1 minute)", "gotta_go_fast"),
         new Effect("Slow like snail (1 minute)", "gotta_go_slow"),
@@ -39,8 +39,8 @@ public class DXRando : SimpleTCPPack
         new Effect("Go Third-Person (1 minute)","third_person"),
         new Effect("Take Double Damage (1 minute)","dmg_double"),
         new Effect("Take Half Damage (1 minute)","dmg_half"),
-        new Effect("Give credits", "add_credits",new[]{"creditsslider"}),
-        new Effect("Remove credits", "remove_credits",new[]{"creditsslider"}),        
+        new Effect("Give 100 credits", "add_credits",new[]{"creditsslider"}), //Updated for text second Crowd Control batch
+        new Effect("Remove 100 credits", "remove_credits",new[]{"creditsslider"}), //Updated text for second Crowd Control batch      
         new Effect("Upgrade a Flamethrower to a LAMThrower (1 minute)", "lamthrower"),
 
         new Effect("Give Grenade","give_grenade",new[]{"grenades"}),
@@ -49,6 +49,15 @@ public class DXRando : SimpleTCPPack
 
         new Effect ("Add/Upgrade Aug","up_aug",new[] { "augs" }),
         new Effect ("Remove/Downgrade Aug","down_aug",new[] { "augs" }),
+        
+        new Effect ("Ask a Question","ask_a_question"), //New for second Crowd Control batch
+        new Effect ("Nudge","nudge"), //New for second Crowd Control batch
+        new Effect ("Swap Player with another human","swap_player_position"), //New for second Crowd Control batch
+        new Effect ("Float Away","floaty_physics"), //New for second Crowd Control batch
+        new Effect ("Floor is Lava","floor_is_lava"), //New for second Crowd Control batch
+        new Effect ("Invert Mouse Controls","invert_mouse"), //New for second Crowd Control batch
+        new Effect ("Invert Movement Controls","invert_movement"), //New for second Crowd Control batch
+        new Effect ("Give Ammo","give_ammo",new[] { "ammo","amount" }),  //New for second Crowd Control batch
         
         //Start of list elements
         
@@ -85,7 +94,36 @@ public class DXRando : SimpleTCPPack
         new Effect("Plasma Rifle", "plasma", ItemKind.Usable, "weapons"),
         new Effect("LAW", "law", ItemKind.Usable, "weapons"),
         new Effect("Sniper Rifle", "sniper", ItemKind.Usable, "weapons"),
+        new Effect("Assault Rifle", "assaultgun", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        new Effect("Assault Shotgun", "assaultshotgun", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        new Effect("Baton", "baton", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        new Effect("Combat Knife", "knife", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        new Effect("Crowbar", "crowbar", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        new Effect("Mini Crossbow", "crossbow", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        new Effect("Pepper Spray", "pepperspray", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        new Effect("Pistol", "pistol", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        new Effect("Stealth Pistol", "stealthpistol", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        new Effect("Riot Prod", "prod", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        new Effect("Sawed-off Shotgun", "sawedoff", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        new Effect("Throwing Knives", "shuriken", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        new Effect("Sword", "sword", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
         
+        //Ammo
+        new Effect("10mm Ammo (Pistols)", "ammo10mm", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("20mm Ammo (Assault Rifle)", "ammo20mm", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("7.62mm Ammo (Assault Rifle)", "ammo762mm", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("30.06mm Ammo (Sniper Rifle)", "ammo3006", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("Prod Charger", "ammobattery", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("Darts", "ammodart", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("Flare Darts", "ammodartflare", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("Tranq Darts", "ammodartpoison", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("Napalm", "ammonapalm", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("Pepper Spray", "ammopepper", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("Plasma", "ammoplasma", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("Rockets", "ammorocket", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("WP Rockets", "ammorocketwp", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("Sabot Shells", "ammosabot", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("Shotgun Shells", "ammoshell", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
 
 
     };
@@ -98,6 +136,7 @@ public class DXRando : SimpleTCPPack
         new ItemType("Augmentation", "augs", ItemType.Subtype.ItemList),
         new ItemType("Grenades", "grenades", ItemType.Subtype.ItemList),
         new ItemType("Weapons", "weapons", ItemType.Subtype.ItemList),
+        new ItemType("Ammo", "ammo", ItemType.Subtype.ItemList), //New for second Crowd Control batch
 
     });
 }

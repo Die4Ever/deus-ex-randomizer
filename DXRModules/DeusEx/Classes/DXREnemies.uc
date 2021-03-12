@@ -166,7 +166,8 @@ function RandoCarcasses()
 
 function SwapScriptedPawns()
 {
-    local ScriptedPawn a, b;
+    local ScriptedPawn temp[512];
+    local ScriptedPawn a;
     local int num, i, slot;
 
     SetSeed( "SwapScriptedPawns" );
@@ -176,37 +177,20 @@ function SwapScriptedPawns()
         if( a.bHidden || a.bStatic ) continue;
         if( a.bImportant ) continue;
         if( IsCritter(a) ) continue;
-        num++;
+        temp[num++] = a;
     }
 
-    foreach AllActors(class'ScriptedPawn', a )
-    {
-        if( a.bHidden || a.bStatic ) continue;
-        if( a.bImportant ) continue;
-        if( IsCritter(a) ) continue;
-
-        i=0;
+    l("SwapScriptedPawns num: "$num);
+    for(i=0; i<num; i++) {
         slot=rng(num);// -1 because we skip ourself, but +1 for vanilla
         if(slot==0) {
-            l("not swapping "$a);
+            l("not swapping "$ActorToString(temp[i]));
             continue;
         }
         slot--;
-        foreach AllActors(class'ScriptedPawn', b )
-        {
-            if( a == b ) continue;
-            if( b.bHidden || b.bStatic ) continue;
-            if( b.bImportant ) continue;
-            if( IsCritter(b) ) continue;
-
-            if(i==slot) {
-                a.Orders = defaultOrders;
-                b.Orders = defaultOrders;
-                Swap(a, b);
-                break;
-            }
-            i++;
-        }
+        if(slot >= i) slot++;
+        l("SwapScriptedPawns swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot]));
+        Swap(temp[i], temp[slot]);
     }
 }
 
@@ -439,7 +423,8 @@ function RandomizeSize(Actor a)
         p.DropDecoration();
         carried.SetPhysics(PHYS_None);
     }
-    SetActorScale(a, float(rng(200))/1000 + 0.9);
+
+    SetActorScale(a, rngrange(1, 0.9, 1.1));
     a.Fatness = rng(20) + 120;
 
     if( carried != None ) {

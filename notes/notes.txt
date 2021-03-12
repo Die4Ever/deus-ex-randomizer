@@ -336,6 +336,8 @@ https://docs.unrealengine.com/udk/Two/UnrealScriptReference.html
 
 https://web.archive.org/web/20190407081013/http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/unrealscript.html
 
+https://web.archive.org/web/20181105143052/http://unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/actor-methods.html
+
 https://web.archive.org/web/20201023054944/http://wiki.beyondunreal.com/Legacy:Compiler_Errors
 
 http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/unrealscript.html

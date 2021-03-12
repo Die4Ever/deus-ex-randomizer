@@ -164,25 +164,16 @@ function CheckConfig()
 function FirstEntry()
 {
     Super.FirstEntry();
-    if( dxr.flags.keysrando == 4 )
+    if( dxr.flags.keysrando == 4 || dxr.flags.keysrando == 2 ) // 1 is dumb aka anywhere, 3 is copies instead of smart positioning? 5 would be something more advanced?
         MoveNanoKeys4();
-    else if( dxr.flags.keysrando == 2 )
-        MoveNanoKeys();
 
     RandomizeDoors();
 }
 
 function AnyEntry()
 {
-    local NanoKey k;
     Super.AnyEntry();
     AdjustRestrictions(dxr.flags.doorsmode, dxr.flags.doorspickable, dxr.flags.doorsdestructible, dxr.flags.deviceshackable, dxr.flags.removeinvisiblewalls);
-
-    foreach AllActors(class'NanoKey', k )
-    {
-        if ( SkipActorBase(k) ) continue;
-        SetActorScale(k, 1.3);
-    }
 }
 
 function RandomizeDoors()
@@ -201,67 +192,14 @@ function RandomizeDoors()
     }
 }
 
-function MoveNanoKeys()
-{
-    local Inventory a;
-    local NanoKey k;
-    local DeusExMover d;
-    local int num, i, slot;
-    local vector doorloc, distkey, distdoor;
-
-    num=0;
-
-    SetSeed( "MoveNanoKeys" );
-
-    foreach AllActors(class'NanoKey', k )
-    {
-        if ( SkipActorBase(k) ) continue;
-
-        doorloc = vect(99999, 99999, 99999);
-        foreach AllActors(class'DeusExMover', d)
-        {
-            if( d.KeyIDNeeded == k.KeyID ) {
-                doorloc = d.Location;
-                break;
-            }
-        }
-        i=0;
-        num=0;
-        foreach AllActors(class'Inventory', a)
-        {
-            if( SkipActor(a, 'Inventory') ) continue;
-            distkey = AbsEach(a.Location - k.Location);
-            distdoor = AbsEach(a.Location - doorloc);
-            if ( AnyGreater( distkey, distdoor ) ) continue;
-            num++;
-        }
-        slot=rng(num-1);// -1 because we skip ourself
-        i=0;
-        foreach AllActors(class'Inventory', a)
-        {
-            if( a == k ) continue;
-            if( SkipActor(a, 'Inventory') ) continue;
-            distkey = AbsEach(a.Location - k.Location);
-            distdoor = AbsEach(a.Location - doorloc);
-            if ( AnyGreater( distkey, distdoor ) ) continue;
-
-            if(i==slot) {
-                l("swapping key "$k.KeyID$" (distdoor "$distdoor$", distkey "$distkey$") with "$a.Class);
-                Swap(k, a);
-                break;
-            }
-            i++;
-        }
-    }
-}
-
 function MoveNanoKeys4()
 {
     local DeusExCarcass carc;
+    local Actor temp[1024];
     local Inventory a;
     local Containers c;
     local NanoKey k;
-    local int num, i, slot;
+    local int num, slot;
 
     SetSeed( "MoveNanoKeys4" );
 
@@ -273,56 +211,29 @@ function MoveNanoKeys4()
     {
         if ( SkipActorBase(k) ) continue;
 
-        i=0;
         num=0;
         foreach AllActors(class'Inventory', a)
         {
             if( a == k ) continue;
             if( SkipActor(a, 'Inventory') ) continue;
             if( KeyPositionGood(k, a.Location) == False ) continue;
-            num++;
+            temp[num++] = a;
         }
         /*foreach AllActors(class'Containers', c)
         {
             if( SkipActor(c, 'Containers') ) continue;
             if( KeyPositionGood(k, c.Location) == False ) continue;
-            num++;
+            temp[num++] = c;
         }*/
 
         slot=rng(num+1);// +1 for vanilla
         if(slot==0) {
-            l("not swapping key "$k.KeyID);
+            info("not swapping key "$k.KeyID);
             continue;
         }
         slot--;
-        i=0;
-        l("key "$k.KeyID$" got num "$num);
-        foreach AllActors(class'Inventory', a)
-        {
-            if( a == k ) continue;
-            if( SkipActor(a, 'Inventory') ) continue;
-            if( KeyPositionGood(k, a.Location) == False ) continue;
-
-            if(i==slot) {
-                l("swapping key "$k.KeyID$" with "$a);
-                Swap(k, a);
-                break;
-            }
-            i++;
-        }
-        /*if(i==slot) continue;
-        foreach AllActors(class'Containers', c)
-        {
-            if( SkipActor(c, 'Containers') ) continue;
-            if( KeyPositionGood(k, c.Location) == False ) continue;
-
-            if(i==slot) {
-                l("swapping key "$k.KeyID$" with "$c.Class);
-                Swap(k, c);
-                break;
-            }
-            i++;
-        }*/
+        info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot]);
+        Swap(k, temp[slot]);
     }
 }
 

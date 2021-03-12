@@ -218,64 +218,72 @@ function bool SkipActor(Actor a, name classname)
     return false;
 }
 
-function Swap(Actor a, Actor b)
+function bool SetActorLocation(Actor a, vector newloc)
 {
-    local vector newloc;
+    local ScriptedPawn p;
+
+    if( ! a.SetLocation(newloc) ) return false;
+
+    p = ScriptedPawn(a);
+    if( p != None && p.Orders == 'Patrolling' ) {
+        p.SetOrders('Wandering');
+        p.HomeTag = 'Start';
+        p.HomeLoc = p.Location;
+    }
+
+    return true;
+}
+
+function bool Swap(Actor a, Actor b)
+{
+    local vector newloc, oldloc;
     local rotator newrot;
     local bool asuccess, bsuccess;
     local Actor abase, bbase;
-    local bool AbCollideActors, AbBlockActors, AbBlockPlayers, BbCollideActors, BbBlockActors, BbBlockPlayers;
+    local bool AbCollideActors, AbBlockActors, AbBlockPlayers;
     local EPhysics aphysics, bphysics;
 
-    if( a == b ) return;
+    if( a == b ) return true;
 
-    //l("swapping "$ActorToString(a)$" and "$ActorToString(b));
     l("swapping "$ActorToString(a)$" and "$ActorToString(b)$" distance == " $ VSize(a.Location - b.Location) );
 
-    // https://docs.unrealengine.com/udk/Two/ActorVariables.html#Advanced
-    // native(262) final function SetCollision( optional bool NewColActors, optional bool NewBlockActors, optional bool NewBlockPlayers );
     AbCollideActors = a.bCollideActors;
     AbBlockActors = a.bBlockActors;
     AbBlockPlayers = a.bBlockPlayers;
-    BbCollideActors = b.bCollideActors;
-    BbBlockActors = b.bBlockActors;
-    BbBlockPlayers = b.bBlockPlayers;
     a.SetCollision(false, false, false);
-    b.SetCollision(false, false, false);
 
-    newloc = b.Location + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1);
-    newrot = b.Rotation;
+    oldloc = a.Location;
+    newloc = b.Location;
 
-    bsuccess = b.SetLocation(a.Location + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1) );
-    b.SetRotation(a.Rotation);
-
-    if( bsuccess == false )
+    bsuccess = SetActorLocation(b, oldloc + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1) );
+    a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
+    if( bsuccess == false ) {
         warning("bsuccess failed to move " $ ActorToString(b) $ " into location of " $ ActorToString(a) );
+        return false;
+    }
 
-    asuccess = a.SetLocation(newloc);
-    a.SetRotation(newrot);
-
-    if( asuccess == false )
+    asuccess = SetActorLocation(a, newloc + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1));
+    if( asuccess == false ) {
         warning("asuccess failed to move " $ ActorToString(a) $ " into location of " $ ActorToString(b) );
+        SetActorLocation(b, newloc);
+        return false;
+    }
+
+    newrot = b.Rotation;
+    b.SetRotation(a.Rotation);
+    a.SetRotation(newrot);
 
     aphysics = a.Physics;
     bphysics = b.Physics;
     abase = a.Base;
     bbase = b.Base;
 
-    if(asuccess)
-    {
-        a.SetPhysics(bphysics);
-        if(abase != bbase) a.SetBase(bbase);
-    }
-    if(bsuccess)
-    {
-        b.SetPhysics(aphysics);
-        if(abase != bbase) b.SetBase(abase);
-    }
+    a.SetPhysics(bphysics);
+    if(abase != bbase) a.SetBase(bbase);
+    b.SetPhysics(aphysics);
+    if(abase != bbase) b.SetBase(abase);
 
-    a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
-    b.SetCollision(BbCollideActors, BbBlockActors, BbBlockPlayers);
+    return true;
 }
 
 function bool DestroyActor( Actor d )
@@ -338,7 +346,7 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
 function string ActorToString( Actor a )
 {
     local string out;
-    out = a.Name$"("$a.Location$")";
+    out = a.Class.Name$"."$a.Name$"("$a.Location$")";
     if( a.Base != None && a.Base.Class!=class'LevelInfo' )
         out = out $ "(Base:"$a.Base.Name$")";
     return out;
@@ -346,18 +354,12 @@ function string ActorToString( Actor a )
 
 static function SetActorScale(Actor a, float scale)
 {
-    local bool AbCollideActors, AbBlockActors, AbBlockPlayers;
     local Vector newloc;
-    
-    AbCollideActors = a.bCollideActors;
-    AbBlockActors = a.bBlockActors;
-    AbBlockPlayers = a.bBlockPlayers;
-    a.SetCollision(false, false, false);
+
     newloc = a.Location + ( (a.CollisionHeight*scale - a.CollisionHeight*a.DrawScale) * vect(0,0,1) );
+    a.SetLocation(newloc);
     a.SetCollisionSize(a.CollisionRadius, a.CollisionHeight / a.DrawScale * scale);
     a.DrawScale = scale;
-    a.SetLocation(newloc);
-    a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
 }
 
 function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist)
