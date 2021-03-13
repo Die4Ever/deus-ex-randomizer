@@ -243,7 +243,7 @@ function bool MoveCamera(SecurityCamera c, vector loc)
     local rotator rotation;
     local int i;
     local bool success;
-    
+
     if( GetCameraLocation(loc, rotation) == false ) {
         warning("MoveCamera("$loc$") "$c$" failed to GetCameraLocation");
         return false;
@@ -251,6 +251,8 @@ function bool MoveCamera(SecurityCamera c, vector loc)
 
     c.SetLocation(loc);
     c.SetRotation(rotation);
+    c.origRot = rotation;
+    c.DesiredRotation = rotation;
     return true;
 }
 
