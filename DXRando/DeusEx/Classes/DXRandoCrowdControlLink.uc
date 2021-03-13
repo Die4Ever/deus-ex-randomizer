@@ -878,35 +878,36 @@ function SetFloatyPhysics(bool enabled) {
         if (enabled) {
             SaveDefaultZoneGravity(Z);
             Z.ZoneGravity = FloatGrav;
-            
-            //Get everything floating immediately
-            ForEach AllActors(class'Actor',A)
-            {
-                apply = False;
-                if (A.isa('ScriptedPawn')){
-                    apply = (A.GetStateName() != 'Patrolling' &&
-                             ScriptedPawn(A).Orders != 'Sitting');
-                } else if (A.isa('PlayerPawn')) {
-                    apply = True;
-                } else if (A.isa('Decoration')) {
-                    apply = ((A.Base!=None && 
-                              A.Physics == PHYS_None && 
-                              A.bStatic == False &&
-                              Decoration(A).bPushable == True) || A.isa('Carcass'));
-                } else if (A.isa('Inventory')) {
-                    apply = (Pawn(A.Owner) == None);
-                }
-                
-                if (apply) {
-                    A.Velocity.Z+=Rand(10)+1;
-                    A.SetPhysics(PHYS_Falling);               
-                }
-            }
         }
         else if ( (!enabled) && Z.ZoneGravity == FloatGrav ) {
             Z.ZoneGravity = GetDefaultZoneGravity(Z);
-
         }
+    }
+    
+    if (enabled){
+        //Get everything floating immediately
+        ForEach AllActors(class'Actor',A)
+        {
+            apply = False;
+            if (A.isa('ScriptedPawn')){
+                apply = (A.GetStateName() != 'Patrolling' &&
+                         ScriptedPawn(A).Orders != 'Sitting');
+            } else if (A.isa('PlayerPawn')) {
+                apply = True;
+            } else if (A.isa('Decoration')) {
+                apply = ((A.Base!=None && 
+                          A.Physics == PHYS_None && 
+                          A.bStatic == False &&
+                          Decoration(A).bPushable == True) || A.isa('Carcass'));
+            } else if (A.isa('Inventory')) {
+                apply = (Pawn(A.Owner) == None);
+            }
+            
+            if (apply) {
+                A.Velocity.Z+=Rand(10)+1;
+                A.SetPhysics(PHYS_Falling);               
+            }
+        }    
     }
 }
 
