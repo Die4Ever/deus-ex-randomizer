@@ -868,6 +868,10 @@ function SaveDefaultZoneGravity(ZoneInfo z)
 
 function SetFloatyPhysics(bool enabled) {
     local ZoneInfo Z;
+    
+    local Actor A;
+    local bool apply;
+    
     ForEach AllActors(class'ZoneInfo', Z)
     {
         log("SetFloatyPhysics "$Z$" gravity: "$Z.ZoneGravity);
@@ -878,6 +882,32 @@ function SetFloatyPhysics(bool enabled) {
         else if ( (!enabled) && Z.ZoneGravity == FloatGrav ) {
             Z.ZoneGravity = GetDefaultZoneGravity(Z);
         }
+    }
+    
+    if (enabled){
+        //Get everything floating immediately
+        ForEach AllActors(class'Actor',A)
+        {
+            apply = False;
+            if (A.isa('ScriptedPawn')){
+                apply = (A.GetStateName() != 'Patrolling' &&
+                         ScriptedPawn(A).Orders != 'Sitting');
+            } else if (A.isa('PlayerPawn')) {
+                apply = True;
+            } else if (A.isa('Decoration')) {
+                apply = ((A.Base!=None && 
+                          A.Physics == PHYS_None && 
+                          A.bStatic == False &&
+                          Decoration(A).bPushable == True) || A.isa('Carcass'));
+            } else if (A.isa('Inventory')) {
+                apply = (Pawn(A.Owner) == None);
+            }
+            
+            if (apply) {
+                A.Velocity.Z+=Rand(10)+1;
+                A.SetPhysics(PHYS_Falling);               
+            }
+        }    
     }
 }
 
