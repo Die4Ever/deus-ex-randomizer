@@ -157,11 +157,16 @@ function FirstEntry()
 
 function AnyEntry()
 {
+    local ConSpeech c;
     Super.AnyEntry();
 
     lastCheckedNote = None;
     LogAll();
     SetTimer(1.0, True);
+
+    foreach AllObjects(class'ConSpeech', c) {
+        ProcessString(c.speech);
+    }
 }
 
 function RandoHacks()
