@@ -1199,6 +1199,7 @@ function int doCrowdControlEventWithPrefix(string code, string param[5], string 
         case "rem":
             return RemoveAug(getAugClass(words[1]),viewer);
         default:
+            err("Unknown effect: "$code);
             return NotAvail;
     }
 

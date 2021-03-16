@@ -16,7 +16,7 @@ public class DXRando : SimpleTCPPack
 
     public override List<Effect> Effects => new List<Effect>
     {
-        
+
         //General Effects
         new Effect("Trigger the Killswitch", "kill"),
         new Effect("Poison the Player", "poison"),
@@ -30,7 +30,7 @@ public class DXRando : SimpleTCPPack
         new Effect("Enable Matrix Mode (1 Minute)", "matrix"),
         new Effect("Give Player EMP Field (15 seconds)", "emp_field"),
         new Effect("Give Bioelectric Energy", "give_energy",new[]{"amount"}),
-        new Effect("Give one Biocell", "give_biocell"),
+        new Effect("Give one Biocell", "give_bioelectriccell"),
         new Effect("Give 100 skill points", "give_skillpoints",new[]{"spslider"}), //Updated text for second Crowd Control batch
         new Effect("Remove 100 skill points", "remove_skillpoints",new[]{"spslider"}), //Updated text for second Crowd Control batch
         new Effect("Disable Jump (1 minute)", "disable_jump"),
