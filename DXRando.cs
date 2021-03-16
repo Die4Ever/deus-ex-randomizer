@@ -6,7 +6,7 @@ using ConnectorType = CrowdControl.Common.ConnectorType;
 
 public class DeusEx : SimpleTCPPack
 {
-    public override string Host { get; } = "127.0.0.1";
+    public override string Host { get; } = "0.0.0.0";
 
     public override ushort Port { get; } = 43384;
 
