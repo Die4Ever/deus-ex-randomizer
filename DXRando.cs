@@ -12,7 +12,7 @@ public class DeusEx : SimpleTCPPack
 
     public DeusEx(IPlayer player, Func<CrowdControlBlock, bool> responseHandler, Action<object> statusUpdateHandler) : base(player, responseHandler, statusUpdateHandler) { }
 
-    public override Game Game { get; } = new Game(90, "Deus Ex", "DeusEx", "PC", ConnectorType.SimpleTCPConnector);
+    public override Game Game { get; } = new Game(90, "Deus Ex Randomizer", "DeusEx", "PC", ConnectorType.SimpleTCPConnector);
 
     public override List<Effect> Effects => new List<Effect>
     {
