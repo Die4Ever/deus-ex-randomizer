@@ -55,9 +55,34 @@ function RandoWeapon(DeusExWeapon w)
             case class'PlasmaBolt':
                 w.ProjectileClass.default.Damage = 1.15 * float(w.HitDamage);
                 break;
+
+            case class'Fireball':
+                w.ProjectileClass.default.Damage = float(w.HitDamage);
+                break;
+            
+            case class'Rocket':
+                w.ProjectileClass.default.Damage = float(w.HitDamage);
+                break;
+
+            case class'Shuriken':
+                w.ProjectileClass.default.Damage = float(w.HitDamage);
+                break;
+
+            case class'GasGrenade':
+            case class'TearGas':
+            case class'GreaselSpit':
+            case class'RocketRobot':
+            case class'LAM':
+            case class'RocketLAW':
+            case class'NanoVirusGrenade':
+            case class'EMPGrenade':
+            case class'GraySpit':
+            case class'RocketMini':
+                //ignore these for now
+                break;
             
             default:
-                info("RandoWeapon("$w$") didn't set damage for projectile "$w.ProjectileClass);
+                warning("RandoWeapon("$w$") didn't set damage for projectile "$w.ProjectileClass$", w.default.HitDamage: "$w.default.HitDamage$", new w.HitDamage: "$w.HitDamage$", w.ProjectileClass.default.Damage: "$w.ProjectileClass.default.Damage);
                 break;
         }
     }

@@ -199,7 +199,7 @@ function MoveNanoKeys4()
     local Inventory a;
     local Containers c;
     local NanoKey k;
-    local int num, slot;
+    local int num, slot, tries;
 
     SetSeed( "MoveNanoKeys4" );
 
@@ -226,14 +226,17 @@ function MoveNanoKeys4()
             temp[num++] = c;
         }*/
 
-        slot=rng(num+1);// +1 for vanilla
-        if(slot==0) {
-            info("not swapping key "$k.KeyID);
-            continue;
+        for(tries=0; tries<5; tries++) {
+            slot=rng(num+1);// +1 for vanilla
+            if(slot==0) {
+                info("not swapping key "$k.KeyID);
+                continue;
+            }
+            slot--;
+            info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot]);
+            // Swap argument A is more lenient with collision than argument B
+            if( Swap(temp[slot], k) ) break;
         }
-        slot--;
-        info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot]);
-        Swap(k, temp[slot]);
     }
 }
 

@@ -584,10 +584,6 @@ function bool IsGrenade(inventory i) {
     return (i.IsA('WeaponLAM') || i.IsA('WeaponGasGrenade') || i.IsA ('WeaponEMPGrenade') || i.IsA('WeaponNanoVirusGrenade'));
 }
 
-function GiveItem(class<Inventory> c) {
-    class'DXRActorsBase'.static.GiveItem(dxr.Player, c);
-}
-
 function SkillPointsRemove(int numPoints) {
     dxr.Player.SkillPointsAvail -= numPoints;
     dxr.Player.SkillPointsTotal -= numPoints;
@@ -623,48 +619,8 @@ function MakeLamThrower (inventory anItem) {
     f.beltDescription = "LAMTHWR";
 }
 
-function Class<Augmentation> getAugClass(string param) {
-    switch(param) {
-        case "aqualung":
-            return class'AugAqualung';
-        case "ballistic":
-            return class'AugBallistic';
-        case "cloak":
-            return class'AugCloak';
-        case "combat":
-            return class'AugCombat';
-        case "defense":
-            return class'AugDefense';
-        case "drone":
-            return class'AugDrone';
-        case "emp":
-            return class'AugEmp';
-        case "enviro":
-            return class'AugEnviro';
-        case "healing":
-            return class'AugHealing';
-        case "heartlung":
-            return class'AugHeartLung';
-        case "muscle":
-            return class'AugMuscle';
-        case "power":
-            return class'AugPower';
-        case "radartrans":
-            return class'AugRadarTrans';
-        case "shield":
-            return class'AugShield';
-        case "speed":
-            return class'AugSpeed';
-        case "stealth":
-            return class'AugStealth';
-        case "target":
-            return class'AugTarget';
-        case "vision":
-            return class'AugVision';
-        default:
-            return None;
-        
-    }
+function class<Augmentation> getAugClass(string type) {
+    return class<Augmentation>(ccModule.GetClassFromString(type, class'Augmentation'));
 }
 
 //"Why not just use "GivePlayerAugmentation", you ask.
@@ -959,15 +915,8 @@ function bool InGame() {
 
 
 function int doCrowdControlEvent(string code, string param[5], string viewer, int type) {
-    local vector v;
-    local inventory anItem;
     local int i;
-    local bool result;
-    local Actor a;
-    v.X=0;
-    v.Y=0;
-    v.Z=0;
-    
+
     switch(code) {
         case "poison":
             if (!InGame()) {
@@ -979,48 +928,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "kill":
-            dxr.Player.Died(dxr.Player,'CrowdControl',v);
+            dxr.Player.Died(dxr.Player,'CrowdControl',dxr.Player.Location);
             PlayerMessage(viewer@"set off your killswitch!");
             dxr.Player.MultiplayerDeathMsg(dxr.Player,False,True,viewer,"triggering your kill switch");
-            break;
-
-        case "drop_grenade":
-             
-             //Don't drop grenades if you're in the menu
-             if (!InGame()) {
-                 return TempFail;
-             }
-             
-             //Don't drop grenades if you're in a conversation - It screws things up
-             if (dxr.Player.InConversation()) {
-                 return TempFail;
-             }
-        
-            //Spawned ThrownProjectiles won't beep if they don't have an owner,
-            //so make sure to set one here (the player)
-            switch(param[0]){
-                case("g_lam"):
-                    a = Spawn(Class'LAM',dxr.Player,,dxr.Player.Location);
-                    PlayerMessage(viewer@"dropped a LAM at your feet!");
-                    break;
-                case("g_emp"):
-                    a = Spawn(Class'EMPGrenade',dxr.Player,,dxr.Player.Location);
-                    PlayerMessage(viewer@"dropped an EMP grenade at your feet!");
-                    break;
-                case("g_gas"):
-                    a = Spawn(Class'GasGrenade',dxr.Player,,dxr.Player.Location);
-                    PlayerMessage(viewer@"dropped a gas grenade at your feet!");
-                    break;
-                case("g_scrambler"):
-                    a = Spawn(Class'NanoVirusGrenade',dxr.Player,,dxr.Player.Location);
-                    PlayerMessage(viewer@"dropped a scramble grenade at your feet!");
-                    break;
-                default:
-                    return Failed;
-            }
-            a.Velocity.X=0;
-            a.Velocity.Y=0;
-            a.Velocity.Z=0;
             break;
 
         case "glass_legs":
@@ -1041,11 +951,6 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
         case "set_fire":
             dxr.Player.CatchFire(dxr.Player);
             PlayerMessage(viewer@"set you on fire!");
-            break;
-
-        case "give_medkit":
-            GiveItem(class'MedKit');
-            PlayerMessage(viewer@"gave you a medkit");
             break;
 
         case "full_heal":
@@ -1098,8 +1003,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (dxr.Player.InHand == None) {
                 return TempFail;
             }
-            result = dxr.Player.DropItem();
-            if (result == False) {
+            if (dxr.Player.DropItem() == False) {
                 return TempFail;
             }
             PlayerMessage(viewer@"made you fumble your item");
@@ -1147,11 +1051,6 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             PlayerMessage(viewer@"gave you "$param[0]$" energy!");
             break;
 
-       case "give_biocell":
-            GiveItem(class'BioelectricCell');
-            PlayerMessage(viewer@"gave you a bioelectric cell!");
-            break;
-
         case "give_skillpoints":
             i = Int(param[0])*100;
             PlayerMessage(viewer@"gave you "$i$" skill points");
@@ -1172,118 +1071,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "lamthrower":
-            if (isTimerActive('cc_lamthrowerTimer')) {
-                return TempFail;
-            }
-            
-            anItem = dxr.Player.FindInventoryType(class'WeaponFlamethrower');
-            if (anItem==None) {
-                return TempFail;
-            }
-
-            MakeLamThrower(anItem);
-            setTimerFlag('cc_lamthrowerTimer',LamThrowerTimeDefault);
-            PlayerMessage(viewer@"turned your flamethrower into a LAM Thrower!");
-            break;
-
-        case "give_grenade":
-            PlayerMessage(viewer@"Gave you a grenade");
-            switch(param[0]){
-                case("g_lam"):
-                    GiveItem(Class'WeaponLAM');
-                    break;
-                case("g_emp"):
-                    GiveItem(Class'WeaponEMPGrenade');
-                    break;
-                case("g_gas"):
-                    GiveItem(Class'WeaponGasGrenade');
-                    break;
-                case("g_scrambler"):
-                    GiveItem(Class'WeaponNanoVirusGrenade');
-                    break;
-                default:
-                    return Failed;
-            }
-            break;
-            
-        case "give_weapon":
-            PlayerMessage(viewer@"Gave you a weapon");
-
-            switch(param[0]){
-                case "flamethrower":
-                    GiveItem(class'WeaponFlamethrower');
-                    break;
-                case "gep":
-                    GiveItem(class'WeaponGEPGun');
-                    break;
-                case "dts":
-                    GiveItem(class'WeaponNanoSword');
-                    break;
-                case "plasma":
-                    GiveItem(class'WeaponPlasmaRifle');
-                    break;
-                case "law":
-                    GiveItem(class'WeaponLAW');
-                    break;
-                case "sniper":
-                    GiveItem(class'WeaponRifle');
-                    break;
-                case "assaultgun":
-                    GiveItem(class'WeaponAssaultGun');
-                    break;
-                case "assaultshotgun":
-                    GiveItem(class'WeaponAssaultShotgun');
-                    break;
-                case "baton":
-                    GiveItem(class'WeaponBaton');
-                    break;
-                case "knife":
-                    GiveItem(class'WeaponCombatKnife');
-                    break;
-                case "crowbar":
-                    GiveItem(class'WeaponCrowbar');
-                    break;
-                case "crossbow":
-                    GiveItem(class'WeaponMiniCrossbow');
-                    break;
-                case "pepperspray":
-                    GiveItem(class'WeaponPepperGun');
-                    break;
-                case "pistol":
-                    GiveItem(class'WeaponPistol');
-                    break;
-                case "stealthpistol":
-                    GiveItem(class'WeaponStealthPistol');
-                    break;
-                case "prod":
-                    GiveItem(class'WeaponProd');
-                    break;
-                case "sawedoff":
-                    GiveItem(class'WeaponSawedOffShotgun');
-                    break;
-                case "shuriken":
-                    GiveItem(class'WeaponShuriken');
-                    break;
-                case "sword":
-                    GiveItem(class'WeaponSword');
-                    break;
-                
-                default:
-                    return Failed;
-            }
-            break;
-
-        case "give_ps40":
-            PlayerMessage(viewer@"Gave you a PS40");
-
-            GiveItem(class'WeaponHideAGun');
-            break;
-
-        case "up_aug":
-            return GiveAug(getAugClass(param[0]),viewer);         
-        
-        case "down_aug":
-            return RemoveAug(getAugClass(param[0]),viewer);        
+            return GiveLamThrower(viewer);
         
         case "dmg_double":
             if (isTimerActive('cc_DifficultyTimer')) {
@@ -1346,11 +1134,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             setTimerFlag('cc_floatyTimer',FloatyTimeDefault);
 
             break;   
-        
-        case "give_ammo":
-            return GiveAmmo(viewer,param[0],Int(param[1]));
-            break;
-        
+
         case "floor_is_lava":
             if (!InGame()) {
                 return TempFail;
@@ -1392,10 +1176,52 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             setTimerFlag('cc_invertMovementTimer',InvertMovementTimeDefault);
             break;
-        
+
         default:
+            return doCrowdControlEventWithPrefix(code, param, viewer, type);
+    }
+
+    return Success;
+}
+
+function int doCrowdControlEventWithPrefix(string code, string param[5], string viewer, int type) {
+    local string words[8];
+
+    SplitString(code, "_", words);
+
+    switch(words[0]) {
+        case "drop":
+            return DropProjectile(viewer, words[1], Int(param[0]));
+        case "give":
+            return GiveItem(viewer, words[1], Int(param[0]));
+        case "add":
+            return GiveAug(getAugClass(words[1]),viewer);
+        case "rem":
+            return RemoveAug(getAugClass(words[1]),viewer);
+        default:
+            err("Unknown effect: "$code);
             return NotAvail;
     }
+
+    return Success;
+}
+
+function int GiveLamThrower(string viewer)
+{
+    local Inventory anItem;
+
+    if (isTimerActive('cc_lamthrowerTimer')) {
+        return TempFail;
+    }
+    
+    anItem = dxr.Player.FindInventoryType(class'WeaponFlamethrower');
+    if (anItem==None) {
+        return TempFail;
+    }
+
+    MakeLamThrower(anItem);
+    setTimerFlag('cc_lamthrowerTimer',LamThrowerTimeDefault);
+    PlayerMessage(viewer@"turned your flamethrower into a LAM Thrower!");
     return Success;
 }
 
@@ -1482,32 +1308,66 @@ function floorIsLava() {
     }
 }
 
-function int GiveAmmo(string viewer, string ammotype, int amount) {
+function int GiveItem(string viewer, string type, optional int amount) {
     local int i;
-    local class<DeusExAmmo> ammo;
-    
+    local class<Inventory> itemclass;
     local string outMsg;
+    local Inventory item;
     
-    outMsg = viewer@"gave you"@amount;
+    if( amount < 1 ) amount = 1;
     
-    if (amount == 1) {
-        outMsg = outMsg@"case of";
-    } else {
-        outMsg = outMsg@"cases of";
-    }
+    itemclass = class<Inventory>(ccModule.GetClassFromString(type,class'Inventory'));
     
-    ammo = class<DeusExAmmo>(ccModule.GetClassFromString(ammotype,class'DeusExAmmo'));
-    
-    outMsg = outMsg@ammo.Default.ItemName;
-    
-    if (ammo == None) {
+    if (itemclass == None) {
         return NotAvail;
     }
     
     for (i=0;i<amount;i++) {
-        GiveItem(ammo);   
+        item = class'DXRActorsBase'.static.GiveItem(dxr.Player, itemclass);
+        if( item == None ) return Failed;
     }
+
+    outMsg = viewer@"gave you";
+    if( amount > 1 && DeusExAmmo(item) != None ) {
+        outMsg = outMsg @amount@"cases of"@item.ItemName;
+    }
+    else if( DeusExAmmo(item) != None ) {
+        outMsg = outMsg @"a case of"@item.ItemName;
+    }
+    else if( amount > 1 ) {
+        outMsg = outMsg @amount@item.ItemName$"s";
+    } else {
+        outMsg = outMsg @item.ItemArticle@item.ItemName;
+    }
+
     PlayerMessage(outMsg);
+    return Success;
+}
+
+function int DropProjectile(string viewer, string type, optional int amount)
+{
+    local class<DeusExProjectile> c;
+    local DeusExProjectile p;
+    if( amount < 1 ) amount = 1;
+
+    //Don't drop grenades if you're in the menu
+    if (!InGame()) {
+        return TempFail;
+    }
+
+    //Don't drop grenades if you're in a conversation - It screws things up
+    if (dxr.Player.InConversation()) {
+        return TempFail;
+    }
+
+    c = class<DeusExProjectile>(ccModule.GetClassFromString(type, class'DeusExProjectile'));
+    if( c == None ) return NotAvail;
+    p = Spawn( c, dxr.Player,,dxr.Player.Location);
+    if( p == None ) return Failed;
+    PlayerMessage(viewer@"dropped "$ p.ItemArticle @ p.ItemName $ " at your feet!");
+    p.Velocity.X=0;
+    p.Velocity.Y=0;
+    p.Velocity.Z=0;
     return Success;
 }
 
@@ -1758,11 +1618,33 @@ function info(string msg)
     class'DXRTelemetry'.static.SendLog(dxr, Self, "INFO", msg);
 }
 
+function SplitString(string src, string divider, out string parts[8])
+{
+    local int i, c;
+
+    parts[0] = src;
+    for(i=0; i+1<ArrayCount(parts); i++) {
+        c = InStr(parts[i], divider);
+        if( c == -1 ) {
+            return;
+        }
+        parts[i+1] = Mid(parts[i], c+1);
+        parts[i] = Left(parts[i], c);
+    }
+}
+
 function RunTests(DXRCrowdControl m)
 {
     local int i;
     local string msg;
     local string params[5];
+    local string words[8];
+
+    SplitString("add_aug_aqualung", "_", words);
+    m.teststring(words[0], "add", "SplitString");
+    m.teststring(words[1], "aug", "SplitString");
+    m.teststring(words[2], "aqualung", "SplitString");
+    m.teststring(words[3], "", "SplitString");
 
     msg="";
     m.testbool( isCrowdControl(msg), false, "isCrowdControl "$msg);

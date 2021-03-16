@@ -16,20 +16,21 @@ public class DXRando : SimpleTCPPack
 
     public override List<Effect> Effects => new List<Effect>
     {
+
+        //General Effects
         new Effect("Trigger the Killswitch", "kill"),
         new Effect("Poison the Player", "poison"),
         new Effect("Glass Legs", "glass_legs"),
         new Effect("Give Health", "give_health",new[]{"amount"}),
         new Effect("Set On Fire", "set_fire"),
-        new Effect("Drop a live grenade", "drop_grenade",new[]{"grenades"}),
         new Effect("Give one Medkit", "give_medkit"),
         new Effect("Full Heal", "full_heal"),
         new Effect("Drunk Mode (1 minute)", "drunk_mode"),
-        new Effect("Drop Selected Item", "drop_selected_item"), 
-        new Effect("Enable Matrix Mode (1 Minute)", "matrix"),        
+        new Effect("Drop Selected Item", "drop_selected_item"),
+        new Effect("Enable Matrix Mode (1 Minute)", "matrix"),
         new Effect("Give Player EMP Field (15 seconds)", "emp_field"),
         new Effect("Give Bioelectric Energy", "give_energy",new[]{"amount"}),
-        new Effect("Give one Biocell", "give_biocell"),
+        new Effect("Give one Biocell", "give_bioelectriccell"),
         new Effect("Give 100 skill points", "give_skillpoints",new[]{"spslider"}), //Updated text for second Crowd Control batch
         new Effect("Remove 100 skill points", "remove_skillpoints",new[]{"spslider"}), //Updated text for second Crowd Control batch
         new Effect("Disable Jump (1 minute)", "disable_jump"),
@@ -42,13 +43,6 @@ public class DXRando : SimpleTCPPack
         new Effect("Give 100 credits", "add_credits",new[]{"creditsslider"}), //Updated for text second Crowd Control batch
         new Effect("Remove 100 credits", "remove_credits",new[]{"creditsslider"}), //Updated text for second Crowd Control batch      
         new Effect("Upgrade a Flamethrower to a LAMThrower (1 minute)", "lamthrower"),
-
-        new Effect("Give Grenade","give_grenade",new[]{"grenades"}),
-        new Effect("Give Weapon","give_weapon",new[]{"weapons"}),
-        new Effect("Give PS40","give_ps40"),
-
-        new Effect ("Add/Upgrade Aug","up_aug",new[] { "augs" }),
-        new Effect ("Remove/Downgrade Aug","down_aug",new[] { "augs" }),
         
         new Effect ("Ask a Question","ask_a_question"), //New for second Crowd Control batch
         new Effect ("Nudge","nudge"), //New for second Crowd Control batch
@@ -57,86 +51,113 @@ public class DXRando : SimpleTCPPack
         new Effect ("Floor is Lava","floor_is_lava"), //New for second Crowd Control batch
         new Effect ("Invert Mouse Controls","invert_mouse"), //New for second Crowd Control batch
         new Effect ("Invert Movement Controls","invert_movement"), //New for second Crowd Control batch
-        new Effect ("Give Ammo","give_ammo",new[] { "ammo","amount" }),  //New for second Crowd Control batch
+                
+        //Add/Remove Augs
+        new Effect("Add/Upgrade Augmentations","addaugs",ItemKind.Folder),
+        new Effect("Remove/Downgrade Augmentations","remaugs",ItemKind.Folder),
         
-        //Start of list elements
-        
-        //Augs
-        new Effect("Aqualung", "aqualung", ItemKind.Usable, "augs"),
-        new Effect("Ballistic Protection", "ballistic", ItemKind.Usable, "augs"),
-        new Effect("Cloak", "cloak", ItemKind.Usable, "augs"),
-        new Effect("Combat Strength", "combat", ItemKind.Usable, "augs"),
-        new Effect("Aggressive Defense System", "defense", ItemKind.Usable, "augs"),
-        new Effect("Spy Drone", "drone", ItemKind.Usable, "augs"),
-        new Effect("EMP Shield", "emp", ItemKind.Usable, "augs"),
-        new Effect("Environmental Resistance", "enviro", ItemKind.Usable, "augs"),
-        new Effect("Regeneration", "healing", ItemKind.Usable, "augs"),
-        new Effect("Synthetic Heart", "heartlung", ItemKind.Usable, "augs"),
-        new Effect("Microfibral Muscle", "muscle", ItemKind.Usable, "augs"),
-        new Effect("Power Recirculator", "power", ItemKind.Usable, "augs"),
-        new Effect("Radar Transparancy", "radartrans", ItemKind.Usable, "augs"),
-        new Effect("Energy Shield", "shield", ItemKind.Usable, "augs"),
-        new Effect("Speed Enhancement", "speed", ItemKind.Usable, "augs"),
-        new Effect("Run Silent", "stealth", ItemKind.Usable, "augs"),
-        new Effect("Targeting", "target", ItemKind.Usable, "augs"),
-        new Effect("Vision Enhancement", "vision", ItemKind.Usable, "augs"),
+        new Effect("Add/Upgrade Aqualung", "add_augaqualung", "addaugs"),
+        new Effect("Add/Upgrade Ballistic Protection", "add_augballistic", "addaugs"),
+        new Effect("Add/Upgrade Cloak", "add_augcloak", "addaugs"),
+        new Effect("Add/Upgrade Combat Strength", "add_augcombat", "addaugs"),
+        new Effect("Add/Upgrade Aggressive Defense System", "add_augdefense", "addaugs"),
+        new Effect("Add/Upgrade Spy Drone", "add_augdrone", "addaugs"),
+        new Effect("Add/Upgrade EMP Shield", "add_augemp", "addaugs"),
+        new Effect("Add/Upgrade Environmental Resistance", "add_augenviro", "addaugs"),
+        new Effect("Add/Upgrade Regeneration", "add_aughealing", "addaugs"),
+        new Effect("Add/Upgrade Synthetic Heart", "add_augheartlung", "addaugs"),
+        new Effect("Add/Upgrade Microfibral Muscle", "add_augmuscle", "addaugs"),
+        new Effect("Add/Upgrade Power Recirculator", "add_augpower", "addaugs"),
+        new Effect("Add/Upgrade Radar Transparancy", "add_augradartrans", "addaugs"),
+        new Effect("Add/Upgrade Energy Shield", "add_augshield", "addaugs"),
+        new Effect("Add/Upgrade Speed Enhancement", "add_augspeed", "addaugs"),
+        new Effect("Add/Upgrade Run Silent", "add_augstealth", "addaugs"),
+        new Effect("Add/Upgrade Targeting", "add_augtarget", "addaugs"),
+        new Effect("Add/Upgrade Vision Enhancement", "add_augvision", "addaugs"),
 
-        //Grenades
-        new Effect("LAM", "g_lam", ItemKind.Usable, "grenades"),
-        new Effect("EMP", "g_emp", ItemKind.Usable, "grenades"),
-        new Effect("Gas", "g_gas", ItemKind.Usable, "grenades"),
-        new Effect("Scrambler", "g_scrambler", ItemKind.Usable, "grenades"),
+        new Effect("Remove/Downgrade Aqualung", "rem_augaqualung", "remaugs"),
+        new Effect("Remove/Downgrade Ballistic Protection", "rem_augballistic", "remaugs"),
+        new Effect("Remove/Downgrade Cloak", "rem_augcloak", "remaugs"),
+        new Effect("Remove/Downgrade Combat Strength", "rem_augcombat", "remaugs"),
+        new Effect("Remove/Downgrade Aggressive Defense System", "rem_augdefense", "remaugs"),
+        new Effect("Remove/Downgrade Spy Drone", "rem_augdrone", "remaugs"),
+        new Effect("Remove/Downgrade EMP Shield", "rem_augemp", "remaugs"),
+        new Effect("Remove/Downgrade Environmental Resistance", "rem_augenviro", "remaugs"),
+        new Effect("Remove/Downgrade Regeneration", "rem_aughealing", "remaugs"),
+        new Effect("Remove/Downgrade Synthetic Heart", "rem_augheartlung", "remaugs"),
+        new Effect("Remove/Downgrade Microfibral Muscle", "rem_augmuscle", "remaugs"),
+        new Effect("Remove/Downgrade Power Recirculator", "rem_augpower", "remaugs"),
+        new Effect("Remove/Downgrade Radar Transparancy", "rem_augradartrans", "remaugs"),
+        new Effect("Remove/Downgrade Energy Shield", "rem_augshield", "remaugs"),
+        new Effect("Remove/Downgrade Speed Enhancement", "rem_augspeed", "remaugs"),
+        new Effect("Remove/Downgrade Run Silent", "rem_augstealth", "remaugs"),
+        new Effect("Remove/Downgrade Targeting", "rem_augtarget", "remaugs"),
+        new Effect("Remove/Downgrade Vision Enhancement", "rem_augvision", "remaugs"),
+
         
-        //Weapons (More valuable ones)
-        new Effect("Flamethrower", "flamethrower", ItemKind.Usable, "weapons"),
-        new Effect("GEP Gun", "gep", ItemKind.Usable, "weapons"),
-        new Effect("Dragon Tooth Sword", "dts", ItemKind.Usable, "weapons"),
-        new Effect("Plasma Rifle", "plasma", ItemKind.Usable, "weapons"),
-        new Effect("LAW", "law", ItemKind.Usable, "weapons"),
-        new Effect("Sniper Rifle", "sniper", ItemKind.Usable, "weapons"),
-        new Effect("Assault Rifle", "assaultgun", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
-        new Effect("Assault Shotgun", "assaultshotgun", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
-        new Effect("Baton", "baton", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
-        new Effect("Combat Knife", "knife", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
-        new Effect("Crowbar", "crowbar", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
-        new Effect("Mini Crossbow", "crossbow", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
-        new Effect("Pepper Spray", "pepperspray", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
-        new Effect("Pistol", "pistol", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
-        new Effect("Stealth Pistol", "stealthpistol", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
-        new Effect("Riot Prod", "prod", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
-        new Effect("Sawed-off Shotgun", "sawedoff", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
-        new Effect("Throwing Knives", "shuriken", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
-        new Effect("Sword", "sword", ItemKind.Usable, "weapons"),  //New for second Crowd Control batch
+        //Drop Grenades
+        new Effect("Drop a live grenade","dropgrenade",ItemKind.Folder),
+        
+        new Effect("Drop a live LAM", "drop_lam", "dropgrenade"),
+        new Effect("Drop a live EMP Grenade", "drop_empgrenade", "dropgrenade"),
+        new Effect("Drop a live Gas Grenade", "drop_gasgrenade", "dropgrenade"),
+        new Effect("Drop a live Scrambler Grenade", "drop_nanovirusgrenade", "dropgrenade"),
+
+
+        //Weapons
+        new Effect("Give Weapons","giveweapon",ItemKind.Folder),
+        
+        new Effect("Give Flamethrower", "give_weaponflamethrower", "giveweapon"),
+        new Effect("Give GEP Gun", "give_weapongepgun", "giveweapon"),
+        new Effect("Give Dragon Tooth Sword", "give_weaponnanosword", "giveweapon"),
+        new Effect("Give Plasma Rifle", "give_weaponplasmarifle", "giveweapon"),
+        new Effect("Give LAW", "give_weaponlaw", "giveweapon"),
+        new Effect("Give Sniper Rifle", "give_weaponrifle", "giveweapon"),
+        new Effect("Give Assault Rifle", "give_weaponassaultgun", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Assault Shotgun", "give_weaponassaultshotgun", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Baton", "give_weaponbaton", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Combat Knife", "give_weaponcombatknife", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Crowbar", "give_weaponcrowbar", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Mini Crossbow", "give_weaponminicrossbow", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Pepper Spray", "give_weaponpeppergun", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Pistol", "give_weaponpistol", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Stealth Pistol", "give_weaponstealthpistol", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Riot Prod", "give_weaponprod", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Sawed-off Shotgun", "give_weaponsawedoffshotgun", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Throwing Knives", "give_weaponshuriken", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Sword", "give_weaponsword", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give LAM", "give_weaponlam", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give EMP Grenade", "give_weaponempgrenade", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Gas Grenade", "give_weapongasgrenade", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give Scrambler Grenade", "give_weaponnanovirusgrenade", "giveweapon"),  //New for second Crowd Control batch
+        new Effect("Give PS40","give_weaponhideagun","giveweapon"),
         
         //Ammo
-        new Effect("10mm Ammo (Pistols)", "ammo10mm", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("20mm Ammo (Assault Rifle)", "ammo20mm", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("7.62mm Ammo (Assault Rifle)", "ammo762mm", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("30.06mm Ammo (Sniper Rifle)", "ammo3006", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("Prod Charger", "ammobattery", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("Darts", "ammodart", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("Flare Darts", "ammodartflare", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("Tranq Darts", "ammodartpoison", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("Napalm", "ammonapalm", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("Pepper Spray", "ammopepper", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("Plasma", "ammoplasma", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("Rockets", "ammorocket", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("WP Rockets", "ammorocketwp", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("Sabot Shells", "ammosabot", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
-        new Effect("Shotgun Shells", "ammoshell", ItemKind.Usable, "ammo"), //New for second Crowd Control batch
+        new Effect("Give Ammo","giveammo",ItemKind.Folder),
 
+        new Effect("Give 10mm Ammo (Pistols)", "give_ammo10mm",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give 20mm Ammo (Assault Rifle)", "give_ammo20mm",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give 7.62mm Ammo (Assault Rifle)", "give_ammo762mm",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give 30.06mm Ammo (Sniper Rifle)", "give_ammo3006",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Prod Charger", "give_ammobattery",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Darts", "give_ammodart",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Flare Darts", "give_ammodartflare",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Tranq Darts", "give_ammodartpoison",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Napalm", "give_ammonapalm",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Pepper Spray Ammo", "give_ammopepper",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Plasma", "give_ammoplasma",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Rockets", "give_ammorocket",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give WP Rockets", "give_ammorocketwp",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Sabot Shells", "give_ammosabot",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Shotgun Shells", "give_ammoshell",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
 
     };
     
+    //Slider ranges need to be defined
     public override List<ItemType> ItemTypes => new List<ItemType>(new[]
     {
-        new ItemType("Credits", "creditsslider", ItemType.Subtype.Slider, "{\"min\":1,\"max\":9999}"),
-        new ItemType("Skill Points", "spslider", ItemType.Subtype.Slider, "{\"min\":1,\"max\":9999}"),
+        new ItemType("Credits", "creditsslider", ItemType.Subtype.Slider, "{\"min\":1,\"max\":1000}"),
+        new ItemType("Skill Points", "spslider", ItemType.Subtype.Slider, "{\"min\":1,\"max\":1000}"),
         new ItemType("Amount","amount",ItemType.Subtype.Slider, "{\"min\":1,\"max\":100}"),
-        new ItemType("Augmentation", "augs", ItemType.Subtype.ItemList),
-        new ItemType("Grenades", "grenades", ItemType.Subtype.ItemList),
-        new ItemType("Weapons", "weapons", ItemType.Subtype.ItemList),
-        new ItemType("Ammo", "ammo", ItemType.Subtype.ItemList), //New for second Crowd Control batch
-
     });
 }

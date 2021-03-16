@@ -413,11 +413,13 @@ function GenerateConnections(int missionNum)
     local int attempts;
     local bool isValid;
     isValid = False;
-    for(attempts=0; attempts<100; attempts++)
+    for(attempts=0; attempts<200; attempts++)
     {
         _GenerateConnections(missionNum);
-        if(ValidateConnections())
+        if(ValidateConnections()) {
+            if( attempts > 50 ) warning("GenerateConnections("$missionNum$") succeeded but took "$attempts$" attempts!");
             return;
+        }
     }
     err("GenerateConnections("$missionNum$") failed after "$attempts$" attempts!");
 }
