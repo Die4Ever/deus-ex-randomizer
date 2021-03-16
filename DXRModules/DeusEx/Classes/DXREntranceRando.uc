@@ -413,7 +413,7 @@ function GenerateConnections(int missionNum)
     local int attempts;
     local bool isValid;
     isValid = False;
-    for(attempts=0; attempts<1000; attempts++)
+    for(attempts=0; attempts<200; attempts++)
     {
         _GenerateConnections(missionNum);
         if(ValidateConnections()) {
