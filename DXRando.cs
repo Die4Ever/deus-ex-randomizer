@@ -4,24 +4,23 @@ using CrowdControl.Common;
 using CrowdControl.Games.Packs;
 using ConnectorType = CrowdControl.Common.ConnectorType;
 
-public class DXRando : SimpleTCPPack
+public class DeusEx : SimpleTCPPack
 {
-    public override string Host => "0.0.0.0";
+    public override string Host { get; } = "127.0.0.1";
 
-    public override ushort Port => 43384;
+    public override ushort Port { get; } = 43384;
 
-    public DXRando(IPlayer player, Func<CrowdControlBlock, bool> responseHandler, Action<object> statusUpdateHandler) : base(player, responseHandler, statusUpdateHandler) { }
+    public DeusEx(IPlayer player, Func<CrowdControlBlock, bool> responseHandler, Action<object> statusUpdateHandler) : base(player, responseHandler, statusUpdateHandler) { }
 
-    public override Game Game => new Game(90, "Deus Ex Randomizer", "DeusEx", "PC", ConnectorType.SimpleTCPConnector);
+    public override Game Game { get; } = new Game(90, "Deus Ex", "DeusEx", "PC", ConnectorType.SimpleTCPConnector);
 
     public override List<Effect> Effects => new List<Effect>
     {
-
         //General Effects
         new Effect("Trigger the Killswitch", "kill"),
         new Effect("Poison the Player", "poison"),
         new Effect("Glass Legs", "glass_legs"),
-        new Effect("Give Health", "give_health",new[]{"amount"}),
+        new Effect("Give Health", "give_health",new[]{"amount100"}),
         new Effect("Set On Fire", "set_fire"),
         new Effect("Give one Medkit", "give_medkit"),
         new Effect("Full Heal", "full_heal"),
@@ -29,21 +28,21 @@ public class DXRando : SimpleTCPPack
         new Effect("Drop Selected Item", "drop_selected_item"),
         new Effect("Enable Matrix Mode (1 Minute)", "matrix"),
         new Effect("Give Player EMP Field (15 seconds)", "emp_field"),
-        new Effect("Give Bioelectric Energy", "give_energy",new[]{"amount"}),
-        new Effect("Give one Biocell", "give_bioelectriccell"),
-        new Effect("Give 100 skill points", "give_skillpoints",new[]{"spslider"}), //Updated text for second Crowd Control batch
-        new Effect("Remove 100 skill points", "remove_skillpoints",new[]{"spslider"}), //Updated text for second Crowd Control batch
+        new Effect("Give Bioelectric Energy", "give_energy",new[]{"amount100"}),
+        new Effect("Give One Biocell", "give_bioelectriccell"),
+        new Effect("Give Skill Points (x100)", "give_skillpoints",new[]{"skillpoints1000"}), //Updated text for second Crowd Control batch
+        new Effect("Remove Skill  Points (x100)", "remove_skillpoints",new[]{"skillpoints1000"}), //Updated text for second Crowd Control batch
         new Effect("Disable Jump (1 minute)", "disable_jump"),
-        new Effect("Gotta go fast (1 minute)", "gotta_go_fast"),
-        new Effect("Slow like snail (1 minute)", "gotta_go_slow"),
+        new Effect("Gotta Go Fast (1 minute)", "gotta_go_fast"),
+        new Effect("Slow Like Snail (1 minute)", "gotta_go_slow"),
         new Effect("Ice Physics! (1 minute)","ice_physics"),
         new Effect("Go Third-Person (1 minute)","third_person"),
         new Effect("Take Double Damage (1 minute)","dmg_double"),
         new Effect("Take Half Damage (1 minute)","dmg_half"),
-        new Effect("Give 100 credits", "add_credits",new[]{"creditsslider"}), //Updated for text second Crowd Control batch
-        new Effect("Remove 100 credits", "remove_credits",new[]{"creditsslider"}), //Updated text for second Crowd Control batch      
+        new Effect("Give Credits (x100)", "add_credits",new[]{"credits1000"}), //Updated for text second Crowd Control batch
+        new Effect("Remove Credits (x100)", "remove_credits",new[]{"credits1000"}), //Updated text for second Crowd Control batch      
         new Effect("Upgrade a Flamethrower to a LAMThrower (1 minute)", "lamthrower"),
-        
+
         new Effect ("Ask a Question","ask_a_question"), //New for second Crowd Control batch
         new Effect ("Nudge","nudge"), //New for second Crowd Control batch
         new Effect ("Swap Player with another human","swap_player_position"), //New for second Crowd Control batch
@@ -55,7 +54,7 @@ public class DXRando : SimpleTCPPack
         //Add/Remove Augs
         new Effect("Add/Upgrade Augmentations","addaugs",ItemKind.Folder),
         new Effect("Remove/Downgrade Augmentations","remaugs",ItemKind.Folder),
-        
+
         new Effect("Add/Upgrade Aqualung", "add_augaqualung", "addaugs"),
         new Effect("Add/Upgrade Ballistic Protection", "add_augballistic", "addaugs"),
         new Effect("Add/Upgrade Cloak", "add_augcloak", "addaugs"),
@@ -97,16 +96,16 @@ public class DXRando : SimpleTCPPack
         
         //Drop Grenades
         new Effect("Drop a live grenade","dropgrenade",ItemKind.Folder),
-        
-        new Effect("Drop a live LAM", "drop_lam", "dropgrenade"),
-        new Effect("Drop a live EMP Grenade", "drop_empgrenade", "dropgrenade"),
-        new Effect("Drop a live Gas Grenade", "drop_gasgrenade", "dropgrenade"),
-        new Effect("Drop a live Scrambler Grenade", "drop_nanovirusgrenade", "dropgrenade"),
+
+        new Effect("Drop a Live LAM", "drop_lam", "dropgrenade"),
+        new Effect("Drop a Live EMP Grenade", "drop_empgrenade", "dropgrenade"),
+        new Effect("Drop a Live Gas Grenade", "drop_gasgrenade", "dropgrenade"),
+        new Effect("Drop a Live Scrambler Grenade", "drop_nanovirusgrenade", "dropgrenade"),
 
 
         //Weapons
         new Effect("Give Weapons","giveweapon",ItemKind.Folder),
-        
+
         new Effect("Give Flamethrower", "give_weaponflamethrower", "giveweapon"),
         new Effect("Give GEP Gun", "give_weapongepgun", "giveweapon"),
         new Effect("Give Dragon Tooth Sword", "give_weaponnanosword", "giveweapon"),
@@ -135,29 +134,28 @@ public class DXRando : SimpleTCPPack
         //Ammo
         new Effect("Give Ammo","giveammo",ItemKind.Folder),
 
-        new Effect("Give 10mm Ammo (Pistols)", "give_ammo10mm",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give 20mm Ammo (Assault Rifle)", "give_ammo20mm",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give 7.62mm Ammo (Assault Rifle)", "give_ammo762mm",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give 30.06mm Ammo (Sniper Rifle)", "give_ammo3006",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give Prod Charger", "give_ammobattery",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give Darts", "give_ammodart",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give Flare Darts", "give_ammodartflare",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give Tranq Darts", "give_ammodartpoison",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give Napalm", "give_ammonapalm",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give Pepper Spray Ammo", "give_ammopepper",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give Plasma", "give_ammoplasma",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give Rockets", "give_ammorocket",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give WP Rockets", "give_ammorocketwp",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give Sabot Shells", "give_ammosabot",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-        new Effect("Give Shotgun Shells", "give_ammoshell",new[]{"amount"},"giveammo"), //New for second Crowd Control batch
-
+        new Effect("Give 10mm Ammo (Pistols)", "give_ammo10mm",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give 20mm Ammo (Assault Rifle)", "give_ammo20mm",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give 7.62mm Ammo (Assault Rifle)", "give_ammo762mm",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give 30.06mm Ammo (Sniper Rifle)", "give_ammo3006",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Prod Charger", "give_ammobattery",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Darts", "give_ammodart",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Flare Darts", "give_ammodartflare",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Tranq Darts", "give_ammodartpoison",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Napalm", "give_ammonapalm",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Pepper Spray Ammo", "give_ammopepper",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Plasma", "give_ammoplasma",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Rockets", "give_ammorocket",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give WP Rockets", "give_ammorocketwp",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Sabot Shells", "give_ammosabot",new[]{"amount100"},"giveammo"), //New for second Crowd Control batch
+        new Effect("Give Shotgun Shells", "give_ammoshell",new[]{"amount100"},"giveammo") //New for second Crowd Control batch
     };
-    
+
     //Slider ranges need to be defined
     public override List<ItemType> ItemTypes => new List<ItemType>(new[]
     {
-        new ItemType("Credits", "creditsslider", ItemType.Subtype.Slider, "{\"min\":1,\"max\":1000}"),
-        new ItemType("Skill Points", "spslider", ItemType.Subtype.Slider, "{\"min\":1,\"max\":1000}"),
-        new ItemType("Amount","amount",ItemType.Subtype.Slider, "{\"min\":1,\"max\":100}"),
+        new ItemType("Credits", "credits1000", ItemType.Subtype.Slider, "{\"min\":1,\"max\":1000}"),
+        new ItemType("Skill Points", "skillpoints1000", ItemType.Subtype.Slider, "{\"min\":1,\"max\":1000}"),
+        new ItemType("Amount","amount100",ItemType.Subtype.Slider, "{\"min\":1,\"max\":100}")
     });
 }
