@@ -1003,6 +1003,11 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (dxr.Player.InHand == None) {
                 return TempFail;
             }
+            
+            if (canDropItem() == False) {
+                return TempFail;
+            }
+            
             if (dxr.Player.DropItem() == False) {
                 return TempFail;
             }
@@ -1433,6 +1438,30 @@ function AskRandomQuestion(String viewer) {
     
     ccModule.CreateCustomMessageBox(viewer$" asks...",question,numAnswers,answers,ccModule,1,True);
     
+}
+
+function bool canDropItem() {
+	local Vector X, Y, Z, dropVect;
+	local Inventory item;
+    
+    item = dxr.Player.InHand;
+    
+    if (item == None) {
+        return False;
+    }
+    
+	GetAxes(dxr.Player.Rotation, X, Y, Z);
+	dropVect = dxr.Player.Location + (dxr.Player.CollisionRadius + 2*item.CollisionRadius) * X;
+	dropVect.Z += dxr.Player.BaseEyeHeight;
+    
+	// check to see if we're blocked by terrain
+	if (!dxr.Player.FastTrace(dropVect))
+	{
+		return False;
+	}
+    
+    return True;
+
 }
 
 
