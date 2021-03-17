@@ -30,6 +30,8 @@ function Init(DXRando tdxr)
     local bool anon;
     Super.Init(tdxr);
 
+    curStupidQuestion = Rand(numStupidQuestions);
+
     if (tdxr.flags.crowdcontrol != 0) {
         link = Spawn(class'DXRandoCrowdControlLink');
         info("spawned "$link);
