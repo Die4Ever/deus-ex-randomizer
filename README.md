@@ -12,7 +12,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 
 [![v1.5 Trailer](https://img.youtube.com/vi/A0Li3XuBjGg/0.jpg)](https://www.youtube.com/watch?v=A0Li3XuBjGg)
 
-### Currently in v1.5.3, DXRando randomizes
+### Currently in v1.5.4, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
@@ -30,7 +30,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 * the damage and firing speed of weapons
 
 There are also settings for
-* Crowd Control! Let your viewers troll you or help you! Check [their website](https://crowdcontrol.live/) for when they enable Deus Ex Randomizer
+* Crowd Control! Let your viewers troll you or help you! NOW PLAYABLE! https://forum.warp.world/t/deus-ex-randomizer-pc/20496
     * If you want to try some of the Crowd Control features without actually streaming, you can try the "OfflineCrowdControl.py" script to randomly send Crowd Control messages to your local game!  Requires Python 3.8 or above
 * New Game+ - after beating the game play it again keeping your items, skills, and augs, but with increased difficulty and a new seed
 * new game modes!
