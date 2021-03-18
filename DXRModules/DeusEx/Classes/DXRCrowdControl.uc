@@ -45,10 +45,10 @@ function Init(DXRando tdxr)
 }
 
 function AnyEntry() {
+    Super.AnyEntry();
     if( link != None ) {
         link.InitOnEnter();
     }
-    Super.AnyEntry();
 }
 
 function PreTravel() {

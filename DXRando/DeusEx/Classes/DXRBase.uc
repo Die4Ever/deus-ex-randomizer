@@ -33,9 +33,9 @@ function AnyEntry()
     l(Self$".AnyEntry()");
 }
 
-function ReEntry()
+function ReEntry(bool IsTravel)
 {
-    l(Self$".ReEntry()");
+    l(Self$".ReEntry(IsTravel: "$IsTravel$")");
 }
 
 function PreTravel()

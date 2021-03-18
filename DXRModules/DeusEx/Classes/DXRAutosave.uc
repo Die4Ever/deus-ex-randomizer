@@ -5,20 +5,23 @@ var config float save_delay;
 
 function FirstEntry()
 {
+    Super.FirstEntry();
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave > 0 ) {
         bNeedSave=true;
     }
 }
 
-function ReEntry()
+function ReEntry(bool IsTravel)
 {
-    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave==2 && dxr.flags.f.GetBool('PlayerTraveling') ) {
+    Super.ReEntry(IsTravel);
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave==2 && IsTravel ) {
         bNeedSave=true;
     }
 }
 
 function AnyEntry()
 {
+    Super.AnyEntry();
     if( bNeedSave )
         SetTimer(save_delay, True);
 }

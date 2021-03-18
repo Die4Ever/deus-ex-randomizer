@@ -31,17 +31,23 @@ function FirstEntry()
             dt.Radius = 160;
             break;
     }
+
+    CheckTeleport();
 }
 
-function AnyEntry()
+function ReEntry(bool IsTravel)
+{
+    Super.ReEntry(IsTravel);
+    //need to make sure this doesn't happen when loading a save
+    if ( !IsTravel ) return;
+    CheckTeleport();
+}
+
+function CheckTeleport()
 {
     local string tonamestring;
     local name toname;
     local Actor a;
-    Super.AnyEntry();
-
-    //need to make sure this doesn't happen when loading a save
-    if (! dxr.flags.f.GetBool('PlayerTraveling')) return;
 
     tonamestring = Level.game.ParseOption( "?" $ Level.GetLocalURL(), "toname" );
     if( InStr(tonamestring, "#") >=0 ) {
