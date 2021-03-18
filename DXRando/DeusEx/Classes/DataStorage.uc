@@ -23,8 +23,11 @@ function static DataStorage GetObj(DeusExPlayer p)
 {
     local DataStorage d;
     d = DataStorage(p.FindInventoryType(class'DataStorage'));
-    if( d == None )
-        d = DataStorage(class'DXRActorsBase'.static.GiveItem(p, class'DataStorage'));
+    if( d == None ) {
+        d = p.Spawn(class'DataStorage');
+        d.GiveTo(p);
+        d.SetBase(p);
+    }
     return d;
 }
 
