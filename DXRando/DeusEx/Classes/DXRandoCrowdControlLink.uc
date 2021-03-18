@@ -1334,15 +1334,15 @@ function int GiveItem(string viewer, string type, optional int amount) {
 
     outMsg = viewer@"gave you";
     if( amount > 1 && DeusExAmmo(item) != None ) {
-        outMsg = outMsg @amount@"cases of"@item.ItemName;
+        outMsg = outMsg @amount@"cases of"@item.Default.ItemName;
     }
     else if( DeusExAmmo(item) != None ) {
-        outMsg = outMsg @"a case of"@item.ItemName;
+        outMsg = outMsg @"a case of"@item.Default.ItemName;
     }
     else if( amount > 1 ) {
-        outMsg = outMsg @amount@item.ItemName$"s";
+        outMsg = outMsg @ amount @ item.Default.ItemName $ "s";
     } else {
-        outMsg = outMsg @item.ItemArticle@item.ItemName;
+        outMsg = outMsg @ item.Default.ItemArticle @ item.Default.ItemName;
     }
 
     PlayerMessage(outMsg);
