@@ -39,8 +39,7 @@ function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
     //need to make sure this doesn't happen when loading a save
-    if ( !IsTravel ) return;
-    CheckTeleport();
+    if ( IsTravel ) CheckTeleport();
 }
 
 function CheckTeleport()

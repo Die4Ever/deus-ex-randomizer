@@ -364,12 +364,12 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( IsHuman(p) == False ) return; // only give random weapons to humans
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
 
-    GiveRandomWeapon(p);
+    GiveRandomWeapon(p, false, 2);
     GiveRandomMeleeWeapon(p);
     p.SetupWeapon(false);
 }
 
-function GiveRandomWeapon(Pawn p, optional bool allow_dupes)
+function GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional int add_ammo)
 {
     local class<DeusExWeapon> wclass;
     local Ammo a;
@@ -387,7 +387,7 @@ function GiveRandomWeapon(Pawn p, optional bool allow_dupes)
         l("not giving a random weapon to "$p); return;
     }
 
-    GiveItem( p, wclass, true );
+    GiveItem( p, wclass, add_ammo );
 }
 
 function GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
