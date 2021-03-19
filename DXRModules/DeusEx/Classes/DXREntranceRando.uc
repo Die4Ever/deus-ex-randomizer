@@ -642,13 +642,14 @@ function RandoMission12()
     AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");
     AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");
 
-    if( dxr.localURL == "12_VANDENBERG_CMD" ) {
+    //make sure the tests don't adjust these doors
+    if( dxr.flags.gamemode == 1 && dxr.localURL == "12_VANDENBERG_CMD" ) {
         foreach AllActors(class'DeusExMover', d) {
             switch(d.Tag) {
                 case 'door_controlroom':
                 case 'security_tunnels':
-                    class'DXRKeys'.static.MakePickable(d);
-                    class'DXRKeys'.static.MakeDestructible(d);
+                    class'DXRKeys'.static.StaticMakePickable(d);
+                    class'DXRKeys'.static.StaticMakeDestructible(d);
                     break;
             }
         }

@@ -185,9 +185,11 @@ function RandomizeDoors()
     foreach AllActors(class'DeusExMover', d) {
         if( d.bPickable ) {
             d.lockStrength = FClamp(rngrange(d.lockStrength, min_lock_adjust, max_lock_adjust), 0, 1);
+            d.initiallockStrength = d.lockStrength;
         }
         if( d.bBreakable ) {
             d.doorStrength = FClamp(rngrange(d.doorStrength, min_door_adjust, max_door_adjust), 0, 1);
+            d.minDamageThreshold = rngrange(d.minDamageThreshold, min_door_adjust, max_door_adjust);
         }
     }
 }
@@ -313,6 +315,7 @@ function ApplyDoorFixes()
             if( door_fixes[i].bPickable ) MakePickable(d);
             d.bPickable = door_fixes[i].bPickable;
             d.lockStrength = door_fixes[i].lockStrength;
+            d.initiallockStrength = d.lockStrength;
             if( door_fixes[i].bBreakable ) MakeDestructible(d);
             d.bBreakable = door_fixes[i].bBreakable;
             d.minDamageThreshold = door_fixes[i].minDamageThreshold;
@@ -407,7 +410,22 @@ function AdjustDoor(DeusExMover d, int exclusivitymode, int doorspickable, int d
     }
 }
 
-static function MakePickable(DeusExMover d)
+function MakePickable(DeusExMover d)
+{
+    if( d.bHighlight == false || d.bFrobbable == false ) {
+        d.bPickable = false;
+        d.bLocked = true;
+        d.bHighlight = true;
+        d.bFrobbable = true;
+    }
+    if( d.bPickable == false ) {
+        d.bPickable = true;
+        d.lockStrength = FClamp(rngrange(1, min_door_adjust, max_door_adjust), 0, 1);
+        d.initiallockStrength = d.lockStrength;
+    }
+}
+
+static function StaticMakePickable(DeusExMover d)
 {
     if( d.bHighlight == false || d.bFrobbable == false ) {
         d.bPickable = false;
@@ -422,7 +440,22 @@ static function MakePickable(DeusExMover d)
     }
 }
 
-static function MakeDestructible(DeusExMover d)
+function MakeDestructible(DeusExMover d)
+{
+    if( d.bHighlight == false || d.bFrobbable == false ) {
+        d.bPickable = false;
+        d.bLocked = true;
+        d.bHighlight = true;
+        //d.bFrobbable = true;
+    }
+    if( d.bBreakable == false ) {
+        d.bBreakable = true;
+        d.minDamageThreshold = rngrange(55, min_door_adjust, max_door_adjust);
+        d.doorStrength = FClamp(rngrange(1, min_door_adjust, max_door_adjust), 0, 1);
+    }
+}
+
+static function StaticMakeDestructible(DeusExMover d)
 {
     if( d.bHighlight == false || d.bFrobbable == false ) {
         d.bPickable = false;
