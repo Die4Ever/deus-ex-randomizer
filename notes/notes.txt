@@ -25,6 +25,35 @@ native static final function StaticSaveConfig();
 native static final function ResetConfig();
 
 
+//causes issues with test "simple GenerateConnections validation" for some reason, using GetUnusedTransferByOffset instead of GetNextTransferIdx works better
+function SortTransfers()
+{
+    local int i, t;
+    local MapTransfer temp;
+    local int numxfersbymap[50];
+
+    for(i=0; i<numXfers; i++) {
+        numxfersbymap[i] = GetNumXfersByMap(xfers[i].mapname);
+    }
+
+    for(i=0; i+1<numXfers; i++) {
+        if( numxfersbymap[i] < numxfersbymap[i+1] ) {
+
+            temp = xfers[i];
+            t = numxfersbymap[i];
+
+            xfers[i] = xfers[i+1];
+            numxfersbymap[i] = numxfersbymap[i+1];
+
+            xfers[i+1] = temp;
+            numxfersbymap[i+1] = t;
+
+            i=-1;
+        }
+    }
+}
+
+
 UWindowHTMLTextArea
 ninja mode (maybe rename low tech skill to ninjitsu, and always run silent?
 fix "softlock" in 03_batterypark, maybe by adding an atm and datacube, or copying over the threatened bum from 02_street, putting a note on curly's body, hiding money and/or datacubes on the map...

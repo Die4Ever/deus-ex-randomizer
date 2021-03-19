@@ -308,14 +308,14 @@ def runAutomatedTests(out):
             print("")
 
             if len(warnings) > 0:
-                print("Test Warnings:")
+                print("Test Warnings ("+str(len(warnings))+"):")
                 print("-----------------")
                 for warn in warnings:
                     print(warn)
                 print("")
 
             if len(failures) > 0:
-                print("Test Failures:")
+                print("Test Failures ("+str(len(failures))+"):")
                 print("-----------------")
                 for fail in failures:
                     print(fail)
