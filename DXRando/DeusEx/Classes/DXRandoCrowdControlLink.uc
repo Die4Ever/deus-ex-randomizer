@@ -68,6 +68,8 @@ struct ZoneGravity
 };
 var ZoneGravity zone_gravities[32];
 
+var DXRandoCrowdControlTimer timerDisplays[32];
+
 //JSON parsing states
 const KeyState = 1;
 const ValState = 2;
@@ -394,17 +396,110 @@ function StopMatrixMode(optional bool silent) {
 
 }
 
+function int getDefaultTimerTimeByName(name timerName) {
+    switch(timerName) {
+        case 'cc_MatrixModeTimer':
+            return MatrixTimeDefault;
+        case 'cc_EmpTimer':
+            return EmpDefault;
+        case 'cc_JumpTimer':
+            return JumpTimeDefault;
+        case 'cc_SpeedTimer':
+            return SpeedTimeDefault;
+        case 'cc_lamthrowerTimer':
+            return LamThrowerTimeDefault;
+        case 'cc_iceTimer':
+            return IceTimeDefault;
+        case 'cc_behindTimer':
+            return BehindTimeDefault;
+        case 'cc_DifficultyTimer':
+            return DifficultyTimeDefault;
+        case 'cc_floatyTimer':
+            return FloatyTimeDefault;
+        case 'cc_floorLavaTimer':
+            return FloorLavaTimeDefault;
+        case 'cc_invertMouseTimer':
+            return InvertMouseTimeDefault;
+        case 'cc_invertMovementTimer':
+            return InvertMovementTimeDefault;
+        
+        default:
+            PlayerMessage("Unknown timer name "$timerName);
+            return 0;
+    }
+}
+
+function removeTimerDisplay(DXRandoCrowdControlTimer tDisplay) {
+    local int i;
+    
+    //PlayerMessage("Removing display");
+    
+    for (i=0;i < 32; i++) {
+        if (timerDisplays[i] == tDisplay) {
+            //timerDisplays[i].Destroy();
+            timerDisplays[i] = None;
+        }
+    }
+}
+
+function addTimerDisplay(name timerName, int time) {
+    local DXRandoCrowdControlTimer timer;
+    local int i;
+    local vector v;
+    
+    v.X = dxr.Player.Location.X;
+    v.Y = dxr.Player.Location.Y;
+    v.Z = dxr.Player.Location.Z+5;
+    
+    //PlayerMessage("Adding display");
+    
+    timer = Spawn(class'DXRandoCrowdControlTimer', dxr.Player,,dxr.Player.Location);
+    timer.initTimer(self,timerName,time);
+    timer.Activate();
+    
+    //Find a spot to keep track of the timer
+    
+    for (i = 0; i < 32; i++) {
+        if (timerDisplays[i] == None) {
+            timerDisplays[i] = timer;
+            return;
+        }
+    }
+    PlayerMessage("Couldn't find location to track Crowd Control timer!");
+    
+}
+
+function bool checkForTimerDisplay(name timerName) {
+    local int i;
+    
+    for (i = 0; i < 32; i++) {
+        if (timerDisplays[i].GetTimerName() == timerName) {
+            return True;
+        }
+    }
+    
+    return False;
+}
+
 function int getTimer(name timerName) {
     if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr.Player);
     return int(datastorage.GetConfigKey(timerName));
 }
 
-function setTimerFlag(name timerName, int time) {
+function setTimerFlag(name timerName, int time, bool newTimer) {
     local int expiration;
     if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr.Player);
     if( time == 0 ) expiration = 1;
     else expiration = 3600*12;
     datastorage.SetConfig(timerName, time, expiration);
+    if (newTimer) { 
+        addTimerDisplay(timerName,time);
+    } else {
+        //This is basically just for if you reload a game, or change maps
+        if (checkForTimerDisplay(timerName) == False) {
+            addTimerDisplay(timerName,getDefaultTimerTimeByName(timerName)); 
+        }
+    }
 }
 
 function bool isTimerActive(name timerName) {
@@ -417,11 +512,16 @@ function bool decrementTimer(name timerName) {
     time = getTimer(timerName);
     if (time>0 && InGame()) {
         time -= 1;
-        setTimerFlag(timerName,time);
+        setTimerFlag(timerName,time,False);
         
         return (time == 0);
     }
     return false;
+}
+
+function startNewTimer(name timerName) {
+    setTimerFlag(timerName,getDefaultTimerTimeByName(timerName),True);
+
 }
 
 function Timer() {
@@ -973,7 +1073,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
 
             dxr.Player.JumpZ = 0;
-            setTimerFlag('cc_JumpTimer',JumpTimeDefault);
+            startnewTimer('cc_JumpTimer');
             PlayerMessage(viewer@"made your knees lock up.");
             break;
 
@@ -983,7 +1083,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             dxr.Player.FlagBase.SetInt('cc_moveSpeedModifier',MoveSpeedMultiplier);
             dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedMultiplier;
-            setTimerFlag('cc_SpeedTimer',SpeedTimeDefault);
+            startNewTimer('cc_SpeedTimer');
             PlayerMessage(viewer@"made you fast like Sonic!");
             break;
 
@@ -993,7 +1093,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             dxr.Player.FlagBase.SetInt('cc_moveSpeedModifier',MoveSpeedDivisor);
             dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedDivisor;
-            setTimerFlag('cc_SpeedTimer',SpeedTimeDefault);
+            startNewTimer('cc_SpeedTimer');
             PlayerMessage(viewer@"made you slow like a snail!");
             break;
         case "drunk_mode":
@@ -1022,7 +1122,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
         case "emp_field":
             dxr.Player.bWarrenEMPField = true;
-            setTimerFlag('cc_EmpTimer',EmpDefault);
+            startNewTimer('cc_EmpTimer');
             PlayerMessage(viewer@"made electronics allergic to you");
             break;
 
@@ -1032,7 +1132,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             StartMatrixMode();
-            setTimerFlag('cc_MatrixModeTimer',MatrixTimeDefault);
+            startNewTimer('cc_MatrixModeTimer');
             PlayerMessage(viewer@"thinks you are The One...");
             break;
             
@@ -1041,7 +1141,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             dxr.Player.bBehindView=True;
-            setTimerFlag('cc_behindTimer',BehindTimeDefault);
+            startNewTimer('cc_behindTimer');
             PlayerMessage(viewer@"gave you an out of body experience");
             break;
 
@@ -1091,7 +1191,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             dxr.Player.FlagBase.SetFloat('cc_damageMult',2.0);
            
             PlayerMessage(viewer@"made your body extra squishy");
-            setTimerFlag('cc_DifficultyTimer',DifficultyTimeDefault);
+            startNewTimer('cc_DifficultyTimer');
             break;
         case "dmg_half":
             if (isTimerActive('cc_DifficultyTimer')) {
@@ -1099,7 +1199,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             dxr.Player.FlagBase.SetFloat('cc_damageMult',0.5);
             PlayerMessage(viewer@"made your body extra tough!");
-            setTimerFlag('cc_DifficultyTimer',DifficultyTimeDefault);
+            startNewTimer('cc_DifficultyTimer');
             break;
         
         case "ice_physics":
@@ -1108,7 +1208,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             PlayerMessage(viewer@"made the ground freeze!");
             SetIcePhysics(True);
-            setTimerFlag('cc_iceTimer',IceTimeDefault);
+            startNewTimer('cc_iceTimer');
 
             break;      
         
@@ -1142,7 +1242,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             PlayerMessage(viewer@"made you feel light as a feather");
             SetFloatyPhysics(True);
-            setTimerFlag('cc_floatyTimer',FloatyTimeDefault);
+            startNewTimer('cc_floatyTimer');
 
             break;   
 
@@ -1155,7 +1255,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             PlayerMessage(viewer@"turned the floor into lava!");
             lavaTick = 0;
-            setTimerFlag('cc_floorLavaTimer',FloorLavaTimeDefault);
+            startNewTimer('cc_floorLavaTimer');
             
             break;
             
@@ -1170,7 +1270,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             dxr.Player.FlagBase.SetBool('cc_InvertMouseDef',dxr.Player.bInvertMouse);
 
             dxr.Player.bInvertMouse = !dxr.Player.bInvertMouse;
-            setTimerFlag('cc_invertMouseTimer',InvertMouseTimeDefault);
+            startNewTimer('cc_invertMouseTimer');
 
             break;
             
@@ -1185,7 +1285,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             
             invertMovementControls();
 
-            setTimerFlag('cc_invertMovementTimer',InvertMovementTimeDefault);
+            startNewTimer('cc_invertMovementTimer');
             break;
 
         default:
@@ -1231,7 +1331,7 @@ function int GiveLamThrower(string viewer)
     }
 
     MakeLamThrower(anItem);
-    setTimerFlag('cc_lamthrowerTimer',LamThrowerTimeDefault);
+    setTimerFlag('cc_lamthrowerTimer',LamThrowerTimeDefault,True);
     PlayerMessage(viewer@"turned your flamethrower into a LAM Thrower!");
     return Success;
 }
