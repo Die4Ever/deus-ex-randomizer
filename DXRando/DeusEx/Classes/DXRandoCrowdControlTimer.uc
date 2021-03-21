@@ -10,7 +10,6 @@ var string timerLabel;
 
 function initTimer( DXRandoCrowdControlLink ccLink, name tName, int defaultTime, string label )
 {
-
     link = ccLink;
     timerName = tName;
     defTime = defaultTime;
@@ -19,9 +18,6 @@ function initTimer( DXRandoCrowdControlLink ccLink, name tName, int defaultTime,
     SetPhysics(PHYS_None);
     SetCollision(False,False,False);
     bHidden = True;
-    
-    
-
 }
 
 function string GetTimerLabel()
@@ -45,30 +41,29 @@ function Float GetCurrentCharge()
 
 function ChargedPickupBegin(DeusExPlayer Player)
 {
-	Player.AddChargedDisplay(Self);
+    Player.AddChargedDisplay(Self);
 
-	bIsActive = True;
+    bIsActive = True;
 }
 function ChargedPickupEnd(DeusExPlayer Player)
 {
     Player.RemoveChargedDisplay(Self);
-	bIsActive = False;
+    bIsActive = False;
     
     link.removeTimerDisplay(self);
-
 }
 
 function UsedUp()
 {
-	local DeusExPlayer Player;
+    local DeusExPlayer Player;
 
-	Player = link.dxr.Player;
+    Player = link.dxr.Player;
     
-	if (Player != None)
-	{
-		ChargedPickupEnd(Player);
+    if (Player != None)
+    {
+        ChargedPickupEnd(Player);
         
-	}
+    }
     
     Destroy();
 }
@@ -77,40 +72,40 @@ state Activated
 {
     function Timer()
     {
-		Charge = GetCurrentCharge();
+        Charge = GetCurrentCharge();
         //link.PlayerMessage("Charge is now "$Charge);
-		if (Charge <= 0)
-			UsedUp();
+        if (Charge <= 0)
+            UsedUp();
  
     }
     
-	function BeginState()
-	{
-		local DeusExPlayer Player;
+    function BeginState()
+    {
+        local DeusExPlayer Player;
 
-		Super(DeusExPickup).BeginState();
+        Super(DeusExPickup).BeginState();
 
-		Player = link.dxr.Player;
-		if (Player != None)
-		{
-			ChargedPickupBegin(Player);
-			SetTimer(0.1, True);
-		}
-	}
+        Player = link.dxr.Player;
+        if (Player != None)
+        {
+            ChargedPickupBegin(Player);
+            SetTimer(0.1, True);
+        }
+    }
 
-	function EndState()
-	{
-		local DeusExPlayer Player;
+    function EndState()
+    {
+        local DeusExPlayer Player;
 
-		Super.EndState();
+        Super.EndState();
 
-		Player = link.dxr.Player;
-		if (Player != None)
-		{
-			ChargedPickupEnd(Player);
-			SetTimer(0.1, False);
-		}
-	}
+        Player = link.dxr.Player;
+        if (Player != None)
+        {
+            ChargedPickupEnd(Player);
+            SetTimer(0.1, False);
+        }
+    }
 
 }
 

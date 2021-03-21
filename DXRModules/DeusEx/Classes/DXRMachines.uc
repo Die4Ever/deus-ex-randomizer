@@ -433,7 +433,7 @@ function TestCameraPlacement(vector from, bool none_ok, optional float max_dist,
 
     success = GetCameraLocation(loc, rotation);
     if( none_ok && !success ) return;
-    else test( success, "GetCameraLocation "$from);
+    else if( !none_ok ) test( success, "GetCameraLocation "$from);
     if( ! success )
         return;
 
