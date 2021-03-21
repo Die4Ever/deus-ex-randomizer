@@ -182,7 +182,7 @@ function RandoEnter()
         flags.f.SetBool(flagName, True,, 999);
     }
 
-    info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel);
+    info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL);
 
     if ( firstTime == true )
     {
