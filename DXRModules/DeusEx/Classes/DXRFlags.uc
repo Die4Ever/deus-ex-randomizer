@@ -278,7 +278,7 @@ function SaveFlags()
 
 function LogFlags(string prefix)
 {
-    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", " $ StringifyFlags() );
+    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", " $ StringifyFlags() );
 }
 
 function string StringifyFlags()
