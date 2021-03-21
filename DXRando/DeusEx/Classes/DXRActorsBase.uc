@@ -162,10 +162,13 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
     local DeusExWeapon w;
     local int i;
 
+    player = DeusExPlayer(p);
     if( class<Ammo>(iclass) != None ) {
         anItem = p.FindInventoryType(iclass);
         if( anItem != None ) {
             Ammo(anItem).AmmoAmount += Class<Ammo>(iclass).default.AmmoAmount;
+            if( player != None )
+                player.UpdateAmmoBeltText(Ammo(anItem));
             return anItem;
         }
     }
@@ -174,7 +177,6 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
     if( anItem == None ) return None;
     anItem.InitialState='Idle2';
     anItem.SetLocation(p.Location);
-    player = DeusExPlayer(p);
     if( player != None ) {
         player.FrobTarget = anItem;
         player.ParseRightClick();
@@ -191,6 +193,9 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
                 w.AmmoType = DeusExAmmo(GiveItem(p, w.AmmoName));
         }
     }
+
+    if( player != None )
+        player.UpdateBeltText(anItem);
 
     return anItem;
 }

@@ -505,11 +505,6 @@ function removeTimerDisplay(DXRandoCrowdControlTimer tDisplay) {
 function addTimerDisplay(name timerName, int time) {
     local DXRandoCrowdControlTimer timer;
     local int i;
-    local vector v;
-    
-    v.X = dxr.Player.Location.X;
-    v.Y = dxr.Player.Location.Y;
-    v.Z = dxr.Player.Location.Z+5;
     
     //PlayerMessage("Adding display");
     
@@ -526,7 +521,6 @@ function addTimerDisplay(name timerName, int time) {
         }
     }
     PlayerMessage("Couldn't find location to track Crowd Control timer!");
-    
 }
 
 function bool checkForTimerDisplay(name timerName) {
