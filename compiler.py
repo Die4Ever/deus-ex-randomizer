@@ -229,6 +229,8 @@ def runAutomatedTests(out):
     rc = False
     if exists(out + '/System/DXRando.ini'):
         os.remove(out + '/System/DXRando.ini')
+    if exists(out + '/System/DXRDataStorage.ini'):
+        os.remove(out + '/System/DXRDataStorage.ini')
     if exists(out + '/System/DeusEx.ini'):
         # copy DeusEx.ini to test.ini, change [Engine.Engine] DefaultServerGame to =DeusEx.DXRandoTests
         f = open (out + '/System/DeusEx.ini','r')
@@ -308,14 +310,14 @@ def runAutomatedTests(out):
             print("")
 
             if len(warnings) > 0:
-                print("Test Warnings:")
+                print("Test Warnings ("+str(len(warnings))+"):")
                 print("-----------------")
                 for warn in warnings:
                     print(warn)
                 print("")
 
             if len(failures) > 0:
-                print("Test Failures:")
+                print("Test Failures ("+str(len(failures))+"):")
                 print("-----------------")
                 for fail in failures:
                     print(fail)

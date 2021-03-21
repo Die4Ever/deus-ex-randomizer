@@ -226,7 +226,7 @@ function AnyEntry()
     local int i;
 
     if( dxr.flags.gamemode != 2 ) return;
-
+    Super.AnyEntry();
     if( dxr.dxInfo.missionNumber>0 && dxr.localURL != map_name ) {
         Level.Game.SendPlayer(dxr.player, map_name);
         return;

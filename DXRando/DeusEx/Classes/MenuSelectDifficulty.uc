@@ -110,7 +110,7 @@ function BindControls(bool writing, optional string action)
         f.speedlevel = 2;
         f.startinglocations = 100;
         f.goals = 100;
-        f.equipment = 2;
+        f.equipment = 4;
         f.medbots = 35;
         f.repairbots = 35;
         f.turrets_move = 50;
@@ -138,7 +138,7 @@ function BindControls(bool writing, optional string action)
         f.speedlevel = 1;
         f.startinglocations = 100;
         f.goals = 100;
-        f.equipment = 1;
+        f.equipment = 2;
         f.medbots = 25;
         f.repairbots = 25;
         f.turrets_move = 50;

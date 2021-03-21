@@ -278,7 +278,7 @@ function SaveFlags()
 
 function LogFlags(string prefix)
 {
-    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", " $ StringifyFlags() );
+    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", " $ StringifyFlags() );
 }
 
 function string StringifyFlags()
@@ -329,7 +329,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 4) $ "";
+    return VersionToString(1, 5, 5) $ " Alpha";
 }
 
 function MaxRando()
@@ -416,14 +416,102 @@ function ExtendedTests()
     testfloatrange( pow(9,4), 9*9*9*9, 0.001, "pow");
     testfloatrange( pow(5.7,3), 5.7*5.7*5.7, 0.001, "pow");
 
-    for(i=1;i<=5;i++)
+    for(i=1;i<=4;i++)
         TestRngExp(25, 300, 100, i);
-    for(i=1;i<=5;i++)
+    for(i=1;i<=4;i++)
         TestRngExp(50, 300, 100, i);
-    for(i=1;i<=5;i++)
+    for(i=1;i<=4;i++)
         TestRngExp(50, 400, 100, i);
-    for(i=1;i<=5;i++)
+    for(i=1;i<=4;i++)
         TestRngExp(25, 150, 100, i);
+
+    TestTime();
+}
+
+function TestTime()
+{
+    local DataStorage ds;
+    local int y,m,d,h,min,s;//old backup values;
+    local int time1, time2, i;
+    local bool didOverflow;
+
+    y=Level.Year;
+    m=Level.Month;
+    d=Level.Day;
+    h=Level.Hour;
+    min=Level.Minute;
+    s=Level.Second;
+    ds = Spawn(class'DataStorage');
+
+    Level.Year=1723;
+    Level.Month=2;
+    Level.Day=6;
+    Level.Hour=12;
+    Level.Minute=0;
+    Level.Second=0;
+    time1 = ds.SystemTime();
+    Level.Day = 7;
+    time2 = ds.SystemTime();
+
+    testint(time2-time1, 86400, "1723-02-06 vs 1723-02-07");
+    Level.Month = 3;
+    time2 = ds.SystemTime();
+    testint(time2-time1, 86400*29, "1723-02-06 vs 1723-03-07");
+    Level.Hour = 0;
+    time2 = ds.SystemTime();
+    testint(time2-time1, 86400*28 + 3600*12, "1723-02-06 noon vs 1723-03-07 midnight");
+
+    Level.Year=2020;
+    Level.Month=2;
+    Level.Day=6;
+    time1 = ds.SystemTime();
+    Level.Month=3;
+    time2 = ds.SystemTime();
+    testint(time2-time1, 86400*29, "leap year 2020-02-06 vs 2020-03-06");
+
+    for(i=2030; i<=2040; i++) {
+        //test int overflows, I fully expect people to still be playing this in the year 2040, so we gotta make sure it works
+        Level.Year=i;
+        Level.Month=6;
+        Level.Day=23;
+        time1 = ds.SystemTime();
+        Level.Day=24;
+        time2 = ds.SystemTime();
+        testint(time2-time1, 86400, "int overflow, "$i$"-06-23 vs "$i$"-06-24");
+
+        Level.Day=27;
+        time2 = ds.SystemTime();
+        testint(time2-time1, 4*86400, "int overflow, "$i$"-06-23 vs "$i$"-06-27");
+
+        Level.Month=7;
+        Level.Day=1;
+        time2 = ds.SystemTime();
+        testint(time2-time1, 8*86400, "int overflow, "$i$"-06-23 vs "$i$"-07-01");
+
+        Level.Year=i+1;
+        Level.Month=6;
+        Level.Day=23;
+        time2 = ds.SystemTime();
+        if( time2-time1 == 366*86400 )
+            testint(time2-time1, 366*86400, "int overflow, leap year "$i$"-06-23 vs "$(i+1)$"-06-23");
+        else
+            testint(time2-time1, 365*86400, "int overflow, non-leap year "$i$"-06-23 vs "$(i+1)$"-06-23");
+
+        if( time2 < time1 ) {
+            l("did overflow on year "$i$" to "$(i+1));
+            didOverflow=true;
+        }
+    }
+
+    test(didOverflow, "tested timestamp overflow");
+
+    Level.Year=y;
+    Level.Month=m;
+    Level.Day=d;
+    Level.Hour=h;
+    Level.Minute=min;
+    Level.Second=s;
+    ds.Destroy();
 }
 
 function TestRngExp(int minrange, int maxrange, int mid, float curve)

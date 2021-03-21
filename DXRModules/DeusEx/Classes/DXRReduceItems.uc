@@ -212,7 +212,8 @@ function SetMaxAmmo(class<Ammo> type, int percent)
     local Ammo a;
     foreach AllActors(class'Ammo', a) {
         if( ! a.IsA(type.name) ) continue;
-        a.MaxAmmo = a.default.MaxAmmo * percent / 100;
+        a.MaxAmmo = a.default.MaxAmmo * percent / 100 / 3;
+        if( a.AmmoAmount > a.MaxAmmo ) a.AmmoAmount = a.MaxAmmo;
     }
 }
 

@@ -176,7 +176,7 @@ function bool IsConnectionValid(int missionNum, MapTransfer a, MapTransfer b)
             return false;
         }
     }
-    
+
     return True;
 }
 
@@ -413,15 +413,16 @@ function GenerateConnections(int missionNum)
     local int attempts;
     local bool isValid;
     isValid = False;
+
     for(attempts=0; attempts<200; attempts++)
     {
         _GenerateConnections(missionNum);
         if(ValidateConnections()) {
-            if( attempts > 50 ) warning("GenerateConnections("$missionNum$") succeeded but took "$attempts$" attempts!");
+            if( attempts > 20 ) warning("GenerateConnections("$missionNum$") succeeded but took "$attempts$" attempts! seed: "$dxr.seed);
             return;
         }
     }
-    err("GenerateConnections("$missionNum$") failed after "$attempts$" attempts!");
+    err("GenerateConnections("$missionNum$") failed after "$attempts$" attempts! seed: "$dxr.seed);
 }
 
 function _GenerateConnections(int missionNum)
@@ -429,7 +430,7 @@ function _GenerateConnections(int missionNum)
     local int xfersUsed;
     local int connsMade;
     local int nextAvailIdx;
-    local int destOffset;
+    local int xferOffset;
     local int destIdx;
     local int maxAttempts;
     local int i;
@@ -450,7 +451,8 @@ function _GenerateConnections(int missionNum)
 
     while (xfersUsed < numXfers)
     {
-        nextAvailIdx = GetNextTransferIdx();
+        xferOffset = rng(numXfers-xfersUsed);
+        nextAvailIdx = GetUnusedTransferByOffset(xferOffset);
         conns[connsMade].a = xfers[nextAvailIdx];
     
         xfers[nextAvailIdx].used = True;
@@ -459,8 +461,8 @@ function _GenerateConnections(int missionNum)
         //Get a random unused transfer
         for (i=0;i<maxAttempts;i++)
         {
-            destOffset = rng(numXfers-xfersUsed);
-            destIdx = GetUnusedTransferByOffset(destOffset);
+            xferOffset = rng(numXfers-xfersUsed);
+            destIdx = GetUnusedTransferByOffset(xferOffset);
         
             if (IsConnectionValid(missionNum,xfers[nextAvailIdx],xfers[destIdx]))
             {
@@ -640,13 +642,14 @@ function RandoMission12()
     AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");
     AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");
 
-    if( dxr.localURL == "12_VANDENBERG_CMD" ) {
+    //make sure the tests don't adjust these doors
+    if( dxr.flags.gamemode == 1 && dxr.localURL == "12_VANDENBERG_CMD" ) {
         foreach AllActors(class'DeusExMover', d) {
             switch(d.Tag) {
                 case 'door_controlroom':
                 case 'security_tunnels':
-                    class'DXRKeys'.static.MakePickable(d);
-                    class'DXRKeys'.static.MakeDestructible(d);
+                    class'DXRKeys'.static.StaticMakePickable(d);
+                    class'DXRKeys'.static.StaticMakeDestructible(d);
                     break;
             }
         }
@@ -830,8 +833,7 @@ function RunTests()
     BasicTests();
     OneWayTests();
 
-    for(i=0; i <= 100; i++) {
-        dxr.SetSeed( 123 + i + dxr.Crc("entrancerando") );
+    for(i=0; i <= 50; i++) {
         EntranceRando(i);
         if( numXfers > 0 && numConns > 0 ) {
             LogConnections();
@@ -934,7 +936,7 @@ function BasicTests()
     dxr.SetSeed( 123 + dxr.Crc("entrancerando") );
     GenerateConnections(3);
     //LogConnections();
-    testbool(ValidateConnections(), true, "GenerateConnections validation");
+    testbool(ValidateConnections(), true, "simple GenerateConnections validation");
 
     dead_ends[0] = old_dead_end;
 }

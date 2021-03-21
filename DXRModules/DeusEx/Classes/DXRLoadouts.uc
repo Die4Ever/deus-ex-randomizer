@@ -409,7 +409,7 @@ function _RandoStartingEquipment(DeusExPlayer player, DXREnemies dxre)
     local class<Inventory> iclass;
 
     if(dxre != None) {
-        dxre.GiveRandomWeapon(player);
+        dxre.GiveRandomWeapon(player, true, 1);
         dxre.GiveRandomMeleeWeapon(player);
     }
 

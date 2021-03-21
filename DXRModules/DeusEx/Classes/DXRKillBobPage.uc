@@ -23,9 +23,8 @@ function FirstEntry()
     local int i ,slot, num;
     local string map;
 
-    Super.FirstEntry();
-
     if( dxr.flags.gamemode != 3 ) return;
+    Super.FirstEntry();
 
     dxr.SetSeed( dxr.seed + dxr.Crc(Class.Name) );
 
@@ -58,9 +57,8 @@ function FirstEntry()
 
 function AnyEntry()
 {
-    Super.AnyEntry();
-
     if( dxr.flags.gamemode != 3 ) return;
+    Super.AnyEntry();
     
     switch(dxr.dxInfo.missionNumber) {
         case 1:

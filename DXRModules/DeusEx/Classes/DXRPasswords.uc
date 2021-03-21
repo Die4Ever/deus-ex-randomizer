@@ -301,7 +301,8 @@ function RandoInfoDevs(int percent)
         }
         slot--;
         l("swapping infodevice "$ActorToString(id)$" with "$temp[slot]);
-        Swap(id, temp[slot]);
+        // Swap argument A is more lenient with collision than argument B
+        Swap(temp[slot], id);
     }
 }
 

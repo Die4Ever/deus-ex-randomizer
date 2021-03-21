@@ -4,6 +4,13 @@ var DXRando dxr;
 var DXRLoadouts loadout;
 var bool bOnLadder;
 
+function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
+{
+    Super.ClientMessage(msg, type, bBeep);
+    if( dxr == None ) foreach AllActors(class'DXRando', dxr) { break; }
+    class'DXRTelemetry'.static.SendLog(dxr, self, "INFO", msg);
+}
+
 function DXRBase DXRFindModule(class<DXRBase> class)
 {
     local DXRBase m;
@@ -30,7 +37,7 @@ function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, o
     if (info != None) {
         newNote.mission = info.MissionNumber;
         newNote.level_name = Caps(info.mapName);
-        log("ERROR: new note mission: "$newNote.mission$", level name: "$newNote.level_name);
+        log("AddNote: new note mission: "$newNote.mission$", level name: "$newNote.level_name);
     }
     return newNote;
 }

@@ -171,6 +171,9 @@ function RandoEnter()
     local int i;
     local bool firstTime;
     local name flagName;
+    local bool IsTravel;
+
+    IsTravel = flags.f.GetBool('PlayerTraveling');
 
     flagName = Player.rootWindow.StringToName("M"$localURL$"_Randomized");
     if (!flags.f.GetBool(flagName))
@@ -179,10 +182,11 @@ function RandoEnter()
         flags.f.SetBool(flagName, True,, 999);
     }
 
-    info("RandoEnter() firstTime: "$firstTime);
+    info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel);
 
     if ( firstTime == true )
     {
+        //if( !IsTravel ) warning(localURL$": loaded save but FirstEntry? firstTime: "$firstTime$", IsTravel: "$IsTravel);
         SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL) );
 
         info("randomizing "$localURL$" using seed " $ seed);
@@ -196,7 +200,7 @@ function RandoEnter()
     else
     {
         for(i=0; i<num_modules; i++) {
-            modules[i].ReEntry();
+            modules[i].ReEntry(IsTravel);
         }
     }
 

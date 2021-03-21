@@ -155,16 +155,20 @@ static function bool IsMeleeWeapon(Inventory item)
         || item.IsA('WeaponNanoSword');
 }
 
-static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional bool add_ammo)
+static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int add_ammo)
 {
     local inventory anItem;
     local DeusExPlayer player;
     local DeusExWeapon w;
+    local int i;
 
+    player = DeusExPlayer(p);
     if( class<Ammo>(iclass) != None ) {
         anItem = p.FindInventoryType(iclass);
         if( anItem != None ) {
             Ammo(anItem).AmmoAmount += Class<Ammo>(iclass).default.AmmoAmount;
+            if( player != None )
+                player.UpdateAmmoBeltText(Ammo(anItem));
             return anItem;
         }
     }
@@ -173,7 +177,6 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional boo
     if( anItem == None ) return None;
     anItem.InitialState='Idle2';
     anItem.SetLocation(p.Location);
-    player = DeusExPlayer(p);
     if( player != None ) {
         player.FrobTarget = anItem;
         player.ParseRightClick();
@@ -183,13 +186,16 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional boo
     }
 
     w = DeusExWeapon(anItem);
-    if( add_ammo && w != None ) {
-        if ((w.AmmoType == None) && (w.AmmoName != None) &&
-            (w.AmmoName != Class'AmmoNone'))
+    if( add_ammo > 0 && w != None ) {
+        if ( (w.AmmoName != None) && (w.AmmoName != Class'AmmoNone') )
         {
-            w.AmmoType = DeusExAmmo(GiveItem(p, w.AmmoName));
+            for(i=0; i<add_ammo; i++)
+                w.AmmoType = DeusExAmmo(GiveItem(p, w.AmmoName));
         }
     }
+
+    if( player != None )
+        player.UpdateBeltText(anItem);
 
     return anItem;
 }

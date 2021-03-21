@@ -1,5 +1,7 @@
 class ActorDisplayWindow injects ActorDisplayWindow;
 
+var Font textfont;
+
 //I just want to change the font :(
 function DrawWindow(GC gc)
 {
@@ -388,7 +390,7 @@ function DrawWindow(GC gc)
 			if (str != "")
 			{
 				gc.SetAlignments(HALIGN_Center, VALIGN_Top);
-				gc.SetFont(Font'FontFixedWidthSmall');
+				gc.SetFont(textfont);
 				//gc.SetTextColorRGB(visibility*255, visibility*255, visibility*255);
 				gc.SetTextColorRGB(0, 255, 0);
 				gc.DrawText(leftX-50, bottomY+barOffset+5, 100+rightX-leftX, 280, str);
@@ -396,8 +398,13 @@ function DrawWindow(GC gc)
 
 			gc.SetTextColor(mainColor);
 			gc.SetAlignments(HALIGN_Center, VALIGN_Bottom);
-			gc.SetFont(Font'FontFixedWidthSmall');
+			gc.SetFont(textfont);
 			gc.DrawText(leftX-50, topY-140, 100+rightX-leftX, 135, GetPlayerPawn().GetItemName(String(trackActor)));
 		}
 	}
+}
+
+defaultproperties
+{
+	textfont=Font'DeusExUI.FontFixedWidthSmall';
 }
