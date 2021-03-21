@@ -318,7 +318,7 @@ function InitOnEnter() {
     dxr.Player.bWarrenEMPField = isTimerActive('cc_EmpTimer');
 
     if (isTimerActive('cc_SpeedTimer')) {
-        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * dxr.Player.FlagBase.GetInt('cc_moveSpeedModifier');        
+        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * retrieveFloatValue('cc_moveSpeedModifier');        
     } else {
         dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;        
     }
@@ -338,11 +338,11 @@ function InitOnEnter() {
     
     dxr.Player.bBehindView=isTimerActive('cc_behindTimer');
     
-    if (0==dxr.Player.FlagBase.GetFloat('cc_damageMult')) {
-        dxr.Player.FlagBase.SetFloat('cc_damageMult',1.0);
+    if (0==retrieveFloatValue('cc_damageMult')) {
+        storeFloatValue('cc_damageMult',1.0);
     }
     if (!isTimerActive('cc_DifficultyTimer')) {
-        dxr.Player.FlagBase.SetFloat('cc_damageMult',1.0);
+        storeFloatValue('cc_damageMult',1.0);
     }
     
     if (isTimerActive('cc_invertMouseTimer')) {
@@ -396,6 +396,19 @@ function StopMatrixMode(optional bool silent) {
 
 }
 
+
+function float retrieveFloatValue(name valName) {
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr.Player);
+    return float(datastorage.GetConfigKey(valName));
+}
+
+function storeFloatValue(name valName, float val) {
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr.Player);
+    datastorage.SetConfig(valName, val, 3600*12);
+
+}
+
+
 function int getDefaultTimerTimeByName(name timerName) {
     switch(timerName) {
         case 'cc_MatrixModeTimer':
@@ -429,6 +442,53 @@ function int getDefaultTimerTimeByName(name timerName) {
     }
 }
 
+function string getTimerLabelByName(name timerName) {
+    local float val;
+    
+    switch(timerName) {
+        case 'cc_MatrixModeTimer':
+            return "Matrix";
+        case 'cc_EmpTimer':
+            return "EMP Field";
+        case 'cc_JumpTimer':
+            return "No Jump";
+        case 'cc_SpeedTimer':
+            val = retrieveFloatValue('cc_moveSpeedModifier');
+            if (val == MoveSpeedMultiplier) {
+                return "Speed";
+            } else if (val == MoveSpeedDivisor) {
+                return "Slow";
+            }
+            return "??? Speed";
+        case 'cc_lamthrowerTimer':
+            return "LAMThrower";
+        case 'cc_iceTimer':
+            return "Ice Phys";
+        case 'cc_behindTimer':
+            return "3rd Pers";
+        case 'cc_DifficultyTimer':
+            val = retrieveFloatValue('cc_damageMult');
+            if (val == 2.0) {
+                return "2x Dmg";
+            } else if (val == 0.5) {
+                return "1/2 Dmg";            
+            }
+            return "??? Damage";
+        case 'cc_floatyTimer':
+            return "Float";
+        case 'cc_floorLavaTimer':
+            return "Lava";
+        case 'cc_invertMouseTimer':
+            return "Inv Mouse";
+        case 'cc_invertMovementTimer':
+            return "Inv Move";
+        
+        default:
+            PlayerMessage("Unknown timer name "$timerName);
+            return "???";
+    }
+}
+
 function removeTimerDisplay(DXRandoCrowdControlTimer tDisplay) {
     local int i;
     
@@ -454,7 +514,7 @@ function addTimerDisplay(name timerName, int time) {
     //PlayerMessage("Adding display");
     
     timer = Spawn(class'DXRandoCrowdControlTimer', dxr.Player,,dxr.Player.Location);
-    timer.initTimer(self,timerName,time);
+    timer.initTimer(self,timerName,time,getTimerLabelByName(timerName));
     timer.Activate();
     
     //Find a spot to keep track of the timer
@@ -569,7 +629,7 @@ function Timer() {
     }
 
     if (isTimerActive('cc_SpeedTimer')) {
-        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * dxr.Player.FlagBase.GetInt('cc_moveSpeedModifier');        
+        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * retrieveFloatValue('cc_moveSpeedModifier');        
     }
     if (decrementTimer('cc_SpeedTimer')) {
         dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;
@@ -593,7 +653,7 @@ function Timer() {
     }
     
     if (decrementTimer('cc_DifficultyTimer')){
-        dxr.Player.FlagBase.SetFloat('cc_damageMult',1.0);        
+        storeFloatValue('cc_damageMult',1.0);        
         PlayerMessage("Your body returns to its normal toughness");
     }
     
@@ -1081,7 +1141,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
                 return TempFail;
             }
-            dxr.Player.FlagBase.SetInt('cc_moveSpeedModifier',MoveSpeedMultiplier);
+            storeFloatValue('cc_moveSpeedModifier',MoveSpeedMultiplier);
             dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedMultiplier;
             startNewTimer('cc_SpeedTimer');
             PlayerMessage(viewer@"made you fast like Sonic!");
@@ -1091,7 +1151,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
                 return TempFail;
             }
-            dxr.Player.FlagBase.SetInt('cc_moveSpeedModifier',MoveSpeedDivisor);
+            storeFloatValue('cc_moveSpeedModifier',MoveSpeedDivisor);
             dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedDivisor;
             startNewTimer('cc_SpeedTimer');
             PlayerMessage(viewer@"made you slow like a snail!");
@@ -1188,7 +1248,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_DifficultyTimer')) {
                 return TempFail;
             }
-            dxr.Player.FlagBase.SetFloat('cc_damageMult',2.0);
+            storeFloatValue('cc_damageMult',2.0);
            
             PlayerMessage(viewer@"made your body extra squishy");
             startNewTimer('cc_DifficultyTimer');
@@ -1197,7 +1257,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_DifficultyTimer')) {
                 return TempFail;
             }
-            dxr.Player.FlagBase.SetFloat('cc_damageMult',0.5);
+            storeFloatValue('cc_damageMult',0.5);
             PlayerMessage(viewer@"made your body extra tough!");
             startNewTimer('cc_DifficultyTimer');
             break;

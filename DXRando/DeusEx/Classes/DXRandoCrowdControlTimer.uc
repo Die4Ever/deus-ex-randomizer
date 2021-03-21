@@ -6,19 +6,27 @@ class DXRandoCrowdControlTimer extends ChargedPickup;
 var DXRandoCrowdControlLink link;
 var name timerName;
 var int defTime;
+var string timerLabel;
 
-function initTimer( DXRandoCrowdControlLink ccLink, name tName, int defaultTime )
+function initTimer( DXRandoCrowdControlLink ccLink, name tName, int defaultTime, string label )
 {
 
     link = ccLink;
     timerName = tName;
     defTime = defaultTime;
+    timerLabel = label;
+    
     SetPhysics(PHYS_None);
     SetCollision(False,False,False);
     bHidden = True;
     
     
 
+}
+
+function string GetTimerLabel()
+{
+    return timerLabel;
 }
 
 function name GetTimerName()
