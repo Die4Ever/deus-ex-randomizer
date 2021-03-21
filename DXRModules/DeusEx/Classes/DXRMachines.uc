@@ -410,7 +410,7 @@ function Actor SpawnNewActor(class<Actor> c, optional vector target, optional fl
 
 function ExtendedTests()
 {
-    local Actor a;
+    local PathNode a;
     Super.ExtendedTests();
 
     teststring( dxr.localURL, "12_VANDENBERG_TUNNELS", "correct map for extended tests");
@@ -418,7 +418,7 @@ function ExtendedTests()
     TestCameraPlacement( vect(900.931396, 1316.819946, -2347.568359), false, 160, -4000, 24575 );
     TestCameraPlacement( vect(-1090.995483, 2757.317871, -2550.324463), false );
 
-    foreach AllActors(class'Actor', a) {
+    foreach AllActors(class'PathNode', a) {
         log("testing camera positioning with "$a);
         TestCameraPlacement( a.Location, true );
     }
@@ -433,11 +433,11 @@ function TestCameraPlacement(vector from, bool none_ok, optional float max_dist,
 
     success = GetCameraLocation(loc, rotation);
     if( none_ok && !success ) return;
-    test( success, "GetCameraLocation "$from);
+    else test( success, "GetCameraLocation "$from);
     if( ! success )
         return;
 
-    l("GetCameraLocation got ("$loc$"), ("$rotation$")");
+    //l("GetCameraLocation got ("$loc$"), ("$rotation$")");
     if( max_dist>0 || expected_pitch != 0 || expected_yaw != 0 ) {
         _TestCameraPlacement(from, loc, rotation, max_dist, expected_pitch, expected_yaw);
     }

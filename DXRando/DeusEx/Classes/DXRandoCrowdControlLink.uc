@@ -7,6 +7,7 @@ var string crowd_control_addr;
 
 var DXRCrowdControl ccModule;
 
+var DataStorage datastorage;
 var transient DXRando dxr;
 var int ListenPort;
 var IpAddr addr;
@@ -58,14 +59,14 @@ struct ZoneFriction
     var name zonename;
     var float friction;
 };
-var transient ZoneFriction zone_frictions[128];
+var ZoneFriction zone_frictions[32];
 
 struct ZoneGravity
 {
     var name zonename;
     var vector gravity;
 };
-var transient ZoneGravity zone_gravities[128];
+var ZoneGravity zone_gravities[32];
 
 //JSON parsing states
 const KeyState = 1;
@@ -394,24 +395,29 @@ function StopMatrixMode(optional bool silent) {
 }
 
 function int getTimer(name timerName) {
-    return dxr.Player.FlagBase.GetInt(timerName);
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr.Player);
+    return int(datastorage.GetConfigKey(timerName));
+}
+
+function setTimerFlag(name timerName, int time) {
+    local int expiration;
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr.Player);
+    if( time == 0 ) expiration = 1;
+    else expiration = 3600*12;
+    datastorage.SetConfig(timerName, time, expiration);
 }
 
 function bool isTimerActive(name timerName) {
-    return (dxr.Player.FlagBase.GetInt(timerName) > 0);
-}
-
-function setTimerFlag(name timerName,int time) {
-    dxr.Player.FlagBase.SetInt(timerName,time);
+    return (getTimer(timerName) > 0);
 }
 
 //Timers only decrement while playing
 function bool decrementTimer(name timerName) {
     local int time;
-    time = dxr.Player.FlagBase.GetInt(timerName);
+    time = getTimer(timerName);
     if (time>0 && InGame()) {
         time -= 1;
-        dxr.Player.FlagBase.SetInt(timerName,time);
+        setTimerFlag(timerName,time);
         
         return (time == 0);
     }
@@ -831,7 +837,7 @@ function SetFloatyPhysics(bool enabled) {
     ForEach AllActors(class'ZoneInfo', Z)
     {
         log("SetFloatyPhysics "$Z$" gravity: "$Z.ZoneGravity);
-        if (enabled) {
+        if (enabled && Z.ZoneGravity != FloatGrav ) {
             SaveDefaultZoneGravity(Z);
             Z.ZoneGravity = FloatGrav;
         }
@@ -872,7 +878,7 @@ function SetMoonPhysics(bool enabled) {
     ForEach AllActors(class'ZoneInfo', Z)
     {
         log("SetFloatyPhysics "$Z$" gravity: "$Z.ZoneGravity);
-        if (enabled) {
+        if (enabled && Z.ZoneGravity != MoonGrav ) {
             SaveDefaultZoneGravity(Z);
             Z.ZoneGravity = MoonGrav;
         }
@@ -885,7 +891,7 @@ function SetMoonPhysics(bool enabled) {
 function SetIcePhysics(bool enabled) {
     local ZoneInfo Z;
     ForEach AllActors(class'ZoneInfo', Z) {
-        if (enabled) {
+        if (enabled && Z.ZoneGroundFriction != IceFriction ) {
             SaveDefaultZoneFriction(Z);
             Z.ZoneGroundFriction = IceFriction;
         }
