@@ -258,6 +258,8 @@ def runAutomatedTests(out):
         calla([ out + '/System/ucc', 'server', 'ini=test.ini' ])
         if exists(out + '/System/DXRando.ini'):
             os.remove(out + '/System/DXRando.ini')
+        if exists(out + '/System/DXRDataStorage.ini'):
+            os.remove(out + '/System/DXRDataStorage.ini')
         print("")
         print("=====================================================")
         print("             Automated Tests Finished")
