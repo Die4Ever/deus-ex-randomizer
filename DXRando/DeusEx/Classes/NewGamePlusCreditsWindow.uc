@@ -32,7 +32,7 @@ function AddDXRCreditsGeneral()
     
     PrintLn();    
     PrintHeader("Discord Community");
-    PrintText("https://discord.gg/wM4rjbTMCm");
+    PrintText("https://discord.gg/daQVyAp2ds");
     
     PrintLn();    
     PrintLn();    

@@ -285,7 +285,7 @@ function IncHandledEffects()
     local int numEffects;
     
     numEffects = dxr.Player.FlagBase.GetInt('cc_numCCEffects');
-    dxr.Player.FlagBase.SetInt('cc_numCCEffects',numEffects+1);
+    dxr.Player.FlagBase.SetInt('cc_numCCEffects',numEffects+1,,999);
 }
 
 function AddDXRCredits(CreditsWindow cw) 
