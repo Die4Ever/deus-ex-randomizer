@@ -241,7 +241,7 @@ function InitStupidQuestions() {
     _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
     numStupidQuestions++;
 
-    _StupidQuestions[numStupidQuestions].Question = "Are Pop Tarts are a ravioli?";
+    _StupidQuestions[numStupidQuestions].Question = "Are Pop Tarts a ravioli?";
     _StupidQuestions[numStupidQuestions].numAnswers = 2;
     _StupidQuestions[numStupidQuestions].answers[0] = "No";
     _StupidQuestions[numStupidQuestions].answers[1] = "Yes";
@@ -279,6 +279,27 @@ function getRandomQuestion(out string question, out int numAnswers,
     ansTwo   = _StupidQuestions[curStupidQuestion].answers[1];
     ansThree = _StupidQuestions[curStupidQuestion].answers[2];
 }
+
+function IncHandledEffects()
+{
+    local int numEffects;
+    
+    numEffects = dxr.Player.FlagBase.GetInt('cc_numCCEffects');
+    dxr.Player.FlagBase.SetInt('cc_numCCEffects',numEffects+1);
+}
+
+function AddDXRCredits(CreditsWindow cw) 
+{
+    local int numEffects;
+    
+    numEffects = dxr.Player.FlagBase.GetInt('cc_numCCEffects');
+
+    if (numEffects>0) {
+        cw.PrintText("Number of Crowd Control Effects:"@numEffects);
+        cw.PrintLn();    
+    }
+}
+
 
 function RunTests()
 {

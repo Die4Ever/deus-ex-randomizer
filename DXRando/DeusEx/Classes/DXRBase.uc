@@ -289,6 +289,11 @@ function MessageBoxClicked(int button, int callbackId) {
     //OK = 2
 }
 
+function AddDXRCredits(CreditsWindow cw) 
+{
+}
+
+
 //consider this like debug or trace
 function l(string message)
 {

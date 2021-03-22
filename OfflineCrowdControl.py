@@ -132,12 +132,12 @@ def pickEffect():
     effects.append(("give_bioelectriccell",None))
     effects.append(("give_bioelectriccell",None))
     
-    effects.append(("give_skillpoints",[str(random.randint(100,1000))]))
-    effects.append(("give_skillpoints",[str(random.randint(100,1000))]))
-    effects.append(("give_skillpoints",[str(random.randint(100,1000))]))
+    effects.append(("give_skillpoints",[str(random.randint(1,10))]))
+    effects.append(("give_skillpoints",[str(random.randint(1,10))]))
+    effects.append(("give_skillpoints",[str(random.randint(1,10))]))
 
-    effects.append(("remove_skillpoints",[str(random.randint(100,1000))]))
-    effects.append(("remove_skillpoints",[str(random.randint(100,1000))]))
+    effects.append(("remove_skillpoints",[str(random.randint(1,10))]))
+    effects.append(("remove_skillpoints",[str(random.randint(1,10))]))
 
     effects.append(("disable_jump",None))
     effects.append(("disable_jump",None))
@@ -167,11 +167,11 @@ def pickEffect():
     effects.append(("dmg_half",None))
     effects.append(("dmg_half",None))
 
-    effects.append(("add_credits",[str(random.randint(100,1000))]))
-    effects.append(("add_credits",[str(random.randint(100,1000))]))
+    effects.append(("add_credits",[str(random.randint(1,10))]))
+    effects.append(("add_credits",[str(random.randint(1,10))]))
 
-    effects.append(("remove_credits",[str(random.randint(100,1000))]))
-    effects.append(("remove_credits",[str(random.randint(100,1000))]))
+    effects.append(("remove_credits",[str(random.randint(1,10))]))
+    effects.append(("remove_credits",[str(random.randint(1,10))]))
 
     effects.append(("lamthrower",None))
     effects.append(("lamthrower",None))

@@ -1673,6 +1673,10 @@ function handleMessage( string msg) {
         }
         result = doCrowdControlEvent(code,param,viewer,type);
         
+        if (result == Success) {
+            ccModule.IncHandledEffects();
+        }
+        
         sendReply(id,result);
         
     } else {
