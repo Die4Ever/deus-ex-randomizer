@@ -128,6 +128,26 @@ function string GetVariableKey(coerce string key, optional out int expiration)
     return "";
 }
 
+function int AddVariableKey(coerce string key, int add, optional out int expiration)
+{
+    local int i, value;
+    for( i=0; i < ArrayCount(var_data); i++) {
+        if( var_data[i].key == key ) {
+            if( IsData(var_data[i]) ) {
+                value = int(var_data[i].value) + add;
+                var_data[i].value = string(value);
+                if( expiration != 0 ) var_data[i].expiration = expiration + SystemTime();
+                if( var_data[i].expiration != 0 ) expiration = var_data[i].expiration - SystemTime();
+                return value;
+            }
+            else break;
+        }
+    }
+    if( ! SetVariable(key, string(add), expiration) ) return 0;
+    if( expiration != 0 ) expiration = expiration + SystemTime();
+    return add;
+}
+
 function string GetVariableIndex(int i, optional out string key)
 {
     if( IsData(var_data[i]) ) {
