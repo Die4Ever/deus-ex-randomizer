@@ -294,6 +294,14 @@ function LogFlags(string prefix)
     info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
 }
 
+function AddDXRCredits(CreditsWindow cw) 
+{
+    cw.PrintHeader("DXRFlags");
+    
+    cw.PrintText(VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id);
+    cw.PrintText(StringifyFlags());
+}
+
 function string StringifyFlags()
 {
     return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", loadout: "$loadout
@@ -353,6 +361,7 @@ function MaxRando()
 function NewGamePlus()
 {
     local DeusExPlayer p;
+    local DataStorage ds;
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
         LoadFlags();
@@ -361,6 +370,9 @@ function NewGamePlus()
 
     info("NewGamePlus()");
     seed++;
+    playthrough_id = class'DataStorage'.static._SystemTime(Level);
+    ds = class'DataStorage'.static.GetObj(dxr.player);
+    if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
     p.CombatDifficulty *= 1.2;
     minskill = minskill*1.2;// int *= float doesn't give as good accuracy as int = int*float
