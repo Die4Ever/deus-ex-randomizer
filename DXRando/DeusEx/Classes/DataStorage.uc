@@ -6,10 +6,10 @@ struct KVP {
     var int expiration;
 };
 
-var transient config KVP config_data[32];
-var travel KVP var_data[128];
+var transient config KVP config_data[1024];
+var travel int playthrough_id;
 
-function int SystemTime()
+static function int _SystemTime(LevelInfo Level)
 {
     local int time, m;
     time = Level.Second + (Level.Minute*60) + (Level.Hour*3600) + (Level.Day*86400);
@@ -53,22 +53,38 @@ function int SystemTime()
     return time;
 }
 
+function int SystemTime()
+{
+    return _SystemTime(Level);
+}
+
 function static DataStorage GetObj(DeusExPlayer p)
 {
     local DataStorage d;
+    local DXRFlags f;
     d = DataStorage(p.FindInventoryType(class'DataStorage'));
     if( d == None ) {
         d = p.Spawn(class'DataStorage');
         d.GiveTo(p);
         d.SetBase(p);
     }
+    if( d.playthrough_id == 0 ) {
+        foreach d.AllActors(class'DXRFlags', f) {
+            d.playthrough_id = f.playthrough_id;
+            break;
+        }
+    }
     return d;
 }
 
 function string GetConfigKey(coerce string key, optional out int expiration)
 {
-    local int i;
-    for( i=0; i < ArrayCount(config_data); i++) {
+    local int i, min, max;
+    min = 0;//(playthrough_id%256)*(ArrayCount(config_data)/256);
+    max = ArrayCount(config_data);//min + (ArrayCount(config_data)/256);
+
+    key = key@playthrough_id;
+    for( i=min; i < max; i++) {
         if( config_data[i].key == key ) {
             if( IsData(config_data[i]) ) {
                 if( config_data[i].expiration != 0 ) expiration = config_data[i].expiration - SystemTime();
@@ -91,7 +107,11 @@ function string GetConfigIndex(int i, optional out string key)
 
 function bool SetConfig(coerce string key, coerce string value, optional int expire_seconds)
 {
-    local int i;
+    local int i, min, max;
+    min = 0;//(playthrough_id%256)*(ArrayCount(config_data)/256);
+    max = ArrayCount(config_data);//min + (ArrayCount(config_data)/256);
+
+    key = key@playthrough_id;
     for( i=0; i < ArrayCount(config_data); i++) {
         if( config_data[i].key == key ) {
             if( SetKVP(config_data[i], key, value, expire_seconds) ) {
@@ -101,7 +121,7 @@ function bool SetConfig(coerce string key, coerce string value, optional int exp
             else return false;
         }
     }
-    for( i=0; i < ArrayCount(config_data); i++) {
+    for( i=min; i < max; i++) {
         if( ! IsData(config_data[i]) ) {
             if( SetKVP(config_data[i], key, value, expire_seconds) ) {
                 SaveConfig();
@@ -109,62 +129,6 @@ function bool SetConfig(coerce string key, coerce string value, optional int exp
             }
             else return false;
         }
-    }
-    return false;
-}
-
-function string GetVariableKey(coerce string key, optional out int expiration)
-{
-    local int i;
-    for( i=0; i < ArrayCount(var_data); i++) {
-        if( var_data[i].key == key ) {
-            if( IsData(var_data[i]) ) {
-                if( var_data[i].expiration != 0 ) expiration = var_data[i].expiration - SystemTime();
-                return var_data[i].value;
-            }
-            else return "";
-        }
-    }
-    return "";
-}
-
-function int AddVariableKey(coerce string key, int add, optional out int expiration)
-{
-    local int i, value;
-    for( i=0; i < ArrayCount(var_data); i++) {
-        if( var_data[i].key == key ) {
-            if( IsData(var_data[i]) ) {
-                value = int(var_data[i].value) + add;
-                var_data[i].value = string(value);
-                if( expiration != 0 ) var_data[i].expiration = expiration + SystemTime();
-                if( var_data[i].expiration != 0 ) expiration = var_data[i].expiration - SystemTime();
-                return value;
-            }
-            else break;
-        }
-    }
-    if( ! SetVariable(key, string(add), expiration) ) return 0;
-    if( expiration != 0 ) expiration = expiration + SystemTime();
-    return add;
-}
-
-function string GetVariableIndex(int i, optional out string key)
-{
-    if( IsData(var_data[i]) ) {
-        key = var_data[i].key;
-        return var_data[i].value;
-    }
-    return "";
-}
-
-function bool SetVariable(coerce string key, coerce string value, optional int expire_seconds)
-{
-    local int i;
-    for( i=0; i < ArrayCount(var_data); i++) {
-        if( var_data[i].key == key ) return SetKVP(var_data[i], key, value, expire_seconds);
-    }
-    for( i=0; i < ArrayCount(var_data); i++) {
-        if( ! IsData(var_data[i]) ) return SetKVP(var_data[i], key, value, expire_seconds);
     }
     return false;
 }
