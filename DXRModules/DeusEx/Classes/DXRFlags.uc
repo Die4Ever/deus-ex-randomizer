@@ -451,6 +451,7 @@ function ExtendedTests()
         TestRngExp(25, 150, 100, i);
 
     TestTime();
+    TestStorage();
 }
 
 function TestTime()
@@ -536,6 +537,22 @@ function TestTime()
     Level.Hour=h;
     Level.Minute=min;
     Level.Second=s;
+    ds.Destroy();
+}
+
+function TestStorage()
+{
+    local DataStorage ds;
+    local int i;
+    ds = Spawn(class'DataStorage');
+    for(i=0;i <3 ;i++) {
+        ds.SetConfig(i, i);
+        testint( int(ds.GetConfigKey(i)), i, "GetConfigKey("$i$")");
+    }
+    for(i=0;i<50;i++) {
+        ds.SetConfig("test"$i, i, 10);
+        testint( int(ds.GetConfigKey("test"$i)), i, "overlap hash GetConfigKey("$i$")");
+    }
     ds.Destroy();
 }
 

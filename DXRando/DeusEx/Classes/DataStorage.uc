@@ -53,7 +53,7 @@ static function int _SystemTime(LevelInfo Level)
     return time;
 }
 
-function int SystemTime()
+final function int SystemTime()
 {
     return _SystemTime(Level);
 }
@@ -77,11 +77,24 @@ function static DataStorage GetObj(DeusExPlayer p)
     return d;
 }
 
+final function GetRange(string key, out int min, out int max)
+{
+    local int hash, len, blocksize, num_blocks;
+    len = ArrayCount(config_data);
+    // case sensitive, and you want the first 2 letters to be unique so don't use a generic prefix
+    hash = playthrough_id + Asc(key)*73 + Asc(Mid(key, 1, 1));
+    blocksize = 16;
+    num_blocks = len / blocksize;
+    //the last block is reserved space because of the way we overlap
+    min = (hash%(num_blocks-1))*blocksize;
+    //length is doubled so that there's overlap across blocks
+    max = min + blocksize*2;
+}
+
 function string GetConfigKey(coerce string key, optional out int expiration)
 {
     local int i, min, max;
-    min = 0;//(playthrough_id%256)*(ArrayCount(config_data)/256);
-    max = ArrayCount(config_data);//min + (ArrayCount(config_data)/256);
+    GetRange(key, min, max);
 
     key = key@playthrough_id;
     for( i=min; i < max; i++) {
@@ -108,11 +121,10 @@ function string GetConfigIndex(int i, optional out string key)
 function bool SetConfig(coerce string key, coerce string value, optional int expire_seconds)
 {
     local int i, min, max;
-    min = 0;//(playthrough_id%256)*(ArrayCount(config_data)/256);
-    max = ArrayCount(config_data);//min + (ArrayCount(config_data)/256);
+    GetRange(key, min, max);
 
     key = key@playthrough_id;
-    for( i=0; i < ArrayCount(config_data); i++) {
+    for( i=min; i < max; i++) {
         if( config_data[i].key == key ) {
             if( SetKVP(config_data[i], key, value, expire_seconds) ) {
                 SaveConfig();
@@ -130,10 +142,20 @@ function bool SetConfig(coerce string key, coerce string value, optional int exp
             else return false;
         }
     }
+
+    //emergency!
+    for( i=min; i < max; i++) {
+        if( config_data[i].expiration != 0 ) {
+            if( SetKVP(config_data[i], key, value, expire_seconds) ) {
+                SaveConfig();
+                return true;
+            }
+        }
+    }
     return false;
 }
 
-function bool IsData(KVP data)
+final function bool IsData(KVP data)
 {
     // subtraction is more resistant to integer overflow than just doing a < operator
     if( data.expiration != 0 && data.expiration - SystemTime() < 0 ) return false;
@@ -142,7 +164,7 @@ function bool IsData(KVP data)
     return true;
 }
 
-function bool SetKVP(out KVP data, coerce string key, coerce string value, optional int expire_seconds)
+final function bool SetKVP(out KVP data, coerce string key, coerce string value, optional int expire_seconds)
 {
     data.key = key;
     data.value = value;

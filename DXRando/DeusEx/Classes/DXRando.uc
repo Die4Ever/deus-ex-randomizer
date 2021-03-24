@@ -2,6 +2,7 @@ class DXRando extends Info config(DXRando) transient;
 
 var transient DeusExPlayer Player;
 var transient DXRFlags flags;
+var transient DXRTelemetry telemetry;
 var transient DeusExLevelInfo dxInfo;
 var transient string localURL;
 

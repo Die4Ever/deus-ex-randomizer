@@ -8,6 +8,7 @@ import subprocess
 import os.path
 import shutil
 from pathlib import Path
+from timeit import default_timer as timer
 
 pp = pprint.PrettyPrinter(indent=4)
 parser = argparse.ArgumentParser(description='Deus Ex Injecting Compiler')
@@ -15,7 +16,11 @@ parser = argparse.ArgumentParser(description='Deus Ex Injecting Compiler')
 
 def calla(cmds):
     print("running "+repr(cmds))
-    return subprocess.Popen(cmds).wait(timeout=3600)
+    start = timer()
+    ret = subprocess.Popen(cmds).wait(timeout=3600)
+    elapsed_time = timer() - start # in seconds
+    print( repr(cmds) + " took " + str(elapsed_time) + " seconds and returned " + str(ret) )
+    return ret
 
 
 def insensitive_glob(pattern):
@@ -304,6 +309,8 @@ def runAutomatedTests(out):
                 elif "ERROR" in line:
                     warnings.append(line.strip())
                 elif "Accessed None" in line:
+                    warnings.append(line.strip())
+                elif "Accessed array out of bounds" in line:
                     warnings.append(line.strip())
 
             for module in modulesTested:
