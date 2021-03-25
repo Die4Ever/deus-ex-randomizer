@@ -300,6 +300,7 @@ function AddDXRCredits(CreditsWindow cw)
     
     cw.PrintText(VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id);
     cw.PrintText(StringifyFlags());
+    cw.PrintLn();
 }
 
 function string StringifyFlags()
@@ -350,7 +351,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 5) $ " Alpha";
+    return VersionToString(1, 5, 5) $ " Beta";
 }
 
 function MaxRando()

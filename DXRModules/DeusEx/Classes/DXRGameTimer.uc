@@ -1,7 +1,5 @@
 class DXRGameTimer extends DXRBase;
 
-var name NameConversion;
-
 function AnyEntry()
 {
     Super.AnyEntry();
@@ -34,6 +32,7 @@ function bool InGame() {
 function IncMissionTimer(int mission)
 {
     local string flagname;
+    local name flag;
     local int time;
     
     if (mission < 1) {
@@ -42,23 +41,22 @@ function IncMissionTimer(int mission)
     
     if (InGame()) {
         flagname = "DXRando_Mission"$mission$"_Timer";
-        SetPropertyText("NameConversion",flagname); //Kludge for logic simplification
-        time = dxr.Player.FlagBase.GetInt(NameConversion);
-        dxr.Player.FlagBase.SetInt(NameConversion,time+1,,999);
+        flag = dxr.Player.rootWindow.StringToName(flagname);
+        time = dxr.Player.FlagBase.GetInt(flag);
+        dxr.Player.FlagBase.SetInt(flag,time+1,,999);
     } else {
         flagname = "DXRando_Mission"$mission$"Menu_Timer";
-        SetPropertyText("NameConversion",flagname); //Kludge for logic simplification
-        time = dxr.Player.FlagBase.GetInt(NameConversion);
-        dxr.Player.FlagBase.SetInt(NameConversion,time+1,,999);
-    
+        flag = dxr.Player.rootWindow.StringToName(flagname);
+        time = dxr.Player.FlagBase.GetInt(flag);
+        dxr.Player.FlagBase.SetInt(flag,time+1,,999);
     }
-     
-    
+
 }
 
 function int GetMissionTime(int mission)
 {
     local string flagname;
+    local name flag;
     local int time;
     
     if (mission < 1) {
@@ -66,8 +64,8 @@ function int GetMissionTime(int mission)
     }
     
     flagname = "DXRando_Mission"$mission$"_Timer";
-    SetPropertyText("NameConversion",flagname); //Kludge for logic simplification
-    time = dxr.Player.FlagBase.GetInt(NameConversion);
+    flag = dxr.Player.rootWindow.StringToName(flagname);
+    time = dxr.Player.FlagBase.GetInt(flag);
     
     return time;
 }
@@ -75,6 +73,7 @@ function int GetMissionTime(int mission)
 function int GetMissionMenuTime(int mission)
 {
     local string flagname;
+    local name flag;
     local int time;
     
     if (mission < 1) {
@@ -82,8 +81,8 @@ function int GetMissionMenuTime(int mission)
     }
     
     flagname = "DXRando_Mission"$mission$"Menu_Timer";
-    SetPropertyText("NameConversion",flagname); //Kludge for logic simplification
-    time = dxr.Player.FlagBase.GetInt(NameConversion);
+    flag = dxr.Player.rootWindow.StringToName(flagname);
+    time = dxr.Player.FlagBase.GetInt(flag);
     
     return time;
 }
@@ -171,6 +170,7 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("14 - Ocean Lab:"@GetMissionTimeString(14));
     cw.PrintText("15 - Area 51:"@GetMissionTimeString(15));
     cw.PrintText("Total:"@GetTotalTimeString());
+    cw.PrintLn();
 
 }
 

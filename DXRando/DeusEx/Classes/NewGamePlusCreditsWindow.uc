@@ -48,7 +48,6 @@ function AddDXRandoCredits()
         mod.AddDXRCredits(Self);
     }
     
-    PrintLn();    
     PrintHeader("Original Developers");
     PrintLn();    
 
