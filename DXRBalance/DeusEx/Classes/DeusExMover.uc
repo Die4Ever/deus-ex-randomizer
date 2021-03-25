@@ -1,4 +1,4 @@
-class DeusExMover injects DeusExMover;
+class DeusExMover merges DeusExMover;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
