@@ -38,6 +38,7 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("Shots Fired: "$fired);
     cw.PrintText("Weapon Swings: "$swings);
     cw.PrintText("Jumps: "$jumps);
+    cw.PrintText("Nano Keys: "$dxr.player.KeyRing.GetKeyCount());
     
     cw.PrintLn();
 

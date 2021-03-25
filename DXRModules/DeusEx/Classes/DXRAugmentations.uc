@@ -75,9 +75,10 @@ function RandomizeAugCannisters()
 
 function static RandomizeAugCannister(DXRando dxr, AugmentationCannister a)
 {
+    local int attempts;
     a.AddAugs[0] = PickRandomAug(dxr);
     a.AddAugs[1] = a.AddAugs[0];
-    while( a.AddAugs[1] == a.AddAugs[0] )
+    for( attempts = 0; attempts<100 && a.AddAugs[1] == a.AddAugs[0]; attempts++ )
     {
         a.AddAugs[1] = PickRandomAug(dxr);
     }
