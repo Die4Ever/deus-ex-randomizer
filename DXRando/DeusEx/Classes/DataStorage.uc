@@ -6,8 +6,27 @@ struct KVP {
     var int expiration;
 };
 
-var transient config KVP config_data[128];
+var transient config KVP config_data[512];
+var transient bool config_dirty;
 var travel int playthrough_id;
+
+function PreTravel()
+{
+    Flush();
+}
+
+function Destroyed()
+{
+    Flush();
+}
+
+function Flush()
+{
+    if( config_dirty ) {
+        SaveConfig();
+        config_dirty = false;
+    }
+}
 
 static function int _SystemTime(LevelInfo Level)
 {
@@ -79,19 +98,16 @@ function static DataStorage GetObj(DeusExPlayer p)
 
 final function GetRange(string key, out int min, out int max)
 {
-    // smaller config file is more important than faster searching
-    min=0;
-    max = ArrayCount(config_data);
-    /*local int hash, len, blocksize, num_blocks;
+    local int hash, len, blocksize, num_blocks;
     len = ArrayCount(config_data);
     // case sensitive, and you want the first and last letters to be unique
     hash = playthrough_id + Asc(key)*73 + Asc(Mid(key, 1, 1));
-    blocksize = 16;
+    blocksize = 32;
     num_blocks = len / blocksize;
     //the last block is reserved space because of the way we overlap
     min = (hash%(num_blocks-1))*blocksize;
     //length is doubled so that there's overlap across blocks
-    max = min + blocksize*2;*/
+    max = min + blocksize*2;
 }
 
 function string GetConfigKey(coerce string key, optional out int expiration)
@@ -130,7 +146,7 @@ function bool SetConfig(coerce string key, coerce string value, optional int exp
     for( i=min; i < max; i++) {
         if( config_data[i].key == key ) {
             if( SetKVP(config_data[i], key, value, expire_seconds) ) {
-                SaveConfig();
+                config_dirty = true;
                 return true;
             }
             else return false;
@@ -139,7 +155,7 @@ function bool SetConfig(coerce string key, coerce string value, optional int exp
     for( i=min; i < max; i++) {
         if( ! IsData(config_data[i]) ) {
             if( SetKVP(config_data[i], key, value, expire_seconds) ) {
-                SaveConfig();
+                config_dirty = true;
                 return true;
             }
             else return false;
@@ -150,7 +166,7 @@ function bool SetConfig(coerce string key, coerce string value, optional int exp
     for( i=min; i < max; i++) {
         if( config_data[i].expiration != 0 ) {
             if( SetKVP(config_data[i], key, value, expire_seconds) ) {
-                SaveConfig();
+                config_dirty = true;
                 return true;
             }
             else return false;
