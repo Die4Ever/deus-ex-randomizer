@@ -1,5 +1,11 @@
 class MissionEndgame injects MissionEndgame;
 
+function PostPostBeginPlay()
+{
+    savedSoundVolume = SoundVolume;
+    Super.PostPostBeginPlay();
+}
+
 // ----------------------------------------------------------------------
 // InitStateMachine()
 // ----------------------------------------------------------------------
