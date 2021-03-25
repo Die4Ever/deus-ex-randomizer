@@ -315,3 +315,52 @@ event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
     else
         bOnLadder = False;
 }
+
+exec function CrowdControlAnon()
+{
+    local DXRCrowdControl cc;
+    local DXRFlags f;
+
+    foreach AllActors(class'DXRCrowdControl',cc)
+    {
+        cc.link.anon = True;
+    }
+    foreach AllActors(class'DXRFlags',f)
+    {
+        f.crowdcontrol = 2;
+        f.f.SetInt('Rando_crowdcontrol',2,,999);
+    }
+
+    ClientMessage("Now hiding Crowd Control names");
+
+}
+
+exec function CrowdControlNames()
+{
+    local DXRCrowdControl cc;
+    local DXRFlags f;
+    
+    foreach AllActors(class'DXRCrowdControl',cc)
+    {
+        cc.link.anon = False;
+    }
+    foreach AllActors(class'DXRFlags',f)
+    {
+        f.crowdcontrol = 1;
+        f.f.SetInt('Rando_crowdcontrol',1,,999);
+    }
+    ClientMessage("Now showing Crowd Control names");
+}
+
+exec function CheatsOn()
+{
+    bCheatsEnabled = true;
+    ClientMessage("Cheats Enabled");
+}
+
+exec function CheatsOff()
+{
+    bCheatsEnabled = false;
+    ClientMessage("Cheats Disabled");
+
+}
