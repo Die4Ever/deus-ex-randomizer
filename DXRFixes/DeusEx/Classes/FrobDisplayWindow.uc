@@ -1,6 +1,8 @@
 class FrobDisplayWindow injects FrobDisplayWindow;
 
 var localized string msgDamageThreshold;
+var localized string msgShot;
+var localized string msgShots;
 
 function DrawWindow(GC gc)
 {
@@ -283,7 +285,10 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     local DeusExMover dxMover;
     local string strInfo;
     local color col;
-    local int numTools, numLines;
+    local int numTools, numLines, numShots;
+    local float damage;
+    local name damageType;
+    local DeusExWeapon w;
 
     numLines = 4;
 
@@ -310,7 +315,25 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
             strInfo = numTools @ msgPicks;
     }
 
-    gc.DrawText(infoX+(infoW-barLength-2), infoY+4+(infoH-8)/numLines, barLength, ((infoH-8)/numLines)-2, strInfo);
+    if ((dxMover != None) && dxMover.bLocked && dxMover.bBreakable)
+    {
+        w = DeusExWeapon(player.inHand);
+        if( w != None ) {
+            damageType = w.WeaponDamageType();
+            damage = dxMover.CalcDamage(w.GetDamage(), damageType) * w.GetNumHits();
+            if( damage > 0 ) {
+                numshots = int((dxMover.doorStrength / damage) + 0.99);
+                if( numshots == 1 )
+                    strInfo = strInfo $ CR() $ numshots @ msgShot;
+                else
+                    strInfo = strInfo $ CR() $ numshots @ msgShots;
+            } else {
+                strInfo = strInfo $ CR() $ msgInf @ msgShots;
+            }
+        }
+    }
+
+    gc.DrawText(infoX+(infoW-barLength-2), infoY+4+(infoH-8)/numLines, barLength, ((infoH-8)/numLines)*2-2, strInfo);
 }
 
 function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY, float infoW, float infoH)
@@ -345,4 +368,6 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
 defaultproperties
 {
     msgDamageThreshold="Dmg Thresh:"
+    msgShot="shot"
+    msgShots="shots"
 }
