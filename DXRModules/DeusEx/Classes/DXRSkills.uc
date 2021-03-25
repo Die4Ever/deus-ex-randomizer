@@ -18,22 +18,17 @@ var config float skill_cost_curve;
 function CheckConfig()
 {
     local int i;
-    if( config_version < 4 ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,5) ) {
         for(i=0; i < ArrayCount(SkillCostMultipliers); i++) {
             SkillCostMultipliers[i].type = "";
             SkillCostMultipliers[i].percent = 100;
             SkillCostMultipliers[i].minLevel = 1;
             SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
         }
-    }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
-        min_skill_str = 0.5;
-        max_skill_str = 1.5;
-    }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
-        skill_cost_curve = 2;
-    }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,3) ) {
+        min_skill_str = default.min_skill_str;
+        max_skill_str = default.max_skill_str;
+        skill_cost_curve = default.skill_cost_curve;
+        
         i=0;
         SkillCostMultipliers[i].type = "SkillDemolition";
         SkillCostMultipliers[i].percent = 80;
@@ -201,4 +196,7 @@ defaultproperties
 {
     banned_skill_chances=5
     banned_skill_level_chances=5
+    min_skill_str=0.5
+    max_skill_str=1.5
+    skill_cost_curve=2
 }

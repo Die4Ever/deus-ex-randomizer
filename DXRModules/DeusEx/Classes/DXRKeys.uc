@@ -147,12 +147,12 @@ function CheckConfig()
         door_fixes[i].tag = 'chamber6';
         i++;
 
-        min_lock_adjust = 0.5;
-        max_lock_adjust = 1.5;
-        min_door_adjust = 0.5;
-        max_door_adjust = 1.5;
-        min_mindmg_adjust = 0.35;
-        max_mindmg_adjust = 1.2;
+        min_lock_adjust = default.min_lock_adjust;
+        max_lock_adjust = default.max_lock_adjust;
+        min_door_adjust = default.min_door_adjust;
+        max_door_adjust = default.max_door_adjust;
+        min_mindmg_adjust = default.min_mindmg_adjust;
+        max_mindmg_adjust = default.max_mindmg_adjust;
     }
     for(i=0; i<ArrayCount(keys_rules); i++) {
         keys_rules[i].map = Caps(keys_rules[i].map);
@@ -522,3 +522,12 @@ function RunTests()
     testbool( _PositionIsSafeOctant(vect(1237.800659,112.333527,-1625.307007), vect(1880.000000,552.000000,-1544.000000), vect(-2620.478516,-19.642990,-1795.483643)), true, "OceanLab test" );
 }
 
+defaultproperties
+{
+    min_lock_adjust=0.5
+    max_lock_adjust=1.5
+    min_door_adjust=0.5
+    max_door_adjust=1.5
+    min_mindmg_adjust=0.35
+    max_mindmg_adjust=1.2
+}
