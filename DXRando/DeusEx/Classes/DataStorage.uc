@@ -6,7 +6,7 @@ struct KVP {
     var int expiration;
 };
 
-var transient config KVP config_data[1024];
+var transient config KVP config_data[128];
 var travel int playthrough_id;
 
 static function int _SystemTime(LevelInfo Level)
@@ -79,16 +79,19 @@ function static DataStorage GetObj(DeusExPlayer p)
 
 final function GetRange(string key, out int min, out int max)
 {
-    local int hash, len, blocksize, num_blocks;
+    // smaller config file is more important than faster searching
+    min=0;
+    max = ArrayCount(config_data);
+    /*local int hash, len, blocksize, num_blocks;
     len = ArrayCount(config_data);
-    // case sensitive, and you want the first 2 letters to be unique so don't use a generic prefix
+    // case sensitive, and you want the first and last letters to be unique
     hash = playthrough_id + Asc(key)*73 + Asc(Mid(key, 1, 1));
     blocksize = 16;
     num_blocks = len / blocksize;
     //the last block is reserved space because of the way we overlap
     min = (hash%(num_blocks-1))*blocksize;
     //length is doubled so that there's overlap across blocks
-    max = min + blocksize*2;
+    max = min + blocksize*2;*/
 }
 
 function string GetConfigKey(coerce string key, optional out int expiration)
@@ -150,6 +153,7 @@ function bool SetConfig(coerce string key, coerce string value, optional int exp
                 SaveConfig();
                 return true;
             }
+            else return false;
         }
     }
     return false;

@@ -550,10 +550,6 @@ function TestStorage()
         ds.SetConfig(i, i);
         testint( int(ds.GetConfigKey(i)), i, "GetConfigKey("$i$")");
     }
-    for(i=0;i<50;i++) {
-        ds.SetConfig("test"$i, i, 10);
-        testint( int(ds.GetConfigKey("test"$i)), i, "overlap hash GetConfigKey("$i$")");
-    }
     ds.Destroy();
 }
 

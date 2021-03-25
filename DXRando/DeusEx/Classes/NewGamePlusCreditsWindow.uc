@@ -55,8 +55,8 @@ function AddDXRandoCredits()
 
 function ProcessText()
 {
-	PrintPicture(CreditsBannerTextures, 2, 1, 505, 75);
-	PrintLn();
+    PrintPicture(CreditsBannerTextures, 2, 1, 505, 75);
+    PrintLn();
     AddDXRandoCredits();
-	Super(CreditsScrollWindow).ProcessText();
+    Super(CreditsScrollWindow).ProcessText();
 }
