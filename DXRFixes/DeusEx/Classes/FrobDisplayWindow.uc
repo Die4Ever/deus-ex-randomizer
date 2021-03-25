@@ -367,7 +367,7 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
 
 defaultproperties
 {
-    msgDamageThreshold="Dmg Thresh:"
+    msgDamageThreshold="Min Dmg:"
     msgShot="shot"
     msgShots="shots"
 }

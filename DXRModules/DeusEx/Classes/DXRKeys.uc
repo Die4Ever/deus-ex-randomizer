@@ -191,7 +191,6 @@ function RandomizeDoors()
         }
         if( d.bBreakable ) {
             d.doorStrength = FClamp(rngrange(d.doorStrength, min_door_adjust, max_door_adjust), 0, 1);
-            d.doorStrength = 0.75;
             d.minDamageThreshold = rngrange(d.minDamageThreshold, min_mindmg_adjust, max_mindmg_adjust);
         }
     }
