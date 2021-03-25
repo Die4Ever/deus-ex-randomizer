@@ -16,7 +16,7 @@ static function IncDataStorageStat(DeusExPlayer p, name valname)
     local int val;
     datastorage = class'DataStorage'.static.GetObj(p);
     val = int(datastorage.GetConfigKey(valname));
-    datastorage.SetConfig(valname, val+1, 3600*12);
+    datastorage.SetConfig(valname, val+1, 3600*24*30);
 
 }
 
