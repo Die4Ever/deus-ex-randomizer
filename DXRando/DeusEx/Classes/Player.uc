@@ -110,6 +110,8 @@ function DoJump( optional float F )
         SetPhysics(PHYS_Falling);
         if ( bCountJumps && (Role == ROLE_Authority) )
             Inventory.OwnerJumped();
+        
+        class'DXRStats'.static.AddJump(self);
     }
 }
 
