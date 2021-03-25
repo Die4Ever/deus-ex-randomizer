@@ -252,7 +252,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     //Apply damage multiplier
     //This gets tweaked from DXRandoCrowdControlLink, but will normally just be 1.0
-    damageMult = flagBase.GetFloat('cc_damageMult');
+    damageMult = GetDamageMultiplier();
     if (damageMult!=0) {
         newDamage*=damageMult;
     }
@@ -294,6 +294,13 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     adjustedDamage = Int(newDamage);
 
     return bReduced;
+}
+
+function float GetDamageMultiplier()
+{
+    local DataStorage datastorage;
+    datastorage = class'DataStorage'.static.GetObj(self);
+    return float(datastorage.GetConfigKey('cc_damageMult'));
 }
 
 function CatchFire( Pawn burner )
