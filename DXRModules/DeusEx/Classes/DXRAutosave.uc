@@ -3,6 +3,14 @@ class DXRAutosave extends DXRBase transient;
 var transient bool bNeedSave;
 var config float save_delay;
 
+function CheckConfig()
+{
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+        save_delay = default.save_delay;
+    }
+    Super.CheckConfig();
+}
+
 function FirstEntry()
 {
     Super.FirstEntry();

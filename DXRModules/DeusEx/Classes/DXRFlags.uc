@@ -3,7 +3,7 @@ class DXRFlags extends DXRBase transient;
 var transient FlagBase f;
 
 //rando flags
-var int seed;
+var int seed, playthrough_id;
 var int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
 var int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food
 var int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
@@ -93,6 +93,7 @@ function InitDefaults()
     doormutuallyexclusive = 3;
 
     seed = 0;
+    playthrough_id = class'DataStorage'.static._SystemTime(Level);
     if( dxr != None ) RollSeed();
     gamemode = 0;
     loadout = 0;
@@ -141,6 +142,7 @@ function CheckConfig()
 
 function LoadFlags()
 {
+    local DataStorage ds;
     local int stored_version;
     info("LoadFlags()");
 
@@ -213,15 +215,24 @@ function LoadFlags()
         loadout = f.GetInt('Rando_loadout');
         newgameplus_loops = f.GetInt('Rando_newgameplus_loops');
     }
+    if( stored_version >= VersionToInt(1,5,5) ) {
+        playthrough_id = f.GetInt('Rando_playthrough_id');
+    }
 
     if(stored_version < flagsversion ) {
         info("upgraded flags from "$stored_version$" to "$flagsversion);
+        SaveFlags();
+    } else if (stored_version > flagsversion ) {
+        warning("downgraded flags from "$stored_version$" to "$flagsversion);
         SaveFlags();
     }
 
     LogFlags("LoadFlags");
     dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
     SetTimer(1.0, True);
+
+    ds = class'DataStorage'.static.GetObj(dxr.player);
+    if( ds != None ) ds.playthrough_id = playthrough_id;
 }
 
 function SaveFlags()
@@ -231,6 +242,8 @@ function SaveFlags()
     InitVersion();
     f.SetInt('Rando_seed', seed,, 999);
     dxr.seed = seed;
+
+    f.SetInt('Rando_playthrough_id', playthrough_id,, 999);
 
     f.SetInt('Rando_version', flagsversion,, 999);
     f.SetInt('Rando_gamemode', gamemode,, 999);
@@ -278,7 +291,16 @@ function SaveFlags()
 
 function LogFlags(string prefix)
 {
-    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", " $ StringifyFlags() );
+    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
+}
+
+function AddDXRCredits(CreditsWindow cw) 
+{
+    cw.PrintHeader("DXRFlags");
+    
+    cw.PrintText(VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id);
+    cw.PrintText(StringifyFlags());
+    cw.PrintLn();
 }
 
 function string StringifyFlags()
@@ -324,12 +346,12 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 5, 4);
+    return VersionToInt(1, 5, 5);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 5) $ " Alpha";
+    return VersionToString(1, 5, 5) $ " Beta";
 }
 
 function MaxRando()
@@ -340,6 +362,7 @@ function MaxRando()
 function NewGamePlus()
 {
     local DeusExPlayer p;
+    local DataStorage ds;
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
         LoadFlags();
@@ -348,6 +371,9 @@ function NewGamePlus()
 
     info("NewGamePlus()");
     seed++;
+    playthrough_id = class'DataStorage'.static._SystemTime(Level);
+    ds = class'DataStorage'.static.GetObj(dxr.player);
+    if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
     p.CombatDifficulty *= 1.2;
     minskill = minskill*1.2;// int *= float doesn't give as good accuracy as int = int*float
@@ -426,6 +452,7 @@ function ExtendedTests()
         TestRngExp(25, 150, 100, i);
 
     TestTime();
+    TestStorage();
 }
 
 function TestTime()
@@ -511,6 +538,18 @@ function TestTime()
     Level.Hour=h;
     Level.Minute=min;
     Level.Second=s;
+    ds.Destroy();
+}
+
+function TestStorage()
+{
+    local DataStorage ds;
+    local int i;
+    ds = Spawn(class'DataStorage');
+    for(i=0;i <3 ;i++) {
+        ds.SetConfig(i, i);
+        testint( int(ds.GetConfigKey(i)), i, "GetConfigKey("$i$")");
+    }
     ds.Destroy();
 }
 

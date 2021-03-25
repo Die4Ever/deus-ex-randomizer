@@ -2,6 +2,7 @@ class DXRando extends Info config(DXRando) transient;
 
 var transient DeusExPlayer Player;
 var transient DXRFlags flags;
+var transient DXRTelemetry telemetry;
 var transient DeusExLevelInfo dxInfo;
 var transient string localURL;
 
@@ -77,6 +78,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRCrowdControl";
         modules_to_load[i++] = "DXRMachines";
         modules_to_load[i++] = "DXRTelemetry";
+        modules_to_load[i++] = "DXRGameTimer";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
@@ -182,7 +184,7 @@ function RandoEnter()
         flags.f.SetBool(flagName, True,, 999);
     }
 
-    info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel);
+    info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL);
 
     if ( firstTime == true )
     {

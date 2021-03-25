@@ -10,13 +10,13 @@ event InitWindow()
 function CheckConfig()
 {
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
-        num_rows=13;
-        num_cols=4;
-        col_width_odd=160;
-        col_width_even=140;
-        row_height=20;
-        padding_width=20;
-        padding_height=10;
+        num_rows=default.num_rows;
+        num_cols=default.num_cols;
+        col_width_odd=default.col_width_odd;
+        col_width_even=default.col_width_even;
+        row_height=default.row_height;
+        padding_width=default.padding_width;
+        padding_height=default.padding_height;
     }
     Super.CheckConfig();
 }

@@ -112,7 +112,7 @@ state Activated
 
 defaultproperties
 {
-     bCollideActors = False
+     bCollideActors=False
      bHidden=True
      M_Activated=""
      skillNeeded=None

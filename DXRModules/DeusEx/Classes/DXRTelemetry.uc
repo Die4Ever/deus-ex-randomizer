@@ -138,6 +138,10 @@ function _SendLog(Actor a, string LogLevel, string message)
 static function SendLog(DXRando dxr, Actor a, string LogLevel, string message)
 {
     local DXRTelemetry module;
-    module = DXRTelemetry(dxr.FindModule(class'DXRTelemetry'));
+    module = dxr.telemetry;
+    if( module == None ) {
+        module = DXRTelemetry(dxr.FindModule(class'DXRTelemetry'));
+        dxr.telemetry = module;
+    }
     if( module != None ) module._SendLog(a, LogLevel, message);
 }

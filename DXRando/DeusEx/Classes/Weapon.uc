@@ -37,6 +37,37 @@ static function SpawnExtraBlood(Actor this, Vector HitLocation, Vector HitNormal
     }
 }
 
+function int GetDamage()
+{
+    local float mult;
+    // AugCombat increases our damage if hand to hand
+    mult = 1.0;
+    if (bHandToHand && (DeusExPlayer(Owner) != None))
+    {
+        mult = DeusExPlayer(Owner).AugmentationSystem.GetAugLevelValue(class'AugCombat');
+        if (mult == -1.0)
+            mult = 1.0;
+    }
+
+    // skill also affects our damage
+    // GetWeaponSkill returns 0.0 to -0.7 (max skill/aug)
+    mult += -2.0 * GetWeaponSkill();
+
+    if( ! bInstantHit && class != class'WeaponHideAGun' )// PS40 copies its damage to the projectile...
+        return ProjectileClass.default.Damage * mult;
+
+    return HitDamage * mult;
+}
+
+function int GetNumHits()
+{
+    if( bInstantHit && AreaOfEffect == AOE_Cone)
+        return 5;
+    if( ! bInstantHit && AreaOfEffect == AOE_Cone)
+        return 3;
+    return 1;
+}
+
 //mostly copied from DeusExWeapon, but use actual values instead of default values
 simulated function bool UpdateInfo(Object winObject)
 {

@@ -13,12 +13,12 @@ struct door_fix {
 };
 var config door_fix door_fixes[32];
 
-var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adjust;
+var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adjust, min_mindmg_adjust, max_mindmg_adjust;
 
 function CheckConfig()
 {
     local int i;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,3) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,5) ) {
 
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
@@ -117,7 +117,7 @@ function CheckConfig()
         door_fixes[i].map = "05_NYC_UNATCOHQ";
         door_fixes[i].tag = 'supplydoor';
         door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 75;
+        door_fixes[i].minDamageThreshold = 60;
         door_fixes[i].doorStrength = 1;
         door_fixes[i].bPickable = true;
         door_fixes[i].lockStrength = 1;
@@ -126,7 +126,7 @@ function CheckConfig()
         door_fixes[i].map = "15_area51_entrance";
         door_fixes[i].tag = 'chamber1';
         door_fixes[i].bBreakable = true;
-        door_fixes[i].minDamageThreshold = 75;
+        door_fixes[i].minDamageThreshold = 60;
         door_fixes[i].doorStrength = 1;
         door_fixes[i].bPickable = true;
         door_fixes[i].lockStrength = 1;
@@ -147,10 +147,12 @@ function CheckConfig()
         door_fixes[i].tag = 'chamber6';
         i++;
 
-        min_lock_adjust = 0.5;
-        max_lock_adjust = 1.5;
-        min_door_adjust = 0.5;
-        max_door_adjust = 1.5;
+        min_lock_adjust = default.min_lock_adjust;
+        max_lock_adjust = default.max_lock_adjust;
+        min_door_adjust = default.min_door_adjust;
+        max_door_adjust = default.max_door_adjust;
+        min_mindmg_adjust = default.min_mindmg_adjust;
+        max_mindmg_adjust = default.max_mindmg_adjust;
     }
     for(i=0; i<ArrayCount(keys_rules); i++) {
         keys_rules[i].map = Caps(keys_rules[i].map);
@@ -189,7 +191,7 @@ function RandomizeDoors()
         }
         if( d.bBreakable ) {
             d.doorStrength = FClamp(rngrange(d.doorStrength, min_door_adjust, max_door_adjust), 0, 1);
-            d.minDamageThreshold = rngrange(d.minDamageThreshold, min_door_adjust, max_door_adjust);
+            d.minDamageThreshold = rngrange(d.minDamageThreshold, min_mindmg_adjust, max_mindmg_adjust);
         }
     }
 }
@@ -450,8 +452,8 @@ function MakeDestructible(DeusExMover d)
     }
     if( d.bBreakable == false ) {
         d.bBreakable = true;
-        d.minDamageThreshold = rngrange(55, min_door_adjust, max_door_adjust);
-        d.doorStrength = FClamp(rngrange(1, min_door_adjust, max_door_adjust), 0, 1);
+        d.minDamageThreshold = rngrange(55, min_mindmg_adjust, max_mindmg_adjust);
+        d.doorStrength = FClamp(rngrange(0.8, min_door_adjust, max_door_adjust), 0, 1);
     }
 }
 
@@ -465,7 +467,7 @@ static function StaticMakeDestructible(DeusExMover d)
     }
     if( d.bBreakable == false ) {
         d.bBreakable = true;
-        d.minDamageThreshold = 75;
+        d.minDamageThreshold = 50;
         d.doorStrength = 1;
     }
 }
@@ -519,3 +521,12 @@ function RunTests()
     testbool( _PositionIsSafeOctant(vect(1237.800659,112.333527,-1625.307007), vect(1880.000000,552.000000,-1544.000000), vect(-2620.478516,-19.642990,-1795.483643)), true, "OceanLab test" );
 }
 
+defaultproperties
+{
+    min_lock_adjust=0.5
+    max_lock_adjust=1.5
+    min_door_adjust=0.5
+    max_door_adjust=1.5
+    min_mindmg_adjust=0.35
+    max_mindmg_adjust=1.2
+}

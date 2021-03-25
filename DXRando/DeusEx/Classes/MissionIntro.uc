@@ -3,6 +3,12 @@ class MissionIntro injects MissionIntro;
 var bool started_conv;
 var bool ran_first_frame;
 
+function PostPostBeginPlay()
+{
+    savedSoundVolume = SoundVolume;
+    Super.PostPostBeginPlay();
+}
+
 function FirstFrame()
 {
     ran_first_frame = true;

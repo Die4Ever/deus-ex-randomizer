@@ -6,10 +6,29 @@ struct KVP {
     var int expiration;
 };
 
-var transient config KVP config_data[32];
-var travel KVP var_data[128];
+var transient config KVP config_data[512];
+var transient bool config_dirty;
+var travel int playthrough_id;
 
-function int SystemTime()
+function PreTravel()
+{
+    Flush();
+}
+
+function Destroyed()
+{
+    Flush();
+}
+
+function Flush()
+{
+    if( config_dirty ) {
+        SaveConfig();
+        config_dirty = false;
+    }
+}
+
+static function int _SystemTime(LevelInfo Level)
 {
     local int time, m;
     time = Level.Second + (Level.Minute*60) + (Level.Hour*3600) + (Level.Day*86400);
@@ -53,22 +72,51 @@ function int SystemTime()
     return time;
 }
 
+final function int SystemTime()
+{
+    return _SystemTime(Level);
+}
+
 function static DataStorage GetObj(DeusExPlayer p)
 {
     local DataStorage d;
+    local DXRFlags f;
     d = DataStorage(p.FindInventoryType(class'DataStorage'));
     if( d == None ) {
         d = p.Spawn(class'DataStorage');
         d.GiveTo(p);
         d.SetBase(p);
     }
+    if( d.playthrough_id == 0 ) {
+        foreach d.AllActors(class'DXRFlags', f) {
+            d.playthrough_id = f.playthrough_id;
+            break;
+        }
+    }
     return d;
+}
+
+final function GetRange(string key, out int min, out int max)
+{
+    local int hash, len, blocksize, num_blocks;
+    len = ArrayCount(config_data);
+    // case sensitive, and you want the first and last letters to be unique
+    hash = playthrough_id + Asc(key)*73 + Asc(Mid(key, 1, 1));
+    blocksize = 32;
+    num_blocks = len / blocksize;
+    //the last block is reserved space because of the way we overlap
+    min = (hash%(num_blocks-1))*blocksize;
+    //length is doubled so that there's overlap across blocks
+    max = min + blocksize*2;
 }
 
 function string GetConfigKey(coerce string key, optional out int expiration)
 {
-    local int i;
-    for( i=0; i < ArrayCount(config_data); i++) {
+    local int i, min, max;
+    GetRange(key, min, max);
+
+    key = key@playthrough_id;
+    for( i=min; i < max; i++) {
         if( config_data[i].key == key ) {
             if( IsData(config_data[i]) ) {
                 if( config_data[i].expiration != 0 ) expiration = config_data[i].expiration - SystemTime();
@@ -91,20 +139,34 @@ function string GetConfigIndex(int i, optional out string key)
 
 function bool SetConfig(coerce string key, coerce string value, optional int expire_seconds)
 {
-    local int i;
-    for( i=0; i < ArrayCount(config_data); i++) {
+    local int i, min, max;
+    GetRange(key, min, max);
+
+    key = key@playthrough_id;
+    for( i=min; i < max; i++) {
         if( config_data[i].key == key ) {
             if( SetKVP(config_data[i], key, value, expire_seconds) ) {
-                SaveConfig();
+                config_dirty = true;
                 return true;
             }
             else return false;
         }
     }
-    for( i=0; i < ArrayCount(config_data); i++) {
+    for( i=min; i < max; i++) {
         if( ! IsData(config_data[i]) ) {
             if( SetKVP(config_data[i], key, value, expire_seconds) ) {
-                SaveConfig();
+                config_dirty = true;
+                return true;
+            }
+            else return false;
+        }
+    }
+
+    //emergency!
+    for( i=min; i < max; i++) {
+        if( config_data[i].expiration != 0 ) {
+            if( SetKVP(config_data[i], key, value, expire_seconds) ) {
+                config_dirty = true;
                 return true;
             }
             else return false;
@@ -113,43 +175,7 @@ function bool SetConfig(coerce string key, coerce string value, optional int exp
     return false;
 }
 
-function string GetVariableKey(coerce string key, optional out int expiration)
-{
-    local int i;
-    for( i=0; i < ArrayCount(var_data); i++) {
-        if( var_data[i].key == key ) {
-            if( IsData(var_data[i]) ) {
-                if( var_data[i].expiration != 0 ) expiration = var_data[i].expiration - SystemTime();
-                return var_data[i].value;
-            }
-            else return "";
-        }
-    }
-    return "";
-}
-
-function string GetVariableIndex(int i, optional out string key)
-{
-    if( IsData(var_data[i]) ) {
-        key = var_data[i].key;
-        return var_data[i].value;
-    }
-    return "";
-}
-
-function bool SetVariable(coerce string key, coerce string value, optional int expire_seconds)
-{
-    local int i;
-    for( i=0; i < ArrayCount(var_data); i++) {
-        if( var_data[i].key == key ) return SetKVP(var_data[i], key, value, expire_seconds);
-    }
-    for( i=0; i < ArrayCount(var_data); i++) {
-        if( ! IsData(var_data[i]) ) return SetKVP(var_data[i], key, value, expire_seconds);
-    }
-    return false;
-}
-
-function bool IsData(KVP data)
+final function bool IsData(KVP data)
 {
     // subtraction is more resistant to integer overflow than just doing a < operator
     if( data.expiration != 0 && data.expiration - SystemTime() < 0 ) return false;
@@ -158,7 +184,7 @@ function bool IsData(KVP data)
     return true;
 }
 
-function bool SetKVP(out KVP data, coerce string key, coerce string value, optional int expire_seconds)
+final function bool SetKVP(out KVP data, coerce string key, coerce string value, optional int expire_seconds)
 {
     data.key = key;
     data.value = value;

@@ -6,8 +6,8 @@ var config float max_aug_str;
 function CheckConfig()
 {
     if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
-        min_aug_str = 0.5;
-        max_aug_str = 1.5;
+        min_aug_str = default.min_aug_str;
+        max_aug_str = default.max_aug_str;
     }
     Super.CheckConfig();
 }
@@ -180,4 +180,10 @@ function string DescriptionLevel(Actor act, int i, out string word)
         err("DescriptionLevel failed for aug "$a);
         return "err";
     }
+}
+
+defaultproperties
+{
+    min_aug_str=0.5
+    max_aug_str=1.5
 }
