@@ -325,6 +325,12 @@ event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
         bOnLadder = False;
 }
 
+function Died(pawn Killer, name damageType, vector HitLocation)
+{
+    class'DXRStats'.static.AddDeath(self);
+    Super.Died(Killer,damageType,HitLocation);
+}
+
 exec function CrowdControlAnon()
 {
     local DXRCrowdControl cc;
