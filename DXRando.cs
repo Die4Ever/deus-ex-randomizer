@@ -23,7 +23,7 @@ public class DeusEx : SimpleTCPPack
         new Effect("Give Health", "give_health",new[]{"amount100"}),
         new Effect("Set On Fire", "set_fire"),
         new Effect("Give one Medkit", "give_medkit"),
-        new Effect("Give a Fire Extinguisher", "give_fireextinguisher"),
+        new Effect("Give a Fire Extinguisher", "give_fireextinguisher"), //New for third Crowd Control batch
         new Effect("Full Heal", "full_heal"),
         new Effect("Drunk Mode (1 minute)", "drunk_mode"),
         new Effect("Drop Selected Item", "drop_selected_item"),
