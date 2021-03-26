@@ -298,6 +298,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     local float damage;
     local name damageType;
     local DeusExWeapon w;
+    local float lockStrength;
 
     numLines = 4;
 
@@ -317,7 +318,8 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     // draw the absolute number of lockpicks on top of the colored bar
     if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable)
     {
-        numTools = Ceil((dxMover.lockStrength / player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking')));
+        lockStrength = Ceil(dxMover.lockStrength*100)/100.0;
+        numTools = Ceil((lockStrength / player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking')));
         if (numTools == 1)
             strInfo = numTools @ msgPick;
         else
