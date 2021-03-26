@@ -4,6 +4,7 @@ struct KVP {
     var string key;
     var string value;
     var int expiration;
+    var int created;
 };
 
 var transient config KVP config_data[512];
@@ -25,6 +26,24 @@ function Flush()
     if( config_dirty ) {
         SaveConfig();
         config_dirty = false;
+    }
+}
+
+function EndPlaythrough()
+{
+    local string pid;
+    local int i, slen, time, expired;
+    pid = " " $ playthrough_id;
+    slen = Len(pid);
+
+    time = SystemTime();
+    expired = time-1;
+    for( i=0; i < ArrayCount(config_data); i++) {
+        if( ! IsData(config_data[i], time) ) continue;
+        if( Right(config_data[i].key, slen) != pid ) continue;
+
+        config_data[i].expiration = expired;
+        config_dirty=true;
     }
 }
 
@@ -110,16 +129,17 @@ final function GetRange(string key, out int min, out int max)
     max = min + blocksize*2;
 }
 
-function string GetConfigKey(coerce string key, optional out int expiration)
+function string GetConfigKey(coerce string key)
 {
-    local int i, min, max;
-    GetRange(key, min, max);
+    local int i, min, max, time;
 
+    GetRange(key, min, max);
+    time = SystemTime();
     key = key@playthrough_id;
+
     for( i=min; i < max; i++) {
         if( config_data[i].key == key ) {
-            if( IsData(config_data[i]) ) {
-                if( config_data[i].expiration != 0 ) expiration = config_data[i].expiration - SystemTime();
+            if( IsData(config_data[i], time) ) {
                 return config_data[i].value;
             }
             else return "";
@@ -130,22 +150,24 @@ function string GetConfigKey(coerce string key, optional out int expiration)
 
 function string GetConfigIndex(int i, optional out string key)
 {
-    if( IsData(config_data[i]) ) {
+    if( IsData(config_data[i], SystemTime()) ) {
         key = config_data[i].key;
         return config_data[i].value;
     }
     else return "";
 }
 
-function bool SetConfig(coerce string key, coerce string value, optional int expire_seconds)
+function bool SetConfig(coerce string key, coerce string value, int expire_seconds)
 {
-    local int i, min, max;
-    GetRange(key, min, max);
+    local int i, min, max, time, oldest, oldestcreated;
 
+    GetRange(key, min, max);
+    time = SystemTime();
     key = key@playthrough_id;
+
     for( i=min; i < max; i++) {
         if( config_data[i].key == key ) {
-            if( SetKVP(config_data[i], key, value, expire_seconds) ) {
+            if( SetKVP(config_data[i], key, value, expire_seconds, time) ) {
                 config_dirty = true;
                 return true;
             }
@@ -153,8 +175,8 @@ function bool SetConfig(coerce string key, coerce string value, optional int exp
         }
     }
     for( i=min; i < max; i++) {
-        if( ! IsData(config_data[i]) ) {
-            if( SetKVP(config_data[i], key, value, expire_seconds) ) {
+        if( ! IsData(config_data[i], time) ) {
+            if( SetKVP(config_data[i], key, value, expire_seconds, time) ) {
                 config_dirty = true;
                 return true;
             }
@@ -162,34 +184,40 @@ function bool SetConfig(coerce string key, coerce string value, optional int exp
         }
     }
 
-    //emergency!
+    //emergency! find oldest item and overwrite it (oldest, not the item closest to expiration)
+    oldest = min;
+    oldestcreated = config_data[oldest].created;
+
     for( i=min; i < max; i++) {
-        if( config_data[i].expiration != 0 ) {
-            if( SetKVP(config_data[i], key, value, expire_seconds) ) {
-                config_dirty = true;
-                return true;
-            }
-            else return false;
+        if( config_data[i].created - oldestcreated < 0 ) {
+            oldest = i;
+            oldestcreated = config_data[i].created;
         }
     }
+
+    if( SetKVP(config_data[oldest], key, value, expire_seconds, time) ) {
+        config_dirty = true;
+        return true;
+    }
+    
     return false;
 }
 
-final function bool IsData(KVP data)
+final function bool IsData(KVP data, int time)
 {
     // subtraction is more resistant to integer overflow than just doing a < operator
-    if( data.expiration != 0 && data.expiration - SystemTime() < 0 ) return false;
+    if( data.expiration - time < 0 ) return false;
     if( data.key == "" ) return false;
     if( data.value == "" ) return false;
     return true;
 }
 
-final function bool SetKVP(out KVP data, coerce string key, coerce string value, optional int expire_seconds)
+final function bool SetKVP(out KVP data, coerce string key, coerce string value, int expire_seconds, int time)
 {
     data.key = key;
     data.value = value;
-    if( expire_seconds == 0 ) data.expiration = 0;
-    else data.expiration = expire_seconds + SystemTime();
+    data.created = time;
+    data.expiration = expire_seconds + data.created;
     return true;
 }
 

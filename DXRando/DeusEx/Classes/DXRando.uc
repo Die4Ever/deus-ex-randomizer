@@ -49,7 +49,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,5) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -78,7 +78,6 @@ function CheckConfig()
         modules_to_load[i++] = "DXRCrowdControl";
         modules_to_load[i++] = "DXRMachines";
         modules_to_load[i++] = "DXRTelemetry";
-        modules_to_load[i++] = "DXRGameTimer";
         modules_to_load[i++] = "DXRStats";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
