@@ -172,6 +172,15 @@ function DrawWindowBase(GC gc, actor frobTarget)
     gc.DrawBox(infoX+1, infoY+1, infoW-2, infoH-2, 0, 0, 1, Texture'Solid');
 }
 
+function int Ceil(float f)
+{
+    local int ret;
+    ret = f;
+    if( float(ret) < f )
+        ret++;
+    return ret;
+}
+
 function string GetStrInfo(Actor a)
 {
     if ( Mover(a) != None )
@@ -308,7 +317,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     // draw the absolute number of lockpicks on top of the colored bar
     if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable)
     {
-        numTools = int((dxMover.lockStrength / player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking')) + 0.99);
+        numTools = Ceil((dxMover.lockStrength / player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking')));
         if (numTools == 1)
             strInfo = numTools @ msgPick;
         else
@@ -322,7 +331,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
             damageType = w.WeaponDamageType();
             damage = dxMover.CalcDamage(w.GetDamage(), damageType) * w.GetNumHits();
             if( damage > 0 ) {
-                numshots = int((dxMover.doorStrength / damage) + 0.99);
+                numshots = Ceil((dxMover.doorStrength / damage));
                 if( numshots == 1 )
                     strInfo = strInfo $ CR() $ numshots @ msgShot;
                 else
@@ -340,6 +349,7 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
 {
     local string strInfo;
     local int numTools, numLines;
+    local float hackStrength;
     local color col;
 
     numLines = 2;
@@ -356,7 +366,9 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
     // draw the absolute number of multitools on top of the colored bar
     if ((device.bHackable) && (device.hackStrength != 0.0))
     {
-        numTools = int((device.hackStrength / player.SkillSystem.GetSkillLevelValue(class'SkillTech')) + 0.99);
+        // do to the way HackableDevices uses a timer, it seems to use very slightly more tools than it's supposed to sometimes, rounding up to the next 100th of a hackStrength
+        hackStrength = Ceil(device.hackStrength*100)/100.0;
+        numTools = Ceil((hackStrength / player.SkillSystem.GetSkillLevelValue(class'SkillTech')));
         if (numTools == 1)
             strInfo = numTools @ msgTool;
         else
