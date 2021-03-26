@@ -200,6 +200,15 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
     return anItem;
 }
 
+static function ThrowItem(Actor a, Inventory item)
+{
+    if( Pawn(a) != None )
+        Pawn(a).DeleteInventory(item);
+    item.DropFrom(a.Location);
+    // kinda copied from DeusExPlayer DropItem function
+    item.Velocity = vector(a.rotation) * 300 + vect(0,0,220);
+}
+
 function bool SkipActorBase(Actor a)
 {
     if( a == dxr.Player.carriedDecoration )
