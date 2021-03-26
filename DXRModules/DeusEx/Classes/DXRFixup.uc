@@ -113,6 +113,7 @@ function AnyEntry()
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
     FixSamCarter();
+    FixAmmoShurikenName();
 
     switch(dxr.dxInfo.missionNumber) {
         case 4:
@@ -184,6 +185,20 @@ function FixSamCarter()
     local SamCarter s;
     foreach AllActors(class'SamCarter', s) {
         RemoveFears(s);
+    }
+}
+
+function FixAmmoShurikenName()
+{
+    local AmmoShuriken a;
+
+    class'AmmoShuriken'.default.ItemName = "Throwing Knives";
+    class'AmmoShuriken'.default.ItemArticle = "some";
+    class'AmmoShuriken'.default.beltDescription="THW KNIFE";
+    foreach AllActors(class'AmmoShuriken', a) {
+        a.ItemName = a.default.ItemName;
+        a.ItemArticle = a.default.ItemArticle;
+        a.beltDescription = a.default.beltDescription;
     }
 }
 
