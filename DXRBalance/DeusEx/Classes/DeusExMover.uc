@@ -1,5 +1,5 @@
 class DeusExMover merges DeusExMover;
-
+// need to figure out states compatibility https://github.com/Die4Ever/deus-ex-randomizer/issues/135
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
     if (bDestroyed)

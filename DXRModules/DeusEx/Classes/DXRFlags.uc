@@ -351,7 +351,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 5) $ "";
+    return VersionToString(1, 5, 6) $ " Alpha";
 }
 
 function MaxRando()

@@ -1,6 +1,6 @@
 class ScriptedPawn merges ScriptedPawn;
-// doesn't work with injects due to use of Self
-
+// doesn't work with injects, because of states and : Error, DeusEx.ScriptedPawn's superclass must be Engine.Pawn, not DeusEx.ScriptedPawnBase
+// could work with injectsabove or whatever https://github.com/Die4Ever/deus-ex-randomizer/issues/115
 var int flareBurnTime;
 
 function PlayDying(name damageType, vector hitLoc)

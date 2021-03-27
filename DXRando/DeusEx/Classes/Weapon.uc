@@ -1,5 +1,5 @@
 class DXRWeapon merges DeusExWeapon abstract;
-
+// need to figure out states compatibility https://github.com/Die4Ever/deus-ex-randomizer/issues/135
 var float blood_mult;
 
 function PostBeginPlay()

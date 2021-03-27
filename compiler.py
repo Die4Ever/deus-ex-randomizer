@@ -120,7 +120,7 @@ def apply_merge(a, b):
     if bVars!="":
         merged = []
         aContent = a['content'].split("\n")
-        lastVarLine = 0;
+        lastVarLine = 0
 
         for line in aContent:
             if line.strip().startswith("var "):
@@ -162,21 +162,24 @@ def apply_merge(a, b):
 def inject_into(f, injects):
     classname = f['classname']
     classline = f['classline']
+    content = f['content']
     comment = "// === was "+classname+" ===\n"
     #print(f['qualifiedclass'] + ' has '+ str(len(injects[f['qualifiedclass']])) +' injections, renaming to Base'+f['classname'] )
     classname = classname+'Base'
     classline = re.sub('class '+f['classname'], comment + 'class '+classname, classline, count=1)
-    return classname, classline
+    content = re.sub('([^a-z])(self)([^a-z])', r'\1'+f['classname']+r'(Self)\3', content, flags=re.IGNORECASE)
+    return classname, classline, content
 
 
 def inject_from(f, injects):
     classname = f['classname']
     classline = f['classline']
+    content = f['content']
     #print(f['qualifiedclass'] + ' injects into ' + f['baseclass'] )
     comment = "// === was "+f['mod_name']+'/'+classname+" ===\n"
     classname = f['baseclass']
     classline = re.sub('class '+f['classname']+' injects '+f['baseclass'], comment + 'class '+classname+' extends '+f['baseclass']+'Base', classline, count=1)
-    return classname, classline
+    return classname, classline, content
 
 
 def write_file(out, f, written, injects):
@@ -192,10 +195,10 @@ def write_file(out, f, written, injects):
         if injects[qualifiedclass][0]['operator'] == 'merges':
             content = apply_merge(f, injects[qualifiedclass][0])
         else:
-            classname, classline = inject_into(f, injects)
+            classname, classline, content = inject_into(f, injects)
     
     if f['operator'] == 'injects':
-        classname, classline = inject_from(f, injects)
+        classname, classline, content = inject_from(f, injects)
 
     if f['operator'] == 'merges' or f['operator'] == 'overwrites':
         print("not writing because inheritance operator is "+f['operator'])
