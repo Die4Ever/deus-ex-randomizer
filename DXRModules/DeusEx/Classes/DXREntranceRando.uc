@@ -418,7 +418,7 @@ function GenerateConnections(int missionNum)
     {
         _GenerateConnections(missionNum);
         if(ValidateConnections()) {
-            if( attempts > 20 ) warning("GenerateConnections("$missionNum$") succeeded but took "$attempts$" attempts! seed: "$dxr.seed);
+            if( attempts > 40 ) warning("GenerateConnections("$missionNum$") succeeded but took "$attempts$" attempts! seed: "$dxr.seed);
             return;
         }
     }

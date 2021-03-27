@@ -210,9 +210,16 @@ function SetMaxCopies(class<DeusExPickup> type, int percent)
 function SetMaxAmmo(class<Ammo> type, int percent)
 {
     local Ammo a;
+    local int demo_add;
+
+    demo_add = dxr.Player.SkillSystem.GetSkillLevel(class'SkillDemolition');
+
     foreach AllActors(class'Ammo', a) {
         if( ! a.IsA(type.name) ) continue;
         a.MaxAmmo = float(a.default.MaxAmmo) * float(percent) / 100.0 * 0.8;
+        if( AmmoEMPGrenade(a) != None || AmmoGasGrenade(a) != None || AmmoLAM(a) != None || AmmoNanoVirusGrenade(a) != None )
+            a.MaxAmmo += demo_add;
+        
         if( a.AmmoAmount > a.MaxAmmo ) a.AmmoAmount = a.MaxAmmo;
     }
 }

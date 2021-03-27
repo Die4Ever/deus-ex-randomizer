@@ -186,7 +186,7 @@ function BindControls(bool writing, optional string action)
         f.skills_independent_levels = 100;
         f.minskill = 50;
         f.maxskill = 400;
-        f.ammo = 30;
+        f.ammo = 35;
         f.medkits = 50;
         f.biocells = 30;
         f.lockpicks = 30;

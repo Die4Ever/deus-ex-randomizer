@@ -110,7 +110,16 @@ function RandoSkill(Skill aSkill)
 
 function RandoSkillLevelValues(Skill a)
 {
+    local string add_desc;
     RandoLevelValues(a, min_skill_str, max_skill_str, a.Description);
+
+    if( SkillDemolition(a) != None ) {
+        add_desc = "Each level increases the number of grenades you can carry by 1.";
+    }
+
+    if( add_desc != "" && InStr(a.Description, add_desc) == -1 ) {
+        a.Description = a.Description $ "|n|n" $ add_desc;
+    }
 }
 
 function string DescriptionLevel(Actor act, int i, out string word)
