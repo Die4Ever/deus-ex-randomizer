@@ -76,9 +76,13 @@ function FirstEntry()
     Super.FirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" FirstEntry()");
 
+    SetSeed( "DXRFixup FirstEntry" );
+
     IncreaseBrightness(dxr.flags.brightness);
     OverwriteDecorations();
     FixFlagTriggers();
+
+    SetSeed( "DXRFixup FirstEntry missions" );
     
     switch(dxr.dxInfo.missionNumber) {
         case 2:
@@ -112,8 +116,12 @@ function AnyEntry()
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
+    SetSeed( "DXRFixup AnyEntry" );
+
     FixSamCarter();
     FixAmmoShurikenName();
+
+    SetSeed( "DXRFixup AnyEntry missions" );
 
     switch(dxr.dxInfo.missionNumber) {
         case 4:
@@ -347,6 +355,12 @@ function Airfield_FirstEntry()
 function Jailbreak_FirstEntry()
 {
     local PaulDenton p;
+    /*local Inventory item, nextItem;
+    local Ammo a;
+    local Vector locs[4];
+    local class<Ammo> types[5];
+    local class<Ammo> type;
+    local int i, k, r;*/
 
     switch (dxr.localURL)
     {
@@ -354,6 +368,38 @@ function Jailbreak_FirstEntry()
             foreach AllActors(class'PaulDenton', p) {
                 p.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
             }
+
+            // remove ammo from the player when captured
+            /*for( item = dxr.Player.Inventory; item != None; item = nextItem) {
+                nextItem = item.Inventory;
+                a = Ammo(item);
+                if( a != None ) {
+                    a.AmmoAmount = 0;
+                    dxr.Player.UpdateAmmoBeltText(a);
+                }
+            }
+
+            // make up for it by adding ammo on the guard's desk
+            types[0] = class'Ammo10mm';
+            types[1] = class'Ammo762mm';
+            types[2] = class'AmmoShell';
+            types[3] = class'Ammo3006';
+            types[4] = class'AmmoDartPoison';
+            locs[0] = vect(-2084.170654, 1212.210327, -132.129761);// the first guard's desk
+            locs[1] = vect(-2104.531494, 1232.512817, -132.130157);
+            locs[2] = vect(-2140.163330, 1245.518555, -132.130081);
+            locs[3] = vect(-2183.612061, 1241.690430, -132.129669);
+            for(i=0; i < ArrayCount(locs); i++) {
+                if( ! chance_single(dxr.flags.ammo) ) continue;
+
+                r = initchance();
+                type = types[0];
+                for(k=0; k<ArrayCount(types); k++) {
+                    if( chance( 100/ArrayCount(types), r ) ) type = types[k];
+                }
+                chance_remaining(r);
+                a = Spawn( type,,, locs[i] );
+            }*/
             break;
     }
 }

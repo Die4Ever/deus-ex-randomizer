@@ -963,7 +963,7 @@ function FirstEntry()
     if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
     }
-    if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
+    else if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
         foreach AllActors(class'AnnaNavarre', anna) {
             anna.SetOrders('Standing');
             anna.SetLocation( vect(1082.845703, 1807.538818, 335.101776) );
