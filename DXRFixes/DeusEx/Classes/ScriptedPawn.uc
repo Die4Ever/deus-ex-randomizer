@@ -1,6 +1,8 @@
 class ScriptedPawn merges ScriptedPawn;
 // doesn't work with injects due to use of Self
 
+var int flareBurnTime;
+
 function PlayDying(name damageType, vector hitLoc)
 {
     local Inventory item, nextItem;
@@ -21,4 +23,40 @@ function PlayDying(name damageType, vector hitLoc)
     }
     
     _PlayDying(damageType, hitLoc);
+}
+
+function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType,
+                        bool bPlayAnim)
+{
+    local name baseDamageType;
+    local DeusExPlayer p;
+    
+    if (damageType == 'FlareFlamed') {
+        baseDamageType = 'Flamed';
+    } else {
+        baseDamageType = damageType;
+    }
+    
+    _TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
+    
+    if (bBurnedToDeath) {
+        p = DeusExPlayer(GetPlayerPawn());
+        p.ClientMessage("Burned to death!");
+        class'DXRStats'.static.AddBurnKill(p);
+    } 
+    
+    if (damageType == 'FlareFlamed') {
+        flareBurnTime = 3;
+    }
+}
+
+function UpdateFire()
+{
+    _UpdateFire();
+    if (flareBurnTime > 0) {
+        flareBurnTime -= 1;
+        if (flareBurnTime == 0) {
+            ExtinguishFire();
+        }
+    }
 }
