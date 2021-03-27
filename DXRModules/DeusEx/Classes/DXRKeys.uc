@@ -187,6 +187,7 @@ function RandomizeDoors()
     foreach AllActors(class'DeusExMover', d) {
         if( d.bPickable ) {
             d.lockStrength = FClamp(rngrange(d.lockStrength, min_lock_adjust, max_lock_adjust), 0, 1);
+            d.lockStrength = int(d.lockStrength*100)/100.0;
             d.initiallockStrength = d.lockStrength;
         }
         if( d.bBreakable ) {
@@ -423,6 +424,7 @@ function MakePickable(DeusExMover d)
     if( d.bPickable == false ) {
         d.bPickable = true;
         d.lockStrength = FClamp(rngrange(1, min_door_adjust, max_door_adjust), 0, 1);
+        d.lockStrength = int(d.lockStrength*100)/100.0;
         d.initiallockStrength = d.lockStrength;
     }
 }

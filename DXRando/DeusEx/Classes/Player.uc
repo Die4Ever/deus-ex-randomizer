@@ -110,6 +110,8 @@ function DoJump( optional float F )
         SetPhysics(PHYS_Falling);
         if ( bCountJumps && (Role == ROLE_Authority) )
             Inventory.OwnerJumped();
+        
+        class'DXRStats'.static.AddJump(self);
     }
 }
 
@@ -250,7 +252,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     //Apply damage multiplier
     //This gets tweaked from DXRandoCrowdControlLink, but will normally just be 1.0
-    damageMult = flagBase.GetFloat('cc_damageMult');
+    damageMult = GetDamageMultiplier();
     if (damageMult!=0) {
         newDamage*=damageMult;
     }
@@ -294,6 +296,13 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     return bReduced;
 }
 
+function float GetDamageMultiplier()
+{
+    local DataStorage datastorage;
+    datastorage = class'DataStorage'.static.GetObj(self);
+    return float(datastorage.GetConfigKey('cc_damageMult'));
+}
+
 function CatchFire( Pawn burner )
 {
     local bool doSetTimer;
@@ -314,4 +323,59 @@ event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
     }
     else
         bOnLadder = False;
+}
+
+function Died(pawn Killer, name damageType, vector HitLocation)
+{
+    class'DXRStats'.static.AddDeath(self);
+    Super.Died(Killer,damageType,HitLocation);
+}
+
+exec function CrowdControlAnon()
+{
+    local DXRCrowdControl cc;
+    local DXRFlags f;
+
+    foreach AllActors(class'DXRCrowdControl',cc)
+    {
+        cc.link.anon = True;
+    }
+    foreach AllActors(class'DXRFlags',f)
+    {
+        f.crowdcontrol = 2;
+        f.f.SetInt('Rando_crowdcontrol',2,,999);
+    }
+
+    ClientMessage("Now hiding Crowd Control names");
+
+}
+
+exec function CrowdControlNames()
+{
+    local DXRCrowdControl cc;
+    local DXRFlags f;
+    
+    foreach AllActors(class'DXRCrowdControl',cc)
+    {
+        cc.link.anon = False;
+    }
+    foreach AllActors(class'DXRFlags',f)
+    {
+        f.crowdcontrol = 1;
+        f.f.SetInt('Rando_crowdcontrol',1,,999);
+    }
+    ClientMessage("Now showing Crowd Control names");
+}
+
+exec function CheatsOn()
+{
+    bCheatsEnabled = true;
+    ClientMessage("Cheats Enabled");
+}
+
+exec function CheatsOff()
+{
+    bCheatsEnabled = false;
+    ClientMessage("Cheats Disabled");
+
 }

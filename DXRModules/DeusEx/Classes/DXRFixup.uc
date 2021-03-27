@@ -76,9 +76,13 @@ function FirstEntry()
     Super.FirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" FirstEntry()");
 
+    SetSeed( "DXRFixup FirstEntry" );
+
     IncreaseBrightness(dxr.flags.brightness);
     OverwriteDecorations();
     FixFlagTriggers();
+
+    SetSeed( "DXRFixup FirstEntry missions" );
     
     switch(dxr.dxInfo.missionNumber) {
         case 2:
@@ -112,7 +116,12 @@ function AnyEntry()
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
+    SetSeed( "DXRFixup AnyEntry" );
+
     FixSamCarter();
+    FixAmmoShurikenName();
+
+    SetSeed( "DXRFixup AnyEntry missions" );
 
     switch(dxr.dxInfo.missionNumber) {
         case 4:
@@ -184,6 +193,20 @@ function FixSamCarter()
     local SamCarter s;
     foreach AllActors(class'SamCarter', s) {
         RemoveFears(s);
+    }
+}
+
+function FixAmmoShurikenName()
+{
+    local AmmoShuriken a;
+
+    class'AmmoShuriken'.default.ItemName = "Throwing Knives";
+    class'AmmoShuriken'.default.ItemArticle = "some";
+    class'AmmoShuriken'.default.beltDescription="THW KNIFE";
+    foreach AllActors(class'AmmoShuriken', a) {
+        a.ItemName = a.default.ItemName;
+        a.ItemArticle = a.default.ItemArticle;
+        a.beltDescription = a.default.beltDescription;
     }
 }
 

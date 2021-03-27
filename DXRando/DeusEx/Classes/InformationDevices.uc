@@ -4,6 +4,34 @@ var DXRPasswords passwords;
 var string plaintext;
 var string new_passwords[16];
 
+function string _GetMapName()
+{
+    local DeusExLevelInfo dxinfo;
+    foreach AllActors(class'DeusExLevelInfo', dxinfo) {
+        return Caps(dxinfo.mapName);
+    }
+    log("WARNING: "$self$" failed to find DeusExLevelInfo!");
+    return Caps(GetURLMap());
+}
+
+function string GetMapNameStripped()
+{
+    local string mapname;
+    local int i;
+    mapname = _GetMapName();
+    while( true ) {
+        i = InStr(mapname, "\\");
+        if( i == -1 ) break;
+        mapname = Mid(mapname, i+1);
+    }
+    while( true ) {
+        i = InStr(mapname, ".");
+        if( i == -1 ) break;
+        mapname = Left(mapname, i) $ "-" $ Mid(mapname, i+1);
+    }
+    return mapname;
+}
+
 // ----------------------------------------------------------------------
 // CreateInfoWindow()
 // ----------------------------------------------------------------------
@@ -31,12 +59,7 @@ function CreateInfoWindow()
         winText.SetText(vaultString);
         if (bAddToVault)
         {
-            mapname = Caps(GetURLMap());
-            while( true ) {
-                i = InStr(mapname, ".");
-                if( i == -1 ) break;
-                mapname = Left(mapname, i) $ "-" $ Mid(mapname, i+1);
-            }
+            mapname = GetMapNameStripped();
             plaintextTag = rootWindow.StringToName(mapname$"-"$Name);
             log(Self$": plaintextTag: "$plaintextTag);
             note = aReader.GetNote(plaintextTag);

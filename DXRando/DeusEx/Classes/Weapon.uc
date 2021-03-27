@@ -389,6 +389,20 @@ simulated function bool UpdateInfo(Object winObject)
     return True;
 }
 
+function Fire(float value)
+{
+
+    if (Owner.IsA('DeusExPlayer')) {
+        if (bHandToHand) {
+            class'DXRStats'.static.AddWeaponSwing(DeusExPlayer(Owner));        
+        } else if (AmmoLeftInClip()!=0) {
+            class'DXRStats'.static.AddShotFired(DeusExPlayer(Owner));
+        }
+    }
+    _Fire(value);
+
+}
+
 defaultproperties
 {
     blood_mult=0

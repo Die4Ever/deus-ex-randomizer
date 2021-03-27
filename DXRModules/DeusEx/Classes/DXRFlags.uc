@@ -351,7 +351,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 5) $ " Beta";
+    return VersionToString(1, 5, 5) $ "";
 }
 
 function MaxRando()
@@ -547,9 +547,14 @@ function TestStorage()
     local int i;
     ds = Spawn(class'DataStorage');
     for(i=0;i <3 ;i++) {
-        ds.SetConfig(i, i);
+        ds.SetConfig(i, i, 100);
         testint( int(ds.GetConfigKey(i)), i, "GetConfigKey("$i$")");
     }
+    ds.EndPlaythrough();
+    for(i=0;i <3 ;i++) {
+        teststring( ds.GetConfigKey(i), "", "GetConfigKey("$i$") cleared after EndPlaythrough()");
+    }
+    ds.config_dirty = false;// don't bother writing to disk
     ds.Destroy();
 }
 

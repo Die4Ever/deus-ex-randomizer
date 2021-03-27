@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,0) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,5) ) {
         allow_vanilla = false;
 
         i=0;
@@ -572,12 +572,12 @@ function CheckConfig()
 
         map = "03_nyc_batterypark";
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-4819.345215,3478.138916,-304.225006);//'HarleyFilben0'
+        important_locations[i].location = vect(-4857.345215,3452.138916,-301.399628);//'HarleyFilben0'
         important_locations[i].is_player_start = true;
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-2763.231689,1370.594604,369.799988);//'BumMale4'
+        important_locations[i].location = vect(-2771.231689,1412.594604,373.603882);//'BumMale4'
         important_locations[i].rotation = rot(0,7272,0);
         important_locations[i].is_player_start = true;
         i++;
@@ -963,7 +963,7 @@ function FirstEntry()
     if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
     }
-    if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
+    else if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
         foreach AllActors(class'AnnaNavarre', anna) {
             anna.SetOrders('Standing');
             anna.SetLocation( vect(1082.845703, 1807.538818, 335.101776) );

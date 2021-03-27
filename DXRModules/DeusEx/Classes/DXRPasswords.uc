@@ -184,6 +184,8 @@ function _RandoHackable(HackableDevices h)
 {
     if( h.bHackable ) {
         h.hackStrength = FClamp(rngrange(h.hackStrength, min_hack_adjust, max_hack_adjust), 0, 1);
+        h.hackStrength = int(h.hackStrength*100)/100.0;
+        h.initialhackStrength = h.hackStrength;
     }
 }
 
@@ -319,8 +321,9 @@ function MakeAllHackable(int deviceshackable)
         if( h.bHackable == false && chance_single(deviceshackable) ) {
             l("found unhackable device: " $ ActorToString(h) $ ", tag: " $ h.Tag $ " in " $ dxr.localURL);
             h.bHackable = true;
-            h.hackStrength = 1;
-            h.initialhackStrength = 1;
+            h.hackStrength = FClamp(rngrange(1, min_hack_adjust, max_hack_adjust), 0, 1);
+            h.hackStrength = int(h.hackStrength*100)/100.0;
+            h.initialhackStrength = h.hackStrength;
         }
     }
 }

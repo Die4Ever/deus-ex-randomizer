@@ -21,26 +21,27 @@ function AddDXRCreditsGeneral()
 {
     PrintHeader("Deus Ex Randomizer");
     PrintText("Version"@class'DXRFlags'.static.VersionString());
-    PrintLn();    
+    PrintLn();
     PrintHeader("Contributors");
     PrintText("Die4Ever");
     PrintText("TheAstropath");
     
-    PrintLn();    
+    PrintLn();
     PrintHeader("Home Page");
     PrintText("https://github.com/Die4Ever/deus-ex-randomizer");
     
-    PrintLn();    
+    PrintLn();
     PrintHeader("Discord Community");
     PrintText("https://discord.gg/daQVyAp2ds");
     
-    PrintLn();    
-    PrintLn();    
+    PrintLn();
+    PrintLn();
 }
 
 function AddDXRandoCredits()
 {
     local DXRBase mod;
+    local DataStorage ds;
     
     AddDXRCreditsGeneral();
     
@@ -49,8 +50,10 @@ function AddDXRandoCredits()
     }
     
     PrintHeader("Original Developers");
-    PrintLn();    
+    PrintLn();
 
+    ds = class'DataStorage'.static.GetObj(player);
+    if( ds != None ) ds.EndPlaythrough();
 }
 
 function ProcessText()
