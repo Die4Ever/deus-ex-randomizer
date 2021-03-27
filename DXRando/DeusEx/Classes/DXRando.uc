@@ -79,6 +79,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRMachines";
         modules_to_load[i++] = "DXRTelemetry";
         modules_to_load[i++] = "DXRStats";
+        modules_to_load[i++] = "DXRFashion";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
