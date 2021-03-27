@@ -14,7 +14,7 @@ function PlayDying(name damageType, vector hitLoc)
     while( item != None ) {
         nextItem = item.Inventory;
         melee = item.IsA('WeaponProd') || item.IsA('WeaponBaton') || item.IsA('WeaponCombatKnife') || item.Isa('WeaponCrowbar') || item.IsA('WeaponNanoSword') || item.Isa('WeaponSword');
-        drop = (item.IsA('NanoKey') && gibbed) || (melee && !gibbed);//don't give the melee weapon if we're getting gibbed, that would make the game easier and this is supposed to be a QoL change not a balance change
+        drop = (item.IsA('NanoKey') && gibbed) || (melee && !gibbed) || (gibbed && item.bDisplayableInv);
         if( drop ) {
             class'DXRActorsBase'.static.ThrowItem(self, item);
             item.Velocity *= vect(-1, -1, 1.3);
