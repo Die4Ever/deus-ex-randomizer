@@ -1,6 +1,6 @@
 class DXRHUDObjectSlot injects HUDObjectSlot;
 
-var String      ammoText;
+var String ammoText;
 
 event DrawWindow(GC gc)
 {
@@ -25,7 +25,7 @@ event DrawWindow(GC gc)
 
 function bool ShouldDisplayAmmo(DeusExWeapon weapon)
 {
-    if (weapon.AmmoType == None ) {
+    if ( weapon.AmmoType == None || weapon.AmmoName == class'AmmoNone' ) {
         return False;
     }
     

@@ -5,10 +5,16 @@ var int flareBurnTime;
 
 function PlayDying(name damageType, vector hitLoc)
 {
+    local DeusExPlayer p;
     local Inventory item, nextItem;
     local bool gibbed, drop, melee;
 
     gibbed = (Health < -100) && !IsA('Robot');
+
+    if( gibbed ) {
+        p = DeusExPlayer(GetPlayerPawn());
+        class'DXRStats'.static.AddGibbedKill(p);
+    }
 
     item = Inventory;
     while( item != None ) {
@@ -41,7 +47,6 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
     
     if (bBurnedToDeath) {
         p = DeusExPlayer(GetPlayerPawn());
-        p.ClientMessage("Burned to death!");
         class'DXRStats'.static.AddBurnKill(p);
     } 
     
