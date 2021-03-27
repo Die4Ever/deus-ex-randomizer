@@ -49,7 +49,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,5) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -71,7 +71,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXREnemies";
         modules_to_load[i++] = "DXREntranceRando";
         modules_to_load[i++] = "DXRHordeMode";
-        modules_to_load[i++] = "DXRKillBobPage";
+        //modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
         modules_to_load[i++] = "DXRLoadouts";
         modules_to_load[i++] = "DXRWeapons";
