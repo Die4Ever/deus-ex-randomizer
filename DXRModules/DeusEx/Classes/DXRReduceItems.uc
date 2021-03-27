@@ -202,7 +202,7 @@ function SetMaxCopies(class<DeusExPickup> type, int percent)
     local DeusExPickup p;
     foreach AllActors(class'DeusExPickup', p) {
         if( ! p.IsA(type.name) ) continue;
-        p.maxCopies = float(p.default.maxCopies) * float(percent) / 100.0 * 0.75;
+        p.maxCopies = float(p.default.maxCopies) * float(percent) / 100.0 * 0.8;
         if( p.NumCopies > p.maxCopies ) p.NumCopies = p.maxCopies;
     }
 }
@@ -212,7 +212,7 @@ function SetMaxAmmo(class<Ammo> type, int percent)
     local Ammo a;
     foreach AllActors(class'Ammo', a) {
         if( ! a.IsA(type.name) ) continue;
-        a.MaxAmmo = float(a.default.MaxAmmo) * float(percent) / 100.0 * 0.75;
+        a.MaxAmmo = float(a.default.MaxAmmo) * float(percent) / 100.0 * 0.8;
         if( a.AmmoAmount > a.MaxAmmo ) a.AmmoAmount = a.MaxAmmo;
     }
 }
