@@ -797,8 +797,8 @@ function CheckConfig()
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-4336.000000, -150, -176.000000);//storage closet
-        important_locations[i].rotation = rot(0, -16384, 0);
+        important_locations[i].location = vect(-4096.000000, -816.000000, -128.000000);//storage closet
+        important_locations[i].rotation = rot(0, 32768, 0);
         i++;
 
         important_locations[i].map_name = map;
@@ -812,8 +812,8 @@ function CheckConfig()
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-320.000000, -784.000000, 32.000000);//engine control room
-        important_locations[i].rotation = rot(3800, 16384, 0);
+        important_locations[i].location = vect(-288.000000, -432.000000, 96.000000);//engine control room
+        important_locations[i].rotation = rot(-16384, 16384, 0);
         i++;
 
         map = "11_paris_cathedral";

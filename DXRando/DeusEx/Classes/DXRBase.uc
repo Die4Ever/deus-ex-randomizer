@@ -104,7 +104,7 @@ function float rngexp(float min, float max, float curve)
     return pow(f, curve);
 }
 
-function RandoLevelValues(Actor a, float min, float max, out string Desc)
+function bool RandoLevelValues(Actor a, float min, float max, out string Desc)
 {
     local Augmentation aug;
     local Skill sk;
@@ -137,9 +137,11 @@ function RandoLevelValues(Actor a, float min, float max, out string Desc)
 
     s = "(" $ word $ ": " $ s $ ")";
 
-    if( InStr(Desc, s) == -1 )
+    if( InStr(Desc, s) == -1 ) {
         Desc = Desc $ "|n|n" $ s;
-
+        return true;
+    }
+    return false;
 }
 
 function string DescriptionLevel(Actor a, int i, out string word)

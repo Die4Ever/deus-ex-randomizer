@@ -1,24 +1,70 @@
 class ScriptedPawn merges ScriptedPawn;
 // doesn't work with injects due to use of Self
 
+var int flareBurnTime;
+
 function PlayDying(name damageType, vector hitLoc)
 {
+    local DeusExPlayer p;
     local Inventory item, nextItem;
     local bool gibbed, drop, melee;
 
     gibbed = (Health < -100) && !IsA('Robot');
 
+    if( gibbed ) {
+        p = DeusExPlayer(GetPlayerPawn());
+        class'DXRStats'.static.AddGibbedKill(p);
+    }
+
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
         melee = item.IsA('WeaponProd') || item.IsA('WeaponBaton') || item.IsA('WeaponCombatKnife') || item.Isa('WeaponCrowbar') || item.IsA('WeaponNanoSword') || item.Isa('WeaponSword');
-        drop = (item.IsA('NanoKey') && gibbed) || (melee && !gibbed);//don't give the melee weapon if we're getting gibbed, that would make the game easier and this is supposed to be a QoL change not a balance change
+        drop = (item.IsA('NanoKey') && gibbed) || (melee && !gibbed) || (gibbed && item.bDisplayableInv);
         if( drop ) {
             class'DXRActorsBase'.static.ThrowItem(self, item);
-            item.Velocity *= vect(-1, -1, 1.3);
+            if(gibbed)
+                item.Velocity *= vect(-2, -2, 2);
+            else
+                item.Velocity *= vect(-1.5, -1.5, 1.5);
         }
         item = nextItem;
     }
     
     _PlayDying(damageType, hitLoc);
+}
+
+function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType,
+                        bool bPlayAnim)
+{
+    local name baseDamageType;
+    local DeusExPlayer p;
+    
+    if (damageType == 'FlareFlamed') {
+        baseDamageType = 'Flamed';
+    } else {
+        baseDamageType = damageType;
+    }
+    
+    _TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
+    
+    if (bBurnedToDeath) {
+        p = DeusExPlayer(GetPlayerPawn());
+        class'DXRStats'.static.AddBurnKill(p);
+    } 
+    
+    if (damageType == 'FlareFlamed') {
+        flareBurnTime = 3;
+    }
+}
+
+function UpdateFire()
+{
+    _UpdateFire();
+    if (flareBurnTime > 0) {
+        flareBurnTime -= 1;
+        if (flareBurnTime == 0) {
+            ExtinguishFire();
+        }
+    }
 }

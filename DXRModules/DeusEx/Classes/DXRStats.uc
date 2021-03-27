@@ -187,6 +187,16 @@ static function AddDeath(DeusExPlayer p)
     IncDataStorageStat(p,'DXRStats_deaths');
 }
 
+static function AddBurnKill(DeusExPlayer p)
+{
+    IncStatFlag(p,'DXRStats_burnkills');
+}
+
+static function AddGibbedKill(DeusExPlayer p)
+{
+    IncStatFlag(p,'DXRStats_gibbedkills');
+}
+
 function int GetDataStorageStat(name valname)
 {
     local DataStorage datastorage;
@@ -196,7 +206,7 @@ function int GetDataStorageStat(name valname)
 
 function AddDXRCredits(CreditsWindow cw) 
 {  
-    local int fired,swings,jumps,deaths;
+    local int fired,swings,jumps,deaths,burnkills,gibbedkills;
 
     cw.PrintHeader("In-Game Time");
     
@@ -219,6 +229,8 @@ function AddDXRCredits(CreditsWindow cw)
     fired = dxr.Player.FlagBase.GetInt('DXRStats_shotsfired');
     swings = dxr.Player.FlagBase.GetInt('DXRStats_weaponswings');
     jumps = dxr.Player.FlagBase.GetInt('DXRStats_jumps');
+    burnkills = dxr.Player.FlagBase.GetInt('DXRStats_burnkills');
+    gibbedkills = dxr.Player.FlagBase.GetInt('DXRStats_gibbedkills');
     deaths = GetDataStorageStat('DXRStats_deaths');
     
     cw.PrintHeader("Statistics");
@@ -228,6 +240,8 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("Jumps: "$jumps);
     cw.PrintText("Nano Keys: "$dxr.player.KeyRing.GetKeyCount());
     cw.PrintText("Skill Points Earned: "$dxr.Player.SkillPointsTotal);
+    cw.PrintText("Enemies Burned to Death: "$burnkills);
+    cw.PrintText("Enemies Gibbed: "$gibbedkills);
     cw.PrintText("Deaths: "$deaths);
     
     cw.PrintLn();

@@ -17,9 +17,10 @@ function DropKeys()
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
-        if( item.IsA('NanoKey') ) {
+        if( item.IsA('NanoKey') || item.bDisplayableInv ) {
             DeleteInventory(item);
-            item.DropFrom(Location);
+            class'DXRActorsBase'.static.ThrowItem(self, item);
+            item.Velocity *= vect(-2, -2, 3);
         }
         item = nextItem;
     }
