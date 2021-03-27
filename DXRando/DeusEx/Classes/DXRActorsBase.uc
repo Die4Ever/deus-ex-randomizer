@@ -204,9 +204,9 @@ static function ThrowItem(Actor a, Inventory item)
 {
     if( Pawn(a) != None )
         Pawn(a).DeleteInventory(item);
-    item.DropFrom(a.Location);
+    item.DropFrom(a.Location + VRand()*32);
     // kinda copied from DeusExPlayer DropItem function
-    item.Velocity = vector(a.rotation) * 300 + vect(0,0,220);
+    item.Velocity = vector(a.rotation) * 300 + vect(0,0,220) + VRand()*32;
 }
 
 function bool SkipActorBase(Actor a)

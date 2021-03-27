@@ -23,7 +23,10 @@ function PlayDying(name damageType, vector hitLoc)
         drop = (item.IsA('NanoKey') && gibbed) || (melee && !gibbed) || (gibbed && item.bDisplayableInv);
         if( drop ) {
             class'DXRActorsBase'.static.ThrowItem(self, item);
-            item.Velocity *= vect(-1, -1, 1.3);
+            if(gibbed)
+                item.Velocity *= vect(-2, -2, 2);
+            else
+                item.Velocity *= vect(-1.5, -1.5, 1.5);
         }
         item = nextItem;
     }
