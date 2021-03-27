@@ -94,7 +94,7 @@ function SetAllMaxCopies(int scale)
     if( dxr == None ) return;
     SetMaxAmmo( class'Ammo', dxr.flags.ammo*scale/100 );
 
-    SetMaxCopies(class'FireExtinguisher', 100);// just make sure to apply the enviro skill
+    SetMaxCopies(class'FireExtinguisher', 125);// just make sure to apply the enviro skill, HACK: 125% to counteract the normal 80%
     SetMaxCopies(class'Multitool', dxr.flags.multitools*scale/100 );
     SetMaxCopies(class'Lockpick', dxr.flags.lockpicks*scale/100 );
     SetMaxCopies(class'BioelectricCell', dxr.flags.biocells*scale/100 );
@@ -203,7 +203,8 @@ function SetMaxCopies(class<DeusExPickup> type, int percent)
     local DeusExPickup p;
     local int enviro_add;
 
-    enviro_add = dxr.Player.SkillSystem.GetSkillLevel(class'SkillEnviro');
+    if( ClassIsChildOf(class'FireExtinguisher', type) )
+        enviro_add = dxr.Player.SkillSystem.GetSkillLevel(class'SkillEnviro');
 
     foreach AllActors(class'DeusExPickup', p) {
         if( ! p.IsA(type.name) ) continue;
@@ -234,4 +235,5 @@ function SetMaxAmmo(class<Ammo> type, int percent)
 
 defaultproperties
 {
+    bAlwaysTick=True
 }
