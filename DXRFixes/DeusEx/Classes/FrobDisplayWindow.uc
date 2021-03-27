@@ -368,7 +368,7 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
     // draw the absolute number of multitools on top of the colored bar
     if ((device.bHackable) && (device.hackStrength != 0.0))
     {
-        // do to the way HackableDevices uses a timer, it seems to use very slightly more tools than it's supposed to sometimes, rounding up to the next 100th of a hackStrength
+        // due to the way HackableDevices uses a timer, it seems to use very slightly more tools than it's supposed to sometimes, rounding up to the next 100th of a hackStrength
         hackStrength = Ceil(device.hackStrength*100)/100.0;
         numTools = Ceil((hackStrength / player.SkillSystem.GetSkillLevelValue(class'SkillTech')));
         if (numTools == 1)
