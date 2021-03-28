@@ -9,7 +9,7 @@ function Frob(actor Frobber, Inventory frobWith)
 	player = DeusExPlayer(Frobber);
 	if (player != None && player.bOnFire)
 	{
-		player.ClientMessage("Splish Splash!");
+		player.ClientMessage("Splish Splash!",, true);
 		player.ExtinguishFire();
 	}
 }

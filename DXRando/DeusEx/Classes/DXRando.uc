@@ -302,7 +302,7 @@ function warning(string message)
 function err(string message)
 {
     log("ERROR: " $ message, class.name);
-    Player.ClientMessage( Class @ message );
+    Player.ClientMessage( Class @ message, 'ERROR' );
 
     class'DXRTelemetry'.static.SendLog(Self, Self, "ERROR", message);
 }

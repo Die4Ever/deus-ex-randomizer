@@ -8,6 +8,8 @@ player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 
 for v1.6 programatically modify conversations? ===================
 
+for better log message window, look at DeusExRootWindow ClientMessage function, and HUDLogDisplay AddLog and SetLogTimeout functions
+
 in Actor.uc
 // Probe messages.
 native(117) final function Enable( name ProbeFunc );

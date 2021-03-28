@@ -321,7 +321,7 @@ function err(string message)
 {
     log("ERROR: " $ message, class.name);
     if(dxr != None && dxr.Player != None) {
-        dxr.Player.ClientMessage( Class @ message );
+        dxr.Player.ClientMessage( Class @ message, 'ERROR' );
     }
 
     class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", message);

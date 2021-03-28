@@ -17,7 +17,7 @@ function Frob(actor Frobber, Inventory frobWith)
     
     if (Frobber.IsA('DeusExPlayer')){
         p = DeusExPlayer(Frobber);
-        p.ClientMessage("Time for some new clothes!");
+        p.ClientMessage("Time for some new clothes!",, true);
         foreach AllActors(class'DXRFashion',fashion)
             break;
         

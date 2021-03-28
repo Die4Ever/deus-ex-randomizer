@@ -423,10 +423,14 @@ function ReplacePassword(string oldpassword, string newpassword)
 
 function NotifyPlayerNotesUpdated()
 {
-    if( updated == 1 )
+    if( updated == 1 ) {
         dxr.Player.ClientMessage("Note updated");
-    else if( updated > 1 )
+        DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
+    }
+    else if( updated > 1 ) {
         dxr.Player.ClientMessage("Notes updated");
+        DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
+    }
     updated = 0;
 }
 
@@ -438,6 +442,8 @@ function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword
     if( WordInStr( Caps(goal.text), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return false;
 
     dxr.Player.ClientMessage("Goal updated");
+    DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
+    
     info("found goal with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
     goal.text = ReplaceText( goal.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
