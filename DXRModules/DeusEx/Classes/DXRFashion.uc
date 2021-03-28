@@ -5,22 +5,22 @@ var int numInfluencers;
 var class<ScriptedPawn> coatInfluencers[100];
 var int numCoatInfluencers;
 
-var texture coat1,coat2,pants,shirt;
-
-
 function AnyEntry()
 {
+    local int lastUpdate;
     Super.AnyEntry();
+
+    InitInfluencers();
+
+    lastUpdate = dxr.flags.f.GetInt('DXRFashion_LastUpdate');
+    if (lastUpdate < dxr.dxInfo.MissionNumber) {
+        RandomizeClothes();
+        dxr.Player.ClientMessage("Time for a change of clothes...");
+    }
+
     GetDressed();
 }
 
-function FirstEntry()
-{
-    Super.FirstEntry();
-    InitInfluencers();
-    RandomizeClothes();
-
-}
 
 function InitInfluencers()
 {
@@ -64,6 +64,7 @@ function InitInfluencers()
     AddCoatInfluencer(class'StantonDowd');
     AddCoatInfluencer(class'Jock');
     AddCoatInfluencer(class'ThugMale');
+    AddCoatInfluencer(class'PaulDenton');
 }
 
 //This will assume the pawn is a trenchcoat wearer
@@ -147,16 +148,43 @@ function GetDressed()
 	local PaulDentonCarcass paulCarcass;
 	local JCDentonMaleCarcass jcCarcass;
 	local JCDouble jc;  
-    
-    
-    if (coat1 == None ||
-        coat2 == None ||
-        shirt == None ||
-        pants == None) {
+    local texture coat1,coat2,pants,shirt;
+    local name coatinfluencer,pantsinfluencer,shirtinfluencer;
+    local class<ScriptedPawn> styleInfluencer;
+
+    coatinfluencer = dxr.Player.FlagBase.GetName('DXRFashion_CoatInfluencer');
+    pantsinfluencer = dxr.Player.FlagBase.GetName('DXRFashion_PantsInfluencer');
+    shirtinfluencer = dxr.Player.FlagBase.GetName('DXRFashion_ShirtInfluencer');
+
+    if (coatinfluencer == '' ||
+        pantsinfluencer == '' ||
+        shirtinfluencer == '') {
         //This was probably a game saved before fashion existed
+        info("No stored outfit!");
         InitInfluencers();
         RandomizeClothes();
+        coatinfluencer = dxr.Player.FlagBase.GetName('DXRFashion_CoatInfluencer');
+        pantsinfluencer = dxr.Player.FlagBase.GetName('DXRFashion_PantsInfluencer');
+        shirtinfluencer = dxr.Player.FlagBase.GetName('DXRFashion_ShirtInfluencer');        
     }
+
+    if (coatinfluencer!='') {
+        styleInfluencer = class<ScriptedPawn>(GetClassFromString(string(coatinfluencer),class'ScriptedPawn'));
+        coat1=GetCoat1(styleInfluencer);
+        coat2=GetCoat2(styleInfluencer);
+    }
+    
+    if (pantsinfluencer!='') {
+        styleInfluencer = class<ScriptedPawn>(GetClassFromString(string(pantsinfluencer),class'ScriptedPawn'));   
+        pants = GetPants(styleInfluencer);   
+    }
+
+    if (shirtinfluencer!='') {
+        styleInfluencer = class<ScriptedPawn>(GetClassFromString(string(shirtinfluencer),class'ScriptedPawn'));    
+        shirt = GetShirt(styleInfluencer);
+    }
+
+
     
     
 	// Paul Denton
@@ -217,22 +245,22 @@ function RandomizeClothes()
 {
     local class<ScriptedPawn> styleInfluencer;
   
-    
     //Randomize Coat (Multiskin 1 and 5)
     styleInfluencer = RandomCoatInfluencer();
-    l("Coat influencer is "$styleInfluencer);
-    coat1=GetCoat1(styleInfluencer);
-    coat2=GetCoat2(styleInfluencer);
+    dxr.Player.FlagBase.SetName('DXRFashion_CoatInfluencer',styleInfluencer.name);
+    info("Coat influencer is "$styleInfluencer);
+
     
     //Randomize Pants (Multiskin 2)
     styleInfluencer = RandomShirtPantInfluencer();
-    l("Pants influencer is "$styleInfluencer);
-    pants = GetPants(styleInfluencer);
+    dxr.Player.FlagBase.SetName('DXRFashion_PantsInfluencer',styleInfluencer.name);
+    info("Pants influencer is "$styleInfluencer);
     
     //Randomize Shirt (Multiskin 4
     styleInfluencer = RandomCoatInfluencer();
-    l("Shirt influencer is "$styleInfluencer);
-    shirt = GetShirt(styleInfluencer);
-
+    dxr.Player.FlagBase.SetName('DXRFashion_ShirtInfluencer',styleInfluencer.name);
+    info("Shirt influencer is "$styleInfluencer);
+    
+    dxr.flags.f.SetInt('DXRFashion_LastUpdate',dxr.dxInfo.MissionNumber,,999);
 
 }
