@@ -2,11 +2,22 @@ class DXRJCDentonMaleCarcass injects JCDentonMaleCarcass;
 
 function SetSkin(DeusExPlayer player)
 {
-	Super.SetSkin(player);
+	local int i;
+    Super.SetSkin(player);
 
-        //FASHION!
-        MultiSkins[1]=player.MultiSkins[1];
-	MultiSkins[5]=player.MultiSkins[5];
-	MultiSkins[4]=player.MultiSkins[4];
-	MultiSkins[2]=player.MultiSkins[2];         
+    //FASHION!
+    if (player.Mesh == LodMesh'DeusExCharacters.GM_Trench') {
+        Mesh = LodMesh'DeusExCharacters.GM_Trench_Carcass';
+        Mesh2 = LodMesh'DeusExCharacters.GM_Trench_CarcassB';
+        Mesh3 = LodMesh'DeusExCharacters.GM_Trench_CarcassC';
+    } else {
+        Mesh = LodMesh'DeusExCharacters.GM_DressShirt_Carcass';
+        Mesh2 = LodMesh'DeusExCharacters.GM_DressShirt_CarcassB';
+        Mesh3 = LodMesh'DeusExCharacters.GM_DressShirt_CarcassC';
+    }
+    
+    for (i = 0; i <= 7; i++) {
+        MultiSkins[i]=player.MultiSkins[i];
+    }
+       
 }
