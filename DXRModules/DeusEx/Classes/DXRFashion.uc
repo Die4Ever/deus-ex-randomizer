@@ -28,60 +28,97 @@ function InitInfluencers()
 {
     numInfluencers = 0;
     numCoatInfluencers = 0;
+    numNonCoatInfluencers = 0;
     
-    AddNonCoatInfluencer(class'AlexJacobson');
-    AddNonCoatInfluencer(class'BoatPerson');
-    AddNonCoatInfluencer(class'Bartender');
-    AddNonCoatInfluencer(class'HowardStrong');
-    AddNonCoatInfluencer(class'JoeGreene');
-    AddNonCoatInfluencer(class'Male1');
-    AddNonCoatInfluencer(class'Male2');
-    AddNonCoatInfluencer(class'Male3');
-    AddNonCoatInfluencer(class'MorganEverett');
-    AddNonCoatInfluencer(class'Cop');
-    AddNonCoatInfluencer(class'JoJoFine');
-    AddNonCoatInfluencer(class'ThugMale2');
-    AddNonCoatInfluencer(class'ThugMale3');
-    AddNonCoatInfluencer(class'GuntherHermann');
-
-    AddCoatInfluencer(class'BumMale');
-    AddCoatInfluencer(class'BumMale2');
-    AddCoatInfluencer(class'BumMale3');
-    AddCoatInfluencer(class'JCDouble');
-    AddCoatInfluencer(class'JaimeReyes');
-    AddCoatInfluencer(class'HarleyFilben');
-    AddCoatInfluencer(class'GilbertRenton');
-    AddCoatInfluencer(class'FordSchick');
-    AddCoatInfluencer(class'GordonQuick');
-    AddCoatInfluencer(class'JuanLebedev');
-    AddCoatInfluencer(class'MaxChen');
-    AddCoatInfluencer(class'WaltonSimons');
-    AddCoatInfluencer(class'Smuggler');
-    AddCoatInfluencer(class'TobyAtanwe');
-    AddCoatInfluencer(class'TerroristCommander');
-    AddCoatInfluencer(class'TriadRedArrow');
-    AddCoatInfluencer(class'GarySavage');
-    AddCoatInfluencer(class'Doctor');
-    AddCoatInfluencer(class'ScientistMale');
-    AddCoatInfluencer(class'StantonDowd');
-    AddCoatInfluencer(class'Jock');
-    AddCoatInfluencer(class'ThugMale');
-    AddCoatInfluencer(class'PaulDenton');
+    AddInfluencer(class'AlexJacobson');
+    AddInfluencer(class'BoatPerson');
+    AddInfluencer(class'Bartender');
+    AddInfluencer(class'HowardStrong');
+    AddInfluencer(class'JoeGreene');
+    AddInfluencer(class'Male1');
+    AddInfluencer(class'Male2');
+    AddInfluencer(class'Male3');
+    AddInfluencer(class'MorganEverett');
+    AddInfluencer(class'Cop');
+    AddInfluencer(class'JoJoFine');
+    AddInfluencer(class'ThugMale2');
+    AddInfluencer(class'ThugMale3');
+    AddInfluencer(class'GuntherHermann');
+    AddInfluencer(class'BusinessMan1');
+    AddInfluencer(class'BusinessMan2');
+    AddInfluencer(class'BusinessMan3');
+    AddInfluencer(class'Butler');
+    AddInfluencer(class'Chef');
+    AddInfluencer(class'ChildMale');
+    AddInfluencer(class'ChildMale2');
+    AddInfluencer(class'Janitor');
+    AddInfluencer(class'JunkieMale');
+    AddInfluencer(class'LowerClassMale');
+    AddInfluencer(class'LowerClassMale2');
+    AddInfluencer(class'Male4');
+    AddInfluencer(class'Mechanic');
+    AddInfluencer(class'MichaelHamner');
+    AddInfluencer(class'NathanMadison');
+    AddInfluencer(class'PhilipMead');
+    AddInfluencer(class'Sailor');
+    AddInfluencer(class'SecretService');
+    AddInfluencer(class'TracerTong');
+    AddInfluencer(class'BobPage');
+    AddInfluencer(class'HKMilitary');
+    AddInfluencer(class'JosephManderley');
+    AddInfluencer(class'MIB');
+    AddInfluencer(class'MJ12Troop');
+    AddInfluencer(class'RiotCop');
+    AddInfluencer(class'SamCarter');
+    AddInfluencer(class'Soldier');
+    AddInfluencer(class'Terrorist');
+    AddInfluencer(class'UNATCOTroop');
+    AddInfluencer(class'Chad');
+    AddInfluencer(class'ThugMale');
+    AddInfluencer(class'TriadLumPath');
+    AddInfluencer(class'TriadLumPath2');
+    AddInfluencer(class'BumMale');
+    AddInfluencer(class'BumMale2');
+    AddInfluencer(class'BumMale3');
+    AddInfluencer(class'JCDouble');
+    AddInfluencer(class'JaimeReyes');
+    AddInfluencer(class'HarleyFilben');
+    AddInfluencer(class'GilbertRenton');
+    AddInfluencer(class'FordSchick');
+    AddInfluencer(class'GordonQuick');
+    AddInfluencer(class'JuanLebedev');
+    AddInfluencer(class'MaxChen');
+    AddInfluencer(class'WaltonSimons');
+    AddInfluencer(class'Smuggler');
+    AddInfluencer(class'TobyAtanwe');
+    AddInfluencer(class'TerroristCommander');
+    AddInfluencer(class'TriadRedArrow');
+    AddInfluencer(class'GarySavage');
+    AddInfluencer(class'Doctor');
+    AddInfluencer(class'ScientistMale');
+    AddInfluencer(class'StantonDowd');
+    AddInfluencer(class'Jock');
+    AddInfluencer(class'ThugMale');
+    AddInfluencer(class'PaulDenton'); 
 }
 
-//This will assume the pawn is a trenchcoat wearer
 function texture GetCoat1(class<ScriptedPawn> p) 
 {
     if (p==None){
         return None;
     }
+    if (!IsTrenchInfluencer(p)) {
+        return None;
+    }
     return p.Default.MultiSkins[1];
 }
 
-//This will assume the pawn is a trenchcoat wearer
 function texture GetCoat2(class<ScriptedPawn> p) 
 {
     if (p==None){
+        return None;
+    }
+    if (!IsTrenchInfluencer(p)) {
         return None;
     }
     return p.Default.MultiSkins[5];
@@ -99,9 +136,21 @@ function texture GetShirt(class<ScriptedPawn> p)
 
         //Non-Trenchcoat shirts don't map onto the trenchcoat body properly            
         case LodMesh'DeusExCharacters.GM_DressShirt_B':
-            return p.Default.MultiSkins[0];  
+            return p.Default.MultiSkins[0]; 
+        case LodMesh'DeusExCharacters.GM_DressShirt':
+        case LodMesh'DeusExCharacters.GM_DressShirt_F':
+        case LodMesh'DeusExCharacters.GM_DressShirt_S':
+             return p.Default.MultiSkins[5];
+        case LodMesh'DeusExCharacters.GM_Jumpsuit':
+             return p.Default.MultiSkins[2];
+        case LodMesh'DeusExCharacters.GMK_DressShirt':
+        case LodMesh'DeusExCharacters.GMK_DressShirt_F':
+             return p.Default.MultiSkins[1];
+        case LodMesh'DeusExCharacters.GM_Suit':
+             return p.Default.MultiSkins[3];
         default:
-            return p.Default.MultiSkins[5];
+            dxr.Player.ClientMessage("Influencer "$p.Name$" has mesh "$p.Default.Mesh);
+            return None;
     }
 }
 
@@ -116,25 +165,45 @@ function texture GetPants(class<ScriptedPawn> p)
             return p.Default.MultiSkins[2];    
         case LodMesh'DeusExCharacters.GM_DressShirt_B':
             return p.Default.MultiSkins[1];    
+        case LodMesh'DeusExCharacters.GM_DressShirt':
+        case LodMesh'DeusExCharacters.GM_DressShirt_F':
+        case LodMesh'DeusExCharacters.GM_DressShirt_S':
+             return p.Default.MultiSkins[3];
+        case LodMesh'DeusExCharacters.GM_Jumpsuit':
+        case LodMesh'DeusExCharacters.GM_Suit':
+             return p.Default.MultiSkins[1];
+        case LodMesh'DeusExCharacters.GMK_DressShirt':
+        case LodMesh'DeusExCharacters.GMK_DressShirt_F':
+             return p.Default.MultiSkins[2];
         default:
-            return p.Default.MultiSkins[3];
+            dxr.Player.ClientMessage("Influencer "$p.Name$" has mesh "$p.Default.Mesh);
+            return None;
     }
 }
 
 function AddInfluencer(class<ScriptedPawn> p)
+{
+    if (isTrenchInfluencer(p)) {
+        AddCoatInfluencer(p);
+    } else {
+        AddNonCoatInfluencer(p);    
+    }
+}
+
+function AddBaseInfluencer(class<ScriptedPawn> p)
 {
     influencers[numInfluencers++] = p;
 }
 
 function AddNonCoatInfluencer(class<ScriptedPawn> p)
 {
-    AddInfluencer(p);
+    AddBaseInfluencer(p);
     nonCoatInfluencers[numNonCoatInfluencers++] = p;
 }
 
 function AddCoatInfluencer(class<ScriptedPawn> p)
 {
-    AddInfluencer(p);
+    AddBaseInfluencer(p);
     coatInfluencers[numCoatInfluencers++] = p;
 }
 
@@ -156,7 +225,7 @@ function class<ScriptedPawn> RandomNonCoatInfluencer()
 function bool IsTrenchInfluencer(class<ScriptedPawn> influencer)
 {
     return (influencer.Default.Mesh == LodMesh'DeusExCharacters.GM_Trench' ||
-        influencer.Default.Mesh == LodMesh'DeusExCharacters.GM_Trench_F');
+            influencer.Default.Mesh == LodMesh'DeusExCharacters.GM_Trench_F');
 }
 
 function ApplyOutfit(Actor p, texture coat1, texture coat2, texture shirt, texture pants, bool isJC) {
@@ -293,12 +362,13 @@ function RandomizeClothes()
     isTrench = IsTrenchInfluencer(styleInfluencer);
     dxr.Player.FlagBase.SetName('DXRFashion_CoatInfluencer',styleInfluencer.name);
     info("Coat influencer is "$styleInfluencer);
-
+    //dxr.Player.ClientMessage("Coat influencer is "$styleInfluencer);
     
     //Randomize Pants (Multiskin 2)
     styleInfluencer = RandomInfluencer();
     dxr.Player.FlagBase.SetName('DXRFashion_PantsInfluencer',styleInfluencer.name);
     info("Pants influencer is "$styleInfluencer);
+    //dxr.Player.ClientMessage("Pants influencer is "$styleInfluencer);
     
     //Randomize Shirt (Multiskin 4
     if (isTrench) {
@@ -308,6 +378,7 @@ function RandomizeClothes()
     }
     dxr.Player.FlagBase.SetName('DXRFashion_ShirtInfluencer',styleInfluencer.name);
     info("Shirt influencer is "$styleInfluencer);
+    //dxr.Player.ClientMessage("Shirt influencer is "$styleInfluencer);
     
     dxr.flags.f.SetInt('DXRFashion_LastUpdate',dxr.dxInfo.MissionNumber,,999);
 
