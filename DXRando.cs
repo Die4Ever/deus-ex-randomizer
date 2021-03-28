@@ -22,15 +22,12 @@ public class DeusEx : SimpleTCPPack
         new Effect("Glass Legs", "glass_legs"),
         new Effect("Give Health", "give_health",new[]{"amount100"}),
         new Effect("Set On Fire", "set_fire"),
-        new Effect("Give one Medkit", "give_medkit"),
-        new Effect("Give a Fire Extinguisher", "give_fireextinguisher"), //New for third Crowd Control batch
         new Effect("Full Heal", "full_heal"),
         new Effect("Drunk Mode (1 minute)", "drunk_mode"),
         new Effect("Drop Selected Item", "drop_selected_item"),
         new Effect("Enable Matrix Mode (1 Minute)", "matrix"),
         new Effect("Give Player EMP Field (15 seconds)", "emp_field"),
         new Effect("Give Bioelectric Energy", "give_energy",new[]{"amount100"}),
-        new Effect("Give One Biocell", "give_bioelectriccell"),
         new Effect("Give Skill Points (x100)", "give_skillpoints",new[]{"skillpoints1000"}), //Updated text for second Crowd Control batch
         new Effect("Remove Skill  Points (x100)", "remove_skillpoints",new[]{"skillpoints1000"}), //Updated text for second Crowd Control batch
         new Effect("Disable Jump (1 minute)", "disable_jump"),
@@ -51,6 +48,18 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Floor is Lava","floor_is_lava"), //New for second Crowd Control batch
         new Effect ("Invert Mouse Controls","invert_mouse"), //New for second Crowd Control batch
         new Effect ("Invert Movement Controls","invert_movement"), //New for second Crowd Control batch
+
+        //Items
+        new Effect("Give Items","giveitems",ItemKind.Folder), //New folder for third batch
+        new Effect("Give a Medkit", "give_medkit", "giveitems"), //Moved into new folder for third batch
+        new Effect("Give a Biocell", "give_bioelectriccell", "giveitems"), //Moved into new folder for third batch
+        new Effect("Give a Fire Extinguisher", "give_fireextinguisher", "giveitems"), //New for third Crowd Control batch
+        new Effect("Give a Ballistic Armor", "give_ballisticarmor", "giveitems"), //New for third Crowd Control batch
+        new Effect("Give a Lockpick", "give_lockpick", "giveitems"), //New for third Crowd Control batch
+        new Effect("Give a Multitool", "give_multitool", "giveitems"), //New for third Crowd Control batch
+        new Effect("Give a Rebreather", "give_rebreather", "giveitems"), //New for third Crowd Control batch
+        new Effect("Give a Thermoptic Camo", "give_adaptivearmor", "giveitems"), //New for third Crowd Control batch
+        new Effect("Give a HazMat Suit", "give_hazmatsuit", "giveitems"), //New for third Crowd Control batch
                 
         //Add/Remove Augs
         new Effect("Add/Upgrade Augmentations","addaugs",ItemKind.Folder),
