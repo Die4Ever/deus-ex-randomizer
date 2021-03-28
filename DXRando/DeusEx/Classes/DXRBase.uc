@@ -41,7 +41,6 @@ function ReEntry(bool IsTravel)
 function PreTravel()
 {
     l(Self$".PreTravel()");
-    dxr = None;
     SetTimer(0, False);
 }
 

@@ -136,9 +136,18 @@ function AnyEntry()
     }
 }
 
+function PreTravel()
+{
+    Super.PreTravel();
+    switch(dxr.localURL) {
+        case "04_NYC_HOTEL":
+            NYC_04_LeaveHotel();
+            break;
+    }
+}
+
 function Timer()
 {
-    local PaulDenton paul;
     local BlackHelicopter chopper;
     local Music m;
     local int i;
@@ -161,21 +170,7 @@ function Timer()
     switch(dxr.localURL)
     {
         case "04_NYC_HOTEL":
-            if( dxr.player.flagBase.GetBool('M04RaidBegan') ) {
-                foreach AllActors(class'PaulDenton', paul) {
-                    paul.bInvincible = false;
-                    i = 400;
-                    paul.Health = i;
-                    paul.HealthArmLeft = i;
-                    paul.HealthArmRight = i;
-                    paul.HealthHead = i;
-                    paul.HealthLegLeft = i;
-                    paul.HealthLegRight = i;
-                    paul.HealthTorso = i;
-                    paul.ChangeAlly('Player', 1, true);
-                }
-                SetTimer(0, false);
-            }
+            NYC_04_CheckPaulRaid();
             break;
         case "08_NYC_STREET":
             if ( dxr.Player.flagBase.GetBool('StantonDowd_Played') )
@@ -366,6 +361,85 @@ function Jailbreak_FirstEntry()
     }
 }
 
+// if you bail on Paul but then have a change of heart and re-enter to come back and save him
+function NYC_04_CheckPaulUndead()
+{
+    local PaulDenton paul;
+    local int count;
+
+    if( ! dxr.Player.flagBase.GetBool('PaulDenton_Dead')) return;
+
+    foreach AllActors(class'PaulDenton', paul) {
+        if( paul.Health > 0 ) {
+            dxr.Player.flagBase.SetBool('PaulDenton_Dead', false,, 999);
+            return;
+        }
+    }
+}
+
+function NYC_04_CheckPaulRaid()
+{
+    local PaulDenton paul;
+    local int count, i;
+
+    if( ! dxr.player.flagBase.GetBool('M04RaidTeleportDone') ) return;
+
+    foreach AllActors(class'PaulDenton', paul) {
+        if( paul.Health > 0 ) count++;
+        if( ! paul.bInvincible ) continue;
+
+        paul.bInvincible = false;
+        i = 400;
+        paul.Health = i;
+        paul.HealthArmLeft = i;
+        paul.HealthArmRight = i;
+        paul.HealthHead = i;
+        paul.HealthLegLeft = i;
+        paul.HealthLegRight = i;
+        paul.HealthTorso = i;
+        paul.ChangeAlly('Player', 1, true);
+    }
+
+    if( count == 0 && dxr.player.flagBase.GetBool('PaulDenton_Dead') ) {
+        dxr.player.ClientMessage("RIP Paul :( "$count);
+        SetTimer(0, False);
+    }
+    else if( count == 0 ) {
+        NYC_04_MarkPaulSafe();
+        SetTimer(0, False);
+    }
+}
+
+function NYC_04_MarkPaulSafe()
+{
+    local FlagTrigger t;
+    if( dxr.player.flagBase.GetBool('PaulLeftHotel') ) return;
+
+    dxr.player.flagBase.SetBool('PaulLeftHotel', true,, 999);
+    dxr.player.ClientMessage("Paul safely escaped the hotel! :)");
+
+    foreach AllActors(class'FlagTrigger', t) {
+        switch(t.tag) {
+            case 'KillPaul':
+            case 'BailedOutWindow':
+                t.Destroy();
+        }
+        if( t.Event == 'BailedOutWindow' )
+            t.Destroy();
+    }
+}
+
+function NYC_04_LeaveHotel()
+{
+    local FlagTrigger t;
+    foreach AllActors(class'FlagTrigger', t) {
+        if( t.Event == 'BailedOutWindow' )
+        {
+            t.Touch(dxr.Player);
+        }
+    }
+}
+
 function NYC_04_AnyEntry()
 {
     switch (dxr.localURL)
@@ -375,6 +449,7 @@ function NYC_04_AnyEntry()
             if(dxr.Player.flagBase.GetBool('NSFSignalSent')) {
                 dxr.Player.flagBase.SetBool('PaulInjured_Played', true,, 5);
             }
+            NYC_04_CheckPaulUndead();
             break;
     }
 }
