@@ -120,6 +120,7 @@ function AnyEntry()
 
     FixSamCarter();
     FixAmmoShurikenName();
+    FixLogTimeout();
 
     SetSeed( "DXRFixup AnyEntry missions" );
 
@@ -203,6 +204,12 @@ function FixAmmoShurikenName()
         a.ItemArticle = a.default.ItemArticle;
         a.beltDescription = a.default.beltDescription;
     }
+}
+
+function FixLogTimeout()
+{
+    //err("HUD LogTimeout was: "$DeusExRootWindow(dxr.player.rootWindow).hud.msgLog.displayTime);
+    DeusExRootWindow(dxr.player.rootWindow).hud.msgLog.SetLogTimeout(10);
 }
 
 function IncreaseBrightness(int brightness)
@@ -380,12 +387,18 @@ function NYC_04_CheckPaulUndead()
 function NYC_04_CheckPaulRaid()
 {
     local PaulDenton paul;
-    local int count, i;
+    local int count, dead, i;
 
     if( ! dxr.player.flagBase.GetBool('M04RaidTeleportDone') ) return;
 
     foreach AllActors(class'PaulDenton', paul) {
-        if( paul.Health > 0 ) count++;
+        // fix a softlock if you jump while approaching Paul
+        if( ! dxr.Player.flagBase.GetBool('TalkedToPaulAfterMessage_Played') ) {
+            dxr.Player.StartConversationByName('TalkedToPaulAfterMessage', paul, False, False);
+        }
+
+        count++;
+        if( paul.Health <= 0 ) dead++;
         if( ! paul.bInvincible ) continue;
 
         paul.bInvincible = false;
@@ -400,11 +413,12 @@ function NYC_04_CheckPaulRaid()
         paul.ChangeAlly('Player', 1, true);
     }
 
-    if( count == 0 && dxr.player.flagBase.GetBool('PaulDenton_Dead') ) {
-        dxr.player.ClientMessage("RIP Paul :( "$count);
+    if( dead > 0 || dxr.player.flagBase.GetBool('PaulDenton_Dead') ) {
+        dxr.player.ClientMessage("RIP Paul :( "$count,, true);
+        dxr.player.flagBase.SetBool('PaulDenton_Dead', true,, 999);
         SetTimer(0, False);
     }
-    else if( count == 0 ) {
+    else if( count == 0 && dead == 0 ) {
         NYC_04_MarkPaulSafe();
         SetTimer(0, False);
     }
@@ -416,7 +430,7 @@ function NYC_04_MarkPaulSafe()
     if( dxr.player.flagBase.GetBool('PaulLeftHotel') ) return;
 
     dxr.player.flagBase.SetBool('PaulLeftHotel', true,, 999);
-    dxr.player.ClientMessage("Paul safely escaped the hotel! :)");
+    dxr.player.ClientMessage("Paul safely escaped the hotel! :)",, true);
 
     foreach AllActors(class'FlagTrigger', t) {
         switch(t.tag) {
@@ -442,14 +456,16 @@ function NYC_04_LeaveHotel()
 
 function NYC_04_AnyEntry()
 {
+    local FlagTrigger t;
     switch (dxr.localURL)
     {
         case "04_NYC_HOTEL":
-            SetTimer(1.0, True);
+            NYC_04_CheckPaulUndead();
+            if( ! dxr.player.flagBase.GetBool('PaulDenton_Dead') )
+                SetTimer(1, True);
             if(dxr.Player.flagBase.GetBool('NSFSignalSent')) {
                 dxr.Player.flagBase.SetBool('PaulInjured_Played', true,, 5);
             }
-            NYC_04_CheckPaulUndead();
             break;
     }
 }
