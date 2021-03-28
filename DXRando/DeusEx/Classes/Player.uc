@@ -9,6 +9,12 @@ function ClientMessage(coerce string msg, optional Name type, optional bool bBee
     Super.ClientMessage(msg, type, bBeep);
     if( dxr == None ) foreach AllActors(class'DXRando', dxr) { break; }
     class'DXRTelemetry'.static.SendLog(dxr, self, "INFO", msg);
+
+    if(bBeep) {
+        // we don't want to override more important log sounds like Sound'LogSkillPoints'
+        if(DeusExRootWindow(rootWindow).hud.msgLog.logSoundToPlay == None)
+            DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'Menu_Focus');
+    }
 }
 
 function DXRBase DXRFindModule(class<DXRBase> class)
