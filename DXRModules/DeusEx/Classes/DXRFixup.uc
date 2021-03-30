@@ -357,12 +357,26 @@ function Airfield_FirstEntry()
 function Jailbreak_FirstEntry()
 {
     local PaulDenton p;
+    local ComputerPersonal c;
+    local int i;
 
     switch (dxr.localURL)
     {
         case "05_NYC_UNATCOMJ12LAB":
             foreach AllActors(class'PaulDenton', p) {
                 p.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
+            }
+            break;
+        case "05_NYC_UNATCOHQ":
+            foreach AllActors(class'ComputerPersonal', c) {
+                if( c.Name != 'ComputerPersonal3' ) continue;
+                // gunther and anna's computer across from Carter
+                for(i=0; i < ArrayCount(c.UserList); i++) {
+                    if( c.UserList[i].userName != "JCD" ) continue;
+                    // it's silly that you can use JC's account to get part of Anna's killphrase, and also weird that Anna's account isn't on here
+                    c.UserList[i].userName = "anavarre";
+                    c.UserList[i].password = "scryspc";
+                }
             }
             break;
     }
@@ -378,7 +392,7 @@ function NYC_04_CheckPaulUndead()
 
     foreach AllActors(class'PaulDenton', paul) {
         if( paul.Health > 0 ) {
-            dxr.Player.flagBase.SetBool('PaulDenton_Dead', false,, 999);
+            dxr.Player.flagBase.DeleteFlag('PaulDenton_Dead', FLAG_Bool);
             return;
         }
     }
@@ -414,7 +428,7 @@ function NYC_04_CheckPaulRaid()
     }
 
     if( dead > 0 || dxr.player.flagBase.GetBool('PaulDenton_Dead') ) {
-        dxr.player.ClientMessage("RIP Paul :( "$count,, true);
+        dxr.player.ClientMessage("RIP Paul :(",, true);
         dxr.player.flagBase.SetBool('PaulDenton_Dead', true,, 999);
         SetTimer(0, False);
     }
@@ -624,10 +638,10 @@ function HongKong_AnyEntry()
                         ScriptedPawn(a).ChangeAlly(dxr.Player.Alliance,1,False);
                         break;
                         
-                    case "TracerTong":                      
+                    case "TracerTong":
                         if ( boolFlag == True )
                         {
-                            ScriptedPawn(a).EnterWorld();                    
+                            ScriptedPawn(a).EnterWorld();
                         } else {
                             ScriptedPawn(a).LeaveWorld();
                         }
@@ -636,16 +650,16 @@ function HongKong_AnyEntry()
                         recruitedFlag = dxr.Player.flagBase.GetBool('JacobsonRecruited');
                         if ( boolFlag == True && recruitedFlag == True)
                         {
-                            ScriptedPawn(a).EnterWorld();                    
+                            ScriptedPawn(a).EnterWorld();
                         } else {
                             ScriptedPawn(a).LeaveWorld();
                         }
                         break;
                     case "JaimeReyes":
-                        recruitedFlag = dxr.Player.flagBase.GetBool('JaimeRecruited');
+                        recruitedFlag = dxr.Player.flagBase.GetBool('JaimeRecruited') && dxr.Player.flagBase.GetBool('Versalife_Done');
                         if ( boolFlag == True && recruitedFlag == True)
                         {
-                            ScriptedPawn(a).EnterWorld();                    
+                            ScriptedPawn(a).EnterWorld();
                         } else {
                             ScriptedPawn(a).LeaveWorld();
                         }
@@ -656,7 +670,7 @@ function HongKong_AnyEntry()
                     case "TurnOnTheKillSwitch":
                         if (boolFlag == True)
                         {
-                            Trigger(a).TriggerType = TT_PlayerProximity;                        
+                            Trigger(a).TriggerType = TT_PlayerProximity;
                         } else {
                             Trigger(a).TriggerType = TT_ClassProximity;
                             Trigger(a).ClassProximityType = class'Teleporter';//Impossible, thus disabling it
