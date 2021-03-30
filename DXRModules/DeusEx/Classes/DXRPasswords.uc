@@ -3,6 +3,9 @@ class DXRPasswords extends DXRActorsBase;
 var transient DeusExNote lastCheckedNote;
 var config safe_rule datacubes_rules[32];
 
+var int num_not_passwords;
+var config string not_passwords[32];
+
 var travel string oldpasswords[64];
 var travel string newpasswords[64];
 var travel int passStart;
@@ -17,7 +20,7 @@ function CheckConfig()
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
     }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,3) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
         i=0;
 
         datacubes_rules[i].map = "04_NYC_NSFHQ";
@@ -75,9 +78,32 @@ function CheckConfig()
         datacubes_rules[i] = datacubes_rules[i-1];
         datacubes_rules[i].item_name = 'DataCube2';
         i++;
+
+        i=0;
+        not_passwords[i++] = "dragon head";
+        not_passwords[i++] = "security restriction";
+        not_passwords[i++] = "security officer";
+        not_passwords[i++] = " of security";
+        not_passwords[i++] = "captain james";
+        not_passwords[i++] = "captain keene";
+        not_passwords[i++] = "captain Kang";
+        not_passwords[i++] = "captain Zhao";
+        not_passwords[i++] = "the captain";
+        not_passwords[i++] = "Brooklyn Naval Shipyard";
+        not_passwords[i++] = "Simons is no better";
+        not_passwords[i++] = "Simons, FEMA";
+        not_passwords[i++] = "MJ12 COMPROMISED INDIVIDUALS";
+        not_passwords[i++] = "MJ12 tool";
+        not_passwords[i++] = "MJ12 has the";
+        not_passwords[i++] = "MJ12 network";
+        not_passwords[i++] = "the MJ12";
     }
     for(i=0; i<ArrayCount(datacubes_rules); i++) {
         datacubes_rules[i].map = Caps(datacubes_rules[i].map);
+    }
+    num_not_passwords=0;
+    for(i=0; i<ArrayCount(not_passwords); i++) {
+        not_passwords[num_not_passwords++] = Caps(not_passwords[i]);
     }
     Super.CheckConfig();
 }
@@ -95,8 +121,11 @@ function Timer()
     while( goal != None ) {
         for (i=0; i<ArrayCount(oldpasswords); i++)
         {
-            if( oldpasswords[i] == "6282" )
-                UpdateGoal(goal, oldpasswords[i], newpasswords[i]);
+            switch(oldpasswords[i]) {
+                case "6282":
+                case "archon":
+                    UpdateGoal(goal, oldpasswords[i], newpasswords[i]);
+            }
         }
         goal = goal.next;
     }
@@ -136,7 +165,7 @@ function bool UpdateString(out string str, string oldpassword, string newpasswor
 {
     if( oldpassword == "" ) return false;
     if( str == "") return false;
-    if( WordInStr( Caps(str), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return false;
+    if( PassInStr( str, oldpassword ) == -1 ) return false;
 
     info("found string with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
@@ -439,7 +468,7 @@ function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword
     if( oldpassword == "" ) return false;
     if( goal.text == "") return false;
     if( goal.bCompleted ) return false;
-    if( WordInStr( Caps(goal.text), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return false;
+    if( PassInStr( goal.text, oldpassword ) == -1 ) return false;
 
     dxr.Player.ClientMessage("Goal updated");
     DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
@@ -454,7 +483,7 @@ function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword
 {
     if( oldpassword == "" ) return false;
     if( note.text == "") return false;
-    if( WordInStr( Caps(note.text), Caps(oldpassword), Len(oldpassword), true ) == -1 ) return false;
+    if( PassInStr( note.text, oldpassword ) == -1 ) return false;
     if( note.HasEitherPassword(oldpassword, newpassword) ) return false;
 
     updated++;
@@ -509,6 +538,38 @@ function string GeneratePasscode(string oldpasscode)
     return newpasscode;
 }
 
+final function int PassInStr(string text, string oldpassword)
+{
+    local string capsPass, capsText, capsNot;
+    local int lenPass, i, n, k, offset;
+    local bool found;
+
+    capsText = Caps(text);
+    capsPass = Caps(oldpassword);
+    lenPass = Len(oldpassword);
+
+    i = WordInStr( capsText, capsPass, lenPass, true );
+    while (i != -1) {
+        found = false;
+        for(n=0; n<num_not_passwords; n++) {
+            capsNot = Caps(not_passwords[n]);
+            offset = InStr(capsNot, capsPass);
+            if( offset == -1 ) continue;
+
+            k = InStr(capsText, capsNot);
+            if( k == i-offset ) {
+                found = true;
+                break;
+            }
+        }
+        if( !found ) return i;
+        capsText = Mid(capsText, i + lenPass); 
+        i = WordInStr( capsText, capsPass, lenPass, true );
+    }
+
+    return -1;
+}
+
 static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With, optional bool word)
 {
     local int i, replace_len;
@@ -534,7 +595,7 @@ static final function int WordInStr(coerce string Text, coerce string Replace, i
     if(word==false || i==-1) return i;
 
     if(i>0) {
-        if( IsAlphaNumeric(Text, i-1) ) {
+        if( IsWordChar(Text, i-1) ) {
             e = WordInStr(Mid(Text, i+1), Replace, replace_len, word);
             if( e <= 0 ) return -1;
             return i+1+e;
@@ -542,7 +603,7 @@ static final function int WordInStr(coerce string Text, coerce string Replace, i
     }
     e = i + replace_len;
     if( e < Len(Text) ) {
-        if( IsAlphaNumeric(Text, e) ) {
+        if( IsWordChar(Text, e) ) {
             e = WordInStr(Mid(Text, i+1), Replace, replace_len, word);
             if( e <= 0 ) return -1;
             return i+1+e;
@@ -551,7 +612,7 @@ static final function int WordInStr(coerce string Text, coerce string Replace, i
     return i;
 }
 
-static final function bool IsAlphaNumeric(coerce string Text, int index)
+static final function bool IsWordChar(coerce string Text, int index)
 {
     local int c;
     c = Asc(Mid(Text, index, 1));
@@ -560,6 +621,8 @@ static final function bool IsAlphaNumeric(coerce string Text, int index)
     if( c>=65 && c<=90) // A-Z
         return true;
     if( c>=97 && c<=122) // a-z
+        return true;
+    if( c == 39 ) // apostrophe
         return true;
     return false;
 }
@@ -615,9 +678,8 @@ function ProcessText(DeusExTextParser parser, out int hasPass[64])
 
         for(i=0; i<passEnd; i++) {
             if( Len(oldpasswords[i]) == 0 ) continue;
-            if( WordInStr( text, Caps(oldpasswords[i]), Len(oldpasswords[i]), true ) != -1 ) {
+            if( PassInStr( text, oldpasswords[i] ) != -1 ) {
                 hasPass[i] = 1;
-                //l("hasPass["$i$"] = 1;");
             }
         }
     }
@@ -629,9 +691,8 @@ function ProcessStringHasPass(string text, out int hasPass[64])
     text = Caps(text);
     for(i=0; i<passEnd; i++) {
         if( Len(oldpasswords[i]) == 0 ) continue;
-        if( WordInStr( text, Caps(oldpasswords[i]), Len(oldpasswords[i]), true ) != -1 ) {
+        if( PassInStr( text, oldpasswords[i] ) != -1 ) {
             hasPass[i] = 1;
-            //l("hasPass["$i$"] = 1;");
         }
     }
 }
@@ -716,6 +777,8 @@ function bool InfoPositionGood(InformationDevices id, vector newpos, int hasPass
 
 function RunTests()
 {
+    local int old_num_not_passwords;
+    local string oldnot;
     Super.RunTests();
 
     testint( WordInStr("THIS IS A TEST", "IS", 2 ), 2, "WordInStr match" );
@@ -726,4 +789,18 @@ function RunTests()
 
     teststring( ReplaceText("MJ12 12 12345", "12", "12345", true), "MJ12 12345 12345", "ReplaceText 1" );
     teststring( ReplaceText("MJ12 12 12345", "45", "12345", true), "MJ12 12 12345", "ReplaceText 2" );
+    teststring( ReplaceText("dragon's dragon", "dragon", "test", true), "dragon's test", "ReplaceText 3 apostrophe" );
+
+    oldnot = not_passwords[0];
+    not_passwords[0] = "CAPTAIN ZHAO";
+    old_num_not_passwords = num_not_passwords;
+    num_not_passwords = 1;
+
+    testint( PassInStr("hello captain zhao", "captain"), -1, "not password 1");
+    testint( PassInStr("hello captain zhao", "zhao"), -1, "not password 2");
+    testint( PassInStr("hello captain zhao", "hello"), 0, "yes password 1");
+    testint( PassInStr("password is captain", "captain"), 12, "yes password 2");
+
+    not_passwords[0] = oldnot;
+    num_not_passwords = old_num_not_passwords;
 }
