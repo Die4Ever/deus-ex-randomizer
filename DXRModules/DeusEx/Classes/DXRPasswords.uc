@@ -4,7 +4,7 @@ var transient DeusExNote lastCheckedNote;
 var config safe_rule datacubes_rules[32];
 
 var int num_not_passwords;
-var config string not_passwords[32];
+var config string not_passwords[64];
 
 var travel string oldpasswords[64];
 var travel string newpasswords[64];
@@ -82,8 +82,22 @@ function CheckConfig()
         i=0;
         not_passwords[i++] = "dragon head";
         not_passwords[i++] = "security restriction";
-        not_passwords[i++] = "security officer";
+        not_passwords[i++] = "security office";
+        not_passwords[i++] = "security system";
         not_passwords[i++] = " of security";
+        not_passwords[i++] = "SECURITY PERSON";
+        not_passwords[i++] = "AUTHORIZED SECURITY";
+        not_passwords[i++] = "SECURITY SHOULD";
+        not_passwords[i++] = "SECURITY MEASURE";
+        not_passwords[i++] = "SECURITY OFFICE";
+        not_passwords[i++] = "SECURITY AGEN";
+        not_passwords[i++] = "SECURITY CODE";
+        not_passwords[i++] = "SECURITY PROTOCOL";
+        not_passwords[i++] = "SECURITY VULN";
+        not_passwords[i++] = "SECURITY GRID";
+        not_passwords[i++] = "SECURITY LIAB";
+        not_passwords[i++] = "SECURITY CONSOLE";
+        not_passwords[i++] = "SECURITY UPGRADE";
         not_passwords[i++] = "captain james";
         not_passwords[i++] = "captain keene";
         not_passwords[i++] = "captain Kang";
@@ -92,11 +106,15 @@ function CheckConfig()
         not_passwords[i++] = "Brooklyn Naval Shipyard";
         not_passwords[i++] = "Simons is no better";
         not_passwords[i++] = "Simons, FEMA";
+        not_passwords[i++] = "Walton Simons";
+        not_passwords[i++] = "SIMONS WENT";
+        not_passwords[i++] = "Bob Page";
         not_passwords[i++] = "MJ12 COMPROMISED INDIVIDUALS";
         not_passwords[i++] = "MJ12 tool";
         not_passwords[i++] = "MJ12 has the";
         not_passwords[i++] = "MJ12 network";
         not_passwords[i++] = "the MJ12";
+        not_passwords[i++] = "1";
     }
     for(i=0; i<ArrayCount(datacubes_rules); i++) {
         datacubes_rules[i].map = Caps(datacubes_rules[i].map);
@@ -143,7 +161,7 @@ function Timer()
     NotifyPlayerNotesUpdated();
 }
 
-function ProcessString(out string str, optional out string updated_passwords[16])
+function ProcessString(out string str, optional out string updated_passwords[16], optional bool conversation)
 {
     local int i, j;
     for(j=0; j<ArrayCount(updated_passwords); j++) {
@@ -151,6 +169,9 @@ function ProcessString(out string str, optional out string updated_passwords[16]
     }
     for (i=0; i<ArrayCount(oldpasswords); i++)
     {
+        if( conversation && oldpasswords[i] == "SECURITY" ) {// HACK
+            continue;
+        }
         if( UpdateString(str, oldpasswords[i], newpasswords[i]) ) {
             if( j >= ArrayCount(updated_passwords) ) {
                 warning("ProcessString "$oldpasswords[i]$" to "$newpasswords[i]$", j >= ArrayCount(updated_passwords)");
@@ -168,6 +189,8 @@ function bool UpdateString(out string str, string oldpassword, string newpasswor
     if( PassInStr( str, oldpassword ) == -1 ) return false;
 
     info("found string with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
+    //l(str);
+    //l("---");
 
     str = ReplaceText( str, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
     return true;
@@ -194,7 +217,7 @@ function AnyEntry()
     SetTimer(1.0, True);
 
     foreach AllObjects(class'ConSpeech', c) {
-        ProcessString(c.speech);
+        ProcessString(c.speech,, true);
     }
 }
 
@@ -269,14 +292,54 @@ function RandoPasswords(int mode)
 function FixCodes()
 {
     local string newpassword;
-    if( dxr.localURL == "02_NYC_HOTEL" ) {
-        newpassword = GeneratePasscode("4321");
-        ReplacePassword("count back from 4", newpassword);
+    switch(dxr.localURL) {
+        case "02_NYC_HOTEL":
+            newpassword = GeneratePasscode("4321");
+            ReplacePassword("count back from 4", newpassword);
+            break;
+        
+        case "15_AREA51_PAGE":
+            newpassword = GeneratePasscode("7243");
+            ReplacePassword("724", Left(newpassword, 3) );
+            break;
     }
-    if( dxr.localURL == "15_AREA51_PAGE" ) {
-        newpassword = GeneratePasscode("7243");
-        ReplacePassword("724", Left(newpassword, 3) );
-    }
+}
+
+function FixMaggieChowBday(Keypad k)
+{
+    local string oldpassword, newpassword;
+    local int month, day, i, oldseed;
+    local string months[12];
+
+    oldpassword = k.validCode;
+
+    i=1;
+    months[i++] = "January";
+    months[i++] = "February";
+    months[i++] = "March";
+    months[i++] = "April";
+    months[i++] = "May";
+    months[i++] = "June";
+    months[i++] = "July";
+    months[i++] = "August";
+    months[i++] = "September";
+    months[i++] = "October";
+    months[i++] = "November";
+    months[i++] = "December";
+
+    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(oldpassword) );//manually set the seed to avoid using the level name in the seed
+    month = rng(12)+1;
+    day = rng(28)+1;// HACK: too lazy to do the right number of days in each month
+    dxr.SetSeed(oldseed);
+    
+    newpassword = string(month);
+    if(day<10) newpassword = newpassword $ "0" $ day;
+    else newpassword = newpassword $ day;
+    ReplacePassword(oldpassword, newpassword);
+    k.validCode = newpassword;
+
+    newpassword = months[month] @ day;
+    ReplacePassword("July 18th", newpassword);
 }
 
 function RandoInfoDevs(int percent)
@@ -384,6 +447,11 @@ function ChangeKeypadPasscode(Keypad k)
     local string oldpassword;
     local string newpassword;
     local int j;
+
+    if( k.validCode == "718" ) {
+        FixMaggieChowBday(k);
+        return;
+    }
 
     oldpassword = k.validCode;
 
@@ -679,6 +747,9 @@ function ProcessText(DeusExTextParser parser, out int hasPass[64])
         for(i=0; i<passEnd; i++) {
             if( Len(oldpasswords[i]) == 0 ) continue;
             if( PassInStr( text, oldpasswords[i] ) != -1 ) {
+                /*l("found password "$oldpasswords[i]);
+                l(text);
+                l("---");*/
                 hasPass[i] = 1;
             }
         }
@@ -692,6 +763,9 @@ function ProcessStringHasPass(string text, out int hasPass[64])
     for(i=0; i<passEnd; i++) {
         if( Len(oldpasswords[i]) == 0 ) continue;
         if( PassInStr( text, oldpasswords[i] ) != -1 ) {
+            /*l("found password "$oldpasswords[i]);
+            l(text);
+            l("---");*/
             hasPass[i] = 1;
         }
     }
