@@ -183,6 +183,9 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     bReduced = False;
     newDamage = Float(Damage);
+    if( newDamage > 49/CombatDifficulty ) {
+        newDamage = 49/CombatDifficulty;
+    }
     oldDamage = newDamage;
 
     if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||
@@ -259,6 +262,17 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
         if (augLevel >= 0.0)
             newDamage *= augLevel;
+
+        if (UsingChargedPickup(class'HazMatSuit'))
+        {
+            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+            newDamage *= 0.75 * skillLevel;
+        }
+        else // passive enviro skill still gives some damage reduction
+        {
+            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+            newDamage *= (skillLevel + 1)/2;
+        }
     }
 
     //Apply damage multiplier
