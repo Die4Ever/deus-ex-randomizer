@@ -12,14 +12,21 @@ function SetSkin(DeusExPlayer player)
         Mesh = LodMesh'DeusExCharacters.GM_Trench_Carcass';
         Mesh2 = LodMesh'DeusExCharacters.GM_Trench_CarcassB';
         Mesh3 = LodMesh'DeusExCharacters.GM_Trench_CarcassC';
+        for (i = 1; i <= 5; i++) { //Paul doesn't get the sunglasses
+            MultiSkins[i]=player.MultiSkins[i];
+        }
     } else {
-        Mesh = LodMesh'DeusExCharacters.GM_DressShirt_Carcass';
-        Mesh2 = LodMesh'DeusExCharacters.GM_DressShirt_CarcassB';
-        Mesh3 = LodMesh'DeusExCharacters.GM_DressShirt_CarcassC';
+        Mesh = LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass';
+        Mesh2 = LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB';
+        Mesh3 = LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC';
+        for (i = 1; i <= 7; i++) { //Paul doesn't get the sunglasses
+            MultiSkins[i]=player.MultiSkins[i];
+        }
+        MultiSkins[3] = MultiSkins[0]; //This is another face texture
+        
+        self.Texture = player.Texture;
     }
-    for (i = 1; i <= 5; i++) { //Paul doesn't get the sunglasses
-        MultiSkins[i]=player.MultiSkins[i];
-    }
+
 
             
 }
