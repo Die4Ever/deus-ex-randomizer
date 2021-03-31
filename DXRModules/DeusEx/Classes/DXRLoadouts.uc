@@ -404,7 +404,8 @@ function RandoStartingEquipment(DeusExPlayer player)
 
 function _RandoStartingEquipment(DeusExPlayer player, DXREnemies dxre)
 {
-    local int i, r;
+    local int i;
+    local float r;
     local Inventory item;
     local class<Inventory> iclass;
 

@@ -386,7 +386,7 @@ function AdjustHighlightableDoors(int exclusivitymode, int doorspickable, int do
 
 function AdjustDoor(DeusExMover d, int exclusivitymode, int doorspickable, int doorsdestructible)
 {
-    local int r;
+    local float r;
     switch(exclusivitymode) {
         // mutually inclusive (they always go together)
         case 1:

@@ -155,7 +155,7 @@ function ReduceAmmo(class<Ammo> type, float mult)
 function ReduceSpawns(class<Actor> classname, float percent)
 {
     local Actor a;
-    local int tperc;
+    local float tperc;
 
     SetSeed( "ReduceSpawns " $ classname );
 
@@ -180,7 +180,7 @@ function ReduceSpawns(class<Actor> classname, float percent)
 function ReduceSpawnsInContainers(class<Actor> classname, float percent)
 {
     local Containers d;
-    local int tperc;
+    local float tperc;
 
     SetSeed( "ReduceSpawnsInContainers " $ classname.Name );
 

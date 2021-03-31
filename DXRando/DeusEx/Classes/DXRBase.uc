@@ -1,7 +1,7 @@
 class DXRBase extends Info config(DXRando);
 
 var transient DXRando dxr;
-var transient int overallchances;
+var transient float overallchancesf;
 var config int config_version;
 
 var transient int passes;
@@ -157,30 +157,30 @@ function static int staticrng(DXRando dxr, int max)
     return dxr.rng(max);
 }
 
-function int initchance()
+function float initchance()
 {
-    if(overallchances > 0 && overallchances < 100) warning("initchance() overallchances == "$overallchances);
-    overallchances=0;
-    return rng(100);
+    if(overallchancesf > 0 && overallchancesf < 100) warning("initchance() overallchancesf == "$overallchancesf);
+    overallchancesf=0;
+    return rngf();
 }
 
-function bool chance(int percent, int r)
+function bool chance(float percent, float r)
 {
-    overallchances+=percent;
-    if(overallchances>100) warning("chance("$percent$", "$r$") overallchances == "$overallchances);
-    return r>= (overallchances-percent) && r< overallchances;
+    overallchancesf+=percent;
+    if(overallchancesf>100) warning("chance("$percent$", "$r$") overallchancesf == "$overallchancesf);
+    return r>= (overallchancesf-percent) && r< overallchancesf;
 }
 
 function bool chance_remaining(int r)
 {
     local int percent;
-    percent = 100 - overallchances;
+    percent = 100 - overallchancesf;
     return chance(percent, r);
 }
 
-function bool chance_single(int percent)
+function bool chance_single(float percent)
 {
-    return rng(100) < percent;
+    return rngf() < percent;
 }
 
 function class<Actor> GetClassFromString(string classstring, class<Actor> c)

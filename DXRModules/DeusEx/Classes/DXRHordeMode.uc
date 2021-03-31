@@ -473,8 +473,8 @@ function float GenerateEnemy(DXREnemies dxre)
 {
     local class<ScriptedPawn> c;
     local ScriptedPawn p;
-    local int i,r;
-    local float difficulty, dist;
+    local int i;
+    local float difficulty, dist, r;
     local vector loc;
 
     r = initchance();
@@ -558,13 +558,14 @@ function GenerateItems()
 
 function GenerateItem()
 {
-    local int i,r, num;
+    local int i, num;
     local Actor a;
     local class<Actor> c;
     local vector loc;
     local AugmentationCannister aug;
     local Barrel1 barrel;
     local DeusExMover d;
+    local float r;
     r = initchance();
     for(i=0; i < ArrayCount(items); i++) {
         if( chance(items[i].chance, r) ) c = GetClassFromString(items[i].type, class'Actor');

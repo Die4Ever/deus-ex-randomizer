@@ -4,14 +4,14 @@ var config int chance_clone_nonhumans;
 var config int enemy_multiplier;
 
 struct RandomWeaponStruct { var string type; var int chance; };
-struct _RandomWeaponStruct { var class<DeusExWeapon> type; var int chance; };
+struct _RandomWeaponStruct { var class<DeusExWeapon> type; var float chance; };
 var config RandomWeaponStruct randommelees[8];
 var _RandomWeaponStruct _randommelees[8];
 var config RandomWeaponStruct randomweapons[32];
 var _RandomWeaponStruct _randomweapons[32];
 
 struct RandomEnemyStruct { var string type; var int chance; };
-struct _RandomEnemyStruct { var class<ScriptedPawn> type; var int chance; };
+struct _RandomEnemyStruct { var class<ScriptedPawn> type; var float chance; };
 var config RandomEnemyStruct randomenemies[32];
 var _RandomEnemyStruct _randomenemies[32];
 
@@ -238,7 +238,8 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 {
     local class<ScriptedPawn> newclass;
     local ScriptedPawn n;
-    local int r, i;
+    local int i;
+    local float r;
     r = initchance();
     for(i=0; i < ArrayCount(_randomenemies); i++ ) {
         if( chance( _randomenemies[i].chance, r ) ) newclass = _randomenemies[i].type;
@@ -373,7 +374,8 @@ function GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional int add_am
 {
     local class<DeusExWeapon> wclass;
     local Ammo a;
-    local int r, i;
+    local int i;
+    local float r;
     r = initchance();
     for(i=0; i < ArrayCount(_randomweapons); i++ ) {
         if( chance( _randomweapons[i].chance, r ) ) wclass = _randomweapons[i].type;
@@ -393,7 +395,8 @@ function GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional int add_am
 function GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
 {
     local class<Weapon> wclass;
-    local int r, i;
+    local int i;
+    local float r;
 
     if( (!allow_dupes) && HasMeleeWeapon(p))
         return;
