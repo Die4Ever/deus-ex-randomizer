@@ -165,7 +165,7 @@ function Landed(vector HitNormal)
     bJustLanded = true;
 }
 
-function float UndoTorsoCrit(float Damage, name damageType, vector hitLocation)
+function float AdjustCritSpots(float Damage, name damageType, vector hitLocation)
 {
     local vector offset;
     local float headOffsetZ, headOffsetY, armOffset;
@@ -243,7 +243,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     bReduced = False;
     newDamage = Float(Damage);
-    newDamage = UndoTorsoCrit(newDamage, damageType, hitLocation);
+    newDamage = AdjustCritSpots(newDamage, damageType, hitLocation);
     oldDamage = newDamage;
 
     if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||

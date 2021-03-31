@@ -313,7 +313,7 @@ function FixMaggieChowBday(Keypad k)
 
     oldpassword = k.validCode;
 
-    i=1;
+    i=0;
     months[i++] = "January";
     months[i++] = "February";
     months[i++] = "March";
@@ -338,7 +338,7 @@ function FixMaggieChowBday(Keypad k)
     ReplacePassword(oldpassword, newpassword);
     k.validCode = newpassword;
 
-    newpassword = months[month] @ day;
+    newpassword = months[month-1] @ day;
     ReplacePassword("July 18th", newpassword);
 }
 
