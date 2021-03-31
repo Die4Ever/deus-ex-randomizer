@@ -51,11 +51,11 @@ function Timer()
     }
 }
 
-function FirstEntry()
+function PreFirstEntry()
 {
-    Super.FirstEntry();
+    Super.PreFirstEntry();
     Timer();
-    LogFlags("FirstEntry "$dxr.localURL);
+    LogFlags("PreFirstEntry "$dxr.localURL);
 }
 
 function AnyEntry()

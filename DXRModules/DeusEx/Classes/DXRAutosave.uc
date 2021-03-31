@@ -11,9 +11,9 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-function FirstEntry()
+function PostFirstEntry()
 {
-    Super.FirstEntry();
+    Super.PostFirstEntry();
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave > 0 ) {
         bNeedSave=true;
     }

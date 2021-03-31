@@ -46,11 +46,11 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-function FirstEntry()
+function PostFirstEntry()
 {
     local int i, mission, scale;
     local class<Actor> c;
-    Super.FirstEntry();
+    Super.PostFirstEntry();
 
     mission = Clamp(dxr.dxInfo.missionNumber, 0, ArrayCount(mission_scaling)-1);
     scale = mission_scaling[mission];

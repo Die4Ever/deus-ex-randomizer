@@ -195,7 +195,15 @@ function RandoEnter()
         info("randomizing "$localURL$" using seed " $ seed);
 
         for(i=0; i<num_modules; i++) {
+            modules[i].PreFirstEntry();
+        }
+
+        for(i=0; i<num_modules; i++) {
             modules[i].FirstEntry();
+        }
+
+        for(i=0; i<num_modules; i++) {
+            modules[i].PostFirstEntry();
         }
 
         info("done randomizing "$localURL$" using seed " $ seed);

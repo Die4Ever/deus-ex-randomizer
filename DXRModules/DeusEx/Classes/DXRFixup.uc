@@ -71,18 +71,18 @@ function CheckConfig()
     }
 }
 
-function FirstEntry()
+function PreFirstEntry()
 {
-    Super.FirstEntry();
-    l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" FirstEntry()");
+    Super.PreFirstEntry();
+    l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" PreFirstEntry()");
 
-    SetSeed( "DXRFixup FirstEntry" );
+    SetSeed( "DXRFixup PreFirstEntry" );
 
     IncreaseBrightness(dxr.flags.brightness);
     OverwriteDecorations();
     FixFlagTriggers();
 
-    SetSeed( "DXRFixup FirstEntry missions" );
+    SetSeed( "DXRFixup PreFirstEntry missions" );
     
     switch(dxr.dxInfo.missionNumber) {
         case 2:
@@ -304,7 +304,11 @@ function Airfield_FirstEntry()
                     InformationDevices(a).bAddToVault = true;
                 }
             }
+
+            //rebreather because of #TOOCEAN connection
+            _AddActor(Self, class'Rebreather', vect(-936.151245, -3464.031006, 293.710968), rot(0,0,0));
             break;
+
         case "03_NYC_AirfieldHeliBase":
             foreach AllActors(class'Mover',m) {
                 // call the elevator at the end of the level when you open the appropriate door
@@ -339,12 +343,22 @@ function Airfield_FirstEntry()
             //crates to get back over the beginning of the level
             _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
             _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
+
+            //rebreather because of #TOOCEAN connection
+            _AddActor(Self, class'Rebreather', vect(1411.798950, 546.628845, 247.708572), rot(0,0,0));
             break;
+        
+        case "03_NYC_AIRFIELD":
+            //rebreather because of #TOOCEAN connection
+            _AddActor(Self, class'Rebreather', vect(-2031.959473, 995.781067, 75.709816), rot(0,0,0));
+            break;
+
         case "03_NYC_BROOKLYNBRIDGESTATION":
             //Put a button behind the hidden bathroom door
             //Mostly for entrance rando, but just in case
             AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
             break;
+
         case "03_NYC_MOLEPEOPLE":
             foreach AllActors(class'Mover', m, 'DeusExMover') {
                 if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';

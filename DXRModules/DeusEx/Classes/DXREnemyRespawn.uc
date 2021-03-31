@@ -31,11 +31,11 @@ var OriginalEnemy enemies[128];
 var int time;
 var config name dont_respawn[8];
 
-function FirstEntry()
+function PostFirstEntry()
 {
     local ScriptedPawn p;
     local int i, a;
-    Super.FirstEntry();
+    Super.PostFirstEntry();
 
     if( dxr.flags.enemyrespawn <= 0 ) return;
     if( dxr.flags.gamemode != 0 && dxr.flags.gamemode != 1 ) return;
