@@ -23,12 +23,15 @@ var config sReduceItem reduce_items[16];
 var config sSetMax max_copies[16];
 var config sMaxAmmo max_ammo[16];
 
-var float min_rate_adjust, max_rate_adjust;
+var config float min_rate_adjust, max_rate_adjust;
 
 function CheckConfig()
 {
     local int i;
-    if( config_version < 4 ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
+        min_rate_adjust = default.min_rate_adjust;
+        max_rate_adjust = default.max_rate_adjust;
+
         for(i=0; i < ArrayCount(mission_scaling); i++) {
             mission_scaling[i] = 100;
         }
@@ -164,7 +167,7 @@ function ReduceSpawns(class<Actor> classname, float percent)
         if( ! a.IsA(classname.name) ) continue;
 
         tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, a.class.name);
-        if( chance_single(tperc) )
+        if( !chance_single(tperc) )
         {
             l("destroying "$ActorToString(a)$", tperc: "$tperc);
             DestroyActor( a );
@@ -185,21 +188,21 @@ function ReduceSpawnsInContainers(class<Actor> classname, float percent)
     {
         if( ClassIsChildOf( d.Content3, classname) ) {
             tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, d.Content3.name);
-            if( chance_single(tperc) ) {
+            if( !chance_single(tperc) ) {
                 l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing content3 "$d.Content3$", tperc: "$tperc);
                 d.Content3 = None;
             }
         }
         if( ClassIsChildOf( d.Content2, classname) ) {
             tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, d.Content2.name);
-            if( chance_single(tperc) ) {
+            if( !chance_single(tperc) ) {
                 l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing content2 "$d.Content2$", tperc: "$tperc);
                 d.Content2 = d.Content3;
             }
         }
         if( ClassIsChildOf( d.Contents, classname) ) {
             tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, d.Contents.name);
-            if( chance_single(tperc) ) {
+            if( !chance_single(tperc) ) {
                 l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing contents "$d.Contents$", tperc: "$tperc);
                 d.Contents = d.Content2;
             }
