@@ -84,7 +84,7 @@ function static RandomizeAugCannister(DXRando dxr, AugmentationCannister a)
     }
 
     if( a.AddAugs[0] == 'AugSpeed' || a.AddAugs[1] == 'AugSpeed' ) {
-        dxr.Player.ClientMessage("Speed Enhancement is in this area.");
+        dxr.Player.ClientMessage("Speed Enhancement is in this area.",, true);
     }
 }
 

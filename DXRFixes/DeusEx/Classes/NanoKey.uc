@@ -1,5 +1,5 @@
 class NanoKey merges NanoKey;
-// doesn't work with injects due to use of Self
+// need to figure out states compatibility https://github.com/Die4Ever/deus-ex-randomizer/issues/135
 function PostBeginPlay()
 {
 	Super.PostPostBeginPlay();

@@ -71,18 +71,18 @@ function CheckConfig()
     }
 }
 
-function FirstEntry()
+function PreFirstEntry()
 {
-    Super.FirstEntry();
-    l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" FirstEntry()");
+    Super.PreFirstEntry();
+    l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" PreFirstEntry()");
 
-    SetSeed( "DXRFixup FirstEntry" );
+    SetSeed( "DXRFixup PreFirstEntry" );
 
     IncreaseBrightness(dxr.flags.brightness);
     OverwriteDecorations();
     FixFlagTriggers();
 
-    SetSeed( "DXRFixup FirstEntry missions" );
+    SetSeed( "DXRFixup PreFirstEntry missions" );
     
     switch(dxr.dxInfo.missionNumber) {
         case 2:
@@ -120,6 +120,7 @@ function AnyEntry()
 
     FixSamCarter();
     FixAmmoShurikenName();
+    FixLogTimeout();
 
     SetSeed( "DXRFixup AnyEntry missions" );
 
@@ -136,9 +137,18 @@ function AnyEntry()
     }
 }
 
+function PreTravel()
+{
+    Super.PreTravel();
+    switch(dxr.localURL) {
+        case "04_NYC_HOTEL":
+            NYC_04_LeaveHotel();
+            break;
+    }
+}
+
 function Timer()
 {
-    local PaulDenton paul;
     local BlackHelicopter chopper;
     local Music m;
     local int i;
@@ -161,21 +171,7 @@ function Timer()
     switch(dxr.localURL)
     {
         case "04_NYC_HOTEL":
-            if( dxr.player.flagBase.GetBool('M04RaidBegan') ) {
-                foreach AllActors(class'PaulDenton', paul) {
-                    paul.bInvincible = false;
-                    i = 400;
-                    paul.Health = i;
-                    paul.HealthArmLeft = i;
-                    paul.HealthArmRight = i;
-                    paul.HealthHead = i;
-                    paul.HealthLegLeft = i;
-                    paul.HealthLegRight = i;
-                    paul.HealthTorso = i;
-                    paul.ChangeAlly('Player', 1, true);
-                }
-                SetTimer(0, false);
-            }
+            NYC_04_CheckPaulRaid();
             break;
         case "08_NYC_STREET":
             if ( dxr.Player.flagBase.GetBool('StantonDowd_Played') )
@@ -208,6 +204,12 @@ function FixAmmoShurikenName()
         a.ItemArticle = a.default.ItemArticle;
         a.beltDescription = a.default.beltDescription;
     }
+}
+
+function FixLogTimeout()
+{
+    //err("HUD LogTimeout was: "$DeusExRootWindow(dxr.player.rootWindow).hud.msgLog.displayTime);
+    DeusExRootWindow(dxr.player.rootWindow).hud.msgLog.SetLogTimeout(10);
 }
 
 function IncreaseBrightness(int brightness)
@@ -302,7 +304,11 @@ function Airfield_FirstEntry()
                     InformationDevices(a).bAddToVault = true;
                 }
             }
+
+            //rebreather because of #TOOCEAN connection
+            _AddActor(Self, class'Rebreather', vect(-936.151245, -3464.031006, 293.710968), rot(0,0,0));
             break;
+
         case "03_NYC_AirfieldHeliBase":
             foreach AllActors(class'Mover',m) {
                 // call the elevator at the end of the level when you open the appropriate door
@@ -337,12 +343,22 @@ function Airfield_FirstEntry()
             //crates to get back over the beginning of the level
             _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
             _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
+
+            //rebreather because of #TOOCEAN connection
+            _AddActor(Self, class'Rebreather', vect(1411.798950, 546.628845, 247.708572), rot(0,0,0));
             break;
+        
+        case "03_NYC_AIRFIELD":
+            //rebreather because of #TOOCEAN connection
+            _AddActor(Self, class'Rebreather', vect(-2031.959473, 995.781067, 75.709816), rot(0,0,0));
+            break;
+
         case "03_NYC_BROOKLYNBRIDGESTATION":
             //Put a button behind the hidden bathroom door
             //Mostly for entrance rando, but just in case
             AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
             break;
+
         case "03_NYC_MOLEPEOPLE":
             foreach AllActors(class'Mover', m, 'DeusExMover') {
                 if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
@@ -355,6 +371,8 @@ function Airfield_FirstEntry()
 function Jailbreak_FirstEntry()
 {
     local PaulDenton p;
+    local ComputerPersonal c;
+    local int i;
 
     switch (dxr.localURL)
     {
@@ -363,15 +381,116 @@ function Jailbreak_FirstEntry()
                 p.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
             }
             break;
+        case "05_NYC_UNATCOHQ":
+            foreach AllActors(class'ComputerPersonal', c) {
+                if( c.Name != 'ComputerPersonal3' ) continue;
+                // gunther and anna's computer across from Carter
+                for(i=0; i < ArrayCount(c.UserList); i++) {
+                    if( c.UserList[i].userName != "JCD" ) continue;
+                    // it's silly that you can use JC's account to get part of Anna's killphrase, and also weird that Anna's account isn't on here
+                    c.UserList[i].userName = "anavarre";
+                    c.UserList[i].password = "scryspc";
+                }
+            }
+            break;
+    }
+}
+
+// if you bail on Paul but then have a change of heart and re-enter to come back and save him
+function NYC_04_CheckPaulUndead()
+{
+    local PaulDenton paul;
+    local int count;
+
+    if( ! dxr.Player.flagBase.GetBool('PaulDenton_Dead')) return;
+
+    foreach AllActors(class'PaulDenton', paul) {
+        if( paul.Health > 0 ) {
+            dxr.Player.flagBase.DeleteFlag('PaulDenton_Dead', FLAG_Bool);
+            return;
+        }
+    }
+}
+
+function NYC_04_CheckPaulRaid()
+{
+    local PaulDenton paul;
+    local int count, dead, i;
+
+    if( ! dxr.player.flagBase.GetBool('M04RaidTeleportDone') ) return;
+
+    foreach AllActors(class'PaulDenton', paul) {
+        // fix a softlock if you jump while approaching Paul
+        if( ! dxr.Player.flagBase.GetBool('TalkedToPaulAfterMessage_Played') ) {
+            dxr.Player.StartConversationByName('TalkedToPaulAfterMessage', paul, False, False);
+        }
+
+        count++;
+        if( paul.Health <= 0 ) dead++;
+        if( ! paul.bInvincible ) continue;
+
+        paul.bInvincible = false;
+        i = 400;
+        paul.Health = i;
+        paul.HealthArmLeft = i;
+        paul.HealthArmRight = i;
+        paul.HealthHead = i;
+        paul.HealthLegLeft = i;
+        paul.HealthLegRight = i;
+        paul.HealthTorso = i;
+        paul.ChangeAlly('Player', 1, true);
+    }
+
+    if( dead > 0 || dxr.player.flagBase.GetBool('PaulDenton_Dead') ) {
+        dxr.player.ClientMessage("RIP Paul :(",, true);
+        dxr.player.flagBase.SetBool('PaulDenton_Dead', true,, 999);
+        SetTimer(0, False);
+    }
+    else if( count == 0 && dead == 0 ) {
+        NYC_04_MarkPaulSafe();
+        SetTimer(0, False);
+    }
+}
+
+function NYC_04_MarkPaulSafe()
+{
+    local FlagTrigger t;
+    if( dxr.player.flagBase.GetBool('PaulLeftHotel') ) return;
+
+    dxr.player.flagBase.SetBool('PaulLeftHotel', true,, 999);
+    dxr.player.ClientMessage("Paul safely escaped the hotel! :)",, true);
+
+    foreach AllActors(class'FlagTrigger', t) {
+        switch(t.tag) {
+            case 'KillPaul':
+            case 'BailedOutWindow':
+                t.Destroy();
+        }
+        if( t.Event == 'BailedOutWindow' )
+            t.Destroy();
+    }
+}
+
+function NYC_04_LeaveHotel()
+{
+    local FlagTrigger t;
+    foreach AllActors(class'FlagTrigger', t) {
+        if( t.Event == 'BailedOutWindow' )
+        {
+            t.Touch(dxr.Player);
+        }
     }
 }
 
 function NYC_04_AnyEntry()
 {
+    local FlagTrigger t;
     switch (dxr.localURL)
     {
         case "04_NYC_HOTEL":
-            SetTimer(1.0, True);
+            NYC_04_CheckPaulUndead();
+            if( ! dxr.player.flagBase.GetBool('PaulDenton_Dead') )
+                SetTimer(1, True);
             if(dxr.Player.flagBase.GetBool('NSFSignalSent')) {
                 dxr.Player.flagBase.SetBool('PaulInjured_Played', true,, 5);
             }
@@ -533,10 +652,10 @@ function HongKong_AnyEntry()
                         ScriptedPawn(a).ChangeAlly(dxr.Player.Alliance,1,False);
                         break;
                         
-                    case "TracerTong":                      
+                    case "TracerTong":
                         if ( boolFlag == True )
                         {
-                            ScriptedPawn(a).EnterWorld();                    
+                            ScriptedPawn(a).EnterWorld();
                         } else {
                             ScriptedPawn(a).LeaveWorld();
                         }
@@ -545,16 +664,16 @@ function HongKong_AnyEntry()
                         recruitedFlag = dxr.Player.flagBase.GetBool('JacobsonRecruited');
                         if ( boolFlag == True && recruitedFlag == True)
                         {
-                            ScriptedPawn(a).EnterWorld();                    
+                            ScriptedPawn(a).EnterWorld();
                         } else {
                             ScriptedPawn(a).LeaveWorld();
                         }
                         break;
                     case "JaimeReyes":
-                        recruitedFlag = dxr.Player.flagBase.GetBool('JaimeRecruited');
+                        recruitedFlag = dxr.Player.flagBase.GetBool('JaimeRecruited') && dxr.Player.flagBase.GetBool('Versalife_Done');
                         if ( boolFlag == True && recruitedFlag == True)
                         {
-                            ScriptedPawn(a).EnterWorld();                    
+                            ScriptedPawn(a).EnterWorld();
                         } else {
                             ScriptedPawn(a).LeaveWorld();
                         }
@@ -565,7 +684,7 @@ function HongKong_AnyEntry()
                     case "TurnOnTheKillSwitch":
                         if (boolFlag == True)
                         {
-                            Trigger(a).TriggerType = TT_PlayerProximity;                        
+                            Trigger(a).TriggerType = TT_PlayerProximity;
                         } else {
                             Trigger(a).TriggerType = TT_ClassProximity;
                             Trigger(a).ClassProximityType = class'Teleporter';//Impossible, thus disabling it

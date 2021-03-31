@@ -8,6 +8,10 @@ player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 
 for v1.6 programatically modify conversations? ===================
 
+DXREntranceRando: ERROR: GenerateConnections(2) failed after 200 attempts! seed: 879104 and mission 4 seed 305104
+
+for better log message window, look at DeusExRootWindow ClientMessage function, and HUDLogDisplay AddLog and SetLogTimeout functions
+
 in Actor.uc
 // Probe messages.
 native(117) final function Enable( name ProbeFunc );

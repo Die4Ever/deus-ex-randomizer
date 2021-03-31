@@ -9,7 +9,7 @@ var transient int fails;
 
 function Init(DXRando tdxr)
 {
-    l(Self$".Init()");
+    //l(Self$".Init()");
     dxr = tdxr;
     CheckConfig();
 }
@@ -23,25 +23,15 @@ function CheckConfig()
     }
 }
 
-function FirstEntry()
-{
-    l(Self$".FirstEntry()");
-}
+function PreFirstEntry();
+function FirstEntry();
+function PostFirstEntry();
 
-function AnyEntry()
-{
-    l(Self$".AnyEntry()");
-}
-
-function ReEntry(bool IsTravel)
-{
-    l(Self$".ReEntry(IsTravel: "$IsTravel$")");
-}
+function AnyEntry();
+function ReEntry(bool IsTravel);
 
 function PreTravel()
 {
-    l(Self$".PreTravel()");
-    dxr = None;
     SetTimer(0, False);
 }
 
@@ -51,7 +41,6 @@ function Timer()
 
 event Destroyed()
 {
-    l(Self$".Destroyed()");
     dxr = None;
     Super.Destroyed();
 }
@@ -322,7 +311,7 @@ function err(string message)
 {
     log("ERROR: " $ message, class.name);
     if(dxr != None && dxr.Player != None) {
-        dxr.Player.ClientMessage( Class @ message );
+        dxr.Player.ClientMessage( Class @ message, 'ERROR' );
     }
 
     class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", message);
@@ -397,7 +386,7 @@ function bool testint(int result, int expected, string testname)
 function bool testfloat(float result, float expected, string testname)
 {
     if(result ~= expected) {
-        //print both because they might not be exaclty equal
+        //print both because they might not be exactly equal
         l("pass: "$testname$": got "$result$", expected "$expected);
         passes++;
         return true;
@@ -414,7 +403,7 @@ function bool testfloatrange(float result, float expected, float range, string t
     local float diff;
     diff = abs(result-expected);
     if( diff <= range ) {
-        //print both because they might not be exaclty equal
+        //print both because they might not be exactly equal
         l("pass: "$testname$": got "$result$", expected "$expected$", with range "$range);
         passes++;
         return true;

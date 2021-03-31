@@ -12,7 +12,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 
 [![v1.5 Trailer](https://img.youtube.com/vi/A0Li3XuBjGg/0.jpg)](https://www.youtube.com/watch?v=A0Li3XuBjGg)
 
-### Currently in v1.5.5, DXRando randomizes
+### Currently in v1.5.6, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
@@ -28,6 +28,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 * the hack strength for keypads
 * the strength of augmentations and skills
 * the damage and firing speed of weapons
+* JC's and Paul's clothes
 
 There are also settings for
 * Crowd Control! Let your viewers troll you or help you! NOW PLAYABLE! https://forum.warp.world/t/deus-ex-randomizer-pc/20496
@@ -58,7 +59,7 @@ There are also settings for
 
 For the randomized passwords, you can copy-paste from the Goals/Notes screen.
 
-I've also made some balance tweaks. Hacking computers now uses bioelectric energy. The healing aug gives less health. Level 1 of the speed aug has been buffed, but max level remains the same. Dragon's Tooth Sword now does much less damage, but if you aim for the head you can still kill most enemies in 1 hit. Thowing knives deal more damage, and their speed and range increase with your low tech skill. Spy Drone aug has improved speed and the emp blast now also does explosive damage. Fire extinguishers now stack in your inventory. Also the PS20 has been upgraded to the PS40 and does significantly more damage. Paul is now mortal during the raid in mission 4, so you need to help him fight! Also the swimming, enviro, and demolition skills are now 20% cheaper. Demolition skill allows you to carry more grenades at once. Gibbed enemies now drop all their items. Flare darts now set enemies on fire for 3 seconds.
+I've also made some balance tweaks. Hacking computers now uses bioelectric energy. The healing aug gives less health. Level 1 of the speed aug has been buffed, but max level remains the same. Dragon's Tooth Sword now does much less damage, but if you aim for the head you can still kill most enemies in 1 hit. Thowing knives deal more damage, and their speed and range increase with your low tech skill. Spy Drone aug has improved speed and the emp blast now also does explosive damage. Fire extinguishers now stack in your inventory, and the Environmental skill allows you to carry more. Also the PS20 has been upgraded to the PS40 and does significantly more damage. Paul is now mortal during the raid in mission 4, so you need to help him fight! Also the swimming, enviro, and demolition skills are now 20% cheaper. Demolition skill allows you to carry more grenades at once. Gibbed enemies now drop all their items. Flare darts now set enemies on fire for 3 seconds. Items like ballistic armor and rebreathers now free up the inventory space immediately when you equip them.
 
 ### Recommended tweaks for running Deus Ex on modern computers
 

@@ -13,7 +13,7 @@ function Tick(float deltaTime)
                 p.Energy = 0;
                 detectionTime = -1;
                 bHackDetected = true;
-                p.ClientMessage("You need more energy to hack!");
+                p.ClientMessage("You need more energy to hack!",, true);
             }
         }
     }

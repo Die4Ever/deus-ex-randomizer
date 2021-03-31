@@ -27,6 +27,13 @@ function CheckConfig()
 
         keys_rules[i].map = "03_NYC_747";
         keys_rules[i].item_name = 'lebedevdoor';
+        keys_rules[i].min_pos = vect(570, -312, 153);//ban the annoying spot behind the crates
+        keys_rules[i].max_pos = vect(602, -280, 185);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].map = "03_NYC_747";
+        keys_rules[i].item_name = 'lebedevdoor';
         keys_rules[i].min_pos = vect(166, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;

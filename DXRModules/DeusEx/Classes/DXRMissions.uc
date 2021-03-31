@@ -943,7 +943,7 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-function FirstEntry()
+function PreFirstEntry()
 {
     local Actor a;
     local AnnaNavarre anna;
@@ -956,7 +956,7 @@ function FirstEntry()
     local ImportantLocation player_starts[32];
     local ImportantLocation goal_locations[32];
 
-    Super.FirstEntry();
+    Super.PreFirstEntry();
 
     vanilla_distance = 16 * 20;// 20 feet
 

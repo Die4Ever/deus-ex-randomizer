@@ -285,7 +285,7 @@ function Timer()
     if( dxr.player.Health <= 0 ) {
         dxr.player.ShowHud(true);
         l("You died on wave "$wave);
-        dxr.player.ClientMessage("You died on wave "$wave);
+        dxr.player.ClientMessage("You died on wave "$wave,, true);
         //SetTimer(0, false);
         return;
     }
@@ -317,7 +317,7 @@ function InWaveTick()
 
     if( numScriptedPawns == 0 || ( time_in_wave > early_end_wave_timer && numScriptedPawns <= early_end_wave_enemies ) ) {
         if( numScriptedPawns > 0 ) {
-            dxr.player.ClientMessage("Moving on. Warning: there are still "$numScriptedPawns$" enemies!");
+            dxr.player.ClientMessage("Moving on. Warning: there are still "$numScriptedPawns$" enemies!",, true);
         }
         EndWave();
         return;

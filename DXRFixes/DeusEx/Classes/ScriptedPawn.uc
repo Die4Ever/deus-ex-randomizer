@@ -1,6 +1,6 @@
 class ScriptedPawn merges ScriptedPawn;
-// doesn't work with injects due to use of Self
-
+// doesn't work with injects, because of states and : Error, DeusEx.ScriptedPawn's superclass must be Engine.Pawn, not DeusEx.ScriptedPawnBase
+// could work with injectsabove or whatever https://github.com/Die4Ever/deus-ex-randomizer/issues/115
 var int flareBurnTime;
 
 function PlayDying(name damageType, vector hitLoc)
@@ -21,6 +21,10 @@ function PlayDying(name damageType, vector hitLoc)
         nextItem = item.Inventory;
         melee = item.IsA('WeaponProd') || item.IsA('WeaponBaton') || item.IsA('WeaponCombatKnife') || item.Isa('WeaponCrowbar') || item.IsA('WeaponNanoSword') || item.Isa('WeaponSword');
         drop = (item.IsA('NanoKey') && gibbed) || (melee && !gibbed) || (gibbed && item.bDisplayableInv);
+        if( DeusExWeapon(item) != None && DeusExWeapon(item).bNativeAttack )
+            drop = false;
+        if( Ammo(item) != None )
+            drop = false;
         if( drop ) {
             class'DXRActorsBase'.static.ThrowItem(self, item);
             if(gibbed)

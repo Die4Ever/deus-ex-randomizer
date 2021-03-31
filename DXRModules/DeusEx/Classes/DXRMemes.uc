@@ -108,9 +108,10 @@ function AnyEntry()
     }
 }
 
-function FirstEntry()
+function PostFirstEntry()
 {
     local ScriptedPawn sp;
+    Super.PostFirstEntry();
 
     foreach AllActors(class'ScriptedPawn',sp)
     {

@@ -1795,14 +1795,14 @@ function PlayerMessage(string msg)
 {
     log(Self$": "$msg);
     class'DXRTelemetry'.static.SendLog(dxr, Self, "INFO", msg);
-    dxr.Player.ClientMessage(msg);
+    dxr.Player.ClientMessage(msg, 'CrowdControl', true);
 }
 
 function err(string msg)
 {
     log(Self$": ERROR: "$msg);
     class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", msg);
-    dxr.Player.ClientMessage(msg);
+    dxr.Player.ClientMessage(msg, 'ERROR', true);
 }
 
 function info(string msg)

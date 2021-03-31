@@ -51,11 +51,11 @@ function Timer()
     }
 }
 
-function FirstEntry()
+function PreFirstEntry()
 {
-    Super.FirstEntry();
+    Super.PreFirstEntry();
     Timer();
-    LogFlags("FirstEntry "$dxr.localURL);
+    LogFlags("PreFirstEntry "$dxr.localURL);
 }
 
 function AnyEntry()
@@ -346,12 +346,12 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 5, 5);
+    return VersionToInt(1, 5, 6);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 5) $ "";
+    return VersionToString(1, 5, 6) $ " Alpha";
 }
 
 function MaxRando()

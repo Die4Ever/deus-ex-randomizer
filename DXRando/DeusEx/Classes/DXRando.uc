@@ -49,7 +49,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,5) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -71,7 +71,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXREnemies";
         modules_to_load[i++] = "DXREntranceRando";
         modules_to_load[i++] = "DXRHordeMode";
-        modules_to_load[i++] = "DXRKillBobPage";
+        //modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
         modules_to_load[i++] = "DXRLoadouts";
         modules_to_load[i++] = "DXRWeapons";
@@ -79,6 +79,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRMachines";
         modules_to_load[i++] = "DXRTelemetry";
         modules_to_load[i++] = "DXRStats";
+        modules_to_load[i++] = "DXRFashion";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
@@ -194,7 +195,15 @@ function RandoEnter()
         info("randomizing "$localURL$" using seed " $ seed);
 
         for(i=0; i<num_modules; i++) {
+            modules[i].PreFirstEntry();
+        }
+
+        for(i=0; i<num_modules; i++) {
             modules[i].FirstEntry();
+        }
+
+        for(i=0; i<num_modules; i++) {
+            modules[i].PostFirstEntry();
         }
 
         info("done randomizing "$localURL$" using seed " $ seed);
@@ -301,7 +310,7 @@ function warning(string message)
 function err(string message)
 {
     log("ERROR: " $ message, class.name);
-    Player.ClientMessage( Class @ message );
+    Player.ClientMessage( Class @ message, 'ERROR' );
 
     class'DXRTelemetry'.static.SendLog(Self, Self, "ERROR", message);
 }

@@ -802,10 +802,9 @@ function AdjustTeleporter(NavigationPoint p)
     }
 }
 
-function FirstEntry()
+function PostFirstEntry()
 {
-    Super.FirstEntry();
-
+    Super.PostFirstEntry();
     if( dxr.flags.gamemode != 1 ) return;
     
     //Randomize entrances for this mission
