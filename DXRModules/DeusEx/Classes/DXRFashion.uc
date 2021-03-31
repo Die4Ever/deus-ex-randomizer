@@ -358,7 +358,8 @@ function RandomizeClothes()
     local bool isTrench;
   
     //Randomize Coat (Multiskin 1 and 5)
-    styleInfluencer = RandomInfluencer();
+    // TweenAnim: Sequence 'CrouchWalk' not found in Mesh 'GM_DressShirt'
+    styleInfluencer = RandomCoatInfluencer();
     isTrench = IsTrenchInfluencer(styleInfluencer);
     dxr.Player.FlagBase.SetName('DXRFashion_CoatInfluencer',styleInfluencer.name);
     info("Coat influencer is "$styleInfluencer);
