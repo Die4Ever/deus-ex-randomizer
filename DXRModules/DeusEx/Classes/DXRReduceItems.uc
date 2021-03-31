@@ -23,6 +23,8 @@ var config sReduceItem reduce_items[16];
 var config sSetMax max_copies[16];
 var config sMaxAmmo max_ammo[16];
 
+var float min_rate_adjust, max_rate_adjust;
+
 function CheckConfig()
 {
     local int i;
@@ -117,18 +119,18 @@ function ReduceAmmo(class<Ammo> type, float mult)
     local Weapon w;
     local Ammo a;
     local int i;
+    local float tmult;
 
     l("ReduceAmmo "$mult);
     SetSeed( "ReduceAmmo" );
-
-    if( mult ~= 1 ) return;
 
     foreach AllActors(class'Weapon', w)
     {
         if( w.AmmoName != type && ClassIsChildOf(w.AmmoName, type) == false ) continue;
         if( w.PickupAmmoCount > 0 ) {
-            i = Clamp(float(w.PickupAmmoCount) * mult, 1, 1000);
-            l("reducing ammo in "$ActorToString(w)$" from "$w.PickupAmmoCount$" down to "$i);
+            tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, w.AmmoName);
+            i = Clamp(float(w.PickupAmmoCount) * tmult, 1, 1000);
+            l("reducing ammo in "$ActorToString(w)$" from "$w.PickupAmmoCount$" down to "$i$", tmult: "$tmult);
             w.PickupAmmoCount = i;
         }
     }
@@ -137,20 +139,20 @@ function ReduceAmmo(class<Ammo> type, float mult)
     {
         if( ! a.IsA(type.name) ) continue;
         if( a.AmmoAmount > 0 && ( ! CarriedItem(a) ) ) {
-            i = Clamp(float(a.AmmoAmount) * mult, 1, 1000);
-            l("reducing ammo in "$ActorToString(a)$" from "$a.AmmoAmount$" down to "$i);
+            tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, a.class.name);
+            i = Clamp(float(a.AmmoAmount) * tmult, 1, 1000);
+            l("reducing ammo in "$ActorToString(a)$" from "$a.AmmoAmount$" down to "$i$", tmult: "$tmult);
             a.AmmoAmount = i;
         }
     }
 
-    ReduceSpawnsInContainers(type, int(mult*100.0) );
+    ReduceSpawnsInContainers(type, mult*100.0 );
 }
 
-function ReduceSpawns(class<Actor> classname, int percent)
+function ReduceSpawns(class<Actor> classname, float percent)
 {
     local Actor a;
-
-    if( percent >= 100 ) return;
+    local int tperc;
 
     SetSeed( "ReduceSpawns " $ classname );
 
@@ -161,9 +163,10 @@ function ReduceSpawns(class<Actor> classname, int percent)
         if( a.Owner == dxr.Player ) continue;
         if( ! a.IsA(classname.name) ) continue;
 
-        if( rng(100) >= percent )
+        tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, a.class.name);
+        if( chance_single(tperc) )
         {
-            l("destroying "$ActorToString(a));
+            l("destroying "$ActorToString(a)$", tperc: "$tperc);
             DestroyActor( a );
         }
     }
@@ -171,27 +174,33 @@ function ReduceSpawns(class<Actor> classname, int percent)
     ReduceSpawnsInContainers(classname, percent);
 }
 
-function ReduceSpawnsInContainers(class<Actor> classname, int percent)
+function ReduceSpawnsInContainers(class<Actor> classname, float percent)
 {
     local Containers d;
-
-    if( percent >= 100 ) return;
+    local int tperc;
 
     SetSeed( "ReduceSpawnsInContainers " $ classname.Name );
 
     foreach AllActors(class'Containers', d)
     {
-        if( rng(100) >= percent ) {
-            if( ClassIsChildOf( d.Content3, classname) ) {
-                l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing content3 "$d.Content3);
+        if( ClassIsChildOf( d.Content3, classname) ) {
+            tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, d.Content3.name);
+            if( chance_single(tperc) ) {
+                l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing content3 "$d.Content3$", tperc: "$tperc);
                 d.Content3 = None;
             }
-            if( ClassIsChildOf( d.Content2, classname) ) {
-                l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing content2 "$d.Content2);
+        }
+        if( ClassIsChildOf( d.Content2, classname) ) {
+            tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, d.Content2.name);
+            if( chance_single(tperc) ) {
+                l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing content2 "$d.Content2$", tperc: "$tperc);
                 d.Content2 = d.Content3;
             }
-            if( ClassIsChildOf( d.Contents, classname) ) {
-                l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing contents "$d.Contents);
+        }
+        if( ClassIsChildOf( d.Contents, classname) ) {
+            tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, d.Contents.name);
+            if( chance_single(tperc) ) {
+                l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing contents "$d.Contents$", tperc: "$tperc);
                 d.Contents = d.Content2;
             }
         }
@@ -236,4 +245,6 @@ function SetMaxAmmo(class<Ammo> type, int percent)
 defaultproperties
 {
     bAlwaysTick=True
+    min_rate_adjust=0.5
+    max_rate_adjust=1.5
 }

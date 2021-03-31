@@ -78,6 +78,19 @@ function float rngrange(float val, float min, float max)
     return ret;
 }
 
+function float rngrangeseeded(float val, float min, float max, coerce string classname)
+{
+    local float mult, r, ret;
+    local int oldseed;
+    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(classname) );//manually set the seed to avoid using the level name in the seed
+    mult = max - min;
+    r = rngf();
+    ret = val * (r * mult + min);
+    //l("rngrange r: "$r$", mult: "$mult$", min: "$min$", max: "$max$", val: "$val$", return: "$ret);
+    dxr.SetSeed(oldseed);
+    return ret;
+}
+
 function float pow(float m, float e)
 {
     return exp(e * loge(m) );
