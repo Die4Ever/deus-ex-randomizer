@@ -131,7 +131,7 @@ function BindControls(bool writing, optional string action)
         f.minskill = 50;
         f.maxskill = 300;
         f.ammo = 75;
-        f.medkits = 75;
+        f.medkits = 70;
         f.biocells = f.medkits;
         f.lockpicks = f.medkits;
         f.multitools = f.medkits;

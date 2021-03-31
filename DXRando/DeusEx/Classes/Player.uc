@@ -165,6 +165,66 @@ function Landed(vector HitNormal)
     bJustLanded = true;
 }
 
+function float UndoTorsoCrit(float Damage, name damageType, vector hitLocation)
+{
+    local vector offset;
+    local float headOffsetZ, headOffsetY, armOffset;
+
+    // EMP attacks drain BE energy
+	if (damageType == 'EMP')
+        return Damage;
+
+    // use the hitlocation to determine where the pawn is hit
+    // transform the worldspace hitlocation into objectspace
+    // in objectspace, remember X is front to back
+    // Y is side to side, and Z is top to bottom
+    offset = (hitLocation - Location) << Rotation;
+
+    // calculate our hit extents
+    headOffsetZ = CollisionHeight * 0.78;
+    headOffsetY = CollisionRadius * 0.35;
+    armOffset = CollisionRadius * 0.35;
+
+    // We decided to just have 3 hit locations in multiplayer MBCODE
+    if (( Level.NetMode == NM_DedicatedServer ) || ( Level.NetMode == NM_ListenServer ))
+    {
+        // leave it vanilla
+        return Damage;
+    }
+
+    // Normal damage code path for single player
+    if (offset.z > headOffsetZ)     // head
+    {
+        // narrow the head region
+        if ((Abs(offset.x) < headOffsetY) || (Abs(offset.y) < headOffsetY))
+        {
+            // do 1.6x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
+            return Damage * 0.8;
+        }
+    }
+    else if (offset.z < 0.0)        // legs
+    {
+    }
+    else                            // arms and torso
+    {
+        if (offset.y > armOffset)
+        {
+            // right arm
+        }
+        else if (offset.y < -armOffset)
+        {
+            // left arm
+        }
+        else
+        {
+            // and finally, the torso! do 1.2x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
+            return Damage * 0.6;
+        }
+    }
+
+    return Damage;
+}
+
 // ----------------------------------------------------------------------
 // DXReduceDamage()
 //
@@ -183,9 +243,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     bReduced = False;
     newDamage = Float(Damage);
-    if( newDamage > 49/CombatDifficulty ) {
-        newDamage = 49/CombatDifficulty;
-    }
+    newDamage = UndoTorsoCrit(newDamage, damageType, hitLocation);
     oldDamage = newDamage;
 
     if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||
