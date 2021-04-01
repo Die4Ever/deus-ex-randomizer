@@ -92,6 +92,7 @@ static function bool IsHuman(Actor a)
 
 static function bool IsCritter(Actor a)
 {
+    if( CleanerBot(a) != None ) return true;
     if( Animal(a) == None ) return false;
     return Doberman(a) == None && Gray(a) == None && Greasel(a) == None && Karkian(a) == None;
 }

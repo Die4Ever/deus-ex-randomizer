@@ -25,6 +25,41 @@ function DXRBase DXRFindModule(class<DXRBase> class)
     return m;
 }
 
+function PostIntro()
+{
+    if( flagbase.GetInt('Rando_newgameplus_loops') > 0 ) {
+        bStartNewGameAfterIntro = true;
+    }
+    Super.PostIntro();
+}
+
+// just wrap some stuff in an if statement for flag Rando_newgameplus_loops
+exec function StartNewGame(String startMap)
+{
+    if (DeusExRootWindow(rootWindow) != None)
+        DeusExRootWindow(rootWindow).ClearWindowStack();
+
+    // Set a flag designating that we're traveling,
+    // so MissionScript can check and not call FirstFrame() for this map.
+    flagBase.SetBool('PlayerTraveling', True, True, 0);
+
+    if( flagbase.GetInt('Rando_newgameplus_loops') == 0 ) {
+        log(self$": StartNewGame not newgameplus");
+        SaveSkillPoints();
+        ResetPlayer();
+    }
+    DeleteSaveGameFiles();
+
+    bStartingNewGame = True;
+
+    // Send the player to the specified map!
+    log(self$": StartNewGame startmap: "$startMap);
+    if (startMap == "")
+        Level.Game.SendPlayer(Self, "01_NYC_UNATCOIsland");		// TODO: Must be stored somewhere!
+    else
+        Level.Game.SendPlayer(Self, startMap);
+}
+
 function bool AddInventory( inventory NewItem )
 {
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
@@ -171,7 +206,7 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
     local float headOffsetZ, headOffsetY, armOffset;
 
     // EMP attacks drain BE energy
-	if (damageType == 'EMP')
+    if (damageType == 'EMP')
         return Damage;
 
     // use the hitlocation to determine where the pawn is hit

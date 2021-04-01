@@ -30,7 +30,6 @@ function PreTravel()
         SaveFlags();
     }
     f = None;
-    Self.Destroy();// for some reason, "f = tdxr.Player.FlagBase;" inside the Init function crashes if I don't do this, not sure why
 }
 
 function Init(DXRando tdxr)
