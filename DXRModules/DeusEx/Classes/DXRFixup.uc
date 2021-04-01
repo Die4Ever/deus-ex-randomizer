@@ -513,6 +513,7 @@ function NYC_04_AnyEntry()
     local OrdersTrigger ot;
     local SkillAwardTrigger st;
     local Conversation c;
+    local FordSchick ford;
 
     switch (dxr.localURL)
     {
@@ -547,6 +548,11 @@ function NYC_04_AnyEntry()
                 if( c.conName == 'PaulAfterAttack' ) FixConversationFlag(c, 'M04RaidDone', true, 'PaulLeftHotel', true);
                 if( c.conName == 'PaulDuringAttack' ) FixConversationFlag(c, 'M04RaidDone', false, 'PaulLeftHotel', false);
             }
+            break;
+
+        case "04_NYC_SMUG":
+            if( dxr.player.flagBase.GetBool('FordSchickRescued') ) foreach AllActors(class'FordSchick', ford)
+                ford.EnterWorld();
             break;
     }
 }
