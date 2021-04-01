@@ -550,8 +550,11 @@ function NYC_04_AnyEntry()
             break;
 
         case "04_NYC_SMUG":
-            if( dxr.player.flagBase.GetBool('FordSchickRescued') ) foreach AllActors(class'FordSchick', ford)
-                ford.EnterWorld();
+            if( dxr.player.flagBase.GetBool('FordSchickRescued') )
+            {
+                foreach AllActors(class'FordSchick', ford)
+                    ford.EnterWorld();
+            }
             break;
     }
 }
@@ -1043,7 +1046,6 @@ static function FixConversationGiveItem(Conversation c, string fromName, Class<I
             t.objectName = string(to.name);
             t.giveObject = to;
         }
-        log("DXRFixup: FixConversationGiveItem found "$t$", objectName: "$t.objectName$", giveObject: "$t.giveObject);
     }
 }
 
