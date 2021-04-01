@@ -11,7 +11,3 @@ function Timer()
 
     Super.Timer();
 }
-
-function PreTravel()
-{
-}

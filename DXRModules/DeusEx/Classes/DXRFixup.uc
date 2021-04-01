@@ -507,18 +507,6 @@ function NYC_04_LeaveHotel()
     }
 }
 
-static function FixConversationFlag(Conversation c, name fromName, bool fromValue, name toName, bool toValue)
-{
-    local ConFlagRef f;
-    for(f = c.flagRefList; f!=None; f=f.nextFlagRef) {
-        if( f.flagName == fromName && f.value == fromValue ) {
-            f.flagName = toName;
-            f.value = toValue;
-            return;
-        }
-    }
-}
-
 function NYC_04_AnyEntry()
 {
     local FlagTrigger ft;
@@ -787,9 +775,21 @@ function HongKong_AnyEntry()
 function NYC_08_AnyEntry()
 {
     local StantonDowd s;
+    local Conversation c;
     SetTimer(1.0, True);
-    foreach AllActors(class'StantonDowd', s) {
-        RemoveFears(s);
+
+    switch(dxr.localURL) {
+        case "08_NYC_STREET":
+            foreach AllActors(class'StantonDowd', s) {
+                RemoveFears(s);
+            }
+            break;
+
+        case "08_NYC_SMUG":
+            foreach AllObjects(class'Conversation', c) {
+                if( c.conName == 'M08MeetFordSchick' ) FixConversationGiveItem(c, "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
+            }
+            break;
     }
 }
 
@@ -1005,6 +1005,33 @@ function UpdateDynamicMusic(Music Song)
             }
         }
 	}
+}
+
+static function FixConversationFlag(Conversation c, name fromName, bool fromValue, name toName, bool toValue)
+{
+    local ConFlagRef f;
+    for(f = c.flagRefList; f!=None; f=f.nextFlagRef) {
+        if( f.flagName == fromName && f.value == fromValue ) {
+            f.flagName = toName;
+            f.value = toValue;
+            return;
+        }
+    }
+}
+
+static function FixConversationGiveItem(Conversation c, string fromName, Class<Inventory> fromClass, Class<Inventory> to)
+{
+    local ConEvent e;
+    local ConEventTransferObject t;
+    for(e=c.eventList; e!=None; e=e.nextEvent) {
+        t = ConEventTransferObject(e);
+        if( t == None ) continue;
+        if( t.objectName == fromName && t.giveObject == fromClass ) {
+            t.objectName = string(to.name);
+            t.giveObject = to;
+        }
+        log("DXRFixup: FixConversationGiveItem found "$t$", objectName: "$t.objectName$", giveObject: "$t.giveObject);
+    }
 }
 
 defaultproperties
