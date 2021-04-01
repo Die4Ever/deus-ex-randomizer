@@ -13,7 +13,7 @@ function Frob(actor Frobber, Inventory frobWith)
 {
     local DXRFashion fashion;
     
-	Super.Frob(Frobber, frobWith);
+    Super.Frob(Frobber, frobWith);
     
     if (Frobber.IsA('DeusExPlayer')){
         p = DeusExPlayer(Frobber);

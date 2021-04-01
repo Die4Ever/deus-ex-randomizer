@@ -181,6 +181,32 @@ function texture GetPants(class<ScriptedPawn> p)
     }
 }
 
+
+function texture GetHelmet(class<ScriptedPawn> p)
+{
+    if (p==None){
+        return None;
+    }
+    switch(p.Default.Mesh){
+        case LodMesh'DeusExCharacters.GM_Trench_F':
+        case LodMesh'DeusExCharacters.GM_Trench': 
+        case LodMesh'DeusExCharacters.GM_DressShirt_B':   
+        case LodMesh'DeusExCharacters.GM_DressShirt':
+        case LodMesh'DeusExCharacters.GM_DressShirt_F':
+        case LodMesh'DeusExCharacters.GM_DressShirt_S':
+        case LodMesh'DeusExCharacters.GM_Suit':
+        case LodMesh'DeusExCharacters.GMK_DressShirt':
+        case LodMesh'DeusExCharacters.GMK_DressShirt_F':
+             return Texture'DeusExItems.Skins.PinkMaskTex';
+        case LodMesh'DeusExCharacters.GM_Jumpsuit':
+             return p.Default.MultiSkins[6];
+        default:
+            dxr.Player.ClientMessage("Influencer "$p.Name$" has mesh "$p.Default.Mesh);
+            return None;
+    }
+
+}
+
 function AddInfluencer(class<ScriptedPawn> p)
 {
     if (isTrenchInfluencer(p)) {
@@ -228,7 +254,7 @@ function bool IsTrenchInfluencer(class<ScriptedPawn> influencer)
             influencer.Default.Mesh == LodMesh'DeusExCharacters.GM_Trench_F');
 }
 
-function ApplyOutfit(Actor p, texture coat1, texture coat2, texture shirt, texture pants, bool isJC) {
+function ApplyOutfit(Actor p, texture coat1, texture coat2, texture shirt, texture pants, texture helmet, bool isJC) {
     local bool isTrench;
     
     isTrench = (coat1 != None && coat2 != None);
@@ -236,23 +262,32 @@ function ApplyOutfit(Actor p, texture coat1, texture coat2, texture shirt, textu
     if (isTrench) {
         p.Mesh = LodMesh'DeusExCharacters.GM_Trench';
         p.MultiSkins[1] = coat1;
-	    p.MultiSkins[5] = coat2;
-    	p.MultiSkins[4] = shirt;
-        p.MultiSkins[2] = pants;   
+        p.MultiSkins[2] = pants;  
+        p.MultiSkins[4] = shirt;
+        p.MultiSkins[5] = coat2;
+        
+        if (isJC) {
+            p.MultiSkins[6] = Texture'DeusExCharacters.Skins.FramesTex4';
+            p.MultiSkins[7] = Texture'DeusExCharacters.Skins.LensesTex5';
+        } else {
+            p.MultiSkins[6] = Texture'DeusExItems.Skins.GrayMaskTex';
+            p.MultiSkins[7] = Texture'DeusExItems.Skins.BlackMaskTex';       
+        }
+        
     } else {
-        p.Mesh = LodMesh'DeusExCharacters.GM_DressShirt';
-    	p.MultiSkins[5] = shirt;
-        p.MultiSkins[3] = pants;
-        p.MultiSkins[1] = Texture'DeusExItems.Skins.PinkMaskTex';
-        p.MultiSkins[2] = Texture'DeusExItems.Skins.PinkMaskTex';
-    }
-    
-    if (isJC) {
-        p.MultiSkins[6] = Texture'DeusExCharacters.Skins.FramesTex4';
-        p.MultiSkins[7] = Texture'DeusExCharacters.Skins.LensesTex5';
-    } else {
-        p.MultiSkins[6] = Texture'DeusExItems.Skins.GrayMaskTex';
-        p.MultiSkins[7] = Texture'DeusExItems.Skins.BlackMaskTex';
+        p.Mesh = LodMesh'MPCharacters.mp_jumpsuit';
+        p.MultiSkins[1] = pants;
+        p.MultiSkins[2] = shirt;
+        p.MultiSkins[3] = p.MultiSkins[0];
+        p.MultiSkins[4] = Texture'DeusExItems.Skins.PinkMaskTex'; //Face mask, like for NSF guys
+        p.MultiSkins[5] = Texture'DeusExItems.Skins.PinkMaskTex'; //Visor lens
+        p.MultiSkins[6] = helmet; //Helmet
+        p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';
+        
+        p.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
+        
+        //Jumpsuit doesn't support glasses
+        
     }
 
 
@@ -261,11 +296,11 @@ function ApplyOutfit(Actor p, texture coat1, texture coat2, texture shirt, textu
 //Brothers gotta match, mom got their clothes out in advance
 function GetDressed()
 {
-	local PaulDenton paul;
-	local PaulDentonCarcass paulCarcass;
-	local JCDentonMaleCarcass jcCarcass;
-	local JCDouble jc;  
-    local texture coat1,coat2,pants,shirt;
+    local PaulDenton paul;
+    local PaulDentonCarcass paulCarcass;
+    local JCDentonMaleCarcass jcCarcass;
+    local JCDouble jc;  
+    local texture coat1,coat2,pants,shirt,helmet;
     local name coatinfluencer,pantsinfluencer,shirtinfluencer;
     local class<ScriptedPawn> styleInfluencer;
     local bool isTrench;
@@ -293,9 +328,11 @@ function GetDressed()
         if (isTrench) {
             coat1=GetCoat1(styleInfluencer);
             coat2=GetCoat2(styleInfluencer);
+            helmet = None;
         } else {
             coat1 = None;
             coat2 = None;
+            helmet = GetHelmet(styleInfluencer);
         }
     }
     
@@ -313,41 +350,41 @@ function GetDressed()
 
     
     
-	// Paul Denton
-	foreach AllActors(class'PaulDenton', paul)
-		break;
+    // Paul Denton
+    foreach AllActors(class'PaulDenton', paul)
+        break;
 
-	if (paul != None) {
-        ApplyOutfit(paul,coat1,coat2,shirt,pants,False);
+    if (paul != None) {
+        ApplyOutfit(paul,coat1,coat2,shirt,pants,helmet,False);
     }
 
-	// Paul Denton Carcass
-	foreach AllActors(class'PaulDentonCarcass', paulCarcass) 
+    // Paul Denton Carcass
+    foreach AllActors(class'PaulDentonCarcass', paulCarcass) 
         break;
         
     if (paulCarcass!=None) {
-        ApplyOutfit(paulCarcass,coat1,coat2,shirt,pants,False);
+        ApplyOutfit(paulCarcass,coat1,coat2,shirt,pants,helmet,False);
     }
 
 
-	// JC Denton Carcass
-	foreach AllActors(class'JCDentonMaleCarcass', jcCarcass)
-		break;
-
-	if (jcCarcass != None) {
-        ApplyOutfit(jcCarcass,coat1,coat2,shirt,pants,True);
-    }
-
-	// JC's stunt double
-	foreach AllActors(class'JCDouble', jc)
+    // JC Denton Carcass
+    foreach AllActors(class'JCDentonMaleCarcass', jcCarcass)
         break;
 
-	if (jc != None) {
-        ApplyOutfit(jc,coat1,coat2,shirt,pants,True);
+    if (jcCarcass != None) {
+        ApplyOutfit(jcCarcass,coat1,coat2,shirt,pants,helmet,True);
+    }
+
+    // JC's stunt double
+    foreach AllActors(class'JCDouble', jc)
+        break;
+
+    if (jc != None) {
+        ApplyOutfit(jc,coat1,coat2,shirt,pants,helmet,True);
     }
     
     if (dxr.Player != None) {
-        ApplyOutfit(dxr.Player,coat1,coat2,shirt,pants,True);
+        ApplyOutfit(dxr.Player,coat1,coat2,shirt,pants,helmet,True);
     }
 
 }
@@ -358,8 +395,7 @@ function RandomizeClothes()
     local bool isTrench;
   
     //Randomize Coat (Multiskin 1 and 5)
-    // TweenAnim: Sequence 'CrouchWalk' not found in Mesh 'GM_DressShirt'
-    styleInfluencer = RandomCoatInfluencer();
+    styleInfluencer = RandomInfluencer();
     isTrench = IsTrenchInfluencer(styleInfluencer);
     dxr.Player.FlagBase.SetName('DXRFashion_CoatInfluencer',styleInfluencer.name);
     info("Coat influencer is "$styleInfluencer);

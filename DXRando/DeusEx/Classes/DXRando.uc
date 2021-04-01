@@ -130,7 +130,7 @@ function LoadModules()
     RunTests();
 }
 
-function DXRBase FindModule(class<DXRBase> moduleclass)
+final function DXRBase FindModule(class<DXRBase> moduleclass)
 {
     local DXRBase m;
     local int i;
@@ -221,7 +221,7 @@ function RandoEnter()
 
 }
 
-function int SetSeed(int s)
+final function int SetSeed(int s)
 {
     local int oldseed;
     oldseed = newseed;
@@ -230,7 +230,7 @@ function int SetSeed(int s)
     return oldseed;
 }
 
-function int rng(int max)
+final function int rng(int max)
 {
     local int gen1, gen2;
     gen2 = 2147483643;

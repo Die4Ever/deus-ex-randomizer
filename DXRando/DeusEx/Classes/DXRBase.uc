@@ -1,7 +1,7 @@
 class DXRBase extends Info config(DXRando);
 
 var transient DXRando dxr;
-var transient int overallchances;
+var transient float overallchances;
 var config int config_version;
 
 var transient int passes;
@@ -78,6 +78,19 @@ function float rngrange(float val, float min, float max)
     return ret;
 }
 
+function float rngrangeseeded(float val, float min, float max, coerce string classname)
+{
+    local float mult, r, ret;
+    local int oldseed;
+    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(classname) );//manually set the seed to avoid using the level name in the seed
+    mult = max - min;
+    r = rngf();
+    ret = val * (r * mult + min);
+    //l("rngrange r: "$r$", mult: "$mult$", min: "$min$", max: "$max$", val: "$val$", return: "$ret);
+    dxr.SetSeed(oldseed);
+    return ret;
+}
+
 function float pow(float m, float e)
 {
     return exp(e * loge(m) );
@@ -144,14 +157,14 @@ function static int staticrng(DXRando dxr, int max)
     return dxr.rng(max);
 }
 
-function int initchance()
+function float initchance()
 {
     if(overallchances > 0 && overallchances < 100) warning("initchance() overallchances == "$overallchances);
     overallchances=0;
-    return rng(100);
+    return rngf()*100.0;
 }
 
-function bool chance(int percent, int r)
+function bool chance(float percent, float r)
 {
     overallchances+=percent;
     if(overallchances>100) warning("chance("$percent$", "$r$") overallchances == "$overallchances);
@@ -165,9 +178,9 @@ function bool chance_remaining(int r)
     return chance(percent, r);
 }
 
-function bool chance_single(int percent)
+function bool chance_single(float percent)
 {
-    return rng(100) < percent;
+    return rngf()*100.0 < percent;
 }
 
 function class<Actor> GetClassFromString(string classstring, class<Actor> c)

@@ -415,7 +415,8 @@ function NYC_04_CheckPaulUndead()
 function NYC_04_CheckPaulRaid()
 {
     local PaulDenton paul;
-    local int count, dead, i;
+    local ScriptedPawn p;
+    local int count, dead, i, pawns;
 
     if( ! dxr.player.flagBase.GetBool('M04RaidTeleportDone') ) return;
 
@@ -441,33 +442,59 @@ function NYC_04_CheckPaulRaid()
         paul.ChangeAlly('Player', 1, true);
     }
 
+    foreach AllActors(class'ScriptedPawn', p) {
+        if( PaulDenton(p) != None ) continue;
+        if( IsCritter(p) ) continue;
+        if( p.bHidden ) continue;
+        p.bStasis = false;
+        pawns++;
+    }
+
     if( dead > 0 || dxr.player.flagBase.GetBool('PaulDenton_Dead') ) {
         dxr.player.ClientMessage("RIP Paul :(",, true);
         dxr.player.flagBase.SetBool('PaulDenton_Dead', true,, 999);
         SetTimer(0, False);
     }
-    else if( count == 0 && dead == 0 ) {
+    else if( dead == 0 && (count == 0 || pawns == 0) ) {
         NYC_04_MarkPaulSafe();
         SetTimer(0, False);
     }
+    else if( pawns == 1 )
+        dxr.player.ClientMessage(pawns$" enemy remaining");
+    else if( pawns <3 )
+        dxr.player.ClientMessage(pawns$" enemies remaining");
 }
 
 function NYC_04_MarkPaulSafe()
 {
+    local PaulDenton paul;
     local FlagTrigger t;
+    local SkillAwardTrigger st;
     if( dxr.player.flagBase.GetBool('PaulLeftHotel') ) return;
 
     dxr.player.flagBase.SetBool('PaulLeftHotel', true,, 999);
-    dxr.player.ClientMessage("Paul safely escaped the hotel! :)",, true);
+
+    foreach AllActors(class'PaulDenton', paul) {
+        paul.SetOrders('Leaving', 'PaulLeaves', True);
+    }
 
     foreach AllActors(class'FlagTrigger', t) {
         switch(t.tag) {
             case 'KillPaul':
             case 'BailedOutWindow':
                 t.Destroy();
+                break;
         }
         if( t.Event == 'BailedOutWindow' )
             t.Destroy();
+    }
+
+    foreach AllActors(class'SkillAwardTrigger', st) {
+        switch(st.Tag) {
+            case 'StayedWithPaul':
+            case 'PaulOutaHere':
+                st.Touch(dxr.Player);
+        }
     }
 }
 
@@ -484,7 +511,11 @@ function NYC_04_LeaveHotel()
 
 function NYC_04_AnyEntry()
 {
-    local FlagTrigger t;
+    local FlagTrigger ft;
+    local OrdersTrigger ot;
+    local SkillAwardTrigger st;
+    local FordSchick ford;
+
     switch (dxr.localURL)
     {
         case "04_NYC_HOTEL":
@@ -493,6 +524,36 @@ function NYC_04_AnyEntry()
                 SetTimer(1, True);
             if(dxr.Player.flagBase.GetBool('NSFSignalSent')) {
                 dxr.Player.flagBase.SetBool('PaulInjured_Played', true,, 5);
+            }
+            foreach AllActors(class'OrdersTrigger', ot, 'PaulSafe') {
+                if( ot.Orders == 'Leaving' )
+                    ot.Orders = 'Seeking';
+            }
+            foreach AllActors(class'FlagTrigger', ft) {
+                if( ft.Event == 'PaulOutaHere' )
+                    ft.Destroy();
+            }
+            foreach AllActors(class'SkillAwardTrigger', st) {
+                if( st.Tag == 'StayedWithPaul' ) {
+                    st.skillPointsAdded = 100;
+                    st.awardMessage = "Stayed with Paul";
+                    st.Destroy();// HACK: this trigger is buggy for some reason, just forget about it for now
+                }
+                else if( st.Tag == 'PaulOutaHere' ) {
+                    st.skillPointsAdded = 500;
+                    st.awardMessage = "Saved Paul";
+                }
+            }
+
+            FixConversationFlag(GetConversation('PaulAfterAttack'), 'M04RaidDone', true, 'PaulLeftHotel', true);
+            FixConversationFlag(GetConversation('PaulDuringAttack'), 'M04RaidDone', false, 'PaulLeftHotel', false);
+            break;
+
+        case "04_NYC_SMUG":
+            if( dxr.player.flagBase.GetBool('FordSchickRescued') )
+            {
+                foreach AllActors(class'FordSchick', ford)
+                    ford.EnterWorld();
             }
             break;
     }
@@ -723,8 +784,17 @@ function NYC_08_AnyEntry()
 {
     local StantonDowd s;
     SetTimer(1.0, True);
-    foreach AllActors(class'StantonDowd', s) {
-        RemoveFears(s);
+
+    switch(dxr.localURL) {
+        case "08_NYC_STREET":
+            foreach AllActors(class'StantonDowd', s) {
+                RemoveFears(s);
+            }
+            break;
+
+        case "08_NYC_SMUG":
+            FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
+            break;
     }
 }
 
@@ -940,6 +1010,43 @@ function UpdateDynamicMusic(Music Song)
             }
         }
 	}
+}
+
+function Conversation GetConversation(Name conName)
+{
+    local Conversation c;
+    foreach AllObjects(class'Conversation', c) {
+        if( c.conName == conName ) return c;
+    }
+    return None;
+}
+
+static function FixConversationFlag(Conversation c, name fromName, bool fromValue, name toName, bool toValue)
+{
+    local ConFlagRef f;
+    if( c == None ) return;
+    for(f = c.flagRefList; f!=None; f=f.nextFlagRef) {
+        if( f.flagName == fromName && f.value == fromValue ) {
+            f.flagName = toName;
+            f.value = toValue;
+            return;
+        }
+    }
+}
+
+static function FixConversationGiveItem(Conversation c, string fromName, Class<Inventory> fromClass, Class<Inventory> to)
+{
+    local ConEvent e;
+    local ConEventTransferObject t;
+    if( c == None ) return;
+    for(e=c.eventList; e!=None; e=e.nextEvent) {
+        t = ConEventTransferObject(e);
+        if( t == None ) continue;
+        if( t.objectName == fromName && t.giveObject == fromClass ) {
+            t.objectName = string(to.name);
+            t.giveObject = to;
+        }
+    }
 }
 
 defaultproperties

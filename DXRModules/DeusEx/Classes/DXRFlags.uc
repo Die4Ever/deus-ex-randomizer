@@ -30,7 +30,6 @@ function PreTravel()
         SaveFlags();
     }
     f = None;
-    Self.Destroy();// for some reason, "f = tdxr.Player.FlagBase;" inside the Init function crashes if I don't do this, not sure why
 }
 
 function Init(DXRando tdxr)
@@ -431,6 +430,15 @@ function RunTests()
     dxr.SetSeed(-111);
     i = rng(100);
     test( rng(100) != i, "rng(100) != rng(100)");
+
+    dxr.SetSeed(111);
+    testbool( chance_single(0), false, "chance_single(0)");
+    testbool( chance_single(1), false, "chance_single(1)");
+    testbool( chance_single(100), true, "chance_single(100)");
+    testbool( chance_single(50), true, "chance_single(50) 1");
+    testbool( chance_single(50), false, "chance_single(50) 2");
+    testbool( chance_single(50), false, "chance_single(50) 3");
+    testbool( chance_single(50), false, "chance_single(50) 4");
 }
 
 function ExtendedTests()
