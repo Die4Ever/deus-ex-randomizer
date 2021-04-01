@@ -15,6 +15,7 @@ function DoNewGamePlus()
     foreach player.AllActors(class'DXRFlags', f) {
         f.NewGamePlus();
         bLoadIntro=false;
+        break;
     }
 }
 

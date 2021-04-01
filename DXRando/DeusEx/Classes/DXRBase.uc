@@ -161,7 +161,7 @@ function float initchance()
 {
     if(overallchancesf > 0 && overallchancesf < 100) warning("initchance() overallchancesf == "$overallchancesf);
     overallchancesf=0;
-    return rngf();
+    return rngf()*100.0;
 }
 
 function bool chance(float percent, float r)
@@ -180,7 +180,7 @@ function bool chance_remaining(int r)
 
 function bool chance_single(float percent)
 {
-    return rngf() < percent;
+    return rngf()*100.0 < percent;
 }
 
 function class<Actor> GetClassFromString(string classstring, class<Actor> c)

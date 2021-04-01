@@ -459,6 +459,8 @@ function NYC_04_CheckPaulRaid()
         NYC_04_MarkPaulSafe();
         SetTimer(0, False);
     }
+    else if( pawns == 1 )
+        dxr.player.ClientMessage(pawns$" enemy remaining");
     else if( pawns <3 )
         dxr.player.ClientMessage(pawns$" enemies remaining");
 }
@@ -512,7 +514,6 @@ function NYC_04_AnyEntry()
     local FlagTrigger ft;
     local OrdersTrigger ot;
     local SkillAwardTrigger st;
-    local Conversation c;
     local FordSchick ford;
 
     switch (dxr.localURL)
@@ -544,10 +545,8 @@ function NYC_04_AnyEntry()
                 }
             }
 
-            foreach AllObjects(class'Conversation', c) {
-                if( c.conName == 'PaulAfterAttack' ) FixConversationFlag(c, 'M04RaidDone', true, 'PaulLeftHotel', true);
-                if( c.conName == 'PaulDuringAttack' ) FixConversationFlag(c, 'M04RaidDone', false, 'PaulLeftHotel', false);
-            }
+            FixConversationFlag(GetConversation('PaulAfterAttack'), 'M04RaidDone', true, 'PaulLeftHotel', true);
+            FixConversationFlag(GetConversation('PaulDuringAttack'), 'M04RaidDone', false, 'PaulLeftHotel', false);
             break;
 
         case "04_NYC_SMUG":
@@ -781,7 +780,6 @@ function HongKong_AnyEntry()
 function NYC_08_AnyEntry()
 {
     local StantonDowd s;
-    local Conversation c;
     SetTimer(1.0, True);
 
     switch(dxr.localURL) {
@@ -792,9 +790,7 @@ function NYC_08_AnyEntry()
             break;
 
         case "08_NYC_SMUG":
-            foreach AllObjects(class'Conversation', c) {
-                if( c.conName == 'M08MeetFordSchick' ) FixConversationGiveItem(c, "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
-            }
+            FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
             break;
     }
 }
@@ -1013,9 +1009,19 @@ function UpdateDynamicMusic(Music Song)
 	}
 }
 
+function Conversation GetConversation(Name conName)
+{
+    local Conversation c;
+    foreach AllObjects(class'Conversation', c) {
+        if( c.conName == conName ) return c;
+    }
+    return None;
+}
+
 static function FixConversationFlag(Conversation c, name fromName, bool fromValue, name toName, bool toValue)
 {
     local ConFlagRef f;
+    if( c == None ) return;
     for(f = c.flagRefList; f!=None; f=f.nextFlagRef) {
         if( f.flagName == fromName && f.value == fromValue ) {
             f.flagName = toName;
@@ -1029,6 +1035,7 @@ static function FixConversationGiveItem(Conversation c, string fromName, Class<I
 {
     local ConEvent e;
     local ConEventTransferObject t;
+    if( c == None ) return;
     for(e=c.eventList; e!=None; e=e.nextEvent) {
         t = ConEventTransferObject(e);
         if( t == None ) continue;

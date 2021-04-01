@@ -23,9 +23,6 @@ function FirstFrame()
 
 function Timer()
 {
-    if ( flags.GetInt('Rando_newgameplus_loops') > 0 ) {
-        player.bStartNewGameAfterIntro = true;
-    }
     if( ran_first_frame == false ) {
         Level.Game.SetGameSpeed(0.05);
         SetTimer(0.075, True);
