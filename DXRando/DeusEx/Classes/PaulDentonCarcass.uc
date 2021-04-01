@@ -2,7 +2,7 @@ class DXRPaulDentonCarcass injects PaulDentonCarcass;
 
 function SetSkin(DeusExPlayer player)
 {
-	local int i;
+    local int i;
     
     Super.SetSkin(player);
 
@@ -27,6 +27,4 @@ function SetSkin(DeusExPlayer player)
         self.Texture = player.Texture;
     }
 
-
-            
 }

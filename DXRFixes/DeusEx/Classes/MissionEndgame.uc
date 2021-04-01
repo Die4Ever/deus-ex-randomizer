@@ -80,9 +80,9 @@ function EndQuote PickRandomQuote()
     local DXRando dxr;
     
     foreach AllActors(class'DXRando',dxr)
-        break;
-
-    return quotes[dxr.rng(numQuotes)];
+        return quotes[dxr.rng(numQuotes)];
+    
+    return quotes[Rand(numQuotes)];
 }
 
 function PostPostBeginPlay()

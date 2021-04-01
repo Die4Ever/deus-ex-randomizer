@@ -44,7 +44,6 @@ exec function StartNewGame(String startMap)
     flagBase.SetBool('PlayerTraveling', True, True, 0);
 
     if( flagbase.GetInt('Rando_newgameplus_loops') == 0 ) {
-        log(self$": StartNewGame not newgameplus");
         SaveSkillPoints();
         ResetPlayer();
     }
@@ -53,7 +52,6 @@ exec function StartNewGame(String startMap)
     bStartingNewGame = True;
 
     // Send the player to the specified map!
-    log(self$": StartNewGame startmap: "$startMap);
     if (startMap == "")
         Level.Game.SendPlayer(Self, "01_NYC_UNATCOIsland");		// TODO: Must be stored somewhere!
     else

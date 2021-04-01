@@ -264,8 +264,8 @@ function ApplyOutfit(Actor p, texture coat1, texture coat2, texture shirt, textu
         p.MultiSkins[1] = coat1;
         p.MultiSkins[2] = pants;  
         p.MultiSkins[4] = shirt;
-	    p.MultiSkins[5] = coat2;
-    	
+        p.MultiSkins[5] = coat2;
+        
         if (isJC) {
             p.MultiSkins[6] = Texture'DeusExCharacters.Skins.FramesTex4';
             p.MultiSkins[7] = Texture'DeusExCharacters.Skins.LensesTex5';
@@ -277,7 +277,7 @@ function ApplyOutfit(Actor p, texture coat1, texture coat2, texture shirt, textu
     } else {
         p.Mesh = LodMesh'MPCharacters.mp_jumpsuit';
         p.MultiSkins[1] = pants;
-    	p.MultiSkins[2] = shirt;
+        p.MultiSkins[2] = shirt;
         p.MultiSkins[3] = p.MultiSkins[0];
         p.MultiSkins[4] = Texture'DeusExItems.Skins.PinkMaskTex'; //Face mask, like for NSF guys
         p.MultiSkins[5] = Texture'DeusExItems.Skins.PinkMaskTex'; //Visor lens
@@ -296,10 +296,10 @@ function ApplyOutfit(Actor p, texture coat1, texture coat2, texture shirt, textu
 //Brothers gotta match, mom got their clothes out in advance
 function GetDressed()
 {
-	local PaulDenton paul;
-	local PaulDentonCarcass paulCarcass;
-	local JCDentonMaleCarcass jcCarcass;
-	local JCDouble jc;  
+    local PaulDenton paul;
+    local PaulDentonCarcass paulCarcass;
+    local JCDentonMaleCarcass jcCarcass;
+    local JCDouble jc;  
     local texture coat1,coat2,pants,shirt,helmet;
     local name coatinfluencer,pantsinfluencer,shirtinfluencer;
     local class<ScriptedPawn> styleInfluencer;
@@ -350,16 +350,16 @@ function GetDressed()
 
     
     
-	// Paul Denton
-	foreach AllActors(class'PaulDenton', paul)
-		break;
+    // Paul Denton
+    foreach AllActors(class'PaulDenton', paul)
+        break;
 
-	if (paul != None) {
+    if (paul != None) {
         ApplyOutfit(paul,coat1,coat2,shirt,pants,helmet,False);
     }
 
-	// Paul Denton Carcass
-	foreach AllActors(class'PaulDentonCarcass', paulCarcass) 
+    // Paul Denton Carcass
+    foreach AllActors(class'PaulDentonCarcass', paulCarcass) 
         break;
         
     if (paulCarcass!=None) {
@@ -367,19 +367,19 @@ function GetDressed()
     }
 
 
-	// JC Denton Carcass
-	foreach AllActors(class'JCDentonMaleCarcass', jcCarcass)
-		break;
+    // JC Denton Carcass
+    foreach AllActors(class'JCDentonMaleCarcass', jcCarcass)
+        break;
 
-	if (jcCarcass != None) {
+    if (jcCarcass != None) {
         ApplyOutfit(jcCarcass,coat1,coat2,shirt,pants,helmet,True);
     }
 
-	// JC's stunt double
-	foreach AllActors(class'JCDouble', jc)
+    // JC's stunt double
+    foreach AllActors(class'JCDouble', jc)
         break;
 
-	if (jc != None) {
+    if (jc != None) {
         ApplyOutfit(jc,coat1,coat2,shirt,pants,helmet,True);
     }
     
