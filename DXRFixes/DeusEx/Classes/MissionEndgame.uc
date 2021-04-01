@@ -142,30 +142,30 @@ function FirstFrame()
 
 function PrintEndgameQuote(int num)
 {
-	local int i;
-	local DeusExRootWindow root;
+    local int i;
+    local DeusExRootWindow root;
     local EndQuote quote;
 
-	bQuotePrinted = True;
-	flags.SetBool('EndgameExplosions', False);
+    bQuotePrinted = True;
+    flags.SetBool('EndgameExplosions', False);
     
     LoadQuotes();
 
-	root = DeusExRootWindow(Player.rootWindow);
-	if (root != None)
-	{
-		quoteDisplay = HUDMissionStartTextDisplay(root.NewChild(Class'HUDMissionStartTextDisplay', True));
-		if (quoteDisplay != None)
-		{
-			quoteDisplay.displayTime = endgameDelays[num];
-			quoteDisplay.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
+    root = DeusExRootWindow(Player.rootWindow);
+    if (root != None)
+    {
+        quoteDisplay = HUDMissionStartTextDisplay(root.NewChild(Class'HUDMissionStartTextDisplay', True));
+        if (quoteDisplay != None)
+        {
+            quoteDisplay.displayTime = endgameDelays[num];
+            quoteDisplay.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
             
             quote = PickRandomQuote();
 
-		    quoteDisplay.AddMessage(quote.quote);
-		    quoteDisplay.AddMessage(quote.attribution);
+            quoteDisplay.AddMessage(quote.quote);
+            quoteDisplay.AddMessage(quote.attribution);
 
-			quoteDisplay.StartMessage();
-		}
-	}
+            quoteDisplay.StartMessage();
+        }
+    }
 }
