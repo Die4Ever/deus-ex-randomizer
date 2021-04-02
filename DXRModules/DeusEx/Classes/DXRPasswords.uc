@@ -6,6 +6,13 @@ var config safe_rule datacubes_rules[32];
 var int num_not_passwords;
 var config string not_passwords[64];
 
+struct YesPassword {
+    var string map;
+    var string password;
+    var string search_for;
+};
+var config YesPassword yes_passwords[32];
+
 var travel string oldpasswords[64];
 var travel string newpasswords[64];
 var travel int passStart;
@@ -84,7 +91,7 @@ function CheckConfig()
         not_passwords[i++] = "security restriction";
         not_passwords[i++] = "security office";
         not_passwords[i++] = "security system";
-        not_passwords[i++] = " of security";
+        not_passwords[i++] = " of security";// TODO: reduce these, we can probably just blacklist the word security and then whitelist the actual passwords
         not_passwords[i++] = "SECURITY PERSON";
         not_passwords[i++] = "AUTHORIZED SECURITY";
         not_passwords[i++] = "SECURITY SHOULD";
@@ -108,13 +115,40 @@ function CheckConfig()
         not_passwords[i++] = "Simons, FEMA";
         not_passwords[i++] = "Walton Simons";
         not_passwords[i++] = "SIMONS WENT";
+        not_passwords[i++] = "REPORT TO SIMONS";
         not_passwords[i++] = "Bob Page";
         not_passwords[i++] = "MJ12 COMPROMISED INDIVIDUALS";
         not_passwords[i++] = "MJ12 tool";
         not_passwords[i++] = "MJ12 has the";
         not_passwords[i++] = "MJ12 network";
         not_passwords[i++] = "the MJ12";
+        not_passwords[i++] = "Majestic 12";
+        not_passwords[i++] = "the Illuminati";
+        not_passwords[i++] = "raptor-chickens";
+        not_passwords[i++] = "of Illuminati";
+        not_passwords[i++] = "Tiffany";// and then manually allow "password Tiffany" inside FixCodes()
         not_passwords[i++] = "1";
+
+        i=0;
+        yes_passwords[i].map = "12_VANDENBERG_COMPUTER";
+        yes_passwords[i].password = "Tiffany";
+        yes_passwords[i].search_for = "password Tiffany";
+        i++;
+
+        yes_passwords[i].map = "09_NYC_DOCKYARD";
+        yes_passwords[i].password = "SIMONS";
+        yes_passwords[i].search_for = "PASSWORD: SIMONS";
+        i++;
+
+        yes_passwords[i].map = "06_HONGKONG_WANCHAI_STREET";
+        yes_passwords[i].password = "SECURITY";
+        yes_passwords[i].search_for = "PASSWORD SECURITY";
+        i++;
+
+        yes_passwords[i].map = "06_HONGKONG_MJ12LAB";
+        yes_passwords[i].password = "SECURITY";
+        yes_passwords[i].search_for = "PASSWORD HAS BEEN RESET TO THE DEFAULT MJ12 AND SECURITY";
+        i++;
     }
     for(i=0; i<ArrayCount(datacubes_rules); i++) {
         datacubes_rules[i].map = Caps(datacubes_rules[i].map);
@@ -124,6 +158,15 @@ function CheckConfig()
         not_passwords[num_not_passwords++] = Caps(not_passwords[i]);
     }
     Super.CheckConfig();
+
+    for(i=0; i<ArrayCount(yes_passwords); i++) {
+        if( yes_passwords[i].map != "" ) continue;
+        // can't put escaped quotes inside config, so we need to add it after saving the config
+        yes_passwords[i].map = "09_NYC_DOCKYARD";
+        yes_passwords[i].password = "SECURITY";
+        yes_passwords[i].search_for = "PASSWORD IS \"SECURITY\"";
+        break;
+    }
 }
 
 function Timer()
@@ -169,7 +212,7 @@ function ProcessString(out string str, optional out string updated_passwords[16]
     }
     for (i=0; i<ArrayCount(oldpasswords); i++)
     {
-        if( conversation && oldpasswords[i] == "SECURITY" ) {// HACK
+        if( conversation && ( oldpasswords[i] == "SECURITY" || oldpasswords[i] == "TARGET" || oldpasswords[i] == "RESEARCH") ) {// HACK
             continue;
         }
         if( UpdateString(str, oldpasswords[i], newpasswords[i]) ) {
@@ -291,7 +334,17 @@ function RandoPasswords(int mode)
 
 function FixCodes()
 {
-    local string newpassword;
+    local string newpassword, replacement;
+    local int i;
+
+    for(i=0; i<ArrayCount(yes_passwords); i++) {
+        l("yes_passwords["$i$"].search_for: "$yes_passwords[i].search_for);
+        if( yes_passwords[i].map != dxr.localURL ) continue;
+        newpassword = GeneratePassword(dxr, yes_passwords[i].password);
+        replacement = ReplaceText(yes_passwords[i].search_for, yes_passwords[i].password, newpassword, true);
+        ReplacePassword(yes_passwords[i].search_for, replacement );
+    }
+
     switch(dxr.localURL) {
         case "02_NYC_HOTEL":
             newpassword = GeneratePasscode("4321");
