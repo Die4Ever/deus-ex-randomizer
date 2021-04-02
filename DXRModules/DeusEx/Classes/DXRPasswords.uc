@@ -338,7 +338,6 @@ function FixCodes()
     local int i;
 
     for(i=0; i<ArrayCount(yes_passwords); i++) {
-        l("yes_passwords["$i$"].search_for: "$yes_passwords[i].search_for);
         if( yes_passwords[i].map != dxr.localURL ) continue;
         newpassword = GeneratePassword(dxr, yes_passwords[i].password);
         replacement = ReplaceText(yes_passwords[i].search_for, yes_passwords[i].password, newpassword, true);
