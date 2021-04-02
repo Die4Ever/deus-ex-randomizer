@@ -206,6 +206,7 @@ function BindControls(bool writing, optional string action)
     helptexts[id] = "Saves the game in case you die!";
     EnumOption(id, "Every Entry", 2, writing, f.autosave);
     EnumOption(id, "First Entry", 1, writing, f.autosave);
+    EnumOption(id, "Autosaves-Only (Hardcore)", 3, writing, f.autosave);
     EnumOption(id, "Off", 0, writing, f.autosave);
     id++;
 

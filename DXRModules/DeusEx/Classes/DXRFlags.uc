@@ -10,7 +10,7 @@ var int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
 var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
 var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
 var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
-var int autosave;//0=off, 1=first time entering level, 2=every loading screen
+var int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
 var int removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices;
 var int dancingpercent;
 var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;

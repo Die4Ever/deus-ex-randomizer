@@ -58,6 +58,12 @@ exec function StartNewGame(String startMap)
         Level.Game.SendPlayer(Self, startMap);
 }
 
+exec function QuickSave()
+{
+    if( class'DXRAutosave'.static.AllowManualSaves(self) ) Super.QuickSave();
+    else ClientMessage("Manual saving is not allowed in this game mode! Good Luck!",, true);
+}
+
 function bool AddInventory( inventory NewItem )
 {
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));

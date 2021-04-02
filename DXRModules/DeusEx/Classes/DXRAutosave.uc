@@ -40,6 +40,15 @@ function Timer()
         doAutosave();
 }
 
+static function bool AllowManualSaves(DeusExPlayer player)
+{
+    local DXRFlags f;
+    f = DXRFlags(Human(player).DXRFindModule(class'DXRFlags'));
+    if( f == None ) return true;
+    if( f.autosave == 3 ) return false;
+    return true;
+}
+
 function doAutosave()
 {
     local string saveName;
