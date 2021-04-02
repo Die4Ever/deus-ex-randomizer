@@ -159,7 +159,7 @@ function static int staticrng(DXRando dxr, int max)
 
 function float initchance()
 {
-    if(overallchances > 0 && overallchances < 100) warning("initchance() overallchances == "$overallchances);
+    if(overallchances > 0.01 && overallchances < 100) warning("initchance() overallchances == "$overallchances);
     overallchances=0;
     return rngf()*100.0;
 }
@@ -167,7 +167,7 @@ function float initchance()
 function bool chance(float percent, float r)
 {
     overallchances+=percent;
-    if(overallchances>100) warning("chance("$percent$", "$r$") overallchances == "$overallchances);
+    if(overallchances>100.01) warning("chance("$percent$", "$r$") overallchances == "$overallchances);
     return r>= (overallchances-percent) && r< overallchances;
 }
 

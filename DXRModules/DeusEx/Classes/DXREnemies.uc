@@ -16,14 +16,16 @@ var config RandomEnemyStruct randomenemies[32];
 var _RandomEnemyStruct _randomenemies[32];
 
 var config name defaultOrders;
+var config float min_rate_adjust, max_rate_adjust;
 
 function CheckConfig()
 {
     local int i;
-    local class<Actor> a;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
         chance_clone_nonhumans = 60;
         enemy_multiplier = 1;
+        min_rate_adjust = default.min_rate_adjust;
+        max_rate_adjust = default.max_rate_adjust;
 
         for(i=0; i < ArrayCount(randommelees); i++ ) {
             randommelees[i].type = "";
@@ -39,7 +41,7 @@ function CheckConfig()
         AddRandomEnemyType("ThugMale", 14);
         AddRandomEnemyType("ThugMale2", 14);
         AddRandomEnemyType("ThugMale3", 14);
-        AddRandomEnemyType("Greasel", 5);
+        AddRandomEnemyType("Greasel", 4);
         AddRandomEnemyType("Gray", 2);
         AddRandomEnemyType("Karkian", 2);
         AddRandomEnemyType("SpiderBot2", 2);//little spider
@@ -77,27 +79,7 @@ function CheckConfig()
     }
     Super.CheckConfig();
 
-    for(i=0; i < ArrayCount(randommelees); i++) {
-        if( randommelees[i].type != "" ) {
-            a = GetClassFromString(randommelees[i].type, class'DeusExWeapon');
-            _randommelees[i].type = class<DeusExWeapon>(a);
-            _randommelees[i].chance = randommelees[i].chance;
-        }
-    }
-    for(i=0; i < ArrayCount(randomweapons); i++) {
-        if( randomweapons[i].type != "" ) {
-            a = GetClassFromString(randomweapons[i].type, class'DeusExWeapon');
-            _randomweapons[i].type = class<DeusExWeapon>(a);
-            _randomweapons[i].chance = randomweapons[i].chance;
-        }
-    }
-    for(i=0; i < ArrayCount(randomenemies); i++) {
-        if( randomenemies[i].type != "" ) {
-            a = GetClassFromString(randomenemies[i].type, class'ScriptedPawn');
-            _randomenemies[i].type = class<ScriptedPawn>(a);
-            _randomenemies[i].chance = randomenemies[i].chance;
-        }
-    }
+    ReadConfig();
 }
 
 function AddRandomWeapon(string t, int c)
@@ -142,6 +124,66 @@ function FirstEntry()
     RandoEnemies(dxr.flags.enemiesrandomized);
     //SwapScriptedPawns();
     RandoCarcasses();
+}
+
+function ReadConfig()
+{
+    local int i, num;
+    local float total, target_total;
+    local class<Actor> a;
+
+    total=0;
+    target_total=0;
+    num=0;
+    for(i=0; i < ArrayCount(randommelees); i++) {
+        if( randommelees[i].type != "" ) {
+            a = GetClassFromString(randommelees[i].type, class'DeusExWeapon');
+            if( a == None ) continue;
+            _randommelees[num].type = class<DeusExWeapon>(a);
+            _randommelees[num].chance = rngrangeseeded(randommelees[i].chance, min_rate_adjust, max_rate_adjust, a.name);
+            total += _randommelees[num].chance;
+            target_total += randommelees[i].chance;
+            num++;
+        }
+    }
+    for(i=0; i < num; i++) {
+        _randommelees[i].chance *= target_total / total;
+        //l(_randommelees[i].type$": "$_randommelees[i].chance);
+    }
+
+    total=0;
+    num=0;
+    for(i=0; i < ArrayCount(randomweapons); i++) {
+        if( randomweapons[i].type != "" ) {
+            a = GetClassFromString(randomweapons[i].type, class'DeusExWeapon');
+            if( a == None ) continue;
+            _randomweapons[num].type = class<DeusExWeapon>(a);
+            _randomweapons[num].chance = rngrangeseeded(randomweapons[i].chance, min_rate_adjust, max_rate_adjust, a.name);
+            total += _randomweapons[num].chance;
+            num++;
+        }
+    }
+    for(i=0; i < num; i++) {
+        _randomweapons[i].chance *= 100.0/total;
+        //l(_randomweapons[i].type$": "$_randomweapons[i].chance);
+    }
+
+    total=0;
+    num=0;
+    for(i=0; i < ArrayCount(randomenemies); i++) {
+        if( randomenemies[i].type != "" ) {
+            a = GetClassFromString(randomenemies[i].type, class'ScriptedPawn');
+            if( a == None ) continue;
+            _randomenemies[num].type = class<ScriptedPawn>(a);
+            _randomenemies[num].chance = rngrangeseeded(randomenemies[i].chance, min_rate_adjust, max_rate_adjust, a.name);
+            total += _randomenemies[num].chance;
+            num++;
+        }
+    }
+    for(i=0; i < num; i++) {
+        _randomenemies[i].chance *= 100.0/total;
+        //l(_randomenemies[i].type$": "$_randomenemies[i].chance);
+    }
 }
 
 function RandoCarcasses()
@@ -242,6 +284,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
     local float r;
     r = initchance();
     for(i=0; i < ArrayCount(_randomenemies); i++ ) {
+        if( _randomenemies[i].type == None ) break;
         if( chance( _randomenemies[i].chance, r ) ) newclass = _randomenemies[i].type;
     }
 
@@ -378,6 +421,7 @@ function GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional int add_am
     local float r;
     r = initchance();
     for(i=0; i < ArrayCount(_randomweapons); i++ ) {
+        if( _randomweapons[i].type == None ) break;
         if( chance( _randomweapons[i].chance, r ) ) wclass = _randomweapons[i].type;
     }
     chance_remaining(r);
@@ -403,7 +447,7 @@ function GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
 
     r = initchance();
     for(i=0; i < ArrayCount(_randommelees); i++ ) {
-        if( _randommelees[i].type == None ) continue;
+        if( _randommelees[i].type == None ) break;
         if( chance( _randommelees[i].chance, r ) ) wclass = _randommelees[i].type;
 
         if( (!allow_dupes) && HasItem(p, _randommelees[i].type) ) {
@@ -456,4 +500,10 @@ function RunTests()
         total += randommelees[i].chance;
     }
     testint( total, 100, "config randommelees chances, check total "$total);
+}
+
+defaultproperties
+{
+    min_rate_adjust=0.5
+    max_rate_adjust=1.5
 }
