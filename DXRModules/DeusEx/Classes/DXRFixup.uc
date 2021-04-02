@@ -91,6 +91,9 @@ function PreFirstEntry()
         case 3:
             Airfield_FirstEntry();
             break;
+        case 4:
+            NYC_04_FirstEntry();
+            break;
         case 5:
             Jailbreak_FirstEntry();
         case 6:
@@ -107,6 +110,17 @@ function PreFirstEntry()
             break;
         case 15:
             Area51_FirstEntry();
+            break;
+    }
+}
+
+function PostFirstEntry()
+{
+    Super.PostFirstEntry();
+
+    switch(dxr.localURL) {
+        case "05_NYC_UNATCOMJ12LAB":
+            BalanceJailbreak();
             break;
     }
 }
@@ -396,6 +410,27 @@ function Jailbreak_FirstEntry()
     }
 }
 
+function BalanceJailbreak()
+{
+    local class<Inventory> iclass;
+    local DXREnemies e;
+    local int i;
+    local float r;
+
+    e = DXREnemies(dxr.FindModule(class'DXREnemies'));
+    if( e != None ) {
+        r = initchance();
+        for(i=0; i < ArrayCount(e._randommelees); i++ ) {
+            if( e._randommelees[i].type == None ) break;
+            if( chance( e._randommelees[i].chance, r ) ) iclass = e._randommelees[i].type;
+        }
+        chance_remaining(r);
+    }
+    else iclass = class'WeaponCombatKnife';
+
+    Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915) );
+}
+
 // if you bail on Paul but then have a change of heart and re-enter to come back and save him
 function NYC_04_CheckPaulUndead()
 {
@@ -509,22 +544,17 @@ function NYC_04_LeaveHotel()
     }
 }
 
-function NYC_04_AnyEntry()
+function NYC_04_FirstEntry()
 {
     local FlagTrigger ft;
     local OrdersTrigger ot;
     local SkillAwardTrigger st;
-    local FordSchick ford;
+    local Teleporter tele;
+    local DynamicTeleporter dtele;
 
     switch (dxr.localURL)
     {
         case "04_NYC_HOTEL":
-            NYC_04_CheckPaulUndead();
-            if( ! dxr.player.flagBase.GetBool('PaulDenton_Dead') )
-                SetTimer(1, True);
-            if(dxr.Player.flagBase.GetBool('NSFSignalSent')) {
-                dxr.Player.flagBase.SetBool('PaulInjured_Played', true,, 5);
-            }
             foreach AllActors(class'OrdersTrigger', ot, 'PaulSafe') {
                 if( ot.Orders == 'Leaving' )
                     ot.Orders = 'Seeking';
@@ -544,7 +574,36 @@ function NYC_04_AnyEntry()
                     st.awardMessage = "Saved Paul";
                 }
             }
+            break;
 
+        case "04_NYC_BATTERYPARK":
+            foreach AllActors(class'Teleporter', tele) {
+                if( ! tele.bEnabled ) continue;
+                if( tele.URL != "04_NYC_Street#ToStreet" ) continue;
+                tele.bEnabled = false;
+                dtele = Spawn(class'DynamicTeleporter',,,tele.Location);
+                dtele.URL = "04_NYC_Street#?toname=PathNode194";
+                dtele.Radius = 30;
+            }
+            break;
+    }
+}
+
+function NYC_04_AnyEntry()
+{
+    local FordSchick ford;
+
+    switch (dxr.localURL)
+    {
+        case "04_NYC_HOTEL":
+            NYC_04_CheckPaulUndead();
+            if( ! dxr.player.flagBase.GetBool('PaulDenton_Dead') )
+                SetTimer(1, True);
+            if(dxr.Player.flagBase.GetBool('NSFSignalSent')) {
+                dxr.Player.flagBase.SetBool('PaulInjured_Played', true,, 5);
+            }
+
+            // conversations are transient, so they need to be fixed in AnyEntry
             FixConversationFlag(GetConversation('PaulAfterAttack'), 'M04RaidDone', true, 'PaulLeftHotel', true);
             FixConversationFlag(GetConversation('PaulDuringAttack'), 'M04RaidDone', false, 'PaulLeftHotel', false);
             break;
