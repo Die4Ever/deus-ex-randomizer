@@ -478,7 +478,6 @@ function ChangeComputerPassword(Computers c, int i)
     local int j;
 
     oldpassword = c.userList[i].password;
-    if( Len(oldpassword) < 2 ) return;
 
     for (j=0; j<ArrayCount(oldpasswords); j++)
     {
@@ -488,6 +487,7 @@ function ChangeComputerPassword(Computers c, int i)
         }
     }
 
+    if( Len(oldpassword) < 2 ) return;
     newpassword = GeneratePassword(dxr, oldpassword);
     c.userList[i].password = newpassword;
     ReplacePassword(oldpassword, newpassword);
@@ -505,7 +505,6 @@ function ChangeKeypadPasscode(Keypad k)
     }
 
     oldpassword = k.validCode;
-    if( Len(oldpassword) < 2 ) return;
 
     for (j=0; j<ArrayCount(oldpasswords); j++)
     {
@@ -515,6 +514,7 @@ function ChangeKeypadPasscode(Keypad k)
         }
     }
 
+    if( Len(oldpassword) < 2 ) return;
     newpassword = GeneratePasscode(oldpassword);
     k.validCode = newpassword;
     ReplacePassword(oldpassword, newpassword);
@@ -527,7 +527,6 @@ function ChangeATMPIN(ATM a, int i)
     local int j;
 
     oldpassword = a.userList[i].PIN;
-    if( Len(oldpassword) < 2 ) return;
 
     for (j=0; j<ArrayCount(oldpasswords); j++)
     {
@@ -537,6 +536,7 @@ function ChangeATMPIN(ATM a, int i)
         }
     }
 
+    if( Len(oldpassword) < 2 ) return;
     newpassword = GeneratePasscode(oldpassword);
     a.userList[i].PIN = newpassword;
     ReplacePassword(oldpassword, newpassword);

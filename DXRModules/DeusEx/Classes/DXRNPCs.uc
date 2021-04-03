@@ -164,7 +164,7 @@ function CreateMerchant()
         npc.ConBindEvents();
         return;
     }
-    npc = Spawn(class'Businessman3',, 'DXRNPCs1', GetRandomPositionFine() );
+    npc = Spawn(class'Businessman3',, 'DXRNPCs1', GetRandomMerchantPosition() );
     if( npc == None ) {
         err("CreateMerchant failed to spawn merchant");
         return;
@@ -180,6 +180,24 @@ function CreateMerchant()
     }
     //RemoveFears(npc);// no fears makes it easy for him to block doorways
     npc.ConBindEvents();
+}
+
+function vector GetRandomMerchantPosition()
+{
+    local DeusExMover d;
+    local vector loc;
+    local int i;
+
+    for(i=0; i<10; i++) {
+        loc = GetRandomPositionFine();
+        d = None;
+        foreach RadiusActors(class'DeusExMover', d, 150.0, loc) {
+            break;
+        }
+        if( d == None ) return loc;
+    }
+
+    return loc;
 }
 
 function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bool player_talking, optional string label)
