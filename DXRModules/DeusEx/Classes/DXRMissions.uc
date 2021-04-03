@@ -1123,7 +1123,7 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
     local Teleporter t;
     local float too_close, dist;
     local DXRMissions m;
-    too_close = 60*16;
+    too_close = 90*16;
 
     m = DXRMissions(dxr.FindModule(class'DXRMissions'));
     if( m != None && m.b_rando_start ) {

@@ -250,6 +250,23 @@ function bool SetActorLocation(Actor a, vector newloc)
     return true;
 }
 
+function RemoveFears(ScriptedPawn p)
+{
+    if( p == None ) {
+        err("RemoveFears "$p);
+        return;
+    }
+    p.bFearHacking = false;
+    p.bFearWeapon = false;
+    p.bFearShot = false;
+    p.bFearInjury = false;
+    p.bFearIndirectInjury = false;
+    p.bFearCarcass = false;
+    p.bFearDistress = false;
+    p.bFearAlarm = false;
+    p.bFearProjectiles = false;
+}
+
 function bool Swap(Actor a, Actor b)
 {
     local vector newloc, oldloc;

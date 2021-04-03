@@ -2,6 +2,12 @@ class MenuMain injects MenuMain;
 
 var float countdown;
 
+function UpdateButtonStatus()
+{
+    Super.UpdateButtonStatus();
+    if( ! class'DXRAutosave'.static.AllowManualSaves(player) ) winButtons[1].SetSensitivity(False);
+}
+
 function SetTitle(String newTitle)
 {
     bTickEnabled = true;

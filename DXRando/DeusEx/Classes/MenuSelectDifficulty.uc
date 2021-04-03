@@ -43,6 +43,9 @@ function BindControls(bool writing, optional string action)
     //EnumOption(id, "Kill Bob Page (Alpha)", 3, writing, f.gamemode);
     //EnumOption(id, "How About Some Soy Food?", 6, writing, f.gamemode);
     //EnumOption(id, "Max Rando", 7, writing, f.gamemode);
+    if( EnumOption(id, "Add Merchant (Alpha)", 50, writing, f.merchants) ) {
+        f.gamemode = 0;// this isn't really a game mode, but I don't have anywhere else to put it yet
+    }
     id++;
 
     labels[id] = "";
@@ -206,6 +209,7 @@ function BindControls(bool writing, optional string action)
     helptexts[id] = "Saves the game in case you die!";
     EnumOption(id, "Every Entry", 2, writing, f.autosave);
     EnumOption(id, "First Entry", 1, writing, f.autosave);
+    EnumOption(id, "Autosaves-Only (Hardcore)", 3, writing, f.autosave);
     EnumOption(id, "Off", 0, writing, f.autosave);
     id++;
 

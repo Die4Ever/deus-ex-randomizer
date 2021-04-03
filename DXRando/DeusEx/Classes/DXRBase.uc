@@ -159,7 +159,7 @@ function static int staticrng(DXRando dxr, int max)
 
 function float initchance()
 {
-    if(overallchances > 0 && overallchances < 100) warning("initchance() overallchances == "$overallchances);
+    if(overallchances > 0.01 && overallchances < 99.99) warning("initchance() overallchances == "$overallchances);
     overallchances=0;
     return rngf()*100.0;
 }
@@ -167,7 +167,7 @@ function float initchance()
 function bool chance(float percent, float r)
 {
     overallchances+=percent;
-    if(overallchances>100) warning("chance("$percent$", "$r$") overallchances == "$overallchances);
+    if(overallchances>100.01) warning("chance("$percent$", "$r$") overallchances == "$overallchances);
     return r>= (overallchances-percent) && r< overallchances;
 }
 
@@ -299,7 +299,7 @@ function AddDXRCredits(CreditsWindow cw)
 
 
 //consider this like debug or trace
-function l(string message)
+function l(coerce string message)
 {
     log(message, class.name);
 
@@ -308,19 +308,19 @@ function l(string message)
     }*/
 }
 
-function info(string message)
+function info(coerce string message)
 {
     log("INFO: " $ message, class.name);
     class'DXRTelemetry'.static.SendLog(dxr, Self, "INFO", message);
 }
 
-function warning(string message)
+function warning(coerce string message)
 {
     log("WARNING: " $ message, class.name);
     class'DXRTelemetry'.static.SendLog(dxr, Self, "WARNING", message);
 }
 
-function err(string message)
+function err(coerce string message)
 {
     log("ERROR: " $ message, class.name);
     if(dxr != None && dxr.Player != None) {
@@ -328,6 +328,11 @@ function err(string message)
     }
 
     class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", message);
+}
+
+function name StringToName(string s)
+{
+    return dxr.Player.rootWindow.StringToName(s);
 }
 
 final function StartRunTests()
