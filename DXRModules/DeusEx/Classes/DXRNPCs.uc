@@ -105,6 +105,8 @@ function RandomizeItems(out ItemPurchase items[8])
     for(i=3; i<ArrayCount(items) ; i++) {
         items[i].item = None;
     }
+
+    // need to sync with flags
 }
 
 function CreateMerchant()
@@ -121,7 +123,7 @@ function CreateMerchant()
         return;
     }
 
-    SetSeed("CreateMerchant");
+    SetSeed("CreateMerchant");// probably seed by mission number without map name
     RandomizeItems(items);
 
     c = new(Level) class'Conversation';
@@ -157,6 +159,7 @@ function CreateMerchant()
     }
     if(list == None) err("list == None");
 
+    // need to sync npc inventory with the items array, because of the flags for already purchased items
     foreach AllActors(class'Businessman3', npc, 'DXRNPCs1') {
         npc.BindName = "DXRNPCs1";
         npc.ConBindEvents();
@@ -174,7 +177,7 @@ function CreateMerchant()
     npc.bImportant = true;
     for(i=0; i < ArrayCount(items); i++) {
         if(items[i].item == None) continue;
-        GiveItem(npc, items[i].item);
+        GiveItem(npc, items[i].item);// sync inventory by flags?
     }
     RemoveFears(npc);
     npc.ConBindEvents();
@@ -257,6 +260,7 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
         BuildBuyItemText(items[i], true, text, label);
         prev = AddSpeech(c, prev, text, true, label);
         prev = AddTransfer(c, prev, items[i].item);
+        // set flag for purchased item
         prev = AddGiveCredits(c, prev, -items[i].price );
         prev = AddJump(c, prev, "bought");
     }
@@ -337,6 +341,7 @@ function ConChoice _AddItemChoice(ConEventChoice e, ConChoice prev, ItemPurchase
 
 function ConChoice AddItemChoice(ConEventChoice e, ConChoice prev, ItemPurchase item)
 {
+    // check flag for already purchased item
     prev = _AddItemChoice(e, prev, item, true);
     prev = _AddItemChoice(e, prev, item, false);
     return prev;
@@ -427,8 +432,9 @@ function ConEventJump AddJump(Conversation c, ConEvent prev, string after_label)
 function AddConEvent(Conversation c, ConEvent prev, ConEvent e)
 {
     if( prev != None ) {
-        if( prev.nextEvent != None )
+        if( prev.nextEvent != None )// this might be good to do intentionally sometimes
             warning("prev.nextEvent != None, c: "$c$", prev: "$prev$", e: "$e);
+        e.nextEvent = prev.nextEvent;
         prev.nextEvent = e;
     }
     else
