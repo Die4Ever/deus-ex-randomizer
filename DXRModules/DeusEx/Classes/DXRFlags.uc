@@ -5,7 +5,7 @@ var transient FlagBase f;
 //rando flags
 var int seed, playthrough_id;
 var int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
-var int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando, 8=merchants
+var int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
 var int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
 var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
 var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
@@ -19,6 +19,7 @@ var int medbots, repairbots;//there are 90 levels in the game, so 10% means appr
 var int turrets_move, turrets_add;
 var int crowdcontrol;
 var int newgameplus_loops;
+var int merchants;
 
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
@@ -130,11 +131,12 @@ function InitDefaults()
     turrets_add = 20;
     crowdcontrol = 0;
     newgameplus_loops = 0;
+    merchants = 0;
 }
 
 function CheckConfig()
 {
-    if( config_version < 4 ) {
+    if( config_version < VersionToInt(1,5,6) ) {
     }
     Super.CheckConfig();
 }
@@ -217,6 +219,9 @@ function LoadFlags()
     if( stored_version >= VersionToInt(1,5,5) ) {
         playthrough_id = f.GetInt('Rando_playthrough_id');
     }
+    if( stored_version >= VersionToInt(1,5,6) ) {
+        merchants = f.GetInt('Rando_merchants');
+    }
 
     if(stored_version < flagsversion ) {
         info("upgraded flags from "$stored_version$" to "$flagsversion);
@@ -284,6 +289,7 @@ function SaveFlags()
     f.SetInt('Rando_turrets_add', turrets_add,, 999);
     f.SetInt('Rando_crowdcontrol', crowdcontrol,, 999);
     f.SetInt('Rando_newgameplus_loops', newgameplus_loops,, 999);
+    f.SetInt('Rando_merchants', merchants,, 999);
 
     LogFlags("SaveFlags");
 }
@@ -305,7 +311,7 @@ function AddDXRCredits(CreditsWindow cw)
 function string StringifyFlags()
 {
     return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", loadout: "$loadout
-        $ ", brightness: "$brightness $ ", newgameplus_loops: "$newgameplus_loops $ ", ammo: " $ ammo
+        $ ", brightness: "$brightness $ ", newgameplus_loops: "$newgameplus_loops $ ", ammo: " $ ammo $ ", merchants: "$ merchants
         $ ", minskill: "$minskill$", maxskill: "$maxskill$", skills_disable_downgrades: " $ skills_disable_downgrades $ ", skills_reroll_missions: " $ skills_reroll_missions $ ", skills_independent_levels: " $ skills_independent_levels
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
@@ -386,6 +392,7 @@ function NewGamePlus()
     medbots = medbots*0.9;
     repairbots = repairbots*0.9;
     turrets_add = turrets_add*1.2;
+    merchants *= 0.9;
 
     if (p.KeyRing != None)
     {

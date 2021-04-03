@@ -9,7 +9,6 @@ struct ItemPurchase
 function AnyEntry()
 {
     Super.AnyEntry();
-    if( dxr.flags.gamemode != 8 ) return;
 
     CreateMerchant();
 
@@ -72,6 +71,8 @@ function RandomizeItems(out ItemPurchase items[8])
     classes[i++] = class'AmmoDartPoison';
     classes[i++] = class'AmmoRocket';
     classes[i++] = class'WeaponShuriken';
+    classes[i++] = class'HazMatSuit';
+    classes[i++] = class'Rebreather';
     num=i;
 
     for(i=0; i<ArrayCount(items); i++) {
@@ -105,8 +106,6 @@ function RandomizeItems(out ItemPurchase items[8])
     for(i=3; i<ArrayCount(items) ; i++) {
         items[i].item = None;
     }
-
-    // need to sync with flags
 }
 
 function CreateMerchant()
@@ -119,11 +118,12 @@ function CreateMerchant()
     local ItemPurchase items[8];
     local int i;
 
+    SetSeed("CreateMerchant");
+    if( ! chance_single( dxr.flags.merchants ) ) return;
     if( dxr.flags.f.GetBool('DXRNPCs1_Dead') ) {
         return;
     }
 
-    SetSeed("CreateMerchant");// probably seed by mission number without map name
     RandomizeItems(items);
 
     c = new(Level) class'Conversation';
@@ -159,7 +159,6 @@ function CreateMerchant()
     }
     if(list == None) err("list == None");
 
-    // need to sync npc inventory with the items array, because of the flags for already purchased items
     foreach AllActors(class'Businessman3', npc, 'DXRNPCs1') {
         npc.BindName = "DXRNPCs1";
         npc.ConBindEvents();
@@ -172,14 +171,14 @@ function CreateMerchant()
     }
     npc.BindName = "DXRNPCs1";
     npc.SetOrders('Standing');
-    npc.FamiliarName = "Merchant";
+    npc.FamiliarName = "The Merchant";
     npc.UnfamiliarName = npc.FamiliarName;
     npc.bImportant = true;
     for(i=0; i < ArrayCount(items); i++) {
         if(items[i].item == None) continue;
-        GiveItem(npc, items[i].item);// sync inventory by flags?
+        GiveItem(npc, items[i].item);
     }
-    RemoveFears(npc);
+    //RemoveFears(npc);// no fears makes it easy for him to block doorways
     npc.ConBindEvents();
 }
 
@@ -256,11 +255,13 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
 
     for(i=0; i<ArrayCount(items); i++) {
         if( items[i].item == None ) continue;
-        // transfer object else jump to noRoom, add negative credits, jump to bought
+        // transfer object, if it fails then jump to noRoom
         BuildBuyItemText(items[i], true, text, label);
         prev = AddSpeech(c, prev, text, true, label);
         prev = AddTransfer(c, prev, items[i].item);
-        // set flag for purchased item
+
+        //set flag for bought item, give negative credits, jump to bought
+        prev = AddSetFlag(c, prev, "", "bought"$items[i].item.name, true);
         prev = AddGiveCredits(c, prev, -items[i].price );
         prev = AddJump(c, prev, "bought");
     }
@@ -335,13 +336,16 @@ function ConChoice _AddItemChoice(ConEventChoice e, ConChoice prev, ItemPurchase
     f.flagName = StringToName("canBuy"$item.item.name);
     f.value = canBuy;
     choice.flagRef = f;
+    f.nextFlagRef = new(e) class'ConFlagRef';
+    f = f.nextFlagRef;
+    f.flagName = StringToName("bought"$item.item.name);
+    f.value = false;
 
     return choice;
 }
 
 function ConChoice AddItemChoice(ConEventChoice e, ConChoice prev, ItemPurchase item)
 {
-    // check flag for already purchased item
     prev = _AddItemChoice(e, prev, item, true);
     prev = _AddItemChoice(e, prev, item, false);
     return prev;
