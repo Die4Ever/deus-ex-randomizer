@@ -941,19 +941,6 @@ static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rot
     return d;
 }
 
-function RemoveFears(ScriptedPawn p)
-{
-    p.bFearHacking = false;
-    p.bFearWeapon = false;
-    p.bFearShot = false;
-    p.bFearInjury = false;
-    p.bFearIndirectInjury = false;
-    p.bFearCarcass = false;
-    p.bFearDistress = false;
-    p.bFearAlarm = false;
-    p.bFearProjectiles = false;
-}
-
 // mostly copied from DeusExPlayer.uc
 function UpdateDynamicMusic(Music Song)
 {
