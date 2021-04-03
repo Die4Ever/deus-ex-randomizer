@@ -3,14 +3,12 @@ class ChargedPickup merges ChargedPickup;
 
 function ChargedPickupBegin(DeusExPlayer Player)
 {
-    local DeusExPlayer p;
+    local Human p;
     if(bOneUseOnly) {
         bDisplayableInv = false;
-        p = DeusExPlayer(Owner);
+        p = Human(Owner);
         if( p != None ) {
-            p.DeleteInventory(self);
-            Inventory = p.Inventory;
-            p.Inventory = self;
+            p.HideInventory(self);
         }
     }
     _ChargedPickupBegin(Player);

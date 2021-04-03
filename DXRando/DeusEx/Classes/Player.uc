@@ -72,6 +72,45 @@ function bool AddInventory( inventory NewItem )
     return Super.AddInventory(NewItem);
 }
 
+// copied a lot from DeusExPlayer DeleteInventory
+function bool HideInventory(inventory item)
+{
+    local DeusExRootWindow root;
+    local PersonaScreenInventory winInv;
+
+    item.bDisplayableInv = false;
+    
+    // If the item was inHand, clear the inHand
+    if (inHand == item)
+    {
+        SetInHand(None);
+        SetInHandPending(None);
+    }
+
+    // Make sure the item is removed from the inventory grid
+    RemoveItemFromSlot(item);
+
+    root = DeusExRootWindow(rootWindow);
+
+    if (root != None)
+    {
+        // If the inventory screen is active, we need to send notification
+        // that the item is being removed
+        winInv = PersonaScreenInventory(root.GetTopWindow());
+        if (winInv != None)
+            winInv.InventoryDeleted(item);
+
+        // Remove the item from the object belt
+        if (root != None)
+            root.DeleteInventory(item);
+      else //In multiplayer, we often don't have a root window when creating corpse, so hand delete
+      {
+         item.bInObjectBelt = false;
+         item.beltPos = -1;
+      }
+    }
+}
+
 function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, optional bool bShowInLog )
 {
     local DeusExLevelInfo info;
