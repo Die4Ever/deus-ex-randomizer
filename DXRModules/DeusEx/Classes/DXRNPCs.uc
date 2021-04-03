@@ -9,6 +9,8 @@ struct ItemPurchase
 function AnyEntry()
 {
     Super.AnyEntry();
+    if( dxr.flags.gamemode != 8 ) return;
+
     CreateMerchant();
 
     //LogAll('MeetKaplan');
@@ -20,6 +22,16 @@ function LogAll(name conName)
     local Conversation c;
     local ConEvent e;
     local ConEventSpeech s;
+    local ConversationList list;
+    local ConversationMissionList mlist;
+
+    foreach AllObjects(class'ConversationList', list) {
+        l("ConversationList: "$list$", missionDescription: "$list.missionDescription$", missionNumber: "$list.missionNumber$", conversations: "$list.conversations );
+    }
+
+    foreach AllObjects(class'ConversationMissionList', mlist) {
+        l("ConversationMissionList: "$mlist$", missions: "$mlist.missions);
+    }
 
     foreach AllObjects(class'Conversation', c) {
         if( c.conName == conName ) break;
@@ -44,39 +56,52 @@ function LogAll(name conName)
 
 function RandomizeItems(out ItemPurchase items[8])
 {
-    local DXRLoadouts loadout;
     local float r;
     local int i, k, num;
     local class<Inventory> iclass;
+    local class<Inventory> classes[16];
 
-    loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
-    if( loadout == None ) return;
+    i=0;
+    classes[i++] = class'Medkit';
+    classes[i++] = class'Lockpick';
+    classes[i++] = class'Multitool';
+    classes[i++] = class'BioelectricCell';
+    classes[i++] = class'BallisticArmor';
+    classes[i++] = class'Ammo10mm';
+    classes[i++] = class'AmmoBattery';
+    classes[i++] = class'AmmoDartPoison';
+    classes[i++] = class'AmmoRocket';
+    classes[i++] = class'WeaponShuriken';
+    num=i;
 
-    num = rng(ArrayCount(items)-4)+5;
-    for(i=0; i<num; i++) {
+    for(i=0; i<ArrayCount(items); i++) {
+        iclass = classes[0];
         r = initchance();
-        for(k=0; k < ArrayCount(loadout._randomitems); k++ ) {
-            if( loadout._randomitems[k].type == None ) continue;
-            if( chance( loadout._randomitems[k].chance, r ) ) iclass = loadout._randomitems[k].type;
+        for(k=0; k < num; k++ ) {
+            if( classes[k] == None ) continue;
+            if( chance( 100/num, r ) ) iclass = classes[k];
         }
+        chance_remaining(r);
 
         items[i].item = iclass;
         items[i].price = rngrange(2000, 0.25, 2);
     }
 
     // remove duplicates
-    for(i=0; i+1<num; i++) {
-        for(k=i+1; k<num; k++) {
+    for(i=0; i+1<ArrayCount(items); i++) {
+        for(k=i+1; k<ArrayCount(items); k++) {
             if( items[i].item == items[k].item ) items[k].item = None;
         }
     }
 
-    // compress, and limit to 3
+    // compress
     num = 0;
     for(i=0; i<ArrayCount(items) ; i++) {
         if(items[i].item == None) continue;
         items[num++] = items[i];
     }
+
+    // limit to 3
     for(i=3; i<ArrayCount(items) ; i++) {
         items[i].item = None;
     }
@@ -86,9 +111,15 @@ function CreateMerchant()
 {
     local Businessman3 npc;
     local Conversation c;
-    local ConItem conItem, tconItem;
+    local ConItem conItem;
+    local ConversationList list;
     local ConEvent e;
     local ItemPurchase items[8];
+    local int i;
+
+    if( dxr.flags.f.GetBool('DXRNPCs1_Dead') ) {
+        return;
+    }
 
     SetSeed("CreateMerchant");
     RandomizeItems(items);
@@ -97,7 +128,6 @@ function CreateMerchant()
     c.conName = 'DXRNPCs1';
     c.CreatedBy = "DXRNPCs";
     c.conOwnerName = "DXRNPCs1";
-    //c.bRandomCamera = true;
     c.bGenerateAudioNames = false;
     c.bInvokeFrob = true;
 
@@ -118,22 +148,36 @@ function CreateMerchant()
 
     conItem = new(Level) class'ConItem';
     conItem.conObject = c;
-    foreach AllObjects(class'ConItem', tconItem) {
-        conItem.next = tconItem.next;
-        tconItem.next = conItem;
-        break;
+    foreach AllObjects(class'ConversationList', list) {
+        if( list.conversations != None ) {
+            conItem.next = list.conversations;
+            list.conversations = conItem;
+            break;
+        }
     }
+    if(list == None) err("list == None");
 
-    foreach AllActors(class'Businessman3', npc, 'DXRNPCs1') break;
-    if( npc == None ) npc = Spawn(class'Businessman3',, 'DXRNPCs1', GetRandomPositionFine() );
+    foreach AllActors(class'Businessman3', npc, 'DXRNPCs1') {
+        npc.BindName = "DXRNPCs1";
+        npc.ConBindEvents();
+        return;
+    }
+    npc = Spawn(class'Businessman3',, 'DXRNPCs1', GetRandomPositionFine() );
     if( npc == None ) {
         err("CreateMerchant failed to spawn merchant");
         return;
     }
     npc.BindName = "DXRNPCs1";
     npc.SetOrders('Standing');
-    npc.ConBindEvents();
+    npc.FamiliarName = "Merchant";
+    npc.UnfamiliarName = npc.FamiliarName;
+    npc.bImportant = true;
+    for(i=0; i < ArrayCount(items); i++) {
+        if(items[i].item == None) continue;
+        GiveItem(npc, items[i].item);
+    }
     RemoveFears(npc);
+    npc.ConBindEvents();
 }
 
 function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bool player_talking, optional string label)
