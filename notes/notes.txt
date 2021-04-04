@@ -7,8 +7,13 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 
 v1.5.6 Beta:
+	move gunther farther into the WiB room
+	manually add actors to the safety checks for keys and datacubes (like 12_vandenberg_tunnels... NanoKey0 with ElevatorMover7)
+	make horde mode use the autosave blocking manual saves method instead of the hack-y permanent fake datalink
+	05_nyc_mj12 ban DataCube0 in (-2235.2, 1384.7, -160.8)
 	use better logic for The Merchant's location, like cameras?
 	scroll bar on advanced settings page, with option for merchant %
+	use key safe location logic for hazmats vs damage zones (this might only be a big deal for paris?)
 	new option in autosave enum for autosave-only, no saving, needs to be firstentry only
 		MainMenu.uc function UpdateButtonStatus() winButtons[1].SetSensitivity(False);
 		DeusExPlayer.uc exec function QuickSave()

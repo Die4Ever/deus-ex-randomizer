@@ -441,7 +441,7 @@ function NYC_04_CheckPaulUndead()
 
     foreach AllActors(class'PaulDenton', paul) {
         if( paul.Health > 0 ) {
-            dxr.Player.flagBase.DeleteFlag('PaulDenton_Dead', FLAG_Bool);
+            dxr.Player.flagBase.SetBool('PaulDenton_Dead', false,, -999);
             return;
         }
     }
@@ -549,8 +549,6 @@ function NYC_04_FirstEntry()
     local FlagTrigger ft;
     local OrdersTrigger ot;
     local SkillAwardTrigger st;
-    local Teleporter tele;
-    local DynamicTeleporter dtele;
 
     switch (dxr.localURL)
     {
@@ -573,17 +571,6 @@ function NYC_04_FirstEntry()
                     st.skillPointsAdded = 500;
                     st.awardMessage = "Saved Paul";
                 }
-            }
-            break;
-
-        case "04_NYC_BATTERYPARK":
-            foreach AllActors(class'Teleporter', tele) {
-                if( ! tele.bEnabled ) continue;
-                if( tele.URL != "04_NYC_Street#ToStreet" ) continue;
-                tele.bEnabled = false;
-                dtele = Spawn(class'DynamicTeleporter',,,tele.Location);
-                dtele.URL = "04_NYC_Street#?toname=PathNode194";
-                dtele.Radius = 30;
             }
             break;
     }

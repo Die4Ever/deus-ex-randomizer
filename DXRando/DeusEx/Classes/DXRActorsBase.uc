@@ -395,7 +395,7 @@ static function SetActorScale(Actor a, float scale)
     a.DrawScale = scale;
 }
 
-function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist)
+function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain)
 {
     local PathNode temp[4096];
     local PathNode p;
@@ -406,6 +406,8 @@ function vector GetRandomPosition(optional vector target, optional float mindist
         maxdist = 9999999;
 
     foreach AllActors(class'PathNode', p) {
+        if( (!allowWater) && p.Region.Zone.bWaterZone ) continue;
+        if( (!allowPain) && (p.Region.Zone.bKillZone || p.Region.Zone.bPainZone ) ) continue;
         dist = VSize(p.Location-target);
         if( dist < mindist ) continue;
         if( dist > maxdist ) continue;
@@ -423,10 +425,10 @@ function vector JitterPosition(vector loc)
     return loc;
 }
 
-function vector GetRandomPositionFine(optional vector target, optional float mindist, optional float maxdist)
+function vector GetRandomPositionFine(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain)
 {
     local vector loc;
-    loc = GetRandomPosition(target, mindist, maxdist);
+    loc = GetRandomPosition(target, mindist, maxdist, allowWater, allowPain);
     loc = JitterPosition(loc);
     return loc;
 }

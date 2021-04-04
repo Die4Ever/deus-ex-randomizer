@@ -174,6 +174,14 @@ function CreateMerchant()
     npc.FamiliarName = "The Merchant";
     npc.UnfamiliarName = npc.FamiliarName;
     npc.bImportant = true;
+    i = 200;
+    npc.Health = i;
+    npc.HealthArmLeft = i;
+    npc.HealthArmRight = i;
+    npc.HealthHead = i;
+    npc.HealthLegLeft = i;
+    npc.HealthLegRight = i;
+    npc.HealthTorso = i;
     for(i=0; i < ArrayCount(items); i++) {
         if(items[i].item == None) continue;
         GiveItem(npc, items[i].item);
@@ -189,7 +197,7 @@ function vector GetRandomMerchantPosition()
     local int i;
 
     for(i=0; i<10; i++) {
-        loc = GetRandomPositionFine();
+        loc = GetRandomPosition();
         d = None;
         foreach RadiusActors(class'DeusExMover', d, 150.0, loc) {
             break;
