@@ -134,6 +134,11 @@ function CheckConfig()
         yes_passwords[i].search_for = "password Tiffany";
         i++;
 
+        yes_passwords[i].map = "12_VANDENBERG_COMPUTER";
+        yes_passwords[i].password = "Tiffany";
+        yes_passwords[i].search_for = "password: Tiffany";
+        i++;
+
         yes_passwords[i].map = "09_NYC_DOCKYARD";
         yes_passwords[i].password = "SIMONS";
         yes_passwords[i].search_for = "PASSWORD: SIMONS";
