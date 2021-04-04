@@ -16,7 +16,7 @@ function FirstFrame()
 
     if( flags.GetBool('Intro_Played') ) {
         log("ERROR: "$self$": Intro_Played already set before FirstFrame?");
-        flags.DeleteFlag('Intro_Played', FLAG_Bool);
+        flags.SetBool('Intro_Played', false,, -999);
     }
 }
 
