@@ -186,6 +186,32 @@ function ReadConfig()
     }
 }
 
+function AddDXRCredits(CreditsWindow cw) 
+{
+    local int i;
+
+    cw.PrintHeader( dxr.flags.enemiesrandomized $ "% Added Enemies");
+    for(i=0; i < ArrayCount(_randomenemies); i++) {
+        if( _randomenemies[i].type == None ) continue;
+        cw.PrintText(_randomenemies[i].type.default.FamiliarName $ ": " $ FloatToString(_randomenemies[i].chance, 1) $ "%" );
+    }
+    cw.PrintLn();
+
+    cw.PrintHeader("Extra Weapons For Enemies");
+    for(i=0; i < ArrayCount(_randomweapons); i++) {
+        if( _randomweapons[i].type == None ) continue;
+        cw.PrintText( _randomweapons[i].type.default.ItemName $ ": " $ FloatToString(_randomweapons[i].chance, 1) $ "%" );
+    }
+    cw.PrintLn();
+
+    cw.PrintHeader("Melee Weapons For Enemies");
+    for(i=0; i < ArrayCount(_randommelees); i++) {
+        if( _randommelees[i].type == None ) continue;
+        cw.PrintText( _randommelees[i].type.default.ItemName $ ": " $ FloatToString(_randommelees[i].chance, 1) $ "%" );
+    }
+    cw.PrintLn();
+}
+
 function RandoCarcasses()
 {
     local DeusExCarcass c;

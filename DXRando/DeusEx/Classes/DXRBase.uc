@@ -217,6 +217,17 @@ static function string UnpackString(out string s)
     return ret;
 }
 
+static function string FloatToString(float f, int decimal_places)
+{
+    local int i;
+    local string s;
+    s = string(f);
+    i = InStr(s, ".");
+    if( i != -1 ) {
+        s = Left(s, i+1+decimal_places);
+    }
+    return s;
+}
 
 //Based on function MessageBox from DeusExRootWindow
 //msgBoxMode = 0 or 1, 0 = Yes/No box, 1 = OK box
