@@ -413,6 +413,7 @@ function NewGamePlus()
     p.SetInHandPending(None);
     p.SetInHand(None);
     p.bInHandTransition = False;
+    p.RestoreAllHealth();
 
     info("NewGamePlus() deleting all flags");
     f.DeleteAllFlags();
