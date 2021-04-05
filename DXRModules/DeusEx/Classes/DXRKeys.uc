@@ -62,7 +62,7 @@ function CheckConfig()
 
         //disallow this weird locked room under water
         keys_rules[i].map = "12_Vandenberg_Tunnels";
-        keys_rules[i].item_name = 'NanoKey0';
+        keys_rules[i].item_name = 'control_room';
         keys_rules[i].min_pos = vect(-3521.955078, 3413.110352, -3246.771729);
         keys_rules[i].max_pos = vect(-2844.053467, 3756.776855, -3097.210205);
         keys_rules[i].allow = false;
