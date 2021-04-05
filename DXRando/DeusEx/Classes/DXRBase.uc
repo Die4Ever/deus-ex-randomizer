@@ -91,7 +91,7 @@ function float rngrangeseeded(float val, float min, float max, coerce string cla
     return ret;
 }
 
-function float pow(float m, float e)
+static function float pow(float m, float e)
 {
     return exp(e * loge(m) );
 }
@@ -221,6 +221,7 @@ static function string FloatToString(float f, int decimal_places)
 {
     local int i;
     local string s;
+    f += 0.5 * pow(10, -decimal_places);// round it instead of floor
     s = string(f);
     i = InStr(s, ".");
     if( i != -1 ) {

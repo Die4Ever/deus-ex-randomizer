@@ -31,7 +31,6 @@ function CheckConfig()
         }
         i=0;
         skipactor_types[i++] = "BarrelAmbrosia";
-        skipactor_types[i++] = "BarrelVirus";
         skipactor_types[i++] = "NanoKey";
     }
     Super.CheckConfig();

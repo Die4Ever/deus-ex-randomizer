@@ -452,6 +452,10 @@ function RunTests()
     testbool( chance_single(50), false, "chance_single(50) 2");
     testbool( chance_single(50), false, "chance_single(50) 3");
     testbool( chance_single(50), false, "chance_single(50) 4");
+
+    teststring( FloatToString(0.5555, 1), "0.6", "FloatToString 1");
+    teststring( FloatToString(0.5454999, 4), "0.5455", "FloatToString 2");
+    teststring( FloatToString(0.5455, 2), "0.55", "FloatToString 3");
 }
 
 function ExtendedTests()
