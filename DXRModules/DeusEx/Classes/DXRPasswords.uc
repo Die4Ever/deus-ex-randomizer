@@ -45,6 +45,13 @@ function CheckConfig()
         datacubes_rules[i].item_name = 'DataCube3';
         i++;
 
+        datacubes_rules[i].map = "05_NYC_UNATCOMJ12LAB";
+        datacubes_rules[i].item_name = 'DataCube0';// don't allow this in the locked cabinet
+        datacubes_rules[i].min_pos = vect(-2235.248291, 1414.674072, -159.039658)-vect(8,8,8);
+        datacubes_rules[i].max_pos = vect(-2235.248291, 1414.674072, -159.039658)+vect(8,8,8);
+        datacubes_rules[i].allow = false;
+        i++;
+
         // DataCube0 and 2
         datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
         datacubes_rules[i].item_name = 'DataCube0';

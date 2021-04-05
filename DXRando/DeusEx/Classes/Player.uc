@@ -79,7 +79,7 @@ function bool HideInventory(inventory item)
     local PersonaScreenInventory winInv;
 
     item.bDisplayableInv = false;
-    
+
     // If the item was inHand, clear the inHand
     if (inHand == item)
     {
@@ -295,8 +295,8 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
         }
         else
         {
-            // and finally, the torso! do 1.2x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
-            return Damage * 0.6;
+            // and finally, the torso! do 1.3x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
+            return Damage * 0.65;
         }
     }
 

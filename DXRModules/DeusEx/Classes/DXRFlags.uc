@@ -26,7 +26,8 @@ var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutua
 function PreTravel()
 {
     Super.PreTravel();
-    if( dxr != None && f.GetInt('Rando_version') == 0 ) {
+    l("PreTravel "$dxr.localURL);
+    if( dxr != None && f != None && f.GetInt('Rando_version') == 0 ) {
         info("PreTravel "$dxr.localURL$" SaveFlags");
         SaveFlags();
     }
@@ -45,7 +46,7 @@ function Timer()
 {
     Super.Timer();
 
-    if( f.GetInt('Rando_version') == 0 ) {
+    if( f != None && f.GetInt('Rando_version') == 0 ) {
         info("flags got deleted, saving again");//the intro deletes all flags
         SaveFlags();
     }
@@ -242,6 +243,10 @@ function LoadFlags()
 function SaveFlags()
 {
     l("SaveFlags()");
+    if( f == None ) {
+        err("SaveFlags() f == None");
+        return;
+    }
 
     InitVersion();
     f.SetInt('Rando_seed', seed,, 999);

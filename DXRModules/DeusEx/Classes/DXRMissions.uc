@@ -837,7 +837,7 @@ function CheckConfig()
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(3527.593750, -1992.829834, -100.499969);//WiB room
+        important_locations[i].location = vect(3458.506592, -2423.655029, -104.499863);//WiB room
         important_locations[i].rotation = rot(0, -16384, 0);
         i++;
 
