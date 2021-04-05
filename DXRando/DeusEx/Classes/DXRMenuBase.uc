@@ -9,6 +9,8 @@ struct EnumBtn {
 };
 var EnumBtn enums[64];
 
+var MenuUIScrollAreaWindow winScroll;
+var Window controlsParent;
 var MenuUILabelWindow winHelp;
 var bool bHelpAlwaysOn;
 
@@ -42,7 +44,14 @@ event Init(DXRando d)
     coords = _GetCoords(num_rows, num_cols);
     ClientWidth = coords.X;
     ClientHeight = coords.Y;
+
     Super.InitWindow();
+
+    controlsParent = winClient;
+    /*winScroll = CreateScrollAreaWindow(winClient);
+    winScroll.SetPos(10, 10);
+    winScroll.SetSize(ClientWidth-50, ClientHeight);
+    controlsParent = winScroll;*/
 
     ResetToDefaults();
     BindControls(false);
@@ -281,7 +290,7 @@ function MenuUILabelWindow CreateLabel(int row, string label)
     local MenuUILabelWindow winLabel;
     local vector coords;
     coords = GetCoords(row, 0);
-    winLabel = CreateMenuLabel( coords.x, coords.y+4, label, winClient);
+    winLabel = CreateMenuLabel( coords.x, coords.y+4, label, controlsParent);
     return winLabel;
 }
 
@@ -293,7 +302,7 @@ function MenuUIEditWindow CreateEdit(int row, string label, string helptext, str
     CreateLabel(row, label);
 
     coords = GetCoords(row, 1);
-    edit = CreateMenuEditWindow(coords.x, coords.y, GetWidth(row, 1, 1), 10, winClient);
+    edit = CreateMenuEditWindow(coords.x, coords.y, GetWidth(row, 1, 1), 10, controlsParent);
 
     edit.SetText(deflt);
     edit.SetFilter(filterString);
@@ -323,7 +332,7 @@ function MenuUIEditWindow CreateSlider(int row, string label, string helptext, o
     CreateLabel(row, label);
 
     coords = GetCoords(row, 1);
-    slider = MenuUISliderButtonWindow(winClient.NewChild(Class'MenuUISliderButtonWindow'));
+    slider = MenuUISliderButtonWindow(controlsParent.NewChild(Class'MenuUISliderButtonWindow'));
     slider.SetPos(coords.x, coords.y);
     slider.SetTicks(numTicks, min, max);
     slider.winSlider.SetValue(deflt);
@@ -347,7 +356,7 @@ function MenuUIActionButtonWindow CreateBtn(int row, string label, string helpte
 
     if( label != "" ) CreateLabel(row, label);
 
-    btn = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
+    btn = MenuUIActionButtonWindow(controlsParent.NewChild(Class'MenuUIActionButtonWindow'));
     btn.SetButtonText(text);
     if( label == "" ) {
         coords = GetCoords(row, 0);
