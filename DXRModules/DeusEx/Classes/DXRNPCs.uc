@@ -10,9 +10,10 @@ function AnyEntry()
 {
     Super.AnyEntry();
 
-    CreateMerchant();
-
-    //LogAll('MeetKaplan');
+    if( dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 ) {
+        CreateMerchant();
+        //LogAll('MeetKaplan');
+    }
 }
 
 function LogAll(name conName)

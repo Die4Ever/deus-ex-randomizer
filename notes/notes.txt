@@ -6,16 +6,23 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 
 player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 
-v1.5.6 Beta:
+v1.5.7 Alpha:
+	cloned enemies copy the Tag? might be risky
+	entrance rando write current mission layout to DataStorage for clean upgrades
+	security cameras might be weird? maybe it's medbots' alliance?
+	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
 	make horde mode use the autosave blocking manual saves method instead of the hack-y permanent fake datalink
 	use better logic for The Merchant's location, like cameras?
-	scroll bar on advanced settings page, with option for merchant %
 	use key safe location logic for hazmats vs damage zones (this might only be a big deal for paris?)
-	new option in autosave enum for autosave-only, no saving, needs to be firstentry only
-		MainMenu.uc function UpdateButtonStatus() winButtons[1].SetSensitivity(False);
-		DeusExPlayer.uc exec function QuickSave()
-		MenuScreenSaveGame.uc function PerformSave()
+	does this work in a config file?
+		dead_ends[0]=06_HONGKONG_WANCHAI_GARAGE#TELEPORTER
+	crowd control spawn medbot, friendly milbot
+	crowd control incremental speed effects
+	crowd control, ensure you don't go past the max ammo
+	if I get rid of the ZoneVelocity on WaterZone5 in 06_hongkong_storage, I can add a dynamicteleporter to make that pipe a 2-way connection
+		might also need to do WaterZone1, but that might make it difficult to hold your breath through there, and I could just make the dynamicteleporter bring you past that
+		canal HKTukTuk0 to (1162.203735, 1349.818481, -482.995361), with a new BoxMedium on it at about (1151.214355, 1359.400024, -448.902985)
 
 for v1.6 programatically modify conversations? ===================
 

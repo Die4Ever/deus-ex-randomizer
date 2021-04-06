@@ -337,7 +337,8 @@ function string StringifyFlags()
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
         $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", enemyrespawn: "$enemyrespawn$", infodevices: "$infodevices
-        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots$", turrets_move: "$turrets_move$", turrets_add: "$turrets_add$", crowdcontrol: "$crowdcontrol;
+        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots$", turrets_move: "$turrets_move$", turrets_add: "$turrets_add
+        $ ", crowdcontrol: "$crowdcontrol$", banned_skills: "$banned_skills$", banned_skill_levels: "$banned_skill_levels$", enemies_nonhumans: "$enemies_nonhumans;
 }
 
 function int FlagsHash()
@@ -376,7 +377,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 6) $ " Beta";
+    return VersionToString(1, 5, 6) $ "";
 }
 
 function MaxRando()
