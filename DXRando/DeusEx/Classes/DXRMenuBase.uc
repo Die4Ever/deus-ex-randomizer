@@ -50,13 +50,15 @@ event Init(DXRando d)
     controlsParent = winClient;
     winScroll = CreateScrollAreaWindow(winClient);
     winScroll.SetPos(0, 0);
-    winScroll.SetSize(ClientWidth, ClientHeight);
+    winScroll.SetSize(ClientWidth, ClientHeight + _GetY(0) - _GetY(1) );
     //winScroll.AutoHideScrollbars(false);
     winScroll.EnableScrolling(false,true);
     controlsParent = winScroll.clipWindow;
     controlsParent = controlsParent.NewChild(class'MenuUIClientWindow');
+    coords = _GetCoords(num_rows-1, num_cols);// num_rows-1 cause no help text inside the scroll area
     controlsParent.SetSize(coords.X, coords.Y);
     //winScroll.clipWindow.SetChildPosition(0, 0);
+    winScroll.SetScrollbarDistance(0);
 
     ResetToDefaults();
     BindControls(false);
@@ -238,6 +240,7 @@ function InitHelp()
     local vector coords;
     bHelpAlwaysOn = True;
     coords = _GetCoords(num_rows-1, 0);
+    coords.y = ClientHeight + _GetY(0) - _GetY(1);
     winHelp = CreateMenuLabel( coords.x, coords.y+4, "", winClient);
 }
 
@@ -266,9 +269,14 @@ function vector GetCoords(int row, int col)
 function vector _GetCoords(int row, int col)
 {
     local vector v;
-    v.x = _GetX(col);// col * col_width + col*padding_width + padding_width;
-    v.y = row * row_height + row*padding_height + padding_height;
+    v.x = _GetX(col);
+    v.y = _GetY(row);
     return v;
+}
+
+function int _GetY(int row)
+{
+    return row * row_height + row*padding_height + padding_height;
 }
 
 function int _GetX(int col)
