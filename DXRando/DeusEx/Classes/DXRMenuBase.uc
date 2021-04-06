@@ -43,15 +43,20 @@ event Init(DXRando d)
 
     coords = _GetCoords(num_rows, num_cols);
     ClientWidth = coords.X;
-    ClientHeight = coords.Y;
+    ClientHeight = min(coords.Y, 300);
 
     Super.InitWindow();
 
     controlsParent = winClient;
-    /*winScroll = CreateScrollAreaWindow(winClient);
-    winScroll.SetPos(10, 10);
-    winScroll.SetSize(ClientWidth-50, ClientHeight);
-    controlsParent = winScroll;*/
+    winScroll = CreateScrollAreaWindow(winClient);
+    winScroll.SetPos(0, 0);
+    winScroll.SetSize(ClientWidth, ClientHeight);
+    //winScroll.AutoHideScrollbars(false);
+    winScroll.EnableScrolling(false,true);
+    controlsParent = winScroll.clipWindow;
+    controlsParent = controlsParent.NewChild(class'MenuUIClientWindow');
+    controlsParent.SetSize(coords.X, coords.Y);
+    //winScroll.clipWindow.SetChildPosition(0, 0);
 
     ResetToDefaults();
     BindControls(false);
@@ -292,6 +297,31 @@ function MenuUILabelWindow CreateLabel(int row, string label)
     coords = GetCoords(row, 0);
     winLabel = CreateMenuLabel( coords.x, coords.y+4, label, controlsParent);
     return winLabel;
+}
+
+// copied from MenuUIWindow.uc
+function MenuUIEditWindow CreateMenuEditWindow(int posX, int posY, int editWidth, int maxChars, Window winParent)
+{
+    local MenuUIInfoButtonWindow btnInfo;
+    local ClipWindow             clipName;
+    local MenuUIEditWindow       newEdit;
+
+    // Create an info button behind this sucker
+    btnInfo = MenuUIInfoButtonWindow(winParent.NewChild(Class'MenuUIInfoButtonWindow'));
+    btnInfo.SetPos(posX, posY);
+    btnInfo.SetWidth(editWidth);
+    btnInfo.SetSensitivity(False);
+
+    // the original code foolishly uses winClient here instead of the winParent argument
+    clipName = ClipWindow(winParent.newChild(Class'ClipWindow'));
+    clipName.SetWidth(editWidth - 8);
+    clipName.ForceChildSize(False, True);
+    clipName.SetPos(posX + 4, posY + 5);
+
+    newEdit = MenuUIEditWindow(clipName.NewChild(Class'MenuUIEditWindow'));
+    newEdit.SetMaxSize(maxChars);
+
+    return newEdit;
 }
 
 function MenuUIEditWindow CreateEdit(int row, string label, string helptext, string filterString, optional string deflt )

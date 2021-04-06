@@ -20,6 +20,10 @@ v1.5.6 Beta:
 for v1.6 programatically modify conversations? ===================
 
 DXREntranceRando: ERROR: GenerateConnections(2) failed after 200 attempts! seed: 879104 and mission 4 seed 305104
+DXREntranceRando: ERROR: GenerateConnections(2) failed after 200 attempts! seed: 699584
+
+DXRando.uc run PostFirstEntry() and RunTests() in the next frame? use Tick function or Timer?
+	PostFirstEntry running after ReEntry and AnyEntry might require some adjustments, seems like only DXRAutosave would need a tiny change
 
 for better log message window, look at DeusExRootWindow ClientMessage function, and HUDLogDisplay AddLog and SetLogTimeout functions
 
