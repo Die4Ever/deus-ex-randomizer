@@ -43,7 +43,7 @@ event Init(DXRando d)
 
     coords = _GetCoords(num_rows, num_cols);
     ClientWidth = coords.X;
-    ClientHeight = min(coords.Y, 300);
+    ClientHeight = min(coords.Y, 400);
 
     Super.InitWindow();
 
@@ -57,8 +57,6 @@ event Init(DXRando d)
     controlsParent = controlsParent.NewChild(class'MenuUIClientWindow');
     coords = _GetCoords(num_rows-1, num_cols);// num_rows-1 cause no help text inside the scroll area
     controlsParent.SetSize(coords.X, coords.Y);
-    //winScroll.clipWindow.SetChildPosition(0, 0);
-    winScroll.SetScrollbarDistance(0);
 
     ResetToDefaults();
     BindControls(false);
@@ -66,6 +64,7 @@ event Init(DXRando d)
     // Need to do this because of the edit control used for 
     // saving games.
     SetMouseFocusMode(MFOCUS_Click);
+    if( wnds[0] != None ) SetFocusWindow(wnds[0]);
 
     InitHelp();
     Show();
