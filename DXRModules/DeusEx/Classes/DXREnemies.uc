@@ -1,6 +1,5 @@
 class DXREnemies extends DXRActorsBase;
 
-var config int chance_clone_nonhumans;
 var config int enemy_multiplier;
 
 struct RandomWeaponStruct { var string type; var int chance; };
@@ -22,7 +21,6 @@ function CheckConfig()
 {
     local int i;
     if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
-        chance_clone_nonhumans = 60;
         enemy_multiplier = 1;
         min_rate_adjust = default.min_rate_adjust;
         max_rate_adjust = default.max_rate_adjust;
@@ -316,7 +314,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 
     chance_remaining(r);// else keep the same class
 
-    if( chance_single(chance_clone_nonhumans)==False && newclass == None && IsHuman(base) == False ) return None;
+    if( chance_single(dxr.flags.enemies_nonhumans)==False && newclass == None && IsHuman(base) == False ) return None;
 
     n = CloneScriptedPawn(base, newclass);
     l("new RandomEnemy("$base$", "$percent$") == "$n);

@@ -43,9 +43,6 @@ function BindControls(bool writing, optional string action)
     //EnumOption(id, "Kill Bob Page (Alpha)", 3, writing, f.gamemode);
     //EnumOption(id, "How About Some Soy Food?", 6, writing, f.gamemode);
     //EnumOption(id, "Max Rando", 7, writing, f.gamemode);
-    if( EnumOption(id, "Add Merchant (Alpha)", 50, writing, f.merchants) ) {
-        f.gamemode = 0;// this isn't really a game mode, but I don't have anywhere else to put it yet
-    }
     id++;
 
     labels[id] = "";
@@ -75,6 +72,8 @@ function BindControls(bool writing, optional string action)
         f.skills_disable_downgrades = 0;
         f.skills_reroll_missions = 1;
         f.skills_independent_levels = 0;
+        f.banned_skills = 5;
+        f.banned_skill_levels = 5;
         f.minskill = 0;
         f.maxskill = 1;
         f.ammo = 90;
@@ -103,6 +102,8 @@ function BindControls(bool writing, optional string action)
         f.skills_disable_downgrades = 0;
         f.skills_reroll_missions = 5;
         f.skills_independent_levels = 0;
+        f.banned_skills = 3;
+        f.banned_skill_levels = 3;
         f.minskill = 25;
         f.maxskill = 150;
         f.ammo = 90;
@@ -131,6 +132,8 @@ function BindControls(bool writing, optional string action)
         f.skills_disable_downgrades = 0;
         f.skills_reroll_missions = 5;
         f.skills_independent_levels = 0;
+        f.banned_skills = 5;
+        f.banned_skill_levels = 5;
         f.minskill = 50;
         f.maxskill = 300;
         f.ammo = 75;
@@ -159,6 +162,8 @@ function BindControls(bool writing, optional string action)
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
         f.skills_independent_levels = 100;
+        f.banned_skills = 5;
+        f.banned_skill_levels = 7;
         f.minskill = 50;
         f.maxskill = 300;
         f.ammo = 60;
@@ -187,6 +192,8 @@ function BindControls(bool writing, optional string action)
         f.skills_disable_downgrades = 5;
         f.skills_reroll_missions = 5;
         f.skills_independent_levels = 100;
+        f.banned_skills = 7;
+        f.banned_skill_levels = 7;
         f.minskill = 50;
         f.maxskill = 400;
         f.ammo = 40;

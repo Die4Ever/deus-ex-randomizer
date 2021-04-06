@@ -20,6 +20,7 @@ var int turrets_move, turrets_add;
 var int crowdcontrol;
 var int newgameplus_loops;
 var int merchants;
+var int banned_skills, banned_skill_levels, enemies_nonhumans;
 
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
@@ -132,7 +133,10 @@ function InitDefaults()
     turrets_add = 20;
     crowdcontrol = 0;
     newgameplus_loops = 0;
-    merchants = 0;
+    merchants = 50;
+    banned_skills = 5;
+    banned_skill_levels = 5;
+    enemies_nonhumans = 60;
 }
 
 function CheckConfig()
@@ -222,6 +226,9 @@ function LoadFlags()
     }
     if( stored_version >= VersionToInt(1,5,6) ) {
         merchants = f.GetInt('Rando_merchants');
+        FlagInt('Rando_banned_skills', banned_skills);
+        FlagInt('Rando_banned_skill_level', banned_skill_levels);
+        FlagInt('Rando_enemies_nonhumans', enemies_nonhumans);
     }
 
     if(stored_version < flagsversion ) {
@@ -238,6 +245,14 @@ function LoadFlags()
 
     ds = class'DataStorage'.static.GetObj(dxr.player);
     if( ds != None ) ds.playthrough_id = playthrough_id;
+}
+
+function FlagInt(name flagname, out int val)
+{
+    if( f.CheckFlag(flagname, FLAG_Int) )
+    {
+        val = f.GetInt(flagname);
+    }
 }
 
 function SaveFlags()
@@ -361,7 +376,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 6) $ " Alpha";
+    return VersionToString(1, 5, 6) $ " Beta";
 }
 
 function MaxRando()

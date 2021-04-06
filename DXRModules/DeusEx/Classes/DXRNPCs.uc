@@ -157,7 +157,7 @@ function CreateMerchant()
             break;
         }
     }
-    if(list == None) err("list == None");
+    if(list == None) err(dxr.localURL $ " list == None");
 
     foreach AllActors(class'Businessman3', npc, 'DXRNPCs1') {
         npc.BindName = "DXRNPCs1";

@@ -8,8 +8,6 @@ struct SkillCostMultiplier {
 };
 
 var config SkillCostMultiplier SkillCostMultipliers[16];
-var config int banned_skill_chances;
-var config int banned_skill_level_chances;
 
 var config float min_skill_str;
 var config float max_skill_str;
@@ -94,7 +92,7 @@ function RandoSkill(Skill aSkill)
     if( dxr == None ) return;
 
     percent = rngexp(dxr.flags.minskill, dxr.flags.maxskill, skill_cost_curve);
-    banned = chance_single(banned_skill_chances);
+    banned = chance_single(dxr.flags.banned_skills);
     l( aSkill.Class.Name $ " percent: "$percent$"%, banned: " $ banned );
     for(i=0; i<arrayCount(aSkill.Cost); i++)
     {
@@ -174,7 +172,7 @@ function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     local SkillCostMultiplier scm;
     local class<Skill> c;
 
-    if( chance_single(banned_skill_level_chances) ) {
+    if( chance_single(dxr.flags.banned_skill_levels) ) {
         l( aSkill.Class.Name $ " lvl: "$(i+1)$" is banned");
         aSkill.Cost[i] = 99999;
         return;
@@ -203,8 +201,6 @@ function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
 
 defaultproperties
 {
-    banned_skill_chances=5
-    banned_skill_level_chances=5
     min_skill_str=0.5
     max_skill_str=1.5
     skill_cost_curve=2

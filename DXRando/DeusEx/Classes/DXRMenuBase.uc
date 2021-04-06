@@ -43,7 +43,7 @@ event Init(DXRando d)
 
     coords = _GetCoords(num_rows, num_cols);
     ClientWidth = coords.X;
-    ClientHeight = min(coords.Y, 400);
+    ClientHeight = min(coords.Y, 500);
 
     Super.InitWindow();
 
@@ -258,9 +258,11 @@ function CreateControls()
 
 function vector GetCoords(int row, int col)
 {
-    while( row >= num_rows-1 ) {
-        row -= num_rows-1;
-        col += 2;
+    col += (row % (num_cols/2)) * 2;
+    row /= max(num_cols/2, 1);
+
+    if( _GetY(row+1) > controlsParent.height ) {
+        controlsParent.SetSize( controlsParent.width, _GetY(row+1) );
     }
     return _GetCoords(row, col);
 }
