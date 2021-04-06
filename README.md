@@ -54,14 +54,14 @@ There are also settings for
 * optional hardcore Autosave-Only mode, no save-scumming allowed!
 
 #### When you click New Game, you will see this settings screen:
-![options](https://i.imgur.com/2QpVbGy.png)
+![options](https://i.imgur.com/P9Yvcqx.png)
 
 #### If you click Next then it will use default settings based on your difficulty choice. But if you click Advanced then you will see these settings:
-![advanced options](https://i.imgur.com/ABECGMK.png)
+![advanced options](https://i.imgur.com/yxMQ17h.png)
 
 For the randomized passwords, you can copy-paste from the Goals/Notes screen.
 
-I've also made some balance tweaks. Hacking computers now uses bioelectric energy. The large metal crates are now destructible, they have 2000 hp. The healing aug gives less health. Level 1 of the speed aug has been buffed, but max level remains the same. Dragon's Tooth Sword now does much less damage, but if you aim for the head you can still kill most enemies in 1 hit. Thowing knives deal more damage, and their speed and range increase with your low tech skill. Spy Drone aug has improved speed and the emp blast now also does explosive damage. Fire extinguishers now stack in your inventory, and the Environmental skill allows you to carry more. Also the PS20 has been upgraded to the PS40 and does significantly more damage. Paul is now mortal during the raid in mission 4, so you need to help him fight! Also the swimming, enviro, and demolition skills are now 20% cheaper. Hazmat suit now also helps against fire, electricity, and explosions. Enviro skill now gives a little passive damage resistance for the same damage types as Hazmat suits. Demolition skill allows you to carry more grenades at once. Gibbed enemies now drop all their items. Flare darts now set enemies on fire for 3 seconds. Items like ballistic armor and rebreathers now free up the inventory space immediately when you equip them. Damage to the player's torso has been reduced, and to the head slightly reduced. [See full list of balance changes here in the wiki.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Balance-Changes)
+I've also made some balance tweaks. Make sure to read the descriptions for skills and augmentations. Hacking computers now uses bioelectric energy. The large metal crates are now destructible, they have 2000 hp. The healing aug gives less health. Dragon's Tooth Sword now does less damage, but if you aim for the head you can still kill most enemies in 1 hit. Thowing knives deal more damage, and their speed and range increase with your low tech skill. Spy Drone aug has improved speed and the emp blast now also does explosive damage. The PS20 has been upgraded to the PS40 and does significantly more damage. Paul is now mortal during the raid in mission 4, so you need to help him fight! Hazmat suit now also helps against fire, electricity, and explosions. Enviro skill now gives a little passive damage resistance for the same damage types as Hazmat suits. Demolition skill allows you to carry more grenades at once. Items like ballistic armor and rebreathers now free up the inventory space immediately when you equip them. [See full list of balance changes here in the wiki.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Balance-Changes)
 
 ### Recommended tweaks for running Deus Ex on modern computers
 

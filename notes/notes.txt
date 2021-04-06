@@ -11,6 +11,10 @@ v1.5.7 Alpha:
 	entrance rando write current mission layout to DataStorage for clean upgrades
 	security cameras might be weird? maybe it's medbots' alliance?
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
+	DXRando.uc run PostFirstEntry() and RunTests() in the next frame? use Tick function or Timer?
+		PostFirstEntry running after ReEntry and AnyEntry might require some adjustments, seems like only DXRAutosave would need a tiny change
+
+v1.5.7:
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
 	make horde mode use the autosave blocking manual saves method instead of the hack-y permanent fake datalink
 	use better logic for The Merchant's location, like cameras?
@@ -23,14 +27,12 @@ v1.5.7 Alpha:
 	if I get rid of the ZoneVelocity on WaterZone5 in 06_hongkong_storage, I can add a dynamicteleporter to make that pipe a 2-way connection
 		might also need to do WaterZone1, but that might make it difficult to hold your breath through there, and I could just make the dynamicteleporter bring you past that
 		canal HKTukTuk0 to (1162.203735, 1349.818481, -482.995361), with a new BoxMedium on it at about (1151.214355, 1359.400024, -448.902985)
+	enough advanced options to be able to play unrandomized
+	DXREntranceRando: ERROR: GenerateConnections(2) failed after 200 attempts! seed: 879104 and mission 4 seed 305104
+	DXREntranceRando: ERROR: GenerateConnections(2) failed after 200 attempts! seed: 699584
+
 
 for v1.6 programatically modify conversations? ===================
-
-DXREntranceRando: ERROR: GenerateConnections(2) failed after 200 attempts! seed: 879104 and mission 4 seed 305104
-DXREntranceRando: ERROR: GenerateConnections(2) failed after 200 attempts! seed: 699584
-
-DXRando.uc run PostFirstEntry() and RunTests() in the next frame? use Tick function or Timer?
-	PostFirstEntry running after ReEntry and AnyEntry might require some adjustments, seems like only DXRAutosave would need a tiny change
 
 for better log message window, look at DeusExRootWindow ClientMessage function, and HUDLogDisplay AddLog and SetLogTimeout functions
 
