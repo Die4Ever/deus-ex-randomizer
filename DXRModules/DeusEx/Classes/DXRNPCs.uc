@@ -10,9 +10,10 @@ function AnyEntry()
 {
     Super.AnyEntry();
 
-    CreateMerchant();
-
-    //LogAll('MeetKaplan');
+    if( dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 ) {
+        CreateMerchant();
+        //LogAll('MeetKaplan');
+    }
 }
 
 function LogAll(name conName)
@@ -157,7 +158,7 @@ function CreateMerchant()
             break;
         }
     }
-    if(list == None) err("list == None");
+    if(list == None) err(dxr.localURL $ " list == None");
 
     foreach AllActors(class'Businessman3', npc, 'DXRNPCs1') {
         npc.BindName = "DXRNPCs1";

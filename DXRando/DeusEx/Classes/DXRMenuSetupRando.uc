@@ -91,6 +91,11 @@ function BindControls(bool writing, optional string action)
     Slider(id, f.enemiesrandomized, 0, 100, writing);
     id++;
 
+    labels[id] = "Non-Human Chance %";
+    helptexts[id] = "Reduce the chance of new enemies being non-humans.";
+    Slider(id, f.enemies_nonhumans, 0, 100, writing);
+    id++;
+
     labels[id] = "Enemy Respawn Seconds";
     helptexts[id] = "(Beta) How many seconds for enemies to respawn. Leave blank or 0 to disable";
     Slider(id, f.enemyrespawn, 0, 100, writing);
@@ -122,6 +127,16 @@ function BindControls(bool writing, optional string action)
     labels[id] = "Maximum Skill Cost %";
     helptexts[id] = "Maximum cost for skills in percentage of the original cost.";
     Slider(id, f.maxskill, 0, 1000, writing);
+    id++;
+
+    labels[id] = "Banned Skills %";
+    helptexts[id] = "Chance of a skill having a cost of 99,999 points.";
+    Slider(id, f.banned_skills, 0, 100, writing);
+    id++;
+
+    labels[id] = "Banned Skill Levels %";
+    helptexts[id] = "Chance of a certain level of a skill having a cost of 99,999 points.";
+    Slider(id, f.banned_skill_levels, 0, 100, writing);
     id++;
 
     iDifficulty = int(combatDifficulty * 100.0);
@@ -182,10 +197,14 @@ function BindControls(bool writing, optional string action)
     f.goals = UnpackInt(locations_option);
     id++;
 
-    labels[id] = "Medbots and Repair bots";
-    helptexts[id] = "Percentage chance for a medbot or repair bot to spawn in a map (vanilla is about 14%)";
+    labels[id] = "Medbots";
+    helptexts[id] = "Percentage chance for a medbot to spawn in a map (vanilla is about 14%)";
     Slider(id, f.medbots, 0, 100, writing);
-    f.repairbots = f.medbots;
+    id++;
+
+    labels[id] = "Repair bots";
+    helptexts[id] = "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%)";
+    Slider(id, f.repairbots, 0, 100, writing);
     id++;
 
     labels[id] = "Move Turrets";
@@ -196,6 +215,11 @@ function BindControls(bool writing, optional string action)
     labels[id] = "Add Turrets";
     helptexts[id] = "Randomly adds turrets, cameras, and security computers for them.";
     Slider(id, f.turrets_add, 0, 100, writing);
+    id++;
+
+    labels[id] = "The Merchant Chance %";
+    helptexts[id] = "The chance for The Merchant to appear in each map.";
+    Slider(id, f.merchants, 0, 100, writing);
     id++;
 
     if( action == "NEXT" ) InvokeNewGameScreen(combatDifficulty, InitDxr());

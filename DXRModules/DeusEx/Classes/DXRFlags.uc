@@ -20,6 +20,7 @@ var int turrets_move, turrets_add;
 var int crowdcontrol;
 var int newgameplus_loops;
 var int merchants;
+var int banned_skills, banned_skill_levels, enemies_nonhumans;
 
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 
@@ -132,7 +133,10 @@ function InitDefaults()
     turrets_add = 20;
     crowdcontrol = 0;
     newgameplus_loops = 0;
-    merchants = 0;
+    merchants = 50;
+    banned_skills = 5;
+    banned_skill_levels = 5;
+    enemies_nonhumans = 60;
 }
 
 function CheckConfig()
@@ -222,6 +226,9 @@ function LoadFlags()
     }
     if( stored_version >= VersionToInt(1,5,6) ) {
         merchants = f.GetInt('Rando_merchants');
+        FlagInt('Rando_banned_skills', banned_skills);
+        FlagInt('Rando_banned_skill_level', banned_skill_levels);
+        FlagInt('Rando_enemies_nonhumans', enemies_nonhumans);
     }
 
     if(stored_version < flagsversion ) {
@@ -238,6 +245,14 @@ function LoadFlags()
 
     ds = class'DataStorage'.static.GetObj(dxr.player);
     if( ds != None ) ds.playthrough_id = playthrough_id;
+}
+
+function FlagInt(name flagname, out int val)
+{
+    if( f.CheckFlag(flagname, FLAG_Int) )
+    {
+        val = f.GetInt(flagname);
+    }
 }
 
 function SaveFlags()
@@ -322,7 +337,8 @@ function string StringifyFlags()
         $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
         $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", enemyrespawn: "$enemyrespawn$", infodevices: "$infodevices
-        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots$", turrets_move: "$turrets_move$", turrets_add: "$turrets_add$", crowdcontrol: "$crowdcontrol;
+        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots$", turrets_move: "$turrets_move$", turrets_add: "$turrets_add
+        $ ", crowdcontrol: "$crowdcontrol$", banned_skills: "$banned_skills$", banned_skill_levels: "$banned_skill_levels$", enemies_nonhumans: "$enemies_nonhumans;
 }
 
 function int FlagsHash()
@@ -361,7 +377,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 6) $ " Alpha";
+    return VersionToString(1, 5, 6) $ "";
 }
 
 function MaxRando()
@@ -413,6 +429,7 @@ function NewGamePlus()
     p.SetInHandPending(None);
     p.SetInHand(None);
     p.bInHandTransition = False;
+    p.RestoreAllHealth();
 
     info("NewGamePlus() deleting all flags");
     f.DeleteAllFlags();
@@ -451,6 +468,10 @@ function RunTests()
     testbool( chance_single(50), false, "chance_single(50) 2");
     testbool( chance_single(50), false, "chance_single(50) 3");
     testbool( chance_single(50), false, "chance_single(50) 4");
+
+    teststring( FloatToString(0.5555, 1), "0.6", "FloatToString 1");
+    teststring( FloatToString(0.5454999, 4), "0.5455", "FloatToString 2");
+    teststring( FloatToString(0.5455, 2), "0.55", "FloatToString 3");
 }
 
 function ExtendedTests()

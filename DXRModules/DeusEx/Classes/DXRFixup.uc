@@ -103,6 +103,7 @@ function PreFirstEntry()
             Shipyard_FirstEntry();
             break;
         case 10:
+        case 11:
             Paris_FirstEntry();
             break;
         case 12:
@@ -728,11 +729,19 @@ function Shipyard_FirstEntry()
 
 function Paris_FirstEntry()
 {
+    local GuntherHermann g;
+
     switch(dxr.localURL)
     {
         case "10_PARIS_CATACOMBS_TUNNELS":
             AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
             AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
+            break;
+        
+        case "11_PARIS_CATHEDRAL":
+            foreach AllActors(class'GuntherHermann', g) {
+                g.ChangeAlly('mj12', 1, true);
+            }
             break;
     }
 }

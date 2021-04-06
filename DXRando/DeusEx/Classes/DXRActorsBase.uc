@@ -25,13 +25,12 @@ function CheckConfig()
 {
     local class<Actor> temp_skipactor_types[6];
     local int i, t;
-    if( config_version < 4 && skipactor_types[0] == "" ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
         for(i=0; i < ArrayCount(skipactor_types); i++) {
             skipactor_types[i] = "";
         }
         i=0;
         skipactor_types[i++] = "BarrelAmbrosia";
-        skipactor_types[i++] = "BarrelVirus";
         skipactor_types[i++] = "NanoKey";
     }
     Super.CheckConfig();

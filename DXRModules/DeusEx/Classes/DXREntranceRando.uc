@@ -745,11 +745,6 @@ function ApplyEntranceRando()
 {
     local Teleporter t;
     local MapExit m;
-    local string newDest;
-    local string curDest;
-    local string destTag;
-    local int i;
-    local int hashPos;
 
     foreach AllActors(class'Teleporter',t)
     {

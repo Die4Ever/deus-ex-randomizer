@@ -9,6 +9,8 @@ struct EnumBtn {
 };
 var EnumBtn enums[64];
 
+var MenuUIScrollAreaWindow winScroll;
+var Window controlsParent;
 var MenuUILabelWindow winHelp;
 var bool bHelpAlwaysOn;
 
@@ -41,8 +43,20 @@ event Init(DXRando d)
 
     coords = _GetCoords(num_rows, num_cols);
     ClientWidth = coords.X;
-    ClientHeight = coords.Y;
+    ClientHeight = min(coords.Y, 500);
+
     Super.InitWindow();
+
+    controlsParent = winClient;
+    winScroll = CreateScrollAreaWindow(winClient);
+    winScroll.SetPos(0, 0);
+    winScroll.SetSize(ClientWidth, ClientHeight + _GetY(0) - _GetY(1) );
+    //winScroll.AutoHideScrollbars(false);
+    winScroll.EnableScrolling(false,true);
+    controlsParent = winScroll.clipWindow;
+    controlsParent = controlsParent.NewChild(class'MenuUIClientWindow');
+    coords = _GetCoords(num_rows-1, num_cols);// num_rows-1 cause no help text inside the scroll area
+    controlsParent.SetSize(coords.X, coords.Y);
 
     ResetToDefaults();
     BindControls(false);
@@ -50,6 +64,7 @@ event Init(DXRando d)
     // Need to do this because of the edit control used for 
     // saving games.
     SetMouseFocusMode(MFOCUS_Click);
+    if( wnds[0] != None ) SetFocusWindow(wnds[0]);
 
     InitHelp();
     Show();
@@ -224,6 +239,7 @@ function InitHelp()
     local vector coords;
     bHelpAlwaysOn = True;
     coords = _GetCoords(num_rows-1, 0);
+    coords.y = ClientHeight + _GetY(0) - _GetY(1);
     winHelp = CreateMenuLabel( coords.x, coords.y+4, "", winClient);
 }
 
@@ -242,9 +258,11 @@ function CreateControls()
 
 function vector GetCoords(int row, int col)
 {
-    while( row >= num_rows-1 ) {
-        row -= num_rows-1;
-        col += 2;
+    col += (row % (num_cols/2)) * 2;
+    row /= max(num_cols/2, 1);
+
+    if( _GetY(row+1) > controlsParent.height ) {
+        controlsParent.SetSize( controlsParent.width, _GetY(row+1) );
     }
     return _GetCoords(row, col);
 }
@@ -252,9 +270,14 @@ function vector GetCoords(int row, int col)
 function vector _GetCoords(int row, int col)
 {
     local vector v;
-    v.x = _GetX(col);// col * col_width + col*padding_width + padding_width;
-    v.y = row * row_height + row*padding_height + padding_height;
+    v.x = _GetX(col);
+    v.y = _GetY(row);
     return v;
+}
+
+function int _GetY(int row)
+{
+    return row * row_height + row*padding_height + padding_height;
 }
 
 function int _GetX(int col)
@@ -281,8 +304,33 @@ function MenuUILabelWindow CreateLabel(int row, string label)
     local MenuUILabelWindow winLabel;
     local vector coords;
     coords = GetCoords(row, 0);
-    winLabel = CreateMenuLabel( coords.x, coords.y+4, label, winClient);
+    winLabel = CreateMenuLabel( coords.x, coords.y+4, label, controlsParent);
     return winLabel;
+}
+
+// copied from MenuUIWindow.uc
+function MenuUIEditWindow CreateMenuEditWindow(int posX, int posY, int editWidth, int maxChars, Window winParent)
+{
+    local MenuUIInfoButtonWindow btnInfo;
+    local ClipWindow             clipName;
+    local MenuUIEditWindow       newEdit;
+
+    // Create an info button behind this sucker
+    btnInfo = MenuUIInfoButtonWindow(winParent.NewChild(Class'MenuUIInfoButtonWindow'));
+    btnInfo.SetPos(posX, posY);
+    btnInfo.SetWidth(editWidth);
+    btnInfo.SetSensitivity(False);
+
+    // the original code foolishly uses winClient here instead of the winParent argument
+    clipName = ClipWindow(winParent.newChild(Class'ClipWindow'));
+    clipName.SetWidth(editWidth - 8);
+    clipName.ForceChildSize(False, True);
+    clipName.SetPos(posX + 4, posY + 5);
+
+    newEdit = MenuUIEditWindow(clipName.NewChild(Class'MenuUIEditWindow'));
+    newEdit.SetMaxSize(maxChars);
+
+    return newEdit;
 }
 
 function MenuUIEditWindow CreateEdit(int row, string label, string helptext, string filterString, optional string deflt )
@@ -293,7 +341,7 @@ function MenuUIEditWindow CreateEdit(int row, string label, string helptext, str
     CreateLabel(row, label);
 
     coords = GetCoords(row, 1);
-    edit = CreateMenuEditWindow(coords.x, coords.y, GetWidth(row, 1, 1), 10, winClient);
+    edit = CreateMenuEditWindow(coords.x, coords.y, GetWidth(row, 1, 1), 10, controlsParent);
 
     edit.SetText(deflt);
     edit.SetFilter(filterString);
@@ -323,7 +371,7 @@ function MenuUIEditWindow CreateSlider(int row, string label, string helptext, o
     CreateLabel(row, label);
 
     coords = GetCoords(row, 1);
-    slider = MenuUISliderButtonWindow(winClient.NewChild(Class'MenuUISliderButtonWindow'));
+    slider = MenuUISliderButtonWindow(controlsParent.NewChild(Class'MenuUISliderButtonWindow'));
     slider.SetPos(coords.x, coords.y);
     slider.SetTicks(numTicks, min, max);
     slider.winSlider.SetValue(deflt);
@@ -347,7 +395,7 @@ function MenuUIActionButtonWindow CreateBtn(int row, string label, string helpte
 
     if( label != "" ) CreateLabel(row, label);
 
-    btn = MenuUIActionButtonWindow(winClient.NewChild(Class'MenuUIActionButtonWindow'));
+    btn = MenuUIActionButtonWindow(controlsParent.NewChild(Class'MenuUIActionButtonWindow'));
     btn.SetButtonText(text);
     if( label == "" ) {
         coords = GetCoords(row, 0);
