@@ -11,12 +11,11 @@ function PreFirstEntry()
     switch(dxr.localURL) {
         case "04_NYC_BATTERYPARK":
             foreach AllActors(class'Teleporter', t) {
+                if( DynamicTeleporter(t) != None ) continue;
                 if( ! t.bEnabled ) continue;
                 if( t.URL != "04_NYC_Street#ToStreet" ) continue;
-                t.bEnabled = false;
-                dt = Spawn(class'DynamicTeleporter',,,t.Location);
+                dt = class'DynamicTeleporter'.static.ReplaceTeleporter(t);
                 dt.SetDestination("04_NYC_Street", 'PathNode194');
-                dt.Radius = 30;
             }
             break;
         

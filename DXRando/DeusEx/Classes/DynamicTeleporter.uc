@@ -4,10 +4,11 @@ var float proxCheckTime;
 var float Radius;
 var name destName;
 
-function SetDestination(string destURL, name dest_actor_name)
+function SetDestination(string destURL, name dest_actor_name, optional string tag)
 {
-    URL = destURL $ "#";
+    URL = destURL $ "#" $ tag;
     destName = dest_actor_name;
+    log(Self$": SetDestination("$destURL$", "$dest_actor_name$", "$tag$") URL: "$URL$", destName: "$destName);
 }
 
 simulated function Tick(float deltaTime)
@@ -40,6 +41,11 @@ static function ClearTeleport(DeusExPlayer player)
     player.flagbase.SetName('DynTeleport', '',, -999);
 }
 
+static function SetDestName(DeusExPlayer player, name destName)
+{
+    player.flagbase.SetName('DynTeleport', destName,, 999);
+}
+
 simulated function Touch( actor Other )
 {
     local DeusExPlayer p;
@@ -48,7 +54,7 @@ simulated function Touch( actor Other )
 
     p = DeusExPlayer(Other);
     if( p != None ) {
-        p.flagbase.SetName('DynTeleport', destName,, 999);
+        SetDestName(p, destName);
     }
 
     Super.Touch(Other);
@@ -71,10 +77,28 @@ static function CheckTeleport(DeusExPlayer player)
     ClearTeleport(player);
 }
 
+static function DynamicTeleporter ReplaceTeleporter(Teleporter t)
+{
+    local DynamicTeleporter dt;
+    if( DynamicTeleporter(t) != None ) return DynamicTeleporter(t);
+    if( ! t.bEnabled ) return None;
+    dt = t.Spawn(class'DynamicTeleporter',,,t.Location, t.Rotation);
+    if( dt != None ) {
+        t.bEnabled = false;
+        t.Disable('Touch');
+        t.Disable('Trigger');
+        t.SetCollision(false, false, false);
+        dt.URL = t.URL;
+        dt.Radius = t.CollisionRadius;
+    }
+    log("ReplaceTeleporter("$t$") "$dt);
+    return dt;
+}
+
 defaultproperties
 {
     bGameRelevant=True
-    bCollideActors=False
+    bCollideActors=True
     bStatic=False
     Radius=160
 }

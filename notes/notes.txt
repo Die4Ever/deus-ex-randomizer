@@ -21,8 +21,6 @@ v1.5.7:
 	make horde mode use the autosave blocking manual saves method instead of the hack-y permanent fake datalink
 	use better logic for The Merchant's location, like cameras?
 	use key safe location logic for hazmats vs damage zones (this might only be a big deal for paris?)
-	does this work in a config file?
-		dead_ends[0]=06_HONGKONG_WANCHAI_GARAGE#TELEPORTER
 	crowd control spawn medbot, friendly milbot
 	crowd control incremental speed effects
 	crowd control, ensure you don't go past the max ammo

@@ -11,6 +11,10 @@ var transient config KVP config_data[512];
 var transient bool config_dirty;
 var travel int playthrough_id;
 
+var travel int EntranceRandoMissionNumber;
+var travel int numConns;
+var travel string conns[120];
+
 function PreTravel()
 {
     Flush();
@@ -219,6 +223,14 @@ final function bool SetKVP(out KVP data, coerce string key, coerce string value,
     data.created = time;
     data.expiration = expire_seconds + data.created;
     return true;
+}
+
+final function BindConn(int slot_a, int slot_b, out string val, bool writing)
+{
+    if( writing )
+        conns[slot_a*6 + slot_b] = val;
+    else
+        val = conns[slot_a*6 + slot_b];
 }
 
 defaultproperties

@@ -30,7 +30,7 @@ struct MapConnection
     var() int    numDests;
     var() string dest[15]; //List of maps that can be reached from this one
 };
-var Connection conns[50];
+var Connection conns[20];
 var int numConns;
 
 var Connection fixed_conns[8];
@@ -613,7 +613,7 @@ function RandoMission10()
 {
     AddFixedConn("10_PARIS_CATACOMBS","x", "10_PARIS_CATACOMBS","x");
     AddDoubleXfer("10_PARIS_CATACOMBS","spiralstair","10_Paris_Catacombs_Tunnels","spiralstair");//same tag on both sides?
-    AddFixedConn("10_PARIS_CATACOMBS_TUNNELS","?toname=AmbientSound10","10_Paris_Metro","sewer");//one way, I could maybe use separate teleporters for each side of the sewers to make more options?
+    AddDoubleXfer("10_PARIS_CATACOMBS_TUNNELS","?toname=AmbientSound10","10_Paris_Metro","sewer");
     AddFixedConn("10_Paris_Metro","","10_PARIS_CHATEAU","x");//one way
     //AddDoubleXfer("10_PARIS_CHATEAU","","11_Paris_Cathedral","cathedralstart");//one way
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club1","10_Paris_Metro","Paris_Metro1");
@@ -740,62 +740,46 @@ function EntranceRando(int missionNum)
     }
 }
 
-function BindInt(name flagname, out int val, bool writing)
-{
-    if(writing) {
-        dxr.flags.f.SetInt(flagname, val,, dxr.dxInfo.missionNumber+1);
-    }
-    else {
-        val = dxr.flags.f.GetInt(flagname);
-    }
-}
-
-function BindString(string flagname, out string val, bool writing)
-{
-    local name k, v;
-    k = StringToName(flagname);
-    if(writing) {
-        v = StringToName(val);
-        dxr.flags.f.SetName(k, v,, dxr.dxInfo.missionNumber+1);
-    }
-    else {
-        val = string(dxr.flags.f.GetName(k));
-    }
-}
-
-function StoreEntrances(bool writing)
+function BindEntrances(DataStorage ds, bool writing)
 {
     local int i;
-    BindInt('EntrancesNumConns', numConns, writing);
+
+    if(writing) ds.numConns = numConns;
+    else numConns = ds.numConns;
+
     for (i = 0;i<numConns;i++)
     {
-        BindString("Entrances"$i$"MapA", conns[i].a.mapname, writing);
-        BindString("Entrances"$i$"InA", conns[i].a.inTag, writing);
-        BindString("Entrances"$i$"OutA", conns[i].a.outTag, writing);
+        ds.BindConn(i, 0, conns[i].a.mapname, writing);
+        ds.BindConn(i, 1, conns[i].a.inTag, writing);
+        ds.BindConn(i, 2, conns[i].a.outTag, writing);
 
-        BindString("Entrances"$i$"MapB", conns[i].b.mapname, writing);
-        BindString("Entrances"$i$"InB", conns[i].b.inTag, writing);
-        BindString("Entrances"$i$"OutB", conns[i].b.outTag, writing);
+        ds.BindConn(i, 3, conns[i].b.mapname, writing);
+        ds.BindConn(i, 4, conns[i].b.inTag, writing);
+        ds.BindConn(i, 5, conns[i].b.outTag, writing);
     }
 }
 
 function ApplyEntranceRando()
 {
+    local NavigationPoint newnp, last;
     local Teleporter t;
     local MapExit m;
+    local DataStorage ds;
 
-    // broken right now because of trying to do StringToName("?toname=AmbientSound10")
-    // maybe I should detect if it's a dynamicteleporter and check the destName directly instead of the URL
-    /*if( dxr.flags.f.GetInt('EntrancesMission') == dxr.dxInfo.missionNumber ) {
-        StoreEntrances(false);
+    ds = class'DataStorage'.static.GetObj(dxr.Player);
+    if( ds.EntranceRandoMissionNumber == dxr.dxInfo.missionNumber ) {
+        BindEntrances(ds, false);
     } else {
-        dxr.flags.f.SetInt('EntrancesMission', dxr.dxInfo.missionNumber,, dxr.dxInfo.missionNumber+1);
-        StoreEntrances(true);
-    }*/
+        ds.EntranceRandoMissionNumber = dxr.dxInfo.missionNumber;
+        BindEntrances(ds, true);
+    }
 
+    last = None;
     foreach AllActors(class'Teleporter',t)
     {
-        AdjustTeleporter(t);
+        if( t == last ) break;
+        newnp = AdjustTeleporter(t);
+        if( last == None ) last = newnp;
     }
     
     foreach AllActors(class'MapExit',m)
@@ -805,25 +789,29 @@ function ApplyEntranceRando()
     
 }
 
-function AdjustTeleporter(NavigationPoint p)
+function NavigationPoint AdjustTeleporter(NavigationPoint p)
 {
     local Teleporter t;
     local MapExit m;
-    local DynamicTeleporter dt;
-    local string newDest;
-    local string curDest;
-    local string destTag;
+    local DynamicTeleporter dt, newdt;
+    local string curDest, destTag;
+    local string newMap, newTag, newName;
     local int i;
     local int hashPos;
+    local int namePos;
 
     t = Teleporter(p);
     m = MapExit(p);
     dt = DynamicTeleporter(p);
     if( dt != None ) curDest = dt.URL $ "?toname=" $ dt.destName;
-    else if( t != None ) curDest = t.URL;
-    else if( m != None ) curDest = m.DestMap;
+    else if( m != None && m.destName != '' ) curDest = m.DestMap $ " ?toname=" $ m.destName;
+    else if( m != None )  curDest = m.DestMap;
+    else if( t != None ) {
+        if( ! t.bEnabled ) return None;
+        curDest = t.URL;
+    }
 
-    if( curDest == "" ) return;
+    if( curDest == "" ) return None;
 
     hashPos = InStr(curDest,"#");
     destTag = Caps(Mid(curDest,hashPos+1));
@@ -832,20 +820,45 @@ function AdjustTeleporter(NavigationPoint p)
     {
         if (conns[i].a.mapname == dxr.localURL && destTag == conns[i].a.outTag)
         {
-            newDest = conns[i].b.mapname$"#"$conns[i].b.inTag;
+            newMap = conns[i].b.mapname;
+            newTag = conns[i].b.inTag;
         }
         else if (conns[i].b.mapname == dxr.localURL && destTag == conns[i].b.outTag)
         {
-            newDest = conns[i].a.mapname$"#"$conns[i].a.inTag;
+            newMap = conns[i].a.mapname;
+            newTag = conns[i].a.inTag;
         }
         else
             continue;
 
-        if( dt != None ) dt.URL = newDest;// lots of problems here now
-        else if( t != None ) t.URL = newDest;
-        else if( m != None ) m.DestMap = newDest;
-        l("Found " $ p $ " with destination " $ curDest $ ", changed to " $ newDest);
+        namePos = InStr(newTag, "?TONAME=");
+        if( namePos > 0 ) err("AdjustTeleporter "$p$", newMap: "$newMap$", newTag: "$newTag$", namePos: "$namePos);
+        if( namePos == 0 ) {
+            newName = Mid(newTag, Len("?TONAME=") );
+            if( dt == None && t != None ) {
+                newdt = class'DynamicTeleporter'.static.ReplaceTeleporter(t);
+                newdt.SetDestination(newMap, StringToName(newName));
+            }
+            else if( dt != None ) {
+                dt.SetDestination(newMap, StringToName(newName));
+            }
+            else if( m != None ) {
+                m.SetDestination(newMap, StringToName(newName));
+            }
+        }
+        else {
+            if( dt != None )
+                dt.SetDestination(newMap, '', newTag);
+            else if( m != None )
+                m.SetDestination(newMap, '', newTag);
+            else if( t != None )
+                t.URL = newMap $ "#" $ newTag;
+        }
+        info("Found " $ p $ " with destination " $ curDest $ ", changed to " $ newMap$"#"$newTag );
+        break;
     }
+
+    return newdt;
 }
 
 function PostFirstEntry()
