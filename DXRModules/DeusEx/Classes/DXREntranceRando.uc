@@ -854,7 +854,7 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
             else if( t != None )
                 t.URL = newMap $ "#" $ newTag;
         }
-        info("Found " $ p $ " with destination " $ curDest $ ", changed to " $ newMap$"#"$newTag );
+        info("Found " $ p $ " with destination " $ curDest $ ", changed to " $ newMap$"#"$newTag$", newdt: "$newdt );
         break;
     }
 
@@ -869,17 +869,24 @@ function PostFirstEntry()
     //Randomize entrances for this mission
     EntranceRando(dxr.dxInfo.missionNumber);
     ApplyEntranceRando();
-    LogConnections();
+    LogConnections(true);
 }
 
-function LogConnections()
+function LogConnections(optional bool bInfo)
 {
     local int i;
     for (i = 0;i<numConns;i++)
     {
-        l("conns["$i$"]:");
-        l( "    "$ conns[i].a.mapname $"#"$ conns[i].a.outTag $" goes to "$ conns[i].b.mapname $"#"$ conns[i].b.inTag );
-        l( "    "$ conns[i].b.mapname $"#"$ conns[i].b.outTag $" goes to "$ conns[i].a.mapname $"#"$ conns[i].a.inTag );
+        if( bInfo ) {
+            info("conns["$i$"]:");
+            info( "    "$ conns[i].a.mapname $"#"$ conns[i].a.outTag $" goes to "$ conns[i].b.mapname $"#"$ conns[i].b.inTag );
+            info( "    "$ conns[i].b.mapname $"#"$ conns[i].b.outTag $" goes to "$ conns[i].a.mapname $"#"$ conns[i].a.inTag );
+        }
+        else {
+            l("conns["$i$"]:");
+            l( "    "$ conns[i].a.mapname $"#"$ conns[i].a.outTag $" goes to "$ conns[i].b.mapname $"#"$ conns[i].b.inTag );
+            l( "    "$ conns[i].b.mapname $"#"$ conns[i].b.outTag $" goes to "$ conns[i].a.mapname $"#"$ conns[i].a.inTag );
+        }
     }
 }
 
