@@ -740,11 +740,58 @@ function EntranceRando(int missionNum)
     }
 }
 
+function BindInt(name flagname, out int val, bool writing)
+{
+    if(writing) {
+        dxr.flags.f.SetInt(flagname, val,, dxr.dxInfo.missionNumber+1);
+    }
+    else {
+        val = dxr.flags.f.GetInt(flagname);
+    }
+}
+
+function BindString(string flagname, out string val, bool writing)
+{
+    local name k, v;
+    k = StringToName(flagname);
+    if(writing) {
+        v = StringToName(val);
+        dxr.flags.f.SetName(k, v,, dxr.dxInfo.missionNumber+1);
+    }
+    else {
+        val = string(dxr.flags.f.GetName(k));
+    }
+}
+
+function StoreEntrances(bool writing)
+{
+    local int i;
+    BindInt('EntrancesNumConns', numConns, writing);
+    for (i = 0;i<numConns;i++)
+    {
+        BindString("Entrances"$i$"MapA", conns[i].a.mapname, writing);
+        BindString("Entrances"$i$"InA", conns[i].a.inTag, writing);
+        BindString("Entrances"$i$"OutA", conns[i].a.outTag, writing);
+
+        BindString("Entrances"$i$"MapB", conns[i].b.mapname, writing);
+        BindString("Entrances"$i$"InB", conns[i].b.inTag, writing);
+        BindString("Entrances"$i$"OutB", conns[i].b.outTag, writing);
+    }
+}
 
 function ApplyEntranceRando()
 {
     local Teleporter t;
     local MapExit m;
+
+    // broken right now because of trying to do StringToName("?toname=AmbientSound10")
+    // maybe I should detect if it's a dynamicteleporter and check the destName directly instead of the URL
+    /*if( dxr.flags.f.GetInt('EntrancesMission') == dxr.dxInfo.missionNumber ) {
+        StoreEntrances(false);
+    } else {
+        dxr.flags.f.SetInt('EntrancesMission', dxr.dxInfo.missionNumber,, dxr.dxInfo.missionNumber+1);
+        StoreEntrances(true);
+    }*/
 
     foreach AllActors(class'Teleporter',t)
     {
@@ -762,6 +809,7 @@ function AdjustTeleporter(NavigationPoint p)
 {
     local Teleporter t;
     local MapExit m;
+    local DynamicTeleporter dt;
     local string newDest;
     local string curDest;
     local string destTag;
@@ -770,7 +818,9 @@ function AdjustTeleporter(NavigationPoint p)
 
     t = Teleporter(p);
     m = MapExit(p);
-    if( t != None ) curDest = t.URL;
+    dt = DynamicTeleporter(p);
+    if( dt != None ) curDest = dt.URL $ "?toname=" $ dt.destName;
+    else if( t != None ) curDest = t.URL;
     else if( m != None ) curDest = m.DestMap;
 
     if( curDest == "" ) return;
@@ -791,7 +841,8 @@ function AdjustTeleporter(NavigationPoint p)
         else
             continue;
 
-        if( t != None ) t.URL = newDest;
+        if( dt != None ) dt.URL = newDest;// lots of problems here now
+        else if( t != None ) t.URL = newDest;
         else if( m != None ) m.DestMap = newDest;
         l("Found " $ p $ " with destination " $ curDest $ ", changed to " $ newDest);
     }

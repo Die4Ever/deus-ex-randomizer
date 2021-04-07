@@ -7,7 +7,7 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 
 v1.5.7 Alpha:
-	entrance rando write current mission layout to DataStorage for clean upgrades
+	entrance rando write current mission layout to DataStorage or flags for clean upgrades
 	security cameras might be weird? maybe it's medbots' alliance?
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	DXRando.uc run PostFirstEntry() and RunTests() in the next frame? use Tick function or Timer?
