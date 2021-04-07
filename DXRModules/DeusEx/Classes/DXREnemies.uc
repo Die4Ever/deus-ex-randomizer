@@ -338,12 +338,14 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     local vector loc, loc_offset;
     local Inventory inv;
     local NanoKey k1, k2;
+    local name newtag;
 
     if( p == None ) {
         l("p == None?");
         return None;
     }
     if( newclass == None ) newclass = p.class;
+    newtag = StringToName(p.Tag $ "_clone");
     radius = p.CollisionRadius + newclass.default.CollisionRadius;
     for(i=0; i<10; i++) {
         loc_offset.X = 1 + rngf() * 3 * Sqrt(float(enemy_multiplier+1));
@@ -354,7 +356,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
             info("CloneScriptedPawn "$loc$" is too close to start!");
             continue;
         }
-        n = Spawn(newclass,,, loc );
+        n = Spawn(newclass,, newtag, loc );
         if( n != None ) break;
     }
     if( n == None ) {

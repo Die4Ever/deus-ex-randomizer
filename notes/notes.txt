@@ -7,7 +7,6 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 
 v1.5.7 Alpha:
-	cloned enemies copy the Tag? might be risky
 	entrance rando write current mission layout to DataStorage for clean upgrades
 	security cameras might be weird? maybe it's medbots' alliance?
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
@@ -15,6 +14,9 @@ v1.5.7 Alpha:
 		PostFirstEntry running after ReEntry and AnyEntry might require some adjustments, seems like only DXRAutosave would need a tiny change
 
 v1.5.7:
+	fix 14_OceanLab_Lab DataCube1 login text is getting replaced with a password
+		the "Oceanguard" login and "Kraken" password
+		it's because ComputerSecurity0 has the username and password flipped
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
 	make horde mode use the autosave blocking manual saves method instead of the hack-y permanent fake datalink
 	use better logic for The Merchant's location, like cameras?
