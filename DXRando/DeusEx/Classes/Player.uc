@@ -435,12 +435,12 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
             oldDamage = 1;
     }
 
-    if (newDamage < oldDamage)
+    //make sure to factor the rounding into the percentage
+    pct = 1.0 - ( Float(Int(newDamage)) / Float(Int(oldDamage)) );
+    if (pct != 1.0)
     {
         if (!bCheckOnly)
         {
-            //make sure to factor the rounding into the percentage
-            pct = 1.0 - ( Float(Int(newDamage)) / Float(Int(oldDamage)) );
             SetDamagePercent(pct);
             ClientFlash(0.01, vect(0, 0, 50));
         }
