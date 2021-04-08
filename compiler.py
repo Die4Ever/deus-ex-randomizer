@@ -17,7 +17,12 @@ parser = argparse.ArgumentParser(description='Deus Ex Injecting Compiler')
 def calla(cmds):
     print("running "+repr(cmds))
     start = timer()
-    ret = subprocess.Popen(cmds).wait(timeout=3600)
+    proc = subprocess.Popen(cmds)
+    try:
+        ret = proc.wait(timeout=600)
+    except Exception as e:
+        proc.kill()
+        raise
     elapsed_time = timer() - start # in seconds
     print( repr(cmds) + " took " + str(elapsed_time) + " seconds and returned " + str(ret) )
     return ret
@@ -336,8 +341,8 @@ def runAutomatedTests(out):
                 print("")
                 rc = False
 
-            elif len(allTestsPassed) == len(startingTests) and len(allExtendedTestsPassed) > 0:
-                print("All tests passed!")
+            elif len(allTestsPassed) == len(startingTests) and len(allTestsPassed) > 0 and len(startingTests) > 0 and len(allExtendedTestsPassed) > 0:
+                print("All tests passed! len(startingTests) == "+str(len(startingTests))+", len(allTestsPassed) == "+str(len(allTestsPassed))+", len(allExtendedTestsPassed) == "+str(len(allExtendedTestsPassed)))
                 rc = True
             else:
                 print("len(startingTests) == "+str(len(startingTests))+", len(allTestsPassed) == "+str(len(allTestsPassed))+", len(allExtendedTestsPassed) == "+str(len(allExtendedTestsPassed)))

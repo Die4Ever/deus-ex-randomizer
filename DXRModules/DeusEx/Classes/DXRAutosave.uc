@@ -16,6 +16,7 @@ function PostFirstEntry()
     Super.PostFirstEntry();
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave > 0 ) {
         bNeedSave=true;
+        SetTimer(save_delay, True);
     }
 }
 
@@ -24,14 +25,8 @@ function ReEntry(bool IsTravel)
     Super.ReEntry(IsTravel);
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave==2 && IsTravel ) {
         bNeedSave=true;
-    }
-}
-
-function AnyEntry()
-{
-    Super.AnyEntry();
-    if( bNeedSave )
         SetTimer(save_delay, True);
+    }
 }
 
 function Timer()

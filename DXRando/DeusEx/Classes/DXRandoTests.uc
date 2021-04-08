@@ -40,12 +40,18 @@ function Timer()
     local DXRando dxr;
     
     foreach AllActors(class'DXRando', dxr) { break; }
-    if( dxr.player == None ) dxr.Timer();
+    if( dxr.bTickEnabled ) {
+        log("waiting... dxr: " $ dxr $ ", dxr.bTickEnabled: " $ dxr.bTickEnabled );
+        return;
+    }
     if( dxr.player == None ) {
-        log("ERROR: still didn't find player?", Name);
+        log("ERROR: still didn't find player? dxr.bTickEnabled: "$dxr.bTickEnabled, Name);
         SetTimer(0, false);
         ConsoleCommand("Exit");
         return;
+    }
+    if( dxr.runPostFirstEntry ) {
+        log("ERROR: dxr.runPostFirstEntry: " $ dxr.runPostFirstEntry);
     }
 
     dxr.ExtendedTests();
