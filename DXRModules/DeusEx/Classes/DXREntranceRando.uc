@@ -69,6 +69,7 @@ function CheckConfig()
         dead_ends[i++] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
         dead_ends[i++] = "06_HONGKONG_Storage#waterpipe";
         //dead_ends[i++] = "12_VANDENBERG_CMD#storage";//it's actually backwards from this, instead of this teleporter being a dead end, the door before the teleporter is the dead end
+        //dead_ends[i++] = "12_VANDENBERG_TUNNELS#End";//this isn't right either, because if you can get to this teleporter then you can get through the map
     }
     for(i=0; i < ArrayCount(BannedConnections); i++) {
         BannedConnections[i].map_a = Caps(BannedConnections[i].map_a);
