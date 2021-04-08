@@ -703,7 +703,7 @@ function RandoMission12()
 {
     AddFixedConn("12_VANDENBERG_CMD","x","12_VANDENBERG_CMD", "x");
     AddDoubleXfer("12_VANDENBERG_CMD","commstat","12_vandenberg_tunnels","start");
-    AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");
+    AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");// this needs to be marked as one way somehow, not just AddXfer, because it does go both ways, but only after opening the door
     AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");
 
     //AddDoubleXfer("12_VANDENBERG_CMD","","12_Vandenberg_gas","");

@@ -342,7 +342,7 @@ function Airfield_FirstEntry()
                     t.Event = '';
                 }
             }
-            //stepping stone valves out of the water
+            //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
             _AddActor(Self, class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
             a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3105,-385,-210), rot(0,0,0));
             SetActorScale(a, 1.3);
@@ -482,6 +482,7 @@ function NYC_04_CheckPaulRaid()
         if( PaulDenton(p) != None ) continue;
         if( IsCritter(p) ) continue;
         if( p.bHidden ) continue;
+        if( p.GetAllianceType(dxr.player.alliance) != ALLIANCE_Hostile ) continue;
         p.bStasis = false;
         pawns++;
     }
