@@ -407,7 +407,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         else // passive enviro skill still gives some damage reduction
         {
             skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= (skillLevel + 1)/2;
+            newDamage *= (skillLevel + 2)/3;
         }
     }
 
