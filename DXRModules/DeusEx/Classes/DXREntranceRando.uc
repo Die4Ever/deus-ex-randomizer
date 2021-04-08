@@ -1,7 +1,7 @@
 //=============================================================================
 // DXREntranceRando.
 //=============================================================================
-class DXREntranceRando expands DXRBase;
+class DXREntranceRando expands DXRActorsBase;
 
 //Defines an edge of a map where you can transfer between maps
 //Via Teleporter or MapExit
@@ -63,12 +63,12 @@ function CheckConfig()
         BannedConnections[1].map_a = "02_NYC_BatteryPark";
         BannedConnections[1].map_b = "02_NYC_Warehouse";
     }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,5) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,7) ) {
         min_connections_selfconnect = 999;
         i = 0;
-        //dead_ends[i++] = "03_NYC_AirfieldHeliBase#FromOcean";
         dead_ends[i++] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
-        //dead_ends[i++] = "12_VANDENBERG_CMD#storage";//it's actually backwards from this...
+        dead_ends[i++] = "06_HONGKONG_Storage#waterpipe";
+        //dead_ends[i++] = "12_VANDENBERG_CMD#storage";//it's actually backwards from this, instead of this teleporter being a dead end, the door before the teleporter is the dead end
     }
     for(i=0; i < ArrayCount(BannedConnections); i++) {
         BannedConnections[i].map_a = Caps(BannedConnections[i].map_a);
@@ -294,21 +294,25 @@ function MarkMapsConnected(out MapConnection mapdests[15], int numMaps, MapTrans
 {
     local int mapidx;
 
+    // can we get from A to B?
     if( IsDeadEndConnection(b, a) == false ) {
         mapidx = FindMapDestinations(mapdests, numMaps, a.mapname);
         if(mapidx == -1) {
             err("failed MarkMapsConnected("$numMaps$", "$a.mapname$", "$b.mapname$") find A");
             return;
         }
+        // write B into the destinations of A
         AddDestination( mapdests[mapidx], b.mapname);
     }
 
+    // can we get from B to A?
     if( IsDeadEndConnection(a, b) == false ) {
         mapidx = FindMapDestinations(mapdests, numMaps, b.mapname);
         if(mapidx == -1) {
             err("failed MarkMapsConnected("$numMaps$", "$a.mapname$", "$b.mapname$") find B");
             return;
         }
+        // write A into the destinations of B
         AddDestination( mapdests[mapidx], a.mapname);
     }
 }
@@ -509,6 +513,67 @@ function AddFixedConn(string map_a, string inTag_a, string map_b, string outTag_
     numFixedConns++;
 }
 
+function ApplyFixes()
+{
+    local DeusExMover d;
+    local HKTukTuk tuktuk;
+    local BoxMedium box;
+    local DynamicBlockPlayer dbp;
+    local WaterZone w;
+    local vector loc;
+    local int i;
+
+    switch(dxr.localURL) {
+        case "06_HONGKONG_WANCHAI_CANAL":
+            foreach AllActors(class'HKTukTuk', tuktuk) {
+                if( tuktuk.Name != 'HKTukTuk0' ) continue;
+                tuktuk.SetCollision(false,false,false);
+                tuktuk.bCollideWorld = false;
+                tuktuk.SetLocation(vect(1162.203735, 1370, -482.995361));
+                break;
+            }
+            loc = vect(1074.268188, 1368.834106, -535);
+            for(i=0; i < 5; i++) {
+                dbp = Spawn(class'DynamicBlockPlayer',,, loc);
+                dbp.SetBase(tuktuk);
+                dbp.SetCollisionSize(dbp.CollisionRadius*4, dbp.CollisionHeight*4);
+
+                if( i == 2 )// only the middle one will collide with the box
+                    dbp.SetCollision(true, true, true);
+                if( i == 3 )// the roof thing on the boat is a bit higher
+                    dbp.SetLocation(loc+vect(0,0,16));
+
+                loc += vect(38, 0, 0);
+            }
+            box = Spawn(class'BoxMedium',,, vect(1151.214355, 1370, -400));
+            box.bCollideWorld = false;
+            box.bInvincible = true;
+            box.bPushable = false;
+            box.bHighlight = false;
+            box.SetLocation(vect(1151.214355, 1370, -450));
+            break;
+        
+        /*case "06_HONGKONG_STORAGE":
+            foreach AllActors(class'WaterZone', w) {
+                //if( w.Name == 'WaterZone5' || w.Name == 'WaterZone1' )
+                    w.ZoneVelocity = vect(0,0,0);
+            }
+            break;*/
+
+        case "12_VANDENBERG_CMD":
+            foreach AllActors(class'DeusExMover', d) {
+                switch(d.Tag) {
+                    case 'door_controlroom':
+                    case 'security_tunnels':
+                        class'DXRKeys'.static.StaticMakePickable(d);
+                        class'DXRKeys'.static.StaticMakeDestructible(d);
+                        break;
+                }
+            }
+            break;
+    }
+}
+
 function RandoMission2()
 {
     AddFixedConn("02_NYC_BatteryPark","ToBatteryPark", "02_NYC_Street","ToStreet");
@@ -635,25 +700,11 @@ function RandoMission11()
 
 function RandoMission12()
 {
-    local DeusExMover d;
-
     AddFixedConn("12_VANDENBERG_CMD","x","12_VANDENBERG_CMD", "x");
     AddDoubleXfer("12_VANDENBERG_CMD","commstat","12_vandenberg_tunnels","start");
     AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");
     AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");
 
-    //make sure the tests don't adjust these doors
-    if( dxr.flags.gamemode == 1 && dxr.localURL == "12_VANDENBERG_CMD" ) {
-        foreach AllActors(class'DeusExMover', d) {
-            switch(d.Tag) {
-                case 'door_controlroom':
-                case 'security_tunnels':
-                    class'DXRKeys'.static.StaticMakePickable(d);
-                    class'DXRKeys'.static.StaticMakeDestructible(d);
-                    break;
-            }
-        }
-    }
     //AddDoubleXfer("12_VANDENBERG_CMD","","12_Vandenberg_gas","");
     //AddDoubleXfer("12_VANDENBERG_GAS","gas_start","","");
     //AddDoubleXfer("12_VANDENBERG_GAS","","14_Vandenberg_sub","");
@@ -870,6 +921,7 @@ function PostFirstEntry()
     EntranceRando(dxr.dxInfo.missionNumber);
     ApplyEntranceRando();
     LogConnections(true);
+    ApplyFixes();
 }
 
 function LogConnections(optional bool bInfo)
@@ -895,8 +947,7 @@ function RunTests()
     local int i;
     Super.RunTests();
 
-    BasicTests();
-    OneWayTests();
+    test(min_connections_selfconnect >= 3, "min_connections_selfconnect needs to be at least 3");
 
     for(i=0; i <= 50; i++) {
         EntranceRando(i);
@@ -911,12 +962,18 @@ function RunTests()
     numFixedConns = 0;
 }
 
+function ExtendedTests()
+{
+    Super.ExtendedTests();
+
+    BasicTests();
+    OneWayTests();
+}
+
 function BasicTests()
 {
     local int i;
     local string old_dead_end;
-
-    test(min_connections_selfconnect >= 3, "min_connections_selfconnect needs to be at least 3");
 
     numXfers = 0;
     numFixedConns = 0;
@@ -1004,6 +1061,10 @@ function BasicTests()
     testbool(ValidateConnections(), true, "simple GenerateConnections validation");
 
     dead_ends[0] = old_dead_end;
+
+    numXfers = 0;
+    numConns = 0;
+    numFixedConns = 0;
 }
 
 function OneWayTests()
@@ -1048,6 +1109,10 @@ function OneWayTests()
     }
     LogConnections();
     testbool(ValidateConnections(), true, "manual Paris validation");
+
+    numXfers = 0;
+    numConns = 0;
+    numFixedConns = 0;
 }
 
 defaultproperties

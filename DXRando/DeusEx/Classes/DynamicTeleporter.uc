@@ -49,6 +49,7 @@ static function SetDestName(DeusExPlayer player, name destName)
 simulated function Touch( actor Other )
 {
     local DeusExPlayer p;
+    proxCheckTime = 0;
     if ( !bEnabled )
         return;
 
