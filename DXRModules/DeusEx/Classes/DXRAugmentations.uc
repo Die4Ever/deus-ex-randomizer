@@ -131,9 +131,13 @@ function string DescriptionLevel(Actor act, int i, out string word)
         word = "Breath";
         return int(a.LevelValues[i]) $" sec";
     }
-    else if( a.Class == class'AugBallistic' || a.Class == class'AugCombat' || a.Class == class'AugEMP' || a.Class == class'AugEnviro' || a.Class == class'AugShield') {
+    else if( a.Class == class'AugCombat') {
         word = "Damage";
         return int(a.LevelValues[i] * 100.0) $"%";
+    }
+    else if( a.Class == class'AugBallistic' || a.Class == class'AugEMP' || a.Class == class'AugEnviro' || a.Class == class'AugShield') {
+        word = "Damage Reduction";
+        return int( (1.0 - a.LevelValues[i]) * 100.0 ) $ "%";
     }
     else if( a.Class == class'AugCloak' || a.Class == class'AugRadarTrans') {
         word = "Energy Use";
