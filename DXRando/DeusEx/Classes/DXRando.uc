@@ -22,9 +22,16 @@ var transient bool bTickEnabled;// bTickEnabled is just for DXRandoTests to insp
 
 function SetdxInfo(DeusExLevelInfo i)
 {
+    local int missionNum;
+
     dxInfo = i;
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL);
+
+    // undo the damage that DXRBacktracking has done to prevent saves from being deleted
+    // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
+    missionNum = class'DXRTestAllMaps'.static.GetMissionNumber(localURL);
+    if( missionNum != 0 ) dxInfo.missionNumber = missionNum;
 
     Enable('Tick');
     bTickEnabled = true;
@@ -85,6 +92,8 @@ function CheckConfig()
         modules_to_load[i++] = "DXRStats";
         modules_to_load[i++] = "DXRFashion";
         modules_to_load[i++] = "DXRNPCs";
+
+        //modules_to_load[i++] = "DXRTestAllMaps";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());

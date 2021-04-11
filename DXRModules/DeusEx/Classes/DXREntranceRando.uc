@@ -47,6 +47,18 @@ struct BanConnection
 var config BanConnection BannedConnections[32];
 
 var config string dead_ends[32];
+/*var config string unreachable_conns[16];
+
+struct Dependency
+{
+    // this is mostly for keys that are needed from other areas
+    // the key would be inside the map dependency
+    // dependent would be the teleporter that is behind the locked door, which may end up going to a different map
+    var string dependent;
+    var string dependency;
+};
+
+var config Dependency dependencies[16];*/
 
 var config int min_connections_selfconnect;
 
@@ -70,6 +82,18 @@ function CheckConfig()
         dead_ends[i++] = "06_HONGKONG_Storage#waterpipe";
         //dead_ends[i++] = "12_VANDENBERG_CMD#storage";//it's actually backwards from this, instead of this teleporter being a dead end, the door before the teleporter is the dead end
         //dead_ends[i++] = "12_VANDENBERG_TUNNELS#End";//this isn't right either, because if you can get to this teleporter then you can get through the map
+
+        /*i=0;
+        unreachable_conns[i++] = "12_VANDENBERG_CMD#storage";
+
+        i=0;
+        dependencies[i].dependent = "12_vandenberg_computer#computer";
+        dependencies[i].dependency = "12_VANDENBERG_TUNNELS";
+        i++;
+
+        dependencies[i].dependent = "12_vandenberg_gas";
+        dependencies[i].dependency = "12_VANDENBERG_COMPUTER";
+        i++;*/
     }
     for(i=0; i < ArrayCount(BannedConnections); i++) {
         BannedConnections[i].map_a = Caps(BannedConnections[i].map_a);
@@ -701,9 +725,10 @@ function RandoMission11()
 
 function RandoMission12()
 {
+    // I'm not sure what arrangements I would want for vandenberg? maybe I should just make a key for the storage door and stick it somewhere in cmd?
     AddFixedConn("12_VANDENBERG_CMD","x","12_VANDENBERG_CMD", "x");
     AddDoubleXfer("12_VANDENBERG_CMD","commstat","12_vandenberg_tunnels","start");
-    AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");// this needs to be marked as one way somehow, not just AddXfer, because it does go both ways, but only after opening the door
+    //AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");// this needs to be marked as one way somehow, not just AddXfer, because it does go both ways, but only after opening the door
     AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");
 
     //AddDoubleXfer("12_VANDENBERG_CMD","","12_Vandenberg_gas","");
@@ -751,7 +776,7 @@ function EntranceRando(int missionNum)
     numXfers = 0;
     numFixedConns = 0;
     //if( missionNum == 11 ) missionNum = 10;//combine paris 10 and 11
-    //if( missionNum == 14 ) missionNum = 12;//combine vandenberg and oceanlab?
+    //if( missionNum == 14 ) missionNum = 12;//combine vandenberg and oceanlab
     dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") + missionNum );
 
     switch(missionNum)
@@ -969,6 +994,7 @@ function ExtendedTests()
 
     BasicTests();
     OneWayTests();
+    //VandenbergTests();
 }
 
 function BasicTests()
@@ -1115,6 +1141,57 @@ function OneWayTests()
     numConns = 0;
     numFixedConns = 0;
 }
+
+/*function VandenbergTests()
+{
+    local int i;
+
+    numXfers = 0;
+    numFixedConns = 0;
+
+    AddFixedConn("12_VANDENBERG_CMD","x","12_VANDENBERG_CMD", "x");
+    AddDoubleXfer("12_VANDENBERG_CMD","commstat","12_vandenberg_tunnels","start");
+    AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");// this needs to be marked as one way somehow, not just AddXfer, because it does go both ways, but only after opening the door
+    AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");
+
+    conns[0] = fixed_conns[0];
+    //comsat to tunnels
+    conns[1].a = xfers[0];
+    conns[1].b = xfers[1];
+    //storage to computer
+    conns[2].a = xfers[2];
+    conns[2].b = xfers[5];
+    //hall to tunnels end
+    conns[3].a = xfers[4];
+    conns[3].b = xfers[3];
+    //cmd to gas
+    conns[4].a = xfers[6];
+    conns[4].b = xfers[7];
+    numConns = 5;
+    LogConnections();
+    testbool(ValidateConnections(), false, "VandenbergTests 1");
+
+    conns[0] = fixed_conns[0];
+    //comsat to computer
+    conns[1].a = xfers[0];
+    conns[1].b = xfers[5];
+    //storage to tunnel
+    conns[2].a = xfers[2];
+    conns[2].b = xfers[1];
+    //hall to tunnels end
+    conns[3].a = xfers[4];
+    conns[3].b = xfers[3];
+    //cmd to gas
+    conns[4].a = xfers[6];
+    conns[4].b = xfers[7];
+    numConns = 5;
+    LogConnections();
+    testbool(ValidateConnections(), true, "VandenbergTests 1");
+
+    numXfers = 0;
+    numConns = 0;
+    numFixedConns = 0;
+}*/
 
 defaultproperties
 {

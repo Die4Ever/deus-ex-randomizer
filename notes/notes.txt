@@ -9,6 +9,7 @@ player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 v1.5.7 Alpha:
 	security cameras might be weird? maybe it's medbots' alliance?
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
+	combine entrance rando for missions 10/11, and 12/14
 
 v1.5.7:
 	fix 14_OceanLab_Lab DataCube1 login text is getting replaced with a password
@@ -27,6 +28,7 @@ v1.5.7:
 	enough advanced options to be able to play unrandomized
 	DXREntranceRando: ERROR: GenerateConnections(2) failed after 200 attempts! seed: 879104 and mission 4 seed 305104
 	DXREntranceRando: ERROR: GenerateConnections(2) failed after 200 attempts! seed: 699584
+	DXREntranceRando: ERROR: GenerateConnections(4) failed after 200 attempts! seed: 668224
 	tweak rotations for teleporters?
 	NG+ remove 2 random skills, half your skill points, and a random aug&weapon?
 	item rates in credits stats

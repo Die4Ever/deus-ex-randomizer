@@ -1,4 +1,4 @@
-class DXRBacktracking extends DXRActorsBase;
+class DXRBacktracking extends DXRActorsBase transient;
 // backtracking specific fixes that might be too extreme for the more generic DXRFixup? or move the stuff from DXRFixup into here?
 
 function PreFirstEntry()
@@ -43,6 +43,33 @@ function PreFirstEntry()
     }
 
     class'DynamicTeleporter'.static.CheckTeleport(dxr.player);
+}
+
+function PreTravel()
+{
+    log("PreTravel");
+    checknextmap();
+}
+
+function checknextmap()
+{
+    local int oldMissionNum, newMissionNum;
+
+    oldMissionNum = dxr.dxInfo.missionNumber;
+    newMissionNum = class'DXRTestAllMaps'.static.GetMissionNumber(Human(dxr.Player).nextMap);
+
+    //do this for paris (10/11) and vandenberg (12/14)
+    if( oldMissionNum == 10 && newMissionNum == 11
+        ||
+        oldMissionNum == 11 && newMissionNum == 10
+        ||
+        oldMissionNum == 12 && newMissionNum == 14
+        ||
+        oldMissionNum == 14 && newMissionNum == 12 )
+    {
+        info( "keeping save files, dxr.Player.nextMap: "$ Human(dxr.Player).nextMap );
+        dxr.dxInfo.missionNumber = newMissionNum;
+    }
 }
 
 function ReEntry(bool IsTravel)

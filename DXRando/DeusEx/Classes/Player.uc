@@ -3,6 +3,7 @@ class DXRPlayer injects Human;
 var DXRando dxr;
 var DXRLoadouts loadout;
 var bool bOnLadder;
+var transient string nextMap;
 
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
 {
@@ -15,6 +16,12 @@ function ClientMessage(coerce string msg, optional Name type, optional bool bBee
         if(DeusExRootWindow(rootWindow).hud.msgLog.logSoundToPlay == None)
             DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'Menu_Focus');
     }
+}
+
+event ClientTravel( string URL, ETravelType TravelType, bool bItems )
+{
+    nextMap = URL;
+    Super.ClientTravel(URL, TravelType, bItems);
 }
 
 function DXRBase DXRFindModule(class<DXRBase> class)
