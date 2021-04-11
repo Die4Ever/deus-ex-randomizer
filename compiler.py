@@ -82,6 +82,9 @@ def bIfdef(ifdef, definitions):
 
 
 def preprocess(content, ifdef, definitions):
+    # the ?=(#\w+) is for a lookahead
+    # because we want to read up until the next preprocessor directive
+    # but we don't want to swallow it yet
     r = re.compile(r'(#[^\n]+)\n(.*?)\n(?=(#\w+))', flags=re.DOTALL)
     for i in r.finditer(ifdef):
         if bIfdef(i.group(1), definitions):

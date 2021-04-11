@@ -23,6 +23,7 @@ function Timer()
     local bool found;
     Super.Timer();
     if( dxr == None ) return;
+    if( dxr.bTickEnabled ) return;// wait for everything to finish
 
     for(i=0; i < ArrayCount(maps); i++) {
         if( Caps(maps[i]) == Caps(dxr.localURL) ) {
