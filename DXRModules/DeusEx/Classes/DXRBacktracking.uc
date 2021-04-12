@@ -97,6 +97,20 @@ static function DeleteExpiredFlags(FlagBase flags, int missionNumber)
     flags.DeleteExpiredFlags(missionNumber);
 }
 
+function AnyEntry()
+{
+    local DeusExPlayer p;// we wanna make sure we get all the player objects, even in multiplayer?
+    local DeusExDecoration d;
+    local ScriptedPawn s;
+    Super.AnyEntry();
+    foreach AllActors(class'DeusExPlayer', p)
+        p.ConBindEvents();
+    foreach AllActors(class'DeusExDecoration', d)
+        d.ConBindEvents();
+    foreach AllActors(class'ScriptedPawn', s)
+        s.ConBindEvents();
+}
+
 function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
