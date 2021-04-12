@@ -47,29 +47,54 @@ function PreFirstEntry()
 
 function PreTravel()
 {
-    log("PreTravel");
-    checknextmap();
+    Super.PreTravel();
+    CheckNextMap(Human(dxr.Player).nextMap);
 }
 
-function checknextmap()
+function CheckNextMap(string nextMap)
 {
     local int oldMissionNum, newMissionNum;
 
     oldMissionNum = dxr.dxInfo.missionNumber;
-    newMissionNum = class'DXRTestAllMaps'.static.GetMissionNumber(Human(dxr.Player).nextMap);
+    newMissionNum = class'DXRTestAllMaps'.static.GetMissionNumber(nextMap);
 
     //do this for paris (10/11) and vandenberg (12/14)
-    if( oldMissionNum == 10 && newMissionNum == 11
-        ||
-        oldMissionNum == 11 && newMissionNum == 10
-        ||
-        oldMissionNum == 12 && newMissionNum == 14
-        ||
-        oldMissionNum == 14 && newMissionNum == 12 )
+    if( (oldMissionNum == 10 && newMissionNum == 11) || (oldMissionNum == 11 && newMissionNum == 10)
+            ||
+        (oldMissionNum == 12 && newMissionNum == 14) || (oldMissionNum == 14 && newMissionNum == 12) )
     {
-        info( "keeping save files, dxr.Player.nextMap: "$ Human(dxr.Player).nextMap );
+        RetainSaves(oldMissionNum, newMissionNum, nextMap);
+    }
+}
+
+function RetainSaves(int oldMissionNum, int newMissionNum, string nextMap)
+{
+    info( "keeping save files, dxr.Player.nextMap: "$ nextMap );
+    dxr.dxInfo.missionNumber = newMissionNum;
+}
+
+static function LevelInit(DXRando dxr)
+{
+    local int newMissionNum;
+
+    newMissionNum = class'DXRTestAllMaps'.static.GetMissionNumber(dxr.localURL);
+    if( newMissionNum != 0 && newMissionNum != dxr.dxInfo.missionNumber ) {
+        log("LevelInit("$dxr$") dxr.localURL: "$dxr.localURL$", newMissionNum: "$ newMissionNum $", dxr.dxInfo.missionNumber: "$dxr.dxInfo.missionNumber, 'DXRBacktracking');
         dxr.dxInfo.missionNumber = newMissionNum;
     }
+}
+
+static function DeleteExpiredFlags(FlagBase flags, int missionNumber)
+{
+    switch(missionNumber) {
+        case 11:
+            missionNumber = 10;
+            break;
+        case 14:
+            missionNumber = 12;
+            break;
+    }
+    flags.DeleteExpiredFlags(missionNumber);
 }
 
 function ReEntry(bool IsTravel)

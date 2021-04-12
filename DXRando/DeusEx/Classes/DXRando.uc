@@ -30,8 +30,7 @@ function SetdxInfo(DeusExLevelInfo i)
 
     // undo the damage that DXRBacktracking has done to prevent saves from being deleted
     // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
-    missionNum = class'DXRTestAllMaps'.static.GetMissionNumber(localURL);
-    if( missionNum != 0 ) dxInfo.missionNumber = missionNum;
+    class'DXRBacktracking'.static.LevelInit(Self);
 
     Enable('Tick');
     bTickEnabled = true;

@@ -88,6 +88,7 @@ def preprocess(content, ifdef, definitions):
     r = re.compile(r'(#[^\n]+)\n(.*?)\n(?=(#\w+))', flags=re.DOTALL)
     for i in r.finditer(ifdef):
         if bIfdef(i.group(1), definitions):
+            # TODO: pad in extra blank lines so that the line numbers from compiler errors still match?
             return content.replace( ifdef, i.group(2) )
     return content
 
