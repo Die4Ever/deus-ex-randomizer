@@ -540,42 +540,9 @@ function AddFixedConn(string map_a, string inTag_a, string map_b, string outTag_
 
 function ApplyFixes()
 {
-    local DeusExMover d;
-    local HKTukTuk tuktuk;
-    local BoxMedium box;
-    local DynamicBlockPlayer dbp;
-    local WaterZone w;
-    local vector loc;
-    local int i;
-
     switch(dxr.localURL) {
         case "06_HONGKONG_WANCHAI_CANAL":
-            foreach AllActors(class'HKTukTuk', tuktuk) {
-                if( tuktuk.Name != 'HKTukTuk0' ) continue;
-                tuktuk.SetCollision(false,false,false);
-                tuktuk.bCollideWorld = false;
-                tuktuk.SetLocation(vect(1162.203735, 1370, -482.995361));
-                break;
-            }
-            loc = vect(1074.268188, 1368.834106, -535);
-            for(i=0; i < 5; i++) {
-                dbp = Spawn(class'DynamicBlockPlayer',,, loc);
-                dbp.SetBase(tuktuk);
-                dbp.SetCollisionSize(dbp.CollisionRadius*4, dbp.CollisionHeight*4);
-
-                if( i == 2 )// only the middle one will collide with the box
-                    dbp.SetCollision(true, true, true);
-                if( i == 3 )// the roof thing on the boat is a bit higher
-                    dbp.SetLocation(loc+vect(0,0,16));
-
-                loc += vect(38, 0, 0);
-            }
-            box = Spawn(class'BoxMedium',,, vect(1151.214355, 1370, -400));
-            box.bCollideWorld = false;
-            box.bInvincible = true;
-            box.bPushable = false;
-            box.bHighlight = false;
-            box.SetLocation(vect(1151.214355, 1370, -450));
+            FixHongKongCanal();
             break;
         
         /*case "06_HONGKONG_STORAGE":
@@ -586,16 +553,59 @@ function ApplyFixes()
             break;*/
 
         case "12_VANDENBERG_CMD":
-            foreach AllActors(class'DeusExMover', d) {
-                switch(d.Tag) {
-                    case 'door_controlroom':
-                    case 'security_tunnels':
-                        class'DXRKeys'.static.StaticMakePickable(d);
-                        class'DXRKeys'.static.StaticMakeDestructible(d);
-                        break;
-                }
-            }
+            FixVandebergCmd();
             break;
+    }
+}
+
+function FixHongKongCanal()
+{
+    local HKTukTuk tuktuk;
+    local BoxMedium box;
+    local DynamicBlockPlayer dbp;
+    local vector loc;
+    local int i;
+
+    foreach AllActors(class'HKTukTuk', tuktuk) {
+        if( tuktuk.Name != 'HKTukTuk0' ) continue;
+        tuktuk.SetCollision(false,false,false);
+        tuktuk.bCollideWorld = false;
+        tuktuk.SetLocation(vect(1162.203735, 1370, -482.995361));
+        break;
+    }
+    loc = vect(1074.268188, 1368.834106, -535);
+    for(i=0; i < 5; i++) {
+        dbp = Spawn(class'DynamicBlockPlayer',,, loc);
+        dbp.SetBase(tuktuk);
+        dbp.SetCollisionSize(dbp.CollisionRadius*4, dbp.CollisionHeight*4);
+
+        if( i == 2 )// only the middle one will collide with the box
+            dbp.SetCollision(true, true, true);
+        if( i == 3 )// the roof thing on the boat is a bit higher
+            dbp.SetLocation(loc+vect(0,0,16));
+
+        loc += vect(38, 0, 0);
+    }
+    box = Spawn(class'BoxMedium',,, vect(1151.214355, 1370, -400));
+    box.bCollideWorld = false;
+    box.bInvincible = true;
+    box.bPushable = false;
+    box.bHighlight = false;
+    box.SetLocation(vect(1151.214355, 1370, -450));
+}
+
+function FixVandebergCmd()
+{
+    local DeusExMover d;
+
+    foreach AllActors(class'DeusExMover', d) {
+        switch(d.Tag) {
+            case 'door_controlroom':
+            case 'security_tunnels':
+                class'DXRKeys'.static.StaticMakePickable(d);
+                class'DXRKeys'.static.StaticMakeDestructible(d);
+                break;
+        }
     }
 }
 

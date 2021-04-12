@@ -22,8 +22,6 @@ var transient bool bTickEnabled;// bTickEnabled is just for DXRandoTests to insp
 
 function SetdxInfo(DeusExLevelInfo i)
 {
-    local int missionNum;
-
     dxInfo = i;
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL);

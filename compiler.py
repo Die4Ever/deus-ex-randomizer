@@ -409,21 +409,24 @@ def compile(source, mods, out, definitions):
     injects = {}
     written = {}
 
+    print("processing source files from "+source)
     for file in insensitive_glob(source+'/*'):
         debug("Processing file "+str(file))
         proc_file(file, orig_files, 'original', None, definitions)
     
     for mod in mods:
+        print("processing files from mod "+mod)
         mods_files.append({})
         for file in insensitive_glob(mod+'*'):
             debug("Processing mod file "+str(file))
             proc_file(file, mods_files[-1], mod, injects, definitions)
 
-    debug("\nwriting files...")
+    print("\nwriting source files...")
     for file in orig_files.values():
         debug("Writing file "+str(file['file']))
         write_file(out, file, written, injects)
     for mod in mods_files:
+        print("writing mod "+repr(mod.keys()))
         for file in mod.values():
             debug("Writing mod file "+str(file['file']))
             write_file(out, file, written, injects)
