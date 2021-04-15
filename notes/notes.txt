@@ -10,13 +10,14 @@ v1.5.7 Alpha:
 	security cameras might be weird? maybe it's medbots' alliance?
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	combine entrance rando for missions 10/11, and 12/14
+	need to support optional maps?
 
 v1.5.7:
 	fix 14_OceanLab_Lab DataCube1 login text is getting replaced with a password
 		the "Oceanguard" login and "Kraken" password
 		it's because ComputerSecurity0 has the username and password flipped
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
-	make horde mode use the autosave blocking manual saves method instead of the hack-y permanent fake datalink
+	make horde mode use the DXRAutosave blocking manual saves method instead of the hack-y permanent fake datalink
 	use better logic for The Merchant's location, like cameras?
 	use key safe location logic for hazmats vs damage zones (this might only be a big deal for paris?)
 	crowd control spawn medbot, friendly milbot
@@ -32,10 +33,16 @@ v1.5.7:
 	tweak rotations for teleporters?
 	NG+ remove 2 random skills, half your skill points, and a random aug&weapon?
 	item rates in credits stats
+	cleanup goals when finishing missions, especially hong kong
+	in DXRFixup PostFirstEntry() force the unatco retinal scanner to MJ12 lab to be unhackable, except make it work in mission 5
+	in paris underground (subway) I could disable the pain zone and add teleporters to the ends of the tracks to make it into a hub area
+	prevent extra enemy spawning in tiffany's jail cell
+	add datacubes for area51 page codes? uc control rooms = 1234, coolant room = 9248, aquinas router = 6188
 
 
 for v1.6 programatically modify conversations? ===================
 
+create new "stories", start with a hub area (either hell's kitchen or hong kong), connect a bunch of random maps to it (from any mission), remove all vanilla npcs and dialog and add new ones
 for better log message window, look at DeusExRootWindow ClientMessage function, and HUDLogDisplay AddLog and SetLogTimeout functions
 
 in Actor.uc

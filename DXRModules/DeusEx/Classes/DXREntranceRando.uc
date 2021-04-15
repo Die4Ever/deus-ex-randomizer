@@ -715,22 +715,12 @@ function RandoMission10()
     AddDoubleXfer("10_PARIS_CATACOMBS","spiralstair","10_Paris_Catacombs_Tunnels","spiralstair");//same tag on both sides?
     AddDoubleXfer("10_PARIS_CATACOMBS_TUNNELS","?toname=AmbientSound10","10_Paris_Metro","sewer");
     AddFixedConn("10_Paris_Metro","","10_PARIS_CHATEAU","x");//one way
-    //AddDoubleXfer("10_PARIS_CHATEAU","","11_Paris_Cathedral","cathedralstart");//one way
+    AddDoubleXfer("10_PARIS_CHATEAU","","11_Paris_Cathedral","cathedralstart");
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club1","10_Paris_Metro","Paris_Metro1");
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club2","10_Paris_Metro","Paris_Metro2");
-    //AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
-    //AddDoubleXfer("11_PARIS_EVERETT","","12_Vandenberg_cmd");
+    AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
 
     GenerateConnections(10);
-}
-
-function RandoMission11()
-{
-    //AddFixedConn("11_PARIS_CATHEDRAL","x","11_PARIS_CATHEDRAL", "x");
-    AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
-    //AddDoubleXfer("11_PARIS_EVERETT","","12_Vandenberg_cmd");
-
-    GenerateConnections(11);
 }
 
 function RandoMission12()
@@ -741,31 +731,11 @@ function RandoMission12()
     //AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");// this needs to be marked as one way somehow, not just AddXfer, because it does go both ways, but only after opening the door
     AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");
 
-    //AddDoubleXfer("12_VANDENBERG_CMD","","12_Vandenberg_gas","");
-    //AddDoubleXfer("12_VANDENBERG_GAS","gas_start","","");
-    //AddDoubleXfer("12_VANDENBERG_GAS","","14_Vandenberg_sub","");
-
-    /*AddFixedConn("12_vandenberg_computer","x","14_Vandenberg_sub.dx", "x");//jock takes you to the gas station after 12_vandenberg_computer, then to vandenberg sub... this causes issues
-
-    AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC.dx ","UC");//strange formatting, some even have a space
-    AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub.dx","subbay");*/
-    //AddDoubleXfer("14_OCEANLAB_SILO","frontgate","","");
-    //AddDoubleXfer("14_OCEANLAB_SILO","","15_area51_bunker.dx ","bunker_start");
-    //AddDoubleXfer("14_Vandenberg_sub.dx","","14_Oceanlab_silo.dx ","frontgate");
-
-    GenerateConnections(12);
-}
-
-function RandoMission14()
-{
-    AddFixedConn("14_Vandenberg_sub.dx","x","14_Vandenberg_sub.dx", "x");
+    AddFixedConn("12_vandenberg_computer","x","14_Vandenberg_sub.dx", "x");//jock takes you to the gas station after 12_vandenberg_computer, then to vandenberg sub... this causes issues
     AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC.dx ","UC");//strange formatting, some even have a space
     AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub.dx","subbay");
-    //AddDoubleXfer("14_OCEANLAB_SILO","frontgate","","");
-    //AddDoubleXfer("14_OCEANLAB_SILO","","15_area51_bunker.dx ","bunker_start");
-    //AddDoubleXfer("14_Vandenberg_sub.dx","","14_Oceanlab_silo.dx ","frontgate");
 
-    GenerateConnections(14);
+    GenerateConnections(12);
 }
 
 function RandoMission15()
@@ -781,12 +751,10 @@ function RandoMission15()
 }
 
 function EntranceRando(int missionNum)
-{   
+{
     numConns = 0;
     numXfers = 0;
     numFixedConns = 0;
-    //if( missionNum == 11 ) missionNum = 10;//combine paris 10 and 11
-    //if( missionNum == 14 ) missionNum = 12;//combine vandenberg and oceanlab
     dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") + missionNum );
 
     switch(missionNum)
@@ -846,7 +814,7 @@ function BindEntrances(DataStorage ds, bool writing)
     }
 }
 
-function ApplyEntranceRando()
+function ApplyEntranceRando(int missionNum)
 {
     local NavigationPoint newnp, last;
     local Teleporter t;
@@ -854,10 +822,10 @@ function ApplyEntranceRando()
     local DataStorage ds;
 
     ds = class'DataStorage'.static.GetObj(dxr.Player);
-    if( ds.EntranceRandoMissionNumber == dxr.dxInfo.missionNumber ) {
+    if( ds.EntranceRandoMissionNumber == missionNum ) {
         BindEntrances(ds, false);
     } else {
-        ds.EntranceRandoMissionNumber = dxr.dxInfo.missionNumber;
+        ds.EntranceRandoMissionNumber = missionNum;
         BindEntrances(ds, true);
     }
 
@@ -950,12 +918,16 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
 
 function PostFirstEntry()
 {
+    local int missionNum;
     Super.PostFirstEntry();
     if( dxr.flags.gamemode != 1 ) return;
     
+    missionNum = dxr.dxInfo.missionNumber;
+    if( missionNum == 11 ) missionNum = 10;//combine paris 10 and 11
+    if( missionNum == 14 ) missionNum = 12;//combine vandenberg and oceanlab
     //Randomize entrances for this mission
-    EntranceRando(dxr.dxInfo.missionNumber);
-    ApplyEntranceRando();
+    EntranceRando(missionNum);
+    ApplyEntranceRando(missionNum);
     LogConnections(true);
     ApplyFixes();
 }

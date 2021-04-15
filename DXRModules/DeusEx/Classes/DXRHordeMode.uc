@@ -305,6 +305,7 @@ function InWaveTick()
     foreach AllActors(class'ScriptedPawn', p) {
         if( p.IsA('Animal') ) continue;
         if( (time_in_wave+numScriptedPawns) % 5 == 0 ) p.SetOrders(default_orders, default_order_tag);
+        p.bStasis = false;
         dist = VSize(p.Location-dxr.player.Location);
         if( dist > popin_dist ) {
             ratio = dist/popin_dist;
@@ -400,6 +401,7 @@ function GetOverHere()
     foreach AllActors(class'ScriptedPawn', p) {
         if( p.IsA('Animal') ) continue;
 
+        p.bStasis = false;
         dist = VSize(dxr.player.Location-p.Location);
         if( (time_in_wave+i) % 7 == 0 && p.CanSee(dxr.player) == false && dist > maxdist ) {
             loc = GetCloserPosition(dxr.player.Location, p.Location, maxdist*2);
@@ -510,6 +512,7 @@ function float GenerateEnemy(DXREnemies dxre)
     dxre.RandomizeSP(p, 100);
     GiveRandomItems(p);
     p.InitializeInventory();
+    p.bStasis = false;
 
     return difficulty;
 }
