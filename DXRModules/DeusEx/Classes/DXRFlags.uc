@@ -377,7 +377,7 @@ static function int VersionNumber()
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 6) $ "";
+    return VersionToString(1, 5, 7) $ " Alpha";
 }
 
 function MaxRando()
@@ -401,18 +401,18 @@ function NewGamePlus()
     ds = class'DataStorage'.static.GetObj(dxr.player);
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
-    p.CombatDifficulty *= 1.2;
+    p.CombatDifficulty *= 1.3;
     minskill = minskill*1.2;// int *= float doesn't give as good accuracy as int = int*float
     maxskill = maxskill*1.2;
     enemiesrandomized = enemiesrandomized*1.2;
     ammo = ammo*0.9;
-    medkits = medkits*0.9;
-    multitools = multitools*0.9;
-    lockpicks = lockpicks*0.9;
-    biocells = biocells*0.9;
-    medbots = medbots*0.9;
-    repairbots = repairbots*0.9;
-    turrets_add = turrets_add*1.2;
+    medkits = medkits*0.8;
+    multitools = multitools*0.8;
+    lockpicks = lockpicks*0.8;
+    biocells = biocells*0.8;
+    medbots = medbots*0.8;
+    repairbots = repairbots*0.8;
+    turrets_add = turrets_add*1.3;
     merchants *= 0.9;
 
     if (p.KeyRing != None)

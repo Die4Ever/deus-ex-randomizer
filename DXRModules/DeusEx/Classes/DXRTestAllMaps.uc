@@ -23,6 +23,7 @@ function Timer()
     local bool found;
     Super.Timer();
     if( dxr == None ) return;
+    if( dxr.bTickEnabled ) return;// wait for everything to finish
 
     for(i=0; i < ArrayCount(maps); i++) {
         if( Caps(maps[i]) == Caps(dxr.localURL) ) {
@@ -128,10 +129,14 @@ static function GetAllMaps(out string maps[128])
 
 static function int GetMissionNumber(string map)
 {
-    local int mission;
+    local int mission, i;
 
-    mission = (Asc(map)-Asc("0")) * 10;
-    mission += (Asc(Mid(map,1,1))-Asc("0"));
+    i = (Asc(map)-Asc("0"));
+    if( i < 0 || i > 9 ) return 0;
+    mission = i * 10;
+    i = (Asc(Mid(map,1,1))-Asc("0"));
+    if( i < 0 || i > 9 ) return 0;
+    mission += i;
     return mission;
 }
 
@@ -161,6 +166,8 @@ function RunTests()
 {
     Super.RunTests();
 
+    testint( GetMissionNumber("Intro") , 0, "GetMissionNumber(\"Intro\")" );
+    testint( GetMissionNumber("2Fort") , 0, "GetMissionNumber(\"2Fort\")" );
     testint( GetMissionNumber("06_HongKong_WanChai_Underworld") , 6, "GetMissionNumber(\"06_HongKong_WanChai_Underworld\")" );
     testint( GetMissionNumber("15_Area51_Final") , 15, "GetMissionNumber(\"15_Area51_Final\")" );
     test( PickRandomMap(dxr) != "", "PickRandomMap" );

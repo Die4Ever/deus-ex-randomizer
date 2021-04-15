@@ -17,12 +17,21 @@ var transient int num_modules;
 var config string modules_to_load[31];// 1 less than the modules array, because we always load the DXRFlags module
 var config int config_version;
 
+var transient bool runPostFirstEntry;
+var transient bool bTickEnabled;// bTickEnabled is just for DXRandoTests to inspect
+
 function SetdxInfo(DeusExLevelInfo i)
 {
     dxInfo = i;
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL);
-    Init();
+
+    // undo the damage that DXRBacktracking has done to prevent saves from being deleted
+    // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
+    class'DXRBacktracking'.static.LevelInit(Self);
+
+    Enable('Tick');
+    bTickEnabled = true;
 }
 
 function Init()
@@ -30,8 +39,7 @@ function Init()
     l("Init has localURL == " $ localURL);
     foreach AllActors(class'DeusExPlayer', Player) { break; }
     if( Player == None ) {
-        l("Init() didn't find player?");
-        SetTimer(0.001, False);
+        warn("Init() didn't find player?");
         return;
     }
     l("found Player "$Player);
@@ -81,6 +89,8 @@ function CheckConfig()
         modules_to_load[i++] = "DXRStats";
         modules_to_load[i++] = "DXRFashion";
         modules_to_load[i++] = "DXRNPCs";
+
+        //modules_to_load[i++] = "DXRTestAllMaps";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
@@ -128,7 +138,6 @@ function LoadModules()
         c = flags.GetClassFromString(modules_to_load[i], class'DXRBase');
         LoadModule( class<DXRBase>(c) );
     }
-    RunTests();
 }
 
 final function DXRBase FindModule(class<DXRBase> moduleclass)
@@ -161,12 +170,30 @@ function ClearModules()
     flags=None;
 }
 
-function Timer()
+simulated function Tick(float deltaTime)
 {
     local int i;
-    if( Player == None ) {
+    if( dxInfo == None )
+    {
+        //waiting...
+    }
+    if( Player == None )
+    {
         Init();
-        return;
+    }
+    else if(runPostFirstEntry)
+    {
+        for(i=0; i<num_modules; i++) {
+            modules[i].PostFirstEntry();
+        }
+        info("done randomizing "$localURL$" PostFirstEntry using seed " $ seed $ ", deltaTime: " $ deltaTime);
+        runPostFirstEntry = false;
+    }
+    else
+    {
+        RunTests();
+        Disable('Tick');
+        bTickEnabled = false;
     }
 }
 
@@ -203,10 +230,7 @@ function RandoEnter()
             modules[i].FirstEntry();
         }
 
-        for(i=0; i<num_modules; i++) {
-            modules[i].PostFirstEntry();
-        }
-
+        runPostFirstEntry = true;
         info("done randomizing "$localURL$" using seed " $ seed);
     }
     else
@@ -311,7 +335,8 @@ function warning(string message)
 function err(string message)
 {
     log("ERROR: " $ message, class.name);
-    Player.ClientMessage( Class @ message, 'ERROR' );
+    if( Player != None )
+        Player.ClientMessage( Class @ message, 'ERROR' );
 
     class'DXRTelemetry'.static.SendLog(Self, Self, "ERROR", message);
 }
@@ -365,4 +390,5 @@ function ExtendedTests()
 defaultproperties
 {
      bAlwaysRelevant=True
+     bTickEnabled=True
 }

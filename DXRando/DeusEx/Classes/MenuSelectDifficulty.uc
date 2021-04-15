@@ -62,7 +62,7 @@ function BindControls(bool writing, optional string action)
     helptexts[id] = "Difficulty determines the default settings for the randomizer.";
     if( (InStr(f.VersionString(), "Alpha")>=0 || InStr(f.VersionString(), "Beta")>=0) && EnumOption(id, "Super Easy QA", 1, writing) ) {
         difficulty=0;
-        f.doorsmode = f.keyonlydoors + f.doormutuallyinclusive;
+        f.doorsmode = f.undefeatabledoors + f.doormutuallyinclusive;
         f.doorsdestructible = 100;
         f.doorspickable = 100;
         f.deviceshackable = 100;
@@ -92,7 +92,7 @@ function BindControls(bool writing, optional string action)
     }
     if( EnumOption(id, "Easy", 1, writing) ) {
         difficulty=1;
-        f.doorsmode = f.keyonlydoors + f.doormutuallyinclusive;
+        f.doorsmode = f.undefeatabledoors + f.doormutuallyinclusive;
         f.doorsdestructible = 100;
         f.doorspickable = 100;
         f.deviceshackable = 100;
@@ -122,7 +122,7 @@ function BindControls(bool writing, optional string action)
     }
     if( EnumOption(id, "Normal", 0, writing) ) {
         difficulty=1.5;
-        f.doorsmode = f.keyonlydoors + f.doormutuallyexclusive;
+        f.doorsmode = f.undefeatabledoors + f.doormutuallyexclusive;
         f.doorsdestructible = 50;
         f.doorspickable = 50;
         f.deviceshackable = 100;
@@ -152,7 +152,7 @@ function BindControls(bool writing, optional string action)
     }
     if( EnumOption(id, "Hard", 2, writing) ) {
         difficulty=2;
-        f.doorsmode = f.keyonlydoors + f.doormutuallyexclusive;
+        f.doorsmode = f.undefeatabledoors + f.doormutuallyexclusive;
         f.doorsdestructible = 25;
         f.doorspickable = 25;
         f.deviceshackable = 50;
@@ -182,7 +182,7 @@ function BindControls(bool writing, optional string action)
     }
     if( EnumOption(id, "Extreme", 3, writing) ) {
         difficulty=3;
-        f.doorsmode = f.keyonlydoors + f.doormutuallyexclusive;
+        f.doorsmode = f.undefeatabledoors + f.doormutuallyexclusive;
         f.doorsdestructible = 25;
         f.doorspickable = 25;
         f.deviceshackable = 50;

@@ -3,6 +3,7 @@ class DXRPlayer injects Human;
 var DXRando dxr;
 var DXRLoadouts loadout;
 var bool bOnLadder;
+var transient string nextMap;
 
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
 {
@@ -15,6 +16,12 @@ function ClientMessage(coerce string msg, optional Name type, optional bool bBee
         if(DeusExRootWindow(rootWindow).hud.msgLog.logSoundToPlay == None)
             DeusExRootWindow(rootWindow).hud.msgLog.PlayLogSound(Sound'Menu_Focus');
     }
+}
+
+event ClientTravel( string URL, ETravelType TravelType, bool bItems )
+{
+    nextMap = URL;
+    Super.ClientTravel(URL, TravelType, bItems);
 }
 
 function DXRBase DXRFindModule(class<DXRBase> class)
@@ -111,10 +118,17 @@ function bool HideInventory(inventory item)
     }
 }
 
+#ifdef transcended
+function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, optional bool bShowInLog, optional String strSource)
+#else
 function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, optional bool bShowInLog )
+#endif
 {
     local DeusExLevelInfo info;
     local DeusExNote newNote;
+#ifdef transcended
+    newNote = Super.AddNote(strNote, bUserNote, bShowInLog, strSource);
+#else
     newNote = Super.AddNote(strNote, bUserNote, bShowInLog);
 
     info = GetLevelInfo();
@@ -123,6 +137,8 @@ function DeusExNote AddNote( optional String strNote, optional Bool bUserNote, o
         newNote.level_name = Caps(info.mapName);
         log("AddNote: new note mission: "$newNote.mission$", level name: "$newNote.level_name);
     }
+#endif
+
     return newNote;
 }
 
@@ -407,7 +423,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         else // passive enviro skill still gives some damage reduction
         {
             skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= (skillLevel + 1)/2;
+            newDamage *= (skillLevel + 2)/3;
         }
     }
 
@@ -435,12 +451,12 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
             oldDamage = 1;
     }
 
-    if (newDamage < oldDamage)
+    //make sure to factor the rounding into the percentage
+    pct = 1.0 - ( Float(Int(newDamage)) / Float(Int(oldDamage)) );
+    if (pct != 1.0)
     {
         if (!bCheckOnly)
         {
-            //make sure to factor the rounding into the percentage
-            pct = 1.0 - ( Float(Int(newDamage)) / Float(Int(oldDamage)) );
             SetDamagePercent(pct);
             ClientFlash(0.01, vect(0, 0, 50));
         }

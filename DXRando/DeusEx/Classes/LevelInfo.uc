@@ -10,8 +10,6 @@ function SpawnScript()
     local DXRando dxr;
     local bool bFound;
 
-    _SpawnScript();
-
     bFound = False;
     foreach AllActors(class'DXRando', dxr)
         bFound = True;
@@ -20,4 +18,6 @@ function SpawnScript()
         dxr = Spawn(class'DXRando');
         dxr.SetdxInfo(Self);
     }
+
+    _SpawnScript();
 }

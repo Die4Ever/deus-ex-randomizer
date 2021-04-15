@@ -1,4 +1,4 @@
-class DXRBacktracking extends DXRActorsBase;
+class DXRBacktracking extends DXRActorsBase transient;
 // backtracking specific fixes that might be too extreme for the more generic DXRFixup? or move the stuff from DXRFixup into here?
 
 function PreFirstEntry()
@@ -11,12 +11,11 @@ function PreFirstEntry()
     switch(dxr.localURL) {
         case "04_NYC_BATTERYPARK":
             foreach AllActors(class'Teleporter', t) {
+                if( DynamicTeleporter(t) != None ) continue;
                 if( ! t.bEnabled ) continue;
                 if( t.URL != "04_NYC_Street#ToStreet" ) continue;
-                t.bEnabled = false;
-                dt = Spawn(class'DynamicTeleporter',,,t.Location);
+                dt = class'DynamicTeleporter'.static.ReplaceTeleporter(t);
                 dt.SetDestination("04_NYC_Street", 'PathNode194');
-                dt.Radius = 30;
             }
             break;
         
@@ -44,6 +43,72 @@ function PreFirstEntry()
     }
 
     class'DynamicTeleporter'.static.CheckTeleport(dxr.player);
+}
+
+function PreTravel()
+{
+    Super.PreTravel();
+    CheckNextMap(Human(dxr.Player).nextMap);
+}
+
+function CheckNextMap(string nextMap)
+{
+    local int oldMissionNum, newMissionNum;
+
+    oldMissionNum = dxr.dxInfo.missionNumber;
+    newMissionNum = class'DXRTestAllMaps'.static.GetMissionNumber(nextMap);
+
+    //do this for paris (10/11) and vandenberg (12/14)
+    if( (oldMissionNum == 10 && newMissionNum == 11) || (oldMissionNum == 11 && newMissionNum == 10)
+            ||
+        (oldMissionNum == 12 && newMissionNum == 14) || (oldMissionNum == 14 && newMissionNum == 12) )
+    {
+        RetainSaves(oldMissionNum, newMissionNum, nextMap);
+    }
+}
+
+function RetainSaves(int oldMissionNum, int newMissionNum, string nextMap)
+{
+    info( "keeping save files, dxr.Player.nextMap: "$ nextMap );
+    dxr.dxInfo.missionNumber = newMissionNum;
+}
+
+static function LevelInit(DXRando dxr)
+{
+    local int newMissionNum;
+
+    newMissionNum = class'DXRTestAllMaps'.static.GetMissionNumber(dxr.localURL);
+    if( newMissionNum != 0 && newMissionNum != dxr.dxInfo.missionNumber ) {
+        log("LevelInit("$dxr$") dxr.localURL: "$dxr.localURL$", newMissionNum: "$ newMissionNum $", dxr.dxInfo.missionNumber: "$dxr.dxInfo.missionNumber, 'DXRBacktracking');
+        dxr.dxInfo.missionNumber = newMissionNum;
+    }
+}
+
+static function DeleteExpiredFlags(FlagBase flags, int missionNumber)
+{
+    switch(missionNumber) {
+        case 11:
+            missionNumber = 10;
+            break;
+        case 14:
+            missionNumber = 12;
+            break;
+    }
+    flags.DeleteExpiredFlags(missionNumber);
+}
+
+function AnyEntry()
+{
+    local DeusExPlayer p;// we wanna make sure we get all the player objects, even in multiplayer?
+    local DeusExDecoration d;
+    local ScriptedPawn s;
+    Super.AnyEntry();
+    foreach AllActors(class'DeusExPlayer', p)
+        p.ConBindEvents();
+    foreach AllActors(class'DeusExDecoration', d)
+        d.ConBindEvents();
+    foreach AllActors(class'ScriptedPawn', s)
+        s.ConBindEvents();
 }
 
 function ReEntry(bool IsTravel)

@@ -142,7 +142,7 @@ function string DescriptionLevel(Actor act, int i, out string word)
     }
     else if( s.Class == class'SkillEnviro' ) {
         word = "Damage Reduction";
-        return int( 1.0 / s.LevelValues[i] * 0.66 * 100.0 ) $ "%";//hazmat is * 0.75, ballistic armor is * 0.5...
+        return int( (1 - s.LevelValues[i] * 0.66) * 100.0 ) $ "%";//hazmat is * 0.75, ballistic armor is * 0.5...
     }
     else if( s.Class == class'SkillMedicine') {
         word = "Healing";

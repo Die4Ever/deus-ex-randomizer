@@ -7,17 +7,31 @@ import json
 import subprocess
 import os.path
 import shutil
+import traceback
 from pathlib import Path
 from timeit import default_timer as timer
 
+default_source_path = "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup/"
+default_output_path = "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex/"
 pp = pprint.PrettyPrinter(indent=4)
 parser = argparse.ArgumentParser(description='Deus Ex Injecting Compiler')
+loglevel = 'info'
 
+def debug(str):
+    global loglevel
+    if loglevel == 'debug':
+        print(str)
 
 def calla(cmds):
     print("running "+repr(cmds))
     start = timer()
-    ret = subprocess.Popen(cmds).wait(timeout=3600)
+    proc = subprocess.Popen(cmds)
+    try:
+        ret = proc.wait(timeout=600)
+    except Exception as e:
+        proc.kill()
+        print(traceback.format_exc())
+        raise
     elapsed_time = timer() - start # in seconds
     print( repr(cmds) + " took " + str(elapsed_time) + " seconds and returned " + str(ret) )
     return ret
@@ -60,7 +74,35 @@ def get_class_line(content):
     return classline
 
 
-def read_uc_file(file):
+def bIfdef(ifdef, definitions):
+    if ifdef == '#else':
+        return True
+    var = re.search( r'(#\w+) (.*)$', ifdef )
+    return var.group(2) in definitions
+
+
+def preprocess(content, ifdef, definitions):
+    # the ?=(#\w+) is for a lookahead
+    # because we want to read up until the next preprocessor directive
+    # but we don't want to swallow it yet
+    r = re.compile(r'(#[^\n]+)\n(.*?)\n(?=(#\w+))', flags=re.DOTALL)
+    for i in r.finditer(ifdef):
+        if bIfdef(i.group(1), definitions):
+            # TODO: pad in extra blank lines so that the line numbers from compiler errors still match?
+            return content.replace( ifdef, i.group(2) )
+    return content
+
+
+def preprocessor(content, definitions):
+    # TODO: doesn't yet support nested preprocessor definitions
+    content_out = content
+    r = re.compile(r'(#ifdef )(.*?)(#endif)', flags=re.DOTALL)
+    for i in r.finditer(content):
+        content_out = preprocess(content_out, i.group(0), definitions)
+    return content_out
+
+
+def read_uc_file(file, definitions):
     path = list(Path(file).parts)
     if len(path) <3:
         return
@@ -74,6 +116,8 @@ def read_uc_file(file):
     content=None
     with open(file) as f:
         content = f.read()
+    
+    content = preprocessor(content, definitions)
 
     content_no_comments = strip_comments(content)
     classline = get_class_line(content_no_comments)
@@ -95,8 +139,8 @@ def read_uc_file(file):
         'classname':classname, 'operator':operator, 'baseclass':baseclass, 'qualifiedclass':namespace+'.'+classname }
 
 
-def proc_file(file, files, mod_name, injects=None):
-    f = read_uc_file(file)
+def proc_file(file, files, mod_name, injects, definitions):
+    f = read_uc_file(file, definitions)
     if f is None:
         return
     f['mod_name'] = mod_name
@@ -221,8 +265,8 @@ def write_file(out, f, written, injects):
             written[f['file']] = 1
             return
 
-    print("writing from: "+f['file']+" to: "+path)
-    print("")
+    debug("writing from: "+f['file']+" to: "+path)
+    debug("")
     with open(path, 'w') as file:
         file.write(content)
     written[f['file']] = 1
@@ -336,8 +380,8 @@ def runAutomatedTests(out):
                 print("")
                 rc = False
 
-            elif len(allTestsPassed) == len(startingTests) and len(allExtendedTestsPassed) > 0:
-                print("All tests passed!")
+            elif len(allTestsPassed) == len(startingTests) and len(allTestsPassed) > 0 and len(startingTests) > 0 and len(allExtendedTestsPassed) > 0:
+                print("All tests passed! len(startingTests) == "+str(len(startingTests))+", len(allTestsPassed) == "+str(len(allTestsPassed))+", len(allExtendedTestsPassed) == "+str(len(allExtendedTestsPassed)))
                 rc = True
             else:
                 print("len(startingTests) == "+str(len(startingTests))+", len(allTestsPassed) == "+str(len(allTestsPassed))+", len(allExtendedTestsPassed) == "+str(len(allExtendedTestsPassed)))
@@ -359,29 +403,32 @@ def runAutomatedTests(out):
     return rc
 
     
-def compile(source, mods, out):
+def compile(source, mods, out, definitions):
     orig_files = {}
     mods_files = []
     injects = {}
     written = {}
 
+    print("processing source files from "+source)
     for file in insensitive_glob(source+'/*'):
-        print("Processing file "+str(file))
-        proc_file(file, orig_files, 'original')
+        debug("Processing file "+str(file))
+        proc_file(file, orig_files, 'original', None, definitions)
     
     for mod in mods:
+        print("processing files from mod "+mod)
         mods_files.append({})
         for file in insensitive_glob(mod+'*'):
-            print("Processing mod file "+str(file))
-            proc_file(file, mods_files[-1], mod, injects)
+            debug("Processing mod file "+str(file))
+            proc_file(file, mods_files[-1], mod, injects, definitions)
 
-    print("\nwriting files...")
+    print("\nwriting source files...")
     for file in orig_files.values():
-        print("Writing file "+str(file['file']))
+        debug("Writing file "+str(file['file']))
         write_file(out, file, written, injects)
     for mod in mods_files:
+        print("writing mod "+repr(mod.keys()))
         for file in mod.values():
-            print("Writing mod file "+str(file['file']))
+            debug("Writing mod file "+str(file['file']))
             write_file(out, file, written, injects)
     
     # now we need to delete DeusEx.u otherwise it won't get recompiled, might want to consider support for other packages too
@@ -399,17 +446,30 @@ def compile(source, mods, out):
 
 
 parser.add_argument('--source_path', help='Path to the original game source code')
+parser.add_argument('--preproc_definitions', nargs='*', help='Preprocessor variables for #ifdef')
 parser.add_argument('--mods_paths', nargs='*', help='List of mods folders')
 parser.add_argument('--out_dir', help='Where to write files to')
 parser.add_argument('--copy_local', action="store_true", help="Use this flag to make a local copy of DeusEx.u")
+parser.add_argument('--verbose', action="store_true", help="Output way more to the screen")
 args = parser.parse_args()
 pp.pprint(args)
 
 if args.source_path is None:
-    args.source_path = input("Enter original game source code path (blank for default of C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup/): ")
+    args.source_path = input("Enter original game source code path (blank for default of "+default_source_path+"): ")
 
 if args.source_path is None or args.source_path == '':
-    args.source_path = "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup/"
+    args.source_path = default_source_path
+
+if args.preproc_definitions is None:
+    args.preproc_definitions = [ ]
+
+while 1:
+    f = input("Enter a variable for the preprocessor (or blank to continue): ")
+    if f == '':
+        break
+    if args.preproc_definitions is None:
+        args.preproc_definitions = [ ]
+    args.preproc_definitions.append(f)
 
 while 1:
     f = input("Enter a mod path (or blank to continue): ")
@@ -420,21 +480,25 @@ while 1:
     args.mods_paths.append(f)
 
 if args.out_dir is None:
-    args.out_dir = input("Enter output path (blank for default of C:/Program Files (x86)/Steam/steamapps/common/Deus Ex/): ")
+    args.out_dir = input("Enter output path (blank for default of "+default_output_path+"): ")
 
 if args.out_dir is None or args.out_dir == '':
-    args.out_dir = "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex/"
+    args.out_dir = default_output_path
 
 pp.pprint(args)
 if args.mods_paths is None:
     print("no mods specified! using local directory")
     args.mods_paths = [ './' ]
 
+if args.verbose:
+    loglevel = 'debug'
+
+
 rerun = ""
 while rerun == "":
     try:
         print("\ncompiling...")
-        compileResult = compile(args.source_path, args.mods_paths, args.out_dir)
+        compileResult = compile(args.source_path, args.mods_paths, args.out_dir, args.preproc_definitions)
         if compileResult != 0:
             raise RuntimeError("Compilation failed, returned: "+str(compileResult))
         testSuccess = runAutomatedTests(args.out_dir)
@@ -447,7 +511,7 @@ while rerun == "":
                 
     except Exception as e:
         print('\n\ncompile error: ')
-        print(e)
+        print(traceback.format_exc())
     print("\n")
     rerun = input("press enter to compile again, otherwise type exit")
 

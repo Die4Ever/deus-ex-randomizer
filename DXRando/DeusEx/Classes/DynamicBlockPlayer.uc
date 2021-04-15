@@ -4,4 +4,5 @@ defaultproperties
 {
     bStatic=false
     bCollideActors=true
+    bCollideWorld=false
 }

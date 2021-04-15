@@ -349,6 +349,7 @@ function AdjustUndefeatableDoors(int exclusivitymode, int doorspickable, int doo
     foreach AllActors(class'DeusExMover', d)
     {
         if( d.bPickable || d.bBreakable ) continue;
+        if( !d.bIsDoor && d.KeyIDNeeded == '' && !d.bHighlight && !d.bFrobbable ) continue;
         AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
     }
 }
@@ -359,6 +360,7 @@ function AdjustAllDoors(int exclusivitymode, int doorspickable, int doorsdestruc
 
     foreach AllActors(class'DeusExMover', d)
     {
+        if( !d.bIsDoor && d.KeyIDNeeded == '' && !d.bHighlight && !d.bFrobbable ) continue;
         if( d.bHighlight == false || d.bFrobbable == false ) {
             d.bPickable = false;
             d.bLocked = true;

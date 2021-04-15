@@ -111,13 +111,34 @@ function AnyEntry()
 function PostFirstEntry()
 {
     local ScriptedPawn sp;
+    local InterpolationPoint p;
+    local vector v;
+    local rotator r;
     Super.PostFirstEntry();
+
+    SetSeed("Memes Dancing");
 
     foreach AllActors(class'ScriptedPawn',sp)
     {
         //Make people dance across the world
         RandomDancing(sp);
     }
+
+    SetSeed("Memes InterpolationPoints");
+
+    /* might want to first search for the InterpolateTrigger to make sure you find the right tag for the chopper's path and not the camera's path, and maybe go through them in order by the Position variable
+    foreach AllActors(class'InterpolationPoint', p) {
+        if( p.Position == 0 || p.Position == 1 ) continue;
+        v = p.Location;
+        v.X += rngfn() * 160.0 * p.Position;
+        v.Y += rngfn() * 160.0 * p.Position;
+        v.Z += rngfn() * 160.0 * p.Position;
+        p.SetLocation( v );
+        r.Pitch = rng(65536);
+        r.Yaw = rng(65536);
+        r.Roll = rng(65536);
+        p.SetRotation( r );
+    }*/
 }
 
 state() RotatingState {
