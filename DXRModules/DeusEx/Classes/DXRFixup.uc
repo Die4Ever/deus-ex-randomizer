@@ -912,31 +912,6 @@ function AddDelay(Actor trigger, float time)
     trigger.Event = d.Tag;
 }
 
-function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
-{
-    return _AddSwitch(Self, loc, rotate, Event);
-}
-
-static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate, name Event)
-{
-    local DeusExDecoration d;
-    d = DeusExDecoration( _AddActor(a, class'Switch2', loc, rotate) );
-    d.Event = Event;
-    return d;
-}
-
-static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rotate)
-{
-    local Actor d;
-    local bool oldCollideWorld;
-    d = a.Spawn(c,,, loc, rotate );
-    oldCollideWorld = d.bCollideWorld;
-    d.bCollideWorld = false;
-    d.SetLocation(loc);
-    d.SetRotation(rotate);
-    d.bCollideWorld = oldCollideWorld;
-    return d;
-}
 
 // mostly copied from DeusExPlayer.uc
 function UpdateDynamicMusic(Music Song)

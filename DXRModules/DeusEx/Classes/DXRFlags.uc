@@ -99,7 +99,7 @@ function InitDefaults()
     if( dxr != None ) RollSeed();
     gamemode = 0;
     loadout = 0;
-    brightness = 10;
+    brightness = 20;
     minskill = 25;
     maxskill = 300;
     ammo = 90;

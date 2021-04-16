@@ -561,7 +561,7 @@ function ApplyFixes()
 function FixHongKongCanal()
 {
     local HKTukTuk tuktuk;
-    local BoxMedium box;
+    local Containers box;
     local DynamicBlockPlayer dbp;
     local vector loc;
     local int i;
@@ -586,12 +586,11 @@ function FixHongKongCanal()
 
         loc += vect(38, 0, 0);
     }
-    box = Spawn(class'BoxMedium',,, vect(1151.214355, 1370, -400));
+    
+    box = AddBox(class'BoxMedium', vect(1151.214355, 1370, -400));
     box.bCollideWorld = false;
-    box.bInvincible = true;
     box.bPushable = false;
     box.bHighlight = false;
-    box.SetLocation(vect(1151.214355, 1370, -450));
 }
 
 function FixVandebergCmd()
@@ -714,8 +713,8 @@ function RandoMission10()
     AddFixedConn("10_PARIS_CATACOMBS","x", "10_PARIS_CATACOMBS","x");
     AddDoubleXfer("10_PARIS_CATACOMBS","spiralstair","10_Paris_Catacombs_Tunnels","spiralstair");//same tag on both sides?
     AddDoubleXfer("10_PARIS_CATACOMBS_TUNNELS","?toname=AmbientSound10","10_Paris_Metro","sewer");
-    AddFixedConn("10_Paris_Metro","","10_PARIS_CHATEAU","x");//one way, need to make the choppers stick around
-    AddDoubleXfer("10_PARIS_CHATEAU","","11_Paris_Cathedral","cathedralstart");
+    AddDoubleXfer("10_PARIS_CHATEAU","Chateau_start", "10_paris_metro","?toname=PathNode447");
+    AddDoubleXfer("10_PARIS_CHATEAU","?toname=Light135","11_Paris_Cathedral","cathedralstart");
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club1","10_Paris_Metro","Paris_Metro1");
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club2","10_Paris_Metro","Paris_Metro2");
     AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");

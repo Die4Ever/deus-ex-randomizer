@@ -30,19 +30,46 @@ function PreFirstEntry()
             dt.Radius = 160;
             AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
             break;
+
+        case "11_PARIS_CATHEDRAL":
+            dt = Spawn(class'DynamicTeleporter',,'cathedral_backtrack',vect(-2268.337891, 3042.279297, -866.726196));
+            dt.SetDestination("10_PARIS_CHATEAU", 'Light135');
+            dt.Radius = 160;
+            foreach AllActors(class'BlockPlayer', bp) {
+                switch(bp.Name) {
+                    case 'BlockPlayer90':
+                    case 'BlockPlayer91':
+                    case 'BlockPlayer117':
+                        bp.bBlockPlayers=false;
+                }
+            }
+            break;
+
         case "15_AREA51_ENTRANCE":
             dt = Spawn(class'DynamicTeleporter',,,vect(4384.407715, -2483.292236, -41.900017));
             dt.SetDestination("15_area51_bunker", 'Light188');
             dt.Radius = 160;
             break;
+
         case "15_AREA51_FINAL":
             dt = Spawn(class'DynamicTeleporter',,,vect(-5714.406250, -1977.827881, -1358.711304));
             dt.SetDestination("15_area51_entrance", 'Light73');
             dt.Radius = 160;
             break;
+
     }
 
     class'DynamicTeleporter'.static.CheckTeleport(dxr.player);
+}
+
+function PostFirstEntry()
+{
+    switch(dxr.localURL) {
+        case "11_PARIS_CATHEDRAL":
+            AddBox(class'CrateUnbreakableSmall', vect(-2130.379639, 3345.327881, -1151.909180));
+            AddBox(class'CrateUnbreakableLarge', vect(-2234.959473, 3227.824951, -1127.913330));
+            break;
+    }
 }
 
 function PreTravel()
@@ -133,11 +160,16 @@ function ParisMetroAnyEntry()
     local GuntherHermann gunther;
     local BlackHelicopter chopper;
     local FlagBase flags;
+    local MapExit exit;
 
     flags = dxr.player.flagBase;
 
     foreach AllActors(class'InterpolateTrigger', t, 'ChopperExit') {
         t.bTriggerOnceOnly = false;
+    }
+
+    foreach AllActors(class'MapExit', exit, 'ChopperExit') {
+        exit.SetDestination("10_PARIS_CHATEAU", '', "Chateau_start");
     }
 
     if( flags.GetBool('JockReady_Played') ) {
@@ -213,9 +245,4 @@ function ParisChateauAnyEntry()
 
     foreach AllActors(class'InterpolationPoint', pnew, 'Camera1')
         pnew.BeginPlay();// find the Prev and Next
-}
-
-function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
-{
-    return class'DXRFixup'.static._AddSwitch(Self, loc, rotate, Event);
 }
