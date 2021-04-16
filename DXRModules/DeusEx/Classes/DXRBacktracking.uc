@@ -109,6 +109,15 @@ function AnyEntry()
         d.ConBindEvents();
     foreach AllActors(class'ScriptedPawn', s)
         s.ConBindEvents();
+
+    switch(dxr.localURL) {
+        case "10_PARIS_METRO":
+            ParisMetroAnyEntry();
+            break;
+        case "10_PARIS_CHATEAU":
+            ParisChateauAnyEntry();
+            break;
+    }
 }
 
 function ReEntry(bool IsTravel)
@@ -116,6 +125,94 @@ function ReEntry(bool IsTravel)
     Super.ReEntry(IsTravel);
     //need to make sure this doesn't happen when loading a save
     if ( IsTravel ) class'DynamicTeleporter'.static.CheckTeleport(dxr.player);
+}
+
+function ParisMetroAnyEntry()
+{
+    local InterpolateTrigger t;
+    local GuntherHermann gunther;
+    local BlackHelicopter chopper;
+    local FlagBase flags;
+
+    flags = dxr.player.flagBase;
+
+    foreach AllActors(class'InterpolateTrigger', t, 'ChopperExit') {
+        t.bTriggerOnceOnly = false;
+    }
+
+    if( flags.GetBool('JockReady_Played') ) {
+        flags.SetBool('JockReady_Played', false,, 11);
+        flags.SetBool('MS_GuntherUnhidden', false,, 11);
+
+        foreach AllActors(class'GuntherHermann', gunther) {
+            gunther.SetLocation( vect(3790.952637, 1990.542969, 199.763168) );
+            gunther.LeaveWorld();
+        }
+
+        foreach AllActors(class'BlackHelicopter', chopper) {
+            chopper.Destroy();
+        }
+
+        chopper = Spawn(class'BlackHelicopter',, 'BlackHelicopter', vect(3134.682373, 1101.204956, 304.756897), rot(0, -24944, 0) );
+        chopper.Event = 'choppertrack';
+        chopper.BindName = "Jock";
+        chopper.FamiliarName = "Black Helicopter";
+        chopper.UnFamiliarName = "Black Helicopter";
+        chopper.ConBindEvents();
+    }
+}
+
+function ParisChateauAnyEntry()
+{
+    local InterpolateTrigger t;
+    local BlackHelicopter chopper;
+    local MapExit exit;
+    local InterpolationPoint p;
+    local InterpolationPoint pnew;
+    local FlagBase flags;
+
+    flags = dxr.player.flagBase;
+    flags.SetBool('NicoletteReadyToLeave', true,, 12);
+    flags.SetBool('NicoletteOutside_Played', true,, 12);
+    flags.SetBool('NicoletteLeftClub', true,, 12);
+
+    foreach AllActors(class'InterpolateTrigger', t) {
+        t.Destroy();
+    }
+
+    t = Spawn(class'InterpolateTrigger',, 'ChopperExit', vect(-825.793274, 1976.029297, 176.545380));
+    t.bTriggerOnceOnly = false;
+    t.Event = 'BlackHelicopter';
+    t.SetCollision(false);
+
+    foreach AllActors(class'BlackHelicopter', chopper)
+        chopper.Destroy();
+
+    chopper = Spawn(class'BlackHelicopter',, 'BlackHelicopter', vect(-825.793274, 1976.029297, 176.545380), rot(0, -10944, 0) );
+    chopper.Event = 'UN_BlackHeli_Fly';
+    chopper.BindName = "Jock";
+    chopper.FamiliarName = "Black Helicopter";
+    chopper.UnFamiliarName = "Black Helicopter";
+    chopper.ConBindEvents();
+
+    exit = Spawn(class'MapExit',, 'ChopperExit', vect(-825.793274, 1976.029297, 176.545380) );
+    exit.SetDestination("10_PARIS_METRO", 'PathNode447');
+    exit.bPlayTransition = true;
+    exit.cameraPathTag = 'Camera1';
+
+    foreach AllActors(class'InterpolationPoint', pnew, 'Camera1') break;
+    if( pnew != None ) return;
+
+    foreach AllActors(class'InterpolationPoint', p, 'UN_BlackHeli_Fly') {
+        pnew = Spawn(class'InterpolationPoint',, 'Camera1', p.Location-vect(500,0,0), p.Rotation);
+        pnew.bEndOfPath = p.bEndOfPath;
+        pnew.bSkipNextPath = p.bSkipNextPath;
+        pnew.Position = p.Position;
+        pnew.RateModifier = p.RateModifier;
+    }
+
+    foreach AllActors(class'InterpolationPoint', pnew, 'Camera1')
+        pnew.BeginPlay();// find the Prev and Next
 }
 
 function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
