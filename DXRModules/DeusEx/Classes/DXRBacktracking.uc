@@ -137,6 +137,8 @@ function AnyEntry()
     foreach AllActors(class'ScriptedPawn', s)
         s.ConBindEvents();
 
+    FixInterpolating();
+
     switch(dxr.localURL) {
         case "10_PARIS_METRO":
             ParisMetroAnyEntry();
@@ -154,6 +156,17 @@ function ReEntry(bool IsTravel)
     if ( IsTravel ) class'DynamicTeleporter'.static.CheckTeleport(dxr.player);
 }
 
+function FixInterpolating()
+{
+    //err(dxr.player$" state: "$dxr.player.GetStateName()$", Tag: "$dxr.player.tag$", NextState: "$dxr.player.NextState$", bInterpolating: "$dxr.player.bInterpolating);
+    if( dxr.player.NextState != 'Interpolating' ) return;
+    info("FixInterpolating(), "$dxr.player$" state: "$dxr.player.GetStateName()$", Tag: "$dxr.player.tag$", NextState: "$dxr.player.NextState$", bInterpolating: "$dxr.player.bInterpolating);
+    dxr.player.NextState = '';
+    dxr.player.NextLabel = '';
+    dxr.player.GotoState('PlayerWalking');
+    dxr.player.bDetectable = true;
+}
+
 function ParisMetroAnyEntry()
 {
     local InterpolateTrigger t;
@@ -168,15 +181,8 @@ function ParisMetroAnyEntry()
         t.bTriggerOnceOnly = false;
     }
 
-    //err(dxr.player$" state: "$dxr.player.GetStateName()$", Tag: "$dxr.player.tag$", NextState: "$dxr.player.NextState$", bInterpolating: "$dxr.player.bInterpolating);
-    dxr.player.NextState = '';
-    dxr.player.NextLabel = '';
-    dxr.player.GotoState('PlayerWalking');
-    dxr.player.bDetectable = true;
-
     foreach AllActors(class'MapExit', exit, 'ChopperExit') {
         exit.SetDestination("10_PARIS_CHATEAU", '', "Chateau_start");
-        //exit.bPlayTransition = false;
     }
 
     if( flags.GetBool('JockReady_Played') ) {
@@ -206,8 +212,6 @@ function ParisChateauAnyEntry()
     local InterpolateTrigger t;
     local BlackHelicopter chopper;
     local MapExit exit;
-    local InterpolationPoint p;
-    local InterpolationPoint pnew;
     local FlagBase flags;
 
     flags = dxr.player.flagBase;
@@ -218,12 +222,6 @@ function ParisChateauAnyEntry()
     foreach AllActors(class'InterpolateTrigger', t) {
         t.Destroy();
     }
-
-    //err(dxr.player$" state: "$dxr.player.GetStateName()$", Tag: "$dxr.player.tag$", NextState: "$dxr.player.NextState$", bInterpolating: "$dxr.player.bInterpolating);
-    dxr.player.NextState = '';
-    dxr.player.NextLabel = '';
-    dxr.player.GotoState('PlayerWalking');
-    dxr.player.bDetectable = true;
 
     t = Spawn(class'InterpolateTrigger',, 'ChopperExit', vect(-825.793274, 1976.029297, 176.545380));
     t.bTriggerOnceOnly = false;
@@ -246,17 +244,24 @@ function ParisChateauAnyEntry()
     exit.bPlayTransition = true;
     exit.cameraPathTag = 'Camera1';
 
-    foreach AllActors(class'InterpolationPoint', pnew, 'Camera1') break;
-    if( pnew != None ) return;
+    CloneInterpolationPoints( 'UN_BlackHeli_Fly', 'Camera1', vect(-500,0,0) );
+}
 
-    foreach AllActors(class'InterpolationPoint', p, 'UN_BlackHeli_Fly') {
-        pnew = Spawn(class'InterpolationPoint',, 'Camera1', p.Location-vect(500,0,0), p.Rotation);
+function CloneInterpolationPoints(Name oldtag, Name newtag, vector offset)
+{
+    local InterpolationPoint p, pnew;
+
+    foreach AllActors(class'InterpolationPoint', p, newtag)
+        return;// don't do anything if newtag already exists
+
+    foreach AllActors(class'InterpolationPoint', p, oldtag) {
+        pnew = Spawn(class'InterpolationPoint',, newtag, p.Location+offset, p.Rotation);
         pnew.bEndOfPath = p.bEndOfPath;
         pnew.bSkipNextPath = p.bSkipNextPath;
         pnew.Position = p.Position;
         pnew.RateModifier = p.RateModifier;
     }
 
-    foreach AllActors(class'InterpolationPoint', pnew, 'Camera1')
+    foreach AllActors(class'InterpolationPoint', pnew, newtag)
         pnew.BeginPlay();// find the Prev and Next
 }
