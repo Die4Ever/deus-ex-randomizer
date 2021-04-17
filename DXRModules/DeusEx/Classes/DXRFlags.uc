@@ -443,6 +443,7 @@ function NewGamePlus()
 function RunTests()
 {
     local int i, t;
+    local DeusExPlayer p;
     Super.RunTests();
 
     //this Crc function returns negative numbers
@@ -472,6 +473,10 @@ function RunTests()
     teststring( FloatToString(0.5555, 1), "0.6", "FloatToString 1");
     teststring( FloatToString(0.5454999, 4), "0.5455", "FloatToString 2");
     teststring( FloatToString(0.5455, 2), "0.55", "FloatToString 3");
+
+    i=0;
+    foreach AllActors(class'DeusExPlayer', p) i++;
+    testint(i, 1, "Found 1 DeusExPlayer");
 }
 
 function ExtendedTests()

@@ -8,8 +8,7 @@ var transient string nextMap;
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
 {
     Super.ClientMessage(msg, type, bBeep);
-    if( dxr == None ) foreach AllActors(class'DXRando', dxr) { break; }
-    class'DXRTelemetry'.static.SendLog(dxr, self, "INFO", msg);
+    class'DXRTelemetry'.static.SendLog(GetDXR(), self, "INFO", msg);
 
     if(bBeep) {
         // we don't want to override more important log sounds like Sound'LogSkillPoints'
@@ -18,16 +17,29 @@ function ClientMessage(coerce string msg, optional Name type, optional bool bBee
     }
 }
 
+function PlayerMove( float DeltaTime )
+{
+    log("ERROR: "$Self$".PlayerMove("$DeltaTime$", state: "$GetStateName());
+    ClientMessage("ERROR: "$Self$".PlayerMove("$DeltaTime$", state: "$GetStateName());
+    GotoState('PlayerWalking');
+}
+
 event ClientTravel( string URL, ETravelType TravelType, bool bItems )
 {
     nextMap = URL;
     Super.ClientTravel(URL, TravelType, bItems);
 }
 
+function DXRando GetDXR()
+{
+    if( dxr == None ) foreach AllActors(class'DXRando', dxr) { break; }
+    return dxr;
+}
+
 function DXRBase DXRFindModule(class<DXRBase> class)
 {
     local DXRBase m;
-    if( dxr == None ) foreach AllActors(class'DXRando', dxr) { break; }
+    if( dxr == None ) GetDXR();
     if( dxr != None ) m = dxr.FindModule(class);
     return m;
 }

@@ -538,6 +538,7 @@ function AddFixedConn(string map_a, string inTag_a, string map_b, string outTag_
     numFixedConns++;
 }
 
+// ApplyFixes is for backtracking that we don't want in the normal game
 function ApplyFixes()
 {
     switch(dxr.localURL) {
@@ -586,7 +587,7 @@ function FixHongKongCanal()
 
         loc += vect(38, 0, 0);
     }
-    
+
     box = AddBox(class'BoxMedium', vect(1151.214355, 1370, -400));
     box.bCollideWorld = false;
     box.bPushable = false;

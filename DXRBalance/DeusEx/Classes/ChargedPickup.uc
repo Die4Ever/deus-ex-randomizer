@@ -13,3 +13,18 @@ function ChargedPickupBegin(DeusExPlayer Player)
     }
     _ChargedPickupBegin(Player);
 }
+
+simulated function int CalcChargeDrain(DeusExPlayer Player)
+{
+    local int drain;
+
+    drain = _CalcChargeDrain(Player);
+    if( drain < 1 ) drain = 1;
+    return drain;
+}
+
+// overriding the Inventory class's function returning true, we return false in order to allow the pickup to happen
+function bool HandlePickupQuery( inventory Item )
+{
+    return false;
+}

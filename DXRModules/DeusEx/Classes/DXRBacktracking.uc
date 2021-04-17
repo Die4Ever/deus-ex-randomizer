@@ -168,8 +168,20 @@ function ParisMetroAnyEntry()
         t.bTriggerOnceOnly = false;
     }
 
+    //err(dxr.player$" state: "$dxr.player.GetStateName()$", Tag: "$dxr.player.tag$", NextState: "$dxr.player.NextState$", bInterpolating: "$dxr.player.bInterpolating);
+    //dxr.player.ClearNextState();
+    /*dxr.player.NextState = '';
+    dxr.player.NextLabel = '';
+    dxr.player.GotoState('PlayerWalking');*/
+    /*dxr.player.bInterpolating = false;
+    dxr.player.bCollideWorld = true;
+    dxr.player.SetCollision(true,true,true);
+    dxr.player.SetPhysics(PHYS_Falling);
+    dxr.player.AmbientSound = None;*/
+
     foreach AllActors(class'MapExit', exit, 'ChopperExit') {
         exit.SetDestination("10_PARIS_CHATEAU", '', "Chateau_start");
+        exit.bPlayTransition = false;
     }
 
     if( flags.GetBool('JockReady_Played') ) {
@@ -228,8 +240,9 @@ function ParisChateauAnyEntry()
     chopper.ConBindEvents();
 
     exit = Spawn(class'MapExit',, 'ChopperExit', vect(-825.793274, 1976.029297, 176.545380) );
+    exit.SetCollision(false,false,false);
     exit.SetDestination("10_PARIS_METRO", 'PathNode447');
-    exit.bPlayTransition = true;
+    //exit.bPlayTransition = true;
     exit.cameraPathTag = 'Camera1';
 
     foreach AllActors(class'InterpolationPoint', pnew, 'Camera1') break;

@@ -302,7 +302,7 @@ function InWaveTick()
     local int numScriptedPawns;
     local float dist, ratio;
 
-    foreach AllActors(class'ScriptedPawn', p) {
+    foreach AllActors(class'ScriptedPawn', p, 'hordeenemy') {
         if( p.IsA('Animal') ) continue;
         if( (time_in_wave+numScriptedPawns) % 5 == 0 ) p.SetOrders(default_orders, default_order_tag);
         p.bStasis = false;
@@ -398,7 +398,7 @@ function GetOverHere()
 
     time_overdue = time_in_wave-time_before_teleport_enemies;
     maxdist = popin_dist - float(time_overdue*5);
-    foreach AllActors(class'ScriptedPawn', p) {
+    foreach AllActors(class'ScriptedPawn', p, 'hordeenemy') {
         if( p.IsA('Animal') ) continue;
 
         p.bStasis = false;
@@ -498,7 +498,7 @@ function float GenerateEnemy(DXREnemies dxre)
         loc = GetRandomPosition(dxr.player.Location, popin_dist*0.8, popin_dist*2.5);
         loc.X += rngfn() * 25;
         loc.Y += rngfn() * 25;
-        p = Spawn(c,,, loc );
+        p = Spawn(c,, 'hordeenemy', loc );
     }
     if(p==None) {
         l("failed to spawn "$c$" at "$loc);
