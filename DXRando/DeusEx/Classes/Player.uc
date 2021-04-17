@@ -19,8 +19,8 @@ function ClientMessage(coerce string msg, optional Name type, optional bool bBee
 
 function PlayerMove( float DeltaTime )
 {
-    log("ERROR: "$Self$".PlayerMove("$DeltaTime$", state: "$GetStateName());
-    ClientMessage("ERROR: "$Self$".PlayerMove("$DeltaTime$", state: "$GetStateName());
+    log("ERROR: "$Self$".PlayerMove("$DeltaTime$"), state: "$GetStateName());
+    ClientMessage("ERROR: "$Self$".PlayerMove("$DeltaTime$"), state: "$GetStateName());
     GotoState('PlayerWalking');
 }
 

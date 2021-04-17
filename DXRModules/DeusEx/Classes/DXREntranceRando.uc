@@ -445,18 +445,20 @@ function GenerateConnections(int missionNum)
     local bool isValid;
     isValid = False;
 
-    for(attempts=0; attempts<200; attempts++)
+    for(attempts=0; attempts<500; attempts++)
     {
-        _GenerateConnections(missionNum);
+        if( ! _GenerateConnections(missionNum) )
+            continue;// save a bunch of loops if we know we failed?
         if(ValidateConnections()) {
             if( attempts > 40 ) warning("GenerateConnections("$missionNum$") succeeded but took "$attempts$" attempts! seed: "$dxr.seed);
             return;
         }
     }
     err("GenerateConnections("$missionNum$") failed after "$attempts$" attempts! seed: "$dxr.seed);
+    numConns = 0;// vanilla on failure
 }
 
-function _GenerateConnections(int missionNum)
+function bool _GenerateConnections(int missionNum)
 {
     local int xfersUsed;
     local int connsMade;
@@ -466,7 +468,7 @@ function _GenerateConnections(int missionNum)
     local int maxAttempts;
     local int i;
     
-    maxAttempts = 50;
+    maxAttempts = 30;
     
     for(i=0;i<numXfers;i++)
     {
@@ -502,7 +504,7 @@ function _GenerateConnections(int missionNum)
         }
         if( i >= maxAttempts ) {
             l("failed to find valid connection for " $ xfers[nextAvailIdx].mapname $ "#" $ xfers[nextAvailIdx].inTag $ " / #" $ xfers[nextAvailIdx].outTag );
-            return;
+            return false;
         }
         xfers[destIdx].used = True;
         xfersUsed++;
@@ -511,6 +513,7 @@ function _GenerateConnections(int missionNum)
         connsMade++;
     }
     numConns = connsMade;
+    return true;
 }
 
 function AddXfer(string mapname, string inTag, string outTag)
@@ -969,13 +972,12 @@ function ExtendedTests()
     OneWayTests();
     //VandenbergTests();
 
-    //TestAllMissions(17411);
-    //TestAllMissions(102596);
+    //TestAllMissions(154944);
 
-    /*for(i=1; i<10; i++) {
+    for(i=1; i<10; i++) {
         // reduce this if we start getting runaway loops, or make it so extended tests can run across multiple frames
         TestAllMissions( dxr.seed + i );
-    }*/
+    }
 }
 
 function BasicTests()

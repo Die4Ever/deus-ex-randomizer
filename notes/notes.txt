@@ -13,8 +13,7 @@ v1.5.7 Alpha:
 	need to support optional maps?
 
 v1.5.7:
-	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 17411: got False, expected True
-	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 102596: got False, expected True
+	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 154944: got False, expected True
 	fix 14_OceanLab_Lab DataCube1 login text is getting replaced with a password
 		the "Oceanguard" login and "Kraken" password
 		it's because ComputerSecurity0 has the username and password flipped
