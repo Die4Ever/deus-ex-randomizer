@@ -64,18 +64,13 @@ var config int min_connections_selfconnect;
 
 function CheckConfig()
 {
-    local int i;
-    if( config_version < 4 ) {
+    local int i, k;
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,7) ) {
         for(i=0; i < ArrayCount(BannedConnections); i++) {
             BannedConnections[i].map_a = "";
             BannedConnections[i].map_b = "";
         }
-        BannedConnections[0].map_a = "02_NYC_BatteryPark";
-        BannedConnections[0].map_b = "02_NYC_Underground";
-        BannedConnections[1].map_a = "02_NYC_BatteryPark";
-        BannedConnections[1].map_b = "02_NYC_Warehouse";
-    }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,7) ) {
+
         min_connections_selfconnect = 999;
         i = 0;
         dead_ends[i++] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
@@ -95,12 +90,17 @@ function CheckConfig()
         dependencies[i].dependency = "12_VANDENBERG_COMPUTER";
         i++;*/
     }
+    k=0;
     for(i=0; i < ArrayCount(BannedConnections); i++) {
-        BannedConnections[i].map_a = Caps(BannedConnections[i].map_a);
-        BannedConnections[i].map_b = Caps(BannedConnections[i].map_b);
+        if( BannedConnections[i].map_a == "" ) continue;
+        BannedConnections[k].map_a = Caps(BannedConnections[i].map_a);
+        BannedConnections[k].map_b = Caps(BannedConnections[i].map_b);
+        k++;
     }
+    k=0;
     for(i=0; i < ArrayCount(dead_ends); i++) {
-        dead_ends[i] = Caps(dead_ends[i]);
+        if( dead_ends[i] == "" ) continue;
+        dead_ends[k++] = Caps(dead_ends[i]);
     }
     Super.CheckConfig();
 }
@@ -193,6 +193,7 @@ function bool IsConnectionValid(int missionNum, MapTransfer a, MapTransfer b)
     }
 
     for(i=0; i < ArrayCount(BannedConnections); i++) {
+        if( BannedConnections[i].map_a == "" ) break;
         if( 
             (a.mapname == BannedConnections[i].map_a && b.mapname == BannedConnections[i].map_b)
             ||
@@ -351,6 +352,7 @@ function bool IsDeadEndConnection(MapTransfer m, MapTransfer from)
     if(m.inTag == "") return true;
     s = Caps(m.mapname $"#"$ m.inTag);
     for(i=0; i < ArrayCount(dead_ends); i++) {
+        if( dead_ends[i] == "" ) break;
         if( s == dead_ends[i] ) {
             return true;
         }
@@ -464,7 +466,7 @@ function _GenerateConnections(int missionNum)
     local int maxAttempts;
     local int i;
     
-    maxAttempts = 20;
+    maxAttempts = 50;
     
     for(i=0;i<numXfers;i++)
     {
@@ -952,31 +954,28 @@ function LogConnections(optional bool bInfo)
 
 function RunTests()
 {
-    local int i;
     Super.RunTests();
 
     test(min_connections_selfconnect >= 3, "min_connections_selfconnect needs to be at least 3");
-
-    for(i=0; i <= 50; i++) {
-        EntranceRando(i);
-        if( numXfers > 0 && numConns > 0 ) {
-            LogConnections();
-            testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation");
-        }
-    }
-
-    numXfers = 0;
-    numConns = 0;
-    numFixedConns = 0;
+    TestAllMissions(dxr.seed);
 }
 
 function ExtendedTests()
 {
+    local int i;
     Super.ExtendedTests();
 
     BasicTests();
     OneWayTests();
     //VandenbergTests();
+
+    //TestAllMissions(17411);
+    //TestAllMissions(102596);
+
+    /*for(i=1; i<10; i++) {
+        // reduce this if we start getting runaway loops, or make it so extended tests can run across multiple frames
+        TestAllMissions( dxr.seed + i );
+    }*/
 }
 
 function BasicTests()
@@ -1122,6 +1121,28 @@ function OneWayTests()
     numXfers = 0;
     numConns = 0;
     numFixedConns = 0;
+}
+
+function TestAllMissions(int newseed)
+{
+    local int oldseed, i;
+
+    oldseed = dxr.seed;
+    dxr.seed = newseed;
+
+    for(i=0; i <= 50; i++) {
+        EntranceRando(i);
+        if( numXfers > 0 ) {
+            if( ! testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation, seed: "$newseed) ) {
+                LogConnections();
+            }
+        }
+    }
+
+    numXfers = 0;
+    numConns = 0;
+    numFixedConns = 0;
+    dxr.seed = oldseed;
 }
 
 /*function VandenbergTests()
