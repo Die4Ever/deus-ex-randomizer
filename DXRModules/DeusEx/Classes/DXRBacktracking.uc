@@ -244,7 +244,7 @@ function ParisChateauAnyEntry()
     exit.bPlayTransition = true;
     exit.cameraPathTag = 'Camera1';
 
-    CloneInterpolationPoints( 'UN_BlackHeli_Fly', 'Camera1', vect(-500,0,0) );
+    CloneInterpolationPoints( 'UN_BlackHeli_Fly', 'Camera1', vect(-500,250,0) );
 }
 
 function CloneInterpolationPoints(Name oldtag, Name newtag, vector offset)

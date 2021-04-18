@@ -14,6 +14,11 @@ v1.5.7 Alpha:
 
 v1.5.7:
 	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 154944: got False, expected True
+	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 59072: got False, expected True
+	DXREntranceRando: ERROR: fail: RandoMission4 validation, seed: 569968: got False, expected True
+	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 120577: got False, expected True
+	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 487814: got False, expected True
+	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 814214: got False, expected True
 	fix 14_OceanLab_Lab DataCube1 login text is getting replaced with a password
 		the "Oceanguard" login and "Kraken" password
 		it's because ComputerSecurity0 has the username and password flipped

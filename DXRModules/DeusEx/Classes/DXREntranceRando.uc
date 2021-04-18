@@ -864,7 +864,7 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
     m = MapExit(p);
     dt = DynamicTeleporter(p);
     if( dt != None ) curDest = dt.URL $ "?toname=" $ dt.destName;
-    else if( m != None && m.destName != '' ) curDest = m.DestMap $ " ?toname=" $ m.destName;
+    else if( m != None && m.destName != '' ) curDest = m.DestMap $ "?toname=" $ m.destName;
     else if( m != None )  curDest = m.DestMap;
     else if( t != None ) {
         if( ! t.bEnabled ) return None;
@@ -875,6 +875,8 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
 
     hashPos = InStr(curDest,"#");
     destTag = Caps(Mid(curDest,hashPos+1));
+
+    l("AdjustTeleporter("$p$") curDest: "$curDest$", destTag: "$destTag);
 
     for (i = 0;i<numConns;i++)
     {
@@ -914,7 +916,7 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
             else if( t != None )
                 t.URL = newMap $ "#" $ newTag;
         }
-        info("Found " $ p $ " with destination " $ curDest $ ", changed to " $ newMap$"#"$newTag$", newdt: "$newdt );
+        info("AdjustTeleporter found " $ p $ " with destination " $ curDest $ ", changed to " $ newMap$"#"$newTag$", newdt: "$newdt );
         break;
     }
 
