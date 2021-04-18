@@ -77,8 +77,8 @@ function CreateInfoWindow()
         return;
     }
 
-    if (bAddToVault && textTag != '') note = aReader.GetNote(textTag);
     Super.CreateInfoWindow();
+    if (bAddToVault && textTag != '') note = aReader.GetNote(textTag);
     if ( bAddToVault && note != None )
     {
         for(i=0; i < ArrayCount(new_passwords) && i < ArrayCount(note.new_passwords); i++) {
