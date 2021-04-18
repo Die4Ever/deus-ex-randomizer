@@ -77,11 +77,10 @@ function CreateInfoWindow()
         return;
     }
 
-    if (bAddToVault) note = aReader.GetNote(Name);
+    if (bAddToVault && textTag != '') note = aReader.GetNote(textTag);
     Super.CreateInfoWindow();
-    if ( bAddToVault && note == None && aReader.FirstNote.textTag == Name && textTag != '' )
+    if ( bAddToVault && note != None )
     {
-        note = aReader.FirstNote;
         for(i=0; i < ArrayCount(new_passwords) && i < ArrayCount(note.new_passwords); i++) {
             note.new_passwords[i] = new_passwords[i];
             new_passwords[i] = "";
