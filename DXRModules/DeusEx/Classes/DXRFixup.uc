@@ -731,12 +731,27 @@ function Shipyard_FirstEntry()
 function Paris_FirstEntry()
 {
     local GuntherHermann g;
+    local DeusExMover m;
+    local Trigger t;
 
     switch(dxr.localURL)
     {
         case "10_PARIS_CATACOMBS_TUNNELS":
+            foreach AllActors(class'Trigger', t)
+                if( t.Event == 'MJ12CommandoSpecial' )
+                    t.Touch(dxr.player);// make this guy patrol instead of t-pose
+            
             AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
             AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
+            break;
+
+        case "10_PARIS_CHATEAU":
+            foreach AllActors(class'DeusExMover', m, 'everettsignal')
+                m.Tag = 'everettsignaldoor';
+            t = Spawn(class'Trigger',, 'everettsignal');
+            t.Event = 'everettsignaldoor';
+            t.SetCollision(false,false,false);
+            AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
             break;
         
         case "11_PARIS_CATHEDRAL":

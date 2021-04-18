@@ -172,6 +172,7 @@ function ParisMetroAnyEntry()
     local InterpolateTrigger t;
     local GuntherHermann gunther;
     local BlackHelicopter chopper;
+    local NicoletteDuClare nicolette;
     local FlagBase flags;
     local MapExit exit;
 
@@ -183,6 +184,11 @@ function ParisMetroAnyEntry()
 
     foreach AllActors(class'MapExit', exit, 'ChopperExit') {
         exit.SetDestination("10_PARIS_CHATEAU", '', "Chateau_start");
+    }
+
+    if( flags.GetBool('NicoletteDoneFollowing') ) {
+        foreach AllActors(class'NicoletteDuClare', nicolette)
+            nicolette.Destroy();
     }
 
     if( flags.GetBool('JockReady_Played') ) {
@@ -205,6 +211,11 @@ function ParisMetroAnyEntry()
         chopper.UnFamiliarName = "Black Helicopter";
         chopper.ConBindEvents();
     }
+
+    /*if( flags.GetBool('ClubComplete') ) {
+        // switch back to her dialog when she's ready to get in the chopper
+        flags.SetBool('ClubComplete', false,, 12);
+    }*/
 }
 
 function ParisChateauAnyEntry()
@@ -218,6 +229,8 @@ function ParisChateauAnyEntry()
     flags.SetBool('NicoletteReadyToLeave', true,, 12);
     flags.SetBool('NicoletteOutside_Played', true,, 12);
     flags.SetBool('NicoletteLeftClub', true,, 12);
+    flags.SetBool('ClubComplete', true,, 12);
+    flags.SetBool('MeetNicolette_Played', true,, 12);
 
     foreach AllActors(class'InterpolateTrigger', t) {
         t.Destroy();
@@ -238,13 +251,14 @@ function ParisChateauAnyEntry()
     chopper.UnFamiliarName = "Black Helicopter";
     chopper.ConBindEvents();
 
+    CloneInterpolationPoints( 'UN_BlackHeli_Fly', 'Camera1', vect(-500,250,0) );
+
+    foreach AllActors(class'MapExit', exit, 'ChopperExit') { return; }
     exit = Spawn(class'MapExit',, 'ChopperExit', vect(-825.793274, 1976.029297, 176.545380) );
     exit.SetCollision(false,false,false);
     exit.SetDestination("10_PARIS_METRO", 'PathNode447');
     exit.bPlayTransition = true;
     exit.cameraPathTag = 'Camera1';
-
-    CloneInterpolationPoints( 'UN_BlackHeli_Fly', 'Camera1', vect(-500,250,0) );
 }
 
 function CloneInterpolationPoints(Name oldtag, Name newtag, vector offset)
