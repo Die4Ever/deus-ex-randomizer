@@ -1045,15 +1045,6 @@ function UpdateDynamicMusic(Music Song)
 	}
 }
 
-function Conversation GetConversation(Name conName)
-{
-    local Conversation c;
-    foreach AllObjects(class'Conversation', c) {
-        if( c.conName == conName ) return c;
-    }
-    return None;
-}
-
 static function FixConversationFlag(Conversation c, name fromName, bool fromValue, name toName, bool toValue)
 {
     local ConFlagRef f;

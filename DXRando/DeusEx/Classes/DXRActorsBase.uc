@@ -375,6 +375,15 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
     return a;
 }
 
+function Conversation GetConversation(Name conName)
+{
+    local Conversation c;
+    foreach AllObjects(class'Conversation', c) {
+        if( c.conName == conName ) return c;
+    }
+    return None;
+}
+
 static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate, name Event)
 {
     local DeusExDecoration d;
