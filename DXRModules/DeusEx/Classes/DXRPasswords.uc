@@ -188,7 +188,7 @@ function Timer()
 
     Super.Timer();
     if( dxr == None ) return;
-
+    
     goal = dxr.Player.FirstGoal;
     while( goal != None ) {
         for (i=0; i<ArrayCount(oldpasswords); i++)
@@ -247,6 +247,7 @@ function bool UpdateString(out string str, string oldpassword, string newpasswor
     //l("---");
 
     str = ReplaceText( str, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
+        
     return true;
 }
 
@@ -594,6 +595,22 @@ function NotifyPlayerNotesUpdated()
     updated = 0;
 }
 
+function MarkPasswordKnown(string password)
+{
+    local Keypad k;
+    
+    //Check computer logins
+    
+    //Check keypad logins
+    foreach AllActors(class 'Keypad',k)
+    {
+        if (password == k.validCode) {
+            k.bCodeKnown = True;
+        }
+    }
+
+}
+
 function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword)
 {
     if( oldpassword == "" ) return false;
@@ -605,8 +622,11 @@ function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword
     DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
     
     info("found goal with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
-
+    
     goal.text = ReplaceText( goal.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
+    
+    MarkPasswordKnown(newpassword);
+    
     return true;
 }
 
@@ -614,14 +634,23 @@ function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword
 {
     if( oldpassword == "" ) return false;
     if( note.text == "") return false;
-    if( PassInStr( note.text, oldpassword ) == -1 ) return false;
-    if( note.HasEitherPassword(oldpassword, newpassword) ) return false;
+        
+    if( note.HasPassword(newpassword))
+    {
+        MarkPasswordKnown(newpassword);
+    }
 
+    if( note.HasEitherPassword(oldpassword, newpassword) ) return false;
+    if( PassInStr( note.text, oldpassword ) == -1 ) return false;
+    
     updated++;
     info("found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
     note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
     note.SetNewPassword(newpassword);
+    
+    MarkPasswordKnown(newpassword);
+    
     return true;
 }
 
@@ -814,6 +843,7 @@ function ProcessText(DeusExTextParser parser, out int hasPass[64])
                 l(text);
                 l("---");*/
                 hasPass[i] = 1;
+                
             }
         }
     }
