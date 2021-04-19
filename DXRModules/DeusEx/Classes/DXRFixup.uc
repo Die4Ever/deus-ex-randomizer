@@ -660,6 +660,7 @@ function HongKong_FirstEntry()
 {
     local Actor a;
     local ScriptedPawn p;
+    local Button1 b;
 
     switch(dxr.localURL)
     {
@@ -708,6 +709,15 @@ function HongKong_FirstEntry()
                 }
             }
             
+            break;
+        case "06_HONGKONG_WANCHAI_STREET":
+            foreach AllActors(class'Button1',b)
+            {
+                if (b.Event=='JockShaftTop')
+                {
+                    b.Event='JocksElevatorTop';
+                }
+            }
             break;
         default:
             break;
