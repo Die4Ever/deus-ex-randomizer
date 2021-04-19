@@ -190,7 +190,6 @@ function CheckConfig()
         remove_objects[i++] = 'MapExit';
         remove_objects[i++] = 'ScriptedPawn';
         remove_objects[i++] = 'DataLinkTrigger';
-        remove_objects[i++] = 'MapExit';
         remove_objects[i++] = 'Teleporter';
         remove_objects[i++] = 'SecurityCamera';
         remove_objects[i++] = 'AutoTurret';
