@@ -661,6 +661,7 @@ function HongKong_FirstEntry()
     local Actor a;
     local ScriptedPawn p;
     local Button1 b;
+    local ElevatorMover e;
 
     switch(dxr.localURL)
     {
@@ -716,6 +717,14 @@ function HongKong_FirstEntry()
                 if (b.Event=='JockShaftTop')
                 {
                     b.Event='JocksElevatorTop';
+                }
+            }
+            
+            foreach AllActors(class'ElevatorMover',e)
+            {
+                if(e.Tag=='JocksElevator')
+                {
+                    e.Event = '';
                 }
             }
             break;
