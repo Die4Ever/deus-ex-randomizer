@@ -348,7 +348,7 @@ function AdjustUndefeatableDoors(int exclusivitymode, int doorspickable, int doo
 
     foreach AllActors(class'DeusExMover', d)
     {
-        if( d.bPickable || d.bBreakable ) continue;
+        if( DoorIsPickable(d) || d.bBreakable ) continue;
         if( !d.bIsDoor && d.KeyIDNeeded == '' && !d.bHighlight && !d.bFrobbable ) continue;
         AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
     }
@@ -378,7 +378,7 @@ function AdjustKeyOnlyDoors(int exclusivitymode, int doorspickable, int doorsdes
     foreach AllActors(class'DeusExMover', d)
     {
         if( d.bHighlight == false || d.bFrobbable == false ) continue;
-        if( d.KeyIDNeeded == 'None' || d.bPickable || d.bBreakable ) continue;
+        if( d.KeyIDNeeded == 'None' || DoorIsPickable(d) || d.bBreakable ) continue;
         AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
     }
 }
@@ -428,6 +428,11 @@ function AdjustDoor(DeusExMover d, int exclusivitymode, int doorspickable, int d
         default:
             break;
     }
+}
+
+static function bool DoorIsPickable(DeusExMover d)
+{// maybe also needs to be bLocked?
+    return d.bFrobbable && d.bHighlight && d.bPickable;
 }
 
 function MakePickable(DeusExMover d)

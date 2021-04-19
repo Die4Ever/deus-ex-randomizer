@@ -62,7 +62,7 @@ function BindControls(bool writing, optional string action)
     helptexts[id] = "Difficulty determines the default settings for the randomizer.";
     if( (InStr(f.VersionString(), "Alpha")>=0 || InStr(f.VersionString(), "Beta")>=0) && EnumOption(id, "Super Easy QA", 1, writing) ) {
         difficulty=0;
-        f.doorsmode = f.undefeatabledoors + f.doormutuallyinclusive;
+        f.doorsmode = f.alldoors + f.doormutuallyinclusive;
         f.doorsdestructible = 100;
         f.doorspickable = 100;
         f.deviceshackable = 100;
