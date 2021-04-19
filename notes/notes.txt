@@ -19,6 +19,10 @@ v1.5.7:
 	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 120577: got False, expected True
 	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 487814: got False, expected True
 	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 814214: got False, expected True
+	fix charged pickups screwing up your inventory
+	speed up the door in paris chateau wine cellar
+	move area51 start location, and maybe add another one in the sniper tower?
+	paris chateau door didn't open, maybe because of StayOpenTime
 	fix 14_OceanLab_Lab DataCube1 login text is getting replaced with a password
 		the "Oceanguard" login and "Kraken" password
 		it's because ComputerSecurity0 has the username and password flipped

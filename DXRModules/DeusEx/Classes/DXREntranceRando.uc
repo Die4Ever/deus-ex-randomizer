@@ -976,10 +976,10 @@ function ExtendedTests()
 
     //TestAllMissions(154944);
 
-    for(i=1; i<10; i++) {
+    /*for(i=1; i<10; i++) {
         // reduce this if we start getting runaway loops, or make it so extended tests can run across multiple frames
         TestAllMissions( dxr.seed + i );
-    }
+    }*/
 }
 
 function BasicTests()

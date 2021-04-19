@@ -23,8 +23,11 @@ simulated function int CalcChargeDrain(DeusExPlayer Player)
     return drain;
 }
 
-// overriding the Inventory class's function returning true, we return false in order to allow the pickup to happen
+// overriding the Pickup class's function returning true, we return false in order to allow the pickup to happen
+// if we don't do this, then Pickup will return true because bDisplayableInv is false
 function bool HandlePickupQuery( inventory Item )
 {
-    return false;
+    if ( Item.Class == Class )
+        return false;
+    return Super.HandlePickupQuery(Item);
 }
