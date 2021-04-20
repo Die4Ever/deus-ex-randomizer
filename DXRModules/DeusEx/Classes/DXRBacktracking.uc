@@ -254,7 +254,7 @@ function ParisChateauAnyEntry()
 
     RemoveChoppers();
     
-    CloneInterpolationPoints( 'UN_BlackHeli_Fly', 'Camera1', vect(-500,250,0) );
+    CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'Camera1', vect(-500,250,0) );
     BacktrackChopper( 'ChopperExit', 'BlackHelicopter', 'UN_BlackHeli_Fly', "Jock", 'Camera1', "10_PARIS_METRO", 'PathNode447', "", vect(-825.793274, 1976.029297, 176.545380), rot(0, -10944, 0) );
 }
 
@@ -285,6 +285,7 @@ function VandGasAnyEntry()
 {
     local BlackHelicopter chopper;
     local InterpolateTrigger t;
+    local DeusExMover M;
     local FlagBase flags;
     flags = dxr.player.flagBase;
 
@@ -300,7 +301,7 @@ function VandGasAnyEntry()
         chopper.Event = 'UN_BlackHeli';
 
     CreateInterpolationPoints( 'backtrack_exit', vect(2520.256836, -2489.873535, -1402.078857) );
-    CloneInterpolationPoints( 'backtrack_exit', 'backtrack_camera', vect(-500,250,0) );
+    CreateCameraInterpolationPoints( 'backtrack_exit', 'backtrack_camera', vect(-500,250,0) );
 
     // I could also give Jock a "Let's go" conversation
     BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_CMD", 'PathNode8', "", vect(2520.256836, -2489.873535, -1402.078857), rot(0,0,0) );
@@ -314,18 +315,40 @@ function VandGasAnyEntry()
         RemoveChoppers('Heli');
         SpawnChopper( 'Heli', 'UN_BlackHeli', "Jock", vect(-3207.999756, 135.342285, -905.545044), rot(0, -63104, 0) );
     }
+    else if( flags.GetBool('TiffanyRescued') ) {
+        foreach AllActors(class'BlackHelicopter', chopper)
+            chopper.EnterWorld();
+
+        foreach AllActors(Class'DeusExMover', M, 'junkyard_doors')
+            M.BlowItUp(None);
+        
+        flags.SetBool('MS_ChopperGasUnhidden', True,, 15);
+    }
 }
 
 function VandSubAnyEntry()
 {
+    local InterpolateTrigger t;
+    local InterpolationPoint p;
     local FlagBase flags;
     flags = dxr.player.flagBase;
 
     // backtracking to gas station
     flags.SetBool('TiffanyRescued', true,, 15);// despite the name, this really just means the rescue has been attempted
+
+    foreach AllActors(class'InterpolateTrigger', t, 'InterpolateTrigger')
+        if( t.Event == 'UN_BlackHeli' ) t.Destroy();
+    
     RemoveChoppers('UN_BlackHeli');
 
-    //BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_GAS", 'PathNode98', "", vect(), rot() );
+    foreach AllActors(class'InterpolationPoint', p, 'UN_BlackHeli_Fly') {
+        if( p.Position > 2 ) continue;
+        p.SetLocation(vect(7035.433594, 3841.281250, -379.008362));
+        if( p.Position < 2 ) p.SetRotation(rot(0, -15720, 0));
+    }
+
+    CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'backtrack_camera', vect(200,600,0) );
+    BacktrackChopper('UN_BlackHeli_Fly', 'backtrack_chopper', 'UN_BlackHeli_Fly', "", 'backtrack_camera', "12_VANDENBERG_GAS", 'PathNode98', "", vect(7035.433594, 3841.281250, -379.008362), rot(0, -15720, 0) );
     
     // repeat flights to silo
 }
@@ -402,15 +425,20 @@ function CreateInterpolationPoints(Name PathTag, vector loc)
         p.BeginPlay();// find the Prev and Next
 }
 
-function CloneInterpolationPoints(Name oldtag, Name newtag, vector offset)
+function CreateCameraInterpolationPoints(Name oldtag, Name newtag, vector offset)
 {
     local InterpolationPoint p, pnew;
+    local vector loc;
+    local rotator rot;
 
     foreach AllActors(class'InterpolationPoint', p, newtag)
         p.Destroy();//return;// don't do anything if newtag already exists
 
     foreach AllActors(class'InterpolationPoint', p, oldtag) {
-        pnew = Spawn(class'InterpolationPoint',, newtag, p.Location+offset, p.Rotation);
+        loc = (10+p.Position) * 0.1 * offset;
+        loc += p.Location;
+        rot = Rotator(p.Location - loc);
+        pnew = Spawn(class'InterpolationPoint',, newtag, loc, rot);
         pnew.bEndOfPath = p.bEndOfPath;
         pnew.bSkipNextPath = p.bSkipNextPath;
         pnew.Position = p.Position;
