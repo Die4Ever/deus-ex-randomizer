@@ -41,7 +41,7 @@ There are also settings for
 * challenge mode loadouts!
     * Stick With the Prod means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts
-    * Ninja JC - the only weapons allowed are thowing knives and the sword, you get a Ninja Augmentation which gives you speed and stealth at the same time
+    * Ninja JC - the only weapons allowed are throwing knives and the sword, you get a Ninja Augmentation which gives you speed and stealth at the same time
     * Don't Give Me the GEP Gun - bans the GEP gun
     * Freeman Mode - only weapon allowed is the crowbar
     * Grenades Only
