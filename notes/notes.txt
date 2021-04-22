@@ -45,6 +45,7 @@ v1.5.7:
 	in paris underground (subway) I could disable the pain zone and add teleporters to the ends of the tracks to make it into a hub area
 	prevent extra enemy spawning in tiffany's jail cell
 	add datacubes for area51 page codes? uc control rooms = 1234, coolant room = 9248, aquinas router = 6188
+	make the merchant cheaper but less common?
 
 
 for v1.6 programatically modify conversations? ===================

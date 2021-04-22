@@ -508,8 +508,6 @@ function bool _GenerateConnections(int missionNum)
     local int maxAttempts;
     local int i;
     
-    maxAttempts = 50;
-    
     for(i=0;i<numXfers;i++)
     {
         xfers[i].used = False;
@@ -532,6 +530,7 @@ function bool _GenerateConnections(int missionNum)
         xfersUsed++;
     
         //Get a random unused transfer
+        maxAttempts = (numXfers-xfersUsed)*3;
         for (i=0;i<maxAttempts;i++)
         {
             xferOffset = rng(numXfers-xfersUsed);
@@ -543,7 +542,9 @@ function bool _GenerateConnections(int missionNum)
             }
         }
         if( i >= maxAttempts ) {
-            l("failed to find valid connection for " $ xfers[nextAvailIdx].mapname $ "#" $ xfers[nextAvailIdx].inTag $ " / #" $ xfers[nextAvailIdx].outTag );
+            l("failed to find valid connection for "
+                $ xfers[nextAvailIdx].mapname $ "#" $ xfers[nextAvailIdx].inTag $ " / #" $ xfers[nextAvailIdx].outTag
+                $ " after "$i$" attempts with "$numXfers$" numXfers" );
             return false;
         }
         xfers[destIdx].used = True;
@@ -1033,10 +1034,10 @@ function ExtendedTests()
 
     TestAllMissions(21);
 
-    /*for(i=1; i<10; i++) {
+    for(i=1; i<10; i++) {
         // reduce this if we start getting runaway loops, or make it so extended tests can run across multiple frames
         TestAllMissions( dxr.seed + i );
-    }*/
+    }
 }
 
 function BasicTests()
