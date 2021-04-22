@@ -77,7 +77,9 @@ function PreFirstEntry()
 
     }
 
-    class'DynamicTeleporter'.static.CheckTeleport(dxr.player);
+    if( ! class'DynamicTeleporter'.static.CheckTeleport(dxr.player) ) {
+        err("DynamicTeleporter failed");
+    }
 }
 
 function PostFirstEntry()
@@ -157,6 +159,8 @@ function AnyEntry()
 
     FixInterpolating();
 
+    SetSeed("DXRBacktracking AnyEntry");// just in case we do randomized interpolationpoints
+
     switch(dxr.localURL) {
         case "10_PARIS_METRO":
             ParisMetroAnyEntry();
@@ -187,7 +191,10 @@ function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
     //need to make sure this doesn't happen when loading a save
-    if ( IsTravel ) class'DynamicTeleporter'.static.CheckTeleport(dxr.player);
+    if ( IsTravel ) {
+        if( ! class'DynamicTeleporter'.static.CheckTeleport(dxr.player) )
+            err("DynamicTeleporter failed");
+    }
 }
 
 function FixInterpolating()

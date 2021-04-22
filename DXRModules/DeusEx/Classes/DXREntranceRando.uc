@@ -29,6 +29,7 @@ struct MapConnection
     var() string mapname;
     var() int    numDests;
     var() string dest[15]; //List of maps that can be reached from this one
+    var() string depends[15]; //The map each dest depends on
 };
 var Connection conns[20];
 var int numConns;
@@ -47,7 +48,7 @@ struct BanConnection
 var config BanConnection BannedConnections[32];
 
 var config string dead_ends[32];
-/*var config string unreachable_conns[16];
+//var config string unreachable_conns[16];
 
 struct Dependency
 {
@@ -58,7 +59,7 @@ struct Dependency
     var string dependency;
 };
 
-var config Dependency dependencies[16];*/
+var config Dependency dependencies[16];
 
 var config int min_connections_selfconnect;
 
@@ -75,20 +76,18 @@ function CheckConfig()
         i = 0;
         dead_ends[i++] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
         dead_ends[i++] = "06_HONGKONG_Storage#waterpipe";
-        //dead_ends[i++] = "12_VANDENBERG_CMD#storage";//it's actually backwards from this, instead of this teleporter being a dead end, the door before the teleporter is the dead end
-        //dead_ends[i++] = "12_VANDENBERG_TUNNELS#End";//this isn't right either, because if you can get to this teleporter then you can get through the map
 
         /*i=0;
-        unreachable_conns[i++] = "12_VANDENBERG_CMD#storage";
+        unreachable_conns[i++] = "12_VANDENBERG_CMD#storage";*/
 
         i=0;
-        dependencies[i].dependent = "12_vandenberg_computer#computer";
-        dependencies[i].dependency = "12_VANDENBERG_TUNNELS";
+        dependencies[i].dependent = "12_VANDENBERG_CMD#gas_start";// source map and outTag
+        dependencies[i].dependency = "12_VANDENBERG_COMPUTER";
         i++;
 
-        dependencies[i].dependent = "12_vandenberg_gas";
-        dependencies[i].dependency = "12_VANDENBERG_COMPUTER";
-        i++;*/
+        dependencies[i].dependent = "12_VANDENBERG_CMD#computer";// source map and outTag
+        dependencies[i].dependency = "12_VANDENBERG_TUNNELS";
+        i++;
     }
     k=0;
     for(i=0; i < ArrayCount(BannedConnections); i++) {
@@ -101,6 +100,13 @@ function CheckConfig()
     for(i=0; i < ArrayCount(dead_ends); i++) {
         if( dead_ends[i] == "" ) continue;
         dead_ends[k++] = Caps(dead_ends[i]);
+    }
+    k=0;
+    for(i=0; i < ArrayCount(dependencies); i++) {
+        if( dependencies[i].dependent == "" ) continue;
+        dependencies[k].dependent = Caps(dependencies[i].dependent);
+        dependencies[k].dependency = Caps(dependencies[i].dependency);
+        k++;
     }
     Super.CheckConfig();
 }
@@ -240,13 +246,13 @@ function bool ValidateConnections()
     {
         for ( j=0;j<numMaps;j++)
         {
-            //See if map can be visited
+            //See if map j can be visited
             canVisitMap = False;
             for (k=0;k<visitable;k++)
             {
                 if (mapdests[j].mapname == canvisit[k])
                 {
-                    canVisitMap = True;
+                    canVisitMap = true;
                 }
             }
             
@@ -256,11 +262,13 @@ function bool ValidateConnections()
                 MarkMapDestinationsVisitible(mapdests[j], canvisit, visitable);
             }
         }
+
+        if( visitable == numMaps ) break;
     }
     
     //Theoretically I should probably actually check to see if the maps match,
     //but this is fairly safe...
-    l("ValidateConnections visitable: " $ visitable $", numMaps: " $ numMaps);
+    l("ValidateConnections visitable: " $ visitable $", numMaps: " $ numMaps $", i: "$i$", numConns: "$numConns);
     return visitable == numMaps;
 }
 
@@ -318,29 +326,42 @@ function int GetAllMapNames(out MapConnection mapdests[15])
 
 function MarkMapsConnected(out MapConnection mapdests[15], int numMaps, MapTransfer a, MapTransfer b)
 {
-    local int mapidx;
+    local int mapidx, i;
 
-    // can we get from A to B?
-    if( IsDeadEndConnection(b, a) == false ) {
-        mapidx = FindMapDestinations(mapdests, numMaps, a.mapname);
-        if(mapidx == -1) {
-            err("failed MarkMapsConnected("$numMaps$", "$a.mapname$", "$b.mapname$") find A");
-            return;
-        }
-        // write B into the destinations of A
-        AddDestination( mapdests[mapidx], b.mapname);
+    // can you get from A to B?
+    _MarkMapConnected(mapdests, numMaps, a, b);
+
+    // can you get from B to A?
+    _MarkMapConnected(mapdests, numMaps, b, a);
+}
+
+function bool _MarkMapConnected(out MapConnection mapdests[15], int numMaps, MapTransfer a, MapTransfer b)
+{
+    local int mapidx, i;
+    local string maptag, depends;
+
+    // can you get from A to B?
+    if( IsDeadEndConnection(b, a) ) return false;
+
+    mapidx = FindMapDestinations(mapdests, numMaps, a.mapname);
+    if(mapidx == -1) {
+        err("failed _MarkMapConnected("$numMaps$", "$a.mapname$", "$b.mapname$")");
+        return false;
     }
 
-    // can we get from B to A?
-    if( IsDeadEndConnection(a, b) == false ) {
-        mapidx = FindMapDestinations(mapdests, numMaps, b.mapname);
-        if(mapidx == -1) {
-            err("failed MarkMapsConnected("$numMaps$", "$a.mapname$", "$b.mapname$") find B");
-            return;
+    maptag = a.mapname $ "#" $ a.outTag;
+    for(i=0;i<ArrayCount(dependencies);i++) {
+        if( dependencies[i].dependent == "" ) break;
+        if( maptag == dependencies[i].dependent ) {
+            depends = dependencies[i].dependency;
+            break;
         }
-        // write A into the destinations of B
-        AddDestination( mapdests[mapidx], a.mapname);
     }
+
+    // write B into the destinations of A
+    AddDestination( mapdests[mapidx], b.mapname, depends);
+
+    return true;
 }
 
 function bool IsDeadEndConnection(MapTransfer m, MapTransfer from)
@@ -374,15 +395,17 @@ function int FindMapDestinations(MapConnection mapdests[15], int numMaps, string
     return -1;
 }
 
-function AddDestination( out MapConnection map, string mapname )
+function AddDestination( out MapConnection map, string mapname, string depends )
 {
     local int i;
     for(i=0; i < map.numDests; i++) {
         if( map.dest[i] == mapname ) {
+            if( depends != "" ) map.depends[i] = depends;
             return;
         }
     }
     map.dest[map.numDests] = mapname;
+    map.depends[map.numDests] = depends;
     map.numDests++;
 }
 
@@ -415,6 +438,20 @@ function bool CheckDuplicate(MapTransfer a, MapTransfer b)
     return false;
 }
 
+function bool CheckDependencies(string depends, string canvisit[15], int visitable)
+{
+    local int i;
+
+    if( depends == "" ) return true;
+    
+    for(i=0;i<visitable;i++) {
+        if( depends == canvisit[i] ) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function MarkMapDestinationsVisitible(MapConnection m, out string canvisit[15], out int visitable)
 {
     local int k, p;
@@ -431,7 +468,7 @@ function MarkMapDestinationsVisitible(MapConnection m, out string canvisit[15], 
                 canVisitDest = True;
             }
         }
-        if (canVisitDest == False)
+        if (canVisitDest == False && CheckDependencies(m.depends[k], canvisit, visitable) )
         {
             canvisit[visitable] = m.dest[k];
             visitable++;
@@ -441,20 +478,23 @@ function MarkMapDestinationsVisitible(MapConnection m, out string canvisit[15], 
 
 function GenerateConnections(int missionNum)
 {
-    local int attempts;
+    local int attempts, genconsfails, validatefails;
     local bool isValid;
     isValid = False;
 
     for(attempts=0; attempts<500; attempts++)
     {
-        if( ! _GenerateConnections(missionNum) )
+        if( ! _GenerateConnections(missionNum) ) {
+            genconsfails++;
             continue;// save a bunch of loops if we know we failed?
+        }
         if(ValidateConnections()) {
-            if( attempts > 40 ) warning("GenerateConnections("$missionNum$") succeeded but took "$attempts$" attempts! seed: "$dxr.seed);
+            if( attempts > 40 ) warning("GenerateConnections("$missionNum$") succeeded but took "$attempts$" attempts! seed: "$dxr.seed $", genconsfails: "$genconsfails$", validatefails: "$validatefails);
             return;
         }
+        validatefails++;
     }
-    err("GenerateConnections("$missionNum$") failed after "$attempts$" attempts! seed: "$dxr.seed);
+    err("GenerateConnections("$missionNum$") failed after "$attempts$" attempts! seed: "$dxr.seed $", genconsfails: "$genconsfails$", validatefails: "$validatefails);
     numConns = 0;// vanilla on failure
 }
 
@@ -468,7 +508,7 @@ function bool _GenerateConnections(int missionNum)
     local int maxAttempts;
     local int i;
     
-    maxAttempts = 30;
+    maxAttempts = 50;
     
     for(i=0;i<numXfers;i++)
     {
@@ -602,16 +642,31 @@ function FixHongKongCanal()
 function FixVandebergCmd()
 {
     local DeusExMover d;
+    local Nanokey n;
+    local DXRKeys dxrk;
 
-    foreach AllActors(class'DeusExMover', d) {
+    foreach AllActors(class'DeusExMover', d, 'security_tunnels') {
+        d.KeyIDNeeded = 'storage_door';
+    }
+
+    /*foreach AllActors(class'DeusExMover', d) {
         switch(d.Tag) {
-            case 'door_controlroom':
             case 'security_tunnels':
+                d.KeyIDNeeded = 'storage_door';
+            case 'door_controlroom':
                 class'DXRKeys'.static.StaticMakePickable(d);
                 class'DXRKeys'.static.StaticMakeDestructible(d);
                 break;
         }
-    }
+    }*/
+
+    n = Spawn(class'NanoKey',,, vect(2048.289063, 4712.830078, -2052.789551) );
+    n.Description = "Storage door key";
+    n.KeyID = 'storage_door';
+
+    // this is called from PostFirstEntry, so it's after DXRKeys already ran
+    dxrk = DXRKeys(dxr.FindModule(class'DXRKeys'));
+    if( dxrk != None ) dxrk.RandoKey(n);
 }
 
 function RandoMission2()
@@ -733,12 +788,14 @@ function RandoMission12()
     // I'm not sure what arrangements I would want for vandenberg? maybe I should just make a key for the storage door and stick it somewhere in cmd?
     AddFixedConn("12_VANDENBERG_CMD","x","12_VANDENBERG_CMD", "x");
     AddDoubleXfer("12_VANDENBERG_CMD","commstat","12_vandenberg_tunnels","start");
-    //AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");// this needs to be marked as one way somehow, not just AddXfer, because it does go both ways, but only after opening the door
+    AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");
     AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");
+    AddDoubleXfer("12_VANDENBERG_CMD","?toname=PathNode8", "12_Vandenberg_gas","gas_start");
 
-    AddFixedConn("12_vandenberg_computer","x","14_Vandenberg_sub.dx", "x");//jock takes you to the gas station after 12_vandenberg_computer, then to vandenberg sub... this causes issues
+    AddDoubleXfer("12_VANDENBERG_GAS","?toname=PathNode98", "14_Vandenberg_sub","PlayerStart");
     AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC.dx ","UC");//strange formatting, some even have a space
     AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub.dx","subbay");
+    AddDoubleXfer("14_Vandenberg_Sub","?toname=InterpolationPoint39", "14_Oceanlab_silo.dx ","#frontgate");
 
     GenerateConnections(12);
 }
@@ -972,10 +1029,9 @@ function ExtendedTests()
 
     BasicTests();
     OneWayTests();
-    //VandenbergTests();
+    TestDependencies();
 
-    //TestAllMissions(21);
-    //TestAllMissions(154944);
+    TestAllMissions(21);
 
     /*for(i=1; i<10; i++) {
         // reduce this if we start getting runaway loops, or make it so extended tests can run across multiple frames
@@ -1150,7 +1206,7 @@ function TestAllMissions(int newseed)
     dxr.seed = oldseed;
 }
 
-/*function VandenbergTests()
+function TestDependencies()
 {
     local int i;
 
@@ -1158,48 +1214,77 @@ function TestAllMissions(int newseed)
     numFixedConns = 0;
 
     AddFixedConn("12_VANDENBERG_CMD","x","12_VANDENBERG_CMD", "x");
-    AddDoubleXfer("12_VANDENBERG_CMD","commstat","12_vandenberg_tunnels","start");
-    AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");// this needs to be marked as one way somehow, not just AddXfer, because it does go both ways, but only after opening the door
+    AddFixedConn("12_VANDENBERG_CMD","x2","12_VANDENBERG_TUNNELS","x2");
     AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");
+    AddDoubleXfer("12_VANDENBERG_CMD","?toname=PathNode8", "12_Vandenberg_gas","gas_start");
+    AddDoubleXfer("12_VANDENBERG_GAS","?toname=PathNode98", "14_Vandenberg_sub","PlayerStart");
 
+    //vanilla test
     conns[0] = fixed_conns[0];
-    //comsat to tunnels
+    //cmd to gas, test order of operations
+    conns[1].a = xfers[2];
+    conns[1].b = xfers[3];
+    //cmd to comp
+    conns[2].a = xfers[0];
+    conns[2].b = xfers[1];
+    //gas to sub
+    conns[3].a = xfers[4];
+    conns[3].b = xfers[5];
+
+    conns[4] = fixed_conns[1];
+    numConns = 5;
+    testbool(ValidateConnections(), true, "Test Dependencies vanilla");
+
+    numFixedConns=1;
+    numConns=4;
+    testbool(ValidateConnections(), false, "Test Dependencies vanilla but without tunnels");
+    numFixedConns=2;
+
+    //bad good
+    conns[0] = fixed_conns[0];
+    //cmd hall to gas (which goes to comp)
     conns[1].a = xfers[0];
-    conns[1].b = xfers[1];
-    //storage to computer
+    conns[1].b = xfers[3];
+    //cmd heli to sub
     conns[2].a = xfers[2];
     conns[2].b = xfers[5];
-    //hall to tunnels end
+    //gas to comp
     conns[3].a = xfers[4];
-    conns[3].b = xfers[3];
-    //cmd to gas
-    conns[4].a = xfers[6];
-    conns[4].b = xfers[7];
-    numConns = 5;
-    LogConnections();
-    testbool(ValidateConnections(), false, "VandenbergTests 1");
+    conns[3].b = xfers[1];
 
+    conns[4] = fixed_conns[1];
+    numConns = 5;
+    testbool(ValidateConnections(), true, "Test Dependencies good");
+
+    numFixedConns=1;
+    numConns=4;
+    testbool(ValidateConnections(), false, "Test Dependencies good but without tunnels");
+    numFixedConns=2;
+
+    //bad test
     conns[0] = fixed_conns[0];
-    //comsat to computer
+    //cmd hall to gas
     conns[1].a = xfers[0];
-    conns[1].b = xfers[5];
-    //storage to tunnel
+    conns[1].b = xfers[3];
+    //cmd heli to comp
     conns[2].a = xfers[2];
     conns[2].b = xfers[1];
-    //hall to tunnels end
+    //gas to sub
     conns[3].a = xfers[4];
-    conns[3].b = xfers[3];
-    //cmd to gas
-    conns[4].a = xfers[6];
-    conns[4].b = xfers[7];
+    conns[3].b = xfers[5];
+    
+    conns[4] = fixed_conns[1];
     numConns = 5;
-    LogConnections();
-    testbool(ValidateConnections(), true, "VandenbergTests 1");
+    testbool(ValidateConnections(), false, "Test Dependencies bad");
+
+    numFixedConns=1;
+    numConns=4;
+    testbool(ValidateConnections(), false, "Test Dependencies bad but without tunnels");
 
     numXfers = 0;
     numConns = 0;
     numFixedConns = 0;
-}*/
+}
 
 defaultproperties
 {
