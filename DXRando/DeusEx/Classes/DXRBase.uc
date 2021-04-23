@@ -28,6 +28,8 @@ function FirstEntry();
 function PostFirstEntry();
 
 function AnyEntry();
+function PostAnyEntry();
+
 function ReEntry(bool IsTravel);
 
 function PreTravel()

@@ -81,11 +81,15 @@ function CheckConfig()
         unreachable_conns[i++] = "12_VANDENBERG_CMD#storage";*/
 
         i=0;
-        dependencies[i].dependent = "12_VANDENBERG_CMD#gas_start";// source map and outTag
+        dependencies[i].dependent = "04_NYC_STREET#ToNSFHQ";// source map and outTag
+        dependencies[i].dependency = "04_NYC_HOTEL";
+        i++;
+
+        dependencies[i].dependent = "12_VANDENBERG_CMD#gas_start";
         dependencies[i].dependency = "12_VANDENBERG_COMPUTER";
         i++;
 
-        dependencies[i].dependent = "12_VANDENBERG_CMD#computer";// source map and outTag
+        dependencies[i].dependent = "12_VANDENBERG_CMD#computer";
         dependencies[i].dependency = "12_VANDENBERG_TUNNELS";
         i++;
     }
@@ -705,7 +709,7 @@ function RandoMission3()
 function RandoMission4()
 {
     AddFixedConn("04_NYC_Street","x", "04_NYC_Street","x");
-    AddDoubleXfer("04_NYC_BATTERYPARK","ToBatteryPark","04_NYC_Street","ToStreet");
+    //AddDoubleXfer("04_NYC_BATTERYPARK","ToBatteryPark","04_NYC_Street","ToStreet");
     AddDoubleXfer("04_NYC_STREET","FromSmugBackDoor","04_NYC_Smug","ToSmugBackDoor");
     AddDoubleXfer("04_NYC_STREET","FromSmugFrontDoor","04_NYC_Smug","ToSmugFrontDoor");
     AddDoubleXfer("04_NYC_STREET","FromBarBackEntrance","04_NYC_Bar","ToBarBackEntrance");
