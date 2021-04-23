@@ -67,19 +67,39 @@ function SetCompOwner(ElectronicDevices newCompOwner)
 	local int compIndex;
 	local int rowId;
 	local int userRowIndex;
+    local ATM atm;
 
-	compOwner = Computers(newCompOwner);
+    if (newCompOwner.IsA('Computers'))
+    {
+        compOwner = Computers(newCompOwner);
 
-	// Loop through the names and add them to our listbox
-	for (compIndex=0; compIndex<compOwner.NumUsers(); compIndex++)
-	{
-        if (compOwner.GetAccountKnown(compIndex)) {
-            lstAccounts.AddRow(Caps(compOwner.GetUserName(compIndex))$";"$compOwner.GetPassword(compIndex));
+        // Loop through the names and add them to our listbox
+        for (compIndex=0; compIndex<compOwner.NumUsers(); compIndex++)
+        {
+            if (compOwner.GetAccountKnown(compIndex)) {
+                lstAccounts.AddRow(Caps(compOwner.GetUserName(compIndex))$";"$compOwner.GetPassword(compIndex));
 
-            if (Caps(winTerm.GetUserName()) == Caps(compOwner.GetUserName(compIndex)))
-                userRowIndex = compIndex;
+                if (Caps(winTerm.GetUserName()) == Caps(compOwner.GetUserName(compIndex)))
+                    userRowIndex = compIndex;
+            }
         }
-	}
+    }
+    else if (newCompOwner.IsA('ATM'))
+    {
+        atm = ATM(newCompOwner);
+
+        // Loop through the names and add them to our listbox
+        for (compIndex=0; compIndex<atm.NumUsers(); compIndex++)
+        {
+            log("ATM has account "$atm.GetAccountNumber(compIndex));
+            if (atm.GetAccountKnown(compIndex)) {
+                lstAccounts.AddRow(Caps(atm.GetAccountNumber(compIndex))$";"$atm.GetPIN(compIndex));
+
+                if (Caps(winTerm.GetUserName()) == Caps(atm.GetAccountNumber(compIndex)))
+                    userRowIndex = compIndex;
+            }
+        }   
+    }
 
 	// Select the row that matches the current user
 	rowId = lstAccounts.IndexToRowId(userRowIndex);

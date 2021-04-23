@@ -35,13 +35,23 @@ function ConfigurationChanged()
 function LogInAs(String user, String pass)
 {
     local ComputerScreenLogin login;
+    local ComputerScreenATM atm;
     if (winComputer.IsA('ComputerScreenLogin'))
     {
         login = ComputerScreenLogin(winComputer);
 		login.editUserName.SetText(user);
 		login.editPassword.SetText(pass);
         login.ProcessLogin();
+    } 
+    else if (winComputer.IsA('ComputerScreenATM'))
+    {
+        atm = ComputerScreenAtm(winComputer);
+		atm.editAccount.SetText(user);
+		atm.editPIN.SetText(pass);
+        atm.ProcessLogin();
     }
+    
+    userName = user;
 }
 
 function CloseScreen(String action)
@@ -56,7 +66,8 @@ function CloseScreen(String action)
 
 function CreateKnownAccountsWindow()
 {
-    if (Computers(compOwner).HasKnownAccounts()) {
+    if (Computers(compOwner).HasKnownAccounts() ||
+        ATM(compOwner).hasKnownAccounts()) {
 		winKnownShadow = ShadowWindow(NewChild(Class'ShadowWindow'));
 
 		winKnownAccounts = ComputerScreenKnownAccounts(NewChild(Class'ComputerScreenKnownAccounts'));

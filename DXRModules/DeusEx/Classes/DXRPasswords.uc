@@ -599,13 +599,19 @@ function MarkPasswordKnown(string password)
 {
     local Keypad k;
     local Computers c;
+    local ATM a;
        
     //Check computer logins
     foreach AllActors(class 'Computers',c)
     {
         c.SetAccountKnownByPassword(password);
     }
-    
+
+    foreach AllActors(class 'ATM',a)
+    {
+        a.SetAccountKnownByPassword(password);
+    } 
+ 
     //Check keypad logins
     foreach AllActors(class 'Keypad',k)
     {
