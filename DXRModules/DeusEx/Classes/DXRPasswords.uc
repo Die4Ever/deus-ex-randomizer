@@ -598,8 +598,13 @@ function NotifyPlayerNotesUpdated()
 function MarkPasswordKnown(string password)
 {
     local Keypad k;
-    
+    local Computers c;
+       
     //Check computer logins
+    foreach AllActors(class 'Computers',c)
+    {
+        c.SetAccountKnownByPassword(password);
+    }
     
     //Check keypad logins
     foreach AllActors(class 'Keypad',k)
