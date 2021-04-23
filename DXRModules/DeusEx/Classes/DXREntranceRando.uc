@@ -80,9 +80,21 @@ function CheckConfig()
         /*i=0;
         unreachable_conns[i++] = "12_VANDENBERG_CMD#storage";*/
 
-        i=0;
-        dependencies[i].dependent = "04_NYC_STREET#ToNSFHQ";// source map and outTag
+        i=0;// dependencies[i].dependent = source map and outTag
+        dependencies[i].dependent = "02_NYC_Street#ToNYCUndergroundSewer2";
+        dependencies[i].dependency = "02_NYC_Smug";
+        i++;
+
+        dependencies[i].dependent = "02_NYC_Street#ToNYCSump";
+        dependencies[i].dependency = "02_NYC_Smug";
+        i++;
+
+        dependencies[i].dependent = "04_NYC_STREET#ToNSFHQ";
         dependencies[i].dependency = "04_NYC_HOTEL";
+        i++;
+
+        dependencies[i].dependent = "06_HongKong_WanChai_Market#Lobby";
+        dependencies[i].dependency = "06_HongKong_WanChai_Street";
         i++;
 
         dependencies[i].dependent = "12_VANDENBERG_CMD#gas_start";
@@ -731,7 +743,7 @@ function RandoMission6()
     AddDoubleXfer("06_HONGKONG_STORAGE","waterpipe","06_HongKong_WanChai_Canal","canal");
     //AddDoubleXfer("06_HONGKONG_STORAGE","basement","06_HongKong_MJ12lab","tubeend");
     //AddXfer("06_HongKong_Storage","BackDoor","06_HONGKONG_WANCHAI_GARAGE#Teleporter");//one way
-    AddFixedConn("06_HONGKONG_TONGBASE","lab","06_HongKong_WanChai_Market","compound");
+    //AddFixedConn("06_HONGKONG_TONGBASE","lab","06_HongKong_WanChai_Market","compound");
     AddDoubleXfer("06_HONGKONG_VERSALIFE","Lobby","06_HongKong_WanChai_Market","market");
     AddDoubleXfer("06_HONGKONG_WANCHAI_CANAL","Street","06_HongKong_WanChai_Street","Canal");
     AddDoubleXfer("06_HONGKONG_WANCHAI_CANAL","market01","06_HongKong_WanChai_Market","canal01");
