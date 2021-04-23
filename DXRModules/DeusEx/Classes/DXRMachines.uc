@@ -340,6 +340,8 @@ function Datacube SpawnDatacube(vector loc, ComputerSecurity c)
         return None;
     }
     d.plaintext = c.UserList[0].userName $ " password is " $ c.UserList[0].Password;
+    d.new_passwords[0] = c.UserList[0].Password;
+    
     info("SpawnDatacube "$d$" done at ("$locnorm.loc$"), ("$locnorm.norm$") with name: "$d.Name);
     return d;
 }

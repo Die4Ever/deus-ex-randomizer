@@ -66,8 +66,8 @@ function CloseScreen(String action)
 
 function CreateKnownAccountsWindow()
 {
-    if (Computers(compOwner).HasKnownAccounts() ||
-        ATM(compOwner).hasKnownAccounts()) {
+    if (compOwner.IsA('Computers') && (Computers(compOwner).HasKnownAccounts()) ||
+        (compOwner.IsA('ATM') && ATM(compOwner).hasKnownAccounts())) {
 		winKnownShadow = ShadowWindow(NewChild(Class'ShadowWindow'));
 
 		winKnownAccounts = ComputerScreenKnownAccounts(NewChild(Class'ComputerScreenKnownAccounts'));
