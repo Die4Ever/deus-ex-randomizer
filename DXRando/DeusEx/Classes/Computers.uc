@@ -30,9 +30,10 @@ function int GetAccountIndexByName(string username)
 {
     local int compIndex;
     
+	username = Caps(username);
 	for (compIndex=0; compIndex<NumUsers(); compIndex++)
 	{
-		if (Caps(username) == Caps(GetUserName(compIndex)))
+		if (username == Caps(GetUserName(compIndex)))
 		{
             return compIndex;
         }
@@ -44,9 +45,10 @@ function int GetAccountIndexByPass(string password)
 {
     local int compIndex;
     
+	password = Caps(password);
 	for (compIndex=0; compIndex<NumUsers(); compIndex++)
 	{
-		if (Caps(password) == Caps(GetPassword(compIndex)))
+		if (password == Caps(GetPassword(compIndex)))
 		{
             log("Found password "$password$" in computer "$Name);
             return compIndex;

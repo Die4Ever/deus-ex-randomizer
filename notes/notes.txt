@@ -13,13 +13,6 @@ v1.5.7 Alpha:
 	need to support optional maps?
 
 v1.5.7:
-	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 154944: got False, expected True
-	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 59072: got False, expected True
-	DXREntranceRando: ERROR: fail: RandoMission4 validation, seed: 569968: got False, expected True
-	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 120577: got False, expected True
-	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 487814: got False, expected True
-	DXREntranceRando: ERROR: fail: RandoMission2 validation, seed: 814214: got False, expected True
-	fix charged pickups screwing up your inventory
 	speed up the door in paris chateau wine cellar
 	move area51 start location, and maybe add another one in the sniper tower?
 	paris chateau door didn't open, maybe because of StayOpenTime
@@ -38,7 +31,7 @@ v1.5.7:
 		might also need to do WaterZone1, but that would make it difficult to hold your breath through there, I could make a dynamicteleporter bring you past that
 	enough advanced options to be able to play unrandomized
 	tweak rotations for teleporters?
-	NG+ remove 2 random skills, half your skill points, and a random aug&weapon?
+	NG+ remove 2 random skills, half your skill points, a random aug, and a random weapon?
 	item rates in credits stats
 	cleanup goals when finishing missions, especially hong kong
 	in DXRFixup PostFirstEntry() force the unatco retinal scanner to MJ12 lab to be unhackable, except make it work in mission 5

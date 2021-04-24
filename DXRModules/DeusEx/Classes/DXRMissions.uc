@@ -797,7 +797,7 @@ function CheckConfig()
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-4096.000000, -816.000000, -128.000000);//storage closet, need to move closer to wall
+        important_locations[i].location = vect(-4080.000000, -816.000000, -128.000000);//storage closet
         important_locations[i].rotation = rot(0, 32768, 0);
         i++;
 
@@ -807,7 +807,7 @@ function CheckConfig()
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-3072.000000, 64.000000, 816.000000);//big fan
+        important_locations[i].location = vect(-3200,-48,-96);//big fan
         important_locations[i].rotation = rot(0, 0, 0);
         i++;
 
