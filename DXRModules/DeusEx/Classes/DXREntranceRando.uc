@@ -104,6 +104,10 @@ function CheckConfig()
         dependencies[i].dependent = "12_VANDENBERG_CMD#computer";
         dependencies[i].dependency = "12_VANDENBERG_TUNNELS";
         i++;
+
+        dependencies[i].dependent = "14_Vandenberg_Sub#frontgate";
+        dependencies[i].dependency = "14_OceanLab_UC";//format has to match the connection not the teleporter
+        i++;
     }
     k=0;
     for(i=0; i < ArrayCount(BannedConnections); i++) {
@@ -238,7 +242,7 @@ function bool ValidateConnections()
     local bool foundMap;
     
     local string canvisit[15];
-    local int visitable;
+    local int visitable, oldVisitable;
     
     local bool canVisitMap;
     
@@ -255,6 +259,7 @@ function bool ValidateConnections()
     
     //Start finding out what maps we can visit
     visitable = 0;
+    oldVisitable = 0;
     canvisit[visitable]=mapdests[0].mapname;
     visitable++;
     
@@ -280,6 +285,8 @@ function bool ValidateConnections()
         }
 
         if( visitable == numMaps ) break;
+        if( visitable == oldVisitable ) break;
+        oldVisitable = visitable;
     }
     
     //Theoretically I should probably actually check to see if the maps match,
@@ -342,8 +349,6 @@ function int GetAllMapNames(out MapConnection mapdests[15])
 
 function MarkMapsConnected(out MapConnection mapdests[15], int numMaps, MapTransfer a, MapTransfer b)
 {
-    local int mapidx, i;
-
     // can you get from A to B?
     _MarkMapConnected(mapdests, numMaps, a, b);
 
@@ -810,9 +815,9 @@ function RandoMission12()
     AddDoubleXfer("12_VANDENBERG_CMD","?toname=PathNode8", "12_Vandenberg_gas","gas_start");
 
     AddDoubleXfer("12_VANDENBERG_GAS","?toname=PathNode98", "14_Vandenberg_sub","PlayerStart");
-    AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC.dx ","UC");//strange formatting, some even have a space
-    AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub.dx","subbay");
-    AddDoubleXfer("14_Vandenberg_Sub","?toname=InterpolationPoint39", "14_Oceanlab_silo.dx ","#frontgate");
+    AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC","UC");//we don't care about what map name the teleporter says, the real map name is what matters
+    AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub","subbay");
+    AddDoubleXfer("14_Vandenberg_Sub","?toname=InterpolationPoint39", "14_Oceanlab_silo","#frontgate");
 
     GenerateConnections(12);
 }

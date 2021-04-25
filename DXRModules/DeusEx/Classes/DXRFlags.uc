@@ -133,7 +133,7 @@ function InitDefaults()
     turrets_add = 20;
     crowdcontrol = 0;
     newgameplus_loops = 0;
-    merchants = 50;
+    merchants = 30;
     banned_skills = 5;
     banned_skill_levels = 5;
     enemies_nonhumans = 60;

@@ -107,6 +107,7 @@ function PreFirstEntry()
             Paris_FirstEntry();
             break;
         case 12:
+        case 14:
             Vandenberg_FirstEntry();
             break;
         case 15:
@@ -613,6 +614,7 @@ function Vandenberg_FirstEntry()
     local Button1 b;
     local Dispatcher d;
     local LogicTrigger lt;
+    local ComputerSecurity comp;
 
     switch(dxr.localURL)
     {
@@ -650,6 +652,15 @@ function Vandenberg_FirstEntry()
             foreach AllActors(class'Button1', b) {
                 if( b.Event == 'Top' || b.Event == 'middle' || b.Event == 'Bottom' ) {
                     AddDelay(b, 5);
+                }
+            }
+            break;
+        
+        case "14_OCEANLAB_LAB":
+            foreach AllActors(class'ComputerSecurity', comp) {
+                if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
+                    comp.UserList[0].userName = "Oceanguard";
+                    comp.UserList[0].Password = "Kraken";
                 }
             }
             break;

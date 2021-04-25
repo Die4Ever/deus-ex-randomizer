@@ -7,15 +7,17 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 
 v1.5.7 Alpha:
+	button to get out of gas station exit
 	security cameras might be weird? maybe it's medbots' alliance?
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	combine entrance rando for missions 10/11, and 12/14
 	need to support optional maps?
 
 v1.5.7:
+	make radioactive barrels breakable
 	speed up the door in paris chateau wine cellar
 	move area51 start location, and maybe add another one in the sniper tower?
-	paris chateau door didn't open, maybe because of StayOpenTime
+	paris chateau door didn't open, maybe because of StayOpenTime while the enemies were in stasis?
 	fix 14_OceanLab_Lab DataCube1 login text is getting replaced with a password
 		the "Oceanguard" login and "Kraken" password
 		it's because ComputerSecurity0 has the username and password flipped

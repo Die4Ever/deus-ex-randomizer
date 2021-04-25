@@ -504,7 +504,7 @@ function CreateInterpolationPoints(Name PathTag, vector loc)
     local int i;
 
     foreach AllActors(class'InterpolationPoint', p, PathTag)
-        p.Destroy();//return;// don't do anything if PathTag already exists
+        return;// don't do anything if PathTag already exists
     
     for(i=0; i<10 ; i++) {
         p = Spawn(class'InterpolationPoint',, PathTag, loc, rot(0,0,0) );
@@ -526,7 +526,7 @@ function CreateCameraInterpolationPoints(Name oldtag, Name newtag, vector offset
     local rotator rot;
 
     foreach AllActors(class'InterpolationPoint', p, newtag)
-        p.Destroy();//return;// don't do anything if newtag already exists
+        return;// don't do anything if newtag already exists
 
     foreach AllActors(class'InterpolationPoint', p, oldtag) {
         loc = (10+p.Position) * 0.1 * offset;
