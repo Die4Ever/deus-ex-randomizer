@@ -7,16 +7,22 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 
 v1.5.7 Alpha:
+	button to get out of gas station exit
 	security cameras might be weird? maybe it's medbots' alliance?
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	combine entrance rando for missions 10/11, and 12/14
+	need to support optional maps?
 
 v1.5.7:
+	make radioactive barrels breakable
+	speed up the door in paris chateau wine cellar
+	move area51 start location, and maybe add another one in the sniper tower?
+	paris chateau door didn't open, maybe because of StayOpenTime while the enemies were in stasis?
 	fix 14_OceanLab_Lab DataCube1 login text is getting replaced with a password
 		the "Oceanguard" login and "Kraken" password
 		it's because ComputerSecurity0 has the username and password flipped
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
-	make horde mode use the autosave blocking manual saves method instead of the hack-y permanent fake datalink
+	make horde mode use the DXRAutosave blocking manual saves method instead of the hack-y permanent fake datalink
 	use better logic for The Merchant's location, like cameras?
 	use key safe location logic for hazmats vs damage zones (this might only be a big deal for paris?)
 	crowd control spawn medbot, friendly milbot
@@ -26,16 +32,20 @@ v1.5.7:
 	if I get rid of the ZoneVelocity on WaterZone5 in 06_hongkong_storage, I can add a dynamicteleporter to make that pipe a 2-way connection
 		might also need to do WaterZone1, but that would make it difficult to hold your breath through there, I could make a dynamicteleporter bring you past that
 	enough advanced options to be able to play unrandomized
-	DXREntranceRando: ERROR: GenerateConnections(2) failed after 200 attempts! seed: 879104 and mission 4 seed 305104
-	DXREntranceRando: ERROR: GenerateConnections(2) failed after 200 attempts! seed: 699584
-	DXREntranceRando: ERROR: GenerateConnections(4) failed after 200 attempts! seed: 668224
 	tweak rotations for teleporters?
-	NG+ remove 2 random skills, half your skill points, and a random aug&weapon?
+	NG+ remove 2 random skills, half your skill points, a random aug, and a random weapon?
 	item rates in credits stats
+	cleanup goals when finishing missions, especially hong kong
+	in DXRFixup PostFirstEntry() force the unatco retinal scanner to MJ12 lab to be unhackable, except make it work in mission 5
+	in paris underground (subway) I could disable the pain zone and add teleporters to the ends of the tracks to make it into a hub area
+	prevent extra enemy spawning in tiffany's jail cell
+	add datacubes for area51 page codes? uc control rooms = 1234, coolant room = 9248, aquinas router = 6188
+	make the merchant cheaper but less common?
 
 
 for v1.6 programatically modify conversations? ===================
 
+create new "stories", start with a hub area (either hell's kitchen or hong kong), connect a bunch of random maps to it (from any mission), remove all vanilla npcs and dialog and add new ones
 for better log message window, look at DeusExRootWindow ClientMessage function, and HUDLogDisplay AddLog and SetLogTimeout functions
 
 in Actor.uc

@@ -29,6 +29,7 @@ struct MapConnection
     var() string mapname;
     var() int    numDests;
     var() string dest[15]; //List of maps that can be reached from this one
+    var() string depends[15]; //The map each dest depends on
 };
 var Connection conns[20];
 var int numConns;
@@ -47,7 +48,7 @@ struct BanConnection
 var config BanConnection BannedConnections[32];
 
 var config string dead_ends[32];
-/*var config string unreachable_conns[16];
+//var config string unreachable_conns[16];
 
 struct Dependency
 {
@@ -58,49 +59,74 @@ struct Dependency
     var string dependency;
 };
 
-var config Dependency dependencies[16];*/
+var config Dependency dependencies[16];
 
 var config int min_connections_selfconnect;
 
 function CheckConfig()
 {
-    local int i;
-    if( config_version < 4 ) {
+    local int i, k;
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,7) ) {
         for(i=0; i < ArrayCount(BannedConnections); i++) {
             BannedConnections[i].map_a = "";
             BannedConnections[i].map_b = "";
         }
-        BannedConnections[0].map_a = "02_NYC_BatteryPark";
-        BannedConnections[0].map_b = "02_NYC_Underground";
-        BannedConnections[1].map_a = "02_NYC_BatteryPark";
-        BannedConnections[1].map_b = "02_NYC_Warehouse";
-    }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,7) ) {
+
         min_connections_selfconnect = 999;
         i = 0;
         dead_ends[i++] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
         dead_ends[i++] = "06_HONGKONG_Storage#waterpipe";
-        //dead_ends[i++] = "12_VANDENBERG_CMD#storage";//it's actually backwards from this, instead of this teleporter being a dead end, the door before the teleporter is the dead end
-        //dead_ends[i++] = "12_VANDENBERG_TUNNELS#End";//this isn't right either, because if you can get to this teleporter then you can get through the map
 
         /*i=0;
-        unreachable_conns[i++] = "12_VANDENBERG_CMD#storage";
+        unreachable_conns[i++] = "12_VANDENBERG_CMD#storage";*/
 
-        i=0;
-        dependencies[i].dependent = "12_vandenberg_computer#computer";
+        i=0;// dependencies[i].dependent = source map and outTag
+        dependencies[i].dependent = "02_NYC_Street#ToNYCUndergroundSewer2";
+        dependencies[i].dependency = "02_NYC_Smug";
+        i++;
+
+        dependencies[i].dependent = "02_NYC_Street#ToNYCSump";
+        dependencies[i].dependency = "02_NYC_Smug";
+        i++;
+
+        dependencies[i].dependent = "04_NYC_STREET#ToNSFHQ";
+        dependencies[i].dependency = "04_NYC_HOTEL";
+        i++;
+
+        dependencies[i].dependent = "06_HongKong_WanChai_Market#Lobby";
+        dependencies[i].dependency = "06_HongKong_WanChai_Street";
+        i++;
+
+        dependencies[i].dependent = "12_VANDENBERG_CMD#gas_start";
+        dependencies[i].dependency = "12_VANDENBERG_COMPUTER";
+        i++;
+
+        dependencies[i].dependent = "12_VANDENBERG_CMD#computer";
         dependencies[i].dependency = "12_VANDENBERG_TUNNELS";
         i++;
 
-        dependencies[i].dependent = "12_vandenberg_gas";
-        dependencies[i].dependency = "12_VANDENBERG_COMPUTER";
-        i++;*/
+        dependencies[i].dependent = "14_Vandenberg_Sub#frontgate";
+        dependencies[i].dependency = "14_OceanLab_UC";//format has to match the connection not the teleporter
+        i++;
     }
+    k=0;
     for(i=0; i < ArrayCount(BannedConnections); i++) {
-        BannedConnections[i].map_a = Caps(BannedConnections[i].map_a);
-        BannedConnections[i].map_b = Caps(BannedConnections[i].map_b);
+        if( BannedConnections[i].map_a == "" ) continue;
+        BannedConnections[k].map_a = Caps(BannedConnections[i].map_a);
+        BannedConnections[k].map_b = Caps(BannedConnections[i].map_b);
+        k++;
     }
+    k=0;
     for(i=0; i < ArrayCount(dead_ends); i++) {
-        dead_ends[i] = Caps(dead_ends[i]);
+        if( dead_ends[i] == "" ) continue;
+        dead_ends[k++] = Caps(dead_ends[i]);
+    }
+    k=0;
+    for(i=0; i < ArrayCount(dependencies); i++) {
+        if( dependencies[i].dependent == "" ) continue;
+        dependencies[k].dependent = Caps(dependencies[i].dependent);
+        dependencies[k].dependency = Caps(dependencies[i].dependency);
+        k++;
     }
     Super.CheckConfig();
 }
@@ -193,6 +219,7 @@ function bool IsConnectionValid(int missionNum, MapTransfer a, MapTransfer b)
     }
 
     for(i=0; i < ArrayCount(BannedConnections); i++) {
+        if( BannedConnections[i].map_a == "" ) break;
         if( 
             (a.mapname == BannedConnections[i].map_a && b.mapname == BannedConnections[i].map_b)
             ||
@@ -215,7 +242,7 @@ function bool ValidateConnections()
     local bool foundMap;
     
     local string canvisit[15];
-    local int visitable;
+    local int visitable, oldVisitable;
     
     local bool canVisitMap;
     
@@ -232,6 +259,7 @@ function bool ValidateConnections()
     
     //Start finding out what maps we can visit
     visitable = 0;
+    oldVisitable = 0;
     canvisit[visitable]=mapdests[0].mapname;
     visitable++;
     
@@ -239,13 +267,13 @@ function bool ValidateConnections()
     {
         for ( j=0;j<numMaps;j++)
         {
-            //See if map can be visited
+            //See if map j can be visited
             canVisitMap = False;
             for (k=0;k<visitable;k++)
             {
                 if (mapdests[j].mapname == canvisit[k])
                 {
-                    canVisitMap = True;
+                    canVisitMap = true;
                 }
             }
             
@@ -255,11 +283,15 @@ function bool ValidateConnections()
                 MarkMapDestinationsVisitible(mapdests[j], canvisit, visitable);
             }
         }
+
+        if( visitable == numMaps ) break;
+        if( visitable == oldVisitable ) break;
+        oldVisitable = visitable;
     }
     
     //Theoretically I should probably actually check to see if the maps match,
     //but this is fairly safe...
-    l("ValidateConnections visitable: " $ visitable $", numMaps: " $ numMaps);
+    l("ValidateConnections visitable: " $ visitable $", numMaps: " $ numMaps $", i: "$i$", numConns: "$numConns);
     return visitable == numMaps;
 }
 
@@ -317,29 +349,40 @@ function int GetAllMapNames(out MapConnection mapdests[15])
 
 function MarkMapsConnected(out MapConnection mapdests[15], int numMaps, MapTransfer a, MapTransfer b)
 {
-    local int mapidx;
+    // can you get from A to B?
+    _MarkMapConnected(mapdests, numMaps, a, b);
 
-    // can we get from A to B?
-    if( IsDeadEndConnection(b, a) == false ) {
-        mapidx = FindMapDestinations(mapdests, numMaps, a.mapname);
-        if(mapidx == -1) {
-            err("failed MarkMapsConnected("$numMaps$", "$a.mapname$", "$b.mapname$") find A");
-            return;
-        }
-        // write B into the destinations of A
-        AddDestination( mapdests[mapidx], b.mapname);
+    // can you get from B to A?
+    _MarkMapConnected(mapdests, numMaps, b, a);
+}
+
+function bool _MarkMapConnected(out MapConnection mapdests[15], int numMaps, MapTransfer a, MapTransfer b)
+{
+    local int mapidx, i;
+    local string maptag, depends;
+
+    // can you get from A to B?
+    if( IsDeadEndConnection(b, a) ) return false;
+
+    mapidx = FindMapDestinations(mapdests, numMaps, a.mapname);
+    if(mapidx == -1) {
+        err("failed _MarkMapConnected("$numMaps$", "$a.mapname$", "$b.mapname$")");
+        return false;
     }
 
-    // can we get from B to A?
-    if( IsDeadEndConnection(a, b) == false ) {
-        mapidx = FindMapDestinations(mapdests, numMaps, b.mapname);
-        if(mapidx == -1) {
-            err("failed MarkMapsConnected("$numMaps$", "$a.mapname$", "$b.mapname$") find B");
-            return;
+    maptag = a.mapname $ "#" $ a.outTag;
+    for(i=0;i<ArrayCount(dependencies);i++) {
+        if( dependencies[i].dependent == "" ) break;
+        if( maptag == dependencies[i].dependent ) {
+            depends = dependencies[i].dependency;
+            break;
         }
-        // write A into the destinations of B
-        AddDestination( mapdests[mapidx], a.mapname);
     }
+
+    // write B into the destinations of A
+    AddDestination( mapdests[mapidx], b.mapname, depends);
+
+    return true;
 }
 
 function bool IsDeadEndConnection(MapTransfer m, MapTransfer from)
@@ -351,6 +394,7 @@ function bool IsDeadEndConnection(MapTransfer m, MapTransfer from)
     if(m.inTag == "") return true;
     s = Caps(m.mapname $"#"$ m.inTag);
     for(i=0; i < ArrayCount(dead_ends); i++) {
+        if( dead_ends[i] == "" ) break;
         if( s == dead_ends[i] ) {
             return true;
         }
@@ -372,15 +416,17 @@ function int FindMapDestinations(MapConnection mapdests[15], int numMaps, string
     return -1;
 }
 
-function AddDestination( out MapConnection map, string mapname )
+function AddDestination( out MapConnection map, string mapname, string depends )
 {
     local int i;
     for(i=0; i < map.numDests; i++) {
         if( map.dest[i] == mapname ) {
+            if( depends != "" ) map.depends[i] = depends;
             return;
         }
     }
     map.dest[map.numDests] = mapname;
+    map.depends[map.numDests] = depends;
     map.numDests++;
 }
 
@@ -413,6 +459,20 @@ function bool CheckDuplicate(MapTransfer a, MapTransfer b)
     return false;
 }
 
+function bool CheckDependencies(string depends, string canvisit[15], int visitable)
+{
+    local int i;
+
+    if( depends == "" ) return true;
+    
+    for(i=0;i<visitable;i++) {
+        if( depends == canvisit[i] ) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function MarkMapDestinationsVisitible(MapConnection m, out string canvisit[15], out int visitable)
 {
     local int k, p;
@@ -429,7 +489,7 @@ function MarkMapDestinationsVisitible(MapConnection m, out string canvisit[15], 
                 canVisitDest = True;
             }
         }
-        if (canVisitDest == False)
+        if (canVisitDest == False && CheckDependencies(m.depends[k], canvisit, visitable) )
         {
             canvisit[visitable] = m.dest[k];
             visitable++;
@@ -439,22 +499,27 @@ function MarkMapDestinationsVisitible(MapConnection m, out string canvisit[15], 
 
 function GenerateConnections(int missionNum)
 {
-    local int attempts;
+    local int attempts, genconsfails, validatefails;
     local bool isValid;
     isValid = False;
 
-    for(attempts=0; attempts<200; attempts++)
+    for(attempts=0; attempts<500; attempts++)
     {
-        _GenerateConnections(missionNum);
+        if( ! _GenerateConnections(missionNum) ) {
+            genconsfails++;
+            continue;// save a bunch of loops if we know we failed?
+        }
         if(ValidateConnections()) {
-            if( attempts > 40 ) warning("GenerateConnections("$missionNum$") succeeded but took "$attempts$" attempts! seed: "$dxr.seed);
+            if( attempts > 40 ) warning("GenerateConnections("$missionNum$") succeeded but took "$attempts$" attempts! seed: "$dxr.seed $", genconsfails: "$genconsfails$", validatefails: "$validatefails);
             return;
         }
+        validatefails++;
     }
-    err("GenerateConnections("$missionNum$") failed after "$attempts$" attempts! seed: "$dxr.seed);
+    err("GenerateConnections("$missionNum$") failed after "$attempts$" attempts! seed: "$dxr.seed $", genconsfails: "$genconsfails$", validatefails: "$validatefails);
+    numConns = 0;// vanilla on failure
 }
 
-function _GenerateConnections(int missionNum)
+function bool _GenerateConnections(int missionNum)
 {
     local int xfersUsed;
     local int connsMade;
@@ -463,8 +528,6 @@ function _GenerateConnections(int missionNum)
     local int destIdx;
     local int maxAttempts;
     local int i;
-    
-    maxAttempts = 20;
     
     for(i=0;i<numXfers;i++)
     {
@@ -488,6 +551,7 @@ function _GenerateConnections(int missionNum)
         xfersUsed++;
     
         //Get a random unused transfer
+        maxAttempts = (numXfers-xfersUsed)*3;
         for (i=0;i<maxAttempts;i++)
         {
             xferOffset = rng(numXfers-xfersUsed);
@@ -499,8 +563,10 @@ function _GenerateConnections(int missionNum)
             }
         }
         if( i >= maxAttempts ) {
-            l("failed to find valid connection for " $ xfers[nextAvailIdx].mapname $ "#" $ xfers[nextAvailIdx].inTag $ " / #" $ xfers[nextAvailIdx].outTag );
-            return;
+            l("failed to find valid connection for "
+                $ xfers[nextAvailIdx].mapname $ "#" $ xfers[nextAvailIdx].inTag $ " / #" $ xfers[nextAvailIdx].outTag
+                $ " after "$i$" attempts with "$numXfers$" numXfers" );
+            return false;
         }
         xfers[destIdx].used = True;
         xfersUsed++;
@@ -509,6 +575,7 @@ function _GenerateConnections(int missionNum)
         connsMade++;
     }
     numConns = connsMade;
+    return true;
 }
 
 function AddXfer(string mapname, string inTag, string outTag)
@@ -538,6 +605,7 @@ function AddFixedConn(string map_a, string inTag_a, string map_b, string outTag_
     numFixedConns++;
 }
 
+// ApplyFixes is for backtracking that we don't want in the normal game
 function ApplyFixes()
 {
     switch(dxr.localURL) {
@@ -561,7 +629,7 @@ function ApplyFixes()
 function FixHongKongCanal()
 {
     local HKTukTuk tuktuk;
-    local BoxMedium box;
+    local Containers box;
     local DynamicBlockPlayer dbp;
     local vector loc;
     local int i;
@@ -586,27 +654,41 @@ function FixHongKongCanal()
 
         loc += vect(38, 0, 0);
     }
-    box = Spawn(class'BoxMedium',,, vect(1151.214355, 1370, -400));
+
+    box = AddBox(class'BoxMedium', vect(1151.214355, 1370, -400));
     box.bCollideWorld = false;
-    box.bInvincible = true;
     box.bPushable = false;
     box.bHighlight = false;
-    box.SetLocation(vect(1151.214355, 1370, -450));
 }
 
 function FixVandebergCmd()
 {
     local DeusExMover d;
+    local Nanokey n;
+    local DXRKeys dxrk;
 
-    foreach AllActors(class'DeusExMover', d) {
+    foreach AllActors(class'DeusExMover', d, 'security_tunnels') {
+        d.KeyIDNeeded = 'storage_door';
+    }
+
+    /*foreach AllActors(class'DeusExMover', d) {
         switch(d.Tag) {
-            case 'door_controlroom':
             case 'security_tunnels':
+                d.KeyIDNeeded = 'storage_door';
+            case 'door_controlroom':
                 class'DXRKeys'.static.StaticMakePickable(d);
                 class'DXRKeys'.static.StaticMakeDestructible(d);
                 break;
         }
-    }
+    }*/
+
+    n = Spawn(class'NanoKey',,, vect(2048.289063, 4712.830078, -2052.789551) );
+    n.Description = "Storage door key";
+    n.KeyID = 'storage_door';
+
+    // this is called from PostFirstEntry, so it's after DXRKeys already ran
+    dxrk = DXRKeys(dxr.FindModule(class'DXRKeys'));
+    if( dxrk != None ) dxrk.RandoKey(n);
 }
 
 function RandoMission2()
@@ -644,7 +726,7 @@ function RandoMission3()
 function RandoMission4()
 {
     AddFixedConn("04_NYC_Street","x", "04_NYC_Street","x");
-    AddDoubleXfer("04_NYC_BATTERYPARK","ToBatteryPark","04_NYC_Street","ToStreet");
+    //AddDoubleXfer("04_NYC_BATTERYPARK","ToBatteryPark","04_NYC_Street","ToStreet");
     AddDoubleXfer("04_NYC_STREET","FromSmugBackDoor","04_NYC_Smug","ToSmugBackDoor");
     AddDoubleXfer("04_NYC_STREET","FromSmugFrontDoor","04_NYC_Smug","ToSmugFrontDoor");
     AddDoubleXfer("04_NYC_STREET","FromBarBackEntrance","04_NYC_Bar","ToBarBackEntrance");
@@ -666,7 +748,7 @@ function RandoMission6()
     AddDoubleXfer("06_HONGKONG_STORAGE","waterpipe","06_HongKong_WanChai_Canal","canal");
     //AddDoubleXfer("06_HONGKONG_STORAGE","basement","06_HongKong_MJ12lab","tubeend");
     //AddXfer("06_HongKong_Storage","BackDoor","06_HONGKONG_WANCHAI_GARAGE#Teleporter");//one way
-    AddFixedConn("06_HONGKONG_TONGBASE","lab","06_HongKong_WanChai_Market","compound");
+    //AddFixedConn("06_HONGKONG_TONGBASE","lab","06_HongKong_WanChai_Market","compound");
     AddDoubleXfer("06_HONGKONG_VERSALIFE","Lobby","06_HongKong_WanChai_Market","market");
     AddDoubleXfer("06_HONGKONG_WANCHAI_CANAL","Street","06_HongKong_WanChai_Street","Canal");
     AddDoubleXfer("06_HONGKONG_WANCHAI_CANAL","market01","06_HongKong_WanChai_Market","canal01");
@@ -714,23 +796,13 @@ function RandoMission10()
     AddFixedConn("10_PARIS_CATACOMBS","x", "10_PARIS_CATACOMBS","x");
     AddDoubleXfer("10_PARIS_CATACOMBS","spiralstair","10_Paris_Catacombs_Tunnels","spiralstair");//same tag on both sides?
     AddDoubleXfer("10_PARIS_CATACOMBS_TUNNELS","?toname=AmbientSound10","10_Paris_Metro","sewer");
-    AddFixedConn("10_Paris_Metro","","10_PARIS_CHATEAU","x");//one way
-    //AddDoubleXfer("10_PARIS_CHATEAU","","11_Paris_Cathedral","cathedralstart");//one way
+    AddDoubleXfer("10_PARIS_CHATEAU","Chateau_start", "10_paris_metro","?toname=PathNode447");
+    AddDoubleXfer("10_PARIS_CHATEAU","?toname=Light135","11_Paris_Cathedral","cathedralstart");
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club1","10_Paris_Metro","Paris_Metro1");
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club2","10_Paris_Metro","Paris_Metro2");
-    //AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
-    //AddDoubleXfer("11_PARIS_EVERETT","","12_Vandenberg_cmd");
+    AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
 
     GenerateConnections(10);
-}
-
-function RandoMission11()
-{
-    //AddFixedConn("11_PARIS_CATHEDRAL","x","11_PARIS_CATHEDRAL", "x");
-    AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
-    //AddDoubleXfer("11_PARIS_EVERETT","","12_Vandenberg_cmd");
-
-    GenerateConnections(11);
 }
 
 function RandoMission12()
@@ -738,34 +810,16 @@ function RandoMission12()
     // I'm not sure what arrangements I would want for vandenberg? maybe I should just make a key for the storage door and stick it somewhere in cmd?
     AddFixedConn("12_VANDENBERG_CMD","x","12_VANDENBERG_CMD", "x");
     AddDoubleXfer("12_VANDENBERG_CMD","commstat","12_vandenberg_tunnels","start");
-    //AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");// this needs to be marked as one way somehow, not just AddXfer, because it does go both ways, but only after opening the door
+    AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");
     AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");
+    AddDoubleXfer("12_VANDENBERG_CMD","?toname=PathNode8", "12_Vandenberg_gas","gas_start");
 
-    //AddDoubleXfer("12_VANDENBERG_CMD","","12_Vandenberg_gas","");
-    //AddDoubleXfer("12_VANDENBERG_GAS","gas_start","","");
-    //AddDoubleXfer("12_VANDENBERG_GAS","","14_Vandenberg_sub","");
-
-    /*AddFixedConn("12_vandenberg_computer","x","14_Vandenberg_sub.dx", "x");//jock takes you to the gas station after 12_vandenberg_computer, then to vandenberg sub... this causes issues
-
-    AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC.dx ","UC");//strange formatting, some even have a space
-    AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub.dx","subbay");*/
-    //AddDoubleXfer("14_OCEANLAB_SILO","frontgate","","");
-    //AddDoubleXfer("14_OCEANLAB_SILO","","15_area51_bunker.dx ","bunker_start");
-    //AddDoubleXfer("14_Vandenberg_sub.dx","","14_Oceanlab_silo.dx ","frontgate");
+    AddDoubleXfer("12_VANDENBERG_GAS","?toname=PathNode98", "14_Vandenberg_sub","PlayerStart");
+    AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC","UC");//we don't care about what map name the teleporter says, the real map name is what matters
+    AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub","subbay");
+    AddDoubleXfer("14_Vandenberg_Sub","?toname=InterpolationPoint39", "14_Oceanlab_silo","#frontgate");
 
     GenerateConnections(12);
-}
-
-function RandoMission14()
-{
-    AddFixedConn("14_Vandenberg_sub.dx","x","14_Vandenberg_sub.dx", "x");
-    AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC.dx ","UC");//strange formatting, some even have a space
-    AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub.dx","subbay");
-    //AddDoubleXfer("14_OCEANLAB_SILO","frontgate","","");
-    //AddDoubleXfer("14_OCEANLAB_SILO","","15_area51_bunker.dx ","bunker_start");
-    //AddDoubleXfer("14_Vandenberg_sub.dx","","14_Oceanlab_silo.dx ","frontgate");
-
-    GenerateConnections(14);
 }
 
 function RandoMission15()
@@ -781,12 +835,10 @@ function RandoMission15()
 }
 
 function EntranceRando(int missionNum)
-{   
+{
     numConns = 0;
     numXfers = 0;
     numFixedConns = 0;
-    //if( missionNum == 11 ) missionNum = 10;//combine paris 10 and 11
-    //if( missionNum == 14 ) missionNum = 12;//combine vandenberg and oceanlab
     dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") + missionNum );
 
     switch(missionNum)
@@ -846,7 +898,7 @@ function BindEntrances(DataStorage ds, bool writing)
     }
 }
 
-function ApplyEntranceRando()
+function ApplyEntranceRando(int missionNum)
 {
     local NavigationPoint newnp, last;
     local Teleporter t;
@@ -854,10 +906,10 @@ function ApplyEntranceRando()
     local DataStorage ds;
 
     ds = class'DataStorage'.static.GetObj(dxr.Player);
-    if( ds.EntranceRandoMissionNumber == dxr.dxInfo.missionNumber ) {
+    if( ds.EntranceRandoMissionNumber == missionNum ) {
         BindEntrances(ds, false);
     } else {
-        ds.EntranceRandoMissionNumber = dxr.dxInfo.missionNumber;
+        ds.EntranceRandoMissionNumber = missionNum;
         BindEntrances(ds, true);
     }
 
@@ -891,7 +943,7 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
     m = MapExit(p);
     dt = DynamicTeleporter(p);
     if( dt != None ) curDest = dt.URL $ "?toname=" $ dt.destName;
-    else if( m != None && m.destName != '' ) curDest = m.DestMap $ " ?toname=" $ m.destName;
+    else if( m != None && m.destName != '' ) curDest = m.DestMap $ "?toname=" $ m.destName;
     else if( m != None )  curDest = m.DestMap;
     else if( t != None ) {
         if( ! t.bEnabled ) return None;
@@ -902,6 +954,8 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
 
     hashPos = InStr(curDest,"#");
     destTag = Caps(Mid(curDest,hashPos+1));
+
+    l("AdjustTeleporter("$p$") curDest: "$curDest$", destTag: "$destTag);
 
     for (i = 0;i<numConns;i++)
     {
@@ -941,7 +995,7 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
             else if( t != None )
                 t.URL = newMap $ "#" $ newTag;
         }
-        info("Found " $ p $ " with destination " $ curDest $ ", changed to " $ newMap$"#"$newTag$", newdt: "$newdt );
+        info("AdjustTeleporter found " $ p $ " with destination " $ curDest $ ", changed to " $ newMap$"#"$newTag$", newdt: "$newdt );
         break;
     }
 
@@ -950,12 +1004,16 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
 
 function PostFirstEntry()
 {
+    local int missionNum;
     Super.PostFirstEntry();
     if( dxr.flags.gamemode != 1 ) return;
     
+    missionNum = dxr.dxInfo.missionNumber;
+    if( missionNum == 11 ) missionNum = 10;//combine paris 10 and 11
+    if( missionNum == 14 ) missionNum = 12;//combine vandenberg and oceanlab
     //Randomize entrances for this mission
-    EntranceRando(dxr.dxInfo.missionNumber);
-    ApplyEntranceRando();
+    EntranceRando(missionNum);
+    ApplyEntranceRando(missionNum);
     LogConnections(true);
     ApplyFixes();
 }
@@ -980,31 +1038,27 @@ function LogConnections(optional bool bInfo)
 
 function RunTests()
 {
-    local int i;
     Super.RunTests();
 
     test(min_connections_selfconnect >= 3, "min_connections_selfconnect needs to be at least 3");
-
-    for(i=0; i <= 50; i++) {
-        EntranceRando(i);
-        if( numXfers > 0 && numConns > 0 ) {
-            LogConnections();
-            testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation");
-        }
-    }
-
-    numXfers = 0;
-    numConns = 0;
-    numFixedConns = 0;
+    TestAllMissions(dxr.seed);
 }
 
 function ExtendedTests()
 {
+    local int i;
     Super.ExtendedTests();
 
     BasicTests();
     OneWayTests();
-    //VandenbergTests();
+    TestDependencies();
+
+    TestAllMissions(21);
+
+    for(i=1; i<10; i++) {
+        // reduce this if we start getting runaway loops, or make it so extended tests can run across multiple frames
+        TestAllMissions( dxr.seed + i );
+    }
 }
 
 function BasicTests()
@@ -1152,7 +1206,29 @@ function OneWayTests()
     numFixedConns = 0;
 }
 
-/*function VandenbergTests()
+function TestAllMissions(int newseed)
+{
+    local int oldseed, i;
+
+    oldseed = dxr.seed;
+    dxr.seed = newseed;
+
+    for(i=0; i <= 50; i++) {
+        EntranceRando(i);
+        if( numXfers > 0 ) {
+            if( ! testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation, seed: "$newseed) ) {
+                LogConnections();
+            }
+        }
+    }
+
+    numXfers = 0;
+    numConns = 0;
+    numFixedConns = 0;
+    dxr.seed = oldseed;
+}
+
+function TestDependencies()
 {
     local int i;
 
@@ -1160,48 +1236,77 @@ function OneWayTests()
     numFixedConns = 0;
 
     AddFixedConn("12_VANDENBERG_CMD","x","12_VANDENBERG_CMD", "x");
-    AddDoubleXfer("12_VANDENBERG_CMD","commstat","12_vandenberg_tunnels","start");
-    AddDoubleXfer("12_VANDENBERG_CMD","storage","12_vandenberg_tunnels","end");// this needs to be marked as one way somehow, not just AddXfer, because it does go both ways, but only after opening the door
+    AddFixedConn("12_VANDENBERG_CMD","x2","12_VANDENBERG_TUNNELS","x2");
     AddDoubleXfer("12_VANDENBERG_CMD","hall","12_vandenberg_computer","computer");
+    AddDoubleXfer("12_VANDENBERG_CMD","?toname=PathNode8", "12_Vandenberg_gas","gas_start");
+    AddDoubleXfer("12_VANDENBERG_GAS","?toname=PathNode98", "14_Vandenberg_sub","PlayerStart");
 
+    //vanilla test
     conns[0] = fixed_conns[0];
-    //comsat to tunnels
+    //cmd to gas, test order of operations
+    conns[1].a = xfers[2];
+    conns[1].b = xfers[3];
+    //cmd to comp
+    conns[2].a = xfers[0];
+    conns[2].b = xfers[1];
+    //gas to sub
+    conns[3].a = xfers[4];
+    conns[3].b = xfers[5];
+
+    conns[4] = fixed_conns[1];
+    numConns = 5;
+    testbool(ValidateConnections(), true, "Test Dependencies vanilla");
+
+    numFixedConns=1;
+    numConns=4;
+    testbool(ValidateConnections(), false, "Test Dependencies vanilla but without tunnels");
+    numFixedConns=2;
+
+    //bad good
+    conns[0] = fixed_conns[0];
+    //cmd hall to gas (which goes to comp)
     conns[1].a = xfers[0];
-    conns[1].b = xfers[1];
-    //storage to computer
+    conns[1].b = xfers[3];
+    //cmd heli to sub
     conns[2].a = xfers[2];
     conns[2].b = xfers[5];
-    //hall to tunnels end
+    //gas to comp
     conns[3].a = xfers[4];
-    conns[3].b = xfers[3];
-    //cmd to gas
-    conns[4].a = xfers[6];
-    conns[4].b = xfers[7];
-    numConns = 5;
-    LogConnections();
-    testbool(ValidateConnections(), false, "VandenbergTests 1");
+    conns[3].b = xfers[1];
 
+    conns[4] = fixed_conns[1];
+    numConns = 5;
+    testbool(ValidateConnections(), true, "Test Dependencies good");
+
+    numFixedConns=1;
+    numConns=4;
+    testbool(ValidateConnections(), false, "Test Dependencies good but without tunnels");
+    numFixedConns=2;
+
+    //bad test
     conns[0] = fixed_conns[0];
-    //comsat to computer
+    //cmd hall to gas
     conns[1].a = xfers[0];
-    conns[1].b = xfers[5];
-    //storage to tunnel
+    conns[1].b = xfers[3];
+    //cmd heli to comp
     conns[2].a = xfers[2];
     conns[2].b = xfers[1];
-    //hall to tunnels end
+    //gas to sub
     conns[3].a = xfers[4];
-    conns[3].b = xfers[3];
-    //cmd to gas
-    conns[4].a = xfers[6];
-    conns[4].b = xfers[7];
+    conns[3].b = xfers[5];
+    
+    conns[4] = fixed_conns[1];
     numConns = 5;
-    LogConnections();
-    testbool(ValidateConnections(), true, "VandenbergTests 1");
+    testbool(ValidateConnections(), false, "Test Dependencies bad");
+
+    numFixedConns=1;
+    numConns=4;
+    testbool(ValidateConnections(), false, "Test Dependencies bad but without tunnels");
 
     numXfers = 0;
     numConns = 0;
     numFixedConns = 0;
-}*/
+}
 
 defaultproperties
 {

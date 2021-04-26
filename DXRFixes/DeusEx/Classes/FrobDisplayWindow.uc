@@ -229,17 +229,34 @@ function string MoverStrInfo(Mover m)
 function string DeviceStrInfo(HackableDevices device)
 {
     local string strInfo;
+    local bool codeKnown;
+    
+    codeKnown = False;
 
-    strInfo = device.itemName $ CR() $ msgHackStr;
+    if (device.IsA('Keypad') && (Keypad(device).bCodeKnown))
+    {
+        strInfo = device.itemName $ ": Code Known ("$Keypad(device).validCode$")"$ CR() $ msgHackStr;
+        codeKnown = True;
+    } else {
+        strInfo = device.itemName $ CR() $ msgHackStr;
+    }
+    
     if (device.bHackable)
     {
         if (device.hackStrength != 0.0)
             strInfo = strInfo $ FormatString(device.hackStrength * 100.0) $ "%";
         else
-            strInfo = device.itemName $ ": " $ msgHacked;
+            //Should try to track if the player knew the code before hacking it
+            //if (codeKnown) {
+            //    strInfo = device.itemName $ ": " $ msgHacked $ " (YOU KNEW THE CODE THOUGH!)";
+            //} else {
+                strInfo = device.itemName $ ": " $ msgHacked;            
+            //}
     }
     else
         strInfo = strInfo $ msgInf;
+        
+
 
     return strInfo;
 }

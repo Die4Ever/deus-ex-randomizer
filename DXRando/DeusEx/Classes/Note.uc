@@ -34,3 +34,13 @@ function bool HasEitherPassword(string password_a, string password_b)
     }
     return false;
 }
+
+function DumpPasswords(DeusExPlayer p)
+{
+    local int i;
+    for(i=0; i < ArrayCount(new_passwords); i++) {
+        if (new_passwords[i]!=""){
+            p.ClientMessage("Password: "$new_passwords[i]);
+        }
+    }
+}

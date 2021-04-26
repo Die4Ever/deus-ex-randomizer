@@ -797,17 +797,17 @@ function CheckConfig()
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-4096.000000, -816.000000, -128.000000);//storage closet
+        important_locations[i].location = vect(-4080.000000, -816.000000, -128.000000);//storage closet
         important_locations[i].rotation = rot(0, 32768, 0);
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-5152.000000, 1536.000000, -160.000000);//air control
+        important_locations[i].location = vect(-4720.000000, 1536.000000, -144.000000);//air control
         important_locations[i].rotation = rot(0, -16384, 0);
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-3072.000000, 64.000000, 816.000000);//big fan
+        important_locations[i].location = vect(-3200, -48, -96);//big fan
         important_locations[i].rotation = rot(0, 0, 0);
         i++;
 

@@ -375,6 +375,49 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
     return a;
 }
 
+function Conversation GetConversation(Name conName)
+{
+    local Conversation c;
+    foreach AllObjects(class'Conversation', c) {
+        if( c.conName == conName ) return c;
+    }
+    return None;
+}
+
+static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate, name Event)
+{
+    local DeusExDecoration d;
+    d = DeusExDecoration( _AddActor(a, class'Switch2', loc, rotate) );
+    d.Event = Event;
+    return d;
+}
+
+function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
+{
+    return _AddSwitch(Self, loc, rotate, Event);
+}
+
+static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rotate)
+{
+    local Actor d;
+    local bool oldCollideWorld;
+    d = a.Spawn(c,,, loc, rotate );
+    oldCollideWorld = d.bCollideWorld;
+    d.bCollideWorld = false;
+    d.SetLocation(loc);
+    d.SetRotation(rotate);
+    d.bCollideWorld = oldCollideWorld;
+    return d;
+}
+
+function Containers AddBox(class<Containers> c, vector loc, optional rotator rotate)
+{
+    local Containers box;
+    box = Containers(_AddActor(Self, c, loc, rotate));
+    box.bInvincible = true;
+    return box;
+}
+
 function string ActorToString( Actor a )
 {
     local string out;

@@ -80,8 +80,10 @@ function RandoTurrets(int percent_move, int percent_add)
         if( cam == None ) continue;
         t = SpawnTurret(loc);
         c = SpawnSecurityComputer(loc, t, cam);
-        loc = GetRandomPosition(loc, min_datacube_distance, max_datacube_distance);
-        SpawnDatacube(loc, c);
+        if( c != None ) {
+            loc = GetRandomPosition(loc, min_datacube_distance, max_datacube_distance);
+            SpawnDatacube(loc, c);
+        }
     }
 }
 
@@ -338,6 +340,8 @@ function Datacube SpawnDatacube(vector loc, ComputerSecurity c)
         return None;
     }
     d.plaintext = c.UserList[0].userName $ " password is " $ c.UserList[0].Password;
+    d.new_passwords[0] = c.UserList[0].Password;
+    
     info("SpawnDatacube "$d$" done at ("$locnorm.loc$"), ("$locnorm.norm$") with name: "$d.Name);
     return d;
 }

@@ -192,6 +192,11 @@ simulated function Tick(float deltaTime)
     else
     {
         RunTests();
+
+        for(i=0; i<num_modules; i++) {
+            modules[i].PostAnyEntry();
+        }
+        
         Disable('Tick');
         bTickEnabled = false;
     }

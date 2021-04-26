@@ -61,21 +61,22 @@ simulated function Touch( actor Other )
     Super.Touch(Other);
 }
 
-static function CheckTeleport(DeusExPlayer player)
+static function bool CheckTeleport(DeusExPlayer player)
 {
     local name toname;
     local Actor a;
 
     toname = GetToName(player);
-    if( toname == '' ) return;
+    if( toname == '' ) return true;
+    ClearTeleport(player);
 
     foreach player.AllActors(class'Actor', a) {
         if( a.Name == toname ) {
-            player.SetLocation(a.Location);
-            break;
+            return player.SetLocation(a.Location);
         }
     }
-    ClearTeleport(player);
+    
+    return false;
 }
 
 static function DynamicTeleporter ReplaceTeleporter(Teleporter t)

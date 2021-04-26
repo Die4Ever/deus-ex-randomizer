@@ -6,6 +6,8 @@ function PreFirstEntry()
     local Teleporter t;
     local DynamicTeleporter dt;
     local BlockPlayer bp;
+    local MapExit exit;
+
     Super.PreFirstEntry();
 
     switch(dxr.localURL) {
@@ -29,20 +31,65 @@ function PreFirstEntry()
             dt.SetDestination("10_PARIS_CATACOMBS_TUNNELS", 'AmbientSound10');
             dt.Radius = 160;
             AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
+
+            foreach AllActors(class'MapExit', exit, 'ChopperExit') {
+                exit.SetDestination("10_PARIS_CHATEAU", '', "Chateau_start");
+            }
             break;
+
+        case "11_PARIS_CATHEDRAL":
+            dt = Spawn(class'DynamicTeleporter',,'cathedral_backtrack',vect(-2268.337891, 3042.279297, -866.726196));
+            dt.SetDestination("10_PARIS_CHATEAU", 'Light135');
+            dt.Radius = 160;
+            foreach AllActors(class'BlockPlayer', bp) {
+                switch(bp.Name) {
+                    case 'BlockPlayer90':
+                    case 'BlockPlayer91':
+                    case 'BlockPlayer117':
+                        bp.bBlockPlayers=false;
+                }
+            }
+            break;
+
+        case "12_VANDENBERG_CMD":
+            foreach AllActors(class'MapExit', exit, 'mission_done') {
+                exit.SetDestination("12_Vandenberg_gas", '', "gas_start");
+            }
+            break;
+        
+        case "12_VANDENBERG_GAS":
+            foreach AllActors(class'MapExit', exit, 'UN_BlackHeli') {
+                exit.SetDestination("14_Vandenberg_sub", '', "PlayerStart");
+            }
+            break;
+
         case "15_AREA51_ENTRANCE":
             dt = Spawn(class'DynamicTeleporter',,,vect(4384.407715, -2483.292236, -41.900017));
             dt.SetDestination("15_area51_bunker", 'Light188');
             dt.Radius = 160;
             break;
+
         case "15_AREA51_FINAL":
             dt = Spawn(class'DynamicTeleporter',,,vect(-5714.406250, -1977.827881, -1358.711304));
             dt.SetDestination("15_area51_entrance", 'Light73');
             dt.Radius = 160;
             break;
+
     }
 
-    class'DynamicTeleporter'.static.CheckTeleport(dxr.player);
+    if( ! class'DynamicTeleporter'.static.CheckTeleport(dxr.player) ) {
+        err("DynamicTeleporter failed");
+    }
+}
+
+function PostFirstEntry()
+{
+    switch(dxr.localURL) {
+        case "11_PARIS_CATHEDRAL":
+            AddBox(class'CrateUnbreakableSmall', vect(-2130.379639, 3345.327881, -1151.909180));
+            AddBox(class'CrateUnbreakableLarge', vect(-2234.959473, 3227.824951, -1127.913330));
+            break;
+    }
 }
 
 function PreTravel()
@@ -109,16 +156,398 @@ function AnyEntry()
         d.ConBindEvents();
     foreach AllActors(class'ScriptedPawn', s)
         s.ConBindEvents();
+
+    FixInterpolating();
+
+    SetSeed("DXRBacktracking AnyEntry");// just in case we do randomized interpolationpoints
+
+    switch(dxr.localURL) {
+        case "10_PARIS_METRO":
+            ParisMetroAnyEntry();
+            break;
+        case "10_PARIS_CHATEAU":
+            ParisChateauAnyEntry();
+            break;
+        
+        case "12_VANDENBERG_CMD":
+            VandCmdAnyEntry();
+            break;
+        case "12_VANDENBERG_GAS":
+            VandGasAnyEntry();
+            break;
+        case "14_VANDENBERG_SUB":
+            VandSubAnyEntry();
+            break;
+        case "14_OCEANLAB_LAB":
+            VandOceanLabAnyEntry();
+            break;
+        case "14_OCEANLAB_SILO":
+            VandSiloAnyEntry();
+            break;
+    }
 }
 
 function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
     //need to make sure this doesn't happen when loading a save
-    if ( IsTravel ) class'DynamicTeleporter'.static.CheckTeleport(dxr.player);
+    if ( IsTravel ) {
+        if( ! class'DynamicTeleporter'.static.CheckTeleport(dxr.player) )
+            err("DynamicTeleporter failed");
+    }
 }
 
-function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
+function FixInterpolating()
 {
-    return class'DXRFixup'.static._AddSwitch(Self, loc, rotate, Event);
+    //err(dxr.player$" state: "$dxr.player.GetStateName()$", Tag: "$dxr.player.tag$", NextState: "$dxr.player.NextState$", bInterpolating: "$dxr.player.bInterpolating);
+    if( dxr.player.NextState != 'Interpolating' ) return;
+    info("FixInterpolating(), "$dxr.player$" state: "$dxr.player.GetStateName()$", Tag: "$dxr.player.tag$", NextState: "$dxr.player.NextState$", bInterpolating: "$dxr.player.bInterpolating);
+    dxr.player.NextState = '';
+    dxr.player.NextLabel = '';
+    dxr.player.GotoState('PlayerWalking');
+    dxr.player.bDetectable = true;
+}
+
+function ParisMetroAnyEntry()
+{
+    local InterpolateTrigger t;
+    local GuntherHermann gunther;
+    local NicoletteDuClare nicolette;
+    local FlagBase flags;
+    local MapExit exit;
+
+    flags = dxr.player.flagBase;
+
+    foreach AllActors(class'InterpolateTrigger', t, 'ChopperExit') {
+        t.bTriggerOnceOnly = false;
+    }
+
+    if( flags.GetBool('NicoletteDoneFollowing') ) {
+        foreach AllActors(class'NicoletteDuClare', nicolette)
+            nicolette.Destroy();
+    }
+
+    if( flags.GetBool('JockReady_Played') ) {
+        flags.SetBool('JockReady_Played', false,, 11);
+        flags.SetBool('MS_GuntherUnhidden', false,, 11);
+
+        foreach AllActors(class'GuntherHermann', gunther) {
+            gunther.SetLocation( vect(3790.952637, 1990.542969, 199.763168) );
+            gunther.LeaveWorld();
+        }
+
+        RemoveChoppers();
+
+        SpawnChopper( 'BlackHelicopter', 'choppertrack', "Jock", vect(3134.682373, 1101.204956, 304.756897), rot(0, -24944, 0) );
+    }
+
+    /*if( flags.GetBool('ClubComplete') ) {
+        // switch back to her dialog when she's ready to get in the chopper
+        flags.SetBool('ClubComplete', false,, 12);
+    }*/
+}
+
+function ParisChateauAnyEntry()
+{
+    local InterpolateTrigger t;
+    local FlagBase flags;
+
+    flags = dxr.player.flagBase;
+    flags.SetBool('NicoletteReadyToLeave', true,, 12);
+    flags.SetBool('NicoletteOutside_Played', true,, 12);
+    flags.SetBool('NicoletteLeftClub', true,, 12);
+    flags.SetBool('ClubComplete', true,, 12);
+    flags.SetBool('MeetNicolette_Played', true,, 12);
+
+    foreach AllActors(class'InterpolateTrigger', t)
+        t.Destroy();
+
+    RemoveChoppers();
+    
+    CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'Camera1', vect(-500,250,0) );
+    BacktrackChopper( 'ChopperExit', 'BlackHelicopter', 'UN_BlackHeli_Fly', "Jock", 'Camera1', "10_PARIS_METRO", 'PathNode447', "", vect(-825.793274, 1976.029297, 176.545380), rot(0, -10944, 0) );
+}
+
+function VandCmdAnyEntry()
+{
+    local InterpolateTrigger t;
+    local FlagBase flags;
+
+    foreach AllActors(class'InterpolateTrigger', t, 'mission_done') {
+        t.bTriggerOnceOnly = false;
+    }
+
+    // I could also give Jock a "Let's go" conversation instead
+    ConversationFrobOnly(GetConversation('TongTrigger'));
+    ConversationFrobOnly(GetConversation('M12JockFinal'));
+    ConversationFrobOnly(GetConversation('M12JockFinal2'));
+
+    flags = dxr.player.flagBase;
+    flags.SetBool('TongTrigger_Played', false,, 1);
+    if ( flags.GetBool('GaryHostageBriefing_Played') )
+    {
+        RemoveChoppers('Helicopter');        
+        SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vect(7014.185059, 7540.296875, -2884.704102), rot(0, -19840, 0) );
+    }
+}
+
+function VandGasAnyEntry()
+{
+    local BlackHelicopter chopper;
+    local InterpolateTrigger t;
+    local DeusExMover M;
+    local FlagBase flags;
+    flags = dxr.player.flagBase;
+
+    ConversationFrobOnly(GetConversation('M12JockFinal'));
+    ConversationFrobOnly(GetConversation('M12JockFinal2'));
+
+    // backtracking to CMD
+    flags.SetBool('GaryHostageBriefing_Played', true,, 15);
+
+    RemoveChoppers('backtrack_chopper');
+
+    foreach AllActors(class'BlackHelicopter', chopper, 'Heli')
+        chopper.Event = 'UN_BlackHeli';
+
+    CreateInterpolationPoints( 'backtrack_exit', vect(2520.256836, -2489.873535, -1402.078857) );
+    CreateCameraInterpolationPoints( 'backtrack_exit', 'backtrack_camera', vect(-500,250,0) );
+
+    // I could also give Jock a "Let's go" conversation
+    BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_CMD", 'PathNode8', "", vect(2520.256836, -2489.873535, -1402.078857), rot(0,0,0) );
+
+
+    // repeat flights to the sub base
+    foreach AllActors(class'InterpolateTrigger', t, 'UN_BlackHeli')
+        t.bTriggerOnceOnly = false;
+    
+    if( flags.GetBool('MS_ChopperGasUnhidden') ) {
+        RemoveChoppers('Heli');
+        SpawnChopper( 'Heli', 'UN_BlackHeli', "Jock", vect(-3207.999756, 135.342285, -905.545044), rot(0, -63104, 0) );
+    }
+    else if( flags.GetBool('TiffanyRescued') ) {
+        foreach AllActors(class'BlackHelicopter', chopper)
+            chopper.EnterWorld();
+
+        foreach AllActors(Class'DeusExMover', M, 'junkyard_doors')
+            M.BlowItUp(None);
+        
+        flags.SetBool('MS_ChopperGasUnhidden', True,, 15);
+    }
+}
+
+function VandSubAnyEntry()
+{
+    local InterpolateTrigger t;
+    local InterpolationPoint p;
+    local FlagTrigger ft;
+    local FlagBase flags;
+    flags = dxr.player.flagBase;
+
+    // backtracking to gas station
+    flags.SetBool('TiffanyRescued', true,, 15);// despite the name, this really just means the rescue has been attempted
+
+    foreach AllActors(class'InterpolateTrigger', t, 'InterpolateTrigger')
+        if( t.Event == 'UN_BlackHeli' ) t.Destroy();
+    
+    RemoveChoppers('UN_BlackHeli');
+
+    foreach AllActors(class'InterpolationPoint', p, 'UN_BlackHeli_Fly') {
+        if( p.Position > 2 ) continue;
+        p.SetLocation(vect(7035.433594, 3841.281250, -379.008362));
+        if( p.Position < 2 ) p.SetRotation(rot(0, -15720, 0));
+    }
+
+    CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'backtrack_camera', vect(200,600,0) );
+    BacktrackChopper('UN_BlackHeli_Fly', 'backtrack_chopper', 'UN_BlackHeli_Fly', "", 'backtrack_camera', "12_VANDENBERG_GAS", 'PathNode98', "", vect(7035.433594, 3841.281250, -379.008362), rot(0, -15720, 0) );
+    
+    // need to backtrack with the sub too
+    foreach AllActors(class'FlagTrigger', ft, 'subexit') {
+        if( ft.Event != 'flag2' ) continue;
+        ft.Event = 'reallysubexit';
+    }
+    // TODO: there are unused InterpolationPoints for the submarine
+
+    // repeat flights to silo
+    foreach AllActors(class'InterpolateTrigger', t, 'ChopperExit')
+        t.bTriggerOnceOnly = false;
+    if( flags.GetBool('DL_downloaded_Played') ) {
+        RemoveChoppers('BlackHelicopter');
+        SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vect(2104.722168, 3647.967773, 896.197144), rot(0, 0, 0) );
+    }
+}
+
+function VandOceanLabAnyEntry()
+{
+    local FlagTrigger ft;
+    local MiniSub s;
+    local InterpolateTrigger it;
+    local DataLinkTrigger dlt;
+    local MapExit me;
+    local Conversation c;
+
+    // reentry with the sub
+    foreach AllActors(class'FlagTrigger', ft, 'subexit') {
+        if( ft.Event == 'flag2' )
+            ft.Event = 'reallysubexit';
+    }
+
+    foreach AllActors(class'DataLinkTrigger', dlt, 'subexit') {
+        if( dlt.datalinkTag == 'dl_subnotready' )
+            dlt.Destroy();
+    }
+
+    foreach AllActors(class'InterpolateTrigger', it, 'reallysubexit') {
+        //it.bTriggerOnceOnly = false;
+        //it.SetCollision(false,false,false);
+        it.Destroy();
+    }
+
+    foreach AllActors(class'MiniSub', s, 'MiniSub') {
+        s.Event = '';
+        s.Destroy();
+    }
+
+    foreach AllActors(class'MapExit', me, 'reallysubexit') {
+        // HACK: can't figure out how to fix the camera transition starting immediately when you enter the level sometimes
+        me.bPlayTransition = false;
+    }
+
+    s = Spawn(class'MiniSub',, 'MiniSub', vect(186.735916, 243.355240, -2217.393555), rot(0, -16408, 0) );
+    s.Event = 'subexit';
+    s.bFloating = true;
+    s.SetPhysics(PHYS_Swimming);
+    s.SetRotation(rot(0, -16408, 0));
+    s.DesiredRotation = rot(0, -16408, 0);
+    s.origRot = rot(0, -16408, 0);
+
+    foreach AllActors(class'DataLinkTrigger', dlt) {
+        if( dlt.datalinkTag != 'dl_seconddoors' ) continue;
+        dlt.SetCollision(false);
+        dlt.Tag = 'subexit';
+    }
+    c = GetConversation('DL_SecondDoors');
+    c.bDisplayOnce = false;
+    class'DXRFixup'.static.FixConversationFlag(c, 'schematic_downloaded', true, 'door_open', false);
+}
+
+function VandSiloAnyEntry()
+{
+    local FlagBase flags;
+    flags = dxr.player.flagBase;
+
+    // back to sub base
+    flags.SetBool('DL_downloaded_Played', true,, 15);
+    CreateInterpolationPoints( 'backtrack_path', vect(507, -2500, 1600) );
+    CreateCameraInterpolationPoints( 'backtrack_path', 'backtrack_camera', vect(-500,250,0) );
+
+    RemoveChoppers('backtrack_chopper');
+    BacktrackChopper('backtrack_path', 'backtrack_chopper', 'backtrack_path', "", 'backtrack_camera', "14_Vandenberg_Sub", 'InterpolationPoint39', "", vect(507, -2500, 1600), rot(0,0,0) );
+}
+
+function RemoveChoppers(optional Name ChopperTag)
+{
+    local BlackHelicopter chopper;
+    foreach AllActors(class'BlackHelicopter', chopper) {
+        if( ChopperTag == '' || chopper.Tag == ChopperTag ) {
+            chopper.Event = '';// in the Decoration class, the Destroy function triggers the Event
+            chopper.Destroy();
+        }
+    }
+}
+
+function SpawnChopper(Name ChopperTag, Name PathTag, string BindName, vector loc, rotator rot)
+{
+    local BlackHelicopter chopper;
+    local bool bOldCollideWorld;
+
+    bOldCollideWorld = class'BlackHelicopter'.default.bCollideWorld;
+    class'BlackHelicopter'.default.bCollideWorld = false;
+
+    chopper = Spawn(class'BlackHelicopter',, ChopperTag, loc, rot );
+    chopper.Event = PathTag;
+    chopper.BindName = BindName;
+    chopper.FamiliarName = "Jock";
+    chopper.UnFamiliarName = "Jock";
+    chopper.ConBindEvents();
+
+    class'BlackHelicopter'.default.bCollideWorld = bOldCollideWorld;
+}
+
+function BacktrackChopper(Name event, Name ChopperTag, Name PathTag, string BindName, Name CameraPath, string DestMap, Name DestName, string DestTag, vector loc, rotator rot)
+{
+    local InterpolateTrigger t;
+    local MapExit exit;
+
+    if( event != '' ) {
+        t = Spawn(class'InterpolateTrigger',, event, loc);
+        t.bTriggerOnceOnly = false;
+        t.Event = ChopperTag;
+        t.SetCollision(false,false,false);
+    }
+
+    SpawnChopper(ChopperTag, PathTag, BindName, loc, rot);
+
+    foreach AllActors(class'MapExit', exit, event)
+        return;
+    
+    exit = Spawn(class'MapExit',, event, loc );
+    exit.SetCollision(false,false,false);
+    exit.SetDestination(DestMap, DestName, DestTag);
+    exit.bPlayTransition = true;
+    exit.cameraPathTag = CameraPath;
+}
+
+function CreateInterpolationPoints(Name PathTag, vector loc)
+{
+    local InterpolationPoint p;
+    local int i;
+
+    foreach AllActors(class'InterpolationPoint', p, PathTag)
+        return;// don't do anything if PathTag already exists
+    
+    for(i=0; i<10 ; i++) {
+        p = Spawn(class'InterpolationPoint',, PathTag, loc, rot(0,0,0) );
+        p.Position = i;
+        p.RateModifier = 2;
+        loc.Z += 20*i;
+
+        if( i > 6 ) p.bEndOfPath = true;
+    }
+
+    foreach AllActors(class'InterpolationPoint', p, PathTag)
+        p.BeginPlay();// find the Prev and Next
+}
+
+function CreateCameraInterpolationPoints(Name oldtag, Name newtag, vector offset)
+{
+    local InterpolationPoint p, pnew;
+    local vector loc;
+    local rotator rot;
+
+    foreach AllActors(class'InterpolationPoint', p, newtag)
+        return;// don't do anything if newtag already exists
+
+    foreach AllActors(class'InterpolationPoint', p, oldtag) {
+        loc = (10+p.Position) * 0.1 * offset;
+        loc += p.Location;
+        rot = Rotator(p.Location - loc);
+        pnew = Spawn(class'InterpolationPoint',, newtag, loc, rot);
+        pnew.bEndOfPath = p.bEndOfPath;
+        pnew.bSkipNextPath = p.bSkipNextPath;
+        pnew.Position = p.Position;
+        pnew.RateModifier = p.RateModifier;
+    }
+
+    foreach AllActors(class'InterpolationPoint', pnew, newtag)
+        pnew.BeginPlay();// find the Prev and Next
+}
+
+function ConversationFrobOnly(Conversation c)
+{
+    if( c == None ) return;
+
+    c.bInvokeBump = false;
+    c.bInvokeSight = false;
+    c.bInvokeRadius = false;
 }

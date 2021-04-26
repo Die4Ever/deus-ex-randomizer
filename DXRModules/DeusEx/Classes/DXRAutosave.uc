@@ -16,7 +16,6 @@ function PostFirstEntry()
     Super.PostFirstEntry();
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave > 0 ) {
         bNeedSave=true;
-        SetTimer(save_delay, True);
     }
 }
 
@@ -25,8 +24,13 @@ function ReEntry(bool IsTravel)
     Super.ReEntry(IsTravel);
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave==2 && IsTravel ) {
         bNeedSave=true;
-        SetTimer(save_delay, True);
     }
+}
+
+function PostAnyEntry()
+{
+    if( bNeedSave )
+        SetTimer(save_delay, True);
 }
 
 function Timer()
@@ -53,7 +57,13 @@ function doAutosave()
 
     if( dxr == None ) {
         info("dxr == None, doAutosave() not saving yet");
-        SetTimer(1.0, True);
+        SetTimer(save_delay, True);
+        return;
+    }
+
+    if( dxr.bTickEnabled ) {
+        info("dxr.bTickEnabled, doAutosave() not saving yet");
+        SetTimer(save_delay, True);
         return;
     }
     
@@ -97,5 +107,5 @@ function doAutosave()
 
 defaultproperties
 {
-    save_delay=1.5
+    save_delay=0.5
 }

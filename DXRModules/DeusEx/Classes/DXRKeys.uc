@@ -212,14 +212,20 @@ function RandomizeDoors()
     }
 }
 
+function RandoKey(NanoKey k)
+{
+    local int oldseed;
+    if( dxr.flags.keysrando == 4 || dxr.flags.keysrando == 2 ) {
+        oldseed = SetSeed( "RandoKey " $ k.Name );
+        _RandoKey(k);
+        dxr.SetSeed(oldseed);
+    }
+}
+
 function MoveNanoKeys4()
 {
     local DeusExCarcass carc;
-    local Actor temp[1024];
-    local Inventory a;
-    local Containers c;
     local NanoKey k;
-    local int num, slot, tries;
 
     SetSeed( "MoveNanoKeys4" );
 
@@ -230,33 +236,42 @@ function MoveNanoKeys4()
     foreach AllActors(class'NanoKey', k )
     {
         if ( SkipActorBase(k) ) continue;
+        _RandoKey(k);
+    }
+}
 
-        num=0;
-        foreach AllActors(class'Inventory', a)
-        {
-            if( a == k ) continue;
-            if( SkipActor(a, 'Inventory') ) continue;
-            if( KeyPositionGood(k, a.Location) == False ) continue;
-            temp[num++] = a;
-        }
-        /*foreach AllActors(class'Containers', c)
-        {
-            if( SkipActor(c, 'Containers') ) continue;
-            if( KeyPositionGood(k, c.Location) == False ) continue;
-            temp[num++] = c;
-        }*/
+function _RandoKey(NanoKey k)
+{
+    local Actor temp[1024];
+    local Inventory a;
+    local Containers c;
+    local int num, slot, tries;
 
-        for(tries=0; tries<5; tries++) {
-            slot=rng(num+1);// +1 for vanilla
-            if(slot==0) {
-                info("not swapping key "$k.KeyID);
-                continue;
-            }
-            slot--;
-            info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot]);
-            // Swap argument A is more lenient with collision than argument B
-            if( Swap(temp[slot], k) ) break;
+    num=0;
+    foreach AllActors(class'Inventory', a)
+    {
+        if( a == k ) continue;
+        if( SkipActor(a, 'Inventory') ) continue;
+        if( KeyPositionGood(k, a.Location) == False ) continue;
+        temp[num++] = a;
+    }
+    /*foreach AllActors(class'Containers', c)
+    {
+        if( SkipActor(c, 'Containers') ) continue;
+        if( KeyPositionGood(k, c.Location) == False ) continue;
+        temp[num++] = c;
+    }*/
+
+    for(tries=0; tries<5; tries++) {
+        slot=rng(num+1);// +1 for vanilla
+        if(slot==0) {
+            info("not swapping key "$k.KeyID);
+            continue;
         }
+        slot--;
+        info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot]);
+        // Swap argument A is more lenient with collision than argument B
+        if( Swap(temp[slot], k) ) break;
     }
 }
 
@@ -348,7 +363,7 @@ function AdjustUndefeatableDoors(int exclusivitymode, int doorspickable, int doo
 
     foreach AllActors(class'DeusExMover', d)
     {
-        if( d.bPickable || d.bBreakable ) continue;
+        if( DoorIsPickable(d) || d.bBreakable ) continue;
         if( !d.bIsDoor && d.KeyIDNeeded == '' && !d.bHighlight && !d.bFrobbable ) continue;
         AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
     }
@@ -378,7 +393,7 @@ function AdjustKeyOnlyDoors(int exclusivitymode, int doorspickable, int doorsdes
     foreach AllActors(class'DeusExMover', d)
     {
         if( d.bHighlight == false || d.bFrobbable == false ) continue;
-        if( d.KeyIDNeeded == 'None' || d.bPickable || d.bBreakable ) continue;
+        if( d.KeyIDNeeded == 'None' || DoorIsPickable(d) || d.bBreakable ) continue;
         AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
     }
 }
@@ -428,6 +443,11 @@ function AdjustDoor(DeusExMover d, int exclusivitymode, int doorspickable, int d
         default:
             break;
     }
+}
+
+static function bool DoorIsPickable(DeusExMover d)
+{// maybe also needs to be bLocked?
+    return d.bFrobbable && d.bHighlight && d.bPickable;
 }
 
 function MakePickable(DeusExMover d)

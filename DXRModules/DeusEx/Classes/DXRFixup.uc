@@ -107,6 +107,7 @@ function PreFirstEntry()
             Paris_FirstEntry();
             break;
         case 12:
+        case 14:
             Vandenberg_FirstEntry();
             break;
         case 15:
@@ -613,6 +614,7 @@ function Vandenberg_FirstEntry()
     local Button1 b;
     local Dispatcher d;
     local LogicTrigger lt;
+    local ComputerSecurity comp;
 
     switch(dxr.localURL)
     {
@@ -653,6 +655,15 @@ function Vandenberg_FirstEntry()
                 }
             }
             break;
+        
+        case "14_OCEANLAB_LAB":
+            foreach AllActors(class'ComputerSecurity', comp) {
+                if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
+                    comp.UserList[0].userName = "Oceanguard";
+                    comp.UserList[0].Password = "Kraken";
+                }
+            }
+            break;
     }
 }
 
@@ -660,6 +671,8 @@ function HongKong_FirstEntry()
 {
     local Actor a;
     local ScriptedPawn p;
+    local Button1 b;
+    local ElevatorMover e;
 
     switch(dxr.localURL)
     {
@@ -709,6 +722,23 @@ function HongKong_FirstEntry()
             }
             
             break;
+        case "06_HONGKONG_WANCHAI_STREET":
+            foreach AllActors(class'Button1',b)
+            {
+                if (b.Event=='JockShaftTop')
+                {
+                    b.Event='JocksElevatorTop';
+                }
+            }
+            
+            foreach AllActors(class'ElevatorMover',e)
+            {
+                if(e.Tag=='JocksElevator')
+                {
+                    e.Event = '';
+                }
+            }
+            break;
         default:
             break;
     }
@@ -731,12 +761,27 @@ function Shipyard_FirstEntry()
 function Paris_FirstEntry()
 {
     local GuntherHermann g;
+    local DeusExMover m;
+    local Trigger t;
 
     switch(dxr.localURL)
     {
         case "10_PARIS_CATACOMBS_TUNNELS":
+            foreach AllActors(class'Trigger', t)
+                if( t.Event == 'MJ12CommandoSpecial' )
+                    t.Touch(dxr.player);// make this guy patrol instead of t-pose
+            
             AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
             AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
+            break;
+
+        case "10_PARIS_CHATEAU":
+            foreach AllActors(class'DeusExMover', m, 'everettsignal')
+                m.Tag = 'everettsignaldoor';
+            t = Spawn(class'Trigger',, 'everettsignal');
+            t.Event = 'everettsignaldoor';
+            t.SetCollision(false,false,false);
+            AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
             break;
         
         case "11_PARIS_CATHEDRAL":
@@ -912,31 +957,6 @@ function AddDelay(Actor trigger, float time)
     trigger.Event = d.Tag;
 }
 
-function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
-{
-    return _AddSwitch(Self, loc, rotate, Event);
-}
-
-static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate, name Event)
-{
-    local DeusExDecoration d;
-    d = DeusExDecoration( _AddActor(a, class'Switch2', loc, rotate) );
-    d.Event = Event;
-    return d;
-}
-
-static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rotate)
-{
-    local Actor d;
-    local bool oldCollideWorld;
-    d = a.Spawn(c,,, loc, rotate );
-    oldCollideWorld = d.bCollideWorld;
-    d.bCollideWorld = false;
-    d.SetLocation(loc);
-    d.SetRotation(rotate);
-    d.bCollideWorld = oldCollideWorld;
-    return d;
-}
 
 // mostly copied from DeusExPlayer.uc
 function UpdateDynamicMusic(Music Song)
@@ -1053,15 +1073,6 @@ function UpdateDynamicMusic(Music Song)
             }
         }
 	}
-}
-
-function Conversation GetConversation(Name conName)
-{
-    local Conversation c;
-    foreach AllObjects(class'Conversation', c) {
-        if( c.conName == conName ) return c;
-    }
-    return None;
 }
 
 static function FixConversationFlag(Conversation c, name fromName, bool fromValue, name toName, bool toValue)

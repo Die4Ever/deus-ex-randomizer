@@ -1,5 +1,11 @@
 class Barrel1 injects Barrel1;
 
+function BeginPlay()
+{
+    Super.BeginPlay();
+    bInvincible = false;
+}
+
 event TravelPreAccept()
 {
     Super.TravelPreAccept();

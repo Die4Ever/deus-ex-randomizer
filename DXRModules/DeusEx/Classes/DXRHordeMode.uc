@@ -190,7 +190,6 @@ function CheckConfig()
         remove_objects[i++] = 'MapExit';
         remove_objects[i++] = 'ScriptedPawn';
         remove_objects[i++] = 'DataLinkTrigger';
-        remove_objects[i++] = 'MapExit';
         remove_objects[i++] = 'Teleporter';
         remove_objects[i++] = 'SecurityCamera';
         remove_objects[i++] = 'AutoTurret';
@@ -302,9 +301,10 @@ function InWaveTick()
     local int numScriptedPawns;
     local float dist, ratio;
 
-    foreach AllActors(class'ScriptedPawn', p) {
+    foreach AllActors(class'ScriptedPawn', p, 'hordeenemy') {
         if( p.IsA('Animal') ) continue;
         if( (time_in_wave+numScriptedPawns) % 5 == 0 ) p.SetOrders(default_orders, default_order_tag);
+        p.bStasis = false;
         dist = VSize(p.Location-dxr.player.Location);
         if( dist > popin_dist ) {
             ratio = dist/popin_dist;
@@ -397,9 +397,10 @@ function GetOverHere()
 
     time_overdue = time_in_wave-time_before_teleport_enemies;
     maxdist = popin_dist - float(time_overdue*5);
-    foreach AllActors(class'ScriptedPawn', p) {
+    foreach AllActors(class'ScriptedPawn', p, 'hordeenemy') {
         if( p.IsA('Animal') ) continue;
 
+        p.bStasis = false;
         dist = VSize(dxr.player.Location-p.Location);
         if( (time_in_wave+i) % 7 == 0 && p.CanSee(dxr.player) == false && dist > maxdist ) {
             loc = GetCloserPosition(dxr.player.Location, p.Location, maxdist*2);
@@ -496,7 +497,7 @@ function float GenerateEnemy(DXREnemies dxre)
         loc = GetRandomPosition(dxr.player.Location, popin_dist*0.8, popin_dist*2.5);
         loc.X += rngfn() * 25;
         loc.Y += rngfn() * 25;
-        p = Spawn(c,,, loc );
+        p = Spawn(c,, 'hordeenemy', loc );
     }
     if(p==None) {
         l("failed to spawn "$c$" at "$loc);
@@ -510,6 +511,7 @@ function float GenerateEnemy(DXREnemies dxre)
     dxre.RandomizeSP(p, 100);
     GiveRandomItems(p);
     p.InitializeInventory();
+    p.bStasis = false;
 
     return difficulty;
 }

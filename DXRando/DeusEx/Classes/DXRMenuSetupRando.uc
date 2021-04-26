@@ -52,8 +52,8 @@ function BindControls(bool writing, optional string action)
     EnumOptionString(id, "Undefeatable Doors Breakable", (f.undefeatabledoors+f.doorindependent)$";100;0", writing, doors_option);
     EnumOptionString(id, "Undefeatable Doors Pickable", (f.undefeatabledoors+f.doorindependent)$";0;100", writing, doors_option);
     EnumOptionString(id, "Doors Unchanged", "0;0;0", writing, doors_option);
-    EnumOptionString(id, "All Doors Breakable & Pickable", (f.alldoors+f.doormutuallyexclusive)$";100;100", writing, doors_option);
-    EnumOptionString(id, "All Doors Breakable or Pickable", (f.alldoors+f.doormutuallyinclusive)$";50;50", writing, doors_option);
+    EnumOptionString(id, "All Doors Breakable or Pickable", (f.alldoors+f.doormutuallyexclusive)$";50;50", writing, doors_option);
+    EnumOptionString(id, "All Doors Breakable & Pickable", (f.alldoors+f.doormutuallyinclusive)$";100;100", writing, doors_option);
     EnumOptionString(id, "All Doors Breakable", (f.alldoors+f.doorindependent)$";100;0", writing, doors_option);
     EnumOptionString(id, "All Doors Pickable", (f.alldoors+f.doorindependent)$";0;100", writing, doors_option);
     f.doorsmode = UnpackInt(doors_option);

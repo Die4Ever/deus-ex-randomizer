@@ -86,7 +86,7 @@ function RandomizeItems(out ItemPurchase items[8])
         chance_remaining(r);
 
         items[i].item = iclass;
-        items[i].price = rngrange(2000, 0.25, 2);
+        items[i].price = rngrange(2000, 0.2, 1.5);
     }
 
     // remove duplicates

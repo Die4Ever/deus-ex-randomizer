@@ -99,7 +99,7 @@ function InitDefaults()
     if( dxr != None ) RollSeed();
     gamemode = 0;
     loadout = 0;
-    brightness = 10;
+    brightness = 20;
     minskill = 25;
     maxskill = 300;
     ammo = 90;
@@ -133,7 +133,7 @@ function InitDefaults()
     turrets_add = 20;
     crowdcontrol = 0;
     newgameplus_loops = 0;
-    merchants = 50;
+    merchants = 30;
     banned_skills = 5;
     banned_skill_levels = 5;
     enemies_nonhumans = 60;
@@ -443,6 +443,7 @@ function NewGamePlus()
 function RunTests()
 {
     local int i, t;
+    local DeusExPlayer p;
     Super.RunTests();
 
     //this Crc function returns negative numbers
@@ -472,6 +473,10 @@ function RunTests()
     teststring( FloatToString(0.5555, 1), "0.6", "FloatToString 1");
     teststring( FloatToString(0.5454999, 4), "0.5455", "FloatToString 2");
     teststring( FloatToString(0.5455, 2), "0.55", "FloatToString 3");
+
+    i=0;
+    foreach AllActors(class'DeusExPlayer', p) i++;
+    testint(i, 1, "Found 1 DeusExPlayer");
 }
 
 function ExtendedTests()
