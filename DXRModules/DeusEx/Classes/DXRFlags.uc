@@ -446,6 +446,7 @@ function RunTests()
     local DeusExPlayer p;
     Super.RunTests();
 
+    test( dxr != None, "found dxr "$dxr );
     //this Crc function returns negative numbers
     testint( dxr.Crc("a bomb!"), -1813716842, "Crc32 test");
     testint( dxr.Crc("1723"), -441943723, "Crc32 test");

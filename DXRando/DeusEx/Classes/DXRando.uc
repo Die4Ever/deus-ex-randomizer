@@ -223,7 +223,7 @@ function RandoEnter()
     if ( firstTime == true )
     {
         //if( !IsTravel ) warning(localURL$": loaded save but FirstEntry? firstTime: "$firstTime$", IsTravel: "$IsTravel);
-        SetSeed( Crc(seed $ "MS_" $ dxInfo.MissionNumber $ localURL) );
+        SetSeed( Crc(seed $ localURL) );
 
         info("randomizing "$localURL$" using seed " $ seed);
 
