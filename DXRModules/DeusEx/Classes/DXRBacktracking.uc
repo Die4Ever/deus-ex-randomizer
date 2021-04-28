@@ -320,10 +320,20 @@ function VandGasAnyEntry()
     // repeat flights to the sub base
     foreach AllActors(class'InterpolateTrigger', t, 'UN_BlackHeli')
         t.bTriggerOnceOnly = false;
+
+    foreach AllActors(Class'DeusExMover', M, 'junkyard_doors') {
+        M.bLocked = true;
+        class'DXRKeys'.static.StaticMakeDestructible(M);
+        M.doorStrength = 0.1;
+        M.minDamageThreshold = 1;
+    }
     
     if( flags.GetBool('MS_ChopperGasUnhidden') ) {
         RemoveChoppers('Heli');
         SpawnChopper( 'Heli', 'UN_BlackHeli', "Jock", vect(-3207.999756, 135.342285, -905.545044), rot(0, -63104, 0) );
+
+        foreach AllActors(Class'DeusExMover', M, 'junkyard_doors')
+            M.BlowItUp(None);
     }
     else if( flags.GetBool('TiffanyRescued') ) {
         foreach AllActors(class'BlackHelicopter', chopper)
