@@ -7,7 +7,6 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 
 v1.5.7 Beta:
-	button to get out of gas station exit, or just put the player on the other side
 	do I need to make choppers appear when backtracking? like appearing at the exit of the sub base?
 	paris chateau door didn't open, maybe because of StayOpenTime while the enemies were in stasis?
 
