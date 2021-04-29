@@ -70,7 +70,7 @@ var config int min_connections_selfconnect;
 function CheckConfig()
 {
     local int i, k;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,7) ) {
+    if( ConfigOlderThan(1,5,7) ) {
         for(i=0; i < ArrayCount(BannedConnections); i++) {
             BannedConnections[i].map_a = "";
             BannedConnections[i].map_b = "";
