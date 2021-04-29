@@ -2,9 +2,9 @@ class ScopeView injects DeusExScopeView;
 
 event DrawWindow(GC gc)
 {
-    local float			fromX, toX;
-    local float			fromY, toY;
-    local float			scopeWidth, scopeHeight;
+    local float fromX, toX;
+    local float fromY, toY;
+    local float scopeWidth, scopeHeight;
 
     Super(Window).DrawWindow(gc);
 
