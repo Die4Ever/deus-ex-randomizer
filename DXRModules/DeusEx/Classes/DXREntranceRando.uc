@@ -574,15 +574,15 @@ function BuildCache()
 {
     local int idx, destIdx;
 
-    //2d loop
     for(idx=0; idx<numXfers; idx++) {
         numXfersMaps[idx] = GetNumXfersByMap(xfers[idx].mapname);
-        numInvalids[idx] = 0;
-
         // don't link to self
         invalidCons[ (idx*ArrayCount(xfers)) + idx ] = 1;
-        numInvalids[idx]++;
+        numInvalids[idx] = 1;
+    }
 
+    //2d loop
+    for(idx=0; idx<numXfers; idx++) {
         for(destIdx=idx+1; destIdx<numXfers; destIdx++) {
             // check validity, also reversed
             invalidCons[ (idx*ArrayCount(xfers)) + destIdx ] = 0;
@@ -1154,7 +1154,7 @@ function ExtendedTests()
 
     TestAllMissions(21);
 
-    for(i=1; i<20; i++) {
+    for(i=1; i<50; i++) {
         // reduce this if we start getting runaway loops, or make it so extended tests can run across multiple frames
         TestAllMissions( dxr.seed + i );
     }
