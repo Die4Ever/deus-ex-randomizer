@@ -140,9 +140,19 @@ def read_uc_file(file, definitions):
 
 
 def proc_file(file, files, mod_name, injects, definitions):
+    debug("Processing "+file+" from "+mod_name)
+
     f = read_uc_file(file, definitions)
     if f is None:
         return
+    
+    if not hasattr(proc_file,"last_folder"):
+        proc_file.last_folder=""
+    folder = Path(file).parent
+    if folder != proc_file.last_folder:
+        print("Processing folder "+str(folder)[-50:]+" from "+mod_name)
+    proc_file.last_folder = folder
+
     f['mod_name'] = mod_name
     if f['operator'] == 'injects' or f['operator'] == 'merges':
         if f['baseclass'] not in injects:
@@ -191,7 +201,7 @@ def apply_merge(a, b):
     pattern_post = r'(\s*\()'
     r = re.compile(pattern_pre+r'([^\s\(]+)'+pattern_post, flags=re.IGNORECASE)
     for i in r.finditer(b_content_no_comments):
-        print( "merging found: " + repr(i.groups()) )
+        debug( "merging found: " + repr(i.groups()) )
         func = i.group(3)
         content = re.sub( \
             pattern_pre + re.escape(func) + pattern_post, \
@@ -230,6 +240,14 @@ def write_file(out, f, written, injects):
     if f['file'] in written:
         return
     
+    if not hasattr(write_file,"last_folder"):
+        write_file.last_folder=""
+    folder = Path(f['file']).parent
+    if folder != write_file.last_folder:
+        print("Writing folder "+str(folder)[-50:])
+    debug("Writing "+f['file'])
+    write_file.last_folder = folder
+    
     classname = f['classname']
     classline = f['classline']
     qualifiedclass = f['qualifiedclass']
@@ -245,12 +263,12 @@ def write_file(out, f, written, injects):
         classname, classline, content = inject_from(f, injects)
 
     if f['operator'] == 'merges' or f['operator'] == 'overwrites':
-        print("not writing because inheritance operator is "+f['operator'])
+        debug("not writing because inheritance operator is "+f['operator'])
         return
 
     if classline != f['classline']:
         content = re.sub(f['classline'], classline, content, count=1)
-        print("changing from: "+f['classline']+"\n---to: "+classline)
+        debug("changing from: "+f['classline']+"\n---to: "+classline)
     
     path = out + '/' + f['namespace'] + '/Classes/'
     if not exists_dir(path):
@@ -411,14 +429,12 @@ def compile(source, mods, out, definitions):
 
     print("processing source files from "+source)
     for file in insensitive_glob(source+'/*'):
-        debug("Processing file "+str(file))
-        proc_file(file, orig_files, 'original', None, definitions)
+        proc_file(file, orig_files, 'source', None, definitions)
     
     for mod in mods:
         print("processing files from mod "+mod)
         mods_files.append({})
         for file in insensitive_glob(mod+'*'):
-            debug("Processing mod file "+str(file))
             proc_file(file, mods_files[-1], mod, injects, definitions)
 
     print("\nwriting source files...")

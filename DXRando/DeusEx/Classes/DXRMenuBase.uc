@@ -47,6 +47,8 @@ event Init(DXRando d)
 
     Super.InitWindow();
 
+    InitHelp();
+
     controlsParent = winClient;
     winScroll = CreateScrollAreaWindow(winClient);
     winScroll.SetPos(0, 0);
@@ -66,7 +68,6 @@ event Init(DXRando d)
     SetMouseFocusMode(MFOCUS_Click);
     if( wnds[0] != None ) SetFocusWindow(wnds[0]);
 
-    InitHelp();
     Show();
 
     StyleChanged();
@@ -539,6 +540,9 @@ event StyleChanged()
 event FocusEnteredDescendant(Window enterWindow)
 {
     local int i;
+    
+    if( enterWindow == None ) return;
+
     for(i=0;i<ArrayCount(wnds);i++) {
         if( wnds[i] == enterWindow ) {
             winHelp.Show();

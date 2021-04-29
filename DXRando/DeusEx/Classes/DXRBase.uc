@@ -49,7 +49,7 @@ event Destroyed()
 
 function int SetSeed(coerce string name)
 {
-    return dxr.SetSeed( dxr.Crc(dxr.seed $ "MS_" $ dxr.dxInfo.MissionNumber $ dxr.localURL $ name) );
+    return dxr.SetSeed( dxr.Crc(dxr.seed $ dxr.localURL $ name) );
 }
 
 function int rng(int max)

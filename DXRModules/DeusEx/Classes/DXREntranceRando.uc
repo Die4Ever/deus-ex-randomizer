@@ -39,6 +39,10 @@ var int numFixedConns;
 
 var MapTransfer xfers[50];
 var int numXfers;
+// caches
+var int numInvalids[50];
+var int numXfersMaps[50];
+var int invalidCons[2500];// 2d array of xfers[a] to xfers[b], cache of IsConnectionValid
 
 struct BanConnection
 {
@@ -146,6 +150,23 @@ function int GetNextTransferIdx()
     return -1;
 }
 
+
+function int GetNextPickiestTransfer()
+{
+    local int idx, pickiestIdx, pickiestCount;
+
+    pickiestCount = -1;
+    for(idx=0;idx<numXfers;idx++)
+    {
+        if( (!xfers[idx].used) && numInvalids[idx] > pickiestCount ) {
+            pickiestIdx = idx;
+            pickiestCount = numInvalids[idx];
+        }
+    }
+
+    return pickiestIdx;
+}
+
 //This gets the <offset>th unused transfer and returns its index
 function int GetUnusedTransferByOffset(int offset)
 {
@@ -168,6 +189,29 @@ function int GetUnusedTransferByOffset(int offset)
     return -1;
 }
 
+//This gets the <offset>th unused transfer for a connection and returns its index
+function int GetNextUnusedTransferByOffset(int nextAvailIdx, int offset)
+{
+    local int idx;
+    local int numUnused;
+    
+    idx = 0;
+    numUnused = 0;
+    
+    for(idx=0;idx<numXfers;idx++)
+    {
+        if (xfers[idx].used == False && invalidCons[ (nextAvailIdx*ArrayCount(xfers)) + idx ] == 0 )
+        {
+            if (numUnused==offset)
+                return idx;
+            else
+                numUnused++;
+        }
+    }
+    return -1;
+}
+
+
 function int GetNumXfersByMap(string mapname)
 {
     local int i;
@@ -186,33 +230,37 @@ function int GetNumXfersByMap(string mapname)
     return count;
 }
 
-function bool IsDeadEndMap(string mapname)
+function bool IsDeadEndMap(int idx)
 {
-    return GetNumXfersByMap(mapname)==1;
+    return numXfersMaps[idx]==1;
 }
 
-function bool CanSelfConnect(string mapname)
+function bool CanSelfConnect(int idx)
 {
-    return GetNumXfersByMap(mapname) >= min_connections_selfconnect;
+    return numXfersMaps[idx] >= min_connections_selfconnect;
 }
 
-function bool IsConnectionValid(int missionNum, MapTransfer a, MapTransfer b)
+function bool IsConnectionValid(int idx_a, int idx_b)
 {
     local int i;
+    local MapTransfer a,b;
+
+    a = xfers[idx_a];
+    b = xfers[idx_b];
 
     if( a.mapname == b.mapname && a.inTag == b.inTag && a.outTag == b.outTag ) {
         err("IsConnectionValid got duplicate MapTransfers? mapname: " $ a.mapname $", inTag: " $ a.inTag $", outTag: " $a.outTag);
         return False;
     }
 
-    if ( IsDeadEndMap(a.mapname) && IsDeadEndMap(b.mapname) )
+    if ( IsDeadEndMap(idx_a) && IsDeadEndMap(idx_b) )
     {
         return False;
     }
     
     if ( a.mapname == b.mapname)
     {
-        if ( !CanSelfConnect(a.mapname))
+        if ( !CanSelfConnect(idx_a))
         {
             return False;
         }
@@ -291,7 +339,8 @@ function bool ValidateConnections()
     
     //Theoretically I should probably actually check to see if the maps match,
     //but this is fairly safe...
-    l("ValidateConnections visitable: " $ visitable $", numMaps: " $ numMaps $", i: "$i$", numConns: "$numConns);
+    if( visitable != numMaps )
+        l("ValidateConnections visitable: " $ visitable $", numMaps: " $ numMaps $", i: "$i$", numConns: "$numConns);
     return visitable == numMaps;
 }
 
@@ -503,14 +552,16 @@ function GenerateConnections(int missionNum)
     local bool isValid;
     isValid = False;
 
-    for(attempts=0; attempts<500; attempts++)
+    BuildCache();
+
+    for(attempts=0; attempts<200; attempts++)
     {
         if( ! _GenerateConnections(missionNum) ) {
             genconsfails++;
             continue;// save a bunch of loops if we know we failed?
         }
         if(ValidateConnections()) {
-            if( attempts > 40 ) warning("GenerateConnections("$missionNum$") succeeded but took "$attempts$" attempts! seed: "$dxr.seed $", genconsfails: "$genconsfails$", validatefails: "$validatefails);
+            if( attempts > 20 ) warning("GenerateConnections("$missionNum$") succeeded but took "$attempts$" attempts! seed: "$dxr.seed $", genconsfails: "$genconsfails$", validatefails: "$validatefails);
             return;
         }
         validatefails++;
@@ -519,14 +570,40 @@ function GenerateConnections(int missionNum)
     numConns = 0;// vanilla on failure
 }
 
+function BuildCache()
+{
+    local int idx, destIdx;
+
+    for(idx=0; idx<numXfers; idx++) {
+        numXfersMaps[idx] = GetNumXfersByMap(xfers[idx].mapname);
+        // don't link to self
+        invalidCons[ (idx*ArrayCount(xfers)) + idx ] = 1;
+        numInvalids[idx] = 1;
+    }
+
+    //2d loop
+    for(idx=0; idx<numXfers; idx++) {
+        for(destIdx=idx+1; destIdx<numXfers; destIdx++) {
+            // check validity, also reversed
+            invalidCons[ (idx*ArrayCount(xfers)) + destIdx ] = 0;
+            invalidCons[ (destIdx*ArrayCount(xfers)) + idx ] = 0;
+            if ( ! IsConnectionValid(idx, destIdx) ) {
+                invalidCons[ (idx*ArrayCount(xfers)) + destIdx ] = 1;
+                invalidCons[ (destIdx*ArrayCount(xfers)) + idx ] = 1;
+                numInvalids[idx]++;
+                numInvalids[destIdx]++;
+            }
+            //
+        }
+    }
+}
+
 function bool _GenerateConnections(int missionNum)
 {
     local int xfersUsed;
     local int connsMade;
     local int nextAvailIdx;
-    local int xferOffset;
     local int destIdx;
-    local int maxAttempts;
     local int i;
     
     for(i=0;i<numXfers;i++)
@@ -543,29 +620,16 @@ function bool _GenerateConnections(int missionNum)
 
     while (xfersUsed < numXfers)
     {
-        xferOffset = rng(numXfers-xfersUsed);
-        nextAvailIdx = GetUnusedTransferByOffset(xferOffset);
+        nextAvailIdx = GetNextPickiestTransfer();
+        
         conns[connsMade].a = xfers[nextAvailIdx];
     
         xfers[nextAvailIdx].used = True;
         xfersUsed++;
     
         //Get a random unused transfer
-        maxAttempts = (numXfers-xfersUsed)*3;
-        for (i=0;i<maxAttempts;i++)
-        {
-            xferOffset = rng(numXfers-xfersUsed);
-            destIdx = GetUnusedTransferByOffset(xferOffset);
-        
-            if (IsConnectionValid(missionNum,xfers[nextAvailIdx],xfers[destIdx]))
-            {
-                break;
-            }
-        }
-        if( i >= maxAttempts ) {
-            l("failed to find valid connection for "
-                $ xfers[nextAvailIdx].mapname $ "#" $ xfers[nextAvailIdx].inTag $ " / #" $ xfers[nextAvailIdx].outTag
-                $ " after "$i$" attempts with "$numXfers$" numXfers" );
+        destIdx = _FindConnectionFor(xfersUsed, nextAvailIdx);
+        if( destIdx == -1 ) {
             return false;
         }
         xfers[destIdx].used = True;
@@ -576,6 +640,38 @@ function bool _GenerateConnections(int missionNum)
     }
     numConns = connsMade;
     return true;
+}
+
+function int _FindConnectionFor(int xfersUsed, int nextAvailIdx)
+{
+    local int xferOffset, destIdx;
+
+    //count how many invalidCons we have
+    for(destIdx=0; destIdx<numXfers; destIdx++) {
+        if( xfers[destIdx].used ) {
+            continue;
+        }
+        else if( invalidCons[ (nextAvailIdx*ArrayCount(xfers)) + destIdx ] == 1 ) {
+            xfersUsed++;
+        }
+    }
+
+    //Get a random unused transfer
+    for (destIdx=-1; xfersUsed <= numXfers; xfersUsed++)
+    {
+        xferOffset = rng(numXfers-xfersUsed);
+        destIdx = GetNextUnusedTransferByOffset(nextAvailIdx, xferOffset);
+    
+        if( destIdx == -1 )
+            break;
+        
+        return destIdx;
+    }
+
+    l("failed to find valid connection for "
+        $ xfers[nextAvailIdx].mapname $ "#" $ xfers[nextAvailIdx].inTag $ " / #" $ xfers[nextAvailIdx].outTag
+        $ " with "$numXfers$" numXfers" );
+    return -1;
 }
 
 function AddXfer(string mapname, string inTag, string outTag)
@@ -995,7 +1091,10 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
             else if( t != None )
                 t.URL = newMap $ "#" $ newTag;
         }
-        info("AdjustTeleporter found " $ p $ " with destination " $ curDest $ ", changed to " $ newMap$"#"$newTag$", newdt: "$newdt );
+        if( newdt != None )
+            info("AdjustTeleporter found " $ p $ " with destination " $ curDest $ ", changed to " $ newMap$"#"$newTag$", newdt: "$newdt );
+        else
+            info("AdjustTeleporter found " $ p $ " with destination " $ curDest $ ", changed to " $ newMap$"#"$newTag );
         break;
     }
 
@@ -1055,7 +1154,7 @@ function ExtendedTests()
 
     TestAllMissions(21);
 
-    for(i=1; i<10; i++) {
+    for(i=1; i<50; i++) {
         // reduce this if we start getting runaway loops, or make it so extended tests can run across multiple frames
         TestAllMissions( dxr.seed + i );
     }
@@ -1216,7 +1315,7 @@ function TestAllMissions(int newseed)
     for(i=0; i <= 50; i++) {
         EntranceRando(i);
         if( numXfers > 0 ) {
-            if( ! testbool(ValidateConnections(), true, "RandoMission" $ i $ " validation, seed: "$newseed) ) {
+            if( ! testbool( numConns > 0, true, "RandoMission" $ i $ " validation, seed: "$newseed) ) {
                 LogConnections();
             }
         }

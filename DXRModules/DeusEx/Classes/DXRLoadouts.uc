@@ -376,7 +376,7 @@ function RandoStartingEquipment(DeusExPlayer player)
     if( dxr.flags.equipment == 0 ) return;
 
     l("RandoStartingEquipment");
-    dxr.SetSeed( dxr.Crc(dxr.seed $ " RandoStartingEquipment") );//independent of map/mission
+    dxr.SetSeed( dxr.seed + dxr.Crc("RandoStartingEquipment") );//independent of map/mission
 
     dxr.player.energy = rng(75)+25;
     dxr.player.Credits = rng(200);

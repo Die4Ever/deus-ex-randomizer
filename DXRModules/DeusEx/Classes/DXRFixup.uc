@@ -763,6 +763,7 @@ function Paris_FirstEntry()
     local GuntherHermann g;
     local DeusExMover m;
     local Trigger t;
+    local Dispatcher d;
 
     switch(dxr.localURL)
     {
@@ -778,9 +779,8 @@ function Paris_FirstEntry()
         case "10_PARIS_CHATEAU":
             foreach AllActors(class'DeusExMover', m, 'everettsignal')
                 m.Tag = 'everettsignaldoor';
-            t = Spawn(class'Trigger',, 'everettsignal');
-            t.Event = 'everettsignaldoor';
-            t.SetCollision(false,false,false);
+            d = Spawn(class'Dispatcher',, 'everettsignal', vect(176.275253, 4298.747559, -148.500031) );
+            d.OutEvents[0] = 'everettsignaldoor';
             AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
             break;
         

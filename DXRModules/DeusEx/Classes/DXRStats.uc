@@ -1,4 +1,4 @@
-class DXRStats extends DXRBase;
+class DXRStats extends DXRBase transient;
 
 function AnyEntry()
 {
@@ -89,6 +89,7 @@ function int GetMissionMenuTime(int mission)
 
 function Timer()
 {
+    if( dxr == None ) return;
     //Increment timer flag
     IncMissionTimer(dxr.dxInfo.MissionNumber);
 
