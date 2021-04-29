@@ -121,6 +121,11 @@ function PostFirstEntry()
     Super.PostFirstEntry();
 
     switch(dxr.localURL) {
+        case "03_NYC_AirfieldHeliBase":
+            //crates to get back over the beginning of the level
+            _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
+            _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
+            break;
         case "05_NYC_UNATCOMJ12LAB":
             BalanceJailbreak();
             break;
@@ -355,10 +360,6 @@ function Airfield_FirstEntry()
             _AddActor(Self, class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
             a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3065,-405,-130), rot(0,0,0));
             SetActorScale(a, 1.3);
-
-            //crates to get back over the beginning of the level
-            _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
-            _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
 
             //rebreather because of #TOOCEAN connection
             _AddActor(Self, class'Rebreather', vect(1411.798950, 546.628845, 247.708572), rot(0,0,0));

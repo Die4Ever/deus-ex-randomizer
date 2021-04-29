@@ -9,7 +9,6 @@ player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 v1.5.7 Beta:
 	do I need to make choppers appear when backtracking? like appearing at the exit of the sub base?
 	add datacubes for area51 page codes? uc control rooms = 1234, coolant room = 9248, aquinas router = 6188
-	broken backtracking crates in 03 airfield heli base https://github.com/Die4Ever/deus-ex-randomizer/issues/149
 	14_oceanlab_lab probably bad key location https://github.com/Die4Ever/deus-ex-randomizer/issues/148
 
 v1.5.7:
