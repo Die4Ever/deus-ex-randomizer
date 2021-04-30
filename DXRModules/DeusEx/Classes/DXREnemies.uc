@@ -210,6 +210,12 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
+function _RandomWeaponStruct GetWeaponConfig(int i)
+{
+    if( i < ArrayCount(_randomweapons) )
+        return _randomweapons[i];
+}
+
 function RandoCarcasses()
 {
     local DeusExCarcass c;

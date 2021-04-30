@@ -5,11 +5,11 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
 
 v1.5.7:
-	do I need to make choppers appear when backtracking? like appearing at the exit of the sub base?
+	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
 	options for password autofill - on, indicator? (just tell the player if they have the password), and off
 	enough advanced options to be able to play unrandomized
+		-disable item/container shuffling, aug cannisters and aug values, skill values, loadout, names)
 	tweak rotations for teleporters?
-	item rates in credits stats
 
 v1.5.8:
 	can I simplify the music fixes in mission 8?
