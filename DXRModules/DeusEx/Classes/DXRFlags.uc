@@ -373,7 +373,7 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 5, 6);
+    return VersionToInt(1, 5, 7);
 }
 
 static function bool VersionOlderThan(int config_version, int major, int minor, int patch)
@@ -383,7 +383,7 @@ static function bool VersionOlderThan(int config_version, int major, int minor, 
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 7) $ " Alpha";
+    return VersionToString(1, 5, 7) $ " Beta";
 }
 
 function MaxRando()
