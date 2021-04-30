@@ -310,7 +310,7 @@ function string ComputersStrInfo(ElectronicDevices d, out int numLines)
     }
     else if( known_codes && a != None && a.HasKnownAccounts() )
     {
-        strInfo = strInfo $ CR() $ "Password Known";
+        strInfo = strInfo $ CR() $ "PIN Known";
     }
 
     return strInfo;
