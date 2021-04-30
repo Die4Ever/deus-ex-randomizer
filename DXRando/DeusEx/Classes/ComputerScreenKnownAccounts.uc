@@ -1,54 +1,58 @@
 class ComputerScreenKnownAccounts extends ComputerScreenHackAccounts;
 
+var bool bShowPasswords;
+var localized string msgKnownPass;
+var localized string msgUnknownPass;
+
 function CreateHeaders()
 {
-	local MenuUIHeaderWindow winHeader;
+    local MenuUIHeaderWindow winHeader;
 
-	winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
-	winHeader.SetPos(12, 12);
-	winHeader.SetText("Last Login");
+    winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
+    winHeader.SetPos(12, 12);
+    winHeader.SetText("Last Login");
 
-	winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
-	winHeader.SetPos(12, 53);
-	winHeader.SetText("Known Accounts");
+    winHeader = MenuUIHeaderWindow(NewChild(Class'MenuUIHeaderWindow'));
+    winHeader.SetPos(12, 53);
+    winHeader.SetText("Accounts");
 }
 
 function CreateAccountsList()
 {
-	local PersonaScrollAreaWindow winScroll;
+    local PersonaScrollAreaWindow winScroll;
 
-	winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));;
-	winScroll.SetPos(14, 69);
-	winScroll.SetSize(170, 97);
+    winScroll = PersonaScrollAreaWindow(NewChild(Class'PersonaScrollAreaWindow'));;
+    winScroll.SetPos(14, 69);
+    winScroll.SetSize(170, 97);
 
-	lstAccounts = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
-	lstAccounts.EnableMultiSelect(False);
-	lstAccounts.EnableAutoExpandColumns(False);
-	lstAccounts.EnableHotKeys(False);
-	lstAccounts.SetNumColumns(2);
-	lstAccounts.SetColumnWidth(0, 80);
-	lstAccounts.SetColumnWidth(1, 80);
+    lstAccounts = PersonaListWindow(winScroll.clipWindow.NewChild(Class'PersonaListWindow'));
+    lstAccounts.EnableMultiSelect(False);
+    lstAccounts.EnableAutoExpandColumns(False);
+    lstAccounts.EnableHotKeys(False);
+    lstAccounts.SetNumColumns(2);
+    lstAccounts.SetColumnWidth(0, 80);
+    lstAccounts.SetColumnWidth(1, 80);
 }
 
 function CreateControls()
 {
-	CreateChangeAccountButton();
-	CreateCurrentUserWindow();
-	CreateAccountsList();
-	CreateHeaders();
+    CreateChangeAccountButton();
+    CreateCurrentUserWindow();
+    CreateAccountsList();
+    CreateHeaders();
 }
 
 function CreateChangeAccountButton()
 {
-	local PersonaButtonBarWindow winActionButtons;
+    local PersonaButtonBarWindow winActionButtons;
 
-	winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(12, 169);
-	winActionButtons.SetWidth(174);
-	winActionButtons.FillAllSpace(False);
+    winActionButtons = PersonaButtonBarWindow(NewChild(Class'PersonaButtonBarWindow'));
+    winActionButtons.SetPos(12, 169);
+    winActionButtons.SetWidth(174);
+    winActionButtons.FillAllSpace(False);
 
-	btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-	btnChangeAccount.SetButtonText("Login");
+    btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnChangeAccount.SetButtonText("Login");
 }
 
 function ChangeSelectedAccount()
@@ -58,51 +62,73 @@ function ChangeSelectedAccount()
     user = lstAccounts.GetField(lstAccounts.GetSelectedRow(),0);
     pass = lstAccounts.GetField(lstAccounts.GetSelectedRow(),1);
 
-	if (winTerm != None)
+    if( pass == msgKnownPass || pass == msgUnknownPass )
+        pass = "";
+
+    if (winTerm != None)
         winTerm.LogInAs(user,pass);
+}
+
+function bool GetAccountKnown(Computers comp, ATM atm, int i, out string username, out string password)
+{
+    if( comp != None )
+        username = Caps(comp.GetUserName(i));
+    else if( atm != None )
+        username = Caps(atm.GetAccountNumber(i));
+    
+    if( comp != None && comp.GetAccountKnown(i) ) {
+        password = Caps(comp.GetPassword(i));
+        return true;
+    }
+    else if( atm != None && atm.GetAccountKnown(i) ) {
+        password = Caps(atm.GetPIN(i));
+        return true;
+    }
+    password = "";
+    return false;
 }
 
 function SetCompOwner(ElectronicDevices newCompOwner)
 {
-	local int compIndex;
-	local int rowId;
-	local int userRowIndex;
+    local int compIndex;
+    local int rowId;
+    local int userRowIndex;
     local ATM atm;
+    local int numUsers;
+    local string username, password;
+    local bool known;
 
-    if (newCompOwner.IsA('Computers'))
+    compOwner = Computers(newCompOwner);
+    atm = ATM(newCompOwner);
+
+    if( compOwner != None )
+        numUsers = compOwner.NumUsers();
+    else if( atm != None )
+        numUsers = atm.NumUsers();
+
+    // Loop through the names and add them to our listbox
+    for (compIndex=0; compIndex<numUsers; compIndex++)
     {
-        compOwner = Computers(newCompOwner);
+        known = GetAccountKnown(compOwner, atm, compIndex, username, password);
 
-        // Loop through the names and add them to our listbox
-        for (compIndex=0; compIndex<compOwner.NumUsers(); compIndex++)
-        {
-            if (compOwner.GetAccountKnown(compIndex)) {
-                lstAccounts.AddRow(Caps(compOwner.GetUserName(compIndex))$";"$compOwner.GetPassword(compIndex));
+        if( known && ! bShowPasswords )
+            password = msgKnownPass;
+        else if( !known )
+            password = msgUnknownPass;
+        
+        lstAccounts.AddRow(username$";"$password);
 
-                if (Caps(winTerm.GetUserName()) == Caps(compOwner.GetUserName(compIndex)))
-                    userRowIndex = compIndex;
-            }
-        }
-    }
-    else if (newCompOwner.IsA('ATM'))
-    {
-        atm = ATM(newCompOwner);
-
-        // Loop through the names and add them to our listbox
-        for (compIndex=0; compIndex<atm.NumUsers(); compIndex++)
-        {
-            log("ATM has account "$atm.GetAccountNumber(compIndex));
-            if (atm.GetAccountKnown(compIndex)) {
-                lstAccounts.AddRow(Caps(atm.GetAccountNumber(compIndex))$";"$atm.GetPIN(compIndex));
-
-                if (Caps(winTerm.GetUserName()) == Caps(atm.GetAccountNumber(compIndex)))
-                    userRowIndex = compIndex;
-            }
-        }   
+        if (Caps(winTerm.GetUserName()) == username)
+            userRowIndex = compIndex;
     }
 
-	// Select the row that matches the current user
-	rowId = lstAccounts.IndexToRowId(userRowIndex);
-	lstAccounts.SetRow(rowId, True);
+    // Select the row that matches the current user
+    rowId = lstAccounts.IndexToRowId(userRowIndex);
+    lstAccounts.SetRow(rowId, True);
 }
 
+defaultproperties
+{
+    msgKnownPass="Known"
+    msgUnknownPass="Unknown"
+}

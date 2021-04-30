@@ -41,14 +41,20 @@ function LogInAs(String user, String pass)
         login = ComputerScreenLogin(winComputer);
         login.editUserName.SetText(user);
         login.editPassword.SetText(pass);
-        login.ProcessLogin();
+        if(pass != "")
+            login.ProcessLogin();
+        else
+            login.SetFocusWindow(login.editPassword);
     } 
     else if (winComputer.IsA('ComputerScreenATM'))
     {
         atm = ComputerScreenAtm(winComputer);
         atm.editAccount.SetText(user);
         atm.editPIN.SetText(pass);
-        atm.ProcessLogin();
+        if(pass != "")
+            atm.ProcessLogin();
+        else
+            atm.SetFocusWindow(atm.editPIN);
     }
     
     userName = user;
@@ -68,18 +74,16 @@ function CreateKnownAccountsWindow()
 {
     local int codes_mode;
     codes_mode = Player.FlagBase.GetInt('Rando_codes_mode');
-    if( codes_mode != 2 ) return;
+    if( codes_mode < 1 ) return;
     
-    if (compOwner.IsA('Computers') && (Computers(compOwner).HasKnownAccounts()) ||
-        (compOwner.IsA('ATM') && ATM(compOwner).hasKnownAccounts())) {
-        winKnownShadow = ShadowWindow(NewChild(Class'ShadowWindow'));
+    winKnownShadow = ShadowWindow(NewChild(Class'ShadowWindow'));
 
-        winKnownAccounts = ComputerScreenKnownAccounts(NewChild(Class'ComputerScreenKnownAccounts'));
-        winKnownAccounts.SetNetworkTerminal(Self);
-        winKnownAccounts.SetCompOwner(compOwner);
-        winKnownAccounts.AskParentForReconfigure();   
-    }
-
+    winKnownAccounts = ComputerScreenKnownAccounts(NewChild(Class'ComputerScreenKnownAccounts'));
+    if( codes_mode == 2 )
+        winKnownAccounts.bShowPasswords = true;
+    winKnownAccounts.SetNetworkTerminal(Self);
+    winKnownAccounts.SetCompOwner(compOwner);
+    winKnownAccounts.AskParentForReconfigure();
 }
 
 function CloseKnownAccountsWindow()

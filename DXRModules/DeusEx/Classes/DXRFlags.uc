@@ -389,7 +389,7 @@ static function bool VersionOlderThan(int config_version, int major, int minor, 
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 7) $ " Beta";
+    return VersionToString(1, 5, 7) $ " Beta 2";
 }
 
 function MaxRando()

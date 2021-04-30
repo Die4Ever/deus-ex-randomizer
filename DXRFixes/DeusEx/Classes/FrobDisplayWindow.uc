@@ -304,13 +304,19 @@ function string ComputersStrInfo(ElectronicDevices d, out int numLines)
 
     c = Computers(d);
     a = ATM(d);
-    if( known_codes && c != None && c.HasKnownAccounts() )
+    if( known_codes && c != None )
     {
-        strInfo = strInfo $ CR() $ "Password Known";
+        if( c.HasKnownAccounts() )
+            strInfo = strInfo $ CR() $ "Password Known";
+        else
+            strInfo = strInfo $ CR() $ "Unknown Password";
     }
-    else if( known_codes && a != None && a.HasKnownAccounts() )
+    else if( known_codes && a != None )
     {
-        strInfo = strInfo $ CR() $ "PIN Known";
+        if( a.HasKnownAccounts() )
+            strInfo = strInfo $ CR() $ "PIN Known";
+        else
+            strInfo = strInfo $ CR() $ "Unknown PIN";
     }
 
     return strInfo;
