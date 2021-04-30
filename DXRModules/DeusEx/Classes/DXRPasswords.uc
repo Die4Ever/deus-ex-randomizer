@@ -643,6 +643,7 @@ function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword
 
 function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword)
 {
+    if( note.bUserNote ) return false;
     if( oldpassword == "" ) return false;
     if( note.text == "") return false;
         

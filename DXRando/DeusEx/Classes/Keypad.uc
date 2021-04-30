@@ -17,10 +17,19 @@ simulated function ActivateKeypadWindow(DeusExPlayer Hacker, bool bHacked)
       {
          keypadwindow.keypadOwner = Self;
          keypadwindow.player = Hacker;
-         keypadwindow.bInstantSuccess = bHacked || bCodeKnown;
+         keypadwindow.bInstantSuccess = GetInstantSuccess(Hacker, bHacked);
          keypadwindow.InitData();
       }
    }
+}
+
+function bool GetInstantSuccess(DeusExPlayer Hacker, bool bHacked)
+{
+   local int codes_mode;
+   if( bHacked ) return true;
+   codes_mode = Hacker.FlagBase.GetInt('Rando_codes_mode');
+   if( codes_mode == 2 && bCodeKnown ) return true;
+   return false;
 }
 
 defaultproperties

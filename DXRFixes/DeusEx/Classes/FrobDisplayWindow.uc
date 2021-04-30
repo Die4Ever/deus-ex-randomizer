@@ -4,9 +4,15 @@ var localized string msgDamageThreshold;
 var localized string msgShot;
 var localized string msgShots;
 
+var transient bool inited;
+var transient bool auto_codes;
+var transient bool known_codes;
+
 function DrawWindow(GC gc)
 {
     local actor frobTarget;
+
+    InitFlags();
 
     if (player != None)
     {
@@ -19,6 +25,22 @@ function DrawWindow(GC gc)
     if( frobTarget != None ) DrawWindowBase(gc, frobTarget);
 }
 
+function InitFlags()
+{
+    local int codes_mode;
+    if( inited ) return;
+    if( player == None || player.FlagBase == None ) return;
+    inited = true;
+
+    codes_mode = player.FlagBase.GetInt('Rando_codes_mode');
+    if( codes_mode == 2 ) {
+        auto_codes = true;
+    }
+    if( codes_mode >= 1 ) {
+        known_codes = true;
+    }
+}
+
 function DrawWindowBase(GC gc, actor frobTarget)
 {
     local float     infoX, infoY, infoW, infoH;
@@ -27,7 +49,7 @@ function DrawWindowBase(GC gc, actor frobTarget)
     local Vector    centerLoc, v1, v2;
     local float     boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
     local float     corner, x, y;
-    local int       i, j, k, offset;
+    local int       i, j, k, offset, numLines;
     local Color     col;
 
     // move the box in and out based on time
@@ -137,7 +159,7 @@ function DrawWindowBase(GC gc, actor frobTarget)
     }
 
     // draw object-specific info
-    strInfo = GetStrInfo(frobTarget);
+    strInfo = GetStrInfo(frobTarget, numLines);
 
     infoX = boxTLX + 10;
     infoY = boxTLY + 10;
@@ -159,7 +181,7 @@ function DrawWindowBase(GC gc, actor frobTarget)
 
     gc.SetTextColor(colText);
 
-    DrawActorBars(gc, frobTarget, infoX, infoY, infoW, infoH);
+    DrawActorBars(gc, frobTarget, infoX, infoY, infoW, infoH, numLines);
 
     // draw the text
     gc.DrawText(infoX+4, infoY+4, infoW-8, infoH-8, strInfo);
@@ -181,22 +203,26 @@ function int Ceil(float f)
     return ret;
 }
 
-function string GetStrInfo(Actor a)
+function string GetStrInfo(Actor a, out int numLines)
 {
     if ( Mover(a) != None )
-        return MoverStrInfo(Mover(a));
+        return MoverStrInfo(Mover(a), numLines);
     else if ( HackableDevices(a) != None )
-        return DeviceStrInfo(HackableDevices(a));
+        return DeviceStrInfo(HackableDevices(a), numLines);
+    else if ( Computers(a) != None || ATM(a) != None )
+        return ComputersStrInfo(ElectronicDevices(a), numLines);
     else if (!a.bStatic && player.bObjectNames)
-        return OtherStrInfo(a);
+        return OtherStrInfo(a, numLines);
 
     return "";
 }
 
-function string MoverStrInfo(Mover m)
+function string MoverStrInfo(Mover m, out int numLines)
 {
     local string strInfo;
     local DeusExMover dxMover;
+
+    numLines = 4;
 
     dxMover = DeusExMover(m);
     if ((dxMover != None) && dxMover.bLocked)
@@ -226,21 +252,13 @@ function string MoverStrInfo(Mover m)
     return strInfo;
 }
 
-function string DeviceStrInfo(HackableDevices device)
+function string DeviceStrInfo(HackableDevices device, out int numLines)
 {
     local string strInfo;
-    local bool codeKnown;
-    
-    codeKnown = False;
 
-    if (device.IsA('Keypad') && (Keypad(device).bCodeKnown))
-    {
-        strInfo = device.itemName $ ": Code Known ("$Keypad(device).validCode$")"$ CR() $ msgHackStr;
-        codeKnown = True;
-    } else {
-        strInfo = device.itemName $ CR() $ msgHackStr;
-    }
-    
+    numLines = 2;
+
+    strInfo = device.itemName $ CR() $ msgHackStr;
     if (device.bHackable)
     {
         if (device.hackStrength != 0.0)
@@ -250,18 +268,55 @@ function string DeviceStrInfo(HackableDevices device)
             //if (codeKnown) {
             //    strInfo = device.itemName $ ": " $ msgHacked $ " (YOU KNEW THE CODE THOUGH!)";
             //} else {
-                strInfo = device.itemName $ ": " $ msgHacked;            
+                strInfo = device.itemName $ ": " $ msgHacked;
             //}
     }
     else
         strInfo = strInfo $ msgInf;
-        
-
+    
+    if( device.IsA('Keypad') && (Keypad(device).bCodeKnown) )
+    {
+        if( auto_codes ) {
+            numLines = 3;
+            strInfo = strInfo $ CR() $ "Code Known ("$Keypad(device).validCode$")";
+        }
+        else if( known_codes ) {
+            numLines = 3;
+            strInfo = strInfo $ CR() $ "Code Known";
+        }
+    }
+    else if( device.IsA('Keypad') && known_codes )
+    {
+        numLines = 3;
+        strInfo = strInfo $ CR() $ "Unknown Code";
+    }
 
     return strInfo;
 }
 
-function string OtherStrInfo(Actor frobTarget)
+function string ComputersStrInfo(ElectronicDevices d, out int numLines)
+{
+    local Computers c;
+    local ATM a;
+    local string strInfo;
+
+    strInfo = player.GetDisplayName(d);
+
+    c = Computers(d);
+    a = ATM(d);
+    if( known_codes && c != None && c.HasKnownAccounts() )
+    {
+        strInfo = strInfo $ CR() $ "Password Known";
+    }
+    else if( known_codes && a != None && a.HasKnownAccounts() )
+    {
+        strInfo = strInfo $ CR() $ "Password Known";
+    }
+
+    return strInfo;
+}
+
+function string OtherStrInfo(Actor frobTarget, out int numLines)
 {
     local string strInfo;
 
@@ -298,26 +353,24 @@ function bool ActorHasBars(Actor frobTarget)
     return false;
 }
 
-function DrawActorBars(GC gc, Actor a, float infoX, float infoY, float infoW, float infoH)
+function DrawActorBars(GC gc, Actor a, float infoX, float infoY, float infoW, float infoH, int numLines)
 {
     if ( Mover(a) != None )
-        MoverDrawBars(gc, Mover(a), infoX, infoY, infoW, infoH);
+        MoverDrawBars(gc, Mover(a), infoX, infoY, infoW, infoH, numLines);
     else if ( HackableDevices(a) != None )
-        DeviceDrawBars(gc, HackableDevices(a), infoX, infoY, infoW, infoH);
+        DeviceDrawBars(gc, HackableDevices(a), infoX, infoY, infoW, infoH, numLines);
 }
 
-function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, float infoH)
+function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, float infoH, int numLines)
 {
     local DeusExMover dxMover;
     local string strInfo;
     local color col;
-    local int numTools, numLines, numShots;
+    local int numTools, numShots;
     local float damage;
     local name damageType;
     local DeusExWeapon w;
     local float lockStrength;
-
-    numLines = 4;
 
     dxMover = DeusExMover(m);
     // draw colored bars for each value
@@ -364,14 +417,12 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     gc.DrawText(infoX+(infoW-barLength-2), infoY+4+(infoH-8)/numLines, barLength, ((infoH-8)/numLines)*2-2, strInfo);
 }
 
-function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY, float infoW, float infoH)
+function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY, float infoW, float infoH, int numLines)
 {
     local string strInfo;
-    local int numTools, numLines;
+    local int numTools;
     local float hackStrength;
     local color col;
-
-    numLines = 2;
 
     // draw a colored bar
     if (device.hackStrength != 0.0)

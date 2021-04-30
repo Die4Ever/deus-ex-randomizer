@@ -23,6 +23,7 @@ var int merchants;
 var int banned_skills, banned_skill_levels, enemies_nonhumans;
 
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
+var int codes_mode;
 
 function PreTravel()
 {
@@ -136,6 +137,7 @@ function InitDefaults()
     banned_skills = 5;
     banned_skill_levels = 5;
     enemies_nonhumans = 60;
+    codes_mode = 2;
 }
 
 function CheckConfig()
@@ -230,6 +232,9 @@ function LoadFlags()
         FlagInt('Rando_banned_skill_level', banned_skill_levels);
         FlagInt('Rando_enemies_nonhumans', enemies_nonhumans);
     }
+    if( stored_version >= VersionToInt(1,5,7) ) {
+        FlagInt('Rando_codes_mode', codes_mode);
+    }
 
     if(stored_version < flagsversion ) {
         info("upgraded flags from "$stored_version$" to "$flagsversion);
@@ -311,6 +316,7 @@ function SaveFlags()
     f.SetInt('Rando_crowdcontrol', crowdcontrol,, 999);
     f.SetInt('Rando_newgameplus_loops', newgameplus_loops,, 999);
     f.SetInt('Rando_merchants', merchants,, 999);
+    f.SetInt('Rando_codes_mode', codes_mode,, 999);
 
     LogFlags("SaveFlags");
 }
@@ -339,7 +345,7 @@ function string StringifyFlags()
         $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
         $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", enemyrespawn: "$enemyrespawn$", infodevices: "$infodevices
         $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots$", turrets_move: "$turrets_move$", turrets_add: "$turrets_add
-        $ ", crowdcontrol: "$crowdcontrol$", banned_skills: "$banned_skills$", banned_skill_levels: "$banned_skill_levels$", enemies_nonhumans: "$enemies_nonhumans;
+        $ ", crowdcontrol: "$crowdcontrol$", banned_skills: "$banned_skills$", banned_skill_levels: "$banned_skill_levels$", enemies_nonhumans: "$enemies_nonhumans$", codes_mode: "$codes_mode;
 }
 
 function int FlagsHash()

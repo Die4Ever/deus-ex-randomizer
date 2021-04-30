@@ -6,7 +6,6 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 
 v1.5.7:
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
-	options for password autofill - on, indicator? (just tell the player if they have the password), and off
 	enough advanced options to be able to play unrandomized
 		-disable item/container shuffling, aug cannisters and aug values, skill values, loadout, names)
 	tweak rotations for teleporters?

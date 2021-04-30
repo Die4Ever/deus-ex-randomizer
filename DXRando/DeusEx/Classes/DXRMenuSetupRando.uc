@@ -222,6 +222,13 @@ function BindControls(bool writing, optional string action)
     Slider(id, f.merchants, 0, 100, writing);
     id++;
 
+    labels[id] = "";
+    helptexts[id] = "Help with finding passwords from your notes.";
+    EnumOption(id, "Autofill Passwords", 2, writing, f.codes_mode);
+    EnumOption(id, "Mark Known Passwords", 1, writing, f.codes_mode);
+    EnumOption(id, "No Assistance With Passwords", 0, writing, f.codes_mode);
+    id++;
+
     if( action == "NEXT" ) InvokeNewGameScreen(combatDifficulty, InitDxr());
 }
 
