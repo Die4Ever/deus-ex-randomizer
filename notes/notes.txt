@@ -4,14 +4,8 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 // check a 100 foot radius around me for combat
 if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
 
-player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
-
-v1.5.7 Beta:
-	do I need to make choppers appear when backtracking? like appearing at the exit of the sub base?
-	14_oceanlab_lab probably bad key location https://github.com/Die4Ever/deus-ex-randomizer/issues/148
-
 v1.5.7:
-	prevent extra enemy spawning in tiffany's jail cell
+	do I need to make choppers appear when backtracking? like appearing at the exit of the sub base?
 	options for password autofill - on, indicator? (just tell the player if they have the password), and off
 	enough advanced options to be able to play unrandomized
 	tweak rotations for teleporters?
@@ -19,6 +13,7 @@ v1.5.7:
 
 v1.5.8:
 	can I simplify the music fixes in mission 8?
+		player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 	security cameras might be weird? maybe it's medbots' alliance?
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	speed up the door in paris chateau wine cellar
