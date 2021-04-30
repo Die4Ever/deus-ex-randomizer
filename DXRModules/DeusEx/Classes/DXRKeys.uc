@@ -18,7 +18,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,5) ) {
+    if( ConfigOlderThan(1,5,7) ) {
 
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
@@ -113,6 +113,36 @@ function CheckConfig()
         keys_rules[i].item_name = 'storage';
         keys_rules[i].min_pos = vect(528.007446, -99999, -1653.906006);
         keys_rules[i].max_pos = vect(1047.852173, 436.867401, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //disallow below storage
+        keys_rules[i].map = "14_oceanlab_lab";
+        keys_rules[i].item_name = 'Glab';
+        keys_rules[i].min_pos = vect(500, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, -1644.895142);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].map = "14_oceanlab_lab";
+        keys_rules[i].item_name = 'storage';
+        keys_rules[i].min_pos = vect(500, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, -1644.895142);
+        keys_rules[i].allow = false;
+        i++;
+
+        //disallow east of greasel lab door
+        keys_rules[i].map = "14_oceanlab_lab";
+        keys_rules[i].item_name = 'Glab';
+        keys_rules[i].min_pos = vect(1879, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].map = "14_oceanlab_lab";
+        keys_rules[i].item_name = 'storage';
+        keys_rules[i].min_pos = vect(1879, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = false;
         i++;
 
@@ -558,6 +588,49 @@ function RunTests()
 
     testbool( _PositionIsSafeOctant(vect(-2588.39917,-5.10672,-1794.256958), vect(1048,80,-1544), vect(785.475647,-79.326523,-1601.681763)), true, "OceanLab test" );
     testbool( _PositionIsSafeOctant(vect(1237.800659,112.333527,-1625.307007), vect(1880.000000,552.000000,-1544.000000), vect(-2620.478516,-19.642990,-1795.483643)), true, "OceanLab test" );
+}
+
+function ExtendedTests()
+{
+    local string oldurl;
+
+    Super.ExtendedTests();
+
+    oldurl = dxr.localURL;
+    dxr.localURL = Caps("14_oceanlab_lab");
+
+    TestKeyRules( 'Glab', false, vect(1964.752808, 3191.954834, -2537.410400), "crew area" );
+    TestKeyRules( 'Glab', false, vect(-2535.691162, 234.638947, -1833.254883), "far flooded area" );
+    TestKeyRules( 'Glab', false, vect(4225.205078, 407.563324, -1540.875000), "electricity room" );
+    TestKeyRules( 'Glab', false, vect(1557.180542, 350.402100, -1809.903687), "below storage room" );
+    TestKeyRules( 'Glab', true, vect(207.516022, 527.347168, -1575.402710), "gun turret room before storage" );
+    TestKeyRules( 'Glab', true, vect(1237.800659, 112.333527, -1616.783936), "hallway before storage" );
+    TestKeyRules( 'Glab', true, vect(1657.591064, -30.407259, -1630.926147), "unlocked storage room" );
+    TestKeyRules( 'Glab', true, vect(785.475647, -79.326523, -1601.681763), "locked storage room" );
+
+    TestKeyRules( 'storage', false, vect(1964.752808, 3191.954834, -2537.410400), "crew area" );
+    TestKeyRules( 'storage', false, vect(-2535.691162, 234.638947, -1833.254883), "far flooded area" );
+    TestKeyRules( 'storage', false, vect(4225.205078, 407.563324, -1540.875000), "electricity room" );
+    TestKeyRules( 'storage', false, vect(1557.180542, 350.402100, -1809.903687), "below storage room" );
+    TestKeyRules( 'storage', true, vect(207.516022, 527.347168, -1575.402710), "gun turret room before storage" );
+    TestKeyRules( 'storage', true, vect(1237.800659, 112.333527, -1616.783936), "hallway before storage" );
+    TestKeyRules( 'storage', true, vect(1657.591064, -30.407259, -1630.926147), "unlocked storage room" );
+    TestKeyRules( 'storage', false, vect(785.475647, -79.326523, -1601.681763), "locked storage room" );
+
+    dxr.localURL = oldurl;
+}
+
+function TestKeyRules(Name KeyID, bool allowed, vector loc, string description)
+{
+    local int i;
+    description = "key: " $ KeyID $ ", expected allowed: "$allowed$", " $ description $ " ("$loc$")";
+    i = GetSafeRule( keys_rules, KeyID, loc );
+    if( allowed && i == -1 ) {
+        test( true, "without key rule - " $ description );
+        return;
+    }
+    test( i >= 0, "found key rule - " $ description );
+    testbool( keys_rules[i].allow, allowed, description );
 }
 
 defaultproperties

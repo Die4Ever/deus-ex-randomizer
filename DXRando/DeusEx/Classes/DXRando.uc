@@ -30,6 +30,11 @@ function SetdxInfo(DeusExLevelInfo i)
     // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
     class'DXRBacktracking'.static.LevelInit(Self);
 
+    CrcInit();
+    ClearModules();
+    LoadFlagsModule();
+    CheckConfig();
+
     Enable('Tick');
     bTickEnabled = true;
 }
@@ -43,13 +48,9 @@ function Init()
         return;
     }
     l("found Player "$Player);
-    CrcInit();
-    ClearModules();
-    LoadFlagsModule();
+    
     flags.LoadFlags();
-    CheckConfig();
     LoadModules();
-
     RandoEnter();
 }
 

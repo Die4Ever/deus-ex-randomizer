@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,5) ) {
+    if( ConfigOlderThan(1,5,7) ) {
         allow_vanilla = false;
 
         i=0;
@@ -923,7 +923,7 @@ function CheckConfig()
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(1137.405762, -2744.735107, -135.899963);//warehouse? MechanicCarcass
+        important_locations[i].location = vect(1182.996094, -2744.775635, -285.398254);//warehouse? near Soldier0
         important_locations[i].rotation = rot(0, 0, 0);
         important_locations[i].is_goal_position = false;
         important_locations[i].is_player_start = true;

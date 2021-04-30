@@ -16,11 +16,19 @@ struct DecorationsOverwrite {
 var config DecorationsOverwrite DecorationsOverwrites[16];
 var class<DeusExDecoration> DecorationsOverwritesClasses[16];
 
+struct AddDatacube {
+    var string map;
+    var string text;
+    var vector location;// 0,0,0 for random
+    // spawned in PreFirstEntry, so if you set a location then it will be moved according to the logic of DXRPasswords
+};
+var config AddDatacube add_datacubes[32];
+
 function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( config_version < 4 ) {
+    if( ConfigOlderThan(1,5,7) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -62,12 +70,41 @@ function CheckConfig()
         DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
         DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
         DecorationsOverwrites[i].bPushable = c.default.bPushable;
+
+        i=0;
+
+        add_datacubes[i].map = "15_AREA51_ENTRANCE";
+        add_datacubes[i].text = "My code is 6786";
+        i++;
+
+        add_datacubes[i].map = "15_AREA51_ENTRANCE";
+        add_datacubes[i].text = "My code is 3901";
+        i++;
+
+        add_datacubes[i].map = "15_AREA51_ENTRANCE";
+        add_datacubes[i].text = "My code is 4322";
+        i++;
+
+        add_datacubes[i].map = "15_AREA51_PAGE";
+        add_datacubes[i].text = "UC Control Rooms code: 1234";
+        i++;
+
+        add_datacubes[i].map = "15_AREA51_PAGE";
+        add_datacubes[i].text = "Coolant Room code: 9248";
+        i++;
+
+        add_datacubes[i].map = "15_AREA51_PAGE";
+        add_datacubes[i].text = "Aquinas Router code: 6188";
+        i++;
     }
     Super.CheckConfig();
 
     for(i=0; i<ArrayCount(DecorationsOverwrites); i++) {
         if( DecorationsOverwrites[i].type == "" ) continue;
         DecorationsOverwritesClasses[i] = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+    }
+    for(i=0; i<ArrayCount(add_datacubes); i++) {
+        add_datacubes[i].map = Caps(add_datacubes[i].map);
     }
 }
 
@@ -81,6 +118,7 @@ function PreFirstEntry()
     IncreaseBrightness(dxr.flags.brightness);
     OverwriteDecorations();
     FixFlagTriggers();
+    SpawnDatacubes();
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
     
@@ -121,6 +159,11 @@ function PostFirstEntry()
     Super.PostFirstEntry();
 
     switch(dxr.localURL) {
+        case "03_NYC_AirfieldHeliBase":
+            //crates to get back over the beginning of the level
+            _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
+            _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
+            break;
         case "05_NYC_UNATCOMJ12LAB":
             BalanceJailbreak();
             break;
@@ -278,6 +321,26 @@ function FixFlagTriggers()
     }
 }
 
+function SpawnDatacubes()
+{
+    local DataCube dc;
+    local vector loc;
+    local int i;
+
+    for(i=0; i<ArrayCount(add_datacubes); i++) {
+        if( dxr.localURL != add_datacubes[i].map ) continue;
+
+        loc = add_datacubes[i].location;
+        if( loc.X == 0 && loc.Y == 0 && loc.Z == 0 )
+            loc = GetRandomPosition();
+        
+        dc = Spawn(class'DataCube',,, loc, rot(0,0,0));
+
+        if( dc != None ) dc.plaintext = add_datacubes[i].text;
+        else warning("failed to spawn datacube at "$loc$", text: "$add_datacubes[i].text);
+    }
+}
+
 function NYC_02_FirstEntry()
 {
     local DeusExMover d;
@@ -355,10 +418,6 @@ function Airfield_FirstEntry()
             _AddActor(Self, class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
             a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3065,-405,-130), rot(0,0,0));
             SetActorScale(a, 1.3);
-
-            //crates to get back over the beginning of the level
-            _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
-            _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
 
             //rebreather because of #TOOCEAN connection
             _AddActor(Self, class'Rebreather', vect(1411.798950, 546.628845, 247.708572), rot(0,0,0));
@@ -920,15 +979,6 @@ function Area51_FirstEntry()
                 if( d.Name == 'DeusExMover20' ) d.Tag = 'final_door';
             }
             AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');
-
-            dc = Spawn(class'DataCube',,, GetRandomPosition(), rot(0,0,0));
-            if( dc != None ) dc.plaintext = "My code is 6786";
-
-            dc = Spawn(class'DataCube',,, GetRandomPosition(), rot(0,0,0));
-            if( dc != None ) dc.plaintext = "My code is 3901";
-
-            dc = Spawn(class'DataCube',,, GetRandomPosition(), rot(0,0,0));
-            if( dc != None ) dc.plaintext = "My code is 4322";
 
             foreach AllActors(class'DeusExMover', d, 'doors_lower') {
                 d.bLocked = false;

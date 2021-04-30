@@ -38,7 +38,6 @@ function PreTravel()
 function Init(DXRando tdxr)
 {
     Super.Init(tdxr);
-    f = tdxr.Player.FlagBase;
     tdxr.seed = seed;
     InitVersion();
 }
@@ -152,6 +151,7 @@ function LoadFlags()
     local int stored_version;
     info("LoadFlags()");
 
+    f = dxr.Player.FlagBase;
     InitDefaults();
 
     stored_version = f.GetInt('Rando_version');
@@ -258,6 +258,7 @@ function FlagInt(name flagname, out int val)
 function SaveFlags()
 {
     l("SaveFlags()");
+    f = dxr.Player.FlagBase;
     if( f == None ) {
         err("SaveFlags() f == None");
         return;
@@ -372,12 +373,17 @@ static function string VersionToString(int major, int minor, int patch)
 
 static function int VersionNumber()
 {
-    return VersionToInt(1, 5, 6);
+    return VersionToInt(1, 5, 7);
+}
+
+static function bool VersionOlderThan(int config_version, int major, int minor, int patch)
+{
+    return config_version < VersionToInt(major, minor, patch);
 }
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 7) $ " Alpha";
+    return VersionToString(1, 5, 7) $ " Beta";
 }
 
 function MaxRando()
