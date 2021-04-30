@@ -51,6 +51,7 @@ event Init(DXRando d)
 
     controlsParent = winClient;
     winScroll = CreateScrollAreaWindow(winClient);
+    winScroll.vScale.SetThumbStep(20);
     winScroll.SetPos(0, 0);
     winScroll.SetSize(ClientWidth, ClientHeight + _GetY(0) - _GetY(1) );
     //winScroll.AutoHideScrollbars(false);
@@ -67,6 +68,7 @@ event Init(DXRando d)
     // saving games.
     SetMouseFocusMode(MFOCUS_Click);
     if( wnds[0] != None ) SetFocusWindow(wnds[0]);
+    winScroll.vScale.SetTickPosition(0);
 
     Show();
 

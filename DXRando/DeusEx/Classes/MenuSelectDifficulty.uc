@@ -89,6 +89,7 @@ function BindControls(bool writing, optional string action)
         f.repairbots = 100;
         f.turrets_move = 100;
         f.turrets_add = 50;
+        f.codes_mode = 2;
     }
     if( EnumOption(id, "Easy", 1, writing) ) {
         difficulty=1;
@@ -119,6 +120,7 @@ function BindControls(bool writing, optional string action)
         f.repairbots = 35;
         f.turrets_move = 50;
         f.turrets_add = 30;
+        f.codes_mode = 2;
     }
     if( EnumOption(id, "Normal", 0, writing) ) {
         difficulty=1.5;
@@ -149,6 +151,7 @@ function BindControls(bool writing, optional string action)
         f.repairbots = 25;
         f.turrets_move = 50;
         f.turrets_add = 70;
+        f.codes_mode = 2;
     }
     if( EnumOption(id, "Hard", 2, writing) ) {
         difficulty=2;
@@ -179,6 +182,7 @@ function BindControls(bool writing, optional string action)
         f.repairbots = 20;
         f.turrets_move = 50;
         f.turrets_add = 120;
+        f.codes_mode = 2;
     }
     if( EnumOption(id, "Extreme", 3, writing) ) {
         difficulty=3;
@@ -209,6 +213,7 @@ function BindControls(bool writing, optional string action)
         f.repairbots = 15;
         f.turrets_move = 50;
         f.turrets_add = 200;
+        f.codes_mode = 2;
     }
     id++;
 

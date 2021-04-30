@@ -245,6 +245,68 @@ function SetMaxAmmo(class<Ammo> type, int percent)
     }
 }
 
+function AddDXRCredits(CreditsWindow cw) 
+{
+    local int i;
+    local DXREnemies e;
+    local class<DeusExWeapon> w;
+    cw.PrintHeader( "Items" );
+
+    PrintItemRate(cw, class'Multitool', dxr.flags.multitools);
+    PrintItemRate(cw, class'Lockpick', dxr.flags.lockpicks);
+    PrintItemRate(cw, class'BioelectricCell', dxr.flags.biocells);
+    PrintItemRate(cw, class'MedKit', dxr.flags.medkits);
+
+    cw.PrintLn();
+
+    cw.PrintHeader( "Ammo: "$dxr.flags.ammo$"%" );
+    e = DXREnemies(dxr.FindModule(class'DXREnemies'));
+    if(e != None) {
+        for(i=0; i < 100; i++) {
+            w = e.GetWeaponConfig(i).type;
+            if( w == None ) break;
+            PrintAmmoRates(cw, w);
+        }
+    }
+
+    cw.PrintLn();
+}
+
+function PrintAmmoRates(CreditsWindow cw, class<DeusExWeapon> w)
+{
+    local class<Ammo> a;
+    local int i;
+
+    a = w.default.AmmoName;
+    PrintItemRate(cw, a, dxr.flags.ammo, true, w.default.ItemName $ " Ammo");
+    for(i=0; i<ArrayCount(w.default.AmmoNames); i++) {
+        if( w.default.AmmoNames[i] != a )
+            PrintItemRate(cw, w.default.AmmoNames[i], dxr.flags.ammo, true, w.default.ItemName $ " Ammo");
+    }
+}
+
+function PrintItemRate(CreditsWindow cw, class<Inventory> c, int percent, optional bool AllowIncrease, optional string BackupName)
+{
+    local float tperc;
+    local string ItemName;
+
+    if( c == None ) return;
+    if( c == class'DeusEx.AmmoNone' ) return;
+
+    tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, c.name);
+    if( ! AllowIncrease && tperc > 100 )
+        tperc = Clamp( tperc, 0, 100 );
+    else if( tperc < 0 )
+        tperc = 0;
+    
+    ItemName = c.default.ItemName;
+    if( ItemName == class'DeusExAmmo'.default.ItemName )
+        ItemName = BackupName;
+    if( Len(ItemName) == 0 )
+        ItemName = string(c.Name);
+    cw.PrintText( ItemName $ " : " $ FloatToString(tperc, 1) $ "%" );
+}
+
 defaultproperties
 {
     bAlwaysTick=True

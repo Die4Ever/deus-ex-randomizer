@@ -1126,6 +1126,9 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
     too_close = 90*16;
 
     m = DXRMissions(dxr.FindModule(class'DXRMissions'));
+    if( dxr.localURL == "12_VANDENBERG_GAS" ) {
+        if ( VSize(vect(168.601334, 607.866882, -980.902832) - loc) < too_close ) return true;
+    }
     if( m != None && m.b_rando_start ) {
         if ( VSize(m.rando_start_loc - loc) < too_close ) return true;
         else return false;
