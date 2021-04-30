@@ -247,11 +247,9 @@ function SetMaxAmmo(class<Ammo> type, int percent)
 
 function AddDXRCredits(CreditsWindow cw) 
 {
-    local float tperc;
-    local int i, k;
+    local int i;
     local DXREnemies e;
     local class<DeusExWeapon> w;
-    local class<Ammo> a;
     cw.PrintHeader( "Items" );
 
     PrintItemRate(cw, class'Multitool', dxr.flags.multitools);
@@ -267,17 +265,24 @@ function AddDXRCredits(CreditsWindow cw)
         for(i=0; i < 100; i++) {
             w = e.GetWeaponConfig(i).type;
             if( w == None ) break;
-
-            a = w.default.AmmoName;
-            PrintItemRate(cw, a, dxr.flags.ammo, true, w.default.ItemName $ " Ammo");
-            for(k=0; k<ArrayCount(w.default.AmmoNames); k++) {
-                if( w.default.AmmoNames[k] != a )
-                    PrintItemRate(cw, w.default.AmmoNames[k], dxr.flags.ammo, true, w.default.ItemName $ " Ammo");
-            }
+            PrintAmmoRates(cw, w);
         }
     }
 
     cw.PrintLn();
+}
+
+function PrintAmmoRates(CreditsWindow cw, class<DeusExWeapon> w)
+{
+    local class<Ammo> a;
+    local int i;
+
+    a = w.default.AmmoName;
+    PrintItemRate(cw, a, dxr.flags.ammo, true, w.default.ItemName $ " Ammo");
+    for(i=0; i<ArrayCount(w.default.AmmoNames); i++) {
+        if( w.default.AmmoNames[i] != a )
+            PrintItemRate(cw, w.default.AmmoNames[i], dxr.flags.ammo, true, w.default.ItemName $ " Ammo");
+    }
 }
 
 function PrintItemRate(CreditsWindow cw, class<Inventory> c, int percent, optional bool AllowIncrease, optional string BackupName)
