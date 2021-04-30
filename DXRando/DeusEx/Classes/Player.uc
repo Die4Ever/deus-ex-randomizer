@@ -379,7 +379,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         else // passive enviro skill still gives some damage reduction
         {
             skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= (skillLevel + 1)/2;
+            newDamage *= (skillLevel + 3)/5;
         }
     }
 
@@ -435,7 +435,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         else // passive enviro skill still gives some damage reduction
         {
             skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= (skillLevel + 2)/3;
+            newDamage *= (skillLevel + 3)/5;
         }
     }
 

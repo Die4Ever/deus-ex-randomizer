@@ -4,13 +4,11 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 // check a 100 foot radius around me for combat
 if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
 
-v1.5.7:
+v1.5.8:
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
+	tweak rotations for teleporters?
 	enough advanced options to be able to play unrandomized
 		-disable item/container shuffling, aug cannisters and aug values, skill values, loadout, names)
-	tweak rotations for teleporters?
-
-v1.5.8:
 	can I simplify the music fixes in mission 8?
 		player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 	security cameras might be weird? maybe it's medbots' alliance?

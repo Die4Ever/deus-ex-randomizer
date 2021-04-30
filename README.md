@@ -12,7 +12,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 
 [![v1.5 Trailer](https://img.youtube.com/vi/A0Li3XuBjGg/0.jpg)](https://www.youtube.com/watch?v=A0Li3XuBjGg)
 
-### Currently in v1.5.6, DXRando randomizes
+### Currently in v1.5.7, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
@@ -52,14 +52,15 @@ There are also settings for
 * making enemies respawn
 * starting the game with the running speed augmentation
 * optional hardcore Autosave-Only mode, no save-scumming allowed!
+* autofill passwords options
 
 #### When you click New Game, you will see this settings screen:
-![options](https://i.imgur.com/P9Yvcqx.png)
+![options](https://i.imgur.com/WaExgts.png)
 
 #### If you click Next then it will use default settings based on your difficulty choice. But if you click Advanced then you will see these settings:
-![advanced options](https://i.imgur.com/yxMQ17h.png)
+![advanced options](https://i.imgur.com/bQcLOY7.png)
 
-For the randomized passwords, you can copy-paste from the Goals/Notes screen.
+For the randomized passwords, you can copy-paste from the Goals/Notes screen, or use the new autofill passwords option.
 
 I've also made some balance tweaks. Make sure to read the descriptions for skills and augmentations. Hacking computers now uses bioelectric energy. The large metal crates are now destructible, they have 2000 hp. Spy Drone aug has improved speed and the emp blast now also does explosive damage. The PS20 has been upgraded to the PS40 and does significantly more damage. Paul is now mortal during the raid in mission 4, so you need to help him fight! Hazmat suit now also helps against fire, electricity, and explosions. Enviro skill now gives a little passive damage resistance for the same damage types as Hazmat suits. Demolition skill allows you to carry more grenades at once. Items like ballistic armor and rebreathers now free up the inventory space immediately when you equip them. [See full list of balance changes here in the wiki.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Balance-Changes)
 
