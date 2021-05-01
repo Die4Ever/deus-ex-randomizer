@@ -75,3 +75,5 @@ DerivedDataCache/*
 
 #Windows shortcuts (To provide arguments to the compiler)
 *.lnk
+
+__pycache__
