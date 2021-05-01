@@ -572,6 +572,15 @@ exec function CheatsOff()
 
 }
 
+//Just a copy of PlayersOnly, but doesn't need cheats and faster to type (In case of lockups after a save)
+exec function po()
+{
+	if ( Level.Netmode != NM_Standalone )
+		return;
+
+	Level.bPlayersOnly = !Level.bPlayersOnly;
+}
+
 function ChangeSong(string SongName, byte section)
 {
     LevelSong = Music(DynamicLoadObject(SongName, class'Music'));
