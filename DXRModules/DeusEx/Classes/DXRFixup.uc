@@ -214,19 +214,6 @@ function Timer()
     Super.Timer();
     if( dxr == None ) return;
 
-    switch(dxr.dxInfo.missionNumber) {
-        case 8:
-            if( dxr.Player.Song == None && Level.Song == None ) {
-                m = Music(DynamicLoadObject("NYCStreets2_Music.NYCStreets2_Music", class'Music'));
-                //err("replacing "$dxr.Player.Song$":"$dxr.Player.SongSection$":"$dxr.Player.CdTrack$" with "$m);
-                UpdateDynamicMusic(m);
-            }
-            else if( Level.Song == None ) {
-                UpdateDynamicMusic(dxr.Player.Song);
-            }
-            break;
-    }
-
     switch(dxr.localURL)
     {
         case "04_NYC_HOTEL":
@@ -943,7 +930,10 @@ function HongKong_AnyEntry()
 function NYC_08_AnyEntry()
 {
     local StantonDowd s;
-    SetTimer(1.0, True);
+
+    if( dxr.localURL != "08_NYC_BAR" ) {
+        dxr.Player.ChangeSong("NYCStreets2_Music.NYCStreets2_Music", 0);
+    }
 
     switch(dxr.localURL) {
         case "08_NYC_STREET":
@@ -1005,124 +995,6 @@ function AddDelay(Actor trigger, float time)
     d.OutEvents[0] = trigger.Event;
     d.OutDelays[0] = time;
     trigger.Event = d.Tag;
-}
-
-
-// mostly copied from DeusExPlayer.uc
-function UpdateDynamicMusic(Music Song)
-{
-    local float deltaTime;
-    local bool bCombat;
-    local ScriptedPawn npc;
-    local Pawn CurPawn;
-    local DeusExPlayer p;
-
-	if (Song == None)
-		return;
-
-    deltaTime = 1.0;
-    p = dxr.Player;
-
-    if(p.Song == None) {
-        p.ClientSetMusic(Song, 0, 255, MTRAN_FastFade);
-        p.musicMode = MUS_Ambient;
-        p.savedSection = 0;
-    }
-    if(p.Song != Song) {
-        p.Song = Song;
-    }
-
-	p.musicCheckTimer += deltaTime;
-	p.musicChangeTimer += deltaTime;
-
-	if (p.IsInState('Interpolating'))
-	{
-		if (p.musicMode != MUS_Outro)
-		{
-			p.ClientSetMusic(Song, 5, 255, MTRAN_FastFade);
-			p.musicMode = MUS_Outro;
-		}
-	}
-	else if (p.IsInState('Conversation'))
-	{
-		if (p.musicMode != MUS_Conversation)
-		{
-			// save our place in the ambient track
-			if (p.musicMode == MUS_Ambient)
-				p.savedSection = p.SongSection;
-			else
-				p.savedSection = 255;
-
-			p.ClientSetMusic(Song, 4, 255, MTRAN_Fade);
-			p.musicMode = MUS_Conversation;
-		}
-	}
-	else if (p.IsInState('Dying'))
-	{
-		if (p.musicMode != MUS_Dying)
-		{
-			p.ClientSetMusic(Song, 1, 255, MTRAN_Fade);
-			p.musicMode = MUS_Dying;
-		}
-	}
-	else
-	{
-        p.musicCheckTimer = 0.0;
-        bCombat = False;
-
-        // check a 100 foot radius around me for combat
-        // XXXDEUS_EX AMSD Slow Pawn Iterator
-        //foreach RadiusActors(class'ScriptedPawn', npc, 1600)
-        for (CurPawn = Level.PawnList; CurPawn != None; CurPawn = CurPawn.NextPawn)
-        {
-            npc = ScriptedPawn(CurPawn);
-            if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
-            {
-                if ((npc.GetStateName() == 'Attacking') && (npc.Enemy == p))
-                {
-                    bCombat = True;
-                    break;
-                }
-            }
-        }
-
-        if (bCombat)
-        {
-            p.musicChangeTimer = 0.0;
-
-            if (p.musicMode != MUS_Combat)
-            {
-                // save our place in the ambient track
-                if (p.musicMode == MUS_Ambient)
-                    p.savedSection = p.SongSection;
-                else
-                    p.savedSection = 0;
-
-                p.ClientSetMusic(Song, 3, 255, MTRAN_FastFade);
-                p.musicMode = MUS_Combat;
-            }
-        }
-        else if (p.musicMode != MUS_Ambient)
-        {
-            // wait until we've been out of combat for 5 seconds before switching music
-            if (p.musicChangeTimer >= 5.0)
-            {
-                // use the default ambient section for this map
-                if (p.savedSection == 255)
-                    p.savedSection = 0;
-
-                // fade slower for combat transitions
-                if (p.musicMode == MUS_Combat)
-                    p.ClientSetMusic(Song, p.savedSection, 255, MTRAN_SlowFade);
-                else
-                    p.ClientSetMusic(Song, p.savedSection, 255, MTRAN_Fade);
-
-                p.savedSection = 255;
-                p.musicMode = MUS_Ambient;
-                p.musicChangeTimer = 0.0;
-            }
-        }
-	}
 }
 
 static function FixConversationFlag(Conversation c, name fromName, bool fromValue, name toName, bool toValue)

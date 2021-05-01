@@ -86,10 +86,13 @@ function DXRFlags InitFlags()
 function DXRando InitDxr()
 {
     if( dxr != None ) return dxr;
+    
     log("InitDxr has player "$player);
     dxr = player.Spawn(class'DXRando', None);
     log("InitDxr got "$dxr);
-    dxr.player = player;
+    dxr.player = Human(player);
+    if( dxr.player == None ) log("ERROR: "$player$" is not a Human class", name);
+
     InitFlags();
     if( flags != None ) {
         dxr.modules[0] = flags;

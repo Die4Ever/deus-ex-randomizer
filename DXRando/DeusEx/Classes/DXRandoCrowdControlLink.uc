@@ -1453,11 +1453,12 @@ function floorIsLava() {
     loc.X = dxr.Player.Location.X;
     loc.Y = dxr.Player.Location.Y;
     loc.Z = dxr.Player.Location.Z - 1;
-    if ((dxr.Player.Base.IsA('LevelInfo') ||
-         dxr.Player.Base.IsA('Mover')) &&
-         Human(dxr.Player).bOnLadder==False)        {
-        lavaTick++;   
-        //PlayerMessage("Standing on Lava! "$lavaTick);        
+    if (
+        ( dxr.Player.Base.IsA('LevelInfo') || dxr.Player.Base.IsA('Mover') )
+        && dxr.Player.bOnLadder==False
+    ) {
+        lavaTick++;
+        //PlayerMessage("Standing on Lava! "$lavaTick);
     } else {
         lavaTick = 0;
         //PlayerMessage("Not Lava "$dxr.Player.Base);
