@@ -55,16 +55,17 @@ def execute_injections(f, injects):
     return write
 
 def handle_inheritance_operator(f, injects):
-    if f.operator not in vanilla_inheritance_keywords:
-        debug("handle_inheritance_operator("+f.file+") "+f.operator)
-        module = load_module( 'compiler.' + f.operator)
-        try:
-            return module.handle_inheritance_operator(f, injects)
-        except Exception as e:
-            print(traceback.format_exc())
-            print('handle_inheritance_operator('+f.file+') '+f.operator)
-            raise
-    return True
+    if f.operator in vanilla_inheritance_keywords:
+        return True
+    
+    debug("handle_inheritance_operator("+f.file+") "+f.operator)
+    module = load_module( 'compiler.' + f.operator)
+    try:
+        return module.handle_inheritance_operator(f, injects)
+    except Exception as e:
+        print(traceback.format_exc())
+        print('handle_inheritance_operator('+f.file+') '+f.operator)
+        raise
 
 def write_file(out, f, written, injects):
     if f.file in written:
