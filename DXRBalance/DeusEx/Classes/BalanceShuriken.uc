@@ -5,7 +5,7 @@ var float blood_mult;
 function SpawnBlood(Vector HitLocation, Vector HitNormal)
 {
     Super.SpawnBlood(HitLocation, HitNormal);
-    class'DeusExWeapon'.static.SpawnExtraBlood(Self, HitLocation, HitNormal, blood_mult);
+    class'WeaponShuriken'.static.SpawnExtraBlood(Self, HitLocation, HitNormal, blood_mult);
 }
 
 auto simulated state Flying

@@ -1,6 +1,6 @@
 class DXRando extends Info config(DXRando) transient;
 
-var transient DeusExPlayer Player;
+var transient Human Player;
 var transient DXRFlags flags;
 var transient DXRTelemetry telemetry;
 var transient DeusExLevelInfo dxInfo;
@@ -42,7 +42,7 @@ function SetdxInfo(DeusExLevelInfo i)
 function Init()
 {
     l("Init has localURL == " $ localURL);
-    foreach AllActors(class'DeusExPlayer', Player) { break; }
+    foreach AllActors(class'Human', Player) { break; }
     if( Player == None ) {
         warn("Init() didn't find player?");
         return;

@@ -9,8 +9,6 @@ v1.5.8:
 	tweak rotations for teleporters?
 	enough advanced options to be able to play unrandomized
 		-disable item/container shuffling, aug cannisters and aug values, skill values, loadout, names)
-	can I simplify the music fixes in mission 8?
-		player.ClientSetMusic(CreditsMusic, 0, 255, MTRAN_FastFade);
 	security cameras might be weird? maybe it's medbots' alliance?
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	speed up the door in paris chateau wine cellar
@@ -27,6 +25,7 @@ v1.5.8:
 	NG+ remove 2 random skills, half your skill points, a random aug, and a random weapon?
 	cleanup goals when finishing missions, especially hong kong
 	in DXRFixup PostFirstEntry() force the unatco retinal scanner to MJ12 lab to be unhackable, except make it work in mission 5
+	DXREntranceRando: WARNING: GenerateConnections(12) succeeded but took 24 attempts! seed: 158016, genconsfails: 7, validatefails: 17
 
 
 for v1.6 programatically modify conversations? ===================

@@ -5,6 +5,9 @@ var DXRLoadouts loadout;
 var bool bOnLadder;
 var transient string nextMap;
 
+var Music LevelSong;
+var byte LevelSongSection;
+
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
 {
     Super.ClientMessage(msg, type, bBeep);
@@ -271,240 +274,6 @@ function Landed(vector HitNormal)
     bJustLanded = true;
 }
 
-function float AdjustCritSpots(float Damage, name damageType, vector hitLocation)
-{
-    local vector offset;
-    local float headOffsetZ, headOffsetY, armOffset;
-
-    // EMP attacks drain BE energy
-    if (damageType == 'EMP')
-        return Damage;
-
-    // use the hitlocation to determine where the pawn is hit
-    // transform the worldspace hitlocation into objectspace
-    // in objectspace, remember X is front to back
-    // Y is side to side, and Z is top to bottom
-    offset = (hitLocation - Location) << Rotation;
-
-    // calculate our hit extents
-    headOffsetZ = CollisionHeight * 0.78;
-    headOffsetY = CollisionRadius * 0.35;
-    armOffset = CollisionRadius * 0.35;
-
-    // We decided to just have 3 hit locations in multiplayer MBCODE
-    if (( Level.NetMode == NM_DedicatedServer ) || ( Level.NetMode == NM_ListenServer ))
-    {
-        // leave it vanilla
-        return Damage;
-    }
-
-    // Normal damage code path for single player
-    if (offset.z > headOffsetZ)     // head
-    {
-        // narrow the head region
-        if ((Abs(offset.x) < headOffsetY) || (Abs(offset.y) < headOffsetY))
-        {
-            // do 1.6x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
-            return Damage * 0.8;
-        }
-    }
-    else if (offset.z < 0.0)        // legs
-    {
-    }
-    else                            // arms and torso
-    {
-        if (offset.y > armOffset)
-        {
-            // right arm
-        }
-        else if (offset.y < -armOffset)
-        {
-            // left arm
-        }
-        else
-        {
-            // and finally, the torso! do 1.3x damage instead of the 2x damage in DeusExPlayer.uc::TakeDamage()
-            return Damage * 0.65;
-        }
-    }
-
-    return Damage;
-}
-
-// ----------------------------------------------------------------------
-// DXReduceDamage()
-//
-// Calculates reduced damage from augmentations and from inventory items
-// Also calculates a scalar damage reduction based on the mission number
-// ----------------------------------------------------------------------
-function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, out int adjustedDamage, bool bCheckOnly)
-{
-    local float newDamage, oldDamage;
-    local float augLevel, skillLevel;
-    local float pct;
-    local HazMatSuit suit;
-    local BallisticArmor armor;
-    local bool bReduced;
-    local float damageMult;
-
-    bReduced = False;
-    newDamage = Float(Damage);
-    newDamage = AdjustCritSpots(newDamage, damageType, hitLocation);
-    oldDamage = newDamage;
-
-    if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||
-        (damageType == 'HalonGas')  || (damageType == 'PoisonEffect') || (damageType == 'Poison') 
-        /*|| damageType == 'Flamed' || damageType == 'Burned'*/ )
-    {
-        if (AugmentationSystem != None)
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
-
-        if (augLevel >= 0.0)
-            newDamage *= augLevel;
-
-        // get rid of poison if we're maxed out
-        if (newDamage ~= 0.0)
-        {
-            StopPoison();
-            drugEffectTimer -= 4;	// stop the drunk effect
-            if (drugEffectTimer < 0)
-                drugEffectTimer = 0;
-        }
-
-        if (UsingChargedPickup(class'HazMatSuit'))
-        {
-            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= 0.75 * skillLevel;
-        }
-        else // passive enviro skill still gives some damage reduction
-        {
-            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= (skillLevel + 3)/5;
-        }
-    }
-
-    if ((damageType == 'Shot') || (damageType == 'Sabot') || (damageType == 'Exploded') || (damageType == 'AutoShot'))
-    {
-        // go through the actor list looking for owned BallisticArmor
-        // since they aren't in the inventory anymore after they are used
-        if (UsingChargedPickup(class'BallisticArmor'))
-        {
-            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= 0.5 * skillLevel;
-        }
-    }
-
-    if (damageType == 'HalonGas')
-    {
-        if (bOnFire && !bCheckOnly)
-            ExtinguishFire();
-    }
-
-    if ((damageType == 'Shot') || (damageType == 'AutoShot'))
-    {
-        if (AugmentationSystem != None)
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugBallistic');
-
-        if (augLevel >= 0.0)
-            newDamage *= augLevel;
-    }
-
-    if (damageType == 'EMP')
-    {
-        if (AugmentationSystem != None)
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugEMP');
-
-        if (augLevel >= 0.0)
-            newDamage *= augLevel;
-    }
-
-    if ((damageType == 'Burned') || (damageType == 'Flamed') ||
-        (damageType == 'Exploded') || (damageType == 'Shocked'))
-    {
-        if (AugmentationSystem != None)
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugShield');
-
-        if (augLevel >= 0.0)
-            newDamage *= augLevel;
-
-        if (UsingChargedPickup(class'HazMatSuit'))
-        {
-            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= 0.75 * skillLevel;
-        }
-        else // passive enviro skill still gives some damage reduction
-        {
-            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= (skillLevel + 3)/5;
-        }
-    }
-
-    //Apply damage multiplier
-    //This gets tweaked from DXRandoCrowdControlLink, but will normally just be 1.0
-    damageMult = GetDamageMultiplier();
-    if (damageMult!=0) {
-        newDamage*=damageMult;
-    }
-
-
-    //
-    // Reduce or increase the damage based on the combat difficulty setting, do this before SetDamagePercent for the UI display
-    // because we don't want to show 100% damage reduction but then do the minimum of 1 damage
-    if ((damageType == 'Shot') || (damageType == 'AutoShot') ||
-        damageType == 'Flamed' || damageType == 'Burned')
-    {
-        newDamage *= CombatDifficulty;
-        oldDamage *= CombatDifficulty;
-
-        // always take at least one point of damage
-        if ((newDamage <= 1) && (Damage > 0))
-            newDamage = 1;
-        if ((oldDamage <= 1) && (Damage > 0))
-            oldDamage = 1;
-    }
-
-    //make sure to factor the rounding into the percentage
-    pct = 1.0 - ( Float(Int(newDamage)) / Float(Int(oldDamage)) );
-    if (pct != 1.0)
-    {
-        if (!bCheckOnly)
-        {
-            SetDamagePercent(pct);
-            ClientFlash(0.01, vect(0, 0, 50));
-        }
-        bReduced = True;
-    }
-    else
-    {
-        if (!bCheckOnly)
-            SetDamagePercent(0.0);
-    }
-
-    adjustedDamage = Int(newDamage);
-
-    return bReduced;
-}
-
-function float GetDamageMultiplier()
-{
-    local DataStorage datastorage;
-    datastorage = class'DataStorage'.static.GetObj(self);
-    return float(datastorage.GetConfigKey('cc_damageMult'));
-}
-
-function CatchFire( Pawn burner )
-{
-    local bool doSetTimer;
-    if (bOnFire==false && Region.Zone.bWaterZone==false)
-        doSetTimer = true;
-
-    Super.CatchFire(burner);
-
-    // set the burn timer, tick the burn every 4 seconds instead of 1 so that the player can actually survive it
-    if(doSetTimer)
-        SetTimer(4.0, True);
-}
-
 event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
 {
     if ( Texture!=None && Texture.Outer!=None && Texture.Outer.Name=='Ladder' ) {
@@ -567,4 +336,166 @@ exec function CheatsOff()
     bCheatsEnabled = false;
     ClientMessage("Cheats Disabled");
 
+}
+
+//Just a copy of PlayersOnly, but doesn't need cheats and faster to type (In case of lockups after a save)
+exec function po()
+{
+	if ( Level.Netmode != NM_Standalone )
+		return;
+
+	Level.bPlayersOnly = !Level.bPlayersOnly;
+}
+
+function ChangeSong(string SongName, byte section)
+{
+    LevelSong = Music(DynamicLoadObject(SongName, class'Music'));
+    LevelSongSection = section;
+    ClientSetMusic(LevelSong, LevelSongSection, 255, MTRAN_Fade);
+}
+
+// ----------------------------------------------------------------------
+// UpdateDynamicMusic() copied from DeusExPlayer, but Level.Song was changed to LevelSong, and Level.SongSection changed to LevelSongSection
+//
+// Pattern definitions:
+//   0 - Ambient 1
+//   1 - Dying
+//   2 - Ambient 2 (optional)
+//   3 - Combat
+//   4 - Conversation
+//   5 - Outro
+// ----------------------------------------------------------------------
+
+function UpdateDynamicMusic(float deltaTime)
+{
+    local bool bCombat;
+    local ScriptedPawn npc;
+    local Pawn CurPawn;
+    local DeusExLevelInfo info;
+
+    // copy to LevelSong in order to support changing songs, since Level.Song is const
+    if(LevelSong == None) {
+        LevelSong = Level.Song;
+        LevelSongSection = Level.SongSection;
+    }
+
+    if (LevelSong == None)
+        return;
+
+   // DEUS_EX AMSD In singleplayer, do the old thing.
+   // In multiplayer, we can come out of dying.
+   if (!PlayerIsClient())
+   {
+      if ((musicMode == MUS_Dying) || (musicMode == MUS_Outro))
+         return;
+   }
+   else
+   {
+      if (musicMode == MUS_Outro)
+         return;
+   }
+
+    musicCheckTimer += deltaTime;
+    musicChangeTimer += deltaTime;
+
+    if (IsInState('Interpolating'))
+    {
+        // don't mess with the music on any of the intro maps
+        info = GetLevelInfo();
+        if ((info != None) && (info.MissionNumber < 0))
+        {
+            musicMode = MUS_Outro;
+            return;
+        }
+
+        if (musicMode != MUS_Outro)
+        {
+            ClientSetMusic(LevelSong, 5, 255, MTRAN_FastFade);
+            musicMode = MUS_Outro;
+        }
+    }
+    else if (IsInState('Conversation'))
+    {
+        if (musicMode != MUS_Conversation)
+        {
+            // save our place in the ambient track
+            if (musicMode == MUS_Ambient)
+                savedSection = SongSection;
+            else
+                savedSection = 255;
+
+            ClientSetMusic(LevelSong, 4, 255, MTRAN_Fade);
+            musicMode = MUS_Conversation;
+        }
+    }
+    else if (IsInState('Dying'))
+    {
+        if (musicMode != MUS_Dying)
+        {
+            ClientSetMusic(LevelSong, 1, 255, MTRAN_Fade);
+            musicMode = MUS_Dying;
+        }
+    }
+    else
+    {
+        // only check for combat music every second
+        if (musicCheckTimer >= 1.0)
+        {
+            musicCheckTimer = 0.0;
+            bCombat = False;
+
+            // check a 100 foot radius around me for combat
+            // XXXDEUS_EX AMSD Slow Pawn Iterator
+            //foreach RadiusActors(class'ScriptedPawn', npc, 1600)
+            for (CurPawn = Level.PawnList; CurPawn != None; CurPawn = CurPawn.NextPawn)
+            {
+                npc = ScriptedPawn(CurPawn);
+                if ((npc != None) && (VSize(npc.Location - Location) < (1600 + npc.CollisionRadius)))
+                {
+                    if ((npc.GetStateName() == 'Attacking') && (npc.Enemy == Self))
+                    {
+                        bCombat = True;
+                        break;
+                    }
+                }
+            }
+
+            if (bCombat)
+            {
+                musicChangeTimer = 0.0;
+
+                if (musicMode != MUS_Combat)
+                {
+                    // save our place in the ambient track
+                    if (musicMode == MUS_Ambient)
+                        savedSection = SongSection;
+                    else
+                        savedSection = 255;
+
+                    ClientSetMusic(LevelSong, 3, 255, MTRAN_FastFade);
+                    musicMode = MUS_Combat;
+                }
+            }
+            else if (musicMode != MUS_Ambient)
+            {
+                // wait until we've been out of combat for 5 seconds before switching music
+                if (musicChangeTimer >= 5.0)
+                {
+                    // use the default ambient section for this map
+                    if (savedSection == 255)
+                        savedSection = LevelSongSection;
+
+                    // fade slower for combat transitions
+                    if (musicMode == MUS_Combat)
+                        ClientSetMusic(LevelSong, savedSection, 255, MTRAN_SlowFade);
+                    else
+                        ClientSetMusic(LevelSong, savedSection, 255, MTRAN_Fade);
+
+                    savedSection = 255;
+                    musicMode = MUS_Ambient;
+                    musicChangeTimer = 0.0;
+                }
+            }
+        }
+    }
 }

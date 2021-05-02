@@ -95,7 +95,7 @@ function PostFirstEntry()
 function PreTravel()
 {
     Super.PreTravel();
-    CheckNextMap(Human(dxr.Player).nextMap);
+    CheckNextMap(dxr.Player.nextMap);
 }
 
 function CheckNextMap(string nextMap)

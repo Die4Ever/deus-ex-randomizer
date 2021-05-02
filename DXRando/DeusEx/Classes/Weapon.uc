@@ -1,11 +1,11 @@
-class DXRWeapon merges DeusExWeapon abstract;
-// need to figure out states compatibility https://github.com/Die4Ever/deus-ex-randomizer/issues/135
+class DXRWeapon shims DeusExWeapon abstract;
+
 var float blood_mult;
 
 function PostBeginPlay()
 {
     local DXRWeapons m;
-    _PostBeginPlay();
+    Super.PostBeginPlay();
 
     foreach AllActors(class'DXRWeapons', m) {
         m.RandoWeapon(self);
@@ -14,7 +14,7 @@ function PostBeginPlay()
 
 function SpawnBlood(Vector HitLocation, Vector HitNormal)
 {
-    _SpawnBlood(HitLocation, HitNormal);
+    Super.SpawnBlood(HitLocation, HitNormal);
     SpawnExtraBlood(Self, HitLocation, HitNormal, blood_mult);
 }
 
@@ -399,8 +399,7 @@ function Fire(float value)
             class'DXRStats'.static.AddShotFired(DeusExPlayer(Owner));
         }
     }
-    _Fire(value);
-
+    Super.Fire(value);
 }
 
 defaultproperties

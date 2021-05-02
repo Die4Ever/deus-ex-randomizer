@@ -317,15 +317,15 @@ function NinjaAdjustWeapon(DeusExWeapon w)
     class'Shuriken'.default.blood_mult = 2;
     switch(w.Class) {
         case class'WeaponSword':
-            w.blood_mult = 2;
-            w.default.blood_mult = 2;
+            WeaponSword(w).blood_mult = 2;
+            WeaponSword(w).default.blood_mult = 2;
             w.ShotTime=0;
             w.default.ShotTime=0;
             w.maxRange = 96;
             w.default.maxRange = 96;
         case class'WeaponNanoSword':
-            w.blood_mult = 2;
-            w.default.blood_mult = 2;
+            WeaponNanoSword(w).blood_mult = 2;
+            WeaponNanoSword(w).default.blood_mult = 2;
             break;
     }
 }

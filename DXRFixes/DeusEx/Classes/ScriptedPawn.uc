@@ -1,7 +1,11 @@
-class ScriptedPawn merges ScriptedPawn;
+class ScriptedPawn shims ScriptedPawn;
 // doesn't work with injects, because of states and : Error, DeusEx.ScriptedPawn's superclass must be Engine.Pawn, not DeusEx.ScriptedPawnBase
 // could work with injectsabove or whatever https://github.com/Die4Ever/deus-ex-randomizer/issues/115
 var int flareBurnTime;
+
+var int loopCounter;
+var Actor prevDest;
+var Actor prevprevDest;
 
 function PlayDying(name damageType, vector hitLoc)
 {
@@ -35,7 +39,7 @@ function PlayDying(name damageType, vector hitLoc)
         item = nextItem;
     }
     
-    _PlayDying(damageType, hitLoc);
+    Super.PlayDying(damageType, hitLoc);
 }
 
 function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType,
@@ -50,7 +54,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
         baseDamageType = damageType;
     }
     
-    _TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
+    Super.TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
     
     if (bBurnedToDeath) {
         p = DeusExPlayer(GetPlayerPawn());
@@ -64,11 +68,61 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 
 function UpdateFire()
 {
-    _UpdateFire();
+    Super.UpdateFire();
     if (flareBurnTime > 0) {
         flareBurnTime -= 1;
         if (flareBurnTime == 0) {
             ExtinguishFire();
         }
+    }
+}
+
+// HACK: will need to improve the compiler in order to actually fix state code
+function EnableCheckDestLoc(bool bEnable)
+{
+    local DXRando dxr;
+    local Actor tMoveTarget;
+    local string message;
+
+    Super.EnableCheckDestLoc(bEnable);
+
+    if( !bEnable ) return;
+    if( GetStateName() != 'Patrolling' ) {
+        loopCounter=0;
+        return;
+    }
+
+    // don't do any fix if the destPoint is not one of the 2 most recent ones
+    // when I saw the crash, the pawn would alternate between attempting 2 different destPoints, but the FindPathToward would fail for both of them
+    if( prevprevDest == destPoint ) {
+        prevprevDest = prevDest;
+        prevDest = destPoint;
+    }
+    else if( prevDest != destPoint ) {
+        prevprevDest = prevDest;
+        prevDest = destPoint;
+        loopCounter=0;
+        return;
+    }
+
+    tMoveTarget = FindPathToward(destPoint);
+    if( tMoveTarget != None ) {
+        loopCounter=0;
+        prevprevDest = None;
+        prevDest = None;
+        return;
+    }
+
+    loopCounter++;
+
+    if( loopCounter > 10 ) {
+        message = "EnableCheckDestLoc, bEnable: "$bEnable$", loopCounter: "$loopCounter$", destPoint: "$destPoint$", tMoveTarget: "$tMoveTarget$", MoveTarget: "$MoveTarget;
+        log(self$": WARNING: "$message);
+        foreach AllActors(class'DXRando', dxr) break;
+        if( dxr != None ) class'DXRTelemetry'.static.SendLog(None, Self, "WARNING", message);
+
+        //calling the BackOff() function also works and makes them attempt to patrol again after, but I expect it would always just fail over and over
+        SetOrders('Wandering', '', true);
+        loopCounter=0;
     }
 }
