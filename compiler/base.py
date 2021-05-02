@@ -9,6 +9,7 @@ from pathlib import Path
 from timeit import default_timer as timer
 
 loglevel = 'info'
+vanilla_inheritance_keywords = [None, 'extends', 'expands']
 
 def debug(str):
     global loglevel

@@ -29,16 +29,16 @@ def read_uc_file(file, definitions, preprocessor):
     content_no_comments = strip_comments(content)
     classline = get_class_line(content_no_comments)
     # idk if there can be any keywords before the extends/expands keyword? but this regex allows for it
-    inheritance = re.search(r'class\s+(\S+)\s+(.*\s+)??(((injects)|(extends)|(expands)|(overwrites)|(merges))\s+([^\s;]+))?', classline, flags=re.IGNORECASE)
+    inheritance = re.search(r'class\s+(?P<classname>\S+)\s+(.*\s+)??((?P<operator>(injects)|(extends)|(expands)|(overwrites)|(merges)|(shims))\s+(?P<baseclass>[^\s;]+))?', classline, flags=re.IGNORECASE)
     classname = None
     operator = None
     baseclass = None
     if inheritance is not None:
-        classname = inheritance.group(1)
-        operator = inheritance.group(4)
-        baseclass = inheritance.group(10)
+        classname = inheritance.group('classname')
+        operator = inheritance.group('operator')
+        baseclass = inheritance.group('baseclass')
     else:
-        RuntimeError("couldn't read class definition")
+        RuntimeError(file+" couldn't read class definition")
     
     # maybe do some assertions on classnames, and verify that classname matches filename?
 
@@ -61,7 +61,7 @@ def proc_file(file, files, mod_name, injects, definitions, preprocessor):
     proc_file.last_folder = folder
 
     f['mod_name'] = mod_name
-    if f['operator'] == 'injects' or f['operator'] == 'merges':
+    if f['operator'] not in vanilla_inheritance_keywords:
         key = f['namespace']+'.'+f['baseclass']
         if key not in injects:
             injects[key] = [ ]

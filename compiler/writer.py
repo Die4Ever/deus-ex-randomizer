@@ -13,8 +13,24 @@ def load_module(name):
         return modules[name]
     except Exception as e:
         print(traceback.format_exc())
+        print('load_module('+name+')')
         raise
 
+def before_write(mod, injects):
+    for i in injects:
+        inject = injects[i]
+        for f in inject:
+            before_write_file(mod, f, inject)
+
+
+def before_write_file(mod, f, injects):
+    try:
+        module = load_module( 'compiler.' + f['operator'])
+        module.before_write(mod, f, injects)
+    except Exception as e:
+        print(traceback.format_exc())
+        print('before_write_file('+repr(mod)+', '+f['file']+')')
+        raise
 
 def execute_injections(f, classname, classline, content, injects):
     write = True
@@ -30,16 +46,20 @@ def execute_injections(f, classname, classline, content, injects):
             prev = inject
     except Exception as e:
         print(traceback.format_exc())
+        print('execute_injections('+f['file']+')')
+        raise
     return write, classname, classline, content
 
 def handle_inheritance_operator(f, classname, classline, content, injects):
     try:
-        if f['operator'] not in [None, 'extends', 'expands']:
+        if f['operator'] not in vanilla_inheritance_keywords:
             debug("handle_inheritance_operator("+f['file']+") "+f['operator'])
             module = load_module( 'compiler.' + f['operator'])
             return module.handle_inheritance_operator(f, classname, classline, content, injects)
     except Exception as e:
         print(traceback.format_exc())
+        print('handle_inheritance_operator('+f['file']+')')
+        raise
     return True, classname, classline, content
 
 def write_file(out, f, written, injects):
@@ -59,6 +79,9 @@ def write_file(out, f, written, injects):
     qualifiedclass = f['qualifiedclass']
     content = f['content']
     write = True
+
+    if 'newclassline' in f:
+        classline = f['newclassline']
     
     if qualifiedclass in injects:
         write, classname, classline, content = execute_injections(f, classname, classline, content, injects)
@@ -72,7 +95,7 @@ def write_file(out, f, written, injects):
 
     if classline != f['classline']:
         content = re.sub(f['classline'], classline, content, count=1)
-        debug("changing from: "+f['classline']+"\n---to: "+classline)
+        print("changing from: "+f['classline']+"\n---to: "+classline)
     
     path = out + '/' + f['namespace'] + '/Classes/'
     if not exists_dir(path):

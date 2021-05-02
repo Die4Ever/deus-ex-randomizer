@@ -1,7 +1,11 @@
+# merges will append our code to the baseclass
 from compiler.base import *
 
 disabled = False
 whitelist = []
+
+def before_write(mod, f, injects):
+    pass
 
 def execute_injections(f, prev, idx, inject, classname, classline, content, injects):
     if disabled and classname not in whitelist:

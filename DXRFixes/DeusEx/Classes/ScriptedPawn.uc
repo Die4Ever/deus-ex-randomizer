@@ -1,4 +1,4 @@
-class ScriptedPawn merges ScriptedPawn;
+class ScriptedPawn shims ScriptedPawn;
 // doesn't work with injects, because of states and : Error, DeusEx.ScriptedPawn's superclass must be Engine.Pawn, not DeusEx.ScriptedPawnBase
 // could work with injectsabove or whatever https://github.com/Die4Ever/deus-ex-randomizer/issues/115
 var int flareBurnTime;
@@ -39,7 +39,7 @@ function PlayDying(name damageType, vector hitLoc)
         item = nextItem;
     }
     
-    _PlayDying(damageType, hitLoc);
+    Super.PlayDying(damageType, hitLoc);
 }
 
 function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType,
@@ -54,7 +54,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
         baseDamageType = damageType;
     }
     
-    _TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
+    Super.TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
     
     if (bBurnedToDeath) {
         p = DeusExPlayer(GetPlayerPawn());
@@ -68,7 +68,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 
 function UpdateFire()
 {
-    _UpdateFire();
+    Super.UpdateFire();
     if (flareBurnTime > 0) {
         flareBurnTime -= 1;
         if (flareBurnTime == 0) {
@@ -84,7 +84,7 @@ function EnableCheckDestLoc(bool bEnable)
     local Actor tMoveTarget;
     local string message;
 
-    _EnableCheckDestLoc(bEnable);
+    Super.EnableCheckDestLoc(bEnable);
 
     if( !bEnable ) return;
     if( GetStateName() != 'Patrolling' ) {
