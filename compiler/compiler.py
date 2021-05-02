@@ -44,5 +44,7 @@ def compile(args):
     if not exists_dir(out + '/DeusEx/Inc'):
         os.makedirs(out + '/DeusEx/Inc', exist_ok=True)
     # also we can check UCC.log for success or just the existence of DeusEx.u
-    return calla([ out + '/System/ucc', 'make', '-h', '-NoBind', '-Silent' ])
+    ret = calla([ out + '/System/ucc', 'make', '-h', '-NoBind', '-Silent' ])
+    # if ret != 0 we should show the end of UCC.log, we could also keep track of compiler warnings to show at the end after the test results
+    return ret
 

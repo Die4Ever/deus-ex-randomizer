@@ -3,7 +3,7 @@ from compiler.base import *
 disabled = False
 whitelist = []
 
-def execute_injections(f, inject, classname, classline, content, injects):
+def execute_injections(f, prev, idx, inject, classname, classline, content, injects):
     if disabled and classname not in whitelist:
         return True, classname, classline, content
     

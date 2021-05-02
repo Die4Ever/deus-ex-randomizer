@@ -20,10 +20,14 @@ def execute_injections(f, classname, classline, content, injects):
     write = True
     try:
         debug("execute_injections("+f['file']+") "+classline)
-        for inject in injects[f['qualifiedclass']]:
+        prev = f
+        for idx, inject in enumerate(injects[f['qualifiedclass']]):
+            if f == inject:
+                continue
             debug("execute_injections("+f['file']+") "+inject['file']+' '+inject['operator'])
             module = load_module( 'compiler.' + inject['operator'])
-            write, classname, classline, content = module.execute_injections(f, inject, classname, classline, content, injects)
+            write, classname, classline, content = module.execute_injections(f, prev, idx, inject, classname, classline, content, injects[f['qualifiedclass']])
+            prev = inject
     except Exception as e:
         print(traceback.format_exc())
     return write, classname, classline, content

@@ -62,8 +62,9 @@ def proc_file(file, files, mod_name, injects, definitions, preprocessor):
 
     f['mod_name'] = mod_name
     if f['operator'] == 'injects' or f['operator'] == 'merges':
-        if f['baseclass'] not in injects:
-            injects[f['namespace']+'.'+f['baseclass']] = [ ]
-        injects[f['namespace']+'.'+f['baseclass']].append(f)
+        key = f['namespace']+'.'+f['baseclass']
+        if key not in injects:
+            injects[key] = [ ]
+        injects[key].append(f)
     files[f['qualifiedclass']] = f
 
