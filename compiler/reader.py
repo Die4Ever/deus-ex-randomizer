@@ -1,6 +1,5 @@
 from compiler.base import *
 
-
 def get_class_line(content):
     classline = re.search( r'(class .+?;)', content, flags=re.IGNORECASE | re.DOTALL)
     if classline is not None:

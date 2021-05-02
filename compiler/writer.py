@@ -1,79 +1,42 @@
 from compiler.base import *
+import importlib
 
-def apply_merge(a, b):
-    #Find variable definitions in b (file to be merged)
-    bVars=[]
-    bRest=[]
-    for line in b['content'].split("\n"):
-        if line.startswith("var "):
-            bVars.append(line)
-        else:
-            bRest.append(line)
+modules = {}
 
-    if bVars!="":
-        merged = []
-        aContent = a['content'].split("\n")
-        lastVarLine = 0
-
-        for line in aContent:
-            if line.strip().startswith("var "):
-                lastVarLine = aContent.index(line)
-
-        merged+=aContent[:lastVarLine+1]
-            
-        merged.append("//=======Start of variables merged from "+b['mod_name']+'/'+b['classname']+"=======")
-        merged+=bVars
-        merged.append("//=======End of variables merged from "+b['mod_name']+'/'+b['classname']+"=========")
-        merged+=aContent[lastVarLine+1:]
-
-        content="\n".join(merged)
-
-    else:
-        content = a['content']
-
-    content += "\n\n// === merged from "+b['mod_name']+'/'+b['classname']+"\n\n"
-    b_content = "\n".join(bRest)
-    b_content = re.sub(b['classline'], "/* "+b['classline']+" */", b_content, count=1)
-    b_content_no_comments = strip_comments(b_content)
-
-    pattern_pre = r'(function\s+([^\(]+\s+)?)'
-    pattern_post = r'(\s*\()'
-    r = re.compile(pattern_pre+r'([^\s\(]+)'+pattern_post, flags=re.IGNORECASE)
-    for i in r.finditer(b_content_no_comments):
-        debug( "merging found: " + repr(i.groups()) )
-        func = i.group(3)
-        content = re.sub( \
-            pattern_pre + re.escape(func) + pattern_post, \
-            r'\1_'+func+r'\3', \
-            content, \
-            flags=re.IGNORECASE \
-        )
-    
-    return content + b_content
+def load_module(name):
+    global modules
+    try:
+        if name not in modules and name in sys.modules:
+            modules[name] = importlib.reload(sys.modules[name])
+        if name not in modules:
+            modules[name] = importlib.import_module(name)
+        return modules[name]
+    except Exception as e:
+        print(traceback.format_exc())
+        raise
 
 
-def inject_into(f, injects):
-    classname = f['classname']
-    classline = f['classline']
-    content = f['content']
-    comment = "// === was "+classname+" ===\n"
-    #print(f['qualifiedclass'] + ' has '+ str(len(injects[f['qualifiedclass']])) +' injections, renaming to Base'+f['classname'] )
-    classname = classname+'Base'
-    classline = re.sub('class '+f['classname'], comment + 'class '+classname, classline, count=1)
-    content = re.sub('([^a-z])(self)([^a-z])', r'\1'+f['classname']+r'(Self)\3', content, flags=re.IGNORECASE)
-    return classname, classline, content
+def execute_injections(f, classname, classline, content, injects):
+    write = True
+    try:
+        debug("execute_injections("+f['file']+") "+classline)
+        for inject in injects[f['qualifiedclass']]:
+            debug("execute_injections("+f['file']+") "+inject['file']+' '+inject['operator'])
+            module = load_module( 'compiler.' + inject['operator'])
+            write, classname, classline, content = module.execute_injections(f, inject, classname, classline, content, injects)
+    except Exception as e:
+        print(traceback.format_exc())
+    return write, classname, classline, content
 
-
-def inject_from(f, injects):
-    classname = f['classname']
-    classline = f['classline']
-    content = f['content']
-    #print(f['qualifiedclass'] + ' injects into ' + f['baseclass'] )
-    comment = "// === was "+f['mod_name']+'/'+classname+" ===\n"
-    classname = f['baseclass']
-    classline = re.sub('class '+f['classname']+' injects '+f['baseclass'], comment + 'class '+classname+' extends '+f['baseclass']+'Base', classline, count=1)
-    return classname, classline, content
-
+def handle_inheritance_operator(f, classname, classline, content, injects):
+    try:
+        if f['operator'] not in [None, 'extends', 'expands']:
+            debug("handle_inheritance_operator("+f['file']+") "+f['operator'])
+            module = load_module( 'compiler.' + f['operator'])
+            return module.handle_inheritance_operator(f, classname, classline, content, injects)
+    except Exception as e:
+        print(traceback.format_exc())
+    return True, classname, classline, content
 
 def write_file(out, f, written, injects):
     if f['file'] in written:
@@ -91,18 +54,16 @@ def write_file(out, f, written, injects):
     classline = f['classline']
     qualifiedclass = f['qualifiedclass']
     content = f['content']
+    write = True
     
     if qualifiedclass in injects:
-        if injects[qualifiedclass][0]['operator'] == 'merges':
-            content = apply_merge(f, injects[qualifiedclass][0])
-        else:
-            classname, classline, content = inject_into(f, injects)
+        write, classname, classline, content = execute_injections(f, classname, classline, content, injects)
     
-    if f['operator'] == 'injects':
-        classname, classline, content = inject_from(f, injects)
+    if f['operator']:
+        write, classname, classline, content = handle_inheritance_operator(f, classname, classline, content, injects)
 
-    if f['operator'] == 'merges' or f['operator'] == 'overwrites':
-        debug("not writing because inheritance operator is "+f['operator'])
+    if not write:
+        debug("not writing "+f['file'])
         return
 
     if classline != f['classline']:

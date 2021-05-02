@@ -10,7 +10,7 @@ import shutil
 import traceback
 from pathlib import Path
 from timeit import default_timer as timer
-from importlib import reload
+from importlib import reload, invalidate_caches
 
 import compiler.base
 import compiler.preprocessor
@@ -75,7 +75,9 @@ if args.verbose:
 rerun = ""
 while rerun == "":
     try:
-        print("\nloading modules...")
+        print("")
+        print("loading modules...")
+        invalidate_caches()
         args.base = reload(compiler.base)
         args.compiler = reload(compiler.compiler)
         args.reader = reload(compiler.reader)
@@ -83,7 +85,7 @@ while rerun == "":
         args.tester = reload(compiler.tester)
         args.preprocessor = reload(compiler.preprocessor)
 
-        print("\ncompiling...")
+        print("compiling...")
         compileResult = args.compiler.compile(args)
         if compileResult != 0:
             raise RuntimeError("Compilation failed, returned: "+str(compileResult))
