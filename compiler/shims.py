@@ -6,38 +6,27 @@ disabled = False
 whitelist = []
 
 def before_write(mod, f, injects):
+    global whitelist, disabled
     if disabled:
         return
     shimmer = None
-    baseclass = f['baseclass']
+    baseclass = f.baseclass
     shimname = baseclass + 'Shim'
     print("shimming "+baseclass)
     for f in mod.values():
-        if f['baseclass'] != baseclass:
+        if f.baseclass != baseclass:
             continue
-        if f['operator'] == 'shims':
-            write_classline(f, shimname, 'extends', baseclass)
+        if f.operator == 'shims':
+            f.modify_classline(shimname, 'extends', baseclass)
             shimmer = f
             continue
-        print("shimming between "+baseclass+' and '+f['classname'])
-        write_classline(f, f['classname'], f['operator'], shimname)
-
-def write_classline(f, classname, operator, baseclass):
-    oldclassline = f['classline']
-    oldclassname = f['classname']
-    oldoperator = f['operator']
-    oldbaseclass = f['baseclass']
-    comment = "// === was "+f['mod_name']+'/'+oldclassname+" ===\n"
-    newclassline = re.sub('class\s+'+oldclassname+'\s+'+oldoperator+'\s+'+oldbaseclass, comment + 'class '+classname+' '+operator+' '+baseclass, oldclassline, count=1)
-    f['newclassline'] = newclassline
-    f['classname'] = classname
-    f['operator'] = operator
-    f['baseclass'] = baseclass
+        print("shimming between "+baseclass+' and '+f.classname)
+        f.modify_classline(f.classname, f.operator, shimname)
 
 
-def execute_injections(f, prev, idx, inject, classname, classline, content, injects):
-    return True, classname, classline, content
+def execute_injections(f, prev, idx, inject, injects):
+    return True
 
 
-def handle_inheritance_operator(f, classname, classline, content, injects):
-    return True, classname, classline, content
+def handle_inheritance_operator(f, injects):
+    return False

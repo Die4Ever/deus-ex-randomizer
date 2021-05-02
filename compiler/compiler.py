@@ -1,5 +1,7 @@
 from compiler.base import *
 
+dryrun = False
+
 def compile(args):
     orig_files = {}
     mods_files = []
@@ -16,25 +18,30 @@ def compile(args):
 
     print("processing source files from "+source)
     for file in insensitive_glob(source+'/*'):
-        reader.proc_file(file, orig_files, 'source', None, definitions, preprocessor)
+        reader.proc_file(file, orig_files, 'source', None, preprocessor, definitions)
     
     for mod in mods:
         print("processing files from mod "+mod)
         mods_files.append({})
         for file in insensitive_glob(mod+'*'):
-            reader.proc_file(file, mods_files[-1], mod, injects, definitions, preprocessor)
+            reader.proc_file(file, mods_files[-1], mod, injects, preprocessor, definitions)
 
     print("\nwriting source files...")
     writer.before_write(orig_files, injects)
     for file in orig_files.values():
-        debug("Writing file "+str(file['file']))
+        debug("Writing file "+str(file.file))
         writer.write_file(out, file, written, injects)
     for mod in mods_files:
         print("writing mod "+repr(mod.keys()))
         writer.before_write(mod, injects)
         for file in mod.values():
-            debug("Writing mod file "+str(file['file']))
+            debug("Writing mod file "+str(file.file))
             writer.write_file(out, file, written, injects)
+    
+    if dryrun:
+        return 1
+    
+    writer.cleanup(out, written)
     
     # now we need to delete DeusEx.u otherwise it won't get recompiled, might want to consider support for other packages too
     if exists(out + '/System/DeusEx.u'):

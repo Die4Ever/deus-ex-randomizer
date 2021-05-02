@@ -69,9 +69,6 @@ if args.mods_paths is None:
     print("no mods specified! using local directory")
     args.mods_paths = [ './' ]
 
-if args.verbose:
-    loglevel = 'debug'
-
 rerun = ""
 while rerun == "":
     try:
@@ -84,6 +81,9 @@ while rerun == "":
         args.writer = reload(compiler.writer)
         args.tester = reload(compiler.tester)
         args.preprocessor = reload(compiler.preprocessor)
+
+        if args.verbose:
+            args.base.loglevel = 'debug'
 
         print("compiling...")
         compileResult = args.compiler.compile(args)

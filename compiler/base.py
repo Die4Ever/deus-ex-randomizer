@@ -51,14 +51,21 @@ def exists_dir(path):
     #     print("dir already exists: " + path)
     return exists
 
-def strip_comments(content):
-    content_no_comments = re.sub(r'//.*', ' ', content)
-    content_no_comments = re.sub(r'/\*.*?\*/', ' ', content_no_comments, flags=re.DOTALL)
-    return content_no_comments
-
 def copyDeusExU(out):
     if exists(out + '/System/DeusEx.u'):
         print("DeusEx.u exists")
         shutil.copy2(out + '/System/DeusEx.u',"./DeusEx.u")
         print("DeusEx.u copied locally")
 
+def is_uc_file(file):
+    path = list(Path(file).parts)
+    if len(path) <3:
+        return False
+    filename = path[-1]
+    namespace = path[-3]
+    if path[-2] != 'Classes':
+        return False
+    if not path[-1].endswith('.uc'):
+        return False
+    
+    return True, filename, namespace
