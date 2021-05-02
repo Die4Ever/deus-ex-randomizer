@@ -1,3 +1,4 @@
+# read and parse UC files
 from compiler.base import *
 
 class UnrealScriptFile():
@@ -6,7 +7,7 @@ class UnrealScriptFile():
         self.read_file(preprocessor, definitions)
     
     def read_file(self, preprocessor, definitions):
-        success, self.filename, self.namespace = is_uc_file(self.file)
+        success, self.filename, self.namespace, self.parentfolder = is_uc_file(self.file)
         if not success:
             raise RuntimeError( self.file + ' is not an unrealscript file!' )
             
@@ -30,8 +31,13 @@ class UnrealScriptFile():
         self.qualifiedclass = self.namespace+'.'+self.classname
     
     def modify_classline(f, classname, operator, baseclass):
-        comment = "// === was "+f.mod_name+'/'+f.classname+" ===\n"
+        comment = "// === was "+f.mod_name+'/'
+        if f.parentfolder:
+            comment += f.parentfolder+'/'
+        comment += f.filename+' class '+f.classname+" ===\n"
+
         oldclassline = f.classline
+
         f.classline = re.sub('class\s+'+f.classname+'\s+'+f.operator+'\s+'+f.baseclass, comment + 'class '+classname+' '+operator+' '+baseclass, oldclassline, count=1)
         f.classname = classname
         f.operator = operator

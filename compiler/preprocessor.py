@@ -1,3 +1,4 @@
+# handles ifdef so we can exclude/include code depending on compiler flags, like if we want to build on top of another mod
 from compiler.base import *
 
 def bIfdef(ifdef, definitions):

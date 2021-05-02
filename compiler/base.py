@@ -1,3 +1,4 @@
+# shared code for all compiler modules
 import sys
 import re
 import glob
@@ -15,6 +16,13 @@ def debug(str):
     global loglevel
     if loglevel == 'debug':
         print(str)
+
+def printHeader(text):
+    print("")
+    print("=====================================================")
+    print("            "+text)
+    print("=====================================================")
+    print("")
 
 def calla(cmds):
     print("running "+repr(cmds))
@@ -63,9 +71,12 @@ def is_uc_file(file):
         return False
     filename = path[-1]
     namespace = path[-3]
+    parent = None
+    if len(path) > 3:
+        parent = path[-4]
     if path[-2] != 'Classes':
         return False
     if not path[-1].endswith('.uc'):
         return False
     
-    return True, filename, namespace
+    return True, filename, namespace, parent

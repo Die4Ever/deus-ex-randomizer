@@ -1,5 +1,6 @@
-# shims is similar to injects, except it rewrites all the children of baseclass to extend our shim class instead
+# shims is similar to injects, except it rewrites all the classlines of the children of baseclass to extend our shim class instead
 # class FixScriptedPawn shims ScriptedPawn; becomes class FixScriptedPawn extends ScriptedPawn;
+# and then the children like Robot becomes class Robot extends FixScriptedPawn;
 from compiler.base import *
 
 disabled = False

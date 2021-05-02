@@ -1,3 +1,5 @@
+# calls all of the inheritance operator modules (injects.py, shims.py, merges.py) and writes out the files
+# also cleans up the extra leftover files
 from compiler.base import *
 import importlib
 import pathlib
@@ -25,42 +27,43 @@ def before_write(mod, injects):
 
 
 def before_write_file(mod, f, injects):
+    module = load_module( 'compiler.' + f.operator)
     try:
-        module = load_module( 'compiler.' + f.operator)
         module.before_write(mod, f, injects)
     except Exception as e:
         print(traceback.format_exc())
-        print('before_write_file('+repr(mod)+', '+f.file+')')
+        print('before_write_file('+repr(mod)+', '+f.file+') '+f.operator)
         raise
 
 def execute_injections(f, injects):
     write = True
-    try:
-        debug("execute_injections("+f.file+") "+f.classline)
-        prev = f
-        for idx, inject in enumerate(injects[f.qualifiedclass]):
-            if f == inject:
-                continue
-            debug("execute_injections("+f.file+") "+inject.file+' '+inject.operator)
-            module = load_module( 'compiler.' + inject.operator)
+    
+    debug("execute_injections("+f.file+") "+f.classline)
+    prev = f
+    for idx, inject in enumerate(injects[f.qualifiedclass]):
+        if f == inject:
+            continue
+        debug("execute_injections("+f.file+") "+inject.file+' '+inject.operator)
+        module = load_module( 'compiler.' + inject.operator)
+        try:
             write = module.execute_injections(f, prev, idx, inject, injects[f.qualifiedclass])
             prev = inject
-    except Exception as e:
-        print(traceback.format_exc())
-        print('execute_injections('+f.file+')')
-        raise
+        except Exception as e:
+            print(traceback.format_exc())
+            print('execute_injections('+f.file+') '+inject.file+' '+inject.operator)
+            raise
     return write
 
 def handle_inheritance_operator(f, injects):
-    try:
-        if f.operator not in vanilla_inheritance_keywords:
-            debug("handle_inheritance_operator("+f.file+") "+f.operator)
-            module = load_module( 'compiler.' + f.operator)
+    if f.operator not in vanilla_inheritance_keywords:
+        debug("handle_inheritance_operator("+f.file+") "+f.operator)
+        module = load_module( 'compiler.' + f.operator)
+        try:
             return module.handle_inheritance_operator(f, injects)
-    except Exception as e:
-        print(traceback.format_exc())
-        print('handle_inheritance_operator('+f.file+')')
-        raise
+        except Exception as e:
+            print(traceback.format_exc())
+            print('handle_inheritance_operator('+f.file+') '+f.operator)
+            raise
     return True
 
 def write_file(out, f, written, injects):

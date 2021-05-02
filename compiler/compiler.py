@@ -1,3 +1,4 @@
+# calls the other modules and runs the UCC make compiler
 from compiler.base import *
 
 dryrun = False

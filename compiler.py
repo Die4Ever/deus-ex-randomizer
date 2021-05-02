@@ -1,3 +1,5 @@
+# run this script, it accepts the arguments and user input before running the compiler/compiler.py module
+# also reloads all modules for every run
 import sys
 import pprint
 import argparse
