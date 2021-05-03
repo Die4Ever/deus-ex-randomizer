@@ -18,10 +18,17 @@ function RandomDancing(Actor a)
 
 function AnyEntry()
 {
+#ifdef hx
+    local HXDXLogo logo;
+    local HXIonStormLogo islogo;
+    local HXEidosLogo elogo;
+    local HXElectricityEmitter elec;
+#else
     local DXLogo logo;
     local IonStormLogo islogo;
     local EidosLogo elogo;
     local ElectricityEmitter elec;
+#endif
     local Actor a;
     local Rotator r;
     local Vector v;
@@ -32,7 +39,11 @@ function AnyEntry()
         case "DXONLY":
         case "DX":
             l("Memeing up "$ dxr.localURL);
+#ifdef hx
+            foreach AllActors(class'HXDXLogo', logo)
+#else
             foreach AllActors(class'DXLogo', logo)
+#endif
             {                
                 a = ReplaceWithRandomClass(logo);
                 if (IsHuman(a)){
@@ -58,7 +69,11 @@ function AnyEntry()
                 GotoState('RotatingState');
             }
 
+#ifdef hx
+            foreach AllActors(class'HXIonStormLogo', islogo)
+#else
             foreach AllActors(class'IonStormLogo', islogo)
+#endif
             {
                 a = ReplaceWithRandomClass(islogo);
                 if (IsHuman(a)){
@@ -73,7 +88,11 @@ function AnyEntry()
                 a.AmbientSound = None;
             }
 
+#ifdef hx
+            foreach AllActors(class'HXEidosLogo', elogo)
+#else
             foreach AllActors(class'EidosLogo', elogo)
+#endif
             {
                 a = ReplaceWithRandomClass(elogo);
                 if (IsHuman(a)){
@@ -88,7 +107,11 @@ function AnyEntry()
                 a.AmbientSound = None;
             }
             
+#ifdef hx
+            foreach AllActors(class'HXElectricityEmitter', elec)
+#else
             foreach AllActors(class'ElectricityEmitter', elec)
+#endif
             {
                 v.Z = 70;
                 elec.move(v);
@@ -252,7 +275,11 @@ function Actor ReplaceWithRandomClass(Actor old)
 
 function string GetRandomActorClass()
 {
+#ifdef hx
+    return "HX.HX" $ _GetRandomActorClass();
+#else
     return "DeusEx." $ _GetRandomActorClass();
+#endif
 }
 
 function string _GetRandomActorClass()

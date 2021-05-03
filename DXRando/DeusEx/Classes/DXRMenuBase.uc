@@ -90,8 +90,12 @@ function DXRando InitDxr()
     log("InitDxr has player "$player);
     dxr = player.Spawn(class'DXRando', None);
     log("InitDxr got "$dxr);
+#ifdef hx
+    dxr.player = HXHuman(player);
+#else
     dxr.player = Human(player);
-    if( dxr.player == None ) log("ERROR: "$player$" is not a Human class", name);
+#endif
+    if( dxr.player == None ) log("ERROR: "$player$" is not the correct class", name);
 
     InitFlags();
     if( flags != None ) {

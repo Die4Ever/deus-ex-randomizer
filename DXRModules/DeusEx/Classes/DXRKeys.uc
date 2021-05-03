@@ -259,9 +259,11 @@ function MoveNanoKeys4()
 
     SetSeed( "MoveNanoKeys4" );
 
+#ifdef vanilla
     foreach AllActors(class'DeusExCarcass', carc) {
         carc.DropKeys();
     }
+#endif
 
     foreach AllActors(class'NanoKey', k )
     {

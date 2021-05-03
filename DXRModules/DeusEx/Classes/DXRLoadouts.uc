@@ -314,6 +314,7 @@ function AdjustWeapon(DeusExWeapon w)
 
 function NinjaAdjustWeapon(DeusExWeapon w)
 {
+#ifdef vanilla
     class'Shuriken'.default.blood_mult = 2;
     switch(w.Class) {
         case class'WeaponSword':
@@ -328,6 +329,7 @@ function NinjaAdjustWeapon(DeusExWeapon w)
             WeaponNanoSword(w).default.blood_mult = 2;
             break;
     }
+#endif
 }
 
 function FirstEntry()

@@ -149,12 +149,18 @@ function CheckConfig()
 
 function LoadFlags()
 {
+    //do flags binding
     local DataStorage ds;
     local int stored_version;
     info("LoadFlags()");
 
-    f = dxr.Player.FlagBase;
+    f = dxr.FlagBase;
     InitDefaults();
+
+    if( f == None) {
+        err("LoadFlags() f == None");
+        return;
+    }
 
     stored_version = f.GetInt('Rando_version');
 
@@ -263,7 +269,7 @@ function FlagInt(name flagname, out int val)
 function SaveFlags()
 {
     l("SaveFlags()");
-    f = dxr.Player.FlagBase;
+    f = dxr.FlagBase;
     if( f == None ) {
         err("SaveFlags() f == None");
         return;
@@ -389,7 +395,7 @@ static function bool VersionOlderThan(int config_version, int major, int minor, 
 
 static function string VersionString()
 {
-    return VersionToString(1, 5, 7) $ "";
+    return VersionToString(1, 5, 8) $ " Alpha";
 }
 
 function MaxRando()

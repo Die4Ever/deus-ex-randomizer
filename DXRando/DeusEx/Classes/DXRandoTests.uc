@@ -1,4 +1,8 @@
+#ifdef hx
+class DXRandoTests extends HXRandoGameInfo;
+#else
 class DXRandoTests extends DeusExGameInfo;
+#endif
 
 event playerpawn Login
 (

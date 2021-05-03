@@ -325,6 +325,7 @@ function ComputerSecurity SpawnSecurityComputer(vector loc, optional AutoTurret 
 function Datacube SpawnDatacube(vector loc, ComputerSecurity c)
 {
     local Datacube d;
+#ifdef vanilla
     local LocationNormal locnorm;
     local FMinMax distrange;
     locnorm.loc = loc;
@@ -343,6 +344,7 @@ function Datacube SpawnDatacube(vector loc, ComputerSecurity c)
     d.new_passwords[0] = c.UserList[0].Password;
     
     info("SpawnDatacube "$d$" done at ("$locnorm.loc$"), ("$locnorm.norm$") with name: "$d.Name);
+#endif
     return d;
 }
 

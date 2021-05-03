@@ -1,6 +1,11 @@
 class DXRando extends Info config(DXRando) transient;
 
+#ifdef hx
+var transient HXHuman Player;
+#else
 var transient Human Player;
+#endif
+var transient FlagBase flagbase;
 var transient DXRFlags flags;
 var transient DXRTelemetry telemetry;
 var transient DeusExLevelInfo dxInfo;
@@ -26,9 +31,11 @@ function SetdxInfo(DeusExLevelInfo i)
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL);
 
+#ifdef vanilla
     // undo the damage that DXRBacktracking has done to prevent saves from being deleted
     // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
     class'DXRBacktracking'.static.LevelInit(Self);
+#endif
 
     CrcInit();
     ClearModules();
@@ -41,8 +48,22 @@ function SetdxInfo(DeusExLevelInfo i)
 
 function Init()
 {
+#ifdef hx
+    local HXSteve steve;
+#endif
     l("Init has localURL == " $ localURL);
-    foreach AllActors(class'Human', Player) { break; }
+#ifdef hx
+    foreach AllActors(class'HXHuman', Player) { break; }
+    foreach AllActors(class'HXSteve', steve) {
+        flagbase = steve.FlagBase;
+        break;
+    }
+#else
+    foreach AllActors(class'Human', Player) {
+        flagbase = Player.FlagBase;
+        break;
+    }
+#endif
     if( Player == None ) {
         warn("Init() didn't find player?");
         return;
@@ -64,6 +85,7 @@ function CheckConfig()
         }
 
         i=0;
+#ifdef vanilla
         modules_to_load[i++] = "DXRMissions";
         modules_to_load[i++] = "DXRSwapItems";
         //modules_to_load[i++] = "DXRAddItems";
@@ -75,10 +97,12 @@ function CheckConfig()
         modules_to_load[i++] = "DXRAugmentations";
         modules_to_load[i++] = "DXRReduceItems";
         modules_to_load[i++] = "DXRNames";
-        modules_to_load[i++] = "DXRAutosave";
+#endif
         modules_to_load[i++] = "DXRMemes";
+#ifdef vanilla
         modules_to_load[i++] = "DXREnemies";
         modules_to_load[i++] = "DXREntranceRando";
+        modules_to_load[i++] = "DXRAutosave";
         modules_to_load[i++] = "DXRHordeMode";
         //modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
@@ -90,7 +114,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRStats";
         modules_to_load[i++] = "DXRFashion";
         modules_to_load[i++] = "DXRNPCs";
-
+#endif
         //modules_to_load[i++] = "DXRTestAllMaps";
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
@@ -136,7 +160,11 @@ function LoadModules()
     local class<Actor> c;
     for( i=0; i < ArrayCount( modules_to_load ); i++ ) {
         if( modules_to_load[i] == "" ) continue;
+#ifdef hx
+        c = flags.GetClassFromString( "HXRandomizer." $ modules_to_load[i], class'DXRBase');
+#else
         c = flags.GetClassFromString(modules_to_load[i], class'DXRBase');
+#endif
         LoadModule( class<DXRBase>(c) );
     }
 }
@@ -209,6 +237,11 @@ function RandoEnter()
     local bool firstTime;
     local name flagName;
     local bool IsTravel;
+
+    if( flags.f == None ) {
+        err("RandoEnter() flags.f == None");
+        return;
+    }
 
     IsTravel = flags.f.GetBool('PlayerTraveling');
 

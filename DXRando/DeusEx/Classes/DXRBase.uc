@@ -193,8 +193,13 @@ function bool chance_single(float percent)
 function class<Actor> GetClassFromString(string classstring, class<Actor> c)
 {
     local class<Actor> a;
-    if( InStr(classstring, ".") == -1 )
+    if( InStr(classstring, ".") == -1 ) {
+#ifdef hx
+        classstring = "HX." $ classstring;
+#else
         classstring = "DeusEx." $ classstring;
+#endif
+    }
     a = class<Actor>(DynamicLoadObject(classstring, class'class'));
     if( a == None ) {
         err("GetClassFromString: failed to load class "$classstring);

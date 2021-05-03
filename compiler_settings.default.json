@@ -1,0 +1,25 @@
+{
+    "default": {
+        "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup/",
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex/",
+        "preproc_definitions": [ "vanilla" ],
+        "mods_paths": [ "./" ],
+        "packages": [ "DeusEx" ],
+        "verbose": false,
+        "copy_local": true,
+        "run_tests": true,
+        "blacklist": [ "HXRandomizer" ]
+    },
+    "hx": {
+        "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX Backup/",
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX/",
+        "preproc_definitions": [ "hx" ],
+        "mods_paths": [ "./" ],
+        "packages": [ "HXRandomizer" ],
+        "rewrite_packages": { "DeusEx": "HXRandomizer" },
+        "verbose": false,
+        "copy_local": true,
+        "run_tests": false,
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRFixup.uc", "DXRAutosave.uc" ]
+    }
+}

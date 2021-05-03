@@ -159,6 +159,9 @@ function PostFirstEntry()
     Super.PostFirstEntry();
 
     switch(dxr.localURL) {
+        case "02_NYC_WAREHOUSE":
+            AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));
+        // force the unatco retinal scanner to MJ12 lab to be unhackable, except make it actually work in mission 5
         case "03_NYC_AirfieldHeliBase":
             //crates to get back over the beginning of the level
             _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));

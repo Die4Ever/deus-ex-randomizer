@@ -20,17 +20,22 @@ def preprocess(content, ifdef, definitions):
     replacement = None
 
     for i in r.finditer(ifdef):
-        if bIfdef(i.group(1), definitions):
+        if replacement is not None:
+            num_lines_after += i.group(1).count('\n')+1
+            num_lines_after += i.group(2).count('\n')+1
+
+        elif bIfdef(i.group(1), definitions):
             num_lines_before += i.group(1).count('\n')+1
             replacement = i.group(2)
+
         elif replacement is None:
             num_lines_before += i.group(1).count('\n')+1
             num_lines_before += i.group(2).count('\n')+1
-        else:
-            num_lines_after += i.group(1).count('\n')+1
-            num_lines_after += i.group(2).count('\n')+1
     
-    if replacement:
+    if replacement is None:
+        replacement = ""
+    
+    if replacement is not None:
         replacement = ('\n'*num_lines_before) + replacement + ('\n'*num_lines_after)
         return content.replace( ifdef, replacement )
     return content

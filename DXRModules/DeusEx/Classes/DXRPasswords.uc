@@ -433,9 +433,12 @@ function RandoInfoDevs(int percent)
             }
             CriticalDelete(parser);
         }
+
+#ifdef vanilla
         if( id.plaintext != "" ) {
             ProcessStringHasPass(id.plaintext, hasPass);
         }
+#endif
 
         num=0;
         foreach AllActors(class'Inventory', inv)
@@ -597,6 +600,7 @@ function NotifyPlayerNotesUpdated()
 
 function MarkPasswordKnown(string password)
 {
+#ifdef vanilla
     local Keypad k;
     local Computers c;
     local ATM a;
@@ -619,7 +623,7 @@ function MarkPasswordKnown(string password)
             k.bCodeKnown = True;
         }
     }
-
+#endif
 }
 
 function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword)
@@ -646,20 +650,24 @@ function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword
     if( note.bUserNote && dxr.player.CombatDifficulty > 0 ) return false;
     if( oldpassword == "" ) return false;
     if( note.text == "") return false;
-        
+
+#ifdef vanilla
     if( note.HasPassword(newpassword))
     {
         MarkPasswordKnown(newpassword);
     }
 
     if( note.HasEitherPassword(oldpassword, newpassword) ) return false;
+#endif
     if( PassInStr( note.text, oldpassword ) == -1 ) return false;
     
     updated++;
     info("found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
     note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
+#ifdef vanilla
     note.SetNewPassword(newpassword);
+#endif
     
     MarkPasswordKnown(newpassword);
     

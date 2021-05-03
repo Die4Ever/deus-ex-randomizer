@@ -73,7 +73,10 @@ Plugins/*/Intermediate/*
 # Cache files for the editor to use
 DerivedDataCache/*
 
-#Windows shortcuts (To provide arguments to the compiler)
+# Windows shortcuts (To provide arguments to the compiler)
 *.lnk
+
+# Settings file for the compiler
+compiler_settings.json
 
 __pycache__
