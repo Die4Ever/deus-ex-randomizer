@@ -13,10 +13,26 @@ def preprocess(content, ifdef, definitions):
     # because we want to read up until the next preprocessor directive
     # but we don't want to swallow it yet
     r = re.compile(r'(#[^\n]+)\n(.*?)\n(?=(#\w+))', flags=re.DOTALL)
+    
+    # pad the new lines so the errors coming from the compiler match the lines in the original files
+    num_lines_before = 0
+    num_lines_after = 1 # 1 for the #endif
+    replacement = None
+
     for i in r.finditer(ifdef):
         if bIfdef(i.group(1), definitions):
-            # TODO: pad in extra blank lines so that the line numbers from compiler errors still match?
-            return content.replace( ifdef, i.group(2) )
+            num_lines_before += i.group(1).count('\n')+1
+            replacement = i.group(2)
+        elif replacement is None:
+            num_lines_before += i.group(1).count('\n')+1
+            num_lines_before += i.group(2).count('\n')+1
+        else:
+            num_lines_after += i.group(1).count('\n')+1
+            num_lines_after += i.group(2).count('\n')+1
+    
+    if replacement:
+        replacement = ('\n'*num_lines_before) + replacement + ('\n'*num_lines_after)
+        return content.replace( ifdef, replacement )
     return content
 
 
