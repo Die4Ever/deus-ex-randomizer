@@ -1456,7 +1456,7 @@ function floorIsLava() {
     if (
         ( dxr.Player.Base.IsA('LevelInfo') || dxr.Player.Base.IsA('Mover') )
 #ifdef vanilla
-        && dxr.Player.bOnLadder==False
+        && Human(dxr.Player).bOnLadder==False
 #endif
     ) {
         lavaTick++;
