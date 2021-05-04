@@ -123,7 +123,7 @@ function AnyEntry()
         case "ENDGAME2":
         case "ENDGAME3":
         case "ENDGAME4":
-        case "00_TRAINING":
+        //case "00_TRAINING":
             // extra randomization in the intro for the lolz, ENDGAME4 doesn't have a DeusExLevelInfo object though, so it doesn't get randomized :(
             l("Memeing up "$ dxr.localURL);
             RandomizeIntro();

@@ -25,6 +25,18 @@ var int banned_skills, banned_skill_levels, enemies_nonhumans;
 var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 var int codes_mode;
 
+replication
+{
+    reliable if( Role==ROLE_Authority )
+        f, seed, playthrough_id, flagsversion, gamemode, loadout, brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel,
+        keysrando, doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys, autosave,
+        removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices, dancingpercent, skills_disable_downgrades, skills_reroll_missions, skills_independent_levels,
+        startinglocations, goals, equipment, medbots, repairbots, turrets_move, turrets_add, crowdcontrol, newgameplus_loops, merchants,
+        banned_skills, banned_skill_levels, enemies_nonhumans,
+        undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive,
+        codes_mode;
+}
+
 function PreTravel()
 {
     Super.PreTravel();

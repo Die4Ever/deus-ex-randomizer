@@ -13,6 +13,12 @@ var config float min_skill_str;
 var config float max_skill_str;
 var config float skill_cost_curve;
 
+replication
+{
+    reliable if( Role==ROLE_Authority )
+        SkillCostMultipliers, min_skill_str, max_skill_str, skill_cost_curve;
+}
+
 function CheckConfig()
 {
     local int i;
@@ -28,6 +34,9 @@ function CheckConfig()
         skill_cost_curve = default.skill_cost_curve;
         
         i=0;
+#ifdef hx
+
+#else
         SkillCostMultipliers[i].type = "SkillDemolition";
         SkillCostMultipliers[i].percent = 80;
         SkillCostMultipliers[i].minLevel = 1;
@@ -45,17 +54,19 @@ function CheckConfig()
         SkillCostMultipliers[i].minLevel = 1;
         SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
         i++;
+#endif
     }
     Super.CheckConfig();
 }
 
-function AnyEntry()
+simulated function Login(DeusExPlayer player)
 {
-    Super.AnyEntry();
-    RandoSkills(dxr.Player.SkillSystem.FirstSkill);
+    Super.Login(player);
+    info(self$".Login("$player$"), player.SkillSystem: "$player.SkillSystem$", player.SkillSystem.FirstSkill: "$player.SkillSystem.FirstSkill);
+    RandoSkills(player.SkillSystem.FirstSkill);
 }
 
-function RandoSkills(Skill aSkill)
+simulated function RandoSkills(Skill aSkill)
 {
     local int i;
     local int mission_group;
@@ -84,7 +95,7 @@ function RandoSkills(Skill aSkill)
     }
 }
 
-function RandoSkill(Skill aSkill)
+simulated function RandoSkill(Skill aSkill)
 {
     local float percent;
     local int i;
@@ -106,7 +117,7 @@ function RandoSkill(Skill aSkill)
     RandoSkillLevelValues(aSkill);
 }
 
-function RandoSkillLevelValues(Skill a)
+simulated function RandoSkillLevelValues(Skill a)
 {
     local string add_desc;
     RandoLevelValues(a, min_skill_str, max_skill_str, a.Description);
@@ -120,7 +131,7 @@ function RandoSkillLevelValues(Skill a)
     }
 }
 
-function string DescriptionLevel(Actor act, int i, out string word)
+simulated function string DescriptionLevel(Actor act, int i, out string word)
 {
     local Skill s;
     local float f;
@@ -164,7 +175,7 @@ function string DescriptionLevel(Actor act, int i, out string word)
     }
 }
 
-function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
+simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
 {
     local float percent;
     local int m;

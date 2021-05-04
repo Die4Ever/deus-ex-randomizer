@@ -30,6 +30,8 @@ EditPackages=HX
 EditPackages=HXRandomizer
 
 v1.5.8 Alpha:
+	maybe changeup the preprocessor definitions, like instead of using vanilla so much I should probably have extra definitions
+		-like fixes, balance, mapfixes...
 	compile with HX
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	NG+ remove 2 random skills (so the player has to make choices), half your skill points, a random aug, and a random weapon?
@@ -454,6 +456,16 @@ bIsItemGoal?
 should NanoKeys have buoyancy?
 
 maybe I can rewrite this as a mutator?
+
+https://wiki.beyondunreal.com/Legacy:Simulated_Function
+
+http://www.hypercoop.tk/infobase/archive/unrealtech/Network.htm
+
+https://wiki.beyondunreal.com/Legacy:Replication_Examples/Replication_Test
+
+https://wiki.beyondunreal.com/What_happens_when_an_Actor_is_spawned
+
+https://wiki.beyondunreal.com/Legacy:Simulated_Function
 
 https://docs.unrealengine.com/udk/Two/UnrealScriptReference.html
 

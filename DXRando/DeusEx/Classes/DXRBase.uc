@@ -7,6 +7,14 @@ var config int config_version;
 var transient int passes;
 var transient int fails;
 
+/*reliable if( Role==ROLE_Authority )
+        PreFirstEntry, FirstEntry, PostFirstEntry, AnyEntry, PostAnyEntry, ReEntry, Login;*/
+replication
+{
+    reliable if( Role==ROLE_Authority )
+        dxr;
+}
+
 function Init(DXRando tdxr)
 {
     //l(Self$".Init()");
@@ -28,41 +36,48 @@ function CheckConfig()
     }
 }
 
-function PreFirstEntry();
-function FirstEntry();
-function PostFirstEntry();
+simulated function PreFirstEntry();
+simulated function FirstEntry();
+simulated function PostFirstEntry();
 
-function AnyEntry();
-function PostAnyEntry();
+simulated function AnyEntry();
+simulated function PostAnyEntry();
 
-function ReEntry(bool IsTravel);
+simulated function ReEntry(bool IsTravel);
 
-function PreTravel()
+simulated function Login(DeusExPlayer player)
+{
+    //l("Login("$player$")");
+}
+
+simulated event PreTravel()
 {
     SetTimer(0, False);
 }
 
-function Timer()
+simulated event Timer()
 {
 }
 
-event Destroyed()
+simulated event Tick(float deltaTime);
+
+simulated event Destroyed()
 {
     dxr = None;
     Super.Destroyed();
 }
 
-function int SetSeed(coerce string name)
+simulated function int SetSeed(coerce string name)
 {
     return dxr.SetSeed( dxr.Crc(dxr.seed $ dxr.localURL $ name) );
 }
 
-function int rng(int max)
+simulated function int rng(int max)
 {
     return dxr.rng(max);
 }
 
-function float rngf()
+simulated function float rngf()
 {// 0 to 1.0
     local float f;
     f = float(dxr.rng(100001))/100000.0;
@@ -70,12 +85,12 @@ function float rngf()
     return f;
 }
 
-function float rngfn()
+simulated function float rngfn()
 {// -1.0 to 1.0
     return rngf() * 2.0 - 1.0;
 }
 
-function float rngrange(float val, float min, float max)
+simulated function float rngrange(float val, float min, float max)
 {
     local float mult, r, ret;
     mult = max - min;
@@ -85,7 +100,7 @@ function float rngrange(float val, float min, float max)
     return ret;
 }
 
-function float rngrangeseeded(float val, float min, float max, coerce string classname)
+simulated function float rngrangeseeded(float val, float min, float max, coerce string classname)
 {
     local float mult, r, ret;
     local int oldseed;
@@ -98,12 +113,12 @@ function float rngrangeseeded(float val, float min, float max, coerce string cla
     return ret;
 }
 
-static function float pow(float m, float e)
+simulated static function float pow(float m, float e)
 {
     return exp(e * loge(m) );
 }
 
-function float rngexp(float min, float max, float curve)
+simulated function float rngexp(float min, float max, float curve)
 {
     local float frange, f;
     min = pow(min, 1/curve);
@@ -113,7 +128,7 @@ function float rngexp(float min, float max, float curve)
     return pow(f, curve);
 }
 
-function bool RandoLevelValues(Actor a, float min, float max, out string Desc)
+simulated function bool RandoLevelValues(Actor a, float min, float max, out string Desc)
 {
     local Augmentation aug;
     local Skill sk;
@@ -153,44 +168,44 @@ function bool RandoLevelValues(Actor a, float min, float max, out string Desc)
     return false;
 }
 
-function string DescriptionLevel(Actor a, int i, out string word)
+simulated function string DescriptionLevel(Actor a, int i, out string word)
 {
     err("DXRBase DescriptionLevel failed for "$a);
     return "err";
 }
 
-function static int staticrng(DXRando dxr, int max)
+simulated function static int staticrng(DXRando dxr, int max)
 {
     return dxr.rng(max);
 }
 
-function float initchance()
+simulated function float initchance()
 {
     if(overallchances > 0.01 && overallchances < 99.99) warning("initchance() overallchances == "$overallchances);
     overallchances=0;
     return rngf()*100.0;
 }
 
-function bool chance(float percent, float r)
+simulated function bool chance(float percent, float r)
 {
     overallchances+=percent;
     if(overallchances>100.01) warning("chance("$percent$", "$r$") overallchances == "$overallchances);
     return r>= (overallchances-percent) && r< overallchances;
 }
 
-function bool chance_remaining(int r)
+simulated function bool chance_remaining(int r)
 {
     local int percent;
     percent = 100 - overallchances;
     return chance(percent, r);
 }
 
-function bool chance_single(float percent)
+simulated function bool chance_single(float percent)
 {
     return rngf()*100.0 < percent;
 }
 
-function class<Actor> GetClassFromString(string classstring, class<Actor> c)
+simulated function class<Actor> GetClassFromString(string classstring, class<Actor> c)
 {
     local class<Actor> a;
     if( InStr(classstring, ".") == -1 ) {
@@ -212,7 +227,23 @@ function class<Actor> GetClassFromString(string classstring, class<Actor> c)
     return a;
 }
 
-static function string UnpackString(out string s)
+simulated function Class<Inventory> ModifyInventoryClass( out Class<Inventory> InventoryClass )
+{
+#ifdef hx
+    HXGameInfo(Level.Game).ModifyInventoryClass( InventoryClass );
+#endif
+    return InventoryClass;
+}
+
+simulated function Class<Actor> ModifyActorClass( out Class<Actor> ActorClass )
+{
+#ifdef hx
+    HXGameInfo(Level.Game).ModifyActorClass( ActorClass );
+#endif
+    return ActorClass;
+}
+
+simulated static function string UnpackString(out string s)
 {
     local int i, l;
     local string ret;
@@ -229,7 +260,7 @@ static function string UnpackString(out string s)
     return ret;
 }
 
-static function string FloatToString(float f, int decimal_places)
+simulated static function string FloatToString(float f, int decimal_places)
 {
     local int i;
     local string s;
@@ -246,7 +277,7 @@ static function string FloatToString(float f, int decimal_places)
 //msgBoxMode = 0 or 1, 0 = Yes/No box, 1 = OK box
 //module will presumably be the module you are creating the message box for
 //id lets you provide an ID so you can identify where the response should go
-function CreateMessageBox( String msgTitle, String msgText, int msgBoxMode, 
+simulated function CreateMessageBox( String msgTitle, String msgText, int msgBoxMode, 
                            DXRBase module, int id, optional bool noPause) {
                            
     local DXRMessageBoxWindow msgBox;
@@ -265,7 +296,7 @@ function CreateMessageBox( String msgTitle, String msgText, int msgBoxMode,
 //You can only fit 3 buttons along a box, and the labels can't be too long.
 //7 Characters is about the label limit before the button box starts expanding.
 //You can likely fit about 34ish characters between all three labels before it looks bad
-function CreateCustomMessageBox (String msgTitle, String msgText, int numBtns, String buttonLabels[3],
+simulated function CreateCustomMessageBox (String msgTitle, String msgText, int numBtns, String buttonLabels[3],
                                  DXRBase module, int id, optional bool noPause) {
     local DXRMessageBoxWindow msgBox;
 
@@ -281,7 +312,7 @@ function CreateCustomMessageBox (String msgTitle, String msgText, int numBtns, S
 }
 
 //Implement this in your DXRBase subclass to handle message boxes for your particular needs
-function MessageBoxClicked(int button, int callbackId) {
+simulated function MessageBoxClicked(int button, int callbackId) {
     local DXRMessageBoxWindow msgBox;
     local string title, message;
 
@@ -317,13 +348,13 @@ function MessageBoxClicked(int button, int callbackId) {
     //OK = 2
 }
 
-function AddDXRCredits(CreditsWindow cw) 
+simulated function AddDXRCredits(CreditsWindow cw) 
 {
 }
 
 
 //consider this like debug or trace
-function l(coerce string message)
+simulated function l(coerce string message)
 {
     log(message, class.name);
 
@@ -332,19 +363,19 @@ function l(coerce string message)
     }*/
 }
 
-function info(coerce string message)
+simulated function info(coerce string message)
 {
     log("INFO: " $ message, class.name);
     class'DXRTelemetry'.static.SendLog(dxr, Self, "INFO", message);
 }
 
-function warning(coerce string message)
+simulated function warning(coerce string message)
 {
     log("WARNING: " $ message, class.name);
     class'DXRTelemetry'.static.SendLog(dxr, Self, "WARNING", message);
 }
 
-function err(coerce string message)
+simulated function err(coerce string message)
 {
     log("ERROR: " $ message, class.name);
     if(dxr != None && dxr.Player != None) {
@@ -354,7 +385,7 @@ function err(coerce string message)
     class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", message);
 }
 
-function name StringToName(string s)
+simulated function name StringToName(string s)
 {
     return dxr.Player.rootWindow.StringToName(s);
 }
@@ -469,4 +500,12 @@ function bool teststring(string result, string expected, string testname)
         fails++;
         return false;
     }
+}
+
+defaultproperties
+{
+    NetPriority=0.2
+    bAlwaysRelevant=True
+    bGameRelevant=True
+    RemoteRole=ROLE_SimulatedProxy
 }

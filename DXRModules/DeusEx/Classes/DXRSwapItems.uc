@@ -11,7 +11,11 @@ function CheckConfig()
         }
         i=0;
         swap_actors[i++] = "Engine.Inventory";
+#ifdef hx
+        swap_actors[i++] = "HX.HXContainers";
+#else
         swap_actors[i++] = "Containers";
+#endif
     }
     Super.CheckConfig();
 }

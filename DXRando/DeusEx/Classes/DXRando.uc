@@ -1,10 +1,6 @@
 class DXRando extends Info config(DXRando) transient;
 
-#ifdef hx
-var transient HXHuman Player;
-#else
-var transient Human Player;
-#endif
+var transient DeusExPlayer Player;
 var transient FlagBase flagbase;
 var transient DXRFlags flags;
 var transient DXRTelemetry telemetry;
@@ -24,6 +20,44 @@ var config int config_version;
 
 var transient bool runPostFirstEntry;
 var transient bool bTickEnabled;// bTickEnabled is just for DXRandoTests to inspect
+
+
+/*reliable if( Role==ROLE_Authority )
+        SetdxInfo, Init, DXRTick, RandoEnter, Login;*/
+    /*reliable if( Role==ROLE_Authority )
+        Login;*/
+    
+    /*reliable if( Role<ROLE_Authority )
+        l, info, warning, err;*/
+replication
+{
+    reliable if( Role==ROLE_Authority )
+        modules, num_modules, runPostFirstEntry, bTickEnabled, localURL, dxInfo, telemetry, flags, flagbase, Player, CrcTable, seed;
+    
+    /*reliable if( Role==ROLE_Authority )
+        Login;*/
+}
+
+simulated event PostNetBeginPlay()
+{
+    Super.PostNetBeginPlay();
+    log(Self$".PostNetBeginPlay()", self.class.name);
+    SetTimer(1, true);
+}
+
+simulated event Timer()
+{
+    local int i;
+    if( bTickEnabled == true ) return;
+    for(i=0; i<num_modules; i++) {
+        if( modules[i].dxr != Self) {
+            log(Self$".Timer() bailing", self.class.name);
+            return;
+        }
+    }
+    SetTimer(0, false);
+    Login(GetPlayerPawn());
+}
 
 function SetdxInfo(DeusExLevelInfo i)
 {
@@ -52,15 +86,13 @@ function Init()
     local HXSteve steve;
 #endif
     l("Init has localURL == " $ localURL);
-#ifdef hx
-    foreach AllActors(class'HXHuman', Player) { break; }
-    foreach AllActors(class'HXSteve', steve) {
-        flagbase = steve.FlagBase;
+    foreach AllActors(class'DeusExPlayer', Player) {
+        flagbase = Player.FlagBase;
         break;
     }
-#else
-    foreach AllActors(class'Human', Player) {
-        flagbase = Player.FlagBase;
+#ifdef hx
+    foreach AllActors(class'HXSteve', steve) {
+        flagbase = steve.FlagBase;
         break;
     }
 #endif
@@ -79,7 +111,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
+    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,5,8) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -87,20 +119,24 @@ function CheckConfig()
         i=0;
 #ifdef vanilla
         modules_to_load[i++] = "DXRMissions";
+#endif
         modules_to_load[i++] = "DXRSwapItems";
         //modules_to_load[i++] = "DXRAddItems";
+#ifdef vanilla
         modules_to_load[i++] = "DXRFixup";
         modules_to_load[i++] = "DXRBacktracking";
         modules_to_load[i++] = "DXRKeys";
+#endif
         modules_to_load[i++] = "DXRSkills";
+#ifdef vanilla
         modules_to_load[i++] = "DXRPasswords";
         modules_to_load[i++] = "DXRAugmentations";
         modules_to_load[i++] = "DXRReduceItems";
         modules_to_load[i++] = "DXRNames";
 #endif
         modules_to_load[i++] = "DXRMemes";
-#ifdef vanilla
         modules_to_load[i++] = "DXREnemies";
+#ifdef vanilla
         modules_to_load[i++] = "DXREntranceRando";
         modules_to_load[i++] = "DXRAutosave";
         modules_to_load[i++] = "DXRHordeMode";
@@ -109,8 +145,10 @@ function CheckConfig()
         modules_to_load[i++] = "DXRLoadouts";
         modules_to_load[i++] = "DXRWeapons";
         modules_to_load[i++] = "DXRCrowdControl";
+#endif
         modules_to_load[i++] = "DXRMachines";
         modules_to_load[i++] = "DXRTelemetry";
+#ifdef vanilla
         modules_to_load[i++] = "DXRStats";
         modules_to_load[i++] = "DXRFashion";
         modules_to_load[i++] = "DXRNPCs";
@@ -169,7 +207,7 @@ function LoadModules()
     }
 }
 
-final function DXRBase FindModule(class<DXRBase> moduleclass)
+simulated final function DXRBase FindModule(class<DXRBase> moduleclass)
 {
     local DXRBase m;
     local int i;
@@ -199,9 +237,21 @@ function ClearModules()
     flags=None;
 }
 
-simulated function Tick(float deltaTime)
+simulated event Tick(float deltaTime)
 {
+    log("Tick", self.class.name);
+    if( Role < ROLE_Authority ) {
+        Disable('Tick');
+        return;
+    }
+    DXRTick(deltaTime);
+}
+
+function DXRTick(float deltaTime)
+{
+    local PlayerPawn pawn;
     local int i;
+    SetTimer(0, false);
     if( dxInfo == None )
     {
         //waiting...
@@ -228,6 +278,10 @@ simulated function Tick(float deltaTime)
         
         Disable('Tick');
         bTickEnabled = false;
+
+        foreach AllActors(class'PlayerPawn', pawn) {
+            Login(pawn);
+        }
     }
 }
 
@@ -285,7 +339,27 @@ function RandoEnter()
 
 }
 
-final function int SetSeed(int s)
+simulated function Login(PlayerPawn pawn)
+{
+    local DeusExPlayer p;
+    local int i;
+
+    info("Login("$pawn$"), bTickEnabled: "$bTickEnabled);
+    if( bTickEnabled == true ) return;
+
+    p = DeusExPlayer(pawn);
+    if( p == None ) {
+        err("Login("$pawn$") not DeusExPlayer?");
+        return;
+    }
+
+    info("Login("$pawn$") do it "$p);
+    for(i=0; i<num_modules; i++) {
+        modules[i].Login(p);
+    }
+}
+
+simulated final function int SetSeed(int s)
 {
     local int oldseed;
     oldseed = newseed;
@@ -294,7 +368,7 @@ final function int SetSeed(int s)
     return oldseed;
 }
 
-final function int rng(int max)
+simulated final function int rng(int max)
 {
     local int gen1, gen2;
     gen2 = 2147483643;
@@ -311,7 +385,7 @@ final function int rng(int max)
 // Initializes CrcTable and prepares it for use with Crc.
 // ============================================================================
 
-final function CrcInit() {
+simulated final function CrcInit() {
 
     const CrcPolynomial = 0xedb88320;
 
@@ -341,7 +415,7 @@ final function CrcInit() {
 // Calculates and returns a checksum of the given string. Call CrcInit before.
 // ============================================================================
 
-final function int Crc(coerce string Text) {
+simulated final function int Crc(coerce string Text) {
 
     local int CrcValue;
     local int IndexChar;
@@ -354,24 +428,24 @@ final function int Crc(coerce string Text) {
     return CrcValue;
 }
 
-function l(string message)
+simulated function l(string message)
 {
     log(message, class.name);
 }
 
-function info(string message)
+simulated function info(string message)
 {
     log("INFO: " $ message, class.name);
     class'DXRTelemetry'.static.SendLog(Self, Self, "INFO", message);
 }
 
-function warning(string message)
+simulated function warning(string message)
 {
     log("WARNING: " $ message, class.name);
     class'DXRTelemetry'.static.SendLog(Self, Self, "WARNING", message);
 }
 
-function err(string message)
+simulated function err(string message)
 {
     log("ERROR: " $ message, class.name);
     if( Player != None )
@@ -428,6 +502,9 @@ function ExtendedTests()
 
 defaultproperties
 {
-     bAlwaysRelevant=True
-     bTickEnabled=True
+    NetPriority=0.1
+    bAlwaysRelevant=True
+    bGameRelevant=True
+    bTickEnabled=True
+    RemoteRole=ROLE_SimulatedProxy
 }
