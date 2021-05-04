@@ -20,6 +20,7 @@ var config int config_version;
 
 var transient bool runPostFirstEntry;
 var transient bool bTickEnabled;// bTickEnabled is just for DXRandoTests to inspect
+var transient bool bLoginReady;
 
 
 /*reliable if( Role==ROLE_Authority )
@@ -42,21 +43,23 @@ simulated event PostNetBeginPlay()
 {
     Super.PostNetBeginPlay();
     log(Self$".PostNetBeginPlay()", self.class.name);
-    SetTimer(1, true);
+    SetTimer(0.2, true);
 }
 
 simulated event Timer()
 {
     local int i;
     if( bTickEnabled == true ) return;
-    for(i=0; i<num_modules; i++) {
-        if( modules[i].dxr != Self) {
-            log(Self$".Timer() bailing", self.class.name);
-            return;
-        }
+
+    if( bLoginReady ) {
+        Login(GetPlayerPawn());
+        SetTimer(0, false);
     }
-    SetTimer(0, false);
-    Login(GetPlayerPawn());
+
+    if( ! CheckLogin(GetPlayerPawn()) )
+        return;
+    
+    bLoginReady = true;
 }
 
 function SetdxInfo(DeusExLevelInfo i)
@@ -65,7 +68,7 @@ function SetdxInfo(DeusExLevelInfo i)
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL);
 
-#ifdef vanilla
+#ifdef backtracking
     // undo the damage that DXRBacktracking has done to prevent saves from being deleted
     // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
     class'DXRBacktracking'.static.LevelInit(Self);
@@ -122,38 +125,42 @@ function CheckConfig()
 #endif
         modules_to_load[i++] = "DXRSwapItems";
         //modules_to_load[i++] = "DXRAddItems";
-#ifdef vanilla
+#ifdef fixes
         modules_to_load[i++] = "DXRFixup";
-        modules_to_load[i++] = "DXRBacktracking";
-        modules_to_load[i++] = "DXRKeys";
 #endif
+#ifdef backtracking
+        modules_to_load[i++] = "DXRBacktracking";
+#endif
+        modules_to_load[i++] = "DXRKeys";
         modules_to_load[i++] = "DXRSkills";
-#ifdef vanilla
         modules_to_load[i++] = "DXRPasswords";
         modules_to_load[i++] = "DXRAugmentations";
         modules_to_load[i++] = "DXRReduceItems";
         modules_to_load[i++] = "DXRNames";
-#endif
         modules_to_load[i++] = "DXRMemes";
         modules_to_load[i++] = "DXREnemies";
-#ifdef vanilla
+#ifdef backtracking
         modules_to_load[i++] = "DXREntranceRando";
+#endif
+#ifdef singleplayer
         modules_to_load[i++] = "DXRAutosave";
+#endif
         modules_to_load[i++] = "DXRHordeMode";
         //modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
+#ifndef hx
         modules_to_load[i++] = "DXRLoadouts";
+#endif
         modules_to_load[i++] = "DXRWeapons";
         modules_to_load[i++] = "DXRCrowdControl";
-#endif
         modules_to_load[i++] = "DXRMachines";
         modules_to_load[i++] = "DXRTelemetry";
-#ifdef vanilla
         modules_to_load[i++] = "DXRStats";
-        modules_to_load[i++] = "DXRFashion";
+#ifdef singleplayer
         modules_to_load[i++] = "DXRNPCs";
-#endif
+        modules_to_load[i++] = "DXRFashion";
         //modules_to_load[i++] = "DXRTestAllMaps";
+#endif
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
@@ -337,6 +344,29 @@ function RandoEnter()
         modules[i].AnyEntry();
     }
 
+}
+
+simulated function bool CheckLogin(PlayerPawn pawn)
+{
+    local DeusExPlayer p;
+    local int i;
+
+    if( bTickEnabled == true ) return false;
+
+    p = DeusExPlayer(pawn);
+    if( p == None ) {
+        return false;
+    }
+
+    for(i=0; i<num_modules; i++) {
+        if( modules[i] == None )
+            return false;
+        if( modules[i].dxr != Self )
+            return false;
+        if( ! modules[i].CheckLogin(p) )
+            return false;
+    }
+    return true;
 }
 
 simulated function Login(PlayerPawn pawn)

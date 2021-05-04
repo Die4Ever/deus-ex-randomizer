@@ -182,15 +182,24 @@ function CheckConfig()
 
 function Timer()
 {
-    local DeusExGoal goal;
-    local DeusExNote note;
+#ifdef hx
+    local HXGoal goal, tgoal;
+#else
+    local DeusExGoal goal, tgoal;
+#endif
+    local DeusExNote note, tnote;
     local int i;
 
     Super.Timer();
     if( dxr == None ) return;
     
+#ifdef hx
+    goal = HXGameInfo(Level.Game).Steve.FirstGoal;
+#else
     goal = dxr.Player.FirstGoal;
+#endif
     while( goal != None ) {
+        tgoal = goal.next;
         for (i=0; i<ArrayCount(oldpasswords); i++)
         {
             switch(oldpasswords[i]) {
@@ -199,19 +208,28 @@ function Timer()
                     UpdateGoal(goal, oldpasswords[i], newpasswords[i]);
             }
         }
-        goal = goal.next;
+        goal = tgoal;
     }
 
+#ifdef hx
+    note = HXGameInfo(Level.Game).FirstNote;
+#else
     note = dxr.Player.FirstNote;
+#endif
     while( note != lastCheckedNote && note != None )
     {
+        tnote = note.next;
         for (i=0; i<ArrayCount(oldpasswords); i++)
         {
             UpdateNote(note, oldpasswords[i], newpasswords[i]);
         }
-        note = note.next;
+        note = tnote;
     }
+#ifdef hx
+    lastCheckedNote = HXGameInfo(Level.Game).FirstNote;
+#else
     lastCheckedNote = dxr.Player.FirstNote;
+#endif
     NotifyPlayerNotesUpdated();
 }
 
@@ -278,16 +296,16 @@ function AnyEntry()
 
 function RandoHacks()
 {
-    local HackableDevices h;
+    local #var prefix HackableDevices h;
 
     SetSeed( "RandoHacks" );
 
-    foreach AllActors(class'HackableDevices', h) {
+    foreach AllActors(class'#var prefix HackableDevices', h) {
         _RandoHackable(h);
     }
 }
 
-function _RandoHackable(HackableDevices h)
+function _RandoHackable(#var prefix HackableDevices h)
 {
     if( h.bHackable ) {
         h.hackStrength = FClamp(rngrange(h.hackStrength, min_hack_adjust, max_hack_adjust), 0, 1);
@@ -296,7 +314,7 @@ function _RandoHackable(HackableDevices h)
     }
 }
 
-static function RandoHackable(DXRando dxr, HackableDevices h)
+static function RandoHackable(DXRando dxr, #var prefix HackableDevices h)
 {
     local DXRPasswords m;
     m = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
@@ -307,14 +325,14 @@ static function RandoHackable(DXRando dxr, HackableDevices h)
 
 function RandoPasswords(int mode)
 {
-    local Computers c;
-    local Keypad k;
-    local ATM a;
+    local #var prefix Computers c;
+    local #var prefix Keypad k;
+    local #var prefix ATM a;
     local int i;
 
     if( mode == 0 ) return;
 
-    foreach AllActors(class'Computers', c)
+    foreach AllActors(class'#var prefix Computers', c)
     {
         for (i=0; i<ArrayCount(c.userList); i++)
         {
@@ -325,13 +343,22 @@ function RandoPasswords(int mode)
         }
     }
 
-    foreach AllActors(class'Keypad', k)
+    foreach AllActors(class'#var prefix Keypad', k)
     {
         ChangeKeypadPasscode(k);
     }
 
-    foreach AllActors(class'ATM', a)
+    foreach AllActors(class'#var prefix ATM', a)
     {
+#ifdef hx
+        for (i=0; i<ArrayCount(a.ATMUserList); i++)
+        {
+            if(a.ATMUserList[i].PIN == "")
+                continue;
+
+            ChangeATMPIN(a, i);
+        }
+#else
         for (i=0; i<ArrayCount(a.userList); i++)
         {
             if(a.userList[i].PIN == "")
@@ -339,6 +366,7 @@ function RandoPasswords(int mode)
 
             ChangeATMPIN(a, i);
         }
+#endif
     }
 
     FixCodes();
@@ -369,7 +397,7 @@ function FixCodes()
     }
 }
 
-function FixMaggieChowBday(Keypad k)
+function FixMaggieChowBday(#var prefix Keypad k)
 {
     local string oldpassword, newpassword;
     local int month, day, i, oldseed;
@@ -408,7 +436,7 @@ function FixMaggieChowBday(Keypad k)
 
 function RandoInfoDevs(int percent)
 {
-    local InformationDevices id;
+    local #var prefix InformationDevices id;
     local Inventory inv;
     local Actor temp[1024];
     local int i, num, slot;
@@ -418,7 +446,7 @@ function RandoInfoDevs(int percent)
     //l("RandoInfoDevs percent == "$percent);
     if(percent == 0) return;
 
-    foreach AllActors(class'InformationDevices', id)
+    foreach AllActors(class'#var prefix InformationDevices', id)
     {
         if( rng(100) > percent ) continue;
         
@@ -469,13 +497,13 @@ function RandoInfoDevs(int percent)
 
 function MakeAllHackable(int deviceshackable)
 {
-    local HackableDevices h;
+    local #var prefix HackableDevices h;
 
     if( deviceshackable <= 0 ) return;
 
     SetSeed( "MakeAllHackable" );
 
-    foreach AllActors(class'HackableDevices', h)
+    foreach AllActors(class'#var prefix HackableDevices', h)
     {
         if( h.bHackable == false && chance_single(deviceshackable) ) {
             l("found unhackable device: " $ ActorToString(h) $ ", tag: " $ h.Tag $ " in " $ dxr.localURL);
@@ -487,7 +515,7 @@ function MakeAllHackable(int deviceshackable)
     }
 }
 
-function ChangeComputerPassword(Computers c, int i)
+function ChangeComputerPassword(#var prefix Computers c, int i)
 {
     local string oldpassword;
     local string newpassword;
@@ -509,7 +537,7 @@ function ChangeComputerPassword(Computers c, int i)
     ReplacePassword(oldpassword, newpassword);
 }
 
-function ChangeKeypadPasscode(Keypad k)
+function ChangeKeypadPasscode(#var prefix Keypad k)
 {
     local string oldpassword;
     local string newpassword;
@@ -536,32 +564,48 @@ function ChangeKeypadPasscode(Keypad k)
     ReplacePassword(oldpassword, newpassword);
 }
 
-function ChangeATMPIN(ATM a, int i)
+function ChangeATMPIN(#var prefix ATM a, int i)
 {
     local string oldpassword;
     local string newpassword;
     local int j;
 
+#ifdef hx
+    oldpassword = a.ATMUserList[i].PIN;
+#else
     oldpassword = a.userList[i].PIN;
+#endif
 
     for (j=0; j<ArrayCount(oldpasswords); j++)
     {
         if( oldpassword == oldpasswords[j] ) {
+#ifdef hx
+            a.ATMUserList[i].PIN = newpasswords[j];
+#else
             a.userList[i].PIN = newpasswords[j];
+#endif
             return;
         }
     }
 
     if( Len(oldpassword) < 2 ) return;
     newpassword = GeneratePasscode(oldpassword);
+#ifdef hx
+    a.ATMUserList[i].PIN = newpassword;
+#else
     a.userList[i].PIN = newpassword;
+#endif
     ReplacePassword(oldpassword, newpassword);
 }
 
 function ReplacePassword(string oldpassword, string newpassword)
 { // do I even need passStart?
-    local DeusExGoal goal;
-    local DeusExNote note;
+#ifdef hx
+    local HXGoal goal, tgoal;
+#else
+    local DeusExGoal goal, tgoal;
+#endif
+    local DeusExNote note, tnote;
 
     oldpasswords[passEnd] = oldpassword;
     newpasswords[passEnd] = newpassword;
@@ -570,18 +614,28 @@ function ReplacePassword(string oldpassword, string newpassword)
     info("replaced password " $ oldpassword $ " with " $ newpassword $ ", passEnd is " $ passEnd $", passStart is " $ passStart);
 
     if( oldpassword == "6282" ) {
+#ifdef hx
+        goal = HXGameInfo(Level.Game).Steve.FirstGoal;
+#else
         goal = dxr.Player.FirstGoal;
+#endif
         while( goal != None ) {
+            tgoal = goal.next;
             UpdateGoal(goal, oldpassword, newpassword);
-            goal = goal.next;
+            goal = tgoal;
         }
     }
 
+#ifdef hx
+    note = HXGameInfo(Level.Game).FirstNote;
+#else
     note = dxr.Player.FirstNote;
+#endif
     while( note != None )
     {
+        tnote = note.next;
         UpdateNote(note, oldpassword, newpassword);
-        note = note.next;
+        note = tnote;
     }
 }
 
@@ -601,23 +655,23 @@ function NotifyPlayerNotesUpdated()
 function MarkPasswordKnown(string password)
 {
 #ifdef vanilla
-    local Keypad k;
-    local Computers c;
-    local ATM a;
+    local #var prefix Keypad k;
+    local #var prefix Computers c;
+    local #var prefix ATM a;
        
     //Check computer logins
-    foreach AllActors(class 'Computers',c)
+    foreach AllActors(class '#var prefix Computers',c)
     {
         c.SetAccountKnownByPassword(password);
     }
 
-    foreach AllActors(class 'ATM',a)
+    foreach AllActors(class '#var prefix ATM',a)
     {
         a.SetAccountKnownByPassword(password);
     } 
  
     //Check keypad logins
-    foreach AllActors(class 'Keypad',k)
+    foreach AllActors(class '#var prefix Keypad',k)
     {
         if (password == k.validCode) {
             k.bCodeKnown = True;
@@ -626,20 +680,37 @@ function MarkPasswordKnown(string password)
 #endif
 }
 
+#ifdef hx
+function bool UpdateGoal(HXGoal goal, string oldpassword, string newpassword)
+{
+    local HXPlayerPawn p;
+#else
 function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword)
 {
+#endif
     if( oldpassword == "" ) return false;
     if( goal.text == "") return false;
     if( goal.bCompleted ) return false;
     if( PassInStr( goal.text, oldpassword ) == -1 ) return false;
 
+#ifndef hx
     dxr.Player.ClientMessage("Goal updated");
     DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
+#endif
     
     info("found goal with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
     
     goal.text = ReplaceText( goal.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
     
+#ifdef hx
+    //HXGameInfo(Level.Game).DeleteGoal(goal);
+    //HXGameInfo(Level.Game).AddGoal(goal.GoalName, goal.bPrimaryGoal, goal.Text);
+    /*foreach AllActors(class'HXPlayerPawn', p) {
+        p.ClientMessage("Found password: "$newpassword);
+    }*/
+    HXGameInfo(Level.Game).AddNote(goal.text, false, true, '');
+#endif
+
     MarkPasswordKnown(newpassword);
     
     return true;
@@ -647,6 +718,10 @@ function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword
 
 function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword)
 {
+#ifdef hx
+    local HXPlayerPawn p;
+#endif
+
     if( note.bUserNote && dxr.player.CombatDifficulty > 0 ) return false;
     if( oldpassword == "" ) return false;
     if( note.text == "") return false;
@@ -667,6 +742,12 @@ function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword
     note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
 #ifdef vanilla
     note.SetNewPassword(newpassword);
+#elseif hx
+    /*foreach AllActors(class'HXPlayerPawn', p) {
+        p.ClientMessage("Found password: "$newpassword);
+    }*/
+    HXGameInfo(Level.Game).DeleteNote(note);
+    HXGameInfo(Level.Game).AddNote(note.text, note.bUserNote, true, '');
 #endif
     
     MarkPasswordKnown(newpassword);
@@ -809,19 +890,19 @@ static final function bool IsWordChar(coerce string Text, int index)
 
 function LogAll()
 {
-    local Computers c;
-    local Keypad k;
-    local ATM a;
+    local #var prefix Computers c;
+    local #var prefix Keypad k;
+    local #var prefix ATM a;
     local int i;
 
     l("passEnd is " $ passEnd $", passStart is " $ passStart);
 
-    foreach AllActors(class'Keypad', k)
+    foreach AllActors(class'#var prefix Keypad', k)
     {
         l("found "$k$" with code: " $ k.validCode );
     }
 
-    foreach AllActors(class'Computers', c)
+    foreach AllActors(class'#var prefix Computers', c)
     {
         for (i=0; i<ArrayCount(c.userList); i++)
         {
@@ -832,8 +913,17 @@ function LogAll()
         }
     }
 
-    foreach AllActors(class'ATM', a)
+    foreach AllActors(class'#var prefix ATM', a)
     {
+#ifdef hx
+        for( i=0; i<ArrayCount(a.ATMUserList); i++) {
+            if (a.ATMUserList[i].PIN == "")
+                continue;
+            
+            l("found "$a$" PIN: "$a.ATMUserList[i].PIN);
+        }
+    }
+#else
         for( i=0; i<ArrayCount(a.userList); i++) {
             if (a.userList[i].PIN == "")
                 continue;
@@ -841,6 +931,7 @@ function LogAll()
             l("found "$a$" PIN: "$a.userList[i].PIN);
         }
     }
+#endif
 }
 
 function ProcessText(DeusExTextParser parser, out int hasPass[64])
@@ -884,7 +975,7 @@ function ProcessStringHasPass(string text, out int hasPass[64])
     }
 }
 
-function bool CheckComputerPosition(InformationDevices id, Computers c, vector newpos, int hasPass[64])
+function bool CheckComputerPosition(#var prefix InformationDevices id, #var prefix Computers c, vector newpos, int hasPass[64])
 {
     local int a, i;
 
@@ -904,7 +995,7 @@ function bool CheckComputerPosition(InformationDevices id, Computers c, vector n
     return True;
 }
 
-function bool CheckKeypadPosition(InformationDevices id, Keypad k, vector newpos, int hasPass[64])
+function bool CheckKeypadPosition(#var prefix InformationDevices id, #var prefix Keypad k, vector newpos, int hasPass[64])
 {
     local int i;
 
@@ -919,10 +1010,10 @@ function bool CheckKeypadPosition(InformationDevices id, Keypad k, vector newpos
     return True;
 }
 
-function bool InfoPositionGood(InformationDevices id, vector newpos, int hasPass[64])
+function bool InfoPositionGood(#var prefix InformationDevices id, vector newpos, int hasPass[64])
 {
-    local Computers c;
-    local Keypad k;
+    local #var prefix Computers c;
+    local #var prefix Keypad k;
     local int a, i;
 
     i = GetSafeRule( datacubes_rules, id.name, newpos);
@@ -944,14 +1035,14 @@ function bool InfoPositionGood(InformationDevices id, vector newpos, int hasPass
         return True;
     }// else l("InfoPositionGood("$ActorToString(id)$", "$newpos$") found hasPass "$a);
 
-    foreach AllActors(class'Computers', c)
+    foreach AllActors(class'#var prefix Computers', c)
     {
         if( CheckComputerPosition(id, c, newpos, hasPass) == False ) {
             //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning False, found computer "$ActorToString(c));
             return False;
         }
     }
-    foreach AllActors(class'Keypad', k)
+    foreach AllActors(class'#var prefix Keypad', k)
     {
         if( CheckKeypadPosition(id, k, newpos, hasPass) == False ) {
             //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning False, found keypad "$ActorToString(k));

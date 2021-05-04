@@ -45,6 +45,14 @@ simulated function PostAnyEntry();
 
 simulated function ReEntry(bool IsTravel);
 
+simulated function bool CheckLogin(DeusExPlayer player)
+{
+    if( player == None ) return false;
+    if( player.SkillSystem == None ) return false;
+    if( player.SkillSystem.FirstSkill == None ) return false;
+    return true;
+}
+
 simulated function Login(DeusExPlayer player)
 {
     //l("Login("$player$")");
@@ -130,14 +138,14 @@ simulated function float rngexp(float min, float max, float curve)
 
 simulated function bool RandoLevelValues(Actor a, float min, float max, out string Desc)
 {
-    local Augmentation aug;
-    local Skill sk;
+    local #var prefix Augmentation aug;
+    local #var prefix Skill sk;
     local string s, word;
     local int i, len;
     local float prev_d, d, v, min_val;
 
-    aug = Augmentation(a);
-    sk = Skill(a);
+    aug = #var prefix Augmentation(a);
+    sk = #var prefix Skill(a);
 
     if( aug != None ) len = ArrayCount(aug.LevelValues);
     else if( sk != None ) len = ArrayCount(sk.LevelValues);
@@ -210,7 +218,7 @@ simulated function class<Actor> GetClassFromString(string classstring, class<Act
     local class<Actor> a;
     if( InStr(classstring, ".") == -1 ) {
 #ifdef hx
-        classstring = "HX." $ classstring;
+        classstring = "HX.HX" $ classstring;
 #else
         classstring = "DeusEx." $ classstring;
 #endif
@@ -227,7 +235,7 @@ simulated function class<Actor> GetClassFromString(string classstring, class<Act
     return a;
 }
 
-simulated function Class<Inventory> ModifyInventoryClass( out Class<Inventory> InventoryClass )
+final function Class<Inventory> ModifyInventoryClass( out Class<Inventory> InventoryClass )
 {
 #ifdef hx
     HXGameInfo(Level.Game).ModifyInventoryClass( InventoryClass );
@@ -235,7 +243,7 @@ simulated function Class<Inventory> ModifyInventoryClass( out Class<Inventory> I
     return InventoryClass;
 }
 
-simulated function Class<Actor> ModifyActorClass( out Class<Actor> ActorClass )
+final function Class<Actor> ModifyActorClass( out Class<Actor> ActorClass )
 {
 #ifdef hx
     HXGameInfo(Level.Game).ModifyActorClass( ActorClass );

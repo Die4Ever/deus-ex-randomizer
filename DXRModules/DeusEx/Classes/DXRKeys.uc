@@ -225,11 +225,11 @@ function AnyEntry()
 
 function RandomizeDoors()
 {
-    local DeusExMover d;
+    local #var Mover  d;
 
     SetSeed( "RandomizeDoors" );
 
-    foreach AllActors(class'DeusExMover', d) {
+    foreach AllActors(class'#var Mover ', d) {
         if( d.bPickable ) {
             d.lockStrength = FClamp(rngrange(d.lockStrength, min_lock_adjust, max_lock_adjust), 0, 1);
             d.lockStrength = int(d.lockStrength*100)/100.0;
@@ -242,7 +242,7 @@ function RandomizeDoors()
     }
 }
 
-function RandoKey(NanoKey k)
+function RandoKey(#var prefix NanoKey k)
 {
     local int oldseed;
     if( dxr.flags.keysrando == 4 || dxr.flags.keysrando == 2 ) {
@@ -255,7 +255,7 @@ function RandoKey(NanoKey k)
 function MoveNanoKeys4()
 {
     local DeusExCarcass carc;
-    local NanoKey k;
+    local #var prefix NanoKey k;
 
     SetSeed( "MoveNanoKeys4" );
 
@@ -265,14 +265,14 @@ function MoveNanoKeys4()
     }
 #endif
 
-    foreach AllActors(class'NanoKey', k )
+    foreach AllActors(class'#var prefix NanoKey', k )
     {
         if ( SkipActorBase(k) ) continue;
         _RandoKey(k);
     }
 }
 
-function _RandoKey(NanoKey k)
+function _RandoKey(#var prefix NanoKey k)
 {
     local Actor temp[1024];
     local Inventory a;
@@ -307,9 +307,9 @@ function _RandoKey(NanoKey k)
     }
 }
 
-function bool KeyPositionGood(NanoKey k, vector newpos)
+function bool KeyPositionGood(#var prefix NanoKey k, vector newpos)
 {
-    local DeusExMover d;
+    local #var Mover  d;
     local float dist;
     local int i;
 
@@ -319,7 +319,7 @@ function bool KeyPositionGood(NanoKey k, vector newpos)
     dist = VSize( k.Location - newpos );
     if( dist > 5000 ) return False;
 
-    foreach AllActors(class'DeusExMover', d)
+    foreach AllActors(class'#var Mover ', d)
     {
         if( d.KeyIDNeeded == 'None' ) continue;
         else if( d.KeyIDNeeded != k.KeyID )
@@ -369,10 +369,10 @@ function AdjustRestrictions(int doorsmode, int doorspickable, int doorsdestructi
 
 function ApplyDoorFixes()
 {
-    local DeusExMover d;
+    local #var Mover  d;
     local int i;
 
-    foreach AllActors(class'DeusExMover', d) {
+    foreach AllActors(class'#var Mover ', d) {
         for(i=0; i<ArrayCount(door_fixes); i++) {
             if( door_fixes[i].tag != d.Tag ) continue;
             if( dxr.localURL != door_fixes[i].map ) continue;
@@ -391,9 +391,9 @@ function ApplyDoorFixes()
 
 function AdjustUndefeatableDoors(int exclusivitymode, int doorspickable, int doorsdestructible)
 {
-    local DeusExMover d;
+    local #var Mover  d;
 
-    foreach AllActors(class'DeusExMover', d)
+    foreach AllActors(class'#var Mover ', d)
     {
         if( DoorIsPickable(d) || d.bBreakable ) continue;
         if( !d.bIsDoor && d.KeyIDNeeded == '' && !d.bHighlight && !d.bFrobbable ) continue;
@@ -403,9 +403,9 @@ function AdjustUndefeatableDoors(int exclusivitymode, int doorspickable, int doo
 
 function AdjustAllDoors(int exclusivitymode, int doorspickable, int doorsdestructible)
 {
-    local DeusExMover d;
+    local #var Mover  d;
 
-    foreach AllActors(class'DeusExMover', d)
+    foreach AllActors(class'#var Mover ', d)
     {
         if( !d.bIsDoor && d.KeyIDNeeded == '' && !d.bHighlight && !d.bFrobbable ) continue;
         if( d.bHighlight == false || d.bFrobbable == false ) {
@@ -420,9 +420,9 @@ function AdjustAllDoors(int exclusivitymode, int doorspickable, int doorsdestruc
 
 function AdjustKeyOnlyDoors(int exclusivitymode, int doorspickable, int doorsdestructible)
 {
-    local DeusExMover d;
+    local #var Mover  d;
 
-    foreach AllActors(class'DeusExMover', d)
+    foreach AllActors(class'#var Mover ', d)
     {
         if( d.bHighlight == false || d.bFrobbable == false ) continue;
         if( d.KeyIDNeeded == 'None' || DoorIsPickable(d) || d.bBreakable ) continue;
@@ -432,16 +432,16 @@ function AdjustKeyOnlyDoors(int exclusivitymode, int doorspickable, int doorsdes
 
 function AdjustHighlightableDoors(int exclusivitymode, int doorspickable, int doorsdestructible)
 {
-    local DeusExMover d;
+    local #var Mover  d;
 
-    foreach AllActors(class'DeusExMover', d)
+    foreach AllActors(class'#var Mover ', d)
     {
         if( d.bHighlight == false || d.bFrobbable == false ) continue;
         AdjustDoor(d, exclusivitymode, doorspickable, doorsdestructible);
     }
 }
 
-function AdjustDoor(DeusExMover d, int exclusivitymode, int doorspickable, int doorsdestructible)
+function AdjustDoor(#var Mover  d, int exclusivitymode, int doorspickable, int doorsdestructible)
 {
     local float r;
     switch(exclusivitymode) {
@@ -477,12 +477,12 @@ function AdjustDoor(DeusExMover d, int exclusivitymode, int doorspickable, int d
     }
 }
 
-static function bool DoorIsPickable(DeusExMover d)
+static function bool DoorIsPickable(#var Mover  d)
 {// maybe also needs to be bLocked?
     return d.bFrobbable && d.bHighlight && d.bPickable;
 }
 
-function MakePickable(DeusExMover d)
+function MakePickable(#var Mover  d)
 {
     if( d.bHighlight == false || d.bFrobbable == false ) {
         d.bPickable = false;
@@ -498,7 +498,7 @@ function MakePickable(DeusExMover d)
     }
 }
 
-static function StaticMakePickable(DeusExMover d)
+static function StaticMakePickable(#var Mover  d)
 {
     if( d.bHighlight == false || d.bFrobbable == false ) {
         d.bPickable = false;
@@ -513,7 +513,7 @@ static function StaticMakePickable(DeusExMover d)
     }
 }
 
-function MakeDestructible(DeusExMover d)
+function MakeDestructible(#var Mover  d)
 {
     if( d.bHighlight == false || d.bFrobbable == false ) {
         d.bPickable = false;
@@ -528,7 +528,7 @@ function MakeDestructible(DeusExMover d)
     }
 }
 
-static function StaticMakeDestructible(DeusExMover d)
+static function StaticMakeDestructible(#var Mover  d)
 {
     if( d.bHighlight == false || d.bFrobbable == false ) {
         d.bPickable = false;

@@ -30,13 +30,8 @@ function CheckConfig()
             skipactor_types[i] = "";
         }
         i=0;
-#ifdef hx
-        skipactor_types[i++] = "HXBarrelAmbrosia";
-        skipactor_types[i++] = "HXNanoKey";
-#else
         skipactor_types[i++] = "BarrelAmbrosia";
         skipactor_types[i++] = "NanoKey";
-#endif
     }
     Super.CheckConfig();
 

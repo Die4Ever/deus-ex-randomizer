@@ -111,7 +111,7 @@ function RandomizeItems(out ItemPurchase items[8])
 
 function CreateMerchant()
 {
-    local Businessman3 npc;
+    local #var prefix Businessman3 npc;
     local Conversation c;
     local ConItem conItem;
     local ConversationList list;
@@ -160,12 +160,12 @@ function CreateMerchant()
     }
     if(list == None) err(dxr.localURL $ " list == None");
 
-    foreach AllActors(class'Businessman3', npc, 'DXRNPCs1') {
+    foreach AllActors(class'#var prefix Businessman3', npc, 'DXRNPCs1') {
         npc.BindName = "DXRNPCs1";
         npc.ConBindEvents();
         return;
     }
-    npc = Spawn(class'Businessman3',, 'DXRNPCs1', GetRandomMerchantPosition() );
+    npc = Spawn(class'#var prefix Businessman3',, 'DXRNPCs1', GetRandomMerchantPosition() );
     if( npc == None ) {
         err("CreateMerchant failed to spawn merchant");
         return;
