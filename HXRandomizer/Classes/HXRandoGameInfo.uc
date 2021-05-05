@@ -1,4 +1,4 @@
-class HXRandoGameInfo extends HXGameInfo;
+class HXRandoGameInfo extends HXGameInfo config;
 
 var DXRando dxr;
 var travel DataStorage ds;
@@ -29,5 +29,5 @@ event PostLogin(playerpawn NewPlayer)
 
     foreach AllActors(class'DXRando', dxr) break;
     log("PostLogin("$NewPlayer$") server, dxr: "$dxr, self.name);
-    dxr.Login( #var PlayerPawn (NewPlayer) );
+    dxr.PlayerLogin( #var PlayerPawn (NewPlayer) );
 }

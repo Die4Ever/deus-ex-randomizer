@@ -37,7 +37,7 @@ replication
         codes_mode;
 }
 
-function PreTravel()
+simulated function PreTravel()
 {
     Super.PreTravel();
     l("PreTravel "$dxr.localURL);
@@ -57,7 +57,7 @@ function Init(DXRando tdxr)
     InitVersion();
 }
 
-function Timer()
+simulated function Timer()
 {
     Super.Timer();
 
@@ -161,11 +161,16 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-function LoadFlags()
+simulated function LoadFlags()
 {
     //do flags binding
     local DataStorage ds;
     local int stored_version;
+
+    if( Role != ROLE_Authority ) {
+        err("LoadFlags() we're not the authority here!");
+        return;
+    }
     info("LoadFlags()");
 
     f = dxr.flagbase;
@@ -277,7 +282,7 @@ function LoadFlags()
     if( ds != None ) ds.playthrough_id = playthrough_id;
 }
 
-function FlagInt(name flagname, out int val)
+simulated function FlagInt(name flagname, out int val)
 {
     if( f.CheckFlag(flagname, FLAG_Int) )
     {
@@ -285,8 +290,13 @@ function FlagInt(name flagname, out int val)
     }
 }
 
-function SaveFlags()
+simulated function SaveFlags()
 {
+    if( Role != ROLE_Authority ) {
+        err("SaveFlags() we're not the authority here!");
+        return;
+    }
+
     l("SaveFlags()");
     f = dxr.flagbase;
     if( f == None ) {
@@ -346,7 +356,7 @@ function SaveFlags()
     LogFlags("SaveFlags");
 }
 
-function LogFlags(string prefix)
+simulated function LogFlags(string prefix)
 {
     local float CombatDifficulty;
 #ifdef hx
@@ -358,7 +368,7 @@ function LogFlags(string prefix)
     info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
 }
 
-function AddDXRCredits(CreditsWindow cw) 
+simulated function AddDXRCredits(CreditsWindow cw) 
 {
         local float CombatDifficulty;
 #ifdef hx
@@ -374,7 +384,7 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
-function string StringifyFlags()
+simulated function string StringifyFlags()
 {
         local float CombatDifficulty;
 #ifdef hx
@@ -394,7 +404,7 @@ function string StringifyFlags()
         $ ", crowdcontrol: "$crowdcontrol$", banned_skills: "$banned_skills$", banned_skill_levels: "$banned_skill_levels$", enemies_nonhumans: "$enemies_nonhumans$", codes_mode: "$codes_mode;
 }
 
-function int FlagsHash()
+simulated function int FlagsHash()
 {
     local int hash;
     hash = dxr.Crc(StringifyFlags());
@@ -407,7 +417,7 @@ function InitVersion()
     flagsversion = VersionNumber();
 }
 
-static function int VersionToInt(int major, int minor, int patch)
+simulated static function int VersionToInt(int major, int minor, int patch)
 {
     local int ret;
     ret = major*10000+minor*100+patch;
@@ -415,7 +425,7 @@ static function int VersionToInt(int major, int minor, int patch)
     return ret;
 }
 
-static function string VersionToString(int major, int minor, int patch)
+simulated static function string VersionToString(int major, int minor, int patch)
 {
     if( patch == 0 )
         return "v" $ major $"."$ minor;
@@ -423,22 +433,22 @@ static function string VersionToString(int major, int minor, int patch)
         return "v" $ major $"."$ minor $"."$ patch;
 }
 
-static function int VersionNumber()
+simulated static function int VersionNumber()
 {
     return VersionToInt(1, 5, 7);
 }
 
-static function bool VersionOlderThan(int config_version, int major, int minor, int patch)
+simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch)
 {
     return config_version < VersionToInt(major, minor, patch);
 }
 
-static function string VersionString()
+simulated static function string VersionString()
 {
     return VersionToString(1, 5, 8) $ " Alpha";
 }
 
-function MaxRando()
+simulated function MaxRando()
 {
     //should have a chance to make some skills completely unattainable, like 999999 cost? would this also have to be an option in the GUI or can it be exclusive to MaxRando?
 }

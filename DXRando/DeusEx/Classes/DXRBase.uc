@@ -47,15 +47,17 @@ simulated function ReEntry(bool IsTravel);
 
 simulated function bool CheckLogin(#var PlayerPawn  player)
 {
+    if( dxr.flagbase == None ) return false;
+    if( dxr.flags.f == None ) return false;
     if( player == None ) return false;
     if( player.SkillSystem == None ) return false;
     if( player.SkillSystem.FirstSkill == None ) return false;
     return true;
 }
 
-simulated function PlayerFirstEntry(#var PlayerPawn  player)
+simulated function PlayerLogin(#var PlayerPawn  player)
 {
-    l("PlayerFirstEntry("$player$")");
+    l("PlayerLogin("$player$")");
 }
 
 simulated function PlayerAnyEntry(#var PlayerPawn  player)

@@ -4,6 +4,8 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 // check a 100 foot radius around me for combat
 if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
 
+what does this ResetKeyboard() function do?
+
 in order to decompile HX with UnrealEd, or compile HXRandomizer, you'll need to add the EditPackages lines to the DeusEx.ini file in the HX System folder
 EditPackages=Core
 EditPackages=Engine
@@ -31,6 +33,8 @@ EditPackages=HXRandomizer
 
 v1.5.8 Alpha:
 	need to handle PlayerFirstEntry vs PlayerAnyEntry
+	should do flagbase = class'DataStorage'.static.GetObj(self);// flags don't seem to be working for ints or names
+		make DataStorage match the interface of FlagBase
 	make door strength and min damage threshold proportional so HX players know how strong a door is?
 	need to do something about all the object names, maybe some of them can be switched to class+tag combos
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving

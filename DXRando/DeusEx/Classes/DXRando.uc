@@ -40,7 +40,7 @@ simulated event Timer()
     if( bTickEnabled == true ) return;
 
     if( bLoginReady ) {
-        Login(#var PlayerPawn (GetPlayerPawn()) );
+        PlayerLogin(#var PlayerPawn (GetPlayerPawn()) );
         SetTimer(0, false);
     }
 
@@ -73,21 +73,16 @@ function SetdxInfo(DeusExLevelInfo i)
 
 function DXRInit()
 {
-#ifdef hx
-    local HXSteve steve;
-#else
+#ifndef hx
     local #var PlayerPawn  p;
     l("DXRInit has localURL == " $ localURL);
     foreach AllActors(class'#var PlayerPawn ', p) {
         flagbase = p.FlagBase;
         break;
     }
-#endif
-#ifdef hx
-    foreach AllActors(class'HXSteve', steve) {
-        flagbase = steve.FlagBase;
-        break;
-    }
+#elseif hx
+    flagbase = HXGameInfo(Level.Game).Steve.FlagBase;
+    //flagbase = class'DataStorage'.static.GetObj(self);// flags don't seem to be working for ints or names
 #endif
     if( flagbase == None ) {
         warn("DXRInit() didn't find flagbase?");
@@ -334,7 +329,7 @@ function RandoEnter()
     }
 
     foreach AllActors(class'#var PlayerPawn ', pawn) {
-        Login(pawn);
+        PlayerLogin(pawn);
     }
 
 }
@@ -356,14 +351,24 @@ simulated function bool CheckLogin(#var PlayerPawn  p)
     return true;
 }
 
-simulated function Login(#var PlayerPawn  p)
+simulated function PlayerLogin(#var PlayerPawn  p)
 {
     local int i;
 
-    info("Login("$p$"), flagbase: "$flagbase);
+    info("PlayerLogin("$p$"), flagbase: "$flagbase);
     if( flagbase == None ) return;
 
-    info("Login("$p$") do it ");
+    info("PlayerLogin("$p$") do it, p.PlayerDataItem: "$p.FindInventoryType(class'PlayerDataItem'));
+
+    if( p.FindInventoryType(class'PlayerDataItem')==None && dxInfo.missionNumber > 0 && dxInfo.missionNumber < 99 )
+    {
+        p.ClientMessage("PlayerLogin "$p);
+        for(i=0; i<num_modules; i++) {
+            modules[i].PlayerLogin(p);
+        }
+        class'PlayerDataItem'.static.GiveItem(p);
+    }
+    p.ClientMessage("PlayerAnyEntry "$p);
     for(i=0; i<num_modules; i++) {
         modules[i].PlayerAnyEntry(p);
     }

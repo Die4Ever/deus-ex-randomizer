@@ -343,15 +343,15 @@ function FirstEntry()
     SpawnItems();
 }
 
-simulated function PlayerFirstEntry(#var PlayerPawn  p)
+simulated function PlayerLogin(#var PlayerPawn  p)
 {
-    Super.PlayerFirstEntry(p);
-    if( dxr.localURL == "01_NYC_UNATCOISLAND" && dxr.flags.newgameplus_loops == 0 ) {
+    Super.PlayerLogin(p);
+    //if( dxr.localURL == "01_NYC_UNATCOISLAND" && dxr.flags.newgameplus_loops == 0 ) {
         RandoStartingEquipment(p);
-    }
+    //}
 }
 
-function AddStartingEquipment(Pawn p)
+function AddStartingEquipment(DeusExPlayer p)
 {
     local class<Inventory> iclass;
     local class<Augmentation> aclass;
@@ -373,7 +373,7 @@ function AddStartingEquipment(Pawn p)
     for(i=0; i < ArrayCount(_item_sets[loadout].starting_augs); i++) {
         aclass = _item_sets[loadout].starting_augs[i];
         if( aclass == None ) continue;
-        class'DXRAugmentations'.static.AddAug( player(), aclass, dxr.flags.speedlevel );
+        class'DXRAugmentations'.static.AddAug( p, aclass, dxr.flags.speedlevel );
     }
 }
 
