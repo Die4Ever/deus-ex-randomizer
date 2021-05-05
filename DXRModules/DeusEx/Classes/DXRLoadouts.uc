@@ -318,7 +318,7 @@ function AdjustWeapon(DeusExWeapon w)
 
 function NinjaAdjustWeapon(DeusExWeapon w)
 {
-#ifdef vanilla
+#ifdef injections
     class'Shuriken'.default.blood_mult = 2;
     switch(w.Class) {
         case class'WeaponSword':
@@ -343,9 +343,9 @@ function FirstEntry()
     SpawnItems();
 }
 
-simulated function Login(#var PlayerPawn  p)
+simulated function PlayerFirstEntry(#var PlayerPawn  p)
 {
-    Super.Login(p);
+    Super.PlayerFirstEntry(p);
     if( dxr.localURL == "01_NYC_UNATCOISLAND" && dxr.flags.newgameplus_loops == 0 ) {
         RandoStartingEquipment(p);
     }
@@ -398,9 +398,12 @@ function RandoStartingEquipment(DeusExPlayer player)
     {
         anItem = item;
         item = item.Inventory;
-        if( NanoKeyRing(anItem) != None ) continue;
-        if( dxre == None && DeusExWeapon(anItem) != None ) continue;
+        l("RandoStartingEquipment("$player$") checking item "$anItem$", bDisplayableInv: "$anItem.bDisplayableInv);
+        if( ! anItem.bDisplayableInv ) continue;
+        if( #var prefix NanoKeyRing(anItem) != None ) continue;
+        if( dxre == None && Weapon(anItem) != None ) continue;
         if( dxre == None && Ammo(anItem) != None ) continue;
+        l("RandoStartingEquipment("$player$") removing item: "$anItem);
         player.DeleteInventory(anItem);
         anItem.Destroy();
     }

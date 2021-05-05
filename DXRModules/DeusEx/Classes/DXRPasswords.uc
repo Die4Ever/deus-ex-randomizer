@@ -466,7 +466,7 @@ function RandoInfoDevs(int percent)
             CriticalDelete(parser);
         }
 
-#ifdef vanilla
+#ifdef injections
         if( id.plaintext != "" ) {
             ProcessStringHasPass(id.plaintext, hasPass);
         }
@@ -649,7 +649,7 @@ function NotifyPlayerNotesUpdated(#var PlayerPawn  p)
 
 function MarkPasswordKnown(string password)
 {
-#ifdef vanilla
+#ifdef injections
     local #var prefix Keypad k;
     local #var prefix Computers c;
     local #var prefix ATM a;
@@ -748,7 +748,7 @@ function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword
     if( oldpassword == "" ) return false;
     if( note.text == "") return false;
 
-#ifdef vanilla
+#ifdef injections
     if( note.HasPassword(newpassword))
     {
         MarkPasswordKnown(newpassword);
@@ -762,7 +762,7 @@ function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword
     info("found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
     note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
-#ifdef vanilla
+#ifdef injections
     note.SetNewPassword(newpassword);
 #elseif hx
     /*foreach AllActors(class'HXPlayerPawn', p) {

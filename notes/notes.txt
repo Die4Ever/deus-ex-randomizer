@@ -30,10 +30,9 @@ EditPackages=HX
 EditPackages=HXRandomizer
 
 v1.5.8 Alpha:
-	maybe changeup the preprocessor definitions, like instead of using vanilla so much I should probably have extra definitions
-		-like fixes, balance, mapfixes...
-	compile with HX
+	need to handle PlayerFirstEntry vs PlayerAnyEntry
 	make door strength and min damage threshold proportional so HX players know how strong a door is?
+	need to do something about all the object names, maybe some of them can be switched to class+tag combos
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	NG+ remove 2 random skills (so the player has to make choices), half your skill points, a random aug, and a random weapon?
 	cleanup goals when finishing missions, especially hong kong

@@ -95,7 +95,7 @@ function DXRando InitDxr()
 #else
     dxr.flagbase = #var PlayerPawn (player).FlagBase;
 #endif
-    if( dxr.flagbase == None ) log("ERROR: "$dxr.flagbase$" not found", name);
+    if( dxr.flagbase == None ) log("ERROR: flagbase "$dxr.flagbase$" not found", name);
 
     InitFlags();
     if( flags != None ) {

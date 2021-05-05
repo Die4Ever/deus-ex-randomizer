@@ -45,7 +45,9 @@ function PreTravel()
         info("PreTravel "$dxr.localURL$" SaveFlags");
         SaveFlags();
     }
+    // the game silently crashes if you don't wipe out all references to FlagBase during PreTravel?
     f = None;
+    dxr.flagbase = None;
 }
 
 function Init(DXRando tdxr)
@@ -166,7 +168,7 @@ function LoadFlags()
     local int stored_version;
     info("LoadFlags()");
 
-    f = dxr.FlagBase;
+    f = dxr.flagbase;
     InitDefaults();
 
     if( f == None) {
@@ -286,7 +288,7 @@ function FlagInt(name flagname, out int val)
 function SaveFlags()
 {
     l("SaveFlags()");
-    f = dxr.FlagBase;
+    f = dxr.flagbase;
     if( f == None ) {
         err("SaveFlags() f == None");
         return;

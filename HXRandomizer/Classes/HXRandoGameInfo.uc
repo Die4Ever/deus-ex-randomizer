@@ -1,7 +1,7 @@
 class HXRandoGameInfo extends HXGameInfo;
 
 var DXRando dxr;
-var DataStorage ds;
+var travel DataStorage ds;
 
 replication
 {

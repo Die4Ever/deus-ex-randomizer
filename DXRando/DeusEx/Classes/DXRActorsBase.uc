@@ -32,6 +32,10 @@ function CheckConfig()
         i=0;
         skipactor_types[i++] = "BarrelAmbrosia";
         skipactor_types[i++] = "NanoKey";
+#ifdef hx
+        // since it's not put into a player's inventory, it's not automatically skipped
+        skipactor_types[i++] = "HXRandomizer.DataStorage";
+#endif
     }
     Super.CheckConfig();
 

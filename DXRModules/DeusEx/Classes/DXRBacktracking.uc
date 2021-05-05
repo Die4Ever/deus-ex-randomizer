@@ -78,9 +78,9 @@ function PreFirstEntry()
     }
 }
 
-simulated function Login(#var PlayerPawn  p)
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
 {
-    Super.Login(p);
+    Super.PlayerAnyEntry(p);
     FixInterpolating(p);
     if( ! class'DynamicTeleporter'.static.CheckTeleport(p) ) {
         err("DynamicTeleporter failed");
@@ -211,7 +211,7 @@ function ParisMetroAnyEntry()
     local FlagBase flags;
     local MapExit exit;
 
-    flags = dxr.flagBase;
+    flags = dxr.flagbase;
 
     foreach AllActors(class'InterpolateTrigger', t, 'ChopperExit') {
         t.bTriggerOnceOnly = false;
@@ -247,7 +247,7 @@ function ParisChateauAnyEntry()
     local InterpolateTrigger t;
     local FlagBase flags;
 
-    flags = dxr.flagBase;
+    flags = dxr.flagbase;
     flags.SetBool('NicoletteReadyToLeave', true,, 12);
     flags.SetBool('NicoletteOutside_Played', true,, 12);
     flags.SetBool('NicoletteLeftClub', true,, 12);
@@ -277,7 +277,7 @@ function VandCmdAnyEntry()
     ConversationFrobOnly(GetConversation('M12JockFinal'));
     ConversationFrobOnly(GetConversation('M12JockFinal2'));
 
-    flags = dxr.flagBase;
+    flags = dxr.flagbase;
     flags.SetBool('TongTrigger_Played', false,, 1);
     if ( flags.GetBool('GaryHostageBriefing_Played') )
     {
@@ -292,7 +292,7 @@ function VandGasAnyEntry()
     local InterpolateTrigger t;
     local DeusExMover M;
     local FlagBase flags;
-    flags = dxr.flagBase;
+    flags = dxr.flagbase;
 
     ConversationFrobOnly(GetConversation('M12JockFinal'));
     ConversationFrobOnly(GetConversation('M12JockFinal2'));
@@ -347,7 +347,7 @@ function VandSubAnyEntry()
     local InterpolationPoint p;
     local FlagTrigger ft;
     local FlagBase flags;
-    flags = dxr.flagBase;
+    flags = dxr.flagbase;
 
     // backtracking to gas station
     flags.SetBool('TiffanyRescued', true,, 15);// despite the name, this really just means the rescue has been attempted
@@ -439,7 +439,7 @@ function VandOceanLabAnyEntry()
 function VandSiloAnyEntry()
 {
     local FlagBase flags;
-    flags = dxr.flagBase;
+    flags = dxr.flagbase;
 
     // back to sub base
     flags.SetBool('DL_downloaded_Played', true,, 15);

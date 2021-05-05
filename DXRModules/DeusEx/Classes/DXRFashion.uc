@@ -7,10 +7,10 @@ var int numCoatInfluencers;
 var class<ScriptedPawn> nonCoatInfluencers[100];
 var int numNonCoatInfluencers;
 
-simulated function Login(#var PlayerPawn  p)
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
 {
     local int lastUpdate;
-    Super.Login(p);
+    Super.PlayerAnyEntry(p);
 
     InitInfluencers();
 

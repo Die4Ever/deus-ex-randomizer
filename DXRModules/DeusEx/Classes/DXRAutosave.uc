@@ -42,7 +42,7 @@ function Timer()
 static function bool AllowManualSaves(DeusExPlayer player)
 {
     local DXRFlags f;
-    f = DXRFlags(Human(player).DXRFindModule(class'DXRFlags'));
+    f = Human(player).GetDXR().flags;
     if( f == None ) return true;
     if( f.autosave == 3 ) return false;
     return true;

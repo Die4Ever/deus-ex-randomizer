@@ -29,10 +29,10 @@ function AnyEntry()
     }
 }
 
-simulated function Login(#var PlayerPawn  p)
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
 {
     local Augmentation a;
-    Super.Login(p);
+    Super.PlayerAnyEntry(p);
     foreach AllActors(class'Augmentation', a) {
         RandoAug(a);
     }

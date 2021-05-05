@@ -198,9 +198,9 @@ function AnyEntry()
     }
 }
 
-simulated function Login(#var PlayerPawn  p)
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
 {
-    Super.Login(p);
+    Super.PlayerAnyEntry(p);
     FixLogTimeout(p);
     FixAmmoShurikenName();
 }
@@ -229,11 +229,11 @@ function Timer()
             NYC_04_CheckPaulRaid();
             break;
         case "08_NYC_STREET":
-            if ( dxr.flagBase.GetBool('StantonDowd_Played') )
+            if ( dxr.flagbase.GetBool('StantonDowd_Played') )
             {
                 foreach AllActors(class'BlackHelicopter', chopper, 'CopterExit')
                     chopper.EnterWorld();
-                dxr.flagBase.SetBool('MS_Helicopter_Unhidden', True,, 9);
+                dxr.flagbase.SetBool('MS_Helicopter_Unhidden', True,, 9);
             }
             break;
     }
@@ -493,11 +493,11 @@ function NYC_04_CheckPaulUndead()
     local PaulDenton paul;
     local int count;
 
-    if( ! dxr.flagBase.GetBool('PaulDenton_Dead')) return;
+    if( ! dxr.flagbase.GetBool('PaulDenton_Dead')) return;
 
     foreach AllActors(class'PaulDenton', paul) {
         if( paul.Health > 0 ) {
-            dxr.flagBase.SetBool('PaulDenton_Dead', false,, -999);
+            dxr.flagbase.SetBool('PaulDenton_Dead', false,, -999);
             return;
         }
     }
@@ -509,11 +509,11 @@ function NYC_04_CheckPaulRaid()
     local ScriptedPawn p;
     local int count, dead, i, pawns;
 
-    if( ! dxr.flagBase.GetBool('M04RaidTeleportDone') ) return;
+    if( ! dxr.flagbase.GetBool('M04RaidTeleportDone') ) return;
 
     foreach AllActors(class'PaulDenton', paul) {
         // fix a softlock if you jump while approaching Paul
-        if( ! dxr.flagBase.GetBool('TalkedToPaulAfterMessage_Played') ) {
+        if( ! dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played') ) {
             player().StartConversationByName('TalkedToPaulAfterMessage', paul, False, False);
         }
 
@@ -542,9 +542,9 @@ function NYC_04_CheckPaulRaid()
         pawns++;
     }
 
-    if( dead > 0 || dxr.flagBase.GetBool('PaulDenton_Dead') ) {
+    if( dead > 0 || dxr.flagbase.GetBool('PaulDenton_Dead') ) {
         player().ClientMessage("RIP Paul :(",, true);
-        dxr.flagBase.SetBool('PaulDenton_Dead', true,, 999);
+        dxr.flagbase.SetBool('PaulDenton_Dead', true,, 999);
         SetTimer(0, False);
     }
     else if( dead == 0 && (count == 0 || pawns == 0) ) {

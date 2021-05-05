@@ -1,6 +1,5 @@
 class DXRando extends Info config(DXRando) transient;
 
-//var transient DeusExPlayer Player;
 var transient FlagBase flagbase;
 var transient DXRFlags flags;
 var transient DXRTelemetry telemetry;
@@ -22,21 +21,10 @@ var transient bool runPostFirstEntry;
 var transient bool bTickEnabled;// bTickEnabled is just for DXRandoTests to inspect
 var transient bool bLoginReady;
 
-
-/*reliable if( Role==ROLE_Authority )
-        SetdxInfo, Init, DXRTick, RandoEnter, Login;*/
-    /*reliable if( Role==ROLE_Authority )
-        Login;*/
-    
-    /*reliable if( Role<ROLE_Authority )
-        l, info, warning, err;*/
 replication
 {
     reliable if( Role==ROLE_Authority )
-        modules, num_modules, runPostFirstEntry, bTickEnabled, localURL, dxInfo, telemetry, flags, flagbase, /*Player,*/ CrcTable, seed;
-    
-    /*reliable if( Role==ROLE_Authority )
-        Login;*/
+        modules, num_modules, runPostFirstEntry, bTickEnabled, localURL, dxInfo, telemetry, flags, flagbase, CrcTable, seed;
 }
 
 simulated event PostNetBeginPlay()
@@ -83,13 +71,13 @@ function SetdxInfo(DeusExLevelInfo i)
     bTickEnabled = true;
 }
 
-function Init()
+function DXRInit()
 {
 #ifdef hx
     local HXSteve steve;
 #else
     local #var PlayerPawn  p;
-    l("Init has localURL == " $ localURL);
+    l("DXRInit has localURL == " $ localURL);
     foreach AllActors(class'#var PlayerPawn ', p) {
         flagbase = p.FlagBase;
         break;
@@ -102,11 +90,11 @@ function Init()
     }
 #endif
     if( flagbase == None ) {
-        warn("Init() didn't find flagbase?");
+        warn("DXRInit() didn't find flagbase?");
         return;
     }
     l("found flagbase "$flagbase);
-    
+
     flags.LoadFlags();
     LoadModules();
     RandoEnter();
@@ -264,10 +252,12 @@ function DXRTick(float deltaTime)
     if( dxInfo == None )
     {
         //waiting...
+        l("DXRTick dxInfo == None");
+        return;
     }
-    if( flagbase == None )
+    else if( flagbase == None )
     {
-        Init();
+        DXRInit();
     }
     else if(runPostFirstEntry)
     {
@@ -287,22 +277,19 @@ function DXRTick(float deltaTime)
         
         Disable('Tick');
         bTickEnabled = false;
-
-        foreach AllActors(class'#var PlayerPawn ', pawn) {
-            Login(pawn);
-        }
     }
 }
 
 function RandoEnter()
 {
+    local #var PlayerPawn  pawn;
     local int i;
     local bool firstTime;
     local name flagName;
     local bool IsTravel;
 
-    if( flags.f == None ) {
-        err("RandoEnter() flags.f == None");
+    if( flagbase == None ) {
+        err("RandoEnter() flagbase == None");
         return;
     }
 
@@ -346,6 +333,10 @@ function RandoEnter()
         modules[i].AnyEntry();
     }
 
+    foreach AllActors(class'#var PlayerPawn ', pawn) {
+        Login(pawn);
+    }
+
 }
 
 simulated function bool CheckLogin(#var PlayerPawn  p)
@@ -369,12 +360,12 @@ simulated function Login(#var PlayerPawn  p)
 {
     local int i;
 
-    info("Login("$p$"), bTickEnabled: "$bTickEnabled);
-    if( bTickEnabled == true ) return;
+    info("Login("$p$"), flagbase: "$flagbase);
+    if( flagbase == None ) return;
 
     info("Login("$p$") do it ");
     for(i=0; i<num_modules; i++) {
-        modules[i].Login(p);
+        modules[i].PlayerAnyEntry(p);
     }
 }
 

@@ -53,9 +53,14 @@ simulated function bool CheckLogin(#var PlayerPawn  player)
     return true;
 }
 
-simulated function Login(#var PlayerPawn  player)
+simulated function PlayerFirstEntry(#var PlayerPawn  player)
 {
-    //l("Login("$player$")");
+    l("PlayerFirstEntry("$player$")");
+}
+
+simulated function PlayerAnyEntry(#var PlayerPawn  player)
+{
+    l("PlayerAnyEntry("$player$")");
 }
 
 simulated event PreTravel()
