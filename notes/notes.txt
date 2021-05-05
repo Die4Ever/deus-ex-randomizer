@@ -91,12 +91,12 @@ native static final function ResetConfig();
 	local int i, k, r;
 
 	// remove ammo from the player when captured
-	for( item = dxr.Player.Inventory; item != None; item = nextItem) {
+	for( item = player().Inventory; item != None; item = nextItem) {
 		nextItem = item.Inventory;
 		a = Ammo(item);
 		if( a != None ) {
 			a.AmmoAmount = 0;
-			dxr.Player.UpdateAmmoBeltText(a);
+			player().UpdateAmmoBeltText(a);
 		}
 	}
 

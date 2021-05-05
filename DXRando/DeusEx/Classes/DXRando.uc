@@ -1,6 +1,6 @@
 class DXRando extends Info config(DXRando) transient;
 
-var transient DeusExPlayer Player;
+//var transient DeusExPlayer Player;
 var transient FlagBase flagbase;
 var transient DXRFlags flags;
 var transient DXRTelemetry telemetry;
@@ -33,7 +33,7 @@ var transient bool bLoginReady;
 replication
 {
     reliable if( Role==ROLE_Authority )
-        modules, num_modules, runPostFirstEntry, bTickEnabled, localURL, dxInfo, telemetry, flags, flagbase, Player, CrcTable, seed;
+        modules, num_modules, runPostFirstEntry, bTickEnabled, localURL, dxInfo, telemetry, flags, flagbase, /*Player,*/ CrcTable, seed;
     
     /*reliable if( Role==ROLE_Authority )
         Login;*/
@@ -52,11 +52,11 @@ simulated event Timer()
     if( bTickEnabled == true ) return;
 
     if( bLoginReady ) {
-        Login(GetPlayerPawn());
+        Login(#var PlayerPawn (GetPlayerPawn()) );
         SetTimer(0, false);
     }
 
-    if( ! CheckLogin(GetPlayerPawn()) )
+    if( ! CheckLogin(#var PlayerPawn (GetPlayerPawn())) )
         return;
     
     bLoginReady = true;
@@ -87,23 +87,25 @@ function Init()
 {
 #ifdef hx
     local HXSteve steve;
-#endif
+#else
+    local #var PlayerPawn  p;
     l("Init has localURL == " $ localURL);
-    foreach AllActors(class'DeusExPlayer', Player) {
-        flagbase = Player.FlagBase;
+    foreach AllActors(class'#var PlayerPawn ', p) {
+        flagbase = p.FlagBase;
         break;
     }
+#endif
 #ifdef hx
     foreach AllActors(class'HXSteve', steve) {
         flagbase = steve.FlagBase;
         break;
     }
 #endif
-    if( Player == None ) {
-        warn("Init() didn't find player?");
+    if( flagbase == None ) {
+        warn("Init() didn't find flagbase?");
         return;
     }
-    l("found Player "$Player);
+    l("found flagbase "$flagbase);
     
     flags.LoadFlags();
     LoadModules();
@@ -114,7 +116,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,5,8) ) {
+    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,5,7) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -155,8 +157,8 @@ function CheckConfig()
         modules_to_load[i++] = "DXRCrowdControl";
         modules_to_load[i++] = "DXRMachines";
         modules_to_load[i++] = "DXRTelemetry";
-        modules_to_load[i++] = "DXRStats";
 #ifdef singleplayer
+        modules_to_load[i++] = "DXRStats";
         modules_to_load[i++] = "DXRNPCs";
         modules_to_load[i++] = "DXRFashion";
         //modules_to_load[i++] = "DXRTestAllMaps";
@@ -256,14 +258,14 @@ simulated event Tick(float deltaTime)
 
 function DXRTick(float deltaTime)
 {
-    local PlayerPawn pawn;
+    local #var PlayerPawn  pawn;
     local int i;
     SetTimer(0, false);
     if( dxInfo == None )
     {
         //waiting...
     }
-    if( Player == None )
+    if( flagbase == None )
     {
         Init();
     }
@@ -286,7 +288,7 @@ function DXRTick(float deltaTime)
         Disable('Tick');
         bTickEnabled = false;
 
-        foreach AllActors(class'PlayerPawn', pawn) {
+        foreach AllActors(class'#var PlayerPawn ', pawn) {
             Login(pawn);
         }
     }
@@ -304,13 +306,13 @@ function RandoEnter()
         return;
     }
 
-    IsTravel = flags.f.GetBool('PlayerTraveling');
+    IsTravel = flagbase.GetBool('PlayerTraveling');
 
-    flagName = Player.rootWindow.StringToName("M"$localURL$"_Randomized");
-    if (!flags.f.GetBool(flagName))
+    flagName = flagbase.StringToName("M"$localURL$"_Randomized");
+    if (!flagbase.GetBool(flagName))
     {
         firstTime = True;
-        flags.f.SetBool(flagName, True,, 999);
+        flagbase.SetBool(flagName, True,, 999);
     }
 
     info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL);
@@ -346,17 +348,11 @@ function RandoEnter()
 
 }
 
-simulated function bool CheckLogin(PlayerPawn pawn)
+simulated function bool CheckLogin(#var PlayerPawn  p)
 {
-    local DeusExPlayer p;
     local int i;
 
     if( bTickEnabled == true ) return false;
-
-    p = DeusExPlayer(pawn);
-    if( p == None ) {
-        return false;
-    }
 
     for(i=0; i<num_modules; i++) {
         if( modules[i] == None )
@@ -369,21 +365,14 @@ simulated function bool CheckLogin(PlayerPawn pawn)
     return true;
 }
 
-simulated function Login(PlayerPawn pawn)
+simulated function Login(#var PlayerPawn  p)
 {
-    local DeusExPlayer p;
     local int i;
 
-    info("Login("$pawn$"), bTickEnabled: "$bTickEnabled);
+    info("Login("$p$"), bTickEnabled: "$bTickEnabled);
     if( bTickEnabled == true ) return;
 
-    p = DeusExPlayer(pawn);
-    if( p == None ) {
-        err("Login("$pawn$") not DeusExPlayer?");
-        return;
-    }
-
-    info("Login("$pawn$") do it "$p);
+    info("Login("$p$") do it ");
     for(i=0; i<num_modules; i++) {
         modules[i].Login(p);
     }
@@ -478,8 +467,8 @@ simulated function warning(string message)
 simulated function err(string message)
 {
     log("ERROR: " $ message, class.name);
-    if( Player != None )
-        Player.ClientMessage( Class @ message, 'ERROR' );
+    if( flags.player() != None )
+        flags.player().ClientMessage( Class @ message, 'ERROR' );
 
     class'DXRTelemetry'.static.SendLog(Self, Self, "ERROR", message);
 }
@@ -492,7 +481,7 @@ function RunTests()
         modules[i].StartRunTests();
         if( modules[i].fails > 0 ) {
             failures++;
-            player.ShowHud(true);
+            flags.player().ShowHud(true);
             err( "ERROR: " $ modules[i] @ modules[i].fails $ " tests failed!" );
         }
         else
@@ -502,7 +491,7 @@ function RunTests()
     if( failures == 0 ) {
         l( "all tests passed!" );
     } else {
-        player.ShowHud(true);
+        flags.player().ShowHud(true);
         err( "ERROR: " $ failures $ " modules failed tests!" );
     }
 }
@@ -515,7 +504,7 @@ function ExtendedTests()
         modules[i].StartExtendedTests();
         if( modules[i].fails > 0 ) {
             failures++;
-            player.ShowHud(true);
+            flags.player().ShowHud(true);
             err( "ERROR: " $ modules[i] @ modules[i].fails $ " tests failed!" );
         }
         else
@@ -525,7 +514,7 @@ function ExtendedTests()
     if( failures == 0 ) {
         l( "all extended tests passed!" );
     } else {
-        player.ShowHud(true);
+        flags.player().ShowHud(true);
         err( "ERROR: " $ failures $ " modules failed tests!" );
     }
 }

@@ -263,10 +263,15 @@ function LoadFlags()
     }
 
     LogFlags("LoadFlags");
-    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
+    if( player() != None )
+        player().ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ player().CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
     SetTimer(1.0, True);
 
-    ds = class'DataStorage'.static.GetObj(dxr.player);
+#ifdef hx
+    ds = class'DataStorage'.static.GetObj(self);
+#else
+    ds = class'DataStorage'.static.GetObj(player());
+#endif
     if( ds != None ) ds.playthrough_id = playthrough_id;
 }
 
@@ -341,21 +346,42 @@ function SaveFlags()
 
 function LogFlags(string prefix)
 {
-    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
+    local float CombatDifficulty;
+#ifdef hx
+    CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
+#else
+    if( player() != None )
+        CombatDifficulty = player().CombatDifficulty;
+#endif
+    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
 }
 
 function AddDXRCredits(CreditsWindow cw) 
 {
+        local float CombatDifficulty;
+#ifdef hx
+    CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
+#else
+    if( player() != None )
+        CombatDifficulty = player().CombatDifficulty;
+#endif
     cw.PrintHeader("DXRFlags");
     
-    cw.PrintText(VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id);
+    cw.PrintText(VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id);
     cw.PrintText(StringifyFlags());
     cw.PrintLn();
 }
 
 function string StringifyFlags()
 {
-    return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", loadout: "$loadout
+        local float CombatDifficulty;
+#ifdef hx
+    CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
+#else
+    if( player() != None )
+        CombatDifficulty = player().CombatDifficulty;
+#endif
+    return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ CombatDifficulty $ ", loadout: "$loadout
         $ ", brightness: "$brightness $ ", newgameplus_loops: "$newgameplus_loops $ ", ammo: " $ ammo $ ", merchants: "$ merchants
         $ ", minskill: "$minskill$", maxskill: "$maxskill$", skills_disable_downgrades: " $ skills_disable_downgrades $ ", skills_reroll_missions: " $ skills_reroll_missions $ ", skills_independent_levels: " $ skills_independent_levels
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
@@ -417,18 +443,18 @@ function MaxRando()
 
 function NewGamePlus()
 {
-    local DeusExPlayer p;
+    local #var PlayerPawn  p;
     local DataStorage ds;
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
         LoadFlags();
     }
-    p = dxr.player;
+    p = player();
 
     info("NewGamePlus()");
     seed++;
     playthrough_id = class'DataStorage'.static._SystemTime(Level);
-    ds = class'DataStorage'.static.GetObj(dxr.player);
+    ds = class'DataStorage'.static.GetObj(p);
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
     p.CombatDifficulty *= 1.3;
@@ -473,7 +499,6 @@ function NewGamePlus()
 function RunTests()
 {
     local int i, t;
-    local DeusExPlayer p;
     Super.RunTests();
 
     test( dxr != None, "found dxr "$dxr );
@@ -504,10 +529,6 @@ function RunTests()
     teststring( FloatToString(0.5555, 1), "0.6", "FloatToString 1");
     teststring( FloatToString(0.5454999, 4), "0.5455", "FloatToString 2");
     teststring( FloatToString(0.5455, 2), "0.55", "FloatToString 3");
-
-    i=0;
-    foreach AllActors(class'DeusExPlayer', p) i++;
-    testint(i, 1, "Found 1 DeusExPlayer");
 }
 
 function ExtendedTests()

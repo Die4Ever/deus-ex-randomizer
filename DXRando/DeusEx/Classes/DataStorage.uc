@@ -15,6 +15,12 @@ var travel int EntranceRandoMissionNumber;
 var travel int numConns;
 var travel string conns[120];
 
+replication
+{
+    reliable if( Role==ROLE_Authority )
+        config_data, config_dirty, playthrough_id, EntranceRandoMissionNumber, numConns, conns;
+}
+
 function PreTravel()
 {
     Flush();
@@ -100,15 +106,30 @@ final function int SystemTime()
     return _SystemTime(Level);
 }
 
-function static DataStorage GetObj(DeusExPlayer p)
+#ifdef hx
+simulated function static DataStorage GetObj(Actor p)
+#else
+simulated function static DataStorage GetObj(DeusExPlayer p)
+#endif
 {
     local DataStorage d;
     local DXRFlags f;
+
+    if( p == None ) return None;
+    
+#ifdef hx
+    d = HXRandoGameInfo(p.Level.Game).ds;
+#else
     d = DataStorage(p.FindInventoryType(class'DataStorage'));
+#endif
     if( d == None ) {
         d = p.Spawn(class'DataStorage');
+#ifdef hx
+        HXRandoGameInfo(p.Level.Game).ds = d;
+#else
         d.GiveTo(p);
         d.SetBase(p);
+#endif
     }
     if( d.playthrough_id == 0 ) {
         foreach d.AllActors(class'DXRFlags', f) {

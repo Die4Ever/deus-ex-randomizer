@@ -183,6 +183,22 @@ function CheckConfig()
 function Timer()
 {
 #ifdef hx
+    UpdateGoalsAndNotes( HXGameInfo(Level.Game).Steve.FirstGoal, HXGameInfo(Level.Game).FirstNote );
+#else
+    local #var PlayerPawn  p;
+    foreach AllActors(class'#var PlayerPawn ', p) {
+        UpdateGoalsAndNotes( p.FirstGoal, p.FirstNote );
+    }
+#endif
+}
+
+#ifdef hx
+simulated function UpdateGoalsAndNotes(HXGoal first_goal, DeusExNote first_note)
+#else
+simulated function UpdateGoalsAndNotes(DeusExGoal first_goal, DeusExNote first_note)
+#endif
+{
+#ifdef hx
     local HXGoal goal, tgoal;
 #else
     local DeusExGoal goal, tgoal;
@@ -190,14 +206,7 @@ function Timer()
     local DeusExNote note, tnote;
     local int i;
 
-    Super.Timer();
-    if( dxr == None ) return;
-    
-#ifdef hx
-    goal = HXGameInfo(Level.Game).Steve.FirstGoal;
-#else
-    goal = dxr.Player.FirstGoal;
-#endif
+    goal = first_goal;
     while( goal != None ) {
         tgoal = goal.next;
         for (i=0; i<ArrayCount(oldpasswords); i++)
@@ -211,11 +220,7 @@ function Timer()
         goal = tgoal;
     }
 
-#ifdef hx
-    note = HXGameInfo(Level.Game).FirstNote;
-#else
-    note = dxr.Player.FirstNote;
-#endif
+    note = first_note;
     while( note != lastCheckedNote && note != None )
     {
         tnote = note.next;
@@ -225,13 +230,12 @@ function Timer()
         }
         note = tnote;
     }
-#ifdef hx
-    lastCheckedNote = HXGameInfo(Level.Game).FirstNote;
-#else
-    lastCheckedNote = dxr.Player.FirstNote;
+    lastCheckedNote = first_note;
+#ifndef hx
+    NotifyPlayerNotesUpdated(player());
 #endif
-    NotifyPlayerNotesUpdated();
 }
+
 
 function ProcessString(out string str, optional out string updated_passwords[16], optional bool conversation)
 {
@@ -600,12 +604,9 @@ function ChangeATMPIN(#var prefix ATM a, int i)
 
 function ReplacePassword(string oldpassword, string newpassword)
 { // do I even need passStart?
-#ifdef hx
-    local HXGoal goal, tgoal;
-#else
-    local DeusExGoal goal, tgoal;
+#ifndef hx
+    local #var PlayerPawn  p;
 #endif
-    local DeusExNote note, tnote;
 
     oldpasswords[passEnd] = oldpassword;
     newpasswords[passEnd] = newpassword;
@@ -614,40 +615,34 @@ function ReplacePassword(string oldpassword, string newpassword)
     info("replaced password " $ oldpassword $ " with " $ newpassword $ ", passEnd is " $ passEnd $", passStart is " $ passStart);
 
     if( oldpassword == "6282" ) {
+        // we only update the code 6282 because it's rare for passwords to be in goals
 #ifdef hx
-        goal = HXGameInfo(Level.Game).Steve.FirstGoal;
+        UpdateAllGoals(HXGameInfo(Level.Game).Steve.FirstGoal, oldpassword, newpassword);
 #else
-        goal = dxr.Player.FirstGoal;
-#endif
-        while( goal != None ) {
-            tgoal = goal.next;
-            UpdateGoal(goal, oldpassword, newpassword);
-            goal = tgoal;
+        foreach AllActors(class'#var PlayerPawn ', p) {
+            UpdateAllGoals(p.FirstGoal, oldpassword, newpassword);
         }
+#endif
     }
 
 #ifdef hx
-    note = HXGameInfo(Level.Game).FirstNote;
+    UpdateAllNotes(HXGameInfo(Level.Game).FirstNote, oldpassword, newpassword);
 #else
-    note = dxr.Player.FirstNote;
-#endif
-    while( note != None )
-    {
-        tnote = note.next;
-        UpdateNote(note, oldpassword, newpassword);
-        note = tnote;
+    foreach AllActors(class'#var PlayerPawn ', p) {
+        UpdateAllNotes(p.FirstNote, oldpassword, newpassword);
     }
+#endif
 }
 
-function NotifyPlayerNotesUpdated()
+function NotifyPlayerNotesUpdated(#var PlayerPawn  p)
 {
     if( updated == 1 ) {
-        dxr.Player.ClientMessage("Note updated");
-        DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
+        p.ClientMessage("Note updated");
+        DeusExRootWindow(p.rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
     }
     else if( updated > 1 ) {
-        dxr.Player.ClientMessage("Notes updated");
-        DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
+        p.ClientMessage("Notes updated");
+        DeusExRootWindow(p.rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
     }
     updated = 0;
 }
@@ -681,6 +676,22 @@ function MarkPasswordKnown(string password)
 }
 
 #ifdef hx
+function bool UpdateAllGoals(HXGoal goal, string oldpassword, string newpassword)
+{
+    local HXGoal tgoal;
+#else
+function bool UpdateAllGoals(DeusExGoal goal, string oldpassword, string newpassword)
+{
+    local DeusExGoal tgoal;
+#endif
+    while( goal != None ) {
+        tgoal = goal.next;
+        UpdateGoal(goal, oldpassword, newpassword);
+        goal = tgoal;
+    }
+}
+
+#ifdef hx
 function bool UpdateGoal(HXGoal goal, string oldpassword, string newpassword)
 {
     local HXPlayerPawn p;
@@ -694,8 +705,8 @@ function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword
     if( PassInStr( goal.text, oldpassword ) == -1 ) return false;
 
 #ifndef hx
-    dxr.Player.ClientMessage("Goal updated");
-    DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
+    player().ClientMessage("Goal updated");
+    DeusExRootWindow(player().rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
 #endif
     
     info("found goal with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
@@ -716,13 +727,24 @@ function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword
     return true;
 }
 
+function bool UpdateAllNotes(DeusExNote note, string oldpassword, string newpassword)
+{
+    local DeusExNote tnote;
+    while( note != None )
+    {
+        tnote = note.next;
+        UpdateNote(note, oldpassword, newpassword);
+        note = tnote;
+    }
+}
+
 function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword)
 {
 #ifdef hx
     local HXPlayerPawn p;
 #endif
 
-    if( note.bUserNote && dxr.player.CombatDifficulty > 0 ) return false;
+    if( note.bUserNote && player().CombatDifficulty > 0 ) return false;
     if( oldpassword == "" ) return false;
     if( note.text == "") return false;
 

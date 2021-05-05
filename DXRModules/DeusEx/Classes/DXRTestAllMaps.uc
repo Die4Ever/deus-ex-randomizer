@@ -31,7 +31,7 @@ function Timer()
             continue;
         }
         if( found == true && maps[i] != "" ) {
-            Level.Game.SendPlayer(dxr.player, maps[i]);
+            Level.Game.SendPlayer(player(), maps[i]);
             break;
         }
     }

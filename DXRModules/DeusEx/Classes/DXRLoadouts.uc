@@ -340,11 +340,15 @@ function FirstEntry()
 {
     Super.FirstEntry();
 
-    if( dxr.localURL == "01_NYC_UNATCOISLAND" && dxr.flags.newgameplus_loops == 0 ) {
-        RandoStartingEquipment(dxr.player);
-    }
-
     SpawnItems();
+}
+
+simulated function Login(#var PlayerPawn  p)
+{
+    Super.Login(p);
+    if( dxr.localURL == "01_NYC_UNATCOISLAND" && dxr.flags.newgameplus_loops == 0 ) {
+        RandoStartingEquipment(p);
+    }
 }
 
 function AddStartingEquipment(Pawn p)
@@ -369,7 +373,7 @@ function AddStartingEquipment(Pawn p)
     for(i=0; i < ArrayCount(_item_sets[loadout].starting_augs); i++) {
         aclass = _item_sets[loadout].starting_augs[i];
         if( aclass == None ) continue;
-        class'DXRAugmentations'.static.AddAug( dxr.player, aclass, dxr.flags.speedlevel );
+        class'DXRAugmentations'.static.AddAug( player(), aclass, dxr.flags.speedlevel );
     }
 }
 
@@ -384,8 +388,8 @@ function RandoStartingEquipment(DeusExPlayer player)
     l("RandoStartingEquipment");
     dxr.SetSeed( dxr.seed + dxr.Crc("RandoStartingEquipment") );//independent of map/mission
 
-    dxr.player.energy = rng(75)+25;
-    dxr.player.Credits = rng(200);
+    player.energy = rng(75)+25;
+    player.Credits = rng(200);
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
 

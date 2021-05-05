@@ -57,7 +57,7 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-simulated function Login(DeusExPlayer player)
+simulated function Login(#var PlayerPawn  player)
 {
     Super.Login(player);
     RandoSkills(player.SkillSystem.FirstSkill);

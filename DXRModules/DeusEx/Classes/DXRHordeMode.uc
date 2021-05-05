@@ -227,27 +227,27 @@ function AnyEntry()
     if( dxr.flags.gamemode != 2 ) return;
     Super.AnyEntry();
     if( dxr.dxInfo.missionNumber>0 && dxr.localURL != map_name ) {
-        Level.Game.SendPlayer(dxr.player, map_name);
+        Level.Game.SendPlayer(player(), map_name);
         return;
     }
     else if( dxr.localURL != map_name ) {
         return;
     }
 
-    dxr.Player.SetLocation(starting_location);
+    player().SetLocation(starting_location);
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
     if( dxre == None ) {
         err("Could not find DXREnemies! This is required for Horde Mode.");
     }
 
-    class'DXRAugmentations'.static.AddAug( dxr.player, class'AugSpeed', dxr.flags.speedlevel );
-    dxre.GiveRandomWeapon(dxr.Player);
-    dxre.GiveRandomWeapon(dxr.Player);
-    dxre.GiveRandomMeleeWeapon(dxr.Player);
-    GiveItem(dxr.Player, class'Medkit');
-    GiveItem(dxr.Player, class'FireExtinguisher');
-    dxr.Player.dataLinkPlay = Spawn(class'DataLinkPlay',, 'dummydatalink');//this prevents saving the game :)
+    class'DXRAugmentations'.static.AddAug( player(), class'AugSpeed', dxr.flags.speedlevel );
+    dxre.GiveRandomWeapon(player());
+    dxre.GiveRandomWeapon(player());
+    dxre.GiveRandomMeleeWeapon(player());
+    GiveItem(player(), class'Medkit');
+    GiveItem(player(), class'FireExtinguisher');
+    player().dataLinkPlay = Spawn(class'DataLinkPlay',, 'dummydatalink');//this prevents saving the game :)
     time_to_next_wave = time_between_waves;
 
     foreach AllActors(class'Teleporter', t) {
@@ -281,10 +281,10 @@ function AnyEntry()
 
 function Timer()
 {
-    if( dxr.player.Health <= 0 ) {
-        dxr.player.ShowHud(true);
+    if( player().Health <= 0 ) {
+        player().ShowHud(true);
         l("You died on wave "$wave);
-        dxr.player.ClientMessage("You died on wave "$wave,, true);
+        player().ClientMessage("You died on wave "$wave,, true);
         //SetTimer(0, false);
         return;
     }
@@ -305,7 +305,7 @@ function InWaveTick()
         if( p.IsA('Animal') ) continue;
         if( (time_in_wave+numScriptedPawns) % 5 == 0 ) p.SetOrders(default_orders, default_order_tag);
         p.bStasis = false;
-        dist = VSize(p.Location-dxr.player.Location);
+        dist = VSize(p.Location-player().Location);
         if( dist > popin_dist ) {
             ratio = dist/popin_dist;
             p.GroundSpeed = p.class.default.GroundSpeed * ratio*ratio;
@@ -317,7 +317,7 @@ function InWaveTick()
 
     if( numScriptedPawns == 0 || ( time_in_wave > early_end_wave_timer && numScriptedPawns <= early_end_wave_enemies ) ) {
         if( numScriptedPawns > 0 ) {
-            dxr.player.ClientMessage("Moving on. Warning: there are still "$numScriptedPawns$" enemies!",, true);
+            player().ClientMessage("Moving on. Warning: there are still "$numScriptedPawns$" enemies!",, true);
         }
         EndWave();
         return;
@@ -327,7 +327,7 @@ function InWaveTick()
     NotifyPlayerPawns(numScriptedPawns);
 
     if( time_in_wave >= time_before_damage && time_in_wave%damage_timer == 0 ) {
-        dxr.player.TakeDamage(1, dxr.player, dxr.player.Location, vect(0,0,0), 'Shocked');
+        player().TakeDamage(1, player(), player().Location, vect(0,0,0), 'Shocked');
         PlaySound(sound'ProdFire');
         PlaySound(sound'MalePainSmall');
     }
@@ -384,7 +384,7 @@ function EndWave()
 {
     in_wave=false;
     time_to_next_wave = time_between_waves;
-    dxr.player.SkillPointsAdd(skill_points_award);
+    player().SkillPointsAdd(skill_points_award);
     GenerateItems();
 }
 
@@ -401,15 +401,15 @@ function GetOverHere()
         if( p.IsA('Animal') ) continue;
 
         p.bStasis = false;
-        dist = VSize(dxr.player.Location-p.Location);
-        if( (time_in_wave+i) % 7 == 0 && p.CanSee(dxr.player) == false && dist > maxdist ) {
-            loc = GetCloserPosition(dxr.player.Location, p.Location, maxdist*2);
+        dist = VSize(player().Location-p.Location);
+        if( (time_in_wave+i) % 7 == 0 && p.CanSee(player()) == false && dist > maxdist ) {
+            loc = GetCloserPosition(player().Location, p.Location, maxdist*2);
             loc.X += rngfn() * 50;
             loc.Y += rngfn() * 50;
             p.SetLocation( loc );
         }
-        else if( (time_in_wave+i) % 13 == 0 && p.CanSee(dxr.player) == false && dist > maxdist*2 ) {
-            loc = GetRandomPosition(dxr.player.Location, maxdist, dist);
+        else if( (time_in_wave+i) % 13 == 0 && p.CanSee(player()) == false && dist > maxdist*2 ) {
+            loc = GetRandomPosition(player().Location, maxdist, dist);
             loc.X += rngfn() * 50;
             loc.Y += rngfn() * 50;
             p.SetLocation(loc);
@@ -427,7 +427,7 @@ function NotifyPlayerTimer(int time, string text)
         || (time < 60 && time % 10 == 0)
         || (time <= 10)
     ) {
-        dxr.player.ClientMessage(text);
+        player().ClientMessage(text);
     }
 }
 
@@ -437,9 +437,9 @@ function NotifyPlayerPawns(int numScriptedPawns)
     if( time_in_wave % 3 != 0 ) return;
 
     if( numScriptedPawns == 1 )
-        dxr.player.ClientMessage("Wave "$wave$": " $ numScriptedPawns $ " enemy remaining.");
+        player().ClientMessage("Wave "$wave$": " $ numScriptedPawns $ " enemy remaining.");
     else
-        dxr.player.ClientMessage("Wave "$wave$": " $ numScriptedPawns $ " enemies remaining.");
+        player().ClientMessage("Wave "$wave$": " $ numScriptedPawns $ " enemies remaining.");
 }
 
 function NotifyPlayerTime()
@@ -494,7 +494,7 @@ function float GenerateEnemy(DXREnemies dxre)
     }
     p = None;
     for(i=0; i < 10 && p == None; i++ ) {
-        loc = GetRandomPosition(dxr.player.Location, popin_dist*0.8, popin_dist*2.5);
+        loc = GetRandomPosition(player().Location, popin_dist*0.8, popin_dist*2.5);
         loc.X += rngfn() * 25;
         loc.Y += rngfn() * 25;
         p = Spawn(c,, 'hordeenemy', loc );
@@ -540,13 +540,13 @@ function SetAlliance(ScriptedPawn p)
     p.InitialAlliances[0].AllianceLevel = 1;
     p.InitialAlliances[0].bPermanent = true;
 
-    p.InitialAlliances[1].AllianceName = dxr.player.Alliance;
+    p.InitialAlliances[1].AllianceName = player().Alliance;
     p.InitialAlliances[1].AllianceLevel = -1;
     p.InitialAlliances[1].bPermanent = true;
 
     p.SetAlliance(p.Alliance);
     p.InitializeAlliances();
-    //p.SetEnemy(dxr.player, 0, true);
+    //p.SetEnemy(player(), 0, true);
 }
 
 function GenerateItems()

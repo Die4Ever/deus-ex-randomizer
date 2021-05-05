@@ -2,7 +2,7 @@
     "default": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex/",
-        "preproc_definitions": { "vanilla":1, "singleplayer":1, "fixes":1, "mapfixes":1, "balance":1, "backtracking":1, "prefix":"", "Mover":"DeusExMover" },
+        "preproc_definitions": { "vanilla":1, "singleplayer":1, "fixes":1, "mapfixes":1, "balance":1, "backtracking":1, "prefix":"", "Mover":"DeusExMover", "PlayerPawn":"Human" },
         "mods_paths": [ "./" ],
         "packages": [ "DeusEx" ],
         "verbose": false,
@@ -13,7 +13,7 @@
     "hx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX/",
-        "preproc_definitions": { "hx":1, "multiplayer":1, "balance":1, "prefix":"HX", "Mover":"HXMover" },
+        "preproc_definitions": { "hx":1, "multiplayer":1, "balance":1, "prefix":"HX", "Mover":"HXMover", "PlayerPawn":"HXPlayerPawn" },
         "mods_paths": [ "./" ],
         "packages": [ "HXRandomizer" ],
         "rewrite_packages": { "DeusEx": "HXRandomizer" },

@@ -189,45 +189,46 @@ state() RotatingState {
 
 function RandomizeIntro()
 {
-    local Tree t;
-    local DeusExMover m;
-    local BreakableGlass g;
+    local #var prefix Tree t;
+    local Mover m;
+    local #var prefix BreakableGlass g;
     local Actor a;
+    local class<Actor> old_skip;
     //local CameraPoint c;
 
     SetSeed("RandomizeIntro");
     
-    foreach AllActors(class'Tree', t)
+    foreach AllActors(class'#var prefix Tree', t)
     { // exclude 90% of trees from the SwapAll by temporarily hiding them
         if( rng(100) < 90 ) t.bHidden = true;
     }
-    foreach AllActors(class'DeusExMover', m)
+    foreach AllActors(class'Mover', m)
     {
         m.bHidden = true;
     }
-    foreach AllActors(class'BreakableGlass', g)
+    foreach AllActors(class'#var prefix BreakableGlass', g)
     {
         g.bHidden = true;
     }
-    dxr.Player.bHidden = true;
+    old_skip = _skipactor_types[0];
+    _skipactor_types[0] = class'DeusExPlayer';
     SwapAll('Actor');
     foreach AllActors(class'Actor', a)
     {
-        if( a.bHidden ) continue;
+        if( a.bHidden || DeusExPlayer(a) != None ) continue;
         SetActorScale(a, float(rng(1500))/1000 + 0.3);
         a.Fatness = rng(50) + 105;
     }
-    dxr.Player.bHidden = false;
 
-    foreach AllActors(class'Tree', t)
+    foreach AllActors(class'#var prefix Tree', t)
     {
         t.bHidden = false;
     }
-    foreach AllActors(class'DeusExMover', m)
+    foreach AllActors(class'Mover', m)
     {
         m.bHidden = false;
     }
-    foreach AllActors(class'BreakableGlass', g)
+    foreach AllActors(class'#var prefix BreakableGlass', g)
     {
         g.bHidden = false;
     }
@@ -241,6 +242,7 @@ function RandomizeIntro()
     {
         c.bHidden = true;
     }*/
+    _skipactor_types[0] = old_skip;
 }
 
 function bool is_valid(string s, class<Object> o)

@@ -45,7 +45,7 @@ simulated function PostAnyEntry();
 
 simulated function ReEntry(bool IsTravel);
 
-simulated function bool CheckLogin(DeusExPlayer player)
+simulated function bool CheckLogin(#var PlayerPawn  player)
 {
     if( player == None ) return false;
     if( player.SkillSystem == None ) return false;
@@ -53,7 +53,7 @@ simulated function bool CheckLogin(DeusExPlayer player)
     return true;
 }
 
-simulated function Login(DeusExPlayer player)
+simulated function Login(#var PlayerPawn  player)
 {
     //l("Login("$player$")");
 }
@@ -251,6 +251,11 @@ final function Class<Actor> ModifyActorClass( out Class<Actor> ActorClass )
     return ActorClass;
 }
 
+simulated final function #var PlayerPawn  player()
+{
+    return #var PlayerPawn (GetPlayerPawn());
+}
+
 simulated static function string UnpackString(out string s)
 {
     local int i, l;
@@ -292,7 +297,7 @@ simulated function CreateMessageBox( String msgTitle, String msgText, int msgBox
 
     info(module$" CreateMessageBox "$msgTitle$" - "$msgText);
 
-    msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PushWindow(Class'DXRMessageBoxWindow', False, noPause ));
+    msgBox = DXRMessageBoxWindow(DeusExRootWindow(player().rootWindow).PushWindow(Class'DXRMessageBoxWindow', False, noPause ));
     msgBox.SetTitle(msgTitle);
     msgBox.SetMessageText(msgText);
     msgBox.SetMode(msgBoxMode);
@@ -310,7 +315,7 @@ simulated function CreateCustomMessageBox (String msgTitle, String msgText, int 
 
     info(module$" CreateCustomMessageBox "$msgTitle$" - "$msgText);
 
-    msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PushWindow(Class'DXRMessageBoxWindow', False, noPause ));
+    msgBox = DXRMessageBoxWindow(DeusExRootWindow(player().rootWindow).PushWindow(Class'DXRMessageBoxWindow', False, noPause ));
     msgBox.SetTitle(msgTitle);
     msgBox.SetMessageText(msgText);
     msgBox.SetCustomMode(numBtns,buttonLabels);
@@ -324,7 +329,7 @@ simulated function MessageBoxClicked(int button, int callbackId) {
     local DXRMessageBoxWindow msgBox;
     local string title, message;
 
-    msgBox = DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).GetTopWindow());
+    msgBox = DXRMessageBoxWindow(DeusExRootWindow(player().rootWindow).GetTopWindow());
     if( msgBox != None ) {
         title = msgBox.winTitle.titleText;
         message = msgBox.winText.GetText();
@@ -347,7 +352,7 @@ simulated function MessageBoxClicked(int button, int callbackId) {
         info("MessageBoxClicked "$msgBox.customBtn[button].buttonText$": "$title$" - "$message);
     }
     
-    DXRMessageBoxWindow(DeusExRootWindow(dxr.Player.rootWindow).PopWindow());
+    DXRMessageBoxWindow(DeusExRootWindow(player().rootWindow).PopWindow());
 
     //Implementations in subclasses just need to call Super to pop the window, then can handle the message however they want
     //Buttons:
@@ -386,8 +391,8 @@ simulated function warning(coerce string message)
 simulated function err(coerce string message)
 {
     log("ERROR: " $ message, class.name);
-    if(dxr != None && dxr.Player != None) {
-        dxr.Player.ClientMessage( Class @ message, 'ERROR' );
+    if(dxr != None && player() != None) {
+        player().ClientMessage( Class @ message, 'ERROR' );
     }
 
     class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", message);
@@ -395,7 +400,7 @@ simulated function err(coerce string message)
 
 simulated function name StringToName(string s)
 {
-    return dxr.Player.rootWindow.StringToName(s);
+    return dxr.flagbase.StringToName(s);
 }
 
 final function StartRunTests()

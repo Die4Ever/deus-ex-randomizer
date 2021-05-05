@@ -1,11 +1,12 @@
 class HXRandoGameInfo extends HXGameInfo;
 
 var DXRando dxr;
+var DataStorage ds;
 
 replication
 {
     reliable if( Role==ROLE_Authority )
-        dxr;
+        dxr, ds;
 }
 
 event InitGame( String Options, out String Error )
@@ -28,5 +29,5 @@ event PostLogin(playerpawn NewPlayer)
 
     foreach AllActors(class'DXRando', dxr) break;
     log("PostLogin("$NewPlayer$") server, dxr: "$dxr, self.name);
-    dxr.Login(NewPlayer);
+    dxr.Login( #var PlayerPawn (NewPlayer) );
 }

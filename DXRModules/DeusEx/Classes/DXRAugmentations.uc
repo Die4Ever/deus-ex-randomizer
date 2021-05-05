@@ -14,8 +14,6 @@ function CheckConfig()
 
 function FirstEntry()
 {
-    local Augmentation anAug;
-
     Super.FirstEntry();
 
     RandomizeAugCannisters();
@@ -26,6 +24,15 @@ function AnyEntry()
     local Augmentation a;
     Super.AnyEntry();
 
+    foreach AllActors(class'Augmentation', a) {
+        RandoAug(a);
+    }
+}
+
+simulated function Login(#var PlayerPawn  p)
+{
+    local Augmentation a;
+    Super.Login(p);
     foreach AllActors(class'Augmentation', a) {
         RandoAug(a);
     }
@@ -62,13 +69,13 @@ function RandomizeAugCannisters()
 {
     local AugmentationCannister a;
 
-    if( dxr.Player == None ) return;
+    if( dxr.flagbase == None ) return;
 
     SetSeed( "RandomizeAugCannisters" );
 
     foreach AllActors(class'AugmentationCannister', a)
     {
-        if( a.Owner == dxr.Player ) continue;
+        if( DeusExPlayer(a.Owner) != None ) continue;
         RandomizeAugCannister(dxr, a);
     }
 }
@@ -84,7 +91,7 @@ function static RandomizeAugCannister(DXRando dxr, AugmentationCannister a)
     }
 
     if( a.AddAugs[0] == '#var prefix AugSpeed' || a.AddAugs[1] == '#var prefix AugSpeed' ) {
-        dxr.Player.ClientMessage("Speed Enhancement is in this area.",, true);
+        dxr.flags.player().ClientMessage("Speed Enhancement is in this area.",, true);
     }
 }
 
@@ -93,6 +100,7 @@ function static Name PickRandomAug(DXRando dxr)
     local int slot;
     local int skipAugSpeed;
     local int numAugs;
+    local Name AugName;
     numAugs=21;
     if( dxr.flags.speedlevel > 0 )
         skipAugSpeed=1;
@@ -100,11 +108,12 @@ function static Name PickRandomAug(DXRando dxr)
     if ( slot >= 11 ) slot++;// skip AugIFF
     if ( slot >= 12 ) slot++;// skip AugLight
     if (slot >= 18 ) slot++;// skip AugDatalink
-    log("Picked Aug "$ slot $"/"$numAugs$" " $ dxr.Player.AugmentationSystem.augClasses[slot].Name, 'DXRAugmentations');
-    return dxr.Player.AugmentationSystem.augClasses[slot].Name;
+    AugName = class'#var prefix AugmentationManager'.default.augClasses[slot].Name;
+    log("Picked Aug "$ slot $"/"$numAugs$" " $ AugName, 'DXRAugmentations');
+    return AugName;
 }
 
-function RandoAug(Augmentation a)
+simulated function RandoAug(Augmentation a)
 {
     local int oldseed;
     if( dxr == None ) return;
@@ -119,7 +128,7 @@ function RandoAug(Augmentation a)
     dxr.SetSeed(oldseed);
 }
 
-function string DescriptionLevel(Actor act, int i, out string word)
+simulated function string DescriptionLevel(Actor act, int i, out string word)
 {
     local Augmentation a;
     local float f;

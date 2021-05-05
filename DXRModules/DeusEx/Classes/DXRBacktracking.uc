@@ -76,8 +76,13 @@ function PreFirstEntry()
             break;
 
     }
+}
 
-    if( ! class'DynamicTeleporter'.static.CheckTeleport(dxr.player) ) {
+simulated function Login(#var PlayerPawn  p)
+{
+    Super.Login(p);
+    FixInterpolating(p);
+    if( ! class'DynamicTeleporter'.static.CheckTeleport(p) ) {
         err("DynamicTeleporter failed");
     }
 }
@@ -95,7 +100,7 @@ function PostFirstEntry()
 function PreTravel()
 {
     Super.PreTravel();
-    CheckNextMap(dxr.Player.nextMap);
+    CheckNextMap(player().nextMap);
 }
 
 function CheckNextMap(string nextMap)
@@ -116,7 +121,7 @@ function CheckNextMap(string nextMap)
 
 function RetainSaves(int oldMissionNum, int newMissionNum, string nextMap)
 {
-    info( "keeping save files, dxr.Player.nextMap: "$ nextMap );
+    info( "keeping save files, nextMap: "$ nextMap );
     dxr.dxInfo.missionNumber = newMissionNum;
 }
 
@@ -146,18 +151,18 @@ static function DeleteExpiredFlags(FlagBase flags, int missionNumber)
 
 function AnyEntry()
 {
-    local DeusExPlayer p;// we wanna make sure we get all the player objects, even in multiplayer?
+    local #var PlayerPawn  p;// we wanna make sure we get all the player objects, even in multiplayer?
     local DeusExDecoration d;
     local ScriptedPawn s;
     Super.AnyEntry();
-    foreach AllActors(class'DeusExPlayer', p)
+    foreach AllActors(class'#var PlayerPawn ', p) {
         p.ConBindEvents();
+        FixInterpolating(p);
+    }
     foreach AllActors(class'DeusExDecoration', d)
         d.ConBindEvents();
     foreach AllActors(class'ScriptedPawn', s)
         s.ConBindEvents();
-
-    FixInterpolating();
 
     SetSeed("DXRBacktracking AnyEntry");// just in case we do randomized interpolationpoints
 
@@ -187,25 +192,15 @@ function AnyEntry()
     }
 }
 
-function ReEntry(bool IsTravel)
+function FixInterpolating(#var PlayerPawn  p)
 {
-    Super.ReEntry(IsTravel);
-    //need to make sure this doesn't happen when loading a save
-    if ( IsTravel ) {
-        if( ! class'DynamicTeleporter'.static.CheckTeleport(dxr.player) )
-            err("DynamicTeleporter failed");
-    }
-}
-
-function FixInterpolating()
-{
-    //err(dxr.player$" state: "$dxr.player.GetStateName()$", Tag: "$dxr.player.tag$", NextState: "$dxr.player.NextState$", bInterpolating: "$dxr.player.bInterpolating);
-    if( dxr.player.NextState != 'Interpolating' ) return;
-    info("FixInterpolating(), "$dxr.player$" state: "$dxr.player.GetStateName()$", Tag: "$dxr.player.tag$", NextState: "$dxr.player.NextState$", bInterpolating: "$dxr.player.bInterpolating);
-    dxr.player.NextState = '';
-    dxr.player.NextLabel = '';
-    dxr.player.GotoState('PlayerWalking');
-    dxr.player.bDetectable = true;
+    //err(player()$" state: "$player().GetStateName()$", Tag: "$player().tag$", NextState: "$player().NextState$", bInterpolating: "$player().bInterpolating);
+    if( p.NextState != 'Interpolating' ) return;
+    info("FixInterpolating(), "$p$" state: "$p.GetStateName()$", Tag: "$p.tag$", NextState: "$p.NextState$", bInterpolating: "$p.bInterpolating);
+    p.NextState = '';
+    p.NextLabel = '';
+    p.GotoState('PlayerWalking');
+    p.bDetectable = true;
 }
 
 function ParisMetroAnyEntry()
@@ -216,7 +211,7 @@ function ParisMetroAnyEntry()
     local FlagBase flags;
     local MapExit exit;
 
-    flags = dxr.player.flagBase;
+    flags = dxr.flagBase;
 
     foreach AllActors(class'InterpolateTrigger', t, 'ChopperExit') {
         t.bTriggerOnceOnly = false;
@@ -252,7 +247,7 @@ function ParisChateauAnyEntry()
     local InterpolateTrigger t;
     local FlagBase flags;
 
-    flags = dxr.player.flagBase;
+    flags = dxr.flagBase;
     flags.SetBool('NicoletteReadyToLeave', true,, 12);
     flags.SetBool('NicoletteOutside_Played', true,, 12);
     flags.SetBool('NicoletteLeftClub', true,, 12);
@@ -282,7 +277,7 @@ function VandCmdAnyEntry()
     ConversationFrobOnly(GetConversation('M12JockFinal'));
     ConversationFrobOnly(GetConversation('M12JockFinal2'));
 
-    flags = dxr.player.flagBase;
+    flags = dxr.flagBase;
     flags.SetBool('TongTrigger_Played', false,, 1);
     if ( flags.GetBool('GaryHostageBriefing_Played') )
     {
@@ -297,7 +292,7 @@ function VandGasAnyEntry()
     local InterpolateTrigger t;
     local DeusExMover M;
     local FlagBase flags;
-    flags = dxr.player.flagBase;
+    flags = dxr.flagBase;
 
     ConversationFrobOnly(GetConversation('M12JockFinal'));
     ConversationFrobOnly(GetConversation('M12JockFinal2'));
@@ -352,7 +347,7 @@ function VandSubAnyEntry()
     local InterpolationPoint p;
     local FlagTrigger ft;
     local FlagBase flags;
-    flags = dxr.player.flagBase;
+    flags = dxr.flagBase;
 
     // backtracking to gas station
     flags.SetBool('TiffanyRescued', true,, 15);// despite the name, this really just means the rescue has been attempted
@@ -444,7 +439,7 @@ function VandOceanLabAnyEntry()
 function VandSiloAnyEntry()
 {
     local FlagBase flags;
-    flags = dxr.player.flagBase;
+    flags = dxr.flagBase;
 
     // back to sub base
     flags.SetBool('DL_downloaded_Played', true,, 15);

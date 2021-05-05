@@ -51,8 +51,8 @@ function Timer()
     local DXRando dxr;
     foreach AllActors(class'DXRando', dxr) { break; }
     if( dxr == None ) return;
-    if( dxr.Player == None ) dxr.Init();
-    if( dxr.Player == None ) return;
+    if( dxr.flagbase == None ) dxr.Init();
+    if( dxr.flagbase == None ) return;
 
     Super.Timer();
 }

@@ -333,7 +333,7 @@ function bool IsInitialEnemy(ScriptedPawn p)
 {
     local int i;
 
-    return p.GetPawnAllianceType(dxr.Player) == ALLIANCE_Hostile;
+    return p.GetPawnAllianceType(player()) == ALLIANCE_Hostile;
 }
 
 function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedPawn> newclass)

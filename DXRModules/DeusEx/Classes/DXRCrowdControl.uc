@@ -284,15 +284,15 @@ function IncHandledEffects()
 {
     local int numEffects;
     
-    numEffects = dxr.Player.FlagBase.GetInt('cc_numCCEffects');
-    dxr.Player.FlagBase.SetInt('cc_numCCEffects',numEffects+1,,999);
+    numEffects = dxr.FlagBase.GetInt('cc_numCCEffects');
+    dxr.FlagBase.SetInt('cc_numCCEffects',numEffects+1,,999);
 }
 
 function AddDXRCredits(CreditsWindow cw) 
 {
     local int numEffects;
     
-    numEffects = dxr.Player.FlagBase.GetInt('cc_numCCEffects');
+    numEffects = dxr.FlagBase.GetInt('cc_numCCEffects');
 
     if (numEffects>0) {
         cw.PrintText("Number of Crowd Control Effects:"@numEffects);

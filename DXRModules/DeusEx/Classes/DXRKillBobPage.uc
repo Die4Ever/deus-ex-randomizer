@@ -77,11 +77,11 @@ function Timer()
 {
     Super.Timer();
     if( BobPage == None || BobPage.health <= 0 ) {
-        dxr.player.ConsoleCommand("open " $ endgamemap);
+        player().ConsoleCommand("open " $ endgamemap);
     }
     /*if( dxr.flags.f.GetBool('EndGameBoss_Dead') ) {
         l("EndGameBoss_Dead BobPage == " $ BobPage);
-        dxr.player.ConsoleCommand("open " $ endgamemap);
+        player().ConsoleCommand("open " $ endgamemap);
     }*/
 }
 

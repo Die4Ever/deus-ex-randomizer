@@ -1012,8 +1012,8 @@ function PreFirstEntry()
     }
 
     if( allow_vanilla == true && num_ps > 0 ) {
-        player_starts[num_ps].location = dxr.Player.location;
-        player_starts[num_ps].rotation = dxr.Player.rotation;
+        player_starts[num_ps].location = player().location;
+        player_starts[num_ps].rotation = player().rotation;
         num_ps++;
     }
 
@@ -1021,9 +1021,9 @@ function PreFirstEntry()
     if( dxr.flags.startinglocations > 0 && num_ps > 0 ) {
         l("randomizing starting location, num_ps == "$num_ps);
         start = rng(num_ps);
-        dxr.Player.SetLocation(player_starts[start].location);
-        dxr.Player.SetRotation(player_starts[start].rotation);
-        rando_start_loc = dxr.Player.Location;
+        player().SetLocation(player_starts[start].location);
+        player().SetRotation(player_starts[start].rotation);
+        rando_start_loc = player().Location;
         b_rando_start = true;
 
         for(i=0; i<num_gl; i++) {
@@ -1067,7 +1067,7 @@ function PreFirstEntry()
         }
         if( local_goals[i].group_radius >= 0.1 ) {
             foreach RadiusActors(class'Actor', a, local_goals[i].group_radius, loc ) {
-                if( a == dxr.Player ) continue;
+                if( a == player() ) continue;
                 if( a.bStatic ) continue;
                 if( NavigationPoint(a) != None ) continue;
                 if( Light(a) != None ) continue;

@@ -9,20 +9,26 @@ function AnyEntry()
 
 //Returns true when you aren't in a menu, or in the intro, etc.
 function bool InGame() {
+#ifdef hx
+    return true;
+#endif
 
-    if (dxr.Player.InConversation()) {
+    if( player() == None )
+        return false;
+    
+    if (player().InConversation()) {
         return True;
     }
 
-    if (None == DeusExRootWindow(dxr.Player.rootWindow)) {
+    if (None == DeusExRootWindow(player().rootWindow)) {
         return False;
     }
     
-    if (None == DeusExRootWindow(dxr.Player.rootWindow).hud) {
+    if (None == DeusExRootWindow(player().rootWindow).hud) {
         return False;
     }
     
-    if (!DeusExRootWindow(dxr.Player.rootWindow).hud.isVisible()){
+    if (!DeusExRootWindow(player().rootWindow).hud.isVisible()){
         return False;
     }
     
@@ -41,14 +47,14 @@ function IncMissionTimer(int mission)
     
     if (InGame()) {
         flagname = "DXRando_Mission"$mission$"_Timer";
-        flag = dxr.Player.rootWindow.StringToName(flagname);
-        time = dxr.Player.FlagBase.GetInt(flag);
-        dxr.Player.FlagBase.SetInt(flag,time+1,,999);
+        flag = StringToName(flagname);
+        time = dxr.flagbase.GetInt(flag);
+        dxr.flagbase.SetInt(flag,time+1,,999);
     } else {
         flagname = "DXRando_Mission"$mission$"Menu_Timer";
-        flag = dxr.Player.rootWindow.StringToName(flagname);
-        time = dxr.Player.FlagBase.GetInt(flag);
-        dxr.Player.FlagBase.SetInt(flag,time+1,,999);
+        flag = StringToName(flagname);
+        time = dxr.flagbase.GetInt(flag);
+        dxr.flagbase.SetInt(flag,time+1,,999);
     }
 
 }
@@ -64,8 +70,8 @@ function int GetMissionTime(int mission)
     }
     
     flagname = "DXRando_Mission"$mission$"_Timer";
-    flag = dxr.Player.rootWindow.StringToName(flagname);
-    time = dxr.Player.FlagBase.GetInt(flag);
+    flag = StringToName(flagname);
+    time = dxr.flagbase.GetInt(flag);
     
     return time;
 }
@@ -81,8 +87,8 @@ function int GetMissionMenuTime(int mission)
     }
     
     flagname = "DXRando_Mission"$mission$"Menu_Timer";
-    flag = dxr.Player.rootWindow.StringToName(flagname);
-    time = dxr.Player.FlagBase.GetInt(flag);
+    flag = StringToName(flagname);
+    time = dxr.flagbase.GetInt(flag);
     
     return time;
 }
@@ -201,7 +207,7 @@ static function AddGibbedKill(DeusExPlayer p)
 function int GetDataStorageStat(name valname)
 {
     local DataStorage datastorage;
-    datastorage = class'DataStorage'.static.GetObj(dxr.Player);
+    datastorage = class'DataStorage'.static.GetObj(player());
     return int(datastorage.GetConfigKey(valname));
 }
 
@@ -227,11 +233,11 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("Total:"@GetTotalTimeString());
     cw.PrintLn();
     
-    fired = dxr.Player.FlagBase.GetInt('DXRStats_shotsfired');
-    swings = dxr.Player.FlagBase.GetInt('DXRStats_weaponswings');
-    jumps = dxr.Player.FlagBase.GetInt('DXRStats_jumps');
-    burnkills = dxr.Player.FlagBase.GetInt('DXRStats_burnkills');
-    gibbedkills = dxr.Player.FlagBase.GetInt('DXRStats_gibbedkills');
+    fired = dxr.flagbase.GetInt('DXRStats_shotsfired');
+    swings = dxr.flagbase.GetInt('DXRStats_weaponswings');
+    jumps = dxr.flagbase.GetInt('DXRStats_jumps');
+    burnkills = dxr.flagbase.GetInt('DXRStats_burnkills');
+    gibbedkills = dxr.flagbase.GetInt('DXRStats_gibbedkills');
     deaths = GetDataStorageStat('DXRStats_deaths');
     
     cw.PrintHeader("Statistics");
@@ -239,8 +245,8 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("Shots Fired: "$fired);
     cw.PrintText("Weapon Swings: "$swings);
     cw.PrintText("Jumps: "$jumps);
-    cw.PrintText("Nano Keys: "$dxr.player.KeyRing.GetKeyCount());
-    cw.PrintText("Skill Points Earned: "$dxr.Player.SkillPointsTotal);
+    cw.PrintText("Nano Keys: "$player().KeyRing.GetKeyCount());
+    cw.PrintText("Skill Points Earned: "$player().SkillPointsTotal);
     cw.PrintText("Enemies Burned to Death: "$burnkills);
     cw.PrintText("Enemies Gibbed: "$gibbedkills);
     cw.PrintText("Deaths: "$deaths);
