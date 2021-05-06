@@ -346,9 +346,7 @@ function FirstEntry()
 simulated function PlayerLogin(#var PlayerPawn  p)
 {
     Super.PlayerLogin(p);
-    //if( dxr.localURL == "01_NYC_UNATCOISLAND" && dxr.flags.newgameplus_loops == 0 ) {
-        RandoStartingEquipment(p);
-    //}
+    RandoStartingEquipment(p);
 }
 
 function AddStartingEquipment(DeusExPlayer p)

@@ -133,9 +133,7 @@ function CheckConfig()
         modules_to_load[i++] = "DXRHordeMode";
         //modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
-#ifndef hx
         modules_to_load[i++] = "DXRLoadouts";
-#endif
         modules_to_load[i++] = "DXRWeapons";
         modules_to_load[i++] = "DXRCrowdControl";
         modules_to_load[i++] = "DXRMachines";
@@ -338,6 +336,7 @@ simulated function bool CheckLogin(#var PlayerPawn  p)
 {
     local int i;
 
+    err("CheckLogin("$p$"), bTickEnabled: "$bTickEnabled$", flagbase: "$flagbase$", num_modules: "$num_modules$", flags: "$flags);
     if( bTickEnabled == true ) return false;
 
     for(i=0; i<num_modules; i++) {
@@ -354,21 +353,23 @@ simulated function bool CheckLogin(#var PlayerPawn  p)
 simulated function PlayerLogin(#var PlayerPawn  p)
 {
     local int i;
+    local PlayerDataItem data;
 
-    info("PlayerLogin("$p$"), flagbase: "$flagbase);
-    if( flagbase == None ) return;
+    if( flags == None || !flags.flags_loaded ) {
+        info("PlayerLogin("$p$") flags: "$flags$", flags.flags_loaded: "$flags.flags_loaded);
+        return;
+    }
 
-    info("PlayerLogin("$p$") do it, p.PlayerDataItem: "$p.FindInventoryType(class'PlayerDataItem'));
+    data = class'PlayerDataItem'.static.GiveItem(p);
+    info("PlayerLogin("$p$") do it, p.PlayerDataItem: " $ data $", data.local_inited: "$data.local_inited);
 
-    if( p.FindInventoryType(class'PlayerDataItem')==None && dxInfo.missionNumber > 0 && dxInfo.missionNumber < 99 )
+    if( !data.local_inited && dxInfo.missionNumber > 0 && dxInfo.missionNumber < 99 )
     {
-        p.ClientMessage("PlayerLogin "$p);
         for(i=0; i<num_modules; i++) {
             modules[i].PlayerLogin(p);
         }
-        class'PlayerDataItem'.static.GiveItem(p);
+        data.local_inited = true;
     }
-    p.ClientMessage("PlayerAnyEntry "$p);
     for(i=0; i<num_modules; i++) {
         modules[i].PlayerAnyEntry(p);
     }
@@ -463,8 +464,12 @@ simulated function warning(string message)
 simulated function err(string message)
 {
     log("ERROR: " $ message, class.name);
+#ifdef singleplayer
     if( flags.player() != None )
         flags.player().ClientMessage( Class @ message, 'ERROR' );
+#else
+    BroadcastMessage(class.name$": ERROR: "$message, true, 'ERROR');
+#endif
 
     class'DXRTelemetry'.static.SendLog(Self, Self, "ERROR", message);
 }

@@ -1,5 +1,7 @@
 class PlayerDataItem extends Inventory;
 
+var travel bool local_inited;
+
 simulated function static PlayerDataItem GiveItem(#var PlayerPawn  p)
 {
     local PlayerDataItem i;

@@ -47,8 +47,7 @@ simulated function ReEntry(bool IsTravel);
 
 simulated function bool CheckLogin(#var PlayerPawn  player)
 {
-    if( dxr.flagbase == None ) return false;
-    if( dxr.flags.f == None ) return false;
+    info("CheckLogin("$player$"), dxr.flagbase: "$dxr.flagbase$", dxr.flags.flags_loaded: "$dxr.flags.flags_loaded$", player.SkillSystem: "$player.SkillSystem$", player.SkillSystem.FirstSkill: "$player.SkillSystem.FirstSkill);
     if( player == None ) return false;
     if( player.SkillSystem == None ) return false;
     if( player.SkillSystem.FirstSkill == None ) return false;
@@ -406,7 +405,7 @@ simulated function err(coerce string message, optional bool skip_player_message)
         player().ClientMessage( Class @ message, 'ERROR' );
     }
 #else
-    Level.Game.BroadcastMessage(class.name$": ERROR: "$message, true, 'ERROR');
+    BroadcastMessage(class.name$": ERROR: "$message, true, 'ERROR');
 #endif
 
     class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", message);

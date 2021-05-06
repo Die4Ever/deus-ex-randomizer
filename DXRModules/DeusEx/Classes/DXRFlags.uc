@@ -30,6 +30,8 @@ var #var flagvarprefix  int banned_skills, banned_skill_levels, enemies_nonhuman
 var #var flagvarprefix  int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
 var #var flagvarprefix  int codes_mode;
 
+var bool flags_loaded;
+
 replication
 {
     reliable if( Role==ROLE_Authority )
@@ -39,7 +41,8 @@ replication
         startinglocations, goals, equipment, medbots, repairbots, turrets_move, turrets_add, crowdcontrol, newgameplus_loops, merchants,
         banned_skills, banned_skill_levels, enemies_nonhumans,
         undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive,
-        codes_mode;
+        codes_mode,
+        flags_loaded;
 }
 
 simulated function PreTravel()
@@ -75,6 +78,11 @@ simulated function Timer()
         SaveFlags();
     }
 #endif
+}
+
+simulated function bool CheckLogin(#var PlayerPawn  p)
+{
+    return flags_loaded && Super.CheckLogin(p);
 }
 
 function PreFirstEntry()
@@ -215,6 +223,7 @@ simulated function LoadFlags()
         return;
     }
 
+    flags_loaded = true;
     stored_version = f.GetInt('Rando_version');
 
     if( stored_version == 0 && dxr.localURL != "DX" && dxr.localURL != "DXONLY" && dxr.localURL != "00_TRAINING" ) {
@@ -395,6 +404,9 @@ simulated function LoadNoFlags()
 {
     local DataStorage ds;
     local float CombatDifficulty;
+
+    flags_loaded = true;
+
 #ifdef hx
     CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
 #else
