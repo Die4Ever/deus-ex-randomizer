@@ -32,6 +32,10 @@ function CheckConfig()
         i=0;
         skipactor_types[i++] = "BarrelAmbrosia";
         skipactor_types[i++] = "NanoKey";
+#ifdef hx
+        // since it's not put into a player's inventory, it's not automatically skipped, although it's bHidden so it should be skipped anyways
+        skipactor_types[i++] = "HXRandomizer.DataStorage";
+#endif
     }
     Super.CheckConfig();
 
@@ -79,7 +83,7 @@ static function bool AnyGreater(vector a, vector b)
 
 function bool CarriedItem(Actor a)
 {// I need to check Engine.Inventory.bCarriedItem
-    if( a == dxr.Player.carriedDecoration )
+    if( PlayerPawn(a.Base) != None )
         return true;
     return a.Owner != None && a.Owner.IsA('Pawn');
 }
@@ -211,12 +215,12 @@ static function ThrowItem(Actor a, Inventory item)
 
 function bool SkipActorBase(Actor a)
 {
-    if( a == dxr.Player.carriedDecoration )
-        return true;
     if( (a.Owner != None) || a.bStatic || a.bHidden || a.bMovable==False )
         return true;
-    if( a.Base != None )
-        return a.Base.IsA('ScriptedPawn');
+    if( ScriptedPawn(a.Base) != None )
+        return true;
+    if( PlayerPawn(a.Base) != None )
+        return true;
     return false;
 }
 

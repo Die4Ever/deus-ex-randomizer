@@ -59,11 +59,6 @@ def exists_dir(path):
     #     print("dir already exists: " + path)
     return exists
 
-def copyDeusExU(out):
-    if exists(out + '/System/DeusEx.u'):
-        print("DeusEx.u exists")
-        shutil.copy2(out + '/System/DeusEx.u',"./DeusEx.u")
-        print("DeusEx.u copied locally")
 
 def is_uc_file(file):
     path = list(Path(file).parts)

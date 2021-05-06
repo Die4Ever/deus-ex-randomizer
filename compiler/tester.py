@@ -2,7 +2,7 @@
 from compiler.base import *
 
 
-def runAutomatedTests(out):
+def runAutomatedTests(out, package):
     rc = False
     cleanup(out)
 
@@ -14,7 +14,7 @@ def runAutomatedTests(out):
 
         for i in range(0,len(lines)):
             if "DefaultServerGame" in lines[i]:
-                lines[i] = "DefaultServerGame=DeusEx.DXRandoTests\n"
+                lines[i] = "DefaultServerGame="+package+".DXRandoTests\n"
 
         f = open(out + '/System/test.ini','w')
         f.writelines(lines)

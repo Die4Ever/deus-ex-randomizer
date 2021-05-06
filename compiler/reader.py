@@ -89,4 +89,5 @@ def proc_file(file, files, mod_name, injects, preprocessor, definitions):
             injects[key] = [ ]
         injects[key].append(f)
     files[f.qualifiedclass] = f
+    return f
 

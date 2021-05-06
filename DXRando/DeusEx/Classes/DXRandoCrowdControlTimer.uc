@@ -57,7 +57,7 @@ function UsedUp()
 {
     local DeusExPlayer Player;
 
-    Player = link.dxr.Player;
+    Player = link.player();
     
     if (Player != None)
     {
@@ -85,7 +85,7 @@ state Activated
 
         Super(DeusExPickup).BeginState();
 
-        Player = link.dxr.Player;
+        Player = link.player();
         if (Player != None)
         {
             ChargedPickupBegin(Player);
@@ -99,7 +99,7 @@ state Activated
 
         Super.EndState();
 
-        Player = link.dxr.Player;
+        Player = link.player();
         if (Player != None)
         {
             ChargedPickupEnd(Player);

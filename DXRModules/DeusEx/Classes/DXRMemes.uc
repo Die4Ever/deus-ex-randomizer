@@ -18,10 +18,17 @@ function RandomDancing(Actor a)
 
 function AnyEntry()
 {
+#ifdef hx
+    local HXDXLogo logo;
+    local HXIonStormLogo islogo;
+    local HXEidosLogo elogo;
+    local HXElectricityEmitter elec;
+#else
     local DXLogo logo;
     local IonStormLogo islogo;
     local EidosLogo elogo;
     local ElectricityEmitter elec;
+#endif
     local Actor a;
     local Rotator r;
     local Vector v;
@@ -32,7 +39,11 @@ function AnyEntry()
         case "DXONLY":
         case "DX":
             l("Memeing up "$ dxr.localURL);
+#ifdef hx
+            foreach AllActors(class'HXDXLogo', logo)
+#else
             foreach AllActors(class'DXLogo', logo)
+#endif
             {                
                 a = ReplaceWithRandomClass(logo);
                 if (IsHuman(a)){
@@ -58,7 +69,11 @@ function AnyEntry()
                 GotoState('RotatingState');
             }
 
+#ifdef hx
+            foreach AllActors(class'HXIonStormLogo', islogo)
+#else
             foreach AllActors(class'IonStormLogo', islogo)
+#endif
             {
                 a = ReplaceWithRandomClass(islogo);
                 if (IsHuman(a)){
@@ -73,7 +88,11 @@ function AnyEntry()
                 a.AmbientSound = None;
             }
 
+#ifdef hx
+            foreach AllActors(class'HXEidosLogo', elogo)
+#else
             foreach AllActors(class'EidosLogo', elogo)
+#endif
             {
                 a = ReplaceWithRandomClass(elogo);
                 if (IsHuman(a)){
@@ -88,7 +107,11 @@ function AnyEntry()
                 a.AmbientSound = None;
             }
             
+#ifdef hx
+            foreach AllActors(class'HXElectricityEmitter', elec)
+#else
             foreach AllActors(class'ElectricityEmitter', elec)
+#endif
             {
                 v.Z = 70;
                 elec.move(v);
@@ -100,7 +123,7 @@ function AnyEntry()
         case "ENDGAME2":
         case "ENDGAME3":
         case "ENDGAME4":
-        case "00_TRAINING":
+        //case "00_TRAINING":
             // extra randomization in the intro for the lolz, ENDGAME4 doesn't have a DeusExLevelInfo object though, so it doesn't get randomized :(
             l("Memeing up "$ dxr.localURL);
             RandomizeIntro();
@@ -166,45 +189,46 @@ state() RotatingState {
 
 function RandomizeIntro()
 {
-    local Tree t;
-    local DeusExMover m;
-    local BreakableGlass g;
+    local #var prefix Tree t;
+    local Mover m;
+    local #var prefix BreakableGlass g;
     local Actor a;
+    local class<Actor> old_skip;
     //local CameraPoint c;
 
     SetSeed("RandomizeIntro");
     
-    foreach AllActors(class'Tree', t)
+    foreach AllActors(class'#var prefix Tree', t)
     { // exclude 90% of trees from the SwapAll by temporarily hiding them
         if( rng(100) < 90 ) t.bHidden = true;
     }
-    foreach AllActors(class'DeusExMover', m)
+    foreach AllActors(class'Mover', m)
     {
         m.bHidden = true;
     }
-    foreach AllActors(class'BreakableGlass', g)
+    foreach AllActors(class'#var prefix BreakableGlass', g)
     {
         g.bHidden = true;
     }
-    dxr.Player.bHidden = true;
+    old_skip = _skipactor_types[0];
+    _skipactor_types[0] = class'DeusExPlayer';
     SwapAll('Actor');
     foreach AllActors(class'Actor', a)
     {
-        if( a.bHidden ) continue;
+        if( a.bHidden || DeusExPlayer(a) != None ) continue;
         SetActorScale(a, float(rng(1500))/1000 + 0.3);
         a.Fatness = rng(50) + 105;
     }
-    dxr.Player.bHidden = false;
 
-    foreach AllActors(class'Tree', t)
+    foreach AllActors(class'#var prefix Tree', t)
     {
         t.bHidden = false;
     }
-    foreach AllActors(class'DeusExMover', m)
+    foreach AllActors(class'Mover', m)
     {
         m.bHidden = false;
     }
-    foreach AllActors(class'BreakableGlass', g)
+    foreach AllActors(class'#var prefix BreakableGlass', g)
     {
         g.bHidden = false;
     }
@@ -218,6 +242,7 @@ function RandomizeIntro()
     {
         c.bHidden = true;
     }*/
+    _skipactor_types[0] = old_skip;
 }
 
 function bool is_valid(string s, class<Object> o)
@@ -252,7 +277,11 @@ function Actor ReplaceWithRandomClass(Actor old)
 
 function string GetRandomActorClass()
 {
+#ifdef hx
+    return "HX.HX" $ _GetRandomActorClass();
+#else
     return "DeusEx." $ _GetRandomActorClass();
+#endif
 }
 
 function string _GetRandomActorClass()

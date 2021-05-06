@@ -3,6 +3,12 @@ class DXRAugmentations extends DXRBase transient;
 var config float min_aug_str;
 var config float max_aug_str;
 
+replication
+{
+    reliable if( Role==ROLE_Authority )
+        min_aug_str, max_aug_str;
+}
+
 function CheckConfig()
 {
     if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
@@ -14,8 +20,6 @@ function CheckConfig()
 
 function FirstEntry()
 {
-    local Augmentation anAug;
-
     Super.FirstEntry();
 
     RandomizeAugCannisters();
@@ -26,6 +30,15 @@ function AnyEntry()
     local Augmentation a;
     Super.AnyEntry();
 
+    foreach AllActors(class'Augmentation', a) {
+        RandoAug(a);
+    }
+}
+
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
+{
+    local Augmentation a;
+    Super.PlayerAnyEntry(p);
     foreach AllActors(class'Augmentation', a) {
         RandoAug(a);
     }
@@ -62,13 +75,13 @@ function RandomizeAugCannisters()
 {
     local AugmentationCannister a;
 
-    if( dxr.Player == None ) return;
+    if( dxr.flagbase == None ) return;
 
     SetSeed( "RandomizeAugCannisters" );
 
     foreach AllActors(class'AugmentationCannister', a)
     {
-        if( a.Owner == dxr.Player ) continue;
+        if( DeusExPlayer(a.Owner) != None ) continue;
         RandomizeAugCannister(dxr, a);
     }
 }
@@ -83,8 +96,8 @@ function static RandomizeAugCannister(DXRando dxr, AugmentationCannister a)
         a.AddAugs[1] = PickRandomAug(dxr);
     }
 
-    if( a.AddAugs[0] == 'AugSpeed' || a.AddAugs[1] == 'AugSpeed' ) {
-        dxr.Player.ClientMessage("Speed Enhancement is in this area.",, true);
+    if( a.AddAugs[0] == '#var prefix AugSpeed' || a.AddAugs[1] == '#var prefix AugSpeed' ) {
+        dxr.flags.player().ClientMessage("Speed Enhancement is in this area.",, true);
     }
 }
 
@@ -93,6 +106,7 @@ function static Name PickRandomAug(DXRando dxr)
     local int slot;
     local int skipAugSpeed;
     local int numAugs;
+    local Name AugName;
     numAugs=21;
     if( dxr.flags.speedlevel > 0 )
         skipAugSpeed=1;
@@ -100,15 +114,19 @@ function static Name PickRandomAug(DXRando dxr)
     if ( slot >= 11 ) slot++;// skip AugIFF
     if ( slot >= 12 ) slot++;// skip AugLight
     if (slot >= 18 ) slot++;// skip AugDatalink
-    log("Picked Aug "$ slot $"/"$numAugs$" " $ dxr.Player.AugmentationSystem.augClasses[slot].Name, 'DXRAugmentations');
-    return dxr.Player.AugmentationSystem.augClasses[slot].Name;
+    AugName = class'#var prefix AugmentationManager'.default.augClasses[slot].Name;
+    log("Picked Aug "$ slot $"/"$numAugs$" " $ AugName, 'DXRAugmentations');
+    return AugName;
 }
 
-function RandoAug(Augmentation a)
+simulated function RandoAug(Augmentation a)
 {
     local int oldseed;
     if( dxr == None ) return;
-    if( AugSpeed(a) != None || AugLight(a) != None || AugHeartLung(a) != None || AugIFF(a) != None || AugDatalink(a) != None || AugNinja(a) != None ) return;
+
+    if( #var prefix AugSpeed(a) != None || #var prefix AugLight(a) != None || #var prefix AugHeartLung(a) != None
+    || #var prefix AugIFF(a) != None || #var prefix AugDatalink(a) != None || AugNinja(a) != None )
+        return;
     oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoAug " $ a.class.name ) );
 
     RandoLevelValues(a, min_aug_str, max_aug_str, a.Description);
@@ -116,7 +134,7 @@ function RandoAug(Augmentation a)
     dxr.SetSeed(oldseed);
 }
 
-function string DescriptionLevel(Actor act, int i, out string word)
+simulated function string DescriptionLevel(Actor act, int i, out string word)
 {
     local Augmentation a;
     local float f;
@@ -127,56 +145,56 @@ function string DescriptionLevel(Actor act, int i, out string word)
         return "err";
     }
 
-    if( a.Class == class'AugAqualung') {
+    if( a.Class == class'#var prefix AugAqualung') {
         word = "Breath";
         return int(a.LevelValues[i]) $" sec";
     }
-    else if( a.Class == class'AugCombat') {
+    else if( a.Class == class'#var prefix AugCombat') {
         word = "Damage";
         return int(a.LevelValues[i] * 100.0) $"%";
     }
-    else if( a.Class == class'AugBallistic' || a.Class == class'AugEMP' || a.Class == class'AugEnviro' || a.Class == class'AugShield') {
+    else if( a.Class == class'#var prefix AugBallistic' || a.Class == class'#var prefix AugEMP' || a.Class == class'#var prefix AugEnviro' || a.Class == class'#var prefix AugShield') {
         word = "Damage Reduction";
         return int( (1.0 - a.LevelValues[i]) * 100.0 ) $ "%";
     }
-    else if( a.Class == class'AugCloak' || a.Class == class'AugRadarTrans') {
+    else if( a.Class == class'#var prefix AugCloak' || a.Class == class'#var prefix AugRadarTrans') {
         word = "Energy Use";
         return int(a.EnergyRate * a.LevelValues[i]) $" per min";
     }
-    else if( a.Class == class'AugDefense') {
+    else if( a.Class == class'#var prefix AugDefense') {
         word = "Distance";
         return int(a.LevelValues[i] / 16.0) $" ft";
     }
-    else if( a.Class == class'AugDrone') {
+    else if( a.Class == class'#var prefix AugDrone') {
         word = "Values";
         return string(int(a.LevelValues[i]));
     }
-    else if( a.Class == class'AugHealing') {
+    else if( a.Class == class'#var prefix AugHealing') {
         word = "Healing";
         return int(a.LevelValues[i]) $ " HP";
     }
-    else if( a.Class == class'AugMuscle') {
+    else if( a.Class == class'#var prefix AugMuscle') {
         word = "Strength";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
-    else if( a.Class == class'AugPower') {
+    else if( a.Class == class'#var prefix AugPower') {
         word = "Energy";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
-    else if( a.Class == class'AugSpeed' || a.Class == class'AugNinja') {
+    else if( a.Class == class'#var prefix AugSpeed' || a.Class == class'AugNinja') {
         word = "Speed";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
-    else if( a.Class == class'AugStealth') {
+    else if( a.Class == class'#var prefix AugStealth') {
         word = "Noise";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
-    else if( a.Class == class'AugTarget') {
+    else if( a.Class == class'#var prefix AugTarget') {
         word = "Damage";
         f = -2.0 * a.LevelValues[i] + 1.0;
         return int(f * 100.0) $ "%";
     }
-    else if( a.Class == class'AugVision') {
+    else if( a.Class == class'#var prefix AugVision') {
         word = "Distance";
         if(i<2) return "--";
         return int(a.LevelValues[i] / 16.0) $" ft";

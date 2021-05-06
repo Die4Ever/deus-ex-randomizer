@@ -4,13 +4,52 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 // check a 100 foot radius around me for combat
 if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
 
+what does this ResetKeyboard() function do?
+
+in order to decompile HX with UnrealEd, or compile HXRandomizer, you'll need to add the EditPackages lines to the DeusEx.ini file in the HX System folder
+EditPackages=Core
+EditPackages=Engine
+EditPackages=Editor
+EditPackages=Fire
+EditPackages=IpDrv
+EditPackages=UWindow
+EditPackages=UBrowser
+EditPackages=Extension
+EditPackages=DeusExUI
+EditPackages=ConSys
+EditPackages=DeusExConversations
+EditPackages=DeusExSounds
+EditPackages=DeusExItems
+EditPackages=DeusExDeco
+EditPackages=DeusExCharacters
+EditPackages=DeusExConText
+EditPackages=DeusExConAudioAIBarks
+EditPackages=MPCharacters
+EditPackages=DeusExText
+EditPackages=IpServer
+EditPackages=DeusEx
+EditPackages=HX
+EditPackages=HXRandomizer
+
+v1.5.8 Alpha:
+	need to handle PlayerFirstEntry vs PlayerAnyEntry
+	should do flagbase = class'DataStorage'.static.GetObj(self);// flags don't seem to be working for ints or names
+		make DataStorage match the interface of FlagBase
+	make door strength and min damage threshold proportional so HX players know how strong a door is?
+	need to do something about all the object names, maybe some of them can be switched to class+tag combos
+	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
+	NG+ remove 2 random skills (so the player has to make choices), half your skill points, a random aug, and a random weapon?
+	cleanup goals when finishing missions, especially hong kong
+	in DXRFixup PostFirstEntry() force the unatco retinal scanner to MJ12 lab to be unhackable, except make it work in mission 5
+	can I partially re-enable Paul's conversation in liberty island and remove the part where he gives you a weapon?
+		will need to mark it as played when entering unatco though, pretty sure it can break stuff
+
 v1.5.8:
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
 	tweak rotations for teleporters?
 	enough advanced options to be able to play unrandomized
 		-disable item/container shuffling, aug cannisters and aug values, skill values, loadout, names)
 	security cameras might be weird? maybe it's medbots' alliance?
-	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	speed up the door in paris chateau wine cellar
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
 	make horde mode use the DXRAutosave blocking manual saves method instead of the hack-y permanent fake datalink
@@ -22,9 +61,6 @@ v1.5.8:
 	fix the dumb button to backtrack in paris metro, stacked boxes is better
 	if I get rid of the ZoneVelocity on WaterZone5 in 06_hongkong_storage, I can add a dynamicteleporter to make that pipe a 2-way connection
 		might also need to do WaterZone1, but that would make it difficult to hold your breath through there, I could make a dynamicteleporter bring you past that
-	NG+ remove 2 random skills, half your skill points, a random aug, and a random weapon?
-	cleanup goals when finishing missions, especially hong kong
-	in DXRFixup PostFirstEntry() force the unatco retinal scanner to MJ12 lab to be unhackable, except make it work in mission 5
 	DXREntranceRando: WARNING: GenerateConnections(12) succeeded but took 24 attempts! seed: 158016, genconsfails: 7, validatefails: 17
 
 
@@ -58,12 +94,12 @@ native static final function ResetConfig();
 	local int i, k, r;
 
 	// remove ammo from the player when captured
-	for( item = dxr.Player.Inventory; item != None; item = nextItem) {
+	for( item = player().Inventory; item != None; item = nextItem) {
 		nextItem = item.Inventory;
 		a = Ammo(item);
 		if( a != None ) {
 			a.AmmoAmount = 0;
-			dxr.Player.UpdateAmmoBeltText(a);
+			player().UpdateAmmoBeltText(a);
 		}
 	}
 
@@ -424,6 +460,16 @@ bIsItemGoal?
 should NanoKeys have buoyancy?
 
 maybe I can rewrite this as a mutator?
+
+https://wiki.beyondunreal.com/Legacy:Simulated_Function
+
+http://www.hypercoop.tk/infobase/archive/unrealtech/Network.htm
+
+https://wiki.beyondunreal.com/Legacy:Replication_Examples/Replication_Test
+
+https://wiki.beyondunreal.com/What_happens_when_an_Actor_is_spawned
+
+https://wiki.beyondunreal.com/Legacy:Simulated_Function
 
 https://docs.unrealengine.com/udk/Two/UnrealScriptReference.html
 

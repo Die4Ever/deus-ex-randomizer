@@ -1,4 +1,8 @@
+#ifdef hx
+class DXRandoTests extends HXRandoGameInfo;
+#else
 class DXRandoTests extends DeusExGameInfo;
+#endif
 
 event playerpawn Login
 (
@@ -44,8 +48,8 @@ function Timer()
         log("waiting... dxr: " $ dxr $ ", dxr.bTickEnabled: " $ dxr.bTickEnabled );
         return;
     }
-    if( dxr.player == None ) {
-        log("ERROR: still didn't find player? dxr.bTickEnabled: "$dxr.bTickEnabled, Name);
+    if( dxr.flagbase == None ) {
+        log("ERROR: still didn't find flagbase? dxr.bTickEnabled: "$dxr.bTickEnabled, Name);
         SetTimer(0, false);
         ConsoleCommand("Exit");
         return;

@@ -159,6 +159,9 @@ function PostFirstEntry()
     Super.PostFirstEntry();
 
     switch(dxr.localURL) {
+        case "02_NYC_WAREHOUSE":
+            AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));
+        // TODO: force the unatco retinal scanner to MJ12 lab to be unhackable, except make it actually work in mission 5
         case "03_NYC_AirfieldHeliBase":
             //crates to get back over the beginning of the level
             _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
@@ -179,7 +182,6 @@ function AnyEntry()
 
     FixSamCarter();
     FixAmmoShurikenName();
-    FixLogTimeout();
 
     SetSeed( "DXRFixup AnyEntry missions" );
 
@@ -194,6 +196,13 @@ function AnyEntry()
             NYC_08_AnyEntry();
             break;
     }
+}
+
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
+{
+    Super.PlayerAnyEntry(p);
+    FixLogTimeout(p);
+    FixAmmoShurikenName();
 }
 
 function PreTravel()
@@ -220,11 +229,11 @@ function Timer()
             NYC_04_CheckPaulRaid();
             break;
         case "08_NYC_STREET":
-            if ( dxr.Player.flagBase.GetBool('StantonDowd_Played') )
+            if ( dxr.flagbase.GetBool('StantonDowd_Played') )
             {
                 foreach AllActors(class'BlackHelicopter', chopper, 'CopterExit')
                     chopper.EnterWorld();
-                dxr.Player.flagBase.SetBool('MS_Helicopter_Unhidden', True,, 9);
+                dxr.flagbase.SetBool('MS_Helicopter_Unhidden', True,, 9);
             }
             break;
     }
@@ -238,7 +247,7 @@ function FixSamCarter()
     }
 }
 
-function FixAmmoShurikenName()
+simulated function FixAmmoShurikenName()
 {
     local AmmoShuriken a;
 
@@ -252,10 +261,9 @@ function FixAmmoShurikenName()
     }
 }
 
-function FixLogTimeout()
+simulated function FixLogTimeout(#var PlayerPawn  p)
 {
-    //err("HUD LogTimeout was: "$DeusExRootWindow(dxr.player.rootWindow).hud.msgLog.displayTime);
-    DeusExRootWindow(dxr.player.rootWindow).hud.msgLog.SetLogTimeout(10);
+    DeusExRootWindow(p.rootWindow).hud.msgLog.SetLogTimeout(10);
 }
 
 function IncreaseBrightness(int brightness)
@@ -485,11 +493,11 @@ function NYC_04_CheckPaulUndead()
     local PaulDenton paul;
     local int count;
 
-    if( ! dxr.Player.flagBase.GetBool('PaulDenton_Dead')) return;
+    if( ! dxr.flagbase.GetBool('PaulDenton_Dead')) return;
 
     foreach AllActors(class'PaulDenton', paul) {
         if( paul.Health > 0 ) {
-            dxr.Player.flagBase.SetBool('PaulDenton_Dead', false,, -999);
+            dxr.flagbase.SetBool('PaulDenton_Dead', false,, -999);
             return;
         }
     }
@@ -501,12 +509,12 @@ function NYC_04_CheckPaulRaid()
     local ScriptedPawn p;
     local int count, dead, i, pawns;
 
-    if( ! dxr.player.flagBase.GetBool('M04RaidTeleportDone') ) return;
+    if( ! dxr.flagbase.GetBool('M04RaidTeleportDone') ) return;
 
     foreach AllActors(class'PaulDenton', paul) {
         // fix a softlock if you jump while approaching Paul
-        if( ! dxr.Player.flagBase.GetBool('TalkedToPaulAfterMessage_Played') ) {
-            dxr.Player.StartConversationByName('TalkedToPaulAfterMessage', paul, False, False);
+        if( ! dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played') ) {
+            player().StartConversationByName('TalkedToPaulAfterMessage', paul, False, False);
         }
 
         count++;
@@ -529,14 +537,14 @@ function NYC_04_CheckPaulRaid()
         if( PaulDenton(p) != None ) continue;
         if( IsCritter(p) ) continue;
         if( p.bHidden ) continue;
-        if( p.GetAllianceType(dxr.player.alliance) != ALLIANCE_Hostile ) continue;
+        if( p.GetAllianceType(player().alliance) != ALLIANCE_Hostile ) continue;
         p.bStasis = false;
         pawns++;
     }
 
-    if( dead > 0 || dxr.player.flagBase.GetBool('PaulDenton_Dead') ) {
-        dxr.player.ClientMessage("RIP Paul :(",, true);
-        dxr.player.flagBase.SetBool('PaulDenton_Dead', true,, 999);
+    if( dead > 0 || dxr.flagbase.GetBool('PaulDenton_Dead') ) {
+        player().ClientMessage("RIP Paul :(",, true);
+        dxr.flagbase.SetBool('PaulDenton_Dead', true,, 999);
         SetTimer(0, False);
     }
     else if( dead == 0 && (count == 0 || pawns == 0) ) {
@@ -544,9 +552,9 @@ function NYC_04_CheckPaulRaid()
         SetTimer(0, False);
     }
     else if( pawns == 1 )
-        dxr.player.ClientMessage(pawns$" enemy remaining");
+        player().ClientMessage(pawns$" enemy remaining");
     else if( pawns <3 )
-        dxr.player.ClientMessage(pawns$" enemies remaining");
+        player().ClientMessage(pawns$" enemies remaining");
 }
 
 function NYC_04_MarkPaulSafe()
@@ -554,9 +562,9 @@ function NYC_04_MarkPaulSafe()
     local PaulDenton paul;
     local FlagTrigger t;
     local SkillAwardTrigger st;
-    if( dxr.player.flagBase.GetBool('PaulLeftHotel') ) return;
+    if( dxr.flagbase.GetBool('PaulLeftHotel') ) return;
 
-    dxr.player.flagBase.SetBool('PaulLeftHotel', true,, 999);
+    dxr.flagbase.SetBool('PaulLeftHotel', true,, 999);
 
     foreach AllActors(class'PaulDenton', paul) {
         paul.SetOrders('Leaving', 'PaulLeaves', True);
@@ -577,7 +585,7 @@ function NYC_04_MarkPaulSafe()
         switch(st.Tag) {
             case 'StayedWithPaul':
             case 'PaulOutaHere':
-                st.Touch(dxr.Player);
+                st.Touch(player());
         }
     }
 }
@@ -588,7 +596,7 @@ function NYC_04_LeaveHotel()
     foreach AllActors(class'FlagTrigger', t) {
         if( t.Event == 'BailedOutWindow' )
         {
-            t.Touch(dxr.Player);
+            t.Touch(player());
         }
     }
 }
@@ -633,10 +641,10 @@ function NYC_04_AnyEntry()
     {
         case "04_NYC_HOTEL":
             NYC_04_CheckPaulUndead();
-            if( ! dxr.player.flagBase.GetBool('PaulDenton_Dead') )
+            if( ! dxr.flagbase.GetBool('PaulDenton_Dead') )
                 SetTimer(1, True);
-            if(dxr.Player.flagBase.GetBool('NSFSignalSent')) {
-                dxr.Player.flagBase.SetBool('PaulInjured_Played', true,, 5);
+            if(dxr.flagbase.GetBool('NSFSignalSent')) {
+                dxr.flagbase.SetBool('PaulInjured_Played', true,, 5);
             }
 
             // conversations are transient, so they need to be fixed in AnyEntry
@@ -645,7 +653,7 @@ function NYC_04_AnyEntry()
             break;
 
         case "04_NYC_SMUG":
-            if( dxr.player.flagBase.GetBool('FordSchickRescued') )
+            if( dxr.flagbase.GetBool('FordSchickRescued') )
             {
                 foreach AllActors(class'FordSchick', ford)
                     ford.EnterWorld();
@@ -816,7 +824,7 @@ function Paris_FirstEntry()
         case "10_PARIS_CATACOMBS_TUNNELS":
             foreach AllActors(class'Trigger', t)
                 if( t.Event == 'MJ12CommandoSpecial' )
-                    t.Touch(dxr.player);// make this guy patrol instead of t-pose
+                    t.Touch(player());// make this guy patrol instead of t-pose
             
             AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
             AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
@@ -851,13 +859,13 @@ function HongKong_AnyEntry()
     switch(dxr.localURL)
     {
         case "06_HONGKONG_TONGBASE":
-            boolFlag = dxr.Player.flagBase.GetBool('QuickLetPlayerIn');
+            boolFlag = dxr.flagbase.GetBool('QuickLetPlayerIn');
             foreach AllActors(class'Actor', a)
             {
                 switch(string(a.Tag))
                 {
                     case "TriadLumPath":
-                        ScriptedPawn(a).ChangeAlly(dxr.Player.Alliance,1,False);
+                        ScriptedPawn(a).ChangeAlly(player().Alliance,1,False);
                         break;
                         
                     case "TracerTong":
@@ -869,7 +877,7 @@ function HongKong_AnyEntry()
                         }
                         break;
                     case "AlexJacobson":
-                        recruitedFlag = dxr.Player.flagBase.GetBool('JacobsonRecruited');
+                        recruitedFlag = dxr.flagbase.GetBool('JacobsonRecruited');
                         if ( boolFlag == True && recruitedFlag == True)
                         {
                             ScriptedPawn(a).EnterWorld();
@@ -878,7 +886,7 @@ function HongKong_AnyEntry()
                         }
                         break;
                     case "JaimeReyes":
-                        recruitedFlag = dxr.Player.flagBase.GetBool('JaimeRecruited') && dxr.Player.flagBase.GetBool('Versalife_Done');
+                        recruitedFlag = dxr.flagbase.GetBool('JaimeRecruited') && dxr.flagbase.GetBool('Versalife_Done');
                         if ( boolFlag == True && recruitedFlag == True)
                         {
                             ScriptedPawn(a).EnterWorld();
@@ -916,7 +924,7 @@ function HongKong_AnyEntry()
                     case "TriadLumPath5":
                     case "GordonQuick":
                     
-                        ScriptedPawn(a).ChangeAlly(dxr.Player.Alliance,1,False);
+                        ScriptedPawn(a).ChangeAlly(player().Alliance,1,False);
                         break;
                 }
             }
@@ -932,7 +940,9 @@ function NYC_08_AnyEntry()
     local StantonDowd s;
 
     if( dxr.localURL != "08_NYC_BAR" ) {
-        dxr.Player.ChangeSong("NYCStreets2_Music.NYCStreets2_Music", 0);
+#ifdef injections
+        player().ChangeSong("NYCStreets2_Music.NYCStreets2_Music", 0);
+#endif
     }
 
     switch(dxr.localURL) {
@@ -990,7 +1000,7 @@ function AddDelay(Actor trigger, float time)
 {
     local Dispatcher d;
     local name tagname;
-    tagname = dxr.Player.rootWindow.StringToName( "dxr_delay_" $ trigger.Event );
+    tagname = StringToName( "dxr_delay_" $ trigger.Event );
     d = Spawn(class'Dispatcher', trigger, tagname);
     d.OutEvents[0] = trigger.Event;
     d.OutDelays[0] = time;

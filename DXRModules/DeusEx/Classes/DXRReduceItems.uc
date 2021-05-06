@@ -62,10 +62,10 @@ function PostFirstEntry()
 
     ReduceAmmo(class'Ammo', float(dxr.flags.ammo*scale)/100.0/100.0);
 
-    ReduceSpawns(class'Multitool', dxr.flags.multitools*scale/100);
-    ReduceSpawns(class'Lockpick', dxr.flags.lockpicks*scale/100);
-    ReduceSpawns(class'BioelectricCell', dxr.flags.biocells*scale/100);
-    ReduceSpawns(class'MedKit', dxr.flags.medkits*scale/100);
+    ReduceSpawns(class'#var prefix Multitool', dxr.flags.multitools*scale/100);
+    ReduceSpawns(class'#var prefix Lockpick', dxr.flags.lockpicks*scale/100);
+    ReduceSpawns(class'#var prefix BioelectricCell', dxr.flags.biocells*scale/100);
+    ReduceSpawns(class'#var prefix MedKit', dxr.flags.medkits*scale/100);
 
     for(i=0; i < ArrayCount(ammo_reductions); i++) {
         if( ammo_reductions[i].type == "" ) continue;
@@ -81,7 +81,7 @@ function PostFirstEntry()
     SetTimer(1.0, true);
 }
 
-function Timer()
+simulated function Timer()
 {
     local int mission, scale;
     Super.Timer();
@@ -92,23 +92,23 @@ function Timer()
     SetAllMaxCopies(scale);
 }
 
-function SetAllMaxCopies(int scale)
+simulated function SetAllMaxCopies(int scale)
 {
     local int i;
     local class<Actor> c;
     if( dxr == None ) return;
     SetMaxAmmo( class'Ammo', dxr.flags.ammo*scale/100 );
 
-    SetMaxCopies(class'FireExtinguisher', 125);// just make sure to apply the enviro skill, HACK: 125% to counteract the normal 80%
-    SetMaxCopies(class'Multitool', dxr.flags.multitools*scale/100 );
-    SetMaxCopies(class'Lockpick', dxr.flags.lockpicks*scale/100 );
-    SetMaxCopies(class'BioelectricCell', dxr.flags.biocells*scale/100 );
-    SetMaxCopies(class'MedKit', dxr.flags.medkits*scale/100 );
+    SetMaxCopies(class'#var prefix FireExtinguisher', 125);// just make sure to apply the enviro skill, HACK: 125% to counteract the normal 80%
+    SetMaxCopies(class'#var prefix Multitool', dxr.flags.multitools*scale/100 );
+    SetMaxCopies(class'#var prefix Lockpick', dxr.flags.lockpicks*scale/100 );
+    SetMaxCopies(class'#var prefix BioelectricCell', dxr.flags.biocells*scale/100 );
+    SetMaxCopies(class'#var prefix MedKit', dxr.flags.medkits*scale/100 );
 
     for(i=0; i < ArrayCount(max_copies); i++) {
         if( max_copies[i].type == "" ) continue;
-        c = GetClassFromString( max_copies[i].type, class'DeusExPickup' );
-        SetMaxCopies( class<DeusExPickup>(c), max_copies[i].percent*scale/100 );
+        c = GetClassFromString( max_copies[i].type, class'#var prefix DeusExPickup' );
+        SetMaxCopies( class<#var prefix DeusExPickup>(c), max_copies[i].percent*scale/100 );
     }
     for(i=0; i < ArrayCount(max_ammo); i++) {
         if( max_ammo[i].type == "" ) continue;
@@ -162,8 +162,8 @@ function ReduceSpawns(class<Actor> classname, float percent)
     foreach AllActors(class'Actor', a)
     {
         //if( SkipActor(a, classname.name) ) continue;
-        if( a == dxr.Player ) continue;
-        if( a.Owner == dxr.Player ) continue;
+        if( PlayerPawn(a) != None ) continue;
+        if( PlayerPawn(a.Owner) != None ) continue;
         if( ! a.IsA(classname.name) ) continue;
 
         tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, a.class.name);
@@ -210,42 +210,38 @@ function ReduceSpawnsInContainers(class<Actor> classname, float percent)
     }
 }
 
-function SetMaxCopies(class<DeusExPickup> type, int percent)
+simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
 {
-    local DeusExPickup p;
-    local int enviro_add;
+    local #var prefix DeusExPickup p;
 
-    if( ClassIsChildOf(class'FireExtinguisher', type) )
-        enviro_add = dxr.Player.SkillSystem.GetSkillLevel(class'SkillEnviro');
-
-    foreach AllActors(class'DeusExPickup', p) {
+    foreach AllActors(class'#var prefix DeusExPickup', p) {
         if( ! p.IsA(type.name) ) continue;
         p.maxCopies = float(p.default.maxCopies) * float(percent) / 100.0 * 0.8;
-        if( FireExtinguisher(p) != None )
-            p.maxCopies += enviro_add;
+        if( DeusExPlayer(p.Owner) != None && #var prefix FireExtinguisher(p) != None )
+            p.maxCopies += DeusExPlayer(p.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillEnviro');;
 
         if( p.NumCopies > p.maxCopies ) p.NumCopies = p.maxCopies;
     }
 }
 
-function SetMaxAmmo(class<Ammo> type, int percent)
+simulated function SetMaxAmmo(class<Ammo> type, int percent)
 {
     local Ammo a;
-    local int demo_add;
-
-    demo_add = dxr.Player.SkillSystem.GetSkillLevel(class'SkillDemolition');
 
     foreach AllActors(class'Ammo', a) {
         if( ! a.IsA(type.name) ) continue;
         a.MaxAmmo = float(a.default.MaxAmmo) * float(percent) / 100.0 * 0.8;
-        if( AmmoEMPGrenade(a) != None || AmmoGasGrenade(a) != None || AmmoLAM(a) != None || AmmoNanoVirusGrenade(a) != None )
-            a.MaxAmmo += demo_add;
+        if( DeusExPlayer(a.Owner) != None
+            && (AmmoEMPGrenade(a) != None || AmmoGasGrenade(a) != None || AmmoLAM(a) != None || AmmoNanoVirusGrenade(a) != None )
+        ) {
+            a.MaxAmmo += DeusExPlayer(a.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillDemolition');;
+        }
         
         if( a.AmmoAmount > a.MaxAmmo ) a.AmmoAmount = a.MaxAmmo;
     }
 }
 
-function AddDXRCredits(CreditsWindow cw) 
+simulated function AddDXRCredits(CreditsWindow cw) 
 {
     local int i;
     local DXREnemies e;
@@ -272,7 +268,7 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
-function PrintAmmoRates(CreditsWindow cw, class<DeusExWeapon> w)
+simulated function PrintAmmoRates(CreditsWindow cw, class<DeusExWeapon> w)
 {
     local class<Ammo> a;
     local int i;
@@ -285,7 +281,7 @@ function PrintAmmoRates(CreditsWindow cw, class<DeusExWeapon> w)
     }
 }
 
-function PrintItemRate(CreditsWindow cw, class<Inventory> c, int percent, optional bool AllowIncrease, optional string BackupName)
+simulated function PrintItemRate(CreditsWindow cw, class<Inventory> c, int percent, optional bool AllowIncrease, optional string BackupName)
 {
     local float tperc;
     local string ItemName;

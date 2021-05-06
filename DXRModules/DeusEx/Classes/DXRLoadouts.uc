@@ -76,7 +76,11 @@ function CheckConfig()
         item_sets[3].bans = "Engine.Weapon";
         item_sets[3].allows = "WeaponSword,WeaponShuriken";
         item_sets[3].starting_equipments = "WeaponShuriken,WeaponSword,AmmoShuriken";
+#ifdef hx
+        item_sets[3].starting_augs = "HXRandomizer.AugNinja";//combines AugStealth and active AugSpeed
+#else
         item_sets[3].starting_augs = "AugNinja";//combines AugStealth and active AugSpeed
+#endif
         item_sets[3].item_spawns = "WeaponShuriken,5,BioelectricCell,2";
 
         item_sets[4].name = "Don't Give Me the GEP Gun";
@@ -314,6 +318,7 @@ function AdjustWeapon(DeusExWeapon w)
 
 function NinjaAdjustWeapon(DeusExWeapon w)
 {
+#ifdef injections
     class'Shuriken'.default.blood_mult = 2;
     switch(w.Class) {
         case class'WeaponSword':
@@ -328,20 +333,23 @@ function NinjaAdjustWeapon(DeusExWeapon w)
             WeaponNanoSword(w).default.blood_mult = 2;
             break;
     }
+#endif
 }
 
 function FirstEntry()
 {
     Super.FirstEntry();
 
-    if( dxr.localURL == "01_NYC_UNATCOISLAND" && dxr.flags.newgameplus_loops == 0 ) {
-        RandoStartingEquipment(dxr.player);
-    }
-
     SpawnItems();
 }
 
-function AddStartingEquipment(Pawn p)
+simulated function PlayerLogin(#var PlayerPawn  p)
+{
+    Super.PlayerLogin(p);
+    RandoStartingEquipment(p);
+}
+
+function AddStartingEquipment(DeusExPlayer p)
 {
     local class<Inventory> iclass;
     local class<Augmentation> aclass;
@@ -363,7 +371,7 @@ function AddStartingEquipment(Pawn p)
     for(i=0; i < ArrayCount(_item_sets[loadout].starting_augs); i++) {
         aclass = _item_sets[loadout].starting_augs[i];
         if( aclass == None ) continue;
-        class'DXRAugmentations'.static.AddAug( dxr.player, aclass, dxr.flags.speedlevel );
+        class'DXRAugmentations'.static.AddAug( p, aclass, dxr.flags.speedlevel );
     }
 }
 
@@ -378,8 +386,8 @@ function RandoStartingEquipment(DeusExPlayer player)
     l("RandoStartingEquipment");
     dxr.SetSeed( dxr.seed + dxr.Crc("RandoStartingEquipment") );//independent of map/mission
 
-    dxr.player.energy = rng(75)+25;
-    dxr.player.Credits = rng(200);
+    player.energy = rng(75)+25;
+    player.Credits = rng(200);
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
 
@@ -388,9 +396,12 @@ function RandoStartingEquipment(DeusExPlayer player)
     {
         anItem = item;
         item = item.Inventory;
-        if( NanoKeyRing(anItem) != None ) continue;
-        if( dxre == None && DeusExWeapon(anItem) != None ) continue;
+        l("RandoStartingEquipment("$player$") checking item "$anItem$", bDisplayableInv: "$anItem.bDisplayableInv);
+        if( ! anItem.bDisplayableInv ) continue;
+        if( #var prefix NanoKeyRing(anItem) != None ) continue;
+        if( dxre == None && Weapon(anItem) != None ) continue;
         if( dxre == None && Ammo(anItem) != None ) continue;
+        l("RandoStartingEquipment("$player$") removing item: "$anItem);
         player.DeleteInventory(anItem);
         anItem.Destroy();
     }

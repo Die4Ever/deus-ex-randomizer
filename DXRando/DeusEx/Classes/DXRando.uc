@@ -1,6 +1,6 @@
 class DXRando extends Info config(DXRando) transient;
 
-var transient Human Player;
+var transient FlagBase flagbase;
 var transient DXRFlags flags;
 var transient DXRTelemetry telemetry;
 var transient DeusExLevelInfo dxInfo;
@@ -19,6 +19,36 @@ var config int config_version;
 
 var transient bool runPostFirstEntry;
 var transient bool bTickEnabled;// bTickEnabled is just for DXRandoTests to inspect
+var transient bool bLoginReady;
+
+replication
+{
+    reliable if( Role==ROLE_Authority )
+        modules, num_modules, runPostFirstEntry, bTickEnabled, localURL, dxInfo, telemetry, flags, flagbase, CrcTable, seed;
+}
+
+simulated event PostNetBeginPlay()
+{
+    Super.PostNetBeginPlay();
+    log(Self$".PostNetBeginPlay()", self.class.name);
+    SetTimer(0.2, true);
+}
+
+simulated event Timer()
+{
+    local int i;
+    if( bTickEnabled == true ) return;
+
+    if( bLoginReady ) {
+        PlayerLogin(#var PlayerPawn (GetPlayerPawn()) );
+        SetTimer(0, false);
+    }
+
+    if( ! CheckLogin(#var PlayerPawn (GetPlayerPawn())) )
+        return;
+    
+    bLoginReady = true;
+}
 
 function SetdxInfo(DeusExLevelInfo i)
 {
@@ -26,9 +56,11 @@ function SetdxInfo(DeusExLevelInfo i)
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL);
 
+#ifdef backtracking
     // undo the damage that DXRBacktracking has done to prevent saves from being deleted
     // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
     class'DXRBacktracking'.static.LevelInit(Self);
+#endif
 
     CrcInit();
     ClearModules();
@@ -39,16 +71,25 @@ function SetdxInfo(DeusExLevelInfo i)
     bTickEnabled = true;
 }
 
-function Init()
+function DXRInit()
 {
-    l("Init has localURL == " $ localURL);
-    foreach AllActors(class'Human', Player) { break; }
-    if( Player == None ) {
-        warn("Init() didn't find player?");
+#ifndef hx
+    local #var PlayerPawn  p;
+    l("DXRInit has localURL == " $ localURL);
+    foreach AllActors(class'#var PlayerPawn ', p) {
+        flagbase = p.FlagBase;
+        break;
+    }
+#elseif hx
+    flagbase = HXGameInfo(Level.Game).Steve.FlagBase;
+    //flagbase = class'DataStorage'.static.GetObj(self);// flags don't seem to be working for ints or names
+#endif
+    if( flagbase == None ) {
+        warn("DXRInit() didn't find flagbase?");
         return;
     }
-    l("found Player "$Player);
-    
+    l("found flagbase "$flagbase);
+
     flags.LoadFlags();
     LoadModules();
     RandoEnter();
@@ -58,27 +99,37 @@ function CheckConfig()
 {
     local int i;
 
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
+    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,5,7) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
 
         i=0;
+#ifdef vanilla
         modules_to_load[i++] = "DXRMissions";
+#endif
         modules_to_load[i++] = "DXRSwapItems";
         //modules_to_load[i++] = "DXRAddItems";
+#ifdef fixes
         modules_to_load[i++] = "DXRFixup";
+#endif
+#ifdef backtracking
         modules_to_load[i++] = "DXRBacktracking";
+#endif
         modules_to_load[i++] = "DXRKeys";
         modules_to_load[i++] = "DXRSkills";
         modules_to_load[i++] = "DXRPasswords";
         modules_to_load[i++] = "DXRAugmentations";
         modules_to_load[i++] = "DXRReduceItems";
         modules_to_load[i++] = "DXRNames";
-        modules_to_load[i++] = "DXRAutosave";
         modules_to_load[i++] = "DXRMemes";
         modules_to_load[i++] = "DXREnemies";
+#ifdef backtracking
         modules_to_load[i++] = "DXREntranceRando";
+#endif
+#ifdef singleplayer
+        modules_to_load[i++] = "DXRAutosave";
+#endif
         modules_to_load[i++] = "DXRHordeMode";
         //modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
@@ -87,11 +138,12 @@ function CheckConfig()
         modules_to_load[i++] = "DXRCrowdControl";
         modules_to_load[i++] = "DXRMachines";
         modules_to_load[i++] = "DXRTelemetry";
+#ifdef singleplayer
         modules_to_load[i++] = "DXRStats";
-        modules_to_load[i++] = "DXRFashion";
         modules_to_load[i++] = "DXRNPCs";
-
+        modules_to_load[i++] = "DXRFashion";
         //modules_to_load[i++] = "DXRTestAllMaps";
+#endif
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
         info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
@@ -136,12 +188,16 @@ function LoadModules()
     local class<Actor> c;
     for( i=0; i < ArrayCount( modules_to_load ); i++ ) {
         if( modules_to_load[i] == "" ) continue;
+#ifdef hx
+        c = flags.GetClassFromString( "HXRandomizer." $ modules_to_load[i], class'DXRBase');
+#else
         c = flags.GetClassFromString(modules_to_load[i], class'DXRBase');
+#endif
         LoadModule( class<DXRBase>(c) );
     }
 }
 
-final function DXRBase FindModule(class<DXRBase> moduleclass)
+simulated final function DXRBase FindModule(class<DXRBase> moduleclass)
 {
     local DXRBase m;
     local int i;
@@ -171,16 +227,30 @@ function ClearModules()
     flags=None;
 }
 
-simulated function Tick(float deltaTime)
+simulated event Tick(float deltaTime)
 {
+    log("Tick", self.class.name);
+    if( Role < ROLE_Authority ) {
+        Disable('Tick');
+        return;
+    }
+    DXRTick(deltaTime);
+}
+
+function DXRTick(float deltaTime)
+{
+    local #var PlayerPawn  pawn;
     local int i;
+    SetTimer(0, false);
     if( dxInfo == None )
     {
         //waiting...
+        l("DXRTick dxInfo == None");
+        return;
     }
-    if( Player == None )
+    else if( flagbase == None )
     {
-        Init();
+        DXRInit();
     }
     else if(runPostFirstEntry)
     {
@@ -205,18 +275,24 @@ simulated function Tick(float deltaTime)
 
 function RandoEnter()
 {
+    local #var PlayerPawn  pawn;
     local int i;
     local bool firstTime;
     local name flagName;
     local bool IsTravel;
 
-    IsTravel = flags.f.GetBool('PlayerTraveling');
+    if( flagbase == None ) {
+        err("RandoEnter() flagbase == None");
+        return;
+    }
 
-    flagName = Player.rootWindow.StringToName("M"$localURL$"_Randomized");
-    if (!flags.f.GetBool(flagName))
+    IsTravel = flagbase.GetBool('PlayerTraveling');
+
+    flagName = flagbase.StringToName("M"$localURL$"_Randomized");
+    if (!flagbase.GetBool(flagName))
     {
         firstTime = True;
-        flags.f.SetBool(flagName, True,, 999);
+        flagbase.SetBool(flagName, True,, 999);
     }
 
     info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL);
@@ -250,9 +326,56 @@ function RandoEnter()
         modules[i].AnyEntry();
     }
 
+    foreach AllActors(class'#var PlayerPawn ', pawn) {
+        PlayerLogin(pawn);
+    }
+
 }
 
-final function int SetSeed(int s)
+simulated function bool CheckLogin(#var PlayerPawn  p)
+{
+    local int i;
+
+    err("CheckLogin("$p$"), bTickEnabled: "$bTickEnabled$", flagbase: "$flagbase$", num_modules: "$num_modules$", flags: "$flags);
+    if( bTickEnabled == true ) return false;
+
+    for(i=0; i<num_modules; i++) {
+        if( modules[i] == None )
+            return false;
+        if( modules[i].dxr != Self )
+            return false;
+        if( ! modules[i].CheckLogin(p) )
+            return false;
+    }
+    return true;
+}
+
+simulated function PlayerLogin(#var PlayerPawn  p)
+{
+    local int i;
+    local PlayerDataItem data;
+
+    if( flags == None || !flags.flags_loaded ) {
+        info("PlayerLogin("$p$") flags: "$flags$", flags.flags_loaded: "$flags.flags_loaded);
+        return;
+    }
+
+    data = class'PlayerDataItem'.static.GiveItem(p);
+    info("PlayerLogin("$p$") do it, p.PlayerDataItem: " $ data $", data.local_inited: "$data.local_inited);
+
+    if( !data.local_inited && dxInfo.missionNumber > 0 && dxInfo.missionNumber < 99 )
+    {
+        for(i=0; i<num_modules; i++) {
+            modules[i].PlayerLogin(p);
+        }
+        data.local_inited = true;
+    }
+    for(i=0; i<num_modules; i++) {
+        modules[i].PlayerAnyEntry(p);
+    }
+}
+
+simulated final function int SetSeed(int s)
 {
     local int oldseed;
     oldseed = newseed;
@@ -261,7 +384,7 @@ final function int SetSeed(int s)
     return oldseed;
 }
 
-final function int rng(int max)
+simulated final function int rng(int max)
 {
     local int gen1, gen2;
     gen2 = 2147483643;
@@ -278,7 +401,7 @@ final function int rng(int max)
 // Initializes CrcTable and prepares it for use with Crc.
 // ============================================================================
 
-final function CrcInit() {
+simulated final function CrcInit() {
 
     const CrcPolynomial = 0xedb88320;
 
@@ -308,7 +431,7 @@ final function CrcInit() {
 // Calculates and returns a checksum of the given string. Call CrcInit before.
 // ============================================================================
 
-final function int Crc(coerce string Text) {
+simulated final function int Crc(coerce string Text) {
 
     local int CrcValue;
     local int IndexChar;
@@ -321,28 +444,32 @@ final function int Crc(coerce string Text) {
     return CrcValue;
 }
 
-function l(string message)
+simulated function l(string message)
 {
     log(message, class.name);
 }
 
-function info(string message)
+simulated function info(string message)
 {
     log("INFO: " $ message, class.name);
     class'DXRTelemetry'.static.SendLog(Self, Self, "INFO", message);
 }
 
-function warning(string message)
+simulated function warning(string message)
 {
     log("WARNING: " $ message, class.name);
     class'DXRTelemetry'.static.SendLog(Self, Self, "WARNING", message);
 }
 
-function err(string message)
+simulated function err(string message)
 {
     log("ERROR: " $ message, class.name);
-    if( Player != None )
-        Player.ClientMessage( Class @ message, 'ERROR' );
+#ifdef singleplayer
+    if( flags.player() != None )
+        flags.player().ClientMessage( Class @ message, 'ERROR' );
+#else
+    BroadcastMessage(class.name$": ERROR: "$message, true, 'ERROR');
+#endif
 
     class'DXRTelemetry'.static.SendLog(Self, Self, "ERROR", message);
 }
@@ -355,7 +482,7 @@ function RunTests()
         modules[i].StartRunTests();
         if( modules[i].fails > 0 ) {
             failures++;
-            player.ShowHud(true);
+            flags.player().ShowHud(true);
             err( "ERROR: " $ modules[i] @ modules[i].fails $ " tests failed!" );
         }
         else
@@ -365,7 +492,7 @@ function RunTests()
     if( failures == 0 ) {
         l( "all tests passed!" );
     } else {
-        player.ShowHud(true);
+        flags.player().ShowHud(true);
         err( "ERROR: " $ failures $ " modules failed tests!" );
     }
 }
@@ -378,7 +505,7 @@ function ExtendedTests()
         modules[i].StartExtendedTests();
         if( modules[i].fails > 0 ) {
             failures++;
-            player.ShowHud(true);
+            flags.player().ShowHud(true);
             err( "ERROR: " $ modules[i] @ modules[i].fails $ " tests failed!" );
         }
         else
@@ -388,13 +515,16 @@ function ExtendedTests()
     if( failures == 0 ) {
         l( "all extended tests passed!" );
     } else {
-        player.ShowHud(true);
+        flags.player().ShowHud(true);
         err( "ERROR: " $ failures $ " modules failed tests!" );
     }
 }
 
 defaultproperties
 {
-     bAlwaysRelevant=True
-     bTickEnabled=True
+    NetPriority=0.1
+    bAlwaysRelevant=True
+    bGameRelevant=True
+    bTickEnabled=True
+    RemoteRole=ROLE_SimulatedProxy
 }

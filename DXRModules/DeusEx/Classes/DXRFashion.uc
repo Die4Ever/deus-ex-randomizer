@@ -7,24 +7,23 @@ var int numCoatInfluencers;
 var class<ScriptedPawn> nonCoatInfluencers[100];
 var int numNonCoatInfluencers;
 
-function AnyEntry()
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
 {
     local int lastUpdate;
-    Super.AnyEntry();
+    Super.PlayerAnyEntry(p);
 
     InitInfluencers();
 
-    lastUpdate = dxr.flags.f.GetInt('DXRFashion_LastUpdate');
+    lastUpdate = dxr.flagbase.GetInt('DXRFashion_LastUpdate');
     if (lastUpdate < dxr.dxInfo.MissionNumber) {
         RandomizeClothes();
-        dxr.Player.ClientMessage("Time for a change of clothes...");
+        p.ClientMessage("Time for a change of clothes...");
     }
 
     GetDressed();
 }
 
-
-function InitInfluencers()
+simulated function InitInfluencers()
 {
     numInfluencers = 0;
     numCoatInfluencers = 0;
@@ -102,7 +101,7 @@ function InitInfluencers()
     AddInfluencer(class'PaulDenton'); 
 }
 
-function texture GetCoat1(class<ScriptedPawn> p) 
+simulated function texture GetCoat1(class<ScriptedPawn> p) 
 {
     if (p==None){
         return None;
@@ -113,7 +112,7 @@ function texture GetCoat1(class<ScriptedPawn> p)
     return p.Default.MultiSkins[1];
 }
 
-function texture GetCoat2(class<ScriptedPawn> p) 
+simulated function texture GetCoat2(class<ScriptedPawn> p) 
 {
     if (p==None){
         return None;
@@ -124,7 +123,7 @@ function texture GetCoat2(class<ScriptedPawn> p)
     return p.Default.MultiSkins[5];
 }
 
-function texture GetShirt(class<ScriptedPawn> p)
+simulated function texture GetShirt(class<ScriptedPawn> p)
 {
     if (p==None){
         return None;
@@ -149,12 +148,12 @@ function texture GetShirt(class<ScriptedPawn> p)
         case LodMesh'DeusExCharacters.GM_Suit':
              return p.Default.MultiSkins[3];
         default:
-            dxr.Player.ClientMessage("Influencer "$p.Name$" has mesh "$p.Default.Mesh);
+            err("Influencer "$p.Name$" has mesh "$p.Default.Mesh);
             return None;
     }
 }
 
-function texture GetPants(class<ScriptedPawn> p)
+simulated function texture GetPants(class<ScriptedPawn> p)
 {
     if (p==None){
         return None;
@@ -176,13 +175,13 @@ function texture GetPants(class<ScriptedPawn> p)
         case LodMesh'DeusExCharacters.GMK_DressShirt_F':
              return p.Default.MultiSkins[2];
         default:
-            dxr.Player.ClientMessage("Influencer "$p.Name$" has mesh "$p.Default.Mesh);
+            err("Influencer "$p.Name$" has mesh "$p.Default.Mesh);
             return None;
     }
 }
 
 
-function texture GetHelmet(class<ScriptedPawn> p)
+simulated function texture GetHelmet(class<ScriptedPawn> p)
 {
     if (p==None){
         return None;
@@ -201,60 +200,60 @@ function texture GetHelmet(class<ScriptedPawn> p)
         case LodMesh'DeusExCharacters.GM_Jumpsuit':
              return p.Default.MultiSkins[6];
         default:
-            dxr.Player.ClientMessage("Influencer "$p.Name$" has mesh "$p.Default.Mesh);
+            err("Influencer "$p.Name$" has mesh "$p.Default.Mesh);
             return None;
     }
 
 }
 
-function AddInfluencer(class<ScriptedPawn> p)
+simulated function AddInfluencer(class<ScriptedPawn> p)
 {
     if (isTrenchInfluencer(p)) {
         AddCoatInfluencer(p);
     } else {
-        AddNonCoatInfluencer(p);    
+        AddNonCoatInfluencer(p);
     }
 }
 
-function AddBaseInfluencer(class<ScriptedPawn> p)
+simulated function AddBaseInfluencer(class<ScriptedPawn> p)
 {
     influencers[numInfluencers++] = p;
 }
 
-function AddNonCoatInfluencer(class<ScriptedPawn> p)
+simulated function AddNonCoatInfluencer(class<ScriptedPawn> p)
 {
     AddBaseInfluencer(p);
     nonCoatInfluencers[numNonCoatInfluencers++] = p;
 }
 
-function AddCoatInfluencer(class<ScriptedPawn> p)
+simulated function AddCoatInfluencer(class<ScriptedPawn> p)
 {
     AddBaseInfluencer(p);
     coatInfluencers[numCoatInfluencers++] = p;
 }
 
-function class<ScriptedPawn> RandomInfluencer()
+simulated function class<ScriptedPawn> RandomInfluencer()
 {
     return influencers[Rand(numInfluencers)];
 }
 
-function class<ScriptedPawn> RandomCoatInfluencer()
+simulated function class<ScriptedPawn> RandomCoatInfluencer()
 {
     return coatInfluencers[Rand(numCoatInfluencers)];
 }
 
-function class<ScriptedPawn> RandomNonCoatInfluencer()
+simulated function class<ScriptedPawn> RandomNonCoatInfluencer()
 {
     return nonCoatInfluencers[Rand(numNonCoatInfluencers)];
 }
 
-function bool IsTrenchInfluencer(class<ScriptedPawn> influencer)
+simulated function bool IsTrenchInfluencer(class<ScriptedPawn> influencer)
 {
     return (influencer.Default.Mesh == LodMesh'DeusExCharacters.GM_Trench' ||
             influencer.Default.Mesh == LodMesh'DeusExCharacters.GM_Trench_F');
 }
 
-function ApplyOutfit(Actor p, texture coat1, texture coat2, texture shirt, texture pants, texture helmet, bool isJC) {
+simulated function ApplyOutfit(Actor p, texture coat1, texture coat2, texture shirt, texture pants, texture helmet, bool isJC) {
     local bool isTrench;
     
     isTrench = (coat1 != None && coat2 != None);
@@ -294,20 +293,21 @@ function ApplyOutfit(Actor p, texture coat1, texture coat2, texture shirt, textu
 }
 
 //Brothers gotta match, mom got their clothes out in advance
-function GetDressed()
+simulated function GetDressed()
 {
     local PaulDenton paul;
     local PaulDentonCarcass paulCarcass;
     local JCDentonMaleCarcass jcCarcass;
-    local JCDouble jc;  
+    local JCDouble jc;
+    local DeusExPlayer player;
     local texture coat1,coat2,pants,shirt,helmet;
     local name coatinfluencer,pantsinfluencer,shirtinfluencer;
     local class<ScriptedPawn> styleInfluencer;
     local bool isTrench;
 
-    coatinfluencer = dxr.Player.FlagBase.GetName('DXRFashion_CoatInfluencer');
-    pantsinfluencer = dxr.Player.FlagBase.GetName('DXRFashion_PantsInfluencer');
-    shirtinfluencer = dxr.Player.FlagBase.GetName('DXRFashion_ShirtInfluencer');
+    coatinfluencer = dxr.flagbase.GetName('DXRFashion_CoatInfluencer');
+    pantsinfluencer = dxr.flagbase.GetName('DXRFashion_PantsInfluencer');
+    shirtinfluencer = dxr.flagbase.GetName('DXRFashion_ShirtInfluencer');
 
     if (coatinfluencer == '' ||
         pantsinfluencer == '' ||
@@ -316,9 +316,9 @@ function GetDressed()
         info("No stored outfit!");
         InitInfluencers();
         RandomizeClothes();
-        coatinfluencer = dxr.Player.FlagBase.GetName('DXRFashion_CoatInfluencer');
-        pantsinfluencer = dxr.Player.FlagBase.GetName('DXRFashion_PantsInfluencer');
-        shirtinfluencer = dxr.Player.FlagBase.GetName('DXRFashion_ShirtInfluencer');        
+        coatinfluencer = dxr.flagbase.GetName('DXRFashion_CoatInfluencer');
+        pantsinfluencer = dxr.flagbase.GetName('DXRFashion_PantsInfluencer');
+        shirtinfluencer = dxr.flagbase.GetName('DXRFashion_ShirtInfluencer');        
     }
     
 
@@ -377,19 +377,14 @@ function GetDressed()
 
     // JC's stunt double
     foreach AllActors(class'JCDouble', jc)
-        break;
-
-    if (jc != None) {
         ApplyOutfit(jc,coat1,coat2,shirt,pants,helmet,True);
-    }
-    
-    if (dxr.Player != None) {
-        ApplyOutfit(dxr.Player,coat1,coat2,shirt,pants,helmet,True);
-    }
+
+    foreach AllActors(class'DeusExPlayer', player)
+        ApplyOutfit(player,coat1,coat2,shirt,pants,helmet,True);
 
 }
 
-function RandomizeClothes()
+simulated function RandomizeClothes()
 {
     local class<ScriptedPawn> styleInfluencer;
     local bool isTrench;
@@ -397,15 +392,15 @@ function RandomizeClothes()
     //Randomize Coat (Multiskin 1 and 5)
     styleInfluencer = RandomInfluencer();
     isTrench = IsTrenchInfluencer(styleInfluencer);
-    dxr.Player.FlagBase.SetName('DXRFashion_CoatInfluencer',styleInfluencer.name);
+    dxr.flagbase.SetName('DXRFashion_CoatInfluencer',styleInfluencer.name);
     info("Coat influencer is "$styleInfluencer);
-    //dxr.Player.ClientMessage("Coat influencer is "$styleInfluencer);
+    //player().ClientMessage("Coat influencer is "$styleInfluencer);
     
     //Randomize Pants (Multiskin 2)
     styleInfluencer = RandomInfluencer();
-    dxr.Player.FlagBase.SetName('DXRFashion_PantsInfluencer',styleInfluencer.name);
+    dxr.flagbase.SetName('DXRFashion_PantsInfluencer',styleInfluencer.name);
     info("Pants influencer is "$styleInfluencer);
-    //dxr.Player.ClientMessage("Pants influencer is "$styleInfluencer);
+    //player().ClientMessage("Pants influencer is "$styleInfluencer);
     
     //Randomize Shirt (Multiskin 4
     if (isTrench) {
@@ -413,9 +408,9 @@ function RandomizeClothes()
     } else {
         styleInfluencer = RandomNonCoatInfluencer();
     }
-    dxr.Player.FlagBase.SetName('DXRFashion_ShirtInfluencer',styleInfluencer.name);
+    dxr.flagbase.SetName('DXRFashion_ShirtInfluencer',styleInfluencer.name);
     info("Shirt influencer is "$styleInfluencer);
-    //dxr.Player.ClientMessage("Shirt influencer is "$styleInfluencer);
+    //player().ClientMessage("Shirt influencer is "$styleInfluencer);
     
     dxr.flags.f.SetInt('DXRFashion_LastUpdate',dxr.dxInfo.MissionNumber,,999);
 

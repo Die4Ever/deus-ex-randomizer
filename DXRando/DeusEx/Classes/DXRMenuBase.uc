@@ -90,8 +90,12 @@ function DXRando InitDxr()
     log("InitDxr has player "$player);
     dxr = player.Spawn(class'DXRando', None);
     log("InitDxr got "$dxr);
-    dxr.player = Human(player);
-    if( dxr.player == None ) log("ERROR: "$player$" is not a Human class", name);
+#ifdef hx
+    //player() = HXHuman(player);
+#else
+    dxr.flagbase = #var PlayerPawn (player).FlagBase;
+#endif
+    if( dxr.flagbase == None ) log("ERROR: flagbase "$dxr.flagbase$" not found", name);
 
     InitFlags();
     if( flags != None ) {

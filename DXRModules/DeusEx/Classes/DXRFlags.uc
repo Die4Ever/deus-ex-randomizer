@@ -3,54 +3,86 @@ class DXRFlags extends DXRBase transient;
 var transient FlagBase f;
 
 //rando flags
-var int seed, playthrough_id;
-var int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
-var int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
-var int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
-var int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
-var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
-var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
-var int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
-var int removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices;
-var int dancingpercent;
-var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
-var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
-var int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
-var int turrets_move, turrets_add;
-var int crowdcontrol;
-var int newgameplus_loops;
-var int merchants;
-var int banned_skills, banned_skill_levels, enemies_nonhumans;
+#ifdef hx
+var #var flagvarprefix  int next_seed;
+#endif
 
-var int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
-var int codes_mode;
+var #var flagvarprefix  int seed, playthrough_id;
+var #var flagvarprefix  int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
 
-function PreTravel()
+var #var flagvarprefix  int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
+var #var flagvarprefix  int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
+var #var flagvarprefix  int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
+var #var flagvarprefix  int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
+var #var flagvarprefix  int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
+var #var flagvarprefix  int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
+var #var flagvarprefix  int removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices;
+var #var flagvarprefix  int dancingpercent;
+var #var flagvarprefix  int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
+var #var flagvarprefix  int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
+var #var flagvarprefix  int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
+var #var flagvarprefix  int turrets_move, turrets_add;
+var #var flagvarprefix  int crowdcontrol;
+var #var flagvarprefix  int newgameplus_loops;
+var #var flagvarprefix  int merchants;
+var #var flagvarprefix  int banned_skills, banned_skill_levels, enemies_nonhumans;
+
+var #var flagvarprefix  int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
+var #var flagvarprefix  int codes_mode;
+
+var bool flags_loaded;
+
+replication
+{
+    reliable if( Role==ROLE_Authority )
+        f, seed, playthrough_id, flagsversion, gamemode, loadout, brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel,
+        keysrando, doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys, autosave,
+        removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices, dancingpercent, skills_disable_downgrades, skills_reroll_missions, skills_independent_levels,
+        startinglocations, goals, equipment, medbots, repairbots, turrets_move, turrets_add, crowdcontrol, newgameplus_loops, merchants,
+        banned_skills, banned_skill_levels, enemies_nonhumans,
+        undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive,
+        codes_mode,
+        flags_loaded;
+}
+
+simulated function PreTravel()
 {
     Super.PreTravel();
     l("PreTravel "$dxr.localURL);
+#ifndef noflags
     if( dxr != None && f != None && f.GetInt('Rando_version') == 0 ) {
         info("PreTravel "$dxr.localURL$" SaveFlags");
         SaveFlags();
     }
+#endif
+    // the game silently crashes if you don't wipe out all references to FlagBase during PreTravel?
     f = None;
+    dxr.flagbase = None;
 }
 
 function Init(DXRando tdxr)
 {
     Super.Init(tdxr);
     tdxr.seed = seed;
+#ifdef flags
     InitVersion();
+#endif
 }
 
-function Timer()
+simulated function Timer()
 {
     Super.Timer();
-
+#ifdef flags
     if( f != None && f.GetInt('Rando_version') == 0 ) {
         info("flags got deleted, saving again");//the intro deletes all flags
         SaveFlags();
     }
+#endif
+}
+
+simulated function bool CheckLogin(#var PlayerPawn  p)
+{
+    return flags_loaded && Super.CheckLogin(p);
 }
 
 function PreFirstEntry()
@@ -80,10 +112,26 @@ function RollSeed()
     dxr.seed = seed;
 }
 
+#ifdef hx
+function HXRollSeed()
+{
+    playthrough_id = class'DataStorage'.static._SystemTime(Level);
+    if( next_seed != 0 ) {
+        seed = next_seed;
+        dxr.seed = seed;
+        next_seed = 0;
+    }
+    else {
+        RollSeed();
+    }
+    SaveConfig();
+}
+#endif
+
 function InitDefaults()
 {
     InitVersion();
-    CheckConfig();
+    //CheckConfig();
     //dxr.CrcInit();
 
     undefeatabledoors = 1*256;
@@ -143,19 +191,39 @@ function InitDefaults()
 function CheckConfig()
 {
     if( config_version < VersionToInt(1,5,6) ) {
+#ifdef noflags
+        InitDefaults();
+#endif
     }
     Super.CheckConfig();
 }
 
-function LoadFlags()
+simulated function LoadFlags()
 {
+    //do flags binding
     local DataStorage ds;
     local int stored_version;
+
+    if( Role != ROLE_Authority ) {
+        err("LoadFlags() we're not the authority here!");
+        return;
+    }
+#ifdef noflags
+    LoadNoFlags();
+    return;
+#endif
+
     info("LoadFlags()");
 
-    f = dxr.Player.FlagBase;
+    f = dxr.flagbase;
     InitDefaults();
 
+    if( f == None) {
+        err("LoadFlags() f == None");
+        return;
+    }
+
+    flags_loaded = true;
     stored_version = f.GetInt('Rando_version');
 
     if( stored_version == 0 && dxr.localURL != "DX" && dxr.localURL != "DXONLY" && dxr.localURL != "00_TRAINING" ) {
@@ -245,14 +313,15 @@ function LoadFlags()
     }
 
     LogFlags("LoadFlags");
-    dxr.Player.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
+    if( player() != None )
+        player().ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ player().CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
     SetTimer(1.0, True);
 
-    ds = class'DataStorage'.static.GetObj(dxr.player);
+    ds = class'DataStorage'.static.GetObj(player());
     if( ds != None ) ds.playthrough_id = playthrough_id;
 }
 
-function FlagInt(name flagname, out int val)
+simulated function FlagInt(name flagname, out int val)
 {
     if( f.CheckFlag(flagname, FLAG_Int) )
     {
@@ -260,10 +329,20 @@ function FlagInt(name flagname, out int val)
     }
 }
 
-function SaveFlags()
+simulated function SaveFlags()
 {
+    if( Role != ROLE_Authority ) {
+        err("SaveFlags() we're not the authority here!");
+        return;
+    }
+
+#ifdef noflags
+    SaveNoFlags();
+    return;
+#endif
+
     l("SaveFlags()");
-    f = dxr.Player.FlagBase;
+    f = dxr.flagbase;
     if( f == None ) {
         err("SaveFlags() f == None");
         return;
@@ -321,23 +400,101 @@ function SaveFlags()
     LogFlags("SaveFlags");
 }
 
-function LogFlags(string prefix)
+simulated function LoadNoFlags()
 {
-    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
+    local DataStorage ds;
+    local float CombatDifficulty;
+
+    flags_loaded = true;
+
+#ifdef hx
+    CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
+#else
+    if( player() != None )
+        CombatDifficulty = player().CombatDifficulty;
+#endif
+
+    info("LoadNoFlags()");
+
+    if( flagsversion == 0 && dxr.localURL != "DX" && dxr.localURL != "DXONLY" && dxr.localURL != "00_TRAINING" ) {
+        err(dxr.localURL$" failed to load flags! using default randomizer settings");
+        InitDefaults();
+        autosave = 0;//autosaving while slowmo is set to high speed crashes the game, maybe autosave should adjust its waittime by the slowmo speed
+        SaveNoFlags();
+    }
+
+#ifdef hx
+    // bool flags work though
+    if( dxr.localURL != "DX" && dxr.localURL != "DXONLY" && dxr.localURL != "00_TRAINING" ) {
+        if( ! dxr.flagbase.GetBool('Rando_rolled') ) {
+            HXRollSeed();
+            dxr.flagbase.SetBool('Rando_rolled', true,, 999);
+        }
+    }
+#endif
+
+    dxr.seed = seed;
+
+#ifdef hx
+    ds = class'DataStorage'.static.GetObj(self);
+#else
+    ds = class'DataStorage'.static.GetObj(player());
+#endif
+    if( ds != None ) ds.playthrough_id = playthrough_id;
+
+    LogFlags("LoadNoFlags");
+    if( player() != None )
+        player().ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
 }
 
-function AddDXRCredits(CreditsWindow cw) 
+simulated function SaveNoFlags()
 {
+    l("SaveNoFlags()");
+
+    InitVersion();
+    SaveConfig();
+
+    LogFlags("SaveNoFlags");
+}
+
+simulated function LogFlags(string prefix)
+{
+    local float CombatDifficulty;
+#ifdef hx
+    CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
+#else
+    if( player() != None )
+        CombatDifficulty = player().CombatDifficulty;
+#endif
+    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
+}
+
+simulated function AddDXRCredits(CreditsWindow cw) 
+{
+    local float CombatDifficulty;
+#ifdef hx
+    CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
+#else
+    if( player() != None )
+        CombatDifficulty = player().CombatDifficulty;
+#endif
     cw.PrintHeader("DXRFlags");
     
-    cw.PrintText(VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ dxr.Player.CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id);
+    cw.PrintText(VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id);
     cw.PrintText(StringifyFlags());
     cw.PrintLn();
 }
 
-function string StringifyFlags()
+simulated function string StringifyFlags()
 {
-    return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ dxr.Player.CombatDifficulty $ ", loadout: "$loadout
+        local float CombatDifficulty;
+#ifdef hx
+    CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
+#else
+    if( player() != None )
+        CombatDifficulty = player().CombatDifficulty;
+#endif
+    return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ CombatDifficulty $ ", loadout: "$loadout
         $ ", brightness: "$brightness $ ", newgameplus_loops: "$newgameplus_loops $ ", ammo: " $ ammo $ ", merchants: "$ merchants
         $ ", minskill: "$minskill$", maxskill: "$maxskill$", skills_disable_downgrades: " $ skills_disable_downgrades $ ", skills_reroll_missions: " $ skills_reroll_missions $ ", skills_independent_levels: " $ skills_independent_levels
         $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
@@ -348,7 +505,7 @@ function string StringifyFlags()
         $ ", crowdcontrol: "$crowdcontrol$", banned_skills: "$banned_skills$", banned_skill_levels: "$banned_skill_levels$", enemies_nonhumans: "$enemies_nonhumans$", codes_mode: "$codes_mode;
 }
 
-function int FlagsHash()
+simulated function int FlagsHash()
 {
     local int hash;
     hash = dxr.Crc(StringifyFlags());
@@ -361,7 +518,7 @@ function InitVersion()
     flagsversion = VersionNumber();
 }
 
-static function int VersionToInt(int major, int minor, int patch)
+simulated static function int VersionToInt(int major, int minor, int patch)
 {
     local int ret;
     ret = major*10000+minor*100+patch;
@@ -369,7 +526,7 @@ static function int VersionToInt(int major, int minor, int patch)
     return ret;
 }
 
-static function string VersionToString(int major, int minor, int patch)
+simulated static function string VersionToString(int major, int minor, int patch)
 {
     if( patch == 0 )
         return "v" $ major $"."$ minor;
@@ -377,40 +534,40 @@ static function string VersionToString(int major, int minor, int patch)
         return "v" $ major $"."$ minor $"."$ patch;
 }
 
-static function int VersionNumber()
+simulated static function int VersionNumber()
 {
     return VersionToInt(1, 5, 7);
 }
 
-static function bool VersionOlderThan(int config_version, int major, int minor, int patch)
+simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch)
 {
     return config_version < VersionToInt(major, minor, patch);
 }
 
-static function string VersionString()
+simulated static function string VersionString()
 {
-    return VersionToString(1, 5, 7) $ "";
+    return VersionToString(1, 5, 8) $ " Alpha";
 }
 
-function MaxRando()
+simulated function MaxRando()
 {
     //should have a chance to make some skills completely unattainable, like 999999 cost? would this also have to be an option in the GUI or can it be exclusive to MaxRando?
 }
 
 function NewGamePlus()
 {
-    local DeusExPlayer p;
+    local #var PlayerPawn  p;
     local DataStorage ds;
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
         LoadFlags();
     }
-    p = dxr.player;
+    p = player();
 
     info("NewGamePlus()");
     seed++;
     playthrough_id = class'DataStorage'.static._SystemTime(Level);
-    ds = class'DataStorage'.static.GetObj(dxr.player);
+    ds = class'DataStorage'.static.GetObj(p);
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
     p.CombatDifficulty *= 1.3;
@@ -455,7 +612,6 @@ function NewGamePlus()
 function RunTests()
 {
     local int i, t;
-    local DeusExPlayer p;
     Super.RunTests();
 
     test( dxr != None, "found dxr "$dxr );
@@ -486,10 +642,6 @@ function RunTests()
     teststring( FloatToString(0.5555, 1), "0.6", "FloatToString 1");
     teststring( FloatToString(0.5454999, 4), "0.5455", "FloatToString 2");
     teststring( FloatToString(0.5455, 2), "0.55", "FloatToString 3");
-
-    i=0;
-    foreach AllActors(class'DeusExPlayer', p) i++;
-    testint(i, 1, "Found 1 DeusExPlayer");
 }
 
 function ExtendedTests()

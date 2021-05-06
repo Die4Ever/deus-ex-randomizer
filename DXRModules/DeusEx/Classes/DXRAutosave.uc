@@ -42,7 +42,7 @@ function Timer()
 static function bool AllowManualSaves(DeusExPlayer player)
 {
     local DXRFlags f;
-    f = DXRFlags(Human(player).DXRFindModule(class'DXRFlags'));
+    f = Human(player).GetDXR().flags;
     if( f == None ) return true;
     if( f.autosave == 3 ) return false;
     return true;
@@ -52,6 +52,7 @@ function doAutosave()
 {
     local string saveName;
     local DataLinkPlay interruptedDL;
+    local #var PlayerPawn  p;
     local int saveSlot;
     local int lastMission;
 
@@ -66,18 +67,20 @@ function doAutosave()
         SetTimer(save_delay, True);
         return;
     }
+
+    p = player();
     
-    if( dxr.Player.dataLinkPlay != None ) {
-        dxr.Player.dataLinkPlay.AbortDataLink();
-        interruptedDL = dxr.Player.dataLinkPlay;
-        dxr.Player.dataLinkPlay = None;
+    if( p.dataLinkPlay != None ) {
+        p.dataLinkPlay.AbortDataLink();
+        interruptedDL = p.dataLinkPlay;
+        p.dataLinkPlay = None;
     }
 
     //copied from DeusExPlayer QuickSave()
     if (
         (dxr.dxInfo == None) || (dxr.dxInfo.MissionNumber < 0) || 
-        ((dxr.Player.IsInState('Dying')) || (dxr.Player.IsInState('Paralyzed')) || (dxr.Player.IsInState('Interpolating'))) || 
-        (dxr.Player.dataLinkPlay != None) || (dxr.Level.Netmode != NM_Standalone) || (dxr.Player.InConversation())
+        ((p.IsInState('Dying')) || (p.IsInState('Paralyzed')) || (p.IsInState('Interpolating'))) || 
+        (p.dataLinkPlay != None) || (dxr.Level.Netmode != NM_Standalone) || (p.InConversation())
     ){
         info("doAutosave() not saving yet");
         SetTimer(1.0, True);
@@ -94,11 +97,11 @@ function doAutosave()
     dxr.flags.f.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber,, 999);
 
     bNeedSave = false;
-    dxr.Player.SaveGame(saveSlot, saveName);
+    p.SaveGame(saveSlot, saveName);
     if( interruptedDL != None ) {
-        dxr.Player.dataLinkPlay = interruptedDL;
+        p.dataLinkPlay = interruptedDL;
         if( interruptedDL.tag != 'dummydatalink' )
-            dxr.Player.ResumeDataLinks();
+            p.ResumeDataLinks();
     }
 
     SetTimer(0, False);

@@ -25,10 +25,10 @@ function CheckConfig()
 
 function AnyEntry()
 {
-    local DeusExPlayer p;
+    local #var PlayerPawn  p;
     Super.AnyEntry();
     //info log player's health, item counts...?
-    p = dxr.player;
+    p = player();
     if( p == None ) return;
     info("health: "$p.health$", HealthLegLeft: "$p.HealthLegLeft$", HealthLegRight: "$p.HealthLegRight$", HealthTorso: "$p.HealthTorso$", HealthHead: "$p.HealthHead$", HealthArmLeft: "$p.HealthArmLeft$", HealthArmRight: "$p.HealthArmRight);
 }
@@ -70,8 +70,8 @@ function bool CanShowNotification()
 
     if( dxr.localURL == "DX" || dxr.localURL == "DXONLY" ) return true;
 
-    /*if( dxr.Player == None ) return false;
-    r = DeusExRootWindow(dxr.Player.rootWindow);
+    /*if( player() == None ) return false;
+    r = DeusExRootWindow(player().rootWindow);
     if( r == None ) return false;
     hud = r.hud;
     if( hud == None ) return false;
@@ -112,7 +112,7 @@ function CheckNotification(string data)
 function MessageBoxClicked(int button, int callbackId){
     Super.MessageBoxClicked(button, callbackId);
     if( button == 0 ) {
-        dxr.Player.ConsoleCommand("start "$notification_url);
+        player().ConsoleCommand("start "$notification_url);
     }
     //Implementations in subclasses just need to call Super to pop the window, then can handle the message however they want
     //Buttons:

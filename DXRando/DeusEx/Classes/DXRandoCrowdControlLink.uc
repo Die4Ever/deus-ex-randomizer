@@ -315,16 +315,16 @@ function InitOnEnter() {
         StopMatrixMode(True);
     }
     
-    dxr.Player.bWarrenEMPField = isTimerActive('cc_EmpTimer');
+    player().bWarrenEMPField = isTimerActive('cc_EmpTimer');
 
     if (isTimerActive('cc_SpeedTimer')) {
-        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * retrieveFloatValue('cc_moveSpeedModifier');        
+        player().Default.GroundSpeed = DefaultGroundSpeed * retrieveFloatValue('cc_moveSpeedModifier');        
     } else {
-        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;        
+        player().Default.GroundSpeed = DefaultGroundSpeed;        
     }
     
     if (isTimerActive('cc_lamthrowerTimer')) {
-        anItem = dxr.Player.FindInventoryType(class'WeaponFlamethrower');
+        anItem = player().FindInventoryType(class'WeaponFlamethrower');
         if (anItem!=None) {
             MakeLamThrower(anItem);
         }
@@ -336,7 +336,7 @@ function InitOnEnter() {
     
     SetFloatyPhysics(isTimerActive('cc_floatyTimer'));
     
-    dxr.Player.bBehindView=isTimerActive('cc_behindTimer');
+    player().bBehindView=isTimerActive('cc_behindTimer');
     
     if (0==retrieveFloatValue('cc_damageMult')) {
         storeFloatValue('cc_damageMult',1.0);
@@ -346,7 +346,7 @@ function InitOnEnter() {
     }
     
     if (isTimerActive('cc_invertMouseTimer')) {
-        dxr.Player.bInvertMouse = !dxr.Player.FlagBase.GetBool('cc_InvertMouseDef');
+        player().bInvertMouse = !dxr.flagbase.GetBool('cc_InvertMouseDef');
     }
     
     if (isTimerActive('cc_invertMovementTimer')) {
@@ -361,15 +361,15 @@ function InitOnEnter() {
 //so that they can be cleanly re-applied next time you enter
 function CleanupOnExit() {
     StopMatrixMode(True);  //matrix
-    dxr.Player.bWarrenEMPField = false;  //emp
-    dxr.Player.JumpZ = dxr.Player.Default.JumpZ;  //disable_jump
-    dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;  //gotta_go_fast and gotta_go_slow
+    player().bWarrenEMPField = false;  //emp
+    player().JumpZ = player().Default.JumpZ;  //disable_jump
+    player().Default.GroundSpeed = DefaultGroundSpeed;  //gotta_go_fast and gotta_go_slow
     UndoLamThrowers(); //lamthrower
     SetIcePhysics(False); //ice_physics
-    dxr.Player.bBehindView = False; //third_person
+    player().bBehindView = False; //third_person
     SetFloatyPhysics(False);
     if (isTimerActive('cc_invertMouseTimer')) {
-        dxr.Player.bInvertMouse = dxr.Player.FlagBase.GetBool('cc_InvertMouseDef');
+        player().bInvertMouse = dxr.flagbase.GetBool('cc_InvertMouseDef');
     }
 
     if (isTimerActive('cc_invertMovementTimer')) {
@@ -379,15 +379,15 @@ function CleanupOnExit() {
 }
 
 function StartMatrixMode() {
-    if (dxr.Player.Sprite == None)
+    if (player().Sprite == None)
     {
-        dxr.Player.Matrix();
+        player().Matrix();
     }
 }
 
 function StopMatrixMode(optional bool silent) {
-    if (dxr.Player.Sprite!=None) {
-        dxr.Player.Matrix();
+    if (player().Sprite!=None) {
+        player().Matrix();
     }
 
     if (!silent) {
@@ -398,12 +398,12 @@ function StopMatrixMode(optional bool silent) {
 
 
 function float retrieveFloatValue(name valName) {
-    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr.Player);
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(player());
     return float(datastorage.GetConfigKey(valName));
 }
 
 function storeFloatValue(name valName, float val) {
-    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr.Player);
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(player());
     datastorage.SetConfig(valName, val, 3600*12);
 
 }
@@ -508,7 +508,7 @@ function addTimerDisplay(name timerName, int time) {
     
     //PlayerMessage("Adding display");
     
-    timer = Spawn(class'DXRandoCrowdControlTimer', dxr.Player,,dxr.Player.Location);
+    timer = Spawn(class'DXRandoCrowdControlTimer', player(),,player().Location);
     timer.initTimer(self,timerName,time,getTimerLabelByName(timerName));
     timer.Activate();
     
@@ -536,13 +536,13 @@ function bool checkForTimerDisplay(name timerName) {
 }
 
 function int getTimer(name timerName) {
-    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr.Player);
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(player());
     return int(datastorage.GetConfigKey(timerName));
 }
 
 function setTimerFlag(name timerName, int time, bool newTimer) {
     local int expiration;
-    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr.Player);
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(player());
     if( time == 0 ) expiration = 1;
     else expiration = 3600*12;
     datastorage.SetConfig(timerName, time, expiration);
@@ -610,23 +610,23 @@ function Timer() {
 
     //EMP Field timer
     if (decrementTimer('cc_EmpTimer')) {
-            dxr.Player.bWarrenEMPField = false;
+            player().bWarrenEMPField = false;
             PlayerMessage("EMP Field has disappeared...");        
     }
 
     if (isTimerActive('cc_JumpTimer')) {
-        dxr.Player.JumpZ = 0;        
+        player().JumpZ = 0;        
     }
     if (decrementTimer('cc_JumpTimer')) {
-        dxr.Player.JumpZ = dxr.Player.Default.JumpZ;
+        player().JumpZ = player().Default.JumpZ;
         PlayerMessage("Your knees feel fine again.");
     }
 
     if (isTimerActive('cc_SpeedTimer')) {
-        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * retrieveFloatValue('cc_moveSpeedModifier');        
+        player().Default.GroundSpeed = DefaultGroundSpeed * retrieveFloatValue('cc_moveSpeedModifier');        
     }
     if (decrementTimer('cc_SpeedTimer')) {
-        dxr.Player.Default.GroundSpeed = DefaultGroundSpeed;
+        player().Default.GroundSpeed = DefaultGroundSpeed;
         PlayerMessage("Back to normal speed!");
     }
 
@@ -642,7 +642,7 @@ function Timer() {
     }
     
     if (decrementTimer('cc_behindTimer')) {
-        dxr.Player.bBehindView=False;
+        player().bBehindView=False;
         PlayerMessage("You re-enter your body");
     }
     
@@ -662,7 +662,7 @@ function Timer() {
     
     if (decrementTimer('cc_invertMouseTimer')) {
         PlayerMessage("Your mouse controls return to normal");
-        dxr.Player.bInvertMouse = dxr.Player.FlagBase.GetBool('cc_InvertMouseDef');
+        player().bInvertMouse = dxr.flagbase.GetBool('cc_InvertMouseDef');
     }
 
     if (decrementTimer('cc_invertMovementTimer')) {
@@ -745,15 +745,15 @@ function bool IsGrenade(inventory i) {
 }
 
 function SkillPointsRemove(int numPoints) {
-    dxr.Player.SkillPointsAvail -= numPoints;
-    dxr.Player.SkillPointsTotal -= numPoints;
+    player().SkillPointsAvail -= numPoints;
+    player().SkillPointsTotal -= numPoints;
 
-    if ((DeusExRootWindow(dxr.Player.rootWindow) != None) &&
-        (DeusExRootWindow(dxr.Player.rootWindow).hud != None) && 
-        (DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog != None))
+    if ((DeusExRootWindow(player().rootWindow) != None) &&
+        (DeusExRootWindow(player().rootWindow).hud != None) && 
+        (DeusExRootWindow(player().rootWindow).hud.msgLog != None))
     {
-        PlayerMessage(Sprintf(dxr.Player.SkillPointsAward, -numPoints));
-        DeusExRootWindow(dxr.Player.rootWindow).hud.msgLog.PlayLogSound(Sound'LogSkillPoints');
+        PlayerMessage(Sprintf(player().SkillPointsAward, -numPoints));
+        DeusExRootWindow(player().rootWindow).hud.msgLog.PlayLogSound(Sound'LogSkillPoints');
     }
 }
 
@@ -794,7 +794,7 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
     
     // Checks to see if the player already has it.  If so, we want to 
     // increase the level
-    anAug = dxr.Player.AugmentationSystem.FindAugmentation(giveClass);
+    anAug = player().AugmentationSystem.FindAugmentation(giveClass);
     
     if (anAug == None) {
         PlayerMessage(viewer@"tried to give you an aug that doesn't exist?");
@@ -824,7 +824,7 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
         return Success;
     }
     
-    if(dxr.Player.AugmentationSystem.AreSlotsFull(anAug)) {
+    if(player().AugmentationSystem.AreSlotsFull(anAug)) {
         PlayerMessage(viewer@"wanted to give you "$anAug.AugmentationName$" but there is no room");
         return Failed;
     }
@@ -842,26 +842,26 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
     }   
     
     // Manage our AugLocs[] array
-    dxr.Player.AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount++;
+    player().AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount++;
     
     // Assign hot key to new aug 
     // (must be after before augCount is incremented!)
-    anAug.HotKeyNum = dxr.Player.AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount + dxr.Player.AugmentationSystem.AugLocs[anAug.AugmentationLocation].KeyBase;
+    anAug.HotKeyNum = player().AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount + player().AugmentationSystem.AugLocs[anAug.AugmentationLocation].KeyBase;
 
 
-    if ((!anAug.bAlwaysActive) && (dxr.Player.bHUDShowAllAugs))
-        dxr.Player.AddAugmentationDisplay(anAug);   
+    if ((!anAug.bAlwaysActive) && (player().bHUDShowAllAugs))
+        player().AddAugmentationDisplay(anAug);   
     PlayerMessage(viewer@"gave you the "$anAug.AugmentationName$" augmentation");
     return Success;
 }
 
 function int AddCredits(int amount,string viewer) {
     //Reject requests to remove credits if the player doesn't have any
-    if (dxr.Player.Credits == 0  && amount<0) {
+    if (player().Credits == 0  && amount<0) {
         return Failed;
     }
     
-    dxr.Player.Credits += amount;
+    player().Credits += amount;
     
     if (amount>0) {
         PlayerMessage(viewer@"gave you "$amount$" credits!");
@@ -869,8 +869,8 @@ function int AddCredits(int amount,string viewer) {
         PlayerMessage(viewer@"took away "$(-amount)$" credits!");        
     }
     
-    if (dxr.Player.Credits < 0) {
-        dxr.Player.Credits = 0;
+    if (player().Credits < 0) {
+        player().Credits = 0;
     }
     return Success;
 }
@@ -882,7 +882,7 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
     
     // Checks to see if the player already has it, so we can decrease the level,
     // or remove it all together
-    anAug = dxr.Player.AugmentationSystem.FindAugmentation(giveClass);
+    anAug = player().AugmentationSystem.FindAugmentation(giveClass);
     
     if (anAug == None) {
        PlayerMessage(viewer@"tried to remove an aug that doesn't exist?");
@@ -918,10 +918,10 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
     anAug.bHasIt = False;
     
     // Manage our AugLocs[] array
-    dxr.Player.AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount--;
+    player().AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount--;
     
     //Icon lookup is BY HOTKEY, so make sure to remove the icon before the hotkey
-    dxr.Player.RemoveAugmentationDisplay(anAug);
+    player().RemoveAugmentationDisplay(anAug);
     // Assign hot key back to default
     anAug.HotKeyNum = anAug.Default.HotKeyNum;
 
@@ -1058,15 +1058,15 @@ function SetIcePhysics(bool enabled) {
 
 //Returns true when you aren't in a menu, or in the intro, etc.
 function bool InGame() {
-    if (None == DeusExRootWindow(dxr.Player.rootWindow)) {
+    if (None == DeusExRootWindow(player().rootWindow)) {
         return False;
     }
     
-    if (None == DeusExRootWindow(dxr.Player.rootWindow).hud) {
+    if (None == DeusExRootWindow(player().rootWindow).hud) {
         return False;
     }
     
-    if (!DeusExRootWindow(dxr.Player.rootWindow).hud.isVisible()){
+    if (!DeusExRootWindow(player().rootWindow).hud.isVisible()){
         return False;
     }
     
@@ -1083,76 +1083,76 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
         
-            dxr.Player.StartPoison(dxr.Player,5);
+            player().StartPoison(player(),5);
             PlayerMessage(viewer@"poisoned you!");
             break;
 
         case "kill":
-            dxr.Player.Died(dxr.Player,'CrowdControl',dxr.Player.Location);
+            player().Died(player(),'CrowdControl',player().Location);
             PlayerMessage(viewer@"set off your killswitch!");
-            dxr.Player.MultiplayerDeathMsg(dxr.Player,False,True,viewer,"triggering your kill switch");
+            player().MultiplayerDeathMsg(player(),False,True,viewer,"triggering your kill switch");
             break;
 
         case "glass_legs":
-            dxr.Player.HealthLegLeft=1;
-            dxr.Player.HealthLegRight=1;
-            dxr.Player.GenerateTotalHealth();
+            player().HealthLegLeft=1;
+            player().HealthLegRight=1;
+            player().GenerateTotalHealth();
             PlayerMessage(viewer@"gave you glass legs!");
             break;
 
         case "give_health":
-            if (dxr.Player.Health == 100) {
+            if (player().Health == 100) {
                 return TempFail;
             }
-            dxr.Player.HealPlayer(Int(param[0]),False);
+            player().HealPlayer(Int(param[0]),False);
             PlayerMessage(viewer@"gave you "$param[0]$" health!");
             break;
 
         case "set_fire":
-            dxr.Player.CatchFire(dxr.Player);
+            player().CatchFire(player());
             PlayerMessage(viewer@"set you on fire!");
             break;
 
         case "full_heal":
-            if (dxr.Player.Health == 100) {
+            if (player().Health == 100) {
                 return TempFail;
             }
-            dxr.Player.RestoreAllHealth();
+            player().RestoreAllHealth();
             PlayerMessage(viewer@"fully healed you!");
             break;
 
         case "disable_jump":
-            if (dxr.Player.JumpZ == 0) {
+            if (player().JumpZ == 0) {
                 return TempFail;
             }
 
-            dxr.Player.JumpZ = 0;
+            player().JumpZ = 0;
             startnewTimer('cc_JumpTimer');
             PlayerMessage(viewer@"made your knees lock up.");
             break;
 
         case "gotta_go_fast":
-            if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
+            if (DefaultGroundSpeed != player().Default.GroundSpeed) {
                 return TempFail;
             }
             storeFloatValue('cc_moveSpeedModifier',MoveSpeedMultiplier);
-            dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedMultiplier;
+            player().Default.GroundSpeed = DefaultGroundSpeed * moveSpeedMultiplier;
             startNewTimer('cc_SpeedTimer');
             PlayerMessage(viewer@"made you fast like Sonic!");
             break;
 
         case "gotta_go_slow":
-            if (DefaultGroundSpeed != dxr.Player.Default.GroundSpeed) {
+            if (DefaultGroundSpeed != player().Default.GroundSpeed) {
                 return TempFail;
             }
             storeFloatValue('cc_moveSpeedModifier',MoveSpeedDivisor);
-            dxr.Player.Default.GroundSpeed = DefaultGroundSpeed * moveSpeedDivisor;
+            player().Default.GroundSpeed = DefaultGroundSpeed * moveSpeedDivisor;
             startNewTimer('cc_SpeedTimer');
             PlayerMessage(viewer@"made you slow like a snail!");
             break;
         case "drunk_mode":
-            if (dxr.Player.drugEffectTimer<30.0) {
-                dxr.Player.drugEffectTimer+=60.0;
+            if (player().drugEffectTimer<30.0) {
+                player().drugEffectTimer+=60.0;
             } else {
                 return TempFail;
             }
@@ -1160,7 +1160,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "drop_selected_item":
-            if (dxr.Player.InHand == None) {
+            if (player().InHand == None) {
                 return TempFail;
             }
             
@@ -1168,20 +1168,20 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             
-            if (dxr.Player.DropItem() == False) {
+            if (player().DropItem() == False) {
                 return TempFail;
             }
             PlayerMessage(viewer@"made you fumble your item");
             break;
 
         case "emp_field":
-            dxr.Player.bWarrenEMPField = true;
+            player().bWarrenEMPField = true;
             startNewTimer('cc_EmpTimer');
             PlayerMessage(viewer@"made electronics allergic to you");
             break;
 
         case "matrix":
-            if (dxr.Player.Sprite!=None) {
+            if (player().Sprite!=None) {
                 //Matrix Mode already enabled
                 return TempFail;
             }
@@ -1194,24 +1194,24 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_behindTimer')) {
                 return TempFail;
             }
-            dxr.Player.bBehindView=True;
+            player().bBehindView=True;
             startNewTimer('cc_behindTimer');
             PlayerMessage(viewer@"gave you an out of body experience");
             break;
 
         case "give_energy":
             
-            if (dxr.Player.Energy == dxr.Player.EnergyMax) {
+            if (player().Energy == player().EnergyMax) {
                 return TempFail;
             }
             //Copied from BioelectricCell
 
             //PlayerMessage("Recharged 10 points");
-            dxr.Player.PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
+            player().PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
 
-            dxr.Player.Energy += Int(param[0]);
-            if (dxr.Player.Energy > dxr.Player.EnergyMax)
-                dxr.Player.Energy = dxr.Player.EnergyMax;
+            player().Energy += Int(param[0]);
+            if (player().Energy > player().EnergyMax)
+                player().Energy = player().EnergyMax;
 
             PlayerMessage(viewer@"gave you "$param[0]$" energy!");
             break;
@@ -1219,7 +1219,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
         case "give_skillpoints":
             i = Int(param[0])*100;
             PlayerMessage(viewer@"gave you "$i$" skill points");
-            dxr.Player.SkillPointsAdd(i);
+            player().SkillPointsAdd(i);
             break;
 
         case "remove_skillpoints":
@@ -1321,9 +1321,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             PlayerMessage(viewer@"inverted your mouse!");
-            dxr.Player.FlagBase.SetBool('cc_InvertMouseDef',dxr.Player.bInvertMouse);
+            dxr.flagbase.SetBool('cc_InvertMouseDef',player().bInvertMouse);
 
-            dxr.Player.bInvertMouse = !dxr.Player.bInvertMouse;
+            player().bInvertMouse = !player().bInvertMouse;
             startNewTimer('cc_invertMouseTimer');
 
             break;
@@ -1379,7 +1379,7 @@ function int GiveLamThrower(string viewer)
         return TempFail;
     }
     
-    anItem = dxr.Player.FindInventoryType(class'WeaponFlamethrower');
+    anItem = player().FindInventoryType(class'WeaponFlamethrower');
     if (anItem==None) {
         return TempFail;
     }
@@ -1407,9 +1407,9 @@ function invertMovementControls() {
     local int i;
     
     for (i=0;i<255;i++) {
-        KeyName = dxr.Player.ConsoleCommand("KEYNAME "$i);
+        KeyName = player().ConsoleCommand("KEYNAME "$i);
         if (KeyName!="") {
-            Alias = dxr.Player.ConsoleCommand("KEYBINDING "$KeyName);
+            Alias = player().ConsoleCommand("KEYBINDING "$KeyName);
             //PlayerMessage("Alias is "$Alias);
             switch(Alias){
                 case "MoveForward":
@@ -1433,16 +1433,16 @@ function invertMovementControls() {
     }
     
     for (i=0;i<numFwd;i++){
-        dxr.Player.ConsoleCommand("SET InputExt "$fwdInputs[i]$" MoveBackward");
+        player().ConsoleCommand("SET InputExt "$fwdInputs[i]$" MoveBackward");
     }
     for (i=0;i<numBack;i++){
-        dxr.Player.ConsoleCommand("SET InputExt "$backInputs[i]$" MoveForward");
+        player().ConsoleCommand("SET InputExt "$backInputs[i]$" MoveForward");
     }
     for (i=0;i<numRight;i++){
-        dxr.Player.ConsoleCommand("SET InputExt "$rightInputs[i]$" StrafeLeft");
+        player().ConsoleCommand("SET InputExt "$rightInputs[i]$" StrafeLeft");
     }
     for (i=0;i<numLeft;i++){
-        dxr.Player.ConsoleCommand("SET InputExt "$leftInputs[i]$" StrafeRight");
+        player().ConsoleCommand("SET InputExt "$leftInputs[i]$" StrafeRight");
     }    
     
 }
@@ -1450,27 +1450,29 @@ function invertMovementControls() {
 function floorIsLava() {
     local vector v;
     local vector loc;
-    loc.X = dxr.Player.Location.X;
-    loc.Y = dxr.Player.Location.Y;
-    loc.Z = dxr.Player.Location.Z - 1;
+    loc.X = player().Location.X;
+    loc.Y = player().Location.Y;
+    loc.Z = player().Location.Z - 1;
     if (
-        ( dxr.Player.Base.IsA('LevelInfo') || dxr.Player.Base.IsA('Mover') )
-        && dxr.Player.bOnLadder==False
+        ( player().Base.IsA('LevelInfo') || player().Base.IsA('Mover') )
+#ifdef vanilla
+        && player().bOnLadder==False
+#endif
     ) {
         lavaTick++;
         //PlayerMessage("Standing on Lava! "$lavaTick);
     } else {
         lavaTick = 0;
-        //PlayerMessage("Not Lava "$dxr.Player.Base);
+        //PlayerMessage("Not Lava "$player().Base);
         return;
     }
     
     if ((lavaTick % 10)==0) { //If you stand on lava for 1 second
-        dxr.Player.TakeDamage(10,dxr.Player,loc,v,'Burned');
+        player().TakeDamage(10,player(),loc,v,'Burned');
     }
     
     if ((lavaTick % 50)==0) { //if you stand in lava for 5 seconds
-        dxr.Player.CatchFire(dxr.Player);
+        player().CatchFire(player());
     }
 }
 
@@ -1489,7 +1491,7 @@ function int GiveItem(string viewer, string type, optional int amount) {
     }
     
     for (i=0;i<amount;i++) {
-        item = class'DXRActorsBase'.static.GiveItem(dxr.Player, itemclass);
+        item = class'DXRActorsBase'.static.GiveItem(player(), itemclass);
         if( item == None ) return Failed;
     }
 
@@ -1522,13 +1524,13 @@ function int DropProjectile(string viewer, string type, optional int amount)
     }
 
     //Don't drop grenades if you're in a conversation - It screws things up
-    if (dxr.Player.InConversation()) {
+    if (player().InConversation()) {
         return TempFail;
     }
 
     c = class<DeusExProjectile>(ccModule.GetClassFromString(type, class'DeusExProjectile'));
     if( c == None ) return NotAvail;
-    p = Spawn( c, dxr.Player,,dxr.Player.Location);
+    p = Spawn( c, player(),,player().Location);
     if( p == None ) return Failed;
     PlayerMessage(viewer@"dropped "$ p.ItemArticle @ p.ItemName $ " at your feet!");
     p.Velocity.X=0;
@@ -1545,7 +1547,7 @@ function ScriptedPawn findOtherHuman() {
     num = 0;
     
     foreach AllActors(class'ScriptedPawn',p) {
-        if (class'DXRActorsBase'.static.IsHuman(p) && p!=dxr.Player && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
+        if (class'DXRActorsBase'.static.IsHuman(p) && p!=player() && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
             humans[num++] = p;
         }
     }
@@ -1563,8 +1565,8 @@ function bool swapPlayer(string viewer) {
         return false;
     }
     
-    ccModule.Swap(dxr.Player,a);
-    dxr.Player.ViewRotation = dxr.Player.Rotation;
+    ccModule.Swap(player(),a);
+    player().ViewRotation = player().Rotation;
     PlayerMessage(viewer@"thought you would look better if you were where"@a.FamiliarName@"was");
     
     return true;
@@ -1580,10 +1582,10 @@ function doNudge(string viewer) {
     
     //Not super happy with how this looks,
     //Since you sort of just teleport to the new position
-    dxr.Player.MoveSmooth(newAccel);
+    player().MoveSmooth(newAccel);
     
     //Play an oof sound
-    dxr.Player.PlaySound(Sound'DeusExSounds.Player.MalePainSmall');
+    player().PlaySound(Sound'DeusExSounds.Player.MalePainSmall');
     
     PlayerMessage(viewer@"nudged you a little bit");
 
@@ -1605,18 +1607,18 @@ function bool canDropItem() {
 	local Vector X, Y, Z, dropVect;
 	local Inventory item;
     
-    item = dxr.Player.InHand;
+    item = player().InHand;
     
     if (item == None) {
         return False;
     }
     
-	GetAxes(dxr.Player.Rotation, X, Y, Z);
-	dropVect = dxr.Player.Location + (dxr.Player.CollisionRadius + 2*item.CollisionRadius) * X;
-	dropVect.Z += dxr.Player.BaseEyeHeight;
+	GetAxes(player().Rotation, X, Y, Z);
+	dropVect = player().Location + (player().CollisionRadius + 2*item.CollisionRadius) * X;
+	dropVect.Z += player().BaseEyeHeight;
     
 	// check to see if we're blocked by terrain
-	if (!dxr.Player.FastTrace(dropVect))
+	if (!player().FastTrace(dropVect))
 	{
 		return False;
 	}
@@ -1792,18 +1794,23 @@ function ResolveFailed()
     reconnectTimer = ReconDefault;
 }
 
+simulated final function #var PlayerPawn  player()
+{
+    return #var PlayerPawn (GetPlayerPawn());
+}
+
 function PlayerMessage(string msg)
 {
     log(Self$": "$msg);
     class'DXRTelemetry'.static.SendLog(dxr, Self, "INFO", msg);
-    dxr.Player.ClientMessage(msg, 'CrowdControl', true);
+    player().ClientMessage(msg, 'CrowdControl', true);
 }
 
 function err(string msg)
 {
     log(Self$": ERROR: "$msg);
     class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", msg);
-    dxr.Player.ClientMessage(msg, 'ERROR', true);
+    player().ClientMessage(msg, 'ERROR', true);
 }
 
 function info(string msg)
