@@ -1796,7 +1796,7 @@ function ResolveFailed()
 
 simulated final function #var PlayerPawn  player()
 {
-    return #var PlayerPawn (GetPlayerPawn());
+    return dxr.flags.player();
 }
 
 function PlayerMessage(string msg)

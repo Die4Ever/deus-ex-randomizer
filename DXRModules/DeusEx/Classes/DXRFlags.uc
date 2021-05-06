@@ -203,6 +203,7 @@ simulated function LoadFlags()
     //do flags binding
     local DataStorage ds;
     local int stored_version;
+    local #var PlayerPawn  p;
 
     if( Role != ROLE_Authority ) {
         err("LoadFlags() we're not the authority here!");
@@ -214,6 +215,7 @@ simulated function LoadFlags()
 #endif
 
     info("LoadFlags()");
+    p = player();
 
     f = dxr.flagbase;
     InitDefaults();
@@ -313,11 +315,11 @@ simulated function LoadFlags()
     }
 
     LogFlags("LoadFlags");
-    if( player() != None )
-        player().ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ player().CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
+    if( p != None )
+        p.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ p.CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
     SetTimer(1.0, True);
 
-    ds = class'DataStorage'.static.GetObj(player());
+    ds = class'DataStorage'.static.GetObj(p);
     if( ds != None ) ds.playthrough_id = playthrough_id;
 }
 
@@ -402,6 +404,7 @@ simulated function SaveFlags()
 
 simulated function LoadNoFlags()
 {
+    local #var PlayerPawn  p;
     local DataStorage ds;
     local float CombatDifficulty;
 
@@ -410,8 +413,9 @@ simulated function LoadNoFlags()
 #ifdef hx
     CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
 #else
-    if( player() != None )
-        CombatDifficulty = player().CombatDifficulty;
+    p = player();
+    if( p != None )
+        CombatDifficulty = p.CombatDifficulty;
 #endif
 
     info("LoadNoFlags()");
@@ -438,13 +442,13 @@ simulated function LoadNoFlags()
 #ifdef hx
     ds = class'DataStorage'.static.GetObj(self);
 #else
-    ds = class'DataStorage'.static.GetObj(player());
+    ds = class'DataStorage'.static.GetObj(p);
 #endif
     if( ds != None ) ds.playthrough_id = playthrough_id;
 
     LogFlags("LoadNoFlags");
-    if( player() != None )
-        player().ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
+    if( p != None )
+        p.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
 }
 
 simulated function SaveNoFlags()
@@ -460,11 +464,14 @@ simulated function SaveNoFlags()
 simulated function LogFlags(string prefix)
 {
     local float CombatDifficulty;
+    local #var PlayerPawn  p;
+    
 #ifdef hx
     CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
 #else
-    if( player() != None )
-        CombatDifficulty = player().CombatDifficulty;
+    p = player();
+    if( p != None )
+        CombatDifficulty = p.CombatDifficulty;
 #endif
     info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
 }
@@ -472,11 +479,13 @@ simulated function LogFlags(string prefix)
 simulated function AddDXRCredits(CreditsWindow cw) 
 {
     local float CombatDifficulty;
+    local #var PlayerPawn  p;
 #ifdef hx
     CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
 #else
-    if( player() != None )
-        CombatDifficulty = player().CombatDifficulty;
+    p = player();
+    if( p != None )
+        CombatDifficulty = p.CombatDifficulty;
 #endif
     cw.PrintHeader("DXRFlags");
     
@@ -488,11 +497,13 @@ simulated function AddDXRCredits(CreditsWindow cw)
 simulated function string StringifyFlags()
 {
         local float CombatDifficulty;
+        local #var PlayerPawn  p;
 #ifdef hx
     CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
 #else
-    if( player() != None )
-        CombatDifficulty = player().CombatDifficulty;
+    p = player();
+    if( p != None )
+        CombatDifficulty = p.CombatDifficulty;
 #endif
     return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ CombatDifficulty $ ", loadout: "$loadout
         $ ", brightness: "$brightness $ ", newgameplus_loops: "$newgameplus_loops $ ", ammo: " $ ammo $ ", merchants: "$ merchants

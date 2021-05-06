@@ -81,6 +81,12 @@ function PostFirstEntry()
     SetTimer(1.0, true);
 }
 
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
+{
+    Super.PlayerAnyEntry(p);
+    SetTimer(1.0, true);
+}
+
 simulated function Timer()
 {
     local int mission, scale;
@@ -218,7 +224,7 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
         if( ! p.IsA(type.name) ) continue;
         p.maxCopies = float(p.default.maxCopies) * float(percent) / 100.0 * 0.8;
         if( DeusExPlayer(p.Owner) != None && #var prefix FireExtinguisher(p) != None )
-            p.maxCopies += DeusExPlayer(p.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillEnviro');;
+            p.maxCopies += DeusExPlayer(p.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillEnviro');
 
         if( p.NumCopies > p.maxCopies ) p.NumCopies = p.maxCopies;
     }
@@ -234,7 +240,7 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
         if( DeusExPlayer(a.Owner) != None
             && (AmmoEMPGrenade(a) != None || AmmoGasGrenade(a) != None || AmmoLAM(a) != None || AmmoNanoVirusGrenade(a) != None )
         ) {
-            a.MaxAmmo += DeusExPlayer(a.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillDemolition');;
+            a.MaxAmmo += DeusExPlayer(a.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillDemolition');
         }
         
         if( a.AmmoAmount > a.MaxAmmo ) a.AmmoAmount = a.MaxAmmo;

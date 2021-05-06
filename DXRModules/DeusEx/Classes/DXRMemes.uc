@@ -18,17 +18,10 @@ function RandomDancing(Actor a)
 
 function AnyEntry()
 {
-#ifdef hx
-    local HXDXLogo logo;
-    local HXIonStormLogo islogo;
-    local HXEidosLogo elogo;
-    local HXElectricityEmitter elec;
-#else
-    local DXLogo logo;
-    local IonStormLogo islogo;
-    local EidosLogo elogo;
-    local ElectricityEmitter elec;
-#endif
+    local #var prefix DXLogo logo;
+    local #var prefix IonStormLogo islogo;
+    local #var prefix EidosLogo elogo;
+    local #var prefix ElectricityEmitter elec;
     local Actor a;
     local Rotator r;
     local Vector v;
@@ -39,11 +32,7 @@ function AnyEntry()
         case "DXONLY":
         case "DX":
             l("Memeing up "$ dxr.localURL);
-#ifdef hx
-            foreach AllActors(class'HXDXLogo', logo)
-#else
-            foreach AllActors(class'DXLogo', logo)
-#endif
+            foreach AllActors(class'#var prefix DXLogo', logo)
             {                
                 a = ReplaceWithRandomClass(logo);
                 if (IsHuman(a)){
@@ -69,11 +58,7 @@ function AnyEntry()
                 GotoState('RotatingState');
             }
 
-#ifdef hx
-            foreach AllActors(class'HXIonStormLogo', islogo)
-#else
-            foreach AllActors(class'IonStormLogo', islogo)
-#endif
+            foreach AllActors(class'#var prefix IonStormLogo', islogo)
             {
                 a = ReplaceWithRandomClass(islogo);
                 if (IsHuman(a)){
@@ -88,11 +73,7 @@ function AnyEntry()
                 a.AmbientSound = None;
             }
 
-#ifdef hx
-            foreach AllActors(class'HXEidosLogo', elogo)
-#else
-            foreach AllActors(class'EidosLogo', elogo)
-#endif
+            foreach AllActors(class'#var prefix EidosLogo', elogo)
             {
                 a = ReplaceWithRandomClass(elogo);
                 if (IsHuman(a)){
@@ -107,11 +88,7 @@ function AnyEntry()
                 a.AmbientSound = None;
             }
             
-#ifdef hx
-            foreach AllActors(class'HXElectricityEmitter', elec)
-#else
-            foreach AllActors(class'ElectricityEmitter', elec)
-#endif
+            foreach AllActors(class'#var prefix ElectricityEmitter', elec)
             {
                 v.Z = 70;
                 elec.move(v);

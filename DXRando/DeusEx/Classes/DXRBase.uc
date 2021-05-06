@@ -7,8 +7,6 @@ var config int config_version;
 var transient int passes;
 var transient int fails;
 
-/*reliable if( Role==ROLE_Authority )
-        PreFirstEntry, FirstEntry, PostFirstEntry, AnyEntry, PostAnyEntry, ReEntry, Login;*/
 replication
 {
     reliable if( Role==ROLE_Authority )
@@ -260,7 +258,12 @@ final function Class<Actor> ModifyActorClass( out Class<Actor> ActorClass )
 simulated final function #var PlayerPawn  player()
 {
     local #var PlayerPawn  p;
-    p = #var PlayerPawn (GetPlayerPawn());
+    //p = #var PlayerPawn (GetPlayerPawn());
+    p = dxr.Player;
+    if( p == None ) {
+        p = #var PlayerPawn (GetPlayerPawn());
+        dxr.Player = p;
+    }
     if( p == None ) err("player() found None", true);
     return p;
 }

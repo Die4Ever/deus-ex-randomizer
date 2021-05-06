@@ -32,9 +32,10 @@ EditPackages=HX
 EditPackages=HXRandomizer
 
 v1.5.8 Alpha:
-	need to handle PlayerFirstEntry vs PlayerAnyEntry
-	should do flagbase = class'DataStorage'.static.GetObj(self);// flags don't seem to be working for ints or names
-		make DataStorage match the interface of FlagBase
+	add replication for other DXRModules, I think it's only needed for the ones that do PlayerLogin or PlayerAnyEntry, but also DXREnemies because it gets accessed from DXRLoadouts
+	config for difficulty settings
+		in DXRando easy: { combatDifficulty: 1 } means easy is the key and combat difficulty is a result of it
+		in HXRando we can look up which rando settings to use based on the combatDifficulty, so it'll be backwards lookup
 	make door strength and min damage threshold proportional so HX players know how strong a door is?
 	need to do something about all the object names, maybe some of them can be switched to class+tag combos
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
@@ -43,12 +44,14 @@ v1.5.8 Alpha:
 	in DXRFixup PostFirstEntry() force the unatco retinal scanner to MJ12 lab to be unhackable, except make it work in mission 5
 	can I partially re-enable Paul's conversation in liberty island and remove the part where he gives you a weapon?
 		will need to mark it as played when entering unatco though, pretty sure it can break stuff
+	cleanup commented code in DXRPasswords
 
 v1.5.8:
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
 	tweak rotations for teleporters?
 	enough advanced options to be able to play unrandomized
 		-disable item/container shuffling, aug cannisters and aug values, skill values, loadout, names)
+	force the unatco retinal scanner to MJ12 lab to be unhackable, except make it actually work in mission 5
 	security cameras might be weird? maybe it's medbots' alliance?
 	speed up the door in paris chateau wine cellar
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
@@ -63,6 +66,10 @@ v1.5.8:
 		might also need to do WaterZone1, but that would make it difficult to hold your breath through there, I could make a dynamicteleporter bring you past that
 	DXREntranceRando: WARNING: GenerateConnections(12) succeeded but took 24 attempts! seed: 158016, genconsfails: 7, validatefails: 17
 
+
+v1.5.9:
+	HX: DXRMissions, DXRFixup? DXRHordeMode? credits, new game plus? DXRStats? crowd control, gonna need to add simulated to like every function
+	automated tests in HX?
 
 for v1.6 programatically modify conversations? ===================
 

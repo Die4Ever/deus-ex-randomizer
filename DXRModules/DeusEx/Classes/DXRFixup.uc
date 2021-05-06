@@ -537,7 +537,7 @@ function NYC_04_CheckPaulRaid()
         if( PaulDenton(p) != None ) continue;
         if( IsCritter(p) ) continue;
         if( p.bHidden ) continue;
-        if( p.GetAllianceType(player().alliance) != ALLIANCE_Hostile ) continue;
+        if( p.GetAllianceType('Player') != ALLIANCE_Hostile ) continue;
         p.bStasis = false;
         pawns++;
     }
@@ -865,7 +865,7 @@ function HongKong_AnyEntry()
                 switch(string(a.Tag))
                 {
                     case "TriadLumPath":
-                        ScriptedPawn(a).ChangeAlly(player().Alliance,1,False);
+                        ScriptedPawn(a).ChangeAlly('Player',1,False);
                         break;
                         
                     case "TracerTong":
@@ -924,7 +924,7 @@ function HongKong_AnyEntry()
                     case "TriadLumPath5":
                     case "GordonQuick":
                     
-                        ScriptedPawn(a).ChangeAlly(player().Alliance,1,False);
+                        ScriptedPawn(a).ChangeAlly('Player',1,False);
                         break;
                 }
             }
