@@ -298,7 +298,8 @@ simulated function GetDressed()
     local PaulDenton paul;
     local PaulDentonCarcass paulCarcass;
     local JCDentonMaleCarcass jcCarcass;
-    local JCDouble jc;  
+    local JCDouble jc;
+    local DeusExPlayer player;
     local texture coat1,coat2,pants,shirt,helmet;
     local name coatinfluencer,pantsinfluencer,shirtinfluencer;
     local class<ScriptedPawn> styleInfluencer;
@@ -376,15 +377,10 @@ simulated function GetDressed()
 
     // JC's stunt double
     foreach AllActors(class'JCDouble', jc)
-        break;
-
-    if (jc != None) {
         ApplyOutfit(jc,coat1,coat2,shirt,pants,helmet,True);
-    }
-    
-    if (player() != None) {
-        ApplyOutfit(player(),coat1,coat2,shirt,pants,helmet,True);
-    }
+
+    foreach AllActors(class'DeusExPlayer', player)
+        ApplyOutfit(player,coat1,coat2,shirt,pants,helmet,True);
 
 }
 

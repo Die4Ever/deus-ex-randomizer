@@ -3,6 +3,12 @@ class DXRAugmentations extends DXRBase transient;
 var config float min_aug_str;
 var config float max_aug_str;
 
+replication
+{
+    reliable if( Role==ROLE_Authority )
+        min_aug_str, max_aug_str;
+}
+
 function CheckConfig()
 {
     if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {

@@ -260,7 +260,10 @@ final function Class<Actor> ModifyActorClass( out Class<Actor> ActorClass )
 
 simulated final function #var PlayerPawn  player()
 {
-    return #var PlayerPawn (GetPlayerPawn());
+    local #var PlayerPawn  p;
+    p = #var PlayerPawn (GetPlayerPawn());
+    if( p == None ) err("player() found None", true);
+    return p;
 }
 
 simulated static function string UnpackString(out string s)
@@ -395,12 +398,16 @@ simulated function warning(coerce string message)
     class'DXRTelemetry'.static.SendLog(dxr, Self, "WARNING", message);
 }
 
-simulated function err(coerce string message)
+simulated function err(coerce string message, optional bool skip_player_message)
 {
     log("ERROR: " $ message, class.name);
-    if(dxr != None && player() != None) {
+#ifdef singleplayer
+    if(dxr != None && !skip_player_message && player() != None) {
         player().ClientMessage( Class @ message, 'ERROR' );
     }
+#else
+    Level.Game.BroadcastMessage(class.name$": ERROR: "$message, true, 'ERROR');
+#endif
 
     class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", message);
 }
