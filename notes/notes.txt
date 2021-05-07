@@ -6,6 +6,8 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 
 what does this ResetKeyboard() function do?
 
+in HX, use the switchcooplevel command to load a level
+
 in order to decompile HX with UnrealEd, or compile HXRandomizer, you'll need to add the EditPackages lines to the DeusEx.ini file in the HX System folder
 EditPackages=Core
 EditPackages=Engine
@@ -33,9 +35,8 @@ EditPackages=HXRandomizer
 
 v1.5.8 Alpha:
 	config for difficulty settings
-		in DXRando easy: { combatDifficulty: 1 } means easy is the key and combat difficulty is a result of it
-		in HXRando we can look up which rando settings to use based on the combatDifficulty, so it'll be backwards lookup
-	make door strength and min damage threshold proportional so HX players know how strong a door is?
+		in DXRando, easy: { combatDifficulty: 1 } means easy is the key and combat difficulty is a result of it
+		in HXRando, we can look up which rando settings to use based on the combatDifficulty, so it'll be backwards lookup
 	need to do something about all the object names, maybe some of them can be switched to class+tag combos
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	NG+ remove 2 random skills (so the player has to make choices), half your skill points, a random aug, and a random weapon?
@@ -45,6 +46,9 @@ v1.5.8 Alpha:
 		will need to mark it as played when entering unatco though, pretty sure it can break stuff
 	cleanup commented code in DXRPasswords
 	DXRPasswords should set the timer from PlayerAnyEntry to avoid replication issues with goals and notes, need to replicate the oldpasswords and newpasswords arrays
+	DXRWeapons projectile damage
+	fix respawn equipment
+	fix Human.SkillSystem.ResetSkills() when used skill points is greater than available, in HXGameInfo AcceptInventory
 
 v1.5.8:
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?

@@ -238,6 +238,9 @@ function RandomizeDoors()
         if( d.bBreakable ) {
             d.doorStrength = FClamp(rngrange(d.doorStrength, min_door_adjust, max_door_adjust), 0, 1);
             d.minDamageThreshold = rngrange(d.minDamageThreshold, min_mindmg_adjust, max_mindmg_adjust);
+#ifndef injections
+            d.minDamageThreshold = d.doorStrength * 60;
+#endif
         }
     }
 }
@@ -525,6 +528,9 @@ function MakeDestructible(#var Mover  d)
         d.bBreakable = true;
         d.minDamageThreshold = rngrange(55, min_mindmg_adjust, max_mindmg_adjust);
         d.doorStrength = FClamp(rngrange(0.8, min_door_adjust, max_door_adjust), 0, 1);
+#ifndef injections
+        d.minDamageThreshold = d.doorStrength * 60;
+#endif
     }
 }
 

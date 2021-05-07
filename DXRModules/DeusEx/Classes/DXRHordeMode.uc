@@ -564,7 +564,7 @@ function GenerateItem()
     local Actor a;
     local class<Actor> c;
     local vector loc;
-    local AugmentationCannister aug;
+    local #var prefix AugmentationCannister aug;
     local Barrel1 barrel;
     local DeusExMover d;
     local float r;
@@ -596,7 +596,7 @@ function GenerateItem()
         return ;
     }
 
-    aug = AugmentationCannister(a);
+    aug = #var prefix AugmentationCannister(a);
     barrel = Barrel1(a);
 
     if( aug != None ) {

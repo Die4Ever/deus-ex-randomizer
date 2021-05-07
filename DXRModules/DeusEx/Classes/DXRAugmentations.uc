@@ -73,20 +73,20 @@ static function AddAug(DeusExPlayer player, class<Augmentation> aclass, int leve
 
 function RandomizeAugCannisters()
 {
-    local AugmentationCannister a;
+    local #var prefix AugmentationCannister a;
 
     if( dxr.flagbase == None ) return;
 
     SetSeed( "RandomizeAugCannisters" );
 
-    foreach AllActors(class'AugmentationCannister', a)
+    foreach AllActors(class'#var prefix AugmentationCannister', a)
     {
         if( DeusExPlayer(a.Owner) != None ) continue;
         RandomizeAugCannister(dxr, a);
     }
 }
 
-function static RandomizeAugCannister(DXRando dxr, AugmentationCannister a)
+function static RandomizeAugCannister(DXRando dxr, #var prefix AugmentationCannister a)
 {
     local int attempts;
     a.AddAugs[0] = PickRandomAug(dxr);

@@ -65,12 +65,27 @@ function CheckConfig()
         datacubes_rules[i].allow = false;
         i++;
 
+        // make sure you can get to the book without needing to jump down
+        datacubes_rules[i].map = "10_PARIS_CATACOMBS";
+        datacubes_rules[i].item_name = '10_Book09';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, 1956.809082); //top floor
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].map = "10_PARIS_CATACOMBS";
+        datacubes_rules[i].item_name = '10_Book09';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999); //top floor
+        datacubes_rules[i].max_pos = vect(99999, 99999, 1956.809082);
+        datacubes_rules[i].allow = false;
+        i++;
+
         // DataCube0 and 2
         datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
         datacubes_rules[i].item_name = '11_Datacube03';
-        datacubes_rules[i].min_pos = vect(3723, -1504, -907); //gunther room
-        datacubes_rules[i].max_pos = vect(5379, -399, -506);
-        datacubes_rules[i].allow = false;
+        datacubes_rules[i].min_pos = vect(-99999, -99999, 1956.809082); //top floor
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
         i++;
 
         datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
@@ -295,6 +310,7 @@ function AnyEntry()
 
 simulated function PlayerAnyEntry(#var PlayerPawn  p)
 {
+    local #var prefix InformationDevices id;
     local ConSpeech c;
     Super.PlayerAnyEntry(p);
 
@@ -304,6 +320,12 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
 
     foreach AllObjects(class'ConSpeech', c) {
         ProcessString(c.speech,, true);
+    }
+
+    foreach AllActors(class'#var prefix InformationDevices', id)
+    {// bAddToVault is not replicated, so we need to run this locally
+        if( InfoDevsHasPass(id) )
+            id.bAddToVault = true;
     }
 }
 
@@ -447,14 +469,43 @@ function FixMaggieChowBday(#var prefix Keypad k)
     ReplacePassword("July 18th", newpassword);
 }
 
+simulated function bool InfoDevsHasPass(#var prefix InformationDevices id, optional out int hasPass[64], optional out int numHasPass)
+{
+    local DeusExTextParser parser;
+    local int i;
+
+    numHasPass=0;
+    for(i=0; i<ArrayCount(hasPass); i++)
+        hasPass[i]=0;
+    
+    if ( id.textTag != '' ) {
+        parser = new(None) Class'DeusExTextParser';
+        if( parser.OpenText(id.textTag, id.TextPackage) ) {
+            ProcessText(parser, hasPass, numHasPass);
+            parser.CloseText();
+        }
+        CriticalDelete(parser);
+    }
+
+#ifdef injections
+    if( id.plaintext != "" ) {
+        ProcessStringHasPass(id.plaintext, hasPass, numHasPass);
+    }
+#endif
+
+    if( numHasPass > 0 )
+        id.bAddToVault = true;
+    
+    return numHasPass > 0;
+}
+
 function RandoInfoDevs(int percent)
 {
     local #var prefix InformationDevices id;
     local Inventory inv;
     local Actor temp[1024];
-    local int i, num, slot;
+    local int num, slot, numHasPass;
     local int hasPass[64];
-    local DeusExTextParser parser;
 
     //l("RandoInfoDevs percent == "$percent);
     if(percent == 0) return;
@@ -462,30 +513,15 @@ function RandoInfoDevs(int percent)
     foreach AllActors(class'#var prefix InformationDevices', id)
     {
         if( rng(100) > percent ) continue;
-        
-        for(i=0; i<ArrayCount(hasPass); i++)
-            hasPass[i]=0;
-        
-        if ( id.textTag != '' ) {
-            parser = new(None) Class'DeusExTextParser';
-            if( parser.OpenText(id.textTag, id.TextPackage) ) {
-                ProcessText(parser, hasPass);
-                parser.CloseText();
-            }
-            CriticalDelete(parser);
-        }
 
-#ifdef injections
-        if( id.plaintext != "" ) {
-            ProcessStringHasPass(id.plaintext, hasPass);
-        }
-#endif
+        if( InfoDevsHasPass(id, hasPass, numHasPass) )
+            id.bAddToVault = true;
 
         num=0;
         foreach AllActors(class'Inventory', inv)
         {
             if( SkipActor(inv, 'Inventory') ) continue;
-            if( InfoPositionGood(id, inv.Location, hasPass) == False ) continue;
+            if( InfoPositionGood(id, inv.Location, hasPass, numHasPass) == False ) continue;
             temp[num++] = inv;
         }
         /*foreach AllActors(class'Containers', c)
@@ -979,7 +1015,7 @@ simulated function LogAll()
 #endif
 }
 
-simulated function ProcessText(DeusExTextParser parser, out int hasPass[64])
+simulated function ProcessText(DeusExTextParser parser, out int hasPass[64], out int numHasPass)
 {
     local string text;
     local int i;
@@ -992,20 +1028,11 @@ simulated function ProcessText(DeusExTextParser parser, out int hasPass[64])
         text = Caps(parser.GetText());
         if( Len(text) == 0 ) continue;
 
-        for(i=0; i<passEnd; i++) {
-            if( Len(oldpasswords[i]) == 0 ) continue;
-            if( PassInStr( text, oldpasswords[i] ) != -1 ) {
-                /*l("found password "$oldpasswords[i]);
-                l(text);
-                l("---");*/
-                hasPass[i] = 1;
-                
-            }
-        }
+        ProcessStringHasPass( text, hasPass, numHasPass );
     }
 }
 
-simulated function ProcessStringHasPass(string text, out int hasPass[64])
+simulated function ProcessStringHasPass(string text, out int hasPass[64], out int numHasPass)
 {
     local int i;
     text = Caps(text);
@@ -1016,6 +1043,7 @@ simulated function ProcessStringHasPass(string text, out int hasPass[64])
             l(text);
             l("---");*/
             hasPass[i] = 1;
+            numHasPass++;
         }
     }
 }
@@ -1055,11 +1083,11 @@ function bool CheckKeypadPosition(#var prefix InformationDevices id, #var prefix
     return True;
 }
 
-function bool InfoPositionGood(#var prefix InformationDevices id, vector newpos, int hasPass[64])
+function bool InfoPositionGood(#var prefix InformationDevices id, vector newpos, int hasPass[64], int numHasPass)
 {
     local #var prefix Computers c;
     local #var prefix Keypad k;
-    local int a, i;
+    local int i;
 
     i = GetSafeRule( datacubes_rules, id.textTag, newpos);
     if( i != -1 ) return datacubes_rules[i].allow;
@@ -1071,11 +1099,7 @@ function bool InfoPositionGood(#var prefix InformationDevices id, vector newpos,
         return True;
     }
 
-    a=0;
-    for(i=0; i<passEnd; i++) {
-        a+=hasPass[i];
-    }
-    if( a==0 ) {
+    if( numHasPass==0 ) {
         //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning True, hasPass is empty");
         return True;
     }// else l("InfoPositionGood("$ActorToString(id)$", "$newpos$") found hasPass "$a);
