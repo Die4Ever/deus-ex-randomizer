@@ -45,6 +45,7 @@ v1.5.8 Alpha:
 	can I partially re-enable Paul's conversation in liberty island and remove the part where he gives you a weapon?
 		will need to mark it as played when entering unatco though, pretty sure it can break stuff
 	cleanup commented code in DXRPasswords
+	DXRPasswords should set the timer from PlayerAnyEntry to avoid replication issues with goals and notes, need to replicate the oldpasswords and newpasswords arrays
 
 v1.5.8:
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?

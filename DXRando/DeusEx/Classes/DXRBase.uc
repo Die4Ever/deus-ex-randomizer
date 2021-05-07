@@ -6,11 +6,12 @@ var config int config_version;
 
 var transient int passes;
 var transient int fails;
+var transient bool inited;
 
 replication
 {
     reliable if( Role==ROLE_Authority )
-        dxr;
+        dxr, inited;
 }
 
 function Init(DXRando tdxr)
@@ -18,6 +19,7 @@ function Init(DXRando tdxr)
     //l(Self$".Init()");
     dxr = tdxr;
     CheckConfig();
+    inited = true;
 }
 
 function bool ConfigOlderThan(int major, int minor, int patch)
@@ -34,6 +36,12 @@ function CheckConfig()
     }
 }
 
+simulated event PostNetBeginPlay()
+{
+    Super.PostNetBeginPlay();
+    log(Self$".PostNetBeginPlay()", self.class.name);
+}
+
 simulated function PreFirstEntry();
 simulated function FirstEntry();
 simulated function PostFirstEntry();
@@ -45,7 +53,8 @@ simulated function ReEntry(bool IsTravel);
 
 simulated function bool CheckLogin(#var PlayerPawn  player)
 {
-    info("CheckLogin("$player$"), dxr.flagbase: "$dxr.flagbase$", dxr.flags.flags_loaded: "$dxr.flags.flags_loaded$", player.SkillSystem: "$player.SkillSystem$", player.SkillSystem.FirstSkill: "$player.SkillSystem.FirstSkill);
+    info("CheckLogin("$player$"), inited: "$inited$", dxr.flagbase: "$dxr.flagbase$", dxr.flags.flags_loaded: "$dxr.flags.flags_loaded$", player.SkillSystem: "$player.SkillSystem$", player.SkillSystem.FirstSkill: "$player.SkillSystem.FirstSkill);
+    if( inited == false ) return false;
     if( player == None ) return false;
     if( player.SkillSystem == None ) return false;
     if( player.SkillSystem.FirstSkill == None ) return false;

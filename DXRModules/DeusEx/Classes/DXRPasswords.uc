@@ -20,6 +20,12 @@ var travel int passEnd;
 var config float min_hack_adjust, max_hack_adjust;
 var transient int updated;
 
+replication
+{
+    reliable if( Role==ROLE_Authority )
+        num_not_passwords, not_passwords, yes_passwords, oldpasswords, newpasswords, passStart, passEnd;
+}
+
 function CheckConfig()
 {
     local int i;
@@ -180,10 +186,13 @@ function CheckConfig()
     }
 }
 
-function Timer()
+simulated function Timer()
 {
 #ifdef hx
-    UpdateGoalsAndNotes( HXGameInfo(Level.Game).Steve.FirstGoal, HXGameInfo(Level.Game).FirstNote );
+    if( Role == ROLE_Authority )
+        UpdateGoalsAndNotes( HXGameInfo(Level.Game).Steve.FirstGoal, HXGameInfo(Level.Game).FirstNote );
+    
+    UpdateGoalsAndNotes( None, player().FirstNote );
 #else
     local #var PlayerPawn  p;
     foreach AllActors(class'#var PlayerPawn ', p) {
@@ -237,7 +246,7 @@ simulated function UpdateGoalsAndNotes(DeusExGoal first_goal, DeusExNote first_n
 }
 
 
-function ProcessString(out string str, optional out string updated_passwords[16], optional bool conversation)
+simulated function ProcessString(out string str, optional out string updated_passwords[16], optional bool conversation)
 {
     local int i, j;
     for(j=0; j<ArrayCount(updated_passwords); j++) {
@@ -258,7 +267,7 @@ function ProcessString(out string str, optional out string updated_passwords[16]
     }
 }
 
-function bool UpdateString(out string str, string oldpassword, string newpassword)
+simulated function bool UpdateString(out string str, string oldpassword, string newpassword)
 {
     if( oldpassword == "" ) return false;
     if( str == "") return false;
@@ -289,9 +298,16 @@ function AnyEntry()
     local ConSpeech c;
     Super.AnyEntry();
 
-    lastCheckedNote = None;
     LogAll();
-    SetTimer(1.0, True);
+}
+
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
+{
+    local ConSpeech c;
+    Super.PlayerAnyEntry(p);
+
+    lastCheckedNote = None;
+    SetTimer(1.0, true);
 
     foreach AllObjects(class'ConSpeech', c) {
         ProcessString(c.speech,, true);
@@ -634,7 +650,7 @@ function ReplacePassword(string oldpassword, string newpassword)
 #endif
 }
 
-function NotifyPlayerNotesUpdated(#var PlayerPawn  p)
+simulated function NotifyPlayerNotesUpdated(#var PlayerPawn  p)
 {
     if( updated == 1 ) {
         p.ClientMessage("Note updated");
@@ -676,11 +692,11 @@ function MarkPasswordKnown(string password)
 }
 
 #ifdef hx
-function bool UpdateAllGoals(HXGoal goal, string oldpassword, string newpassword)
+simulated function bool UpdateAllGoals(HXGoal goal, string oldpassword, string newpassword)
 {
     local HXGoal tgoal;
 #else
-function bool UpdateAllGoals(DeusExGoal goal, string oldpassword, string newpassword)
+simulated function bool UpdateAllGoals(DeusExGoal goal, string oldpassword, string newpassword)
 {
     local DeusExGoal tgoal;
 #endif
@@ -692,11 +708,11 @@ function bool UpdateAllGoals(DeusExGoal goal, string oldpassword, string newpass
 }
 
 #ifdef hx
-function bool UpdateGoal(HXGoal goal, string oldpassword, string newpassword)
+simulated function bool UpdateGoal(HXGoal goal, string oldpassword, string newpassword)
 {
     local HXPlayerPawn p;
 #else
-function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword)
+simulated function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword)
 {
 #endif
     if( oldpassword == "" ) return false;
@@ -727,7 +743,7 @@ function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword
     return true;
 }
 
-function bool UpdateAllNotes(DeusExNote note, string oldpassword, string newpassword)
+simulated function bool UpdateAllNotes(DeusExNote note, string oldpassword, string newpassword)
 {
     local DeusExNote tnote;
     while( note != None )
@@ -738,7 +754,7 @@ function bool UpdateAllNotes(DeusExNote note, string oldpassword, string newpass
     }
 }
 
-function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword)
+simulated function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword)
 {
 #ifdef hx
     local HXPlayerPawn p;
@@ -764,17 +780,31 @@ function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword
     note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
 #ifdef injections
     note.SetNewPassword(newpassword);
-#elseif hx
-    /*foreach AllActors(class'HXPlayerPawn', p) {
-        p.ClientMessage("Found password: "$newpassword);
-    }*/
-    HXGameInfo(Level.Game).DeleteNote(note);
-    HXGameInfo(Level.Game).AddNote(note.text, note.bUserNote, true, '');
+#endif
+#ifdef hx
+    HXUpdateNote(note.textTag, note.text);
 #endif
     
     MarkPasswordKnown(newpassword);
     
     return true;
+}
+
+simulated function HXUpdateNote(Name textTag, string newText)
+{
+    local DeusExNote note;
+    l("HXUpdateNote, player(): "$player()$", textTag: "$textTag$", newText: "$newText);
+#ifdef hx
+    note = HXGameInfo(Level.Game).GetNote(textTag);
+    if( note == None ) {
+        HXGameInfo(Level.Game).AddNote(newText, false, true, textTag);
+    }
+    else
+        note.text = newText;
+#endif
+    note = player().GetNote(textTag);
+    if( note != None )
+        note.text = newText;
 }
 
 static function string GeneratePassword(DXRando dxr, string oldpassword)
@@ -821,7 +851,7 @@ function string GeneratePasscode(string oldpasscode)
     return newpasscode;
 }
 
-final function int PassInStr(string text, string oldpassword)
+simulated final function int PassInStr(string text, string oldpassword)
 {
     local string capsPass, capsText, capsNot;
     local int lenPass, i, n, k, offset;
@@ -853,7 +883,7 @@ final function int PassInStr(string text, string oldpassword)
     return -1;
 }
 
-static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With, optional bool word)
+simulated static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With, optional bool word)
 {
     local int i, replace_len;
     local string Output, capsReplace;
@@ -871,7 +901,7 @@ static final function string ReplaceText(coerce string Text, coerce string Repla
     return Output;
 }
 
-static final function int WordInStr(coerce string Text, coerce string Replace, int replace_len, optional bool word)
+simulated static final function int WordInStr(coerce string Text, coerce string Replace, int replace_len, optional bool word)
 {
     local int i, e;
     i = InStr(Text, Replace);
@@ -895,7 +925,7 @@ static final function int WordInStr(coerce string Text, coerce string Replace, i
     return i;
 }
 
-static final function bool IsWordChar(coerce string Text, int index)
+simulated static final function bool IsWordChar(coerce string Text, int index)
 {
     local int c;
     c = Asc(Mid(Text, index, 1));
@@ -910,7 +940,7 @@ static final function bool IsWordChar(coerce string Text, int index)
     return false;
 }
 
-function LogAll()
+simulated function LogAll()
 {
     local #var prefix Computers c;
     local #var prefix Keypad k;
@@ -956,7 +986,7 @@ function LogAll()
 #endif
 }
 
-function ProcessText(DeusExTextParser parser, out int hasPass[64])
+simulated function ProcessText(DeusExTextParser parser, out int hasPass[64])
 {
     local string text;
     local int i;
@@ -982,7 +1012,7 @@ function ProcessText(DeusExTextParser parser, out int hasPass[64])
     }
 }
 
-function ProcessStringHasPass(string text, out int hasPass[64])
+simulated function ProcessStringHasPass(string text, out int hasPass[64])
 {
     local int i;
     text = Caps(text);
