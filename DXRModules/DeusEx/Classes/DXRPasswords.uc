@@ -194,10 +194,7 @@ simulated function Timer()
     
     UpdateGoalsAndNotes( None, player().FirstNote );
 #else
-    local #var PlayerPawn  p;
-    foreach AllActors(class'#var PlayerPawn ', p) {
-        UpdateGoalsAndNotes( p.FirstGoal, p.FirstNote );
-    }
+    UpdateGoalsAndNotes( player().FirstGoal, player().FirstNote );
 #endif
 }
 
@@ -306,7 +303,8 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
     local ConSpeech c;
     Super.PlayerAnyEntry(p);
 
-    lastCheckedNote = None;
+    if( p == player() )
+        lastCheckedNote = None;
     SetTimer(1.0, true);
 
     foreach AllObjects(class'ConSpeech', c) {

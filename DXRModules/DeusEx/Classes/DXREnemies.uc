@@ -17,6 +17,12 @@ var _RandomEnemyStruct _randomenemies[32];
 var config name defaultOrders;
 var config float min_rate_adjust, max_rate_adjust;
 
+replication
+{
+    reliable if( Role == ROLE_Authority )
+        _randommelees, _randomweapons;
+}
+
 function CheckConfig()
 {
     local int i;

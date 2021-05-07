@@ -34,6 +34,12 @@ var _RandomItemStruct _randomitems[16];
 
 var config int mult_items_per_level;
 
+replication
+{
+    reliable if( Role == ROLE_Authority )
+        loadout, _item_sets, _randomitems, mult_items_per_level;
+}
+
 function CheckConfig()
 {
     local string temp;

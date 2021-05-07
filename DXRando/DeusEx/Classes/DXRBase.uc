@@ -39,7 +39,7 @@ function CheckConfig()
 simulated event PostNetBeginPlay()
 {
     Super.PostNetBeginPlay();
-    log(Self$".PostNetBeginPlay()", self.class.name);
+    l("PostNetBeginPlay()");
 }
 
 simulated function PreFirstEntry();

@@ -25,6 +25,12 @@ var config sMaxAmmo max_ammo[16];
 
 var config float min_rate_adjust, max_rate_adjust;
 
+replication
+{
+    reliable if( Role == ROLE_Authority )
+        mission_scaling, ammo_reductions, reduce_items, max_copies, max_ammo, min_rate_adjust, max_rate_adjust;
+}
+
 function CheckConfig()
 {
     local int i;

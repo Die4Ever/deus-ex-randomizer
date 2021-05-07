@@ -32,7 +32,7 @@ simulated event PostNetBeginPlay()
 {
     Super.PostNetBeginPlay();
     Player = #var PlayerPawn (GetPlayerPawn());
-    log(Self$".PostNetBeginPlay() "$Player, self.class.name);
+    l(Self$".PostNetBeginPlay() "$Player);
     SetTimer(0.2, true);
 }
 
@@ -233,7 +233,7 @@ function ClearModules()
 
 simulated event Tick(float deltaTime)
 {
-    log("Tick", self.class.name);
+    l("Tick");
     if( Role < ROLE_Authority ) {
         Disable('Tick');
         return;
