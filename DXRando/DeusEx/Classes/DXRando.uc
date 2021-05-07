@@ -330,8 +330,9 @@ function RandoEnter()
         modules[i].AnyEntry();
     }
 
-    if( Player != None )
-        PlayerLogin(Player);
+    foreach AllActors(class'#var PlayerPawn ', pawn) {
+        PlayerLogin(pawn);
+    }
 }
 
 simulated function bool CheckLogin(#var PlayerPawn  p)

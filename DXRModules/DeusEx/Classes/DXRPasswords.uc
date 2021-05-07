@@ -33,26 +33,33 @@ function CheckConfig()
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
     }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,8) ) {
         i=0;
 
+        datacubes_rules[i].map = "01_NYC_UNATCOISLAND";
+        datacubes_rules[i].item_name = '01_Datacube06';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
         datacubes_rules[i].map = "04_NYC_NSFHQ";
-        datacubes_rules[i].item_name = 'DataCube0';//DataCube4 too?
+        datacubes_rules[i].item_name = '04_Datacube01';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
 
         datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = 'DataCube1';
+        datacubes_rules[i].item_name = '04_Datacube02';
         i++;
 
         datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = 'DataCube3';
+        datacubes_rules[i].item_name = '04_Datacube02';
         i++;
 
         datacubes_rules[i].map = "05_NYC_UNATCOMJ12LAB";
-        datacubes_rules[i].item_name = 'DataCube0';// don't allow this in the locked cabinet
+        datacubes_rules[i].item_name = '05_Datacube01';// don't allow this in the locked cabinet
         datacubes_rules[i].min_pos = vect(-2235.248291, 1414.674072, -159.039658)-vect(8,8,8);
         datacubes_rules[i].max_pos = vect(-2235.248291, 1414.674072, -159.039658)+vect(8,8,8);
         datacubes_rules[i].allow = false;
@@ -60,43 +67,31 @@ function CheckConfig()
 
         // DataCube0 and 2
         datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = 'DataCube0';
+        datacubes_rules[i].item_name = '11_Datacube03';
         datacubes_rules[i].min_pos = vect(3723, -1504, -907); //gunther room
         datacubes_rules[i].max_pos = vect(5379, -399, -506);
         datacubes_rules[i].allow = false;
         i++;
-        datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = 'DataCube2';
-        i++;
 
         datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = 'DataCube0';// 0 and 2
+        datacubes_rules[i].item_name = '11_Datacube03';// 0 and 2
         datacubes_rules[i].min_pos = vect(3587, -812, -487); //before gunther room
         datacubes_rules[i].max_pos = vect(4322, -124, 74);
         datacubes_rules[i].allow = false;
         i++;
-        datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = 'DataCube2';
-        i++;
 
         datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = 'DataCube0';// 0 and 2
+        datacubes_rules[i].item_name = '11_Datacube03';// 0 and 2
         datacubes_rules[i].min_pos = vect(3146, -1715, -85); //above before gunther room
         datacubes_rules[i].max_pos = vect(3907, -1224, 434);
         datacubes_rules[i].allow = false;
         i++;
-        datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = 'DataCube2';
-        i++;
 
         datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = 'DataCube0';
+        datacubes_rules[i].item_name = '11_Datacube03';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
-        i++;
-        datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = 'DataCube2';
         i++;
 
         i=0;
@@ -1066,7 +1061,7 @@ function bool InfoPositionGood(#var prefix InformationDevices id, vector newpos,
     local #var prefix Keypad k;
     local int a, i;
 
-    i = GetSafeRule( datacubes_rules, id.name, newpos);
+    i = GetSafeRule( datacubes_rules, id.textTag, newpos);
     if( i != -1 ) return datacubes_rules[i].allow;
 
     if( VSize( id.Location - newpos ) > 5000 ) return False;

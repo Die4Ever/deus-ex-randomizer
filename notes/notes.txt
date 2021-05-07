@@ -32,7 +32,6 @@ EditPackages=HX
 EditPackages=HXRandomizer
 
 v1.5.8 Alpha:
-	add replication for other DXRModules, I think it's only needed for the ones that do PlayerLogin or PlayerAnyEntry, but also DXREnemies because it gets accessed from DXRLoadouts
 	config for difficulty settings
 		in DXRando easy: { combatDifficulty: 1 } means easy is the key and combat difficulty is a result of it
 		in HXRando we can look up which rando settings to use based on the combatDifficulty, so it'll be backwards lookup
