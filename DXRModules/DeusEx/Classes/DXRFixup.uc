@@ -855,6 +855,21 @@ function Paris_FirstEntry()
             d = Spawn(class'Dispatcher',, 'everettsignal', vect(176.275253, 4298.747559, -148.500031) );
             d.OutEvents[0] = 'everettsignaldoor';
             AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
+
+            //speed up the secret door...
+            foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
+                d.OutDelays[1] = 0;
+                d.OutDelays[2] = 0;
+                d.OutDelays[3] = 0;
+                d.OutEvents[2] = '';
+                d.OutEvents[3] = '';
+            }
+            foreach AllActors(class'DeusExMover', m, 'secret_candle') {
+                m.MoveTime = 0.5;
+            }
+            foreach AllActors(class'DeusExMover', m, 'cellar_door') {
+                m.MoveTime = 1;
+            }
             break;
         
         case "11_PARIS_CATHEDRAL":

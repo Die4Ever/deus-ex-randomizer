@@ -54,7 +54,6 @@ v1.5.8:
 	enough advanced options to be able to play unrandomized
 		-disable item/container shuffling, aug cannisters and aug values, skill values, loadout, names)
 	security cameras might be weird? maybe it's medbots' alliance?
-	speed up the door in paris chateau wine cellar
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
 	make horde mode use the DXRAutosave blocking manual saves method instead of the hack-y permanent fake datalink
 	use better logic for The Merchant's location, like cameras?
