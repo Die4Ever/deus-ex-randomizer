@@ -156,17 +156,36 @@ function PreFirstEntry()
 
 function PostFirstEntry()
 {
+    local RetinalScanner r;
     Super.PostFirstEntry();
 
     switch(dxr.localURL) {
+        case "01_NYC_UNATCOHQ":
+        case "03_NYC_UNATCOHQ":
+        case "04_NYC_UNATCOHQ":
+        case "05_NYC_UNATCOHQ":
+            foreach AllActors(class'RetinalScanner', r) {
+                if( r.Event != 'retinal_msg_trigger' ) continue;
+                if( dxr.localURL == "05_NYC_UNATCOHQ" )
+                    r.Event = 'UN_blastdoor2';
+                else
+                {
+                    r.bHackable = false;
+                    r.hackStrength = 0;
+                    r.msgUsed = "";
+                }
+            }
+            break;
+
         case "02_NYC_WAREHOUSE":
             AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));
-        // TODO: force the unatco retinal scanner to MJ12 lab to be unhackable, except make it actually work in mission 5
+        
         case "03_NYC_AirfieldHeliBase":
             //crates to get back over the beginning of the level
             _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
             _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
             break;
+        
         case "05_NYC_UNATCOMJ12LAB":
             BalanceJailbreak();
             break;

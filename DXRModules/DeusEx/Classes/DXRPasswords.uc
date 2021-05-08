@@ -321,12 +321,6 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
     foreach AllObjects(class'ConSpeech', c) {
         ProcessString(c.speech,, true);
     }
-
-    foreach AllActors(class'#var prefix InformationDevices', id)
-    {// bAddToVault is not replicated, so we need to run this locally
-        if( InfoDevsHasPass(id) )
-            id.bAddToVault = true;
-    }
 }
 
 function RandoHacks()
@@ -514,8 +508,7 @@ function RandoInfoDevs(int percent)
     {
         if( rng(100) > percent ) continue;
 
-        if( InfoDevsHasPass(id, hasPass, numHasPass) )
-            id.bAddToVault = true;
+        InfoDevsHasPass(id, hasPass, numHasPass);
 
         num=0;
         foreach AllActors(class'Inventory', inv)

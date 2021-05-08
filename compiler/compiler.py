@@ -8,6 +8,7 @@ def run(args):
     if args.verbose:
         args.base.loglevel = 'debug'
     
+    argprofiles = args.profile
     default_settings = {}
     with open('compiler_settings.default.json') as f:
         default_settings = json.load(f)
@@ -20,7 +21,13 @@ def run(args):
         pass
 
     merged = {**default_settings, **settings}
-    for p in args.profile.split(','):
+    profiles = []
+    if argprofiles == 'all':
+        profiles = merged.keys()
+    else:
+        profiles = argprofiles.split(',')
+    
+    for p in profiles:
         profile_name = p.strip()
         profile = merged[profile_name]
         print("using "+profile_name+" settings\n"+repr(profile)+"\n")

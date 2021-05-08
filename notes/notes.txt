@@ -41,11 +41,9 @@ v1.5.8 Alpha:
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	NG+ remove 2 random skills (so the player has to make choices), half your skill points, a random aug, and a random weapon?
 	cleanup goals when finishing missions, especially hong kong
-	in DXRFixup PostFirstEntry() force the unatco retinal scanner to MJ12 lab to be unhackable, except make it work in mission 5
 	can I partially re-enable Paul's conversation in liberty island and remove the part where he gives you a weapon?
 		will need to mark it as played when entering unatco though, pretty sure it can break stuff
 	cleanup commented code in DXRPasswords
-	DXRPasswords should set the timer from PlayerAnyEntry to avoid replication issues with goals and notes, need to replicate the oldpasswords and newpasswords arrays
 	DXRWeapons projectile damage
 	fix respawn equipment
 	fix Human.SkillSystem.ResetSkills() when used skill points is greater than available, in HXGameInfo AcceptInventory
@@ -55,7 +53,6 @@ v1.5.8:
 	tweak rotations for teleporters?
 	enough advanced options to be able to play unrandomized
 		-disable item/container shuffling, aug cannisters and aug values, skill values, loadout, names)
-	force the unatco retinal scanner to MJ12 lab to be unhackable, except make it actually work in mission 5
 	security cameras might be weird? maybe it's medbots' alliance?
 	speed up the door in paris chateau wine cellar
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
