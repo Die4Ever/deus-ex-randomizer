@@ -20,6 +20,12 @@ var travel int passEnd;
 var config float min_hack_adjust, max_hack_adjust;
 var transient int updated;
 
+replication
+{
+    reliable if( Role==ROLE_Authority )
+        num_not_passwords, not_passwords, yes_passwords, oldpasswords, newpasswords, passStart, passEnd;
+}
+
 function CheckConfig()
 {
     local int i;
@@ -27,70 +33,80 @@ function CheckConfig()
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
     }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
+    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,8) ) {
         i=0;
 
+        datacubes_rules[i].map = "01_NYC_UNATCOISLAND";
+        datacubes_rules[i].item_name = '01_Datacube06';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
         datacubes_rules[i].map = "04_NYC_NSFHQ";
-        datacubes_rules[i].item_name = 'DataCube0';//DataCube4 too?
+        datacubes_rules[i].item_name = '04_Datacube01';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
 
         datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = 'DataCube1';
+        datacubes_rules[i].item_name = '04_Datacube02';
         i++;
 
         datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = 'DataCube3';
+        datacubes_rules[i].item_name = '04_Datacube02';
         i++;
 
         datacubes_rules[i].map = "05_NYC_UNATCOMJ12LAB";
-        datacubes_rules[i].item_name = 'DataCube0';// don't allow this in the locked cabinet
+        datacubes_rules[i].item_name = '05_Datacube01';// don't allow this in the locked cabinet
         datacubes_rules[i].min_pos = vect(-2235.248291, 1414.674072, -159.039658)-vect(8,8,8);
         datacubes_rules[i].max_pos = vect(-2235.248291, 1414.674072, -159.039658)+vect(8,8,8);
         datacubes_rules[i].allow = false;
         i++;
 
-        // DataCube0 and 2
-        datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = 'DataCube0';
-        datacubes_rules[i].min_pos = vect(3723, -1504, -907); //gunther room
-        datacubes_rules[i].max_pos = vect(5379, -399, -506);
+        // make sure you can get to the book without needing to jump down
+        datacubes_rules[i].map = "10_PARIS_CATACOMBS";
+        datacubes_rules[i].item_name = '10_Book09';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, 1956.809082); //top floor
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        datacubes_rules[i].map = "10_PARIS_CATACOMBS";
+        datacubes_rules[i].item_name = '10_Book09';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999); //top floor
+        datacubes_rules[i].max_pos = vect(99999, 99999, 1956.809082);
         datacubes_rules[i].allow = false;
         i++;
-        datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = 'DataCube2';
+
+        // DataCube0 and 2
+        datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
+        datacubes_rules[i].item_name = '11_Datacube03';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, 1956.809082); //top floor
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
         i++;
 
         datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = 'DataCube0';// 0 and 2
+        datacubes_rules[i].item_name = '11_Datacube03';// 0 and 2
         datacubes_rules[i].min_pos = vect(3587, -812, -487); //before gunther room
         datacubes_rules[i].max_pos = vect(4322, -124, 74);
         datacubes_rules[i].allow = false;
         i++;
-        datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = 'DataCube2';
-        i++;
 
         datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = 'DataCube0';// 0 and 2
+        datacubes_rules[i].item_name = '11_Datacube03';// 0 and 2
         datacubes_rules[i].min_pos = vect(3146, -1715, -85); //above before gunther room
         datacubes_rules[i].max_pos = vect(3907, -1224, 434);
         datacubes_rules[i].allow = false;
         i++;
-        datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = 'DataCube2';
-        i++;
 
         datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = 'DataCube0';
+        datacubes_rules[i].item_name = '11_Datacube03';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
-        i++;
-        datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = 'DataCube2';
         i++;
 
         i=0;
@@ -180,15 +196,15 @@ function CheckConfig()
     }
 }
 
-function Timer()
+simulated function Timer()
 {
 #ifdef hx
-    UpdateGoalsAndNotes( HXGameInfo(Level.Game).Steve.FirstGoal, HXGameInfo(Level.Game).FirstNote );
+    if( Role == ROLE_Authority )
+        UpdateGoalsAndNotes( HXGameInfo(Level.Game).Steve.FirstGoal, HXGameInfo(Level.Game).FirstNote );
+    
+    UpdateGoalsAndNotes( None, player().FirstNote );
 #else
-    local #var PlayerPawn  p;
-    foreach AllActors(class'#var PlayerPawn ', p) {
-        UpdateGoalsAndNotes( p.FirstGoal, p.FirstNote );
-    }
+    UpdateGoalsAndNotes( player().FirstGoal, player().FirstNote );
 #endif
 }
 
@@ -237,7 +253,7 @@ simulated function UpdateGoalsAndNotes(DeusExGoal first_goal, DeusExNote first_n
 }
 
 
-function ProcessString(out string str, optional out string updated_passwords[16], optional bool conversation)
+simulated function ProcessString(out string str, optional out string updated_passwords[16], optional bool conversation)
 {
     local int i, j;
     for(j=0; j<ArrayCount(updated_passwords); j++) {
@@ -258,7 +274,7 @@ function ProcessString(out string str, optional out string updated_passwords[16]
     }
 }
 
-function bool UpdateString(out string str, string oldpassword, string newpassword)
+simulated function bool UpdateString(out string str, string oldpassword, string newpassword)
 {
     if( oldpassword == "" ) return false;
     if( str == "") return false;
@@ -289,9 +305,18 @@ function AnyEntry()
     local ConSpeech c;
     Super.AnyEntry();
 
-    lastCheckedNote = None;
     LogAll();
-    SetTimer(1.0, True);
+}
+
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
+{
+    local #var prefix InformationDevices id;
+    local ConSpeech c;
+    Super.PlayerAnyEntry(p);
+
+    if( p == player() )
+        lastCheckedNote = None;
+    SetTimer(1.0, true);
 
     foreach AllObjects(class'ConSpeech', c) {
         ProcessString(c.speech,, true);
@@ -438,14 +463,43 @@ function FixMaggieChowBday(#var prefix Keypad k)
     ReplacePassword("July 18th", newpassword);
 }
 
+simulated function bool InfoDevsHasPass(#var prefix InformationDevices id, optional out int hasPass[64], optional out int numHasPass)
+{
+    local DeusExTextParser parser;
+    local int i;
+
+    numHasPass=0;
+    for(i=0; i<ArrayCount(hasPass); i++)
+        hasPass[i]=0;
+    
+    if ( id.textTag != '' ) {
+        parser = new(None) Class'DeusExTextParser';
+        if( parser.OpenText(id.textTag, id.TextPackage) ) {
+            ProcessText(parser, hasPass, numHasPass);
+            parser.CloseText();
+        }
+        CriticalDelete(parser);
+    }
+
+#ifdef injections
+    if( id.plaintext != "" ) {
+        ProcessStringHasPass(id.plaintext, hasPass, numHasPass);
+    }
+#endif
+
+    if( numHasPass > 0 )
+        id.bAddToVault = true;
+    
+    return numHasPass > 0;
+}
+
 function RandoInfoDevs(int percent)
 {
     local #var prefix InformationDevices id;
     local Inventory inv;
     local Actor temp[1024];
-    local int i, num, slot;
+    local int num, slot, numHasPass;
     local int hasPass[64];
-    local DeusExTextParser parser;
 
     //l("RandoInfoDevs percent == "$percent);
     if(percent == 0) return;
@@ -453,30 +507,14 @@ function RandoInfoDevs(int percent)
     foreach AllActors(class'#var prefix InformationDevices', id)
     {
         if( rng(100) > percent ) continue;
-        
-        for(i=0; i<ArrayCount(hasPass); i++)
-            hasPass[i]=0;
-        
-        if ( id.textTag != '' ) {
-            parser = new(None) Class'DeusExTextParser';
-            if( parser.OpenText(id.textTag, id.TextPackage) ) {
-                ProcessText(parser, hasPass);
-                parser.CloseText();
-            }
-            CriticalDelete(parser);
-        }
 
-#ifdef injections
-        if( id.plaintext != "" ) {
-            ProcessStringHasPass(id.plaintext, hasPass);
-        }
-#endif
+        InfoDevsHasPass(id, hasPass, numHasPass);
 
         num=0;
         foreach AllActors(class'Inventory', inv)
         {
             if( SkipActor(inv, 'Inventory') ) continue;
-            if( InfoPositionGood(id, inv.Location, hasPass) == False ) continue;
+            if( InfoPositionGood(id, inv.Location, hasPass, numHasPass) == False ) continue;
             temp[num++] = inv;
         }
         /*foreach AllActors(class'Containers', c)
@@ -634,7 +672,7 @@ function ReplacePassword(string oldpassword, string newpassword)
 #endif
 }
 
-function NotifyPlayerNotesUpdated(#var PlayerPawn  p)
+simulated function NotifyPlayerNotesUpdated(#var PlayerPawn  p)
 {
     if( updated == 1 ) {
         p.ClientMessage("Note updated");
@@ -676,11 +714,11 @@ function MarkPasswordKnown(string password)
 }
 
 #ifdef hx
-function bool UpdateAllGoals(HXGoal goal, string oldpassword, string newpassword)
+simulated function bool UpdateAllGoals(HXGoal goal, string oldpassword, string newpassword)
 {
     local HXGoal tgoal;
 #else
-function bool UpdateAllGoals(DeusExGoal goal, string oldpassword, string newpassword)
+simulated function bool UpdateAllGoals(DeusExGoal goal, string oldpassword, string newpassword)
 {
     local DeusExGoal tgoal;
 #endif
@@ -692,11 +730,11 @@ function bool UpdateAllGoals(DeusExGoal goal, string oldpassword, string newpass
 }
 
 #ifdef hx
-function bool UpdateGoal(HXGoal goal, string oldpassword, string newpassword)
+simulated function bool UpdateGoal(HXGoal goal, string oldpassword, string newpassword)
 {
     local HXPlayerPawn p;
 #else
-function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword)
+simulated function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword)
 {
 #endif
     if( oldpassword == "" ) return false;
@@ -727,7 +765,7 @@ function bool UpdateGoal(DeusExGoal goal, string oldpassword, string newpassword
     return true;
 }
 
-function bool UpdateAllNotes(DeusExNote note, string oldpassword, string newpassword)
+simulated function bool UpdateAllNotes(DeusExNote note, string oldpassword, string newpassword)
 {
     local DeusExNote tnote;
     while( note != None )
@@ -738,7 +776,7 @@ function bool UpdateAllNotes(DeusExNote note, string oldpassword, string newpass
     }
 }
 
-function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword)
+simulated function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword)
 {
 #ifdef hx
     local HXPlayerPawn p;
@@ -764,17 +802,31 @@ function bool UpdateNote(DeusExNote note, string oldpassword, string newpassword
     note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
 #ifdef injections
     note.SetNewPassword(newpassword);
-#elseif hx
-    /*foreach AllActors(class'HXPlayerPawn', p) {
-        p.ClientMessage("Found password: "$newpassword);
-    }*/
-    HXGameInfo(Level.Game).DeleteNote(note);
-    HXGameInfo(Level.Game).AddNote(note.text, note.bUserNote, true, '');
+#endif
+#ifdef hx
+    HXUpdateNote(note.textTag, note.text);
 #endif
     
     MarkPasswordKnown(newpassword);
     
     return true;
+}
+
+simulated function HXUpdateNote(Name textTag, string newText)
+{
+    local DeusExNote note;
+    l("HXUpdateNote, player(): "$player()$", textTag: "$textTag$", newText: "$newText);
+#ifdef hx
+    note = HXGameInfo(Level.Game).GetNote(textTag);
+    if( note == None ) {
+        HXGameInfo(Level.Game).AddNote(newText, false, true, textTag);
+    }
+    else
+        note.text = newText;
+#endif
+    note = player().GetNote(textTag);
+    if( note != None )
+        note.text = newText;
 }
 
 static function string GeneratePassword(DXRando dxr, string oldpassword)
@@ -821,7 +873,7 @@ function string GeneratePasscode(string oldpasscode)
     return newpasscode;
 }
 
-final function int PassInStr(string text, string oldpassword)
+simulated final function int PassInStr(string text, string oldpassword)
 {
     local string capsPass, capsText, capsNot;
     local int lenPass, i, n, k, offset;
@@ -853,7 +905,7 @@ final function int PassInStr(string text, string oldpassword)
     return -1;
 }
 
-static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With, optional bool word)
+simulated static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With, optional bool word)
 {
     local int i, replace_len;
     local string Output, capsReplace;
@@ -871,7 +923,7 @@ static final function string ReplaceText(coerce string Text, coerce string Repla
     return Output;
 }
 
-static final function int WordInStr(coerce string Text, coerce string Replace, int replace_len, optional bool word)
+simulated static final function int WordInStr(coerce string Text, coerce string Replace, int replace_len, optional bool word)
 {
     local int i, e;
     i = InStr(Text, Replace);
@@ -895,7 +947,7 @@ static final function int WordInStr(coerce string Text, coerce string Replace, i
     return i;
 }
 
-static final function bool IsWordChar(coerce string Text, int index)
+simulated static final function bool IsWordChar(coerce string Text, int index)
 {
     local int c;
     c = Asc(Mid(Text, index, 1));
@@ -910,7 +962,7 @@ static final function bool IsWordChar(coerce string Text, int index)
     return false;
 }
 
-function LogAll()
+simulated function LogAll()
 {
     local #var prefix Computers c;
     local #var prefix Keypad k;
@@ -956,7 +1008,7 @@ function LogAll()
 #endif
 }
 
-function ProcessText(DeusExTextParser parser, out int hasPass[64])
+simulated function ProcessText(DeusExTextParser parser, out int hasPass[64], out int numHasPass)
 {
     local string text;
     local int i;
@@ -969,20 +1021,11 @@ function ProcessText(DeusExTextParser parser, out int hasPass[64])
         text = Caps(parser.GetText());
         if( Len(text) == 0 ) continue;
 
-        for(i=0; i<passEnd; i++) {
-            if( Len(oldpasswords[i]) == 0 ) continue;
-            if( PassInStr( text, oldpasswords[i] ) != -1 ) {
-                /*l("found password "$oldpasswords[i]);
-                l(text);
-                l("---");*/
-                hasPass[i] = 1;
-                
-            }
-        }
+        ProcessStringHasPass( text, hasPass, numHasPass );
     }
 }
 
-function ProcessStringHasPass(string text, out int hasPass[64])
+simulated function ProcessStringHasPass(string text, out int hasPass[64], out int numHasPass)
 {
     local int i;
     text = Caps(text);
@@ -993,6 +1036,7 @@ function ProcessStringHasPass(string text, out int hasPass[64])
             l(text);
             l("---");*/
             hasPass[i] = 1;
+            numHasPass++;
         }
     }
 }
@@ -1032,13 +1076,13 @@ function bool CheckKeypadPosition(#var prefix InformationDevices id, #var prefix
     return True;
 }
 
-function bool InfoPositionGood(#var prefix InformationDevices id, vector newpos, int hasPass[64])
+function bool InfoPositionGood(#var prefix InformationDevices id, vector newpos, int hasPass[64], int numHasPass)
 {
     local #var prefix Computers c;
     local #var prefix Keypad k;
-    local int a, i;
+    local int i;
 
-    i = GetSafeRule( datacubes_rules, id.name, newpos);
+    i = GetSafeRule( datacubes_rules, id.textTag, newpos);
     if( i != -1 ) return datacubes_rules[i].allow;
 
     if( VSize( id.Location - newpos ) > 5000 ) return False;
@@ -1048,11 +1092,7 @@ function bool InfoPositionGood(#var prefix InformationDevices id, vector newpos,
         return True;
     }
 
-    a=0;
-    for(i=0; i<passEnd; i++) {
-        a+=hasPass[i];
-    }
-    if( a==0 ) {
+    if( numHasPass==0 ) {
         //l("InfoPositionGood("$ActorToString(id)$", "$newpos$") returning True, hasPass is empty");
         return True;
     }// else l("InfoPositionGood("$ActorToString(id)$", "$newpos$") found hasPass "$a);

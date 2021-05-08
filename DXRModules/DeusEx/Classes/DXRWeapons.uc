@@ -7,6 +7,12 @@ var config float max_weapon_shottime;
 
 var DXRLoadouts loadouts;
 
+replication
+{
+    reliable if( Role == ROLE_Authority )
+        min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime;
+}
+
 function CheckConfig()
 {
     if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
@@ -18,7 +24,7 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-function AnyEntry()
+simulated function AnyEntry()
 {
     local DeusExWeapon w;
     Super.AnyEntry();
@@ -30,7 +36,13 @@ function AnyEntry()
     }
 }
 
-function RandoWeapon(DeusExWeapon w)
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
+{
+    Super.PlayerAnyEntry(p);
+    AnyEntry();
+}
+
+simulated function RandoWeapon(DeusExWeapon w)
 {
     local int oldseed;
     if( dxr == None ) return;
@@ -39,45 +51,45 @@ function RandoWeapon(DeusExWeapon w)
     if( loadouts != None ) loadouts.AdjustWeapon(w);
 
     w.HitDamage = rngrange(float(w.default.HitDamage), min_weapon_dmg, max_weapon_dmg);
-    if( WeaponHideAGun(w) == None && w.ProjectileClass != None ) {
+    if( #var prefix WeaponHideAGun(w) == None && w.ProjectileClass != None ) {
         //don't do this for the PS20/PS40 because it shares the PlasmaBolt projectile with the PlasmaRifle in a really dumb way, the PS40 code handles this itself
         //I might move this logic into an injector into DeusExProjectile, maybe in BeginPlay it could check its owner and copy the HitDamage from there?
         switch(w.ProjectileClass) {
-            case class'Dart':
+            case class'#var prefix Dart':
                 w.ProjectileClass.default.Damage = 0.6 * float(w.HitDamage);
                 break;
             
-            case class'DartFlare':
-            case class'DartPoison':
+            case class'#var prefix DartFlare':
+            case class'#var prefix DartPoison':
                 w.ProjectileClass.default.Damage = 0.2 * float(w.HitDamage);
                 break;
             
-            case class'PlasmaBolt':
+            case class'#var prefix PlasmaBolt':
                 w.ProjectileClass.default.Damage = 1.15 * float(w.HitDamage);
                 break;
 
-            case class'Fireball':
+            case class'#var prefix Fireball':
                 w.ProjectileClass.default.Damage = float(w.HitDamage);
                 break;
             
-            case class'Rocket':
+            case class'#var prefix Rocket':
                 w.ProjectileClass.default.Damage = float(w.HitDamage);
                 break;
 
-            case class'Shuriken':
+            case class'#var prefix Shuriken':
                 w.ProjectileClass.default.Damage = float(w.HitDamage);
                 break;
 
-            case class'GasGrenade':
-            case class'TearGas':
-            case class'GreaselSpit':
-            case class'RocketRobot':
-            case class'LAM':
-            case class'RocketLAW':
-            case class'NanoVirusGrenade':
-            case class'EMPGrenade':
-            case class'GraySpit':
-            case class'RocketMini':
+            case class'#var prefix GasGrenade':
+            case class'#var prefix TearGas':
+            case class'#var prefix GreaselSpit':
+            case class'#var prefix RocketRobot':
+            case class'#var prefix LAM':
+            case class'#var prefix RocketLAW':
+            case class'#var prefix NanoVirusGrenade':
+            case class'#var prefix EMPGrenade':
+            case class'#var prefix GraySpit':
+            case class'#var prefix RocketMini':
                 //ignore these for now
                 break;
             
@@ -96,4 +108,26 @@ function RandoWeapon(DeusExWeapon w)
     f = w.default.BaseAccuracy * (rngf()+0.5);
     w.BaseAccuracy = f;*/
     dxr.SetSeed(oldseed);
+}
+
+simulated function RemoveRandomWeapon(#var PlayerPawn  p)
+{
+    local Inventory i;
+    local Weapon weaps[64];
+    local int numWeaps, slot;
+
+    for( i = p.Inventory; i != None; i = i.Inventory ) {
+        if( Weapon(i) == None ) continue;
+        weaps[numWeaps++] = Weapon(i);
+    }
+
+    // don't take the player's only weapon
+    if( numWeaps <= 1 ) return;
+
+    SetSeed( "RemoveRandomWeapon " $ numWeaps );
+
+    slot = rng(numWeaps);
+    info("RemoveRandomWeapon("$p$") Removing weapon "$weaps[slot]$", numWeaps was "$numWeaps);
+    p.DeleteInventory(weaps[slot]);
+    weaps[slot].Destroy();
 }

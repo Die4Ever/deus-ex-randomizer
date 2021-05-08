@@ -6,13 +6,12 @@ var config int config_version;
 
 var transient int passes;
 var transient int fails;
+var transient bool inited;
 
-/*reliable if( Role==ROLE_Authority )
-        PreFirstEntry, FirstEntry, PostFirstEntry, AnyEntry, PostAnyEntry, ReEntry, Login;*/
 replication
 {
     reliable if( Role==ROLE_Authority )
-        dxr;
+        dxr, inited;
 }
 
 function Init(DXRando tdxr)
@@ -20,6 +19,7 @@ function Init(DXRando tdxr)
     //l(Self$".Init()");
     dxr = tdxr;
     CheckConfig();
+    inited = true;
 }
 
 function bool ConfigOlderThan(int major, int minor, int patch)
@@ -36,6 +36,12 @@ function CheckConfig()
     }
 }
 
+simulated event PostNetBeginPlay()
+{
+    Super.PostNetBeginPlay();
+    l("PostNetBeginPlay()");
+}
+
 simulated function PreFirstEntry();
 simulated function FirstEntry();
 simulated function PostFirstEntry();
@@ -47,7 +53,8 @@ simulated function ReEntry(bool IsTravel);
 
 simulated function bool CheckLogin(#var PlayerPawn  player)
 {
-    info("CheckLogin("$player$"), dxr.flagbase: "$dxr.flagbase$", dxr.flags.flags_loaded: "$dxr.flags.flags_loaded$", player.SkillSystem: "$player.SkillSystem$", player.SkillSystem.FirstSkill: "$player.SkillSystem.FirstSkill);
+    info("CheckLogin("$player$"), inited: "$inited$", dxr.flagbase: "$dxr.flagbase$", dxr.flags.flags_loaded: "$dxr.flags.flags_loaded$", player.SkillSystem: "$player.SkillSystem$", player.SkillSystem.FirstSkill: "$player.SkillSystem.FirstSkill);
+    if( inited == false ) return false;
     if( player == None ) return false;
     if( player.SkillSystem == None ) return false;
     if( player.SkillSystem.FirstSkill == None ) return false;
@@ -260,7 +267,12 @@ final function Class<Actor> ModifyActorClass( out Class<Actor> ActorClass )
 simulated final function #var PlayerPawn  player()
 {
     local #var PlayerPawn  p;
-    p = #var PlayerPawn (GetPlayerPawn());
+    //p = #var PlayerPawn (GetPlayerPawn());
+    p = dxr.Player;
+    if( p == None ) {
+        p = #var PlayerPawn (GetPlayerPawn());
+        dxr.Player = p;
+    }
     if( p == None ) err("player() found None", true);
     return p;
 }

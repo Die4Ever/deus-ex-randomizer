@@ -1,5 +1,6 @@
 class DXRando extends Info config(DXRando) transient;
 
+var transient #var PlayerPawn  Player;
 var transient FlagBase flagbase;
 var transient DXRFlags flags;
 var transient DXRTelemetry telemetry;
@@ -30,7 +31,8 @@ replication
 simulated event PostNetBeginPlay()
 {
     Super.PostNetBeginPlay();
-    log(Self$".PostNetBeginPlay()", self.class.name);
+    Player = #var PlayerPawn (GetPlayerPawn());
+    l(Self$".PostNetBeginPlay() "$Player);
     SetTimer(0.2, true);
 }
 
@@ -40,11 +42,11 @@ simulated event Timer()
     if( bTickEnabled == true ) return;
 
     if( bLoginReady ) {
-        PlayerLogin(#var PlayerPawn (GetPlayerPawn()) );
+        PlayerLogin(Player);
         SetTimer(0, false);
     }
 
-    if( ! CheckLogin(#var PlayerPawn (GetPlayerPawn())) )
+    if( ! CheckLogin(Player) )
         return;
     
     bLoginReady = true;
@@ -73,22 +75,22 @@ function SetdxInfo(DeusExLevelInfo i)
 
 function DXRInit()
 {
-#ifndef hx
-    local #var PlayerPawn  p;
     l("DXRInit has localURL == " $ localURL);
-    foreach AllActors(class'#var PlayerPawn ', p) {
-        flagbase = p.FlagBase;
-        break;
-    }
-#elseif hx
+
+    Player = #var PlayerPawn (GetPlayerPawn());
+    if( Player == None )
+        foreach AllActors(class'#var PlayerPawn ', Player)
+            break;
+    
+    flagbase = Player.FlagBase;
+#ifdef hx
     flagbase = HXGameInfo(Level.Game).Steve.FlagBase;
-    //flagbase = class'DataStorage'.static.GetObj(self);// flags don't seem to be working for ints or names
 #endif
     if( flagbase == None ) {
         warn("DXRInit() didn't find flagbase?");
         return;
     }
-    l("found flagbase "$flagbase);
+    l("found flagbase: "$flagbase$", Player: "$Player);
 
     flags.LoadFlags();
     LoadModules();
@@ -105,6 +107,7 @@ function CheckConfig()
         }
 
         i=0;
+        modules_to_load[i++] = "DXRTelemetry";
 #ifdef vanilla
         modules_to_load[i++] = "DXRMissions";
 #endif
@@ -137,7 +140,6 @@ function CheckConfig()
         modules_to_load[i++] = "DXRWeapons";
         modules_to_load[i++] = "DXRCrowdControl";
         modules_to_load[i++] = "DXRMachines";
-        modules_to_load[i++] = "DXRTelemetry";
 #ifdef singleplayer
         modules_to_load[i++] = "DXRStats";
         modules_to_load[i++] = "DXRNPCs";
@@ -195,6 +197,8 @@ function LoadModules()
 #endif
         LoadModule( class<DXRBase>(c) );
     }
+
+    telemetry = DXRTelemetry(FindModule(class'DXRTelemetry'));
 }
 
 simulated final function DXRBase FindModule(class<DXRBase> moduleclass)
@@ -229,7 +233,6 @@ function ClearModules()
 
 simulated event Tick(float deltaTime)
 {
-    log("Tick", self.class.name);
     if( Role < ROLE_Authority ) {
         Disable('Tick');
         return;
@@ -245,7 +248,7 @@ function DXRTick(float deltaTime)
     if( dxInfo == None )
     {
         //waiting...
-        l("DXRTick dxInfo == None");
+        //l("DXRTick dxInfo == None");
         return;
     }
     else if( flagbase == None )
@@ -329,7 +332,6 @@ function RandoEnter()
     foreach AllActors(class'#var PlayerPawn ', pawn) {
         PlayerLogin(pawn);
     }
-
 }
 
 simulated function bool CheckLogin(#var PlayerPawn  p)
@@ -465,8 +467,8 @@ simulated function err(string message)
 {
     log("ERROR: " $ message, class.name);
 #ifdef singleplayer
-    if( flags.player() != None )
-        flags.player().ClientMessage( Class @ message, 'ERROR' );
+    if( Player != None )
+        Player.ClientMessage( Class @ message, 'ERROR' );
 #else
     BroadcastMessage(class.name$": ERROR: "$message, true, 'ERROR');
 #endif
@@ -482,7 +484,7 @@ function RunTests()
         modules[i].StartRunTests();
         if( modules[i].fails > 0 ) {
             failures++;
-            flags.player().ShowHud(true);
+            Player.ShowHud(true);
             err( "ERROR: " $ modules[i] @ modules[i].fails $ " tests failed!" );
         }
         else
@@ -492,7 +494,7 @@ function RunTests()
     if( failures == 0 ) {
         l( "all tests passed!" );
     } else {
-        flags.player().ShowHud(true);
+        Player.ShowHud(true);
         err( "ERROR: " $ failures $ " modules failed tests!" );
     }
 }
@@ -505,7 +507,7 @@ function ExtendedTests()
         modules[i].StartExtendedTests();
         if( modules[i].fails > 0 ) {
             failures++;
-            flags.player().ShowHud(true);
+            Player.ShowHud(true);
             err( "ERROR: " $ modules[i] @ modules[i].fails $ " tests failed!" );
         }
         else
@@ -515,7 +517,7 @@ function ExtendedTests()
     if( failures == 0 ) {
         l( "all extended tests passed!" );
     } else {
-        flags.player().ShowHud(true);
+        Player.ShowHud(true);
         err( "ERROR: " $ failures $ " modules failed tests!" );
     }
 }

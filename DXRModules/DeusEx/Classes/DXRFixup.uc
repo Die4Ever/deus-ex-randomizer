@@ -156,17 +156,36 @@ function PreFirstEntry()
 
 function PostFirstEntry()
 {
+    local RetinalScanner r;
     Super.PostFirstEntry();
 
     switch(dxr.localURL) {
+        case "01_NYC_UNATCOHQ":
+        case "03_NYC_UNATCOHQ":
+        case "04_NYC_UNATCOHQ":
+        case "05_NYC_UNATCOHQ":
+            foreach AllActors(class'RetinalScanner', r) {
+                if( r.Event != 'retinal_msg_trigger' ) continue;
+                if( dxr.localURL == "05_NYC_UNATCOHQ" )
+                    r.Event = 'UN_blastdoor2';
+                else
+                {
+                    r.bHackable = false;
+                    r.hackStrength = 0;
+                    r.msgUsed = "";
+                }
+            }
+            break;
+
         case "02_NYC_WAREHOUSE":
             AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));
-        // TODO: force the unatco retinal scanner to MJ12 lab to be unhackable, except make it actually work in mission 5
+        
         case "03_NYC_AirfieldHeliBase":
             //crates to get back over the beginning of the level
             _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
             _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
             break;
+        
         case "05_NYC_UNATCOMJ12LAB":
             BalanceJailbreak();
             break;
@@ -537,7 +556,7 @@ function NYC_04_CheckPaulRaid()
         if( PaulDenton(p) != None ) continue;
         if( IsCritter(p) ) continue;
         if( p.bHidden ) continue;
-        if( p.GetAllianceType(player().alliance) != ALLIANCE_Hostile ) continue;
+        if( p.GetAllianceType('Player') != ALLIANCE_Hostile ) continue;
         p.bStasis = false;
         pawns++;
     }
@@ -836,6 +855,21 @@ function Paris_FirstEntry()
             d = Spawn(class'Dispatcher',, 'everettsignal', vect(176.275253, 4298.747559, -148.500031) );
             d.OutEvents[0] = 'everettsignaldoor';
             AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
+
+            //speed up the secret door...
+            foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
+                d.OutDelays[1] = 0;
+                d.OutDelays[2] = 0;
+                d.OutDelays[3] = 0;
+                d.OutEvents[2] = '';
+                d.OutEvents[3] = '';
+            }
+            foreach AllActors(class'DeusExMover', m, 'secret_candle') {
+                m.MoveTime = 0.5;
+            }
+            foreach AllActors(class'DeusExMover', m, 'cellar_door') {
+                m.MoveTime = 1;
+            }
             break;
         
         case "11_PARIS_CATHEDRAL":
@@ -865,7 +899,7 @@ function HongKong_AnyEntry()
                 switch(string(a.Tag))
                 {
                     case "TriadLumPath":
-                        ScriptedPawn(a).ChangeAlly(player().Alliance,1,False);
+                        ScriptedPawn(a).ChangeAlly('Player',1,False);
                         break;
                         
                     case "TracerTong":
@@ -924,7 +958,7 @@ function HongKong_AnyEntry()
                     case "TriadLumPath5":
                     case "GordonQuick":
                     
-                        ScriptedPawn(a).ChangeAlly(player().Alliance,1,False);
+                        ScriptedPawn(a).ChangeAlly('Player',1,False);
                         break;
                 }
             }

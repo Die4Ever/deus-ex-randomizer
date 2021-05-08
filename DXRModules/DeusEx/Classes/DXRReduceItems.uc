@@ -25,6 +25,12 @@ var config sMaxAmmo max_ammo[16];
 
 var config float min_rate_adjust, max_rate_adjust;
 
+replication
+{
+    reliable if( Role == ROLE_Authority )
+        mission_scaling, ammo_reductions, reduce_items, max_copies, max_ammo, min_rate_adjust, max_rate_adjust;
+}
+
 function CheckConfig()
 {
     local int i;
@@ -78,6 +84,12 @@ function PostFirstEntry()
         ReduceSpawns(c, reduce_items[i].percent*scale/100 );
     }
     SetAllMaxCopies(scale);
+    SetTimer(1.0, true);
+}
+
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
+{
+    Super.PlayerAnyEntry(p);
     SetTimer(1.0, true);
 }
 
@@ -218,7 +230,7 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
         if( ! p.IsA(type.name) ) continue;
         p.maxCopies = float(p.default.maxCopies) * float(percent) / 100.0 * 0.8;
         if( DeusExPlayer(p.Owner) != None && #var prefix FireExtinguisher(p) != None )
-            p.maxCopies += DeusExPlayer(p.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillEnviro');;
+            p.maxCopies += DeusExPlayer(p.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillEnviro');
 
         if( p.NumCopies > p.maxCopies ) p.NumCopies = p.maxCopies;
     }
@@ -234,7 +246,7 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
         if( DeusExPlayer(a.Owner) != None
             && (AmmoEMPGrenade(a) != None || AmmoGasGrenade(a) != None || AmmoLAM(a) != None || AmmoNanoVirusGrenade(a) != None )
         ) {
-            a.MaxAmmo += DeusExPlayer(a.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillDemolition');;
+            a.MaxAmmo += DeusExPlayer(a.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillDemolition');
         }
         
         if( a.AmmoAmount > a.MaxAmmo ) a.AmmoAmount = a.MaxAmmo;

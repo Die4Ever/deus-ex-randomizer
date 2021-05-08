@@ -207,6 +207,25 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     aSkill.Cost[i] = int(f);
 }
 
+simulated function RemoveRandomSkill(#var PlayerPawn  p)
+{
+    local Skill skills[64], t;
+    local int numSkills, slot;
+
+    for( t = p.SkillSystem.FirstSkill; t != None; t = t.next ) {
+        if( t.CurrentLevel <= 0 ) continue;
+        skills[numSkills++] = t;
+    }
+
+    if( numSkills == 0 ) return;
+
+    SetSeed( "RemoveRandomSkill " $ numSkills );
+
+    slot = rng(numSkills);
+    info("RemoveRandomSkill("$p$") Removing skill "$skills[slot]$", numSkills was "$numSkills);
+    skills[slot].CurrentLevel = 0;
+}
+
 defaultproperties
 {
     min_skill_str=0.5

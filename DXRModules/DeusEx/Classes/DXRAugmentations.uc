@@ -73,20 +73,20 @@ static function AddAug(DeusExPlayer player, class<Augmentation> aclass, int leve
 
 function RandomizeAugCannisters()
 {
-    local AugmentationCannister a;
+    local #var prefix AugmentationCannister a;
 
     if( dxr.flagbase == None ) return;
 
     SetSeed( "RandomizeAugCannisters" );
 
-    foreach AllActors(class'AugmentationCannister', a)
+    foreach AllActors(class'#var prefix AugmentationCannister', a)
     {
         if( DeusExPlayer(a.Owner) != None ) continue;
         RandomizeAugCannister(dxr, a);
     }
 }
 
-function static RandomizeAugCannister(DXRando dxr, AugmentationCannister a)
+function static RandomizeAugCannister(DXRando dxr, #var prefix AugmentationCannister a)
 {
     local int attempts;
     a.AddAugs[0] = PickRandomAug(dxr);
@@ -203,6 +203,37 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         err("DescriptionLevel failed for aug "$a);
         return "err";
     }
+}
+
+simulated function RemoveRandomAug(#var PlayerPawn  p)
+{
+    local Augmentation a, augs[64];
+    local AugmentationManager am;
+    local int numAugs, slot;
+
+    am = p.AugmentationSystem;
+
+    for( a = am.FirstAug; a != None; a = a.next ) {
+        if( !a.bHasIt ) continue;
+
+        if( #var prefix AugSpeed(a) != None || #var prefix AugLight(a) != None
+            || #var prefix AugIFF(a) != None || #var prefix AugDatalink(a) != None || AugNinja(a) != None
+        ) continue;
+
+        augs[numAugs++] = a;
+    }
+
+    if( numAugs == 0 ) return;
+
+    SetSeed( "RemoveRandomAug " $ numAugs );
+    slot = rng(numAugs);
+    a = augs[slot];
+    info("RemoveRandomAug("$p$") Removing aug "$a$", numAugs was "$numAugs);
+    am.AugLocs[a.AugmentationLocation].augCount--;
+    p.RemoveAugmentationDisplay(a);
+    a.Deactivate();
+    a.CurrentLevel = 0;
+    a.bHasIt = false;
 }
 
 defaultproperties

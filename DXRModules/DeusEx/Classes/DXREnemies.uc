@@ -17,6 +17,12 @@ var _RandomEnemyStruct _randomenemies[32];
 var config name defaultOrders;
 var config float min_rate_adjust, max_rate_adjust;
 
+replication
+{
+    reliable if( Role == ROLE_Authority )
+        _randommelees, _randomweapons;
+}
+
 function CheckConfig()
 {
     local int i;
@@ -333,7 +339,7 @@ function bool IsInitialEnemy(ScriptedPawn p)
 {
     local int i;
 
-    return p.GetPawnAllianceType(player()) == ALLIANCE_Hostile;
+    return p.GetAllianceType( class'#var PlayerPawn '.default.Alliance ) == ALLIANCE_Hostile;
 }
 
 function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedPawn> newclass)

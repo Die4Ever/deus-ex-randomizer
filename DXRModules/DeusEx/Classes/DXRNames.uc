@@ -2,18 +2,26 @@ class DXRNames extends DXRBase;
 
 function FirstEntry()
 {
-    local ScriptedPawn p;
+    local #var prefix ScriptedPawn p;
+#ifdef hx
+    local HXCarcass c;
+#else
     local DeusExCarcass c;
+#endif
     Super.FirstEntry();
 
     SetSeed( "DXRNames" );
 
-    foreach AllActors(class'ScriptedPawn', p)
+    foreach AllActors(class'#var prefix ScriptedPawn', p)
     {
         GiveRandomName(dxr, p);
     }
 
+#ifdef hx
+    foreach AllActors(class'HXCarcass', c)
+#else
     foreach AllActors(class'DeusExCarcass', c)
+#endif
     {
         if ( c.itemName != "Dead Body" && c.itemName != "Unconscious" && c.itemName != "Animal Carcass" )
             return;
@@ -30,7 +38,7 @@ static function GiveRandomName(DXRando dxr, ScriptedPawn p)
 
 static function string RandomName(DXRando dxr, optional Actor a)
 {
-    if ( a != None && a.IsA('Robot') ) {
+    if ( a != None && a.IsA('#var prefix Robot') ) {
         return Caps(RandomNamePart(dxr, 2,4)) $ "-" $ dxr.rng(1000);
     }
 
