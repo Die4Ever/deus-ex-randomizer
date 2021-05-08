@@ -569,6 +569,10 @@ function NewGamePlus()
 {
     local #var PlayerPawn  p;
     local DataStorage ds;
+    local DXRSkills skills;
+    local DXRWeapons weapons;
+    local DXRAugmentations augs;
+
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
         LoadFlags();
@@ -577,6 +581,7 @@ function NewGamePlus()
 
     info("NewGamePlus()");
     seed++;
+    dxr.seed = seed;
     playthrough_id = class'DataStorage'.static._SystemTime(Level);
     ds = class'DataStorage'.static.GetObj(p);
     if( ds != None ) ds.playthrough_id = playthrough_id;
@@ -610,6 +615,22 @@ function NewGamePlus()
     p.SetInHand(None);
     p.bInHandTransition = False;
     p.RestoreAllHealth();
+
+    skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
+    if( skills != None ) {
+        skills.RemoveRandomSkill(p);
+        skills.RemoveRandomSkill(p);
+        p.SkillPointsAvail /= 2;
+    }
+    else p.SkillPointsAvail = 0;
+
+    augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
+    if( augs != None )
+        augs.RemoveRandomAug(p);
+    
+    weapons = DXRWeapons(dxr.FindModule(class'DXRWeapons'));
+    if( weapons != None )
+        weapons.RemoveRandomWeapon(p);
 
     info("NewGamePlus() deleting all flags");
     f.DeleteAllFlags();

@@ -1,5 +1,7 @@
 class MissionScript injects MissionScript transient abstract;
 
+var DXRando dxr;
+
 // have to copy this whole function just to let DXRBacktracking handle the DeleteExpiredFlags
 function InitStateMachine()
 {
@@ -48,10 +50,10 @@ function InitStateMachine()
 function Timer()
 {
     // ensure DXRFlags can load flags before we start
-    local DXRando dxr;
-    foreach AllActors(class'DXRando', dxr) { break; }
+    if( dxr == None ) foreach AllActors(class'DXRando', dxr) break;
     if( dxr == None ) return;
     if( dxr.flagbase == None ) return;
+    log(self$".Timer() got dxr: "$dxr);
 
     Super.Timer();
 }

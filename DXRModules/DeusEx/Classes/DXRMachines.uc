@@ -394,6 +394,10 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag)
 
     a = SpawnNewActor(c);
     if( a == None ) return None;
+    if( Pawn(a) != None ) {
+        Pawn(a).bDetectable = false;
+        Pawn(a).bIgnore = true;
+    }
 
     d = #var prefix Datacube(SpawnNewActor(class'#var prefix Datacube', a.Location, min_datacube_distance, max_datacube_distance));
     if( d == None ) return a;

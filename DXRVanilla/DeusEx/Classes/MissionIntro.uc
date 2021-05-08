@@ -9,6 +9,12 @@ function PostPostBeginPlay()
     Super.PostPostBeginPlay();
 }
 
+function InitStateMachine()
+{
+    Super.InitStateMachine();
+    dxr.flags.Timer();
+}
+
 function FirstFrame()
 {
     ran_first_frame = true;

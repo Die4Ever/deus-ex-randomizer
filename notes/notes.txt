@@ -39,7 +39,6 @@ v1.5.8 Alpha:
 		in HXRando, we can look up which rando settings to use based on the combatDifficulty, so it'll be backwards lookup
 	need to do something about all the object names, maybe some of them can be switched to class+tag combos
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
-	NG+ remove 2 random skills (so the player has to make choices), half your skill points, a random aug, and a random weapon?
 	cleanup goals when finishing missions, especially hong kong
 	can I partially re-enable Paul's conversation in liberty island and remove the part where he gives you a weapon?
 		will need to mark it as played when entering unatco though, pretty sure it can break stuff
@@ -53,7 +52,6 @@ v1.5.8:
 	tweak rotations for teleporters?
 	enough advanced options to be able to play unrandomized
 		-disable item/container shuffling, aug cannisters and aug values, skill values, loadout, names)
-	security cameras might be weird? maybe it's medbots' alliance?
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
 	make horde mode use the DXRAutosave blocking manual saves method instead of the hack-y permanent fake datalink
 	use better logic for The Merchant's location, like cameras?

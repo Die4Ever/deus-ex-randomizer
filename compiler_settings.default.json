@@ -3,7 +3,7 @@
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex/",
         "preproc_definitions": {
-            "vanilla":1, "singleplayer":1, "fixes":1, "mapfixes":1, "balance":1, "backtracking":1, "injections":1, "prefix":"",
+            "vanilla":1, "singleplayer":1, "fixes":1, "mapfixes":1, "balance":1, "backtracking":1, "injections":1, "flags": 1, "prefix":"",
             "Mover":"DeusExMover", "PlayerPawn":"Human", "flagvarprefix": ""
         },
         "mods_paths": [ "./" ],

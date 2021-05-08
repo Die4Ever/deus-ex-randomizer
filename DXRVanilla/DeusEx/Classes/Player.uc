@@ -65,7 +65,8 @@ exec function StartNewGame(String startMap)
     // so MissionScript can check and not call FirstFrame() for this map.
     flagBase.SetBool('PlayerTraveling', True, True, 0);
 
-    if( flagbase.GetInt('Rando_newgameplus_loops') == 0 ) {
+    GetDXR();
+    if( dxr != None && dxr.flags.newgameplus_loops == 0 ) {
         SaveSkillPoints();
         ResetPlayer();
     }
