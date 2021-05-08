@@ -124,6 +124,8 @@ simulated function RemoveRandomWeapon(#var PlayerPawn  p)
     // don't take the player's only weapon
     if( numWeaps <= 1 ) return;
 
+    SetSeed( "RemoveRandomWeapon " $ numWeaps );
+
     slot = rng(numWeaps);
     info("RemoveRandomWeapon("$p$") Removing weapon "$weaps[slot]$", numWeaps was "$numWeaps);
     p.DeleteInventory(weaps[slot]);

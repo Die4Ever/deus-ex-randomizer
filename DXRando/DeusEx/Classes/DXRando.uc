@@ -233,7 +233,6 @@ function ClearModules()
 
 simulated event Tick(float deltaTime)
 {
-    l("Tick");
     if( Role < ROLE_Authority ) {
         Disable('Tick');
         return;
@@ -249,7 +248,7 @@ function DXRTick(float deltaTime)
     if( dxInfo == None )
     {
         //waiting...
-        l("DXRTick dxInfo == None");
+        //l("DXRTick dxInfo == None");
         return;
     }
     else if( flagbase == None )

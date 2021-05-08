@@ -225,6 +225,7 @@ simulated function RemoveRandomAug(#var PlayerPawn  p)
 
     if( numAugs == 0 ) return;
 
+    SetSeed( "RemoveRandomAug " $ numAugs );
     slot = rng(numAugs);
     a = augs[slot];
     info("RemoveRandomAug("$p$") Removing aug "$a$", numAugs was "$numAugs);

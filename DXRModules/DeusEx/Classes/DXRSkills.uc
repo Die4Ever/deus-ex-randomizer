@@ -219,6 +219,8 @@ simulated function RemoveRandomSkill(#var PlayerPawn  p)
 
     if( numSkills == 0 ) return;
 
+    SetSeed( "RemoveRandomSkill " $ numSkills );
+
     slot = rng(numSkills);
     info("RemoveRandomSkill("$p$") Removing skill "$skills[slot]$", numSkills was "$numSkills);
     skills[slot].CurrentLevel = 0;
