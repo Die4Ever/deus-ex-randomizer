@@ -65,7 +65,7 @@ v1.5.9:
 	DXREntranceRando: WARNING: GenerateConnections(12) succeeded but took 24 attempts! seed: 158016, genconsfails: 7, validatefails: 17
 	HX: DXRMissions, DXRFixup? DXRHordeMode? credits, new game plus? DXRStats? crowd control, gonna need to add simulated to like every function
 	automated tests in HX?
-	lore friendly enemy spawns?
+	lore friendly enemy spawns? triads would be good extra enemies in hong kong at least
 	any way I could get DXRNames to work with replication?
 
 for v1.6 programatically modify conversations? ===================

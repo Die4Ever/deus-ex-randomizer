@@ -1,4 +1,8 @@
+#ifdef hx
+class DXRando extends Info config(HXRando) transient;
+#else
 class DXRando extends Info config(DXRando) transient;
+#endif
 
 var transient #var PlayerPawn  Player;
 var transient FlagBase flagbase;

@@ -376,6 +376,11 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
         return None;
     }
     l("cloning "$ActorToString(p)$" into class "$newclass$" got "$ActorToString(n));
+#ifdef hx
+    // HACK: HXThugMale is missing the CarcassType
+    if( n.class == class'HXThugMale' && n.CarcassType == None )
+        n.CarcassType = class'HXThugMaleCarcass';
+#endif
 
     if( IsHuman(p) && IsHuman(n) && p.BarkBindName != "" && n.BarkBindName == "" ) n.BarkBindName = p.BarkBindName;
     class'DXRNames'.static.GiveRandomName(dxr, n);

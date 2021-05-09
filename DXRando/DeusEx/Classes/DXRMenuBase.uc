@@ -1,4 +1,8 @@
+#ifdef hx
+class DXRMenuBase expands MenuUIScreenWindow config(HXRando);
+#else
 class DXRMenuBase expands MenuUIScreenWindow config(DXRando);
+#endif
 
 var MenuUIInfoButtonWindow winNameBorder;
 
