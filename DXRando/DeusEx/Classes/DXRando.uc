@@ -365,6 +365,12 @@ simulated function PlayerLogin(#var PlayerPawn  p)
     data = class'PlayerDataItem'.static.GiveItem(p);
     info("PlayerLogin("$p$") do it, p.PlayerDataItem: " $ data $", data.local_inited: "$data.local_inited);
 
+#ifdef singleplayer
+    if ( flags.stored_version != 0 && flags.stored_version < class'DXRFlags'.static.VersionToInt(1,5,8) ) {
+        data.local_inited = true;
+    }
+#endif
+
     if( !data.local_inited && dxInfo.missionNumber > 0 && dxInfo.missionNumber < 99 )
     {
         for(i=0; i<num_modules; i++) {
