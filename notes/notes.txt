@@ -33,7 +33,8 @@ EditPackages=DeusEx
 EditPackages=HX
 EditPackages=HXRandomizer
 
-v1.5.8 Alpha:
+
+v1.5.9 Alpha:
 	config for difficulty settings
 		in DXRando, easy: { combatDifficulty: 1 } means easy is the key and combat difficulty is a result of it
 		in HXRando, we can look up which rando settings to use based on the combatDifficulty, so it'll be backwards lookup
@@ -42,10 +43,10 @@ v1.5.8 Alpha:
 	cleanup goals when finishing missions, especially hong kong
 	can I partially re-enable Paul's conversation in liberty island and remove the part where he gives you a weapon?
 		will need to mark it as played when entering unatco though, pretty sure it can break stuff
-	cleanup commented code in DXRPasswords
 	DXRWeapons projectile damage
+	DXRPasswords and DXRKeys using Containers as possible locations? can be risky
 
-v1.5.8:
+v1.5.9:
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
 	tweak rotations for teleporters?
 	enough advanced options to be able to play unrandomized
@@ -67,6 +68,7 @@ v1.5.9:
 	HX: DXRMissions, DXRFixup? DXRHordeMode? credits, new game plus? DXRStats? crowd control, gonna need to add simulated to like every function
 	automated tests in HX?
 	lore friendly enemy spawns?
+	any way I could get DXRNames to work with replication?
 
 for v1.6 programatically modify conversations? ===================
 
