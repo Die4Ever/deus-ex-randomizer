@@ -56,3 +56,14 @@ function float CalcDamage(float Damage, name damageType)
     }
     return Damage * 0.002;
 }
+
+function bool EncroachingOn( actor Other )
+{
+    if( Inventory(Other) != None ) {
+        return false;
+    }
+    if( EncroachDamage < 1 && #var PlayerPawn (Other) == None ) {
+        Other.TakeDamage( 1, Instigator, Other.Location, vect(0,0,0), 'Crushed' );
+    }
+    return Super.EncroachingOn(Other);
+}

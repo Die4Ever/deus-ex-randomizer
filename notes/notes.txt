@@ -70,8 +70,13 @@ v1.5.9:
 
 for v1.6 programatically modify conversations? ===================
 
-create new "stories", start with a hub area (either hell's kitchen or hong kong), connect a bunch of random maps to it (from any mission), remove all vanilla npcs and dialog and add new ones
+create new "stories", start with a hub area (either hell's kitchen or hong kong, but which hell's kitchen?)
+	connect a bunch of random maps to it (from any mission)
+	remove all vanilla npcs and dialog and add new ones
+	after beating a hub area, it can take you to the "next" area just by running a different seed, maybe do something to ensure it's based on a different hub area
+	I need to reuse the data in DXREntranceRando, maybe by subclassing it
 for better log message window, look at DeusExRootWindow ClientMessage function, and HUDLogDisplay AddLog and SetLogTimeout functions
+I think we could randomize music by choosing a random starting section, and then using EMusicTransition MTRAN_Segue to set a new section?
 
 in Actor.uc
 // Probe messages.
