@@ -451,7 +451,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
     p.SetupWeapon(false);
 }
 
-function GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional int add_ammo)
+function inventory GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional int add_ammo)
 {
     local class<DeusExWeapon> wclass;
     local Ammo a;
@@ -465,23 +465,23 @@ function GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional int add_am
     chance_remaining(r);
 
     if( (!allow_dupes) && HasItem(p, wclass) )
-        return;
+        return None;
 
     if( wclass == None ) {
-        l("not giving a random weapon to "$p); return;
+        l("not giving a random weapon to "$p); return None;
     }
 
-    GiveItem( p, wclass, add_ammo );
+    return GiveItem( p, wclass, add_ammo );
 }
 
-function GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
+function inventory GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
 {
     local class<Weapon> wclass;
     local int i;
     local float r;
 
     if( (!allow_dupes) && HasMeleeWeapon(p))
-        return;
+        return None;
 
     r = initchance();
     for(i=0; i < ArrayCount(_randommelees); i++ ) {
@@ -490,11 +490,11 @@ function GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
 
         if( (!allow_dupes) && HasItem(p, _randommelees[i].type) ) {
             chance_remaining(r);
-            return;
+            return None;
         }
     }
 
-    GiveItem(p, wclass);
+    return GiveItem(p, wclass);
 }
 
 function RandomizeSize(Actor a)

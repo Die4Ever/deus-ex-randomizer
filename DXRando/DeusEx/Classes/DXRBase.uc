@@ -66,6 +66,11 @@ simulated function PlayerLogin(#var PlayerPawn  player)
     l("PlayerLogin("$player$")");
 }
 
+simulated function PlayerRespawn(#var PlayerPawn  player)
+{
+    l("PlayerRespawn("$player$")");
+}
+
 simulated function PlayerAnyEntry(#var PlayerPawn  player)
 {
     l("PlayerAnyEntry("$player$")");

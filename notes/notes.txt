@@ -44,8 +44,6 @@ v1.5.8 Alpha:
 		will need to mark it as played when entering unatco though, pretty sure it can break stuff
 	cleanup commented code in DXRPasswords
 	DXRWeapons projectile damage
-	fix respawn equipment
-	fix Human.SkillSystem.ResetSkills() when used skill points is greater than available, in HXGameInfo AcceptInventory
 
 v1.5.8:
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
@@ -68,6 +66,7 @@ v1.5.8:
 v1.5.9:
 	HX: DXRMissions, DXRFixup? DXRHordeMode? credits, new game plus? DXRStats? crowd control, gonna need to add simulated to like every function
 	automated tests in HX?
+	lore friendly enemy spawns?
 
 for v1.6 programatically modify conversations? ===================
 

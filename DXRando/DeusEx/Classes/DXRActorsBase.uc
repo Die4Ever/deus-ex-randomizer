@@ -166,7 +166,7 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
     local DeusExWeapon w;
     local int i;
 
-    player = DeusExPlayer(p);
+    player = #var PlayerPawn (p);
     if( class<Ammo>(iclass) != None ) {
         anItem = p.FindInventoryType(iclass);
         if( anItem != None ) {

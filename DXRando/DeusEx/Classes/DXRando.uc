@@ -383,6 +383,14 @@ simulated function PlayerLogin(#var PlayerPawn  p)
     }
 }
 
+simulated function PlayerRespawn(#var PlayerPawn  p)
+{
+    local int i;
+    for(i=0; i<num_modules; i++) {
+        modules[i].PlayerRespawn(p);
+    }
+}
+
 simulated final function int SetSeed(int s)
 {
     local int oldseed;
