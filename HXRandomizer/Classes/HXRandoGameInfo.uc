@@ -126,6 +126,16 @@ event AcceptInventory(pawn PlayerPawn)
     // TODO replicated notes, etc.
 }
 
+function ProcessServerTravel( string URL, bool bItems )
+{
+    local int i;
+    log(Self$".ProcessServerTravel PreTravel dxr: "$dxr);
+    for(i=0; i<dxr.num_modules; i++) {
+        dxr.modules[i].PreTravel();
+    }
+    Super.ProcessServerTravel( URL, bItems );
+}
+
 function bool RestartPlayer( Pawn PlayerToRestart )
 {
     local #var PlayerPawn  p;

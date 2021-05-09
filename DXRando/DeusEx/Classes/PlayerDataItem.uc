@@ -1,6 +1,10 @@
 class PlayerDataItem extends Inventory;
 
 var travel bool local_inited;
+#ifdef multiplayer
+var travel int SkillPointsTotal;
+var travel int SkillPointsAvail;
+#endif
 
 simulated function static PlayerDataItem GiveItem(#var PlayerPawn  p)
 {

@@ -57,10 +57,42 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+simulated function PlayerLogin(#var PlayerPawn  player)
+{
+    local PlayerDataItem data;
+    Super.PlayerLogin(player);
+#ifdef multiplayer
+    data = class'PlayerDataItem'.static.GiveItem(player);
+    data.SkillPointsAvail = player.SkillPointsAvail;
+    data.SkillPointsTotal = player.SkillPointsTotal;
+#endif
+}
+
+event PreTravel()
+{
+    local PlayerDataItem data;
+    local #var PlayerPawn  p;
+    Super.PreTravel();
+#ifdef multiplayer
+    foreach AllActors(class'#var PlayerPawn ', p) {
+        l("PreTravel "$p);
+        data = class'PlayerDataItem'.static.GiveItem(p);
+        data.SkillPointsAvail = p.SkillPointsAvail;
+        data.SkillPointsTotal = p.SkillPointsTotal;
+    }
+#endif
+}
+
 simulated function PlayerAnyEntry(#var PlayerPawn  player)
 {
+    local PlayerDataItem data;
     Super.PlayerAnyEntry(player);
     RandoSkills(player.SkillSystem.FirstSkill);
+#ifdef multiplayer
+    data = class'PlayerDataItem'.static.GiveItem(player);
+    player.SkillPointsAvail = data.SkillPointsAvail;
+    player.SkillPointsTotal = data.SkillPointsTotal;
+#endif
 }
 
 simulated function RandoSkills(Skill aSkill)
