@@ -53,7 +53,6 @@ function Timer()
     if( dxr == None ) foreach AllActors(class'DXRando', dxr) break;
     if( dxr == None ) return;
     if( dxr.flagbase == None ) return;
-    log(self$".Timer() got dxr: "$dxr);
 
     Super.Timer();
 }

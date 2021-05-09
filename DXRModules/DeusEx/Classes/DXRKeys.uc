@@ -544,7 +544,7 @@ static function StaticMakeDestructible(#var Mover  d)
     }
     if( d.bBreakable == false ) {
         d.bBreakable = true;
-        d.minDamageThreshold = 50;
+        d.minDamageThreshold = 60;
         d.doorStrength = 1;
     }
 }

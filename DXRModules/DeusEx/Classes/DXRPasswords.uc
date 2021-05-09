@@ -89,7 +89,7 @@ function CheckConfig()
         i++;
 
         datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = '11_Datacube03';// 0 and 2
+        datacubes_rules[i].item_name = '11_Datacube03';// DataCube0 and 2 have the same textTag
         datacubes_rules[i].min_pos = vect(3587, -812, -487); //before gunther room
         datacubes_rules[i].max_pos = vect(4322, -124, 74);
         datacubes_rules[i].allow = false;
@@ -501,7 +501,6 @@ function RandoInfoDevs(int percent)
     local int num, slot, numHasPass;
     local int hasPass[64];
 
-    //l("RandoInfoDevs percent == "$percent);
     if(percent == 0) return;
 
     foreach AllActors(class'#var prefix InformationDevices', id)
@@ -752,11 +751,6 @@ simulated function bool UpdateGoal(DeusExGoal goal, string oldpassword, string n
     goal.text = ReplaceText( goal.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
     
 #ifdef hx
-    //HXGameInfo(Level.Game).DeleteGoal(goal);
-    //HXGameInfo(Level.Game).AddGoal(goal.GoalName, goal.bPrimaryGoal, goal.Text);
-    /*foreach AllActors(class'HXPlayerPawn', p) {
-        p.ClientMessage("Found password: "$newpassword);
-    }*/
     HXGameInfo(Level.Game).AddNote(goal.text, false, true, '');
 #endif
 

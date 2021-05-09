@@ -31,6 +31,7 @@ var #var flagvarprefix  int undefeatabledoors, alldoors, keyonlydoors, highlight
 var #var flagvarprefix  int codes_mode;
 
 var bool flags_loaded;
+var int stored_version;
 
 replication
 {
@@ -202,7 +203,6 @@ simulated function LoadFlags()
 {
     //do flags binding
     local DataStorage ds;
-    local int stored_version;
     local #var PlayerPawn  p;
 
     if( Role != ROLE_Authority ) {
@@ -427,6 +427,8 @@ simulated function LoadNoFlags()
         SaveNoFlags();
     }
 
+    stored_version = flagsversion;
+
 #ifdef hx
     // bool flags work though
     if( dxr.localURL != "DX" && dxr.localURL != "DXONLY" && dxr.localURL != "00_TRAINING" ) {
@@ -547,7 +549,7 @@ simulated static function string VersionToString(int major, int minor, int patch
 
 simulated static function int VersionNumber()
 {
-    return VersionToInt(1, 5, 7);
+    return VersionToInt(1, 5, 8);
 }
 
 simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch)
@@ -557,7 +559,7 @@ simulated static function bool VersionOlderThan(int config_version, int major, i
 
 simulated static function string VersionString()
 {
-    return VersionToString(1, 5, 8) $ " Alpha";
+    return VersionToString(1, 5, 8) $ " Beta";
 }
 
 simulated function MaxRando()

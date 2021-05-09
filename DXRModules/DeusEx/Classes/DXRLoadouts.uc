@@ -352,10 +352,16 @@ function FirstEntry()
 simulated function PlayerLogin(#var PlayerPawn  p)
 {
     Super.PlayerLogin(p);
-    RandoStartingEquipment(p);
+    RandoStartingEquipment(p, false);
 }
 
-function AddStartingEquipment(DeusExPlayer p)
+simulated function PlayerRespawn(#var PlayerPawn  p)
+{
+    Super.PlayerRespawn(p);
+    RandoStartingEquipment(p, true);
+}
+
+function AddStartingEquipment(DeusExPlayer p, bool bFrob)
 {
     local class<Inventory> iclass;
     local class<Augmentation> aclass;
@@ -371,7 +377,8 @@ function AddStartingEquipment(DeusExPlayer p)
         if( class<DeusExAmmo>(iclass) == None && class'DXRActorsBase'.static.HasItem(p, iclass) )
             continue;
 
-        GiveItem( p, iclass );
+        item = GiveItem( p, iclass );
+        if( bFrob && item != None ) item.Frob( p, None );
     }
 
     for(i=0; i < ArrayCount(_item_sets[loadout].starting_augs); i++) {
@@ -381,7 +388,7 @@ function AddStartingEquipment(DeusExPlayer p)
     }
 }
 
-function RandoStartingEquipment(DeusExPlayer player)
+function RandoStartingEquipment(DeusExPlayer player, bool respawn)
 {
     local Inventory item, anItem;
     local DXREnemies dxre;
@@ -403,7 +410,7 @@ function RandoStartingEquipment(DeusExPlayer player)
         anItem = item;
         item = item.Inventory;
         l("RandoStartingEquipment("$player$") checking item "$anItem$", bDisplayableInv: "$anItem.bDisplayableInv);
-        if( ! anItem.bDisplayableInv ) continue;
+        if( Ammo(anItem) == None && ! anItem.bDisplayableInv ) continue;
         if( #var prefix NanoKeyRing(anItem) != None ) continue;
         if( dxre == None && Weapon(anItem) != None ) continue;
         if( dxre == None && Ammo(anItem) != None ) continue;
@@ -412,23 +419,34 @@ function RandoStartingEquipment(DeusExPlayer player)
         anItem.Destroy();
     }
 
-    AddStartingEquipment(player);
+    AddStartingEquipment(player, respawn);
 
     for(i=0; i < dxr.flags.equipment; i++) {
-        _RandoStartingEquipment(player, dxre);
+        _RandoStartingEquipment(player, dxre, respawn);
     }
 }
 
-function _RandoStartingEquipment(DeusExPlayer player, DXREnemies dxre)
+function _RandoStartingEquipment(DeusExPlayer player, DXREnemies dxre, bool bFrob)
 {
     local int i;
     local float r;
     local Inventory item;
+    local DeusExWeapon w;
     local class<Inventory> iclass;
 
     if(dxre != None) {
-        dxre.GiveRandomWeapon(player, true, 1);
-        dxre.GiveRandomMeleeWeapon(player);
+        item = dxre.GiveRandomWeapon(player, true);
+        if( bFrob && item != None ) item.Frob( player, None );
+        w = DeusExWeapon(item);
+        if ( w != None && (w.AmmoName != None) && (w.AmmoName != Class'AmmoNone') )
+        {
+            w.AmmoType = DeusExAmmo(GiveItem(player, w.AmmoName));
+            if( bFrob && w.AmmoType != None )
+                w.AmmoType.Frob( player, None );
+        }
+
+        item = dxre.GiveRandomMeleeWeapon(player);
+        if( bFrob && item != None ) item.Frob( player, None );
     }
 
     r = initchance();
@@ -438,7 +456,8 @@ function _RandoStartingEquipment(DeusExPlayer player, DXREnemies dxre)
     }
 
     if( iclass == None ) return;
-    GiveItem(player, iclass);
+    item = GiveItem(player, iclass);
+    if( bFrob && item != None ) item.Frob( player, None );
 }
 
 function SpawnItems()
