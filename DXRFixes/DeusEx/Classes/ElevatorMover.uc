@@ -19,17 +19,25 @@ function bool EncroachingOn( actor Other )
 function SetSeq(int seqnum)
 {
     local bool oldSeq;
+    local int prevKeyNum;
+    local float dist;
+
     if( MoveTime/2 < Level.TimeSeconds-lastTime )
         oldSeq = true;
     
     if ( bIsMoving && !oldSeq )
         return;
-    
-    lastTime = Level.TimeSeconds;
 
     if (KeyNum != seqnum || oldSeq)
     {
+        prevKeyNum = KeyNum;
         KeyNum = seqnum;
+        dist = VSize(BasePos + KeyPos[seqnum] - Location);
+        
         GotoState('ElevatorMover', 'Next');
+
+        if( prevKeyNum == seqnum || dist < 16.0 )
+            bIsMoving = false;
+        else lastTime = Level.TimeSeconds;
     }
 }

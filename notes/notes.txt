@@ -77,6 +77,7 @@ v1.5.9:
 
 for v1.6 programatically modify conversations? ===================
 
+GUI for NG+? can open a window similar to the advanced settings page
 create new "stories", start with a hub area (either hell's kitchen or hong kong, but which hell's kitchen?)
 	class DXRStories extends DXREntranceRando;
 	move stuff from DXRBacktracking into functions to "open up" areas, so they can be called from DXRStories
