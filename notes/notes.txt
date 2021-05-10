@@ -77,6 +77,7 @@ create new "stories", start with a hub area (either hell's kitchen or hong kong,
 	I need to reuse the data in DXREntranceRando, maybe by subclassing it
 for better log message window, look at DeusExRootWindow ClientMessage function, and HUDLogDisplay AddLog and SetLogTimeout functions
 HUD to show current energy use per second, similar to the damage resistance HUD
+dynamically generate patrol routes? will probably need a new state for scriptedpawns to replace patrolling
 
 in Actor.uc
 // Probe messages.

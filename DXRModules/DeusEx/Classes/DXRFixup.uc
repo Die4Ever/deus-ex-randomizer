@@ -746,6 +746,7 @@ function HongKong_FirstEntry()
     local ScriptedPawn p;
     local Button1 b;
     local ElevatorMover e;
+    local #var Mover  m;
 
     switch(dxr.localURL)
     {
@@ -812,6 +813,21 @@ function HongKong_FirstEntry()
                 }
             }
             break;
+        
+        case "06_HONGKONG_MJ12LAB":
+            foreach AllActors(class'#var Mover ', m, 'security_doors') {
+                m.bBreakable = false;
+                m.bPickable = false;
+            }
+            foreach AllActors(class'#var Mover ', m, 'Lower_lab_doors') {
+                m.bBreakable = false;
+                m.bPickable = false;
+            }
+            foreach AllActors(class'#var Mover ', m, 'elevator_door') {
+                m.bIsDoor = true;// DXRKeys will pick this up later since we're in PreFirstEntry
+            }
+            break;
+
         default:
             break;
     }
@@ -968,6 +984,7 @@ function HongKong_AnyEntry()
         case "06_HONGKONG_VERSALIFE":
             DeleteConversationFlag( GetConversation('Disgruntled_Guy_Convos'), 'VL_Found_Labs', false);
             GetConversation('Disgruntled_Guy_Return').AddFlagRef('Disgruntled_Guy_Done', true);
+            break;
         
         default:
             break;
