@@ -40,10 +40,11 @@ v1.5.9 Alpha:
 			or assume that if the other arguments match the current version then the build should match too?
 		make a warning when I call VersionToInt with build number less than 0 so I remember to clean them up?
 		bump the minimum versions for every config so everyone is updated
-	notes don't travel, goals do
+	HX notes don't travel, goals do
 	config for difficulty settings
 		in DXRando, easy: { combatDifficulty: 1 } means easy is the key and combat difficulty is a result of it
 		in HXRando, we can look up which rando settings to use based on the combatDifficulty, so it'll be backwards lookup
+		I might want to switch configs to use an array of struct KeyValuePair { name key; int val; }, need to make sure it fits in replication
 	need to do something about all the object names, maybe some of them can be switched to class+tag combos
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	cleanup goals when finishing missions, especially hong kong
@@ -72,10 +73,13 @@ v1.5.9:
 	automated tests in HX?
 	lore friendly enemy spawns? triads would be good extra enemies in hong kong at least
 	any way I could get DXRNames to work with replication?
+	maybe clean up the credits a bit more, especially the DXRFlags section
 
 for v1.6 programatically modify conversations? ===================
 
 create new "stories", start with a hub area (either hell's kitchen or hong kong, but which hell's kitchen?)
+	class DXRStories extends DXREntranceRando;
+	move stuff from DXRBacktracking into functions to "open up" areas, so they can be called from DXRStories
 	connect a bunch of random maps to it (from any mission)
 	remove all vanilla npcs and dialog and add new ones
 	after beating a hub area, it can take you to the "next" area just by running a different seed, maybe do something to ensure it's based on a different hub area

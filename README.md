@@ -38,7 +38,7 @@ There are also settings for
     -takes away 1 random augmentation, and 1 of your weapons
     -takes away half your skill points and 5 random skill levels, so the player has to choose which ones to level up first
 * new game modes!
-    * Rearranged Levels is in beta, it changes what level each teleporter takes you to, but keeps it within the same mission.
+    * Entrance Randomization is in beta, it changes what level each teleporter takes you to, but keeps it within the same mission.
     * Horde Mode is in beta and mostly I think it just needs balancing.
 * challenge mode loadouts!
     * Stick With the Prod means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
