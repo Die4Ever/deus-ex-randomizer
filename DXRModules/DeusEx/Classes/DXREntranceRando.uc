@@ -78,8 +78,9 @@ function CheckConfig()
 
         min_connections_selfconnect = 999;
         i = 0;
-        dead_ends[i++] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
+        //dead_ends[i++] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
         dead_ends[i++] = "06_HONGKONG_Storage#waterpipe";
+        //dead_ends[i++] = "06_HONGKONG_MJ12LAB#tubeend";
 
         /*i=0;
         unreachable_conns[i++] = "12_VANDENBERG_CMD#storage";*/
@@ -99,6 +100,26 @@ function CheckConfig()
 
         dependencies[i].dependent = "06_HongKong_WanChai_Market#Lobby";
         dependencies[i].dependency = "06_HongKong_WanChai_Street";
+        i++;
+
+        dependencies[i].dependent = "06_HongKong_WanChai_Market#Lobby";
+        dependencies[i].dependency = "06_HongKong_WanChai_Underworld";
+        i++;
+
+        dependencies[i].dependent = "06_HONGKONG_STORAGE#CANAL";
+        dependencies[i].dependency = "06_HongKong_WanChai_Underworld";
+        i++;
+
+        dependencies[i].dependent = "06_HONGKONG_MJ12LAB#basement";
+        dependencies[i].dependency = "06_HongKong_WanChai_Underworld";
+        i++;
+
+        /*dependencies[i].dependent = "06_HONGKONG_wanchai_garage#BackDoor";
+        dependencies[i].dependency = "06_HongKong_WanChai_Underworld";
+        i++;*/
+
+        dependencies[i].dependent = "06_HongKong_Storage#canal";
+        dependencies[i].dependency = "06_HongKong_WanChai_MJ12Lab";
         i++;
 
         dependencies[i].dependent = "12_VANDENBERG_CMD#gas_start";
@@ -842,7 +863,6 @@ function RandoMission6()
     AddDoubleXfer("06_HONGKONG_MJ12LAB","cathedral","06_HongKong_VersaLife","secret");
     AddDoubleXfer("06_HONGKONG_MJ12LAB","tubeend","06_HongKong_Storage","basement");
     AddDoubleXfer("06_HONGKONG_STORAGE","waterpipe","06_HongKong_WanChai_Canal","canal");
-    //AddDoubleXfer("06_HONGKONG_STORAGE","basement","06_HongKong_MJ12lab","tubeend");
     //AddXfer("06_HongKong_Storage","BackDoor","06_HONGKONG_WANCHAI_GARAGE#Teleporter");//one way
     //AddFixedConn("06_HONGKONG_TONGBASE","lab","06_HongKong_WanChai_Market","compound");
     AddDoubleXfer("06_HONGKONG_VERSALIFE","Lobby","06_HongKong_WanChai_Market","market");

@@ -76,7 +76,7 @@ create new "stories", start with a hub area (either hell's kitchen or hong kong,
 	after beating a hub area, it can take you to the "next" area just by running a different seed, maybe do something to ensure it's based on a different hub area
 	I need to reuse the data in DXREntranceRando, maybe by subclassing it
 for better log message window, look at DeusExRootWindow ClientMessage function, and HUDLogDisplay AddLog and SetLogTimeout functions
-I think we could randomize music by choosing a random starting section, and then using EMusicTransition MTRAN_Segue to set a new section?
+HUD to show current energy use per second, similar to the damage resistance HUD
 
 in Actor.uc
 // Probe messages.

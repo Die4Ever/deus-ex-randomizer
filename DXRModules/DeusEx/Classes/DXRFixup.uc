@@ -964,6 +964,11 @@ function HongKong_AnyEntry()
             }
 
             break;
+        
+        case "06_HONGKONG_VERSALIFE":
+            DeleteConversationFlag( GetConversation('Disgruntled_Guy_Convos'), 'VL_Found_Labs', false);
+            GetConversation('Disgruntled_Guy_Return').AddFlagRef('Disgruntled_Guy_Done', true);
+        
         default:
             break;
     }
@@ -1039,6 +1044,23 @@ function AddDelay(Actor trigger, float time)
     d.OutEvents[0] = trigger.Event;
     d.OutDelays[0] = time;
     trigger.Event = d.Tag;
+}
+
+
+static function DeleteConversationFlag(Conversation c, name Name, bool Value)
+{
+    local ConFlagRef f, prev;
+    if( c == None ) return;
+    for(f = c.flagRefList; f!=None; f=f.nextFlagRef) {
+        if( f.flagName == Name && f.value == Value ) {
+            if( prev == None )
+                c.flagRefList = f.nextFlagRef;
+            else
+                prev.nextFlagRef = f.nextFlagRef;
+            return;
+        }
+        prev = f;
+    }
 }
 
 static function FixConversationFlag(Conversation c, name fromName, bool fromValue, name toName, bool toValue)
