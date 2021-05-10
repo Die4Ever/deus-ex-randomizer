@@ -574,6 +574,7 @@ function NewGamePlus()
     local DXRSkills skills;
     local DXRWeapons weapons;
     local DXRAugmentations augs;
+    local int i;
 
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
@@ -620,8 +621,8 @@ function NewGamePlus()
 
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( skills != None ) {
-        skills.RemoveRandomSkill(p);
-        skills.RemoveRandomSkill(p);
+        for(i=0; i<5; i++)
+            skills.DowngradeRandomSkill(p);
         p.SkillPointsAvail /= 2;
     }
     else p.SkillPointsAvail = 0;

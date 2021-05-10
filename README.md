@@ -36,7 +36,7 @@ There are also settings for
     * If you want to try some of the Crowd Control features without actually streaming, you can try the "OfflineCrowdControl.py" script to randomly send Crowd Control messages to your local game!  Requires Python 3.8 or above
 * New Game+ - after beating the game play it again keeping your items, skills, and augs, but with increased difficulty and a new seed
     -takes away 1 random augmentation, and 1 of your weapons
-    -takes away half your skill points and 2 random skills, so the player has to choose which one to level up first
+    -takes away half your skill points and 5 random skill levels, so the player has to choose which ones to level up first
 * new game modes!
     * Rearranged Levels is in beta, it changes what level each teleporter takes you to, but keeps it within the same mission.
     * Horde Mode is in beta and mostly I think it just needs balancing.

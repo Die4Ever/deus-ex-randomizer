@@ -35,6 +35,11 @@ EditPackages=HXRandomizer
 
 
 v1.5.9 Alpha:
+	VersionToInt reserve some more digits for hidden version numbers and alphas and betas
+		argument for optional int build, and make alphas and betas use negative numbers?
+			or assume that if the other arguments match the current version then the build should match too?
+		make a warning when I call VersionToInt with build number less than 0 so I remember to clean them up?
+		bump the minimum versions for every config so everyone is updated
 	notes don't travel, goals do
 	config for difficulty settings
 		in DXRando, easy: { combatDifficulty: 1 } means easy is the key and combat difficulty is a result of it
