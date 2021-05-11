@@ -62,9 +62,9 @@ function bool EncroachingOn( actor Other )
     if( Inventory(Other) != None ) {
         return false;
     }
-    if( EncroachDamage < 1 && Pawn(Other) == None ) {
+    /*if( EncroachDamage < 1 && Pawn(Other) == None ) {
         Other.TakeDamage( 1000, Instigator, Other.Location, vect(0,0,0), 'Crushed' );
         Other.TakeDamage( 1000, Instigator, Other.Location, vect(0,0,0), 'Exploded' );
-    }
+    }*/
     return Super.EncroachingOn(Other);
 }

@@ -54,6 +54,7 @@ v1.5.9 Alpha:
 	DXRPasswords and DXRKeys using Containers as possible locations? can be risky
 
 v1.5.9:
+	I can make ninja mode spawn more continuous blood on a timer or tick
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
 	tweak rotations for teleporters?
 	enough advanced options to be able to play unrandomized
@@ -83,12 +84,15 @@ create new "stories", start with a hub area (either hell's kitchen or hong kong,
 	class DXRStories extends DXREntranceRando;
 	move stuff from DXRBacktracking into functions to "open up" areas, so they can be called from DXRStories
 	connect a bunch of random maps to it (from any mission)
+	how to determine if a map should be neutral or hostile?
 	remove all vanilla npcs and dialog and add new ones
 	after beating a hub area, it can take you to the "next" area just by running a different seed, maybe do something to ensure it's based on a different hub area
 	I need to reuse the data in DXREntranceRando, maybe by subclassing it
 for better log message window, look at DeusExRootWindow ClientMessage function, and HUDLogDisplay AddLog and SetLogTimeout functions
 HUD to show current energy use per second, similar to the damage resistance HUD
 dynamically generate patrol routes? will probably need a new state for scriptedpawns to replace patrolling
+randomize item pool by replacing 50% of items?
+
 
 in Actor.uc
 // Probe messages.
