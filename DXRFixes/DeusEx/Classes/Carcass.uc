@@ -20,7 +20,7 @@ function bool _DropItem(Inventory item, Name classname)
         return false;
 }
 
-function _DropItems(Name classname)
+function _DropItems(Name classname, vector offset, vector velocity)
 {
     local Inventory item, nextItem;
 
@@ -30,7 +30,8 @@ function _DropItems(Name classname)
         if( _DropItem(item, classname) ) {
             DeleteInventory(item);
             class'DXRActorsBase'.static.ThrowItem(self, item);
-            item.Velocity *= vect(-2, -2, 3);
+            item.SetLocation( item.Location + offset );
+            item.Velocity *= velocity;
         }
         item = nextItem;
     }
@@ -38,11 +39,18 @@ function _DropItems(Name classname)
 
 function DropKeys()
 {
-    _DropItems('NanoKey');
+    _DropItems('NanoKey', vect(0,0,80), vect(0, 0, 0) );
 }
 
 function Destroyed()
 {
-    _DropItems('Inventory');
+    _DropItems('Inventory', vect(0,0,0), vect(-2, -2, 3) );
     Super.Destroyed();
+}
+
+defaultproperties
+{
+    bCollideActors=true
+    bBlockActors=true
+    bBlockPlayers=true
 }
