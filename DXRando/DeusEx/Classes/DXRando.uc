@@ -79,7 +79,8 @@ function SetdxInfo(DeusExLevelInfo i)
 
 function DXRInit()
 {
-    l("DXRInit has localURL == " $ localURL);
+    l("DXRInit has localURL == " $ localURL $ ", flagbase == "$flagbase);
+    if( flagbase != None ) return;
 
     Player = #var PlayerPawn (GetPlayerPawn());
     if( Player == None )

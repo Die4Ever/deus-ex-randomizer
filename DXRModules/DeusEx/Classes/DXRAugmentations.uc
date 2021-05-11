@@ -215,7 +215,6 @@ simulated function RemoveRandomAug(#var PlayerPawn  p)
 
     for( a = am.FirstAug; a != None; a = a.next ) {
         if( !a.bHasIt ) continue;
-        if( a.CurrentLevel == 0 ) continue;
 
         if( #var prefix AugSpeed(a) != None || #var prefix AugLight(a) != None
             || #var prefix AugIFF(a) != None || #var prefix AugDatalink(a) != None || AugNinja(a) != None

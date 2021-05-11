@@ -66,7 +66,8 @@ exec function StartNewGame(String startMap)
     flagBase.SetBool('PlayerTraveling', True, True, 0);
 
     GetDXR();
-    if( dxr != None && dxr.flags.newgameplus_loops == 0 ) {
+    dxr.DXRInit();
+    if( dxr.flags.newgameplus_loops == 0 ) {
         SaveSkillPoints();
         ResetPlayer();
     }
