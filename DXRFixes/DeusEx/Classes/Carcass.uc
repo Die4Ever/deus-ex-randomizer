@@ -10,17 +10,24 @@ function InitFor(Actor Other)
     Super.InitFor(Other);
 }
 
-function DropKeys()
+function bool _DropItem(Inventory item, Name classname)
+{
+    if( Ammo(item) != None )
+        return false;
+    else if( item.IsA(classname) && item.bDisplayableInv )
+        return true;
+    else
+        return false;
+}
+
+function _DropItems(Name classname)
 {
     local Inventory item, nextItem;
-    local bool drop;
 
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
-        drop = item.IsA('NanoKey') || item.bDisplayableInv;
-        if( Ammo(item) != None ) drop = false;
-        if( drop ) {
+        if( _DropItem(item, classname) ) {
             DeleteInventory(item);
             class'DXRActorsBase'.static.ThrowItem(self, item);
             item.Velocity *= vect(-2, -2, 3);
@@ -29,8 +36,13 @@ function DropKeys()
     }
 }
 
+function DropKeys()
+{
+    _DropItems('NanoKey');
+}
+
 function Destroyed()
 {
-    DropKeys();
+    _DropItems('Inventory');
     Super.Destroyed();
 }

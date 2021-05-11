@@ -36,8 +36,25 @@ function CheckConfig()
     if( config_version < class'DXRFlags'.static.VersionToInt(1,5,8) ) {
         i=0;
 
+        // satcom password
         datacubes_rules[i].map = "01_NYC_UNATCOISLAND";
         datacubes_rules[i].item_name = '01_Datacube06';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        // armory 0451 code
+        datacubes_rules[i].map = "01_NYC_UNATCOISLAND";
+        datacubes_rules[i].item_name = '01_Datacube03';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        // nsf001 smashthestate
+        datacubes_rules[i].map = "01_NYC_UNATCOISLAND";
+        datacubes_rules[i].item_name = '01_Datacube04';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
@@ -310,7 +327,6 @@ function AnyEntry()
 
 simulated function PlayerAnyEntry(#var PlayerPawn  p)
 {
-    local #var prefix InformationDevices id;
     local ConSpeech c;
     Super.PlayerAnyEntry(p);
 

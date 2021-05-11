@@ -217,9 +217,7 @@ function bool SkipActorBase(Actor a)
 {
     if( (a.Owner != None) || a.bStatic || a.bHidden || a.bMovable==False )
         return true;
-    if( ScriptedPawn(a.Base) != None )
-        return true;
-    if( PlayerPawn(a.Base) != None )
+    if( Pawn(a.Base) != None )
         return true;
     return false;
 }

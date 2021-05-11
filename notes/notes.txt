@@ -35,6 +35,7 @@ EditPackages=HXRandomizer
 
 
 v1.5.9 Alpha:
+	better way to merge compiler_settings.json into compiler_settings.default.json
 	VersionToInt reserve some more digits for hidden version numbers and alphas and betas
 		argument for optional int build, and make alphas and betas use negative numbers?
 			or assume that if the other arguments match the current version then the build should match too?
@@ -55,6 +56,8 @@ v1.5.9 Alpha:
 
 v1.5.9:
 	I can make ninja mode spawn more continuous blood on a timer or tick
+	can I also give low tech skill more levels, or repurpose other skills? maybe gas grenades should be allowed too?
+	Stick With the Prod (and Plus) should give the AugStealth instead of AugSpeed?
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
 	tweak rotations for teleporters?
 	enough advanced options to be able to play unrandomized
@@ -90,8 +93,12 @@ create new "stories", start with a hub area (either hell's kitchen or hong kong,
 	I need to reuse the data in DXREntranceRando, maybe by subclassing it
 for better log message window, look at DeusExRootWindow ClientMessage function, and HUDLogDisplay AddLog and SetLogTimeout functions
 HUD to show current energy use per second, similar to the damage resistance HUD
+	could allow randomization of aug energy usage
 dynamically generate patrol routes? will probably need a new state for scriptedpawns to replace patrolling
 randomize item pool by replacing 50% of items?
+with flags binding, maybe I could convert some of them to floats or ints x100
+
+CleanerBot Tick function could also cleanup Effects, TrashPaper, Fragment...
 
 
 in Actor.uc
