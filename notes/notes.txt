@@ -74,6 +74,7 @@ v1.5.9:
 	lore friendly enemy spawns? triads would be good extra enemies in hong kong at least
 	any way I could get DXRNames to work with replication?
 	maybe clean up the credits a bit more, especially the DXRFlags section
+	scale difficulty with extra players like diablo, slightly increase enemy randomization and combat difficulty
 
 for v1.6 programatically modify conversations? ===================
 

@@ -8,8 +8,9 @@ function bool EncroachingOn( actor Other )
     if( Inventory(Other) != None ) {
         return false;
     }
-    if( #var PlayerPawn (Other) == None ) {
-        Other.TakeDamage( 10000, Instigator, Other.Location, vect(0,0,0), 'Crushed' );
+    if( EncroachDamage < 10 && #var PlayerPawn (Other) == None ) {
+        Other.TakeDamage( 1000, Instigator, Other.Location, vect(0,0,0), 'Crushed' );
+        Other.TakeDamage( 1000, Instigator, Other.Location, vect(0,0,0), 'Exploded' );
         return false;
     }
     Super.EncroachingOn(Other);
@@ -33,7 +34,7 @@ function SetSeq(int seqnum)
         prevKeyNum = KeyNum;
         KeyNum = seqnum;
         dist = VSize(BasePos + KeyPos[seqnum] - Location);
-        
+
         GotoState('ElevatorMover', 'Next');
 
         if( prevKeyNum == seqnum || dist < 16.0 )

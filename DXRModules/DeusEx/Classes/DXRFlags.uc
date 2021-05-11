@@ -559,7 +559,7 @@ simulated static function bool VersionOlderThan(int config_version, int major, i
 
 simulated static function string VersionString()
 {
-    return VersionToString(1, 5, 8) $ " Beta";
+    return VersionToString(1, 5, 8) $ "";
 }
 
 simulated function MaxRando()
