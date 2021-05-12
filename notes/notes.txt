@@ -35,6 +35,7 @@ EditPackages=HXRandomizer
 
 
 v1.5.9 Alpha:
+	fix skill values resetting every 5 missions?
 	better way to merge compiler_settings.json into compiler_settings.default.json
 	VersionToInt reserve some more digits for hidden version numbers and alphas and betas
 		argument for optional int build, and make alphas and betas use negative numbers?

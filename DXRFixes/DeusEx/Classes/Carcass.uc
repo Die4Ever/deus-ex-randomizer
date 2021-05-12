@@ -52,5 +52,5 @@ defaultproperties
 {
     bCollideActors=true
     bBlockActors=true
-    bBlockPlayers=true
+    //bBlockPlayers=true
 }
