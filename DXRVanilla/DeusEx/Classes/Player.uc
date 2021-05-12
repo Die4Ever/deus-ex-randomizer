@@ -92,7 +92,10 @@ exec function QuickSave()
 function bool AddInventory( inventory NewItem )
 {
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
-    if ( loadout != None && loadout.ban(self, NewItem) ) return true;
+    if ( loadout != None && loadout.ban(self, NewItem) ) {
+        NewItem.Destroy();
+        return true;
+    }
 
     return Super.AddInventory(NewItem);
 }
