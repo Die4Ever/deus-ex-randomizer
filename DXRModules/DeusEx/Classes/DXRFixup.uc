@@ -1003,8 +1003,9 @@ function NYC_08_AnyEntry()
 
     switch(dxr.localURL) {
         case "08_NYC_STREET":
+            SetTimer(1.0, True);
             foreach AllActors(class'StantonDowd', s) {
-                RemoveFears(s);
+                RemoveReactions(s);
             }
             break;
 

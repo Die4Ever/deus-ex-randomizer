@@ -266,6 +266,30 @@ function RemoveFears(ScriptedPawn p)
     p.bFearProjectiles = false;
 }
 
+function RemoveReactions(ScriptedPawn p)
+{
+    if( p == None ) {
+        err("RemoveReactions "$p);
+        return;
+    }
+    RemoveFears(p);
+    p.bHateHacking = false;
+    p.bHateWeapon = false;
+    p.bHateShot = false;
+    p.bHateInjury = false;
+    p.bHateIndirectInjury = false;
+    p.bHateCarcass = false;
+    p.bHateDistress = false;
+    p.bReactFutz = false;
+    p.bReactPresence = false;
+    p.bReactLoudNoise = false;
+    p.bReactAlarm = false;
+    p.bReactShot = false;
+    p.bReactCarcass = false;
+    p.bReactDistress = false;
+    p.bReactProjectiles = false;
+}
+
 function bool Swap(Actor a, Actor b)
 {
     local vector newloc, oldloc;
