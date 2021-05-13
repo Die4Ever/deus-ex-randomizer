@@ -353,6 +353,25 @@ exec function po()
 	Level.bPlayersOnly = !Level.bPlayersOnly;
 }
 
+exec function FixAugHotkeys()
+{
+    local AugmentationManager am;
+    local int hotkeynums[7], loc;
+    local Augmentation a;
+
+    am = AugmentationSystem;
+    for(loc=0; loc<ArrayCount(am.AugLocs); loc++) {
+        hotkeynums[loc] = am.AugLocs[loc].KeyBase + 1;
+    }
+    for( a = am.FirstAug; a != None; a = a.next ) {
+        if( !a.bHasIt ) continue;
+        loc = a.AugmentationLocation;
+        a.HotKeyNum = hotkeynums[loc]++;
+    }
+
+    am.RefreshAugDisplay();
+}
+
 function ChangeSong(string SongName, byte section)
 {
     LevelSong = Music(DynamicLoadObject(SongName, class'Music'));
