@@ -366,6 +366,8 @@ exec function FixAugHotkeys()
     for( a = am.FirstAug; a != None; a = a.next ) {
         if( !a.bHasIt ) continue;
         loc = a.AugmentationLocation;
+        if(loc==6 && a.AugmentationName!="Light") continue;
+        ClientMessage(a.AugmentationName$" will bind to F"$hotkeynums[loc]);
         a.HotKeyNum = hotkeynums[loc]++;
     }
 
