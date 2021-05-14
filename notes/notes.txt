@@ -56,6 +56,8 @@ v1.5.9 Alpha:
 	DXRPasswords and DXRKeys using Containers as possible locations? can be risky
 
 v1.5.9:
+	sub base elevator needs call down button
+	bug in sub base backtracking chopper
 	fix charged pickups going in hand
 	weapon/ammo descriptions should show the max ammo
 	improve: DXRKeys: INFO: key maintenancekey got num: 1, slot: 0, actor: 12_Vandenberg_Tunnels.MedKit0
@@ -67,6 +69,7 @@ v1.5.9:
 		wider range on the sword for ninja mode?
 		can I also give low tech skill more levels, or repurpose other skills?
 		maybe gas grenades should be allowed too? emp grenades? other grenades?
+		too much throwing knives ammo?
 	Stick With the Prod (and Plus) should give the AugStealth instead of AugSpeed?
 		rename them to Stick With the Prod (Pure) and Stick With the Prod (Plus)?
 		start with the muscles aug so you can move explosive barrels? combat strength is useless anyways
