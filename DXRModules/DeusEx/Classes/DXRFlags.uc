@@ -559,7 +559,7 @@ simulated static function bool VersionOlderThan(int config_version, int major, i
 
 simulated static function string VersionString()
 {
-    return VersionToString(1, 5, 8) $ " Beta";
+    return VersionToString(1, 5, 8) $ "";
 }
 
 simulated function MaxRando()
@@ -574,6 +574,7 @@ function NewGamePlus()
     local DXRSkills skills;
     local DXRWeapons weapons;
     local DXRAugmentations augs;
+    local int i;
 
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
@@ -620,8 +621,8 @@ function NewGamePlus()
 
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( skills != None ) {
-        skills.RemoveRandomSkill(p);
-        skills.RemoveRandomSkill(p);
+        for(i=0; i<5; i++)
+            skills.DowngradeRandomSkill(p);
         p.SkillPointsAvail /= 2;
     }
     else p.SkillPointsAvail = 0;

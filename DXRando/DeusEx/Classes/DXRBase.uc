@@ -1,4 +1,8 @@
+#ifdef hx
+class DXRBase extends Info config(HXRando);
+#else
 class DXRBase extends Info config(DXRando);
+#endif
 
 var transient DXRando dxr;
 var transient float overallchances;

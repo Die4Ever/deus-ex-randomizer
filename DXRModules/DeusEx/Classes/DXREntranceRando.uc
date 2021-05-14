@@ -78,8 +78,9 @@ function CheckConfig()
 
         min_connections_selfconnect = 999;
         i = 0;
-        dead_ends[i++] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
+        //dead_ends[i++] = "06_HONGKONG_WANCHAI_GARAGE#Teleporter";
         dead_ends[i++] = "06_HONGKONG_Storage#waterpipe";
+        //dead_ends[i++] = "06_HONGKONG_MJ12LAB#tubeend";
 
         /*i=0;
         unreachable_conns[i++] = "12_VANDENBERG_CMD#storage";*/
@@ -99,6 +100,26 @@ function CheckConfig()
 
         dependencies[i].dependent = "06_HongKong_WanChai_Market#Lobby";
         dependencies[i].dependency = "06_HongKong_WanChai_Street";
+        i++;
+
+        dependencies[i].dependent = "06_HongKong_WanChai_Market#Lobby";
+        dependencies[i].dependency = "06_HongKong_WanChai_Underworld";
+        i++;
+
+        dependencies[i].dependent = "06_HONGKONG_STORAGE#CANAL";
+        dependencies[i].dependency = "06_HongKong_WanChai_Underworld";
+        i++;
+
+        dependencies[i].dependent = "06_HONGKONG_MJ12LAB#basement";
+        dependencies[i].dependency = "06_HongKong_WanChai_Underworld";
+        i++;
+
+        /*dependencies[i].dependent = "06_HONGKONG_wanchai_garage#BackDoor";
+        dependencies[i].dependency = "06_HongKong_WanChai_Underworld";
+        i++;*/
+
+        dependencies[i].dependent = "06_HongKong_Storage#canal";
+        dependencies[i].dependency = "06_HongKong_WanChai_MJ12Lab";
         i++;
 
         dependencies[i].dependent = "12_VANDENBERG_CMD#gas_start";
@@ -801,8 +822,6 @@ function RandoMission2()
     AddDoubleXfer("02_NYC_Underground","ToNYCSump","02_NYC_Street","FromNYCSump");
     AddDoubleXfer("02_NYC_Warehouse","ToRoofTop","02_NYC_Street","FromRoofTop");
     AddDoubleXfer("02_NYC_Warehouse","ToWarehouseAlley","02_NYC_Street","FromWarehouseAlley");
-
-    GenerateConnections(2);
 }
 
 function RandoMission3()
@@ -815,8 +834,6 @@ function RandoMission3()
     AddDoubleXfer("03_NYC_AirfieldHeliBase","FromOcean","03_NYC_Airfield","ToOcean");
     AddDoubleXfer("03_NYC_Airfield","HangarExit","03_NYC_Hangar","HangarEnt");
     AddDoubleXfer("03_NYC_Hangar","747PassExit","03_NYC_747","747PassEnt");
-    
-    GenerateConnections(3);
 }
 
 function RandoMission4()
@@ -832,8 +849,6 @@ function RandoMission4()
     AddDoubleXfer("04_NYC_STREET","FromNSFHQ","04_NYC_NSFHQ","ToNSFHQ");
     AddDoubleXfer("04_NYC_STREET","FromNYCUndergroundSewer2","04_NYC_Underground","ToNYCUndergroundSewer2");
     AddDoubleXfer("04_NYC_STREET","FromNYCSump","04_NYC_Underground","ToNYCSump");
-
-    GenerateConnections(4);
 }
 
 function RandoMission6()
@@ -842,7 +857,6 @@ function RandoMission6()
     AddDoubleXfer("06_HONGKONG_MJ12LAB","cathedral","06_HongKong_VersaLife","secret");
     AddDoubleXfer("06_HONGKONG_MJ12LAB","tubeend","06_HongKong_Storage","basement");
     AddDoubleXfer("06_HONGKONG_STORAGE","waterpipe","06_HongKong_WanChai_Canal","canal");
-    //AddDoubleXfer("06_HONGKONG_STORAGE","basement","06_HongKong_MJ12lab","tubeend");
     //AddXfer("06_HongKong_Storage","BackDoor","06_HONGKONG_WANCHAI_GARAGE#Teleporter");//one way
     //AddFixedConn("06_HONGKONG_TONGBASE","lab","06_HongKong_WanChai_Market","compound");
     AddDoubleXfer("06_HONGKONG_VERSALIFE","Lobby","06_HongKong_WanChai_Market","market");
@@ -852,8 +866,6 @@ function RandoMission6()
     AddDoubleXfer("06_HONGKONG_WANCHAI_GARAGE","market04","06_HongKong_WanChai_Market","garage01");
     AddDoubleXfer("06_HONGKONG_WANCHAI_MARKET","canal03","06_HongKong_WanChai_Underworld","market03");
     AddDoubleXfer("06_HongKong_WanChai_Street","alleyout","06_HongKong_WanChai_Canal","alleyin");
-
-    GenerateConnections(6);
 }
 
 function RandoMission8()
@@ -868,8 +880,6 @@ function RandoMission8()
     AddDoubleXfer("08_NYC_SMUG","ToSmugBackDoor","08_NYC_Street","FromSmugBackDoor");
     AddDoubleXfer("08_NYC_UNDERGROUND","ToNYCSump","08_NYC_Street","FromNYCSump");
     AddDoubleXfer("08_NYC_UNDERGROUND","ToNYCUndergroundSewer2","08_NYC_Street","FromNYCUndergroundSewer2");
-
-    GenerateConnections(8);
 }
 
 function RandoMission9()
@@ -883,8 +893,6 @@ function RandoMission9()
     AddDoubleXfer("09_NYC_SHIP","FromFanRoom","09_NYC_ShipFan","ToFanRoom");
     AddDoubleXfer("09_NYC_SHIP","FromDuctRoom","09_NYC_ShipFan","ToDuctRoom");
     AddDoubleXfer("09_NYC_SHIP","FromBelow","09_NYC_ShipBelow","FromAbove");
-
-    GenerateConnections(9);
 }
 
 function RandoMission10()
@@ -897,8 +905,6 @@ function RandoMission10()
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club1","10_Paris_Metro","Paris_Metro1");
     AddDoubleXfer("10_PARIS_CLUB","Paris_Club2","10_Paris_Metro","Paris_Metro2");
     AddDoubleXfer("11_PARIS_CATHEDRAL","Paris_Underground","11_Paris_Underground","Paris_Underground");
-
-    GenerateConnections(10);
 }
 
 function RandoMission12()
@@ -914,8 +920,6 @@ function RandoMission12()
     AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC","UC");//we don't care about what map name the teleporter says, the real map name is what matters
     AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub","subbay");
     AddDoubleXfer("14_Vandenberg_Sub","?toname=InterpolationPoint39", "14_Oceanlab_silo","#frontgate");
-
-    GenerateConnections(12);
 }
 
 function RandoMission15()
@@ -926,17 +930,10 @@ function RandoMission15()
     AddDoubleXfer("15_Area51_entrance","?toname=Light73","15_AREA51_FINAL","start");
     AddDoubleXfer("15_AREA51_FINAL","final_end","15_Area51_page","page_start");
     //AddDoubleXfer("15_AREA51_FINAL","Start","");
-
-    GenerateConnections(15);
 }
 
-function EntranceRando(int missionNum)
+function GenerateXfers(int missionNum)
 {
-    numConns = 0;
-    numXfers = 0;
-    numFixedConns = 0;
-    dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") + missionNum );
-
     switch(missionNum)
     {
         case 2:
@@ -973,6 +970,19 @@ function EntranceRando(int missionNum)
             RandoMission15();
             break;
     }
+}
+
+function EntranceRando(int missionNum)
+{
+    numConns = 0;
+    numXfers = 0;
+    numFixedConns = 0;
+    dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") + missionNum );
+
+    GenerateXfers(missionNum);
+
+    if( numXfers > 0 )
+        GenerateConnections(missionNum);
 }
 
 function BindEntrances(DataStorage ds, bool writing)

@@ -239,23 +239,49 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     aSkill.Cost[i] = int(f);
 }
 
-simulated function RemoveRandomSkill(#var PlayerPawn  p)
+simulated function Skill GetRandomPlayerSkill(#var PlayerPawn  p)
 {
     local Skill skills[64], t;
-    local int numSkills, slot;
+    local int numSkills, slot, numLevels;
 
     for( t = p.SkillSystem.FirstSkill; t != None; t = t.next ) {
         if( t.CurrentLevel <= 0 ) continue;
+        numLevels += t.CurrentLevel;
         skills[numSkills++] = t;
     }
 
-    if( numSkills == 0 ) return;
+    if( numSkills == 0 ) return None;
 
-    SetSeed( "RemoveRandomSkill " $ numSkills );
+    SetSeed( "GetRandomPlayerSkill " $ numLevels );
 
     slot = rng(numSkills);
-    info("RemoveRandomSkill("$p$") Removing skill "$skills[slot]$", numSkills was "$numSkills);
-    skills[slot].CurrentLevel = 0;
+    return skills[slot];
+}
+
+simulated function DowngradeRandomSkill(#var PlayerPawn  p)
+{
+    local Skill skill;
+
+    skill = GetRandomPlayerSkill(p);
+    if( skill == None ) {
+        info("DowngradeRandomSkill("$p$") no skills found");
+        return;
+    }
+    info("DowngradeRandomSkill("$p$") Downgrading skill "$skill);
+    skill.CurrentLevel--;
+}
+
+simulated function RemoveRandomSkill(#var PlayerPawn  p)
+{
+    local Skill skill;
+
+    skill = GetRandomPlayerSkill(p);
+    if( skill == None ) {
+        info("RemoveRandomSkill("$p$") no skills found");
+        return;
+    }
+    info("RemoveRandomSkill("$p$") Removing skill "$skill);
+    skill.CurrentLevel = 0;
 }
 
 defaultproperties

@@ -1,4 +1,8 @@
+#ifdef hx
+class DXRando extends Info config(HXRando) transient;
+#else
 class DXRando extends Info config(DXRando) transient;
+#endif
 
 var transient #var PlayerPawn  Player;
 var transient FlagBase flagbase;
@@ -75,7 +79,8 @@ function SetdxInfo(DeusExLevelInfo i)
 
 function DXRInit()
 {
-    l("DXRInit has localURL == " $ localURL);
+    l("DXRInit has localURL == " $ localURL $ ", flagbase == "$flagbase);
+    if( flagbase != None ) return;
 
     Player = #var PlayerPawn (GetPlayerPawn());
     if( Player == None )

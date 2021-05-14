@@ -106,16 +106,24 @@ function PreTravel()
 function CheckNextMap(string nextMap)
 {
     local int oldMissionNum, newMissionNum;
+    local string combo;
 
     oldMissionNum = dxr.dxInfo.missionNumber;
     newMissionNum = class'DXRTestAllMaps'.static.GetMissionNumber(nextMap);
-
-    //do this for paris (10/11) and vandenberg (12/14)
-    if( (oldMissionNum == 10 && newMissionNum == 11) || (oldMissionNum == 11 && newMissionNum == 10)
-            ||
-        (oldMissionNum == 12 && newMissionNum == 14) || (oldMissionNum == 14 && newMissionNum == 12) )
-    {
-        RetainSaves(oldMissionNum, newMissionNum, nextMap);
+    
+    if( oldMissionNum == newMissionNum ) return;
+    
+    combo = oldMissionNum $ " to " $ newMissionNum;
+    switch(combo) {
+        case "10 to 11":
+        case "11 to 10":
+        case "12 to 14":
+        case "14 to 12":
+            RetainSaves(oldMissionNum, newMissionNum, nextMap);
+            break;
+        default:
+            if( dxr.flags.gamemode == 3 )
+                RetainSaves(oldMissionNum, newMissionNum, nextMap);
     }
 }
 

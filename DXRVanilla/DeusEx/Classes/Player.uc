@@ -66,7 +66,9 @@ exec function StartNewGame(String startMap)
     flagBase.SetBool('PlayerTraveling', True, True, 0);
 
     GetDXR();
-    if( dxr != None && dxr.flags.newgameplus_loops == 0 ) {
+    dxr.DXRInit();
+    dxr.info( Self$" StartNewGame("$startMap$") found "$dxr$", dxr.flagbase: "$dxr.flagbase$", dxr.flags.newgameplus_loops: "$dxr.flags.newgameplus_loops);
+    if( dxr.flags.newgameplus_loops == 0 ) {
         SaveSkillPoints();
         ResetPlayer();
     }
@@ -90,7 +92,10 @@ exec function QuickSave()
 function bool AddInventory( inventory NewItem )
 {
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
-    if ( loadout != None && loadout.ban(self, NewItem) ) return true;
+    if ( loadout != None && loadout.ban(self, NewItem) ) {
+        NewItem.Destroy();
+        return true;
+    }
 
     return Super.AddInventory(NewItem);
 }
@@ -346,6 +351,27 @@ exec function po()
 		return;
 
 	Level.bPlayersOnly = !Level.bPlayersOnly;
+}
+
+exec function FixAugHotkeys()
+{
+    local AugmentationManager am;
+    local int hotkeynums[7], loc;
+    local Augmentation a;
+
+    am = AugmentationSystem;
+    for(loc=0; loc<ArrayCount(am.AugLocs); loc++) {
+        hotkeynums[loc] = am.AugLocs[loc].KeyBase + 1;
+    }
+    for( a = am.FirstAug; a != None; a = a.next ) {
+        if( !a.bHasIt ) continue;
+        loc = a.AugmentationLocation;
+        if( a.AugmentationLocation == LOC_Default ) continue;
+        ClientMessage(a.AugmentationName$" will bind to F"$hotkeynums[loc]);
+        a.HotKeyNum = hotkeynums[loc]++;
+    }
+
+    am.RefreshAugDisplay();
 }
 
 function ChangeSong(string SongName, byte section)

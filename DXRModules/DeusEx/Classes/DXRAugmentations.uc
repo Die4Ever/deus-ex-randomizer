@@ -207,7 +207,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
 
 simulated function RemoveRandomAug(#var PlayerPawn  p)
 {
-    local Augmentation a, augs[64];
+    local Augmentation a, b, augs[64];
     local AugmentationManager am;
     local int numAugs, slot;
 
@@ -215,6 +215,7 @@ simulated function RemoveRandomAug(#var PlayerPawn  p)
 
     for( a = am.FirstAug; a != None; a = a.next ) {
         if( !a.bHasIt ) continue;
+        if( a.AugmentationLocation == LOC_Default ) continue;
 
         if( #var prefix AugSpeed(a) != None || #var prefix AugLight(a) != None
             || #var prefix AugIFF(a) != None || #var prefix AugDatalink(a) != None || AugNinja(a) != None
@@ -228,12 +229,19 @@ simulated function RemoveRandomAug(#var PlayerPawn  p)
     SetSeed( "RemoveRandomAug " $ numAugs );
     slot = rng(numAugs);
     a = augs[slot];
-    info("RemoveRandomAug("$p$") Removing aug "$a$", numAugs was "$numAugs);
-    am.AugLocs[a.AugmentationLocation].augCount--;
-    p.RemoveAugmentationDisplay(a);
+    info("RemoveRandomAug("$p$") Removing aug "$a$" from "$am$", numAugs was "$numAugs);
     a.Deactivate();
     a.CurrentLevel = 0;
     a.bHasIt = false;
+    am.AugLocs[a.AugmentationLocation].augCount--;
+    p.RemoveAugmentationDisplay(a);
+
+    // walk back the hotkey numbers
+    slot = am.AugLocs[a.AugmentationLocation].KeyBase + 1;
+    for( b = am.FirstAug; b != None; b = b.next ) {
+        if( b.bHasIt && a.AugmentationLocation == b.AugmentationLocation )
+            b.HotKeyNum = slot++;
+    }
 }
 
 defaultproperties

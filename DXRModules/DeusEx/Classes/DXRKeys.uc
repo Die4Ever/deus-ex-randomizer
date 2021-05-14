@@ -39,6 +39,13 @@ function CheckConfig()
         keys_rules[i].allow = true;
         i++;
 
+        keys_rules[i].map = "06_HONGKONG_STORAGE";
+        keys_rules[i].item_name = 'NanoContainmentDoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
         keys_rules[i].map = "10_Paris_Chateau";
         keys_rules[i].item_name = 'duclare_chateau';
         keys_rules[i].min_pos = vect(-99999, -99999, -125);
@@ -215,11 +222,6 @@ function FirstEntry()
         MoveNanoKeys4();
 
     RandomizeDoors();
-}
-
-function AnyEntry()
-{
-    Super.AnyEntry();
     AdjustRestrictions(dxr.flags.doorsmode, dxr.flags.doorspickable, dxr.flags.doorsdestructible, dxr.flags.deviceshackable, dxr.flags.removeinvisiblewalls);
 }
 
@@ -237,6 +239,7 @@ function RandomizeDoors()
         }
         if( d.bBreakable ) {
             d.doorStrength = FClamp(rngrange(d.doorStrength, min_door_adjust, max_door_adjust), 0, 1);
+            d.doorStrength = int(d.doorStrength*100)/100.0;
             d.minDamageThreshold = rngrange(d.minDamageThreshold, min_mindmg_adjust, max_mindmg_adjust);
 #ifndef injections
             d.minDamageThreshold = d.doorStrength * 60;
@@ -301,7 +304,7 @@ function _RandoKey(#var prefix NanoKey k)
         slot=rng(num+1);// +1 for vanilla
         if(slot==0) {
             info("not swapping key "$k.KeyID);
-            continue;
+            break;
         }
         slot--;
         info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot]);
@@ -528,6 +531,7 @@ function MakeDestructible(#var Mover  d)
         d.bBreakable = true;
         d.minDamageThreshold = rngrange(55, min_mindmg_adjust, max_mindmg_adjust);
         d.doorStrength = FClamp(rngrange(0.8, min_door_adjust, max_door_adjust), 0, 1);
+        d.doorStrength = int(d.doorStrength*100)/100.0;
 #ifndef injections
         d.minDamageThreshold = d.doorStrength * 60;
 #endif

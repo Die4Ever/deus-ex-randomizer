@@ -334,6 +334,7 @@ function NinjaAdjustWeapon(DeusExWeapon w)
             w.default.ShotTime=0;
             w.maxRange = 96;
             w.default.maxRange = 96;
+            break;
         case class'WeaponNanoSword':
             WeaponNanoSword(w).blood_mult = 2;
             WeaponNanoSword(w).default.blood_mult = 2;

@@ -10,27 +10,48 @@ function InitFor(Actor Other)
     Super.InitFor(Other);
 }
 
-function DropKeys()
+function bool _DropItem(Inventory item, Name classname)
+{
+    if( Ammo(item) != None )
+        return false;
+    else if( item.IsA(classname) && item.bDisplayableInv )
+        return true;
+    else
+        return false;
+}
+
+function _DropItems(Name classname, vector offset, vector velocity)
 {
     local Inventory item, nextItem;
-    local bool drop;
 
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
-        drop = item.IsA('NanoKey') || item.bDisplayableInv;
-        if( Ammo(item) != None ) drop = false;
-        if( drop ) {
+        if( _DropItem(item, classname) ) {
             DeleteInventory(item);
             class'DXRActorsBase'.static.ThrowItem(self, item);
-            item.Velocity *= vect(-2, -2, 3);
+            item.SetLocation( item.Location + offset );
+            item.Velocity *= velocity;
         }
         item = nextItem;
     }
 }
 
+function DropKeys()
+{
+    _DropItems('NanoKey', vect(0,0,80), vect(-0.2, -0.2, 1) );
+    SetCollision(true,true,bBlockPlayers);
+}
+
 function Destroyed()
 {
-    DropKeys();
+    _DropItems('Inventory', vect(0,0,0), vect(-2, -2, 3) );
     Super.Destroyed();
+}
+
+defaultproperties
+{
+    //bCollideActors=true
+    //bBlockActors=true
+    //bBlockPlayers=true
 }

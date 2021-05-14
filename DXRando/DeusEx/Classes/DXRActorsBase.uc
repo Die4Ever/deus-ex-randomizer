@@ -208,7 +208,7 @@ static function ThrowItem(Actor a, Inventory item)
 {
     if( Pawn(a) != None )
         Pawn(a).DeleteInventory(item);
-    item.DropFrom(a.Location + VRand()*32);
+    item.DropFrom(a.Location + (VRand()*vect(32,32,16)) + vect(0,0,16) );
     // kinda copied from DeusExPlayer DropItem function
     item.Velocity = vector(a.rotation) * 300 + vect(0,0,220) + VRand()*32;
 }
@@ -216,10 +216,6 @@ static function ThrowItem(Actor a, Inventory item)
 function bool SkipActorBase(Actor a)
 {
     if( (a.Owner != None) || a.bStatic || a.bHidden || a.bMovable==False )
-        return true;
-    if( ScriptedPawn(a.Base) != None )
-        return true;
-    if( PlayerPawn(a.Base) != None )
         return true;
     return false;
 }
@@ -268,6 +264,30 @@ function RemoveFears(ScriptedPawn p)
     p.bFearDistress = false;
     p.bFearAlarm = false;
     p.bFearProjectiles = false;
+}
+
+function RemoveReactions(ScriptedPawn p)
+{
+    if( p == None ) {
+        err("RemoveReactions "$p);
+        return;
+    }
+    RemoveFears(p);
+    p.bHateHacking = false;
+    p.bHateWeapon = false;
+    p.bHateShot = false;
+    p.bHateInjury = false;
+    p.bHateIndirectInjury = false;
+    p.bHateCarcass = false;
+    p.bHateDistress = false;
+    p.bReactFutz = false;
+    p.bReactPresence = false;
+    p.bReactLoudNoise = false;
+    p.bReactAlarm = false;
+    p.bReactShot = false;
+    p.bReactCarcass = false;
+    p.bReactDistress = false;
+    p.bReactProjectiles = false;
 }
 
 function bool Swap(Actor a, Actor b)

@@ -35,10 +35,18 @@ EditPackages=HXRandomizer
 
 
 v1.5.9 Alpha:
-	notes don't travel, goals do
+	fix skill values resetting every 5 missions?
+	better way to merge compiler_settings.json into compiler_settings.default.json
+	VersionToInt reserve some more digits for hidden version numbers and alphas and betas
+		argument for optional int build, and make alphas and betas use negative numbers?
+			or assume that if the other arguments match the current version then the build should match too?
+		make a warning when I call VersionToInt with build number less than 0 so I remember to clean them up?
+		bump the minimum versions for every config so everyone is updated
+	HX notes don't travel, goals do
 	config for difficulty settings
 		in DXRando, easy: { combatDifficulty: 1 } means easy is the key and combat difficulty is a result of it
 		in HXRando, we can look up which rando settings to use based on the combatDifficulty, so it'll be backwards lookup
+		I might want to switch configs to use an array of struct KeyValuePair { name key; int val; }, need to make sure it fits in replication
 	need to do something about all the object names, maybe some of them can be switched to class+tag combos
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	cleanup goals when finishing missions, especially hong kong
@@ -48,6 +56,23 @@ v1.5.9 Alpha:
 	DXRPasswords and DXRKeys using Containers as possible locations? can be risky
 
 v1.5.9:
+	sub base elevator needs call down button
+	bug in sub base backtracking chopper
+	fix charged pickups going in hand
+	weapon/ammo descriptions should show the max ammo
+	improve: DXRKeys: INFO: key maintenancekey got num: 1, slot: 0, actor: 12_Vandenberg_Tunnels.MedKit0
+		DXRKeys: swapping MedKit.MedKit0(-1437.876587,3819.677734,-3246.906738) and NanoKey.NanoKey1(-1138.429199,3494.751221,-3084.074463) distance == 470.914337
+	
+	ninja mode:
+		I can make ninja mode spawn more continuous blood on a timer or tick
+		faster weapon switching speeds for ninja mode?
+		wider range on the sword for ninja mode?
+		can I also give low tech skill more levels, or repurpose other skills?
+		maybe gas grenades should be allowed too? emp grenades? other grenades?
+		too much throwing knives ammo?
+	Stick With the Prod (and Plus) should give the AugStealth instead of AugSpeed?
+		rename them to Stick With the Prod (Pure) and Stick With the Prod (Plus)?
+		start with the muscles aug so you can move explosive barrels? combat strength is useless anyways
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
 	tweak rotations for teleporters?
 	enough advanced options to be able to play unrandomized
@@ -65,13 +90,31 @@ v1.5.9:
 	DXREntranceRando: WARNING: GenerateConnections(12) succeeded but took 24 attempts! seed: 158016, genconsfails: 7, validatefails: 17
 	HX: DXRMissions, DXRFixup? DXRHordeMode? credits, new game plus? DXRStats? crowd control, gonna need to add simulated to like every function
 	automated tests in HX?
-	lore friendly enemy spawns?
+	lore friendly enemy spawns? triads would be good extra enemies in hong kong at least
 	any way I could get DXRNames to work with replication?
+	maybe clean up the credits a bit more, especially the DXRFlags section
+	scale difficulty with extra players like diablo, slightly increase enemy randomization and combat difficulty
 
 for v1.6 programatically modify conversations? ===================
 
-create new "stories", start with a hub area (either hell's kitchen or hong kong), connect a bunch of random maps to it (from any mission), remove all vanilla npcs and dialog and add new ones
+GUI for NG+? can open a window similar to the advanced settings page
+create new "stories", start with a hub area (either hell's kitchen or hong kong, but which hell's kitchen?)
+	class DXRStories extends DXREntranceRando;
+	move stuff from DXRBacktracking into functions to "open up" areas, so they can be called from DXRStories
+	connect a bunch of random maps to it (from any mission)
+	how to determine if a map should be neutral or hostile?
+	remove all vanilla npcs and dialog and add new ones
+	after beating a hub area, it can take you to the "next" area just by running a different seed, maybe do something to ensure it's based on a different hub area
+	I need to reuse the data in DXREntranceRando, maybe by subclassing it
 for better log message window, look at DeusExRootWindow ClientMessage function, and HUDLogDisplay AddLog and SetLogTimeout functions
+HUD to show current energy use per second, similar to the damage resistance HUD
+	could allow randomization of aug energy usage
+dynamically generate patrol routes? will probably need a new state for scriptedpawns to replace patrolling
+randomize item pool by replacing 50% of items?
+with flags binding, maybe I could convert some of them to floats or ints x100
+
+CleanerBot Tick function could also cleanup Effects, TrashPaper, Fragment...
+
 
 in Actor.uc
 // Probe messages.

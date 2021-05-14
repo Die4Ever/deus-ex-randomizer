@@ -746,6 +746,7 @@ function HongKong_FirstEntry()
     local ScriptedPawn p;
     local Button1 b;
     local ElevatorMover e;
+    local #var Mover  m;
 
     switch(dxr.localURL)
     {
@@ -812,6 +813,21 @@ function HongKong_FirstEntry()
                 }
             }
             break;
+        
+        case "06_HONGKONG_MJ12LAB":
+            foreach AllActors(class'#var Mover ', m, 'security_doors') {
+                m.bBreakable = false;
+                m.bPickable = false;
+            }
+            foreach AllActors(class'#var Mover ', m, 'Lower_lab_doors') {
+                m.bBreakable = false;
+                m.bPickable = false;
+            }
+            foreach AllActors(class'#var Mover ', m, 'elevator_door') {
+                m.bIsDoor = true;// DXRKeys will pick this up later since we're in PreFirstEntry
+            }
+            break;
+
         default:
             break;
     }
@@ -964,6 +980,12 @@ function HongKong_AnyEntry()
             }
 
             break;
+        
+        case "06_HONGKONG_VERSALIFE":
+            DeleteConversationFlag( GetConversation('Disgruntled_Guy_Convos'), 'VL_Found_Labs', false);
+            GetConversation('Disgruntled_Guy_Return').AddFlagRef('Disgruntled_Guy_Done', true);
+            break;
+        
         default:
             break;
     }
@@ -981,8 +1003,9 @@ function NYC_08_AnyEntry()
 
     switch(dxr.localURL) {
         case "08_NYC_STREET":
+            SetTimer(1.0, True);
             foreach AllActors(class'StantonDowd', s) {
-                RemoveFears(s);
+                RemoveReactions(s);
             }
             break;
 
@@ -1039,6 +1062,23 @@ function AddDelay(Actor trigger, float time)
     d.OutEvents[0] = trigger.Event;
     d.OutDelays[0] = time;
     trigger.Event = d.Tag;
+}
+
+
+static function DeleteConversationFlag(Conversation c, name Name, bool Value)
+{
+    local ConFlagRef f, prev;
+    if( c == None ) return;
+    for(f = c.flagRefList; f!=None; f=f.nextFlagRef) {
+        if( f.flagName == Name && f.value == Value ) {
+            if( prev == None )
+                c.flagRefList = f.nextFlagRef;
+            else
+                prev.nextFlagRef = f.nextFlagRef;
+            return;
+        }
+        prev = f;
+    }
 }
 
 static function FixConversationFlag(Conversation c, name fromName, bool fromValue, name toName, bool toValue)
