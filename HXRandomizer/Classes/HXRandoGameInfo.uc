@@ -6,7 +6,7 @@ var travel DataStorage ds;
 replication
 {
     reliable if( Role==ROLE_Authority )
-        dxr, ds;
+        dxr;
 }
 
 event InitGame( String Options, out String Error )
@@ -25,13 +25,24 @@ event InitGame( String Options, out String Error )
 
 event PostLogin(playerpawn NewPlayer)
 {
+    local DeusExNote note;
+    local #var PlayerPawn  p;
+
     Super.PostLogin(NewPlayer);
     if( Role != ROLE_Authority ) return;
+
+    p = #var PlayerPawn (NewPlayer);
 
     if( dxr == None )
         foreach AllActors(class'DXRando', dxr) break;
     log("PostLogin("$NewPlayer$") server, dxr: "$dxr, self.name);
-    dxr.PlayerLogin( #var PlayerPawn (NewPlayer) );
+    dxr.PlayerLogin( p );
+
+    for( note = FirstNote; note != None; note = note.next )
+    {
+        log(p$".ClientAddNote( "$note.text$", "$note.bUserNote$", "$note.textTag$" );");
+        p.ClientAddNote( note.text, note.bUserNote, note.textTag );
+    }
 }
 
 //
@@ -129,10 +140,17 @@ event AcceptInventory(pawn PlayerPawn)
 function ProcessServerTravel( string URL, bool bItems )
 {
     local int i;
+    local DeusExNote note;
     log(Self$".ProcessServerTravel PreTravel dxr: "$dxr);
     for(i=0; i<dxr.num_modules; i++) {
         dxr.modules[i].PreTravel();
     }
+
+    for( note = FirstNote; note != None; note = note.next ) {
+        log(self$".ProcessServerTravel, note: "$note);
+        ds.AddNote( note.textTag, note.bUserNote, note.text );
+    }
+    ds.PreTravel();
     Super.ProcessServerTravel( URL, bItems );
 }
 

@@ -319,10 +319,15 @@ function FirstEntry()
 
 function AnyEntry()
 {
+    local DataStorage ds;
     local ConSpeech c;
     Super.AnyEntry();
 
     LogAll();
+#ifdef hx
+    ds = class'DataStorage'.static.GetObj(self);
+    ds.HXLoadNotes();
+#endif
 }
 
 simulated function PlayerAnyEntry(#var PlayerPawn  p)

@@ -15,6 +15,77 @@ var travel int EntranceRandoMissionNumber;
 var travel int numConns;
 var travel string conns[120];
 
+#ifdef multiplayer
+// DeusExNotes
+var transient config int notes_playthrough;
+var transient config name textTags[512];
+var transient config string texts[512];
+var transient config int notes_start, notes_len;
+
+simulated function _AddNote(int i, Name textTag, bool bUserNote, String text)
+{
+    textTags[i] = textTag;
+    texts[i] = text;
+    log(self$".AddNote("$textTag$", "$text$") added to slot "$i);
+    config_dirty = true;
+}
+
+simulated function AddNote(Name textTag, bool bUserNote, String text)
+{
+    local int i, end;
+
+    log(self$".AddNote("$textTag$", "$text$"), bUserNote: "$bUserNote$", notes_playthrough: "$notes_playthrough$", playthrough_id: "$playthrough_id);
+    if( bUserNote ) return;
+
+    if( notes_playthrough != playthrough_id ) {
+        for(i=0; i<ArrayCount(textTags); i++) {
+            textTags[i]='';
+            texts[i]="";
+        }
+        notes_start = 0;
+        notes_len = 0;
+        notes_playthrough = playthrough_id;
+        config_dirty = true;
+    }
+
+    if( textTag != '' ) {
+        for(i=0; i<ArrayCount(textTags); i++) {
+            if( textTags[i] == textTag ) {
+                _AddNote(i, textTag, bUserNote, text);
+                return;
+            }
+        }
+    }
+
+    end = (notes_start + notes_len) % ArrayCount(textTags);
+    _AddNote(end, textTag, bUserNote, text);
+    if( notes_len == ArrayCount(textTags) )
+        notes_start = (notes_start+1) % ArrayCount(textTags);
+    else
+        notes_len++;
+}
+
+function HXLoadNotes()
+{
+    local int i;
+    local HXGameInfo g;
+
+    log(self$".HXLoadNotes, notes_playthrough: "$notes_playthrough$", playthrough_id: "$playthrough_id);
+
+    if( notes_playthrough != playthrough_id ) {
+        return;
+    }
+
+    g = HXGameInfo(Level.Game);
+
+    for(i=0; i<ArrayCount(textTags); i++) {
+        if( texts[i] == "" ) continue;
+        g.AddNote( texts[i], false, false, textTags[i] );
+    }
+}
+
+#endif
+
 replication
 {
     reliable if( Role==ROLE_Authority )
@@ -259,4 +330,5 @@ defaultproperties
     bDisplayableInv=False
     ItemName="DataStorage"
     bHidden=True
+    Physics=PHYS_None
 }
