@@ -20,7 +20,13 @@ def run(args):
     except:
         pass
 
-    merged = {**default_settings, **settings}
+    merged = default_settings
+    for p in settings:
+        if p not in merged:
+            merged[p] = {}
+        merged[p] = {**merged[p], **settings[p]}
+    
+
     profiles = []
     if argprofiles == 'all':
         profiles = merged.keys()
