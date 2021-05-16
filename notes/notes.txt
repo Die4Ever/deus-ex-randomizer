@@ -35,10 +35,7 @@ EditPackages=HXRandomizer
 
 
 v1.5.9 Alpha:
-	HX fix skill points travel?
 	HX fix duplicate notes
-	fix skill values resetting every 5 missions?
-	better way to merge compiler_settings.json into compiler_settings.default.json
 	VersionToInt reserve some more digits for hidden version numbers and alphas and betas
 		argument for optional int build, and make alphas and betas use negative numbers?
 			or assume that if the other arguments match the current version then the build should match too?
@@ -54,6 +51,7 @@ v1.5.9 Alpha:
 	DXRPasswords and DXRKeys using Containers as possible locations? can be risky
 
 v1.5.9:
+	fix skill values resetting every 5 missions?
 	sub base elevator needs call down button
 	bug in sub base backtracking chopper
 	fix charged pickups going in hand

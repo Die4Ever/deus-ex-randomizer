@@ -1019,18 +1019,28 @@ function Area51_FirstEntry()
 {
     local DeusExMover d;
     local DataCube dc;
+    local ComputerSecurity c;
+    
     switch(dxr.localURL)
     {
         case "15_AREA51_BUNKER":
             AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
             break;
+        
         case "15_AREA51_FINAL":
             foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
                 d.move(vect(0, 0, -1));
             }
             AddSwitch( vect(-5107.805176, -2530.276123, -1374.614258), rot(0, -16384, 0), 'blastdoor_final');
             AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
+
+            foreach AllActors(class'DeusExMover', d, 'doors_lower') {
+                d.bLocked = false;
+                d.bHighlight = true;
+                d.bFrobbable = true;
+            }
             break;
+        
         case "15_AREA51_ENTRANCE":
             foreach AllActors(class'DeusExMover', d, 'DeusExMover') {
                 if( d.Name == 'DeusExMover20' ) d.Tag = 'final_door';
@@ -1043,11 +1053,12 @@ function Area51_FirstEntry()
                 d.bFrobbable = true;
             }
             break;
-        case "15_AREA51_FINAL":
-            foreach AllActors(class'DeusExMover', d, 'doors_lower') {
-                d.bLocked = false;
-                d.bHighlight = true;
-                d.bFrobbable = true;
+
+        case "15_AREA51_PAGE":
+            foreach AllActors(class'ComputerSecurity', c) {
+                if( c.UserList[0].userName != "graytest" || c.UserList[0].Password != "Lab12" ) continue;
+                c.UserList[0].userName = "Lab 12";
+                c.UserList[0].Password = "graytest";
             }
             break;
     }
