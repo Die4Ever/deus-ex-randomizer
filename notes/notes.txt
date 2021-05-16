@@ -36,12 +36,6 @@ EditPackages=HXRandomizer
 
 v1.5.9 Alpha:
 	HX fix duplicate notes
-	VersionToInt reserve some more digits for hidden version numbers and alphas and betas
-		argument for optional int build, and make alphas and betas use negative numbers?
-			or assume that if the other arguments match the current version then the build should match too?
-		make a warning when I call VersionToInt with build number less than 0 so I remember to clean them up?
-		bump the minimum versions for every config so everyone is updated
-	HX notes don't travel, goals do
 	config for difficulty settings
 		in DXRando, easy: { combatDifficulty: 1 } means easy is the key and combat difficulty is a result of it
 		in HXRando, we can look up which rando settings to use based on the combatDifficulty, so it'll be backwards lookup
@@ -49,6 +43,8 @@ v1.5.9 Alpha:
 	need to do something about all the object names, maybe some of them can be switched to class+tag combos
 	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	DXRPasswords and DXRKeys using Containers as possible locations? can be risky
+	make VersionToInt build argument not optional, so I can move everything to use the VersionOlderThan function instead
+		cleanup old campatibility code
 
 v1.5.9:
 	fix skill values resetting every 5 missions?

@@ -531,11 +531,14 @@ function InitVersion()
     flagsversion = VersionNumber();
 }
 
-simulated static function int VersionToInt(int major, int minor, int patch)
+simulated static function int VersionToInt(int major, int minor, int patch, optional int build)
 {
     local int ret;
     ret = major*10000+minor*100+patch;
     if( ret <= 10400 ) return minor;//v1.4 and earlier
+    if( ret > 10508 ) {
+        ret = major*1000000+minor*10000+patch*100+build;
+    }
     return ret;
 }
 
@@ -549,17 +552,29 @@ simulated static function string VersionToString(int major, int minor, int patch
 
 simulated static function int VersionNumber()
 {
-    return VersionToInt(1, 5, 8);
+    local int major,minor,patch,build;
+    CurrentVersion(major,minor,patch,build);
+    return VersionToInt(major, minor, patch, build);
 }
 
-simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch)
+simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch, optional int build)
 {
-    return config_version < VersionToInt(major, minor, patch);
+    return config_version < VersionToInt(major, minor, patch, build);
+}
+
+simulated static function CurrentVersion(optional out int major, optional out int minor, optional out int patch, optional out int build)
+{
+    major=1;
+    minor=5;
+    patch=9;
+    build=0;
 }
 
 simulated static function string VersionString()
 {
-    return VersionToString(1, 5, 9) $ " Alpha";
+    local int major,minor,patch,build;
+    CurrentVersion(major,minor,patch,build);
+    return VersionToString(major, minor, patch) $ " Alpha";
 }
 
 simulated function MaxRando()
