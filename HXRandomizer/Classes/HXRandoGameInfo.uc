@@ -114,27 +114,10 @@ event AcceptInventory(pawn PlayerPawn)
             //NintendoImmunityEffect( True );
             Human.GiveInitialInventory();
         //}
+
+        Human.SkillPointsTotal = Steve.SkillPointsTotal;
+        Human.SkillPointsAvail = Steve.SkillPointsTotal;
     }
-
-    /*PointsSpent = HXSkillManager(Human.SkillSystem).CalculateSpentSkillPoints();
-    
-    if ( PointsSpent > Steve.SkillPointsTotal )
-    {
-        if ( DeusExLevelInfo!= None && Caps(DeusExLevelInfo.MapName)=="00_TRAININGFINAL" )
-        {
-            // HACK: ignore for training to keep rifle skill at master at 00_TrainingFinal
-        }
-        else
-        {
-            Log( Human $ " has " $ PointsSpent $ " SkillPoints spent, but only " $ Steve.SkillPointsTotal $ " are available, resetting Skills." );
-            Human.SkillSystem.ResetSkills();
-        }
-    }*/
-
-    Human.SkillPointsTotal = Steve.SkillPointsTotal;
-    Human.SkillPointsAvail = Steve.SkillPointsTotal;// - PointsSpent;
-
-    // TODO replicated notes, etc.
 }
 
 function ProcessServerTravel( string URL, bool bItems )
