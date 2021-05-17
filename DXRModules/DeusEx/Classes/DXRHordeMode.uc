@@ -241,7 +241,7 @@ function AnyEntry()
         err("Could not find DXREnemies! This is required for Horde Mode.");
     }
 
-    class'DXRAugmentations'.static.AddAug( player(), class'AugSpeed', dxr.flags.speedlevel );
+    class'DXRAugmentations'.static.AddAug( player(), class'AugSpeed', dxr.flags.settings.speedlevel );
     dxre.GiveRandomWeapon(player());
     dxre.GiveRandomWeapon(player());
     dxre.GiveRandomMeleeWeapon(player());

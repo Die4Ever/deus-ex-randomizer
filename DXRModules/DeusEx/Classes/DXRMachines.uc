@@ -33,8 +33,8 @@ function CheckConfig()
 function FirstEntry()
 {
     Super.FirstEntry();
-    RandoMedBotsRepairBots(dxr.flags.medbots, dxr.flags.repairbots);
-    RandoTurrets(dxr.flags.turrets_move, dxr.flags.turrets_add);
+    RandoMedBotsRepairBots(dxr.flags.settings.medbots, dxr.flags.settings.repairbots);
+    RandoTurrets(dxr.flags.settings.turrets_move, dxr.flags.settings.turrets_add);
 }
 
 function RandoTurrets(int percent_move, int percent_add)

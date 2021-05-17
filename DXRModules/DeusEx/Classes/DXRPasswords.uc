@@ -311,10 +311,10 @@ function FirstEntry()
     Super.FirstEntry();
 
     lastCheckedNote = None;
-    RandoPasswords(dxr.flags.passwordsrandomized);
-    RandoInfoDevs(dxr.flags.infodevices);
+    RandoPasswords(dxr.flags.settings.passwordsrandomized);
+    RandoInfoDevs(dxr.flags.settings.infodevices);
     RandoHacks();
-    MakeAllHackable(dxr.flags.deviceshackable);
+    MakeAllHackable(dxr.flags.settings.deviceshackable);
 }
 
 function AnyEntry()

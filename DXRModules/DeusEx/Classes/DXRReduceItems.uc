@@ -66,12 +66,12 @@ function PostFirstEntry()
     mission = Clamp(dxr.dxInfo.missionNumber, 0, ArrayCount(mission_scaling)-1);
     scale = mission_scaling[mission];
 
-    ReduceAmmo(class'Ammo', float(dxr.flags.ammo*scale)/100.0/100.0);
+    ReduceAmmo(class'Ammo', float(dxr.flags.settings.ammo*scale)/100.0/100.0);
 
-    ReduceSpawns(class'#var prefix Multitool', dxr.flags.multitools*scale/100);
-    ReduceSpawns(class'#var prefix Lockpick', dxr.flags.lockpicks*scale/100);
-    ReduceSpawns(class'#var prefix BioelectricCell', dxr.flags.biocells*scale/100);
-    ReduceSpawns(class'#var prefix MedKit', dxr.flags.medkits*scale/100);
+    ReduceSpawns(class'#var prefix Multitool', dxr.flags.settings.multitools*scale/100);
+    ReduceSpawns(class'#var prefix Lockpick', dxr.flags.settings.lockpicks*scale/100);
+    ReduceSpawns(class'#var prefix BioelectricCell', dxr.flags.settings.biocells*scale/100);
+    ReduceSpawns(class'#var prefix MedKit', dxr.flags.settings.medkits*scale/100);
 
     for(i=0; i < ArrayCount(ammo_reductions); i++) {
         if( ammo_reductions[i].type == "" ) continue;
@@ -109,13 +109,13 @@ simulated function SetAllMaxCopies(int scale)
     local int i;
     local class<Actor> c;
     if( dxr == None ) return;
-    SetMaxAmmo( class'Ammo', dxr.flags.ammo*scale/100 );
+    SetMaxAmmo( class'Ammo', dxr.flags.settings.ammo*scale/100 );
 
     SetMaxCopies(class'#var prefix FireExtinguisher', 125);// just make sure to apply the enviro skill, HACK: 125% to counteract the normal 80%
-    SetMaxCopies(class'#var prefix Multitool', dxr.flags.multitools*scale/100 );
-    SetMaxCopies(class'#var prefix Lockpick', dxr.flags.lockpicks*scale/100 );
-    SetMaxCopies(class'#var prefix BioelectricCell', dxr.flags.biocells*scale/100 );
-    SetMaxCopies(class'#var prefix MedKit', dxr.flags.medkits*scale/100 );
+    SetMaxCopies(class'#var prefix Multitool', dxr.flags.settings.multitools*scale/100 );
+    SetMaxCopies(class'#var prefix Lockpick', dxr.flags.settings.lockpicks*scale/100 );
+    SetMaxCopies(class'#var prefix BioelectricCell', dxr.flags.settings.biocells*scale/100 );
+    SetMaxCopies(class'#var prefix MedKit', dxr.flags.settings.medkits*scale/100 );
 
     for(i=0; i < ArrayCount(max_copies); i++) {
         if( max_copies[i].type == "" ) continue;
@@ -260,14 +260,14 @@ simulated function AddDXRCredits(CreditsWindow cw)
     local class<DeusExWeapon> w;
     cw.PrintHeader( "Items" );
 
-    PrintItemRate(cw, class'Multitool', dxr.flags.multitools);
-    PrintItemRate(cw, class'Lockpick', dxr.flags.lockpicks);
-    PrintItemRate(cw, class'BioelectricCell', dxr.flags.biocells);
-    PrintItemRate(cw, class'MedKit', dxr.flags.medkits);
+    PrintItemRate(cw, class'Multitool', dxr.flags.settings.multitools);
+    PrintItemRate(cw, class'Lockpick', dxr.flags.settings.lockpicks);
+    PrintItemRate(cw, class'BioelectricCell', dxr.flags.settings.biocells);
+    PrintItemRate(cw, class'MedKit', dxr.flags.settings.medkits);
 
     cw.PrintLn();
 
-    cw.PrintHeader( "Ammo: "$dxr.flags.ammo$"%" );
+    cw.PrintHeader( "Ammo: "$dxr.flags.settings.ammo$"%" );
     e = DXREnemies(dxr.FindModule(class'DXREnemies'));
     if(e != None) {
         for(i=0; i < 100; i++) {
@@ -286,10 +286,10 @@ simulated function PrintAmmoRates(CreditsWindow cw, class<DeusExWeapon> w)
     local int i;
 
     a = w.default.AmmoName;
-    PrintItemRate(cw, a, dxr.flags.ammo, true, w.default.ItemName $ " Ammo");
+    PrintItemRate(cw, a, dxr.flags.settings.ammo, true, w.default.ItemName $ " Ammo");
     for(i=0; i<ArrayCount(w.default.AmmoNames); i++) {
         if( w.default.AmmoNames[i] != a )
-            PrintItemRate(cw, w.default.AmmoNames[i], dxr.flags.ammo, true, w.default.ItemName $ " Ammo");
+            PrintItemRate(cw, w.default.AmmoNames[i], dxr.flags.settings.ammo, true, w.default.ItemName $ " Ammo");
     }
 }
 

@@ -120,7 +120,7 @@ function CreateMerchant()
     local int i;
 
     SetSeed("CreateMerchant");
-    if( ! chance_single( dxr.flags.merchants ) ) return;
+    if( ! chance_single( dxr.flags.settings.merchants ) ) return;
     if( dxr.flags.f.GetBool('DXRNPCs1_Dead') ) {
         return;
     }

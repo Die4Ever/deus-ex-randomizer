@@ -60,161 +60,18 @@ function BindControls(bool writing, optional string action)
 
     labels[id] = "Difficulty";
     helptexts[id] = "Difficulty determines the default settings for the randomizer.";
-    if( (InStr(f.VersionString(), "Alpha")>=0 || InStr(f.VersionString(), "Beta")>=0) && EnumOption(id, "Super Easy QA", 1, writing) ) {
-        difficulty=0;
-        f.doorsmode = f.alldoors + f.doormutuallyinclusive;
-        f.doorsdestructible = 100;
-        f.doorspickable = 100;
-        f.deviceshackable = 100;
-        f.passwordsrandomized = 100;
-        f.infodevices = 100;
-        f.enemiesrandomized = 20;
-        f.skills_disable_downgrades = 0;
-        f.skills_reroll_missions = 1;
-        f.skills_independent_levels = 0;
-        f.banned_skills = 5;
-        f.banned_skill_levels = 5;
-        f.minskill = 0;
-        f.maxskill = 1;
-        f.ammo = 90;
-        f.medkits = 90;
-        f.biocells = f.medkits;
-        f.lockpicks = f.medkits;
-        f.multitools = f.medkits;
-        f.speedlevel = 4;
-        f.startinglocations = 100;
-        f.goals = 100;
-        f.equipment = 5;
-        f.medbots = 100;
-        f.repairbots = 100;
-        f.turrets_move = 100;
-        f.turrets_add = 50;
-        f.codes_mode = 2;
+
+    if( (InStr(f.VersionString(), "Alpha")>=0 || InStr(f.VersionString(), "Beta")>=0) )
+        i=0;
+    else
+        i=1;
+    
+    for( i=i; i < ArrayCount(f.difficulty_names); i++ ) {
+        if( f.difficulty_names[i] == "" ) continue;
+        EnumOption(id, f.difficulty_names[i], i, writing, f.difficulty);
     }
-    if( EnumOption(id, "Easy", 1, writing) ) {
-        difficulty=1;
-        f.doorsmode = f.undefeatabledoors + f.doormutuallyinclusive;
-        f.doorsdestructible = 100;
-        f.doorspickable = 100;
-        f.deviceshackable = 100;
-        f.passwordsrandomized = 100;
-        f.infodevices = 100;
-        f.enemiesrandomized = 20;
-        f.skills_disable_downgrades = 0;
-        f.skills_reroll_missions = 5;
-        f.skills_independent_levels = 0;
-        f.banned_skills = 3;
-        f.banned_skill_levels = 3;
-        f.minskill = 25;
-        f.maxskill = 150;
-        f.ammo = 90;
-        f.medkits = 90;
-        f.biocells = f.medkits;
-        f.lockpicks = f.medkits;
-        f.multitools = f.medkits;
-        f.speedlevel = 2;
-        f.startinglocations = 100;
-        f.goals = 100;
-        f.equipment = 4;
-        f.medbots = 35;
-        f.repairbots = 35;
-        f.turrets_move = 50;
-        f.turrets_add = 30;
-        f.codes_mode = 2;
-    }
-    if( EnumOption(id, "Normal", 0, writing) ) {
-        difficulty=1.5;
-        f.doorsmode = f.undefeatabledoors + f.doormutuallyexclusive;
-        f.doorsdestructible = 50;
-        f.doorspickable = 50;
-        f.deviceshackable = 100;
-        f.passwordsrandomized = 100;
-        f.infodevices = 100;
-        f.enemiesrandomized = 30;
-        f.skills_disable_downgrades = 0;
-        f.skills_reroll_missions = 5;
-        f.skills_independent_levels = 0;
-        f.banned_skills = 5;
-        f.banned_skill_levels = 5;
-        f.minskill = 50;
-        f.maxskill = 300;
-        f.ammo = 75;
-        f.medkits = 70;
-        f.biocells = f.medkits;
-        f.lockpicks = f.medkits;
-        f.multitools = f.medkits;
-        f.speedlevel = 1;
-        f.startinglocations = 100;
-        f.goals = 100;
-        f.equipment = 2;
-        f.medbots = 25;
-        f.repairbots = 25;
-        f.turrets_move = 50;
-        f.turrets_add = 70;
-        f.codes_mode = 2;
-    }
-    if( EnumOption(id, "Hard", 2, writing) ) {
-        difficulty=2;
-        f.doorsmode = f.undefeatabledoors + f.doormutuallyexclusive;
-        f.doorsdestructible = 25;
-        f.doorspickable = 25;
-        f.deviceshackable = 50;
-        f.passwordsrandomized = 100;
-        f.infodevices = 100;
-        f.enemiesrandomized = 40;
-        f.skills_disable_downgrades = 5;
-        f.skills_reroll_missions = 5;
-        f.skills_independent_levels = 100;
-        f.banned_skills = 5;
-        f.banned_skill_levels = 7;
-        f.minskill = 50;
-        f.maxskill = 300;
-        f.ammo = 60;
-        f.medkits = 60;
-        f.biocells = 50;
-        f.lockpicks = 50;
-        f.multitools = 50;
-        f.speedlevel = 1;
-        f.startinglocations = 100;
-        f.goals = 100;
-        f.equipment = 1;
-        f.medbots = 20;
-        f.repairbots = 20;
-        f.turrets_move = 50;
-        f.turrets_add = 120;
-        f.codes_mode = 2;
-    }
-    if( EnumOption(id, "Extreme", 3, writing) ) {
-        difficulty=3;
-        f.doorsmode = f.undefeatabledoors + f.doormutuallyexclusive;
-        f.doorsdestructible = 25;
-        f.doorspickable = 25;
-        f.deviceshackable = 50;
-        f.passwordsrandomized = 100;
-        f.infodevices = 100;
-        f.enemiesrandomized = 50;
-        f.skills_disable_downgrades = 5;
-        f.skills_reroll_missions = 5;
-        f.skills_independent_levels = 100;
-        f.banned_skills = 7;
-        f.banned_skill_levels = 7;
-        f.minskill = 50;
-        f.maxskill = 400;
-        f.ammo = 40;
-        f.medkits = 50;
-        f.biocells = 30;
-        f.lockpicks = 30;
-        f.multitools = 30;
-        f.speedlevel = 1;
-        f.startinglocations = 100;
-        f.goals = 100;
-        f.equipment = 1;
-        f.medbots = 15;
-        f.repairbots = 15;
-        f.turrets_move = 50;
-        f.turrets_add = 200;
-        f.codes_mode = 2;
-    }
+    if(writing)
+        difficulty = f.SetDifficulty(f.difficulty).CombatDifficulty;
     id++;
 
     labels[id] = "Autosave";

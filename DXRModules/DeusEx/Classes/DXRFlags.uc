@@ -12,23 +12,48 @@ var #var flagvarprefix  int flagsversion;//if you load an old game with a newer 
 
 var #var flagvarprefix  int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
 var #var flagvarprefix  int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
-var #var flagvarprefix  int brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
-var #var flagvarprefix  int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
-var #var flagvarprefix  int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys;//could be bools, but int is more flexible, especially so I don't have to change the flag type
+var #var flagvarprefix  int brightness;
 var #var flagvarprefix  int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
-var #var flagvarprefix  int removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices;
-var #var flagvarprefix  int dancingpercent;
-var #var flagvarprefix  int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
-var #var flagvarprefix  int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
-var #var flagvarprefix  int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
-var #var flagvarprefix  int turrets_move, turrets_add;
-var #var flagvarprefix  int crowdcontrol;
 var #var flagvarprefix  int newgameplus_loops;
-var #var flagvarprefix  int merchants;
-var #var flagvarprefix  int banned_skills, banned_skill_levels, enemies_nonhumans;
-
-var #var flagvarprefix  int undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive;
+var #var flagvarprefix  int crowdcontrol;
 var #var flagvarprefix  int codes_mode;
+
+var #var flagvarprefix  int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
+
+struct FlagsSettings {
+#ifndef hx
+    var float CombatDifficulty;
+#endif
+    var int minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
+    var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
+    var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized;//could be bools, but int is more flexible, especially so I don't have to change the flag type
+    var int enemiesrandomized, enemyrespawn, infodevices;
+    var int dancingpercent;
+    var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
+    var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
+    var int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
+    var int turrets_move, turrets_add;
+    var int merchants;
+    var int banned_skills, banned_skill_levels, enemies_nonhumans;
+};
+
+#ifdef hx
+var config string difficulty_names[4];// Easy, Medium, Hard, DeusEx
+var config FlagsSettings difficulty_settings[4];
+#else
+var config string difficulty_names[5];// Super Easy QA, Easy, Normal, Hard, Extreme
+var config FlagsSettings difficulty_settings[5];
+#endif
+
+var #var flagvarprefix  FlagsSettings settings;
+
+const undefeatabledoors = 256;//1*256;
+const alldoors = 512;//2*256;
+const keyonlydoors = 768;//3*256;
+const highlightabledoors = 1024;//4*256;
+const doormutuallyinclusive = 1;
+const doorindependent = 2;
+const doormutuallyexclusive = 3;
 
 var bool flags_loaded;
 var int stored_version;
@@ -36,12 +61,8 @@ var int stored_version;
 replication
 {
     reliable if( Role==ROLE_Authority )
-        f, seed, playthrough_id, flagsversion, gamemode, loadout, brightness, minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel,
-        keysrando, doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized, gibsdropkeys, autosave,
-        removeinvisiblewalls, enemiesrandomized, enemyrespawn, infodevices, dancingpercent, skills_disable_downgrades, skills_reroll_missions, skills_independent_levels,
-        startinglocations, goals, equipment, medbots, repairbots, turrets_move, turrets_add, crowdcontrol, newgameplus_loops, merchants,
-        banned_skills, banned_skill_levels, enemies_nonhumans,
-        undefeatabledoors, alldoors, keyonlydoors, highlightabledoors, doormutuallyinclusive, doorindependent, doormutuallyexclusive,
+        f, seed, playthrough_id, flagsversion, gamemode, loadout, brightness, newgameplus_loops,
+        settings,
         codes_mode,
         flags_loaded;
 }
@@ -116,6 +137,8 @@ function RollSeed()
 #ifdef hx
 function HXRollSeed()
 {
+    difficulty = Level.Game.Difficulty;
+    settings = difficulty_settings[difficulty];
     playthrough_id = class'DataStorage'.static._SystemTime(Level);
     if( next_seed != 0 ) {
         seed = next_seed;
@@ -132,16 +155,6 @@ function HXRollSeed()
 function InitDefaults()
 {
     InitVersion();
-    //CheckConfig();
-    //dxr.CrcInit();
-
-    undefeatabledoors = 1*256;
-    alldoors = 2*256;
-    keyonlydoors = 3*256;
-    highlightabledoors = 4*256;
-    doormutuallyinclusive = 1;
-    doorindependent = 2;
-    doormutuallyexclusive = 3;
 
     seed = 0;
     playthrough_id = class'DataStorage'.static._SystemTime(Level);
@@ -149,54 +162,243 @@ function InitDefaults()
     gamemode = 0;
     loadout = 0;
     brightness = 20;
-    minskill = 25;
-    maxskill = 300;
-    ammo = 90;
-    medkits = 90;
-    multitools = 80;
-    lockpicks = 80;
-    biocells = 80;
-    speedlevel = 1;
-    keysrando = 4;
-    doorsmode = keyonlydoors + doormutuallyexclusive;
-    doorspickable = 50;
-    doorsdestructible = 50;
-    deviceshackable = 100;
-    passwordsrandomized = 100;
-    gibsdropkeys = 1;
     autosave = 2;
-    removeinvisiblewalls = 0;
-    enemiesrandomized = 25;
-    enemyrespawn = 0;
-    infodevices = 100;
-    dancingpercent = 25;
-    skills_disable_downgrades = 0;
-    skills_reroll_missions = 0;
-    skills_independent_levels = 0;
-    startinglocations = 100;
-    goals = 100;
-    equipment = 1;
-    medbots = 15;
-    repairbots = 15;
-    turrets_move = 50;
-    turrets_add = 20;
     crowdcontrol = 0;
     newgameplus_loops = 0;
-    merchants = 30;
-    banned_skills = 5;
-    banned_skill_levels = 5;
-    enemies_nonhumans = 60;
     codes_mode = 2;
+
+#ifdef hx
+    difficulty = 1;
+#else
+    difficulty = 2;
+#endif
+    settings = difficulty_settings[difficulty];
+}
+
+simulated static function CurrentVersion(optional out int major, optional out int minor, optional out int patch, optional out int build)
+{
+    major=1;
+    minor=5;
+    patch=9;
+    build=2;
+}
+
+simulated static function string VersionString(optional bool full)
+{
+    local int major,minor,patch,build;
+    CurrentVersion(major,minor,patch,build);
+    return VersionToString(major, minor, patch, build, full) $ " Alpha";
 }
 
 function CheckConfig()
 {
-    if( config_version < VersionToInt(1,5,6) ) {
+    local int i;
+    if( VersionOlderThan(config_version, 1,5,9,2) ) {
+        // setup default difficulties
+        i=0;
+#ifndef hx
+        difficulty_names[i] = "Super Easy QA";
+        difficulty_settings[i].CombatDifficulty = 0;
+        difficulty_settings[i].doorsmode = alldoors + doormutuallyinclusive;
+        difficulty_settings[i].doorsdestructible = 100;
+        difficulty_settings[i].doorspickable = 100;
+        difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].deviceshackable = 100;
+        difficulty_settings[i].passwordsrandomized = 100;
+        difficulty_settings[i].infodevices = 100;
+        difficulty_settings[i].enemiesrandomized = 20;
+        difficulty_settings[i].enemies_nonhumans = 60;
+        difficulty_settings[i].enemyrespawn = 0;
+        difficulty_settings[i].skills_disable_downgrades = 0;
+        difficulty_settings[i].skills_reroll_missions = 1;
+        difficulty_settings[i].skills_independent_levels = 0;
+        difficulty_settings[i].banned_skills = 5;
+        difficulty_settings[i].banned_skill_levels = 5;
+        difficulty_settings[i].minskill = 1;
+        difficulty_settings[i].maxskill = 5;
+        difficulty_settings[i].ammo = 90;
+        difficulty_settings[i].medkits = 90;
+        difficulty_settings[i].biocells = 90;
+        difficulty_settings[i].lockpicks = 90;
+        difficulty_settings[i].multitools = 90;
+        difficulty_settings[i].speedlevel = 4;
+        difficulty_settings[i].startinglocations = 100;
+        difficulty_settings[i].goals = 100;
+        difficulty_settings[i].equipment = 5;
+        difficulty_settings[i].medbots = 100;
+        difficulty_settings[i].repairbots = 100;
+        difficulty_settings[i].turrets_move = 100;
+        difficulty_settings[i].turrets_add = 50;
+        difficulty_settings[i].merchants = 30;
+        difficulty_settings[i].dancingpercent = 25;
+        i++;
+#endif
+
+        difficulty_names[i] = "Easy";
+#ifndef hx
+        difficulty_settings[i].CombatDifficulty = 1;
+#endif
+        difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyinclusive;
+        difficulty_settings[i].doorsdestructible = 100;
+        difficulty_settings[i].doorspickable = 100;
+        difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].deviceshackable = 100;
+        difficulty_settings[i].passwordsrandomized = 100;
+        difficulty_settings[i].infodevices = 100;
+        difficulty_settings[i].enemiesrandomized = 20;
+        difficulty_settings[i].enemies_nonhumans = 60;
+        difficulty_settings[i].enemyrespawn = 0;
+        difficulty_settings[i].skills_disable_downgrades = 0;
+        difficulty_settings[i].skills_reroll_missions = 5;
+        difficulty_settings[i].skills_independent_levels = 0;
+        difficulty_settings[i].banned_skills = 3;
+        difficulty_settings[i].banned_skill_levels = 3;
+        difficulty_settings[i].minskill = 25;
+        difficulty_settings[i].maxskill = 150;
+        difficulty_settings[i].ammo = 90;
+        difficulty_settings[i].medkits = 90;
+        difficulty_settings[i].biocells = 90;
+        difficulty_settings[i].lockpicks = 90;
+        difficulty_settings[i].multitools = 90;
+        difficulty_settings[i].speedlevel = 2;
+        difficulty_settings[i].startinglocations = 100;
+        difficulty_settings[i].goals = 100;
+        difficulty_settings[i].equipment = 4;
+        difficulty_settings[i].medbots = 35;
+        difficulty_settings[i].repairbots = 35;
+        difficulty_settings[i].turrets_move = 50;
+        difficulty_settings[i].turrets_add = 30;
+        difficulty_settings[i].merchants = 30;
+        difficulty_settings[i].dancingpercent = 25;
+        i++;
+
+        difficulty_names[i] = "Medium";
+#ifndef hx
+        difficulty_names[i] = "Normal";
+        difficulty_settings[i].CombatDifficulty = 1.5;
+#endif
+        difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
+        difficulty_settings[i].doorsdestructible = 50;
+        difficulty_settings[i].doorspickable = 50;
+        difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].deviceshackable = 100;
+        difficulty_settings[i].passwordsrandomized = 100;
+        difficulty_settings[i].infodevices = 100;
+        difficulty_settings[i].enemiesrandomized = 30;
+        difficulty_settings[i].enemies_nonhumans = 60;
+        difficulty_settings[i].enemyrespawn = 0;
+        difficulty_settings[i].skills_disable_downgrades = 0;
+        difficulty_settings[i].skills_reroll_missions = 5;
+        difficulty_settings[i].skills_independent_levels = 0;
+        difficulty_settings[i].banned_skills = 5;
+        difficulty_settings[i].banned_skill_levels = 5;
+        difficulty_settings[i].minskill = 50;
+        difficulty_settings[i].maxskill = 300;
+        difficulty_settings[i].ammo = 70;
+        difficulty_settings[i].medkits = 70;
+        difficulty_settings[i].biocells = 70;
+        difficulty_settings[i].lockpicks = 70;
+        difficulty_settings[i].multitools = 70;
+        difficulty_settings[i].speedlevel = 1;
+        difficulty_settings[i].startinglocations = 100;
+        difficulty_settings[i].goals = 100;
+        difficulty_settings[i].equipment = 2;
+        difficulty_settings[i].medbots = 25;
+        difficulty_settings[i].repairbots = 25;
+        difficulty_settings[i].turrets_move = 50;
+        difficulty_settings[i].turrets_add = 70;
+        difficulty_settings[i].merchants = 30;
+        difficulty_settings[i].dancingpercent = 25;
+        i++;
+
+        difficulty_names[i] = "Hard";
+#ifndef hx
+        difficulty_settings[i].CombatDifficulty = 2;
+#endif
+        difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
+        difficulty_settings[i].doorsdestructible = 25;
+        difficulty_settings[i].doorspickable = 25;
+        difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].deviceshackable = 50;
+        difficulty_settings[i].passwordsrandomized = 100;
+        difficulty_settings[i].infodevices = 100;
+        difficulty_settings[i].enemiesrandomized = 40;
+        difficulty_settings[i].enemies_nonhumans = 60;
+        difficulty_settings[i].enemyrespawn = 0;
+        difficulty_settings[i].skills_disable_downgrades = 5;
+        difficulty_settings[i].skills_reroll_missions = 5;
+        difficulty_settings[i].skills_independent_levels = 100;
+        difficulty_settings[i].banned_skills = 5;
+        difficulty_settings[i].banned_skill_levels = 7;
+        difficulty_settings[i].minskill = 50;
+        difficulty_settings[i].maxskill = 300;
+        difficulty_settings[i].ammo = 60;
+        difficulty_settings[i].medkits = 60;
+        difficulty_settings[i].biocells = 50;
+        difficulty_settings[i].lockpicks = 50;
+        difficulty_settings[i].multitools = 50;
+        difficulty_settings[i].speedlevel = 1;
+        difficulty_settings[i].startinglocations = 100;
+        difficulty_settings[i].goals = 100;
+        difficulty_settings[i].equipment = 1;
+        difficulty_settings[i].medbots = 20;
+        difficulty_settings[i].repairbots = 20;
+        difficulty_settings[i].turrets_move = 50;
+        difficulty_settings[i].turrets_add = 120;
+        difficulty_settings[i].merchants = 30;
+        difficulty_settings[i].dancingpercent = 25;
+        i++;
+
+        difficulty_names[i] = "DeusEx";
+#ifndef hx
+        difficulty_names[i] = "Extreme";
+        difficulty_settings[i].CombatDifficulty = 3;
+#endif
+        difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
+        difficulty_settings[i].doorsdestructible = 25;
+        difficulty_settings[i].doorspickable = 25;
+        difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].deviceshackable = 50;
+        difficulty_settings[i].passwordsrandomized = 100;
+        difficulty_settings[i].infodevices = 100;
+        difficulty_settings[i].enemiesrandomized = 50;
+        difficulty_settings[i].enemies_nonhumans = 60;
+        difficulty_settings[i].enemyrespawn = 0;
+        difficulty_settings[i].skills_disable_downgrades = 5;
+        difficulty_settings[i].skills_reroll_missions = 5;
+        difficulty_settings[i].skills_independent_levels = 100;
+        difficulty_settings[i].banned_skills = 7;
+        difficulty_settings[i].banned_skill_levels = 7;
+        difficulty_settings[i].minskill = 50;
+        difficulty_settings[i].maxskill = 400;
+        difficulty_settings[i].ammo = 40;
+        difficulty_settings[i].medkits = 50;
+        difficulty_settings[i].biocells = 30;
+        difficulty_settings[i].lockpicks = 30;
+        difficulty_settings[i].multitools = 30;
+        difficulty_settings[i].speedlevel = 1;
+        difficulty_settings[i].startinglocations = 100;
+        difficulty_settings[i].goals = 100;
+        difficulty_settings[i].equipment = 1;
+        difficulty_settings[i].medbots = 15;
+        difficulty_settings[i].repairbots = 15;
+        difficulty_settings[i].turrets_move = 50;
+        difficulty_settings[i].turrets_add = 200;
+        difficulty_settings[i].merchants = 30;
+        difficulty_settings[i].dancingpercent = 25;
+        i++;
+
 #ifdef noflags
         InitDefaults();
 #endif
     }
     Super.CheckConfig();
+}
+
+function FlagsSettings SetDifficulty(int difficulty)
+{
+    settings = difficulty_settings[difficulty];
+    return settings;
 }
 
 simulated function LoadFlags()
@@ -233,78 +435,7 @@ simulated function LoadFlags()
         autosave = 0;//autosaving while slowmo is set to high speed crashes the game, maybe autosave should adjust its waittime by the slowmo speed
     }
 
-    if( stored_version >= 1 ) {
-        seed = f.GetInt('Rando_seed');
-        dxr.seed = seed;
-        brightness = f.GetInt('Rando_brightness');
-        minskill = f.GetInt('Rando_minskill');
-        maxskill = f.GetInt('Rando_maxskill');
-        ammo = f.GetInt('Rando_ammo');
-        multitools = f.GetInt('Rando_multitools');
-        lockpicks = f.GetInt('Rando_lockpicks');
-        biocells = f.GetInt('Rando_biocells');
-        speedlevel = f.GetInt('Rando_speedlevel');
-        keysrando = f.GetInt('Rando_keys');
-        doorspickable = f.GetInt('Rando_doorspickable');
-        doorsdestructible = f.GetInt('Rando_doorsdestructible');
-        deviceshackable = f.GetInt('Rando_deviceshackable');
-        passwordsrandomized = f.GetInt('Rando_passwordsrandomized');
-        gibsdropkeys = f.GetInt('Rando_gibsdropkeys');
-    }
-    if( stored_version >= 2 ) {
-        medkits = f.GetInt('Rando_medkits');
-    }
-    if( stored_version >= 3 ) {
-        autosave = f.GetInt('Rando_autosave');
-        removeinvisiblewalls = f.GetInt('Rando_removeinvisiblewalls');
-        enemiesrandomized = f.GetInt('Rando_enemiesrandomized');
-        infodevices = f.GetInt('Rando_infodevices');
-        dancingpercent = f.GetInt('Rando_dancingpercent');
-    }
-    if( stored_version >= 4 ) {
-        doorsmode = f.GetInt('Rando_doorsmode');
-        gamemode = f.GetInt('Rando_gamemode');
-        enemyrespawn = f.GetInt('Rando_enemyrespawn');
-    }
-    if( stored_version >= VersionToInt(1,4,4) ) {
-        skills_disable_downgrades = f.GetInt('Rando_skills_disable_downgrades');
-        skills_reroll_missions = f.GetInt('Rando_skills_reroll_missions');
-        skills_independent_levels = f.GetInt('Rando_skills_independent_levels');
-
-        if( gamemode == 4 ) loadout = 1;
-        if( gamemode == 5 ) loadout = 2;
-    }
-    if( stored_version >= VersionToInt(1,4,7) ) {
-        loadout = f.GetInt('Rando_banneditems');
-    }
-    if( stored_version >= VersionToInt(1,4,9) ) {
-        startinglocations = f.GetInt('Rando_startinglocations');
-        goals = f.GetInt('Rando_goals');
-        equipment = f.GetInt('Rando_equipment');
-        medbots = f.GetInt('Rando_medbots');
-        repairbots = f.GetInt('Rando_repairbots');
-    }
-    if( stored_version >= VersionToInt(1,5,0) ) {
-        turrets_move = f.GetInt('Rando_turrets_move');
-        turrets_add = f.GetInt('Rando_turrets_add');
-        crowdcontrol = f.GetInt('Rando_crowdcontrol');
-    }
-    if( stored_version >= VersionToInt(1,5,1) ) {
-        loadout = f.GetInt('Rando_loadout');
-        newgameplus_loops = f.GetInt('Rando_newgameplus_loops');
-    }
-    if( stored_version >= VersionToInt(1,5,5) ) {
-        playthrough_id = f.GetInt('Rando_playthrough_id');
-    }
-    if( stored_version >= VersionToInt(1,5,6) ) {
-        merchants = f.GetInt('Rando_merchants');
-        FlagInt('Rando_banned_skills', banned_skills);
-        FlagInt('Rando_banned_skill_level', banned_skill_levels);
-        FlagInt('Rando_enemies_nonhumans', enemies_nonhumans);
-    }
-    if( stored_version >= VersionToInt(1,5,7) ) {
-        FlagInt('Rando_codes_mode', codes_mode);
-    }
+    BindFlags(false);
 
     if(stored_version < flagsversion ) {
         info("upgraded flags from "$stored_version$" to "$flagsversion);
@@ -323,12 +454,75 @@ simulated function LoadFlags()
     if( ds != None ) ds.playthrough_id = playthrough_id;
 }
 
-simulated function FlagInt(name flagname, out int val)
+simulated function BindFlags(bool writing)
 {
+    if( FlagInt('Rando_seed', seed, writing) )
+        dxr.seed = seed;
+
+    FlagInt('Rando_autosave', autosave, writing);
+    FlagInt('Rando_brightness', brightness, writing);
+    FlagInt('Rando_crowdcontrol', crowdcontrol, writing);
+    FlagInt('Rando_loadout', loadout, writing);
+    FlagInt('Rando_codes_mode', codes_mode, writing);
+    FlagInt('Rando_newgameplus_loops', newgameplus_loops, writing);
+    FlagInt('Rando_playthrough_id', playthrough_id, writing);
+    FlagInt('Rando_gamemode', gamemode, writing);
+
+    if( FlagInt('Rando_difficulty', difficulty, writing) ) {
+        settings = difficulty_settings[difficulty];
+    }
+
+    FlagInt('Rando_minskill', settings.minskill, writing);
+    FlagInt('Rando_maxskill', settings.maxskill, writing);
+    FlagInt('Rando_ammo', settings.ammo, writing);
+    FlagInt('Rando_multitools', settings.multitools, writing);
+    FlagInt('Rando_lockpicks', settings.lockpicks, writing);
+    FlagInt('Rando_biocells', settings.biocells, writing);
+    FlagInt('Rando_speedlevel', settings.speedlevel, writing);
+    FlagInt('Rando_keys', settings.keysrando, writing);
+    FlagInt('Rando_doorspickable', settings.doorspickable, writing);
+    FlagInt('Rando_doorsdestructible', settings.doorsdestructible, writing);
+    FlagInt('Rando_deviceshackable', settings.deviceshackable, writing);
+    FlagInt('Rando_passwordsrandomized', settings.passwordsrandomized, writing);
+
+    FlagInt('Rando_medkits', settings.medkits, writing);
+    FlagInt('Rando_enemiesrandomized', settings.enemiesrandomized, writing);
+    FlagInt('Rando_infodevices', settings.infodevices, writing);
+    FlagInt('Rando_dancingpercent', settings.dancingpercent, writing);
+    FlagInt('Rando_doorsmode', settings.doorsmode, writing);
+    FlagInt('Rando_enemyrespawn', settings.enemyrespawn, writing);
+
+    FlagInt('Rando_skills_disable_downgrades', settings.skills_disable_downgrades, writing);
+    FlagInt('Rando_skills_reroll_missions', settings.skills_reroll_missions, writing);
+    FlagInt('Rando_skills_independent_levels', settings.skills_independent_levels, writing);
+    FlagInt('Rando_startinglocations', settings.startinglocations, writing);
+    FlagInt('Rando_goals', settings.goals, writing);
+    FlagInt('Rando_equipment', settings.equipment, writing);
+    FlagInt('Rando_medbots', settings.medbots, writing);
+    FlagInt('Rando_repairbots', settings.repairbots, writing);
+    FlagInt('Rando_turrets_move', settings.turrets_move, writing);
+    FlagInt('Rando_turrets_add', settings.turrets_add, writing);
+
+    FlagInt('Rando_merchants', settings.merchants, writing);
+    FlagInt('Rando_banned_skills', settings.banned_skills, writing);
+    FlagInt('Rando_banned_skill_level', settings.banned_skill_levels, writing);
+    FlagInt('Rando_enemies_nonhumans', settings.enemies_nonhumans, writing);
+}
+
+// returns true is read was successful
+simulated function bool FlagInt(name flagname, out int val, bool writing)
+{
+    if( writing ) {
+        f.SetInt(flagname, val,, 999);
+        return false;
+    }
+
     if( f.CheckFlag(flagname, FLAG_Int) )
     {
         val = f.GetInt(flagname);
+        return true;
     }
+    return false;
 }
 
 simulated function SaveFlags()
@@ -351,54 +545,8 @@ simulated function SaveFlags()
     }
 
     InitVersion();
-    f.SetInt('Rando_seed', seed,, 999);
-    dxr.seed = seed;
-
-    f.SetInt('Rando_playthrough_id', playthrough_id,, 999);
-
     f.SetInt('Rando_version', flagsversion,, 999);
-    f.SetInt('Rando_gamemode', gamemode,, 999);
-    f.SetInt('Rando_loadout', loadout,, 999);
-    f.SetInt('Rando_brightness', brightness,, 999);
-    f.SetInt('Rando_minskill', minskill,, 999);
-    f.SetInt('Rando_maxskill', maxskill,, 999);
-    f.SetInt('Rando_ammo', ammo,, 999);
-    f.SetInt('Rando_multitools', multitools,, 999);
-    f.SetInt('Rando_lockpicks', lockpicks,, 999);
-    f.SetInt('Rando_biocells', biocells,, 999);
-    f.SetInt('Rando_medkits', medkits,, 999);
-    f.SetInt('Rando_speedlevel', speedlevel,, 999);
-    f.SetInt('Rando_keys', keysrando,, 999);
-    f.SetInt('Rando_doorsmode', doorsmode,, 999);
-    f.SetInt('Rando_doorspickable', doorspickable,, 999);
-    f.SetInt('Rando_doorsdestructible', doorsdestructible,, 999);
-    f.SetInt('Rando_deviceshackable', deviceshackable,, 999);
-    f.SetInt('Rando_passwordsrandomized', passwordsrandomized,, 999);
-    f.SetInt('Rando_gibsdropkeys', gibsdropkeys,, 999);
-    f.SetInt('Rando_autosave', autosave,, 999);
-    f.SetInt('Rando_removeinvisiblewalls', removeinvisiblewalls,, 999);
-    f.SetInt('Rando_enemiesrandomized', enemiesrandomized,, 999);
-    f.SetInt('Rando_enemyrespawn', enemyrespawn,, 999);
-    f.SetInt('Rando_infodevices', infodevices,, 999);
-    f.SetInt('Rando_dancingpercent', dancingpercent,, 999);
-
-    f.SetInt('Rando_skills_disable_downgrades', skills_disable_downgrades,, 999);
-    f.SetInt('Rando_skills_reroll_missions', skills_reroll_missions,, 999);
-    f.SetInt('Rando_skills_independent_levels', skills_independent_levels,, 999);
-
-    f.SetInt('Rando_startinglocations', startinglocations,, 999);
-    f.SetInt('Rando_goals', goals,, 999);
-    f.SetInt('Rando_equipment', equipment,, 999);
-
-    f.SetInt('Rando_medbots', medbots,, 999);
-    f.SetInt('Rando_repairbots', repairbots,, 999);
-    f.SetInt('Rando_turrets_move', turrets_move,, 999);
-    f.SetInt('Rando_turrets_add', turrets_add,, 999);
-    f.SetInt('Rando_crowdcontrol', crowdcontrol,, 999);
-    f.SetInt('Rando_newgameplus_loops', newgameplus_loops,, 999);
-    f.SetInt('Rando_merchants', merchants,, 999);
-    f.SetInt('Rando_codes_mode', codes_mode,, 999);
-
+    BindFlags(true);
     LogFlags("SaveFlags");
 }
 
@@ -423,7 +571,7 @@ simulated function LoadNoFlags()
     if( flagsversion == 0 && dxr.localURL != "DX" && dxr.localURL != "DXONLY" && dxr.localURL != "00_TRAINING" ) {
         err(dxr.localURL$" failed to load flags! using default randomizer settings");
         InitDefaults();
-        autosave = 0;//autosaving while slowmo is set to high speed crashes the game, maybe autosave should adjust its waittime by the slowmo speed
+        autosave = 0;
         SaveNoFlags();
     }
 
@@ -508,14 +656,24 @@ simulated function string StringifyFlags()
         CombatDifficulty = p.CombatDifficulty;
 #endif
     return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ CombatDifficulty $ ", loadout: "$loadout
-        $ ", brightness: "$brightness $ ", newgameplus_loops: "$newgameplus_loops $ ", ammo: " $ ammo $ ", merchants: "$ merchants
-        $ ", minskill: "$minskill$", maxskill: "$maxskill$", skills_disable_downgrades: " $ skills_disable_downgrades $ ", skills_reroll_missions: " $ skills_reroll_missions $ ", skills_independent_levels: " $ skills_independent_levels
-        $ ", multitools: "$multitools$", lockpicks: "$lockpicks$", biocells: "$biocells$", medkits: "$medkits
-        $ ", speedlevel: "$speedlevel$", keysrando: "$keysrando$", doorsmode: "$doorsmode$", doorspickable: "$doorspickable$", doorsdestructible: "$doorsdestructible
-        $ ", deviceshackable: "$deviceshackable$", passwordsrandomized: "$passwordsrandomized$", gibsdropkeys: "$gibsdropkeys
-        $ ", autosave: "$autosave$", removeinvisiblewalls: "$removeinvisiblewalls$", enemiesrandomized: "$enemiesrandomized$", enemyrespawn: "$enemyrespawn$", infodevices: "$infodevices
-        $ ", startinglocations: "$startinglocations$", goals: "$goals$", equipment: "$equipment$", dancingpercent: "$dancingpercent$", medbots: "$medbots$", repairbots: "$repairbots$", turrets_move: "$turrets_move$", turrets_add: "$turrets_add
-        $ ", crowdcontrol: "$crowdcontrol$", banned_skills: "$banned_skills$", banned_skill_levels: "$banned_skill_levels$", enemies_nonhumans: "$enemies_nonhumans$", codes_mode: "$codes_mode;
+        $ ", brightness: "$brightness $ ", newgameplus_loops: "$newgameplus_loops
+        $ ", autosave: "$autosave$", crowdcontrol: "$crowdcontrol$", codes_mode: "$codes_mode
+        $ ", "$ StringifyDifficultySettings(settings);
+}
+
+simulated function string StringifyDifficultySettings( FlagsSettings s )
+{
+    return "ammo: " $ s.ammo $ ", merchants: "$ s.merchants
+        $ ", minskill: "$s.minskill$", maxskill: "$s.maxskill$", skills_disable_downgrades: " $ s.skills_disable_downgrades
+        $ ", skills_reroll_missions: " $ s.skills_reroll_missions $ ", skills_independent_levels: " $ s.skills_independent_levels
+        $ ", multitools: "$s.multitools$", lockpicks: "$s.lockpicks$", biocells: "$s.biocells$", medkits: "$s.medkits
+        $ ", speedlevel: "$s.speedlevel$", keysrando: "$s.keysrando$", doorsmode: "$s.doorsmode$", doorspickable: "$s.doorspickable
+        $ ", doorsdestructible: "$s.doorsdestructible$", deviceshackable: "$s.deviceshackable$", passwordsrandomized: "$s.passwordsrandomized
+        $ ", enemiesrandomized: "$s.enemiesrandomized$", enemyrespawn: "$s.enemyrespawn$", infodevices: "$s.infodevices
+        $ ", startinglocations: "$s.startinglocations$", goals: "$s.goals$", equipment: "$s.equipment$", dancingpercent: "$s.dancingpercent
+        $ ", medbots: "$s.medbots$", repairbots: "$s.repairbots$", turrets_move: "$s.turrets_move$", turrets_add: "$s.turrets_add
+        $ ", banned_skills: "$s.banned_skills$", banned_skill_levels: "$s.banned_skill_levels
+        $ ", enemies_nonhumans: "$s.enemies_nonhumans;
 }
 
 simulated function int FlagsHash()
@@ -542,9 +700,11 @@ simulated static function int VersionToInt(int major, int minor, int patch, opti
     return ret;
 }
 
-simulated static function string VersionToString(int major, int minor, int patch)
+simulated static function string VersionToString(int major, int minor, int patch, optional int build, optional bool full)
 {
-    if( patch == 0 )
+    if( full )
+        return "v" $ major $"."$ minor $"."$ patch $"."$ build;
+    else if( patch == 0 )
         return "v" $ major $"."$ minor;
     else
         return "v" $ major $"."$ minor $"."$ patch;
@@ -560,21 +720,6 @@ simulated static function int VersionNumber()
 simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch, optional int build)
 {
     return config_version < VersionToInt(major, minor, patch, build);
-}
-
-simulated static function CurrentVersion(optional out int major, optional out int minor, optional out int patch, optional out int build)
-{
-    major=1;
-    minor=5;
-    patch=9;
-    build=0;
-}
-
-simulated static function string VersionString()
-{
-    local int major,minor,patch,build;
-    CurrentVersion(major,minor,patch,build);
-    return VersionToString(major, minor, patch) $ " Alpha";
 }
 
 simulated function MaxRando()
@@ -605,18 +750,18 @@ function NewGamePlus()
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
     p.CombatDifficulty *= 1.3;
-    minskill = minskill*1.2;// int *= float doesn't give as good accuracy as int = int*float
-    maxskill = maxskill*1.2;
-    enemiesrandomized = enemiesrandomized*1.2;
-    ammo = ammo*0.9;
-    medkits = medkits*0.8;
-    multitools = multitools*0.8;
-    lockpicks = lockpicks*0.8;
-    biocells = biocells*0.8;
-    medbots = medbots*0.8;
-    repairbots = repairbots*0.8;
-    turrets_add = turrets_add*1.3;
-    merchants *= 0.9;
+    settings.minskill = settings.minskill*1.2;// int *= float doesn't give as good accuracy as int = int*float
+    settings.maxskill = settings.maxskill*1.2;
+    settings.enemiesrandomized = settings.enemiesrandomized*1.2;
+    settings.ammo = settings.ammo*0.9;
+    settings.medkits = settings.medkits*0.8;
+    settings.multitools = settings.multitools*0.8;
+    settings.lockpicks = settings.lockpicks*0.8;
+    settings.biocells = settings.biocells*0.8;
+    settings.medbots = settings.medbots*0.8;
+    settings.repairbots = settings.repairbots*0.8;
+    settings.turrets_add = settings.turrets_add*1.3;
+    settings.merchants = settings.merchants*0.9;
 
     if (p.KeyRing != None)
     {

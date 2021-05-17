@@ -10,7 +10,7 @@ function RandomDancing(Actor a)
             ScriptedPawn(a).Orders == 'Sitting' ||
             ScriptedPawn(a).Orders == '') {
             if (a.HasAnim('Dance')){
-                if (chance_single(dxr.flags.dancingpercent))  ScriptedPawn(a).SetOrders('Dancing');
+                if (chance_single(dxr.flags.settings.dancingpercent))  ScriptedPawn(a).SetOrders('Dancing');
             }
         }
     }

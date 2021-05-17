@@ -108,7 +108,7 @@ function static Name PickRandomAug(DXRando dxr)
     local int numAugs;
     local Name AugName;
     numAugs=21;
-    if( dxr.flags.speedlevel > 0 )
+    if( dxr.flags.settings.speedlevel > 0 )
         skipAugSpeed=1;
     slot = staticrng(dxr, numAugs-3-skipAugSpeed) + skipAugSpeed;// exclude the 3 or 4 augs you start with, 0 is AugSpeed
     if ( slot >= 11 ) slot++;// skip AugIFF
