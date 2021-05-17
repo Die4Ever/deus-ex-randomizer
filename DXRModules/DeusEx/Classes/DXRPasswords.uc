@@ -29,11 +29,11 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+    if( ConfigOlderThan(1,4,8,0) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
     }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,8) ) {
+    if( ConfigOlderThan(1,5,8,0) ) {
         i=0;
 
         // satcom password

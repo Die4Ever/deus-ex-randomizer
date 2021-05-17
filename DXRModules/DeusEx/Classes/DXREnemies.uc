@@ -26,7 +26,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
+    if( ConfigOlderThan(1,5,6,0) ) {
         enemy_multiplier = 1;
         min_rate_adjust = default.min_rate_adjust;
         max_rate_adjust = default.max_rate_adjust;

@@ -11,7 +11,7 @@ replication
 
 function CheckConfig()
 {
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+    if( ConfigOlderThan(1,4,8,0) ) {
         min_aug_str = default.min_aug_str;
         max_aug_str = default.max_aug_str;
     }

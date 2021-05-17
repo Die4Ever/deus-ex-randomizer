@@ -36,12 +36,7 @@ EditPackages=HXRandomizer
 
 v1.5.9 Alpha:
 	HX fix duplicate notes
-	config for difficulty settings
-		in DXRando, easy: { combatDifficulty: 1 } means easy is the key and combat difficulty is a result of it
-		in HXRando, we can look up which rando settings to use based on the combatDifficulty, so it'll be backwards lookup
-		I might want to switch configs to use an array of struct KeyValuePair { name key; int val; }, need to make sure it fits in replication
 	need to do something about all the object names, maybe some of them can be switched to class+tag combos
-	refactor DXRFlags to do binding on the flags, should be similar to LoadFlags because stored_version will be the newest version when saving
 	DXRPasswords and DXRKeys using Containers as possible locations? can be risky
 	make VersionToInt build argument not optional, so I can move everything to use the VersionOlderThan function instead
 		cleanup old campatibility code

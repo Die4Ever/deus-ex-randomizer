@@ -193,7 +193,7 @@ simulated static function string VersionString(optional bool full)
 function CheckConfig()
 {
     local int i;
-    if( VersionOlderThan(config_version, 1,5,9,2) ) {
+    if( ConfigOlderThan(1,5,9,2) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -689,7 +689,7 @@ function InitVersion()
     flagsversion = VersionNumber();
 }
 
-simulated static function int VersionToInt(int major, int minor, int patch, optional int build)
+simulated static function int VersionToInt(int major, int minor, int patch, int build)
 {
     local int ret;
     ret = major*10000+minor*100+patch;
@@ -717,7 +717,7 @@ simulated static function int VersionNumber()
     return VersionToInt(major, minor, patch, build);
 }
 
-simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch, optional int build)
+simulated static function bool VersionOlderThan(int config_version, int major, int minor, int patch, int build)
 {
     return config_version < VersionToInt(major, minor, patch, build);
 }

@@ -5,7 +5,7 @@ var config float save_delay;
 
 function CheckConfig()
 {
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+    if( ConfigOlderThan(1,4,8,0) ) {
         save_delay = default.save_delay;
     }
     Super.CheckConfig();

@@ -45,7 +45,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
+    if( ConfigOlderThan(1,5,1,0) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(item_sets); i++) {

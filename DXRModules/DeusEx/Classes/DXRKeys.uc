@@ -18,7 +18,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,5,7) ) {
+    if( ConfigOlderThan(1,5,7,0) ) {
 
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";

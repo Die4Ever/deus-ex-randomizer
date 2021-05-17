@@ -22,7 +22,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,5) ) {
+    if( ConfigOlderThan(1,5,5,0) ) {
         for(i=0; i < ArrayCount(SkillCostMultipliers); i++) {
             SkillCostMultipliers[i].type = "";
             SkillCostMultipliers[i].percent = 100;
