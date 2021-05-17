@@ -63,7 +63,7 @@ function CheckConfig()
     if ( crowd_control_addr=="" ) {
         crowd_control_addr = "localhost";
     }
-    if (numStupidQuestions == 0 || class'DXRFlags'.static.VersionOlderThan(config_version, 1,5,5,0) ) {
+    if (numStupidQuestions == 0 || ConfigOlderThan(1,5,5,0) ) {
         InitStupidQuestions();
         StupidQuestionsToSave();
         SaveConfig();

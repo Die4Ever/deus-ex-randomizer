@@ -38,8 +38,6 @@ v1.5.9 Alpha:
 	HX fix duplicate notes
 	need to do something about all the object names, maybe some of them can be switched to class+tag combos
 	DXRPasswords and DXRKeys using Containers as possible locations? can be risky
-	make VersionToInt build argument not optional, so I can move everything to use the VersionOlderThan function instead
-		cleanup old campatibility code
 
 v1.5.9:
 	fix skill values resetting every 5 missions?
