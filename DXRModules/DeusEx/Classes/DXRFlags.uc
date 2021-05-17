@@ -395,8 +395,9 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-function FlagsSettings SetDifficulty(int difficulty)
+function FlagsSettings SetDifficulty(int new_difficulty)
 {
+    difficulty = new_difficulty;
     settings = difficulty_settings[difficulty];
     return settings;
 }
