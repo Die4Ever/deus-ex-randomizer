@@ -15,7 +15,7 @@ function CheckConfig()
 {
     local int i;
     local class<Actor> a;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
+    if( ConfigOlderThan(1,5,1,0) ) {
         max_turrets = 3;
         turret_move_min_distance = 10*16;
         turret_move_max_distance = 500*16;
@@ -33,8 +33,8 @@ function CheckConfig()
 function FirstEntry()
 {
     Super.FirstEntry();
-    RandoMedBotsRepairBots(dxr.flags.medbots, dxr.flags.repairbots);
-    RandoTurrets(dxr.flags.turrets_move, dxr.flags.turrets_add);
+    RandoMedBotsRepairBots(dxr.flags.settings.medbots, dxr.flags.settings.repairbots);
+    RandoTurrets(dxr.flags.settings.turrets_move, dxr.flags.settings.turrets_add);
 }
 
 function RandoTurrets(int percent_move, int percent_add)

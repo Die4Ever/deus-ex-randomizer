@@ -15,7 +15,7 @@ replication
 
 function CheckConfig()
 {
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+    if( ConfigOlderThan(1,4,8,0) ) {
         min_weapon_dmg = 0.5;
         max_weapon_dmg = 1.5;
         min_weapon_shottime = 0.5;

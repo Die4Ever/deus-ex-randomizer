@@ -25,7 +25,7 @@ function CheckConfig()
 {
     local class<Actor> temp_skipactor_types[6];
     local int i, t;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
+    if( ConfigOlderThan(1,5,6,0) ) {
         for(i=0; i < ArrayCount(skipactor_types); i++) {
             skipactor_types[i] = "";
         }

@@ -43,7 +43,7 @@ var config ItemChances items[32];
 function CheckConfig()
 {
     local int i;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1, 4, 1) ) {
+    if( ConfigOlderThan(1,4,1,0) ) {
         time_between_waves = 65;
         time_before_damage = 180;
         damage_timer = 10;
@@ -180,7 +180,7 @@ function CheckConfig()
         items[i].type = "AugmentationUpgradeCannister";
         items[i].chance = 3;
     }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,2) ) {
+    if( ConfigOlderThan(1,4,2,0) ) {
         map_name = "11_paris_cathedral";
         starting_location = vect(-3811.785156, 2170.053223, -774.903442);
         default_orders = 'Attacking';
@@ -241,7 +241,7 @@ function AnyEntry()
         err("Could not find DXREnemies! This is required for Horde Mode.");
     }
 
-    class'DXRAugmentations'.static.AddAug( player(), class'AugSpeed', dxr.flags.speedlevel );
+    class'DXRAugmentations'.static.AddAug( player(), class'AugSpeed', dxr.flags.settings.speedlevel );
     dxre.GiveRandomWeapon(player());
     dxre.GiveRandomWeapon(player());
     dxre.GiveRandomMeleeWeapon(player());

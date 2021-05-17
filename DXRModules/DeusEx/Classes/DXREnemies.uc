@@ -26,7 +26,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,6) ) {
+    if( ConfigOlderThan(1,5,6,0) ) {
         enemy_multiplier = 1;
         min_rate_adjust = default.min_rate_adjust;
         max_rate_adjust = default.max_rate_adjust;
@@ -125,7 +125,7 @@ function AddRandomEnemyType(string t, int c)
 function FirstEntry()
 {
     Super.FirstEntry();
-    RandoEnemies(dxr.flags.enemiesrandomized);
+    RandoEnemies(dxr.flags.settings.enemiesrandomized);
     //SwapScriptedPawns();
     RandoCarcasses();
 }
@@ -194,7 +194,7 @@ function AddDXRCredits(CreditsWindow cw)
 {
     local int i;
 
-    cw.PrintHeader( dxr.flags.enemiesrandomized $ "% Added Enemies");
+    cw.PrintHeader( dxr.flags.settings.enemiesrandomized $ "% Added Enemies");
     for(i=0; i < ArrayCount(_randomenemies); i++) {
         if( _randomenemies[i].type == None ) continue;
         cw.PrintText(_randomenemies[i].type.default.FamiliarName $ ": " $ FloatToString(_randomenemies[i].chance, 1) $ "%" );
@@ -326,7 +326,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 
     chance_remaining(r);// else keep the same class
 
-    if( chance_single(dxr.flags.enemies_nonhumans)==False && newclass == None && IsHuman(base) == False ) return None;
+    if( chance_single(dxr.flags.settings.enemies_nonhumans)==False && newclass == None && IsHuman(base) == False ) return None;
 
     n = CloneScriptedPawn(base, newclass);
     l("new RandomEnemy("$base$", "$percent$") == "$n);

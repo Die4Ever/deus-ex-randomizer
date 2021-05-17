@@ -26,9 +26,9 @@ function Init(DXRando tdxr)
     inited = true;
 }
 
-function bool ConfigOlderThan(int major, int minor, int patch)
+function bool ConfigOlderThan(int major, int minor, int patch, int build)
 {
-    return class'DXRFlags'.static.VersionOlderThan(config_version, major, minor, patch);
+    return class'DXRFlags'.static.VersionOlderThan(config_version, major, minor, patch, build);
 }
 
 function CheckConfig()

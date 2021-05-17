@@ -18,7 +18,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,5,7) ) {
+    if( ConfigOlderThan(1,5,7,0) ) {
 
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
@@ -218,11 +218,11 @@ function CheckConfig()
 function FirstEntry()
 {
     Super.FirstEntry();
-    if( dxr.flags.keysrando == 4 || dxr.flags.keysrando == 2 ) // 1 is dumb aka anywhere, 3 is copies instead of smart positioning? 5 would be something more advanced?
+    if( dxr.flags.settings.keysrando == 4 || dxr.flags.settings.keysrando == 2 ) // 1 is dumb aka anywhere, 3 is copies instead of smart positioning? 5 would be something more advanced?
         MoveNanoKeys4();
 
     RandomizeDoors();
-    AdjustRestrictions(dxr.flags.doorsmode, dxr.flags.doorspickable, dxr.flags.doorsdestructible, dxr.flags.deviceshackable, dxr.flags.removeinvisiblewalls);
+    AdjustRestrictions(dxr.flags.settings.doorsmode, dxr.flags.settings.doorspickable, dxr.flags.settings.doorsdestructible, dxr.flags.settings.deviceshackable);
 }
 
 function RandomizeDoors()
@@ -251,7 +251,7 @@ function RandomizeDoors()
 function RandoKey(#var prefix NanoKey k)
 {
     local int oldseed;
-    if( dxr.flags.keysrando == 4 || dxr.flags.keysrando == 2 ) {
+    if( dxr.flags.settings.keysrando == 4 || dxr.flags.settings.keysrando == 2 ) {
         oldseed = SetSeed( "RandoKey " $ k.Name );
         _RandoKey(k);
         dxr.SetSeed(oldseed);
@@ -338,7 +338,7 @@ function bool KeyPositionGood(#var prefix NanoKey k, vector newpos)
     return True;
 }
 
-function AdjustRestrictions(int doorsmode, int doorspickable, int doorsdestructible, int deviceshackable, int removeinvisiblewalls)
+function AdjustRestrictions(int doorsmode, int doorspickable, int doorsdestructible, int deviceshackable)
 {
     local Keypoint kp;
     SetSeed( "AdjustRestrictions" );
@@ -358,16 +358,6 @@ function AdjustRestrictions(int doorsmode, int doorspickable, int doorsdestructi
             break;
         default:
             break;
-    }
-
-    if( removeinvisiblewalls == 1 ) {
-        foreach AllActors(class'Engine.Keypoint', kp)
-        {
-            if( kp.bBlockPlayers ) {
-                l("found invisible wall "$ActorToString(kp));
-                kp.bBlockPlayers=false;
-            }
-        }
     }
 
     ApplyDoorFixes();

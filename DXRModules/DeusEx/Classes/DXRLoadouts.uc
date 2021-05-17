@@ -45,7 +45,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,1) ) {
+    if( ConfigOlderThan(1,5,1,0) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(item_sets); i++) {
@@ -385,7 +385,7 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
     for(i=0; i < ArrayCount(_item_sets[loadout].starting_augs); i++) {
         aclass = _item_sets[loadout].starting_augs[i];
         if( aclass == None ) continue;
-        class'DXRAugmentations'.static.AddAug( p, aclass, dxr.flags.speedlevel );
+        class'DXRAugmentations'.static.AddAug( p, aclass, dxr.flags.settings.speedlevel );
     }
 }
 
@@ -395,7 +395,7 @@ function RandoStartingEquipment(DeusExPlayer player, bool respawn)
     local DXREnemies dxre;
     local int i;
 
-    if( dxr.flags.equipment == 0 ) return;
+    if( dxr.flags.settings.equipment == 0 ) return;
 
     l("RandoStartingEquipment");
     dxr.SetSeed( dxr.seed + dxr.Crc("RandoStartingEquipment") );//independent of map/mission
@@ -422,7 +422,7 @@ function RandoStartingEquipment(DeusExPlayer player, bool respawn)
 
     AddStartingEquipment(player, respawn);
 
-    for(i=0; i < dxr.flags.equipment; i++) {
+    for(i=0; i < dxr.flags.settings.equipment; i++) {
         _RandoStartingEquipment(player, dxre, respawn);
     }
 }

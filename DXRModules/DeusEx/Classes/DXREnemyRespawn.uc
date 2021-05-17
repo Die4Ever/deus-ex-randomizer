@@ -37,7 +37,7 @@ function PostFirstEntry()
     local int i, a;
     Super.PostFirstEntry();
 
-    if( dxr.flags.enemyrespawn <= 0 ) return;
+    if( dxr.flags.settings.enemyrespawn <= 0 ) return;
     if( dxr.flags.gamemode != 0 && dxr.flags.gamemode != 1 ) return;
 
     time=0;
@@ -117,7 +117,7 @@ function AnyEntry()
 
     if( dxr.flags.gamemode != 0 && dxr.flags.gamemode != 1 ) return;
 
-    if( dxr.flags.enemyrespawn <= 0 ) return;
+    if( dxr.flags.settings.enemyrespawn <= 0 ) return;
 
     /*for(i=0; i < ArrayCount(enemies); i++) {
         if( enemies[i].sp == None || enemies[i].sp.health <= 0  ) {
@@ -139,7 +139,7 @@ function Timer()
         else if( ( enemies[i].sp == None || enemies[i].sp.health <= 0 ) && enemies[i].time_died == 0 ) {
             enemies[i].time_died = time;
         }
-        else if( ( enemies[i].sp == None || enemies[i].sp.health <= 0 ) && time - enemies[i].time_died > dxr.flags.enemyrespawn ) {
+        else if( ( enemies[i].sp == None || enemies[i].sp.health <= 0 ) && time - enemies[i].time_died > dxr.flags.settings.enemyrespawn ) {
             Respawn(enemies[i]);
         }
     }

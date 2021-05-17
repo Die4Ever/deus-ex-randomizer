@@ -106,7 +106,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,5,7) ) {
+    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,5,7,0) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -371,7 +371,7 @@ simulated function PlayerLogin(#var PlayerPawn  p)
     info("PlayerLogin("$p$") do it, p.PlayerDataItem: " $ data $", data.local_inited: "$data.local_inited);
 
 #ifdef singleplayer
-    if ( flags.stored_version != 0 && flags.stored_version < class'DXRFlags'.static.VersionToInt(1,5,8) ) {
+    if ( flags.stored_version != 0 && flags.stored_version < class'DXRFlags'.static.VersionToInt(1,5,8,0) ) {
         data.local_inited = true;
     }
 #endif

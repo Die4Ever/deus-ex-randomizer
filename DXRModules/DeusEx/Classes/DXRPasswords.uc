@@ -29,11 +29,11 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,4,8) ) {
+    if( ConfigOlderThan(1,4,8,0) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
     }
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,8) ) {
+    if( ConfigOlderThan(1,5,8,0) ) {
         i=0;
 
         // satcom password
@@ -311,18 +311,23 @@ function FirstEntry()
     Super.FirstEntry();
 
     lastCheckedNote = None;
-    RandoPasswords(dxr.flags.passwordsrandomized);
-    RandoInfoDevs(dxr.flags.infodevices);
+    RandoPasswords(dxr.flags.settings.passwordsrandomized);
+    RandoInfoDevs(dxr.flags.settings.infodevices);
     RandoHacks();
-    MakeAllHackable(dxr.flags.deviceshackable);
+    MakeAllHackable(dxr.flags.settings.deviceshackable);
 }
 
 function AnyEntry()
 {
+    local DataStorage ds;
     local ConSpeech c;
     Super.AnyEntry();
 
     LogAll();
+#ifdef hx
+    ds = class'DataStorage'.static.GetObj(self);
+    ds.HXLoadNotes();
+#endif
 }
 
 simulated function PlayerAnyEntry(#var PlayerPawn  p)

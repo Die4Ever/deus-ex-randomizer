@@ -34,7 +34,7 @@ function BindControls(bool writing, optional string action)
     Slider(id, f.brightness, 0, 255, writing);
     id++;
 
-    doors_option = f.doorsmode $ ";" $ f.doorsdestructible $ ";" $ f.doorspickable;
+    doors_option = f.settings.doorsmode $ ";" $ f.settings.doorsdestructible $ ";" $ f.settings.doorspickable;
 
     labels[id] = "";
     helptexts[id] = "Additional options to get through doors that normally can't be destroyed or lockpicked.";
@@ -56,54 +56,54 @@ function BindControls(bool writing, optional string action)
     EnumOptionString(id, "All Doors Breakable & Pickable", (f.alldoors+f.doormutuallyinclusive)$";100;100", writing, doors_option);
     EnumOptionString(id, "All Doors Breakable", (f.alldoors+f.doorindependent)$";100;0", writing, doors_option);
     EnumOptionString(id, "All Doors Pickable", (f.alldoors+f.doorindependent)$";0;100", writing, doors_option);
-    f.doorsmode = UnpackInt(doors_option);
-    f.doorsdestructible = UnpackInt(doors_option);
-    f.doorspickable = UnpackInt(doors_option);
+    f.settings.doorsmode = UnpackInt(doors_option);
+    f.settings.doorsdestructible = UnpackInt(doors_option);
+    f.settings.doorspickable = UnpackInt(doors_option);
     id++;
 
     labels[id] = "NanoKey Locations";
     helptexts[id] = "Move keys around the map.";
-    EnumOption(id, "Randomized", 4, writing, f.keysrando);
-    EnumOption(id, "Unchanged", 0, writing, f.keysrando);
+    EnumOption(id, "Randomized", 4, writing, f.settings.keysrando);
+    EnumOption(id, "Unchanged", 0, writing, f.settings.keysrando);
     id++;
 
     labels[id] = "Electronic Devices";
     helptexts[id] = "Provide additional options for keypads and electronic panels.";
-    EnumOption(id, "All Hackable", 100, writing, f.deviceshackable);
-    EnumOption(id, "Some Hackable", 50, writing, f.deviceshackable);
-    EnumOption(id, "Unchanged", 0, writing, f.deviceshackable);
+    EnumOption(id, "All Hackable", 100, writing, f.settings.deviceshackable);
+    EnumOption(id, "Some Hackable", 50, writing, f.settings.deviceshackable);
+    EnumOption(id, "Unchanged", 0, writing, f.settings.deviceshackable);
     id++;
 
     labels[id] = "Passwords";
     helptexts[id] = "Forces you to look for passwords and passcodes.";
-    EnumOption(id, "Randomized", 100, writing, f.passwordsrandomized);
-    EnumOption(id, "Unchanged", 0, writing, f.passwordsrandomized);
+    EnumOption(id, "Randomized", 100, writing, f.settings.passwordsrandomized);
+    EnumOption(id, "Unchanged", 0, writing, f.settings.passwordsrandomized);
     id++;
 
     labels[id] = "Datacubes Locations";
     helptexts[id] = "Moves datacubes and other information objects around the map.";
-    EnumOption(id, "Randomized", 100, writing, f.infodevices);
-    EnumOption(id, "Unchanged", 0, writing, f.infodevices);
+    EnumOption(id, "Randomized", 100, writing, f.settings.infodevices);
+    EnumOption(id, "Unchanged", 0, writing, f.settings.infodevices);
     id++;
 
     labels[id] = "Enemy Randomization %";
     helptexts[id] = "How many additional enemies to add and how much to randomize their weapons.";
-    Slider(id, f.enemiesrandomized, 0, 100, writing);
+    Slider(id, f.settings.enemiesrandomized, 0, 100, writing);
     id++;
 
     labels[id] = "Non-Human Chance %";
     helptexts[id] = "Reduce the chance of new enemies being non-humans.";
-    Slider(id, f.enemies_nonhumans, 0, 100, writing);
+    Slider(id, f.settings.enemies_nonhumans, 0, 100, writing);
     id++;
 
     labels[id] = "Enemy Respawn Seconds";
     helptexts[id] = "(Beta) How many seconds for enemies to respawn. Leave blank or 0 to disable";
-    Slider(id, f.enemyrespawn, 0, 100, writing);
+    Slider(id, f.settings.enemyrespawn, 0, 100, writing);
     id++;
 
     labels[id] = "";
     helptexts[id] = "Adjust how skill cost randomization works.";
-    skills_option = f.skills_disable_downgrades $";"$ f.skills_reroll_missions $";"$ f.skills_independent_levels;
+    skills_option = f.settings.skills_disable_downgrades $";"$ f.settings.skills_reroll_missions $";"$ f.settings.skills_independent_levels;
     EnumOptionString(id, "Normal Skill Randomization", "0;0;0", writing, skills_option);
     EnumOptionString(id, "Normal Skills Every Mission", "0;1;0", writing, skills_option);
     EnumOptionString(id, "Normal Skills Every 2 Missions", "0;2;0", writing, skills_option);
@@ -114,29 +114,29 @@ function BindControls(bool writing, optional string action)
     EnumOptionString(id, "Blind Skills Every 2 Missions", "5;2;100", writing, skills_option);
     EnumOptionString(id, "Blind Skills Every 3 Missions", "5;3;100", writing, skills_option);
     EnumOptionString(id, "Blind Skills Every 5 Missions", "5;5;100", writing, skills_option);
-    f.skills_disable_downgrades = UnpackInt(skills_option);
-    f.skills_reroll_missions = UnpackInt(skills_option);
-    f.skills_independent_levels = UnpackInt(skills_option);
+    f.settings.skills_disable_downgrades = UnpackInt(skills_option);
+    f.settings.skills_reroll_missions = UnpackInt(skills_option);
+    f.settings.skills_independent_levels = UnpackInt(skills_option);
     id++;
 
     labels[id] = "Minimum Skill Cost %";
     helptexts[id] = "Minimum cost for skills in percentage of the original cost.";
-    Slider(id, f.minskill, 0, 1000, writing);
+    Slider(id, f.settings.minskill, 0, 1000, writing);
     id++;
 
     labels[id] = "Maximum Skill Cost %";
     helptexts[id] = "Maximum cost for skills in percentage of the original cost.";
-    Slider(id, f.maxskill, 0, 1000, writing);
+    Slider(id, f.settings.maxskill, 0, 1000, writing);
     id++;
 
     labels[id] = "Banned Skills %";
     helptexts[id] = "Chance of a skill having a cost of 99,999 points.";
-    Slider(id, f.banned_skills, 0, 100, writing);
+    Slider(id, f.settings.banned_skills, 0, 100, writing);
     id++;
 
     labels[id] = "Banned Skill Levels %";
     helptexts[id] = "Chance of a certain level of a skill having a cost of 99,999 points.";
-    Slider(id, f.banned_skill_levels, 0, 100, writing);
+    Slider(id, f.settings.banned_skill_levels, 0, 100, writing);
     id++;
 
     iDifficulty = int(combatDifficulty * 100.0);
@@ -148,78 +148,78 @@ function BindControls(bool writing, optional string action)
 
     labels[id] = "Ammo Drops %";
     helptexts[id] = "Make ammo more scarce.";
-    Slider(id, f.ammo, 0, 100, writing);
+    Slider(id, f.settings.ammo, 0, 100, writing);
     id++;
 
     labels[id] = "Multitools Drops %";
     helptexts[id] = "Make multitools more scarce.";
-    Slider(id, f.multitools, 0, 100, writing);
+    Slider(id, f.settings.multitools, 0, 100, writing);
     id++;
 
     labels[id] = "Lockpicks Drops %";
     helptexts[id] = "Make lockpicks more scarce.";
-    Slider(id, f.lockpicks, 0, 100, writing);
+    Slider(id, f.settings.lockpicks, 0, 100, writing);
     id++;
 
     labels[id] = "Bioelectric Cells Drops %";
     helptexts[id] = "Make bioelectric cells more scarce.";
-    Slider(id, f.biocells, 0, 100, writing);
+    Slider(id, f.settings.biocells, 0, 100, writing);
     id++;
 
     labels[id] = "Medkit Drops %";
     helptexts[id] = "Make medkits more scarce.";
-    Slider(id, f.medkits, 0, 100, writing);
+    Slider(id, f.settings.medkits, 0, 100, writing);
     id++;
 
     labels[id] = "Speed Aug Level";
     helptexts[id] = "Start the game with the Speed Enhancement augmentation.";
-    Slider(id, f.speedlevel, 0, 3, writing);
+    Slider(id, f.settings.speedlevel, 0, 3, writing);
     id++;
 
     labels[id] = "Dancing %";
     helptexts[id] = "How many characters should be dancing.";
-    Slider(id, f.dancingpercent, 0, 100, writing);
+    Slider(id, f.settings.dancingpercent, 0, 100, writing);
     id++;
 
     labels[id] = "Starting Equipment";
     helptexts[id] = "How many random items you start with";
-    Slider(id, f.equipment, 0, 10, writing);
+    Slider(id, f.settings.equipment, 0, 10, writing);
     id++;
 
     labels[id] = "";
-    locations_option = f.startinglocations $";"$ f.goals;
+    locations_option = f.settings.startinglocations $";"$ f.settings.goals;
     helptexts[id] = "Randomize goal locations, starting locations, or both";
     EnumOptionString(id, "Randomize Goal and Starting Locations", "100;100", writing, locations_option);
     EnumOptionString(id, "Randomize Starting Locations", "100;0", writing, locations_option);
     EnumOptionString(id, "Randomize Goal Locations", "0;100", writing, locations_option);
     EnumOptionString(id, "Unchanged Goal and Starting Locations", "0;0", writing, locations_option);
-    f.startinglocations = UnpackInt(locations_option);
-    f.goals = UnpackInt(locations_option);
+    f.settings.startinglocations = UnpackInt(locations_option);
+    f.settings.goals = UnpackInt(locations_option);
     id++;
 
     labels[id] = "Medbots";
     helptexts[id] = "Percentage chance for a medbot to spawn in a map (vanilla is about 14%)";
-    Slider(id, f.medbots, 0, 100, writing);
+    Slider(id, f.settings.medbots, 0, 100, writing);
     id++;
 
     labels[id] = "Repair bots";
     helptexts[id] = "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%)";
-    Slider(id, f.repairbots, 0, 100, writing);
+    Slider(id, f.settings.repairbots, 0, 100, writing);
     id++;
 
     labels[id] = "Move Turrets";
     helptexts[id] = "Randomizes locations of turrets, cameras, and security computers for them.";
-    Slider(id, f.turrets_move, 0, 100, writing);
+    Slider(id, f.settings.turrets_move, 0, 100, writing);
     id++;
 
     labels[id] = "Add Turrets";
     helptexts[id] = "Randomly adds turrets, cameras, and security computers for them.";
-    Slider(id, f.turrets_add, 0, 100, writing);
+    Slider(id, f.settings.turrets_add, 0, 100, writing);
     id++;
 
     labels[id] = "The Merchant Chance %";
     helptexts[id] = "The chance for The Merchant to appear in each map.";
-    Slider(id, f.merchants, 0, 100, writing);
+    Slider(id, f.settings.merchants, 0, 100, writing);
     id++;
 
     labels[id] = "";

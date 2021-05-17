@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(1,5,7) ) {
+    if( ConfigOlderThan(1,5,7,0) ) {
         allow_vanilla = false;
 
         i=0;
@@ -1018,7 +1018,7 @@ function PreFirstEntry()
     }
 
     start = -1;
-    if( dxr.flags.startinglocations > 0 && num_ps > 0 ) {
+    if( dxr.flags.settings.startinglocations > 0 && num_ps > 0 ) {
         l("randomizing starting location, num_ps == "$num_ps);
         start = rng(num_ps);
         player().SetLocation(player_starts[start].location);
@@ -1037,7 +1037,7 @@ function PreFirstEntry()
         }
     }
 
-    if( dxr.flags.goals == 0 ) return;
+    if( dxr.flags.settings.goals == 0 ) return;
 
     l("randomizing goals, num_ma=="$num_ma$", num_gl=="$num_gl);
 

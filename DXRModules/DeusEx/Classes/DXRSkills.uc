@@ -22,7 +22,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( config_version < class'DXRFlags'.static.VersionToInt(1,5,5) ) {
+    if( ConfigOlderThan(1,5,5,0) ) {
         for(i=0; i < ArrayCount(SkillCostMultipliers); i++) {
             SkillCostMultipliers[i].type = "";
             SkillCostMultipliers[i].percent = 100;
@@ -104,18 +104,18 @@ simulated function RandoSkills(Skill aSkill)
         return;
     }
 
-    l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.minskill$", max: "$dxr.flags.maxskill $", reroll_missions: "$ dxr.flags.skills_reroll_missions $", independent_levels: "$ dxr.flags.skills_independent_levels );
-    if( dxr.flags.skills_reroll_missions == 0 )
+    l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.settings.minskill$", max: "$dxr.flags.settings.maxskill $", reroll_missions: "$ dxr.flags.settings.skills_reroll_missions $", independent_levels: "$ dxr.flags.settings.skills_independent_levels );
+    if( dxr.flags.settings.skills_reroll_missions == 0 )
         dxr.SetSeed(dxr.seed);
     else {
         if( dxr.dxInfo != None )
             mission_group = dxr.dxInfo.missionNumber;
-        mission_group = Clamp(mission_group, 1, 1000) / dxr.flags.skills_reroll_missions;
+        mission_group = Clamp(mission_group, 1, 1000) / dxr.flags.settings.skills_reroll_missions;
         i = dxr.Crc(dxr.seed $"M"$ mission_group);
         dxr.SetSeed( i );
     }
 
-    if( dxr.flags.minskill > dxr.flags.maxskill ) dxr.flags.maxskill = dxr.flags.minskill;
+    if( dxr.flags.settings.minskill > dxr.flags.settings.maxskill ) dxr.flags.settings.maxskill = dxr.flags.settings.minskill;
 
     while(aSkill != None)
     {
@@ -131,8 +131,8 @@ simulated function RandoSkill(Skill aSkill)
     local bool banned;
     if( dxr == None ) return;
 
-    percent = rngexp(dxr.flags.minskill, dxr.flags.maxskill, skill_cost_curve);
-    banned = chance_single(dxr.flags.banned_skills);
+    percent = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
+    banned = chance_single(dxr.flags.settings.banned_skills);
     l( aSkill.Class.Name $ " percent: "$percent$"%, banned: " $ banned );
     for(i=0; i<arrayCount(aSkill.Cost); i++)
     {
@@ -212,14 +212,14 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     local SkillCostMultiplier scm;
     local class<Skill> c;
 
-    if( chance_single(dxr.flags.banned_skill_levels) ) {
+    if( chance_single(dxr.flags.settings.banned_skill_levels) ) {
         l( aSkill.Class.Name $ " lvl: "$(i+1)$" is banned");
         aSkill.Cost[i] = 99999;
         return;
     } 
 
-    if( dxr.flags.skills_independent_levels > 0 ) {
-        percent = rngexp(dxr.flags.minskill, dxr.flags.maxskill, skill_cost_curve);
+    if( dxr.flags.settings.skills_independent_levels > 0 ) {
+        percent = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
         l( aSkill.Class.Name $ " lvl: "$(i+1)$", percent: "$percent$"%");
     } else {
         percent = parent_percent;

@@ -23,7 +23,7 @@ function ResetToDefaults()
     portraitIndex = 0;
     btnPortrait.SetBackground(texPortraits[portraitIndex]);
 
-    if( flags != None && flags.skills_disable_downgrades == 0 ) {
+    if( flags != None && flags.settings.skills_disable_downgrades == 0 ) {
         CopySkills();
         PopulateSkillsList();
         UpdateSkillPoints();
@@ -41,7 +41,7 @@ function EnableButtons()
         level = selectedSkill.GetCurrentLevel();
 
     allow_downgrade = level > 0;
-    allow_downgrade = allow_downgrade && level > flags.skills_disable_downgrades;
+    allow_downgrade = allow_downgrade && level > flags.settings.skills_disable_downgrades;
     btnDowngrade.EnableWindow(allow_downgrade);
 }
 
