@@ -219,9 +219,11 @@ simulated function Timer()
     if( Role == ROLE_Authority )
         UpdateGoalsAndNotes( HXGameInfo(Level.Game).Steve.FirstGoal, HXGameInfo(Level.Game).FirstNote );
     
-    UpdateGoalsAndNotes( None, player().FirstNote );
+    if( player() != None )
+        UpdateGoalsAndNotes( None, player().FirstNote );
 #else
-    UpdateGoalsAndNotes( player().FirstGoal, player().FirstNote );
+    if( player() != None )
+        UpdateGoalsAndNotes( player().FirstGoal, player().FirstNote );
 #endif
 }
 
