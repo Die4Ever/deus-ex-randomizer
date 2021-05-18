@@ -273,7 +273,7 @@ final function Class<Actor> ModifyActorClass( out Class<Actor> ActorClass )
     return ActorClass;
 }
 
-simulated final function #var PlayerPawn  player()
+simulated final function #var PlayerPawn  player(optional bool quiet)
 {
     local #var PlayerPawn  p;
     //p = #var PlayerPawn (GetPlayerPawn());
@@ -282,7 +282,7 @@ simulated final function #var PlayerPawn  player()
         p = #var PlayerPawn (GetPlayerPawn());
         dxr.Player = p;
     }
-    if( p == None ) err("player() found None", true);
+    if( p == None && !quiet ) err("player() found None", true);
     return p;
 }
 
