@@ -45,7 +45,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(1,5,1,0) ) {
+    if( ConfigOlderThan(1,5,9,3) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(item_sets); i++) {
@@ -65,22 +65,26 @@ function CheckConfig()
 
         item_sets[0].name = "Randomized Starting Equipment";
 
-        item_sets[1].name = "Stick With the Prod";
-        item_sets[1].player_message = "stick with the prod!";
+        item_sets[1].name = "Stick With the Prod Pure";
+        item_sets[1].player_message = "Stick with the prod!";
         item_sets[1].bans = "Engine.Weapon";
         item_sets[1].allows = "WeaponProd";
         item_sets[1].starting_equipments = "WeaponProd,AmmoBattery,AmmoBattery";
+        item_sets[1].starting_augs = "AugStealth,AugMuscle";
+        //item_sets[1].item_spawns = "CrateExplosiveSmall,2";
 
         item_sets[2].name = "Stick With the Prod Plus";
-        item_sets[2].player_message = "stick with the prod!";
+        item_sets[2].player_message = "Stick with the prod!";
         item_sets[2].bans = "Engine.Weapon,AmmoDart";
         item_sets[2].allows = "WeaponProd,WeaponEMPGrenade,WeaponGasGrenade,WeaponMiniCrossbow,AmmoDartPoison,WeaponNanoVirusGrenade,WeaponPepperGun";
         item_sets[2].starting_equipments = "WeaponProd,AmmoBattery";
+        item_sets[2].starting_augs = "AugStealth,AugMuscle";
+        //item_sets[2].item_spawns = "CrateExplosiveSmall,2";
 
         item_sets[3].name = "Ninja JC";
         item_sets[3].player_message = "I am Ninja!";
         item_sets[3].bans = "Engine.Weapon";
-        item_sets[3].allows = "WeaponSword,WeaponShuriken";
+        item_sets[3].allows = "WeaponSword,WeaponShuriken,WeaponEMPGrenade,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponPepperGun,WeaponLAM";
         item_sets[3].starting_equipments = "WeaponShuriken,WeaponSword,AmmoShuriken";
 #ifdef hx
         item_sets[3].starting_augs = "HXRandomizer.AugNinja";//combines AugStealth and active AugSpeed
@@ -264,8 +268,8 @@ function AddItemSpawn(int s, string type, int chances)
     
     for(i=0; i < ArrayCount(_item_sets[s].item_spawns); i++) {
         if( _item_sets[s].item_spawns[i] == None ) {
-            a = GetClassFromString(type, class'Inventory');
-            _item_sets[s].item_spawns[i] = class<Inventory>(a);
+            a = GetClassFromString(type, class'Actor');
+            _item_sets[s].item_spawns[i] = a;
             _item_sets[s].item_spawns_chances[i] = chances;
             return;
         }
@@ -307,7 +311,8 @@ function bool ban(DeusExPlayer player, Inventory item)
 {
     if ( is_banned( _item_sets[loadout], item) ) {
         if( item_sets[loadout].player_message != "" ) {
-            item.ItemName = item.ItemName $ ", " $ item_sets[loadout].player_message;
+            //item.ItemName = item.ItemName $ ", " $ item_sets[loadout].player_message;
+            player.ClientMessage(item_sets[loadout].player_message, 'Pickup');
         }
         return true;
     }
@@ -330,14 +335,28 @@ function NinjaAdjustWeapon(DeusExWeapon w)
         case class'WeaponSword':
             WeaponSword(w).blood_mult = 2;
             WeaponSword(w).default.blood_mult = 2;
+            WeaponSword(w).anim_speed = 2;
+            WeaponSword(w).default.anim_speed = 2;
             w.ShotTime=0;
             w.default.ShotTime=0;
-            w.maxRange = 96;
-            w.default.maxRange = 96;
+            w.maxRange = 110;
+            w.default.maxRange = 110;
+            w.AccurateRange = 110;
+            w.default.AccurateRange = 110;
             break;
         case class'WeaponNanoSword':
             WeaponNanoSword(w).blood_mult = 2;
             WeaponNanoSword(w).default.blood_mult = 2;
+            w.ShotTime=0;
+            w.default.ShotTime=0;
+            w.maxRange = 110;
+            w.default.maxRange = 110;
+            w.AccurateRange = 110;
+            w.default.AccurateRange = 110;
+            break;
+        case class'WeaponShuriken':
+            WeaponShuriken(w).anim_speed = 2;
+            WeaponShuriken(w).default.anim_speed = 2;
             break;
     }
 #endif
@@ -466,9 +485,12 @@ function SpawnItems()
     local vector loc;
     local Actor a;
     local class<Actor> aclass;
+    local DXRReduceItems reducer;
     local int i, j, chance;
     l("SpawnItems()");
     SetSeed("SpawnItems()");
+
+    reducer = DXRReduceItems(dxr.FindModule(class'DXRReduceItems'));
 
     for(i=0;i<ArrayCount(_item_sets[loadout].item_spawns);i++) {
         aclass = _item_sets[loadout].item_spawns[i];
@@ -480,9 +502,14 @@ function SpawnItems()
             if( chance_single(50) ) {
                 loc = GetRandomPositionFine();
                 a = Spawn(aclass,,, loc);
+                if( reducer != None && a != None )
+                    reducer.ReduceItem(a);
             }
         }
     }
+
+    if( reducer != None )
+        reducer.Timer();
 }
 
 function RunTests()

@@ -180,7 +180,7 @@ simulated static function CurrentVersion(optional out int major, optional out in
     major=1;
     minor=5;
     patch=9;
-    build=2;
+    build=3;
 }
 
 simulated static function string VersionString(optional bool full)

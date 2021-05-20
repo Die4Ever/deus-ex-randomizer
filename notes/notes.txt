@@ -35,11 +35,13 @@ EditPackages=HXRandomizer
 
 
 v1.5.9 Alpha:
-	HX fix duplicate notes
+	HX fix duplicate notes, maybe need to hex encode or base64 encode notes in config?
 	need to do something about all the object names, maybe some of them can be switched to class+tag combos
 	DXRPasswords and DXRKeys using Containers as possible locations? can be risky
 
 v1.5.9:
+	NG+ and DXRAugmentations::PickRandomAug need to check with DXRLoadouts to see which are defaults
+	DXRLoadouts ensure tnt crates don't spawn too far from the ground
 	fix skill values resetting every 5 missions?
 	sub base elevator needs call down button
 	bug in sub base backtracking chopper
@@ -53,15 +55,8 @@ v1.5.9:
 	DXRWeapons projectile damage
 	ninja mode:
 		I can make ninja mode spawn more continuous blood on a timer or tick
-		faster weapon switching speeds for ninja mode?
-		wider range on the sword for ninja mode?
 		can I also give low tech skill more levels, or repurpose other skills?
-		maybe gas grenades should be allowed too? emp grenades? other grenades?
-		too much throwing knives ammo?
 		allow DTS? a nerfed version? nerf throwing knives?
-	Stick With the Prod (and Plus) should give the AugStealth instead of AugSpeed?
-		rename them to Stick With the Prod (Pure) and Stick With the Prod (Plus)?
-		start with the muscles aug so you can move explosive barrels? combat strength is useless anyways
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
 	tweak rotations for teleporters?
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules

@@ -1,6 +1,7 @@
 class DXRWeapon shims DeusExWeapon abstract;
 
 var float blood_mult;
+var float anim_speed;
 
 function PostBeginPlay()
 {
@@ -35,6 +36,26 @@ static function SpawnExtraBlood(Actor this, Vector HitLocation, Vector HitNormal
         a = this.spawn(class'BloodDrop',,,HitLocation+HitNormal*4+v);
         a.DrawScale *= mult;
     }
+}
+
+simulated function TweenDown()
+{
+	if ( (AnimSequence != '') && (GetAnimGroup(AnimSequence) == 'Select') )
+		TweenAnim( AnimSequence, AnimFrame * 0.4 );
+	else
+	{
+		// Have the put away animation play twice as fast in multiplayer
+		if ( Level.NetMode != NM_Standalone )
+			PlayAnim('Down', 2.0*anim_speed, 0.05);
+		else
+			PlayAnim('Down', 1.0*anim_speed, 0.05);
+	}
+}
+
+function PlaySelect()
+{
+	PlayAnim('Select',1.0*anim_speed,0.0);
+	Owner.PlaySound(SelectSound, SLOT_Misc, Pawn(Owner).SoundDampening);	
 }
 
 function int GetDamage()
@@ -405,4 +426,5 @@ function Fire(float value)
 defaultproperties
 {
     blood_mult=0
+    anim_speed=1
 }

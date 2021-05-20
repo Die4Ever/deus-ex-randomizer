@@ -87,6 +87,34 @@ function PostFirstEntry()
     SetTimer(1.0, true);
 }
 
+function ReduceItem(Actor a)
+{
+    local int i, mission, scale;
+    local class<Actor> c;
+
+    mission = Clamp(dxr.dxInfo.missionNumber, 0, ArrayCount(mission_scaling)-1);
+    scale = mission_scaling[mission];
+
+    if( Ammo(a) != None ) {
+        _ReduceAmmo(Ammo(a), float(dxr.flags.settings.ammo*scale)/100.0/100.0);
+    }
+    else if( Weapon(a) != None ) {
+        _ReduceWeaponAmmo(Weapon(a), float(dxr.flags.settings.ammo*scale)/100.0/100.0);
+    }
+    else if( #var prefix Multitool(a) != None ) {
+        _ReduceSpawns(a, dxr.flags.settings.multitools*scale/100);
+    }
+    else if( #var prefix Lockpick(a) != None ) {
+        _ReduceSpawns(a, dxr.flags.settings.lockpicks*scale/100);
+    }
+    else if( #var prefix BioelectricCell(a) != None ) {
+        _ReduceSpawns(a, dxr.flags.settings.biocells*scale/100);
+    }
+    else if( #var prefix MedKit(a) != None ) {
+        _ReduceSpawns(a, dxr.flags.settings.medkits*scale/100);
+    }
+}
+
 simulated function PlayerAnyEntry(#var PlayerPawn  p)
 {
     Super.PlayerAnyEntry(p);
@@ -129,12 +157,34 @@ simulated function SetAllMaxCopies(int scale)
     }
 }
 
+function _ReduceWeaponAmmo(Weapon w, float mult)
+{
+    local int i;
+    local float tmult;
+    if( w.AmmoName == None || w.PickupAmmoCount <= 0 ) return;
+
+    tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, w.AmmoName);
+    i = Clamp(float(w.PickupAmmoCount) * tmult, 1, 1000);
+    l("reducing ammo in "$ActorToString(w)$" from "$w.PickupAmmoCount$" down to "$i$", tmult: "$tmult);
+    w.PickupAmmoCount = i;
+}
+
+function _ReduceAmmo(Ammo a, float mult)
+{
+    local int i;
+    local float tmult;
+    if( a.AmmoAmount <= 0 || CarriedItem(a) ) return;
+    
+    tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, a.class.name);
+    i = Clamp(float(a.AmmoAmount) * tmult, 1, 1000);
+    l("reducing ammo in "$ActorToString(a)$" from "$a.AmmoAmount$" down to "$i$", tmult: "$tmult);
+    a.AmmoAmount = i;
+}
+
 function ReduceAmmo(class<Ammo> type, float mult)
 {
     local Weapon w;
     local Ammo a;
-    local int i;
-    local float tmult;
 
     l("ReduceAmmo "$mult);
     SetSeed( "ReduceAmmo" );
@@ -142,32 +192,32 @@ function ReduceAmmo(class<Ammo> type, float mult)
     foreach AllActors(class'Weapon', w)
     {
         if( w.AmmoName != type && ClassIsChildOf(w.AmmoName, type) == false ) continue;
-        if( w.PickupAmmoCount > 0 ) {
-            tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, w.AmmoName);
-            i = Clamp(float(w.PickupAmmoCount) * tmult, 1, 1000);
-            l("reducing ammo in "$ActorToString(w)$" from "$w.PickupAmmoCount$" down to "$i$", tmult: "$tmult);
-            w.PickupAmmoCount = i;
-        }
+        _ReduceWeaponAmmo(w, mult);
     }
 
     foreach AllActors(class'Ammo', a)
     {
         if( ! a.IsA(type.name) ) continue;
-        if( a.AmmoAmount > 0 && ( ! CarriedItem(a) ) ) {
-            tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, a.class.name);
-            i = Clamp(float(a.AmmoAmount) * tmult, 1, 1000);
-            l("reducing ammo in "$ActorToString(a)$" from "$a.AmmoAmount$" down to "$i$", tmult: "$tmult);
-            a.AmmoAmount = i;
-        }
+        _ReduceAmmo(a, mult);
     }
 
     ReduceSpawnsInContainers(type, mult*100.0 );
 }
 
+function _ReduceSpawns(Actor a, float percent)
+{
+    local float tperc;
+    tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, a.class.name);
+    if( !chance_single(tperc) )
+    {
+        l("destroying "$ActorToString(a)$", tperc: "$tperc);
+        DestroyActor( a );
+    }
+}
+
 function ReduceSpawns(class<Actor> classname, float percent)
 {
     local Actor a;
-    local float tperc;
 
     SetSeed( "ReduceSpawns " $ classname );
 
@@ -178,12 +228,7 @@ function ReduceSpawns(class<Actor> classname, float percent)
         if( PlayerPawn(a.Owner) != None ) continue;
         if( ! a.IsA(classname.name) ) continue;
 
-        tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, a.class.name);
-        if( !chance_single(tperc) )
-        {
-            l("destroying "$ActorToString(a)$", tperc: "$tperc);
-            DestroyActor( a );
-        }
+        _ReduceSpawns(a, percent);
     }
 
     ReduceSpawnsInContainers(classname, percent);
