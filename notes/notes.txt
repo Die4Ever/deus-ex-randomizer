@@ -35,7 +35,6 @@ EditPackages=HXRandomizer
 
 
 v1.5.9 Alpha:
-	HX fix duplicate notes, maybe need to hex encode or base64 encode notes in config?
 	need to do something about all the object names, maybe some of them can be switched to class+tag combos
 	DXRPasswords and DXRKeys using Containers as possible locations? can be risky
 
@@ -44,7 +43,6 @@ v1.5.9:
 	DXRLoadouts ensure tnt crates don't spawn too far from the ground
 	bug in sub base backtracking chopper
 	fix charged pickups going in hand
-	weapon/ammo descriptions should show the max ammo
 	improve: DXRKeys: INFO: key maintenancekey got num: 1, slot: 0, actor: 12_Vandenberg_Tunnels.MedKit0
 		DXRKeys: swapping MedKit.MedKit0(-1437.876587,3819.677734,-3246.906738) and NanoKey.NanoKey1(-1138.429199,3494.751221,-3084.074463) distance == 470.914337
 	cleanup goals when finishing missions, especially hong kong
@@ -54,7 +52,7 @@ v1.5.9:
 	ninja mode:
 		I can make ninja mode spawn more continuous blood on a timer or tick
 		can I also give low tech skill more levels, or repurpose other skills?
-		allow DTS? a nerfed version? nerf throwing knives?
+		allow DTS? a nerfed version?
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
 	tweak rotations for teleporters?
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules

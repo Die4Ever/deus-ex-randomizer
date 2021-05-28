@@ -196,6 +196,9 @@ simulated function bool UpdateInfo(Object winObject)
 
     winInfo.AddAmmoTypesItem(msgInfoAmmo, str);
 
+    if( AmmoType != None && AmmoName != None && AmmoName != Class'DeusEx.AmmoNone' )
+        winInfo.AddInfoItem("Max Ammo:", AmmoType.MaxAmmo);
+
     // base damage
     if (AreaOfEffect == AOE_Cone)
     {
