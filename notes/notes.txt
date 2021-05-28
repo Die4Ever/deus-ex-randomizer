@@ -42,8 +42,6 @@ v1.5.9 Alpha:
 v1.5.9:
 	NG+ and DXRAugmentations::PickRandomAug need to check with DXRLoadouts to see which are defaults
 	DXRLoadouts ensure tnt crates don't spawn too far from the ground
-	fix skill values resetting every 5 missions?
-	sub base elevator needs call down button
 	bug in sub base backtracking chopper
 	fix charged pickups going in hand
 	weapon/ammo descriptions should show the max ammo
@@ -62,6 +60,7 @@ v1.5.9:
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
 	make horde mode use the DXRAutosave blocking manual saves method instead of the hack-y permanent fake datalink
 	maybe clean up the credits a bit more, especially the DXRFlags section
+	to change gas grenades from teargas to poisongas, will need to override function SpawnTearGas() in ThrownProjectile
 
 v1.6:
 	enough advanced options to be able to play unrandomized

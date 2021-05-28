@@ -121,17 +121,13 @@ function static Name PickRandomAug(DXRando dxr)
 
 simulated function RandoAug(Augmentation a)
 {
-    local int oldseed;
     if( dxr == None ) return;
 
     if( #var prefix AugSpeed(a) != None || #var prefix AugLight(a) != None || #var prefix AugHeartLung(a) != None
     || #var prefix AugIFF(a) != None || #var prefix AugDatalink(a) != None || AugNinja(a) != None )
         return;
-    oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoAug " $ a.class.name ) );
 
     RandoLevelValues(a, min_aug_str, max_aug_str, a.Description);
-
-    dxr.SetSeed(oldseed);
 }
 
 simulated function string DescriptionLevel(Actor act, int i, out string word)
