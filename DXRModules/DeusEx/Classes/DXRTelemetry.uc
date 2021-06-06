@@ -27,7 +27,7 @@ function AnyEntry()
 {
     local #var PlayerPawn  p;
     Super.AnyEntry();
-    SetTimer(120, true);
+    SetTimer(300, true);
     //info log player's health, item counts...?
     p = player();
     if( p == None ) return;
@@ -42,16 +42,17 @@ function Timer()
     local name names[4096];
     local int counts[4096], slot, i;
 
-    foreach AllActors(class'Actor', a) { numActors++; };
     foreach AllObjects(class'Object', o) {
-        if( ! o.IsA('Actor') ) {
-            numObjects++;
-            last = o;
-            slot = Abs(dxr.Crc( String(o.class.name) )) % ArrayCount(names);
-            if( names[slot] == '' || names[slot] == o.class.name ) {
-                names[slot] = o.class.name;
-                counts[slot]++;
-            }
+        if( o.IsA('Actor') ) {
+            numActors++;
+            continue;
+        }
+        numObjects++;
+        last = o;
+        slot = Abs(dxr.Crc( String(o.class.name) )) % ArrayCount(names);
+        if( names[slot] == '' || names[slot] == o.class.name ) {
+            names[slot] = o.class.name;
+            counts[slot]++;
         }
     }
 
