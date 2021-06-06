@@ -799,8 +799,8 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     local HXPlayerPawn p;
 #endif
 
-    if( note.bUserNote && player().CombatDifficulty > 0 ) return false;
     if( oldpassword == "" ) return false;
+    if( note.bUserNote && player().CombatDifficulty > 0 ) return false;
     if( note.text == "") return false;
 
 #ifdef injections

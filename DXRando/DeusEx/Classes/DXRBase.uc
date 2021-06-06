@@ -286,7 +286,7 @@ simulated final function #var PlayerPawn  player(optional bool quiet)
         p = #var PlayerPawn (GetPlayerPawn());
         dxr.Player = p;
     }
-    if( p == None && !quiet ) err("player() found None", true);
+    if( p == None && !quiet ) warning("player() found None");
     return p;
 }
 

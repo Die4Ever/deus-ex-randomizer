@@ -43,8 +43,6 @@ v1.5.9:
 	DXRLoadouts ensure tnt crates don't spawn too far from the ground
 	bug in sub base backtracking chopper
 	fix charged pickups going in hand
-	improve: DXRKeys: INFO: key maintenancekey got num: 1, slot: 0, actor: 12_Vandenberg_Tunnels.MedKit0
-		DXRKeys: swapping MedKit.MedKit0(-1437.876587,3819.677734,-3246.906738) and NanoKey.NanoKey1(-1138.429199,3494.751221,-3084.074463) distance == 470.914337
 	cleanup goals when finishing missions, especially hong kong
 	can I partially re-enable Paul's conversation in liberty island and remove the part where he gives you a weapon?
 		will need to mark it as played when entering unatco though, pretty sure it can break stuff
