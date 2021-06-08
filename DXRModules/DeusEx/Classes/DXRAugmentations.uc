@@ -86,14 +86,39 @@ function RandomizeAugCannisters()
     }
 }
 
+function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAugs)
+{
+    local DXRLoadouts loadouts;
+    local int i;
+
+    banned[11]=1;
+    banned[12]=1;
+    banned[18]=1;
+    loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+    for(i=0; i<ArrayCount(class'#var prefix AugmentationManager'.default.augClasses); i++) {
+        if( banned[i] == 1 ) continue;
+        if( loadouts != None ) {
+            if( loadouts.StartedWithAug(class'#var prefix AugmentationManager'.default.augClasses[i]) ) {
+                banned[i] = 1;
+                continue;
+            }
+        }
+        numAugs++;
+    }
+}
+
 function static RandomizeAugCannister(DXRando dxr, #var prefix AugmentationCannister a)
 {
-    local int attempts;
-    a.AddAugs[0] = PickRandomAug(dxr);
+    local int attempts, numAugs;
+    local int banned[50];
+
+    _DefaultAugsMask(dxr, banned, numAugs);
+
+    a.AddAugs[0] = PickRandomAug(dxr, banned, numAugs);
     a.AddAugs[1] = a.AddAugs[0];
     for( attempts = 0; attempts<100 && a.AddAugs[1] == a.AddAugs[0]; attempts++ )
     {
-        a.AddAugs[1] = PickRandomAug(dxr);
+        a.AddAugs[1] = PickRandomAug(dxr, banned, numAugs);
     }
 
     if( a.AddAugs[0] == '#var prefix AugSpeed' || a.AddAugs[1] == '#var prefix AugSpeed' ) {
@@ -101,19 +126,20 @@ function static RandomizeAugCannister(DXRando dxr, #var prefix AugmentationCanni
     }
 }
 
-function static Name PickRandomAug(DXRando dxr)
+function static Name PickRandomAug(DXRando dxr, int banned[50], int numAugs)
 {
-    local int slot;
-    local int skipAugSpeed;
-    local int numAugs;
+    local int slot, i, r;
     local Name AugName;
-    numAugs=21;
-    if( dxr.flags.settings.speedlevel > 0 )
-        skipAugSpeed=1;
-    slot = staticrng(dxr, numAugs-3-skipAugSpeed) + skipAugSpeed;// exclude the 3 or 4 augs you start with, 0 is AugSpeed
-    if ( slot >= 11 ) slot++;// skip AugIFF
-    if ( slot >= 12 ) slot++;// skip AugLight
-    if (slot >= 18 ) slot++;// skip AugDatalink
+    r = staticrng(dxr, numAugs);
+    for(i=0; i < ArrayCount(class'#var prefix AugmentationManager'.default.augClasses); i++) {
+        if( banned[i] == 1 ) continue;
+        if( slot == r )
+            break;
+        slot++;
+    }
+    slot = i;
+    if( slot >= ArrayCount(class'#var prefix AugmentationManager'.default.augClasses) )
+        dxr.err("PickRandomAug WTF");
     AugName = class'#var prefix AugmentationManager'.default.augClasses[slot].Name;
     log("Picked Aug "$ slot $"/"$numAugs$" " $ AugName, 'DXRAugmentations');
     return AugName;
@@ -205,17 +231,21 @@ simulated function RemoveRandomAug(#var PlayerPawn  p)
 {
     local Augmentation a, b, augs[64];
     local AugmentationManager am;
+    local DXRLoadouts loadouts;
     local int numAugs, slot;
 
     am = p.AugmentationSystem;
+    loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
 
     for( a = am.FirstAug; a != None; a = a.next ) {
         if( !a.bHasIt ) continue;
         if( a.AugmentationLocation == LOC_Default ) continue;
 
-        if( #var prefix AugSpeed(a) != None || #var prefix AugLight(a) != None
-            || #var prefix AugIFF(a) != None || #var prefix AugDatalink(a) != None || AugNinja(a) != None
-        ) continue;
+        if( #var prefix AugLight(a) != None || #var prefix AugIFF(a) != None || #var prefix AugDatalink(a) != None )
+            continue;
+
+        if( loadouts != None && loadouts.StartedWithAug(a.class) )
+            continue;
 
         augs[numAugs++] = a;
     }

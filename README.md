@@ -43,7 +43,7 @@ There are also settings for
 * challenge mode loadouts!
     * Stick With the Prod means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts
-    * Ninja JC - the only weapons allowed are throwing knives and the sword, you get a Ninja Augmentation which gives you speed and stealth at the same time
+    * Ninja JC - the only weapons allowed are throwing knives, swords, and grenades. You also get a Ninja Augmentation which gives you speed and stealth at the same time
     * Don't Give Me the GEP Gun - bans the GEP gun
     * Freeman Mode - only weapon allowed is the crowbar
     * Grenades Only
@@ -68,7 +68,7 @@ I've also made some balance tweaks. Make sure to read the descriptions for skill
 
 ### Recommended tweaks for running Deus Ex on modern computers
 
-Recommended to use it with [Kentie's Deus Exe Launcher](http://www.kentie.net/article/dxguide/), or [Han's Launcher](https://coding.hanfling.de/launch/#binaries). Play with OpenGL renderer because the Direct3D renderers have trouble on newer Nvidia drivers unless you use the [Deus Ex Speedup Fix mod. The Deus Ex Speedup Fix mod, download at the bottom,](https://steamcommunity.com/sharedfiles/filedetails/?id=2048525175) allows you to disable the fps cap (the fps cap in the game can cause stutters, but capping frame rate in nvidia control panel works perfectly) If you use that mod, then edit your `Documents\Deus Ex\System\DeusEx.ini` file and search for `FPSLimit=` and set it to 0 to manually remove the fps cap because I've noticed that Kentie's Launcher doesn't always do it correctly, and also disable vsync with your graphics driver. If you use the speedup fix then you'll probably want to use the [Direct3D 10](https://kentie.net/article/d3d10drv/) or [Direct3D 11](https://kentie.net/article/d3d11drv/index.htm) renderer. I use my graphics driver to enforce a 120fps limit.
+Recommended to use it with [Kentie's Deus Exe Launcher](http://www.kentie.net/article/dxguide/), or [Han's Launcher](https://coding.hanfling.de/launch/#binaries). Play with OpenGL renderer because the Direct3D renderers have trouble on newer Nvidia drivers unless you use the [Deus Ex Speedup Fix mod. The Deus Ex Speedup Fix mod, download at the bottom,](https://steamcommunity.com/sharedfiles/filedetails/?id=2048525175) allows you to disable the fps cap (the fps cap in the game can cause stutters, but capping frame rate in nvidia control panel works perfectly) If you use that mod, then edit your `Documents\Deus Ex\System\DeusEx.ini` file and search for `FPSLimit=` and set it to 0 to manually remove the fps cap because I've noticed that Kentie's Launcher doesn't always do it correctly, and also disable vsync with your graphics driver. If you use the speedup fix then you'll probably want to use the [Direct3D 10](https://kentie.net/article/d3d10drv/) or [Direct3D 11](https://kentie.net/article/d3d11drv/index.htm) renderer. I use my graphics driver to enforce a 120fps limit with Direct3D 10.
 
 Join the [discord channel for discussion](https://discord.gg/daQVyAp2ds) or message me directly Die4Ever#6351
 

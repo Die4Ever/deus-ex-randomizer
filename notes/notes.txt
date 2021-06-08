@@ -57,6 +57,7 @@ v1.5.9:
 	maybe clean up the credits a bit more, especially the DXRFlags section
 
 v1.6:
+	for flashbang grenades, stun duration is hardcoded to sleep for 15 seconds in ScriptedPawn state Stunned Begin
 	enough advanced options to be able to play unrandomized
 		-disable item/container shuffling, aug cannisters and aug values, skill values, loadout, names)
 	use better logic for The Merchant's location, like cameras?
