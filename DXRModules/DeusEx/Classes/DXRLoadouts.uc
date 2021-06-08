@@ -391,6 +391,9 @@ function bool StartedWithAug(class<Augmentation> a)
         aclass = _item_sets[loadout].starting_augs[i];
         if( aclass == a ) return true;
 
+        if( a.default.AugmentationLocation == LOC_Default )
+            return true;
+
         //speed, stealth, ninja, muscle...
         if( aclass.default.AugmentationLocation == a.default.AugmentationLocation ) {
             if( class'#var prefix AugmentationManager'.default.AugLocs[a.default.AugmentationLocation].NumSlots == 1 )

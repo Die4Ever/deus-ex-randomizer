@@ -89,16 +89,19 @@ function RandomizeAugCannisters()
 function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAugs)
 {
     local DXRLoadouts loadouts;
+    local class<Augmentation> a;
     local int i;
 
-    banned[11]=1;
-    banned[12]=1;
-    banned[18]=1;
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
     for(i=0; i<ArrayCount(class'#var prefix AugmentationManager'.default.augClasses); i++) {
         if( banned[i] == 1 ) continue;
+        a = class'#var prefix AugmentationManager'.default.augClasses[i];
+        if( a.default.AugmentationLocation == LOC_Default ) {
+            banned[i] = 1;
+            continue;
+        }
         if( loadouts != None ) {
-            if( loadouts.StartedWithAug(class'#var prefix AugmentationManager'.default.augClasses[i]) ) {
+            if( loadouts.StartedWithAug(a) ) {
                 banned[i] = 1;
                 continue;
             }
