@@ -36,6 +36,11 @@ event ClientTravel( string URL, ETravelType TravelType, bool bItems )
     Super.ClientTravel(URL, TravelType, bItems);
 }
 
+function ResetGoals()
+{
+    DeleteAllGoals();
+}
+
 function DXRando GetDXR()
 {
     if( dxr == None ) foreach AllActors(class'DXRando', dxr) { break; }
