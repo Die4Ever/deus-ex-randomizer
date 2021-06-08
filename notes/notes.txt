@@ -43,7 +43,6 @@ v1.5.9:
 	DXRLoadouts ensure tnt crates don't spawn too far from the ground
 	bug in sub base backtracking chopper
 	fix charged pickups going in hand
-	cleanup goals when finishing missions, especially hong kong
 	can I partially re-enable Paul's conversation in liberty island and remove the part where he gives you a weapon?
 		will need to mark it as played when entering unatco though, pretty sure it can break stuff
 	DXRWeapons projectile damage
@@ -56,7 +55,6 @@ v1.5.9:
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
 	make horde mode use the DXRAutosave blocking manual saves method instead of the hack-y permanent fake datalink
 	maybe clean up the credits a bit more, especially the DXRFlags section
-	to change gas grenades from teargas to poisongas, will need to override function SpawnTearGas() in ThrownProjectile
 
 v1.6:
 	enough advanced options to be able to play unrandomized
