@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(1,5,7,0) ) {
+    if( ConfigOlderThan(1,5,9,5) ) {
         allow_vanilla = false;
 
         i=0;
@@ -812,7 +812,7 @@ function CheckConfig()
         i++;
 
         important_locations[i].map_name = map;
-        important_locations[i].location = vect(-288.000000, -432.000000, 96.000000);//engine control room
+        important_locations[i].location = vect(-288.000000, -432.000000, 112.000000);//engine control room
         important_locations[i].rotation = rot(-16384, 16384, 0);
         i++;
 
@@ -1092,6 +1092,7 @@ function PreFirstEntry()
 function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
 {
     local ScriptedPawn sp;
+    local Mover m;
     local bool success, oldbCollideWorld;
 
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
@@ -1112,6 +1113,11 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
         if( sp.Orders == 'Patrolling' ) sp.SetOrders('Wandering');
         sp.HomeLoc = sp.Location;
         sp.HomeRot = vector(sp.Rotation);
+    }
+    m = Mover(a);
+    if( m != None ) {
+        m.BasePos = a.Location;
+        m.BaseRot = a.Rotation;
     }
 
     return true;

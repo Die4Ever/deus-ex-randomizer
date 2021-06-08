@@ -849,6 +849,13 @@ function Shipyard_FirstEntry()
             }
             AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
             break;
+        
+        case "09_NYC_SHIPBELOW":
+            foreach AllActors(class'DeusExMover', m, 'ShipBreech') {
+                m.bHighlight = true;
+                m.bLocked = true;
+            }
+            break;
     }
 }
 
