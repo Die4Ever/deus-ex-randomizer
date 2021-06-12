@@ -39,6 +39,10 @@ v1.5.9 Alpha:
 	DXRPasswords and DXRKeys using Containers as possible locations? can be risky
 
 v1.5.9:
+	03_nyc_unatcoisland didn't detect that I knew the code for the shack (computers seem to work but not keypads?)
+	need backtracking button for 03 sewer/airfield helicopter door
+	maybe need a datacube with the versalife elevator code somewhere, like in versalife itself
+	paris dependency on the club isn't working?
 	NG+ and DXRAugmentations::PickRandomAug need to check with DXRLoadouts to see which are defaults
 	DXRLoadouts ensure tnt crates don't spawn too far from the ground
 	bug in sub base backtracking chopper

@@ -202,13 +202,15 @@ function AnyEntry()
 
 function FixInterpolating(#var PlayerPawn  p)
 {
+    p.bDetectable = true;
+    p.bHidden = false;
+    p.Visibility = p.Default.Visibility;
     //err(player()$" state: "$player().GetStateName()$", Tag: "$player().tag$", NextState: "$player().NextState$", bInterpolating: "$player().bInterpolating);
     if( p.NextState != 'Interpolating' ) return;
     info("FixInterpolating(), "$p$" state: "$p.GetStateName()$", Tag: "$p.tag$", NextState: "$p.NextState$", bInterpolating: "$p.bInterpolating);
     p.NextState = '';
     p.NextLabel = '';
     p.GotoState('PlayerWalking');
-    p.bDetectable = true;
 }
 
 function ParisMetroAnyEntry()

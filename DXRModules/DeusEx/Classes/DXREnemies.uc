@@ -447,6 +447,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
 
     l("RandomizeSP("$p$", "$percent$")");
     p.SurprisePeriod = rngrange(p.SurprisePeriod+0.1, 0.3, 1.2);
+    p.GroundSpeed = rngrange(p.GroundSpeed, 0.9, 1.1);
 
     if( IsHuman(p) == False ) return; // only give random weapons to humans
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
