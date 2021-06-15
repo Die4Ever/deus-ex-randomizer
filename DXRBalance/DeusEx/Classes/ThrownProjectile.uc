@@ -16,13 +16,13 @@ function SpawnTearGas()
     {
         if (FRand() < 0.9)
         {
-            SpawnCloudType( GasType, tDamageType );
+            GetSpawnCloudType( GasType, tDamageType );
             SpawnCloud(GasType, tDamageType);
         }
     }
 }
 
-function SpawnCloudType(out class<Cloud> GasType, out Name tDamageType)
+function GetSpawnCloudType(out class<Cloud> GasType, out Name tDamageType)
 {
     GasType = class'TearGas';
     tDamageType = 'TearGas';

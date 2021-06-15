@@ -45,7 +45,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(1,5,9,6) ) {
+    if( ConfigOlderThan(1,5,9,8) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(item_sets); i++) {

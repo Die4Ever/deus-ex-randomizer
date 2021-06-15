@@ -1,6 +1,6 @@
 class GasGrenade injects GasGrenade;
 
-function SpawnCloudType(out class<Cloud> GasType, out Name tDamageType)
+function GetSpawnCloudType(out class<Cloud> GasType, out Name tDamageType)
 {
     GasType = class'TearGas';
     tDamageType = 'TearGas';

@@ -12,12 +12,12 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 
 [![v1.5 Trailer](https://img.youtube.com/vi/A0Li3XuBjGg/0.jpg)](https://www.youtube.com/watch?v=A0Li3XuBjGg)
 
-### Currently in v1.5.8, DXRando randomizes
+### Currently in v1.5.9, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
 * starting equipment, bioelectric energy, and credits
-* adding and changing characters, giving them random names and making some of them dance
+* adding and changing enemies/characters, giving them random names and making some of them dance
 * changing the locations of items/boxes/NanoKeys/datacubes around the map
 * passwords and passcodes (they get updated in your Goals/Notes screen)
 * exp costs for skills
@@ -35,18 +35,21 @@ There are also settings for
 * Crowd Control! Let your viewers troll you or help you! NOW PLAYABLE! https://forum.warp.world/t/deus-ex-randomizer-pc/20496
     * If you want to try some of the Crowd Control features without actually streaming, you can try the "OfflineCrowdControl.py" script to randomly send Crowd Control messages to your local game!  Requires Python 3.8 or above
 * New Game+ - after beating the game play it again keeping your items, skills, and augs, but with increased difficulty and a new seed
-    -takes away 1 random augmentation, and 1 of your weapons
-    -takes away half your skill points and 5 random skill levels, so the player has to choose which ones to level up first
+    * takes away 1 random augmentation, and 1 of your weapons
+    * takes away half your skill points and 5 random skill levels, so the player has to choose which ones to level up first
 * new game modes!
     * Entrance Randomization is in beta, it changes what level each teleporter takes you to, but keeps it within the same mission.
     * Horde Mode is in beta and mostly I think it just needs balancing.
 * challenge mode loadouts!
-    * Stick With the Prod means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
+    * Stick With the Prod Pure means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts
-    * Ninja JC - the only weapons allowed are throwing knives, swords, and grenades. You also get a Ninja Augmentation which gives you speed and stealth at the same time
+    * Ninja JC - the only weapons allowed are throwing knives, swords, pepper spray, and grenades. You also get a Ninja Augmentation which gives you speed and stealth at the same time
     * Don't Give Me the GEP Gun - bans the GEP gun
     * Freeman Mode - only weapon allowed is the crowbar
     * Grenades Only
+* Co-op when combined with the HX mod (Alpha)
+    * download HX-0.9.89.4.zip from https://builds.hx.hanfling.de/testing/
+    * copy HXRandomizer.u and HXRandomizer.int into the System directory of the game
 * making all or some of the doors that normally require a key also lockpickable and/or destructible
 * making all or some keypads hackable.
 * reducing the drop rate for ammo, multitools, lockpicks, medkits, and bioelectric cells

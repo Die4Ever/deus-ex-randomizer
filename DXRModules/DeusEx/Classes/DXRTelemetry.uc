@@ -12,11 +12,7 @@ var string notification_url;
 
 function CheckConfig()
 {
-    if( server == "" ) {
-        server = "raycarro.com";
-        cache_addr = 0;
-    }
-    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+    if( server == "" || config_version < class'DXRFlags'.static.VersionNumber() ) {
         server = "raycarro.com";
         cache_addr = 0;
     }

@@ -25,7 +25,7 @@ function CheckConfig()
 {
     local class<Actor> temp_skipactor_types[6];
     local int i, t;
-    if( ConfigOlderThan(1,5,6,0) ) {
+    if( ConfigOlderThan(1,5,9,8) ) {
         for(i=0; i < ArrayCount(skipactor_types); i++) {
             skipactor_types[i] = "";
         }

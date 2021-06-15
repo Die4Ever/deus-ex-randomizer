@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(1,5,9,5) ) {
+    if( ConfigOlderThan(1,5,9,8) ) {
         allow_vanilla = false;
 
         i=0;

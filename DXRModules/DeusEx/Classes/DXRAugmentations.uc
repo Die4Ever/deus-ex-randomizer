@@ -11,7 +11,7 @@ replication
 
 function CheckConfig()
 {
-    if( ConfigOlderThan(1,4,8,0) ) {
+    if( ConfigOlderThan(1,5,9,8) ) {
         min_aug_str = default.min_aug_str;
         max_aug_str = default.max_aug_str;
     }
