@@ -163,8 +163,10 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
     local #var prefix Augmentation aug;
     local #var prefix Skill sk;
     local string s, word;
-    local int i, len;
+    local int i, len, oldseed;
     local float prev_d, d, v, min_val;
+
+    oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ " RandoLevelValues " $ a.class.name ) );
 
     aug = #var prefix Augmentation(a);
     sk = #var prefix Skill(a);
@@ -190,6 +192,8 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
     }
 
     s = "(" $ word $ ": " $ s $ ")";
+
+    dxr.SetSeed( oldseed );
 
     if( InStr(Desc, s) == -1 ) {
         Desc = Desc $ "|n|n" $ s;
@@ -273,7 +277,7 @@ final function Class<Actor> ModifyActorClass( out Class<Actor> ActorClass )
     return ActorClass;
 }
 
-simulated final function #var PlayerPawn  player()
+simulated final function #var PlayerPawn  player(optional bool quiet)
 {
     local #var PlayerPawn  p;
     //p = #var PlayerPawn (GetPlayerPawn());
@@ -282,7 +286,7 @@ simulated final function #var PlayerPawn  player()
         p = #var PlayerPawn (GetPlayerPawn());
         dxr.Player = p;
     }
-    if( p == None ) err("player() found None", true);
+    if( p == None && !quiet ) warning("player() found None");
     return p;
 }
 

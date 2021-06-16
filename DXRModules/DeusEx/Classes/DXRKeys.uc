@@ -18,7 +18,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,5,7,0) ) {
+    if( ConfigOlderThan(1,5,9,8) ) {
 
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
@@ -73,6 +73,27 @@ function CheckConfig()
         keys_rules[i].min_pos = vect(-3521.955078, 3413.110352, -3246.771729);
         keys_rules[i].max_pos = vect(-2844.053467, 3756.776855, -3097.210205);
         keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].map = "12_Vandenberg_Tunnels";
+        keys_rules[i].item_name = 'maintenancekey';
+        keys_rules[i].min_pos = vect(-3521.955078, 3413.110352, -3246.771729);
+        keys_rules[i].max_pos = vect(-2844.053467, 3756.776855, -3097.210205);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].map = "12_Vandenberg_Tunnels";
+        keys_rules[i].item_name = 'control_room';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].map = "12_Vandenberg_Tunnels";
+        keys_rules[i].item_name = 'maintenancekey';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
         i++;
 
         //disallow the crew quarters

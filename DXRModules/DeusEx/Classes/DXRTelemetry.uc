@@ -12,11 +12,7 @@ var string notification_url;
 
 function CheckConfig()
 {
-    if( server == "" ) {
-        server = "raycarro.com";
-        cache_addr = 0;
-    }
-    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+    if( server == "" || config_version < class'DXRFlags'.static.VersionNumber() ) {
         server = "raycarro.com";
         cache_addr = 0;
     }
@@ -27,10 +23,42 @@ function AnyEntry()
 {
     local #var PlayerPawn  p;
     Super.AnyEntry();
+#ifdef hx
+    SetTimer(300, true);
+#endif
     //info log player's health, item counts...?
     p = player();
     if( p == None ) return;
     info("health: "$p.health$", HealthLegLeft: "$p.HealthLegLeft$", HealthLegRight: "$p.HealthLegRight$", HealthTorso: "$p.HealthTorso$", HealthHead: "$p.HealthHead$", HealthArmLeft: "$p.HealthArmLeft$", HealthArmRight: "$p.HealthArmRight);
+}
+
+function Timer()
+{
+    local int numActors, numObjects;
+    local Actor a;
+    local Object o, last;
+    local name names[4096];
+    local int counts[4096], slot, i;
+
+    foreach AllObjects(class'Object', o) {
+        if( o.IsA('Actor') ) {
+            numActors++;
+            continue;
+        }
+        numObjects++;
+        last = o;
+        slot = Abs(dxr.Crc( String(o.class.name) )) % ArrayCount(names);
+        if( names[slot] == '' || names[slot] == o.class.name ) {
+            names[slot] = o.class.name;
+            counts[slot]++;
+        }
+    }
+
+    info("numActors: "$numActors$", numObjects: "$numObjects$", last object: "$last);
+    for(i=0; i<ArrayCount(names); i++) {
+        if( names[i] == '' ) continue;
+        info(names[i] @ counts[i]);
+    }
 }
 
 function set_enabled(bool e)

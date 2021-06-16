@@ -34,34 +34,16 @@ EditPackages=HX
 EditPackages=HXRandomizer
 
 
-v1.5.9 Alpha:
-	HX fix duplicate notes
-	need to do something about all the object names, maybe some of them can be switched to class+tag combos
-	DXRPasswords and DXRKeys using Containers as possible locations? can be risky
-
-v1.5.9:
-	fix skill values resetting every 5 missions?
-	sub base elevator needs call down button
+v1.6 Alpha:
+	crowd control auto save when giving items?
+	03_nyc_unatcoisland didn't detect that I knew the code for the shack (computers seem to work but not keypads?)
+	need backtracking button for 03 sewer/airfieldhelicopter door (near the falling bridge thing)
+	maybe need a datacube with the versalife elevator code somewhere, like in versalife itself
+	paris dependency on the club isn't working?
+	NG+ should be able to downlevel default augs, just not below the default level?
+		make StartedWithAug return an int of the starting level instead of just a bool
+	DXRLoadouts ensure tnt crates don't spawn too far from the ground
 	bug in sub base backtracking chopper
-	fix charged pickups going in hand
-	weapon/ammo descriptions should show the max ammo
-	improve: DXRKeys: INFO: key maintenancekey got num: 1, slot: 0, actor: 12_Vandenberg_Tunnels.MedKit0
-		DXRKeys: swapping MedKit.MedKit0(-1437.876587,3819.677734,-3246.906738) and NanoKey.NanoKey1(-1138.429199,3494.751221,-3084.074463) distance == 470.914337
-	cleanup goals when finishing missions, especially hong kong
-	can I partially re-enable Paul's conversation in liberty island and remove the part where he gives you a weapon?
-		will need to mark it as played when entering unatco though, pretty sure it can break stuff
-	DXRWeapons projectile damage
-	ninja mode:
-		I can make ninja mode spawn more continuous blood on a timer or tick
-		faster weapon switching speeds for ninja mode?
-		wider range on the sword for ninja mode?
-		can I also give low tech skill more levels, or repurpose other skills?
-		maybe gas grenades should be allowed too? emp grenades? other grenades?
-		too much throwing knives ammo?
-		allow DTS? a nerfed version? nerf throwing knives?
-	Stick With the Prod (and Plus) should give the AugStealth instead of AugSpeed?
-		rename them to Stick With the Prod (Pure) and Stick With the Prod (Plus)?
-		start with the muscles aug so you can move explosive barrels? combat strength is useless anyways
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
 	tweak rotations for teleporters?
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
@@ -69,25 +51,30 @@ v1.5.9:
 	maybe clean up the credits a bit more, especially the DXRFlags section
 
 v1.6:
+	buff alcohol from 2 to 3 health, limit the drunken effect?
+	show maxCopies for item descriptions
 	enough advanced options to be able to play unrandomized
 		-disable item/container shuffling, aug cannisters and aug values, skill values, loadout, names)
 	use better logic for The Merchant's location, like cameras?
 	use key safe location logic for hazmats vs damage zones (this might only be a big deal for paris?)
-	crowd control spawn medbot, friendly milbot
-	crowd control incremental speed effects
-	crowd control, ensure you don't go past the max ammo
 	fix the dumb button to backtrack in paris metro, stacked boxes is better
 	if I get rid of the ZoneVelocity on WaterZone5 in 06_hongkong_storage, I can add a dynamicteleporter to make that pipe a 2-way connection
 		might also need to do WaterZone1, but that would make it difficult to hold your breath through there, I could make a dynamicteleporter bring you past that
 	DXREntranceRando: WARNING: GenerateConnections(12) succeeded but took 24 attempts! seed: 158016, genconsfails: 7, validatefails: 17
-	HX: DXRMissions, DXRFixup? DXRHordeMode? credits, new game plus? DXRStats? crowd control, gonna need to add simulated to like every function
-	automated tests in HX?
 	lore friendly enemy spawns? triads would be good extra enemies in hong kong at least
-	any way I could get DXRNames to work with replication?
-	scale difficulty with extra players like diablo, slightly increase enemy randomization and combat difficulty
 
 for v1.6.1+ programatically modify conversations? ===================
-
+all enemies have LAWs mode?
+automated tests in HX?
+any way I could get DXRNames to work with replication?
+scale difficulty with extra players like diablo, slightly increase enemy randomization and combat difficulty
+HX: DXRMissions, DXRFixup? DXRHordeMode? credits, new game plus? DXRStats? crowd control, gonna need to add simulated to like every function
+DXRWeapons projectile damage
+crowd control spawn medbot, friendly milbot
+crowd control incremental speed effects
+crowd control, ensure you don't go past the max ammo
+can I partially re-enable Paul's conversation in liberty island and remove the part where he gives you a weapon?
+	will need to mark it as played when entering unatco though, pretty sure it can break stuff
 GUI for NG+? can open a window similar to the advanced settings page
 create new "stories", start with a hub area (either hell's kitchen or hong kong, but which hell's kitchen?)
 	class DXRStories extends DXREntranceRando;
@@ -103,6 +90,8 @@ HUD to show current energy use per second, similar to the damage resistance HUD
 dynamically generate patrol routes? will probably need a new state for scriptedpawns to replace patrolling
 randomize item pool by replacing 50% of items?
 with flags binding, maybe I could convert some of them to floats or ints x100
+flashbang grenades?
+	for flashbang grenades, stun duration is hardcoded to sleep for 15 seconds in ScriptedPawn state Stunned Begin, maybe have to call them stun grenades
 
 CleanerBot Tick function could also cleanup Effects, TrashPaper, Fragment...
 

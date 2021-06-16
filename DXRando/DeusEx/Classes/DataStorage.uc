@@ -56,6 +56,13 @@ simulated function AddNote(Name textTag, bool bUserNote, String text)
             }
         }
     }
+    else {
+        for(i=0; i<ArrayCount(textTags); i++) {
+            if( texts[i] == text ) {
+                return;
+            }
+        }
+    }
 
     end = (notes_start + notes_len) % ArrayCount(textTags);
     _AddNote(end, textTag, bUserNote, text);

@@ -180,20 +180,20 @@ simulated static function CurrentVersion(optional out int major, optional out in
     major=1;
     minor=5;
     patch=9;
-    build=2;
+    build=8;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)
 {
     local int major,minor,patch,build;
     CurrentVersion(major,minor,patch,build);
-    return VersionToString(major, minor, patch, build, full) $ " Alpha";
+    return VersionToString(major, minor, patch, build, full) $ "";
 }
 
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,5,9,2) ) {
+    if( ConfigOlderThan(1,5,9,8) ) {
         // setup default difficulties
         i=0;
 #ifndef hx

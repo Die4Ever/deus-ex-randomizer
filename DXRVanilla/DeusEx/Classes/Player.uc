@@ -10,6 +10,9 @@ var byte LevelSongSection;
 
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
 {
+    // 2 spaces because destroyed item pickups do ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
+    if( msg == "  " ) return;
+
     Super.ClientMessage(msg, type, bBeep);
     class'DXRTelemetry'.static.SendLog(GetDXR(), self, "INFO", msg);
 
@@ -31,6 +34,11 @@ event ClientTravel( string URL, ETravelType TravelType, bool bItems )
 {
     nextMap = URL;
     Super.ClientTravel(URL, TravelType, bItems);
+}
+
+function ResetGoals()
+{
+    DeleteAllGoals();
 }
 
 function DXRando GetDXR()

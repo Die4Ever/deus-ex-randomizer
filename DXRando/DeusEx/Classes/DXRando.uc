@@ -106,7 +106,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,5,7,0) ) {
+    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,5,9,8) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }

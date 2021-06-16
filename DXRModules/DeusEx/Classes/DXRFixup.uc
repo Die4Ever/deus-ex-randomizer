@@ -729,6 +729,11 @@ function Vandenberg_FirstEntry()
             }
             break;
         
+        case "14_VANDENBERG_SUB":
+            AddSwitch( vect(3790.639893, -488.639587, -369.964142), rot(0, 32768, 0), 'Elevator1');
+            AddSwitch( vect(3799.953613, -446.640015, -1689.817993), rot(0, 16384, 0), 'Elevator1');
+            break;
+
         case "14_OCEANLAB_LAB":
             foreach AllActors(class'ComputerSecurity', comp) {
                 if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
@@ -843,6 +848,13 @@ function Shipyard_FirstEntry()
                 if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
             }
             AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
+            break;
+        
+        case "09_NYC_SHIPBELOW":
+            foreach AllActors(class'DeusExMover', m, 'ShipBreech') {
+                m.bHighlight = true;
+                m.bLocked = true;
+            }
             break;
     }
 }

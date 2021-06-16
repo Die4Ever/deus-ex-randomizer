@@ -219,9 +219,11 @@ simulated function Timer()
     if( Role == ROLE_Authority )
         UpdateGoalsAndNotes( HXGameInfo(Level.Game).Steve.FirstGoal, HXGameInfo(Level.Game).FirstNote );
     
-    UpdateGoalsAndNotes( None, player().FirstNote );
+    if( player(true) != None )
+        UpdateGoalsAndNotes( None, player().FirstNote );
 #else
-    UpdateGoalsAndNotes( player().FirstGoal, player().FirstNote );
+    if( player(true) != None )
+        UpdateGoalsAndNotes( player().FirstGoal, player().FirstNote );
 #endif
 }
 
@@ -797,8 +799,8 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     local HXPlayerPawn p;
 #endif
 
-    if( note.bUserNote && player().CombatDifficulty > 0 ) return false;
     if( oldpassword == "" ) return false;
+    if( note.bUserNote && player().CombatDifficulty > 0 ) return false;
     if( note.text == "") return false;
 
 #ifdef injections

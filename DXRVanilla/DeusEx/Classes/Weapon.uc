@@ -1,6 +1,7 @@
 class DXRWeapon shims DeusExWeapon abstract;
 
 var float blood_mult;
+var float anim_speed;
 
 function PostBeginPlay()
 {
@@ -37,6 +38,72 @@ static function SpawnExtraBlood(Actor this, Vector HitLocation, Vector HitNormal
     }
 }
 
+simulated function float AnimSpeed(float e)
+{
+    if( anim_speed == 1.0 ) return 1.0;
+    return class'DXRBase'.static.pow(anim_speed + -0.2 * GetWeaponSkill(), e);
+}
+
+simulated function TweenDown()
+{
+    if ( (AnimSequence != '') && (GetAnimGroup(AnimSequence) == 'Select') )
+        TweenAnim( AnimSequence, AnimFrame * 0.4 );
+    else
+    {
+        // Have the put away animation play twice as fast in multiplayer
+        if ( Level.NetMode != NM_Standalone )
+            PlayAnim('Down', 2.0*AnimSpeed(2), 0.05);
+        else
+            PlayAnim('Down', 1.0*AnimSpeed(2), 0.05);
+    }
+}
+
+function PlaySelect()
+{
+    PlayAnim('Select',1.0*AnimSpeed(2),0.0);
+    Owner.PlaySound(SelectSound, SLOT_Misc, Pawn(Owner).SoundDampening);	
+}
+
+simulated function PlaySelectiveFiring()
+{
+    local Pawn aPawn;
+    local float rnd;
+    local Name anim;
+
+    anim = 'Shoot';
+
+    if (bHandToHand)
+    {
+        rnd = FRand();
+        if (rnd < 0.33)
+            anim = 'Attack';
+        else if (rnd < 0.66)
+            anim = 'Attack2';
+        else
+            anim = 'Attack3';
+    }
+
+    if (( Level.NetMode == NM_Standalone ) || ( DeusExPlayer(Owner) == DeusExPlayer(GetPlayerPawn())) )
+    {
+        if (bAutomatic)
+            LoopAnim(anim,1.0*AnimSpeed(1), 0.1);
+        else
+            PlayAnim(anim,1.0*AnimSpeed(1),0.1);
+    }
+    else if ( Role == ROLE_Authority )
+    {
+        for ( aPawn = Level.PawnList; aPawn != None; aPawn = aPawn.nextPawn )
+        {
+            if ( aPawn.IsA('DeusExPlayer') && ( DeusExPlayer(Owner) != DeusExPlayer(aPawn) ) )
+            {
+                // If they can't see the weapon, don't bother
+                if ( DeusExPlayer(aPawn).FastTrace( DeusExPlayer(aPawn).Location, Location ))
+                    DeusExPlayer(aPawn).ClientPlayAnimation( Self, anim, 0.1*AnimSpeed(1), bAutomatic );
+            }
+        }
+    }
+}
+
 function int GetDamage()
 {
     local float mult;
@@ -66,6 +133,18 @@ function int GetNumHits()
     if( ! bInstantHit && AreaOfEffect == AOE_Cone)
         return 3;
     return 1;
+}
+
+function Fire(float value)
+{
+    if (Owner.IsA('DeusExPlayer')) {
+        if (bHandToHand) {
+            class'DXRStats'.static.AddWeaponSwing(DeusExPlayer(Owner));
+        } else if (AmmoLeftInClip()!=0) {
+            class'DXRStats'.static.AddShotFired(DeusExPlayer(Owner));
+        }
+    }
+    Super.Fire(value);
 }
 
 //mostly copied from DeusExWeapon, but use actual values instead of default values
@@ -174,6 +253,9 @@ simulated function bool UpdateInfo(Object winObject)
             str = str $ "|n" $ AmmoNames[i].Default.ItemName;
 
     winInfo.AddAmmoTypesItem(msgInfoAmmo, str);
+
+    if( AmmoType != None && AmmoName != None && AmmoName != Class'DeusEx.AmmoNone' )
+        winInfo.AddInfoItem("Max Ammo:", AmmoType.MaxAmmo);
 
     // base damage
     if (AreaOfEffect == AOE_Cone)
@@ -389,20 +471,8 @@ simulated function bool UpdateInfo(Object winObject)
     return True;
 }
 
-function Fire(float value)
-{
-
-    if (Owner.IsA('DeusExPlayer')) {
-        if (bHandToHand) {
-            class'DXRStats'.static.AddWeaponSwing(DeusExPlayer(Owner));        
-        } else if (AmmoLeftInClip()!=0) {
-            class'DXRStats'.static.AddShotFired(DeusExPlayer(Owner));
-        }
-    }
-    Super.Fire(value);
-}
-
 defaultproperties
 {
     blood_mult=0
+    anim_speed=1
 }
