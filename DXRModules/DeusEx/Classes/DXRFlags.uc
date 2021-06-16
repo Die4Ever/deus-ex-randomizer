@@ -178,16 +178,16 @@ function InitDefaults()
 simulated static function CurrentVersion(optional out int major, optional out int minor, optional out int patch, optional out int build)
 {
     major=1;
-    minor=5;
-    patch=9;
-    build=8;//build can't be higher than 99
+    minor=6;
+    patch=0;
+    build=0;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)
 {
     local int major,minor,patch,build;
     CurrentVersion(major,minor,patch,build);
-    return VersionToString(major, minor, patch, build, full) $ "";
+    return VersionToString(major, minor, patch, build, full) $ " Alpha";
 }
 
 function CheckConfig()

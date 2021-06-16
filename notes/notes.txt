@@ -35,6 +35,7 @@ EditPackages=HXRandomizer
 
 
 v1.6 Alpha:
+	"Race" difficulty, same as hard mode but disable rando goals?
 	crowd control auto save when giving items?
 	03_nyc_unatcoisland didn't detect that I knew the code for the shack (computers seem to work but not keypads?)
 	need backtracking button for 03 sewer/airfieldhelicopter door (near the falling bridge thing)
@@ -64,6 +65,10 @@ v1.6:
 	lore friendly enemy spawns? triads would be good extra enemies in hong kong at least
 
 for v1.6.1+ programatically modify conversations? ===================
+fix tagging for HX for autoupdate Downloads, will need to inspect own class name to figure out the tag in GetClassFromString
+	Warning: Failed to load 'HXRandomizer': Can't find file for package 'HXRandomizer'
+	Warning: Failed to load 'Class HXRandomizer.DXRSwapItems': Can't find file for package 'HXRandomizer'
+	DXRFlags_20210615: ERROR: GetClassFromString: failed to load class HXRandomizer.DXRSwapItems
 all enemies have LAWs mode?
 automated tests in HX?
 any way I could get DXRNames to work with replication?

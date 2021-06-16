@@ -90,14 +90,14 @@ function bool CarriedItem(Actor a)
 
 static function bool IsHuman(Actor a)
 {
-    return HumanMilitary(a) != None || HumanThug(a) != None || HumanCivilian(a) != None;
+    return #var prefix HumanMilitary(a) != None || #var prefix HumanThug(a) != None || #var prefix HumanCivilian(a) != None;
 }
 
 static function bool IsCritter(Actor a)
 {
-    if( CleanerBot(a) != None ) return true;
-    if( Animal(a) == None ) return false;
-    return Doberman(a) == None && Gray(a) == None && Greasel(a) == None && Karkian(a) == None;
+    if( #var prefix CleanerBot(a) != None ) return true;
+    if( #var prefix Animal(a) == None ) return false;
+    return #var prefix Doberman(a) == None && #var prefix Gray(a) == None && #var prefix Greasel(a) == None && #var prefix Karkian(a) == None;
 }
 
 static function bool HasItem(Pawn p, class c)
@@ -143,20 +143,20 @@ static function bool HasItemSubclass(Pawn p, class<Inventory> c)
 
 static function bool HasMeleeWeapon(Pawn p)
 {
-    return HasItem(p, class'WeaponBaton')
-        || HasItem(p, class'WeaponCombatKnife')
-        || HasItem(p, class'WeaponCrowbar')
-        || HasItem(p, class'WeaponSword')
-        || HasItem(p, class'WeaponNanoSword');
+    return HasItem(p, class'#var prefix WeaponBaton')
+        || HasItem(p, class'#var prefix WeaponCombatKnife')
+        || HasItem(p, class'#var prefix WeaponCrowbar')
+        || HasItem(p, class'#var prefix WeaponSword')
+        || HasItem(p, class'#var prefix WeaponNanoSword');
 }
 
 static function bool IsMeleeWeapon(Inventory item)
 {
-    return item.IsA('WeaponBaton')
-        || item.IsA('WeaponCombatKnife')
-        || item.IsA('WeaponCrowbar')
-        || item.IsA('WeaponSword')
-        || item.IsA('WeaponNanoSword');
+    return item.IsA('#var prefix WeaponBaton')
+        || item.IsA('#var prefix WeaponCombatKnife')
+        || item.IsA('#var prefix WeaponCrowbar')
+        || item.IsA('#var prefix WeaponSword')
+        || item.IsA('#var prefix WeaponNanoSword');
 }
 
 static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int add_ammo)
