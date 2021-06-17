@@ -35,6 +35,8 @@ struct FlagsSettings {
     var int turrets_move, turrets_add;
     var int merchants;
     var int banned_skills, banned_skill_levels, enemies_nonhumans;
+    var int swapitems, swapcontainers, augcans, min_aug_value, max_aug_value, min_skill_value, max_skill_value;
+    var int min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime;
 };
 
 #ifdef hx
@@ -180,7 +182,7 @@ simulated static function CurrentVersion(optional out int major, optional out in
     major=1;
     minor=6;
     patch=0;
-    build=0;//build can't be higher than 99
+    build=1;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)
@@ -193,7 +195,7 @@ simulated static function string VersionString(optional bool full)
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,5,9,8) ) {
+    if( ConfigOlderThan(1,6,0,1) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -231,6 +233,17 @@ function CheckConfig()
         difficulty_settings[i].turrets_add = 50;
         difficulty_settings[i].merchants = 30;
         difficulty_settings[i].dancingpercent = 25;
+        difficulty_settings[i].swapitems = 100;
+        difficulty_settings[i].swapcontainers = 100;
+        difficulty_settings[i].augcans = 100;
+        difficulty_settings[i].min_aug_value = 50;
+        difficulty_settings[i].max_aug_value = 150;
+        difficulty_settings[i].min_skill_value = 50;
+        difficulty_settings[i].max_skill_value = 150;
+        difficulty_settings[i].min_weapon_dmg = 50;
+        difficulty_settings[i].max_weapon_dmg = 150;
+        difficulty_settings[i].min_weapon_shottime = 50;
+        difficulty_settings[i].max_weapon_shottime = 150;
         i++;
 #endif
 
@@ -270,6 +283,17 @@ function CheckConfig()
         difficulty_settings[i].turrets_add = 30;
         difficulty_settings[i].merchants = 30;
         difficulty_settings[i].dancingpercent = 25;
+        difficulty_settings[i].swapitems = 100;
+        difficulty_settings[i].swapcontainers = 100;
+        difficulty_settings[i].augcans = 100;
+        difficulty_settings[i].min_aug_value = 50;
+        difficulty_settings[i].max_aug_value = 150;
+        difficulty_settings[i].min_skill_value = 50;
+        difficulty_settings[i].max_skill_value = 150;
+        difficulty_settings[i].min_weapon_dmg = 50;
+        difficulty_settings[i].max_weapon_dmg = 150;
+        difficulty_settings[i].min_weapon_shottime = 50;
+        difficulty_settings[i].max_weapon_shottime = 150;
         i++;
 
         difficulty_names[i] = "Medium";
@@ -309,6 +333,17 @@ function CheckConfig()
         difficulty_settings[i].turrets_add = 70;
         difficulty_settings[i].merchants = 30;
         difficulty_settings[i].dancingpercent = 25;
+        difficulty_settings[i].swapitems = 100;
+        difficulty_settings[i].swapcontainers = 100;
+        difficulty_settings[i].augcans = 100;
+        difficulty_settings[i].min_aug_value = 50;
+        difficulty_settings[i].max_aug_value = 150;
+        difficulty_settings[i].min_skill_value = 50;
+        difficulty_settings[i].max_skill_value = 150;
+        difficulty_settings[i].min_weapon_dmg = 50;
+        difficulty_settings[i].max_weapon_dmg = 150;
+        difficulty_settings[i].min_weapon_shottime = 50;
+        difficulty_settings[i].max_weapon_shottime = 150;
         i++;
 
         difficulty_names[i] = "Hard";
@@ -347,6 +382,17 @@ function CheckConfig()
         difficulty_settings[i].turrets_add = 120;
         difficulty_settings[i].merchants = 30;
         difficulty_settings[i].dancingpercent = 25;
+        difficulty_settings[i].swapitems = 100;
+        difficulty_settings[i].swapcontainers = 100;
+        difficulty_settings[i].augcans = 100;
+        difficulty_settings[i].min_aug_value = 50;
+        difficulty_settings[i].max_aug_value = 150;
+        difficulty_settings[i].min_skill_value = 50;
+        difficulty_settings[i].max_skill_value = 150;
+        difficulty_settings[i].min_weapon_dmg = 50;
+        difficulty_settings[i].max_weapon_dmg = 150;
+        difficulty_settings[i].min_weapon_shottime = 50;
+        difficulty_settings[i].max_weapon_shottime = 150;
         i++;
 
         difficulty_names[i] = "DeusEx";
@@ -386,6 +432,17 @@ function CheckConfig()
         difficulty_settings[i].turrets_add = 200;
         difficulty_settings[i].merchants = 30;
         difficulty_settings[i].dancingpercent = 25;
+        difficulty_settings[i].swapitems = 100;
+        difficulty_settings[i].swapcontainers = 100;
+        difficulty_settings[i].augcans = 100;
+        difficulty_settings[i].min_aug_value = 50;
+        difficulty_settings[i].max_aug_value = 150;
+        difficulty_settings[i].min_skill_value = 50;
+        difficulty_settings[i].max_skill_value = 150;
+        difficulty_settings[i].min_weapon_dmg = 50;
+        difficulty_settings[i].max_weapon_dmg = 150;
+        difficulty_settings[i].min_weapon_shottime = 50;
+        difficulty_settings[i].max_weapon_shottime = 150;
         i++;
 
 #ifdef noflags
@@ -508,6 +565,18 @@ simulated function BindFlags(bool writing)
     FlagInt('Rando_banned_skills', settings.banned_skills, writing);
     FlagInt('Rando_banned_skill_level', settings.banned_skill_levels, writing);
     FlagInt('Rando_enemies_nonhumans', settings.enemies_nonhumans, writing);
+
+    FlagInt('Rando_swapitems', settings.swapitems, writing);
+    FlagInt('Rando_swapcontainers', settings.swapcontainers, writing);
+    FlagInt('Rando_augcans', settings.augcans, writing);
+    FlagInt('Rando_min_aug_value', settings.min_aug_value, writing);
+    FlagInt('Rando_max_aug_value', settings.max_aug_value, writing);
+    FlagInt('Rando_min_skill_value', settings.min_skill_value, writing);
+    FlagInt('Rando_max_skill_value', settings.max_skill_value, writing);
+    FlagInt('Rando_min_weapon_dmg', settings.min_weapon_dmg, writing);
+    FlagInt('Rando_max_weapon_dmg', settings.max_weapon_dmg, writing);
+    FlagInt('Rando_min_weapon_shottime', settings.min_weapon_shottime, writing);
+    FlagInt('Rando_max_weapon_shottime', settings.max_weapon_shottime, writing);
 }
 
 // returns true is read was successful
@@ -614,34 +683,17 @@ simulated function SaveNoFlags()
 
 simulated function LogFlags(string prefix)
 {
-    local float CombatDifficulty;
-    local #var PlayerPawn  p;
-    
-#ifdef hx
-    CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
-#else
-    p = player();
-    if( p != None )
-        CombatDifficulty = p.CombatDifficulty;
-#endif
-    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
+    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
+    info(prefix$" - " $ StringifyDifficultySettings(settings) );
 }
 
 simulated function AddDXRCredits(CreditsWindow cw) 
 {
-    local float CombatDifficulty;
-    local #var PlayerPawn  p;
-#ifdef hx
-    CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
-#else
-    p = player();
-    if( p != None )
-        CombatDifficulty = p.CombatDifficulty;
-#endif
     cw.PrintHeader("DXRFlags");
     
-    cw.PrintText(VersionString() $ ", " $ "seed: "$seed$", difficulty: " $ CombatDifficulty $ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id);
+    cw.PrintText(VersionString() $ ", " $ "seed: "$seed$", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id);
     cw.PrintText(StringifyFlags());
+    cw.PrintText(StringifyDifficultySettings(settings));
     cw.PrintLn();
 }
 
@@ -658,8 +710,7 @@ simulated function string StringifyFlags()
 #endif
     return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ CombatDifficulty $ ", loadout: "$loadout
         $ ", brightness: "$brightness $ ", newgameplus_loops: "$newgameplus_loops
-        $ ", autosave: "$autosave$", crowdcontrol: "$crowdcontrol$", codes_mode: "$codes_mode
-        $ ", "$ StringifyDifficultySettings(settings);
+        $ ", autosave: "$autosave$", crowdcontrol: "$crowdcontrol$", codes_mode: "$codes_mode;
 }
 
 simulated function string StringifyDifficultySettings( FlagsSettings s )
@@ -673,14 +724,19 @@ simulated function string StringifyDifficultySettings( FlagsSettings s )
         $ ", enemiesrandomized: "$s.enemiesrandomized$", enemyrespawn: "$s.enemyrespawn$", infodevices: "$s.infodevices
         $ ", startinglocations: "$s.startinglocations$", goals: "$s.goals$", equipment: "$s.equipment$", dancingpercent: "$s.dancingpercent
         $ ", medbots: "$s.medbots$", repairbots: "$s.repairbots$", turrets_move: "$s.turrets_move$", turrets_add: "$s.turrets_add
-        $ ", banned_skills: "$s.banned_skills$", banned_skill_levels: "$s.banned_skill_levels
-        $ ", enemies_nonhumans: "$s.enemies_nonhumans;
+        $ ", banned_skills: "$s.banned_skills$", banned_skill_levels: "$s.banned_skill_levels$ ", enemies_nonhumans: "$s.enemies_nonhumans
+        $ ", swapitems: "$s.swapitems$", swapcontainers: "$s.swapcontainers$", augcans: "$s.augcans
+        $ ", min_aug_value: "$s.min_aug_value$", max_aug_value: "$s.max_aug_value
+        $ ", min_skill_value: "$s.min_skill_value$", max_skill_value: "$s.max_skill_value
+        $ ", min_weapon_dmg: "$s.min_weapon_dmg$", max_weapon_dmg: "$s.max_weapon_dmg
+        $ ", min_weapon_shottime: "$s.min_weapon_shottime$", max_weapon_shottime: "$s.max_weapon_shottime;
 }
 
 simulated function int FlagsHash()
 {
     local int hash;
     hash = dxr.Crc(StringifyFlags());
+    hash += dxr.Crc(StringifyDifficultySettings(settings));
     hash = int(abs(hash));
     return hash;
 }

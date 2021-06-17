@@ -47,7 +47,7 @@ function CheckConfig()
     }
 }
 
-function SwapAll(name classname)
+function SwapAll(name classname, float percent_chance)
 {
     local Actor temp[4096];
     local Actor a, b;
@@ -62,6 +62,7 @@ function SwapAll(name classname)
     }
 
     for(i=0; i<num; i++) {
+        if( percent_chance<100 && !chance_single(percent_chance) ) continue;
         slot=rng(num-1);// -1 because we skip ourself
         if(slot >= i) slot++;
         Swap(temp[i], temp[slot]);

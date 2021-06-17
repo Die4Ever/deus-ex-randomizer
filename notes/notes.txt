@@ -37,16 +37,12 @@ EditPackages=HXRandomizer
 v1.6 Alpha:
 	"Race" difficulty, same as hard mode but disable rando goals?
 	crowd control auto save when giving items?
-	03_nyc_unatcoisland didn't detect that I knew the code for the shack (computers seem to work but not keypads?)
-	need backtracking button for 03 sewer/airfieldhelicopter door (near the falling bridge thing)
-	maybe need a datacube with the versalife elevator code somewhere, like in versalife itself
-	paris dependency on the club isn't working?
 	NG+ should be able to downlevel default augs, just not below the default level?
 		make StartedWithAug return an int of the starting level instead of just a bool
 	DXRLoadouts ensure tnt crates don't spawn too far from the ground
 	bug in sub base backtracking chopper
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
-	tweak rotations for teleporters?
+	tweak rotations for teleporters? just automatically face away from nearby teleporters/mapexits?
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
 	make horde mode use the DXRAutosave blocking manual saves method instead of the hack-y permanent fake datalink
 	maybe clean up the credits a bit more, especially the DXRFlags section
@@ -54,8 +50,6 @@ v1.6 Alpha:
 v1.6:
 	buff alcohol from 2 to 3 health, limit the drunken effect?
 	show maxCopies for item descriptions
-	enough advanced options to be able to play unrandomized
-		-disable item/container shuffling, aug cannisters and aug values, skill values, loadout, names)
 	use better logic for The Merchant's location, like cameras?
 	use key safe location logic for hazmats vs damage zones (this might only be a big deal for paris?)
 	fix the dumb button to backtrack in paris metro, stacked boxes is better

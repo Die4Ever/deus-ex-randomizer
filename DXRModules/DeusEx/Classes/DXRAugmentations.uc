@@ -1,19 +1,8 @@
 class DXRAugmentations extends DXRBase transient;
 
-var config float min_aug_str;
-var config float max_aug_str;
-
-replication
-{
-    reliable if( Role==ROLE_Authority )
-        min_aug_str, max_aug_str;
-}
-
 function CheckConfig()
 {
-    if( ConfigOlderThan(1,5,9,8) ) {
-        min_aug_str = default.min_aug_str;
-        max_aug_str = default.max_aug_str;
+    if( ConfigOlderThan(1,6,0,1) ) {
     }
     Super.CheckConfig();
 }
@@ -82,6 +71,7 @@ function RandomizeAugCannisters()
     foreach AllActors(class'#var prefix AugmentationCannister', a)
     {
         if( DeusExPlayer(a.Owner) != None ) continue;
+        if( ! chance_single(dxr.flags.settings.augcans) ) continue;
         RandomizeAugCannister(dxr, a);
     }
 }
@@ -150,13 +140,16 @@ function static Name PickRandomAug(DXRando dxr, int banned[50], int numAugs)
 
 simulated function RandoAug(Augmentation a)
 {
+    local float min_aug_value, max_aug_value;
     if( dxr == None ) return;
 
     if( #var prefix AugSpeed(a) != None || #var prefix AugLight(a) != None || #var prefix AugHeartLung(a) != None
     || #var prefix AugIFF(a) != None || #var prefix AugDatalink(a) != None || AugNinja(a) != None )
         return;
 
-    RandoLevelValues(a, min_aug_str, max_aug_str, a.Description);
+    min_aug_value = float(dxr.flags.settings.min_aug_value) / 100;
+    max_aug_value = float(dxr.flags.settings.max_aug_value) / 100;
+    RandoLevelValues(a, min_aug_value, max_aug_value, a.Description);
 }
 
 simulated function string DescriptionLevel(Actor act, int i, out string word)
@@ -275,6 +268,4 @@ simulated function RemoveRandomAug(#var PlayerPawn  p)
 
 defaultproperties
 {
-    min_aug_str=0.5
-    max_aug_str=1.5
 }

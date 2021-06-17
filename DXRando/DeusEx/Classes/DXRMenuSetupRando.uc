@@ -229,6 +229,61 @@ function BindControls(bool writing, optional string action)
     EnumOption(id, "No Assistance With Passwords", 0, writing, f.codes_mode);
     id++;
 
+    labels[id] = "Swap Items %";
+    helptexts[id] = "The chance for item positions to be swapped.";
+    Slider(id, f.settings.swapitems, 0, 100, writing);
+    id++;
+
+    labels[id] = "Swap Containers %";
+    helptexts[id] = "The chance for container positions to be swapped.";
+    Slider(id, f.settings.swapcontainers, 0, 100, writing);
+    id++;
+
+    labels[id] = "Aug Cans Randomized %";
+    helptexts[id] = "The chance for aug cannisters to have their contents changed.";
+    Slider(id, f.settings.augcans, 0, 100, writing);
+    id++;
+
+    labels[id] = "Min Aug Strength %";
+    helptexts[id] = "The minmum strength for augmentations.";
+    Slider(id, f.settings.min_aug_value, 0, 300, writing);
+    id++;
+
+    labels[id] = "Max Aug Strength %";
+    helptexts[id] = "The maximum strength for augmentations.";
+    Slider(id, f.settings.max_aug_value, 0, 300, writing);
+    id++;
+
+    labels[id] = "Min Skill Strength %";
+    helptexts[id] = "The minmum strength for skills.";
+    Slider(id, f.settings.min_skill_value, 0, 300, writing);
+    id++;
+
+    labels[id] = "Max Skill Strength %";
+    helptexts[id] = "The maximum strength for skills.";
+    Slider(id, f.settings.max_skill_value, 0, 300, writing);
+    id++;
+
+    labels[id] = "Min Weapon Damage %";
+    helptexts[id] = "The minmum damage for weapons.";
+    Slider(id, f.settings.min_weapon_dmg, 0, 300, writing);
+    id++;
+
+    labels[id] = "Max Weapon Damage %";
+    helptexts[id] = "The maximum damage for weapons.";
+    Slider(id, f.settings.max_weapon_dmg, 0, 300, writing);
+    id++;
+
+    labels[id] = "Min Weapon Shot Time %";
+    helptexts[id] = "The minmum shot time / firing speed for weapons.";
+    Slider(id, f.settings.min_weapon_shottime, 0, 300, writing);
+    id++;
+
+    labels[id] = "Max Weapon Shot Time %";
+    helptexts[id] = "The maximum shot time / firing speed for weapons.";
+    Slider(id, f.settings.max_weapon_shottime, 0, 300, writing);
+    id++;
+
     if( action == "NEXT" ) InvokeNewGameScreen(combatDifficulty, InitDxr());
 }
 
