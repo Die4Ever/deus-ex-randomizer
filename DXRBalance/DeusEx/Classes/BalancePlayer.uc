@@ -233,3 +233,117 @@ function CatchFire( Pawn burner )
     if(doSetTimer)
         SetTimer(4.0, True);
 }
+
+simulated function DrugEffects(float deltaTime)
+{
+    local float olddrugEffectTimer;
+
+    // set a cap on the effect strength separately from the duration
+    olddrugEffectTimer = drugEffectTimer;
+    drugEffectTimer = FMin( drugEffectTimer, 120.0 );
+    Super.DrugEffects(deltaTime);
+
+    // calculate duration myself
+    drugEffectTimer = FMin(olddrugEffectTimer, 120.0 );
+    drugEffectTimer -= deltaTime * 1.5;
+    if (drugEffectTimer < 0)
+        drugEffectTimer = 0;
+}
+
+// ----------------------------------------------------------------------
+// HealPlayer()
+// ----------------------------------------------------------------------
+
+function int HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill)
+{
+    local int adjustedHealAmount;
+
+    adjustedHealAmount = _HealPlayer(baseHealPoints, bUseMedicineSkill);
+    
+    if (adjustedHealAmount == 1)
+        ClientMessage(Sprintf(HealedPointLabel, adjustedHealAmount));
+    else if(adjustedHealAmount > 0)
+        ClientMessage(Sprintf(HealedPointsLabel, adjustedHealAmount));
+    
+    return adjustedHealAmount;
+}
+
+function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill)
+{
+    local float mult;
+    local int adjustedHealAmount, aha2, tempaha;
+    local int origHealAmount;
+    local float dividedHealAmount;
+
+    if (bUseMedicineSkill)
+        adjustedHealAmount = CalculateSkillHealAmount(baseHealPoints);
+    else
+        adjustedHealAmount = baseHealPoints;
+
+    origHealAmount = adjustedHealAmount;
+
+    if (adjustedHealAmount > 0)
+    {
+        if (bUseMedicineSkill)
+            PlaySound(sound'MedicalHiss', SLOT_None,,, 256);
+
+        // Heal by 3 regions via multiplayer game
+        if (( Level.NetMode == NM_DedicatedServer ) || ( Level.NetMode == NM_ListenServer ))
+        {
+         // DEUS_EX AMSD If legs broken, heal them a little bit first
+         if (HealthLegLeft == 0)
+         {
+            aha2 = adjustedHealAmount;
+            if (aha2 >= 5)
+               aha2 = 5;
+            tempaha = aha2;
+            adjustedHealAmount = adjustedHealAmount - aha2;
+            HealPart(HealthLegLeft, aha2);
+            HealPart(HealthLegRight,tempaha);
+                mpMsgServerFlags = mpMsgServerFlags & (~MPSERVERFLAG_LostLegs);
+         }
+            HealPart(HealthHead, adjustedHealAmount);
+
+            if ( adjustedHealAmount > 0 )
+            {
+                aha2 = adjustedHealAmount;
+                HealPart(HealthTorso, aha2);
+                aha2 = adjustedHealAmount;
+                HealPart(HealthArmRight,aha2);
+                HealPart(HealthArmLeft, adjustedHealAmount);
+            }
+            if ( adjustedHealAmount > 0 )
+            {
+                aha2 = adjustedHealAmount;
+                HealPart(HealthLegRight, aha2);
+                HealPart(HealthLegLeft, adjustedHealAmount);
+            }
+        }
+        else
+        {
+            HealBrokenPart(HealthLegRight, adjustedHealAmount);
+            HealBrokenPart(HealthLegLeft, adjustedHealAmount);
+            HealPart(HealthHead, adjustedHealAmount);
+            HealPart(HealthTorso, adjustedHealAmount);
+            HealPart(HealthLegRight, adjustedHealAmount);
+            HealPart(HealthLegLeft, adjustedHealAmount);
+            HealPart(HealthArmRight, adjustedHealAmount);
+            HealPart(HealthArmLeft, adjustedHealAmount);
+        }
+
+        GenerateTotalHealth();
+
+        adjustedHealAmount = origHealAmount - adjustedHealAmount;
+    }
+
+    return adjustedHealAmount;
+}
+
+function HealBrokenPart(out int points, out int amt)
+{
+    local int heal;
+    heal = 1;
+    if( points > 0 || amt < heal ) return;
+    amt -= heal;
+    HealPart(points, heal);
+}

@@ -28,7 +28,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(1,6,0,1) ) {
+    if( ConfigOlderThan(1,6,0,2) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -78,7 +78,7 @@ function CheckConfig()
         i++;
 
         add_datacubes[i].map = "06_HONGKONG_STORAGE";
-        add_datacubes[i].text = "Access code to the Versalife nanotech research wing on Level 2: 55655.";
+        add_datacubes[i].text = "Access code to the Versalife nanotech research wing: 55655.";
         i++;
 
         add_datacubes[i].map = "15_AREA51_ENTRANCE";

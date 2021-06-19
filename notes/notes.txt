@@ -35,6 +35,7 @@ EditPackages=HXRandomizer
 
 
 v1.6 Alpha:
+	does HX need more ammo?
 	"Race" difficulty, same as hard mode but disable rando goals?
 	crowd control auto save when giving items?
 	NG+ should be able to downlevel default augs, just not below the default level?
@@ -48,7 +49,6 @@ v1.6 Alpha:
 	maybe clean up the credits a bit more, especially the DXRFlags section
 
 v1.6:
-	buff alcohol from 2 to 3 health, limit the drunken effect?
 	show maxCopies for item descriptions
 	use better logic for The Merchant's location, like cameras?
 	use key safe location logic for hazmats vs damage zones (this might only be a big deal for paris?)
