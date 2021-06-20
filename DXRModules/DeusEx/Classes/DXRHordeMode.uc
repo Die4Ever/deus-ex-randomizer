@@ -43,7 +43,7 @@ var config ItemChances items[32];
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,4,1,0) ) {
+    if( ConfigOlderThan(1,6,0,3) ) {
         time_between_waves = 65;
         time_before_damage = 180;
         damage_timer = 10;
@@ -56,6 +56,7 @@ function CheckConfig()
         difficulty_per_wave = 1.5;
         difficulty_first_wave = 2;
         wine_bottles_per_enemy = 2;
+
         for(i=0; i < ArrayCount(enemies); i++) {
             enemies[i].type = "";
             enemies[i].chance = 0;
@@ -124,6 +125,10 @@ function CheckConfig()
         enemies[i].minWave = 7;
         enemies[i].difficulty = 4;
 
+        for(i=0; i<ArrayCount(items); i++) {
+            items[i].type="";
+            items[i].chance=0;
+        }
         i=0;
         items[i].type = "BioelectricCell";
         items[i].chance = 6;
@@ -179,8 +184,7 @@ function CheckConfig()
         i++;
         items[i].type = "AugmentationUpgradeCannister";
         items[i].chance = 3;
-    }
-    if( ConfigOlderThan(1,4,2,0) ) {
+
         map_name = "11_paris_cathedral";
         starting_location = vect(-3811.785156, 2170.053223, -774.903442);
         default_orders = 'Attacking';
@@ -247,7 +251,6 @@ function AnyEntry()
     dxre.GiveRandomMeleeWeapon(player());
     GiveItem(player(), class'Medkit');
     GiveItem(player(), class'FireExtinguisher');
-    player().dataLinkPlay = Spawn(class'DataLinkPlay',, 'dummydatalink');//this prevents saving the game :)
     time_to_next_wave = time_between_waves;
 
     foreach AllActors(class'Teleporter', t) {
@@ -356,6 +359,7 @@ function StartWave()
     local int num_carcasses;
     local int num_items;
     local Inventory item;
+    local Weapon w;
     foreach AllActors(class'MedicalBot', mb) {
         mb.TakeDamage(10000, mb, mb.Location, vect(0,0,0), 'Exploded');
     }
@@ -373,6 +377,14 @@ function StartWave()
             //c.TakeDamage(10000, None, c.Location, vect(0,0,0), 'Exploded');
             c.Destroy();
         }
+    }
+    num_items=0;
+    foreach AllActors(class'Weapon', w) {
+        if( w.Owner != None ) continue;
+        if( ! IsMeleeWeapon(w) ) continue;
+        num_items++;
+        w.Destroy();
+
     }
     in_wave = true;
     time_in_wave = 0;

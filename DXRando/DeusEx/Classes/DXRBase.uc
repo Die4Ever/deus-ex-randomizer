@@ -164,7 +164,9 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
     local #var prefix Skill sk;
     local string s, word;
     local int i, len, oldseed;
-    local float prev_d, d, v, min_val;
+    local float v;
+    local float d_min, d_max, avg_diff;
+    local float points[8];
 
     oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ " RandoLevelValues " $ a.class.name ) );
 
@@ -174,25 +176,53 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
     if( aug != None ) len = ArrayCount(aug.LevelValues);
     else if( sk != None ) len = ArrayCount(sk.LevelValues);
 
-    for(i=0; i < len; i++) {
-        if( aug != None ) d = aug.Default.LevelValues[i];
-        else if( sk != None ) d = sk.Default.LevelValues[i];
+    // figure out the range we will use
+    if( aug != None ) {
+        d_min = aug.Default.LevelValues[0];
+        d_max = aug.Default.LevelValues[len-1];
+    }
+    else if( sk != None ) {
+        d_min = sk.Default.LevelValues[0];
+        d_max = sk.Default.LevelValues[len-1];
+    }
 
-        v = rngrange(d, min, max);
-        if( i>0 && prev_d < d && v < min_val ) v = min_val;
-        else if( i>0 && prev_d > d && v > min_val ) v = min_val;
-        min_val = v;
+    // expand the range for more variety
+    avg_diff = (d_max - d_min) / float(len);
+    d_min -= avg_diff*min;
+    d_max += avg_diff*max;
+
+    // choose random points within the 0-1 range
+    for(i=0; i < len; i++) {
+        points[i] = rngf();
+        // some slight weighting
+        if( i == 0 ) points[i] *= 0.75;
+        if( i == len-1 ) points[i] = points[i]*0.75+0.25;
+    }
+
+    // sort the values
+    for(i=1; i < len; i++) {
+        if( points[i] < points[i-1] ) {
+            v = points[i];
+            points[i] = points[i-1];
+            points[i-1] = v;
+            i=0;
+        }
+    }
+
+    // apply the values
+    for(i=0; i < len; i++) {
+        v = points[i] * (d_max-d_min) + d_min;
 
         if( aug != None ) aug.LevelValues[i] = v;
         else if( sk != None ) sk.LevelValues[i] = v;
 
         if( i>0 ) s = s $ ", ";
         s = s $ DescriptionLevel(a, i, word);
-        prev_d = d;
     }
 
     s = "(" $ word $ ": " $ s $ ")";
 
+    info("RandoLevelValues "$a$" - d_min: "$d_min$", d_max: "$d_max$", s: "$s);
     dxr.SetSeed( oldseed );
 
     if( InStr(Desc, s) == -1 ) {

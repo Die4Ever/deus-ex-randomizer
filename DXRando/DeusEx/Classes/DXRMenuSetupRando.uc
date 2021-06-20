@@ -244,23 +244,23 @@ function BindControls(bool writing, optional string action)
     Slider(id, f.settings.augcans, 0, 100, writing);
     id++;
 
-    labels[id] = "Min Aug Strength %";
-    helptexts[id] = "The minmum strength for augmentations.";
+    labels[id] = "Min Aug Strength -%";
+    helptexts[id] = "Reduce the minimum strength for augmentations.";
     Slider(id, f.settings.min_aug_value, 0, 300, writing);
     id++;
 
-    labels[id] = "Max Aug Strength %";
-    helptexts[id] = "The maximum strength for augmentations.";
+    labels[id] = "Max Aug Strength +%";
+    helptexts[id] = "The additional maximum strength for augmentations.";
     Slider(id, f.settings.max_aug_value, 0, 300, writing);
     id++;
 
-    labels[id] = "Min Skill Strength %";
-    helptexts[id] = "The minmum strength for skills.";
+    labels[id] = "Min Skill Strength -%";
+    helptexts[id] = "Reduce the minimum strength for skills.";
     Slider(id, f.settings.min_skill_value, 0, 300, writing);
     id++;
 
-    labels[id] = "Max Skill Strength %";
-    helptexts[id] = "The maximum strength for skills.";
+    labels[id] = "Max Skill Strength +%";
+    helptexts[id] = "The additional maximum strength for skills.";
     Slider(id, f.settings.max_skill_value, 0, 300, writing);
     id++;
 

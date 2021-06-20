@@ -12,7 +12,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 
 [![v1.5 Trailer](https://img.youtube.com/vi/A0Li3XuBjGg/0.jpg)](https://www.youtube.com/watch?v=A0Li3XuBjGg)
 
-### Currently in v1.5.9, DXRando randomizes
+### Currently in v1.6, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
@@ -38,8 +38,8 @@ There are also settings for
     * takes away 1 random augmentation, and 1 of your weapons
     * takes away half your skill points and 5 random skill levels, so the player has to choose which ones to level up first
 * new game modes!
-    * Entrance Randomization is in beta, it changes what level each teleporter takes you to, but keeps it within the same mission.
-    * Horde Mode is in beta and mostly I think it just needs balancing.
+    * Entrance Randomization - changes what level each teleporter takes you to, but keeps it within the same mission.
+    * Horde Mode - fight for your life to see how long you can survive in the Paris Cathedral.
 * challenge mode loadouts!
     * Stick With the Prod Pure means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts

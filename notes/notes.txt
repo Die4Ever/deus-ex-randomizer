@@ -45,7 +45,6 @@ v1.6 Alpha:
 	do I need to make choppers appear when backtracking? like appearing at the mapexit on the roof of the sub base?
 	tweak rotations for teleporters? just automatically face away from nearby teleporters/mapexits?
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
-	make horde mode use the DXRAutosave blocking manual saves method instead of the hack-y permanent fake datalink
 	maybe clean up the credits a bit more, especially the DXRFlags section
 
 v1.6:
