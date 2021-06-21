@@ -148,14 +148,19 @@ simulated static function float pow(float m, float e)
     return exp(e * loge(m) );
 }
 
-simulated function float rngexp(float min, float max, float curve)
+simulated function float rngexp(float origmin, float origmax, float curve)
 {
-    local float frange, f;
-    min = pow(min, 1/curve);
+    local float frange, f, min, max;
+    min = origmin;
+    max = origmax;
+    if(min != 0)
+        min = pow(min, 1/curve);
     max = pow(max+1.0, 1/curve);
     frange = max-min;
     f = rngf()*frange + min;
-    return pow(f, curve);
+    f = pow(f, curve);
+    f = FClamp( f, origmin, origmax );
+    return f;
 }
 
 simulated function bool RandoLevelValues(Actor a, float min, float max, out string Desc)
@@ -163,10 +168,10 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
     local #var prefix Augmentation aug;
     local #var prefix Skill sk;
     local string s, word;
-    local int i, len, oldseed;
+    local int i, len, mid, oldseed;
     local float v;
     local float d_min, d_max, avg_diff;
-    local float points[8];
+    local float points[16];
 
     oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ " RandoLevelValues " $ a.class.name ) );
 
@@ -191,16 +196,26 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
     d_min -= avg_diff*min;
     d_max += avg_diff*max;
 
-    // choose random points within the 0-1 range
+    // we'll remove values later, 1 or 2?
+    len+=6;
+
+    // choose random points within the 0-1 range, with an extra point so we can remove the median
     for(i=0; i < len; i++) {
-        points[i] = rngf();
-        // some slight weighting
-        if( i == 0 ) points[i] *= 0.75;
-        if( i == len-1 ) points[i] = points[i]*0.75+0.25;
+        //v = rngf();
+        v = rngexp(0,100,1.5) / 100.0;
+        // add some weighting
+        /*v *= 2.0;
+        v += float(i) / float(len-1);
+        v /= 3.0;*/
+        points[i] = v;
     }
 
     // sort the values
     for(i=1; i < len; i++) {
+        if( points[i] < -0 || points[i] > 1 ) {
+            warning("RandoLevelValues sorting, "$points[i]);
+            points[i] = FClamp( points[i], 0, 1 );
+        }
         if( points[i] < points[i-1] ) {
             v = points[i];
             points[i] = points[i-1];
@@ -209,12 +224,44 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
         }
     }
 
+    // remove the smallest jumps, is this better than weighting the values?
+    RemoveSmallestJump(len--, points);
+    RemoveSmallestJump(len--, points);
+    RemoveSmallestJump(len--, points);
+    RemoveSmallestJump(len--, points);
+    RemoveSmallestJump(len--, points);
+    RemoveSmallestJump(len--, points);
+
+    // randomize deltas between levels, away from midpoint
+    /*mid = len/2-1;
+    points[mid] = rngrange( float(mid+1) / float(len), 0.5, 1.25 );
+    for(i=mid+1; i < len; i++) {
+        // accumulate for higher levels
+        v = points[i-1];
+        v += rngrange( 1.0/float(len), 0.1, 1.7 );
+        points[i] = FClamp(v, 0, 1);
+    }
+    for(i=mid-1; i>=0; i--) {
+        // subtrack for lower levels
+        v = points[i+1];
+        v -= rngrange( 1.0/float(len), 0.1, 1.7 );
+        points[i] = FClamp(v, 0, 1);
+    }*/
+    // randomize deltas between levels
+    /*for(i=0; i < len; i++) {
+        v = rngrange( 1.0/float(len), 0.5, 1.5 );
+        if( i > 0 )
+            v += points[i-1];
+        
+        points[i] = v;
+    }*/
+
     // apply the values
     for(i=0; i < len; i++) {
-        v = points[i] * (d_max-d_min) + d_min;
+        v = points[i];
 
-        if( aug != None ) aug.LevelValues[i] = v;
-        else if( sk != None ) sk.LevelValues[i] = v;
+        if( aug != None ) aug.LevelValues[i] = WeightedLevelValue(aug.LevelValues[i], v, d_max, d_min, i, len);
+        else if( sk != None ) sk.LevelValues[i] = WeightedLevelValue(sk.LevelValues[i], v, d_max, d_min, i, len);
 
         if( i>0 ) s = s $ ", ";
         s = s $ DescriptionLevel(a, i, word);
@@ -222,7 +269,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
 
     s = "(" $ word $ ": " $ s $ ")";
 
-    info("RandoLevelValues "$a$" - d_min: "$d_min$", d_max: "$d_max$", s: "$s);
+    info("RandoLevelValues "$a$" = "$s);
     dxr.SetSeed( oldseed );
 
     if( InStr(Desc, s) == -1 ) {
@@ -230,6 +277,39 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
         return true;
     }
     return false;
+}
+
+simulated function float WeightedLevelValue(float orig, float v, float d_max, float d_min, int i, int len)
+{
+    //if(i==0) v *= 0.9;
+    //if(i+1==len) v = (v*3.0+1.0)/4.0;
+    v = v * (d_max-d_min) + d_min;
+    return v;
+}
+
+simulated function RemoveSmallestJump(int len, out float a[16])
+{
+    local float v;
+    local int i;
+
+    v = a[1]-a[0];
+    for(i=1; i < len; i++) {
+        if( a[i] - a[i-1] < v ) {
+            v = a[i] - a[i-1];
+        }
+    }
+
+    for(i=1; i < len; i++) {
+        if( a[i] - a[i-1] > v ) continue;
+        
+        if( i==1 )// retain the lowest value to keep the range large
+            i++;
+        
+        for(v=0; i<len; i++) {
+            a[i-1] = a[i];
+        }
+        break;
+    }
 }
 
 simulated function string DescriptionLevel(Actor a, int i, out string word)

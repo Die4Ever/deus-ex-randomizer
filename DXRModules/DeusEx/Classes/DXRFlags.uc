@@ -182,7 +182,7 @@ simulated static function CurrentVersion(optional out int major, optional out in
     major=1;
     minor=6;
     patch=0;
-    build=3;//build can't be higher than 99
+    build=4;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)
@@ -195,7 +195,7 @@ simulated static function string VersionString(optional bool full)
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,6,0,3) ) {
+    if( ConfigOlderThan(1,6,0,4) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -236,10 +236,10 @@ function CheckConfig()
         difficulty_settings[i].swapitems = 100;
         difficulty_settings[i].swapcontainers = 100;
         difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].min_aug_value = 50;
-        difficulty_settings[i].max_aug_value = 50;
-        difficulty_settings[i].min_skill_value = 50;
-        difficulty_settings[i].max_skill_value = 50;
+        difficulty_settings[i].min_aug_value = 30;
+        difficulty_settings[i].max_aug_value = 100;
+        difficulty_settings[i].min_skill_value = 30;
+        difficulty_settings[i].max_skill_value = 100;
         difficulty_settings[i].min_weapon_dmg = 50;
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
@@ -286,10 +286,10 @@ function CheckConfig()
         difficulty_settings[i].swapitems = 100;
         difficulty_settings[i].swapcontainers = 100;
         difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].min_aug_value = 50;
-        difficulty_settings[i].max_aug_value = 50;
-        difficulty_settings[i].min_skill_value = 50;
-        difficulty_settings[i].max_skill_value = 50;
+        difficulty_settings[i].min_aug_value = 30;
+        difficulty_settings[i].max_aug_value = 100;
+        difficulty_settings[i].min_skill_value = 30;
+        difficulty_settings[i].max_skill_value = 100;
         difficulty_settings[i].min_weapon_dmg = 50;
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
@@ -336,10 +336,10 @@ function CheckConfig()
         difficulty_settings[i].swapitems = 100;
         difficulty_settings[i].swapcontainers = 100;
         difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].min_aug_value = 50;
-        difficulty_settings[i].max_aug_value = 50;
-        difficulty_settings[i].min_skill_value = 50;
-        difficulty_settings[i].max_skill_value = 50;
+        difficulty_settings[i].min_aug_value = 30;
+        difficulty_settings[i].max_aug_value = 100;
+        difficulty_settings[i].min_skill_value = 30;
+        difficulty_settings[i].max_skill_value = 100;
         difficulty_settings[i].min_weapon_dmg = 50;
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
@@ -385,10 +385,10 @@ function CheckConfig()
         difficulty_settings[i].swapitems = 100;
         difficulty_settings[i].swapcontainers = 100;
         difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].min_aug_value = 50;
-        difficulty_settings[i].max_aug_value = 50;
-        difficulty_settings[i].min_skill_value = 50;
-        difficulty_settings[i].max_skill_value = 50;
+        difficulty_settings[i].min_aug_value = 30;
+        difficulty_settings[i].max_aug_value = 100;
+        difficulty_settings[i].min_skill_value = 30;
+        difficulty_settings[i].max_skill_value = 100;
         difficulty_settings[i].min_weapon_dmg = 50;
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
@@ -435,10 +435,10 @@ function CheckConfig()
         difficulty_settings[i].swapitems = 100;
         difficulty_settings[i].swapcontainers = 100;
         difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].min_aug_value = 50;
-        difficulty_settings[i].max_aug_value = 50;
-        difficulty_settings[i].min_skill_value = 50;
-        difficulty_settings[i].max_skill_value = 50;
+        difficulty_settings[i].min_aug_value = 30;
+        difficulty_settings[i].max_aug_value = 100;
+        difficulty_settings[i].min_skill_value = 30;
+        difficulty_settings[i].max_skill_value = 100;
         difficulty_settings[i].min_weapon_dmg = 50;
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
@@ -905,6 +905,8 @@ function ExtendedTests()
     testfloatrange( pow(9,4), 9*9*9*9, 0.001, "pow");
     testfloatrange( pow(5.7,3), 5.7*5.7*5.7, 0.001, "pow");
 
+    TestRngExp(0, 1, 0.5, 1.5);
+
     for(i=1;i<=4;i++)
         TestRngExp(25, 300, 100, i);
     for(i=1;i<=4;i++)
@@ -1021,10 +1023,11 @@ function TestStorage()
     ds.Destroy();
 }
 
-function TestRngExp(int minrange, int maxrange, int mid, float curve)
+function TestRngExp(float minrange, float maxrange, float mid, float curve)
 {
-    local int min, max, avg, lows, highs, mids, times;
-    local int i, t;
+    local float min, max, avg, t;
+    local int lows, highs, mids, times;
+    local int i;
 
     times = 10000;
     min=maxrange;
@@ -1041,10 +1044,10 @@ function TestRngExp(int minrange, int maxrange, int mid, float curve)
         if(t>mid) highs++;
         if(t==mid) mids++;
     }
-    avg /= times;
-    test( min >= minrange-1, "exponential ^"$curve$" - min: "$min);
+    avg /= float(times);
+    test( min >= minrange, "exponential ^"$curve$" - min: "$min);
     test( min < minrange+10, "exponential ^"$curve$" - min: "$min);
-    test( max <= maxrange+1, "exponential ^"$curve$" - max: "$max);
+    test( max <= maxrange, "exponential ^"$curve$" - max: "$max);
     test( max > maxrange-10, "exponential ^"$curve$" - max: "$max);
     test( avg < maxrange, "exponential ^"$curve$" - avg "$avg$" < maxrange "$maxrange);
     test( avg > minrange, "exponential ^"$curve$" - avg "$avg$" > minrange "$minrange);
