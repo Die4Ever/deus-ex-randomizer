@@ -35,7 +35,7 @@ struct FlagsSettings {
     var int turrets_move, turrets_add;
     var int merchants;
     var int banned_skills, banned_skill_levels, enemies_nonhumans;
-    var int swapitems, swapcontainers, augcans, min_aug_value, max_aug_value, min_skill_value, max_skill_value;
+    var int swapitems, swapcontainers, augcans, aug_value_rando, skill_value_rando;
     var int min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime;
 };
 
@@ -182,7 +182,7 @@ simulated static function CurrentVersion(optional out int major, optional out in
     major=1;
     minor=6;
     patch=0;
-    build=4;//build can't be higher than 99
+    build=5;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)
@@ -195,7 +195,7 @@ simulated static function string VersionString(optional bool full)
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,6,0,4) ) {
+    if( ConfigOlderThan(1,6,0,5) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -236,10 +236,8 @@ function CheckConfig()
         difficulty_settings[i].swapitems = 100;
         difficulty_settings[i].swapcontainers = 100;
         difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].min_aug_value = 30;
-        difficulty_settings[i].max_aug_value = 100;
-        difficulty_settings[i].min_skill_value = 30;
-        difficulty_settings[i].max_skill_value = 100;
+        difficulty_settings[i].aug_value_rando = 100;
+        difficulty_settings[i].skill_value_rando = 100;
         difficulty_settings[i].min_weapon_dmg = 50;
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
@@ -286,10 +284,8 @@ function CheckConfig()
         difficulty_settings[i].swapitems = 100;
         difficulty_settings[i].swapcontainers = 100;
         difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].min_aug_value = 30;
-        difficulty_settings[i].max_aug_value = 100;
-        difficulty_settings[i].min_skill_value = 30;
-        difficulty_settings[i].max_skill_value = 100;
+        difficulty_settings[i].aug_value_rando = 100;
+        difficulty_settings[i].skill_value_rando = 100;
         difficulty_settings[i].min_weapon_dmg = 50;
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
@@ -336,10 +332,8 @@ function CheckConfig()
         difficulty_settings[i].swapitems = 100;
         difficulty_settings[i].swapcontainers = 100;
         difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].min_aug_value = 30;
-        difficulty_settings[i].max_aug_value = 100;
-        difficulty_settings[i].min_skill_value = 30;
-        difficulty_settings[i].max_skill_value = 100;
+        difficulty_settings[i].aug_value_rando = 100;
+        difficulty_settings[i].skill_value_rando = 100;
         difficulty_settings[i].min_weapon_dmg = 50;
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
@@ -385,10 +379,8 @@ function CheckConfig()
         difficulty_settings[i].swapitems = 100;
         difficulty_settings[i].swapcontainers = 100;
         difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].min_aug_value = 30;
-        difficulty_settings[i].max_aug_value = 100;
-        difficulty_settings[i].min_skill_value = 30;
-        difficulty_settings[i].max_skill_value = 100;
+        difficulty_settings[i].aug_value_rando = 100;
+        difficulty_settings[i].skill_value_rando = 100;
         difficulty_settings[i].min_weapon_dmg = 50;
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
@@ -435,10 +427,8 @@ function CheckConfig()
         difficulty_settings[i].swapitems = 100;
         difficulty_settings[i].swapcontainers = 100;
         difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].min_aug_value = 30;
-        difficulty_settings[i].max_aug_value = 100;
-        difficulty_settings[i].min_skill_value = 30;
-        difficulty_settings[i].max_skill_value = 100;
+        difficulty_settings[i].aug_value_rando = 100;
+        difficulty_settings[i].skill_value_rando = 100;
         difficulty_settings[i].min_weapon_dmg = 50;
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
@@ -569,10 +559,8 @@ simulated function BindFlags(bool writing)
     FlagInt('Rando_swapitems', settings.swapitems, writing);
     FlagInt('Rando_swapcontainers', settings.swapcontainers, writing);
     FlagInt('Rando_augcans', settings.augcans, writing);
-    FlagInt('Rando_min_aug_value', settings.min_aug_value, writing);
-    FlagInt('Rando_max_aug_value', settings.max_aug_value, writing);
-    FlagInt('Rando_min_skill_value', settings.min_skill_value, writing);
-    FlagInt('Rando_max_skill_value', settings.max_skill_value, writing);
+    FlagInt('Rando_aug_value_rando', settings.aug_value_rando, writing);
+    FlagInt('Rando_skill_value_rando', settings.skill_value_rando, writing);
     FlagInt('Rando_min_weapon_dmg', settings.min_weapon_dmg, writing);
     FlagInt('Rando_max_weapon_dmg', settings.max_weapon_dmg, writing);
     FlagInt('Rando_min_weapon_shottime', settings.min_weapon_shottime, writing);
@@ -726,8 +714,7 @@ simulated function string StringifyDifficultySettings( FlagsSettings s )
         $ ", medbots: "$s.medbots$", repairbots: "$s.repairbots$", turrets_move: "$s.turrets_move$", turrets_add: "$s.turrets_add
         $ ", banned_skills: "$s.banned_skills$", banned_skill_levels: "$s.banned_skill_levels$ ", enemies_nonhumans: "$s.enemies_nonhumans
         $ ", swapitems: "$s.swapitems$", swapcontainers: "$s.swapcontainers$", augcans: "$s.augcans
-        $ ", min_aug_value: "$s.min_aug_value$", max_aug_value: "$s.max_aug_value
-        $ ", min_skill_value: "$s.min_skill_value$", max_skill_value: "$s.max_skill_value
+        $ ", aug_value_rando: "$s.aug_value_rando$", skill_value_rando: "$s.skill_value_rando
         $ ", min_weapon_dmg: "$s.min_weapon_dmg$", max_weapon_dmg: "$s.max_weapon_dmg
         $ ", min_weapon_shottime: "$s.min_weapon_shottime$", max_weapon_shottime: "$s.max_weapon_shottime;
 }

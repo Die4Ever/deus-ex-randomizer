@@ -163,12 +163,12 @@ simulated function float rngexp(float origmin, float origmax, float curve)
     return f;
 }
 
-simulated function bool RandoLevelValues(Actor a, float min, float max, out string Desc)
+simulated function bool RandoLevelValues(Actor a, float min, float max, float wet, out string Desc)
 {
     local #var prefix Augmentation aug;
     local #var prefix Skill sk;
     local string s, word;
-    local int i, len, mid, oldseed;
+    local int i, len, mid, oldseed, removals;
     local float v;
     local float d_min, d_max, avg_diff;
     local float points[16];
@@ -197,16 +197,12 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
     d_max += avg_diff*max;
 
     // we'll remove values later, 1 or 2?
-    len+=6;
+    removals = 3;
+    len += removals;
 
     // choose random points within the 0-1 range, with an extra point so we can remove the median
     for(i=0; i < len; i++) {
-        //v = rngf();
-        v = rngexp(0,100,1.5) / 100.0;
-        // add some weighting
-        /*v *= 2.0;
-        v += float(i) / float(len-1);
-        v /= 3.0;*/
+        v = rngexp(0, 100, 1.4) / 100.0;
         points[i] = v;
     }
 
@@ -225,43 +221,16 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
     }
 
     // remove the smallest jumps, is this better than weighting the values?
-    RemoveSmallestJump(len--, points);
-    RemoveSmallestJump(len--, points);
-    RemoveSmallestJump(len--, points);
-    RemoveSmallestJump(len--, points);
-    RemoveSmallestJump(len--, points);
-    RemoveSmallestJump(len--, points);
-
-    // randomize deltas between levels, away from midpoint
-    /*mid = len/2-1;
-    points[mid] = rngrange( float(mid+1) / float(len), 0.5, 1.25 );
-    for(i=mid+1; i < len; i++) {
-        // accumulate for higher levels
-        v = points[i-1];
-        v += rngrange( 1.0/float(len), 0.1, 1.7 );
-        points[i] = FClamp(v, 0, 1);
+    for(i=0; i < removals; i++) {
+        RemoveSmallestJump(len--, points);
     }
-    for(i=mid-1; i>=0; i--) {
-        // subtrack for lower levels
-        v = points[i+1];
-        v -= rngrange( 1.0/float(len), 0.1, 1.7 );
-        points[i] = FClamp(v, 0, 1);
-    }*/
-    // randomize deltas between levels
-    /*for(i=0; i < len; i++) {
-        v = rngrange( 1.0/float(len), 0.5, 1.5 );
-        if( i > 0 )
-            v += points[i-1];
-        
-        points[i] = v;
-    }*/
-
+    
     // apply the values
     for(i=0; i < len; i++) {
         v = points[i];
 
-        if( aug != None ) aug.LevelValues[i] = WeightedLevelValue(aug.LevelValues[i], v, d_max, d_min, i, len);
-        else if( sk != None ) sk.LevelValues[i] = WeightedLevelValue(sk.LevelValues[i], v, d_max, d_min, i, len);
+        if( aug != None ) aug.LevelValues[i] = WeightedLevelValue(aug.LevelValues[i], v, d_max, d_min, wet, i, len);
+        else if( sk != None ) sk.LevelValues[i] = WeightedLevelValue(sk.LevelValues[i], v, d_max, d_min, wet, i, len);
 
         if( i>0 ) s = s $ ", ";
         s = s $ DescriptionLevel(a, i, word);
@@ -279,11 +248,12 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
     return false;
 }
 
-simulated function float WeightedLevelValue(float orig, float v, float d_max, float d_min, int i, int len)
+simulated function float WeightedLevelValue(float orig, float v, float d_max, float d_min, float wet, int i, int len)
 {
-    //if(i==0) v *= 0.9;
-    //if(i+1==len) v = (v*3.0+1.0)/4.0;
+    local float dry;
     v = v * (d_max-d_min) + d_min;
+    dry = 1.0 - wet;
+    v = ( v * wet ) + ( orig * dry );
     return v;
 }
 
