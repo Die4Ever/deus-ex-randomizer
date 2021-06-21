@@ -389,6 +389,7 @@ function bool StartedWithAug(class<Augmentation> a)
     local int i;
     for(i=0; i < ArrayCount(_item_sets[loadout].starting_augs); i++) {
         aclass = _item_sets[loadout].starting_augs[i];
+        if( aclass == None ) continue;
         if( aclass == a ) return true;
 
         if( a.default.AugmentationLocation == LOC_Default )

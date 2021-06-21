@@ -189,7 +189,7 @@ function RandomizeIntro()
     }
     old_skip = _skipactor_types[0];
     _skipactor_types[0] = class'DeusExPlayer';
-    SwapAll('Actor');
+    SwapAll('Actor', 100);
     foreach AllActors(class'Actor', a)
     {
         if( a.bHidden || DeusExPlayer(a) != None ) continue;
@@ -214,7 +214,7 @@ function RandomizeIntro()
     {
         c.bHidden = false;
     }
-    SwapAll('CameraPoint');
+    SwapAll('CameraPoint', 100);
     foreach AllActors(class'CameraPoint', c)
     {
         c.bHidden = true;

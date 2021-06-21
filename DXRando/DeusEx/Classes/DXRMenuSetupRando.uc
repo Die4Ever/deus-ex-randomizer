@@ -229,6 +229,51 @@ function BindControls(bool writing, optional string action)
     EnumOption(id, "No Assistance With Passwords", 0, writing, f.codes_mode);
     id++;
 
+    labels[id] = "Swap Items %";
+    helptexts[id] = "The chance for item positions to be swapped.";
+    Slider(id, f.settings.swapitems, 0, 100, writing);
+    id++;
+
+    labels[id] = "Swap Containers %";
+    helptexts[id] = "The chance for container positions to be swapped.";
+    Slider(id, f.settings.swapcontainers, 0, 100, writing);
+    id++;
+
+    labels[id] = "Aug Cans Randomized %";
+    helptexts[id] = "The chance for aug cannisters to have their contents changed.";
+    Slider(id, f.settings.augcans, 0, 100, writing);
+    id++;
+
+    labels[id] = "Aug Strength Rando %";
+    helptexts[id] = "How much to randomize the strength of augmentations.";
+    Slider(id, f.settings.aug_value_rando, 0, 300, writing);
+    id++;
+
+    labels[id] = "Skill Strength Rando %";
+    helptexts[id] = "How much to randomize the strength of skills.";
+    Slider(id, f.settings.skill_value_rando, 0, 300, writing);
+    id++;
+
+    labels[id] = "Min Weapon Damage %";
+    helptexts[id] = "The minmum damage for weapons.";
+    Slider(id, f.settings.min_weapon_dmg, 0, 300, writing);
+    id++;
+
+    labels[id] = "Max Weapon Damage %";
+    helptexts[id] = "The maximum damage for weapons.";
+    Slider(id, f.settings.max_weapon_dmg, 0, 300, writing);
+    id++;
+
+    labels[id] = "Min Weapon Shot Time %";
+    helptexts[id] = "The minmum shot time / firing speed for weapons.";
+    Slider(id, f.settings.min_weapon_shottime, 0, 300, writing);
+    id++;
+
+    labels[id] = "Max Weapon Shot Time %";
+    helptexts[id] = "The maximum shot time / firing speed for weapons.";
+    Slider(id, f.settings.max_weapon_shottime, 0, 300, writing);
+    id++;
+
     if( action == "NEXT" ) InvokeNewGameScreen(combatDifficulty, InitDxr());
 }
 

@@ -148,23 +148,30 @@ simulated static function float pow(float m, float e)
     return exp(e * loge(m) );
 }
 
-simulated function float rngexp(float min, float max, float curve)
+simulated function float rngexp(float origmin, float origmax, float curve)
 {
-    local float frange, f;
-    min = pow(min, 1/curve);
+    local float frange, f, min, max;
+    min = origmin;
+    max = origmax;
+    if(min != 0)
+        min = pow(min, 1/curve);
     max = pow(max+1.0, 1/curve);
     frange = max-min;
     f = rngf()*frange + min;
-    return pow(f, curve);
+    f = pow(f, curve);
+    f = FClamp( f, origmin, origmax );
+    return f;
 }
 
-simulated function bool RandoLevelValues(Actor a, float min, float max, out string Desc)
+simulated function bool RandoLevelValues(Actor a, float min, float max, float wet, out string Desc)
 {
     local #var prefix Augmentation aug;
     local #var prefix Skill sk;
     local string s, word;
-    local int i, len, oldseed;
-    local float prev_d, d, v, min_val;
+    local int i, len, mid, oldseed, removals;
+    local float v;
+    local float d_min, d_max, avg_diff;
+    local float points[16];
 
     oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ " RandoLevelValues " $ a.class.name ) );
 
@@ -174,25 +181,60 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
     if( aug != None ) len = ArrayCount(aug.LevelValues);
     else if( sk != None ) len = ArrayCount(sk.LevelValues);
 
+    // figure out the range we will use
+    if( aug != None ) {
+        d_min = aug.Default.LevelValues[0];
+        d_max = aug.Default.LevelValues[len-1];
+    }
+    else if( sk != None ) {
+        d_min = sk.Default.LevelValues[0];
+        d_max = sk.Default.LevelValues[len-1];
+    }
+
+    // expand the range for more variety
+    avg_diff = (d_max - d_min) / float(len);
+    d_min -= avg_diff*min;
+    d_max += avg_diff*max;
+
+    // we'll remove values later
+    removals = 1;
+    len += removals;
+
+    // choose random points within the 0-1 range, with an extra point so we can remove the median
     for(i=0; i < len; i++) {
-        if( aug != None ) d = aug.Default.LevelValues[i];
-        else if( sk != None ) d = sk.Default.LevelValues[i];
+        v = rngexp(0, 100, 1.4) / 100.0;
+        points[i] = v;
+    }
 
-        v = rngrange(d, min, max);
-        if( i>0 && prev_d < d && v < min_val ) v = min_val;
-        else if( i>0 && prev_d > d && v > min_val ) v = min_val;
-        min_val = v;
+    // sort the values
+    for(i=1; i < len; i++) {
+        if( points[i] < points[i-1] ) {
+            v = points[i];
+            points[i] = points[i-1];
+            points[i-1] = v;
+            i=0;
+        }
+    }
 
-        if( aug != None ) aug.LevelValues[i] = v;
-        else if( sk != None ) sk.LevelValues[i] = v;
+    // remove the smallest jumps, is this better than weighting the values?
+    for(i=0; i < removals; i++) {
+        RemoveSmallestJump(len--, points);
+    }
+    
+    // apply the values
+    for(i=0; i < len; i++) {
+        v = points[i];
+
+        if( aug != None ) aug.LevelValues[i] = WeightedLevelValue(aug.LevelValues[i], v, d_max, d_min, wet, i, len);
+        else if( sk != None ) sk.LevelValues[i] = WeightedLevelValue(sk.LevelValues[i], v, d_max, d_min, wet, i, len);
 
         if( i>0 ) s = s $ ", ";
         s = s $ DescriptionLevel(a, i, word);
-        prev_d = d;
     }
 
     s = "(" $ word $ ": " $ s $ ")";
 
+    info("RandoLevelValues "$a$" = "$s);
     dxr.SetSeed( oldseed );
 
     if( InStr(Desc, s) == -1 ) {
@@ -200,6 +242,40 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, out stri
         return true;
     }
     return false;
+}
+
+simulated function float WeightedLevelValue(float orig, float v, float d_max, float d_min, float wet, int i, int len)
+{
+    local float dry;
+    v = v * (d_max-d_min) + d_min;
+    dry = 1.0 - wet;
+    v = ( v * wet ) + ( orig * dry );
+    return v;
+}
+
+simulated function RemoveSmallestJump(int len, out float a[16])
+{
+    local float v;
+    local int i;
+
+    v = a[1]-a[0];
+    for(i=1; i < len; i++) {
+        if( a[i] - a[i-1] < v ) {
+            v = a[i] - a[i-1];
+        }
+    }
+
+    for(i=1; i < len; i++) {
+        if( a[i] - a[i-1] > v ) continue;
+        
+        if( i==1 )// retain the lowest value to keep the range large
+            i++;
+        
+        for(v=0; i<len; i++) {
+            a[i-1] = a[i];
+        }
+        break;
+    }
 }
 
 simulated function string DescriptionLevel(Actor a, int i, out string word)

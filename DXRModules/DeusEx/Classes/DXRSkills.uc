@@ -9,27 +9,26 @@ struct SkillCostMultiplier {
 
 var config SkillCostMultiplier SkillCostMultipliers[16];
 
-var config float min_skill_str;
-var config float max_skill_str;
+var config float min_skill_weaken, max_skill_str;
 var config float skill_cost_curve;
 
 replication
 {
     reliable if( Role==ROLE_Authority )
-        SkillCostMultipliers, min_skill_str, max_skill_str, skill_cost_curve;
+        SkillCostMultipliers, min_skill_weaken, max_skill_str, skill_cost_curve;
 }
 
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,5,5,0) ) {
+    if( ConfigOlderThan(1,6,0,5) ) {
         for(i=0; i < ArrayCount(SkillCostMultipliers); i++) {
             SkillCostMultipliers[i].type = "";
             SkillCostMultipliers[i].percent = 100;
             SkillCostMultipliers[i].minLevel = 1;
             SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
         }
-        min_skill_str = default.min_skill_str;
+        min_skill_weaken = default.min_skill_weaken;
         max_skill_str = default.max_skill_str;
         skill_cost_curve = default.skill_cost_curve;
         
@@ -149,7 +148,10 @@ simulated function RandoSkill(Skill aSkill)
 simulated function RandoSkillLevelValues(Skill a)
 {
     local string add_desc;
-    RandoLevelValues(a, min_skill_str, max_skill_str, a.Description);
+    local float skill_value_rando;
+
+    skill_value_rando = float(dxr.flags.settings.skill_value_rando) / 100.0;
+    RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_rando, a.Description);
 
     if( #var prefix SkillDemolition(a) != None ) {
         add_desc = "Each level increases the number of grenades you can carry by 1.";
@@ -286,7 +288,7 @@ simulated function RemoveRandomSkill(#var PlayerPawn  p)
 
 defaultproperties
 {
-    min_skill_str=0.5
-    max_skill_str=1.5
+    min_skill_weaken=0.3
+    max_skill_str=1.0
     skill_cost_curve=2
 }

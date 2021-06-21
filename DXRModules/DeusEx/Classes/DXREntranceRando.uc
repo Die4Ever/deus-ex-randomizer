@@ -70,7 +70,7 @@ var config int min_connections_selfconnect;
 function CheckConfig()
 {
     local int i, k;
-    if( ConfigOlderThan(1,5,7,0) ) {
+    if( ConfigOlderThan(1,6,0,1) ) {
         for(i=0; i < ArrayCount(BannedConnections); i++) {
             BannedConnections[i].map_a = "";
             BannedConnections[i].map_b = "";
@@ -120,6 +120,10 @@ function CheckConfig()
 
         dependencies[i].dependent = "06_HongKong_Storage#canal";
         dependencies[i].dependency = "06_HongKong_WanChai_MJ12Lab";
+        i++;
+
+        dependencies[i].dependent = "10_paris_metro#?toname=PathNode447";
+        dependencies[i].dependency = "10_PARIS_CLUB";
         i++;
 
         dependencies[i].dependent = "12_VANDENBERG_CMD#gas_start";

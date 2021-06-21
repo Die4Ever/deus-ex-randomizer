@@ -1,25 +1,10 @@
 class DXRWeapons extends DXRBase;
 
-var config float min_weapon_dmg;
-var config float max_weapon_dmg;
-var config float min_weapon_shottime;
-var config float max_weapon_shottime;
-
 var DXRLoadouts loadouts;
-
-replication
-{
-    reliable if( Role == ROLE_Authority )
-        min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime;
-}
 
 function CheckConfig()
 {
-    if( ConfigOlderThan(1,4,8,0) ) {
-        min_weapon_dmg = 0.5;
-        max_weapon_dmg = 1.5;
-        min_weapon_shottime = 0.5;
-        max_weapon_shottime = 1.5;
+    if( ConfigOlderThan(1,6,0,1) ) {
     }
     Super.CheckConfig();
 }
@@ -45,11 +30,14 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
 simulated function RandoWeapon(DeusExWeapon w)
 {
     local int oldseed;
+    local float min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime;
     if( dxr == None ) return;
     oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoWeapon " $ w.class.name ) );
 
     if( loadouts != None ) loadouts.AdjustWeapon(w);
 
+    min_weapon_dmg = float(dxr.flags.settings.min_weapon_dmg) / 100;
+    max_weapon_dmg = float(dxr.flags.settings.max_weapon_dmg) / 100;
     w.HitDamage = rngrange(float(w.default.HitDamage), min_weapon_dmg, max_weapon_dmg);
     if( #var prefix WeaponHideAGun(w) == None && w.ProjectileClass != None ) {
         //don't do this for the PS20/PS40 because it shares the PlasmaBolt projectile with the PlasmaRifle in a really dumb way, the PS40 code handles this itself
@@ -98,6 +86,9 @@ simulated function RandoWeapon(DeusExWeapon w)
                 break;
         }
     }
+
+    min_weapon_shottime = float(dxr.flags.settings.min_weapon_shottime) / 100;
+    max_weapon_shottime = float(dxr.flags.settings.max_weapon_shottime) / 100;
     w.ShotTime = rngrange(w.default.ShotTime, min_weapon_shottime, max_weapon_shottime);
     /*f = w.default.ReloadTime * (rngf()+0.5);
     w.ReloadTime = f;

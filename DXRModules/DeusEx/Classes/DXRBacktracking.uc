@@ -368,6 +368,8 @@ function VandSubAnyEntry()
     RemoveChoppers('UN_BlackHeli');
 
     foreach AllActors(class'InterpolationPoint', p, 'UN_BlackHeli_Fly') {
+        p.RateModifier = 0.25;
+        if( p.Position > 4 ) p.bEndOfPath = true;
         if( p.Position > 2 ) continue;
         p.SetLocation(vect(7035.433594, 3841.281250, -379.008362));
         if( p.Position < 2 ) p.SetRotation(rot(0, -15720, 0));

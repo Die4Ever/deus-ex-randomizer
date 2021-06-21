@@ -28,7 +28,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(1,5,7,0) ) {
+    if( ConfigOlderThan(1,6,0,2) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -72,6 +72,14 @@ function CheckConfig()
         DecorationsOverwrites[i].bPushable = c.default.bPushable;
 
         i=0;
+
+        add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
+        add_datacubes[i].text = "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.";
+        i++;
+
+        add_datacubes[i].map = "06_HONGKONG_STORAGE";
+        add_datacubes[i].text = "Access code to the Versalife nanotech research wing: 55655.";
+        i++;
 
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
         add_datacubes[i].text = "My code is 6786";
@@ -413,6 +421,11 @@ function Airfield_FirstEntry()
                 {
                     m.Event = 'GroundLevel';
                 }
+                // sewer door backtracking
+                else if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
+                {
+                    m.Event = 'Sewerdoor';
+                }
             }
             foreach AllActors(class'Trigger', t) {
                 //disable the platforms that fall when you step on them
@@ -420,6 +433,10 @@ function Airfield_FirstEntry()
                     t.Event = '';
                 }
             }
+
+            // Sewerdoor backtracking
+            AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
+
             //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
             _AddActor(Self, class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
             a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3105,-385,-210), rot(0,0,0));
@@ -1030,7 +1047,6 @@ function NYC_08_AnyEntry()
 function Area51_FirstEntry()
 {
     local DeusExMover d;
-    local DataCube dc;
     local ComputerSecurity c;
     
     switch(dxr.localURL)
