@@ -268,7 +268,7 @@ function int HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill)
     return adjustedHealAmount;
 }
 
-function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill)
+function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, optional bool bFixLegs)
 {
     local float mult;
     local int adjustedHealAmount, aha2, tempaha;
@@ -321,7 +321,7 @@ function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill)
         }
         else
         {
-            if( bUseMedicineSkill ) {
+            if( bUseMedicineSkill || bFixLegs ) {
                 HealBrokenPart(HealthLegRight, adjustedHealAmount);
                 HealBrokenPart(HealthLegLeft, adjustedHealAmount);
             }
