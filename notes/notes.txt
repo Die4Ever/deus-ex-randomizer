@@ -34,7 +34,7 @@ EditPackages=HX
 EditPackages=HXRandomizer
 
 
-v1.6 Alpha:
+v1.6.1 Alpha:
 	does HX need more ammo?
 	"Race" difficulty, same as hard mode but disable rando goals?
 	crowd control auto save when giving items?
@@ -47,7 +47,7 @@ v1.6 Alpha:
 	manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
 	maybe clean up the credits a bit more, especially the DXRFlags section
 
-v1.6:
+v1.6.1:
 	show maxCopies for item descriptions
 	use better logic for The Merchant's location, like cameras?
 	use key safe location logic for hazmats vs damage zones (this might only be a big deal for paris?)

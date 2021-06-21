@@ -196,8 +196,8 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     d_min -= avg_diff*min;
     d_max += avg_diff*max;
 
-    // we'll remove values later, 1 or 2?
-    removals = 3;
+    // we'll remove values later
+    removals = 1;
     len += removals;
 
     // choose random points within the 0-1 range, with an extra point so we can remove the median
@@ -208,10 +208,6 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
 
     // sort the values
     for(i=1; i < len; i++) {
-        if( points[i] < -0 || points[i] > 1 ) {
-            warning("RandoLevelValues sorting, "$points[i]);
-            points[i] = FClamp( points[i], 0, 1 );
-        }
         if( points[i] < points[i-1] ) {
             v = points[i];
             points[i] = points[i-1];

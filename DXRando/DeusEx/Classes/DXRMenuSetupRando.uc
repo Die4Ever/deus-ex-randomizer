@@ -244,12 +244,12 @@ function BindControls(bool writing, optional string action)
     Slider(id, f.settings.augcans, 0, 100, writing);
     id++;
 
-    labels[id] = "Aug Strength Randomization %";
+    labels[id] = "Aug Strength Rando %";
     helptexts[id] = "How much to randomize the strength of augmentations.";
     Slider(id, f.settings.aug_value_rando, 0, 300, writing);
     id++;
 
-    labels[id] = "Skill Strength Randomization %";
+    labels[id] = "Skill Strength Rando %";
     helptexts[id] = "How much to randomize the strength of skills.";
     Slider(id, f.settings.skill_value_rando, 0, 300, writing);
     id++;
