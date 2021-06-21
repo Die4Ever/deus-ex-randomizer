@@ -50,6 +50,8 @@ There are also settings for
 * Co-op when combined with the HX mod (Alpha)
     * download HX-0.9.89.4.zip from https://builds.hx.hanfling.de/testing/
     * copy HXRandomizer.u and HXRandomizer.int into the System directory of the game
+    * Co-op Teaser
+      * [![Co-op Teaser](https://img.youtube.com/vi/YwgKlt5N70A/0.jpg)](https://www.youtube.com/watch?v=YwgKlt5N70A)
 * making all or some of the doors that normally require a key also lockpickable and/or destructible
 * making all or some keypads hackable.
 * reducing the drop rate for ammo, multitools, lockpicks, medkits, and bioelectric cells
