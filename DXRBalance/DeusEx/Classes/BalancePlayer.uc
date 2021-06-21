@@ -321,8 +321,10 @@ function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill)
         }
         else
         {
-            HealBrokenPart(HealthLegRight, adjustedHealAmount);
-            HealBrokenPart(HealthLegLeft, adjustedHealAmount);
+            if( bUseMedicineSkill ) {
+                HealBrokenPart(HealthLegRight, adjustedHealAmount);
+                HealBrokenPart(HealthLegLeft, adjustedHealAmount);
+            }
             HealPart(HealthHead, adjustedHealAmount);
             HealPart(HealthTorso, adjustedHealAmount);
             HealPart(HealthLegRight, adjustedHealAmount);

@@ -18,7 +18,7 @@ function DoHeal(DeusExPlayer player)
     player.drugEffectTimer += drugEffect;
 
     if( health > 0 ) {
-        i = player.HealPlayer(health, False);
+        i = player.HealPlayer(health, True);
         message = "Healed "$ i $" point";
         if(i > 1)
             message = message $ "s";
