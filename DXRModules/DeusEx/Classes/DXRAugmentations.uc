@@ -286,7 +286,7 @@ function ExtendedTests()
 
     a = Spawn(class'#var prefix AugmentationCannister');
     SetSeed( self );
-    for(i=0;i<100;i++) {
+    for(i=0;i<50;i++) {
         RandomizeAugCannister(dxr, a);
         test( a.AddAugs[0] != '', "a.AddAugs[0] == "$a.AddAugs[0] );
         test( a.AddAugs[1] != '', "a.AddAugs[1] == "$a.AddAugs[1] );
