@@ -96,6 +96,10 @@ function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAug
     for(i=0; i<ArrayCount(class'#var prefix AugmentationManager'.default.augClasses); i++) {
         if( banned[i] == 1 ) continue;
         a = class'#var prefix AugmentationManager'.default.augClasses[i];
+        if( a == None ) {
+            banned[i] = 1;
+            continue;
+        }
         if( a.default.AugmentationLocation == LOC_Default ) {
             banned[i] = 1;
             continue;
@@ -112,24 +116,20 @@ function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAug
 
 function static RandomizeAugCannister(DXRando dxr, #var prefix AugmentationCannister a)
 {
-    local int attempts, numAugs;
+    local int numAugs;
     local int banned[50];
 
     _DefaultAugsMask(dxr, banned, numAugs);
 
     a.AddAugs[0] = PickRandomAug(dxr, banned, numAugs);
-    a.AddAugs[1] = a.AddAugs[0];
-    for( attempts = 0; attempts<100 && a.AddAugs[1] == a.AddAugs[0]; attempts++ )
-    {
-        a.AddAugs[1] = PickRandomAug(dxr, banned, numAugs);
-    }
+    a.AddAugs[1] = PickRandomAug(dxr, banned, numAugs);
 
     if( a.AddAugs[0] == '#var prefix AugSpeed' || a.AddAugs[1] == '#var prefix AugSpeed' ) {
         dxr.flags.player().ClientMessage("Speed Enhancement is in this area.",, true);
     }
 }
 
-function static Name PickRandomAug(DXRando dxr, int banned[50], int numAugs)
+function static Name PickRandomAug(DXRando dxr, out int banned[50], out int numAugs)
 {
     local int slot, i, r;
     local Name AugName;
@@ -142,9 +142,11 @@ function static Name PickRandomAug(DXRando dxr, int banned[50], int numAugs)
     }
     slot = i;
     if( slot >= ArrayCount(class'#var prefix AugmentationManager'.default.augClasses) )
-        dxr.err("PickRandomAug WTF");
+        dxr.err("PickRandomAug WTF "$slot);
     AugName = class'#var prefix AugmentationManager'.default.augClasses[slot].Name;
     log("Picked Aug "$ slot $"/"$numAugs$" " $ AugName, 'DXRAugmentations');
+    banned[slot] = 1;
+    numAugs--;
     return AugName;
 }
 
@@ -273,6 +275,24 @@ simulated function RemoveRandomAug(#var PlayerPawn  p)
         if( b.bHasIt && a.AugmentationLocation == b.AugmentationLocation )
             b.HotKeyNum = slot++;
     }
+}
+
+function ExtendedTests()
+{
+    local int i;
+    local #var prefix AugmentationCannister a;
+
+    Super.ExtendedTests();
+
+    a = Spawn(class'#var prefix AugmentationCannister');
+    SetSeed( self );
+    for(i=0;i<100;i++) {
+        RandomizeAugCannister(dxr, a);
+        test( a.AddAugs[0] != '', "a.AddAugs[0] == "$a.AddAugs[0] );
+        test( a.AddAugs[1] != '', "a.AddAugs[1] == "$a.AddAugs[1] );
+        test( a.AddAugs[0] != a.AddAugs[1], "a.AddAugs[0] == "$a.AddAugs[0]$", a.AddAugs[1] == "$a.AddAugs[1] );
+    }
+    a.Destroy();
 }
 
 defaultproperties
