@@ -5,6 +5,9 @@ function SetSkin(DeusExPlayer player)
     local int i;
     Super.SetSkin(player);
 
+    if( player == None ) {
+        return;
+    }
     //FASHION!
     if (player.Mesh == LodMesh'DeusExCharacters.GM_Trench') {
         Mesh = LodMesh'DeusExCharacters.GM_Trench_Carcass';

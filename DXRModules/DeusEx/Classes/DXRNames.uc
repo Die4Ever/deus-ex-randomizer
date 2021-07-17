@@ -25,6 +25,8 @@ function FirstEntry()
     {
         if ( c.itemName != "Dead Body" && c.itemName != "Unconscious" && c.itemName != "Animal Carcass" )
             return;
+        if ( c.BindName == "PaulDentonCarcass" )
+            return;
         c.itemName = c.itemName $ " (" $ RandomName(dxr) $ ")";
     }
 }

@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(1,5,9,8) ) {
+    if( ConfigOlderThan(1,6,2,1) ) {
         allow_vanilla = false;
 
         i=0;
@@ -197,6 +197,7 @@ function CheckConfig()
         goals[i].actor_name = 'DataLinkTrigger6';
         goals[i].allow_vanilla = true;
         goals[i].move_with_previous = true;
+        goals[i].physics = PHYS_None;
         i++;
 
         map = "05_NYC_UnatcoHQ";

@@ -35,6 +35,7 @@ EditPackages=HXRandomizer
 
 
 v1.6.1 Alpha:
+	notify player when skill costs are rerolled
 	does HX need more ammo?
 	"Race" difficulty, same as hard mode but disable rando goals?
 	crowd control auto save when giving items?

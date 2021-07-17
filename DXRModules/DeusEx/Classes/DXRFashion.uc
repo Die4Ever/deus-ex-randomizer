@@ -259,9 +259,16 @@ simulated function ApplyOutfit(Actor p, texture coat1, texture coat2, texture sh
     isTrench = (coat1 != None && coat2 != None);
     
     if (isTrench) {
-        p.Mesh = LodMesh'DeusExCharacters.GM_Trench';
+        if( DeusExCarcass(p) != None ) {
+            p.Mesh = LodMesh'DeusExCharacters.GM_Trench_Carcass';
+            DeusExCarcass(p).Mesh2 = LodMesh'DeusExCharacters.GM_Trench_CarcassB';
+            DeusExCarcass(p).Mesh3 = LodMesh'DeusExCharacters.GM_Trench_CarcassC';
+        }
+        else {
+            p.Mesh = LodMesh'DeusExCharacters.GM_Trench';
+        }
         p.MultiSkins[1] = coat1;
-        p.MultiSkins[2] = pants;  
+        p.MultiSkins[2] = pants;
         p.MultiSkins[4] = shirt;
         p.MultiSkins[5] = coat2;
         
@@ -270,11 +277,18 @@ simulated function ApplyOutfit(Actor p, texture coat1, texture coat2, texture sh
             p.MultiSkins[7] = Texture'DeusExCharacters.Skins.LensesTex5';
         } else {
             p.MultiSkins[6] = Texture'DeusExItems.Skins.GrayMaskTex';
-            p.MultiSkins[7] = Texture'DeusExItems.Skins.BlackMaskTex';       
+            p.MultiSkins[7] = Texture'DeusExItems.Skins.BlackMaskTex';
         }
         
     } else {
-        p.Mesh = LodMesh'MPCharacters.mp_jumpsuit';
+        if( DeusExCarcass(p) != None ) {
+            p.Mesh = LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass';
+            DeusExCarcass(p).Mesh2 = LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB';
+            DeusExCarcass(p).Mesh3 = LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC';
+        }
+        else {
+            p.Mesh = LodMesh'MPCharacters.mp_jumpsuit';
+        }
         p.MultiSkins[1] = pants;
         p.MultiSkins[2] = shirt;
         p.MultiSkins[3] = p.MultiSkins[0];
@@ -286,10 +300,7 @@ simulated function ApplyOutfit(Actor p, texture coat1, texture coat2, texture sh
         p.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
         
         //Jumpsuit doesn't support glasses
-        
     }
-
-
 }
 
 //Brothers gotta match, mom got their clothes out in advance

@@ -181,7 +181,7 @@ simulated static function CurrentVersion(optional out int major, optional out in
 {
     major=1;
     minor=6;
-    patch=1;
+    patch=2;
     build=1;//build can't be higher than 99
 }
 
@@ -189,7 +189,7 @@ simulated static function string VersionString(optional bool full)
 {
     local int major,minor,patch,build;
     CurrentVersion(major,minor,patch,build);
-    return VersionToString(major, minor, patch, build, full) $ "";
+    return VersionToString(major, minor, patch, build, full) $ " Alpha";
 }
 
 function CheckConfig()
