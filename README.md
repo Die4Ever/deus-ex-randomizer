@@ -12,7 +12,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 
 [![v1.5 Trailer](https://img.youtube.com/vi/A0Li3XuBjGg/0.jpg)](https://www.youtube.com/watch?v=A0Li3XuBjGg)
 
-### Currently in v1.6.1, DXRando randomizes
+### Currently in v1.6.2, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
