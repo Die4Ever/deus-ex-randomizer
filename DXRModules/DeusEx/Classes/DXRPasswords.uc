@@ -341,11 +341,9 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
         lastCheckedNote = None;
     SetTimer(1.0, true);
 
-#ifndef multiplayer
     foreach AllObjects(class'ConSpeech', c) {
         ProcessString(c.speech,, true);
     }
-#endif
 }
 
 function RandoHacks()
