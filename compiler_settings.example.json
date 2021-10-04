@@ -1,0 +1,10 @@
+{
+    "default": {
+        "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup/",
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex/"
+    },
+    "hx": {
+        "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX Backup/",
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX/"
+    }
+}

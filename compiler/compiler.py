@@ -17,8 +17,9 @@ def run(args):
     try:
         with open('compiler_settings.json') as f:
             settings = json.load(f)
-    except:
-        pass
+    except FileNotFoundError as e:
+        e.strerror += '\n\nERROR: You need to copy compiler_settings.example.json to compiler_settings.json and adjust the paths.'
+        raise
 
     merged = default_settings
     for p in settings:
