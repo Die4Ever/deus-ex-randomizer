@@ -1,5 +1,8 @@
 class Carcass injects DeusExCarcass;
 
+var(Display) mesh Mesh2;		// mesh for secondary carcass
+var(Display) mesh Mesh3;		// mesh for floating carcass
+
 function InitFor(Actor Other)
 {
     if( Other != None ) {

@@ -274,7 +274,7 @@ function BindControls(bool writing, optional string action)
     Slider(id, f.settings.max_weapon_shottime, 0, 300, writing);
     id++;
 
-    if( action == "NEXT" ) InvokeNewGameScreen(combatDifficulty, InitDxr());
+    if( action == "NEXT" ) _InvokeNewGameScreen(combatDifficulty, InitDxr());
 }
 
 function SetDifficulty(float newDifficulty)

@@ -112,7 +112,7 @@ function DXRando InitDxr()
     return dxr;
 }
 
-function InvokeNewGameScreen(float difficulty, DXRando dxr)
+function _InvokeNewGameScreen(float difficulty, DXRando dxr)
 {
     local DXRMenuScreenNewGame newGame;
 
