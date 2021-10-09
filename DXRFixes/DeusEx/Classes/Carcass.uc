@@ -1,8 +1,5 @@
 class Carcass injects DeusExCarcass;
 
-var(Display) mesh Mesh2;		// mesh for secondary carcass
-var(Display) mesh Mesh3;		// mesh for floating carcass
-
 function InitFor(Actor Other)
 {
     if( Other != None ) {
@@ -11,6 +8,19 @@ function InitFor(Actor Other)
     }
     
     Super.InitFor(Other);
+}
+
+// HACK to fix compatibility with Lay D Denton, see Carcass2.uc
+function SetMesh2(mesh m)
+{
+    log(Self$".GetMesh2("$m$"): "$Mesh2);
+    Mesh2 = m;
+}
+
+function SetMesh3(mesh m)
+{
+    log(Self$".GetMesh3("$m$"): "$Mesh3);
+    Mesh3 = m;
 }
 
 function bool _DropItem(Inventory item, Name classname)
