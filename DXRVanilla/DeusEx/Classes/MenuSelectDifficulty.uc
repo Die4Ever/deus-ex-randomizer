@@ -116,8 +116,13 @@ function BindControls(bool writing, optional string action)
 
     if(writing) {
         if( action == "ADVANCED" ) NewGameSetup(difficulty);
-        else InvokeNewGameScreen(difficulty, InitDxr());
+        else _InvokeNewGameScreen(difficulty, InitDxr());
     }
+}
+
+function InvokeNewGameScreen(float difficulty)
+{
+    _InvokeNewGameScreen(difficulty, InitDxr());
 }
 
 function NewGameSetup(float difficulty)

@@ -30,7 +30,7 @@ args = parser.parse_args()
 print(repr(args))
 
 if args.profile is None:
-    args.profile = "default"
+    args.profile = "all"
 
 rerun = ""
 while rerun != "exit":

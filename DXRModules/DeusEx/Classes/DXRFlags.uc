@@ -181,8 +181,8 @@ simulated static function CurrentVersion(optional out int major, optional out in
 {
     major=1;
     minor=6;
-    patch=2;
-    build=2;//build can't be higher than 99
+    patch=3;
+    build=6;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)
@@ -195,7 +195,7 @@ simulated static function string VersionString(optional bool full)
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,6,0,5) ) {
+    if( ConfigOlderThan(1,6,3,2) ) {
         // setup default difficulties
         i=0;
 #ifndef hx

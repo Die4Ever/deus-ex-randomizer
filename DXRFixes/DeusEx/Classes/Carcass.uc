@@ -10,6 +10,17 @@ function InitFor(Actor Other)
     Super.InitFor(Other);
 }
 
+// HACK to fix compatibility with Lay D Denton, see Carcass2.uc
+function SetMesh2(mesh m)
+{
+    Mesh2 = m;
+}
+
+function SetMesh3(mesh m)
+{
+    Mesh3 = m;
+}
+
 function bool _DropItem(Inventory item, Name classname)
 {
     if( Ammo(item) != None )

@@ -769,6 +769,7 @@ function HongKong_FirstEntry()
     local Button1 b;
     local ElevatorMover e;
     local #var Mover  m;
+    local FlagTrigger ft;
 
     switch(dxr.localURL)
     {
@@ -847,6 +848,9 @@ function HongKong_FirstEntry()
             }
             foreach AllActors(class'#var Mover ', m, 'elevator_door') {
                 m.bIsDoor = true;// DXRKeys will pick this up later since we're in PreFirstEntry
+            }
+            foreach AllActors(class'FlagTrigger', ft, 'MJ12Alert') {
+                ft.Tag = 'TongHasRom';
             }
             break;
 

@@ -407,14 +407,30 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag)
     return a;
 }
 
-function Actor SpawnNewActor(class<Actor> c, optional vector target, optional float mindist, optional float maxdist)
+function Actor _SpawnNewActor(class<Actor> c, optional vector target, optional float mindist, optional float maxdist)
 {
     local Actor a;
     local vector loc;
     loc = GetRandomPositionFine(target, mindist, maxdist);
     a = Spawn(c,,, loc );
-    if( a == None ) warning("SpawnNewActor "$c$" failed at "$loc);
-    else if( ScriptedPawn(a) != None ) class'DXRNames'.static.GiveRandomName(dxr, ScriptedPawn(a) );
+
+    if( ScriptedPawn(a) != None ) class'DXRNames'.static.GiveRandomName(dxr, ScriptedPawn(a) );
+    
+    if( a == None ) warning("_SpawnNewActor "$c$" failed at "$loc);
+    else info("_SpawnNewActor "$a$" at ("$loc$")");
+    return a;
+}
+
+function Actor SpawnNewActor(class<Actor> c, optional vector target, optional float mindist, optional float maxdist)
+{
+    local Actor a;
+    local int i;
+
+    for(i=0; i<10; i++) {
+        a = _SpawnNewActor(c, target, mindist, maxdist);
+        if( a != None ) return a;
+    }
+
     return a;
 }
 
