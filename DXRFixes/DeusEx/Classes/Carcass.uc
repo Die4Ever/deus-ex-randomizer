@@ -13,13 +13,11 @@ function InitFor(Actor Other)
 // HACK to fix compatibility with Lay D Denton, see Carcass2.uc
 function SetMesh2(mesh m)
 {
-    log(Self$".GetMesh2("$m$"): "$Mesh2);
     Mesh2 = m;
 }
 
 function SetMesh3(mesh m)
 {
-    log(Self$".GetMesh3("$m$"): "$Mesh3);
     Mesh3 = m;
 }
 
