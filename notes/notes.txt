@@ -538,3 +538,44 @@ https://gamefaqs.gamespot.com/pc/250533-deus-ex/faqs/51057
 http://pierrelorenzi.fr/deusexdialogs/
 
 https://www.ttlg.com/forums/showthread.php?t=130419
+
+http://www.offtopicproductions.com/forum/viewtopic.php?f=36&t=10464
+
+
+GMDX compiling:
+Copy and place everything from the ...\DeusEx\GMDXv9\System AND the \DeusEx\HDTP\System folders into ...\DeusEx\System.
+In ...\DeusEx\System find the DeusEx.ini file, open it and under [Editor.EditorEngine] your EditPackages list should look this (copy-paste the below):
+EditPackages=Core
+EditPackages=Engine
+EditPackages=Editor
+EditPackages=Fire
+EditPackages=IpDrv
+EditPackages=UWindow
+EditPackages=UBrowser
+EditPackages=Extension
+EditPackages=DeusExUI
+EditPackages=ConSys
+EditPackages=DeusExConversations
+EditPackages=DeusExSounds
+EditPackages=DeusExItems
+EditPackages=DeusExDeco
+EditPackages=DeusExCharacters
+EditPackages=HDTPCharacters
+EditPackages=HDTPItems
+EditPackages=HDTPDecos
+EditPackages=HDTPPapers
+EditPackages=HDTPBookOpen
+EditPackages=HDTPBookClosed
+EditPackages=MPCharacters
+EditPackages=DeusExText
+EditPackages=IpServer
+EditPackages=ShifterEX
+EditPackages=GMDXSFX
+EditPackages=GMDXUI
+EditPackages=GameMedia
+EditPackages=FOMOD
+EditPackages=DeusEx
+EditPackages=Models
+EditPackages=GMDRandomizer
+
+Copy GameEffects.utx in DeusEx\GMDXv9\Textures AND HDTPAnim.utx in DeusEx\HDTP\Textures into DeusEx\Textures.

@@ -8,6 +8,28 @@ Download the `DeusEx.u` file from the releases page here https://github.com/Die4
 
 Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`). If the game is not running well, see the recommended tweaks below.
 
+### Installation Instructions for GMDX
+
+Install GMDX from https://www.moddb.com/mods/gmdx/downloads/gmdxv90-release
+
+Download GMDXRandomizer.u and copy it into the game's System folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
+
+Edit the GMDX.ini file which is probably in `%UserProfile%\Documents\Deus Ex\System`
+
+In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=GMDXRandomizer.GMDXRandoGameInfo`
+
+GMDXRandomizer is in early alpha testing and does not support all of the features that the single player randomizer has.
+
+### Installation Instructions for HX (Co-op)
+
+Make sure to use the DeusEx.u file from the original game for co-op.
+
+First download and install HX-0.9.89.4.zip from https://builds.hx.hanfling.de/testing/
+
+Then copy HXRandomizer.u and HXRandomizer.int into the System directory of the game.
+
+HXRandomizer is in early alpha testing and does not support all of the features that the single player randomizer has.
+
 ### v1.5 Trailer
 
 [![v1.5 Trailer](https://img.youtube.com/vi/A0Li3XuBjGg/0.jpg)](https://www.youtube.com/watch?v=A0Li3XuBjGg)

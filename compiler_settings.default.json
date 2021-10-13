@@ -11,7 +11,7 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": true,
-        "blacklist": [ "HXRandomizer" ]
+        "blacklist": [ "HXRandomizer", "GMDXRandomizer" ]
     },
     "hx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX Backup/",
@@ -26,6 +26,21 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRFixup.uc", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRFixup.uc", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "GMDXRandomizer" ]
+    },
+    "gmdx": {
+        "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX Backup/",
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX/",
+        "preproc_definitions": {
+            "gmdx":1, "singeplayer":1, "flags":1, "prefix":"",
+            "Mover":"DeusExMover", "PlayerPawn":"Human", "flagvarprefix": ""
+        },
+        "mods_paths": [ "./" ],
+        "packages": [ "GMDXRandomizer" ],
+        "rewrite_packages": { "DeusEx": "GMDXRandomizer" },
+        "verbose": false,
+        "copy_local": true,
+        "run_tests": false,
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRFixup.uc", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "DXRMenuBase.uc", "DXRMenuScreenNewGame.uc", "DXRMenuSetupRando.uc" ]
     }
 }

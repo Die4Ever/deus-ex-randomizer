@@ -106,24 +106,19 @@ function CheckConfig()
 {
     local int i;
 
-    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,5,9,8) ) {
+    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,6,4,1) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
 
         i=0;
-        modules_to_load[i++] = "DXRTelemetry";
 #ifdef vanilla
+        modules_to_load[i++] = "DXRTelemetry";
         modules_to_load[i++] = "DXRMissions";
-#endif
         modules_to_load[i++] = "DXRSwapItems";
         //modules_to_load[i++] = "DXRAddItems";
-#ifdef fixes
         modules_to_load[i++] = "DXRFixup";
-#endif
-#ifdef backtracking
         modules_to_load[i++] = "DXRBacktracking";
-#endif
         modules_to_load[i++] = "DXRKeys";
         modules_to_load[i++] = "DXRSkills";
         modules_to_load[i++] = "DXRPasswords";
@@ -132,12 +127,8 @@ function CheckConfig()
         modules_to_load[i++] = "DXRNames";
         modules_to_load[i++] = "DXRMemes";
         modules_to_load[i++] = "DXREnemies";
-#ifdef backtracking
         modules_to_load[i++] = "DXREntranceRando";
-#endif
-#ifdef singleplayer
         modules_to_load[i++] = "DXRAutosave";
-#endif
         modules_to_load[i++] = "DXRHordeMode";
         //modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
@@ -145,11 +136,27 @@ function CheckConfig()
         modules_to_load[i++] = "DXRWeapons";
         modules_to_load[i++] = "DXRCrowdControl";
         modules_to_load[i++] = "DXRMachines";
-#ifdef singleplayer
         modules_to_load[i++] = "DXRStats";
         modules_to_load[i++] = "DXRNPCs";
         modules_to_load[i++] = "DXRFashion";
         //modules_to_load[i++] = "DXRTestAllMaps";
+#else
+        modules_to_load[i++] = "DXRTelemetry";
+        modules_to_load[i++] = "DXRSwapItems";
+        modules_to_load[i++] = "DXRKeys";
+        modules_to_load[i++] = "DXRSkills";
+        modules_to_load[i++] = "DXRPasswords";
+        modules_to_load[i++] = "DXRAugmentations";
+        modules_to_load[i++] = "DXRReduceItems";
+        modules_to_load[i++] = "DXRNames";
+        modules_to_load[i++] = "DXRMemes";
+        modules_to_load[i++] = "DXREnemies";
+        modules_to_load[i++] = "DXRHordeMode";
+        modules_to_load[i++] = "DXREnemyRespawn";
+        modules_to_load[i++] = "DXRLoadouts";
+        modules_to_load[i++] = "DXRWeapons";
+        modules_to_load[i++] = "DXRCrowdControl";
+        modules_to_load[i++] = "DXRMachines";
 #endif
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
@@ -197,6 +204,8 @@ function LoadModules()
         if( modules_to_load[i] == "" ) continue;
 #ifdef hx
         c = flags.GetClassFromString( "HXRandomizer." $ modules_to_load[i], class'DXRBase');
+#elseif gmdx
+        c = flags.GetClassFromString( "GMDXRandomizer." $ modules_to_load[i], class'DXRBase');
 #else
         c = flags.GetClassFromString(modules_to_load[i], class'DXRBase');
 #endif

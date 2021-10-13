@@ -88,6 +88,8 @@ function CheckConfig()
         item_sets[3].starting_equipments = "WeaponShuriken,WeaponSword,AmmoShuriken";
 #ifdef hx
         item_sets[3].starting_augs = "HXRandomizer.AugNinja";//combines AugStealth and active AugSpeed
+#elseif gmdx
+        item_sets[3].starting_augs = "GMDXRandomizer.AugNinja";//combines AugStealth and active AugSpeed
 #else
         item_sets[3].starting_augs = "AugNinja";//combines AugStealth and active AugSpeed
 #endif

@@ -148,6 +148,8 @@ def copyPackageFile(out, package):
         print(file+" exists")
         shutil.copy2(out + '/System/'+file,'./'+file)
         print(file+" copied locally")
+    else:
+        raise RuntimeError("could not find "+file)
 
 
 def file_is_blacklisted(file, settings):
