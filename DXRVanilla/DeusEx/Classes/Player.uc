@@ -1,4 +1,5 @@
 class DXRPlayer injects Human;
+//class DXRPlayer shims DeusExPlayer;
 
 var DXRando dxr;
 var DXRLoadouts loadout;
@@ -534,3 +535,106 @@ function UpdateDynamicMusic(float deltaTime)
         }
     }
 }
+
+// for Lay D Denton compatibility
+simulated function PreBeginPlay()
+{
+	Super.PreBeginPlay();
+}
+function PlayTakeHitSound(int Damage, name damageType, int Mult)
+{
+    Super.PlayTakeHitSound(Damage, damageType, Mult);
+}
+function TweenToRunning(float tweentime)
+{
+    Super.TweenToRunning(tweentime);
+}
+function PlayWalking()
+{
+    Super.PlayWalking();
+}
+function TweenToWalking(float tweentime)
+{
+    Super.TweenToWalking(tweentime);
+}
+function PlayFiring()
+{
+    Super.PlayFiring();
+}
+function TweenToWaiting(float tweentime)
+{
+    Super.TweenToWaiting(tweentime);
+}
+function UpdateAnimRate( float augValue )
+{
+    Super.UpdateAnimRate(augValue);
+}
+function PlayDying(name damageType, vector hitLoc)
+{
+    Super.PlayDying(damageType, hitLoc);
+}
+function TweenToSwimming(float tweentime)
+{
+    Super.TweenToSwimming(tweentime);
+}
+function PlayDyingSound()
+{
+    Super.PlayDyingSound();
+}
+function Gasp()
+{
+    Super.Gasp();
+}
+function float RandomPitch()
+{
+    return Super.RandomPitch();
+}
+function PlayWeaponSwitch(Weapon newWeapon)
+{
+    Super.PlayWeaponSwitch(newWeapon);
+}
+function PlayCrawling()
+{
+    Super.PlayCrawling();
+}
+function PlayRising()
+{
+    Super.PlayRising();
+}
+function PlayDuck()
+{
+    Super.PlayDuck();
+}
+function PlayLanded(float impactVel)
+{
+    Super.PlayLanded(impactVel);
+}
+function PlayInAir()
+{
+    Super.PlayInAir();
+}
+function PlaySwimming()
+{
+    Super.PlaySwimming();
+}
+function PlayWaiting()
+{
+    Super.PlayWaiting();
+}
+function PlayRunning()
+{
+    Super.PlayRunning();
+}
+function PlayTurning()
+{
+    Super.PlayTurning();
+}
+function Bool HasTwoHandedWeapon()
+{
+    return Super.HasTwoHandedWeapon();
+}
+function Bool IsFiring()
+{
+    return Super.IsFiring();
+}
+// ---

@@ -316,6 +316,12 @@ simulated function GetDressed()
     local class<ScriptedPawn> styleInfluencer;
     local bool isTrench;
 
+    if( Level.Game.Class.Name == 'JCDentonFemaleGameInfo' ) {
+        dxr.flagbase.SetBool('LDDPJCIsFemale', true,, 999);
+        info("disabled DXRFashion because Level.Game.Class.Name == " $ Level.Game.Class.Name);
+        return;
+    }
+
     coatinfluencer = dxr.flagbase.GetName('DXRFashion_CoatInfluencer');
     pantsinfluencer = dxr.flagbase.GetName('DXRFashion_PantsInfluencer');
     shirtinfluencer = dxr.flagbase.GetName('DXRFashion_ShirtInfluencer');

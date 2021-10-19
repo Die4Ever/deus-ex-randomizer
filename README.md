@@ -2,11 +2,29 @@
 
 This is a mod for the original Deus Ex that takes everything and shuffles it all around to make it like a new game every time but with the same great story.
 
+### If the game is not running well, see the recommended tweaks below.
+
 ### Installation Instructions
 
 Download the `DeusEx.u` file from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
 
-Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`). If the game is not running well, see the recommended tweaks below.
+Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`).
+
+### Installation Instructions for Lay D Denton
+
+Download Lay D Denton version 1.1 from here https://www.moddb.com/mods/the-lay-d-denton-project
+
+Copy all the files into your Deus Ex folder.
+
+Download the `DeusEx.u` file from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
+
+Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`).
+
+If you're using Kentie's Launcher then the ini files will be in your `%UserProfile%\Documents\Deus Ex\System` folder. Otherwise they will be in the game's System folder, where you put `DeusEx.u`.
+
+Edit your `DeusEx.ini` file, in the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=FemJC.JCDentonFemaleGameInfo`.
+
+Edit your `User.ini` file, in the `[DefaultPlayer]` section, change `Class` from `Class=DeusEx.JCDentonMale` to `Class=FemJC.JCDentonFemale`.
 
 ### Installation Instructions for GMDX
 

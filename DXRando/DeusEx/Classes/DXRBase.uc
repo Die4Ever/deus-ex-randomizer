@@ -1,5 +1,7 @@
 #ifdef hx
 class DXRBase extends Info config(HXRando);
+#ifdef gmdx
+class DXRBase extends Info config(GMDXRando);
 #else
 class DXRBase extends Info config(DXRando);
 #endif
