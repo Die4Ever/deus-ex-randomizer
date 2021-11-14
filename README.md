@@ -18,7 +18,7 @@ Install Lay D Denton by copying all the files into your Deus Ex folder.
 
 Download the `DeusEx.u` file from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
 
-Then copy DXRando's `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`). This will overwrite the `DeusEx.u` file from Lay D Denton.
+Then copy Deus Ex Randomizers's `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`). This will overwrite the `DeusEx.u` file from Lay D Denton.
 
 If you're using Kentie's Launcher then the ini files will be in your `%UserProfile%\Documents\Deus Ex\System` folder. Otherwise they will be in the game's System folder, where you put `DeusEx.u`.
 
@@ -32,13 +32,29 @@ The menus don't show female graphics, so the easiest way to tell if it's working
 
 Install GMDX from https://www.moddb.com/mods/gmdx/downloads/gmdxv90-release
 
-Download GMDXRandomizer.u and copy it into the game's System folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
+Download `GMDXRandomizer.u` from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
+
+Copy `GMDXRandomizer.u` into the game's `System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
 
 Edit the GMDX.ini file which is probably in `%UserProfile%\Documents\Deus Ex\System`
 
 In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=GMDXRandomizer.GMDXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=GMDXRandomizer.GMDXRandoRootWindow`
 
-GMDXRandomizer is in early alpha testing and does not support all of the features that the single player randomizer has.
+GMDX Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
+
+### Installation Instructions for Revision
+
+Install Revision from Steam or https://www.moddb.com/mods/deus-ex-revision/downloads/deus-ex-revision
+
+Download `RevRandomizer.u`  from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
+
+Copy `RevRandomizer.u` into the game's `Revision\System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
+
+Edit the Revision.ini file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
+
+In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=Revision.RevGameInfo` to `DefaultGame=RevRandomizer.RevRandoGameInfo` and change `Root` from `Root=Revision.RevRootWindow` to `Root=RevRandomizer.RevRandoRootWindow`
+
+Revision Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
 
 ### Installation Instructions for HX (Co-op)
 
@@ -46,9 +62,9 @@ Make sure to use the DeusEx.u file from the original game for co-op.
 
 First download and install HX-0.9.89.4.zip from https://builds.hx.hanfling.de/testing/
 
-Then copy HXRandomizer.u and HXRandomizer.int into the System directory of the game.
+Then copy `HXRandomizer.u` and `HXRandomizer.int` into the `System` directory of the game.
 
-HXRandomizer is in early alpha testing and does not support all of the features that the single player randomizer has.
+HXRandomizer is in early alpha testing and does not support all of the features that the single player vanilla randomizer has.
 
 ### v1.5 Trailer
 

@@ -10,5 +10,9 @@
     "gmdx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX/"
+    },
+    "revision": {
+        "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision Backup/",
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision/"
     }
 }

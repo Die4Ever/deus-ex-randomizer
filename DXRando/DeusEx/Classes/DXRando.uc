@@ -202,15 +202,15 @@ function LoadModules()
 {
     local int i;
     local class<Actor> c;
+    local string classstring;
+    
     for( i=0; i < ArrayCount( modules_to_load ); i++ ) {
         if( modules_to_load[i] == "" ) continue;
-#ifdef hx
-        c = flags.GetClassFromString( "HXRandomizer." $ modules_to_load[i], class'DXRBase');
-#elseif gmdx
-        c = flags.GetClassFromString( "GMDXRandomizer." $ modules_to_load[i], class'DXRBase');
-#else
-        c = flags.GetClassFromString(modules_to_load[i], class'DXRBase');
-#endif
+        classstring = modules_to_load[i];
+        if( InStr(classstring, ".") == -1 ) {
+            classstring = "#var package ." $ classstring;
+        }
+        c = flags.GetClassFromString(classstring, class'DXRBase');
         LoadModule( class<DXRBase>(c) );
     }
 

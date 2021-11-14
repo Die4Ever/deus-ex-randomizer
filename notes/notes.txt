@@ -542,6 +542,49 @@ https://www.ttlg.com/forums/showthread.php?t=130419
 http://www.offtopicproductions.com/forum/viewtopic.php?f=36&t=10464
 
 
+Revision compiling:
+copy all .u files from Revision\System\ to System\
+in DeusEx\System edit DeusEx.ini, under [Core.System] set your paths like this
+Paths=..\System\*.u
+Paths=..\Revision\System\*.u
+Paths=..\Maps\*.dx
+Paths=..\Textures\*.utx
+Paths=..\Revision\Textures\*.utx
+Paths=..\Sounds\*.uax
+Paths=..\Revision\Sounds\*.uax
+Paths=..\Music\*.umx
+Paths=..\Revision\Music\*.umx
+and under [Editor.EditorEngine] set your EditPackages like this
+EditPackages=Core
+EditPackages=Engine
+EditPackages=Editor
+EditPackages=Fire
+EditPackages=IpDrv
+EditPackages=UWindow
+EditPackages=UBrowser
+EditPackages=Extension
+EditPackages=DeusExUI
+EditPackages=ConSys
+EditPackages=DeusExConversations
+EditPackages=DeusExSounds
+EditPackages=DeusExItems
+EditPackages=DeusExDeco
+EditPackages=DeusExCharacters
+EditPackages=MPCharacters
+EditPackages=DeusExText
+EditPackages=IpServer
+EditPackages=EngineI
+EditPackages=DeusEx
+EditPackages=MoreTriggers
+EditPackages=RF
+EditPackages=Precipitation
+EditPackages=DXOgg
+EditPackages=RevisionPawn
+EditPackages=RevisionUI
+EditPackages=Revision
+EditPackages=RevRandomizer
+
+
 GMDX compiling:
 Copy and place everything from the ...\DeusEx\GMDXv9\System AND the \DeusEx\HDTP\System folders into ...\DeusEx\System.
 In ...\DeusEx\System find the DeusEx.ini file, open it and under [Editor.EditorEngine] your EditPackages list should look this (copy-paste the below):

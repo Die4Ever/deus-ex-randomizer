@@ -821,7 +821,7 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     note.SetNewPassword(newpassword);
 #endif
 #ifdef hx
-    HXUpdateNote(note.textTag, note.text);
+    HXUpdateNote(note.textTag, note.text, "");
 #endif
     
     MarkPasswordKnown(newpassword);
@@ -829,10 +829,10 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     return true;
 }
 
-simulated function HXUpdateNote(Name textTag, string newText)
+simulated function HXUpdateNote(Name textTag, string newText, string TextPackage)
 {
     local DeusExNote note;
-    l("HXUpdateNote, player(): "$player()$", textTag: "$textTag$", newText: "$newText);
+    l("HXUpdateNote, player(): "$player()$", textTag: "$textTag$", newText: "$newText$", TextPackage: "$TextPackage);
 #ifdef hx
     note = HXGameInfo(Level.Game).GetNote(textTag);
     if( note == None ) {
@@ -841,7 +841,12 @@ simulated function HXUpdateNote(Name textTag, string newText)
     else
         note.text = newText;
 #endif
+    // I don't think Revision needs this function at all
+#ifdef revision
+    note = player().GetNote(textTag, TextPackage);
+#else
     note = player().GetNote(textTag);
+#endif
     if( note != None )
         note.text = newText;
 }
