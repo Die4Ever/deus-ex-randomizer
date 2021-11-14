@@ -14,11 +14,11 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 
 Download Lay D Denton version 1.1 from here https://www.moddb.com/mods/the-lay-d-denton-project
 
-Copy all the files into your Deus Ex folder.
+Install Lay D Denton by copying all the files into your Deus Ex folder.
 
 Download the `DeusEx.u` file from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
 
-Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`).
+Then copy DXRando's `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`). This will overwrite the `DeusEx.u` file from Lay D Denton.
 
 If you're using Kentie's Launcher then the ini files will be in your `%UserProfile%\Documents\Deus Ex\System` folder. Otherwise they will be in the game's System folder, where you put `DeusEx.u`.
 
