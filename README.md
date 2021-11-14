@@ -34,7 +34,7 @@ Download GMDXRandomizer.u and copy it into the game's System folder, which is pr
 
 Edit the GMDX.ini file which is probably in `%UserProfile%\Documents\Deus Ex\System`
 
-In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=GMDXRandomizer.GMDXRandoGameInfo`
+In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=GMDXRandomizer.GMDXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=GMDXRandomizer.GMDXRandoRootWindow`
 
 GMDXRandomizer is in early alpha testing and does not support all of the features that the single player randomizer has.
 

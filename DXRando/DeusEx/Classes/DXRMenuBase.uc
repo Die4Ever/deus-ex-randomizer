@@ -119,7 +119,11 @@ function _InvokeNewGameScreen(float difficulty, DXRando dxr)
     newGame = DXRMenuScreenNewGame(root.InvokeMenuScreen(Class'DXRMenuScreenNewGame'));
 
     if (newGame != None) {
+#ifdef gmdx
+        newGame.SetDifficulty(difficulty, dxr.flags.autosave != 3);
+#else
         newGame.SetDifficulty(difficulty);
+#endif
         newGame.SetDxr(dxr);
     }
 }

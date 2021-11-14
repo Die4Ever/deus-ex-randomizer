@@ -182,6 +182,11 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
     if( anItem == None ) return None;
     anItem.InitialState='Idle2';
     anItem.SetLocation(p.Location);
+
+#ifdef gmdx
+    anItem.GiveTo(p);
+    anItem.SetBase(p);
+#else
     if( player != None ) {
         player.FrobTarget = anItem;
         player.ParseRightClick();
@@ -189,6 +194,7 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
         anItem.GiveTo(p);
         anItem.SetBase(p);
     }
+#endif
 
     w = DeusExWeapon(anItem);
     if( add_ammo > 0 && w != None ) {

@@ -200,6 +200,13 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         word = "Swimming Speed";
         return int(s.LevelValues[i] * 100.0) $ "%";
     }
+#ifdef gmdx
+    else if( s.Class == class'SkillStealth' ) {
+        // TODO: improve description
+        word = "Values";
+        return string(int(s.LevelValues[i]));
+    }
+#endif
     else {
         err("DescriptionLevel failed for skill "$act);
         return "err";

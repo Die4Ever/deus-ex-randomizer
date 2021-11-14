@@ -41,6 +41,6 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRFixup.uc", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "DXRMenuBase.uc", "DXRMenuScreenNewGame.uc", "DXRMenuSetupRando.uc" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRFixup.uc", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc" ]
     }
 }

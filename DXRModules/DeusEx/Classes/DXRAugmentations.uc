@@ -178,7 +178,11 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         word = "Breath";
         return int(a.LevelValues[i]) $" sec";
     }
-    else if( a.Class == class'#var prefix AugCombat') {
+    else if( a.Class == class'#var prefix AugCombat'
+#ifdef gmdx
+    || a.Class == class'AugCombatStrength'
+#endif
+    ) {
         word = "Damage";
         return int(a.LevelValues[i] * 100.0) $"%";
     }
@@ -195,6 +199,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         return int(a.LevelValues[i] / 16.0) $" ft";
     }
     else if( a.Class == class'#var prefix AugDrone') {
+        // TODO: improve description
         word = "Values";
         return string(int(a.LevelValues[i]));
     }
@@ -228,6 +233,17 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         if(i<2) return "--";
         return int(a.LevelValues[i] / 16.0) $" ft";
     }
+#ifdef gmdx
+    else if( a.Class == class'AugBallisticPassive') {
+        word = "Damage Reduction";
+        return int( (1.0 - a.LevelValues[i]) * 100.0 ) $ "%";
+    }
+    else if( a.Class == class'AugIcarus' || a.Class == class'AugEnergyTransfer' ) {
+        // TODO: improve description
+        word = "Values";
+        return string(int(a.LevelValues[i]));
+    }
+#endif
     else {
         err("DescriptionLevel failed for aug "$a);
         return "err";
