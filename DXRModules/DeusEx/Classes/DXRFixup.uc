@@ -130,9 +130,65 @@ function PreFirstEntry()
     FixFlagTriggers();
     SpawnDatacubes();
 
-#ifdef vanilla
     SetSeed( "DXRFixup PreFirstEntry missions" );
-    
+#ifdef vanilla
+    VanillaPreFirstEntry();
+#endif
+}
+
+function PostFirstEntry()
+{
+    Super.PostFirstEntry();
+
+#ifdef vanilla
+    VanillaPostFirstEntry();
+#endif
+}
+
+function AnyEntry()
+{
+    Super.AnyEntry();
+    l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
+
+    SetSeed( "DXRFixup AnyEntry" );
+
+    FixSamCarter();
+    SetSeed( "DXRFixup AnyEntry missions" );
+#ifdef vanilla
+    VanillaAnyEntry();
+    FixAmmoShurikenName();
+#endif
+}
+
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
+{
+    Super.PlayerAnyEntry(p);
+#ifdef vanilla
+    FixLogTimeout(p);
+    FixAmmoShurikenName();
+#endif
+}
+
+function PreTravel()
+{
+    Super.PreTravel();
+#ifdef vanilla
+    VanillaPreTravel();
+#endif
+}
+
+function Timer()
+{
+    Super.Timer();
+    if( dxr == None ) return;
+
+#ifdef vanilla
+    VanillaTimer();
+#endif
+}
+
+function VanillaPreFirstEntry()
+{
     switch(dxr.dxInfo.missionNumber) {
         case 2:
             NYC_02_FirstEntry();
@@ -163,15 +219,12 @@ function PreFirstEntry()
             Area51_FirstEntry();
             break;
     }
-#endif
 }
 
-function PostFirstEntry()
+function VanillaPostFirstEntry()
 {
     local RetinalScanner r;
-    Super.PostFirstEntry();
-
-#ifdef vanilla
+    
     switch(dxr.localURL) {
         case "01_NYC_UNATCOHQ":
         case "03_NYC_UNATCOHQ":
@@ -203,22 +256,10 @@ function PostFirstEntry()
             BalanceJailbreak();
             break;
     }
-#endif
 }
 
-function AnyEntry()
+function VanillaAnyEntry()
 {
-    Super.AnyEntry();
-    l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
-
-    SetSeed( "DXRFixup AnyEntry" );
-
-    FixSamCarter();
-#ifdef vanilla
-    FixAmmoShurikenName();
-
-    SetSeed( "DXRFixup AnyEntry missions" );
-
     switch(dxr.dxInfo.missionNumber) {
         case 4:
             NYC_04_AnyEntry();
@@ -230,39 +271,23 @@ function AnyEntry()
             NYC_08_AnyEntry();
             break;
     }
-#endif
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  p)
+function VanillaPreTravel()
 {
-    Super.PlayerAnyEntry(p);
-#ifdef vanilla
-    FixLogTimeout(p);
-    FixAmmoShurikenName();
-#endif
-}
-
-function PreTravel()
-{
-    Super.PreTravel();
-#ifdef vanilla
     switch(dxr.localURL) {
         case "04_NYC_HOTEL":
             NYC_04_LeaveHotel();
             break;
     }
-#endif
 }
 
-function Timer()
+function VanillaTimer()
 {
     local BlackHelicopter chopper;
     local Music m;
     local int i;
-    Super.Timer();
-    if( dxr == None ) return;
 
-#ifdef vanilla
     switch(dxr.localURL)
     {
         case "04_NYC_HOTEL":
@@ -277,7 +302,6 @@ function Timer()
             }
             break;
     }
-#endif
 }
 
 function FixSamCarter()

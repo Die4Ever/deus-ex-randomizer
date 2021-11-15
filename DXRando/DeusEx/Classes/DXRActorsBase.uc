@@ -184,6 +184,7 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
     anItem.SetLocation(p.Location);
 
 #ifdef gmdx
+    // TODO: fix gmdx and revision
     anItem.GiveTo(p);
     anItem.SetBase(p);
 #elseif revision
