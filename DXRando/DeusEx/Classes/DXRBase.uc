@@ -1,9 +1,11 @@
 #ifdef hx
-class DXRBase extends Info config(HXRando);
-#ifdef gmdx
-class DXRBase extends Info config(GMDXRando);
+class DXRBase extends Info config(HXRando) transient;
+#elseif gmdx
+class DXRBase extends Info config(GMDXRando) transient;
+#elseif revision
+class DXRBase extends Info config(RevRando) transient;
 #else
-class DXRBase extends Info config(DXRando);
+class DXRBase extends Info config(DXRando) transient;
 #endif
 
 var transient DXRando dxr;

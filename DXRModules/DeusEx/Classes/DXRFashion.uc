@@ -12,6 +12,12 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
     local int lastUpdate;
     Super.PlayerAnyEntry(p);
 
+    if( Level.Game.Class.Name == 'JCDentonFemaleGameInfo' ) {
+        dxr.flagbase.SetBool('LDDPJCIsFemale', true,, 999);
+        info("disabled DXRFashion because Level.Game.Class.Name == " $ Level.Game.Class.Name);
+        return;
+    }
+
     InitInfluencers();
 
     lastUpdate = dxr.flagbase.GetInt('DXRFashion_LastUpdate');
@@ -315,12 +321,6 @@ simulated function GetDressed()
     local name coatinfluencer,pantsinfluencer,shirtinfluencer;
     local class<ScriptedPawn> styleInfluencer;
     local bool isTrench;
-
-    if( Level.Game.Class.Name == 'JCDentonFemaleGameInfo' ) {
-        dxr.flagbase.SetBool('LDDPJCIsFemale', true,, 999);
-        info("disabled DXRFashion because Level.Game.Class.Name == " $ Level.Game.Class.Name);
-        return;
-    }
 
     coatinfluencer = dxr.flagbase.GetName('DXRFashion_CoatInfluencer');
     pantsinfluencer = dxr.flagbase.GetName('DXRFashion_PantsInfluencer');

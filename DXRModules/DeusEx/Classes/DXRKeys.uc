@@ -23,6 +23,7 @@ function CheckConfig()
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
+#ifndef revision
         i=0;
 
         keys_rules[i].map = "03_NYC_747";
@@ -185,6 +186,10 @@ function CheckConfig()
         // X > 528.007446, X < 1047.852173, Y < 436.867401, Z > -1653.906006 == storage closet
         // 1888.000000, 544.000000, -1536.000000 == glabs door, X > -414.152771 && X < 1888 && Y < 1930.014771 == before greasel labs
         // 4856.000000, 3515.999512, -1816.000000 == crew quarters door
+#elseif revision
+        i=0;
+        // TODO: keys_rules for Revision
+#endif
 
         i=0;
         door_fixes[i].map = "05_NYC_UNATCOHQ";

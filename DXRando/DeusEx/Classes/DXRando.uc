@@ -1,7 +1,9 @@
 #ifdef hx
 class DXRando extends Info config(HXRando) transient;
-#ifdef gmdx
+#elseif gmdx
 class DXRando extends Info config(GMDXRando) transient;
+#elseif revision
+class DXRando extends Info config(RevRando) transient;
 #else
 class DXRando extends Info config(DXRando) transient;
 #endif

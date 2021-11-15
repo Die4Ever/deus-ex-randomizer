@@ -1,4 +1,12 @@
-class DataStorage extends Inventory config(DXRDataStorage);
+#ifdef hx
+class DataStorage extends Inventory config(HXRandoDataStorage) transient;
+#elseif gmdx
+class DataStorage extends Inventory config(GMDXRandoDataStorage) transient;
+#elseif revision
+class DataStorage extends Inventory config(RevRandoDataStorage) transient;
+#else
+class DataStorage extends Inventory config(DXRDataStorage) transient;
+#endif
 
 struct KVP {
     var string key;

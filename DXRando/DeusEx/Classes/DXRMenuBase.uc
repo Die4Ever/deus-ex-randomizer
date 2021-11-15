@@ -120,7 +120,7 @@ function _InvokeNewGameScreen(float difficulty, DXRando dxr)
 
     if (newGame != None) {
 #ifdef gmdx
-        newGame.SetDifficulty(difficulty, dxr.flags.autosave != 3);
+        newGame.SetDifficulty(difficulty, dxr.flags.autosave == 3);
 #else
         newGame.SetDifficulty(difficulty);
 #endif
