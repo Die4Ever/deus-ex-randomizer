@@ -186,6 +186,9 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
 #ifdef gmdx
     anItem.GiveTo(p);
     anItem.SetBase(p);
+#elseif revision
+    anItem.GiveTo(p);
+    anItem.SetBase(p);
 #else
     if( player != None ) {
         player.FrobTarget = anItem;

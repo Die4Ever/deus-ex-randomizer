@@ -26,7 +26,7 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRFixup.uc", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "GMDXRandomizer", "RevRandomizer" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "GMDXRandomizer", "RevRandomizer" ]
     },
     "gmdx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX Backup/",
@@ -41,7 +41,7 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRFixup.uc", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "RevRandomizer" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "RevRandomizer" ]
     },
     "revision": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision Backup/",
@@ -56,6 +56,6 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRFixup.uc", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "GMDXRandomizer" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "GMDXRandomizer" ]
     }
 }

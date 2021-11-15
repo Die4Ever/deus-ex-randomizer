@@ -71,6 +71,7 @@ function CheckConfig()
         DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
         DecorationsOverwrites[i].bPushable = c.default.bPushable;
 
+#ifdef vanilla
         i=0;
 
         add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
@@ -104,6 +105,7 @@ function CheckConfig()
         add_datacubes[i].map = "15_AREA51_PAGE";
         add_datacubes[i].text = "Aquinas Router code: 6188";
         i++;
+#endif
     }
     Super.CheckConfig();
 
@@ -128,6 +130,7 @@ function PreFirstEntry()
     FixFlagTriggers();
     SpawnDatacubes();
 
+#ifdef vanilla
     SetSeed( "DXRFixup PreFirstEntry missions" );
     
     switch(dxr.dxInfo.missionNumber) {
@@ -160,6 +163,7 @@ function PreFirstEntry()
             Area51_FirstEntry();
             break;
     }
+#endif
 }
 
 function PostFirstEntry()
@@ -167,6 +171,7 @@ function PostFirstEntry()
     local RetinalScanner r;
     Super.PostFirstEntry();
 
+#ifdef vanilla
     switch(dxr.localURL) {
         case "01_NYC_UNATCOHQ":
         case "03_NYC_UNATCOHQ":
@@ -198,6 +203,7 @@ function PostFirstEntry()
             BalanceJailbreak();
             break;
     }
+#endif
 }
 
 function AnyEntry()
@@ -208,6 +214,7 @@ function AnyEntry()
     SetSeed( "DXRFixup AnyEntry" );
 
     FixSamCarter();
+#ifdef vanilla
     FixAmmoShurikenName();
 
     SetSeed( "DXRFixup AnyEntry missions" );
@@ -223,23 +230,28 @@ function AnyEntry()
             NYC_08_AnyEntry();
             break;
     }
+#endif
 }
 
 simulated function PlayerAnyEntry(#var PlayerPawn  p)
 {
     Super.PlayerAnyEntry(p);
+#ifdef vanilla
     FixLogTimeout(p);
     FixAmmoShurikenName();
+#endif
 }
 
 function PreTravel()
 {
     Super.PreTravel();
+#ifdef vanilla
     switch(dxr.localURL) {
         case "04_NYC_HOTEL":
             NYC_04_LeaveHotel();
             break;
     }
+#endif
 }
 
 function Timer()
@@ -250,6 +262,7 @@ function Timer()
     Super.Timer();
     if( dxr == None ) return;
 
+#ifdef vanilla
     switch(dxr.localURL)
     {
         case "04_NYC_HOTEL":
@@ -264,6 +277,7 @@ function Timer()
             }
             break;
     }
+#endif
 }
 
 function FixSamCarter()
@@ -345,7 +359,8 @@ function FixFlagTriggers()
 
 function SpawnDatacubes()
 {
-    local DataCube dc;
+#ifdef injections
+    local #var prefix DataCube dc;
     local vector loc;
     local int i;
 
@@ -356,11 +371,12 @@ function SpawnDatacubes()
         if( loc.X == 0 && loc.Y == 0 && loc.Z == 0 )
             loc = GetRandomPosition();
         
-        dc = Spawn(class'DataCube',,, loc, rot(0,0,0));
+        dc = Spawn(class'#var prefix DataCube',,, loc, rot(0,0,0));
 
         if( dc != None ) dc.plaintext = add_datacubes[i].text;
         else warning("failed to spawn datacube at "$loc$", text: "$add_datacubes[i].text);
     }
+#endif
 }
 
 function NYC_02_FirstEntry()

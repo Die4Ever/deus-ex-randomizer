@@ -108,7 +108,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,6,4,1) ) {
+    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,6,4,2) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -145,6 +145,7 @@ function CheckConfig()
 #else
         modules_to_load[i++] = "DXRTelemetry";
         modules_to_load[i++] = "DXRSwapItems";
+        modules_to_load[i++] = "DXRFixup";
         modules_to_load[i++] = "DXRKeys";
         modules_to_load[i++] = "DXRSkills";
         modules_to_load[i++] = "DXRPasswords";
