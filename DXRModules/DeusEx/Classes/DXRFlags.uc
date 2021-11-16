@@ -671,7 +671,7 @@ simulated function SaveNoFlags()
 
 simulated function LogFlags(string prefix)
 {
-    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
+    info(prefix$" "$Self.Class$" - " $ VersionString() $ ", " $ "seed: "$seed$ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
     info(prefix$" - " $ StringifyDifficultySettings(settings) );
 }
 
