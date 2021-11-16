@@ -422,7 +422,7 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
 
     // first set to defaults
     for(i=1; i<8; i++) {
-        p.MultiSkins[i] = Texture'DeusExItems.Skins.PinkMaskTex';// model.Default.MultiSkins[i];
+        p.MultiSkins[i] = model.Default.MultiSkins[i];
     }
     p.MultiSkins[0] = p.Default.MultiSkins[0];
     /*coat1 = Texture'DeusExItems.Skins.PinkMaskTex';
@@ -653,7 +653,8 @@ simulated function RandomizeClothes()
     // notes about mixing and matching clothes
     // male pants are distorted on female butts, but look fine from the front
     // shirts don't blend well with skirts
-    // shirts are distorted on the GFM_TShirtPants model (unless of course they're made for that model)
+    // shirts are distorted on the GFM_TShirtPants model (unless of course they're made for that model), I think it also spills into the hair
+    // maybe the only unisex clothing should be shirts on GFM_Trench, gotta check how coats work out
     
     //Randomize Coat (Multiskin 1 and 5)
     styleInfluencer = RandomInfluencer(isFemale);
