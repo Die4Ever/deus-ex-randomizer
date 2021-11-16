@@ -352,6 +352,42 @@ simulated function class<ScriptedPawn> RandomNonCoatInfluencer(bool female)
         return nonCoatInfluencers[Rand(numNonCoatInfluencers)];
 }
 
+simulated function class<ScriptedPawn> RandomUniSexNonSkirtInfluencer(bool female)
+{
+    local int num, r;
+
+    num = numInfluencers + numFemaleCoatInfluencers + numFemaleNonCoatInfluencers;
+    r = Rand(num);
+    if( r >= numInfluencers ) {
+        r -= numInfluencers;
+        if( r >= numFemaleCoatInfluencers ) {
+            r -= numFemaleCoatInfluencers;
+            return femaleNonCoatInfluencers[r];
+        }
+        return femaleCoatInfluencers[r];
+    }
+
+    return influencers[r];
+}
+
+simulated function class<ScriptedPawn> RandomUniSexNonCoatInfluencer(bool female)
+{
+    local int num, r;
+
+    num = numNonCoatInfluencers + numFemaleSkirtInfluencers + numFemaleNonCoatInfluencers;
+    r = Rand(num);
+    if( r >= numNonCoatInfluencers ) {
+        r -= numNonCoatInfluencers;
+        if( r >= numFemaleSkirtInfluencers ) {
+            r -= numFemaleSkirtInfluencers;
+            return femaleNonCoatInfluencers[r];
+        }
+        return femaleSkirtInfluencers[r];
+    }
+
+    return nonCoatInfluencers[r];
+}
+
 simulated function bool IsTrenchInfluencer(class<ScriptedPawn> influencer)
 {
     return (influencer.Default.Mesh == LodMesh'DeusExCharacters.GM_Trench' ||
@@ -386,9 +422,14 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
 
     // first set to defaults
     for(i=1; i<8; i++) {
-        p.MultiSkins[i] = model.Default.MultiSkins[i];
+        p.MultiSkins[i] = Texture'DeusExItems.Skins.PinkMaskTex';// model.Default.MultiSkins[i];
     }
     p.MultiSkins[0] = p.Default.MultiSkins[0];
+    /*coat1 = Texture'DeusExItems.Skins.PinkMaskTex';
+    coat2 = Texture'DeusExItems.Skins.PinkMaskTex';
+    shirt = Texture'DeusExItems.Skins.PinkMaskTex';
+    //pants = Texture'DeusExItems.Skins.PinkMaskTex';
+    helmet = Texture'DeusExItems.Skins.PinkMaskTex';*/
 
     switch(model.default.Mesh) {
         case LodMesh'DeusExCharacters.GFM_Trench':
@@ -484,6 +525,7 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
             err("unhandled mesh " $ model.default.Mesh);
     }
 
+    info( p $ " " $ p.Mesh );
     for(i=0; i<8; i++) {
         info( p $ " " $ i $ ": " $ p.MultiSkins[i]);
     }
@@ -505,20 +547,20 @@ simulated function class<ScriptedPawn> GetInfluencerClass(name inf)
 simulated function ApplyInfluencers(Actor p, name coatinfluencer, name pantsinfluencer, name shirtinfluencer, bool isJC)
 {
     local texture coat1,coat2,pants,shirt,helmet;
-    local class<ScriptedPawn> styleInfluencer;
+    local class<ScriptedPawn> styleInfluencer, model;
     local bool isTrench;
 
     if (coatinfluencer!='') {
-        styleInfluencer = GetInfluencerClass(coatinfluencer);
-        isTrench = IsTrenchInfluencer(styleInfluencer);
+        model = GetInfluencerClass(coatinfluencer);
+        isTrench = IsTrenchInfluencer(model);
         if (isTrench) {
-            coat1=GetCoat1(styleInfluencer);
-            coat2=GetCoat2(styleInfluencer);
+            coat1=GetCoat1(model);
+            coat2=GetCoat2(model);
             helmet = None;
         } else {
             coat1 = None;
             coat2 = None;
-            helmet = GetHelmet(styleInfluencer);
+            helmet = GetHelmet(model);
         }
     }
     
@@ -533,7 +575,7 @@ simulated function ApplyInfluencers(Actor p, name coatinfluencer, name pantsinfl
         shirt = GetShirt(styleInfluencer);
     }
 
-    ApplyOutfit(p, styleInfluencer, coat1, coat2, shirt, pants, helmet, isJC);
+    ApplyOutfit(p, model, coat1, coat2, shirt, pants, helmet, isJC);
 }
 
 simulated function name GetMaleInfluencer(name influencer)
@@ -545,8 +587,9 @@ simulated function name GetMaleInfluencer(name influencer)
             return influencers[i].Name;
         }
     }
-    warning("GetMaleInfluencer("$influencer$") failed");
-    return 'PaulDenton';
+    return influencer;
+    //warning("GetMaleInfluencer("$influencer$") failed");
+    //return 'PaulDenton';
 }
 
 //Siblings gotta match, mom got their clothes out in advance
@@ -606,21 +649,26 @@ simulated function RandomizeClothes()
 {
     local class<ScriptedPawn> styleInfluencer;
     local bool isTrench, isSkirt;
-  
+
+    // notes about mixing and matching clothes
+    // male pants are distorted on female butts, but look fine from the front
+    // shirts don't blend well with skirts
+    // shirts are distorted on the GFM_TShirtPants model (unless of course they're made for that model)
+    
     //Randomize Coat (Multiskin 1 and 5)
     styleInfluencer = RandomInfluencer(isFemale);
     isTrench = IsTrenchInfluencer(styleInfluencer);
     isSkirt = IsSkirtInfluencer(styleInfluencer);
     dxr.flagbase.SetName('DXRFashion_CoatInfluencer',styleInfluencer.name);
-    info("Coat influencer is "$styleInfluencer);
+    info("Coat influencer is "$styleInfluencer$", isSkirt: "$isSkirt$", isTrench: "$isTrench);
     //player().ClientMessage("Coat influencer is "$styleInfluencer);
     
     //Randomize Pants (Multiskin 2)
     if (isSkirt) {
         styleInfluencer = RandomSkirtInfluencer();
     } else {
-        // for pants we might be able to pull from male pants too
-        styleInfluencer = RandomInfluencer(isFemale);
+        // for pants we might be able to pull from male pants too, but no skirts
+        styleInfluencer = RandomUniSexNonSkirtInfluencer(isFemale);
     }
     dxr.flagbase.SetName('DXRFashion_PantsInfluencer',styleInfluencer.name);
     info("Pants influencer is "$styleInfluencer);
@@ -631,7 +679,7 @@ simulated function RandomizeClothes()
         styleInfluencer = RandomCoatInfluencer(isFemale);
     } else {
         // for shirts we might be able to pull from male shirts too
-        styleInfluencer = RandomNonCoatInfluencer(isFemale);
+        styleInfluencer = RandomUniSexNonCoatInfluencer(isFemale);
     }
     dxr.flagbase.SetName('DXRFashion_ShirtInfluencer',styleInfluencer.name);
     info("Shirt influencer is "$styleInfluencer);
