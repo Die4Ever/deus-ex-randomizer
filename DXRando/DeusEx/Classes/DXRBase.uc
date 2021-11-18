@@ -619,7 +619,7 @@ function bool testfloatrange(float result, float expected, float range, string t
     }
 }
 
-function bool teststring(string result, string expected, string testname)
+function bool teststring(coerce string result, coerce string expected, coerce string testname)
 {
     if(result == expected) {
         l("pass: "$testname$": got "$result);

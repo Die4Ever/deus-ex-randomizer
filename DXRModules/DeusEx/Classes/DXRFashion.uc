@@ -2,21 +2,17 @@ class DXRFashion extends DXRBase transient;
 
 var class<ScriptedPawn> influencers[100];
 var int numInfluencers;
-var class<ScriptedPawn> coatInfluencers[100];
-var int numCoatInfluencers;
-var class<ScriptedPawn> nonCoatInfluencers[100];
-var int numNonCoatInfluencers;
 
 var class<ScriptedPawn> femaleInfluencers[100];
 var int numFemaleInfluencers;
-var class<ScriptedPawn> femaleCoatInfluencers[100];
-var int numFemaleCoatInfluencers;
-var class<ScriptedPawn> femaleSkirtInfluencers[100];
-var int numFemaleSkirtInfluencers;
-var class<ScriptedPawn> femaleNonCoatInfluencers[100];
-var int numFemaleNonCoatInfluencers;
 
 var bool isFemale;
+
+function CheckConfig()
+{
+    Super.CheckConfig();
+    InitInfluencers();
+}
 
 simulated function PlayerAnyEntry(#var PlayerPawn  p)
 {
@@ -46,8 +42,6 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
         info( "" $ p.CarcassType.default.Mesh3 );*/
     }
 
-    InitInfluencers();
-
     lastUpdate = dxr.flagbase.GetInt('DXRFashion_LastUpdate');
     if (lastUpdate < dxr.dxInfo.MissionNumber) {
         RandomizeClothes();
@@ -60,19 +54,13 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
 simulated function InitInfluencers()
 {
     numInfluencers = 0;
-    numCoatInfluencers = 0;
-    numNonCoatInfluencers = 0;
     numFemaleInfluencers = 0;
-    numFemaleCoatInfluencers = 0;
-    numFemaleSkirtInfluencers = 0;
-    numFemaleNonCoatInfluencers = 0;
     
     AddInfluencer(class'Male1', class'Female2');
     AddInfluencer(class'Male2', class'Female4');
     AddInfluencer(class'Male3', class'Female1');
     AddInfluencer(class'Male4', class'Female3');
     AddInfluencer(class'Doctor', class'Nurse');
-    AddInfluencerString(class'JCDouble', "FemJC.JCFDouble");
     AddInfluencer(class'ScientistMale', class'ScientistFemale');
     AddInfluencer(class'Bartender', class'JordanShea');
     AddInfluencer(class'MaxChen', class'MaggieChow');
@@ -86,6 +74,7 @@ simulated function InitInfluencers()
     AddInfluencer(class'JoJoFine', class'TiffanySavage');
     AddInfluencer(class'BusinessMan1', class'Secretary');
     AddInfluencer(class'BumMale', class'BumFemale');
+    AddInfluencerName(class'JCDouble', 'JCFDouble');
 
 
     AddInfluencer(class'AlexJacobson', None);
@@ -266,28 +255,21 @@ simulated function texture GetHelmet(class<ScriptedPawn> p)
 
 simulated function AddInfluencer(class<ScriptedPawn> male, class<ScriptedPawn> female)
 {
-    if (isTrenchInfluencer(male))
-        AddCoatInfluencer(male, false);
-    else
-        AddNonCoatInfluencer(male, false);
+    AddBaseInfluencer(male, false);
 
-    if( female == None || isFemale == false )
+    if( female == None )
         return;
 
-    if (isTrenchInfluencer(female))
-        AddCoatInfluencer(female, true);
-    else if (IsSkirtInfluencer(female))
-        AddSkirtInfluencer(female);
-    else
-        AddNonCoatInfluencer(female, true);
+    info("AddInfluencer("$male$", "$female$") male model: "$male.Default.Mesh$", female model: "$female.Default.Mesh);
+    AddBaseInfluencer(female, true);
 }
 
-simulated function AddInfluencerString(class<ScriptedPawn> male, string female)
+simulated function AddInfluencerName(class<ScriptedPawn> male, name female)
 {
     local class<ScriptedPawn> femaleClass;
     // don't want to require LDD for compilation, so this handles it at runtime
     if( isFemale )
-        femaleClass = class<ScriptedPawn>(GetClassFromString(female, class'ScriptedPawn'));
+        femaleClass = GetInfluencerClass(female);
     AddInfluencer(male, femaleClass);
 }
 
@@ -299,28 +281,46 @@ simulated function AddBaseInfluencer(class<ScriptedPawn> p, bool female)
         influencers[numInfluencers++] = p;
 }
 
-simulated function AddNonCoatInfluencer(class<ScriptedPawn> p, bool female)
+simulated function class<ScriptedPawn> RandomInfluencerForMeshes(bool female, LodMesh meshes[16])
 {
-    AddBaseInfluencer(p, female);
-    if( female )
-        femaleNonCoatInfluencers[numFemaleNonCoatInfluencers++] = p;
-    else
-        nonCoatInfluencers[numNonCoatInfluencers++] = p;
-}
+    local class<ScriptedPawn> infs[100];
+    local int num, i, m;
+    num = 0;
+    if(female) {
+        for(i=0; i<numFemaleInfluencers; i++) {
+            //warning(""$femaleInfluencers[i].Default.Mesh);
+            for(m=0; m<ArrayCount(meshes); m++) {
+                if( meshes[m] == None )
+                    break;
+                if( femaleInfluencers[i].Default.Mesh == meshes[m] ) {
+                    infs[num++] = femaleInfluencers[i];
+                    break;
+                }
+            }
+        }
+    } else {
+        for(i=0; i<numInfluencers; i++) {
+            for(m=0; m<ArrayCount(meshes); m++) {
+                if( meshes[m] == None )
+                    break;
+                if( influencers[i].Default.Mesh == meshes[m] ) {
+                    infs[num++] = influencers[i];
+                    break;
+                }
+            }
+        }
+    }
 
-simulated function AddCoatInfluencer(class<ScriptedPawn> p, bool female)
-{
-    AddBaseInfluencer(p, female);
-    if( female )
-        femaleCoatInfluencers[numFemaleCoatInfluencers++] = p;
-    else
-        coatInfluencers[numCoatInfluencers++] = p;
-}
-
-simulated function AddSkirtInfluencer(class<ScriptedPawn> p)
-{
-    AddBaseInfluencer(p, true);
-    femaleSkirtInfluencers[numFemaleSkirtInfluencers++] = p;
+    if(num == 0) {
+        err("RandomInfluencerForMeshes, female: "$female$", failed with meshes...");
+        for(m=0; m<ArrayCount(meshes); m++) {
+            if(meshes[m] == None) break;
+            warning("..." $ meshes[m]);
+        }
+        return None;
+    }
+    
+    return infs[Rand(num)];
 }
 
 simulated function class<ScriptedPawn> RandomInfluencer(bool female)
@@ -333,59 +333,99 @@ simulated function class<ScriptedPawn> RandomInfluencer(bool female)
 
 simulated function class<ScriptedPawn> RandomCoatInfluencer(bool female)
 {
-    if( female )
-        return femaleCoatInfluencers[Rand(numFemaleCoatInfluencers)];
-    else
-        return coatInfluencers[Rand(numCoatInfluencers)];
+    local LodMesh meshes[16];
+
+    if(female) {
+        meshes[0] = LodMesh'DeusExCharacters.GFM_Trench';
+        
+    } else {
+        meshes[0] = LodMesh'DeusExCharacters.GM_Trench';
+        meshes[1] = LodMesh'DeusExCharacters.GM_Trench_F';
+    }
+
+    return RandomInfluencerForMeshes(female, meshes);
+}
+
+simulated function class<ScriptedPawn> RandomFemaleShirtInfluencer()
+{
+    local LodMesh meshes[16];
+    meshes[0] = LodMesh'DeusExCharacters.GFM_TShirtPants';
+    return RandomInfluencerForMeshes(true, meshes);
 }
 
 simulated function class<ScriptedPawn> RandomSkirtInfluencer()
 {
-    return femaleSkirtInfluencers[Rand(numFemaleSkirtInfluencers)];
+    local LodMesh meshes[16];
+    meshes[0] = LodMesh'DeusExCharacters.GFM_SuitSkirt';
+    meshes[1] = LodMesh'DeusExCharacters.GFM_SuitSkirt_F';
+    return RandomInfluencerForMeshes(true, meshes);
 }
 
 simulated function class<ScriptedPawn> RandomNonCoatInfluencer(bool female)
 {
-    if( female )
-        return femaleNonCoatInfluencers[Rand(numFemaleNonCoatInfluencers)];
-    else
-        return nonCoatInfluencers[Rand(numNonCoatInfluencers)];
+    local LodMesh meshes[16];
+    local int i;
+    i=0;
+
+    if(female) {
+        meshes[i++] = LodMesh'DeusExCharacters.GFM_SuitSkirt';
+        meshes[i++] = LodMesh'DeusExCharacters.GFM_SuitSkirt_F';
+        meshes[i++] = LodMesh'DeusExCharacters.GFM_TShirtPants';
+    } else {
+        meshes[i++] = LodMesh'DeusExCharacters.GM_DressShirt_B';
+        meshes[i++] = LodMesh'DeusExCharacters.GM_DressShirt';
+        meshes[i++] = LodMesh'DeusExCharacters.GM_DressShirt_F';
+        meshes[i++] = LodMesh'DeusExCharacters.GM_DressShirt_S';
+        meshes[i++] = LodMesh'DeusExCharacters.GM_Jumpsuit';
+        meshes[i++] = LodMesh'DeusExCharacters.GMK_DressShirt';
+        meshes[i++] = LodMesh'DeusExCharacters.GMK_DressShirt_F';
+        meshes[i++] = LodMesh'DeusExCharacters.GM_Suit';
+    }
+
+    return RandomInfluencerForMeshes(female, meshes);
 }
 
 simulated function class<ScriptedPawn> RandomUniSexNonSkirtInfluencer(bool female)
 {
-    local int num, r;
+    local LodMesh meshes[16];
+    local int i;
+    i=0;
+    meshes[i++] = LodMesh'DeusExCharacters.GFM_TShirtPants';
+    meshes[i++] = LodMesh'DeusExCharacters.GM_DressShirt_B';
+    meshes[i++] = LodMesh'DeusExCharacters.GM_DressShirt';
+    meshes[i++] = LodMesh'DeusExCharacters.GM_DressShirt_F';
+    meshes[i++] = LodMesh'DeusExCharacters.GM_DressShirt_S';
+    meshes[i++] = LodMesh'DeusExCharacters.GM_Jumpsuit';
+    meshes[i++] = LodMesh'DeusExCharacters.GMK_DressShirt';
+    meshes[i++] = LodMesh'DeusExCharacters.GMK_DressShirt_F';
+    meshes[i++] = LodMesh'DeusExCharacters.GM_Suit';
 
-    num = numInfluencers + numFemaleCoatInfluencers + numFemaleNonCoatInfluencers;
-    r = Rand(num);
-    if( r >= numInfluencers ) {
-        r -= numInfluencers;
-        if( r >= numFemaleCoatInfluencers ) {
-            r -= numFemaleCoatInfluencers;
-            return femaleNonCoatInfluencers[r];
-        }
-        return femaleCoatInfluencers[r];
-    }
-
-    return influencers[r];
+    // currently ignore the incoming female flag, maybe later we might want to use it for weighting or something?
+    female = Rand(2) == 1;
+    return RandomInfluencerForMeshes(female, meshes);
 }
 
 simulated function class<ScriptedPawn> RandomUniSexNonCoatInfluencer(bool female)
 {
-    local int num, r;
+    local LodMesh meshes[16];
+    local int i;
+    i=0;
 
-    num = numNonCoatInfluencers + numFemaleSkirtInfluencers + numFemaleNonCoatInfluencers;
-    r = Rand(num);
-    if( r >= numNonCoatInfluencers ) {
-        r -= numNonCoatInfluencers;
-        if( r >= numFemaleSkirtInfluencers ) {
-            r -= numFemaleSkirtInfluencers;
-            return femaleNonCoatInfluencers[r];
-        }
-        return femaleSkirtInfluencers[r];
-    }
+    meshes[i++] = LodMesh'DeusExCharacters.GFM_SuitSkirt';
+    meshes[i++] = LodMesh'DeusExCharacters.GFM_SuitSkirt_F';
+    //meshes[i++] = LodMesh'DeusExCharacters.GFM_TShirtPants';
+    meshes[i++] = LodMesh'DeusExCharacters.GM_DressShirt_B';
+    meshes[i++] = LodMesh'DeusExCharacters.GM_DressShirt';
+    meshes[i++] = LodMesh'DeusExCharacters.GM_DressShirt_F';
+    meshes[i++] = LodMesh'DeusExCharacters.GM_DressShirt_S';
+    meshes[i++] = LodMesh'DeusExCharacters.GM_Jumpsuit';
+    meshes[i++] = LodMesh'DeusExCharacters.GMK_DressShirt';
+    meshes[i++] = LodMesh'DeusExCharacters.GMK_DressShirt_F';
+    meshes[i++] = LodMesh'DeusExCharacters.GM_Suit';
 
-    return nonCoatInfluencers[r];
+    // currently ignore the incoming female flag, maybe later we might want to use it for weighting or something?
+    //female = Rand(2) == 1;
+    return RandomInfluencerForMeshes(female, meshes);
 }
 
 simulated function bool IsTrenchInfluencer(class<ScriptedPawn> influencer)
@@ -398,6 +438,11 @@ simulated function bool IsTrenchInfluencer(class<ScriptedPawn> influencer)
 simulated function bool IsSkirtInfluencer(class<ScriptedPawn> influencer)
 {
     return influencer.Default.Mesh == LodMesh'DeusExCharacters.GFM_SuitSkirt' || influencer.Default.Mesh == LodMesh'DeusExCharacters.GFM_SuitSkirt_F';
+}
+
+simulated function bool IsFemaleShirtInfluencer(class<ScriptedPawn> influencer)
+{
+    return influencer.Default.Mesh == LodMesh'DeusExCharacters.GFM_TShirtPants';
 }
 
 simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1, texture coat2, texture shirt, texture pants, texture helmet, bool isJC) {
@@ -418,6 +463,44 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
     }
     else {
         p.Mesh = model.default.Mesh;
+    }
+
+    switch(model.default.Mesh) {
+        case LodMesh'DeusExCharacters.GM_Trench_F':
+        case LodMesh'DeusExCharacters.GM_Trench':
+            if( carcass != None ) {
+                carcass.Mesh = LodMesh'DeusExCharacters.GM_Trench_Carcass';
+                carcass.Mesh2 = LodMesh'DeusExCharacters.GM_Trench_CarcassB';
+                carcass.Mesh3 = LodMesh'DeusExCharacters.GM_Trench_CarcassC';
+            } else {
+                p.Mesh = LodMesh'DeusExCharacters.GM_Trench';
+            }
+            break;
+
+        //case LodMesh'DeusExCharacters.GFM_Trench':
+            //break;
+        //case LodMesh'DeusExCharacters.GFM_SuitSkirt':
+        //case LodMesh'DeusExCharacters.GFM_SuitSkirt_F':
+        //case LodMesh'DeusExCharacters.GFM_TShirtPants':
+            //break;
+        
+        case LodMesh'DeusExCharacters.GM_DressShirt_B':
+        case LodMesh'DeusExCharacters.GM_DressShirt':
+        case LodMesh'DeusExCharacters.GM_DressShirt_F':
+        case LodMesh'DeusExCharacters.GM_DressShirt_S':
+        case LodMesh'DeusExCharacters.GM_Jumpsuit':
+        case LodMesh'DeusExCharacters.GMK_DressShirt':
+        case LodMesh'DeusExCharacters.GMK_DressShirt_F':
+        case LodMesh'DeusExCharacters.GM_Suit':
+            if( DeusExCarcass(p) != None ) {
+                p.Mesh = LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass';
+                DeusExCarcass(p).Mesh2 = LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB';
+                DeusExCarcass(p).Mesh3 = LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC';
+            }
+            else {
+                p.Mesh = LodMesh'MPCharacters.mp_jumpsuit';
+            }
+            break;
     }
 
     // first set to defaults
@@ -634,6 +717,10 @@ simulated function GetDressed()
         coatinfluencer = GetMaleInfluencer(coatinfluencer);
         pantsinfluencer = GetMaleInfluencer(pantsinfluencer);
         shirtinfluencer = GetMaleInfluencer(shirtinfluencer);
+
+        // disable Paul for now, unfortunately the compatibility checks are too complicated to convert influencers to male
+        // example: trying to convert a trenchcoat influencer to a jumpsuit male, or a skirt to a trenchcoat...
+        return;
     }
 
     // Paul Denton
@@ -648,7 +735,7 @@ simulated function GetDressed()
 simulated function RandomizeClothes()
 {
     local class<ScriptedPawn> styleInfluencer;
-    local bool isTrench, isSkirt;
+    local bool isTrench, isSkirt, isFemaleShirt;
 
     // notes about mixing and matching clothes
     // male pants are distorted on female butts, but look fine from the front
@@ -660,8 +747,9 @@ simulated function RandomizeClothes()
     styleInfluencer = RandomInfluencer(isFemale);
     isTrench = IsTrenchInfluencer(styleInfluencer);
     isSkirt = IsSkirtInfluencer(styleInfluencer);
+    isFemaleShirt = IsFemaleShirtInfluencer(styleInfluencer);// these shirts aren't compatible with other texture coordinates
     dxr.flagbase.SetName('DXRFashion_CoatInfluencer',styleInfluencer.name);
-    info("Coat influencer is "$styleInfluencer$", isSkirt: "$isSkirt$", isTrench: "$isTrench);
+    info("Coat influencer is "$styleInfluencer$", isSkirt: "$isSkirt$", isTrench: "$isTrench$", isFemaleShirt: "$isFemaleShirt);
     //player().ClientMessage("Coat influencer is "$styleInfluencer);
     
     //Randomize Pants (Multiskin 2)
@@ -678,6 +766,8 @@ simulated function RandomizeClothes()
     //Randomize Shirt (Multiskin 4)
     if (isTrench) {
         styleInfluencer = RandomCoatInfluencer(isFemale);
+    } else if (isFemaleShirt) {
+        styleInfluencer = RandomFemaleShirtInfluencer();
     } else {
         // for shirts we might be able to pull from male shirts too
         styleInfluencer = RandomUniSexNonCoatInfluencer(isFemale);
@@ -687,5 +777,13 @@ simulated function RandomizeClothes()
     //player().ClientMessage("Shirt influencer is "$styleInfluencer);
     
     dxr.flags.f.SetInt('DXRFashion_LastUpdate',dxr.dxInfo.MissionNumber,,999);
+}
 
+function RunTests()
+{
+    Super.RunTests();
+    teststring( GetMaleInfluencer('Female2'), 'Male1', "GetMaleInfluencer");
+    teststring( GetMaleInfluencer('Nurse'), 'Doctor', "GetMaleInfluencer");
+    teststring( GetMaleInfluencer('ScientistFemale'), 'ScientistMale', "GetMaleInfluencer");
+    teststring( GetMaleInfluencer('AnnaNavarre'), 'GuntherHermann', "GetMaleInfluencer");
 }
