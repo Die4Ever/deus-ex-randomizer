@@ -25,26 +25,11 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
         isFemale = true;
         dxr.flagbase.SetBool('LDDPJCIsFemale', true,, 999);
         info("DXRFashion isFemale because Level.Game.Class.Name == " $ Level.Game.Class.Name);
-
-        info( "" $ p.Mesh );
-        for(i=0; i<8; i++) {
-            info( "" $ p.MultiSkins[i]);
-        }
-        info( "" $ p.CarcassType );
-        jcd = class<Pawn>(GetClassFromString("FemJC.JCFDouble", class'Pawn'));
-        info( "" $ jcd.default.Mesh );
-        for(i=0; i<8; i++) {
-            info( "" $ jcd.default.MultiSkins[i]);
-        }
-
-        /*info( "" $ p.CarcassType.default.Mesh );
-        info( "" $ p.CarcassType.default.Mesh2 );
-        info( "" $ p.CarcassType.default.Mesh3 );*/
     }
 
     lastUpdate = dxr.flagbase.GetInt('DXRFashion_LastUpdate');
     if (lastUpdate < dxr.dxInfo.MissionNumber) {
-        RandomizeClothes();
+        _RandomizeClothes(isFemale);
         p.ClientMessage("Time for a change of clothes...");
     }
 
@@ -675,7 +660,36 @@ simulated function name GetMaleInfluencer(name influencer)
     //return 'PaulDenton';
 }
 
-//Siblings gotta match, mom got their clothes out in advance
+simulated function _ReadInfluencers(bool female, out name coatinfluencer, out name pantsinfluencer, out name shirtinfluencer)
+{
+    if(female) {
+        coatinfluencer = dxr.flagbase.GetName('DXRFashion_CoatInfluencerF');
+        pantsinfluencer = dxr.flagbase.GetName('DXRFashion_PantsInfluencerF');
+        shirtinfluencer = dxr.flagbase.GetName('DXRFashion_ShirtInfluencerF');
+    } else {
+        coatinfluencer = dxr.flagbase.GetName('DXRFashion_CoatInfluencer');
+        pantsinfluencer = dxr.flagbase.GetName('DXRFashion_PantsInfluencer');
+        shirtinfluencer = dxr.flagbase.GetName('DXRFashion_ShirtInfluencer');
+    }
+}
+
+simulated function ReadInfluencers(bool female, out name coatinfluencer, out name pantsinfluencer, out name shirtinfluencer)
+{
+    _ReadInfluencers(female, coatinfluencer, pantsinfluencer, shirtinfluencer);
+
+    if (coatinfluencer == '' ||
+        pantsinfluencer == '' ||
+        shirtinfluencer == '') {
+        //This was probably a game saved before fashion existed
+        info("No stored outfit!");
+        InitInfluencers();
+        _RandomizeClothes(isFemale);
+
+        _ReadInfluencers(female, coatinfluencer, pantsinfluencer, shirtinfluencer);
+    }
+}
+
+//Brothers gotta match, mom got their clothes out in advance... maybe one day we can make FemJC and Paul match...
 simulated function GetDressed()
 {
     local PaulDenton paul;
@@ -685,21 +699,7 @@ simulated function GetDressed()
     local DeusExPlayer player;
     local name coatinfluencer,pantsinfluencer,shirtinfluencer;
 
-    coatinfluencer = dxr.flagbase.GetName('DXRFashion_CoatInfluencer');
-    pantsinfluencer = dxr.flagbase.GetName('DXRFashion_PantsInfluencer');
-    shirtinfluencer = dxr.flagbase.GetName('DXRFashion_ShirtInfluencer');
-
-    if (coatinfluencer == '' ||
-        pantsinfluencer == '' ||
-        shirtinfluencer == '') {
-        //This was probably a game saved before fashion existed
-        info("No stored outfit!");
-        InitInfluencers();
-        RandomizeClothes();
-        coatinfluencer = dxr.flagbase.GetName('DXRFashion_CoatInfluencer');
-        pantsinfluencer = dxr.flagbase.GetName('DXRFashion_PantsInfluencer');
-        shirtinfluencer = dxr.flagbase.GetName('DXRFashion_ShirtInfluencer');
-    }
+    ReadInfluencers(isFemale, coatinfluencer, pantsinfluencer, shirtinfluencer);
 
     // JC Denton Carcass
     foreach AllActors(class'JCDentonMaleCarcass', jcCarcass)
@@ -714,13 +714,13 @@ simulated function GetDressed()
 
     if( isFemale ) {
         // convert influencers to male for Paul
-        coatinfluencer = GetMaleInfluencer(coatinfluencer);
+        /*coatinfluencer = GetMaleInfluencer(coatinfluencer);
         pantsinfluencer = GetMaleInfluencer(pantsinfluencer);
-        shirtinfluencer = GetMaleInfluencer(shirtinfluencer);
+        shirtinfluencer = GetMaleInfluencer(shirtinfluencer);*/
 
-        // disable Paul for now, unfortunately the compatibility checks are too complicated to convert influencers to male
+        // disable matching Paul for now, unfortunately the compatibility checks are too complicated to convert influencers to male
         // example: trying to convert a trenchcoat influencer to a jumpsuit male, or a skirt to a trenchcoat...
-        return;
+        ReadInfluencers(false, coatinfluencer, pantsinfluencer, shirtinfluencer);
     }
 
     // Paul Denton
@@ -732,10 +732,11 @@ simulated function GetDressed()
         ApplyInfluencers(paulCarcass, coatinfluencer, pantsinfluencer, shirtinfluencer, false);
 }
 
-simulated function RandomizeClothes()
+simulated function _RandomizeClothes(bool female)
 {
     local class<ScriptedPawn> styleInfluencer;
     local bool isTrench, isSkirt, isFemaleShirt;
+    local name flagname;
 
     // notes about mixing and matching clothes
     // male pants are distorted on female butts, but look fine from the front
@@ -744,11 +745,15 @@ simulated function RandomizeClothes()
     // maybe the only unisex clothing should be shirts on GFM_Trench, gotta check how coats work out
     
     //Randomize Coat (Multiskin 1 and 5)
-    styleInfluencer = RandomInfluencer(isFemale);
+    styleInfluencer = RandomInfluencer(female);
     isTrench = IsTrenchInfluencer(styleInfluencer);
     isSkirt = IsSkirtInfluencer(styleInfluencer);
     isFemaleShirt = IsFemaleShirtInfluencer(styleInfluencer);// these shirts aren't compatible with other texture coordinates
-    dxr.flagbase.SetName('DXRFashion_CoatInfluencer',styleInfluencer.name);
+    if(female)
+        flagname = 'DXRFashion_CoatInfluencerF';
+    else
+        flagname = 'DXRFashion_CoatInfluencer';
+    dxr.flagbase.SetName(flagname,styleInfluencer.name);
     info("Coat influencer is "$styleInfluencer$", isSkirt: "$isSkirt$", isTrench: "$isTrench$", isFemaleShirt: "$isFemaleShirt);
     //player().ClientMessage("Coat influencer is "$styleInfluencer);
     
@@ -757,26 +762,42 @@ simulated function RandomizeClothes()
         styleInfluencer = RandomSkirtInfluencer();
     } else {
         // for pants we might be able to pull from male pants too, but no skirts
-        styleInfluencer = RandomUniSexNonSkirtInfluencer(isFemale);
+        styleInfluencer = RandomUniSexNonSkirtInfluencer(female);
     }
-    dxr.flagbase.SetName('DXRFashion_PantsInfluencer',styleInfluencer.name);
+    if(female)
+        flagname = 'DXRFashion_PantsInfluencerF';
+    else
+        flagname = 'DXRFashion_PantsInfluencer';
+    dxr.flagbase.SetName(flagname,styleInfluencer.name);
     info("Pants influencer is "$styleInfluencer);
     //player().ClientMessage("Pants influencer is "$styleInfluencer);
     
     //Randomize Shirt (Multiskin 4)
     if (isTrench) {
-        styleInfluencer = RandomCoatInfluencer(isFemale);
+        styleInfluencer = RandomCoatInfluencer(female);
     } else if (isFemaleShirt) {
         styleInfluencer = RandomFemaleShirtInfluencer();
     } else {
         // for shirts we might be able to pull from male shirts too
-        styleInfluencer = RandomUniSexNonCoatInfluencer(isFemale);
+        styleInfluencer = RandomUniSexNonCoatInfluencer(female);
     }
-    dxr.flagbase.SetName('DXRFashion_ShirtInfluencer',styleInfluencer.name);
+    if(female)
+        flagname = 'DXRFashion_ShirtInfluencerF';
+    else
+        flagname = 'DXRFashion_ShirtInfluencer';
+    dxr.flagbase.SetName(flagname,styleInfluencer.name);
     info("Shirt influencer is "$styleInfluencer);
     //player().ClientMessage("Shirt influencer is "$styleInfluencer);
     
     dxr.flags.f.SetInt('DXRFashion_LastUpdate',dxr.dxInfo.MissionNumber,,999);
+}
+
+simulated function RandomizeClothes()
+{
+    _RandomizeClothes(isFemale);
+    // when FemJC uses a clothesrack, we only change her clothes? or Paul's too?
+    if(isFemale)
+        _RandomizeClothes(false);
 }
 
 function RunTests()
