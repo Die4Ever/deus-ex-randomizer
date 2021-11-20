@@ -442,6 +442,11 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
     female = isFemale && isJC;
     carcass = DeusExCarcass(p);
 
+    if(DeusExPlayer(p) != None) {
+        // LDD: take control away from FemJC package
+        DeusExPlayer(p).CarcassType = class'JCDentonMaleCarcass';
+    }
+
     // need to exlude _F meshes, JC is fit
     if( carcass != None ) {
         modelCarcass = class<DeusExCarcass>(model.default.CarcassType);
@@ -602,10 +607,10 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
             err("unhandled mesh " $ model.default.Mesh);
     }
 
-    info( p $ " " $ p.Mesh );
+    /*info( p $ " " $ p.Mesh );
     for(i=0; i<8; i++) {
         info( p $ " " $ i $ ": " $ p.MultiSkins[i]);
-    }
+    }*/
 }
 
 simulated function class<ScriptedPawn> GetInfluencerClass(name inf)
