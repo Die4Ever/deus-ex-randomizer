@@ -20,14 +20,6 @@ Download Deus Ex Randomizers's `DeusEx.u` file from the releases page here https
 
 Then copy Deus Ex Randomizers's `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`. This will overwrite the `DeusEx.u` file from Lay D Denton.
 
-If you're using Kentie's Launcher then the ini files will be in your `%UserProfile%\Documents\Deus Ex\System` folder. Otherwise they will be in the game's System folder, where you put `DeusEx.u`.
-
-Edit your `DeusEx.ini` file, in the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=FemJC.JCDentonFemaleGameInfo`
-
-Edit your `User.ini` file, in the `[DefaultPlayer]` section, change `Class` from `Class=DeusEx.JCDentonMale` to `Class=FemJC.JCDentonFemale`
-
-The menus don't show female graphics, so the easiest way to tell if it's working is by jumping and you should hear the female jump sound.
-
 ### Installation Instructions for HX (Co-op)
 
 Make sure to use the DeusEx.u file from the original game for co-op.
