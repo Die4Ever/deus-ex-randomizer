@@ -21,15 +21,18 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
     Super.PlayerAnyEntry(p);
 
     isFemale = false;
-    if( Level.Game.Class.Name == 'JCDentonFemaleGameInfo' ) {
+    //if( Level.Game.Class.Name == 'JCDentonFemaleGameInfo' ) {
+    if( dxr.flagbase.GetBool('LDDPJCIsFemale') ) {
         isFemale = true;
-        dxr.flagbase.SetBool('LDDPJCIsFemale', true,, 999);
-        info("DXRFashion isFemale because Level.Game.Class.Name == " $ Level.Game.Class.Name);
+        //dxr.flagbase.SetBool('LDDPJCIsFemale', true,, 999);
+        info("DXRFashion isFemale, Level.Game.Class.Name == " $ Level.Game.Class.Name);
     }
 
     lastUpdate = dxr.flagbase.GetInt('DXRFashion_LastUpdate');
     if (lastUpdate < dxr.dxInfo.MissionNumber) {
         _RandomizeClothes(isFemale);
+        if(isFemale)
+            _RandomizeClothes(false);
         p.ClientMessage("Time for a change of clothes...");
     }
 
@@ -245,7 +248,7 @@ simulated function AddInfluencer(class<ScriptedPawn> male, class<ScriptedPawn> f
     if( female == None )
         return;
 
-    info("AddInfluencer("$male$", "$female$") male model: "$male.Default.Mesh$", female model: "$female.Default.Mesh);
+    //info("AddInfluencer("$male$", "$female$") male model: "$male.Default.Mesh$", female model: "$female.Default.Mesh);
     AddBaseInfluencer(female, true);
 }
 
@@ -451,6 +454,17 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
     }
 
     switch(model.default.Mesh) {
+        case LodMesh'DeusExCharacters.GFM_SuitSkirt':
+        case LodMesh'DeusExCharacters.GFM_SuitSkirt_F':
+            if( carcass != None ) {
+                carcass.Mesh = LodMesh'DeusExCharacters.GFM_SuitSkirt_Carcass';
+                carcass.Mesh2 = LodMesh'DeusExCharacters.GFM_SuitSkirt_CarcassB';
+                carcass.Mesh3 = LodMesh'DeusExCharacters.GFM_SuitSkirt_CarcassC';
+            } else {
+                p.Mesh = LodMesh'DeusExCharacters.GFM_SuitSkirt';
+            }
+            break;
+
         case LodMesh'DeusExCharacters.GM_Trench_F':
         case LodMesh'DeusExCharacters.GM_Trench':
             if( carcass != None ) {
@@ -492,12 +506,7 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
     for(i=1; i<8; i++) {
         p.MultiSkins[i] = model.Default.MultiSkins[i];
     }
-    p.MultiSkins[0] = p.Default.MultiSkins[0];
-    /*coat1 = Texture'DeusExItems.Skins.PinkMaskTex';
-    coat2 = Texture'DeusExItems.Skins.PinkMaskTex';
-    shirt = Texture'DeusExItems.Skins.PinkMaskTex';
-    //pants = Texture'DeusExItems.Skins.PinkMaskTex';
-    helmet = Texture'DeusExItems.Skins.PinkMaskTex';*/
+    //p.MultiSkins[0] = p.Default.MultiSkins[0];
 
     switch(model.default.Mesh) {
         case LodMesh'DeusExCharacters.GFM_Trench':
@@ -682,7 +691,7 @@ simulated function ReadInfluencers(bool female, out name coatinfluencer, out nam
         shirtinfluencer == '') {
         //This was probably a game saved before fashion existed
         info("No stored outfit!");
-        InitInfluencers();
+        //InitInfluencers();
         _RandomizeClothes(isFemale);
 
         _ReadInfluencers(female, coatinfluencer, pantsinfluencer, shirtinfluencer);

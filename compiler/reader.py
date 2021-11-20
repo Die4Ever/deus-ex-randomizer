@@ -26,7 +26,7 @@ class UnrealScriptFile():
             self.operator = inheritance.group('operator')
             self.baseclass = inheritance.group('baseclass')
         else:
-            RuntimeError(file+" couldn't read class definition")
+            RuntimeError(self.file+" couldn't read class definition")
         # maybe do some assertions on classnames, and verify that classname matches filename?
         self.qualifiedclass = self.namespace+'.'+self.classname
     

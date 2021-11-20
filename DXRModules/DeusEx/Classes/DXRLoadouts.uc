@@ -90,7 +90,9 @@ function CheckConfig()
         item_sets[3].starting_augs = "HXRandomizer.AugNinja";//combines AugStealth and active AugSpeed
 #elseif gmdx
         item_sets[3].starting_augs = "GMDXRandomizer.AugNinja";//combines AugStealth and active AugSpeed
-#else
+#elseif revision
+        item_sets[3].starting_augs = "RevRandomizer.AugNinja";//combines AugStealth and active AugSpeed
+#elseif vanilla
         item_sets[3].starting_augs = "AugNinja";//combines AugStealth and active AugSpeed
 #endif
         item_sets[3].item_spawns = "WeaponShuriken,5,BioelectricCell,2";
