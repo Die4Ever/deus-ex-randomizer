@@ -262,7 +262,7 @@ function int HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill)
     
     if (adjustedHealAmount == 1)
         ClientMessage(Sprintf(HealedPointLabel, adjustedHealAmount));
-    else if(adjustedHealAmount > 0)
+    else if(adjustedHealAmount != 1)// we want messages for healing 0 so you know it could've healed you
         ClientMessage(Sprintf(HealedPointsLabel, adjustedHealAmount));
     
     return adjustedHealAmount;

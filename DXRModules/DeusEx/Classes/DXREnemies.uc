@@ -56,8 +56,9 @@ function CheckConfig()
         AddRandomEnemyType("SecurityBot4", 2);//unused little guy
 
         AddRandomWeapon("WeaponShuriken", 12);
-        AddRandomWeapon("WeaponPistol", 10);
-        AddRandomWeapon("WeaponAssaultGun", 10);
+        AddRandomWeapon("WeaponPistol", 5);
+        AddRandomWeapon("WeaponStealthPistol", 4);
+        AddRandomWeapon("WeaponAssaultGun", 11);
         AddRandomWeapon("WeaponMiniCrossbow", 5);
         AddRandomWeapon("WeaponGEPGun", 4);
         AddRandomWeapon("WeaponAssaultShotgun", 5);
