@@ -3,10 +3,9 @@ class DXRJCDentonMaleCarcass injects JCDentonMaleCarcass;
 function SetSkin(DeusExPlayer player)
 {
     local int i;
-    //Super.SetSkin(player);
 
-    log(Self$" SetSkin("$player$")");
     if( player == None ) {
+        Super.SetSkin(player);
         return;
     }
 
@@ -54,10 +53,8 @@ function SetSkin(DeusExPlayer player)
             break;
     }
     
-    log(Self$" "$Mesh$", "$Mesh2$", "$Mesh3);
     for (i = 0; i <= 7; i++) {
         MultiSkins[i]=player.MultiSkins[i];
-        log(Self$" "$i$" "$MultiSkins[i]);
     }
 
 }

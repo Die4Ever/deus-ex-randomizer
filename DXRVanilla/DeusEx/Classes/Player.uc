@@ -356,10 +356,10 @@ exec function CheatsOff()
 //Just a copy of PlayersOnly, but doesn't need cheats and faster to type (In case of lockups after a save)
 exec function po()
 {
-	if ( Level.Netmode != NM_Standalone )
-		return;
+    if ( Level.Netmode != NM_Standalone )
+        return;
 
-	Level.bPlayersOnly = !Level.bPlayersOnly;
+    Level.bPlayersOnly = !Level.bPlayersOnly;
 }
 
 exec function FixAugHotkeys()
@@ -536,10 +536,10 @@ function UpdateDynamicMusic(float deltaTime)
     }
 }
 
-// for Lay D Denton compatibility
+// LDDP: for Lay D Denton compatibility
 simulated function PreBeginPlay()
 {
-	Super.PreBeginPlay();
+    Super.PreBeginPlay();
 }
 function PlayTakeHitSound(int Damage, name damageType, int Mult)
 {
@@ -551,11 +551,33 @@ function TweenToRunning(float tweentime)
 }
 function PlayWalking()
 {
-    Super.PlayWalking();
+    local float newhumanAnimRate;
+
+    newhumanAnimRate = humanAnimRate;
+
+    // UnPhysic.cpp walk speed changed by proportion 0.7/0.3 (2.33), but that looks too goofy (fast as hell), so we'll try something a little slower
+    if ( Level.NetMode != NM_Standalone )
+        newhumanAnimRate = humanAnimRate * 1.75;
+
+    //	ClientMessage("PlayWalking()");
+    if(!HasAnim('CrouchWalk'))
+        LoopAnim('Walk', newhumanAnimRate);
+    else if (bForceDuck || bCrouchOn)
+        LoopAnim('CrouchWalk', newhumanAnimRate);
+    else
+    {
+        if (HasTwoHandedWeapon())
+            LoopAnim('Walk2H', newhumanAnimRate);
+        else
+            LoopAnim('Walk', newhumanAnimRate);
+    }
 }
 function TweenToWalking(float tweentime)
 {
-    Super.TweenToWalking(tweentime);
+    if(!HasAnim('CrouchWalk'))
+        TweenAnim('Walk', tweentime);
+    else
+        Super.TweenToWalking(tweentime);
 }
 function PlayFiring()
 {
@@ -563,7 +585,23 @@ function PlayFiring()
 }
 function TweenToWaiting(float tweentime)
 {
-    Super.TweenToWaiting(tweentime);
+    //	ClientMessage("TweenToWaiting()");
+    if (IsInState('PlayerSwimming') || (Physics == PHYS_Swimming))
+    {
+        if (IsFiring())
+            LoopAnim('TreadShoot');
+        else
+            LoopAnim('Tread');
+    }
+    else if (HasAnim('CrouchWalk') && (IsLeaning() || bForceDuck))
+        TweenAnim('CrouchWalk', tweentime);
+    else if (((AnimSequence == 'Pickup') && bAnimFinished) || ((AnimSequence != 'Pickup') && !IsFiring()))
+    {
+        if (HasTwoHandedWeapon())
+            TweenAnim('BreatheLight2H', tweentime);
+        else
+            TweenAnim('BreatheLight', tweentime);
+    }
 }
 function UpdateAnimRate( float augValue )
 {
@@ -595,7 +633,11 @@ function PlayWeaponSwitch(Weapon newWeapon)
 }
 function PlayCrawling()
 {
-    Super.PlayCrawling();
+    //	ClientMessage("PlayCrawling()");
+    if (IsFiring())
+        LoopAnim('CrouchShoot');
+    else if(HasAnim('CrouchWalk'))
+        LoopAnim('CrouchWalk');
 }
 function PlayRising()
 {
@@ -603,7 +645,16 @@ function PlayRising()
 }
 function PlayDuck()
 {
-    Super.PlayDuck();
+    //	ClientMessage("PlayDuck()");
+    if ((AnimSequence != 'Crouch') && (AnimSequence != 'CrouchWalk'))
+    {
+        if (IsFiring())
+            PlayAnim('CrouchShoot',,0.1);
+        else
+            PlayAnim('Crouch',,0.1);
+    }
+    else if(HasAnim('CrouchWalk'))
+        TweenAnim('CrouchWalk', 0.1);
 }
 function PlayLanded(float impactVel)
 {
@@ -619,7 +670,23 @@ function PlaySwimming()
 }
 function PlayWaiting()
 {
-    Super.PlayWaiting();
+//	ClientMessage("PlayWaiting()");
+    if (IsInState('PlayerSwimming') || (Physics == PHYS_Swimming))
+    {
+        if (IsFiring())
+            LoopAnim('TreadShoot');
+        else
+            LoopAnim('Tread');
+    }
+    else if (HasAnim('CrouchWalk') && (IsLeaning() || bForceDuck))
+        TweenAnim('CrouchWalk', 0.1);
+    else if (!IsFiring())
+    {
+        if (HasTwoHandedWeapon())
+            LoopAnim('BreatheLight2H');
+        else
+            LoopAnim('BreatheLight');
+    }
 }
 function PlayRunning()
 {
@@ -627,7 +694,10 @@ function PlayRunning()
 }
 function PlayTurning()
 {
-    Super.PlayTurning();
+    if(!HasAnim('CrouchWalk'))
+        TweenAnim('Walk', 0.1);
+    else
+        Super.PlayTurning();
 }
 function Bool HasTwoHandedWeapon()
 {

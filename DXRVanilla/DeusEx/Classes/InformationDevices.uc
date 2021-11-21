@@ -44,6 +44,23 @@ function WritePasswordsToNote(DeusExNote note)
     }
 }
 
+function WritePasswordsToNoteByTag(DeusExRootWindow root, Name tag)
+{
+    local DeusExNote note;
+    if(tag == '')
+        return;
+    
+    note = aReader.GetNote(tag);
+    if (note != None)
+        WritePasswordsToNote(note);
+
+    // LDDP compatibility
+    tag = root.StringToName("FemJC"$tag);
+    note = aReader.GetNote(tag);
+    if (note != None)
+        WritePasswordsToNote(note);
+}
+
 // ----------------------------------------------------------------------
 // CreateInfoWindow()
 // ----------------------------------------------------------------------
@@ -87,11 +104,8 @@ function CreateInfoWindow()
     }
 
     Super.CreateInfoWindow();
-    if (bAddToVault && textTag != '') note = aReader.GetNote(textTag);
-    if ( bAddToVault && note != None )
-    {
-        WritePasswordsToNote(note);
-    }
+    if(bAddToVault)
+        WritePasswordsToNoteByTag(DeusExRootWindow(aReader.rootWindow), textTag);
 }
 
 // ----------------------------------------------------------------------

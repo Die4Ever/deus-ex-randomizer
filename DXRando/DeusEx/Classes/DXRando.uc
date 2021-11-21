@@ -11,6 +11,7 @@ class DXRando extends Info config(DXRando) transient;
 var transient #var PlayerPawn  Player;
 var transient FlagBase flagbase;
 var transient DXRFlags flags;
+var transient DataStorage ds;
 var transient DXRTelemetry telemetry;
 var transient DeusExLevelInfo dxInfo;
 var transient string localURL;
@@ -385,8 +386,9 @@ simulated function PlayerLogin(#var PlayerPawn  p)
     info("PlayerLogin("$p$") do it, p.PlayerDataItem: " $ data $", data.local_inited: "$data.local_inited);
 
 #ifdef singleplayer
-    if ( flags.stored_version != 0 && flags.stored_version < class'DXRFlags'.static.VersionToInt(1,5,8,0) ) {
+    if ( flags.stored_version != 0 && flags.stored_version < class'DXRFlags'.static.VersionNumber() ) {
         data.local_inited = true;
+        data.version = class'DXRFlags'.static.VersionNumber();
     }
 #endif
 
@@ -400,6 +402,8 @@ simulated function PlayerLogin(#var PlayerPawn  p)
     for(i=0; i<num_modules; i++) {
         modules[i].PlayerAnyEntry(p);
     }
+
+    data.version = class'DXRFlags'.static.VersionNumber();
 }
 
 simulated function PlayerRespawn(#var PlayerPawn  p)

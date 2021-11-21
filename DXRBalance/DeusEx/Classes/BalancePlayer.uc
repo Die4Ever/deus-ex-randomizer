@@ -217,7 +217,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 function float GetDamageMultiplier()
 {
     local DataStorage datastorage;
-    datastorage = class'DataStorage'.static.GetObj(self);
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
     return float(datastorage.GetConfigKey('cc_damageMult'));
 }
 
@@ -348,4 +348,25 @@ function HealBrokenPart(out int points, out int amt)
     if( points > 0 || amt < heal ) return;
     amt -= heal;
     HealPart(points, heal);
+}
+
+exec function ActivateAugmentation(int num)
+{
+    local Augmentation anAug;
+    local int count, wantedSlot, slotIndex;
+    local bool bFound;
+
+    if (RestrictInput())
+        return;
+
+    anAug = AugmentationSystem.GetAugByKey(num);
+    if (Energy == 0 && anAug.GetEnergyRate() > 0)
+    {
+        ClientMessage(EnergyDepleted);
+        PlaySound(AugmentationSystem.FirstAug.DeactivateSound, SLOT_None);
+        return;
+    }
+
+    if (AugmentationSystem != None)
+        AugmentationSystem.ActivateAugByKey(num);
 }

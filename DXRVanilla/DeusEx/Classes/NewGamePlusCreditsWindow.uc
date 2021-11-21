@@ -54,7 +54,7 @@ function AddDXRandoCredits()
     PrintHeader("Original Developers");
     PrintLn();
 
-    ds = class'DataStorage'.static.GetObj(player);
+    ds = class'DataStorage'.static.GetObjFromPlayer(player);
     if( ds != None ) ds.EndPlaythrough();
 }
 

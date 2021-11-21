@@ -32,10 +32,6 @@ function CheckConfig()
         i=0;
         skipactor_types[i++] = "BarrelAmbrosia";
         skipactor_types[i++] = "NanoKey";
-#ifdef hx
-        // since it's not put into a player's inventory, it's not automatically skipped, although it's bHidden so it should be skipped anyways
-        skipactor_types[i++] = "HXRandomizer.DataStorage";
-#endif
     }
     Super.CheckConfig();
 
@@ -101,6 +97,39 @@ static function bool IsCritter(Actor a)
     return #var prefix Doberman(a) == None && #var prefix Gray(a) == None && #var prefix Greasel(a) == None && #var prefix Karkian(a) == None;
 }
 
+static function bool RemoveItem(Pawn p, class c)
+{
+    local ScriptedPawn sp;
+    local Inventory Inv, next;
+    local int i;
+    local bool found;
+    sp = ScriptedPawn(p);
+    found = false;
+    
+    if( sp != None ) {
+        for (i=0; i<ArrayCount(sp.InitialInventory); i++)
+        {
+            if ((sp.InitialInventory[i].Inventory != None) && (sp.InitialInventory[i].Count > 0))
+            {
+                if( ClassIsChildOf(sp.InitialInventory[i].Inventory, c) ) {
+                    sp.InitialInventory[i].Count = 0;
+                    found = True;
+                }
+            }
+        }
+    }
+
+    for( Inv=p.Inventory; Inv!=None; Inv=next ) {
+        next = Inv.Inventory;
+        if ( ClassIsChildOf(Inv.class, c) ) {
+            Inv.Destroy();
+            found = true;
+        }
+    }
+    
+    return found;
+}
+
 static function bool HasItem(Pawn p, class c)
 {
     local ScriptedPawn sp;
@@ -112,7 +141,7 @@ static function bool HasItem(Pawn p, class c)
         {
             if ((sp.InitialInventory[i].Inventory != None) && (sp.InitialInventory[i].Count > 0))
             {
-                if( sp.InitialInventory[i].Inventory.Class == c ) return True;
+                if( sp.InitialInventory[i].Inventory == c ) return True;
             }
         }
     }
@@ -131,15 +160,15 @@ static function bool HasItemSubclass(Pawn p, class<Inventory> c)
         {
             if ((sp.InitialInventory[i].Inventory != None) && (sp.InitialInventory[i].Count > 0))
             {
-                if( ClassIsChildOf(sp.InitialInventory[i].Inventory.Class, c) ) return True;
+                if( ClassIsChildOf(sp.InitialInventory[i].Inventory, c) ) return True;
             }
         }
     }
 
-    for( Inv=p.Inventory; Inv!=None; Inv=Inv.Inventory )   
-		if ( ClassIsChildOf(Inv.class, c) )
-			return true;
-	return false;
+    for( Inv=p.Inventory; Inv!=None; Inv=Inv.Inventory )
+        if ( ClassIsChildOf(Inv.class, c) )
+            return true;
+    return false;
 }
 
 static function bool HasMeleeWeapon(Pawn p)

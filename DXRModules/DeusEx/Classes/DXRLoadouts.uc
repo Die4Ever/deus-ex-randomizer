@@ -45,7 +45,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(1,5,9,8) ) {
+    if( ConfigOlderThan(1,6,4,7) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(item_sets); i++) {
@@ -63,7 +63,7 @@ function CheckConfig()
             randomitems[i].chance = 0;
         }
 
-        item_sets[0].name = "Randomized Starting Equipment";
+        item_sets[0].name = "All Items Allowed";
 
         item_sets[1].name = "Stick With the Prod Pure";
         item_sets[1].player_message = "Stick with the prod!";
@@ -112,6 +112,10 @@ function CheckConfig()
         item_sets[6].bans = "Engine.Weapon";
         item_sets[6].allows = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade";
         item_sets[6].starting_equipments = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade";
+
+        item_sets[7].name = "No Pistols";
+        item_sets[7].player_message = "No Pistols";
+        item_sets[7].bans = "WeaponPistol,WeaponStealthPistol";
 
         i=0;
 

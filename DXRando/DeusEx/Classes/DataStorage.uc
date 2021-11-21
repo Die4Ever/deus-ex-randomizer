@@ -1,11 +1,11 @@
 #ifdef hx
-class DataStorage extends Inventory config(HXRandoDataStorage) transient;
+class DataStorage extends Info config(HXRandoDataStorage) transient;
 #elseif gmdx
-class DataStorage extends Inventory config(GMDXRandoDataStorage) transient;
+class DataStorage extends Info config(GMDXRandoDataStorage) transient;
 #elseif revision
-class DataStorage extends Inventory config(RevRandoDataStorage) transient;
+class DataStorage extends Info config(RevRandoDataStorage) transient;
 #else
-class DataStorage extends Inventory config(DXRDataStorage) transient;
+class DataStorage extends Info config(DXRDataStorage) transient;
 #endif
 
 struct KVP {
@@ -110,6 +110,7 @@ replication
 function PreTravel()
 {
     Flush();
+    Destroy();
 }
 
 function Destroyed()
@@ -192,38 +193,43 @@ final function int SystemTime()
     return _SystemTime(Level);
 }
 
-#ifdef hx
-simulated function static DataStorage GetObj(Actor p)
-#else
-simulated function static DataStorage GetObj(DeusExPlayer p)
-#endif
+simulated function static DataStorage GetObj(DXRando dxr)
 {
     local DataStorage d;
     local DXRFlags f;
+    log("DataStorage GetObj "$dxr);
 
-    if( p == None ) return None;
+    if( dxr == None ) return None;
     
-#ifdef hx
-    d = HXRandoGameInfo(p.Level.Game).ds;
-#else
-    d = DataStorage(p.FindInventoryType(class'DataStorage'));
-#endif
+    d = dxr.ds;
+
     if( d == None ) {
-        d = p.Spawn(class'DataStorage');
-#ifdef hx
-        HXRandoGameInfo(p.Level.Game).ds = d;
-#else
-        d.GiveTo(p);
-        d.SetBase(p);
-#endif
+        d = dxr.Spawn(class'DataStorage');
+        dxr.ds = d;
     }
     if( d.playthrough_id == 0 ) {
-        foreach d.AllActors(class'DXRFlags', f) {
-            d.playthrough_id = f.playthrough_id;
-            break;
-        }
+        d.playthrough_id = dxr.flags.playthrough_id;
     }
     return d;
+}
+
+simulated function static DataStorage GetObjFromPlayer(PlayerPawn  p)
+{
+    local DXRando dxr;
+
+#ifdef injections
+    if( #var PlayerPawn (p) != None ) {
+        dxr = #var PlayerPawn (p).GetDXR();
+        if(dxr != None)
+            return GetObj(dxr);
+    }
+#endif
+    
+    foreach p.AllActors(class'DXRando', dxr) { break; }
+    if(dxr == None)
+        return None;
+    
+    return GetObj(dxr);
 }
 
 final function GetRange(string key, out int min, out int max)
@@ -342,8 +348,4 @@ final function BindConn(int slot_a, int slot_b, out string val, bool writing)
 
 defaultproperties
 {
-    bDisplayableInv=False
-    ItemName="DataStorage"
-    bHidden=True
-    Physics=PHYS_None
 }

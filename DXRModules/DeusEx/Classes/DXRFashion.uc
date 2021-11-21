@@ -255,7 +255,7 @@ simulated function AddInfluencer(class<ScriptedPawn> male, class<ScriptedPawn> f
 simulated function AddInfluencerName(class<ScriptedPawn> male, name female)
 {
     local class<ScriptedPawn> femaleClass;
-    // don't want to require LDD for compilation, so this handles it at runtime
+    // don't want to require LDDP for compilation, so this handles it at runtime
     if( isFemale )
         femaleClass = GetInfluencerClass(female);
     AddInfluencer(male, femaleClass);
@@ -443,7 +443,7 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
     carcass = DeusExCarcass(p);
 
     if(DeusExPlayer(p) != None) {
-        // LDD: take control away from FemJC package
+        // LDDP: take control away from FemJC package
         DeusExPlayer(p).CarcassType = class'JCDentonMaleCarcass';
     }
 
@@ -511,7 +511,6 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
     for(i=1; i<8; i++) {
         p.MultiSkins[i] = model.Default.MultiSkins[i];
     }
-    //p.MultiSkins[0] = p.Default.MultiSkins[0];
 
     switch(model.default.Mesh) {
         case LodMesh'DeusExCharacters.GFM_Trench':
@@ -607,10 +606,10 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
             err("unhandled mesh " $ model.default.Mesh);
     }
 
-    /*info( p $ " " $ p.Mesh );
+    l( p $ " " $ p.Mesh );
     for(i=0; i<8; i++) {
-        info( p $ " " $ i $ ": " $ p.MultiSkins[i]);
-    }*/
+        l( p $ " " $ i $ ": " $ p.MultiSkins[i]);
+    }
 }
 
 simulated function class<ScriptedPawn> GetInfluencerClass(name inf)

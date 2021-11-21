@@ -332,7 +332,7 @@ function AnyEntry()
 
     LogAll();
 #ifdef hx
-    ds = class'DataStorage'.static.GetObj(self);
+    ds = class'DataStorage'.static.GetObj(dxr);
     ds.HXLoadNotes();
 #endif
 }

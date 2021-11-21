@@ -1015,7 +1015,7 @@ function ApplyEntranceRando(int missionNum)
     local MapExit m;
     local DataStorage ds;
 
-    ds = class'DataStorage'.static.GetObj(player());
+    ds = class'DataStorage'.static.GetObj(dxr);
     if( ds.EntranceRandoMissionNumber == missionNum ) {
         BindEntrances(ds, false);
     } else {

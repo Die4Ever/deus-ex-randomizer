@@ -1,6 +1,7 @@
 class PlayerDataItem extends Inventory;
 
 var travel bool local_inited;
+var travel int version;
 #ifdef multiplayer
 var travel int SkillPointsTotal;
 var travel int SkillPointsAvail;
@@ -15,7 +16,7 @@ simulated function static PlayerDataItem GiveItem(#var PlayerPawn  p)
     {
         i = p.Spawn(class'PlayerDataItem');
         i.GiveTo(p);
-        i.SetBase(p);
+        log("spawned new "$i$" for "$p);
     }
     return i;
 }
@@ -25,4 +26,8 @@ defaultproperties
     bDisplayableInv=false
     ItemName="PlayerDataItem"
     bHidden=true
+    bHeldItem=true
+    InvSlotsX=-1
+    InvSlotsY=-1
+    Physics=PHYS_None
 }

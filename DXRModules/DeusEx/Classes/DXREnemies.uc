@@ -1,4 +1,4 @@
-class DXREnemies extends DXRActorsBase;
+class DXREnemies extends DXRActorsBase transient;
 
 var config int enemy_multiplier;
 
@@ -452,7 +452,10 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( IsHuman(p) == False ) return; // only give random weapons to humans
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
 
+    RemoveItem(p, class'Weapon');
     GiveRandomWeapon(p, false, 2);
+    if( chance_single(50) )
+        GiveRandomWeapon(p, false, 2);
     GiveRandomMeleeWeapon(p);
     p.SetupWeapon(false);
 }
@@ -474,7 +477,8 @@ function inventory GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional 
         return None;
 
     if( wclass == None ) {
-        l("not giving a random weapon to "$p); return None;
+        warning("not giving a random weapon to "$p);
+        return None;
     }
 
     return GiveItem( p, wclass, add_ammo );

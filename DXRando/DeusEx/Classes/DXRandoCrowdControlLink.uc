@@ -398,12 +398,12 @@ function StopMatrixMode(optional bool silent) {
 
 
 function float retrieveFloatValue(name valName) {
-    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(player());
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
     return float(datastorage.GetConfigKey(valName));
 }
 
 function storeFloatValue(name valName, float val) {
-    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(player());
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
     datastorage.SetConfig(valName, val, 3600*12);
 
 }
@@ -536,13 +536,13 @@ function bool checkForTimerDisplay(name timerName) {
 }
 
 function int getTimer(name timerName) {
-    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(player());
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
     return int(datastorage.GetConfigKey(timerName));
 }
 
 function setTimerFlag(name timerName, int time, bool newTimer) {
     local int expiration;
-    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(player());
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
     if( time == 0 ) expiration = 1;
     else expiration = 3600*12;
     datastorage.SetConfig(timerName, time, expiration);
