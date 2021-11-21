@@ -110,7 +110,6 @@ replication
 function PreTravel()
 {
     Flush();
-    Destroy();
 }
 
 function Destroyed()
@@ -213,7 +212,7 @@ simulated function static DataStorage GetObj(DXRando dxr)
     return d;
 }
 
-simulated function static DataStorage GetObjFromPlayer(PlayerPawn  p)
+simulated function static DataStorage GetObjFromPlayer(Actor p)
 {
     local DXRando dxr;
 

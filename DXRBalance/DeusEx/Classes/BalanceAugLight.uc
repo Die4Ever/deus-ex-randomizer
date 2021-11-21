@@ -3,6 +3,9 @@ class BalanceAugLight injects AugLight;
 function SetBeamLocation()
 {
     Super.SetBeamLocation();
+    if( b1 == None || b2 == None )
+        return;
+    
     b1.LightRadius *= 2;
     b1.LightBrightness = 220; // default is 192
     b2.LightRadius = 8; // default is 4
@@ -16,5 +19,5 @@ function SetBeamLocation()
 defaultproperties
 {
     EnergyRate=0.000000
-    LevelValues(0)=10240.000000
+    LevelValues(0)=1000
 }

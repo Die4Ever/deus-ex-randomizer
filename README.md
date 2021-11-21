@@ -69,6 +69,7 @@ There are also settings for
     * Don't Give Me the GEP Gun - bans the GEP gun
     * Freeman Mode - only weapon allowed is the crowbar
     * Grenades Only
+    * No Pistols - for people who think the pistol is OP
 * Co-op when combined with the HX mod (Alpha)
     * download HX-0.9.89.4.zip from https://builds.hx.hanfling.de/testing/
     * copy HXRandomizer.u and HXRandomizer.int into the System directory of the game
