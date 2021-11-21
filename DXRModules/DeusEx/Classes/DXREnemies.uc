@@ -454,6 +454,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
 
     RemoveItem(p, class'Weapon');
+    RemoveItem(p, class'Ammo');
     GiveRandomWeapon(p, false, 2);
     if( chance_single(50) )
         GiveRandomWeapon(p, false, 2);
