@@ -115,9 +115,11 @@ If you click Next then it will use default settings based on your difficulty cho
 
 ## Balance Chances
 
-Hacking computers now uses bioelectric energy. The light augmentation no longer uses energy. The large metal crates are now destructible, they have 2000 hp. Spy Drone aug has improved speed and the emp blast now also does explosive damage. The PS20 has been upgraded to the PS40 and does significantly more damage. Paul is now mortal during the raid in mission 4, so you need to help him fight! Hazmat suit now also helps against fire, electricity, and explosions. Enviro skill now gives a little passive damage resistance for the same damage types as Hazmat suits. Demolition skill allows you to carry more grenades at once. Items like ballistic armor and rebreathers now free up the inventory space immediately when you equip them. Alcohol now gives you some energy and also fixes dead legs.
+DXRando features many small but impactful balance changes that can expand your tactical options.
 
-[See full list of balance changes here in the wiki.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Balance-Changes)
+The large metal crates are now destructible with 2000hp. Alcohol now fixes dead legs. Things that normally aren't useful have been buffed, such as hazmat suits, ballistic armor, environmental skill, and the spy drone augmentation. And more balance changes to maximize variety for many replays!
+
+[See the full list of balance changes here in the wiki so you may be better able to adapt to the unique challenges DXRando generates.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Balance-Changes)
 
 ## Recommended tweaks for running Deus Ex on modern computers
 <details>
