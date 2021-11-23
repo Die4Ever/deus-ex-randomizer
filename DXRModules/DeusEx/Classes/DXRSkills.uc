@@ -153,9 +153,14 @@ simulated function RandoSkillLevelValues(Skill a)
     skill_value_rando = float(dxr.flags.settings.skill_value_rando) / 100.0;
     RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_rando, a.Description);
 
+#ifdef balance
     if( #var prefix SkillDemolition(a) != None ) {
         add_desc = "Each level increases the number of grenades you can carry by 1.";
     }
+    else if( #var prefix SkillComputer(a) != None ) {
+        add_desc = "Hacking uses 5 bioelectric energy per second.";
+    }
+#endif
 
     if( add_desc != "" && InStr(a.Description, add_desc) == -1 ) {
         a.Description = a.Description $ "|n|n" $ add_desc;
@@ -194,7 +199,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         word = "Hack Time";
         if( i == 0 ) return "--";
         f = 15.0 / (s.LevelValues[i] * 1.5);
-        return int(f) $ " sec";
+        return FloatToString(f, 1) $ " sec";
     }
     else if( s.Class == class'#var prefix SkillSwimming') {
         word = "Swimming Speed";
