@@ -528,7 +528,11 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
         case LodMesh'DeusExCharacters.GFM_SuitSkirt':
         case LodMesh'DeusExCharacters.GFM_SuitSkirt_F':
             // 1 is hair?
-            p.MultiSkins[3] = Texture'DeusExCharacters.Skins.Female2Tex1';// legs/pants
+            if( String(p.MultiSkins[0]) == "FemJC.Characters.JCDentonFemaleTex4" || String(p.MultiSkins[0]) == "FemJC.Characters.JCDentonFemaleTex5" )
+                p.MultiSkins[3] = Texture'DeusExCharacters.Skins.Hooker1Tex1';// darker legs
+            else
+                p.MultiSkins[3] = Texture'DeusExCharacters.Skins.Female2Tex1';// legs/pants
+            
             p.MultiSkins[4] = shirt;
             p.MultiSkins[5] = pants;// skirt
 
