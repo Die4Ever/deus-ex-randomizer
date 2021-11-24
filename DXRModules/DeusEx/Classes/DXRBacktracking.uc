@@ -357,15 +357,27 @@ function VandSubAnyEntry()
     local InterpolationPoint p;
     local FlagTrigger ft;
     local FlagBase flags;
+    local DataLinkTrigger dt;
     flags = dxr.flagbase;
 
     // backtracking to gas station
     flags.SetBool('TiffanyRescued', true,, 15);// despite the name, this really just means the rescue has been attempted
 
+    foreach AllActors(class'DataLinkTrigger', dt, 'DataLinkTrigger') {
+        if( dt.datalinkTag == 'dl_start') {
+            dt.CheckFlag = 'dl_start_Played';
+            dt.bCheckFalse = true;
+        }
+    }
+
     foreach AllActors(class'InterpolateTrigger', t, 'InterpolateTrigger')
-        if( t.Event == 'UN_BlackHeli' ) t.Destroy();
+        if( t.Event == 'UN_BlackHeli' ) {
+            t.Event = '';
+            t.Destroy();
+        }
     
     RemoveChoppers('UN_BlackHeli');
+    RemoveChoppers('backtrack_chopper');
 
     foreach AllActors(class'InterpolationPoint', p, 'UN_BlackHeli_Fly') {
         p.RateModifier = 0.25;
