@@ -30,9 +30,7 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
 
     lastUpdate = dxr.flagbase.GetInt('DXRFashion_LastUpdate');
     if (lastUpdate < dxr.dxInfo.MissionNumber) {
-        _RandomizeClothes(isFemale);
-        if(isFemale)
-            _RandomizeClothes(false);
+        RandomizeClothes();
         p.ClientMessage("Time for a change of clothes...");
     }
 
@@ -696,7 +694,7 @@ simulated function ReadInfluencers(bool female, out name coatinfluencer, out nam
         //This was probably a game saved before fashion existed
         info("No stored outfit!");
         //InitInfluencers();
-        _RandomizeClothes(isFemale);
+        _RandomizeClothes(female);
 
         _ReadInfluencers(female, coatinfluencer, pantsinfluencer, shirtinfluencer);
     }
