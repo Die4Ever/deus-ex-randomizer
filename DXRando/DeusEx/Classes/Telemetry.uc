@@ -68,7 +68,7 @@ function HTTPReceivedData(string Data)
 
 event Closed()
 {
-    log(Self$": Closed");
+    //log(Self$": Closed");
     Super.Closed();
     Done();
 }
@@ -103,7 +103,7 @@ function Done()
 {
     local int i;
     SetTimer(0, False);
-    log(Self$": Done()");
+    //log(Self$": Done()");
     if( ServerIpAddr.Addr == 0 )
     {
         log(Self$": ERROR: never got server IP! trying cached_addr");

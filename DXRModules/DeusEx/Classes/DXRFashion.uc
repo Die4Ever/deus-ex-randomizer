@@ -30,7 +30,7 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
 
     lastUpdate = dxr.flagbase.GetInt('DXRFashion_LastUpdate');
     if (lastUpdate < dxr.dxInfo.MissionNumber) {
-        RandomizeClothes();
+        RandomizeClothes(player());
         p.ClientMessage("Time for a change of clothes...");
     }
 
@@ -332,6 +332,18 @@ simulated function class<ScriptedPawn> RandomCoatInfluencer(bool female)
     return RandomInfluencerForMeshes(female, meshes);
 }
 
+simulated function class<ScriptedPawn> RandomCoatOtherSkinInfluencer(bool female)
+{
+    local int i;
+    local class<ScriptedPawn> c;
+    local bool compatible;
+    for(i=0; i < 10 && !compatible; i++) {
+        c = RandomCoatInfluencer(female);
+        compatible = isOtherSkinCompatible(c);
+    }
+    return c;
+}
+
 simulated function class<ScriptedPawn> RandomFemaleShirtInfluencer()
 {
     local LodMesh meshes[16];
@@ -391,10 +403,12 @@ simulated function class<ScriptedPawn> RandomUniSexNonSkirtInfluencer(bool femal
     return RandomInfluencerForMeshes(female, meshes);
 }
 
-simulated function class<ScriptedPawn> RandomUniSexNonCoatInfluencer(bool female)
+simulated function class<ScriptedPawn> RandomUniSexNonCoatInfluencer(bool female, bool isOtherSkinColor)
 {
     local LodMesh meshes[16];
     local int i;
+    local class<ScriptedPawn> c;
+    local bool compatible;
     i=0;
 
     meshes[i++] = LodMesh'DeusExCharacters.GFM_SuitSkirt';
@@ -411,7 +425,21 @@ simulated function class<ScriptedPawn> RandomUniSexNonCoatInfluencer(bool female
 
     // currently ignore the incoming female flag, maybe later we might want to use it for weighting or something?
     //female = Rand(2) == 1;
-    return RandomInfluencerForMeshes(female, meshes);
+    if(!isOtherSkinColor)
+        return RandomInfluencerForMeshes(female, meshes);
+
+    for(i=0; i < 10 && !compatible; i++) {
+        c = RandomInfluencerForMeshes(female, meshes);
+        compatible = isOtherSkinCompatible(c);
+    }
+    return c;
+}
+
+simulated function bool isOtherSkinCompatible(class<ScriptedPawn> c)
+{
+    return ! (c == class'Female4' || c == class'Male4' || c == class'HKMilitary' || c == class'SamCarter'
+            || c == class'BoatPerson' || c == class'LowerClassMale' || c == class'GordonQuick' || c == class'ThugMale3');
+            // maybe ThugMale3?
 }
 
 simulated function bool IsTrenchInfluencer(class<ScriptedPawn> influencer)
@@ -698,7 +726,7 @@ simulated function ReadInfluencers(bool female, out name coatinfluencer, out nam
         //This was probably a game saved before fashion existed
         info("No stored outfit!");
         //InitInfluencers();
-        _RandomizeClothes(female);
+        _RandomizeClothes(player(), female);
 
         _ReadInfluencers(female, coatinfluencer, pantsinfluencer, shirtinfluencer);
     }
@@ -747,10 +775,10 @@ simulated function GetDressed()
         ApplyInfluencers(paulCarcass, coatinfluencer, pantsinfluencer, shirtinfluencer, false);
 }
 
-simulated function _RandomizeClothes(bool female)
+simulated function _RandomizeClothes(#var PlayerPawn  player, bool female)
 {
     local class<ScriptedPawn> styleInfluencer;
-    local bool isTrench, isSkirt, isFemaleShirt;
+    local bool isTrench, isSkirt, isFemaleShirt, isOtherSkinColor;
     local name flagname;
 
     // notes about mixing and matching clothes
@@ -758,9 +786,14 @@ simulated function _RandomizeClothes(bool female)
     // shirts don't blend well with skirts
     // shirts are distorted on the GFM_TShirtPants model (unless of course they're made for that model), I think it also spills into the hair
     // maybe the only unisex clothing should be shirts on GFM_Trench, gotta check how coats work out
+    // female shirts and skirts don't seem to have any darker skin options
     
     //Randomize Coat (Multiskin 1 and 5)
-    styleInfluencer = RandomInfluencer(female);
+    isOtherSkinColor = player.PlayerSkin == 1 || player.PlayerSkin == 2 || player.PlayerSkin == 4;
+    if(female && isOtherSkinColor)
+        styleInfluencer = RandomCoatInfluencer(female);
+    else
+        styleInfluencer = RandomInfluencer(female);
     isTrench = IsTrenchInfluencer(styleInfluencer);
     isSkirt = IsSkirtInfluencer(styleInfluencer);
     isFemaleShirt = IsFemaleShirtInfluencer(styleInfluencer);// these shirts aren't compatible with other texture coordinates
@@ -789,12 +822,15 @@ simulated function _RandomizeClothes(bool female)
     
     //Randomize Shirt (Multiskin 4)
     if (isTrench) {
-        styleInfluencer = RandomCoatInfluencer(female);
+        if(isOtherSkinColor)
+            styleInfluencer = RandomCoatOtherSkinInfluencer(female);
+        else
+            styleInfluencer = RandomCoatInfluencer(female);
     } else if (isFemaleShirt) {
         styleInfluencer = RandomFemaleShirtInfluencer();
     } else {
         // for shirts we might be able to pull from male shirts too
-        styleInfluencer = RandomUniSexNonCoatInfluencer(female);
+        styleInfluencer = RandomUniSexNonCoatInfluencer(female, isOtherSkinColor);
     }
     if(female)
         flagname = 'DXRFashion_ShirtInfluencerF';
@@ -807,12 +843,12 @@ simulated function _RandomizeClothes(bool female)
     dxr.flags.f.SetInt('DXRFashion_LastUpdate',dxr.dxInfo.MissionNumber,,999);
 }
 
-simulated function RandomizeClothes()
+simulated function RandomizeClothes(#var PlayerPawn  player)
 {
-    _RandomizeClothes(isFemale);
+    _RandomizeClothes(player, isFemale);
     // when FemJC uses a clothesrack, we only change her clothes? or Paul's too?
     if(isFemale)
-        _RandomizeClothes(false);
+        _RandomizeClothes(player, false);
 }
 
 function RunTests()
