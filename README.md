@@ -6,7 +6,7 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 
 ## Installation Instructions
 <details>
-<summary>Click to expand...</summary>
+<summary>Click to expand Installation Instructions...</summary>
 
 Download the `DeusEx.u` file from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
 
@@ -15,7 +15,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 
 ## Installation Instructions for Lay D Denton
 <details>
-<summary>Click to expand...</summary>
+<summary>Click to expand Lay D Denton Installation Instructions...</summary>
 
 Download Lay D Denton version 1.1 from here https://www.moddb.com/mods/the-lay-d-denton-project/downloads
 
@@ -28,7 +28,7 @@ Then copy Deus Ex Randomizers's `DeusEx.u` file into your `Deus Ex\System\` fold
 
 ## Installation Instructions for HX (Co-op)
 <details>
-<summary>Click to expand...</summary>
+<summary>Click to expand HX Installation Instructions...</summary>
 
 Make sure to use the DeusEx.u file from the original game for co-op.
 
@@ -123,7 +123,7 @@ The large metal crates are now destructible with 2000hp. Alcohol now fixes dead 
 
 ## Recommended tweaks for running Deus Ex on modern computers
 <details>
-<summary>Click to expand...</summary>
+<summary>Click to expand performance fixes...</summary>
 
 Recommended to use it with [Kentie's Deus Exe Launcher](http://www.kentie.net/article/dxguide/), or [Han's Launcher](https://coding.hanfling.de/launch/#binaries). Play with OpenGL renderer because the Direct3D renderers have trouble on newer Nvidia drivers unless you use the [Deus Ex Speedup Fix mod. The Deus Ex Speedup Fix mod (download at the bottom of linked page)](https://steamcommunity.com/sharedfiles/filedetails/?id=2048525175) allows you to disable the fps cap (the fps cap in the game can cause stutters, but capping frame rate in nvidia control panel works perfectly) If you use that mod, then edit your `Documents\Deus Ex\System\DeusEx.ini` file and search for `FPSLimit=` and set it to 0 to manually remove the fps cap because I've noticed that Kentie's Launcher doesn't always do it correctly, and also disable vsync with your graphics driver. If you use the speedup fix then you'll probably want to use the [Direct3D 10](https://kentie.net/article/d3d10drv/) or [Direct3D 11](https://kentie.net/article/d3d11drv/index.htm) renderer. I use my graphics driver to enforce a 120fps limit with Direct3D 10.
 
