@@ -1,5 +1,9 @@
 #ifdef hx
 class DXRando extends Info config(HXRando) transient;
+#elseif gmdx
+class DXRando extends Info config(GMDXRando) transient;
+#elseif revision
+class DXRando extends Info config(RevRando) transient;
 #else
 class DXRando extends Info config(DXRando) transient;
 #endif
@@ -7,6 +11,7 @@ class DXRando extends Info config(DXRando) transient;
 var transient #var PlayerPawn  Player;
 var transient FlagBase flagbase;
 var transient DXRFlags flags;
+var transient DataStorage ds;
 var transient DXRTelemetry telemetry;
 var transient DeusExLevelInfo dxInfo;
 var transient string localURL;
@@ -106,24 +111,19 @@ function CheckConfig()
 {
     local int i;
 
-    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,5,9,8) ) {
+    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,6,4,2) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
 
         i=0;
-        modules_to_load[i++] = "DXRTelemetry";
 #ifdef vanilla
+        modules_to_load[i++] = "DXRTelemetry";
         modules_to_load[i++] = "DXRMissions";
-#endif
         modules_to_load[i++] = "DXRSwapItems";
         //modules_to_load[i++] = "DXRAddItems";
-#ifdef fixes
         modules_to_load[i++] = "DXRFixup";
-#endif
-#ifdef backtracking
         modules_to_load[i++] = "DXRBacktracking";
-#endif
         modules_to_load[i++] = "DXRKeys";
         modules_to_load[i++] = "DXRSkills";
         modules_to_load[i++] = "DXRPasswords";
@@ -132,12 +132,8 @@ function CheckConfig()
         modules_to_load[i++] = "DXRNames";
         modules_to_load[i++] = "DXRMemes";
         modules_to_load[i++] = "DXREnemies";
-#ifdef backtracking
         modules_to_load[i++] = "DXREntranceRando";
-#endif
-#ifdef singleplayer
         modules_to_load[i++] = "DXRAutosave";
-#endif
         modules_to_load[i++] = "DXRHordeMode";
         //modules_to_load[i++] = "DXRKillBobPage";
         modules_to_load[i++] = "DXREnemyRespawn";
@@ -145,11 +141,28 @@ function CheckConfig()
         modules_to_load[i++] = "DXRWeapons";
         modules_to_load[i++] = "DXRCrowdControl";
         modules_to_load[i++] = "DXRMachines";
-#ifdef singleplayer
         modules_to_load[i++] = "DXRStats";
         modules_to_load[i++] = "DXRNPCs";
         modules_to_load[i++] = "DXRFashion";
         //modules_to_load[i++] = "DXRTestAllMaps";
+#else
+        modules_to_load[i++] = "DXRTelemetry";
+        modules_to_load[i++] = "DXRSwapItems";
+        modules_to_load[i++] = "DXRFixup";
+        modules_to_load[i++] = "DXRKeys";
+        modules_to_load[i++] = "DXRSkills";
+        modules_to_load[i++] = "DXRPasswords";
+        modules_to_load[i++] = "DXRAugmentations";
+        modules_to_load[i++] = "DXRReduceItems";
+        modules_to_load[i++] = "DXRNames";
+        modules_to_load[i++] = "DXRMemes";
+        modules_to_load[i++] = "DXREnemies";
+        modules_to_load[i++] = "DXRHordeMode";
+        modules_to_load[i++] = "DXREnemyRespawn";
+        modules_to_load[i++] = "DXRLoadouts";
+        modules_to_load[i++] = "DXRWeapons";
+        modules_to_load[i++] = "DXRCrowdControl";
+        modules_to_load[i++] = "DXRMachines";
 #endif
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
@@ -193,13 +206,15 @@ function LoadModules()
 {
     local int i;
     local class<Actor> c;
+    local string classstring;
+    
     for( i=0; i < ArrayCount( modules_to_load ); i++ ) {
         if( modules_to_load[i] == "" ) continue;
-#ifdef hx
-        c = flags.GetClassFromString( "HXRandomizer." $ modules_to_load[i], class'DXRBase');
-#else
-        c = flags.GetClassFromString(modules_to_load[i], class'DXRBase');
-#endif
+        classstring = modules_to_load[i];
+        if( InStr(classstring, ".") == -1 ) {
+            classstring = "#var package ." $ classstring;
+        }
+        c = flags.GetClassFromString(classstring, class'DXRBase');
         LoadModule( class<DXRBase>(c) );
     }
 
@@ -371,8 +386,9 @@ simulated function PlayerLogin(#var PlayerPawn  p)
     info("PlayerLogin("$p$") do it, p.PlayerDataItem: " $ data $", data.local_inited: "$data.local_inited);
 
 #ifdef singleplayer
-    if ( flags.stored_version != 0 && flags.stored_version < class'DXRFlags'.static.VersionToInt(1,5,8,0) ) {
+    if ( flags.stored_version != 0 && flags.stored_version < class'DXRFlags'.static.VersionNumber() ) {
         data.local_inited = true;
+        data.version = class'DXRFlags'.static.VersionNumber();
     }
 #endif
 
@@ -386,6 +402,8 @@ simulated function PlayerLogin(#var PlayerPawn  p)
     for(i=0; i<num_modules; i++) {
         modules[i].PlayerAnyEntry(p);
     }
+
+    data.version = class'DXRFlags'.static.VersionNumber();
 }
 
 simulated function PlayerRespawn(#var PlayerPawn  p)

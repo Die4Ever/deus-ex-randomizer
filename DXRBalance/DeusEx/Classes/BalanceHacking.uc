@@ -13,7 +13,7 @@ function Tick(float deltaTime)
         p = DeusExPlayer(winTerm.compOwner.Owner);
         if( p == None ) p = Player;// ATMs don't set the Owner
         if( p != None ) {
-            p.Energy -= deltaTime * 3.0;
+            p.Energy -= deltaTime * 5.0;
             if( p.Energy <= 0 ) {
                 p.Energy = 0;
                 detectionTime = -1;
@@ -64,7 +64,7 @@ function UpdateEnergyMeter()
     energy = int(p.Energy);
     energydec = int((p.Energy * 10) - (energy*10));
 
-    reqEnergy = hackTime * 3.0;
+    reqEnergy = hackTime * 5.0;
     req = int(reqEnergy);
     reqdec = int((reqEnergy*10) - (req*10));
 

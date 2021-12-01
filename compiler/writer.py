@@ -27,8 +27,11 @@ def before_write(mod, injects):
 
 
 def before_write_file(mod, f, injects):
-    module = load_module( 'compiler.' + f.operator)
+    if f.operator in vanilla_inheritance_keywords:
+        return
+    
     try:
+        module = load_module( 'compiler.' + f.operator)
         module.before_write(mod, f, injects)
     except Exception as e:
         print(traceback.format_exc())
@@ -41,11 +44,11 @@ def execute_injections(f, injects):
     debug("execute_injections("+f.file+") "+f.classline)
     prev = f
     for idx, inject in enumerate(injects[f.qualifiedclass]):
-        if f == inject:
+        if f == inject or inject.operator in vanilla_inheritance_keywords:
             continue
         debug("execute_injections("+f.file+") "+inject.file+' '+inject.operator)
-        module = load_module( 'compiler.' + inject.operator)
         try:
+            module = load_module( 'compiler.' + inject.operator)
             write = module.execute_injections(f, prev, idx, inject, injects[f.qualifiedclass])
             prev = inject
         except Exception as e:

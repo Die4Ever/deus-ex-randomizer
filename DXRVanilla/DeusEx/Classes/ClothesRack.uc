@@ -22,7 +22,7 @@ function Frob(actor Frobber, Inventory frobWith)
             break;
         
         if (fashion!=None) {
-            fashion.RandomizeClothes();
+            fashion.RandomizeClothes(#var PlayerPawn (p));
             fashion.GetDressed();
         
             if (p.bBehindView == False) {

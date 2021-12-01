@@ -71,6 +71,7 @@ function CheckConfig()
         DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
         DecorationsOverwrites[i].bPushable = c.default.bPushable;
 
+#ifdef vanilla
         i=0;
 
         add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
@@ -104,6 +105,7 @@ function CheckConfig()
         add_datacubes[i].map = "15_AREA51_PAGE";
         add_datacubes[i].text = "Aquinas Router code: 6188";
         i++;
+#endif
     }
     Super.CheckConfig();
 
@@ -129,7 +131,64 @@ function PreFirstEntry()
     SpawnDatacubes();
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
-    
+#ifdef vanilla
+    VanillaPreFirstEntry();
+#endif
+}
+
+function PostFirstEntry()
+{
+    Super.PostFirstEntry();
+
+#ifdef vanilla
+    VanillaPostFirstEntry();
+#endif
+}
+
+function AnyEntry()
+{
+    Super.AnyEntry();
+    l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
+
+    SetSeed( "DXRFixup AnyEntry" );
+
+    FixSamCarter();
+    SetSeed( "DXRFixup AnyEntry missions" );
+#ifdef vanilla
+    VanillaAnyEntry();
+    FixAmmoShurikenName();
+#endif
+}
+
+simulated function PlayerAnyEntry(#var PlayerPawn  p)
+{
+    Super.PlayerAnyEntry(p);
+#ifdef vanilla
+    FixLogTimeout(p);
+    FixAmmoShurikenName();
+#endif
+}
+
+function PreTravel()
+{
+    Super.PreTravel();
+#ifdef vanilla
+    VanillaPreTravel();
+#endif
+}
+
+function Timer()
+{
+    Super.Timer();
+    if( dxr == None ) return;
+
+#ifdef vanilla
+    VanillaTimer();
+#endif
+}
+
+function VanillaPreFirstEntry()
+{
     switch(dxr.dxInfo.missionNumber) {
         case 2:
             NYC_02_FirstEntry();
@@ -162,11 +221,10 @@ function PreFirstEntry()
     }
 }
 
-function PostFirstEntry()
+function VanillaPostFirstEntry()
 {
     local RetinalScanner r;
-    Super.PostFirstEntry();
-
+    
     switch(dxr.localURL) {
         case "01_NYC_UNATCOHQ":
         case "03_NYC_UNATCOHQ":
@@ -200,18 +258,8 @@ function PostFirstEntry()
     }
 }
 
-function AnyEntry()
+function VanillaAnyEntry()
 {
-    Super.AnyEntry();
-    l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
-
-    SetSeed( "DXRFixup AnyEntry" );
-
-    FixSamCarter();
-    FixAmmoShurikenName();
-
-    SetSeed( "DXRFixup AnyEntry missions" );
-
     switch(dxr.dxInfo.missionNumber) {
         case 4:
             NYC_04_AnyEntry();
@@ -225,16 +273,8 @@ function AnyEntry()
     }
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  p)
+function VanillaPreTravel()
 {
-    Super.PlayerAnyEntry(p);
-    FixLogTimeout(p);
-    FixAmmoShurikenName();
-}
-
-function PreTravel()
-{
-    Super.PreTravel();
     switch(dxr.localURL) {
         case "04_NYC_HOTEL":
             NYC_04_LeaveHotel();
@@ -242,13 +282,11 @@ function PreTravel()
     }
 }
 
-function Timer()
+function VanillaTimer()
 {
     local BlackHelicopter chopper;
     local Music m;
     local int i;
-    Super.Timer();
-    if( dxr == None ) return;
 
     switch(dxr.localURL)
     {
@@ -345,7 +383,8 @@ function FixFlagTriggers()
 
 function SpawnDatacubes()
 {
-    local DataCube dc;
+#ifdef injections
+    local #var prefix DataCube dc;
     local vector loc;
     local int i;
 
@@ -356,11 +395,12 @@ function SpawnDatacubes()
         if( loc.X == 0 && loc.Y == 0 && loc.Z == 0 )
             loc = GetRandomPosition();
         
-        dc = Spawn(class'DataCube',,, loc, rot(0,0,0));
+        dc = Spawn(class'#var prefix DataCube',,, loc, rot(0,0,0));
 
         if( dc != None ) dc.plaintext = add_datacubes[i].text;
         else warning("failed to spawn datacube at "$loc$", text: "$add_datacubes[i].text);
     }
+#endif
 }
 
 function NYC_02_FirstEntry()

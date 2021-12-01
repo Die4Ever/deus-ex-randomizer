@@ -171,7 +171,7 @@ static function IncDataStorageStat(DeusExPlayer p, name valname)
 {
     local DataStorage datastorage;
     local int val;
-    datastorage = class'DataStorage'.static.GetObj(p);
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(p);
     val = int(datastorage.GetConfigKey(valname));
     datastorage.SetConfig(valname, val+1, 3600*24*366);
 
@@ -207,7 +207,7 @@ static function AddGibbedKill(DeusExPlayer p)
 function int GetDataStorageStat(name valname)
 {
     local DataStorage datastorage;
-    datastorage = class'DataStorage'.static.GetObj(player());
+    datastorage = class'DataStorage'.static.GetObj(dxr);
     return int(datastorage.GetConfigKey(valname));
 }
 

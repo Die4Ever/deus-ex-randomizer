@@ -37,6 +37,7 @@ def run(args):
     for p in profiles:
         profile_name = p.strip()
         profile = merged[profile_name]
+        args.base.loglevel = 'debug' if profile['verbose'] else 'info'
         print("using "+profile_name+" settings\n"+repr(profile)+"\n")
         if not run_profile(args, profile):
             return
@@ -148,6 +149,8 @@ def copyPackageFile(out, package):
         print(file+" exists")
         shutil.copy2(out + '/System/'+file,'./'+file)
         print(file+" copied locally")
+    else:
+        raise RuntimeError("could not find "+file)
 
 
 def file_is_blacklisted(file, settings):

@@ -1,7 +1,6 @@
 class HXRandoGameInfo extends HXGameInfo config;
 
 var DXRando dxr;
-var travel DataStorage ds;
 
 replication
 {
@@ -124,11 +123,13 @@ function ProcessServerTravel( string URL, bool bItems )
 {
     local int i;
     local DeusExNote note;
+    local DataStorage ds;
     log(Self$".ProcessServerTravel PreTravel dxr: "$dxr);
     for(i=0; i<dxr.num_modules; i++) {
         dxr.modules[i].PreTravel();
     }
 
+    ds = class'DataStorage'.static.GetObj(dxr);
     for( note = FirstNote; note != None; note = note.next ) {
         log(self$".ProcessServerTravel, note: "$note);
         ds.AddNote( note.textTag, note.bUserNote, note.text );

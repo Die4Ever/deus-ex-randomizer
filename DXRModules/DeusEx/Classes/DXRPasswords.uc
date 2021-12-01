@@ -34,6 +34,7 @@ function CheckConfig()
         max_hack_adjust = 1.5;
     }
     if( ConfigOlderThan(1,5,8,0) ) {
+#ifndef revision
         i=0;
 
         // satcom password
@@ -125,6 +126,10 @@ function CheckConfig()
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
         i++;
+#elseif revision
+        i=0;
+        // TODO: datacubes_rules for Revision
+#endif
 
         i=0;
         not_passwords[i++] = "dragon head";
@@ -327,7 +332,7 @@ function AnyEntry()
 
     LogAll();
 #ifdef hx
-    ds = class'DataStorage'.static.GetObj(self);
+    ds = class'DataStorage'.static.GetObj(dxr);
     ds.HXLoadNotes();
 #endif
 }
@@ -697,11 +702,11 @@ function ReplacePassword(string oldpassword, string newpassword)
 simulated function NotifyPlayerNotesUpdated(#var PlayerPawn  p)
 {
     if( updated == 1 ) {
-        p.ClientMessage("Note updated");
+        p.ClientMessage("Note updated with randomized password");
         DeusExRootWindow(p.rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
     }
     else if( updated > 1 ) {
-        p.ClientMessage("Notes updated");
+        p.ClientMessage("Notes updated with randomized passwords");
         DeusExRootWindow(p.rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
     }
     updated = 0;
@@ -765,7 +770,7 @@ simulated function bool UpdateGoal(DeusExGoal goal, string oldpassword, string n
     if( PassInStr( goal.text, oldpassword ) == -1 ) return false;
 
 #ifndef hx
-    player().ClientMessage("Goal updated");
+    player().ClientMessage("Goal updated with randomized password");
     DeusExRootWindow(player().rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
 #endif
     
@@ -821,7 +826,7 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     note.SetNewPassword(newpassword);
 #endif
 #ifdef hx
-    HXUpdateNote(note.textTag, note.text);
+    HXUpdateNote(note.textTag, note.text, "");
 #endif
     
     MarkPasswordKnown(newpassword);
@@ -829,10 +834,10 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     return true;
 }
 
-simulated function HXUpdateNote(Name textTag, string newText)
+simulated function HXUpdateNote(Name textTag, string newText, string TextPackage)
 {
     local DeusExNote note;
-    l("HXUpdateNote, player(): "$player()$", textTag: "$textTag$", newText: "$newText);
+    l("HXUpdateNote, player(): "$player()$", textTag: "$textTag$", newText: "$newText$", TextPackage: "$TextPackage);
 #ifdef hx
     note = HXGameInfo(Level.Game).GetNote(textTag);
     if( note == None ) {
@@ -841,7 +846,12 @@ simulated function HXUpdateNote(Name textTag, string newText)
     else
         note.text = newText;
 #endif
+    // I don't think Revision needs this function at all
+#ifdef revision
+    note = player().GetNote(textTag, TextPackage);
+#else
     note = player().GetNote(textTag);
+#endif
     if( note != None )
         note.text = newText;
 }

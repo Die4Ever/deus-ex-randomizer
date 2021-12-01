@@ -163,7 +163,7 @@ function InitDefaults()
     if( dxr != None ) RollSeed();
     gamemode = 0;
     loadout = 0;
-    brightness = 20;
+    brightness = 15;
     autosave = 2;
     crowdcontrol = 0;
     newgameplus_loops = 0;
@@ -180,9 +180,9 @@ function InitDefaults()
 simulated static function CurrentVersion(optional out int major, optional out int minor, optional out int patch, optional out int build)
 {
     major=1;
-    minor=6;
-    patch=3;
-    build=6;//build can't be higher than 99
+    minor=7;
+    patch=0;
+    build=5;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)
@@ -498,7 +498,7 @@ simulated function LoadFlags()
         p.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ p.CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
     SetTimer(1.0, True);
 
-    ds = class'DataStorage'.static.GetObj(p);
+    ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None ) ds.playthrough_id = playthrough_id;
 }
 
@@ -647,11 +647,7 @@ simulated function LoadNoFlags()
 
     dxr.seed = seed;
 
-#ifdef hx
-    ds = class'DataStorage'.static.GetObj(self);
-#else
-    ds = class'DataStorage'.static.GetObj(p);
-#endif
+    ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None ) ds.playthrough_id = playthrough_id;
 
     LogFlags("LoadNoFlags");
@@ -671,7 +667,7 @@ simulated function SaveNoFlags()
 
 simulated function LogFlags(string prefix)
 {
-    info(prefix$" - " $ VersionString() $ ", " $ "seed: "$seed$ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
+    info(prefix$" "$Self.Class$" - " $ VersionString(true) $ ", " $ "seed: "$seed$ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
     info(prefix$" - " $ StringifyDifficultySettings(settings) );
 }
 
@@ -790,7 +786,7 @@ function NewGamePlus()
     seed++;
     dxr.seed = seed;
     playthrough_id = class'DataStorage'.static._SystemTime(Level);
-    ds = class'DataStorage'.static.GetObj(p);
+    ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
     p.CombatDifficulty *= 1.3;

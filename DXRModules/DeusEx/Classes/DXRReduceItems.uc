@@ -34,7 +34,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,5,6,0) ) {
+    if( ConfigOlderThan(1,6,4,8) ) {
         min_rate_adjust = default.min_rate_adjust;
         max_rate_adjust = default.max_rate_adjust;
 
@@ -53,6 +53,14 @@ function CheckConfig()
         for(i=0; i < ArrayCount(max_ammo); i++) {
             max_ammo[i].type = "";
         }
+
+        i=0;
+        ammo_reductions[i].type = "Ammo10mm";
+        ammo_reductions[i].percent = 80;
+
+        i=0;
+        max_ammo[i].type = "Ammo10mm";
+        max_ammo[i].percent = 30;
     }
     Super.CheckConfig();
 }

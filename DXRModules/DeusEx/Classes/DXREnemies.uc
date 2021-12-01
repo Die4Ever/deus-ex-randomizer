@@ -1,4 +1,4 @@
-class DXREnemies extends DXRActorsBase;
+class DXREnemies extends DXRActorsBase transient;
 
 var config int enemy_multiplier;
 
@@ -56,7 +56,8 @@ function CheckConfig()
         AddRandomEnemyType("SecurityBot4", 2);//unused little guy
 
         AddRandomWeapon("WeaponShuriken", 12);
-        AddRandomWeapon("WeaponPistol", 10);
+        AddRandomWeapon("WeaponPistol", 5);
+        AddRandomWeapon("WeaponStealthPistol", 4);
         AddRandomWeapon("WeaponAssaultGun", 10);
         AddRandomWeapon("WeaponMiniCrossbow", 5);
         AddRandomWeapon("WeaponGEPGun", 4);
@@ -71,7 +72,7 @@ function CheckConfig()
         AddRandomWeapon("WeaponPepperGun", 4);
         AddRandomWeapon("WeaponPlasmaRifle", 5);
         AddRandomWeapon("WeaponRifle", 5);
-        AddRandomWeapon("WeaponSawedOffShotgun", 5);
+        AddRandomWeapon("WeaponSawedOffShotgun", 6);
         AddRandomWeapon("WeaponProd", 2);
 
         AddRandomMelee("WeaponBaton", 25);
@@ -452,7 +453,11 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( IsHuman(p) == False ) return; // only give random weapons to humans
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
 
+    RemoveItem(p, class'Weapon');
+    RemoveItem(p, class'Ammo');
     GiveRandomWeapon(p, false, 2);
+    if( chance_single(50) )
+        GiveRandomWeapon(p, false, 2);
     GiveRandomMeleeWeapon(p);
     p.SetupWeapon(false);
 }
@@ -474,7 +479,8 @@ function inventory GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional 
         return None;
 
     if( wclass == None ) {
-        l("not giving a random weapon to "$p); return None;
+        warning("not giving a random weapon to "$p);
+        return None;
     }
 
     return GiveItem( p, wclass, add_ammo );
