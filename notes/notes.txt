@@ -6,9 +6,9 @@ Download `VMDRandomizer.u` from the releases page here https://github.com/Die4Ev
 
 Copy `VMDRandomizer.u` into the game's `System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
 
-Edit the `VMDSim.ini` file which is probably in `%UserProfile%\Documents\Deus Ex\System`
+Edit the `VMDSim.ini` file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
 
-In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=VMDRandomizer.VMDRandoGameInfo` and (when we program this package...) change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=GMDXRandomizer.VMDRandoRootWindow`
+In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=VMDRandomizer.VMDRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=VMDRandomizer.VMDRandoRootWindow`
 
 VMD Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
 
