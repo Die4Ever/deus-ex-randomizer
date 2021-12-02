@@ -1,12 +1,4 @@
-#ifdef hx
-class DXRBase extends Info config(HXRando);
-#elseif gmdx
-class DXRBase extends Info config(GMDXRando);
-#elseif revision
-class DXRBase extends Info config(RevRando);
-#else
-class DXRBase extends Info config(DXRando);
-#endif
+class DXRBase extends Info config(#var package );
 
 var transient DXRando dxr;
 var transient float overallchances;

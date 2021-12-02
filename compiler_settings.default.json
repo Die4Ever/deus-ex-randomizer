@@ -11,7 +11,7 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": true,
-        "blacklist": [ "HXRandomizer", "GMDXRandomizer", "RevRandomizer" ]
+        "blacklist": [ "HXRandomizer", "GMDXRandomizer", "RevRandomizer", "VMDRandomizer" ]
     },
     "hx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX Backup/",
@@ -26,7 +26,7 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "GMDXRandomizer", "RevRandomizer" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "GMDXRandomizer", "RevRandomizer", "VMDRandomizer" ]
     },
     "gmdx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX Backup/",
@@ -41,7 +41,7 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "RevRandomizer" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "RevRandomizer", "VMDRandomizer" ]
     },
     "revision": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision Backup/",
@@ -56,6 +56,21 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "GMDXRandomizer" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "GMDXRandomizer", "VMDRandomizer" ]
+    },
+    "vmd": {
+        "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD Backup/",
+        "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD/",
+        "preproc_definitions": {
+            "vmd":1, "singeplayer":1, "flags":1, "prefix":"",
+            "Mover":"DeusExMover", "PlayerPawn":"Human", "flagvarprefix": "", "package": "VMDRandomizer"
+        },
+        "mods_paths": [ "./" ],
+        "packages": [ "VMDRandomizer" ],
+        "rewrite_packages": { "DeusEx": "VMDRandomizer" },
+        "verbose": false,
+        "copy_local": true,
+        "run_tests": false,
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "RevRandomizer", "GMDXRandomizer" ]
     }
 }
