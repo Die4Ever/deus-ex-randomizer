@@ -50,6 +50,9 @@ if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRa
 
 what does this ResetKeyboard() function do?
 
+in order to decompile VMD I had to copy VMDSim.ini to DeusEx.ini
+and in order to compile again I had to copy the .u files out of VMDSim\System\ and into System\
+
 in HX, use the switchcooplevel command to load a level
 
 in order to decompile HX with UnrealEd, or compile HXRandomizer, you'll need to add the EditPackages lines to the DeusEx.ini file in the HX System folder

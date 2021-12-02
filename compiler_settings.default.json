@@ -71,6 +71,6 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "RevRandomizer", "GMDXRandomizer" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "DXRFashion", "RevRandomizer", "GMDXRandomizer" ]
     }
 }
