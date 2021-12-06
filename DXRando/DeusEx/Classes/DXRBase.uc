@@ -1,4 +1,8 @@
+#ifdef injections
+class DXRBase extends Info config(DXRando);
+#else
 class DXRBase extends Info config(#var package );
+#endif
 
 var transient DXRando dxr;
 var transient float overallchances;

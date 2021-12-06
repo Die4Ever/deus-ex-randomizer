@@ -1,4 +1,8 @@
+#ifdef injections
+class DXRMenuBase expands MenuUIScreenWindow config(DXRando);
+#else
 class DXRMenuBase expands MenuUIScreenWindow config(#var package );
+#endif
 
 var MenuUIInfoButtonWindow winNameBorder;
 

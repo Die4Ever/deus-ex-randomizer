@@ -1,4 +1,8 @@
+#ifdef injections
+class DXRando extends Info config(DXRando) transient;
+#else
 class DXRando extends Info config(#var package ) transient;
+#endif
 
 var transient #var PlayerPawn  Player;
 var transient FlagBase flagbase;
