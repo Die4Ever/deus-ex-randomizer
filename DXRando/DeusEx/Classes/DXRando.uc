@@ -103,58 +103,24 @@ function CheckConfig()
 {
     local int i;
 
-    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,6,4,2) ) {
+    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,7,1,1) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
 
-        i=0;
 #ifdef vanilla
-        modules_to_load[i++] = "DXRTelemetry";
-        modules_to_load[i++] = "DXRMissions";
-        modules_to_load[i++] = "DXRSwapItems";
-        //modules_to_load[i++] = "DXRAddItems";
-        modules_to_load[i++] = "DXRFixup";
-        modules_to_load[i++] = "DXRBacktracking";
-        modules_to_load[i++] = "DXRKeys";
-        modules_to_load[i++] = "DXRSkills";
-        modules_to_load[i++] = "DXRPasswords";
-        modules_to_load[i++] = "DXRAugmentations";
-        modules_to_load[i++] = "DXRReduceItems";
-        modules_to_load[i++] = "DXRNames";
-        modules_to_load[i++] = "DXRMemes";
-        modules_to_load[i++] = "DXREnemies";
-        modules_to_load[i++] = "DXREntranceRando";
-        modules_to_load[i++] = "DXRAutosave";
-        modules_to_load[i++] = "DXRHordeMode";
-        //modules_to_load[i++] = "DXRKillBobPage";
-        modules_to_load[i++] = "DXREnemyRespawn";
-        modules_to_load[i++] = "DXRLoadouts";
-        modules_to_load[i++] = "DXRWeapons";
-        modules_to_load[i++] = "DXRCrowdControl";
-        modules_to_load[i++] = "DXRMachines";
-        modules_to_load[i++] = "DXRStats";
-        modules_to_load[i++] = "DXRNPCs";
-        modules_to_load[i++] = "DXRFashion";
-        //modules_to_load[i++] = "DXRTestAllMaps";
+        vanilla_modules();
+#elseif hx
+        hx_modules();
+#elseif gmdx
+        gmdx_modules();
+#elseif revision
+        revision_modules();
+#elseif vmd
+        vmd_modules();
 #else
-        modules_to_load[i++] = "DXRTelemetry";
-        modules_to_load[i++] = "DXRSwapItems";
-        modules_to_load[i++] = "DXRFixup";
-        modules_to_load[i++] = "DXRKeys";
-        modules_to_load[i++] = "DXRSkills";
-        modules_to_load[i++] = "DXRPasswords";
-        modules_to_load[i++] = "DXRAugmentations";
-        modules_to_load[i++] = "DXRReduceItems";
-        modules_to_load[i++] = "DXRNames";
-        modules_to_load[i++] = "DXRMemes";
-        modules_to_load[i++] = "DXREnemies";
-        modules_to_load[i++] = "DXRHordeMode";
-        modules_to_load[i++] = "DXREnemyRespawn";
-        modules_to_load[i++] = "DXRLoadouts";
-        modules_to_load[i++] = "DXRWeapons";
-        modules_to_load[i++] = "DXRCrowdControl";
-        modules_to_load[i++] = "DXRMachines";
+        warning("unknown mod, using default set of modules!");
+        hx_modules();
 #endif
     }
     if( config_version < class'DXRFlags'.static.VersionNumber() ) {
@@ -162,6 +128,94 @@ function CheckConfig()
         config_version = class'DXRFlags'.static.VersionNumber();
         SaveConfig();
     }
+}
+
+function vanilla_modules()
+{
+    local int i;
+    modules_to_load[i++] = "DXRTelemetry";
+    modules_to_load[i++] = "DXRMissions";
+    modules_to_load[i++] = "DXRSwapItems";
+    //modules_to_load[i++] = "DXRAddItems";
+    modules_to_load[i++] = "DXRFixup";
+    modules_to_load[i++] = "DXRBacktracking";
+    modules_to_load[i++] = "DXRKeys";
+    modules_to_load[i++] = "DXRSkills";
+    modules_to_load[i++] = "DXRPasswords";
+    modules_to_load[i++] = "DXRAugmentations";
+    modules_to_load[i++] = "DXRReduceItems";
+    modules_to_load[i++] = "DXRNames";
+    modules_to_load[i++] = "DXRMemes";
+    modules_to_load[i++] = "DXREnemies";
+    modules_to_load[i++] = "DXREntranceRando";
+    modules_to_load[i++] = "DXRAutosave";
+    modules_to_load[i++] = "DXRHordeMode";
+    //modules_to_load[i++] = "DXRKillBobPage";
+    modules_to_load[i++] = "DXREnemyRespawn";
+    modules_to_load[i++] = "DXRLoadouts";
+    modules_to_load[i++] = "DXRWeapons";
+    modules_to_load[i++] = "DXRCrowdControl";
+    modules_to_load[i++] = "DXRMachines";
+    modules_to_load[i++] = "DXRStats";
+    modules_to_load[i++] = "DXRNPCs";
+    modules_to_load[i++] = "DXRFashion";
+    //modules_to_load[i++] = "DXRTestAllMaps";
+}
+
+function hx_modules()
+{
+    local int i;
+    modules_to_load[i++] = "DXRTelemetry";
+    modules_to_load[i++] = "DXRSwapItems";
+    modules_to_load[i++] = "DXRFixup";
+    modules_to_load[i++] = "DXRKeys";
+    modules_to_load[i++] = "DXRSkills";
+    modules_to_load[i++] = "DXRPasswords";
+    modules_to_load[i++] = "DXRAugmentations";
+    modules_to_load[i++] = "DXRReduceItems";
+    modules_to_load[i++] = "DXRNames";
+    modules_to_load[i++] = "DXRMemes";
+    modules_to_load[i++] = "DXREnemies";
+    modules_to_load[i++] = "DXRHordeMode";
+    modules_to_load[i++] = "DXREnemyRespawn";
+    modules_to_load[i++] = "DXRLoadouts";
+    modules_to_load[i++] = "DXRWeapons";
+    modules_to_load[i++] = "DXRCrowdControl";
+    modules_to_load[i++] = "DXRMachines";
+}
+
+function gmdx_modules()
+{
+    local int i;
+    modules_to_load[i++] = "DXRTelemetry";
+    modules_to_load[i++] = "DXRMissions";
+    modules_to_load[i++] = "DXRSwapItems";
+    modules_to_load[i++] = "DXRFixup";
+    modules_to_load[i++] = "DXRKeys";
+    modules_to_load[i++] = "DXRSkills";
+    modules_to_load[i++] = "DXRPasswords";
+    modules_to_load[i++] = "DXRAugmentations";
+    modules_to_load[i++] = "DXRReduceItems";
+    modules_to_load[i++] = "DXRNames";
+    modules_to_load[i++] = "DXRMemes";
+    modules_to_load[i++] = "DXREnemies";
+    modules_to_load[i++] = "DXRHordeMode";
+    modules_to_load[i++] = "DXREnemyRespawn";
+    modules_to_load[i++] = "DXRLoadouts";
+    modules_to_load[i++] = "DXRWeapons";
+    modules_to_load[i++] = "DXRCrowdControl";
+    modules_to_load[i++] = "DXRMachines";
+}
+
+function revision_modules()
+{
+    gmdx_modules();
+}
+
+function vmd_modules()
+{
+    // Vanilla? Madder
+    gmdx_modules();
 }
 
 function DXRFlags LoadFlagsModule()
