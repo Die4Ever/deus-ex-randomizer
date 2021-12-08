@@ -29,106 +29,17 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,4,8,0) ) {
+    if( ConfigOlderThan(1,5,8,0) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
-    }
-    if( ConfigOlderThan(1,5,8,0) ) {
-#ifndef revision
-        i=0;
 
-        // satcom password
-        datacubes_rules[i].map = "01_NYC_UNATCOISLAND";
-        datacubes_rules[i].item_name = '01_Datacube06';
-        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
-        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
-        i++;
-
-        // armory 0451 code
-        datacubes_rules[i].map = "01_NYC_UNATCOISLAND";
-        datacubes_rules[i].item_name = '01_Datacube03';
-        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
-        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
-        i++;
-
-        // nsf001 smashthestate
-        datacubes_rules[i].map = "01_NYC_UNATCOISLAND";
-        datacubes_rules[i].item_name = '01_Datacube04';
-        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
-        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
-        i++;
-
-        datacubes_rules[i].map = "04_NYC_NSFHQ";
-        datacubes_rules[i].item_name = '04_Datacube01';
-        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
-        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
-        i++;
-
-        datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = '04_Datacube02';
-        i++;
-
-        datacubes_rules[i] = datacubes_rules[i-1];
-        datacubes_rules[i].item_name = '04_Datacube02';
-        i++;
-
-        datacubes_rules[i].map = "05_NYC_UNATCOMJ12LAB";
-        datacubes_rules[i].item_name = '05_Datacube01';// don't allow this in the locked cabinet
-        datacubes_rules[i].min_pos = vect(-2235.248291, 1414.674072, -159.039658)-vect(8,8,8);
-        datacubes_rules[i].max_pos = vect(-2235.248291, 1414.674072, -159.039658)+vect(8,8,8);
-        datacubes_rules[i].allow = false;
-        i++;
-
-        // make sure you can get to the book without needing to jump down
-        datacubes_rules[i].map = "10_PARIS_CATACOMBS";
-        datacubes_rules[i].item_name = '10_Book09';
-        datacubes_rules[i].min_pos = vect(-99999, -99999, 1956.809082); //top floor
-        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
-        i++;
-
-        datacubes_rules[i].map = "10_PARIS_CATACOMBS";
-        datacubes_rules[i].item_name = '10_Book09';
-        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999); //top floor
-        datacubes_rules[i].max_pos = vect(99999, 99999, 1956.809082);
-        datacubes_rules[i].allow = false;
-        i++;
-
-        // DataCube0 and 2
-        datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = '11_Datacube03';
-        datacubes_rules[i].min_pos = vect(-99999, -99999, 1956.809082); //top floor
-        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
-        i++;
-
-        datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = '11_Datacube03';// DataCube0 and 2 have the same textTag
-        datacubes_rules[i].min_pos = vect(3587, -812, -487); //before gunther room
-        datacubes_rules[i].max_pos = vect(4322, -124, 74);
-        datacubes_rules[i].allow = false;
-        i++;
-
-        datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = '11_Datacube03';// 0 and 2
-        datacubes_rules[i].min_pos = vect(3146, -1715, -85); //above before gunther room
-        datacubes_rules[i].max_pos = vect(3907, -1224, 434);
-        datacubes_rules[i].allow = false;
-        i++;
-
-        datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
-        datacubes_rules[i].item_name = '11_Datacube03';
-        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
-        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-        datacubes_rules[i].allow = true;
-        i++;
-#elseif revision
-        i=0;
-        // TODO: datacubes_rules for Revision
+        for(i=0; i<ArrayCount(datacubes_rules); i++) {
+            datacubes_rules[i].map = "";
+        }
+#ifdef revision
+        revision_datacubes_rules();
+#else
+        vanilla_datacubes_rules();
 #endif
 
         i=0;
@@ -216,6 +127,108 @@ function CheckConfig()
         yes_passwords[i].search_for = "PASSWORD IS \"SECURITY\"";
         break;
     }
+}
+
+function vanilla_datacubes_rules()
+{
+    local int i;
+
+    // satcom password
+    datacubes_rules[i].map = "01_NYC_UNATCOISLAND";
+    datacubes_rules[i].item_name = '01_Datacube06';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    // armory 0451 code
+    datacubes_rules[i].map = "01_NYC_UNATCOISLAND";
+    datacubes_rules[i].item_name = '01_Datacube03';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    // nsf001 smashthestate
+    datacubes_rules[i].map = "01_NYC_UNATCOISLAND";
+    datacubes_rules[i].item_name = '01_Datacube04';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    datacubes_rules[i].map = "04_NYC_NSFHQ";
+    datacubes_rules[i].item_name = '04_Datacube01';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    datacubes_rules[i] = datacubes_rules[i-1];
+    datacubes_rules[i].item_name = '04_Datacube02';
+    i++;
+
+    datacubes_rules[i] = datacubes_rules[i-1];
+    datacubes_rules[i].item_name = '04_Datacube02';
+    i++;
+
+    datacubes_rules[i].map = "05_NYC_UNATCOMJ12LAB";
+    datacubes_rules[i].item_name = '05_Datacube01';// don't allow this in the locked cabinet
+    datacubes_rules[i].min_pos = vect(-2235.248291, 1414.674072, -159.039658)-vect(8,8,8);
+    datacubes_rules[i].max_pos = vect(-2235.248291, 1414.674072, -159.039658)+vect(8,8,8);
+    datacubes_rules[i].allow = false;
+    i++;
+
+    // make sure you can get to the book without needing to jump down
+    datacubes_rules[i].map = "10_PARIS_CATACOMBS";
+    datacubes_rules[i].item_name = '10_Book09';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, 1956.809082); //top floor
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    datacubes_rules[i].map = "10_PARIS_CATACOMBS";
+    datacubes_rules[i].item_name = '10_Book09';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999); //top floor
+    datacubes_rules[i].max_pos = vect(99999, 99999, 1956.809082);
+    datacubes_rules[i].allow = false;
+    i++;
+
+    // DataCube0 and 2
+    datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
+    datacubes_rules[i].item_name = '11_Datacube03';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, 1956.809082); //top floor
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
+    datacubes_rules[i].item_name = '11_Datacube03';// DataCube0 and 2 have the same textTag
+    datacubes_rules[i].min_pos = vect(3587, -812, -487); //before gunther room
+    datacubes_rules[i].max_pos = vect(4322, -124, 74);
+    datacubes_rules[i].allow = false;
+    i++;
+
+    datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
+    datacubes_rules[i].item_name = '11_Datacube03';// 0 and 2
+    datacubes_rules[i].min_pos = vect(3146, -1715, -85); //above before gunther room
+    datacubes_rules[i].max_pos = vect(3907, -1224, 434);
+    datacubes_rules[i].allow = false;
+    i++;
+
+    datacubes_rules[i].map = "11_PARIS_CATHEDRAL";
+    datacubes_rules[i].item_name = '11_Datacube03';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+}
+
+function revision_datacubes_rules()
+{
+    local int i;
+
+    // TODO: datacubes_rules for Revision
 }
 
 simulated function Timer()

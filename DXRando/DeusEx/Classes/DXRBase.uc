@@ -1,11 +1,7 @@
-#ifdef hx
-class DXRBase extends Info config(HXRando);
-#elseif gmdx
-class DXRBase extends Info config(GMDXRando);
-#elseif revision
-class DXRBase extends Info config(RevRando);
-#else
+#ifdef injections
 class DXRBase extends Info config(DXRando);
+#else
+class DXRBase extends Info config(#var package );
 #endif
 
 var transient DXRando dxr;

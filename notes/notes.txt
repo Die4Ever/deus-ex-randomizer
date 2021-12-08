@@ -1,3 +1,17 @@
+### Installation Instructions for Vanilla? Madder
+
+Install VMD from https://www.moddb.com/mods/vanilla-madder-actual-phase-1/downloads
+
+Download `VMDRandomizer.u` from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
+
+Copy `VMDRandomizer.u` into the game's `System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
+
+Edit the `VMDSim.ini` file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
+
+In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=VMDRandomizer.VMDRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=VMDRandomizer.VMDRandoRootWindow`
+
+VMD Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
+
 ### Installation Instructions for GMDX
 
 Install GMDX from https://www.moddb.com/mods/gmdx/downloads/gmdxv90-release
@@ -6,7 +20,7 @@ Download `GMDXRandomizer.u` from the releases page here https://github.com/Die4E
 
 Copy `GMDXRandomizer.u` into the game's `System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
 
-Edit the GMDX.ini file which is probably in `%UserProfile%\Documents\Deus Ex\System`
+Edit the `GMDX.ini` file which is probably in `%UserProfile%\Documents\Deus Ex\System`
 
 In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=GMDXRandomizer.GMDXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=GMDXRandomizer.GMDXRandoRootWindow`
 
@@ -20,7 +34,7 @@ Download `RevRandomizer.u`  from the releases page here https://github.com/Die4E
 
 Copy `RevRandomizer.u` into the game's `Revision\System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
 
-Edit the Revision.ini file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
+Edit the `Revision.ini` file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
 
 In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=Revision.RevGameInfo` to `DefaultGame=RevRandomizer.RevRandoGameInfo` and change `Root` from `Root=Revision.RevRootWindow` to `Root=RevRandomizer.RevRandoRootWindow`
 
@@ -35,6 +49,9 @@ Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utili
 if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
 
 what does this ResetKeyboard() function do?
+
+in order to decompile VMD I had to copy VMDSim.ini to DeusEx.ini
+and in order to compile again I had to copy the .u files out of VMDSim\System\ and into System\
 
 in HX, use the switchcooplevel command to load a level
 
@@ -536,6 +553,10 @@ https://web.archive.org/web/20181105143052/http://unrealtexture.com/Unreal/Downl
 https://web.archive.org/web/20201023054944/http://wiki.beyondunreal.com/Legacy:Compiler_Errors
 
 http://www.unrealtexture.com/Unreal/Downloads/3DEditing/UnrealEd/Tutorials/unrealwiki-offline/unrealscript.html
+
+http://dark191.333networks.com/uncodex/
+
+https://www.bunnytrack.net/package-explorer/
 
 https://web.archive.org/web/20051025132508/http://mimesis.csc.ncsu.edu/Unreal/Syntax.htm
 

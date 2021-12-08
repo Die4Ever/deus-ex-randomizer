@@ -17,7 +17,7 @@ Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is proba
 <details>
 <summary>Click to expand Lay D Denton Installation Instructions...</summary>
 
-Download Lay D Denton version 1.1 from here https://www.moddb.com/mods/the-lay-d-denton-project/downloads
+[Download Lay D Denton version 1.1 or newer from here](https://www.moddb.com/mods/the-lay-d-denton-project/downloads)
 
 Install Lay D Denton by copying all the files into your Deus Ex folder.
 
