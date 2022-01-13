@@ -1972,6 +1972,11 @@ function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer
 
     msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"targets\":"$targets$",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$",\"targets\":"$targets$"}";
     _TestMsg(m, msg, id, type, code, viewer, params);
+
+    // test array of objects
+    targets = "[{\"id\":\"1234\",\"name\":\"Die4Ever\",\"avatar\":\"\"},{\"name\":\"TheAstropath\"}]";
+    msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"targets\":"$targets$",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$",\"targets\":"$targets$"}";
+    _TestMsg(m, msg, id, type, code, viewer, params);
 }
 
 defaultproperties

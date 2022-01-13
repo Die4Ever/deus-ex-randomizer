@@ -49,7 +49,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <a href="https://www.youtube.com/watch?v=A0Li3XuBjGg" target="_blank">
 <img src="https://i.imgur.com/hTCuQCH.png" alt="v1.5 Trailer" height="200"/></a>
 
-## Currently in v1.7, DXRando randomizes
+## Currently in v1.7.1, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
@@ -69,7 +69,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 * randomly adds "The Merchant"
 
 ## There are also settings for
-* Crowd Control! Let your viewers troll you or help you! NOW PLAYABLE! https://forum.warp.world/t/deus-ex-randomizer-pc/20496
+* Crowd Control! Let your viewers troll you or help you! NOW PLAYABLE! https://crowdcontrol.live/guides/DeusEx
     * If you want to try some of the Crowd Control features without actually streaming, you can try the "OfflineCrowdControl.py" script to randomly send Crowd Control messages to your local game!  Requires Python 3.8 or above
 * New Game+ - after beating the game play it again keeping your items, skills, and augs, but with increased difficulty and a new seed
     * takes away 1 random augmentation, and 1 of your weapons
