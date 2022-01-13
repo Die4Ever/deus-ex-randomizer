@@ -1862,7 +1862,7 @@ function RunTests(DXRCrowdControl m)
     
     msg="{\"id\":3,\"code\":\"disable_jump\",\"targets\":[{\"id\":\"1234\",\"name\":\"dxrandotest\",\"avatar\":\"\"}],\"viewer\":\"dxrandotest\",\"type\":1}";
     m.testbool( isCrowdControl(msg), true, "isCrowdControl "$msg);
-    //TestArbitraryMsg(m,msg,3,1,"disable_jump","dxrandotest",0);
+    _TestMsg(m,msg,3,1,"disable_jump","dxrandotest",params);
 
     TestMsg(m, 123, 1, "kill", "die4ever", params);
     TestMsg(m, 123, 1, "test with spaces", "die4ever", params);
@@ -1880,11 +1880,48 @@ function RunTests(DXRCrowdControl m)
     //TestMsg(m, 123, 1, "test\\\\with\\\\escaped\\\\backslashes", "die4ever", ""); //Note that we have to double escape so that the end result is a single escaped backslash
 }
 
-function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer, string params[5])
+function bool GetJsonField(DXRCrowdControl m, JsonMsg jmsg, string key, coerce string expected, optional out JsonElement je)
 {
-    local int i, p, matches, num_params;
-    local string msg, val, params_string;
+    local int i;
+
+    m.warning("GetJsonField jmsg.count == "$jmsg.count);
+    for (i=0;i<jmsg.count;i++) {
+        if (jmsg.e[i].key == key && jmsg.e[i].valCount>0) {
+            m.teststring(jmsg.e[i].value[0], expected, "GetJsonField " $ key);
+            je = jmsg.e[i];
+            return true;
+        }
+    }
+    m.test(false, "GetJsonField " $ key $ " not found");
+    return false;
+}
+
+function _TestMsg(DXRCrowdControl m, string msg, int id, int type, string code, string viewer, string params[5])
+{
     local JsonMsg jmsg;
+    local JsonElement je;
+    local int p;
+
+    m.testbool( isCrowdControl(msg), true, "isCrowdControl: "$msg);
+
+    jmsg=ParseJson(msg);
+    GetJsonField(m, jmsg, "code", code);
+    GetJsonField(m, jmsg, "viewer", viewer);
+    GetJsonField(m, jmsg, "id", id);
+    GetJsonField(m, jmsg, "type", type);
+
+    if(params[0] != "") {
+        GetJsonField(m, jmsg, "parameters", params[0], je);
+        for(p=0; p<ArrayCount(params); p++) {
+            m.teststring(je.value[p], params[p], "param "$p);
+        }
+    }
+}
+
+function string BuildParamsString(string params[5])
+{
+    local int i, num_params;
+    local string params_string;
 
     for(i=0; i < ArrayCount(params); i++) {
         if( params[i] != "" ) num_params++;
@@ -1902,86 +1939,29 @@ function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer
     else if ( num_params <= 1 )
         params_string = "\""$params[0]$"\"";
 
-    msg="{\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$"}";
-
-    m.testbool( isCrowdControl(msg), true, "isCrowdControl: "$msg);
-
-    jmsg=ParseJson(msg);
-    for (i=0;i<jmsg.count;i++) {
-        if (jmsg.e[i].valCount>0) {
-            val = jmsg.e[i].value[0];
-            switch (jmsg.e[i].key) {
-                case "code":
-                    m.teststring(val, code, "code");
-                    matches++;
-                    break;
-                case "viewer":
-                    m.teststring(val, viewer, "viewer");
-                    matches++;
-                    break;
-                case "id":
-                    m.testint(Int(val), id, "id");
-                    matches++;
-                    break;
-                case "type":
-                    m.testint(Int(val), type, "type");
-                    matches++;
-                    break;
-                case "parameters":
-                    for(p=0; p<ArrayCount(params); p++) {
-                        m.teststring(jmsg.e[i].value[p], params[p], "param "$p);
-                    }
-                    matches++;
-                    break;
-            }
-        }
-    }
-
-    m.testint(matches, 5, "5 matches for msg: "$msg);
+    return params_string;
 }
 
-function TestArbitraryMsg(DXRCrowdControl m, string msg, int id, int type, string code, string viewer, int num_params)
+function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer, string params[5])
 {
     local int i, p, matches;
-    local string val;
+    local string msg, params_string, targets;
     local JsonMsg jmsg;
 
-    m.testbool( isCrowdControl(msg), true, "isCrowdControl: "$msg);
+    params_string = BuildParamsString(params);
 
-    jmsg=ParseJson(msg);
-    for (i=0;i<jmsg.count;i++) {
-        if (jmsg.e[i].valCount>0) {
-            val = jmsg.e[i].value[0];
-            switch (jmsg.e[i].key) {
-                case "code":
-                    m.teststring(val, code, "code");
-                    matches++;
-                    break;
-                case "viewer":
-                    m.teststring(val, viewer, "viewer");
-                    matches++;
-                    break;
-                case "id":
-                    m.testint(Int(val), id, "id");
-                    matches++;
-                    break;
-                case "type":
-                    m.testint(Int(val), type, "type");
-                    matches++;
-                    break;
-                case "parameters":
-                    //TBD
-                    //for(p=0; p<ArrayCount(params); p++) {
-                    //    m.teststring(jmsg.e[i].value[p], params[p], "param "$p);
-                    //}
-                    matches++;
-                    break;
-            }
-        }
-    }
+    msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$"}";
+    _TestMsg(m, msg, id, type, code, viewer, params);
 
-    m.testint(matches, 5, "5 matches for msg: "$msg);
+    targets = "[{\"id\":\"1234\",\"name\":\"Die4Ever\",\"avatar\":\"\"}]";
+    msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"targets\":"$targets$",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$"}";
+    _TestMsg(m, msg, id, type, code, viewer, params);
 
+    msg = "{\"targets\":"$targets$",\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$"}";
+    _TestMsg(m, msg, id, type, code, viewer, params);
+
+    msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"targets\":"$targets$",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$",\"targets\":"$targets$"}";
+    _TestMsg(m, msg, id, type, code, viewer, params);
 }
 
 defaultproperties
