@@ -6,7 +6,7 @@
             "vanilla":1, "singleplayer":1, "fixes":1, "mapfixes":1, "balance":1, "backtracking":1, "injections":1, "flags": 1, "prefix":"",
             "Mover":"DeusExMover", "PlayerPawn":"Human", "flagvarprefix": "", "package": "DeusEx"
         },
-        "mods_paths": [ "../LayDDenton", "./" ],
+        "mods_paths": [ "../Lay-D-Denton-Project", "./" ],
         "packages": [ "DeusEx" ],
         "verbose": false,
         "copy_local": true,
