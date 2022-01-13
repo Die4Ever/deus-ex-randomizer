@@ -680,8 +680,11 @@ function bool isCrowdControl( string msg) {
         return False;
     }
     
-    if (InStr(msg,"}")!=Len(msg)-1){
-        //PlayerMessage("Message doesn't end with curly");
+    //Explicitly check last character of string to see if it's a closing curly
+    tmp = Mid(msg,Len(msg)-1,1);
+    //if (InStr(msg,"}")!=Len(msg)-1){
+    if (tmp != "}"){
+        //PlayerMessage("Message doesn't end with curly.  Ends with '"$tmp$"'.");
         return False;    
     }
     
@@ -689,19 +692,23 @@ function bool isCrowdControl( string msg) {
     
     //id field
     if (InStr(msg,"id")==-1){
+        //PlayerMessage("Doesn't have id");
         return False;
     }
     
     //code field
     if (InStr(msg,"code")==-1){
+        //PlayerMessage("Doesn't have code");
         return False;
     }    
     //viewer field
     if (InStr(msg,"viewer")==-1){
+        //PlayerMessage("Doesn't have viewer");
         return False;
     }   
     //type field
     if (InStr(msg,"type")==-1){
+        //PlayerMessage("Doesn't have type");
         return False;
     }
     
@@ -709,18 +716,18 @@ function bool isCrowdControl( string msg) {
     //By removing the outermost curly brackets, we can check to
     //see if there are any more inside them (indicating one was
     //closed and another one was opened within the same message
-    tmp = Mid(msg,1,Len(msg)-2);
-    //PlayerMessage("Removed outer curlies: "$tmp);
-    //Check for extra curly braces inside the outermost ones
-    if (InStr(tmp,"{")!=-1){
-        //PlayerMessage("Has extra internal open curly!");
-        return False;
-    }
-    
-    if (InStr(tmp,"}")!=-1){
-        //PlayerMessage("Has extra internal close curly!");
-        return False;    
-    }
+//    tmp = Mid(msg,1,Len(msg)-2);
+//    //PlayerMessage("Removed outer curlies: "$tmp);
+//    //Check for extra curly braces inside the outermost ones
+//    if (InStr(tmp,"{")!=-1){
+//        //PlayerMessage("Has extra internal open curly!");
+//        return False;
+//    }
+//    
+//    if (InStr(tmp,"}")!=-1){
+//        //PlayerMessage("Has extra internal close curly!");
+//        return False;    
+//    }
 
     return True;
 }
@@ -1852,6 +1859,10 @@ function RunTests(DXRCrowdControl m)
 
     msg="{}";
     m.testbool( isCrowdControl(msg), false, "isCrowdControl "$msg);
+    
+    msg="{\"id\":3,\"code\":\"disable_jump\",\"targets\":[{\"id\":\"1234\",\"name\":\"dxrandotest\",\"avatar\":\"\"}],\"viewer\":\"dxrandotest\",\"type\":1}";
+    m.testbool( isCrowdControl(msg), true, "isCrowdControl "$msg);
+    //TestArbitraryMsg(m,msg,3,1,"disable_jump","dxrandotest",0);
 
     TestMsg(m, 123, 1, "kill", "die4ever", params);
     TestMsg(m, 123, 1, "test with spaces", "die4ever", params);
@@ -1927,6 +1938,50 @@ function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer
     }
 
     m.testint(matches, 5, "5 matches for msg: "$msg);
+}
+
+function TestArbitraryMsg(DXRCrowdControl m, string msg, int id, int type, string code, string viewer, int num_params)
+{
+    local int i, p, matches;
+    local string val;
+    local JsonMsg jmsg;
+
+    m.testbool( isCrowdControl(msg), true, "isCrowdControl: "$msg);
+
+    jmsg=ParseJson(msg);
+    for (i=0;i<jmsg.count;i++) {
+        if (jmsg.e[i].valCount>0) {
+            val = jmsg.e[i].value[0];
+            switch (jmsg.e[i].key) {
+                case "code":
+                    m.teststring(val, code, "code");
+                    matches++;
+                    break;
+                case "viewer":
+                    m.teststring(val, viewer, "viewer");
+                    matches++;
+                    break;
+                case "id":
+                    m.testint(Int(val), id, "id");
+                    matches++;
+                    break;
+                case "type":
+                    m.testint(Int(val), type, "type");
+                    matches++;
+                    break;
+                case "parameters":
+                    //TBD
+                    //for(p=0; p<ArrayCount(params); p++) {
+                    //    m.teststring(jmsg.e[i].value[p], params[p], "param "$p);
+                    //}
+                    matches++;
+                    break;
+            }
+        }
+    }
+
+    m.testint(matches, 5, "5 matches for msg: "$msg);
+
 }
 
 defaultproperties
