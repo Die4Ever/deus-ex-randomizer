@@ -153,6 +153,7 @@ function JsonMsg ParseJson (string msg) {
     local int parsestate;
     local bool inquotes;
     local bool escape;
+    local int inBraces;
     
     local JsonMsg j;
     
@@ -197,13 +198,18 @@ function JsonMsg ParseJson (string msg) {
                   } else if (parsestate == ArrayDoneState){
                       parseState = KeyState;
                   }
+                    buf = "";
+                    break; // break for colon and comma
+
                 case "{":
+                    inBraces++;
                     buf = "";
                     break;
                 
                 case "}":
                     //PlayerMessage(buf);
-                    if (parsestate == ValState) {
+                    inBraces--;
+                    if (inBraces == 0 && parsestate == ValState) {
                       //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
                       j.e[j.count].value[j.e[j.count].valCount]=buf;
                       j.e[j.count].valCount++;
@@ -212,6 +218,9 @@ function JsonMsg ParseJson (string msg) {
                     }
                     if (parsestate == ArrayState) {
                         // TODO: arrays of objects
+                    }
+                    else if(inBraces > 0) {
+                        // TODO: sub objects
                     }
                     else {
                         msgDone = True;
@@ -284,7 +293,6 @@ function JsonMsg ParseJson (string msg) {
     }
     
     return j;
-    
 }
 
 function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous)
@@ -1975,6 +1983,11 @@ function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer
 
     // test array of objects
     targets = "[{\"id\":\"1234\",\"name\":\"Die4Ever\",\"avatar\":\"\"},{\"name\":\"TheAstropath\"}]";
+    msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"targets\":"$targets$",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$",\"targets\":"$targets$"}";
+    _TestMsg(m, msg, id, type, code, viewer, params);
+
+    // test sub objects
+    targets = "{\"array\":[{\"id\":\"1234\",\"name\":\"Die4Ever\",\"avatar\":\"\"},{\"name\":\"TheAstropath\"}]}";
     msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"targets\":"$targets$",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$",\"targets\":"$targets$"}";
     _TestMsg(m, msg, id, type, code, viewer, params);
 }
