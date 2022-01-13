@@ -716,34 +716,12 @@ function bool isCrowdControl( string msg) {
     if (InStr(msg,"code")==-1){
         //PlayerMessage("Doesn't have code");
         return False;
-    }    
+    }
     //viewer field
     if (InStr(msg,"viewer")==-1){
         //PlayerMessage("Doesn't have viewer");
         return False;
-    }   
-    //type field
-    if (InStr(msg,"type")==-1){
-        //PlayerMessage("Doesn't have type");
-        return False;
     }
-    
-    //Check to see if there are multiple messages stuck together
-    //By removing the outermost curly brackets, we can check to
-    //see if there are any more inside them (indicating one was
-    //closed and another one was opened within the same message
-//    tmp = Mid(msg,1,Len(msg)-2);
-//    //PlayerMessage("Removed outer curlies: "$tmp);
-//    //Check for extra curly braces inside the outermost ones
-//    if (InStr(tmp,"{")!=-1){
-//        //PlayerMessage("Has extra internal open curly!");
-//        return False;
-//    }
-//    
-//    if (InStr(tmp,"}")!=-1){
-//        //PlayerMessage("Has extra internal close curly!");
-//        return False;    
-//    }
 
     return True;
 }
@@ -1880,6 +1858,11 @@ function RunTests(DXRCrowdControl m)
     m.testbool( isCrowdControl(msg), true, "isCrowdControl "$msg);
     _TestMsg(m,msg,3,1,"disable_jump","dxrandotest",params);
 
+    // test multiple payloads, Crowd Control always puts a \0 between them so this isn't an issue, but still good to be safe
+    msg="{\"id\":3,\"code\":\"disable_jump\",\"viewer\":\"dxrandotest\",\"type\":1}{\"parameters\":[1,2,3],\"code\":\"fail\"}";
+    m.testbool( isCrowdControl(msg), true, "isCrowdControl "$msg);
+    _TestMsg(m,msg,3,1,"disable_jump","dxrandotest",params);
+
     TestMsg(m, 123, 1, "kill", "die4ever", params);
     TestMsg(m, 123, 1, "test with spaces", "die4ever", params);
     TestMsg(m, 123, 1, "test:with:colons", "die4ever", params);
@@ -1896,21 +1879,32 @@ function RunTests(DXRCrowdControl m)
     //TestMsg(m, 123, 1, "test\\\\with\\\\escaped\\\\backslashes", "die4ever", ""); //Note that we have to double escape so that the end result is a single escaped backslash
 }
 
-function bool GetJsonField(DXRCrowdControl m, JsonMsg jmsg, string key, coerce string expected, optional out JsonElement je)
+function int GetJsonField(JsonMsg jmsg, string key, optional out JsonElement je)
 {
     local int i;
 
-    m.test(jmsg.count < ArrayCount(jmsg.e), "jmsg.count < ArrayCount(jmsg.e)");
     for (i=0;i<jmsg.count;i++) {
         if (jmsg.e[i].key == key && jmsg.e[i].valCount>0) {
-            m.test(jmsg.e[i].valCount < ArrayCount(jmsg.e[i].value), "jmsg.e[i].valCount < ArrayCount(jmsg.e[i].value)");
-            m.teststring(jmsg.e[i].value[0], expected, "GetJsonField " $ key);
             je = jmsg.e[i];
-            return true;
+            return jmsg.e[i].valCount;
         }
     }
-    m.test(false, "GetJsonField " $ key $ " not found");
-    return false;
+    return 0;
+}
+
+function int TestJsonField(DXRCrowdControl m, JsonMsg jmsg, string key, coerce string expected, optional out JsonElement je)
+{
+    local int len;
+    m.test(jmsg.count < ArrayCount(jmsg.e), "jmsg.count < ArrayCount(jmsg.e)");
+    len = GetJsonField(jmsg, key, je);
+    if(expected == "" && len == 0) {
+        m.test(true, "TestJsonField "$key$" correctly missing");
+    } else {
+        m.test(je.valCount > 0, "je.valCount > 0");
+        m.test(je.valCount < ArrayCount(je.value), "je.valCount < ArrayCount(je.value)");
+        m.teststring(je.value[0], expected, "TestJsonField " $ key);
+    }
+    return len;
 }
 
 function _TestMsg(DXRCrowdControl m, string msg, int id, int type, string code, string viewer, string params[5])
@@ -1922,16 +1916,15 @@ function _TestMsg(DXRCrowdControl m, string msg, int id, int type, string code, 
     m.testbool( isCrowdControl(msg), true, "isCrowdControl: "$msg);
 
     jmsg=ParseJson(msg);
-    GetJsonField(m, jmsg, "code", code);
-    GetJsonField(m, jmsg, "viewer", viewer);
-    GetJsonField(m, jmsg, "id", id);
-    GetJsonField(m, jmsg, "type", type);
+    m.testint(TestJsonField(m, jmsg, "code", code), 1, "got 1 code");
+    m.testint(TestJsonField(m, jmsg, "viewer", viewer), 1, "got 1 viewer");
+    m.testint(TestJsonField(m, jmsg, "id", id), 1, "got 1 id");
+    m.testint(TestJsonField(m, jmsg, "type", type), 1, "got 1 type");
 
-    if(params[0] != "") {
-        GetJsonField(m, jmsg, "parameters", params[0], je);
-        for(p=0; p<ArrayCount(params); p++) {
-            m.teststring(je.value[p], params[p], "param "$p);
-        }
+
+    TestJsonField(m, jmsg, "parameters", params[0], je);
+    for(p=0; p<ArrayCount(params); p++) {
+        m.teststring(je.value[p], params[p], "param "$p);
     }
 }
 
