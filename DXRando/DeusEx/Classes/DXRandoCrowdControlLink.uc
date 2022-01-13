@@ -153,6 +153,7 @@ function JsonMsg ParseJson (string msg) {
     local int parsestate;
     local bool inquotes;
     local bool escape;
+    local int inBraces;
     
     local JsonMsg j;
     
@@ -188,26 +189,42 @@ function JsonMsg ParseJson (string msg) {
                       parsestate = KeyState;
                       elemDone = True;
                   } else if (parsestate == ArrayState) {
-                      //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                      j.e[j.count].value[j.e[j.count].valCount]=buf;
-                      j.e[j.count].valCount++;
+                      // TODO: arrays of objects
+                      if (c != ":") {
+                        //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                        j.e[j.count].value[j.e[j.count].valCount]=buf;
+                        j.e[j.count].valCount++;
+                      }
                   } else if (parsestate == ArrayDoneState){
                       parseState = KeyState;
                   }
+                    buf = "";
+                    break; // break for colon and comma
+
                 case "{":
+                    inBraces++;
                     buf = "";
                     break;
                 
                 case "}":
                     //PlayerMessage(buf);
-                    if (parsestate == ValState) {
+                    inBraces--;
+                    if (inBraces == 0 && parsestate == ValState) {
                       //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
                       j.e[j.count].value[j.e[j.count].valCount]=buf;
                       j.e[j.count].valCount++;
                       parsestate = KeyState;
                       elemDone = True;
                     }
-                    msgDone = True;
+                    if (parsestate == ArrayState) {
+                        // TODO: arrays of objects
+                    }
+                    else if(inBraces > 0) {
+                        // TODO: sub objects
+                    }
+                    else {
+                        msgDone = True;
+                    }
                     break;
                 
                 case "]":
@@ -242,7 +259,7 @@ function JsonMsg ParseJson (string msg) {
                 case Chr(34): //Quotes
                     if (escape) {
                         escape = False;
-                        buf = buf $ JsonGetEscapedChar(c);                       
+                        buf = buf $ JsonGetEscapedChar(c);
                     } else {
                         inQuotes = !inQuotes;
                     }
@@ -264,19 +281,18 @@ function JsonMsg ParseJson (string msg) {
                     } else {
                         buf = buf $ c;
                     }
-                    break;                
+                    break;
             }
         }
         
         if (elemDone) {
           //PlayerMessage("Key: "$j.e[j.count].key$ "   Val: "$j.e[j.count].value[0]);
           j.count++;
-          elemDone = False;          
+          elemDone = False;
         }
     }
     
     return j;
-    
 }
 
 function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous)
@@ -680,8 +696,11 @@ function bool isCrowdControl( string msg) {
         return False;
     }
     
-    if (InStr(msg,"}")!=Len(msg)-1){
-        //PlayerMessage("Message doesn't end with curly");
+    //Explicitly check last character of string to see if it's a closing curly
+    tmp = Mid(msg,Len(msg)-1,1);
+    //if (InStr(msg,"}")!=Len(msg)-1){
+    if (tmp != "}"){
+        //PlayerMessage("Message doesn't end with curly.  Ends with '"$tmp$"'.");
         return False;    
     }
     
@@ -689,37 +708,19 @@ function bool isCrowdControl( string msg) {
     
     //id field
     if (InStr(msg,"id")==-1){
+        //PlayerMessage("Doesn't have id");
         return False;
     }
     
     //code field
     if (InStr(msg,"code")==-1){
+        //PlayerMessage("Doesn't have code");
         return False;
-    }    
+    }
     //viewer field
     if (InStr(msg,"viewer")==-1){
+        //PlayerMessage("Doesn't have viewer");
         return False;
-    }   
-    //type field
-    if (InStr(msg,"type")==-1){
-        return False;
-    }
-    
-    //Check to see if there are multiple messages stuck together
-    //By removing the outermost curly brackets, we can check to
-    //see if there are any more inside them (indicating one was
-    //closed and another one was opened within the same message
-    tmp = Mid(msg,1,Len(msg)-2);
-    //PlayerMessage("Removed outer curlies: "$tmp);
-    //Check for extra curly braces inside the outermost ones
-    if (InStr(tmp,"{")!=-1){
-        //PlayerMessage("Has extra internal open curly!");
-        return False;
-    }
-    
-    if (InStr(tmp,"}")!=-1){
-        //PlayerMessage("Has extra internal close curly!");
-        return False;    
     }
 
     return True;
@@ -1852,6 +1853,15 @@ function RunTests(DXRCrowdControl m)
 
     msg="{}";
     m.testbool( isCrowdControl(msg), false, "isCrowdControl "$msg);
+    
+    msg="{\"id\":3,\"code\":\"disable_jump\",\"targets\":[{\"id\":\"1234\",\"name\":\"dxrandotest\",\"avatar\":\"\"}],\"viewer\":\"dxrandotest\",\"type\":1}";
+    m.testbool( isCrowdControl(msg), true, "isCrowdControl "$msg);
+    _TestMsg(m,msg,3,1,"disable_jump","dxrandotest",params);
+
+    // test multiple payloads, Crowd Control always puts a \0 between them so this isn't an issue, but still good to be safe
+    msg="{\"id\":3,\"code\":\"disable_jump\",\"viewer\":\"dxrandotest\",\"type\":1}{\"parameters\":[1,2,3],\"code\":\"fail\"}";
+    m.testbool( isCrowdControl(msg), true, "isCrowdControl "$msg);
+    _TestMsg(m,msg,3,1,"disable_jump","dxrandotest",params);
 
     TestMsg(m, 123, 1, "kill", "die4ever", params);
     TestMsg(m, 123, 1, "test with spaces", "die4ever", params);
@@ -1869,11 +1879,59 @@ function RunTests(DXRCrowdControl m)
     //TestMsg(m, 123, 1, "test\\\\with\\\\escaped\\\\backslashes", "die4ever", ""); //Note that we have to double escape so that the end result is a single escaped backslash
 }
 
-function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer, string params[5])
+function int GetJsonField(JsonMsg jmsg, string key, optional out JsonElement je)
 {
-    local int i, p, matches, num_params;
-    local string msg, val, params_string;
+    local int i;
+
+    for (i=0;i<jmsg.count;i++) {
+        if (jmsg.e[i].key == key && jmsg.e[i].valCount>0) {
+            je = jmsg.e[i];
+            return jmsg.e[i].valCount;
+        }
+    }
+    return 0;
+}
+
+function int TestJsonField(DXRCrowdControl m, JsonMsg jmsg, string key, coerce string expected, optional out JsonElement je)
+{
+    local int len;
+    m.test(jmsg.count < ArrayCount(jmsg.e), "jmsg.count < ArrayCount(jmsg.e)");
+    len = GetJsonField(jmsg, key, je);
+    if(expected == "" && len == 0) {
+        m.test(true, "TestJsonField "$key$" correctly missing");
+    } else {
+        m.test(je.valCount > 0, "je.valCount > 0");
+        m.test(je.valCount < ArrayCount(je.value), "je.valCount < ArrayCount(je.value)");
+        m.teststring(je.value[0], expected, "TestJsonField " $ key);
+    }
+    return len;
+}
+
+function _TestMsg(DXRCrowdControl m, string msg, int id, int type, string code, string viewer, string params[5])
+{
     local JsonMsg jmsg;
+    local JsonElement je;
+    local int p;
+
+    m.testbool( isCrowdControl(msg), true, "isCrowdControl: "$msg);
+
+    jmsg=ParseJson(msg);
+    m.testint(TestJsonField(m, jmsg, "code", code), 1, "got 1 code");
+    m.testint(TestJsonField(m, jmsg, "viewer", viewer), 1, "got 1 viewer");
+    m.testint(TestJsonField(m, jmsg, "id", id), 1, "got 1 id");
+    m.testint(TestJsonField(m, jmsg, "type", type), 1, "got 1 type");
+
+
+    TestJsonField(m, jmsg, "parameters", params[0], je);
+    for(p=0; p<ArrayCount(params); p++) {
+        m.teststring(je.value[p], params[p], "param "$p);
+    }
+}
+
+function string BuildParamsString(string params[5])
+{
+    local int i, num_params;
+    local string params_string;
 
     for(i=0; i < ArrayCount(params); i++) {
         if( params[i] != "" ) num_params++;
@@ -1891,42 +1949,40 @@ function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer
     else if ( num_params <= 1 )
         params_string = "\""$params[0]$"\"";
 
-    msg="{\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$"}";
+    return params_string;
+}
 
-    m.testbool( isCrowdControl(msg), true, "isCrowdControl: "$msg);
+function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer, string params[5])
+{
+    local int i, p, matches;
+    local string msg, params_string, targets;
+    local JsonMsg jmsg;
 
-    jmsg=ParseJson(msg);
-    for (i=0;i<jmsg.count;i++) {
-        if (jmsg.e[i].valCount>0) {
-            val = jmsg.e[i].value[0];
-            switch (jmsg.e[i].key) {
-                case "code":
-                    m.teststring(val, code, "code");
-                    matches++;
-                    break;
-                case "viewer":
-                    m.teststring(val, viewer, "viewer");
-                    matches++;
-                    break;
-                case "id":
-                    m.testint(Int(val), id, "id");
-                    matches++;
-                    break;
-                case "type":
-                    m.testint(Int(val), type, "type");
-                    matches++;
-                    break;
-                case "parameters":
-                    for(p=0; p<ArrayCount(params); p++) {
-                        m.teststring(jmsg.e[i].value[p], params[p], "param "$p);
-                    }
-                    matches++;
-                    break;
-            }
-        }
-    }
+    params_string = BuildParamsString(params);
 
-    m.testint(matches, 5, "5 matches for msg: "$msg);
+    msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$"}";
+    _TestMsg(m, msg, id, type, code, viewer, params);
+
+    // test new targets field, in the beginning, in the middle, and at the end...
+    targets = "[{\"id\":\"1234\",\"name\":\"Die4Ever\",\"avatar\":\"\"}]";
+    msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"targets\":"$targets$",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$"}";
+    _TestMsg(m, msg, id, type, code, viewer, params);
+
+    msg = "{\"targets\":"$targets$",\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$"}";
+    _TestMsg(m, msg, id, type, code, viewer, params);
+
+    msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"targets\":"$targets$",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$",\"targets\":"$targets$"}";
+    _TestMsg(m, msg, id, type, code, viewer, params);
+
+    // test array of objects
+    targets = "[{\"id\":\"1234\",\"name\":\"Die4Ever\",\"avatar\":\"\"},{\"name\":\"TheAstropath\"}]";
+    msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"targets\":"$targets$",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$",\"targets\":"$targets$"}";
+    _TestMsg(m, msg, id, type, code, viewer, params);
+
+    // test sub objects
+    targets = "{\"array\":[{\"id\":\"1234\",\"name\":\"Die4Ever\",\"avatar\":\"\"},{\"name\":\"TheAstropath\"}]}";
+    msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"targets\":"$targets$",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$",\"targets\":"$targets$"}";
+    _TestMsg(m, msg, id, type, code, viewer, params);
 }
 
 defaultproperties
