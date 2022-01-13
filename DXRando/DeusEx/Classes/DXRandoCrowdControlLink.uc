@@ -188,9 +188,12 @@ function JsonMsg ParseJson (string msg) {
                       parsestate = KeyState;
                       elemDone = True;
                   } else if (parsestate == ArrayState) {
-                      //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                      j.e[j.count].value[j.e[j.count].valCount]=buf;
-                      j.e[j.count].valCount++;
+                      // TODO: arrays of objects
+                      if (c != ":") {
+                        //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                        j.e[j.count].value[j.e[j.count].valCount]=buf;
+                        j.e[j.count].valCount++;
+                      }
                   } else if (parsestate == ArrayDoneState){
                       parseState = KeyState;
                   }
@@ -207,7 +210,12 @@ function JsonMsg ParseJson (string msg) {
                       parsestate = KeyState;
                       elemDone = True;
                     }
-                    msgDone = True;
+                    if (parsestate == ArrayState) {
+                        // TODO: arrays of objects
+                    }
+                    else {
+                        msgDone = True;
+                    }
                     break;
                 
                 case "]":
@@ -242,7 +250,7 @@ function JsonMsg ParseJson (string msg) {
                 case Chr(34): //Quotes
                     if (escape) {
                         escape = False;
-                        buf = buf $ JsonGetEscapedChar(c);                       
+                        buf = buf $ JsonGetEscapedChar(c);
                     } else {
                         inQuotes = !inQuotes;
                     }
@@ -264,14 +272,14 @@ function JsonMsg ParseJson (string msg) {
                     } else {
                         buf = buf $ c;
                     }
-                    break;                
+                    break;
             }
         }
         
         if (elemDone) {
           //PlayerMessage("Key: "$j.e[j.count].key$ "   Val: "$j.e[j.count].value[0]);
           j.count++;
-          elemDone = False;          
+          elemDone = False;
         }
     }
     
@@ -1884,9 +1892,10 @@ function bool GetJsonField(DXRCrowdControl m, JsonMsg jmsg, string key, coerce s
 {
     local int i;
 
-    m.warning("GetJsonField jmsg.count == "$jmsg.count);
+    m.test(jmsg.count < ArrayCount(jmsg.e), "jmsg.count < ArrayCount(jmsg.e)");
     for (i=0;i<jmsg.count;i++) {
         if (jmsg.e[i].key == key && jmsg.e[i].valCount>0) {
+            m.test(jmsg.e[i].valCount < ArrayCount(jmsg.e[i].value), "jmsg.e[i].valCount < ArrayCount(jmsg.e[i].value)");
             m.teststring(jmsg.e[i].value[0], expected, "GetJsonField " $ key);
             je = jmsg.e[i];
             return true;
@@ -1953,6 +1962,7 @@ function TestMsg(DXRCrowdControl m, int id, int type, string code, string viewer
     msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$"}";
     _TestMsg(m, msg, id, type, code, viewer, params);
 
+    // test new targets field, in the beginning, in the middle, and at the end...
     targets = "[{\"id\":\"1234\",\"name\":\"Die4Ever\",\"avatar\":\"\"}]";
     msg = "{\"id\":\""$id$"\",\"code\":\""$code$"\",\"targets\":"$targets$",\"viewer\":\""$viewer$"\",\"type\":\""$type$"\",\"parameters\":"$params_string$"}";
     _TestMsg(m, msg, id, type, code, viewer, params);
