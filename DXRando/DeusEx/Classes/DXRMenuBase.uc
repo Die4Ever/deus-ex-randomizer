@@ -395,7 +395,7 @@ function MenuUIEditWindow CreateEdit(int row, string label, string helptext, str
 
 function MenuUIEditWindow CreateSlider(int row, string label, string helptext, optional int deflt, optional int min, optional int max )
 {
-    return CreateEdit(row, label, helptext, "1234567890", string(deflt));
+    return CreateEdit(row, label, helptext, "-1234567890", string(deflt));
     /*local MenuUISliderButtonWindow slider;
     local vector coords;
     local int numTicks;

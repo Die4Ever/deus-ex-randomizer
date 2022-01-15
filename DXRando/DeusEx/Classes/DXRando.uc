@@ -107,7 +107,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,7,1,1) ) {
+    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,7,2,1) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -163,6 +163,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRStats";
     modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXRFashion";
+    modules_to_load[i++] = "DXRHints";
     //modules_to_load[i++] = "DXRTestAllMaps";
 }
 
@@ -186,6 +187,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRWeapons";
     modules_to_load[i++] = "DXRCrowdControl";
     modules_to_load[i++] = "DXRMachines";
+    modules_to_load[i++] = "DXRHints";
 }
 
 function gmdx_modules()
@@ -209,6 +211,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRWeapons";
     modules_to_load[i++] = "DXRCrowdControl";
     modules_to_load[i++] = "DXRMachines";
+    modules_to_load[i++] = "DXRHints";
 }
 
 function revision_modules()
