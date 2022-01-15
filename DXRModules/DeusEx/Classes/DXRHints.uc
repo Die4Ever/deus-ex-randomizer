@@ -12,6 +12,12 @@ simulated function InitHints()
     local int mission;
     local string map;
 
+    mission = dxr.dxInfo.missionNumber;
+    map = dxr.localURL;
+    if(mission < 1 || mission > 50) {
+        return; // mission number is invalid
+    }
+
     AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken");
     AddHint("You can carry 5 fire extinguishers in 1 inventory slot.", "They are very useful for stealthily killing multiple enemies.");
     if(dxr.flags.settings.medbots > 0) {
@@ -40,21 +46,18 @@ simulated function InitHints()
     AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them");
     AddHint("Ever tried to extinguish a fire with a toilet?");
     
-    
-    mission = dxr.dxInfo.missionNumber;
-    map = dxr.localURL;
-    if(mission < 1 || mission > 15) {
-        // mission number is invalid
-    }
-    else if(mission <= 4) {
+    if(mission <= 4) {
         AddHint("Melee attacks from behind do bonus damage!");
         AddHint("The flashlight (F12) no longer consumes energy when used.", "Go wild with it!");
         AddHint("The flashlight (F12) can be used to attract the attention of guards");
+        AddHint("Don't hoard items.", "You'll find more!");
     }
     else if(mission <= 9) {
+        AddHint("Don't hoard items.", "You'll find more!");
     }
     else if(mission <= 15) {
         AddHint("Try not dying.");
+        AddHint("Don't hoard items.", "What are you saving them for?");
     }
 
     // ~= is case insensitive equality
@@ -164,19 +167,36 @@ simulated function int GetHint()
     return Rand(numHints);
 }
 
-simulated function Timer()
+simulated function ShowHint(optional int recursion)
 {
     local int hint;
-    if(_player.Health > 0) return;
     SetTimer(15, true);
+    if( recursion > 10 ) {
+        error("ShowHint reached max recursion " $ recursion);
+        return;
+    }
     hint = GetHint();
-    class'DXRBigMessage'.static.CreateBigMessage(_player, hints[hint], details[hint]);
+
+    if(class'DXRBigMessage'.static.CreateBigMessage(_player, self, hints[hint], details[hint]) == None)
+        ShowHint(recursion++);
+}
+
+simulated function Timer()
+{
+    if(_player == None) {
+        SetTimer(0, false);
+        return;
+    }
+    if(_player.IsInState('Dying'))
+        ShowHint();
 }
 
 function RunTests()
 {
     local int i, ln;
     Super.RunTests();
+
+    test(numHints <= arrayCount(hints), "numHints within bounds");
 
     for(i=0; i<numHints; i++) {
         ln = Len(hints[i]);
