@@ -383,6 +383,22 @@ exec function FixAugHotkeys()
     am.RefreshAugDisplay();
 }
 
+exec function MoveGoalLocation(name goalName, int locNumber)
+{
+    local DXRMissions missions;
+    
+    foreach AllActors(class'DXRMissions',missions)
+    {
+        if (missions.MoveGoalTo(goalName,locNumber)==true){
+            ClientMessage("Successfully moved goal");
+        } else {
+            ClientMessage("Failed to move goal");        
+        }
+    }
+    
+}
+
+
 function ChangeSong(string SongName, byte section)
 {
     LevelSong = Music(DynamicLoadObject(SongName, class'Music'));

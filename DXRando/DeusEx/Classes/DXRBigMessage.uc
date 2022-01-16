@@ -100,6 +100,26 @@ event bool MouseButtonReleased(float pointX, float pointY, EInputKey button, int
     return True;
 }
 
+//Find what key is bound to the given action
+function string FindKeyBinding(string binding)
+{
+    local int i;
+    local string KeyName;
+    local string Alias;
+
+    for (i=0;i<255;i++){
+        KeyName = Player.ConsoleCommand("KEYNAME "$i);
+        if (KeyName!="") {
+            Alias = Player.ConsoleCommand("KEYBINDING "$KeyName);
+            if (Alias ~= binding) { //Case-insensitive, just to be nice
+                return KeyName;
+            }
+        }
+    }
+    return "";
+}
+
+//Find what action is bound to the given key
 function string GetKeyAssigned(EInputKey key)
 {
     // based on DeusExRootWindow.IsKeyAssigned
