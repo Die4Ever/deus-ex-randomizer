@@ -95,6 +95,8 @@ simulated function InitHints()
             if (map ~= "06_hongkong_mj12lab") {
                 if(dxr.flags.settings.goals > 0)
                     AddHint("The location of the computer with the ROM Encoding is randomized.");
+            } else if (map ~= "06_HongKong_WanChai_Street") {
+                AddHint("The Dragon Tooth Sword is randomized, but you need to","open the case in Maggie Chow's apartment to proceed");
             }
             break;
         case 8:
