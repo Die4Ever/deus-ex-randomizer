@@ -113,18 +113,22 @@ simulated function InitHints()
 
             break;
         case 10:
+#ifdef injections
             if( dxr.FindModule(class'DXRBacktracking') != None ) {
                 AddHint("Randomizer has enabled extra backtracking.", "You will be able to come back here later.");
             }
+#endif
             break;
         case 11:
             if (map ~= "11_paris_cathedral") {
                 if(dxr.flags.settings.goals > 0)
                     AddHint("The location of Gunther and the computer is randomized.");
             }
+#ifdef injections
             if( dxr.FindModule(class'DXRBacktracking') != None ) {
                 AddHint("Randomizer has enabled extra backtracking.", "You will be able to go back to previous Paris levels.");
             }
+#endif
 
             break;
         case 12:
@@ -132,24 +136,30 @@ simulated function InitHints()
                 if(dxr.flags.settings.goals > 0)
                     AddHint("The locations of the power generator keypads are randomized.");
             }
+#ifdef injections
             if( dxr.FindModule(class'DXRBacktracking') != None ) {
                 AddHint("Randomizer has enabled extra backtracking.", "You will be able to come back here later.");
             }
+#else
             break;
         case 14:
             if (map ~= "14_oceanlab_silo") {
                 if(dxr.flags.settings.goals > 0)
                     AddHint("Howard Strong is now on a random floor of the missile silo.");
             }
+#ifdef injections
             if( dxr.FindModule(class'DXRBacktracking') != None ) {
                 AddHint("Randomizer has enabled extra backtracking.", "You will be able to go back to Vandenberg.");
             }
+#endif
 
             break;
         case 15:
+#ifdef injections
             if( dxr.FindModule(class'DXRBacktracking') != None ) {
                 AddHint("Randomizer has enabled extra backtracking.", "You will be able to move more freely through Area 51.");
             }
+#endif
             break;
     };
 }
