@@ -483,6 +483,7 @@ function inventory GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional 
         return None;
     }
 
+    l("GiveRandomWeapon "$p$", "$wclass.Name$", "$add_ammo);
     return GiveItem( p, wclass, add_ammo );
 }
 
@@ -506,6 +507,7 @@ function inventory GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
         }
     }
 
+    l("GiveRandomMeleeWeapon "$p$", "$wclass.Name);
     return GiveItem(p, wclass);
 }
 
