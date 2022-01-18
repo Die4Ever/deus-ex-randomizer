@@ -118,21 +118,33 @@ function static RandomizeAugCannister(DXRando dxr, #var prefix AugmentationCanni
 {
     local int numAugs;
     local int banned[50];
+    local class<Augmentation> augs[2];
 
     _DefaultAugsMask(dxr, banned, numAugs);
 
-    a.AddAugs[0] = PickRandomAug(dxr, banned, numAugs);
-    a.AddAugs[1] = PickRandomAug(dxr, banned, numAugs);
+    augs[0] = PickRandomAug(dxr, banned, numAugs);
+    augs[1] = PickRandomAug(dxr, banned, numAugs);
+
+    a.AddAugs[0] = augs[0].Name;
+    a.AddAugs[1] = augs[1].Name;
+
+    if(augs[0] != None && augs[1] != None)
+        a.ItemName = a.ItemName $": "$ augs[0].default.AugmentationName $ " / " $ augs[1].default.AugmentationName;
+    else if(augs[0] != None)
+        a.ItemName = a.ItemName $": "$ augs[0].default.AugmentationName;
+    else if(augs[1] != None)
+        a.ItemName = a.ItemName $": "$ augs[1].default.AugmentationName;
 
     if( a.AddAugs[0] == '#var prefix AugSpeed' || a.AddAugs[1] == '#var prefix AugSpeed' ) {
         dxr.flags.player().ClientMessage("Speed Enhancement is in this area.",, true);
     }
 }
 
-function static Name PickRandomAug(DXRando dxr, out int banned[50], out int numAugs)
+// HX uses the regular Augmentation base class
+function static class<Augmentation> PickRandomAug(DXRando dxr, out int banned[50], out int numAugs)
 {
     local int slot, i, r;
-    local Name AugName;
+    local class<Augmentation> aug;
     r = staticrng(dxr, numAugs);
     for(i=0; i < ArrayCount(class'#var prefix AugmentationManager'.default.augClasses); i++) {
         if( banned[i] == 1 ) continue;
@@ -143,11 +155,11 @@ function static Name PickRandomAug(DXRando dxr, out int banned[50], out int numA
     slot = i;
     if( slot >= ArrayCount(class'#var prefix AugmentationManager'.default.augClasses) )
         dxr.err("PickRandomAug WTF "$slot);
-    AugName = class'#var prefix AugmentationManager'.default.augClasses[slot].Name;
-    log("Picked Aug "$ slot $"/"$numAugs$" " $ AugName, 'DXRAugmentations');
+    aug = class'#var prefix AugmentationManager'.default.augClasses[slot];
+    log("Picked Aug "$ slot $"/"$numAugs$" " $ aug.Name, 'DXRAugmentations');
     banned[slot] = 1;
     numAugs--;
-    return AugName;
+    return aug;
 }
 
 simulated function RandoAug(Augmentation a)
