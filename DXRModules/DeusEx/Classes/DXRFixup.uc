@@ -1078,8 +1078,10 @@ function Paris_AnyEntry()
             // give him weapons to defend himself
             dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
             if(dxre != None && sp != None) {
+                GiveItem(sp, class'#var prefix WineBottle');
                 dxre.RandomizeSP(sp, 100);
                 RemoveFears(sp);
+                sp.SwitchToBestWeapon();
             }
             break;
     }
