@@ -86,11 +86,10 @@ Begin:
     Goto('Idle');
 }
 
-
 defaultproperties
 {
-    blinkRate=0.500000
-    startDelay=0.500000
-    endDelay=0.500000
-    perCharDelay=0.020000
+    blinkRate=0.3
+    startDelay=0.3
+    endDelay=0.3
+    perCharDelay=0.015
 }
