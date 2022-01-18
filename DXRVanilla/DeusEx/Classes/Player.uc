@@ -39,7 +39,31 @@ event ClientTravel( string URL, ETravelType TravelType, bool bItems )
 
 function ResetGoals()
 {
-    DeleteAllGoals();
+	local DeusExGoal goal;
+	local DeusExGoal goalNext;
+    local bool isOldGoal;
+
+    GetDXR();
+    
+        
+
+	goal = FirstGoal;
+
+	while( goal != None )
+	{
+		goalNext = goal.next;
+        isOldGoal = (goal.goalMission < (dxr.dxInfo.missionNumber-1));
+
+		// Delete:
+		// 1) Completed Primary Goals
+        // 2) Any Primary Goals two or more missions old
+		// 3) ALL Secondary Goals
+
+		if ((!goal.IsPrimaryGoal()) || (goal.IsPrimaryGoal() && (goal.IsCompleted() || isOldGoal)))
+			DeleteGoal(goal);
+
+		goal = goalNext;
+	}
 }
 
 function DXRando GetDXR()
