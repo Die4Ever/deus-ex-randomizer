@@ -270,6 +270,9 @@ function VanillaAnyEntry()
         case 8:
             NYC_08_AnyEntry();
             break;
+        case 9:
+            Shipyard_AnyEntry();
+            break;
     }
 }
 
@@ -300,6 +303,9 @@ function VanillaTimer()
                     chopper.EnterWorld();
                 dxr.flagbase.SetBool('MS_Helicopter_Unhidden', True,, 9);
             }
+            break;
+        case "09_NYC_SHIPBELOW":
+            NYC_09_CountWeldPoints();
             break;
     }
 }
@@ -561,6 +567,75 @@ function BalanceJailbreak()
     else iclass = class'WeaponCombatKnife';
 
     Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915) );
+}
+
+function UpdateWeldPointGoal(int count)
+{
+    local string goalText;
+    local DeusExGoal goal;
+    local int bracketPos;
+    goal = player().FindGoal('ScuttleShip');
+    
+    if (goal!=None){
+        goalText = goal.text;
+        bracketPos = InStr(goalText,"(");
+        
+        if (bracketPos>0){ //If the extra text is already there, strip it.
+            goalText = Mid(goalText,0,bracketPos-1);
+        }
+        
+        goalText = goalText$" ("$count$" remaining)";
+        
+        goal.SetText(goalText);
+    }
+    
+    
+}
+
+function NYC_09_CountWeldPoints()
+{
+    local int storedWeldCount;
+    local int newWeldCount;
+    local DeusExMover m;
+    
+    storedWeldCount = dxr.flagbase.GetInt('DXRando_WeldPointCount');
+    
+    newWeldCount=0;
+    
+    //Search for the weld point movers
+    foreach AllActors(class'DeusExMover',m) {
+        if (m.name == 'DeusExMover40' ||
+            m.name == 'DeusExMover16' ||
+            m.name == 'DeusExMover33' ||
+            m.name == 'DeusExMover31' ||
+            m.name == 'DeusExMover32'){
+            if (!m.bDestroyed){
+                newWeldCount++;
+            }
+        }
+    }
+        
+    if (newWeldCount != storedWeldCount) {
+        //A weld point has been destroyed!
+        dxr.flags.f.SetInt('DXRando_WeldPointCount',newWeldCount);
+        
+        switch(newWeldCount){
+            case 0:
+                player().ClientMessage("All weld points destroyed!");
+                SetTimer(0, False);  //Disable the timer now that all weld points are gone
+                break;
+            case 1:
+                player().ClientMessage("1 weld point remaining");
+                break;
+            default:
+                player().ClientMessage(newWeldCount$" weld points remaining");
+                break;
+        }
+        
+        UpdateWeldPointGoal(newWeldCount);
+    }
+    
+    
 }
 
 // if you bail on Paul but then have a change of heart and re-enter to come back and save him
@@ -916,9 +991,22 @@ function Shipyard_FirstEntry()
                 m.bHighlight = true;
                 m.bLocked = true;
             }
+            dxr.flags.f.SetInt('DXRando_WeldPointCount',5);
+            UpdateWeldPointGoal(5);
             break;
     }
 }
+
+function Shipyard_AnyEntry()
+{
+    switch(dxr.localURL)
+    {
+        case "09_NYC_SHIPBELOW":
+            SetTimer(1, True);
+            break;
+    }
+}
+
 
 function Paris_FirstEntry()
 {
