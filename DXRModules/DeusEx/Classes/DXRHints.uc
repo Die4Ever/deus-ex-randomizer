@@ -21,6 +21,20 @@ simulated function InitHints()
     AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken");
     AddHint("You can carry 5 fire extinguishers in 1 inventory slot.", "They are very useful for stealthily killing multiple enemies.");
     AddHint("Use everything at your disposal, like TNT crates.", "Randomizer makes this even more of a strategy/puzzle game.");
+    AddHint("A vending machine can provide you with 20 health worth of food.", "Eat up!");
+    AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them");
+    AddHint("Ever tried to extinguish a fire with a toilet?", "How about a urinal or a shower?");
+    AddHint("Items like ballistic armor and rebreathers now free up", "the inventory spaceimmediately when you equip them.");
+    AddHint("Items like hazmat suits and thermoptic camo now free up", "the inventory space immediately when you equip them.");
+    AddHint("The large metal crates are now destructible.", "They have 2000 hp.");
+    AddHint("Hacking computers now uses 5 bioelectric energy per second.");
+    AddHint("Make sure to read the descriptions for skills, augmentations, and items.", "Randomizer adds some extra info.");
+    AddHint("Spy Drone aug has improved speed", "and the emp blast now also does explosive damage.");
+    AddHint("The PS20 has been upgraded to the PS40", "and does significantly more damage.");
+    AddHint("Flare darts now set enemies on fire for 3 seconds.");
+    AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
+    AddHint("Read the pop-up text on doors to see how many", "hit from your equiped weapon to break it.");
+
     if(dxr.flags.settings.medbots > 0) {
         AddHint("Medbots are randomized.", "Don't expect to find them in the usual locations.");
     }
@@ -39,12 +53,8 @@ simulated function InitHints()
     }
     
     if (dxr.flags.settings.goals > 0) {
-        //Add this one in once the wiki actually has that info
-        //AddHint("Check the Deus Ex Randomizer wiki for information about randomized objective locations!");
+        AddHint("Check the Deus Ex Randomizer wiki for information about randomized objective locations!");
     }
-    
-    AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them");
-    AddHint("Ever tried to extinguish a fire with a toilet?");
     
     if(mission <= 4) {
         AddHint("Melee attacks from behind do bonus damage!");
