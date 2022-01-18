@@ -273,6 +273,9 @@ function VanillaAnyEntry()
         case 9:
             Shipyard_AnyEntry();
             break;
+        case 10:
+            Paris_AnyEntry();
+            break;
     }
 }
 
@@ -1052,6 +1055,31 @@ function Paris_FirstEntry()
         case "11_PARIS_CATHEDRAL":
             foreach AllActors(class'GuntherHermann', g) {
                 g.ChangeAlly('mj12', 1, true);
+            }
+            break;
+    }
+}
+
+function Paris_AnyEntry()
+{
+    local DXRNPCs npcs;
+    local DXREnemies dxre;
+    local ScriptedPawn sp;
+
+    switch(dxr.localURL)
+    {
+        case "10_PARIS_CATACOMBS":
+            // spawn Le Merchant with a hazmat suit because there's no guarantee of one before the highly radioactive area
+            // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
+            npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
+            if(npcs != None) {
+                sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vect(-3209.483154, 5190.826172,1199.610352), rot(0, -10000, 0), class'#var prefix HazMatSuit');
+            }
+            // give him weapons to defend himself
+            dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+            if(dxre != None && sp != None) {
+                dxre.RandomizeSP(sp, 100);
+                RemoveFears(sp);
             }
             break;
     }
