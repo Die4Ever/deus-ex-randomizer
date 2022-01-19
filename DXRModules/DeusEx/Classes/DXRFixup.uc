@@ -888,6 +888,7 @@ function HongKong_FirstEntry()
     local ElevatorMover e;
     local #var Mover  m;
     local FlagTrigger ft;
+    local AllianceTrigger at;
 
     switch(dxr.localURL)
     {
@@ -971,7 +972,11 @@ function HongKong_FirstEntry()
                 ft.Tag = 'TongHasRom';
             }
             break;
-
+        case "06_HONGKONG_WANCHAI_UNDERWORLD":
+            foreach AllActors(class'AllianceTrigger',at,'StoreSafe') {
+                at.bPlayerOnly = true;
+            }
+            break;
         default:
             break;
     }

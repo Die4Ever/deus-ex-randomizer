@@ -1,4 +1,20 @@
 class DXRAllianceTrigger injects AllianceTrigger;
+var() bool bPlayerOnly;
+
+function Trigger(Actor Other, Pawn Instigator)
+{
+    local bool wasPlayer;
+    local DeusExPlayer p;
+    
+    p = DeusExPlayer(GetPlayerPawn());
+    if (p!=None){
+        wasPlayer = (Instigator == p);
+    }
+    
+    if (!bPlayerOnly || (bPlayerOnly && wasPlayer)) { 
+        Super.Trigger(Other,Instigator);
+    }
+}
 
 function bool SetAlliances()
 {
