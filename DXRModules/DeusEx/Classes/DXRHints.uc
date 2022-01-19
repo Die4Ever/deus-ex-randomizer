@@ -127,6 +127,9 @@ simulated function InitHints()
             if( dxr.FindModule(class'DXRBacktracking') != None ) {
                 AddHint("Randomizer has enabled extra backtracking.", "You will be able to come back here later.");
             }
+            AddHint("There's wine everywhere in Paris,", "it can be a decent source of health and energy.");
+#else
+            AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
 #endif
             break;
         case 11:
@@ -138,6 +141,9 @@ simulated function InitHints()
             if( dxr.FindModule(class'DXRBacktracking') != None ) {
                 AddHint("Randomizer has enabled extra backtracking.", "You will be able to go back to previous Paris levels.");
             }
+            AddHint("There's wine everywhere in Paris,", "it can be a decent source of health and energy.");
+#else
+            AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
 #endif
 
             break;
