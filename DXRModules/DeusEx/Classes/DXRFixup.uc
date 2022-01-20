@@ -224,6 +224,8 @@ function VanillaPreFirstEntry()
 function VanillaPostFirstEntry()
 {
     local RetinalScanner r;
+    local CrateUnbreakableLarge c;
+    local Actor a;
     
     switch(dxr.localURL) {
         case "01_NYC_UNATCOHQ":
@@ -254,6 +256,20 @@ function VanillaPostFirstEntry()
         
         case "05_NYC_UNATCOMJ12LAB":
             BalanceJailbreak();
+            break;
+        
+        case "09_NYC_DOCKYARD":
+            foreach RadiusActors(class'CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
+                info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
+                c.Destroy();
+            }
+            break;
+        
+        case "12_VANDENBERG_CMD":
+            foreach RadiusActors(class'CrateUnbreakableLarge', c, 16, vect(570.835083, 1934.114014, -1646.114746)) {
+                info("removing " $ c $ " dist: " $ VSize(c.Location - vect(570.835083, 1934.114014, -1646.114746)) );
+                c.Destroy();
+            }
             break;
     }
 }
@@ -972,11 +988,13 @@ function HongKong_FirstEntry()
                 ft.Tag = 'TongHasRom';
             }
             break;
+#ifdef injections
         case "06_HONGKONG_WANCHAI_UNDERWORLD":
             foreach AllActors(class'AllianceTrigger',at,'StoreSafe') {
                 at.bPlayerOnly = true;
             }
             break;
+#endif
         default:
             break;
     }
