@@ -915,19 +915,8 @@ function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
         return Success;
     }
     
-    anAug.Deactivate();
-    anAug.bHasIt = False;
+    class'DXRAugmentations'.static.RemoveAug(player(),anAug);
     
-    // Manage our AugLocs[] array
-    player().AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount--;
-    
-    //Icon lookup is BY HOTKEY, so make sure to remove the icon before the hotkey
-    player().RemoveAugmentationDisplay(anAug);
-    // Assign hot key back to default
-    anAug.HotKeyNum = anAug.Default.HotKeyNum;
-
-    
-
     PlayerMessage(viewer@"removed your "$anAug.AugmentationName$" augmentation");
     return Success;
 }

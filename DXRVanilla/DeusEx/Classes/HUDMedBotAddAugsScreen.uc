@@ -44,7 +44,10 @@ function bool ButtonActivated(Window buttonPressed)
 		case btnRemove:
 			RemoveAugmentation();
 			break;
-
+            
+		case btnInstall:
+			InstallAugmentation();
+			break;
 		default:
 			bHandled = False;
 			break;
@@ -61,26 +64,7 @@ function bool ButtonActivated(Window buttonPressed)
 
 function RemoveAugmentation() 
 {   
-    if (selectedAug == None) {
-       return; //Shouldn't happen
-    }
-    
-    if (!selectedAug.bHasIt)
-    {
-        return; //Also shouldn't happen      
-    }
-        
-    selectedAug.Deactivate();
-    selectedAug.bHasIt = False;
-    
-    // Manage our AugLocs[] array
-    player.AugmentationSystem.AugLocs[selectedAug.AugmentationLocation].augCount--;
-    
-    //Icon lookup is BY HOTKEY, so make sure to remove the icon before the hotkey
-    player.RemoveAugmentationDisplay(selectedAug);
-    
-    // Assign hot key back to default
-    selectedAug.HotKeyNum = selectedAug.Default.HotKeyNum;
+    class'DXRAugmentations'.static.RemoveAug(player,selectedAug);
     
     //Deselect the aug
     selectedAug = None;
@@ -93,8 +77,26 @@ function RemoveAugmentation()
 	DestroyAugmentationButtons();
 	CreateAugmentationButtons();
     
+    
     //Remove the aug description
     winInfo.Clear();
     
+    // Need to update the aug list
+	PopulateAugCanList();
+    
     return;
 }
+
+function DestroyAugmentationButtons()
+{
+	local int buttonIndex;
+
+	for(buttonIndex=0; buttonIndex<arrayCount(augItems); buttonIndex++)
+	{
+		if (augItems[buttonIndex] != None)
+			augItems[buttonIndex].Destroy();
+            augItems[buttonIndex] = None;
+	}
+}
+
+

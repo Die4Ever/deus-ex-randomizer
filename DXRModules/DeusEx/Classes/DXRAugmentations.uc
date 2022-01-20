@@ -70,6 +70,50 @@ static function AddAug(DeusExPlayer player, class<Augmentation> aclass, int leve
     }
 }
 
+static function RemoveAug(DeusExPlayer player, Augmentation aug)
+{
+    local int slot;
+    local Augmentation b;
+    local AugmentationManager am;
+    
+    am = player.AugmentationSystem;
+
+    if (aug == None) {
+       return; //Shouldn't happen
+    }
+    
+    if (!aug.bHasIt)
+    {
+        return; //Also shouldn't happen      
+    }
+        
+    aug.Deactivate();
+    aug.bHasIt = False;
+    
+    // Manage our AugLocs[] array
+    player.AugmentationSystem.AugLocs[aug.AugmentationLocation].augCount--;
+    
+    //Icon lookup is BY HOTKEY, so make sure to remove the icon before the hotkey
+    player.RemoveAugmentationDisplay(aug);
+    
+    // Assign hot key back to default
+    aug.HotKeyNum = aug.Default.HotKeyNum;
+    
+    // walk back the hotkey numbers
+    // This is needed for multi-slot locations like the torso.
+    // Hotkeys will double up if you remove one that isn't the last hotkey
+    slot = am.AugLocs[aug.AugmentationLocation].KeyBase + 1;
+    for( b = am.FirstAug; b != None; b = b.next ) {
+        if( b.bHasIt && aug.AugmentationLocation == b.AugmentationLocation )
+            b.HotKeyNum = slot++;
+    }
+    
+    // This is needed, otherwise the side-of-screen aug display gets confused
+    // when you add a new aug
+    am.RefreshAugDisplay();
+    
+}
+
 function RandomizeAugCannisters()
 {
     local #var prefix AugmentationCannister a;
@@ -291,18 +335,8 @@ simulated function RemoveRandomAug(#var PlayerPawn  p)
     slot = rng(numAugs);
     a = augs[slot];
     info("RemoveRandomAug("$p$") Removing aug "$a$" from "$am$", numAugs was "$numAugs);
-    a.Deactivate();
-    a.CurrentLevel = 0;
-    a.bHasIt = false;
-    am.AugLocs[a.AugmentationLocation].augCount--;
-    p.RemoveAugmentationDisplay(a);
-
-    // walk back the hotkey numbers
-    slot = am.AugLocs[a.AugmentationLocation].KeyBase + 1;
-    for( b = am.FirstAug; b != None; b = b.next ) {
-        if( b.bHasIt && a.AugmentationLocation == b.AugmentationLocation )
-            b.HotKeyNum = slot++;
-    }
+    class'DXRAugmentations'.static.RemoveAug(p,a);
+    
 }
 
 function ExtendedTests()
