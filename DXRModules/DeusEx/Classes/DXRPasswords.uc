@@ -450,8 +450,8 @@ function FixCodes()
     for(i=0; i<ArrayCount(yes_passwords); i++) {
         if( yes_passwords[i].map != dxr.localURL ) continue;
         newpassword = GeneratePassword(dxr, yes_passwords[i].password);
-        replacement = ReplaceText(yes_passwords[i].search_for, yes_passwords[i].password, newpassword, true);
-        ReplacePassword(yes_passwords[i].search_for, replacement );
+        //replacement = ReplaceText(yes_passwords[i].search_for, yes_passwords[i].password, newpassword, false);
+        ReplacePassword(yes_passwords[i].search_for, newpassword );
     }
 
     switch(dxr.localURL) {
@@ -690,7 +690,7 @@ function ReplacePassword(string oldpassword, string newpassword)
     newpasswords[passEnd] = newpassword;
     passEnd = (passEnd+1) % ArrayCount(oldpasswords);
     if(passEnd == passStart) passStart = (passStart+1) % ArrayCount(oldpasswords);
-    info("replaced password " $ oldpassword $ " with " $ newpassword $ ", passEnd is " $ passEnd $", passStart is " $ passStart);
+    info("replaced password \"" $ oldpassword $ "\" with \"" $ newpassword $ "\", passEnd is " $ passEnd $", passStart is " $ passStart);
 
     if( oldpassword == "6282" ) {
         // we only update the code 6282 because it's rare for passwords to be in goals
@@ -875,7 +875,7 @@ static function string GeneratePassword(DXRando dxr, string oldpassword)
     local int i;
     local int c;
     local int oldseed;
-    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(oldpassword) );
+    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(Caps(oldpassword)) );
     for(i=0; i<5; i++) {
         // 0-9 is 48-57, 97-122 is a-z
         c = staticrng(dxr, 36) + 48;
@@ -927,7 +927,7 @@ simulated final function int PassInStr(string text, string oldpassword)
     while (i != -1) {
         found = false;
         for(n=0; n<num_not_passwords; n++) {
-            capsNot = Caps(not_passwords[n]);
+            capsNot = not_passwords[n];
             offset = InStr(capsNot, capsPass);
             if( offset == -1 ) continue;
 
@@ -1164,6 +1164,8 @@ function RunTests()
     testint( WordInStr("THIS IS A TEST", "IS", 2 ), 2, "WordInStr match" );
     testint( WordInStr("THIS IS A TEST", "IS", 2, true ), 5, "WordInStr 2nd match" );
     testint( WordInStr("THISIS A TEST", "IS", 2, true ), -1, "WordInStr 2nd match not word" );
+    testint( WordInStr("THIS .IS. A TEST", "IS", 2, true ), 6, "WordInStr periods" );
+    testint( WordInStr("THIS \"IS\" A TEST", "IS", 2, true ), 6, "WordInStr quotes" );
     testint( WordInStr("MJ12", "12", 2, true ), -1, "WordInStr not word" );
     testint( WordInStr("MJ 12", "12", 2, true ), 3, "WordInStr match at end" );
 
@@ -1180,6 +1182,10 @@ function RunTests()
     testint( PassInStr("hello captain zhao", "zhao"), -1, "not password 2");
     testint( PassInStr("hello captain zhao", "hello"), 0, "yes password 1");
     testint( PassInStr("password is captain", "captain"), 12, "yes password 2");
+    testint( PassInStr("password is captain.", "captain"), 12, "yes password period");
+    testint( PassInStr("password is \"captain\"", "captain"), 13, "yes password quotes");
+
+    teststring( GeneratePassword(dxr, "CAPTain"), GeneratePassword(dxr, "captain"), "GeneratePassword is case insensitive");
 
     not_passwords[0] = oldnot;
     num_not_passwords = old_num_not_passwords;
