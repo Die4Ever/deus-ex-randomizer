@@ -175,6 +175,13 @@ function NewMenuItem(string label, string helptext)
     helptexts[id] = helptext;
 }
 
+function BreakLine()
+{
+    local int width;
+    width = num_cols / 2;
+    while((id-1) % width != 0) id++;
+}
+
 function NewGroup(string text)
 {
     local MenuUILabelWindow winLabel;
@@ -184,15 +191,13 @@ function NewGroup(string text)
     width = num_cols / 2;
     if(id != -1)
         id += width;
+    BreakLine();
     id++;
-    while(id % width != 0) id++;
 
     coords = GetCoords(id, 0);
     winLabel = CreateMenuLabel(coords.x + groupHeaderX, coords.y + groupHeaderY, text, controlsParent);
     winLabel.SetFont(groupHeaderFont);
-    id++;
-    while(id % width != 0) id++;
-    id--;
+    BreakLine();
 }
 
 function bool EnumOption(string label, int value, optional out int output)
@@ -201,6 +206,7 @@ function bool EnumOption(string label, int value, optional out int output)
 
     if( writing ) {
         if( label == GetEnumValue(id) ) {
+            log(self$" EnumOption: "$label$", changing from "$output$" to "$value);
             output = value;
             return true;
         }
@@ -216,6 +222,7 @@ function bool EnumOption(string label, int value, optional out int output)
             enums[id].btn = CreateEnum(id, labels[id], helptexts[id], enums[id]);
             wnds[id] = enums[id].btn;
         }
+        log(self$" EnumOption: "$label$" == "$value$" compared to default of "$output);
         if( output == value ) {
             enums[id].btn.SetButtonText(label);
             enums[id].value = i;
@@ -230,6 +237,7 @@ function bool EnumOptionString(string label, string value, optional out string o
 
     if( writing ) {
         if( label == GetEnumValue(id) ) {
+            log(self$" EnumOptionString: "$label$", changing from "$output$" to "$value);
             output = value;
             return true;
         }
@@ -245,6 +253,7 @@ function bool EnumOptionString(string label, string value, optional out string o
             enums[id].btn = CreateEnum(id, labels[id], helptexts[id], enums[id]);
             wnds[id] = enums[id].btn;
         }
+        log(self$" EnumOptionString: "$label$" == "$value$" compared to default of "$output);
         if( output == value ) {
             enums[id].btn.SetButtonText(label);
             enums[id].value = i;

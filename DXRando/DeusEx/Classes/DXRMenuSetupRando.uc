@@ -24,8 +24,8 @@ function CheckConfig()
 function BindControls(optional string action)
 {
     local DXRFlags f;
-    local string doors_option, skills_option;
-    local int iDifficulty;
+    local string doors_option;
+    local int iDifficulty, doors_type;
     f = InitFlags();
 
     NewGroup("General");
@@ -63,29 +63,36 @@ function BindControls(optional string action)
     Slider(f.settings.dancingpercent, 0, 100);
 
     NewGroup("Doors and Keys");
-    NewMenuItem("", "Additional options to get through doors that normally can't be destroyed or lockpicked.");
-    doors_option = f.settings.doorsmode $ ";" $ f.settings.doorsdestructible $ ";" $ f.settings.doorspickable;
-    //I could make this dual column? "Key-Only Doors" on the left and then "Breakable or Pickable" on the right? or should it be 2 rows?
-    EnumOptionString("Key-Only Doors Breakable or Pickable", (f.keyonlydoors+f.doormutuallyexclusive)$";50;50", doors_option);
-    EnumOptionString("Key-Only Doors Breakable & Pickable", (f.keyonlydoors+f.doormutuallyinclusive)$";100;100", doors_option);
-    EnumOptionString("Key-Only Doors Breakable", (f.keyonlydoors+f.doorindependent)$";100;0", doors_option);
-    EnumOptionString("Key-Only Doors Pickable", (f.keyonlydoors+f.doorindependent)$";0;100", doors_option);
-    EnumOptionString("Some Doors Breakable or Pickable", (f.keyonlydoors+f.doormutuallyexclusive)$";25;25", doors_option);
-    EnumOptionString("Some Doors Breakable & Pickable", (f.keyonlydoors+f.doormutuallyinclusive)$";50;50", doors_option);
-    EnumOptionString("Some Doors Breakable", (f.keyonlydoors+f.doorindependent)$";50;0", doors_option);
-    EnumOptionString("Some Doors Pickable", (f.keyonlydoors+f.doorindependent)$";0;50", doors_option);
-    EnumOptionString("Undefeatable Doors Breakable or Pickable", (f.undefeatabledoors+f.doormutuallyexclusive)$";50;50", doors_option);
-    EnumOptionString("Undefeatable Doors Breakable & Pickable", (f.undefeatabledoors+f.doormutuallyinclusive)$";100;100", doors_option);
-    EnumOptionString("Undefeatable Doors Breakable", (f.undefeatabledoors+f.doorindependent)$";100;0", doors_option);
-    EnumOptionString("Undefeatable Doors Pickable", (f.undefeatabledoors+f.doorindependent)$";0;100", doors_option);
-    EnumOptionString("Doors Unchanged", "0;0;0", doors_option);
-    EnumOptionString("All Doors Breakable or Pickable", (f.alldoors+f.doormutuallyexclusive)$";50;50", doors_option);
-    EnumOptionString("All Doors Breakable & Pickable", (f.alldoors+f.doormutuallyinclusive)$";100;100", doors_option);
-    EnumOptionString("All Doors Breakable", (f.alldoors+f.doorindependent)$";100;0", doors_option);
-    EnumOptionString("All Doors Pickable", (f.alldoors+f.doorindependent)$";0;100", doors_option);
+
+    NewMenuItem("", "Which doors to provide additional options to get through.");
+    doors_type = f.settings.doorsmode / 256 * 256;
+    if( f.settings.doorsdestructible + f.settings.doorspickable == 50 )
+        doors_type += 1;
+    EnumOption("Key-Only Doors", f.keyonlydoors, doors_type);
+    EnumOption("Some Key-Only Doors", f.keyonlydoors + 1, doors_type);
+    EnumOption("Undefeatable Doors", f.undefeatabledoors, doors_type);
+    EnumOption("Some Undefeatable Doors", f.undefeatabledoors + 1, doors_type);
+    EnumOption("All Doors", f.alldoors, doors_type);
+    EnumOption("Many Doors", f.alldoors + 1, doors_type);
+
+    doors_option = int(f.settings.doorsmode % 256) $ ";" $ f.settings.doorsdestructible $ ";" $ f.settings.doorspickable;
+    NewMenuItem("", "What to do with those doors.");
+    EnumOptionString("Breakable or Pickable", f.doormutuallyexclusive$";50;50", doors_option);
+    EnumOptionString("Breakable & Pickable", f.doormutuallyinclusive$";100;100", doors_option);
+    EnumOptionString("Breakable", f.doorindependent$";100;0", doors_option);
+    EnumOptionString("Pickable", f.doorindependent$";0;100", doors_option);
+    EnumOptionString("Don't Change Doors", f.doorindependent$";0;0", doors_option);
     f.settings.doorsmode = UnpackInt(doors_option);
     f.settings.doorsdestructible = UnpackInt(doors_option);
     f.settings.doorspickable = UnpackInt(doors_option);
+    if(doors_type % 2 == 1) {
+        doors_type--;
+        f.settings.doorsdestructible /= 2;
+        f.settings.doorspickable /= 2;
+    }
+    f.settings.doorsmode += doors_type;
+
+    BreakLine();
 
     NewMenuItem("NanoKey Locations", "Move keys around the map.");
     EnumOption("Randomized", 4, f.settings.keysrando);
@@ -122,21 +129,22 @@ function BindControls(optional string action)
     Slider(f.settings.turrets_add, 0, 100);
 
     NewGroup("Skills");
-    NewMenuItem("", "Adjust how skill cost randomization works.");
-    skills_option = f.settings.skills_disable_downgrades $";"$ f.settings.skills_reroll_missions $";"$ f.settings.skills_independent_levels;
-    EnumOptionString("Normal Skill Randomization", "0;0;0", skills_option);
-    EnumOptionString("Normal Skills Every Mission", "0;1;0", skills_option);
-    EnumOptionString("Normal Skills Every 2 Missions", "0;2;0", skills_option);
-    EnumOptionString("Normal Skills Every 3 Missions", "0;3;0", skills_option);
-    EnumOptionString("Normal Skills Every 5 Missions", "0;5;0", skills_option);
-    EnumOptionString("Blind Skill Randomization", "5;0;100", skills_option);
-    EnumOptionString("Blind Skills Every Mission", "5;1;100", skills_option);
-    EnumOptionString("Blind Skills Every 2 Missions", "5;2;100", skills_option);
-    EnumOptionString("Blind Skills Every 3 Missions", "5;3;100", skills_option);
-    EnumOptionString("Blind Skills Every 5 Missions", "5;5;100", skills_option);
-    f.settings.skills_disable_downgrades = UnpackInt(skills_option);
-    f.settings.skills_reroll_missions = UnpackInt(skills_option);
-    f.settings.skills_independent_levels = UnpackInt(skills_option);
+    NewMenuItem("", "Disallow downgrades to prevent scouting ahead in the new game screen.");
+    EnumOption("Allow Downgrades On New Game Screen", 0, f.settings.skills_disable_downgrades);
+    EnumOption("Disallow Downgrades On New Game Screen", 5, f.settings.skills_disable_downgrades);
+
+    NewMenuItem("", "How often to reroll skill costs.");
+    EnumOption("Don't Reroll Skill Costs", 0, f.settings.skills_reroll_missions);
+    EnumOption("Reroll Skill Costs Every Mission", 1, f.settings.skills_reroll_missions);
+    EnumOption("Reroll Skill Costs Every 2 Missions", 2, f.settings.skills_reroll_missions);
+    EnumOption("Reroll Skill Costs Every 3 Missions", 3, f.settings.skills_reroll_missions);
+    EnumOption("Reroll Skill Costs Every 5 Missions", 5, f.settings.skills_reroll_missions);
+
+    NewMenuItem("", "Predictability of skill level cost scaling.");
+    EnumOption("Relative Skill Level Costs", 0, f.settings.skills_independent_levels);
+    EnumOption("Unpredictable Skill Level Costs", 1, f.settings.skills_independent_levels);
+
+    BreakLine();
 
     NewMenuItem("Minimum Skill Cost %", "Minimum cost for skills in percentage of the original cost.");
     Slider(f.settings.minskill, 0, 1000);
@@ -178,12 +186,14 @@ function BindControls(optional string action)
     NewMenuItem("Swap Containers %", "The chance for container positions to be swapped.");
     Slider(f.settings.swapcontainers, 0, 100);
 
+    BreakLine();
     NewMenuItem("Min Weapon Damage %", "The minmum damage for weapons.");
     Slider(f.settings.min_weapon_dmg, 0, 300);
 
     NewMenuItem("Max Weapon Damage %", "The maximum damage for weapons.");
     Slider(f.settings.max_weapon_dmg, 0, 300);
 
+    BreakLine();
     NewMenuItem("Min Weapon Shot Time %", "The minmum shot time / firing speed for weapons.");
     Slider(f.settings.min_weapon_shottime, 0, 300);
 
