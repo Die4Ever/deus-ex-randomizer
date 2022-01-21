@@ -158,7 +158,14 @@ function CheckConfig()
     }
 }
 
-function bool EnumOption(int id, string label, int value, bool writing, optional out int output)
+function NewMenuItem(string label, string helptext)
+{
+    id++;
+    labels[id] = label;
+    helptexts[id] = helptext;
+}
+
+function bool EnumOption(string label, int value, bool writing, optional out int output)
 {
     local int i;
 
@@ -187,7 +194,7 @@ function bool EnumOption(int id, string label, int value, bool writing, optional
     return false;
 }
 
-function bool EnumOptionString(int id, string label, string value, bool writing, optional out string output)
+function bool EnumOptionString(string label, string value, bool writing, optional out string output)
 {
     local int i;
 
@@ -216,7 +223,7 @@ function bool EnumOptionString(int id, string label, string value, bool writing,
     return false;
 }
 
-function string EditBox(int id, string value, string pattern, bool writing)
+function string EditBox(string value, string pattern, bool writing)
 {
     if( writing ) {
         return MenuUIEditWindow(wnds[id]).GetText();
@@ -228,7 +235,7 @@ function string EditBox(int id, string value, string pattern, bool writing)
     return value;
 }
 
-function int Slider(int id, out int value, int min, int max, bool writing)
+function int Slider(out int value, int min, int max, bool writing)
 {
     if( writing ) {
         value = GetSliderValue(MenuUIEditWindow(wnds[id]));
@@ -269,7 +276,8 @@ function ResetToDefaults()
 
 function BindControls(bool writing, optional string action)
 {
-    id=0;
+    // start at -1 because NewMenuItem increments before adding
+    id = -1;
 }
 
 function InitHelp()
