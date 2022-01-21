@@ -11,7 +11,7 @@ struct EnumBtn {
     var string values[32];
     var int value;
 };
-var EnumBtn enums[64];
+var EnumBtn enums[128];
 
 var MenuUIScrollAreaWindow winScroll;
 var Window controlsParent;
@@ -20,9 +20,9 @@ var bool bHelpAlwaysOn;
 
 var int id;
 //var int numwnds;
-var Window wnds[64];
-var String labels[64];
-var String helptexts[64];
+var Window wnds[128];
+var String labels[128];
+var String helptexts[128];
 
 var DXRando dxr;
 var DXRFlags flags;
@@ -36,10 +36,14 @@ var config int col_width_odd;
 var config int row_height;
 var config int padding_width;
 var config int padding_height;
+var config Font groupHeaderFont;
+var config int groupHeaderX;
+var config int groupHeaderY;
 
 event Init(DXRando d)
 {
     local vector coords;
+    local int i;
     dxr = d;
     flags = dxr.flags;
 
@@ -71,7 +75,12 @@ event Init(DXRando d)
     // Need to do this because of the edit control used for 
     // saving games.
     SetMouseFocusMode(MFOCUS_Click);
-    if( wnds[0] != None ) SetFocusWindow(wnds[0]);
+    for(i=0; i<ArrayCount(wnds); i++) {
+        if( wnds[i] != None ) {
+            SetFocusWindow(wnds[i]);
+            break;
+        }
+    }
     winScroll.vScale.SetTickPosition(0);
 
     Show();
@@ -163,6 +172,26 @@ function NewMenuItem(string label, string helptext)
     id++;
     labels[id] = label;
     helptexts[id] = helptext;
+}
+
+function NewGroup(string text)
+{
+    local MenuUILabelWindow winLabel;
+    local int width;
+    local vector coords;
+    
+    width = num_cols / 2;
+    if(id != -1)
+        id += width;
+    id++;
+    while(id % width != 0) id++;
+
+    coords = GetCoords(id, 0);
+    winLabel = CreateMenuLabel(coords.x + groupHeaderX, coords.y + groupHeaderY, text, controlsParent);
+    winLabel.SetFont(groupHeaderFont);
+    id++;
+    while(id % width != 0) id++;
+    id--;
 }
 
 function bool EnumOption(string label, int value, bool writing, optional out int output)
@@ -284,10 +313,18 @@ function InitHelp()
 {
     local MenuUILabelWindow winLabel;
     local vector coords;
+
     bHelpAlwaysOn = True;
     coords = _GetCoords(num_rows-1, 0);
     coords.y = ClientHeight + _GetY(0) - _GetY(1);
-    winHelp = CreateMenuLabel( coords.x, coords.y+4, "", winClient);
+    winHelp = CreateMenuLabel(0 /*coords.x - padding_width*/, coords.y/*+4*/, "", winClient);
+    winHelp.SetHeight(_GetY(1) - _GetY(0));
+    winHelp.SetWidth(ClientWidth);
+    winHelp.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+
+    winHelp.SetBackgroundStyle(DSTY_Translucent);
+    winHelp.SetBackground(Texture'Solid');
+    winHelp.SetTileColorRGB(10, 10, 10);
 }
 
 event DestroyWindow()
@@ -628,4 +665,7 @@ defaultproperties
     ClientHeight=357
     bUsesHelpWindow=False
     bEscapeSavesSettings=False
+    groupHeaderFont=Font'FontMenuExtraLarge'
+    groupHeaderX=-10
+    groupHeaderY=-2
 }
