@@ -21,7 +21,7 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-function BindControls(bool writing, optional string action)
+function BindControls(optional string action)
 {
     local float difficulty;
     local DXRFlags f;
@@ -31,26 +31,24 @@ function BindControls(bool writing, optional string action)
     local DXRCrowdControl cc;
     local int temp, i;
 
-    Super.BindControls(writing);
-
     f = InitFlags();
 
     NewMenuItem("", "Choose a game mode!");
-    EnumOption("Original Story", 0, writing, f.gamemode);
-    EnumOption("Entrance Randomization", 1, writing, f.gamemode);
-    EnumOption("Horde Mode", 2, writing, f.gamemode);
-    //EnumOption("Kill Bob Page (Alpha)", 3, writing, f.gamemode);
-    //EnumOption("How About Some Soy Food?", 6, writing, f.gamemode);
-    //EnumOption("Max Rando", 7, writing, f.gamemode);
+    EnumOption("Original Story", 0, f.gamemode);
+    EnumOption("Entrance Randomization", 1, f.gamemode);
+    EnumOption("Horde Mode", 2, f.gamemode);
+    //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
+    //EnumOption("How About Some Soy Food?", 6, f.gamemode);
+    //EnumOption("Max Rando", 7, f.gamemode);
 
     NewMenuItem("", "Which items and augs you start with and which are banned.");
     foreach f.AllActors(class'DXRLoadouts', loadout) { break; }
     if( loadout == None )
-        EnumOption("All Items Allowed", 0, writing, f.loadout);
+        EnumOption("All Items Allowed", 0, f.loadout);
     else {
         for(i=0; i < 20; i++) {
             if( loadout.GetName(i) == "" ) continue;
-            EnumOption(loadout.GetName(i), i, writing, f.loadout);
+            EnumOption(loadout.GetName(i), i, f.loadout);
         }
     }
 
@@ -62,7 +60,7 @@ function BindControls(bool writing, optional string action)
     
     for( i=i; i < ArrayCount(f.difficulty_names); i++ ) {
         if( f.difficulty_names[i] == "" ) continue;
-        EnumOption(f.difficulty_names[i], i, writing, f.difficulty);
+        EnumOption(f.difficulty_names[i], i, f.difficulty);
     }
 #ifndef hx
     // TODO: menus for HX?
@@ -71,30 +69,30 @@ function BindControls(bool writing, optional string action)
 #endif
 
     NewMenuItem("Autosave", "Saves the game in case you die!");
-    EnumOption("Every Entry", 2, writing, f.autosave);
-    EnumOption("First Entry", 1, writing, f.autosave);
-    EnumOption("Autosaves-Only (Hardcore)", 3, writing, f.autosave);
-    EnumOption("Off", 0, writing, f.autosave);
+    EnumOption("Every Entry", 2, f.autosave);
+    EnumOption("First Entry", 1, f.autosave);
+    EnumOption("Autosaves-Only (Hardcore)", 3, f.autosave);
+    EnumOption("Off", 0, f.autosave);
 
     NewMenuItem("Crowd Control", "Let your Twitch viewers troll you or help you!");
-    EnumOption("Enabled (Anonymous)", 2, writing, f.crowdcontrol);
-    EnumOption("Enabled (With Names)", 1, writing, f.crowdcontrol);
-    EnumOption("Disabled", 0, writing, f.crowdcontrol);
+    EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol);
+    EnumOption("Enabled (With Names)", 1, f.crowdcontrol);
+    EnumOption("Disabled", 0, f.crowdcontrol);
 
     foreach f.AllActors(class'DXRTelemetry', t) { break; }
     if( t == None ) t = f.Spawn(class'DXRTelemetry');
     t.CheckConfig();
     temp = Int(t.enabled);
     NewMenuItem("Help us improve", "Send error reports and get notified about updates!");
-    if( EnumOption("Enabled", 1, writing, temp) ) {
+    if( EnumOption("Enabled", 1, temp) ) {
         t.set_enabled(true);
     }
-    if( EnumOption("Disabled", 0, writing, temp) ) {
+    if( EnumOption("Disabled", 0, temp) ) {
         t.set_enabled(false);
     }
 
     NewMenuItem("Seed", "Enter a seed if you want to play the same game again.");
-    sseed = EditBox("", "1234567890", writing);
+    sseed = EditBox("", "1234567890");
     if( sseed != "" ) {
         f.seed = int(sseed);
         dxr.seed = f.seed;

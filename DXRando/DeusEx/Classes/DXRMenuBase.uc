@@ -19,6 +19,7 @@ var MenuUILabelWindow winHelp;
 var bool bHelpAlwaysOn;
 
 var int id;
+var bool writing;
 //var int numwnds;
 var Window wnds[128];
 var String labels[128];
@@ -70,7 +71,7 @@ event Init(DXRando d)
     controlsParent.SetSize(coords.X, coords.Y);
 
     ResetToDefaults();
-    BindControls(false);
+    _BindControls(false);
 
     // Need to do this because of the edit control used for 
     // saving games.
@@ -194,7 +195,7 @@ function NewGroup(string text)
     id--;
 }
 
-function bool EnumOption(string label, int value, bool writing, optional out int output)
+function bool EnumOption(string label, int value, optional out int output)
 {
     local int i;
 
@@ -223,7 +224,7 @@ function bool EnumOption(string label, int value, bool writing, optional out int
     return false;
 }
 
-function bool EnumOptionString(string label, string value, bool writing, optional out string output)
+function bool EnumOptionString(string label, string value, optional out string output)
 {
     local int i;
 
@@ -252,7 +253,7 @@ function bool EnumOptionString(string label, string value, bool writing, optiona
     return false;
 }
 
-function string EditBox(string value, string pattern, bool writing)
+function string EditBox(string value, string pattern)
 {
     if( writing ) {
         return MenuUIEditWindow(wnds[id]).GetText();
@@ -264,7 +265,7 @@ function string EditBox(string value, string pattern, bool writing)
     return value;
 }
 
-function int Slider(out int value, int min, int max, bool writing)
+function int Slider(out int value, int min, int max)
 {
     if( writing ) {
         value = GetSliderValue(MenuUIEditWindow(wnds[id]));
@@ -295,7 +296,7 @@ static function int UnpackInt(out string s)
 
 function ProcessAction(String actionKey)
 {
-    BindControls(true, actionKey);
+    _BindControls(true, actionKey);
 }
 
 function ResetToDefaults()
@@ -303,10 +304,17 @@ function ResetToDefaults()
     //delete all controls and run BindControls(false) again?
 }
 
-function BindControls(bool writing, optional string action)
+function _BindControls(bool newwriting, optional string action)
 {
     // start at -1 because NewMenuItem increments before adding
     id = -1;
+    writing = newwriting;
+    BindControls(action);
+}
+
+function BindControls(optional string action)
+{
+    // override in subclasses
 }
 
 function InitHelp()
