@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(1,7,1,1) ) {
+    if( ConfigOlderThan(1,7,2,3) ) {
         allow_vanilla = false;
 
         for(i=0; i<ArrayCount(remove_actors); i++) {
@@ -885,6 +885,11 @@ function vanilla_important_locations()
     important_locations[i].rotation = rot(0, -16384, 0);
     i++;
 
+    important_locations[i].map_name = map;
+    important_locations[i].location = vect(2659.672852, -1515.583862, 393.494843);//bridge between the towers
+    important_locations[i].rotation = rot(0, 10720, 0);
+    i++;
+
     map = "12_vandenberg_cmd";
     important_locations[i].map_name = map;
     important_locations[i].location = vect(1895.174561, 1405.394287, -1656.404175);//hallway across from computer door
@@ -936,7 +941,7 @@ function vanilla_important_locations()
 
     map = "14_oceanlab_silo";
     important_locations[i].map_name = map;
-    important_locations[i].location = vect(-264.838135, -6829.463379, 55.600639);//3rd floor
+    important_locations[i].location = vect(-220, -6829.463379, 55.600639);//3rd floor
     i++;
 
     important_locations[i].map_name = map;
@@ -982,6 +987,7 @@ function PreFirstEntry()
     local float vanilla_distance;
     local bool success;
     local vector loc, diff;
+    local rotator rot_diff;
     local Actor movable_actors[32];
     local Goal local_goals[32];
     local ImportantLocation player_starts[32];
@@ -1086,6 +1092,7 @@ function PreFirstEntry()
         l("moving goal: " $ movable_actors[i] );
 
         diff = goal_locations[slot].location - movable_actors[i].location;
+        rot_diff = goal_locations[slot].rotation - movable_actors[i].rotation;
         if( allow_vanilla == false && local_goals[i].allow_vanilla == false && num_gl > 1 && VSize(diff) < 16 && tries<100 ) {
             tries++;
             l(movable_actors[i] $ ", vanilla not allowed, num_gl==" $ num_gl $ ", tries=="$tries);
@@ -1102,16 +1109,19 @@ function PreFirstEntry()
                 if( a.bStatic ) continue;
                 if( NavigationPoint(a) != None ) continue;
                 if( Light(a) != None ) continue;
-                success = MoveActor(a, a.location + diff, a.rotation, local_goals[i].physics);
-                if( success == false ) MoveActor(a, goal_locations[slot].location, a.rotation, local_goals[i].physics);
+                success = MoveActor(a, a.location + diff, a.rotation + rot_diff, local_goals[i].physics);
+                if( success == false )
+                    MoveActor(a, goal_locations[slot].location, a.rotation + rot_diff, local_goals[i].physics);
             }
         }
 
         for(k=i+1; k<num_ma; k++) {
             if( local_goals[k].move_with_previous == false ) break;
             success = false;
-            if( local_goals[k].group_radius ~= 0.0 ) success = MoveActor(movable_actors[k], movable_actors[k].location + diff, goal_locations[slot].rotation, local_goals[k].physics);
-            if( success == false ) MoveActor(movable_actors[k], goal_locations[slot].location, goal_locations[slot].rotation, local_goals[k].physics);
+            if( local_goals[k].group_radius ~= 0.0 )
+                success = MoveActor(movable_actors[k], movable_actors[k].location + diff, movable_actors[k].rotation + rot_diff, local_goals[k].physics);
+            if( success == false )
+                MoveActor(movable_actors[k], goal_locations[slot].location, movable_actors[k].rotation + rot_diff, local_goals[k].physics);
         }
 
         goal_locations[slot] = goal_locations[num_gl-1];
@@ -1144,6 +1154,7 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
         if( sp.Orders == 'Patrolling' ) sp.SetOrders('Wandering');
         sp.HomeLoc = sp.Location;
         sp.HomeRot = vector(sp.Rotation);
+        sp.DesiredRotation = rotation;
     }
     m = Mover(a);
     if( m != None ) {
