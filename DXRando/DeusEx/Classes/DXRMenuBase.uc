@@ -179,7 +179,7 @@ function BreakLine()
 {
     local int width;
     width = num_cols / 2;
-    while((id-1) % width != 0) id++;
+    while((id+1) % width != 0) id++;
 }
 
 function NewGroup(string text)
@@ -684,5 +684,5 @@ defaultproperties
     bEscapeSavesSettings=False
     groupHeaderFont=Font'FontMenuExtraLarge'
     groupHeaderX=-10
-    groupHeaderY=-2
+    groupHeaderY=-3
 }
