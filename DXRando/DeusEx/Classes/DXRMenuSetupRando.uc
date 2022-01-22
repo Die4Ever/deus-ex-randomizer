@@ -37,6 +37,7 @@ function BindControls(optional string action)
     Slider(iDifficulty, 0, 500);
     combatDifficulty = float(iDifficulty) / 100.0;
 
+#ifdef vanilla
     NewMenuItem("", "Randomize starting locations on certain maps");
     EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations);
     EnumOption("Unchanged Starting Locations", 0, f.settings.startinglocations);
@@ -44,6 +45,7 @@ function BindControls(optional string action)
     NewMenuItem("", "Randomize goal locations on certain maps");
     EnumOption("Randomize Goal Locations", 100, f.settings.goals);
     EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
+#endif
 
     NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%)");
     Slider(f.settings.medbots, -1, 100);
@@ -94,10 +96,12 @@ function BindControls(optional string action)
     EnumOption("Unchanged", 0, f.settings.keysrando);
 
     NewGroup("Passwords");
+#ifdef injections
     NewMenuItem("", "Help with finding passwords from your notes.");
     EnumOption("Autofill Passwords", 2, f.codes_mode);
     EnumOption("Mark Known Passwords", 1, f.codes_mode);
     EnumOption("No Assistance With Passwords", 0, f.codes_mode);
+#endif
 
     NewMenuItem("Electronic Devices", "Provide additional options for keypads and electronic panels.");
     EnumOption("All Hackable", 100, f.settings.deviceshackable);

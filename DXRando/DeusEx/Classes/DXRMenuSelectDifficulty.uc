@@ -33,6 +33,7 @@ function BindControls(optional string action)
 
     f = InitFlags();
 
+#ifdef vanilla
     NewMenuItem("", "Choose a game mode!");
     EnumOption("Original Story", 0, f.gamemode);
     EnumOption("Entrance Randomization", 1, f.gamemode);
@@ -40,7 +41,9 @@ function BindControls(optional string action)
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
     //EnumOption("Max Rando", 7, f.gamemode);
+#endif
 
+#ifdef injections
     NewMenuItem("", "Which items and augs you start with and which are banned.");
     foreach f.AllActors(class'DXRLoadouts', loadout) { break; }
     if( loadout == None )
@@ -51,6 +54,7 @@ function BindControls(optional string action)
             EnumOption(loadout.GetName(i), i, f.loadout);
         }
     }
+#endif
 
     NewMenuItem("Difficulty", "Difficulty determines the default settings for the randomizer.");
     if( (InStr(f.VersionString(), "Alpha")>=0 || InStr(f.VersionString(), "Beta")>=0) )
@@ -68,11 +72,13 @@ function BindControls(optional string action)
         difficulty = f.SetDifficulty(f.difficulty).CombatDifficulty;
 #endif
 
+#ifdef injections
     NewMenuItem("Autosave", "Saves the game in case you die!");
     EnumOption("Every Entry", 2, f.autosave);
     EnumOption("First Entry", 1, f.autosave);
     EnumOption("Autosaves-Only (Hardcore)", 3, f.autosave);
     EnumOption("Off", 0, f.autosave);
+#endif
 
     NewMenuItem("Crowd Control", "Let your Twitch viewers troll you or help you!");
     EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol);
