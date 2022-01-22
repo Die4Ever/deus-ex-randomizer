@@ -46,18 +46,13 @@ function BindControls(optional string action)
     EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
 
     NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%)");
-    Slider(f.settings.medbots, 0, 100);
+    Slider(f.settings.medbots, -1, 100);
 
     NewMenuItem("Repair bots", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%)");
-    Slider(f.settings.repairbots, 0, 100);
+    Slider(f.settings.repairbots, -1, 100);
 
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map.");
     Slider(f.settings.merchants, 0, 100);
-
-    NewMenuItem("", "Help with finding passwords from your notes.");
-    EnumOption("Autofill Passwords", 2, f.codes_mode);
-    EnumOption("Mark Known Passwords", 1, f.codes_mode);
-    EnumOption("No Assistance With Passwords", 0, f.codes_mode);
 
     NewMenuItem("Dancing %", "How many characters should be dancing.");
     Slider(f.settings.dancingpercent, 0, 100);
@@ -99,6 +94,11 @@ function BindControls(optional string action)
     EnumOption("Unchanged", 0, f.settings.keysrando);
 
     NewGroup("Passwords");
+    NewMenuItem("", "Help with finding passwords from your notes.");
+    EnumOption("Autofill Passwords", 2, f.codes_mode);
+    EnumOption("Mark Known Passwords", 1, f.codes_mode);
+    EnumOption("No Assistance With Passwords", 0, f.codes_mode);
+
     NewMenuItem("Electronic Devices", "Provide additional options for keypads and electronic panels.");
     EnumOption("All Hackable", 100, f.settings.deviceshackable);
     EnumOption("Some Hackable", 50, f.settings.deviceshackable);
