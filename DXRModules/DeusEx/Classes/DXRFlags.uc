@@ -195,7 +195,7 @@ simulated static function string VersionString(optional bool full)
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,6,3,2) ) {
+    if( ConfigOlderThan(1,7,2,4) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -434,6 +434,12 @@ function CheckConfig()
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         i++;
+
+#ifdef hx
+        for(i=0; i<ArrayCount(difficulty_settings); i++) {
+            difficulty_settings[i].startinglocations = 0;
+        }
+#endif
 
 #ifdef noflags
         InitDefaults();

@@ -171,6 +171,7 @@ function hx_modules()
 {
     local int i;
     modules_to_load[i++] = "DXRTelemetry";
+    modules_to_load[i++] = "DXRMissions";
     modules_to_load[i++] = "DXRSwapItems";
     modules_to_load[i++] = "DXRFixup";
     modules_to_load[i++] = "DXRKeys";

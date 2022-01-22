@@ -62,6 +62,18 @@ function CheckConfig()
         vanilla_remove_actors();
         vanilla_goals();
         vanilla_important_locations();
+#elseif hx
+        vanilla_remove_actors();
+        vanilla_goals();
+        vanilla_important_locations();
+        for(i=0; i<ArrayCount(remove_actors); i++) {
+            if(remove_actors[i].map_name != "")
+                remove_actors[i].actor_name = StringToName("HX" $ remove_actors[i].actor_name);
+        }
+        for(i=0; i<ArrayCount(goals); i++) {
+            if(goals[i].map_name != "")
+                goals[i].actor_name = StringToName("HX" $ goals[i].actor_name);
+        }
 #elseif gmdx
         vanilla_remove_actors();
         vanilla_goals();
@@ -197,6 +209,9 @@ function vanilla_goals()
     map = "04_NYC_NSFHQ";
     goals[i].map_name = map;
     goals[i].actor_name = 'ComputerPersonal3';
+#ifdef hx
+    goals[i].actor_name = 'ComputerPersonal0';
+#endif
     goals[i].allow_vanilla = true;
     goals[i].physics = PHYS_None;
     i++;
@@ -982,8 +997,8 @@ function vanilla_important_locations()
 function PreFirstEntry()
 {
     local Actor a;
-    local AnnaNavarre anna;
-    local int i, k, start, slot, tries, num_ma, num_ps, num_gl;
+    local #var prefix AnnaNavarre anna;
+    local int i, k, start, slot, tries, num_ma, num_ps, num_gl, found_actors;
     local float vanilla_distance;
     local bool success;
     local vector loc, diff;
@@ -1001,7 +1016,7 @@ function PreFirstEntry()
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
     }
     else if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
-        foreach AllActors(class'AnnaNavarre', anna) {
+        foreach AllActors(class'#var prefix AnnaNavarre', anna) {
             anna.SetOrders('Standing');
             anna.SetLocation( vect(1082.845703, 1807.538818, 335.101776) );
             anna.SetRotation( rot(0, -16608, 0) );
@@ -1039,12 +1054,23 @@ function PreFirstEntry()
                 a.Destroy();
                 break;
             }
+#ifdef hx
+            else if( Left( string(a.name), Len(string(a.name))-2 ) == Left( string(remove_actors[i].actor_name), Len(string(a.name))-2 ) ) {
+                warning("remove_actors[i].actor_name "$remove_actors[i].actor_name$" is very similar to "$a.name);
+            }
+#endif
         }
 
         for(i=0; i<num_ma; i++) {
             if( a.name == local_goals[i].actor_name ) {
                 movable_actors[i] = a;
+                found_actors++;
             }
+#ifdef hx
+            else if( Left( string(a.name), Len(string(a.name))-2 ) == Left( string(local_goals[i].actor_name), Len(string(a.name))-2 ) ) {
+                warning("local_goals[i].actor_name "$local_goals[i].actor_name$" is very similar to "$a.name);
+            }
+#endif
         }
     }
 
@@ -1076,7 +1102,11 @@ function PreFirstEntry()
 
     if( dxr.flags.settings.goals == 0 ) return;
 
-    l("randomizing goals, num_ma=="$num_ma$", num_gl=="$num_gl);
+    l("randomizing goals, num_ma=="$num_ma$", num_gl=="$num_gl$", found_actors=="$found_actors);
+    if(found_actors != num_ma) {
+        warning("found_actors: "$found_actors$" != num_ma: "$num_ma);
+        return;
+    }
 
     for(i=0; i<num_ma && num_gl>0; i++) {
         if( local_goals[i].move_with_previous == true ) continue;

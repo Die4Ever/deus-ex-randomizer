@@ -7,6 +7,11 @@ var int loopCounter;
 var Actor prevDest;
 var Actor prevprevDest;
 
+/*function IncreaseAgitation(Actor actorInstigator, optional float AgitationLevel)
+{
+    log(Self$" IncreaseAgitation "$actorInstigator$", "$AgitationLevel);
+}*/
+
 function PlayDying(name damageType, vector hitLoc)
 {
     local DeusExPlayer p;
