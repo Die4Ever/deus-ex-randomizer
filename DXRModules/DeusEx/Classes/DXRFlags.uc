@@ -33,6 +33,8 @@ struct FlagsSettings {
     var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
     var int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
     var int medbotuses, repairbotuses; //Limit the maximum number of uses for medbots and repairbots
+    var int medbotcooldowns,repairbotcooldowns;
+    var int medbotamount,repairbotamount;
     var int turrets_move, turrets_add;
     var int merchants;
     var int banned_skills, banned_skill_levels, enemies_nonhumans;
@@ -567,6 +569,10 @@ simulated function BindFlags(bool writing)
     FlagInt('Rando_repairbots', settings.repairbots, writing);
     FlagInt('Rando_medbotuses', settings.medbotuses, writing);
     FlagInt('Rando_repairbotuses', settings.repairbotuses, writing);
+    FlagInt('Rando_medbotcooldowns', settings.medbotcooldowns, writing);
+    FlagInt('Rando_repairbotcooldowns', settings.repairbotcooldowns, writing);
+    FlagInt('Rando_medbotamount', settings.medbotamount, writing);
+    FlagInt('Rando_repairbotamount', settings.repairbotamount, writing);
     FlagInt('Rando_turrets_move', settings.turrets_move, writing);
     FlagInt('Rando_turrets_add', settings.turrets_add, writing);
 
@@ -727,6 +733,8 @@ simulated function string StringifyDifficultySettings( FlagsSettings s )
         $ ", enemiesrandomized: "$s.enemiesrandomized$", enemyrespawn: "$s.enemyrespawn$", infodevices: "$s.infodevices
         $ ", startinglocations: "$s.startinglocations$", goals: "$s.goals$", equipment: "$s.equipment$", dancingpercent: "$s.dancingpercent
         $ ", medbots: "$s.medbots$", repairbots: "$s.repairbots $", medbotuses: "$s.medbotuses$", repairbotuses: "$s.repairbotuses
+        $ ", medbotcooldowns: "$s.medbotcooldowns$", repairbotcooldowns: "$s.repairbotcooldowns 
+        $ ", medbotamount: "$s.medbotamount$", repairbotamount: "$s.repairbotamount
         $ ", turrets_move: "$s.turrets_move$", turrets_add: "$s.turrets_add
         $ ", banned_skills: "$s.banned_skills$", banned_skill_levels: "$s.banned_skill_levels$ ", enemies_nonhumans: "$s.enemies_nonhumans
         $ ", swapitems: "$s.swapitems$", swapcontainers: "$s.swapcontainers$", augcans: "$s.augcans

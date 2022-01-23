@@ -47,6 +47,14 @@ function BindControls(optional string action)
     EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
 #endif
 
+    NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map.");
+    Slider(f.settings.merchants, 0, 100);
+
+    NewMenuItem("Dancing %", "How many characters should be dancing.");
+    Slider(f.settings.dancingpercent, 0, 100);
+
+    NewGroup("Medical Bots and Repair Bots");
+
     NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%)");
     Slider(f.settings.medbots, -1, 100);
 
@@ -59,11 +67,25 @@ function BindControls(optional string action)
     NewMenuItem("Repair Bot Uses", "Number of times you can use an individual repair bot to restore energy");
     Slider(f.settings.repairbotuses, -1, 10);
 
-    NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map.");
-    Slider(f.settings.merchants, 0, 100);
+    NewMenuItem("Medbot Cooldowns", "Individual: Each Medbot has its own healing cooldown.  Global: All Medbots have the same cooldown");
+    EnumOption("Unchanged", 0, f.settings.medbotcooldowns);
+    EnumOption("Individual", 1, f.settings.medbotcooldowns);
+    EnumOption("Global", 2, f.settings.medbotcooldowns);
 
-    NewMenuItem("Dancing %", "How many characters should be dancing.");
-    Slider(f.settings.dancingpercent, 0, 100);
+    NewMenuItem("Repair Bot Cooldowns", "Individual: Each Repair Bot has its own charge cooldown.  Global: All Repair Bots have the same cooldown");
+    EnumOption("Unchanged", 0, f.settings.repairbotcooldowns);
+    EnumOption("Individual", 1, f.settings.repairbotcooldowns);
+    EnumOption("Global", 2, f.settings.repairbotcooldowns);
+
+    NewMenuItem("Medbot Heal Amount", "Individual: Each Medbot has its own healing amount.  Global: All Medbots have the same amount");
+    EnumOption("Unchanged", 0, f.settings.medbotamount);
+    EnumOption("Individual", 1, f.settings.medbotamount);
+    EnumOption("Global", 2, f.settings.medbotamount);
+
+    NewMenuItem("Repair Bot Charge Amount", "Individual: Each Repair Bot has its own charge amount.  Global: All Repair Bots have the same amount");
+    EnumOption("Unchanged", 0, f.settings.repairbotamount);
+    EnumOption("Individual", 1, f.settings.repairbotamount);
+    EnumOption("Global", 2, f.settings.repairbotamount);
 
     NewGroup("Doors and Keys");
 

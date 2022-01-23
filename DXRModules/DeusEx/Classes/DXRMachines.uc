@@ -34,6 +34,7 @@ function FirstEntry()
 {
     Super.FirstEntry();
     RandoMedBotsRepairBots(dxr.flags.settings.medbots, dxr.flags.settings.repairbots);
+    RandoMedRepairBotAmountCooldowns(dxr.flags.settings.medbotamount,dxr.flags.settings.repairbotamount,dxr.flags.settings.medbotcooldowns,dxr.flags.settings.repairbotcooldowns);
     RandoTurrets(dxr.flags.settings.turrets_move, dxr.flags.settings.turrets_add);
 }
 
@@ -384,6 +385,66 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
     SetSeed( "RandoRepairBots" );
     if( chance_single(repairbots) ) {
         SpawnBot(class'#var prefix RepairBot', repairHint);
+    }
+ 
+}
+
+function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcooldown, int rbcooldown)
+{
+    local #var prefix RepairBot r;
+    local #var prefix MedicalBot m;
+
+    if (mbcooldown!=0 || mbamount!=0) {
+         foreach AllActors(class'#var prefix MedicalBot', m) {
+            if (mbcooldown!=0){
+                if (mbcooldown == 1) { //Individual
+                    SetSeed("MedBotCooldown"$m.name); //Seed includes level name and the unique bot name
+                } else if (mbcooldown == 2) { //Global
+                    dxr.SetSeed(dxr.Crc(dxr.seed$"MedBotCooldown")); //Don't include the level name, or anything unique
+                }
+                
+                //Actually rando the cooldown
+                m.healRefreshTime = rngrange(m.default.healRefreshTime, 0.5, 1.5); 
+            }
+            
+            if (mbamount!=0){
+                if (mbamount == 1) { //Individual
+                    SetSeed("MedBotAmount"$m.name); //Seed includes level name and the unique bot name
+                } else if (mbamount == 2) { //Global
+                    dxr.SetSeed(dxr.Crc(dxr.seed$"MedBotAmount")); //Don't include the level name, or anything unique
+                }
+                
+                //Actually rando the cooldown
+                m.healAmount = rngrange(m.default.healAmount, 0.5, 1.5);
+            }
+        }
+   
+    }
+
+    if (rbcooldown!=0 || rbamount!=0) {
+        foreach AllActors(class'#var prefix RepairBot', r) {
+             if (rbcooldown!=0){
+                if (rbcooldown == 1) { //Individual
+                    SetSeed("RepairBotCooldown"$r.name); //Seed includes level name and the unique bot name
+                } else if (rbcooldown == 2) { //Global
+                    dxr.SetSeed(dxr.Crc(dxr.seed$"RepairBotCooldown")); //Don't include the level name, or anything unique
+                }
+                
+                //Actually rando the cooldown
+                r.chargeRefreshTime = rngrange(r.default.chargeRefreshTime, 0.5, 1.5); 
+            }
+            
+            if (rbamount!=0){
+                if (rbamount == 1) { //Individual
+                    SetSeed("RepairBotAmount"$r.name); //Seed includes level name and the unique bot name
+                } else if (rbamount == 2) { //Global
+                    dxr.SetSeed(dxr.Crc(dxr.seed$"RepairBotAmount")); //Don't include the level name, or anything unique
+                }
+                
+                //Actually rando the cooldown
+                r.chargeAmount = rngrange(r.default.chargeAmount, 0.5, 1.5);
+            }           
+        }    
     }
 }
 
