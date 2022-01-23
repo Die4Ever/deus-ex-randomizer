@@ -1,4 +1,4 @@
-class DXRMedicalBot injects MedicalBot;
+class DXRMedicalBot merges MedicalBot;
 
 var int numUses;
 
@@ -6,7 +6,7 @@ function int HealPlayer(DeusExPlayer player)
 {
     local int healAmount;
     
-    healAmount = Super.HealPlayer(player);
+    healAmount = _HealPlayer(player);
     
     numUses++;
     
@@ -59,7 +59,7 @@ function bool HealsRemaining()
 
 function bool CanHeal()
 {
-    if (Super.CanHeal()) {
+    if (_CanHeal()) {
         if (HasLimitedUses()) {
             return (GetRemainingUses()>0);
         } else {

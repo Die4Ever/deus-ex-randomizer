@@ -1,4 +1,4 @@
-class DXRRepairBot injects RepairBot;
+class DXRRepairBot merges RepairBot;
 
 var int numUses;
 
@@ -6,7 +6,7 @@ function int ChargePlayer(DeusExPlayer PlayerToCharge)
 {    
     local int chargeAmount;
     
-    chargeAmount = Super.ChargePlayer(PlayerToCharge);
+    chargeAmount = _ChargePlayer(PlayerToCharge);
     
     numUses++;
     
@@ -60,7 +60,7 @@ function bool ChargesRemaining()
 
 function bool CanCharge()
 {
-    if (Super.CanCharge()) {
+    if (_CanCharge()) {
         if (HasLimitedUses()) {
             return (GetRemainingUses()>0);
         } else {
