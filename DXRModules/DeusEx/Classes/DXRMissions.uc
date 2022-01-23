@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(1,7,2,3) ) {
+    if( ConfigOlderThan(1,7,2,5) ) {
         allow_vanilla = false;
 
         for(i=0; i<ArrayCount(remove_actors); i++) {
@@ -66,14 +66,6 @@ function CheckConfig()
         vanilla_remove_actors();
         vanilla_goals();
         vanilla_important_locations();
-        for(i=0; i<ArrayCount(remove_actors); i++) {
-            if(remove_actors[i].map_name != "")
-                remove_actors[i].actor_name = StringToName("HX" $ remove_actors[i].actor_name);
-        }
-        for(i=0; i<ArrayCount(goals); i++) {
-            if(goals[i].map_name != "")
-                goals[i].actor_name = StringToName("HX" $ goals[i].actor_name);
-        }
 #elseif gmdx
         vanilla_remove_actors();
         vanilla_goals();
@@ -176,13 +168,13 @@ function vanilla_goals()
 
     map = "03_nyc_airfield";
     goals[i].map_name = map;
-    goals[i].actor_name = 'Terrorist13';
+    goals[i].actor_name = 'Terrorist13';// boatguard
     goals[i].allow_vanilla = true;
     i++;
 
     map = "03_NYC_BrooklynBridgeStation";
     goals[i].map_name = map;
-    goals[i].actor_name = 'ThugMale13';
+    goals[i].actor_name = 'ThugMale13';// Rock
     goals[i].allow_vanilla = true;
     i++;
 
@@ -197,21 +189,18 @@ function vanilla_goals()
     i++;
 
     goals[i].map_name = map;
-    goals[i].actor_name = 'ThugMale3';
+    goals[i].actor_name = 'ThugMale3';// Elrey
     goals[i].allow_vanilla = true;
     i++;
 
     goals[i].map_name = map;
-    goals[i].actor_name = 'BumMale3';
+    goals[i].actor_name = 'BumMale3';// tag BumMale2
     goals[i].allow_vanilla = true;
     i++;
 
     map = "04_NYC_NSFHQ";
     goals[i].map_name = map;
     goals[i].actor_name = 'ComputerPersonal3';
-#ifdef hx
-    goals[i].actor_name = 'ComputerPersonal0';
-#endif
     goals[i].allow_vanilla = true;
     goals[i].physics = PHYS_None;
     i++;
@@ -1007,6 +996,7 @@ function PreFirstEntry()
     local Goal local_goals[32];
     local ImportantLocation player_starts[32];
     local ImportantLocation goal_locations[32];
+    local Name a_name;
 
     Super.PreFirstEntry();
 
@@ -1047,30 +1037,27 @@ function PreFirstEntry()
     }
 
     foreach AllActors(class'Actor', a) {
+        a_name = a.Name;
+#ifdef hx
+        a_name = StringToName(a.GetPropertyText("PrecessorName"));
+        if(a_name == '') continue;
+#endif
         for(i=0; i<ArrayCount(remove_actors); i++) {
             if( dxr.localURL != remove_actors[i].map_name ) continue;
 
-            if( a.name == remove_actors[i].actor_name ) {
+            if( a_name == remove_actors[i].actor_name ) {
+                //l("Destroying remove_actors["$i$"] "$ActorToString(a));
                 a.Destroy();
                 break;
             }
-#ifdef hx
-            else if( Left( string(a.name), Len(string(a.name))-2 ) == Left( string(remove_actors[i].actor_name), Len(string(a.name))-2 ) ) {
-                warning("remove_actors[i].actor_name "$remove_actors[i].actor_name$" is very similar to "$a.name);
-            }
-#endif
         }
 
         for(i=0; i<num_ma; i++) {
-            if( a.name == local_goals[i].actor_name ) {
+            if( a_name == local_goals[i].actor_name ) {
                 movable_actors[i] = a;
                 found_actors++;
+                //l("found local_goals["$i$"] "$ActorToString(a));
             }
-#ifdef hx
-            else if( Left( string(a.name), Len(string(a.name))-2 ) == Left( string(local_goals[i].actor_name), Len(string(a.name))-2 ) ) {
-                warning("local_goals[i].actor_name "$local_goals[i].actor_name$" is very similar to "$a.name);
-            }
-#endif
         }
     }
 
@@ -1205,7 +1192,12 @@ function bool MoveGoalTo(name goalName, int locNumber)
    
     //Find goal actor by name
      foreach AllActors(class'Actor', a) {
-        if( a.name == goalName ) {
+#ifdef hx
+        if( a.GetPropertyText("PrecessorName") == string(goalName) )
+#else
+        if( a.name == goalName )
+#endif
+        {
             goalActor = a;
             break;
         }
