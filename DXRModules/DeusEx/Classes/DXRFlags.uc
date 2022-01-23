@@ -32,6 +32,7 @@ struct FlagsSettings {
     var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
     var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
     var int medbots, repairbots;//there are 90 levels in the game, so 10% means approximately 9 medbots and 9 repairbots for the whole game, I think the vanilla game has 12 medbots, but they're also placed in smart locations so we might want to give more than that for Normal difficulty
+    var int medbotuses, repairbotuses; //Limit the maximum number of uses for medbots and repairbots
     var int turrets_move, turrets_add;
     var int merchants;
     var int banned_skills, banned_skill_levels, enemies_nonhumans;
@@ -195,7 +196,7 @@ simulated static function string VersionString(optional bool full)
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,7,2,4) ) {
+    if( ConfigOlderThan(1,7,2,5) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -229,6 +230,8 @@ function CheckConfig()
         difficulty_settings[i].equipment = 5;
         difficulty_settings[i].medbots = 100;
         difficulty_settings[i].repairbots = 100;
+        difficulty_settings[i].medbotuses = 0;
+        difficulty_settings[i].repairbotuses = 0;
         difficulty_settings[i].turrets_move = 100;
         difficulty_settings[i].turrets_add = 50;
         difficulty_settings[i].merchants = 30;
@@ -277,6 +280,8 @@ function CheckConfig()
         difficulty_settings[i].equipment = 4;
         difficulty_settings[i].medbots = 35;
         difficulty_settings[i].repairbots = 35;
+        difficulty_settings[i].medbotuses = 35;
+        difficulty_settings[i].repairbotuses = 35;
         difficulty_settings[i].turrets_move = 50;
         difficulty_settings[i].turrets_add = 30;
         difficulty_settings[i].merchants = 30;
@@ -325,6 +330,8 @@ function CheckConfig()
         difficulty_settings[i].equipment = 2;
         difficulty_settings[i].medbots = 25;
         difficulty_settings[i].repairbots = 25;
+        difficulty_settings[i].medbotuses = 0;
+        difficulty_settings[i].repairbotuses = 0;
         difficulty_settings[i].turrets_move = 50;
         difficulty_settings[i].turrets_add = 70;
         difficulty_settings[i].merchants = 30;
@@ -372,6 +379,8 @@ function CheckConfig()
         difficulty_settings[i].equipment = 1;
         difficulty_settings[i].medbots = 20;
         difficulty_settings[i].repairbots = 20;
+        difficulty_settings[i].medbotuses = 3;
+        difficulty_settings[i].repairbotuses = 3;
         difficulty_settings[i].turrets_move = 50;
         difficulty_settings[i].turrets_add = 120;
         difficulty_settings[i].merchants = 30;
@@ -420,6 +429,8 @@ function CheckConfig()
         difficulty_settings[i].equipment = 1;
         difficulty_settings[i].medbots = 15;
         difficulty_settings[i].repairbots = 15;
+        difficulty_settings[i].medbotuses = 1;
+        difficulty_settings[i].repairbotuses = 1;
         difficulty_settings[i].turrets_move = 50;
         difficulty_settings[i].turrets_add = 200;
         difficulty_settings[i].merchants = 30;
@@ -554,6 +565,8 @@ simulated function BindFlags(bool writing)
     FlagInt('Rando_equipment', settings.equipment, writing);
     FlagInt('Rando_medbots', settings.medbots, writing);
     FlagInt('Rando_repairbots', settings.repairbots, writing);
+    FlagInt('Rando_medbotuses', settings.medbotuses, writing);
+    FlagInt('Rando_repairbotuses', settings.repairbotuses, writing);
     FlagInt('Rando_turrets_move', settings.turrets_move, writing);
     FlagInt('Rando_turrets_add', settings.turrets_add, writing);
 
@@ -713,7 +726,8 @@ simulated function string StringifyDifficultySettings( FlagsSettings s )
         $ ", doorsdestructible: "$s.doorsdestructible$", deviceshackable: "$s.deviceshackable$", passwordsrandomized: "$s.passwordsrandomized
         $ ", enemiesrandomized: "$s.enemiesrandomized$", enemyrespawn: "$s.enemyrespawn$", infodevices: "$s.infodevices
         $ ", startinglocations: "$s.startinglocations$", goals: "$s.goals$", equipment: "$s.equipment$", dancingpercent: "$s.dancingpercent
-        $ ", medbots: "$s.medbots$", repairbots: "$s.repairbots$", turrets_move: "$s.turrets_move$", turrets_add: "$s.turrets_add
+        $ ", medbots: "$s.medbots$", repairbots: "$s.repairbots $", medbotuses: "$s.medbotuses$", repairbotuses: "$s.repairbotuses
+        $ ", turrets_move: "$s.turrets_move$", turrets_add: "$s.turrets_add
         $ ", banned_skills: "$s.banned_skills$", banned_skill_levels: "$s.banned_skill_levels$ ", enemies_nonhumans: "$s.enemies_nonhumans
         $ ", swapitems: "$s.swapitems$", swapcontainers: "$s.swapcontainers$", augcans: "$s.augcans
         $ ", aug_value_rando: "$s.aug_value_rando$", skill_value_rando: "$s.skill_value_rando

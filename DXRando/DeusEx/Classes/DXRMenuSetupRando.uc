@@ -50,8 +50,14 @@ function BindControls(optional string action)
     NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%)");
     Slider(f.settings.medbots, -1, 100);
 
-    NewMenuItem("Repair bots", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%)");
+    NewMenuItem("Repair Bots", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%)");
     Slider(f.settings.repairbots, -1, 100);
+
+    NewMenuItem("Medbot Uses", "Number of times you can use an individual medbot to heal");
+    Slider(f.settings.medbotuses, -1, 10);
+
+    NewMenuItem("Repair Bot Uses", "Number of times you can use an individual repair bot to restore energy");
+    Slider(f.settings.repairbotuses, -1, 10);
 
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map.");
     Slider(f.settings.merchants, 0, 100);
