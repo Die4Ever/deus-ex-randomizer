@@ -131,3 +131,14 @@ function EnableCheckDestLoc(bool bEnable)
         loopCounter=0;
     }
 }
+
+function float GetPawnAlliance(Pawn p)
+{
+    local int i;
+
+    for(i=0; i<ArrayCount(AlliancesEx); i++) {
+        if(AlliancesEx[i].AllianceName == p.Alliance)
+            return AlliancesEx[i].AllianceLevel;
+    }
+    return 0;
+}
