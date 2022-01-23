@@ -34,6 +34,7 @@ simulated function InitHints()
     AddHint("Flare darts now set enemies on fire for 3 seconds.");
     AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
     AddHint("Read the pop-up text on doors to see how many", "hit from your equiped weapon to break it.");
+    AddHint("Vision Enhancement Aug and Tech Goggles", "can now see through walls, even at level 1.");
 
     if(dxr.flags.settings.medbots > 0) {
         AddHint("Medbots are randomized.", "Don't expect to find them in the usual locations.");

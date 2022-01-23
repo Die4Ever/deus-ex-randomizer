@@ -1,12 +1,20 @@
 class AugDisplayWindow injects AugmentationDisplayWindow;
 
-var GC _gc;
+var Actor drawQueue[128];
+var int drawQueueLen;
 
 function DrawVisionAugmentation(GC gc)
 {
-    _gc = gc;
+    local int i;
+    drawQueueLen = 0;
+
     Super.DrawVisionAugmentation(gc);
-    _gc = None;
+
+    for(i=0; i<drawQueueLen; i++) {
+        DrawBrush(drawQueue[i], gc);
+        drawQueue[i] = None;
+    }
+    drawQueueLen = 0;
 }
 
 function bool IsHeatSource(Actor A)
@@ -25,7 +33,7 @@ function bool IsHeatSource(Actor A)
         return True;
     else if (A.IsA('FleshFragment'))
         return True;
-    else if (A.bVisionImportant)
+    else if ( (A.IsA('Mover') || A.IsA('Decoration')) && A.bVisionImportant && !A.bHidden)
         return true;
     else
         return False;
@@ -34,30 +42,35 @@ function bool IsHeatSource(Actor A)
 
 function SetSkins(Actor actor, out Texture oldSkins[9])
 {
-    /*local Mover m;
-    m = Mover(actor);
-    if(m != None && _gc != None) {
-        // try to draw brushes...
-        DrawMover(m, _gc);
+    local vector forwards, backwards;
+    local float dist;
+
+    if(actor.Mesh == None) {
+        dist = VSize(Player.Location - actor.Location);
+        forwards = Player.Location + (Vector(Player.ViewRotation) * dist);
+        backwards = Player.Location + (Vector(Player.ViewRotation) * (-dist));
+        if( VSize(actor.Location - forwards) < VSize(actor.Location - backwards) )
+            drawQueue[drawQueueLen++] = actor;
     }
-    else*/ Super.SetSkins(actor, oldSkins);
+    else
+        Super.SetSkins(actor, oldSkins);
 }
 
 function ResetSkins(Actor actor, Texture oldSkins[9])
 {
-    /*local Mover m;
-    m = Mover(actor);
-    if(m != None && _gc != None) {
-    }
-    else*/ Super.ResetSkins(actor, oldSkins);
+    if(actor.Mesh == None) {}
+    else
+        Super.ResetSkins(actor, oldSkins);
 }
 
-function DrawMover(Mover m, GC gc)
+function DrawBrush(Actor a, GC gc)
 {
     local float boxTLX, boxTLY, boxBRX, boxBRY, width, height;
-    class'FrobDisplayWindow'.static.GetActorBox(self, m, 1, boxTLX, boxTLY, boxBRX, boxBRY);
+    class'FrobDisplayWindow'.static.GetActorBox(self, a, 1, boxTLX, boxTLY, boxBRX, boxBRY);
     
-    width = boxTLX - boxBRX;
-    height = boxTLY - boxBRY;
-    gc.DrawTexture(boxTLX, boxTLY, width, height, 0, 0, Texture'Virus_SFX');
+    width = boxBRX - boxTLX;
+    height = boxBRY - boxTLY;
+    //log(self$" DrawBrush "$a @ width @ height);
+    gc.DrawPattern(boxTLX, boxTLY, width, height, 0, 0, Texture'Virus_SFX');
+    //gc.DrawText(boxTLX, boxTLY, width, height, a.name @ a.bHidden);
 }
