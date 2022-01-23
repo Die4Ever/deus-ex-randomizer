@@ -1055,6 +1055,7 @@ function PreFirstEntry()
         for(i=0; i<num_ma; i++) {
             if( a_name == local_goals[i].actor_name ) {
                 movable_actors[i] = a;
+                if(!a.bHidden) a.bVisionImportant = true;
                 found_actors++;
                 //l("found local_goals["$i$"] "$ActorToString(a));
             }

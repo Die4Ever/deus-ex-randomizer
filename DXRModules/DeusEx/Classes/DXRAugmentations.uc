@@ -286,7 +286,9 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
     else if( a.Class == class'#var prefix AugVision') {
         word = "Distance";
+#ifndef balance
         if(i<2) return "--";
+#endif
         return int(a.LevelValues[i] / 16.0) $" ft";
     }
 #ifdef gmdx
