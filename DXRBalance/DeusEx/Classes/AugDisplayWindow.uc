@@ -49,7 +49,7 @@ function ResetSkins(Actor actor, Texture oldSkins[9])
     m = Mover(actor);
     if(m != None && _gc != None) {
     }
-    else*/ Super.SetSkins(actor, oldSkins);
+    else*/ Super.ResetSkins(actor, oldSkins);
 }
 
 function DrawMover(Mover m, GC gc)
