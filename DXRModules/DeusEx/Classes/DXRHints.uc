@@ -48,6 +48,43 @@ simulated function InitHints()
     else if(dxr.flags.settings.repairbots == 0) {
         AddHint("Repair bots are disabled.", "Good luck.");
     }
+    
+    if (dxr.flags.settings.medbotuses==1) {
+        AddHint("Each medbot can heal you one time!","Use it wisely!");     
+    } else if (dxr.flags.settings.medbotuses>1) {
+        AddHint("Each medbot can heal you "$dxr.flags.settings.medbotuses$" times!","Use them wisely!");
+    }
+
+    if (dxr.flags.settings.repairbotuses == 1) {
+        AddHint("Each repair bot can recharge you one time!","Use it wisely!");     
+    } else if (dxr.flags.settings.repairbotuses>1){
+        AddHint("Each repair bot can recharge you "$dxr.flags.settings.repairbotuses$" times!","Use them wisely!");
+    }
+
+    if (dxr.flags.settings.medbotcooldowns == 1) { //Individual
+        AddHint("Medbots have a randomized cooldown.", "Each one is different, so pay attention!");
+    } else if (dxr.flags.settings.medbotcooldowns == 2) { //Global
+        AddHint("Medbots have a randomized cooldown", "The cooldown is the same for all of them!");    
+    }
+
+    if (dxr.flags.settings.repairbotcooldowns == 1) { //Individual
+        AddHint("Repair bots have a randomized cooldown.", "Each one is different, so pay attention!");
+    } else if (dxr.flags.settings.repairbotcooldowns == 2) { //Global
+        AddHint("Repair bots have a randomized cooldown", "The cooldown is the same for all of them!");    
+    }
+
+    if (dxr.flags.settings.medbotamount == 1) { //Individual
+        AddHint("Medbots have a randomized heal amount.", "Each one is different, so pay attention!");
+    } else if (dxr.flags.settings.medbotamount == 2) { //Global
+        AddHint("Medbots have a randomized heal amount", "The cooldown is the same for all of them!");    
+    }
+
+    if (dxr.flags.settings.repairbotamount == 1) { //Individual
+        AddHint("Repair bots have a randomized recharge amount.", "Each one is different, so pay attention!");
+    } else if (dxr.flags.settings.repairbotamount == 2) { //Global
+        AddHint("Repair bots have a randomized recharge amount", "The cooldown is the same for all of them!");    
+    }
+    
     if(dxr.flags.crowdcontrol > 0) {
         AddHint("Viewers, you could've prevented this with Crowd Control.", "Or maybe you caused it.");
         AddHint("Don't forget you (the viewer!) can", "use Crowd Control to influence the game!");

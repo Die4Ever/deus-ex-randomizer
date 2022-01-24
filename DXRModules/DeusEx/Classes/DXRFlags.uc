@@ -565,6 +565,7 @@ simulated function BindFlags(bool writing)
     FlagInt('Rando_startinglocations', settings.startinglocations, writing);
     FlagInt('Rando_goals', settings.goals, writing);
     FlagInt('Rando_equipment', settings.equipment, writing);
+    
     FlagInt('Rando_medbots', settings.medbots, writing);
     FlagInt('Rando_repairbots', settings.repairbots, writing);
     FlagInt('Rando_medbotuses', settings.medbotuses, writing);
@@ -573,6 +574,7 @@ simulated function BindFlags(bool writing)
     FlagInt('Rando_repairbotcooldowns', settings.repairbotcooldowns, writing);
     FlagInt('Rando_medbotamount', settings.medbotamount, writing);
     FlagInt('Rando_repairbotamount', settings.repairbotamount, writing);
+    
     FlagInt('Rando_turrets_move', settings.turrets_move, writing);
     FlagInt('Rando_turrets_add', settings.turrets_add, writing);
 
