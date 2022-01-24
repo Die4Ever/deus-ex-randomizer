@@ -289,6 +289,8 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
 #ifndef balance
         if(i<2) return "--";
 #endif
+        if(a.LevelValues[i] < 0)
+            a.LevelValues[i] = 0;
         return int(a.LevelValues[i] / 16.0) $" ft";
     }
 #ifdef gmdx
