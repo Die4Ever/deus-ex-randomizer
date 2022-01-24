@@ -81,5 +81,5 @@ function Float GetRefreshTimeRemaining()
         timeRemaining = 0;
     }
     
-	return timeRemaining;
+    return timeRemaining;
 }

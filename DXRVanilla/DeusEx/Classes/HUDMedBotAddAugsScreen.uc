@@ -4,19 +4,19 @@ var PersonaActionButtonWindow btnRemove;
 
 function CreateButtons()
 {
-	local PersonaButtonBarWindow winActionButtons;
+    local PersonaButtonBarWindow winActionButtons;
 
-	winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-	winActionButtons.SetPos(346, 371);
-	winActionButtons.SetWidth(150); 
+    winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
+    winActionButtons.SetPos(346, 371);
+    winActionButtons.SetWidth(150); 
 
-	btnRemove = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnRemove = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
     btnRemove.bTranslucent = false; //This doesn't look amazing, but it covers up the weird transparency in the menu image
-	btnRemove.SetButtonText("|&Remove");
+    btnRemove.SetButtonText("|&Remove");
 
-	btnInstall = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnInstall = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
     btnInstall.bTranslucent = false; //This doesn't look amazing, but it covers up the weird transparency in the menu image
-	btnInstall.SetButtonText(InstallButtonLabel);
+    btnInstall.SetButtonText(InstallButtonLabel);
     
 }
 
@@ -26,39 +26,39 @@ function EnableButtons()
     Super.EnableButtons();
     
     if (PersonaAugmentationItemButton(selectedAugButton) != None && (selectedAug.AugmentationLocation != LOC_Default))
-	{
+    {
         btnRemove.EnableWindow(True);
-	} else {
- 	    btnRemove.EnableWindow(False);
+    } else {
+         btnRemove.EnableWindow(False);
     }
 }
 
 function bool ButtonActivated(Window buttonPressed)
 {
-	local bool bHandled;
+    local bool bHandled;
 
-	bHandled   = True;
+    bHandled   = True;
 
-	switch(buttonPressed)
-	{
-		case btnRemove:
-			RemoveAugmentation();
-			break;
+    switch(buttonPressed)
+    {
+        case btnRemove:
+            RemoveAugmentation();
+            break;
             
-		case btnInstall:
-			InstallAugmentation();
-			break;
-		default:
-			bHandled = False;
-			break;
-	}
+        case btnInstall:
+            InstallAugmentation();
+            break;
+        default:
+            bHandled = False;
+            break;
+    }
 
-	if (bHandled)
-		return true;
-	else 
-		return Super.ButtonActivated(buttonPressed);
+    if (bHandled)
+        return true;
+    else 
+        return Super.ButtonActivated(buttonPressed);
 
-	return bHandled;
+    return bHandled;
 }
 
 
@@ -70,33 +70,31 @@ function RemoveAugmentation()
     selectedAug = None;
     selectedAugButton = None;
     
-	// play a cool animation
-	medBot.PlayAnim('Scan');
+    // play a cool animation
+    medBot.PlayAnim('Scan');
     
-	// Update the Installed Augmentation Icons
-	DestroyAugmentationButtons();
-	CreateAugmentationButtons();
+    // Update the Installed Augmentation Icons
+    DestroyAugmentationButtons();
+    CreateAugmentationButtons();
     
     
     //Remove the aug description
     winInfo.Clear();
     
     // Need to update the aug list
-	PopulateAugCanList();
+    PopulateAugCanList();
     
     return;
 }
 
 function DestroyAugmentationButtons()
 {
-	local int buttonIndex;
+    local int buttonIndex;
 
-	for(buttonIndex=0; buttonIndex<arrayCount(augItems); buttonIndex++)
-	{
-		if (augItems[buttonIndex] != None)
-			augItems[buttonIndex].Destroy();
+    for(buttonIndex=0; buttonIndex<arrayCount(augItems); buttonIndex++)
+    {
+        if (augItems[buttonIndex] != None)
+            augItems[buttonIndex].Destroy();
             augItems[buttonIndex] = None;
-	}
+    }
 }
-
-
