@@ -622,18 +622,12 @@ function NYC_09_CountWeldPoints()
     newWeldCount=0;
     
     //Search for the weld point movers
-    foreach AllActors(class'DeusExMover',m) {
-        if (m.name == 'DeusExMover40' ||
-            m.name == 'DeusExMover16' ||
-            m.name == 'DeusExMover33' ||
-            m.name == 'DeusExMover31' ||
-            m.name == 'DeusExMover32'){
-            if (!m.bDestroyed){
-                newWeldCount++;
-            }
+    foreach AllActors(class'DeusExMover',m, 'ShipBreech') {
+        if (!m.bDestroyed){
+            newWeldCount++;
         }
     }
-        
+    
     if (newWeldCount != storedWeldCount) {
         //A weld point has been destroyed!
         dxr.flags.f.SetInt('DXRando_WeldPointCount',newWeldCount);
@@ -653,8 +647,6 @@ function NYC_09_CountWeldPoints()
         
         UpdateWeldPointGoal(newWeldCount);
     }
-    
-    
 }
 
 // if you bail on Paul but then have a change of heart and re-enter to come back and save him

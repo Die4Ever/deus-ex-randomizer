@@ -102,6 +102,11 @@ simulated function int SetSeed(coerce string name)
     return dxr.SetSeed( dxr.Crc(dxr.seed $ dxr.localURL $ name) );
 }
 
+simulated function int SetGlobalSeed(coerce string name)
+{
+    return dxr.SetSeed( dxr.seed + dxr.Crc(name) );
+}
+
 simulated function int rng(int max)
 {
     return dxr.rng(max);
@@ -173,7 +178,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     local float d_min, d_max, avg_diff;
     local float points[16];
 
-    oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ " RandoLevelValues " $ a.class.name ) );
+    oldseed = SetGlobalSeed(" RandoLevelValues " $ a.class.name );
 
     aug = #var prefix Augmentation(a);
     sk = #var prefix Skill(a);

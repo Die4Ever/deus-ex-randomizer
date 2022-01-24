@@ -96,7 +96,6 @@ simulated function PlayerAnyEntry(#var PlayerPawn  player)
 
 simulated function RandoSkills(Skill aSkill)
 {
-    local int i;
     local int mission_group;
     if( dxr == None ) {
         warning("RandoSkills dxr is None");
@@ -105,13 +104,12 @@ simulated function RandoSkills(Skill aSkill)
 
     l("randomizing skills with seed " $ dxr.seed $ ", min: "$dxr.flags.settings.minskill$", max: "$dxr.flags.settings.maxskill $", reroll_missions: "$ dxr.flags.settings.skills_reroll_missions $", independent_levels: "$ dxr.flags.settings.skills_independent_levels );
     if( dxr.flags.settings.skills_reroll_missions == 0 )
-        dxr.SetSeed(dxr.seed);
+        SetGlobalSeed("RandoSkills");
     else {
         if( dxr.dxInfo != None )
             mission_group = dxr.dxInfo.missionNumber;
         mission_group = Clamp(mission_group, 1, 1000) / dxr.flags.settings.skills_reroll_missions;
-        i = dxr.Crc(dxr.seed $"M"$ mission_group);
-        dxr.SetSeed( i );
+        SetGlobalSeed("RandoSkills " $ mission_group);
     }
 
     if( dxr.flags.settings.minskill > dxr.flags.settings.maxskill ) dxr.flags.settings.maxskill = dxr.flags.settings.minskill;

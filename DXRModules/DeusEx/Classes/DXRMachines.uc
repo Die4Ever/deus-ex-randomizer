@@ -400,7 +400,7 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
                 if (mbcooldown == 1) { //Individual
                     SetSeed("MedBotCooldown"$m.name); //Seed includes level name and the unique bot name
                 } else if (mbcooldown == 2) { //Global
-                    dxr.SetSeed(dxr.Crc(dxr.seed$"MedBotCooldown")); //Don't include the level name, or anything unique
+                    SetGlobalSeed("MedBotCooldown"); //Don't include the level name, or anything unique
                 }
                 
                 //Actually rando the cooldown
@@ -411,7 +411,7 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
                 if (mbamount == 1) { //Individual
                     SetSeed("MedBotAmount"$m.name); //Seed includes level name and the unique bot name
                 } else if (mbamount == 2) { //Global
-                    dxr.SetSeed(dxr.Crc(dxr.seed$"MedBotAmount")); //Don't include the level name, or anything unique
+                    SetGlobalSeed("MedBotAmount"); //Don't include the level name, or anything unique
                 }
                 
                 //Actually rando the cooldown
@@ -427,7 +427,7 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
                 if (rbcooldown == 1) { //Individual
                     SetSeed("RepairBotCooldown"$r.name); //Seed includes level name and the unique bot name
                 } else if (rbcooldown == 2) { //Global
-                    dxr.SetSeed(dxr.Crc(dxr.seed$"RepairBotCooldown")); //Don't include the level name, or anything unique
+                    SetGlobalSeed("RepairBotCooldown"); //Don't include the level name, or anything unique
                 }
                 
                 //Actually rando the cooldown
@@ -438,7 +438,7 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
                 if (rbamount == 1) { //Individual
                     SetSeed("RepairBotAmount"$r.name); //Seed includes level name and the unique bot name
                 } else if (rbamount == 2) { //Global
-                    dxr.SetSeed(dxr.Crc(dxr.seed$"RepairBotAmount")); //Don't include the level name, or anything unique
+                    SetGlobalSeed("RepairBotAmount"); //Don't include the level name, or anything unique
                 }
                 
                 //Actually rando the cooldown

@@ -468,7 +468,7 @@ function GenerateEnemies()
     local int i, numEnemies;
     local float difficulty, maxdifficulty;
     
-    dxr.SetSeed( dxr.seed + wave + dxr.Crc( "Horde GenerateEnemies") );
+    SetGlobalSeed( "Horde GenerateEnemies " $ wave);
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
     if( dxre == None ) {
         return;
@@ -564,7 +564,7 @@ function SetAlliance(ScriptedPawn p)
 function GenerateItems()
 {
     local int i;
-    dxr.SetSeed( dxr.seed + wave + dxr.Crc( "Horde GenerateItems") );
+    SetGlobalSeed("Horde GenerateItems" $ wave);
     for(i=0;i<items_per_wave;i++) {
         GenerateItem();
     }

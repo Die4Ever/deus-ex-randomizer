@@ -26,7 +26,7 @@ function FirstEntry()
     if( dxr.flags.gamemode != 3 ) return;
     Super.FirstEntry();
 
-    dxr.SetSeed( dxr.seed + dxr.Crc(Class.Name) );
+    SetGlobalSeed(Class.Name);
 
     map = class'DXRTestAllMaps'.static.PickRandomMap(dxr);
     //map = "01_NYC_UNATCOISLAND";

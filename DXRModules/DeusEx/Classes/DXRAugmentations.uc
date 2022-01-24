@@ -339,8 +339,7 @@ simulated function RemoveRandomAug(#var PlayerPawn  p)
     slot = rng(numAugs);
     a = augs[slot];
     info("RemoveRandomAug("$p$") Removing aug "$a$" from "$am$", numAugs was "$numAugs);
-    class'DXRAugmentations'.static.RemoveAug(p,a);
-    
+    RemoveAug(p,a);
 }
 
 function ExtendedTests()

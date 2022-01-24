@@ -32,7 +32,7 @@ simulated function RandoWeapon(DeusExWeapon w)
     local int oldseed;
     local float min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime;
     if( dxr == None ) return;
-    oldseed = dxr.SetSeed( dxr.Crc(dxr.seed $ "RandoWeapon " $ w.class.name ) );
+    oldseed = SetGlobalSeed("RandoWeapon " $ w.class.name);
 
     if( loadouts != None ) loadouts.AdjustWeapon(w);
 

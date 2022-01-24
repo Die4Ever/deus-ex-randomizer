@@ -489,7 +489,7 @@ function FixMaggieChowBday(#var prefix Keypad k)
     months[i++] = "November";
     months[i++] = "December";
 
-    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(oldpassword) );//manually set the seed to avoid using the level name in the seed
+    oldseed = SetGlobalSeed(oldpassword);//manually set the seed to avoid using the level name in the seed
     month = rng(12)+1;
     day = rng(28)+1;// HACK: too lazy to do the right number of days in each month
     dxr.SetSeed(oldseed);
@@ -902,7 +902,7 @@ function string GeneratePasscode(string oldpasscode)
         maximum = maximum * 10;
     }    
     
-    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(oldpasscode) );//manually set the seed to avoid using the level name in the seed
+    oldseed = SetGlobalSeed(oldpasscode);//manually set the seed to avoid using the level name in the seed
     newpasscode = rng(maximum) $ "";
     dxr.SetSeed(oldseed);
 
