@@ -76,13 +76,13 @@ simulated function InitHints()
     if (dxr.flags.settings.medbotamount == 1) { //Individual
         AddHint("Medbots have a randomized heal amount.", "Each one is different, so pay attention!");
     } else if (dxr.flags.settings.medbotamount == 2) { //Global
-        AddHint("Medbots have a randomized heal amount", "The cooldown is the same for all of them!");    
+        AddHint("Medbots have a randomized heal amount", "The amount is the same for all of them!");    
     }
 
     if (dxr.flags.settings.repairbotamount == 1) { //Individual
         AddHint("Repair bots have a randomized recharge amount.", "Each one is different, so pay attention!");
     } else if (dxr.flags.settings.repairbotamount == 2) { //Global
-        AddHint("Repair bots have a randomized recharge amount", "The cooldown is the same for all of them!");    
+        AddHint("Repair bots have a randomized recharge amount", "The amount is the same for all of them!");    
     }
     
     if(dxr.flags.crowdcontrol > 0) {
