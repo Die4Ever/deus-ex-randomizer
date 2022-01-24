@@ -3,15 +3,7 @@ var() bool bPlayerOnly;
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-    local bool wasPlayer;
-    local DeusExPlayer p;
-    
-    p = DeusExPlayer(GetPlayerPawn());
-    if (p!=None){
-        wasPlayer = (Instigator == p);
-    }
-    
-    if (!bPlayerOnly || (bPlayerOnly && wasPlayer)) { 
+    if (!bPlayerOnly || #var PlayerPawn (Instigator) != None) { 
         Super.Trigger(Other,Instigator);
     }
 }
