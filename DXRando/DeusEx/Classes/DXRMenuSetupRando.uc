@@ -41,14 +41,16 @@ function BindControls(optional string action)
     NewMenuItem("", "Randomize starting locations on certain maps");
     EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations);
     EnumOption("Unchanged Starting Locations", 0, f.settings.startinglocations);
-
+#endif
+    
     NewMenuItem("", "Randomize goal locations on certain maps");
     EnumOption("Randomize Goal Locations", 100, f.settings.goals);
     EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
-#endif
 
+#ifdef vanilla
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map.");
     Slider(f.settings.merchants, 0, 100);
+#endif
 
     NewMenuItem("Dancing %", "How many characters should be dancing.");
     Slider(f.settings.dancingpercent, 0, 100);
@@ -61,11 +63,13 @@ function BindControls(optional string action)
     NewMenuItem("Repair Bots", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%)");
     Slider(f.settings.repairbots, -1, 100);
 
+#ifdef vanilla
     NewMenuItem("Medbot Uses", "Number of times you can use an individual medbot to heal");
-    Slider(f.settings.medbotuses, -1, 10);
+    Slider(f.settings.medbotuses, 0, 10);
 
     NewMenuItem("Repair Bot Uses", "Number of times you can use an individual repair bot to restore energy");
-    Slider(f.settings.repairbotuses, -1, 10);
+    Slider(f.settings.repairbotuses, 0, 10);
+#endif
 
     NewMenuItem("Medbot Cooldowns", "Individual: Each Medbot has its own healing cooldown.  Global: All Medbots have the same cooldown");
     EnumOption("Unchanged", 0, f.settings.medbotcooldowns);

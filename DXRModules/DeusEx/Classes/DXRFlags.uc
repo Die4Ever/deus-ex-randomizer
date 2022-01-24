@@ -177,6 +177,10 @@ function InitDefaults()
 #else
     difficulty = 2;
 #endif
+#ifndef vanilla
+    codes_mode = 0;
+    autosave = 0;
+#endif
     settings = difficulty_settings[difficulty];
 }
 
@@ -282,8 +286,8 @@ function CheckConfig()
         difficulty_settings[i].equipment = 4;
         difficulty_settings[i].medbots = 35;
         difficulty_settings[i].repairbots = 35;
-        difficulty_settings[i].medbotuses = 35;
-        difficulty_settings[i].repairbotuses = 35;
+        difficulty_settings[i].medbotuses = 0;
+        difficulty_settings[i].repairbotuses = 0;
         difficulty_settings[i].turrets_move = 50;
         difficulty_settings[i].turrets_add = 30;
         difficulty_settings[i].merchants = 30;
@@ -451,6 +455,13 @@ function CheckConfig()
 #ifdef hx
         for(i=0; i<ArrayCount(difficulty_settings); i++) {
             difficulty_settings[i].startinglocations = 0;
+        }
+#endif
+#ifndef vanilla
+        for(i=0; i<ArrayCount(difficulty_settings); i++) {
+            difficulty_settings[i].merchants = 0;
+            difficulty_settings[i].repairbotuses = 0;
+            difficulty_settings[i].medbotuses = 0;
         }
 #endif
 
