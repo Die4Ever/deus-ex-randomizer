@@ -11,7 +11,7 @@ struct EnumBtn {
     var string values[32];
     var int value;
 };
-var EnumBtn enums[64];
+var EnumBtn enums[128];
 
 var MenuUIScrollAreaWindow winScroll;
 var Window controlsParent;
@@ -19,10 +19,11 @@ var MenuUILabelWindow winHelp;
 var bool bHelpAlwaysOn;
 
 var int id;
+var bool writing;
 //var int numwnds;
-var Window wnds[64];
-var String labels[64];
-var String helptexts[64];
+var Window wnds[128];
+var String labels[128];
+var String helptexts[128];
 
 var DXRando dxr;
 var DXRFlags flags;
@@ -36,10 +37,14 @@ var config int col_width_odd;
 var config int row_height;
 var config int padding_width;
 var config int padding_height;
+var config Font groupHeaderFont;
+var config int groupHeaderX;
+var config int groupHeaderY;
 
 event Init(DXRando d)
 {
     local vector coords;
+    local int i;
     dxr = d;
     flags = dxr.flags;
 
@@ -66,12 +71,17 @@ event Init(DXRando d)
     controlsParent.SetSize(coords.X, coords.Y);
 
     ResetToDefaults();
-    BindControls(false);
+    _BindControls(false);
 
     // Need to do this because of the edit control used for 
     // saving games.
     SetMouseFocusMode(MFOCUS_Click);
-    if( wnds[0] != None ) SetFocusWindow(wnds[0]);
+    for(i=0; i<ArrayCount(wnds); i++) {
+        if( wnds[i] != None ) {
+            SetFocusWindow(wnds[i]);
+            break;
+        }
+    }
     winScroll.vScale.SetTickPosition(0);
 
     Show();
@@ -158,12 +168,45 @@ function CheckConfig()
     }
 }
 
-function bool EnumOption(int id, string label, int value, bool writing, optional out int output)
+function NewMenuItem(string label, string helptext)
+{
+    id++;
+    labels[id] = label;
+    helptexts[id] = helptext;
+}
+
+function BreakLine()
+{
+    local int width;
+    width = num_cols / 2;
+    while((id+1) % width != 0) id++;
+}
+
+function NewGroup(string text)
+{
+    local MenuUILabelWindow winLabel;
+    local int width;
+    local vector coords;
+    
+    width = num_cols / 2;
+    if(id != -1)
+        id += width;
+    BreakLine();
+    id++;
+
+    coords = GetCoords(id, 0);
+    winLabel = CreateMenuLabel(coords.x + groupHeaderX, coords.y + groupHeaderY, text, controlsParent);
+    winLabel.SetFont(groupHeaderFont);
+    BreakLine();
+}
+
+function bool EnumOption(string label, int value, optional out int output)
 {
     local int i;
 
     if( writing ) {
         if( label == GetEnumValue(id) ) {
+            log(self$" EnumOption: "$label$", changing from "$output$" to "$value);
             output = value;
             return true;
         }
@@ -179,6 +222,7 @@ function bool EnumOption(int id, string label, int value, bool writing, optional
             enums[id].btn = CreateEnum(id, labels[id], helptexts[id], enums[id]);
             wnds[id] = enums[id].btn;
         }
+        log(self$" EnumOption: "$label$" == "$value$" compared to default of "$output);
         if( output == value ) {
             enums[id].btn.SetButtonText(label);
             enums[id].value = i;
@@ -187,12 +231,13 @@ function bool EnumOption(int id, string label, int value, bool writing, optional
     return false;
 }
 
-function bool EnumOptionString(int id, string label, string value, bool writing, optional out string output)
+function bool EnumOptionString(string label, string value, optional out string output)
 {
     local int i;
 
     if( writing ) {
         if( label == GetEnumValue(id) ) {
+            log(self$" EnumOptionString: "$label$", changing from "$output$" to "$value);
             output = value;
             return true;
         }
@@ -208,6 +253,7 @@ function bool EnumOptionString(int id, string label, string value, bool writing,
             enums[id].btn = CreateEnum(id, labels[id], helptexts[id], enums[id]);
             wnds[id] = enums[id].btn;
         }
+        log(self$" EnumOptionString: "$label$" == "$value$" compared to default of "$output);
         if( output == value ) {
             enums[id].btn.SetButtonText(label);
             enums[id].value = i;
@@ -216,7 +262,7 @@ function bool EnumOptionString(int id, string label, string value, bool writing,
     return false;
 }
 
-function string EditBox(int id, string value, string pattern, bool writing)
+function string EditBox(string value, string pattern)
 {
     if( writing ) {
         return MenuUIEditWindow(wnds[id]).GetText();
@@ -228,7 +274,7 @@ function string EditBox(int id, string value, string pattern, bool writing)
     return value;
 }
 
-function int Slider(int id, out int value, int min, int max, bool writing)
+function int Slider(out int value, int min, int max)
 {
     if( writing ) {
         value = GetSliderValue(MenuUIEditWindow(wnds[id]));
@@ -259,7 +305,7 @@ static function int UnpackInt(out string s)
 
 function ProcessAction(String actionKey)
 {
-    BindControls(true, actionKey);
+    _BindControls(true, actionKey);
 }
 
 function ResetToDefaults()
@@ -267,19 +313,35 @@ function ResetToDefaults()
     //delete all controls and run BindControls(false) again?
 }
 
-function BindControls(bool writing, optional string action)
+function _BindControls(bool newwriting, optional string action)
 {
-    id=0;
+    // start at -1 because NewMenuItem increments before adding
+    id = -1;
+    writing = newwriting;
+    BindControls(action);
+}
+
+function BindControls(optional string action)
+{
+    // override in subclasses
 }
 
 function InitHelp()
 {
     local MenuUILabelWindow winLabel;
     local vector coords;
+
     bHelpAlwaysOn = True;
     coords = _GetCoords(num_rows-1, 0);
     coords.y = ClientHeight + _GetY(0) - _GetY(1);
-    winHelp = CreateMenuLabel( coords.x, coords.y+4, "", winClient);
+    winHelp = CreateMenuLabel(0 /*coords.x - padding_width*/, coords.y/*+4*/, "", winClient);
+    winHelp.SetHeight(_GetY(1) - _GetY(0));
+    winHelp.SetWidth(ClientWidth);
+    winHelp.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+
+    winHelp.SetBackgroundStyle(DSTY_Translucent);
+    winHelp.SetBackground(Texture'Solid');
+    winHelp.SetTileColorRGB(10, 10, 10);
 }
 
 event DestroyWindow()
@@ -395,7 +457,7 @@ function MenuUIEditWindow CreateEdit(int row, string label, string helptext, str
 
 function MenuUIEditWindow CreateSlider(int row, string label, string helptext, optional int deflt, optional int min, optional int max )
 {
-    return CreateEdit(row, label, helptext, "1234567890", string(deflt));
+    return CreateEdit(row, label, helptext, "-1234567890", string(deflt));
     /*local MenuUISliderButtonWindow slider;
     local vector coords;
     local int numTicks;
@@ -620,4 +682,7 @@ defaultproperties
     ClientHeight=357
     bUsesHelpWindow=False
     bEscapeSavesSettings=False
+    groupHeaderFont=Font'FontMenuExtraLarge'
+    groupHeaderX=-10
+    groupHeaderY=-3
 }

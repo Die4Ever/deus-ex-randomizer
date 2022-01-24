@@ -41,21 +41,14 @@ function InitFlags()
     }
 }
 
-function DrawWindowBase(GC gc, actor frobTarget)
+static function GetActorBox(Window w, actor frobTarget, float margin, out float boxTLX, out float boxTLY, out float boxBRX, out float boxBRY)
 {
-    local float     infoX, infoY, infoW, infoH;
-    local string    strInfo;
     local Mover     M;
     local Vector    centerLoc, v1, v2;
-    local float     boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
-    local float     corner, x, y;
-    local int       i, j, k, offset, numLines;
-    local Color     col;
+    local float     boxCX, boxCY;
+    local float     x, y;
+    local int       i, j, k;
 
-    // move the box in and out based on time
-    offset = (24.0 * (frobTarget.Level.TimeSeconds % 0.3));
-
-    // draw a cornered targetting box
     // get the center of the object
     M = Mover(frobTarget);
     if (M != None)
@@ -74,7 +67,7 @@ function DrawWindowBase(GC gc, actor frobTarget)
         v1.Z = frobTarget.CollisionHeight;
     }
 
-    ConvertVectorToCoordinates(centerLoc, boxCX, boxCY);
+    w.ConvertVectorToCoordinates(centerLoc, boxCX, boxCY);
 
     boxTLX = boxCX;
     boxTLY = boxCY;
@@ -97,7 +90,7 @@ function DrawWindowBase(GC gc, actor frobTarget)
                 v2.Y += centerLoc.Y;
                 v2.Z += centerLoc.Z;
 
-                if (ConvertVectorToCoordinates(v2, x, y))
+                if (w.ConvertVectorToCoordinates(v2, x, y))
                 {
                     boxTLX = FMin(boxTLX, x);
                     boxTLY = FMin(boxTLY, y);
@@ -116,10 +109,26 @@ function DrawWindowBase(GC gc, actor frobTarget)
         boxBRY -= frobTarget.CollisionHeight / 4.0;
     }
 
-    boxTLX = FClamp(boxTLX, margin, width-margin);
-    boxTLY = FClamp(boxTLY, margin, height-margin);
-    boxBRX = FClamp(boxBRX, margin, width-margin);
-    boxBRY = FClamp(boxBRY, margin, height-margin);
+    boxTLX = FClamp(boxTLX, margin, w.width-margin);
+    boxTLY = FClamp(boxTLY, margin, w.height-margin);
+    boxBRX = FClamp(boxBRX, margin, w.width-margin);
+    boxBRY = FClamp(boxBRY, margin, w.height-margin);
+}
+
+function DrawWindowBase(GC gc, actor frobTarget)
+{
+    local float     infoX, infoY, infoW, infoH;
+    local string    strInfo;
+    local float     boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
+    local float     corner;
+    local int       i, offset, numLines;
+    local Color     col;
+
+    // move the box in and out based on time
+    offset = (24.0 * (frobTarget.Level.TimeSeconds % 0.3));
+
+    // draw a cornered targetting box
+    GetActorBox(self, frobTarget, margin, boxTLX, boxTLY, boxBRX, boxBRY);
 
     boxW = boxBRX - boxTLX;
     boxH = boxBRY - boxTLY;

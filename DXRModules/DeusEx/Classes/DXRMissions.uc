@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(1,7,1,1) ) {
+    if( ConfigOlderThan(1,7,2,5) ) {
         allow_vanilla = false;
 
         for(i=0; i<ArrayCount(remove_actors); i++) {
@@ -59,6 +59,10 @@ function CheckConfig()
         }
 
 #ifdef vanilla
+        vanilla_remove_actors();
+        vanilla_goals();
+        vanilla_important_locations();
+#elseif hx
         vanilla_remove_actors();
         vanilla_goals();
         vanilla_important_locations();
@@ -164,13 +168,13 @@ function vanilla_goals()
 
     map = "03_nyc_airfield";
     goals[i].map_name = map;
-    goals[i].actor_name = 'Terrorist13';
+    goals[i].actor_name = 'Terrorist13';// boatguard
     goals[i].allow_vanilla = true;
     i++;
 
     map = "03_NYC_BrooklynBridgeStation";
     goals[i].map_name = map;
-    goals[i].actor_name = 'ThugMale13';
+    goals[i].actor_name = 'ThugMale13';// Rock
     goals[i].allow_vanilla = true;
     i++;
 
@@ -185,12 +189,12 @@ function vanilla_goals()
     i++;
 
     goals[i].map_name = map;
-    goals[i].actor_name = 'ThugMale3';
+    goals[i].actor_name = 'ThugMale3';// Elrey
     goals[i].allow_vanilla = true;
     i++;
 
     goals[i].map_name = map;
-    goals[i].actor_name = 'BumMale3';
+    goals[i].actor_name = 'BumMale3';// tag BumMale2
     goals[i].allow_vanilla = true;
     i++;
 
@@ -885,6 +889,11 @@ function vanilla_important_locations()
     important_locations[i].rotation = rot(0, -16384, 0);
     i++;
 
+    important_locations[i].map_name = map;
+    important_locations[i].location = vect(2659.672852, -1515.583862, 393.494843);//bridge between the towers
+    important_locations[i].rotation = rot(0, 10720, 0);
+    i++;
+
     map = "12_vandenberg_cmd";
     important_locations[i].map_name = map;
     important_locations[i].location = vect(1895.174561, 1405.394287, -1656.404175);//hallway across from computer door
@@ -936,7 +945,7 @@ function vanilla_important_locations()
 
     map = "14_oceanlab_silo";
     important_locations[i].map_name = map;
-    important_locations[i].location = vect(-264.838135, -6829.463379, 55.600639);//3rd floor
+    important_locations[i].location = vect(-220, -6829.463379, 55.600639);//3rd floor
     i++;
 
     important_locations[i].map_name = map;
@@ -977,15 +986,17 @@ function vanilla_important_locations()
 function PreFirstEntry()
 {
     local Actor a;
-    local AnnaNavarre anna;
-    local int i, k, start, slot, tries, num_ma, num_ps, num_gl;
+    local #var prefix AnnaNavarre anna;
+    local int i, k, start, slot, tries, num_ma, num_ps, num_gl, found_actors;
     local float vanilla_distance;
     local bool success;
     local vector loc, diff;
+    local rotator rot_diff;
     local Actor movable_actors[32];
     local Goal local_goals[32];
     local ImportantLocation player_starts[32];
     local ImportantLocation goal_locations[32];
+    local Name a_name;
 
     Super.PreFirstEntry();
 
@@ -995,7 +1006,7 @@ function PreFirstEntry()
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
     }
     else if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
-        foreach AllActors(class'AnnaNavarre', anna) {
+        foreach AllActors(class'#var prefix AnnaNavarre', anna) {
             anna.SetOrders('Standing');
             anna.SetLocation( vect(1082.845703, 1807.538818, 335.101776) );
             anna.SetRotation( rot(0, -16608, 0) );
@@ -1026,18 +1037,27 @@ function PreFirstEntry()
     }
 
     foreach AllActors(class'Actor', a) {
+        a_name = a.Name;
+#ifdef hx
+        a_name = StringToName(a.GetPropertyText("PrecessorName"));
+        if(a_name == '') continue;
+#endif
         for(i=0; i<ArrayCount(remove_actors); i++) {
             if( dxr.localURL != remove_actors[i].map_name ) continue;
 
-            if( a.name == remove_actors[i].actor_name ) {
+            if( a_name == remove_actors[i].actor_name ) {
+                //l("Destroying remove_actors["$i$"] "$ActorToString(a));
                 a.Destroy();
                 break;
             }
         }
 
         for(i=0; i<num_ma; i++) {
-            if( a.name == local_goals[i].actor_name ) {
+            if( a_name == local_goals[i].actor_name ) {
                 movable_actors[i] = a;
+                if(!a.bHidden) a.bVisionImportant = true;
+                found_actors++;
+                //l("found local_goals["$i$"] "$ActorToString(a));
             }
         }
     }
@@ -1070,7 +1090,11 @@ function PreFirstEntry()
 
     if( dxr.flags.settings.goals == 0 ) return;
 
-    l("randomizing goals, num_ma=="$num_ma$", num_gl=="$num_gl);
+    l("randomizing goals, num_ma=="$num_ma$", num_gl=="$num_gl$", found_actors=="$found_actors);
+    if(found_actors != num_ma) {
+        warning("found_actors: "$found_actors$" != num_ma: "$num_ma);
+        return;
+    }
 
     for(i=0; i<num_ma && num_gl>0; i++) {
         if( local_goals[i].move_with_previous == true ) continue;
@@ -1086,6 +1110,7 @@ function PreFirstEntry()
         l("moving goal: " $ movable_actors[i] );
 
         diff = goal_locations[slot].location - movable_actors[i].location;
+        rot_diff = goal_locations[slot].rotation - movable_actors[i].rotation;
         if( allow_vanilla == false && local_goals[i].allow_vanilla == false && num_gl > 1 && VSize(diff) < 16 && tries<100 ) {
             tries++;
             l(movable_actors[i] $ ", vanilla not allowed, num_gl==" $ num_gl $ ", tries=="$tries);
@@ -1102,16 +1127,19 @@ function PreFirstEntry()
                 if( a.bStatic ) continue;
                 if( NavigationPoint(a) != None ) continue;
                 if( Light(a) != None ) continue;
-                success = MoveActor(a, a.location + diff, a.rotation, local_goals[i].physics);
-                if( success == false ) MoveActor(a, goal_locations[slot].location, a.rotation, local_goals[i].physics);
+                success = MoveActor(a, a.location + diff, a.rotation + rot_diff, local_goals[i].physics);
+                if( success == false )
+                    MoveActor(a, goal_locations[slot].location, a.rotation + rot_diff, local_goals[i].physics);
             }
         }
 
         for(k=i+1; k<num_ma; k++) {
             if( local_goals[k].move_with_previous == false ) break;
             success = false;
-            if( local_goals[k].group_radius ~= 0.0 ) success = MoveActor(movable_actors[k], movable_actors[k].location + diff, goal_locations[slot].rotation, local_goals[k].physics);
-            if( success == false ) MoveActor(movable_actors[k], goal_locations[slot].location, goal_locations[slot].rotation, local_goals[k].physics);
+            if( local_goals[k].group_radius ~= 0.0 )
+                success = MoveActor(movable_actors[k], movable_actors[k].location + diff, movable_actors[k].rotation + rot_diff, local_goals[k].physics);
+            if( success == false )
+                MoveActor(movable_actors[k], goal_locations[slot].location, movable_actors[k].rotation + rot_diff, local_goals[k].physics);
         }
 
         goal_locations[slot] = goal_locations[num_gl-1];
@@ -1144,6 +1172,7 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
         if( sp.Orders == 'Patrolling' ) sp.SetOrders('Wandering');
         sp.HomeLoc = sp.Location;
         sp.HomeRot = vector(sp.Rotation);
+        sp.DesiredRotation = rotation;
     }
     m = Mover(a);
     if( m != None ) {
@@ -1152,6 +1181,68 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     }
 
     return true;
+}
+
+function bool MoveGoalTo(name goalName, int locNumber)
+{
+    local Actor goalActor,a;
+    local ImportantLocation targetLoc;
+    local goal targetGoal;
+    local int i,locNum;
+    local bool foundGoal,foundLoc;
+   
+    //Find goal actor by name
+     foreach AllActors(class'Actor', a) {
+#ifdef hx
+        if( a.GetPropertyText("PrecessorName") == string(goalName) )
+#else
+        if( a.name == goalName )
+#endif
+        {
+            goalActor = a;
+            break;
+        }
+    }
+    
+    if (goalActor == None) {
+        //Couldn't find the actual goal actor
+        return False;
+    }
+    locNum = 0;
+    for(i=0; i<ArrayCount(important_locations); i++) {
+        if( dxr.localURL != important_locations[i].map_name ) continue;
+        if (locNum==locNumber){
+            targetLoc = important_locations[i];
+            foundLoc = true;
+            break;
+        }
+        locNum++;
+    }
+    
+    if (foundLoc == false){
+        //Couldn't find the target location
+        return False;
+    }
+    
+    for(i=0; i<ArrayCount(goals); i++) {
+        if( dxr.localURL != goals[i].map_name ) continue;
+        if (goals[i].actor_name==goalName){
+            targetGoal = goals[i];
+            foundGoal = true;
+            break;
+        }
+    }
+    
+    if (foundGoal == false){
+        //Couldn't find a goal for the specified name
+        return False;
+    }
+ 
+    MoveActor(goalActor, targetLoc.location, targetLoc.rotation, targetGoal.physics);
+    
+    return True;
+ 
+    
 }
 
 static function bool IsCloseToStart(DXRando dxr, vector loc)

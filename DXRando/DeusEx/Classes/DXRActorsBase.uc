@@ -485,10 +485,23 @@ function Containers AddBox(class<Containers> c, vector loc, optional rotator rot
 function string ActorToString( Actor a )
 {
     local string out;
-    out = a.Class.Name$"."$a.Name$"("$a.Location$")";
+    out = a.Class.Name$"."$a.Name$"("$a.Location$") "$a.tag;
+#ifdef hx
+    out = out $ " (was "$a.GetPropertyText("PrecessorName")$")";
+#endif
     if( a.Base != None && a.Base.Class!=class'LevelInfo' )
-        out = out $ "(Base:"$a.Base.Name$")";
+        out = out $ " (Base:"$a.Base.Name$")";
     return out;
+}
+
+function bool NamesAreSimilar(coerce string a, coerce string b)
+{
+    local int len_a, len_b;
+    len_a = Len(a);
+    len_b = Len(b);
+
+    if( len_a - len_b < -1 ) return false;
+    return Left( a, len_a-2 ) == Left( b, len_a-2 );
 }
 
 static function SetActorScale(Actor a, float scale)

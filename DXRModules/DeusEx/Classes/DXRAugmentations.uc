@@ -70,6 +70,50 @@ static function AddAug(DeusExPlayer player, class<Augmentation> aclass, int leve
     }
 }
 
+static function RemoveAug(DeusExPlayer player, Augmentation aug)
+{
+    local int slot;
+    local Augmentation b;
+    local AugmentationManager am;
+    
+    am = player.AugmentationSystem;
+
+    if (aug == None) {
+       return; //Shouldn't happen
+    }
+    
+    if (!aug.bHasIt)
+    {
+        return; //Also shouldn't happen      
+    }
+        
+    aug.Deactivate();
+    aug.bHasIt = False;
+    
+    // Manage our AugLocs[] array
+    player.AugmentationSystem.AugLocs[aug.AugmentationLocation].augCount--;
+    
+    //Icon lookup is BY HOTKEY, so make sure to remove the icon before the hotkey
+    player.RemoveAugmentationDisplay(aug);
+    
+    // Assign hot key back to default
+    aug.HotKeyNum = aug.Default.HotKeyNum;
+    
+    // walk back the hotkey numbers
+    // This is needed for multi-slot locations like the torso.
+    // Hotkeys will double up if you remove one that isn't the last hotkey
+    slot = am.AugLocs[aug.AugmentationLocation].KeyBase + 1;
+    for( b = am.FirstAug; b != None; b = b.next ) {
+        if( b.bHasIt && aug.AugmentationLocation == b.AugmentationLocation )
+            b.HotKeyNum = slot++;
+    }
+    
+    // This is needed, otherwise the side-of-screen aug display gets confused
+    // when you add a new aug
+    am.RefreshAugDisplay();
+    
+}
+
 function RandomizeAugCannisters()
 {
     local #var prefix AugmentationCannister a;
@@ -118,21 +162,33 @@ function static RandomizeAugCannister(DXRando dxr, #var prefix AugmentationCanni
 {
     local int numAugs;
     local int banned[50];
+    local class<Augmentation> augs[2];
 
     _DefaultAugsMask(dxr, banned, numAugs);
 
-    a.AddAugs[0] = PickRandomAug(dxr, banned, numAugs);
-    a.AddAugs[1] = PickRandomAug(dxr, banned, numAugs);
+    augs[0] = PickRandomAug(dxr, banned, numAugs);
+    augs[1] = PickRandomAug(dxr, banned, numAugs);
+
+    a.AddAugs[0] = augs[0].Name;
+    a.AddAugs[1] = augs[1].Name;
+
+    if(augs[0] != None && augs[1] != None)
+        a.ItemName = a.ItemName $": "$ augs[0].default.AugmentationName $ " / " $ augs[1].default.AugmentationName;
+    else if(augs[0] != None)
+        a.ItemName = a.ItemName $": "$ augs[0].default.AugmentationName;
+    else if(augs[1] != None)
+        a.ItemName = a.ItemName $": "$ augs[1].default.AugmentationName;
 
     if( a.AddAugs[0] == '#var prefix AugSpeed' || a.AddAugs[1] == '#var prefix AugSpeed' ) {
         dxr.flags.player().ClientMessage("Speed Enhancement is in this area.",, true);
     }
 }
 
-function static Name PickRandomAug(DXRando dxr, out int banned[50], out int numAugs)
+// HX uses the regular Augmentation base class
+function static class<Augmentation> PickRandomAug(DXRando dxr, out int banned[50], out int numAugs)
 {
     local int slot, i, r;
-    local Name AugName;
+    local class<Augmentation> aug;
     r = staticrng(dxr, numAugs);
     for(i=0; i < ArrayCount(class'#var prefix AugmentationManager'.default.augClasses); i++) {
         if( banned[i] == 1 ) continue;
@@ -143,11 +199,11 @@ function static Name PickRandomAug(DXRando dxr, out int banned[50], out int numA
     slot = i;
     if( slot >= ArrayCount(class'#var prefix AugmentationManager'.default.augClasses) )
         dxr.err("PickRandomAug WTF "$slot);
-    AugName = class'#var prefix AugmentationManager'.default.augClasses[slot].Name;
-    log("Picked Aug "$ slot $"/"$numAugs$" " $ AugName, 'DXRAugmentations');
+    aug = class'#var prefix AugmentationManager'.default.augClasses[slot];
+    log("Picked Aug "$ slot $"/"$numAugs$" " $ aug.Name, 'DXRAugmentations');
     banned[slot] = 1;
     numAugs--;
-    return AugName;
+    return aug;
 }
 
 simulated function RandoAug(Augmentation a)
@@ -230,7 +286,11 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
     else if( a.Class == class'#var prefix AugVision') {
         word = "Distance";
+#ifndef balance
         if(i<2) return "--";
+#endif
+        if(a.LevelValues[i] < 0)
+            a.LevelValues[i] = 0;
         return int(a.LevelValues[i] / 16.0) $" ft";
     }
 #ifdef gmdx
@@ -279,18 +339,7 @@ simulated function RemoveRandomAug(#var PlayerPawn  p)
     slot = rng(numAugs);
     a = augs[slot];
     info("RemoveRandomAug("$p$") Removing aug "$a$" from "$am$", numAugs was "$numAugs);
-    a.Deactivate();
-    a.CurrentLevel = 0;
-    a.bHasIt = false;
-    am.AugLocs[a.AugmentationLocation].augCount--;
-    p.RemoveAugmentationDisplay(a);
-
-    // walk back the hotkey numbers
-    slot = am.AugLocs[a.AugmentationLocation].KeyBase + 1;
-    for( b = am.FirstAug; b != None; b = b.next ) {
-        if( b.bHasIt && a.AugmentationLocation == b.AugmentationLocation )
-            b.HotKeyNum = slot++;
-    }
+    RemoveAug(p,a);
 }
 
 function ExtendedTests()

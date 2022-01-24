@@ -11,7 +11,7 @@ function AnyEntry()
     Super.AnyEntry();
 
     if( dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 ) {
-        CreateMerchant();
+        CreateRandomMerchant();
         //LogAll('MeetKaplan');
     }
 }
@@ -54,7 +54,7 @@ function LogAll(name conName)
     }
 }
 
-function RandomizeItems(out ItemPurchase items[8])
+function RandomizeItems(out ItemPurchase items[8], optional int forced)
 {
     local float r;
     local int i, k, num;
@@ -62,21 +62,27 @@ function RandomizeItems(out ItemPurchase items[8])
     local class<Inventory> classes[16];
 
     i=0;
-    classes[i++] = class'Medkit';
-    classes[i++] = class'Lockpick';
-    classes[i++] = class'Multitool';
-    classes[i++] = class'BioelectricCell';
-    classes[i++] = class'BallisticArmor';
-    classes[i++] = class'Ammo10mm';
-    classes[i++] = class'AmmoBattery';
-    classes[i++] = class'AmmoDartPoison';
-    classes[i++] = class'AmmoRocket';
-    classes[i++] = class'WeaponShuriken';
-    classes[i++] = class'HazMatSuit';
-    classes[i++] = class'Rebreather';
+    classes[i++] = class'#var prefix Medkit';
+    classes[i++] = class'#var prefix Lockpick';
+    classes[i++] = class'#var prefix Multitool';
+    classes[i++] = class'#var prefix BioelectricCell';
+    classes[i++] = class'#var prefix BallisticArmor';
+    classes[i++] = class'#var prefix Ammo10mm';
+    classes[i++] = class'#var prefix AmmoBattery';
+    classes[i++] = class'#var prefix AmmoDartPoison';
+    classes[i++] = class'#var prefix AmmoRocket';
+    classes[i++] = class'#var prefix WeaponShuriken';
+    classes[i++] = class'#var prefix HazMatSuit';
+    classes[i++] = class'#var prefix Rebreather';
     num=i;
 
-    for(i=0; i<ArrayCount(items); i++) {
+    // randomize cost for forced items
+    for(i=0; i<forced; i++) {
+        items[i].price = rngrange(2000, 0.2, 1.5);
+    }
+
+    // randomize list
+    for(i=forced; i<ArrayCount(items); i++) {
         iclass = classes[0];
         r = initchance();
         for(k=0; k < num; k++ ) {
@@ -103,21 +109,15 @@ function RandomizeItems(out ItemPurchase items[8])
         items[num++] = items[i];
     }
 
-    // limit to 3
-    for(i=3; i<ArrayCount(items) ; i++) {
+    // limit to 4
+    for(i=4; i<ArrayCount(items) ; i++) {
         items[i].item = None;
     }
 }
 
-function CreateMerchant()
+function CreateRandomMerchant()
 {
-    local #var prefix Businessman3 npc;
-    local Conversation c;
-    local ConItem conItem;
-    local ConversationList list;
-    local ConEvent e;
     local ItemPurchase items[8];
-    local int i;
 
     SetSeed("CreateMerchant");
     if( ! chance_single( dxr.flags.settings.merchants ) ) return;
@@ -127,10 +127,41 @@ function CreateMerchant()
 
     RandomizeItems(items);
 
+    CreateMerchant("The Merchant", 'DXRNPCs1', items, GetRandomMerchantPosition());
+}
+
+function ScriptedPawn CreateForcedMerchant(string name, Name bindname, vector loc, rotator rot, optional class<Inventory> forcedItem)
+{
+    local ItemPurchase items[8];
+    local int forced;
+
+    SetSeed("CreateForcedMerchant " $ name);
+    if( dxr.flags.f.GetBool(StringToName(bindname $ "_Dead")) ) {
+        return None;
+    }
+
+    if(forcedItem != None) {
+        items[0].item = forcedItem;
+        forced++;
+    }
+    RandomizeItems(items, forced);
+
+    return CreateMerchant(name, bindname, items, loc, rot);
+}
+
+function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase items[8], vector loc, optional rotator rot)
+{
+    local #var prefix Businessman3 npc;
+    local Conversation c;
+    local ConItem conItem;
+    local ConversationList list;
+    local ConEvent e;
+    local int i;
+
     c = new(Level) class'Conversation';
-    c.conName = 'DXRNPCs1';
-    c.CreatedBy = "DXRNPCs";
-    c.conOwnerName = "DXRNPCs1";
+    c.conName = bindname;
+    c.CreatedBy = String(bindname);
+    c.conOwnerName = String(bindname);
     c.bGenerateAudioNames = false;
     c.bInvokeFrob = true;
 
@@ -160,19 +191,20 @@ function CreateMerchant()
     }
     if(list == None) err(dxr.localURL $ " list == None");
 
-    foreach AllActors(class'#var prefix Businessman3', npc, 'DXRNPCs1') {
-        npc.BindName = "DXRNPCs1";
+    foreach AllActors(class'#var prefix Businessman3', npc, bindname) {
+        npc.BindName = String(bindname);
         npc.ConBindEvents();
-        return;
+        // don't return if he already existed
+        return None;
     }
-    npc = Spawn(class'#var prefix Businessman3',, 'DXRNPCs1', GetRandomMerchantPosition() );
+    npc = Spawn(class'#var prefix Businessman3',, bindname, loc, rot );
     if( npc == None ) {
         err("CreateMerchant failed to spawn merchant");
-        return;
+        return None;
     }
-    npc.BindName = "DXRNPCs1";
+    npc.BindName = String(bindname);
     npc.SetOrders('Standing');
-    npc.FamiliarName = "The Merchant";
+    npc.FamiliarName = name;
     npc.UnfamiliarName = npc.FamiliarName;
     npc.bImportant = true;
     i = 200;
@@ -189,6 +221,7 @@ function CreateMerchant()
     }
     //RemoveFears(npc);// no fears makes it easy for him to block doorways
     npc.ConBindEvents();
+    return npc;
 }
 
 function vector GetRandomMerchantPosition()
@@ -228,10 +261,10 @@ function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bo
     e.conversation = c;
     if( player_talking ) {
         e.speakerName = "JCDenton";
-        e.speakingToName = "DXRNPCs1";
+        e.speakingToName = c.conOwnerName;
     }
     else {
-        e.speakerName = "DXRNPCs1";
+        e.speakerName = c.conOwnerName;
         e.speakingToName = "JCDenton";
     }
     e.conSpeech = new(c) class'ConSpeech';
@@ -268,14 +301,14 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
     e.conversation = c;
     e.eventType = ET_Choice;
     e.label = "choices";
-    //bClearScreen?
+    e.bClearScreen = true;
 
+    choice = AddChoice(e, choice, "Nevermind", "leave");
+    
     for(i=0; i<ArrayCount(items); i++) {
         if( items[i].item == None ) continue;
         choice = AddItemChoice(e, choice, items[i]);
     }
-
-    choice = AddChoice(e, choice, "Nevermind", "leave");
 
     AddConEvent(c, prev, e);
     prev = e;

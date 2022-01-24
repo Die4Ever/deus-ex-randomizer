@@ -448,7 +448,7 @@ function RandoStartingEquipment(DeusExPlayer player, bool respawn)
     if( dxr.flags.settings.equipment == 0 ) return;
 
     l("RandoStartingEquipment");
-    dxr.SetSeed( dxr.seed + dxr.Crc("RandoStartingEquipment") );//independent of map/mission
+    SetGlobalSeed("RandoStartingEquipment");//independent of map/mission
 
     player.energy = rng(75)+25;
     player.Credits = rng(200);

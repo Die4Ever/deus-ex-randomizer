@@ -224,6 +224,8 @@ function VanillaPreFirstEntry()
 function VanillaPostFirstEntry()
 {
     local RetinalScanner r;
+    local CrateUnbreakableLarge c;
+    local Actor a;
     
     switch(dxr.localURL) {
         case "01_NYC_UNATCOHQ":
@@ -255,6 +257,20 @@ function VanillaPostFirstEntry()
         case "05_NYC_UNATCOMJ12LAB":
             BalanceJailbreak();
             break;
+        
+        case "09_NYC_DOCKYARD":
+            foreach RadiusActors(class'CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
+                info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
+                c.Destroy();
+            }
+            break;
+        
+        case "12_VANDENBERG_CMD":
+            foreach RadiusActors(class'CrateUnbreakableLarge', c, 16, vect(570.835083, 1934.114014, -1646.114746)) {
+                info("removing " $ c $ " dist: " $ VSize(c.Location - vect(570.835083, 1934.114014, -1646.114746)) );
+                c.Destroy();
+            }
+            break;
     }
 }
 
@@ -269,6 +285,12 @@ function VanillaAnyEntry()
             break;
         case 8:
             NYC_08_AnyEntry();
+            break;
+        case 9:
+            Shipyard_AnyEntry();
+            break;
+        case 10:
+            Paris_AnyEntry();
             break;
     }
 }
@@ -300,6 +322,9 @@ function VanillaTimer()
                     chopper.EnterWorld();
                 dxr.flagbase.SetBool('MS_Helicopter_Unhidden', True,, 9);
             }
+            break;
+        case "09_NYC_SHIPBELOW":
+            NYC_09_CountWeldPoints();
             break;
     }
 }
@@ -563,6 +588,67 @@ function BalanceJailbreak()
     Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915) );
 }
 
+function UpdateWeldPointGoal(int count)
+{
+    local string goalText;
+    local DeusExGoal goal;
+    local int bracketPos;
+    goal = player().FindGoal('ScuttleShip');
+    
+    if (goal!=None){
+        goalText = goal.text;
+        bracketPos = InStr(goalText,"(");
+        
+        if (bracketPos>0){ //If the extra text is already there, strip it.
+            goalText = Mid(goalText,0,bracketPos-1);
+        }
+        
+        goalText = goalText$" ("$count$" remaining)";
+        
+        goal.SetText(goalText);
+    }
+    
+    
+}
+
+function NYC_09_CountWeldPoints()
+{
+    local int storedWeldCount;
+    local int newWeldCount;
+    local DeusExMover m;
+    
+    storedWeldCount = dxr.flagbase.GetInt('DXRando_WeldPointCount');
+    
+    newWeldCount=0;
+    
+    //Search for the weld point movers
+    foreach AllActors(class'DeusExMover',m, 'ShipBreech') {
+        if (!m.bDestroyed){
+            newWeldCount++;
+        }
+    }
+    
+    if (newWeldCount != storedWeldCount) {
+        //A weld point has been destroyed!
+        dxr.flags.f.SetInt('DXRando_WeldPointCount',newWeldCount);
+        
+        switch(newWeldCount){
+            case 0:
+                player().ClientMessage("All weld points destroyed!");
+                SetTimer(0, False);  //Disable the timer now that all weld points are gone
+                break;
+            case 1:
+                player().ClientMessage("1 weld point remaining");
+                break;
+            default:
+                player().ClientMessage(newWeldCount$" weld points remaining");
+                break;
+        }
+        
+        UpdateWeldPointGoal(newWeldCount);
+    }
+}
+
 // if you bail on Paul but then have a change of heart and re-enter to come back and save him
 function NYC_04_CheckPaulUndead()
 {
@@ -810,6 +896,7 @@ function HongKong_FirstEntry()
     local ElevatorMover e;
     local #var Mover  m;
     local FlagTrigger ft;
+    local AllianceTrigger at;
 
     switch(dxr.localURL)
     {
@@ -893,7 +980,13 @@ function HongKong_FirstEntry()
                 ft.Tag = 'TongHasRom';
             }
             break;
-
+#ifdef injections
+        case "06_HONGKONG_WANCHAI_UNDERWORLD":
+            foreach AllActors(class'AllianceTrigger',at,'StoreSafe') {
+                at.bPlayerOnly = true;
+            }
+            break;
+#endif
         default:
             break;
     }
@@ -916,9 +1009,22 @@ function Shipyard_FirstEntry()
                 m.bHighlight = true;
                 m.bLocked = true;
             }
+            dxr.flags.f.SetInt('DXRando_WeldPointCount',5);
+            UpdateWeldPointGoal(5);
             break;
     }
 }
+
+function Shipyard_AnyEntry()
+{
+    switch(dxr.localURL)
+    {
+        case "09_NYC_SHIPBELOW":
+            SetTimer(1, True);
+            break;
+    }
+}
+
 
 function Paris_FirstEntry()
 {
@@ -964,6 +1070,33 @@ function Paris_FirstEntry()
         case "11_PARIS_CATHEDRAL":
             foreach AllActors(class'GuntherHermann', g) {
                 g.ChangeAlly('mj12', 1, true);
+            }
+            break;
+    }
+}
+
+function Paris_AnyEntry()
+{
+    local DXRNPCs npcs;
+    local DXREnemies dxre;
+    local ScriptedPawn sp;
+
+    switch(dxr.localURL)
+    {
+        case "10_PARIS_CATACOMBS":
+            // spawn Le Merchant with a hazmat suit because there's no guarantee of one before the highly radioactive area
+            // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
+            npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
+            if(npcs != None) {
+                sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vect(-3209.483154, 5190.826172,1199.610352), rot(0, -10000, 0), class'#var prefix HazMatSuit');
+            }
+            // give him weapons to defend himself
+            dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+            if(dxre != None && sp != None) {
+                sp.bKeepWeaponDrawn = true;
+                GiveItem(sp, class'#var prefix WineBottle');
+                dxre.RandomizeSP(sp, 100);
+                RemoveFears(sp);
             }
             break;
     }

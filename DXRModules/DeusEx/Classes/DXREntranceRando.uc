@@ -981,7 +981,7 @@ function EntranceRando(int missionNum)
     numConns = 0;
     numXfers = 0;
     numFixedConns = 0;
-    dxr.SetSeed( dxr.seed + dxr.Crc("entrancerando") + missionNum );
+    SetGlobalSeed("entrancerando " $ missionNum);
 
     GenerateXfers(missionNum);
 
