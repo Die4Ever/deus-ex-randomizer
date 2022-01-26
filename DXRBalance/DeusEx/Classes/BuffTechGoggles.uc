@@ -36,10 +36,44 @@ function PostBeginPlay()
 function UpdateHUDDisplay(DeusExPlayer Player)
 {
     local AugVision aug;
-
-    Super.UpdateHUDDisplay(Player);
-    DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevel = 1;
+    local AugmentationDisplayWindow augDisplay;
+    local float dist;
 
     aug = AugVision(Player.AugmentationSystem.GetAug(class'AugVision'));
-    DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevelValue = CalcDistance(aug);
+    dist = CalcDistance(aug);
+
+    augDisplay = DeusExRootWindow(Player.rootWindow).hud.augDisplay;
+    if ((augDisplay.activeCount == 0) && (IsActive())) {
+        augDisplay.activeCount++;
+        log("WARNING: "$self$".UpdateHUDDisplay augDisplay.activeCount == 0");
+    }
+    
+    if(augDisplay.activeCount == 1) {
+        augDisplay.bVisionActive = True;
+        augDisplay.visionLevel = 1;
+        augDisplay.visionLevelValue = dist;
+    } else {
+        augDisplay.bVisionActive = True;
+        augDisplay.visionLevel += 1;
+        augDisplay.visionLevelValue += dist;
+    }
+}
+
+function ChargedPickupEnd(DeusExPlayer Player)
+{
+    local AugVision aug;
+    local AugmentationDisplayWindow augDisplay;
+
+    augDisplay = DeusExRootWindow(Player.rootWindow).hud.augDisplay;
+    if (--augDisplay.activeCount <= 0) {
+        augDisplay.activeCount = 0;
+        augDisplay.bVisionActive = False;
+        augDisplay.visionLevel = 0;
+        augDisplay.visionLevelValue = 0;
+        augDisplay.visionBlinder = None;
+    } else {
+        augDisplay.visionLevel -= 1;
+        aug = AugVision(Player.AugmentationSystem.GetAug(class'AugVision'));
+        augDisplay.visionLevelValue -= CalcDistance(aug);
+    }
 }

@@ -7,9 +7,34 @@ Begin:
 
 simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)
 {
-    Super.SetVisionAugStatus(Level, LevelValue, IsActive);
-    DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevel = Level + 1;
-    DeusExRootWindow(Player.rootWindow).hud.augDisplay.visionLevelValue = LevelValue;
+    local AugmentationDisplayWindow augDisplay;
+
+    augDisplay = DeusExRootWindow(Player.rootWindow).hud.augDisplay;
+    if (IsActive)
+    {
+        if (++augDisplay.activeCount <= 1) {
+            augDisplay.activeCount = 1;
+            augDisplay.bVisionActive = True;
+            augDisplay.visionLevel = Level + 1;
+            augDisplay.visionLevelValue = LevelValue;
+        } else {
+            augDisplay.visionLevel += Level + 1;
+            augDisplay.visionLevelValue += LevelValue;
+        }
+    }
+    else
+    {
+        if (--augDisplay.activeCount <= 0) {
+            augDisplay.activeCount = 0;
+            augDisplay.bVisionActive = False;
+            augDisplay.visionLevel = 0;
+            augDisplay.visionLevelValue = 0;
+        } else {
+            augDisplay.visionLevel -= Level + 1;
+            augDisplay.visionLevelValue -= LevelValue;
+        }
+        augDisplay.visionBlinder = None;
+    }
 }
 
 // level value is feet*16
