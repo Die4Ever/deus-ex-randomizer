@@ -15,7 +15,7 @@ function DeactivateAll()
 }
 
 function Augmentation GetAugByKey(int keyNum)
-{	
+{
     local Augmentation anAug;
 
     if ((keyNum < 0) || (keyNum > 9))
@@ -27,6 +27,21 @@ function Augmentation GetAugByKey(int keyNum)
         if ((anAug.HotKeyNum - 3 == keyNum) && (anAug.bHasIt))
             return anAug;
 
+        anAug = anAug.next;
+    }
+
+    return None;
+}
+
+simulated function Augmentation GetAug(class<Augmentation> AugClass)
+{
+    local Augmentation anAug;
+
+    anAug = FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.Class == augClass)
+            return anAug;
         anAug = anAug.next;
     }
 
