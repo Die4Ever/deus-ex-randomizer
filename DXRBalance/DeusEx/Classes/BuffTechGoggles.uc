@@ -76,4 +76,6 @@ function ChargedPickupEnd(DeusExPlayer Player)
         aug = AugVision(Player.AugmentationSystem.GetAug(class'AugVision'));
         augDisplay.visionLevelValue -= CalcDistance(aug);
     }
+
+    Super(ChargedPickup).ChargedPickupEnd(Player);
 }
