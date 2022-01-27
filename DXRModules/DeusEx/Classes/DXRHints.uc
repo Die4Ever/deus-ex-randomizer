@@ -36,7 +36,7 @@ simulated function InitHints()
     AddHint("Flare darts now set enemies on fire for 3 seconds.");
     AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
     AddHint("Read the pop-up text on doors to see how many", "hit from your equiped weapon to break it.");
-    AddHint("Vision Enhancement Aug and Tech Goggles", "can now see through walls, even at level 1.");
+    AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
 #endif
 
     if(dxr.flags.settings.medbots > 0) {

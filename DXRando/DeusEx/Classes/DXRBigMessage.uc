@@ -137,6 +137,8 @@ event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
     local string command;
     if(key == IK_Escape) {
         Remove();
+        // idk why escape requires me to call ShowMainMenu twice but it works
+        Player.ShowMainMenu();
         return True;
     }
     else if(key == IK_Space && Player.Level.Timeseconds > lockoutTime) {
