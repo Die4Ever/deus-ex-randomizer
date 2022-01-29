@@ -1,20 +1,12 @@
 class AugDisplayWindow injects AugmentationDisplayWindow;
 
-var Actor drawQueue[128];
-var int drawQueueLen;
+var GC _gc;
 
 function DrawVisionAugmentation(GC gc)
 {
-    local int i;
-    drawQueueLen = 0;
-
+    _gc = gc;
     _DrawVisionAugmentation(gc);
-
-    for(i=0; i<drawQueueLen; i++) {
-        DrawBrush(drawQueue[i], gc);
-        drawQueue[i] = None;
-    }
-    drawQueueLen = 0;
+    _gc = None;
 }
 
 function bool IsHeatSource(Actor A)
@@ -50,7 +42,7 @@ function SetSkins(Actor actor, out Texture oldSkins[9])
         forwards = Player.Location + (Vector(Player.ViewRotation) * dist);
         backwards = Player.Location + (Vector(Player.ViewRotation) * (-dist));
         if( VSize(actor.Location - forwards) < VSize(actor.Location - backwards) )
-            drawQueue[drawQueueLen++] = actor;
+            DrawBrush(actor, _gc);
     }
     else
         Super.SetSkins(actor, oldSkins);
