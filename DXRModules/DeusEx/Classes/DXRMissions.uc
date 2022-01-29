@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(1,7,2,5) ) {
+    if( ConfigOlderThan(1,7,2,8) ) {
         allow_vanilla = false;
 
         for(i=0; i<ArrayCount(remove_actors); i++) {
@@ -103,6 +103,22 @@ function vanilla_remove_actors()
 
     remove_actors[i].map_name = "01_NYC_unatcoisland";
     remove_actors[i].actor_name = 'DataLinkTrigger8';//the "don't leave without talking to Paul" datalink
+    i++;
+
+    remove_actors[i].map_name = "01_NYC_unatcoisland";
+    remove_actors[i].actor_name = 'DataLinkTrigger10';//DL_MissedHermann
+    i++;
+
+    remove_actors[i].map_name = "01_NYC_unatcoisland";
+    remove_actors[i].actor_name = 'DataLinkTrigger10';//DL_MissedHermann
+    i++;
+
+    remove_actors[i].map_name = "01_NYC_unatcoisland";
+    remove_actors[i].actor_name = 'DataLinkTrigger5';//DL_NearTop
+    i++;
+
+    remove_actors[i].map_name = "01_NYC_unatcoisland";
+    remove_actors[i].actor_name = 'DataLinkTrigger12';//DL_Top
     i++;
 
     remove_actors[i].map_name = "09_NYC_GRAVEYARD";
