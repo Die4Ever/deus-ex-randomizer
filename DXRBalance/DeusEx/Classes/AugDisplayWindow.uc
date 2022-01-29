@@ -78,57 +78,23 @@ function DrawBrush(Actor a, GC gc)
 function _DrawVisionAugmentation(GC gc)
 {
     local Vector loc;
-    local float boxCX, boxCY, boxTLX, boxTLY, boxBRX, boxBRY, boxW, boxH;
     local float x, y, w, h;
     local Actor A;
 
-    boxW = width/2;
-    boxH = height/2;
-    boxCX = width/2;
-    boxCY = height/2;
-    boxTLX = boxCX - boxW/2;
-    boxTLY = boxCY - boxH/2;
-    boxBRX = boxCX + boxW/2;
-    boxBRY = boxCY + boxH/2;
+    // brighten and tint the screen
+    gc.SetStyle(DSTY_Modulated);
+    gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
+    gc.DrawPattern(0, 0, width, height, 0, 0, Texture'SolidGreen');
+    //gc.DrawPattern(0, 0, width, height, 0, 0, Texture'VisionBlue');
+    gc.SetStyle(DSTY_Translucent);
 
     // at level one and higher, enhance heat sources (FLIR)
     // use DrawActor to enhance NPC visibility
     if (visionLevel >= 1)
     {
-        // shift the entire screen to dark red (except for the middle box)
-        if (player.Level.Netmode == NM_Standalone)
-        {
-            gc.SetStyle(DSTY_Modulated);
-            gc.DrawPattern(0, 0, width, boxTLY, 0, 0, Texture'ConWindowBackground');
-            gc.DrawPattern(0, boxBRY, width, height-boxBRY, 0, 0, Texture'ConWindowBackground');
-            gc.DrawPattern(0, boxTLY, boxTLX, boxH, 0, 0, Texture'ConWindowBackground');
-            gc.DrawPattern(boxBRX, boxTLY, width-boxBRX, boxH, 0, 0, Texture'ConWindowBackground');
-            gc.DrawPattern(0, 0, width, boxTLY, 0, 0, Texture'SolidRed');
-            gc.DrawPattern(0, boxBRY, width, height-boxBRY, 0, 0, Texture'SolidRed');
-            gc.DrawPattern(0, boxTLY, boxTLX, boxH, 0, 0, Texture'SolidRed');
-            gc.DrawPattern(boxBRX, boxTLY, width-boxBRX, boxH, 0, 0, Texture'SolidRed');
-            gc.SetStyle(DSTY_Translucent);
-        }
-
-        // DEUS_EX AMSD In multiplayer, draw green here so that we can draw red actors over it
-        if (player.Level.Netmode != NM_Standalone)
-        {
-            gc.SetStyle(DSTY_Modulated);
-            gc.DrawPattern(0, 0, width, height, 0, 0, Texture'VisionBlue');
-            gc.DrawPattern(0, 0, width, height, 0, 0, Texture'VisionBlue');
-            gc.SetStyle(DSTY_Translucent);
-        }
-        
-
         // adjust for the player's eye height
         loc = Player.Location;
         loc.Z += Player.BaseEyeHeight;
-
-        // DEUS_EX AMSD In multiplayer, in order to not let you snipe people hiding in the dark across the map, but not get
-        // bad feedback from coloring everything green, we have to make the red non translucent so that scale glow darkens it,
-        // instead of fading it out.
-        //if (Player.Level.Netmode != NM_Standalone)
-            //gc.SetStyle(DSTY_Normal);
 
         foreach Player.AllActors(class'Actor', A)
         {
@@ -143,39 +109,19 @@ function _DrawVisionAugmentation(GC gc)
         }
 
         // draw text label
-        if (player.Level.Netmode == NM_Standalone)
-        {
-            gc.GetTextExtent(0, w, h, msgIRAmpActive);
-            x = boxTLX + margin;
-            y = boxTLY - margin - h;
-            gc.SetTextColor(colHeaderText);
-            gc.DrawText(x, y, w, h, msgIRAmpActive);
-        }
+        gc.GetTextExtent(0, w, h, msgIRAmpActive);
+        x = width * 0.1;
+        y = height * 0.2 + h;
+        gc.SetTextColor(colHeaderText);
+        gc.DrawText(x, y, w, h, msgIRAmpActive);
     }
-
-    // shift the middle of the screen green (NV) and increase the contrast
-    // DEUS_EX AMSD In singleplayer, draw this here
-    // In multiplayer, drawn earlier so you can still see through walls with it.
-    if (player.Level.Netmode == NM_Standalone)
-    {
-        gc.SetStyle(DSTY_Modulated);
-        gc.DrawPattern(boxTLX, boxTLY, boxW, boxH, 0, 0, Texture'SolidGreen');
-        gc.DrawPattern(boxTLX, boxTLY, boxW, boxH, 0, 0, Texture'SolidGreen');
-    }
-    gc.SetStyle(DSTY_Normal);
-
-    if (player.Level.NetMode == NM_Standalone)
-        DrawDropShadowBox(gc, boxTLX, boxTLY, boxW, boxH);
 
     // draw text label
-    if (player.Level.Netmode == NM_Standalone)
-    {
-        gc.GetTextExtent(0, w, h, msgLightAmpActive);
-        x = boxTLX + margin;
-        y = boxTLY + margin;
-        gc.SetTextColor(colHeaderText);
-        gc.DrawText(x, y, w, h, msgLightAmpActive);
-    }
+    gc.GetTextExtent(0, w, h, msgLightAmpActive);
+    x = width * 0.1;
+    y = height * 0.2;
+    gc.SetTextColor(colHeaderText);
+    gc.DrawText(x, y, w, h, msgLightAmpActive);
 }
 
 function bool ShouldDrawActor(Actor A)
