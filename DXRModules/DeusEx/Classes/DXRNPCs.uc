@@ -78,7 +78,7 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
 
     // randomize cost for forced items
     for(i=0; i<forced; i++) {
-        items[i].price = rngrange(2000, 0.2, 1.5);
+        items[i].price = rngrange(1500, 0.2, 1.5);
     }
 
     // randomize list
@@ -92,7 +92,7 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
         chance_remaining(r);
 
         items[i].item = iclass;
-        items[i].price = rngrange(2000, 0.2, 1.5);
+        items[i].price = rngrange(1500, 0.2, 1.5);
     }
 
     // remove duplicates
