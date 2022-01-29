@@ -41,7 +41,7 @@ simulated function SetVisionAugStatus(int Level, int LevelValue, bool IsActive)
 defaultproperties
 {
     LevelValues(0)=160
-    LevelValues(1)=800
-    LevelValues(2)=1600
-    LevelValues(3)=3200
+    LevelValues(1)=400
+    LevelValues(2)=1200
+    LevelValues(3)=2400
 }
