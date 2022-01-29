@@ -37,6 +37,7 @@ simulated function InitHints()
     AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
     AddHint("Read the pop-up text on doors to see how many", "hit from your equiped weapon to break it.");
     AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
+    AddHint("Vision Enhancement Aug can see items and devices through walls at level 2.", "Use it to see what's inside locked boxes.");
 #endif
 
     if(dxr.flags.settings.medbots > 0) {
