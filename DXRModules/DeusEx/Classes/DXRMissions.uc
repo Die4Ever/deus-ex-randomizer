@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(1,7,2,8) ) {
+    if( ConfigOlderThan(1,7,2,9) ) {
         allow_vanilla = false;
 
         for(i=0; i<ArrayCount(remove_actors); i++) {
