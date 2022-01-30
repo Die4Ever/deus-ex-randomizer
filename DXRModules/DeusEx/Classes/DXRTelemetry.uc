@@ -170,3 +170,15 @@ static function SendLog(DXRando dxr, Actor a, string LogLevel, string message)
     module = dxr.telemetry;
     if( module != None ) module._SendLog(a, LogLevel, message);
 }
+
+static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Killer, optional coerce string damageType, optional vector HitLocation)
+{
+    local string msg;
+    if(Killer != None )
+        msg = player.TruePlayerName $ " was killed by " $ Killer.Class.Name @ Killer.FamiliarName $ " with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
+    else
+        msg = player.TruePlayerName $ " was killed in " $ dxr.localURL $ " (" $ player.Location $ ")";
+    
+    log("DEATH: " $ msg, 'DXRTelemetry');
+    SendLog(dxr, player, "DEATH", msg);
+}

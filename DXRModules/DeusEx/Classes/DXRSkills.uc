@@ -151,7 +151,7 @@ simulated function RandoSkillLevelValues(Skill a)
     skill_value_rando = float(dxr.flags.settings.skill_value_rando) / 100.0;
     RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_rando, a.Description);
 
-#ifdef balance
+#ifdef injections
     if( #var prefix SkillDemolition(a) != None ) {
         add_desc = "Each level increases the number of grenades you can carry by 1.";
     }

@@ -404,7 +404,7 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
                 }
                 
                 //Actually rando the cooldown
-                m.healRefreshTime = rngrange(m.default.healRefreshTime, 0.5, 1.5); 
+                m.healRefreshTime = rngrange(m.default.healRefreshTime, 0.25, 1.25);
             }
             
             if (mbamount!=0){
@@ -431,7 +431,7 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
                 }
                 
                 //Actually rando the cooldown
-                r.chargeRefreshTime = rngrange(r.default.chargeRefreshTime, 0.5, 1.5); 
+                r.chargeRefreshTime = rngrange(r.default.chargeRefreshTime, 0.25, 1.25); 
             }
             
             if (rbamount!=0){
@@ -443,8 +443,8 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
                 
                 //Actually rando the cooldown
                 r.chargeAmount = rngrange(r.default.chargeAmount, 0.5, 1.5);
-            }           
-        }    
+            }
+        }
     }
 }
 

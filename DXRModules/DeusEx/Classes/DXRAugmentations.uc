@@ -43,6 +43,22 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
     }
 }
 
+function PostFirstEntry()
+{
+    local TechGoggles goggles;
+    local AugVision aug;
+    local string goggles_desc;
+
+    Super.PostFirstEntry();
+
+#ifdef injections
+    aug = AugVision(player().AugmentationSystem.GetAug(class'AugVision'));
+    foreach AllActors(class'TechGoggles', goggles) {
+        goggles.Description = class'TechGoggles'.static.CalcDescription(aug);
+    }
+#endif
+}
+
 static function AddAug(DeusExPlayer player, class<Augmentation> aclass, int level)
 {
     local Augmentation anAug;
@@ -285,7 +301,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         return int(f * 100.0) $ "%";
     }
     else if( a.Class == class'#var prefix AugVision') {
-        word = "Distance";
+        word = "See-through walls distance";
 #ifndef balance
         if(i<2) return "--";
 #endif

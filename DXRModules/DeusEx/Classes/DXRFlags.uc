@@ -189,20 +189,20 @@ simulated static function CurrentVersion(optional out int major, optional out in
     major=1;
     minor=7;
     patch=2;
-    build=6;//build can't be higher than 99
+    build=9;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)
 {
     local int major,minor,patch,build;
     CurrentVersion(major,minor,patch,build);
-    return VersionToString(major, minor, patch, build, full) $ " Beta";
+    return VersionToString(major, minor, patch, build, full) $ "";
 }
 
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,7,2,5) ) {
+    if( ConfigOlderThan(1,7,2,9) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -238,6 +238,10 @@ function CheckConfig()
         difficulty_settings[i].repairbots = 100;
         difficulty_settings[i].medbotuses = 0;
         difficulty_settings[i].repairbotuses = 0;
+        difficulty_settings[i].medbotcooldowns = 1;
+        difficulty_settings[i].repairbotcooldowns = 1;
+        difficulty_settings[i].medbotamount = 1;
+        difficulty_settings[i].repairbotamount = 1;
         difficulty_settings[i].turrets_move = 100;
         difficulty_settings[i].turrets_add = 50;
         difficulty_settings[i].merchants = 30;
@@ -256,6 +260,7 @@ function CheckConfig()
 
         difficulty_names[i] = "Easy";
 #ifndef hx
+        difficulty_names[i] = "Normal";
         difficulty_settings[i].CombatDifficulty = 1;
 #endif
         difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyinclusive;
@@ -273,7 +278,7 @@ function CheckConfig()
         difficulty_settings[i].skills_independent_levels = 0;
         difficulty_settings[i].banned_skills = 3;
         difficulty_settings[i].banned_skill_levels = 3;
-        difficulty_settings[i].minskill = 25;
+        difficulty_settings[i].minskill = 50;
         difficulty_settings[i].maxskill = 150;
         difficulty_settings[i].ammo = 90;
         difficulty_settings[i].medkits = 90;
@@ -288,6 +293,10 @@ function CheckConfig()
         difficulty_settings[i].repairbots = 35;
         difficulty_settings[i].medbotuses = 0;
         difficulty_settings[i].repairbotuses = 0;
+        difficulty_settings[i].medbotcooldowns = 1;
+        difficulty_settings[i].repairbotcooldowns = 1;
+        difficulty_settings[i].medbotamount = 1;
+        difficulty_settings[i].repairbotamount = 1;
         difficulty_settings[i].turrets_move = 50;
         difficulty_settings[i].turrets_add = 30;
         difficulty_settings[i].merchants = 30;
@@ -305,7 +314,7 @@ function CheckConfig()
 
         difficulty_names[i] = "Medium";
 #ifndef hx
-        difficulty_names[i] = "Normal";
+        difficulty_names[i] = "Hard";
         difficulty_settings[i].CombatDifficulty = 1.5;
 #endif
         difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
@@ -338,6 +347,10 @@ function CheckConfig()
         difficulty_settings[i].repairbots = 25;
         difficulty_settings[i].medbotuses = 0;
         difficulty_settings[i].repairbotuses = 0;
+        difficulty_settings[i].medbotcooldowns = 1;
+        difficulty_settings[i].repairbotcooldowns = 1;
+        difficulty_settings[i].medbotamount = 1;
+        difficulty_settings[i].repairbotamount = 1;
         difficulty_settings[i].turrets_move = 50;
         difficulty_settings[i].turrets_add = 70;
         difficulty_settings[i].merchants = 30;
@@ -355,6 +368,7 @@ function CheckConfig()
 
         difficulty_names[i] = "Hard";
 #ifndef hx
+        difficulty_names[i] = "Extreme";
         difficulty_settings[i].CombatDifficulty = 2;
 #endif
         difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
@@ -387,6 +401,10 @@ function CheckConfig()
         difficulty_settings[i].repairbots = 20;
         difficulty_settings[i].medbotuses = 3;
         difficulty_settings[i].repairbotuses = 3;
+        difficulty_settings[i].medbotcooldowns = 1;
+        difficulty_settings[i].repairbotcooldowns = 1;
+        difficulty_settings[i].medbotamount = 1;
+        difficulty_settings[i].repairbotamount = 1;
         difficulty_settings[i].turrets_move = 50;
         difficulty_settings[i].turrets_add = 120;
         difficulty_settings[i].merchants = 30;
@@ -404,7 +422,7 @@ function CheckConfig()
 
         difficulty_names[i] = "DeusEx";
 #ifndef hx
-        difficulty_names[i] = "Extreme";
+        difficulty_names[i] = "Impossible";
         difficulty_settings[i].CombatDifficulty = 3;
 #endif
         difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
@@ -437,6 +455,10 @@ function CheckConfig()
         difficulty_settings[i].repairbots = 15;
         difficulty_settings[i].medbotuses = 1;
         difficulty_settings[i].repairbotuses = 1;
+        difficulty_settings[i].medbotcooldowns = 1;
+        difficulty_settings[i].repairbotcooldowns = 1;
+        difficulty_settings[i].medbotamount = 1;
+        difficulty_settings[i].repairbotamount = 1;
         difficulty_settings[i].turrets_move = 50;
         difficulty_settings[i].turrets_add = 200;
         difficulty_settings[i].merchants = 30;

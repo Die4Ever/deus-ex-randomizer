@@ -6,6 +6,7 @@ var #var PlayerPawn  _player;
 var string hints[100];
 var string details[100];
 var int numHints;
+var int hintsGiven;
 
 simulated function InitHints()
 {
@@ -36,7 +37,8 @@ simulated function InitHints()
     AddHint("Flare darts now set enemies on fire for 3 seconds.");
     AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
     AddHint("Read the pop-up text on doors to see how many", "hit from your equiped weapon to break it.");
-    AddHint("Vision Enhancement Aug and Tech Goggles", "can now see through walls, even at level 1.");
+    AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
+    AddHint("Vision Enhancement Aug can see items and devices through walls at level 2.", "Use it to see what's inside locked boxes.");
 #endif
 
     if(dxr.flags.settings.medbots > 0) {
@@ -232,6 +234,7 @@ simulated function PlayerRespawn(#var PlayerPawn  player)
 {
     Super.PlayerRespawn(player);
     _player = player;
+    hintsGiven = 0;
     SetTimer(1, true);
 }
 
@@ -242,6 +245,7 @@ simulated function PlayerAnyEntry(#var PlayerPawn  player)
         InitHints();
     }
     _player = player;
+    hintsGiven = 0;
     SetTimer(1, true);
 }
 
@@ -255,6 +259,7 @@ simulated function ShowHint(optional int recursion)
 {
     local int hint;
     SetTimer(15, true);
+    hintsGiven++;
     if( recursion > 10 ) {
         error("ShowHint reached max recursion " $ recursion);
         return;
@@ -271,8 +276,18 @@ simulated function Timer()
         SetTimer(0, false);
         return;
     }
-    if(_player.IsInState('Dying'))
+    if(_player.IsInState('Dying')) {
+#ifndef injections
+        if(hintsGiven == 0) {
+            class'DXRStats'.static.AddDeath(_player);
+            class'DXRTelemetry'.static.AddDeath(dxr, _player);
+        }
+#endif
+
         ShowHint();
+    }
+    else
+        hintsGiven = 0;
 }
 
 function RunTests()
