@@ -6,6 +6,7 @@ var #var PlayerPawn  _player;
 var string hints[100];
 var string details[100];
 var int numHints;
+var int hintsGiven;
 
 simulated function InitHints()
 {
@@ -233,6 +234,7 @@ simulated function PlayerRespawn(#var PlayerPawn  player)
 {
     Super.PlayerRespawn(player);
     _player = player;
+    hintsGiven = 0;
     SetTimer(1, true);
 }
 
@@ -243,6 +245,7 @@ simulated function PlayerAnyEntry(#var PlayerPawn  player)
         InitHints();
     }
     _player = player;
+    hintsGiven = 0;
     SetTimer(1, true);
 }
 
@@ -256,6 +259,7 @@ simulated function ShowHint(optional int recursion)
 {
     local int hint;
     SetTimer(15, true);
+    hintsGiven++;
     if( recursion > 10 ) {
         error("ShowHint reached max recursion " $ recursion);
         return;
@@ -273,12 +277,17 @@ simulated function Timer()
         return;
     }
     if(_player.IsInState('Dying')) {
-        ShowHint();
 #ifndef injections
-        class'DXRStats'.static.AddDeath(_player);
-        class'DXRTelemetry'.static.AddDeath(dxr, _player, None, "", _player.Location);
+        if(hintsGiven == 0) {
+            class'DXRStats'.static.AddDeath(_player);
+            class'DXRTelemetry'.static.AddDeath(dxr, _player);
+        }
 #endif
+
+        ShowHint();
     }
+    else
+        hintsGiven = 0;
 }
 
 function RunTests()
