@@ -49,7 +49,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <a href="https://www.youtube.com/watch?v=A0Li3XuBjGg" target="_blank">
 <img src="https://i.imgur.com/hTCuQCH.png" alt="v1.5 Trailer" height="200"/></a>
 
-## Currently in v1.7.1, DXRando randomizes
+## Currently in v1.7.2, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
@@ -100,7 +100,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <details>
 <summary>When you click New Game, you will see this settings screen:</summary>
 
-![options](https://i.imgur.com/VrvaGrl.png)
+![options](https://i.imgur.com/Sppvvvy.png)
 
 </details>
 
@@ -109,7 +109,7 @@ If you click Next then it will use default settings based on your difficulty cho
 <details>
 <summary>But if you click Advanced then you will see these settings:</summary>
 
-![advanced options](https://i.imgur.com/BrWtks6.png)
+![advanced options](https://i.imgur.com/Mp5Qt7V.png)
 
 </details>
 
