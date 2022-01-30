@@ -272,8 +272,13 @@ simulated function Timer()
         SetTimer(0, false);
         return;
     }
-    if(_player.IsInState('Dying'))
+    if(_player.IsInState('Dying')) {
         ShowHint();
+#ifndef injections
+        class'DXRStats'.static.AddDeath(_player);
+        class'DXRTelemetry'.static.AddDeath(dxr, _player, None, "", _player.Location);
+#endif
+    }
 }
 
 function RunTests()
