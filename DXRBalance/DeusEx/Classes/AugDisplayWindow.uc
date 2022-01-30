@@ -1,14 +1,5 @@
 class AugDisplayWindow injects AugmentationDisplayWindow;
 
-var GC _gc;
-
-function DrawVisionAugmentation(GC gc)
-{
-    _gc = gc;
-    _DrawVisionAugmentation(gc);
-    _gc = None;
-}
-
 function bool IsHeatSource(Actor A)
 {
     if ((A.bHidden) && (Player.Level.NetMode != NM_Standalone))
@@ -31,43 +22,26 @@ function bool IsHeatSource(Actor A)
         return False;
 }
 
-
-function SetSkins(Actor actor, out Texture oldSkins[9])
+function DrawBrush(GC gc, Actor a)
 {
     local vector forwards, backwards;
-    local float dist;
-
-    if(actor.Mesh == None) {
-        dist = VSize(Player.Location - actor.Location);
-        forwards = Player.Location + (Vector(Player.ViewRotation) * dist);
-        backwards = Player.Location + (Vector(Player.ViewRotation) * (-dist));
-        if( VSize(actor.Location - forwards) < VSize(actor.Location - backwards) )
-            DrawBrush(actor, _gc);
-    }
-    else
-        Super.SetSkins(actor, oldSkins);
-}
-
-function ResetSkins(Actor actor, Texture oldSkins[9])
-{
-    if(actor.Mesh == None) {}
-    else
-        Super.ResetSkins(actor, oldSkins);
-}
-
-function DrawBrush(Actor a, GC gc)
-{
-    local float boxTLX, boxTLY, boxBRX, boxBRY, width, height;
-    class'FrobDisplayWindow'.static.GetActorBox(self, a, 1, boxTLX, boxTLY, boxBRX, boxBRY);
+    local float dist, boxTLX, boxTLY, boxBRX, boxBRY, width, height;
     
+    dist = VSize(Player.Location - a.Location);
+    forwards = Player.Location + (Vector(Player.ViewRotation) * dist);
+    backwards = Player.Location + (Vector(Player.ViewRotation) * (-dist));
+
+    // don't draw behind us
+    if( VSize(a.Location - forwards) >= VSize(a.Location - backwards) )
+        return;
+    
+    class'FrobDisplayWindow'.static.GetActorBox(self, a, 1, boxTLX, boxTLY, boxBRX, boxBRY);
     width = boxBRX - boxTLX;
     height = boxBRY - boxTLY;
-    //log(self$" DrawBrush "$a @ width @ height);
     gc.DrawPattern(boxTLX, boxTLY, width, height, 0, 0, Texture'Virus_SFX');
-    //gc.DrawText(boxTLX, boxTLY, width, height, a.name @ a.bHidden);
 }
 
-function _DrawVisionAugmentation(GC gc)
+function DrawVisionAugmentation(GC gc)
 {
     local Vector loc;
     local float x, y, w, h;
@@ -142,15 +116,25 @@ function bool ShouldDrawActorDist(Actor A, float dist)
     if(Player.Level.Netmode != NM_Standalone)
         maxDist /= 2.0;
 
-    if(!IsHeatSource(A))
-        maxDist /= 2.0;
-
     return dist <= maxDist;
+}
+
+function _DrawActor(GC gc, Actor A, float DrawGlow)
+{
+    local Texture oldSkins[9];
+
+    if(A.Mesh == None) {
+        DrawBrush(gc, A);
+    }
+    else {
+        SetSkins(A, oldSkins);
+        gc.DrawActor(A, False, False, True, 1.0, DrawGlow, None);
+        ResetSkins(A, oldSkins);
+    }
 }
 
 function DrawActor(GC gc, Actor A, vector loc)
 {
-    local Texture oldSkins[9];
     local float dist, DrawGlow;
 
     dist = VSize(A.Location - loc);
@@ -158,9 +142,7 @@ function DrawActor(GC gc, Actor A, vector loc)
     if ( ShouldDrawActorDist(A, dist) )
     {
         VisionTargetStatus = GetVisionTargetStatus(A);
-        SetSkins(A, oldSkins);
-        gc.DrawActor(A, False, False, True, 1.0, 2.0, None);
-        ResetSkins(A, oldSkins);
+        _DrawActor(gc, A, 2.0);
     }
     else if ((Player.Level.Netmode != NM_Standalone) && (GetVisionTargetStatus(A) == VISIONENEMY) && (A.Style == STY_Translucent))
     {
@@ -169,15 +151,12 @@ function DrawActor(GC gc, Actor A, vector loc)
         if ( (dist <= (visionLevelvalue)) && (Player.LineOfSightTo(A,true)) )
         {
             VisionTargetStatus = GetVisionTargetStatus(A);
-            SetSkins(A, oldSkins);
-            gc.DrawActor(A, False, False, True, 1.0, 2.0, None);
-            ResetSkins(A, oldSkins);
+            _DrawActor(gc, A, 2.0);
         }
     }
     else if (Player.LineOfSightTo(A,true))
     {
         VisionTargetStatus = GetVisionTargetStatus(A);
-        SetSkins(A, oldSkins);
         
         if ((Player.Level.NetMode == NM_Standalone) || (dist < VisionLevelValue * 1.5) || (VisionTargetStatus != VISIONENEMY))
         {
@@ -192,8 +171,7 @@ function DrawActor(GC gc, Actor A, vector loc)
             // Set a minimum.
             DrawGlow = FMax(DrawGlow,0.15);
         }
-        gc.DrawActor(A, False, False, True, 1.0, DrawGlow, None);
-        ResetSkins(A, oldSkins);
+        _DrawActor(gc, A, DrawGlow);
     }
 }
 

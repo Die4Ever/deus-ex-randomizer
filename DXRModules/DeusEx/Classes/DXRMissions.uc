@@ -110,10 +110,6 @@ function vanilla_remove_actors()
     i++;
 
     remove_actors[i].map_name = "01_NYC_unatcoisland";
-    remove_actors[i].actor_name = 'DataLinkTrigger10';//DL_MissedHermann
-    i++;
-
-    remove_actors[i].map_name = "01_NYC_unatcoisland";
     remove_actors[i].actor_name = 'DataLinkTrigger5';//DL_NearTop
     i++;
 
