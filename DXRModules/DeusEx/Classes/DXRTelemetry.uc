@@ -12,7 +12,7 @@ var string notification_url;
 
 function CheckConfig()
 {
-    if( server == "" || config_version < class'DXRFlags'.static.VersionNumber() ) {
+    if( server == "" || config_version < VersionNumber() ) {
         server = "raycarro.com";
         cache_addr = 0;
     }
@@ -134,7 +134,7 @@ function CheckNotification(string data)
     i = InStr(notification_url, " ");
     if( i != -1 ) notification_url = Left(notification_url, i);
 
-    message = class'DXRPasswords'.static.ReplaceText(message, "https://", "");
+    message = ReplaceText(message, "https://", "");
     CreateMessageBox(title, message, 0, Self, 1);
 }
 

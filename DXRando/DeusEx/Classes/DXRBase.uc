@@ -1,15 +1,8 @@
-#ifdef injections
-class DXRBase extends Info config(DXRando);
-#else
-class DXRBase extends Info config(#var package );
-#endif
+class DXRBase extends DXRInfo;
 
 var transient DXRando dxr;
 var transient float overallchances;
-var config int config_version;
 
-var transient int passes;
-var transient int fails;
 var transient bool inited;
 
 replication
@@ -26,18 +19,9 @@ function Init(DXRando tdxr)
     inited = true;
 }
 
-function bool ConfigOlderThan(int major, int minor, int patch, int build)
+simulated function DXRando GetDXR()
 {
-    return class'DXRFlags'.static.VersionOlderThan(config_version, major, minor, patch, build);
-}
-
-function CheckConfig()
-{
-    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
-        info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
-        config_version = class'DXRFlags'.static.VersionNumber();
-        SaveConfig();
-    }
+    return dxr;
 }
 
 simulated event PostNetBeginPlay()
@@ -146,11 +130,6 @@ simulated function float rngrangeseeded(float val, float min, float max, coerce 
     //l("rngrange r: "$r$", mult: "$mult$", min: "$min$", max: "$max$", val: "$val$", return: "$ret);
     dxr.SetSeed(oldseed);
     return ret;
-}
-
-simulated static function float pow(float m, float e)
-{
-    return exp(e * loge(m) );
 }
 
 simulated function float rngexp(float origmin, float origmax, float curve)
@@ -320,28 +299,6 @@ simulated function bool chance_single(float percent)
     return rngf()*100.0 < percent;
 }
 
-simulated function class<Actor> GetClassFromString(string classstring, class<Actor> c)
-{
-    local class<Actor> a;
-    if( InStr(classstring, ".") == -1 ) {
-#ifdef hx
-        classstring = "HX.HX" $ classstring;
-#else
-        classstring = "DeusEx." $ classstring;
-#endif
-    }
-    a = class<Actor>(DynamicLoadObject(classstring, class'class'));
-    if( a == None ) {
-        err("GetClassFromString: failed to load class "$classstring);
-    }
-    else if( ClassIsChildOf(a, c) == false ) {
-        err("GetClassFromString: " $ classstring $ " is not a subclass of " $ c.name);
-        return None;
-    }
-    //l("GetClassFromString: found " $ classstring);
-    return a;
-}
-
 final function Class<Inventory> ModifyInventoryClass( out Class<Inventory> InventoryClass )
 {
 #ifdef hx
@@ -356,49 +313,6 @@ final function Class<Actor> ModifyActorClass( out Class<Actor> ActorClass )
     HXGameInfo(Level.Game).ModifyActorClass( ActorClass );
 #endif
     return ActorClass;
-}
-
-simulated final function #var PlayerPawn  player(optional bool quiet)
-{
-    local #var PlayerPawn  p;
-    //p = #var PlayerPawn (GetPlayerPawn());
-    p = dxr.Player;
-    if( p == None ) {
-        p = #var PlayerPawn (GetPlayerPawn());
-        dxr.Player = p;
-    }
-    if( p == None && !quiet ) warning("player() found None");
-    return p;
-}
-
-simulated static function string UnpackString(out string s)
-{
-    local int i, l;
-    local string ret;
-    l = Len(s);
-    for(i=0; i<l; i++) {
-        if( Mid(s, i, 1) == "," ) {
-            ret = Left(s, i);
-            s = Mid(s, i+1);
-            return ret;
-        }
-    }
-    ret = s;
-    s="";
-    return ret;
-}
-
-simulated static function string FloatToString(float f, int decimal_places)
-{
-    local int i;
-    local string s;
-    f += 0.5 * pow(10, -decimal_places);// round it instead of floor
-    s = string(f);
-    i = InStr(s, ".");
-    if( i != -1 ) {
-        s = Left(s, i+1+decimal_places);
-    }
-    return s;
 }
 
 //Based on function MessageBox from DeusExRootWindow
@@ -478,170 +392,4 @@ simulated function MessageBoxClicked(int button, int callbackId) {
 
 simulated function AddDXRCredits(CreditsWindow cw) 
 {
-}
-
-simulated function debug(coerce string message)
-{
-    //log(message, class.name);
-}
-
-//does not send to telemetry
-simulated function l(coerce string message)
-{
-    log(message, class.name);
-
-    /*if( (InStr(class'DXRFlags'.static.VersionString(), "Alpha")>=0 || InStr(class'DXRFlags'.static.VersionString(), "Beta")>=0) ) {
-        class'Telemetry'.static.SendLog(Self, "DEBUG", message);
-    }*/
-}
-
-simulated function info(coerce string message)
-{
-    log("INFO: " $ message, class.name);
-    class'DXRTelemetry'.static.SendLog(dxr, Self, "INFO", message);
-}
-
-simulated function warning(coerce string message)
-{
-    log("WARNING: " $ message, class.name);
-    class'DXRTelemetry'.static.SendLog(dxr, Self, "WARNING", message);
-}
-
-simulated function err(coerce string message, optional bool skip_player_message)
-{
-    log("ERROR: " $ message, class.name);
-#ifdef singleplayer
-    if(dxr != None && !skip_player_message && player() != None) {
-        player().ClientMessage( Class @ message, 'ERROR' );
-    }
-#else
-    BroadcastMessage(class.name$": ERROR: "$message, true, 'ERROR');
-#endif
-
-    class'DXRTelemetry'.static.SendLog(dxr, Self, "ERROR", message);
-}
-
-simulated function name StringToName(string s)
-{
-    return dxr.flagbase.StringToName(s);
-}
-
-final function StartRunTests()
-{
-    l(".RunTests() " $ dxr.localURL);
-    passes = 0;
-    fails = 0;
-    RunTests();
-}
-
-function RunTests()
-{
-}
-
-final function StartExtendedTests()
-{// these are tests that depend on being in a real level
-    l(".ExtendedTests() " $ dxr.localURL);
-    passes = 0;
-    fails = 0;
-    ExtendedTests();
-}
-
-function ExtendedTests()
-{
-}
-
-function bool test(bool result, string testname)
-{
-    if(result == true) {
-        debug("pass: "$testname);
-        passes++;
-        return true;
-    }
-    else {
-        err("fail: "$testname);
-        fails++;
-        return false;
-    }
-}
-
-function bool testbool(bool result, bool expected, string testname)
-{
-    if(result == expected) {
-        debug("pass: "$testname$": got "$result);
-        passes++;
-        return true;
-    }
-    else {
-        err("fail: "$testname$": got "$result$", expected "$expected);
-        fails++;
-        return false;
-    }
-}
-
-function bool testint(int result, int expected, string testname)
-{
-    if(result == expected) {
-        debug("pass: "$testname$": got "$result);
-        passes++;
-        return true;
-    }
-    else {
-        err("fail: "$testname$": got "$result$", expected "$expected);
-        fails++;
-        return false;
-    }
-}
-
-function bool testfloat(float result, float expected, string testname)
-{
-    if(result ~= expected) {
-        //print both because they might not be exactly equal
-        debug("pass: "$testname$": got "$result$", expected "$expected);
-        passes++;
-        return true;
-    }
-    else {
-        err("fail: "$testname$": got "$result$", expected "$expected);
-        fails++;
-        return false;
-    }
-}
-
-function bool testfloatrange(float result, float expected, float range, string testname)
-{
-    local float diff;
-    diff = abs(result-expected);
-    if( diff <= range ) {
-        //print both because they might not be exactly equal
-        debug("pass: "$testname$": got "$result$", expected "$expected$", with range "$range);
-        passes++;
-        return true;
-    }
-    else {
-        err("fail: "$testname$": got "$result$", expected "$expected$", with range "$range);
-        fails++;
-        return false;
-    }
-}
-
-function bool teststring(coerce string result, coerce string expected, coerce string testname)
-{
-    if(result == expected) {
-        debug("pass: "$testname$": got "$result);
-        passes++;
-        return true;
-    }
-    else {
-        err("fail: "$testname$": got "$result$", expected "$expected);
-        fails++;
-        return false;
-    }
-}
-
-defaultproperties
-{
-    NetPriority=0.2
-    bAlwaysRelevant=True
-    bGameRelevant=True
-    RemoteRole=ROLE_SimulatedProxy
 }

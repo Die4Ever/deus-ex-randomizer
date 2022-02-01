@@ -13,7 +13,7 @@ function UpdateButtonStatus()
 function SetTitle(String newTitle)
 {
     bTickEnabled = true;
-    title = "REVISION RANDOMIZER " $ class'DXRFlags'.static.VersionString();
+    title = "REVISION RANDOMIZER " $ class'DXRVersion'.static.VersionString();
     winTitle.SetTitle( title );
     countdown = 0.5;
 }

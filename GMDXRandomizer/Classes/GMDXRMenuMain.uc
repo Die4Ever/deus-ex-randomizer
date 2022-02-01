@@ -13,7 +13,7 @@ function UpdateButtonStatus()
 function SetTitle(String newTitle)
 {
     bTickEnabled = true;
-    title = "GMDX RANDOMIZER " $ class'DXRFlags'.static.VersionString();
+    title = "GMDX RANDOMIZER " $ class'DXRVersion'.static.VersionString();
     winTitle.SetTitle( title );
     countdown = 0.5;
 }

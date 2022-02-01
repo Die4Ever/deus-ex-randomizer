@@ -11,7 +11,7 @@ function UpdateButtonStatus()
 function SetTitle(String newTitle)
 {
     bTickEnabled = true;
-    title = "DEUS EX RANDOMIZER " $ class'DXRFlags'.static.VersionString();
+    title = "DEUS EX RANDOMIZER " $ class'DXRVersion'.static.VersionString();
     winTitle.SetTitle( title );
     countdown = 0.5;
 }

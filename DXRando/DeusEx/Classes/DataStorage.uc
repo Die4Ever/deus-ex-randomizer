@@ -1,11 +1,7 @@
-#ifdef hx
-class DataStorage extends Info config(HXRandoDataStorage) transient;
-#elseif gmdx
-class DataStorage extends Info config(GMDXRandoDataStorage) transient;
-#elseif revision
-class DataStorage extends Info config(RevRandoDataStorage) transient;
+#ifdef vanilla
+class DataStorage extends DXRInfo config(DXRDataStorage) transient;
 #else
-class DataStorage extends Info config(DXRDataStorage) transient;
+class DataStorage extends DXRInfo config(#var package DataStorage) transient;
 #endif
 
 struct KVP {
@@ -143,55 +139,6 @@ function EndPlaythrough()
     }
 }
 
-static function int _SystemTime(LevelInfo Level)
-{
-    local int time, m;
-    time = Level.Second + (Level.Minute*60) + (Level.Hour*3600) + (Level.Day*86400);
-
-    switch(Level.Month) {
-        // in case 12, we add the days of november not december, because we're still in december
-        // all the cases roll over to add the other days of the year that have passed
-        case 12:
-            time += 30 * 86400;
-        case 11:
-            time += 31 * 86400;
-        case 10:
-            time += 30 * 86400;
-        case 9:
-            time += 31 * 86400;
-        case 8:
-            time += 31 * 86400;
-        case 7:
-            time += 30 * 86400;
-        case 6:
-            time += 31 * 86400;
-        case 5:
-            time += 30 * 86400;
-        case 4:
-            time += 31 * 86400;
-        case 3:
-            time += 28 * 86400;
-        case 2:
-            time += 31 * 86400;
-    }
-
-    time += (Level.Year-1970) * 86400 * 365;
-
-    // leap years...
-    time += (Level.Year-1)/4 * 86400;// leap year every 4th year
-    time -= (Level.Year-1)/100 * 86400;// but not every 100th year
-    time += (Level.Year-1)/400 * 86400;// unless it's also a 400th year
-    // if the current year is a leap year, have we passed it?
-    if ( (Level.Year % 4) == 0 && ( (Level.Year % 100) != 0 || (Level.Year % 400) == 0 ) && Level.Month > 2 )
-        time += 86400;
-    return time;
-}
-
-final function int SystemTime()
-{
-    return _SystemTime(Level);
-}
-
 simulated function static DataStorage GetObj(DXRando dxr)
 {
     local DataStorage d;
@@ -204,6 +151,7 @@ simulated function static DataStorage GetObj(DXRando dxr)
 
     if( d == None ) {
         d = dxr.Spawn(class'DataStorage');
+        d.CheckConfig();
         dxr.ds = d;
     }
     if( d.playthrough_id == 0 ) {

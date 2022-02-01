@@ -199,7 +199,7 @@ simulated function InitHints()
             if( dxr.FindModule(class'DXRBacktracking') != None ) {
                 AddHint("Randomizer has enabled extra backtracking.", "You will be able to come back here later.");
             }
-#else
+#endif
             break;
         case 14:
             if (map ~= "14_oceanlab_silo") {

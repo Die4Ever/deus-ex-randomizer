@@ -9,7 +9,7 @@ event InitWindow()
 
 function CheckConfig()
 {
-    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
+    if( config_version < class'DXRVersion'.static.VersionNumber() ) {
         num_rows=default.num_rows;
         num_cols=default.num_cols;
         col_width_odd=default.col_width_odd;

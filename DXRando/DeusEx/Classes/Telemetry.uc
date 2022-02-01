@@ -90,7 +90,7 @@ function string GetUrl()
 {
     local string version;
     local int i;
-    version = class'DXRFlags'.static.VersionString(true);
+    version = class'DXRVersion'.static.VersionString(true);
     i = InStr(version, " ");
     while( i != -1 ) {
         version = Left(version, i) $ "%20" $ Mid(version, i+1);
