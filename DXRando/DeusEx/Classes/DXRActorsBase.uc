@@ -492,8 +492,6 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     local Actor newactor;
     local bool bCollideActors, bBlockActors, bBlockPlayers;
 
-    l("SpawnReplacement("$a$", "$newclass$")");
-
     bCollideActors = a.bCollideActors;
     bBlockActors = a.bBlockActors;
     bBlockPlayers = a.bBlockPlayers;
@@ -501,10 +499,12 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
 
     newactor = _AddActor(a, newclass, a.Location, a.Rotation, a.Owner, a.Tag);
     if(newactor == None) {
-        l("SpawnReplacement("$a$", "$newclass$") failed");
+        error("SpawnReplacement("$a$", "$newclass$") failed");
         a.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
         return None;
     }
+
+    l("SpawnReplacement("$a$", "$newclass$") " $ newactor);
     
     newactor.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
     newactor.SetPhysics(a.Physics);

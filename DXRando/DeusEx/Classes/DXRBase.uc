@@ -480,8 +480,12 @@ simulated function AddDXRCredits(CreditsWindow cw)
 {
 }
 
+simulated function debug(coerce string message)
+{
+    //log(message, class.name);
+}
 
-//consider this like debug or trace
+//does not send to telemetry
 simulated function l(coerce string message)
 {
     log(message, class.name);
@@ -549,7 +553,7 @@ function ExtendedTests()
 function bool test(bool result, string testname)
 {
     if(result == true) {
-        l("pass: "$testname);
+        debug("pass: "$testname);
         passes++;
         return true;
     }
@@ -563,7 +567,7 @@ function bool test(bool result, string testname)
 function bool testbool(bool result, bool expected, string testname)
 {
     if(result == expected) {
-        l("pass: "$testname$": got "$result);
+        debug("pass: "$testname$": got "$result);
         passes++;
         return true;
     }
@@ -577,7 +581,7 @@ function bool testbool(bool result, bool expected, string testname)
 function bool testint(int result, int expected, string testname)
 {
     if(result == expected) {
-        l("pass: "$testname$": got "$result);
+        debug("pass: "$testname$": got "$result);
         passes++;
         return true;
     }
@@ -592,7 +596,7 @@ function bool testfloat(float result, float expected, string testname)
 {
     if(result ~= expected) {
         //print both because they might not be exactly equal
-        l("pass: "$testname$": got "$result$", expected "$expected);
+        debug("pass: "$testname$": got "$result$", expected "$expected);
         passes++;
         return true;
     }
@@ -609,7 +613,7 @@ function bool testfloatrange(float result, float expected, float range, string t
     diff = abs(result-expected);
     if( diff <= range ) {
         //print both because they might not be exactly equal
-        l("pass: "$testname$": got "$result$", expected "$expected$", with range "$range);
+        debug("pass: "$testname$": got "$result$", expected "$expected$", with range "$range);
         passes++;
         return true;
     }
@@ -623,7 +627,7 @@ function bool testfloatrange(float result, float expected, float range, string t
 function bool teststring(coerce string result, coerce string expected, coerce string testname)
 {
     if(result == expected) {
-        l("pass: "$testname$": got "$result);
+        debug("pass: "$testname$": got "$result);
         passes++;
         return true;
     }

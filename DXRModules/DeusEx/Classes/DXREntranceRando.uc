@@ -365,7 +365,7 @@ function bool ValidateConnections()
     //Theoretically I should probably actually check to see if the maps match,
     //but this is fairly safe...
     if( visitable != numMaps )
-        l("ValidateConnections visitable: " $ visitable $", numMaps: " $ numMaps $", i: "$i$", numConns: "$numConns);
+        debug("ValidateConnections visitable: " $ visitable $", numMaps: " $ numMaps $", i: "$i$", numConns: "$numConns);
     return visitable == numMaps;
 }
 
@@ -1142,9 +1142,9 @@ function LogConnections(optional bool bInfo)
             info( "    "$ conns[i].b.mapname $"#"$ conns[i].b.outTag $" goes to "$ conns[i].a.mapname $"#"$ conns[i].a.inTag );
         }
         else {
-            l("conns["$i$"]:");
-            l( "    "$ conns[i].a.mapname $"#"$ conns[i].a.outTag $" goes to "$ conns[i].b.mapname $"#"$ conns[i].b.inTag );
-            l( "    "$ conns[i].b.mapname $"#"$ conns[i].b.outTag $" goes to "$ conns[i].a.mapname $"#"$ conns[i].a.inTag );
+            debug("conns["$i$"]:");
+            debug( "    "$ conns[i].a.mapname $"#"$ conns[i].a.outTag $" goes to "$ conns[i].b.mapname $"#"$ conns[i].b.inTag );
+            debug( "    "$ conns[i].b.mapname $"#"$ conns[i].b.outTag $" goes to "$ conns[i].a.mapname $"#"$ conns[i].a.inTag );
         }
     }
 }

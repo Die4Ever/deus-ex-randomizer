@@ -506,7 +506,7 @@ function ExtendedTests()
     TestCameraPlacement( vect(-1090.995483, 2757.317871, -2550.324463), false );
 
     foreach AllActors(class'PathNode', a) {
-        log("testing camera positioning with "$a);
+        debug("testing camera positioning with "$a);
         TestCameraPlacement( a.Location, true );
     }
 }

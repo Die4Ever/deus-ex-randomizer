@@ -239,7 +239,7 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
     local DXRBase m;
     l("loading module "$moduleclass);
 
-    m = FindModule(moduleclass);
+    m = FindModule(moduleclass, true);
     if( m != None ) {
         info("found already loaded module "$m);
         if(m.dxr != Self) m.Init(Self);
@@ -277,7 +277,7 @@ function LoadModules()
     telemetry = DXRTelemetry(FindModule(class'DXRTelemetry'));
 }
 
-simulated final function DXRBase FindModule(class<DXRBase> moduleclass)
+simulated final function DXRBase FindModule(class<DXRBase> moduleclass, optional bool bSilent)
 {
     local DXRBase m;
     local int i;
@@ -289,7 +289,8 @@ simulated final function DXRBase FindModule(class<DXRBase> moduleclass)
     foreach AllActors(class'DXRBase', m)
     {
         if( m.Class == moduleclass ) {
-            l("FindModule("$moduleclass$") found "$m);
+            if(!bSilent)
+                l("FindModule("$moduleclass$") found "$m);
             m.Init(Self);
             modules[num_modules] = m;
             num_modules++;
@@ -297,7 +298,8 @@ simulated final function DXRBase FindModule(class<DXRBase> moduleclass)
         }
     }
 
-    l("didn't find module "$moduleclass);
+    if(!bSilent)
+        l("didn't find module "$moduleclass);
     return None;
 }
 
