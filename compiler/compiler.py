@@ -90,30 +90,50 @@ def compile(args, settings):
     if source:
         print("processing source files from "+source)
         for file in insensitive_glob(source+'/*'):
-            reader.proc_file(file, orig_files, 'source', None, preprocessor, definitions)
+            try:
+                reader.proc_file(file, orig_files, 'source', None, preprocessor, definitions)
+            except Exception as e:
+                appendException(e, "error processing file: "+file)
+                raise
     
     for mod in mods:
         print("processing files from mod "+mod)
         mods_files.append({})
         for file in insensitive_glob(mod+'*'):
-            if file_is_blacklisted(file, settings):
-                continue
-            f = reader.proc_file(file, mods_files[-1], mod, injects, preprocessor, definitions)
-            if f and f.namespace in rewrite_packages:
-                f.namespace = rewrite_packages[f.namespace]
+            try:
+                if file_is_blacklisted(file, settings):
+                    continue
+                f = reader.proc_file(file, mods_files[-1], mod, injects, preprocessor, definitions)
+                if f and f.namespace in rewrite_packages:
+                    f.namespace = rewrite_packages[f.namespace]
+            except Exception as e:
+                appendException(e, "error processing file: "+file)
+                raise
 
     print("\nwriting source files...")
     writer.before_write(orig_files, injects)
     for file in orig_files.values():
-        debug("Writing file "+str(file.file))
-        writer.write_file(out, file, written, injects)
+        try:
+            debug("Writing file "+str(file.file))
+            writer.write_file(out, file, written, injects)
+        except Exception as e:
+            appendException(e, "error writing file "+str(file.file))
+            raise
     
     for mod in mods_files:
         print("writing mod "+repr(mod.keys()))
-        writer.before_write(mod, injects)
+        try:
+            writer.before_write(mod, injects)
+        except Exception as e:
+            appendException(e, "error before_write mod "+repr(mod.keys()))
+            raise
         for file in mod.values():
             debug("Writing mod file "+str(file.file))
-            writer.write_file(out, file, written, injects)
+            try:
+                writer.write_file(out, file, written, injects)
+            except Exception as e:
+                appendException(e, "error writing mod file "+str(file.file))
+                raise
     
     if dryrun:
         return 1

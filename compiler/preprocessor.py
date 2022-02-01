@@ -23,6 +23,17 @@ def preprocess(content, ifdef, definitions):
     num_lines_before = 0
     num_lines_after = 1 # 1 for the #endif
     replacement = None
+    total_lines = ifdef.count('\n')
+
+    if total_lines > 200:
+        # this is a strong warning to refactor the code
+        raise Exception("ifdef is "+str(total_lines)+" lines long!")
+    
+    if ifdef.count('#endif') != 1:
+        raise Exception("ifdef contains "+str(ifdef.count('#endif'))+" #endif's")
+    
+    if ifdef.count('#ifdef') > 1:
+        raise Exception("ifdef contains too many #ifdefs: "+str(ifdef.count('#ifdef')))
 
     for i in r.finditer(ifdef):
         if replacement is not None:
@@ -36,7 +47,7 @@ def preprocess(content, ifdef, definitions):
         elif replacement is None:
             num_lines_before += i.group(1).count('\n')+1
             num_lines_before += i.group(2).count('\n')+1
-    
+
     if replacement is None:
         replacement = ""
     
