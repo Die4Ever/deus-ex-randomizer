@@ -37,7 +37,7 @@ function BindControls(optional string action)
     Slider(iDifficulty, 0, 500);
     combatDifficulty = float(iDifficulty) / 100.0;
 
-#ifdef vanilla
+#ifndef hx
     NewMenuItem("", "Randomize starting locations on certain maps");
     EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations);
     EnumOption("Unchanged Starting Locations", 0, f.settings.startinglocations);

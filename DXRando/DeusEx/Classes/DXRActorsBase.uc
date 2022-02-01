@@ -461,11 +461,16 @@ function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
     return _AddSwitch(Self, loc, rotate, Event);
 }
 
-static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rotate)
+static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rotate, optional Actor owner, optional Name tag)
 {
     local Actor d;
     local bool oldCollideWorld;
-    d = a.Spawn(c,,, loc, rotate );
+
+    d = a.Spawn(c, owner, tag, loc, rotate );
+    if(d == None) {
+        return None;
+    }
+
     oldCollideWorld = d.bCollideWorld;
     d.bCollideWorld = false;
     d.SetLocation(loc);
@@ -480,6 +485,36 @@ function Containers AddBox(class<Containers> c, vector loc, optional rotator rot
     box = Containers(_AddActor(Self, c, loc, rotate));
     box.bInvincible = true;
     return box;
+}
+
+function Actor SpawnReplacement(Actor a, class<Actor> newclass)
+{
+    local Actor newactor;
+    local bool bCollideActors, bBlockActors, bBlockPlayers;
+
+    l("SpawnReplacement("$a$", "$newclass$")");
+
+    bCollideActors = a.bCollideActors;
+    bBlockActors = a.bBlockActors;
+    bBlockPlayers = a.bBlockPlayers;
+    a.SetCollision(false, false, false);
+
+    newactor = _AddActor(a, newclass, a.Location, a.Rotation, a.Owner, a.Tag);
+    if(newactor == None) {
+        l("SpawnReplacement("$a$", "$newclass$") failed");
+        a.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
+        return None;
+    }
+    
+    newactor.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
+    newactor.SetPhysics(a.Physics);
+    newactor.SetCollisionSize(a.CollisionRadius, a.CollisionHeight);
+    newactor.SetBase(a.Base);
+    newactor.Texture = a.Texture;
+    newactor.Mesh = a.Mesh;
+    newactor.Mass = a.Mass;
+    newactor.Buoyancy = a.Buoyancy;
+    return newactor;
 }
 
 function string ActorToString( Actor a )

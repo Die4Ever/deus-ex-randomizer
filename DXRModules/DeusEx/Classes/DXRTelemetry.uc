@@ -24,7 +24,7 @@ function AnyEntry()
     local #var PlayerPawn  p;
     Super.AnyEntry();
 #ifdef hx
-    SetTimer(300, true);
+    //SetTimer(300, true);
 #endif
     //info log player's health, item counts...?
     p = player();
