@@ -1,55 +1,61 @@
 # handles ifdef so we can exclude/include code depending on compiler flags, like if we want to build on top of another mod
 from compiler.base import *
 
-def bIfdef(ifdef, definitions):
+def bIfdef(ifdef, cond, definitions):
     if ifdef == '#else':
         return True
-    var = re.search( r'(#\w+) (.*)$', ifdef )
-    if var.group(1) == '#ifdef' or var.group(1) == '#elseif':
-        return var.group(2) in definitions
-    elif var.group(1) == '#ifndef' or var.group(1) == '#elseifn':
-        return var.group(2) not in definitions
+    #var = re.search( r'(#\w+) (.*)$', ifdef )
+    if ifdef == '#ifdef' or ifdef == '#elseif':
+        return cond in definitions
+    elif ifdef == '#ifndef' or ifdef == '#elseifn':
+        return cond not in definitions
     
-    raise RuntimeError("Unknown preprocessor "+ifdef)
+    raise RuntimeError("Unknown preprocessor "+ifdef+' '+cond)
 
 
 def preprocess(content, ifdef, definitions):
     # the ?=(#\w+) is for a lookahead
     # because we want to read up until the next preprocessor directive
     # but we don't want to swallow it yet
-    r = re.compile(r'(#[^\n]+)\n(.*?)\n(?=(#\w+))', flags=re.DOTALL)
+    r = re.compile(r'(?P<ifdef>#[^\s]+)( (?P<cond>[^\s]+))?\n(?P<code>.*?)\n(?=(?P<next>#\w+))', flags=re.DOTALL)
     
     # pad the new lines so the errors coming from the compiler match the lines in the original files
     num_lines_before = 0
     num_lines_after = 1 # 1 for the #endif
     replacement = None
-    total_lines = ifdef.count('\n')
-
-    if total_lines > 200:
-        # this is a strong warning to refactor the code
-        raise Exception("ifdef is "+str(total_lines)+" lines long!")
-    
-    if ifdef.count('#endif') != 1:
-        raise Exception("ifdef contains "+str(ifdef.count('#endif'))+" #endif's")
-    
-    if ifdef.count('#ifdef') > 1:
-        raise Exception("ifdef contains too many #ifdefs: "+str(ifdef.count('#ifdef')))
+    num_lines = 0
+    counts = {'#ifdef':0, '#ifndef':0, '#else':0, '#elseif':0, '#elseifn':0}
 
     for i in r.finditer(ifdef):
-        if replacement is not None:
-            num_lines_after += i.group(1).count('\n')+1
-            num_lines_after += i.group(2).count('\n')+1
+        counts[i.group('ifdef')] += 1
 
-        elif bIfdef(i.group(1), definitions):
-            num_lines_before += i.group(1).count('\n')+1
-            replacement = i.group(2)
+        if replacement is not None:
+            num_lines_after += 1
+            num_lines_after += i.group('code').count('\n')+1
+
+        elif bIfdef(i.group('ifdef'), i.group('cond'), definitions):
+            num_lines_before += 1
+            replacement = i.group('code')
+            num_lines = replacement.count('\n')
 
         elif replacement is None:
-            num_lines_before += i.group(1).count('\n')+1
-            num_lines_before += i.group(2).count('\n')+1
+            num_lines_before += 1
+            num_lines_before += i.group('code').count('\n')+1
+
+    if num_lines_before + num_lines + num_lines_after > 200:
+        # this is a strong warning to refactor the code
+        raise Exception("ifdef is "+str(num_lines_before + num_lines + num_lines_after)+" lines long!")
+    if counts['#ifdef'] + counts['#ifndef'] != 1:
+        raise Exception("ifdef has "+str(counts['#ifdef'] + counts['#ifndef'])+" #ifdefs/#ifndefs")
+    if counts['#elseif'] + counts['#elseifn'] > 20:
+        # this is a strong warning to refactor the code
+        raise Exception("ifdef has "+str(counts['#elseif'] + counts['#elseifn'])+" #elseifs/#elseifns")
+    if counts['#else'] > 1:
+        raise Exception("ifdef has "+str(counts['#else'])+" #elses")
 
     if replacement is None:
         replacement = ""
+        num_lines_before -= 1
     
     if replacement is not None:
         replacement = ('\n'*num_lines_before) + replacement + ('\n'*num_lines_after)

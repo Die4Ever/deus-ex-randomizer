@@ -18,10 +18,10 @@ def debug(str):
         print(str)
 
 def prependException(e, msg):
-    e.args = (msg + "\n" + e.args[0],) + e.args[1:]
+    e.args = (msg + " \n" + e.args[0],) + e.args[1:]
 
 def appendException(e, msg):
-    e.args = (e.args[0] + "\n" + msg,) + e.args[1:]
+    e.args = (e.args[0] + " \n" + msg,) + e.args[1:]
 
 def printHeader(text):
     print("")

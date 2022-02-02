@@ -93,7 +93,7 @@ def compile(args, settings):
             try:
                 reader.proc_file(file, orig_files, 'source', None, preprocessor, definitions)
             except Exception as e:
-                appendException(e, "error processing file: "+file)
+                appendException(e, "error processing vanilla file: "+file)
                 raise
     
     for mod in mods:
@@ -107,7 +107,7 @@ def compile(args, settings):
                 if f and f.namespace in rewrite_packages:
                     f.namespace = rewrite_packages[f.namespace]
             except Exception as e:
-                appendException(e, "error processing file: "+file)
+                appendException(e, "error processing mod file: "+file)
                 raise
 
     print("\nwriting source files...")
@@ -117,7 +117,7 @@ def compile(args, settings):
             debug("Writing file "+str(file.file))
             writer.write_file(out, file, written, injects)
         except Exception as e:
-            appendException(e, "error writing file "+str(file.file))
+            appendException(e, "error writing vanilla file "+str(file.file))
             raise
     
     for mod in mods_files:
