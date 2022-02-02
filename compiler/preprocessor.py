@@ -67,29 +67,30 @@ def replace_vars(content, definitions):
     r = re.compile(r'#var (\w+) ')
     content_out = content
     for i in r.finditer(content):
-        if i.group(1) not in definitions:
-            raise RuntimeError("Unknown preprocessor variable "+i.group(0))
-        content_out = content_out.replace( i.group(0), definitions[i.group(1)] )
+        if i.group(1) in definitions:
+            content_out = content_out.replace( i.group(0), definitions[i.group(1)] )
+        else:
+            content_out = content_out.replace( i.group(0), "None" )
     return content_out
 
 
-def replace_isdefs(content, definitions):
-    r = re.compile(r'#isdef (\w+)')
+def replace_defineds(content, definitions):
+    r = re.compile(r'#defined (\w+)')
     content_out = content
     for i in r.finditer(content):
-        if i.group(1) not in definitions:
-            content_out = content_out.replace( i.group(0), 'false' )
-        else:
+        if i.group(1) in definitions:
             content_out = content_out.replace( i.group(0), 'true' )
+        else:
+            content_out = content_out.replace( i.group(0), 'false' )
     return content_out
 
 
 def preprocessor(content, definitions):
     # TODO: doesn't yet support nested preprocessor definitions
     content = replace_vars(content, definitions)
-    content = replace_isdefs(content, definitions)
+    content = replace_defineds(content, definitions)
     content_out = content
-    r = re.compile(r'((#ifdef )|(#ifndef))(.*?)(#endif)', flags=re.DOTALL)
+    r = re.compile(r'((#ifdef )|(#ifndef ))(.*?)(#endif)', flags=re.DOTALL)
     for i in r.finditer(content):
         content_out = preprocess(content_out, i.group(0), definitions)
     return content_out
