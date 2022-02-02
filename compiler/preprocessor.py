@@ -73,9 +73,21 @@ def replace_vars(content, definitions):
     return content_out
 
 
+def replace_isdefs(content, definitions):
+    r = re.compile(r'#isdef (\w+)')
+    content_out = content
+    for i in r.finditer(content):
+        if i.group(1) not in definitions:
+            content_out = content_out.replace( i.group(0), 'false' )
+        else:
+            content_out = content_out.replace( i.group(0), 'true' )
+    return content_out
+
+
 def preprocessor(content, definitions):
     # TODO: doesn't yet support nested preprocessor definitions
     content = replace_vars(content, definitions)
+    content = replace_isdefs(content, definitions)
     content_out = content
     r = re.compile(r'((#ifdef )|(#ifndef))(.*?)(#endif)', flags=re.DOTALL)
     for i in r.finditer(content):
