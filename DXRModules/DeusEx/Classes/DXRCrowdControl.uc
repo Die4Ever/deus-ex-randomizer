@@ -46,14 +46,14 @@ function Init(DXRando tdxr)
 
 function AnyEntry() {
     Super.AnyEntry();
-    if( link != None ) {
-        link.InitOnEnter();
+    if( link != None && link.ccEffects != None ) {
+        link.ccEffects.InitOnEnter();
     }
 }
 
 function PreTravel() {
-    if( link != None ) {
-        link.CleanupOnExit();
+    if( link != None && link.ccEffects != None ) {
+        link.ccEffects.CleanupOnExit();
     }
     Super.PreTravel();
 }
