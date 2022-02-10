@@ -11,7 +11,7 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": true,
-        "blacklist": [ "HXRandomizer", "GMDXRandomizer", "RevRandomizer", "VMDRandomizer", "DXRReplaceActors.uc" ]
+        "blacklist": [ "DXRNonVanilla", "HXRandomizer", "GMDXRandomizer", "RevRandomizer", "VMDRandomizer", "DXRReplaceActors.uc" ]
     },
     "hx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX Backup/",

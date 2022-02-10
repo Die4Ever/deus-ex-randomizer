@@ -186,7 +186,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
 
     // choose random points within the 0-1 range, with an extra point so we can remove the median
     for(i=0; i < len; i++) {
-        v = rngexp(0, 100, 1.4) / 100.0;
+        v = rngexp(0, 100, 1.4) / 100.0;// should this be using a 1.4 curve?
         points[i] = v;
     }
 

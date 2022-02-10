@@ -8,7 +8,7 @@ Copy `VMDRandomizer.u` into the game's `System` folder, which is probably `C:\Pr
 
 Edit the `VMDSim.ini` file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
 
-In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=VMDRandomizer.VMDRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=VMDRandomizer.VMDRandoRootWindow`
+In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=VMDRandomizer.DXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=VMDRandomizer.DXRandoRootWindow`
 
 VMD Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
 
@@ -22,7 +22,7 @@ Copy `GMDXRandomizer.u` into the game's `System` folder, which is probably `C:\P
 
 Edit the `GMDX.ini` file which is probably in `%UserProfile%\Documents\Deus Ex\System`
 
-In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=GMDXRandomizer.GMDXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=GMDXRandomizer.GMDXRandoRootWindow`
+In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=GMDXRandomizer.DXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=GMDXRandomizer.DXRandoRootWindow`
 
 GMDX Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
 
@@ -36,7 +36,7 @@ Copy `RevRandomizer.u` into the game's `Revision\System` folder, which is probab
 
 Edit the `Revision.ini` file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
 
-In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=Revision.RevGameInfo` to `DefaultGame=RevRandomizer.RevRandoGameInfo` and change `Root` from `Root=Revision.RevRootWindow` to `Root=RevRandomizer.RevRandoRootWindow`
+In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=Revision.RevGameInfo` to `DefaultGame=RevRandomizer.DXRandoGameInfo` and change `Root` from `Root=Revision.RevRootWindow` to `Root=RevRandomizer.DXRandoRootWindow`
 
 Revision Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
 
