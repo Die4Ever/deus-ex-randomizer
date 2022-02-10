@@ -29,19 +29,26 @@ function InvokeMenu(Class<DeusExBaseWindow> newMenu)
 
 function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, optional Bool bNoPause)
 {
-    if(class<NetworkTerminal>(newScreen) != None) {
-        log("InvokeUIScreen "$newScreen);
-        /*
-        class ATMWindow extends NetworkTerminalATM;
-        class NetworkTerminalATM extends NetworkTerminal;
-        class NetworkTerminalPersonal extends NetworkTerminal;
-        class NetworkTerminalPublic extends NetworkTerminal;
-        class NetworkTerminalSecurity extends NetworkTerminal;
-        */
-    }
     switch(newScreen) {
-        case class'NetworkTerminal':
-            newScreen = class'NetworkTerminal';
+        /*case class'ATMWindow':
+            newScreen = class'DXRATMWindow';
+            break;
+        case class'NetworkTerminalATM':
+            newScreen = class'DXRNetworkTerminalATM';
+            break;*/
+        case class'NetworkTerminalPersonal':
+            newScreen = class'DXRNetworkTerminalPersonal';
+            break;
+        case class'NetworkTerminalPublic':
+            newScreen = class'DXRNetworkTerminalPublic';
+            break;
+        case class'NetworkTerminalSecurity':
+            newScreen = class'DXRNetworkTerminalSecurity';
+            break;
+        default:
+            if(class<NetworkTerminal>(newScreen) != None) {
+                log("WARNING: InvokeUIScreen "$newScreen);
+            }
             break;
     }
     return Super.InvokeUIScreen(newScreen, bNoPause);
