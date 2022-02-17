@@ -1,5 +1,7 @@
+# for VSCode https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig
+
 [*]
-indent_style = tab
+indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
 insert_final_newline = true
