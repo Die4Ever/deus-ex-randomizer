@@ -105,7 +105,7 @@ static function bool RemoveItem(Pawn p, class c)
     local bool found;
     sp = ScriptedPawn(p);
     found = false;
-    
+
     if( sp != None ) {
         for (i=0; i<ArrayCount(sp.InitialInventory); i++)
         {
@@ -126,7 +126,7 @@ static function bool RemoveItem(Pawn p, class c)
             found = true;
         }
     }
-    
+
     return found;
 }
 
@@ -135,7 +135,7 @@ static function bool HasItem(Pawn p, class c)
     local ScriptedPawn sp;
     local int i;
     sp = ScriptedPawn(p);
-    
+
     if( sp != None ) {
         for (i=0; i<ArrayCount(sp.InitialInventory); i++)
         {
@@ -154,7 +154,7 @@ static function bool HasItemSubclass(Pawn p, class<Inventory> c)
     local ScriptedPawn sp;
     local int i;
     sp = ScriptedPawn(p);
-    
+
     if( sp != None ) {
         for (i=0; i<ArrayCount(sp.InitialInventory); i++)
         {
@@ -189,12 +189,26 @@ static function bool IsMeleeWeapon(Inventory item)
         || item.IsA('#var prefix WeaponNanoSword');
 }
 
+static function DeusExAmmo GiveAmmoForWeapon(Pawn p, DeusExWeapon w, int add_ammo)
+{
+    local int i;
+
+    if( w == None || add_ammo <= 0 )
+        return None;
+
+    if ( w.AmmoName == None || w.AmmoName == Class'AmmoNone' )
+        return None;
+
+    for(i=0; i<add_ammo; i++)
+        w.AmmoType = DeusExAmmo(GiveItem(p, w.AmmoName));
+}
+
 static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int add_ammo)
 {
     local inventory anItem;
     local DeusExPlayer player;
-    local DeusExWeapon w;
-    local int i;
+    local bool PlayerTraveling;
+    local DeusExPickup pickup;
 
     player = #var PlayerPawn (p);
     if( class<Ammo>(iclass) != None ) {
@@ -207,19 +221,36 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
         }
     }
 
+    if( class<DeusExWeapon>(iclass) != None ) {
+        anItem = p.FindInventoryType(iclass);
+        if( anItem != None ) {
+            GiveAmmoForWeapon(p, DeusExWeapon(anItem), add_ammo + 1);
+            return anItem;
+        }
+    }
+
+    if( class<DeusExPickup>(iclass) != None ) {
+        pickup = DeusExPickup(p.FindInventoryType(iclass));
+        if( pickup != None ) {
+            if( pickup.bCanHaveMultipleCopies && pickup.NumCopies < pickup.MaxCopies ) {
+                pickup.NumCopies++;
+                return pickup;
+            }
+        }
+    }
+
     anItem = p.Spawn(iclass, p);
     if( anItem == None ) return None;
     anItem.InitialState='Idle2';
     anItem.SetLocation(p.Location);
 
-#ifdef gmdx
-    // TODO: fix gmdx and revision
-    anItem.GiveTo(p);
-    anItem.SetBase(p);
-#elseif revision
-    anItem.GiveTo(p);
-    anItem.SetBase(p);
-#else
+    if( (#defined gmdx || #defined revision ) && player != None ) {
+        PlayerTraveling = player.FlagBase.GetBool('PlayerTraveling');
+        if(PlayerTraveling) {
+            player.FlagBase.SetBool('PlayerTraveling', false);
+        }
+    }
+
     if( player != None ) {
         player.FrobTarget = anItem;
         player.ParseRightClick();
@@ -227,16 +258,12 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
         anItem.GiveTo(p);
         anItem.SetBase(p);
     }
-#endif
 
-    w = DeusExWeapon(anItem);
-    if( add_ammo > 0 && w != None ) {
-        if ( (w.AmmoName != None) && (w.AmmoName != Class'AmmoNone') )
-        {
-            for(i=0; i<add_ammo; i++)
-                w.AmmoType = DeusExAmmo(GiveItem(p, w.AmmoName));
-        }
+    if(PlayerTraveling) {
+        player.FlagBase.SetBool('PlayerTraveling', true);
     }
+
+    GiveAmmoForWeapon(p, DeusExWeapon(anItem), add_ammo);
 
     if( player != None )
         player.UpdateBeltText(anItem);
@@ -419,18 +446,18 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
         largestDim = a.CollisionHeight;
     }
     scalefactor = oldactor.CollisionHeight/largestDim;
-    
+
     //DrawScale doesn't work right for Inventory objects
     a.DrawScale = scalefactor;
     if (a.IsA('Inventory')) {
         Inventory(a).PickupViewScale = scalefactor;
     }
-    
+
     //Floating decorations don't rotate
     if (a.IsA('DeusExDecoration')) {
         DeusExDecoration(a).bFloating = False;
     }
-    
+
     //Get it at the right height
     a.move(a.PrePivot);
     oldactor.bHidden = true;
@@ -505,7 +532,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     }
 
     l("SpawnReplacement("$a$", "$newclass$") " $ newactor);
-    
+
     newactor.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
     newactor.SetPhysics(a.Physics);
     newactor.SetCollisionSize(a.CollisionRadius, a.CollisionHeight);
@@ -728,7 +755,7 @@ function bool _NearestWall(out LocationNormal out, FMinMax distrange)
 function bool NearestWall(out LocationNormal out, FMinMax distrange, optional float away_from_wall)
 {
     local vector MoveOffWall, normal;
-    
+
     if( _NearestWall(out, distrange) == false ) {
         return false;
     }

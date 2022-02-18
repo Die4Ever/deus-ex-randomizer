@@ -53,15 +53,15 @@ simulated function InitHints()
     else if(dxr.flags.settings.repairbots == 0) {
         AddHint("Repair bots are disabled.", "Good luck.");
     }
-    
+
     if (dxr.flags.settings.medbotuses==1) {
-        AddHint("Each medbot can heal you one time!","Use it wisely!");     
+        AddHint("Each medbot can heal you one time!","Use it wisely!");
     } else if (dxr.flags.settings.medbotuses>1) {
         AddHint("Each medbot can heal you "$dxr.flags.settings.medbotuses$" times!","Use them wisely!");
     }
 
     if (dxr.flags.settings.repairbotuses == 1) {
-        AddHint("Each repair bot can recharge you one time!","Use it wisely!");     
+        AddHint("Each repair bot can recharge you one time!","Use it wisely!");
     } else if (dxr.flags.settings.repairbotuses>1){
         AddHint("Each repair bot can recharge you "$dxr.flags.settings.repairbotuses$" times!","Use them wisely!");
     }
@@ -69,39 +69,41 @@ simulated function InitHints()
     if (dxr.flags.settings.medbotcooldowns == 1) { //Individual
         AddHint("Medbots have a randomized cooldown.", "Each one is different, so pay attention!");
     } else if (dxr.flags.settings.medbotcooldowns == 2) { //Global
-        AddHint("Medbots have a randomized cooldown", "The cooldown is the same for all of them!");    
+        AddHint("Medbots have a randomized cooldown", "The cooldown is the same for all of them!");
     }
 
     if (dxr.flags.settings.repairbotcooldowns == 1) { //Individual
         AddHint("Repair bots have a randomized cooldown.", "Each one is different, so pay attention!");
     } else if (dxr.flags.settings.repairbotcooldowns == 2) { //Global
-        AddHint("Repair bots have a randomized cooldown", "The cooldown is the same for all of them!");    
+        AddHint("Repair bots have a randomized cooldown", "The cooldown is the same for all of them!");
     }
 
     if (dxr.flags.settings.medbotamount == 1) { //Individual
         AddHint("Medbots have a randomized heal amount.", "Each one is different, so pay attention!");
     } else if (dxr.flags.settings.medbotamount == 2) { //Global
-        AddHint("Medbots have a randomized heal amount", "The amount is the same for all of them!");    
+        AddHint("Medbots have a randomized heal amount", "The amount is the same for all of them!");
     }
 
     if (dxr.flags.settings.repairbotamount == 1) { //Individual
         AddHint("Repair bots have a randomized recharge amount.", "Each one is different, so pay attention!");
     } else if (dxr.flags.settings.repairbotamount == 2) { //Global
-        AddHint("Repair bots have a randomized recharge amount", "The amount is the same for all of them!");    
+        AddHint("Repair bots have a randomized recharge amount", "The amount is the same for all of them!");
     }
-    
+
     if(dxr.flags.crowdcontrol > 0) {
         AddHint("Viewers, you could've prevented this with Crowd Control.", "Or maybe you caused it.");
         AddHint("Don't forget you (the viewer!) can", "use Crowd Control to influence the game!");
     }
-    
+
     if (dxr.flags.settings.goals > 0) {
         AddHint("Check the Deus Ex Randomizer wiki for information about randomized objective locations!");
     }
-    
+
     if(mission <= 4) {
-        AddHint("Melee attacks from behind do bonus damage!");
+#ifdef injections
         AddHint("The flashlight (F12) no longer consumes energy when used.", "Go wild with it!");
+#endif
+        AddHint("Melee attacks from behind do bonus damage!");
         AddHint("The flashlight (F12) can be used to attract the attention of guards");
         AddHint("Don't hoard items.", "You'll find more!");
     }
@@ -161,7 +163,7 @@ simulated function InitHints()
             } else if (map ~= "09_nyc_shipbelow") {
                  if(dxr.flags.settings.goals > 0)
                     AddHint("The locations of the tri-hull weld points are randomized.");
-           
+
             }
 
             break;

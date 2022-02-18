@@ -1,4 +1,5 @@
 # for VSCode https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig
+# https://marketplace.visualstudio.com/items?itemName=EricBlade.vscode-unrealscript
 
 [*]
 indent_style = space
