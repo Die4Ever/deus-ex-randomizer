@@ -15,7 +15,8 @@ function SetDxr(DXRando d)
 
 function ResetToDefaults()
 {
-    editName.SetText(player.TruePlayerName);
+    // force the player to type in a name, it makes Death Markers more fun!
+    editName.SetText("");
 
     player.SkillPointsAvail = player.Default.SkillPointsAvail;
     player.SkillPointsTotal = player.Default.SkillPointsTotal;
