@@ -10,13 +10,13 @@ const ArrayDoneState = 4;
 struct JsonElement
 {
     var string key;
-    var string value[5];
+    var string value[10];// make sure to keep this in sync with get_vals
     var int valCount;
 };
 
 struct JsonMsg
 {
-    var JsonElement e[20];
+    var JsonElement e[100];
     var int count;
 };
 
@@ -48,6 +48,10 @@ function int max_values() {
     return ArrayCount(_data.e[0].value);
 }
 
+function string key_at(int k) {
+    return _data.e[k].key;
+}
+
 function string at(int k, optional int i) {
     return _data.e[k].value[i];
 }
@@ -66,7 +70,7 @@ function int find(string key) {
     return -1;
 }
 
-function int get_vals(string key, optional out string vals[5]) {
+function int get_vals(string key, optional out string vals[10]) {
     local int i;
     local int j;
 
@@ -79,7 +83,7 @@ function int get_vals(string key, optional out string vals[5]) {
     return _data.e[i].valCount;
 }
 
-function int get_count(string key) {
+function int get_vals_count(string key) {
     local int i;
     i = find(key);
     if(i == -1)

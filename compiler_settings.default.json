@@ -11,7 +11,7 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": true,
-        "blacklist": [ "DXRNonVanilla", "HXRandomizer", "GMDXRandomizer", "RevRandomizer", "VMDRandomizer", "DXRReplaceActors.uc" ]
+        "blacklist": [ "DXRNonVanilla", "HXRandomizer", "DXRReplaceActors.uc" ]
     },
     "hx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX Backup/",
@@ -26,7 +26,7 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "GMDXRandomizer", "RevRandomizer", "VMDRandomizer" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc" ]
     },
     "gmdx": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX Backup/",
@@ -41,7 +41,7 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "RevRandomizer", "VMDRandomizer" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc" ]
     },
     "revision": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision Backup/",
@@ -56,7 +56,7 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "GMDXRandomizer", "VMDRandomizer" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc" ]
     },
     "vmd": {
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD Backup/",
@@ -71,6 +71,6 @@
         "verbose": false,
         "copy_local": true,
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "DXRFashion", "RevRandomizer", "GMDXRandomizer" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "DXRFashion" ]
     }
 }

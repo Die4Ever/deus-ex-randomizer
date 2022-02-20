@@ -23,7 +23,7 @@ simulated function InitHints()
     AddHint("A vending machine can provide you with 20 health worth of food.", "Eat up!");
     AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them");
     AddHint("The large metal crates are now destructible.", "They have 2000 hp.");
-    AddHint("Make sure to read the descriptions for skills, augmentations, and items.", "Randomizer adds some extra info.");
+    AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
 
 #ifdef injections
     AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken");
@@ -38,7 +38,7 @@ simulated function InitHints()
     AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
     AddHint("Read the pop-up text on doors to see how many", "hit from your equiped weapon to break it.");
     AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
-    AddHint("Vision Enhancement Aug can see items and devices through walls at level 2.", "Use it to see what's inside locked boxes.");
+    AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
 #endif
 
     if(dxr.flags.settings.medbots > 0) {
@@ -96,7 +96,7 @@ simulated function InitHints()
     }
 
     if (dxr.flags.settings.goals > 0) {
-        AddHint("Check the Deus Ex Randomizer wiki for information about randomized objective locations!");
+        AddHint("Check the Deus Ex Randomizer wiki", "for information about randomized objective locations!");
     }
 
     if(mission <= 4) {
@@ -301,9 +301,9 @@ function RunTests()
 
     for(i=0; i<numHints; i++) {
         ln = Len(hints[i]);
-        test(ln < 100, "length " $ ln $ " of hint: "$hints[i]);
+        test(ln < 70, "length " $ ln $ " of hint: "$hints[i]);
 
         ln = Len(details[i]);
-        test(ln < 100, "length " $ ln $ " of hint detail: "$details[i]);
+        test(ln < 70, "length " $ ln $ " of hint detail: "$details[i]);
     }
 }

@@ -124,7 +124,7 @@ function sendReply(int id, int status) {
 }
 
 
-function handleMessage( string msg) {
+function handleMessage(string msg) {
 
     local int id,type;
     local string code,viewer;
@@ -133,8 +133,7 @@ function handleMessage( string msg) {
     local int result;
 
     local Json jmsg;
-    local string val;
-    local int i,j;
+    local int i;
 
     if (isCrowdControl(msg)) {
         jmsg = class'Json'.static.parse(Level, msg);
@@ -142,7 +141,10 @@ function handleMessage( string msg) {
         viewer = jmsg.get("viewer");
         id = int(jmsg.get("id"));
         type = int(jmsg.get("type"));
-        jmsg.get_vals("parameters", param);
+        // maybe a little cleaner than using get_vals and having to worry about matching the array sizes?
+        for(i=0; i<ArrayCount(param); i++) {
+            param[i] = jmsg.get("parameters", i);
+        }
 
         //Streamers may not want names to show up in game
         //so that they can avoid troll names, etc
@@ -319,9 +321,9 @@ function RunTests(DXRCrowdControl m)
     m.teststring(j.JsonStripSpaces(" { " $ msg), "", "invalid json completely stripped");
     m.teststring(j.JsonStripSpaces(msg $ " } "), "", "invalid json completely stripped");
 
-    msg=" { \"key\": \"value\" } ";
+    msg=" { \"key\": \"value \\\"{}[]()\\\"\" } ";
     j = class'Json'.static.parse(Level, msg);
-    m.teststring(j.get("key"), "value", "did parse valid json");
+    m.teststring(j.get("key"), "value \"{}[]()\"", "did parse valid json");
 
     msg="{\"id\":3,\"code\":\"disable_jump\",\"targets\":[{\"id\":\"1234\",\"name\":\"dxrandotest\",\"avatar\":\"\"}],\"viewer\":\"dxrandotest\",\"type\":1}";
     m.testbool( isCrowdControl(msg), true, "isCrowdControl "$msg);
@@ -344,6 +346,8 @@ function RunTests(DXRCrowdControl m)
     params[1] = "10";
     TestMsg(m, 123, 1, "drop_grenade", "die4ever", params);
 
+    TestMsg(m, 123, 1, "drop_grenade", "-(:die[4]ever{dm}:)-", params);
+
     //Need to do more work to validate escaped characters
     //TestMsg(m, 123, 1, "test\\\\with\\\\escaped\\\\backslashes", "die4ever", ""); //Note that we have to double escape so that the end result is a single escaped backslash
 }
@@ -353,7 +357,7 @@ function int TestJsonField(DXRCrowdControl m, Json jmsg, string key, coerce stri
 {
     local int len;
     m.test(jmsg.count() < jmsg.max_count(), "jmsg.count() < jmsg.max_count()");
-    len = jmsg.get_count(key);
+    len = jmsg.get_vals_count(key);
     if(expected == "" && len == 0) {
         m.test(true, "TestJsonField "$key$" correctly missing");
     } else {
@@ -379,7 +383,7 @@ function _TestMsg(DXRCrowdControl m, string msg, int id, int type, string code, 
 
 
     TestJsonField(m, jmsg, "parameters", params[0]);
-    for(p=0; p<jmsg.max_values(); p++) {
+    for(p=0; p<ArrayCount(params); p++) {
         m.teststring(jmsg.get("parameters", p), params[p], "param "$p);
     }
 }

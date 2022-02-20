@@ -92,9 +92,10 @@ function ReceivedData(string data)
     j = class'Json'.static.parse(Level, data);
     status = j.get("status");
     if( InStr(status,"ERROR") >= 0 || InStr(status, "ok") == -1 ) {
-        l("HTTPReceivedData: " $ data);
+        l("HTTPReceivedData: " $ status);
     }
     CheckNotification(j.get("notification"), j.get("message"));
+    CheckDeaths(j);
 }
 
 function bool CanShowNotification()
@@ -145,6 +146,25 @@ function MessageBoxClicked(int button, int callbackId){
     //OK = 2
 }
 
+function CheckDeaths(Json j) {
+    local string k, t;
+    local int i;
+    local vector loc;
+
+    for(i=0; i<j.count(); i++) {
+        k = j.key_at(i);
+        l("CheckDeaths key: "$k);
+        if( InStr(k, "deaths.") == 0 ) {
+            loc.x = float(j.at(i, 5));
+            loc.y = float(j.at(i, 6));
+            loc.z = float(j.at(i, 7));
+            l("CheckDeaths key: "$k$" new deathmarker "$loc);
+            // New(Actor a, vector loc, string playername, string killerclass, string killer, string damagetype, int age, int numtimes)
+            class'DeathMarker'.static.New(Self, loc, j.at(i, 1), j.at(i, 8), j.at(i, 2), j.at(i, 3), int(j.at(i, 4)), int(j.at(i, 0)));
+        }
+    }
+}
+
 function _SendLog(Actor a, string LogLevel, string message)
 {
     if( ! enabled ) return;
@@ -168,12 +188,34 @@ static function SendLog(DXRando dxr, Actor a, string LogLevel, string message)
 
 static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string msg;
-    if(Killer != None )
-        msg = player.TruePlayerName $ " was killed by " $ Killer.Class.Name @ Killer.FamiliarName $ " with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
+    local string msg, killername;
+    local #var prefix ScriptedPawn sp;
+    local #var PlayerPawn  killerplayer;
+
+    killerplayer = #var PlayerPawn (Killer);
+    sp = #var prefix ScriptedPawn(Killer);
+
+    if(killerplayer != None)
+        killername = killerplayer.TruePlayerName;
+    // bImportant ScriptedPawns don't get their names randomized
+    else if(sp != None && sp.bImportant)
+        killername = Killer.FamiliarName;
+    // randomized names aren't really meaningful here so use their default name
+    else if(Killer != None)
+        killername = Killer.default.FamiliarName;
+
+    if(Killer != None)
+        msg = player.TruePlayerName $ " was killed by " $ Killer.Class.Name @ killername $ " with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
     else
         msg = player.TruePlayerName $ " was killed in " $ dxr.localURL $ " (" $ player.Location $ ")";
 
     log("DEATH: " $ msg, 'DXRTelemetry');
     SendLog(dxr, player, "DEATH", msg);
+}
+
+function ExtendedTests()
+{
+    local vector loc;
+    loc = vect(1,2,3);
+    teststring(string(loc), loc.x$","$loc.y$","$loc.z, "vector to string x,y,z");
 }
