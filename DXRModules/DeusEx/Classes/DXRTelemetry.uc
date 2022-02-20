@@ -5,6 +5,7 @@ var transient Telemetry t;
 var config int config_version;
 var config bool enabled;
 var config string server;
+var config string path;
 var config int cache_addr;
 var config string last_notification;
 
@@ -14,6 +15,7 @@ function CheckConfig()
 {
     if( server == "" || config_version < VersionNumber() ) {
         server = "raycarro.com";
+        path = "/dxrando/log.py";
         cache_addr = 0;
     }
     Super.CheckConfig();
@@ -85,10 +87,14 @@ function int GetAddrFromCache()
 
 function ReceivedData(string data)
 {
-    if( InStr(data,"ERROR") >= 0 || InStr(data, "ok") == -1 ) {
+    local string status;
+    local Json j;
+    j = class'Json'.static.parse(Level, data);
+    status = j.get("status");
+    if( InStr(status,"ERROR") >= 0 || InStr(status, "ok") == -1 ) {
         l("HTTPReceivedData: " $ data);
     }
-    CheckNotification(data);
+    CheckNotification(j.get("notification"), j.get("message"));
 }
 
 function bool CanShowNotification()
@@ -108,27 +114,16 @@ function bool CanShowNotification()
     return false;
 }
 
-function CheckNotification(string data)
+
+function CheckNotification(string title, string message)
 {
     local int i;
-    local string update, title, message, url, marker;
 
     if( ! CanShowNotification() ) return;
-
-    marker = " notification: ";
-    i = InStr(data, marker);
-    if( i == -1 ) return;
-
-    update = Mid(data, i+Len(marker) );
-    i = InStr(update, t.LF);
-    title = Left(update, i);
-    message = Mid(update, i+1);
-    if( title == last_notification ) return;
+    if( title == "" || title == last_notification ) return;
     last_notification = title;
     SaveConfig();
 
-    i = InStr(message, t.LF);
-    message = Left(message, i);
     i = InStr(message, "https://");
     notification_url = Mid(message, i);
     i = InStr(notification_url, " ");
@@ -178,7 +173,7 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Kil
         msg = player.TruePlayerName $ " was killed by " $ Killer.Class.Name @ Killer.FamiliarName $ " with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
     else
         msg = player.TruePlayerName $ " was killed in " $ dxr.localURL $ " (" $ player.Location $ ")";
-    
+
     log("DEATH: " $ msg, 'DXRTelemetry');
     SendLog(dxr, player, "DEATH", msg);
 }

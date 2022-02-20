@@ -96,7 +96,7 @@ function string GetUrl()
         version = Left(version, i) $ "%20" $ Mid(version, i+1);
         i = InStr(version, " ");
     }
-    return "/dxrando/log.py?version="$version;
+    return module.path $ "?version="$version;
 }
 
 function Done()
