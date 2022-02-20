@@ -13,7 +13,7 @@ var string playername, killerclass, killer, damagetype, map;
 var int created, numtimes;
 
 static function string DamageTypeText(string dmg) {
-    if(dmg == "None")
+    if(dmg == "None" || dmg == "")
         return "killed";
 
     switch(dmg) {
