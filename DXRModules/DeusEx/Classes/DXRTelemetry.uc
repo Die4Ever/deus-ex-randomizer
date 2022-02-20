@@ -204,10 +204,17 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Kil
     else if(Killer != None)
         killername = Killer.default.FamiliarName;
 
+    if(damageType == "shot") {
+        if( !IsHuman(Killer) && Robot(Killer) == None ) {
+            // only humans and robots can shoot? karkians deal shot damage
+            damageType = "";
+        }
+    }
+
     if(Killer != None)
         msg = player.TruePlayerName $ " was killed by " $ Killer.Class.Name @ killername $ " with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
     else
-        msg = player.TruePlayerName $ " was killed in " $ dxr.localURL $ " (" $ player.Location $ ")";
+        msg = player.TruePlayerName $ " was killed with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
 
     log("DEATH: " $ msg, 'DXRTelemetry');
     SendLog(dxr, player, "DEATH", msg);

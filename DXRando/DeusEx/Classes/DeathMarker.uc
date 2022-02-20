@@ -17,6 +17,8 @@ static function string DamageTypeText(string dmg) {
         return "killed";
 
     switch(dmg) {
+        case "shot":
+            return "murdered";
         case "TearGas":
             return "tear gassed to death";
         case "PoisonGas":
@@ -29,9 +31,8 @@ static function string DamageTypeText(string dmg) {
         case "Poison":
             return "poisoned to death";
         case "Sabot":
-        case "shot":
         case "autoshot":
-            return "shot to death";
+            return "filled with holes";
         case "Burned":
         case "Flamed":
             return "burned to death";
