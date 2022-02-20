@@ -84,22 +84,8 @@ function Timer() {
 }
 
 
-function bool isCrowdControl( string msg) {
+function bool isCrowdControl(string msg) {
     local string tmp;
-    //Validate if it looks json-like
-    if (InStr(msg,"{")!=0){
-        //PlayerMessage("Message doesn't start with curly");
-        return False;
-    }
-
-    //Explicitly check last character of string to see if it's a closing curly
-    tmp = Mid(msg,Len(msg)-1,1);
-    //if (InStr(msg,"}")!=Len(msg)-1){
-    if (tmp != "}"){
-        //PlayerMessage("Message doesn't end with curly.  Ends with '"$tmp$"'.");
-        return False;
-    }
-
     //Check to see if it looks like it has the right fields in it
 
     //id field
@@ -312,6 +298,7 @@ function RunTests(DXRCrowdControl m)
     local string msg;
     local string params[5];
     local string words[8];
+    local Json j;
 
     SplitString("add_aug_aqualung", "_", words);
     m.teststring(words[0], "add", "SplitString");
@@ -325,12 +312,23 @@ function RunTests(DXRCrowdControl m)
     msg="{}";
     m.testbool( isCrowdControl(msg), false, "isCrowdControl "$msg);
 
+    msg=" \"key\": \"value\" ";
+    j = class'Json'.static.parse(Level, msg);
+    m.teststring(j.get("key"), "", "did not parse invalid json");
+    m.teststring(j.JsonStripSpaces(msg), "", "invalid json completely stripped");
+    m.teststring(j.JsonStripSpaces(" { " $ msg), "", "invalid json completely stripped");
+    m.teststring(j.JsonStripSpaces(msg $ " } "), "", "invalid json completely stripped");
+
+    msg=" { \"key\": \"value\" } ";
+    j = class'Json'.static.parse(Level, msg);
+    m.teststring(j.get("key"), "value", "did parse valid json");
+
     msg="{\"id\":3,\"code\":\"disable_jump\",\"targets\":[{\"id\":\"1234\",\"name\":\"dxrandotest\",\"avatar\":\"\"}],\"viewer\":\"dxrandotest\",\"type\":1}";
     m.testbool( isCrowdControl(msg), true, "isCrowdControl "$msg);
     _TestMsg(m,msg,3,1,"disable_jump","dxrandotest",params);
 
     // test multiple payloads, Crowd Control always puts a \0 between them so this isn't an issue, but still good to be safe
-    msg="{\"id\":3,\"code\":\"disable_jump\",\"viewer\":\"dxrandotest\",\"type\":1}{\"parameters\":[1,2,3],\"code\":\"fail\"}";
+    msg=" {\"id\":3,\"code\":\"disable_jump\",\"viewer\":\"dxrandotest\",\"type\":1}{\"parameters\":[1,2,3],\"code\":\"fail\"} ";
     m.testbool( isCrowdControl(msg), true, "isCrowdControl "$msg);
     _TestMsg(m,msg,3,1,"disable_jump","dxrandotest",params);
 

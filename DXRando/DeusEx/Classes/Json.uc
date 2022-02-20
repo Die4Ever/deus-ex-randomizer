@@ -100,7 +100,7 @@ function string get(string key, optional int v) {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function string StripQuotes (string msg) {
+static function string StripQuotes (string msg) {
     if (Mid(msg,0,1)==Chr(34)) {
         if (Mid(msg,Len(Msg)-1,1)==Chr(34)) {
             return Mid(msg,1,Len(msg)-2);
@@ -109,32 +109,39 @@ function string StripQuotes (string msg) {
     return msg;
 }
 
-function string JsonStripSpaces(string msg) {
-    local int i;
+static function string JsonStripSpaces(string msg) {
+    local int i, a, length, lastCurly;
     local string c;
     local string buf;
     local bool inQuotes;
 
     inQuotes = False;
+    msg = Mid(msg, InStr(msg, "{"));
 
-    for (i = 0; i < Len(msg) ; i++) {
+    length = Len(msg);
+    for (i = 0; i < length; i++) {
         c = Mid(msg,i,1); //Grab a single character
+        a = Asc(c);
 
-        if (c==" " && !inQuotes) {
-            continue;  //Don't add spaces to the buffer if we're outside quotes
-        } else if (c==Chr(34)) {
+        if (!inQuotes && (a<33 || a>126)) {
+            continue;  //Don't add whitespace or invisible characters to the buffer if we're outside quotes
+        } else if (a==34) {// 34 is "
             inQuotes = !inQuotes;
+        } else if (a==125) {// 125 is }
+            lastCurly = Len(buf)+1;
         }
 
         buf = buf $ c;
     }
+
+    buf = Mid(buf, 0, lastCurly);
 
     return buf;
 }
 
 //Returns the appropriate character for whatever is after
 //the backslash, eg \c
-function string JsonGetEscapedChar(string c) {
+static function string JsonGetEscapedChar(string c) {
     switch(c){
         case "b":
             return Chr(8); //Backspace
@@ -154,10 +161,22 @@ function string JsonGetEscapedChar(string c) {
     }
 }
 
-function JsonMsg ParseJson(string msg) {
+static function bool _IsJson(string msg, int length) {
+    // we've already run JsonStripSpaces
+    if (Mid(msg, 0, 1) != "{") {
+        log("Json._IsJson missing opening curly brace: "$msg);
+        return false;
+    }
+    if (Mid(msg, length-1, 1) != "}") {
+        log("JSon._IsJson missing closing curly brace: "$msg);
+        return false;
+    }
 
-    local bool msgDone;
-    local int i;
+    return true;
+}
+
+function JsonMsg ParseJson(string msg) {
+    local int i, length;
     local string c;
     local string buf;
 
@@ -175,13 +194,18 @@ function JsonMsg ParseJson(string msg) {
     parsestate = KeyState;
     inquotes = False;
     escape = False;
-    msgDone = False;
     buf = "";
 
     //Strip any spaces outside of strings to standardize the input a bit
     msg = JsonStripSpaces(msg);
+    length = Len(msg);
+    if( ! _IsJson(msg, length) ) {
+        log(Self$".ParseJson IsJson failed! " $ msg);
+        return j;
+    }
 
-    for (i = 0; i < Len(msg) && !msgDone ; i++) {
+    // we set the length to -1 to end the loop
+    for (i = 0; i < length; i++) {
         c = Mid(msg,i,1); //Grab a single character
 
         if (!inQuotes) {
@@ -234,7 +258,8 @@ function JsonMsg ParseJson(string msg) {
                         // TODO: sub objects
                     }
                     else {
-                        msgDone = True;
+                        // last loop iteration
+                        length = -1;
                     }
                     break;
 
