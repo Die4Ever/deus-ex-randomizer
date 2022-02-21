@@ -192,15 +192,24 @@ static function SendLog(DXRando dxr, Actor a, string LogLevel, string message)
 
 static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string msg, killername;
+    local string msg, killername, playername;
     local #var prefix ScriptedPawn sp;
     local #var PlayerPawn  killerplayer;
 
     killerplayer = #var PlayerPawn (Killer);
     sp = #var prefix ScriptedPawn(Killer);
 
-    if(killerplayer != None)
+#ifdef hx
+    playername = player.PlayerReplicationInfo.PlayerName;
+    if(killerplayer != None) {
         killername = killerplayer.TruePlayerName;
+    }
+#else
+    playername = player.TruePlayerName;
+    if(killerplayer != None) {
+        killername = killerplayer.TruePlayerName;
+    }
+#endif
     // bImportant ScriptedPawns don't get their names randomized
     else if(sp != None && sp.bImportant)
         killername = Killer.FamiliarName;
@@ -216,9 +225,9 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Kil
     }
 
     if(Killer != None)
-        msg = player.TruePlayerName $ " was killed by " $ Killer.Class.Name @ killername $ " with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
+        msg = playername $ " was killed by " $ Killer.Class.Name @ killername $ " with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
     else
-        msg = player.TruePlayerName $ " was killed with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
+        msg = playername $ " was killed with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
 
     log("DEATH: " $ msg, 'DXRTelemetry');
     SendLog(dxr, player, "DEATH", msg);
