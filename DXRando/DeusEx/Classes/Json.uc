@@ -100,9 +100,22 @@ function string get(string key, optional int v) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////                                             JSON STUFF                                                   ////
+////                                    INTERNAL JSON STUFF                                                   ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+static function l(coerce string message, string j)
+{
+    local int length;
+
+    length = Len(j);
+    log(message $ " length: "$length, default.class.name);
+    if(length > 500) {
+        log("Left 200: "$Left(j, 200), default.class.name);
+        log("Right 200: "$Right(j, 200), default.class.name);
+    } else {
+        log(j, default.class.name);
+    }
+}
 
 static function string StripQuotes (string msg) {
     if (Mid(msg,0,1)==Chr(34)) {
@@ -168,11 +181,11 @@ static function string JsonGetEscapedChar(string c) {
 static function bool _IsJson(string msg, int length) {
     // we've already run JsonStripSpaces
     if (Mid(msg, 0, 1) != "{") {
-        log("Json._IsJson missing opening curly brace: "$msg);
+        l("_IsJson missing opening curly brace:", msg);
         return false;
     }
     if (Mid(msg, length-1, 1) != "}") {
-        log("JSon._IsJson missing closing curly brace: "$msg);
+        l("_IsJson missing closing curly brace:", msg);
         return false;
     }
 
@@ -204,7 +217,7 @@ function JsonMsg ParseJson(string msg) {
     msg = JsonStripSpaces(msg);
     length = Len(msg);
     if( ! _IsJson(msg, length) ) {
-        log(Self$".ParseJson IsJson failed! " $ msg);
+        l(".ParseJson IsJson failed!", msg);
         return j;
     }
 

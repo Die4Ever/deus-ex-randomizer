@@ -4,10 +4,6 @@ class DeathMarker extends HXDecoration;
 class DeathMarker extends DeusExDecoration;
 #endif
 
-// Sprite.
-#exec Texture Import File=Textures\Corpse.pcx Name=S_Corpse Flags=2
-// normally has Mips=Off for the editor, but probably not good for the game
-
 var string playername, killerclass, killer, damagetype, map;
 // we receive the age from the server and store the difference between that age and our local _SystemTime
 var int created, numtimes;
