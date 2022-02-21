@@ -18,9 +18,13 @@ def debug(str):
         print(str)
 
 def prependException(e, msg):
+    if not e.args:
+        e.args = ("",)
     e.args = (msg + " \n" + e.args[0],) + e.args[1:]
 
 def appendException(e, msg):
+    if not e.args:
+        e.args = ("",)
     e.args = (e.args[0] + " \n" + msg,) + e.args[1:]
 
 def printHeader(text):
@@ -79,5 +83,5 @@ def is_uc_file(file):
         return False
     if not path[-1].endswith('.uc'):
         return False
-    
+
     return True, filename, namespace, parent

@@ -133,7 +133,6 @@ static function DeathMarker New(Actor a, vector loc, string playername, string k
 defaultproperties
 {
     bStatic=false
-    bDecorative=True
     Texture=Texture'Engine.S_Corpse'
     CollisionRadius=16
     CollisionHeight=16

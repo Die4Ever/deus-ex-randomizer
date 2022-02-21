@@ -1,4 +1,4 @@
-class DXRNetworkTerminal extends DXRInfo;
+class DXRNetworkTerminal extends DXRInfo abstract;
 
 static function Class<ComputerUIWindow> ShowScreen(Class<ComputerUIWindow> newScreen)
 {
