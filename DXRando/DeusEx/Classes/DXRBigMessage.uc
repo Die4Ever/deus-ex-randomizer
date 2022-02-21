@@ -89,7 +89,9 @@ function Remove()
     {
         bDestroy = True;
         root.PopWindow();
+#ifndef hx
         Player.ShowMainMenu();
+#endif
     }
 }
 
