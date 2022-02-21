@@ -48,6 +48,19 @@ def calla(cmds):
     print( repr(cmds) + " took " + str(elapsed_time) + " seconds and returned " + str(ret) )
     return ret
 
+def call_read(cmd):
+    proc = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True, universal_newlines=True)
+    outs=''
+    errs=''
+
+    try:
+        outs, errs = proc.communicate(timeout=600)
+    except Exception as e:
+        proc.kill()
+        print(traceback.format_exc())
+        raise
+    return outs
+
 
 def insensitive_glob(pattern):
     return (

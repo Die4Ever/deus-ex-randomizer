@@ -7,12 +7,12 @@ dryrun = False
 def run(args):
     if args.verbose:
         args.base.loglevel = 'debug'
-    
+
     argprofiles = args.profile
     default_settings = {}
     with open('compiler_settings.default.json') as f:
         default_settings = json.load(f)
-    
+
     settings = {}
     try:
         with open('compiler_settings.json') as f:
@@ -26,14 +26,14 @@ def run(args):
         if p not in merged:
             merged[p] = {}
         merged[p] = {**merged[p], **settings[p]}
-    
+
 
     profiles = []
     if argprofiles == 'all':
         profiles = merged.keys()
     else:
         profiles = argprofiles.split(',')
-    
+
     for p in profiles:
         profile_name = p.strip()
         profile = merged[profile_name]
@@ -41,13 +41,20 @@ def run(args):
         print("using "+profile_name+" settings\n"+repr(profile)+"\n")
         if not run_profile(args, profile):
             return
-    
+
 
 def run_profile(args, settings):
     out = settings['out_dir']
     packages = settings['packages']
-    copy_local = settings['copy_local']
     run_tests = settings['run_tests']
+
+    copy_local = settings.get('copy_local')
+    changed = False
+    if settings.get('copy_if_changed'):
+        copy_local = True
+        gitstatus = call_read('git status')
+        if re.search(r'%s' % settings.get('copy_if_changed'), gitstatus):
+            changed = True
 
     compileResult = compile(args, settings)
     if compileResult != 0:
@@ -60,9 +67,13 @@ def run_profile(args, settings):
     if not testSuccess:
         return False
 
-    if copy_local:
+    if settings.get('copy_if_changed') and not changed:
+        print("not copying locally because "+settings.get('copy_if_changed')+" has not changed: "+repr(packages))
+    elif copy_local:
         copy_package_files(out, packages)
-    
+    else:
+        print("not copying locally due to compiler_settings config file: "+repr(packages))
+
     return True
 
 
@@ -95,7 +106,7 @@ def compile(args, settings):
             except Exception as e:
                 appendException(e, "error processing vanilla file: "+file)
                 raise
-    
+
     for mod in mods:
         print("processing files from mod "+mod)
         mods_files.append({})
@@ -119,7 +130,7 @@ def compile(args, settings):
         except Exception as e:
             appendException(e, "error writing vanilla file "+str(file.file))
             raise
-    
+
     for mod in mods_files:
         print("writing mod "+repr(mod.keys()))
         try:
@@ -134,12 +145,12 @@ def compile(args, settings):
             except Exception as e:
                 appendException(e, "error writing mod file "+str(file.file))
                 raise
-    
+
     if dryrun:
         return 1
-    
+
     writer.cleanup(out, written)
-    
+
     # now we need to delete DeusEx.u otherwise it won't get recompiled, might want to consider support for other packages too
     for package in packages:
         file = package+'.u'
