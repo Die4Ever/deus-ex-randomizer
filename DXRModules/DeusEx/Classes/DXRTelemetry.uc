@@ -3,7 +3,7 @@ class DXRTelemetry extends DXRActorsBase transient;
 var transient Telemetry t;
 
 var config int config_version;
-var config bool enabled;
+var config bool enabled, death_markers;
 var config string server;
 var config string path;
 var config int cache_addr;
@@ -63,10 +63,11 @@ function Timer()
     }
 }
 
-function set_enabled(bool e)
+function set_enabled(bool e, bool set_death_markers)
 {
     log(Self$": set_enabled "$e);
     enabled = e;
+    death_markers = set_death_markers;
     SaveConfig();
 }
 
@@ -151,16 +152,19 @@ function CheckDeaths(Json j) {
     local int i;
     local vector loc;
 
+    // if death_markers is disabled, we still should parse the list so we can tell the server the newest one we've already received?
+
     for(i=0; i<j.count(); i++) {
         k = j.key_at(i);
-        l("CheckDeaths key: "$k);
         if( InStr(k, "deaths.") == 0 ) {
             loc.x = float(j.at(i, 5));
             loc.y = float(j.at(i, 6));
             loc.z = float(j.at(i, 7));
-            l("CheckDeaths key: "$k$" new deathmarker "$loc);
-            // New(Actor a, vector loc, string playername, string killerclass, string killer, string damagetype, int age, int numtimes)
-            class'DeathMarker'.static.New(Self, loc, j.at(i, 1), j.at(i, 8), j.at(i, 2), j.at(i, 3), int(j.at(i, 4)), int(j.at(i, 0)));
+            if(death_markers) {
+                l("CheckDeaths key: "$k$" new deathmarker "$loc);
+                // New(Actor a, vector loc, string playername, string killerclass, string killer, string damagetype, int age, int numtimes)
+                class'DeathMarker'.static.New(Self, loc, j.at(i, 1), j.at(i, 8), j.at(i, 2), j.at(i, 3), int(j.at(i, 4)), int(j.at(i, 0)));
+            }
         }
     }
 }
@@ -225,4 +229,9 @@ function ExtendedTests()
     local vector loc;
     loc = vect(1,2,3);
     teststring(string(loc), loc.x$","$loc.y$","$loc.z, "vector to string x,y,z");
+}
+
+defaultproperties
+{
+    death_markers=true
 }

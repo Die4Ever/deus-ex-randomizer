@@ -7,20 +7,6 @@ event InitWindow()
     Init(InitDxr());
 }
 
-function CheckConfig()
-{
-    if( config_version < class'DXRVersion'.static.VersionNumber() ) {
-        num_rows=default.num_rows;
-        num_cols=default.num_cols;
-        col_width_odd=default.col_width_odd;
-        col_width_even=default.col_width_even;
-        row_height=default.row_height;
-        padding_width=default.padding_width;
-        padding_height=default.padding_height;
-    }
-    Super.CheckConfig();
-}
-
 function BindControls(optional string action)
 {
     local float difficulty;
@@ -56,12 +42,12 @@ function BindControls(optional string action)
     }
 #endif
 
-    NewMenuItem("Difficulty", "Difficulty determines the default settings for the randomizer.");
+    NewMenuItem("Difficulty", "Difficulty determines the default settings for the randomizer."$BR$"Hard is recommended for Deus Ex verterans.");
     if( (InStr(f.VersionString(), "Alpha")>=0 || InStr(f.VersionString(), "Beta")>=0) )
         i=0;
     else
         i=1;
-    
+
     for( i=i; i < ArrayCount(f.difficulty_names); i++ ) {
         if( f.difficulty_names[i] == "" ) continue;
         EnumOption(f.difficulty_names[i], i, f.difficulty);
@@ -88,13 +74,21 @@ function BindControls(optional string action)
     foreach f.AllActors(class'DXRTelemetry', t) { break; }
     if( t == None ) t = f.Spawn(class'DXRTelemetry');
     t.CheckConfig();
-    temp = Int(t.enabled);
-    NewMenuItem("Help us improve", "Send error reports and get notified about updates!");
-    if( EnumOption("Enabled", 1, temp) ) {
-        t.set_enabled(true);
+    if(t.enabled && t.death_markers)
+        temp = 2;
+    else if(t.enabled)
+        temp = 1;
+    else
+        temp = 0;
+    NewMenuItem("Online Features", "Death Markers, send error reports,"$BR$" and get notified about updates!");
+    if( EnumOption("All Enabled", 2, temp) ) {
+        t.set_enabled(true, true);
+    }
+    if( EnumOption("Enabled, Death Markers Hidden", 1, temp) ) {
+        t.set_enabled(true, false);
     }
     if( EnumOption("Disabled", 0, temp) ) {
-        t.set_enabled(false);
+        t.set_enabled(false, true);
     }
 
     NewMenuItem("Seed", "Enter a seed if you want to play the same game again.");
@@ -133,14 +127,12 @@ defaultproperties
 {
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Advanced",Key="ADVANCED")
     Title="DX Rando Options"
-    ClientWidth=672
-    ClientHeight=357
     bUsesHelpWindow=False
     bEscapeSavesSettings=False
     num_rows=8;
     num_cols=2;
     col_width_odd=160;
-    col_width_even=220;
+    col_width_even=240;
     row_height=20;
     padding_width=20;
     padding_height=10;
