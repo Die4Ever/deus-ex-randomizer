@@ -30,6 +30,10 @@ var DXRFlags flags;
 
 var config int config_version;
 
+var config Texture background_texture, help_background_texture;
+var config color background, help_background;
+var config EDrawStyle background_style, help_background_style;
+
 var config int num_rows;
 var config int num_cols;
 var config int col_width_even;
@@ -41,12 +45,15 @@ var config Font groupHeaderFont;
 var config int groupHeaderX;
 var config int groupHeaderY;
 
+var string BR;// line break
+
 event Init(DXRando d)
 {
     local vector coords;
     local int i;
     dxr = d;
     flags = dxr.flags;
+    BR = Chr(10);
 
     CheckConfig();
 
@@ -57,6 +64,10 @@ event Init(DXRando d)
     Super.InitWindow();
 
     InitHelp();
+
+    winClient.SetBackground(background_texture);
+    winClient.SetBackgroundStyle(background_style);
+    winClient.SetTileColor(background);
 
     controlsParent = winClient;
     winScroll = CreateScrollAreaWindow(winClient);
@@ -73,7 +84,7 @@ event Init(DXRando d)
     ResetToDefaults();
     _BindControls(false);
 
-    // Need to do this because of the edit control used for 
+    // Need to do this because of the edit control used for
     // saving games.
     SetMouseFocusMode(MFOCUS_Click);
     for(i=0; i<ArrayCount(wnds); i++) {
@@ -100,7 +111,7 @@ function DXRFlags InitFlags()
 function DXRando InitDxr()
 {
     if( dxr != None ) return dxr;
-    
+
     log("InitDxr has player "$player);
     dxr = player.Spawn(class'DXRando', None);
     log("InitDxr got "$dxr);
@@ -128,22 +139,22 @@ function _InvokeNewGameScreen(float difficulty, DXRando dxr)
 #ifdef vmd
     local VMDMenuSelectCampaign VMDNewGame;
     local VMDBufferPlayer VMP;
-    
+
     VMDNewGame = VMDMenuSelectCampaign(root.InvokeMenuScreen(Class'VMDMenuSelectCampaign'));
-    
+
     //MADDERS: Call relevant reset data.
     VMP = VMDBufferPlayer(Player);
     if (VMP != None)
     {
         VMP.VMDResetNewGameVars(1);
     }
-    
+
     //MADDERS: We only call this from the main menu, NOT in game.
     //By this logic, setting it all on the fly is fine.
     Player.CombatDifficulty = Difficulty;
     if (VMDNewGame != None)
         VMDNewGame.SetDifficulty(difficulty);
-    
+
     return;
 #endif
 
@@ -161,9 +172,23 @@ function _InvokeNewGameScreen(float difficulty, DXRando dxr)
 
 function CheckConfig()
 {
-    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
-        log(Self$": upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
-        config_version = class'DXRFlags'.static.VersionNumber();
+    if( config_version < class'DXRVersion'.static.VersionNumber() ) {
+        num_rows=default.num_rows;
+        num_cols=default.num_cols;
+        col_width_odd=default.col_width_odd;
+        col_width_even=default.col_width_even;
+        row_height=default.row_height;
+        padding_width=default.padding_width;
+        padding_height=default.padding_height;
+        background=default.background;
+        help_background=default.help_background;
+        background_style=default.background_style;
+        help_background_style=default.help_background_style;
+        background_texture=default.background_texture;
+        help_background_texture=default.help_background_texture;
+
+        log(Self$": upgraded config from "$config_version$" to "$class'DXRVersion'.static.VersionNumber());
+        config_version = class'DXRVersion'.static.VersionNumber();
         SaveConfig();
     }
 }
@@ -187,7 +212,7 @@ function NewGroup(string text)
     local MenuUILabelWindow winLabel;
     local int width;
     local vector coords;
-    
+
     width = num_cols / 2;
     if(id != -1)
         id += width;
@@ -339,9 +364,9 @@ function InitHelp()
     winHelp.SetWidth(ClientWidth);
     winHelp.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 
-    winHelp.SetBackgroundStyle(DSTY_Translucent);
-    winHelp.SetBackground(Texture'Solid');
-    winHelp.SetTileColorRGB(10, 10, 10);
+    winHelp.SetBackground(help_background_texture);
+    winHelp.SetBackgroundStyle(help_background_style);
+    winHelp.SetTileColor(help_background);
 }
 
 event DestroyWindow()
@@ -351,7 +376,7 @@ event DestroyWindow()
 function CreateControls()
 {
     Super.CreateControls();
-    Title = "Deus Ex Randomizer "$ class'DXRFlags'.static.VersionString();
+    Title = "Deus Ex Randomizer "$ class'DXRVersion'.static.VersionString();
     SetTitle(Title);
     //if(flags == None) return;
     //BindControls(false);
@@ -640,7 +665,7 @@ event StyleChanged()
 event FocusEnteredDescendant(Window enterWindow)
 {
     local int i;
-    
+
     if( enterWindow == None ) return;
 
     for(i=0;i<ArrayCount(wnds);i++) {
@@ -678,11 +703,15 @@ defaultproperties
     actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
     //actionButtons(2)=(Action=AB_Reset)
     Title="DX Rando Options"
-    ClientWidth=672
-    ClientHeight=357
     bUsesHelpWindow=False
     bEscapeSavesSettings=False
     groupHeaderFont=Font'FontMenuExtraLarge'
     groupHeaderX=-10
     groupHeaderY=-3
+    background=(R=0,G=0,B=0,A=255)
+    background_style=DSTY_Translucent
+    background_texture=Texture'Solid'
+    help_background=(R=10,G=10,B=10,A=255)
+    help_background_style=DSTY_Translucent
+    help_background_texture=Texture'Solid'
 }

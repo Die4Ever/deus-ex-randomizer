@@ -51,7 +51,7 @@ function CheckConfig()
         for(i=0; i < ArrayCount(item_sets); i++) {
             item_sets[i].name = "";
             item_sets[i].player_message = "";
-            
+
             item_sets[i].bans = "";
             item_sets[i].allows = "";
             item_sets[i].starting_equipments = "";
@@ -225,7 +225,7 @@ function AddAllow(int s, string type)
     local int i;
 
     if( type == "" ) return;
-    
+
     for(i=0; i < ArrayCount(_item_sets[s].allow_types); i++) {
         if( _item_sets[s].allow_types[i] == None ) {
             a = GetClassFromString(type, class'Inventory');
@@ -241,7 +241,7 @@ function AddStart(int s, string type)
     local int i;
 
     if( type == "" ) return;
-    
+
     for(i=0; i < ArrayCount(_item_sets[s].starting_equipment); i++) {
         if( _item_sets[s].starting_equipment[i] == None ) {
             a = GetClassFromString(type, class'Inventory');
@@ -257,7 +257,7 @@ function AddAug(int s, string type)
     local int i;
 
     if( type == "" ) return;
-    
+
     for(i=0; i < ArrayCount(_item_sets[s].starting_augs); i++) {
         if( _item_sets[s].starting_augs[i] == None ) {
             a = GetClassFromString(type, class'Augmentation');
@@ -273,7 +273,7 @@ function AddItemSpawn(int s, string type, int chances)
     local int i;
 
     if( type == "" ) return;
-    
+
     for(i=0; i < ArrayCount(_item_sets[s].item_spawns); i++) {
         if( _item_sets[s].item_spawns[i] == None ) {
             a = GetClassFromString(type, class'Actor');
@@ -446,6 +446,7 @@ function RandoStartingEquipment(DeusExPlayer player, bool respawn)
     local int i;
 
     if( dxr.flags.settings.equipment == 0 ) return;
+    if( dxr.dxInfo.missionNumber == 0 ) return;
 
     l("RandoStartingEquipment");
     SetGlobalSeed("RandoStartingEquipment");//independent of map/mission
@@ -470,6 +471,9 @@ function RandoStartingEquipment(DeusExPlayer player, bool respawn)
         anItem.Destroy();
     }
 
+#ifdef gmdx
+    player.RepairInventory();
+#endif
     AddStartingEquipment(player, respawn);
 
     for(i=0; i < dxr.flags.settings.equipment; i++) {

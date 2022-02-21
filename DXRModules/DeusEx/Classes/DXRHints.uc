@@ -23,7 +23,7 @@ simulated function InitHints()
     AddHint("A vending machine can provide you with 20 health worth of food.", "Eat up!");
     AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them");
     AddHint("The large metal crates are now destructible.", "They have 2000 hp.");
-    AddHint("Make sure to read the descriptions for skills, augmentations, and items.", "Randomizer adds some extra info.");
+    AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
 
 #ifdef injections
     AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken");
@@ -38,7 +38,7 @@ simulated function InitHints()
     AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
     AddHint("Read the pop-up text on doors to see how many", "hit from your equiped weapon to break it.");
     AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
-    AddHint("Vision Enhancement Aug can see items and devices through walls at level 2.", "Use it to see what's inside locked boxes.");
+    AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
 #endif
 
     if(dxr.flags.settings.medbots > 0) {
@@ -53,15 +53,15 @@ simulated function InitHints()
     else if(dxr.flags.settings.repairbots == 0) {
         AddHint("Repair bots are disabled.", "Good luck.");
     }
-    
+
     if (dxr.flags.settings.medbotuses==1) {
-        AddHint("Each medbot can heal you one time!","Use it wisely!");     
+        AddHint("Each medbot can heal you one time!","Use it wisely!");
     } else if (dxr.flags.settings.medbotuses>1) {
         AddHint("Each medbot can heal you "$dxr.flags.settings.medbotuses$" times!","Use them wisely!");
     }
 
     if (dxr.flags.settings.repairbotuses == 1) {
-        AddHint("Each repair bot can recharge you one time!","Use it wisely!");     
+        AddHint("Each repair bot can recharge you one time!","Use it wisely!");
     } else if (dxr.flags.settings.repairbotuses>1){
         AddHint("Each repair bot can recharge you "$dxr.flags.settings.repairbotuses$" times!","Use them wisely!");
     }
@@ -69,39 +69,41 @@ simulated function InitHints()
     if (dxr.flags.settings.medbotcooldowns == 1) { //Individual
         AddHint("Medbots have a randomized cooldown.", "Each one is different, so pay attention!");
     } else if (dxr.flags.settings.medbotcooldowns == 2) { //Global
-        AddHint("Medbots have a randomized cooldown", "The cooldown is the same for all of them!");    
+        AddHint("Medbots have a randomized cooldown", "The cooldown is the same for all of them!");
     }
 
     if (dxr.flags.settings.repairbotcooldowns == 1) { //Individual
         AddHint("Repair bots have a randomized cooldown.", "Each one is different, so pay attention!");
     } else if (dxr.flags.settings.repairbotcooldowns == 2) { //Global
-        AddHint("Repair bots have a randomized cooldown", "The cooldown is the same for all of them!");    
+        AddHint("Repair bots have a randomized cooldown", "The cooldown is the same for all of them!");
     }
 
     if (dxr.flags.settings.medbotamount == 1) { //Individual
         AddHint("Medbots have a randomized heal amount.", "Each one is different, so pay attention!");
     } else if (dxr.flags.settings.medbotamount == 2) { //Global
-        AddHint("Medbots have a randomized heal amount", "The amount is the same for all of them!");    
+        AddHint("Medbots have a randomized heal amount", "The amount is the same for all of them!");
     }
 
     if (dxr.flags.settings.repairbotamount == 1) { //Individual
         AddHint("Repair bots have a randomized recharge amount.", "Each one is different, so pay attention!");
     } else if (dxr.flags.settings.repairbotamount == 2) { //Global
-        AddHint("Repair bots have a randomized recharge amount", "The amount is the same for all of them!");    
+        AddHint("Repair bots have a randomized recharge amount", "The amount is the same for all of them!");
     }
-    
+
     if(dxr.flags.crowdcontrol > 0) {
         AddHint("Viewers, you could've prevented this with Crowd Control.", "Or maybe you caused it.");
         AddHint("Don't forget you (the viewer!) can", "use Crowd Control to influence the game!");
     }
-    
+
     if (dxr.flags.settings.goals > 0) {
-        AddHint("Check the Deus Ex Randomizer wiki for information about randomized objective locations!");
+        AddHint("Check the Deus Ex Randomizer wiki", "for information about randomized objective locations!");
     }
-    
+
     if(mission <= 4) {
-        AddHint("Melee attacks from behind do bonus damage!");
+#ifdef injections
         AddHint("The flashlight (F12) no longer consumes energy when used.", "Go wild with it!");
+#endif
+        AddHint("Melee attacks from behind do bonus damage!");
         AddHint("The flashlight (F12) can be used to attract the attention of guards");
         AddHint("Don't hoard items.", "You'll find more!");
     }
@@ -161,7 +163,7 @@ simulated function InitHints()
             } else if (map ~= "09_nyc_shipbelow") {
                  if(dxr.flags.settings.goals > 0)
                     AddHint("The locations of the tri-hull weld points are randomized.");
-           
+
             }
 
             break;
@@ -199,7 +201,7 @@ simulated function InitHints()
             if( dxr.FindModule(class'DXRBacktracking') != None ) {
                 AddHint("Randomizer has enabled extra backtracking.", "You will be able to come back here later.");
             }
-#else
+#endif
             break;
         case 14:
             if (map ~= "14_oceanlab_silo") {
@@ -299,9 +301,9 @@ function RunTests()
 
     for(i=0; i<numHints; i++) {
         ln = Len(hints[i]);
-        test(ln < 100, "length " $ ln $ " of hint: "$hints[i]);
+        test(ln < 70, "length " $ ln $ " of hint: "$hints[i]);
 
         ln = Len(details[i]);
-        test(ln < 100, "length " $ ln $ " of hint detail: "$details[i]);
+        test(ln < 70, "length " $ ln $ " of hint detail: "$details[i]);
     }
 }

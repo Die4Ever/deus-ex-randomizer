@@ -408,6 +408,7 @@ function VandSubAnyEntry()
 
 function VandOceanLabAnyEntry()
 {
+    local Actor a;
     local FlagTrigger ft;
     local MiniSub s;
     local InterpolateTrigger it;
@@ -415,13 +416,25 @@ function VandOceanLabAnyEntry()
     local MapExit me;
     local Conversation c;
 
-    // reentry with the sub
-    foreach AllActors(class'FlagTrigger', ft, 'subexit') {
-        if( ft.Event == 'flag2' )
-            ft.Event = 'reallysubexit';
+    // fix shared tags https://github.com/Die4Ever/deus-ex-randomizer/issues/224
+    foreach AllActors(class'Actor', a) {
+        if(a.Tag == 'subexit')
+            a.Tag = 'subexit2';
+        if(a.Event == 'subexit')
+            a.Event = 'subexit2';
+        if(a.Tag == 'flag2') {
+            a.Tag = 'oldflag2';
+            a.Event = '';
+        }
     }
 
-    foreach AllActors(class'DataLinkTrigger', dlt, 'subexit') {
+    // reentry with the sub
+    foreach AllActors(class'FlagTrigger', ft, 'subexit2') {
+        if( ft.Event == 'flag2' || ft.Event == 'reallysubexit' )
+            ft.Event = 'reallysubexit2';
+    }
+
+    foreach AllActors(class'DataLinkTrigger', dlt, 'subexit2') {
         if( dlt.datalinkTag == 'dl_subnotready' )
             dlt.Destroy();
     }
@@ -439,11 +452,13 @@ function VandOceanLabAnyEntry()
 
     foreach AllActors(class'MapExit', me, 'reallysubexit') {
         // HACK: can't figure out how to fix the camera transition starting immediately when you enter the level sometimes
+        me.Tag = 'reallysubexit2';
         me.bPlayTransition = false;
+        me.SetCollision(false,false,false);
     }
 
     s = Spawn(class'MiniSub',, 'MiniSub', vect(186.735916, 243.355240, -2217.393555), rot(0, -16408, 0) );
-    s.Event = 'subexit';
+    s.Event = 'subexit2';
     s.bFloating = true;
     s.SetPhysics(PHYS_Swimming);
     s.SetRotation(rot(0, -16408, 0));
@@ -453,7 +468,7 @@ function VandOceanLabAnyEntry()
     foreach AllActors(class'DataLinkTrigger', dlt) {
         if( dlt.datalinkTag != 'dl_seconddoors' ) continue;
         dlt.SetCollision(false);
-        dlt.Tag = 'subexit';
+        dlt.Tag = 'subexit2';
     }
     c = GetConversation('DL_SecondDoors');
     c.bDisplayOnce = false;

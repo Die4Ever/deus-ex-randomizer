@@ -316,7 +316,7 @@ function #var prefix ComputerSecurity SpawnSecurityComputer(vector loc, optional
     if( t != None ) {
         c.Views[0].TurretTag = t.Tag;
     }
-    c.UserList[0].userName = class'DXRPasswords'.static.ReplaceText(String(c.Name), "ComputerSecurity", "Comp");
+    c.UserList[0].userName = ReplaceText(String(c.Name), "ComputerSecurity", "Comp");
     c.itemName = c.UserList[0].userName;
     c.UserList[0].Password = class'DXRPasswords'.static.GeneratePassword(dxr, dxr.localURL @ String(c.Name) );
     info("SpawnSecurityComputer "$c.UserList[0].userName$" done at ("$loc$"), ("$rotation$") with password: "$c.UserList[0].Password );
@@ -506,7 +506,7 @@ function ExtendedTests()
     TestCameraPlacement( vect(-1090.995483, 2757.317871, -2550.324463), false );
 
     foreach AllActors(class'PathNode', a) {
-        log("testing camera positioning with "$a);
+        debug("testing camera positioning with "$a);
         TestCameraPlacement( a.Location, true );
     }
 }

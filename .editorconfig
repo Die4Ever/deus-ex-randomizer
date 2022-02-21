@@ -1,0 +1,10 @@
+# for VSCode https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig
+# https://marketplace.visualstudio.com/items?itemName=EricBlade.vscode-unrealscript
+
+[*]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+vc_generate_documentation_comments = doxygen_slash_star
+end_of_line = lf

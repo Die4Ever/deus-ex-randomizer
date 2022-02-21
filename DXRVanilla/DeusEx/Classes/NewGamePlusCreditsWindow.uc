@@ -22,7 +22,7 @@ function DoNewGamePlus()
 function AddDXRCreditsGeneral() 
 {
     PrintHeader("Deus Ex Randomizer");
-    PrintText("Version"@class'DXRFlags'.static.VersionString());
+    PrintText("Version"@class'DXRVersion'.static.VersionString());
     PrintLn();
     PrintHeader("Contributors");
     PrintText("Die4Ever");

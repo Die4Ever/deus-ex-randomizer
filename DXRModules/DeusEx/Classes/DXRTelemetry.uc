@@ -3,8 +3,9 @@ class DXRTelemetry extends DXRActorsBase transient;
 var transient Telemetry t;
 
 var config int config_version;
-var config bool enabled;
+var config bool enabled, death_markers;
 var config string server;
+var config string path;
 var config int cache_addr;
 var config string last_notification;
 
@@ -12,8 +13,9 @@ var string notification_url;
 
 function CheckConfig()
 {
-    if( server == "" || config_version < class'DXRFlags'.static.VersionNumber() ) {
+    if( server == "" || config_version < VersionNumber() ) {
         server = "raycarro.com";
+        path = "/dxrando/log.py";
         cache_addr = 0;
     }
     Super.CheckConfig();
@@ -24,7 +26,7 @@ function AnyEntry()
     local #var PlayerPawn  p;
     Super.AnyEntry();
 #ifdef hx
-    SetTimer(300, true);
+    //SetTimer(300, true);
 #endif
     //info log player's health, item counts...?
     p = player();
@@ -61,10 +63,11 @@ function Timer()
     }
 }
 
-function set_enabled(bool e)
+function set_enabled(bool e, bool set_death_markers)
 {
     log(Self$": set_enabled "$e);
     enabled = e;
+    death_markers = set_death_markers;
     SaveConfig();
 }
 
@@ -85,10 +88,15 @@ function int GetAddrFromCache()
 
 function ReceivedData(string data)
 {
-    if( InStr(data,"ERROR") >= 0 || InStr(data, "ok") == -1 ) {
-        l("HTTPReceivedData: " $ data);
+    local string status;
+    local Json j;
+    j = class'Json'.static.parse(Level, data);
+    status = j.get("status");
+    if( InStr(status,"ERROR") >= 0 || InStr(status, "ok") == -1 ) {
+        l("HTTPReceivedData: " $ status);
     }
-    CheckNotification(data);
+    CheckNotification(j.get("notification"), j.get("message"));
+    CheckDeaths(j);
 }
 
 function bool CanShowNotification()
@@ -108,33 +116,22 @@ function bool CanShowNotification()
     return false;
 }
 
-function CheckNotification(string data)
+
+function CheckNotification(string title, string message)
 {
     local int i;
-    local string update, title, message, url, marker;
 
     if( ! CanShowNotification() ) return;
-
-    marker = " notification: ";
-    i = InStr(data, marker);
-    if( i == -1 ) return;
-
-    update = Mid(data, i+Len(marker) );
-    i = InStr(update, t.LF);
-    title = Left(update, i);
-    message = Mid(update, i+1);
-    if( title == last_notification ) return;
+    if( title == "" || title == last_notification ) return;
     last_notification = title;
     SaveConfig();
 
-    i = InStr(message, t.LF);
-    message = Left(message, i);
     i = InStr(message, "https://");
     notification_url = Mid(message, i);
     i = InStr(notification_url, " ");
     if( i != -1 ) notification_url = Left(notification_url, i);
 
-    message = class'DXRPasswords'.static.ReplaceText(message, "https://", "");
+    message = ReplaceText(message, "https://", "");
     CreateMessageBox(title, message, 0, Self, 1);
 }
 
@@ -148,6 +145,28 @@ function MessageBoxClicked(int button, int callbackId){
     //Yes = 0
     //No = 1
     //OK = 2
+}
+
+function CheckDeaths(Json j) {
+    local string k, t;
+    local int i;
+    local vector loc;
+
+    // if death_markers is disabled, we still should parse the list so we can tell the server the newest one we've already received?
+
+    for(i=0; i<j.count(); i++) {
+        k = j.key_at(i);
+        if( InStr(k, "deaths.") == 0 ) {
+            loc.x = float(j.at(i, 5));
+            loc.y = float(j.at(i, 6));
+            loc.z = float(j.at(i, 7));
+            if(death_markers) {
+                l("CheckDeaths key: "$k$" new deathmarker "$loc);
+                // New(Actor a, vector loc, string playername, string killerclass, string killer, string damagetype, int age, int numtimes)
+                class'DeathMarker'.static.New(Self, loc, j.at(i, 1), j.at(i, 8), j.at(i, 2), j.at(i, 3), int(j.at(i, 4)), int(j.at(i, 0)));
+            }
+        }
+    }
 }
 
 function _SendLog(Actor a, string LogLevel, string message)
@@ -173,12 +192,55 @@ static function SendLog(DXRando dxr, Actor a, string LogLevel, string message)
 
 static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string msg;
-    if(Killer != None )
-        msg = player.TruePlayerName $ " was killed by " $ Killer.Class.Name @ Killer.FamiliarName $ " with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
+    local string msg, killername, playername;
+    local #var prefix ScriptedPawn sp;
+    local #var PlayerPawn  killerplayer;
+
+    killerplayer = #var PlayerPawn (Killer);
+    sp = #var prefix ScriptedPawn(Killer);
+
+#ifdef hx
+    playername = player.PlayerReplicationInfo.PlayerName;
+    if(killerplayer != None) {
+        killername = killerplayer.TruePlayerName;
+    }
+#else
+    playername = player.TruePlayerName;
+    if(killerplayer != None) {
+        killername = killerplayer.TruePlayerName;
+    }
+#endif
+    // bImportant ScriptedPawns don't get their names randomized
+    else if(sp != None && sp.bImportant)
+        killername = Killer.FamiliarName;
+    // randomized names aren't really meaningful here so use their default name
+    else if(Killer != None)
+        killername = Killer.default.FamiliarName;
+
+    if(damageType == "shot") {
+        if( !IsHuman(Killer) && Robot(Killer) == None ) {
+            // only humans and robots can shoot? karkians deal shot damage
+            damageType = "";
+        }
+    }
+
+    if(Killer != None)
+        msg = playername $ " was killed by " $ Killer.Class.Name @ killername $ " with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
     else
-        msg = player.TruePlayerName $ " was killed in " $ dxr.localURL $ " (" $ player.Location $ ")";
-    
+        msg = playername $ " was killed with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
+
     log("DEATH: " $ msg, 'DXRTelemetry');
     SendLog(dxr, player, "DEATH", msg);
+}
+
+function ExtendedTests()
+{
+    local vector loc;
+    loc = vect(1,2,3);
+    teststring(string(loc), loc.x$","$loc.y$","$loc.z, "vector to string x,y,z");
+}
+
+defaultproperties
+{
+    death_markers=true
 }

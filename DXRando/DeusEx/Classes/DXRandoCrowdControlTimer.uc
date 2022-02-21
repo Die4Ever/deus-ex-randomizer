@@ -3,14 +3,14 @@
 //=============================================================================
 class DXRandoCrowdControlTimer extends ChargedPickup;
 
-var DXRandoCrowdControlLink link;
+var DXRCrowdControlEffects effects;
 var name timerName;
 var int defTime;
 var string timerLabel;
 
-function initTimer( DXRandoCrowdControlLink ccLink, name tName, int defaultTime, string label )
+function initTimer( DXRCrowdControlEffects ccEffects, name tName, int defaultTime, string label )
 {
-    link = ccLink;
+    effects = ccEffects;
     timerName = tName;
     defTime = defaultTime;
     timerLabel = label;
@@ -34,7 +34,7 @@ function Float GetCurrentCharge()
 {
     local int curTime;
     
-    curTime = link.getTimer(timerName);
+    curTime = effects.getTimer(timerName);
     
     return (Float(curTime) / Float(defTime)) * 100.0;
 }
@@ -50,14 +50,14 @@ function ChargedPickupEnd(DeusExPlayer Player)
     Player.RemoveChargedDisplay(Self);
     bIsActive = False;
     
-    link.removeTimerDisplay(self);
+    effects.removeTimerDisplay(self);
 }
 
 function UsedUp()
 {
     local DeusExPlayer Player;
 
-    Player = link.player();
+    Player = effects.player();
     
     if (Player != None)
     {
@@ -73,7 +73,7 @@ state Activated
     function Timer()
     {
         Charge = GetCurrentCharge();
-        //link.PlayerMessage("Charge is now "$Charge);
+        //effects.PlayerMessage("Charge is now "$Charge);
         if (Charge <= 0)
             UsedUp();
  
@@ -85,7 +85,7 @@ state Activated
 
         Super(DeusExPickup).BeginState();
 
-        Player = link.player();
+        Player = effects.player();
         if (Player != None)
         {
             ChargedPickupBegin(Player);
@@ -99,7 +99,7 @@ state Activated
 
         Super.EndState();
 
-        Player = link.player();
+        Player = effects.player();
         if (Player != None)
         {
             ChargedPickupEnd(Player);

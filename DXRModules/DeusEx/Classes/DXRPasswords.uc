@@ -945,63 +945,6 @@ simulated final function int PassInStr(string text, string oldpassword)
     return -1;
 }
 
-simulated static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With, optional bool word)
-{
-    local int i, replace_len;
-    local string Output, capsReplace;
-
-    replace_len = Len(Replace);
-    capsReplace = Caps(Replace);
-    
-    i = WordInStr( Caps(Text), capsReplace, replace_len, word );
-    while (i != -1) {
-        Output = Output $ Left(Text, i) $ With;
-        Text = Mid(Text, i + replace_len); 
-        i = WordInStr( Caps(Text), capsReplace, replace_len, word);
-    }
-    Output = Output $ Text;
-    return Output;
-}
-
-simulated static final function int WordInStr(coerce string Text, coerce string Replace, int replace_len, optional bool word)
-{
-    local int i, e;
-    i = InStr(Text, Replace);
-    if(word==false || i==-1) return i;
-
-    if(i>0) {
-        if( IsWordChar(Text, i-1) ) {
-            e = WordInStr(Mid(Text, i+1), Replace, replace_len, word);
-            if( e <= 0 ) return -1;
-            return i+1+e;
-        }
-    }
-    e = i + replace_len;
-    if( e < Len(Text) ) {
-        if( IsWordChar(Text, e) ) {
-            e = WordInStr(Mid(Text, i+1), Replace, replace_len, word);
-            if( e <= 0 ) return -1;
-            return i+1+e;
-        }
-    }
-    return i;
-}
-
-simulated static final function bool IsWordChar(coerce string Text, int index)
-{
-    local int c;
-    c = Asc(Mid(Text, index, 1));
-    if( c>=48 && c<=57) // 0-9
-        return true;
-    if( c>=65 && c<=90) // A-Z
-        return true;
-    if( c>=97 && c<=122) // a-z
-        return true;
-    if( c == 39 ) // apostrophe
-        return true;
-    return false;
-}
-
 simulated function LogAll()
 {
     local #var prefix Computers c;

@@ -7,20 +7,6 @@ event InitWindow()
     Super.InitWindow();
 }
 
-function CheckConfig()
-{
-    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
-        num_rows=default.num_rows;
-        num_cols=default.num_cols;
-        col_width_odd=default.col_width_odd;
-        col_width_even=default.col_width_even;
-        row_height=default.row_height;
-        padding_width=default.padding_width;
-        padding_height=default.padding_height;
-    }
-    Super.CheckConfig();
-}
-
 function BindControls(optional string action)
 {
     local DXRFlags f;
@@ -37,18 +23,18 @@ function BindControls(optional string action)
     Slider(iDifficulty, 0, 500);
     combatDifficulty = float(iDifficulty) / 100.0;
 
-#ifdef vanilla
+#ifndef hx
     NewMenuItem("", "Randomize starting locations on certain maps");
     EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations);
     EnumOption("Unchanged Starting Locations", 0, f.settings.startinglocations);
 #endif
-    
+
     NewMenuItem("", "Randomize goal locations on certain maps");
     EnumOption("Randomize Goal Locations", 100, f.settings.goals);
     EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
 
 #ifdef vanilla
-    NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map.");
+    NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map."$BR$"If The Merchant dies then he stays dead for the rest of the game.");
     Slider(f.settings.merchants, 0, 100);
 #endif
 
@@ -71,22 +57,22 @@ function BindControls(optional string action)
     Slider(f.settings.repairbotuses, 0, 10);
 #endif
 
-    NewMenuItem("Medbot Cooldowns", "Individual: Each Medbot has its own healing cooldown.  Global: All Medbots have the same cooldown");
+    NewMenuItem("Medbot Cooldowns", "Individual: Each Medbot has its own healing cooldown."$BR$"Global: All Medbots have the same cooldown");
     EnumOption("Unchanged", 0, f.settings.medbotcooldowns);
     EnumOption("Individual", 1, f.settings.medbotcooldowns);
     EnumOption("Global", 2, f.settings.medbotcooldowns);
 
-    NewMenuItem("Repair Bot Cooldowns", "Individual: Each Repair Bot has its own charge cooldown.  Global: All Repair Bots have the same cooldown");
+    NewMenuItem("Repair Bot Cooldowns", "Individual: Each Repair Bot has its own charge cooldown."$BR$"Global: All Repair Bots have the same cooldown");
     EnumOption("Unchanged", 0, f.settings.repairbotcooldowns);
     EnumOption("Individual", 1, f.settings.repairbotcooldowns);
     EnumOption("Global", 2, f.settings.repairbotcooldowns);
 
-    NewMenuItem("Medbot Heal Amount", "Individual: Each Medbot has its own healing amount.  Global: All Medbots have the same amount");
+    NewMenuItem("Medbot Heal Amount", "Individual: Each Medbot has its own healing amount."$BR$"Global: All Medbots have the same amount");
     EnumOption("Unchanged", 0, f.settings.medbotamount);
     EnumOption("Individual", 1, f.settings.medbotamount);
     EnumOption("Global", 2, f.settings.medbotamount);
 
-    NewMenuItem("Repair Bot Charge Amount", "Individual: Each Repair Bot has its own charge amount.  Global: All Repair Bots have the same amount");
+    NewMenuItem("Repair Bot Charge Amount", "Individual: Each Repair Bot has its own charge amount."$BR$"Global: All Repair Bots have the same amount");
     EnumOption("Unchanged", 0, f.settings.repairbotamount);
     EnumOption("Individual", 1, f.settings.repairbotamount);
     EnumOption("Global", 2, f.settings.repairbotamount);
@@ -264,8 +250,6 @@ defaultproperties
     padding_width=20
     padding_height=10
     Title="DX Rando Options"
-    ClientWidth=672
-    ClientHeight=357
     bUsesHelpWindow=False
     bEscapeSavesSettings=False
 }

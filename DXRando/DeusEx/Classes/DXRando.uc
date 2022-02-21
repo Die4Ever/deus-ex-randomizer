@@ -1,8 +1,4 @@
-#ifdef injections
-class DXRando extends Info config(DXRando) transient;
-#else
-class DXRando extends Info config(#var package ) transient;
-#endif
+class DXRando extends DXRInfo transient;
 
 var transient #var PlayerPawn  Player;
 var transient FlagBase flagbase;
@@ -107,7 +103,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( class'DXRFlags'.static.VersionOlderThan(config_version, 1,7,2,9) ) {
+    if( VersionOlderThan(config_version, 1,7,3,0) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -127,11 +123,7 @@ function CheckConfig()
         hx_modules();
 #endif
     }
-    if( config_version < class'DXRFlags'.static.VersionNumber() ) {
-        info("upgraded config from "$config_version$" to "$class'DXRFlags'.static.VersionNumber());
-        config_version = class'DXRFlags'.static.VersionNumber();
-        SaveConfig();
-    }
+    Super.CheckConfig();
 }
 
 function vanilla_modules()
@@ -189,6 +181,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRCrowdControl";
     modules_to_load[i++] = "DXRMachines";
     modules_to_load[i++] = "DXRHints";
+    modules_to_load[i++] = "DXRReplaceActors";
 }
 
 function gmdx_modules()
@@ -213,6 +206,8 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRCrowdControl";
     modules_to_load[i++] = "DXRMachines";
     modules_to_load[i++] = "DXRHints";
+    modules_to_load[i++] = "DXRReplaceActors";
+    modules_to_load[i++] = "DXRFashion";
 }
 
 function revision_modules()
@@ -237,7 +232,7 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
     local DXRBase m;
     l("loading module "$moduleclass);
 
-    m = FindModule(moduleclass);
+    m = FindModule(moduleclass, true);
     if( m != None ) {
         info("found already loaded module "$m);
         if(m.dxr != Self) m.Init(Self);
@@ -275,7 +270,7 @@ function LoadModules()
     telemetry = DXRTelemetry(FindModule(class'DXRTelemetry'));
 }
 
-simulated final function DXRBase FindModule(class<DXRBase> moduleclass)
+simulated final function DXRBase FindModule(class<DXRBase> moduleclass, optional bool bSilent)
 {
     local DXRBase m;
     local int i;
@@ -287,7 +282,8 @@ simulated final function DXRBase FindModule(class<DXRBase> moduleclass)
     foreach AllActors(class'DXRBase', m)
     {
         if( m.Class == moduleclass ) {
-            l("FindModule("$moduleclass$") found "$m);
+            if(!bSilent)
+                l("FindModule("$moduleclass$") found "$m);
             m.Init(Self);
             modules[num_modules] = m;
             num_modules++;
@@ -295,7 +291,8 @@ simulated final function DXRBase FindModule(class<DXRBase> moduleclass)
         }
     }
 
-    l("didn't find module "$moduleclass);
+    if(!bSilent)
+        l("didn't find module "$moduleclass);
     return None;
 }
 
@@ -440,9 +437,9 @@ simulated function PlayerLogin(#var PlayerPawn  p)
     info("PlayerLogin("$p$") do it, p.PlayerDataItem: " $ data $", data.local_inited: "$data.local_inited);
 
 #ifdef singleplayer
-    if ( flags.stored_version != 0 && flags.stored_version < class'DXRFlags'.static.VersionNumber() ) {
+    if ( flags.stored_version != 0 && flags.stored_version < VersionNumber() ) {
         data.local_inited = true;
-        data.version = class'DXRFlags'.static.VersionNumber();
+        data.version = VersionNumber();
     }
 #endif
 
@@ -457,7 +454,7 @@ simulated function PlayerLogin(#var PlayerPawn  p)
         modules[i].PlayerAnyEntry(p);
     }
 
-    data.version = class'DXRFlags'.static.VersionNumber();
+    data.version = VersionNumber();
 }
 
 simulated function PlayerRespawn(#var PlayerPawn  p)
@@ -537,34 +534,9 @@ simulated final function int Crc(coerce string Text) {
     return CrcValue;
 }
 
-simulated function l(string message)
+simulated function DXRando GetDXR()
 {
-    log(message, class.name);
-}
-
-simulated function info(string message)
-{
-    log("INFO: " $ message, class.name);
-    class'DXRTelemetry'.static.SendLog(Self, Self, "INFO", message);
-}
-
-simulated function warning(string message)
-{
-    log("WARNING: " $ message, class.name);
-    class'DXRTelemetry'.static.SendLog(Self, Self, "WARNING", message);
-}
-
-simulated function err(string message)
-{
-    log("ERROR: " $ message, class.name);
-#ifdef singleplayer
-    if( Player != None )
-        Player.ClientMessage( Class @ message, 'ERROR' );
-#else
-    BroadcastMessage(class.name$": ERROR: "$message, true, 'ERROR');
-#endif
-
-    class'DXRTelemetry'.static.SendLog(Self, Self, "ERROR", message);
+    return Self;
 }
 
 function RunTests()
@@ -616,8 +588,4 @@ function ExtendedTests()
 defaultproperties
 {
     NetPriority=0.1
-    bAlwaysRelevant=True
-    bGameRelevant=True
-    bTickEnabled=True
-    RemoteRole=ROLE_SimulatedProxy
 }
