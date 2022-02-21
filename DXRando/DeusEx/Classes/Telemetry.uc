@@ -96,7 +96,7 @@ function string GetUrl()
         version = Left(version, i) $ "%20" $ Mid(version, i+1);
         i = InStr(version, " ");
     }
-    return module.path $ "?version="$version;
+    return module.path $ "?version="$version$"&mod=#var package ";
 }
 
 function Done()
