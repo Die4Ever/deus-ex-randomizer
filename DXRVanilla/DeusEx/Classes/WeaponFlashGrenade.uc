@@ -3,7 +3,6 @@ class WeaponFlashGrenade extends WeaponGasGrenade;
 
 defaultproperties
 {
-    DamageType=Stunned
     AmmoName=Class'DeusEx.AmmoFlashGrenade'
     ProjectileClass=Class'DeusEx.FlashGrenade'
     ItemName="Flashbang Grenade"

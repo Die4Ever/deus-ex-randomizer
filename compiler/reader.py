@@ -5,12 +5,12 @@ class UnrealScriptFile():
     def __init__(self, file, preprocessor, definitions):
         self.file = file
         self.read_file(preprocessor, definitions)
-    
+
     def read_file(self, preprocessor, definitions):
         success, self.filename, self.namespace, self.parentfolder = is_uc_file(self.file)
         if not success:
             raise RuntimeError( self.file + ' is not an unrealscript file!' )
-            
+
         self.content = None
         with open(self.file) as f:
             self.content = f.read()
@@ -29,7 +29,7 @@ class UnrealScriptFile():
             RuntimeError(self.file+" couldn't read class definition")
         # maybe do some assertions on classnames, and verify that classname matches filename?
         self.qualifiedclass = self.namespace+'.'+self.classname
-    
+
     def modify_classline(f, classname, operator, baseclass):
         comment = "// === was "+f.mod_name+'/'
         if f.parentfolder:
@@ -43,7 +43,7 @@ class UnrealScriptFile():
         f.operator = operator
         f.baseclass = baseclass
         f.content = re.sub(oldclassline, f.classline, f.content, count=1)
-    
+
     @staticmethod
     def get_class_line(content):
         classline = re.search( r'(class .+?;)', content, flags=re.IGNORECASE | re.DOTALL)
@@ -53,7 +53,7 @@ class UnrealScriptFile():
             print(content)
             raise RuntimeError('Could not find classline')
         return classline
-    
+
     @staticmethod
     def strip_comments(content):
         content_no_comments = re.sub(r'//.*', ' ', content)
@@ -70,12 +70,12 @@ def proc_file(file, files, mod_name, injects, preprocessor, definitions):
     debug("Processing "+file+" from "+mod_name)
     if not is_uc_file(file):
         return
-    
+
     if not hasattr(proc_file,"last_folder"):
         proc_file.last_folder=""
     folder = Path(file).parent
     if folder != proc_file.last_folder:
-        print("Processing folder "+str(folder)[-50:]+" from "+mod_name)
+        debug("Processing folder "+str(folder)[-50:]+" from "+mod_name)
     proc_file.last_folder = folder
 
     f = read_uc_file(file, preprocessor, definitions)

@@ -18,7 +18,7 @@ def run(args):
         with open('compiler_settings.json') as f:
             settings = json.load(f)
     except FileNotFoundError as e:
-        e.strerror += '\n\nERROR: You need to copy compiler_settings.example.json to compiler_settings.json and adjust the paths.'
+        appendException(e, '\n\nERROR: You need to copy compiler_settings.example.json to compiler_settings.json and adjust the paths.')
         raise
 
     merged = default_settings
@@ -38,7 +38,8 @@ def run(args):
         profile_name = p.strip()
         profile = merged[profile_name]
         args.base.loglevel = 'debug' if profile['verbose'] else 'info'
-        print("using "+profile_name+" settings\n"+repr(profile)+"\n")
+        printHeader("using profile: "+profile_name+", settings:")
+        print(repr(profile)+"\n")
         if not run_profile(args, profile):
             return
 
@@ -52,17 +53,20 @@ def run_profile(args, settings):
     changed = False
     if settings.get('copy_if_changed'):
         copy_local = True
-        gitstatus = call_read('git status')
+        gitstatus = call(['git', 'status'])[1]
         if re.search(r'%s' % settings.get('copy_if_changed'), gitstatus):
             changed = True
 
-    compileResult = compile(args, settings)
+    (compileResult, compileWarnings) = compile(args, settings)
     if compileResult != 0:
         raise RuntimeError("Compilation failed, returned: "+str(compileResult))
 
     testSuccess = True
     if run_tests:
         testSuccess = args.tester.runAutomatedTests(out, packages[0])
+
+    for warning in compileWarnings:
+        print_colored(warning)
 
     if not testSuccess:
         return False
@@ -132,7 +136,7 @@ def compile(args, settings):
             raise
 
     for mod in mods_files:
-        print("writing mod "+repr(mod.keys()))
+        print("writing mod "+repr(mod.keys())[:200])
         try:
             writer.before_write(mod, injects)
         except Exception as e:
@@ -164,9 +168,14 @@ def compile(args, settings):
         os.makedirs(out + '/DeusEx/Inc', exist_ok=True)
     # also we can check UCC.log for success or just the existence of DeusEx.u
     ret = 1
-    ret = calla([ out + '/System/ucc', 'make', '-h', '-NoBind', '-Silent' ])
+    (ret, out) = call([ out + '/System/ucc', 'make', '-h', '-NoBind', '-Silent' ])
+    warnings = []
+    re_terrorist = re.compile(r'((Parsing)|(Compiling)) (([\w\d_]*Terrorist\w*)|(AmmoNone))')
+    for line in out.splitlines():
+        if re_error.search(line) and not re_terrorist.match(line):
+            warnings.append(line)
     # if ret != 0 we should show the end of UCC.log, we could also keep track of compiler warnings to show at the end after the test results
-    return ret
+    return (ret, warnings)
 
 
 def copy_package_files(out_dir, packages):

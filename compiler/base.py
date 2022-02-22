@@ -7,10 +7,15 @@ import os.path
 import shutil
 import traceback
 from pathlib import Path
+import time
 from timeit import default_timer as timer
 
 loglevel = 'info'
 vanilla_inheritance_keywords = [None, 'extends', 'expands']
+# text colors
+WARNING = '\033[91m'
+ENDCOLOR = '\033[0m'
+re_error = re.compile(r'((none)|(warning)|(error)|(fail)|(out of bounds))', re.IGNORECASE)
 
 def debug(str):
     global loglevel
@@ -27,6 +32,9 @@ def appendException(e, msg):
         e.args = ("",)
     e.args = (e.args[0] + " \n" + msg,) + e.args[1:]
 
+def printError(e):
+    print(WARNING+e+ENDCOLOR)
+
 def printHeader(text):
     print("")
     print("=====================================================")
@@ -34,32 +42,63 @@ def printHeader(text):
     print("=====================================================")
     print("")
 
-def calla(cmds):
-    print("running "+repr(cmds))
+
+def print_colored(msg):
+    msg = re_error.sub(WARNING+"\\1"+ENDCOLOR, msg)
+    print(msg)
+
+
+def read(pipe, outs, verbose):
+    o = ''
+    if pipe and pipe.readable():
+        o += pipe.readline()
+
+    if o and (verbose or re_error.search(o)):
+        print_colored(o.strip())
+    return outs+o
+
+
+def call(cmds, verbose=False, stdout=True, stderr=True):
+    print("\nrunning "+repr(cmds))
     start = timer()
-    proc = subprocess.Popen(cmds)
+    last_print = start
+    if loglevel == 'debug':
+        verbose = True
+
+    if stdout:
+        stdout = subprocess.PIPE
+        if stderr:
+            stderr = subprocess.STDOUT
+    elif stderr:
+        stderr = subprocess.PIPE
+        stdout = None
+    else:
+        stderr = None
+        stdout = None
+
+    proc = subprocess.Popen(cmds, stdout=stdout, stderr=stderr, close_fds=True, universal_newlines=True)
+    outs = ''
+    pipe = None
+    if stdout:
+        pipe = proc.stdout
+    elif stderr:
+        pipe = proc.stderr
+
     try:
-        ret = proc.wait(timeout=600)
+        while proc.returncode is None and timer() - start < 600:
+            outs = read(pipe, outs, verbose)
+            proc.poll()
+        if proc.returncode != 0:
+            raise Exception("call didn't return 0: "+repr(cmds))
     except Exception as e:
         proc.kill()
+        outs = read(pipe, outs, verbose)
+        proc.poll()
         print(traceback.format_exc())
         raise
     elapsed_time = timer() - start # in seconds
-    print( repr(cmds) + " took " + str(elapsed_time) + " seconds and returned " + str(ret) )
-    return ret
-
-def call_read(cmd):
-    proc = subprocess.Popen(cmd, shell=True, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True, universal_newlines=True)
-    outs=''
-    errs=''
-
-    try:
-        outs, errs = proc.communicate(timeout=600)
-    except Exception as e:
-        proc.kill()
-        print(traceback.format_exc())
-        raise
-    return outs
+    print( repr(cmds) + " took " + str(elapsed_time) + " seconds and returned " + str(proc.returncode) + "\n" )
+    return (proc.returncode, outs)
 
 
 def insensitive_glob(pattern):
