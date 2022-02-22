@@ -243,13 +243,11 @@ function JsonMsg ParseJson(string msg) {
                 case ":":
                 case ",":
                     //Wrap up the current string that was being handled
-                    //PlayerMessage(buf);
                     if (parsestate == KeyState) {
                         StripQuotes(_buf, p);
                         j.e[j.count].key = p;
                         parsestate = ValState;
                     } else if (parsestate == ValState) {
-                        //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
                         j.e[j.count].value[j.e[j.count].valCount] = p;
                         j.e[j.count].valCount++;
                         parsestate = KeyState;
@@ -257,7 +255,6 @@ function JsonMsg ParseJson(string msg) {
                     } else if (parsestate == ArrayState) {
                         // TODO: arrays of objects
                         if (c != ":") {
-                            //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
                             j.e[j.count].value[j.e[j.count].valCount] = p;
                             j.e[j.count].valCount++;
                         }
@@ -275,10 +272,8 @@ function JsonMsg ParseJson(string msg) {
                     break;
 
                 case "}":
-                    //PlayerMessage(buf);
                     inBraces--;
                     if (inBraces == 0 && parsestate == ValState) {
-                        //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
                         j.e[j.count].value[j.e[j.count].valCount] = p;
                         j.e[j.count].valCount++;
                         parsestate = KeyState;
@@ -298,7 +293,6 @@ function JsonMsg ParseJson(string msg) {
 
                 case "]":
                     if (parsestate == ArrayState) {
-                        //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
                         j.e[j.count].value[j.e[j.count].valCount] = p;
                         j.e[j.count].valCount++;
                         elemDone = True;
@@ -365,7 +359,6 @@ function JsonMsg ParseJson(string msg) {
         }
 
         if (elemDone) {
-          //PlayerMessage("Key: "$j.e[j.count].key$ "   Val: "$j.e[j.count].value[0]);
           j.count++;
           elemDone = False;
         }
