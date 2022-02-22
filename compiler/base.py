@@ -2,6 +2,7 @@
 import sys
 import re
 import glob
+import datetime
 import subprocess
 import os.path
 import shutil
@@ -15,7 +16,7 @@ vanilla_inheritance_keywords = [None, 'extends', 'expands']
 # text colors
 WARNING = '\033[91m'
 ENDCOLOR = '\033[0m'
-re_error = re.compile(r'((none)|(warning)|(error)|(fail)|(out of bounds))', re.IGNORECASE)
+re_error = re.compile(r'((none)|(warning)|(error)|(fail)|(out of bounds)|(time:))', re.IGNORECASE)
 
 def trace(str):
     # lower than debug
@@ -70,7 +71,7 @@ def read(pipe, outs, errs, verbose):
 
     hasWarnings = re_error.search(o)
     if o and (verbose or hasWarnings):
-        print_colored(o.strip())
+        print_colored(str(datetime.datetime.now().time()) +" "+ o.strip())
     if hasWarnings:
         errs += o
     return outs+o, errs

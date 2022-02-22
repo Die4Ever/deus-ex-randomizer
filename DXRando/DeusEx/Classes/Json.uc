@@ -117,7 +117,7 @@ static function l(coerce string message, string j)
     }
 }
 
-static function string StripQuotes (string msg) {
+static function string StripQuotes(string msg) {
     if (Mid(msg,0,1)==Chr(34)) {
         if (Mid(msg,Len(Msg)-1,1)==Chr(34)) {
             return Mid(msg,1,Len(msg)-2);
@@ -229,27 +229,27 @@ function JsonMsg ParseJson(string msg) {
             switch (c) {
                 case ":":
                 case ",":
-                  //Wrap up the current string that was being handled
-                  //PlayerMessage(buf);
-                  if (parsestate == KeyState) {
-                      j.e[j.count].key = StripQuotes(buf);
-                      parsestate = ValState;
-                  } else if (parsestate == ValState) {
-                      //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                      j.e[j.count].value[j.e[j.count].valCount]=buf;
-                      j.e[j.count].valCount++;
-                      parsestate = KeyState;
-                      elemDone = True;
-                  } else if (parsestate == ArrayState) {
-                      // TODO: arrays of objects
-                      if (c != ":") {
+                    //Wrap up the current string that was being handled
+                    //PlayerMessage(buf);
+                    if (parsestate == KeyState) {
+                        j.e[j.count].key = StripQuotes(buf);
+                        parsestate = ValState;
+                    } else if (parsestate == ValState) {
                         //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
                         j.e[j.count].value[j.e[j.count].valCount]=buf;
                         j.e[j.count].valCount++;
-                      }
-                  } else if (parsestate == ArrayDoneState){
-                      parseState = KeyState;
-                  }
+                        parsestate = KeyState;
+                        elemDone = True;
+                    } else if (parsestate == ArrayState) {
+                        // TODO: arrays of objects
+                        if (c != ":") {
+                        //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                        j.e[j.count].value[j.e[j.count].valCount]=buf;
+                        j.e[j.count].valCount++;
+                        }
+                    } else if (parsestate == ArrayDoneState){
+                        parseState = KeyState;
+                    }
                     buf = "";
                     break; // break for colon and comma
 
@@ -262,11 +262,11 @@ function JsonMsg ParseJson(string msg) {
                     //PlayerMessage(buf);
                     inBraces--;
                     if (inBraces == 0 && parsestate == ValState) {
-                      //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                      j.e[j.count].value[j.e[j.count].valCount]=buf;
-                      j.e[j.count].valCount++;
-                      parsestate = KeyState;
-                      elemDone = True;
+                        //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                        j.e[j.count].value[j.e[j.count].valCount]=buf;
+                        j.e[j.count].valCount++;
+                        parsestate = KeyState;
+                        elemDone = True;
                     }
                     if (parsestate == ArrayState) {
                         // TODO: arrays of objects
