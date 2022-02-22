@@ -418,6 +418,7 @@ function ParseJson(string msg) {
     local JsonMsg data;
 
     parsestate = KeyState;
+    j = data;// clear the global
 
     //Strip any spaces outside of strings to standardize the input a bit
     msg = JsonStripSpaces(msg);
@@ -427,7 +428,6 @@ function ParseJson(string msg) {
     }
 
     _buf = "";
-    j = data;// clear the global
 
     //l("ParseJson start", msg);
     for(i=0; i<999999; i++) {
