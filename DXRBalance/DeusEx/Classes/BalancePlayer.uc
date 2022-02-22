@@ -60,6 +60,40 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
     return Damage;
 }
 
+function float ReduceEnviroDamage(float damage)
+{
+    local float skillLevel;
+
+    skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+    if(skillLevel < 0)
+        skillLevel = 0;
+
+    if (UsingChargedPickup(class'HazMatSuit'))
+    {
+        return damage * 0.75 * skillLevel;
+    }
+    else // passive enviro skill still gives some damage reduction
+    {
+        return damage * 1.5 * skillLevel;
+    }
+}
+
+function float ArmorReduceDamage(float damage)
+{
+    local float skillLevel;
+
+    // go through the actor list looking for owned BallisticArmor
+    // since they aren't in the inventory anymore after they are used
+    if (UsingChargedPickup(class'BallisticArmor'))
+    {
+        skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
+        if(skillLevel < 0)
+            skillLevel = 0;
+        return damage * 0.5 * skillLevel;
+    }
+    return damage;
+}
+
 // ----------------------------------------------------------------------
 // DXReduceDamage()
 //
@@ -82,7 +116,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     oldDamage = newDamage;
 
     if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||
-        (damageType == 'HalonGas')  || (damageType == 'PoisonEffect') || (damageType == 'Poison') 
+        (damageType == 'HalonGas')  || (damageType == 'PoisonEffect') || (damageType == 'Poison')
         /*|| damageType == 'Flamed' || damageType == 'Burned'*/ )
     {
         if (AugmentationSystem != None)
@@ -100,27 +134,12 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
                 drugEffectTimer = 0;
         }
 
-        if (UsingChargedPickup(class'HazMatSuit'))
-        {
-            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= 0.75 * skillLevel;
-        }
-        else // passive enviro skill still gives some damage reduction
-        {
-            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= (skillLevel + 3)/5;
-        }
+        newDamage = ReduceEnviroDamage(newDamage);
     }
 
     if ((damageType == 'Shot') || (damageType == 'Sabot') || (damageType == 'Exploded') || (damageType == 'AutoShot'))
     {
-        // go through the actor list looking for owned BallisticArmor
-        // since they aren't in the inventory anymore after they are used
-        if (UsingChargedPickup(class'BallisticArmor'))
-        {
-            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= 0.5 * skillLevel;
-        }
+        newDamage = ArmorReduceDamage(newDamage);
     }
 
     if (damageType == 'HalonGas')
@@ -156,16 +175,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         if (augLevel >= 0.0)
             newDamage *= augLevel;
 
-        if (UsingChargedPickup(class'HazMatSuit'))
-        {
-            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= 0.75 * skillLevel;
-        }
-        else // passive enviro skill still gives some damage reduction
-        {
-            skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-            newDamage *= (skillLevel + 3)/5;
-        }
+        newDamage = ReduceEnviroDamage(newDamage);
     }
 
     //Apply damage multiplier
@@ -174,7 +184,6 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     if (damageMult!=0) {
         newDamage*=damageMult;
     }
-
 
     //
     // Reduce or increase the damage based on the combat difficulty setting, do this before SetDamagePercent for the UI display
@@ -194,19 +203,13 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
     //make sure to factor the rounding into the percentage
     pct = 1.0 - ( Float(Int(newDamage)) / Float(Int(oldDamage)) );
-    if (pct != 1.0)
+    if (!bCheckOnly)
     {
-        if (!bCheckOnly)
-        {
-            SetDamagePercent(pct);
-            ClientFlash(0.01, vect(0, 0, 50));
-        }
-        bReduced = True;
+        SetDamagePercent(pct);
     }
-    else
-    {
-        if (!bCheckOnly)
-            SetDamagePercent(0.0);
+    if( pct > 0 ) {
+        bReduced = True;
+        ClientFlash(0.01, vect(0, 0, 50));
     }
 
     adjustedDamage = Int(newDamage);
@@ -259,12 +262,12 @@ function int HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill)
     local int adjustedHealAmount;
 
     adjustedHealAmount = _HealPlayer(baseHealPoints, bUseMedicineSkill);
-    
+
     if (adjustedHealAmount == 1)
         ClientMessage(Sprintf(HealedPointLabel, adjustedHealAmount));
     else if(adjustedHealAmount != 1)// we want messages for healing 0 so you know it could've healed you
         ClientMessage(Sprintf(HealedPointsLabel, adjustedHealAmount));
-    
+
     return adjustedHealAmount;
 }
 

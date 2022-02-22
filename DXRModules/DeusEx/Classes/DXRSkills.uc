@@ -31,7 +31,7 @@ function CheckConfig()
         min_skill_weaken = default.min_skill_weaken;
         max_skill_str = default.max_skill_str;
         skill_cost_curve = default.skill_cost_curve;
-        
+
         i=0;
 #ifdef balance
         SkillCostMultipliers[i].type = "SkillDemolition";
@@ -169,7 +169,8 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
 {
     local Skill s;
     local float f;
-    
+    local string r;
+
     s = Skill(act);
     if( s == None ) {
         err("DescriptionLevel failed for skill "$act);
@@ -186,8 +187,15 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         return int(s.LevelValues[i] * 100.0) $ "%";
     }
     else if( s.Class == class'#var prefix SkillEnviro' ) {
-        word = "Damage Reduction";
-        return int( (1 - s.LevelValues[i] * 0.66) * 100.0 ) $ "%";//hazmat is * 0.75, ballistic armor is * 0.5...
+        word = "Damage Reduction (Passive/HazMat/Armor)";
+        f = s.LevelValues[i];
+        if(f < 0)
+            f = 0;
+        if(i>0) r="|n    ";
+        r = r $ int( (1 - f * 1.5) * 100.0 ) $ "% / "; // passive is * 1.5
+        r = r $ int( (1 - f * 0.75) * 100.0 ) $ "% / ";//passive is * lvl+3/5, hazmat is * 0.75, ballistic armor is * 0.5...
+        r = r $ int( (1 - f * 0.5) * 100.0 ) $ "%";
+        return r;
     }
     else if( s.Class == class'#var prefix SkillMedicine') {
         word = "Healing";
@@ -228,7 +236,7 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
         l( aSkill.Class.Name $ " lvl: "$(i+1)$" is banned");
         aSkill.Cost[i] = 99999;
         return;
-    } 
+    }
 
     if( dxr.flags.settings.skills_independent_levels > 0 ) {
         percent = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
