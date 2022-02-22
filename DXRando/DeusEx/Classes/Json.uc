@@ -9,7 +9,7 @@ const ArrayDoneState = 4;
 
 struct IntPair
 {
-    var int idx, vlen;
+    var int idx, len;
 };
 
 struct JsonElement
@@ -55,7 +55,7 @@ function int max_values() {
 }
 
 function string get_string(IntPair i) {
-    return Mid(_buf, i.idx, i.vlen);
+    return Mid(_buf, i.idx, i.len);
 }
 
 function string key_at(int k) {
@@ -127,11 +127,11 @@ static function l(coerce string message, string j)
     }
 }
 
-static function StripQuotes(string msg, out int start, out int length) {
-    if (Mid(msg,start,1)==Chr(34)) {
-        if (Mid(msg,start+length-1,1)==Chr(34)) {
-            start++;
-            length-=2;
+static function StripQuotes(string msg, out IntPair p) {
+    if (Mid(msg,p.idx,1)==Chr(34)) {
+        if (Mid(msg,p.idx+p.len-1,1)==Chr(34)) {
+            p.idx++;
+            p.len-=2;
             return;
         }
     }
@@ -205,7 +205,7 @@ static function bool _IsJson(string msg) {
 
 function JsonMsg ParseJson(string msg) {
     local int i, length;
-    local int idx, tlen;
+    local IntPair p;
     local string c;
     //local string buf;
 
@@ -223,7 +223,6 @@ function JsonMsg ParseJson(string msg) {
     parsestate = KeyState;
     inquotes = False;
     escape = False;
-    _buf = "";
 
     //Strip any spaces outside of strings to standardize the input a bit
     msg = JsonStripSpaces(msg);
@@ -231,6 +230,8 @@ function JsonMsg ParseJson(string msg) {
         l(".ParseJson IsJson failed!", msg);
         return j;
     }
+
+    _buf = "";
 
     // we set the length to -1 to end the loop
     length = Len(msg);
@@ -244,14 +245,12 @@ function JsonMsg ParseJson(string msg) {
                     //Wrap up the current string that was being handled
                     //PlayerMessage(buf);
                     if (parsestate == KeyState) {
-                        StripQuotes(_buf, idx, tlen);
-                        j.e[j.count].key.idx = idx;
-                        j.e[j.count].key.vlen = tlen;
+                        StripQuotes(_buf, p);
+                        j.e[j.count].key = p;
                         parsestate = ValState;
                     } else if (parsestate == ValState) {
                         //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                        j.e[j.count].value[j.e[j.count].valCount].idx = idx;
-                        j.e[j.count].value[j.e[j.count].valCount].vlen = tlen;
+                        j.e[j.count].value[j.e[j.count].valCount] = p;
                         j.e[j.count].valCount++;
                         parsestate = KeyState;
                         elemDone = True;
@@ -259,21 +258,20 @@ function JsonMsg ParseJson(string msg) {
                         // TODO: arrays of objects
                         if (c != ":") {
                             //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                            j.e[j.count].value[j.e[j.count].valCount].idx = idx;
-                            j.e[j.count].value[j.e[j.count].valCount].vlen = tlen;
+                            j.e[j.count].value[j.e[j.count].valCount] = p;
                             j.e[j.count].valCount++;
                         }
                     } else if (parsestate == ArrayDoneState){
                         parseState = KeyState;
                     }
-                    idx = Len(_buf);
-                    tlen = 0;
+                    p.idx = Len(_buf);
+                    p.len = 0;
                     break; // break for colon and comma
 
                 case "{":
                     inBraces++;
-                    idx = Len(_buf);
-                    tlen = 0;
+                    p.idx = Len(_buf);
+                    p.len = 0;
                     break;
 
                 case "}":
@@ -281,8 +279,7 @@ function JsonMsg ParseJson(string msg) {
                     inBraces--;
                     if (inBraces == 0 && parsestate == ValState) {
                         //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                        j.e[j.count].value[j.e[j.count].valCount].idx = idx;
-                        j.e[j.count].value[j.e[j.count].valCount].vlen = tlen;
+                        j.e[j.count].value[j.e[j.count].valCount] = p;
                         j.e[j.count].valCount++;
                         parsestate = KeyState;
                         elemDone = True;
@@ -302,14 +299,13 @@ function JsonMsg ParseJson(string msg) {
                 case "]":
                     if (parsestate == ArrayState) {
                         //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                        j.e[j.count].value[j.e[j.count].valCount].idx = idx;
-                        j.e[j.count].value[j.e[j.count].valCount].vlen = tlen;
+                        j.e[j.count].value[j.e[j.count].valCount] = p;
                         j.e[j.count].valCount++;
                         elemDone = True;
                         parsestate = ArrayDoneState;
                     } else {
                         _buf = _buf $ c;
-                        tlen++;
+                        p.len++;
                     }
                     break;
                 case "[":
@@ -317,7 +313,7 @@ function JsonMsg ParseJson(string msg) {
                         parsestate = ArrayState;
                     } else {
                         _buf = _buf $ c;
-                        tlen++;
+                        p.len++;
                     }
                     break;
                 case Chr(34): //Quotes
@@ -326,7 +322,7 @@ function JsonMsg ParseJson(string msg) {
                 default:
                     //Build up the buffer
                     _buf = _buf $ c;
-                    tlen++;
+                    p.len++;
                     break;
 
             }
@@ -337,7 +333,7 @@ function JsonMsg ParseJson(string msg) {
                         escape = False;
                         c = JsonGetEscapedChar(c);
                         _buf = _buf $ c;
-                        tlen += Len(c);
+                        p.len += Len(c);
                     } else {
                         inQuotes = !inQuotes;
                     }
@@ -348,7 +344,7 @@ function JsonMsg ParseJson(string msg) {
                         escape = False;
                         c = JsonGetEscapedChar(c);
                         _buf = _buf $ c;
-                        tlen += Len(c);
+                        p.len += Len(c);
                     } else {
                         escape = True;
                     }
@@ -359,10 +355,10 @@ function JsonMsg ParseJson(string msg) {
                         escape = False;
                         c = JsonGetEscapedChar(c);
                         _buf = _buf $ c;
-                        tlen += Len(c);
+                        p.len += Len(c);
                     } else {
                         _buf = _buf $ c;
-                        tlen++;
+                        p.len++;
                     }
                     break;
             }
