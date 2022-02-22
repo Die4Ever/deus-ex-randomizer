@@ -2,6 +2,7 @@ class DXRMenuScreenNewGame extends MenuScreenNewGame;
 
 var DXRando dxr;
 var DXRFlags flags;
+var config string last_player_name;
 
 function SetDxr(DXRando d)
 {
@@ -16,7 +17,7 @@ function SetDxr(DXRando d)
 function ResetToDefaults()
 {
     // force the player to type in a name, it makes Death Markers more fun!
-    editName.SetText("");
+    editName.SetText(last_player_name);
 
     player.SkillPointsAvail = player.Default.SkillPointsAvail;
     player.SkillPointsTotal = player.Default.SkillPointsTotal;
@@ -89,6 +90,8 @@ function SaveSettings()
     foreach player.AllActors(class'DXRando', dxr)
         dxr.Destroy();
     player.ServerSetSloMo(1);//reset game speed to prevent crashes
+    last_player_name = player.TruePlayerName;
+    SaveConfig();
 }
 
 defaultproperties
