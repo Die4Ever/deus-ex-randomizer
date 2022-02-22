@@ -243,9 +243,9 @@ function JsonMsg ParseJson(string msg) {
                     } else if (parsestate == ArrayState) {
                         // TODO: arrays of objects
                         if (c != ":") {
-                        //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                        j.e[j.count].value[j.e[j.count].valCount]=buf;
-                        j.e[j.count].valCount++;
+                            //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
+                            j.e[j.count].value[j.e[j.count].valCount]=buf;
+                            j.e[j.count].valCount++;
                         }
                     } else if (parsestate == ArrayDoneState){
                         parseState = KeyState;
