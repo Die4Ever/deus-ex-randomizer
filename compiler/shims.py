@@ -13,7 +13,7 @@ def before_write(mod, f, injects):
     shimmer = None
     baseclass = f.baseclass
     shimname = baseclass + 'Shim'
-    debug("shimming "+baseclass)
+    info("shimming "+baseclass)
     for f in mod.values():
         if f.baseclass != baseclass:
             continue

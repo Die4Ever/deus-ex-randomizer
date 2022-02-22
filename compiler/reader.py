@@ -75,7 +75,7 @@ def proc_file(file, files, mod_name, injects, preprocessor, definitions):
         proc_file.last_folder=""
     folder = Path(file).parent
     if folder != proc_file.last_folder:
-        debug("Processing folder "+str(folder)[-50:]+" from "+mod_name)
+        info("Processing folder "+str(folder)[-50:]+" from "+mod_name)
     proc_file.last_folder = folder
 
     f = read_uc_file(file, preprocessor, definitions)

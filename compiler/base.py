@@ -17,10 +17,25 @@ WARNING = '\033[91m'
 ENDCOLOR = '\033[0m'
 re_error = re.compile(r'((none)|(warning)|(error)|(fail)|(out of bounds))', re.IGNORECASE)
 
+def trace(str):
+    # lower than debug
+    pass
+
+
 def debug(str):
     global loglevel
     if loglevel == 'debug':
         print(str)
+
+def info(str):
+    global loglevel
+    # later we should make this actually separate
+    if loglevel == 'debug':
+        print(str)
+
+def notice(str):
+    # this might be useful if we do threading? so we can redirect to a file?
+    print(str)
 
 def prependException(e, msg):
     if not e.args:
@@ -48,14 +63,17 @@ def print_colored(msg):
     print(msg)
 
 
-def read(pipe, outs, verbose):
+def read(pipe, outs, errs, verbose):
     o = ''
     if pipe and pipe.readable():
         o += pipe.readline()
 
-    if o and (verbose or re_error.search(o)):
+    hasWarnings = re_error.search(o)
+    if o and (verbose or hasWarnings):
         print_colored(o.strip())
-    return outs+o
+    if hasWarnings:
+        errs += o
+    return outs+o, errs
 
 
 def call(cmds, verbose=False, stdout=True, stderr=True):
@@ -78,6 +96,7 @@ def call(cmds, verbose=False, stdout=True, stderr=True):
 
     proc = subprocess.Popen(cmds, stdout=stdout, stderr=stderr, close_fds=True, universal_newlines=True)
     outs = ''
+    errs = ''
     pipe = None
     if stdout:
         pipe = proc.stdout
@@ -86,19 +105,19 @@ def call(cmds, verbose=False, stdout=True, stderr=True):
 
     try:
         while proc.returncode is None and timer() - start < 600:
-            outs = read(pipe, outs, verbose)
+            (outs, errs) = read(pipe, outs, errs, verbose)
             proc.poll()
         if proc.returncode != 0:
             raise Exception("call didn't return 0: "+repr(cmds))
     except Exception as e:
         proc.kill()
-        outs = read(pipe, outs, verbose)
+        (outs, errs) = read(pipe, outs, errs, verbose)
         proc.poll()
         print(traceback.format_exc())
         raise
     elapsed_time = timer() - start # in seconds
     print( repr(cmds) + " took " + str(elapsed_time) + " seconds and returned " + str(proc.returncode) + "\n" )
-    return (proc.returncode, outs)
+    return (proc.returncode, outs, errs)
 
 
 def insensitive_glob(pattern):

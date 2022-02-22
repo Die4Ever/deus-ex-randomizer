@@ -78,7 +78,7 @@ def write_file(out, f, written, injects):
         write_file.last_folder=""
     folder = Path(f.file).parent
     if folder != write_file.last_folder:
-        debug("Writing folder "+str(folder)[-50:])
+        info("Writing folder "+str(folder)[-50:])
     debug("Writing "+f.file)
     write_file.last_folder = folder
 

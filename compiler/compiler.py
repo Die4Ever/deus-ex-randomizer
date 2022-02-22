@@ -39,7 +39,7 @@ def run(args):
         profile = merged[profile_name]
         args.base.loglevel = 'debug' if profile['verbose'] else 'info'
         printHeader("using profile: "+profile_name+", settings:")
-        print(repr(profile)+"\n")
+        notice(repr(profile)+"\n")
         if not run_profile(args, profile):
             return
 
@@ -64,19 +64,18 @@ def run_profile(args, settings):
     testSuccess = True
     if run_tests:
         testSuccess = args.tester.runAutomatedTests(out, packages[0])
-
-    for warning in compileWarnings:
-        print_colored(warning)
+        for warning in compileWarnings:
+            print_colored(warning)
 
     if not testSuccess:
         return False
 
     if settings.get('copy_if_changed') and not changed:
-        print("not copying locally because "+settings.get('copy_if_changed')+" has not changed: "+repr(packages))
+        notice("not copying locally because "+settings.get('copy_if_changed')+" has not changed: "+repr(packages))
     elif copy_local:
         copy_package_files(out, packages)
     else:
-        print("not copying locally due to compiler_settings config file: "+repr(packages))
+        notice("not copying locally due to compiler_settings config file: "+repr(packages))
 
     return True
 
@@ -103,7 +102,7 @@ def compile(args, settings):
     writer = args.writer
 
     if source:
-        print("processing source files from "+source)
+        notice("processing source files from "+source)
         for file in insensitive_glob(source+'/*'):
             try:
                 reader.proc_file(file, orig_files, 'source', None, preprocessor, definitions)
@@ -112,7 +111,7 @@ def compile(args, settings):
                 raise
 
     for mod in mods:
-        print("processing files from mod "+mod)
+        notice("processing files from mod "+mod)
         mods_files.append({})
         for file in insensitive_glob(mod+'*'):
             try:
@@ -125,7 +124,7 @@ def compile(args, settings):
                 appendException(e, "error processing mod file: "+file)
                 raise
 
-    print("\nwriting source files...")
+    notice("\nwriting source files...")
     writer.before_write(orig_files, injects)
     for file in orig_files.values():
         try:
@@ -136,7 +135,7 @@ def compile(args, settings):
             raise
 
     for mod in mods_files:
-        print("writing mod "+repr(mod.keys())[:200])
+        notice("writing mod "+repr(mod.keys())[:200])
         try:
             writer.before_write(mod, injects)
         except Exception as e:
@@ -159,7 +158,7 @@ def compile(args, settings):
     for package in packages:
         file = package+'.u'
         if exists(out + '/System/'+file):
-            print("Removing old "+file)
+            notice("Removing old "+file)
             os.remove(out + '/System/'+file)
 
     # can set a custom ini file ucc make INI=ProBob.ini https://www.oldunreal.com/wiki/index.php?title=Working_with_*.uc%27s
@@ -168,11 +167,11 @@ def compile(args, settings):
         os.makedirs(out + '/DeusEx/Inc', exist_ok=True)
     # also we can check UCC.log for success or just the existence of DeusEx.u
     ret = 1
-    (ret, out) = call([ out + '/System/ucc', 'make', '-h', '-NoBind', '-Silent' ])
+    (ret, out, errs) = call([ out + '/System/ucc', 'make', '-h', '-NoBind', '-Silent' ])
     warnings = []
     re_terrorist = re.compile(r'((Parsing)|(Compiling)) (([\w\d_]*Terrorist\w*)|(AmmoNone))')
-    for line in out.splitlines():
-        if re_error.search(line) and not re_terrorist.match(line):
+    for line in errs.splitlines():
+        if not re_terrorist.match(line):
             warnings.append(line)
     # if ret != 0 we should show the end of UCC.log, we could also keep track of compiler warnings to show at the end after the test results
     return (ret, warnings)
@@ -186,9 +185,9 @@ def copy_package_files(out_dir, packages):
 def copyPackageFile(out, package):
     file = package+'.u'
     if exists(out + '/System/'+file):
-        print(file+" exists")
+        notice(file+" exists")
         shutil.copy2(out + '/System/'+file,'./'+file)
-        print(file+" copied locally")
+        notice(file+" copied locally")
     else:
         raise RuntimeError("could not find "+file)
 
