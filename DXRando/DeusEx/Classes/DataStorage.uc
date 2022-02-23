@@ -143,10 +143,9 @@ simulated function static DataStorage GetObj(DXRando dxr)
 {
     local DataStorage d;
     local DXRFlags f;
-    log("DataStorage GetObj "$dxr);
 
     if( dxr == None ) return None;
-    
+
     d = dxr.ds;
 
     if( d == None ) {
@@ -171,11 +170,11 @@ simulated function static DataStorage GetObjFromPlayer(Actor p)
             return GetObj(dxr);
     }
 #endif
-    
+
     foreach p.AllActors(class'DXRando', dxr) { break; }
     if(dxr == None)
         return None;
-    
+
     return GetObj(dxr);
 }
 
@@ -263,7 +262,7 @@ function bool SetConfig(coerce string key, coerce string value, int expire_secon
         config_dirty = true;
         return true;
     }
-    
+
     return false;
 }
 

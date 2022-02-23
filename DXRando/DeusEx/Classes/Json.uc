@@ -189,19 +189,6 @@ static function string JsonGetEscapedChar(string c) {
     }
 }
 
-static function bool _IsJson(string msg) {
-    // we've already run JsonStripSpaces
-    if (Mid(msg, 0, 1) != "{") {
-        l("_IsJson missing opening curly brace:", msg);
-        return false;
-    }
-    if (Mid(msg, Len(msg)-1, 1) != "}") {
-        l("_IsJson missing closing curly brace:", msg);
-        return false;
-    }
-
-    return true;
-}
 
 function int ParseKey(string msg, out int i, out IntPair p, out int inBraces) {
     local string c;
@@ -422,7 +409,7 @@ function ParseJson(string msg) {
 
     //Strip any spaces outside of strings to standardize the input a bit
     msg = JsonStripSpaces(msg);
-    if( ! _IsJson(msg) ) {
+    if( Len(msg) < 2 ) {
         l(".ParseJson IsJson failed!", msg);
         return;
     }

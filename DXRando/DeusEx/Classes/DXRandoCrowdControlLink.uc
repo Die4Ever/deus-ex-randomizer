@@ -363,49 +363,49 @@ function RunTests(DXRCrowdControl m)
     //Need to do more work to validate escaped characters
     //TestMsg(m, 123, 1, "test\\\\with\\\\escaped\\\\backslashes", "die4ever", ""); //Note that we have to double escape so that the end result is a single escaped backslash
 
-    /*msg = "{ \"testkeyname\": 1 ";
+    msg = "{ \"testkeyname\": 1 ";
     for(i=0; i<90; i++) {
         msg = msg $ " , \"testlongkeyname-"$i$"\": [1,2,3,4,5,6,7,8,9] ";
     }
     msg = msg $ "}";
     log("TIME: start long json parses 90 arrays");
-    for(i=0; i<50; i++)
+    for(i=0; i<3; i++)
         j = class'Json'.static.parse(Level, msg);
-    log("TIME: end long json parses 90 arrays");*/
+    log("TIME: end long json parses 90 arrays");
 
 
-    /*msg = "{ \"testkeyname\": 1 ";
+    msg = "{ \"testkeyname\": 1 ";
     for(i=0; i<90; i++) {
         msg = msg $ " , \"testlongkeyname-"$i$"\": [\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\"] ";
     }
     msg = msg $ "}";
     log("TIME: start long json parses 90 arrays with quotes");
-    for(i=0; i<50; i++)
+    for(i=0; i<3; i++)
         j = class'Json'.static.parse(Level, msg);
-    log("TIME: end long json parses 90 arrays with quotes");*/
+    log("TIME: end long json parses 90 arrays with quotes");
 
 
-    /*msg = "{ \"test really long key name\": \"1\" ";
+    msg = "{ \"test really long key name\": \"1\" ";
     for(i=0; Len(msg)<4000; i++) {
         msg = msg $ " , \"test long key name-"$i$"\": \"[1, 2, 3,4, 5, 6, 7, 8, 9]\" ";
         if(i>=99) m.test(false, "oops");
     }
     msg = msg $ "}";
     log("TIME: start long json parses strings");
-    for(i=0; i<50; i++)
+    for(i=0; i<3; i++)
         j = class'Json'.static.parse(Level, msg);
-    log("TIME: end long json parses strings");*/
+    log("TIME: end long json parses strings");
 
-    /*msg = "{ \"test really long key name\": \"1\" ";
+    msg = "{ \"test really long key name\": \"1\" ";
     for(i=0; i<90; i++) {
         msg = msg $ " , \"test long key name-"$i$"\": \"[1, 2, 3,4, 5, 6, 7, 8, 9]\" ";
         if(i>=99) m.test(false, "oops");
     }
     msg = msg $ "}";
     log("TIME: start long json parses 90 strings");
-    for(i=0; i<50; i++)
+    for(i=0; i<3; i++)
         j = class'Json'.static.parse(Level, msg);
-    log("TIME: end long json parses 90 strings");*/
+    log("TIME: end long json parses 90 strings");
 }
 
 
