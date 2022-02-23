@@ -91,6 +91,7 @@ function ReceivedData(string data)
     local string status;
     local Json j;
     j = class'Json'.static.parse(Level, data);
+    data = "";
     status = j.get("status");
     if( InStr(status,"ERROR") >= 0 || InStr(status, "ok") == -1 ) {
         l("HTTPReceivedData: " $ status);
