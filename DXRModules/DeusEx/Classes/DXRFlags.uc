@@ -133,7 +133,6 @@ function AnyEntry()
 
 function RollSeed()
 {
-    dxr.CrcInit();
     seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );
     seed = abs(seed) % 1000000;
     dxr.seed = seed;
@@ -144,7 +143,7 @@ function HXRollSeed()
 {
     difficulty = Level.Game.Difficulty;
     settings = difficulty_settings[difficulty];
-    playthrough_id = class'DataStorage'.static._SystemTime(Level);
+    NewPlaythroughId();
     if( next_seed != 0 ) {
         seed = next_seed;
         dxr.seed = seed;
@@ -157,12 +156,17 @@ function HXRollSeed()
 }
 #endif
 
+function NewPlaythroughId() {
+    playthrough_id = class'DataStorage'.static._SystemTime(Level);
+    playthrough_id += (Rand(MaxInt) & 0xffff0000) + dxr.Crc(Level.TimeSeconds) * 65536;
+}
+
 function InitDefaults()
 {
     InitVersion();
 
     seed = 0;
-    playthrough_id = class'DataStorage'.static._SystemTime(Level);
+    NewPlaythroughId();
     if( dxr != None ) RollSeed();
     gamemode = 0;
     loadout = 0;
@@ -583,7 +587,7 @@ simulated function BindFlags(bool writing)
     FlagInt('Rando_startinglocations', settings.startinglocations, writing);
     FlagInt('Rando_goals', settings.goals, writing);
     FlagInt('Rando_equipment', settings.equipment, writing);
-    
+
     FlagInt('Rando_medbots', settings.medbots, writing);
     FlagInt('Rando_repairbots', settings.repairbots, writing);
     FlagInt('Rando_medbotuses', settings.medbotuses, writing);
@@ -592,7 +596,7 @@ simulated function BindFlags(bool writing)
     FlagInt('Rando_repairbotcooldowns', settings.repairbotcooldowns, writing);
     FlagInt('Rando_medbotamount', settings.medbotamount, writing);
     FlagInt('Rando_repairbotamount', settings.repairbotamount, writing);
-    
+
     FlagInt('Rando_turrets_move', settings.turrets_move, writing);
     FlagInt('Rando_turrets_add', settings.turrets_add, writing);
 
@@ -716,10 +720,10 @@ simulated function LogFlags(string prefix)
     info(prefix$" - " $ StringifyDifficultySettings(settings) );
 }
 
-simulated function AddDXRCredits(CreditsWindow cw) 
+simulated function AddDXRCredits(CreditsWindow cw)
 {
     cw.PrintHeader("DXRFlags");
-    
+
     cw.PrintText(VersionString() $ ", " $ "seed: "$seed$", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id);
     cw.PrintText(StringifyFlags());
     cw.PrintText(StringifyDifficultySettings(settings));
@@ -753,7 +757,7 @@ simulated function string StringifyDifficultySettings( FlagsSettings s )
         $ ", enemiesrandomized: "$s.enemiesrandomized$", enemyrespawn: "$s.enemyrespawn$", infodevices: "$s.infodevices
         $ ", startinglocations: "$s.startinglocations$", goals: "$s.goals$", equipment: "$s.equipment$", dancingpercent: "$s.dancingpercent
         $ ", medbots: "$s.medbots$", repairbots: "$s.repairbots $", medbotuses: "$s.medbotuses$", repairbotuses: "$s.repairbotuses
-        $ ", medbotcooldowns: "$s.medbotcooldowns$", repairbotcooldowns: "$s.repairbotcooldowns 
+        $ ", medbotcooldowns: "$s.medbotcooldowns$", repairbotcooldowns: "$s.repairbotcooldowns
         $ ", medbotamount: "$s.medbotamount$", repairbotamount: "$s.repairbotamount
         $ ", turrets_move: "$s.turrets_move$", turrets_add: "$s.turrets_add
         $ ", banned_skills: "$s.banned_skills$", banned_skill_levels: "$s.banned_skill_levels$ ", enemies_nonhumans: "$s.enemies_nonhumans
@@ -800,7 +804,7 @@ function NewGamePlus()
     info("NewGamePlus()");
     seed++;
     dxr.seed = seed;
-    playthrough_id = class'DataStorage'.static._SystemTime(Level);
+    NewPlaythroughId();
     ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
@@ -845,7 +849,7 @@ function NewGamePlus()
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
     if( augs != None )
         augs.RemoveRandomAug(p);
-    
+
     weapons = DXRWeapons(dxr.FindModule(class'DXRWeapons'));
     if( weapons != None )
         weapons.RemoveRandomWeapon(p);

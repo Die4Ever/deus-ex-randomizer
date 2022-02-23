@@ -115,6 +115,7 @@ function DXRando InitDxr()
     log("InitDxr has player "$player);
     dxr = player.Spawn(class'DXRando', None);
     log("InitDxr got "$dxr);
+    dxr.CrcInit();
 #ifdef hx
     //player() = HXHuman(player);
 #else
