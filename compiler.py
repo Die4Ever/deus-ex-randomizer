@@ -50,15 +50,16 @@ while rerun != "exit":
 
         print("compiling "+args.profile+"...")
         args.compiler.run(args)
-        
+
     except Exception as e:
-        print('\n\ncompile error: ')
+        args.base.printError('\n\ncompile error: ')
         if args.verbose:
             tb = traceback.TracebackException.from_exception(e, capture_locals=True)
             print("\n----------\n".join(tb.format()))
         else:
             print(traceback.format_exc())
-    
+        args.base.printError("----------------")
+
     print("\n")
     print("press enter to compile "+args.profile+" again")
     print("- or type in a new profile name")

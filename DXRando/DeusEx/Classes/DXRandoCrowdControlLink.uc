@@ -321,6 +321,18 @@ function RunTests(DXRCrowdControl m)
     m.teststring(j.JsonStripSpaces(" { " $ msg), "", "invalid json completely stripped");
     m.teststring(j.JsonStripSpaces(msg $ " } "), "", "invalid json completely stripped");
 
+    m.teststring(j.JsonStripSpaces(" { } "), "{}", "JsonStripSpaces");
+
+    log("testing json parsing");
+    msg="{\"key\": \"value\"}";
+    j = class'Json'.static.parse(Level, msg);
+    m.teststring(j.get("key"), "value", "parsed basic json value");
+
+    log("testing json array parsing");
+    msg="{\"key\": [\"value\", 2]}";
+    j = class'Json'.static.parse(Level, msg);
+    m.teststring(j.get("key", 1), "2", "parsed basic json array");
+
     msg=" { \"key\": \"value \\\"{}[]()\\\"\" } ";
     j = class'Json'.static.parse(Level, msg);
     m.teststring(j.get("key"), "value \"{}[]()\"", "did parse valid json");
@@ -330,7 +342,7 @@ function RunTests(DXRCrowdControl m)
     _TestMsg(m,msg,3,1,"disable_jump","dxrandotest",params);
 
     // test multiple payloads, Crowd Control always puts a \0 between them so this isn't an issue, but still good to be safe
-    msg=" {\"id\":3,\"code\":\"disable_jump\",\"viewer\":\"dxrandotest\",\"type\":1}{\"parameters\":[1,2,3],\"code\":\"fail\"} ";
+    msg=" {\"id\":3,\"code\":\"disable_jump\",\"viewer\":\"dxrandotest\",\"type\":1}{\"parameters\":[1,2,3],\"code\":\"testcode\"} ";
     m.testbool( isCrowdControl(msg), true, "isCrowdControl "$msg);
     _TestMsg(m,msg,3,1,"disable_jump","dxrandotest",params);
 
@@ -350,6 +362,50 @@ function RunTests(DXRCrowdControl m)
 
     //Need to do more work to validate escaped characters
     //TestMsg(m, 123, 1, "test\\\\with\\\\escaped\\\\backslashes", "die4ever", ""); //Note that we have to double escape so that the end result is a single escaped backslash
+
+    msg = "{ \"testkeyname\": 1 ";
+    for(i=0; i<90; i++) {
+        msg = msg $ " , \"testlongkeyname-"$i$"\": [1,2,3,4,5,6,7,8,9] ";
+    }
+    msg = msg $ "}";
+    log("TIME: start long json parses 90 arrays");
+    for(i=0; i<3; i++)
+        j = class'Json'.static.parse(Level, msg);
+    log("TIME: end long json parses 90 arrays");
+
+
+    msg = "{ \"testkeyname\": 1 ";
+    for(i=0; i<90; i++) {
+        msg = msg $ " , \"testlongkeyname-"$i$"\": [\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"7\",\"8\",\"9\"] ";
+    }
+    msg = msg $ "}";
+    log("TIME: start long json parses 90 arrays with quotes");
+    for(i=0; i<3; i++)
+        j = class'Json'.static.parse(Level, msg);
+    log("TIME: end long json parses 90 arrays with quotes");
+
+
+    msg = "{ \"test really long key name\": \"1\" ";
+    for(i=0; Len(msg)<4000; i++) {
+        msg = msg $ " , \"test long key name-"$i$"\": \"[1, 2, 3,4, 5, 6, 7, 8, 9]\" ";
+        if(i>=99) m.test(false, "oops");
+    }
+    msg = msg $ "}";
+    log("TIME: start long json parses strings");
+    for(i=0; i<3; i++)
+        j = class'Json'.static.parse(Level, msg);
+    log("TIME: end long json parses strings");
+
+    msg = "{ \"test really long key name\": \"1\" ";
+    for(i=0; i<90; i++) {
+        msg = msg $ " , \"test long key name-"$i$"\": \"[1, 2, 3,4, 5, 6, 7, 8, 9]\" ";
+        if(i>=99) m.test(false, "oops");
+    }
+    msg = msg $ "}";
+    log("TIME: start long json parses 90 strings");
+    for(i=0; i<3; i++)
+        j = class'Json'.static.parse(Level, msg);
+    log("TIME: end long json parses 90 strings");
 }
 
 

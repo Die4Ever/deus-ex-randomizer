@@ -6,11 +6,17 @@ const KeyState = 1;
 const ValState = 2;
 const ArrayState = 3;
 const ArrayDoneState = 4;
+const EndState = 5;
+
+struct IntPair
+{
+    var int idx, len;
+};
 
 struct JsonElement
 {
-    var string key;
-    var string value[10];// make sure to keep this in sync with get_vals
+    var IntPair key;
+    var IntPair value[10];// make sure to keep this in sync with get_vals
     var int valCount;
 };
 
@@ -20,10 +26,11 @@ struct JsonMsg
     var int count;
 };
 
-var JsonMsg _data;
+var string _buf;
+var JsonMsg j;
 
 function _parse(string msg) {
-    _data = ParseJson(msg);
+    ParseJson(msg);
 }
 
 static function Json parse(LevelInfo parent, string msg, optional Json o) {
@@ -37,32 +44,35 @@ static function Json parse(LevelInfo parent, string msg, optional Json o) {
 }
 
 function int count() {
-    return _data.count;
+    return j.count;
 }
 
 function int max_count() {
-    return ArrayCount(_data.e);
+    return ArrayCount(j.e);
 }
 
 function int max_values() {
-    return ArrayCount(_data.e[0].value);
+    return ArrayCount(j.e[0].value);
+}
+
+function string get_string(IntPair i) {
+    return Mid(_buf, i.idx, i.len);
 }
 
 function string key_at(int k) {
-    return _data.e[k].key;
+    return get_string(j.e[k].key);
 }
 
 function string at(int k, optional int i) {
-    return _data.e[k].value[i];
+    return get_string(j.e[k].value[i]);
 }
 
 function int find(string key) {
-    local int i;
-    local int j;
+    local int k;
 
-    for (i=0;i<_data.count;i++) {
-        if (_data.e[i].key == key) {
-            return i;
+    for (k=0;k<j.count;k++) {
+        if (get_string(j.e[k].key) == key) {
+            return k;
         }
     }
 
@@ -72,31 +82,31 @@ function int find(string key) {
 
 function int get_vals(string key, optional out string vals[10]) {
     local int i;
-    local int j;
+    local int k;
 
-    i = find(key);
-    if(i == -1)
+    k = find(key);
+    if(k == -1)
         return 0;
 
-    for(j=0; j < ArrayCount(vals); j++)
-        vals[j] = _data.e[i].value[j];
-    return _data.e[i].valCount;
+    for(i=0; i < ArrayCount(vals); i++)
+        vals[i] = get_string(j.e[k].value[i]);
+    return j.e[k].valCount;
 }
 
 function int get_vals_count(string key) {
-    local int i;
-    i = find(key);
-    if(i == -1)
+    local int k;
+    k = find(key);
+    if(k == -1)
         return 0;
-    return _data.e[i].valCount;
+    return j.e[k].valCount;
 }
 
-function string get(string key, optional int v) {
-    local int i;
-    i = find(key);
-    if(i == -1)
+function string get(string key, optional int i) {
+    local int k;
+    k = find(key);
+    if(k == -1)
         return "";
-    return _data.e[i].value[v];
+    return get_string(j.e[k].value[i]);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,13 +127,14 @@ static function l(coerce string message, string j)
     }
 }
 
-static function string StripQuotes (string msg) {
-    if (Mid(msg,0,1)==Chr(34)) {
-        if (Mid(msg,Len(Msg)-1,1)==Chr(34)) {
-            return Mid(msg,1,Len(msg)-2);
+static function StripQuotes(string msg, out IntPair p) {
+    if (Mid(msg,p.idx,1)==Chr(34)) {
+        if (Mid(msg,p.idx+p.len-1,1)==Chr(34)) {
+            p.idx++;
+            p.len-=2;
+            return;
         }
     }
-    return msg;
 }
 
 static function string JsonStripSpaces(string msg) {
@@ -170,180 +181,260 @@ static function string JsonGetEscapedChar(string c) {
             return Chr(13); //Carriage return
         case "t":
             return Chr(9); //Tab
-        case Chr(34): //Quotes
-        case Chr(92): //Backslash
+        case "\"": //Quotes
+        case "\\": //Backslash
             return c;
         default:
             return "";
     }
 }
 
-static function bool _IsJson(string msg, int length) {
-    // we've already run JsonStripSpaces
-    if (Mid(msg, 0, 1) != "{") {
-        l("_IsJson missing opening curly brace:", msg);
-        return false;
-    }
-    if (Mid(msg, length-1, 1) != "}") {
-        l("_IsJson missing closing curly brace:", msg);
-        return false;
-    }
 
-    return true;
+function int ParseKey(string msg, out int i, out IntPair p, out int inBraces) {
+    local string c;
+
+    for(i=i; i < Len(msg); i++) {
+        c = Mid(msg,i,1); //Grab a single character
+        switch (c) {
+        case ":":
+        case ",":
+            //Wrap up the current string that was being handled
+            StripQuotes(_buf, p);
+            j.e[j.count].key = p;
+            p.idx = Len(_buf);
+            p.len = 0;
+            return ValState;
+
+        case "{":
+            inBraces++;
+            p.idx = Len(_buf);
+            p.len = 0;
+            break;
+
+        case "}":
+            inBraces--;
+            if(inBraces <= 0)
+                return EndState;
+
+        case "]":
+            _buf = _buf $ c;
+            p.len++;
+            break;
+
+        case "[":
+            _buf = _buf $ c;
+            p.len++;
+            break;
+
+        case "\"": //Quotes
+            ParseQuotes(msg, i, p);
+            break;
+
+        default:
+            //Build up the buffer
+            _buf = _buf $ c;
+            p.len++;
+            break;
+        }
+    }
 }
 
-function JsonMsg ParseJson(string msg) {
-    local int i, length;
+function int ParseVal(string msg, out int i, out IntPair p, out int inBraces) {
     local string c;
-    local string buf;
 
+    for(i=i; i < Len(msg); i++) {
+        c = Mid(msg,i,1); //Grab a single character
+        switch (c) {
+        case ":":
+        case ",":
+            j.e[j.count].value[j.e[j.count].valCount] = p;
+            j.e[j.count].valCount++;
+            j.count++;
+            p.idx = Len(_buf);
+            p.len = 0;
+            return KeyState;
+
+        case "{":
+            inBraces++;
+            p.idx = Len(_buf);
+            p.len = 0;
+            break;
+
+        case "}":
+            inBraces--;
+            if (inBraces <= 0) {
+                j.e[j.count].value[j.e[j.count].valCount] = p;
+                j.e[j.count].valCount++;
+                j.count++;
+                return EndState;
+            }
+            break;
+
+        case "]":
+            _buf = _buf $ c;
+            p.len++;
+            break;
+
+        case "[":
+            return ArrayState;
+
+        case "\"": // Quotes
+            ParseQuotes(msg, i, p);
+            break;
+
+        default:
+            //Build up the buffer
+            _buf = _buf $ c;
+            p.len++;
+            break;
+        }
+    }
+}
+
+function int ParseArray(string msg, out int i, out IntPair p, out int inBraces) {
+    local string c;
+
+    for(i=i; i < Len(msg); i++) {
+        c = Mid(msg,i,1); //Grab a single character
+        switch (c) {
+        case ":":
+            // TODO: arrays of objects
+            p.idx = Len(_buf);
+            p.len = 0;
+            break;
+
+        case ",":
+            j.e[j.count].value[j.e[j.count].valCount] = p;
+            j.e[j.count].valCount++;
+            p.idx = Len(_buf);
+            p.len = 0;
+            break;
+
+        case "{":
+            inBraces++;
+            p.idx = Len(_buf);
+            p.len = 0;
+            break;
+
+        case "}":
+            // TODO: arrays of objects
+            inBraces--;
+            break;
+
+        case "]":
+            j.e[j.count].value[j.e[j.count].valCount] = p;
+            j.e[j.count].valCount++;
+            j.count++;
+            return ArrayDoneState;
+
+        case "[":
+            // TODO: arrays in arrays
+            _buf = _buf $ c;
+            p.len++;
+            break;
+
+        case "\"": //Quotes
+            ParseQuotes(msg, i, p);
+            break;
+
+        default:
+            //Build up the buffer
+            _buf = _buf $ c;
+            p.len++;
+            break;
+        }
+    }
+}
+
+function int ParseArrayDone(string msg, out int i, out IntPair p, out int inBraces) {
+    local string c;
+
+    for(i=i; i < Len(msg); i++) {
+        c = Mid(msg,i,1); //Grab a single character
+        switch (c) {
+        case ",":
+            p.idx = Len(_buf);
+            p.len = 0;
+            return KeyState;
+
+        case "}":
+            inBraces--;
+            if(inBraces <= 0)
+                return EndState;
+
+        default:
+            //Build up the buffer
+            _buf = _buf $ c;
+            p.len++;
+            break;
+        }
+    }
+}
+
+function ParseQuotes(string msg, out int i, out IntPair p) {
+    local string c;
+
+    for(i=i+1; i < Len(msg); i++) {
+        c = Mid(msg,i,1); //Grab a single character
+        switch (c) {
+        case "\"": //Quotes
+            return;
+
+        case "\\": //Backslash, escape character time
+            i++;
+            c = Mid(msg,i,1); //Grab a single character
+            c = JsonGetEscapedChar(c);
+            _buf = _buf $ c;
+            p.len += Len(c);
+            break;
+
+        default:
+            //Build up the buffer
+            _buf = _buf $ c;
+            p.len++;
+            break;
+        }
+    }
+}
+
+function ParseJson(string msg) {
+    local int i;
+    local IntPair p;
     local int parsestate;
-    local bool inquotes;
-    local bool escape;
     local int inBraces;
-
-    local JsonMsg j;
-
-    local bool elemDone;
-
-    elemDone = False;
+    local JsonMsg data;
 
     parsestate = KeyState;
-    inquotes = False;
-    escape = False;
-    buf = "";
+    j = data;// clear the global
 
     //Strip any spaces outside of strings to standardize the input a bit
     msg = JsonStripSpaces(msg);
-    length = Len(msg);
-    if( ! _IsJson(msg, length) ) {
+    if( Len(msg) < 2 ) {
         l(".ParseJson IsJson failed!", msg);
-        return j;
+        return;
     }
 
-    // we set the length to -1 to end the loop
-    for (i = 0; i < length; i++) {
-        c = Mid(msg,i,1); //Grab a single character
+    _buf = "";
 
-        if (!inQuotes) {
-            switch (c) {
-                case ":":
-                case ",":
-                  //Wrap up the current string that was being handled
-                  //PlayerMessage(buf);
-                  if (parsestate == KeyState) {
-                      j.e[j.count].key = StripQuotes(buf);
-                      parsestate = ValState;
-                  } else if (parsestate == ValState) {
-                      //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                      j.e[j.count].value[j.e[j.count].valCount]=buf;
-                      j.e[j.count].valCount++;
-                      parsestate = KeyState;
-                      elemDone = True;
-                  } else if (parsestate == ArrayState) {
-                      // TODO: arrays of objects
-                      if (c != ":") {
-                        //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                        j.e[j.count].value[j.e[j.count].valCount]=buf;
-                        j.e[j.count].valCount++;
-                      }
-                  } else if (parsestate == ArrayDoneState){
-                      parseState = KeyState;
-                  }
-                    buf = "";
-                    break; // break for colon and comma
-
-                case "{":
-                    inBraces++;
-                    buf = "";
-                    break;
-
-                case "}":
-                    //PlayerMessage(buf);
-                    inBraces--;
-                    if (inBraces == 0 && parsestate == ValState) {
-                      //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                      j.e[j.count].value[j.e[j.count].valCount]=buf;
-                      j.e[j.count].valCount++;
-                      parsestate = KeyState;
-                      elemDone = True;
-                    }
-                    if (parsestate == ArrayState) {
-                        // TODO: arrays of objects
-                    }
-                    else if(inBraces > 0) {
-                        // TODO: sub objects
-                    }
-                    else {
-                        // last loop iteration
-                        length = -1;
-                    }
-                    break;
-
-                case "]":
-                    if (parsestate == ArrayState) {
-                        //j.e[j.count].value[j.e[j.count].valCount]=StripQuotes(buf);
-                        j.e[j.count].value[j.e[j.count].valCount]=buf;
-                        j.e[j.count].valCount++;
-                        elemDone = True;
-                        parsestate = ArrayDoneState;
-                    } else {
-                        buf = buf $ c;
-                    }
-                    break;
-                case "[":
-                    if (parsestate == ValState){
-                        parsestate = ArrayState;
-                    } else {
-                        buf = buf $ c;
-                    }
-                    break;
-                case Chr(34): //Quotes
-                    inQuotes = !inQuotes;
-                    break;
-                default:
-                    //Build up the buffer
-                    buf = buf $ c;
-                    break;
-
-            }
-        } else {
-            switch(c) {
-                case Chr(34): //Quotes
-                    if (escape) {
-                        escape = False;
-                        buf = buf $ JsonGetEscapedChar(c);
-                    } else {
-                        inQuotes = !inQuotes;
-                    }
-                    break;
-                case Chr(92): //Backslash, escape character time
-                    if (escape) {
-                        //If there has already been one, then we need to turn it into the right char
-                        escape = False;
-                        buf = buf $ JsonGetEscapedChar(c);
-                    } else {
-                        escape = True;
-                    }
-                    break;
-                default:
-                    //Build up the buffer
-                    if (escape) {
-                        escape = False;
-                        buf = buf $ JsonGetEscapedChar(c);
-                    } else {
-                        buf = buf $ c;
-                    }
-                    break;
-            }
-        }
-
-        if (elemDone) {
-          //PlayerMessage("Key: "$j.e[j.count].key$ "   Val: "$j.e[j.count].value[0]);
-          j.count++;
-          elemDone = False;
+    //l("ParseJson start", msg);
+    for(i=0; i<999999; i++) {
+        //log("ParseJson state: "$parsestate);
+        switch(parsestate) {
+        case KeyState:
+            parsestate = ParseKey(msg, i, p, inBraces);
+            break;
+        case ValState:
+            parsestate = ParseVal(msg, i, p, inBraces);
+            break;
+        case ArrayState:
+            parsestate = ParseArray(msg, i, p, inBraces);
+            break;
+        case ArrayDoneState:
+            parsestate = ParseArrayDone(msg, i, p, inBraces);
+            break;
+        case EndState:
+            return;
         }
     }
-
-    return j;
+    //log("ERROR: ParseJson ran too long, i: "$i);
 }

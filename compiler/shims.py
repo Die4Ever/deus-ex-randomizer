@@ -13,7 +13,7 @@ def before_write(mod, f, injects):
     shimmer = None
     baseclass = f.baseclass
     shimname = baseclass + 'Shim'
-    print("shimming "+baseclass)
+    info("shimming "+baseclass)
     for f in mod.values():
         if f.baseclass != baseclass:
             continue
@@ -21,7 +21,7 @@ def before_write(mod, f, injects):
             f.modify_classline(shimname, 'extends', baseclass)
             shimmer = f
             continue
-        print("shimming between "+baseclass+' and '+f.classname)
+        debug("shimming between "+baseclass+' and '+f.classname)
         f.modify_classline(f.classname, f.operator, shimname)
 
 

@@ -1,4 +1,4 @@
-# runs the automated tests using 
+# runs the automated tests using
 from compiler.base import *
 
 
@@ -24,7 +24,7 @@ def runAutomatedTests(out, package):
 
         # then we run this command
         # ucc server ini=test.ini
-        calla([ out + '/System/ucc', 'server', 'ini=test.ini' ])
+        log = call([ out + '/System/ucc', 'server', 'ini=test.ini' ])[1]
         cleanup(out)
 
         printHeader('Automated Tests Finished')
@@ -32,14 +32,14 @@ def runAutomatedTests(out, package):
         # then we can check UCC.log for the test results or parse them from the stdout
 
         printHeader('Results')
-        
+
         if exists(out + '/System/ucc.log'):
-            rc = parseUCClog(out + '/System/ucc.log')
+            rc = parseUCClog(log)
         else:
             print("Couldn't find ucc.log - did the compilation actually happen?")
             rc = False
 
-        
+
     else:
         print("DeusEx.ini does not exist in the system folder of the output dir!")
         rc = False
@@ -47,10 +47,8 @@ def runAutomatedTests(out, package):
     return rc
 
 
-def parseUCClog(logfile):
-    f = open (logfile,'r')
-    lines = f.readlines()
-    f.close()
+def parseUCClog(log):
+    lines = log.splitlines()
 
     modulesTested = []
     failures = []
@@ -87,17 +85,17 @@ def parseUCClog(logfile):
     print("")
 
     if len(warnings) > 0:
-        print("Test Warnings ("+str(len(warnings))+"):")
+        print_colored("Test Warnings ("+str(len(warnings))+"):")
         print("-----------------")
         for warn in warnings:
-            print(warn)
+            print_colored(warn)
         print("")
 
     if len(failures) > 0:
-        print("Test Failures ("+str(len(failures))+"):")
-        print("-----------------")
+        printError("Test Failures ("+str(len(failures))+"):")
+        printError("-----------------")
         for fail in failures:
-            print(fail)
+            print_colored(fail)
         print("")
         rc = False
 
@@ -106,7 +104,7 @@ def parseUCClog(logfile):
         rc = True
     else:
         print("len(startingTests) == "+str(len(startingTests))+", len(allTestsPassed) == "+str(len(allTestsPassed))+", len(allExtendedTestsPassed) == "+str(len(allExtendedTestsPassed)))
-        print("Failed to run tests!")
+        printError("Failed to run tests!")
         rc = False
 
     print("")

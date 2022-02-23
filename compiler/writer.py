@@ -29,7 +29,7 @@ def before_write(mod, injects):
 def before_write_file(mod, f, injects):
     if f.operator in vanilla_inheritance_keywords:
         return
-    
+
     try:
         module = load_module( 'compiler.' + f.operator)
         module.before_write(mod, f, injects)
@@ -40,7 +40,7 @@ def before_write_file(mod, f, injects):
 
 def execute_injections(f, injects):
     write = True
-    
+
     debug("execute_injections("+f.file+") "+f.classline)
     prev = f
     for idx, inject in enumerate(injects[f.qualifiedclass]):
@@ -60,7 +60,7 @@ def execute_injections(f, injects):
 def handle_inheritance_operator(f, injects):
     if f.operator in vanilla_inheritance_keywords:
         return True
-    
+
     debug("handle_inheritance_operator("+f.file+") "+f.operator)
     module = load_module( 'compiler.' + f.operator)
     try:
@@ -73,27 +73,27 @@ def handle_inheritance_operator(f, injects):
 def write_file(out, f, written, injects):
     if f.file in written:
         return
-    
+
     if not hasattr(write_file,"last_folder"):
         write_file.last_folder=""
     folder = Path(f.file).parent
     if folder != write_file.last_folder:
-        print("Writing folder "+str(folder)[-50:])
+        info("Writing folder "+str(folder)[-50:])
     debug("Writing "+f.file)
     write_file.last_folder = folder
-    
+
     write = True
 
     if f.qualifiedclass in injects:
         write = execute_injections(f, injects)
-    
+
     if f.operator:
         write = handle_inheritance_operator(f, injects)
 
     if not write:
         debug("not writing "+f.file)
         return
-    
+
     path = pathlib.PurePath(out, f.namespace, 'Classes')
     if not exists_dir(path):
         os.makedirs(path, exist_ok=True)

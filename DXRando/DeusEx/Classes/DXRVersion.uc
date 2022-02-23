@@ -5,14 +5,14 @@ simulated static function CurrentVersion(optional out int major, optional out in
     major=1;
     minor=7;
     patch=3;
-    build=4;//build can't be higher than 99
+    build=7;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)
 {
     local int major,minor,patch,build;
     CurrentVersion(major,minor,patch,build);
-    return VersionToString(major, minor, patch, build, full) $ " Alpha";
+    return VersionToString(major, minor, patch, build, full) $ " Beta";
 }
 
 simulated static function int VersionToInt(int major, int minor, int patch, int build)

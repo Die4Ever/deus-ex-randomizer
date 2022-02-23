@@ -9,6 +9,7 @@ var bool running;
 
 function Resolved( IpAddr Addr )
 {
+    //log(Self$" Resolved");
     module.CacheAddr(Addr.Addr);
     Super.Resolved(Addr);
 }
@@ -26,7 +27,8 @@ event Opened()
     local string c;
     local int i;
 
-    SetTimer(10, False);
+    // timeout!
+    SetTimer(120, False);
 
     c = content[start];
     content[start] = "";
@@ -51,6 +53,7 @@ event Opened()
 
 function int SendText( coerce string Str )
 {
+    //log(Self$" SendText: "$Len(Str));
     Str = Left(Str, 500);
     return Super.SendText(Str);
 }
@@ -63,14 +66,17 @@ function HTTPError(int Code)
 
 function HTTPReceivedData(string Data)
 {
+    log(Self$": HTTPReceivedData: "$Len(Data));
     module.ReceivedData(Data);
+    Done();
 }
 
 event Closed()
 {
-    //log(Self$": Closed");
+    //log(Self$": Closed, InputBuffer: "$Len(InputBuffer));
     Super.Closed();
-    Done();
+    if(CurrentState != ReceivingData)
+        Done();
 }
 
 function SetError(int Code)
@@ -90,20 +96,20 @@ function string GetUrl()
 {
     local string version;
     local int i;
-    version = class'DXRVersion'.static.VersionString(true);
+    version = module.VersionString(true);
     i = InStr(version, " ");
     while( i != -1 ) {
         version = Left(version, i) $ "%20" $ Mid(version, i+1);
         i = InStr(version, " ");
     }
-    return module.path $ "?version="$version;
+    return module.path $ "?version="$version$"&mod=#var package ";
 }
 
 function Done()
 {
     local int i;
     SetTimer(0, False);
-    //log(Self$": Done()");
+    //log(Self$": Done(), InputBuffer: "$Len(InputBuffer));
     if( ServerIpAddr.Addr == 0 )
     {
         log(Self$": ERROR: never got server IP! trying cached_addr");

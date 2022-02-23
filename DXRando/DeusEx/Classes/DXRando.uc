@@ -49,7 +49,7 @@ simulated event Timer()
 
     if( ! CheckLogin(Player) )
         return;
-    
+
     bLoginReady = true;
 }
 
@@ -83,7 +83,7 @@ function DXRInit()
     if( Player == None )
         foreach AllActors(class'#var PlayerPawn ', Player)
             break;
-    
+
     flagbase = Player.FlagBase;
 #ifdef hx
     flagbase = HXGameInfo(Level.Game).Steve.FlagBase;
@@ -256,7 +256,7 @@ function LoadModules()
     local int i;
     local class<Actor> c;
     local string classstring;
-    
+
     for( i=0; i < ArrayCount( modules_to_load ); i++ ) {
         if( modules_to_load[i] == "" ) continue;
         classstring = modules_to_load[i];
@@ -341,7 +341,7 @@ function DXRTick(float deltaTime)
         for(i=0; i<num_modules; i++) {
             modules[i].PostAnyEntry();
         }
-        
+
         Disable('Tick');
         bTickEnabled = false;
     }
@@ -509,7 +509,7 @@ simulated final function CrcInit() {
             else
                 CrcValue = CrcValue >>> 1;
         }
-        
+
         CrcTable[IndexEntry] = CrcValue;
     }
 }
@@ -525,6 +525,9 @@ simulated final function int Crc(coerce string Text) {
 
     local int CrcValue;
     local int IndexChar;
+
+    //if(CrcTable[1] == 0)
+        //err("CrcTable uninitialized?");
 
     CrcValue = 0xffffffff;
 

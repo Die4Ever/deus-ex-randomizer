@@ -167,10 +167,12 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
 
     // figure out the range we will use
     if( aug != None ) {
+        Desc = aug.default.Description;
         d_min = aug.Default.LevelValues[0];
         d_max = aug.Default.LevelValues[len-1];
     }
     else if( sk != None ) {
+        Desc = sk.default.Description;
         d_min = sk.Default.LevelValues[0];
         d_max = sk.Default.LevelValues[len-1];
     }
@@ -204,7 +206,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     for(i=0; i < removals; i++) {
         RemoveSmallestJump(len--, points);
     }
-    
+
     // apply the values
     for(i=0; i < len; i++) {
         v = points[i];
@@ -216,13 +218,13 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
         s = s $ DescriptionLevel(a, i, word);
     }
 
-    s = "(" $ word $ ": " $ s $ ")";
+    s = word $ ":|n    " $ s;
 
     info("RandoLevelValues "$a$" = "$s);
     dxr.SetSeed( oldseed );
 
     if( InStr(Desc, s) == -1 ) {
-        Desc = Desc $ "|n|n" $ s;
+        Desc = s $ "|n|n" $ Desc;
         return true;
     }
     return false;
@@ -251,10 +253,10 @@ simulated function RemoveSmallestJump(int len, out float a[16])
 
     for(i=1; i < len; i++) {
         if( a[i] - a[i-1] > v ) continue;
-        
+
         if( i==1 )// retain the lowest value to keep the range large
             i++;
-        
+
         for(v=0; i<len; i++) {
             a[i-1] = a[i];
         }
@@ -319,9 +321,9 @@ final function Class<Actor> ModifyActorClass( out Class<Actor> ActorClass )
 //msgBoxMode = 0 or 1, 0 = Yes/No box, 1 = OK box
 //module will presumably be the module you are creating the message box for
 //id lets you provide an ID so you can identify where the response should go
-simulated function CreateMessageBox( String msgTitle, String msgText, int msgBoxMode, 
+simulated function CreateMessageBox( String msgTitle, String msgText, int msgBoxMode,
                            DXRBase module, int id, optional bool noPause) {
-                           
+
     local DXRMessageBoxWindow msgBox;
 
     info(module$" CreateMessageBox "$msgTitle$" - "$msgText);
@@ -363,7 +365,7 @@ simulated function MessageBoxClicked(int button, int callbackId) {
         title = msgBox.winTitle.titleText;
         message = msgBox.winText.GetText();
     }
-    
+
     if (msgBox.mbMode == 0 || msgBox.mbMode == 1) {
         switch(button) {
             case 0:
@@ -380,7 +382,7 @@ simulated function MessageBoxClicked(int button, int callbackId) {
         //Custom mode
         info("MessageBoxClicked "$msgBox.customBtn[button].buttonText$": "$title$" - "$message);
     }
-    
+
     DXRMessageBoxWindow(DeusExRootWindow(player().rootWindow).PopWindow());
 
     //Implementations in subclasses just need to call Super to pop the window, then can handle the message however they want
@@ -390,6 +392,6 @@ simulated function MessageBoxClicked(int button, int callbackId) {
     //OK = 2
 }
 
-simulated function AddDXRCredits(CreditsWindow cw) 
+simulated function AddDXRCredits(CreditsWindow cw)
 {
 }

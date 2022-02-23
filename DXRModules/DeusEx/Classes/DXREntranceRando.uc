@@ -163,7 +163,7 @@ function CheckConfig()
 function int GetNextTransferIdx()
 {
     local int i;
-    
+
     i = 0;
     for (i=0;i<numXfers;i++)
     {
@@ -171,7 +171,7 @@ function int GetNextTransferIdx()
         {
             return i;
         }
-    }   
+    }
     return -1;
 }
 
@@ -197,10 +197,10 @@ function int GetUnusedTransferByOffset(int offset)
 {
     local int idx;
     local int numUnused;
-    
+
     idx = 0;
     numUnused = 0;
-    
+
     for(idx=0;idx<numXfers;idx++)
     {
         if (xfers[idx].used == False)
@@ -219,10 +219,10 @@ function int GetNextUnusedTransferByOffset(int nextAvailIdx, int offset)
 {
     local int idx;
     local int numUnused;
-    
+
     idx = 0;
     numUnused = 0;
-    
+
     for(idx=0;idx<numXfers;idx++)
     {
         if (xfers[idx].used == False && invalidCons[ (nextAvailIdx*ArrayCount(xfers)) + idx ] == 0 )
@@ -241,9 +241,9 @@ function int GetNumXfersByMap(string mapname)
 {
     local int i;
     local int count;
-    
+
     count = 0;
-    
+
     for (i=0;i<numXfers;i++)
     {
         if (xfers[i].mapname == mapname)
@@ -251,7 +251,7 @@ function int GetNumXfersByMap(string mapname)
             count++;
         }
     }
-    
+
     return count;
 }
 
@@ -282,7 +282,7 @@ function bool IsConnectionValid(int idx_a, int idx_b)
     {
         return False;
     }
-    
+
     if ( a.mapname == b.mapname)
     {
         if ( !CanSelfConnect(idx_a))
@@ -293,7 +293,7 @@ function bool IsConnectionValid(int idx_a, int idx_b)
 
     for(i=0; i < ArrayCount(BannedConnections); i++) {
         if( BannedConnections[i].map_a == "" ) break;
-        if( 
+        if(
             (a.mapname == BannedConnections[i].map_a && b.mapname == BannedConnections[i].map_b)
             ||
             (b.mapname == BannedConnections[i].map_a && a.mapname == BannedConnections[i].map_b)
@@ -313,15 +313,15 @@ function bool ValidateConnections()
     local int numPasses;
     local int i,j,k;
     local bool foundMap;
-    
+
     local string canvisit[15];
     local int visitable, oldVisitable;
-    
+
     local bool canVisitMap;
-    
+
     numPasses = numConns;
     numMaps = GetAllMapNames(mapdests);
-    
+
     if( DuplicateConnections() > 0 ) return false;
 
     //Determine what maps can be visited from each map
@@ -329,13 +329,13 @@ function bool ValidateConnections()
     {
         MarkMapsConnected(mapdests, numMaps, conns[i].a, conns[i].b);
     }
-    
+
     //Start finding out what maps we can visit
     visitable = 0;
     oldVisitable = 0;
     canvisit[visitable]=mapdests[0].mapname;
     visitable++;
-    
+
     for( i=0;i<numPasses;i++)
     {
         for ( j=0;j<numMaps;j++)
@@ -349,7 +349,7 @@ function bool ValidateConnections()
                     canVisitMap = true;
                 }
             }
-            
+
             //If map can be visited, go through all the places it can go
             if (canVisitMap)
             {
@@ -361,7 +361,7 @@ function bool ValidateConnections()
         if( visitable == oldVisitable ) break;
         oldVisitable = visitable;
     }
-    
+
     //Theoretically I should probably actually check to see if the maps match,
     //but this is fairly safe...
     if( visitable != numMaps )
@@ -538,7 +538,7 @@ function bool CheckDependencies(string depends, string canvisit[15], int visitab
     local int i;
 
     if( depends == "" ) return true;
-    
+
     for(i=0;i<visitable;i++) {
         if( depends == canvisit[i] ) {
             return true;
@@ -630,7 +630,7 @@ function bool _GenerateConnections(int missionNum)
     local int nextAvailIdx;
     local int destIdx;
     local int i;
-    
+
     for(i=0;i<numXfers;i++)
     {
         xfers[i].used = False;
@@ -646,12 +646,12 @@ function bool _GenerateConnections(int missionNum)
     while (xfersUsed < numXfers)
     {
         nextAvailIdx = GetNextPickiestTransfer();
-        
+
         conns[connsMade].a = xfers[nextAvailIdx];
-    
+
         xfers[nextAvailIdx].used = True;
         xfersUsed++;
-    
+
         //Get a random unused transfer
         destIdx = _FindConnectionFor(xfersUsed, nextAvailIdx);
         if( destIdx == -1 ) {
@@ -659,7 +659,7 @@ function bool _GenerateConnections(int missionNum)
         }
         xfers[destIdx].used = True;
         xfersUsed++;
-    
+
         conns[connsMade].b = xfers[destIdx];
         connsMade++;
     }
@@ -686,14 +686,14 @@ function int _FindConnectionFor(int xfersUsed, int nextAvailIdx)
     {
         xferOffset = rng(numXfers-xfersUsed);
         destIdx = GetNextUnusedTransferByOffset(nextAvailIdx, xferOffset);
-    
+
         if( destIdx == -1 )
             break;
-        
+
         return destIdx;
     }
 
-    l("failed to find valid connection for "
+    l("didn't find valid connection for "
         $ xfers[nextAvailIdx].mapname $ "#" $ xfers[nextAvailIdx].inTag $ " / #" $ xfers[nextAvailIdx].outTag
         $ " with "$numXfers$" numXfers" );
     return -1;
@@ -705,7 +705,7 @@ function AddXfer(string mapname, string inTag, string outTag)
     xfers[numXfers].inTag = Caps(inTag);
     xfers[numXfers].outTag = Caps(outTag);
     xfers[numXfers].used = False;
-    
+
     numXfers++;
 }
 
@@ -733,7 +733,7 @@ function ApplyFixes()
         case "06_HONGKONG_WANCHAI_CANAL":
             FixHongKongCanal();
             break;
-        
+
         /*case "06_HONGKONG_STORAGE":
             foreach AllActors(class'WaterZone', w) {
                 //if( w.Name == 'WaterZone5' || w.Name == 'WaterZone1' )
@@ -1030,12 +1030,12 @@ function ApplyEntranceRando(int missionNum)
         newnp = AdjustTeleporter(t);
         if( last == None ) last = newnp;
     }
-    
+
     foreach AllActors(class'MapExit',m)
     {
         AdjustTeleporter(m);
     }
-    
+
 }
 
 function NavigationPoint AdjustTeleporter(NavigationPoint p)
@@ -1120,7 +1120,7 @@ function PostFirstEntry()
     local int missionNum;
     Super.PostFirstEntry();
     if( dxr.flags.gamemode != 1 ) return;
-    
+
     missionNum = dxr.dxInfo.missionNumber;
     if( missionNum == 11 ) missionNum = 10;//combine paris 10 and 11
     if( missionNum == 14 ) missionNum = 12;//combine vandenberg and oceanlab
@@ -1188,7 +1188,7 @@ function BasicTests()
     AddDoubleXfer("wanchai_market","to_tong","tong","tong_from_wanchai");
     AddDoubleXfer("wanchai_market","to_versalife","versalife","versalife_from_wanchai");
     AddDoubleXfer("versalife","to_versalife2","versalife2","from_versalife");
-    
+
     conns[0].a = xfers[0];
     conns[0].b = xfers[1];
     conns[1].a = xfers[1];
@@ -1282,7 +1282,7 @@ function OneWayTests()
     AddXfer("Paris_Metro","sewer","");
     //AddDoubleXfer("PARIS_CLUB","Paris_Club1","Paris_Metro","Paris_Metro1");
     //AddDoubleXfer("PARIS_CLUB","Paris_Club2","Paris_Metro","Paris_Metro2");
-    
+
     conns[0].a = xfers[0];
     conns[0].b = xfers[2];
     conns[1].a = xfers[3];
@@ -1407,7 +1407,7 @@ function TestDependencies()
     //gas to sub
     conns[3].a = xfers[4];
     conns[3].b = xfers[5];
-    
+
     conns[4] = fixed_conns[1];
     numConns = 5;
     testbool(ValidateConnections(), false, "Test Dependencies bad");

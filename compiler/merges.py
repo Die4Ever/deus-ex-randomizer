@@ -11,7 +11,7 @@ def execute_injections(f, prev, idx, inject, injects):
     global whitelist, disabled
     if disabled and f.classname not in whitelist:
         return True
-    
+
     f.content = apply_merge(f, f.content, inject)
     return True
 
@@ -40,7 +40,7 @@ def apply_merge(a, orig_content, b):
                 lastVarLine = aContent.index(line)
 
         merged+=aContent[:lastVarLine+1]
-            
+
         merged.append("//=======Start of variables merged from "+b.mod_name+'/'+b.classname+"=======")
         merged+=bVars
         merged.append("//=======End of variables merged from "+b.mod_name+'/'+b.classname+"=========")
@@ -61,7 +61,7 @@ def apply_merge(a, orig_content, b):
     pattern_post = r'(?P<end>\s*\()'
     r = re.compile(pattern_pre+pattern_mid+pattern_post, flags=re.IGNORECASE)
     for i in r.finditer(b_content_no_comments):
-        print( "merging found: " + repr(i.groupdict()) )
+        debug( "merging found: " + repr(i.groupdict()) )
         prefix = i.group('prefix')
         func = i.group('name')
         end = i.group('end')
@@ -71,5 +71,5 @@ def apply_merge(a, orig_content, b):
             content, \
             flags=re.IGNORECASE \
         )
-    
+
     return content + b_content

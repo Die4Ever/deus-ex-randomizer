@@ -9,7 +9,7 @@
         "mods_paths": [ "../Lay-D-Denton-Project", "./" ],
         "packages": [ "DeusEx" ],
         "verbose": false,
-        "copy_local": true,
+        "copy_if_changed": "DXRVersion.uc",
         "run_tests": true,
         "blacklist": [ "DXRNonVanilla", "HXRandomizer", "DXRReplaceActors.uc" ]
     },
@@ -24,7 +24,7 @@
         "packages": [ "HXRandomizer" ],
         "rewrite_packages": { "DeusEx": "HXRandomizer" },
         "verbose": false,
-        "copy_local": true,
+        "copy_if_changed": "DXRVersion.uc",
         "run_tests": false,
         "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc" ]
     },
@@ -39,7 +39,7 @@
         "packages": [ "GMDXRandomizer" ],
         "rewrite_packages": { "DeusEx": "GMDXRandomizer" },
         "verbose": false,
-        "copy_local": true,
+        "copy_if_changed": "DXRVersion.uc",
         "run_tests": false,
         "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc" ]
     },
@@ -54,7 +54,7 @@
         "packages": [ "RevRandomizer" ],
         "rewrite_packages": { "DeusEx": "RevRandomizer" },
         "verbose": false,
-        "copy_local": true,
+        "copy_if_changed": "DXRVersion.uc",
         "run_tests": false,
         "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc" ]
     },
@@ -69,7 +69,7 @@
         "packages": [ "VMDRandomizer" ],
         "rewrite_packages": { "DeusEx": "VMDRandomizer" },
         "verbose": false,
-        "copy_local": true,
+        "copy_if_changed": "DXRVersion.uc",
         "run_tests": false,
         "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "DXRFashion" ]
     }
