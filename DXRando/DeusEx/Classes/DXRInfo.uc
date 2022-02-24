@@ -79,6 +79,8 @@ simulated function debug(coerce string message)
 //does not send to telemetry
 simulated function l(coerce string message)
 {
+    if(Len(message)>900)
+        warning("Len(message)>900: "$Left(message, 100));
     log(message, class.name);
 
     /*if( (InStr(VersionString(), "Alpha")>=0 || InStr(VersionString(), "Beta")>=0) ) {
@@ -88,18 +90,24 @@ simulated function l(coerce string message)
 
 simulated function info(coerce string message)
 {
+    if(Len(message)>900)
+        warning("Len(message)>900: "$Left(message, 100));
     log("INFO: " $ message, class.name);
     class'DXRTelemetry'.static.SendLog(GetDXR(), Self, "INFO", message);
 }
 
 simulated function warning(coerce string message)
 {
+    if(Len(message)>900)
+        warning("Len(message)>900: "$Left(message, 100));
     log("WARNING: " $ message, class.name);
     class'DXRTelemetry'.static.SendLog(GetDXR(), Self, "WARNING", message);
 }
 
 simulated function err(coerce string message, optional bool skip_player_message)
 {
+    if(Len(message)>900)
+        warning("Len(message)>900: "$Left(message, 100));
     log("ERROR: " $ message, class.name);
 #ifdef singleplayer
     if(!skip_player_message && player() != None) {
@@ -226,6 +234,17 @@ function bool NamesAreSimilar(coerce string a, coerce string b)
     return Left( a, len_a-2 ) == Left( b, len_a-2 );
 }
 
+simulated function int FindLast(coerce string Text, coerce string search)
+{
+    local int last, a, b;
+    while(a != -1) {
+        last = b - 1;
+        a = InStr(Mid(Text, b), search);
+        b += a + 1;
+    }
+    return last;
+}
+
 simulated static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With, optional bool word)
 {
     local int i, replace_len;
@@ -233,11 +252,11 @@ simulated static final function string ReplaceText(coerce string Text, coerce st
 
     replace_len = Len(Replace);
     capsReplace = Caps(Replace);
-    
+
     i = WordInStr( Caps(Text), capsReplace, replace_len, word );
     while (i != -1) {
         Output = Output $ Left(Text, i) $ With;
-        Text = Mid(Text, i + replace_len); 
+        Text = Mid(Text, i + replace_len);
         i = WordInStr( Caps(Text), capsReplace, replace_len, word);
     }
     Output = Output $ Text;
