@@ -243,6 +243,27 @@ function RandoCarcasses()
     }
 }
 
+function SwapItems(Pawn a, Pawn b)
+{
+    local Inventory item, newa[64], newb[64];
+    local int i, numa, numb;
+
+    for(item=a.Inventory; item != None; item=item.Inventory) {
+        if(Weapon(item) == None && Ammo(item) == None)
+            newb[numb++] = item;
+    }
+    for(item=b.Inventory; item != None; item=item.Inventory) {
+        if(Weapon(item) == None && Ammo(item) == None)
+            newa[numa++] = item;
+    }
+
+    for(i=0; i<numa; i++) {
+        GiveExistingItem(a, newa[i]);
+    }
+    for(i=0; i<numb; i++) {
+        GiveExistingItem(b, newb[i]);
+    }
+}
 
 function SwapScriptedPawns(int percent, bool enemies)
 {
@@ -279,7 +300,7 @@ function SwapScriptedPawns(int percent, bool enemies)
         }
 
         // TODO: swap non-weapons/ammo inventory, only need to swap nanokeys?
-
+        SwapItems(temp[i], temp[slot]);
         SwapNames(temp[i].Tag, temp[slot].Tag);
         SwapNames(temp[i].Event, temp[slot].Event);
         SwapNames(temp[i].AlarmTag, temp[slot].AlarmTag);

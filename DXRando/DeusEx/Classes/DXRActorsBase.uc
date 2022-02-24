@@ -203,46 +203,50 @@ static function DeusExAmmo GiveAmmoForWeapon(Pawn p, DeusExWeapon w, int add_amm
         w.AmmoType = DeusExAmmo(GiveItem(p, w.AmmoName));
 }
 
-static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int add_ammo)
+static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int add_ammo)
 {
-    local inventory anItem;
+    local DeusExWeapon w;
+    local Ammo a;
+    local DeusExPickup pickup;
     local DeusExPlayer player;
     local bool PlayerTraveling;
-    local DeusExPickup pickup;
+
+    if( item == None ) return None;
 
     player = #var PlayerPawn (p);
-    if( class<Ammo>(iclass) != None ) {
-        anItem = p.FindInventoryType(iclass);
-        if( anItem != None ) {
-            Ammo(anItem).AmmoAmount += Class<Ammo>(iclass).default.AmmoAmount;
+    if( Ammo(item) != None ) {
+        a = Ammo(p.FindInventoryType(item.class));
+        if( a != None ) {
+            a.AmmoAmount += a.default.AmmoAmount + add_ammo;
             if( player != None )
-                player.UpdateAmmoBeltText(Ammo(anItem));
-            return anItem;
+                player.UpdateAmmoBeltText(a);
+            item.Destroy();
+            return a;
         }
     }
 
-    if( class<DeusExWeapon>(iclass) != None ) {
-        anItem = p.FindInventoryType(iclass);
-        if( anItem != None ) {
-            GiveAmmoForWeapon(p, DeusExWeapon(anItem), add_ammo + 1);
-            return anItem;
+    if( DeusExWeapon(item) != None ) {
+        w = DeusExWeapon(p.FindInventoryType(item.class));
+        if( w != None ) {
+            GiveAmmoForWeapon(p, w, 1 + add_ammo);
+            item.Destroy();
+            return w;
         }
     }
 
-    if( class<DeusExPickup>(iclass) != None ) {
-        pickup = DeusExPickup(p.FindInventoryType(iclass));
+    if( DeusExPickup(item) != None ) {
+        pickup = DeusExPickup(p.FindInventoryType(item.class));
         if( pickup != None ) {
             if( pickup.bCanHaveMultipleCopies && pickup.NumCopies < pickup.MaxCopies ) {
                 pickup.NumCopies++;
+                item.Destroy();
                 return pickup;
             }
         }
     }
 
-    anItem = p.Spawn(iclass, p);
-    if( anItem == None ) return None;
-    anItem.InitialState='Idle2';
-    anItem.SetLocation(p.Location);
+    item.InitialState='Idle2';
+    item.SetLocation(p.Location);
 
     if( (#defined gmdx || #defined revision ) && player != None ) {
         PlayerTraveling = player.FlagBase.GetBool('PlayerTraveling');
@@ -252,23 +256,30 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
     }
 
     if( player != None ) {
-        player.FrobTarget = anItem;
+        player.FrobTarget = item;
         player.ParseRightClick();
     } else {
-        anItem.GiveTo(p);
-        anItem.SetBase(p);
+        item.GiveTo(p);
+        item.SetBase(p);
     }
 
     if(PlayerTraveling) {
         player.FlagBase.SetBool('PlayerTraveling', true);
     }
 
-    GiveAmmoForWeapon(p, DeusExWeapon(anItem), add_ammo);
+    GiveAmmoForWeapon(p, DeusExWeapon(item), add_ammo);
 
     if( player != None )
-        player.UpdateBeltText(anItem);
+        player.UpdateBeltText(item);
+}
 
-    return anItem;
+static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int add_ammo)
+{
+    local inventory item;
+
+    item = p.Spawn(iclass, p);
+    if( item == None ) return None;
+    return GiveExistingItem(p, item);
 }
 
 static function ThrowItem(Actor a, Inventory item)
