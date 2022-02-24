@@ -126,8 +126,8 @@ function AddRandomEnemyType(string t, int c)
 function FirstEntry()
 {
     Super.FirstEntry();
+    SwapScriptedPawns(dxr.flags.settings.enemiesshuffled, true);
     RandoEnemies(dxr.flags.settings.enemiesrandomized);
-    //SwapScriptedPawns();
     RandoCarcasses();
 }
 
@@ -191,7 +191,7 @@ function ReadConfig()
     }
 }
 
-function AddDXRCredits(CreditsWindow cw) 
+function AddDXRCredits(CreditsWindow cw)
 {
     local int i;
 
@@ -243,7 +243,8 @@ function RandoCarcasses()
     }
 }
 
-function SwapScriptedPawns()
+
+function SwapScriptedPawns(int percent, bool enemies)
 {
     local ScriptedPawn temp[512];
     local ScriptedPawn a;
@@ -256,6 +257,8 @@ function SwapScriptedPawns()
         if( a.bHidden || a.bStatic ) continue;
         if( a.bImportant ) continue;
         if( IsCritter(a) ) continue;
+        if( IsInitialEnemy(a) != enemies ) continue;
+        if( !chance_single(percent) ) continue;
         temp[num++] = a;
     }
 
@@ -268,8 +271,30 @@ function SwapScriptedPawns()
         }
         slot--;
         if(slot >= i) slot++;
+        if( IsInitialEnemy(temp[i]) != IsInitialEnemy(temp[slot]) ) continue;
         l("SwapScriptedPawns swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot]));
-        Swap(temp[i], temp[slot]);
+
+        if( !Swap(temp[i], temp[slot], true) ) {
+            continue;
+        }
+
+        // TODO: swap non-weapons/ammo inventory, only need to swap nanokeys?
+
+        SwapNames(temp[i].Tag, temp[slot].Tag);
+        SwapNames(temp[i].Event, temp[slot].Event);
+        SwapNames(temp[i].AlarmTag, temp[slot].AlarmTag);
+        SwapNames(temp[i].SharedAlarmTag, temp[slot].SharedAlarmTag);
+        SwapNames(temp[i].HomeTag, temp[slot].HomeTag);
+        SwapVector(temp[i].HomeLoc, temp[slot].HomeLoc);
+        SwapVector(temp[i].HomeRot, temp[slot].HomeRot);
+        SwapProperty(temp[i], temp[slot], "HomeExtent");
+        SwapProperty(temp[i], temp[slot], "bUseHome");
+        SwapNames(temp[i].Orders, temp[slot].Orders);
+        SwapNames(temp[i].OrderTag, temp[slot].OrderTag);
+        SwapProperty(temp[i], temp[slot], "RaiseAlarm");
+
+        ResetOrders(temp[i]);
+        ResetOrders(temp[slot]);
     }
 }
 
@@ -296,13 +321,14 @@ function RandoEnemies(int percent)
     foreach AllActors(class'ScriptedPawn', p)
     {
         if( p == newsp ) break;
-        if( p.bImportant || p.bInvincible ) continue;
         if( IsCritter(p) ) continue;
         if( SkipActor(p, 'ScriptedPawn') ) continue;
         //if( IsInitialEnemy(p) == False ) continue;
 
         if( HasItemSubclass(p, class'Weapon') == false ) continue;//don't randomize neutral npcs that don't already have weapons
         if( chance_single(percent) ) RandomizeSP(p, percent);
+
+        if( p.bImportant || p.bInvincible ) continue;
 
         if( chance_single(percent) == false ) continue;
 
@@ -390,7 +416,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     {
         n.InitialAlliances[i] = p.InitialAlliances[i];
     }
-    
+
     inv = p.Inventory;
     while( inv != None ) {
         k1 = NanoKey(inv);

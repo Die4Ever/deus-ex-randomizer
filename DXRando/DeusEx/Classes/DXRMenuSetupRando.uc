@@ -138,6 +138,9 @@ function BindControls(optional string action)
     NewMenuItem("Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.");
     Slider(f.settings.enemiesrandomized, 0, 100);
 
+    NewMenuItem("Enemy Shuffling %", "Experimental: shuffle enemies around the map.");
+    Slider(f.settings.enemiesshuffled, 0, 100);
+
     NewMenuItem("Non-Human Chance %", "Reduce the chance of new enemies being non-humans.");
     Slider(f.settings.enemies_nonhumans, 0, 100);
 

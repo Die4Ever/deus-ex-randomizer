@@ -300,14 +300,14 @@ function bool SkipActor(Actor a, name classname)
     return false;
 }
 
-function bool SetActorLocation(Actor a, vector newloc)
+function bool SetActorLocation(Actor a, vector newloc, optional bool retainOrders)
 {
     local ScriptedPawn p;
 
     if( ! a.SetLocation(newloc) ) return false;
 
     p = ScriptedPawn(a);
-    if( p != None && p.Orders == 'Patrolling' ) {
+    if( p != None && p.Orders == 'Patrolling' && !retainOrders ) {
         p.SetOrders('Wandering');
         p.HomeTag = 'Start';
         p.HomeLoc = p.Location;
@@ -357,7 +357,7 @@ function RemoveReactions(ScriptedPawn p)
     p.bReactProjectiles = false;
 }
 
-function bool Swap(Actor a, Actor b)
+function bool Swap(Actor a, Actor b, optional bool retainOrders)
 {
     local vector newloc, oldloc;
     local rotator newrot;
@@ -378,17 +378,17 @@ function bool Swap(Actor a, Actor b)
     oldloc = a.Location;
     newloc = b.Location;
 
-    bsuccess = SetActorLocation(b, oldloc + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1) );
+    bsuccess = SetActorLocation(b, oldloc + (b.CollisionHeight - a.CollisionHeight) * vect(0,0,1), retainOrders );
     a.SetCollision(AbCollideActors, AbBlockActors, AbBlockPlayers);
     if( bsuccess == false ) {
         warning("bsuccess failed to move " $ ActorToString(b) $ " into location of " $ ActorToString(a) );
         return false;
     }
 
-    asuccess = SetActorLocation(a, newloc + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1));
+    asuccess = SetActorLocation(a, newloc + (a.CollisionHeight - b.CollisionHeight) * vect(0,0,1), retainOrders);
     if( asuccess == false ) {
         warning("asuccess failed to move " $ ActorToString(a) $ " into location of " $ ActorToString(b) );
-        SetActorLocation(b, newloc);
+        SetActorLocation(b, newloc, retainOrders);
         return false;
     }
 
@@ -407,6 +407,50 @@ function bool Swap(Actor a, Actor b)
     if(abase != bbase) b.SetBase(abase);
 
     return true;
+}
+
+function SwapNames(out Name a, out Name b) {
+    local Name t;
+    t = a;
+    a = b;
+    b = t;
+}
+
+function SwapVector(out vector a, out vector b) {
+    local vector t;
+    t = a;
+    a = b;
+    b = t;
+}
+
+function SwapProperty(Actor a, Actor b, string propname) {
+    local string t;
+    t = a.GetPropertyText(propname);
+    a.SetPropertyText(propname, b.GetPropertyText(propname));
+    a.SetPropertyText(propname, t);
+}
+
+function ResetOrders(ScriptedPawn p) {
+    p.OrderActor = None;
+    p.NextState = '';
+    p.NextLabel = '';
+
+    if(p.Orders == 'Idle') {
+        p.Orders = 'Standing';
+        p.OrderTag = '';
+    }
+    p.SetOrders(p.Orders, p.OrderTag, false);
+    p.FollowOrders();
+}
+
+function bool HasConversation(Actor a) {
+    local ConListItem i;
+
+    for(i=ConListItem(a.ConListItems); i!=None; i=i.next) {
+        //warning(a$" HasConversation "$i.con.conName@i.con.bFirstPerson@i.con.bNonInteractive@i.con.bDataLinkCon@i.con.conOwnerName@i.con.bCanBeInterrupted@i.con.bCannotBeInterrupted);
+        return true;
+    }
+    return false;
 }
 
 function bool DestroyActor( Actor d )
