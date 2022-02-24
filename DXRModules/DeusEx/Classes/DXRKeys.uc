@@ -337,7 +337,7 @@ function _RandoKey(#var prefix NanoKey k)
     for(tries=0; tries<5; tries++) {
         slot=rng(num+1);// +1 for vanilla
         if(slot==0) {
-            info("not swapping key "$k.KeyID);
+            info("not swapping key "$k.KeyID$", num: "$num);
             break;
         }
         slot--;

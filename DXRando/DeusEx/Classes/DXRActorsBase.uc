@@ -282,13 +282,14 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
     return GiveExistingItem(p, item);
 }
 
-static function ThrowItem(Actor a, Inventory item)
+static function ThrowItem(Actor a, Inventory item, float VelocityMult)
 {
     if( Pawn(a) != None )
         Pawn(a).DeleteInventory(item);
     item.DropFrom(a.Location + (VRand()*vect(32,32,16)) + vect(0,0,16) );
     // kinda copied from DeusExPlayer DropItem function
     item.Velocity = vector(a.rotation) * 300 + vect(0,0,220) + VRand()*32;
+    item.Velocity *= VelocityMult;
 }
 
 function bool SkipActorBase(Actor a)

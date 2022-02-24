@@ -6,7 +6,7 @@ function InitFor(Actor Other)
         DrawScale = Other.DrawScale;
         Fatness = Other.Fatness;
     }
-    
+
     Super.InitFor(Other);
 }
 
@@ -21,7 +21,7 @@ function SetMesh3(mesh m)
     Mesh3 = m;
 }
 
-function bool _DropItem(Inventory item, Name classname)
+function bool _ShouldDropItem(Inventory item, Name classname)
 {
     if( Ammo(item) != None )
         return false;
@@ -38,9 +38,8 @@ function _DropItems(Name classname, vector offset, vector velocity)
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
-        if( _DropItem(item, classname) ) {
-            DeleteInventory(item);
-            class'DXRActorsBase'.static.ThrowItem(self, item);
+        if( _ShouldDropItem(item, classname) ) {
+            class'DXRActorsBase'.static.ThrowItem(self, item, 1.0);
             item.SetLocation( item.Location + offset );
             item.Velocity *= velocity;
         }

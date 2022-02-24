@@ -249,19 +249,27 @@ function SwapItems(Pawn a, Pawn b)
     local int i, numa, numb;
 
     for(item=a.Inventory; item != None; item=item.Inventory) {
-        if(Weapon(item) == None && Ammo(item) == None)
+        if(Weapon(item) == None && Ammo(item) == None) {
+            a.DeleteInventory(item);
             newb[numb++] = item;
+        }
     }
     for(item=b.Inventory; item != None; item=item.Inventory) {
-        if(Weapon(item) == None && Ammo(item) == None)
+        if(Weapon(item) == None && Ammo(item) == None) {
+            b.DeleteInventory(item);
             newa[numa++] = item;
+        }
     }
 
     for(i=0; i<numa; i++) {
-        GiveExistingItem(a, newa[i]);
+        item = GiveExistingItem(a, newa[i]);
+        if(Robot(a) != None)
+            ThrowItem(a, item, 0.1);
     }
     for(i=0; i<numb; i++) {
-        GiveExistingItem(b, newb[i]);
+        item = GiveExistingItem(b, newb[i]);
+        if(Robot(b) != None)
+            ThrowItem(b, item, 0.1);
     }
 }
 

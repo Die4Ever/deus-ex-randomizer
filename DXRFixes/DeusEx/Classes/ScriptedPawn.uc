@@ -28,14 +28,14 @@ function PlayDying(name damageType, vector hitLoc)
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
-        melee = item.IsA('WeaponProd') || item.IsA('WeaponBaton') || item.IsA('WeaponCombatKnife') || item.Isa('WeaponCrowbar') || item.IsA('WeaponNanoSword') || item.Isa('WeaponSword');
+        melee = class'DXRActorsBase'.static.IsMeleeWeapon(item);
         drop = (item.IsA('NanoKey') && gibbed) || (melee && !gibbed) || (gibbed && item.bDisplayableInv);
         if( DeusExWeapon(item) != None && DeusExWeapon(item).bNativeAttack )
             drop = false;
         if( Ammo(item) != None )
             drop = false;
         if( drop ) {
-            class'DXRActorsBase'.static.ThrowItem(self, item);
+            class'DXRActorsBase'.static.ThrowItem(self, item, 1.0);
             if(gibbed)
                 item.Velocity *= vect(-2, -2, 2);
             else
@@ -43,7 +43,7 @@ function PlayDying(name damageType, vector hitLoc)
         }
         item = nextItem;
     }
-    
+
     Super.PlayDying(damageType, hitLoc);
 }
 
@@ -52,20 +52,20 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 {
     local name baseDamageType;
     local DeusExPlayer p;
-    
+
     if (damageType == 'FlareFlamed') {
         baseDamageType = 'Flamed';
     } else {
         baseDamageType = damageType;
     }
-    
+
     Super.TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
-    
+
     if (bBurnedToDeath) {
         p = DeusExPlayer(GetPlayerPawn());
         class'DXRStats'.static.AddBurnKill(p);
-    } 
-    
+    }
+
     if (damageType == 'FlareFlamed') {
         flareBurnTime = 3;
     }
