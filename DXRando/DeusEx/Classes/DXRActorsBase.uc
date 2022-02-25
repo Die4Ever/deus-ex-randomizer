@@ -271,6 +271,8 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
 
     if( player != None )
         player.UpdateBeltText(item);
+
+    return item;
 }
 
 static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int add_ammo)
@@ -282,13 +284,21 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
     return GiveExistingItem(p, item);
 }
 
-static function ThrowItem(Actor a, Inventory item, float VelocityMult)
+static function ThrowItem(Inventory item, float VelocityMult)
 {
+    local Actor a;
+    local vector loc, rot;
+
+    a = item.Owner;
     if( Pawn(a) != None )
         Pawn(a).DeleteInventory(item);
-    item.DropFrom(a.Location + (VRand()*vect(32,32,16)) + vect(0,0,16) );
+    if( a != None ) {
+        loc = a.Location;
+        rot = vector(a.Rotation);
+    }
+    item.DropFrom(loc + (VRand()*vect(32,32,16)) + vect(0,0,16) );
     // kinda copied from DeusExPlayer DropItem function
-    item.Velocity = vector(a.rotation) * 300 + vect(0,0,220) + VRand()*32;
+    item.Velocity = rot * 300 + vect(0,0,220) + VRand()*32;
     item.Velocity *= VelocityMult;
 }
 

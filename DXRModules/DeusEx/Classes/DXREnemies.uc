@@ -250,13 +250,15 @@ function SwapItems(Pawn a, Pawn b)
 
     for(item=a.Inventory; item != None; item=item.Inventory) {
         if(Weapon(item) == None && Ammo(item) == None) {
-            a.DeleteInventory(item);
+            if(item.Owner == a)
+                a.DeleteInventory(item);
             newb[numb++] = item;
         }
     }
     for(item=b.Inventory; item != None; item=item.Inventory) {
         if(Weapon(item) == None && Ammo(item) == None) {
-            b.DeleteInventory(item);
+            if(item.Owner == b)
+                b.DeleteInventory(item);
             newa[numa++] = item;
         }
     }
@@ -264,12 +266,12 @@ function SwapItems(Pawn a, Pawn b)
     for(i=0; i<numa; i++) {
         item = GiveExistingItem(a, newa[i]);
         if(Robot(a) != None)
-            ThrowItem(a, item, 0.1);
+            ThrowItem(item, 0.1);
     }
     for(i=0; i<numb; i++) {
         item = GiveExistingItem(b, newb[i]);
         if(Robot(b) != None)
-            ThrowItem(b, item, 0.1);
+            ThrowItem(item, 0.1);
     }
 }
 

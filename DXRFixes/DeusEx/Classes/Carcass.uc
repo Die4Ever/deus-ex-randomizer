@@ -39,7 +39,7 @@ function _DropItems(Name classname, vector offset, vector velocity)
     while( item != None ) {
         nextItem = item.Inventory;
         if( _ShouldDropItem(item, classname) ) {
-            class'DXRActorsBase'.static.ThrowItem(self, item, 1.0);
+            class'DXRActorsBase'.static.ThrowItem(item, 1.0);
             item.SetLocation( item.Location + offset );
             item.Velocity *= velocity;
         }
