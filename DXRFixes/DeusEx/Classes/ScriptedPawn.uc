@@ -4,8 +4,7 @@ class ScriptedPawn shims ScriptedPawn;
 var int flareBurnTime;
 
 var int loopCounter;
-var Actor prevDest;
-var Actor prevprevDest;
+var float lastEnableCheckDestLocTime;
 
 /*function IncreaseAgitation(Actor actorInstigator, optional float AgitationLevel)
 {
@@ -35,7 +34,7 @@ function PlayDying(name damageType, vector hitLoc)
         if( Ammo(item) != None )
             drop = false;
         if( drop ) {
-            class'DXRActorsBase'.static.ThrowItem(self, item, 1.0);
+            class'DXRActorsBase'.static.ThrowItem(item, 1.0);
             if(gibbed)
                 item.Velocity *= vect(-2, -2, 2);
             else
@@ -86,7 +85,6 @@ function UpdateFire()
 function EnableCheckDestLoc(bool bEnable)
 {
     local DXRando dxr;
-    local Actor tMoveTarget;
     local string message;
 
     Super.EnableCheckDestLoc(bEnable);
@@ -97,31 +95,16 @@ function EnableCheckDestLoc(bool bEnable)
         return;
     }
 
-    // don't do any fix if the destPoint is not one of the 2 most recent ones
-    // when I saw the crash, the pawn would alternate between attempting 2 different destPoints, but the FindPathToward would fail for both of them
-    if( prevprevDest == destPoint ) {
-        prevprevDest = prevDest;
-        prevDest = destPoint;
+    // prevent runaway loops by keeping track of how many times this is called in the same frame/tick
+    if(lastEnableCheckDestLocTime == Level.TimeSeconds) {
+        loopCounter++;
+    } else {
+        lastEnableCheckDestLocTime = Level.TimeSeconds;
+        loopCounter = 0;
     }
-    else if( prevDest != destPoint ) {
-        prevprevDest = prevDest;
-        prevDest = destPoint;
-        loopCounter=0;
-        return;
-    }
-
-    tMoveTarget = FindPathToward(destPoint);
-    if( tMoveTarget != None ) {
-        loopCounter=0;
-        prevprevDest = None;
-        prevDest = None;
-        return;
-    }
-
-    loopCounter++;
 
     if( loopCounter > 10 ) {
-        message = "EnableCheckDestLoc, bEnable: "$bEnable$", loopCounter: "$loopCounter$", destPoint: "$destPoint$", tMoveTarget: "$tMoveTarget$", MoveTarget: "$MoveTarget;
+        message = "EnableCheckDestLoc, bEnable: "$bEnable$", loopCounter: "$loopCounter$", destPoint: "$destPoint$", lastEnableCheckDestLocTime: "$lastEnableCheckDestLocTime;
         log(self$": WARNING: "$message);
         foreach AllActors(class'DXRando', dxr) break;
         if( dxr != None ) class'DXRTelemetry'.static.SendLog(None, Self, "WARNING", message);
