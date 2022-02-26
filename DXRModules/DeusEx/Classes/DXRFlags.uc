@@ -32,6 +32,7 @@ struct FlagsSettings {
 #endif
     var int minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
     var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
+    var int keys_containers, infodevices_containers;
     var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized;//could be bools, but int is more flexible, especially so I don't have to change the flag type
     var int enemiesrandomized, enemiesshuffled, enemyrespawn, infodevices;
     var int dancingpercent;
@@ -207,6 +208,8 @@ function CheckConfig()
         difficulty_settings[i].doorsdestructible = 100;
         difficulty_settings[i].doorspickable = 100;
         difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].keys_containers = 0;
+        difficulty_settings[i].infodevices_containers = 0;
         difficulty_settings[i].deviceshackable = 100;
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
@@ -263,6 +266,8 @@ function CheckConfig()
         difficulty_settings[i].doorsdestructible = 100;
         difficulty_settings[i].doorspickable = 100;
         difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].keys_containers = 0;
+        difficulty_settings[i].infodevices_containers = 0;
         difficulty_settings[i].deviceshackable = 100;
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
@@ -318,6 +323,8 @@ function CheckConfig()
         difficulty_settings[i].doorsdestructible = 50;
         difficulty_settings[i].doorspickable = 50;
         difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].keys_containers = 0;
+        difficulty_settings[i].infodevices_containers = 0;
         difficulty_settings[i].deviceshackable = 100;
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
@@ -373,6 +380,8 @@ function CheckConfig()
         difficulty_settings[i].doorsdestructible = 25;
         difficulty_settings[i].doorspickable = 25;
         difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].keys_containers = 0;
+        difficulty_settings[i].infodevices_containers = 0;
         difficulty_settings[i].deviceshackable = 50;
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
@@ -428,6 +437,8 @@ function CheckConfig()
         difficulty_settings[i].doorsdestructible = 25;
         difficulty_settings[i].doorspickable = 25;
         difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].keys_containers = 0;
+        difficulty_settings[i].infodevices_containers = 0;
         difficulty_settings[i].deviceshackable = 50;
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
@@ -580,6 +591,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_biocells', settings.biocells, mode, str);
     FlagInt('Rando_speedlevel', settings.speedlevel, mode, str);
     FlagInt('Rando_keys', settings.keysrando, mode, str);
+    FlagInt('Rando_keys_containers', settings.keys_containers, mode, str);
     FlagInt('Rando_doorspickable', settings.doorspickable, mode, str);
     FlagInt('Rando_doorsdestructible', settings.doorsdestructible, mode, str);
     FlagInt('Rando_deviceshackable', settings.deviceshackable, mode, str);
@@ -589,6 +601,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_enemiesrandomized', settings.enemiesrandomized, mode, str);
     FlagInt('Rando_enemiesshuffled', settings.enemiesshuffled, mode, str);
     FlagInt('Rando_infodevices', settings.infodevices, mode, str);
+    FlagInt('Rando_infodevices_containers', settings.infodevices_containers, mode, str);
     FlagInt('Rando_dancingpercent', settings.dancingpercent, mode, str);
     FlagInt('Rando_doorsmode', settings.doorsmode, mode, str);
     FlagInt('Rando_enemyrespawn', settings.enemyrespawn, mode, str);
@@ -905,6 +918,8 @@ function RunTests()
     teststring( FloatToString(0.5555, 1), "0.6", "FloatToString 1");
     teststring( FloatToString(0.5454999, 4), "0.5455", "FloatToString 2");
     teststring( FloatToString(0.5455, 2), "0.55", "FloatToString 3");
+
+    testbool( #defined debug, false, "debug is disabled");
 }
 
 function ExtendedTests()

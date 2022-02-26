@@ -4,7 +4,7 @@
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Rando/",
         "preproc_definitions": {
             "vanilla":1, "singleplayer":1, "fixes":1, "mapfixes":1, "balance":1, "backtracking":1, "injections":1, "flags": 1, "prefix":"",
-            "Mover":"DeusExMover", "PlayerPawn":"Human", "flagvarprefix": "", "package": "DeusEx"
+            "Mover":"DeusExMover", "PlayerPawn":"Human", "flagvarprefix": "", "package": "DeusEx", "debug": 1
         },
         "mods_paths": [ "../Lay-D-Denton-Project", "./" ],
         "packages": [ "DeusEx" ],

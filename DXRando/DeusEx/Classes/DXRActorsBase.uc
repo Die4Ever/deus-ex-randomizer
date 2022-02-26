@@ -475,6 +475,13 @@ function bool HasConversation(Actor a) {
     return false;
 }
 
+function bool HasBased(Actor a) {
+    local Actor b;
+    foreach a.BasedActors(class'Actor', b)
+        return true;
+    return false;
+}
+
 function bool DestroyActor( Actor d )
 {
     // If this item is in an inventory chain, unlink it.
@@ -950,6 +957,23 @@ function bool PositionIsSafe(Vector oldloc, Actor test, Vector newloc)
 function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
 {// https://github.com/Die4Ever/deus-ex-randomizer/wiki#smarter-key-randomization
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
+}
+
+function DebugMarkKeyPosition(Actor a, coerce string id)
+{
+    if( ! #defined debug ) err("don't call DebugMarkKeyPosition without debug mode!");
+
+    if(DeusExDecoration(a) != None) {
+        DeusExDecoration(a).ItemName = id @ DeusExDecoration(a).ItemName;
+    } else if(Inventory(a) != None) {
+        Inventory(a).ItemName = id @ Inventory(a).ItemName;
+    }
+    a.LightType=LT_Steady;
+    a.LightEffect=LE_WateryShimmer;
+    a.LightBrightness=255;
+    a.LightHue=155;
+    a.LightRadius=20;
+    debug("DebugMarkKeyPosition "$a$ " ("$a.Location$") " $ id);
 }
 
 defaultproperties

@@ -73,15 +73,21 @@ simulated final function #var PlayerPawn  player(optional bool quiet)
 */
 simulated function debug(coerce string message)
 {
-    //log(message, class.name);
+#ifdef debug
+    if(Len(message)>900)
+        warning("Len(message)>900: "$Left(message, 500));
+    else
+        log(message, class.name);
+#endif
 }
 
 //does not send to telemetry
 simulated function l(coerce string message)
 {
     if(Len(message)>900)
-        warning("Len(message)>900: "$Left(message, 100));
-    log(message, class.name);
+        warning("Len(message)>900: "$Left(message, 500));
+    else
+        log(message, class.name);
 
     /*if( (InStr(VersionString(), "Alpha")>=0 || InStr(VersionString(), "Beta")>=0) ) {
         class'Telemetry'.static.SendLog(Self, "DEBUG", message);
@@ -91,24 +97,27 @@ simulated function l(coerce string message)
 simulated function info(coerce string message)
 {
     if(Len(message)>900)
-        warning("Len(message)>900: "$Left(message, 100));
-    log("INFO: " $ message, class.name);
+        warning("Len(message)>900: "$Left(message, 500));
+    else
+        log("INFO: " $ message, class.name);
     class'DXRTelemetry'.static.SendLog(GetDXR(), Self, "INFO", message);
 }
 
 simulated function warning(coerce string message)
 {
     if(Len(message)>900)
-        warning("Len(message)>900: "$Left(message, 100));
-    log("WARNING: " $ message, class.name);
+        warning("Len(message)>900: "$Left(message, 500));
+    else
+        log("WARNING: " $ message, class.name);
     class'DXRTelemetry'.static.SendLog(GetDXR(), Self, "WARNING", message);
 }
 
 simulated function err(coerce string message, optional bool skip_player_message)
 {
     if(Len(message)>900)
-        warning("Len(message)>900: "$Left(message, 100));
-    log("ERROR: " $ message, class.name);
+        err("Len(message)>900: "$Left(message, 500));
+    else
+        log("ERROR: " $ message, class.name);
 #ifdef singleplayer
     if(!skip_player_message && player() != None) {
         player().ClientMessage( Class @ message, 'ERROR' );

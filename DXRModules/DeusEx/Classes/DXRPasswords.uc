@@ -236,7 +236,7 @@ simulated function Timer()
 #ifdef hx
     if( Role == ROLE_Authority )
         UpdateGoalsAndNotes( HXGameInfo(Level.Game).Steve.FirstGoal, HXGameInfo(Level.Game).FirstNote );
-    
+
     if( player(true) != None )
         UpdateGoalsAndNotes( None, player().FirstNote );
 #else
@@ -322,7 +322,7 @@ simulated function bool UpdateString(out string str, string oldpassword, string 
     //l("---");
 
     str = ReplaceText( str, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
-        
+
     return true;
 }
 
@@ -459,7 +459,7 @@ function FixCodes()
             newpassword = GeneratePasscode("4321");
             ReplacePassword("count back from 4", newpassword);
             break;
-        
+
         case "15_AREA51_PAGE":
             newpassword = GeneratePasscode("7243");
             ReplacePassword("724", Left(newpassword, 3) );
@@ -493,7 +493,7 @@ function FixMaggieChowBday(#var prefix Keypad k)
     month = rng(12)+1;
     day = rng(28)+1;// HACK: too lazy to do the right number of days in each month
     dxr.SetSeed(oldseed);
-    
+
     newpassword = string(month);
     if(day<10) newpassword = newpassword $ "0" $ day;
     else newpassword = newpassword $ day;
@@ -512,7 +512,7 @@ simulated function bool InfoDevsHasPass(#var prefix InformationDevices id, optio
     numHasPass=0;
     for(i=0; i<ArrayCount(hasPass); i++)
         hasPass[i]=0;
-    
+
     if ( id.textTag != '' ) {
         parser = new(None) Class'DeusExTextParser';
         if( parser.OpenText(id.textTag, id.TextPackage) ) {
@@ -530,51 +530,67 @@ simulated function bool InfoDevsHasPass(#var prefix InformationDevices id, optio
 
     if( numHasPass > 0 )
         id.bAddToVault = true;
-    
+
     return numHasPass > 0;
 }
 
 function RandoInfoDevs(int percent)
 {
     local #var prefix InformationDevices id;
-    local Inventory inv;
-    local Actor temp[1024];
-    local int num, slot, numHasPass;
-    local int hasPass[64];
 
     if(percent == 0) return;
 
     foreach AllActors(class'#var prefix InformationDevices', id)
     {
-        if( rng(100) > percent ) continue;
+        if( ! chance_single(percent) ) continue;
+        _RandoInfoDev(id, dxr.flags.settings.infodevices_containers > 0);
+    }
+}
 
-        InfoDevsHasPass(id, hasPass, numHasPass);
+function _RandoInfoDev(#var prefix InformationDevices id, bool containers)
+{
+    local Inventory inv;
+    local Containers c;
+    local Actor temp[1024];
+    local int num, slot, numHasPass;
+    local int hasPass[64];
 
-        num=0;
-        foreach AllActors(class'Inventory', inv)
-        {
-            if( SkipActor(inv, 'Inventory') ) continue;
-            if( InfoPositionGood(id, inv.Location, hasPass, numHasPass) == False ) continue;
-            temp[num++] = inv;
-        }
-        /*foreach AllActors(class'Containers', c)
+    InfoDevsHasPass(id, hasPass, numHasPass);
+
+    num=0;
+    foreach AllActors(class'Inventory', inv)
+    {
+        if( SkipActor(inv, 'Inventory') ) continue;
+        if( InfoPositionGood(id, inv.Location, hasPass, numHasPass) == False ) continue;
+#ifdef debug
+        //DebugMarkKeyPosition(inv, id.textTag);
+#endif
+        temp[num++] = inv;
+    }
+
+    if(containers) {
+        foreach AllActors(class'Containers', c)
         {
             if( SkipActor(c, 'Containers') ) continue;
-            if( InfoPositionGood(id, c.Location, hasPass) == False ) continue;
+            if( InfoPositionGood(id, c.Location, hasPass, numHasPass) == False ) continue;
+            if( HasBased(c) ) continue;
+#ifdef debug
+            //DebugMarkKeyPosition(inv, id.textTag);
+#endif
             temp[num++] = c;
-        }*/
-
-        l("datacube "$id$" got num "$num);
-        slot=rng(num+1);//+1 for the vanilla location
-        if(slot==0) {
-            l("not swapping infodevice "$ActorToString(id));
-            continue;
         }
-        slot--;
-        l("swapping infodevice "$ActorToString(id)$" with "$temp[slot]);
-        // Swap argument A is more lenient with collision than argument B
-        Swap(temp[slot], id);
     }
+
+    l("datacube "$id$" got num "$num);
+    slot=rng(num+1);//+1 for the vanilla location
+    if(slot==0) {
+        l("not swapping infodevice "$ActorToString(id));
+        return;
+    }
+    slot--;
+    l("swapping infodevice "$ActorToString(id)$" with "$temp[slot] $" ("$temp[slot].Location$")");
+    // Swap argument A is more lenient with collision than argument B
+    Swap(temp[slot], id);
 }
 
 function MakeAllHackable(int deviceshackable)
@@ -731,7 +747,7 @@ function MarkPasswordKnown(string password)
     local #var prefix Keypad k;
     local #var prefix Computers c;
     local #var prefix ATM a;
-       
+
     //Check computer logins
     foreach AllActors(class '#var prefix Computers',c)
     {
@@ -741,8 +757,8 @@ function MarkPasswordKnown(string password)
     foreach AllActors(class '#var prefix ATM',a)
     {
         a.SetAccountKnownByPassword(password);
-    } 
- 
+    }
+
     //Check keypad logins
     foreach AllActors(class '#var prefix Keypad',k)
     {
@@ -786,17 +802,17 @@ simulated function bool UpdateGoal(DeusExGoal goal, string oldpassword, string n
     player().ClientMessage("Goal updated with randomized password");
     DeusExRootWindow(player().rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
 #endif
-    
+
     info("found goal with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
-    
+
     goal.text = ReplaceText( goal.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
-    
+
 #ifdef hx
     HXGameInfo(Level.Game).AddNote(goal.text, false, true, '');
 #endif
 
     MarkPasswordKnown(newpassword);
-    
+
     return true;
 }
 
@@ -830,7 +846,7 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     if( note.HasEitherPassword(oldpassword, newpassword) ) return false;
 #endif
     if( PassInStr( note.text, oldpassword ) == -1 ) return false;
-    
+
     updated++;
     info("found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
@@ -841,9 +857,9 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
 #ifdef hx
     HXUpdateNote(note.textTag, note.text, "");
 #endif
-    
+
     MarkPasswordKnown(newpassword);
-    
+
     return true;
 }
 
@@ -900,8 +916,8 @@ function string GeneratePasscode(string oldpasscode)
     //10 for single digit gives 1-9, 100 for double gives 1-99, etc...
     for(i=0;i<oldpasslength;i++) {
         maximum = maximum * 10;
-    }    
-    
+    }
+
     oldseed = SetGlobalSeed(oldpasscode);//manually set the seed to avoid using the level name in the seed
     newpasscode = rng(maximum) $ "";
     dxr.SetSeed(oldseed);
@@ -938,7 +954,7 @@ simulated final function int PassInStr(string text, string oldpassword)
             }
         }
         if( !found ) return i;
-        capsText = Mid(capsText, i + lenPass); 
+        capsText = Mid(capsText, i + lenPass);
         i = WordInStr( capsText, capsPass, lenPass, true );
     }
 
@@ -976,7 +992,7 @@ simulated function LogAll()
         for( i=0; i<ArrayCount(a.ATMUserList); i++) {
             if (a.ATMUserList[i].PIN == "")
                 continue;
-            
+
             l("found "$a$" PIN: "$a.ATMUserList[i].PIN);
         }
     }
@@ -984,7 +1000,7 @@ simulated function LogAll()
         for( i=0; i<ArrayCount(a.userList); i++) {
             if (a.userList[i].PIN == "")
                 continue;
-            
+
             l("found "$a$" PIN: "$a.userList[i].PIN);
         }
     }
@@ -1034,7 +1050,7 @@ function bool CheckComputerPosition(#var prefix InformationDevices id, #var pref
     {
         if (c.userList[i].password == "")
             continue;
-        
+
         for (a=0; a<passEnd; a++) {
             if( hasPass[a]==1 && c.userList[i].password == newpasswords[a] ) {
                 return False;

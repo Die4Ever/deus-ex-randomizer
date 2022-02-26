@@ -287,7 +287,7 @@ function RandoKey(#var prefix NanoKey k)
     local int oldseed;
     if( dxr.flags.settings.keysrando == 4 || dxr.flags.settings.keysrando == 2 ) {
         oldseed = SetSeed( "RandoKey " $ k.Name );
-        _RandoKey(k);
+        _RandoKey(k, dxr.flags.settings.keys_containers > 0);
         dxr.SetSeed(oldseed);
     }
 }
@@ -308,11 +308,11 @@ function MoveNanoKeys4()
     foreach AllActors(class'#var prefix NanoKey', k )
     {
         if ( SkipActorBase(k) ) continue;
-        _RandoKey(k);
+        _RandoKey(k, dxr.flags.settings.keys_containers > 0);
     }
 }
 
-function _RandoKey(#var prefix NanoKey k)
+function _RandoKey(#var prefix NanoKey k, bool containers)
 {
     local Actor temp[1024];
     local Inventory a;
@@ -325,14 +325,24 @@ function _RandoKey(#var prefix NanoKey k)
         if( a == k ) continue;
         if( SkipActor(a, 'Inventory') ) continue;
         if( KeyPositionGood(k, a.Location) == False ) continue;
+#ifdef debug
+        DebugMarkKeyPosition(a, k.KeyID);
+#endif
         temp[num++] = a;
     }
-    /*foreach AllActors(class'Containers', c)
-    {
-        if( SkipActor(c, 'Containers') ) continue;
-        if( KeyPositionGood(k, c.Location) == False ) continue;
-        temp[num++] = c;
-    }*/
+
+    if(containers) {
+        foreach AllActors(class'Containers', c)
+        {
+            if( SkipActor(c, 'Containers') ) continue;
+            if( KeyPositionGood(k, c.Location) == False ) continue;
+            if( HasBased(c) ) continue;
+#ifdef debug
+            DebugMarkKeyPosition(a, k.KeyID);
+#endif
+            temp[num++] = c;
+        }
+    }
 
     for(tries=0; tries<5; tries++) {
         slot=rng(num+1);// +1 for vanilla
@@ -341,7 +351,7 @@ function _RandoKey(#var prefix NanoKey k)
             break;
         }
         slot--;
-        info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot]);
+        info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot] $" ("$temp[slot].Location$")");
         // Swap argument A is more lenient with collision than argument B
         if( Swap(temp[slot], k) ) break;
     }
