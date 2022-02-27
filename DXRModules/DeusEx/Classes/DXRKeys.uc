@@ -18,7 +18,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,5,9,8) ) {
+    if( ConfigOlderThan(1,7,3,9) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -81,6 +81,20 @@ function CheckConfig()
 function vanilla_keys_rules()
 {
     local int i;
+
+    keys_rules[i].map = "03_NYC_AIRFIELD";
+    keys_rules[i].item_name = 'eastgate';
+    keys_rules[i].min_pos = vect(1915, 2332, -999999);
+    keys_rules[i].max_pos = vect(5579, 4031, 999999);
+    keys_rules[i].allow = false;
+    i++;
+
+    keys_rules[i].map = "03_NYC_AIRFIELD";
+    keys_rules[i].item_name = 'eastgate';
+    keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+    keys_rules[i].max_pos = vect(999999, 999999, 999999);
+    keys_rules[i].allow = true;
+    i++;
 
     keys_rules[i].map = "03_NYC_747";
     keys_rules[i].item_name = 'lebedevdoor';
@@ -326,7 +340,10 @@ function _RandoKey(#var prefix NanoKey k, bool containers)
         if( SkipActor(a, 'Inventory') ) continue;
         if( KeyPositionGood(k, a.Location) == False ) continue;
 #ifdef debug
-        DebugMarkKeyPosition(a, k.KeyID);
+        /*if(k.KeyID=='eastgate') {
+            DebugMarkKeyPosition(a, k.KeyID);
+            continue;
+        }*/
 #endif
         temp[num++] = a;
     }
@@ -338,7 +355,10 @@ function _RandoKey(#var prefix NanoKey k, bool containers)
             if( KeyPositionGood(k, c.Location) == False ) continue;
             if( HasBased(c) ) continue;
 #ifdef debug
-            DebugMarkKeyPosition(a, k.KeyID);
+            /*if(k.KeyID=='eastgate') {
+                DebugMarkKeyPosition(c, k.KeyID);
+                continue;
+            }*/
 #endif
             temp[num++] = c;
         }
