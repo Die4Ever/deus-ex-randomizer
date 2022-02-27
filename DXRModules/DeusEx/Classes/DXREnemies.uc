@@ -302,7 +302,10 @@ function SwapScriptedPawns(int percent, bool enemies)
         }
         slot--;
         if(slot >= i) slot++;
-        if( IsInitialEnemy(temp[i]) != IsInitialEnemy(temp[slot]) ) continue;
+        if( temp[i].Region.Zone.bWaterZone || temp[i].Region.Zone.bPainZone || temp[slot].Region.Zone.bWaterZone || temp[slot].Region.Zone.bPainZone ) {
+            l("SwapScriptedPawns not swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot])$" due to zone");
+            continue;
+        }
         l("SwapScriptedPawns swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot]));
 
         if( !Swap(temp[i], temp[slot], true) ) {
@@ -362,6 +365,8 @@ function RandoEnemies(int percent)
         if( p.bImportant || p.bInvincible ) continue;
 
         if( chance_single(percent) == false ) continue;
+
+        if( p.Region.Zone.bWaterZone || p.Region.Zone.bPainZone ) continue;
 
         for(i = rng(enemy_multiplier*100+percent)/100; i >= 0; i--) {
             n = RandomEnemy(p, percent);

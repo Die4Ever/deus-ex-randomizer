@@ -198,7 +198,7 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,7,3,7) ) {
+    if( ConfigOlderThan(1,7,3,9) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -214,7 +214,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 20;
-        difficulty_settings[i].enemiesshuffled = 0;
+        difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
@@ -272,7 +272,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 20;
-        difficulty_settings[i].enemiesshuffled = 0;
+        difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
@@ -329,7 +329,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 30;
-        difficulty_settings[i].enemiesshuffled = 0;
+        difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
@@ -386,7 +386,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 40;
-        difficulty_settings[i].enemiesshuffled = 0;
+        difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 5;
@@ -443,7 +443,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 50;
-        difficulty_settings[i].enemiesshuffled = 0;
+        difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 5;
