@@ -109,7 +109,11 @@ function BindControls(optional string action)
 
     BreakLine();
 
-    NewMenuItem("NanoKey Locations", "Move keys around the map.");
+    NewMenuItem("NanoKey Locations", "Move keys around the map."$BR$"Experimental allows keys to be swapped with containers.");
+    if(EnumOption("Experimental", 100, f.settings.keys_containers))
+        f.settings.keysrando = 4;
+    else
+        f.settings.keys_containers = 0;
     EnumOption("Randomized", 4, f.settings.keysrando);
     EnumOption("Unchanged", 0, f.settings.keysrando);
 
@@ -130,13 +134,20 @@ function BindControls(optional string action)
     EnumOption("Randomized", 100, f.settings.passwordsrandomized);
     EnumOption("Unchanged", 0, f.settings.passwordsrandomized);
 
-    NewMenuItem("Datacubes Locations", "Moves datacubes and other information objects around the map.");
+    NewMenuItem("Datacubes Locations", "Moves datacubes and other information objects around the map."$BR$"Experimental allows datacubes to be swapped with containers.");
+    if(EnumOption("Experimental", 100, f.settings.infodevices_containers))
+        f.settings.infodevices = 100;
+    else
+        f.settings.infodevices_containers = 0;
     EnumOption("Randomized", 100, f.settings.infodevices);
     EnumOption("Unchanged", 0, f.settings.infodevices);
 
     NewGroup("Enemies");
     NewMenuItem("Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.");
     Slider(f.settings.enemiesrandomized, 0, 100);
+
+    NewMenuItem("Enemy Shuffling %", "Shuffle enemies around the map.");
+    Slider(f.settings.enemiesshuffled, 0, 100);
 
     NewMenuItem("Non-Human Chance %", "Reduce the chance of new enemies being non-humans.");
     Slider(f.settings.enemies_nonhumans, 0, 100);

@@ -49,12 +49,12 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <a href="https://www.youtube.com/watch?v=A0Li3XuBjGg" target="_blank">
 <img src="https://i.imgur.com/hTCuQCH.png" alt="v1.5 Trailer" height="200"/></a>
 
-## Currently in v1.7.2, DXRando randomizes
+## Currently in v1.7.3, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
 * starting equipment, bioelectric energy, and credits
-* adding and changing enemies/characters, giving them random names and making some of them dance
+* moving enemies around, adding and changing enemies/characters, giving them random names and making some of them dance
 * changing the locations of items/boxes/NanoKeys/datacubes around the map
 * passwords and passcodes
 * exp costs for skills
@@ -94,13 +94,14 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 * starting the game with the running speed augmentation
 * optional hardcore Autosave-Only mode, no save-scumming allowed!
 * autofill passwords options
+* [Death Markers](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Death-Markers) - see where other players have died!
 
 ## New Game Menus
 
 <details>
 <summary>When you click New Game, you will see this settings screen:</summary>
 
-![options](https://i.imgur.com/Sppvvvy.png)
+![options](https://i.imgur.com/Fb2aeNk.png)
 
 </details>
 
@@ -109,7 +110,7 @@ If you click Next then it will use default settings based on your difficulty cho
 <details>
 <summary>But if you click Advanced then you will see these settings:</summary>
 
-![advanced options](https://i.imgur.com/Mp5Qt7V.png)
+![advanced options](https://i.imgur.com/E60D722.png)
 
 </details>
 

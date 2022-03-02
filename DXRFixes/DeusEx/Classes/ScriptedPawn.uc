@@ -4,8 +4,7 @@ class ScriptedPawn shims ScriptedPawn;
 var int flareBurnTime;
 
 var int loopCounter;
-var Actor prevDest;
-var Actor prevprevDest;
+var float lastEnableCheckDestLocTime;
 
 /*function IncreaseAgitation(Actor actorInstigator, optional float AgitationLevel)
 {
@@ -28,14 +27,14 @@ function PlayDying(name damageType, vector hitLoc)
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
-        melee = item.IsA('WeaponProd') || item.IsA('WeaponBaton') || item.IsA('WeaponCombatKnife') || item.Isa('WeaponCrowbar') || item.IsA('WeaponNanoSword') || item.Isa('WeaponSword');
+        melee = class'DXRActorsBase'.static.IsMeleeWeapon(item);
         drop = (item.IsA('NanoKey') && gibbed) || (melee && !gibbed) || (gibbed && item.bDisplayableInv);
         if( DeusExWeapon(item) != None && DeusExWeapon(item).bNativeAttack )
             drop = false;
         if( Ammo(item) != None )
             drop = false;
         if( drop ) {
-            class'DXRActorsBase'.static.ThrowItem(self, item);
+            class'DXRActorsBase'.static.ThrowItem(item, 1.0);
             if(gibbed)
                 item.Velocity *= vect(-2, -2, 2);
             else
@@ -43,7 +42,7 @@ function PlayDying(name damageType, vector hitLoc)
         }
         item = nextItem;
     }
-    
+
     Super.PlayDying(damageType, hitLoc);
 }
 
@@ -52,20 +51,20 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 {
     local name baseDamageType;
     local DeusExPlayer p;
-    
+
     if (damageType == 'FlareFlamed') {
         baseDamageType = 'Flamed';
     } else {
         baseDamageType = damageType;
     }
-    
+
     Super.TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
-    
+
     if (bBurnedToDeath) {
         p = DeusExPlayer(GetPlayerPawn());
         class'DXRStats'.static.AddBurnKill(p);
-    } 
-    
+    }
+
     if (damageType == 'FlareFlamed') {
         flareBurnTime = 3;
     }
@@ -86,7 +85,6 @@ function UpdateFire()
 function EnableCheckDestLoc(bool bEnable)
 {
     local DXRando dxr;
-    local Actor tMoveTarget;
     local string message;
 
     Super.EnableCheckDestLoc(bEnable);
@@ -97,34 +95,19 @@ function EnableCheckDestLoc(bool bEnable)
         return;
     }
 
-    // don't do any fix if the destPoint is not one of the 2 most recent ones
-    // when I saw the crash, the pawn would alternate between attempting 2 different destPoints, but the FindPathToward would fail for both of them
-    if( prevprevDest == destPoint ) {
-        prevprevDest = prevDest;
-        prevDest = destPoint;
+    // prevent runaway loops by keeping track of how many times this is called in the same frame/tick
+    if(lastEnableCheckDestLocTime == Level.TimeSeconds) {
+        loopCounter++;
+    } else {
+        lastEnableCheckDestLocTime = Level.TimeSeconds;
+        loopCounter = 0;
     }
-    else if( prevDest != destPoint ) {
-        prevprevDest = prevDest;
-        prevDest = destPoint;
-        loopCounter=0;
-        return;
-    }
-
-    tMoveTarget = FindPathToward(destPoint);
-    if( tMoveTarget != None ) {
-        loopCounter=0;
-        prevprevDest = None;
-        prevDest = None;
-        return;
-    }
-
-    loopCounter++;
 
     if( loopCounter > 10 ) {
-        message = "EnableCheckDestLoc, bEnable: "$bEnable$", loopCounter: "$loopCounter$", destPoint: "$destPoint$", tMoveTarget: "$tMoveTarget$", MoveTarget: "$MoveTarget;
+        message = "EnableCheckDestLoc, bEnable: "$bEnable$", loopCounter: "$loopCounter$", destPoint: "$destPoint$", lastEnableCheckDestLocTime: "$lastEnableCheckDestLocTime;
         log(self$": WARNING: "$message);
         foreach AllActors(class'DXRando', dxr) break;
-        if( dxr != None ) class'DXRTelemetry'.static.SendLog(None, Self, "WARNING", message);
+        if( dxr != None ) class'DXRTelemetry'.static.SendLog(dxr, Self, "WARNING", message);
 
         //calling the BackOff() function also works and makes them attempt to patrol again after, but I expect it would always just fail over and over
         SetOrders('Wandering', '', true);

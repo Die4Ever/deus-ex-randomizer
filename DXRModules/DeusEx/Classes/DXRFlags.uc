@@ -2,6 +2,12 @@ class DXRFlags extends DXRBase transient;
 
 var transient FlagBase f;
 
+const Reading = 1;
+const Writing = 2;
+const Stringifying = 3;
+const Printing = 4;
+const Credits = 5;
+
 //rando flags
 #ifdef hx
 var #var flagvarprefix  int next_seed;
@@ -26,8 +32,9 @@ struct FlagsSettings {
 #endif
     var int minskill, maxskill, ammo, multitools, lockpicks, biocells, medkits, speedlevel;
     var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
+    var int keys_containers, infodevices_containers;
     var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized;//could be bools, but int is more flexible, especially so I don't have to change the flag type
-    var int enemiesrandomized, enemyrespawn, infodevices;
+    var int enemiesrandomized, enemiesshuffled, enemyrespawn, infodevices;
     var int dancingpercent;
     var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
     var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
@@ -191,7 +198,7 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,7,2,9) ) {
+    if( ConfigOlderThan(1,7,3,9) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -201,10 +208,13 @@ function CheckConfig()
         difficulty_settings[i].doorsdestructible = 100;
         difficulty_settings[i].doorspickable = 100;
         difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].keys_containers = 0;
+        difficulty_settings[i].infodevices_containers = 0;
         difficulty_settings[i].deviceshackable = 100;
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 20;
+        difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
@@ -256,10 +266,13 @@ function CheckConfig()
         difficulty_settings[i].doorsdestructible = 100;
         difficulty_settings[i].doorspickable = 100;
         difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].keys_containers = 0;
+        difficulty_settings[i].infodevices_containers = 0;
         difficulty_settings[i].deviceshackable = 100;
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 20;
+        difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
@@ -310,10 +323,13 @@ function CheckConfig()
         difficulty_settings[i].doorsdestructible = 50;
         difficulty_settings[i].doorspickable = 50;
         difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].keys_containers = 0;
+        difficulty_settings[i].infodevices_containers = 0;
         difficulty_settings[i].deviceshackable = 100;
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 30;
+        difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
@@ -364,10 +380,13 @@ function CheckConfig()
         difficulty_settings[i].doorsdestructible = 25;
         difficulty_settings[i].doorspickable = 25;
         difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].keys_containers = 0;
+        difficulty_settings[i].infodevices_containers = 0;
         difficulty_settings[i].deviceshackable = 50;
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 40;
+        difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 5;
@@ -418,10 +437,13 @@ function CheckConfig()
         difficulty_settings[i].doorsdestructible = 25;
         difficulty_settings[i].doorspickable = 25;
         difficulty_settings[i].keysrando = 4;
+        difficulty_settings[i].keys_containers = 0;
+        difficulty_settings[i].infodevices_containers = 0;
         difficulty_settings[i].deviceshackable = 50;
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 50;
+        difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 5;
@@ -524,7 +546,7 @@ simulated function LoadFlags()
         autosave = 0;//autosaving while slowmo is set to high speed crashes the game, maybe autosave should adjust its waittime by the slowmo speed
     }
 
-    BindFlags(false);
+    BindFlags(Reading);
 
     if(stored_version < flagsversion ) {
         info("upgraded flags from "$stored_version$" to "$flagsversion);
@@ -543,91 +565,111 @@ simulated function LoadFlags()
     if( ds != None ) ds.playthrough_id = playthrough_id;
 }
 
-simulated function BindFlags(bool writing)
+simulated function string BindFlags(int mode, optional string str)
 {
-    if( FlagInt('Rando_seed', seed, writing) )
+    if( FlagInt('Rando_seed', seed, mode, str) )
         dxr.seed = seed;
 
-    FlagInt('Rando_autosave', autosave, writing);
-    FlagInt('Rando_brightness', brightness, writing);
-    FlagInt('Rando_crowdcontrol', crowdcontrol, writing);
-    FlagInt('Rando_loadout', loadout, writing);
-    FlagInt('Rando_codes_mode', codes_mode, writing);
-    FlagInt('Rando_newgameplus_loops', newgameplus_loops, writing);
-    FlagInt('Rando_playthrough_id', playthrough_id, writing);
-    FlagInt('Rando_gamemode', gamemode, writing);
+    FlagInt('Rando_autosave', autosave, mode, str);
+    FlagInt('Rando_brightness', brightness, mode, str);
+    FlagInt('Rando_crowdcontrol', crowdcontrol, mode, str);
+    FlagInt('Rando_loadout', loadout, mode, str);
+    FlagInt('Rando_codes_mode', codes_mode, mode, str);
+    FlagInt('Rando_newgameplus_loops', newgameplus_loops, mode, str);
+    FlagInt('Rando_playthrough_id', playthrough_id, mode, str);
+    FlagInt('Rando_gamemode', gamemode, mode, str);
 
-    if( FlagInt('Rando_difficulty', difficulty, writing) ) {
+    if( FlagInt('Rando_difficulty', difficulty, mode, str) ) {
         settings = difficulty_settings[difficulty];
     }
 
-    FlagInt('Rando_minskill', settings.minskill, writing);
-    FlagInt('Rando_maxskill', settings.maxskill, writing);
-    FlagInt('Rando_ammo', settings.ammo, writing);
-    FlagInt('Rando_multitools', settings.multitools, writing);
-    FlagInt('Rando_lockpicks', settings.lockpicks, writing);
-    FlagInt('Rando_biocells', settings.biocells, writing);
-    FlagInt('Rando_speedlevel', settings.speedlevel, writing);
-    FlagInt('Rando_keys', settings.keysrando, writing);
-    FlagInt('Rando_doorspickable', settings.doorspickable, writing);
-    FlagInt('Rando_doorsdestructible', settings.doorsdestructible, writing);
-    FlagInt('Rando_deviceshackable', settings.deviceshackable, writing);
-    FlagInt('Rando_passwordsrandomized', settings.passwordsrandomized, writing);
+    FlagInt('Rando_minskill', settings.minskill, mode, str);
+    FlagInt('Rando_maxskill', settings.maxskill, mode, str);
+    FlagInt('Rando_ammo', settings.ammo, mode, str);
+    FlagInt('Rando_multitools', settings.multitools, mode, str);
+    FlagInt('Rando_lockpicks', settings.lockpicks, mode, str);
+    FlagInt('Rando_biocells', settings.biocells, mode, str);
+    FlagInt('Rando_speedlevel', settings.speedlevel, mode, str);
+    FlagInt('Rando_keys', settings.keysrando, mode, str);
+    FlagInt('Rando_keys_containers', settings.keys_containers, mode, str);
+    FlagInt('Rando_doorspickable', settings.doorspickable, mode, str);
+    FlagInt('Rando_doorsdestructible', settings.doorsdestructible, mode, str);
+    FlagInt('Rando_deviceshackable', settings.deviceshackable, mode, str);
+    FlagInt('Rando_passwordsrandomized', settings.passwordsrandomized, mode, str);
 
-    FlagInt('Rando_medkits', settings.medkits, writing);
-    FlagInt('Rando_enemiesrandomized', settings.enemiesrandomized, writing);
-    FlagInt('Rando_infodevices', settings.infodevices, writing);
-    FlagInt('Rando_dancingpercent', settings.dancingpercent, writing);
-    FlagInt('Rando_doorsmode', settings.doorsmode, writing);
-    FlagInt('Rando_enemyrespawn', settings.enemyrespawn, writing);
+    FlagInt('Rando_medkits', settings.medkits, mode, str);
+    FlagInt('Rando_enemiesrandomized', settings.enemiesrandomized, mode, str);
+    FlagInt('Rando_enemiesshuffled', settings.enemiesshuffled, mode, str);
+    FlagInt('Rando_infodevices', settings.infodevices, mode, str);
+    FlagInt('Rando_infodevices_containers', settings.infodevices_containers, mode, str);
+    FlagInt('Rando_dancingpercent', settings.dancingpercent, mode, str);
+    FlagInt('Rando_doorsmode', settings.doorsmode, mode, str);
+    FlagInt('Rando_enemyrespawn', settings.enemyrespawn, mode, str);
 
-    FlagInt('Rando_skills_disable_downgrades', settings.skills_disable_downgrades, writing);
-    FlagInt('Rando_skills_reroll_missions', settings.skills_reroll_missions, writing);
-    FlagInt('Rando_skills_independent_levels', settings.skills_independent_levels, writing);
-    FlagInt('Rando_startinglocations', settings.startinglocations, writing);
-    FlagInt('Rando_goals', settings.goals, writing);
-    FlagInt('Rando_equipment', settings.equipment, writing);
+    FlagInt('Rando_skills_disable_downgrades', settings.skills_disable_downgrades, mode, str);
+    FlagInt('Rando_skills_reroll_missions', settings.skills_reroll_missions, mode, str);
+    FlagInt('Rando_skills_independent_levels', settings.skills_independent_levels, mode, str);
+    FlagInt('Rando_startinglocations', settings.startinglocations, mode, str);
+    FlagInt('Rando_goals', settings.goals, mode, str);
+    FlagInt('Rando_equipment', settings.equipment, mode, str);
 
-    FlagInt('Rando_medbots', settings.medbots, writing);
-    FlagInt('Rando_repairbots', settings.repairbots, writing);
-    FlagInt('Rando_medbotuses', settings.medbotuses, writing);
-    FlagInt('Rando_repairbotuses', settings.repairbotuses, writing);
-    FlagInt('Rando_medbotcooldowns', settings.medbotcooldowns, writing);
-    FlagInt('Rando_repairbotcooldowns', settings.repairbotcooldowns, writing);
-    FlagInt('Rando_medbotamount', settings.medbotamount, writing);
-    FlagInt('Rando_repairbotamount', settings.repairbotamount, writing);
+    FlagInt('Rando_medbots', settings.medbots, mode, str);
+    FlagInt('Rando_repairbots', settings.repairbots, mode, str);
+    FlagInt('Rando_medbotuses', settings.medbotuses, mode, str);
+    FlagInt('Rando_repairbotuses', settings.repairbotuses, mode, str);
+    FlagInt('Rando_medbotcooldowns', settings.medbotcooldowns, mode, str);
+    FlagInt('Rando_repairbotcooldowns', settings.repairbotcooldowns, mode, str);
+    FlagInt('Rando_medbotamount', settings.medbotamount, mode, str);
+    FlagInt('Rando_repairbotamount', settings.repairbotamount, mode, str);
 
-    FlagInt('Rando_turrets_move', settings.turrets_move, writing);
-    FlagInt('Rando_turrets_add', settings.turrets_add, writing);
+    FlagInt('Rando_turrets_move', settings.turrets_move, mode, str);
+    FlagInt('Rando_turrets_add', settings.turrets_add, mode, str);
 
-    FlagInt('Rando_merchants', settings.merchants, writing);
-    FlagInt('Rando_banned_skills', settings.banned_skills, writing);
-    FlagInt('Rando_banned_skill_level', settings.banned_skill_levels, writing);
-    FlagInt('Rando_enemies_nonhumans', settings.enemies_nonhumans, writing);
+    FlagInt('Rando_merchants', settings.merchants, mode, str);
+    FlagInt('Rando_banned_skills', settings.banned_skills, mode, str);
+    FlagInt('Rando_banned_skill_level', settings.banned_skill_levels, mode, str);
+    FlagInt('Rando_enemies_nonhumans', settings.enemies_nonhumans, mode, str);
 
-    FlagInt('Rando_swapitems', settings.swapitems, writing);
-    FlagInt('Rando_swapcontainers', settings.swapcontainers, writing);
-    FlagInt('Rando_augcans', settings.augcans, writing);
-    FlagInt('Rando_aug_value_rando', settings.aug_value_rando, writing);
-    FlagInt('Rando_skill_value_rando', settings.skill_value_rando, writing);
-    FlagInt('Rando_min_weapon_dmg', settings.min_weapon_dmg, writing);
-    FlagInt('Rando_max_weapon_dmg', settings.max_weapon_dmg, writing);
-    FlagInt('Rando_min_weapon_shottime', settings.min_weapon_shottime, writing);
-    FlagInt('Rando_max_weapon_shottime', settings.max_weapon_shottime, writing);
+    FlagInt('Rando_swapitems', settings.swapitems, mode, str);
+    FlagInt('Rando_swapcontainers', settings.swapcontainers, mode, str);
+    FlagInt('Rando_augcans', settings.augcans, mode, str);
+    FlagInt('Rando_aug_value_rando', settings.aug_value_rando, mode, str);
+    FlagInt('Rando_skill_value_rando', settings.skill_value_rando, mode, str);
+    FlagInt('Rando_min_weapon_dmg', settings.min_weapon_dmg, mode, str);
+    FlagInt('Rando_max_weapon_dmg', settings.max_weapon_dmg, mode, str);
+    FlagInt('Rando_min_weapon_shottime', settings.min_weapon_shottime, mode, str);
+    FlagInt('Rando_max_weapon_shottime', settings.max_weapon_shottime, mode, str);
+
+    return str;
 }
 
 // returns true is read was successful
-simulated function bool FlagInt(name flagname, out int val, bool writing)
+simulated function bool FlagInt(name flagname, out int val, int mode, out string str)
 {
-    if( writing ) {
-        f.SetInt(flagname, val,, 999);
-        return false;
+    if( mode == 0 ) {
+        err("FlagInt("$flagname$", "$val$", 0, ...) unknown mode");
     }
+    else if( mode == Reading ) {
+        if( f.CheckFlag(flagname, FLAG_Int) )
+        {
+            val = f.GetInt(flagname);
+            return true;
+        }
+    }
+    else if( mode == Writing ) {
+        f.SetInt(flagname, val,, 999);
+    }
+    else {
+        if(mode == Printing && Len(str) > 300) {
+            info(str);
+            str = "";
+        }
+        else if(mode == Credits && Len(str)-FindLast(str, "|n") > 50)
+            str = str $ ",|n";
+        else if(Len(str) > 0)
+            str = str $ ", ";
 
-    if( f.CheckFlag(flagname, FLAG_Int) )
-    {
-        val = f.GetInt(flagname);
-        return true;
+        str = str $ ReplaceText(flagname, "Rando_", "") $ ": " $ val;
     }
     return false;
 }
@@ -653,7 +695,7 @@ simulated function SaveFlags()
 
     InitVersion();
     f.SetInt('Rando_version', flagsversion,, 999);
-    BindFlags(true);
+    BindFlags(Writing);
     LogFlags("SaveFlags");
 }
 
@@ -716,21 +758,23 @@ simulated function SaveNoFlags()
 
 simulated function LogFlags(string prefix)
 {
-    info(prefix$" "$Self.Class$" - " $ VersionString(true) $ ", " $ "seed: "$seed$ ", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id$", " $ StringifyFlags() );
-    info(prefix$" - " $ StringifyDifficultySettings(settings) );
+    local string str;
+    str = prefix$" "$Self.Class$" - version: " $ VersionString(true);
+    str = BindFlags(Printing, str);
+    if(Len(str) > 0)
+        info(prefix @ str);
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
 {
     cw.PrintHeader("DXRFlags");
 
-    cw.PrintText(VersionString() $ ", " $ "seed: "$seed$", flagshash: " $ FlagsHash() $ ", playthrough_id: "$playthrough_id);
-    cw.PrintText(StringifyFlags());
-    cw.PrintText(StringifyDifficultySettings(settings));
+    cw.PrintText(VersionString() $ ", flagshash: " $ FlagsHash());
+    cw.PrintText(StringifyFlags(Credits));
     cw.PrintLn();
 }
 
-simulated function string StringifyFlags()
+simulated function string StringifyFlags(optional int mode)
 {
         local float CombatDifficulty;
         local #var PlayerPawn  p;
@@ -741,37 +785,15 @@ simulated function string StringifyFlags()
     if( p != None )
         CombatDifficulty = p.CombatDifficulty;
 #endif
-    return "flagsversion: "$flagsversion$", gamemode: "$gamemode $ ", difficulty: " $ CombatDifficulty $ ", loadout: "$loadout
-        $ ", brightness: "$brightness $ ", newgameplus_loops: "$newgameplus_loops
-        $ ", autosave: "$autosave$", crowdcontrol: "$crowdcontrol$", codes_mode: "$codes_mode;
-}
-
-simulated function string StringifyDifficultySettings( FlagsSettings s )
-{
-    return "ammo: " $ s.ammo $ ", merchants: "$ s.merchants
-        $ ", minskill: "$s.minskill$", maxskill: "$s.maxskill$", skills_disable_downgrades: " $ s.skills_disable_downgrades
-        $ ", skills_reroll_missions: " $ s.skills_reroll_missions $ ", skills_independent_levels: " $ s.skills_independent_levels
-        $ ", multitools: "$s.multitools$", lockpicks: "$s.lockpicks$", biocells: "$s.biocells$", medkits: "$s.medkits
-        $ ", speedlevel: "$s.speedlevel$", keysrando: "$s.keysrando$", doorsmode: "$s.doorsmode$", doorspickable: "$s.doorspickable
-        $ ", doorsdestructible: "$s.doorsdestructible$", deviceshackable: "$s.deviceshackable$", passwordsrandomized: "$s.passwordsrandomized
-        $ ", enemiesrandomized: "$s.enemiesrandomized$", enemyrespawn: "$s.enemyrespawn$", infodevices: "$s.infodevices
-        $ ", startinglocations: "$s.startinglocations$", goals: "$s.goals$", equipment: "$s.equipment$", dancingpercent: "$s.dancingpercent
-        $ ", medbots: "$s.medbots$", repairbots: "$s.repairbots $", medbotuses: "$s.medbotuses$", repairbotuses: "$s.repairbotuses
-        $ ", medbotcooldowns: "$s.medbotcooldowns$", repairbotcooldowns: "$s.repairbotcooldowns
-        $ ", medbotamount: "$s.medbotamount$", repairbotamount: "$s.repairbotamount
-        $ ", turrets_move: "$s.turrets_move$", turrets_add: "$s.turrets_add
-        $ ", banned_skills: "$s.banned_skills$", banned_skill_levels: "$s.banned_skill_levels$ ", enemies_nonhumans: "$s.enemies_nonhumans
-        $ ", swapitems: "$s.swapitems$", swapcontainers: "$s.swapcontainers$", augcans: "$s.augcans
-        $ ", aug_value_rando: "$s.aug_value_rando$", skill_value_rando: "$s.skill_value_rando
-        $ ", min_weapon_dmg: "$s.min_weapon_dmg$", max_weapon_dmg: "$s.max_weapon_dmg
-        $ ", min_weapon_shottime: "$s.min_weapon_shottime$", max_weapon_shottime: "$s.max_weapon_shottime;
+    if(mode == 0)
+        mode = Stringifying;
+    return BindFlags(mode, "flagsversion: "$flagsversion$", difficulty: " $ CombatDifficulty);
 }
 
 simulated function int FlagsHash()
 {
     local int hash;
     hash = dxr.Crc(StringifyFlags());
-    hash += dxr.Crc(StringifyDifficultySettings(settings));
     hash = int(abs(hash));
     return hash;
 }
@@ -896,12 +918,17 @@ function RunTests()
     teststring( FloatToString(0.5555, 1), "0.6", "FloatToString 1");
     teststring( FloatToString(0.5454999, 4), "0.5455", "FloatToString 2");
     teststring( FloatToString(0.5455, 2), "0.55", "FloatToString 3");
+
+    testbool( #defined debug, false, "debug is disabled");
 }
 
 function ExtendedTests()
 {
     local int i;
     Super.ExtendedTests();
+
+    testint(FindLast("this is a test", "nope"), -1, "FindLast");
+    testint(FindLast("this is a test", " "), 9, "FindLast");
 
     dxr.SetSeed(0451);
     testfloatrange( pow(9,4), 9*9*9*9, 0.001, "pow");

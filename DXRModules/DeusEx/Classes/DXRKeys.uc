@@ -18,7 +18,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,5,9,8) ) {
+    if( ConfigOlderThan(1,7,3,9) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -81,6 +81,20 @@ function CheckConfig()
 function vanilla_keys_rules()
 {
     local int i;
+
+    keys_rules[i].map = "03_NYC_AIRFIELD";
+    keys_rules[i].item_name = 'eastgate';
+    keys_rules[i].min_pos = vect(1915, 2332, -999999);
+    keys_rules[i].max_pos = vect(5579, 4031, 999999);
+    keys_rules[i].allow = false;
+    i++;
+
+    keys_rules[i].map = "03_NYC_AIRFIELD";
+    keys_rules[i].item_name = 'eastgate';
+    keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+    keys_rules[i].max_pos = vect(999999, 999999, 999999);
+    keys_rules[i].allow = true;
+    i++;
 
     keys_rules[i].map = "03_NYC_747";
     keys_rules[i].item_name = 'lebedevdoor';
@@ -287,7 +301,7 @@ function RandoKey(#var prefix NanoKey k)
     local int oldseed;
     if( dxr.flags.settings.keysrando == 4 || dxr.flags.settings.keysrando == 2 ) {
         oldseed = SetSeed( "RandoKey " $ k.Name );
-        _RandoKey(k);
+        _RandoKey(k, dxr.flags.settings.keys_containers > 0);
         dxr.SetSeed(oldseed);
     }
 }
@@ -308,11 +322,11 @@ function MoveNanoKeys4()
     foreach AllActors(class'#var prefix NanoKey', k )
     {
         if ( SkipActorBase(k) ) continue;
-        _RandoKey(k);
+        _RandoKey(k, dxr.flags.settings.keys_containers > 0);
     }
 }
 
-function _RandoKey(#var prefix NanoKey k)
+function _RandoKey(#var prefix NanoKey k, bool containers)
 {
     local Actor temp[1024];
     local Inventory a;
@@ -325,23 +339,39 @@ function _RandoKey(#var prefix NanoKey k)
         if( a == k ) continue;
         if( SkipActor(a, 'Inventory') ) continue;
         if( KeyPositionGood(k, a.Location) == False ) continue;
+#ifdef debug
+        /*if(k.KeyID=='eastgate') {
+            DebugMarkKeyPosition(a, k.KeyID);
+            continue;
+        }*/
+#endif
         temp[num++] = a;
     }
-    /*foreach AllActors(class'Containers', c)
-    {
-        if( SkipActor(c, 'Containers') ) continue;
-        if( KeyPositionGood(k, c.Location) == False ) continue;
-        temp[num++] = c;
-    }*/
+
+    if(containers) {
+        foreach AllActors(class'Containers', c)
+        {
+            if( SkipActor(c, 'Containers') ) continue;
+            if( KeyPositionGood(k, c.Location) == False ) continue;
+            if( HasBased(c) ) continue;
+#ifdef debug
+            /*if(k.KeyID=='eastgate') {
+                DebugMarkKeyPosition(c, k.KeyID);
+                continue;
+            }*/
+#endif
+            temp[num++] = c;
+        }
+    }
 
     for(tries=0; tries<5; tries++) {
         slot=rng(num+1);// +1 for vanilla
         if(slot==0) {
-            info("not swapping key "$k.KeyID);
+            info("not swapping key "$k.KeyID$", num: "$num);
             break;
         }
         slot--;
-        info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot]);
+        info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot] $" ("$temp[slot].Location$")");
         // Swap argument A is more lenient with collision than argument B
         if( Swap(temp[slot], k) ) break;
     }
