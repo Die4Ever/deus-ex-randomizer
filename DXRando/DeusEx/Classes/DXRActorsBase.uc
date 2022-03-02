@@ -296,6 +296,9 @@ static function ThrowItem(Inventory item, float VelocityMult)
     if( a != None ) {
         loc = a.Location;
         rot = vector(a.Rotation);
+    } else {
+        loc = item.Location;
+        rot = vector(item.Rotation);
     }
     item.DropFrom(loc + (VRand()*vect(32,32,16)) + vect(0,0,16) );
     // kinda copied from DeusExPlayer DropItem function
@@ -450,7 +453,7 @@ function SwapProperty(Actor a, Actor b, string propname) {
     local string t;
     t = a.GetPropertyText(propname);
     a.SetPropertyText(propname, b.GetPropertyText(propname));
-    a.SetPropertyText(propname, t);
+    b.SetPropertyText(propname, t);
 }
 
 function ResetOrders(ScriptedPawn p) {
