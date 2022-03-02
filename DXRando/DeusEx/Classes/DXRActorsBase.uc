@@ -189,7 +189,7 @@ static function bool IsMeleeWeapon(Inventory item)
         || item.IsA('#var prefix WeaponNanoSword');
 }
 
-static function DeusExAmmo GiveAmmoForWeapon(Pawn p, DeusExWeapon w, int add_ammo)
+static function Ammo GiveAmmoForWeapon(Pawn p, DeusExWeapon w, int add_ammo)
 {
     local int i;
 
@@ -200,7 +200,8 @@ static function DeusExAmmo GiveAmmoForWeapon(Pawn p, DeusExWeapon w, int add_amm
         return None;
 
     for(i=0; i<add_ammo; i++)
-        w.AmmoType = DeusExAmmo(GiveItem(p, w.AmmoName));
+        w.AmmoType = Ammo(GiveItem(p, w.AmmoName));
+    return w.AmmoType;
 }
 
 static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int add_ammo)
@@ -281,7 +282,7 @@ static function inventory GiveItem(Pawn p, class<Inventory> iclass, optional int
 
     item = p.Spawn(iclass, p);
     if( item == None ) return None;
-    return GiveExistingItem(p, item);
+    return GiveExistingItem(p, item, add_ammo);
 }
 
 static function ThrowItem(Inventory item, float VelocityMult)
