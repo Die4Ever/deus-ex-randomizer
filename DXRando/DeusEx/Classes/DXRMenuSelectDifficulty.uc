@@ -29,7 +29,6 @@ function BindControls(optional string action)
     //EnumOption("Max Rando", 7, f.gamemode);
 #endif
 
-#ifdef injections
     NewMenuItem("", "Which items and augs you start with and which are banned.");
     foreach f.AllActors(class'DXRLoadouts', loadout) { break; }
     if( loadout == None )
@@ -40,7 +39,6 @@ function BindControls(optional string action)
             EnumOption(loadout.GetName(i), i, f.loadout);
         }
     }
-#endif
 
     NewMenuItem("Difficulty", "Difficulty determines the default settings for the randomizer."$BR$"Hard is recommended for Deus Ex verterans.");
     if( (InStr(f.VersionString(), "Alpha")>=0 || InStr(f.VersionString(), "Beta")>=0) )
