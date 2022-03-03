@@ -13,6 +13,11 @@ function ReplaceActors()
         if( #var prefix InformationDevices(a) != None ) {
             ReplaceInformationDevice(#var prefix InformationDevices(a));
         }
+#ifdef gmdx
+        if( WeaponGEPGun(a) != None ) {
+            ReplaceGepGun(WeaponGEPGun(a));
+        }
+#endif
     }
 }
 
@@ -37,6 +42,38 @@ function ReplaceInformationDevice(#var prefix InformationDevices a)
     ReplaceDeusExDecoration(a, n);
 
     a.Destroy();
+}
+
+function ReplaceGEPGun(WeaponGEPGUN a)
+{
+    local GMDXGepGun n;
+
+    if(GMDXGepGun(a) != None)
+        return;
+
+    n = GMDXGepGun(SpawnReplacement(a, class'GMDXGepGun'));
+    if(n == None)
+        return;
+
+    ReplaceWeapon(a, n);
+}
+
+function DeusExWeapon ReplaceWeapon(DeusExWeapon a, DeusExWeapon n)
+{
+    local ScriptedPawn owner;
+    local bool bWasDrawn;
+    owner = ScriptedPawn(a.Owner);
+    if(owner != None && owner.Weapon == a) {
+        bWasDrawn = true;
+    }
+    a.Destroy();
+    if(owner != None) {
+        GiveExistingItem(owner, n);
+        if(bWasDrawn) {
+            owner.SetupWeapon(true, true);
+            owner.SetWeapon(n);
+        }
+    }
 }
 
 #ifdef hx

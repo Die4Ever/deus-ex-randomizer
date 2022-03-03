@@ -570,16 +570,18 @@ static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rot
     local Actor d;
     local bool oldCollideWorld;
 
+    oldCollideWorld = c.default.bCollideWorld;
+    c.default.bCollideWorld = false;
     d = a.Spawn(c, owner, tag, loc, rotate );
     if(d == None) {
         return None;
     }
 
-    oldCollideWorld = d.bCollideWorld;
     d.bCollideWorld = false;
     d.SetLocation(loc);
     d.SetRotation(rotate);
     d.bCollideWorld = oldCollideWorld;
+    c.default.bCollideWorld = oldCollideWorld;
     return d;
 }
 
@@ -603,7 +605,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
 
     newactor = _AddActor(a, newclass, a.Location, a.Rotation, a.Owner, a.Tag);
     if(newactor == None) {
-        error("SpawnReplacement("$a$", "$newclass$") failed");
+        err("SpawnReplacement("$a$", "$newclass$") failed");
         a.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
         return None;
     }
