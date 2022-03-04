@@ -1240,27 +1240,6 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             return AddCredits(-Int(param[0])*100,viewer);
             break;
 
-        case "lamthrower":
-            return GiveLamThrower(viewer);
-
-        case "dmg_double":
-            if (isTimerActive('cc_DifficultyTimer')) {
-                return TempFail;
-            }
-            storeFloatValue('cc_damageMult',2.0);
-
-            PlayerMessage(viewer@"made your body extra squishy");
-            startNewTimer('cc_DifficultyTimer');
-            break;
-        case "dmg_half":
-            if (isTimerActive('cc_DifficultyTimer')) {
-                return TempFail;
-            }
-            storeFloatValue('cc_damageMult',0.5);
-            PlayerMessage(viewer@"made your body extra tough!");
-            startNewTimer('cc_DifficultyTimer');
-            break;
-
         case "ice_physics":
             if (isTimerActive('cc_iceTimer')) {
                 return TempFail;
@@ -1346,6 +1325,31 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             startNewTimer('cc_invertMovementTimer');
             break;
+
+#ifdef vanilla
+        // LAM Thrower crashes for mods with fancy physics?
+        case "lamthrower":
+            return GiveLamThrower(viewer);
+
+        // dmg_double and dmg_half require changes inside the player class
+        case "dmg_double":
+            if (isTimerActive('cc_DifficultyTimer')) {
+                return TempFail;
+            }
+            storeFloatValue('cc_damageMult',2.0);
+
+            PlayerMessage(viewer@"made your body extra squishy");
+            startNewTimer('cc_DifficultyTimer');
+            break;
+        case "dmg_half":
+            if (isTimerActive('cc_DifficultyTimer')) {
+                return TempFail;
+            }
+            storeFloatValue('cc_damageMult',0.5);
+            PlayerMessage(viewer@"made your body extra tough!");
+            startNewTimer('cc_DifficultyTimer');
+            break;
+#endif
 
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type);
