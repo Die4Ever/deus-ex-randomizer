@@ -228,35 +228,52 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
 {
     local float percent;
     local int m;
-    local float f;
+    local float f, perk;
     local SkillCostMultiplier scm;
     local class<Skill> c;
 
     if( chance_single(dxr.flags.settings.banned_skill_levels) ) {
         l( aSkill.Class.Name $ " lvl: "$(i+1)$" is banned");
         aSkill.Cost[i] = 99999;
+#ifdef gmdx
+        aSkill.PerkCost[i] = 99999;
+#endif
         return;
     }
 
     if( dxr.flags.settings.skills_independent_levels > 0 ) {
         percent = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
+#ifdef gmdx
+        perk = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
+        l( aSkill.Class.Name $ " lvl: "$(i+1)$", percent: "$percent$"%, perk percent: "$perk$"%");
+#else
         l( aSkill.Class.Name $ " lvl: "$(i+1)$", percent: "$percent$"%");
+#endif
     } else {
         percent = parent_percent;
+        perk = percent;
     }
 
     f = float(aSkill.default.Cost[i]) * percent / 100.0;
+#ifdef gmdx
+    perk = float(aSkill.default.PerkCost[i]) * perk / 100.0;
+#endif
     for(m=0; m < ArrayCount(SkillCostMultipliers); m++) {
         scm = SkillCostMultipliers[m];
         if( scm.type == "" ) continue;
         c = class<Skill>(GetClassFromString(scm.type, class'Skill'));
         if( aSkill.IsA(c.name) && i+1 >= scm.minLevel && i < scm.maxLevel ) {
             f *= float(scm.percent) / 100.0;
+            perk *= float(scm.percent) / 100.0;
         }
     }
 
     f = Clamp(f, 0, 99999);
+    perk = Clamp(perk, 0, 99999);
     aSkill.Cost[i] = int(f);
+#ifdef gmdx
+    aSkill.PerkCost[i] = int(perk);
+#endif
 }
 
 simulated function Skill GetRandomPlayerSkill(#var PlayerPawn  p)
