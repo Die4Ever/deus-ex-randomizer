@@ -13,6 +13,9 @@ function ReplaceActors()
         if( #var prefix InformationDevices(a) != None ) {
             ReplaceInformationDevice(#var prefix InformationDevices(a));
         }
+        if( #var prefix AllianceTrigger(a) != None ) {
+            ReplaceAllianceTrigger(#var prefix AllianceTrigger(a));
+        }
 #ifdef gmdx
         if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -57,6 +60,42 @@ function ReplaceGEPGun(WeaponGEPGUN a)
 
     ReplaceWeapon(a, n);
 }
+
+function ReplaceAllianceTrigger(#var prefix AllianceTrigger a)
+{
+    local DXRAllianceTrigger n;
+    local int i;
+
+    if(DXRAllianceTrigger(a) != None)
+        return;
+
+    n = DXRAllianceTrigger(SpawnReplacement(a, class'DXRAllianceTrigger'));
+    if(n == None)
+        return;
+
+    n.Alliance = a.Alliance;
+    for(i=0; i<ArrayCount(a.Alliances); i++) {
+        n.Alliances[i].AllianceName = a.Alliances[i].AllianceName;
+        n.Alliances[i].AllianceLevel = a.Alliances[i].AllianceLevel;
+        n.Alliances[i].bPermanent = a.Alliances[i].bPermanent;
+    }
+}
+
+function ReplaceTrigger(Trigger a, Trigger n)
+{
+    n.TriggerType = a.TriggerType;
+    n.Message = a.Message;
+    n.bTriggerOnceOnly = a.bTriggerOnceOnly;
+    n.bInitiallyActive = a.bInitiallyActive;
+    n.ClassProximityType = a.ClassProximityType;
+    n.RepeatTriggerTime = a.RepeatTriggerTime;
+    n.ReTriggerDelay = a.ReTriggerDelay;
+    n.TriggerTime = a.TriggerTime;
+    n.DamageThreshold = a.DamageThreshold;
+    n.TriggerActor = a.TriggerActor;
+    n.TriggerActor2 = a.TriggerActor2;
+}
+
 
 function DeusExWeapon ReplaceWeapon(DeusExWeapon a, DeusExWeapon n)
 {

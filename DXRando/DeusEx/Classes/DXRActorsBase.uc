@@ -620,6 +620,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     newactor.Mesh = a.Mesh;
     newactor.Mass = a.Mass;
     newactor.Buoyancy = a.Buoyancy;
+    newactor.Event = a.Event;
     return newactor;
 }
 

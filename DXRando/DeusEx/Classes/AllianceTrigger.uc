@@ -1,9 +1,14 @@
+#ifdef injections
 class DXRAllianceTrigger injects AllianceTrigger;
+#else
+class DXRAllianceTrigger extends #var prefix AllianceTrigger;
+#endif
+
 var() bool bPlayerOnly;
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-    if (!bPlayerOnly || #var PlayerPawn (Instigator) != None) { 
+    if (!bPlayerOnly || #var PlayerPawn (Instigator) != None) {
         Super.Trigger(Other,Instigator);
     }
 }
@@ -21,7 +26,7 @@ function bool SetAlliances()
         foreach AllActors (class'ScriptedPawn', P)
         {
             if( P.Tag != Event && P.Tag != newtag ) continue;
-            
+
             P.SetAlliance(Alliance);
             for (i=0; i<ArrayCount(Alliances); i++)
                 if (Alliances[i].AllianceName != '')
