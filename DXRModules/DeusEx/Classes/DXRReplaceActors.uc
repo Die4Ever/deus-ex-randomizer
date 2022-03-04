@@ -16,6 +16,9 @@ function ReplaceActors()
         if( #var prefix AllianceTrigger(a) != None ) {
             ReplaceAllianceTrigger(#var prefix AllianceTrigger(a));
         }
+        if( #var prefix ClothesRack(a) != None ) {
+            ReplaceClothesRack(#var prefix ClothesRack(a));
+        }
 #ifdef gmdx
         if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -79,6 +82,21 @@ function ReplaceAllianceTrigger(#var prefix AllianceTrigger a)
         n.Alliances[i].AllianceLevel = a.Alliances[i].AllianceLevel;
         n.Alliances[i].bPermanent = a.Alliances[i].bPermanent;
     }
+}
+
+function ReplaceClothesRack(#var prefix ClothesRack a)
+{
+    local DXRClothesRack n;
+
+    if(DXRClothesRack(a) != None)
+        return;
+
+    n = DXRClothesRack(SpawnReplacement(a, class'DXRClothesRack'));
+    if(n == None)
+        return;
+
+    n.SkinColor = a.SkinColor;
+    n.Skin = a.Skin;
 }
 
 function ReplaceTrigger(Trigger a, Trigger n)
