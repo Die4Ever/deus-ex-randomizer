@@ -13,7 +13,16 @@ function Trigger(Actor Other, Pawn Instigator)
     }
 }
 
+#ifdef hx
+function SetAlliances()
+{
+    _SetAlliances();
+}
+
+function bool _SetAlliances()
+#else
 function bool SetAlliances()
+#endif
 {
     local ScriptedPawn P;
     local int i;
@@ -36,9 +45,11 @@ function bool SetAlliances()
     return true;
 }
 
+#ifndef hx
 function Name StringToName(string s)
 {
     local DeusExPlayer player;
     player = DeusExPlayer(GetPlayerPawn());
     return player.rootWindow.StringToName(s);
 }
+#endif
