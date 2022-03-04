@@ -61,7 +61,7 @@ function CheckConfig()
         AddRandomWeapon("WeaponAssaultGun", 10);
         AddRandomWeapon("WeaponMiniCrossbow", 5);
 #ifdef gmdx
-        AddRandomWeapon("GMDXGepGun", 4);
+        AddRandomWeapon("#var package .GMDXGepGun", 4);
 #else
         AddRandomWeapon("WeaponGEPGun", 4);
 #endif
