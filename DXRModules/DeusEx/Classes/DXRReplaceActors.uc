@@ -82,6 +82,8 @@ function ReplaceAllianceTrigger(#var prefix AllianceTrigger a)
         n.Alliances[i].AllianceLevel = a.Alliances[i].AllianceLevel;
         n.Alliances[i].bPermanent = a.Alliances[i].bPermanent;
     }
+
+    ReplaceTrigger(a, n);
 }
 
 function ReplaceClothesRack(#var prefix ClothesRack a)
