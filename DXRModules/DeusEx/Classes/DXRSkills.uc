@@ -189,12 +189,11 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     else if( s.Class == class'#var prefix SkillEnviro' ) {
         word = "Damage Reduction (Passive/HazMat/Armor)";
         f = s.LevelValues[i];
-        if(f < 0)
-            f = 0;
+        f = FClamp(f, 0, 1.1);
         if(i>0) r="|n    ";
-        r = r $ int( (1 - f * 1.5) * 100.0 ) $ "% / "; // passive is * 1.5
-        r = r $ int( (1 - f * 0.75) * 100.0 ) $ "% / ";//passive is * lvl+3/5, hazmat is * 0.75, ballistic armor is * 0.5...
-        r = r $ int( (1 - f * 0.5) * 100.0 ) $ "%";
+        r = r $ int( (1 - (f * 1.25 + 0.25)) * 100.0 ) $ "% / "; // passive is * 1.25 + 0.25
+        r = r $ int( (1 - f * 0.75) * 100.0 ) $ "% / ";// hazmat is * 0.75
+        r = r $ int( (1 - f * 0.5) * 100.0 ) $ "%";//  ballistic armor is * 0.5
         return r;
     }
     else if( s.Class == class'#var prefix SkillMedicine') {

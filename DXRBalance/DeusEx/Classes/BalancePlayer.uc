@@ -85,9 +85,12 @@ function float ReduceEnviroDamage(float damage, name damageType)
             drugEffectTimer = 0;
     }
 
+    if(damageType == 'PoisonEffect' || damageType == 'Poison') {
+        return damage;
+    }
+
     skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
-    if(skillLevel < 0)
-        skillLevel = 0;
+    skillLevel = FClamp(skillLevel, 0, 1.1);
 
     if (UsingChargedPickup(class'HazMatSuit'))
     {
@@ -95,7 +98,7 @@ function float ReduceEnviroDamage(float damage, name damageType)
     }
     else // passive enviro skill still gives some damage reduction
     {
-        damage *= 1.5 * skillLevel;
+        damage *= 1.25 * skillLevel + 0.25;
     }
 
     return damage;
