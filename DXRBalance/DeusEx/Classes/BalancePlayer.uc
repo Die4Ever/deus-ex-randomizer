@@ -60,9 +60,30 @@ function float AdjustCritSpots(float Damage, name damageType, vector hitLocation
     return Damage;
 }
 
-function float ReduceEnviroDamage(float damage)
+function float ReduceEnviroDamage(float damage, name damageType)
 {
-    local float skillLevel;
+    local float skillLevel, augLevel;
+
+    if (damageType != 'TearGas' && damageType != 'PoisonGas' && damageType != 'Radiation'
+        && damageType != 'HalonGas' && damageType != 'PoisonEffect' && damageType != 'Poison'
+        && damageType != 'Flamed' && damageType != 'Burned' && damageType != 'Shocked' ) {
+            return damage;
+    }
+
+    if (AugmentationSystem != None)
+        augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
+
+    if (augLevel >= 0.0)
+        damage *= augLevel;
+
+    // get rid of poison if we're maxed out
+    if (damage ~= 0.0)
+    {
+        StopPoison();
+        drugEffectTimer -= 4;	// stop the drunk effect
+        if (drugEffectTimer < 0)
+            drugEffectTimer = 0;
+    }
 
     skillLevel = SkillSystem.GetSkillLevelValue(class'SkillEnviro');
     if(skillLevel < 0)
@@ -70,12 +91,14 @@ function float ReduceEnviroDamage(float damage)
 
     if (UsingChargedPickup(class'HazMatSuit'))
     {
-        return damage * 0.75 * skillLevel;
+        damage *= 0.75 * skillLevel;
     }
     else // passive enviro skill still gives some damage reduction
     {
-        return damage * 1.5 * skillLevel;
+        damage *= 1.5 * skillLevel;
     }
+
+    return damage;
 }
 
 function float ArmorReduceDamage(float damage)
@@ -115,27 +138,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     newDamage = AdjustCritSpots(newDamage, damageType, hitLocation);
     oldDamage = newDamage;
 
-    if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'Radiation') ||
-        (damageType == 'HalonGas')  || (damageType == 'PoisonEffect') || (damageType == 'Poison')
-        /*|| damageType == 'Flamed' || damageType == 'Burned'*/ )
-    {
-        if (AugmentationSystem != None)
-            augLevel = AugmentationSystem.GetAugLevelValue(class'AugEnviro');
-
-        if (augLevel >= 0.0)
-            newDamage *= augLevel;
-
-        // get rid of poison if we're maxed out
-        if (newDamage ~= 0.0)
-        {
-            StopPoison();
-            drugEffectTimer -= 4;	// stop the drunk effect
-            if (drugEffectTimer < 0)
-                drugEffectTimer = 0;
-        }
-
-        newDamage = ReduceEnviroDamage(newDamage);
-    }
+    newDamage = ReduceEnviroDamage(newDamage, damageType);
 
     if ((damageType == 'Shot') || (damageType == 'Sabot') || (damageType == 'Exploded') || (damageType == 'AutoShot'))
     {
@@ -174,8 +177,6 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
 
         if (augLevel >= 0.0)
             newDamage *= augLevel;
-
-        newDamage = ReduceEnviroDamage(newDamage);
     }
 
     //Apply damage multiplier
