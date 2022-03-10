@@ -242,19 +242,15 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
 
     if( dxr.flags.settings.skills_independent_levels > 0 ) {
         percent = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
-#ifdef gmdx
-        perk = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
-        l( aSkill.Class.Name $ " lvl: "$(i+1)$", percent: "$percent$"%, perk percent: "$perk$"%");
-#else
         l( aSkill.Class.Name $ " lvl: "$(i+1)$", percent: "$percent$"%");
-#endif
     } else {
         percent = parent_percent;
-        perk = percent;
     }
 
     f = float(aSkill.default.Cost[i]) * percent / 100.0;
 #ifdef gmdx
+    perk = rngexp(dxr.flags.settings.minskill, dxr.flags.settings.maxskill, skill_cost_curve);
+    l( aSkill.Class.Name $ " lvl: "$(i+1)$", perk percent: "$perk$"%");
     perk = float(aSkill.default.PerkCost[i]) * perk / 100.0;
 #endif
     for(m=0; m < ArrayCount(SkillCostMultipliers); m++) {

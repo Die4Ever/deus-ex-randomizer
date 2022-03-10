@@ -52,6 +52,7 @@ function ReplaceInformationDevice(#var prefix InformationDevices a)
 
 function ReplaceGEPGun(WeaponGEPGUN a)
 {
+#ifndef hx
     local GMDXGepGun n;
 
     if(GMDXGepGun(a) != None)
@@ -62,6 +63,7 @@ function ReplaceGEPGun(WeaponGEPGUN a)
         return;
 
     ReplaceWeapon(a, n);
+#endif
 }
 
 function ReplaceAllianceTrigger(#var prefix AllianceTrigger a)
@@ -101,9 +103,12 @@ function ReplaceClothesRack(#var prefix ClothesRack a)
     n.Skin = a.Skin;
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
 }
 
-function ReplaceTrigger(Trigger a, Trigger n)
+function ReplaceTrigger(#var prefix Trigger a, #var prefix Trigger n)
 {
     n.TriggerType = a.TriggerType;
     n.Message = a.Message;
@@ -116,10 +121,16 @@ function ReplaceTrigger(Trigger a, Trigger n)
     n.DamageThreshold = a.DamageThreshold;
     n.TriggerActor = a.TriggerActor;
     n.TriggerActor2 = a.TriggerActor2;
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
 }
 
-
+#ifdef hx
+function HXWeapon ReplaceWeapon(HXWeapon a, HXWeapon n)
+#else
 function DeusExWeapon ReplaceWeapon(DeusExWeapon a, DeusExWeapon n)
+#endif
 {
     local ScriptedPawn owner;
     local bool bWasDrawn;
@@ -135,6 +146,9 @@ function DeusExWeapon ReplaceWeapon(DeusExWeapon a, DeusExWeapon n)
             owner.SetWeapon(n);
         }
     }
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
 }
 
 #ifdef hx
