@@ -187,6 +187,7 @@ function _SendLog(Actor a, string LogLevel, string message)
 static function SendLog(DXRando dxr, Actor a, string LogLevel, string message)
 {
     local DXRTelemetry module;
+    if(dxr == None) return;
     module = dxr.telemetry;
     if( module != None ) module._SendLog(a, LogLevel, message);
 }

@@ -99,6 +99,8 @@ function ReplaceClothesRack(#var prefix ClothesRack a)
 
     n.SkinColor = a.SkinColor;
     n.Skin = a.Skin;
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
 }
 
 function ReplaceTrigger(Trigger a, Trigger n)
