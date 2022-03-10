@@ -282,7 +282,7 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
     }
     else
         strInfo = strInfo $ msgInf;
-    
+
     if( device.IsA('Keypad') && (Keypad(device).bCodeKnown) )
     {
         if( auto_codes ) {

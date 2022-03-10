@@ -46,12 +46,12 @@ simulated function RandoWeapon(DeusExWeapon w)
             case class'#var prefix Dart':
                 w.ProjectileClass.default.Damage = 0.6 * float(w.HitDamage);
                 break;
-            
+
             case class'#var prefix DartFlare':
             case class'#var prefix DartPoison':
                 w.ProjectileClass.default.Damage = 0.2 * float(w.HitDamage);
                 break;
-            
+
             case class'#var prefix PlasmaBolt':
                 w.ProjectileClass.default.Damage = 1.15 * float(w.HitDamage);
                 break;
@@ -59,7 +59,7 @@ simulated function RandoWeapon(DeusExWeapon w)
             case class'#var prefix Fireball':
                 w.ProjectileClass.default.Damage = float(w.HitDamage);
                 break;
-            
+
             case class'#var prefix Rocket':
                 w.ProjectileClass.default.Damage = float(w.HitDamage);
                 break;
@@ -80,7 +80,7 @@ simulated function RandoWeapon(DeusExWeapon w)
             case class'#var prefix RocketMini':
                 //ignore these for now
                 break;
-            
+
             default:
                 warning("RandoWeapon("$w$") didn't set damage for projectile "$w.ProjectileClass$", w.default.HitDamage: "$w.default.HitDamage$", new w.HitDamage: "$w.HitDamage$", w.ProjectileClass.default.Damage: "$w.ProjectileClass.default.Damage);
                 break;
