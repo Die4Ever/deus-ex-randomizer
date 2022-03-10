@@ -90,8 +90,12 @@ simulated function PreTravel()
     }
 #endif
     // the game silently crashes if you don't wipe out all references to FlagBase during PreTravel?
+    // and we want to do it here instead of in DXRando.uc to ensure it happens after SaveFlags()
     f = None;
     dxr.flagbase = None;
+    dxr.Disable('Tick');
+    dxr.bTickEnabled = false;
+    dxr.SetTimer(0, false);
 }
 
 function Init(DXRando tdxr)

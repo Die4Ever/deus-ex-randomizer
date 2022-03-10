@@ -83,6 +83,8 @@ function DXRInit()
     if( Player == None )
         foreach AllActors(class'#var PlayerPawn ', Player)
             break;
+    if(Player == None)
+        return;
 
     flagbase = Player.FlagBase;
 #ifdef hx
