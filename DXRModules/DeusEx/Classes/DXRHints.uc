@@ -263,7 +263,7 @@ simulated function ShowHint(optional int recursion)
     SetTimer(15, true);
     hintsGiven++;
     if( recursion > 10 ) {
-        error("ShowHint reached max recursion " $ recursion);
+        err("ShowHint reached max recursion " $ recursion);
         return;
     }
     hint = GetHint();

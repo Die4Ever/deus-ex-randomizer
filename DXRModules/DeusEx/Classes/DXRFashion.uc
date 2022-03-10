@@ -41,7 +41,7 @@ simulated function InitInfluencers()
 {
     numInfluencers = 0;
     numFemaleInfluencers = 0;
-    
+
     AddInfluencer(class'Male1', class'Female2');
     AddInfluencer(class'Male2', class'Female4');
     AddInfluencer(class'Male3', class'Female1');
@@ -113,10 +113,10 @@ simulated function InitInfluencers()
     AddInfluencer(class'StantonDowd', None);
     AddInfluencer(class'Jock', None);
     AddInfluencer(class'ThugMale', None);
-    AddInfluencer(class'PaulDenton', None); 
+    AddInfluencer(class'PaulDenton', None);
 }
 
-simulated function texture GetCoat1(class<ScriptedPawn> p) 
+simulated function texture GetCoat1(class<ScriptedPawn> p)
 {
     if (p==None){
         return None;
@@ -127,7 +127,7 @@ simulated function texture GetCoat1(class<ScriptedPawn> p)
     return p.Default.MultiSkins[1];
 }
 
-simulated function texture GetCoat2(class<ScriptedPawn> p) 
+simulated function texture GetCoat2(class<ScriptedPawn> p)
 {
     // females don't use coat2
     if (p==None){
@@ -305,7 +305,7 @@ simulated function class<ScriptedPawn> RandomInfluencerForMeshes(bool female, Lo
         }
         return None;
     }
-    
+
     return infs[Rand(num)];
 }
 
@@ -323,7 +323,7 @@ simulated function class<ScriptedPawn> RandomCoatInfluencer(bool female)
 
     if(female) {
         meshes[0] = LodMesh'DeusExCharacters.GFM_Trench';
-        
+
     } else {
         meshes[0] = LodMesh'DeusExCharacters.GM_Trench';
         meshes[1] = LodMesh'DeusExCharacters.GM_Trench_F';
@@ -513,7 +513,7 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
         //case LodMesh'DeusExCharacters.GFM_SuitSkirt_F':
         //case LodMesh'DeusExCharacters.GFM_TShirtPants':
             //break;
-        
+
         case LodMesh'DeusExCharacters.GM_DressShirt_B':
         case LodMesh'DeusExCharacters.GM_DressShirt':
         case LodMesh'DeusExCharacters.GM_DressShirt_F':
@@ -560,7 +560,7 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
                 p.MultiSkins[3] = Texture'DeusExCharacters.Skins.Hooker1Tex1';// darker legs
             else
                 p.MultiSkins[3] = Texture'DeusExCharacters.Skins.Female2Tex1';// legs/pants
-            
+
             p.MultiSkins[4] = shirt;
             p.MultiSkins[5] = pants;// skirt
 
@@ -585,14 +585,14 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
                 p.MultiSkins[4] = Texture'DeusExItems.Skins.BlackMaskTex';
             }
             break;
-        
+
         case LodMesh'DeusExCharacters.GM_Trench':
         case LodMesh'DeusExCharacters.GM_Trench_F':
             p.MultiSkins[1] = coat1;
             p.MultiSkins[2] = pants;
             p.MultiSkins[4] = shirt;
             p.MultiSkins[5] = coat2;
-            
+
             if (isJC) {
                 p.MultiSkins[6] = Texture'DeusExCharacters.Skins.FramesTex4';
                 p.MultiSkins[7] = Texture'DeusExCharacters.Skins.LensesTex5';
@@ -601,7 +601,7 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
                 p.MultiSkins[7] = Texture'DeusExItems.Skins.BlackMaskTex';
             }
             break;
-        
+
         case LodMesh'MPCharacters.mp_jumpsuit':
         case LodMesh'DeusExCharacters.GM_DressShirt_B':
         case LodMesh'DeusExCharacters.GM_DressShirt':
@@ -627,7 +627,7 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
             p.MultiSkins[5] = Texture'DeusExItems.Skins.PinkMaskTex'; //Visor lens
             p.MultiSkins[6] = helmet; //Helmet
             p.MultiSkins[7] = Texture'DeusExItems.Skins.PinkMaskTex';
-        
+
             p.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
             //Jumpsuit doesn't support glasses
             break;
@@ -674,11 +674,11 @@ simulated function ApplyInfluencers(Actor p, name coatinfluencer, name pantsinfl
             helmet = GetHelmet(model);
         }
     }
-    
-    
+
+
     if (pantsinfluencer!='') {
         styleInfluencer = GetInfluencerClass(pantsinfluencer);
-        pants = GetPants(styleInfluencer);   
+        pants = GetPants(styleInfluencer);
     }
 
     if (shirtinfluencer!='') {
@@ -724,7 +724,7 @@ simulated function ReadInfluencers(bool female, out name coatinfluencer, out nam
         pantsinfluencer == '' ||
         shirtinfluencer == '') {
         //This was probably a game saved before fashion existed
-        info("No stored outfit!");
+        warning("No stored outfit!");
         //InitInfluencers();
         _RandomizeClothes(player(), female);
 
@@ -771,7 +771,7 @@ simulated function GetDressed()
         ApplyInfluencers(paul, coatinfluencer, pantsinfluencer, shirtinfluencer, false);
 
     // Paul Denton Carcass
-    foreach AllActors(class'PaulDentonCarcass', paulCarcass) 
+    foreach AllActors(class'PaulDentonCarcass', paulCarcass)
         ApplyInfluencers(paulCarcass, coatinfluencer, pantsinfluencer, shirtinfluencer, false);
 }
 
@@ -787,7 +787,7 @@ simulated function _RandomizeClothes(#var PlayerPawn  player, bool female)
     // shirts are distorted on the GFM_TShirtPants model (unless of course they're made for that model), I think it also spills into the hair
     // maybe the only unisex clothing should be shirts on GFM_Trench, gotta check how coats work out
     // female shirts and skirts don't seem to have any darker skin options
-    
+
     //Randomize Coat (Multiskin 1 and 5)
     isOtherSkinColor = player.PlayerSkin == 1 || player.PlayerSkin == 2 || player.PlayerSkin == 4;
     if(female && isOtherSkinColor)
@@ -801,10 +801,10 @@ simulated function _RandomizeClothes(#var PlayerPawn  player, bool female)
         flagname = 'DXRFashion_CoatInfluencerF';
     else
         flagname = 'DXRFashion_CoatInfluencer';
-    dxr.flagbase.SetName(flagname,styleInfluencer.name);
+    dxr.flagbase.SetName(flagname,styleInfluencer.name,, 999);
     info("Coat influencer is "$styleInfluencer$", isSkirt: "$isSkirt$", isTrench: "$isTrench$", isFemaleShirt: "$isFemaleShirt);
     //player().ClientMessage("Coat influencer is "$styleInfluencer);
-    
+
     //Randomize Pants (Multiskin 2)
     if (isSkirt) {
         styleInfluencer = RandomSkirtInfluencer();
@@ -816,10 +816,10 @@ simulated function _RandomizeClothes(#var PlayerPawn  player, bool female)
         flagname = 'DXRFashion_PantsInfluencerF';
     else
         flagname = 'DXRFashion_PantsInfluencer';
-    dxr.flagbase.SetName(flagname,styleInfluencer.name);
+    dxr.flagbase.SetName(flagname,styleInfluencer.name,, 999);
     info("Pants influencer is "$styleInfluencer);
     //player().ClientMessage("Pants influencer is "$styleInfluencer);
-    
+
     //Randomize Shirt (Multiskin 4)
     if (isTrench) {
         if(isOtherSkinColor)
@@ -836,10 +836,10 @@ simulated function _RandomizeClothes(#var PlayerPawn  player, bool female)
         flagname = 'DXRFashion_ShirtInfluencerF';
     else
         flagname = 'DXRFashion_ShirtInfluencer';
-    dxr.flagbase.SetName(flagname,styleInfluencer.name);
+    dxr.flagbase.SetName(flagname,styleInfluencer.name,, 999);
     info("Shirt influencer is "$styleInfluencer);
     //player().ClientMessage("Shirt influencer is "$styleInfluencer);
-    
+
     dxr.flags.f.SetInt('DXRFashion_LastUpdate',dxr.dxInfo.MissionNumber,,999);
 }
 

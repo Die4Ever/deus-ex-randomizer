@@ -13,6 +13,17 @@ function ReplaceActors()
         if( #var prefix InformationDevices(a) != None ) {
             ReplaceInformationDevice(#var prefix InformationDevices(a));
         }
+        if( #var prefix AllianceTrigger(a) != None ) {
+            ReplaceAllianceTrigger(#var prefix AllianceTrigger(a));
+        }
+        if( #var prefix ClothesRack(a) != None ) {
+            ReplaceClothesRack(#var prefix ClothesRack(a));
+        }
+#ifdef gmdx
+        if( WeaponGEPGun(a) != None ) {
+            ReplaceGepGun(WeaponGEPGun(a));
+        }
+#endif
     }
 }
 
@@ -37,6 +48,107 @@ function ReplaceInformationDevice(#var prefix InformationDevices a)
     ReplaceDeusExDecoration(a, n);
 
     a.Destroy();
+}
+
+function ReplaceGEPGun(WeaponGEPGUN a)
+{
+#ifndef hx
+    local GMDXGepGun n;
+
+    if(GMDXGepGun(a) != None)
+        return;
+
+    n = GMDXGepGun(SpawnReplacement(a, class'GMDXGepGun'));
+    if(n == None)
+        return;
+
+    ReplaceWeapon(a, n);
+#endif
+}
+
+function ReplaceAllianceTrigger(#var prefix AllianceTrigger a)
+{
+    local DXRAllianceTrigger n;
+    local int i;
+
+    if(DXRAllianceTrigger(a) != None)
+        return;
+
+    n = DXRAllianceTrigger(SpawnReplacement(a, class'DXRAllianceTrigger'));
+    if(n == None)
+        return;
+
+    n.Alliance = a.Alliance;
+    for(i=0; i<ArrayCount(a.Alliances); i++) {
+        n.Alliances[i].AllianceName = a.Alliances[i].AllianceName;
+        n.Alliances[i].AllianceLevel = a.Alliances[i].AllianceLevel;
+        n.Alliances[i].bPermanent = a.Alliances[i].bPermanent;
+    }
+
+    ReplaceTrigger(a, n);
+}
+
+function ReplaceClothesRack(#var prefix ClothesRack a)
+{
+    local DXRClothesRack n;
+
+    if(DXRClothesRack(a) != None)
+        return;
+
+    n = DXRClothesRack(SpawnReplacement(a, class'DXRClothesRack'));
+    if(n == None)
+        return;
+
+    n.SkinColor = a.SkinColor;
+    n.Skin = a.Skin;
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
+}
+
+function ReplaceTrigger(#var prefix Trigger a, #var prefix Trigger n)
+{
+    n.TriggerType = a.TriggerType;
+    n.Message = a.Message;
+    n.bTriggerOnceOnly = a.bTriggerOnceOnly;
+    n.bInitiallyActive = a.bInitiallyActive;
+    n.ClassProximityType = a.ClassProximityType;
+    n.RepeatTriggerTime = a.RepeatTriggerTime;
+    n.ReTriggerDelay = a.ReTriggerDelay;
+    n.TriggerTime = a.TriggerTime;
+    n.DamageThreshold = a.DamageThreshold;
+    n.TriggerActor = a.TriggerActor;
+    n.TriggerActor2 = a.TriggerActor2;
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
+}
+
+#ifdef hx
+function HXWeapon ReplaceWeapon(HXWeapon a, HXWeapon n)
+#else
+function DeusExWeapon ReplaceWeapon(DeusExWeapon a, DeusExWeapon n)
+#endif
+{
+    local ScriptedPawn owner;
+    local bool bWasDrawn;
+    owner = ScriptedPawn(a.Owner);
+    if(owner != None && owner.Weapon == a) {
+        bWasDrawn = true;
+    }
+    a.Destroy();
+    if(owner != None) {
+        GiveExistingItem(owner, n);
+        if(bWasDrawn) {
+            owner.SetupWeapon(true, true);
+            owner.SetWeapon(n);
+        }
+    }
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
 }
 
 #ifdef hx

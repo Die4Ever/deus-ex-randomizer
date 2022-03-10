@@ -71,6 +71,6 @@
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": false,
-        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "DXRFashion" ]
+        "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "DXRFashion.uc" ]
     }
 }

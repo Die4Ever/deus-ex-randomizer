@@ -91,30 +91,30 @@ static function RemoveAug(DeusExPlayer player, Augmentation aug)
     local int slot;
     local Augmentation b;
     local AugmentationManager am;
-    
+
     am = player.AugmentationSystem;
 
     if (aug == None) {
        return; //Shouldn't happen
     }
-    
+
     if (!aug.bHasIt)
     {
-        return; //Also shouldn't happen      
+        return; //Also shouldn't happen
     }
-        
+
     aug.Deactivate();
     aug.bHasIt = False;
-    
+
     // Manage our AugLocs[] array
     player.AugmentationSystem.AugLocs[aug.AugmentationLocation].augCount--;
-    
+
     //Icon lookup is BY HOTKEY, so make sure to remove the icon before the hotkey
     player.RemoveAugmentationDisplay(aug);
-    
+
     // Assign hot key back to default
     aug.HotKeyNum = aug.Default.HotKeyNum;
-    
+
     // walk back the hotkey numbers
     // This is needed for multi-slot locations like the torso.
     // Hotkeys will double up if you remove one that isn't the last hotkey
@@ -123,11 +123,11 @@ static function RemoveAug(DeusExPlayer player, Augmentation aug)
         if( b.bHasIt && aug.AugmentationLocation == b.AugmentationLocation )
             b.HotKeyNum = slot++;
     }
-    
+
     // This is needed, otherwise the side-of-screen aug display gets confused
     // when you add a new aug
     am.RefreshAugDisplay();
-    
+
 }
 
 function RandomizeAugCannisters()
@@ -318,6 +318,11 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         // TODO: improve description
         word = "Values";
         return string(int(a.LevelValues[i]));
+    }
+    else if( a.Class.Name == 'AugAmmoCap' ) {
+        word = "Ammo Cap";
+        f = a.LevelValues[i]*100.0;
+        return "+" $ string(int(f)) $ "%";
     }
 #endif
     else {

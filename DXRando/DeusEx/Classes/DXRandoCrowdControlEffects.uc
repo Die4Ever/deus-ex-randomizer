@@ -62,7 +62,7 @@ function Init(DXRandoCrowdControlLink crowd_control_link, DXRando tdxr)
 {
     ccLink = crowd_control_link;
     dxr = tdxr;
-    
+
     lavaTick = 0;
 }
 
@@ -78,11 +78,11 @@ function PeriodicUpdates()
     //EMP Field timer
     if (decrementTimer('cc_EmpTimer')) {
             player().bWarrenEMPField = false;
-            PlayerMessage("EMP Field has disappeared...");        
+            PlayerMessage("EMP Field has disappeared...");
     }
 
     if (isTimerActive('cc_JumpTimer')) {
-        player().JumpZ = 0;        
+        player().JumpZ = 0;
     }
     if (decrementTimer('cc_JumpTimer')) {
         player().JumpZ = player().Default.JumpZ;
@@ -90,7 +90,7 @@ function PeriodicUpdates()
     }
 
     if (isTimerActive('cc_SpeedTimer')) {
-        player().Default.GroundSpeed = DefaultGroundSpeed * retrieveFloatValue('cc_moveSpeedModifier');        
+        player().Default.GroundSpeed = DefaultGroundSpeed * retrieveFloatValue('cc_moveSpeedModifier');
     }
     if (decrementTimer('cc_SpeedTimer')) {
         player().Default.GroundSpeed = DefaultGroundSpeed;
@@ -102,31 +102,31 @@ function PeriodicUpdates()
         PlayerMessage("Your flamethrower is boring again");
 
     }
-    
+
     if (decrementTimer('cc_iceTimer')) {
         SetIcePhysics(False);
         PlayerMessage("The ground thaws");
     }
-    
+
     if (decrementTimer('cc_behindTimer')) {
         player().bBehindView=False;
         PlayerMessage("You re-enter your body");
     }
-    
+
     if (decrementTimer('cc_DifficultyTimer')){
-        storeFloatValue('cc_damageMult',1.0);        
+        storeFloatValue('cc_damageMult',1.0);
         PlayerMessage("Your body returns to its normal toughness");
     }
-    
+
     if (decrementTimer('cc_floatyTimer')) {
         SetFloatyPhysics(False);
         PlayerMessage("You feel weighed down again");
     }
-    
+
     if (decrementTimer('cc_floorLavaTimer')) {
         PlayerMessage("The floor returns to normal temperatures");
     }
-    
+
     if (decrementTimer('cc_invertMouseTimer')) {
         PlayerMessage("Your mouse controls return to normal");
         player().bInvertMouse = dxr.flagbase.GetBool('cc_InvertMouseDef');
@@ -155,47 +155,47 @@ function ContinuousUpdates()
 //Make sure to do that here
 function InitOnEnter() {
     local inventory anItem;
-    
+
     if (getTimer('cc_MatrixModeTimer') > 0) {
         StartMatrixMode();
     } else {
         StopMatrixMode(True);
     }
-    
+
     player().bWarrenEMPField = isTimerActive('cc_EmpTimer');
 
     if (isTimerActive('cc_SpeedTimer')) {
-        player().Default.GroundSpeed = DefaultGroundSpeed * retrieveFloatValue('cc_moveSpeedModifier');        
+        player().Default.GroundSpeed = DefaultGroundSpeed * retrieveFloatValue('cc_moveSpeedModifier');
     } else {
-        player().Default.GroundSpeed = DefaultGroundSpeed;        
+        player().Default.GroundSpeed = DefaultGroundSpeed;
     }
-    
+
     if (isTimerActive('cc_lamthrowerTimer')) {
         anItem = player().FindInventoryType(class'WeaponFlamethrower');
         if (anItem!=None) {
             MakeLamThrower(anItem);
         }
     } else {
-        UndoLamThrowers();        
+        UndoLamThrowers();
     }
-    
+
     SetIcePhysics(isTimerActive('cc_iceTimer'));
-    
+
     SetFloatyPhysics(isTimerActive('cc_floatyTimer'));
-    
+
     player().bBehindView=isTimerActive('cc_behindTimer');
-    
+
     if (0==retrieveFloatValue('cc_damageMult')) {
         storeFloatValue('cc_damageMult',1.0);
     }
     if (!isTimerActive('cc_DifficultyTimer')) {
         storeFloatValue('cc_damageMult',1.0);
     }
-    
+
     if (isTimerActive('cc_invertMouseTimer')) {
         player().bInvertMouse = !dxr.flagbase.GetBool('cc_InvertMouseDef');
     }
-    
+
     if (isTimerActive('cc_invertMovementTimer')) {
         invertMovementControls();
     }
@@ -230,9 +230,9 @@ function CleanupOnExit() {
 
 function removeTimerDisplay(DXRandoCrowdControlTimer tDisplay) {
     local int i;
-    
+
     //PlayerMessage("Removing display");
-    
+
     for (i=0;i < 32; i++) {
         if (timerDisplays[i] == tDisplay) {
             //timerDisplays[i].Destroy();
@@ -244,15 +244,15 @@ function removeTimerDisplay(DXRandoCrowdControlTimer tDisplay) {
 function addTimerDisplay(name timerName, int time) {
     local DXRandoCrowdControlTimer timer;
     local int i;
-    
+
     //PlayerMessage("Adding display");
-    
+
     timer = Spawn(class'DXRandoCrowdControlTimer', player(),,player().Location);
     timer.initTimer(self,timerName,time,getTimerLabelByName(timerName));
     timer.Activate();
-    
+
     //Find a spot to keep track of the timer
-    
+
     for (i = 0; i < 32; i++) {
         if (timerDisplays[i] == None) {
             timerDisplays[i] = timer;
@@ -264,13 +264,13 @@ function addTimerDisplay(name timerName, int time) {
 
 function bool checkForTimerDisplay(name timerName) {
     local int i;
-    
+
     for (i = 0; i < 32; i++) {
         if (timerDisplays[i].GetTimerName() == timerName) {
             return True;
         }
     }
-    
+
     return False;
 }
 
@@ -304,7 +304,7 @@ function int getDefaultTimerTimeByName(name timerName) {
             return InvertMouseTimeDefault;
         case 'cc_invertMovementTimer':
             return InvertMovementTimeDefault;
-        
+
         default:
             PlayerMessage("Unknown timer name "$timerName);
             return 0;
@@ -313,7 +313,7 @@ function int getDefaultTimerTimeByName(name timerName) {
 
 function string getTimerLabelByName(name timerName) {
     local float val;
-    
+
     switch(timerName) {
         case 'cc_MatrixModeTimer':
             return "Matrix";
@@ -340,7 +340,7 @@ function string getTimerLabelByName(name timerName) {
             if (val == 2.0) {
                 return "2x Dmg";
             } else if (val == 0.5) {
-                return "1/2 Dmg";            
+                return "1/2 Dmg";
             }
             return "??? Damage";
         case 'cc_floatyTimer':
@@ -351,7 +351,7 @@ function string getTimerLabelByName(name timerName) {
             return "Inv Mouse";
         case 'cc_invertMovementTimer':
             return "Inv Move";
-        
+
         default:
             PlayerMessage("Unknown timer name "$timerName);
             return "???";
@@ -370,12 +370,12 @@ function setTimerFlag(name timerName, int time, bool newTimer) {
     if( time == 0 ) expiration = 1;
     else expiration = 3600*12;
     datastorage.SetConfig(timerName, time, expiration);
-    if (newTimer) { 
+    if (newTimer) {
         addTimerDisplay(timerName,time);
     } else {
         //This is basically just for if you reload a game, or change maps
         if (checkForTimerDisplay(timerName) == False) {
-            addTimerDisplay(timerName,getDefaultTimerTimeByName(timerName)); 
+            addTimerDisplay(timerName,getDefaultTimerTimeByName(timerName));
         }
     }
 }
@@ -391,7 +391,7 @@ function bool decrementTimer(name timerName) {
     if (time>0 && InGame()) {
         time -= 1;
         setTimerFlag(timerName,time,False);
-        
+
         return (time == 0);
     }
     return false;
@@ -451,7 +451,7 @@ function SkillPointsRemove(int numPoints) {
     player().SkillPointsTotal -= numPoints;
 
     if ((DeusExRootWindow(player().rootWindow) != None) &&
-        (DeusExRootWindow(player().rootWindow).hud != None) && 
+        (DeusExRootWindow(player().rootWindow).hud != None) &&
         (DeusExRootWindow(player().rootWindow).hud.msgLog != None))
     {
         PlayerMessage(Sprintf(player().SkillPointsAward, -numPoints));
@@ -487,22 +487,22 @@ function class<Augmentation> getAugClass(string type) {
 
 //"Why not just use "GivePlayerAugmentation", you ask.
 //While it works well to give the player an aug they don't
-//have, it won't actually upgrade their augs if they don't 
+//have, it won't actually upgrade their augs if they don't
 //already have an aug upgrade canister in their inventory.
 //This can also return better status messages for crowd control
 function int GiveAug(Class<Augmentation> giveClass, string viewer) {
     local Augmentation anAug;
     local bool wasActive;
-    
-    // Checks to see if the player already has it.  If so, we want to 
+
+    // Checks to see if the player already has it.  If so, we want to
     // increase the level
     anAug = player().AugmentationSystem.FindAugmentation(giveClass);
-    
+
     if (anAug == None) {
         PlayerMessage(viewer@"tried to give you an aug that doesn't exist?");
         return Failed; //Shouldn't happen
     }
-    
+
     if (anAug.bHasIt)
     {
         //Upgrade scenario
@@ -514,25 +514,25 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
         if (anAug.bIsActive) {
            anAug.Deactivate();
         }
-        
+
         anAug.CurrentLevel++;
-        
+
         //Since this upgrade wasn't player initiated, it would be nice to reactivate it again for them
         if (wasActive) {
             anAug.Activate();
         }
-        
+
         PlayerMessage(viewer@"upgraded "$anAug.AugmentationName$" to level "$anAug.CurrentLevel+1);
         return Success;
     }
-    
+
     if(player().AugmentationSystem.AreSlotsFull(anAug)) {
         PlayerMessage(viewer@"wanted to give you "$anAug.AugmentationName$" but there is no room");
         return Failed;
     }
-    
+
     anAug.bHasIt = True;
-    
+
     if (anAug.bAlwaysActive)
     {
         anAug.bIsActive = True;
@@ -541,18 +541,18 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
     else
     {
         anAug.bIsActive = False;
-    }   
-    
+    }
+
     // Manage our AugLocs[] array
     player().AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount++;
-    
-    // Assign hot key to new aug 
+
+    // Assign hot key to new aug
     // (must be after before augCount is incremented!)
     anAug.HotKeyNum = player().AugmentationSystem.AugLocs[anAug.AugmentationLocation].augCount + player().AugmentationSystem.AugLocs[anAug.AugmentationLocation].KeyBase;
 
 
     if ((!anAug.bAlwaysActive) && (player().bHUDShowAllAugs))
-        player().AddAugmentationDisplay(anAug);   
+        player().AddAugmentationDisplay(anAug);
     PlayerMessage(viewer@"gave you the "$anAug.AugmentationName$" augmentation");
     return Success;
 }
@@ -562,15 +562,15 @@ function int AddCredits(int amount,string viewer) {
     if (player().Credits == 0  && amount<0) {
         return Failed;
     }
-    
+
     player().Credits += amount;
-    
+
     if (amount>0) {
         PlayerMessage(viewer@"gave you "$amount$" credits!");
     } else {
-        PlayerMessage(viewer@"took away "$(-amount)$" credits!");        
+        PlayerMessage(viewer@"took away "$(-amount)$" credits!");
     }
-    
+
     if (player().Credits < 0) {
         player().Credits = 0;
     }
@@ -581,43 +581,43 @@ function int AddCredits(int amount,string viewer) {
 function int RemoveAug(Class<Augmentation> giveClass, string viewer) {
     local Augmentation anAug;
     local bool wasActive;
-    
+
     // Checks to see if the player already has it, so we can decrease the level,
     // or remove it all together
     anAug = player().AugmentationSystem.FindAugmentation(giveClass);
-    
+
     if (anAug == None) {
        PlayerMessage(viewer@"tried to remove an aug that doesn't exist?");
        return Failed; //Shouldn't happen
     }
-    
+
     if (!anAug.bHasIt)
     {
         PlayerMessage(viewer@"wanted to remove "$anAug.AugmentationName$" but you didn't have it");
-        return Failed;      
+        return Failed;
     }
-    
+
     if (anAug.CurrentLevel > 0) {
         //Downgrade scenario, has aug above base level
-        
+
         wasActive = anAug.bIsActive;
         if (anAug.bIsActive) {
            anAug.Deactivate();
         }
-        
+
         anAug.CurrentLevel--;
-        
-        //Since this downgrade wasn't player initiated, it would be nice to reactivate it again for them        
+
+        //Since this downgrade wasn't player initiated, it would be nice to reactivate it again for them
         if (wasActive) {
             anAug.Activate();
         }
-        
+
         PlayerMessage(viewer@"downgraded "$anAug.AugmentationName$" to level "$anAug.CurrentLevel+1);
         return Success;
     }
-    
+
     class'DXRAugmentations'.static.RemoveAug(player(),anAug);
-    
+
     PlayerMessage(viewer@"removed your "$anAug.AugmentationName$" augmentation");
     return Success;
 }
@@ -675,10 +675,10 @@ function SaveDefaultZoneGravity(ZoneInfo z)
 
 function SetFloatyPhysics(bool enabled) {
     local ZoneInfo Z;
-    
+
     local Actor A;
     local bool apply;
-    
+
     ForEach AllActors(class'ZoneInfo', Z)
     {
         log("SetFloatyPhysics "$Z$" gravity: "$Z.ZoneGravity);
@@ -690,7 +690,7 @@ function SetFloatyPhysics(bool enabled) {
             Z.ZoneGravity = GetDefaultZoneGravity(Z);
         }
     }
-    
+
     if (enabled){
         //Get everything floating immediately
         ForEach AllActors(class'Actor',A)
@@ -702,19 +702,19 @@ function SetFloatyPhysics(bool enabled) {
             } else if (A.isa('PlayerPawn')) {
                 apply = True;
             } else if (A.isa('Decoration')) {
-                apply = ((A.Base!=None && 
-                          A.Physics == PHYS_None && 
+                apply = ((A.Base!=None &&
+                          A.Physics == PHYS_None &&
                           A.bStatic == False &&
                           Decoration(A).bPushable == True) || A.isa('Carcass'));
             } else if (A.isa('Inventory')) {
                 apply = (Pawn(A.Owner) == None);
             }
-            
+
             if (apply) {
                 A.Velocity.Z+=Rand(10)+1;
-                A.SetPhysics(PHYS_Falling);               
+                A.SetPhysics(PHYS_Falling);
             }
-        }    
+        }
     }
 }
 
@@ -752,15 +752,15 @@ function bool InGame() {
     if (None == DeusExRootWindow(player().rootWindow)) {
         return False;
     }
-    
+
     if (None == DeusExRootWindow(player().rootWindow).hud) {
         return False;
     }
-    
+
     if (!DeusExRootWindow(player().rootWindow).hud.isVisible()){
         return False;
     }
-    
+
     return True;
 }
 
@@ -772,7 +772,7 @@ function int GiveLamThrower(string viewer)
     if (isTimerActive('cc_lamthrowerTimer')) {
         return TempFail;
     }
-    
+
     anItem = player().FindInventoryType(class'WeaponFlamethrower');
     if (anItem==None) {
         return TempFail;
@@ -789,17 +789,17 @@ function invertMovementControls() {
     local string backInputs[5];
     local string leftInputs[5];
     local string rightInputs[5];
-    
+
     local int numFwd;
     local int numBack;
     local int numLeft;
     local int numRight;
-    
+
     local string KeyName;
     local string Alias;
-    
+
     local int i;
-    
+
     for (i=0;i<255;i++) {
         KeyName = player().ConsoleCommand("KEYNAME "$i);
         if (KeyName!="") {
@@ -825,7 +825,7 @@ function invertMovementControls() {
             }
         }
     }
-    
+
     for (i=0;i<numFwd;i++){
         player().ConsoleCommand("SET InputExt "$fwdInputs[i]$" MoveBackward");
     }
@@ -837,8 +837,8 @@ function invertMovementControls() {
     }
     for (i=0;i<numLeft;i++){
         player().ConsoleCommand("SET InputExt "$leftInputs[i]$" StrafeRight");
-    }    
-    
+    }
+
 }
 
 function floorIsLava() {
@@ -860,11 +860,11 @@ function floorIsLava() {
         //PlayerMessage("Not Lava "$player().Base);
         return;
     }
-    
+
     if ((lavaTick % 10)==0) { //If you stand on lava for 1 second
         player().TakeDamage(10,player(),loc,v,'Burned');
     }
-    
+
     if ((lavaTick % 50)==0) { //if you stand in lava for 5 seconds
         player().CatchFire(player());
     }
@@ -875,15 +875,15 @@ function int GiveItem(string viewer, string type, optional int amount) {
     local class<Inventory> itemclass;
     local string outMsg;
     local Inventory item;
-    
+
     if( amount < 1 ) amount = 1;
-    
+
     itemclass = class<Inventory>(ccLink.ccModule.GetClassFromString(type,class'Inventory'));
-    
+
     if (itemclass == None) {
         return NotAvail;
     }
-    
+
     for (i=0;i<amount;i++) {
         item = class'DXRActorsBase'.static.GiveItem(player(), itemclass);
         if( item == None ) return Failed;
@@ -937,9 +937,9 @@ function ScriptedPawn findOtherHuman() {
     local int num;
     local ScriptedPawn p;
     local ScriptedPawn humans[512];
-    
+
     num = 0;
-    
+
     foreach AllActors(class'ScriptedPawn',p) {
         if (class'DXRActorsBase'.static.IsHuman(p) && p!=player() && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
             humans[num++] = p;
@@ -952,71 +952,71 @@ function ScriptedPawn findOtherHuman() {
 
 function bool swapPlayer(string viewer) {
     local ScriptedPawn a;
-    
+
     a = findOtherHuman();
-    
+
     if (a == None) {
         return false;
     }
-    
+
     ccLink.ccModule.Swap(player(),a);
     player().ViewRotation = player().Rotation;
     PlayerMessage(viewer@"thought you would look better if you were where"@a.FamiliarName@"was");
-    
+
     return true;
 }
 
 function doNudge(string viewer) {
     local Rotator r;
     local vector newAccel;
-    
+
     newAccel.X = Rand(201)-100;
     newAccel.Y = Rand(201)-100;
     //newAccel.Z = Rand(31);
-    
+
     //Not super happy with how this looks,
     //Since you sort of just teleport to the new position
     player().MoveSmooth(newAccel);
-    
+
     //Play an oof sound
     player().PlaySound(Sound'DeusExSounds.Player.MalePainSmall');
-    
+
     PlayerMessage(viewer@"nudged you a little bit");
 
 }
 
 function AskRandomQuestion(String viewer) {
-    
+
     local string question;
     local string answers[3];
     local int numAnswers;
-    
+
     ccLink.ccModule.getRandomQuestion(question,numAnswers,answers[0],answers[1],answers[2]);
-    
+
     ccLink.ccModule.CreateCustomMessageBox(viewer$" asks...",question,numAnswers,answers,ccLink.ccModule,1,True);
-    
+
 }
 
 function bool canDropItem() {
 	local Vector X, Y, Z, dropVect;
 	local Inventory item;
-    
+
     item = player().InHand;
-    
+
     if (item == None) {
         return False;
     }
-    
+
 	GetAxes(player().Rotation, X, Y, Z);
 	dropVect = player().Location + (player().CollisionRadius + 2*item.CollisionRadius) * X;
 	dropVect.Z += player().BaseEyeHeight;
-    
+
 	// check to see if we're blocked by terrain
 	if (!player().FastTrace(dropVect))
 	{
 		return False;
 	}
-    
+
     return True;
 
 }
@@ -1087,7 +1087,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (!InGame()) {
                 return TempFail;
             }
-        
+
             player().StartPoison(player(),5);
             PlayerMessage(viewer@"poisoned you!");
             break;
@@ -1168,11 +1168,11 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (player().InHand == None) {
                 return TempFail;
             }
-            
+
             if (canDropItem() == False) {
                 return TempFail;
             }
-            
+
             if (player().DropItem() == False) {
                 return TempFail;
             }
@@ -1194,7 +1194,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             startNewTimer('cc_MatrixModeTimer');
             PlayerMessage(viewer@"thinks you are The One...");
             break;
-            
+
         case "third_person":
             if (isTimerActive('cc_behindTimer')) {
                 return TempFail;
@@ -1205,7 +1205,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "give_energy":
-            
+
             if (player().Energy == player().EnergyMax) {
                 return TempFail;
             }
@@ -1232,7 +1232,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             PlayerMessage(viewer@"took away "$i$" skill points");
             SkillPointsRemove(i);
             break;
-            
+
         case "add_credits":
             return AddCredits(Int(param[0])*100,viewer);
             break;
@@ -1240,27 +1240,6 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             return AddCredits(-Int(param[0])*100,viewer);
             break;
 
-        case "lamthrower":
-            return GiveLamThrower(viewer);
-        
-        case "dmg_double":
-            if (isTimerActive('cc_DifficultyTimer')) {
-                return TempFail;
-            }
-            storeFloatValue('cc_damageMult',2.0);
-           
-            PlayerMessage(viewer@"made your body extra squishy");
-            startNewTimer('cc_DifficultyTimer');
-            break;
-        case "dmg_half":
-            if (isTimerActive('cc_DifficultyTimer')) {
-                return TempFail;
-            }
-            storeFloatValue('cc_damageMult',0.5);
-            PlayerMessage(viewer@"made your body extra tough!");
-            startNewTimer('cc_DifficultyTimer');
-            break;
-        
         case "ice_physics":
             if (isTimerActive('cc_iceTimer')) {
                 return TempFail;
@@ -1269,8 +1248,8 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             SetIcePhysics(True);
             startNewTimer('cc_iceTimer');
 
-            break;      
-        
+            break;
+
         case "ask_a_question":
             if (!InGame()) {
                 return TempFail;
@@ -1285,7 +1264,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             doNudge(viewer);
             break;
-            
+
         case "swap_player_position":
             if (!InGame()) {
                 return TempFail;
@@ -1294,7 +1273,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return Failed;
             }
             break;
-            
+
         case "floaty_physics":
             if (isTimerActive('cc_floatyTimer')) {
                 return TempFail;
@@ -1303,7 +1282,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             SetFloatyPhysics(True);
             startNewTimer('cc_floatyTimer');
 
-            break;   
+            break;
 
         case "floor_is_lava":
             if (!InGame()) {
@@ -1315,9 +1294,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             PlayerMessage(viewer@"turned the floor into lava!");
             lavaTick = 0;
             startNewTimer('cc_floorLavaTimer');
-            
+
             break;
-            
+
         case "invert_mouse":
             if (!InGame()) {
                 return TempFail;
@@ -1332,7 +1311,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             startNewTimer('cc_invertMouseTimer');
 
             break;
-            
+
         case "invert_movement":
             if (!InGame()) {
                 return TempFail;
@@ -1341,11 +1320,36 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             PlayerMessage(viewer@"inverted your movement controls!");
-            
+
             invertMovementControls();
 
             startNewTimer('cc_invertMovementTimer');
             break;
+
+#ifdef vanilla
+        // LAM Thrower crashes for mods with fancy physics?
+        case "lamthrower":
+            return GiveLamThrower(viewer);
+
+        // dmg_double and dmg_half require changes inside the player class
+        case "dmg_double":
+            if (isTimerActive('cc_DifficultyTimer')) {
+                return TempFail;
+            }
+            storeFloatValue('cc_damageMult',2.0);
+
+            PlayerMessage(viewer@"made your body extra squishy");
+            startNewTimer('cc_DifficultyTimer');
+            break;
+        case "dmg_half":
+            if (isTimerActive('cc_DifficultyTimer')) {
+                return TempFail;
+            }
+            storeFloatValue('cc_damageMult',0.5);
+            PlayerMessage(viewer@"made your body extra tough!");
+            startNewTimer('cc_DifficultyTimer');
+            break;
+#endif
 
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type);

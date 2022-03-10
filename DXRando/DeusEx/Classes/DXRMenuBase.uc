@@ -103,8 +103,8 @@ event Init(DXRando d)
 function DXRFlags InitFlags()
 {
     if( flags != None ) return flags;
-    flags = player.Spawn(class'DXRFlags', None);
-    flags.InitDefaults();
+    log(Self$".InitFlags calling InitDxr");
+    InitDxr();
     return flags;
 }
 
@@ -123,14 +123,9 @@ function DXRando InitDxr()
 #endif
     if( dxr.flagbase == None ) log("ERROR: flagbase "$dxr.flagbase$" not found", name);
 
-    InitFlags();
-    if( flags != None ) {
-        dxr.modules[0] = flags;
-        dxr.num_modules = 1;
-    }
     dxr.LoadFlagsModule();
-    if( flags == None ) dxr.flags.InitDefaults();
     flags = dxr.flags;
+    flags.InitDefaults();
     return dxr;
 }
 

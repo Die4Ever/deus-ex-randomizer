@@ -26,7 +26,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,5,6,0) ) {
+    if( ConfigOlderThan(1,7,4,0) ) {
         enemy_multiplier = 1;
         min_rate_adjust = default.min_rate_adjust;
         max_rate_adjust = default.max_rate_adjust;
@@ -60,7 +60,11 @@ function CheckConfig()
         AddRandomWeapon("WeaponStealthPistol", 4);
         AddRandomWeapon("WeaponAssaultGun", 10);
         AddRandomWeapon("WeaponMiniCrossbow", 5);
+#ifdef gmdx
+        AddRandomWeapon("#var package .GMDXGepGun", 4);
+#else
         AddRandomWeapon("WeaponGEPGun", 4);
+#endif
         AddRandomWeapon("WeaponAssaultShotgun", 5);
         AddRandomWeapon("WeaponEMPGrenade", 5);
         AddRandomWeapon("WeaponFlamethrower", 4);

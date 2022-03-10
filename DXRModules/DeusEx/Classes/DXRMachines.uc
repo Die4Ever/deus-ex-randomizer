@@ -96,7 +96,7 @@ function bool GetTurretLocation(out vector loc, out rotator rotation)
     distrange.max = 16*50;
 
     locnorm.loc = JitterPosition(loc);
-    if( ! NearestCeiling(locnorm, distrange) ) 
+    if( ! NearestCeiling(locnorm, distrange) )
     {
         if( ! NearestFloor(locnorm, distrange) ) return false;
     }
@@ -125,7 +125,8 @@ function MoveTurret(#var prefix AutoTurret t, vector loc)
     rot = t.Rotation;
     rot.Pitch = 0;
     rot.Roll = 0;
-    t.origRot = rot;
+    // HACK: for GMDX v10
+    t.SetPropertyText("origRot", "(Pitch="$rot.Pitch$",Yaw="$rot.Yaw$",Roll="$rot.Roll$")");
     v1.X = 0;
     v1.Y = 0;
     v1.Z = t.CollisionHeight + t.gun.Default.CollisionHeight;
@@ -209,7 +210,7 @@ function bool GetCameraLocation(out vector loc, out rotator rotation)
     wall1 = locnorm;
     distrange.max = 16*50;
     if( ! NearestCornerSearchZ(locnorm, distrange, wall1.norm, 16*3, ceiling.loc, 10) ) return false;
-    
+
     norm = Normal((locnorm.norm + wall1.norm) / 2);
     flipped_norm = Normal(norm*vect(-1,-1,1));
 
@@ -276,7 +277,7 @@ function #var prefix SecurityCamera SpawnCamera(vector loc)
         warning("SpawnCamera failed at "$loc);
         return None;
     }
-    
+
     c.Tag = c.Name;
     c.bSwing = true;
     c.bNoAlarm = false;//true means friendly
@@ -343,7 +344,7 @@ function #var prefix Datacube SpawnDatacube(vector loc, #var prefix ComputerSecu
     }
     d.plaintext = c.UserList[0].userName $ " password is " $ c.UserList[0].Password;
     d.new_passwords[0] = c.UserList[0].Password;
-    
+
     info("SpawnDatacube "$d$" done at ("$locnorm.loc$"), ("$locnorm.norm$") with name: "$d.Name);
 #endif
     return d;
@@ -386,7 +387,7 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
     if( chance_single(repairbots) ) {
         SpawnBot(class'#var prefix RepairBot', repairHint);
     }
- 
+
 }
 
 function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcooldown, int rbcooldown)
@@ -402,23 +403,23 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
                 } else if (mbcooldown == 2) { //Global
                     SetGlobalSeed("MedBotCooldown"); //Don't include the level name, or anything unique
                 }
-                
+
                 //Actually rando the cooldown
                 m.healRefreshTime = rngrange(m.default.healRefreshTime, 0.25, 1.25);
             }
-            
+
             if (mbamount!=0){
                 if (mbamount == 1) { //Individual
                     SetSeed("MedBotAmount"$m.name); //Seed includes level name and the unique bot name
                 } else if (mbamount == 2) { //Global
                     SetGlobalSeed("MedBotAmount"); //Don't include the level name, or anything unique
                 }
-                
+
                 //Actually rando the cooldown
                 m.healAmount = rngrange(m.default.healAmount, 0.5, 1.5);
             }
         }
-   
+
     }
 
     if (rbcooldown!=0 || rbamount!=0) {
@@ -429,18 +430,18 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
                 } else if (rbcooldown == 2) { //Global
                     SetGlobalSeed("RepairBotCooldown"); //Don't include the level name, or anything unique
                 }
-                
+
                 //Actually rando the cooldown
-                r.chargeRefreshTime = rngrange(r.default.chargeRefreshTime, 0.25, 1.25); 
+                r.chargeRefreshTime = rngrange(r.default.chargeRefreshTime, 0.25, 1.25);
             }
-            
+
             if (rbamount!=0){
                 if (rbamount == 1) { //Individual
                     SetSeed("RepairBotAmount"$r.name); //Seed includes level name and the unique bot name
                 } else if (rbamount == 2) { //Global
                     SetGlobalSeed("RepairBotAmount"); //Don't include the level name, or anything unique
                 }
-                
+
                 //Actually rando the cooldown
                 r.chargeAmount = rngrange(r.default.chargeAmount, 0.5, 1.5);
             }
@@ -476,7 +477,7 @@ function Actor _SpawnNewActor(class<Actor> c, optional vector target, optional f
     a = Spawn(c,,, loc );
 
     if( ScriptedPawn(a) != None ) class'DXRNames'.static.GiveRandomName(dxr, ScriptedPawn(a) );
-    
+
     if( a == None ) warning("_SpawnNewActor "$c$" failed at "$loc);
     else info("_SpawnNewActor "$a$" at ("$loc$")");
     return a;

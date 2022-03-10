@@ -16,11 +16,15 @@ VMD Randomizer is in early alpha testing and does not support all of the feature
 
 Install GMDX from https://www.moddb.com/mods/gmdx/downloads/gmdxv90-release
 
+Or v10 https://www.moddb.com/mods/gmdx-v10-community-update/downloads/gmdxv10-092020-update
+
+Or RSD https://www.moddb.com/mods/gmdx/addons/version-rsd-beta-10-future-official-update
+
 Download `GMDXRandomizer.u` from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
 
 Copy `GMDXRandomizer.u` into the game's `System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
 
-Edit the `GMDX.ini` file which is probably in `%UserProfile%\Documents\Deus Ex\System`
+Edit the `GMDX.ini` or `GMDXv10.ini` file which is probably in the game directory, or `%UserProfile%\Documents\Deus Ex\System`
 
 In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=GMDXRandomizer.DXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=GMDXRandomizer.DXRandoRootWindow`
 
@@ -300,14 +304,14 @@ function EEventAction SetupEventSpeech( ConEventSpeech event, out String nextLab
 //
 // Used for non-interactive conversations displayed in first-person
 // mode.  This type of conversation can only display spoken text,
-// choices are -not- allowed.  
+// choices are -not- allowed.
 //=============================================================================
 
 class ConWindow extends DeusExBaseWindow;
 
 function DisplayText(string text, Actor speakingActor)
 {
-	if (winSpeech == None ) 
+	if (winSpeech == None )
 		CreateSpeechWindow();
 
 	winSpeech.SetSpeech(text, speakingActor);
@@ -315,7 +319,7 @@ function DisplayText(string text, Actor speakingActor)
 
 function AppendText(string text)
 {
-	if (winSpeech == None ) 
+	if (winSpeech == None )
 		CreateSpeechWindow();
 
 	winSpeech.AppendSpeech(text);
@@ -331,7 +335,7 @@ class ConWindowActive extends ConWindow;
 // ----------------------------------------------------------------------
 // DisplayChoice()
 //
-// Displays a choice, but sets up the button a little differently than 
+// Displays a choice, but sets up the button a little differently than
 // when displaying normal conversation text
 // ----------------------------------------------------------------------
 
@@ -386,7 +390,7 @@ function SetSpeech(String newSpeech, optional Actor speakingActor)
 		// Use a different color for the player's text
 		if ((speakingActor != None) && (DeusExPlayer(speakingActor) != None))
 			txtSpeech.SetTextColor(colConTextPlayer);
-		else	
+		else
 			txtSpeech.SetTextColor(colConTextNormal);
 
 		txtSpeech.Show(True);
@@ -423,11 +427,11 @@ I could make an AugSkill class to turn any skill into an augmentation (might nee
 NavigationPoint (children: PathNode, PatrolPoint, AmbushPoint, InventorySpot) for extra positions where items can be placed?
 
     - https://docs.unrealengine.com/udk/Three/CharactersTechnicalGuide.html#Pawns%20and%20Possession
-    - Pawn class - native(518) final function Actor FindPathTo(vector aPoint, optional bool bSinglePath, 
+    - Pawn class - native(518) final function Actor FindPathTo(vector aPoint, optional bool bSinglePath,
 												optional bool bClearPaths);
     - FindPathTo [aPoint] [MaxPathLength] [bReturnPartial] - This calculates a path to the navigation node closest to the given destination and returns the next node along that path.
 
-    - Pawn class - native(517) final function Actor FindPathToward(actor anActor, optional bool bSinglePath, 
+    - Pawn class - native(517) final function Actor FindPathToward(actor anActor, optional bool bSinglePath,
 												optional bool bClearPaths);
     - FindPathToward [anActor] [bWeightDetours] [MaxPathLength] [bReturnPartial] - This calculates a path to the navigation node closest to the given actor and returns the next node along that path.
     PointReachable [aPoint] - This returns whether the specified location is directly reachable given the Pawn’s movement capabilities. This function can be expensive and should be avoided in favor of ActorReachable() if possible.
