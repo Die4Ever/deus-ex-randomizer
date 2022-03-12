@@ -105,7 +105,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 1,7,3,0) ) {
+    if( VersionOlderThan(config_version, 1,7,4,5) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -182,7 +182,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRWeapons";
     modules_to_load[i++] = "DXRCrowdControl";
     modules_to_load[i++] = "DXRMachines";
-    modules_to_load[i++] = "DXRHints";
+    //modules_to_load[i++] = "DXRHints";
     modules_to_load[i++] = "DXRReplaceActors";
 }
 
