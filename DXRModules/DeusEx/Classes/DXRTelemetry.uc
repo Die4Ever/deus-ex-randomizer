@@ -235,6 +235,15 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Kil
     SendLog(dxr, player, "DEATH", msg);
 }
 
+static function SendEvent(DXRando dxr, Actor a, string name, Json j)
+{
+    local string msg;
+    // TODO: convert Json j to string
+    // TODO: convert AddDeath to use this
+    log("EVENT: " $ name $ ": " $ msg, 'DXRTelemetry');
+    SendLog(dxr, a, "EVENT", msg);
+}
+
 function ExtendedTests()
 {
     local vector loc;
