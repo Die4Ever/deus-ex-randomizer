@@ -1,5 +1,10 @@
 class DXRTelemetry extends DXRActorsBase transient;
 
+struct JsonOut {
+    var string msg;
+    var string type;
+};
+
 var transient Telemetry t;
 
 var config int config_version;
@@ -194,7 +199,8 @@ static function SendLog(DXRando dxr, Actor a, string LogLevel, string message)
 
 static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string msg, killername, playername;
+    local JsonOut j;
+    local string killername, playername;
     local #var prefix ScriptedPawn sp;
     local #var PlayerPawn  killerplayer;
 
@@ -226,21 +232,45 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Kil
         }
     }
 
-    if(Killer != None)
-        msg = playername $ " was killed by " $ Killer.Class.Name @ killername $ " with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
-    else
-        msg = playername $ " was killed with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
+    j = StartJson("DEATH");
+    AddJson(j, "type", "DEATH");
+    AddJson(j, "player", playername);
+    if(Killer != None) {
+        AddJson(j, "killerclass", Killer.Class.Name);
+        AddJson(j, "killer", killername);
+    }
+    AddJson(j, "dmgtype", damageType);
+    AddJson(j, "map", dxr.localURL);
+    AddJson(j, "location", player.Location);
+    EndJson(j);
+    SendEvent(dxr, player, j);
+}
 
-    log("DEATH: " $ msg, 'DXRTelemetry');
-    SendLog(dxr, player, "DEATH", msg);
+static function JsonOut StartJson(string type)
+{
+    local JsonOut j;
+    j.type = type;
+    j.msg = "{\"type\":\"" $ type $ "\"";
+    return j;
+}
+
+static function string AddJson(out JsonOut j, coerce string key, coerce string value)
+{
+    j.msg = j.msg $ ",\"" $ key $ "\":\"" $ value $ "\"";
+}
+
+static function EndJson(out JsonOut j)
+{
+    j.msg = j.msg $ "}";
 }
 
 static function BeatGame(DXRando dxr, int ending, int time)
 {
-    local string msg, playername;
+    local JsonOut j;
+    local string playername;
     local #var PlayerPawn   player;
 
-    player = dxr.player;
+    player = dxr.Player;
 
 #ifdef hx
     playername = player.PlayerReplicationInfo.PlayerName;
@@ -248,25 +278,20 @@ static function BeatGame(DXRando dxr, int ending, int time)
     playername = player.TruePlayerName;
 #endif
 
-    msg =       "{";
-    msg = msg $ "\"type\":\"BeatGame\",";
-    msg = msg $ "\"seed\":"$dxr.seed$",";
-    msg = msg $ "\"PlayerName\":\""$playername$"\",";
-    msg = msg $ "\"ending\":"$ending$",";
-    msg = msg $ "\"time\":"$time;
-    msg = msg $ "}";
+    j = StartJson("BeatGame");
+    AddJson(j, "seed", dxr.seed);
+    AddJson(j, "PlayerName", playername);
+    AddJson(j, "ending", ending);
+    AddJson(j, "time", time);
+    EndJson(j);
 
-    log("EVENT: BeatGame: " $ msg, 'DXRTelemetry');
-    SendLog(dxr, player, "EVENT", msg);
+    SendEvent(dxr, player, j);
 }
 
-static function SendEvent(DXRando dxr, Actor a, string name, Json j)
+static function SendEvent(DXRando dxr, Actor a, JsonOut j)
 {
-    local string msg;
-    // TODO: convert Json j to string
-    // TODO: convert AddDeath to use this
-    log("EVENT: " $ name $ ": " $ msg, 'DXRTelemetry');
-    SendLog(dxr, a, "EVENT", msg);
+    log("EVENT: " $ j.type $ ": " $ j.msg, 'DXRTelemetry');
+    SendLog(dxr, a, "EVENT", j.msg);
 }
 
 function ExtendedTests()
