@@ -2,7 +2,6 @@ class DXRTelemetry extends DXRActorsBase transient;
 
 struct JsonOut {
     var string msg;
-    var string type;
 };
 
 var transient Telemetry t;
@@ -249,7 +248,6 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Kil
 static function JsonOut StartJson(string type)
 {
     local JsonOut j;
-    j.type = type;
     j.msg = "{\"type\":\"" $ type $ "\"";
     return j;
 }
@@ -290,7 +288,7 @@ static function BeatGame(DXRando dxr, int ending, int time)
 
 static function SendEvent(DXRando dxr, Actor a, JsonOut j)
 {
-    log("EVENT: " $ j.type $ ": " $ j.msg, 'DXRTelemetry');
+    log("EVENT: " $ j.msg, 'DXRTelemetry');
     SendLog(dxr, a, "EVENT", j.msg);
 }
 
