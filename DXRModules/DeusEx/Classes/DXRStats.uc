@@ -3,7 +3,7 @@ class DXRStats extends DXRBase transient;
 function AnyEntry()
 {
     Super.AnyEntry();
-    
+
     SetTimer(0.1, True);
 }
 
@@ -15,7 +15,7 @@ function bool InGame() {
 
     if( player() == None )
         return false;
-    
+
     if (player().InConversation()) {
         return True;
     }
@@ -23,15 +23,15 @@ function bool InGame() {
     if (None == DeusExRootWindow(player().rootWindow)) {
         return False;
     }
-    
+
     if (None == DeusExRootWindow(player().rootWindow).hud) {
         return False;
     }
-    
+
     if (!DeusExRootWindow(player().rootWindow).hud.isVisible()){
         return False;
     }
-    
+
     return True;
 }
 
@@ -40,11 +40,11 @@ function IncMissionTimer(int mission)
     local string flagname;
     local name flag;
     local int time;
-    
+
     if (mission < 1) {
         return;
     }
-    
+
     if (InGame()) {
         flagname = "DXRando_Mission"$mission$"_Timer";
         flag = StringToName(flagname);
@@ -64,15 +64,15 @@ function int GetMissionTime(int mission)
     local string flagname;
     local name flag;
     local int time;
-    
+
     if (mission < 1) {
         return 0;
     }
-    
+
     flagname = "DXRando_Mission"$mission$"_Timer";
     flag = StringToName(flagname);
     time = dxr.flagbase.GetInt(flag);
-    
+
     return time;
 }
 
@@ -81,15 +81,15 @@ function int GetMissionMenuTime(int mission)
     local string flagname;
     local name flag;
     local int time;
-    
+
     if (mission < 1) {
         return 0;
     }
-    
+
     flagname = "DXRando_Mission"$mission$"Menu_Timer";
     flag = StringToName(flagname);
     time = dxr.flagbase.GetInt(flag);
-    
+
     return time;
 }
 
@@ -105,21 +105,21 @@ function string fmtTimeToString(int time)
 {
     local int hours,minutes,seconds,tenths,remain;
     local string timestr;
-    
+
     tenths = time % 10;
     remain = (time - tenths)/10;
     seconds = remain % 60;
-    
+
     remain = (remain - seconds)/60;
     minutes = remain % 60;
-    
+
     hours = (remain - minutes)/60;
-    
+
     if (hours < 10) {
         timestr="0";
     }
     timestr=timestr$hours$":";
-    
+
     if (minutes < 10) {
         timestr=timestr$"0";
     }
@@ -129,7 +129,7 @@ function string fmtTimeToString(int time)
         timestr=timestr$"0";
     }
     timestr=timestr$seconds$"."$tenths;
-    
+
     return timestr;
 }
 
@@ -150,21 +150,39 @@ function string GetMissionMenuTimeString(int mission)
 function String GetTotalTimeString()
 {
     local int i, totaltime;
-    
+
     for (i=1;i<=15;i++) {
         totaltime += GetMissionTime(i);
     }
-    
+
     return fmtTimeToString(totaltime);
-    
+
 }
+static function int GetTotalTime(DXRando dxr)
+{
+    local int i, totaltime;
+    local string flagname;
+    local name flag;
+    local int time;
+
+    for (i=1;i<=15;i++) {
+        flagname = "DXRando_Mission"$i$"_Timer";
+        flag = dxr.StringToName(flagname);
+        time = dxr.flagbase.GetInt(flag);
+        totaltime += time;
+    }
+
+    return totaltime;
+
+}
+
 
 static function IncStatFlag(DeusExPlayer p, name flagname)
 {
     local int val;
     val = p.FlagBase.GetInt(flagname);
     p.FlagBase.SetInt(flagname,val+1,,999);
-    
+
 }
 
 static function IncDataStorageStat(DeusExPlayer p, name valname)
@@ -211,12 +229,12 @@ function int GetDataStorageStat(name valname)
     return int(datastorage.GetConfigKey(valname));
 }
 
-function AddDXRCredits(CreditsWindow cw) 
-{  
+function AddDXRCredits(CreditsWindow cw)
+{
     local int fired,swings,jumps,deaths,burnkills,gibbedkills;
 
     cw.PrintHeader("In-Game Time");
-    
+
     cw.PrintText("1 - Liberty Island:"@GetMissionTimeString(1));
     cw.PrintText("2 - NYC Generator:"@GetMissionTimeString(2));
     cw.PrintText("3 - Airfield:"@GetMissionTimeString(3));
@@ -232,16 +250,16 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("15 - Area 51:"@GetMissionTimeString(15));
     cw.PrintText("Total:"@GetTotalTimeString());
     cw.PrintLn();
-    
+
     fired = dxr.flagbase.GetInt('DXRStats_shotsfired');
     swings = dxr.flagbase.GetInt('DXRStats_weaponswings');
     jumps = dxr.flagbase.GetInt('DXRStats_jumps');
     burnkills = dxr.flagbase.GetInt('DXRStats_burnkills');
     gibbedkills = dxr.flagbase.GetInt('DXRStats_gibbedkills');
     deaths = GetDataStorageStat('DXRStats_deaths');
-    
+
     cw.PrintHeader("Statistics");
-    
+
     cw.PrintText("Shots Fired: "$fired);
     cw.PrintText("Weapon Swings: "$swings);
     cw.PrintText("Jumps: "$jumps);
@@ -250,7 +268,7 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("Enemies Burned to Death: "$burnkills);
     cw.PrintText("Enemies Gibbed: "$gibbedkills);
     cw.PrintText("Deaths: "$deaths);
-    
+
     cw.PrintLn();
 }
 

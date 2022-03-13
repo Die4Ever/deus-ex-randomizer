@@ -235,6 +235,31 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Kil
     SendLog(dxr, player, "DEATH", msg);
 }
 
+static function BeatGame(DXRando dxr, int ending, int time)
+{
+    local string msg, playername;
+    local #var PlayerPawn   player;
+
+    player = dxr.player;
+
+#ifdef hx
+    playername = player.PlayerReplicationInfo.PlayerName;
+#else
+    playername = player.TruePlayerName;
+#endif
+
+    msg =       "{";
+    msg = msg $ "\"type\":\"BeatGame\",";
+    msg = msg $ "\"seed\":"$dxr.seed$",";
+    msg = msg $ "\"PlayerName\":\""$playername$"\",";
+    msg = msg $ "\"ending\":"$ending$",";
+    msg = msg $ "\"time\":"$time;
+    msg = msg $ "}";
+
+    log("EVENT: BeatGame: " $ msg, 'DXRTelemetry');
+    SendLog(dxr, player, "EVENT", msg);
+}
+
 static function SendEvent(DXRando dxr, Actor a, string name, Json j)
 {
     local string msg;
