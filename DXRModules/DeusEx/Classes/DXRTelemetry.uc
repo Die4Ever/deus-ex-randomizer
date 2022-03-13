@@ -196,14 +196,30 @@ static function SendLog(DXRando dxr, Actor a, string LogLevel, string message)
     if( module != None ) module._SendLog(a, LogLevel, message);
 }
 
-static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Killer, optional coerce string damageType, optional vector HitLocation)
+static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local JsonOut j;
     local string killername, playername;
+    local Pawn KillerPawn;
     local #var prefix ScriptedPawn sp;
     local #var PlayerPawn  killerplayer;
 
+    if(Killer == None) {
+        if(player.myProjKiller != None)
+            Killer = player.myProjKiller;
+        if(player.myTurretKiller != None)
+            Killer = player.myTurretKiller;
+        if(player.myPoisoner != None)
+            Killer = player.myPoisoner;
+        if(player.myBurner != None)
+            Killer = player.myBurner;
+        // myKiller is only set in multiplayer
+        if(player.myKiller != None)
+            Killer = player.myKiller;
+    }
+
     killerplayer = #var PlayerPawn (Killer);
+    KillerPawn = Pawn(Killer);
     sp = #var prefix ScriptedPawn(Killer);
 
 #ifdef hx
@@ -240,26 +256,12 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Kil
     }
     AddJson(j, "dmgtype", damageType);
     AddJson(j, "map", dxr.localURL);
+    AddJson(j, "mapname", dxr.dxInfo.MissionLocation);
+    AddJson(j, "mission", dxr.dxInfo.missionNumber);
+    AddJson(j, "TrueNorth", dxr.dxInfo.TrueNorth);
     AddJson(j, "location", player.Location);
     EndJson(j);
     SendEvent(dxr, player, j);
-}
-
-static function JsonOut StartJson(string type)
-{
-    local JsonOut j;
-    j.msg = "{\"type\":\"" $ type $ "\"";
-    return j;
-}
-
-static function string AddJson(out JsonOut j, coerce string key, coerce string value)
-{
-    j.msg = j.msg $ ",\"" $ key $ "\":\"" $ value $ "\"";
-}
-
-static function EndJson(out JsonOut j)
-{
-    j.msg = j.msg $ "}";
 }
 
 static function BeatGame(DXRando dxr, int ending, int time)
@@ -281,6 +283,7 @@ static function BeatGame(DXRando dxr, int ending, int time)
     AddJson(j, "PlayerName", playername);
     AddJson(j, "ending", ending);
     AddJson(j, "time", time);
+    AddJson(j, "SaveCount", player.saveCount);
     EndJson(j);
 
     SendEvent(dxr, player, j);
@@ -290,6 +293,24 @@ static function SendEvent(DXRando dxr, Actor a, JsonOut j)
 {
     log("EVENT: " $ j.msg, 'DXRTelemetry');
     SendLog(dxr, a, "EVENT", j.msg);
+}
+
+
+static function JsonOut StartJson(string type)
+{
+    local JsonOut j;
+    j.msg = "{\"type\":\"" $ type $ "\"";
+    return j;
+}
+
+static function string AddJson(out JsonOut j, coerce string key, coerce string value)
+{
+    j.msg = j.msg $ ",\"" $ key $ "\":\"" $ value $ "\"";
+}
+
+static function EndJson(out JsonOut j)
+{
+    j.msg = j.msg $ "}";
 }
 
 function ExtendedTests()
