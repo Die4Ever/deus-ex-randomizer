@@ -263,9 +263,18 @@ function VanillaPostFirstEntry()
 {
     local RetinalScanner r;
     local CrateUnbreakableLarge c;
+    local DeusExMover m;
+    local UNATCOTroop u;
     local Actor a;
 
     switch(dxr.localURL) {
+        case "01_NYC_UNATCOISLAND":
+            foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {
+                m.bBreakable = false;
+                m.bPickable = false;
+                m.bIsDoor = false;// this prevents Floyd from opening the door
+            }
+            break;
         case "01_NYC_UNATCOHQ":
         case "03_NYC_UNATCOHQ":
         case "04_NYC_UNATCOHQ":
@@ -292,6 +301,12 @@ function VanillaPostFirstEntry()
             _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
             break;
 
+        case "04_NYC_NSFHQ":
+            foreach AllActors(class'DeusExMover', m, 'SignalComputerDoorOpen') {
+                m.bBreakable = false;
+                m.bPickable = false;
+            }
+            break;
         case "05_NYC_UNATCOMJ12LAB":
             BalanceJailbreak();
             break;
