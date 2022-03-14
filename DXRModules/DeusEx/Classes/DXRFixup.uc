@@ -406,7 +406,9 @@ simulated function FixAmmoShurikenName()
 
 simulated function FixLogTimeout(#var PlayerPawn  p)
 {
-    DeusExRootWindow(p.rootWindow).hud.msgLog.SetLogTimeout(10);
+    if( p.GetLogTimeout() - 1 <3 ) {
+        p.SetLogTimeout(10);
+    }
 }
 
 function IncreaseBrightness(int brightness)

@@ -196,10 +196,19 @@ static function SendLog(DXRando dxr, Actor a, string LogLevel, string message)
     if( module != None ) module._SendLog(a, LogLevel, message);
 }
 
+static function string GetLoadoutName(DXRando dxr)
+{
+    local DXRLoadouts loadout;
+    loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+    if( loadout == None )
+        return "";
+    return loadout.GetName(loadout.loadout);
+}
+
 static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local JsonOut j;
-    local string killername, playername;
+    local string killername, playername, loadout;
     local Pawn KillerPawn;
     local #var prefix ScriptedPawn sp;
     local #var PlayerPawn  killerplayer;
@@ -260,6 +269,10 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Ki
     AddJson(j, "mission", dxr.dxInfo.missionNumber);
     AddJson(j, "TrueNorth", dxr.dxInfo.TrueNorth);
     AddJson(j, "location", player.Location);
+
+    loadout = GetLoadoutName(dxr);
+    if(loadout != "")
+        AddJson(j, "loadout", loadout);
     EndJson(j);
     SendEvent(dxr, player, j);
 }
@@ -267,7 +280,7 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Ki
 static function BeatGame(DXRando dxr, int ending, int time)
 {
     local JsonOut j;
-    local string playername;
+    local string playername, loadout;
     local #var PlayerPawn   player;
 
     player = dxr.Player;
@@ -284,6 +297,9 @@ static function BeatGame(DXRando dxr, int ending, int time)
     AddJson(j, "ending", ending);
     AddJson(j, "time", time);
     AddJson(j, "SaveCount", player.saveCount);
+    loadout = GetLoadoutName(dxr);
+    if(loadout != "")
+        AddJson(j, "loadout", loadout);
     EndJson(j);
 
     SendEvent(dxr, player, j);

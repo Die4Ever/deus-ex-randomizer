@@ -70,7 +70,7 @@ function doAutosave()
     }
 
     p = player();
-    
+
     if( p.dataLinkPlay != None ) {
         p.dataLinkPlay.AbortDataLink();
         interruptedDL = p.dataLinkPlay;
@@ -79,8 +79,8 @@ function doAutosave()
 
     //copied from DeusExPlayer QuickSave()
     if (
-        (dxr.dxInfo == None) || (dxr.dxInfo.MissionNumber < 0) || 
-        ((p.IsInState('Dying')) || (p.IsInState('Paralyzed')) || (p.IsInState('Interpolating'))) || 
+        (dxr.dxInfo == None) || (dxr.dxInfo.MissionNumber < 0) ||
+        ((p.IsInState('Dying')) || (p.IsInState('Paralyzed')) || (p.IsInState('Interpolating'))) ||
         (p.dataLinkPlay != None) || (dxr.Level.Netmode != NM_Standalone) || (p.InConversation())
     ){
         info("doAutosave() not saving yet");
@@ -88,7 +88,7 @@ function doAutosave()
         return;
     }
 
-    saveSlot = 9999999;
+    saveSlot = -2;
     saveName = "DXR " $ dxr.seed $ ": " $ dxr.dxInfo.MissionLocation;
     lastMission = dxr.flags.f.GetInt('Rando_lastmission');
     if( lastMission != 0 && dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber ) {
