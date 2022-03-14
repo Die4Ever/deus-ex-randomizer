@@ -527,7 +527,7 @@ function Airfield_FirstEntry()
                 // sewer door backtracking
                 else if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
                 {
-                    m.Event = 'Sewerdoor';
+                    m.Tag = 'Sewerdoor';
                 }
             }
             foreach AllActors(class'Trigger', t) {
