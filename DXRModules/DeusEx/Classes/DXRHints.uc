@@ -24,6 +24,7 @@ simulated function InitHints()
     AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them");
     AddHint("The large metal crates are now destructible.", "They have 2000 hp.");
     AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
+    AddHint("Check out @DXRandoActivity on Twitter!","Make sure \"Online Features\" are enabled to show up yourself!");
 
 #ifdef injections
     AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken");
