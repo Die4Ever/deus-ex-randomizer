@@ -218,44 +218,6 @@ function VanillaPreFirstEntry()
         case 15:
             Area51_FirstEntry();
             break;
-        case 99:
-            Ending_FirstEntry();
-            break;
-    }
-}
-function Ending_FirstEntry()
-{
-    local int ending,time;
-
-    ending = 0;
-
-    switch(dxr.localURL)
-    {
-        //Make sure we actually are only running on the endgame levels
-        //Just in case we hit a custom level with mission 99 or something
-        case "ENDGAME1": //Tong
-            ending = 1;
-            break;
-        case "ENDGAME2": //Helios
-            ending = 2;
-            break;
-        case "ENDGAME3": //Everett
-            ending = 3;
-            break;
-        //The dance party won't actually get hit since the rando can't run there at the moment
-        case "ENDGAME4": //Dance party
-            ending = 4;
-            break;
-        default:
-            //In case rando runs some player level or something with mission 99
-            break;
-    }
-
-    if (ending!=0){
-        //Notify of game completion with correct ending number
-        time = class'DXRStats'.static.GetTotalTime(dxr);
-        class'DXRTelemetry'.static.BeatGame(dxr,ending,time);
-
     }
 }
 
@@ -805,6 +767,9 @@ function NYC_04_MarkPaulSafe()
                 st.Touch(player());
         }
     }
+
+    // we should also check at the start of mission 5 for other mods?
+    class'DXREvents'.static.SavedPaul(dxr, player());
 }
 
 function NYC_04_LeaveHotel()

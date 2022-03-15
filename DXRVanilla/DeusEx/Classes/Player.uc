@@ -44,8 +44,8 @@ function ResetGoals()
     local bool isOldGoal;
 
     GetDXR();
-    
-        
+
+
 
 	goal = FirstGoal;
 
@@ -243,7 +243,7 @@ function DoJump( optional float F )
         {
          if (AugmentationSystem == None)
             augLevel = -1.0;
-         else			
+         else
             augLevel = AugmentationSystem.GetAugLevelValue(class'AugSpeed');
             if( augLevel == -1.0 )
                 augLevel = AugmentationSystem.GetAugLevelValue(class'AugNinja');
@@ -254,7 +254,7 @@ function DoJump( optional float F )
                 Velocity.Z *= scaleFactor;
             }
         }
-        
+
         // reduce the jump velocity if you are crouching
 //		if (bIsCrouching)
 //			Velocity.Z *= 0.9;
@@ -264,7 +264,7 @@ function DoJump( optional float F )
         SetPhysics(PHYS_Falling);
         if ( bCountJumps && (Role == ROLE_Authority) )
             Inventory.OwnerJumped();
-        
+
         class'DXRStats'.static.AddJump(self);
     }
 }
@@ -309,7 +309,7 @@ function Landed(vector HitNormal)
             }
     }
     else if ( (Level.Game != None) && (Level.Game.Difficulty > 1) && (Velocity.Z > 0.5 * JumpZ) )
-        MakeNoise(0.1 * Level.Game.Difficulty);				
+        MakeNoise(0.1 * Level.Game.Difficulty);
     bJustLanded = true;
 }
 
@@ -324,8 +324,7 @@ event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
 
 function Died(pawn Killer, name damageType, vector HitLocation)
 {
-    class'DXRStats'.static.AddDeath(self);
-    class'DXRTelemetry'.static.AddDeath(GetDXR(), self, Killer, damageType, HitLocation);
+    class'DXREvents'.static.AddDeath(GetDXR(), self, Killer, damageType, HitLocation);
     Super.Died(Killer,damageType,HitLocation);
 }
 
@@ -352,7 +351,7 @@ exec function CrowdControlNames()
 {
     local DXRCrowdControl cc;
     local DXRFlags f;
-    
+
     foreach AllActors(class'DXRCrowdControl',cc)
     {
         cc.link.anon = False;
@@ -411,16 +410,16 @@ exec function FixAugHotkeys()
 exec function MoveGoalLocation(name goalName, int locNumber)
 {
     local DXRMissions missions;
-    
+
     foreach AllActors(class'DXRMissions',missions)
     {
         if (missions.MoveGoalTo(goalName,locNumber)==true){
             ClientMessage("Successfully moved goal");
         } else {
-            ClientMessage("Failed to move goal");        
+            ClientMessage("Failed to move goal");
         }
     }
-    
+
 }
 
 
