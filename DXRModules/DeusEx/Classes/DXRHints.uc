@@ -10,6 +10,7 @@ var int hintsGiven;
 
 simulated function InitHints()
 {
+    local DXRTelemetry telem;
     local int mission;
     local string map;
 
@@ -24,7 +25,12 @@ simulated function InitHints()
     AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them");
     AddHint("The large metal crates are now destructible.", "They have 2000 hp.");
     AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
-    AddHint("Check out @DXRandoActivity on Twitter!","Make sure \"Online Features\" are enabled to show up yourself!");
+
+    telem = DXRTelemetry(dxr.FindModule(class'DXRTelemetry'));
+    if(telem == None || telem.enabled == false)
+        AddHint("Check out @DXRandoActivity on Twitter!","Make sure \"Online Features\" are enabled to show up yourself!");
+    else
+        AddHint("Check out @DXRandoActivity on Twitter!", "We just shared your death publicly, go retweet it!");
 
 #ifdef injections
     AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken");
@@ -261,6 +267,10 @@ simulated function int GetHint()
 simulated function ShowHint(optional int recursion)
 {
     local int hint;
+#ifdef hx
+    // for hx, the DXRBigMessage is bugged, so just put the timer back for logging the next death
+    SetTimer(1, true);
+#else
     SetTimer(15, true);
     hintsGiven++;
     if( recursion > 10 ) {
@@ -271,6 +281,7 @@ simulated function ShowHint(optional int recursion)
 
     if(class'DXRBigMessage'.static.CreateBigMessage(_player, self, hints[hint], details[hint]) == None)
         ShowHint(recursion++);
+#endif
 }
 
 simulated function Timer()

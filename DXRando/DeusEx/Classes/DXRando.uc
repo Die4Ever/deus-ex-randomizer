@@ -57,7 +57,7 @@ function SetdxInfo(DeusExLevelInfo i)
 {
     dxInfo = i;
     localURL = Caps(dxInfo.mapName);
-    l("SetdxInfo got localURL: " $ localURL);
+    l("SetdxInfo got localURL: " $ localURL $ ", mapname: " $ i.MissionLocation);
 
 #ifdef backtracking
     // undo the damage that DXRBacktracking has done to prevent saves from being deleted
@@ -105,7 +105,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 1,7,4,5) ) {
+    if( VersionOlderThan(config_version, 1,7,4,7) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -182,7 +182,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRWeapons";
     modules_to_load[i++] = "DXRCrowdControl";
     modules_to_load[i++] = "DXRMachines";
-    //modules_to_load[i++] = "DXRHints";
+    modules_to_load[i++] = "DXRHints";
     modules_to_load[i++] = "DXRReplaceActors";
 }
 
