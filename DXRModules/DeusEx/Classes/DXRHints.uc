@@ -268,8 +268,8 @@ simulated function ShowHint(optional int recursion)
 {
     local int hint;
 #ifdef hx
-    // for hx, the DXRBigMessage is bugged, so just put the timer back for logging the next death
-    SetTimer(1, true);
+    // for hx, the DXRBigMessage is bugged, so just disable the timer and PlayerRespawn will enable it again
+    SetTimer(0, false);
 #else
     SetTimer(15, true);
     hintsGiven++;
