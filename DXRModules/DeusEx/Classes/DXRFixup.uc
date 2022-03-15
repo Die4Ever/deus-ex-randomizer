@@ -218,6 +218,44 @@ function VanillaPreFirstEntry()
         case 15:
             Area51_FirstEntry();
             break;
+        case 99:
+            Ending_FirstEntry();
+            break;
+    }
+}
+function Ending_FirstEntry()
+{
+    local int ending,time;
+
+    ending = 0;
+
+    switch(dxr.localURL)
+    {
+        //Make sure we actually are only running on the endgame levels
+        //Just in case we hit a custom level with mission 99 or something
+        case "ENDGAME1": //Tong
+            ending = 1;
+            break;
+        case "ENDGAME2": //Helios
+            ending = 2;
+            break;
+        case "ENDGAME3": //Everett
+            ending = 3;
+            break;
+        //The dance party won't actually get hit since the rando can't run there at the moment
+        case "ENDGAME4": //Dance party
+            ending = 4;
+            break;
+        default:
+            //In case rando runs some player level or something with mission 99
+            break;
+    }
+
+    if (ending!=0){
+        //Notify of game completion with correct ending number
+        time = class'DXRStats'.static.GetTotalTime(dxr);
+        class'DXRTelemetry'.static.BeatGame(dxr,ending,time);
+
     }
 }
 
@@ -225,9 +263,18 @@ function VanillaPostFirstEntry()
 {
     local RetinalScanner r;
     local CrateUnbreakableLarge c;
+    local DeusExMover m;
+    local UNATCOTroop u;
     local Actor a;
-    
+
     switch(dxr.localURL) {
+        case "01_NYC_UNATCOISLAND":
+            foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {
+                m.bBreakable = false;
+                m.bPickable = false;
+                m.bIsDoor = false;// this prevents Floyd from opening the door
+            }
+            break;
         case "01_NYC_UNATCOHQ":
         case "03_NYC_UNATCOHQ":
         case "04_NYC_UNATCOHQ":
@@ -247,24 +294,30 @@ function VanillaPostFirstEntry()
 
         case "02_NYC_WAREHOUSE":
             AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));
-        
+
         case "03_NYC_AirfieldHeliBase":
             //crates to get back over the beginning of the level
             _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
             _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
             break;
-        
+
+        case "04_NYC_NSFHQ":
+            foreach AllActors(class'DeusExMover', m, 'SignalComputerDoorOpen') {
+                m.bBreakable = false;
+                m.bPickable = false;
+            }
+            break;
         case "05_NYC_UNATCOMJ12LAB":
             BalanceJailbreak();
             break;
-        
+
         case "09_NYC_DOCKYARD":
             foreach RadiusActors(class'CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
                 info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
                 c.Destroy();
             }
             break;
-        
+
         case "12_VANDENBERG_CMD":
             foreach RadiusActors(class'CrateUnbreakableLarge', c, 16, vect(570.835083, 1934.114014, -1646.114746)) {
                 info("removing " $ c $ " dist: " $ VSize(c.Location - vect(570.835083, 1934.114014, -1646.114746)) );
@@ -353,7 +406,9 @@ simulated function FixAmmoShurikenName()
 
 simulated function FixLogTimeout(#var PlayerPawn  p)
 {
-    DeusExRootWindow(p.rootWindow).hud.msgLog.SetLogTimeout(10);
+    if( p.GetLogTimeout() - 1 <3 ) {
+        p.SetLogTimeout(10);
+    }
 }
 
 function IncreaseBrightness(int brightness)
@@ -419,7 +474,7 @@ function SpawnDatacubes()
         loc = add_datacubes[i].location;
         if( loc.X == 0 && loc.Y == 0 && loc.Z == 0 )
             loc = GetRandomPosition();
-        
+
         dc = Spawn(class'#var prefix DataCube',,, loc, rot(0,0,0));
 
         if( dc != None ) dc.plaintext = add_datacubes[i].text;
@@ -433,7 +488,7 @@ function NYC_02_FirstEntry()
     local DeusExMover d;
     local NanoKey k;
     local NYPoliceBoat b;
-    
+
     switch (dxr.localURL)
     {
         case "02_NYC_BATTERYPARK":
@@ -458,7 +513,7 @@ function Airfield_FirstEntry()
     local Mover m;
     local Actor a;
     local Trigger t;
-    
+
     switch (dxr.localURL)
     {
         case "03_NYC_BATTERYPARK":
@@ -489,7 +544,7 @@ function Airfield_FirstEntry()
                 // sewer door backtracking
                 else if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
                 {
-                    m.Event = 'Sewerdoor';
+                    m.Tag = 'Sewerdoor';
                 }
             }
             foreach AllActors(class'Trigger', t) {
@@ -518,7 +573,7 @@ function Airfield_FirstEntry()
             //rebreather because of #TOOCEAN connection
             _AddActor(Self, class'Rebreather', vect(1411.798950, 546.628845, 247.708572), rot(0,0,0));
             break;
-        
+
         case "03_NYC_AIRFIELD":
             //rebreather because of #TOOCEAN connection
             _AddActor(Self, class'Rebreather', vect(-2031.959473, 995.781067, 75.709816), rot(0,0,0));
@@ -594,21 +649,21 @@ function UpdateWeldPointGoal(int count)
     local DeusExGoal goal;
     local int bracketPos;
     goal = player().FindGoal('ScuttleShip');
-    
+
     if (goal!=None){
         goalText = goal.text;
         bracketPos = InStr(goalText,"(");
-        
+
         if (bracketPos>0){ //If the extra text is already there, strip it.
             goalText = Mid(goalText,0,bracketPos-1);
         }
-        
+
         goalText = goalText$" ("$count$" remaining)";
-        
+
         goal.SetText(goalText);
     }
-    
-    
+
+
 }
 
 function NYC_09_CountWeldPoints()
@@ -616,22 +671,22 @@ function NYC_09_CountWeldPoints()
     local int storedWeldCount;
     local int newWeldCount;
     local DeusExMover m;
-    
+
     storedWeldCount = dxr.flagbase.GetInt('DXRando_WeldPointCount');
-    
+
     newWeldCount=0;
-    
+
     //Search for the weld point movers
     foreach AllActors(class'DeusExMover',m, 'ShipBreech') {
         if (!m.bDestroyed){
             newWeldCount++;
         }
     }
-    
+
     if (newWeldCount != storedWeldCount) {
         //A weld point has been destroyed!
         dxr.flags.f.SetInt('DXRando_WeldPointCount',newWeldCount);
-        
+
         switch(newWeldCount){
             case 0:
                 player().ClientMessage("All weld points destroyed!");
@@ -644,7 +699,7 @@ function NYC_09_CountWeldPoints()
                 player().ClientMessage(newWeldCount$" weld points remaining");
                 break;
         }
-        
+
         UpdateWeldPointGoal(newWeldCount);
     }
 }
@@ -871,7 +926,7 @@ function Vandenberg_FirstEntry()
                 }
             }
             break;
-        
+
         case "14_VANDENBERG_SUB":
             AddSwitch( vect(3790.639893, -488.639587, -369.964142), rot(0, 32768, 0), 'Elevator1');
             AddSwitch( vect(3799.953613, -446.640015, -1689.817993), rot(0, 16384, 0), 'Elevator1');
@@ -917,7 +972,7 @@ function HongKong_FirstEntry()
                     default:
                         break;
                 }
-            }    
+            }
             break;
         case "06_HONGKONG_WANCHAI_MARKET":
             foreach AllActors(class'Actor', a)
@@ -930,7 +985,7 @@ function HongKong_FirstEntry()
                     case "BasementKeypad":
                     case "GateKeypad":
                         a.bHidden=False;
-                        break;    
+                        break;
                     case "Breakintocompound":
                     case "LumpathPissed":
                         Trigger(a).bTriggerOnceOnly = False;
@@ -944,7 +999,7 @@ function HongKong_FirstEntry()
                         break;
                 }
             }
-            
+
             break;
         case "06_HONGKONG_WANCHAI_STREET":
             foreach AllActors(class'Button1',b)
@@ -954,7 +1009,7 @@ function HongKong_FirstEntry()
                     b.Event='JocksElevatorTop';
                 }
             }
-            
+
             foreach AllActors(class'ElevatorMover',e)
             {
                 if(e.Tag=='JocksElevator')
@@ -963,7 +1018,7 @@ function HongKong_FirstEntry()
                 }
             }
             break;
-        
+
         case "06_HONGKONG_MJ12LAB":
             foreach AllActors(class'#var Mover ', m, 'security_doors') {
                 m.bBreakable = false;
@@ -1003,7 +1058,7 @@ function Shipyard_FirstEntry()
             }
             AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
             break;
-        
+
         case "09_NYC_SHIPBELOW":
             foreach AllActors(class'DeusExMover', m, 'ShipBreech') {
                 m.bHighlight = true;
@@ -1039,7 +1094,7 @@ function Paris_FirstEntry()
             foreach AllActors(class'Trigger', t)
                 if( t.Event == 'MJ12CommandoSpecial' )
                     t.Touch(player());// make this guy patrol instead of t-pose
-            
+
             AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
             AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
             break;
@@ -1066,7 +1121,7 @@ function Paris_FirstEntry()
                 m.MoveTime = 1;
             }
             break;
-        
+
         case "11_PARIS_CATHEDRAL":
             foreach AllActors(class'GuntherHermann', g) {
                 g.ChangeAlly('mj12', 1, true);
@@ -1123,7 +1178,7 @@ function HongKong_AnyEntry()
                     case "TriadLumPath":
                         ScriptedPawn(a).ChangeAlly('Player',1,False);
                         break;
-                        
+
                     case "TracerTong":
                         if ( boolFlag == True )
                         {
@@ -1165,7 +1220,7 @@ function HongKong_AnyEntry()
                     default:
                         break;
                 }
-            }    
+            }
             break;
         case "06_HONGKONG_WANCHAI_MARKET":
             foreach AllActors(class'Actor', a)
@@ -1179,19 +1234,19 @@ function HongKong_AnyEntry()
                     case "TriadLumPath4":
                     case "TriadLumPath5":
                     case "GordonQuick":
-                    
+
                         ScriptedPawn(a).ChangeAlly('Player',1,False);
                         break;
                 }
             }
 
             break;
-        
+
         case "06_HONGKONG_VERSALIFE":
             DeleteConversationFlag( GetConversation('Disgruntled_Guy_Convos'), 'VL_Found_Labs', false);
             GetConversation('Disgruntled_Guy_Return').AddFlagRef('Disgruntled_Guy_Done', true);
             break;
-        
+
         default:
             break;
     }
@@ -1225,13 +1280,13 @@ function Area51_FirstEntry()
 {
     local DeusExMover d;
     local ComputerSecurity c;
-    
+
     switch(dxr.localURL)
     {
         case "15_AREA51_BUNKER":
             AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
             break;
-        
+
         case "15_AREA51_FINAL":
             foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
                 d.move(vect(0, 0, -1));
@@ -1245,7 +1300,7 @@ function Area51_FirstEntry()
                 d.bFrobbable = true;
             }
             break;
-        
+
         case "15_AREA51_ENTRANCE":
             foreach AllActors(class'DeusExMover', d, 'DeusExMover') {
                 if( d.Name == 'DeusExMover20' ) d.Tag = 'final_door';

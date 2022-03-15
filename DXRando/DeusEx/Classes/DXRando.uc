@@ -57,7 +57,7 @@ function SetdxInfo(DeusExLevelInfo i)
 {
     dxInfo = i;
     localURL = Caps(dxInfo.mapName);
-    l("SetdxInfo got localURL: " $ localURL);
+    l("SetdxInfo got localURL: " $ localURL $ ", mapname: " $ i.MissionLocation);
 
 #ifdef backtracking
     // undo the damage that DXRBacktracking has done to prevent saves from being deleted
@@ -105,7 +105,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 1,7,3,0) ) {
+    if( VersionOlderThan(config_version, 1,7,4,7) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }

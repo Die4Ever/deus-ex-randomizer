@@ -45,6 +45,8 @@ In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=Revisio
 Revision Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
 
 
+select created, name, killer, damagetype, map, version, modname, seed, flagshash from deaths join logs on(log_id=logs.id) where created>now()-interval 30 day order by created asc;
+
 
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 

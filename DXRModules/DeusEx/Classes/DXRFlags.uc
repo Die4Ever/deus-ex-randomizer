@@ -763,7 +763,7 @@ simulated function SaveNoFlags()
 simulated function LogFlags(string prefix)
 {
     local string str;
-    str = prefix$" "$Self.Class$" - version: " $ VersionString(true);
+    str = prefix$" "$Self.Class$" - version: " $ VersionString(true) $ ", flagshash: " $ FlagsHash();
     str = BindFlags(Printing, str);
     if(Len(str) > 0)
         info(prefix @ str);

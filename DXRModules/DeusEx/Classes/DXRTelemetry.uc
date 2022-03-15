@@ -1,5 +1,9 @@
 class DXRTelemetry extends DXRActorsBase transient;
 
+struct JsonOut {
+    var string msg;
+};
+
 var transient Telemetry t;
 
 var config int config_version;
@@ -192,13 +196,39 @@ static function SendLog(DXRando dxr, Actor a, string LogLevel, string message)
     if( module != None ) module._SendLog(a, LogLevel, message);
 }
 
-static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Killer, optional coerce string damageType, optional vector HitLocation)
+static function string GetLoadoutName(DXRando dxr)
 {
-    local string msg, killername, playername;
+    local DXRLoadouts loadout;
+    loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+    if( loadout == None )
+        return "";
+    return loadout.GetName(loadout.loadout);
+}
+
+static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+{
+    local JsonOut j;
+    local string killername, playername, loadout;
+    local Pawn KillerPawn;
     local #var prefix ScriptedPawn sp;
     local #var PlayerPawn  killerplayer;
 
+    if(Killer == None) {
+        if(player.myProjKiller != None)
+            Killer = player.myProjKiller;
+        if(player.myTurretKiller != None)
+            Killer = player.myTurretKiller;
+        if(player.myPoisoner != None)
+            Killer = player.myPoisoner;
+        if(player.myBurner != None)
+            Killer = player.myBurner;
+        // myKiller is only set in multiplayer
+        if(player.myKiller != None)
+            Killer = player.myKiller;
+    }
+
     killerplayer = #var PlayerPawn (Killer);
+    KillerPawn = Pawn(Killer);
     sp = #var prefix ScriptedPawn(Killer);
 
 #ifdef hx
@@ -226,13 +256,77 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Pawn Kil
         }
     }
 
-    if(Killer != None)
-        msg = playername $ " was killed by " $ Killer.Class.Name @ killername $ " with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
-    else
-        msg = playername $ " was killed with " $ damageType $ " damage in " $ dxr.localURL $ " (" $ player.Location $ ")";
+    j = StartJson("DEATH");
+    AddJson(j, "type", "DEATH");
+    AddJson(j, "player", playername);
+    if(Killer != None) {
+        AddJson(j, "killerclass", Killer.Class.Name);
+        AddJson(j, "killer", killername);
+    }
+    AddJson(j, "dmgtype", damageType);
+    AddJson(j, "map", dxr.localURL);
+    AddJson(j, "mapname", dxr.dxInfo.MissionLocation);
+    AddJson(j, "mission", dxr.dxInfo.missionNumber);
+    AddJson(j, "TrueNorth", dxr.dxInfo.TrueNorth);
+    AddJson(j, "location", player.Location);
 
-    log("DEATH: " $ msg, 'DXRTelemetry');
-    SendLog(dxr, player, "DEATH", msg);
+    loadout = GetLoadoutName(dxr);
+    if(loadout != "")
+        AddJson(j, "loadout", loadout);
+    EndJson(j);
+    SendEvent(dxr, player, j);
+}
+
+static function BeatGame(DXRando dxr, int ending, int time)
+{
+    local JsonOut j;
+    local string playername, loadout;
+    local #var PlayerPawn   player;
+
+    player = dxr.Player;
+
+#ifdef hx
+    playername = player.PlayerReplicationInfo.PlayerName;
+#else
+    playername = player.TruePlayerName;
+#endif
+
+    j = StartJson("BeatGame");
+    AddJson(j, "seed", dxr.seed);
+    AddJson(j, "PlayerName", playername);
+    AddJson(j, "ending", ending);
+    AddJson(j, "time", time);
+    AddJson(j, "SaveCount", player.saveCount);
+    loadout = GetLoadoutName(dxr);
+    if(loadout != "")
+        AddJson(j, "loadout", loadout);
+    EndJson(j);
+
+    SendEvent(dxr, player, j);
+}
+
+static function SendEvent(DXRando dxr, Actor a, JsonOut j)
+{
+    log("EVENT: " $ j.msg, 'DXRTelemetry');
+    SendLog(dxr, a, "EVENT", j.msg);
+}
+
+
+static function JsonOut StartJson(string type)
+{
+    local JsonOut j;
+    j.msg = "{\"type\":\"" $ type $ "\"";
+    return j;
+}
+
+static function string AddJson(out JsonOut j, coerce string key, coerce string value)
+{
+    j.msg = j.msg $ ",\"" $ key $ "\":\"" $ value $ "\"";
+}
+
+static function EndJson(out JsonOut j)
+{
+    j.msg = j.msg $ "}";
 }
 
 function ExtendedTests()
