@@ -52,14 +52,18 @@ simulated function PlayerRespawn(#var PlayerPawn  player)
 {
     Super.PlayerRespawn(player);
     _player = player;
-    SetTimer(1, true);
+    died = false;
+    if( !#defined injections )
+        SetTimer(1, true);
 }
 
 simulated function PlayerAnyEntry(#var PlayerPawn  player)
 {
     Super.PlayerAnyEntry(player);
     _player = player;
-    SetTimer(1, true);
+    died = false;
+    if( !#defined injections )
+        SetTimer(1, true);
 }
 
 simulated function Timer()
@@ -68,7 +72,7 @@ simulated function Timer()
         SetTimer(0, false);
         return;
     }
-    if(#defined injections == false && _player.IsInState('Dying') && !died) {
+    if( !#defined injections && _player.IsInState('Dying') && !died) {
         died = true;
         AddDeath(dxr, _player);
     }
