@@ -624,6 +624,27 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     return newactor;
 }
 
+static function DestroyMover(DeusExMover m)
+{
+    local DeusExDecal D;
+
+    // force the mover to stop
+	if (m.Leader != None)
+		m.Leader.MakeGroupStop();
+
+    // destroy all effects that are on us
+	foreach m.BasedActors(class'DeusExDecal', D)
+		D.Destroy();
+
+    m.DropThings();
+
+    //DEUS_EX AMSD Mover is dead, make it a dumb proxy so location updates
+    m.RemoteRole = ROLE_DumbProxy;
+    m.SetLocation(m.Location+vect(0,0,20000));		// move it out of the way
+    m.SetCollision(False, False, False);			// and make it non-colliding
+    m.bDestroyed = True;
+}
+
 static function SetActorScale(Actor a, float scale)
 {
     local Vector newloc;
