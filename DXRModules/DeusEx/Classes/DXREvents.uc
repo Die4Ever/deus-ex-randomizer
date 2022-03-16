@@ -186,6 +186,7 @@ static function BeatGame(DXRando dxr, int ending, int time)
     js.static.Add(j, "ending", ending);
     js.static.Add(j, "time", time);
     js.static.Add(j, "SaveCount", player.saveCount);
+    js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
         js.static.Add(j, "loadout", loadout);
