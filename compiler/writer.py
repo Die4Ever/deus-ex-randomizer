@@ -47,13 +47,13 @@ def execute_injections(f, injects):
     if f.qualifiedclass in injects and len(injects[f.qualifiedclass]) > 1:
         operators = {}
         msg = 'WARNING: found multiple inheritence operators: '
-        num_mismatch = 0
         for p in injects[f.qualifiedclass]:
             if p.operator not in vanilla_inheritance_keywords:
                 operators[p.operator] = 1
             msg += p.file +' '+p.operator+', '
         if len(operators) > 1:
             printError(msg)
+        # else there's no problem
     elif f.qualifiedclass not in injects or len(injects[f.qualifiedclass]) == 0:
         raise Exception(f.file+' '+f.qualifiedclass+' not in injects or len is 0')
 

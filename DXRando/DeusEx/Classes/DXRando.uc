@@ -211,6 +211,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRMachines";
     modules_to_load[i++] = "DXRHints";
     modules_to_load[i++] = "DXRReplaceActors";
+    modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXRFashion";
     modules_to_load[i++] = "DXREvents";
 }

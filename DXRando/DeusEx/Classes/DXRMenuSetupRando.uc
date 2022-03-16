@@ -33,7 +33,7 @@ function BindControls(optional string action)
     EnumOption("Randomize Goal Locations", 100, f.settings.goals);
     EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
 
-#ifdef vanilla
+#ifndef hx
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map."$BR$"If The Merchant dies then he stays dead for the rest of the game.");
     Slider(f.settings.merchants, 0, 100);
 #endif
