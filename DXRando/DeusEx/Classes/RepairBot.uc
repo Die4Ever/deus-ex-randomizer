@@ -1,33 +1,39 @@
+#ifdef injections
 class DXRRepairBot merges RepairBot;
+#else
+class DXRRepairBot extends RepairBot;
+#endif
 
 var int numUses;
 
 function int ChargePlayer(DeusExPlayer PlayerToCharge)
-{    
+{
     local int chargeAmount;
-    
-    chargeAmount = _ChargePlayer(PlayerToCharge);
-    
-    numUses++;
-    
-    return chargeAmount;
 
+#ifdef injections
+    chargeAmount = _ChargePlayer(PlayerToCharge);
+#else
+    chargeAmount = Super.ChargePlayer(PlayerToCharge);
+#endif
+
+    numUses++;
+
+    return chargeAmount;
 }
 
 function int GetMaxUses()
 {
     local DeusExPlayer p;
-    
+
     foreach AllActors(class'DeusExPlayer', p){
         return p.flagBase.GetInt('Rando_repairbotuses');
     }
-    
+
     return 0;
-    
 }
 
 function int GetRemainingUses()
-{   
+{
     return (GetMaxUses() - numUses);
 }
 
@@ -35,17 +41,16 @@ function string GetRemainingUsesStr()
 {
     local int uses;
     local string msg;
-    
+
     uses = GetRemainingUses();
-    
+
     if (uses == 1) {
         msg = " (1 Charges Left)";
     } else {
         msg = " ("$uses$" Charges Left)";
     }
-    
+
     return msg;
-    
 }
 
 function bool HasLimitedUses()
@@ -60,7 +65,11 @@ function bool ChargesRemaining()
 
 function bool CanCharge()
 {
+#ifdef injections
     if (_CanCharge()) {
+#else
+    if (Super.CanCharge()) {
+#endif
         if (HasLimitedUses()) {
             return (GetRemainingUses()>0);
         } else {
@@ -74,12 +83,12 @@ function bool CanCharge()
 function Float GetRefreshTimeRemaining()
 {
     local int timeRemaining;
-    
+
     timeRemaining = chargeRefreshTime - (Level.TimeSeconds - lastChargeTime);
-    
+
     if (timeRemaining < 0) {
         timeRemaining = 0;
     }
-    
+
     return timeRemaining;
 }

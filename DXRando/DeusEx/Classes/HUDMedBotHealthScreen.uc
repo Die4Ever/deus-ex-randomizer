@@ -1,4 +1,8 @@
+#ifdef injections
 class DXRHUDMedBotHealthScreen injects HUDMedBotHealthScreen;
+#else
+class DXRHUDMedBotHealthScreen extends HUDMedBotHealthScreen;
+#endif
 
 function UpdateMedBotDisplay()
 {
@@ -7,16 +11,24 @@ function UpdateMedBotDisplay()
     local float secondsRemaining;
     local String barLabel;
 
+#ifdef injections
+    local MedicalBot dxrbot;
+    dxrbot = medBot;
+#else
+    local DXRMedicalBot dxrbot;
+    dxrbot = DXRMedicalBot(medBot);
+#endif
+
     if (medBot != None)
     {
         infoText = Sprintf(HealthInfoTextLabel, medBot.healAmount);
 
         // Update the bar
         if (medBot.CanHeal())
-        {		
+        {
             winHealthBar.SetCurrentValue(100);
-            if (medBot.HasLimitedUses()) {
-                barLabel = ReadyLabel $ medBot.GetRemainingUsesStr();
+            if (dxrbot != None && dxrbot.HasLimitedUses()) {
+                barLabel = ReadyLabel $ dxrbot.GetRemainingUsesStr();
             } else {
                 barLabel = ReadyLabel;
             }
@@ -35,14 +47,14 @@ function UpdateMedBotDisplay()
 
             winHealthBar.SetCurrentValue(barPercent);
 
-            if (medBot.HasLimitedUses() && !medBot.HealsRemaining())
+            if (dxrbot != None && dxrbot.HasLimitedUses() && !dxrbot.HealsRemaining())
                 winHealthBarText.SetText("No Heals Left");
             else if (secondsRemaining == 1)
                 winHealthBarText.SetText(Sprintf(SecondsSingularLabel, Int(secondsRemaining)));
             else
                 winHealthBarText.SetText(Sprintf(SecondsPluralLabel, Int(secondsRemaining)));
 
-            if (medBot.HasLimitedUses() && !medBot.HealsRemaining()) 
+            if (dxrbot != None && dxrbot.HasLimitedUses() && !dxrbot.HealsRemaining())
                 infoText = infoText $ "|nNo heals remaining";
             else if (IsPlayerDamaged())
                 infoText = infoText $ MedBotRechargingLabel;

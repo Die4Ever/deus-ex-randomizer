@@ -1,4 +1,8 @@
+#ifdef injections
 class DXRHUDRechargeWindow injects HUDRechargeWindow;
+#else
+class DXRHUDRechargeWindow extends HUDRechargeWindow;
+#endif
 
 function UpdateRepairBotWindows()
 {
@@ -7,14 +11,22 @@ function UpdateRepairBotWindows()
     local float secondsRemaining;
     local String barLabel;
 
+#ifdef injections
+    local RepairBot dxrbot;
+    dxrbot = repairBot;
+#else
+    local DXRRepairBot dxrbot;
+    dxrbot = DXRRepairBot(repairBot);
+#endif
+
     if (repairBot != None)
     {
         // Update the bar
         if (repairBot.CanCharge())
-        {		
+        {
             winRepairBotBar.SetCurrentValue(100);
-            if (repairBot.HasLimitedUses()){
-                barLabel = ReadyLabel $ repairBot.GetRemainingUsesStr();
+            if (dxrbot != None && dxrbot.HasLimitedUses()){
+                barLabel = ReadyLabel $ dxrbot.GetRemainingUsesStr();
             } else {
                 barLabel = ReadyLabel;
             }
@@ -28,7 +40,7 @@ function UpdateRepairBotWindows()
 
             winRepairBotBar.SetCurrentValue(barPercent);
 
-            if (repairBot.HasLimitedUses() && !repairBot.ChargesRemaining())
+            if (dxrbot != None && dxrbot.HasLimitedUses() && !dxrbot.ChargesRemaining())
                 winRepairBotBarText.SetText("No Charges Remaining");
             else if (secondsRemaining == 1)
                 winRepairBotBarText.SetText(Sprintf(SecondsSingularLabel, Int(secondsRemaining)));
@@ -44,11 +56,19 @@ function UpdateInfoText()
 {
     local String infoText;
 
+#ifdef injections
+    local RepairBot dxrbot;
+    dxrbot = repairBot;
+#else
+    local DXRRepairBot dxrbot;
+    dxrbot = DXRRepairBot(repairBot);
+#endif
+
     if (repairBot != None)
     {
         infoText = Sprintf(RepairBotInfoText, repairBot.chargeAmount, repairBot.chargeRefreshTime);
 
-        if (repairBot.HasLimitedUses() && !repairBot.ChargesRemaining())
+        if (dxrbot != None && dxrbot.HasLimitedUses() && !dxrbot.ChargesRemaining())
             infoText = infoText $ "|nNo charges remaining";
         else if (player.Energy >= player.EnergyMax)
             infoText = infoText $ RepairBotYouAreHealed;

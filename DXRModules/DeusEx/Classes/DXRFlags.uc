@@ -497,8 +497,6 @@ function CheckConfig()
 #ifndef vanilla
         for(i=0; i<ArrayCount(difficulty_settings); i++) {
             difficulty_settings[i].merchants = 0;
-            difficulty_settings[i].repairbotuses = 0;
-            difficulty_settings[i].medbotuses = 0;
         }
 #endif
 

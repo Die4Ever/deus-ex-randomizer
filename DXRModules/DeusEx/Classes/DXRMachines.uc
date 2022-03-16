@@ -380,14 +380,21 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
 
     SetSeed( "RandoMedBots" );
     if( chance_single(medbots) ) {
-        SpawnBot(class'#var prefix MedicalBot', medHint);
+#ifdef injections
+        SpawnBot(class'MedicalBot', medHint);
+#else
+        SpawnBot(class'DXRMedicalBot', medHint);
+#endif
     }
 
     SetSeed( "RandoRepairBots" );
     if( chance_single(repairbots) ) {
-        SpawnBot(class'#var prefix RepairBot', repairHint);
+#ifdef injections
+        SpawnBot(class'RepairBot', repairHint);
+#else
+        SpawnBot(class'DXRRepairBot', medHint);
+#endif
     }
-
 }
 
 function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcooldown, int rbcooldown)

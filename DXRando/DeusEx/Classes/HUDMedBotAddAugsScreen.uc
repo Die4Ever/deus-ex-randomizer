@@ -1,4 +1,8 @@
+#ifdef injections
 class DXRHUDMedBotAddAugsScreen injects HUDMedBotAddAugsScreen;
+#else
+class DXRHUDMedBotAddAugsScreen extends HUDMedBotAddAugsScreen;
+#endif
 
 var PersonaActionButtonWindow btnRemove;
 
@@ -8,7 +12,7 @@ function CreateButtons()
 
     winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
     winActionButtons.SetPos(346, 371);
-    winActionButtons.SetWidth(150); 
+    winActionButtons.SetWidth(150);
 
     btnRemove = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
     btnRemove.bTranslucent = false; //This doesn't look amazing, but it covers up the weird transparency in the menu image
@@ -17,14 +21,13 @@ function CreateButtons()
     btnInstall = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
     btnInstall.bTranslucent = false; //This doesn't look amazing, but it covers up the weird transparency in the menu image
     btnInstall.SetButtonText(InstallButtonLabel);
-    
+
 }
 
 function EnableButtons()
 {
-    
     Super.EnableButtons();
-    
+
     if (PersonaAugmentationItemButton(selectedAugButton) != None && (selectedAug.AugmentationLocation != LOC_Default))
     {
         btnRemove.EnableWindow(True);
@@ -44,7 +47,7 @@ function bool ButtonActivated(Window buttonPressed)
         case btnRemove:
             RemoveAugmentation();
             break;
-            
+
         case btnInstall:
             InstallAugmentation();
             break;
@@ -55,35 +58,35 @@ function bool ButtonActivated(Window buttonPressed)
 
     if (bHandled)
         return true;
-    else 
+    else
         return Super.ButtonActivated(buttonPressed);
 
     return bHandled;
 }
 
 
-function RemoveAugmentation() 
-{   
+function RemoveAugmentation()
+{
     class'DXRAugmentations'.static.RemoveAug(player,selectedAug);
-    
+
     //Deselect the aug
     selectedAug = None;
     selectedAugButton = None;
-    
+
     // play a cool animation
     medBot.PlayAnim('Scan');
-    
+
     // Update the Installed Augmentation Icons
     DestroyAugmentationButtons();
     CreateAugmentationButtons();
-    
-    
+
+
     //Remove the aug description
     winInfo.Clear();
-    
+
     // Need to update the aug list
     PopulateAugCanList();
-    
+
     return;
 }
 
