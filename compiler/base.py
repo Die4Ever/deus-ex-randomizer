@@ -16,7 +16,7 @@ vanilla_inheritance_keywords = [None, 'extends', 'expands']
 # text colors
 WARNING = '\033[91m'
 ENDCOLOR = '\033[0m'
-re_error = re.compile(r'((none)|(warning)|(error)|(fail)|(out of bounds)|(time:))', re.IGNORECASE)
+re_error = re.compile(r'((none)|(null)|(warning)|(error)|(fail)|(out of bounds)|(time:))', re.IGNORECASE)
 
 def trace(str):
     # lower than debug
