@@ -25,13 +25,15 @@ function CheckConfig()
 {
     local class<Actor> temp_skipactor_types[6];
     local int i, t;
-    if( ConfigOlderThan(1,5,9,8) ) {
+    if( ConfigOlderThan(1,7,5,1) ) {
         for(i=0; i < ArrayCount(skipactor_types); i++) {
             skipactor_types[i] = "";
         }
         i=0;
         skipactor_types[i++] = "BarrelAmbrosia";
         skipactor_types[i++] = "NanoKey";
+        if(#defined gmdx)
+            skipactor_types[i++] = "CrateUnbreakableLarge";
     }
     Super.CheckConfig();
 
@@ -629,12 +631,12 @@ static function DestroyMover(DeusExMover m)
     local DeusExDecal D;
 
     // force the mover to stop
-	if (m.Leader != None)
-		m.Leader.MakeGroupStop();
+    if (m.Leader != None)
+        m.Leader.MakeGroupStop();
 
     // destroy all effects that are on us
-	foreach m.BasedActors(class'DeusExDecal', D)
-		D.Destroy();
+    foreach m.BasedActors(class'DeusExDecal', D)
+        D.Destroy();
 
     m.DropThings();
 

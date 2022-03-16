@@ -218,8 +218,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
 #endif
     else {
-        err("DescriptionLevel failed for skill "$act);
-        return "err";
+        return Super.DescriptionLevel(act, i, word);
     }
 }
 

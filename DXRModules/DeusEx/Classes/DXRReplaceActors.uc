@@ -63,6 +63,7 @@ function ReplaceGEPGun(WeaponGEPGUN a)
         return;
 
     ReplaceWeapon(a, n);
+    a.Destroy();
 #endif
 }
 
@@ -86,6 +87,7 @@ function ReplaceAllianceTrigger(#var prefix AllianceTrigger a)
     }
 
     ReplaceTrigger(a, n);
+    a.Destroy();
 }
 
 function ReplaceClothesRack(#var prefix ClothesRack a)
@@ -106,6 +108,7 @@ function ReplaceClothesRack(#var prefix ClothesRack a)
 #ifdef hx
     n.PrecessorName = a.PrecessorName;
 #endif
+    a.Destroy();
 }
 
 function ReplaceTrigger(#var prefix Trigger a, #var prefix Trigger n)
