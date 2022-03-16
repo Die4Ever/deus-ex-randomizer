@@ -1,7 +1,10 @@
-class DXREvents extends DXRActorsBase transient;
+class DXREvents extends DXRActorsBase;
 
-var #var PlayerPawn  _player;
-var bool died;
+var transient #var PlayerPawn  _player;
+var transient bool died;
+
+var name watchflags[32];
+var int num_watchflags;
 
 function PreFirstEntry()
 {
@@ -10,7 +13,26 @@ function PreFirstEntry()
         case 99:
             Ending_FirstEntry();
             break;
+
+        default:
+            // if any mission has a lot of flags then it can get its own case and function
+            SetWatchFlags();
+            break;
     }
+}
+
+function SetWatchFlags() {
+    switch(dxr.localURL) {
+    case "01_NYC_UNATCOHQ":
+        WatchFlag('BathroomBarks_Played');
+        break;
+    }
+}
+
+function WatchFlag(name flag) {
+    watchflags[num_watchflags++] = flag;
+    if(num_watchflags > ArrayCount(watchflags))
+        err("WatchFlag num_watchflags > ArrayCount(watchflags)");
 }
 
 function Ending_FirstEntry()
@@ -53,8 +75,7 @@ simulated function PlayerRespawn(#var PlayerPawn  player)
     Super.PlayerRespawn(player);
     _player = player;
     died = false;
-    if( !#defined injections )
-        SetTimer(1, true);
+    SetTimer(1, true);
 }
 
 simulated function PlayerAnyEntry(#var PlayerPawn  player)
@@ -62,20 +83,52 @@ simulated function PlayerAnyEntry(#var PlayerPawn  player)
     Super.PlayerAnyEntry(player);
     _player = player;
     died = false;
-    if( !#defined injections )
-        SetTimer(1, true);
+    SetTimer(1, true);
 }
 
 simulated function Timer()
 {
-    if(_player == None) {
-        SetTimer(0, false);
-        return;
+    local int i;
+    for(i=0; i<num_watchflags; i++) {
+        if(watchflags[i] == '') break;
+        if( dxr.flagbase.GetBool(watchflags[i]) ) {
+            SendFlagEvent(watchflags[i]);
+            num_watchflags--;
+            watchflags[i] = watchflags[num_watchflags];
+            i--;
+        }
     }
-    if( !#defined injections && _player.IsInState('Dying') && !died) {
+    if( !#defined injections && _player != None && _player.IsInState('Dying') && !died) {
         died = true;
         AddDeath(dxr, _player);
     }
+}
+
+function SendFlagEvent(name flag)
+{
+    local string j;
+    local #var PlayerPawn  p;
+    local string playername, loadout;
+    local class<Json> js;
+    js = class'Json';
+
+    p = player();
+#ifdef hx
+    // maybe we should report the names of all the players?
+    playername = p.PlayerReplicationInfo.PlayerName;
+#else
+    playername = p.TruePlayerName;
+#endif
+
+    j = js.static.Start("Flag");
+    js.static.Add(j, "seed", dxr.seed);
+    js.static.Add(j, "PlayerName", playername);
+    loadout = GetLoadoutName(dxr);
+    if(loadout != "")
+        js.static.Add(j, "loadout", loadout);
+    js.static.End(j);
+
+    class'DXRTelemetry'.static.SendEvent(dxr, p, j);
 }
 
 static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)

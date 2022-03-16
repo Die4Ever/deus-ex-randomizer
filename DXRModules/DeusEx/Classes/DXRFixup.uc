@@ -24,6 +24,8 @@ struct AddDatacube {
 };
 var config AddDatacube add_datacubes[32];
 
+var int old_pawns;// used for NYC_04_CheckPaulRaid()
+
 function CheckConfig()
 {
     local int i;
@@ -730,10 +732,11 @@ function NYC_04_CheckPaulRaid()
         NYC_04_MarkPaulSafe();
         SetTimer(0, False);
     }
-    else if( pawns == 1 )
+    else if( pawns == 1 && pawns != old_pawns )
         player().ClientMessage(pawns$" enemy remaining");
-    else if( pawns <3 )
+    else if( pawns <3 && pawns != old_pawns )
         player().ClientMessage(pawns$" enemies remaining");
+    old_pawns = pawns;
 }
 
 function NYC_04_MarkPaulSafe()
