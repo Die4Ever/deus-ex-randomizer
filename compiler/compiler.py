@@ -37,7 +37,10 @@ def run(args):
     for p in profiles:
         profile_name = p.strip()
         profile = merged[profile_name]
-        args.base.loglevel = 'debug' if profile['verbose'] else 'info'
+        if profile['verbose']:
+            increase_loglevel(DebugLevels.DEBUG)
+        else:
+            increase_loglevel(DebugLevels.INFO)
         printHeader("using profile: "+profile_name+", settings:")
         notice(repr(profile)+"\n")
         if not run_profile(args, profile):

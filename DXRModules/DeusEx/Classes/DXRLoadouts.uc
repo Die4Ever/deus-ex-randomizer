@@ -334,8 +334,8 @@ function AdjustWeapon(DeusExWeapon w)
 function NinjaAdjustWeapon(DeusExWeapon w)
 {
 #ifdef injections
-    local DeusExWeaponShim ws;
-    ws = DeusExWeaponShim(w);
+    local DXRWeapon ws;
+    ws = DXRWeapon(w);
     class'Shuriken'.default.blood_mult = 2;
     switch(w.Class) {
         case class'WeaponSword':

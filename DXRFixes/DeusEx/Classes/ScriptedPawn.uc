@@ -1,4 +1,4 @@
-class ScriptedPawn shims ScriptedPawn;
+class FixScriptedPawn shims ScriptedPawn;
 // doesn't work with injects, because of states and : Error, DeusEx.ScriptedPawn's superclass must be Engine.Pawn, not DeusEx.ScriptedPawnBase
 // could work with injectsabove or whatever https://github.com/Die4Ever/deus-ex-randomizer/issues/115
 var int flareBurnTime;

@@ -384,7 +384,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     local int numTools, numShots;
     local float damage;
     local name damageType;
-    local DeusExWeaponShim w;
+    local DXRWeapon w;
     local float lockStrength;
 
     dxMover = DeusExMover(m);
@@ -413,7 +413,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
 
     if ((dxMover != None) && dxMover.bLocked && dxMover.bBreakable)
     {
-        w = DeusExWeaponShim(player.inHand);
+        w = DXRWeapon(player.inHand);
         if( w != None ) {
             damageType = w.WeaponDamageType();
             damage = dxMover.CalcDamage(w.GetDamage(), damageType) * w.GetNumHits();

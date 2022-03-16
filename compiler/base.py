@@ -10,33 +10,52 @@ import traceback
 from pathlib import Path
 import time
 from timeit import default_timer as timer
+from enum import Enum, IntEnum
 
-loglevel = 'info'
+class DebugLevels(IntEnum):
+    SILENT = 0
+    NOTICE = 1
+    INFO = 2
+    DEBUG = 3
+    TRACE = 4
+
+loglevel = DebugLevels.INFO
+
 vanilla_inheritance_keywords = [None, 'extends', 'expands']
 # text colors
 WARNING = '\033[91m'
 ENDCOLOR = '\033[0m'
 re_error = re.compile(r'((none)|(null)|(warning)|(error)|(fail)|(out of bounds)|(time:))', re.IGNORECASE)
 
-def trace(str):
-    # lower than debug
-    pass
+def set_loglevel(new_loglevel):
+    global loglevel
+    assert isinstance(new_loglevel, DebugLevels), 'loglevel must be of type DebugLevels'
+    loglevel = new_loglevel
 
+def increase_loglevel(new_loglevel):
+    if new_loglevel > loglevel:
+        set_loglevel(new_loglevel)
+
+def trace(str):
+    global loglevel
+    if loglevel >= DebugLevels.TRACE:
+        print(str)
 
 def debug(str):
     global loglevel
-    if loglevel == 'debug':
+    if loglevel >= DebugLevels.DEBUG:
         print(str)
 
 def info(str):
     global loglevel
-    # later we should make this actually separate
-    if loglevel == 'debug':
+    if loglevel >= DebugLevels.INFO:
         print(str)
 
 def notice(str):
     # this might be useful if we do threading? so we can redirect to a file?
-    print(str)
+    global loglevel
+    if loglevel >= DebugLevels.NOTICE:
+        print(str)
 
 def prependException(e, msg):
     if not e.args:
@@ -63,6 +82,8 @@ def print_colored(msg):
     msg = re_error.sub(WARNING+"\\1"+ENDCOLOR, msg)
     print(msg)
 
+def indent(msg):
+    return '\t'+msg.replace('\n', '\n\t')
 
 def read(pipe, outs, errs, verbose):
     o = ''
@@ -81,7 +102,7 @@ def call(cmds, verbose=False, stdout=True, stderr=True):
     print("\nrunning "+repr(cmds))
     start = timer()
     last_print = start
-    if loglevel == 'debug':
+    if loglevel >= DebugLevels.TRACE:
         verbose = True
 
     if stdout:

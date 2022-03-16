@@ -44,6 +44,9 @@ class UnrealScriptFile():
         f.baseclass = baseclass
         f.content = re.sub(oldclassline, f.classline, f.content, count=1)
 
+    def __repr__(self):
+        return self.classline
+
     @staticmethod
     def get_class_line(content):
         classline = re.search( r'(class .+?;)', content, flags=re.IGNORECASE | re.DOTALL)
