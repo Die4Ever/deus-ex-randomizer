@@ -121,7 +121,6 @@ function SendFlagEvent(name flag)
 #endif
 
     j = js.static.Start("Flag");
-    js.static.Add(j, "seed", dxr.seed);
     js.static.Add(j, "PlayerName", playername);
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
@@ -234,7 +233,6 @@ static function BeatGame(DXRando dxr, int ending, int time)
 #endif
 
     j = js.static.Start("BeatGame");
-    js.static.Add(j, "seed", dxr.seed);
     js.static.Add(j, "PlayerName", playername);
     js.static.Add(j, "ending", ending);
     js.static.Add(j, "time", time);
