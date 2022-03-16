@@ -122,6 +122,7 @@ function SendFlagEvent(name flag)
 
     j = js.static.Start("Flag");
     js.static.Add(j, "PlayerName", playername);
+    js.static.Add(j, "flag", flag);
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
         js.static.Add(j, "loadout", loadout);
