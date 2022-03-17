@@ -24,8 +24,7 @@ function PreFirstEntry()
 function SetWatchFlags() {
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
-        if( !#defined injections )
-            WatchFlag('TerroristCommander_Dead');
+        WatchDeath('TerroristCommander_Dead');
         break;
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
@@ -40,6 +39,10 @@ function SetWatchFlags() {
 
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
+        break;
+
+    case "12_VANDENBERG_GAS":
+        WatchDeath('TiffanySavage_Dead');
         break;
     }
 }
@@ -60,6 +63,11 @@ function WatchFlag(name flag) {
     watchflags[num_watchflags++] = flag;
     if(num_watchflags > ArrayCount(watchflags))
         err("WatchFlag num_watchflags > ArrayCount(watchflags)");
+}
+
+function WatchDeath(name flag) {
+    if( !#defined injections )
+        WatchFlag(flag);
 }
 
 function Ending_FirstEntry()
