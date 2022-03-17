@@ -26,6 +26,12 @@ function SetWatchFlags() {
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
         break;
+
+    case "02_NYC_STREET":
+    case "04_NYC_STREET":
+    case "08_NYC_STREET":
+        Tag = 'MadeBasket';
+        break;
     }
 }
 
@@ -104,6 +110,43 @@ simulated function Timer()
     }
 }
 
+function Trigger(Actor Other, Pawn Instigator)
+{
+     local string j;
+    local #var PlayerPawn  p;
+    local string instigatorname, loadout;
+    local class<Json> js;
+    js = class'Json';
+
+    Super.Trigger(Other, Instigator);
+    p = #var PlayerPawn (Instigator);
+    l("Trigger("$Other$", "$instigator$"), "$p);
+#ifdef hx
+    if(p != None)
+        instigatorname = p.PlayerReplicationInfo.PlayerName;
+#else
+    if(p != None)
+        instigatorname = p.TruePlayerName;
+#endif
+    else
+        instigatorname = Instigator.default.FamiliarName;
+
+    j = js.static.Start("Trigger");
+    js.static.Add(j, "instigator", instigatorname);
+    js.static.Add(j, "tag", tag);
+    js.static.add(j, "other", other.default.FamiliarName);
+    js.static.Add(j, "map", dxr.localURL);
+    js.static.Add(j, "mapname", dxr.dxInfo.MissionLocation);
+    js.static.Add(j, "mission", dxr.dxInfo.missionNumber);
+    js.static.Add(j, "TrueNorth", dxr.dxInfo.TrueNorth);
+    loadout = GetLoadoutName(dxr);
+    if(loadout != "")
+        js.static.Add(j, "loadout", loadout);
+    js.static.End(j);
+
+    class'DXRTelemetry'.static.SendEvent(dxr, p, j);
+}
+
 function SendFlagEvent(name flag)
 {
     local string j;
@@ -123,6 +166,10 @@ function SendFlagEvent(name flag)
     j = js.static.Start("Flag");
     js.static.Add(j, "PlayerName", playername);
     js.static.Add(j, "flag", flag);
+    js.static.Add(j, "map", dxr.localURL);
+    js.static.Add(j, "mapname", dxr.dxInfo.MissionLocation);
+    js.static.Add(j, "mission", dxr.dxInfo.missionNumber);
+    js.static.Add(j, "TrueNorth", dxr.dxInfo.TrueNorth);
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
         js.static.Add(j, "loadout", loadout);
