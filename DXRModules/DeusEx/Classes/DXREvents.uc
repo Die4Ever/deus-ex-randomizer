@@ -167,6 +167,7 @@ function SendFlagEvent(name flag, optional bool immediate)
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", flag);
     js.static.Add(j, "immediate", immediate);
+    js.static.Add(j, "location", dxr.player.location);
     GeneralEventData(dxr, j);
     js.static.End(j);
 
