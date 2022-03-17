@@ -25,6 +25,7 @@ function SetWatchFlags() {
     switch(dxr.localURL) {
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
+        WatchFlag('ManBathroomBarks_Played');
         break;
 
     case "02_NYC_STREET":
