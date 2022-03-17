@@ -70,6 +70,12 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
     }
 }
 
+function Died(pawn Killer, name damageType, vector HitLocation)
+{
+    class'DXREvents'.static.AddPawnDeath(self, Killer, damageType, HitLocation);
+    Super.Died(Killer,damageType,HitLocation);
+}
+
 function UpdateFire()
 {
     Super.UpdateFire();

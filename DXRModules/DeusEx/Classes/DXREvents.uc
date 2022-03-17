@@ -113,81 +113,57 @@ simulated function Timer()
 function Trigger(Actor Other, Pawn Instigator)
 {
      local string j;
-    local #var PlayerPawn  p;
-    local string instigatorname, loadout;
     local class<Json> js;
     js = class'Json';
 
     Super.Trigger(Other, Instigator);
-    p = #var PlayerPawn (Instigator);
-    l("Trigger("$Other$", "$instigator$"), "$p);
-#ifdef hx
-    if(p != None)
-        instigatorname = p.PlayerReplicationInfo.PlayerName;
-#else
-    if(p != None)
-        instigatorname = p.TruePlayerName;
-#endif
-    else
-        instigatorname = Instigator.default.FamiliarName;
+    l("Trigger("$Other$", "$instigator$")");
 
     j = js.static.Start("Trigger");
-    js.static.Add(j, "instigator", instigatorname);
+    js.static.Add(j, "instigator", GetActorName(Instigator));
     js.static.Add(j, "tag", tag);
-    js.static.add(j, "other", other.default.FamiliarName);
-    js.static.Add(j, "map", dxr.localURL);
-    js.static.Add(j, "mapname", dxr.dxInfo.MissionLocation);
-    js.static.Add(j, "mission", dxr.dxInfo.missionNumber);
-    js.static.Add(j, "TrueNorth", dxr.dxInfo.TrueNorth);
-    loadout = GetLoadoutName(dxr);
-    if(loadout != "")
-        js.static.Add(j, "loadout", loadout);
+    js.static.add(j, "other", GetActorName(other));
+    GeneralEventData(dxr, j);
     js.static.End(j);
 
-    class'DXRTelemetry'.static.SendEvent(dxr, p, j);
+    class'DXRTelemetry'.static.SendEvent(dxr, Instigator, j);
 }
 
 function SendFlagEvent(name flag)
 {
     local string j;
-    local #var PlayerPawn  p;
-    local string playername, loadout;
     local class<Json> js;
     js = class'Json';
 
-    p = player();
-#ifdef hx
-    // maybe we should report the names of all the players?
-    playername = p.PlayerReplicationInfo.PlayerName;
-#else
-    playername = p.TruePlayerName;
-#endif
-
     j = js.static.Start("Flag");
-    js.static.Add(j, "PlayerName", playername);
     js.static.Add(j, "flag", flag);
-    js.static.Add(j, "map", dxr.localURL);
-    js.static.Add(j, "mapname", dxr.dxInfo.MissionLocation);
-    js.static.Add(j, "mission", dxr.dxInfo.missionNumber);
-    js.static.Add(j, "TrueNorth", dxr.dxInfo.TrueNorth);
-    loadout = GetLoadoutName(dxr);
-    if(loadout != "")
-        js.static.Add(j, "loadout", loadout);
+    GeneralEventData(dxr, j);
     js.static.End(j);
 
-    class'DXRTelemetry'.static.SendEvent(dxr, p, j);
+    class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
+}
+
+static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce string damageType, vector HitLocation, string type)
+{
+    local string j;
+    local class<Json> js;
+    js = class'Json';
+
+    j = js.static.Start(type);
+    js.static.Add(j, "victim", GetActorName(victim));
+    if(Killer != None) {
+        js.static.Add(j, "killerclass", Killer.Class.Name);
+        js.static.Add(j, "killer", GetActorName(Killer));
+    }
+    js.static.Add(j, "dmgtype", damageType);
+    GeneralEventData(dxr, j);
+    js.static.Add(j, "location", victim.Location);
+    js.static.End(j);
+    class'DXRTelemetry'.static.SendEvent(dxr, victim, j);
 }
 
 static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    local string j;
-    local string killername, playername, loadout;
-    local Pawn KillerPawn;
-    local #var prefix ScriptedPawn sp;
-    local #var PlayerPawn  killerplayer;
-    local class<Json> js;
-    js = class'Json';
-
     class'DXRStats'.static.AddDeath(player);
     class'DXRHints'.static.AddDeath(dxr, player);
 
@@ -205,28 +181,6 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Ki
             Killer = player.myKiller;
     }
 
-    killerplayer = #var PlayerPawn (Killer);
-    KillerPawn = Pawn(Killer);
-    sp = #var prefix ScriptedPawn(Killer);
-
-#ifdef hx
-    playername = player.PlayerReplicationInfo.PlayerName;
-    if(killerplayer != None) {
-        killername = killerplayer.TruePlayerName;
-    }
-#else
-    playername = player.TruePlayerName;
-    if(killerplayer != None) {
-        killername = killerplayer.TruePlayerName;
-    }
-#endif
-    // bImportant ScriptedPawns don't get their names randomized
-    else if(sp != None && sp.bImportant)
-        killername = Killer.FamiliarName;
-    // randomized names aren't really meaningful here so use their default name
-    else if(Killer != None)
-        killername = Killer.default.FamiliarName;
-
     if(damageType == "shot") {
         if( !IsHuman(Killer) && Robot(Killer) == None ) {
             // only humans and robots can shoot? karkians deal shot damage
@@ -234,30 +188,17 @@ static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Ki
         }
     }
 
-    j = js.static.Start("DEATH");
-    js.static.Add(j, "type", "DEATH");
-    js.static.Add(j, "player", playername);
-    if(Killer != None) {
-        js.static.Add(j, "killerclass", Killer.Class.Name);
-        js.static.Add(j, "killer", killername);
-    }
-    js.static.Add(j, "dmgtype", damageType);
-    js.static.Add(j, "map", dxr.localURL);
-    js.static.Add(j, "mapname", dxr.dxInfo.MissionLocation);
-    js.static.Add(j, "mission", dxr.dxInfo.missionNumber);
-    js.static.Add(j, "TrueNorth", dxr.dxInfo.TrueNorth);
-    js.static.Add(j, "location", player.Location);
-
-    loadout = GetLoadoutName(dxr);
-    if(loadout != "")
-        js.static.Add(j, "loadout", loadout);
-    js.static.End(j);
-    class'DXRTelemetry'.static.SendEvent(dxr, player, j);
+    _DeathEvent(dxr, player, Killer, damageType, HitLocation, "DEATH");
 }
 
-static function PaulDied(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
-    // we can call this from an injects on PaulDenton, and also on mission 5 first entry
+    local DXRando dxr;
+    if(!victim.bImportant)
+        return;
+
+    foreach victim.AllActors(class'DXRando', dxr) break;
+    _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
 }
 
 static function SavedPaul(DXRando dxr, #var PlayerPawn  player)
@@ -267,31 +208,36 @@ static function SavedPaul(DXRando dxr, #var PlayerPawn  player)
 static function BeatGame(DXRando dxr, int ending, int time)
 {
     local string j;
-    local string playername, loadout;
-    local #var PlayerPawn   player;
+    local string loadout;
     local class<Json> js;
     js = class'Json';
 
-    player = dxr.Player;
-
-#ifdef hx
-    playername = player.PlayerReplicationInfo.PlayerName;
-#else
-    playername = player.TruePlayerName;
-#endif
-
     j = js.static.Start("BeatGame");
-    js.static.Add(j, "PlayerName", playername);
     js.static.Add(j, "ending", ending);
     js.static.Add(j, "time", time);
-    js.static.Add(j, "SaveCount", player.saveCount);
+    js.static.Add(j, "SaveCount", dxr.player.saveCount);
     js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
+    GeneralEventData(dxr, j);
+    js.static.End(j);
+
+    class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
+}
+
+static function GeneralEventData(DXRando dxr, out string j)
+{
+    local string loadout;
+    local class<Json> js;
+    js = class'Json';
+
+    js.static.Add(j, "PlayerName", GetActorName(dxr.player));
+    js.static.Add(j, "map", dxr.localURL);
+    js.static.Add(j, "mapname", dxr.dxInfo.MissionLocation);
+    js.static.Add(j, "mission", dxr.dxInfo.missionNumber);
+    js.static.Add(j, "TrueNorth", dxr.dxInfo.TrueNorth);
+
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
         js.static.Add(j, "loadout", loadout);
-    js.static.End(j);
-
-    class'DXRTelemetry'.static.SendEvent(dxr, player, j);
 }
 
 static function string GetLoadoutName(DXRando dxr)

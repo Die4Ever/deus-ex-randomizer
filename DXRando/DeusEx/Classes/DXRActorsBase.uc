@@ -554,6 +554,36 @@ function Conversation GetConversation(Name conName)
     return None;
 }
 
+static function string GetActorName(Actor a)
+{
+    local #var PlayerPawn  player;
+    local #var prefix ScriptedPawn sp;
+
+    if(a == None)
+        return "";
+
+    player = #var PlayerPawn (a);
+    sp = #var prefix ScriptedPawn(a);
+
+#ifdef hx
+    if(player != None) {
+        return player.PlayerReplicationInfo.PlayerName;
+    }
+#else
+    if(player != None) {
+        return player.TruePlayerName;
+    }
+#endif
+    // bImportant ScriptedPawns don't get their names randomized
+    else if(sp != None && sp.bImportant)
+        return a.FamiliarName;
+    // randomized names aren't really meaningful here so use their default name
+    else if(a.default.FamiliarName != "")
+        return a.default.FamiliarName;
+
+    return string(a.class.name);
+}
+
 static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate, name Event)
 {
     local DeusExDecoration d;
