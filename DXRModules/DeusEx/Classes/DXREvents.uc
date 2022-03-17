@@ -33,10 +33,26 @@ function SetWatchFlags() {
     case "08_NYC_STREET":
         Tag = 'MadeBasket';
         break;
+
+    case "05_NYC_UNATCOMJ12LAB":
+        CheckPaul();
+        break;
+    }
+}
+
+function CheckPaul() {
+    if( dxr.flagbase.GetBool('PaulDenton_Dead') && ! dxr.flagbase.GetBool('DXREvents_PaulDead') ) {
+        PaulDied(dxr);
+    } else if( ! #defined vanilla ) {
+        SavedPaul(dxr, dxr.player);
     }
 }
 
 function WatchFlag(name flag) {
+    if( dxr.flagbase.GetBool(flag) ) {
+        SendFlagEvent(flag, true);
+        return;
+    }
     watchflags[num_watchflags++] = flag;
     if(num_watchflags > ArrayCount(watchflags))
         err("WatchFlag num_watchflags > ArrayCount(watchflags)");
@@ -130,7 +146,7 @@ function Trigger(Actor Other, Pawn Instigator)
     class'DXRTelemetry'.static.SendEvent(dxr, Instigator, j);
 }
 
-function SendFlagEvent(name flag)
+function SendFlagEvent(name flag, optional bool immediate)
 {
     local string j;
     local class<Json> js;
@@ -138,6 +154,7 @@ function SendFlagEvent(name flag)
 
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", flag);
+    js.static.Add(j, "immediate", immediate);
     GeneralEventData(dxr, j);
     js.static.End(j);
 
@@ -202,14 +219,39 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
 }
 
+
+static function PaulDied(DXRando dxr)
+{
+    local string j;
+    local class<Json> js;
+    js = class'Json';
+
+    j = js.static.Start("PawnDeath");
+    js.static.Add(j, "victim", "Paul Denton");
+    js.static.Add(j, "dmgtype", "");
+    GeneralEventData(dxr, j);
+    js.static.Add(j, "location", dxr.player.location);
+    js.static.End(j);
+    dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
+    class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
+}
+
 static function SavedPaul(DXRando dxr, #var PlayerPawn  player)
 {
+    local string j;
+    local class<Json> js;
+    js = class'Json';
+
+    j = js.static.Start("SavedPaul");
+    GeneralEventData(dxr, j);
+    js.static.End(j);
+
+    class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
 }
 
 static function BeatGame(DXRando dxr, int ending, int time)
 {
     local string j;
-    local string loadout;
     local class<Json> js;
     js = class'Json';
 
