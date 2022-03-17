@@ -23,6 +23,10 @@ function PreFirstEntry()
 
 function SetWatchFlags() {
     switch(dxr.localURL) {
+    case "01_NYC_UNATCOISLAND":
+        if( !#defined injections )
+            WatchFlag('TerroristCommander_Dead');
+        break;
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
         WatchFlag('ManBathroomBarks_Played');
@@ -169,6 +173,7 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
 
     j = js.static.Start(type);
     js.static.Add(j, "victim", GetActorName(victim));
+    js.static.Add(j, "victimBindName", victim.BindName);
     if(Killer != None) {
         js.static.Add(j, "killerclass", Killer.Class.Name);
         js.static.Add(j, "killer", GetActorName(Killer));
