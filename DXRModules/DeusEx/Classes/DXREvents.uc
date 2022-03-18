@@ -313,6 +313,7 @@ static function GeneralEventData(DXRando dxr, out string j)
     js.static.Add(j, "mapname", dxr.dxInfo.MissionLocation);
     js.static.Add(j, "mission", dxr.dxInfo.missionNumber);
     js.static.Add(j, "TrueNorth", dxr.dxInfo.TrueNorth);
+    js.static.Add(j, "PlayerIsFemale", dxr.flagbase.GetBool('LDDPJCIsFemale'));
 
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
