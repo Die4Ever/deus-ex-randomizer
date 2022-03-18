@@ -222,7 +222,7 @@ static function AddGibbedKill(DeusExPlayer p)
     IncStatFlag(p,'DXRStats_gibbedkills');
 }
 
-function int GetDataStorageStat(name valname)
+static function int GetDataStorageStat(DXRando dxr, name valname)
 {
     local DataStorage datastorage;
     datastorage = class'DataStorage'.static.GetObj(dxr);
@@ -256,7 +256,7 @@ function AddDXRCredits(CreditsWindow cw)
     jumps = dxr.flagbase.GetInt('DXRStats_jumps');
     burnkills = dxr.flagbase.GetInt('DXRStats_burnkills');
     gibbedkills = dxr.flagbase.GetInt('DXRStats_gibbedkills');
-    deaths = GetDataStorageStat('DXRStats_deaths');
+    deaths = GetDataStorageStat(dxr, 'DXRStats_deaths');
 
     cw.PrintHeader("Statistics");
 

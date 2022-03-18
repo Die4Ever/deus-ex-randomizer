@@ -362,6 +362,7 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
     repairHint = '03_Datacube11';
 
     if( medbots > -1 ) {
+        DestroyMedbotDoors();
         foreach AllActors(class'#var prefix MedicalBot', m) {
             m.Destroy();
         }
@@ -380,14 +381,21 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
 
     SetSeed( "RandoMedBots" );
     if( chance_single(medbots) ) {
-        SpawnBot(class'#var prefix MedicalBot', medHint);
+#ifdef injections
+        SpawnBot(class'MedicalBot', medHint);
+#else
+        SpawnBot(class'DXRMedicalBot', medHint);
+#endif
     }
 
     SetSeed( "RandoRepairBots" );
     if( chance_single(repairbots) ) {
-        SpawnBot(class'#var prefix RepairBot', repairHint);
+#ifdef injections
+        SpawnBot(class'RepairBot', repairHint);
+#else
+        SpawnBot(class'DXRRepairBot', medHint);
+#endif
     }
-
 }
 
 function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcooldown, int rbcooldown)
@@ -494,6 +502,21 @@ function Actor SpawnNewActor(class<Actor> c, optional vector target, optional fl
     }
 
     return a;
+}
+
+function DestroyMedbotDoors()
+{
+    local DeusExMover m;
+
+    switch(dxr.localURL) {
+    case "01_NYC_UNATCOISLAND":
+        foreach AllActors(class'DeusExMover', m) {
+            if(m.name == 'DeusExMover0' || m.name == 'DeusExMover2') {
+                DestroyMover(m);
+            }
+        }
+        break;
+    }
 }
 
 function ExtendedTests()

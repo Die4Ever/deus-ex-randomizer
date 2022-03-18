@@ -593,7 +593,7 @@ function vanilla_important_locations()
 
     map = "02_nyc_batterypark";
     important_locations[i].map_name = map;
-    important_locations[i].location = vect(-4310.507813,2237.952637,189.843536);//'Light450' 
+    important_locations[i].location = vect(-4310.507813,2237.952637,189.843536);//'Light450'
     important_locations[i].is_player_start = true;
     important_locations[i].is_goal_position = true;
     i++;
@@ -1016,6 +1016,7 @@ function PreFirstEntry()
 
     if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
+        dxr.flags.f.SetBool('FemJCMeetPaul_Played', true,, 2);
     }
     else if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
         foreach AllActors(class'#var prefix AnnaNavarre', anna) {
@@ -1202,7 +1203,7 @@ function bool MoveGoalTo(name goalName, int locNumber)
     local goal targetGoal;
     local int i,locNum;
     local bool foundGoal,foundLoc;
-   
+
     //Find goal actor by name
      foreach AllActors(class'Actor', a) {
 #ifdef hx
@@ -1215,7 +1216,7 @@ function bool MoveGoalTo(name goalName, int locNumber)
             break;
         }
     }
-    
+
     if (goalActor == None) {
         //Couldn't find the actual goal actor
         return False;
@@ -1230,12 +1231,12 @@ function bool MoveGoalTo(name goalName, int locNumber)
         }
         locNum++;
     }
-    
+
     if (foundLoc == false){
         //Couldn't find the target location
         return False;
     }
-    
+
     for(i=0; i<ArrayCount(goals); i++) {
         if( dxr.localURL != goals[i].map_name ) continue;
         if (goals[i].actor_name==goalName){
@@ -1244,17 +1245,17 @@ function bool MoveGoalTo(name goalName, int locNumber)
             break;
         }
     }
-    
+
     if (foundGoal == false){
         //Couldn't find a goal for the specified name
         return False;
     }
- 
+
     MoveActor(goalActor, targetLoc.location, targetLoc.rotation, targetGoal.physics);
-    
+
     return True;
- 
-    
+
+
 }
 
 static function bool IsCloseToStart(DXRando dxr, vector loc)

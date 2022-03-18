@@ -98,7 +98,7 @@ function Fire()
 function Tick(float deltaTime)
 {
     local Pawn pawn;
-    local ScriptedPawnShim sp;
+    local FixScriptedPawn sp;
     local DeusExDecoration deco;
     local float near;
     local Rotator destRot;
@@ -131,7 +131,7 @@ function Tick(float deltaTime)
                     bSwitched = True;
                 else if ((DeathMatchGame(DeusExPlayer(safeTarget).DXGame) != None ) && (DeusExPlayer(safeTarget).PlayerReplicationInfo.PlayerID != team))
                     bSwitched = True;
-                
+
                 if ( bSwitched )
                 {
                     bDisabled = True;
@@ -183,7 +183,7 @@ function Tick(float deltaTime)
 
                 if (TargetRefreshTime < 0)
                     TargetRefreshTime = 0;
-         
+
                 TargetRefreshTime = TargetRefreshTime + deltaTime;
 
                 if (TargetRefreshTime >= 0.3)
@@ -209,7 +209,7 @@ function Tick(float deltaTime)
                 //			F						T				Enemies
                 //			F						F				Everything
                 //
-         
+
                 // Attack allies and neutrals
                 if (bTrackPlayersOnly || (!bTrackPlayersOnly && !bTrackPawnsOnly))
                 {
@@ -227,7 +227,7 @@ function Tick(float deltaTime)
                                 }
                             }
                             // DXRando: > 0 instead of != ALLIANCE_Hostile
-                            else if (pawn.IsA('ScriptedPawnShim') && (ScriptedPawnShim(pawn).GetPawnAlliance(GetPlayerPawn()) > 0))
+                            else if (pawn.IsA('FixScriptedPawn') && (FixScriptedPawn(pawn).GetPawnAlliance(GetPlayerPawn()) > 0))
                             {
                                 curTarget = pawn;
                                 break;
@@ -235,7 +235,7 @@ function Tick(float deltaTime)
                         }
                     }
                 }
-         
+
                 if (!bTrackPlayersOnly)
                 {
                     // Attack everything
@@ -251,9 +251,9 @@ function Tick(float deltaTime)
                             }
                         }
                     }
-            
+
                     // Attack enemies
-                    foreach gun.VisibleActors(class'ScriptedPawnShim', sp, maxRange, gun.Location)
+                    foreach gun.VisibleActors(class'FixScriptedPawn', sp, maxRange, gun.Location)
                     {
                         // DXRando: < 0 instead of == ALLIANCE_Hostile
                         if (sp.bDetectable && !sp.bIgnore && (sp.GetPawnAlliance(GetPlayerPawn()) < 0))

@@ -1,13 +1,7 @@
 class Json extends Object transient;
 // singleton class
 
-//JSON parsing states
-const KeyState = 1;
-const ValState = 2;
-const ArrayState = 3;
-const ArrayDoneState = 4;
-const EndState = 5;
-
+// #region Private Members
 struct IntPair
 {
     var int idx, len;
@@ -29,10 +23,11 @@ struct JsonMsg
 var string _buf;
 var JsonMsg j;
 
-function _parse(string msg) {
-    ParseJson(msg);
-}
-
+// #endregion
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////                                    JSON PUBLIC INTERFACE                                                 ////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// #region Json Public Interface
 static function Json parse(LevelInfo parent, string msg, optional Json o) {
     if(o == None)
         foreach parent.AllObjects(class'json', o)
@@ -109,9 +104,42 @@ function string get(string key, optional int i) {
     return get_string(j.e[k].value[i]);
 }
 
+// #endregion
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////                                            JSON OUTPUT                                                   ////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// #region Json Output
+static function string Start(string type)
+{
+    return "{\"type\":\"" $ type $ "\"";
+}
+
+static function string Add(out string j, coerce string key, coerce string value)
+{
+    j = j $ ",\"" $ key $ "\":\"" $ value $ "\"";
+}
+
+static function End(out string j)
+{
+    j = j $ "}";
+}
+
+// #endregion
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                    INTERNAL JSON STUFF                                                   ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// #region Internal Json Stuff
+
+//JSON parsing states
+const KeyState = 1;
+const ValState = 2;
+const ArrayState = 3;
+const ArrayDoneState = 4;
+const EndState = 5;
+
+function _parse(string msg) {
+    ParseJson(msg);
+}
 
 static function l(coerce string message, string j)
 {
@@ -438,3 +466,4 @@ function ParseJson(string msg) {
     }
     //log("ERROR: ParseJson ran too long, i: "$i);
 }
+// #endregion

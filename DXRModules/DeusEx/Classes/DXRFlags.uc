@@ -202,7 +202,7 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,7,3,9) ) {
+    if( ConfigOlderThan(1,7,5,0) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -247,7 +247,7 @@ function CheckConfig()
         difficulty_settings[i].repairbotamount = 1;
         difficulty_settings[i].turrets_move = 100;
         difficulty_settings[i].turrets_add = 50;
-        difficulty_settings[i].merchants = 30;
+        difficulty_settings[i].merchants = 100;
         difficulty_settings[i].dancingpercent = 25;
         difficulty_settings[i].swapitems = 100;
         difficulty_settings[i].swapcontainers = 100;
@@ -492,13 +492,7 @@ function CheckConfig()
 #ifdef hx
         for(i=0; i<ArrayCount(difficulty_settings); i++) {
             difficulty_settings[i].startinglocations = 0;
-        }
-#endif
-#ifndef vanilla
-        for(i=0; i<ArrayCount(difficulty_settings); i++) {
             difficulty_settings[i].merchants = 0;
-            difficulty_settings[i].repairbotuses = 0;
-            difficulty_settings[i].medbotuses = 0;
         }
 #endif
 

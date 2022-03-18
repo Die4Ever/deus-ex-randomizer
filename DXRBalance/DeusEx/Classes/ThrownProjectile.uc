@@ -1,4 +1,4 @@
-class ThrownProjectile shims ThrownProjectile;
+class DXRThrownProjectile shims ThrownProjectile;
 
 //
 // SpawnTearGas needs to happen on the server so the clouds are insync and damage is dealt out of them
@@ -39,7 +39,7 @@ function SpawnCloud(class<Cloud> type, Name DamageType)
     loc.Z += 32;
     gas = spawn(type, None,, loc);
     if (gas == None) return;
-    
+
     gas.DamageType = DamageType;
     gas.Velocity = vect(0,0,0);
     gas.Acceleration = vect(0,0,0);

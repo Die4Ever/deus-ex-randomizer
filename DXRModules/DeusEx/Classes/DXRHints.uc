@@ -6,7 +6,6 @@ var #var PlayerPawn  _player;
 var string hints[100];
 var string details[100];
 var int numHints;
-var int hintsGiven;
 
 simulated function InitHints()
 {
@@ -14,6 +13,7 @@ simulated function InitHints()
     local int mission;
     local string map;
 
+    numHints = 0;
     mission = dxr.dxInfo.missionNumber;
     map = dxr.localURL;
     if(mission < 1 || mission > 50) {
@@ -32,21 +32,21 @@ simulated function InitHints()
     else
         AddHint("Check out @DXRandoActivity on Twitter!", "We just shared your death publicly, go retweet it!");
 
-#ifdef injections
-    AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken");
-    AddHint("You can carry 5 fire extinguishers in 1 inventory slot.", "They are very useful for stealthily killing multiple enemies.");
-    AddHint("Ever tried to extinguish a fire with a toilet?", "How about a urinal or a shower?");
-    AddHint("Items like ballistic armor and rebreathers now free up", "the inventory spaceimmediately when you equip them.");
-    AddHint("Items like hazmat suits and thermoptic camo now free up", "the inventory space immediately when you equip them.");
-    AddHint("Hacking computers now uses 5 bioelectric energy per second.");
-    AddHint("Spy Drone aug has improved speed", "and the emp blast now also does explosive damage.");
-    AddHint("The PS20 has been upgraded to the PS40", "and does significantly more damage.");
-    AddHint("Flare darts now set enemies on fire for 3 seconds.");
-    AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
-    AddHint("Read the pop-up text on doors to see how many", "hit from your equiped weapon to break it.");
-    AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
-    AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
-#endif
+    if(#defined injections) {
+        AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken");
+        AddHint("You can carry 5 fire extinguishers in 1 inventory slot.", "They are very useful for stealthily killing multiple enemies.");
+        AddHint("Ever tried to extinguish a fire with a toilet?", "How about a urinal or a shower?");
+        AddHint("Items like ballistic armor and rebreathers now free up", "the inventory spaceimmediately when you equip them.");
+        AddHint("Items like hazmat suits and thermoptic camo now free up", "the inventory space immediately when you equip them.");
+        AddHint("Hacking computers now uses 5 bioelectric energy per second.");
+        AddHint("Spy Drone aug has improved speed", "and the emp blast now also does explosive damage.");
+        AddHint("The PS20 has been upgraded to the PS40", "and does significantly more damage.");
+        AddHint("Flare darts now set enemies on fire for 3 seconds.");
+        AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
+        AddHint("Read the pop-up text on doors to see how many", "hit from your equiped weapon to break it.");
+        AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
+        AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
+    }
 
     if(dxr.flags.settings.medbots > 0) {
         AddHint("Medbots are randomized.", "Don't expect to find them in the usual locations.");
@@ -107,9 +107,8 @@ simulated function InitHints()
     }
 
     if(mission <= 4) {
-#ifdef injections
-        AddHint("The flashlight (F12) no longer consumes energy when used.", "Go wild with it!");
-#endif
+        if(#defined injections)
+            AddHint("The flashlight (F12) no longer consumes energy when used.", "Go wild with it!");
         AddHint("Melee attacks from behind do bonus damage!");
         AddHint("The flashlight (F12) can be used to attract the attention of guards");
         AddHint("Don't hoard items.", "You'll find more!");
@@ -239,23 +238,11 @@ simulated function AddHint(string hint, optional string detail)
     numHints++;
 }
 
-simulated function PlayerRespawn(#var PlayerPawn  player)
-{
-    Super.PlayerRespawn(player);
-    _player = player;
-    hintsGiven = 0;
-    SetTimer(1, true);
-}
-
 simulated function PlayerAnyEntry(#var PlayerPawn  player)
 {
     Super.PlayerAnyEntry(player);
-    if(numHints==0) {
-        InitHints();
-    }
     _player = player;
-    hintsGiven = 0;
-    SetTimer(1, true);
+    InitHints();
 }
 
 simulated function int GetHint()
@@ -270,9 +257,10 @@ simulated function ShowHint(optional int recursion)
 #ifdef hx
     // for hx, the DXRBigMessage is bugged, so just disable the timer and PlayerRespawn will enable it again
     SetTimer(0, false);
-#else
+    return;
+#endif
+
     SetTimer(15, true);
-    hintsGiven++;
     if( recursion > 10 ) {
         err("ShowHint reached max recursion " $ recursion);
         return;
@@ -281,7 +269,6 @@ simulated function ShowHint(optional int recursion)
 
     if(class'DXRBigMessage'.static.CreateBigMessage(_player, self, hints[hint], details[hint]) == None)
         ShowHint(recursion++);
-#endif
 }
 
 simulated function Timer()
@@ -290,18 +277,22 @@ simulated function Timer()
         SetTimer(0, false);
         return;
     }
-    if(_player.IsInState('Dying')) {
-#ifndef injections
-        if(hintsGiven == 0) {
-            class'DXRStats'.static.AddDeath(_player);
-            class'DXRTelemetry'.static.AddDeath(dxr, _player);
-        }
-#endif
-
+    if(class'DXRBigMessage'.static.GetCurrentBigMessage(_player) != None) {
         ShowHint();
     }
-    else
-        hintsGiven = 0;
+    else {
+        SetTimer(0, false);
+    }
+}
+
+static function AddDeath(DXRando dxr, #var PlayerPawn  player)
+{
+    local DXRHints hints;
+    hints = DXRHints(dxr.FindModule(class'DXRHints'));
+    if(hints != None) {
+        hints._player = player;
+        hints.ShowHint();
+    }
 }
 
 function RunTests()

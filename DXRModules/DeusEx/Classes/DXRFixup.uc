@@ -24,6 +24,8 @@ struct AddDatacube {
 };
 var config AddDatacube add_datacubes[32];
 
+var int old_pawns;// used for NYC_04_CheckPaulRaid()
+
 function CheckConfig()
 {
     local int i;
@@ -218,44 +220,6 @@ function VanillaPreFirstEntry()
         case 15:
             Area51_FirstEntry();
             break;
-        case 99:
-            Ending_FirstEntry();
-            break;
-    }
-}
-function Ending_FirstEntry()
-{
-    local int ending,time;
-
-    ending = 0;
-
-    switch(dxr.localURL)
-    {
-        //Make sure we actually are only running on the endgame levels
-        //Just in case we hit a custom level with mission 99 or something
-        case "ENDGAME1": //Tong
-            ending = 1;
-            break;
-        case "ENDGAME2": //Helios
-            ending = 2;
-            break;
-        case "ENDGAME3": //Everett
-            ending = 3;
-            break;
-        //The dance party won't actually get hit since the rando can't run there at the moment
-        case "ENDGAME4": //Dance party
-            ending = 4;
-            break;
-        default:
-            //In case rando runs some player level or something with mission 99
-            break;
-    }
-
-    if (ending!=0){
-        //Notify of game completion with correct ending number
-        time = class'DXRStats'.static.GetTotalTime(dxr);
-        class'DXRTelemetry'.static.BeatGame(dxr,ending,time);
-
     }
 }
 
@@ -740,12 +704,20 @@ function NYC_04_CheckPaulRaid()
 
         paul.bInvincible = false;
         i = 400;
+        // we need to set defaults so that GenerateTotalHealth() works properly
+        paul.default.Health = i;
         paul.Health = i;
+        paul.default.HealthArmLeft = i;
         paul.HealthArmLeft = i;
+        paul.default.HealthArmRight = i;
         paul.HealthArmRight = i;
+        paul.default.HealthHead = i;
         paul.HealthHead = i;
+        paul.default.HealthLegLeft = i;
         paul.HealthLegLeft = i;
+        paul.default.HealthLegRight = i;
         paul.HealthLegRight = i;
+        paul.default.HealthTorso = i;
         paul.HealthTorso = i;
         paul.ChangeAlly('Player', 1, true);
     }
@@ -768,10 +740,11 @@ function NYC_04_CheckPaulRaid()
         NYC_04_MarkPaulSafe();
         SetTimer(0, False);
     }
-    else if( pawns == 1 )
+    else if( pawns == 1 && pawns != old_pawns )
         player().ClientMessage(pawns$" enemy remaining");
-    else if( pawns <3 )
+    else if( pawns <3 && pawns != old_pawns )
         player().ClientMessage(pawns$" enemies remaining");
+    old_pawns = pawns;
 }
 
 function NYC_04_MarkPaulSafe()
@@ -779,12 +752,20 @@ function NYC_04_MarkPaulSafe()
     local PaulDenton paul;
     local FlagTrigger t;
     local SkillAwardTrigger st;
+    local int health;
     if( dxr.flagbase.GetBool('PaulLeftHotel') ) return;
 
     dxr.flagbase.SetBool('PaulLeftHotel', true,, 999);
 
     foreach AllActors(class'PaulDenton', paul) {
+        paul.GenerateTotalHealth();
+        health = paul.Health * 100 / 400;// as a percentage
+        if(health == 0) health = 1;
         paul.SetOrders('Leaving', 'PaulLeaves', True);
+    }
+
+    if(health > 0) {
+        player().ClientMessage("Paul had " $ health $ "% health remaining.");
     }
 
     foreach AllActors(class'FlagTrigger', t) {
@@ -805,6 +786,7 @@ function NYC_04_MarkPaulSafe()
                 st.Touch(player());
         }
     }
+    class'DXREvents'.static.SavedPaul(dxr, player(), health);
 }
 
 function NYC_04_LeaveHotel()

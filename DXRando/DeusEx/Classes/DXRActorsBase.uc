@@ -25,13 +25,15 @@ function CheckConfig()
 {
     local class<Actor> temp_skipactor_types[6];
     local int i, t;
-    if( ConfigOlderThan(1,5,9,8) ) {
+    if( ConfigOlderThan(1,7,5,1) ) {
         for(i=0; i < ArrayCount(skipactor_types); i++) {
             skipactor_types[i] = "";
         }
         i=0;
         skipactor_types[i++] = "BarrelAmbrosia";
         skipactor_types[i++] = "NanoKey";
+        if(#defined gmdx)
+            skipactor_types[i++] = "CrateUnbreakableLarge";
     }
     Super.CheckConfig();
 
@@ -552,6 +554,36 @@ function Conversation GetConversation(Name conName)
     return None;
 }
 
+static function string GetActorName(Actor a)
+{
+    local #var PlayerPawn  player;
+    local #var prefix ScriptedPawn sp;
+
+    if(a == None)
+        return "";
+
+    player = #var PlayerPawn (a);
+    sp = #var prefix ScriptedPawn(a);
+
+#ifdef hx
+    if(player != None) {
+        return player.PlayerReplicationInfo.PlayerName;
+    }
+#else
+    if(player != None) {
+        return player.TruePlayerName;
+    }
+#endif
+    // bImportant ScriptedPawns don't get their names randomized
+    else if(sp != None && sp.bImportant)
+        return a.FamiliarName;
+    // randomized names aren't really meaningful here so use their default name
+    else if(a.default.FamiliarName != "")
+        return a.default.FamiliarName;
+
+    return string(a.class.name);
+}
+
 static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate, name Event)
 {
     local DeusExDecoration d;
@@ -622,6 +654,27 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     newactor.Buoyancy = a.Buoyancy;
     newactor.Event = a.Event;
     return newactor;
+}
+
+static function DestroyMover(DeusExMover m)
+{
+    local DeusExDecal D;
+
+    // force the mover to stop
+    if (m.Leader != None)
+        m.Leader.MakeGroupStop();
+
+    // destroy all effects that are on us
+    foreach m.BasedActors(class'DeusExDecal', D)
+        D.Destroy();
+
+    m.DropThings();
+
+    //DEUS_EX AMSD Mover is dead, make it a dumb proxy so location updates
+    m.RemoteRole = ROLE_DumbProxy;
+    m.SetLocation(m.Location+vect(0,0,20000));		// move it out of the way
+    m.SetCollision(False, False, False);			// and make it non-colliding
+    m.bDestroyed = True;
 }
 
 static function SetActorScale(Actor a, float scale)

@@ -314,7 +314,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         word = "Damage Reduction";
         return int( (1.0 - a.LevelValues[i]) * 100.0 ) $ "%";
     }
-    else if( a.Class == class'AugIcarus' || a.Class == class'AugEnergyTransfer' ) {
+    else if( a.Class == class'AugIcarus' || a.Class == class'AugEnergyTransfer' || a.Class.Name == 'AugMetabolism' || a.Class.Name == 'AugAimbot' ) {
         // TODO: improve description
         word = "Values";
         return string(int(a.LevelValues[i]));
@@ -326,8 +326,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
 #endif
     else {
-        err("DescriptionLevel failed for aug "$a);
-        return "err";
+        return Super.DescriptionLevel(act, i, word);
     }
 }
 

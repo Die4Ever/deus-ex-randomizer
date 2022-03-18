@@ -10,19 +10,25 @@ def before_write(mod, f, injects):
     global whitelist, disabled
     if disabled:
         return
-    shimmer = None
-    baseclass = f.baseclass
-    shimname = baseclass + 'Shim'
-    info("shimming "+baseclass)
-    for f in mod.values():
-        if f.baseclass != baseclass:
+
+    orig_base = f.baseclass
+    info('starting shimming '+f.classline)
+    f.modify_classline(f.classname, 'extends', f.baseclass)
+    debug(indent(f.classline))
+    baseclass = f.classname
+    for i in injects:
+        if i != f:
+            i.modify_classline(i.classname, 'extends', baseclass)
+            debug(indent(i.classline))
+            baseclass = i.classname
+
+    debug(indent('modifying children...'))
+    for t in mod.values():
+        if t in injects or t.baseclass != orig_base:
             continue
-        if f.operator == 'shims':
-            f.modify_classline(shimname, 'extends', baseclass)
-            shimmer = f
-            continue
-        debug("shimming between "+baseclass+' and '+f.classname)
-        f.modify_classline(f.classname, f.operator, shimname)
+        debug(indent('shimming between '+t.classname+' and '+baseclass+' and '+orig_base))
+        t.modify_classline(t.classname, t.operator, baseclass)
+    debug('done shimming')
 
 
 def execute_injections(f, prev, idx, inject, injects):

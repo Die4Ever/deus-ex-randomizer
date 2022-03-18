@@ -105,7 +105,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 1,7,4,7) ) {
+    if( VersionOlderThan(config_version, 1,7,5,0) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -158,6 +158,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXRFashion";
     modules_to_load[i++] = "DXRHints";
+    modules_to_load[i++] = "DXREvents";
     //modules_to_load[i++] = "DXRTestAllMaps";
 }
 
@@ -184,6 +185,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRMachines";
     modules_to_load[i++] = "DXRHints";
     modules_to_load[i++] = "DXRReplaceActors";
+    modules_to_load[i++] = "DXREvents";
 }
 
 function gmdx_modules()
@@ -209,7 +211,9 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRMachines";
     modules_to_load[i++] = "DXRHints";
     modules_to_load[i++] = "DXRReplaceActors";
+    modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXRFashion";
+    modules_to_load[i++] = "DXREvents";
 }
 
 function revision_modules()

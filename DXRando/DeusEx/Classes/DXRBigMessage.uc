@@ -13,6 +13,17 @@ const kpStartY = 0.4;
 const kpColumn1X = 0.20;
 const kpColumn2X = 0.60;
 
+static function DXRBigMessage GetCurrentBigMessage(#var PlayerPawn  player) {
+    local DXRBigMessage m;
+    local DeusExRootWindow root;
+
+    root = DeusExRootWindow(player.rootWindow);
+    if ( root == None )
+        return None;
+
+    return DXRBigMessage(root.GetTopWindow());
+}
+
 static function DXRBigMessage CreateBigMessage(#var PlayerPawn  player, DXRHints hints, string message, string detail) {
     local DXRBigMessage m;
     local DeusExRootWindow root;
@@ -21,7 +32,7 @@ static function DXRBigMessage CreateBigMessage(#var PlayerPawn  player, DXRHints
     if ( root == None )
         return None;
 
-    m = DXRBigMessage(root.GetTopWindow());
+    m = GetCurrentBigMessage(player);
     if ( m != None ) {
         if( m.message == message && m.detail == detail )
             return None;

@@ -1,4 +1,4 @@
-class ScriptedPawn shims ScriptedPawn;
+class FixScriptedPawn shims ScriptedPawn;
 // doesn't work with injects, because of states and : Error, DeusEx.ScriptedPawn's superclass must be Engine.Pawn, not DeusEx.ScriptedPawnBase
 // could work with injectsabove or whatever https://github.com/Die4Ever/deus-ex-randomizer/issues/115
 var int flareBurnTime;
@@ -68,6 +68,12 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
     if (damageType == 'FlareFlamed') {
         flareBurnTime = 3;
     }
+}
+
+function Died(pawn Killer, name damageType, vector HitLocation)
+{
+    class'DXREvents'.static.AddPawnDeath(self, Killer, damageType, HitLocation);
+    Super.Died(Killer,damageType,HitLocation);
 }
 
 function UpdateFire()

@@ -218,8 +218,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
 #endif
     else {
-        err("DescriptionLevel failed for skill "$act);
-        return "err";
+        return Super.DescriptionLevel(act, i, word);
     }
 }
 
@@ -234,9 +233,6 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     if( chance_single(dxr.flags.settings.banned_skill_levels) ) {
         l( aSkill.Class.Name $ " lvl: "$(i+1)$" is banned");
         aSkill.Cost[i] = 99999;
-#ifdef gmdx
-        aSkill.PerkCost[i] = 99999;
-#endif
         return;
     }
 
@@ -267,6 +263,10 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     perk = Clamp(perk, 0, 99999);
     aSkill.Cost[i] = int(f);
 #ifdef gmdx
+    if( chance_single(dxr.flags.settings.banned_skill_levels) ) {
+        perk = 99999;
+        l( aSkill.Class.Name $ " perk "$(i+1)$" is banned");
+    }
     aSkill.PerkCost[i] = int(perk);
 #endif
 }

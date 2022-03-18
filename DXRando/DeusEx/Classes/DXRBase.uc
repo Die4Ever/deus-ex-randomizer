@@ -266,7 +266,22 @@ simulated function RemoveSmallestJump(int len, out float a[16])
 
 simulated function string DescriptionLevel(Actor a, int i, out string word)
 {
+    local Skill sk;
+    local Augmentation aug;
+    local float f;
+
     err("DXRBase DescriptionLevel failed for "$a);
+    sk = Skill(a);
+    aug = Augmentation(a);
+    if(sk != None) {
+        word = "% of Normal";
+        f = sk.LevelValues[i] / sk.default.LevelValues[i];
+        return int(f * 100.0) $ "%";
+    } else if(aug != None) {
+        word = "% of Normal";
+        f = aug.LevelValues[i] / aug.default.LevelValues[i];
+        return int(f * 100.0) $ "%";
+    }
     return "err";
 }
 
