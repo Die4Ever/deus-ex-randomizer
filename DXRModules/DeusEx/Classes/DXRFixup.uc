@@ -704,12 +704,20 @@ function NYC_04_CheckPaulRaid()
 
         paul.bInvincible = false;
         i = 400;
+        // we need to set defaults so that GenerateTotalHealth() works properly
+        paul.default.Health = i;
         paul.Health = i;
+        paul.default.HealthArmLeft = i;
         paul.HealthArmLeft = i;
+        paul.default.HealthArmRight = i;
         paul.HealthArmRight = i;
+        paul.default.HealthHead = i;
         paul.HealthHead = i;
+        paul.default.HealthLegLeft = i;
         paul.HealthLegLeft = i;
+        paul.default.HealthLegRight = i;
         paul.HealthLegRight = i;
+        paul.default.HealthTorso = i;
         paul.HealthTorso = i;
         paul.ChangeAlly('Player', 1, true);
     }
@@ -744,12 +752,20 @@ function NYC_04_MarkPaulSafe()
     local PaulDenton paul;
     local FlagTrigger t;
     local SkillAwardTrigger st;
+    local int health;
     if( dxr.flagbase.GetBool('PaulLeftHotel') ) return;
 
     dxr.flagbase.SetBool('PaulLeftHotel', true,, 999);
 
     foreach AllActors(class'PaulDenton', paul) {
+        paul.GenerateTotalHealth();
+        health = paul.Health * 100 / 400;// as a percentage
+        if(health == 0) health = 1;
         paul.SetOrders('Leaving', 'PaulLeaves', True);
+    }
+
+    if(health > 0) {
+        player().ClientMessage("Paul had " $ health $ "% health remaining.");
     }
 
     foreach AllActors(class'FlagTrigger', t) {
@@ -770,9 +786,7 @@ function NYC_04_MarkPaulSafe()
                 st.Touch(player());
         }
     }
-
-    // we should also check at the start of mission 5 for other mods?
-    class'DXREvents'.static.SavedPaul(dxr, player());
+    class'DXREvents'.static.SavedPaul(dxr, player(), health);
 }
 
 function NYC_04_LeaveHotel()

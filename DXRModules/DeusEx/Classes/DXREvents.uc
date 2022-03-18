@@ -272,13 +272,15 @@ static function PaulDied(DXRando dxr)
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
 }
 
-static function SavedPaul(DXRando dxr, #var PlayerPawn  player)
+static function SavedPaul(DXRando dxr, #var PlayerPawn  player, optional int health)
 {
     local string j;
     local class<Json> js;
     js = class'Json';
 
     j = js.static.Start("SavedPaul");
+    if(health > 0)
+        js.static.Add(j, "PaulHealth", health);
     GeneralEventData(dxr, j);
     js.static.End(j);
 
