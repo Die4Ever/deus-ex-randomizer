@@ -30,7 +30,22 @@ function SetWatchFlags() {
         WatchFlag('BathroomBarks_Played');
         WatchFlag('ManBathroomBarks_Played');
         break;
-
+    case "02_NYC_BATTERYPARK":
+        WatchFlag('JoshFed');
+        WatchFlag('M02BillyDone');
+        break;
+    case "02_NYC_UNDERGROUND":
+        WatchFlag('FordSchickRescued');
+        break;
+    case "03_NYC_BROOKLYNBRIDGESTATION":
+        WatchFlag('FreshWaterOpened');
+        break;
+    case "04_NYC_HOTEL":
+        WatchFlag('GaveRentonGun');
+        break;
+    case "05_NYC_UNATCOISLAND":
+        WatchFlag('MiguelHack_Played');
+        break;
     case "02_NYC_STREET":
     case "04_NYC_STREET":
     case "08_NYC_STREET":
@@ -40,7 +55,14 @@ function SetWatchFlags() {
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
         break;
-
+    case "10_PARIS_METRO":
+        WatchFlag('M10EnteredBakery');
+        WatchFlag('AlleyCopSeesPlayer_Played');
+        WatchFlag('assassinapartment');
+        break;
+    case "11_PARIS_EVERETT":
+        WatchFlag('GotHelicopterInfo');
+        break;
     case "12_VANDENBERG_GAS":
         WatchDeath('TiffanySavage_Dead');
         break;
