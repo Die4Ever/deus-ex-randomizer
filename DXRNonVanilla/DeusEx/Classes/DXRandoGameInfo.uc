@@ -21,6 +21,7 @@ function DXRando GetDXR()
     dxr = Spawn(class'DXRando');
     dxr.SetdxInfo(DeusExLevelInfo);
     log("GetDXR(), dxr: "$dxr, self.name);
+    return dxr;
 }
 
 event InitGame( String Options, out String Error )
@@ -60,4 +61,10 @@ function bool PickupQuery( Pawn Other, Inventory item )
     }
 
     return Super.PickupQuery(Other, item);
+}
+
+function Killed( pawn Killer, pawn Other, name damageType )
+{
+    Super.Killed(Killer, Other, damageType);
+    class'DXREvents'.static.AddDeath(Other, Killer, damageType);
 }

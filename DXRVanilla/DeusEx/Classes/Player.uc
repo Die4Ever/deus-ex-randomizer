@@ -324,7 +324,7 @@ event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
 
 function Died(pawn Killer, name damageType, vector HitLocation)
 {
-    class'DXREvents'.static.AddDeath(GetDXR(), self, Killer, damageType, HitLocation);
+    class'DXREvents'.static.AddPlayerDeath(GetDXR(), self, Killer, damageType, HitLocation);
     Super.Died(Killer,damageType,HitLocation);
 }
 

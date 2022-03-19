@@ -1,8 +1,5 @@
 class DXREvents extends DXRActorsBase;
 
-var transient #var PlayerPawn  _player;
-var transient bool died;
-
 var name watchflags[32];
 var int num_watchflags;
 
@@ -26,9 +23,6 @@ function SetWatchFlags() {
     local MapExit m;
 
     switch(dxr.localURL) {
-    case "01_NYC_UNATCOISLAND":
-        WatchDeath('TerroristCommander_Dead');
-        break;
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
         WatchFlag('ManBathroomBarks_Played');
@@ -93,9 +87,6 @@ function SetWatchFlags() {
         WatchFlag('GotHelicopterInfo');
         WatchFlag('MeetAI4_Played');
         break;
-    case "12_VANDENBERG_GAS":
-        WatchDeath('TiffanySavage_Dead');
-        break;
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
         break;
@@ -118,11 +109,6 @@ function WatchFlag(name flag) {
     watchflags[num_watchflags++] = flag;
     if(num_watchflags > ArrayCount(watchflags))
         err("WatchFlag num_watchflags > ArrayCount(watchflags)");
-}
-
-function WatchDeath(name flag) {
-    if( !#defined injections )
-        WatchFlag(flag);
 }
 
 function Ending_FirstEntry()
@@ -160,19 +146,9 @@ function Ending_FirstEntry()
     }
 }
 
-simulated function PlayerRespawn(#var PlayerPawn  player)
+simulated function AnyEntry()
 {
-    Super.PlayerRespawn(player);
-    _player = player;
-    died = false;
-    SetTimer(1, true);
-}
-
-simulated function PlayerAnyEntry(#var PlayerPawn  player)
-{
-    Super.PlayerAnyEntry(player);
-    _player = player;
-    died = false;
+    Super.AnyEntry();
     SetTimer(1, true);
 }
 
@@ -187,10 +163,6 @@ simulated function Timer()
             watchflags[i] = watchflags[num_watchflags];
             i--;
         }
-    }
-    if( !#defined injections && _player != None && _player.IsInState('Dying') && !died) {
-        died = true;
-        AddDeath(dxr, _player);
     }
 }
 
@@ -267,7 +239,7 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
     class'DXRTelemetry'.static.SendEvent(dxr, victim, j);
 }
 
-static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+static function AddPlayerDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     class'DXRStats'.static.AddDeath(player);
     class'DXRHints'.static.AddDeath(dxr, player);
@@ -306,6 +278,20 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
 }
 
+static function AddDeath(#var prefix Pawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+{
+    local DXRando dxr;
+    local #var PlayerPawn  player;
+    local #var prefix ScriptedPawn sp;
+    player = #var PlayerPawn (victim);
+    sp = #var prefix ScriptedPawn(victim);
+    if(player != None) {
+        foreach victim.AllActors(class'DXRando', dxr) break;
+        AddPlayerDeath(dxr, player, Killer, damageType, HitLocation);
+    }
+    else if(sp != None)
+        AddPawnDeath(sp, Killer, damageType, HitLocation);
+}
 
 static function PaulDied(DXRando dxr)
 {
