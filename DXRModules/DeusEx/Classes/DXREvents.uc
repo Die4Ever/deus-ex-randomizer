@@ -1,5 +1,6 @@
 class DXREvents extends DXRActorsBase;
 
+var bool died;
 var name watchflags[32];
 var int num_watchflags;
 
@@ -164,6 +165,11 @@ simulated function Timer()
             i--;
         }
     }
+    // for nonvanilla, because GameInfo.Died is called before the player's Dying state calls root.ClearWindowStack();
+    if(died) {
+        class'DXRHints'.static.AddDeath(dxr, player());
+        died = false;
+    }
 }
 
 function bool SpecialTriggerHandling(Actor Other, Pawn Instigator)
@@ -241,8 +247,17 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
 
 static function AddPlayerDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
+    local DXREvents ev;
     class'DXRStats'.static.AddDeath(player);
-    class'DXRHints'.static.AddDeath(dxr, player);
+
+    if(#defined injections)
+        class'DXRHints'.static.AddDeath(dxr, player);
+    else {
+        // for nonvanilla, because GameInfo.Died is called before the player's Dying state calls root.ClearWindowStack();
+        ev = DXREvents(dxr.FindModule(class'DXREvents'));
+        if(ev != None)
+            ev.died = true;
+    }
 
     if(Killer == None) {
         if(player.myProjKiller != None)
