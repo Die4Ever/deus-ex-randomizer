@@ -58,7 +58,7 @@ function SetWatchFlags() {
         WatchFlag('GaveRentonGun');
         break;
     case "05_NYC_UNATCOISLAND":
-        Tag = 'nsfwander';
+        Tag = 'nsfwander';// saved Miguel
         break;
     case "02_NYC_STREET":
         WatchFlag('AlleyBumRescued');
@@ -79,7 +79,7 @@ function SetWatchFlags() {
         WatchFlag('M08WarnedSmuggler');
         break;
     case "09_NYC_SHIPBELOW":
-        WatchFlag('ShipPowerCut');
+        WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
         break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
@@ -194,16 +194,7 @@ simulated function Timer()
     }
 }
 
-function bool SpecialTriggerHandlingNeeded(Actor Other, Pawn Instigator)
-{
-    if (tag == 'Boat_Exit'){
-        return true;
-    }
-
-    return false;
-}
-
-function SpecialTriggerHandling(Actor Other, Pawn Instigator)
+function bool SpecialTriggerHandling(Actor Other, Pawn Instigator)
 {
     local MapExit m;
 
@@ -213,7 +204,10 @@ function SpecialTriggerHandling(Actor Other, Pawn Instigator)
         foreach AllActors(class'MapExit',m,'Boat_Exit2'){
             m.Trigger(Other,Instigator);
         }
+        return true;
     }
+
+    return false;
 }
 
 function Trigger(Actor Other, Pawn Instigator)
@@ -225,9 +219,7 @@ function Trigger(Actor Other, Pawn Instigator)
     Super.Trigger(Other, Instigator);
     l("Trigger("$Other$", "$instigator$")");
 
-    if (SpecialTriggerHandlingNeeded(Other,Instigator)){
-        SpecialTriggerHandling(Other,Instigator);
-    } else {
+    if (!SpecialTriggerHandling(Other,Instigator)){
         j = js.static.Start("Trigger");
         js.static.Add(j, "instigator", GetActorName(Instigator));
         js.static.Add(j, "tag", tag);
