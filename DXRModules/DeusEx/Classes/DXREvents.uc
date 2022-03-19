@@ -331,13 +331,15 @@ static function PaulDied(DXRando dxr)
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
 }
 
-static function SavedPaul(DXRando dxr, #var PlayerPawn  player)
+static function SavedPaul(DXRando dxr, #var PlayerPawn  player, optional int health)
 {
     local string j;
     local class<Json> js;
     js = class'Json';
 
     j = js.static.Start("SavedPaul");
+    if(health > 0)
+        js.static.Add(j, "PaulHealth", health);
     GeneralEventData(dxr, j);
     js.static.End(j);
 
@@ -372,6 +374,7 @@ static function GeneralEventData(DXRando dxr, out string j)
     js.static.Add(j, "mapname", dxr.dxInfo.MissionLocation);
     js.static.Add(j, "mission", dxr.dxInfo.missionNumber);
     js.static.Add(j, "TrueNorth", dxr.dxInfo.TrueNorth);
+    js.static.Add(j, "PlayerIsFemale", dxr.flagbase.GetBool('LDDPJCIsFemale'));
 
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
