@@ -629,13 +629,18 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
 {
     local Actor newactor;
     local bool bCollideActors, bBlockActors, bBlockPlayers;
+    local name tag, event;
 
     bCollideActors = a.bCollideActors;
     bBlockActors = a.bBlockActors;
     bBlockPlayers = a.bBlockPlayers;
     a.SetCollision(false, false, false);
+    tag = a.Tag;
+    a.Tag = '';
+    event = a.Event;
+    a.Event = '';
 
-    newactor = _AddActor(a, newclass, a.Location, a.Rotation, a.Owner, a.Tag);
+    newactor = _AddActor(a, newclass, a.Location, a.Rotation, a.Owner, tag);
     if(newactor == None) {
         err("SpawnReplacement("$a$", "$newclass$") failed");
         a.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
@@ -652,7 +657,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     newactor.Mesh = a.Mesh;
     newactor.Mass = a.Mass;
     newactor.Buoyancy = a.Buoyancy;
-    newactor.Event = a.Event;
+    newactor.Event = event;
     return newactor;
 }
 
