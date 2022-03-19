@@ -21,7 +21,10 @@ function PreFirstEntry()
     }
 }
 
+
 function SetWatchFlags() {
+    local MapExit m;
+
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
         WatchDeath('TerroristCommander_Dead');
@@ -33,9 +36,20 @@ function SetWatchFlags() {
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
         WatchFlag('M02BillyDone');
+
+        foreach AllActors(class'MapExit',m,'Boat_Exit'){
+            m.Tag = 'Boat_Exit2';
+        }
+        Tag = 'Boat_Exit';
         break;
     case "02_NYC_UNDERGROUND":
         WatchFlag('FordSchickRescued');
+        break;
+    case "02_NYC_BAR":
+        WatchFlag('JockSecondStory');
+        break;
+    case "03_NYC_UNATCOISLAND":
+        WatchFlag('DXREvents_LeftOnBoat');
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
@@ -44,27 +58,46 @@ function SetWatchFlags() {
         WatchFlag('GaveRentonGun');
         break;
     case "05_NYC_UNATCOISLAND":
-        WatchFlag('MiguelHack_Played');
+        Tag = 'nsfwander';
         break;
     case "02_NYC_STREET":
+        WatchFlag('AlleyBumRescued');
     case "04_NYC_STREET":
     case "08_NYC_STREET":
         Tag = 'MadeBasket';
         break;
-
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
+        break;
+    case "06_HONGKONG_WANCHAI_CANAL":
+        WatchFlag('FoundScientistBody');
+        break;
+    case "06_HONGKONG_WANCHAI_UNDERWORLD":
+        WatchFlag('ClubMercedesConvo1_Done');
+        break;
+    case "08_NYC_SMUG":
+        WatchFlag('M08WarnedSmuggler');
+        break;
+    case "09_NYC_SHIPBELOW":
+        WatchFlag('ShipPowerCut');
         break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
         WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
         break;
+    case "10_PARIS_CLUB":
+        WatchFlag('CamilleConvosDone');
+        break;
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');
+        WatchFlag('MeetAI4_Played');
         break;
     case "12_VANDENBERG_GAS":
         WatchDeath('TiffanySavage_Dead');
+        break;
+    case "14_OCEANLAB_LAB":
+        WatchFlag('DL_Flooded_Played');
         break;
     }
 }
@@ -161,6 +194,28 @@ simulated function Timer()
     }
 }
 
+function bool SpecialTriggerHandlingNeeded(Actor Other, Pawn Instigator)
+{
+    if (tag == 'Boat_Exit'){
+        return true;
+    }
+
+    return false;
+}
+
+function SpecialTriggerHandling(Actor Other, Pawn Instigator)
+{
+    local MapExit m;
+
+    if (tag == 'Boat_Exit'){
+        dxr.flagbase.SetBool('DXREvents_LeftOnBoat', true,, 999);
+
+        foreach AllActors(class'MapExit',m,'Boat_Exit2'){
+            m.Trigger(Other,Instigator);
+        }
+    }
+}
+
 function Trigger(Actor Other, Pawn Instigator)
 {
      local string j;
@@ -170,14 +225,18 @@ function Trigger(Actor Other, Pawn Instigator)
     Super.Trigger(Other, Instigator);
     l("Trigger("$Other$", "$instigator$")");
 
-    j = js.static.Start("Trigger");
-    js.static.Add(j, "instigator", GetActorName(Instigator));
-    js.static.Add(j, "tag", tag);
-    js.static.add(j, "other", GetActorName(other));
-    GeneralEventData(dxr, j);
-    js.static.End(j);
+    if (SpecialTriggerHandlingNeeded(Other,Instigator)){
+        SpecialTriggerHandling(Other,Instigator);
+    } else {
+        j = js.static.Start("Trigger");
+        js.static.Add(j, "instigator", GetActorName(Instigator));
+        js.static.Add(j, "tag", tag);
+        js.static.add(j, "other", GetActorName(other));
+        GeneralEventData(dxr, j);
+        js.static.End(j);
 
-    class'DXRTelemetry'.static.SendEvent(dxr, Instigator, j);
+        class'DXRTelemetry'.static.SendEvent(dxr, Instigator, j);
+    }
 }
 
 function SendFlagEvent(name flag, optional bool immediate)
