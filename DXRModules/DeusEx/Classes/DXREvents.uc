@@ -293,7 +293,7 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
 }
 
-static function AddDeath(#var prefix Pawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+static function AddDeath(Pawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local DXRando dxr;
     local #var PlayerPawn  player;
