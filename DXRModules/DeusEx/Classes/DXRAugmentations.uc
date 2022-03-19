@@ -317,7 +317,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     else if( a.Class == class'AugIcarus' || a.Class == class'AugEnergyTransfer' || a.Class.Name == 'AugMetabolism' || a.Class.Name == 'AugAimbot' ) {
         // TODO: improve description
         word = "Values";
-        return string(int(a.LevelValues[i]));
+        return string(a.LevelValues[i]);
     }
     else if( a.Class.Name == 'AugAmmoCap' ) {
         word = "Ammo Cap";
