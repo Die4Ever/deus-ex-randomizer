@@ -8,21 +8,41 @@ class DXRandoGameInfo extends DeusExGameInfo config;
 
 var DXRando dxr;
 
-event InitGame( String Options, out String Error )
+function DXRando GetDXR()
 {
     local DeusExLevelInfo DeusExLevelInfo;
-    Super.InitGame(Options, Error);
 
-    log("InitGame DXR", self.name);
+    if( dxr != None ) return dxr;
+    foreach AllActors(class'DXRando', dxr) return dxr;
+
     foreach AllActors( Class'DeusExLevelInfo', DeusExLevelInfo )
         break;
-    if( DeusExLevelInfo == None ) return;
-    if( dxr != None ) return;
-    foreach AllActors(class'DXRando', dxr) return;
 
     dxr = Spawn(class'DXRando');
     dxr.SetdxInfo(DeusExLevelInfo);
-    log("InitGame, dxr: "$dxr, self.name);
+    log("GetDXR(), dxr: "$dxr, self.name);
+}
+
+event InitGame( String Options, out String Error )
+{
+    Super.InitGame(Options, Error);
+
+    log("InitGame DXR", self.name);
+    GetDXR();
+}
+
+event PostLogin(playerpawn NewPlayer)
+{
+    local #var PlayerPawn  p;
+
+    Super.PostLogin(NewPlayer);
+    if( Role != ROLE_Authority ) return;
+
+    p = #var PlayerPawn (NewPlayer);
+
+    GetDXR();
+    log("PostLogin("$NewPlayer$") server, dxr: "$dxr, self.name);
+    dxr.PlayerLogin( p );
 }
 
 function bool PickupQuery( Pawn Other, Inventory item )
