@@ -26,7 +26,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,7,4,0) ) {
+    if( ConfigOlderThan(1,7,5,3) ) {
         enemy_multiplier = 1;
         min_rate_adjust = default.min_rate_adjust;
         max_rate_adjust = default.max_rate_adjust;
@@ -79,10 +79,10 @@ function CheckConfig()
         AddRandomWeapon("WeaponSawedOffShotgun", 6);
         AddRandomWeapon("WeaponProd", 2);
 
-        AddRandomMelee("WeaponBaton", 25);
-        AddRandomMelee("WeaponCombatKnife", 25);
-        AddRandomMelee("WeaponCrowbar", 25);
-        AddRandomMelee("WeaponSword", 25);
+        AddRandomMelee("WeaponBaton", 15);
+        AddRandomMelee("WeaponCombatKnife", 65);
+        AddRandomMelee("WeaponCrowbar", 15);
+        AddRandomMelee("WeaponSword", 5);
 
         defaultOrders = 'Wandering';
     }
