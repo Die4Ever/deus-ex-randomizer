@@ -69,6 +69,7 @@ function SetWatchFlags() {
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
         WatchFlag('ClubMercedesConvo1_Done');
+        WatchFlag('M07ChenSecondGive_Played');
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
@@ -87,6 +88,7 @@ function SetWatchFlags() {
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');
         WatchFlag('MeetAI4_Played');
+        WatchFlag('DeBeersDead');
         break;
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
@@ -350,6 +352,21 @@ static function BeatGame(DXRando dxr, int ending, int time)
     js.static.Add(j, "time", time);
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
     js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
+    GeneralEventData(dxr, j);
+    js.static.End(j);
+
+    class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
+}
+
+static function ExtinguishFire(DXRando dxr, string extinguisher, DeusExPlayer player)
+{
+    local string j;
+    local class<Json> js;
+    js = class'Json';
+
+    j = js.static.Start("ExtinguishFire");
+    js.static.Add(j, "extinguisher", extinguisher);
+    js.static.Add(j, "location", player.Location);
     GeneralEventData(dxr, j);
     js.static.End(j);
 
