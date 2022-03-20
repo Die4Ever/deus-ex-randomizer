@@ -9,6 +9,6 @@ function PostBeginPlay()
 function Timer()
 {
     Super.Timer();
-    ItemName = ItemName $ " (" $ Description $ ")";
+    ItemName = default.ItemName $ " (" $ Description $ ")";
     class'DXRActorsBase'.static.SetActorScale(Self, 1.3);
 }

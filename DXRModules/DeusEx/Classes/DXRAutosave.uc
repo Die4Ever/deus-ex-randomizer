@@ -88,7 +88,7 @@ function doAutosave()
         return;
     }
 
-    saveSlot = -2;
+    saveSlot = -3;
     saveName = "DXR " $ dxr.seed $ ": " $ dxr.dxInfo.MissionLocation;
     lastMission = dxr.flags.f.GetInt('Rando_lastmission');
     if( lastMission != 0 && dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber ) {
