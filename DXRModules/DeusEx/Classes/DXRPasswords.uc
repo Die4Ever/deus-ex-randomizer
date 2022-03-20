@@ -233,6 +233,8 @@ function revision_datacubes_rules()
 
 simulated function Timer()
 {
+    if(dxr == None)
+        return;
 #ifdef hx
     if( Role == ROLE_Authority )
         UpdateGoalsAndNotes( HXGameInfo(Level.Game).Steve.FirstGoal, HXGameInfo(Level.Game).FirstNote );

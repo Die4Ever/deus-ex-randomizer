@@ -393,7 +393,7 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
 #ifdef injections
         SpawnBot(class'RepairBot', repairHint);
 #else
-        SpawnBot(class'DXRRepairBot', medHint);
+        SpawnBot(class'DXRRepairBot', repairHint);
 #endif
     }
 }
