@@ -556,7 +556,11 @@ simulated function LoadFlags()
 
     LogFlags("LoadFlags");
     if( p != None )
-        p.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ p.CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
+        p.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ p.CombatDifficulty
+#ifdef injections
+            $ ", New Game+ Loops: "$newgameplus_loops
+#endif
+            $ ", flags: " $ FlagsHash() );
     SetTimer(1.0, True);
 
     ds = class'DataStorage'.static.GetObj(dxr);
@@ -741,7 +745,11 @@ simulated function LoadNoFlags()
 
     LogFlags("LoadNoFlags");
     if( p != None )
-        p.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ CombatDifficulty $ ", New Game+ Loops: "$newgameplus_loops$", flags: " $ FlagsHash() );
+        p.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ CombatDifficulty
+#ifdef injections
+            $ ", New Game+ Loops: "$newgameplus_loops
+#endif
+            $ ", flags: " $ FlagsHash() );
 }
 
 simulated function SaveNoFlags()

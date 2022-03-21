@@ -57,7 +57,7 @@ function WritePasswordsToNoteByTag(DeusExRootWindow root, Name tag)
     local DeusExNote note;
     if(tag == '')
         return;
-    
+
     note = GetNote(tag);
     if (note != None)
         WritePasswordsToNote(note);
@@ -238,5 +238,14 @@ function ProcessTag(DeusExTextParser parser)
 
 defaultproperties
 {
-    ItemName="DataCube"
+     bAddToVault=True
+     bInvincible=True
+     bCanBeBase=True
+     ItemName="DataCube"
+     Texture=Texture'DeusExItems.Skins.DataCubeTex2'
+     Mesh=LodMesh'DeusExItems.DataCube'
+     CollisionRadius=7.000000
+     CollisionHeight=1.270000
+     Mass=2.000000
+     Buoyancy=3.000000
 }

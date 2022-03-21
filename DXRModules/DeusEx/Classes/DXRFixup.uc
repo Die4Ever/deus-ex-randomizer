@@ -30,7 +30,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(1,6,0,2) ) {
+    if( ConfigOlderThan(1,7,5,5) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -73,7 +73,6 @@ function CheckConfig()
         DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
         DecorationsOverwrites[i].bPushable = c.default.bPushable;
 
-#ifdef vanilla
         i=0;
 
         add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
@@ -107,7 +106,6 @@ function CheckConfig()
         add_datacubes[i].map = "15_AREA51_PAGE";
         add_datacubes[i].text = "Aquinas Router code: 6188";
         i++;
-#endif
     }
     Super.CheckConfig();
 
@@ -429,6 +427,10 @@ function SpawnDatacubes()
 {
 #ifdef injections
     local #var prefix DataCube dc;
+#else
+    local DXRInformationDevices dc;
+#endif
+
     local vector loc;
     local int i;
 
@@ -439,12 +441,15 @@ function SpawnDatacubes()
         if( loc.X == 0 && loc.Y == 0 && loc.Z == 0 )
             loc = GetRandomPosition();
 
+#ifdef injections
         dc = Spawn(class'#var prefix DataCube',,, loc, rot(0,0,0));
+#else
+        dc = Spawn(class'DXRInformationDevices',,, loc, rot(0,0,0));
+#endif
 
         if( dc != None ) dc.plaintext = add_datacubes[i].text;
         else warning("failed to spawn datacube at "$loc$", text: "$add_datacubes[i].text);
     }
-#endif
 }
 
 function NYC_02_FirstEntry()
