@@ -333,6 +333,11 @@ function _RandoKey(#var prefix NanoKey k, bool containers)
     local Containers c;
     local int num, slot, tries;
 
+#ifndef injections
+    k.ItemName = k.default.ItemName $ " (" $ k.Description $ ")";
+    SetActorScale(k, 1.3);
+#endif
+
     num=0;
     foreach AllActors(class'Inventory', a)
     {

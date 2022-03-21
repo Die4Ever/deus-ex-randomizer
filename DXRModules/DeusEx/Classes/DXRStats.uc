@@ -4,6 +4,8 @@ function AnyEntry()
 {
     Super.AnyEntry();
 
+    l("Total time so far: "$GetTotalTimeString()$", deaths so far: "$GetDataStorageStat(dxr, 'DXRStats_deaths'));
+
     SetTimer(0.1, True);
 }
 

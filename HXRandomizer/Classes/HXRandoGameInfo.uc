@@ -8,18 +8,24 @@ replication
         dxr;
 }
 
+function DXRando GetDXR()
+{
+    if( dxr != None ) return dxr;
+    foreach AllActors(class'DXRando', dxr) return dxr;
+    if( DeusExLevelInfo == None ) return None;
+
+    dxr = Spawn(class'DXRando');
+    dxr.SetdxInfo(DeusExLevelInfo);
+    log("GetDXR(), dxr: "$dxr, self.name);
+    return dxr;
+}
+
 event InitGame( String Options, out String Error )
 {
     Super.InitGame(Options, Error);
 
     log("InitGame", self.name);
-    if( DeusExLevelInfo == None ) return;
-    if( dxr != None ) return;
-    foreach AllActors(class'DXRando', dxr) return;
-    
-    dxr = Spawn(class'DXRando');
-    dxr.SetdxInfo(DeusExLevelInfo);
-    log("InitGame, dxr: "$dxr, self.name);
+    GetDXR();
 }
 
 event PostLogin(playerpawn NewPlayer)
@@ -32,8 +38,7 @@ event PostLogin(playerpawn NewPlayer)
 
     p = #var PlayerPawn (NewPlayer);
 
-    if( dxr == None )
-        foreach AllActors(class'DXRando', dxr) break;
+    GetDXR();
     log("PostLogin("$NewPlayer$") server, dxr: "$dxr, self.name);
     dxr.PlayerLogin( p );
 
@@ -83,7 +88,7 @@ event AcceptInventory(pawn PlayerPawn)
     if ( Human.HXKeyRing != None )
     {
         Log( "KeyRing found! Not adding default equipment for" $ PlayerPawn, 'DevInventory' );
-    
+
         if ( MissionScript!=None && DeusExLevelInfo!=None )
             MissionScript.AcceptInventory( HXPlayerPawn(PlayerPawn), Steve.Portal, Caps(DeusExLevelInfo.MapName) );
 
@@ -146,6 +151,12 @@ function bool RestartPlayer( Pawn PlayerToRestart )
     p = #var PlayerPawn (PlayerToRestart);
     if( p != None )
         dxr.PlayerRespawn( p );
-    
+
     return ret;
+}
+
+function Killed( pawn Killer, pawn Other, name damageType )
+{
+    Super.Killed(Killer, Other, damageType);
+    class'DXREvents'.static.AddDeath(Other, Killer, damageType);
 }

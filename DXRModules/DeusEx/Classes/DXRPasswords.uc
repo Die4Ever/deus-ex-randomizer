@@ -119,9 +119,11 @@ function CheckConfig()
     }
     Super.CheckConfig();
 
+    // can't put escaped quotes inside config, so we need to add it after saving the config
+    not_passwords[num_not_passwords++] = Caps("the \"Oceanguard\" login");
+
     for(i=0; i<ArrayCount(yes_passwords); i++) {
         if( yes_passwords[i].map != "" ) continue;
-        // can't put escaped quotes inside config, so we need to add it after saving the config
         yes_passwords[i].map = "09_NYC_DOCKYARD";
         yes_passwords[i].password = "SECURITY";
         yes_passwords[i].search_for = "PASSWORD IS \"SECURITY\"";
@@ -233,6 +235,8 @@ function revision_datacubes_rules()
 
 simulated function Timer()
 {
+    if(dxr == None)
+        return;
 #ifdef hx
     if( Role == ROLE_Authority )
         UpdateGoalsAndNotes( HXGameInfo(Level.Game).Steve.FirstGoal, HXGameInfo(Level.Game).FirstNote );
@@ -516,6 +520,7 @@ simulated function bool InfoDevsHasPass(#var prefix InformationDevices id, optio
     if ( id.textTag != '' ) {
         parser = new(None) Class'DeusExTextParser';
         if( parser.OpenText(id.textTag, id.TextPackage) ) {
+            l("infodev test password "$id$" textTag: " $ id.textTag);
             ProcessText(parser, hasPass, numHasPass);
             parser.CloseText();
         }
@@ -1017,7 +1022,9 @@ simulated function ProcessText(DeusExTextParser parser, out int hasPass[64], out
         tag = parser.GetTag();
         if( tag != 0 ) continue;
 
-        text = Caps(parser.GetText());
+        text = parser.GetText();
+        l(text);
+        text = Caps(text);
         if( Len(text) == 0 ) continue;
 
         ProcessStringHasPass( text, hasPass, numHasPass );

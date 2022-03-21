@@ -187,6 +187,10 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         return int(s.LevelValues[i] * 100.0) $ "%";
     }
     else if( s.Class == class'#var prefix SkillEnviro' ) {
+#ifndef injections
+        word = "Values";
+        return string(s.LevelValues[i]);
+#endif
         word = "Damage Reduction (Passive/HazMat/Armor)";
         f = s.LevelValues[i];
         f = FClamp(f, 0, 1.1);
@@ -214,7 +218,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     else if( s.Class == class'SkillStealth' ) {
         // TODO: improve description
         word = "Values";
-        return string(int(s.LevelValues[i]));
+        return string(s.LevelValues[i]);
     }
 #endif
     else {

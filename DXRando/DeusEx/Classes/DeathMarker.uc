@@ -39,9 +39,15 @@ static function string DamageTypeText(string dmg) {
             return "shocked to death";
         case "Exploded":
             return "exploded to bits";
+        case "stomped":
+            return "asked to be stepped on";
+        case "stunned":
+            return "stunned";
+        case "knockedout":
+            return "knocked out";
     }
     log("WARNING: missing DamageTypeText for "$dmg);
-    return dmg $ " to death";
+    return "killed";
 }
 
 function string KilledByText() {

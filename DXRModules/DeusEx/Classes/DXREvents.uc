@@ -1,8 +1,6 @@
 class DXREvents extends DXRActorsBase;
 
-var transient #var PlayerPawn  _player;
-var transient bool died;
-
+var bool died;
 var name watchflags[32];
 var int num_watchflags;
 
@@ -21,11 +19,11 @@ function PreFirstEntry()
     }
 }
 
+
 function SetWatchFlags() {
+    local MapExit m;
+
     switch(dxr.localURL) {
-    case "01_NYC_UNATCOISLAND":
-        WatchDeath('TerroristCommander_Dead');
-        break;
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
         WatchFlag('ManBathroomBarks_Played');
@@ -33,9 +31,20 @@ function SetWatchFlags() {
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
         WatchFlag('M02BillyDone');
+
+        foreach AllActors(class'MapExit',m,'Boat_Exit'){
+            m.Tag = 'Boat_Exit2';
+        }
+        Tag = 'Boat_Exit';
         break;
     case "02_NYC_UNDERGROUND":
         WatchFlag('FordSchickRescued');
+        break;
+    case "02_NYC_BAR":
+        WatchFlag('JockSecondStory');
+        break;
+    case "03_NYC_UNATCOISLAND":
+        WatchFlag('DXREvents_LeftOnBoat');
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
@@ -44,34 +53,53 @@ function SetWatchFlags() {
         WatchFlag('GaveRentonGun');
         break;
     case "05_NYC_UNATCOISLAND":
-        WatchFlag('MiguelHack_Played');
+        Tag = 'nsfwander';// saved Miguel
         break;
     case "02_NYC_STREET":
+        WatchFlag('AlleyBumRescued');
     case "04_NYC_STREET":
     case "08_NYC_STREET":
         Tag = 'MadeBasket';
         break;
-
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
+        break;
+    case "06_HONGKONG_WANCHAI_CANAL":
+        WatchFlag('FoundScientistBody');
+        break;
+    case "06_HONGKONG_WANCHAI_UNDERWORLD":
+        WatchFlag('ClubMercedesConvo1_Done');
+        WatchFlag('M07ChenSecondGive_Played');
+        break;
+    case "08_NYC_SMUG":
+        WatchFlag('M08WarnedSmuggler');
+        break;
+    case "09_NYC_SHIPBELOW":
+        WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
         break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
         WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
         break;
+    case "10_PARIS_CLUB":
+        WatchFlag('CamilleConvosDone');
+        break;
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');
+        WatchFlag('MeetAI4_Played');
+        WatchFlag('DeBeersDead');
         break;
-    case "12_VANDENBERG_GAS":
-        WatchDeath('TiffanySavage_Dead');
+    case "14_OCEANLAB_LAB":
+        WatchFlag('DL_Flooded_Played');
         break;
     }
 }
 
 function CheckPaul() {
-    if( dxr.flagbase.GetBool('PaulDenton_Dead') && ! dxr.flagbase.GetBool('DXREvents_PaulDead') ) {
-        PaulDied(dxr);
+    if( dxr.flagbase.GetBool('PaulDenton_Dead') ) {
+        if( ! dxr.flagbase.GetBool('DXREvents_PaulDead'))
+            PaulDied(dxr);
     } else if( ! #defined vanilla ) {
         SavedPaul(dxr, dxr.player);
     }
@@ -85,11 +113,6 @@ function WatchFlag(name flag) {
     watchflags[num_watchflags++] = flag;
     if(num_watchflags > ArrayCount(watchflags))
         err("WatchFlag num_watchflags > ArrayCount(watchflags)");
-}
-
-function WatchDeath(name flag) {
-    if( !#defined injections )
-        WatchFlag(flag);
 }
 
 function Ending_FirstEntry()
@@ -127,19 +150,9 @@ function Ending_FirstEntry()
     }
 }
 
-simulated function PlayerRespawn(#var PlayerPawn  player)
+simulated function AnyEntry()
 {
-    Super.PlayerRespawn(player);
-    _player = player;
-    died = false;
-    SetTimer(1, true);
-}
-
-simulated function PlayerAnyEntry(#var PlayerPawn  player)
-{
-    Super.PlayerAnyEntry(player);
-    _player = player;
-    died = false;
+    Super.AnyEntry();
     SetTimer(1, true);
 }
 
@@ -155,10 +168,27 @@ simulated function Timer()
             i--;
         }
     }
-    if( !#defined injections && _player != None && _player.IsInState('Dying') && !died) {
-        died = true;
-        AddDeath(dxr, _player);
+    // for nonvanilla, because GameInfo.Died is called before the player's Dying state calls root.ClearWindowStack();
+    if(died) {
+        class'DXRHints'.static.AddDeath(dxr, player());
+        died = false;
     }
+}
+
+function bool SpecialTriggerHandling(Actor Other, Pawn Instigator)
+{
+    local MapExit m;
+
+    if (tag == 'Boat_Exit'){
+        dxr.flagbase.SetBool('DXREvents_LeftOnBoat', true,, 999);
+
+        foreach AllActors(class'MapExit',m,'Boat_Exit2'){
+            m.Trigger(Other,Instigator);
+        }
+        return true;
+    }
+
+    return false;
 }
 
 function Trigger(Actor Other, Pawn Instigator)
@@ -170,14 +200,16 @@ function Trigger(Actor Other, Pawn Instigator)
     Super.Trigger(Other, Instigator);
     l("Trigger("$Other$", "$instigator$")");
 
-    j = js.static.Start("Trigger");
-    js.static.Add(j, "instigator", GetActorName(Instigator));
-    js.static.Add(j, "tag", tag);
-    js.static.add(j, "other", GetActorName(other));
-    GeneralEventData(dxr, j);
-    js.static.End(j);
+    if (!SpecialTriggerHandling(Other,Instigator)){
+        j = js.static.Start("Trigger");
+        js.static.Add(j, "instigator", GetActorName(Instigator));
+        js.static.Add(j, "tag", tag);
+        js.static.add(j, "other", GetActorName(other));
+        GeneralEventData(dxr, j);
+        js.static.End(j);
 
-    class'DXRTelemetry'.static.SendEvent(dxr, Instigator, j);
+        class'DXRTelemetry'.static.SendEvent(dxr, Instigator, j);
+    }
 }
 
 function SendFlagEvent(name flag, optional bool immediate)
@@ -216,10 +248,19 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
     class'DXRTelemetry'.static.SendEvent(dxr, victim, j);
 }
 
-static function AddDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+static function AddPlayerDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
+    local DXREvents ev;
     class'DXRStats'.static.AddDeath(player);
-    class'DXRHints'.static.AddDeath(dxr, player);
+
+    if(#defined injections)
+        class'DXRHints'.static.AddDeath(dxr, player);
+    else {
+        // for nonvanilla, because GameInfo.Died is called before the player's Dying state calls root.ClearWindowStack();
+        ev = DXREvents(dxr.FindModule(class'DXREvents'));
+        if(ev != None)
+            ev.died = true;
+    }
 
     if(Killer == None) {
         if(player.myProjKiller != None)
@@ -252,9 +293,27 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
         return;
 
     foreach victim.AllActors(class'DXRando', dxr) break;
+
+    if(victim.BindName == "PaulDenton")
+        dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
+
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
 }
 
+static function AddDeath(Pawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+{
+    local DXRando dxr;
+    local #var PlayerPawn  player;
+    local #var prefix ScriptedPawn sp;
+    player = #var PlayerPawn (victim);
+    sp = #var prefix ScriptedPawn(victim);
+    if(player != None) {
+        foreach victim.AllActors(class'DXRando', dxr) break;
+        AddPlayerDeath(dxr, player, Killer, damageType, HitLocation);
+    }
+    else if(sp != None)
+        AddPawnDeath(sp, Killer, damageType, HitLocation);
+}
 
 static function PaulDied(DXRando dxr)
 {
@@ -298,6 +357,21 @@ static function BeatGame(DXRando dxr, int ending, int time)
     js.static.Add(j, "time", time);
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
     js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
+    GeneralEventData(dxr, j);
+    js.static.End(j);
+
+    class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
+}
+
+static function ExtinguishFire(DXRando dxr, string extinguisher, DeusExPlayer player)
+{
+    local string j;
+    local class<Json> js;
+    js = class'Json';
+
+    j = js.static.Start("ExtinguishFire");
+    js.static.Add(j, "extinguisher", extinguisher);
+    js.static.Add(j, "location", player.Location);
     GeneralEventData(dxr, j);
     js.static.End(j);
 
