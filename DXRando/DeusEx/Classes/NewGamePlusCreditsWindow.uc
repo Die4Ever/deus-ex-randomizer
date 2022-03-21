@@ -25,7 +25,17 @@ function DoNewGamePlus()
 
 function AddDXRCreditsGeneral()
 {
+#ifdef gmdx
+    PrintHeader("Deus Ex GMDX Randomizer");
+#elseif vmd
+    PrintHeader("Deus Ex Vanilla? Madder. Randomizer");
+#elseif revision
+    PrintHeader("Deus Ex: Revision Randomizer");
+#elseif hx
+    PrintHeader("Deus Ex HX Randomizer");
+#else
     PrintHeader("Deus Ex Randomizer");
+#endif
     PrintText("Version"@class'DXRVersion'.static.VersionString());
     PrintLn();
     PrintHeader("Contributors");
