@@ -1,4 +1,8 @@
+#ifdef injections
 class NewGamePlusCreditsWindow injects CreditsWindow;
+#else
+class NewGamePlusCreditsWindow extends CreditsWindow;
+#endif
 
 event DestroyWindow()
 {
@@ -19,7 +23,7 @@ function DoNewGamePlus()
     }
 }
 
-function AddDXRCreditsGeneral() 
+function AddDXRCreditsGeneral()
 {
     PrintHeader("Deus Ex Randomizer");
     PrintText("Version"@class'DXRVersion'.static.VersionString());
@@ -27,15 +31,15 @@ function AddDXRCreditsGeneral()
     PrintHeader("Contributors");
     PrintText("Die4Ever");
     PrintText("TheAstropath");
-    
+
     PrintLn();
     PrintHeader("Home Page");
     PrintText("https://github.com/Die4Ever/deus-ex-randomizer");
-    
+
     PrintLn();
     PrintHeader("Discord Community");
     PrintText("https://discord.gg/daQVyAp2ds");
-    
+
     PrintLn();
     PrintLn();
 }
@@ -44,13 +48,13 @@ function AddDXRandoCredits()
 {
     local DXRBase mod;
     local DataStorage ds;
-    
+
     AddDXRCreditsGeneral();
-    
+
     foreach player.AllActors(class'DXRBase', mod) {
         mod.AddDXRCredits(Self);
     }
-    
+
     PrintHeader("Original Developers");
     PrintLn();
 
