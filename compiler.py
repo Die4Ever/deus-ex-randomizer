@@ -10,6 +10,7 @@ import subprocess
 import os.path
 import shutil
 import traceback
+import datetime
 from pathlib import Path
 from timeit import default_timer as timer
 from importlib import reload, invalidate_caches
@@ -48,7 +49,7 @@ while rerun != "exit":
         if rerun != "":
             args.profile = rerun
 
-        print("compiling "+args.profile+"...")
+        print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + ": compiling "+args.profile+"...")
         args.compiler.run(args)
 
     except Exception as e:
@@ -61,7 +62,8 @@ while rerun != "exit":
         args.base.printError("----------------")
 
     print("\n")
-    print("press enter to compile "+args.profile+" again")
+    print( datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        + ": \npress enter to compile "+args.profile+" again")
     print("- or type in a new profile name")
     rerun = input("- otherwise type exit: ")
 

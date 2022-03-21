@@ -97,8 +97,9 @@ function SetWatchFlags() {
 }
 
 function CheckPaul() {
-    if( dxr.flagbase.GetBool('PaulDenton_Dead') && ! dxr.flagbase.GetBool('DXREvents_PaulDead') ) {
-        PaulDied(dxr);
+    if( dxr.flagbase.GetBool('PaulDenton_Dead') ) {
+        if( ! dxr.flagbase.GetBool('DXREvents_PaulDead'))
+            PaulDied(dxr);
     } else if( ! #defined vanilla ) {
         SavedPaul(dxr, dxr.player);
     }
@@ -292,6 +293,10 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
         return;
 
     foreach victim.AllActors(class'DXRando', dxr) break;
+
+    if(victim.BindName == "PaulDenton")
+        dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
+
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
 }
 
