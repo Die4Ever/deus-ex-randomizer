@@ -58,7 +58,7 @@ function SetWatchFlags() {
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
         break;
-    case "03_NYC_HANGER":
+    case "03_NYC_HANGAR":
         WatchFlag('NiceTerrorist_Dead');// only tweet it once, not like normal PawnDeaths
 
         foreach AllActors(class'Mechanic', mechanic) {
