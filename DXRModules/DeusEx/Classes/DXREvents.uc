@@ -22,6 +22,9 @@ function PreFirstEntry()
 
 function SetWatchFlags() {
     local MapExit m;
+    local ChildMale child;
+    local Mechanic mechanic;
+    local JunkieFemale jf;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOHQ":
@@ -31,6 +34,11 @@ function SetWatchFlags() {
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
         WatchFlag('M02BillyDone');
+
+        foreach AllActors(class'ChildMale', child) {
+            if(child.BindName == "Josh" || child.BindName == "Billy")
+                child.bImportant = true;
+        }
 
         foreach AllActors(class'MapExit',m,'Boat_Exit'){
             m.Tag = 'Boat_Exit2';
@@ -48,6 +56,12 @@ function SetWatchFlags() {
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
+        break;
+    case "03_NYC_HANGER":
+        foreach AllActors(class'Mechanic', mechanic) {
+            if(mechanic.BindName == "Harold")
+                mechanic.bImportant = true;
+        }
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
@@ -76,6 +90,12 @@ function SetWatchFlags() {
         break;
     case "09_NYC_SHIPBELOW":
         WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
+        break;
+    case "10_PARIS_CATACOMBS":
+        foreach AllActors(class'JunkieFemale', jf) {
+            if(jf.BindName == "aimee")
+                jf.bImportant = true;
+        }
         break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
