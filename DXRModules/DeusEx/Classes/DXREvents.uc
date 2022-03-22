@@ -416,6 +416,7 @@ static function GeneralEventData(DXRando dxr, out string j)
     js.static.Add(j, "TrueNorth", dxr.dxInfo.TrueNorth);
     js.static.Add(j, "PlayerIsFemale", dxr.flagbase.GetBool('LDDPJCIsFemale'));
     js.static.Add(j, "GameMode", dxr.flags.GameModeName(dxr.flags.gamemode));
+    js.static.Add(j, "newgameplus_loops", dxr.flags.newgameplus_loops);
 
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
