@@ -25,6 +25,7 @@ function SetWatchFlags() {
     local ChildMale child;
     local Mechanic mechanic;
     local JunkieFemale jf;
+    local GuntherHermann gunther;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOHQ":
@@ -101,6 +102,10 @@ function SetWatchFlags() {
         WatchFlag('M10EnteredBakery');
         WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
+
+        foreach AllActors(class'GuntherHermann', gunther) {
+            gunther.bInvincible = false;
+        }
         break;
     case "10_PARIS_CLUB":
         WatchFlag('CamilleConvosDone');
