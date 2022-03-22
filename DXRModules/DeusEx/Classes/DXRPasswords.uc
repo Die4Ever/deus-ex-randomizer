@@ -118,6 +118,9 @@ function CheckConfig()
         if(not_passwords[i] != "")
             not_passwords[num_not_passwords++] = Caps(not_passwords[i]);
     }
+    for(i=num_not_passwords; i<ArrayCount(not_passwords); i++) {
+        not_passwords[i] = "";
+    }
     Super.CheckConfig();
 
     // can't put escaped quotes inside config, so we need to add it after saving the config
