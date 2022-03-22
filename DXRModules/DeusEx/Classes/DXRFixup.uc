@@ -158,6 +158,8 @@ function AnyEntry()
     VanillaAnyEntry();
     FixAmmoShurikenName();
 #endif
+
+    AllAnyEntry();
 }
 
 simulated function PlayerAnyEntry(#var PlayerPawn  p)
@@ -307,6 +309,21 @@ function VanillaAnyEntry()
         case 10:
             Paris_AnyEntry();
             break;
+    }
+}
+
+function AllAnyEntry()
+{
+    local HowardStrong hs;
+
+    switch(dxr.localURL) {
+    case "14_Oceanlab_Silo":
+        foreach AllActors(class'HowardStrong', hs) {
+            hs.ChangeAlly('', 1, true);
+            hs.ChangeAlly('mj12', 1, true);
+            hs.ChangeAlly('spider', 1, true);
+        }
+        break;
     }
 }
 
