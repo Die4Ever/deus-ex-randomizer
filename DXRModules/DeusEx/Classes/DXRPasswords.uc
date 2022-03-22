@@ -115,7 +115,8 @@ function CheckConfig()
     }
     num_not_passwords=0;
     for(i=0; i<ArrayCount(not_passwords); i++) {
-        not_passwords[num_not_passwords++] = Caps(not_passwords[i]);
+        if(not_passwords[i] != "")
+            not_passwords[num_not_passwords++] = Caps(not_passwords[i]);
     }
     Super.CheckConfig();
 

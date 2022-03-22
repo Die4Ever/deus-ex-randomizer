@@ -184,6 +184,8 @@ final function GetRange(string key, out int min, out int max)
     len = ArrayCount(config_data);
     // case sensitive, and you want the first and last letters to be unique
     hash = playthrough_id + Asc(key)*73 + Asc(Mid(key, 1, 1));
+    if(hash < 0)
+        hash *= -1;
     blocksize = 32;
     num_blocks = len / blocksize;
     //the last block is reserved space because of the way we overlap
