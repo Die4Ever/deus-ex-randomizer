@@ -510,6 +510,22 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     return settings;
 }
 
+static function string GameModeName(int gamemode)
+{
+    switch(gamemode) {
+    case 0:
+        return "Original Story";
+    case 1:
+        return "Entrance Randomization";
+    case 2:
+        return "Horde Mode";
+    }
+    //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
+    //EnumOption("How About Some Soy Food?", 6, f.gamemode);
+    //EnumOption("Max Rando", 7, f.gamemode);
+    return "";
+}
+
 simulated function LoadFlags()
 {
     //do flags binding

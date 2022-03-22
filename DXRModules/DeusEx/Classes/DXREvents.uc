@@ -22,6 +22,10 @@ function PreFirstEntry()
 
 function SetWatchFlags() {
     local MapExit m;
+    local ChildMale child;
+    local Mechanic mechanic;
+    local JunkieFemale jf;
+    local GuntherHermann gunther;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOHQ":
@@ -31,6 +35,11 @@ function SetWatchFlags() {
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
         WatchFlag('M02BillyDone');
+
+        foreach AllActors(class'ChildMale', child) {
+            if(child.BindName == "Josh" || child.BindName == "Billy")
+                child.bImportant = true;
+        }
 
         foreach AllActors(class'MapExit',m,'Boat_Exit'){
             m.Tag = 'Boat_Exit2';
@@ -48,6 +57,14 @@ function SetWatchFlags() {
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
+        break;
+    case "03_NYC_HANGAR":
+        WatchFlag('NiceTerrorist_Dead');// only tweet it once, not like normal PawnDeaths
+
+        foreach AllActors(class'Mechanic', mechanic) {
+            if(mechanic.BindName == "Harold")
+                mechanic.bImportant = true;
+        }
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
@@ -77,10 +94,20 @@ function SetWatchFlags() {
     case "09_NYC_SHIPBELOW":
         WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
         break;
+    case "10_PARIS_CATACOMBS":
+        foreach AllActors(class'JunkieFemale', jf) {
+            if(jf.BindName == "aimee")
+                jf.bImportant = true;
+        }
+        break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
         WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
+
+        foreach AllActors(class'GuntherHermann', gunther) {
+            gunther.bInvincible = false;
+        }
         break;
     case "10_PARIS_CLUB":
         WatchFlag('CamilleConvosDone');
@@ -390,6 +417,8 @@ static function GeneralEventData(DXRando dxr, out string j)
     js.static.Add(j, "mission", dxr.dxInfo.missionNumber);
     js.static.Add(j, "TrueNorth", dxr.dxInfo.TrueNorth);
     js.static.Add(j, "PlayerIsFemale", dxr.flagbase.GetBool('LDDPJCIsFemale'));
+    js.static.Add(j, "GameMode", dxr.flags.GameModeName(dxr.flags.gamemode));
+    js.static.Add(j, "newgameplus_loops", dxr.flags.newgameplus_loops);
 
     loadout = GetLoadoutName(dxr);
     if(loadout != "")

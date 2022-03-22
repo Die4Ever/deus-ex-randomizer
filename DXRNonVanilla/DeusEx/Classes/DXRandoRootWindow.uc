@@ -11,6 +11,10 @@ function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, op
         case class'MenuSelectDifficulty':
             newScreen = class'DXRMenuSelectDifficulty';
             break;
+
+        case class'CreditsWindow':
+            newScreen = class'NewGamePlusCreditsWindow';
+            break;
     }
     return Super.InvokeMenuScreen(newScreen, bNoPause);
 }

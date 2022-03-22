@@ -131,3 +131,11 @@ function float GetPawnAlliance(Pawn p)
     }
     return 0;
 }
+
+function PrintAlliances()
+{
+    local int i;
+    log("PrintAlliances: "$alliance, name);
+    for(i=0; i<ArrayCount(AlliancesEx); i++)
+        log("PrintAlliances "$i$": " $ AlliancesEx[i].AllianceName @ AlliancesEx[i].AllianceLevel @ AlliancesEx[i].bPermanent, name);
+}

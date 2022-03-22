@@ -11,7 +11,7 @@ function BindControls(optional string action)
 {
     local float difficulty;
     local DXRFlags f;
-    local string sseed;
+    local string sseed, ts;
     local DXRLoadouts loadout;
     local DXRTelemetry t;
     local DXRCrowdControl cc;
@@ -21,12 +21,11 @@ function BindControls(optional string action)
 
 #ifdef vanilla
     NewMenuItem("", "Choose a game mode!");
-    EnumOption("Original Story", 0, f.gamemode);
-    EnumOption("Entrance Randomization", 1, f.gamemode);
-    EnumOption("Horde Mode", 2, f.gamemode);
-    //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
-    //EnumOption("How About Some Soy Food?", 6, f.gamemode);
-    //EnumOption("Max Rando", 7, f.gamemode);
+    for(i=0; i<10; i++) {
+        ts = f.GameModeName(i);
+        if(ts != "")
+            EnumOption(ts, i, f.gamemode);
+    }
 #endif
 
     NewMenuItem("", "Which items and augs you start with and which are banned.");
