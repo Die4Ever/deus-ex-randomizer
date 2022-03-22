@@ -59,6 +59,8 @@ function SetWatchFlags() {
         WatchFlag('FreshWaterOpened');
         break;
     case "03_NYC_HANGER":
+        WatchFlag('NiceTerrorist_Dead');// only tweet it once, not like normal PawnDeaths
+
         foreach AllActors(class'Mechanic', mechanic) {
             if(mechanic.BindName == "Harold")
                 mechanic.bImportant = true;
