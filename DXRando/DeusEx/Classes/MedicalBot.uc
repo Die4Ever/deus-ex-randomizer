@@ -5,6 +5,12 @@ class DXRMedicalBot extends #var prefix MedicalBot;
 #endif
 var int numUses;
 
+replication
+{
+    reliable if ( Role == ROLE_Authority )
+        numUses;
+}
+
 function int HealPlayer(DeusExPlayer player)
 {
     local int healAmount;
@@ -20,24 +26,24 @@ function int HealPlayer(DeusExPlayer player)
     return healAmount;
 }
 
-function int GetMaxUses()
+simulated function int GetMaxUses()
 {
-    local DeusExPlayer p;
+    local DXRando dxr;
 
-    foreach AllActors(class'DeusExPlayer', p){
-        return p.flagBase.GetInt('Rando_medbotuses');
+    foreach AllActors(class'DXRando', dxr){
+        return dxr.flags.settings.medbotuses;
     }
 
     return 0;
 
 }
 
-function int GetRemainingUses()
+simulated function int GetRemainingUses()
 {
     return (GetMaxUses() - numUses);
 }
 
-function string GetRemainingUsesStr()
+simulated function string GetRemainingUsesStr()
 {
     local int uses;
     local string msg;
@@ -54,17 +60,17 @@ function string GetRemainingUsesStr()
 
 }
 
-function bool HasLimitedUses()
+simulated function bool HasLimitedUses()
 {
      return (GetMaxUses() != 0);
 }
 
-function bool HealsRemaining()
+simulated function bool HealsRemaining()
 {
     return GetRemainingUses()!=0;
 }
 
-function bool CanHeal()
+simulated function bool CanHeal()
 {
 #ifdef injections
     if (_CanHeal()) {
@@ -81,7 +87,7 @@ function bool CanHeal()
     }
 }
 
-function Float GetRefreshTimeRemaining()
+simulated function Float GetRefreshTimeRemaining()
 {
     local int timeRemaining;
 
