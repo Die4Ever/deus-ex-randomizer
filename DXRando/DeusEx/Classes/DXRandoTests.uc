@@ -1,7 +1,9 @@
 #ifdef hx
 class DXRandoTests extends HXRandoGameInfo;
-#else
+#elseif vanilla
 class DXRandoTests extends DeusExGameInfo;
+#else
+class DXRandoTests extends DXRandoGameInfo;
 #endif
 
 event playerpawn Login
@@ -42,7 +44,7 @@ function PostBeginPlay()
 function Timer()
 {
     local DXRando dxr;
-    
+
     foreach AllActors(class'DXRando', dxr) { break; }
     if( dxr.bTickEnabled ) {
         log("waiting... dxr: " $ dxr $ ", dxr.bTickEnabled: " $ dxr.bTickEnabled );
