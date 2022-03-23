@@ -405,55 +405,65 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
 
     if (mbcooldown!=0 || mbamount!=0) {
          foreach AllActors(class'#var prefix MedicalBot', m) {
-            if (mbcooldown!=0){
-                if (mbcooldown == 1) { //Individual
-                    SetSeed("MedBotCooldown"$m.name); //Seed includes level name and the unique bot name
-                } else if (mbcooldown == 2) { //Global
-                    SetGlobalSeed("MedBotCooldown"); //Don't include the level name, or anything unique
-                }
-
-                //Actually rando the cooldown
-                m.healRefreshTime = rngrange(m.default.healRefreshTime, 0.25, 1.25);
-            }
-
-            if (mbamount!=0){
-                if (mbamount == 1) { //Individual
-                    SetSeed("MedBotAmount"$m.name); //Seed includes level name and the unique bot name
-                } else if (mbamount == 2) { //Global
-                    SetGlobalSeed("MedBotAmount"); //Don't include the level name, or anything unique
-                }
-
-                //Actually rando the cooldown
-                m.healAmount = rngrange(m.default.healAmount, 0.5, 1.5);
-            }
+            RandoMedBot(m, mbamount, mbcooldown);
         }
 
     }
 
     if (rbcooldown!=0 || rbamount!=0) {
         foreach AllActors(class'#var prefix RepairBot', r) {
-             if (rbcooldown!=0){
-                if (rbcooldown == 1) { //Individual
-                    SetSeed("RepairBotCooldown"$r.name); //Seed includes level name and the unique bot name
-                } else if (rbcooldown == 2) { //Global
-                    SetGlobalSeed("RepairBotCooldown"); //Don't include the level name, or anything unique
-                }
-
-                //Actually rando the cooldown
-                r.chargeRefreshTime = rngrange(r.default.chargeRefreshTime, 0.25, 1.25);
-            }
-
-            if (rbamount!=0){
-                if (rbamount == 1) { //Individual
-                    SetSeed("RepairBotAmount"$r.name); //Seed includes level name and the unique bot name
-                } else if (rbamount == 2) { //Global
-                    SetGlobalSeed("RepairBotAmount"); //Don't include the level name, or anything unique
-                }
-
-                //Actually rando the cooldown
-                r.chargeAmount = rngrange(r.default.chargeAmount, 0.5, 1.5);
-            }
+             RandoRepairBot(r, rbamount, rbcooldown);
         }
+    }
+}
+
+simulated function RandoMedBot(#var prefix MedicalBot m, int mbamount, int mbcooldown)
+{
+    if (mbcooldown!=0){
+        if (mbcooldown == 1) { //Individual
+            SetSeed("MedBotCooldown"$m.name); //Seed includes level name and the unique bot name
+        } else if (mbcooldown == 2) { //Global
+            SetGlobalSeed("MedBotCooldown"); //Don't include the level name, or anything unique
+        }
+
+        //Actually rando the cooldown
+        m.healRefreshTime = rngrange(m.default.healRefreshTime, 0.25, 1.25);
+    }
+
+    if (mbamount!=0){
+        if (mbamount == 1) { //Individual
+            SetSeed("MedBotAmount"$m.name); //Seed includes level name and the unique bot name
+        } else if (mbamount == 2) { //Global
+            SetGlobalSeed("MedBotAmount"); //Don't include the level name, or anything unique
+        }
+
+        //Actually rando the cooldown
+        m.healAmount = rngrange(m.default.healAmount, 0.5, 1.5);
+    }
+}
+
+simulated function RandoRepairBot(#var prefix RepairBot r, int rbamount, int rbcooldown)
+{
+    if (rbcooldown!=0){
+        if (rbcooldown == 1) { //Individual
+            SetSeed("RepairBotCooldown"$r.name); //Seed includes level name and the unique bot name
+        } else if (rbcooldown == 2) { //Global
+            SetGlobalSeed("RepairBotCooldown"); //Don't include the level name, or anything unique
+        }
+
+        //Actually rando the cooldown
+        r.chargeRefreshTime = rngrange(r.default.chargeRefreshTime, 0.25, 1.25);
+    }
+
+    if (rbamount!=0){
+        if (rbamount == 1) { //Individual
+            SetSeed("RepairBotAmount"$r.name); //Seed includes level name and the unique bot name
+        } else if (rbamount == 2) { //Global
+            SetGlobalSeed("RepairBotAmount"); //Don't include the level name, or anything unique
+        }
+
+        //Actually rando the cooldown
+        r.chargeAmount = rngrange(r.default.chargeAmount, 0.5, 1.5);
     }
 }
 

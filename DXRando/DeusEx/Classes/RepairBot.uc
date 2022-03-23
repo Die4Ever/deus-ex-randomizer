@@ -71,6 +71,17 @@ simulated function bool ChargesRemaining()
 
 simulated function bool CanCharge()
 {
+#ifdef hx
+    // hx doesn't have replication for our randomized variables
+    local DXRando dxr;
+    local DXRMachines m;
+    foreach AllActors(class'DXRando', dxr) { break; }
+    m = DXRMachines(dxr.FindModule(class'DXRMachines'));
+    if(m != None) {
+        m.RandoRepairBot(self, dxr.flags.settings.repairbotamount, dxr.flags.settings.repairbotcooldowns);
+    }
+#endif
+
 #ifdef injections
     if (_CanCharge()) {
 #else
