@@ -631,6 +631,9 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     local bool bCollideActors, bBlockActors, bBlockPlayers;
     local name tag, event;
 
+    if(a.class == newclass)
+        return None;
+
     bCollideActors = a.bCollideActors;
     bBlockActors = a.bBlockActors;
     bBlockPlayers = a.bBlockPlayers;

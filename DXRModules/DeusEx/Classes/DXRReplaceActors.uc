@@ -39,10 +39,6 @@ function ReplaceActors()
 function ReplaceInformationDevice(#var prefix InformationDevices a)
 {
     local DXRInformationDevices n;
-
-    if( DXRInformationDevices(a) != None )
-        return;
-
     n = DXRInformationDevices(SpawnReplacement(a, class'DXRInformationDevices'));
     if(n == None)
         return;
@@ -63,10 +59,6 @@ function ReplaceGEPGun(WeaponGEPGUN a)
 {
 #ifndef hx
     local GMDXGepGun n;
-
-    if(GMDXGepGun(a) != None)
-        return;
-
     n = GMDXGepGun(SpawnReplacement(a, class'GMDXGepGun'));
     if(n == None)
         return;
@@ -80,10 +72,6 @@ function ReplaceAllianceTrigger(#var prefix AllianceTrigger a)
 {
     local DXRAllianceTrigger n;
     local int i;
-
-    if(DXRAllianceTrigger(a) != None)
-        return;
-
     n = DXRAllianceTrigger(SpawnReplacement(a, class'DXRAllianceTrigger'));
     if(n == None)
         return;
@@ -102,10 +90,6 @@ function ReplaceAllianceTrigger(#var prefix AllianceTrigger a)
 function ReplaceToilet(#var prefix Toilet a)
 {
     local DXRToilet n;
-
-    if(DXRToilet(a) != None)
-        return;
-
     n = DXRToilet(SpawnReplacement(a, class'DXRToilet'));
     if(n == None)
         return;
@@ -123,10 +107,6 @@ function ReplaceToilet(#var prefix Toilet a)
 function ReplaceToilet2(#var prefix Toilet2 a)
 {
     local DXRToilet2 n;
-
-    if(DXRToilet2(a) != None)
-        return;
-
     n = DXRToilet2(SpawnReplacement(a, class'DXRToilet2'));
     if(n == None)
         return;
@@ -145,10 +125,6 @@ function ReplaceShowerFaucet(#var prefix ShowerFaucet a)
 {
     local DXRShowerFaucet n;
     local int i;
-
-    if(DXRShowerFaucet(a) != None)
-        return;
-
     n = DXRShowerFaucet(SpawnReplacement(a, class'DXRShowerFaucet'));
     if(n == None)
         return;
@@ -172,10 +148,6 @@ function ReplaceShowerFaucet(#var prefix ShowerFaucet a)
 function ReplaceClothesRack(#var prefix ClothesRack a)
 {
     local DXRClothesRack n;
-
-    if(DXRClothesRack(a) != None)
-        return;
-
     n = DXRClothesRack(SpawnReplacement(a, class'DXRClothesRack'));
     if(n == None)
         return;
