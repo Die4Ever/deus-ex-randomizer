@@ -19,6 +19,15 @@ function ReplaceActors()
         if( #var prefix ClothesRack(a) != None ) {
             ReplaceClothesRack(#var prefix ClothesRack(a));
         }
+        if( #var prefix Toilet(a) != None ) {
+            ReplaceToilet(#var prefix Toilet(a));
+        }
+        if( #var prefix Toilet2(a) != None ) {
+            ReplaceToilet2(#var prefix Toilet2(a));
+        }
+        if( #var prefix ShowerFaucet(a) != None ) {
+            ReplaceShowerFaucet(#var prefix ShowerFaucet(a));
+        }
 #ifdef gmdx
         if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -87,6 +96,76 @@ function ReplaceAllianceTrigger(#var prefix AllianceTrigger a)
     }
 
     ReplaceTrigger(a, n);
+    a.Destroy();
+}
+
+function ReplaceToilet(#var prefix Toilet a)
+{
+    local DXRToilet n;
+
+    if(DXRToilet(a) != None)
+        return;
+
+    n = DXRToilet(SpawnReplacement(a, class'DXRToilet'));
+    if(n == None)
+        return;
+
+    n.SkinColor = a.SkinColor;
+    n.Skin = a.Skin;
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
+    a.Destroy();
+}
+
+function ReplaceToilet2(#var prefix Toilet2 a)
+{
+    local DXRToilet2 n;
+
+    if(DXRToilet2(a) != None)
+        return;
+
+    n = DXRToilet2(SpawnReplacement(a, class'DXRToilet2'));
+    if(n == None)
+        return;
+
+    n.SkinColor = a.SkinColor;
+    n.Skin = a.Skin;
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
+    a.Destroy();
+}
+
+function ReplaceShowerFaucet(#var prefix ShowerFaucet a)
+{
+    local DXRShowerFaucet n;
+    local int i;
+
+    if(DXRShowerFaucet(a) != None)
+        return;
+
+    n = DXRShowerFaucet(SpawnReplacement(a, class'DXRShowerFaucet'));
+    if(n == None)
+        return;
+
+    n.Skin = a.Skin;
+    for(i=0; i<ArrayCount(n.waterGen); i++) {
+        n.waterGen[i] = a.waterGen[i];
+        a.waterGen[i] = None;
+    }
+    for(i=0; i<ArrayCount(n.sprayOffsets); i++) {
+        n.sprayOffsets[i] = a.sprayOffsets[i];
+    }
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
     a.Destroy();
 }
 

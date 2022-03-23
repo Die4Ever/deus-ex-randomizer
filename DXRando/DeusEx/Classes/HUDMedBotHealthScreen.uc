@@ -1,5 +1,7 @@
 #ifdef injections
 class DXRHUDMedBotHealthScreen injects HUDMedBotHealthScreen;
+#elseif hx
+class DXRHUDMedBotHealthScreen extends HXPersonaScreenHealthMedBot;
 #else
 class DXRHUDMedBotHealthScreen extends HUDMedBotHealthScreen;
 #endif
