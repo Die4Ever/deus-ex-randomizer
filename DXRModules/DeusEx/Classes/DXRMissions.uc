@@ -1017,6 +1017,7 @@ function PreFirstEntry()
     if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
         dxr.flags.f.SetBool('FemJCMeetPaul_Played', true,, 2);
+        dxr.flags.f.SetBool('PaulGaveWeapon', true,, 2);
     }
     else if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
         foreach AllActors(class'#var prefix AnnaNavarre', anna) {
