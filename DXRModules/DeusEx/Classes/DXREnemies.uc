@@ -351,18 +351,15 @@ function RandoEnemies(int percent, int hidden_percent)
     local ScriptedPawn p;
     local ScriptedPawn n;
     local ScriptedPawn newsp;
-    local Pawn pawn;
 
     l("RandoEnemies "$percent);
 
     SetSeed( "RandoEnemies" );
 
-    foreach AllActors(class'Pawn', pawn)
-    {// even hidden pawns?
-        if( pawn.bHidden ) continue;
-        p = ScriptedPawn(pawn);
+    foreach AllActors(class'ScriptedPawn', p)
+    {
         if( p != None && p.bImportant ) continue;
-        RandomizeSize(pawn);
+        RandomizeSize(p);
     }
 
     foreach AllActors(class'ScriptedPawn', p)
@@ -373,6 +370,7 @@ function RandoEnemies(int percent, int hidden_percent)
         //if( IsInitialEnemy(p) == False ) continue;
 
         if( HasItemSubclass(p, class'Weapon') == false ) continue;//don't randomize neutral npcs that don't already have weapons
+
         _perc = percent;
         if(p.bHidden) _perc = hidden_percent;
 
@@ -380,10 +378,9 @@ function RandoEnemies(int percent, int hidden_percent)
 
         if(p.bImportant && p.Tag != 'RaidingCommando') continue;
         if(p.bInvincible) continue;
+        if( p.Region.Zone.bWaterZone || p.Region.Zone.bPainZone ) continue;
 
         if( chance_single(_perc) == false ) continue;
-
-        if( p.Region.Zone.bWaterZone || p.Region.Zone.bPainZone ) continue;
 
         for(i = rng(enemy_multiplier*100+_perc)/100; i >= 0; i--) {
             n = RandomEnemy(p, _perc);
@@ -634,6 +631,7 @@ function RandomizeSize(Actor a)
 {
     local Decoration carried;
     local DeusExPlayer p;
+    local float scale;
 
     p = DeusExPlayer(a);
     if( p != None && p.carriedDecoration != None ) {
@@ -642,7 +640,8 @@ function RandomizeSize(Actor a)
         carried.SetPhysics(PHYS_None);
     }
 
-    SetActorScale(a, rngrange(1, 0.9, 1.1));
+    scale = rngrange(1, 0.9, 1.1);
+    SetActorScale(a, scale);
     a.Fatness = rng(20) + 120;
 
     if( carried != None ) {
