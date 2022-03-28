@@ -519,7 +519,7 @@ static function string GameModeName(int gamemode)
 {
     switch(gamemode) {
     case 0:
-        return "Original Story";
+        return "Normal Randomizer";
     case 1:
         return "Entrance Randomization";
     case 2:
