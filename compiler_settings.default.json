@@ -40,7 +40,7 @@
         "rewrite_packages": { "DeusEx": "GMDXRandomizer" },
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
-        "run_tests": false,
+        "run_tests": true,
         "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc" ]
     },
     "revision": {
@@ -70,7 +70,7 @@
         "rewrite_packages": { "DeusEx": "VMDRandomizer" },
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
-        "run_tests": false,
+        "run_tests": true,
         "blacklist": [ "DXRVanilla", "DXRBalance", "DXRFixes", "DXRBacktracking.uc", "DXREntranceRando.uc", "DXRAutosave.uc", "DXRFashion.uc" ]
     }
 }

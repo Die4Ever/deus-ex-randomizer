@@ -52,9 +52,9 @@ function bool PickupQuery( Pawn Other, Inventory item )
     local #var PlayerPawn  player;
 
     player = #var PlayerPawn (Other);
-    if(player != None) {
+    if(player != None && item != None) {
         loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
-        if( loadouts.ban(player, item) ) {
+        if( loadouts != None && loadouts.ban(player, item) ) {
             item.Destroy();
             return false;
         }

@@ -1,10 +1,16 @@
 #ifdef injections
 class DXRRepairBot merges RepairBot;
 #else
-class DXRRepairBot extends RepairBot;
+class DXRRepairBot extends #var prefix RepairBot;
 #endif
 
 var int numUses;
+
+replication
+{
+    reliable if ( Role == ROLE_Authority )
+        numUses;
+}
 
 function int ChargePlayer(DeusExPlayer PlayerToCharge)
 {
@@ -21,23 +27,23 @@ function int ChargePlayer(DeusExPlayer PlayerToCharge)
     return chargeAmount;
 }
 
-function int GetMaxUses()
+simulated function int GetMaxUses()
 {
-    local DeusExPlayer p;
+    local DXRando dxr;
 
-    foreach AllActors(class'DeusExPlayer', p){
-        return p.flagBase.GetInt('Rando_repairbotuses');
+    foreach AllActors(class'DXRando', dxr){
+        return dxr.flags.settings.repairbotuses;
     }
 
     return 0;
 }
 
-function int GetRemainingUses()
+simulated function int GetRemainingUses()
 {
     return (GetMaxUses() - numUses);
 }
 
-function string GetRemainingUsesStr()
+simulated function string GetRemainingUsesStr()
 {
     local int uses;
     local string msg;
@@ -53,18 +59,29 @@ function string GetRemainingUsesStr()
     return msg;
 }
 
-function bool HasLimitedUses()
+simulated function bool HasLimitedUses()
 {
      return (GetMaxUses() != 0);
 }
 
-function bool ChargesRemaining()
+simulated function bool ChargesRemaining()
 {
     return GetRemainingUses()!=0;
 }
 
-function bool CanCharge()
+simulated function bool CanCharge()
 {
+#ifdef hx
+    // hx doesn't have replication for our randomized variables
+    local DXRando dxr;
+    local DXRMachines m;
+    foreach AllActors(class'DXRando', dxr) { break; }
+    m = DXRMachines(dxr.FindModule(class'DXRMachines'));
+    if(m != None) {
+        m.RandoRepairBot(self, dxr.flags.settings.repairbotamount, dxr.flags.settings.repairbotcooldowns);
+    }
+#endif
+
 #ifdef injections
     if (_CanCharge()) {
 #else
@@ -80,7 +97,7 @@ function bool CanCharge()
     }
 }
 
-function Float GetRefreshTimeRemaining()
+simulated function Float GetRefreshTimeRemaining()
 {
     local int timeRemaining;
 

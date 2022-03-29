@@ -34,7 +34,7 @@ struct FlagsSettings {
     var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
     var int keys_containers, infodevices_containers;
     var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized;//could be bools, but int is more flexible, especially so I don't have to change the flag type
-    var int enemiesrandomized, enemiesshuffled, enemyrespawn, infodevices;
+    var int enemiesrandomized, hiddenenemiesrandomized, enemiesshuffled, enemyrespawn, infodevices;
     var int dancingpercent;
     var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
     var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
@@ -218,6 +218,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 20;
+        difficulty_settings[i].hiddenenemiesrandomized = 0;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
@@ -276,6 +277,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 20;
+        difficulty_settings[i].hiddenenemiesrandomized = 0;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
@@ -333,6 +335,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 30;
+        difficulty_settings[i].hiddenenemiesrandomized = 0;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
@@ -390,6 +393,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 40;
+        difficulty_settings[i].hiddenenemiesrandomized = 0;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
@@ -447,6 +451,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 50;
+        difficulty_settings[i].hiddenenemiesrandomized = 0;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
@@ -514,7 +519,7 @@ static function string GameModeName(int gamemode)
 {
     switch(gamemode) {
     case 0:
-        return "Original Story";
+        return "Normal Randomizer";
     case 1:
         return "Entrance Randomization";
     case 2:
@@ -617,6 +622,7 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_medkits', settings.medkits, mode, str);
     FlagInt('Rando_enemiesrandomized', settings.enemiesrandomized, mode, str);
+    FlagInt('Rando_hiddenenemiesrandomized', settings.hiddenenemiesrandomized, mode, str);
     FlagInt('Rando_enemiesshuffled', settings.enemiesshuffled, mode, str);
     FlagInt('Rando_infodevices', settings.infodevices, mode, str);
     FlagInt('Rando_infodevices_containers', settings.infodevices_containers, mode, str);
@@ -856,6 +862,7 @@ function NewGamePlus()
     settings.minskill = settings.minskill*1.2;// int *= float doesn't give as good accuracy as int = int*float
     settings.maxskill = settings.maxskill*1.2;
     settings.enemiesrandomized = settings.enemiesrandomized*1.2;
+    settings.hiddenenemiesrandomized = settings.hiddenenemiesrandomized*1.2;
     settings.ammo = settings.ammo*0.9;
     settings.medkits = settings.medkits*0.8;
     settings.multitools = settings.multitools*0.8;

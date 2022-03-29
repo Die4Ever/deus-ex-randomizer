@@ -1,4 +1,4 @@
-class DXREnemies extends DXRActorsBase transient;
+class DXREnemies extends DXRActorsBase;
 
 var config int enemy_multiplier;
 
@@ -16,6 +16,14 @@ var _RandomEnemyStruct _randomenemies[32];
 
 var config name defaultOrders;
 var config float min_rate_adjust, max_rate_adjust;
+
+struct WatchEnterWorld {
+    var ScriptedPawn watch, target;
+};
+
+// for hidden/not in world pawns
+var WatchEnterWorld watches[100];
+var int num_watches;
 
 replication
 {
@@ -131,7 +139,7 @@ function FirstEntry()
 {
     Super.FirstEntry();
     SwapScriptedPawns(dxr.flags.settings.enemiesshuffled, true);
-    RandoEnemies(dxr.flags.settings.enemiesrandomized);
+    RandoEnemies(dxr.flags.settings.enemiesrandomized, dxr.flags.settings.hiddenenemiesrandomized);
     RandoCarcasses();
 }
 
@@ -336,44 +344,46 @@ function SwapScriptedPawns(int percent, bool enemies)
     }
 }
 
-function RandoEnemies(int percent)
+function RandoEnemies(int percent, int hidden_percent)
 {
-    local int i;
+    // TODO: later when hidden_percent is well tested, we can get rid of it and _perc
+    local int i, _perc;
     local ScriptedPawn p;
     local ScriptedPawn n;
     local ScriptedPawn newsp;
-    local Pawn pawn;
 
     l("RandoEnemies "$percent);
 
     SetSeed( "RandoEnemies" );
 
-    foreach AllActors(class'Pawn', pawn)
-    {// even hidden pawns?
-        if( pawn.bHidden ) continue;
-        p = ScriptedPawn(pawn);
+    foreach AllActors(class'ScriptedPawn', p)
+    {
         if( p != None && p.bImportant ) continue;
-        RandomizeSize(pawn);
+        RandomizeSize(p);
     }
 
     foreach AllActors(class'ScriptedPawn', p)
     {
         if( p == newsp ) break;
         if( IsCritter(p) ) continue;
-        if( SkipActor(p, 'ScriptedPawn') ) continue;
+        //if( SkipActor(p, 'ScriptedPawn') ) continue;
         //if( IsInitialEnemy(p) == False ) continue;
 
         if( HasItemSubclass(p, class'Weapon') == false ) continue;//don't randomize neutral npcs that don't already have weapons
-        if( chance_single(percent) ) RandomizeSP(p, percent);
 
-        if( p.bImportant || p.bInvincible ) continue;
+        _perc = percent;
+        if(p.bHidden) _perc = hidden_percent;
 
-        if( chance_single(percent) == false ) continue;
+        if( chance_single(_perc) ) RandomizeSP(p, _perc);
 
+        if(p.bImportant && p.Tag != 'RaidingCommando') continue;
+        if(p.bInvincible) continue;
         if( p.Region.Zone.bWaterZone || p.Region.Zone.bPainZone ) continue;
 
-        for(i = rng(enemy_multiplier*100+percent)/100; i >= 0; i--) {
-            n = RandomEnemy(p, percent);
+        if( chance_single(_perc) == false ) continue;
+
+        for(i = rng(enemy_multiplier*100+_perc)/100; i >= 0; i--) {
+            n = RandomEnemy(p, _perc);
             if( newsp == None ) newsp = n;
         }
     }
@@ -430,8 +440,13 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
         loc_offset.X = 1 + rngf() * 3 * Sqrt(float(enemy_multiplier+1));
         loc_offset.Y = 1 + rngf() * 3 * Sqrt(float(enemy_multiplier+1));
         if( chance_single(50) ) loc_offset *= -1;
-        loc = p.Location + (radius*loc_offset);
-        if( class'DXRMissions'.static.IsCloseToStart(dxr, loc) ) {
+
+        if(p.bInWorld)
+            loc = p.Location + (radius*loc_offset);
+        else
+            loc = p.WorldPosition + (radius*loc_offset);
+
+        if( p.bInWorld == true && class'DXRMissions'.static.IsCloseToStart(dxr, loc) ) {
             info("CloneScriptedPawn "$loc$" is too close to start!");
             continue;
         }
@@ -505,7 +520,42 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
 
     RandomizeSize(n);
 
+    if(!p.bInWorld) {
+        n.bHidden = true;
+        n.bInWorld = false;
+        if(num_watches >= ArrayCount(watches)) {
+            // this can happen if someone cranks up the settings too high
+            warning("num_watches >= ArrayCount(watches): "$num_watches $", "$ ArrayCount(watches));
+        } else {
+            watches[num_watches].watch = p;
+            watches[num_watches].target = n;
+            num_watches++;
+            SetTimer(1, true);
+        }
+    } else if(p.bHidden) {
+        err(p$" is hidden but in world?");
+        n.bHidden = true;
+    }
+
     return n;
+}
+
+function Timer() {
+    local int i;
+    local WatchEnterWorld w;
+    Super.Timer();
+
+    for(i=0; i<num_watches; i++) {
+        w = watches[i];
+        if(w.watch != None && w.watch.bInWorld) {
+            w.target.EnterWorld();
+            w.watch = None;
+        }
+        if(w.watch == None) {
+            watches[i] = watches[--num_watches];
+            i--;
+        }
+    }
 }
 
 function RandomizeSP(ScriptedPawn p, int percent)
@@ -581,6 +631,7 @@ function RandomizeSize(Actor a)
 {
     local Decoration carried;
     local DeusExPlayer p;
+    local float scale;
 
     p = DeusExPlayer(a);
     if( p != None && p.carriedDecoration != None ) {
@@ -589,7 +640,8 @@ function RandomizeSize(Actor a)
         carried.SetPhysics(PHYS_None);
     }
 
-    SetActorScale(a, rngrange(1, 0.9, 1.1));
+    scale = rngrange(1, 0.9, 1.1);
+    SetActorScale(a, scale);
     a.Fatness = rng(20) + 120;
 
     if( carried != None ) {

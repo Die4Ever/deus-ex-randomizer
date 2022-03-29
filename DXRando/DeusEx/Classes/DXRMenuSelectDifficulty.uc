@@ -20,7 +20,7 @@ function BindControls(optional string action)
     f = InitFlags();
 
 #ifdef vanilla
-    NewMenuItem("", "Choose a game mode!");
+    NewMenuItem("Game Mode", "Choose a game mode!");
     for(i=0; i<10; i++) {
         ts = f.GameModeName(i);
         if(ts != "")

@@ -1,5 +1,7 @@
 #ifdef injections
 class DXRHUDMedBotAddAugsScreen injects HUDMedBotAddAugsScreen;
+#elseif hx
+class DXRHUDMedBotAddAugsScreen extends HXPersonaScreenAugmentationsMedBot;
 #else
 class DXRHUDMedBotAddAugsScreen extends HUDMedBotAddAugsScreen;
 #endif
@@ -18,10 +20,15 @@ function CreateButtons()
     btnRemove.bTranslucent = false; //This doesn't look amazing, but it covers up the weird transparency in the menu image
     btnRemove.SetButtonText("|&Remove");
 
+#ifdef hx
+    InstallButton = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    InstallButton.bTranslucent = false; //This doesn't look amazing, but it covers up the weird transparency in the menu image
+    InstallButton.SetButtonText(InstallButtonLabel);
+#else
     btnInstall = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
     btnInstall.bTranslucent = false; //This doesn't look amazing, but it covers up the weird transparency in the menu image
     btnInstall.SetButtonText(InstallButtonLabel);
-
+#endif
 }
 
 function EnableButtons()
@@ -48,7 +55,11 @@ function bool ButtonActivated(Window buttonPressed)
             RemoveAugmentation();
             break;
 
+#ifdef hx
+        case InstallButton:
+#else
         case btnInstall:
+#endif
             InstallAugmentation();
             break;
         default:

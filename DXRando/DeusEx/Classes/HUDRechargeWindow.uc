@@ -1,7 +1,7 @@
 #ifdef injections
 class DXRHUDRechargeWindow injects HUDRechargeWindow;
 #else
-class DXRHUDRechargeWindow extends HUDRechargeWindow;
+class DXRHUDRechargeWindow extends #var prefix HUDRechargeWindow;
 #endif
 
 function UpdateRepairBotWindows()
