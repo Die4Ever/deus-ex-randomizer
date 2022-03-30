@@ -95,7 +95,8 @@ function ReceivedData(string data)
     status = j.get("status");
     l("HTTPReceivedData: " $ status $ ", j.count(): " $ j.count());
     if( InStr(status,"ERROR") >= 0 || InStr(status, "ok") == -1 ) {
-        warning("HTTPReceivedData: " $ status);
+        // we probably don't want to use warning or err here because that would send to telemetry which could cause an infinite loop
+        l("ERROR: HTTPReceivedData: " $ status);
     }
     CheckNotification(j.get("notification"), j.get("message"));
     CheckDeaths(j);
