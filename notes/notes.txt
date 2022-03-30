@@ -12,24 +12,6 @@ In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.
 
 VMD Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
 
-### Installation Instructions for GMDX
-
-Install GMDX from https://www.moddb.com/mods/gmdx/downloads/gmdxv90-release
-
-Or v10 https://www.moddb.com/mods/gmdx-v10-community-update/downloads/gmdxv10-092020-update
-
-Or RSD https://www.moddb.com/mods/gmdx/addons/version-rsd-beta-10-future-official-update
-
-Download `GMDXRandomizer.u` from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
-
-Copy `GMDXRandomizer.u` into the game's `System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
-
-Edit the `GMDX.ini` or `GMDXv10.ini` file which is probably in the game directory, or `%UserProfile%\Documents\Deus Ex\System`
-
-In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=GMDXRandomizer.DXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=GMDXRandomizer.DXRandoRootWindow`
-
-GMDX Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
-
 ### Installation Instructions for Revision
 
 Install Revision from Steam or https://www.moddb.com/mods/deus-ex-revision/downloads/deus-ex-revision

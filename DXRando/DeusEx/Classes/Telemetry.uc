@@ -9,7 +9,7 @@ var bool running;
 
 function Resolved( IpAddr Addr )
 {
-    //log(Self$" Resolved");
+    log(Self$" Resolved "$Addr.Addr);
     module.CacheAddr(Addr.Addr);
     Super.Resolved(Addr);
 }
