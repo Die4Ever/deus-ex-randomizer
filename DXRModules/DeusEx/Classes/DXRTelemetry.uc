@@ -93,8 +93,9 @@ function ReceivedData(string data)
     j = class'Json'.static.parse(Level, data);
     data = "";
     status = j.get("status");
+    l("HTTPReceivedData: " $ status $ ", j.count(): " $ j.count());
     if( InStr(status,"ERROR") >= 0 || InStr(status, "ok") == -1 ) {
-        l("HTTPReceivedData: " $ status);
+        warning("HTTPReceivedData: " $ status);
     }
     CheckNotification(j.get("notification"), j.get("message"));
     CheckDeaths(j);
