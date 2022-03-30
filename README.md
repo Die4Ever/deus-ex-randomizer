@@ -26,6 +26,26 @@ Download Deus Ex Randomizers's `DeusEx.u` file from the releases page here https
 Then copy Deus Ex Randomizers's `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`. This will overwrite the `DeusEx.u` file from Lay D Denton.
 </details>
 
+### Installation Instructions for GMDX
+<details>
+<summary>Click to expand HX Installation Instructions...</summary>
+Install GMDX from https://www.moddb.com/mods/gmdx/downloads/gmdxv90-release
+
+Or v10 https://www.moddb.com/mods/gmdx-v10-community-update/downloads/gmdxv10-092020-update
+
+Or RSD https://www.moddb.com/mods/gmdx/addons/version-rsd-beta-10-future-official-update
+
+Download `GMDXRandomizer.u` from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
+
+Copy `GMDXRandomizer.u` into the game's `System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
+
+Edit the `GMDX.ini` file which is probably in `%UserProfile%\Documents\Deus Ex\GMDXv9\System` or `%UserProfile%\Documents\Deus Ex\GMDXvRSD\System`, or `GMDXv10.ini` which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
+
+In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=GMDXRandomizer.DXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=GMDXRandomizer.DXRandoRootWindow`
+
+GMDX Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
+</details>
+
 ## Installation Instructions for HX (Co-op)
 <details>
 <summary>Click to expand HX Installation Instructions...</summary>
@@ -49,7 +69,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <a href="https://www.youtube.com/watch?v=A0Li3XuBjGg" target="_blank">
 <img src="https://i.imgur.com/hTCuQCH.png" alt="v1.5 Trailer" height="200"/></a>
 
-## Currently in v1.7.5, DXRando randomizes
+## Currently in v1.8, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
@@ -101,7 +121,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <details>
 <summary>When you click New Game, you will see this settings screen:</summary>
 
-![options](https://i.imgur.com/Fb2aeNk.png)
+![options](https://i.imgur.com/eeZ4r81.png)
 
 </details>
 
@@ -110,7 +130,7 @@ If you click Next then it will use default settings based on your difficulty cho
 <details>
 <summary>But if you click Advanced then you will see these settings:</summary>
 
-![advanced options](https://i.imgur.com/E60D722.png)
+![advanced options](https://i.imgur.com/THE9WkS.png)
 
 </details>
 
