@@ -26,9 +26,10 @@ Download Deus Ex Randomizers's `DeusEx.u` file from the releases page here https
 Then copy Deus Ex Randomizers's `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`. This will overwrite the `DeusEx.u` file from Lay D Denton.
 </details>
 
-### Installation Instructions for GMDX
+## Installation Instructions for GMDX
 <details>
 <summary>Click to expand HX Installation Instructions...</summary>
+
 Install GMDX from https://www.moddb.com/mods/gmdx/downloads/gmdxv90-release
 
 Or v10 https://www.moddb.com/mods/gmdx-v10-community-update/downloads/gmdxv10-092020-update
