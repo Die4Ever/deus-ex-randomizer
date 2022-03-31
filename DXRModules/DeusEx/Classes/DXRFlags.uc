@@ -218,7 +218,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 20;
-        difficulty_settings[i].hiddenenemiesrandomized = 0;
+        difficulty_settings[i].hiddenenemiesrandomized = 20;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
@@ -277,7 +277,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 20;
-        difficulty_settings[i].hiddenenemiesrandomized = 0;
+        difficulty_settings[i].hiddenenemiesrandomized = 20;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
@@ -335,7 +335,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 30;
-        difficulty_settings[i].hiddenenemiesrandomized = 0;
+        difficulty_settings[i].hiddenenemiesrandomized = 30;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
@@ -393,7 +393,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 40;
-        difficulty_settings[i].hiddenenemiesrandomized = 0;
+        difficulty_settings[i].hiddenenemiesrandomized = 40;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
@@ -451,7 +451,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 50;
-        difficulty_settings[i].hiddenenemiesrandomized = 0;
+        difficulty_settings[i].hiddenenemiesrandomized = 50;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].enemyrespawn = 0;
