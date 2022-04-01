@@ -25,6 +25,8 @@ function ResetToDefaults()
     portraitIndex = 0;
     btnPortrait.SetBackground(texPortraits[portraitIndex]);
 
+    // if skills_disable_downgrades is enabled then we don't want to allow the player to ResetToDefaults as a workaround
+    // SetDxr will still init the skills
     if( flags != None && flags.settings.skills_disable_downgrades == 0 ) {
         CopySkills();
         PopulateSkillsList();
@@ -60,6 +62,12 @@ function CopySkills()
     local int i;
 
     Super.CopySkills();
+
+    for(i=0; i<ArrayCount(localSkills); i++) {
+        if( SkillWeaponPistol(localSkills[i]) != None ) {
+            localSkills[i].DecLevel();
+        }
+    }
 
     for(i=1; i<ArrayCount(localSkills); i++) {
         if( localSkills[i-1] == None ) break;

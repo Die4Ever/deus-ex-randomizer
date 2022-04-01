@@ -170,6 +170,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     local Skill s;
     local float f;
     local string r;
+    local string p;
 
     s = Skill(act);
     if( s == None ) {
@@ -177,14 +178,20 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         return "err";
     }
 
+    // GMDXv10 uses sprintf
+    p = "%";
+    if( InStr(s.default.description, "%d") != -1 ) {
+        p = "%%";
+    }
+
     if( s.Class == class'#var prefix SkillDemolition' || InStr(String(s.Class.Name), "#var prefix SkillWeapon") == 0 ) {
         word = "Damage";
         f = -2.0 * s.LevelValues[i] + 1.0;
-        return int(f * 100.0) $ "%";
+        return int(f * 100.0) $ p;
     }
     else if( s.Class == class'#var prefix SkillLockpicking' || s.Class == class'#var prefix SkillTech' ) {
         word = "Efficiency";
-        return int(s.LevelValues[i] * 100.0) $ "%";
+        return int(s.LevelValues[i] * 100.0) $ p;
     }
     else if( s.Class == class'#var prefix SkillEnviro' ) {
 #ifndef injections
@@ -195,9 +202,9 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         f = s.LevelValues[i];
         f = FClamp(f, 0, 1.1);
         if(i>0) r="|n    ";
-        r = r $ int( (1 - (f * 1.25 + 0.25)) * 100.0 ) $ "% / "; // passive is * 1.25 + 0.25
-        r = r $ int( (1 - f * 0.75) * 100.0 ) $ "% / ";// hazmat is * 0.75
-        r = r $ int( (1 - f * 0.5) * 100.0 ) $ "%";//  ballistic armor is * 0.5
+        r = r $ int( (1 - (f * 1.25 + 0.25)) * 100.0 ) $ p $ " / "; // passive is * 1.25 + 0.25
+        r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
+        r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
         return r;
     }
     else if( s.Class == class'#var prefix SkillMedicine') {
@@ -212,7 +219,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
     else if( s.Class == class'#var prefix SkillSwimming') {
         word = "Swimming Speed";
-        return int(s.LevelValues[i] * 100.0) $ "%";
+        return int(s.LevelValues[i] * 100.0) $ p;
     }
 #ifdef gmdx
     else if( s.Class == class'SkillStealth' ) {
