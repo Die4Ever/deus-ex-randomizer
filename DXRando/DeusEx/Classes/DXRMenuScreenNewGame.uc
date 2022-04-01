@@ -102,6 +102,32 @@ function SaveSettings()
     SaveConfig();
 }
 
+function String BuildSkillString( Skill aSkill )
+{
+    local String skillString;
+    local String levelCost;
+
+    if ( aSkill.GetCurrentLevel() == 3 )
+        levelCost = "--";
+    else if( aSkill.GetCost() >= 99999 )
+        levelCost = "BANNED";
+    else
+        levelCost = String(aSkill.GetCost());
+
+    skillString = aSkill.skillName $ ";" $
+                  aSkill.GetCurrentLevelString()
+                  // space for padding
+                  $ "; " $ levelCost;
+
+    return skillString;
+}
+
+function CreateSkillsListWindow()
+{
+    Super.CreateSkillsListWindow();
+    lstSkills.SetColumnAlignment(2, HALIGN_Left);
+}
+
 defaultproperties
 {
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel)
