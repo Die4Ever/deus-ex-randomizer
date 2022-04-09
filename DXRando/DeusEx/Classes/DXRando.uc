@@ -55,7 +55,13 @@ simulated event Timer()
 
 function SetdxInfo(DeusExLevelInfo i)
 {
+    local LevelInfo li;
     dxInfo = i;
+    if(i == None) {
+        foreach AllActors(class'LevelInfo', li) { break; }
+        warning("SetdxInfo got None, LevelInfo: "$li @ li.Title);
+        return;
+    }
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL $ ", mapname: " $ i.MissionLocation);
 

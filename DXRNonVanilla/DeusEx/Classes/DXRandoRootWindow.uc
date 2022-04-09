@@ -24,11 +24,14 @@ function InvokeMenu(Class<DeusExBaseWindow> newMenu)
 {
     log("DXRandoRootWindow InvokeMenu "$newMenu);
     switch(newMenu) {
-#ifndef vmd
         case class'MenuMain':
             newMenu = class'DXRMenuMain';
             break;
-#endif
+
+        // VMD
+        case class'MenuSelectDifficulty':
+            newMenu = class'DXRMenuSelectDifficulty';
+            break;
     }
     Super.InvokeMenu(newMenu);
 }

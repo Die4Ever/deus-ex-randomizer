@@ -153,6 +153,6 @@ Recommended to use it with [Kentie's Deus Exe Launcher](http://www.kentie.net/ar
 
 ---
 
-Join the [discord channel for discussion](https://discord.gg/daQVyAp2ds) or [my Twitter @Die4EverDM](https://twitter.com/Die4EverDM)
+Join the [discord channel for discussion](https://discord.gg/daQVyAp2ds) or [follow my Twitter @Die4EverDM](https://twitter.com/Die4EverDM).
 
 If you want to play with the `DXRando.ini` config file (in your `Documents\Deus Ex\System\` folder), then you can look at the [wiki for reference](https://github.com/Die4Ever/deus-ex-randomizer/wiki/DXRando.ini-config)
