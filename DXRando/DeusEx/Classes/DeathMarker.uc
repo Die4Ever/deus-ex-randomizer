@@ -45,6 +45,8 @@ static function string DamageTypeText(string dmg) {
             return "stunned";
         case "knockedout":
             return "knocked out";
+        case "Suicided":
+            return "killed";
     }
     log("WARNING: missing DamageTypeText for "$dmg);
     return "killed";
