@@ -160,7 +160,7 @@ function BindControls(optional string action)
     Slider(f.settings.turrets_add, 0, 100);
 
     // TODO: we can remove this once it's well tested and merge it with enemiesrandomized
-    NewMenuItem("Hidden Enemies Rando %", "Experimental: how many enemies to add based on hidden enemies.");
+    NewMenuItem("Hidden Enemies Rando %", "How many enemies to add based on hidden enemies.");
     Slider(f.settings.hiddenenemiesrandomized, 0, 100);
 
     NewGroup("Skills");

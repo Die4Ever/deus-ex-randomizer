@@ -833,7 +833,9 @@ function InitVersion()
 
 simulated function MaxRando()
 {
-    //should have a chance to make some skills completely unattainable, like 999999 cost? would this also have to be an option in the GUI or can it be exclusive to MaxRando?
+    // set a flag to save that we are in Max Rando mode
+    // change the flags normally configurable on the Advanced Settings page, but try to keep the difficulty balanced
+    info("MaxRando()");
 }
 
 function NewGamePlus()

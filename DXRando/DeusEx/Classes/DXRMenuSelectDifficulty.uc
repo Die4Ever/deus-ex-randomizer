@@ -99,6 +99,10 @@ function BindControls(optional string action)
 
     if(writing) {
         if( action == "ADVANCED" ) NewGameSetup(difficulty);
+        else if( action == "MAXRANDO" ) {
+            f.MaxRando();
+            _InvokeNewGameScreen(difficulty, InitDxr());
+        }
         else _InvokeNewGameScreen(difficulty, InitDxr());
     }
 }
@@ -130,6 +134,7 @@ function NewGameSetup(float difficulty)
 defaultproperties
 {
     actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Advanced",Key="ADVANCED")
+    actionButtons(3)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Max Rando",Key="MAXRANDO")
     Title="DX Rando Options"
     bUsesHelpWindow=False
     bEscapeSavesSettings=False
