@@ -108,6 +108,13 @@ function InvokeNewGameScreen(float difficulty)
     _InvokeNewGameScreen(difficulty, InitDxr());
 }
 
+event DestroyWindow()
+{
+#ifdef vmd
+    Player.ConsoleCommand("Open DXOnly");
+#endif
+}
+
 function NewGameSetup(float difficulty)
 {
     local DXRMenuSetupRando newGame;

@@ -136,6 +136,7 @@ function _InvokeNewGameScreen(float difficulty, DXRando dxr)
     local VMDMenuSelectCampaign VMDNewGame;
     local VMDBufferPlayer VMP;
 
+    dxr.flags.SaveFlags();
     VMDNewGame = VMDMenuSelectCampaign(root.InvokeMenuScreen(Class'VMDMenuSelectCampaign'));
 
     //MADDERS: Call relevant reset data.

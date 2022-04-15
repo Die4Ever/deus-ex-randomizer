@@ -106,6 +106,12 @@ simulated function InitHints()
         AddHint("Check the Deus Ex Randomizer wiki", "for information about randomized objective locations!");
     }
 
+    if( dxr.flags.settings.skills_reroll_missions == 1 ) {
+        AddHint("Skill costs reroll every mission.", "Check them often, especially the BANNED skills.");
+    } else if( dxr.flags.settings.skills_reroll_missions > 0 ) {
+        AddHint("Skill costs reroll every "$ dxr.flags.settings.skills_reroll_missions $" missions.", "You're currently in mission "$mission$".");
+    }
+
     if(mission <= 4) {
         if(#defined injections)
             AddHint("The flashlight (F12) no longer consumes energy when used.", "Go wild with it!");

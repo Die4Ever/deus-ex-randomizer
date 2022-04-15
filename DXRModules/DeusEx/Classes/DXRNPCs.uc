@@ -158,6 +158,13 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase it
     local ConEvent e;
     local int i;
 
+    info("CreateMerchant "$name@bindname);
+    for(i=0; i<ArrayCount(items); i++) {
+        if(items[i].item != None) {
+            info("CreateMerchant item " $ i @ items[i].item @ items[i].price);
+        }
+    }
+
     c = new(Level) class'Conversation';
     c.conName = bindname;
     c.CreatedBy = String(bindname);
@@ -195,6 +202,7 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase it
         npc.BindName = String(bindname);
         npc.ConBindEvents();
         // don't return if he already existed
+        info("CreateMerchant reusing merchant "$npc@bindname);
         return None;
     }
     npc = Spawn(class'#var prefix Businessman3',, bindname, loc, rot );
@@ -202,6 +210,7 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase it
         err("CreateMerchant failed to spawn merchant");
         return None;
     }
+    info("CreateMerchant spawned new merchant "$npc@bindname);
     npc.BindName = String(bindname);
     npc.SetOrders('Standing');
     npc.FamiliarName = name;
@@ -271,7 +280,7 @@ function ConEventSpeech AddSpeech(Conversation c, ConEvent prev, string text, bo
     e.conSpeech.speech = text;
 
     AddConEvent(c, prev, e);
-    
+
     return e;
 }
 
@@ -284,7 +293,7 @@ function ConEventEnd AddEnd(Conversation c, ConEvent prev)
     e.label = "bye";
 
     AddConEvent(c, prev, e);
-    
+
     return e;
 }
 
@@ -304,7 +313,7 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
     e.bClearScreen = true;
 
     choice = AddChoice(e, choice, "Nevermind", "leave");
-    
+
     for(i=0; i<ArrayCount(items); i++) {
         if( items[i].item == None ) continue;
         choice = AddItemChoice(e, choice, items[i]);
@@ -391,7 +400,7 @@ function ConChoice _AddItemChoice(ConEventChoice e, ConChoice prev, ItemPurchase
 
     BuildBuyItemText(item, canBuy, text, label);
     choice = AddChoice(e, prev, text, label);
-    
+
     f = new(e) class'ConFlagRef';
     f.flagName = StringToName("canBuy"$item.item.name);
     f.value = canBuy;
@@ -479,7 +488,7 @@ function ConEvent AddSetFlag(Conversation c, ConEvent prev, string after_label, 
 
     if( after_label != "" )
         prev = AddJump(c, prev, after_label);
-    
+
     return prev;
 }
 

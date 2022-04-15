@@ -28,7 +28,7 @@ Then copy Deus Ex Randomizers's `DeusEx.u` file into your `Deus Ex\System\` fold
 
 ## Installation Instructions for GMDX
 <details>
-<summary>Click to expand HX Installation Instructions...</summary>
+<summary>Click to expand GMDX Installation Instructions...</summary>
 
 Install GMDX from https://www.moddb.com/mods/gmdx/downloads/gmdxv90-release
 
@@ -70,7 +70,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <a href="https://www.youtube.com/watch?v=A0Li3XuBjGg" target="_blank">
 <img src="https://i.imgur.com/hTCuQCH.png" alt="v1.5 Trailer" height="200"/></a>
 
-## Currently in v1.8, DXRando randomizes
+## Currently in v1.8.1, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
@@ -153,6 +153,6 @@ Recommended to use it with [Kentie's Deus Exe Launcher](http://www.kentie.net/ar
 
 ---
 
-Join the [discord channel for discussion](https://discord.gg/daQVyAp2ds) or [my Twitter @Die4EverDM](https://twitter.com/Die4EverDM)
+Join the [discord channel for discussion](https://discord.gg/daQVyAp2ds) or [follow my Twitter @Die4EverDM](https://twitter.com/Die4EverDM).
 
 If you want to play with the `DXRando.ini` config file (in your `Documents\Deus Ex\System\` folder), then you can look at the [wiki for reference](https://github.com/Die4Ever/deus-ex-randomizer/wiki/DXRando.ini-config)

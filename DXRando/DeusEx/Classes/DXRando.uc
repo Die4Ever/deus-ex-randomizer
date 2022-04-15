@@ -55,7 +55,13 @@ simulated event Timer()
 
 function SetdxInfo(DeusExLevelInfo i)
 {
+    local LevelInfo li;
     dxInfo = i;
+    if(i == None) {
+        foreach AllActors(class'LevelInfo', li) { break; }
+        warning("SetdxInfo got None, LevelInfo: "$li @ li.Title);
+        return;
+    }
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL $ ", mapname: " $ i.MissionLocation);
 
@@ -105,7 +111,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 1,7,5,5) ) {
+    if( VersionOlderThan(config_version, 1,8,1,3) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -225,8 +231,30 @@ function revision_modules()
 
 function vmd_modules()
 {
-    // Vanilla? Madder
-    gmdx_modules();
+    local int i;
+    modules_to_load[i++] = "DXRTelemetry";
+    modules_to_load[i++] = "DXRMissions";
+    modules_to_load[i++] = "DXRSwapItems";
+    modules_to_load[i++] = "DXRFixup";
+    modules_to_load[i++] = "DXRKeys";
+    modules_to_load[i++] = "DXRSkills";
+    modules_to_load[i++] = "DXRPasswords";
+    modules_to_load[i++] = "DXRAugmentations";
+    modules_to_load[i++] = "DXRReduceItems";
+    modules_to_load[i++] = "DXRNames";
+    modules_to_load[i++] = "DXRMemes";
+    modules_to_load[i++] = "DXREnemies";
+    modules_to_load[i++] = "DXRHordeMode";
+    modules_to_load[i++] = "DXREnemyRespawn";
+    modules_to_load[i++] = "DXRLoadouts";
+    modules_to_load[i++] = "DXRWeapons";
+    modules_to_load[i++] = "DXRCrowdControl";
+    modules_to_load[i++] = "DXRMachines";
+    modules_to_load[i++] = "DXRStats";
+    modules_to_load[i++] = "DXRHints";
+    modules_to_load[i++] = "DXRReplaceActors";
+    modules_to_load[i++] = "DXRNPCs";
+    modules_to_load[i++] = "DXREvents";
 }
 
 function DXRFlags LoadFlagsModule()

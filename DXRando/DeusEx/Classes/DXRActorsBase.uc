@@ -627,6 +627,7 @@ function Containers AddBox(class<Containers> c, vector loc, optional rotator rot
 
 function Actor SpawnReplacement(Actor a, class<Actor> newclass)
 {
+    local int i;
     local Actor newactor;
     local bool bCollideActors, bBlockActors, bBlockPlayers;
     local name tag, event;
@@ -661,6 +662,10 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     newactor.Mass = a.Mass;
     newactor.Buoyancy = a.Buoyancy;
     newactor.Event = event;
+
+    for(i=0; i<ArrayCount(a.Multiskins); i++) {
+        newactor.Multiskins[i] = a.Multiskins[i];
+    }
     return newactor;
 }
 

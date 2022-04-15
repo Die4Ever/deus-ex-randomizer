@@ -25,6 +25,8 @@ function ResetToDefaults()
     portraitIndex = 0;
     btnPortrait.SetBackground(texPortraits[portraitIndex]);
 
+    // if skills_disable_downgrades is enabled then we don't want to allow the player to ResetToDefaults as a workaround
+    // SetDxr will still init the skills
     if( flags != None && flags.settings.skills_disable_downgrades == 0 ) {
         CopySkills();
         PopulateSkillsList();
@@ -61,6 +63,12 @@ function CopySkills()
 
     Super.CopySkills();
 
+    for(i=0; i<ArrayCount(localSkills); i++) {
+        if( SkillWeaponPistol(localSkills[i]) != None ) {
+            localSkills[i].DecLevel();
+        }
+    }
+
     for(i=1; i<ArrayCount(localSkills); i++) {
         if( localSkills[i-1] == None ) break;
         localSkills[i-1].next = localSkills[i];
@@ -92,6 +100,32 @@ function SaveSettings()
     player.ServerSetSloMo(1);//reset game speed to prevent crashes
     last_player_name = player.TruePlayerName;
     SaveConfig();
+}
+
+function String BuildSkillString( Skill aSkill )
+{
+    local String skillString;
+    local String levelCost;
+
+    if ( aSkill.GetCurrentLevel() == 3 )
+        levelCost = "--";
+    else if( aSkill.GetCost() >= 99999 )
+        levelCost = "BANNED";
+    else
+        levelCost = String(aSkill.GetCost());
+
+    skillString = aSkill.skillName $ ";" $
+                  aSkill.GetCurrentLevelString()
+                  // space for padding
+                  $ "; " $ levelCost;
+
+    return skillString;
+}
+
+function CreateSkillsListWindow()
+{
+    Super.CreateSkillsListWindow();
+    lstSkills.SetColumnAlignment(2, HALIGN_Left);
 }
 
 defaultproperties

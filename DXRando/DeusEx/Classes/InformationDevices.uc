@@ -236,6 +236,17 @@ function ProcessTag(DeusExTextParser parser)
 }
 #endif
 
+#ifdef gmdx
+function bool Facelift(bool bOn)
+{
+    return false;
+}
+
+function postbeginplay()
+{
+}
+#endif
+
 defaultproperties
 {
      bAddToVault=True

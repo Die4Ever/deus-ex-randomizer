@@ -164,6 +164,10 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
 
     if( aug != None ) len = ArrayCount(aug.LevelValues);
     else if( sk != None ) len = ArrayCount(sk.LevelValues);
+    else {
+        err("RandoLevelValues "$a$" isn't a skill or an augmentation");
+        return false;
+    }
 
     // figure out the range we will use
     if( aug != None ) {

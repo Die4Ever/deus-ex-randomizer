@@ -2,6 +2,7 @@ class DXRandoRootWindow extends DeusExRootWindow;
 
 function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, optional bool bNoPause)
 {
+    log("DXRandoRootWindow InvokeMenuScreen "$newScreen);
     switch(newScreen) {
 #ifndef vmd
         case class'MenuScreenNewGame':
@@ -21,18 +22,23 @@ function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, op
 
 function InvokeMenu(Class<DeusExBaseWindow> newMenu)
 {
+    log("DXRandoRootWindow InvokeMenu "$newMenu);
     switch(newMenu) {
-#ifndef vmd
         case class'MenuMain':
             newMenu = class'DXRMenuMain';
             break;
-#endif
+
+        // VMD
+        case class'MenuSelectDifficulty':
+            newMenu = class'DXRMenuSelectDifficulty';
+            break;
     }
     Super.InvokeMenu(newMenu);
 }
 
 function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, optional Bool bNoPause)
 {
+    log("DXRandoRootWindow InvokeUIScreen "$newScreen);
     switch(newScreen) {
         /*case class'ATMWindow':
             newScreen = class'DXRATMWindow';
@@ -58,6 +64,9 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
             break;
         case class'NetworkTerminalSecurity':
             newScreen = class'DXRNetworkTerminalSecurity';
+            break;
+        case class'PersonaScreenSkills':
+            newScreen = class'DXRPersonaScreenSkills';
             break;
         default:
             if(class<NetworkTerminal>(newScreen) != None) {
