@@ -472,14 +472,14 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag)
     local Actor a;
     local #var prefix Datacube d;
 
-    a = SpawnNewActor(c);
+    a = SpawnNewActor(c, false);
     if( a == None ) return None;
     if( Pawn(a) != None ) {
         Pawn(a).bDetectable = false;
         Pawn(a).bIgnore = true;
     }
 
-    d = #var prefix Datacube(SpawnNewActor(class'#var prefix Datacube', a.Location, min_datacube_distance, max_datacube_distance));
+    d = #var prefix Datacube(SpawnNewActor(class'#var prefix Datacube', true, a.Location, min_datacube_distance, max_datacube_distance));
     if( d == None ) return a;
     d.textTag = datacubeTag;
     d.bAddToVault = false;
@@ -487,11 +487,14 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag)
     return a;
 }
 
-function Actor _SpawnNewActor(class<Actor> c, optional vector target, optional float mindist, optional float maxdist)
+function Actor _SpawnNewActor(class<Actor> c, bool jitter, vector target, float mindist, float maxdist)
 {
     local Actor a;
     local vector loc;
-    loc = GetRandomPositionFine(target, mindist, maxdist);
+    if(jitter)
+        loc = GetRandomPositionFine(target, mindist, maxdist);
+    else
+        loc = GetRandomPosition(target, mindist, maxdist);
     a = Spawn(c,,, loc );
 
     if( ScriptedPawn(a) != None ) class'DXRNames'.static.GiveRandomName(dxr, ScriptedPawn(a) );
@@ -501,13 +504,13 @@ function Actor _SpawnNewActor(class<Actor> c, optional vector target, optional f
     return a;
 }
 
-function Actor SpawnNewActor(class<Actor> c, optional vector target, optional float mindist, optional float maxdist)
+function Actor SpawnNewActor(class<Actor> c, bool jitter, optional vector target, optional float mindist, optional float maxdist)
 {
     local Actor a;
     local int i;
 
     for(i=0; i<10; i++) {
-        a = _SpawnNewActor(c, target, mindist, maxdist);
+        a = _SpawnNewActor(c, jitter, target, mindist, maxdist);
         if( a != None ) return a;
     }
 

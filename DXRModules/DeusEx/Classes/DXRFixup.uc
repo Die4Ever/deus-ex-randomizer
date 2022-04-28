@@ -1254,6 +1254,7 @@ function HongKong_AnyEntry()
             break;
 
         case "06_HONGKONG_VERSALIFE":
+            // allow you to get the code from him even if you've been to the labs, to fix backtracking
             DeleteConversationFlag( GetConversation('Disgruntled_Guy_Convos'), 'VL_Found_Labs', false);
             GetConversation('Disgruntled_Guy_Return').AddFlagRef('Disgruntled_Guy_Done', true);
             break;
