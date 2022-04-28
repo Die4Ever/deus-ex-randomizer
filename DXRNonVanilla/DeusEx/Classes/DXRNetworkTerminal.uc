@@ -9,6 +9,9 @@ static function Class<ComputerUIWindow> ShowScreen(Class<ComputerUIWindow> newSc
         case class'ComputerScreenBulletins':
             newScreen = class'DXRComputerScreenBulletins';
             break;
+        case class'ComputerScreenSpecialOptions':
+            newScreen = class'DXRComputerScreenSpecialOptions';
+            break;
     }
     return newScreen;
 }
