@@ -202,7 +202,7 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,7,5,0) ) {
+    if( ConfigOlderThan(1,8,2,2) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -430,8 +430,8 @@ function CheckConfig()
         difficulty_settings[i].augcans = 100;
         difficulty_settings[i].aug_value_rando = 100;
         difficulty_settings[i].skill_value_rando = 100;
-        difficulty_settings[i].min_weapon_dmg = 50;
-        difficulty_settings[i].max_weapon_dmg = 150;
+        difficulty_settings[i].min_weapon_dmg = 75;
+        difficulty_settings[i].max_weapon_dmg = 175;
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         i++;
@@ -439,7 +439,7 @@ function CheckConfig()
         difficulty_names[i] = "DeusEx";
 #ifndef hx
         difficulty_names[i] = "Impossible";
-        difficulty_settings[i].CombatDifficulty = 3;
+        difficulty_settings[i].CombatDifficulty = 2.5;
 #endif
         difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
         difficulty_settings[i].doorsdestructible = 25;
@@ -488,8 +488,8 @@ function CheckConfig()
         difficulty_settings[i].augcans = 100;
         difficulty_settings[i].aug_value_rando = 100;
         difficulty_settings[i].skill_value_rando = 100;
-        difficulty_settings[i].min_weapon_dmg = 50;
-        difficulty_settings[i].max_weapon_dmg = 150;
+        difficulty_settings[i].min_weapon_dmg = 100;
+        difficulty_settings[i].max_weapon_dmg = 200;
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         i++;
