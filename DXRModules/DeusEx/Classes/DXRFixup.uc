@@ -131,8 +131,8 @@ function PreFirstEntry()
     SpawnDatacubes();
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
-#ifdef vanilla
-    VanillaPreFirstEntry();
+#ifdef mapfixes
+    PreFirstEntryMapFixes();
 #endif
 }
 
@@ -140,8 +140,8 @@ function PostFirstEntry()
 {
     Super.PostFirstEntry();
 
-#ifdef vanilla
-    VanillaPostFirstEntry();
+#ifdef mapfixes
+    PostFirstEntryMapFixes();
 #endif
 }
 
@@ -154,10 +154,11 @@ function AnyEntry()
 
     FixSamCarter();
     SetSeed( "DXRFixup AnyEntry missions" );
-#ifdef vanilla
-    VanillaAnyEntry();
-    FixAmmoShurikenName();
+#ifdef mapfixes
+    AnyEntryMapFixes();
 #endif
+
+    FixAmmoShurikenName();
 
     AllAnyEntry();
 }
@@ -167,15 +168,16 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
     Super.PlayerAnyEntry(p);
 #ifdef vanilla
     FixLogTimeout(p);
-    FixAmmoShurikenName();
 #endif
+
+    FixAmmoShurikenName();
 }
 
 function PreTravel()
 {
     Super.PreTravel();
-#ifdef vanilla
-    VanillaPreTravel();
+#ifdef mapfixes
+    PreTravelMapFixes();
 #endif
 }
 
@@ -184,46 +186,46 @@ function Timer()
     Super.Timer();
     if( dxr == None ) return;
 
-#ifdef vanilla
-    VanillaTimer();
+#ifdef mapfixes
+    TimerMapFixes();
 #endif
 }
 
-function VanillaPreFirstEntry()
+function PreFirstEntryMapFixes()
 {
     switch(dxr.dxInfo.missionNumber) {
-        case 2:
-            NYC_02_FirstEntry();
-            break;
-        case 3:
-            Airfield_FirstEntry();
-            break;
-        case 4:
-            NYC_04_FirstEntry();
-            break;
-        case 5:
-            Jailbreak_FirstEntry();
-        case 6:
-            HongKong_FirstEntry();
-            break;
-        case 9:
-            Shipyard_FirstEntry();
-            break;
-        case 10:
-        case 11:
-            Paris_FirstEntry();
-            break;
-        case 12:
-        case 14:
-            Vandenberg_FirstEntry();
-            break;
-        case 15:
-            Area51_FirstEntry();
-            break;
+    case 2:
+        NYC_02_FirstEntry();
+        break;
+    case 3:
+        Airfield_FirstEntry();
+        break;
+    case 4:
+        NYC_04_FirstEntry();
+        break;
+    case 5:
+        Jailbreak_FirstEntry();
+    case 6:
+        HongKong_FirstEntry();
+        break;
+    case 9:
+        Shipyard_FirstEntry();
+        break;
+    case 10:
+    case 11:
+        Paris_FirstEntry();
+        break;
+    case 12:
+    case 14:
+        Vandenberg_FirstEntry();
+        break;
+    case 15:
+        Area51_FirstEntry();
+        break;
     }
 }
 
-function VanillaPostFirstEntry()
+function PostFirstEntryMapFixes()
 {
     local RetinalScanner r;
     local CrateUnbreakableLarge c;
@@ -232,83 +234,87 @@ function VanillaPostFirstEntry()
     local Actor a;
 
     switch(dxr.localURL) {
-        case "01_NYC_UNATCOISLAND":
-            foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {
-                m.bBreakable = false;
-                m.bPickable = false;
-                m.bIsDoor = false;// this prevents Floyd from opening the door
+    case "01_NYC_UNATCOISLAND":
+        foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {
+            m.bBreakable = false;
+            m.bPickable = false;
+            m.bIsDoor = false;// this prevents Floyd from opening the door
+        }
+        break;
+    case "01_NYC_UNATCOHQ":
+    case "03_NYC_UNATCOHQ":
+    case "04_NYC_UNATCOHQ":
+    case "05_NYC_UNATCOHQ":
+        foreach AllActors(class'RetinalScanner', r) {
+            if( r.Event != 'retinal_msg_trigger' ) continue;
+            if( dxr.localURL == "05_NYC_UNATCOHQ" )
+                r.Event = 'UN_blastdoor2';
+            else
+            {
+                r.bHackable = false;
+                r.hackStrength = 0;
+                r.msgUsed = "";
             }
-            break;
-        case "01_NYC_UNATCOHQ":
-        case "03_NYC_UNATCOHQ":
-        case "04_NYC_UNATCOHQ":
-        case "05_NYC_UNATCOHQ":
-            foreach AllActors(class'RetinalScanner', r) {
-                if( r.Event != 'retinal_msg_trigger' ) continue;
-                if( dxr.localURL == "05_NYC_UNATCOHQ" )
-                    r.Event = 'UN_blastdoor2';
-                else
-                {
-                    r.bHackable = false;
-                    r.hackStrength = 0;
-                    r.msgUsed = "";
-                }
-            }
-            break;
+        }
+        break;
 
-        case "02_NYC_WAREHOUSE":
-            AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));
+#ifndef revision
+    case "02_NYC_WAREHOUSE":
+        AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));
 
-        case "03_NYC_AirfieldHeliBase":
-            //crates to get back over the beginning of the level
-            _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
-            _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
-            break;
+    case "03_NYC_AirfieldHeliBase":
+        //crates to get back over the beginning of the level
+        _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
+        _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
+        break;
+#endif
 
-        case "04_NYC_NSFHQ":
-            foreach AllActors(class'DeusExMover', m, 'SignalComputerDoorOpen') {
-                m.bBreakable = false;
-                m.bPickable = false;
-            }
-            break;
-        case "05_NYC_UNATCOMJ12LAB":
-            BalanceJailbreak();
-            break;
+    case "04_NYC_NSFHQ":
+        foreach AllActors(class'DeusExMover', m, 'SignalComputerDoorOpen') {
+            m.bBreakable = false;
+            m.bPickable = false;
+        }
+        break;
+    case "05_NYC_UNATCOMJ12LAB":
+        BalanceJailbreak();
+        break;
 
-        case "09_NYC_DOCKYARD":
-            foreach RadiusActors(class'CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
-                info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
-                c.Destroy();
-            }
-            break;
+#ifndef revision
+    case "09_NYC_DOCKYARD":
+        foreach RadiusActors(class'CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
+            info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
+            c.Destroy();
+        }
+        break;
 
-        case "12_VANDENBERG_CMD":
-            foreach RadiusActors(class'CrateUnbreakableLarge', c, 16, vect(570.835083, 1934.114014, -1646.114746)) {
-                info("removing " $ c $ " dist: " $ VSize(c.Location - vect(570.835083, 1934.114014, -1646.114746)) );
-                c.Destroy();
-            }
-            break;
+    case "12_VANDENBERG_CMD":
+        foreach RadiusActors(class'CrateUnbreakableLarge', c, 16, vect(570.835083, 1934.114014, -1646.114746)) {
+            info("removing " $ c $ " dist: " $ VSize(c.Location - vect(570.835083, 1934.114014, -1646.114746)) );
+            c.Destroy();
+        }
+        break;
+#endif
     }
 }
 
-function VanillaAnyEntry()
+function AnyEntryMapFixes()
 {
     switch(dxr.dxInfo.missionNumber) {
-        case 4:
-            NYC_04_AnyEntry();
-            break;
-        case 6:
-            HongKong_AnyEntry();
-            break;
-        case 8:
-            NYC_08_AnyEntry();
-            break;
-        case 9:
-            Shipyard_AnyEntry();
-            break;
-        case 10:
-            Paris_AnyEntry();
-            break;
+    case 4:
+        NYC_04_AnyEntry();
+        break;
+    case 6:
+        HongKong_AnyEntry();
+        break;
+    case 8:
+        NYC_08_AnyEntry();
+        break;
+    case 9:
+        Shipyard_AnyEntry();
+        break;
+    case 10:
+        Paris_AnyEntry();
+        break;
     }
 }
 
@@ -327,16 +333,18 @@ function AllAnyEntry()
     }
 }
 
-function VanillaPreTravel()
+function PreTravelMapFixes()
 {
+#ifdef vanilla
     switch(dxr.localURL) {
-        case "04_NYC_HOTEL":
-            NYC_04_LeaveHotel();
-            break;
+    case "04_NYC_HOTEL":
+        NYC_04_LeaveHotel();
+        break;
     }
+#endif
 }
 
-function VanillaTimer()
+function TimerMapFixes()
 {
     local BlackHelicopter chopper;
     local Music m;
@@ -344,20 +352,22 @@ function VanillaTimer()
 
     switch(dxr.localURL)
     {
-        case "04_NYC_HOTEL":
-            NYC_04_CheckPaulRaid();
-            break;
-        case "08_NYC_STREET":
-            if ( dxr.flagbase.GetBool('StantonDowd_Played') )
-            {
-                foreach AllActors(class'BlackHelicopter', chopper, 'CopterExit')
-                    chopper.EnterWorld();
-                dxr.flagbase.SetBool('MS_Helicopter_Unhidden', True,, 9);
-            }
-            break;
-        case "09_NYC_SHIPBELOW":
-            NYC_09_CountWeldPoints();
-            break;
+#ifdef vanilla
+    case "04_NYC_HOTEL":
+        NYC_04_CheckPaulRaid();
+        break;
+    case "08_NYC_STREET":
+        if ( dxr.flagbase.GetBool('StantonDowd_Played') )
+        {
+            foreach AllActors(class'BlackHelicopter', chopper, 'CopterExit')
+                chopper.EnterWorld();
+            dxr.flagbase.SetBool('MS_Helicopter_Unhidden', True,, 9);
+        }
+        break;
+#endif
+    case "09_NYC_SHIPBELOW":
+        NYC_09_CountWeldPoints();
+        break;
     }
 }
 
@@ -477,20 +487,22 @@ function NYC_02_FirstEntry()
 
     switch (dxr.localURL)
     {
-        case "02_NYC_BATTERYPARK":
-            foreach AllActors(class'NYPoliceBoat',b) {
-                b.BindName = "NYPoliceBoat";
-                b.ConBindEvents();
+#ifdef vanilla
+    case "02_NYC_BATTERYPARK":
+        foreach AllActors(class'NYPoliceBoat',b) {
+            b.BindName = "NYPoliceBoat";
+            b.ConBindEvents();
+        }
+        foreach AllActors(class'DeusExMover', d) {
+            if( d.Name == 'DeusExMover19' ) {
+                d.KeyIDNeeded = 'ControlRoomDoor';
             }
-            foreach AllActors(class'DeusExMover', d) {
-                if( d.Name == 'DeusExMover19' ) {
-                    d.KeyIDNeeded = 'ControlRoomDoor';
-                }
-            }
-            k = Spawn(class'NanoKey',,, vect(1574.209839, -238.380142, 339.215179));
-            k.KeyID = 'ControlRoomDoor';
-            k.Description = "Control Room Door Key";
-            break;
+        }
+        k = Spawn(class'NanoKey',,, vect(1574.209839, -238.380142, 339.215179));
+        k.KeyID = 'ControlRoomDoor';
+        k.Description = "Control Room Door Key";
+        break;
+#endif
     }
 }
 
@@ -499,84 +511,93 @@ function Airfield_FirstEntry()
     local Mover m;
     local Actor a;
     local Trigger t;
+    local NanoKey k;
+    local #var prefix InformationDevices i;
 
     switch (dxr.localURL)
     {
-        case "03_NYC_BATTERYPARK":
-            foreach AllActors(class'Actor', a) {
-                if( a.name == 'NanoKey0' ) {
-                    a.Destroy();
-                }
-                if( a.name == 'BookClosed2' ) {
-                    InformationDevices(a).bAddToVault = true;
-                }
+    case "03_NYC_BATTERYPARK":
+        foreach AllActors(class'NanoKey', k) {
+            // unnamed key normally unreachable
+            if( k.KeyID == '' ) {
+                k.Destroy();
             }
-
-            //rebreather because of #TOOCEAN connection
-            _AddActor(Self, class'Rebreather', vect(-936.151245, -3464.031006, 293.710968), rot(0,0,0));
-            break;
-
-        case "03_NYC_AirfieldHeliBase":
-            foreach AllActors(class'Mover',m) {
-                // call the elevator at the end of the level when you open the appropriate door
-                if (m.Tag == 'BasementDoorOpen')
-                {
-                    m.Event = 'BasementFloor';
-                }
-                else if (m.Tag == 'GroundDoorOpen')
-                {
-                    m.Event = 'GroundLevel';
-                }
-                // sewer door backtracking
-                else if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
-                {
-                    m.Tag = 'Sewerdoor';
-                }
+        }
+        foreach AllActors(class'#var prefix InformationDevices', i) {
+            if( i.textTag == '03_Book06' ) {
+                i.bAddToVault = true;
             }
-            foreach AllActors(class'Trigger', t) {
-                //disable the platforms that fall when you step on them
-                if( t.Name == 'Trigger0' || t.Name == 'Trigger1' ) {
-                    t.Event = '';
-                }
+        }
+
+        //rebreather because of #TOOCEAN connection
+        _AddActor(Self, class'Rebreather', vect(-936.151245, -3464.031006, 293.710968), rot(0,0,0));
+        break;
+
+#ifdef vanilla
+    case "03_NYC_AirfieldHeliBase":
+        foreach AllActors(class'Mover',m) {
+            // call the elevator at the end of the level when you open the appropriate door
+            if (m.Tag == 'BasementDoorOpen')
+            {
+                m.Event = 'BasementFloor';
             }
-
-            // Sewerdoor backtracking
-            AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
-
-            //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
-            _AddActor(Self, class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
-            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3105,-385,-210), rot(0,0,0));
-            SetActorScale(a, 1.3);
-
-            _AddActor(Self, class'Valve', vect(-3080,-395,-170), rot(0,0,16384));
-            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3080,-395,-170), rot(0,0,0));
-            SetActorScale(a, 1.3);
-
-            _AddActor(Self, class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
-            a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3065,-405,-130), rot(0,0,0));
-            SetActorScale(a, 1.3);
-
-            //rebreather because of #TOOCEAN connection
-            _AddActor(Self, class'Rebreather', vect(1411.798950, 546.628845, 247.708572), rot(0,0,0));
-            break;
-
-        case "03_NYC_AIRFIELD":
-            //rebreather because of #TOOCEAN connection
-            _AddActor(Self, class'Rebreather', vect(-2031.959473, 995.781067, 75.709816), rot(0,0,0));
-            break;
-
-        case "03_NYC_BROOKLYNBRIDGESTATION":
-            //Put a button behind the hidden bathroom door
-            //Mostly for entrance rando, but just in case
-            AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
-            break;
-
-        case "03_NYC_MOLEPEOPLE":
-            foreach AllActors(class'Mover', m, 'DeusExMover') {
-                if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
+            else if (m.Tag == 'GroundDoorOpen')
+            {
+                m.Event = 'GroundLevel';
             }
-            AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
-            break;
+            // sewer door backtracking so we can make a switch for this
+            else if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
+            {
+                m.Tag = 'Sewerdoor';
+            }
+        }
+        foreach AllActors(class'Trigger', t) {
+            //disable the platforms that fall when you step on them
+            if( t.Name == 'Trigger0' || t.Name == 'Trigger1' ) {
+                t.Event = '';
+            }
+        }
+
+        // Sewerdoor backtracking
+        AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
+
+        //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
+        _AddActor(Self, class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
+        a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3105,-385,-210), rot(0,0,0));
+        SetActorScale(a, 1.3);
+
+        _AddActor(Self, class'Valve', vect(-3080,-395,-170), rot(0,0,16384));
+        a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3080,-395,-170), rot(0,0,0));
+        SetActorScale(a, 1.3);
+
+        _AddActor(Self, class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
+        a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3065,-405,-130), rot(0,0,0));
+        SetActorScale(a, 1.3);
+
+        //rebreather because of #TOOCEAN connection
+        _AddActor(Self, class'Rebreather', vect(1411.798950, 546.628845, 247.708572), rot(0,0,0));
+        break;
+#endif
+
+    case "03_NYC_AIRFIELD":
+        //rebreather because of #TOOCEAN connection
+        _AddActor(Self, class'Rebreather', vect(-2031.959473, 995.781067, 75.709816), rot(0,0,0));
+        break;
+
+#ifdef vanilla
+    case "03_NYC_BROOKLYNBRIDGESTATION":
+        //Put a button behind the hidden bathroom door
+        //Mostly for entrance rando, but just in case
+        AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
+        break;
+
+    case "03_NYC_MOLEPEOPLE":
+        foreach AllActors(class'Mover', m, 'DeusExMover') {
+            if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
+        }
+        AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
+        break;
+#endif
     }
 }
 
@@ -588,23 +609,26 @@ function Jailbreak_FirstEntry()
 
     switch (dxr.localURL)
     {
-        case "05_NYC_UNATCOMJ12LAB":
-            foreach AllActors(class'PaulDenton', p) {
-                p.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
+    case "05_NYC_UNATCOMJ12LAB":
+        foreach AllActors(class'PaulDenton', p) {
+            p.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
+        }
+        break;
+
+#ifdef vanilla
+    case "05_NYC_UNATCOHQ":
+        foreach AllActors(class'ComputerPersonal', c) {
+            if( c.Name != 'ComputerPersonal3' ) continue;
+            // gunther and anna's computer across from Carter
+            for(i=0; i < ArrayCount(c.UserList); i++) {
+                if( c.UserList[i].userName != "JCD" ) continue;
+                // it's silly that you can use JC's account to get part of Anna's killphrase, and also weird that Anna's account isn't on here
+                c.UserList[i].userName = "anavarre";
+                c.UserList[i].password = "scryspc";
             }
-            break;
-        case "05_NYC_UNATCOHQ":
-            foreach AllActors(class'ComputerPersonal', c) {
-                if( c.Name != 'ComputerPersonal3' ) continue;
-                // gunther and anna's computer across from Carter
-                for(i=0; i < ArrayCount(c.UserList); i++) {
-                    if( c.UserList[i].userName != "JCD" ) continue;
-                    // it's silly that you can use JC's account to get part of Anna's killphrase, and also weird that Anna's account isn't on here
-                    c.UserList[i].userName = "anavarre";
-                    c.UserList[i].password = "scryspc";
-                }
-            }
-            break;
+        }
+        break;
+#endif
     }
 }
 
@@ -648,8 +672,6 @@ function UpdateWeldPointGoal(int count)
 
         goal.SetText(goalText);
     }
-
-
 }
 
 function NYC_09_CountWeldPoints()
@@ -830,27 +852,29 @@ function NYC_04_FirstEntry()
 
     switch (dxr.localURL)
     {
-        case "04_NYC_HOTEL":
-            foreach AllActors(class'OrdersTrigger', ot, 'PaulSafe') {
-                if( ot.Orders == 'Leaving' )
-                    ot.Orders = 'Seeking';
+#ifdef vanilla
+    case "04_NYC_HOTEL":
+        foreach AllActors(class'OrdersTrigger', ot, 'PaulSafe') {
+            if( ot.Orders == 'Leaving' )
+                ot.Orders = 'Seeking';
+        }
+        foreach AllActors(class'FlagTrigger', ft) {
+            if( ft.Event == 'PaulOutaHere' )
+                ft.Destroy();
+        }
+        foreach AllActors(class'SkillAwardTrigger', st) {
+            if( st.Tag == 'StayedWithPaul' ) {
+                st.skillPointsAdded = 100;
+                st.awardMessage = "Stayed with Paul";
+                st.Destroy();// HACK: this trigger is buggy for some reason, just forget about it for now
             }
-            foreach AllActors(class'FlagTrigger', ft) {
-                if( ft.Event == 'PaulOutaHere' )
-                    ft.Destroy();
+            else if( st.Tag == 'PaulOutaHere' ) {
+                st.skillPointsAdded = 500;
+                st.awardMessage = "Saved Paul";
             }
-            foreach AllActors(class'SkillAwardTrigger', st) {
-                if( st.Tag == 'StayedWithPaul' ) {
-                    st.skillPointsAdded = 100;
-                    st.awardMessage = "Stayed with Paul";
-                    st.Destroy();// HACK: this trigger is buggy for some reason, just forget about it for now
-                }
-                else if( st.Tag == 'PaulOutaHere' ) {
-                    st.skillPointsAdded = 500;
-                    st.awardMessage = "Saved Paul";
-                }
-            }
-            break;
+        }
+        break;
+#endif
     }
 }
 
@@ -860,26 +884,28 @@ function NYC_04_AnyEntry()
 
     switch (dxr.localURL)
     {
-        case "04_NYC_HOTEL":
-            NYC_04_CheckPaulUndead();
-            if( ! dxr.flagbase.GetBool('PaulDenton_Dead') )
-                SetTimer(1, True);
-            if(dxr.flagbase.GetBool('NSFSignalSent')) {
-                dxr.flagbase.SetBool('PaulInjured_Played', true,, 5);
-            }
+#ifdef vanilla
+    case "04_NYC_HOTEL":
+        NYC_04_CheckPaulUndead();
+        if( ! dxr.flagbase.GetBool('PaulDenton_Dead') )
+            SetTimer(1, True);
+        if(dxr.flagbase.GetBool('NSFSignalSent')) {
+            dxr.flagbase.SetBool('PaulInjured_Played', true,, 5);
+        }
 
-            // conversations are transient, so they need to be fixed in AnyEntry
-            FixConversationFlag(GetConversation('PaulAfterAttack'), 'M04RaidDone', true, 'PaulLeftHotel', true);
-            FixConversationFlag(GetConversation('PaulDuringAttack'), 'M04RaidDone', false, 'PaulLeftHotel', false);
-            break;
+        // conversations are transient, so they need to be fixed in AnyEntry
+        FixConversationFlag(GetConversation('PaulAfterAttack'), 'M04RaidDone', true, 'PaulLeftHotel', true);
+        FixConversationFlag(GetConversation('PaulDuringAttack'), 'M04RaidDone', false, 'PaulLeftHotel', false);
+        break;
 
-        case "04_NYC_SMUG":
-            if( dxr.flagbase.GetBool('FordSchickRescued') )
-            {
-                foreach AllActors(class'FordSchick', ford)
-                    ford.EnterWorld();
-            }
-            break;
+    case "04_NYC_SMUG":
+        if( dxr.flagbase.GetBool('FordSchickRescued') )
+        {
+            foreach AllActors(class'FordSchick', ford)
+                ford.EnterWorld();
+        }
+        break;
+#endif
     }
 }
 
@@ -894,63 +920,65 @@ function Vandenberg_FirstEntry()
 
     switch(dxr.localURL)
     {
-        case "12_VANDENBERG_CMD":
-            foreach AllActors(class'Dispatcher', d)
+#ifdef vanilla
+    case "12_VANDENBERG_CMD":
+        foreach AllActors(class'Dispatcher', d)
+        {
+            switch(d.Tag)
             {
-                switch(d.Tag)
-                {
-                    case 'overload2':
-                        d.tag = 'overload2disp';
-                        lt = Spawn(class'LogicTrigger',,,d.Location);
-                        lt.Tag = 'overload2';
-                        lt.Event = 'overload2disp';
-                        lt.inGroup1 = 'sec_switch2';
-                        lt.inGroup2 = 'sec_switch2';
-                        lt.OneShot = True;
-                        break;
-                    case 'overload1':
-                        d.tag = 'overload1disp';
-                        lt = Spawn(class'LogicTrigger',,,d.Location);
-                        lt.Tag = 'overload1';
-                        lt.Event = 'overload1disp';
-                        lt.inGroup1 = 'sec_switch1';
-                        lt.inGroup2 = 'sec_switch1';
-                        lt.OneShot = True;
-                        break;
-                }
+                case 'overload2':
+                    d.tag = 'overload2disp';
+                    lt = Spawn(class'LogicTrigger',,,d.Location);
+                    lt.Tag = 'overload2';
+                    lt.Event = 'overload2disp';
+                    lt.inGroup1 = 'sec_switch2';
+                    lt.inGroup2 = 'sec_switch2';
+                    lt.OneShot = True;
+                    break;
+                case 'overload1':
+                    d.tag = 'overload1disp';
+                    lt = Spawn(class'LogicTrigger',,,d.Location);
+                    lt.Tag = 'overload1';
+                    lt.Event = 'overload1disp';
+                    lt.inGroup1 = 'sec_switch1';
+                    lt.inGroup2 = 'sec_switch1';
+                    lt.OneShot = True;
+                    break;
             }
-            break;
-        case "12_VANDENBERG_TUNNELS":
-            foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
-                e.BumpType = BT_PlayerBump;
-                e.BumpEvent = 'SC_Door3_opened';
+        }
+        break;
+    case "12_VANDENBERG_TUNNELS":
+        foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
+            e.BumpType = BT_PlayerBump;
+            e.BumpEvent = 'SC_Door3_opened';
+        }
+        foreach AllActors(class'Button1', b) {
+            if( b.Event == 'Top' || b.Event == 'middle' || b.Event == 'Bottom' ) {
+                AddDelay(b, 5);
             }
-            foreach AllActors(class'Button1', b) {
-                if( b.Event == 'Top' || b.Event == 'middle' || b.Event == 'Bottom' ) {
-                    AddDelay(b, 5);
-                }
-            }
-            break;
+        }
+        break;
 
-        case "14_VANDENBERG_SUB":
-            AddSwitch( vect(3790.639893, -488.639587, -369.964142), rot(0, 32768, 0), 'Elevator1');
-            AddSwitch( vect(3799.953613, -446.640015, -1689.817993), rot(0, 16384, 0), 'Elevator1');
+    case "14_VANDENBERG_SUB":
+        AddSwitch( vect(3790.639893, -488.639587, -369.964142), rot(0, 32768, 0), 'Elevator1');
+        AddSwitch( vect(3799.953613, -446.640015, -1689.817993), rot(0, 16384, 0), 'Elevator1');
 
-            foreach AllActors(class'KarkianBaby',kb) {
-                if(kb.BindName == "tankkarkian"){
-                    kb.BindName = "TankKharkian";
-                }
+        foreach AllActors(class'KarkianBaby',kb) {
+            if(kb.BindName == "tankkarkian"){
+                kb.BindName = "TankKharkian";
             }
-            break;
+        }
+        break;
 
-        case "14_OCEANLAB_LAB":
-            foreach AllActors(class'ComputerSecurity', comp) {
-                if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
-                    comp.UserList[0].userName = "Oceanguard";
-                    comp.UserList[0].Password = "Kraken";
-                }
+    case "14_OCEANLAB_LAB":
+        foreach AllActors(class'ComputerSecurity', comp) {
+            if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
+                comp.UserList[0].userName = "Oceanguard";
+                comp.UserList[0].Password = "Kraken";
             }
-            break;
+        }
+        break;
+#endif
     }
 }
 
@@ -966,95 +994,98 @@ function HongKong_FirstEntry()
 
     switch(dxr.localURL)
     {
-        case "06_HONGKONG_TONGBASE":
-            foreach AllActors(class'Actor', a)
+    case "06_HONGKONG_TONGBASE":
+        foreach AllActors(class'Actor', a)
+        {
+            switch(string(a.Tag))
             {
-                switch(string(a.Tag))
-                {
-                    case "AlexGone":
-                    case "TracerGone":
-                    case "JaimeGone":
-                        a.Destroy();
-                        break;
-                    case "Breakintocompound":
-                    case "LumpathPissed":
-                        Trigger(a).bTriggerOnceOnly = False;
-                        break;
-                    default:
-                        break;
-                }
+                case "AlexGone":
+                case "TracerGone":
+                case "JaimeGone":
+                    a.Destroy();
+                    break;
+                case "Breakintocompound":
+                case "LumpathPissed":
+                    Trigger(a).bTriggerOnceOnly = False;
+                    break;
+                default:
+                    break;
             }
-            break;
-        case "06_HONGKONG_WANCHAI_MARKET":
-            foreach AllActors(class'Actor', a)
+        }
+        break;
+    case "06_HONGKONG_WANCHAI_MARKET":
+        foreach AllActors(class'Actor', a)
+        {
+            switch(string(a.Tag))
             {
-                switch(string(a.Tag))
-                {
-                    case "DummyKeypad01":
-                        a.Destroy();
-                        break;
-                    case "BasementKeypad":
-                    case "GateKeypad":
-                        a.bHidden=False;
-                        break;
-                    case "Breakintocompound":
-                    case "LumpathPissed":
-                        Trigger(a).bTriggerOnceOnly = False;
-                        break;
-                    case "Keypad3":
-                        if( a.Event == 'elevator_door' && HackableDevices(a) != None ) {
-                            HackableDevices(a).hackStrength = 0;
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                case "DummyKeypad01":
+                    a.Destroy();
+                    break;
+                case "BasementKeypad":
+                case "GateKeypad":
+                    a.bHidden=False;
+                    break;
+                case "Breakintocompound":
+                case "LumpathPissed":
+                    Trigger(a).bTriggerOnceOnly = False;
+                    break;
+                case "Keypad3":
+                    if( a.Event == 'elevator_door' && HackableDevices(a) != None ) {
+                        HackableDevices(a).hackStrength = 0;
+                    }
+                    break;
+                default:
+                    break;
             }
+        }
 
-            break;
-        case "06_HONGKONG_WANCHAI_STREET":
-            foreach AllActors(class'Button1',b)
-            {
-                if (b.Event=='JockShaftTop')
-                {
-                    b.Event='JocksElevatorTop';
-                }
-            }
+        break;
 
-            foreach AllActors(class'ElevatorMover',e)
+#ifdef vanilla
+    case "06_HONGKONG_WANCHAI_STREET":
+        foreach AllActors(class'Button1',b)
+        {
+            if (b.Event=='JockShaftTop')
             {
-                if(e.Tag=='JocksElevator')
-                {
-                    e.Event = '';
-                }
+                b.Event='JocksElevatorTop';
             }
-            break;
+        }
 
-        case "06_HONGKONG_MJ12LAB":
-            foreach AllActors(class'#var Mover ', m, 'security_doors') {
-                m.bBreakable = false;
-                m.bPickable = false;
+        foreach AllActors(class'ElevatorMover',e)
+        {
+            if(e.Tag=='JocksElevator')
+            {
+                e.Event = '';
             }
-            foreach AllActors(class'#var Mover ', m, 'Lower_lab_doors') {
-                m.bBreakable = false;
-                m.bPickable = false;
-            }
-            foreach AllActors(class'#var Mover ', m, 'elevator_door') {
-                m.bIsDoor = true;// DXRKeys will pick this up later since we're in PreFirstEntry
-            }
-            foreach AllActors(class'FlagTrigger', ft, 'MJ12Alert') {
-                ft.Tag = 'TongHasRom';
-            }
-            break;
-#ifdef injections
-        case "06_HONGKONG_WANCHAI_UNDERWORLD":
-            foreach AllActors(class'AllianceTrigger',at,'StoreSafe') {
-                at.bPlayerOnly = true;
-            }
-            break;
+        }
+        break;
 #endif
-        default:
-            break;
+
+    case "06_HONGKONG_MJ12LAB":
+        foreach AllActors(class'#var Mover ', m, 'security_doors') {
+            m.bBreakable = false;
+            m.bPickable = false;
+        }
+        foreach AllActors(class'#var Mover ', m, 'Lower_lab_doors') {
+            m.bBreakable = false;
+            m.bPickable = false;
+        }
+        foreach AllActors(class'#var Mover ', m, 'elevator_door') {
+            m.bIsDoor = true;// DXRKeys will pick this up later since we're in PreFirstEntry
+        }
+        foreach AllActors(class'FlagTrigger', ft, 'MJ12Alert') {
+            ft.Tag = 'TongHasRom';
+        }
+        break;
+#ifdef injections
+    case "06_HONGKONG_WANCHAI_UNDERWORLD":
+        foreach AllActors(class'AllianceTrigger',at,'StoreSafe') {
+            at.bPlayerOnly = true;
+        }
+        break;
+#endif
+    default:
+        break;
     }
 }
 
@@ -1063,21 +1094,23 @@ function Shipyard_FirstEntry()
     local DeusExMover m;
     switch(dxr.localURL)
     {
-        case "09_NYC_SHIP":
-            foreach AllActors(class'DeusExMover', m, 'DeusExMover') {
-                if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
-            }
-            AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
-            break;
+#ifdef vanilla
+    case "09_NYC_SHIP":
+        foreach AllActors(class'DeusExMover', m, 'DeusExMover') {
+            if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
+        }
+        AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
+        break;
+#endif
 
-        case "09_NYC_SHIPBELOW":
-            foreach AllActors(class'DeusExMover', m, 'ShipBreech') {
-                m.bHighlight = true;
-                m.bLocked = true;
-            }
-            dxr.flags.f.SetInt('DXRando_WeldPointCount',5);
-            UpdateWeldPointGoal(5);
-            break;
+    case "09_NYC_SHIPBELOW":
+        foreach AllActors(class'DeusExMover', m, 'ShipBreech') {
+            m.bHighlight = true;
+            m.bLocked = true;
+        }
+        dxr.flags.f.SetInt('DXRando_WeldPointCount',5);
+        UpdateWeldPointGoal(5);
+        break;
     }
 }
 
@@ -1085,9 +1118,9 @@ function Shipyard_AnyEntry()
 {
     switch(dxr.localURL)
     {
-        case "09_NYC_SHIPBELOW":
-            SetTimer(1, True);
-            break;
+    case "09_NYC_SHIPBELOW":
+        SetTimer(1, True);
+        break;
     }
 }
 
@@ -1101,43 +1134,45 @@ function Paris_FirstEntry()
 
     switch(dxr.localURL)
     {
-        case "10_PARIS_CATACOMBS_TUNNELS":
-            foreach AllActors(class'Trigger', t)
-                if( t.Event == 'MJ12CommandoSpecial' )
-                    t.Touch(player());// make this guy patrol instead of t-pose
+#ifdef vanilla
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        foreach AllActors(class'Trigger', t)
+            if( t.Event == 'MJ12CommandoSpecial' )
+                t.Touch(player());// make this guy patrol instead of t-pose
 
-            AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
-            AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
-            break;
+        AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
+        AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
+        break;
 
-        case "10_PARIS_CHATEAU":
-            foreach AllActors(class'DeusExMover', m, 'everettsignal')
-                m.Tag = 'everettsignaldoor';
-            d = Spawn(class'Dispatcher',, 'everettsignal', vect(176.275253, 4298.747559, -148.500031) );
-            d.OutEvents[0] = 'everettsignaldoor';
-            AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
+    case "10_PARIS_CHATEAU":
+        foreach AllActors(class'DeusExMover', m, 'everettsignal')
+            m.Tag = 'everettsignaldoor';
+        d = Spawn(class'Dispatcher',, 'everettsignal', vect(176.275253, 4298.747559, -148.500031) );
+        d.OutEvents[0] = 'everettsignaldoor';
+        AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
 
-            //speed up the secret door...
-            foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
-                d.OutDelays[1] = 0;
-                d.OutDelays[2] = 0;
-                d.OutDelays[3] = 0;
-                d.OutEvents[2] = '';
-                d.OutEvents[3] = '';
-            }
-            foreach AllActors(class'DeusExMover', m, 'secret_candle') {
-                m.MoveTime = 0.5;
-            }
-            foreach AllActors(class'DeusExMover', m, 'cellar_door') {
-                m.MoveTime = 1;
-            }
-            break;
+        //speed up the secret door...
+        foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
+            d.OutDelays[1] = 0;
+            d.OutDelays[2] = 0;
+            d.OutDelays[3] = 0;
+            d.OutEvents[2] = '';
+            d.OutEvents[3] = '';
+        }
+        foreach AllActors(class'DeusExMover', m, 'secret_candle') {
+            m.MoveTime = 0.5;
+        }
+        foreach AllActors(class'DeusExMover', m, 'cellar_door') {
+            m.MoveTime = 1;
+        }
+        break;
+#endif
 
-        case "11_PARIS_CATHEDRAL":
-            foreach AllActors(class'GuntherHermann', g) {
-                g.ChangeAlly('mj12', 1, true);
-            }
-            break;
+    case "11_PARIS_CATHEDRAL":
+        foreach AllActors(class'GuntherHermann', g) {
+            g.ChangeAlly('mj12', 1, true);
+        }
+        break;
     }
 }
 
@@ -1149,22 +1184,22 @@ function Paris_AnyEntry()
 
     switch(dxr.localURL)
     {
-        case "10_PARIS_CATACOMBS":
-            // spawn Le Merchant with a hazmat suit because there's no guarantee of one before the highly radioactive area
-            // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
-            npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
-            if(npcs != None) {
-                sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vect(-3209.483154, 5190.826172,1199.610352), rot(0, -10000, 0), class'#var prefix HazMatSuit');
-            }
-            // give him weapons to defend himself
-            dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
-            if(dxre != None && sp != None) {
-                sp.bKeepWeaponDrawn = true;
-                GiveItem(sp, class'#var prefix WineBottle');
-                dxre.RandomizeSP(sp, 100);
-                RemoveFears(sp);
-            }
-            break;
+    case "10_PARIS_CATACOMBS":
+        // spawn Le Merchant with a hazmat suit because there's no guarantee of one before the highly radioactive area
+        // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
+        npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
+        if(npcs != None) {
+            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vect(-3209.483154, 5190.826172,1199.610352), rot(0, -10000, 0), class'#var prefix HazMatSuit');
+        }
+        // give him weapons to defend himself
+        dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+        if(dxre != None && sp != None) {
+            sp.bKeepWeaponDrawn = true;
+            GiveItem(sp, class'#var prefix WineBottle');
+            dxre.RandomizeSP(sp, 100);
+            RemoveFears(sp);
+        }
+        break;
     }
 }
 
@@ -1180,87 +1215,87 @@ function HongKong_AnyEntry()
 
     switch(dxr.localURL)
     {
-        case "06_HONGKONG_TONGBASE":
-            boolFlag = dxr.flagbase.GetBool('QuickLetPlayerIn');
-            foreach AllActors(class'Actor', a)
+    case "06_HONGKONG_TONGBASE":
+        boolFlag = dxr.flagbase.GetBool('QuickLetPlayerIn');
+        foreach AllActors(class'Actor', a)
+        {
+            switch(string(a.Tag))
             {
-                switch(string(a.Tag))
-                {
-                    case "TriadLumPath":
-                        ScriptedPawn(a).ChangeAlly('Player',1,False);
-                        break;
+                case "TriadLumPath":
+                    ScriptedPawn(a).ChangeAlly('Player',1,False);
+                    break;
 
-                    case "TracerTong":
-                        if ( boolFlag == True )
-                        {
-                            ScriptedPawn(a).EnterWorld();
-                        } else {
-                            ScriptedPawn(a).LeaveWorld();
-                        }
-                        break;
-                    case "AlexJacobson":
-                        recruitedFlag = dxr.flagbase.GetBool('JacobsonRecruited');
-                        if ( boolFlag == True && recruitedFlag == True)
-                        {
-                            ScriptedPawn(a).EnterWorld();
-                        } else {
-                            ScriptedPawn(a).LeaveWorld();
-                        }
-                        break;
-                    case "JaimeReyes":
-                        recruitedFlag = dxr.flagbase.GetBool('JaimeRecruited') && dxr.flagbase.GetBool('Versalife_Done');
-                        if ( boolFlag == True && recruitedFlag == True)
-                        {
-                            ScriptedPawn(a).EnterWorld();
-                        } else {
-                            ScriptedPawn(a).LeaveWorld();
-                        }
-                        break;
-                    case "Operation1":
-                        DataLinkTrigger(a).checkFlag = 'QuickLetPlayerIn';
-                        break;
-                    case "TurnOnTheKillSwitch":
-                        if (boolFlag == True)
-                        {
-                            Trigger(a).TriggerType = TT_PlayerProximity;
-                        } else {
-                            Trigger(a).TriggerType = TT_ClassProximity;
-                            Trigger(a).ClassProximityType = class'Teleporter';//Impossible, thus disabling it
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                case "TracerTong":
+                    if ( boolFlag == True )
+                    {
+                        ScriptedPawn(a).EnterWorld();
+                    } else {
+                        ScriptedPawn(a).LeaveWorld();
+                    }
+                    break;
+                case "AlexJacobson":
+                    recruitedFlag = dxr.flagbase.GetBool('JacobsonRecruited');
+                    if ( boolFlag == True && recruitedFlag == True)
+                    {
+                        ScriptedPawn(a).EnterWorld();
+                    } else {
+                        ScriptedPawn(a).LeaveWorld();
+                    }
+                    break;
+                case "JaimeReyes":
+                    recruitedFlag = dxr.flagbase.GetBool('JaimeRecruited') && dxr.flagbase.GetBool('Versalife_Done');
+                    if ( boolFlag == True && recruitedFlag == True)
+                    {
+                        ScriptedPawn(a).EnterWorld();
+                    } else {
+                        ScriptedPawn(a).LeaveWorld();
+                    }
+                    break;
+                case "Operation1":
+                    DataLinkTrigger(a).checkFlag = 'QuickLetPlayerIn';
+                    break;
+                case "TurnOnTheKillSwitch":
+                    if (boolFlag == True)
+                    {
+                        Trigger(a).TriggerType = TT_PlayerProximity;
+                    } else {
+                        Trigger(a).TriggerType = TT_ClassProximity;
+                        Trigger(a).ClassProximityType = class'Teleporter';//Impossible, thus disabling it
+                    }
+                    break;
+                default:
+                    break;
             }
-            break;
-        case "06_HONGKONG_WANCHAI_MARKET":
-            foreach AllActors(class'Actor', a)
+        }
+        break;
+    case "06_HONGKONG_WANCHAI_MARKET":
+        foreach AllActors(class'Actor', a)
+        {
+            switch(string(a.Tag))
             {
-                switch(string(a.Tag))
-                {
-                    case "TriadLumPath":
-                    case "TriadLumPath1":
-                    case "TriadLumPath2":
-                    case "TriadLumPath3":
-                    case "TriadLumPath4":
-                    case "TriadLumPath5":
-                    case "GordonQuick":
+                case "TriadLumPath":
+                case "TriadLumPath1":
+                case "TriadLumPath2":
+                case "TriadLumPath3":
+                case "TriadLumPath4":
+                case "TriadLumPath5":
+                case "GordonQuick":
 
-                        ScriptedPawn(a).ChangeAlly('Player',1,False);
-                        break;
-                }
+                    ScriptedPawn(a).ChangeAlly('Player',1,False);
+                    break;
             }
+        }
 
-            break;
+        break;
 
-        case "06_HONGKONG_VERSALIFE":
-            // allow you to get the code from him even if you've been to the labs, to fix backtracking
-            DeleteConversationFlag( GetConversation('Disgruntled_Guy_Convos'), 'VL_Found_Labs', false);
-            GetConversation('Disgruntled_Guy_Return').AddFlagRef('Disgruntled_Guy_Done', true);
-            break;
+    case "06_HONGKONG_VERSALIFE":
+        // allow you to get the code from him even if you've been to the labs, to fix backtracking
+        DeleteConversationFlag( GetConversation('Disgruntled_Guy_Convos'), 'VL_Found_Labs', false);
+        GetConversation('Disgruntled_Guy_Return').AddFlagRef('Disgruntled_Guy_Done', true);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -1275,16 +1310,18 @@ function NYC_08_AnyEntry()
     }
 
     switch(dxr.localURL) {
-        case "08_NYC_STREET":
-            SetTimer(1.0, True);
-            foreach AllActors(class'StantonDowd', s) {
-                RemoveReactions(s);
-            }
-            break;
+    case "08_NYC_STREET":
+        SetTimer(1.0, True);
+        foreach AllActors(class'StantonDowd', s) {
+            RemoveReactions(s);
+        }
+        break;
 
-        case "08_NYC_SMUG":
-            FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
-            break;
+#ifdef vanilla
+    case "08_NYC_SMUG":
+        FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
+        break;
+#endif
     }
 }
 
@@ -1295,44 +1332,48 @@ function Area51_FirstEntry()
 
     switch(dxr.localURL)
     {
-        case "15_AREA51_BUNKER":
-            AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
-            break;
+#ifdef vanilla
+    case "15_AREA51_BUNKER":
+        // doors_lower is for backtracking
+        AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
+        break;
 
-        case "15_AREA51_FINAL":
-            foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
-                d.move(vect(0, 0, -1));
-            }
-            AddSwitch( vect(-5107.805176, -2530.276123, -1374.614258), rot(0, -16384, 0), 'blastdoor_final');
-            AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
+    case "15_AREA51_FINAL":
+        // Generator_overload is the cover over the beat the game button used in speedruns
+        foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
+            d.move(vect(0, 0, -1));
+        }
+        AddSwitch( vect(-5107.805176, -2530.276123, -1374.614258), rot(0, -16384, 0), 'blastdoor_final');
+        AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
 
-            foreach AllActors(class'DeusExMover', d, 'doors_lower') {
-                d.bLocked = false;
-                d.bHighlight = true;
-                d.bFrobbable = true;
-            }
-            break;
+        foreach AllActors(class'DeusExMover', d, 'doors_lower') {
+            d.bLocked = false;
+            d.bHighlight = true;
+            d.bFrobbable = true;
+        }
+        break;
 
-        case "15_AREA51_ENTRANCE":
-            foreach AllActors(class'DeusExMover', d, 'DeusExMover') {
-                if( d.Name == 'DeusExMover20' ) d.Tag = 'final_door';
-            }
-            AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');
+    case "15_AREA51_ENTRANCE":
+        foreach AllActors(class'DeusExMover', d, 'DeusExMover') {
+            if( d.Name == 'DeusExMover20' ) d.Tag = 'final_door';
+        }
+        AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');
 
-            foreach AllActors(class'DeusExMover', d, 'doors_lower') {
-                d.bLocked = false;
-                d.bHighlight = true;
-                d.bFrobbable = true;
-            }
-            break;
+        foreach AllActors(class'DeusExMover', d, 'doors_lower') {
+            d.bLocked = false;
+            d.bHighlight = true;
+            d.bFrobbable = true;
+        }
+        break;
 
-        case "15_AREA51_PAGE":
-            foreach AllActors(class'ComputerSecurity', c) {
-                if( c.UserList[0].userName != "graytest" || c.UserList[0].Password != "Lab12" ) continue;
-                c.UserList[0].userName = "Lab 12";
-                c.UserList[0].Password = "graytest";
-            }
-            break;
+    case "15_AREA51_PAGE":
+        foreach AllActors(class'ComputerSecurity', c) {
+            if( c.UserList[0].userName != "graytest" || c.UserList[0].Password != "Lab12" ) continue;
+            c.UserList[0].userName = "Lab 12";
+            c.UserList[0].Password = "graytest";
+        }
+        break;
+#endif
     }
 }
 
