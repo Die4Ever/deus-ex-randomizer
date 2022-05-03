@@ -4,7 +4,11 @@ function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, op
 {
     log("DXRandoRootWindow InvokeMenuScreen "$newScreen);
     switch(newScreen) {
-#ifndef vmd
+#ifdef vmd
+        case class'VMDMenuSelectAppearance':
+            newScreen = class'DXRVMDMenuSelectAppearance';
+            break;
+#else
         case class'MenuScreenNewGame':
             newScreen = class'DXRMenuScreenNewGame';
             break;
