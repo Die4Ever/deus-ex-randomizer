@@ -131,18 +131,16 @@ function PreFirstEntry()
     SpawnDatacubes();
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
-#ifdef mapfixes
-    PreFirstEntryMapFixes();
-#endif
+    if(#defined mapfixes)
+        PreFirstEntryMapFixes();
 }
 
 function PostFirstEntry()
 {
     Super.PostFirstEntry();
 
-#ifdef mapfixes
-    PostFirstEntryMapFixes();
-#endif
+    if(#defined mapfixes)
+        PostFirstEntryMapFixes();
 }
 
 function AnyEntry()
@@ -154,9 +152,8 @@ function AnyEntry()
 
     FixSamCarter();
     SetSeed( "DXRFixup AnyEntry missions" );
-#ifdef mapfixes
-    AnyEntryMapFixes();
-#endif
+    if(#defined mapfixes)
+        AnyEntryMapFixes();
 
     FixAmmoShurikenName();
 
@@ -166,9 +163,8 @@ function AnyEntry()
 simulated function PlayerAnyEntry(#var PlayerPawn  p)
 {
     Super.PlayerAnyEntry(p);
-#ifdef vanilla
-    FixLogTimeout(p);
-#endif
+    if(#defined vanilla)
+        FixLogTimeout(p);
 
     FixAmmoShurikenName();
 }
@@ -176,9 +172,8 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
 function PreTravel()
 {
     Super.PreTravel();
-#ifdef mapfixes
-    PreTravelMapFixes();
-#endif
+    if(#defined mapfixes)
+        PreTravelMapFixes();
 }
 
 function Timer()
@@ -186,9 +181,8 @@ function Timer()
     Super.Timer();
     if( dxr == None ) return;
 
-#ifdef mapfixes
-    TimerMapFixes();
-#endif
+    if(#defined mapfixes)
+        TimerMapFixes();
 }
 
 function PreFirstEntryMapFixes()
