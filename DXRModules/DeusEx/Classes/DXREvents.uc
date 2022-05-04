@@ -28,6 +28,10 @@ function SetWatchFlags() {
     local GuntherHermann gunther;
 
     switch(dxr.localURL) {
+    case "01_NYC_UNATCOISLAND":
+        WatchFlag('GuntherFreed');
+        WatchFlag('GuntherRespectsPlayer');
+        break;
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
         WatchFlag('ManBathroomBarks_Played');
@@ -88,11 +92,20 @@ function SetWatchFlags() {
         WatchFlag('ClubMercedesConvo1_Done');
         WatchFlag('M07ChenSecondGive_Played');
         break;
+    case "08_NYC_STREET":
+        WatchFlag('StantonAmbushDefeated');
+        break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
         break;
+    case "09_NYC_SHIP":
+        ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
+        break;
     case "09_NYC_SHIPBELOW":
         WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
+        break;
+    case "09_NYC_GRAVEYARD":
+        WatchFlag('GaveDowdAmbrosia');
         break;
     case "10_PARIS_CATACOMBS":
         foreach AllActors(class'JunkieFemale', jf) {
@@ -120,6 +133,9 @@ function SetWatchFlags() {
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
         break;
+    case "15_AREA51_BUNKER":
+        WatchFlag('JockBlewUp');
+        break;
     }
 }
 
@@ -140,6 +156,12 @@ function WatchFlag(name flag) {
     watchflags[num_watchflags++] = flag;
     if(num_watchflags > ArrayCount(watchflags))
         err("WatchFlag num_watchflags > ArrayCount(watchflags)");
+}
+
+function ReportMissingFlag(name flag, string eventname) {
+    if( ! dxr.flagbase.GetBool(flag) ) {
+        SendFlagEvent(eventname, true);
+    }
 }
 
 function Ending_FirstEntry()
@@ -239,14 +261,14 @@ function Trigger(Actor Other, Pawn Instigator)
     }
 }
 
-function SendFlagEvent(name flag, optional bool immediate)
+function SendFlagEvent(coerce string eventname, optional bool immediate)
 {
     local string j;
     local class<Json> js;
     js = class'Json';
 
     j = js.static.Start("Flag");
-    js.static.Add(j, "flag", flag);
+    js.static.Add(j, "flag", eventname);
     js.static.Add(j, "immediate", immediate);
     js.static.Add(j, "location", dxr.player.location);
     GeneralEventData(dxr, j);
