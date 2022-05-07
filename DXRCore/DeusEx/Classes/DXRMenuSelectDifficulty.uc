@@ -100,7 +100,7 @@ function BindControls(optional string action)
     if(writing) {
         if( action == "ADVANCED" ) NewGameSetup(difficulty);
         else if( action == "MAXRANDO" ) {
-            f.MaxRando();
+            f.ExecMaxRando();
             _InvokeNewGameScreen(difficulty, InitDxr());
         }
         else _InvokeNewGameScreen(difficulty, InitDxr());

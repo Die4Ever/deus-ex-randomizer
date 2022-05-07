@@ -20,6 +20,7 @@ var #var flagvarprefix  int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill
 var #var flagvarprefix  int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
 var #var flagvarprefix  int brightness;
 var #var flagvarprefix  int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
+var #var flagvarprefix  int maxrando;
 var #var flagvarprefix  int newgameplus_loops;
 var #var flagvarprefix  int crowdcontrol;
 var #var flagvarprefix  int codes_mode;
@@ -73,7 +74,7 @@ var int stored_version;
 replication
 {
     reliable if( Role==ROLE_Authority )
-        f, seed, playthrough_id, flagsversion, gamemode, loadout, brightness, newgameplus_loops,
+        f, seed, playthrough_id, flagsversion, gamemode, loadout, brightness, maxrando, newgameplus_loops,
         settings,
         codes_mode,
         flags_loaded;
@@ -163,6 +164,7 @@ function HXRollSeed()
     else {
         RollSeed();
     }
+    ExecMaxRando();
     SaveConfig();
 }
 #endif
@@ -593,6 +595,8 @@ simulated function string BindFlags(int mode, optional string str)
     if( FlagInt('Rando_seed', seed, mode, str) )
         dxr.seed = seed;
 
+    FlagInt('Rando_maxrando', maxrando, mode, str);
+
     FlagInt('Rando_autosave', autosave, mode, str);
     FlagInt('Rando_brightness', brightness, mode, str);
     FlagInt('Rando_crowdcontrol', crowdcontrol, mode, str);
@@ -831,11 +835,80 @@ function InitVersion()
     flagsversion = VersionNumber();
 }
 
-simulated function MaxRando()
+simulated function MaxRandoVal(out int val)
 {
+    val = rngrecip(val, 2);
+}
+
+simulated function MaxRandoValPair(out int min, out int max)
+{
+    local int i;
+
+    MaxRandoVal(min);
+    MaxRandoVal(max);
+
+    if(min > max) {
+        i = min;
+        min = max;
+        max = i;
+    } else if(min == max) {
+        min--;
+        max++;
+    }
+}
+
+simulated function ExecMaxRando()
+{
+    // set local seed
     // set a flag to save that we are in Max Rando mode
     // change the flags normally configurable on the Advanced Settings page, but try to keep the difficulty balanced
-    info("MaxRando()");
+    // also make sure to randomize the doors mode and stuff
+    info("ExecMaxRando()");
+    SetGlobalSeed("ExecMaxRando");
+    maxrando = 1;
+
+    MaxRandoVal(settings.merchants);
+    MaxRandoVal(settings.medbots);
+    MaxRandoVal(settings.repairbots);
+
+    settings.medbotuses = rng(7) + 1;
+    settings.repairbotuses = rng(7) + 1;
+
+    settings.medbotcooldowns = int(rngb()) + 1;// 1 or 2
+    settings.repairbotcooldowns = int(rngb()) + 1;
+    settings.medbotamount = int(rngb()) + 1;
+    settings.repairbotamount = int(rngb()) + 1;
+
+    settings.doorsmode = undefeatabledoors + doorindependent;
+    settings.doorsdestructible = rng(100);
+    settings.doorspickable = rng(100);
+
+    settings.deviceshackable = rng(100);
+    MaxRandoVal(settings.enemiesrandomized);
+    settings.hiddenenemiesrandomized = settings.enemiesrandomized;
+    settings.enemiesshuffled = 100;
+    MaxRandoVal(settings.enemies_nonhumans);
+    if(rngb())
+        settings.enemyrespawn = rng(120) + 120;
+
+    MaxRandoVal(settings.turrets_move);
+    MaxRandoVal(settings.turrets_add);
+    MaxRandoVal(settings.skills_reroll_missions);
+    settings.skills_independent_levels = int(rngb());
+    MaxRandoValPair(settings.minskill, settings.maxskill);
+    MaxRandoVal(settings.banned_skills);
+    MaxRandoVal(settings.banned_skill_levels);
+    MaxRandoVal(settings.skill_value_rando);
+
+    MaxRandoVal(settings.ammo);
+    MaxRandoVal(settings.multitools);
+    MaxRandoVal(settings.lockpicks);
+    MaxRandoVal(settings.biocells);
+    MaxRandoVal(settings.medkits);
+    settings.equipment += int(rngb());
+    MaxRandoValPair(settings.min_weapon_dmg, settings.max_weapon_dmg);
+    MaxRandoValPair(settings.min_weapon_shottime, settings.max_weapon_shottime);
+    MaxRandoVal(settings.aug_value_rando);
 }
 
 function NewGamePlus()
@@ -845,7 +918,7 @@ function NewGamePlus()
     local DXRSkills skills;
     local DXRWeapons weapons;
     local DXRAugmentations augs;
-    local int i;
+    local int i, exp;
 
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
@@ -860,20 +933,33 @@ function NewGamePlus()
     ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
-    p.CombatDifficulty *= 1.3;
-    settings.minskill = settings.minskill*1.2;// int *= float doesn't give as good accuracy as int = int*float
-    settings.maxskill = settings.maxskill*1.2;
-    settings.enemiesrandomized = settings.enemiesrandomized*1.2;
-    settings.hiddenenemiesrandomized = settings.hiddenenemiesrandomized*1.2;
-    settings.ammo = settings.ammo*0.9;
-    settings.medkits = settings.medkits*0.8;
-    settings.multitools = settings.multitools*0.8;
-    settings.lockpicks = settings.lockpicks*0.8;
-    settings.biocells = settings.biocells*0.8;
-    settings.medbots = settings.medbots*0.8;
-    settings.repairbots = settings.repairbots*0.8;
-    settings.turrets_add = settings.turrets_add*1.3;
-    settings.merchants = settings.merchants*0.9;
+    exp = 1;
+
+    if(maxrando > 0) {
+        // rollback settings to the default for the current difficulty
+        settings = difficulty_settings[difficulty];
+        // apply max rando
+        ExecMaxRando();
+        // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
+        exp = newgameplus_loops;
+    }
+
+    SetGlobalSeed("NewGamePlus");
+
+    p.CombatDifficulty *= pow(1.3, exp);
+    settings.minskill = settings.minskill * pow(1.2, exp);// int *= float doesn't give as good accuracy as int = int*float
+    settings.maxskill = settings.maxskill * pow(1.2, exp);
+    settings.enemiesrandomized = settings.enemiesrandomized * pow(1.2, exp);
+    settings.hiddenenemiesrandomized = settings.hiddenenemiesrandomized * pow(1.2, exp);
+    settings.ammo = settings.ammo * pow(0.9, exp);
+    settings.medkits = settings.medkits * pow(0.8, exp);
+    settings.multitools = settings.multitools * pow(0.8, exp);
+    settings.lockpicks = settings.lockpicks * pow(0.8, exp);
+    settings.biocells = settings.biocells * pow(0.8, exp);
+    settings.medbots = settings.medbots * pow(0.8, exp);
+    settings.repairbots = settings.repairbots * pow(0.8, exp);
+    settings.turrets_add = settings.turrets_add * pow(1.3, exp);
+    settings.merchants = settings.merchants * pow(0.9, exp);
 
     if (p.KeyRing != None)
     {
@@ -955,7 +1041,8 @@ function RunTests()
 
 function ExtendedTests()
 {
-    local int i;
+    local int i, total;
+    local float f;
     Super.ExtendedTests();
 
     testint(FindLast("this is a test", "nope"), -1, "FindLast");
@@ -975,6 +1062,26 @@ function ExtendedTests()
         TestRngExp(50, 400, 100, i);
     for(i=1;i<=4;i++)
         TestRngExp(25, 150, 100, i);
+
+    dxr.SetSeed(0451);
+    for(i=0;i<10000;i++)
+        if(rngb()) total++;
+    // close enough?
+    testint(total, 4988, "rngb()");
+
+    for(i=0;i<1000;i++) {
+        f = rngrecip(1, 2);
+        if(f < 0.5)
+            test(false, "rngrecip "$ f $ " < 0.5");
+        if(f > 2)
+            test(false, "rngrecip "$ f $ " > 2");
+
+        f = rngrecip(100, 4);
+        if(f < 25)
+            test(false, "rngrecip "$ f $ " < 25");
+        if(f > 400)
+            test(false, "rngrecip "$ f $ " > 400");
+    }
 
     TestTime();
     TestStorage();

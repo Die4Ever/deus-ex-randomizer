@@ -96,6 +96,11 @@ simulated function int rng(int max)
     return dxr.rng(max);
 }
 
+simulated function bool rngb()
+{
+    return dxr.rng(101) > 50;
+}
+
 simulated function float rngf()
 {// 0 to 1.0
     local float f;
@@ -117,6 +122,16 @@ simulated function float rngrange(float val, float min, float max)
     ret = val * (r * mult + min);
     //l("rngrange r: "$r$", mult: "$mult$", min: "$min$", max: "$max$", val: "$val$", return: "$ret);
     return ret;
+}
+
+simulated function float rngrecip(float val, float max)
+{
+    local float f;
+    f = rngrange(1, 1, max);
+    if( rngb() ) {
+        f = 1 / f;
+    }
+    return val * f;
 }
 
 simulated function float rngrangeseeded(float val, float min, float max, coerce string classname)

@@ -78,7 +78,9 @@ function BindControls(optional string action)
     NewGroup("Doors and Keys");
 
     NewMenuItem("", "Which doors to provide additional options to get through.");
+    // chop off the lowest byte just to get the type
     doors_type = f.settings.doorsmode / 256 * 256;
+    // += 1 is a temporary value to distinguish some vs all just for the menu
     if( f.settings.doorsdestructible + f.settings.doorspickable == 50 )
         doors_type += 1;
     EnumOption("Key-Only Doors", f.keyonlydoors, doors_type);
@@ -88,6 +90,7 @@ function BindControls(optional string action)
     EnumOption("All Doors", f.alldoors, doors_type);
     EnumOption("Many Doors", f.alldoors + 1, doors_type);
 
+    // from the doorsmode, we only want the low byte for the temporary +1, just for the menu code
     doors_option = int(f.settings.doorsmode % 256) $ ";" $ f.settings.doorsdestructible $ ";" $ f.settings.doorspickable;
     NewMenuItem("", "What to do with those doors.");
     EnumOptionString("Breakable or Pickable", f.doormutuallyexclusive$";50;50", doors_option);
@@ -99,10 +102,12 @@ function BindControls(optional string action)
     f.settings.doorsdestructible = UnpackInt(doors_option);
     f.settings.doorspickable = UnpackInt(doors_option);
     if(doors_type % 2 == 1) {
+        // remove the temporary +1 and apply the some vs all change to the chances here
         doors_type--;
         f.settings.doorsdestructible /= 2;
         f.settings.doorspickable /= 2;
     }
+    // add in the high bytes we stored earlier
     f.settings.doorsmode += doors_type;
 
     BreakLine();
