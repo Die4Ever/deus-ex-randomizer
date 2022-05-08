@@ -204,7 +204,7 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,8,2,2) ) {
+    if( ConfigOlderThan(1,8,2,3) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -432,8 +432,8 @@ function CheckConfig()
         difficulty_settings[i].augcans = 100;
         difficulty_settings[i].aug_value_rando = 100;
         difficulty_settings[i].skill_value_rando = 100;
-        difficulty_settings[i].min_weapon_dmg = 75;
-        difficulty_settings[i].max_weapon_dmg = 175;
+        difficulty_settings[i].min_weapon_dmg = 50;
+        difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         i++;
@@ -441,7 +441,7 @@ function CheckConfig()
         difficulty_names[i] = "DeusEx";
 #ifndef hx
         difficulty_names[i] = "Impossible";
-        difficulty_settings[i].CombatDifficulty = 2.5;
+        difficulty_settings[i].CombatDifficulty = 3;
 #endif
         difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
         difficulty_settings[i].doorsdestructible = 25;
@@ -490,8 +490,8 @@ function CheckConfig()
         difficulty_settings[i].augcans = 100;
         difficulty_settings[i].aug_value_rando = 100;
         difficulty_settings[i].skill_value_rando = 100;
-        difficulty_settings[i].min_weapon_dmg = 100;
-        difficulty_settings[i].max_weapon_dmg = 200;
+        difficulty_settings[i].min_weapon_dmg = 50;
+        difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         i++;
@@ -949,13 +949,15 @@ function NewGamePlus()
     ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
-    // rollback settings to the default for the current difficulty
-    settings = difficulty_settings[difficulty];
-    // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
-    exp = newgameplus_loops;
+    exp = 1;
 
     if(maxrando > 0) {
+        // rollback settings to the default for the current difficulty
+        // we only want to do this on maxrando because we want to retain the user's custom choices
+        settings = difficulty_settings[difficulty];
         ExecMaxRando();
+        // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
+        exp = newgameplus_loops;
     }
 
     SetGlobalSeed("NewGamePlus");
