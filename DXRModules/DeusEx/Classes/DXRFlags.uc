@@ -191,9 +191,12 @@ function InitDefaults()
 
 #ifdef hx
     difficulty = 1;
+    maxrando = 1;
 #else
     difficulty = 2;
+    maxrando = 0;
 #endif
+
 #ifndef vanilla
     codes_mode = 0;
     autosave = 0;
