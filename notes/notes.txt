@@ -1,3 +1,12 @@
+check gmdx augs list
+randomize menu music after first load?
+crowd control effects for enable all augs, and disable all augs
+add a note for every mission change
+What if consuming the VialAmbrosia yourself gave you a full heal or something lol
+check mission 5 jailbreak in all mods
+reducing ammo should add a random 0 to 1 before rounding?
+
+
 ### Installation Instructions for Vanilla? Madder
 
 Install VMD from https://www.moddb.com/mods/vanilla-madder-actual-phase-1/downloads
