@@ -1201,6 +1201,7 @@ function HongKong_AnyEntry()
 {
     local Actor a;
     local ScriptedPawn p;
+    local #var prefix DeusExMover m;
     local bool boolFlag;
     local bool recruitedFlag;
 
@@ -1286,6 +1287,13 @@ function HongKong_AnyEntry()
         // allow you to get the code from him even if you've been to the labs, to fix backtracking
         DeleteConversationFlag( GetConversation('Disgruntled_Guy_Convos'), 'VL_Found_Labs', false);
         GetConversation('Disgruntled_Guy_Return').AddFlagRef('Disgruntled_Guy_Done', true);
+        break;
+
+    case "06_HONGKONG_WANCHAI_STREET":
+        foreach AllActors(class'#var prefix DeusExMover', m, 'JockShaftTop') {
+            m.bLocked = false;
+            m.bHighlight = true;
+        }
         break;
 
     default:
