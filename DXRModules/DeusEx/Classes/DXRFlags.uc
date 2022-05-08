@@ -533,6 +533,21 @@ static function string GameModeName(int gamemode)
     return "";
 }
 
+simulated function DisplayRandoInfoMessage(#var PlayerPawn  p, float CombatDifficulty)
+{
+    local string str;
+
+    str = "Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ CombatDifficulty
+#ifdef injections
+            $ ", New Game+ Loops: "$newgameplus_loops
+#endif
+            $ ", flags: " $ FlagsHash();
+
+    info(str);
+    if(p != None)
+        p.ClientMessage(str);
+}
+
 simulated function LoadFlags()
 {
     //do flags binding
@@ -579,11 +594,7 @@ simulated function LoadFlags()
 
     LogFlags("LoadFlags");
     if( p != None )
-        p.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ p.CombatDifficulty
-#ifdef injections
-            $ ", New Game+ Loops: "$newgameplus_loops
-#endif
-            $ ", flags: " $ FlagsHash() );
+        DisplayRandoInfoMessage(p, p.CombatDifficulty);
     SetTimer(1.0, True);
 
     ds = class'DataStorage'.static.GetObj(dxr);
@@ -771,11 +782,7 @@ simulated function LoadNoFlags()
 
     LogFlags("LoadNoFlags");
     if( p != None )
-        p.ClientMessage("Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ CombatDifficulty
-#ifdef injections
-            $ ", New Game+ Loops: "$newgameplus_loops
-#endif
-            $ ", flags: " $ FlagsHash() );
+        DisplayRandoInfoMessage(p, CombatDifficulty);
 }
 
 simulated function SaveNoFlags()
@@ -861,12 +868,12 @@ simulated function ExecMaxRando()
 {
     // set local seed
     // set a flag to save that we are in Max Rando mode
-    // change the flags normally configurable on the Advanced Settings page, but try to keep the difficulty balanced
-    // also make sure to randomize the doors mode and stuff
     info("ExecMaxRando()");
     SetGlobalSeed("ExecMaxRando");
     maxrando = 1;
 
+    // change the flags normally configurable on the Advanced Settings page, but try to keep the difficulty balanced
+    // also make sure to randomize the doors mode and stuff
     MaxRandoVal(settings.merchants);
     MaxRandoVal(settings.medbots);
     MaxRandoVal(settings.repairbots);
@@ -911,6 +918,14 @@ simulated function ExecMaxRando()
     MaxRandoVal(settings.aug_value_rando);
 }
 
+function NewGamePlusVal(out int val, float curve, float exp)
+{
+    if(val > 0) {
+        val = val * pow(curve, exp);// int *= float doesn't give as good accuracy as int = int*float
+        if(val <= 0) val = 1;
+    }
+}
+
 function NewGamePlus()
 {
     local #var PlayerPawn  p;
@@ -918,7 +933,8 @@ function NewGamePlus()
     local DXRSkills skills;
     local DXRWeapons weapons;
     local DXRAugmentations augs;
-    local int i, exp;
+    local int i;
+    local float exp;
 
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
@@ -933,33 +949,31 @@ function NewGamePlus()
     ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
-    exp = 1;
+    // rollback settings to the default for the current difficulty
+    settings = difficulty_settings[difficulty];
+    // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
+    exp = newgameplus_loops;
 
     if(maxrando > 0) {
-        // rollback settings to the default for the current difficulty
-        settings = difficulty_settings[difficulty];
-        // apply max rando
         ExecMaxRando();
-        // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
-        exp = newgameplus_loops;
     }
 
     SetGlobalSeed("NewGamePlus");
-
-    p.CombatDifficulty *= pow(1.3, exp);
-    settings.minskill = settings.minskill * pow(1.2, exp);// int *= float doesn't give as good accuracy as int = int*float
-    settings.maxskill = settings.maxskill * pow(1.2, exp);
-    settings.enemiesrandomized = settings.enemiesrandomized * pow(1.2, exp);
-    settings.hiddenenemiesrandomized = settings.hiddenenemiesrandomized * pow(1.2, exp);
-    settings.ammo = settings.ammo * pow(0.9, exp);
-    settings.medkits = settings.medkits * pow(0.8, exp);
-    settings.multitools = settings.multitools * pow(0.8, exp);
-    settings.lockpicks = settings.lockpicks * pow(0.8, exp);
-    settings.biocells = settings.biocells * pow(0.8, exp);
-    settings.medbots = settings.medbots * pow(0.8, exp);
-    settings.repairbots = settings.repairbots * pow(0.8, exp);
-    settings.turrets_add = settings.turrets_add * pow(1.3, exp);
-    settings.merchants = settings.merchants * pow(0.9, exp);
+    p.CombatDifficulty *= 1.3;
+    NewGamePlusVal(settings.minskill, 1.2, exp);
+    NewGamePlusVal(settings.minskill, 1.2, exp);
+    NewGamePlusVal(settings.maxskill, 1.2, exp);
+    NewGamePlusVal(settings.enemiesrandomized, 1.2, exp);
+    NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp);
+    NewGamePlusVal(settings.ammo, 0.9, exp);
+    NewGamePlusVal(settings.medkits, 0.8, exp);
+    NewGamePlusVal(settings.multitools, 0.8, exp);
+    NewGamePlusVal(settings.lockpicks, 0.8, exp);
+    NewGamePlusVal(settings.biocells, 0.8, exp);
+    NewGamePlusVal(settings.medbots, 0.8, exp);
+    NewGamePlusVal(settings.repairbots, 0.8, exp);
+    NewGamePlusVal(settings.turrets_add, 1.3, exp);
+    NewGamePlusVal(settings.merchants, 0.9, exp);
 
     if (p.KeyRing != None)
     {
