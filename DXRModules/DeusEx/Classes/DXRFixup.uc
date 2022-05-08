@@ -1201,7 +1201,7 @@ function HongKong_AnyEntry()
 {
     local Actor a;
     local ScriptedPawn p;
-    local #var prefix DeusExMover m;
+    local #var Mover  m;
     local bool boolFlag;
     local bool recruitedFlag;
 
@@ -1290,7 +1290,7 @@ function HongKong_AnyEntry()
         break;
 
     case "06_HONGKONG_WANCHAI_STREET":
-        foreach AllActors(class'#var prefix DeusExMover', m, 'JockShaftTop') {
+        foreach AllActors(class'#var Mover ', m, 'JockShaftTop') {
             m.bLocked = false;
             m.bHighlight = true;
         }
