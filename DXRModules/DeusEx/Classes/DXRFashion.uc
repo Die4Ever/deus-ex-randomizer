@@ -29,7 +29,8 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
     }
 
     lastUpdate = dxr.flagbase.GetInt('DXRFashion_LastUpdate');
-    if (lastUpdate < dxr.dxInfo.MissionNumber) {
+    info("got DXRFashion_LastUpdate: "$lastUpdate);
+    if (lastUpdate < dxr.dxInfo.MissionNumber || lastUpdate > dxr.dxInfo.MissionNumber + 2) {
         RandomizeClothes(player());
         p.ClientMessage("Time for a change of clothes...");
     }
@@ -840,6 +841,7 @@ simulated function _RandomizeClothes(#var PlayerPawn  player, bool female)
     info("Shirt influencer is "$styleInfluencer);
     //player().ClientMessage("Shirt influencer is "$styleInfluencer);
 
+    info("writing DXRFashion_LastUpdate: "$dxr.dxInfo.MissionNumber);
     dxr.flags.f.SetInt('DXRFashion_LastUpdate',dxr.dxInfo.MissionNumber,,999);
 }
 

@@ -39,6 +39,11 @@ simulated function RandoWeapon(DeusExWeapon w)
     min_weapon_dmg = float(dxr.flags.settings.min_weapon_dmg) / 100;
     max_weapon_dmg = float(dxr.flags.settings.max_weapon_dmg) / 100;
     w.HitDamage = rngrange(float(w.default.HitDamage), min_weapon_dmg, max_weapon_dmg);
+    l(w $ " w.HitDamage: "$ w.HitDamage);
+    if(w.HitDamage < 2 && w.HitDamage < w.default.HitDamage) {
+        info(w $ " w.HitDamage ("$ w.HitDamage $") < 2");
+        w.HitDamage = 2;
+    }
     if( #var prefix WeaponHideAGun(w) == None && w.ProjectileClass != None ) {
         //don't do this for the PS20/PS40 because it shares the PlasmaBolt projectile with the PlasmaRifle in a really dumb way, the PS40 code handles this itself
         //I might move this logic into an injector into DeusExProjectile, maybe in BeginPlay it could check its owner and copy the HitDamage from there?

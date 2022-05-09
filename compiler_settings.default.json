@@ -17,7 +17,7 @@
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex HX/",
         "preproc_definitions": {
-            "hx":1, "multiplayer":1, "balance":1, "noflags":1, "prefix":"HX",
+            "hx":1, "multiplayer":1, "mapfixes":1, "balance":1, "noflags":1, "prefix":"HX",
             "Mover":"HXMover", "PlayerPawn":"HXPlayerPawn", "flagvarprefix": "config", "package": "HXRandomizer"
         },
         "mods_paths": [ "./" ],
@@ -32,7 +32,7 @@
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex GMDX/",
         "preproc_definitions": {
-            "gmdx":1, "singeplayer":1, "flags":1, "prefix":"",
+            "gmdx":1, "singeplayer":1, "mapfixes":1, "flags":1, "prefix":"",
             "Mover":"DeusExMover", "PlayerPawn":"Human", "flagvarprefix": "", "package": "GMDXRandomizer"
         },
         "mods_paths": [ "./" ],
@@ -47,7 +47,7 @@
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Revision/",
         "preproc_definitions": {
-            "revision":1, "singeplayer":1, "flags":1, "prefix":"",
+            "revision":1, "singeplayer":1, "mapfixes":1, "flags":1, "prefix":"",
             "Mover":"DeusExMover", "PlayerPawn":"Human", "flagvarprefix": "", "package": "RevRandomizer"
         },
         "mods_paths": [ "./" ],
@@ -62,7 +62,7 @@
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD/",
         "preproc_definitions": {
-            "vmd":1, "singeplayer":1, "flags":1, "prefix":"",
+            "vmd":1, "singeplayer":1, "mapfixes":1, "flags":1, "prefix":"",
             "Mover":"DeusExMover", "PlayerPawn":"Human", "flagvarprefix": "", "package": "VMDRandomizer"
         },
         "mods_paths": [ "./" ],

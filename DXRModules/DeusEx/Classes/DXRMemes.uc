@@ -5,8 +5,7 @@ var Actor rotating;
 function RandomDancing(Actor a)
 {
     if (IsHuman(a)) {
-        l("Current orders are " $ ScriptedPawn(a).Orders);
-        if (ScriptedPawn(a).Orders == 'Standing' || 
+        if (ScriptedPawn(a).Orders == 'Standing' ||
             ScriptedPawn(a).Orders == 'Sitting' ||
             ScriptedPawn(a).Orders == '') {
             if (a.HasAnim('Dance')){
@@ -33,15 +32,15 @@ function AnyEntry()
         case "DX":
             l("Memeing up "$ dxr.localURL);
             foreach AllActors(class'#var prefix DXLogo', logo)
-            {                
+            {
                 a = ReplaceWithRandomClass(logo);
                 if (IsHuman(a)){
                     ScriptedPawn(a).SetOrders('Standing');
                 }
-                
+
                 //Maybe make them dance?
                 RandomDancing(a);
-                
+
                 //Get it spinning just right
                 rotating = a;
                 a.SetPhysics(PHYS_None);
@@ -51,10 +50,10 @@ function AnyEntry()
                 r.Yaw = 5000;
                 r.Roll = 0;
                 a.RotationRate = r;
-                
+
                 //Get rid of any ambient sounds it may make
                 a.AmbientSound = None;
-                
+
                 GotoState('RotatingState');
             }
 
@@ -66,7 +65,7 @@ function AnyEntry()
                 }
                 //Maybe make them dance?
                 RandomDancing(a);
-                
+
                 a.SetPhysics(PHYS_None);
                 a.DrawScale *= 2.0;
                 //Get rid of any ambient sounds it may make
@@ -81,13 +80,13 @@ function AnyEntry()
                 }
                 //Maybe make them dance?
                 RandomDancing(a);
-                
+
                 a.SetPhysics(PHYS_None);
                 a.DrawScale *= 2.0;
                 //Get rid of any ambient sounds it may make
                 a.AmbientSound = None;
             }
-            
+
             foreach AllActors(class'#var prefix ElectricityEmitter', elec)
             {
                 v.Z = 70;
@@ -151,7 +150,7 @@ state() RotatingState {
         r.Yaw += float(rotating.RotationRate.Yaw) * deltaTime;
         r.Roll += float(rotating.RotationRate.Roll) * deltaTime;
         rotating.SetRotation(r);
-        
+
         //This is a bit kludgy, HangingDecoration
         //override the rotation behaviour.
         //Worth it for the meme though
@@ -174,7 +173,7 @@ function RandomizeIntro()
     //local CameraPoint c;
 
     SetSeed("RandomizeIntro");
-    
+
     foreach AllActors(class'#var prefix Tree', t)
     { // exclude 90% of trees from the SwapAll by temporarily hiding them
         if( rng(100) < 90 ) t.bHidden = true;
