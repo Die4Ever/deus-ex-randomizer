@@ -3,17 +3,19 @@ class DXRVMDMenuSelectAppearanceDummy extends Object;
 #else
 class DXRVMDMenuSelectAppearance extends VMDMenuSelectAppearance;
 
+var config string last_player_name;
+
 function CreateNameEditWindow()
 {
     Super.CreateNameEditWindow();
-    editName.SetText("");
-    DefaultName = "";
+    editName.SetText(last_player_name);
+    DefaultName = last_player_name;
 }
 
 function SaveSettings()
 {
     Super.SaveSettings();
-    editName.GetText();
+    last_player_name = editName.GetText();
     SaveConfig();
 }
 
