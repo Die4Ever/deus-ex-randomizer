@@ -38,7 +38,7 @@ simulated function RandoWeapon(DeusExWeapon w)
 
     min_weapon_dmg = float(dxr.flags.settings.min_weapon_dmg) / 100;
     max_weapon_dmg = float(dxr.flags.settings.max_weapon_dmg) / 100;
-    w.HitDamage = rngrange(float(w.default.HitDamage), min_weapon_dmg, max_weapon_dmg);
+    w.HitDamage = int(rngrange(float(w.default.HitDamage), min_weapon_dmg, max_weapon_dmg) + 0.5);
     l(w $ " w.HitDamage: "$ w.HitDamage);
     if(w.HitDamage < 2 && w.HitDamage < w.default.HitDamage) {
         info(w $ " w.HitDamage ("$ w.HitDamage $") < 2");
