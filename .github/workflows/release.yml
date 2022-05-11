@@ -22,6 +22,7 @@ jobs:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: DeusEx.u
         asset_name: DeusEx.u
+        asset_content_type: application/octet-stream
 
     - name: Upload Release Asset HXRandomizer.int
       id: upload-release-asset-hx-int
@@ -32,6 +33,7 @@ jobs:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: HXRandomizer.int
         asset_name: HXRandomizer.int
+        asset_content_type: application/octet-stream
 
     - name: Upload Release Asset HXRandomizer.u
       id: upload-release-asset-hx-u
@@ -42,6 +44,7 @@ jobs:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: HXRandomizer.u
         asset_name: HXRandomizer.u
+        asset_content_type: application/octet-stream
 
     - name: Upload Release Asset GMDXRandomizer.u
       id: upload-release-asset-gmdx
@@ -52,3 +55,4 @@ jobs:
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: GMDXRandomizer.u
         asset_name: GMDXRandomizer.u
+        asset_content_type: application/octet-stream
