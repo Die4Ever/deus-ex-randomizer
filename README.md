@@ -70,7 +70,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <a href="https://www.youtube.com/watch?v=A0Li3XuBjGg" target="_blank">
 <img src="https://i.imgur.com/hTCuQCH.png" alt="v1.5 Trailer" height="200"/></a>
 
-## Currently in v1.8.1, DXRando randomizes
+## Currently in v1.8.2, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
@@ -106,6 +106,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
     * Freeman Mode - only weapon allowed is the crowbar
     * Grenades Only
     * No Pistols - for people who think the pistol is OP
+* Max Rando - randomize the randomizer's settings!
 * Co-op when combined with the HX mod (Alpha)
 * making all or some of the doors that normally require a key also lockpickable and/or destructible
 * making all or some keypads hackable.
@@ -122,7 +123,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <details>
 <summary>When you click New Game, you will see this settings screen:</summary>
 
-![options](https://i.imgur.com/eeZ4r81.png)
+![options](https://i.imgur.com/9OZExNd.png)
 
 </details>
 
@@ -131,7 +132,7 @@ If you click Next then it will use default settings based on your difficulty cho
 <details>
 <summary>But if you click Advanced then you will see these settings:</summary>
 
-![advanced options](https://i.imgur.com/THE9WkS.png)
+![advanced options](https://i.imgur.com/ZfekrSK.png)
 
 </details>
 
