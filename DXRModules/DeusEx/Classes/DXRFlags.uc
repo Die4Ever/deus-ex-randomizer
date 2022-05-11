@@ -954,6 +954,8 @@ function NewGamePlus()
     newgameplus_loops++;
     exp = 1;
 
+    // always enable maxrando when doing NG+?
+    maxrando = 1;
     if(maxrando > 0) {
         // rollback settings to the default for the current difficulty
         // we only want to do this on maxrando because we want to retain the user's custom choices

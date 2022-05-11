@@ -237,7 +237,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
         s = s $ DescriptionLevel(a, i, word);
     }
 
-    s = word $ ":|n    " $ s;
+    s = "(DXRando) word $ ":|n    " $ s;
 
     info("RandoLevelValues "$a$" = "$s);
     dxr.SetSeed( oldseed );

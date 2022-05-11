@@ -77,5 +77,5 @@ function ProcessText()
     PrintPicture(CreditsBannerTextures, 2, 1, 505, 75);
     PrintLn();
     AddDXRandoCredits();
-    Super(CreditsScrollWindow).ProcessText();
+    Super.ProcessText();
 }
