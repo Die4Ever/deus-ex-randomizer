@@ -302,6 +302,7 @@ function SwapScriptedPawns(int percent, bool enemies)
         if( IsCritter(a) ) continue;
         if( IsInitialEnemy(a) != enemies ) continue;
         if( !chance_single(percent) ) continue;
+        if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
         temp[num++] = a;
     }
 
@@ -314,10 +315,6 @@ function SwapScriptedPawns(int percent, bool enemies)
         }
         slot--;
         if(slot >= i) slot++;
-        if( temp[i].Region.Zone.bWaterZone || temp[i].Region.Zone.bPainZone || temp[slot].Region.Zone.bWaterZone || temp[slot].Region.Zone.bPainZone ) {
-            l("SwapScriptedPawns not swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot])$" due to zone");
-            continue;
-        }
         l("SwapScriptedPawns swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot]));
 
         if( !Swap(temp[i], temp[slot], true) ) {
@@ -326,7 +323,8 @@ function SwapScriptedPawns(int percent, bool enemies)
 
         // TODO: swap non-weapons/ammo inventory, only need to swap nanokeys?
         SwapItems(temp[i], temp[slot]);
-        SwapNames(temp[i].Tag, temp[slot].Tag);
+        if( temp[i].Tag != 'enemy_bot' && temp[slot].Tag != 'enemy_bot' ) // 12_VANDENBERG_CMD fix, see Mission12.uc https://discord.com/channels/823629359931195394/823629360929046530/974454774034497567
+            SwapNames(temp[i].Tag, temp[slot].Tag);
         SwapNames(temp[i].Event, temp[slot].Event);
         SwapNames(temp[i].AlarmTag, temp[slot].AlarmTag);
         SwapNames(temp[i].SharedAlarmTag, temp[slot].SharedAlarmTag);

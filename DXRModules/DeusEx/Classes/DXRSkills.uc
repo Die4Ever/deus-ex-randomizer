@@ -209,7 +209,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
         r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
 #elseif vmd
-        f = (f + 1) / 2;
+        f = (f + 1) / 2;// VMD nerfed enviro skill
         r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
         r = r $ int( (1 - f * 0.5) * 100.0 ) $ p;//  ballistic armor is * 0.5
 #else
