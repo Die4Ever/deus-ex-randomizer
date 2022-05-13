@@ -315,11 +315,13 @@ function SwapScriptedPawns(int percent, bool enemies)
         }
         slot--;
         if(slot >= i) slot++;
-        l("SwapScriptedPawns swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot]));
 
         if( !Swap(temp[i], temp[slot], true) ) {
+            l("SwapScriptedPawns failed swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot]));
             continue;
         }
+
+        l("SwapScriptedPawns swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot]));
 
         // TODO: swap non-weapons/ammo inventory, only need to swap nanokeys?
         SwapItems(temp[i], temp[slot]);
