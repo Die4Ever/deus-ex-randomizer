@@ -309,6 +309,9 @@ function AnyEntryMapFixes()
     case 10:
         Paris_AnyEntry();
         break;
+    case 14:
+        Vandenberg_AnyEntry();
+        break;
     }
 }
 
@@ -1196,6 +1199,22 @@ function Paris_AnyEntry()
             GiveItem(sp, class'#var prefix WineBottle');
             dxre.RandomizeSP(sp, 100);
             RemoveFears(sp);
+        }
+        break;
+    }
+}
+
+function Vandenberg_AnyEntry()
+{
+    local DataLinkTrigger dt;
+
+    switch(dxr.localURL)
+    {
+    case "14_OCEANLAB_SILO":
+        foreach AllActors(class'DataLinkTrigger', dt) {
+            if(dt.datalinkTag == 'DL_FrontGate') {
+                dt.Touch(Player());
+            }
         }
         break;
     }

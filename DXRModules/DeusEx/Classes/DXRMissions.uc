@@ -1174,7 +1174,7 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     success = a.SetLocation(loc);
     if( success == false ) {
         a.bCollideWorld = oldbCollideWorld;
-        err("failed to move "$a$" to "$loc);
+        warning("failed to move "$a$" to "$loc);
         return false;
     }
     a.SetRotation(rotation);
