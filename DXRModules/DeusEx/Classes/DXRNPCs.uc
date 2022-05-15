@@ -207,7 +207,7 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase it
     }
     npc = Spawn(class'#var prefix Businessman3',, bindname, loc, rot );
     if( npc == None ) {
-        err("CreateMerchant failed to spawn merchant");
+        warning("CreateMerchant failed to spawn merchant");
         return None;
     }
     info("CreateMerchant spawned new merchant "$npc@bindname);

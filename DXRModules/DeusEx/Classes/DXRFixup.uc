@@ -330,6 +330,10 @@ function AllAnyEntry()
 function PreTravelMapFixes()
 {
 #ifdef vanilla
+    if(dxr == None) {
+        warning("PreTravelMapFixes with dxr None");
+        return;
+    }
     switch(dxr.localURL) {
     case "04_NYC_HOTEL":
         NYC_04_LeaveHotel();
