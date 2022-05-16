@@ -285,6 +285,7 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     f = Clamp(f, 0, 99999);
     perk = Clamp(perk, 0, 99999);
     aSkill.Cost[i] = int(f);
+    l( aSkill.Class.Name $ " lvl: "$(i+1)$" cost: "$aSkill.Cost[i]);
 #ifdef gmdx
     if( chance_single(dxr.flags.settings.banned_skill_levels) ) {
         perk = 99999;

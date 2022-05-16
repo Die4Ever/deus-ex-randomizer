@@ -113,7 +113,12 @@ function DXRando InitDxr()
     if( dxr != None ) return dxr;
 
     log("InitDxr has player "$player);
+#ifdef vmd
+    // vmd loads a separate level for character creation
+    foreach player.AllActors(class'DXRando', dxr) { break; }
+#else
     dxr = player.Spawn(class'DXRando', None);
+#endif
     log("InitDxr got "$dxr);
     dxr.CrcInit();
 #ifdef hx
@@ -137,6 +142,8 @@ function _InvokeNewGameScreen(float difficulty, DXRando dxr)
     local VMDBufferPlayer VMP;
 
     dxr.flags.SaveFlags();
+    // I think we really just need to run DXRSkills here
+    dxr.RandoEnter();
     VMDNewGame = VMDMenuSelectCampaign(root.InvokeMenuScreen(Class'VMDMenuSelectCampaign'));
 
     //MADDERS: Call relevant reset data.
