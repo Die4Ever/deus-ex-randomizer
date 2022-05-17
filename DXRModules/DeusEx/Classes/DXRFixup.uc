@@ -309,6 +309,9 @@ function AnyEntryMapFixes()
     case 10:
         Paris_AnyEntry();
         break;
+    case 14:
+        Vandenberg_AnyEntry();
+        break;
     }
 }
 
@@ -330,6 +333,10 @@ function AllAnyEntry()
 function PreTravelMapFixes()
 {
 #ifdef vanilla
+    if(dxr == None) {
+        warning("PreTravelMapFixes with dxr None");
+        return;
+    }
     switch(dxr.localURL) {
     case "04_NYC_HOTEL":
         NYC_04_LeaveHotel();
@@ -513,7 +520,7 @@ function Airfield_FirstEntry()
     case "03_NYC_BATTERYPARK":
         foreach AllActors(class'NanoKey', k) {
             // unnamed key normally unreachable
-            if( k.KeyID == '' ) {
+            if( k.KeyID == '' || k.KeyID == 'KioskDoors' ) {
                 k.Destroy();
             }
         }
@@ -1192,6 +1199,22 @@ function Paris_AnyEntry()
             GiveItem(sp, class'#var prefix WineBottle');
             dxre.RandomizeSP(sp, 100);
             RemoveFears(sp);
+        }
+        break;
+    }
+}
+
+function Vandenberg_AnyEntry()
+{
+    local DataLinkTrigger dt;
+
+    switch(dxr.localURL)
+    {
+    case "14_OCEANLAB_SILO":
+        foreach AllActors(class'DataLinkTrigger', dt) {
+            if(dt.datalinkTag == 'DL_FrontGate') {
+                dt.Touch(Player());
+            }
         }
         break;
     }

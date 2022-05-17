@@ -31,7 +31,9 @@ args = parser.parse_args()
 print(repr(args))
 
 if args.profile is None:
-    args.profile = "all"
+    args.profile = input("type in a profile name to compile, or just press enter for all: ")
+    if args.profile == '':
+        args.profile = 'all'
 
 rerun = ""
 while rerun != "exit":

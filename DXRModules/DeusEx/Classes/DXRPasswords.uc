@@ -361,6 +361,7 @@ function AnyEntry()
 simulated function PlayerAnyEntry(#var PlayerPawn  p)
 {
     local ConSpeech c;
+    local ConEventAddNote cn;
     Super.PlayerAnyEntry(p);
 
     if( p == player() )
@@ -369,6 +370,9 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
 
     foreach AllObjects(class'ConSpeech', c) {
         ProcessString(c.speech,, true);
+    }
+    foreach AllObjects(class'ConEventAddNote', cn) {
+        ProcessString(cn.noteText,, true);
     }
 }
 

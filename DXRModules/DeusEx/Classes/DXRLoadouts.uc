@@ -288,22 +288,37 @@ function string GetName(int i)
 
 function AnyEntry()
 {
+    local ConEventTransferObject c;
+
     Super.AnyEntry();
     loadout = dxr.flags.loadout;
+
+#ifndef injections
+    // TODO: fix being given items from conversations for other mods
+    /*foreach AllObjects(class'ConEventTransferObject', c) {
+        l(c.objectName @ c.giveObject @ c.toName);
+        if( c.toName == "JCDenton" && is_banned(_item_sets[loadout], c.giveObject) ) {
+            l(c.objectName @ c.giveObject @ c.toName $ ", clearing");
+            c.toName = "";
+            c.toActor = None;
+            c.failLabel = "";
+        }
+    }*/
+#endif
 }
 
-function bool is_banned(_loadouts b, Inventory item)
+function bool is_banned(_loadouts b, class<Inventory> item)
 {
     local int i;
 
     for(i=0; i < ArrayCount(b.allow_types); i++ ) {
-        if( b.allow_types[i] != None && item.IsA(b.allow_types[i].name) ) {
+        if( b.allow_types[i] != None && ClassIsChildOf(item, b.allow_types[i]) ) {
             return false;
         }
     }
 
     for(i=0; i < ArrayCount(b.ban_types); i++ ) {
-        if( b.ban_types[i] != None && item.IsA(b.ban_types[i].name) ) {
+        if( b.ban_types[i] != None && ClassIsChildOf(item, b.ban_types[i]) ) {
             return true;
         }
     }
@@ -313,7 +328,7 @@ function bool is_banned(_loadouts b, Inventory item)
 
 function bool ban(DeusExPlayer player, Inventory item)
 {
-    if ( is_banned( _item_sets[loadout], item) ) {
+    if ( is_banned( _item_sets[loadout], item.class) ) {
         if( item_sets[loadout].player_message != "" ) {
             //item.ItemName = item.ItemName $ ", " $ item_sets[loadout].player_message;
             player.ClientMessage(item_sets[loadout].player_message, 'Pickup');

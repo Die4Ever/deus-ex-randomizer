@@ -8,6 +8,10 @@ function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, op
         case class'VMDMenuSelectAppearance':
             newScreen = class'DXRVMDMenuSelectAppearance';
             break;
+
+        case class'VMDMenuSelectSkills':
+            newScreen = class'DXRVMDMenuSelectSkills';
+            break;
 #else
         case class'MenuScreenNewGame':
             newScreen = class'DXRMenuScreenNewGame';
