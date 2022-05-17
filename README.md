@@ -47,11 +47,11 @@ In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.
 GMDX Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
 </details>
 
-## Installation Instructions for Vanilla? Madder
+## Installation Instructions for Vanilla? Madder.
 <details>
-<summary>Click to expand Vanilla? Madder Installation Instructions...</summary>
+<summary>Click to expand Vanilla? Madder. Installation Instructions...</summary>
 
-Install VMD from https://www.moddb.com/mods/vanilla-madder-actual-phase-1/downloads
+Install VMD Phase 1.5 (v1.56) from https://www.moddb.com/mods/vanilla-madder-actual-phase-1/downloads/vmd-phase-15-installer-v156
 
 Download `VMDRandomizer.u` from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
 
