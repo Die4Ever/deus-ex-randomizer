@@ -47,6 +47,23 @@ In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.
 GMDX Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
 </details>
 
+## Installation Instructions for Vanilla? Madder
+<details>
+<summary>Click to expand Vanilla? Madder Installation Instructions...</summary>
+
+Install VMD from https://www.moddb.com/mods/vanilla-madder-actual-phase-1/downloads
+
+Download `VMDRandomizer.u` from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
+
+Copy `VMDRandomizer.u` into the game's `System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
+
+Edit the `VMDSim.ini` file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
+
+In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=VMDRandomizer.DXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=VMDRandomizer.DXRandoRootWindow`
+
+VMD Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
+</details>
+
 ## Installation Instructions for HX (Co-op)
 <details>
 <summary>Click to expand HX Installation Instructions...</summary>
@@ -70,7 +87,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <a href="https://www.youtube.com/watch?v=A0Li3XuBjGg" target="_blank">
 <img src="https://i.imgur.com/hTCuQCH.png" alt="v1.5 Trailer" height="200"/></a>
 
-## Currently in v1.8.2, DXRando randomizes
+## Currently in v1.9, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
