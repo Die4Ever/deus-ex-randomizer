@@ -520,7 +520,7 @@ function Airfield_FirstEntry()
     case "03_NYC_BATTERYPARK":
         foreach AllActors(class'NanoKey', k) {
             // unnamed key normally unreachable
-            if( k.KeyID == '' ) {
+            if( k.KeyID == '' || k.KeyID == 'KioskDoors' ) {
                 k.Destroy();
             }
         }
