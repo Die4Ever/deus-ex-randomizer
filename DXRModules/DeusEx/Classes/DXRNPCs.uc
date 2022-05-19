@@ -151,7 +151,8 @@ function ScriptedPawn CreateForcedMerchant(string name, Name bindname, vector lo
 
 function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase items[8], vector loc, optional rotator rot)
 {
-    local #var prefix Businessman3 npc;
+    local #var prefix Businessman3 oldnpc;
+    local Merchant npc;
     local Conversation c;
     local ConItem conItem;
     local ConversationList list;
@@ -198,14 +199,15 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase it
     }
     if(list == None) err(dxr.localURL $ " list == None");
 
-    foreach AllActors(class'#var prefix Businessman3', npc, bindname) {
-        npc.BindName = String(bindname);
-        npc.ConBindEvents();
+    // old class for backwards compatibility
+    foreach AllActors(class'#var prefix Businessman3', oldnpc, bindname) {
+        oldnpc.BindName = String(bindname);
+        oldnpc.ConBindEvents();
         // don't return if he already existed
-        info("CreateMerchant reusing merchant "$npc@bindname);
+        info("CreateMerchant reusing merchant "$oldnpc@bindname);
         return None;
     }
-    npc = Spawn(class'#var prefix Businessman3',, bindname, loc, rot );
+    npc = Spawn(class'Merchant',, bindname, loc, rot );
     if( npc == None ) {
         warning("CreateMerchant failed to spawn merchant");
         return None;
@@ -215,20 +217,10 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase it
     npc.SetOrders('Standing');
     npc.FamiliarName = name;
     npc.UnfamiliarName = npc.FamiliarName;
-    npc.bImportant = true;
-    i = 200;
-    npc.Health = i;
-    npc.HealthArmLeft = i;
-    npc.HealthArmRight = i;
-    npc.HealthHead = i;
-    npc.HealthLegLeft = i;
-    npc.HealthLegRight = i;
-    npc.HealthTorso = i;
     for(i=0; i < ArrayCount(items); i++) {
         if(items[i].item == None) continue;
         GiveItem(npc, items[i].item);
     }
-    //RemoveFears(npc);// no fears makes it easy for him to block doorways
     npc.ConBindEvents();
     return npc;
 }
