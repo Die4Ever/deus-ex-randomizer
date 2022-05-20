@@ -379,9 +379,10 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
     foreach AllObjects(class'ConSpeech', c) {
         ProcessString(c.speech,, true);
     }
-    foreach AllObjects(class'ConEventAddNote', cn) {
+    // TODO: this doesn't work right cause then the password doesn't get replaced when it gets added which means it never gets marked as "known" for the autofill
+    /*foreach AllObjects(class'ConEventAddNote', cn) {
         ProcessString(cn.noteText,, true);
-    }
+    }*/
 }
 
 function RandoHacks()
