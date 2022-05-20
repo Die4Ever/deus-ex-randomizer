@@ -7,6 +7,12 @@ var travel int SkillPointsTotal;
 var travel int SkillPointsAvail;
 #endif
 
+struct BingoSpot {
+    var travel string event;
+    var travel int progress;
+};
+var travel BingoSpot bingo[25];
+
 simulated function static PlayerDataItem GiveItem(#var PlayerPawn  p)
 {
     local PlayerDataItem i;
