@@ -29,7 +29,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,9,1,1) ) {
+    if( ConfigOlderThan(1,9,1,2) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
 
@@ -168,6 +168,13 @@ function vanilla_datacubes_rules()
     datacubes_rules[i].item_name = '01_Datacube04';
     datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
     datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    datacubes_rules[i].map = "03_NYC_BrooklynBridgeStation";
+    datacubes_rules[i].item_name = '03_Datacube14';
+    datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
+    datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
     datacubes_rules[i].allow = true;
     i++;
 
@@ -574,7 +581,7 @@ function _RandoInfoDev(#var prefix InformationDevices id, bool containers)
     local Inventory inv;
     local Containers c;
     local Actor temp[1024];
-    local int num, slot, numHasPass;
+    local int num, slot, numHasPass, bads;
     local int hasPass[64];
 
     InfoDevsHasPass(id, hasPass, numHasPass);
@@ -583,7 +590,10 @@ function _RandoInfoDev(#var prefix InformationDevices id, bool containers)
     foreach AllActors(class'Inventory', inv)
     {
         if( SkipActor(inv, 'Inventory') ) continue;
-        if( InfoPositionGood(id, inv.Location, hasPass, numHasPass) == False ) continue;
+        if( InfoPositionGood(id, inv.Location, hasPass, numHasPass) == False ) {
+            bads++;
+            continue;
+        }
 #ifdef debug
         //DebugMarkKeyPosition(inv, id.textTag);
 #endif
@@ -594,7 +604,10 @@ function _RandoInfoDev(#var prefix InformationDevices id, bool containers)
         foreach AllActors(class'Containers', c)
         {
             if( SkipActor(c, 'Containers') ) continue;
-            if( InfoPositionGood(id, c.Location, hasPass, numHasPass) == False ) continue;
+            if( InfoPositionGood(id, c.Location, hasPass, numHasPass) == False ) {
+                bads++;
+                continue;
+            }
             if( HasBased(c) ) continue;
 #ifdef debug
             //DebugMarkKeyPosition(inv, id.textTag);
@@ -603,7 +616,7 @@ function _RandoInfoDev(#var prefix InformationDevices id, bool containers)
         }
     }
 
-    l("datacube "$id$" got num "$num);
+    l("datacube "$id$" got num "$num$" with "$bads$" unsafe positions");
     slot=rng(num+1);//+1 for the vanilla location
     if(slot==0) {
         l("not swapping infodevice "$ActorToString(id));
