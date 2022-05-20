@@ -273,6 +273,11 @@ function PostFirstEntryMapFixes()
         BalanceJailbreak();
         break;
 
+    case "09_NYC_SHIPBELOW":
+        // add a tnt crate on top of the pipe, visible from the ground floor
+        _AddActor(Self, class'#var prefix CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567), rot(0,0,0));
+        break;
+
 #ifndef revision
     case "09_NYC_DOCKYARD":
         foreach RadiusActors(class'CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
@@ -417,6 +422,7 @@ function IncreaseBrightness(int brightness)
 function OverwriteDecorations()
 {
     local DeusExDecoration d;
+    local #var prefix Barrel1 b;
     local int i;
     foreach AllActors(class'DeusExDecoration', d) {
         if( d.IsA('CrateBreakableMedCombat') || d.IsA('CrateBreakableMedGeneral') || d.IsA('CrateBreakableMedMedical') ) {
@@ -435,6 +441,13 @@ function OverwriteDecorations()
             d.explosionDamage = DecorationsOverwrites[i].explosionDamage;
             d.explosionRadius = DecorationsOverwrites[i].explosionRadius;
             d.bPushable = DecorationsOverwrites[i].bPushable;
+        }
+    }
+
+    // in DeusExDecoration is the Exploding state, it divides the damage into 5 separate ticks with gradualHurtSteps = 5;
+    foreach AllActors(class'#var prefix Barrel1', b) {
+        if( b.explosionDamage > 50 && b.explosionDamage < 400 ) {
+            b.explosionDamage = 400;
         }
     }
 }
@@ -637,6 +650,7 @@ function BalanceJailbreak()
 {
     local class<Inventory> iclass;
     local DXREnemies e;
+    local DXRLoadouts loadout;
     local int i;
     local float r;
 
@@ -649,7 +663,13 @@ function BalanceJailbreak()
         }
         chance_remaining(r);
     }
-    else iclass = class'WeaponCombatKnife';
+    else iclass = class'#var prefix WeaponCombatKnife';
+
+    // make sure Stick With the Prod and Ninja JC can beat this
+    loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+    if(loadout != None && loadout.is_banned(iclass)) {
+        iclass = loadout.get_starting_item();
+    }
 
     Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915) );
 }

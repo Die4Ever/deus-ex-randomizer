@@ -307,7 +307,7 @@ function AnyEntry()
 #endif
 }
 
-function bool is_banned(_loadouts b, class<Inventory> item)
+function bool _is_banned(_loadouts b, class<Inventory> item)
 {
     local int i;
 
@@ -326,9 +326,19 @@ function bool is_banned(_loadouts b, class<Inventory> item)
     return false;
 }
 
+function bool is_banned(class<Inventory> item)
+{
+    return _is_banned( _item_sets[loadout], item);
+}
+
+function class<Inventory> get_starting_item()
+{
+    return _item_sets[loadout].starting_equipment[0];
+}
+
 function bool ban(DeusExPlayer player, Inventory item)
 {
-    if ( is_banned( _item_sets[loadout], item.class) ) {
+    if ( _is_banned( _item_sets[loadout], item.class) ) {
         if( item_sets[loadout].player_message != "" ) {
             //item.ItemName = item.ItemName $ ", " $ item_sets[loadout].player_message;
             player.ClientMessage(item_sets[loadout].player_message, 'Pickup');

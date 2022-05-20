@@ -18,7 +18,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,7,6,2) ) {
+    if( ConfigOlderThan(1,9,1,2) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -52,6 +52,16 @@ function CheckConfig()
         door_fixes[i].minDamageThreshold = 60;
         door_fixes[i].doorStrength = 1;
         door_fixes[i].bPickable = true;
+        door_fixes[i].lockStrength = 1;
+        i++;
+
+        // don't randomize the weld points
+        door_fixes[i].map = "09_NYC_SHIPBELOW";
+        door_fixes[i].tag = 'ShipBreech';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 60;
+        door_fixes[i].doorStrength = 0.9;
+        door_fixes[i].bPickable = false;
         door_fixes[i].lockStrength = 1;
         i++;
 
@@ -430,8 +440,6 @@ function AdjustRestrictions(int doorsmode, int doorspickable, int doorsdestructi
     local Keypoint kp;
     SetSeed( "AdjustRestrictions" );
 
-    ApplyDoorFixes();
-
     switch( (doorsmode/256) ) {
         case 1:
             AdjustUndefeatableDoors(doorsmode%256, doorspickable, doorsdestructible);
@@ -448,6 +456,8 @@ function AdjustRestrictions(int doorsmode, int doorspickable, int doorsdestructi
         default:
             break;
     }
+
+    ApplyDoorFixes();
 }
 
 function ApplyDoorFixes()
