@@ -989,7 +989,7 @@ function EntranceRando(int missionNum)
         GenerateConnections(missionNum);
 }
 
-function BindEntrances(DataStorage ds, bool writing)
+function BindEntrances(PlayerDataItem ds, bool writing)
 {
     local int i;
 
@@ -1013,9 +1013,9 @@ function ApplyEntranceRando(int missionNum)
     local NavigationPoint newnp, last;
     local Teleporter t;
     local MapExit m;
-    local DataStorage ds;
+    local PlayerDataItem ds;
 
-    ds = class'DataStorage'.static.GetObj(dxr);
+    ds = class'PlayerDataItem'.static.GiveItem(Player());
     if( ds.EntranceRandoMissionNumber == missionNum ) {
         BindEntrances(ds, false);
     } else {
