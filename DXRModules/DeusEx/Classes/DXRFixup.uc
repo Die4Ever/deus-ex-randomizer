@@ -255,6 +255,13 @@ function PostFirstEntryMapFixes()
 #ifndef revision
     case "02_NYC_WAREHOUSE":
         AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));
+        break;
+
+    case "03_NYC_BrooklynBridgeStation":
+        a = _AddActor(Self, class'Barrel1', vect(-27.953907, -3493.229980, 45.101418), rot(0,0,0));
+        Barrel1(a).SkinColor = SC_Explosive;
+        a.BeginPlay();
+        break;
 
     case "03_NYC_AirfieldHeliBase":
         //crates to get back over the beginning of the level
@@ -273,17 +280,17 @@ function PostFirstEntryMapFixes()
         BalanceJailbreak();
         break;
 
-    case "09_NYC_SHIPBELOW":
-        // add a tnt crate on top of the pipe, visible from the ground floor
-        _AddActor(Self, class'#var prefix CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567), rot(0,0,0));
-        break;
-
 #ifndef revision
     case "09_NYC_DOCKYARD":
         foreach RadiusActors(class'CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
             info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
             c.Destroy();
         }
+        break;
+
+    case "09_NYC_SHIPBELOW":
+        // add a tnt crate on top of the pipe, visible from the ground floor
+        _AddActor(Self, class'#var prefix CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567), rot(0,0,0));
         break;
 
     case "12_VANDENBERG_CMD":
