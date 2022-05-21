@@ -288,15 +288,26 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
     j = js.static.Start(type);
     js.static.Add(j, "victim", GetActorName(victim));
     js.static.Add(j, "victimBindName", victim.BindName);
+    js.static.Add(j, "victimRandomizedName", GetRandomizedName(victim));
+
     if(Killer != None) {
         js.static.Add(j, "killerclass", Killer.Class.Name);
         js.static.Add(j, "killer", GetActorName(Killer));
+        js.static.Add(j, "killerRandomizedName", GetRandomizedName(Killer));
     }
     js.static.Add(j, "dmgtype", damageType);
     GeneralEventData(dxr, j);
     js.static.Add(j, "location", victim.Location);
     js.static.End(j);
     class'DXRTelemetry'.static.SendEvent(dxr, victim, j);
+}
+
+static function string GetRandomizedName(Actor a)
+{
+    local ScriptedPawn sp;
+    sp = ScriptedPawn(a);
+    if(sp == None || sp.bImportant) return "";
+    return sp.FamiliarName;
 }
 
 static function AddPlayerDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
