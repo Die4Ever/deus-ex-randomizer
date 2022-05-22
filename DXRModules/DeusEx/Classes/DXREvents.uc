@@ -215,7 +215,7 @@ simulated function PlayerAnyEntry(#var PlayerPawn  player)
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
-            data.SetBingoSpot(x, y, "spot "$x$", "$y, rng(100));
+            data.SetBingoSpot(x, y, "spot "$x$", "$y $" long line with word wrap enabled", rng(100));
         }
     }
 }

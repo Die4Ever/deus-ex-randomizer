@@ -25,9 +25,9 @@ function CreateControls()
 // probably 3 lines of text per spot, maybe no automatic word wrapping so hardcoded separate lines
 function TextWindow CreateBingoSpot(int x, int y, string text)
 {
-    local TextWindow t;
+    local ButtonWindow t;
     local int w, h;
-    t = TextWindow(winClient.NewChild(class'TextWindow'));
+    t = ButtonWindow(winClient.NewChild(class'ButtonWindow'));
     t.SetText(text);
     t.SetWordWrap(true);
     t.SetTextAlignments(HALIGN_Center, VALIGN_Center);
