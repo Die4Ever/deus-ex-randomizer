@@ -4,6 +4,12 @@ var bool died;
 var name watchflags[32];
 var int num_watchflags;
 
+struct BingoOption {
+    var string event, desc;
+    var int max;
+};
+var BingoOption bingo_options[100];
+
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
@@ -480,22 +486,35 @@ simulated function PlayerAnyEntry(#var PlayerPawn  player)
     local int x, y;
     local string event, desc;
     local int progress, max;
+    local int options[100], num_options, slot;
 
-    SetGlobalSeed("bingo");
     data = class'PlayerDataItem'.static.GiveItem(player);
 
     // don't overwrite existing bingo
     data.GetBingoSpot(0, 0, event, desc, progress, max);
     if( event != "" ) return;
+    SetGlobalSeed("bingo");
+
+    num_options = 0;
+    for(x=0; x<ArrayCount(bingo_options); x++) {
+        if(bingo_options[x].event == "") continue;
+        options[num_options++] = x;
+    }
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
-            if(x==2 && y==2) {
-                data.SetBingoSpot(x, y, "free space", "free space", 1, 1);
+            if(num_options == 0 || (x==2 && y==2)) {
+                data.SetBingoSpot(x, y, "Free Space", "Free Space", 1, 1);
+                continue;
             }
-            else {
-                data.SetBingoSpot(x, y, "TerroristCommander_Dead", "TerroristCommander_Dead", 0, 1);
-            }
+
+            slot = rng(num_options);
+            event = bingo_options[options[slot]].event;
+            desc = bingo_options[options[slot]].desc;
+            max = bingo_options[options[slot]].max;
+            num_options--;
+            options[slot] = options[num_options];
+            data.SetBingoSpot(x, y, event, desc, 0, max);
         }
     }
 }
@@ -522,4 +541,10 @@ static function MarkBingo(DXRando dxr, coerce string eventname)
     if(e != None) {
         e._MarkBingo(eventname);
     }
+}
+
+defaultproperties
+{
+    bingo_options(0)=(event="TerroristCommander_Dead",desc="Kill the Terrorist Commander",max=1)
+    bingo_options(1)=(event="GuntherFreed",desc="Free Gunther from jail",max=1)
 }
