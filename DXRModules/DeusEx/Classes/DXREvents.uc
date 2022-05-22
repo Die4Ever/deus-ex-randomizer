@@ -205,6 +205,21 @@ simulated function AnyEntry()
     SetTimer(1, true);
 }
 
+simulated function PlayerAnyEntry(#var PlayerPawn  player)
+{
+    local PlayerDataItem data;
+    local int x, y;
+
+    SetGlobalSeed("bingo");
+    data = class'PlayerDataItem'.static.GiveItem(player);
+
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.SetBingoSpot(x, y, "spot "$x$", "$y, rng(100));
+        }
+    }
+}
+
 simulated function Timer()
 {
     local int i;

@@ -39,6 +39,18 @@ final function BindConn(int slot_a, int slot_b, out string val, bool writing)
         val = conns[slot_a*6 + slot_b];
 }
 
+simulated function GetBingoSpot(int x, int y, out string event, out int progress)
+{
+    event = bingo[x*5+y].event;
+    progress = bingo[x*5+y].progress;
+}
+
+simulated function SetBingoSpot(int x, int y, string event, int progress)
+{
+    bingo[x*5+y].event = event;
+    bingo[x*5+y].progress = progress;
+}
+
 defaultproperties
 {
     bDisplayableInv=false

@@ -1,13 +1,43 @@
 class PersonaScreenBingo extends PersonaScreenBaseWindow;
 
+const bingoWidth = 394;
+const bingoHeight = 361;
+
 function CreateControls()
 {
+    local int x, y, progress;
+    local string event;
+    local PlayerDataItem data;
     Super.CreateControls();
     CreateTitleWindow(9,   5, "That's a Bingo!");
+
+    data = class'PlayerDataItem'.static.GiveItem(#var PlayerPawn (player));
+
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x, y, event, progress);
+            CreateBingoSpot(x, y, event $ "|nprogress: " $ progress);
+        }
+    }
 }
 
 // 5x5 grid, something similar to how PersonaScreenInventory uses PersonaItemButton
 // probably 3 lines of text per spot, maybe no automatic word wrapping so hardcoded separate lines
+function TextWindow CreateBingoSpot(int x, int y, string text)
+{
+    local TextWindow t;
+    local int w, h;
+    t = TextWindow(winClient.NewChild(class'TextWindow'));
+    t.SetText(text);
+    t.SetWordWrap(true);
+    t.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+    w = bingoWidth/5;
+    h = bingoHeight/5;
+    t.SetSize(w, h);
+    t.SetPos(x * w + 16, y * h + 21);
+    t.SetTileColorRGB(0, 0, 0);
+    return t;
+}
 
 defaultproperties
 {
