@@ -357,6 +357,8 @@ static function AddPlayerDeath(DXRando dxr, #var PlayerPawn  player, optional Ac
 static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local DXRando dxr;
+
+    MarkBingo(dxr, victim.BindName$"_Dead");
     if(!victim.bImportant)
         return;
 
@@ -366,7 +368,6 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
         dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
 
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
-    MarkBingo(dxr, victim.BindName$"_Dead");
 }
 
 static function AddDeath(Pawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
@@ -546,5 +547,58 @@ static function MarkBingo(DXRando dxr, coerce string eventname)
 defaultproperties
 {
     bingo_options(0)=(event="TerroristCommander_Dead",desc="Kill the Terrorist Commander",max=1)
-    bingo_options(1)=(event="GuntherFreed",desc="Free Gunther from jail",max=1)
+	bingo_options(1)=(event="TiffanySavage_Dead",desc="Kill Tiffany Savage",max=1)
+	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul Denton die",max=1)
+	bingo_options(3)=(event="JordanShea_Dead",desc="Kill Jordan Shea",max=1)
+	bingo_options(4)=(event="SandraRenton_Dead",desc="Kill Sandra Renton",max=1)
+	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1)
+	bingo_options(6)=(event="AnnaNavarre_Dead",desc="Kill Anna Navarre",max=1)
+	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1)
+	bingo_options(8)=(event="JoJoFine_Dead",desc="Kill JoJo",max=1)
+	bingo_options(9)=(event="TobyAtanwe_Dead",desc="Kill Toby Atanwe",max=1)
+	bingo_options(10)=(event="Antoine_Dead",desc="Kill Antoine",max=1)
+	bingo_options(11)=(event="Chad_Dead",desc="Kill Chad",max=1)
+	bingo_options(12)=(event="hostage_Dead",desc="Kill Juveau",max=1)
+	bingo_options(13)=(event="hostage_female_Dead",desc="Kill hostage Anna",max=1)
+	bingo_options(14)=(event="Hela_Dead",desc="Kill Hela",max=1)
+	bingo_options(15)=(event="Renault_Dead",desc="Kill Renault",max=1)
+	bingo_options(16)=(event="Labrat_Bum_Dead",desc="Kill Labrat Bum",max=1)
+	bingo_options(17)=(event="DXRNPCs1_Dead",desc="Kill The Merchant",max=1)
+	bingo_options(18)=(event="lemerchant_Dead",desc="Kill Le Merchant",max=1)
+	bingo_options(19)=(event="Harold_Dead",desc="Kill Harold",max=1)
+	//bingo_options()=(event="Josh_Dead",desc="Kill Josh",max=1)
+	//bingo_options()=(event="Billy_Dead",desc="Kill Billy",max=1)
+	//bingo_options()=(event="MarketKid_Dead",desc="Kill Louis Pan",max=1)
+	bingo_options(20)=(event="aimee_Dead",desc="Kill Aimee",max=1)
+	bingo_options(21)=(event="WaltonSimons_Dead",desc="Kill Walton Simons",max=1)
+	bingo_options(22)=(event="JoeGreene_Dead",desc="Kill Joe Greene",max=1)
+    bingo_options(23)=(event="GuntherFreed",desc="Free Gunther from jail",max=1)
+    bingo_options(24)=(event="BathroomBarks_Played",desc="Embarass UNATCO",max=1)
+    bingo_options(25)=(event="ManBathroomBarks_Played",desc="Embarass UNATCO",max=1)
+    bingo_options(26)=(event="GotHelicopterInfo",desc="A bomb!",max=1)
+    bingo_options(27)=(event="JoshFed",desc="Give Josh some food",max=1)
+    bingo_options(28)=(event="M02BillyDone",desc="Give Billy some food",max=1)
+    bingo_options(29)=(event="FordSchickRescued",desc="Rescue Ford Schick",max=1)
+    bingo_options(30)=(event="NiceTerrorist_Dead",desc="Ignore Paul",max=1)
+    bingo_options(31)=(event="M10EnteredBakery",desc="Enter the bakery",max=1)
+    //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
+    bingo_options(32)=(event="FreshWaterOpened",desc="Fix the water",max=1)
+    bingo_options(33)=(event="assassinapartment",desc="Visit the assassin",max=1)
+    bingo_options(34)=(event="GaveRentonGun",desc="Give Gilbert a gun",max=1)
+    bingo_options(35)=(event="DXREvents_LeftOnBoat",desc="Take the boat",max=1)
+    bingo_options(36)=(event="AlleyBumRescued",desc="Rescue the alley bum",max=1)
+    bingo_options(37)=(event="FoundScientistBody",desc="Search the canal",max=1)
+    bingo_options(38)=(event="ClubMercedesConvo1_Done",desc="Help Mercedes and Tessa",max=1)
+    bingo_options(39)=(event="M08WarnedSmuggler",desc="Warn Smuggler",max=1)
+    bingo_options(40)=(event="ShipPowerCut",desc="Help the electrician",max=1)
+    bingo_options(41)=(event="CamilleConvosDone",desc="Get info from Camille",max=1)
+    bingo_options(42)=(event="MeetAI4_Played",desc="Talk to Morpheus",max=1)
+    bingo_options(43)=(event="DL_Flooded_Played",desc="Check flooded zone in the ocean lab",max=1)
+    bingo_options(44)=(event="JockSecondStory",desc="Get Jock buzzed",max=1)
+    bingo_options(45)=(event="M07ChenSecondGive_Played",desc="Party with the Triads",max=1)
+    bingo_options(46)=(event="DeBeersDead",desc="Put Lucius out of his misery",max=1)
+    bingo_options(47)=(event="StantonAmbushDefeated",desc="Defend Dowd from the ambush",max=1)
+    bingo_options(48)=(event="SmugglerDied",desc="Let Smuggler die",max=1)
+    bingo_options(49)=(event="GaveDowdAmbrosia",desc="Give Dowd Ambrosia",max=1)
+    bingo_options(50)=(event="JockBlewUp",desc="Let Jock die",max=1)
 }
