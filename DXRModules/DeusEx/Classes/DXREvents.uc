@@ -205,26 +205,6 @@ simulated function AnyEntry()
     SetTimer(1, true);
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  player)
-{
-    local PlayerDataItem data;
-    local int x, y;
-
-    SetGlobalSeed("bingo");
-    data = class'PlayerDataItem'.static.GiveItem(player);
-
-    for(x=0; x<5; x++) {
-        for(y=0; y<5; y++) {
-            if(x==2 && y==2) {
-                data.SetBingoSpot(x, y, "free space", "free space", 1, 1);
-            }
-            else {
-                data.SetBingoSpot(x, y, "TerroristCommander_Dead", "TerroristCommander_Dead", 0, 1);
-            }
-        }
-    }
-}
-
 simulated function Timer()
 {
     local int i;
@@ -491,6 +471,33 @@ static function string GetLoadoutName(DXRando dxr)
     if( loadout == None )
         return "";
     return loadout.GetName(loadout.loadout);
+}
+
+// BINGO STUFF
+simulated function PlayerAnyEntry(#var PlayerPawn  player)
+{
+    local PlayerDataItem data;
+    local int x, y;
+    local string event, desc;
+    local int progress, max;
+
+    SetGlobalSeed("bingo");
+    data = class'PlayerDataItem'.static.GiveItem(player);
+
+    // don't overwrite existing bingo
+    data.GetBingoSpot(0, 0, event, desc, progress, max);
+    if( event != "" ) return;
+
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            if(x==2 && y==2) {
+                data.SetBingoSpot(x, y, "free space", "free space", 1, 1);
+            }
+            else {
+                data.SetBingoSpot(x, y, "TerroristCommander_Dead", "TerroristCommander_Dead", 0, 1);
+            }
+        }
+    }
 }
 
 function _MarkBingo(coerce string eventname)
