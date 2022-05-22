@@ -5,8 +5,8 @@ const bingoHeight = 361;
 
 function CreateControls()
 {
-    local int x, y, progress;
-    local string event;
+    local int x, y, progress, max;
+    local string event, desc;
     local PlayerDataItem data;
     Super.CreateControls();
     CreateTitleWindow(9,   5, "That's a Bingo!");
@@ -15,14 +15,14 @@ function CreateControls()
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
-            data.GetBingoSpot(x, y, event, progress);
-            CreateBingoSpot(x, y, event $ "|nprogress: " $ progress);
+            data.GetBingoSpot(x, y, event, desc, progress, max);
+            CreateBingoSpot(x, y, desc $ "|n" $ progress $ "/" $ max);
         }
     }
 }
 
-// 5x5 grid, something similar to how PersonaScreenInventory uses PersonaItemButton
-// probably 3 lines of text per spot, maybe no automatic word wrapping so hardcoded separate lines
+// we can fit about 6 lines of text, about 14 characters wide
+// probably want a new class instead of ButtonWindow, so we can turn the background into a progress bar, maybe a subclass of PersonaItemButton so the theming works correctly
 function TextWindow CreateBingoSpot(int x, int y, string text)
 {
     local ButtonWindow t;
@@ -35,7 +35,6 @@ function TextWindow CreateBingoSpot(int x, int y, string text)
     h = bingoHeight/5;
     t.SetSize(w, h);
     t.SetPos(x * w + 16, y * h + 21);
-    t.SetTileColorRGB(0, 0, 0);
     return t;
 }
 

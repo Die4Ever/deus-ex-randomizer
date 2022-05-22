@@ -215,7 +215,12 @@ simulated function PlayerAnyEntry(#var PlayerPawn  player)
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
-            data.SetBingoSpot(x, y, "spot "$x$", "$y $" long line with word wrap enabled", rng(100));
+            if(x==2 && y==2) {
+                data.SetBingoSpot(x, y, "free space", "free space", 1, 1);
+            }
+            else {
+                data.SetBingoSpot(x, y, "TerroristCommander_Dead", "TerroristCommander_Dead", 0, 1);
+            }
         }
     }
 }
@@ -490,6 +495,17 @@ static function string GetLoadoutName(DXRando dxr)
 
 function _MarkBingo(coerce string eventname)
 {
+    local int previousbingos;
+    local PlayerDataItem data;
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    previousbingos = data.NumberOfBingos();
+
+    if( ! data.IncrementBingoProgress(eventname)) return;
+
+    if( data.NumberOfBingos() > previousbingos ) {
+        player().ClientMessage("That's a bingo!");
+    }
 }
 
 static function MarkBingo(DXRando dxr, coerce string eventname)
