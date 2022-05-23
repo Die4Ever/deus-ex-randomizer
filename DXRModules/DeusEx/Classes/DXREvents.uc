@@ -543,7 +543,7 @@ simulated function PlayerAnyEntry(#var PlayerPawn  player)
 
 function _MarkBingo(coerce string eventname)
 {
-    local int previousbingos, nowbingos;
+    local int previousbingos, nowbingos, time;
     local PlayerDataItem data;
     local string j;
     local class<Json> js;
@@ -559,11 +559,13 @@ function _MarkBingo(coerce string eventname)
     l(self$"._MarkBingo("$eventname$") previousbingos: "$previousbingos$", nowbingos: "$nowbingos);
 
     if( nowbingos > previousbingos ) {
-        player().ClientMessage("That's a bingo!");
+        time = class'DXRStats'.static.GetTotalTime(dxr);
+        player().ClientMessage("That's a bingo! Game time: " $ class'DXRStats'.static.fmtTimeToString(time));
 
         j = js.static.Start("Bingo");
         js.static.Add(j, "newevent", eventname);
         js.static.Add(j, "location", player().Location);
+        js.static.add(j, "time", time);
         GeneralEventData(dxr, j);
         BingoEventData(dxr, j);
         js.static.End(j);
