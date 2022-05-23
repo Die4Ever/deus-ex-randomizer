@@ -63,6 +63,7 @@ simulated function bool IncrementBingoProgress(string event)
     for(i=0; i<ArrayCount(bingo); i++) {
         if(bingo[i].event != event) continue;
         bingo[i].progress++;
+        log("IncrementBingoProgress "$event$": " $ bingo[i].progress $" / "$ bingo[i].max, self.class.name);
         return bingo[i].progress == bingo[i].max;
     }
     return false;

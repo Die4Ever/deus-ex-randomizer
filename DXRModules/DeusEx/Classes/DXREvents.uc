@@ -358,11 +358,11 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
 {
     local DXRando dxr;
 
+    foreach victim.AllActors(class'DXRando', dxr) break;
+
     MarkBingo(dxr, victim.BindName$"_Dead");
     if(!victim.bImportant)
         return;
-
-    foreach victim.AllActors(class'DXRando', dxr) break;
 
     if(victim.BindName == "PaulDenton")
         dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
@@ -430,6 +430,7 @@ static function BeatGame(DXRando dxr, int ending, int time)
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
     js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
     GeneralEventData(dxr, j);
+    BingoEventData(dxr, j);
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
@@ -469,6 +470,26 @@ static function GeneralEventData(DXRando dxr, out string j)
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
         js.static.Add(j, "loadout", loadout);
+}
+
+static function BingoEventData(DXRando dxr, out string j)
+{
+    local PlayerDataItem data;
+    local string event, desc;
+    local int x, y, progress, max;
+    local class<Json> js;
+    js = class'Json';
+
+    data = class'PlayerDataItem'.static.GiveItem(dxr.player);
+    js.static.Add(j, "NumberOfBingos", data.NumberOfBingos());
+
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x, y, event, desc, progress, max);
+            j = j $ ",\"bingo-"$x$"-"$y $ "\":"
+                $ "{\"event\":\"" $ event $ "\",\"desc\":\"" $ desc $ "\",\"progress\":" $ progress $ ",\"max\":" $ max $ "}";
+        }
+    }
 }
 
 static function string GetLoadoutName(DXRando dxr)
@@ -522,16 +543,32 @@ simulated function PlayerAnyEntry(#var PlayerPawn  player)
 
 function _MarkBingo(coerce string eventname)
 {
-    local int previousbingos;
+    local int previousbingos, nowbingos;
     local PlayerDataItem data;
+    local string j;
+    local class<Json> js;
+    js = class'Json';
 
     data = class'PlayerDataItem'.static.GiveItem(player());
     previousbingos = data.NumberOfBingos();
+    l(self$"._MarkBingo("$eventname$") data: "$data$", previousbingos: "$previousbingos);
 
     if( ! data.IncrementBingoProgress(eventname)) return;
 
-    if( data.NumberOfBingos() > previousbingos ) {
+    nowbingos = data.NumberOfBingos();
+    l(self$"._MarkBingo("$eventname$") previousbingos: "$previousbingos$", nowbingos: "$nowbingos);
+
+    if( nowbingos > previousbingos ) {
         player().ClientMessage("That's a bingo!");
+
+        j = js.static.Start("Bingo");
+        js.static.Add(j, "newevent", eventname);
+        js.static.Add(j, "location", player().Location);
+        GeneralEventData(dxr, j);
+        BingoEventData(dxr, j);
+        js.static.End(j);
+
+        class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
     }
 }
 
@@ -539,6 +576,7 @@ static function MarkBingo(DXRando dxr, coerce string eventname)
 {
     local DXREvents e;
     e = DXREvents(dxr.FindModule(class'DXREvents'));
+    log(e$".MarkBingo "$dxr$", "$eventname);
     if(e != None) {
         e._MarkBingo(eventname);
     }
@@ -565,7 +603,7 @@ defaultproperties
 	bingo_options(16)=(event="Labrat_Bum_Dead",desc="Kill Labrat Bum",max=1)
 	bingo_options(17)=(event="DXRNPCs1_Dead",desc="Kill The Merchant",max=1)
 	bingo_options(18)=(event="lemerchant_Dead",desc="Kill Le Merchant",max=1)
-	bingo_options(19)=(event="Harold_Dead",desc="Kill Harold",max=1)
+	bingo_options(19)=(event="Harold_Dead",desc="Kill Harold the mechanic",max=1)
 	//bingo_options()=(event="Josh_Dead",desc="Kill Josh",max=1)
 	//bingo_options()=(event="Billy_Dead",desc="Kill Billy",max=1)
 	//bingo_options()=(event="MarketKid_Dead",desc="Kill Louis Pan",max=1)

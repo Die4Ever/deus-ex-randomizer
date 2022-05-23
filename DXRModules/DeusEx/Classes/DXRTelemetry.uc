@@ -196,7 +196,10 @@ static function SendLog(DXRando dxr, Actor a, string LogLevel, string message)
 
 static function SendEvent(DXRando dxr, Actor a, string json)
 {
-    log("EVENT: " $ json, 'DXRTelemetry');
+    if(Len(json)>900)
+        log("EVENT: " $ Left(json, 500) $ "...", 'DXRTelemetry');
+    else
+        log("EVENT: " $ json, 'DXRTelemetry');
     SendLog(dxr, a, "EVENT", json);
 }
 
