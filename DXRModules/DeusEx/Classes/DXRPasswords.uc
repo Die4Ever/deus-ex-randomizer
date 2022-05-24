@@ -766,11 +766,11 @@ function ReplacePassword(string oldpassword, string newpassword)
 simulated function NotifyPlayerNotesUpdated(#var PlayerPawn  p)
 {
     if( updated == 1 ) {
-        p.ClientMessage("Note updated with randomized password");
+        p.ClientMessage("Note updated with randomized password",, true);
         DeusExRootWindow(p.rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
     }
     else if( updated > 1 ) {
-        p.ClientMessage("Notes updated with randomized passwords");
+        p.ClientMessage("Notes updated with randomized passwords",, true);
         DeusExRootWindow(p.rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
     }
     updated = 0;
@@ -834,7 +834,7 @@ simulated function bool UpdateGoal(DeusExGoal goal, string oldpassword, string n
     if( PassInStr( goal.text, oldpassword ) == -1 ) return false;
 
 #ifndef hx
-    player().ClientMessage("Goal updated with randomized password");
+    player().ClientMessage("Goal updated with randomized password",, true);
     DeusExRootWindow(player().rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
 #endif
 
