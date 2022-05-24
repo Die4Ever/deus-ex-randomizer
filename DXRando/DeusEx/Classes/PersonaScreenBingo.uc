@@ -1,7 +1,9 @@
 class PersonaScreenBingo extends PersonaScreenBaseWindow;
 
-const bingoWidth = 394;
-const bingoHeight = 361;
+const bingoWidth = 395;
+const bingoHeight = 360;
+const bingoStartX = 16;
+const bingoStartY = 22;
 
 function CreateControls()
 {
@@ -16,26 +18,27 @@ function CreateControls()
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
             data.GetBingoSpot(x, y, event, desc, progress, max);
-            CreateBingoSpot(x, y, desc $ "|n" $ progress $ "/" $ max);
+            CreateBingoSpot(x, y, desc, progress, max);
         }
     }
 }
 
 // we can fit about 6 lines of text, about 14 characters wide
 // probably want a new class instead of ButtonWindow, so we can turn the background into a progress bar, maybe a subclass of PersonaItemButton so the theming works correctly
-function TextWindow CreateBingoSpot(int x, int y, string text)
+function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int max)
 {
-    local ButtonWindow t;
+    local BingoTile t;
     local int w, h;
-    t = ButtonWindow(winClient.NewChild(class'ButtonWindow'));
+    t = BingoTile(winClient.NewChild(class'BingoTile'));
     t.SetText(text);
     t.SetWordWrap(true);
     t.SetTextAlignments(HALIGN_Center, VALIGN_Center);
     t.SetFont(Font'FontMenuSmall_DS');
     w = bingoWidth/5;
     h = bingoHeight/5;
-    t.SetSize(w, h);
-    t.SetPos(x * w + 16, y * h + 21);
+    t.SetSize(w-1, h-1);
+    t.SetPos(x * w + bingoStartX, y * h + bingoStartY);
+    t.SetProgress(progress, max);
     return t;
 }
 
