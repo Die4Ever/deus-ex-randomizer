@@ -289,12 +289,17 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
 {
     local string j;
     local class<Json> js;
+    local bool unconcious;
     js = class'Json';
 
     j = js.static.Start(type);
     js.static.Add(j, "victim", GetActorName(victim));
     js.static.Add(j, "victimBindName", victim.BindName);
     js.static.Add(j, "victimRandomizedName", GetRandomizedName(victim));
+    if(#var prefix ScriptedPawn(victim) != None) {
+        unconcious = #var prefix ScriptedPawn(victim).bStunned;
+        js.static.Add(j, "victimUnconcious", unconcious);
+    }
 
     if(Killer != None) {
         js.static.Add(j, "killerclass", Killer.Class.Name);
