@@ -5,8 +5,11 @@ const bingoHeight = 360;
 const bingoStartX = 16;
 const bingoStartY = 22;
 
+var PersonaActionButtonWindow btnReset;
+
 function CreateControls()
 {
+    local PersonaButtonBarWindow winActionButtons;
     local int x, y, progress, max;
     local string event, desc;
     local PlayerDataItem data;
@@ -21,6 +24,13 @@ function CreateControls()
             CreateBingoSpot(x, y, desc, progress, max);
         }
     }
+
+    winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
+    winActionButtons.SetPos(10, 385);
+    winActionButtons.SetWidth(75);
+
+    btnReset = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnReset.SetButtonText("New Board");
 }
 
 // we can fit about 6 lines of text, about 14 characters wide
@@ -40,6 +50,21 @@ function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int 
     t.SetPos(x * w + bingoStartX, y * h + bingoStartY);
     t.SetProgress(progress, max);
     return t;
+}
+
+function bool ButtonActivated( Window buttonPressed )
+{
+    local DXREvents e;
+
+    if(buttonPressed == btnReset) {
+        foreach player.AllActors(class'DXREvents', e) { break; }
+        if(e == None) return false;
+        e.CreateBingoBoard();
+        SaveSettings();
+        root.InvokeUIScreen(class'PersonaScreenBingo');
+        return true;
+    }
+    return Super.ButtonActivated(buttonPressed);
 }
 
 defaultproperties

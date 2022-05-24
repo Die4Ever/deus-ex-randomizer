@@ -505,10 +505,8 @@ static function string GetLoadoutName(DXRando dxr)
 simulated function PlayerAnyEntry(#var PlayerPawn  player)
 {
     local PlayerDataItem data;
-    local int x, y;
     local string event, desc;
     local int progress, max;
-    local int options[100], num_options, slot;
 
     data = class'PlayerDataItem'.static.GiveItem(player);
 
@@ -516,6 +514,23 @@ simulated function PlayerAnyEntry(#var PlayerPawn  player)
     data.GetBingoSpot(0, 0, event, desc, progress, max);
     if( event != "" ) return;
     SetGlobalSeed("bingo");
+    _CreateBingoBoard(data);
+}
+
+simulated function CreateBingoBoard()
+{
+    local PlayerDataItem data;
+    SetGlobalSeed("bingo"$FRand());
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    _CreateBingoBoard(data);
+}
+
+simulated function _CreateBingoBoard(PlayerDataItem data)
+{
+    local int x, y;
+    local string event, desc;
+    local int progress, max;
+    local int options[100], num_options, slot;
 
     num_options = 0;
     for(x=0; x<ArrayCount(bingo_options); x++) {
