@@ -309,6 +309,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
             a.LevelValues[i] = 0;
         return int(a.LevelValues[i] / 16.0) $" ft";
     }
+
 #ifdef gmdx
     else if( a.Class == class'AugBallisticPassive') {
         word = "Damage Reduction";
@@ -325,6 +326,22 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         return "+" $ string(int(f)) $ "%";
     }
 #endif
+
+#ifdef revision
+    // TODO: actual descriptions
+    else if(
+        a.Class.Name == 'AugAimbot'
+        || a.Class.Name == 'AugLeech'
+        || a.Class.Name == 'AugRadiation'
+        || a.Class.Name == 'AugAutoCounter'
+        || a.Class.Name == 'AugDefenseNPC'
+    ) {
+        word = "% of Normal";
+        f = a.LevelValues[i] / a.default.LevelValues[i];
+        return int(f * 100.0) $ "%";
+    }
+#endif
+
     else {
         return Super.DescriptionLevel(act, i, word);
     }

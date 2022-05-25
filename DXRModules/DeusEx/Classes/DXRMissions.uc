@@ -1018,6 +1018,11 @@ function PreFirstEntry()
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
         dxr.flags.f.SetBool('FemJCMeetPaul_Played', true,, 2);
         dxr.flags.f.SetBool('PaulGaveWeapon', true,, 2);
+#ifdef revision
+        dxr.flags.f.SetBool('PaulGiveWeapon_Played', true,, 2);
+        dxr.flags.f.SetBool('FemJCPaulGiveWeapon_Played', true,, 2);
+        dxr.flags.f.SetBool('GotFreeWeapon', true,, 2);
+#endif
     }
     else if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
         foreach AllActors(class'#var prefix AnnaNavarre', anna) {

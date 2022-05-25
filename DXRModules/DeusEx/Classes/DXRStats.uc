@@ -103,7 +103,7 @@ function Timer()
 
 }
 
-function string fmtTimeToString(int time)
+static function string fmtTimeToString(int time)
 {
     local int hours,minutes,seconds,tenths,remain;
     local string timestr;

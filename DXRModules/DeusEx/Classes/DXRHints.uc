@@ -36,7 +36,7 @@ simulated function InitHints()
         AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken");
         AddHint("You can carry 5 fire extinguishers in 1 inventory slot.", "They are very useful for stealthily killing multiple enemies.");
         AddHint("Ever tried to extinguish a fire with a toilet?", "How about a urinal or a shower?");
-        AddHint("Items like ballistic armor and rebreathers now free up", "the inventory spaceimmediately when you equip them.");
+        AddHint("Items like ballistic armor and rebreathers now free up", "the inventory space immediately when you equip them.");
         AddHint("Items like hazmat suits and thermoptic camo now free up", "the inventory space immediately when you equip them.");
         AddHint("Hacking computers now uses 5 bioelectric energy per second.");
         AddHint("Spy Drone aug has improved speed", "and the emp blast now also does explosive damage.");

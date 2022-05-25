@@ -4,6 +4,12 @@ var bool died;
 var name watchflags[32];
 var int num_watchflags;
 
+struct BingoOption {
+    var string event, desc;
+    var int max;
+};
+var BingoOption bingo_options[100];
+
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
@@ -55,6 +61,9 @@ function SetWatchFlags() {
         break;
     case "02_NYC_BAR":
         WatchFlag('JockSecondStory');
+        break;
+    case "02_NYC_FREECLINIC":
+        WatchFlag('BoughtClinicPlan');
         break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
@@ -258,6 +267,7 @@ function Trigger(Actor Other, Pawn Instigator)
         js.static.End(j);
 
         class'DXRTelemetry'.static.SendEvent(dxr, Instigator, j);
+        _MarkBingo(tag);
     }
 }
 
@@ -275,26 +285,43 @@ function SendFlagEvent(coerce string eventname, optional bool immediate)
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
+    _MarkBingo(eventname);
 }
 
 static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce string damageType, vector HitLocation, string type)
 {
     local string j;
     local class<Json> js;
+    local bool unconcious;
     js = class'Json';
 
     j = js.static.Start(type);
     js.static.Add(j, "victim", GetActorName(victim));
     js.static.Add(j, "victimBindName", victim.BindName);
+    js.static.Add(j, "victimRandomizedName", GetRandomizedName(victim));
+    if(#var prefix ScriptedPawn(victim) != None) {
+        unconcious = #var prefix ScriptedPawn(victim).bStunned;
+        js.static.Add(j, "victimUnconcious", unconcious);
+    }
+
     if(Killer != None) {
         js.static.Add(j, "killerclass", Killer.Class.Name);
         js.static.Add(j, "killer", GetActorName(Killer));
+        js.static.Add(j, "killerRandomizedName", GetRandomizedName(Killer));
     }
     js.static.Add(j, "dmgtype", damageType);
     GeneralEventData(dxr, j);
     js.static.Add(j, "location", victim.Location);
     js.static.End(j);
     class'DXRTelemetry'.static.SendEvent(dxr, victim, j);
+}
+
+static function string GetRandomizedName(Actor a)
+{
+    local ScriptedPawn sp;
+    sp = ScriptedPawn(a);
+    if(sp == None || sp.bImportant) return "";
+    return sp.FamiliarName;
 }
 
 static function AddPlayerDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
@@ -338,10 +365,12 @@ static function AddPlayerDeath(DXRando dxr, #var PlayerPawn  player, optional Ac
 static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local DXRando dxr;
-    if(!victim.bImportant)
-        return;
 
     foreach victim.AllActors(class'DXRando', dxr) break;
+
+    MarkBingo(dxr, victim.BindName$"_Dead");
+    if(!victim.bImportant)
+        return;
 
     if(victim.BindName == "PaulDenton")
         dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
@@ -378,6 +407,7 @@ static function PaulDied(DXRando dxr)
     js.static.End(j);
     dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
+    MarkBingo(dxr, "PaulDenton_Dead");
 }
 
 static function SavedPaul(DXRando dxr, #var PlayerPawn  player, optional int health)
@@ -393,6 +423,7 @@ static function SavedPaul(DXRando dxr, #var PlayerPawn  player, optional int hea
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
+    MarkBingo(dxr, "SavedPaul");
 }
 
 static function BeatGame(DXRando dxr, int ending, int time)
@@ -407,6 +438,7 @@ static function BeatGame(DXRando dxr, int ending, int time)
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
     js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
     GeneralEventData(dxr, j);
+    BingoEventData(dxr, j);
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
@@ -425,6 +457,7 @@ static function ExtinguishFire(DXRando dxr, string extinguisher, DeusExPlayer pl
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
+    MarkBingo(dxr, "ExtinguishFire");
 }
 
 static function GeneralEventData(DXRando dxr, out string j)
@@ -447,6 +480,26 @@ static function GeneralEventData(DXRando dxr, out string j)
         js.static.Add(j, "loadout", loadout);
 }
 
+static function BingoEventData(DXRando dxr, out string j)
+{
+    local PlayerDataItem data;
+    local string event, desc;
+    local int x, y, progress, max;
+    local class<Json> js;
+    js = class'Json';
+
+    data = class'PlayerDataItem'.static.GiveItem(dxr.player);
+    js.static.Add(j, "NumberOfBingos", data.NumberOfBingos());
+
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x, y, event, desc, progress, max);
+            j = j $ ",\"bingo-"$x$"-"$y $ "\":"
+                $ "{\"event\":\"" $ event $ "\",\"desc\":\"" $ desc $ "\",\"progress\":" $ progress $ ",\"max\":" $ max $ "}";
+        }
+    }
+}
+
 static function string GetLoadoutName(DXRando dxr)
 {
     local DXRLoadouts loadout;
@@ -454,4 +507,166 @@ static function string GetLoadoutName(DXRando dxr)
     if( loadout == None )
         return "";
     return loadout.GetName(loadout.loadout);
+}
+
+// BINGO STUFF
+simulated function PlayerAnyEntry(#var PlayerPawn  player)
+{
+    local PlayerDataItem data;
+    local string event, desc;
+    local int progress, max;
+
+    data = class'PlayerDataItem'.static.GiveItem(player);
+
+    // don't overwrite existing bingo
+    data.GetBingoSpot(0, 0, event, desc, progress, max);
+    if( event != "" ) return;
+    SetGlobalSeed("bingo");
+    _CreateBingoBoard(data);
+}
+
+simulated function CreateBingoBoard()
+{
+    local PlayerDataItem data;
+    SetGlobalSeed("bingo"$FRand());
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    _CreateBingoBoard(data);
+}
+
+simulated function _CreateBingoBoard(PlayerDataItem data)
+{
+    local int x, y;
+    local string event, desc;
+    local int progress, max;
+    local int options[100], num_options, slot;
+
+    num_options = 0;
+    for(x=0; x<ArrayCount(bingo_options); x++) {
+        if(bingo_options[x].event == "") continue;
+        options[num_options++] = x;
+    }
+
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            if(num_options == 0 || (x==2 && y==2)) {
+                data.SetBingoSpot(x, y, "Free Space", "Free Space", 1, 1);
+                continue;
+            }
+
+            slot = rng(num_options);
+            event = bingo_options[options[slot]].event;
+            desc = bingo_options[options[slot]].desc;
+            max = bingo_options[options[slot]].max;
+            num_options--;
+            options[slot] = options[num_options];
+            data.SetBingoSpot(x, y, event, desc, 0, max);
+        }
+    }
+}
+
+function _MarkBingo(coerce string eventname)
+{
+    local int previousbingos, nowbingos, time;
+    local PlayerDataItem data;
+    local string j;
+    local class<Json> js;
+    js = class'Json';
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+    previousbingos = data.NumberOfBingos();
+    l(self$"._MarkBingo("$eventname$") data: "$data$", previousbingos: "$previousbingos);
+
+    if( ! data.IncrementBingoProgress(eventname)) return;
+
+    nowbingos = data.NumberOfBingos();
+    l(self$"._MarkBingo("$eventname$") previousbingos: "$previousbingos$", nowbingos: "$nowbingos);
+
+    if( nowbingos > previousbingos ) {
+        time = class'DXRStats'.static.GetTotalTime(dxr);
+        player().ClientMessage("That's a bingo! Game time: " $ class'DXRStats'.static.fmtTimeToString(time),, true);
+
+        j = js.static.Start("Bingo");
+        js.static.Add(j, "newevent", eventname);
+        js.static.Add(j, "location", player().Location);
+        js.static.add(j, "time", time);
+        GeneralEventData(dxr, j);
+        BingoEventData(dxr, j);
+        js.static.End(j);
+
+        class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
+    }
+}
+
+static function MarkBingo(DXRando dxr, coerce string eventname)
+{
+    local DXREvents e;
+    e = DXREvents(dxr.FindModule(class'DXREvents'));
+    log(e$".MarkBingo "$dxr$", "$eventname);
+    if(e != None) {
+        e._MarkBingo(eventname);
+    }
+}
+
+defaultproperties
+{
+    bingo_options(0)=(event="TerroristCommander_Dead",desc="Kill the Terrorist Commander",max=1)
+	bingo_options(1)=(event="TiffanySavage_Dead",desc="Kill Tiffany Savage",max=1)
+	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul Denton die",max=1)
+	bingo_options(3)=(event="JordanShea_Dead",desc="Kill Jordan Shea",max=1)
+	bingo_options(4)=(event="SandraRenton_Dead",desc="Kill Sandra Renton",max=1)
+	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1)
+	bingo_options(6)=(event="AnnaNavarre_Dead",desc="Kill Anna Navarre",max=1)
+	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1)
+	bingo_options(8)=(event="JoJoFine_Dead",desc="Kill JoJo",max=1)
+	bingo_options(9)=(event="TobyAtanwe_Dead",desc="Kill Toby Atanwe",max=1)
+	bingo_options(10)=(event="Antoine_Dead",desc="Kill Antoine",max=1)
+	bingo_options(11)=(event="Chad_Dead",desc="Kill Chad",max=1)
+	bingo_options(12)=(event="hostage_Dead",desc="Kill Juveau",max=1)
+	bingo_options(13)=(event="hostage_female_Dead",desc="Kill hostage Anna",max=1)
+	bingo_options(14)=(event="Hela_Dead",desc="Kill Hela",max=1)
+	bingo_options(15)=(event="Renault_Dead",desc="Kill Renault",max=1)
+	bingo_options(16)=(event="Labrat_Bum_Dead",desc="Kill Labrat Bum",max=1)
+	bingo_options(17)=(event="DXRNPCs1_Dead",desc="Kill The Merchant",max=1)
+	bingo_options(18)=(event="lemerchant_Dead",desc="Kill Le Merchant",max=1)
+	bingo_options(19)=(event="Harold_Dead",desc="Kill Harold the mechanic",max=1)
+	//bingo_options()=(event="Josh_Dead",desc="Kill Josh",max=1)
+	//bingo_options()=(event="Billy_Dead",desc="Kill Billy",max=1)
+	//bingo_options()=(event="MarketKid_Dead",desc="Kill Louis Pan",max=1)
+	bingo_options(20)=(event="aimee_Dead",desc="Kill Aimee",max=1)
+	bingo_options(21)=(event="WaltonSimons_Dead",desc="Kill Walton Simons",max=1)
+	bingo_options(22)=(event="JoeGreene_Dead",desc="Kill Joe Greene",max=1)
+    bingo_options(23)=(event="GuntherFreed",desc="Free Gunther from jail",max=1)
+    bingo_options(24)=(event="BathroomBarks_Played",desc="Embarass UNATCO",max=1)
+    bingo_options(25)=(event="ManBathroomBarks_Played",desc="Embarass UNATCO",max=1)
+    bingo_options(26)=(event="GotHelicopterInfo",desc="A bomb!",max=1)
+    bingo_options(27)=(event="JoshFed",desc="Give Josh some food",max=1)
+    bingo_options(28)=(event="M02BillyDone",desc="Give Billy some food",max=1)
+    bingo_options(29)=(event="FordSchickRescued",desc="Rescue Ford Schick",max=1)
+    bingo_options(30)=(event="NiceTerrorist_Dead",desc="Ignore Paul",max=1)
+    bingo_options(31)=(event="M10EnteredBakery",desc="Enter the bakery",max=1)
+    //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
+    bingo_options(32)=(event="FreshWaterOpened",desc="Fix the water",max=1)
+    bingo_options(33)=(event="assassinapartment",desc="Visit the assassin",max=1)
+    bingo_options(34)=(event="GaveRentonGun",desc="Give Gilbert a gun",max=1)
+    bingo_options(35)=(event="DXREvents_LeftOnBoat",desc="Take the boat",max=1)
+    bingo_options(36)=(event="AlleyBumRescued",desc="Rescue the alley bum",max=1)
+    bingo_options(37)=(event="FoundScientistBody",desc="Search the canal",max=1)
+    bingo_options(38)=(event="ClubMercedesConvo1_Done",desc="Help Mercedes and Tessa",max=1)
+    bingo_options(39)=(event="M08WarnedSmuggler",desc="Warn Smuggler",max=1)
+    bingo_options(40)=(event="ShipPowerCut",desc="Help the electrician",max=1)
+    bingo_options(41)=(event="CamilleConvosDone",desc="Get info from Camille",max=1)
+    bingo_options(42)=(event="MeetAI4_Played",desc="Talk to Morpheus",max=1)
+    bingo_options(43)=(event="DL_Flooded_Played",desc="Check flooded zone in the ocean lab",max=1)
+    bingo_options(44)=(event="JockSecondStory",desc="Get Jock buzzed",max=1)
+    bingo_options(45)=(event="M07ChenSecondGive_Played",desc="Party with the Triads",max=1)
+    bingo_options(46)=(event="DeBeersDead",desc="Put Lucius out of his misery",max=1)
+    bingo_options(47)=(event="StantonAmbushDefeated",desc="Defend Dowd from the ambush",max=1)
+    bingo_options(48)=(event="SmugglerDied",desc="Let Smuggler die",max=1)
+    bingo_options(49)=(event="GaveDowdAmbrosia",desc="Give Dowd Ambrosia",max=1)
+    bingo_options(50)=(event="JockBlewUp",desc="Let Jock die",max=1)
+    bingo_options(51)=(event="SavedPaul",desc="Save Paul",max=1)
+    bingo_options(52)=(event="nsfwander",desc="Save Miguel",max=1)
+    bingo_options(53)=(event="MadeBasket",desc="Sign up for the Knicks",max=1)
+    bingo_options(54)=(event="BoughtClinicPlan",desc="Buy the full treatment plan in the clinic",max=1)
+    bingo_options(55)=(event="ExtinguishFire",desc="Extinguish yourself with running water",max=1)
 }

@@ -255,6 +255,13 @@ function PostFirstEntryMapFixes()
 #ifndef revision
     case "02_NYC_WAREHOUSE":
         AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));
+        break;
+
+    case "03_NYC_BrooklynBridgeStation":
+        a = _AddActor(Self, class'Barrel1', vect(-27.953907, -3493.229980, 45.101418), rot(0,0,0));
+        Barrel1(a).SkinColor = SC_Explosive;
+        a.BeginPlay();
+        break;
 
     case "03_NYC_AirfieldHeliBase":
         //crates to get back over the beginning of the level
@@ -279,6 +286,11 @@ function PostFirstEntryMapFixes()
             info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
             c.Destroy();
         }
+        break;
+
+    case "09_NYC_SHIPBELOW":
+        // add a tnt crate on top of the pipe, visible from the ground floor
+        _AddActor(Self, class'#var prefix CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567), rot(0,0,0));
         break;
 
     case "12_VANDENBERG_CMD":
@@ -417,6 +429,7 @@ function IncreaseBrightness(int brightness)
 function OverwriteDecorations()
 {
     local DeusExDecoration d;
+    local #var prefix Barrel1 b;
     local int i;
     foreach AllActors(class'DeusExDecoration', d) {
         if( d.IsA('CrateBreakableMedCombat') || d.IsA('CrateBreakableMedGeneral') || d.IsA('CrateBreakableMedMedical') ) {
@@ -435,6 +448,13 @@ function OverwriteDecorations()
             d.explosionDamage = DecorationsOverwrites[i].explosionDamage;
             d.explosionRadius = DecorationsOverwrites[i].explosionRadius;
             d.bPushable = DecorationsOverwrites[i].bPushable;
+        }
+    }
+
+    // in DeusExDecoration is the Exploding state, it divides the damage into 5 separate ticks with gradualHurtSteps = 5;
+    foreach AllActors(class'#var prefix Barrel1', b) {
+        if( b.explosionDamage > 50 && b.explosionDamage < 400 ) {
+            b.explosionDamage = 400;
         }
     }
 }
@@ -637,6 +657,7 @@ function BalanceJailbreak()
 {
     local class<Inventory> iclass;
     local DXREnemies e;
+    local DXRLoadouts loadout;
     local int i;
     local float r;
 
@@ -649,7 +670,13 @@ function BalanceJailbreak()
         }
         chance_remaining(r);
     }
-    else iclass = class'WeaponCombatKnife';
+    else iclass = class'#var prefix WeaponCombatKnife';
+
+    // make sure Stick With the Prod and Ninja JC can beat this
+    loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+    if(loadout != None && loadout.is_banned(iclass)) {
+        iclass = loadout.get_starting_item();
+    }
 
     Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915) );
 }

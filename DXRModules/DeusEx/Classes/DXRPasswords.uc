@@ -29,7 +29,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,5,8,0) ) {
+    if( ConfigOlderThan(1,9,1,2) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
 
@@ -61,6 +61,14 @@ function CheckConfig()
         not_passwords[i++] = "SECURITY LIAB";
         not_passwords[i++] = "SECURITY CONSOLE";
         not_passwords[i++] = "SECURITY UPGRADE";
+        not_passwords[i++] = "network security";
+        not_passwords[i++] = "security computers";
+        not_passwords[i++] = "security keypad";
+        not_passwords[i++] = "the security";
+        not_passwords[i++] = "research wing";
+        not_passwords[i++] = "nanotech research";
+        not_passwords[i++] = "research team";
+        not_passwords[i++] = "weapons research";
         not_passwords[i++] = "captain james";
         not_passwords[i++] = "captain keene";
         not_passwords[i++] = "captain Kang";
@@ -160,6 +168,13 @@ function vanilla_datacubes_rules()
     datacubes_rules[i].item_name = '01_Datacube04';
     datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
     datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    datacubes_rules[i].map = "03_NYC_BrooklynBridgeStation";
+    datacubes_rules[i].item_name = '03_Datacube14';
+    datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
+    datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
     datacubes_rules[i].allow = true;
     i++;
 
@@ -371,9 +386,10 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
     foreach AllObjects(class'ConSpeech', c) {
         ProcessString(c.speech,, true);
     }
-    foreach AllObjects(class'ConEventAddNote', cn) {
+    // TODO: this doesn't work right cause then the password doesn't get replaced when it gets added which means it never gets marked as "known" for the autofill
+    /*foreach AllObjects(class'ConEventAddNote', cn) {
         ProcessString(cn.noteText,, true);
-    }
+    }*/
 }
 
 function RandoHacks()
@@ -565,7 +581,7 @@ function _RandoInfoDev(#var prefix InformationDevices id, bool containers)
     local Inventory inv;
     local Containers c;
     local Actor temp[1024];
-    local int num, slot, numHasPass;
+    local int num, slot, numHasPass, bads;
     local int hasPass[64];
 
     InfoDevsHasPass(id, hasPass, numHasPass);
@@ -574,7 +590,10 @@ function _RandoInfoDev(#var prefix InformationDevices id, bool containers)
     foreach AllActors(class'Inventory', inv)
     {
         if( SkipActor(inv, 'Inventory') ) continue;
-        if( InfoPositionGood(id, inv.Location, hasPass, numHasPass) == False ) continue;
+        if( InfoPositionGood(id, inv.Location, hasPass, numHasPass) == False ) {
+            bads++;
+            continue;
+        }
 #ifdef debug
         //DebugMarkKeyPosition(inv, id.textTag);
 #endif
@@ -585,7 +604,10 @@ function _RandoInfoDev(#var prefix InformationDevices id, bool containers)
         foreach AllActors(class'Containers', c)
         {
             if( SkipActor(c, 'Containers') ) continue;
-            if( InfoPositionGood(id, c.Location, hasPass, numHasPass) == False ) continue;
+            if( InfoPositionGood(id, c.Location, hasPass, numHasPass) == False ) {
+                bads++;
+                continue;
+            }
             if( HasBased(c) ) continue;
 #ifdef debug
             //DebugMarkKeyPosition(inv, id.textTag);
@@ -594,7 +616,7 @@ function _RandoInfoDev(#var prefix InformationDevices id, bool containers)
         }
     }
 
-    l("datacube "$id$" got num "$num);
+    l("datacube "$id$" got num "$num$" with "$bads$" unsafe positions");
     slot=rng(num+1);//+1 for the vanilla location
     if(slot==0) {
         l("not swapping infodevice "$ActorToString(id));
@@ -744,11 +766,11 @@ function ReplacePassword(string oldpassword, string newpassword)
 simulated function NotifyPlayerNotesUpdated(#var PlayerPawn  p)
 {
     if( updated == 1 ) {
-        p.ClientMessage("Note updated with randomized password");
+        p.ClientMessage("Note updated with randomized password",, true);
         DeusExRootWindow(p.rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
     }
     else if( updated > 1 ) {
-        p.ClientMessage("Notes updated with randomized passwords");
+        p.ClientMessage("Notes updated with randomized passwords",, true);
         DeusExRootWindow(p.rootWindow).hud.msgLog.PlayLogSound(Sound'LogNoteAdded');
     }
     updated = 0;
@@ -812,7 +834,7 @@ simulated function bool UpdateGoal(DeusExGoal goal, string oldpassword, string n
     if( PassInStr( goal.text, oldpassword ) == -1 ) return false;
 
 #ifndef hx
-    player().ClientMessage("Goal updated with randomized password");
+    player().ClientMessage("Goal updated with randomized password",, true);
     DeusExRootWindow(player().rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
 #endif
 

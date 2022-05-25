@@ -303,6 +303,7 @@ function SwapScriptedPawns(int percent, bool enemies)
         if( IsInitialEnemy(a) != enemies ) continue;
         if( !chance_single(percent) ) continue;
         if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
+        if( class'DXRMissions'.static.IsCloseToStart(dxr, a.Location) ) continue;
         temp[num++] = a;
     }
 
