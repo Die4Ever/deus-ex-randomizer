@@ -437,6 +437,7 @@ static function BeatGame(DXRando dxr, int ending, int time)
     js.static.Add(j, "time", time);
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
     js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
+    js.static.Add(j, "maxrando", dxr.flags.maxrando);
     GeneralEventData(dxr, j);
     BingoEventData(dxr, j);
     js.static.End(j);
