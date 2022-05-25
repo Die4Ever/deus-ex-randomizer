@@ -62,6 +62,9 @@ function SetWatchFlags() {
     case "02_NYC_BAR":
         WatchFlag('JockSecondStory');
         break;
+    case "02_NYC_FREECLINIC":
+        WatchFlag('BoughtClinicPlan');
+        break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
         break;
@@ -664,4 +667,6 @@ defaultproperties
     bingo_options(51)=(event="SavedPaul",desc="Save Paul",max=1)
     bingo_options(52)=(event="nsfwander",desc="Save Miguel",max=1)
     bingo_options(53)=(event="MadeBasket",desc="Sign up for the Knicks",max=1)
+    bingo_options(54)=(event="BoughtClinicPlan",desc="Buy the full treatment plan in the clinic",max=1)
+    bingo_options(55)=(event="ExtinguishFire",desc="Extinguish yourself with running water",max=1)
 }
