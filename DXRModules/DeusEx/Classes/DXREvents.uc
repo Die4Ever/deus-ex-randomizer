@@ -661,4 +661,7 @@ defaultproperties
     bingo_options(48)=(event="SmugglerDied",desc="Let Smuggler die",max=1)
     bingo_options(49)=(event="GaveDowdAmbrosia",desc="Give Dowd Ambrosia",max=1)
     bingo_options(50)=(event="JockBlewUp",desc="Let Jock die",max=1)
+    bingo_options(51)=(event="SavedPaul",desc="Save Paul",max=1)
+    bingo_options(52)=(event="nsfwander",desc="Save Miguel",max=1)
+    bingo_options(53)=(event="MadeBasket",desc="Sign up for the Knicks",max=1)
 }
