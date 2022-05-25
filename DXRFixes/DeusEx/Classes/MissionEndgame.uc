@@ -24,7 +24,7 @@ function LoadQuotes()
     AddQuote("YESTERDAY WE OBEYED KINGS AND BENT OUR NECKS BEFORE EMPERORS.  BUT TODAY WE KNEEL ONLY TO TRUTH...","KAHLIL GIBRAN");
     AddQuote("IF THERE WERE NO GOD, IT WOULD BE NECESSARY TO INVENT HIM.","VOLTAIRE");
     AddQuote("BETTER TO REIGN IN HELL, THAN SERVE IN HEAVEN.","PARADISE LOST, JOHN MILTON");
-    
+
     //DX Quotes
     AddQuote("A BOMB!","JC DENTON");
     AddQuote("OH MY GOD! JC! A BOMB!","JOCK");
@@ -40,12 +40,12 @@ function LoadQuotes()
     AddQuote("THE NEED TO BE OBSERVED AND UNDERSTOOD WAS ONCE SATISFIED BY GOD. NOW WE CAN IMPLEMENT THE SAME FUNCTIONALITY WITH DATA-MINING ALGORITHMS.","MORPHEUS");
     AddQuote("I ORDER YOU TO STAND IN THE SPOTLIGHT AND GROWL AT THE WOMEN LIKE A DOG WHO NEEDS A MASTER.","DOOR GIRL");
     AddQuote("I WANTED ORANGE. IT GAVE ME LEMON-LIME.","GUNTHER HERMANN");
-    
+
     //Why not some Zero Wing?
     AddQuote("SOMEBODY SET UP US THE BOMB.","MECHANIC");
     AddQuote("ALL YOUR BASE ARE BELONG TO US.","CATS");
     AddQuote("YOU HAVE NO CHANCE TO SURVIVE MAKE YOUR TIME.","CATS");
-    
+
     //A bit of Zelda perhaps?
     AddQuote("AND THE MASTER SWORD SLEEPS AGAIN... FOREVER!","A LINK TO THE PAST");
     AddQuote("IT'S A SECRET TO EVERYBODY","MOBLIN");
@@ -56,12 +56,12 @@ function LoadQuotes()
     AddQuote("DO NOT THINK IT ENDS HERE... THE HISTORY OF LIGHT AND SHADOW WILL BE WRITTEN IN BLOOD!","GANONDORF");
     AddQuote("YOUR COURAGE AND STRENGTH WILL NOT BE FORGOTTEN. FOR NOW, YOUR WORK IS DONE. OFF YOU GO TO CELEBRATE LINK'S RETURN. BUT FIRST, REMEMBER, LESSONS OF THE HEART, MERCY, AND HUMAN KINDNESS PREVAIL ABOVE ALL ELSE.","GASPRA");
     AddQuote("LAMP OIL? ROPE? BOMBS? YOU WANT IT? IT'S YOURS MY FRIEND, AS LONG AS YOU HAVE ENOUGH RUBIES!","MORSHU");
-    
+
     //Some Plumber Talk
     AddQuote("THANK YOU MARIO! BUT OUR PRINCESS IS IN ANOTHER CASTLE!","TOAD");
     AddQuote("THANK YOU SO MUCH FOR PLAYING MY GAME!","MARIO");
     AddQuote("DEAR PESKY PLUMBERS, THE KOOPALINGS AND I HAVE TAKEN OVER THE MUSHROOM KINGDOM! THE PRINCESS IS NOW A PERMANENT GUEST AT ONE OF MY SEVEN KOOPA HOTELS. I DARE YOU TO FIND HER IF YOU CAN!","BOWSER");
-    
+
     //A bit of this and that
     AddQuote("UNFORTUNATELY, KLLING IS ONE OF THOSE THINGS THAT GETS EASIER THE MORE YOU DO IT.","SOLID SNAKE");
     AddQuote("WHAT IS A MAN? A MISERABLE LITTLE PILE OF SECRETS!","DRACULA");
@@ -97,16 +97,17 @@ function LoadQuotes()
     AddQuote("HENRY STAUF GREW WEALTHY, BUT THEN THIS STRANGE VIRUS CAME...", "THE 7TH GUEST NARRATOR");
     AddQuote("I THINK THAT WE WERE MEANT TO EAT THE SOUP.", "EDWARD KNOX");
     AddQuote("CHUCK HIM INTO THE SOUP", "SOUP");
+    AddQuote("YEAH, IT'S BLOOD.", "CHIEF JIM MARTIN");
 }
 
 
 function EndQuote PickRandomQuote()
 {
     local DXRando dxr;
-    
+
     foreach AllActors(class'DXRando',dxr)
         return quotes[dxr.rng(numQuotes)];
-    
+
     return quotes[Rand(numQuotes)];
 }
 
@@ -128,14 +129,14 @@ function InitStateMachine()
     //if (flags != None)
     //    flags.DeleteAllFlags();
 
-    // Set the PlayerTraveling flag (always want it set for 
+    // Set the PlayerTraveling flag (always want it set for
     // the intro and endgames)
     flags.SetBool('PlayerTraveling', True, True, 0);
 }
 
 // ----------------------------------------------------------------------
 // FirstFrame()
-// 
+//
 // Stuff to check at first frame
 // ----------------------------------------------------------------------
 
@@ -173,7 +174,7 @@ function PrintEndgameQuote(int num)
 
     bQuotePrinted = True;
     flags.SetBool('EndgameExplosions', False);
-    
+
     LoadQuotes();
 
     root = DeusExRootWindow(Player.rootWindow);
@@ -184,7 +185,7 @@ function PrintEndgameQuote(int num)
         {
             quoteDisplay.displayTime = endgameDelays[num];
             quoteDisplay.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
-            
+
             quote = PickRandomQuote();
 
             quoteDisplay.AddMessage(quote.quote);
