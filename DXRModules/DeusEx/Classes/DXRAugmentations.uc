@@ -224,15 +224,15 @@ function static class<Augmentation> PickRandomAug(DXRando dxr, out int banned[50
 
 simulated function RandoAug(Augmentation a)
 {
-    local float aug_value_rando;
+    local float aug_value_wet_dry;
     if( dxr == None ) return;
 
     if( #var prefix AugSpeed(a) != None || #var prefix AugLight(a) != None || #var prefix AugHeartLung(a) != None
     || #var prefix AugIFF(a) != None || #var prefix AugDatalink(a) != None || AugNinja(a) != None )
         return;
 
-    aug_value_rando = float(dxr.flags.settings.aug_value_rando) / 100.0;
-    RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_rando, a.Description);
+    aug_value_wet_dry = float(dxr.flags.settings.aug_value_rando) / 100.0;
+    RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_wet_dry, a.Description);
 }
 
 simulated function string DescriptionLevel(Actor act, int i, out string word)

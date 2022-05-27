@@ -908,7 +908,7 @@ simulated function ExecMaxRando()
     MaxRandoValPair(settings.minskill, settings.maxskill);
     MaxRandoVal(settings.banned_skills);
     MaxRandoVal(settings.banned_skill_levels);
-    MaxRandoVal(settings.skill_value_rando);
+    settings.skill_value_rando = 100;
 
     MaxRandoVal(settings.ammo);
     MaxRandoVal(settings.multitools);
@@ -918,7 +918,7 @@ simulated function ExecMaxRando()
     settings.equipment += int(rngb());
     MaxRandoValPair(settings.min_weapon_dmg, settings.max_weapon_dmg);
     MaxRandoValPair(settings.min_weapon_shottime, settings.max_weapon_shottime);
-    MaxRandoVal(settings.aug_value_rando);
+    settings.aug_value_rando = 100;
 }
 
 function NewGamePlusVal(out int val, float curve, float exp)

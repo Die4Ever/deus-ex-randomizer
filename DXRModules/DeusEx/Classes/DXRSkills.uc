@@ -146,10 +146,10 @@ simulated function RandoSkill(Skill aSkill)
 simulated function RandoSkillLevelValues(Skill a)
 {
     local string add_desc;
-    local float skill_value_rando;
+    local float skill_value_wet_dry;
 
-    skill_value_rando = float(dxr.flags.settings.skill_value_rando) / 100.0;
-    RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_rando, a.Description);
+    skill_value_wet_dry = float(dxr.flags.settings.skill_value_rando) / 100.0;
+    RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_wet_dry, a.Description);
 
 #ifdef injections
     if( #var prefix SkillDemolition(a) != None ) {
@@ -338,6 +338,36 @@ simulated function RemoveRandomSkill(#var PlayerPawn  p)
     }
     info("RemoveRandomSkill("$p$") Removing skill "$skill);
     skill.CurrentLevel = 0;
+}
+
+function ExtendedTests()
+{
+    local float f;
+    Super.ExtendedTests();
+
+    TestWeightedLevelValues(0.008089, 0.052143);
+
+    for(f=0.01; f<2; f+=0.02) {
+        TestWeightedLevelValues(f, f+0.01);
+    }
+}
+
+function bool TestWeightedLevelValues(float f1, float f2)
+{
+    local float r1, r2;
+    test(f1 < f2, "TestWeightedLevelValues "$f1$" < "$f2);
+
+    r1 = WeightedLevelValue(1, f1, 3.5, 1, 1, 0, 4);
+    r2 = WeightedLevelValue(2, f2, 3.5, 1, 1, 1, 4);
+    test(r1 < r2, "WeightedLevelValue "$f1@f2$", wet==1, "$r1$" < "$r2);
+
+    r1 = WeightedLevelValue(1, f1, 3.5, 1, 0.5, 0, 4);
+    r2 = WeightedLevelValue(2, f2, 3.5, 1, 0.5, 1, 4);
+    test(r1 < r2, "WeightedLevelValue "$f1@f2$", wet==0.5, "$r1$" < "$r2);
+
+    r1 = WeightedLevelValue(1, f1, 3.5, 1, 0.75, 0, 4);
+    r2 = WeightedLevelValue(2, f2, 3.5, 1, 0.75, 1, 4);
+    return test(r1 < r2, "WeightedLevelValue "$f1@f2$", wet=0.75, "$r1$" < "$r2);
 }
 
 defaultproperties
