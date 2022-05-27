@@ -282,17 +282,17 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
 
     foreach AllActors(class'#var prefix DeusExPickup', p) {
         if( ! p.IsA(type.name) ) continue;
-#ifdef vmd
-        p.maxCopies = p.default.maxCopies;
-        maxCopies = p.VMDConfigureMaxCopies();
-#else
+
         maxCopies = p.default.maxCopies;
-#endif
         p.maxCopies = float(maxCopies) * float(percent) / 100.0 * 0.8;
         if( DeusExPlayer(p.Owner) != None && #var prefix FireExtinguisher(p) != None )
             p.maxCopies += DeusExPlayer(p.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillEnviro');
 
+#ifdef vmd
+        if( p.NumCopies > p.VMDConfigureMaxCopies() ) p.NumCopies = p.VMDConfigureMaxCopies();
+#else
         if( p.NumCopies > p.maxCopies ) p.NumCopies = p.maxCopies;
+#endif
     }
 }
 
