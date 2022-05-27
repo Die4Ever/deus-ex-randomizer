@@ -182,7 +182,7 @@ function _ReduceAmmo(Ammo a, float mult)
     local int i;
     local float tmult;
     if( a.AmmoAmount <= 0 || CarriedItem(a) ) return;
-    
+
     tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, a.class.name);
     i = Clamp(float(a.AmmoAmount) * tmult, 1, 1000);
     l("reducing ammo in "$ActorToString(a)$" from "$a.AmmoAmount$" down to "$i$", tmult: "$tmult);
@@ -278,10 +278,17 @@ function ReduceSpawnsInContainers(class<Actor> classname, float percent)
 simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
 {
     local #var prefix DeusExPickup p;
+    local int maxCopies;
 
     foreach AllActors(class'#var prefix DeusExPickup', p) {
         if( ! p.IsA(type.name) ) continue;
-        p.maxCopies = float(p.default.maxCopies) * float(percent) / 100.0 * 0.8;
+#ifdef vmd
+        p.maxCopies = p.default.maxCopies;
+        maxCopies = p.VMDConfigureMaxCopies();
+#else
+        maxCopies = p.default.maxCopies;
+#endif
+        p.maxCopies = float(maxCopies) * float(percent) / 100.0 * 0.8;
         if( DeusExPlayer(p.Owner) != None && #var prefix FireExtinguisher(p) != None )
             p.maxCopies += DeusExPlayer(p.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillEnviro');
 
@@ -301,12 +308,12 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
         ) {
             a.MaxAmmo += DeusExPlayer(a.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillDemolition');
         }
-        
+
         if( a.AmmoAmount > a.MaxAmmo ) a.AmmoAmount = a.MaxAmmo;
     }
 }
 
-simulated function AddDXRCredits(CreditsWindow cw) 
+simulated function AddDXRCredits(CreditsWindow cw)
 {
     local int i;
     local DXREnemies e;
@@ -359,7 +366,7 @@ simulated function PrintItemRate(CreditsWindow cw, class<Inventory> c, int perce
         tperc = Clamp( tperc, 0, 100 );
     else if( tperc < 0 )
         tperc = 0;
-    
+
     ItemName = c.default.ItemName;
     if( ItemName == class'DeusExAmmo'.default.ItemName )
         ItemName = BackupName;
