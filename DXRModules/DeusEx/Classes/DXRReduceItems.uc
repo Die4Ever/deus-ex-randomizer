@@ -283,33 +283,42 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
     foreach AllActors(class'#var prefix DeusExPickup', p) {
         if( ! p.IsA(type.name) ) continue;
 
-        maxCopies = p.default.maxCopies;
-        p.maxCopies = float(maxCopies) * float(percent) / 100.0 * 0.8;
-        if( DeusExPlayer(p.Owner) != None && #var prefix FireExtinguisher(p) != None )
+        p.maxCopies = float(p.default.maxCopies) * float(percent) / 100.0 * 0.8;
+        if( #defined balance && DeusExPlayer(p.Owner) != None && #var prefix FireExtinguisher(p) != None )
             p.maxCopies += DeusExPlayer(p.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillEnviro');
 
 #ifdef vmd
-        if( p.NumCopies > p.VMDConfigureMaxCopies() ) p.NumCopies = p.VMDConfigureMaxCopies();
+        maxCopies = p.VMDConfigureMaxCopies();
 #else
-        if( p.NumCopies > p.maxCopies ) p.NumCopies = p.maxCopies;
+        maxCopies = p.maxCopies;
 #endif
+
+        if( p.NumCopies > maxCopies ) p.NumCopies = maxCopies;
     }
 }
 
 simulated function SetMaxAmmo(class<Ammo> type, int percent)
 {
     local Ammo a;
+    local int maxAmmo;
 
     foreach AllActors(class'Ammo', a) {
         if( ! a.IsA(type.name) ) continue;
         a.MaxAmmo = float(a.default.MaxAmmo) * float(percent) / 100.0 * 0.8;
-        if( DeusExPlayer(a.Owner) != None
+
+        if( #defined balance && DeusExPlayer(a.Owner) != None
             && (AmmoEMPGrenade(a) != None || AmmoGasGrenade(a) != None || AmmoLAM(a) != None || AmmoNanoVirusGrenade(a) != None )
         ) {
             a.MaxAmmo += DeusExPlayer(a.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillDemolition');
         }
 
-        if( a.AmmoAmount > a.MaxAmmo ) a.AmmoAmount = a.MaxAmmo;
+#ifdef vmd
+        maxAmmo = DeusExAmmo(a).VMDConfigureMaxAmmo();
+#else
+        maxAmmo = a.MaxAmmo;
+#endif
+
+        if( a.AmmoAmount > maxAmmo ) a.AmmoAmount = maxAmmo;
     }
 }
 
