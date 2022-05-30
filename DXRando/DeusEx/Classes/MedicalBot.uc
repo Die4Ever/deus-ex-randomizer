@@ -99,3 +99,9 @@ simulated function Float GetRefreshTimeRemaining()
 
     return timeRemaining;
 }
+
+defaultproperties
+{
+    bDetectable=false
+    bIgnore=true
+}

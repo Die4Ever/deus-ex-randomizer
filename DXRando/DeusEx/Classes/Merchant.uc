@@ -10,6 +10,8 @@ function bool ShouldDoSinglePickPocket(DeusExPlayer Frobbie)
 defaultproperties
 {
     bImportant=True
+    bDetectable=false
+    bIgnore=true
     Health=200
     HealthArmLeft=200
     HealthArmRight=200
