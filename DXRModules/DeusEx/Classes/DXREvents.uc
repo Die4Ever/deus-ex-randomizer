@@ -45,6 +45,7 @@ function SetWatchFlags() {
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
         WatchFlag('M02BillyDone');
+        WatchFlag('MS_DL_Played');// this is the datalink played after dealing with the hostage situation, from Mission02.uc
 
         foreach AllActors(class'ChildMale', child) {
             if(child.BindName == "Josh" || child.BindName == "Billy")
@@ -55,6 +56,9 @@ function SetWatchFlags() {
             m.Tag = 'Boat_Exit2';
         }
         Tag = 'Boat_Exit';
+        break;
+    case "02_NYC_HOTEL":
+        WatchFlag('M02HostagesRescued');// for the hotel, set by Mission02.uc
         break;
     case "02_NYC_UNDERGROUND":
         WatchFlag('FordSchickRescued');
@@ -277,6 +281,17 @@ function SendFlagEvent(coerce string eventname, optional bool immediate)
     local class<Json> js;
     js = class'Json';
 
+    if(eventname ~= "M02HostagesRescued") {// for the hotel, set by Mission02.uc
+        M02HotelHostagesRescued();
+        return;
+    }
+    else if(eventname ~= "MS_DL_Played") {// this is a generic flag name used in a few of the mission scripts
+        if(dxr.localURL ~= "02_NYC_BATTERYPARK") {
+            BatteryParkHostages();
+        }
+        return;
+    }
+
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", eventname);
     js.static.Add(j, "immediate", immediate);
@@ -286,6 +301,30 @@ function SendFlagEvent(coerce string eventname, optional bool immediate)
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
     _MarkBingo(eventname);
+}
+
+function M02HotelHostagesRescued()
+{
+    local bool MaleHostage_Dead, FemaleHostage_Dead, GilbertRenton_Dead;
+    MaleHostage_Dead = dxr.flagbase.GetBool('MaleHostage_Dead');
+    FemaleHostage_Dead = dxr.flagbase.GetBool('FemaleHostage_Dead');
+    GilbertRenton_Dead = dxr.flagbase.GetBool('GilbertRenton_Dead');
+    if( !MaleHostage_Dead && !FemaleHostage_Dead && !GilbertRenton_Dead) {
+        SendFlagEvent("HotelHostagesSaved");
+    }
+}
+
+function BatteryParkHostages()
+{
+    local bool SubTerroristsDead, EscapeSuccessful, SubHostageMale_Dead, SubHostageFemale_Dead;
+    SubTerroristsDead = dxr.flagbase.GetBool('SubTerroristsDead');
+    EscapeSuccessful = dxr.flagbase.GetBool('EscapeSuccessful');
+    SubHostageMale_Dead = dxr.flagbase.GetBool('SubHostageMale_Dead');
+    SubHostageFemale_Dead = dxr.flagbase.GetBool('SubHostageFemale_Dead');
+
+    if( (SubTerroristsDead || EscapeSuccessful) && !SubHostageMale_Dead && !SubHostageFemale_Dead ) {
+        SendFlagEvent("SubwayHostagesSaved");
+    }
 }
 
 static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce string damageType, vector HitLocation, string type)
@@ -670,4 +709,6 @@ defaultproperties
     bingo_options(53)=(event="MadeBasket",desc="Sign up for the Knicks",max=1)
     bingo_options(54)=(event="BoughtClinicPlan",desc="Buy the full treatment plan in the clinic",max=1)
     bingo_options(55)=(event="ExtinguishFire",desc="Extinguish yourself with running water",max=1)
+    bingo_options(56)=(event="SubwayHostagesSaved",desc="Save both hostages in the subway",max=1)
+    bingo_options(57)=(event="HotelHostagesSaved",desc="Save all 3 hostages in the hotel",max=1)
 }
