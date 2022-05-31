@@ -188,6 +188,10 @@ simulated function InitHints()
 #else
             AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
 #endif
+            if(map ~= "10_Paris_Catacombs") {
+                AddHint("If you need a Hazmat suit", "Le Merchant has one for sale.");
+                AddHint("You can kill Le Merchant and loot him", "if you don't have enough money.");
+            }
             break;
         case 11:
             if (map ~= "11_paris_cathedral") {
