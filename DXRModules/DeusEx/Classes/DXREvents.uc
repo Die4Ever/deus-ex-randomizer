@@ -126,6 +126,9 @@ function SetWatchFlags() {
                 jf.bImportant = true;
         }
         break;
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        WatchFlag('SilhouetteHostagesAllRescued');
+        break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
         WatchFlag('AlleyCopSeesPlayer_Played');
@@ -711,4 +714,5 @@ defaultproperties
     bingo_options(55)=(event="ExtinguishFire",desc="Extinguish yourself with running water",max=1)
     bingo_options(56)=(event="SubwayHostagesSaved",desc="Save both hostages in the subway",max=1)
     bingo_options(57)=(event="HotelHostagesSaved",desc="Save all 3 hostages in the hotel",max=1)
+    bingo_options(58)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1)
 }
