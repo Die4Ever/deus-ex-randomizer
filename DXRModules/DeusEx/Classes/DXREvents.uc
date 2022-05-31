@@ -10,6 +10,11 @@ struct BingoOption {
 };
 var BingoOption bingo_options[100];
 
+struct MutualExclusion {
+    var string e1, e2;
+};
+var MutualExclusion mutually_exclusive[20];
+
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
@@ -589,6 +594,16 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
         options[num_options++] = x;
     }
 
+    for(x=0; x<ArrayCount(mutually_exclusive); x++) {
+        if(mutually_exclusive[x].e1 == "") continue;
+
+        slot = HandleMutualExclusion(mutually_exclusive[x], options, num_options);
+        if( slot >= 0 ) {
+            num_options--;
+            options[slot] = options[num_options];
+        }
+    }
+
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
             if(num_options == 0 || (x==2 && y==2)) {
@@ -607,6 +622,26 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     }
 }
 
+simulated function int HandleMutualExclusion(MutualExclusion m, int options[100], int num_options) {
+    local int a, b, overwrite;
+
+    for(a=0; a<num_options; a++) {
+        if( bingo_options[options[a]].event == m.e1 ) break;
+    }
+    if( a >= num_options ) return -1;
+
+    for(b=0; b<num_options; b++) {
+        if( bingo_options[options[b]].event == m.e2 ) break;
+    }
+    if( b >= num_options ) return -1;
+
+    if(rngb()) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
 function _MarkBingo(coerce string eventname)
 {
     local int previousbingos, nowbingos, time;
@@ -614,6 +649,8 @@ function _MarkBingo(coerce string eventname)
     local string j;
     local class<Json> js;
     js = class'Json';
+
+    if(eventname == "ManBathroomBarks_Played") eventname = "BathroomBarks_Played";// LDDP
 
     data = class'PlayerDataItem'.static.GiveItem(player());
     previousbingos = data.NumberOfBingos();
@@ -680,12 +717,12 @@ defaultproperties
 	bingo_options(22)=(event="JoeGreene_Dead",desc="Kill Joe Greene",max=1)
     bingo_options(23)=(event="GuntherFreed",desc="Free Gunther from jail",max=1)
     bingo_options(24)=(event="BathroomBarks_Played",desc="Embarass UNATCO",max=1)
-    bingo_options(25)=(event="ManBathroomBarks_Played",desc="Embarass UNATCO",max=1)
+    //bingo_options(25)=(event="ManBathroomBarks_Played",desc="Embarass UNATCO",max=1)
     bingo_options(26)=(event="GotHelicopterInfo",desc="A bomb!",max=1)
     bingo_options(27)=(event="JoshFed",desc="Give Josh some food",max=1)
     bingo_options(28)=(event="M02BillyDone",desc="Give Billy some food",max=1)
     bingo_options(29)=(event="FordSchickRescued",desc="Rescue Ford Schick",max=1)
-    bingo_options(30)=(event="NiceTerrorist_Dead",desc="Ignore Paul",max=1)
+    bingo_options(30)=(event="NiceTerrorist_Dead",desc="Ignore Paul in the 747 Hanger",max=1)
     bingo_options(31)=(event="M10EnteredBakery",desc="Enter the bakery",max=1)
     //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
     bingo_options(32)=(event="FreshWaterOpened",desc="Fix the water",max=1)
@@ -715,4 +752,10 @@ defaultproperties
     bingo_options(56)=(event="SubwayHostagesSaved",desc="Save both hostages in the subway",max=1)
     bingo_options(57)=(event="HotelHostagesSaved",desc="Save all 3 hostages in the hotel",max=1)
     bingo_options(58)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1)
+
+    mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
+    mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
+    mutually_exclusive(2)=(e1="SmugglerDied",e2="M08WarnedSmuggler")
+    mutually_exclusive(3)=(e1="SilhouetteHostagesAllRescued",e2="hostage_Dead")
+    mutually_exclusive(4)=(e1="SilhouetteHostagesAllRescued",e2="hostage_female_Dead")
 }

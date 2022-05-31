@@ -87,7 +87,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <a href="https://www.youtube.com/watch?v=A0Li3XuBjGg" target="_blank">
 <img src="https://i.imgur.com/hTCuQCH.png" alt="v1.5 Trailer" height="200"/></a>
 
-## Currently in v1.9, DXRando randomizes
+## Currently in v1.9.1, DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
@@ -124,6 +124,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
     * Grenades Only
     * No Pistols - for people who think the pistol is OP
 * Max Rando - randomize the randomizer's settings!
+* An integrated Bingo board
 * Co-op when combined with the HX mod (Alpha)
 * making all or some of the doors that normally require a key also lockpickable and/or destructible
 * making all or some keypads hackable.
