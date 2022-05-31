@@ -650,7 +650,16 @@ function _MarkBingo(coerce string eventname)
     local class<Json> js;
     js = class'Json';
 
-    if(eventname == "ManBathroomBarks_Played") eventname = "BathroomBarks_Played";// LDDP
+    // combine some events
+    switch(eventname) {
+        case "ManBathroomBarks_Played":
+            eventname = "BathroomBarks_Played";// LDDP
+            break;
+        case "hostage_female_Dead":
+        case "hostage_Dead":
+            eventname = "paris_hostage_Dead";
+            break;
+    }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
     previousbingos = data.NumberOfBingos();
@@ -701,8 +710,8 @@ defaultproperties
 	bingo_options(9)=(event="TobyAtanwe_Dead",desc="Kill Toby Atanwe",max=1)
 	bingo_options(10)=(event="Antoine_Dead",desc="Kill Antoine",max=1)
 	bingo_options(11)=(event="Chad_Dead",desc="Kill Chad",max=1)
-	bingo_options(12)=(event="hostage_Dead",desc="Kill Juveau",max=1)
-	bingo_options(13)=(event="hostage_female_Dead",desc="Kill hostage Anna",max=1)
+	bingo_options(12)=(event="paris_hostage_Dead",desc="Kill both the hostages in the catacombs",max=2)
+	//bingo_options(13)=(event="hostage_female_Dead",desc="Kill hostage Anna",max=1)
 	bingo_options(14)=(event="Hela_Dead",desc="Kill Hela",max=1)
 	bingo_options(15)=(event="Renault_Dead",desc="Kill Renault",max=1)
 	bingo_options(16)=(event="Labrat_Bum_Dead",desc="Kill Labrat Bum",max=1)
@@ -728,7 +737,7 @@ defaultproperties
     bingo_options(32)=(event="FreshWaterOpened",desc="Fix the water",max=1)
     bingo_options(33)=(event="assassinapartment",desc="Visit the assassin",max=1)
     bingo_options(34)=(event="GaveRentonGun",desc="Give Gilbert a gun",max=1)
-    bingo_options(35)=(event="DXREvents_LeftOnBoat",desc="Take the boat",max=1)
+    bingo_options(35)=(event="DXREvents_LeftOnBoat",desc="Take the boat out of Battery Park",max=1)
     bingo_options(36)=(event="AlleyBumRescued",desc="Rescue the alley bum",max=1)
     bingo_options(37)=(event="FoundScientistBody",desc="Search the canal",max=1)
     bingo_options(38)=(event="ClubMercedesConvo1_Done",desc="Help Mercedes and Tessa",max=1)
@@ -756,6 +765,5 @@ defaultproperties
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
     mutually_exclusive(2)=(e1="SmugglerDied",e2="M08WarnedSmuggler")
-    mutually_exclusive(3)=(e1="SilhouetteHostagesAllRescued",e2="hostage_Dead")
-    mutually_exclusive(4)=(e1="SilhouetteHostagesAllRescued",e2="hostage_female_Dead")
+    mutually_exclusive(3)=(e1="SilhouetteHostagesAllRescued",e2="paris_hostage_Dead")
 }
