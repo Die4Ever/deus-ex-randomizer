@@ -1020,6 +1020,7 @@ function NewGamePlus()
     info("NewGamePlus() deleted all flags");
     SaveFlags();
     p.bStartNewGameAfterIntro = true;
+    class'PlayerDataItem'.static.ResetData(p);
     Level.Game.SendPlayer(p, "00_intro");
 }
 
