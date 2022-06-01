@@ -12,6 +12,7 @@ defaultproperties
     bImportant=True
     bDetectable=false
     bIgnore=true
+    RaiseAlarm=RAISEALARM_Never
     Health=200
     HealthArmLeft=200
     HealthArmRight=200
