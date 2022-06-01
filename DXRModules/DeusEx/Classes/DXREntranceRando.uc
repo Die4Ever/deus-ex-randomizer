@@ -1012,8 +1012,14 @@ function LoadConns(optional int missionNum)
 {
     local PlayerDataItem ds;
 
+    if(missionNum == 0) {
+        missionNum = dxr.dxInfo.missionNumber;
+        if( missionNum == 11 ) missionNum = 10;//combine paris 10 and 11
+        if( missionNum == 14 ) missionNum = 12;//combine vandenberg and oceanlab
+    }
+
     ds = class'PlayerDataItem'.static.GiveItem(Player());
-    if( missionNum == 0 || ds.EntranceRandoMissionNumber == missionNum ) {
+    if( ds.EntranceRandoMissionNumber == missionNum ) {
         BindEntrances(ds, false);
     } else {
         ds.EntranceRandoMissionNumber = missionNum;
