@@ -124,7 +124,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
     * Grenades Only
     * No Pistols - for people who think the pistol is OP
 * Max Rando - randomize the randomizer's settings!
-* An integrated Bingo board
+* An integrated Bingo board (on the Goals screen there's a Bingo button in the top right)
 * Co-op when combined with the HX mod (Alpha)
 * making all or some of the doors that normally require a key also lockpickable and/or destructible
 * making all or some keypads hackable.

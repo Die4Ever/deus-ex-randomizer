@@ -358,6 +358,8 @@ function VandSubAnyEntry()
     local FlagTrigger ft;
     local FlagBase flags;
     local DataLinkTrigger dt;
+    local Conversation c;
+    local MapExit exit;
     flags = dxr.flagbase;
 
     // backtracking to gas station
@@ -410,10 +412,33 @@ function VandSubAnyEntry()
     // repeat flights to silo
     foreach AllActors(class'InterpolateTrigger', t, 'ChopperExit')
         t.bTriggerOnceOnly = false;
+
     if( flags.GetBool('DL_downloaded_Played') ) {
         RemoveChoppers('BlackHelicopter');
         SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vect(2104.722168, 3647.967773, 896.197144), rot(0, 0, 0) );
     }
+
+    // ability to fly to the silo even after howard strong is dead
+    c = GetConversation('JockArea51');
+    c.bDisplayOnce = false;
+
+    foreach AllActors(class'MapExit', exit, 'SiloExit') {
+        exit.event = '';
+        exit.Destroy();
+    }
+    exit = Spawn(class'MapExit',, 'SiloExit', vect(2620, 3284.822754, 743.136780) );
+    exit.event = 'BlackHelicopter';
+    exit.SetCollision(false,false,false);
+    exit.SetDestination("14_Oceanlab_silo.dx", '', "frontgate");
+    exit.bPlayTransition = true;
+    exit.cameraPathTag = 'Camera2';
+
+    foreach AllActors(class'InterpolateTrigger', t, 'SiloExit') {
+        t.event = '';
+        t.Destroy();
+    }
+    t = Spawn(class'InterpolateTrigger',, 'SiloExit', vect(2680, 3332.543213, 768.108032) );
+    t.event = 'BlackHelicopter';
 }
 
 function VandOceanLabAnyEntry()
@@ -488,6 +513,7 @@ function VandOceanLabAnyEntry()
 function VandSiloAnyEntry()
 {
     local FlagBase flags;
+    local Conversation c;
     flags = dxr.flagbase;
 
     // back to sub base
@@ -497,6 +523,9 @@ function VandSiloAnyEntry()
 
     RemoveChoppers('backtrack_chopper');
     BacktrackChopper('backtrack_path', 'backtrack_chopper', 'backtrack_path', "", 'backtrack_camera', "14_Vandenberg_Sub", 'InterpolationPoint39', "", vect(507, -2500, 1600), rot(0,0,0) );
+
+    c = GetConversation('JockArea51');
+    c.bDisplayOnce = false;
 }
 
 function RemoveChoppers(optional Name ChopperTag)
