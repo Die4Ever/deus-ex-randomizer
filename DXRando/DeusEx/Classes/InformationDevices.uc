@@ -1,5 +1,7 @@
 #ifdef injections
 class InformationDevices injects InformationDevices abstract;
+#elseif revision
+class DXRInformationDevices extends DataCube;
 #else
 class DXRInformationDevices extends #var prefix InformationDevices;
 #endif
@@ -244,6 +246,13 @@ function bool Facelift(bool bOn)
 
 function postbeginplay()
 {
+}
+#endif
+
+#ifdef revision
+function bool Facelift(bool bOn)
+{
+	return false;
 }
 #endif
 

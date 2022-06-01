@@ -50,6 +50,9 @@ function ReplaceInformationDevice(#var prefix InformationDevices a)
     n.msgNoText = a.msgNoText;
     n.ImageLabel = a.ImageLabel;
     n.AddedToDatavaultLabel = a.AddedToDatavaultLabel;
+#ifdef revision
+    n.TextPackage = a.TextPackage;
+#endif
     ReplaceDeusExDecoration(a, n);
 
     a.Destroy();
