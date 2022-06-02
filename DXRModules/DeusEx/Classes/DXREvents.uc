@@ -448,6 +448,7 @@ static function PaulDied(DXRando dxr)
 
     j = js.static.Start("PawnDeath");
     js.static.Add(j, "victim", "Paul Denton");
+    js.static.Add(j, "victimBindName", "PaulDenton");
     js.static.Add(j, "dmgtype", "");
     GeneralEventData(dxr, j);
     js.static.Add(j, "location", dxr.player.location);
@@ -700,7 +701,7 @@ defaultproperties
 {
     bingo_options(0)=(event="TerroristCommander_Dead",desc="Kill the Terrorist Commander",max=1)
 	bingo_options(1)=(event="TiffanySavage_Dead",desc="Kill Tiffany Savage",max=1)
-	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul Denton die",max=1)
+	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul die",max=1)
 	bingo_options(3)=(event="JordanShea_Dead",desc="Kill Jordan Shea",max=1)
 	bingo_options(4)=(event="SandraRenton_Dead",desc="Kill Sandra Renton",max=1)
 	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1)
