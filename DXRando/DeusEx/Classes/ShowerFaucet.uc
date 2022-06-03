@@ -1,16 +1,16 @@
 #ifdef injections
 class ShowerFaucet injects ShowerFaucet;
 #else
-class DXRShowerFaucet extends #var prefix ShowerFaucet;
+class DXRShowerFaucet extends #var(prefix)ShowerFaucet;
 #endif
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-	local #var PlayerPawn  player;
+	local #var(PlayerPawn) player;
     local DXRando      dxr;
     local bool         wasOnFire;
 
-	player = #var PlayerPawn (Frobber);
+	player = #var(PlayerPawn)(Frobber);
     wasOnFire = (player != None && player.bOnFire);
 
 	Super.Frob(Frobber, frobWith);

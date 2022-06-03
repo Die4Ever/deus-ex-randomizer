@@ -21,7 +21,7 @@ simulated function AnyEntry()
     }
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  p)
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
     AnyEntry();
@@ -44,45 +44,45 @@ simulated function RandoWeapon(DeusExWeapon w)
         info(w $ " w.HitDamage ("$ w.HitDamage $") < 2");
         w.HitDamage = 2;
     }
-    if( #var prefix WeaponHideAGun(w) == None && w.ProjectileClass != None ) {
+    if( #var(prefix)WeaponHideAGun(w) == None && w.ProjectileClass != None ) {
         //don't do this for the PS20/PS40 because it shares the PlasmaBolt projectile with the PlasmaRifle in a really dumb way, the PS40 code handles this itself
         //I might move this logic into an injector into DeusExProjectile, maybe in BeginPlay it could check its owner and copy the HitDamage from there?
         switch(w.ProjectileClass) {
-            case class'#var prefix Dart':
+            case class'#var(prefix)Dart':
                 w.ProjectileClass.default.Damage = 0.6 * float(w.HitDamage);
                 break;
 
-            case class'#var prefix DartFlare':
-            case class'#var prefix DartPoison':
+            case class'#var(prefix)DartFlare':
+            case class'#var(prefix)DartPoison':
                 w.ProjectileClass.default.Damage = 0.2 * float(w.HitDamage);
                 break;
 
-            case class'#var prefix PlasmaBolt':
+            case class'#var(prefix)PlasmaBolt':
                 w.ProjectileClass.default.Damage = 1.15 * float(w.HitDamage);
                 break;
 
-            case class'#var prefix Fireball':
+            case class'#var(prefix)Fireball':
                 w.ProjectileClass.default.Damage = float(w.HitDamage);
                 break;
 
-            case class'#var prefix Rocket':
+            case class'#var(prefix)Rocket':
                 w.ProjectileClass.default.Damage = float(w.HitDamage);
                 break;
 
-            case class'#var prefix Shuriken':
+            case class'#var(prefix)Shuriken':
                 w.ProjectileClass.default.Damage = float(w.HitDamage);
                 break;
 
-            case class'#var prefix GasGrenade':
-            case class'#var prefix TearGas':
-            case class'#var prefix GreaselSpit':
-            case class'#var prefix RocketRobot':
-            case class'#var prefix LAM':
-            case class'#var prefix RocketLAW':
-            case class'#var prefix NanoVirusGrenade':
-            case class'#var prefix EMPGrenade':
-            case class'#var prefix GraySpit':
-            case class'#var prefix RocketMini':
+            case class'#var(prefix)GasGrenade':
+            case class'#var(prefix)TearGas':
+            case class'#var(prefix)GreaselSpit':
+            case class'#var(prefix)RocketRobot':
+            case class'#var(prefix)LAM':
+            case class'#var(prefix)RocketLAW':
+            case class'#var(prefix)NanoVirusGrenade':
+            case class'#var(prefix)EMPGrenade':
+            case class'#var(prefix)GraySpit':
+            case class'#var(prefix)RocketMini':
                 //ignore these for now
                 break;
 
@@ -106,7 +106,7 @@ simulated function RandoWeapon(DeusExWeapon w)
     dxr.SetSeed(oldseed);
 }
 
-simulated function RemoveRandomWeapon(#var PlayerPawn  p)
+simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
 {
     local Inventory i;
     local Weapon weaps[64];

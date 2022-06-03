@@ -56,7 +56,7 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-simulated function PlayerLogin(#var PlayerPawn  player)
+simulated function PlayerLogin(#var(PlayerPawn) player)
 {
     local PlayerDataItem data;
     Super.PlayerLogin(player);
@@ -70,10 +70,10 @@ simulated function PlayerLogin(#var PlayerPawn  player)
 event PreTravel()
 {
     local PlayerDataItem data;
-    local #var PlayerPawn  p;
+    local #var(PlayerPawn) p;
     Super.PreTravel();
 #ifdef multiplayer
-    foreach AllActors(class'#var PlayerPawn ', p) {
+    foreach AllActors(class'#var(PlayerPawn)', p) {
         l("PreTravel "$p);
         data = class'PlayerDataItem'.static.GiveItem(p);
         data.SkillPointsAvail = p.SkillPointsAvail;
@@ -82,7 +82,7 @@ event PreTravel()
 #endif
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  player)
+simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 {
     local PlayerDataItem data;
     Super.PlayerAnyEntry(player);
@@ -152,10 +152,10 @@ simulated function RandoSkillLevelValues(Skill a)
     RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_wet_dry, a.Description);
 
 #ifdef injections
-    if( #var prefix SkillDemolition(a) != None ) {
+    if( #var(prefix)SkillDemolition(a) != None ) {
         add_desc = "Each level increases the number of grenades you can carry by 1.";
     }
-    else if( #var prefix SkillComputer(a) != None ) {
+    else if( #var(prefix)SkillComputer(a) != None ) {
         add_desc = "Hacking uses 5 bioelectric energy per second.";
     }
 #endif
@@ -184,16 +184,16 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         p = "%%";
     }
 
-    if( s.Class == class'#var prefix SkillDemolition' || InStr(String(s.Class.Name), "#var prefix SkillWeapon") == 0 ) {
+    if( s.Class == class'#var(prefix)SkillDemolition' || InStr(String(s.Class.Name), "#var(prefix)SkillWeapon") == 0 ) {
         word = "Damage";
         f = -2.0 * s.LevelValues[i] + 1.0;
         return int(f * 100.0) $ p;
     }
-    else if( s.Class == class'#var prefix SkillLockpicking' || s.Class == class'#var prefix SkillTech' ) {
+    else if( s.Class == class'#var(prefix)SkillLockpicking' || s.Class == class'#var(prefix)SkillTech' ) {
         word = "Efficiency";
         return int(s.LevelValues[i] * 100.0) $ p;
     }
-    else if( s.Class == class'#var prefix SkillEnviro' ) {
+    else if( s.Class == class'#var(prefix)SkillEnviro' ) {
         f = s.LevelValues[i];
         if(i>0) r="|n    ";
 
@@ -219,17 +219,17 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
 
         return r;
     }
-    else if( s.Class == class'#var prefix SkillMedicine') {
+    else if( s.Class == class'#var(prefix)SkillMedicine') {
         word = "Healing";
         return int( s.LevelValues[i] * 30.0 ) $ " HP";
     }
-    else if( s.Class == class'#var prefix SkillComputer') {
+    else if( s.Class == class'#var(prefix)SkillComputer') {
         word = "Hack Time";
         if( i == 0 ) return "--";
         f = 15.0 / (s.LevelValues[i] * 1.5);
         return FloatToString(f, 1) $ " sec";
     }
-    else if( s.Class == class'#var prefix SkillSwimming') {
+    else if( s.Class == class'#var(prefix)SkillSwimming') {
         word = "Swimming Speed";
         return int(s.LevelValues[i] * 100.0) $ p;
     }
@@ -295,7 +295,7 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
 #endif
 }
 
-simulated function Skill GetRandomPlayerSkill(#var PlayerPawn  p)
+simulated function Skill GetRandomPlayerSkill(#var(PlayerPawn) p)
 {
     local Skill skills[64], t;
     local int numSkills, slot, numLevels;
@@ -314,7 +314,7 @@ simulated function Skill GetRandomPlayerSkill(#var PlayerPawn  p)
     return skills[slot];
 }
 
-simulated function DowngradeRandomSkill(#var PlayerPawn  p)
+simulated function DowngradeRandomSkill(#var(PlayerPawn) p)
 {
     local Skill skill;
 
@@ -327,7 +327,7 @@ simulated function DowngradeRandomSkill(#var PlayerPawn  p)
     skill.CurrentLevel--;
 }
 
-simulated function RemoveRandomSkill(#var PlayerPawn  p)
+simulated function RemoveRandomSkill(#var(PlayerPawn) p)
 {
     local Skill skill;
 

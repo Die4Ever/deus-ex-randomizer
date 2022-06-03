@@ -17,10 +17,10 @@ function RandomDancing(Actor a)
 
 function AnyEntry()
 {
-    local #var prefix DXLogo logo;
-    local #var prefix IonStormLogo islogo;
-    local #var prefix EidosLogo elogo;
-    local #var prefix ElectricityEmitter elec;
+    local #var(prefix)DXLogo logo;
+    local #var(prefix)IonStormLogo islogo;
+    local #var(prefix)EidosLogo elogo;
+    local #var(prefix)ElectricityEmitter elec;
     local Actor a;
     local Rotator r;
     local Vector v;
@@ -31,7 +31,7 @@ function AnyEntry()
         case "DXONLY":
         case "DX":
             l("Memeing up "$ dxr.localURL);
-            foreach AllActors(class'#var prefix DXLogo', logo)
+            foreach AllActors(class'#var(prefix)DXLogo', logo)
             {
                 a = ReplaceWithRandomClass(logo);
                 if (IsHuman(a)){
@@ -57,7 +57,7 @@ function AnyEntry()
                 GotoState('RotatingState');
             }
 
-            foreach AllActors(class'#var prefix IonStormLogo', islogo)
+            foreach AllActors(class'#var(prefix)IonStormLogo', islogo)
             {
                 a = ReplaceWithRandomClass(islogo);
                 if (IsHuman(a)){
@@ -72,7 +72,7 @@ function AnyEntry()
                 a.AmbientSound = None;
             }
 
-            foreach AllActors(class'#var prefix EidosLogo', elogo)
+            foreach AllActors(class'#var(prefix)EidosLogo', elogo)
             {
                 a = ReplaceWithRandomClass(elogo);
                 if (IsHuman(a)){
@@ -87,7 +87,7 @@ function AnyEntry()
                 a.AmbientSound = None;
             }
 
-            foreach AllActors(class'#var prefix ElectricityEmitter', elec)
+            foreach AllActors(class'#var(prefix)ElectricityEmitter', elec)
             {
                 v.Z = 70;
                 elec.move(v);
@@ -166,14 +166,14 @@ state() RotatingState {
 function RandomizeCutscene()
 {
     local Actor a;
-    local #var prefix Tree t;
+    local #var(prefix)Tree t;
     local class<Actor> old_skips[6];
     local int i;
     //local CameraPoint c;
 
     SetSeed("RandomizeCutscene");
 
-    foreach AllActors(class'#var prefix Tree', t)
+    foreach AllActors(class'#var(prefix)Tree', t)
     { // exclude 90% of trees from the SwapAll by temporarily hiding them
         if( rng(100) < 90 ) t.bHidden = true;
     }
@@ -195,7 +195,7 @@ function RandomizeCutscene()
         _skipactor_types[i] = old_skips[i];
     }
 
-    foreach AllActors(class'#var prefix Tree', t)
+    foreach AllActors(class'#var(prefix)Tree', t)
     {
         t.bHidden = false;
     }
@@ -203,7 +203,7 @@ function RandomizeCutscene()
     foreach AllActors(class'Actor', a)
     {
         if( Mover(a) != None ) continue;
-        if( #var prefix BreakableGlass(a) != None ) continue;
+        if( #var(prefix)BreakableGlass(a) != None ) continue;
         if( a.IsA('Rev_SphereLight') ) continue;
         if( a.bHidden || DeusExPlayer(a) != None ) continue;
 

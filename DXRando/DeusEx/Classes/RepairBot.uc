@@ -1,7 +1,7 @@
 #ifdef injections
 class DXRRepairBot merges RepairBot;
 #else
-class DXRRepairBot extends #var prefix RepairBot;
+class DXRRepairBot extends #var(prefix)RepairBot;
 #endif
 
 var int numUses;

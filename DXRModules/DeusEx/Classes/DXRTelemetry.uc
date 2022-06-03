@@ -23,7 +23,7 @@ function CheckConfig()
 
 function AnyEntry()
 {
-    local #var PlayerPawn  p;
+    local #var(PlayerPawn) p;
     Super.AnyEntry();
 #ifdef hx
     //SetTimer(300, true);

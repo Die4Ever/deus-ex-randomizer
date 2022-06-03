@@ -1,6 +1,6 @@
 class DXRHints extends DXRBase transient;
 
-var #var PlayerPawn  _player;
+var #var(PlayerPawn) _player;
 
 // if this hints array is too long, then no one will ever see the best hints
 var string hints[100];
@@ -32,7 +32,7 @@ simulated function InitHints()
     else
         AddHint("Check out @DXRandoActivity on Twitter!", "We just shared your death publicly, go retweet it!");
 
-    if(#defined injections) {
+    if(#defined(injections)) {
         AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken");
         AddHint("You can carry 5 fire extinguishers in 1 inventory slot.", "They are very useful for stealthily killing multiple enemies.");
         AddHint("Ever tried to extinguish a fire with a toilet?", "How about a urinal or a shower?");
@@ -113,7 +113,7 @@ simulated function InitHints()
     }
 
     if(mission <= 4) {
-        if(#defined injections)
+        if(#defined(injections))
             AddHint("The flashlight (F12) no longer consumes energy when used.", "Go wild with it!");
         AddHint("Melee attacks from behind do bonus damage!");
         AddHint("The flashlight (F12) can be used to attract the attention of guards");
@@ -248,7 +248,7 @@ simulated function AddHint(string hint, optional string detail)
     numHints++;
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  player)
+simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 {
     Super.PlayerAnyEntry(player);
     _player = player;
@@ -297,7 +297,7 @@ simulated function Timer()
     }
 }
 
-static function AddDeath(DXRando dxr, #var PlayerPawn  player)
+static function AddDeath(DXRando dxr, #var(PlayerPawn) player)
 {
     local DXRHints hints;
     hints = DXRHints(dxr.FindModule(class'DXRHints'));

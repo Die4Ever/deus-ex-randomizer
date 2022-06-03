@@ -62,7 +62,7 @@ def preprocess(content, ifdef, definitions):
 
 
 def replace_vars(content, definitions):
-    r = re.compile(r'#var (\w+) ')
+    r = re.compile(r'#var\((\w+)\)')
     content_out = content
     for i in r.finditer(content):
         if i.group(1) in definitions:
@@ -73,7 +73,7 @@ def replace_vars(content, definitions):
 
 
 def replace_defineds(content, definitions):
-    r = re.compile(r'#defined (\w+)')
+    r = re.compile(r'#defined\((\w+)\)')
     content_out = content
     for i in r.finditer(content):
         if i.group(1) in definitions:

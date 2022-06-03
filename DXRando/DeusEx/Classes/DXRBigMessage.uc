@@ -14,7 +14,7 @@ const kpStartY = 0.4;
 const kpColumn1X = 0.20;
 const kpColumn2X = 0.60;
 
-static function DXRBigMessage GetCurrentBigMessage(#var PlayerPawn  player) {
+static function DXRBigMessage GetCurrentBigMessage(#var(PlayerPawn) player) {
     local DXRBigMessage m;
     local DeusExRootWindow root;
 
@@ -25,7 +25,7 @@ static function DXRBigMessage GetCurrentBigMessage(#var PlayerPawn  player) {
     return DXRBigMessage(root.GetTopWindow());
 }
 
-static function DXRBigMessage CreateBigMessage(#var PlayerPawn  player, DXRHints hints, string message, string detail, string line3) {
+static function DXRBigMessage CreateBigMessage(#var(PlayerPawn) player, DXRHints hints, string message, string detail, string line3) {
     local DXRBigMessage m;
     local DeusExRootWindow root;
 

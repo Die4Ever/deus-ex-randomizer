@@ -19,7 +19,7 @@ struct BingoSpot {
 };
 var travel BingoSpot bingo[25];
 
-simulated function static PlayerDataItem GiveItem(#var PlayerPawn  p)
+simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
 {
     local PlayerDataItem i;
 
@@ -33,7 +33,7 @@ simulated function static PlayerDataItem GiveItem(#var PlayerPawn  p)
     return i;
 }
 
-simulated function static ResetData(#var PlayerPawn  p)
+simulated function static ResetData(#var(PlayerPawn) p)
 {
     local PlayerDataItem o, n;
     o = GiveItem(p);

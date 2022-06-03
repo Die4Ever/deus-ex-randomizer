@@ -164,7 +164,7 @@ function CheckPaul() {
     if( dxr.flagbase.GetBool('PaulDenton_Dead') ) {
         if( ! dxr.flagbase.GetBool('DXREvents_PaulDead'))
             PaulDied(dxr);
-    } else if( ! #defined vanilla ) {
+    } else if( ! #defined(vanilla)) {
         SavedPaul(dxr, dxr.player);
     }
 }
@@ -346,8 +346,8 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
     js.static.Add(j, "victim", GetActorName(victim));
     js.static.Add(j, "victimBindName", victim.BindName);
     js.static.Add(j, "victimRandomizedName", GetRandomizedName(victim));
-    if(#var prefix ScriptedPawn(victim) != None) {
-        unconcious = #var prefix ScriptedPawn(victim).bStunned;
+    if(#var(prefix)ScriptedPawn(victim) != None) {
+        unconcious = #var(prefix)ScriptedPawn(victim).bStunned;
         js.static.Add(j, "victimUnconcious", unconcious);
     }
 
@@ -371,12 +371,12 @@ static function string GetRandomizedName(Actor a)
     return sp.FamiliarName;
 }
 
-static function AddPlayerDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+static function AddPlayerDeath(DXRando dxr, #var(PlayerPawn) player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local DXREvents ev;
     class'DXRStats'.static.AddDeath(player);
 
-    if(#defined injections)
+    if(#defined(injections))
         class'DXRHints'.static.AddDeath(dxr, player);
     else {
         // for nonvanilla, because GameInfo.Died is called before the player's Dying state calls root.ClearWindowStack();
@@ -428,10 +428,10 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
 static function AddDeath(Pawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local DXRando dxr;
-    local #var PlayerPawn  player;
-    local #var prefix ScriptedPawn sp;
-    player = #var PlayerPawn (victim);
-    sp = #var prefix ScriptedPawn(victim);
+    local #var(PlayerPawn) player;
+    local #var(prefix)ScriptedPawn sp;
+    player = #var(PlayerPawn)(victim);
+    sp = #var(prefix)ScriptedPawn(victim);
     if(player != None) {
         foreach victim.AllActors(class'DXRando', dxr) break;
         AddPlayerDeath(dxr, player, Killer, damageType, HitLocation);
@@ -458,7 +458,7 @@ static function PaulDied(DXRando dxr)
     MarkBingo(dxr, "PaulDenton_Dead");
 }
 
-static function SavedPaul(DXRando dxr, #var PlayerPawn  player, optional int health)
+static function SavedPaul(DXRando dxr, #var(PlayerPawn) player, optional int health)
 {
     local string j;
     local class<Json> js;
@@ -559,7 +559,7 @@ static function string GetLoadoutName(DXRando dxr)
 }
 
 // BINGO STUFF
-simulated function PlayerAnyEntry(#var PlayerPawn  player)
+simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 {
     local PlayerDataItem data;
     local string event, desc;
@@ -762,6 +762,7 @@ defaultproperties
     bingo_options(56)=(event="SubwayHostagesSaved",desc="Save both hostages in the subway",max=1)
     bingo_options(57)=(event="HotelHostagesSaved",desc="Save all 3 hostages in the hotel",max=1)
     bingo_options(58)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1)
+    bingo_options(59)=(event="JosephManderley_Dead",desc="Kill Joseph Manderley",max=1)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")

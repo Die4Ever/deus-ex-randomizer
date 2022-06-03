@@ -40,15 +40,15 @@ function FirstEntry()
 
 function RandoTurrets(int percent_move, int percent_add)
 {
-    local #var prefix AutoTurret t;
-    local #var prefix SecurityCamera cam;
-    local #var prefix ComputerSecurity c;
+    local #var(prefix)AutoTurret t;
+    local #var(prefix)SecurityCamera cam;
+    local #var(prefix)ComputerSecurity c;
     local int i, hostile_turrets;
     local vector loc;
 
     SetSeed( "RandoTurrets move" );
 
-    foreach AllActors(class'#var prefix AutoTurret', t) {
+    foreach AllActors(class'#var(prefix)AutoTurret', t) {
         if( t.bTrackPlayersOnly==true || t.bTrackPawnsOnly==false ) hostile_turrets++;
         if( chance_single(percent_move) == false ) continue;
 
@@ -107,7 +107,7 @@ function bool GetTurretLocation(out vector loc, out rotator rotation)
     return true;
 }
 
-function MoveTurret(#var prefix AutoTurret t, vector loc)
+function MoveTurret(#var(prefix)AutoTurret t, vector loc)
 {
     local rotator rotation;
     local Vector v1, v2;
@@ -136,9 +136,9 @@ function MoveTurret(#var prefix AutoTurret t, vector loc)
     t.gun.SetBase(t);
 }
 
-function #var prefix AutoTurret SpawnTurret(vector loc)
+function #var(prefix)AutoTurret SpawnTurret(vector loc)
 {
-    local #var prefix AutoTurret t;
+    local #var(prefix)AutoTurret t;
     local rotator rotation;
 
     if( ! GetTurretLocation(loc, rotation) ) {
@@ -146,7 +146,7 @@ function #var prefix AutoTurret SpawnTurret(vector loc)
         return None;
     }
 
-    t = Spawn(class'#var prefix AutoTurret',,, loc, rotation);
+    t = Spawn(class'#var(prefix)AutoTurret',,, loc, rotation);
     if( t == None ) {
         warning("SpawnTurret failed at "$loc);
         return None;
@@ -160,19 +160,19 @@ function #var prefix AutoTurret SpawnTurret(vector loc)
     return t;
 }
 
-function #var prefix SecurityCamera GetCameraForTurret(#var prefix AutoTurret t)
+function #var(prefix)SecurityCamera GetCameraForTurret(#var(prefix)AutoTurret t)
 {
-    local #var prefix ComputerSecurity comp;
-    local #var prefix SecurityCamera cam;
+    local #var(prefix)ComputerSecurity comp;
+    local #var(prefix)SecurityCamera cam;
     local int i;
 
-    foreach AllActors(class'#var prefix ComputerSecurity',comp)
+    foreach AllActors(class'#var(prefix)ComputerSecurity',comp)
     {
         for (i = 0; i < ArrayCount(comp.Views); i++)
         {
             if (comp.Views[i].turretTag == t.Tag)
             {
-                foreach AllActors(class'#var prefix SecurityCamera', cam, comp.Views[i].cameraTag) {
+                foreach AllActors(class'#var(prefix)SecurityCamera', cam, comp.Views[i].cameraTag) {
                     return cam;
                 }
             }
@@ -242,7 +242,7 @@ function bool GetCameraLocation(out vector loc, out rotator rotation)
     return true;
 }
 
-function bool MoveCamera(#var prefix SecurityCamera c, vector loc)
+function bool MoveCamera(#var(prefix)SecurityCamera c, vector loc)
 {
     local rotator rotation;
     local int i;
@@ -260,9 +260,9 @@ function bool MoveCamera(#var prefix SecurityCamera c, vector loc)
     return true;
 }
 
-function #var prefix SecurityCamera SpawnCamera(vector loc)
+function #var(prefix)SecurityCamera SpawnCamera(vector loc)
 {
-    local #var prefix SecurityCamera c;
+    local #var(prefix)SecurityCamera c;
     local rotator rotation;
     local int i;
     local bool success;
@@ -272,7 +272,7 @@ function #var prefix SecurityCamera SpawnCamera(vector loc)
         return None;
     }
 
-    c = Spawn(class'#var prefix SecurityCamera',,, loc, rotation);
+    c = Spawn(class'#var(prefix)SecurityCamera',,, loc, rotation);
     if( c == None ) {
         warning("SpawnCamera failed at "$loc);
         return None;
@@ -290,9 +290,9 @@ function #var prefix SecurityCamera SpawnCamera(vector loc)
     return c;
 }
 
-function #var prefix ComputerSecurity SpawnSecurityComputer(vector loc, optional #var prefix AutoTurret t, optional #var prefix SecurityCamera cam)
+function #var(prefix)ComputerSecurity SpawnSecurityComputer(vector loc, optional #var(prefix)AutoTurret t, optional #var(prefix)SecurityCamera cam)
 {
-    local #var prefix ComputerSecurity c;
+    local #var(prefix)ComputerSecurity c;
     local LocationNormal locnorm;
     local int i;
     local FMinMax distrange;
@@ -306,7 +306,7 @@ function #var prefix ComputerSecurity SpawnSecurityComputer(vector loc, optional
     distrange.max = 16*75;
     NearestWallSearchZ(locnorm, distrange, 16*3, locnorm.loc, 2);
 
-    c = Spawn(class'#var prefix ComputerSecurity',,, locnorm.loc, Rotator(locnorm.norm));
+    c = Spawn(class'#var(prefix)ComputerSecurity',,, locnorm.loc, Rotator(locnorm.norm));
     if( c == None ) {
         warning("SpawnSecurityComputer failed at "$locnorm.loc);
         return None;
@@ -324,9 +324,9 @@ function #var prefix ComputerSecurity SpawnSecurityComputer(vector loc, optional
     return c;
 }
 
-function #var prefix Datacube SpawnDatacube(vector loc, #var prefix ComputerSecurity c)
+function #var(prefix)Datacube SpawnDatacube(vector loc, #var(prefix)ComputerSecurity c)
 {
-    local #var prefix Datacube d;
+    local #var(prefix)Datacube d;
 #ifdef vanilla
     local LocationNormal locnorm;
     local FMinMax distrange;
@@ -337,7 +337,7 @@ function #var prefix Datacube SpawnDatacube(vector loc, #var prefix ComputerSecu
     distrange.max = 16*50;
     NearestFloor(locnorm, distrange);
 
-    d = Spawn(class'#var prefix Datacube',,, locnorm.loc, Rotator(locnorm.norm));
+    d = Spawn(class'#var(prefix)Datacube',,, locnorm.loc, Rotator(locnorm.norm));
     if( d == None ) {
         warning("SpawnDatacube failed at "$locnorm.loc);
         return None;
@@ -352,9 +352,9 @@ function #var prefix Datacube SpawnDatacube(vector loc, #var prefix ComputerSecu
 
 function RandoMedBotsRepairBots(int medbots, int repairbots)
 {
-    local #var prefix RepairBot r;
-    local #var prefix MedicalBot m;
-    local #var prefix Datacube d;
+    local #var(prefix)RepairBot r;
+    local #var(prefix)MedicalBot m;
+    local #var(prefix)Datacube d;
     local Name medHint;
     local Name repairHint;
 
@@ -363,18 +363,18 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
 
     if( medbots > -1 ) {
         DestroyMedbotDoors();
-        foreach AllActors(class'#var prefix MedicalBot', m) {
+        foreach AllActors(class'#var(prefix)MedicalBot', m) {
             m.Destroy();
         }
-        foreach AllActors(class'#var prefix Datacube', d) {
+        foreach AllActors(class'#var(prefix)Datacube', d) {
             if( d.textTag == medHint ) d.Destroy();
         }
     }
     if( repairbots > -1 ) {
-        foreach AllActors(class'#var prefix RepairBot', r) {
+        foreach AllActors(class'#var(prefix)RepairBot', r) {
             r.Destroy();
         }
-        foreach AllActors(class'#var prefix Datacube', d) {
+        foreach AllActors(class'#var(prefix)Datacube', d) {
             if( d.textTag == repairHint ) d.Destroy();
         }
     }
@@ -400,24 +400,24 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
 
 function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcooldown, int rbcooldown)
 {
-    local #var prefix RepairBot r;
-    local #var prefix MedicalBot m;
+    local #var(prefix)RepairBot r;
+    local #var(prefix)MedicalBot m;
 
     if (mbcooldown!=0 || mbamount!=0) {
-         foreach AllActors(class'#var prefix MedicalBot', m) {
+         foreach AllActors(class'#var(prefix)MedicalBot', m) {
             RandoMedBot(m, mbamount, mbcooldown);
         }
 
     }
 
     if (rbcooldown!=0 || rbamount!=0) {
-        foreach AllActors(class'#var prefix RepairBot', r) {
+        foreach AllActors(class'#var(prefix)RepairBot', r) {
              RandoRepairBot(r, rbamount, rbcooldown);
         }
     }
 }
 
-simulated function RandoMedBot(#var prefix MedicalBot m, int mbamount, int mbcooldown)
+simulated function RandoMedBot(#var(prefix)MedicalBot m, int mbamount, int mbcooldown)
 {
     if (mbcooldown!=0){
         if (mbcooldown == 1) { //Individual
@@ -442,7 +442,7 @@ simulated function RandoMedBot(#var prefix MedicalBot m, int mbamount, int mbcoo
     }
 }
 
-simulated function RandoRepairBot(#var prefix RepairBot r, int rbamount, int rbcooldown)
+simulated function RandoRepairBot(#var(prefix)RepairBot r, int rbamount, int rbcooldown)
 {
     if (rbcooldown!=0){
         if (rbcooldown == 1) { //Individual
@@ -470,12 +470,12 @@ simulated function RandoRepairBot(#var prefix RepairBot r, int rbamount, int rbc
 function Actor SpawnBot(class<Actor> c, Name datacubeTag)
 {
     local Actor a;
-    local #var prefix Datacube d;
+    local #var(prefix)Datacube d;
 
     a = SpawnNewActor(c, false);
     if( a == None ) return None;
 
-    d = #var prefix Datacube(SpawnNewActor(class'#var prefix Datacube', true, a.Location, min_datacube_distance, max_datacube_distance));
+    d = #var(prefix)Datacube(SpawnNewActor(class'#var(prefix)Datacube', true, a.Location, min_datacube_distance, max_datacube_distance));
     if( d == None ) return a;
     d.textTag = datacubeTag;
     d.bAddToVault = false;

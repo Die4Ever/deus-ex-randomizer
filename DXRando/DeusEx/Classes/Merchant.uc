@@ -1,4 +1,4 @@
-class Merchant extends #var prefix Businessman3;
+class Merchant extends #var(prefix)Businessman3;
 
 #ifdef vmd
 function bool ShouldDoSinglePickPocket(DeusExPlayer Frobbie)

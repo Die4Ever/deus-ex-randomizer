@@ -998,7 +998,7 @@ function vanilla_important_locations()
 function PreFirstEntry()
 {
     local Actor a;
-    local #var prefix AnnaNavarre anna;
+    local #var(prefix)AnnaNavarre anna;
     local int i, k, start, slot, tries, num_ma, num_ps, num_gl, found_actors;
     local float vanilla_distance;
     local bool success;
@@ -1025,7 +1025,7 @@ function PreFirstEntry()
 #endif
     }
     else if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
-        foreach AllActors(class'#var prefix AnnaNavarre', anna) {
+        foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
             anna.SetOrders('Standing');
             anna.SetLocation( vect(1082.845703, 1807.538818, 335.101776) );
             anna.SetRotation( rot(0, -16608, 0) );

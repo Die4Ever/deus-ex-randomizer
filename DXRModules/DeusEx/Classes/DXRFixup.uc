@@ -131,7 +131,7 @@ function PreFirstEntry()
     SpawnDatacubes();
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
-    if(#defined mapfixes)
+    if(#defined(mapfixes))
         PreFirstEntryMapFixes();
 }
 
@@ -139,7 +139,7 @@ function PostFirstEntry()
 {
     Super.PostFirstEntry();
 
-    if(#defined mapfixes)
+    if(#defined(mapfixes))
         PostFirstEntryMapFixes();
 }
 
@@ -152,7 +152,7 @@ function AnyEntry()
 
     FixSamCarter();
     SetSeed( "DXRFixup AnyEntry missions" );
-    if(#defined mapfixes)
+    if(#defined(mapfixes))
         AnyEntryMapFixes();
 
     FixAmmoShurikenName();
@@ -160,10 +160,10 @@ function AnyEntry()
     AllAnyEntry();
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  p)
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
-    if(#defined vanilla)
+    if(#defined(vanilla))
         FixLogTimeout(p);
 
     FixAmmoShurikenName();
@@ -172,7 +172,7 @@ simulated function PlayerAnyEntry(#var PlayerPawn  p)
 function PreTravel()
 {
     Super.PreTravel();
-    if(#defined mapfixes)
+    if(#defined(mapfixes))
         PreTravelMapFixes();
 }
 
@@ -181,7 +181,7 @@ function Timer()
     Super.Timer();
     if( dxr == None ) return;
 
-    if(#defined mapfixes)
+    if(#defined(mapfixes))
         TimerMapFixes();
 }
 
@@ -290,7 +290,7 @@ function PostFirstEntryMapFixes()
 
     case "09_NYC_SHIPBELOW":
         // add a tnt crate on top of the pipe, visible from the ground floor
-        _AddActor(Self, class'#var prefix CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567), rot(0,0,0));
+        _AddActor(Self, class'#var(prefix)CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567), rot(0,0,0));
         break;
 
     case "12_VANDENBERG_CMD":
@@ -406,7 +406,7 @@ simulated function FixAmmoShurikenName()
     }
 }
 
-simulated function FixLogTimeout(#var PlayerPawn  p)
+simulated function FixLogTimeout(#var(PlayerPawn) p)
 {
     if( p.GetLogTimeout() - 1 <3 ) {
         p.SetLogTimeout(10);
@@ -429,7 +429,7 @@ function IncreaseBrightness(int brightness)
 function OverwriteDecorations()
 {
     local DeusExDecoration d;
-    local #var prefix Barrel1 b;
+    local #var(prefix)Barrel1 b;
     local int i;
     foreach AllActors(class'DeusExDecoration', d) {
         if( d.IsA('CrateBreakableMedCombat') || d.IsA('CrateBreakableMedGeneral') || d.IsA('CrateBreakableMedMedical') ) {
@@ -452,7 +452,7 @@ function OverwriteDecorations()
     }
 
     // in DeusExDecoration is the Exploding state, it divides the damage into 5 separate ticks with gradualHurtSteps = 5;
-    foreach AllActors(class'#var prefix Barrel1', b) {
+    foreach AllActors(class'#var(prefix)Barrel1', b) {
         if( b.explosionDamage > 50 && b.explosionDamage < 400 ) {
             b.explosionDamage = 400;
         }
@@ -474,7 +474,7 @@ function FixFlagTriggers()
 function SpawnDatacubes()
 {
 #ifdef injections
-    local #var prefix DataCube dc;
+    local #var(prefix)DataCube dc;
 #else
     local DXRInformationDevices dc;
 #endif
@@ -490,7 +490,7 @@ function SpawnDatacubes()
             loc = GetRandomPosition();
 
 #ifdef injections
-        dc = Spawn(class'#var prefix DataCube',,, loc, rot(0,0,0));
+        dc = Spawn(class'#var(prefix)DataCube',,, loc, rot(0,0,0));
 #else
         dc = Spawn(class'DXRInformationDevices',,, loc, rot(0,0,0));
 #endif
@@ -533,7 +533,7 @@ function Airfield_FirstEntry()
     local Actor a;
     local Trigger t;
     local NanoKey k;
-    local #var prefix InformationDevices i;
+    local #var(prefix)InformationDevices i;
 
     switch (dxr.localURL)
     {
@@ -544,7 +544,7 @@ function Airfield_FirstEntry()
                 k.Destroy();
             }
         }
-        foreach AllActors(class'#var prefix InformationDevices', i) {
+        foreach AllActors(class'#var(prefix)InformationDevices', i) {
             if( i.textTag == '03_Book06' ) {
                 i.bAddToVault = true;
             }
@@ -670,7 +670,7 @@ function BalanceJailbreak()
         }
         chance_remaining(r);
     }
-    else iclass = class'#var prefix WeaponCombatKnife';
+    else iclass = class'#var(prefix)WeaponCombatKnife';
 
     // make sure Stick With the Prod and Ninja JC can beat this
     loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
@@ -1016,7 +1016,7 @@ function HongKong_FirstEntry()
     local ScriptedPawn p;
     local Button1 b;
     local ElevatorMover e;
-    local #var Mover  m;
+    local #var(Mover) m;
     local FlagTrigger ft;
     local AllianceTrigger at;
 
@@ -1090,15 +1090,15 @@ function HongKong_FirstEntry()
 #endif
 
     case "06_HONGKONG_MJ12LAB":
-        foreach AllActors(class'#var Mover ', m, 'security_doors') {
+        foreach AllActors(class'#var(Mover)', m, 'security_doors') {
             m.bBreakable = false;
             m.bPickable = false;
         }
-        foreach AllActors(class'#var Mover ', m, 'Lower_lab_doors') {
+        foreach AllActors(class'#var(Mover)', m, 'Lower_lab_doors') {
             m.bBreakable = false;
             m.bPickable = false;
         }
-        foreach AllActors(class'#var Mover ', m, 'elevator_door') {
+        foreach AllActors(class'#var(Mover)', m, 'elevator_door') {
             m.bIsDoor = true;// DXRKeys will pick this up later since we're in PreFirstEntry
         }
         foreach AllActors(class'FlagTrigger', ft, 'MJ12Alert') {
@@ -1217,13 +1217,13 @@ function Paris_AnyEntry()
         // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
         npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
         if(npcs != None) {
-            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vect(-3209.483154, 5190.826172,1199.610352), rot(0, -10000, 0), class'#var prefix HazMatSuit');
+            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vect(-3209.483154, 5190.826172,1199.610352), rot(0, -10000, 0), class'#var(prefix)HazMatSuit');
         }
         // give him weapons to defend himself
         dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
         if(dxre != None && sp != None) {
             sp.bKeepWeaponDrawn = true;
-            GiveItem(sp, class'#var prefix WineBottle');
+            GiveItem(sp, class'#var(prefix)WineBottle');
             dxre.RandomizeSP(sp, 100);
             RemoveFears(sp);
         }
@@ -1251,7 +1251,7 @@ function HongKong_AnyEntry()
 {
     local Actor a;
     local ScriptedPawn p;
-    local #var Mover  m;
+    local #var(Mover) m;
     local bool boolFlag;
     local bool recruitedFlag;
 
@@ -1340,7 +1340,7 @@ function HongKong_AnyEntry()
         break;
 
     case "06_HONGKONG_WANCHAI_STREET":
-        foreach AllActors(class'#var Mover ', m, 'JockShaftTop') {
+        foreach AllActors(class'#var(Mover)', m, 'JockShaftTop') {
             m.bLocked = false;
             m.bHighlight = true;
         }

@@ -244,7 +244,7 @@ function ResolveFailed()
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-simulated final function #var PlayerPawn  player()
+simulated final function #var(PlayerPawn) player()
 {
     return dxr.flags.player();
 }

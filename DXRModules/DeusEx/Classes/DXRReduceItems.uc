@@ -76,10 +76,10 @@ function PostFirstEntry()
 
     ReduceAmmo(class'Ammo', float(dxr.flags.settings.ammo*scale)/100.0/100.0);
 
-    ReduceSpawns(class'#var prefix Multitool', dxr.flags.settings.multitools*scale/100);
-    ReduceSpawns(class'#var prefix Lockpick', dxr.flags.settings.lockpicks*scale/100);
-    ReduceSpawns(class'#var prefix BioelectricCell', dxr.flags.settings.biocells*scale/100);
-    ReduceSpawns(class'#var prefix MedKit', dxr.flags.settings.medkits*scale/100);
+    ReduceSpawns(class'#var(prefix)Multitool', dxr.flags.settings.multitools*scale/100);
+    ReduceSpawns(class'#var(prefix)Lockpick', dxr.flags.settings.lockpicks*scale/100);
+    ReduceSpawns(class'#var(prefix)BioelectricCell', dxr.flags.settings.biocells*scale/100);
+    ReduceSpawns(class'#var(prefix)MedKit', dxr.flags.settings.medkits*scale/100);
 
     for(i=0; i < ArrayCount(ammo_reductions); i++) {
         if( ammo_reductions[i].type == "" ) continue;
@@ -109,21 +109,21 @@ function ReduceItem(Actor a)
     else if( Weapon(a) != None ) {
         _ReduceWeaponAmmo(Weapon(a), float(dxr.flags.settings.ammo*scale)/100.0/100.0);
     }
-    else if( #var prefix Multitool(a) != None ) {
+    else if( #var(prefix)Multitool(a) != None ) {
         _ReduceSpawns(a, dxr.flags.settings.multitools*scale/100);
     }
-    else if( #var prefix Lockpick(a) != None ) {
+    else if( #var(prefix)Lockpick(a) != None ) {
         _ReduceSpawns(a, dxr.flags.settings.lockpicks*scale/100);
     }
-    else if( #var prefix BioelectricCell(a) != None ) {
+    else if( #var(prefix)BioelectricCell(a) != None ) {
         _ReduceSpawns(a, dxr.flags.settings.biocells*scale/100);
     }
-    else if( #var prefix MedKit(a) != None ) {
+    else if( #var(prefix)MedKit(a) != None ) {
         _ReduceSpawns(a, dxr.flags.settings.medkits*scale/100);
     }
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  p)
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
     SetTimer(1.0, true);
@@ -147,16 +147,16 @@ simulated function SetAllMaxCopies(int scale)
     if( dxr == None ) return;
     SetMaxAmmo( class'Ammo', dxr.flags.settings.ammo*scale/100 );
 
-    SetMaxCopies(class'#var prefix FireExtinguisher', 125);// just make sure to apply the enviro skill, HACK: 125% to counteract the normal 80%
-    SetMaxCopies(class'#var prefix Multitool', dxr.flags.settings.multitools*scale/100 );
-    SetMaxCopies(class'#var prefix Lockpick', dxr.flags.settings.lockpicks*scale/100 );
-    SetMaxCopies(class'#var prefix BioelectricCell', dxr.flags.settings.biocells*scale/100 );
-    SetMaxCopies(class'#var prefix MedKit', dxr.flags.settings.medkits*scale/100 );
+    SetMaxCopies(class'#var(prefix)FireExtinguisher', 125);// just make sure to apply the enviro skill, HACK: 125% to counteract the normal 80%
+    SetMaxCopies(class'#var(prefix)Multitool', dxr.flags.settings.multitools*scale/100 );
+    SetMaxCopies(class'#var(prefix)Lockpick', dxr.flags.settings.lockpicks*scale/100 );
+    SetMaxCopies(class'#var(prefix)BioelectricCell', dxr.flags.settings.biocells*scale/100 );
+    SetMaxCopies(class'#var(prefix)MedKit', dxr.flags.settings.medkits*scale/100 );
 
     for(i=0; i < ArrayCount(max_copies); i++) {
         if( max_copies[i].type == "" ) continue;
-        c = GetClassFromString( max_copies[i].type, class'#var prefix DeusExPickup' );
-        SetMaxCopies( class<#var prefix DeusExPickup>(c), max_copies[i].percent*scale/100 );
+        c = GetClassFromString( max_copies[i].type, class'#var(prefix)DeusExPickup' );
+        SetMaxCopies( class<#var(prefix)DeusExPickup>(c), max_copies[i].percent*scale/100 );
     }
     for(i=0; i < ArrayCount(max_ammo); i++) {
         if( max_ammo[i].type == "" ) continue;
@@ -277,15 +277,15 @@ function ReduceSpawnsInContainers(class<Actor> classname, float percent)
 
 simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
 {
-    local #var prefix DeusExPickup p;
+    local #var(prefix)DeusExPickup p;
     local int maxCopies;
 
-    foreach AllActors(class'#var prefix DeusExPickup', p) {
+    foreach AllActors(class'#var(prefix)DeusExPickup', p) {
         if( ! p.IsA(type.name) ) continue;
 
         p.maxCopies = float(p.default.maxCopies) * float(percent) / 100.0 * 0.8;
-        if( #defined balance && DeusExPlayer(p.Owner) != None && #var prefix FireExtinguisher(p) != None )
-            p.maxCopies += DeusExPlayer(p.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillEnviro');
+        if( #defined(balance) && DeusExPlayer(p.Owner) != None && #var(prefix)FireExtinguisher(p) != None )
+            p.maxCopies += DeusExPlayer(p.Owner).SkillSystem.GetSkillLevel(class'#var(prefix)SkillEnviro');
 
 #ifdef vmd
         maxCopies = p.VMDConfigureMaxCopies();
@@ -306,10 +306,10 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
         if( ! a.IsA(type.name) ) continue;
         a.MaxAmmo = float(a.default.MaxAmmo) * float(percent) / 100.0 * 0.8;
 
-        if( #defined balance && DeusExPlayer(a.Owner) != None
+        if( #defined(balance) && DeusExPlayer(a.Owner) != None
             && (AmmoEMPGrenade(a) != None || AmmoGasGrenade(a) != None || AmmoLAM(a) != None || AmmoNanoVirusGrenade(a) != None )
         ) {
-            a.MaxAmmo += DeusExPlayer(a.Owner).SkillSystem.GetSkillLevel(class'#var prefix SkillDemolition');
+            a.MaxAmmo += DeusExPlayer(a.Owner).SkillSystem.GetSkillLevel(class'#var(prefix)SkillDemolition');
         }
 
 #ifdef vmd

@@ -16,7 +16,7 @@ function CreateControls()
     Super.CreateControls();
     CreateTitleWindow(9,   5, "That's a Bingo!");
 
-    data = class'PlayerDataItem'.static.GiveItem(#var PlayerPawn (player));
+    data = class'PlayerDataItem'.static.GiveItem(#var(PlayerPawn)(player));
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {

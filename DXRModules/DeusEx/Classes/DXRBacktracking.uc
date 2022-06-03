@@ -80,7 +80,7 @@ function PreFirstEntry()
     }
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  p)
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
     FixInterpolating(p);
@@ -161,11 +161,11 @@ static function DeleteExpiredFlags(FlagBase flags, int missionNumber)
 
 function AnyEntry()
 {
-    local #var PlayerPawn  p;// we wanna make sure we get all the player objects, even in multiplayer?
+    local #var(PlayerPawn) p;// we wanna make sure we get all the player objects, even in multiplayer?
     local DeusExDecoration d;
     local ScriptedPawn s;
     Super.AnyEntry();
-    foreach AllActors(class'#var PlayerPawn ', p) {
+    foreach AllActors(class'#var(PlayerPawn)', p) {
         p.ConBindEvents();
         FixInterpolating(p);
     }
@@ -202,7 +202,7 @@ function AnyEntry()
     }
 }
 
-function FixInterpolating(#var PlayerPawn  p)
+function FixInterpolating(#var(PlayerPawn) p)
 {
     p.bDetectable = true;
     p.bHidden = false;

@@ -8,7 +8,7 @@ function bool EncroachingOn( actor Other )
     if( Inventory(Other) != None ) {
         return false;
     }
-    if( EncroachDamage < 10 && #var PlayerPawn (Other) == None ) {
+    if( EncroachDamage < 10 && #var(PlayerPawn)(Other) == None ) {
         Other.TakeDamage( 1000, Instigator, Other.Location, vect(0,0,0), 'Crushed' );
         Other.TakeDamage( 1000, Instigator, Other.Location, vect(0,0,0), 'Exploded' );
         return false;
@@ -25,7 +25,7 @@ function SetSeq(int seqnum)
 
     if( MoveTime/2 < Level.TimeSeconds-lastTime )
         oldSeq = true;
-    
+
     if ( bIsMoving && !oldSeq )
         return;
 

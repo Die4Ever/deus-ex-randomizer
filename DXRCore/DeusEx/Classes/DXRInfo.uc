@@ -1,7 +1,7 @@
 #ifdef injections
 class DXRInfo extends DXRVersion config(DXRando);
 #else
-class DXRInfo extends DXRVersion config(#var package );
+class DXRInfo extends DXRVersion config(#var(package));
 #endif
 
 var transient int passes;
@@ -53,15 +53,15 @@ simulated function DXRando GetDXR()
     return None;
 }
 
-simulated final function #var PlayerPawn  player(optional bool quiet)
+simulated final function #var(PlayerPawn) player(optional bool quiet)
 {
-    local #var PlayerPawn  p;
+    local #var(PlayerPawn) p;
     local DXRando dxr;
     dxr = GetDXR();
-    //p = #var PlayerPawn (GetPlayerPawn());
+    //p = #var(PlayerPawn)(GetPlayerPawn());
     p = dxr.Player;
     if( p == None ) {
-        p = #var PlayerPawn (GetPlayerPawn());
+        p = #var(PlayerPawn)(GetPlayerPawn());
         dxr.Player = p;
     }
     if( p == None && !quiet ) warning("player() found None");

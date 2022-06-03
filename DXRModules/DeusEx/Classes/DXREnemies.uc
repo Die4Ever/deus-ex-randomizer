@@ -69,7 +69,7 @@ function CheckConfig()
         AddRandomWeapon("WeaponAssaultGun", 10);
         AddRandomWeapon("WeaponMiniCrossbow", 5);
 #ifdef gmdx
-        AddRandomWeapon("#var package .GMDXGepGun", 4);
+        AddRandomWeapon("#var(package).GMDXGepGun", 4);
 #else
         AddRandomWeapon("WeaponGEPGun", 4);
 #endif
@@ -417,7 +417,7 @@ function bool IsInitialEnemy(ScriptedPawn p)
 {
     local int i;
 
-    return p.GetAllianceType( class'#var PlayerPawn '.default.Alliance ) == ALLIANCE_Hostile;
+    return p.GetAllianceType( class'#var(PlayerPawn)'.default.Alliance ) == ALLIANCE_Hostile;
 }
 
 function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedPawn> newclass)

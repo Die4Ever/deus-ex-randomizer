@@ -62,18 +62,18 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
     local class<Inventory> classes[16];
 
     i=0;
-    classes[i++] = class'#var prefix Medkit';
-    classes[i++] = class'#var prefix Lockpick';
-    classes[i++] = class'#var prefix Multitool';
-    classes[i++] = class'#var prefix BioelectricCell';
-    classes[i++] = class'#var prefix BallisticArmor';
-    classes[i++] = class'#var prefix Ammo10mm';
-    classes[i++] = class'#var prefix AmmoBattery';
-    classes[i++] = class'#var prefix AmmoDartPoison';
-    classes[i++] = class'#var prefix AmmoRocket';
-    classes[i++] = class'#var prefix WeaponShuriken';
-    classes[i++] = class'#var prefix HazMatSuit';
-    classes[i++] = class'#var prefix Rebreather';
+    classes[i++] = class'#var(prefix)Medkit';
+    classes[i++] = class'#var(prefix)Lockpick';
+    classes[i++] = class'#var(prefix)Multitool';
+    classes[i++] = class'#var(prefix)BioelectricCell';
+    classes[i++] = class'#var(prefix)BallisticArmor';
+    classes[i++] = class'#var(prefix)Ammo10mm';
+    classes[i++] = class'#var(prefix)AmmoBattery';
+    classes[i++] = class'#var(prefix)AmmoDartPoison';
+    classes[i++] = class'#var(prefix)AmmoRocket';
+    classes[i++] = class'#var(prefix)WeaponShuriken';
+    classes[i++] = class'#var(prefix)HazMatSuit';
+    classes[i++] = class'#var(prefix)Rebreather';
     num=i;
 
     // randomize cost for forced items
@@ -151,7 +151,7 @@ function ScriptedPawn CreateForcedMerchant(string name, Name bindname, vector lo
 
 function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase items[8], vector loc, optional rotator rot)
 {
-    local #var prefix Businessman3 oldnpc;
+    local #var(prefix)Businessman3 oldnpc;
     local Merchant npc;
     local Conversation c;
     local ConItem conItem;
@@ -200,7 +200,7 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase it
     if(list == None) err(dxr.localURL $ " list == None");
 
     // old class for backwards compatibility
-    foreach AllActors(class'#var prefix Businessman3', oldnpc, bindname) {
+    foreach AllActors(class'#var(prefix)Businessman3', oldnpc, bindname) {
         oldnpc.BindName = String(bindname);
         oldnpc.ConBindEvents();
         // don't return if he already existed

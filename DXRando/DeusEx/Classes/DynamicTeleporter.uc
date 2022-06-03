@@ -1,4 +1,4 @@
-class DynamicTeleporter extends #var prefix Teleporter;
+class DynamicTeleporter extends #var(prefix)Teleporter;
 
 var float proxCheckTime;
 var float Radius;
@@ -79,7 +79,7 @@ static function bool CheckTeleport(DeusExPlayer player)
     return false;
 }
 
-static function DynamicTeleporter ReplaceTeleporter(#var prefix Teleporter t)
+static function DynamicTeleporter ReplaceTeleporter(#var(prefix)Teleporter t)
 {
     local DynamicTeleporter dt;
     if( DynamicTeleporter(t) != None ) return DynamicTeleporter(t);

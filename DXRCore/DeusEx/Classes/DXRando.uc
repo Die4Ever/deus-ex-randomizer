@@ -1,6 +1,6 @@
 class DXRando extends DXRInfo transient;
 
-var transient #var PlayerPawn  Player;
+var transient #var(PlayerPawn) Player;
 var transient FlagBase flagbase;
 var transient DXRFlags flags;
 var transient DataStorage ds;
@@ -32,7 +32,7 @@ replication
 simulated event PostNetBeginPlay()
 {
     Super.PostNetBeginPlay();
-    Player = #var PlayerPawn (GetPlayerPawn());
+    Player = #var(PlayerPawn)(GetPlayerPawn());
     l(Self$".PostNetBeginPlay() "$Player);
     SetTimer(0.2, true);
 }
@@ -85,9 +85,9 @@ function DXRInit()
     l("DXRInit has localURL == " $ localURL $ ", flagbase == "$flagbase);
     if( flagbase != None ) return;
 
-    Player = #var PlayerPawn (GetPlayerPawn());
+    Player = #var(PlayerPawn)(GetPlayerPawn());
     if( Player == None )
-        foreach AllActors(class'#var PlayerPawn ', Player)
+        foreach AllActors(class'#var(PlayerPawn)', Player)
             break;
     if(Player == None)
         return;
@@ -297,7 +297,7 @@ function LoadModules()
         if( modules_to_load[i] == "" ) continue;
         classstring = modules_to_load[i];
         if( InStr(classstring, ".") == -1 ) {
-            classstring = "#var package ." $ classstring;
+            classstring = "#var(package)." $ classstring;
         }
         c = flags.GetClassFromString(classstring, class'DXRBase');
         LoadModule( class<DXRBase>(c) );
@@ -349,7 +349,7 @@ simulated event Tick(float deltaTime)
 
 function DXRTick(float deltaTime)
 {
-    local #var PlayerPawn  pawn;
+    local #var(PlayerPawn) pawn;
     local int i;
     SetTimer(0, false);
     if( dxInfo == None )
@@ -385,7 +385,7 @@ function DXRTick(float deltaTime)
 
 function RandoEnter()
 {
-    local #var PlayerPawn  pawn;
+    local #var(PlayerPawn) pawn;
     local int i;
     local bool firstTime;
     local name flagName;
@@ -436,12 +436,12 @@ function RandoEnter()
         modules[i].AnyEntry();
     }
 
-    foreach AllActors(class'#var PlayerPawn ', pawn) {
+    foreach AllActors(class'#var(PlayerPawn)', pawn) {
         PlayerLogin(pawn);
     }
 }
 
-simulated function bool CheckLogin(#var PlayerPawn  p)
+simulated function bool CheckLogin(#var(PlayerPawn) p)
 {
     local int i;
 
@@ -459,7 +459,7 @@ simulated function bool CheckLogin(#var PlayerPawn  p)
     return true;
 }
 
-simulated function PlayerLogin(#var PlayerPawn  p)
+simulated function PlayerLogin(#var(PlayerPawn) p)
 {
     local int i;
     local PlayerDataItem data;
@@ -493,7 +493,7 @@ simulated function PlayerLogin(#var PlayerPawn  p)
     data.version = VersionNumber();
 }
 
-simulated function PlayerRespawn(#var PlayerPawn  p)
+simulated function PlayerRespawn(#var(PlayerPawn) p)
 {
     local int i;
     for(i=0; i<num_modules; i++) {

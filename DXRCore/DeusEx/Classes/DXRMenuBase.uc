@@ -1,7 +1,7 @@
 #ifdef injections
 class DXRMenuBase expands MenuUIScreenWindow config(DXRando);
 #else
-class DXRMenuBase expands MenuUIScreenWindow config(#var package );
+class DXRMenuBase expands MenuUIScreenWindow config(#var(package));
 #endif
 
 var MenuUIInfoButtonWindow winNameBorder;
@@ -124,7 +124,7 @@ function DXRando InitDxr()
 #ifdef hx
     //player() = HXHuman(player);
 #else
-    dxr.flagbase = #var PlayerPawn (player).FlagBase;
+    dxr.flagbase = #var(PlayerPawn)(player).FlagBase;
 #endif
     if( dxr.flagbase == None ) log("ERROR: flagbase "$dxr.flagbase$" not found", name);
 

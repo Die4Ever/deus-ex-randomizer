@@ -1056,7 +1056,7 @@ function info(string msg)
     class'DXRTelemetry'.static.SendLog(dxr, Self, "INFO", msg);
 }
 
-simulated final function #var PlayerPawn  player()
+simulated final function #var(PlayerPawn) player()
 {
     return dxr.flags.player();
 }
