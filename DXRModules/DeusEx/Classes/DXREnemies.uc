@@ -291,10 +291,14 @@ function SwapScriptedPawns(int percent, bool enemies)
 {
     local ScriptedPawn temp[512];
     local ScriptedPawn a;
+    local name exceptTag;
     local int num, i, slot;
 
     SetSeed( "SwapScriptedPawns" );
     num=0;
+    if(dxr.localURL ~= "14_OCEANLAB_SILO") {
+        exceptTag = 'Doberman';
+    }
     foreach AllActors(class'ScriptedPawn', a )
     {
         if( a.bHidden || a.bStatic ) continue;
@@ -303,6 +307,7 @@ function SwapScriptedPawns(int percent, bool enemies)
         if( IsInitialEnemy(a) != enemies ) continue;
         if( !chance_single(percent) ) continue;
         if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
+        if( exceptTag != '' && a.Tag == exceptTag ) continue;
         if( class'DXRMissions'.static.IsCloseToStart(dxr, a.Location) ) continue;
         temp[num++] = a;
     }
