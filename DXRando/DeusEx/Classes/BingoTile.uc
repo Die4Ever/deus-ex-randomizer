@@ -12,11 +12,11 @@ event DrawWindow(GC gc)
     c.B = 255;
     SetTextColors(c, c, c, c, c, c);
 
-    c.R = 30;
-    c.G = 30;
-    c.B = 30;
+    c.R = 5;
+    c.G = 5;
+    c.B = 5;
     gc.SetTileColor(c);
-    gc.SetStyle(DSTY_Modulated);
+    gc.SetStyle(DSTY_Normal);
     gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
 
     c.R = 30;

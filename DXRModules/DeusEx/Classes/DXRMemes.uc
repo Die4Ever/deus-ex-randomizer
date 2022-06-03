@@ -17,10 +17,10 @@ function RandomDancing(Actor a)
 
 function AnyEntry()
 {
-    local #var prefix DXLogo logo;
-    local #var prefix IonStormLogo islogo;
-    local #var prefix EidosLogo elogo;
-    local #var prefix ElectricityEmitter elec;
+    local #var(prefix)DXLogo logo;
+    local #var(prefix)IonStormLogo islogo;
+    local #var(prefix)EidosLogo elogo;
+    local #var(prefix)ElectricityEmitter elec;
     local Actor a;
     local Rotator r;
     local Vector v;
@@ -31,7 +31,7 @@ function AnyEntry()
         case "DXONLY":
         case "DX":
             l("Memeing up "$ dxr.localURL);
-            foreach AllActors(class'#var prefix DXLogo', logo)
+            foreach AllActors(class'#var(prefix)DXLogo', logo)
             {
                 a = ReplaceWithRandomClass(logo);
                 if (IsHuman(a)){
@@ -57,7 +57,7 @@ function AnyEntry()
                 GotoState('RotatingState');
             }
 
-            foreach AllActors(class'#var prefix IonStormLogo', islogo)
+            foreach AllActors(class'#var(prefix)IonStormLogo', islogo)
             {
                 a = ReplaceWithRandomClass(islogo);
                 if (IsHuman(a)){
@@ -72,7 +72,7 @@ function AnyEntry()
                 a.AmbientSound = None;
             }
 
-            foreach AllActors(class'#var prefix EidosLogo', elogo)
+            foreach AllActors(class'#var(prefix)EidosLogo', elogo)
             {
                 a = ReplaceWithRandomClass(elogo);
                 if (IsHuman(a)){
@@ -87,7 +87,7 @@ function AnyEntry()
                 a.AmbientSound = None;
             }
 
-            foreach AllActors(class'#var prefix ElectricityEmitter', elec)
+            foreach AllActors(class'#var(prefix)ElectricityEmitter', elec)
             {
                 v.Z = 70;
                 elec.move(v);
@@ -102,7 +102,7 @@ function AnyEntry()
         //case "00_TRAINING":
             // extra randomization in the intro for the lolz, ENDGAME4 doesn't have a DeusExLevelInfo object though, so it doesn't get randomized :(
             l("Memeing up "$ dxr.localURL);
-            RandomizeIntro();
+            RandomizeCutscene();
             break;
     }
 }
@@ -163,50 +163,52 @@ state() RotatingState {
     }
 }
 
-function RandomizeIntro()
+function RandomizeCutscene()
 {
-    local #var prefix Tree t;
-    local Mover m;
-    local #var prefix BreakableGlass g;
     local Actor a;
-    local class<Actor> old_skip;
+    local #var(prefix)Tree t;
+    local class<Actor> old_skips[6];
+    local int i;
     //local CameraPoint c;
 
-    SetSeed("RandomizeIntro");
+    SetSeed("RandomizeCutscene");
 
-    foreach AllActors(class'#var prefix Tree', t)
+    foreach AllActors(class'#var(prefix)Tree', t)
     { // exclude 90% of trees from the SwapAll by temporarily hiding them
         if( rng(100) < 90 ) t.bHidden = true;
     }
-    foreach AllActors(class'Mover', m)
-    {
-        m.bHidden = true;
-    }
-    foreach AllActors(class'#var prefix BreakableGlass', g)
-    {
-        g.bHidden = true;
-    }
-    old_skip = _skipactor_types[0];
-    _skipactor_types[0] = class'DeusExPlayer';
-    SwapAll('Actor', 100);
-    foreach AllActors(class'Actor', a)
-    {
-        if( a.bHidden || DeusExPlayer(a) != None ) continue;
-        SetActorScale(a, float(rng(1500))/1000 + 0.3);
-        a.Fatness = rng(50) + 105;
+
+    for(i=0; i<ArrayCount(_skipactor_types); i++) {
+        old_skips[i] = _skipactor_types[i];
+        _skipactor_types[i] = None;
     }
 
-    foreach AllActors(class'#var prefix Tree', t)
+    i=0;
+    _skipactor_types[i++] = class'DeusExPlayer';
+    _skipactor_types[i++] = class'Mover';
+#ifdef revision
+    _skipactor_types[i++] = class<Actor>(DynamicLoadObject("RevisionDeco.Rev_SphereLight", class'class'));
+#endif
+    SwapAll('Actor', 100);
+
+    for(i=0; i<ArrayCount(_skipactor_types); i++) {
+        _skipactor_types[i] = old_skips[i];
+    }
+
+    foreach AllActors(class'#var(prefix)Tree', t)
     {
         t.bHidden = false;
     }
-    foreach AllActors(class'Mover', m)
+
+    foreach AllActors(class'Actor', a)
     {
-        m.bHidden = false;
-    }
-    foreach AllActors(class'#var prefix BreakableGlass', g)
-    {
-        g.bHidden = false;
+        if( Mover(a) != None ) continue;
+        if( #var(prefix)BreakableGlass(a) != None ) continue;
+        if( a.IsA('Rev_SphereLight') ) continue;
+        if( a.bHidden || DeusExPlayer(a) != None ) continue;
+
+        SetActorScale(a, float(rng(1500))/1000 + 0.3);
+        a.Fatness = rng(50) + 105;
     }
 
     /*foreach AllActors(class'CameraPoint', c)
@@ -218,7 +220,6 @@ function RandomizeIntro()
     {
         c.bHidden = true;
     }*/
-    _skipactor_types[0] = old_skip;
 }
 
 function bool is_valid(string s, class<Object> o)

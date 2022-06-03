@@ -10,23 +10,23 @@ function ReplaceActors()
 {
     local Actor a;
     foreach AllActors(class'Actor', a) {
-        if( #var prefix InformationDevices(a) != None ) {
-            ReplaceInformationDevice(#var prefix InformationDevices(a));
+        if( #var(prefix)InformationDevices(a) != None ) {
+            ReplaceInformationDevice(#var(prefix)InformationDevices(a));
         }
-        if( #var prefix AllianceTrigger(a) != None ) {
-            ReplaceAllianceTrigger(#var prefix AllianceTrigger(a));
+        if( #var(prefix)AllianceTrigger(a) != None ) {
+            ReplaceAllianceTrigger(#var(prefix)AllianceTrigger(a));
         }
-        if( #var prefix ClothesRack(a) != None ) {
-            ReplaceClothesRack(#var prefix ClothesRack(a));
+        if( #var(prefix)ClothesRack(a) != None ) {
+            ReplaceClothesRack(#var(prefix)ClothesRack(a));
         }
-        if( #var prefix Toilet(a) != None ) {
-            ReplaceToilet(#var prefix Toilet(a));
+        if( #var(prefix)Toilet(a) != None ) {
+            ReplaceToilet(#var(prefix)Toilet(a));
         }
-        if( #var prefix Toilet2(a) != None ) {
-            ReplaceToilet2(#var prefix Toilet2(a));
+        if( #var(prefix)Toilet2(a) != None ) {
+            ReplaceToilet2(#var(prefix)Toilet2(a));
         }
-        if( #var prefix ShowerFaucet(a) != None ) {
-            ReplaceShowerFaucet(#var prefix ShowerFaucet(a));
+        if( #var(prefix)ShowerFaucet(a) != None ) {
+            ReplaceShowerFaucet(#var(prefix)ShowerFaucet(a));
         }
 #ifdef gmdx
         if( WeaponGEPGun(a) != None ) {
@@ -36,7 +36,7 @@ function ReplaceActors()
     }
 }
 
-function ReplaceInformationDevice(#var prefix InformationDevices a)
+function ReplaceInformationDevice(#var(prefix)InformationDevices a)
 {
     local DXRInformationDevices n;
     n = DXRInformationDevices(SpawnReplacement(a, class'DXRInformationDevices'));
@@ -50,6 +50,9 @@ function ReplaceInformationDevice(#var prefix InformationDevices a)
     n.msgNoText = a.msgNoText;
     n.ImageLabel = a.ImageLabel;
     n.AddedToDatavaultLabel = a.AddedToDatavaultLabel;
+#ifdef revision
+    n.TextPackage = a.TextPackage;
+#endif
     ReplaceDeusExDecoration(a, n);
 
     a.Destroy();
@@ -68,7 +71,7 @@ function ReplaceGEPGun(WeaponGEPGUN a)
 #endif
 }
 
-function ReplaceAllianceTrigger(#var prefix AllianceTrigger a)
+function ReplaceAllianceTrigger(#var(prefix)AllianceTrigger a)
 {
     local DXRAllianceTrigger n;
     local int i;
@@ -87,7 +90,7 @@ function ReplaceAllianceTrigger(#var prefix AllianceTrigger a)
     a.Destroy();
 }
 
-function ReplaceToilet(#var prefix Toilet a)
+function ReplaceToilet(#var(prefix)Toilet a)
 {
     local DXRToilet n;
     n = DXRToilet(SpawnReplacement(a, class'DXRToilet'));
@@ -104,7 +107,7 @@ function ReplaceToilet(#var prefix Toilet a)
     a.Destroy();
 }
 
-function ReplaceToilet2(#var prefix Toilet2 a)
+function ReplaceToilet2(#var(prefix)Toilet2 a)
 {
     local DXRToilet2 n;
     n = DXRToilet2(SpawnReplacement(a, class'DXRToilet2'));
@@ -121,7 +124,7 @@ function ReplaceToilet2(#var prefix Toilet2 a)
     a.Destroy();
 }
 
-function ReplaceShowerFaucet(#var prefix ShowerFaucet a)
+function ReplaceShowerFaucet(#var(prefix)ShowerFaucet a)
 {
     local DXRShowerFaucet n;
     local int i;
@@ -145,7 +148,7 @@ function ReplaceShowerFaucet(#var prefix ShowerFaucet a)
     a.Destroy();
 }
 
-function ReplaceClothesRack(#var prefix ClothesRack a)
+function ReplaceClothesRack(#var(prefix)ClothesRack a)
 {
     local DXRClothesRack n;
     n = DXRClothesRack(SpawnReplacement(a, class'DXRClothesRack'));
@@ -162,7 +165,7 @@ function ReplaceClothesRack(#var prefix ClothesRack a)
     a.Destroy();
 }
 
-function ReplaceTrigger(#var prefix Trigger a, #var prefix Trigger n)
+function ReplaceTrigger(#var(prefix)Trigger a, #var(prefix)Trigger n)
 {
     n.TriggerType = a.TriggerType;
     n.Message = a.Message;

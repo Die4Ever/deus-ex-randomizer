@@ -53,7 +53,7 @@ function doAutosave()
 {
     local string saveName;
     local DataLinkPlay interruptedDL;
-    local #var PlayerPawn  p;
+    local #var(PlayerPawn) p;
     local int saveSlot;
     local int lastMission;
 

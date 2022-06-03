@@ -10,22 +10,22 @@ const Credits = 5;
 
 //rando flags
 #ifdef hx
-var #var flagvarprefix  int next_seed;
+var #var(flagvarprefix) int next_seed;
 #endif
 
-var #var flagvarprefix  int seed, playthrough_id;
-var #var flagvarprefix  int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
+var #var(flagvarprefix) int seed, playthrough_id;
+var #var(flagvarprefix) int flagsversion;//if you load an old game with a newer version of the randomizer, we'll need to set defaults for new flags
 
-var #var flagvarprefix  int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
-var #var flagvarprefix  int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
-var #var flagvarprefix  int brightness;
-var #var flagvarprefix  int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
-var #var flagvarprefix  int maxrando;
-var #var flagvarprefix  int newgameplus_loops;
-var #var flagvarprefix  int crowdcontrol;
-var #var flagvarprefix  int codes_mode;
+var #var(flagvarprefix) int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
+var #var(flagvarprefix) int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
+var #var(flagvarprefix) int brightness;
+var #var(flagvarprefix) int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
+var #var(flagvarprefix) int maxrando;
+var #var(flagvarprefix) int newgameplus_loops;
+var #var(flagvarprefix) int crowdcontrol;
+var #var(flagvarprefix) int codes_mode;
 
-var #var flagvarprefix  int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
+var #var(flagvarprefix) int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
 
 struct FlagsSettings {
 #ifndef hx
@@ -58,7 +58,7 @@ var config string difficulty_names[5];// Super Easy QA, Easy, Normal, Hard, Extr
 var config FlagsSettings difficulty_settings[5];
 #endif
 
-var #var flagvarprefix  FlagsSettings settings;
+var #var(flagvarprefix) FlagsSettings settings;
 
 const undefeatabledoors = 256;//1*256;
 const alldoors = 512;//2*256;
@@ -119,7 +119,7 @@ simulated function Timer()
 #endif
 }
 
-simulated function bool CheckLogin(#var PlayerPawn  p)
+simulated function bool CheckLogin(#var(PlayerPawn) p)
 {
     return flags_loaded && Super.CheckLogin(p);
 }
@@ -536,7 +536,7 @@ static function string GameModeName(int gamemode)
     return "";
 }
 
-simulated function DisplayRandoInfoMessage(#var PlayerPawn  p, float CombatDifficulty)
+simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDifficulty)
 {
     local string str;
 
@@ -555,7 +555,7 @@ simulated function LoadFlags()
 {
     //do flags binding
     local DataStorage ds;
-    local #var PlayerPawn  p;
+    local #var(PlayerPawn) p;
 
     if( Role != ROLE_Authority ) {
         err("LoadFlags() we're not the authority here!");
@@ -743,7 +743,7 @@ simulated function SaveFlags()
 
 simulated function LoadNoFlags()
 {
-    local #var PlayerPawn  p;
+    local #var(PlayerPawn) p;
     local DataStorage ds;
     local float CombatDifficulty;
 
@@ -819,7 +819,7 @@ simulated function AddDXRCredits(CreditsWindow cw)
 simulated function string StringifyFlags(optional int mode)
 {
         local float CombatDifficulty;
-        local #var PlayerPawn  p;
+        local #var(PlayerPawn) p;
 #ifdef hx
     CombatDifficulty = HXGameInfo(Level.Game).CombatDifficulty;
 #else
@@ -908,7 +908,7 @@ simulated function ExecMaxRando()
     MaxRandoValPair(settings.minskill, settings.maxskill);
     MaxRandoVal(settings.banned_skills);
     MaxRandoVal(settings.banned_skill_levels);
-    MaxRandoVal(settings.skill_value_rando);
+    settings.skill_value_rando = 100;
 
     MaxRandoVal(settings.ammo);
     MaxRandoVal(settings.multitools);
@@ -918,7 +918,7 @@ simulated function ExecMaxRando()
     settings.equipment += int(rngb());
     MaxRandoValPair(settings.min_weapon_dmg, settings.max_weapon_dmg);
     MaxRandoValPair(settings.min_weapon_shottime, settings.max_weapon_shottime);
-    MaxRandoVal(settings.aug_value_rando);
+    settings.aug_value_rando = 100;
 }
 
 function NewGamePlusVal(out int val, float curve, float exp)
@@ -931,7 +931,7 @@ function NewGamePlusVal(out int val, float curve, float exp)
 
 function NewGamePlus()
 {
-    local #var PlayerPawn  p;
+    local #var(PlayerPawn) p;
     local DataStorage ds;
     local DXRSkills skills;
     local DXRWeapons weapons;
@@ -1020,6 +1020,7 @@ function NewGamePlus()
     info("NewGamePlus() deleted all flags");
     SaveFlags();
     p.bStartNewGameAfterIntro = true;
+    class'PlayerDataItem'.static.ResetData(p);
     Level.Game.SendPlayer(p, "00_intro");
 }
 
@@ -1057,7 +1058,7 @@ function RunTests()
     teststring( FloatToString(0.5454999, 4), "0.5455", "FloatToString 2");
     teststring( FloatToString(0.5455, 2), "0.55", "FloatToString 3");
 
-    testbool( #defined debug, false, "debug is disabled");
+    testbool( #defined(debug), false, "debug is disabled");
 }
 
 function ExtendedTests()

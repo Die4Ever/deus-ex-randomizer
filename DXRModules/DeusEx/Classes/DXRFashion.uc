@@ -14,7 +14,7 @@ function CheckConfig()
     InitInfluencers();
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  p)
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     local int lastUpdate, i;
     local class<Pawn> jcd;
@@ -776,7 +776,7 @@ simulated function GetDressed()
         ApplyInfluencers(paulCarcass, coatinfluencer, pantsinfluencer, shirtinfluencer, false);
 }
 
-simulated function _RandomizeClothes(#var PlayerPawn  player, bool female)
+simulated function _RandomizeClothes(#var(PlayerPawn) player, bool female)
 {
     local class<ScriptedPawn> styleInfluencer;
     local bool isTrench, isSkirt, isFemaleShirt, isOtherSkinColor;
@@ -845,7 +845,7 @@ simulated function _RandomizeClothes(#var PlayerPawn  player, bool female)
     dxr.flags.f.SetInt('DXRFashion_LastUpdate',dxr.dxInfo.MissionNumber,,999);
 }
 
-simulated function RandomizeClothes(#var PlayerPawn  player)
+simulated function RandomizeClothes(#var(PlayerPawn) player)
 {
     _RandomizeClothes(player, isFemale);
     // when FemJC uses a clothesrack, we only change her clothes? or Paul's too?

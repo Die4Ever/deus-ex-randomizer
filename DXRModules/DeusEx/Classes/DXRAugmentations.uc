@@ -34,7 +34,7 @@ function AnyEntry()
     }
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  p)
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     local Augmentation a;
     Super.PlayerAnyEntry(p);
@@ -132,13 +132,13 @@ static function RemoveAug(DeusExPlayer player, Augmentation aug)
 
 function RandomizeAugCannisters()
 {
-    local #var prefix AugmentationCannister a;
+    local #var(prefix)AugmentationCannister a;
 
     if( dxr.flagbase == None ) return;
 
     SetSeed( "RandomizeAugCannisters" );
 
-    foreach AllActors(class'#var prefix AugmentationCannister', a)
+    foreach AllActors(class'#var(prefix)AugmentationCannister', a)
     {
         if( DeusExPlayer(a.Owner) != None ) continue;
         if( ! chance_single(dxr.flags.settings.augcans) ) continue;
@@ -153,9 +153,9 @@ function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAug
     local int i;
 
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
-    for(i=0; i<ArrayCount(class'#var prefix AugmentationManager'.default.augClasses); i++) {
+    for(i=0; i<ArrayCount(class'#var(prefix)AugmentationManager'.default.augClasses); i++) {
         if( banned[i] == 1 ) continue;
-        a = class'#var prefix AugmentationManager'.default.augClasses[i];
+        a = class'#var(prefix)AugmentationManager'.default.augClasses[i];
         if( a == None ) {
             banned[i] = 1;
             continue;
@@ -174,7 +174,7 @@ function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAug
     }
 }
 
-function static RandomizeAugCannister(DXRando dxr, #var prefix AugmentationCannister a)
+function static RandomizeAugCannister(DXRando dxr, #var(prefix)AugmentationCannister a)
 {
     local int numAugs;
     local int banned[50];
@@ -195,7 +195,7 @@ function static RandomizeAugCannister(DXRando dxr, #var prefix AugmentationCanni
     else if(augs[1] != None)
         a.ItemName = a.ItemName $": "$ augs[1].default.AugmentationName;
 
-    if( a.AddAugs[0] == '#var prefix AugSpeed' || a.AddAugs[1] == '#var prefix AugSpeed' ) {
+    if( a.AddAugs[0] == '#var(prefix)AugSpeed' || a.AddAugs[1] == '#var(prefix)AugSpeed' ) {
         dxr.flags.player().ClientMessage("Speed Enhancement is in this area.",, true);
     }
 }
@@ -206,16 +206,16 @@ function static class<Augmentation> PickRandomAug(DXRando dxr, out int banned[50
     local int slot, i, r;
     local class<Augmentation> aug;
     r = staticrng(dxr, numAugs);
-    for(i=0; i < ArrayCount(class'#var prefix AugmentationManager'.default.augClasses); i++) {
+    for(i=0; i < ArrayCount(class'#var(prefix)AugmentationManager'.default.augClasses); i++) {
         if( banned[i] == 1 ) continue;
         if( slot == r )
             break;
         slot++;
     }
     slot = i;
-    if( slot >= ArrayCount(class'#var prefix AugmentationManager'.default.augClasses) )
+    if( slot >= ArrayCount(class'#var(prefix)AugmentationManager'.default.augClasses) )
         dxr.err("PickRandomAug WTF "$slot);
-    aug = class'#var prefix AugmentationManager'.default.augClasses[slot];
+    aug = class'#var(prefix)AugmentationManager'.default.augClasses[slot];
     log("Picked Aug "$ slot $"/"$numAugs$" " $ aug.Name, 'DXRAugmentations');
     banned[slot] = 1;
     numAugs--;
@@ -224,15 +224,15 @@ function static class<Augmentation> PickRandomAug(DXRando dxr, out int banned[50
 
 simulated function RandoAug(Augmentation a)
 {
-    local float aug_value_rando;
+    local float aug_value_wet_dry;
     if( dxr == None ) return;
 
-    if( #var prefix AugSpeed(a) != None || #var prefix AugLight(a) != None || #var prefix AugHeartLung(a) != None
-    || #var prefix AugIFF(a) != None || #var prefix AugDatalink(a) != None || AugNinja(a) != None )
+    if( #var(prefix)AugSpeed(a) != None || #var(prefix)AugLight(a) != None || #var(prefix)AugHeartLung(a) != None
+    || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None || AugNinja(a) != None )
         return;
 
-    aug_value_rando = float(dxr.flags.settings.aug_value_rando) / 100.0;
-    RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_rando, a.Description);
+    aug_value_wet_dry = float(dxr.flags.settings.aug_value_rando) / 100.0;
+    RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_wet_dry, a.Description);
 }
 
 simulated function string DescriptionLevel(Actor act, int i, out string word)
@@ -246,11 +246,11 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         return "err";
     }
 
-    if( a.Class == class'#var prefix AugAqualung') {
+    if( a.Class == class'#var(prefix)AugAqualung') {
         word = "Breath";
         return int(a.LevelValues[i]) $" sec";
     }
-    else if( a.Class == class'#var prefix AugCombat'
+    else if( a.Class == class'#var(prefix)AugCombat'
 #ifdef gmdx
     || a.Class == class'AugCombatStrength'
 #endif
@@ -258,49 +258,49 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         word = "Damage";
         return int(a.LevelValues[i] * 100.0) $"%";
     }
-    else if( a.Class == class'#var prefix AugBallistic' || a.Class == class'#var prefix AugEMP' || a.Class == class'#var prefix AugEnviro' || a.Class == class'#var prefix AugShield') {
+    else if( a.Class == class'#var(prefix)AugBallistic' || a.Class == class'#var(prefix)AugEMP' || a.Class == class'#var(prefix)AugEnviro' || a.Class == class'#var(prefix)AugShield') {
         word = "Damage Reduction";
         return int( (1.0 - a.LevelValues[i]) * 100.0 ) $ "%";
     }
-    else if( a.Class == class'#var prefix AugCloak' || a.Class == class'#var prefix AugRadarTrans') {
+    else if( a.Class == class'#var(prefix)AugCloak' || a.Class == class'#var(prefix)AugRadarTrans') {
         word = "Energy Use";
         return int(a.EnergyRate * a.LevelValues[i]) $" per min";
     }
-    else if( a.Class == class'#var prefix AugDefense') {
+    else if( a.Class == class'#var(prefix)AugDefense') {
         word = "Distance";
         return int(a.LevelValues[i] / 16.0) $" ft";
     }
-    else if( a.Class == class'#var prefix AugDrone') {
+    else if( a.Class == class'#var(prefix)AugDrone') {
         // TODO: improve description
         word = "Values";
         return string(int(a.LevelValues[i]));
     }
-    else if( a.Class == class'#var prefix AugHealing') {
+    else if( a.Class == class'#var(prefix)AugHealing') {
         word = "Healing";
         return int(a.LevelValues[i]) $ " HP";
     }
-    else if( a.Class == class'#var prefix AugMuscle') {
+    else if( a.Class == class'#var(prefix)AugMuscle') {
         word = "Strength";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
-    else if( a.Class == class'#var prefix AugPower') {
+    else if( a.Class == class'#var(prefix)AugPower') {
         word = "Energy";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
-    else if( a.Class == class'#var prefix AugSpeed' || a.Class == class'AugNinja') {
+    else if( a.Class == class'#var(prefix)AugSpeed' || a.Class == class'AugNinja') {
         word = "Speed";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
-    else if( a.Class == class'#var prefix AugStealth') {
+    else if( a.Class == class'#var(prefix)AugStealth') {
         word = "Noise";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
-    else if( a.Class == class'#var prefix AugTarget') {
+    else if( a.Class == class'#var(prefix)AugTarget') {
         word = "Damage";
         f = -2.0 * a.LevelValues[i] + 1.0;
         return int(f * 100.0) $ "%";
     }
-    else if( a.Class == class'#var prefix AugVision') {
+    else if( a.Class == class'#var(prefix)AugVision') {
         word = "See-through walls distance";
 #ifndef balance
         if(i<2) return "--";
@@ -347,7 +347,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
 }
 
-simulated function RemoveRandomAug(#var PlayerPawn  p)
+simulated function RemoveRandomAug(#var(PlayerPawn) p)
 {
     local Augmentation a, b, augs[64];
     local AugmentationManager am;
@@ -361,7 +361,7 @@ simulated function RemoveRandomAug(#var PlayerPawn  p)
         if( !a.bHasIt ) continue;
         if( a.AugmentationLocation == LOC_Default ) continue;
 
-        if( #var prefix AugLight(a) != None || #var prefix AugIFF(a) != None || #var prefix AugDatalink(a) != None )
+        if( #var(prefix)AugLight(a) != None || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None )
             continue;
 
         if( loadouts != None && loadouts.StartedWithAug(a.class) )
@@ -382,11 +382,11 @@ simulated function RemoveRandomAug(#var PlayerPawn  p)
 function ExtendedTests()
 {
     local int i;
-    local #var prefix AugmentationCannister a;
+    local #var(prefix)AugmentationCannister a;
 
     Super.ExtendedTests();
 
-    a = Spawn(class'#var prefix AugmentationCannister');
+    a = Spawn(class'#var(prefix)AugmentationCannister');
     SetSeed( self );
     for(i=0;i<50;i++) {
         RandomizeAugCannister(dxr, a);

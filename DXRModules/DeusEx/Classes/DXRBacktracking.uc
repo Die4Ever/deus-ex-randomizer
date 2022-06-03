@@ -1,6 +1,8 @@
 class DXRBacktracking extends DXRActorsBase transient;
 // backtracking specific fixes that might be too extreme for the more generic DXRFixup? or move the stuff from DXRFixup into here?
 
+var DXREntranceRando entrancerando;
+
 function PreFirstEntry()
 {
     local Teleporter t;
@@ -17,7 +19,7 @@ function PreFirstEntry()
                 if( ! t.bEnabled ) continue;
                 if( t.URL != "04_NYC_Street#ToStreet" ) continue;
                 dt = class'DynamicTeleporter'.static.ReplaceTeleporter(t);
-                dt.SetDestination("04_NYC_Street", 'PathNode194');
+                SetDestination(dt, "04_NYC_Street", 'PathNode194');
             }
             break;
 
@@ -28,18 +30,18 @@ function PreFirstEntry()
                 }
             }
             dt = Spawn(class'DynamicTeleporter',,'sewers_backtrack',vect(1599.971558, -4694.342773, 13.399302));
-            dt.SetDestination("10_PARIS_CATACOMBS_TUNNELS", 'AmbientSound10');
+            SetDestination(dt, "10_PARIS_CATACOMBS_TUNNELS", 'AmbientSound10');
             dt.Radius = 160;
             AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
 
             foreach AllActors(class'MapExit', exit, 'ChopperExit') {
-                exit.SetDestination("10_PARIS_CHATEAU", '', "Chateau_start");
+                SetDestination(exit, "10_PARIS_CHATEAU", '', "Chateau_start");
             }
             break;
 
         case "11_PARIS_CATHEDRAL":
             dt = Spawn(class'DynamicTeleporter',,'cathedral_backtrack',vect(-2268.337891, 3042.279297, -866.726196));
-            dt.SetDestination("10_PARIS_CHATEAU", 'Light135');
+            SetDestination(dt, "10_PARIS_CHATEAU", 'Light135');
             dt.Radius = 160;
             foreach AllActors(class'BlockPlayer', bp) {
                 switch(bp.Name) {
@@ -53,32 +55,32 @@ function PreFirstEntry()
 
         case "12_VANDENBERG_CMD":
             foreach AllActors(class'MapExit', exit, 'mission_done') {
-                exit.SetDestination("12_Vandenberg_gas", '', "gas_start");
+                SetDestination(exit, "12_Vandenberg_gas", '', "gas_start");
             }
             break;
 
         case "12_VANDENBERG_GAS":
             foreach AllActors(class'MapExit', exit, 'UN_BlackHeli') {
-                exit.SetDestination("14_Vandenberg_sub", '', "PlayerStart");
+                SetDestination(exit, "14_Vandenberg_sub", '', "PlayerStart");
             }
             break;
 
         case "15_AREA51_ENTRANCE":
             dt = Spawn(class'DynamicTeleporter',,,vect(4384.407715, -2483.292236, -41.900017));
-            dt.SetDestination("15_area51_bunker", 'Light188');
+            SetDestination(dt, "15_area51_bunker", 'Light188');
             dt.Radius = 160;
             break;
 
         case "15_AREA51_FINAL":
             dt = Spawn(class'DynamicTeleporter',,,vect(-5714.406250, -1977.827881, -1358.711304));
-            dt.SetDestination("15_area51_entrance", 'Light73');
+            SetDestination(dt, "15_area51_entrance", 'Light73');
             dt.Radius = 160;
             break;
 
     }
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  p)
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
     FixInterpolating(p);
@@ -159,11 +161,11 @@ static function DeleteExpiredFlags(FlagBase flags, int missionNumber)
 
 function AnyEntry()
 {
-    local #var PlayerPawn  p;// we wanna make sure we get all the player objects, even in multiplayer?
+    local #var(PlayerPawn) p;// we wanna make sure we get all the player objects, even in multiplayer?
     local DeusExDecoration d;
     local ScriptedPawn s;
     Super.AnyEntry();
-    foreach AllActors(class'#var PlayerPawn ', p) {
+    foreach AllActors(class'#var(PlayerPawn)', p) {
         p.ConBindEvents();
         FixInterpolating(p);
     }
@@ -200,7 +202,7 @@ function AnyEntry()
     }
 }
 
-function FixInterpolating(#var PlayerPawn  p)
+function FixInterpolating(#var(PlayerPawn) p)
 {
     p.bDetectable = true;
     p.bHidden = false;
@@ -358,6 +360,8 @@ function VandSubAnyEntry()
     local FlagTrigger ft;
     local FlagBase flags;
     local DataLinkTrigger dt;
+    local Conversation c;
+    local MapExit exit;
     flags = dxr.flagbase;
 
     // backtracking to gas station
@@ -410,10 +414,34 @@ function VandSubAnyEntry()
     // repeat flights to silo
     foreach AllActors(class'InterpolateTrigger', t, 'ChopperExit')
         t.bTriggerOnceOnly = false;
+
     if( flags.GetBool('DL_downloaded_Played') ) {
         RemoveChoppers('BlackHelicopter');
         SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vect(2104.722168, 3647.967773, 896.197144), rot(0, 0, 0) );
     }
+
+    // ability to fly to the silo even after howard strong is dead
+    c = GetConversation('JockArea51');
+    c.bDisplayOnce = false;
+
+    foreach AllActors(class'MapExit', exit, 'SiloExit') {
+        exit.event = '';
+        exit.Destroy();
+    }
+    exit = Spawn(class'MapExit',, 'SiloExit', vect(2620, 3284.822754, 743.136780) );
+    SetDestination(exit, "14_Oceanlab_silo", '', "frontgate");
+    exit.event = 'BlackHelicopter';
+    exit.SetCollision(false,false,false);
+    exit.bPlayTransition = true;
+    exit.cameraPathTag = 'Camera2';
+
+    foreach AllActors(class'InterpolateTrigger', t, 'SiloExit') {
+        t.event = '';
+        t.Destroy();
+    }
+    t = Spawn(class'InterpolateTrigger',, 'SiloExit', vect(2680, 3332.543213, 768.108032) );
+    t.event = 'BlackHelicopter';
+    t.SetCollision(false,false,false);
 }
 
 function VandOceanLabAnyEntry()
@@ -488,6 +516,7 @@ function VandOceanLabAnyEntry()
 function VandSiloAnyEntry()
 {
     local FlagBase flags;
+    local Conversation c;
     flags = dxr.flagbase;
 
     // back to sub base
@@ -497,6 +526,9 @@ function VandSiloAnyEntry()
 
     RemoveChoppers('backtrack_chopper');
     BacktrackChopper('backtrack_path', 'backtrack_chopper', 'backtrack_path', "", 'backtrack_camera', "14_Vandenberg_Sub", 'InterpolationPoint39', "", vect(507, -2500, 1600), rot(0,0,0) );
+
+    c = GetConversation('JockArea51');
+    c.bDisplayOnce = false;
 }
 
 function RemoveChoppers(optional Name ChopperTag)
@@ -552,7 +584,7 @@ function BacktrackChopper(Name event, Name ChopperTag, Name PathTag, string Bind
 
     exit = Spawn(class'MapExit',, event, loc );
     exit.SetCollision(false,false,false);
-    exit.SetDestination(DestMap, DestName, DestTag);
+    SetDestination(exit, DestMap, DestName, DestTag);
     exit.bPlayTransition = true;
     exit.cameraPathTag = CameraPath;
     info("BacktrackChopper spawned "$exit);
@@ -615,4 +647,28 @@ function ConversationFrobOnly(Conversation c)
     c.bInvokeBump = false;
     c.bInvokeSight = false;
     c.bInvokeRadius = false;
+}
+
+function SetDestination(NavigationPoint p, string destURL, name dest_actor_name, optional string tag)
+{
+    local MapExit m;
+    local DynamicTeleporter t;
+
+    m = MapExit(p);
+    t = DynamicTeleporter(p);
+    if( m != None )
+        m.SetDestination(destURL, dest_actor_name, tag);
+    else if( t != None )
+        t.SetDestination(destURL, dest_actor_name, tag);
+    else
+        err("SetDestination failed for "$p);
+
+    if(entrancerando == None) {
+        entrancerando = DXREntranceRando(dxr.FindModule(class'DXREntranceRando'));
+        if(entrancerando != None)
+            entrancerando.LoadConns();
+    }
+    if(entrancerando != None) {
+        entrancerando.AdjustTeleporter(p);
+    }
 }

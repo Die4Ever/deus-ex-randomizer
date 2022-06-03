@@ -1,7 +1,7 @@
 #ifdef injections
 class DXRMedicalBot merges MedicalBot;
 #else
-class DXRMedicalBot extends #var prefix MedicalBot;
+class DXRMedicalBot extends #var(prefix)MedicalBot;
 #endif
 var int numUses;
 
@@ -98,4 +98,10 @@ simulated function Float GetRefreshTimeRemaining()
     }
 
     return timeRemaining;
+}
+
+defaultproperties
+{
+    bDetectable=false
+    bIgnore=true
 }

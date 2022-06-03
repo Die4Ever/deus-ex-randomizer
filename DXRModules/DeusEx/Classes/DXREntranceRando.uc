@@ -923,7 +923,7 @@ function RandoMission12()
     AddDoubleXfer("12_VANDENBERG_GAS","?toname=PathNode98", "14_Vandenberg_sub","PlayerStart");
     AddDoubleXfer("14_OCEANLAB_LAB","Sunkentunnel","14_OceanLab_UC","UC");//we don't care about what map name the teleporter says, the real map name is what matters
     AddDoubleXfer("14_OCEANLAB_LAB","Sunkenlab","14_Vandenberg_sub","subbay");
-    AddDoubleXfer("14_Vandenberg_Sub","?toname=InterpolationPoint39", "14_Oceanlab_silo","#frontgate");
+    AddDoubleXfer("14_Vandenberg_Sub","?toname=InterpolationPoint39", "14_Oceanlab_silo","frontgate");
 }
 
 function RandoMission15()
@@ -1008,20 +1008,32 @@ function BindEntrances(PlayerDataItem ds, bool writing)
     }
 }
 
-function ApplyEntranceRando(int missionNum)
+function LoadConns(optional int missionNum)
 {
-    local NavigationPoint newnp, last;
-    local Teleporter t;
-    local MapExit m;
     local PlayerDataItem ds;
 
+    if(missionNum == 0) {
+        missionNum = dxr.dxInfo.missionNumber;
+        if( missionNum == 11 ) missionNum = 10;//combine paris 10 and 11
+        if( missionNum == 14 ) missionNum = 12;//combine vandenberg and oceanlab
+    }
+
     ds = class'PlayerDataItem'.static.GiveItem(Player());
-    if( ds.EntranceRandoMissionNumber == missionNum ) {
+    if( ds.EntranceRandoMissionNumber == missionNum && ds.numConns > 0 ) {
         BindEntrances(ds, false);
     } else {
         ds.EntranceRandoMissionNumber = missionNum;
         BindEntrances(ds, true);
     }
+}
+
+function ApplyEntranceRando(int missionNum)
+{
+    local NavigationPoint newnp, last;
+    local Teleporter t;
+    local MapExit m;
+
+    LoadConns(missionNum);
 
     last = None;
     foreach AllActors(class'Teleporter',t)

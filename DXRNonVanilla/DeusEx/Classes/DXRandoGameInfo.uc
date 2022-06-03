@@ -34,12 +34,12 @@ event InitGame( String Options, out String Error )
 
 event PostLogin(playerpawn NewPlayer)
 {
-    local #var PlayerPawn  p;
+    local #var(PlayerPawn) p;
 
     Super.PostLogin(NewPlayer);
     if( Role != ROLE_Authority ) return;
 
-    p = #var PlayerPawn (NewPlayer);
+    p = #var(PlayerPawn)(NewPlayer);
 
     GetDXR();
     log("PostLogin("$NewPlayer$") server, dxr: "$dxr, self.name);
@@ -49,9 +49,9 @@ event PostLogin(playerpawn NewPlayer)
 function bool PickupQuery( Pawn Other, Inventory item )
 {
     local DXRLoadouts loadouts;
-    local #var PlayerPawn  player;
+    local #var(PlayerPawn) player;
 
-    player = #var PlayerPawn (Other);
+    player = #var(PlayerPawn)(Other);
     if(player != None && item != None) {
         loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
         if( loadouts != None && loadouts.ban(player, item) ) {

@@ -1,4 +1,4 @@
-class Merchant extends #var prefix Businessman3;
+class Merchant extends #var(prefix)Businessman3;
 
 #ifdef vmd
 function bool ShouldDoSinglePickPocket(DeusExPlayer Frobbie)
@@ -10,6 +10,9 @@ function bool ShouldDoSinglePickPocket(DeusExPlayer Frobbie)
 defaultproperties
 {
     bImportant=True
+    bDetectable=false
+    bIgnore=true
+    RaiseAlarm=RAISEALARM_Never
     Health=200
     HealthArmLeft=200
     HealthArmRight=200

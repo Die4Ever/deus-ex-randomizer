@@ -31,12 +31,12 @@ event InitGame( String Options, out String Error )
 event PostLogin(playerpawn NewPlayer)
 {
     local DeusExNote note;
-    local #var PlayerPawn  p;
+    local #var(PlayerPawn) p;
 
     Super.PostLogin(NewPlayer);
     if( Role != ROLE_Authority ) return;
 
-    p = #var PlayerPawn (NewPlayer);
+    p = #var(PlayerPawn)(NewPlayer);
 
     GetDXR();
     log("PostLogin("$NewPlayer$") server, dxr: "$dxr, self.name);
@@ -145,10 +145,10 @@ function ProcessServerTravel( string URL, bool bItems )
 
 function bool RestartPlayer( Pawn PlayerToRestart )
 {
-    local #var PlayerPawn  p;
+    local #var(PlayerPawn) p;
     local bool ret;
     ret = Super.RestartPlayer(PlayerToRestart);
-    p = #var PlayerPawn (PlayerToRestart);
+    p = #var(PlayerPawn)(PlayerToRestart);
     if( p != None )
         dxr.PlayerRespawn( p );
 

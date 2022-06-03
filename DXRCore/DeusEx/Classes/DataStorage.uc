@@ -1,7 +1,7 @@
 #ifdef vanilla
 class DataStorage extends DXRInfo config(DXRDataStorage) transient;
 #else
-class DataStorage extends DXRInfo config(#var package DataStorage) transient;
+class DataStorage extends DXRInfo config(#var(package)DataStorage) transient;
 #endif
 
 struct KVP {
@@ -160,8 +160,8 @@ simulated function static DataStorage GetObjFromPlayer(Actor p)
     local DXRando dxr;
 
 #ifdef injections
-    if( #var PlayerPawn (p) != None ) {
-        dxr = #var PlayerPawn (p).GetDXR();
+    if( #var(PlayerPawn)(p) != None ) {
+        dxr = #var(PlayerPawn)(p).GetDXR();
         if(dxr != None)
             return GetObj(dxr);
     }

@@ -39,7 +39,7 @@ simulated function PostAnyEntry();
 
 simulated function ReEntry(bool IsTravel);
 
-simulated function bool CheckLogin(#var PlayerPawn  player)
+simulated function bool CheckLogin(#var(PlayerPawn) player)
 {
     info("CheckLogin("$player$"), inited: "$inited$", dxr.flagbase: "$dxr.flagbase$", dxr.flags.flags_loaded: "$dxr.flags.flags_loaded$", player.SkillSystem: "$player.SkillSystem$", player.SkillSystem.FirstSkill: "$player.SkillSystem.FirstSkill);
     if( inited == false ) return false;
@@ -49,17 +49,17 @@ simulated function bool CheckLogin(#var PlayerPawn  player)
     return true;
 }
 
-simulated function PlayerLogin(#var PlayerPawn  player)
+simulated function PlayerLogin(#var(PlayerPawn) player)
 {
     l("PlayerLogin("$player$")");
 }
 
-simulated function PlayerRespawn(#var PlayerPawn  player)
+simulated function PlayerRespawn(#var(PlayerPawn) player)
 {
     l("PlayerRespawn("$player$")");
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  player)
+simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 {
     l("PlayerAnyEntry("$player$")");
 }
@@ -164,8 +164,8 @@ simulated function float rngexp(float origmin, float origmax, float curve)
 
 simulated function bool RandoLevelValues(Actor a, float min, float max, float wet, out string Desc)
 {
-    local #var prefix Augmentation aug;
-    local #var prefix Skill sk;
+    local #var(prefix)Augmentation aug;
+    local #var(prefix)Skill sk;
     local string s, word;
     local int i, len, mid, oldseed, removals;
     local float v;
@@ -174,8 +174,8 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
 
     oldseed = SetGlobalSeed(" RandoLevelValues " $ a.class.name );
 
-    aug = #var prefix Augmentation(a);
-    sk = #var prefix Skill(a);
+    aug = #var(prefix)Augmentation(a);
+    sk = #var(prefix)Skill(a);
 
     if( aug != None ) len = ArrayCount(aug.LevelValues);
     else if( sk != None ) len = ArrayCount(sk.LevelValues);

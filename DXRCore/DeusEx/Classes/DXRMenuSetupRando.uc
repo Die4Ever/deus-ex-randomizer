@@ -199,7 +199,7 @@ function BindControls(optional string action)
     Slider(f.settings.banned_skill_levels, 0, 100);
 
     NewMenuItem("Skill Strength Rando %", "How much to randomize the strength of skills.");
-    Slider(f.settings.skill_value_rando, 0, 300);
+    Slider(f.settings.skill_value_rando, 0, 100);// this is actually a wet/dry scale, so the range should be 0 to 100%
 
     NewGroup("Items");
     NewMenuItem("Ammo Drops %", "Make ammo more scarce.");
@@ -248,7 +248,7 @@ function BindControls(optional string action)
     Slider(f.settings.augcans, 0, 100);
 
     NewMenuItem("Aug Strength Rando %", "How much to randomize the strength of augmentations.");
-    Slider(f.settings.aug_value_rando, 0, 300);
+    Slider(f.settings.aug_value_rando, 0, 100);// this is a wet/dry scale, 0 to 100%
 
     if( action == "NEXT" ) _InvokeNewGameScreen(combatDifficulty, InitDxr());
 }

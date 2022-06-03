@@ -348,7 +348,7 @@ function OutOfWaveTick()
     NotifyPlayerTime();
 
     if( time_to_next_wave <= 0 ) {
-        StartWave();        
+        StartWave();
     }
 }
 
@@ -467,7 +467,7 @@ function GenerateEnemies()
     local DXREnemies dxre;
     local int i, numEnemies;
     local float difficulty, maxdifficulty;
-    
+
     SetGlobalSeed( "Horde GenerateEnemies " $ wave);
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
     if( dxre == None ) {
@@ -576,7 +576,7 @@ function GenerateItem()
     local Actor a;
     local class<Actor> c;
     local vector loc;
-    local #var prefix AugmentationCannister aug;
+    local #var(prefix)AugmentationCannister aug;
     local Barrel1 barrel;
     local DeusExMover d;
     local float r;
@@ -608,7 +608,7 @@ function GenerateItem()
         return ;
     }
 
-    aug = #var prefix AugmentationCannister(a);
+    aug = #var(prefix)AugmentationCannister(a);
     barrel = Barrel1(a);
 
     if( aug != None ) {

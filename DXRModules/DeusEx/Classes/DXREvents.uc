@@ -10,6 +10,11 @@ struct BingoOption {
 };
 var BingoOption bingo_options[100];
 
+struct MutualExclusion {
+    var string e1, e2;
+};
+var MutualExclusion mutually_exclusive[20];
+
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
@@ -45,6 +50,7 @@ function SetWatchFlags() {
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
         WatchFlag('M02BillyDone');
+        WatchFlag('MS_DL_Played');// this is the datalink played after dealing with the hostage situation, from Mission02.uc
 
         foreach AllActors(class'ChildMale', child) {
             if(child.BindName == "Josh" || child.BindName == "Billy")
@@ -55,6 +61,9 @@ function SetWatchFlags() {
             m.Tag = 'Boat_Exit2';
         }
         Tag = 'Boat_Exit';
+        break;
+    case "02_NYC_HOTEL":
+        WatchFlag('M02HostagesRescued');// for the hotel, set by Mission02.uc
         break;
     case "02_NYC_UNDERGROUND":
         WatchFlag('FordSchickRescued');
@@ -122,6 +131,9 @@ function SetWatchFlags() {
                 jf.bImportant = true;
         }
         break;
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        WatchFlag('SilhouetteHostagesAllRescued');
+        break;
     case "10_PARIS_METRO":
         WatchFlag('M10EnteredBakery');
         WatchFlag('AlleyCopSeesPlayer_Played');
@@ -152,7 +164,7 @@ function CheckPaul() {
     if( dxr.flagbase.GetBool('PaulDenton_Dead') ) {
         if( ! dxr.flagbase.GetBool('DXREvents_PaulDead'))
             PaulDied(dxr);
-    } else if( ! #defined vanilla ) {
+    } else if( ! #defined(vanilla)) {
         SavedPaul(dxr, dxr.player);
     }
 }
@@ -277,6 +289,17 @@ function SendFlagEvent(coerce string eventname, optional bool immediate)
     local class<Json> js;
     js = class'Json';
 
+    if(eventname ~= "M02HostagesRescued") {// for the hotel, set by Mission02.uc
+        M02HotelHostagesRescued();
+        return;
+    }
+    else if(eventname ~= "MS_DL_Played") {// this is a generic flag name used in a few of the mission scripts
+        if(dxr.localURL ~= "02_NYC_BATTERYPARK") {
+            BatteryParkHostages();
+        }
+        return;
+    }
+
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", eventname);
     js.static.Add(j, "immediate", immediate);
@@ -286,6 +309,30 @@ function SendFlagEvent(coerce string eventname, optional bool immediate)
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
     _MarkBingo(eventname);
+}
+
+function M02HotelHostagesRescued()
+{
+    local bool MaleHostage_Dead, FemaleHostage_Dead, GilbertRenton_Dead;
+    MaleHostage_Dead = dxr.flagbase.GetBool('MaleHostage_Dead');
+    FemaleHostage_Dead = dxr.flagbase.GetBool('FemaleHostage_Dead');
+    GilbertRenton_Dead = dxr.flagbase.GetBool('GilbertRenton_Dead');
+    if( !MaleHostage_Dead && !FemaleHostage_Dead && !GilbertRenton_Dead) {
+        SendFlagEvent("HotelHostagesSaved");
+    }
+}
+
+function BatteryParkHostages()
+{
+    local bool SubTerroristsDead, EscapeSuccessful, SubHostageMale_Dead, SubHostageFemale_Dead;
+    SubTerroristsDead = dxr.flagbase.GetBool('SubTerroristsDead');
+    EscapeSuccessful = dxr.flagbase.GetBool('EscapeSuccessful');
+    SubHostageMale_Dead = dxr.flagbase.GetBool('SubHostageMale_Dead');
+    SubHostageFemale_Dead = dxr.flagbase.GetBool('SubHostageFemale_Dead');
+
+    if( (SubTerroristsDead || EscapeSuccessful) && !SubHostageMale_Dead && !SubHostageFemale_Dead ) {
+        SendFlagEvent("SubwayHostagesSaved");
+    }
 }
 
 static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce string damageType, vector HitLocation, string type)
@@ -299,8 +346,8 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
     js.static.Add(j, "victim", GetActorName(victim));
     js.static.Add(j, "victimBindName", victim.BindName);
     js.static.Add(j, "victimRandomizedName", GetRandomizedName(victim));
-    if(#var prefix ScriptedPawn(victim) != None) {
-        unconcious = #var prefix ScriptedPawn(victim).bStunned;
+    if(#var(prefix)ScriptedPawn(victim) != None) {
+        unconcious = #var(prefix)ScriptedPawn(victim).bStunned;
         js.static.Add(j, "victimUnconcious", unconcious);
     }
 
@@ -324,12 +371,12 @@ static function string GetRandomizedName(Actor a)
     return sp.FamiliarName;
 }
 
-static function AddPlayerDeath(DXRando dxr, #var PlayerPawn  player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+static function AddPlayerDeath(DXRando dxr, #var(PlayerPawn) player, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local DXREvents ev;
     class'DXRStats'.static.AddDeath(player);
 
-    if(#defined injections)
+    if(#defined(injections))
         class'DXRHints'.static.AddDeath(dxr, player);
     else {
         // for nonvanilla, because GameInfo.Died is called before the player's Dying state calls root.ClearWindowStack();
@@ -381,10 +428,10 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
 static function AddDeath(Pawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local DXRando dxr;
-    local #var PlayerPawn  player;
-    local #var prefix ScriptedPawn sp;
-    player = #var PlayerPawn (victim);
-    sp = #var prefix ScriptedPawn(victim);
+    local #var(PlayerPawn) player;
+    local #var(prefix)ScriptedPawn sp;
+    player = #var(PlayerPawn)(victim);
+    sp = #var(prefix)ScriptedPawn(victim);
     if(player != None) {
         foreach victim.AllActors(class'DXRando', dxr) break;
         AddPlayerDeath(dxr, player, Killer, damageType, HitLocation);
@@ -401,6 +448,7 @@ static function PaulDied(DXRando dxr)
 
     j = js.static.Start("PawnDeath");
     js.static.Add(j, "victim", "Paul Denton");
+    js.static.Add(j, "victimBindName", "PaulDenton");
     js.static.Add(j, "dmgtype", "");
     GeneralEventData(dxr, j);
     js.static.Add(j, "location", dxr.player.location);
@@ -410,7 +458,7 @@ static function PaulDied(DXRando dxr)
     MarkBingo(dxr, "PaulDenton_Dead");
 }
 
-static function SavedPaul(DXRando dxr, #var PlayerPawn  player, optional int health)
+static function SavedPaul(DXRando dxr, #var(PlayerPawn) player, optional int health)
 {
     local string j;
     local class<Json> js;
@@ -437,6 +485,7 @@ static function BeatGame(DXRando dxr, int ending, int time)
     js.static.Add(j, "time", time);
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
     js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
+    js.static.Add(j, "maxrando", dxr.flags.maxrando);
     GeneralEventData(dxr, j);
     BingoEventData(dxr, j);
     js.static.End(j);
@@ -510,7 +559,7 @@ static function string GetLoadoutName(DXRando dxr)
 }
 
 // BINGO STUFF
-simulated function PlayerAnyEntry(#var PlayerPawn  player)
+simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 {
     local PlayerDataItem data;
     local string event, desc;
@@ -546,6 +595,16 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
         options[num_options++] = x;
     }
 
+    for(x=0; x<ArrayCount(mutually_exclusive); x++) {
+        if(mutually_exclusive[x].e1 == "") continue;
+
+        slot = HandleMutualExclusion(mutually_exclusive[x], options, num_options);
+        if( slot >= 0 ) {
+            num_options--;
+            options[slot] = options[num_options];
+        }
+    }
+
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
             if(num_options == 0 || (x==2 && y==2)) {
@@ -564,6 +623,26 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     }
 }
 
+simulated function int HandleMutualExclusion(MutualExclusion m, int options[100], int num_options) {
+    local int a, b, overwrite;
+
+    for(a=0; a<num_options; a++) {
+        if( bingo_options[options[a]].event == m.e1 ) break;
+    }
+    if( a >= num_options ) return -1;
+
+    for(b=0; b<num_options; b++) {
+        if( bingo_options[options[b]].event == m.e2 ) break;
+    }
+    if( b >= num_options ) return -1;
+
+    if(rngb()) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
 function _MarkBingo(coerce string eventname)
 {
     local int previousbingos, nowbingos, time;
@@ -571,6 +650,17 @@ function _MarkBingo(coerce string eventname)
     local string j;
     local class<Json> js;
     js = class'Json';
+
+    // combine some events
+    switch(eventname) {
+        case "ManBathroomBarks_Played":
+            eventname = "BathroomBarks_Played";// LDDP
+            break;
+        case "hostage_female_Dead":
+        case "hostage_Dead":
+            eventname = "paris_hostage_Dead";
+            break;
+    }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
     previousbingos = data.NumberOfBingos();
@@ -611,7 +701,7 @@ defaultproperties
 {
     bingo_options(0)=(event="TerroristCommander_Dead",desc="Kill the Terrorist Commander",max=1)
 	bingo_options(1)=(event="TiffanySavage_Dead",desc="Kill Tiffany Savage",max=1)
-	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul Denton die",max=1)
+	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul die",max=1)
 	bingo_options(3)=(event="JordanShea_Dead",desc="Kill Jordan Shea",max=1)
 	bingo_options(4)=(event="SandraRenton_Dead",desc="Kill Sandra Renton",max=1)
 	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1)
@@ -621,8 +711,8 @@ defaultproperties
 	bingo_options(9)=(event="TobyAtanwe_Dead",desc="Kill Toby Atanwe",max=1)
 	bingo_options(10)=(event="Antoine_Dead",desc="Kill Antoine",max=1)
 	bingo_options(11)=(event="Chad_Dead",desc="Kill Chad",max=1)
-	bingo_options(12)=(event="hostage_Dead",desc="Kill Juveau",max=1)
-	bingo_options(13)=(event="hostage_female_Dead",desc="Kill hostage Anna",max=1)
+	bingo_options(12)=(event="paris_hostage_Dead",desc="Kill both the hostages in the catacombs",max=2)
+	//bingo_options(13)=(event="hostage_female_Dead",desc="Kill hostage Anna",max=1)
 	bingo_options(14)=(event="Hela_Dead",desc="Kill Hela",max=1)
 	bingo_options(15)=(event="Renault_Dead",desc="Kill Renault",max=1)
 	bingo_options(16)=(event="Labrat_Bum_Dead",desc="Kill Labrat Bum",max=1)
@@ -637,18 +727,18 @@ defaultproperties
 	bingo_options(22)=(event="JoeGreene_Dead",desc="Kill Joe Greene",max=1)
     bingo_options(23)=(event="GuntherFreed",desc="Free Gunther from jail",max=1)
     bingo_options(24)=(event="BathroomBarks_Played",desc="Embarass UNATCO",max=1)
-    bingo_options(25)=(event="ManBathroomBarks_Played",desc="Embarass UNATCO",max=1)
+    //bingo_options(25)=(event="ManBathroomBarks_Played",desc="Embarass UNATCO",max=1)
     bingo_options(26)=(event="GotHelicopterInfo",desc="A bomb!",max=1)
     bingo_options(27)=(event="JoshFed",desc="Give Josh some food",max=1)
     bingo_options(28)=(event="M02BillyDone",desc="Give Billy some food",max=1)
     bingo_options(29)=(event="FordSchickRescued",desc="Rescue Ford Schick",max=1)
-    bingo_options(30)=(event="NiceTerrorist_Dead",desc="Ignore Paul",max=1)
+    bingo_options(30)=(event="NiceTerrorist_Dead",desc="Ignore Paul in the 747 Hanger",max=1)
     bingo_options(31)=(event="M10EnteredBakery",desc="Enter the bakery",max=1)
     //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
     bingo_options(32)=(event="FreshWaterOpened",desc="Fix the water",max=1)
     bingo_options(33)=(event="assassinapartment",desc="Visit the assassin",max=1)
     bingo_options(34)=(event="GaveRentonGun",desc="Give Gilbert a gun",max=1)
-    bingo_options(35)=(event="DXREvents_LeftOnBoat",desc="Take the boat",max=1)
+    bingo_options(35)=(event="DXREvents_LeftOnBoat",desc="Take the boat out of Battery Park",max=1)
     bingo_options(36)=(event="AlleyBumRescued",desc="Rescue the alley bum",max=1)
     bingo_options(37)=(event="FoundScientistBody",desc="Search the canal",max=1)
     bingo_options(38)=(event="ClubMercedesConvo1_Done",desc="Help Mercedes and Tessa",max=1)
@@ -669,4 +759,13 @@ defaultproperties
     bingo_options(53)=(event="MadeBasket",desc="Sign up for the Knicks",max=1)
     bingo_options(54)=(event="BoughtClinicPlan",desc="Buy the full treatment plan in the clinic",max=1)
     bingo_options(55)=(event="ExtinguishFire",desc="Extinguish yourself with running water",max=1)
+    bingo_options(56)=(event="SubwayHostagesSaved",desc="Save both hostages in the subway",max=1)
+    bingo_options(57)=(event="HotelHostagesSaved",desc="Save all 3 hostages in the hotel",max=1)
+    bingo_options(58)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1)
+    bingo_options(59)=(event="JosephManderley_Dead",desc="Kill Joseph Manderley",max=1)
+
+    mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
+    mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
+    mutually_exclusive(2)=(e1="SmugglerDied",e2="M08WarnedSmuggler")
+    mutually_exclusive(3)=(e1="SilhouetteHostagesAllRescued",e2="paris_hostage_Dead")
 }

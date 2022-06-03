@@ -25,8 +25,8 @@ function SetTitle(String newTitle)
     secondSpace = 999;
 #elseif revision
     title = "REVISION RANDOMIZER " $ class'DXRVersion'.static.VersionString();
-    nameLen = 19;
-    firstSpace = 9;
+    nameLen = 18;
+    firstSpace = 8;
     secondSpace = 999;
 #elseif vmd
     title = "VMD RANDOMIZER " $ class'DXRVersion'.static.VersionString();

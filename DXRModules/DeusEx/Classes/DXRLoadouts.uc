@@ -89,7 +89,7 @@ function CheckConfig()
 #ifdef vanilla
         item_sets[3].starting_augs = "AugNinja";//combines AugStealth and active AugSpeed
 #else
-        item_sets[3].starting_augs = "#var package .AugNinja";//combines AugStealth and active AugSpeed
+        item_sets[3].starting_augs = "#var(package).AugNinja";//combines AugStealth and active AugSpeed
 #endif
         item_sets[3].item_spawns = "WeaponShuriken,5,BioelectricCell,2";
 
@@ -400,13 +400,13 @@ function FirstEntry()
     SpawnItems();
 }
 
-simulated function PlayerLogin(#var PlayerPawn  p)
+simulated function PlayerLogin(#var(PlayerPawn) p)
 {
     Super.PlayerLogin(p);
     RandoStartingEquipment(p, false);
 }
 
-simulated function PlayerRespawn(#var PlayerPawn  p)
+simulated function PlayerRespawn(#var(PlayerPawn) p)
 {
     Super.PlayerRespawn(p);
     RandoStartingEquipment(p, true);
@@ -426,7 +426,7 @@ function bool StartedWithAug(class<Augmentation> a)
 
         //speed, stealth, ninja, muscle...
         if( aclass.default.AugmentationLocation == a.default.AugmentationLocation ) {
-            if( class'#var prefix AugmentationManager'.default.AugLocs[a.default.AugmentationLocation].NumSlots == 1 )
+            if( class'#var(prefix)AugmentationManager'.default.AugLocs[a.default.AugmentationLocation].NumSlots == 1 )
                 return true;
         }
     }
@@ -484,7 +484,7 @@ function RandoStartingEquipment(DeusExPlayer player, bool respawn)
         item = item.Inventory;
         l("RandoStartingEquipment("$player$") checking item "$anItem$", bDisplayableInv: "$anItem.bDisplayableInv);
         if( Ammo(anItem) == None && ! anItem.bDisplayableInv ) continue;
-        if( #var prefix NanoKeyRing(anItem) != None ) continue;
+        if( #var(prefix)NanoKeyRing(anItem) != None ) continue;
         if( dxre == None && Weapon(anItem) != None ) continue;
         if( dxre == None && Ammo(anItem) != None ) continue;
         l("RandoStartingEquipment("$player$") removing item: "$anItem);

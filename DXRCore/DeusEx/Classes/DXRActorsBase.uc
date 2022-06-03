@@ -32,7 +32,7 @@ function CheckConfig()
         i=0;
         skipactor_types[i++] = "BarrelAmbrosia";
         skipactor_types[i++] = "NanoKey";
-        if(#defined gmdx)
+        if(#defined(gmdx))
             skipactor_types[i++] = "CrateUnbreakableLarge";
     }
     Super.CheckConfig();
@@ -89,14 +89,14 @@ function bool CarriedItem(Actor a)
 
 static function bool IsHuman(Actor a)
 {
-    return #var prefix HumanMilitary(a) != None || #var prefix HumanThug(a) != None || #var prefix HumanCivilian(a) != None;
+    return #var(prefix)HumanMilitary(a) != None || #var(prefix)HumanThug(a) != None || #var(prefix)HumanCivilian(a) != None;
 }
 
 static function bool IsCritter(Actor a)
 {
-    if( #var prefix CleanerBot(a) != None ) return true;
-    if( #var prefix Animal(a) == None ) return false;
-    return #var prefix Doberman(a) == None && #var prefix Gray(a) == None && #var prefix Greasel(a) == None && #var prefix Karkian(a) == None;
+    if( #var(prefix)CleanerBot(a) != None ) return true;
+    if( #var(prefix)Animal(a) == None ) return false;
+    return #var(prefix)Doberman(a) == None && #var(prefix)Gray(a) == None && #var(prefix)Greasel(a) == None && #var(prefix)Karkian(a) == None;
 }
 
 static function bool RemoveItem(Pawn p, class c)
@@ -175,20 +175,20 @@ static function bool HasItemSubclass(Pawn p, class<Inventory> c)
 
 static function bool HasMeleeWeapon(Pawn p)
 {
-    return HasItem(p, class'#var prefix WeaponBaton')
-        || HasItem(p, class'#var prefix WeaponCombatKnife')
-        || HasItem(p, class'#var prefix WeaponCrowbar')
-        || HasItem(p, class'#var prefix WeaponSword')
-        || HasItem(p, class'#var prefix WeaponNanoSword');
+    return HasItem(p, class'#var(prefix)WeaponBaton')
+        || HasItem(p, class'#var(prefix)WeaponCombatKnife')
+        || HasItem(p, class'#var(prefix)WeaponCrowbar')
+        || HasItem(p, class'#var(prefix)WeaponSword')
+        || HasItem(p, class'#var(prefix)WeaponNanoSword');
 }
 
 static function bool IsMeleeWeapon(Inventory item)
 {
-    return item.IsA('#var prefix WeaponBaton')
-        || item.IsA('#var prefix WeaponCombatKnife')
-        || item.IsA('#var prefix WeaponCrowbar')
-        || item.IsA('#var prefix WeaponSword')
-        || item.IsA('#var prefix WeaponNanoSword');
+    return item.IsA('#var(prefix)WeaponBaton')
+        || item.IsA('#var(prefix)WeaponCombatKnife')
+        || item.IsA('#var(prefix)WeaponCrowbar')
+        || item.IsA('#var(prefix)WeaponSword')
+        || item.IsA('#var(prefix)WeaponNanoSword');
 }
 
 static function Ammo GiveAmmoForWeapon(Pawn p, DeusExWeapon w, int add_ammo)
@@ -216,7 +216,7 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
 
     if( item == None ) return None;
 
-    player = #var PlayerPawn (p);
+    player = #var(PlayerPawn)(p);
     if( Ammo(item) != None ) {
         a = Ammo(p.FindInventoryType(item.class));
         if( a != None ) {
@@ -251,7 +251,7 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
     item.InitialState='Idle2';
     item.SetLocation(p.Location);
 
-    if( (#defined gmdx || #defined revision ) && player != None ) {
+    if( (#defined(gmdx) || #defined(revision) ) && player != None ) {
         PlayerTraveling = player.FlagBase.GetBool('PlayerTraveling');
         if(PlayerTraveling) {
             player.FlagBase.SetBool('PlayerTraveling', false);
@@ -556,14 +556,14 @@ function Conversation GetConversation(Name conName)
 
 static function string GetActorName(Actor a)
 {
-    local #var PlayerPawn  player;
-    local #var prefix ScriptedPawn sp;
+    local #var(PlayerPawn) player;
+    local #var(prefix)ScriptedPawn sp;
 
     if(a == None)
         return "";
 
-    player = #var PlayerPawn (a);
-    sp = #var prefix ScriptedPawn(a);
+    player = #var(PlayerPawn)(a);
+    sp = #var(prefix)ScriptedPawn(a);
 
 #ifdef hx
     if(player != None) {
@@ -1034,7 +1034,7 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
 
 function DebugMarkKeyPosition(Actor a, coerce string id)
 {
-    if( ! #defined debug ) err("don't call DebugMarkKeyPosition without debug mode!");
+    if( ! #defined(debug)) err("don't call DebugMarkKeyPosition without debug mode!");
 
     if(DeusExDecoration(a) != None) {
         DeusExDecoration(a).ItemName = id @ DeusExDecoration(a).ItemName;

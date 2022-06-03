@@ -1,7 +1,7 @@
 #ifdef injections
 class DXRPersonaScreenSkills injects PersonaScreenSkills;
 #else
-class DXRPersonaScreenSkills extends #var prefix PersonaScreenSkills;
+class DXRPersonaScreenSkills extends #var(prefix)PersonaScreenSkills;
 #endif
 
 function UpdateSkillBanned(PersonaSkillButtonWindow b)

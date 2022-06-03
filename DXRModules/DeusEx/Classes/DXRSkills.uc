@@ -56,7 +56,7 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
-simulated function PlayerLogin(#var PlayerPawn  player)
+simulated function PlayerLogin(#var(PlayerPawn) player)
 {
     local PlayerDataItem data;
     Super.PlayerLogin(player);
@@ -70,10 +70,10 @@ simulated function PlayerLogin(#var PlayerPawn  player)
 event PreTravel()
 {
     local PlayerDataItem data;
-    local #var PlayerPawn  p;
+    local #var(PlayerPawn) p;
     Super.PreTravel();
 #ifdef multiplayer
-    foreach AllActors(class'#var PlayerPawn ', p) {
+    foreach AllActors(class'#var(PlayerPawn)', p) {
         l("PreTravel "$p);
         data = class'PlayerDataItem'.static.GiveItem(p);
         data.SkillPointsAvail = p.SkillPointsAvail;
@@ -82,7 +82,7 @@ event PreTravel()
 #endif
 }
 
-simulated function PlayerAnyEntry(#var PlayerPawn  player)
+simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 {
     local PlayerDataItem data;
     Super.PlayerAnyEntry(player);
@@ -146,16 +146,16 @@ simulated function RandoSkill(Skill aSkill)
 simulated function RandoSkillLevelValues(Skill a)
 {
     local string add_desc;
-    local float skill_value_rando;
+    local float skill_value_wet_dry;
 
-    skill_value_rando = float(dxr.flags.settings.skill_value_rando) / 100.0;
-    RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_rando, a.Description);
+    skill_value_wet_dry = float(dxr.flags.settings.skill_value_rando) / 100.0;
+    RandoLevelValues(a, min_skill_weaken, max_skill_str, skill_value_wet_dry, a.Description);
 
 #ifdef injections
-    if( #var prefix SkillDemolition(a) != None ) {
+    if( #var(prefix)SkillDemolition(a) != None ) {
         add_desc = "Each level increases the number of grenades you can carry by 1.";
     }
-    else if( #var prefix SkillComputer(a) != None ) {
+    else if( #var(prefix)SkillComputer(a) != None ) {
         add_desc = "Hacking uses 5 bioelectric energy per second.";
     }
 #endif
@@ -184,16 +184,16 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         p = "%%";
     }
 
-    if( s.Class == class'#var prefix SkillDemolition' || InStr(String(s.Class.Name), "#var prefix SkillWeapon") == 0 ) {
+    if( s.Class == class'#var(prefix)SkillDemolition' || InStr(String(s.Class.Name), "#var(prefix)SkillWeapon") == 0 ) {
         word = "Damage";
         f = -2.0 * s.LevelValues[i] + 1.0;
         return int(f * 100.0) $ p;
     }
-    else if( s.Class == class'#var prefix SkillLockpicking' || s.Class == class'#var prefix SkillTech' ) {
+    else if( s.Class == class'#var(prefix)SkillLockpicking' || s.Class == class'#var(prefix)SkillTech' ) {
         word = "Efficiency";
         return int(s.LevelValues[i] * 100.0) $ p;
     }
-    else if( s.Class == class'#var prefix SkillEnviro' ) {
+    else if( s.Class == class'#var(prefix)SkillEnviro' ) {
         f = s.LevelValues[i];
         if(i>0) r="|n    ";
 
@@ -219,17 +219,17 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
 
         return r;
     }
-    else if( s.Class == class'#var prefix SkillMedicine') {
+    else if( s.Class == class'#var(prefix)SkillMedicine') {
         word = "Healing";
         return int( s.LevelValues[i] * 30.0 ) $ " HP";
     }
-    else if( s.Class == class'#var prefix SkillComputer') {
+    else if( s.Class == class'#var(prefix)SkillComputer') {
         word = "Hack Time";
         if( i == 0 ) return "--";
         f = 15.0 / (s.LevelValues[i] * 1.5);
         return FloatToString(f, 1) $ " sec";
     }
-    else if( s.Class == class'#var prefix SkillSwimming') {
+    else if( s.Class == class'#var(prefix)SkillSwimming') {
         word = "Swimming Speed";
         return int(s.LevelValues[i] * 100.0) $ p;
     }
@@ -295,7 +295,7 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
 #endif
 }
 
-simulated function Skill GetRandomPlayerSkill(#var PlayerPawn  p)
+simulated function Skill GetRandomPlayerSkill(#var(PlayerPawn) p)
 {
     local Skill skills[64], t;
     local int numSkills, slot, numLevels;
@@ -314,7 +314,7 @@ simulated function Skill GetRandomPlayerSkill(#var PlayerPawn  p)
     return skills[slot];
 }
 
-simulated function DowngradeRandomSkill(#var PlayerPawn  p)
+simulated function DowngradeRandomSkill(#var(PlayerPawn) p)
 {
     local Skill skill;
 
@@ -327,7 +327,7 @@ simulated function DowngradeRandomSkill(#var PlayerPawn  p)
     skill.CurrentLevel--;
 }
 
-simulated function RemoveRandomSkill(#var PlayerPawn  p)
+simulated function RemoveRandomSkill(#var(PlayerPawn) p)
 {
     local Skill skill;
 
@@ -338,6 +338,36 @@ simulated function RemoveRandomSkill(#var PlayerPawn  p)
     }
     info("RemoveRandomSkill("$p$") Removing skill "$skill);
     skill.CurrentLevel = 0;
+}
+
+function ExtendedTests()
+{
+    local float f;
+    Super.ExtendedTests();
+
+    TestWeightedLevelValues(0.008089, 0.052143);
+
+    for(f=0.01; f<2; f+=0.02) {
+        TestWeightedLevelValues(f, f+0.01);
+    }
+}
+
+function bool TestWeightedLevelValues(float f1, float f2)
+{
+    local float r1, r2;
+    test(f1 < f2, "TestWeightedLevelValues "$f1$" < "$f2);
+
+    r1 = WeightedLevelValue(1, f1, 3.5, 1, 1, 0, 4);
+    r2 = WeightedLevelValue(2, f2, 3.5, 1, 1, 1, 4);
+    test(r1 < r2, "WeightedLevelValue "$f1@f2$", wet==1, "$r1$" < "$r2);
+
+    r1 = WeightedLevelValue(1, f1, 3.5, 1, 0.5, 0, 4);
+    r2 = WeightedLevelValue(2, f2, 3.5, 1, 0.5, 1, 4);
+    test(r1 < r2, "WeightedLevelValue "$f1@f2$", wet==0.5, "$r1$" < "$r2);
+
+    r1 = WeightedLevelValue(1, f1, 3.5, 1, 0.75, 0, 4);
+    r2 = WeightedLevelValue(2, f2, 3.5, 1, 0.75, 1, 4);
+    return test(r1 < r2, "WeightedLevelValue "$f1@f2$", wet=0.75, "$r1$" < "$r2);
 }
 
 defaultproperties

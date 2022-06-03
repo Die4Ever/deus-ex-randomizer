@@ -421,13 +421,13 @@ function DrawWindow(GC gc)
         }
     }
 
-    str = "minpos: ("$minpos$")";
+    /*str = "minpos: ("$minpos$")";
     gc.SetTextColor(mainColor);
     gc.SetAlignments(HALIGN_Left, VALIGN_Bottom);
     gc.SetFont(textfont);
     gc.DrawText(5, 150, 500, 20, str);
     str = "maxpos: ("$maxpos$")";
-    gc.DrawText(5, 170, 500, 20, str);
+    gc.DrawText(5, 170, 500, 20, str);*/
 }
 
 defaultproperties

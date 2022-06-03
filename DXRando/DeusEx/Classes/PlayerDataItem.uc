@@ -19,7 +19,7 @@ struct BingoSpot {
 };
 var travel BingoSpot bingo[25];
 
-simulated function static PlayerDataItem GiveItem(#var PlayerPawn  p)
+simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
 {
     local PlayerDataItem i;
 
@@ -31,6 +31,24 @@ simulated function static PlayerDataItem GiveItem(#var PlayerPawn  p)
         log("spawned new "$i$" for "$p);
     }
     return i;
+}
+
+simulated function static ResetData(#var(PlayerPawn) p)
+{
+    local PlayerDataItem o, n;
+    o = GiveItem(p);
+    n = p.Spawn(class'PlayerDataItem');
+
+    n.local_inited = o.local_inited;
+    n.version = o.version;
+#ifdef multiplayer
+    n.SkillPointsTotal = o.SkillPointsTotal;
+    n.SkillPointsAvail = o.SkillPointsAvail;
+#endif
+
+    o.Destroy();
+    n.GiveTo(p);
+    log("spawned new "$n$" for "$p);
 }
 
 final function BindConn(int slot_a, int slot_b, out string val, bool writing)

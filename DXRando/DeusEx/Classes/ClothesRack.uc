@@ -1,10 +1,10 @@
 #ifdef injections
 class DXRClothesRack injects ClothesRack;
 #else
-class DXRClothesRack extends #var prefix ClothesRack;
+class DXRClothesRack extends #var(prefix)ClothesRack;
 #endif
 
-var #var PlayerPawn  p;
+var #var(PlayerPawn) p;
 
 function Timer()
 {
@@ -23,11 +23,11 @@ function Frob(actor Frobber, Inventory frobWith)
     Super.Frob(Frobber, frobWith);
 
     // only 1 player at a time, otherwise the previous player will be stuck in 3rd person forever
-    if(#defined multiplayer && p!=None) return;
+    if(#defined(multiplayer) && p!=None) return;
 
 #ifndef vmd
-    if (#var PlayerPawn (Frobber) != None){
-        p = #var PlayerPawn (Frobber);
+    if (#var(PlayerPawn)(Frobber) != None){
+        p = #var(PlayerPawn)(Frobber);
         p.ClientMessage("Time for some new clothes!",, true);
         foreach AllActors(class'DXRFashion',fashion)
             break;

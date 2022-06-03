@@ -1,17 +1,17 @@
 #ifdef injections
 class Toilet injects Toilet;
 #else
-class DXRToilet extends #var prefix Toilet;
+class DXRToilet extends #var(prefix)Toilet;
 #endif
 
 function Frob(actor Frobber, Inventory frobWith)
 {
-	local #var PlayerPawn  player;
+	local #var(PlayerPawn) player;
     local DXRando      dxr;
 
 	Super.Frob(Frobber, frobWith);
 
-	player = #var PlayerPawn (Frobber);
+	player = #var(PlayerPawn)(Frobber);
 	if (player != None && player.bOnFire)
 	{
 		player.ClientMessage("Splish Splash!",, true);
