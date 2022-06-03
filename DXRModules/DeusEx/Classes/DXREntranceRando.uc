@@ -1019,7 +1019,7 @@ function LoadConns(optional int missionNum)
     }
 
     ds = class'PlayerDataItem'.static.GiveItem(Player());
-    if( ds.EntranceRandoMissionNumber == missionNum ) {
+    if( ds.EntranceRandoMissionNumber == missionNum && ds.numConns > 0 ) {
         BindEntrances(ds, false);
     } else {
         ds.EntranceRandoMissionNumber = missionNum;
