@@ -324,6 +324,9 @@ function AnyEntryMapFixes()
     case 14:
         Vandenberg_AnyEntry();
         break;
+    case 15:
+        Area51_AnyEntry();
+        break;
     }
 }
 
@@ -1382,9 +1385,9 @@ function Area51_FirstEntry()
     local DeusExMover d;
     local ComputerSecurity c;
 
+#ifdef vanilla
     switch(dxr.localURL)
     {
-#ifdef vanilla
     case "15_AREA51_BUNKER":
         // doors_lower is for backtracking
         AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
@@ -1425,7 +1428,24 @@ function Area51_FirstEntry()
             c.UserList[0].Password = "graytest";
         }
         break;
+    }
 #endif
+}
+
+function Area51_AnyEntry()
+{
+    local Gray g;
+
+    switch(dxr.localURL)
+    {
+    case "15_AREA51_FINAL":
+#ifdef vanilla
+        foreach AllActors(class'Gray', g) {
+            if( g.Tag == 'reactorgray1' ) g.BindName = "ReactorGray1";
+            else if( g.Tag == 'reactorgray2' ) g.BindName = "ReactorGray2";
+        }
+#endif
+        break;
     }
 }
 
