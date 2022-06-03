@@ -736,7 +736,7 @@ defaultproperties
     bingo_options(31)=(event="M10EnteredBakery",desc="Enter the bakery",max=1)
     //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
     bingo_options(32)=(event="FreshWaterOpened",desc="Fix the water",max=1)
-    bingo_options(33)=(event="assassinapartment",desc="Visit the assassin",max=1)
+    bingo_options(33)=(event="assassinapartment",desc="Visit the arms smuggler's apartment in Paris",max=1)
     bingo_options(34)=(event="GaveRentonGun",desc="Give Gilbert a gun",max=1)
     bingo_options(35)=(event="DXREvents_LeftOnBoat",desc="Take the boat out of Battery Park",max=1)
     bingo_options(36)=(event="AlleyBumRescued",desc="Rescue the alley bum",max=1)
