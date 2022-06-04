@@ -524,6 +524,7 @@ function float GenerateEnemy(DXREnemies dxre)
     GiveRandomItems(p);
     p.InitializeInventory();
     p.bStasis = false;
+    class'DXRNames'.static.GiveRandomName(dxr, p);
 
     return difficulty;
 }
