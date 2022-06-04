@@ -98,7 +98,6 @@ function SetWatchFlags() {
     case "02_NYC_STREET":
         WatchFlag('AlleyBumRescued');
     case "04_NYC_STREET":
-    case "08_NYC_STREET":
         Tag = 'MadeBasket';
         break;
     case "05_NYC_UNATCOMJ12LAB":
@@ -112,6 +111,7 @@ function SetWatchFlags() {
         WatchFlag('M07ChenSecondGive_Played');
         break;
     case "08_NYC_STREET":
+        Tag = 'MadeBasket';
         WatchFlag('StantonAmbushDefeated');
         break;
     case "08_NYC_SMUG":
