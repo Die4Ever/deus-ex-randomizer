@@ -186,7 +186,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
 
     if( s.Class == class'#var(prefix)SkillDemolition' || InStr(String(s.Class.Name), "#var(prefix)SkillWeapon") == 0 ) {
         word = "Damage";
-        f = -2.0 * s.LevelValues[i] + 1.0;
+        f = -1.0 * s.LevelValues[i] + 1.0;
         return int(f * 100.0) $ p;
     }
     else if( s.Class == class'#var(prefix)SkillLockpicking' || s.Class == class'#var(prefix)SkillTech' ) {
