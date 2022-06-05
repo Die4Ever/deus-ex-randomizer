@@ -730,20 +730,24 @@ function AddFixedConn(string map_a, string inTag_a, string map_b, string outTag_
 function ApplyFixes()
 {
     switch(dxr.localURL) {
-        case "06_HONGKONG_WANCHAI_CANAL":
-            FixHongKongCanal();
-            break;
+    case "06_HONGKONG_WANCHAI_CANAL":
+        FixHongKongCanal();
+        break;
 
-        /*case "06_HONGKONG_STORAGE":
-            foreach AllActors(class'WaterZone', w) {
-                //if( w.Name == 'WaterZone5' || w.Name == 'WaterZone1' )
-                    w.ZoneVelocity = vect(0,0,0);
-            }
-            break;*/
+    /*case "06_HONGKONG_STORAGE":
+        foreach AllActors(class'WaterZone', w) {
+            //if( w.Name == 'WaterZone5' || w.Name == 'WaterZone1' )
+                w.ZoneVelocity = vect(0,0,0);
+        }
+        break;*/
 
-        case "12_VANDENBERG_CMD":
-            FixVandebergCmd();
-            break;
+    case "12_VANDENBERG_CMD":
+        FixVandebergCmd();
+        break;
+
+    case "14_OceanLab_Lab":
+        FixOceanLab();
+        break;
     }
 }
 
@@ -810,6 +814,19 @@ function FixVandebergCmd()
     // this is called from PostFirstEntry, so it's after DXRKeys already ran
     dxrk = DXRKeys(dxr.FindModule(class'DXRKeys'));
     if( dxrk != None ) dxrk.RandoKey(n);
+}
+
+function FixOceanLab()
+{
+    local NanoKey n;
+
+    n = Spawn(class'NanoKey',,, vect(1913.437012, 3191.914063, -2282.776855) );
+    n.Description = "Crew Module Access";
+    n.KeyID = 'crewkey';
+
+    n = Spawn(class'NanoKey',,, vect(1583.074585, 462.036804, -1762.375610) );
+    n.Description = "Greasel Laboratory Key";
+    n.KeyID = 'Glab';
 }
 
 function RandoMission2()

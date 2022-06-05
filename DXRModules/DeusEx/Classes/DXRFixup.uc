@@ -1002,6 +1002,7 @@ function Vandenberg_FirstEntry()
         break;
 
     case "14_OCEANLAB_LAB":
+        AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');
         foreach AllActors(class'ComputerSecurity', comp) {
             if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
                 comp.UserList[0].userName = "Oceanguard";
