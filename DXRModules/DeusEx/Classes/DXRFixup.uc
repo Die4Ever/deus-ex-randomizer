@@ -319,6 +319,7 @@ function AnyEntryMapFixes()
         Shipyard_AnyEntry();
         break;
     case 10:
+    case 11:
         Paris_AnyEntry();
         break;
     case 14:
@@ -1213,6 +1214,7 @@ function Paris_AnyEntry()
     local DXRNPCs npcs;
     local DXREnemies dxre;
     local ScriptedPawn sp;
+    local TobyAtanwe toby;
 
     switch(dxr.localURL)
     {
@@ -1230,6 +1232,12 @@ function Paris_AnyEntry()
             GiveItem(sp, class'#var(prefix)WineBottle');
             dxre.RandomizeSP(sp, 100);
             RemoveFears(sp);
+        }
+        break;
+
+    case "11_PARIS_EVERETT":
+        foreach AllActors(class'TobyAtanwe', toby) {
+            toby.bInvincible = false;
         }
         break;
     }

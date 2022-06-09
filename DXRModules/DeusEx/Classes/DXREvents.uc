@@ -714,9 +714,7 @@ defaultproperties
 	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1)
 	bingo_options(8)=(event="JoJoFine_Dead",desc="Kill JoJo",max=1)
 	bingo_options(9)=(event="TobyAtanwe_Dead",desc="Kill Toby Atanwe",max=1)
-#ifndef vmd
 	bingo_options(10)=(event="Antoine_Dead",desc="Kill Antoine",max=1)
-#endif
 	bingo_options(11)=(event="Chad_Dead",desc="Kill Chad",max=1)
 	bingo_options(12)=(event="paris_hostage_Dead",desc="Kill both the hostages in the catacombs",max=2)
 	//bingo_options(13)=(event="hostage_female_Dead",desc="Kill hostage Anna",max=1)
