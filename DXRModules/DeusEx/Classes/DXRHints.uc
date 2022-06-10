@@ -48,6 +48,10 @@ simulated function InitHints()
         AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
     }
 
+    if(dxr.flags.gamemode == 1) {
+        AddHint("Entrance Randomizer is enabled,", "check the wiki on our GitHub for help.");
+    }
+
     if(dxr.flags.settings.medbots > 0) {
         AddHint("Medbots are randomized.", "Don't expect to find them in the usual locations.");
     }

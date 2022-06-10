@@ -37,6 +37,7 @@ function SetWatchFlags() {
     local Mechanic mechanic;
     local JunkieFemale jf;
     local GuntherHermann gunther;
+    local Mutt starr;// arms smuggler's dog in Paris
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -97,7 +98,6 @@ function SetWatchFlags() {
     case "02_NYC_STREET":
         WatchFlag('AlleyBumRescued');
     case "04_NYC_STREET":
-    case "08_NYC_STREET":
         Tag = 'MadeBasket';
         break;
     case "05_NYC_UNATCOMJ12LAB":
@@ -111,6 +111,7 @@ function SetWatchFlags() {
         WatchFlag('M07ChenSecondGive_Played');
         break;
     case "08_NYC_STREET":
+        Tag = 'MadeBasket';
         WatchFlag('StantonAmbushDefeated');
         break;
     case "08_NYC_SMUG":
@@ -141,6 +142,10 @@ function SetWatchFlags() {
 
         foreach AllActors(class'GuntherHermann', gunther) {
             gunther.bInvincible = false;
+        }
+        foreach AllActors(class'Mutt', starr) {
+            starr.bImportant = true;// you're important to me
+            starr.BindName = "Starr";
         }
         break;
     case "10_PARIS_CLUB":
@@ -736,7 +741,7 @@ defaultproperties
     bingo_options(31)=(event="M10EnteredBakery",desc="Enter the bakery",max=1)
     //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
     bingo_options(32)=(event="FreshWaterOpened",desc="Fix the water",max=1)
-    bingo_options(33)=(event="assassinapartment",desc="Visit the assassin",max=1)
+    bingo_options(33)=(event="assassinapartment",desc="Visit Starr in Paris",max=1)
     bingo_options(34)=(event="GaveRentonGun",desc="Give Gilbert a gun",max=1)
     bingo_options(35)=(event="DXREvents_LeftOnBoat",desc="Take the boat out of Battery Park",max=1)
     bingo_options(36)=(event="AlleyBumRescued",desc="Rescue the alley bum",max=1)
