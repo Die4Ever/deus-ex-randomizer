@@ -102,7 +102,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 * the strength and lockpick strength for doors
 * the hack strength for keypads
 * the strength of augmentations and skills (make sure to read their descriptions)
-* the damage and firing speed of weapons (make sure to read their descriptions)
+* the damage and firing speed of weapon types (make sure to read the description for one of each type)
 * JC's and Paul's clothes
 * randomly adds "The Merchant"
 
