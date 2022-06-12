@@ -68,7 +68,7 @@ simulated function InitHints()
 
     if (dxr.flags.settings.medbotuses==1) {
         AddHint("Each medbot can heal you one time!","Use it wisely!");
-    } else if (dxr.flags.settings.medbotuses>1) {
+    } else if (dxr.flags.settings.medbotuses>1 && dxr.flags.settings.medbotuses <30) {
         AddHint("Each medbot can heal you "$dxr.flags.settings.medbotuses$" times!","Use them wisely!");
     }
 
