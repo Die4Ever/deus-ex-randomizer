@@ -271,7 +271,9 @@ function ReduceSpawnsInContainers(class<Actor> classname, float percent)
                 l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing contents "$d.Contents$", tperc: "$tperc);
                 d.Contents = d.Content2;
                 if( d.Contents == None ) {
+#ifndef vmd
                     d.Contents = class'Flare';
+#endif
                 }
             }
         }
