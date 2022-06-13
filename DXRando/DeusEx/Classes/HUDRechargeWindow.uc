@@ -19,6 +19,11 @@ function UpdateRepairBotWindows()
     dxrbot = DXRRepairBot(repairBot);
 #endif
 
+#ifdef gmdx
+    Super.UpdateRepairBotWindows();
+    return;
+#endif
+
     if (repairBot != None)
     {
         // Update the bar
@@ -64,6 +69,11 @@ function UpdateInfoText()
     dxrbot = DXRRepairBot(repairBot);
 #endif
 
+#ifdef gmdx
+    Super.UpdateInfoText();
+    return;
+#endif
+
     if (repairBot != None)
     {
         infoText = Sprintf(RepairBotInfoText, repairBot.chargeAmount, repairBot.chargeRefreshTime);
@@ -83,6 +93,11 @@ function UpdateInfoText()
 
 event Tick(float deltaSeconds)
 {
+#ifdef gmdx
+    Super.Tick(deltaSeconds);
+    return;
+#endif
+
     if (lastRefresh >= refreshInterval)
     {
         lastRefresh = 0.0;

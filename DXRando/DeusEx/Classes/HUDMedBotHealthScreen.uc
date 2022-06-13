@@ -21,6 +21,11 @@ function UpdateMedBotDisplay()
     dxrbot = DXRMedicalBot(medBot);
 #endif
 
+#ifdef gmdx
+    Super.UpdateMedBotDisplay();
+    return;
+#endif
+
     if (medBot != None)
     {
         infoText = Sprintf(HealthInfoTextLabel, medBot.healAmount);
@@ -72,6 +77,11 @@ function UpdateMedBotDisplay()
 
 function Tick(float deltaTime)
 {
+#ifdef gmdx
+    Super.Tick(deltaTime);
+    return;
+#endif
+
     UpdateMedBotDisplay();
     UpdateRegionWindows();
 }

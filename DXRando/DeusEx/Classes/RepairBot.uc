@@ -4,13 +4,27 @@ class DXRRepairBot merges RepairBot;
 class DXRRepairBot extends #var(prefix)RepairBot;
 #endif
 
-var int numUses;
+var travel int numUses;
 
 replication
 {
     reliable if ( Role == ROLE_Authority )
         numUses;
 }
+
+#ifdef gmdx
+function PostBeginPlay()
+{
+    Super.PostBeginPlay();
+    chargeMaxTimes = GetMaxUses();
+}
+
+function StandStill()
+{
+    Super.StandStill();
+    SetPropertyText("lowerThreshold", "0");// RSD
+}
+#endif
 
 function int ChargePlayer(DeusExPlayer PlayerToCharge)
 {
@@ -51,7 +65,7 @@ simulated function string GetRemainingUsesStr()
     uses = GetRemainingUses();
 
     if (uses == 1) {
-        msg = " (1 Charges Left)";
+        msg = " (1 Charge Left)";
     } else {
         msg = " ("$uses$" Charges Left)";
     }
@@ -82,6 +96,10 @@ simulated function bool CanCharge()
     }
 #endif
 
+#ifdef gmdx
+    return Super.CanCharge();
+#endif
+
 #ifdef injections
     if (_CanCharge()) {
 #else
@@ -99,9 +117,13 @@ simulated function bool CanCharge()
 
 simulated function Float GetRefreshTimeRemaining()
 {
-    local int timeRemaining;
+    local float timeRemaining;
 
-    timeRemaining = chargeRefreshTime - (Level.TimeSeconds - lastChargeTime);
+#ifdef injections
+    timeRemaining = _GetRefreshTimeRemaining();
+#else
+    timeRemaining = Super.GetRefreshTimeRemaining();
+#endif
 
     if (timeRemaining < 0) {
         timeRemaining = 0;

@@ -3,13 +3,28 @@ class DXRMedicalBot merges MedicalBot;
 #else
 class DXRMedicalBot extends #var(prefix)MedicalBot;
 #endif
-var int numUses;
+
+var travel int numUses;
 
 replication
 {
     reliable if ( Role == ROLE_Authority )
         numUses;
 }
+
+#ifdef gmdx
+function PostBeginPlay()
+{
+    Super.PostBeginPlay();
+    healMaxTimes = GetMaxUses();
+}
+
+function StandStill()
+{
+    Super.StandStill();
+    SetPropertyText("lowerThreshold", "0");// RSD
+}
+#endif
 
 function int HealPlayer(DeusExPlayer player)
 {
@@ -35,7 +50,6 @@ simulated function int GetMaxUses()
     }
 
     return 0;
-
 }
 
 simulated function int GetRemainingUses()
@@ -72,6 +86,10 @@ simulated function bool HealsRemaining()
 
 simulated function bool CanHeal()
 {
+#ifdef gmdx
+    return Super.CanHeal();
+#endif
+
 #ifdef injections
     if (_CanHeal()) {
 #else
@@ -89,9 +107,13 @@ simulated function bool CanHeal()
 
 simulated function Float GetRefreshTimeRemaining()
 {
-    local int timeRemaining;
+    local float timeRemaining;
 
-    timeRemaining = healRefreshTime - (Level.TimeSeconds - lastHealTime);
+#ifdef injections
+    timeRemaining = _GetRefreshTimeRemaining();
+#else
+    timeRemaining = Super.GetRefreshTimeRemaining();
+#endif
 
     if (timeRemaining < 0) {
         timeRemaining = 0;

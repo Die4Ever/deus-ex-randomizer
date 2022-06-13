@@ -335,6 +335,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         || a.Class.Name == 'AugRadiation'
         || a.Class.Name == 'AugAutoCounter'
         || a.Class.Name == 'AugDefenseNPC'
+        || a.Class.Name == 'AugDefenseHeli'
     ) {
         word = "% of Normal";
         f = a.LevelValues[i] / a.default.LevelValues[i];
