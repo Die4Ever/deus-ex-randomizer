@@ -18,7 +18,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,9,1,2) ) {
+    if( ConfigOlderThan(2,0,0,0) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -43,6 +43,16 @@ function CheckConfig()
         i++;
         door_fixes[i] = door_fixes[i-1];
         door_fixes[i].map = "08_NYC_STREET";
+        i++;
+
+        // door to the basement
+        door_fixes[i].map = "04_NYC_NSFHQ";
+        door_fixes[i].tag = 'ExitDoor';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 0;// 0 uses a random value instead
+        door_fixes[i].doorStrength = 0;
+        door_fixes[i].bPickable = true;
+        door_fixes[i].lockStrength = 0;
         i++;
 
         // just in case General Carter's door gets stuck on something
@@ -482,12 +492,16 @@ function ApplyDoorFixes()
 
             if( door_fixes[i].bPickable ) MakePickable(d);
             d.bPickable = door_fixes[i].bPickable;
-            d.lockStrength = door_fixes[i].lockStrength;
+            if(door_fixes[i].lockStrength > 0 )
+                d.lockStrength = door_fixes[i].lockStrength;
+
             d.initiallockStrength = d.lockStrength;
             if( door_fixes[i].bBreakable ) MakeDestructible(d);
             d.bBreakable = door_fixes[i].bBreakable;
-            d.minDamageThreshold = door_fixes[i].minDamageThreshold;
-            d.doorStrength = door_fixes[i].doorStrength;
+            if(door_fixes[i].minDamageThreshold > 0)
+                d.minDamageThreshold = door_fixes[i].minDamageThreshold;
+            if(door_fixes[i].doorStrength > 0)
+                d.doorStrength = door_fixes[i].doorStrength;
         }
     }
 }
@@ -595,7 +609,7 @@ function MakePickable(#var(Mover) d)
     }
     if( d.bPickable == false ) {
         d.bPickable = true;
-        d.lockStrength = FClamp(rngrange(1, min_door_adjust, max_door_adjust), 0, 1);
+        d.lockStrength = FClamp(rngrange(0.8, min_door_adjust, max_door_adjust), 0, 1);
         d.lockStrength = int(d.lockStrength*100)/100.0;
         d.initiallockStrength = d.lockStrength;
     }
@@ -630,7 +644,7 @@ function MakeDestructible(#var(Mover) d)
         d.doorStrength = FClamp(rngrange(0.8, min_door_adjust, max_door_adjust), 0, 1);
         d.doorStrength = int(d.doorStrength*100)/100.0;
 #ifndef injections
-        d.minDamageThreshold = d.doorStrength * 60;
+        d.minDamageThreshold = d.doorStrength * 70;
 #endif
     }
 }
