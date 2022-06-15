@@ -74,7 +74,7 @@ simulated function InitHints()
 
     if (dxr.flags.settings.repairbotuses == 1) {
         AddHint("Each repair bot can recharge you one time!","Use it wisely!");
-    } else if (dxr.flags.settings.repairbotuses>1 && dxr.flags.settings.medbotuses <30){
+    } else if (dxr.flags.settings.repairbotuses>1 && dxr.flags.settings.repairbotuses <30){
         AddHint("Each repair bot can recharge you "$dxr.flags.settings.repairbotuses$" times!","Use them wisely!");
     }
 
