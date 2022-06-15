@@ -509,6 +509,7 @@ function NYC_02_FirstEntry()
     local DeusExMover d;
     local NanoKey k;
     local NYPoliceBoat b;
+    local CrateExplosiveSmall c;
 
     switch (dxr.localURL)
     {
@@ -526,6 +527,15 @@ function NYC_02_FirstEntry()
         k = Spawn(class'NanoKey',,, vect(1574.209839, -238.380142, 339.215179));
         k.KeyID = 'ControlRoomDoor';
         k.Description = "Control Room Door Key";
+        break;
+#endif
+
+#ifdef revision
+    case "02_NYC_STREET":
+        foreach AllActors(class'CrateExplosiveSmall', c) {
+            l("hiding " $ c @ c.Tag @ c.Event);
+            c.bHidden = true;
+        }
         break;
 #endif
     }
