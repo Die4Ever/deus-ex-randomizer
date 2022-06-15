@@ -970,8 +970,8 @@ function doNudge(string viewer) {
     local Rotator r;
     local vector newAccel;
 
-    newAccel.X = Rand(201)-100;
-    newAccel.Y = Rand(201)-100;
+    newAccel.X = (Rand(201)-100) * 3;
+    newAccel.Y = (Rand(201)-100) * 3;
     //newAccel.Z = Rand(31);
 
     //Not super happy with how this looks,
