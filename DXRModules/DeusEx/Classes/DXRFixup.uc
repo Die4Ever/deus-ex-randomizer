@@ -534,7 +534,7 @@ function NYC_02_FirstEntry()
     case "02_NYC_STREET":
         foreach AllActors(class'CrateExplosiveSmall', c) {
             l("hiding " $ c @ c.Tag @ c.Event);
-            c.bHidden = true;
+            c.bHidden = true;// hide it so DXRSwapItems doesn't move it, this is supposed to be inside the plane that flies overhead
         }
         break;
 #endif
