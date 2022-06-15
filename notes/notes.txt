@@ -7,21 +7,6 @@ check mission 5 jailbreak in all mods
 reducing ammo should add a random 0 to 1 before rounding?
 
 
-### Installation Instructions for Revision
-
-Install Revision from Steam or https://www.moddb.com/mods/deus-ex-revision/downloads/deus-ex-revision
-
-Download `RevRandomizer.u`  from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
-
-Copy `RevRandomizer.u` into the game's `Revision\System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
-
-Edit the `Revision.ini` file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
-
-In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=Revision.RevGameInfo` to `DefaultGame=RevRandomizer.DXRandoGameInfo` and change `Root` from `Root=Revision.RevRootWindow` to `Root=RevRandomizer.DXRandoRootWindow`
-
-Revision Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
-
-
 select created, name, killer, damagetype, map, version, modname, seed, flagshash from deaths join logs on(log_id=logs.id) where created>now()-interval 30 day order by created asc;
 
 

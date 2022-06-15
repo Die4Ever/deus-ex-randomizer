@@ -47,6 +47,23 @@ In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.
 GMDX Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
 </details>
 
+## Installation Instructions for Revision
+<details>
+<summary>Click to expand Revision Installation Instructions...</summary>
+
+Install Revision from Steam or https://www.moddb.com/mods/deus-ex-revision/downloads/deus-ex-revision
+
+Download `RevRandomizer.u`  from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
+
+Copy `RevRandomizer.u` into the game's `Revision\System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
+
+Edit the `Revision.ini` file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
+
+In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=Revision.RevGameInfo` to `DefaultGame=RevRandomizer.DXRandoGameInfo` and change `Root` from `Root=Revision.RevRootWindow` to `Root=RevRandomizer.DXRandoRootWindow`
+
+Revision Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
+</details>
+
 ## Installation Instructions for Vanilla? Madder.
 <details>
 <summary>Click to expand Vanilla? Madder. Installation Instructions...</summary>
@@ -82,10 +99,10 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 
 </details>
 
-## v1.5 Trailer
+## v2 Trailer
 
-<a href="https://www.youtube.com/watch?v=A0Li3XuBjGg" target="_blank">
-<img src="https://i.imgur.com/hTCuQCH.png" alt="v1.5 Trailer" height="200"/></a>
+<a href="https://www.youtube.com/watch?v=IvGNyEvAIO8" target="_blank">
+<img src="https://img.youtube.com/vi/IvGNyEvAIO8/0.jpg" alt="v2 Trailer" height="200"/></a>
 
 ## DXRando randomizes
 * locations of goals, NPCs, and some starting locations
