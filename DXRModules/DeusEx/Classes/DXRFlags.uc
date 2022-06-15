@@ -245,8 +245,8 @@ function CheckConfig()
         difficulty_settings[i].equipment = 5;
         difficulty_settings[i].medbots = 100;
         difficulty_settings[i].repairbots = 100;
-        difficulty_settings[i].medbotuses = 999;
-        difficulty_settings[i].repairbotuses = 999;
+        difficulty_settings[i].medbotuses = 20;
+        difficulty_settings[i].repairbotuses = 20;
         difficulty_settings[i].medbotcooldowns = 1;
         difficulty_settings[i].repairbotcooldowns = 1;
         difficulty_settings[i].medbotamount = 1;
@@ -304,8 +304,8 @@ function CheckConfig()
         difficulty_settings[i].equipment = 4;
         difficulty_settings[i].medbots = 35;
         difficulty_settings[i].repairbots = 35;
-        difficulty_settings[i].medbotuses = 50;
-        difficulty_settings[i].repairbotuses = 50;
+        difficulty_settings[i].medbotuses = 10;
+        difficulty_settings[i].repairbotuses = 10;
         difficulty_settings[i].medbotcooldowns = 1;
         difficulty_settings[i].repairbotcooldowns = 1;
         difficulty_settings[i].medbotamount = 1;
@@ -362,8 +362,8 @@ function CheckConfig()
         difficulty_settings[i].equipment = 2;
         difficulty_settings[i].medbots = 25;
         difficulty_settings[i].repairbots = 25;
-        difficulty_settings[i].medbotuses = 10;
-        difficulty_settings[i].repairbotuses = 10;
+        difficulty_settings[i].medbotuses = 5;
+        difficulty_settings[i].repairbotuses = 5;
         difficulty_settings[i].medbotcooldowns = 1;
         difficulty_settings[i].repairbotcooldowns = 1;
         difficulty_settings[i].medbotamount = 1;
