@@ -1,4 +1,8 @@
+#ifdef revision
+class DXRandoRootWindow extends RevRootWindow;
+#else
 class DXRandoRootWindow extends DeusExRootWindow;
+#endif
 
 function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, optional bool bNoPause)
 {
