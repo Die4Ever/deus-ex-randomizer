@@ -87,6 +87,16 @@ simulated function bool IncrementBingoProgress(string event)
     return false;
 }
 
+simulated function string GetBingoDescription(string event)
+{
+    local int i;
+    for(i=0; i<ArrayCount(bingo); i++) {
+        if(bingo[i].event != event) continue;
+        return bingo[i].desc;
+    }
+    return "";
+}
+
 simulated function bool CheckBingo(int sx, int sy, int x, int y)
 {
     local int i, hits;

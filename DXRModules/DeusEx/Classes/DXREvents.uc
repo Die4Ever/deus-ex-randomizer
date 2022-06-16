@@ -689,6 +689,8 @@ function _MarkBingo(coerce string eventname)
         js.static.End(j);
 
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
+    } else {
+        player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
     }
 }
 
@@ -723,7 +725,7 @@ defaultproperties
 	bingo_options(16)=(event="Labrat_Bum_Dead",desc="Kill Labrat Bum",max=1)
 	bingo_options(17)=(event="DXRNPCs1_Dead",desc="Kill The Merchant",max=1)
 	bingo_options(18)=(event="lemerchant_Dead",desc="Kill Le Merchant",max=1)
-	bingo_options(19)=(event="Harold_Dead",desc="Kill Harold the mechanic",max=1)
+	bingo_options(19)=(event="Harold_Dead",desc="Kill Harold the mechanic in the hanger",max=1)
 	//bingo_options()=(event="Josh_Dead",desc="Kill Josh",max=1)
 	//bingo_options()=(event="Billy_Dead",desc="Kill Billy",max=1)
 	//bingo_options()=(event="MarketKid_Dead",desc="Kill Louis Pan",max=1)
@@ -742,7 +744,7 @@ defaultproperties
     //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
     bingo_options(32)=(event="FreshWaterOpened",desc="Fix the water",max=1)
     bingo_options(33)=(event="assassinapartment",desc="Visit Starr in Paris",max=1)
-    bingo_options(34)=(event="GaveRentonGun",desc="Give Gilbert a gun",max=1)
+    bingo_options(34)=(event="GaveRentonGun",desc="Give Gilbert a weapon",max=1)
     bingo_options(35)=(event="DXREvents_LeftOnBoat",desc="Take the boat out of Battery Park",max=1)
     bingo_options(36)=(event="AlleyBumRescued",desc="Rescue the alley bum",max=1)
     bingo_options(37)=(event="FoundScientistBody",desc="Search the canal",max=1)
