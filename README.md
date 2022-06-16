@@ -101,8 +101,8 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 
 ## v2.0 Trailer
 
-<a href="https://www.youtube.com/watch?v=IvGNyEvAIO8" target="_blank">
-<img src="https://i.imgur.com/EXbo4Wb.png" alt="v2.0 Trailer" height="300"/></a>
+<a href="https://youtu.be/XsoIKbn_suE" target="_blank">
+<img src="https://i.imgur.com/Rssbzpl.jpg" alt="v2.0 Trailer" height="300"/></a>
 
 ## DXRando randomizes
 * locations of goals, NPCs, and some starting locations
@@ -158,7 +158,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <details>
 <summary>When you click New Game, you will see this settings screen:</summary>
 
-![options](https://i.imgur.com/9OZExNd.png)
+![options](https://i.imgur.com/tMdOLY1.jpg)
 
 </details>
 
@@ -167,7 +167,7 @@ If you click Next then it will use default settings based on your difficulty cho
 <details>
 <summary>But if you click Advanced then you will see these settings:</summary>
 
-![advanced options](https://i.imgur.com/ZfekrSK.png)
+![advanced options](https://i.imgur.com/kxJyToG.jpg)
 
 </details>
 
