@@ -270,6 +270,9 @@ function ReduceSpawnsInContainers(class<Actor> classname, float percent)
             if( !chance_single(tperc) ) {
                 l("ReduceSpawnsInContainers container "$ActorToString(d)$" removing contents "$d.Contents$", tperc: "$tperc);
                 d.Contents = d.Content2;
+                if( d.Contents == None && !#defined(vmd) ) {
+                    d.Contents = class'Flare';
+                }
             }
         }
     }

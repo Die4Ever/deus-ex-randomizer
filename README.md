@@ -47,6 +47,23 @@ In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.
 GMDX Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
 </details>
 
+## Installation Instructions for Revision
+<details>
+<summary>Click to expand Revision Installation Instructions...</summary>
+
+Install Revision from Steam or https://www.moddb.com/mods/deus-ex-revision/downloads/deus-ex-revision
+
+Download `RevRandomizer.u`  from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
+
+Copy `RevRandomizer.u` into the game's `Revision\System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
+
+Edit the `Revision.ini` file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
+
+In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=Revision.RevGameInfo` to `DefaultGame=RevRandomizer.DXRandoGameInfo` and change `Root` from `Root=Revision.RevRootWindow` to `Root=RevRandomizer.DXRandoRootWindow`
+
+Revision Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
+</details>
+
 ## Installation Instructions for Vanilla? Madder.
 <details>
 <summary>Click to expand Vanilla? Madder. Installation Instructions...</summary>
@@ -82,12 +99,12 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 
 </details>
 
-## v1.5 Trailer
+## v2.0 Trailer
 
-<a href="https://www.youtube.com/watch?v=A0Li3XuBjGg" target="_blank">
-<img src="https://i.imgur.com/hTCuQCH.png" alt="v1.5 Trailer" height="200"/></a>
+<a href="https://youtu.be/XsoIKbn_suE" target="_blank">
+<img src="https://i.imgur.com/Rssbzpl.jpg" alt="v2.0 Trailer" height="300"/></a>
 
-## Currently in v1.9.1, DXRando randomizes
+## DXRando randomizes
 * locations of goals, NPCs, and some starting locations
 * medbots and repair bots (with hint datacubes near them)
 * adding and moving turrets, cameras, security computers, and datacubes for them
@@ -102,7 +119,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 * the strength and lockpick strength for doors
 * the hack strength for keypads
 * the strength of augmentations and skills (make sure to read their descriptions)
-* the damage and firing speed of weapons (make sure to read their descriptions)
+* the damage and firing speed of weapon types (make sure to read the description for one of each type)
 * JC's and Paul's clothes
 * randomly adds "The Merchant"
 
@@ -141,7 +158,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 <details>
 <summary>When you click New Game, you will see this settings screen:</summary>
 
-![options](https://i.imgur.com/9OZExNd.png)
+![options](https://i.imgur.com/tMdOLY1.jpg)
 
 </details>
 
@@ -150,7 +167,7 @@ If you click Next then it will use default settings based on your difficulty cho
 <details>
 <summary>But if you click Advanced then you will see these settings:</summary>
 
-![advanced options](https://i.imgur.com/ZfekrSK.png)
+![advanced options](https://i.imgur.com/kxJyToG.jpg)
 
 </details>
 

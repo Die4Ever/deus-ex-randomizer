@@ -25,6 +25,7 @@ simulated function InitHints()
     AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them");
     AddHint("The large metal crates are now destructible.", "They have 2000 hp.");
     AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
+    AddHint("Each type of weapon gets randomized stats!", "Make sure to check one of each type.");
 
     telem = DXRTelemetry(dxr.FindModule(class'DXRTelemetry'));
     if(telem == None || telem.enabled == false)
@@ -43,7 +44,7 @@ simulated function InitHints()
         AddHint("The PS20 has been upgraded to the PS40", "and does significantly more damage.");
         AddHint("Flare darts now set enemies on fire for 3 seconds.");
         AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");
-        AddHint("Read the pop-up text on doors to see how many", "hit from your equiped weapon to break it.");
+        AddHint("Read the pop-up text on doors to see how many", "hits from your equiped weapon to break it.");
         AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
         AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
     }
@@ -67,13 +68,13 @@ simulated function InitHints()
 
     if (dxr.flags.settings.medbotuses==1) {
         AddHint("Each medbot can heal you one time!","Use it wisely!");
-    } else if (dxr.flags.settings.medbotuses>1) {
+    } else if (dxr.flags.settings.medbotuses>1 && dxr.flags.settings.medbotuses <30) {
         AddHint("Each medbot can heal you "$dxr.flags.settings.medbotuses$" times!","Use them wisely!");
     }
 
     if (dxr.flags.settings.repairbotuses == 1) {
         AddHint("Each repair bot can recharge you one time!","Use it wisely!");
-    } else if (dxr.flags.settings.repairbotuses>1){
+    } else if (dxr.flags.settings.repairbotuses>1 && dxr.flags.settings.repairbotuses <30){
         AddHint("Each repair bot can recharge you "$dxr.flags.settings.repairbotuses$" times!","Use them wisely!");
     }
 

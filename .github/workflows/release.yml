@@ -67,3 +67,14 @@ jobs:
         asset_path: VMDRandomizer.u
         asset_name: VMDRandomizer.u
         asset_content_type: application/octet-stream
+
+    - name: Upload Release Asset RevRandomizer.u
+      id: upload-release-asset-rev
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: RevRandomizer.u
+        asset_name: RevRandomizer.u
+        asset_content_type: application/octet-stream
