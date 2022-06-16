@@ -99,10 +99,10 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 
 </details>
 
-## v2 Trailer
+## v2.0 Trailer
 
 <a href="https://www.youtube.com/watch?v=IvGNyEvAIO8" target="_blank">
-<img src="https://img.youtube.com/vi/IvGNyEvAIO8/0.jpg" alt="v2 Trailer" height="200"/></a>
+<img src="https://i.imgur.com/EXbo4Wb.png" alt="v2.0 Trailer" height="300"/></a>
 
 ## DXRando randomizes
 * locations of goals, NPCs, and some starting locations
