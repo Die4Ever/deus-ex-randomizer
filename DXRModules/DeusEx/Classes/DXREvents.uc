@@ -294,6 +294,8 @@ function SendFlagEvent(coerce string eventname, optional bool immediate)
     local class<Json> js;
     js = class'Json';
 
+    l("SendFlagEvent " $ eventname @ immediate);
+
     if(eventname ~= "M02HostagesRescued") {// for the hotel, set by Mission02.uc
         M02HotelHostagesRescued();
         return;
@@ -335,6 +337,7 @@ function BatteryParkHostages()
     SubHostageMale_Dead = dxr.flagbase.GetBool('SubHostageMale_Dead');
     SubHostageFemale_Dead = dxr.flagbase.GetBool('SubHostageFemale_Dead');
 
+    l("BatteryParkHostages() " $ SubTerroristsDead @ EscapeSuccessful @ SubHostageMale_Dead @ SubHostageFemale_Dead);
     if( (SubTerroristsDead || EscapeSuccessful) && !SubHostageMale_Dead && !SubHostageFemale_Dead ) {
         SendFlagEvent("SubwayHostagesSaved");
     }
