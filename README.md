@@ -51,9 +51,9 @@ GMDX Randomizer is in early alpha testing and does not support all of the featur
 <details>
 <summary>Click to expand Revision Installation Instructions...</summary>
 
-Install Revision from Steam or https://www.moddb.com/mods/deus-ex-revision/downloads/deus-ex-revision
+Install Revision [from Steam](https://store.steampowered.com/app/397550/Deus_Ex_Revision/) or [their ModDB page](https://www.moddb.com/mods/deus-ex-revision/downloads/deus-ex-revision)
 
-Download `RevRandomizer.u`  from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
+Download `RevRandomizer.u` from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
 
 Copy `RevRandomizer.u` into the game's `Revision\System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
 

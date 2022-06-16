@@ -638,15 +638,27 @@ function Airfield_FirstEntry()
 
 function Jailbreak_FirstEntry()
 {
-    local PaulDenton p;
+    local #var(PlayerPawn) p;
+    local PaulDenton paul;
     local ComputerPersonal c;
     local int i;
 
     switch (dxr.localURL)
     {
     case "05_NYC_UNATCOMJ12LAB":
-        foreach AllActors(class'PaulDenton', p) {
-            p.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
+        if(dxr.flags.settings.prison_pocket > 0) {
+            p = player();
+            p.HealthHead = Max(50, p.HealthHead);
+			p.HealthTorso =  Max(50, p.HealthTorso);
+			p.HealthLegLeft =  Max(50, p.HealthLegLeft);
+			p.HealthLegRight =  Max(50, p.HealthLegRight);
+			p.HealthArmLeft =  Max(50, p.HealthArmLeft);
+			p.HealthArmRight =  Max(50, p.HealthArmRight);
+			p.GenerateTotalHealth();
+            dxr.flags.f.SetBool('MS_InventoryRemoved', true,, 6);
+        }
+        foreach AllActors(class'PaulDenton', paul) {
+            paul.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
         }
         break;
 

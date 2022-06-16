@@ -48,6 +48,7 @@ struct FlagsSettings {
     var int banned_skills, banned_skill_levels, enemies_nonhumans;
     var int swapitems, swapcontainers, augcans, aug_value_rando, skill_value_rando;
     var int min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime;
+    var int prison_pocket;// just for Heinki, keep your items when getting captured
 };
 
 #ifdef hx
@@ -681,6 +682,8 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_max_weapon_dmg', settings.max_weapon_dmg, mode, str);
     FlagInt('Rando_min_weapon_shottime', settings.min_weapon_shottime, mode, str);
     FlagInt('Rando_max_weapon_shottime', settings.max_weapon_shottime, mode, str);
+
+    FlagInt('Rando_prison_pocket', settings.prison_pocket, mode, str);
 
     return str;
 }

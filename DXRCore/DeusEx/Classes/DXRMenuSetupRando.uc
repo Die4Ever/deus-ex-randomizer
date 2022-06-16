@@ -240,6 +240,10 @@ function BindControls(optional string action)
     NewMenuItem("Max Weapon Shot Time %", "The maximum shot time / firing speed for weapons.");
     Slider(f.settings.max_weapon_shottime, 0, 300);
 
+    NewMenuItem("JC's Prison Pocket", "Keep all your items when getting captured.");
+    EnumOption("Disabled", 0, f.settings.prison_pocket);
+    EnumOption("Enabled", 100, f.settings.prison_pocket);// maybe the number could be set to the number of items to keep?
+
     NewGroup("Augmentations");
     NewMenuItem("Speed Aug Level", "Start the game with the Speed Enhancement augmentation.");
     Slider(f.settings.speedlevel, 0, 3);
