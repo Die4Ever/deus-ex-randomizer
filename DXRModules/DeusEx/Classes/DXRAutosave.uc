@@ -14,6 +14,7 @@ function CheckConfig()
 function PostFirstEntry()
 {
     Super.PostFirstEntry();
+    l("PostFirstEntry() " $ dxr.dxInfo.MissionNumber);
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave > 0 ) {
         bNeedSave=true;
     }
@@ -22,6 +23,7 @@ function PostFirstEntry()
 function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
+    l("ReEntry() " $ dxr.dxInfo.MissionNumber);
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave==2 && IsTravel ) {
         bNeedSave=true;
     }
@@ -68,6 +70,11 @@ function doAutosave()
         SetTimer(save_delay, True);
         return;
     }
+    if( dxr.flagbase.GetBool('PlayerTraveling') ) {
+        info("waiting for PlayerTraveling to be cleared by the MissionScript, not saving yet");
+        SetTimer(save_delay, True);
+        return;
+    }
 
     p = player();
 
@@ -91,6 +98,7 @@ function doAutosave()
     saveSlot = -3;
     saveName = "DXR " $ dxr.seed $ ": " $ dxr.dxInfo.MissionLocation;
     lastMission = dxr.flags.f.GetInt('Rando_lastmission');
+    l("doAutosave() " $ lastMission @ dxr.dxInfo.MissionNumber @ saveName);
     if( lastMission != 0 && dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber ) {
         saveSlot = 0;
         saveName = "DXR " $ dxr.seed $ ", Mission " $ dxr.dxInfo.MissionNumber $ ": " $ dxr.dxInfo.MissionLocation;
