@@ -633,6 +633,12 @@ function Airfield_FirstEntry()
         AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
         break;
 #endif
+
+    case "03_NYC_747":
+        // fix Jock's conversation state so he doesn't play the dialog for unatco->battery park but now plays dialog for airfield->unatco
+        // DL_Airfield is "You're entering a helibase terminal below a private section of LaGuardia."
+        dxr.flagbase.SetBool('DL_Airfield_Played', true,, 4);
+        break;
     }
 }
 
