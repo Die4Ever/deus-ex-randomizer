@@ -548,6 +548,7 @@ function Airfield_FirstEntry()
     local Trigger t;
     local NanoKey k;
     local #var(prefix)InformationDevices i;
+    local UNATCOTroop unatco;
 
     switch (dxr.localURL)
     {
@@ -591,6 +592,10 @@ function Airfield_FirstEntry()
             if( t.Name == 'Trigger0' || t.Name == 'Trigger1' ) {
                 t.Event = '';
             }
+        }
+        foreach AllActors(class'UNATCOTroop', unatco) {
+            unatco.bHateCarcass = false;
+            unatco.bHateDistress = false;
         }
 
         // Sewerdoor backtracking
