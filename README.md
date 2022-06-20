@@ -152,6 +152,8 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 * optional hardcore Autosave-Only mode, no save-scumming allowed!
 * autofill passwords options
 * [Death Markers](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Death-Markers) - see where other players have died!
+* if you opt-in to Online Features (which is disabled by default), then your in-game events will also contribute to our Twitter bot [@DxRandoActivity](https://twitter.com/DxRandoActivity)
+    * You can search these tweets by adding "from:DxRandoActivity" to your search, and make sure to choose the Latest tab, [like this](https://twitter.com/search?q=from%3ADXRandoActivity%20bingo&src=typed_query&f=live)
 
 ## New Game Menus
 
