@@ -2,102 +2,9 @@
 
 This is a mod for the original Deus Ex that takes everything and shuffles it all around to make it like a new game every time but with the same great story. The goal is to increase the replayability and strategy.
 
-### If the game is not running well, even for vanilla Deus Ex, see the recommended tweaks below.
+## [Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks)
 
-## Installation Instructions
-<details>
-<summary>Click to expand Installation Instructions...</summary>
-
-Download the `DeusEx.u` file from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
-
-Then copy the `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System` (make a backup of the original `DeusEx.u`).
-</details>
-
-## Installation Instructions for Lay D Denton
-<details>
-<summary>Click to expand Lay D Denton Installation Instructions...</summary>
-
-[Download Lay D Denton version 1.1 or newer from here](https://www.moddb.com/mods/the-lay-d-denton-project/downloads)
-
-Install Lay D Denton by copying all the files into your Deus Ex folder.
-
-Download Deus Ex Randomizers's `DeusEx.u` file from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
-
-Then copy Deus Ex Randomizers's `DeusEx.u` file into your `Deus Ex\System\` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`. This will overwrite the `DeusEx.u` file from Lay D Denton.
-</details>
-
-## Installation Instructions for GMDX
-<details>
-<summary>Click to expand GMDX Installation Instructions...</summary>
-
-Install GMDX from https://www.moddb.com/mods/gmdx/downloads/gmdxv90-release
-
-Or v10 https://www.moddb.com/mods/gmdx-v10-community-update/downloads/gmdxv10-092020-update
-
-Or RSD https://www.moddb.com/mods/gmdx/addons/version-rsd-beta-10-future-official-update
-
-Download `GMDXRandomizer.u` from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
-
-Copy `GMDXRandomizer.u` into the game's `System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
-
-Edit the `GMDX.ini` file which is probably in `%UserProfile%\Documents\Deus Ex\GMDXv9\System` or `%UserProfile%\Documents\Deus Ex\GMDXvRSD\System`, or `GMDXv10.ini` which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
-
-In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=GMDXRandomizer.DXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=GMDXRandomizer.DXRandoRootWindow`
-
-GMDX Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
-</details>
-
-## Installation Instructions for Revision
-<details>
-<summary>Click to expand Revision Installation Instructions...</summary>
-
-Install Revision [from Steam](https://store.steampowered.com/app/397550/Deus_Ex_Revision/) or [their ModDB page](https://www.moddb.com/mods/deus-ex-revision/downloads/deus-ex-revision)
-
-Download `RevRandomizer.u` from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
-
-Copy `RevRandomizer.u` into the game's `Revision\System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
-
-Edit the `Revision.ini` file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\Revision\System`
-
-In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=Revision.RevGameInfo` to `DefaultGame=RevRandomizer.DXRandoGameInfo` and change `Root` from `Root=Revision.RevRootWindow` to `Root=RevRandomizer.DXRandoRootWindow`
-
-Revision Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
-</details>
-
-## Installation Instructions for Vanilla? Madder.
-<details>
-<summary>Click to expand Vanilla? Madder. Installation Instructions...</summary>
-
-Install VMD Phase 1.5 (v1.56) from https://www.moddb.com/mods/vanilla-madder-actual-phase-1/downloads/vmd-phase-15-installer-v156
-
-Download `VMDRandomizer.u` from the releases page here https://github.com/Die4Ever/deus-ex-randomizer/releases
-
-Copy `VMDRandomizer.u` into the game's `System` folder, which is probably `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
-
-Edit the `VMDSim.ini` file which is probably in `C:\Program Files (x86)\Steam\steamapps\common\Deus Ex\System`
-
-In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=VMDRandomizer.DXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=VMDRandomizer.DXRandoRootWindow`
-
-VMD Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
-</details>
-
-## Installation Instructions for HX (Co-op)
-<details>
-<summary>Click to expand HX Installation Instructions...</summary>
-
-Make sure to use the DeusEx.u file from the original game for co-op.
-
-First download and install HX-0.9.89.4.zip from https://builds.hx.hanfling.de/testing/
-
-Then copy `HXRandomizer.u` and `HXRandomizer.int` into the `System` directory of the game.
-
-HXRandomizer is in early alpha testing and does not support all of the features that the single player vanilla randomizer has.
-
-#### Co-op Teaser
-
-[![Co-op Teaser](https://img.youtube.com/vi/YwgKlt5N70A/0.jpg)](https://www.youtube.com/watch?v=YwgKlt5N70A)
-
-</details>
+### [If the game is not running well, even for vanilla Deus Ex, see the recommended tweaks here.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks#recommended-tweaks-for-running-deus-ex-on-modern-computers)
 
 ## v2.0 Trailer
 
@@ -180,14 +87,6 @@ DXRando features many small but impactful balance changes that can expand your t
 The large metal crates are now destructible with 2000hp. Alcohol now fixes dead legs. Things that normally aren't useful have been buffed, such as hazmat suits, ballistic armor, environmental skill, and the spy drone augmentation. And more balance changes to maximize variety for many replays!
 
 [See the full list of balance changes here in the wiki so you may be better able to adapt to the unique challenges DXRando generates.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Balance-Changes)
-
-## Recommended tweaks for running Deus Ex on modern computers
-<details>
-<summary>Click to expand performance fixes...</summary>
-
-Recommended to use it with [Kentie's Deus Exe Launcher](http://www.kentie.net/article/dxguide/), or [Han's Launcher](https://coding.hanfling.de/launch/#binaries). Play with OpenGL renderer because the Direct3D renderers have trouble on newer Nvidia drivers unless you use the [Deus Ex Speedup Fix mod. The Deus Ex Speedup Fix mod (download at the bottom of linked page)](https://steamcommunity.com/sharedfiles/filedetails/?id=2048525175) allows you to disable the fps cap (the fps cap in the game can cause stutters, but capping frame rate in nvidia control panel works perfectly) If you use that mod, then edit your `Documents\Deus Ex\System\DeusEx.ini` file and search for `FPSLimit=` and set it to 0 to manually remove the fps cap because I've noticed that Kentie's Launcher doesn't always do it correctly, and also disable vsync with your graphics driver. If you use the speedup fix then you'll probably want to use the [Direct3D 10](https://kentie.net/article/d3d10drv/) or [Direct3D 11](https://kentie.net/article/d3d11drv/index.htm) renderer. I use my graphics driver to enforce a 120fps limit with Direct3D 10.
-
-</details>
 
 ---
 
