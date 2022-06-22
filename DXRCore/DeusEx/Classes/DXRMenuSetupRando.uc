@@ -20,7 +20,7 @@ function BindControls(optional string action)
 
     NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes. The original game uses 400% for realistic.");
     iDifficulty = int(combatDifficulty * 100.0);
-    Slider(iDifficulty, 0, 500);
+    Slider(iDifficulty, 0, 10000);
     combatDifficulty = float(iDifficulty) / 100.0;
 
 #ifndef hx
@@ -147,7 +147,7 @@ function BindControls(optional string action)
 
     NewGroup("Enemies");
     NewMenuItem("Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.");
-    Slider(f.settings.enemiesrandomized, 0, 100);
+    Slider(f.settings.enemiesrandomized, 0, 1000);
 
     NewMenuItem("Enemy Shuffling %", "Shuffle enemies around the map.");
     Slider(f.settings.enemiesshuffled, 0, 100);
@@ -156,17 +156,17 @@ function BindControls(optional string action)
     Slider(f.settings.enemies_nonhumans, 0, 100);
 
     NewMenuItem("Enemy Respawn Seconds", "(Beta) How many seconds for enemies to respawn. Leave blank or 0 to disable");
-    Slider(f.settings.enemyrespawn, 0, 100);
+    Slider(f.settings.enemyrespawn, 0, 10000);
 
     NewMenuItem("Move Turrets", "Randomizes locations of turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_move, 0, 100);
 
     NewMenuItem("Add Turrets", "Randomly adds turrets, cameras, and security computers for them.");
-    Slider(f.settings.turrets_add, 0, 100);
+    Slider(f.settings.turrets_add, 0, 1000);
 
     // TODO: we can remove this once it's well tested and merge it with enemiesrandomized
     NewMenuItem("Hidden Enemies Rando %", "How many enemies to add based on hidden enemies.");
-    Slider(f.settings.hiddenenemiesrandomized, 0, 100);
+    Slider(f.settings.hiddenenemiesrandomized, 0, 1000);
 
     NewGroup("Skills");
     NewMenuItem("", "Disallow downgrades to prevent scouting ahead in the new game screen.");
@@ -187,10 +187,10 @@ function BindControls(optional string action)
     BreakLine();
 
     NewMenuItem("Minimum Skill Cost %", "Minimum cost for skills in percentage of the original cost.");
-    Slider(f.settings.minskill, 0, 1000);
+    Slider(f.settings.minskill, 0, 10000);
 
     NewMenuItem("Maximum Skill Cost %", "Maximum cost for skills in percentage of the original cost.");
-    Slider(f.settings.maxskill, 0, 1000);
+    Slider(f.settings.maxskill, 0, 10000);
 
     NewMenuItem("Banned Skills %", "Chance of a skill having a cost of 99,999 points.");
     Slider(f.settings.banned_skills, 0, 100);
@@ -228,17 +228,17 @@ function BindControls(optional string action)
 
     BreakLine();
     NewMenuItem("Min Weapon Damage %", "The minmum damage for weapons.");
-    Slider(f.settings.min_weapon_dmg, 0, 300);
+    Slider(f.settings.min_weapon_dmg, 0, 500);
 
     NewMenuItem("Max Weapon Damage %", "The maximum damage for weapons.");
-    Slider(f.settings.max_weapon_dmg, 0, 300);
+    Slider(f.settings.max_weapon_dmg, 0, 500);
 
     BreakLine();
     NewMenuItem("Min Weapon Shot Time %", "The minmum shot time / firing speed for weapons.");
-    Slider(f.settings.min_weapon_shottime, 0, 300);
+    Slider(f.settings.min_weapon_shottime, 0, 500);
 
     NewMenuItem("Max Weapon Shot Time %", "The maximum shot time / firing speed for weapons.");
-    Slider(f.settings.max_weapon_shottime, 0, 300);
+    Slider(f.settings.max_weapon_shottime, 0, 500);
 
     NewMenuItem("JC's Prison Pocket", "Keep all your items when getting captured.");
     EnumOption("Disabled", 0, f.settings.prison_pocket);
@@ -246,7 +246,7 @@ function BindControls(optional string action)
 
     NewGroup("Augmentations");
     NewMenuItem("Speed Aug Level", "Start the game with the Speed Enhancement augmentation.");
-    Slider(f.settings.speedlevel, 0, 3);
+    Slider(f.settings.speedlevel, 0, 4);
 
     NewMenuItem("Aug Cans Randomized %", "The chance for aug cannisters to have their contents changed.");
     Slider(f.settings.augcans, 0, 100);
