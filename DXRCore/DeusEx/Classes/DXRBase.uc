@@ -172,6 +172,8 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     local float d_min, d_max, avg_diff;
     local float points[16];
 
+    wet = FClamp(wet, 0, 1);
+
     oldseed = SetGlobalSeed(" RandoLevelValues " $ a.class.name );
 
     aug = #var(prefix)Augmentation(a);

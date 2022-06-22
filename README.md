@@ -2,7 +2,7 @@
 
 This is a mod for the original Deus Ex that takes everything and shuffles it all around to make it like a new game every time but with the same great story. The goal is to increase the replayability and strategy.
 
-## [Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks)
+## [Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks)
 
 ### [If the game is not running well, even for vanilla Deus Ex, see the recommended tweaks here.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks#recommended-tweaks-for-running-deus-ex-on-modern-computers)
 
