@@ -39,7 +39,6 @@ function SetWatchFlags() {
     local JunkieFemale jf;
     local GuntherHermann gunther;
     local Mutt starr;// arms smuggler's dog in Paris
-    local FlagTrigger ft;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -100,16 +99,7 @@ function SetWatchFlags() {
     case "02_NYC_STREET":
         WatchFlag('AlleyBumRescued');
     case "04_NYC_STREET":
-        Tag = 'MadeBasket';
-        foreach AllActors(class'FlagTrigger',ft){
-            if (ft.Event=='MadeBasketM' || ft.Event=='MadeBasketF'){
-                if (dxr.flagbase.GetBool('LDDPJCIsFemale')){
-                    Tag = 'MadeBasketF';
-                } else {
-                    Tag = 'MadeBasketM';
-                }
-            }
-        }
+        Tag = GetKnicksTag();
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
@@ -122,17 +112,8 @@ function SetWatchFlags() {
         WatchFlag('M07ChenSecondGive_Played');
         break;
     case "08_NYC_STREET":
-        Tag = 'MadeBasket';
+        Tag = GetKnicksTag();
         WatchFlag('StantonAmbushDefeated');
-        foreach AllActors(class'FlagTrigger',ft){
-            if (ft.Event=='MadeBasketM' || ft.Event=='MadeBasketF'){
-                if (dxr.flagbase.GetBool('LDDPJCIsFemale')){
-                    Tag = 'MadeBasketF';
-                } else {
-                    Tag = 'MadeBasketM';
-                }
-            }
-        }
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
@@ -183,6 +164,21 @@ function SetWatchFlags() {
         WatchFlag('JockBlewUp');
         break;
     }
+}
+
+function name GetKnicksTag() {
+    local FlagTrigger ft;
+
+    foreach AllActors(class'FlagTrigger',ft) {
+        if (ft.Event=='MadeBasketM' || ft.Event=='MadeBasketF') {
+            if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+                return 'MadeBasketF';
+            } else {
+                return 'MadeBasketM';
+            }
+        }
+    }
+    return 'MadeBasket';
 }
 
 function CheckPaul() {
