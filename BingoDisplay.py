@@ -13,8 +13,16 @@ class Bingo:
         self.tkBoardText = [[None]*5 for i in range(5)]
         self.initDrawnBoard()
 
+    def closeWindow(self):
+        self.win.destroy()
+        self.win=None
+
+    def windowOpen(self):
+        return self.win!=None
+
     def initDrawnBoard(self):
         self.win = Tk()
+        self.win.protocol("WM_DELETE_WINDOW",self.closeWindow)
         self.win.title("Deus Ex Randomizer Bingo Board")
         self.win.geometry("536x536")
         self.pixel = PhotoImage(width=1,height=1) #Needed to allow the button width/height to be configured in pixels
@@ -104,4 +112,8 @@ while True:
         b.readBingoFile()
         #b.printBoard()
         lastUpdate=time.time()
-    b.drawBoard()
+    if (b.windowOpen()):
+        b.drawBoard()
+    else:
+        sys.exit(0)
+    
