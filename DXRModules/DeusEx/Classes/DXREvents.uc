@@ -3,6 +3,7 @@ class DXREvents extends DXRActorsBase;
 var bool died;
 var name watchflags[32];
 var int num_watchflags;
+var int bingo_win_countdown;
 
 struct BingoOption {
     var string event, desc;
@@ -247,6 +248,32 @@ simulated function Timer()
     if(died) {
         class'DXRHints'.static.AddDeath(dxr, player());
         died = false;
+    }
+
+    if (bingo_win_countdown>=0){
+        HandleBingoWinCountdown();
+    }
+}
+
+function HandleBingoWinCountdown()
+{
+    local int time;
+
+    //Blocked in HX for now (Blocked at the check, but here for safety as well)
+    if(#defined(hx)) return;
+
+    if (bingo_win_countdown > 0) {
+        //Show win message
+        class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds","");
+        if (bingo_win_countdown == 1) {
+            //Give it a second to send the tweet
+            time = class'DXRStats'.static.GetTotalTime(dxr);
+            BeatGame(dxr,4,time);
+        }
+        bingo_win_countdown--;
+    } else if (bingo_win_countdown == 0) {
+        //Go to bingo win ending
+        dxr.player.ConsoleCommand("OPEN 99_ENDGAME4");
     }
 }
 
@@ -575,11 +602,16 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 
     data = class'PlayerDataItem'.static.GiveItem(player);
 
+    //Make sure bingo didn't get completed just before leaving a level
+    CheckBingoWin(dxr,data.NumberOfBingos());
+
     // don't overwrite existing bingo
     data.GetBingoSpot(0, 0, event, desc, progress, max);
     if( event != "" ) return;
     SetGlobalSeed("bingo");
     _CreateBingoBoard(data);
+
+
 }
 
 simulated function CreateBingoBoard()
@@ -651,6 +683,20 @@ simulated function int HandleMutualExclusion(MutualExclusion m, int options[100]
     }
 }
 
+function CheckBingoWin(DXRando dxr, int numBingos)
+{
+
+    //Block this in HX for now
+    if(#defined(hx)) return;
+
+    if (dxr.flags.settings.bingo_win > 0){
+        if (numBingos >= dxr.flags.settings.bingo_win){
+            log("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
+            bingo_win_countdown = 5;
+        }
+    }
+}
+
 function _MarkBingo(coerce string eventname)
 {
     local int previousbingos, nowbingos, time;
@@ -692,6 +738,9 @@ function _MarkBingo(coerce string eventname)
         js.static.End(j);
 
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
+
+        CheckBingoWin(dxr,nowbingos);
+
     } else {
         player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
     }
@@ -778,4 +827,6 @@ defaultproperties
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
     mutually_exclusive(2)=(e1="SmugglerDied",e2="M08WarnedSmuggler")
     mutually_exclusive(3)=(e1="SilhouetteHostagesAllRescued",e2="paris_hostage_Dead")
+
+    bingo_win_countdown=-1
 }

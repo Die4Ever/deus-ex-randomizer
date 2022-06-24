@@ -49,6 +49,7 @@ struct FlagsSettings {
     var int swapitems, swapcontainers, augcans, aug_value_rando, skill_value_rando;
     var int min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime;
     var int prison_pocket;// just for Heinki, keep your items when getting captured
+    var int bingo_win; //Number of bingo lines to beat the game
 };
 
 #ifdef hx
@@ -265,6 +266,7 @@ function CheckConfig()
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
+        difficulty_settings[i].bingo_win = 0;
         i++;
 #endif
 
@@ -324,6 +326,7 @@ function CheckConfig()
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
+        difficulty_settings[i].bingo_win = 0;
         i++;
 
         difficulty_names[i] = "Medium";
@@ -382,6 +385,7 @@ function CheckConfig()
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
+        difficulty_settings[i].bingo_win = 0;
         i++;
 
         difficulty_names[i] = "Hard";
@@ -440,6 +444,7 @@ function CheckConfig()
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
+        difficulty_settings[i].bingo_win = 0;
         i++;
 
         difficulty_names[i] = "DeusEx";
@@ -498,6 +503,7 @@ function CheckConfig()
         difficulty_settings[i].max_weapon_dmg = 150;
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
+        difficulty_settings[i].bingo_win = 0;
         i++;
 
 #ifdef hx
@@ -684,6 +690,8 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_max_weapon_shottime', settings.max_weapon_shottime, mode, str);
 
     FlagInt('Rando_prison_pocket', settings.prison_pocket, mode, str);
+
+    FlagInt('Rando_bingo_win', settings.bingo_win, mode, str);
 
     return str;
 }

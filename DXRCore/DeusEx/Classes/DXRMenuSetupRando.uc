@@ -41,6 +41,9 @@ function BindControls(optional string action)
     NewMenuItem("Dancing %", "How many characters should be dancing.");
     Slider(f.settings.dancingpercent, 0, 100);
 
+    NewMenuItem("Bingo Win", "How many completed lines to instantly win");
+    Slider(f.settings.bingo_win, 0, 8);
+
     NewGroup("Medical Bots and Repair Bots");
 
     NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%)");

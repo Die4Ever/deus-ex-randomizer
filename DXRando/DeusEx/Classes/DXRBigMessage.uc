@@ -95,9 +95,11 @@ event DrawWindow(GC gc)
         gc.DrawText( (width*0.5) - (w*0.5), cury, w, h, line3 );
     }
 
-    cury = msgY * height + h * 4.0;
-    gc.GetTextExtent( 0, w, h, "Press right for another hint." );
-    gc.DrawText( (width*0.5) - (w*0.5), cury, w, h, "Press right for another hint." );
+    if (hints!=None){
+        cury = msgY * height + h * 4.0;
+        gc.GetTextExtent( 0, w, h, "Press right for another hint." );
+        gc.DrawText( (width*0.5) - (w*0.5), cury, w, h, "Press right for another hint." );
+    }
 
     Super.DrawWindow(gc);
 }
