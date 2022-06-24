@@ -98,6 +98,8 @@ function SetWatchFlags() {
         break;
     case "02_NYC_STREET":
         WatchFlag('AlleyBumRescued');
+        Tag = GetKnicksTag();
+        break;
     case "04_NYC_STREET":
         Tag = GetKnicksTag();
         break;
