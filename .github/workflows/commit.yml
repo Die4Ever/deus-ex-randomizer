@@ -4,6 +4,8 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
     - name: Install Python Deps
       run: pip3 install tk pyinstaller
     - name: Python check
