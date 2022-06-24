@@ -1,0 +1,14 @@
+name: commit
+on: [push]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - name: Install Python Deps
+      run: pip3 install tk pyinstaller
+    - name: Python check
+      run: python -m compileall -q .
+    - name: Build bingo watcher
+      run: pyinstaller BingoDisplay.py --onefile --noconsole
+    - name: Show results
+      run: tree
