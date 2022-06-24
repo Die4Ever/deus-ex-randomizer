@@ -606,7 +606,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
     CheckBingoWin(dxr,data.NumberOfBingos());
 
     //Update the exported bingo info in case this was a reload
-    data.SaveConfig();
+    data.ExportBingoState();
 
     // don't overwrite existing bingo
     data.GetBingoSpot(0, 0, event, desc, progress, max);
@@ -664,7 +664,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             data.SetBingoSpot(x, y, event, desc, 0, max);
         }
     }
-    data.SaveConfig();
+    data.ExportBingoState();
 }
 
 simulated function int HandleMutualExclusion(MutualExclusion m, int options[100], int num_options) {

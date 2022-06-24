@@ -17,7 +17,8 @@ struct BingoSpot {
     var travel int progress;
     var travel int max;
 };
-var travel config BingoSpot bingo[25];
+var travel BingoSpot bingo[25];
+var travel config BingoSpot bingoexport[25];
 
 simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
 {
@@ -27,7 +28,7 @@ simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
     if( i == None )
     {
         i = p.Spawn(class'PlayerDataItem');
-        i.InitBingoList();
+        i.ExportBingoState();
         i.GiveTo(p);
         log("spawned new "$i$" for "$p);
     }
@@ -39,7 +40,7 @@ simulated function static ResetData(#var(PlayerPawn) p)
     local PlayerDataItem o, n;
     o = GiveItem(p);
     n = p.Spawn(class'PlayerDataItem');
-    n.InitBingoList();
+    n.ExportBingoState();
 
     n.local_inited = o.local_inited;
     n.version = o.version;
@@ -69,20 +70,6 @@ simulated function GetBingoSpot(int x, int y, out string event, out string desc,
     max = bingo[x*5+y].max;
 }
 
-//This is needed so that we don't actually reuse pre-saved data.
-//The saved "config" shouldn't really be loaded back in.
-simulated function InitBingoList()
-{
-    local int i;
-    for(i=0; i<ArrayCount(bingo); i++) {
-        bingo[i].event = "";
-        bingo[i].desc = "";
-        bingo[i].progress = 0;
-        bingo[i].max = 0;
-    }
-    SaveConfig();
-}
-
 simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max)
 {
     bingo[x*5+y].event = event;
@@ -98,7 +85,7 @@ simulated function bool IncrementBingoProgress(string event)
         if(bingo[i].event != event) continue;
         bingo[i].progress++;
         log("IncrementBingoProgress "$event$": " $ bingo[i].progress $" / "$ bingo[i].max, self.class.name);
-        SaveConfig();
+        ExportBingoState();
         return bingo[i].progress == bingo[i].max;
     }
     return false;
@@ -144,6 +131,18 @@ simulated function int NumberOfBingos()
     if( CheckBingo(-1, 1, 4, 0) ) num++;
 
     return num;
+}
+
+simulated function ExportBingoState()
+{
+    local int i;
+    for(i=0; i<ArrayCount(bingo); i++) {
+        bingoexport[i].event = bingo[i].event;
+        bingoexport[i].desc = bingo[i].desc;
+        bingoexport[i].progress = bingo[i].progress;
+        bingoexport[i].max = bingo[i].max;
+    }
+    SaveConfig();
 }
 
 defaultproperties

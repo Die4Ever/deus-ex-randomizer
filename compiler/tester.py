@@ -117,4 +117,6 @@ def cleanup(out):
         os.remove(out + '/System/DXRando.ini')
     if exists(out + '/System/DXRDataStorage.ini'):
         os.remove(out + '/System/DXRDataStorage.ini')
+    if exists(out + '/System/DXRBingo.ini'):
+        os.remove(out + '/System/DXRBingo.ini')
 
