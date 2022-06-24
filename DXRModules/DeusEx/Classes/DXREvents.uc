@@ -602,17 +602,20 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 
     data = class'PlayerDataItem'.static.GiveItem(player);
 
-    //Make sure bingo didn't get completed just before leaving a level
-    CheckBingoWin(dxr,data.NumberOfBingos());
+
 
     //Update the exported bingo info in case this was a reload
     data.ExportBingoState();
 
     // don't overwrite existing bingo
     data.GetBingoSpot(0, 0, event, desc, progress, max);
-    if( event != "" ) return;
-    SetGlobalSeed("bingo");
-    _CreateBingoBoard(data);
+    if( event != "" ) {
+        //Make sure bingo didn't get completed just before leaving a level
+        CheckBingoWin(dxr,data.NumberOfBingos());
+    } else {
+        SetGlobalSeed("bingo");
+        _CreateBingoBoard(data);
+    }
 
 
 }
