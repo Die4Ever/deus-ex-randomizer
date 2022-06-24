@@ -1,4 +1,4 @@
-class PlayerDataItem extends Inventory;
+class PlayerDataItem extends Inventory config(DXRBingo);
 
 var travel bool local_inited;
 var travel int version;
@@ -17,7 +17,7 @@ struct BingoSpot {
     var travel int progress;
     var travel int max;
 };
-var travel BingoSpot bingo[25];
+var travel config BingoSpot bingo[25];
 
 simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
 {
@@ -27,9 +27,11 @@ simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
     if( i == None )
     {
         i = p.Spawn(class'PlayerDataItem');
+        i.InitBingoList();
         i.GiveTo(p);
         log("spawned new "$i$" for "$p);
     }
+    i.SaveConfig();
     return i;
 }
 
@@ -38,6 +40,7 @@ simulated function static ResetData(#var(PlayerPawn) p)
     local PlayerDataItem o, n;
     o = GiveItem(p);
     n = p.Spawn(class'PlayerDataItem');
+    n.InitBingoList();
 
     n.local_inited = o.local_inited;
     n.version = o.version;
@@ -67,6 +70,20 @@ simulated function GetBingoSpot(int x, int y, out string event, out string desc,
     max = bingo[x*5+y].max;
 }
 
+//This is needed so that we don't actually reuse pre-saved data.
+//The saved "config" shouldn't really be loaded back in.
+simulated function InitBingoList()
+{
+    local int i;
+    for(i=0; i<ArrayCount(bingo); i++) {
+        bingo[i].event = "";
+        bingo[i].desc = "";
+        bingo[i].progress = 0;
+        bingo[i].max = 0;
+    }
+    SaveConfig();
+}
+
 simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max)
 {
     bingo[x*5+y].event = event;
@@ -82,6 +99,7 @@ simulated function bool IncrementBingoProgress(string event)
         if(bingo[i].event != event) continue;
         bingo[i].progress++;
         log("IncrementBingoProgress "$event$": " $ bingo[i].progress $" / "$ bingo[i].max, self.class.name);
+        SaveConfig();
         return bingo[i].progress == bingo[i].max;
     }
     return false;

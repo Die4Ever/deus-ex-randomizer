@@ -661,6 +661,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             data.SetBingoSpot(x, y, event, desc, 0, max);
         }
     }
+    data.SaveConfig();
 }
 
 simulated function int HandleMutualExclusion(MutualExclusion m, int options[100], int num_options) {
