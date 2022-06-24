@@ -6,9 +6,9 @@ def runAutomatedTests(out, package):
     rc = False
     cleanup(out)
 
-    if exists(out + '/System/DeusEx.ini'):
-        # copy DeusEx.ini to test.ini, change [Engine.Engine] DefaultServerGame to =DeusEx.DXRandoTests
-        f = open (out + '/System/DeusEx.ini','r')
+    if exists(out + '/System/Default.ini'):
+        # copy Default.ini (defaults for DeusEx.ini) to test.ini, change [Engine.Engine] DefaultServerGame to =DeusEx.DXRandoTests
+        f = open (out + '/System/Default.ini','r')
         lines = f.readlines()
         f.close()
 
@@ -41,7 +41,7 @@ def runAutomatedTests(out, package):
 
 
     else:
-        print("DeusEx.ini does not exist in the system folder of the output dir!")
+        print("Default.ini does not exist in the system folder of the output dir!")
         rc = False
 
     return rc
