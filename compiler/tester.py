@@ -41,7 +41,7 @@ def runAutomatedTests(out, package):
 
 
     else:
-        print("DeusEx.ini does not exist in the system folder of the output dir!")
+        print("Default.ini does not exist in the system folder of the output dir!")
         rc = False
 
     return rc
