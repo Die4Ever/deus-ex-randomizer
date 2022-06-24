@@ -283,10 +283,13 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
     local #var(prefix)DeusExPickup p;
     local int maxCopies;
 
+    percent = Clamp(percent, 10, 1000);
+
     foreach AllActors(class'#var(prefix)DeusExPickup', p) {
         if( ! p.IsA(type.name) ) continue;
 
         p.maxCopies = float(p.default.maxCopies) * float(percent) / 100.0 * 0.8;
+        p.maxCopies = Clamp(p.maxCopies, 1, p.default.maxCopies*10);
         if( #defined(balance) && DeusExPlayer(p.Owner) != None && #var(prefix)FireExtinguisher(p) != None )
             p.maxCopies += DeusExPlayer(p.Owner).SkillSystem.GetSkillLevel(class'#var(prefix)SkillEnviro');
 
@@ -305,9 +308,12 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
     local Ammo a;
     local int maxAmmo;
 
+    percent = Clamp(percent, 10, 1000);
+
     foreach AllActors(class'Ammo', a) {
         if( ! a.IsA(type.name) ) continue;
         a.MaxAmmo = float(a.default.MaxAmmo) * float(percent) / 100.0 * 0.8;
+        a.MaxAmmo = Clamp(a.MaxAmmo, 1, a.default.MaxAmmo*10);
 
         if( #defined(balance) && DeusExPlayer(a.Owner) != None
             && (AmmoEMPGrenade(a) != None || AmmoGasGrenade(a) != None || AmmoLAM(a) != None || AmmoNanoVirusGrenade(a) != None )
