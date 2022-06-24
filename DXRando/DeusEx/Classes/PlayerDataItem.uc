@@ -31,7 +31,6 @@ simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
         i.GiveTo(p);
         log("spawned new "$i$" for "$p);
     }
-    i.SaveConfig();
     return i;
 }
 

@@ -605,6 +605,9 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
     //Make sure bingo didn't get completed just before leaving a level
     CheckBingoWin(dxr,data.NumberOfBingos());
 
+    //Update the exported bingo info in case this was a reload
+    data.SaveConfig();
+
     // don't overwrite existing bingo
     data.GetBingoSpot(0, 0, event, desc, progress, max);
     if( event != "" ) return;
