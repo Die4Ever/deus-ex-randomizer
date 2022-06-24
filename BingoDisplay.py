@@ -1,6 +1,7 @@
 import time
 import sys
 from tkinter import filedialog as fd
+from tkinter import font
 from tkinter import *
 
 class Bingo:
@@ -17,11 +18,12 @@ class Bingo:
         self.win.title("Deus Ex Randomizer Bingo Board")
         self.win.geometry("536x536")
         self.pixel = PhotoImage(width=1,height=1) #Needed to allow the button width/height to be configured in pixels
+        self.font = font.Font(size=12)
         for x in range(5):
             for y in range(5):
                 self.tkBoardText[x][y]=StringVar()
                 self.tkBoardText[x][y].set("("+str(x)+","+str(y)+")")
-                self.tkBoard[x][y]=Button(self.win,textvariable=self.tkBoardText[x][y],image=self.pixel,compound="c",width=100,height=100,wraplength=100)
+                self.tkBoard[x][y]=Button(self.win,textvariable=self.tkBoardText[x][y],image=self.pixel,compound="c",width=100,height=100,wraplength=100,font=self.font)
                 self.tkBoard[x][y].state=DISABLED
                 self.tkBoard[x][y].grid(column=x,row=y)
                 

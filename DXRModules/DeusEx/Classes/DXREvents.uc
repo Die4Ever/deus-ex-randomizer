@@ -39,6 +39,7 @@ function SetWatchFlags() {
     local JunkieFemale jf;
     local GuntherHermann gunther;
     local Mutt starr;// arms smuggler's dog in Paris
+    local FlagTrigger ft;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -100,6 +101,15 @@ function SetWatchFlags() {
         WatchFlag('AlleyBumRescued');
     case "04_NYC_STREET":
         Tag = 'MadeBasket';
+        foreach AllActors(class'FlagTrigger',ft){
+            if (ft.Event=='MadeBasketM' || ft.Event=='MadeBasketF'){
+                if (dxr.flagbase.GetBool('LDDPJCIsFemale')){
+                    Tag = 'MadeBasketF';
+                } else {
+                    Tag = 'MadeBasketM';
+                }
+            }
+        }
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
@@ -114,6 +124,15 @@ function SetWatchFlags() {
     case "08_NYC_STREET":
         Tag = 'MadeBasket';
         WatchFlag('StantonAmbushDefeated');
+        foreach AllActors(class'FlagTrigger',ft){
+            if (ft.Event=='MadeBasketM' || ft.Event=='MadeBasketF'){
+                if (dxr.flagbase.GetBool('LDDPJCIsFemale')){
+                    Tag = 'MadeBasketF';
+                } else {
+                    Tag = 'MadeBasketM';
+                }
+            }
+        }
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
@@ -280,7 +299,6 @@ function HandleBingoWinCountdown()
 function bool SpecialTriggerHandling(Actor Other, Pawn Instigator)
 {
     local MapExit m;
-
     if (tag == 'Boat_Exit'){
         dxr.flagbase.SetBool('DXREvents_LeftOnBoat', true,, 999);
 
@@ -297,7 +315,17 @@ function Trigger(Actor Other, Pawn Instigator)
 {
      local string j;
     local class<Json> js;
+    local name useTag;
+
     js = class'Json';
+
+    //Massage tag names
+    if (tag=='MadeBasketM' || tag=='MadeBasketF'){
+        useTag = 'MadeBasket';
+    } else {
+        useTag = tag;
+    }
+
 
     Super.Trigger(Other, Instigator);
     l("Trigger("$Other$", "$instigator$")");
@@ -305,13 +333,13 @@ function Trigger(Actor Other, Pawn Instigator)
     if (!SpecialTriggerHandling(Other,Instigator)){
         j = js.static.Start("Trigger");
         js.static.Add(j, "instigator", GetActorName(Instigator));
-        js.static.Add(j, "tag", tag);
+        js.static.Add(j, "tag", useTag);
         js.static.add(j, "other", GetActorName(other));
         GeneralEventData(dxr, j);
         js.static.End(j);
 
         class'DXRTelemetry'.static.SendEvent(dxr, Instigator, j);
-        _MarkBingo(tag);
+        _MarkBingo(useTag);
     }
 }
 
