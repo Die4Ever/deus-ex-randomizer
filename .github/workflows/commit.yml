@@ -13,4 +13,13 @@ jobs:
     - name: Build bingo watcher
       run: pyinstaller BingoDisplay.py --onefile --noconsole
     - name: Show results
-      run: tree
+      run: tree /F
+    - name: dir
+      run: dir
+    - name: dir dist
+      run: dir dist
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: "deus-ex-randomizer"
+        path: dist/BindoDisplay.exe
