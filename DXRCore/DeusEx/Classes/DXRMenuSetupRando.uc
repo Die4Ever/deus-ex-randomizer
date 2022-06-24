@@ -42,7 +42,7 @@ function BindControls(optional string action)
     Slider(f.settings.dancingpercent, 0, 100);
 
     NewMenuItem("Bingo Win", "How many completed lines to instantly win");
-    Slider(f.settings.bingo_win, 0, 8);
+    Slider(f.settings.bingo_win, 0, 12);
 
     NewGroup("Medical Bots and Repair Bots");
 
