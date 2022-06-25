@@ -39,6 +39,8 @@ function SetWatchFlags() {
     local JunkieFemale jf;
     local GuntherHermann gunther;
     local Mutt starr;// arms smuggler's dog in Paris
+    local Hooker1 h;  //Mercedes
+    local LowerClassFemale lcf; //Tessa
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -112,6 +114,15 @@ function SetWatchFlags() {
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
         WatchFlag('ClubMercedesConvo1_Done');
         WatchFlag('M07ChenSecondGive_Played');
+        foreach AllActors(class'Hooker1', h) {
+            if(h.BindName == "ClubMercedes")
+                h.bImportant = true;
+        }
+        foreach AllActors(class'LowerClassFemale', lcf) {
+            if(lcf.BindName == "ClubTessa")
+                lcf.bImportant = true;
+        }
+
         break;
     case "08_NYC_STREET":
         Tag = GetKnicksTag();
