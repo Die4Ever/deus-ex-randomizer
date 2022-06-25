@@ -4,6 +4,10 @@ from tkinter import filedialog as fd
 from tkinter import font
 from tkinter import *
 
+BUTTON_BORDER_WIDTH = 4
+BUTTON_BORDER_WIDTH_TOTAL=14*BUTTON_BORDER_WIDTH
+MAGIC_GREEN="#1e641e"
+
 class Bingo:
 
     def __init__(self,targetFile):
@@ -11,6 +15,8 @@ class Bingo:
         self.board = [[None]*5 for i in range(5)]
         self.tkBoard = [[None]*5 for i in range(5)]
         self.tkBoardText = [[None]*5 for i in range(5)]
+        self.width=500
+        self.height=500
         self.initDrawnBoard()
 
     def closeWindow(self):
@@ -20,19 +26,51 @@ class Bingo:
     def windowOpen(self):
         return self.win!=None
 
+    def getFontSizeByWindowSize(self):
+        if self.width<300 or self.height<300:
+            return 8
+        elif self.width<450 or self.height<450:
+            return 10
+        elif self.width<600 or self.height<600:
+            return 12
+        elif self.width<800 or self.height <800:
+            return 14
+        elif self.width<1000 or self.height<1000:
+            return 16
+        elif self.width<1200 or self.height<1200:
+            return 18
+        elif self.width<1400 or self.height<1400:
+            return 24
+        else:  #Mega mode
+            return 48
+
+    def resize(self,event):
+        if event.widget == self.win:
+            self.width=event.width-BUTTON_BORDER_WIDTH_TOTAL
+            self.height=event.height-BUTTON_BORDER_WIDTH_TOTAL
+
+            self.font = font.Font(size=self.getFontSizeByWindowSize())
+
+            for x in range(5):
+                for y in range(5):
+                    self.tkBoard[x][y].config(width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font)
+
+    
+
     def initDrawnBoard(self):
         self.win = Tk()
         self.win.protocol("WM_DELETE_WINDOW",self.closeWindow)
+        self.win.bind("<Configure>",self.resize)
         self.win.title("Deus Ex Randomizer Bingo Board")
-        self.win.geometry("536x536")
+        self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
         self.pixel = PhotoImage(width=1,height=1) #Needed to allow the button width/height to be configured in pixels
         self.font = font.Font(size=12)
         for x in range(5):
             for y in range(5):
                 self.tkBoardText[x][y]=StringVar()
                 self.tkBoardText[x][y].set("("+str(x)+","+str(y)+")")
-                self.tkBoard[x][y]=Button(self.win,textvariable=self.tkBoardText[x][y],image=self.pixel,compound="c",width=100,height=100,wraplength=100,font=self.font)
-                self.tkBoard[x][y].state=DISABLED
+                self.tkBoard[x][y]=Button(self.win,textvariable=self.tkBoardText[x][y],image=self.pixel,compound="c",width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font,fg='white',disabledforeground="white",bd=BUTTON_BORDER_WIDTH)
+                #self.tkBoard[x][y]["state"]='disabled'  #When disabled, there are sometimes weird white dots?
                 self.tkBoard[x][y].grid(column=x,row=y)
                 
 
@@ -42,11 +80,12 @@ class Bingo:
             for y in range(5):
                 boardEntry = self.board[x][y]
                 if boardEntry!=None and self.tkBoard[x][y]!=None:
+                    desc = boardEntry["Desc"]
                     self.tkBoardText[x][y].set(boardEntry["Desc"])
                     if boardEntry["Progress"]>=boardEntry["Max"]:
-                        self.tkBoard[x][y].config(bg="green")
+                        self.tkBoard[x][y].config(bg=MAGIC_GREEN)
                     else:
-                        self.tkBoard[x][y].config(bg="white")
+                        self.tkBoard[x][y].config(bg="black")
                         
         self.win.update()        
 
