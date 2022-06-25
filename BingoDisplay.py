@@ -63,14 +63,14 @@ class Bingo:
         self.win.bind("<Configure>",self.resize)
         self.win.title("Deus Ex Randomizer Bingo Board")
         self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
-        self.pixel = PhotoImage(width=1,height=1) #Needed to allow the button width/height to be configured in pixels
+        self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
         self.font = font.Font(size=12)
         for x in range(5):
             for y in range(5):
                 self.tkBoardText[x][y]=StringVar()
                 self.tkBoardText[x][y].set("("+str(x)+","+str(y)+")")
                 self.tkBoard[x][y]=Button(self.win,textvariable=self.tkBoardText[x][y],image=self.pixel,compound="c",width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font,fg='white',disabledforeground="white",bd=BUTTON_BORDER_WIDTH)
-                #self.tkBoard[x][y]["state"]='disabled'  #When disabled, there are sometimes weird white dots?
+                self.tkBoard[x][y]["state"]='disabled'
                 self.tkBoard[x][y].grid(column=x,row=y)
                 
 
