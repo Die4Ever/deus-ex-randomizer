@@ -20,7 +20,7 @@ function BindControls(optional string action)
 
     NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes. The original game uses 400% for realistic.");
     iDifficulty = int(combatDifficulty * 100.0);
-    Slider(iDifficulty, 0, 10000);
+    Slider(iDifficulty, 0, 100000);
     combatDifficulty = float(iDifficulty) / 100.0;
 
 #ifndef hx

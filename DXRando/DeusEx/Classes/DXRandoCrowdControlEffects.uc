@@ -64,7 +64,6 @@ function Init(DXRandoCrowdControlLink crowd_control_link, DXRando tdxr)
     dxr = tdxr;
 
     lavaTick = 0;
-
 }
 
 
@@ -137,7 +136,6 @@ function PeriodicUpdates()
         PlayerMessage("Your movement controls return to normal");
         invertMovementControls();
     }
-
 
 }
 
@@ -652,7 +650,7 @@ function vector GetDefaultZoneGravity(ZoneInfo z)
 {
     local int i;
     for(i=0; i<ArrayCount(zone_gravities); i++) {
-        if( z.name == zone_gravities[i].zonename ){
+        if( z.name == zone_gravities[i].zonename ) {
             return zone_gravities[i].gravity;
         }
         if( zone_gravities[i].zonename == '' )
@@ -666,13 +664,12 @@ function SaveDefaultZoneGravity(ZoneInfo z)
     local int i;
     if( z.ZoneGravity.X ~= NormalGravity.X && z.ZoneGravity.Y ~= NormalGravity.Y && z.ZoneGravity.Z ~= NormalGravity.Z ) return;
     for(i=0; i<ArrayCount(zone_gravities); i++) {
-        if( z.name == zone_gravities[i].zonename ){
+        if( z.name == zone_gravities[i].zonename ) {
             return;
         }
         if( zone_gravities[i].zonename == '' ) {
             zone_gravities[i].zonename = z.name;
             zone_gravities[i].gravity = z.ZoneGravity;
-
             return;
         }
     }
@@ -690,13 +687,9 @@ function SetFloatyPhysics(bool enabled) {
         if (enabled && Z.ZoneGravity != FloatGrav ) {
             SaveDefaultZoneGravity(Z);
             Z.ZoneGravity = FloatGrav;
-            //PlayerMessage("Gravity is now "$Z.ZoneGravity.X$","$Z.ZoneGravity.Y$","$Z.ZoneGravity.Z);
         }
         else if ( (!enabled) && Z.ZoneGravity == FloatGrav ) {
             Z.ZoneGravity = GetDefaultZoneGravity(Z);
-            //PlayerMessage("Gravity is now "$Z.ZoneGravity.X$","$Z.ZoneGravity.Y$","$Z.ZoneGravity.Z);
-
-
         }
     }
 

@@ -724,7 +724,7 @@ function CheckBingoWin(DXRando dxr, int numBingos)
 
     if (dxr.flags.settings.bingo_win > 0){
         if (numBingos >= dxr.flags.settings.bingo_win){
-            log("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
+            info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
             bingo_win_countdown = 5;
         }
     }
