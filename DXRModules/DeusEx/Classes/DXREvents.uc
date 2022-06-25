@@ -52,7 +52,7 @@ function SetWatchFlags() {
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
         WatchFlag('M02BillyDone');
-        WatchFlag('MS_DL_Played');// this is the datalink played after dealing with the hostage situation, from Mission02.uc
+        WatchFlag('MS_DL_Played', true);// this is the datalink played after dealing with the hostage situation, from Mission02.uc
 
         foreach AllActors(class'ChildMale', child) {
             if(child.BindName == "Josh" || child.BindName == "Billy")
@@ -192,8 +192,8 @@ function CheckPaul() {
     }
 }
 
-function WatchFlag(name flag) {
-    if( dxr.flagbase.GetBool(flag) ) {
+function WatchFlag(name flag, optional bool disallow_immediate) {
+    if( (!disallow_immediate) && dxr.flagbase.GetBool(flag) ) {
         SendFlagEvent(flag, true);
         return;
     }
