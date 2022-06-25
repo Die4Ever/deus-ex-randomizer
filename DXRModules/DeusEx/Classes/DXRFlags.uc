@@ -209,7 +209,7 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,0,0,0) ) {
+    if( ConfigOlderThan(2,0,1,4) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -227,7 +227,7 @@ function CheckConfig()
         difficulty_settings[i].enemiesrandomized = 20;
         difficulty_settings[i].hiddenenemiesrandomized = 20;
         difficulty_settings[i].enemiesshuffled = 100;
-        difficulty_settings[i].enemies_nonhumans = 60;
+        difficulty_settings[i].enemies_nonhumans = 40;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
         difficulty_settings[i].skills_reroll_missions = 1;
@@ -287,7 +287,7 @@ function CheckConfig()
         difficulty_settings[i].enemiesrandomized = 20;
         difficulty_settings[i].hiddenenemiesrandomized = 20;
         difficulty_settings[i].enemiesshuffled = 100;
-        difficulty_settings[i].enemies_nonhumans = 60;
+        difficulty_settings[i].enemies_nonhumans = 40;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
         difficulty_settings[i].skills_reroll_missions = 5;
@@ -405,7 +405,7 @@ function CheckConfig()
         difficulty_settings[i].enemiesrandomized = 40;
         difficulty_settings[i].hiddenenemiesrandomized = 40;
         difficulty_settings[i].enemiesshuffled = 100;
-        difficulty_settings[i].enemies_nonhumans = 60;
+        difficulty_settings[i].enemies_nonhumans = 70;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 5;
         difficulty_settings[i].skills_reroll_missions = 5;
@@ -417,8 +417,8 @@ function CheckConfig()
         difficulty_settings[i].ammo = 60;
         difficulty_settings[i].medkits = 60;
         difficulty_settings[i].biocells = 50;
-        difficulty_settings[i].lockpicks = 50;
-        difficulty_settings[i].multitools = 50;
+        difficulty_settings[i].lockpicks = 60;
+        difficulty_settings[i].multitools = 60;
         difficulty_settings[i].speedlevel = 1;
         difficulty_settings[i].startinglocations = 100;
         difficulty_settings[i].goals = 100;
@@ -432,7 +432,7 @@ function CheckConfig()
         difficulty_settings[i].medbotamount = 1;
         difficulty_settings[i].repairbotamount = 1;
         difficulty_settings[i].turrets_move = 50;
-        difficulty_settings[i].turrets_add = 120;
+        difficulty_settings[i].turrets_add = 150;
         difficulty_settings[i].merchants = 30;
         difficulty_settings[i].dancingpercent = 25;
         difficulty_settings[i].swapitems = 100;
@@ -464,7 +464,7 @@ function CheckConfig()
         difficulty_settings[i].enemiesrandomized = 50;
         difficulty_settings[i].hiddenenemiesrandomized = 50;
         difficulty_settings[i].enemiesshuffled = 100;
-        difficulty_settings[i].enemies_nonhumans = 60;
+        difficulty_settings[i].enemies_nonhumans = 80;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 5;
         difficulty_settings[i].skills_reroll_missions = 5;
@@ -476,8 +476,8 @@ function CheckConfig()
         difficulty_settings[i].ammo = 40;
         difficulty_settings[i].medkits = 50;
         difficulty_settings[i].biocells = 30;
-        difficulty_settings[i].lockpicks = 30;
-        difficulty_settings[i].multitools = 30;
+        difficulty_settings[i].lockpicks = 50;
+        difficulty_settings[i].multitools = 50;
         difficulty_settings[i].speedlevel = 1;
         difficulty_settings[i].startinglocations = 100;
         difficulty_settings[i].goals = 100;
@@ -491,7 +491,7 @@ function CheckConfig()
         difficulty_settings[i].medbotamount = 1;
         difficulty_settings[i].repairbotamount = 1;
         difficulty_settings[i].turrets_move = 50;
-        difficulty_settings[i].turrets_add = 200;
+        difficulty_settings[i].turrets_add = 300;
         difficulty_settings[i].merchants = 30;
         difficulty_settings[i].dancingpercent = 25;
         difficulty_settings[i].swapitems = 100;

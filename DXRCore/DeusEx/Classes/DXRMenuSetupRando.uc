@@ -165,7 +165,7 @@ function BindControls(optional string action)
     Slider(f.settings.turrets_move, 0, 100);
 
     NewMenuItem("Add Turrets", "Randomly adds turrets, cameras, and security computers for them.");
-    Slider(f.settings.turrets_add, 0, 1000);
+    Slider(f.settings.turrets_add, 0, 10000);
 
     // TODO: we can remove this once it's well tested and merge it with enemiesrandomized
     NewMenuItem("Hidden Enemies Rando %", "How many enemies to add based on hidden enemies.");
