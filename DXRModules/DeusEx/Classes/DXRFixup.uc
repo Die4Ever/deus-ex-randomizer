@@ -1440,7 +1440,8 @@ function Area51_FirstEntry()
         foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
             d.move(vect(0, 0, -1));
         }
-        AddSwitch( vect(-5107.805176, -2530.276123, -1374.614258), rot(0, -16384, 0), 'blastdoor_final');
+        AddSwitch( vect(-5112.805176, -2495.639893, -1364), rot(0, 16384, 0), 'blastdoor_final');// just in case the dialog fails
+        AddSwitch( vect(-5112.805176, -2530.276123, -1364), rot(0, -16384, 0), 'blastdoor_final');// for backtracking
         AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
 
         foreach AllActors(class'DeusExMover', d, 'doors_lower') {
