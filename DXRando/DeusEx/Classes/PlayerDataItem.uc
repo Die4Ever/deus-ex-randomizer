@@ -18,7 +18,7 @@ struct BingoSpot {
     var travel int max;
 };
 var travel BingoSpot bingo[25];
-var travel config BingoSpot bingoexport[25];
+var transient config BingoSpot bingoexport[25];
 
 simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
 {
