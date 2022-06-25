@@ -311,7 +311,7 @@ function bool SpecialTriggerHandling(Actor Other, Pawn Instigator)
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-     local string j;
+    local string j;
     local class<Json> js;
     local name useTag;
 
@@ -323,7 +323,6 @@ function Trigger(Actor Other, Pawn Instigator)
     } else {
         useTag = tag;
     }
-
 
     Super.Trigger(Other, Instigator);
     l("Trigger("$Other$", "$instigator$")");
@@ -628,8 +627,6 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 
     data = class'PlayerDataItem'.static.GiveItem(player);
 
-
-
     //Update the exported bingo info in case this was a reload
     data.ExportBingoState();
 
@@ -642,8 +639,6 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
         SetGlobalSeed("bingo");
         _CreateBingoBoard(data);
     }
-
-
 }
 
 simulated function CreateBingoBoard()
@@ -718,7 +713,6 @@ simulated function int HandleMutualExclusion(MutualExclusion m, int options[100]
 
 function CheckBingoWin(DXRando dxr, int numBingos)
 {
-
     //Block this in HX for now
     if(#defined(hx)) return;
 
@@ -773,7 +767,6 @@ function _MarkBingo(coerce string eventname)
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
 
         CheckBingoWin(dxr,nowbingos);
-
     } else {
         player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
     }
