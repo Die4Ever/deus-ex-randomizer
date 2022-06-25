@@ -5,7 +5,7 @@ from tkinter import font
 from tkinter import *
 
 BUTTON_BORDER_WIDTH = 4
-BUTTON_BORDER_WIDTH_TOTAL=14*BUTTON_BORDER_WIDTH
+BUTTON_BORDER_WIDTH_TOTAL=15*BUTTON_BORDER_WIDTH
 MAGIC_GREEN="#1e641e"
 BRIGHT_GREEN="#00FF00"
 BINGO_VARIABLE_CONFIG_NAME="bingoexport"
@@ -29,26 +29,9 @@ class Bingo:
     def isWindowOpen(self):
         return self.win!=None
 
-    #I'm sure there's a better way to do this, but let's just kludge it instead
     def getFontSizeByWindowSize(self):
-        if self.width<300 or self.height<300:
-            return 8
-        elif self.width<450 or self.height<450:
-            return 10
-        elif self.width<600 or self.height<600:
-            return 12
-        elif self.width<800 or self.height <800:
-            return 14
-        elif self.width<1000 or self.height<1000:
-            return 16
-        elif self.width<1200 or self.height<1200:
-            return 18
-        elif self.width<1400 or self.height<1400:
-            return 24
-        elif self.width<1800 or self.height<1800:
-            return 36
-        else:  #In case you wanna full screen on your 4K monitor
-            return 48
+        width = min(self.width, self.height)
+        return int(width / 37)
 
     def resize(self,event):
         if event.widget == self.win:
@@ -61,7 +44,7 @@ class Bingo:
                 for y in range(5):
                     self.tkBoard[x][y].config(width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font)
 
-    
+
 
     def initDrawnBoard(self):
         self.win = Tk()
@@ -69,6 +52,7 @@ class Bingo:
         self.win.bind("<Configure>",self.resize)
         self.win.title("Deus Ex Randomizer Bingo Board")
         self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
+        self.win.config(bg="black")
         self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
         self.font = font.Font(size=self.getFontSizeByWindowSize())
         for x in range(5):
@@ -79,7 +63,7 @@ class Bingo:
                 self.tkBoard[x][y]["state"]='disabled'
                 self.tkBoard[x][y].countdown=0
                 self.tkBoard[x][y].grid(column=x,row=y)
-                
+
 
 
     def drawBoard(self):
@@ -89,8 +73,8 @@ class Bingo:
                 if boardEntry!=None and self.tkBoard[x][y]!=None:
                     desc = boardEntry["Desc"]
                     if boardEntry["Max"]>1:
-                        desc=desc+"\n("+str(boardEntry["Progress"])+"/"+str(boardEntry["Max"])+")"                    
-                    
+                        desc=desc+"\n("+str(boardEntry["Progress"])+"/"+str(boardEntry["Max"])+")"
+
                     self.tkBoardText[x][y].set(desc)
                     if boardEntry["Progress"]>=boardEntry["Max"] and boardEntry["Max"]>0:
                         if self.tkBoard[x][y].cget('bg')=="black":
@@ -104,14 +88,14 @@ class Bingo:
                                 self.tkBoard[x][y].config(bg=MAGIC_GREEN)
                     else:
                         self.tkBoard[x][y].config(bg="black")
-                        
-        self.win.update()        
+
+        self.win.update()
 
     def printBoard(self):
         for x in range(5):
             for y in range(5):
                 print(str(x)+","+str(y)+": "+str(self.board[x][y]))
-    
+
     def bingoNumberToCoord(self,bingoNumber):
         x = bingoNumber//5
         y = bingoNumber%5
@@ -130,7 +114,7 @@ class Bingo:
             if fieldVal.isdigit():
                 fieldVal = int(fieldVal)
             bingoItem[fieldName]=fieldVal
-            
+
         self.board[bingoCoord[0]][bingoCoord[1]] = bingoItem
 
     def readBingoFile(self):
@@ -169,9 +153,9 @@ while True:
         b.readBingoFile()
         #b.printBoard()
         lastFileUpdate=time.time()
-        
+
     if (b.isWindowOpen()):
         b.drawBoard()
     else:
         sys.exit(0)
-    
+
