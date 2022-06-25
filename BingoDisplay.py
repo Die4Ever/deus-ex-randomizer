@@ -7,6 +7,7 @@ from tkinter import *
 BUTTON_BORDER_WIDTH = 4
 BUTTON_BORDER_WIDTH_TOTAL=14*BUTTON_BORDER_WIDTH
 MAGIC_GREEN="#1e641e"
+BINGO_VARIABLE_CONFIG_NAME="bingoexport"
 
 class Bingo:
 
@@ -23,9 +24,10 @@ class Bingo:
         self.win.destroy()
         self.win=None
 
-    def windowOpen(self):
+    def isWindowOpen(self):
         return self.win!=None
 
+    #I'm sure there's a better way to do this, but let's just kludge it instead
     def getFontSizeByWindowSize(self):
         if self.width<300 or self.height<300:
             return 8
@@ -41,7 +43,9 @@ class Bingo:
             return 18
         elif self.width<1400 or self.height<1400:
             return 24
-        else:  #Mega mode
+        elif self.width<1800 or self.height<1800:
+            return 36
+        else:  #In case you wanna full screen on your 4K monitor
             return 48
 
     def resize(self,event):
@@ -64,7 +68,7 @@ class Bingo:
         self.win.title("Deus Ex Randomizer Bingo Board")
         self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
         self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
-        self.font = font.Font(size=12)
+        self.font = font.Font(size=self.getFontSizeByWindowSize())
         for x in range(5):
             for y in range(5):
                 self.tkBoardText[x][y]=StringVar()
@@ -81,8 +85,10 @@ class Bingo:
                 boardEntry = self.board[x][y]
                 if boardEntry!=None and self.tkBoard[x][y]!=None:
                     desc = boardEntry["Desc"]
-                    self.tkBoardText[x][y].set(boardEntry["Desc"])
-                    if boardEntry["Progress"]>=boardEntry["Max"]:
+                    if boardEntry["Max"]>1:
+                        desc=desc+"\n("+str(boardEntry["Progress"])+"/"+str(boardEntry["Max"])+")"
+                    self.tkBoardText[x][y].set(desc)
+                    if boardEntry["Progress"]>=boardEntry["Max"] and boardEntry["Max"]>0:
                         self.tkBoard[x][y].config(bg=MAGIC_GREEN)
                     else:
                         self.tkBoard[x][y].config(bg="black")
@@ -119,7 +125,7 @@ class Bingo:
         try:
             bingoFile = open(self.targetFile);
             for line in bingoFile:
-                if line.startswith("bingoexport["):
+                if line.startswith(BINGO_VARIABLE_CONFIG_NAME):
                     bingoLine = line.strip()
                     self.parseBingoLine(bingoLine)
         except Exception as e:
@@ -151,7 +157,8 @@ while True:
         b.readBingoFile()
         #b.printBoard()
         lastUpdate=time.time()
-    if (b.windowOpen()):
+        
+    if (b.isWindowOpen()):
         b.drawBoard()
     else:
         sys.exit(0)
