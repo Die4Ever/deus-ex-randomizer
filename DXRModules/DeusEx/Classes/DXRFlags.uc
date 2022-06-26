@@ -836,6 +836,7 @@ simulated function string flagNameToHumanName(name flagname){
 
 simulated function string flagValToHumanVal(name flagname, int val){
     local DXRLoadouts loadout;
+    local string ret;
 
     switch(flagname){
         //Return the straight number
@@ -1027,9 +1028,35 @@ simulated function string flagValToHumanVal(name flagname, int val){
             }
 
         //Weird, handle later
+        case 'Rando_doorsmode':
+            switch(val/256*256) {
+            case undefeatabledoors:
+                ret = "undefeatable";
+                break;
+            case alldoors:
+                ret = "all";
+                break;
+            case keyonlydoors:
+                ret = "key-only";
+                break;
+            case highlightabledoors:
+                ret = "highlightable";
+                break;
+            default:
+                ret = (val/256*256) $ " (Unhandled!)";
+                break;
+            }
+            ret = ret $ " / ";
+            switch(val%256) {
+                case doormutuallyinclusive: return ret $ "mutually inclusive";
+                case doorindependent: return ret $ "independent";
+                case doormutuallyexclusive: return ret $ "mutually exclusive";
+                default: return ret $ (val%256) $ " (Unhandled!)";
+            }
+            return val $ " (Unhandled!)";
+
         case 'Rando_doorspickable':
         case 'Rando_doorsdestructible':
-        case 'Rando_doorsmode':
             return ""$val;
 
         default:
