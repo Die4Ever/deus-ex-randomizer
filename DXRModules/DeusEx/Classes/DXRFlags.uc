@@ -27,6 +27,9 @@ var #var(flagvarprefix) int codes_mode;
 
 var #var(flagvarprefix) int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
 
+
+// When adding a new flag, make sure to update BindFlags, flagNameToHumanName, flagValToHumanVal,
+// CheckConfig, and maybe ExecMaxRando if it should be included in that
 struct FlagsSettings {
 #ifndef hx
     var float CombatDifficulty;
@@ -696,6 +699,344 @@ simulated function string BindFlags(int mode, optional string str)
     return str;
 }
 
+simulated function string flagNameToHumanName(name flagname){
+    switch(flagname){
+        case 'Rando_seed':
+            return "Seed";
+        case 'Rando_maxrando':
+            return "Max Rando";
+        case 'Rando_autosave':
+            return "Autosave";
+        case 'Rando_brightness':
+            return "Brightness";
+        case 'Rando_crowdcontrol':
+            return "Crowd Control";
+        case 'Rando_loadout':
+            return "Loadout";
+        case 'Rando_codes_mode':
+            return "Autofill Passwords";
+        case 'Rando_newgameplus_loops':
+            return "New Game+ Loop";
+        case 'Rando_playthrough_id':
+            return "Playthrough ID";
+        case 'Rando_gamemode':
+            return "Game Mode";
+        case 'Rando_difficulty':
+            return "Difficulty";
+        case 'Rando_minskill':
+            return "Minimum Skill Cost";
+        case 'Rando_maxskill':
+            return "Maximum Skill Cost";
+        case 'Rando_ammo':
+            return "Ammo Drops";
+        case 'Rando_multitools':
+            return "Multitool Drops";
+        case 'Rando_lockpicks':
+            return "Lockpick Drops";
+        case 'Rando_biocells':
+            return "Bioelectric Cell Drops";
+        case 'Rando_speedlevel':
+            return "Starting Speed Enhancement Level";
+        case 'Rando_keys':
+            return "NanoKey Locations";
+        case 'Rando_keys_containers':
+            return "NanoKeys can be swapped with containers";
+        case 'Rando_doorspickable':
+            return "Pickable Doors"; ///////////////Might need adjustment?//////////////////
+        case 'Rando_doorsdestructible':
+            return "Destructible Doors"; ///////////////Might need adjustment?//////////////////
+        case 'Rando_deviceshackable':
+            return "Electronic Devices";
+        case 'Rando_passwordsrandomized':
+            return "Passwords";
+        case 'Rando_medkits':
+            return "Medkit Drops";
+        case 'Rando_enemiesrandomized':
+            return "Enemy Randomization";
+        case 'Rando_hiddenenemiesrandomized':
+            return "Hidden Enemy Randomization";
+        case 'Rando_enemiesshuffled':
+            return "Enemy Shuffling";
+        case 'Rando_infodevices':
+            return "Datacube Locations";
+        case 'Rando_infodevices_containers':
+            return "Datacubes can be swapped with containers";
+        case 'Rando_dancingpercent':
+            return "Dancing";
+        case 'Rando_doorsmode':
+            return "Doors Mode"; ///////////////Might need adjustment?//////////////////
+        case 'Rando_enemyrespawn':
+            return "Enemy Respawn Time";
+        case 'Rando_skills_disable_downgrades':
+            return "Disallow downgrades on New Game screen";
+        case 'Rando_skills_reroll_missions':
+            return "How often to reroll skill costs";
+        case 'Rando_skills_independent_levels':
+            return "Predictability of skill level cost scaling";
+        case 'Rando_startinglocations':
+            return "Starting Locations";
+        case 'Rando_goals':
+            return "Goal Locations";
+        case 'Rando_equipment':
+            return "Starting Equipment Amount";
+        case 'Rando_medbots':
+            return "Medbots";
+        case 'Rando_repairbots':
+            return "Repairbots";
+        case 'Rando_medbotuses':
+            return "Uses per Medbot";
+        case 'Rando_repairbotuses':
+            return "Uses per Repairbot";
+        case 'Rando_medbotcooldowns':
+            return "Medbot Cooldowns";
+        case 'Rando_repairbotcooldowns':
+            return "Repairbot Cooldowns";
+        case 'Rando_medbotamount':
+            return "Medbot Heal Amount";
+        case 'Rando_repairbotamount':
+            return "Repairbot Charge Amount";
+        case 'Rando_turrets_move':
+            return "Move Turrets";
+        case 'Rando_turrets_add':
+            return "Add Turrets";
+        case 'Rando_merchants':
+            return "The Merchant Chance";
+        case 'Rando_banned_skills':
+            return "Banned Skills";
+        case 'Rando_banned_skill_level':
+            return "Banned Skill Levels";
+        case 'Rando_enemies_nonhumans':
+            return "Enemy Non-Human Chance";
+        case 'Rando_swapitems':
+            return "Swap Items";
+        case 'Rando_swapcontainers':
+            return "Swap Containers";
+        case 'Rando_augcans':
+            return "Aug Can Content Randomization";
+        case 'Rando_aug_value_rando':
+            return "Aug Strength Randomization";
+        case 'Rando_skill_value_rando':
+            return "Skill Strength Randomization";
+        case 'Rando_min_weapon_dmg':
+            return "Min Weapon Damage";
+        case 'Rando_max_weapon_dmg':
+            return "Max Weapon Damage";
+        case 'Rando_min_weapon_shottime':
+            return "Minimum Weapon Firing Speed";
+        case 'Rando_max_weapon_shottime':
+            return "Maximum Weapon Firing Speed";
+        case 'Rando_prison_pocket':
+            return "JC's Prison Pocket";
+        case 'Rando_bingo_win':
+            return "Bingo Lines to Win";
+        default:
+            return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
+    }
+}
+
+simulated function string flagValToHumanVal(name flagname, int val){
+    local DXRLoadouts loadout;
+
+    switch(flagname){
+        //Return the straight number
+        case 'Rando_seed':
+        case 'Rando_playthrough_id':
+        case 'Rando_speedlevel':
+        case 'Rando_medbotuses':
+        case 'Rando_repairbotuses':
+        case 'Rando_bingo_win':
+        case 'Rando_equipment':
+        case 'Rando_newgameplus_loops':
+            return ""$val;
+
+        //Return the number as a percent
+        case 'Rando_minskill':
+        case 'Rando_maxskill':
+        case 'Rando_ammo':
+        case 'Rando_multitools':
+        case 'Rando_lockpicks':
+        case 'Rando_biocells':
+        case 'Rando_deviceshackable':
+        case 'Rando_medbots':
+        case 'Rando_repairbots':
+        case 'Rando_medkits':
+        case 'Rando_dancingpercent':
+        case 'Rando_turrets_move':
+        case 'Rando_turrets_add':
+        case 'Rando_merchants':
+        case 'Rando_augcans':
+        case 'Rando_aug_value_rando':
+        case 'Rando_skill_value_rando':
+        case 'Rando_min_weapon_dmg':
+        case 'Rando_max_weapon_dmg':
+        case 'Rando_min_weapon_shottime':
+        case 'Rando_max_weapon_shottime':
+        case 'Rando_banned_skills':
+        case 'Rando_banned_skill_level':
+        case 'Rando_enemies_nonhumans':
+        case 'Rando_swapitems':
+        case 'Rando_swapcontainers':
+        case 'Rando_enemiesrandomized':
+        case 'Rando_hiddenenemiesrandomized':
+        case 'Rando_enemiesshuffled':
+            return val$"%";
+
+        case 'Rando_enemyrespawn':
+            return val$" seconds";
+
+        case 'Rando_brightness':
+            return "+"$val;
+
+        //Medbot/Repairbot cooldown and amount options
+        case 'Rando_medbotcooldowns':
+        case 'Rando_repairbotcooldowns':
+        case 'Rando_medbotamount':
+        case 'Rando_repairbotamount':
+            if (val==0){
+                return "Unchanged";
+            }else if (val==1){
+                return "Individual";
+            } else if (val==2){
+                return "Global";
+            }
+            break;
+
+        case 'Rando_crowdcontrol':
+            if (val==0){
+                return "Disabled";
+            } else if (val==1){
+                return "Enabled (With Names)";
+            } else if (val==2){
+                return "Enabled (Anonymous)";
+            }
+            break;
+
+        case 'Rando_prison_pocket':
+            if (val==0){
+                return "Disabled";
+            } else if (val==100) {
+                return "Augmented";
+            }
+            break;
+
+        case 'Rando_keys':
+        case 'Rando_infodevices':
+            if (val==4){
+                return "Randomized";
+            } else if (val==0){
+                return "Unchanged";
+            }
+            break;
+
+        case 'Rando_keys_containers':
+        case 'Rando_infodevices_containers':
+            if (val==100){
+                return "Enabled";
+            } else {
+                return "Disabled";
+            }
+            break;
+
+
+        case 'Rando_maxrando':
+            if (val == 1) {
+                return "Enabled";
+            } else {
+                return "Disabled";
+            }
+
+        case 'Rando_autosave':
+            if (val==0) {
+                return "Off";
+            } else if (val==1) {
+                return "First Entry";
+            } else if (val==2) {
+                return "Every Entry";
+            } else if (val==3) {
+                return "Autosaves Only (Hardcore)";
+            }
+            break;
+
+
+        case 'Rando_codes_mode':
+            if (val==0) {
+                return "No Assistance";
+            } else if (val==1) {
+                return "Mark Known Passwords";
+            } else if (val==2) {
+                return "Autofill Passwords";
+            }
+            break;
+
+
+        case 'Rando_passwordsrandomized':
+        case 'Rando_startinglocations':
+        case 'Rando_goals':
+            if (val==0){
+                return "Unchanged";
+            } else if (val==100){
+                return "Randomized";
+            }
+            break;
+
+        case 'Rando_skills_disable_downgrades':
+            if (val==0){
+                return "Allowed";
+            } else if (val==5) {
+                return "Disallowed";
+            }
+            break;
+
+        case 'Rando_skills_reroll_missions':
+            if (val==0){
+                return "Don't Reroll";
+            } else if (val==1){
+                return "Reroll Every Mission";
+            } else if (val==2){
+                return "Reroll Every 2 Missions";
+            } else if (val==3){
+                return "Reroll Every 3 Missions";
+            } else if (val==5){
+                return "Reroll Every 5 Missions";
+            }
+            break;
+
+        case 'Rando_difficulty':
+            if (val<4){
+                return difficulty_names[val];
+            }
+            break;
+
+        case 'Rando_gamemode':
+            return GameModeName(val);
+
+        case 'Rando_skills_independent_levels':
+            if (val==0){
+                return "Relative Skill Level Costs";
+            } else if (val==1) {
+                return "Unpredictable Skill Level Costs";
+            }
+            break;
+
+        case 'Rando_loadout':
+            foreach AllActors(class'DXRLoadouts', loadout) { break; }
+            if( loadout == None )
+                return "All Items Allowed";
+            else {
+                return loadout.GetName(val);
+            }
+
+        //Weird, handle later
+        case 'Rando_doorspickable':
+        case 'Rando_doorsdestructible':
+        case 'Rando_doorsmode':
+            return ""$val;
+
+        default:
+            return val $ " (Unhandled!)";
+    }
+}
+
 // returns true is read was successful
 simulated function bool FlagInt(name flagname, out int val, int mode, out string str)
 {
@@ -711,6 +1052,9 @@ simulated function bool FlagInt(name flagname, out int val, int mode, out string
     }
     else if( mode == Writing ) {
         f.SetInt(flagname, val,, 999);
+    }
+    else if ( mode == Credits ) {
+        str = str $ "|n" $ flagNameToHumanName(flagname)$": "$flagValToHumanVal(flagname,val);
     }
     else {
         if(mode == Printing && Len(str) > 300) {
