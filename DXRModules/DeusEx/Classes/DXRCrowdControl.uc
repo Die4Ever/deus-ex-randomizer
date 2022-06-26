@@ -27,7 +27,7 @@ var int curStupidQuestion;
 
 function Init(DXRando tdxr)
 {
-    local bool anon;
+    local bool anon, offline;
     Super.Init(tdxr);
 
     curStupidQuestion = Rand(numStupidQuestions);
@@ -40,7 +40,10 @@ function Init(DXRando tdxr)
         } else if (tdxr.flags.crowdcontrol == 2) {
             anon = True;
         }
-        link.Init(tdxr,Self,crowd_control_addr,anon);
+        else if(tdxr.flags.crowdcontrol == 3) {
+            offline = true;
+        }
+        link.Init(tdxr, Self, crowd_control_addr, anon, offline);
     } else info("crowd control disabled");
 }
 
