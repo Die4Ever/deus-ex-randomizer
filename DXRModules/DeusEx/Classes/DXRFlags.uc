@@ -909,6 +909,8 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Enabled (With Names)";
             } else if (val==2){
                 return "Enabled (Anonymous)";
+            } else if (val==3) {
+                return "Offline Simulated";
             }
             break;
 
@@ -1057,7 +1059,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
 
         case 'Rando_doorspickable':
         case 'Rando_doorsdestructible':
-            return ""$val;
+            return val $ "%";
 
         default:
             return val $ " (Unhandled!)";
