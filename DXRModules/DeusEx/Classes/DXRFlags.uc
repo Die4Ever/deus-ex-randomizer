@@ -1420,6 +1420,7 @@ function ExtendedTests()
 {
     local int i, total;
     local float f;
+    local string credits_text;
     Super.ExtendedTests();
 
     testint(FindLast("this is a test", "nope"), -1, "FindLast");
@@ -1462,6 +1463,10 @@ function ExtendedTests()
 
     TestTime();
     TestStorage();
+
+    credits_text = StringifyFlags(Credits);
+    test( InStr(credits_text, "(ADD HUMAN READABLE NAME!)") == -1, "Credits does not contain (ADD HUMAN READABLE NAME!)");
+    test( InStr(credits_text, "(Unhandled!)") == -1, "Credits does not contain (Unhandled!)");
 }
 
 function TestTime()
