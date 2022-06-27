@@ -490,7 +490,7 @@ function FixCodes()
 
         case "09_NYC_DOCKYARD":
             // Jenny
-            newpassword = GeneratePasscode("867530") $ "9";
+            newpassword = GeneratePasscode("867") $ GeneratePasscode("530") $ "9";
             ReplacePassword("8675309", newpassword);
             break;
 
