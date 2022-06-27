@@ -16,6 +16,7 @@ var IpAddr addr;
 var int ticker;
 
 var bool anon;
+var bool offline;
 
 var int reconnectTimer;
 const ReconDefault = 5;
@@ -35,7 +36,7 @@ const CrowdControlPort = 43384;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous)
+function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous, bool offline_mode)
 {
     dxr = tdxr;
     ccModule = cc;
@@ -52,8 +53,11 @@ function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous)
     //Initialize the ticker
     ticker = 0;
 
-    Resolve(crowd_control_addr);
+    offline = offline_mode;
 
+    if(!offline) {
+        Resolve(crowd_control_addr);
+    }
     reconnectTimer = ReconDefault;
     SetTimer(0.1,True);
 
@@ -73,7 +77,7 @@ function Timer() {
     }
     //Everything below here runs once a second
 
-    if (!IsConnected()) {
+    if (!offline && !IsConnected()) {
         reconnectTimer-=1;
         if (reconnectTimer <= 0){
             Resolve(crowd_control_addr);
@@ -81,8 +85,133 @@ function Timer() {
     }
 
     ccEffects.PeriodicUpdates();
+
+    if(offline) {
+        RandomOfflineEffects();
+    }
 }
 
+function int RandomOfflineEffects() {
+    local string param[5];
+    local string viewer;
+
+    // only 2% chance for an effect, each second
+    if(FRand() > 0.02) return 0;
+
+    viewer = "Simulated Crowd Control";
+    param[0] = "1";
+
+    switch(Rand(58)) {
+    case 0: return ccEffects.doCrowdControlEvent("poison", param, viewer, 0);
+    case 1: return ccEffects.doCrowdControlEvent("glass_legs", param, viewer, 0);
+    case 2: param[0] = string(Rand(20)); return ccEffects.doCrowdControlEvent("give_health", param, viewer, 0);
+    case 3: return ccEffects.doCrowdControlEvent("set_fire", param, viewer, 0);
+    case 4: return ccEffects.doCrowdControlEvent("full_heal", param, viewer, 0);
+    case 5: return ccEffects.doCrowdControlEvent("disable_jump", param, viewer, 0);
+    case 6: return ccEffects.doCrowdControlEvent("gotta_go_fast", param, viewer, 0);
+    case 7: return ccEffects.doCrowdControlEvent("gotta_go_slow", param, viewer, 0);
+    case 8: return ccEffects.doCrowdControlEvent("drunk_mode", param, viewer, 0);
+    case 9: return ccEffects.doCrowdControlEvent("drop_selected_item", param, viewer, 0);
+    case 10: return ccEffects.doCrowdControlEvent("emp_field", param, viewer, 0);
+    case 11: return ccEffects.doCrowdControlEvent("matrix", param, viewer, 0);
+    case 12: return ccEffects.doCrowdControlEvent("third_person", param, viewer, 0);
+    case 13: param[0] = string(Rand(10)); return ccEffects.doCrowdControlEvent("give_energy", param, viewer, 0);
+    case 14: param[0] = string(Rand(50)); return ccEffects.doCrowdControlEvent("give_skillpoints", param, viewer, 0);
+    case 15: param[0] = string(Rand(50)); return ccEffects.doCrowdControlEvent("remove_skillpoints", param, viewer, 0);
+    case 16: param[0] = string(Rand(50)); return ccEffects.doCrowdControlEvent("add_credits", param, viewer, 0);
+    case 17: param[0] = string(Rand(50)); return ccEffects.doCrowdControlEvent("remove_credits", param, viewer, 0);
+    case 18: return ccEffects.doCrowdControlEvent("ice_physics", param, viewer, 0);
+    case 19: return ccEffects.doCrowdControlEvent("ask_a_question", param, viewer, 0);
+    case 20: return ccEffects.doCrowdControlEvent("nudge", param, viewer, 0);
+    case 21: return ccEffects.doCrowdControlEvent("swap_player_position", param, viewer, 0);
+    case 22: return ccEffects.doCrowdControlEvent("floaty_physics", param, viewer, 0);
+    case 23: return ccEffects.doCrowdControlEvent("floor_is_lava", param, viewer, 0);
+    case 24: return ccEffects.doCrowdControlEvent("invert_mouse", param, viewer, 0);
+    case 25: return ccEffects.doCrowdControlEvent("invert_movement", param, viewer, 0);
+
+#ifdef vanilla
+    case 26: return ccEffects.doCrowdControlEvent("lamthrower", param, viewer, 0);
+    case 27: return ccEffects.doCrowdControlEvent("dmg_double", param, viewer, 0);
+    case 28: return ccEffects.doCrowdControlEvent("dmg_half", param, viewer, 0);
+#endif
+
+    case 29: return ccEffects.doCrowdControlEvent("drop_lam", param, viewer, 0);
+    case 30: return ccEffects.doCrowdControlEvent("drop_empgrenade", param, viewer, 0);
+    case 31: return ccEffects.doCrowdControlEvent("drop_gasgrenade", param, viewer, 0);
+    case 32: return ccEffects.doCrowdControlEvent("drop_nanovirusgrenade", param, viewer, 0);
+
+    case 33: return ccEffects.doCrowdControlEvent("give_medkit", param, viewer, 0);
+    case 34: return ccEffects.doCrowdControlEvent("give_bioelectriccell", param, viewer, 0);
+    case 35: return ccEffects.doCrowdControlEvent("give_fireextinguisher", param, viewer, 0);
+    case 36: return ccEffects.doCrowdControlEvent("give_ballisticarmor", param, viewer, 0);
+    case 37: return ccEffects.doCrowdControlEvent("give_lockpick", param, viewer, 0);
+    case 38: return ccEffects.doCrowdControlEvent("give_multitool", param, viewer, 0);
+    case 39: return ccEffects.doCrowdControlEvent("give_rebreather", param, viewer, 0);
+    case 40: return ccEffects.doCrowdControlEvent("give_adaptivearmor", param, viewer, 0);
+    case 41: return ccEffects.doCrowdControlEvent("give_hazmatsuit", param, viewer, 0);
+
+    case 42: return ccEffects.doCrowdControlEvent("give_ammo10mm", param, viewer, 0);
+    case 43: return ccEffects.doCrowdControlEvent("give_ammo20mm", param, viewer, 0);
+    case 44: return ccEffects.doCrowdControlEvent("give_ammo762mm", param, viewer, 0);
+    case 45: return ccEffects.doCrowdControlEvent("give_ammo3006", param, viewer, 0);
+    case 46: return ccEffects.doCrowdControlEvent("give_ammobattery", param, viewer, 0);
+    case 47: return ccEffects.doCrowdControlEvent("give_ammodart", param, viewer, 0);
+    case 48: return ccEffects.doCrowdControlEvent("give_ammodartflare", param, viewer, 0);
+    case 49: return ccEffects.doCrowdControlEvent("give_ammodartpoison", param, viewer, 0);
+    case 50: return ccEffects.doCrowdControlEvent("give_ammonapalm", param, viewer, 0);
+    case 51: return ccEffects.doCrowdControlEvent("give_ammopepper", param, viewer, 0);
+    case 52: return ccEffects.doCrowdControlEvent("give_ammoplasma", param, viewer, 0);
+    case 53: return ccEffects.doCrowdControlEvent("give_ammorocket", param, viewer, 0);
+    case 54: return ccEffects.doCrowdControlEvent("give_ammorocketwp", param, viewer, 0);
+    case 55: return ccEffects.doCrowdControlEvent("give_ammosabot", param, viewer, 0);
+    case 56: return ccEffects.doCrowdControlEvent("give_ammoshell", param, viewer, 0);
+
+    case 57:
+        // add and remove augs...
+        switch(Rand(36)) {
+        case 0: return ccEffects.doCrowdControlEvent("add_augaqualung", param, viewer, 0);
+        case 1: return ccEffects.doCrowdControlEvent("add_augballistic", param, viewer, 0);
+        case 2: return ccEffects.doCrowdControlEvent("add_augcloak", param, viewer, 0);
+        case 3: return ccEffects.doCrowdControlEvent("add_augcombat", param, viewer, 0);
+        case 4: return ccEffects.doCrowdControlEvent("add_augdefense", param, viewer, 0);
+        case 5: return ccEffects.doCrowdControlEvent("add_augdrone", param, viewer, 0);
+        case 6: return ccEffects.doCrowdControlEvent("add_augemp", param, viewer, 0);
+        case 7: return ccEffects.doCrowdControlEvent("add_augenviro", param, viewer, 0);
+        case 8: return ccEffects.doCrowdControlEvent("add_aughealing", param, viewer, 0);
+        case 9: return ccEffects.doCrowdControlEvent("add_augheartlung", param, viewer, 0);
+        case 10: return ccEffects.doCrowdControlEvent("add_augmuscle", param, viewer, 0);
+        case 11: return ccEffects.doCrowdControlEvent("add_augpower", param, viewer, 0);
+        case 12: return ccEffects.doCrowdControlEvent("add_augradartrans", param, viewer, 0);
+        case 13: return ccEffects.doCrowdControlEvent("add_augshield", param, viewer, 0);
+        case 14: return ccEffects.doCrowdControlEvent("add_augspeed", param, viewer, 0);
+        case 15: return ccEffects.doCrowdControlEvent("add_augstealth", param, viewer, 0);
+        case 16: return ccEffects.doCrowdControlEvent("add_augtarget", param, viewer, 0);
+        case 17: return ccEffects.doCrowdControlEvent("add_augvision", param, viewer, 0);
+
+        case 18: return ccEffects.doCrowdControlEvent("rem_augaqualung", param, viewer, 0);
+        case 19: return ccEffects.doCrowdControlEvent("rem_augballistic", param, viewer, 0);
+        case 20: return ccEffects.doCrowdControlEvent("rem_augcloak", param, viewer, 0);
+        case 21: return ccEffects.doCrowdControlEvent("rem_augcombat", param, viewer, 0);
+        case 22: return ccEffects.doCrowdControlEvent("rem_augdefense", param, viewer, 0);
+        case 23: return ccEffects.doCrowdControlEvent("rem_augdrone", param, viewer, 0);
+        case 24: return ccEffects.doCrowdControlEvent("rem_augemp", param, viewer, 0);
+        case 25: return ccEffects.doCrowdControlEvent("rem_augenviro", param, viewer, 0);
+        case 26: return ccEffects.doCrowdControlEvent("rem_aughealing", param, viewer, 0);
+        case 27: return ccEffects.doCrowdControlEvent("rem_augheartlung", param, viewer, 0);
+        case 28: return ccEffects.doCrowdControlEvent("rem_augmuscle", param, viewer, 0);
+        case 29: return ccEffects.doCrowdControlEvent("rem_augpower", param, viewer, 0);
+        case 30: return ccEffects.doCrowdControlEvent("rem_augradartrans", param, viewer, 0);
+        case 31: return ccEffects.doCrowdControlEvent("rem_augshield", param, viewer, 0);
+        case 32: return ccEffects.doCrowdControlEvent("rem_augspeed", param, viewer, 0);
+        case 33: return ccEffects.doCrowdControlEvent("rem_augstealth", param, viewer, 0);
+        case 34: return ccEffects.doCrowdControlEvent("rem_augtarget", param, viewer, 0);
+        case 35: return ccEffects.doCrowdControlEvent("rem_augvision", param, viewer, 0);
+        }
+        break;
+    }
+
+    return 0;
+}
 
 function bool isCrowdControl(string msg) {
     local string tmp;

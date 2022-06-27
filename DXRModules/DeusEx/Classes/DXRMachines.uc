@@ -15,8 +15,8 @@ function CheckConfig()
 {
     local int i;
     local class<Actor> a;
-    if( ConfigOlderThan(1,5,1,0) ) {
-        max_turrets = 3;
+    if( ConfigOlderThan(2,0,1,4) ) {
+        max_turrets = 4;
         turret_move_min_distance = 10*16;
         turret_move_max_distance = 500*16;
         max_datacube_distance = 200*16;
@@ -43,7 +43,7 @@ function RandoTurrets(int percent_move, int percent_add)
     local #var(prefix)AutoTurret t;
     local #var(prefix)SecurityCamera cam;
     local #var(prefix)ComputerSecurity c;
-    local int i, hostile_turrets;
+    local int i, hostile_turrets, t_max_turrets;
     local vector loc;
 
     SetSeed( "RandoTurrets move" );
@@ -68,8 +68,9 @@ function RandoTurrets(int percent_move, int percent_add)
 
     SetSeed( "RandoTurrets add" );
 
-    for(i=0; i < max_turrets ; i++) {
-        if( chance_single(percent_add/max_turrets) == false ) continue;
+    t_max_turrets = (percent_add+150) / 100;
+    for(i=0; i < t_max_turrets ; i++) {
+        if( chance_single(percent_add/t_max_turrets) == false ) continue;
 
         loc = GetRandomPositionFine();
         if( class'DXRMissions'.static.IsCloseToStart(dxr, loc) ) {
@@ -155,6 +156,9 @@ function #var(prefix)AutoTurret SpawnTurret(vector loc)
     t.bActive = false;
     t.bTrackPawnsOnly = false;
     t.bTrackPlayersOnly = true;
+    t.maxRange *= 3;
+    t.fireRate *= 0.8;// lower numbers are stronger
+    t.gunAccuracy *= 0.8;// lower numbers are stronger
     class'DXRPasswords'.static.RandoHackable(dxr, t.gun);
     info("SpawnTurret "$t$" done at ("$loc$"), ("$rotation$")");
     return t;
@@ -285,6 +289,7 @@ function #var(prefix)SecurityCamera SpawnCamera(vector loc)
     c.swingPeriod = camera_swing_period;
     c.cameraFOV = camera_fov;
     c.cameraRange = camera_range;
+    c.triggerDelay /= 2;
     class'DXRPasswords'.static.RandoHackable(dxr, c);
     info("SpawnCamera "$c$" done at ("$loc$"), ("$rotation$")");
     return c;

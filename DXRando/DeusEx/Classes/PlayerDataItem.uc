@@ -1,4 +1,4 @@
-class PlayerDataItem extends Inventory;
+class PlayerDataItem extends Inventory config(DXRBingo);
 
 var travel bool local_inited;
 var travel int version;
@@ -18,6 +18,7 @@ struct BingoSpot {
     var travel int max;
 };
 var travel BingoSpot bingo[25];
+var transient config BingoSpot bingoexport[25];
 
 simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
 {
@@ -27,6 +28,7 @@ simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
     if( i == None )
     {
         i = p.Spawn(class'PlayerDataItem');
+        i.ExportBingoState();
         i.GiveTo(p);
         log("spawned new "$i$" for "$p);
     }
@@ -38,6 +40,7 @@ simulated function static ResetData(#var(PlayerPawn) p)
     local PlayerDataItem o, n;
     o = GiveItem(p);
     n = p.Spawn(class'PlayerDataItem');
+    n.ExportBingoState();
 
     n.local_inited = o.local_inited;
     n.version = o.version;
@@ -82,6 +85,7 @@ simulated function bool IncrementBingoProgress(string event)
         if(bingo[i].event != event) continue;
         bingo[i].progress++;
         log("IncrementBingoProgress "$event$": " $ bingo[i].progress $" / "$ bingo[i].max, self.class.name);
+        ExportBingoState();
         return bingo[i].progress == bingo[i].max;
     }
     return false;
@@ -127,6 +131,18 @@ simulated function int NumberOfBingos()
     if( CheckBingo(-1, 1, 4, 0) ) num++;
 
     return num;
+}
+
+simulated function ExportBingoState()
+{
+    local int i;
+    for(i=0; i<ArrayCount(bingo); i++) {
+        bingoexport[i].event = bingo[i].event;
+        bingoexport[i].desc = bingo[i].desc;
+        bingoexport[i].progress = bingo[i].progress;
+        bingoexport[i].max = bingo[i].max;
+    }
+    SaveConfig();
 }
 
 defaultproperties

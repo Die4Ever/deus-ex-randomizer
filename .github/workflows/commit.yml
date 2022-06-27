@@ -1,0 +1,10 @@
+name: commit
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+    - name: Python check
+      run: python -m compileall -q .

@@ -307,6 +307,7 @@ function int Slider(out int value, int min, int max)
 {
     if( writing ) {
         value = GetSliderValue(MenuUIEditWindow(wnds[id]));
+        value = Clamp(value, min, max);
         return value;
     } else {
         if ( wnds[id] == None ) {

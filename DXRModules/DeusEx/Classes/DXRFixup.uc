@@ -30,7 +30,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(1,7,5,5) ) {
+    if( ConfigOlderThan(2,0,1,5) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -83,6 +83,10 @@ function CheckConfig()
         add_datacubes[i].text = "Access code to the Versalife nanotech research wing: 55655.";
         i++;
 
+        add_datacubes[i].map = "09_NYC_Dockyard";
+        add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
+        i++;
+
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
         add_datacubes[i].text = "My code is 6786";
         i++;
@@ -97,10 +101,6 @@ function CheckConfig()
 
         add_datacubes[i].map = "15_AREA51_PAGE";
         add_datacubes[i].text = "UC Control Rooms code: 1234";
-        i++;
-
-        add_datacubes[i].map = "15_AREA51_PAGE";
-        add_datacubes[i].text = "Coolant Room code: 9248";
         i++;
 
         add_datacubes[i].map = "15_AREA51_PAGE";
@@ -271,9 +271,15 @@ function PostFirstEntryMapFixes()
 #endif
 
     case "04_NYC_NSFHQ":
+        // no cheating!
         foreach AllActors(class'DeusExMover', m, 'SignalComputerDoorOpen') {
             m.bBreakable = false;
             m.bPickable = false;
+        }
+        // these crates can make the basement nearly impossible to get through
+        foreach AllActors(class'CrateUnbreakableLarge', c) {
+            if(c.Location.Z > -28.799877) continue;
+            c.Destroy();
         }
         break;
     case "05_NYC_UNATCOMJ12LAB":
@@ -499,7 +505,10 @@ function SpawnDatacubes()
         dc = Spawn(class'DXRInformationDevices',,, loc, rot(0,0,0));
 #endif
 
-        if( dc != None ) dc.plaintext = add_datacubes[i].text;
+        if( dc != None ){
+             dc.plaintext = add_datacubes[i].text;
+             l("add_datacubes spawned "$dc @ dc.plaintext @ loc);
+        }
         else warning("failed to spawn datacube at "$loc$", text: "$add_datacubes[i].text);
     }
 }
@@ -548,6 +557,7 @@ function Airfield_FirstEntry()
     local Trigger t;
     local NanoKey k;
     local #var(prefix)InformationDevices i;
+    local UNATCOTroop unatco;
 
     switch (dxr.localURL)
     {
@@ -592,6 +602,10 @@ function Airfield_FirstEntry()
                 t.Event = '';
             }
         }
+        foreach AllActors(class'UNATCOTroop', unatco) {
+            unatco.bHateCarcass = false;
+            unatco.bHateDistress = false;
+        }
 
         // Sewerdoor backtracking
         AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
@@ -633,20 +647,38 @@ function Airfield_FirstEntry()
         AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
         break;
 #endif
+
+    case "03_NYC_747":
+        // fix Jock's conversation state so he doesn't play the dialog for unatco->battery park but now plays dialog for airfield->unatco
+        // DL_Airfield is "You're entering a helibase terminal below a private section of LaGuardia."
+        dxr.flagbase.SetBool('DL_Airfield_Played', true,, 4);
+        break;
     }
 }
 
 function Jailbreak_FirstEntry()
 {
-    local PaulDenton p;
+    local #var(PlayerPawn) p;
+    local PaulDenton paul;
     local ComputerPersonal c;
     local int i;
 
     switch (dxr.localURL)
     {
     case "05_NYC_UNATCOMJ12LAB":
-        foreach AllActors(class'PaulDenton', p) {
-            p.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
+        if(dxr.flags.settings.prison_pocket > 0) {
+            p = player();
+            p.HealthHead = Max(50, p.HealthHead);
+			p.HealthTorso =  Max(50, p.HealthTorso);
+			p.HealthLegLeft =  Max(50, p.HealthLegLeft);
+			p.HealthLegRight =  Max(50, p.HealthLegRight);
+			p.HealthArmLeft =  Max(50, p.HealthArmLeft);
+			p.HealthArmRight =  Max(50, p.HealthArmRight);
+			p.GenerateTotalHealth();
+            dxr.flags.f.SetBool('MS_InventoryRemoved', true,, 6);
+        }
+        foreach AllActors(class'PaulDenton', paul) {
+            paul.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
         }
         break;
 
@@ -891,6 +923,7 @@ function NYC_04_FirstEntry()
     local FlagTrigger ft;
     local OrdersTrigger ot;
     local SkillAwardTrigger st;
+    local BoxSmall b;
 
     switch (dxr.localURL)
     {
@@ -917,6 +950,12 @@ function NYC_04_FirstEntry()
         }
         break;
 #endif
+
+    case "04_NYC_NSFHQ":
+        foreach RadiusActors(class'BoxSmall', b, 100, vect(-640.699402, 66.666039, -209.364014)) {
+            b.Destroy();
+        }
+        break;
     }
 }
 
@@ -1403,6 +1442,7 @@ function Area51_FirstEntry()
 {
     local DeusExMover d;
     local ComputerSecurity c;
+    local Keypad k;
 
 #ifdef vanilla
     switch(dxr.localURL)
@@ -1417,7 +1457,8 @@ function Area51_FirstEntry()
         foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
             d.move(vect(0, 0, -1));
         }
-        AddSwitch( vect(-5107.805176, -2530.276123, -1374.614258), rot(0, -16384, 0), 'blastdoor_final');
+        AddSwitch( vect(-5112.805176, -2495.639893, -1364), rot(0, 16384, 0), 'blastdoor_final');// just in case the dialog fails
+        AddSwitch( vect(-5112.805176, -2530.276123, -1364), rot(0, -16384, 0), 'blastdoor_final');// for backtracking
         AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
 
         foreach AllActors(class'DeusExMover', d, 'doors_lower') {
@@ -1445,6 +1486,10 @@ function Area51_FirstEntry()
             if( c.UserList[0].userName != "graytest" || c.UserList[0].Password != "Lab12" ) continue;
             c.UserList[0].userName = "Lab 12";
             c.UserList[0].Password = "graytest";
+        }
+        foreach AllActors(class'Keypad', k) {
+            if( k.validCode == "9248" )
+                k.validCode = "2242";
         }
         break;
     }

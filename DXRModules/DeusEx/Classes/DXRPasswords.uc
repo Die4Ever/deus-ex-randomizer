@@ -430,6 +430,8 @@ function RandoPasswords(int mode)
 
     if( mode == 0 ) return;
 
+    FixCodes();// run this first so our manual logic takes precedence
+
     foreach AllActors(class'#var(prefix)Computers', c)
     {
         for (i=0; i<ArrayCount(c.userList); i++)
@@ -466,8 +468,6 @@ function RandoPasswords(int mode)
         }
 #endif
     }
-
-    FixCodes();
 }
 
 function FixCodes()
@@ -486,6 +486,12 @@ function FixCodes()
         case "02_NYC_HOTEL":
             newpassword = GeneratePasscode("4321");
             ReplacePassword("count back from 4", newpassword);
+            break;
+
+        case "09_NYC_DOCKYARD":
+            // Jenny
+            newpassword = GeneratePasscode("867") $ GeneratePasscode("530") $ "9";
+            ReplacePassword("8675309", newpassword);
             break;
 
         case "15_AREA51_PAGE":

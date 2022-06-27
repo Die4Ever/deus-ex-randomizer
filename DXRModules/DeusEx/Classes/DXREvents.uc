@@ -3,6 +3,7 @@ class DXREvents extends DXRActorsBase;
 var bool died;
 var name watchflags[32];
 var int num_watchflags;
+var int bingo_win_countdown;
 
 struct BingoOption {
     var string event, desc;
@@ -38,6 +39,8 @@ function SetWatchFlags() {
     local JunkieFemale jf;
     local GuntherHermann gunther;
     local Mutt starr;// arms smuggler's dog in Paris
+    local Hooker1 h;  //Mercedes
+    local LowerClassFemale lcf; //Tessa
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -51,7 +54,7 @@ function SetWatchFlags() {
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
         WatchFlag('M02BillyDone');
-        WatchFlag('MS_DL_Played');// this is the datalink played after dealing with the hostage situation, from Mission02.uc
+        WatchFlag('MS_DL_Played', true);// this is the datalink played after dealing with the hostage situation, from Mission02.uc
 
         foreach AllActors(class'ChildMale', child) {
             if(child.BindName == "Josh" || child.BindName == "Billy")
@@ -97,8 +100,10 @@ function SetWatchFlags() {
         break;
     case "02_NYC_STREET":
         WatchFlag('AlleyBumRescued');
+        Tag = GetKnicksTag();
+        break;
     case "04_NYC_STREET":
-        Tag = 'MadeBasket';
+        Tag = GetKnicksTag();
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
@@ -109,9 +114,18 @@ function SetWatchFlags() {
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
         WatchFlag('ClubMercedesConvo1_Done');
         WatchFlag('M07ChenSecondGive_Played');
+        foreach AllActors(class'Hooker1', h) {
+            if(h.BindName == "ClubMercedes")
+                h.bImportant = true;
+        }
+        foreach AllActors(class'LowerClassFemale', lcf) {
+            if(lcf.BindName == "ClubTessa")
+                lcf.bImportant = true;
+        }
+
         break;
     case "08_NYC_STREET":
-        Tag = 'MadeBasket';
+        Tag = GetKnicksTag();
         WatchFlag('StantonAmbushDefeated');
         break;
     case "08_NYC_SMUG":
@@ -165,6 +179,21 @@ function SetWatchFlags() {
     }
 }
 
+function name GetKnicksTag() {
+    local FlagTrigger ft;
+
+    foreach AllActors(class'FlagTrigger',ft) {
+        if (ft.Event=='MadeBasketM' || ft.Event=='MadeBasketF') {
+            if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+                return 'MadeBasketF';
+            } else {
+                return 'MadeBasketM';
+            }
+        }
+    }
+    return 'MadeBasket';
+}
+
 function CheckPaul() {
     if( dxr.flagbase.GetBool('PaulDenton_Dead') ) {
         if( ! dxr.flagbase.GetBool('DXREvents_PaulDead'))
@@ -174,8 +203,8 @@ function CheckPaul() {
     }
 }
 
-function WatchFlag(name flag) {
-    if( dxr.flagbase.GetBool(flag) ) {
+function WatchFlag(name flag, optional bool disallow_immediate) {
+    if( (!disallow_immediate) && dxr.flagbase.GetBool(flag) ) {
         SendFlagEvent(flag, true);
         return;
     }
@@ -234,8 +263,18 @@ simulated function AnyEntry()
 simulated function Timer()
 {
     local int i;
+
+    if( dxr == None || dxr.flagbase == None ) {
+        return;
+    }
+
     for(i=0; i<num_watchflags; i++) {
         if(watchflags[i] == '') break;
+
+        if( watchflags[i] == 'MS_DL_Played' && dxr.flagbase.GetBool('PlayerTraveling') ) {
+            continue;
+        }
+
         if( dxr.flagbase.GetBool(watchflags[i]) ) {
             SendFlagEvent(watchflags[i]);
             num_watchflags--;
@@ -248,12 +287,43 @@ simulated function Timer()
         class'DXRHints'.static.AddDeath(dxr, player());
         died = false;
     }
+
+    if (bingo_win_countdown>=0){
+        HandleBingoWinCountdown();
+    }
+}
+
+function PreTravel()
+{
+    Super.PreTravel();
+    SetTimer(0, false);
+}
+
+function HandleBingoWinCountdown()
+{
+    local int time;
+
+    //Blocked in HX for now (Blocked at the check, but here for safety as well)
+    if(#defined(hx)) return;
+
+    if (bingo_win_countdown > 0) {
+        //Show win message
+        class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds","");
+        if (bingo_win_countdown == 1) {
+            //Give it a second to send the tweet
+            time = class'DXRStats'.static.GetTotalTime(dxr);
+            BeatGame(dxr,4,time);
+        }
+        bingo_win_countdown--;
+    } else if (bingo_win_countdown == 0) {
+        //Go to bingo win ending
+        dxr.player.ConsoleCommand("OPEN 99_ENDGAME4");
+    }
 }
 
 function bool SpecialTriggerHandling(Actor Other, Pawn Instigator)
 {
     local MapExit m;
-
     if (tag == 'Boat_Exit'){
         dxr.flagbase.SetBool('DXREvents_LeftOnBoat', true,, 999);
 
@@ -268,9 +338,18 @@ function bool SpecialTriggerHandling(Actor Other, Pawn Instigator)
 
 function Trigger(Actor Other, Pawn Instigator)
 {
-     local string j;
+    local string j;
     local class<Json> js;
+    local name useTag;
+
     js = class'Json';
+
+    //Massage tag names
+    if (tag=='MadeBasketM' || tag=='MadeBasketF'){
+        useTag = 'MadeBasket';
+    } else {
+        useTag = tag;
+    }
 
     Super.Trigger(Other, Instigator);
     l("Trigger("$Other$", "$instigator$")");
@@ -278,13 +357,13 @@ function Trigger(Actor Other, Pawn Instigator)
     if (!SpecialTriggerHandling(Other,Instigator)){
         j = js.static.Start("Trigger");
         js.static.Add(j, "instigator", GetActorName(Instigator));
-        js.static.Add(j, "tag", tag);
+        js.static.Add(j, "tag", useTag);
         js.static.add(j, "other", GetActorName(other));
         GeneralEventData(dxr, j);
         js.static.End(j);
 
         class'DXRTelemetry'.static.SendEvent(dxr, Instigator, j);
-        _MarkBingo(tag);
+        _MarkBingo(useTag);
     }
 }
 
@@ -575,11 +654,18 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 
     data = class'PlayerDataItem'.static.GiveItem(player);
 
+    //Update the exported bingo info in case this was a reload
+    data.ExportBingoState();
+
     // don't overwrite existing bingo
     data.GetBingoSpot(0, 0, event, desc, progress, max);
-    if( event != "" ) return;
-    SetGlobalSeed("bingo");
-    _CreateBingoBoard(data);
+    if( event != "" ) {
+        //Make sure bingo didn't get completed just before leaving a level
+        CheckBingoWin(dxr,data.NumberOfBingos());
+    } else {
+        SetGlobalSeed("bingo");
+        _CreateBingoBoard(data);
+    }
 }
 
 simulated function CreateBingoBoard()
@@ -629,6 +715,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             data.SetBingoSpot(x, y, event, desc, 0, max);
         }
     }
+    data.ExportBingoState();
 }
 
 simulated function int HandleMutualExclusion(MutualExclusion m, int options[100], int num_options) {
@@ -648,6 +735,19 @@ simulated function int HandleMutualExclusion(MutualExclusion m, int options[100]
         return a;
     } else {
         return b;
+    }
+}
+
+function CheckBingoWin(DXRando dxr, int numBingos)
+{
+    //Block this in HX for now
+    if(#defined(hx)) return;
+
+    if (dxr.flags.settings.bingo_win > 0){
+        if (numBingos >= dxr.flags.settings.bingo_win){
+            info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
+            bingo_win_countdown = 5;
+        }
     }
 }
 
@@ -692,6 +792,8 @@ function _MarkBingo(coerce string eventname)
         js.static.End(j);
 
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
+
+        CheckBingoWin(dxr,nowbingos);
     } else {
         player().ClientMessage("Completed bingo goal: " $ data.GetBingoDescription(eventname));
     }
@@ -778,4 +880,6 @@ defaultproperties
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
     mutually_exclusive(2)=(e1="SmugglerDied",e2="M08WarnedSmuggler")
     mutually_exclusive(3)=(e1="SilhouetteHostagesAllRescued",e2="paris_hostage_Dead")
+
+    bingo_win_countdown=-1
 }

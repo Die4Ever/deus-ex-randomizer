@@ -650,8 +650,9 @@ function vector GetDefaultZoneGravity(ZoneInfo z)
 {
     local int i;
     for(i=0; i<ArrayCount(zone_gravities); i++) {
-        if( z.name == zone_gravities[i].zonename )
+        if( z.name == zone_gravities[i].zonename ) {
             return zone_gravities[i].gravity;
+        }
         if( zone_gravities[i].zonename == '' )
             break;
     }
@@ -663,8 +664,9 @@ function SaveDefaultZoneGravity(ZoneInfo z)
     local int i;
     if( z.ZoneGravity.X ~= NormalGravity.X && z.ZoneGravity.Y ~= NormalGravity.Y && z.ZoneGravity.Z ~= NormalGravity.Z ) return;
     for(i=0; i<ArrayCount(zone_gravities); i++) {
-        if( z.name == zone_gravities[i].zonename )
+        if( z.name == zone_gravities[i].zonename ) {
             return;
+        }
         if( zone_gravities[i].zonename == '' ) {
             zone_gravities[i].zonename = z.name;
             zone_gravities[i].gravity = z.ZoneGravity;
@@ -1109,8 +1111,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (player().Health == 100) {
                 return TempFail;
             }
-            player().HealPlayer(Int(param[0]),False);
-            PlayerMessage(viewer@"gave you "$param[0]$" health!");
+            i =  Int(param[0]) * 10;
+            player().HealPlayer(i,False);
+            PlayerMessage(viewer@"gave you "$i$" health!");
             break;
 
         case "set_fire":
@@ -1213,12 +1216,12 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             //PlayerMessage("Recharged 10 points");
             player().PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
-
-            player().Energy += Int(param[0]);
+            i = Int(param[0])*10;
+            player().Energy += i;
             if (player().Energy > player().EnergyMax)
                 player().Energy = player().EnergyMax;
 
-            PlayerMessage(viewer@"gave you "$param[0]$" energy!");
+            PlayerMessage(viewer@"gave you "$i$" energy!");
             break;
 
         case "give_skillpoints":
@@ -1382,7 +1385,7 @@ function int doCrowdControlEventWithPrefix(string code, string param[5], string 
 
 defaultproperties
 {
-    NormalGravity=vect(0,0,-950)
-    FloatGrav=vect(0,0,0.15)
-    MoonGrav=vect(0,0,-300)
+    NormalGravity=(X=0,Y=0,Z=-950)
+    FloatGrav=(X=0,Y=0,Z=0.15)
+    MoonGrav=(X=0,Y=0,Z=-300)
 }
