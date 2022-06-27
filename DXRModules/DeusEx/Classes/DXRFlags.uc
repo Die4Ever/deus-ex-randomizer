@@ -1499,6 +1499,7 @@ function ExtendedTests()
     credits_text = StringifyFlags(Credits);
     test( InStr(credits_text, "(ADD HUMAN READABLE NAME!)") == -1, "Credits does not contain (ADD HUMAN READABLE NAME!)");
     test( InStr(credits_text, "(Unhandled!)") == -1, "Credits does not contain (Unhandled!)");
+    test( InStr(credits_text, "(Mishandled!)") == -1, "Credits does not contain (Mishandled!)");
 }
 
 function TestTime()

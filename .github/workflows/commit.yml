@@ -2,21 +2,9 @@ name: commit
 on: [push]
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - name: Check out repository code
       uses: actions/checkout@v2
-    - name: Install Python Deps
-      run: pip3 install tk pyinstaller
     - name: Python check
       run: python -m compileall -q .
-    - name: Build bingo watcher
-      run: pyinstaller BingoDisplay.py --onefile --noconsole
-    - name: dir dist
-      run: dir dist
-
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: "deus-ex-randomizer"
-        path: dist/BingoDisplay.exe
