@@ -923,7 +923,6 @@ simulated function string flagValToHumanVal(name flagname, int val){
             break;
 
         case 'Rando_keys':
-        case 'Rando_infodevices':
             if (val==4){
                 return "Randomized";
             } else if (val==0){
@@ -975,6 +974,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_passwordsrandomized':
         case 'Rando_startinglocations':
         case 'Rando_goals':
+        case 'Rando_infodevices':
             if (val==0){
                 return "Unchanged";
             } else if (val==100){
@@ -1064,6 +1064,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         default:
             return val $ " (Unhandled!)";
     }
+    return val $ " (Mishandled!)";
 }
 
 // returns true is read was successful
