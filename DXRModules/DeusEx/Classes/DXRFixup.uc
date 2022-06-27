@@ -271,9 +271,15 @@ function PostFirstEntryMapFixes()
 #endif
 
     case "04_NYC_NSFHQ":
+        // no cheating!
         foreach AllActors(class'DeusExMover', m, 'SignalComputerDoorOpen') {
             m.bBreakable = false;
             m.bPickable = false;
+        }
+        // these crates can make the basement nearly impossible to get through
+        foreach AllActors(class'CrateUnbreakableLarge', c) {
+            if(c.Location.Z > -28.799877) continue;
+            c.Destroy();
         }
         break;
     case "05_NYC_UNATCOMJ12LAB":
@@ -917,6 +923,7 @@ function NYC_04_FirstEntry()
     local FlagTrigger ft;
     local OrdersTrigger ot;
     local SkillAwardTrigger st;
+    local BoxSmall b;
 
     switch (dxr.localURL)
     {
@@ -943,6 +950,12 @@ function NYC_04_FirstEntry()
         }
         break;
 #endif
+
+    case "04_NYC_NSFHQ":
+        foreach RadiusActors(class'BoxSmall', b, 100, vect(-640.699402, 66.666039, -209.364014)) {
+            b.Destroy();
+        }
+        break;
     }
 }
 

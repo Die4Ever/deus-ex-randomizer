@@ -64,8 +64,8 @@ function BindControls(optional string action)
 #endif
 
     NewMenuItem("Crowd Control", "Let your Twitch viewers troll you or help you!");
-    EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol);
-    EnumOption("Enabled (With Names)", 1, f.crowdcontrol);
+    //EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol);
+    EnumOption("Enabled", 1, f.crowdcontrol);
     EnumOption("Offline Simulated", 3, f.crowdcontrol);
     EnumOption("Disabled", 0, f.crowdcontrol);
 

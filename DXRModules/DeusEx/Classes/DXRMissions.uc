@@ -92,6 +92,7 @@ function CheckConfig()
 
 function vanilla_remove_actors()
 {
+    // TODO: actor names aren't stable
     local int i;
     remove_actors[i].map_name = "01_NYC_unatcoisland";
     remove_actors[i].actor_name = 'OrdersTrigger2';//the order that makes Paul run to you
