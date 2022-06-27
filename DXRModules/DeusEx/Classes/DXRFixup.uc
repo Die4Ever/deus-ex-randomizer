@@ -30,7 +30,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(1,7,5,5) ) {
+    if( ConfigOlderThan(2,0,1,5) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -83,6 +83,10 @@ function CheckConfig()
         add_datacubes[i].text = "Access code to the Versalife nanotech research wing: 55655.";
         i++;
 
+        add_datacubes[i].map = "09_NYC_Dockyard";
+        add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
+        i++;
+
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
         add_datacubes[i].text = "My code is 6786";
         i++;
@@ -97,10 +101,6 @@ function CheckConfig()
 
         add_datacubes[i].map = "15_AREA51_PAGE";
         add_datacubes[i].text = "UC Control Rooms code: 1234";
-        i++;
-
-        add_datacubes[i].map = "15_AREA51_PAGE";
-        add_datacubes[i].text = "Coolant Room code: 9248";
         i++;
 
         add_datacubes[i].map = "15_AREA51_PAGE";
@@ -499,7 +499,10 @@ function SpawnDatacubes()
         dc = Spawn(class'DXRInformationDevices',,, loc, rot(0,0,0));
 #endif
 
-        if( dc != None ) dc.plaintext = add_datacubes[i].text;
+        if( dc != None ){
+             dc.plaintext = add_datacubes[i].text;
+             l("add_datacubes spawned "$dc @ dc.plaintext @ loc);
+        }
         else warning("failed to spawn datacube at "$loc$", text: "$add_datacubes[i].text);
     }
 }
@@ -1426,6 +1429,7 @@ function Area51_FirstEntry()
 {
     local DeusExMover d;
     local ComputerSecurity c;
+    local Keypad k;
 
 #ifdef vanilla
     switch(dxr.localURL)
@@ -1469,6 +1473,10 @@ function Area51_FirstEntry()
             if( c.UserList[0].userName != "graytest" || c.UserList[0].Password != "Lab12" ) continue;
             c.UserList[0].userName = "Lab 12";
             c.UserList[0].Password = "graytest";
+        }
+        foreach AllActors(class'Keypad', k) {
+            if( k.validCode == "9248" )
+                k.validCode = "2242";
         }
         break;
     }
