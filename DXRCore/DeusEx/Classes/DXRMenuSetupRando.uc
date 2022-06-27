@@ -245,7 +245,8 @@ function BindControls(optional string action)
 
     NewMenuItem("JC's Prison Pocket", "Keep all your items when getting captured.");
     EnumOption("Disabled", 0, f.settings.prison_pocket);
-    EnumOption("Enabled", 100, f.settings.prison_pocket);// maybe the number could be set to the number of items to keep?
+    //EnumOption("Unaugmented", 1, f.settings.prison_pocket);// TODO
+    EnumOption("Augmented", 100, f.settings.prison_pocket);// maybe the number could be set to the number of items to keep?
 
     NewGroup("Augmentations");
     NewMenuItem("Speed Aug Level", "Start the game with the Speed Enhancement augmentation.");

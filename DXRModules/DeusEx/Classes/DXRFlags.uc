@@ -917,7 +917,9 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_prison_pocket':
             if (val==0){
                 return "Disabled";
-            } else if (val==100) {
+            } else if (val==1) {
+                return "Unaugmented";
+            } else if (val>1) {
                 return "Augmented";
             }
             break;
