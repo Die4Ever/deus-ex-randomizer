@@ -166,7 +166,7 @@ function SetWatchFlags() {
         WatchFlag('M06PaidJunkie');
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
-        Tag = 'PoliceVault';
+        Tag = 'PoliceVaultBingo';
 
         foreach AllActors(class'DeusExMover',dxm,'station_door_05'){
             break;
@@ -182,7 +182,7 @@ function SetWatchFlags() {
                     }
                 }
             }
-            closestSkillAward.Event='PoliceVault';
+            closestSkillAward.Event='PoliceVaultBingo';
         }
         break;
     case "08_NYC_STREET":
@@ -981,7 +981,7 @@ defaultproperties
     bingo_options(69)=(event="KnowsGuntherKillphrase",desc="Learn Gunther's Killphrase",max=1)
     bingo_options(70)=(event="KnowsAnnasKillphrase",desc="Learn both parts of Anna's Killphrase",max=2)
     bingo_options(71)=(event="Area51FanShaft",desc="Jump!  You can make it!",max=1)
-    bingo_options(72)=(event="PoliceVault",desc="Visit the Hong Kong police vault",max=1)
+    bingo_options(72)=(event="PoliceVaultBingo",desc="Visit the Hong Kong police vault",max=1)
     bingo_options(73)=(event="SunkenShip",desc="Enter the sunken ship at Liberty Island",max=1)
 
 
