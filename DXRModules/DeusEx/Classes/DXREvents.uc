@@ -43,6 +43,7 @@ function SetWatchFlags() {
     local LowerClassFemale lcf; //Tessa
     local JunkieMale jm;
     local ScientistMale sm;
+    local ZoneInfo zone;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -223,6 +224,12 @@ function SetWatchFlags() {
         break;
     case "15_AREA51_BUNKER":
         WatchFlag('JockBlewUp');
+        Tag = 'Area51FanShaft';
+        foreach AllActors(class'ZoneInfo', zone) {
+            if (zone.Tag=='fan'){
+                zone.ZonePlayerEvent = 'Area51FanShaft';
+            }
+        }
         break;
     }
 }
@@ -945,6 +952,7 @@ defaultproperties
     bingo_options(68)=(event="MeetDrBernard_Played",desc="Find the man locked in the bathroom",max=1)
     bingo_options(69)=(event="KnowsGuntherKillphrase",desc="Learn Gunther's Killphrase",max=1)
     bingo_options(70)=(event="KnowsAnnasKillphrase",desc="Learn both parts of Anna's Killphrase",max=2)
+    bingo_options(70)=(event="Area51FanShaft",desc="Jump!  You can make it!",max=1)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
