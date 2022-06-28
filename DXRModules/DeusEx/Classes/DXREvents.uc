@@ -44,10 +44,11 @@ function SetWatchFlags() {
     local JunkieMale jm;
     local ScientistMale sm;
     local ZoneInfo zone;
-    local SkillAwardTrigger skillAward,closestSkillAward;
+    local SkillAwardTrigger skillAward;
     local DeusExMover dxm;
     local LogicTrigger lTrigger;
     local WaterZone water;
+    local Toilet closestToilet;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -166,6 +167,22 @@ function SetWatchFlags() {
         break;
     case "06_HONGKONG_WANCHAI_STREET":
         WatchFlag('M06PaidJunkie');
+
+        //Find Jock's apartment door
+        foreach AllActors(class'DeusExMover',dxm){
+            if (dxm.KeyIDNeeded=='JocksKey'){
+                break;
+            }
+        }
+
+        //Find the nearest toilet
+        closestToilet = Toilet(findNearestToActor(class'Toilet',dxm));
+
+        Tag = 'JocksToilet';
+        closestToilet.Event='JocksToilet';
+
+
+
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
         Tag = 'PoliceVaultBingo';
@@ -174,18 +191,9 @@ function SetWatchFlags() {
             break;
         }
 
-        foreach AllActors(class'SkillAwardTrigger',skillAward) {
-            if(skillAward.awardMessage=="Area Location Bonus" && skillAward.skillPointsAdded==40){
-                if (closestSkillAward==None){
-                    closestSkillAward = skillAward;
-                } else {
-                    if ((VSize(dxm.Location-skillAward.Location)) < (VSize(dxm.Location-closestSkillAward.Location))){
-                        closestSkillAward = skillAward;
-                    }
-                }
-            }
-            closestSkillAward.Event='PoliceVaultBingo';
-        }
+        skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
+        skillAward.Event='PoliceVaultBingo';
+
         break;
     case "06_HONGKONG_TONGBASE":
         Tag = 'TongsHotTub';
@@ -282,6 +290,21 @@ function SetWatchFlags() {
         }
         break;
     }
+}
+
+function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis){
+    local Actor thing,nearestThing;
+
+    foreach AllActors(nearestClass,thing) {
+        if (nearestThing==None){
+            nearestThing = thing;
+        } else {
+            if ((VSize(nearThis.Location-thing.Location)) < (VSize(nearThis.Location-nearestThing.Location))){
+                nearestThing = thing;
+            }
+        }
+    }
+    return nearestThing;
 }
 
 function name GetKnicksTag() {
@@ -1008,6 +1031,7 @@ defaultproperties
     bingo_options(74)=(event="SpinShipsWheel",desc="Spin 3 ships wheels",max=3)
     bingo_options(75)=(event="ActivateVandenbergBots",desc="Activate both of the bots at Vandenberg",max=2)
     bingo_options(76)=(event="TongsHotTub",desc="Take a dip in Tracer Tong's hot tub",max=1)
+    bingo_options(77)=(event="JocksToilet",desc="Use Jock's toilet",max=1)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
