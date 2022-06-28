@@ -78,6 +78,9 @@ function SetWatchFlags() {
     case "02_NYC_FREECLINIC":
         WatchFlag('BoughtClinicPlan');
         break;
+    case "02_NYC_SMUG":
+        WatchFlag('MetSmuggler');
+        break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
         break;
@@ -108,6 +111,9 @@ function SetWatchFlags() {
     case "04_NYC_BATTERYPARK":
         Tag = 'MadeItToBP';
         break;
+    case "04_NYC_SMUG":
+        WatchFlag('MetSmuggler');
+        break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
         break;
@@ -133,6 +139,7 @@ function SetWatchFlags() {
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
+        WatchFlag('MetSmuggler');
         break;
     case "09_NYC_SHIP":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
@@ -879,6 +886,8 @@ defaultproperties
     bingo_options(58)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1)
     bingo_options(59)=(event="JosephManderley_Dead",desc="Kill Joseph Manderley",max=1)
     bingo_options(60)=(event="MadeItToBP",desc="Escape to Battery Park",max=1)
+    bingo_options(61)=(event="MetSmuggler",desc="Meet Smuggler",max=1)
+
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
