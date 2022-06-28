@@ -44,11 +44,19 @@ function SetWatchFlags() {
     local JunkieMale jm;
     local ScientistMale sm;
     local ZoneInfo zone;
+    local SkillAwardTrigger skillAward,closestSkillAward;
+    local DeusExMover dxm;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
         WatchFlag('GuntherFreed');
         WatchFlag('GuntherRespectsPlayer');
+        Tag = 'SunkenShip';
+        foreach AllActors(class'SkillAwardTrigger',skillAward) {
+            if(skillAward.awardMessage=="Exploration Bonus" && skillAward.skillPointsAdded==50 && skillAward.Region.Zone.bWaterZone){
+                skillAward.Event='SunkenShip';
+            }
+        }
         break;
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
@@ -156,6 +164,26 @@ function SetWatchFlags() {
         break;
     case "06_HONGKONG_WANCHAI_STREET":
         WatchFlag('M06PaidJunkie');
+        break;
+    case "06_HONGKONG_WANCHAI_MARKET":
+        Tag = 'PoliceVault';
+
+        foreach AllActors(class'DeusExMover',dxm,'station_door_05'){
+            break;
+        }
+
+        foreach AllActors(class'SkillAwardTrigger',skillAward) {
+            if(skillAward.awardMessage=="Area Location Bonus" && skillAward.skillPointsAdded==40){
+                if (closestSkillAward==None){
+                    closestSkillAward = skillAward;
+                } else {
+                    if ((VSize(dxm.Location-skillAward.Location)) < (VSize(dxm.Location-closestSkillAward.Location))){
+                        closestSkillAward = skillAward;
+                    }
+                }
+            }
+            closestSkillAward.Event='PoliceVault';
+        }
         break;
     case "08_NYC_STREET":
         Tag = GetKnicksTag();
@@ -952,7 +980,9 @@ defaultproperties
     bingo_options(68)=(event="MeetDrBernard_Played",desc="Find the man locked in the bathroom",max=1)
     bingo_options(69)=(event="KnowsGuntherKillphrase",desc="Learn Gunther's Killphrase",max=1)
     bingo_options(70)=(event="KnowsAnnasKillphrase",desc="Learn both parts of Anna's Killphrase",max=2)
-    bingo_options(70)=(event="Area51FanShaft",desc="Jump!  You can make it!",max=1)
+    bingo_options(71)=(event="Area51FanShaft",desc="Jump!  You can make it!",max=1)
+    bingo_options(72)=(event="PoliceVault",desc="Visit the Hong Kong police vault",max=1)
+    bingo_options(73)=(event="SunkenShip",desc="Enter the sunken ship at Liberty Island",max=1)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
