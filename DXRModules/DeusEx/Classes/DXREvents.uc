@@ -983,6 +983,7 @@ defaultproperties
     bingo_options(71)=(event="Area51FanShaft",desc="Jump!  You can make it!",max=1)
     bingo_options(72)=(event="PoliceVaultBingo",desc="Visit the Hong Kong police vault",max=1)
     bingo_options(73)=(event="SunkenShip",desc="Enter the sunken ship at Liberty Island",max=1)
+    bingo_options(74)=(event="SpinShipsWheel",desc="Spin 3 ships wheels",max=3)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")

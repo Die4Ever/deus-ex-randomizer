@@ -28,6 +28,9 @@ function ReplaceActors()
         if( #var(prefix)ShowerFaucet(a) != None ) {
             ReplaceShowerFaucet(#var(prefix)ShowerFaucet(a));
         }
+        if( #var(prefix)ShipsWheel(a) != None ) {
+            ReplaceShipsWheel(#var(prefix)ShipsWheel(a));
+        }
 #ifdef gmdx
         if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -87,6 +90,21 @@ function ReplaceAllianceTrigger(#var(prefix)AllianceTrigger a)
     }
 
     ReplaceTrigger(a, n);
+    a.Destroy();
+}
+
+function ReplaceShipsWheel(#var(prefix)ShipsWheel a)
+{
+    local DXRShipsWheel n;
+    n = DXRShipsWheel(SpawnReplacement(a, class'DXRShipsWheel'));
+    if(n == None)
+        return;
+
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
     a.Destroy();
 }
 
