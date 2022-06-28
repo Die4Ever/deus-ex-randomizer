@@ -46,6 +46,8 @@ function SetWatchFlags() {
     local ZoneInfo zone;
     local SkillAwardTrigger skillAward,closestSkillAward;
     local DeusExMover dxm;
+    local MilitaryBot mb;
+    local LogicTrigger lTrigger;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -240,6 +242,23 @@ function SetWatchFlags() {
                 sm.bImportant = true;
             }
         }
+
+        //Using a blank LogicTrigger so that we can ensure it only sends one event from each button
+        foreach AllActors(class'MilitaryBot',mb){
+            if (mb.Tag=='S_bot1'){
+                lTrigger = Spawn(class'LogicTrigger',,,mb.Location);
+                lTrigger.OneShot=True;
+                lTrigger.Tag='bunker_door1';
+                lTrigger.Event='ActivateVandenbergBots';
+            } else if (mb.Tag=='S_bot2'){
+                lTrigger = Spawn(class'LogicTrigger',,,mb.Location);
+                lTrigger.OneShot=True;
+                lTrigger.Tag='bunker_door2';
+                lTrigger.Event='ActivateVandenbergBots';
+            }
+        }
+        Tag = 'ActivateVandenbergBots';
+
     case "14_OCEANLAB_SILO":
         WatchFlag('MeetDrBernard_Played');
         foreach AllActors(class'ScientistMale', sm) {
@@ -984,6 +1003,7 @@ defaultproperties
     bingo_options(72)=(event="PoliceVaultBingo",desc="Visit the Hong Kong police vault",max=1)
     bingo_options(73)=(event="SunkenShip",desc="Enter the sunken ship at Liberty Island",max=1)
     bingo_options(74)=(event="SpinShipsWheel",desc="Spin 3 ships wheels",max=3)
+    bingo_options(75)=(event="ActivateVandenbergBots",desc="Activate both of the bots at Vandenberg",max=2)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
