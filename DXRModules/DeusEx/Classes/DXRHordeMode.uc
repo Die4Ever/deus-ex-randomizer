@@ -585,9 +585,7 @@ function GenerateItem()
     for(i=0; i < ArrayCount(items); i++) {
         if( chance(items[i].chance, r) ) c = GetClassFromString(items[i].type, class'Actor');
     }
-    foreach AllActors(class'Actor', a) {
-        if( a.class != c ) continue;
-
+    foreach AllActors(c, a) {
         num++;
         if( num > items_per_wave/2 ) {
             loc = GetRandomItemPosition();

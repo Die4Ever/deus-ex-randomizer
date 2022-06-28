@@ -50,10 +50,12 @@ function SwapAll(name classname, float percent_chance)
     local Actor temp[4096];
     local Actor a, b;
     local int num, i, slot;
+    local class<Actor> c;
 
     SetSeed( "SwapAll " $ classname );
     num=0;
-    foreach AllActors(class'Actor', a )
+    c = GetClassFromString(string(classname), class'Actor');
+    foreach AllActors(c, a)
     {
         if( SkipActor(a, classname) ) continue;
         temp[num++] = a;
