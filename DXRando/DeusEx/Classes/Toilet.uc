@@ -4,6 +4,8 @@ class Toilet injects Toilet;
 class DXRToilet extends #var(prefix)Toilet;
 #endif
 
+var bool bAlreadyUsed;
+
 function Frob(actor Frobber, Inventory frobWith)
 {
 	local #var(PlayerPawn) player;
@@ -26,6 +28,14 @@ function Frob(actor Frobber, Inventory frobWith)
             break;
         }
 	}
+    if (player!=None){
+        if (!bAlreadyUsed){
+            bAlreadyUsed = true;
+            foreach AllActors(class'DXRando', dxr) {
+                class'DXREvents'.static.MarkBingo(dxr,"FlushToilet");
+            }
+        }
+    }
 }
 
 defaultproperties

@@ -42,6 +42,7 @@ function SetWatchFlags() {
     local Hooker1 h;  //Mercedes
     local LowerClassFemale lcf; //Tessa
     local JunkieMale jm;
+    local ScientistMale sm;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -131,6 +132,10 @@ function SetWatchFlags() {
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
         break;
+    case "05_NYC_UNATCOHQ":
+        WatchFlag('KnowsAnnasKillphrase1');
+        WatchFlag('KnowsAnnasKillphrase2');
+        break;
     case "06_HONGKONG_WANCHAI_CANAL":
         WatchFlag('FoundScientistBody');
         WatchFlag('M06BoughtVersaLife');
@@ -181,6 +186,7 @@ function SetWatchFlags() {
         WatchFlag('M10EnteredBakery');
         WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
+        WatchFlag('KnowsGuntherKillphrase');
 
         foreach AllActors(class'GuntherHermann', gunther) {
             gunther.bInvincible = false;
@@ -198,6 +204,20 @@ function SetWatchFlags() {
         WatchFlag('MeetAI4_Played');
         WatchFlag('DeBeersDead');
         break;
+    case "12_VANDENBERG_CMD":
+        WatchFlag('MeetTimBaker_Played');
+        foreach AllActors(class'ScientistMale', sm) {
+            if (sm.BindName=="TimBaker"){
+                sm.bImportant = true;
+            }
+        }
+    case "14_OCEANLAB_SILO":
+        WatchFlag('MeetDrBernard_Played');
+        foreach AllActors(class'ScientistMale', sm) {
+            if (sm.BindName=="drbernard"){
+                sm.bImportant = true;
+            }
+        }
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
         break;
@@ -803,6 +823,10 @@ function _MarkBingo(coerce string eventname)
         case "hostage_Dead":
             eventname = "paris_hostage_Dead";
             break;
+        case "KnowsAnnasKillphrase1":
+        case "KnowsAnnasKillphrase2":
+            eventname = "KnowsAnnasKillphrase";
+            break;
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
@@ -915,6 +939,12 @@ defaultproperties
     bingo_options(62)=(event="SickMan_Dead",desc="Kill the sick man who wants to die",max=1)
     bingo_options(63)=(event="M06PaidJunkie",desc="Help the junkie on Tonnochi Road",max=1)
     bingo_options(64)=(event="M06BoughtVersaLife",desc="Get maps of the VersaLife building",max=1)
+    bingo_options(65)=(event="FlushToilet",desc="Use 30 toilets",max=30)
+    bingo_options(66)=(event="FlushUrinal",desc="Use 20 urinals",max=20)
+    bingo_options(67)=(event="MeetTimBaker_Played",desc="Free Tim from the Vandenberg storage room",max=1)
+    bingo_options(68)=(event="MeetDrBernard_Played",desc="Find the man locked in the bathroom",max=1)
+    bingo_options(69)=(event="KnowsGuntherKillphrase",desc="Learn Gunther's Killphrase",max=1)
+    bingo_options(70)=(event="KnowsAnnasKillphrase",desc="Learn both parts of Anna's Killphrase",max=2)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
