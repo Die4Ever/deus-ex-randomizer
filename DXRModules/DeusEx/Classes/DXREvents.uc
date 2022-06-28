@@ -41,6 +41,7 @@ function SetWatchFlags() {
     local Mutt starr;// arms smuggler's dog in Paris
     local Hooker1 h;  //Mercedes
     local LowerClassFemale lcf; //Tessa
+    local JunkieMale jm;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -59,6 +60,12 @@ function SetWatchFlags() {
         foreach AllActors(class'ChildMale', child) {
             if(child.BindName == "Josh" || child.BindName == "Billy")
                 child.bImportant = true;
+        }
+
+        foreach AllActors(class'JunkieMale',jm) {
+            if(jm.BindName == "SickMan"){
+                jm.bImportant = true;
+            }
         }
 
         foreach AllActors(class'MapExit',m,'Boat_Exit'){
@@ -80,6 +87,13 @@ function SetWatchFlags() {
         break;
     case "02_NYC_SMUG":
         WatchFlag('MetSmuggler');
+        break;
+    case "03_NYC_BATTERYPARK":
+        foreach AllActors(class'JunkieMale',jm) {
+            if(jm.BindName == "SickMan"){
+                jm.bImportant = true;
+            }
+        }
         break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
@@ -112,13 +126,14 @@ function SetWatchFlags() {
         Tag = 'MadeItToBP';
         break;
     case "04_NYC_SMUG":
-        WatchFlag('MetSmuggler');
+        RewatchFlag('MetSmuggler');
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
         break;
     case "06_HONGKONG_WANCHAI_CANAL":
         WatchFlag('FoundScientistBody');
+        WatchFlag('M06BoughtVersaLife');
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
         WatchFlag('ClubMercedesConvo1_Done');
@@ -133,13 +148,16 @@ function SetWatchFlags() {
         }
 
         break;
+    case "06_HONGKONG_WANCHAI_STREET":
+        WatchFlag('M06PaidJunkie');
+        break;
     case "08_NYC_STREET":
         Tag = GetKnicksTag();
         WatchFlag('StantonAmbushDefeated');
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
-        WatchFlag('MetSmuggler');
+        RewatchFlag('MetSmuggler');
         break;
     case "09_NYC_SHIP":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
@@ -221,6 +239,13 @@ function WatchFlag(name flag, optional bool disallow_immediate) {
     watchflags[num_watchflags++] = flag;
     if(num_watchflags > ArrayCount(watchflags))
         err("WatchFlag num_watchflags > ArrayCount(watchflags)");
+}
+
+//Only actually add the flag to the list if it isn't already set
+function RewatchFlag(name flag, optional bool disallow_immediate){
+    if (!dxr.flagbase.GetBool(flag)){
+        WatchFlag(flag,disallow_immediate);
+    }
 }
 
 function ReportMissingFlag(name flag, string eventname) {
@@ -887,6 +912,9 @@ defaultproperties
     bingo_options(59)=(event="JosephManderley_Dead",desc="Kill Joseph Manderley",max=1)
     bingo_options(60)=(event="MadeItToBP",desc="Escape to Battery Park",max=1)
     bingo_options(61)=(event="MetSmuggler",desc="Meet Smuggler",max=1)
+    bingo_options(62)=(event="SickMan_Dead",desc="Kill the sick man who wants to die",max=1)
+    bingo_options(63)=(event="M06PaidJunkie",desc="Help the junkie on Tonnochi Road",max=1)
+    bingo_options(64)=(event="M06BoughtVersaLife",desc="Get maps of the VersaLife building",max=1)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
