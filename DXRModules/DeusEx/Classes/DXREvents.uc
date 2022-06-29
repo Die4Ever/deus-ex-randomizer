@@ -1040,6 +1040,11 @@ defaultproperties
     bingo_options(77)=(event="JocksToilet",desc="Use Jock's toilet",max=1)
     bingo_options(78)=(event="Greasel_ClassDead",desc="Kill 5 Greasels",max=5)
     bingo_options(79)=(event="support1",desc="Blow up a gas station",max=1)
+    bingo_options(80)=(event="UNATCOTroop_ClassDead",desc="Kill 15 UNATCO Troopers",max=15)
+    bingo_options(81)=(event="Terrorist_ClassDead",desc="Kill 15 NSF Terrorists",max=15)
+    bingo_options(82)=(event="MJ12Troop_ClassDead",desc="Kill 25 MJ12 Troopers",max=25)
+    bingo_options(83)=(event="MJ12Commando_ClassDead",desc="Kill 10 MJ12 Commandos",max=10)
+    bingo_options(84)=(event="Karkian_ClassDead",desc="Kill 5 Karkians",max=5)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
