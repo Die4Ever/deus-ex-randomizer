@@ -162,6 +162,7 @@ function SetWatchFlags() {
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
         WatchFlag('ClubMercedesConvo1_Done');
         WatchFlag('M07ChenSecondGive_Played');
+        WatchFlag('LDDPRussPaid');
         foreach AllActors(class'Hooker1', h) {
             if(h.BindName == "ClubMercedes")
                 h.bImportant = true;
@@ -850,6 +851,28 @@ simulated function CreateBingoBoard()
     _CreateBingoBoard(data);
 }
 
+//If there are any situational changes (Eg. Male/Female), adjust the description here
+simulated function string tweakBingoDescription(string event, string desc)
+{
+    local DXRando dxr;
+
+    foreach AllActors(class'DXRando', dxr) {break;}
+
+    switch(event){
+        case "ClubEntryPaid":
+           if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+               return "Let Russ help";
+           } else {
+               return desc;
+           }
+
+            break;
+        default:
+            return desc;
+            break;
+    }
+}
+
 simulated function _CreateBingoBoard(PlayerDataItem data)
 {
     local int x, y;
@@ -883,6 +906,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             slot = rng(num_options);
             event = bingo_options[options[slot]].event;
             desc = bingo_options[options[slot]].desc;
+            desc = tweakBingoDescription(event,desc);
             max = bingo_options[options[slot]].max;
             num_options--;
             options[slot] = options[num_options];
@@ -952,6 +976,10 @@ function _MarkBingo(coerce string eventname)
             break;
         case "SpiderBot2_ClassDead":
             eventname="SpiderBot_ClassDead";
+            break;
+        case "LDDPRussPaid":
+        case "ClubMercedesConvo1_Done":
+            eventname="ClubEntryPaid";
             break;
     }
 
@@ -1038,7 +1066,7 @@ defaultproperties
     bingo_options(33)=(event="DXREvents_LeftOnBoat",desc="Take the boat out of Battery Park",max=1)
     bingo_options(34)=(event="AlleyBumRescued",desc="Rescue the alley bum",max=1)
     bingo_options(35)=(event="FoundScientistBody",desc="Search the canal",max=1)
-    bingo_options(36)=(event="ClubMercedesConvo1_Done",desc="Help Mercedes and Tessa",max=1)
+    bingo_options(36)=(event="ClubEntryPaid",desc="Help Mercedes and Tessa",max=1)
     bingo_options(37)=(event="M08WarnedSmuggler",desc="Warn Smuggler",max=1)
     bingo_options(38)=(event="ShipPowerCut",desc="Help the electrician",max=1)
     bingo_options(39)=(event="CamilleConvosDone",desc="Get info from Camille",max=1)
