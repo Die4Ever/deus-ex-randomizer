@@ -939,6 +939,7 @@ function _MarkBingo(coerce string eventname)
             break;
         case "SpiderBot2_ClassDead":
             eventname="SpiderBot_ClassDead";
+            break;
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
