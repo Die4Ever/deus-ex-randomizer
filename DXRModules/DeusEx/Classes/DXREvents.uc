@@ -208,6 +208,9 @@ function SetWatchFlags() {
             water.ZonePlayerEvent = 'TongsHotTub';
         }
         break;
+    case "06_HONGKONG_HELIBASE":
+        Tag = 'purge';
+        break;
     case "08_NYC_STREET":
         Tag = GetKnicksTag();
         WatchFlag('StantonAmbushDefeated');
@@ -1094,6 +1097,7 @@ defaultproperties
     bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out 15 NSF Terrorists",max=15)
     bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out 25 MJ12 Troopers",max=25)
     bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out 2 MJ12 Commandos",max=2)
+    bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
