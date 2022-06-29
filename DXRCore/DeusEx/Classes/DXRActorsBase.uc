@@ -45,7 +45,7 @@ function CheckConfig()
     }
 }
 
-function SwapAll(name classname, float percent_chance)
+function SwapAll(string classname, float percent_chance)
 {
     local Actor temp[4096];
     local Actor a, b;
@@ -54,10 +54,10 @@ function SwapAll(name classname, float percent_chance)
 
     SetSeed( "SwapAll " $ classname );
     num=0;
-    c = GetClassFromString(string(classname), class'Actor');
+    c = GetClassFromString(classname, class'Actor');
     foreach AllActors(c, a)
     {
-        if( SkipActor(a, classname) ) continue;
+        if( SkipActor(a) ) continue;
         temp[num++] = a;
     }
 
@@ -317,10 +317,10 @@ function bool SkipActorBase(Actor a)
     return false;
 }
 
-function bool SkipActor(Actor a, name classname)
+function bool SkipActor(Actor a)
 {
     local int i;
-    if( SkipActorBase(a) || ( ! a.IsA(classname) ) ) {
+    if( SkipActorBase(a) ) {
         return true;
     }
     for(i=0; i < ArrayCount(_skipactor_types); i++) {

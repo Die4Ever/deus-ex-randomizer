@@ -189,7 +189,7 @@ function RandomizeCutscene()
 #ifdef revision
     _skipactor_types[i++] = class<Actor>(DynamicLoadObject("RevisionDeco.Rev_SphereLight", class'class'));
 #endif
-    SwapAll('Actor', 100);
+    SwapAll("Engine.Actor", 100);
 
     for(i=0; i<ArrayCount(_skipactor_types); i++) {
         _skipactor_types[i] = old_skips[i];
