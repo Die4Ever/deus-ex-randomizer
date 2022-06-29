@@ -1,21 +1,28 @@
-#ifdef injections
-class WaterCooler injects WaterCooler;
-#else
-class DXRWaterCooler extends #var(prefix)WaterCooler;
-#endif
+class DXRWaterCooler injects #var(prefix)WaterCooler;
 
 var float firstUse;
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
-    local bool oldUsing;
+    local bool oldUsing, newUsing;
     local int oldNumUses;
     local DXRando dxr;
+
+#ifdef hx
+    oldUsing = BubbleTime > 0.0;
+#else
     oldUsing = bUsing;
+#endif
     oldNumUses = numUses;
 
     Super.Frob(Frobber, frobWith);
-    if (bUsing && !oldUsing) {
+#ifdef hx
+    newUsing = BubbleTime > 0.0;
+#else
+    newUsing = bUsing;
+#endif
+
+    if (newUsing && !oldUsing) {
         SetTimer(0.4, False);
         if( oldNumUses == default.numUses )
             firstUse = Level.TimeSeconds;
