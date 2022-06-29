@@ -663,6 +663,9 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
     MarkBingo(dxr, victim.BindName$"_Dead");
     if( Killer == None || #var(PlayerPawn)(Killer) != None )
         MarkBingo(dxr, victim.class.name$"_ClassDead");
+        if (damageType=="stomped" && IsHuman(victim)){ //If you stomp a human to death...
+            MarkBingo(dxr,"HumanStompDeath");
+        }
 
     if(!victim.bImportant)
         return;
@@ -1078,6 +1081,8 @@ defaultproperties
     bingo_options(88)=(event="SecurityBot2_ClassDead",desc="Destroy 5 Walking Security Bots",max=5)
     bingo_options(89)=(event="SecurityBotSmall_ClassDead",desc="Destroy 15 commercial grade Security Bots",max=15)
     bingo_options(90)=(event="SpiderBot_ClassDead",desc="Destroy 15 Spider Bots",max=15)
+    bingo_options(91)=(event="HumanStompDeath",desc="Stomp 3 humans to death",max=3)
+    bingo_options(92)=(event="Rat_ClassDead",desc="Kill 40 rats",max=40)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
