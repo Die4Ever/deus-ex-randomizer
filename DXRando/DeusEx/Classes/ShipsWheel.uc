@@ -1,8 +1,4 @@
-#ifdef injections
-class ShipsWheel injects ShipsWheel;
-#else
-class DXRShipsWheel extends #var(prefix)ShipsWheel;
-#endif
+class DXRShipsWheel injects #var(prefix)ShipsWheel;
 
 var bool bAlreadyUsed;
 
