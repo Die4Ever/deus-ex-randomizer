@@ -134,6 +134,11 @@ function PreFirstEntry()
     Super.PreFirstEntry();
     Timer();
     LogFlags("PreFirstEntry "$dxr.localURL);
+#ifdef revision
+    if( player().bIsFemalePlayer && !f.GetBool('LDDPJCIsFemale') ) {
+        f.SetBool('LDDPJCIsFemale', true,, 999);
+    }
+#endif
 }
 
 function AnyEntry()
