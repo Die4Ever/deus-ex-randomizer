@@ -249,6 +249,9 @@ function SetWatchFlags() {
         WatchFlag('MeetAI4_Played');
         WatchFlag('DeBeersDead');
         break;
+    case "12_VANDENBERG_GAS":
+        Tag = 'support1';  //This gets hit when you blow up the gas pumps
+        break;
     case "12_VANDENBERG_CMD":
         WatchFlag('MeetTimBaker_Played');
         foreach AllActors(class'ScientistMale', sm) {
@@ -1035,8 +1038,8 @@ defaultproperties
     bingo_options(75)=(event="ActivateVandenbergBots",desc="Activate both of the bots at Vandenberg",max=2)
     bingo_options(76)=(event="TongsHotTub",desc="Take a dip in Tracer Tong's hot tub",max=1)
     bingo_options(77)=(event="JocksToilet",desc="Use Jock's toilet",max=1)
-
     bingo_options(78)=(event="Greasel_ClassDead",desc="Kill 5 Greasels",max=5)
+    bingo_options(79)=(event="support1",desc="Blow up a gas station",max=1)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
