@@ -641,7 +641,7 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
     foreach victim.AllActors(class'DXRando', dxr) break;
 
     MarkBingo(dxr, victim.BindName$"_Dead");
-    if( #var(PlayerPawn)(Killer) != None )
+    if( Killer == None || #var(PlayerPawn)(Killer) != None )
         MarkBingo(dxr, victim.class.name$"_ClassDead");
 
     if(!victim.bImportant)
