@@ -1,8 +1,4 @@
-#ifdef injections
-class MenuMain injects MenuMain;
-#else
 class DXRMenuMain extends MenuMain;
-#endif
 
 var float countdown;
 var int nameLen, firstSpace, secondSpace;

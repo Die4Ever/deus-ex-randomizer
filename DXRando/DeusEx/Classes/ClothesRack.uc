@@ -1,8 +1,4 @@
-#ifdef injections
-class DXRClothesRack injects ClothesRack;
-#else
-class DXRClothesRack extends #var(prefix)ClothesRack;
-#endif
+class DXRClothesRack injects #var(prefix)ClothesRack;
 
 var #var(PlayerPawn) p;
 

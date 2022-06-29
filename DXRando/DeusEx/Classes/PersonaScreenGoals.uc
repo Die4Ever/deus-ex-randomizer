@@ -1,8 +1,4 @@
-#ifdef injections
-class PersonaScreenGoals injects PersonaScreenGoals;
-#else
-class DXRPersonaScreenGoals extends PersonaScreenGoals;
-#endif
+class DXRPersonaScreenGoals injects PersonaScreenGoals;
 
 var PersonaActionButtonWindow btnBingo;
 

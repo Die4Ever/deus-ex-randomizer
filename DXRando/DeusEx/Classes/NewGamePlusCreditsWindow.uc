@@ -1,8 +1,4 @@
-#ifdef injections
 class NewGamePlusCreditsWindow injects CreditsWindow;
-#else
-class NewGamePlusCreditsWindow extends CreditsWindow;
-#endif
 
 event DestroyWindow()
 {

@@ -1,8 +1,4 @@
-#ifdef injections
-class Toilet injects Toilet;
-#else
-class DXRToilet extends #var(prefix)Toilet;
-#endif
+class DXRToilet injects #var(prefix)Toilet;
 
 var bool bAlreadyUsed;
 
