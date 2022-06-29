@@ -151,6 +151,13 @@ function SetWatchFlags() {
     case "06_HONGKONG_WANCHAI_CANAL":
         WatchFlag('FoundScientistBody');
         WatchFlag('M06BoughtVersaLife');
+        foreach AllActors(class'DeusExMover',dxm,'SecretHold'){
+            break;
+        }
+        skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
+        skillAward.Event='BoatEngineRoom';
+        Tag='BoatEngineRoom';
+
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
         WatchFlag('ClubMercedesConvo1_Done');
@@ -264,14 +271,20 @@ function SetWatchFlags() {
         lTrigger = Spawn(class'LogicTrigger');
         lTrigger.OneShot=True;
         lTrigger.Tag='bunker_door1';
-        lTrigger.Event='ActivateVandenbergBots';
+        lTrigger.Event='VandenbergDXR';
 
         lTrigger = Spawn(class'LogicTrigger');
         lTrigger.OneShot=True;
         lTrigger.Tag='bunker_door2';
-        lTrigger.Event='ActivateVandenbergBots';
+        lTrigger.Event='VandenbergDXR';
 
-        Tag = 'ActivateVandenbergBots';
+        foreach AllActors(class'Toilet',closestToilet){
+            closestToilet.tag='VandenbergToilet';
+            closestToilet.Event='VandenbergDXR';
+        }
+
+        Tag = 'VandenbergDXR';
+        break;
 
     case "14_OCEANLAB_SILO":
         WatchFlag('MeetDrBernard_Played');
@@ -280,6 +293,7 @@ function SetWatchFlags() {
                 sm.bImportant = true;
             }
         }
+        break;
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
         break;
@@ -485,6 +499,12 @@ function Trigger(Actor Other, Pawn Instigator)
     //Massage tag names
     if (tag=='MadeBasketM' || tag=='MadeBasketF'){
         useTag = 'MadeBasket';
+    }else if (tag=='VandenbergDXR'){
+        if (Other.tag=='bunker_door1' || Other.tag=='bunker_door2'){
+            useTag = 'ActivateVandenbergBots';
+        } else if (other.tag=='VandenbergToilet'){
+            useTag = 'VandenbergToilet';
+        }
     } else {
         useTag = tag;
     }
@@ -913,6 +933,12 @@ function _MarkBingo(coerce string eventname)
         case "KnowsAnnasKillphrase2":
             eventname = "KnowsAnnasKillphrase";
             break;
+        case "SecurityBot3_ClassDead":
+        case "SecurityBot4_ClassDead":
+            eventname = "SecurityBotSmall_ClassDead";
+            break;
+        case "SpiderBot2_ClassDead":
+            eventname="SpiderBot_ClassDead";
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
@@ -1045,6 +1071,12 @@ defaultproperties
     bingo_options(82)=(event="MJ12Troop_ClassDead",desc="Kill 25 MJ12 Troopers",max=25)
     bingo_options(83)=(event="MJ12Commando_ClassDead",desc="Kill 10 MJ12 Commandos",max=10)
     bingo_options(84)=(event="Karkian_ClassDead",desc="Kill 5 Karkians",max=5)
+    bingo_options(85)=(event="MilitaryBot_ClassDead",desc="Destroy 5 Military Bots",max=5)
+    bingo_options(86)=(event="VandenbergToilet",desc="Use the only toilet in Vandenberg",max=1)
+    bingo_options(87)=(event="BoatEngineRoom",desc="Access the engine room on the boat in the Hong Kong canals",max=1)
+    bingo_options(88)=(event="SecurityBot2_ClassDead",desc="Destroy 5 Walking Security Bots",max=5)
+    bingo_options(89)=(event="SecurityBotSmall_ClassDead",desc="Destroy 15 commercial grade Security Bots",max=15)
+    bingo_options(90)=(event="SpiderBot_ClassDead",desc="Destroy 15 Spider Bots",max=15)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
