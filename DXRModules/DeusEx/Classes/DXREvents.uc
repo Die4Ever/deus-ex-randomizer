@@ -1093,7 +1093,7 @@ defaultproperties
     bingo_options(91)=(event="UNATCOTroop_ClassUnconscious",desc="Knock out 15 UNATCO Troopers",max=15)
     bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out 15 NSF Terrorists",max=15)
     bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out 25 MJ12 Troopers",max=25)
-    bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out 3 MJ12 Commandos",max=3)
+    bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out 2 MJ12 Commandos",max=2)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
