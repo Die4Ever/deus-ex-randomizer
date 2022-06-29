@@ -859,9 +859,14 @@ simulated function string tweakBingoDescription(string event, string desc)
     foreach AllActors(class'DXRando', dxr) {break;}
 
     switch(event){
+        //FemJC gets a male character instead.  Russ normally, Noah in Revision
         case "ClubEntryPaid":
            if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+#ifdef revision
+               return "Let Noah help";
+#else
                return "Let Russ help";
+#endif
            } else {
                return desc;
            }
