@@ -638,6 +638,9 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
     foreach victim.AllActors(class'DXRando', dxr) break;
 
     MarkBingo(dxr, victim.BindName$"_Dead");
+    if( #var(PlayerPawn)(Killer) != None )
+        MarkBingo(dxr, victim.class.name$"_ClassDead");
+
     if(!victim.bImportant)
         return;
 
@@ -1033,6 +1036,7 @@ defaultproperties
     bingo_options(76)=(event="TongsHotTub",desc="Take a dip in Tracer Tong's hot tub",max=1)
     bingo_options(77)=(event="JocksToilet",desc="Use Jock's toilet",max=1)
 
+    bingo_options(78)=(event="Greasel_ClassDead",desc="Kill 5 Greasels",max=5)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
