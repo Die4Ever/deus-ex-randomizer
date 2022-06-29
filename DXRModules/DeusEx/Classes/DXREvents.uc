@@ -662,7 +662,14 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
 
     MarkBingo(dxr, victim.BindName$"_Dead");
     if( Killer == None || #var(PlayerPawn)(Killer) != None )
-        MarkBingo(dxr, victim.class.name$"_ClassDead");
+        if (IsHuman(victim) && ((damageType == "Stunned") ||
+                                (damageType == "KnockedOut") ||
+	                            (damageType == "Poison") ||
+                                (damageType == "PoisonEffect"))){
+            MarkBingo(dxr, victim.class.name$"_ClassUnconscious");
+        } else {
+            MarkBingo(dxr, victim.class.name$"_ClassDead");
+        }
         if (damageType=="stomped" && IsHuman(victim)){ //If you stomp a human to death...
             MarkBingo(dxr,"HumanStompDeath");
         }
@@ -1005,7 +1012,7 @@ defaultproperties
 	bingo_options(15)=(event="Labrat_Bum_Dead",desc="Kill Labrat Bum",max=1)
 	bingo_options(16)=(event="DXRNPCs1_Dead",desc="Kill The Merchant",max=1)
 	bingo_options(17)=(event="lemerchant_Dead",desc="Kill Le Merchant",max=1)
-	bingo_options(18)=(event="Harold_Dead",desc="Kill Harold the mechanic in the hanger",max=1)
+	bingo_options(18)=(event="Harold_Dead",desc="Kill Harold the mechanic in the hangar",max=1)
 	//bingo_options()=(event="Josh_Dead",desc="Kill Josh",max=1)
 	//bingo_options()=(event="Billy_Dead",desc="Kill Billy",max=1)
 	//bingo_options()=(event="MarketKid_Dead",desc="Kill Louis Pan",max=1)
@@ -1019,7 +1026,7 @@ defaultproperties
     bingo_options(25)=(event="JoshFed",desc="Give Josh some food",max=1)
     bingo_options(26)=(event="M02BillyDone",desc="Give Billy some food",max=1)
     bingo_options(27)=(event="FordSchickRescued",desc="Rescue Ford Schick",max=1)
-    bingo_options(28)=(event="NiceTerrorist_Dead",desc="Ignore Paul in the 747 Hanger",max=1)
+    bingo_options(28)=(event="NiceTerrorist_Dead",desc="Ignore Paul in the 747 Hangar",max=1)
     bingo_options(29)=(event="M10EnteredBakery",desc="Enter the bakery",max=1)
     //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
     bingo_options(30)=(event="FreshWaterOpened",desc="Fix the water",max=1)
@@ -1083,11 +1090,19 @@ defaultproperties
     bingo_options(88)=(event="SpiderBot_ClassDead",desc="Destroy 15 Spider Bots",max=15)
     bingo_options(89)=(event="HumanStompDeath",desc="Stomp 3 humans to death",max=3)
     bingo_options(90)=(event="Rat_ClassDead",desc="Kill 40 rats",max=40)
+    bingo_options(91)=(event="UNATCOTroop_ClassUnconscious",desc="Knock out 15 UNATCO Troopers",max=15)
+    bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out 15 NSF Terrorists",max=15)
+    bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out 25 MJ12 Troopers",max=25)
+    bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out 3 MJ12 Commandos",max=3)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
     mutually_exclusive(2)=(e1="SmugglerDied",e2="M08WarnedSmuggler")
     mutually_exclusive(3)=(e1="SilhouetteHostagesAllRescued",e2="paris_hostage_Dead")
+    mutually_exclusive(4)=(e1="UNATCOTroop_ClassUnconscious",e2="UNATCOTroop_ClassDead")
+    mutually_exclusive(5)=(e1="Terrorist_ClassUnconscious",e2="Terrorist_ClassDead")
+    mutually_exclusive(6)=(e1="MJ12Troop_ClassUnconscious",e2="MJ12Troop_ClassDead")
+    mutually_exclusive(7)=(e1="MJ12Commando_ClassUnconscious",e2="MJ12Commando_ClassDead")
 
     bingo_win_countdown=-1
 }
