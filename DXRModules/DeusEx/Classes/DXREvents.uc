@@ -1132,6 +1132,7 @@ defaultproperties
     bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out 2 MJ12 Commandos",max=2)
     bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1)
     bingo_options(96)=(event="ChugWater",desc="Chug water 30 times",max=30)
+    bingo_options(97)=(event="ChangeClothes",desc="Change clothes at 3 different clothes racks",max=3)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
