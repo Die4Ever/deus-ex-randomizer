@@ -94,6 +94,7 @@ function SetWatchFlags() {
         break;
     case "02_NYC_BAR":
         WatchFlag('JockSecondStory');
+        WatchFlag('LeoToTheBar');
         break;
     case "02_NYC_FREECLINIC":
         WatchFlag('BoughtClinicPlan');
@@ -124,6 +125,9 @@ function SetWatchFlags() {
             if(mechanic.BindName == "Harold")
                 mechanic.bImportant = true;
         }
+        break;
+    case "04_NYC_BAR":
+        WatchFlag('LeoToTheBar');
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
@@ -166,6 +170,8 @@ function SetWatchFlags() {
         WatchFlag('ClubMercedesConvo1_Done');
         WatchFlag('M07ChenSecondGive_Played');
         WatchFlag('LDDPRussPaid');
+        WatchFlag('LeoToTheBar');
+
         foreach AllActors(class'Hooker1', h) {
             if(h.BindName == "ClubMercedes")
                 h.bImportant = true;
@@ -223,6 +229,9 @@ function SetWatchFlags() {
         WatchFlag('M08WarnedSmuggler');
         RewatchFlag('MetSmuggler');
         break;
+    case "08_NYC_BAR":
+        WatchFlag('LeoToTheBar');
+        break;
     case "09_NYC_SHIP":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
         break;
@@ -257,6 +266,8 @@ function SetWatchFlags() {
         break;
     case "10_PARIS_CLUB":
         WatchFlag('CamilleConvosDone');
+        WatchFlag('LeoToTheBar');
+
         break;
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');
@@ -419,6 +430,17 @@ simulated function AnyEntry()
     SetTimer(1, true);
 }
 
+simulated function bool LeoToTheBar()
+{
+    local TerroristCommanderCarcass leoBody;
+    //player().ClientMessage("Looking for Leo");
+
+    foreach AllActors(class'TerroristCommanderCarcass',leoBody){
+        return True;
+    };
+    return False;
+}
+
 simulated function Timer()
 {
     local int i;
@@ -432,6 +454,16 @@ simulated function Timer()
 
         if( watchflags[i] == 'MS_DL_Played' && dxr.flagbase.GetBool('PlayerTraveling') ) {
             continue;
+        }
+
+        if( watchflags[i] == 'LeoToTheBar' ) {
+            if (LeoToTheBar()){
+                SendFlagEvent(watchflags[i]);
+                num_watchflags--;
+                watchflags[i] = watchflags[num_watchflags];
+                i--;
+                continue;
+            }
         }
 
         if( dxr.flagbase.GetBool(watchflags[i]) ) {
@@ -1137,6 +1169,8 @@ defaultproperties
     bingo_options(96)=(event="ChugWater",desc="Chug water 30 times",max=30)
     bingo_options(97)=(event="ChangeClothes",desc="Change clothes at 3 different clothes racks",max=3)
     bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1)
+    bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1)
+
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
