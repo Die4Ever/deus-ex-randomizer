@@ -9,7 +9,7 @@ struct BingoOption {
     var string event, desc;
     var int max;
 };
-var BingoOption bingo_options[100];
+var BingoOption bingo_options[200];
 
 struct MutualExclusion {
     var string e1, e2;
@@ -918,7 +918,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     local int x, y;
     local string event, desc;
     local int progress, max;
-    local int options[100], num_options, slot;
+    local int options[200], num_options, slot;
 
     num_options = 0;
     for(x=0; x<ArrayCount(bingo_options); x++) {
@@ -956,7 +956,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     data.ExportBingoState();
 }
 
-simulated function int HandleMutualExclusion(MutualExclusion m, int options[100], int num_options) {
+simulated function int HandleMutualExclusion(MutualExclusion m, int options[200], int num_options) {
     local int a, b, overwrite;
 
     for(a=0; a<num_options; a++) {
@@ -986,6 +986,66 @@ function CheckBingoWin(DXRando dxr, int numBingos)
             info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
             bingo_win_countdown = 5;
         }
+    }
+}
+
+function ReadText(name textTag)
+{
+    local string eventname;
+    local PlayerDataItem data;
+
+    l("ReadText "$textTag);
+
+    switch(textTag) {
+    // groups of textTags, we need separate tracking for which have been read and which haven't, before incrementing the bingo progress
+    case '01_Bulletin05':
+    case '01_Bulletin06':
+    case '01_Bulletin07':
+    case '01_Bulletin08':
+    case '03_Bulletin01':
+    case '03_Bulletin02':
+        eventname = "KnowYourEnemy";
+        break;
+
+    case '02_Book03':
+    case '03_Book04':
+    case '04_Book03':
+    case '06_Book03':
+    case '09_Book02':
+    case '10_Book02':
+    case '12_Book01':
+    case '15_Book01':
+        eventname = "JacobsShadow";
+        break;
+
+    case '02_Book05':
+    case '03_Book05':
+    case '04_Book05':
+    case '10_Book03':
+    case '12_Book02':
+    case '14_Book04':
+    case '15_Book02':
+        eventname = "ManWhoWasThursday";
+        break;
+
+    case '01_Newspaper06':
+    case '01_Newspaper08':
+    case '02_Newspaper06':
+    case '03_Newspaper02':
+    case '08_Newspaper01':
+        eventname = "GreeneArticles";
+        break;
+
+    default:
+        // it's simple for a bingo event that requires reading just 1 thing
+        _MarkBingo(textTag);
+        return;
+    }
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+
+    if(data.MarkRead(textTag)) {
+        _MarkBingo(eventname);
     }
 }
 
@@ -1125,7 +1185,7 @@ defaultproperties
     bingo_options(52)=(event="BoughtClinicPlan",desc="Buy the full treatment plan in the clinic",max=1)
     bingo_options(53)=(event="ExtinguishFire",desc="Extinguish yourself with running water",max=1)
     bingo_options(54)=(event="SubwayHostagesSaved",desc="Save both hostages in the subway",max=1)
-    bingo_options(55)=(event="HotelHostagesSaved",desc="Save all 3 hostages in the hotel",max=1)
+    bingo_options(55)=(event="HotelHostagesSaved",desc="Save all hostages in the hotel",max=1)
     bingo_options(56)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1)
     bingo_options(57)=(event="JosephManderley_Dead",desc="Kill Joseph Manderley",max=1)
     bingo_options(58)=(event="MadeItToBP",desc="Escape to Battery Park",max=1)
@@ -1170,6 +1230,11 @@ defaultproperties
     bingo_options(97)=(event="ChangeClothes",desc="Change clothes at 3 different clothes racks",max=3)
     bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1)
     bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1)
+    bingo_options(100)=(event="KnowYourEnemy",desc="Read all 6 Know Your Enemy bulletins",max=6)
+    bingo_options(101)=(event="09_NYC_DOCKYARD--796967769",desc="Learn Jenny's phone number",max=1)
+    bingo_options(102)=(event="JacobsShadow",desc="Read all 8 parts of Jacob's Shadow",max=8)
+    bingo_options(103)=(event="ManWhoWasThursday",desc="Read all 7 parts of The Man Who Was Thursday",max=7)
+    bingo_options(104)=(event="GreeneArticles",desc="Read all 5 newspaper articles by Joe Greene",max=5)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")

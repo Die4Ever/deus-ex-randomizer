@@ -20,6 +20,8 @@ struct BingoSpot {
 var travel BingoSpot bingo[25];
 var transient config BingoSpot bingoexport[25];
 
+var travel name readTexts[50];
+
 simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
 {
     local PlayerDataItem i;
@@ -60,6 +62,18 @@ final function BindConn(int slot_a, int slot_b, out string val, bool writing)
         conns[slot_a*6 + slot_b] = val;
     else
         val = conns[slot_a*6 + slot_b];
+}
+
+simulated function bool MarkRead(name textTag) {
+    local int i;
+    for(i=0; i<ArrayCount(readTexts); i++) {
+        if(readTexts[i] == textTag) return false;
+        if(readTexts[i] == '') {
+            readTexts[i] = textTag;
+            return true;
+        }
+    }
+    return false;
 }
 
 simulated function GetBingoSpot(int x, int y, out string event, out string desc, out int progress, out int max)

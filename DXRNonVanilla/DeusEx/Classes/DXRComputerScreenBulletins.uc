@@ -4,6 +4,10 @@ var DXRPasswords passwords;
 
 function ProcessDeusExText(Name textName, optional TextWindow winText)
 {
+    local DXREvents e;
+    foreach player.AllActors(class'DXREvents', e) {
+        e.ReadText(textName);
+    }
     foreach player.AllActors(class'DXRPasswords', passwords) { break; }
 
     Super.ProcessDeusExText(textName, winText);
