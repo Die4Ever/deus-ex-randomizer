@@ -1232,9 +1232,9 @@ defaultproperties
     bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1)
     bingo_options(100)=(event="KnowYourEnemy",desc="Read all 6 Know Your Enemy bulletins",max=6)
     bingo_options(101)=(event="09_NYC_DOCKYARD--796967769",desc="Learn Jenny's phone number",max=1)
-    bingo_options(102)=(event="JacobsShadow",desc="Read all 8 parts of Jacob's Shadow",max=8)
-    bingo_options(103)=(event="ManWhoWasThursday",desc="Read all 7 parts of The Man Who Was Thursday",max=7)
-    bingo_options(104)=(event="GreeneArticles",desc="Read all 5 newspaper articles by Joe Greene",max=5)
+    bingo_options(102)=(event="JacobsShadow",desc="Read 4 parts of Jacob's Shadow",max=4)
+    bingo_options(103)=(event="ManWhoWasThursday",desc="Read 4 parts of The Man Who Was Thursday",max=4)
+    bingo_options(104)=(event="GreeneArticles",desc="Read 4 newspaper articles by Joe Greene",max=4)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
