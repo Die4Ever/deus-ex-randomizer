@@ -111,6 +111,9 @@ function SetWatchFlags() {
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
         break;
+    case "03_NYC_AIRFIELD":
+        Tag = 'arctrigger';
+        break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
         break;
@@ -1133,6 +1136,7 @@ defaultproperties
     bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1)
     bingo_options(96)=(event="ChugWater",desc="Chug water 30 times",max=30)
     bingo_options(97)=(event="ChangeClothes",desc="Change clothes at 3 different clothes racks",max=3)
+    bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
