@@ -1036,6 +1036,12 @@ function ReadText(name textTag)
         eventname = "GreeneArticles";
         break;
 
+    case '02_Newspaper03':
+    case '03_Newspaper01':
+    case '06_Newspaper02':
+        eventname="MoonBaseNews";
+        break;
+
     default:
         // it's simple for a bingo event that requires reading just 1 thing
         _MarkBingo(textTag);
@@ -1235,6 +1241,7 @@ defaultproperties
     bingo_options(102)=(event="JacobsShadow",desc="Read 4 parts of Jacob's Shadow",max=4)
     bingo_options(103)=(event="ManWhoWasThursday",desc="Read 4 parts of The Man Who Was Thursday",max=4)
     bingo_options(104)=(event="GreeneArticles",desc="Read 4 newspaper articles by Joe Greene",max=4)
+    bingo_options(105)=(event="MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
