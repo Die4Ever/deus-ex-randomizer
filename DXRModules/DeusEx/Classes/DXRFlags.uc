@@ -53,6 +53,7 @@ struct FlagsSettings {
     var int min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime;
     var int prison_pocket;// just for Heinki, keep your items when getting captured
     var int bingo_win; //Number of bingo lines to beat the game
+    var int bingo_freespaces; //Number of bingo free spaces
 };
 
 #ifdef hx
@@ -217,7 +218,7 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,0,1,4) ) {
+    if( ConfigOlderThan(2,0,2,2) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -275,6 +276,7 @@ function CheckConfig()
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         difficulty_settings[i].bingo_win = 0;
+        difficulty_settings[i].bingo_freespaces = 1;
         i++;
 #endif
 
@@ -335,6 +337,7 @@ function CheckConfig()
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         difficulty_settings[i].bingo_win = 0;
+        difficulty_settings[i].bingo_freespaces = 1;
         i++;
 
         difficulty_names[i] = "Medium";
@@ -394,6 +397,7 @@ function CheckConfig()
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         difficulty_settings[i].bingo_win = 0;
+        difficulty_settings[i].bingo_freespaces = 1;
         i++;
 
         difficulty_names[i] = "Hard";
@@ -453,6 +457,7 @@ function CheckConfig()
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         difficulty_settings[i].bingo_win = 0;
+        difficulty_settings[i].bingo_freespaces = 1;
         i++;
 
         difficulty_names[i] = "DeusEx";
@@ -512,6 +517,7 @@ function CheckConfig()
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         difficulty_settings[i].bingo_win = 0;
+        difficulty_settings[i].bingo_freespaces = 1;
         i++;
 
 #ifdef hx
@@ -700,6 +706,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_prison_pocket', settings.prison_pocket, mode, str);
 
     FlagInt('Rando_bingo_win', settings.bingo_win, mode, str);
+    FlagInt('Rando_bingo_freespaces', settings.bingo_freespaces, mode, str);
 
     return str;
 }
@@ -834,6 +841,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "JC's Prison Pocket";
         case 'Rando_bingo_win':
             return "Bingo Lines to Win";
+        case 'Rando_bingo_freespaces':
+            return "Bingo Free Spaces";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -1035,6 +1044,16 @@ simulated function string flagValToHumanVal(name flagname, int val){
             else {
                 return loadout.GetName(val);
             }
+
+        case 'Rando_bingo_freespaces':
+            if(val == 0) {
+                return "Disabled";
+            } else if(val == 1) {
+                return "Enabled";
+            } else {
+                return val $ " Free Spaces";
+            }
+            break;
 
         //Weird, handle later
         case 'Rando_doorsmode':

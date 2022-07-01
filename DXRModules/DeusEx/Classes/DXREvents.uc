@@ -938,7 +938,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
-            if(num_options == 0 || (x==2 && y==2)) {
+            if(num_options == 0 || (x==2 && y==2 && dxr.flags.settings.bingo_freespaces>0)) {
                 data.SetBingoSpot(x, y, "Free Space", "Free Space", 1, 1);
                 continue;
             }
@@ -953,6 +953,8 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             data.SetBingoSpot(x, y, event, desc, 0, max);
         }
     }
+
+    // TODO: we could handle bingo_freespaces>1 by randomly putting free spaces on the board, but this probably won't be a desired feature
     data.ExportBingoState();
 }
 

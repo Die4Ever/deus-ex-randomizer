@@ -44,6 +44,10 @@ function BindControls(optional string action)
     NewMenuItem("Bingo Win", "How many completed lines to instantly win");
     Slider(f.settings.bingo_win, 0, 12);
 
+    NewMenuItem("Bingo Freespace", "Should the center be a Free Space");
+    EnumOption("Enabled", 1, f.settings.bingo_freespaces);
+    EnumOption("Disabled", 0, f.settings.bingo_freespaces);
+
     NewGroup("Medical Bots and Repair Bots");
 
     NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%)");
