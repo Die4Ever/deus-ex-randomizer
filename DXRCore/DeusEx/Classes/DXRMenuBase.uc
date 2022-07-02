@@ -243,7 +243,9 @@ function bool EnumOption(string label, int value, optional out int output)
         return false;
     } else {
         for(i=0; i<ArrayCount(enums[id].values); i++) {
-            if( enums[id].values[i] == "" ) {
+            if( enums[id].values[i] == label){
+                break;
+            } else if( enums[id].values[i] == "" ) {
                 enums[id].values[i] = label;
                 break;
             }
@@ -252,7 +254,7 @@ function bool EnumOption(string label, int value, optional out int output)
             enums[id].btn = CreateEnum(id, labels[id], helptexts[id], enums[id]);
             wnds[id] = enums[id].btn;
         }
-        log(self$"    EnumOption: "$label$" == "$value$" compared to default of "$output);
+         log(self$"    EnumOption: "$label$" == "$value$" compared to default of "$output);
         if( output == value ) {
             enums[id].btn.SetButtonText(label);
             enums[id].value = i;
@@ -274,7 +276,9 @@ function bool EnumOptionString(string label, string value, optional out string o
         return false;
     } else {
         for(i=0; i<ArrayCount(enums[id].values); i++) {
-            if( enums[id].values[i] == "" ) {
+            if( enums[id].values[i] == label){
+                break;
+            } else if( enums[id].values[i] == "" ) {
                 enums[id].values[i] = label;
                 break;
             }
@@ -316,6 +320,8 @@ function int Slider(out int value, int min, int max)
     } else {
         if ( wnds[id] == None ) {
             wnds[id] = CreateSlider(id, labels[id], helptexts[id], value, min, max);
+        } else {
+            MenuUIEditWindow(wnds[id]).SetText(string(value));
         }
     }
     return value;

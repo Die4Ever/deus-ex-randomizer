@@ -1289,6 +1289,7 @@ simulated function ExecMaxRando()
     // change the flags normally configurable on the Advanced Settings page, but try to keep the difficulty balanced
     // also make sure to randomize the doors mode and stuff
     MaxRandoVal(settings.merchants);
+    MaxRandoVal(settings.dancingpercent);
     MaxRandoVal(settings.medbots);
     MaxRandoVal(settings.repairbots);
 
@@ -1329,6 +1330,106 @@ simulated function ExecMaxRando()
     settings.equipment += int(rngb());
     MaxRandoValPair(settings.min_weapon_dmg, settings.max_weapon_dmg);
     MaxRandoValPair(settings.min_weapon_shottime, settings.max_weapon_shottime);
+    settings.aug_value_rando = 100;
+}
+
+
+//Initialize the values that get tweaked by max rando
+simulated function InitMaxRandoSettings()
+{
+    settings.merchants = difficulty_settings[difficulty].merchants;
+    settings.dancingpercent = difficulty_settings[difficulty].dancingpercent;
+    settings.medbots = difficulty_settings[difficulty].medbots;
+    settings.repairbots = difficulty_settings[difficulty].repairbots;
+    settings.enemiesrandomized=difficulty_settings[difficulty].enemiesrandomized;
+    settings.enemies_nonhumans=difficulty_settings[difficulty].enemies_nonhumans;
+    settings.turrets_move=difficulty_settings[difficulty].turrets_move;
+    settings.turrets_add=difficulty_settings[difficulty].turrets_add;
+    settings.skills_reroll_missions=difficulty_settings[difficulty].skills_reroll_missions;
+    settings.minskill=difficulty_settings[difficulty].minskill;
+    settings.maxskill=difficulty_settings[difficulty].maxskill;
+    settings.banned_skills=difficulty_settings[difficulty].banned_skills;
+    settings.banned_skill_levels=difficulty_settings[difficulty].banned_skill_levels;
+    settings.ammo=difficulty_settings[difficulty].ammo;
+    settings.multitools=difficulty_settings[difficulty].multitools;
+    settings.lockpicks=difficulty_settings[difficulty].lockpicks;
+    settings.biocells=difficulty_settings[difficulty].biocells;
+    settings.medkits=difficulty_settings[difficulty].medkits;
+    settings.equipment = difficulty_settings[difficulty].equipment;
+    settings.min_weapon_dmg=difficulty_settings[difficulty].min_weapon_dmg;
+    settings.max_weapon_dmg=difficulty_settings[difficulty].max_weapon_dmg;
+    settings.min_weapon_shottime=difficulty_settings[difficulty].min_weapon_shottime;
+    settings.max_weapon_shottime=difficulty_settings[difficulty].max_weapon_shottime;
+    settings.enemyrespawn = difficulty_settings[difficulty].enemyrespawn;
+
+}
+
+//For the randomize button on the advanced screen
+simulated function RandomizeSettings()
+{
+
+    local int i;
+
+    // change the flags normally configurable on the Advanced Settings page, but try to keep the difficulty balanced
+    // also make sure to randomize the doors mode and stuff
+    MaxRandoVal(settings.merchants);
+    MaxRandoVal(settings.dancingpercent);
+    MaxRandoVal(settings.medbots);
+    MaxRandoVal(settings.repairbots);
+
+    settings.medbotuses = rng(7) + 1;
+    settings.repairbotuses = rng(7) + 1;
+
+    settings.medbotcooldowns = int(rngb()) + 1;// 1 or 2
+    settings.repairbotcooldowns = int(rngb()) + 1;
+    settings.medbotamount = int(rngb()) + 1;
+    settings.repairbotamount = int(rngb()) + 1;
+
+    /* Just don't touch the door settings for now.
+       Ideally this would randomize between the selectable choices, but it's annoying
+       This is different from max rando (In that it just doesn't)
+    */
+    //settings.doorsmode = undefeatabledoors + doorindependent;
+    //settings.doorsdestructible = rng(100);
+    //settings.doorspickable = rng(100);
+
+
+    /* Just randomize between 0, 50, and 100 so that it is the same as configurable options
+       This is different from max rando
+    */
+    //settings.deviceshackable = rng(100);
+    settings.deviceshackable = rng(3)*50;
+
+    MaxRandoVal(settings.enemiesrandomized);
+    settings.enemiesshuffled = 100;
+    MaxRandoVal(settings.enemies_nonhumans);
+
+    if(rngb()) {
+        settings.enemyrespawn = rng(120) + 120;
+    } else {
+        settings.enemyrespawn = 0;
+    }
+
+    MaxRandoVal(settings.turrets_move);
+    MaxRandoVal(settings.turrets_add);
+
+    MaxRandoVal(settings.skills_reroll_missions);
+    settings.skills_independent_levels = int(rngb());
+    MaxRandoValPair(settings.minskill, settings.maxskill);
+    MaxRandoVal(settings.banned_skills);
+    MaxRandoVal(settings.banned_skill_levels);
+    settings.skill_value_rando = 100;
+
+    MaxRandoVal(settings.ammo);
+    MaxRandoVal(settings.multitools);
+    MaxRandoVal(settings.lockpicks);
+    MaxRandoVal(settings.biocells);
+    MaxRandoVal(settings.medkits);
+    settings.equipment += int(rngb());
+
+    MaxRandoValPair(settings.min_weapon_dmg, settings.max_weapon_dmg);
+    MaxRandoValPair(settings.min_weapon_shottime, settings.max_weapon_shottime);
+
     settings.aug_value_rando = 100;
 }
 

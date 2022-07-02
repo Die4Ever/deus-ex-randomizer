@@ -108,6 +108,7 @@ function BindControls(optional string action)
     f.settings.doorsmode = UnpackInt(doors_option);
     f.settings.doorsdestructible = UnpackInt(doors_option);
     f.settings.doorspickable = UnpackInt(doors_option);
+
     if(doors_type % 2 == 1) {
         // remove the temporary +1 and apply the some vs all change to the chances here
         doors_type--;
@@ -263,6 +264,22 @@ function BindControls(optional string action)
     Slider(f.settings.aug_value_rando, 0, 100);// this is a wet/dry scale, 0 to 100%
 
     if( action == "NEXT" ) _InvokeNewGameScreen(combatDifficulty, InitDxr());
+    if( action == "RANDOMIZE" ) RandomizeOptions(f);
+}
+
+function RandomizeOptions(DXRFlags f)
+{
+    local int scrollPos;
+
+    scrollPos = winScroll.vScale.GetTickPosition();
+
+    _BindControls(True);
+    f.InitMaxRandoSettings();
+    f.RandomizeSettings();
+    _BindControls(False);
+
+    //Scroll to same position again
+    winScroll.vScale.SetTickPosition(scrollPos);
 }
 
 function SetDifficulty(float newDifficulty)
@@ -282,4 +299,8 @@ defaultproperties
     Title="DX Rando Options"
     bUsesHelpWindow=False
     bEscapeSavesSettings=False
+    actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel,Text="|&Back")
+    actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Next",Key="NEXT")
+    actionButtons(2)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Randomize",Key="RANDOMIZE")
+
 }
