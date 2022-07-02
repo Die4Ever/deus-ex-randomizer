@@ -34,9 +34,10 @@ function BindControls(optional string action)
         EnumOption("All Items Allowed", 0, f.loadout);
     else {
         for(i=0; i < 20; i++) {
-            ts = loadout.GetName(i);
+            temp = loadout.GetIdForSlot(i);
+            ts = loadout.GetName(temp);
             if( ts == "" ) continue;
-            EnumOption(ts, i, f.loadout);
+            EnumOption(ts, temp, f.loadout);
         }
     }
 

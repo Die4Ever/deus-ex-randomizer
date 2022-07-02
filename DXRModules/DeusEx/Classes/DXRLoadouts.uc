@@ -14,6 +14,7 @@ struct loadouts
     var string item_spawns;
 };
 var config loadouts item_sets[20];
+var config int loadouts_order[20];
 
 struct _loadouts
 {
@@ -47,6 +48,22 @@ function CheckConfig()
     local class<Actor> a;
     if( ConfigOlderThan(2,0,2,3) ) {
         mult_items_per_level = 1;
+
+        for(i=0; i < ArrayCount(loadouts_order); i++) {
+            loadouts_order[i] = i;
+        }
+        i=0;
+        loadouts_order[i++] = 0;
+        loadouts_order[i++] = 2;
+        loadouts_order[i++] = 1;
+        loadouts_order[i++] = 3;
+        loadouts_order[i++] = 10;
+        loadouts_order[i++] = 9;
+        loadouts_order[i++] = 4;
+        loadouts_order[i++] = 7;
+        loadouts_order[i++] = 8;
+        loadouts_order[i++] = 6;
+        loadouts_order[i++] = 5;
 
         for(i=0; i < ArrayCount(item_sets); i++) {
             item_sets[i].name = "";
@@ -291,6 +308,12 @@ function AddItemSpawn(int s, string type, int chances)
             return;
         }
     }
+}
+
+function int GetIdForSlot(int i)
+{
+    if( i < 0 || i >= ArrayCount(loadouts_order) ) return -1;
+    return loadouts_order[i];
 }
 
 function string GetName(int i)
