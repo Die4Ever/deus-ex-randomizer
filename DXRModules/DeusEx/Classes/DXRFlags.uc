@@ -1286,51 +1286,7 @@ simulated function ExecMaxRando()
     SetGlobalSeed("ExecMaxRando");
     maxrando = 1;
 
-    // change the flags normally configurable on the Advanced Settings page, but try to keep the difficulty balanced
-    // also make sure to randomize the doors mode and stuff
-    MaxRandoVal(settings.merchants);
-    MaxRandoVal(settings.dancingpercent);
-    MaxRandoVal(settings.medbots);
-    MaxRandoVal(settings.repairbots);
-
-    settings.medbotuses = rng(7) + 1;
-    settings.repairbotuses = rng(7) + 1;
-
-    settings.medbotcooldowns = int(rngb()) + 1;// 1 or 2
-    settings.repairbotcooldowns = int(rngb()) + 1;
-    settings.medbotamount = int(rngb()) + 1;
-    settings.repairbotamount = int(rngb()) + 1;
-
-    settings.doorsmode = undefeatabledoors + doorindependent;
-    settings.doorsdestructible = rng(100);
-    settings.doorspickable = rng(100);
-
-    settings.deviceshackable = rng(100);
-    MaxRandoVal(settings.enemiesrandomized);
-    settings.hiddenenemiesrandomized = settings.enemiesrandomized;
-    settings.enemiesshuffled = 100;
-    MaxRandoVal(settings.enemies_nonhumans);
-    if(rngb())
-        settings.enemyrespawn = rng(120) + 120;
-
-    MaxRandoVal(settings.turrets_move);
-    MaxRandoVal(settings.turrets_add);
-    MaxRandoVal(settings.skills_reroll_missions);
-    settings.skills_independent_levels = int(rngb());
-    MaxRandoValPair(settings.minskill, settings.maxskill);
-    MaxRandoVal(settings.banned_skills);
-    MaxRandoVal(settings.banned_skill_levels);
-    settings.skill_value_rando = 100;
-
-    MaxRandoVal(settings.ammo);
-    MaxRandoVal(settings.multitools);
-    MaxRandoVal(settings.lockpicks);
-    MaxRandoVal(settings.biocells);
-    MaxRandoVal(settings.medkits);
-    settings.equipment += int(rngb());
-    MaxRandoValPair(settings.min_weapon_dmg, settings.max_weapon_dmg);
-    MaxRandoValPair(settings.min_weapon_shottime, settings.max_weapon_shottime);
-    settings.aug_value_rando = 100;
+    RandomizeSettings(False);
 }
 
 
@@ -1364,11 +1320,11 @@ simulated function InitMaxRandoSettings()
 
 }
 
-//For the randomize button on the advanced screen
-simulated function RandomizeSettings()
+//Randomize the values.  If forceMenuOptions is set, we will only allow the values to be set to
+//the options available in DXRMenuSetupRando
+simulated function RandomizeSettings(bool forceMenuOptions)
 {
-
-    local int i;
+    info("RandomizeSettings("$string(forceMenuOptions)$")");
 
     // change the flags normally configurable on the Advanced Settings page, but try to keep the difficulty balanced
     // also make sure to randomize the doors mode and stuff
@@ -1385,20 +1341,20 @@ simulated function RandomizeSettings()
     settings.medbotamount = int(rngb()) + 1;
     settings.repairbotamount = int(rngb()) + 1;
 
-    /* Just don't touch the door settings for now.
-       Ideally this would randomize between the selectable choices, but it's annoying
-       This is different from max rando (In that it just doesn't)
-    */
-    //settings.doorsmode = undefeatabledoors + doorindependent;
-    //settings.doorsdestructible = rng(100);
-    //settings.doorspickable = rng(100);
+    if (forceMenuOptions){
+        //Eventually we can add logic to randomize between the door menu options
+    } else {
+        settings.doorsmode = undefeatabledoors + doorindependent;
+        settings.doorsdestructible = rng(100);
+        settings.doorspickable = rng(100);
+    }
 
-
-    /* Just randomize between 0, 50, and 100 so that it is the same as configurable options
-       This is different from max rando
-    */
-    //settings.deviceshackable = rng(100);
-    settings.deviceshackable = rng(3)*50;
+    /* To match the menu options, we just randomize between 0, 50, and 100 */
+    if (forceMenuOptions){
+        settings.deviceshackable = rng(3)*50;
+    } else {
+        settings.deviceshackable = rng(100);
+    }
 
     MaxRandoVal(settings.enemiesrandomized);
     settings.enemiesshuffled = 100;

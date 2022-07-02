@@ -275,7 +275,7 @@ function RandomizeOptions(DXRFlags f)
 
     _BindControls(True);
     f.InitMaxRandoSettings();
-    f.RandomizeSettings();
+    f.RandomizeSettings(True);
     _BindControls(False);
 
     //Scroll to same position again
