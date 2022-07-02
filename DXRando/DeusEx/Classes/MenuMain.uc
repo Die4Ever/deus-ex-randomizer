@@ -1,4 +1,4 @@
-class DXRMenuMain extends MenuMain;
+class DXRMenuMain injects MenuMain;
 
 var float countdown;
 var int nameLen, firstSpace, secondSpace;
