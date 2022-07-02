@@ -13,7 +13,7 @@ struct loadouts
     var string starting_augs;
     var string item_spawns;
 };
-var config loadouts item_sets[10];
+var config loadouts item_sets[20];
 
 struct _loadouts
 {
@@ -25,7 +25,7 @@ struct _loadouts
     var int                 item_spawns_chances[5];
 };
 
-var _loadouts _item_sets[10];
+var _loadouts _item_sets[20];
 
 struct RandomItemStruct { var string type; var int chance; };
 struct _RandomItemStruct { var class<Inventory> type; var int chance; };
@@ -45,7 +45,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(1,6,4,7) ) {
+    if( ConfigOlderThan(2,0,2,3) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(item_sets); i++) {
@@ -112,6 +112,19 @@ function CheckConfig()
         item_sets[7].name = "No Pistols";
         item_sets[7].player_message = "No Pistols";
         item_sets[7].bans = "WeaponPistol,WeaponStealthPistol";
+
+        item_sets[8].name = "No Swords";
+        item_sets[8].player_message = "No Swords";
+        item_sets[8].bans = "WeaponSword,WeaponNanoSword";
+
+        item_sets[9].name = "No Overpowered Weapons";
+        item_sets[9].player_message = "No Overpowered Weapons";
+        item_sets[9].bans = "WeaponSword,WeaponNanoSword,WeaponPistol,WeaponStealthPistol,WeaponGEPGun";
+
+        item_sets[10].name = "By the Book";
+        item_sets[10].player_message = "By the Book";
+        item_sets[10].bans = "Lockpick,Multitool";
+        item_sets[10].starting_augs = "AugStealth";
 
         i=0;
 
@@ -460,7 +473,7 @@ function AddStartingEquipment(DeusExPlayer p, bool bFrob)
     }
 }
 
-function RandoStartingEquipment(DeusExPlayer player, bool respawn)
+function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 {
     local Inventory item, anItem;
     local DXREnemies dxre;
@@ -502,38 +515,68 @@ function RandoStartingEquipment(DeusExPlayer player, bool respawn)
     }
 }
 
-function _RandoStartingEquipment(DeusExPlayer player, DXREnemies dxre, bool bFrob)
+function Inventory _GiveRandoStartingItem(#var(PlayerPawn) player, Inventory item, bool bFrob)
+{
+    local DeusExWeapon w;
+
+    if(item != None && is_banned(item.class)) {
+        info("_RandoStartingEquipment " $item$" is banned!");
+        item.Destroy();
+        return None;
+    }
+    if( bFrob && item != None ) item.Frob( player, None );
+
+    w = DeusExWeapon(item);
+    if ( w != None && (w.AmmoName != None) && (w.AmmoName != Class'AmmoNone') )
+    {
+        w.AmmoType = DeusExAmmo(GiveItem(player, w.AmmoName));
+        if( bFrob && w.AmmoType != None )
+            w.AmmoType.Frob( player, None );
+    }
+    return item;
+}
+
+function class<Inventory> _GetRandomUtilityItem()
 {
     local int i;
     local float r;
-    local Inventory item;
-    local DeusExWeapon w;
     local class<Inventory> iclass;
-
-    if(dxre != None) {
-        item = dxre.GiveRandomWeapon(player, true);
-        if( bFrob && item != None ) item.Frob( player, None );
-        w = DeusExWeapon(item);
-        if ( w != None && (w.AmmoName != None) && (w.AmmoName != Class'AmmoNone') )
-        {
-            w.AmmoType = DeusExAmmo(GiveItem(player, w.AmmoName));
-            if( bFrob && w.AmmoType != None )
-                w.AmmoType.Frob( player, None );
-        }
-
-        item = dxre.GiveRandomMeleeWeapon(player);
-        if( bFrob && item != None ) item.Frob( player, None );
-    }
 
     r = initchance();
     for(i=0; i < ArrayCount(_randomitems); i++ ) {
         if( _randomitems[i].type == None ) continue;
         if( chance( _randomitems[i].chance, r ) ) iclass = _randomitems[i].type;
     }
+    return iclass;
+}
 
-    if( iclass == None ) return;
-    item = GiveItem(player, iclass);
-    if( bFrob && item != None ) item.Frob( player, None );
+function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool bFrob)
+{
+    local int i;
+    local Inventory item;
+    local class<Inventory> iclass;
+
+    if(dxre != None) {
+        for(i=0; i<100; i++) {
+            item = dxre.GiveRandomWeapon(player, true);
+            item = _GiveRandoStartingItem(player, item, bFrob);
+            if(item != None) break;
+        }
+
+        for(i=0; i<100; i++) {
+            item = dxre.GiveRandomMeleeWeapon(player, true);
+            item = _GiveRandoStartingItem(player, item, bFrob);
+            if(item != None) break;
+        }
+    }
+
+    for(i=0; i<100; i++) {
+        iclass = _GetRandomUtilityItem();
+        if(iclass == None) continue;
+        item = GiveItem(player, iclass);
+        item = _GiveRandoStartingItem(player, item, bFrob);
+        if(item != None) break;
+    }
 }
 
 function SpawnItems()

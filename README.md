@@ -47,6 +47,9 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
     * Freeman Mode - only weapon allowed is the crowbar
     * Grenades Only
     * No Pistols - for people who think the pistol is OP
+    * No Swords - for people who think the sword and Dragon's Tooth Sword are OP
+    * No Overpowered Weapons - bans pistols, swords, and the GEP Gun
+    * By the Book - bans lockpicks and multitools
 * Max Rando - randomize the randomizer's settings!
 * An integrated Bingo board: on the Goals screen there's a Bingo button in the top right, there's also our external BingoDisplay program
 * Co-op when combined with the HX mod (Alpha)
