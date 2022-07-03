@@ -31,7 +31,7 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 * randomly adds "The Merchant"
 
 ## There are also settings for
-* Crowd Control! Let your Twitch/YouTube/Discord viewers troll you or help you! https://crowdcontrol.live/guides/DeusEx
+* Crowd Control! Let your Twitch/YouTube/Discord/other viewers troll you or help you! https://crowdcontrol.live/guides/DeusEx
     * If you want to try some of the Crowd Control features without actually streaming, you can try the "Offline Simulated" mode in the New Game screen!
 * New Game+ - after beating the game play it again keeping your items, skills, and augs, but with increased difficulty and a new seed
     * takes away 1 random augmentation, and 1 of your weapons
