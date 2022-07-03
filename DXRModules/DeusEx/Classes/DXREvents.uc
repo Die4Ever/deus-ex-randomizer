@@ -49,6 +49,7 @@ function SetWatchFlags() {
     local LogicTrigger lTrigger;
     local WaterZone water;
     local Toilet closestToilet;
+    local BookOpen book;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -321,6 +322,13 @@ function SetWatchFlags() {
         foreach AllActors(class'ZoneInfo', zone) {
             if (zone.Tag=='fan'){
                 zone.ZonePlayerEvent = 'Area51FanShaft';
+            }
+        }
+        break;
+    case "15_AREA51_FINAL":
+        foreach AllActors(class'BookOpen', book) {
+            if (book.textTag == '15_Book01'){ //This copy of Jacob's Shadow is also in _BUNKER and _ENTRANCE
+                book.textTag = '15_Book02';  //Put that good Thursday man back where he (probably) belongs
             }
         }
         break;
