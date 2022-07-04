@@ -4,7 +4,7 @@ class DXRandoCrowdControlPawn extends ScriptedPawn;
 defaultproperties
 {
      bInvincible=True
-     bInWorld=True
+     bInWorld=False
      bImportant=True
      bPlayIdle=False
      bAvoidAim=False
