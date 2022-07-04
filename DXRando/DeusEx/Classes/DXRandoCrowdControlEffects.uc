@@ -54,6 +54,10 @@ var ZoneGravity zone_gravities[32];
 
 var DXRandoCrowdControlTimer timerDisplays[32];
 
+const numCcPawns=3;
+var DXRandoCrowdControlPawn CrowdControlPawns[3];
+var int mostRecentCcPawn;
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                  CROWD CONTROL FRAMEWORK                                                 ////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,9 +68,24 @@ function Init(DXRandoCrowdControlLink crowd_control_link, DXRando tdxr)
     dxr = tdxr;
 
     lavaTick = 0;
+    mostRecentCcPawn = 0;
 }
 
+function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
+{
+    mostRecentCcPawn++;
+    if (mostRecentCcPawn>=numCcPawns){
+        mostRecentCcPawn=0;
+    }
 
+    if (CrowdControlPawns[mostRecentCcPawn]==None){
+        CrowdControlPawns[mostRecentCcPawn]=Spawn(class'DXRandoCrowdControlPawn');
+    }
+
+    CrowdControlPawns[mostRecentCcPawn].bImportant=True;
+    CrowdControlPawns[mostRecentCcPawn].familiarName = UserName;
+    return CrowdControlPawns[mostRecentCcPawn];
+}
 
 function PeriodicUpdates()
 {
@@ -358,6 +377,16 @@ function string getTimerLabelByName(name timerName) {
     }
 }
 
+function setFloorIsLavaName(string lavaName)
+{
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
+    datastorage.SetConfig("floorIsLavaName", lavaName, 3600);
+}
+
+function string getFloorIsLavaName() {
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
+    return datastorage.GetConfigKey("floorIsLavaName");
+}
 
 function int getTimer(name timerName) {
     if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
@@ -864,11 +893,11 @@ function floorIsLava() {
     }
 
     if ((lavaTick % 10)==0) { //If you stand on lava for 1 second
-        player().TakeDamage(10,player(),loc,v,'Burned');
+        player().TakeDamage(10,GetCrowdControlPawn(getFloorIsLavaName()),loc,v,'Burned');
     }
 
     if ((lavaTick % 50)==0) { //if you stand in lava for 5 seconds
-        player().CatchFire(player());
+        player().CatchFire(GetCrowdControlPawn(getFloorIsLavaName()));
     }
 }
 
@@ -926,7 +955,7 @@ function int DropProjectile(string viewer, string type, optional int amount)
 
     c = class<DeusExProjectile>(ccLink.ccModule.GetClassFromString(type, class'DeusExProjectile'));
     if( c == None ) return NotAvail;
-    p = Spawn( c, player(),,player().Location);
+    p = Spawn( c, GetCrowdControlPawn(viewer),,player().Location);
     if( p == None ) return Failed;
     PlayerMessage(viewer@"dropped "$ p.ItemArticle @ p.ItemName $ " at your feet!");
     p.Velocity.X=0;
@@ -1090,12 +1119,12 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
 
-            player().StartPoison(player(),5);
+            player().StartPoison(GetCrowdControlPawn(viewer),5);
             PlayerMessage(viewer@"poisoned you!");
             break;
 
         case "kill":
-            player().Died(player(),'CrowdControl',player().Location);
+            player().Died(GetCrowdControlPawn(viewer),'CrowdControl',player().Location);
             PlayerMessage(viewer@"set off your killswitch!");
             player().MultiplayerDeathMsg(player(),False,True,viewer,"triggering your kill switch");
             break;
@@ -1117,7 +1146,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "set_fire":
-            player().CatchFire(player());
+            player().CatchFire(GetCrowdControlPawn(viewer));
             PlayerMessage(viewer@"set you on fire!");
             break;
 
@@ -1297,6 +1326,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             PlayerMessage(viewer@"turned the floor into lava!");
             lavaTick = 0;
             startNewTimer('cc_floorLavaTimer');
+            setFloorIsLavaName(viewer);
 
             break;
 
