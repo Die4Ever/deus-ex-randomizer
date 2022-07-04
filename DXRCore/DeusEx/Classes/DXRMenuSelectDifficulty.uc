@@ -65,7 +65,7 @@ function BindControls(optional string action)
     EnumOption("Off", 0, f.autosave);
 #endif
 
-    NewMenuItem("Crowd Control", "Let your Twitch/YouTube/Discord viewers troll you or help you!" $BR$ "See their website https://crowdcontrol.live");
+    NewMenuItem("Crowd Control", "Let your Twitch/YouTube/Discord viewers troll you or help you!" $BR$ "See their website crowdcontrol.live");
     //EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol);
     EnumOption("Enabled (Streaming)", 1, f.crowdcontrol);
     EnumOption("Offline Simulated", 3, f.crowdcontrol);

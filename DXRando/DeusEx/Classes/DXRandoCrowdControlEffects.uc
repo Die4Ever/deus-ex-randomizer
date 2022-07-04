@@ -82,7 +82,6 @@ function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
         CrowdControlPawns[mostRecentCcPawn]=Spawn(class'DXRandoCrowdControlPawn');
     }
 
-    CrowdControlPawns[mostRecentCcPawn].bImportant=True;
     CrowdControlPawns[mostRecentCcPawn].familiarName = UserName;
     return CrowdControlPawns[mostRecentCcPawn];
 }
