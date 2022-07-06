@@ -692,7 +692,7 @@ static function AddPlayerDeath(DXRando dxr, #var(PlayerPawn) player, optional Ac
     }
 
     if(damageType == "shot") {
-        if( !IsHuman(Killer) && Robot(Killer) == None ) {
+        if( !IsHuman(Killer.class) && Robot(Killer) == None ) {
             // only humans and robots can shoot? karkians deal shot damage
             damageType = "";
         }
@@ -709,7 +709,7 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
 
     MarkBingo(dxr, victim.BindName$"_Dead");
     if( Killer == None || #var(PlayerPawn)(Killer) != None )
-        if (IsHuman(victim) && ((damageType == "Stunned") ||
+        if (IsHuman(victim.class) && ((damageType == "Stunned") ||
                                 (damageType == "KnockedOut") ||
 	                            (damageType == "Poison") ||
                                 (damageType == "PoisonEffect"))){
@@ -717,7 +717,7 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
         } else {
             MarkBingo(dxr, victim.class.name$"_ClassDead");
         }
-        if (damageType=="stomped" && IsHuman(victim)){ //If you stomp a human to death...
+        if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
             MarkBingo(dxr,"HumanStompDeath");
         }
 

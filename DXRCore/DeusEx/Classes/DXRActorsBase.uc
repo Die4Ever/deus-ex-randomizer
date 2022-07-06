@@ -89,9 +89,9 @@ function bool CarriedItem(Actor a)
     return a.Owner != None && a.Owner.IsA('Pawn');
 }
 
-static function bool IsHuman(Actor a)
+static function bool IsHuman(class<Actor> a)
 {
-    return #var(prefix)HumanMilitary(a) != None || #var(prefix)HumanThug(a) != None || #var(prefix)HumanCivilian(a) != None;
+    return ClassIsChildOf(a, class'#var(prefix)HumanMilitary') || ClassIsChildOf(a, class'#var(prefix)HumanThug') || ClassIsChildOf(a, class'#var(prefix)HumanCivilian');
 }
 
 static function bool IsCritter(Actor a)

@@ -409,7 +409,8 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 
     chance_remaining(r);// else keep the same class
 
-    if( chance_single(dxr.flags.settings.enemies_nonhumans)==False && newclass == None && IsHuman(base) == False ) return None;
+    if( newclass == None && IsHuman(base.class) == false && chance_single(dxr.flags.settings.enemies_nonhumans)==false ) return None;
+    if( IsHuman(newclass) == false && chance_single(dxr.flags.settings.enemies_nonhumans)==false ) return None;
 
     n = CloneScriptedPawn(base, newclass);
     l("new RandomEnemy("$base$", "$percent$") == "$n);
@@ -470,7 +471,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
         n.CarcassType = class'HXThugMaleCarcass';
 #endif
 
-    if( IsHuman(p) && IsHuman(n) && p.BarkBindName != "" && n.BarkBindName == "" ) n.BarkBindName = p.BarkBindName;
+    if( IsHuman(p.class) && IsHuman(n.class) && p.BarkBindName != "" && n.BarkBindName == "" ) n.BarkBindName = p.BarkBindName;
     class'DXRNames'.static.GiveRandomName(dxr, n);
     n.Alliance = p.Alliance;
     for(i=0; i<ArrayCount(n.InitialAlliances); i++ )
@@ -573,7 +574,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
     p.GroundSpeed = rngrange(p.GroundSpeed, 0.9, 1.1);
     p.BaseAccuracy -= FClamp(rngf() * float(percent)/100.0, 0, 0.8);
 
-    if( IsHuman(p) == False ) return; // only give random weapons to humans
+    if( IsHuman(p.class) == False ) return; // only give random weapons to humans
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
 
     RemoveItem(p, class'Weapon');

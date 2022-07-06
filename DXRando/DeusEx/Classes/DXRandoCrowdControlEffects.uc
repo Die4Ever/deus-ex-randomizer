@@ -971,7 +971,7 @@ function ScriptedPawn findOtherHuman() {
     num = 0;
 
     foreach AllActors(class'ScriptedPawn',p) {
-        if (class'DXRActorsBase'.static.IsHuman(p) && p!=player() && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
+        if (class'DXRActorsBase'.static.IsHuman(p.class) && p!=player() && !p.bHidden && !p.bStatic && p.bInWorld && p.Orders!='Sitting') {
             humans[num++] = p;
         }
     }
