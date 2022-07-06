@@ -231,10 +231,8 @@ function ReduceSpawns(class<Actor> classname, float percent)
 
     foreach AllActors(classname, a)
     {
-        //if( SkipActor(a, classname.name) ) continue;
         if( PlayerPawn(a) != None ) continue;
         if( PlayerPawn(a.Owner) != None ) continue;
-        //if( ! a.IsA(classname.name) ) continue;
 
         _ReduceSpawns(a, percent);
     }
