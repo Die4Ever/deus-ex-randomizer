@@ -1,12 +1,14 @@
 class DXRWaterFountain injects #var(prefix)WaterFountain;
 
 var float firstUse;
+var int timesUsed;
 
 function Frob(Actor Frobber, Inventory frobWith)
 {
     local bool oldUsing, newUsing;
     local int oldNumUses;
     local DXRando dxr;
+    local bool chugged;
 
 #ifdef hx
     oldUsing = BubbleTime > 0.0;
@@ -23,10 +25,16 @@ function Frob(Actor Frobber, Inventory frobWith)
 #endif
 
     if (newUsing && !oldUsing) {
-        SetTimer(0.4, False);
-        if( oldNumUses == default.numUses )
+        if(!#defined(vmd))
+            SetTimer(0.4, False);
+        if( oldNumUses == default.numUses || (#defined(vmd) && timesUsed==0) )
             firstUse = Level.TimeSeconds;
-        if (numUses <= 0 && oldNumUses > 0 && firstUse > 0 && Level.TimeSeconds - firstUse < 6)
+        timesUsed++;
+        chugged = numUses <= 0 && oldNumUses > 0 && firstUse > 0 && Level.TimeSeconds - firstUse < 6;
+        if(#defined(vmd)) {
+            chugged = timesUsed == 5 && firstUse > 0 && Level.TimeSeconds - firstUse < 15;
+        }
+        if (chugged)
         {
 #ifdef injections
             class'WaterCooler'.static.PlayDrown(Frobber);
