@@ -54,7 +54,6 @@ var ZoneGravity zone_gravities[32];
 
 var DXRandoCrowdControlTimer timerDisplays[32];
 
-const numCcPawns=3;
 var DXRandoCrowdControlPawn CrowdControlPawns[3];
 var int mostRecentCcPawn;
 
@@ -74,7 +73,7 @@ function Init(DXRandoCrowdControlLink crowd_control_link, DXRando tdxr)
 function DXRandoCrowdControlPawn GetCrowdControlPawn(string UserName)
 {
     mostRecentCcPawn++;
-    if (mostRecentCcPawn>=numCcPawns){
+    if (mostRecentCcPawn>=ArrayCount(CrowdControlPawns)){
         mostRecentCcPawn=0;
     }
 
