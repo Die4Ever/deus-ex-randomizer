@@ -1357,6 +1357,7 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     }
 
     MaxRandoVal(settings.enemiesrandomized);
+    settings.hiddenenemiesrandomized = settings.enemiesrandomized;
     settings.enemiesshuffled = 100;
     MaxRandoVal(settings.enemies_nonhumans);
 
