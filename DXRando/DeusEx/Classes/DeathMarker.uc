@@ -9,7 +9,7 @@ var string playername, killerclass, killer, damagetype, map, predamagetype;
 var int created, numtimes;
 
 static function string DamageTypeText(string dmg, out string pre) {
-    pre = "was";
+    pre = "was ";
     if(dmg == "None" || dmg == "")
         return "killed";
 
@@ -62,6 +62,8 @@ static function string DamageTypeText(string dmg, out string pre) {
 function string KilledByText() {
     if(killer == "" || killer == "None")
         return damagetype;
+    if(killer == playername && damagetype == "had their killswitch flipped")
+        return damagetype;
     if(killer == playername)
         return damagetype $" by themselves";
     return damagetype $ " by " $ killer;
@@ -88,7 +90,7 @@ function Frob(Actor Frobber, Inventory frobWith)
         age = int(secondsago/86400.0) $ " days ago";
 
     age = "about " $ age;
-    msg = playername @ predamagetype @ KilledByText() @ age;
+    msg = playername @ predamagetype $ KilledByText() @ age;
     //if(numtimes > 1)
         //msg = msg $ " and "$(numtimes-1)$" times before that";
     msg = msg $ ".";
