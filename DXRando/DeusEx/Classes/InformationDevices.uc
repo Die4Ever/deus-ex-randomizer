@@ -38,6 +38,24 @@ function string GetMapNameStripped()
     return mapname;
 }
 
+function int Crc()
+{
+    local DXRando dxr;
+
+    foreach AllActors(class'DXRando', dxr) {
+        return dxr.Crc(plaintext);
+    }
+    return 0;
+}
+
+function MarkTextRead(name ttextTag)
+{
+    local DXREvents e;
+    foreach AllActors(class'DXREvents', e) {
+        e.ReadText(ttextTag);
+    }
+}
+
 function WritePasswordsToNote(DeusExNote note)
 {
 #ifdef injections
@@ -106,12 +124,14 @@ function AddToVault()
         vaultString = plaintext;
         if(passwords != None) passwords.ProcessString(vaultString, new_passwords);
         mapname = GetMapNameStripped();
-        plaintextTag = StringToName(mapname$"-"$Name);
+        plaintextTag = StringToName(mapname$"-"$ Crc());
         log(Self$": plaintextTag: "$plaintextTag);
-        HXGameInfo(Level.Game).AddNote(vaultString, , True, textTag);
+        MarkTextRead(plaintextTag);
+        HXGameInfo(Level.Game).AddNote(vaultString, , True, plaintextTag);
         return;
     }
 
+    MarkTextRead(textTag);
     Super.AddToVault();
 }
 
@@ -141,8 +161,9 @@ function CreateInfoWindow()
         if (bAddToVault)
         {
             mapname = GetMapNameStripped();
-            plaintextTag = rootWindow.StringToName(mapname$"-"$Name);
+            plaintextTag = rootWindow.StringToName(mapname$"-"$ Crc());
             log(Self$": plaintextTag: "$plaintextTag);
+            MarkTextRead(plaintextTag);
             note = GetNote(plaintextTag);
             if (note == None)
             {
@@ -155,6 +176,7 @@ function CreateInfoWindow()
         return;
     }
 
+    MarkTextRead(textTag);
     Super.CreateInfoWindow();
     if(bAddToVault)
         WritePasswordsToNoteByTag(DeusExRootWindow(aReader.rootWindow), textTag);

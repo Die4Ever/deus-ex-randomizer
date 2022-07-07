@@ -45,17 +45,19 @@ function CheckConfig()
     }
 }
 
-function SwapAll(name classname, float percent_chance)
+function SwapAll(string classname, float percent_chance)
 {
     local Actor temp[4096];
     local Actor a, b;
     local int num, i, slot;
+    local class<Actor> c;
 
     SetSeed( "SwapAll " $ classname );
     num=0;
-    foreach AllActors(class'Actor', a )
+    c = GetClassFromString(classname, class'Actor');
+    foreach AllActors(c, a)
     {
-        if( SkipActor(a, classname) ) continue;
+        if( SkipActor(a) ) continue;
         temp[num++] = a;
     }
 
@@ -87,9 +89,9 @@ function bool CarriedItem(Actor a)
     return a.Owner != None && a.Owner.IsA('Pawn');
 }
 
-static function bool IsHuman(Actor a)
+static function bool IsHuman(class<Actor> a)
 {
-    return #var(prefix)HumanMilitary(a) != None || #var(prefix)HumanThug(a) != None || #var(prefix)HumanCivilian(a) != None;
+    return ClassIsChildOf(a, class'#var(prefix)HumanMilitary') || ClassIsChildOf(a, class'#var(prefix)HumanThug') || ClassIsChildOf(a, class'#var(prefix)HumanCivilian');
 }
 
 static function bool IsCritter(Actor a)
@@ -315,10 +317,10 @@ function bool SkipActorBase(Actor a)
     return false;
 }
 
-function bool SkipActor(Actor a, name classname)
+function bool SkipActor(Actor a)
 {
     local int i;
-    if( SkipActorBase(a) || ( ! a.IsA(classname) ) ) {
+    if( SkipActorBase(a) ) {
         return true;
     }
     for(i=0; i < ArrayCount(_skipactor_types); i++) {

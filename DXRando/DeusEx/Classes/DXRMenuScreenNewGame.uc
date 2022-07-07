@@ -1,4 +1,8 @@
+#ifdef revision
+class DXRMenuScreenNewGame extends RevMenuScreenNewGame;
+#else
 class DXRMenuScreenNewGame extends MenuScreenNewGame;
+#endif
 
 var DXRando dxr;
 var DXRFlags flags;

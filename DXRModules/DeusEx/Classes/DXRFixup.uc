@@ -1116,6 +1116,9 @@ function HongKong_FirstEntry()
                         HackableDevices(a).hackStrength = 0;
                     }
                     break;
+                case "PoliceVault":
+                    a.SetCollision(False,False,False);
+                    break;
                 default:
                     break;
             }

@@ -390,7 +390,7 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
     foreach AllActors(class'Inventory', a)
     {
         if( a == k ) continue;
-        if( SkipActor(a, 'Inventory') ) continue;
+        if( SkipActor(a) ) continue;
         if( KeyPositionGood(k, a.Location) == False ) continue;
 #ifdef debug
         /*if(k.KeyID=='eastgate') {
@@ -404,7 +404,7 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
     if(containers) {
         foreach AllActors(class'Containers', c)
         {
-            if( SkipActor(c, 'Containers') ) continue;
+            if( SkipActor(c) ) continue;
             if( KeyPositionGood(k, c.Location) == False ) continue;
             if( HasBased(c) ) continue;
 #ifdef debug

@@ -1,8 +1,4 @@
-#ifdef injections
-class DXRAllianceTrigger injects AllianceTrigger;
-#else
-class DXRAllianceTrigger extends #var(prefix)AllianceTrigger;
-#endif
+class DXRAllianceTrigger injects #var(prefix)AllianceTrigger;
 
 var() bool bPlayerOnly;
 

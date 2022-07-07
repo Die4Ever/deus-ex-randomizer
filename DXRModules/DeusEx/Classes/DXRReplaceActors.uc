@@ -28,6 +28,15 @@ function ReplaceActors()
         if( #var(prefix)ShowerFaucet(a) != None ) {
             ReplaceShowerFaucet(#var(prefix)ShowerFaucet(a));
         }
+        if( #var(prefix)ShipsWheel(a) != None ) {
+            ReplaceShipsWheel(#var(prefix)ShipsWheel(a));
+        }
+        if( #var(prefix)WaterCooler(a) != None ) {
+            ReplaceWaterCooler(#var(prefix)WaterCooler(a));
+        }
+        if( #var(prefix)WaterFountain(a) != None ) {
+            ReplaceWaterFountain(#var(prefix)WaterFountain(a));
+        }
 #ifdef gmdx
         if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -87,6 +96,51 @@ function ReplaceAllianceTrigger(#var(prefix)AllianceTrigger a)
     }
 
     ReplaceTrigger(a, n);
+    a.Destroy();
+}
+
+function ReplaceShipsWheel(#var(prefix)ShipsWheel a)
+{
+    local DXRShipsWheel n;
+    n = DXRShipsWheel(SpawnReplacement(a, class'DXRShipsWheel'));
+    if(n == None)
+        return;
+
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
+    a.Destroy();
+}
+
+function ReplaceWaterFountain(#var(prefix)WaterFountain a)
+{
+    local DXRWaterFountain n;
+    n = DXRWaterFountain(SpawnReplacement(a, class'DXRWaterFountain'));
+    if(n == None)
+        return;
+
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
+    a.Destroy();
+}
+
+function ReplaceWaterCooler(#var(prefix)WaterCooler a)
+{
+    local DXRWaterCooler n;
+    n = DXRWaterCooler(SpawnReplacement(a, class'DXRWaterCooler'));
+    if(n == None)
+        return;
+
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
     a.Destroy();
 }
 

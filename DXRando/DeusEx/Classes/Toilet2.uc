@@ -1,8 +1,6 @@
-#ifdef injections
-class Toilet2 injects Toilet2;
-#else
-class DXRToilet2 extends #var(prefix)Toilet2;
-#endif
+class DXRToilet2 injects #var(prefix)Toilet2;
+
+var bool bAlreadyUsed;
 
 function Frob(actor Frobber, Inventory frobWith)
 {
@@ -24,6 +22,14 @@ function Frob(actor Frobber, Inventory frobWith)
                 class'DXREvents'.static.ExtinguishFire(dxr,"filthy urinal",player);
             }
             break;
+        }
+    }
+    if (player!=None){
+        if (!bAlreadyUsed){
+            bAlreadyUsed = true;
+            foreach AllActors(class'DXRando', dxr) {
+                class'DXREvents'.static.MarkBingo(dxr,"FlushUrinal");
+            }
         }
     }
 }

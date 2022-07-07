@@ -31,8 +31,8 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 * randomly adds "The Merchant"
 
 ## There are also settings for
-* Crowd Control! Let your viewers troll you or help you! NOW PLAYABLE! https://crowdcontrol.live/guides/DeusEx
-    * If you want to try some of the Crowd Control features without actually streaming, you can try the "OfflineCrowdControl.py" script to randomly send Crowd Control messages to your local game!  Requires Python 3.8 or above
+* Crowd Control! Let your Twitch/YouTube/Discord/other viewers troll you or help you! https://crowdcontrol.live/guides/DeusEx
+    * If you want to try some of the Crowd Control features without actually streaming, you can try the "Offline Simulated" mode in the New Game screen!
 * New Game+ - after beating the game play it again keeping your items, skills, and augs, but with increased difficulty and a new seed
     * takes away 1 random augmentation, and 1 of your weapons
     * takes away half your skill points and 5 random skill levels, so the player has to choose which ones to level up first
@@ -47,6 +47,9 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
     * Freeman Mode - only weapon allowed is the crowbar
     * Grenades Only
     * No Pistols - for people who think the pistol is OP
+    * No Swords - for people who think the sword and Dragon's Tooth Sword are OP
+    * No Overpowered Weapons - bans pistols, swords, and the GEP Gun
+    * By the Book - bans lockpicks and multitools
 * Max Rando - randomize the randomizer's settings!
 * An integrated Bingo board: on the Goals screen there's a Bingo button in the top right, there's also our external BingoDisplay program
 * Co-op when combined with the HX mod (Alpha)

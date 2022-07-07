@@ -4,7 +4,7 @@ var Actor rotating;
 
 function RandomDancing(Actor a)
 {
-    if (IsHuman(a)) {
+    if (IsHuman(a.class)) {
         if (ScriptedPawn(a).Orders == 'Standing' ||
             ScriptedPawn(a).Orders == 'Sitting' ||
             ScriptedPawn(a).Orders == '') {
@@ -34,7 +34,7 @@ function AnyEntry()
             foreach AllActors(class'#var(prefix)DXLogo', logo)
             {
                 a = ReplaceWithRandomClass(logo);
-                if (IsHuman(a)){
+                if (IsHuman(a.class)){
                     ScriptedPawn(a).SetOrders('Standing');
                 }
 
@@ -60,7 +60,7 @@ function AnyEntry()
             foreach AllActors(class'#var(prefix)IonStormLogo', islogo)
             {
                 a = ReplaceWithRandomClass(islogo);
-                if (IsHuman(a)){
+                if (IsHuman(a.class)){
                     ScriptedPawn(a).SetOrders('Standing');
                 }
                 //Maybe make them dance?
@@ -75,7 +75,7 @@ function AnyEntry()
             foreach AllActors(class'#var(prefix)EidosLogo', elogo)
             {
                 a = ReplaceWithRandomClass(elogo);
-                if (IsHuman(a)){
+                if (IsHuman(a.class)){
                     ScriptedPawn(a).SetOrders('Standing');
                 }
                 //Maybe make them dance?
@@ -189,7 +189,7 @@ function RandomizeCutscene()
 #ifdef revision
     _skipactor_types[i++] = class<Actor>(DynamicLoadObject("RevisionDeco.Rev_SphereLight", class'class'));
 #endif
-    SwapAll('Actor', 100);
+    SwapAll("Engine.Actor", 100);
 
     for(i=0; i<ArrayCount(_skipactor_types); i++) {
         _skipactor_types[i] = old_skips[i];

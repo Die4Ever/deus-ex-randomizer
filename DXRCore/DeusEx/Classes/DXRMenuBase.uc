@@ -202,6 +202,7 @@ function NewMenuItem(string label, string helptext)
     id++;
     labels[id] = label;
     helptexts[id] = helptext;
+    log(Self @ label);
 }
 
 function BreakLine()
@@ -235,14 +236,16 @@ function bool EnumOption(string label, int value, optional out int output)
 
     if( writing ) {
         if( label == GetEnumValue(id) ) {
-            log(self$" EnumOption: "$label$", changing from "$output$" to "$value);
+            log(self$"    EnumOption: "$label$", changing from "$output$" to "$value);
             output = value;
             return true;
         }
         return false;
     } else {
         for(i=0; i<ArrayCount(enums[id].values); i++) {
-            if( enums[id].values[i] == "" ) {
+            if( enums[id].values[i] == label){
+                break;
+            } else if( enums[id].values[i] == "" ) {
                 enums[id].values[i] = label;
                 break;
             }
@@ -251,7 +254,7 @@ function bool EnumOption(string label, int value, optional out int output)
             enums[id].btn = CreateEnum(id, labels[id], helptexts[id], enums[id]);
             wnds[id] = enums[id].btn;
         }
-        log(self$" EnumOption: "$label$" == "$value$" compared to default of "$output);
+         log(self$"    EnumOption: "$label$" == "$value$" compared to default of "$output);
         if( output == value ) {
             enums[id].btn.SetButtonText(label);
             enums[id].value = i;
@@ -266,14 +269,16 @@ function bool EnumOptionString(string label, string value, optional out string o
 
     if( writing ) {
         if( label == GetEnumValue(id) ) {
-            log(self$" EnumOptionString: "$label$", changing from "$output$" to "$value);
+            log(self$"    EnumOptionString: "$label$", changing from "$output$" to "$value);
             output = value;
             return true;
         }
         return false;
     } else {
         for(i=0; i<ArrayCount(enums[id].values); i++) {
-            if( enums[id].values[i] == "" ) {
+            if( enums[id].values[i] == label){
+                break;
+            } else if( enums[id].values[i] == "" ) {
                 enums[id].values[i] = label;
                 break;
             }
@@ -282,7 +287,7 @@ function bool EnumOptionString(string label, string value, optional out string o
             enums[id].btn = CreateEnum(id, labels[id], helptexts[id], enums[id]);
             wnds[id] = enums[id].btn;
         }
-        log(self$" EnumOptionString: "$label$" == "$value$" compared to default of "$output);
+        log(self$"    EnumOptionString: "$label$" == "$value$" compared to default of "$output);
         if( output == value ) {
             enums[id].btn.SetButtonText(label);
             enums[id].value = i;
@@ -305,13 +310,18 @@ function string EditBox(string value, string pattern)
 
 function int Slider(out int value, int min, int max)
 {
+    local int output;
     if( writing ) {
-        value = GetSliderValue(MenuUIEditWindow(wnds[id]));
-        value = Clamp(value, min, max);
+        output = GetSliderValue(MenuUIEditWindow(wnds[id]));
+        output = Clamp(output, min, max);
+        log(Self$"    Slider: changing from "$value$" to "$output );
+        value = output;
         return value;
     } else {
         if ( wnds[id] == None ) {
             wnds[id] = CreateSlider(id, labels[id], helptexts[id], value, min, max);
+        } else {
+            MenuUIEditWindow(wnds[id]).SetText(string(value));
         }
     }
     return value;

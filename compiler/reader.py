@@ -2,8 +2,9 @@
 from compiler.base import *
 
 class UnrealScriptFile():
-    def __init__(self, file, preprocessor, definitions):
+    def __init__(self, mod_name, file, preprocessor, definitions):
         self.file = file
+        self.mod_name = mod_name
         self.read_file(preprocessor, definitions)
 
     def read_file(self, preprocessor, definitions):
@@ -27,8 +28,11 @@ class UnrealScriptFile():
             self.baseclass = inheritance.group('baseclass')
         else:
             RuntimeError(self.file+" couldn't read class definition")
+
         # maybe do some assertions on classnames, and verify that classname matches filename?
         self.qualifiedclass = self.namespace+'.'+self.classname
+        if self.operator == 'injects' and 'injections' not in definitions:
+            self.modify_classline(self.classname, 'extends', self.baseclass)
 
     def modify_classline(f, classname, operator, baseclass):
         comment = "// === was "+f.mod_name+'/'
@@ -64,8 +68,8 @@ class UnrealScriptFile():
         return content_no_comments
 
 
-def read_uc_file(file, preprocessor, definitions):
-    f = UnrealScriptFile(file, preprocessor, definitions)
+def read_uc_file(mod_name, file, preprocessor, definitions):
+    f = UnrealScriptFile(mod_name, file, preprocessor, definitions)
     return f
 
 
@@ -81,11 +85,10 @@ def proc_file(file, files, mod_name, injects, preprocessor, definitions):
         info("Processing folder "+str(folder)[-50:]+" from "+mod_name)
     proc_file.last_folder = folder
 
-    f = read_uc_file(file, preprocessor, definitions)
+    f = read_uc_file(mod_name, file, preprocessor, definitions)
     if f is None:
         return
 
-    f.mod_name = mod_name
     if f.operator not in vanilla_inheritance_keywords:
         key = f.namespace+'.'+f.baseclass
         if key not in injects:

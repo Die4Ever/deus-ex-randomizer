@@ -53,6 +53,7 @@ struct FlagsSettings {
     var int min_weapon_dmg, max_weapon_dmg, min_weapon_shottime, max_weapon_shottime;
     var int prison_pocket;// just for Heinki, keep your items when getting captured
     var int bingo_win; //Number of bingo lines to beat the game
+    var int bingo_freespaces; //Number of bingo free spaces
 };
 
 #ifdef hx
@@ -134,6 +135,11 @@ function PreFirstEntry()
     Super.PreFirstEntry();
     Timer();
     LogFlags("PreFirstEntry "$dxr.localURL);
+#ifdef revision
+    if( player().bIsFemalePlayer && !f.GetBool('LDDPJCIsFemale') ) {
+        f.SetBool('LDDPJCIsFemale', true,, 999);
+    }
+#endif
 }
 
 function AnyEntry()
@@ -212,7 +218,7 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,0,1,4) ) {
+    if( ConfigOlderThan(2,0,2,2) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -270,6 +276,7 @@ function CheckConfig()
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         difficulty_settings[i].bingo_win = 0;
+        difficulty_settings[i].bingo_freespaces = 1;
         i++;
 #endif
 
@@ -330,6 +337,7 @@ function CheckConfig()
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         difficulty_settings[i].bingo_win = 0;
+        difficulty_settings[i].bingo_freespaces = 1;
         i++;
 
         difficulty_names[i] = "Medium";
@@ -389,6 +397,7 @@ function CheckConfig()
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         difficulty_settings[i].bingo_win = 0;
+        difficulty_settings[i].bingo_freespaces = 1;
         i++;
 
         difficulty_names[i] = "Hard";
@@ -448,6 +457,7 @@ function CheckConfig()
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         difficulty_settings[i].bingo_win = 0;
+        difficulty_settings[i].bingo_freespaces = 1;
         i++;
 
         difficulty_names[i] = "DeusEx";
@@ -507,6 +517,7 @@ function CheckConfig()
         difficulty_settings[i].min_weapon_shottime = 50;
         difficulty_settings[i].max_weapon_shottime = 150;
         difficulty_settings[i].bingo_win = 0;
+        difficulty_settings[i].bingo_freespaces = 1;
         i++;
 
 #ifdef hx
@@ -695,6 +706,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_prison_pocket', settings.prison_pocket, mode, str);
 
     FlagInt('Rando_bingo_win', settings.bingo_win, mode, str);
+    FlagInt('Rando_bingo_freespaces', settings.bingo_freespaces, mode, str);
 
     return str;
 }
@@ -829,6 +841,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "JC's Prison Pocket";
         case 'Rando_bingo_win':
             return "Bingo Lines to Win";
+        case 'Rando_bingo_freespaces':
+            return "Bingo Free Spaces";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -1030,6 +1044,16 @@ simulated function string flagValToHumanVal(name flagname, int val){
             else {
                 return loadout.GetName(val);
             }
+
+        case 'Rando_bingo_freespaces':
+            if(val == 0) {
+                return "Disabled";
+            } else if(val == 1) {
+                return "Enabled";
+            } else {
+                return val $ " Free Spaces";
+            }
+            break;
 
         //Weird, handle later
         case 'Rando_doorsmode':
@@ -1262,9 +1286,50 @@ simulated function ExecMaxRando()
     SetGlobalSeed("ExecMaxRando");
     maxrando = 1;
 
+    RandomizeSettings(False);
+}
+
+
+//Initialize the values that get tweaked by max rando
+simulated function InitMaxRandoSettings()
+{
+    settings.merchants = difficulty_settings[difficulty].merchants;
+    settings.dancingpercent = difficulty_settings[difficulty].dancingpercent;
+    settings.medbots = difficulty_settings[difficulty].medbots;
+    settings.repairbots = difficulty_settings[difficulty].repairbots;
+    settings.enemiesrandomized=difficulty_settings[difficulty].enemiesrandomized;
+    settings.enemies_nonhumans=difficulty_settings[difficulty].enemies_nonhumans;
+    settings.turrets_move=difficulty_settings[difficulty].turrets_move;
+    settings.turrets_add=difficulty_settings[difficulty].turrets_add;
+    settings.skills_reroll_missions=difficulty_settings[difficulty].skills_reroll_missions;
+    settings.minskill=difficulty_settings[difficulty].minskill;
+    settings.maxskill=difficulty_settings[difficulty].maxskill;
+    settings.banned_skills=difficulty_settings[difficulty].banned_skills;
+    settings.banned_skill_levels=difficulty_settings[difficulty].banned_skill_levels;
+    settings.ammo=difficulty_settings[difficulty].ammo;
+    settings.multitools=difficulty_settings[difficulty].multitools;
+    settings.lockpicks=difficulty_settings[difficulty].lockpicks;
+    settings.biocells=difficulty_settings[difficulty].biocells;
+    settings.medkits=difficulty_settings[difficulty].medkits;
+    settings.equipment = difficulty_settings[difficulty].equipment;
+    settings.min_weapon_dmg=difficulty_settings[difficulty].min_weapon_dmg;
+    settings.max_weapon_dmg=difficulty_settings[difficulty].max_weapon_dmg;
+    settings.min_weapon_shottime=difficulty_settings[difficulty].min_weapon_shottime;
+    settings.max_weapon_shottime=difficulty_settings[difficulty].max_weapon_shottime;
+    settings.enemyrespawn = difficulty_settings[difficulty].enemyrespawn;
+
+}
+
+//Randomize the values.  If forceMenuOptions is set, we will only allow the values to be set to
+//the options available in DXRMenuSetupRando
+simulated function RandomizeSettings(bool forceMenuOptions)
+{
+    info("RandomizeSettings("$string(forceMenuOptions)$")");
+
     // change the flags normally configurable on the Advanced Settings page, but try to keep the difficulty balanced
     // also make sure to randomize the doors mode and stuff
     MaxRandoVal(settings.merchants);
+    MaxRandoVal(settings.dancingpercent);
     MaxRandoVal(settings.medbots);
     MaxRandoVal(settings.repairbots);
 
@@ -1276,20 +1341,35 @@ simulated function ExecMaxRando()
     settings.medbotamount = int(rngb()) + 1;
     settings.repairbotamount = int(rngb()) + 1;
 
-    settings.doorsmode = undefeatabledoors + doorindependent;
-    settings.doorsdestructible = rng(100);
-    settings.doorspickable = rng(100);
+    if (forceMenuOptions){
+        //Eventually we can add logic to randomize between the door menu options
+    } else {
+        settings.doorsmode = undefeatabledoors + doorindependent;
+        settings.doorsdestructible = rng(100);
+        settings.doorspickable = rng(100);
+    }
 
-    settings.deviceshackable = rng(100);
+    /* To match the menu options, we just randomize between 0, 50, and 100 */
+    if (forceMenuOptions){
+        settings.deviceshackable = rng(3)*50;
+    } else {
+        settings.deviceshackable = rng(100);
+    }
+
     MaxRandoVal(settings.enemiesrandomized);
     settings.hiddenenemiesrandomized = settings.enemiesrandomized;
     settings.enemiesshuffled = 100;
     MaxRandoVal(settings.enemies_nonhumans);
-    if(rngb())
+
+    if(rngb()) {
         settings.enemyrespawn = rng(120) + 120;
+    } else {
+        settings.enemyrespawn = 0;
+    }
 
     MaxRandoVal(settings.turrets_move);
     MaxRandoVal(settings.turrets_add);
+
     MaxRandoVal(settings.skills_reroll_missions);
     settings.skills_independent_levels = int(rngb());
     MaxRandoValPair(settings.minskill, settings.maxskill);
@@ -1303,8 +1383,10 @@ simulated function ExecMaxRando()
     MaxRandoVal(settings.biocells);
     MaxRandoVal(settings.medkits);
     settings.equipment += int(rngb());
+
     MaxRandoValPair(settings.min_weapon_dmg, settings.max_weapon_dmg);
     MaxRandoValPair(settings.min_weapon_shottime, settings.max_weapon_shottime);
+
     settings.aug_value_rando = 100;
 }
 

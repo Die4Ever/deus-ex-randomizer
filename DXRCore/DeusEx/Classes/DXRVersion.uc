@@ -4,7 +4,7 @@ simulated static function CurrentVersion(optional out int major, optional out in
 {
     major=2;
     minor=0;
-    patch=1;
+    patch=2;
     build=5;//build can't be higher than 99
 }
 

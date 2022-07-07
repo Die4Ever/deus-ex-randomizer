@@ -9,7 +9,7 @@ struct BingoOption {
     var string event, desc;
     var int max;
 };
-var BingoOption bingo_options[100];
+var BingoOption bingo_options[200];
 
 struct MutualExclusion {
     var string e1, e2;
@@ -41,11 +41,26 @@ function SetWatchFlags() {
     local Mutt starr;// arms smuggler's dog in Paris
     local Hooker1 h;  //Mercedes
     local LowerClassFemale lcf; //Tessa
+    local JunkieMale jm;
+    local ScientistMale sm;
+    local ZoneInfo zone;
+    local SkillAwardTrigger skillAward;
+    local DeusExMover dxm;
+    local LogicTrigger lTrigger;
+    local WaterZone water;
+    local Toilet closestToilet;
+    local BookOpen book;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
         WatchFlag('GuntherFreed');
         WatchFlag('GuntherRespectsPlayer');
+        Tag = 'SunkenShip';
+        foreach AllActors(class'SkillAwardTrigger',skillAward) {
+            if(skillAward.awardMessage=="Exploration Bonus" && skillAward.skillPointsAdded==50 && skillAward.Region.Zone.bWaterZone){
+                skillAward.Event='SunkenShip';
+            }
+        }
         break;
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
@@ -61,6 +76,12 @@ function SetWatchFlags() {
                 child.bImportant = true;
         }
 
+        foreach AllActors(class'JunkieMale',jm) {
+            if(jm.BindName == "SickMan"){
+                jm.bImportant = true;
+            }
+        }
+
         foreach AllActors(class'MapExit',m,'Boat_Exit'){
             m.Tag = 'Boat_Exit2';
         }
@@ -74,12 +95,26 @@ function SetWatchFlags() {
         break;
     case "02_NYC_BAR":
         WatchFlag('JockSecondStory');
+        WatchFlag('LeoToTheBar');
         break;
     case "02_NYC_FREECLINIC":
         WatchFlag('BoughtClinicPlan');
         break;
+    case "02_NYC_SMUG":
+        WatchFlag('MetSmuggler');
+        break;
+    case "03_NYC_BATTERYPARK":
+        foreach AllActors(class'JunkieMale',jm) {
+            if(jm.BindName == "SickMan"){
+                jm.bImportant = true;
+            }
+        }
+        break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
+        break;
+    case "03_NYC_AIRFIELD":
+        Tag = 'arctrigger';
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
@@ -91,6 +126,9 @@ function SetWatchFlags() {
             if(mechanic.BindName == "Harold")
                 mechanic.bImportant = true;
         }
+        break;
+    case "04_NYC_BAR":
+        WatchFlag('LeoToTheBar');
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
@@ -105,15 +143,36 @@ function SetWatchFlags() {
     case "04_NYC_STREET":
         Tag = GetKnicksTag();
         break;
+    case "04_NYC_BATTERYPARK":
+        Tag = 'MadeItToBP';
+        break;
+    case "04_NYC_SMUG":
+        RewatchFlag('MetSmuggler');
+        break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
         break;
+    case "05_NYC_UNATCOHQ":
+        WatchFlag('KnowsAnnasKillphrase1');
+        WatchFlag('KnowsAnnasKillphrase2');
+        break;
     case "06_HONGKONG_WANCHAI_CANAL":
         WatchFlag('FoundScientistBody');
+        WatchFlag('M06BoughtVersaLife');
+        foreach AllActors(class'DeusExMover',dxm,'SecretHold'){
+            break;
+        }
+        skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
+        skillAward.Event='BoatEngineRoom';
+        Tag='BoatEngineRoom';
+
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
         WatchFlag('ClubMercedesConvo1_Done');
         WatchFlag('M07ChenSecondGive_Played');
+        WatchFlag('LDDPRussPaid');
+        WatchFlag('LeoToTheBar');
+
         foreach AllActors(class'Hooker1', h) {
             if(h.BindName == "ClubMercedes")
                 h.bImportant = true;
@@ -124,12 +183,55 @@ function SetWatchFlags() {
         }
 
         break;
+    case "06_HONGKONG_WANCHAI_STREET":
+        WatchFlag('M06PaidJunkie');
+
+        //Find Jock's apartment door
+        foreach AllActors(class'DeusExMover',dxm){
+            if (dxm.KeyIDNeeded=='JocksKey'){
+                break;
+            }
+        }
+
+        //Find the nearest toilet
+        closestToilet = Toilet(findNearestToActor(class'Toilet',dxm));
+
+        Tag = 'JocksToilet';
+        closestToilet.Event='JocksToilet';
+
+
+
+        break;
+    case "06_HONGKONG_WANCHAI_MARKET":
+        Tag = 'PoliceVaultBingo';
+
+        foreach AllActors(class'DeusExMover',dxm,'station_door_05'){
+            break;
+        }
+
+        skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
+        skillAward.Event='PoliceVaultBingo';
+
+        break;
+    case "06_HONGKONG_TONGBASE":
+        Tag = 'TongsHotTub';
+        foreach AllActors(class'WaterZone', water) {
+            water.ZonePlayerEvent = 'TongsHotTub';
+        }
+        break;
+    case "06_HONGKONG_HELIBASE":
+        Tag = 'purge';
+        break;
     case "08_NYC_STREET":
         Tag = GetKnicksTag();
         WatchFlag('StantonAmbushDefeated');
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
+        RewatchFlag('MetSmuggler');
+        break;
+    case "08_NYC_BAR":
+        WatchFlag('LeoToTheBar');
         break;
     case "09_NYC_SHIP":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
@@ -153,6 +255,7 @@ function SetWatchFlags() {
         WatchFlag('M10EnteredBakery');
         WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
+        WatchFlag('KnowsGuntherKillphrase');
 
         foreach AllActors(class'GuntherHermann', gunther) {
             gunther.bInvincible = false;
@@ -164,19 +267,87 @@ function SetWatchFlags() {
         break;
     case "10_PARIS_CLUB":
         WatchFlag('CamilleConvosDone');
+        WatchFlag('LeoToTheBar');
+
         break;
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');
         WatchFlag('MeetAI4_Played');
         WatchFlag('DeBeersDead');
         break;
+    case "12_VANDENBERG_GAS":
+        Tag = 'support1';  //This gets hit when you blow up the gas pumps
+        break;
+    case "12_VANDENBERG_CMD":
+        WatchFlag('MeetTimBaker_Played');
+        foreach AllActors(class'ScientistMale', sm) {
+            if (sm.BindName=="TimBaker"){
+                sm.bImportant = true;
+            }
+        }
+
+        //Using a blank LogicTrigger so that we can ensure it only sends one event from each button
+        lTrigger = Spawn(class'LogicTrigger');
+        lTrigger.OneShot=True;
+        lTrigger.Tag='bunker_door1';
+        lTrigger.Event='VandenbergDXR';
+
+        lTrigger = Spawn(class'LogicTrigger');
+        lTrigger.OneShot=True;
+        lTrigger.Tag='bunker_door2';
+        lTrigger.Event='VandenbergDXR';
+
+        foreach AllActors(class'Toilet',closestToilet){
+            closestToilet.tag='VandenbergToilet';
+            closestToilet.Event='VandenbergDXR';
+        }
+
+        Tag = 'VandenbergDXR';
+        break;
+
+    case "14_OCEANLAB_SILO":
+        WatchFlag('MeetDrBernard_Played');
+        foreach AllActors(class'ScientistMale', sm) {
+            if (sm.BindName=="drbernard"){
+                sm.bImportant = true;
+            }
+        }
+        break;
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
         break;
     case "15_AREA51_BUNKER":
         WatchFlag('JockBlewUp');
+        Tag = 'Area51FanShaft';
+        foreach AllActors(class'ZoneInfo', zone) {
+            if (zone.Tag=='fan'){
+                zone.ZonePlayerEvent = 'Area51FanShaft';
+            }
+        }
+        break;
+    case "15_AREA51_FINAL":
+        foreach AllActors(class'BookOpen', book) {
+            if (book.textTag == '15_Book01'){ //This copy of Jacob's Shadow is also in _BUNKER and _ENTRANCE
+                book.textTag = '15_Book02';  //Put that good Thursday man back where he (probably) belongs
+            }
+        }
         break;
     }
+}
+
+function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis){
+    local Actor thing,nearestThing;
+
+    foreach AllActors(nearestClass,thing) {
+        if (nearestThing==None){
+            nearestThing = thing;
+        } else {
+            if ((VSize(nearThis.Location-thing.Location)) < (VSize(nearThis.Location-nearestThing.Location))){
+                nearestThing = thing;
+            }
+        }
+    }
+    return nearestThing;
 }
 
 function name GetKnicksTag() {
@@ -211,6 +382,13 @@ function WatchFlag(name flag, optional bool disallow_immediate) {
     watchflags[num_watchflags++] = flag;
     if(num_watchflags > ArrayCount(watchflags))
         err("WatchFlag num_watchflags > ArrayCount(watchflags)");
+}
+
+//Only actually add the flag to the list if it isn't already set
+function RewatchFlag(name flag, optional bool disallow_immediate){
+    if (!dxr.flagbase.GetBool(flag)){
+        WatchFlag(flag,disallow_immediate);
+    }
 }
 
 function ReportMissingFlag(name flag, string eventname) {
@@ -260,6 +438,17 @@ simulated function AnyEntry()
     SetTimer(1, true);
 }
 
+simulated function bool LeoToTheBar()
+{
+    local TerroristCommanderCarcass leoBody;
+    //player().ClientMessage("Looking for Leo");
+
+    foreach AllActors(class'TerroristCommanderCarcass',leoBody){
+        return True;
+    };
+    return False;
+}
+
 simulated function Timer()
 {
     local int i;
@@ -273,6 +462,16 @@ simulated function Timer()
 
         if( watchflags[i] == 'MS_DL_Played' && dxr.flagbase.GetBool('PlayerTraveling') ) {
             continue;
+        }
+
+        if( watchflags[i] == 'LeoToTheBar' ) {
+            if (LeoToTheBar()){
+                SendFlagEvent(watchflags[i]);
+                num_watchflags--;
+                watchflags[i] = watchflags[num_watchflags];
+                i--;
+                continue;
+            }
         }
 
         if( dxr.flagbase.GetBool(watchflags[i]) ) {
@@ -347,6 +546,12 @@ function Trigger(Actor Other, Pawn Instigator)
     //Massage tag names
     if (tag=='MadeBasketM' || tag=='MadeBasketF'){
         useTag = 'MadeBasket';
+    }else if (tag=='VandenbergDXR'){
+        if (Other.tag=='bunker_door1' || Other.tag=='bunker_door2'){
+            useTag = 'ActivateVandenbergBots';
+        } else if (other.tag=='VandenbergToilet'){
+            useTag = 'VandenbergToilet';
+        }
     } else {
         useTag = tag;
     }
@@ -487,7 +692,7 @@ static function AddPlayerDeath(DXRando dxr, #var(PlayerPawn) player, optional Ac
     }
 
     if(damageType == "shot") {
-        if( !IsHuman(Killer) && Robot(Killer) == None ) {
+        if( !IsHuman(Killer.class) && Robot(Killer) == None ) {
             // only humans and robots can shoot? karkians deal shot damage
             damageType = "";
         }
@@ -503,6 +708,19 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
     foreach victim.AllActors(class'DXRando', dxr) break;
 
     MarkBingo(dxr, victim.BindName$"_Dead");
+    if( Killer == None || #var(PlayerPawn)(Killer) != None )
+        if (IsHuman(victim.class) && ((damageType == "Stunned") ||
+                                (damageType == "KnockedOut") ||
+	                            (damageType == "Poison") ||
+                                (damageType == "PoisonEffect"))){
+            MarkBingo(dxr, victim.class.name$"_ClassUnconscious");
+        } else {
+            MarkBingo(dxr, victim.class.name$"_ClassDead");
+        }
+        if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
+            MarkBingo(dxr,"HumanStompDeath");
+        }
+
     if(!victim.bImportant)
         return;
 
@@ -676,12 +894,39 @@ simulated function CreateBingoBoard()
     _CreateBingoBoard(data);
 }
 
+//If there are any situational changes (Eg. Male/Female), adjust the description here
+simulated function string tweakBingoDescription(string event, string desc)
+{
+    local DXRando dxr;
+
+    foreach AllActors(class'DXRando', dxr) {break;}
+
+    switch(event){
+        //FemJC gets a male character instead.  Russ normally, Noah in Revision
+        case "ClubEntryPaid":
+           if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+#ifdef revision
+               return "Let Noah help";
+#else
+               return "Let Russ help";
+#endif
+           } else {
+               return desc;
+           }
+
+            break;
+        default:
+            return desc;
+            break;
+    }
+}
+
 simulated function _CreateBingoBoard(PlayerDataItem data)
 {
     local int x, y;
     local string event, desc;
     local int progress, max;
-    local int options[100], num_options, slot;
+    local int options[200], num_options, slot;
 
     num_options = 0;
     for(x=0; x<ArrayCount(bingo_options); x++) {
@@ -701,7 +946,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
-            if(num_options == 0 || (x==2 && y==2)) {
+            if(num_options == 0 || (x==2 && y==2 && dxr.flags.settings.bingo_freespaces>0)) {
                 data.SetBingoSpot(x, y, "Free Space", "Free Space", 1, 1);
                 continue;
             }
@@ -709,16 +954,19 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             slot = rng(num_options);
             event = bingo_options[options[slot]].event;
             desc = bingo_options[options[slot]].desc;
+            desc = tweakBingoDescription(event,desc);
             max = bingo_options[options[slot]].max;
             num_options--;
             options[slot] = options[num_options];
             data.SetBingoSpot(x, y, event, desc, 0, max);
         }
     }
+
+    // TODO: we could handle bingo_freespaces>1 by randomly putting free spaces on the board, but this probably won't be a desired feature
     data.ExportBingoState();
 }
 
-simulated function int HandleMutualExclusion(MutualExclusion m, int options[100], int num_options) {
+simulated function int HandleMutualExclusion(MutualExclusion m, int options[200], int num_options) {
     local int a, b, overwrite;
 
     for(a=0; a<num_options; a++) {
@@ -751,6 +999,72 @@ function CheckBingoWin(DXRando dxr, int numBingos)
     }
 }
 
+function ReadText(name textTag)
+{
+    local string eventname;
+    local PlayerDataItem data;
+
+    l("ReadText "$textTag);
+
+    switch(textTag) {
+    // groups of textTags, we need separate tracking for which have been read and which haven't, before incrementing the bingo progress
+    case '01_Bulletin05':
+    case '01_Bulletin06':
+    case '01_Bulletin07':
+    case '01_Bulletin08':
+    case '03_Bulletin01':
+    case '03_Bulletin02':
+        eventname = "KnowYourEnemy";
+        break;
+
+    case '02_Book03':
+    case '03_Book04':
+    case '04_Book03':
+    case '06_Book03':
+    case '09_Book02':
+    case '10_Book02':
+    case '12_Book01':
+    case '15_Book01':
+        eventname = "JacobsShadow";
+        break;
+
+    case '02_Book05':
+    case '03_Book05':
+    case '04_Book05':
+    case '10_Book03':
+    case '12_Book02':
+    case '14_Book04':
+    case '15_Book02':
+        eventname = "ManWhoWasThursday";
+        break;
+
+    case '01_Newspaper06':
+    case '01_Newspaper08':
+    case '02_Newspaper06':
+    case '03_Newspaper02':
+    case '08_Newspaper01':
+        eventname = "GreeneArticles";
+        break;
+
+    case '02_Newspaper03':
+    case '03_Newspaper01':
+    case '06_Newspaper02':
+        eventname="MoonBaseNews";
+        break;
+
+    default:
+        // it's simple for a bingo event that requires reading just 1 thing
+        _MarkBingo(textTag);
+        return;
+    }
+
+    data = class'PlayerDataItem'.static.GiveItem(player());
+
+    if(data.MarkRead(textTag)) {
+        _MarkBingo(eventname);
+    }
+}
+
 function _MarkBingo(coerce string eventname)
 {
     local int previousbingos, nowbingos, time;
@@ -767,6 +1081,21 @@ function _MarkBingo(coerce string eventname)
         case "hostage_female_Dead":
         case "hostage_Dead":
             eventname = "paris_hostage_Dead";
+            break;
+        case "KnowsAnnasKillphrase1":
+        case "KnowsAnnasKillphrase2":
+            eventname = "KnowsAnnasKillphrase";
+            break;
+        case "SecurityBot3_ClassDead":
+        case "SecurityBot4_ClassDead":
+            eventname = "SecurityBotSmall_ClassDead";
+            break;
+        case "SpiderBot2_ClassDead":
+            eventname="SpiderBot_ClassDead";
+            break;
+        case "LDDPRussPaid":
+        case "ClubMercedesConvo1_Done":
+            eventname="ClubEntryPaid";
             break;
     }
 
@@ -824,62 +1153,115 @@ defaultproperties
 	bingo_options(10)=(event="Antoine_Dead",desc="Kill Antoine",max=1)
 	bingo_options(11)=(event="Chad_Dead",desc="Kill Chad",max=1)
 	bingo_options(12)=(event="paris_hostage_Dead",desc="Kill both the hostages in the catacombs",max=2)
-	//bingo_options(13)=(event="hostage_female_Dead",desc="Kill hostage Anna",max=1)
-	bingo_options(14)=(event="Hela_Dead",desc="Kill Hela",max=1)
-	bingo_options(15)=(event="Renault_Dead",desc="Kill Renault",max=1)
-	bingo_options(16)=(event="Labrat_Bum_Dead",desc="Kill Labrat Bum",max=1)
-	bingo_options(17)=(event="DXRNPCs1_Dead",desc="Kill The Merchant",max=1)
-	bingo_options(18)=(event="lemerchant_Dead",desc="Kill Le Merchant",max=1)
-	bingo_options(19)=(event="Harold_Dead",desc="Kill Harold the mechanic in the hanger",max=1)
+	//bingo_options()=(event="hostage_female_Dead",desc="Kill hostage Anna",max=1)
+	bingo_options(13)=(event="Hela_Dead",desc="Kill Hela",max=1)
+	bingo_options(14)=(event="Renault_Dead",desc="Kill Renault",max=1)
+	bingo_options(15)=(event="Labrat_Bum_Dead",desc="Kill Labrat Bum",max=1)
+	bingo_options(16)=(event="DXRNPCs1_Dead",desc="Kill The Merchant",max=1)
+	bingo_options(17)=(event="lemerchant_Dead",desc="Kill Le Merchant",max=1)
+	bingo_options(18)=(event="Harold_Dead",desc="Kill Harold the mechanic in the hangar",max=1)
 	//bingo_options()=(event="Josh_Dead",desc="Kill Josh",max=1)
 	//bingo_options()=(event="Billy_Dead",desc="Kill Billy",max=1)
 	//bingo_options()=(event="MarketKid_Dead",desc="Kill Louis Pan",max=1)
-	bingo_options(20)=(event="aimee_Dead",desc="Kill Aimee",max=1)
-	bingo_options(21)=(event="WaltonSimons_Dead",desc="Kill Walton Simons",max=1)
-	bingo_options(22)=(event="JoeGreene_Dead",desc="Kill Joe Greene",max=1)
-    bingo_options(23)=(event="GuntherFreed",desc="Free Gunther from jail",max=1)
-    bingo_options(24)=(event="BathroomBarks_Played",desc="Embarass UNATCO",max=1)
-    //bingo_options(25)=(event="ManBathroomBarks_Played",desc="Embarass UNATCO",max=1)
-    bingo_options(26)=(event="GotHelicopterInfo",desc="A bomb!",max=1)
-    bingo_options(27)=(event="JoshFed",desc="Give Josh some food",max=1)
-    bingo_options(28)=(event="M02BillyDone",desc="Give Billy some food",max=1)
-    bingo_options(29)=(event="FordSchickRescued",desc="Rescue Ford Schick",max=1)
-    bingo_options(30)=(event="NiceTerrorist_Dead",desc="Ignore Paul in the 747 Hanger",max=1)
-    bingo_options(31)=(event="M10EnteredBakery",desc="Enter the bakery",max=1)
+	bingo_options(19)=(event="aimee_Dead",desc="Kill Aimee",max=1)
+	bingo_options(20)=(event="WaltonSimons_Dead",desc="Kill Walton Simons",max=1)
+	bingo_options(21)=(event="JoeGreene_Dead",desc="Kill Joe Greene",max=1)
+    bingo_options(22)=(event="GuntherFreed",desc="Free Gunther from jail",max=1)
+    bingo_options(23)=(event="BathroomBarks_Played",desc="Embarrass UNATCO",max=1)
+    //bingo_options()=(event="ManBathroomBarks_Played",desc="Embarass UNATCO",max=1)
+    bingo_options(24)=(event="GotHelicopterInfo",desc="A bomb!",max=1)
+    bingo_options(25)=(event="JoshFed",desc="Give Josh some food",max=1)
+    bingo_options(26)=(event="M02BillyDone",desc="Give Billy some food",max=1)
+    bingo_options(27)=(event="FordSchickRescued",desc="Rescue Ford Schick",max=1)
+    bingo_options(28)=(event="NiceTerrorist_Dead",desc="Ignore Paul in the 747 Hangar",max=1)
+    bingo_options(29)=(event="M10EnteredBakery",desc="Enter the bakery",max=1)
     //bingo_options()=(event="AlleyCopSeesPlayer_Played",desc="",max=1)
-    bingo_options(32)=(event="FreshWaterOpened",desc="Fix the water",max=1)
-    bingo_options(33)=(event="assassinapartment",desc="Visit Starr in Paris",max=1)
-    bingo_options(34)=(event="GaveRentonGun",desc="Give Gilbert a weapon",max=1)
-    bingo_options(35)=(event="DXREvents_LeftOnBoat",desc="Take the boat out of Battery Park",max=1)
-    bingo_options(36)=(event="AlleyBumRescued",desc="Rescue the alley bum",max=1)
-    bingo_options(37)=(event="FoundScientistBody",desc="Search the canal",max=1)
-    bingo_options(38)=(event="ClubMercedesConvo1_Done",desc="Help Mercedes and Tessa",max=1)
-    bingo_options(39)=(event="M08WarnedSmuggler",desc="Warn Smuggler",max=1)
-    bingo_options(40)=(event="ShipPowerCut",desc="Help the electrician",max=1)
-    bingo_options(41)=(event="CamilleConvosDone",desc="Get info from Camille",max=1)
-    bingo_options(42)=(event="MeetAI4_Played",desc="Talk to Morpheus",max=1)
-    bingo_options(43)=(event="DL_Flooded_Played",desc="Check flooded zone in the ocean lab",max=1)
-    bingo_options(44)=(event="JockSecondStory",desc="Get Jock buzzed",max=1)
-    bingo_options(45)=(event="M07ChenSecondGive_Played",desc="Party with the Triads",max=1)
-    bingo_options(46)=(event="DeBeersDead",desc="Put Lucius out of his misery",max=1)
-    bingo_options(47)=(event="StantonAmbushDefeated",desc="Defend Dowd from the ambush",max=1)
-    bingo_options(48)=(event="SmugglerDied",desc="Let Smuggler die",max=1)
-    bingo_options(49)=(event="GaveDowdAmbrosia",desc="Give Dowd Ambrosia",max=1)
-    bingo_options(50)=(event="JockBlewUp",desc="Let Jock die",max=1)
-    bingo_options(51)=(event="SavedPaul",desc="Save Paul",max=1)
-    bingo_options(52)=(event="nsfwander",desc="Save Miguel",max=1)
-    bingo_options(53)=(event="MadeBasket",desc="Sign up for the Knicks",max=1)
-    bingo_options(54)=(event="BoughtClinicPlan",desc="Buy the full treatment plan in the clinic",max=1)
-    bingo_options(55)=(event="ExtinguishFire",desc="Extinguish yourself with running water",max=1)
-    bingo_options(56)=(event="SubwayHostagesSaved",desc="Save both hostages in the subway",max=1)
-    bingo_options(57)=(event="HotelHostagesSaved",desc="Save all 3 hostages in the hotel",max=1)
-    bingo_options(58)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1)
-    bingo_options(59)=(event="JosephManderley_Dead",desc="Kill Joseph Manderley",max=1)
+    bingo_options(30)=(event="FreshWaterOpened",desc="Fix the water",max=1)
+    bingo_options(31)=(event="assassinapartment",desc="Visit Starr in Paris",max=1)
+    bingo_options(32)=(event="GaveRentonGun",desc="Give Gilbert a weapon",max=1)
+    bingo_options(33)=(event="DXREvents_LeftOnBoat",desc="Take the boat out of Battery Park",max=1)
+    bingo_options(34)=(event="AlleyBumRescued",desc="Rescue the bum on the basketball court",max=1)
+    bingo_options(35)=(event="FoundScientistBody",desc="Search the canal",max=1)
+    bingo_options(36)=(event="ClubEntryPaid",desc="Help Mercedes and Tessa",max=1)
+    bingo_options(37)=(event="M08WarnedSmuggler",desc="Warn Smuggler",max=1)
+    bingo_options(38)=(event="ShipPowerCut",desc="Help the electrician",max=1)
+    bingo_options(39)=(event="CamilleConvosDone",desc="Get info from Camille",max=1)
+    bingo_options(40)=(event="MeetAI4_Played",desc="Talk to Morpheus",max=1)
+    bingo_options(41)=(event="DL_Flooded_Played",desc="Check flooded zone in the ocean lab",max=1)
+    bingo_options(42)=(event="JockSecondStory",desc="Get Jock buzzed",max=1)
+    bingo_options(43)=(event="M07ChenSecondGive_Played",desc="Party with the Triads",max=1)
+    bingo_options(44)=(event="DeBeersDead",desc="Put Lucius out of his misery",max=1)
+    bingo_options(45)=(event="StantonAmbushDefeated",desc="Defend Dowd from the ambush",max=1)
+    bingo_options(46)=(event="SmugglerDied",desc="Let Smuggler die",max=1)
+    bingo_options(47)=(event="GaveDowdAmbrosia",desc="Give Dowd Ambrosia",max=1)
+    bingo_options(48)=(event="JockBlewUp",desc="Let Jock die",max=1)
+    bingo_options(49)=(event="SavedPaul",desc="Save Paul",max=1)
+    bingo_options(50)=(event="nsfwander",desc="Save Miguel",max=1)
+    bingo_options(51)=(event="MadeBasket",desc="Sign up for the Knicks",max=1)
+    bingo_options(52)=(event="BoughtClinicPlan",desc="Buy the full treatment plan in the clinic",max=1)
+    bingo_options(53)=(event="ExtinguishFire",desc="Extinguish yourself with running water",max=1)
+    bingo_options(54)=(event="SubwayHostagesSaved",desc="Save both hostages in the subway",max=1)
+    bingo_options(55)=(event="HotelHostagesSaved",desc="Save all hostages in the hotel",max=1)
+    bingo_options(56)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1)
+    bingo_options(57)=(event="JosephManderley_Dead",desc="Kill Joseph Manderley",max=1)
+    bingo_options(58)=(event="MadeItToBP",desc="Escape to Battery Park",max=1)
+    bingo_options(59)=(event="MetSmuggler",desc="Meet Smuggler",max=1)
+    bingo_options(60)=(event="SickMan_Dead",desc="Kill the sick man who wants to die",max=1)
+    bingo_options(61)=(event="M06PaidJunkie",desc="Help the junkie on Tonnochi Road",max=1)
+    bingo_options(62)=(event="M06BoughtVersaLife",desc="Get maps of the VersaLife building",max=1)
+    bingo_options(63)=(event="FlushToilet",desc="Use 30 toilets",max=30)
+    bingo_options(64)=(event="FlushUrinal",desc="Use 20 urinals",max=20)
+    bingo_options(65)=(event="MeetTimBaker_Played",desc="Free Tim from the Vandenberg storage room",max=1)
+    bingo_options(66)=(event="MeetDrBernard_Played",desc="Find the man locked in the bathroom",max=1)
+    bingo_options(67)=(event="KnowsGuntherKillphrase",desc="Learn Gunther's Killphrase",max=1)
+    bingo_options(68)=(event="KnowsAnnasKillphrase",desc="Learn both parts of Anna's Killphrase",max=2)
+    bingo_options(69)=(event="Area51FanShaft",desc="Jump!  You can make it!",max=1)
+    bingo_options(70)=(event="PoliceVaultBingo",desc="Visit the Hong Kong police vault",max=1)
+    bingo_options(71)=(event="SunkenShip",desc="Enter the sunken ship at Liberty Island",max=1)
+    bingo_options(72)=(event="SpinShipsWheel",desc="Spin 3 ships wheels",max=3)
+    bingo_options(73)=(event="ActivateVandenbergBots",desc="Activate both of the bots at Vandenberg",max=2)
+    bingo_options(74)=(event="TongsHotTub",desc="Take a dip in Tracer Tong's hot tub",max=1)
+    bingo_options(75)=(event="JocksToilet",desc="Use Jock's toilet",max=1)
+    bingo_options(76)=(event="Greasel_ClassDead",desc="Kill 5 Greasels",max=5)
+    bingo_options(77)=(event="support1",desc="Blow up a gas station",max=1)
+    bingo_options(78)=(event="UNATCOTroop_ClassDead",desc="Kill 15 UNATCO Troopers",max=15)
+    bingo_options(79)=(event="Terrorist_ClassDead",desc="Kill 15 NSF Terrorists",max=15)
+    bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill 25 MJ12 Troopers",max=25)
+    bingo_options(81)=(event="MJ12Commando_ClassDead",desc="Kill 10 MJ12 Commandos",max=10)
+    bingo_options(82)=(event="Karkian_ClassDead",desc="Kill 5 Karkians",max=5)
+    bingo_options(83)=(event="MilitaryBot_ClassDead",desc="Destroy 5 Military Bots",max=5)
+    bingo_options(84)=(event="VandenbergToilet",desc="Use the only toilet in Vandenberg",max=1)
+    bingo_options(85)=(event="BoatEngineRoom",desc="Access the engine room on the boat in the Hong Kong canals",max=1)
+    bingo_options(86)=(event="SecurityBot2_ClassDead",desc="Destroy 5 Walking Security Bots",max=5)
+    bingo_options(87)=(event="SecurityBotSmall_ClassDead",desc="Destroy 15 commercial grade Security Bots",max=15)
+    bingo_options(88)=(event="SpiderBot_ClassDead",desc="Destroy 15 Spider Bots",max=15)
+    bingo_options(89)=(event="HumanStompDeath",desc="Stomp 3 humans to death",max=3)
+    bingo_options(90)=(event="Rat_ClassDead",desc="Kill 40 rats",max=40)
+    bingo_options(91)=(event="UNATCOTroop_ClassUnconscious",desc="Knock out 15 UNATCO Troopers",max=15)
+    bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out 15 NSF Terrorists",max=15)
+    bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out 25 MJ12 Troopers",max=25)
+    bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out 2 MJ12 Commandos",max=2)
+    bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1)
+    bingo_options(96)=(event="ChugWater",desc="Chug water 30 times",max=30)
+    bingo_options(97)=(event="ChangeClothes",desc="Change clothes at 3 different clothes racks",max=3)
+    bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1)
+    bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1)
+    bingo_options(100)=(event="KnowYourEnemy",desc="Read all 6 Know Your Enemy bulletins",max=6)
+    bingo_options(101)=(event="09_NYC_DOCKYARD--796967769",desc="Learn Jenny's phone number",max=1)
+    bingo_options(102)=(event="JacobsShadow",desc="Read 4 parts of Jacob's Shadow",max=4)
+    bingo_options(103)=(event="ManWhoWasThursday",desc="Read 4 parts of The Man Who Was Thursday",max=4)
+    bingo_options(104)=(event="GreeneArticles",desc="Read 4 newspaper articles by Joe Greene",max=4)
+    bingo_options(105)=(event="MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1)
+
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
     mutually_exclusive(2)=(e1="SmugglerDied",e2="M08WarnedSmuggler")
     mutually_exclusive(3)=(e1="SilhouetteHostagesAllRescued",e2="paris_hostage_Dead")
+    mutually_exclusive(4)=(e1="UNATCOTroop_ClassUnconscious",e2="UNATCOTroop_ClassDead")
+    mutually_exclusive(5)=(e1="Terrorist_ClassUnconscious",e2="Terrorist_ClassDead")
+    mutually_exclusive(6)=(e1="MJ12Troop_ClassUnconscious",e2="MJ12Troop_ClassDead")
+    mutually_exclusive(7)=(e1="MJ12Commando_ClassUnconscious",e2="MJ12Commando_ClassDead")
 
     bingo_win_countdown=-1
 }

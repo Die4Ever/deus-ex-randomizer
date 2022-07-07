@@ -4,11 +4,12 @@ class DeathMarker extends HXDecoration;
 class DeathMarker extends DeusExDecoration;
 #endif
 
-var string playername, killerclass, killer, damagetype, map;
+var string playername, killerclass, killer, damagetype, map, predamagetype;
 // we receive the age from the server and store the difference between that age and our local _SystemTime
 var int created, numtimes;
 
-static function string DamageTypeText(string dmg) {
+static function string DamageTypeText(string dmg, out string pre) {
+    pre = "was ";
     if(dmg == "None" || dmg == "")
         return "killed";
 
@@ -39,7 +40,10 @@ static function string DamageTypeText(string dmg) {
             return "shocked to death";
         case "Exploded":
             return "exploded to bits";
+        case "fell":
+		    return "splattered all over the floor";
         case "stomped":
+            pre = "";
             return "asked to be stepped on";
         case "stunned":
             return "stunned";
@@ -47,6 +51,9 @@ static function string DamageTypeText(string dmg) {
             return "knocked out";
         case "Suicided":
             return "killed";
+        case "crowdcontrol":
+            pre = "";
+            return "had their killswitch flipped";
     }
     log("WARNING: missing DamageTypeText for "$dmg);
     return "killed";
@@ -55,6 +62,10 @@ static function string DamageTypeText(string dmg) {
 function string KilledByText() {
     if(killer == "" || killer == "None")
         return damagetype;
+    if(killer == playername && damagetype == "had their killswitch flipped")
+        return damagetype;
+    if(killer == playername)
+        return damagetype $" by themselves";
     return damagetype $ " by " $ killer;
 }
 
@@ -79,7 +90,7 @@ function Frob(Actor Frobber, Inventory frobWith)
         age = int(secondsago/86400.0) $ " days ago";
 
     age = "about " $ age;
-    msg = playername $ " was " $ KilledByText() @ age;
+    msg = playername @ predamagetype $ KilledByText() @ age;
     //if(numtimes > 1)
         //msg = msg $ " and "$(numtimes-1)$" times before that";
     msg = msg $ ".";
@@ -106,11 +117,12 @@ simulated function Tick(float deltaTime)
 
 static function DeathMarker New(Actor a, vector loc, string playername, string killerclass, string killer, string damagetype, int age, int numtimes) {
     local int created, time;
+    local string predamagetype;
     local DeathMarker dm;
 
     time = class'DataStorage'.static._SystemTime(a.Level);
     created = time - age;
-    damagetype = DamageTypeText(damagetype);
+    damagetype = DamageTypeText(damagetype, predamagetype);
 
     foreach a.RadiusActors(class'DeathMarker', dm, 0.1, loc) {
         if(dm.playername==playername && dm.killerclass==killerclass && dm.killer==killer && dm.damagetype==damagetype) {
@@ -127,6 +139,7 @@ static function DeathMarker New(Actor a, vector loc, string playername, string k
     dm.playername=playername;
     dm.killerclass=killerclass;
     dm.killer=killer;
+    dm.predamagetype = predamagetype;
     dm.damagetype=damagetype;
     dm.created = created;
     dm.numtimes = numtimes;

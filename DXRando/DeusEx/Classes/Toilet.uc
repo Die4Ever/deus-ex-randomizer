@@ -1,8 +1,6 @@
-#ifdef injections
-class Toilet injects Toilet;
-#else
-class DXRToilet extends #var(prefix)Toilet;
-#endif
+class DXRToilet injects #var(prefix)Toilet;
+
+var bool bAlreadyUsed;
 
 function Frob(actor Frobber, Inventory frobWith)
 {
@@ -26,6 +24,14 @@ function Frob(actor Frobber, Inventory frobWith)
             break;
         }
 	}
+    if (player!=None){
+        if (!bAlreadyUsed){
+            bAlreadyUsed = true;
+            foreach AllActors(class'DXRando', dxr) {
+                class'DXREvents'.static.MarkBingo(dxr,"FlushToilet");
+            }
+        }
+    }
 }
 
 defaultproperties

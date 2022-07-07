@@ -1,8 +1,4 @@
-#ifdef injections
-class ShowerFaucet injects ShowerFaucet;
-#else
-class DXRShowerFaucet extends #var(prefix)ShowerFaucet;
-#endif
+class DXRShowerFaucet injects #var(prefix)ShowerFaucet;
 
 function Frob(actor Frobber, Inventory frobWith)
 {

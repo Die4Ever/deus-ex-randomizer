@@ -595,7 +595,7 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
     num=0;
     foreach AllActors(class'Inventory', inv)
     {
-        if( SkipActor(inv, 'Inventory') ) continue;
+        if( SkipActor(inv) ) continue;
         if( InfoPositionGood(id, inv.Location, hasPass, numHasPass) == False ) {
             bads++;
             continue;
@@ -609,7 +609,7 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
     if(containers) {
         foreach AllActors(class'Containers', c)
         {
-            if( SkipActor(c, 'Containers') ) continue;
+            if( SkipActor(c) ) continue;
             if( InfoPositionGood(id, c.Location, hasPass, numHasPass) == False ) {
                 bads++;
                 continue;

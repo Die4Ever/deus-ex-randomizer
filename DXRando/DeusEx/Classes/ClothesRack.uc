@@ -1,10 +1,7 @@
-#ifdef injections
-class DXRClothesRack injects ClothesRack;
-#else
-class DXRClothesRack extends #var(prefix)ClothesRack;
-#endif
+class DXRClothesRack injects #var(prefix)ClothesRack;
 
 var #var(PlayerPawn) p;
+var bool bAlreadyUsed;
 
 function Timer()
 {
@@ -19,6 +16,7 @@ function Frob(actor Frobber, Inventory frobWith)
 #ifndef vmd
     local DXRFashion fashion;
 #endif
+    local DXRando dxr;
 
     Super.Frob(Frobber, frobWith);
 
@@ -39,6 +37,13 @@ function Frob(actor Frobber, Inventory frobWith)
             if (p.bBehindView == False) {
                 p.bBehindView = True;
                 SetTimer(0.75,False);
+            }
+        }
+
+        if (!bAlreadyUsed){
+            bAlreadyUsed=true;
+            foreach AllActors(class'DXRando', dxr) {
+                class'DXREvents'.static.MarkBingo(dxr,"ChangeClothes");
             }
         }
 
