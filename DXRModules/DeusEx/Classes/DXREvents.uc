@@ -50,6 +50,7 @@ function SetWatchFlags() {
     local WaterZone water;
     local Toilet closestToilet;
     local BookOpen book;
+    local FlagTrigger fTrigger;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -110,6 +111,10 @@ function SetWatchFlags() {
             }
         }
         break;
+    case "03_NYC_MOLEPEOPLE":
+        WatchFlag('MolePeopleSlaughtered');
+        Tag='surrender';
+        break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
         break;
@@ -151,6 +156,7 @@ function SetWatchFlags() {
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
+        Tag = 'nanocage';
         break;
     case "05_NYC_UNATCOHQ":
         WatchFlag('KnowsAnnasKillphrase1');
@@ -236,6 +242,15 @@ function SetWatchFlags() {
     case "09_NYC_SHIP":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
         break;
+    case "09_NYC_SHIPFAN":
+        Tag = 'SpinningRoom';
+        foreach AllActors(class'ZoneInfo', zone) {
+            if (zone.DamageType=='Burned'){
+                zone.ZonePlayerEvent = 'SpinningRoom';
+            }
+        }
+
+        break;
     case "09_NYC_SHIPBELOW":
         WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
         break;
@@ -318,11 +333,20 @@ function SetWatchFlags() {
         break;
     case "15_AREA51_BUNKER":
         WatchFlag('JockBlewUp');
+        WatchFlag('blast_door_open');
         Tag = 'Area51FanShaft';
         foreach AllActors(class'ZoneInfo', zone) {
             if (zone.Tag=='fan'){
                 zone.ZonePlayerEvent = 'Area51FanShaft';
             }
+        }
+
+        //This flag trigger actually doesn't trigger because a security computer can only trigger DeusExMovers
+        foreach AllActors(class'FlagTrigger',fTrigger,'blast_door'){
+            fTrigger.Tag = 'blast_door_flag';
+        }
+        foreach AllActors(class'DeusExMover',dxm,'blast_door'){
+            dxm.Event = 'blast_door_flag';
         }
         break;
     case "15_AREA51_FINAL":
@@ -1052,6 +1076,13 @@ function ReadText(name textTag)
         eventname="MoonBaseNews";
         break;
 
+    case '15_Datacube02':
+    case '15_Datacube03':
+    case '15_Datacube04':
+    case '15_Datacube05':
+        eventname="CloneCubes";
+        break;
+
     default:
         // it's simple for a bingo event that requires reading just 1 thing
         _MarkBingo(textTag);
@@ -1252,6 +1283,14 @@ defaultproperties
     bingo_options(103)=(event="ManWhoWasThursday",desc="Read 4 parts of The Man Who Was Thursday",max=4)
     bingo_options(104)=(event="GreeneArticles",desc="Read 4 newspaper articles by Joe Greene",max=4)
     bingo_options(105)=(event="MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1)
+    bingo_options(106)=(event="06_Datacube_05",desc="Learn Maggie Chow's Birthday",max=1)
+    bingo_options(107)=(event="Gray_ClassDead",desc="Kill 5 Grays",max=5)
+    bingo_options(108)=(event="CloneCubes",desc="Read about the four clones in Area 51",max=4)
+    bingo_options(109)=(event="blast_door_open",desc="Open the blast doors at Area 51",max=1)
+    bingo_options(110)=(event="SpinningRoom",desc="Pass through the spinning room",max=1)
+    bingo_options(111)=(event="MolePeopleSlaughtered",desc="Slaughter the Mole People",max=1)
+    bingo_options(112)=(event="surrender",desc="Make the NSF surrender in the Mole People tunnels",max=1)
+    bingo_options(113)=(event="nanocage",desc="Open the cages in the UNATCO MJ12 Lab",max=1)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
