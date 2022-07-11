@@ -14,7 +14,7 @@ NEWLY_COMPLETED_DISPLAY_TIME=80
 class Bingo:
 
     def __init__(self,targetFile):
-        self.targetFile = targetFile;
+        self.targetFile = targetFile
         self.board = [[None]*5 for i in range(5)]
         self.tkBoard = [[None]*5 for i in range(5)]
         self.tkBoardText = [[None]*5 for i in range(5)]
