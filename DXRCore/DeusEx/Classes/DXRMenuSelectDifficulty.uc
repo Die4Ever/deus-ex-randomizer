@@ -42,10 +42,10 @@ function BindControls(optional string action)
     }
 
     NewMenuItem("Difficulty", "Difficulty determines the default settings for the randomizer."$BR$"Hard is recommended for Deus Ex veterans.");
-    if( (InStr(f.VersionString(), "Alpha")>=0 || InStr(f.VersionString(), "Beta")>=0) )
-        i=0;
-    else
+    if( f.VersionIsStable() )
         i=1;
+    else
+        i=0;
 
     for( i=i; i < ArrayCount(f.difficulty_names); i++ ) {
         if( f.difficulty_names[i] == "" ) continue;

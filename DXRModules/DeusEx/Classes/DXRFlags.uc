@@ -154,6 +154,13 @@ function AnyEntry()
     l("AnyEntry() after game: "$Level.Game);*/
 }
 
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
+{
+    Super.PlayerAnyEntry(p);
+    if(!VersionIsStable())
+        p.bCheatsEnabled = true;
+}
+
 function RollSeed()
 {
     seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );

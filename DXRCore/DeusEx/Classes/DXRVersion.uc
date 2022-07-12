@@ -4,15 +4,15 @@ simulated static function CurrentVersion(optional out int major, optional out in
 {
     major=2;
     minor=0;
-    patch=2;
-    build=5;//build can't be higher than 99
+    patch=3;
+    build=0;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)
 {
     local int major,minor,patch,build;
     CurrentVersion(major,minor,patch,build);
-    return VersionToString(major, minor, patch, build, full) $ "";
+    return VersionToString(major, minor, patch, build, full) $ " Alpha";
 }
 
 simulated static function int VersionToInt(int major, int minor, int patch, int build)
@@ -48,3 +48,9 @@ simulated static function bool VersionOlderThan(int config_version, int major, i
     return config_version < VersionToInt(major, minor, patch, build);
 }
 
+simulated static function bool VersionIsStable()
+{
+    local string v;
+    v = VersionString();
+    return InStr(v, "Alpha")==-1 && InStr(v, "Beta")==-1;
+}
