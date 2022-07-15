@@ -226,6 +226,7 @@ function PostFirstEntryMapFixes()
     local DeusExMover m;
     local UNATCOTroop u;
     local Actor a;
+    local Male1 male;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -287,6 +288,13 @@ function PostFirstEntryMapFixes()
         break;
 
 #ifndef revision
+    case "06_HONGKONG_VERSALIFE":
+        foreach AllActors(class'Male1',male){
+            if (male.BindName=="Disgruntled_Guy"){
+                male.bImportant=True;
+            }
+        }
+        break;
     case "09_NYC_DOCKYARD":
         foreach RadiusActors(class'CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
             info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
@@ -1311,6 +1319,21 @@ function Vandenberg_AnyEntry()
     }
 }
 
+function HandleJohnSmithDeath()
+{
+    if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){ //He's already dead
+        return;
+    }
+
+    if (!dxr.flagbase.GetBool('Supervisor01_Dead') &&
+        dxr.flagbase.GetBool('HaveROM') &&
+        !dxr.flagbase.GetBool('Disgruntled_Guy_Return_Played'))
+    {
+        dxr.flagbase.SetBool('Disgruntled_Guy_Dead',true);
+        //We could send a death message here?
+    }
+}
+
 function HongKong_AnyEntry()
 {
     local Actor a;
@@ -1318,6 +1341,7 @@ function HongKong_AnyEntry()
     local #var(Mover) m;
     local bool boolFlag;
     local bool recruitedFlag;
+    local DeusExCarcass carc;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
     // or if flag Have_ROM, Gordon Quick should let you into the compound? requires Have_Evidence and MaxChenConvinced
@@ -1394,7 +1418,7 @@ function HongKong_AnyEntry()
                     break;
             }
         }
-
+        HandleJohnSmithDeath();
         break;
 
     case "06_HONGKONG_VERSALIFE":
@@ -1407,6 +1431,24 @@ function HongKong_AnyEntry()
         foreach AllActors(class'#var(Mover)', m, 'JockShaftTop') {
             m.bLocked = false;
             m.bHighlight = true;
+        }
+        HandleJohnSmithDeath();
+        break;
+
+    case "06_HONGKONG_WANCHAI_CANAL":
+        HandleJohnSmithDeath();
+        if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){
+            player().ClientMessage("Disgruntled guy is dead");
+            foreach AllActors(class'DeusExCarcass', carc, 'John_Smith_Body')
+                if (carc.bHidden){
+				    carc.bHidden = False;
+#ifdef injections
+                    //HACK: to be removed once the problems with Carcass2 are fixed/removed
+                    carc.mesh = LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassC';  //His body starts in the water, so this is fine
+                    carc.SetMesh2(LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassB');
+                    carc.SetMesh3(LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassC');
+#endif
+                }
         }
         break;
 
