@@ -285,6 +285,9 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
 
         break;
+    case "11_PARIS_CATHEDRAL":
+        WatchFlag('GuntherKillswitch');
+        break;
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');
         WatchFlag('MeetAI4_Played');
@@ -473,6 +476,18 @@ simulated function bool LeoToTheBar()
     return False;
 }
 
+simulated function bool WatchGuntherKillSwitch()
+{
+    local GuntherHermann gunther;
+
+    foreach AllActors(class'GuntherHermann',gunther){
+        if (gunther.GetStateName()=='KillswitchActivated'){
+            return True;
+        }
+    };
+    return False;
+}
+
 simulated function Timer()
 {
     local int i;
@@ -490,6 +505,14 @@ simulated function Timer()
 
         if( watchflags[i] == 'LeoToTheBar' ) {
             if (LeoToTheBar()){
+                SendFlagEvent(watchflags[i]);
+                num_watchflags--;
+                watchflags[i] = watchflags[num_watchflags];
+                i--;
+                continue;
+            }
+        } else if( watchflags[i] == 'GuntherKillswitch' ) {
+            if (WatchGuntherKillSwitch()){
                 SendFlagEvent(watchflags[i]);
                 num_watchflags--;
                 watchflags[i] = watchflags[num_watchflags];
@@ -1127,6 +1150,9 @@ function _MarkBingo(coerce string eventname)
         case "LDDPRussPaid":
         case "ClubMercedesConvo1_Done":
             eventname="ClubEntryPaid";
+            break;
+        case "GuntherKillswitch":
+            eventname="GuntherHermann_Dead";
             break;
     }
 
