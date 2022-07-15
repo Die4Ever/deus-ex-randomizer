@@ -165,6 +165,12 @@ function SetWatchFlags() {
     case "06_HONGKONG_WANCHAI_CANAL":
         WatchFlag('FoundScientistBody');
         WatchFlag('M06BoughtVersaLife');
+
+        foreach AllActors(class'FlagTrigger',fTrigger,'FoundScientist'){
+            //500 feels a bit better, so you don't have to go right into the corner
+            fTrigger.SetCollisionSize(500,CollisionHeight);
+        }
+
         foreach AllActors(class'DeusExMover',dxm,'SecretHold'){
             break;
         }
