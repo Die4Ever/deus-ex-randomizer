@@ -1038,7 +1038,6 @@ function PreFirstEntry()
 {
     local Actor a;
     local #var(prefix)AnnaNavarre anna;
-    local BlackHelicopter bh;
     local int i, k, start, slot, tries, num_ma, num_ps, num_gl, found_actors;
     local float vanilla_distance;
     local bool success;
@@ -1072,12 +1071,6 @@ function PreFirstEntry()
             anna.HomeLoc = anna.Location;
             anna.HomeRot = vector(anna.Rotation);
         }
-    }
-    else if( dxr.localURL == "02_NYC_WAREHOUSE" ) {
-        foreach AllActors(class'BlackHelicopter', bh) {
-            bh.EnterWorld();
-        }
-
     }
 
     SetSeed( "DXRMissions" );
@@ -1211,13 +1204,6 @@ function PreFirstEntry()
         num_gl--;
     }
 
-    if( dxr.localURL == "02_NYC_WAREHOUSE" ) {
-        foreach AllActors(class'BlackHelicopter', bh) {
-            bh.LeaveWorld();
-        }
-
-    }
-
 }
 
 function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
@@ -1225,6 +1211,7 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     local ScriptedPawn sp;
     local Mover m;
     local bool success, oldbCollideWorld;
+    local Vehicles v;
 
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
     oldbCollideWorld = a.bCollideWorld;
@@ -1245,7 +1232,19 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
         sp.HomeLoc = sp.Location;
         sp.HomeRot = vector(sp.Rotation);
         sp.DesiredRotation = rotation;
+        if (!sp.bInWorld){
+            sp.WorldPosition = sp.Location;
+            sp.SetLocation(sp.Location+vect(0,0,20000));
+        }
     }
+    v = Vehicles(a);
+    if ( v != None ) {
+        if (!v.bInWorld){
+            v.WorldPosition = v.Location;
+            v.SetLocation(v.Location+vect(0,0,20000));
+        }
+    }
+
     m = Mover(a);
     if( m != None ) {
         m.BasePos = a.Location;
@@ -1323,6 +1322,7 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
     local Teleporter t;
     local float too_close, dist;
     local DXRMissions m;
+
     too_close = 90*16;
 
     m = DXRMissions(dxr.FindModule(class'DXRMissions'));
