@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(1,7,2,9) ) {
+    if( ConfigOlderThan(2,0,3,1) ) {
         allow_vanilla = false;
 
         for(i=0; i<ArrayCount(remove_actors); i++) {
@@ -161,6 +161,13 @@ function vanilla_goals()
     goals[i].actor_name = 'DataLinkTrigger1';
     goals[i].physics = PHYS_None;
     goals[i].move_with_previous = true;
+    i++;
+
+    map = "02_nyc_warehouse";
+    goals[i].map_name = map;
+    goals[i].actor_name = 'BlackHelicopter1';
+    goals[i].physics = PHYS_None;
+    goals[i].allow_vanilla = true;
     i++;
 
     map = "03_nyc_batterypark";
@@ -631,6 +638,37 @@ function vanilla_important_locations()
     important_locations[i].location = vect(-4727.703613,3116.336670,-336.900604);//'PathNode142'
     i++;
 
+    map = "02_nyc_warehouse";
+    important_locations[i].map_name = map;
+    important_locations[i].location = vect(-222.402451,-294.757233,1132.798462);//'BlackHelicopter1'
+    important_locations[i].rotation = rot(0,-24128,0);
+    important_locations[i].is_goal_position = true;
+    i++;
+
+    important_locations[i].map_name = map;
+    important_locations[i].location = vect(-566.249695,305.599731,1207.798462);//Across Street
+    important_locations[i].rotation = rot(0,-32800,0);
+    important_locations[i].is_goal_position = true;
+    i++;
+
+    important_locations[i].map_name = map;
+    important_locations[i].location = vect(1656.467041,-1658.624268,357.798462);//Behind Building
+    important_locations[i].rotation = rot(0,-32800,0);
+    important_locations[i].is_goal_position = true;
+    i++;
+
+    important_locations[i].map_name = map;
+    important_locations[i].location = vect(1665.240112,91.544250,126.798462);//Dog Zone
+    important_locations[i].rotation = rot(0,0,0);
+    important_locations[i].is_goal_position = true;
+    i++;
+
+    important_locations[i].map_name = map;
+    important_locations[i].location = vect(-1508.833008,321.208252,-216.201538);//SEWERCOPTER
+    important_locations[i].rotation = rot(0,16400,0);
+    important_locations[i].is_goal_position = true;
+    i++;
+
     map = "03_nyc_batterypark";
     important_locations[i].map_name = map;
     important_locations[i].location = vect(-4857.345215,3452.138916,-301.399628);//'HarleyFilben0'
@@ -1000,6 +1038,7 @@ function PreFirstEntry()
 {
     local Actor a;
     local #var(prefix)AnnaNavarre anna;
+    local BlackHelicopter bh;
     local int i, k, start, slot, tries, num_ma, num_ps, num_gl, found_actors;
     local float vanilla_distance;
     local bool success;
@@ -1033,6 +1072,12 @@ function PreFirstEntry()
             anna.HomeLoc = anna.Location;
             anna.HomeRot = vector(anna.Rotation);
         }
+    }
+    else if( dxr.localURL == "02_NYC_WAREHOUSE" ) {
+        foreach AllActors(class'BlackHelicopter', bh) {
+            bh.EnterWorld();
+        }
+
     }
 
     SetSeed( "DXRMissions" );
@@ -1164,6 +1209,13 @@ function PreFirstEntry()
 
         goal_locations[slot] = goal_locations[num_gl-1];
         num_gl--;
+    }
+
+    if( dxr.localURL == "02_NYC_WAREHOUSE" ) {
+        foreach AllActors(class'BlackHelicopter', bh) {
+            bh.LeaveWorld();
+        }
+
     }
 
 }
