@@ -78,7 +78,7 @@ function CheckConfig()
         add_datacubes[i].map = "00_TrainingFinal";
         add_datacubes[i].text = "Many other things will be randomized when you get to the real game. In order to be prepared, check out our README and Wiki on the Deus Ex Randomizer GitHub.";
         i++;
-        add_datacubes[i] = add_datacubes[i-1];
+        add_datacubes[i] = add_datacubes[i-1];// dupe just to make sure the player reads it
         i++;
 
         add_datacubes[i].map = "06_HONGKONG_VERSALIFE";

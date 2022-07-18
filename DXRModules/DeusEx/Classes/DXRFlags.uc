@@ -1449,11 +1449,11 @@ simulated function TutorialDisableRandomization(bool isFinal)
 
     settings.skills_reroll_missions = 0;
     settings.skills_independent_levels = 0;
-    settings.minskill = 80;
-    settings.maxskill = 120;
+    //settings.minskill = 80;
+    //settings.maxskill = 120;
     settings.banned_skills = 0;
     settings.banned_skill_levels = 0;
-    settings.skill_value_rando = 30;
+    //settings.skill_value_rando = 30;
 
     settings.ammo = 100;
     settings.multitools = 1000;
