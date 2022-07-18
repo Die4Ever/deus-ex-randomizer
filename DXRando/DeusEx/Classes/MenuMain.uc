@@ -61,3 +61,56 @@ function Tick(float DeltaTime)
 
     winTitle.SetTitle( title );
 }
+
+function InitTraining()
+{
+    local DXRFlags f;
+
+    foreach player.AllActors(class'DXRFlags', f) {
+        f.DisableRandomization();
+        f.SaveFlags();
+    }
+}
+
+function ConfirmTraining()
+{
+    local DeusExLevelInfo info;
+
+    info = player.GetLevelInfo();
+
+    // If the game is running, first *PROMPT* the user, becauase
+    // otherwise the current game will be lost
+
+    if (((info != None) && (info.MissionNumber >= 0)) &&
+       !((player.IsInState('Dying')) || (player.IsInState('Paralyzed'))))
+    {
+    }
+    else
+    {
+        InitTraining();
+    }
+
+    Super.ConfirmTraining();
+}
+
+
+event bool BoxOptionSelected(Window button, int buttonNumber)
+{
+    local bool ret;
+
+    switch(messageBoxMode)
+    {
+        case MB_AskToTrain:
+            if (buttonNumber == 0)
+                InitTraining();
+            break;
+
+        case MB_Training:
+            if (buttonNumber == 0)
+                InitTraining();
+            break;
+    }
+
+    ret = Super.BoxOptionSelected(button, buttonNumber);
+    return ret;
+}
