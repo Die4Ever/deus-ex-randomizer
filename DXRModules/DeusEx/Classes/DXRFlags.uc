@@ -225,6 +225,7 @@ function InitDefaults()
     case "00_Training":
     case "00_TrainingCombat":
     case "00_TrainingFinal":
+        SetDifficulty(1);
         TutorialDisableRandomization(dxr.localURL ~= "00_TrainingFinal");
         SaveFlags();
         break;
@@ -1430,13 +1431,12 @@ simulated function TutorialDisableRandomization(bool isFinal)
     settings.medbots = -1;
     settings.repairbots = -1;
 
-    settings.medbotuses = 99;
-    settings.repairbotuses = 99;
-
+    /*settings.medbotuses = 20;
+    settings.repairbotuses = 20;
     settings.medbotcooldowns = 1;
     settings.repairbotcooldowns = 1;
     settings.medbotamount = 1;
-    settings.repairbotamount = 1;
+    settings.repairbotamount = 1;*/
 
     settings.enemiesrandomized = 0;
     settings.hiddenenemiesrandomized = settings.enemiesrandomized;
@@ -1449,11 +1449,11 @@ simulated function TutorialDisableRandomization(bool isFinal)
 
     settings.skills_reroll_missions = 0;
     settings.skills_independent_levels = 0;
-    //settings.minskill = 80;
-    //settings.maxskill = 120;
+    /*settings.minskill = 80;
+    settings.maxskill = 120;
+    settings.skill_value_rando = 30;*/
     settings.banned_skills = 0;
     settings.banned_skill_levels = 0;
-    //settings.skill_value_rando = 30;
 
     settings.ammo = 100;
     settings.multitools = 1000;
@@ -1462,12 +1462,12 @@ simulated function TutorialDisableRandomization(bool isFinal)
     settings.medkits = 1000;
     settings.equipment = 0;
 
-    //settings.min_weapon_dmg = 100;
-    //settings.max_weapon_dmg = 100;
-    //settings.min_weapon_shottime = 100;
-    //settings.max_weapon_shottime = 100;
+    /*settings.min_weapon_dmg = 100;
+    settings.max_weapon_dmg = 100;
+    settings.min_weapon_shottime = 100;
+    settings.max_weapon_shottime = 100;
 
-    //settings.aug_value_rando = 0;
+    settings.aug_value_rando = 0;*/
 }
 
 function NewGamePlusVal(out int val, float curve, float exp)

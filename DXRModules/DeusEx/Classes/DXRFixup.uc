@@ -30,7 +30,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(2,0,3,3) ) {
+    if( ConfigOlderThan(2,0,3,4) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -75,10 +75,24 @@ function CheckConfig()
 
         i=0;
 
+        add_datacubes[i].map = "00_Training";
+        add_datacubes[i].text = "In the real game, the locations of nanokeys will be randomized.";
+        add_datacubes[i].location = vect(362.768005, 1083.160889, -146.629639);
+        i++;
+
+        add_datacubes[i].map = "00_Training";
+        add_datacubes[i].text = "Passwords are randomized! And in the real game, the locations of datacubes will also be randomized.";
+        add_datacubes[i].location = vect(1492.952026, 824.573669, -146.630493);
+        i++;
+
+        add_datacubes[i].map = "00_TrainingCombat";
+        add_datacubes[i].text = "Each type of weapon has its stats randomized.|n|nFor example, every knife will have the same stats so you don't need to compare different knives. But you will want to compare the knife vs the baton to see which one is better to keep.";
+        add_datacubes[i].location = vect(-237.082443, 5.800471, -94.629921);
+        i++;
+
         add_datacubes[i].map = "00_TrainingFinal";
         add_datacubes[i].text = "Many other things will be randomized when you get to the real game. In order to be prepared, check out our README and Wiki on the Deus Ex Randomizer GitHub.";
-        i++;
-        add_datacubes[i] = add_datacubes[i-1];// dupe just to make sure the player reads it
+        add_datacubes[i].location = vect(6577.697266, -3884.925049, 33.369633);
         i++;
 
         add_datacubes[i].map = "06_HONGKONG_VERSALIFE";

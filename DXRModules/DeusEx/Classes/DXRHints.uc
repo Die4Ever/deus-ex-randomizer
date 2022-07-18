@@ -16,7 +16,7 @@ simulated function InitHints()
     numHints = 0;
     mission = dxr.dxInfo.missionNumber;
     map = dxr.localURL;
-    if(mission < 1 || mission > 50) {
+    if(mission < 0 || mission > 50) {
         return; // mission number is invalid
     }
 
@@ -28,7 +28,7 @@ simulated function InitHints()
     AddHint("Each type of weapon gets randomized stats!", "Make sure to check one of each type.");
 
     telem = DXRTelemetry(dxr.FindModule(class'DXRTelemetry'));
-    if(telem == None || telem.enabled == false)
+    if(telem == None || telem.enabled == false || mission < 1)
         AddHint("Check out @DXRandoActivity on Twitter!","Make sure \"Online Features\" are enabled to show up yourself!");
     else
         AddHint("Check out @DXRandoActivity on Twitter!", "We just shared your death publicly, go retweet it!");
@@ -255,9 +255,23 @@ simulated function AddHint(string hint, optional string detail)
 
 simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 {
+    local int i;
+    local string msg;
+
     Super.PlayerAnyEntry(player);
     _player = player;
     InitHints();
+
+    if(dxr.localURL ~= "00_Training") {
+        for(i=0;i<numHints;i++) {
+            msg = hints[i];
+            if(Len(details[i]) > 0) {
+                msg = msg $ "|n" $ details[i];
+            }
+            player.AddNote(msg, false, i==numHints-1);
+        }
+        player.ClientMessage("Press G or F2 to check your Goals/Notes screen!");
+    }
 }
 
 simulated function int GetHint()
