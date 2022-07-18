@@ -1309,7 +1309,9 @@ defaultproperties
     bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out 2 MJ12 Commandos",max=2)
     bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1)
     bingo_options(96)=(event="ChugWater",desc="Chug water 30 times",max=30)
+#ifndef vmd
     bingo_options(97)=(event="ChangeClothes",desc="Change clothes at 3 different clothes racks",max=3)
+#endif
     bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1)
     bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1)
     bingo_options(100)=(event="KnowYourEnemy",desc="Read all 6 Know Your Enemy bulletins",max=6)
