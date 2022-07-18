@@ -1160,6 +1160,9 @@ function _MarkBingo(coerce string eventname)
         case "GuntherKillswitch":
             eventname="GuntherHermann_Dead";
             break;
+        case "KarkianBaby_ClassDead":
+            eventname="Karkian_ClassDead";
+            break;
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
