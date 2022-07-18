@@ -30,7 +30,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(2,0,1,5) ) {
+    if( ConfigOlderThan(2,0,3,3) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -74,6 +74,12 @@ function CheckConfig()
         DecorationsOverwrites[i].bPushable = c.default.bPushable;
 
         i=0;
+
+        add_datacubes[i].map = "00_TrainingFinal";
+        add_datacubes[i].text = "Many other things will be randomized when you get to the real game. In order to be prepared, check out our README and Wiki on the Deus Ex Randomizer GitHub.";
+        i++;
+        add_datacubes[i] = add_datacubes[i-1];
+        i++;
 
         add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
         add_datacubes[i].text = "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.";

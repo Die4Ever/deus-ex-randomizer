@@ -220,6 +220,15 @@ function InitDefaults()
     autosave = 0;
 #endif
     settings = difficulty_settings[difficulty];
+
+    switch(dxr.localURL) {
+    case "00_Training":
+    case "00_TrainingCombat":
+    case "00_TrainingFinal":
+        TutorialDisableRandomization(dxr.localURL ~= "00_TrainingFinal");
+        SaveFlags();
+        break;
+    }
 }
 
 function CheckConfig()
@@ -1397,35 +1406,37 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     settings.aug_value_rando = 100;
 }
 
-simulated function DisableRandomization()
+simulated function TutorialDisableRandomization(bool isFinal)
 {
+    // a little bit of safe rando just to get a taste?
+    if(!isFinal) {
+        settings.swapitems = 0;
+        settings.swapcontainers = 0;
+        settings.deviceshackable = 0;
+        settings.doorsmode = 0;
+        settings.doorsdestructible = 0;
+        settings.doorspickable = 0;
+    }
+
     settings.keysrando = 0;
     settings.speedlevel = 0;
     settings.startinglocations = 0;
     settings.goals = 0;
     settings.infodevices = 0;
-    settings.merchants = 0;
-    settings.swapitems = 0;
-    settings.swapcontainers = 0;
+    //settings.merchants = 0;
     settings.augcans = 0;
 
-    settings.dancingpercent = 0;
+    settings.dancingpercent = 50;
     settings.medbots = -1;
     settings.repairbots = -1;
 
     settings.medbotuses = 99;
     settings.repairbotuses = 99;
 
-    settings.medbotcooldowns = 0;
-    settings.repairbotcooldowns = 0;
-    settings.medbotamount = -1;
-    settings.repairbotamount = -1;
-
-    settings.doorsmode = 0;
-    settings.doorsdestructible = 0;
-    settings.doorspickable = 0;
-
-    settings.deviceshackable = 0;
+    settings.medbotcooldowns = 1;
+    settings.repairbotcooldowns = 1;
+    settings.medbotamount = 1;
+    settings.repairbotamount = 1;
 
     settings.enemiesrandomized = 0;
     settings.hiddenenemiesrandomized = settings.enemiesrandomized;
@@ -1438,25 +1449,25 @@ simulated function DisableRandomization()
 
     settings.skills_reroll_missions = 0;
     settings.skills_independent_levels = 0;
-    settings.minskill = 100;
-    settings.maxskill = 100;
+    settings.minskill = 80;
+    settings.maxskill = 120;
     settings.banned_skills = 0;
     settings.banned_skill_levels = 0;
-    settings.skill_value_rando = 0;
+    settings.skill_value_rando = 30;
 
-    settings.ammo = 1000;
+    settings.ammo = 100;
     settings.multitools = 1000;
     settings.lockpicks = 1000;
     settings.biocells = 1000;
     settings.medkits = 1000;
     settings.equipment = 0;
 
-    settings.min_weapon_dmg = 100;
-    settings.max_weapon_dmg = 100;
-    settings.min_weapon_shottime = 100;
-    settings.max_weapon_shottime = 100;
+    //settings.min_weapon_dmg = 100;
+    //settings.max_weapon_dmg = 100;
+    //settings.min_weapon_shottime = 100;
+    //settings.max_weapon_shottime = 100;
 
-    settings.aug_value_rando = 0;
+    //settings.aug_value_rando = 0;
 }
 
 function NewGamePlusVal(out int val, float curve, float exp)
