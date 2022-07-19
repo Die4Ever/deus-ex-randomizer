@@ -53,6 +53,10 @@ function SetWatchFlags() {
     local FlagTrigger fTrigger;
 
     switch(dxr.localURL) {
+    case "00_TrainingFinal":
+        WatchFlag('m00meetpage_Played');
+        break;
+
     case "01_NYC_UNATCOISLAND":
         WatchFlag('GuntherFreed');
         WatchFlag('GuntherRespectsPlayer');
