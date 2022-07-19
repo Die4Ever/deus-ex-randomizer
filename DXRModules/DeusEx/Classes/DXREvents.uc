@@ -846,6 +846,7 @@ static function BeatGame(DXRando dxr, int ending, int time)
     js.static.Add(j, "maxrando", dxr.flags.maxrando);
     GeneralEventData(dxr, j);
     BingoEventData(dxr, j);
+    AugmentationData(dxr, j);
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
@@ -885,6 +886,36 @@ static function GeneralEventData(DXRando dxr, out string j)
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
         js.static.Add(j, "loadout", loadout);
+}
+
+static function AugmentationData(DXRando dxr, out string j)
+{
+    local Augmentation anAug;
+    local string augId,augName,augInfo;
+    local int level;
+
+    anAug = dxr.player.AugmentationSystem.FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.HotKeyNum <= 0){ //I think if you uninstall an aug it becomes -1?
+            anAug = anAug.next;
+            continue;
+        }
+        augId = "Aug-"$anAug.HotKeyNum;
+        augName = ""$anAug.Class.Name;
+        level = anAug.CurrentLevel;
+        if (anAug.bBoosted){
+            level = level-1;
+        }
+
+        augInfo = "{\"name\":\"" $ augName $"\",\"level\":"$level$"}";
+
+        j = j $",\"" $ augId $ "\":" $ augInfo;
+
+
+        anAug = anAug.next;
+    }
+
 }
 
 static function BingoEventData(DXRando dxr, out string j)
