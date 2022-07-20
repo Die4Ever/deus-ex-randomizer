@@ -1458,7 +1458,6 @@ function HongKong_AnyEntry()
     case "06_HONGKONG_WANCHAI_CANAL":
         HandleJohnSmithDeath();
         if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){
-            player().ClientMessage("Disgruntled guy is dead");
             foreach AllActors(class'DeusExCarcass', carc, 'John_Smith_Body')
                 if (carc.bHidden){
 				    carc.bHidden = False;
