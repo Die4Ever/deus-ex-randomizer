@@ -47,6 +47,7 @@ simulated function InitHints()
         AddHint("Read the pop-up text on doors to see how many", "hits from your equiped weapon to break it.");
         AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
         AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
+        AddHint("You can left click on items to use them without picking them up.", "Great for eating to recover health or putting on armor!");
     }
 
     if(dxr.flags.gamemode == 1) {

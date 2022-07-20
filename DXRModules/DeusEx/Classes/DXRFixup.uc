@@ -547,11 +547,19 @@ function NYC_02_FirstEntry()
     local NanoKey k;
     local NYPoliceBoat b;
     local CrateExplosiveSmall c;
+    local BarrelAmbrosia ambrosia;
+    local Trigger t;
 
     switch (dxr.localURL)
     {
 #ifdef vanilla
     case "02_NYC_BATTERYPARK":
+        foreach AllActors(class'BarrelAmbrosia', ambrosia) {
+            foreach RadiusActors(class'Trigger', t, 16, ambrosia.Location) {
+                if(t.CollisionRadius < 100)
+                    t.SetCollisionSize(t.CollisionRadius*2, t.CollisionHeight*2);
+            }
+        }
         foreach AllActors(class'NYPoliceBoat',b) {
             b.BindName = "NYPoliceBoat";
             b.ConBindEvents();

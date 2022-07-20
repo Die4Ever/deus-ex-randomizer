@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(2,0,3,1) ) {
+    if( ConfigOlderThan(2,0,3,7) ) {
         allow_vanilla = false;
 
         for(i=0; i<ArrayCount(remove_actors); i++) {
@@ -626,7 +626,7 @@ function vanilla_important_locations()
     i++;
 
     important_locations[i].map_name = map;
-    important_locations[i].location = vect(-444.113403,-2055.208252,-420.899750);//'PathNode192'
+    important_locations[i].location = vect(-420,-2222,-420.899750);//'PathNode192' walkway near the water
     i++;
 
     important_locations[i].map_name = map;

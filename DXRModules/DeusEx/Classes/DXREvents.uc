@@ -170,9 +170,9 @@ function SetWatchFlags() {
         WatchFlag('FoundScientistBody');
         WatchFlag('M06BoughtVersaLife');
 
-        foreach AllActors(class'FlagTrigger',fTrigger,'FoundScientist'){
-            //500 feels a bit better, so you don't have to go right into the corner
-            fTrigger.SetCollisionSize(500,CollisionHeight);
+        foreach AllActors(class'FlagTrigger',fTrigger,'FoundScientist') {
+            // so you don't have to go right into the corner, default is 96, and 40 height
+            fTrigger.SetCollisionSize(500, 160);
         }
 
         foreach AllActors(class'#var(Mover)',dxm,'SecretHold'){
