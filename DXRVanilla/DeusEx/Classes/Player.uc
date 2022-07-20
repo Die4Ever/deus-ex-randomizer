@@ -313,34 +313,33 @@ function Landed(vector HitNormal)
     bJustLanded = true;
 }
 
-function bool IgnoreInstantLeftClick()
+function bool CanInstantLeftClick(DeusExPickup item)
 {
-    if (inHand!=None) return True;
-    if (FrobTarget==None) return True;
-    if (!FrobTarget.IsA('DeusExPickup')) return True;
-    if (DeusExPickup(FrobTarget).bActivatable==False) return True;
-    if (FrobTarget.GetStateName()=='Activated') return True;
+    if (inHand!=None) return false;
 
-    //There are probably more things that shouldn't be instantly used...
-    if (FrobTarget.IsA('Binoculars')) return True; //Unzooming requires left clicking the binocs again
-    //if (FrobTarget.IsA('FireExtinguisher')) return True; //Would need special handling to make it disappear right away.  Probably should be in inventory anyway
-    return False;
+    if (item==None) return false;
+    if (item.bActivatable==False) return false;
+    if (item.GetStateName()=='Activated') return false;
+
+    if (Binoculars(item)!=None) return false; //Unzooming requires left clicking the binocs again
+    return true;
 }
 
 exec function ParseLeftClick()
 {
-    local Inventory item;
+    local DeusExPickup item;
     Super.ParseLeftClick();
-    item = Inventory(FrobTarget);
-    if (item != None && !IgnoreInstantLeftClick())
+    item = DeusExPickup(FrobTarget);
+    if (item != None && CanInstantLeftClick(item))
     {
-        item.SetOwner(self); //So that any effects get applied to you
+        // So that any effects get applied to you
+        item.SetOwner(self);
+        // add to the player's inventory, so ChargedPickups travel across maps
         item.BecomeItem();
         item.bDisplayableInv = false;
-        // add to the player's inventory, so ChargedPickups travel across maps
         item.Inventory = Inventory;
         Inventory = item;
-        DeusExPickup(item).Activate();
+        item.Activate();
     }
 }
 
