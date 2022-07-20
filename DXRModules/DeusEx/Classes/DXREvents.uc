@@ -45,13 +45,18 @@ function SetWatchFlags() {
     local ScientistMale sm;
     local ZoneInfo zone;
     local SkillAwardTrigger skillAward;
-    local DeusExMover dxm;
+    local #var(Mover) dxm;
     local LogicTrigger lTrigger;
     local WaterZone water;
     local Toilet closestToilet;
     local BookOpen book;
+    local FlagTrigger fTrigger;
 
     switch(dxr.localURL) {
+    case "00_TrainingFinal":
+        WatchFlag('m00meetpage_Played');
+        break;
+
     case "01_NYC_UNATCOISLAND":
         WatchFlag('GuntherFreed');
         WatchFlag('GuntherRespectsPlayer');
@@ -110,6 +115,10 @@ function SetWatchFlags() {
             }
         }
         break;
+    case "03_NYC_MOLEPEOPLE":
+        WatchFlag('MolePeopleSlaughtered');
+        Tag='surrender';
+        break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
         break;
@@ -151,6 +160,7 @@ function SetWatchFlags() {
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
+        Tag = 'nanocage';
         break;
     case "05_NYC_UNATCOHQ":
         WatchFlag('KnowsAnnasKillphrase1');
@@ -159,7 +169,13 @@ function SetWatchFlags() {
     case "06_HONGKONG_WANCHAI_CANAL":
         WatchFlag('FoundScientistBody');
         WatchFlag('M06BoughtVersaLife');
-        foreach AllActors(class'DeusExMover',dxm,'SecretHold'){
+
+        foreach AllActors(class'FlagTrigger',fTrigger,'FoundScientist') {
+            // so you don't have to go right into the corner, default is 96, and 40 height
+            fTrigger.SetCollisionSize(500, 160);
+        }
+
+        foreach AllActors(class'#var(Mover)',dxm,'SecretHold'){
             break;
         }
         skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
@@ -187,7 +203,7 @@ function SetWatchFlags() {
         WatchFlag('M06PaidJunkie');
 
         //Find Jock's apartment door
-        foreach AllActors(class'DeusExMover',dxm){
+        foreach AllActors(class'#var(Mover)',dxm){
             if (dxm.KeyIDNeeded=='JocksKey'){
                 break;
             }
@@ -205,7 +221,7 @@ function SetWatchFlags() {
     case "06_HONGKONG_WANCHAI_MARKET":
         Tag = 'PoliceVaultBingo';
 
-        foreach AllActors(class'DeusExMover',dxm,'station_door_05'){
+        foreach AllActors(class'#var(Mover)',dxm,'station_door_05'){
             break;
         }
 
@@ -235,6 +251,15 @@ function SetWatchFlags() {
         break;
     case "09_NYC_SHIP":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
+        break;
+    case "09_NYC_SHIPFAN":
+        Tag = 'SpinningRoom';
+        foreach AllActors(class'ZoneInfo', zone) {
+            if (zone.DamageType=='Burned'){
+                zone.ZonePlayerEvent = 'SpinningRoom';
+            }
+        }
+
         break;
     case "09_NYC_SHIPBELOW":
         WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
@@ -269,6 +294,9 @@ function SetWatchFlags() {
         WatchFlag('CamilleConvosDone');
         WatchFlag('LeoToTheBar');
 
+        break;
+    case "11_PARIS_CATHEDRAL":
+        WatchFlag('GuntherKillswitch');
         break;
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');
@@ -318,11 +346,20 @@ function SetWatchFlags() {
         break;
     case "15_AREA51_BUNKER":
         WatchFlag('JockBlewUp');
+        WatchFlag('blast_door_open');
         Tag = 'Area51FanShaft';
         foreach AllActors(class'ZoneInfo', zone) {
             if (zone.Tag=='fan'){
                 zone.ZonePlayerEvent = 'Area51FanShaft';
             }
+        }
+
+        //This flag trigger actually doesn't trigger because a security computer can only trigger DeusExMovers
+        foreach AllActors(class'FlagTrigger',fTrigger,'blast_door'){
+            fTrigger.Tag = 'blast_door_flag';
+        }
+        foreach AllActors(class'#var(Mover)',dxm,'blast_door'){
+            dxm.Event = 'blast_door_flag';
         }
         break;
     case "15_AREA51_FINAL":
@@ -449,6 +486,18 @@ simulated function bool LeoToTheBar()
     return False;
 }
 
+simulated function bool WatchGuntherKillSwitch()
+{
+    local GuntherHermann gunther;
+
+    foreach AllActors(class'GuntherHermann',gunther){
+        if (gunther.GetStateName()=='KillswitchActivated'){
+            return True;
+        }
+    };
+    return False;
+}
+
 simulated function Timer()
 {
     local int i;
@@ -466,6 +515,14 @@ simulated function Timer()
 
         if( watchflags[i] == 'LeoToTheBar' ) {
             if (LeoToTheBar()){
+                SendFlagEvent(watchflags[i]);
+                num_watchflags--;
+                watchflags[i] = watchflags[num_watchflags];
+                i--;
+                continue;
+            }
+        } else if( watchflags[i] == 'GuntherKillswitch' ) {
+            if (WatchGuntherKillSwitch()){
                 SendFlagEvent(watchflags[i]);
                 num_watchflags--;
                 watchflags[i] = watchflags[num_watchflags];
@@ -793,6 +850,7 @@ static function BeatGame(DXRando dxr, int ending, int time)
     js.static.Add(j, "maxrando", dxr.flags.maxrando);
     GeneralEventData(dxr, j);
     BingoEventData(dxr, j);
+    AugmentationData(dxr, j);
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
@@ -832,6 +890,36 @@ static function GeneralEventData(DXRando dxr, out string j)
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
         js.static.Add(j, "loadout", loadout);
+}
+
+static function AugmentationData(DXRando dxr, out string j)
+{
+    local Augmentation anAug;
+    local string augId,augName,augInfo;
+    local int level;
+
+    anAug = dxr.player.AugmentationSystem.FirstAug;
+    while(anAug != None)
+    {
+        if (anAug.HotKeyNum <= 0){ //I think if you uninstall an aug it becomes -1?
+            anAug = anAug.next;
+            continue;
+        }
+        augId = "Aug-"$anAug.HotKeyNum;
+        augName = ""$anAug.Class.Name;
+        level = anAug.CurrentLevel;
+        if (anAug.bBoosted){
+            level = level-1;
+        }
+
+        augInfo = "{\"name\":\"" $ augName $"\",\"level\":"$level$"}";
+
+        j = j $",\"" $ augId $ "\":" $ augInfo;
+
+
+        anAug = anAug.next;
+    }
+
 }
 
 static function BingoEventData(DXRando dxr, out string j)
@@ -1052,6 +1140,13 @@ function ReadText(name textTag)
         eventname="MoonBaseNews";
         break;
 
+    case '15_Datacube02':
+    case '15_Datacube03':
+    case '15_Datacube04':
+    case '15_Datacube05':
+        eventname="CloneCubes";
+        break;
+
     default:
         // it's simple for a bingo event that requires reading just 1 thing
         _MarkBingo(textTag);
@@ -1096,6 +1191,12 @@ function _MarkBingo(coerce string eventname)
         case "LDDPRussPaid":
         case "ClubMercedesConvo1_Done":
             eventname="ClubEntryPaid";
+            break;
+        case "GuntherKillswitch":
+            eventname="GuntherHermann_Dead";
+            break;
+        case "KarkianBaby_ClassDead":
+            eventname="Karkian_ClassDead";
             break;
     }
 
@@ -1243,7 +1344,9 @@ defaultproperties
     bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out 2 MJ12 Commandos",max=2)
     bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1)
     bingo_options(96)=(event="ChugWater",desc="Chug water 30 times",max=30)
+#ifndef vmd
     bingo_options(97)=(event="ChangeClothes",desc="Change clothes at 3 different clothes racks",max=3)
+#endif
     bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1)
     bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1)
     bingo_options(100)=(event="KnowYourEnemy",desc="Read all 6 Know Your Enemy bulletins",max=6)
@@ -1252,6 +1355,14 @@ defaultproperties
     bingo_options(103)=(event="ManWhoWasThursday",desc="Read 4 parts of The Man Who Was Thursday",max=4)
     bingo_options(104)=(event="GreeneArticles",desc="Read 4 newspaper articles by Joe Greene",max=4)
     bingo_options(105)=(event="MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1)
+    bingo_options(106)=(event="06_Datacube_05",desc="Learn Maggie Chow's Birthday",max=1)
+    bingo_options(107)=(event="Gray_ClassDead",desc="Kill 5 Grays",max=5)
+    bingo_options(108)=(event="CloneCubes",desc="Read about the four clones in Area 51",max=4)
+    bingo_options(109)=(event="blast_door_open",desc="Open the blast doors at Area 51",max=1)
+    bingo_options(110)=(event="SpinningRoom",desc="Pass through the spinning room",max=1)
+    bingo_options(111)=(event="MolePeopleSlaughtered",desc="Slaughter the Mole People",max=1)
+    bingo_options(112)=(event="surrender",desc="Make the NSF surrender in the Mole People tunnels",max=1)
+    bingo_options(113)=(event="nanocage",desc="Open the cages in the UNATCO MJ12 Lab",max=1)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")

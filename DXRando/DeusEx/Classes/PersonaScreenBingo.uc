@@ -7,6 +7,8 @@ const bingoStartY = 22;
 
 var PersonaActionButtonWindow btnReset;
 
+var string ResetWindowHeader, ResetWindowText;
+
 function CreateControls()
 {
     local PersonaButtonBarWindow winActionButtons;
@@ -52,16 +54,36 @@ function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int 
     return t;
 }
 
-function bool ButtonActivated( Window buttonPressed )
+event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
+{
+	// Destroy the msgbox!
+	root.PopWindow();
+    if (buttonNumber==0){
+        ResetBingoBoard();
+    }
+
+	return True;
+}
+
+function bool ResetBingoBoard()
 {
     local DXREvents e;
 
+    foreach player.AllActors(class'DXREvents', e) { break; }
+    if(e == None) return false;
+    e.CreateBingoBoard();
+    SaveSettings();
+    root.InvokeUIScreen(class'PersonaScreenBingo');
+    return true;
+}
+
+function bool ButtonActivated( Window buttonPressed )
+{
+    local int val;
+
     if(buttonPressed == btnReset) {
-        foreach player.AllActors(class'DXREvents', e) { break; }
-        if(e == None) return false;
-        e.CreateBingoBoard();
-        SaveSettings();
-        root.InvokeUIScreen(class'PersonaScreenBingo');
+        root.MessageBox(ResetWindowHeader,ResetWindowText,0,False,Self);
+
         return true;
     }
     return Super.ButtonActivated(buttonPressed);
@@ -87,4 +109,6 @@ defaultproperties
      clientTextureCols=2
      clientBorderTextureRows=2
      clientBorderTextureCols=3
+     ResetWindowHeader="Are you sure?"
+     ResetWindowText="Are you sure you want to reset your board?  All bingo progress will be lost!"
 }

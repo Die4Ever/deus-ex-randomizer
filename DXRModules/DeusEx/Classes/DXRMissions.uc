@@ -36,7 +36,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(1,7,2,9) ) {
+    if( ConfigOlderThan(2,0,3,7) ) {
         allow_vanilla = false;
 
         for(i=0; i<ArrayCount(remove_actors); i++) {
@@ -161,6 +161,13 @@ function vanilla_goals()
     goals[i].actor_name = 'DataLinkTrigger1';
     goals[i].physics = PHYS_None;
     goals[i].move_with_previous = true;
+    i++;
+
+    map = "02_nyc_warehouse";
+    goals[i].map_name = map;
+    goals[i].actor_name = 'BlackHelicopter1';
+    goals[i].physics = PHYS_None;
+    goals[i].allow_vanilla = true;
     i++;
 
     map = "03_nyc_batterypark";
@@ -619,7 +626,7 @@ function vanilla_important_locations()
     i++;
 
     important_locations[i].map_name = map;
-    important_locations[i].location = vect(-444.113403,-2055.208252,-420.899750);//'PathNode192'
+    important_locations[i].location = vect(-420,-2222,-420.899750);//'PathNode192' walkway near the water
     i++;
 
     important_locations[i].map_name = map;
@@ -629,6 +636,37 @@ function vanilla_important_locations()
 
     important_locations[i].map_name = map;
     important_locations[i].location = vect(-4727.703613,3116.336670,-336.900604);//'PathNode142'
+    i++;
+
+    map = "02_nyc_warehouse";
+    important_locations[i].map_name = map;
+    important_locations[i].location = vect(-222.402451,-294.757233,1132.798462);//'BlackHelicopter1'
+    important_locations[i].rotation = rot(0,-24128,0);
+    important_locations[i].is_goal_position = true;
+    i++;
+
+    important_locations[i].map_name = map;
+    important_locations[i].location = vect(-566.249695,305.599731,1207.798462);//Across Street
+    important_locations[i].rotation = rot(0,-32800,0);
+    important_locations[i].is_goal_position = true;
+    i++;
+
+    important_locations[i].map_name = map;
+    important_locations[i].location = vect(1656.467041,-1658.624268,357.798462);//Behind Building
+    important_locations[i].rotation = rot(0,-32800,0);
+    important_locations[i].is_goal_position = true;
+    i++;
+
+    important_locations[i].map_name = map;
+    important_locations[i].location = vect(1665.240112,91.544250,126.798462);//Dog Zone
+    important_locations[i].rotation = rot(0,0,0);
+    important_locations[i].is_goal_position = true;
+    i++;
+
+    important_locations[i].map_name = map;
+    important_locations[i].location = vect(-1508.833008,321.208252,-216.201538);//SEWERCOPTER
+    important_locations[i].rotation = rot(0,16400,0);
+    important_locations[i].is_goal_position = true;
     i++;
 
     map = "03_nyc_batterypark";
@@ -1173,6 +1211,7 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     local ScriptedPawn sp;
     local Mover m;
     local bool success, oldbCollideWorld;
+    local Vehicles v;
 
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
     oldbCollideWorld = a.bCollideWorld;
@@ -1193,7 +1232,19 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
         sp.HomeLoc = sp.Location;
         sp.HomeRot = vector(sp.Rotation);
         sp.DesiredRotation = rotation;
+        if (!sp.bInWorld){
+            sp.WorldPosition = sp.Location;
+            sp.SetLocation(sp.Location+vect(0,0,20000));
+        }
     }
+    v = Vehicles(a);
+    if ( v != None ) {
+        if (!v.bInWorld){
+            v.WorldPosition = v.Location;
+            v.SetLocation(v.Location+vect(0,0,20000));
+        }
+    }
+
     m = Mover(a);
     if( m != None ) {
         m.BasePos = a.Location;
@@ -1271,6 +1322,7 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
     local Teleporter t;
     local float too_close, dist;
     local DXRMissions m;
+
     too_close = 90*16;
 
     m = DXRMissions(dxr.FindModule(class'DXRMissions'));

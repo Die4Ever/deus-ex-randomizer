@@ -140,7 +140,7 @@ function FirstEntry()
     Super.FirstEntry();
     SwapScriptedPawns(dxr.flags.settings.enemiesshuffled, true);
     RandoEnemies(dxr.flags.settings.enemiesrandomized, dxr.flags.settings.hiddenenemiesrandomized);
-    RandoCarcasses();
+    RandoCarcasses(dxr.flags.settings.swapitems);
 }
 
 function ReadConfig()
@@ -235,7 +235,7 @@ function _RandomWeaponStruct GetWeaponConfig(int i)
         return _randomweapons[i];
 }
 
-function RandoCarcasses()
+function RandoCarcasses(int chance)
 {
     local DeusExCarcass c;
     local Inventory item, nextItem;
@@ -243,6 +243,8 @@ function RandoCarcasses()
     SetSeed( "RandoCarcasses" );
 
     foreach AllActors(class'DeusExCarcass', c) {
+        if( ! chance_single(chance) ) continue;
+
         item = c.Inventory;
         while( item != None ) {
             nextItem = item.Inventory;
@@ -361,6 +363,7 @@ function RandoEnemies(int percent, int hidden_percent)
     l("RandoEnemies "$percent);
 
     SetSeed( "RandoEnemies" );
+    if(percent <= 0) return;
 
     foreach AllActors(class'ScriptedPawn', p)
     {

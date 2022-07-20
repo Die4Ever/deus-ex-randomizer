@@ -30,7 +30,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(2,0,1,5) ) {
+    if( ConfigOlderThan(2,0,3,4) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -74,6 +74,26 @@ function CheckConfig()
         DecorationsOverwrites[i].bPushable = c.default.bPushable;
 
         i=0;
+
+        add_datacubes[i].map = "00_Training";
+        add_datacubes[i].text = "In the real game, the locations of nanokeys will be randomized.";
+        add_datacubes[i].location = vect(362.768005, 1083.160889, -146.629639);
+        i++;
+
+        add_datacubes[i].map = "00_Training";
+        add_datacubes[i].text = "Passwords are randomized! And in the real game, the locations of datacubes will also be randomized.";
+        add_datacubes[i].location = vect(1492.952026, 824.573669, -146.630493);
+        i++;
+
+        add_datacubes[i].map = "00_TrainingCombat";
+        add_datacubes[i].text = "Each type of weapon has its stats randomized.|n|nFor example, every knife will have the same stats so you don't need to compare different knives. But you will want to compare the knife vs the baton to see which one is better to keep.";
+        add_datacubes[i].location = vect(-237.082443, 5.800471, -94.629921);
+        i++;
+
+        add_datacubes[i].map = "00_TrainingFinal";
+        add_datacubes[i].text = "Many other things will be randomized when you get to the real game. In order to be prepared, check out our README and Wiki on the Deus Ex Randomizer GitHub.";
+        add_datacubes[i].location = vect(6577.697266, -3884.925049, 33.369633);
+        i++;
 
         add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
         add_datacubes[i].text = "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.";
@@ -226,6 +246,7 @@ function PostFirstEntryMapFixes()
     local DeusExMover m;
     local UNATCOTroop u;
     local Actor a;
+    local Male1 male;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -287,6 +308,13 @@ function PostFirstEntryMapFixes()
         break;
 
 #ifndef revision
+    case "06_HONGKONG_VERSALIFE":
+        foreach AllActors(class'Male1',male){
+            if (male.BindName=="Disgruntled_Guy"){
+                male.bImportant=True;
+            }
+        }
+        break;
     case "09_NYC_DOCKYARD":
         foreach RadiusActors(class'CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
             info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
@@ -519,11 +547,19 @@ function NYC_02_FirstEntry()
     local NanoKey k;
     local NYPoliceBoat b;
     local CrateExplosiveSmall c;
+    local BarrelAmbrosia ambrosia;
+    local Trigger t;
 
     switch (dxr.localURL)
     {
 #ifdef vanilla
     case "02_NYC_BATTERYPARK":
+        foreach AllActors(class'BarrelAmbrosia', ambrosia) {
+            foreach RadiusActors(class'Trigger', t, 16, ambrosia.Location) {
+                if(t.CollisionRadius < 100)
+                    t.SetCollisionSize(t.CollisionRadius*2, t.CollisionHeight*2);
+            }
+        }
         foreach AllActors(class'NYPoliceBoat',b) {
             b.BindName = "NYPoliceBoat";
             b.ConBindEvents();
@@ -1311,6 +1347,21 @@ function Vandenberg_AnyEntry()
     }
 }
 
+function HandleJohnSmithDeath()
+{
+    if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){ //He's already dead
+        return;
+    }
+
+    if (!dxr.flagbase.GetBool('Supervisor01_Dead') &&
+        dxr.flagbase.GetBool('HaveROM') &&
+        !dxr.flagbase.GetBool('Disgruntled_Guy_Return_Played'))
+    {
+        dxr.flagbase.SetBool('Disgruntled_Guy_Dead',true);
+        //We could send a death message here?
+    }
+}
+
 function HongKong_AnyEntry()
 {
     local Actor a;
@@ -1318,6 +1369,7 @@ function HongKong_AnyEntry()
     local #var(Mover) m;
     local bool boolFlag;
     local bool recruitedFlag;
+    local DeusExCarcass carc;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
     // or if flag Have_ROM, Gordon Quick should let you into the compound? requires Have_Evidence and MaxChenConvinced
@@ -1394,7 +1446,7 @@ function HongKong_AnyEntry()
                     break;
             }
         }
-
+        HandleJohnSmithDeath();
         break;
 
     case "06_HONGKONG_VERSALIFE":
@@ -1407,6 +1459,23 @@ function HongKong_AnyEntry()
         foreach AllActors(class'#var(Mover)', m, 'JockShaftTop') {
             m.bLocked = false;
             m.bHighlight = true;
+        }
+        HandleJohnSmithDeath();
+        break;
+
+    case "06_HONGKONG_WANCHAI_CANAL":
+        HandleJohnSmithDeath();
+        if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){
+            foreach AllActors(class'DeusExCarcass', carc, 'John_Smith_Body')
+                if (carc.bHidden){
+				    carc.bHidden = False;
+#ifdef injections
+                    //HACK: to be removed once the problems with Carcass2 are fixed/removed
+                    carc.mesh = LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassC';  //His body starts in the water, so this is fine
+                    carc.SetMesh2(LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassB');
+                    carc.SetMesh3(LodMesh'DeusExCharacters.GM_DressShirt_F_CarcassC');
+#endif
+                }
         }
         break;
 

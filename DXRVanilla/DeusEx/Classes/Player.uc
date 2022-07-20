@@ -313,6 +313,36 @@ function Landed(vector HitNormal)
     bJustLanded = true;
 }
 
+function bool CanInstantLeftClick(DeusExPickup item)
+{
+    if (inHand!=None) return false;
+
+    if (item==None) return false;
+    if (item.bActivatable==False) return false;
+    if (item.GetStateName()=='Activated') return false;
+
+    if (Binoculars(item)!=None) return false; //Unzooming requires left clicking the binocs again
+    return true;
+}
+
+exec function ParseLeftClick()
+{
+    local DeusExPickup item;
+    Super.ParseLeftClick();
+    item = DeusExPickup(FrobTarget);
+    if (item != None && CanInstantLeftClick(item))
+    {
+        // So that any effects get applied to you
+        item.SetOwner(self);
+        // add to the player's inventory, so ChargedPickups travel across maps
+        item.BecomeItem();
+        item.bDisplayableInv = false;
+        item.Inventory = Inventory;
+        Inventory = item;
+        item.Activate();
+    }
+}
+
 event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
 {
     if ( Texture!=None && Texture.Outer!=None && Texture.Outer.Name=='Ladder' ) {

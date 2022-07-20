@@ -154,6 +154,13 @@ function AnyEntry()
     l("AnyEntry() after game: "$Level.Game);*/
 }
 
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
+{
+    Super.PlayerAnyEntry(p);
+    if(!VersionIsStable())
+        p.bCheatsEnabled = true;
+}
+
 function RollSeed()
 {
     seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );
@@ -213,6 +220,16 @@ function InitDefaults()
     autosave = 0;
 #endif
     settings = difficulty_settings[difficulty];
+
+    switch(dxr.localURL) {
+    case "00_Training":
+    case "00_TrainingCombat":
+    case "00_TrainingFinal":
+        SetDifficulty(1);
+        TutorialDisableRandomization(dxr.localURL ~= "00_TrainingFinal");
+        SaveFlags();
+        break;
+    }
 }
 
 function CheckConfig()
@@ -1388,6 +1405,69 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     MaxRandoValPair(settings.min_weapon_shottime, settings.max_weapon_shottime);
 
     settings.aug_value_rando = 100;
+}
+
+simulated function TutorialDisableRandomization(bool enableSomeRando)
+{
+    // a little bit of safe rando just to get a taste?
+    if(!enableSomeRando) {
+        settings.swapitems = 0;
+        settings.swapcontainers = 0;
+        settings.deviceshackable = 0;
+        settings.doorsmode = 0;
+        settings.doorsdestructible = 0;
+        settings.doorspickable = 0;
+    }
+
+    settings.keysrando = 0;
+    settings.speedlevel = 0;
+    settings.startinglocations = 0;
+    settings.goals = 0;
+    settings.infodevices = 0;
+    //settings.merchants = 0;
+    settings.augcans = 0;
+
+    settings.dancingpercent = 50;
+    settings.medbots = -1;
+    settings.repairbots = -1;
+
+    /*settings.medbotuses = 20;
+    settings.repairbotuses = 20;
+    settings.medbotcooldowns = 1;
+    settings.repairbotcooldowns = 1;
+    settings.medbotamount = 1;
+    settings.repairbotamount = 1;*/
+
+    settings.enemiesrandomized = 0;
+    settings.hiddenenemiesrandomized = settings.enemiesrandomized;
+    settings.enemiesshuffled = 0;
+    settings.enemies_nonhumans = 0;
+    settings.enemyrespawn = 0;
+
+    settings.turrets_move = 0;
+    settings.turrets_add = 0;
+
+    settings.skills_reroll_missions = 0;
+    settings.skills_independent_levels = 0;
+    /*settings.minskill = 80;
+    settings.maxskill = 120;
+    settings.skill_value_rando = 30;*/
+    settings.banned_skills = 0;
+    settings.banned_skill_levels = 0;
+
+    settings.ammo = 100;
+    settings.multitools = 1000;
+    settings.lockpicks = 1000;
+    settings.biocells = 1000;
+    settings.medkits = 1000;
+    settings.equipment = 0;
+
+    /*settings.min_weapon_dmg = 100;
+    settings.max_weapon_dmg = 100;
+    settings.min_weapon_shottime = 100;
+    settings.max_weapon_shottime = 100;
+
+    settings.aug_value_rando = 0;*/
 }
 
 function NewGamePlusVal(out int val, float curve, float exp)

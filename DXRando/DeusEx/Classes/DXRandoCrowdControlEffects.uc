@@ -4,6 +4,7 @@ var DXRandoCrowdControlLink ccLink;
 
 var DataStorage datastorage;
 var transient DXRando dxr;
+var string shouldSave;
 
 const Success = 0;
 const Failed = 1;
@@ -481,7 +482,7 @@ function SkillPointsRemove(int numPoints) {
         (DeusExRootWindow(player().rootWindow).hud != None) &&
         (DeusExRootWindow(player().rootWindow).hud.msgLog != None))
     {
-        PlayerMessage(Sprintf(player().SkillPointsAward, -numPoints));
+        PlayerMessage(Sprintf(player().SkillPointsAward, -numPoints) $ shouldSave);
         DeusExRootWindow(player().rootWindow).hud.msgLog.PlayLogSound(Sound'LogSkillPoints');
     }
 }
@@ -549,7 +550,7 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
             anAug.Activate();
         }
 
-        PlayerMessage(viewer@"upgraded "$anAug.AugmentationName$" to level "$anAug.CurrentLevel+1);
+        PlayerMessage(viewer@"upgraded "$anAug.AugmentationName$" to level "$anAug.CurrentLevel+1 $ shouldSave);
         return Success;
     }
 
@@ -580,7 +581,7 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
 
     if ((!anAug.bAlwaysActive) && (player().bHUDShowAllAugs))
         player().AddAugmentationDisplay(anAug);
-    PlayerMessage(viewer@"gave you the "$anAug.AugmentationName$" augmentation");
+    PlayerMessage(viewer@"gave you the "$anAug.AugmentationName$" augmentation" $ shouldSave);
     return Success;
 }
 
@@ -593,7 +594,7 @@ function int AddCredits(int amount,string viewer) {
     player().Credits += amount;
 
     if (amount>0) {
-        PlayerMessage(viewer@"gave you "$amount$" credits!");
+        PlayerMessage(viewer@"gave you "$amount$" credits!" $ shouldSave);
     } else {
         PlayerMessage(viewer@"took away "$(-amount)$" credits!");
     }
@@ -931,7 +932,7 @@ function int GiveItem(string viewer, string type, optional int amount) {
         outMsg = outMsg @ item.Default.ItemArticle @ item.Default.ItemName;
     }
 
-    PlayerMessage(outMsg);
+    PlayerMessage(outMsg $ shouldSave);
     return Success;
 }
 
@@ -1140,7 +1141,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             i =  Int(param[0]) * 10;
             player().HealPlayer(i,False);
-            PlayerMessage(viewer@"gave you "$i$" health!");
+            PlayerMessage(viewer@"gave you "$i$" health!" $ shouldSave);
             break;
 
         case "set_fire":
@@ -1153,7 +1154,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             player().RestoreAllHealth();
-            PlayerMessage(viewer@"fully healed you!");
+            PlayerMessage(viewer@"fully healed you!" $ shouldSave);
             break;
 
         case "disable_jump":
@@ -1248,12 +1249,12 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (player().Energy > player().EnergyMax)
                 player().Energy = player().EnergyMax;
 
-            PlayerMessage(viewer@"gave you "$i$" energy!");
+            PlayerMessage(viewer@"gave you "$i$" energy!" $ shouldSave);
             break;
 
         case "give_skillpoints":
             i = Int(param[0])*100;
-            PlayerMessage(viewer@"gave you "$i$" skill points");
+            PlayerMessage(viewer@"gave you "$i$" skill points" $ shouldSave);
             player().SkillPointsAdd(i);
             break;
 
@@ -1416,4 +1417,5 @@ defaultproperties
     NormalGravity=(X=0,Y=0,Z=-950)
     FloatGrav=(X=0,Y=0,Z=0.15)
     MoonGrav=(X=0,Y=0,Z=-300)
+    shouldSave=" (You should save now.)"
 }

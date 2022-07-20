@@ -91,7 +91,6 @@ function RemoveAugmentation()
     DestroyAugmentationButtons();
     CreateAugmentationButtons();
 
-
     //Remove the aug description
     winInfo.Clear();
 
@@ -101,9 +100,10 @@ function RemoveAugmentation()
     return;
 }
 
+
 function DestroyAugmentationButtons()
 {
-    local int buttonIndex;
+    local int buttonIndex,highlightIndex;
 
     for(buttonIndex=0; buttonIndex<arrayCount(augItems); buttonIndex++)
     {
@@ -111,4 +111,11 @@ function DestroyAugmentationButtons()
             augItems[buttonIndex].Destroy();
             augItems[buttonIndex] = None;
     }
+
+    //Remove the beefy bits from the body
+    for(highlightIndex=0;highlightIndex<arrayCount(augHighlightWindows);highlightIndex++){
+	    augHighlightWindows[highlightIndex].Hide();
+    }
+
+
 }
