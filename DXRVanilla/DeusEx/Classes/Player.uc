@@ -313,6 +313,31 @@ function Landed(vector HitNormal)
     bJustLanded = true;
 }
 
+function bool IgnoreInstantLeftClick()
+{
+    if (inHand!=None) return True;
+    if (FrobTarget==None) return True;
+    if (!FrobTarget.IsA('DeusExPickup')) return True;
+    if (DeusExPickup(FrobTarget).bActivatable==False) return True;
+    if (FrobTarget.GetStateName()=='Activated') return True;
+
+    //There are probably more things that shouldn't be instantly used...
+    if (FrobTarget.IsA('Binoculars')) return True; //Unzooming requires left clicking the binocs again
+    //if (FrobTarget.IsA('FireExtinguisher')) return True; //Would need special handling to make it disappear right away.  Probably should be in inventory anyway
+    return False;
+}
+
+exec function ParseLeftClick()
+{
+    Super.ParseLeftClick();
+    if (!IgnoreInstantLeftClick())
+    {
+        FrobTarget.SetOwner(self); //So that any effects get applied to you
+        DeusExPickup(FrobTarget).Activate();
+        FrobTarget.bHidden=true; //Mostly for ChargedPickups, but can't hurt for anything else?
+    }
+}
+
 event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
 {
     if ( Texture!=None && Texture.Outer!=None && Texture.Outer.Name=='Ladder' ) {
