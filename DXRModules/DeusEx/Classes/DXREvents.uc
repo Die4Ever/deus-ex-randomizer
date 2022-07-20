@@ -45,7 +45,7 @@ function SetWatchFlags() {
     local ScientistMale sm;
     local ZoneInfo zone;
     local SkillAwardTrigger skillAward;
-    local DeusExMover dxm;
+    local #var(Mover) dxm;
     local LogicTrigger lTrigger;
     local WaterZone water;
     local Toilet closestToilet;
@@ -175,7 +175,7 @@ function SetWatchFlags() {
             fTrigger.SetCollisionSize(500,CollisionHeight);
         }
 
-        foreach AllActors(class'DeusExMover',dxm,'SecretHold'){
+        foreach AllActors(class'#var(Mover)',dxm,'SecretHold'){
             break;
         }
         skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
@@ -203,7 +203,7 @@ function SetWatchFlags() {
         WatchFlag('M06PaidJunkie');
 
         //Find Jock's apartment door
-        foreach AllActors(class'DeusExMover',dxm){
+        foreach AllActors(class'#var(Mover)',dxm){
             if (dxm.KeyIDNeeded=='JocksKey'){
                 break;
             }
@@ -221,7 +221,7 @@ function SetWatchFlags() {
     case "06_HONGKONG_WANCHAI_MARKET":
         Tag = 'PoliceVaultBingo';
 
-        foreach AllActors(class'DeusExMover',dxm,'station_door_05'){
+        foreach AllActors(class'#var(Mover)',dxm,'station_door_05'){
             break;
         }
 
@@ -358,7 +358,7 @@ function SetWatchFlags() {
         foreach AllActors(class'FlagTrigger',fTrigger,'blast_door'){
             fTrigger.Tag = 'blast_door_flag';
         }
-        foreach AllActors(class'DeusExMover',dxm,'blast_door'){
+        foreach AllActors(class'#var(Mover)',dxm,'blast_door'){
             dxm.Event = 'blast_door_flag';
         }
         break;

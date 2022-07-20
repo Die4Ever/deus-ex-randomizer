@@ -1407,10 +1407,10 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     settings.aug_value_rando = 100;
 }
 
-simulated function TutorialDisableRandomization(bool isFinal)
+simulated function TutorialDisableRandomization(bool enableSomeRando)
 {
     // a little bit of safe rando just to get a taste?
-    if(!isFinal) {
+    if(!enableSomeRando) {
         settings.swapitems = 0;
         settings.swapcontainers = 0;
         settings.deviceshackable = 0;
