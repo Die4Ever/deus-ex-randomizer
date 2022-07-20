@@ -329,12 +329,18 @@ function bool IgnoreInstantLeftClick()
 
 exec function ParseLeftClick()
 {
+    local Inventory item;
     Super.ParseLeftClick();
-    if (!IgnoreInstantLeftClick())
+    item = Inventory(FrobTarget);
+    if (item != None && !IgnoreInstantLeftClick())
     {
-        FrobTarget.SetOwner(self); //So that any effects get applied to you
-        DeusExPickup(FrobTarget).Activate();
-        FrobTarget.bHidden=true; //Mostly for ChargedPickups, but can't hurt for anything else?
+        item.SetOwner(self); //So that any effects get applied to you
+        item.BecomeItem();
+        item.bDisplayableInv = false;
+        // add to the player's inventory, so ChargedPickups travel across maps
+        item.Inventory = Inventory;
+        Inventory = item;
+        DeusExPickup(item).Activate();
     }
 }
 
