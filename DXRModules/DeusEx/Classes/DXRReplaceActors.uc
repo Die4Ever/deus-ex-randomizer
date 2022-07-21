@@ -16,6 +16,9 @@ function ReplaceActors()
         if( #var(prefix)AllianceTrigger(a) != None ) {
             ReplaceAllianceTrigger(#var(prefix)AllianceTrigger(a));
         }
+        if( #var(prefix)ShakeTrigger(a) != None ) {
+            ReplaceShakeTrigger(#var(prefix)ShakeTrigger(a));
+        }
         if( #var(prefix)ClothesRack(a) != None ) {
             ReplaceClothesRack(#var(prefix)ClothesRack(a));
         }
@@ -94,6 +97,22 @@ function ReplaceAllianceTrigger(#var(prefix)AllianceTrigger a)
         n.Alliances[i].AllianceLevel = a.Alliances[i].AllianceLevel;
         n.Alliances[i].bPermanent = a.Alliances[i].bPermanent;
     }
+
+    ReplaceTrigger(a, n);
+    a.Destroy();
+}
+
+function ReplaceShakeTrigger(#var(prefix)ShakeTrigger a)
+{
+    local DXRShakeTrigger n;
+    local int i;
+    n = DXRShakeTrigger(SpawnReplacement(a, class'DXRShakeTrigger'));
+    if(n == None)
+        return;
+
+    n.shakeTime = a.shakeTime;
+    n.shakeRollMagnitude = a.shakeRollMagnitude;
+    n.shakeVertMagnitude = a.shakeVertMagnitude;
 
     ReplaceTrigger(a, n);
     a.Destroy();
