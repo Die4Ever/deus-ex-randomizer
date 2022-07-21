@@ -16,8 +16,6 @@ struct DecorationsOverwrite {
 var config DecorationsOverwrite DecorationsOverwrites[16];
 var class<DeusExDecoration> DecorationsOverwritesClasses[16];
 
-var bool bShouldShake;
-
 struct AddDatacube {
     var string map;
     var string text;
@@ -178,7 +176,6 @@ function AnyEntry()
         AnyEntryMapFixes();
 
     FixAmmoShurikenName();
-    AnyEntryFixMapShaking();
 
     AllAnyEntry();
 }
@@ -206,7 +203,6 @@ function Timer()
 
     if(#defined(mapfixes))
         TimerMapFixes();
-    ShakeTriggerFixes();
 }
 
 function PreFirstEntryMapFixes()
@@ -369,19 +365,6 @@ function AnyEntryMapFixes()
     }
 }
 
-function AnyEntryFixMapShaking()
-{
-    bShouldShake = False;
-    switch(dxr.localURL)
-    {
-    case "ENDGAME2":
-    case "14_OCEANLAB_SILO":
-        FixShaking();
-        break;
-    }
-
-}
-
 function AllAnyEntry()
 {
     local HowardStrong hs;
@@ -435,30 +418,6 @@ function TimerMapFixes()
 #endif
     case "09_NYC_SHIPBELOW":
         NYC_09_CountWeldPoints();
-        break;
-    }
-}
-
-event Tick(float DeltaTime)
-{
-    if (bShouldShake){
-        player().ViewShake(DeltaTime);
-    }
-}
-
-function ShakeTriggerFixes()
-{
-    switch(dxr.localURL)
-    {
-    case "14_OCEANLAB_SILO":
-        if (player().GetStateName()=='Interpolating'){
-            bShouldShake = True;
-        }
-        break;
-    case "ENDGAME2":
-        if (player().GetStateName()=='Paralyzed'){
-            bShouldShake = True;
-        }
         break;
     }
 }
@@ -1386,11 +1345,6 @@ function Vandenberg_AnyEntry()
         }
         break;
     }
-}
-
-function FixShaking()
-{
-    SetTimer(1, True);
 }
 
 function HandleJohnSmithDeath()

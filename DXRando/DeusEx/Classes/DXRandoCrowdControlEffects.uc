@@ -38,6 +38,7 @@ const FloatyTimeDefault = 60;
 const FloorLavaTimeDefault = 60;
 const InvertMouseTimeDefault = 60;
 const InvertMovementTimeDefault = 60;
+const EarthquakeTimeDefault = 60;
 
 struct ZoneFriction
 {
@@ -155,6 +156,17 @@ function PeriodicUpdates()
         invertMovementControls();
     }
 
+    if (decrementTimer('cc_Earthquake')) {
+        PlayerMessage("The earthquake ends");
+        player().shaketimer=0;
+    }
+
+    //Re-apply the quake, just in case some other shake happened and ended during the timer (ie. superfreighter)
+    if (isTimerActive('cc_Earthquake')){
+        startEarthquake(getTimer('cc_Earthquake'));
+    }
+
+
 }
 
 function ContinuousUpdates()
@@ -216,6 +228,12 @@ function InitOnEnter() {
 
     if (isTimerActive('cc_invertMovementTimer')) {
         invertMovementControls();
+    }
+
+    if (isTimerActive('cc_Earthquake')) {
+        startEarthquake(getTimer('cc_Earthquake'));
+    } else {
+        player().shaketimer=0;
     }
 }
 
@@ -322,6 +340,8 @@ function int getDefaultTimerTimeByName(name timerName) {
             return InvertMouseTimeDefault;
         case 'cc_invertMovementTimer':
             return InvertMovementTimeDefault;
+        case 'cc_Earthquake':
+            return EarthquakeTimeDefault;
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -369,6 +389,8 @@ function string getTimerLabelByName(name timerName) {
             return "Inv Mouse";
         case 'cc_invertMovementTimer':
             return "Inv Move";
+        case 'cc_Earthquake':
+            return "Quake";
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -1027,6 +1049,27 @@ function AskRandomQuestion(String viewer) {
 
 }
 
+function startEarthquake(float time) {
+    local float shakeRollMagnitude,shakeTime,shakeVertMagnitude;
+
+    shakeRollMagnitude = 2500.0;
+    shakeTime = time;
+    shakeVertMagnitude = 75.0;
+
+    player().ShakeView(shakeTime,shakeRollMagnitude,shakeVertMagnitude);
+
+}
+
+function int Earthquake(String viewer) {
+
+    startEarthquake(EarthquakeTimeDefault);
+
+    PlayerMessage(viewer@"set off an earthquake!");
+
+    return Success;
+
+}
+
 function bool canDropItem() {
 	local Vector X, Y, Z, dropVect;
 	local Inventory item;
@@ -1357,6 +1400,18 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             startNewTimer('cc_invertMovementTimer');
             break;
+
+        case "earthquake":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_Earthquake')){
+                return TempFail;
+            }
+
+            startnewTimer('cc_Earthquake');
+
+            return Earthquake(viewer);
 
 #ifdef vanilla
         // LAM Thrower crashes for mods with fancy physics?
