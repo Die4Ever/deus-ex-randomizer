@@ -39,6 +39,7 @@ const FloorLavaTimeDefault = 60;
 const InvertMouseTimeDefault = 60;
 const InvertMovementTimeDefault = 60;
 const EarthquakeTimeDefault = 60;
+const CameraRollTimeDefault = 60;
 
 struct ZoneFriction
 {
@@ -166,14 +167,34 @@ function PeriodicUpdates()
         startEarthquake(getTimer('cc_Earthquake'));
     }
 
+    if (decrementTimer('cc_RollTimer')) {
+        PlayerMessage("Your world turns rightside up again");
+        datastorage.SetConfig('cc_cameraRoll',0, 3600*12);
+        datastorage.SetConfig('cc_cameraSpin',0, 3600*12);
+    }
+
 
 }
 
 function ContinuousUpdates()
 {
+    local int roll;
+    local DataStorage datastorage;
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+
     //Lava floor logic
     if (isTimerActive('cc_floorLavaTimer') && InGame()){
         floorIsLava();
+    }
+
+    //Camera Spin
+    if (bool(datastorage.GetConfigKey('cc_cameraSpin')) && InGame()){
+        roll = int(datastorage.GetConfigKey('cc_cameraRoll'));
+        roll+=110;  //This rate makes about one full rotation in a minute
+        roll = roll % 65535;
+        datastorage.SetConfig('cc_cameraRoll',roll, 3600*12);
+
+
     }
 
 }
@@ -342,6 +363,8 @@ function int getDefaultTimerTimeByName(name timerName) {
             return InvertMovementTimeDefault;
         case 'cc_Earthquake':
             return EarthquakeTimeDefault;
+        case 'cc_RollTimer':
+            return CameraRollTimeDefault;
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -391,6 +414,8 @@ function string getTimerLabelByName(name timerName) {
             return "Inv Move";
         case 'cc_Earthquake':
             return "Quake";
+        case 'cc_RollTimer':
+            return "Camera";
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -1070,6 +1095,35 @@ function int Earthquake(String viewer) {
 
 }
 
+function int TriggerAllAlarms(String viewer) {
+    local int numAlarms;
+    local AlarmUnit au;
+    local SecurityCamera sc;
+
+    numAlarms = 0;
+
+    foreach AllActors(class'AlarmUnit',au){
+        numAlarms+=1;
+        au.Trigger(self,None);
+    }
+    foreach AllActors(class'SecurityCamera',sc){
+        numAlarms+=1;
+        sc.TriggerEvent(True);
+    }
+
+    if (numAlarms==0){
+        return TempFail;
+    }
+
+    PlayerMessage(viewer@"set off "$numAlarms$" alarms!");
+
+    return Success;
+
+}
+
+
+
+
 function bool canDropItem() {
 	local Vector X, Y, Z, dropVect;
 	local Inventory item;
@@ -1295,6 +1349,20 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             PlayerMessage(viewer@"gave you "$i$" energy!" $ shouldSave);
             break;
 
+        case "give_full_energy":
+
+            if (player().Energy == player().EnergyMax) {
+                return TempFail;
+            }
+            //Copied from BioelectricCell
+
+            //PlayerMessage("Recharged 10 points");
+            player().PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
+            player().Energy = player().EnergyMax;
+
+            PlayerMessage(viewer@"refilled your energy!" $ shouldSave);
+            break;
+
         case "give_skillpoints":
             i = Int(param[0])*100;
             PlayerMessage(viewer@"gave you "$i$" skill points" $ shouldSave);
@@ -1413,13 +1481,31 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             return Earthquake(viewer);
 
-#ifdef vanilla
+        case "trigger_alarms":
+            if (!InGame()) {
+                return TempFail;
+            }
+
+            return TriggerAllAlarms(viewer);
+
+
+
         // LAM Thrower crashes for mods with fancy physics?
         case "lamthrower":
+            if (!isVanilla()){
+                PlayerMessage("LAMThrower effect unavailable in this mod");
+                return NotAvail;
+            }
+
             return GiveLamThrower(viewer);
 
         // dmg_double and dmg_half require changes inside the player class
         case "dmg_double":
+            if (!isVanilla()){
+                PlayerMessage("Double Damage effect unavailable in this mod");
+                return NotAvail;
+            }
+
             if (isTimerActive('cc_DifficultyTimer')) {
                 return TempFail;
             }
@@ -1428,7 +1514,13 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             PlayerMessage(viewer@"made your body extra squishy");
             startNewTimer('cc_DifficultyTimer');
             break;
+
         case "dmg_half":
+            if (!isVanilla()){
+                PlayerMessage("Half Damage effect unavailable in this mod");
+                return NotAvail;
+            }
+
             if (isTimerActive('cc_DifficultyTimer')) {
                 return TempFail;
             }
@@ -1436,13 +1528,82 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             PlayerMessage(viewer@"made your body extra tough!");
             startNewTimer('cc_DifficultyTimer');
             break;
-#endif
+
+        case "flipped":
+            if (!isVanilla()){
+                //Changes in player class
+                PlayerMessage("Flipped effect unavailable in this mod");
+                return NotAvail;
+            }
+
+            if (!InGame()) {
+                return TempFail;
+            }
+
+            if (isTimerActive('cc_RollTimer')) {
+                return TempFail;
+            }
+            datastorage.SetConfig('cc_cameraRoll',32768, 3600*12);
+
+            PlayerMessage(viewer@"turned your life upside down");
+            startNewTimer('cc_RollTimer');
+
+            return Success;
+
+        case "limp_neck":
+            if (!isVanilla()){
+                //Changes in player class
+                PlayerMessage("Limp Neck effect unavailable in this mod");
+                return NotAvail;
+            }
+            if (!InGame()) {
+                return TempFail;
+            }
+
+            if (isTimerActive('cc_RollTimer')) {
+                return TempFail;
+            }
+            datastorage.SetConfig('cc_cameraRoll',16383, 3600*12);
+
+            PlayerMessage(viewer@"made your head flop to the side");
+            startNewTimer('cc_RollTimer');
+
+            return Success;
+
+        case "barrel_roll":
+            if (!isVanilla()){
+                //Changes in player class
+                PlayerMessage("Barrel Roll effect unavailable in this mod");
+                return NotAvail;
+            }
+            if (!InGame()) {
+                return TempFail;
+            }
+
+            if (isTimerActive('cc_RollTimer')) {
+                return TempFail;
+            }
+            datastorage.SetConfig('cc_cameraSpin',1, 3600*12);
+
+            PlayerMessage(viewer@"told you to do a barrel roll");
+            startNewTimer('cc_RollTimer');
+
+            return Success;
 
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type);
     }
 
     return Success;
+}
+
+function bool isVanilla(){
+#ifdef vanilla
+    return True;
+#else
+    return False;
+#endif
+
 }
 
 function int doCrowdControlEventWithPrefix(string code, string param[5], string viewer, int type) {

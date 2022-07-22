@@ -606,6 +606,16 @@ function UpdateDynamicMusic(float deltaTime)
     }
 }
 
+function UpdateRotation(float DeltaTime, float maxPitch)
+{
+    local DataStorage datastorage;
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+
+	Super.UpdateRotation(DeltaTime,maxPitch);
+
+    ViewRotation.Roll = int(datastorage.GetConfigKey('cc_cameraRoll'));
+}
+
 // LDDP: for Lay D Denton compatibility
 simulated function PreBeginPlay()
 {
