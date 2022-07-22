@@ -9,6 +9,8 @@ var transient string nextMap;
 var Music LevelSong;
 var byte LevelSongSection;
 
+var Rotator ShakeRotator;
+
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
 {
     // 2 spaces because destroyed item pickups do ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
@@ -609,13 +611,17 @@ function UpdateDynamicMusic(float deltaTime)
 function UpdateRotation(float DeltaTime, float maxPitch)
 {
     local DataStorage datastorage;
+    local int rollAmount;
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
 
+    //Track and handle shake rotation as though we are always right-ways up
+    ViewRotation = ShakeRotator;
 	Super.UpdateRotation(DeltaTime,maxPitch);
+    ShakeRotator = ViewRotation;
 
-    if (shaketimer==0.0){
-        ViewRotation.Roll = (int(datastorage.GetConfigKey('cc_cameraRoll')));
-    }
+    //Apply any roll after figuring out (and storing) the current shake state
+    rollAmount = int(datastorage.GetConfigKey('cc_cameraRoll'));
+    ViewRotation.Roll += rollAmount;
 
 }
 
