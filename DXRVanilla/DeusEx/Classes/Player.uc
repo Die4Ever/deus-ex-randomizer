@@ -613,7 +613,10 @@ function UpdateRotation(float DeltaTime, float maxPitch)
 
 	Super.UpdateRotation(DeltaTime,maxPitch);
 
-    ViewRotation.Roll = int(datastorage.GetConfigKey('cc_cameraRoll'));
+    if (shaketimer==0.0){
+        ViewRotation.Roll = (int(datastorage.GetConfigKey('cc_cameraRoll')));
+    }
+
 }
 
 // LDDP: for Lay D Denton compatibility

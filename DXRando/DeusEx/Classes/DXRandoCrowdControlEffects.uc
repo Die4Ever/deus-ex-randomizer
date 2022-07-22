@@ -1476,6 +1476,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (isTimerActive('cc_Earthquake')){
                 return TempFail;
             }
+            if (isTimerActive('cc_RollTimer')) {
+                return TempFail;
+            }
 
             startnewTimer('cc_Earthquake');
 
@@ -1539,7 +1542,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (!InGame()) {
                 return TempFail;
             }
-
+            if (isTimerActive('cc_Earthquake')){
+                return TempFail;
+            }
             if (isTimerActive('cc_RollTimer')) {
                 return TempFail;
             }
@@ -1559,7 +1564,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (!InGame()) {
                 return TempFail;
             }
-
+            if (isTimerActive('cc_Earthquake')){
+                return TempFail;
+            }
             if (isTimerActive('cc_RollTimer')) {
                 return TempFail;
             }
@@ -1579,7 +1586,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (!InGame()) {
                 return TempFail;
             }
-
+            if (isTimerActive('cc_Earthquake')){
+                return TempFail;
+            }
             if (isTimerActive('cc_RollTimer')) {
                 return TempFail;
             }
