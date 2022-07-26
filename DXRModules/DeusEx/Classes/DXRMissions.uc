@@ -1048,6 +1048,7 @@ function PreFirstEntry()
     local ImportantLocation player_starts[32];
     local ImportantLocation goal_locations[32];
     local Name a_name;
+    local string bitMask;
 
     Super.PreFirstEntry();
 
@@ -1075,23 +1076,38 @@ function PreFirstEntry()
 
     SetSeed( "DXRMissions" );
 
+    for(i=0; i<ArrayCount(goals); i++) {
+        if( dxr.localURL != goals[i].map_name ) continue;
+        bitMask = "NORMAL_GOAL";
+        if(goals[i].allow_vanilla)
+            bitMask = bitMask $ " | VANILLA_GOAL";
+        l("AddGoal(\"" $ goals[i].map_name $ "\", \"\", " $ bitMask $ ", '" $ goals[i].actor_name $ "', PHYS_Falling);");
+        local_goals[num_ma] = goals[i];
+        num_ma++;
+    }
+
     for(i=0; i<ArrayCount(important_locations); i++) {
         if( dxr.localURL != important_locations[i].map_name ) continue;
 
+        bitMask = "";
         if( important_locations[i].is_player_start ) {
+            bitMask = "START_LOCATION";
             player_starts[num_ps] = important_locations[i];
             num_ps++;
         }
         if( important_locations[i].is_goal_position ) {
+            if(Len(bitMask)>0)
+                bitMask = "NORMAL_GOAL | " $ bitMask;
+            else
+                bitMask = "NORMAL_GOAL";
             goal_locations[num_gl] = important_locations[i];
             num_gl++;
         }
-    }
-
-    for(i=0; i<ArrayCount(goals); i++) {
-        if( dxr.localURL != goals[i].map_name ) continue;
-        local_goals[num_ma] = goals[i];
-        num_ma++;
+        l("AddGoalLocation(\"" $ important_locations[i].map_name $ "\", \"\", " $ bitMask
+        $", vect("
+        $ important_locations[i].location.x $", " $ important_locations[i].location.y $", "$ important_locations[i].location.z $ "), "
+        $ "rot(" $ important_locations[i].rotation.Pitch $", "$ important_locations[i].rotation.Yaw $", "$ important_locations[i].rotation.Roll $")"
+        $ ");");
     }
 
     foreach AllActors(class'Actor', a) {
@@ -1112,6 +1128,12 @@ function PreFirstEntry()
 
         for(i=0; i<num_ma; i++) {
             if( a_name == local_goals[i].actor_name ) {
+                if(local_goals[i].allow_vanilla) {
+                    l("AddGoalLocation(\"" $ dxr.localURL $ "\", \"\", NORMAL_GOAL | VANILLA_GOAL, vect("
+                        $a.Location.x$","$a.Location.y$","$a.Location.z
+                        $"), rot("
+                        $a.Rotation.Pitch$","$a.Rotation.Yaw$","$a.Rotation.Roll$"));");
+                }
                 movable_actors[i] = a;
                 if(!a.bHidden) a.bVisionImportant = true;
                 found_actors++;
@@ -1123,6 +1145,10 @@ function PreFirstEntry()
     if( allow_vanilla == true && num_ps > 0 ) {
         player_starts[num_ps].location = player().location;
         player_starts[num_ps].rotation = player().rotation;
+        l("AddGoalLocation(\"" $ dxr.localURL $ "\", \"\", START_LOCATION | VANILLA_GOAL, vect("
+                        $player().location.x$","$player().location.y$","$player().location.z
+                        $"), rot("
+                        $player().rotation.Pitch$","$player().rotation.Yaw$","$player().rotation.Roll$"));");
         num_ps++;
     }
 
