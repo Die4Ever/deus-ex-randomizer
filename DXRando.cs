@@ -54,6 +54,13 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Flip camera upside down","flipped"), //New for fourth Crowd Control batch
         new Effect ("Flip camera sideways","limp_neck"), //New for fourth Crowd Control batch
         new Effect ("Do a barrel roll!","barrel_roll"), //New for fourth Crowd Control batch
+        new Effect ("Set off a Flashbang", "flashbang"), //New for fourth Crowd Control batch
+        new Effect ("Eat Beans", "eat_beans"), //New for fourth Crowd Control batch
+        new Effect ("Fire the current weapon", "fire_weapon"), //New for fourth Crowd Control batch
+        new Effect ("Switch to next item", "next_item"), //New for fourth Crowd Control batch
+        new Effect ("Switch to next HUD color scheme", "next_hud_color"), //New for fourth Crowd Control batch
+        new Effect ("Quick Save", "quick_save"), //New for fourth Crowd Control batch
+        new Effect ("Quick Load", "quick_load"), //New for fourth Crowd Control batch
 
         //Items
         new Effect("Give Items","giveitems",ItemKind.Folder), //New folder for third batch

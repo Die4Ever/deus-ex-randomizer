@@ -40,6 +40,7 @@ const InvertMouseTimeDefault = 60;
 const InvertMovementTimeDefault = 60;
 const EarthquakeTimeDefault = 60;
 const CameraRollTimeDefault = 60;
+const EatBeansTimeDefault = 60;
 
 struct ZoneFriction
 {
@@ -59,6 +60,14 @@ var DXRandoCrowdControlTimer timerDisplays[32];
 
 var DXRandoCrowdControlPawn CrowdControlPawns[3];
 var int mostRecentCcPawn;
+
+var int fartSoundId;
+var int fartDuration;
+
+var int flashbangSoundId;
+var int flashbangDuration;
+
+var bool quickLoadTriggered;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                  CROWD CONTROL FRAMEWORK                                                 ////
@@ -173,6 +182,48 @@ function PeriodicUpdates()
         datastorage.SetConfig('cc_cameraSpin',0, 3600*12);
     }
 
+    if (decrementTimer('cc_EatBeans')) {
+        PlayerMessage("Your stomach settles down");
+    } else if (isTimerActive('cc_EatBeans') && InGame()){
+        Fart();
+    }
+
+    if (flashbangDuration>0){
+        flashbangDuration--;
+        if (flashbangDuration==0){
+            player().StopSound(flashbangSoundId);
+            flashbangSoundId=0;
+        }
+    }
+
+    if (quickLoadTriggered){
+        quickLoadTriggered = False;
+        player().QuickLoadConfirmed();
+    }
+
+}
+
+//Start the sound and fire the clouds
+function Fart()
+{
+    local Rotator r;
+    local int i;
+
+    r = player().Rotation;
+    r.Yaw+=(32768-5000); //Fire out the behind
+
+    //Fart Sound
+    fartSoundId = player().PlaySound(sound'PushMetal',SLOT_Pain, 2,,,0.5+FRand());
+    fartDuration = Rand(3)+1; //Duration in 10ths of a second
+
+    for (i=0;i<5;i++){
+        if (Rand(2)==0){
+            Spawn(class'TearGas', player(),,player().Location,r);
+        } else {
+            Spawn(class'PoisonGas', player(),,player().Location,r);
+        }
+        r.Yaw+=2500;
+    }
 
 }
 
@@ -196,6 +247,15 @@ function ContinuousUpdates()
 
 
     }
+
+    if (fartSoundId!=0){
+        fartDuration--;
+        if (fartDuration <= 0){
+            player().StopSound(fartSoundId);
+            fartSoundId=0;
+        }
+    }
+
 
 }
 
@@ -365,6 +425,8 @@ function int getDefaultTimerTimeByName(name timerName) {
             return EarthquakeTimeDefault;
         case 'cc_RollTimer':
             return CameraRollTimeDefault;
+        case 'cc_EatBeans':
+            return EatBeansTimeDefault;
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -416,6 +478,8 @@ function string getTimerLabelByName(name timerName) {
             return "Quake";
         case 'cc_RollTimer':
             return "Camera";
+        case 'cc_EatBeans':
+            return "Beans";
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -1586,6 +1650,89 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             startNewTimer('cc_RollTimer');
 
             return Success;
+
+        case "flashbang":
+            if (!InGame()) {
+                return TempFail;
+            }
+            player().ClientFlash(1,vect(50000,50000,50000));
+            flashbangSoundId = player().PlaySound(sound'AlarmUnitHum',SLOT_Interface, 100,False,,25);
+            flashbangDuration = 3;
+
+            PlayerMessage(viewer@"set off a flashbang!");
+
+            return Success;
+
+        case "eat_beans":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_EatBeans')) {
+                return TempFail;
+            }
+
+            PlayerMessage(viewer@"fed you a whole bunch of beans!");
+
+            startNewTimer('cc_EatBeans');
+
+            return Success;
+
+        case "fire_weapon":
+            if (player().InHand == None) {
+                return TempFail;
+            }
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (player().RestrictInput()) {
+                return TempFail;
+            }
+            player().Fire();
+            PlayerMessage(viewer@"made you fire your weapon!");
+            break;
+
+        case "next_item":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (player().RestrictInput()) {
+                return TempFail;
+            }
+            player().NextBeltItem();
+            PlayerMessage(viewer@"made you change your item!");
+            break;
+
+        case "next_hud_color":
+            player().NextHUDColorTheme();
+            PlayerMessage(viewer@"gave your game a fresh coat of paint");
+            break;
+
+        case "quick_load":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (player().RestrictInput()) {
+                return TempFail;
+            }
+            PlayerMessage(viewer@"is about to do a Quick Load!");
+
+            quickLoadTriggered = True;
+            break;
+
+        case "quick_save":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (player().RestrictInput()) {
+                return TempFail;
+            }
+            if (player().dataLinkPlay!=None) {
+                return TempFail;
+            }
+            PlayerMessage(viewer@"is about to Quick Save!");
+            player().QuickSave();
+            break;
+
 
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type);
