@@ -1036,7 +1036,11 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
 
 function DebugMarkKeyPosition(Actor a, coerce string id)
 {
-    if( ! #defined(debug)) err("don't call DebugMarkKeyPosition without debug mode!");
+    local ActorDisplayWindow actorDisplay;
+    if( ! #defined(debug)) {
+        err("Don't call DebugMarkKeyPosition without debug mode! Add debug to the compiler_settings.default.json file");
+        return;
+    }
 
     if(DeusExDecoration(a) != None) {
         DeusExDecoration(a).ItemName = id @ DeusExDecoration(a).ItemName;
@@ -1049,6 +1053,11 @@ function DebugMarkKeyPosition(Actor a, coerce string id)
     a.LightHue=155;
     a.LightRadius=20;
     debug("DebugMarkKeyPosition "$a$ " ("$a.Location$") " $ id);
+
+    actorDisplay = DeusExRootWindow(player().rootWindow).actorDisplay;
+    GetPlayerPawn().ConsoleCommand("ShowClass "$ a.class.name );
+    actorDisplay.ShowLOS(false);
+    actorDisplay.ShowPos(true);
 }
 
 defaultproperties
