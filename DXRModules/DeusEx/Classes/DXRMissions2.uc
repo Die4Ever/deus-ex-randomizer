@@ -416,7 +416,7 @@ function int InitGoals(int mission, string map)
 function PreFirstEntry()
 {
     local #var(prefix)AnnaNavarre anna;
-    local int goalsToLocations[15];
+    local int goalsToLocations[32];
     local int seed;
 
     Super.PreFirstEntry();
@@ -471,7 +471,7 @@ function MoveActorsOut()
     }
 }
 
-function MoveActorsIn(int goalsToLocations[15])
+function MoveActorsIn(int goalsToLocations[32])
 {
     local int g, i;
     local #var(PlayerPawn) p;
@@ -494,7 +494,7 @@ function MoveActorsIn(int goalsToLocations[15])
     }
 }
 
-function bool _ChooseGoalLocations(out int goalsToLocations[15])
+function bool _ChooseGoalLocations(out int goalsToLocations[32])
 {
     // TODO: check mutual_exclusions, maybe ensure things aren't too close together?
     local int i, r, _num_locs;
@@ -531,7 +531,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[15])
     return true;
 }
 
-function ChooseGoalLocations(out int goalsToLocations[15])
+function ChooseGoalLocations(out int goalsToLocations[32])
 {
     local int attempts;
     for(attempts=0; attempts<1000; attempts++) {
