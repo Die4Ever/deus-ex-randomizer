@@ -25,6 +25,11 @@ function Timer()
     if( dxr == None ) return;
     if( dxr.bTickEnabled ) return;// wait for everything to finish
 
+    if( DeusExRootWindow(player().rootWindow).actorDisplay.viewClass != None ) {
+        SetTimer(0, False);
+        return;
+    }
+
     for(i=0; i < ArrayCount(maps); i++) {
         if( Caps(maps[i]) == Caps(dxr.localURL) ) {
             found = true;

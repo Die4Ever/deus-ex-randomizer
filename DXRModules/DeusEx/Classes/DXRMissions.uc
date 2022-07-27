@@ -13,6 +13,7 @@ const GOAL_TYPE3 = 8;
 const GOAL_TYPE4 = 16;
 const VANILLA_GOAL = 536870912;
 const START_LOCATION = 1073741824;
+const VANILLA_START = 2147483648;
 const PLAYER_LOCATION = 7; // keep in sync with length of GoalLocation.positions array
 
 struct GoalActor {
@@ -172,7 +173,7 @@ function int InitGoals(int mission, string map)
         // need to add vanilla start locations
         AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
         AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vect(-6348.445313, 1912.637207, -111.428482), rot(0, 0, 0));
-        AddGoalLocation("01_NYC_UNATCOISLAND", "Dock", START_LOCATION | VANILLA_GOAL, vect(-4760.569824, 10430.811523, -280.674988), rot(0, -7040, 0));
+        AddGoalLocation("01_NYC_UNATCOISLAND", "Dock", START_LOCATION | VANILLA_START, vect(-4760.569824, 10430.811523, -280.674988), rot(0, -7040, 0));
         AddGoalLocation("01_NYC_UNATCOISLAND", "Harley Filben Dock", START_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
         AddGoalLocation("01_NYC_UNATCOISLAND", "Electric Bunker", NORMAL_GOAL | START_LOCATION, vect(6552.227539, -3246.095703, -447.438049), rot(0, 0, 0));
         AddGoalLocation("01_NYC_UNATCOISLAND", "Jail", NORMAL_GOAL | START_LOCATION, vect(2127.692139, -1774.869141, -149.140366), rot(0, 0, 0));
@@ -189,7 +190,7 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 3, 'FlagTrigger1', PHYS_None);
         AddGoalActor(goal, 4, 'DataLinkTrigger1', PHYS_None);
 
-        AddGoalLocation("02_NYC_BATTERYPARK", "Dock", START_LOCATION | VANILLA_GOAL, vect(-619.571289, -3679.116455, 255.099762), rot(0, 29856, 0));
+        AddGoalLocation("02_NYC_BATTERYPARK", "Dock", START_LOCATION | VANILLA_START, vect(-619.571289, -3679.116455, 255.099762), rot(0, 29856, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Ventilation system", NORMAL_GOAL | START_LOCATION, vect(-4310.507813, 2237.952637, 189.843536), rot(0, 0, 0));
         if(dxr.flags.settings.goals > 0) {
             loc = AddGoalLocation("02_NYC_BATTERYPARK", "Ambrosia Vanilla", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(507.282898, -1066.344604, -403.132751), rot(0, 16536, 0));
@@ -205,27 +206,24 @@ function int InitGoals(int mission, string map)
 
     case "02_NYC_WAREHOUSE":
         AddGoal("02_NYC_WAREHOUSE", "Jock", NORMAL_GOAL, 'BlackHelicopter1', PHYS_Falling);
-        AddGoalLocation("02_NYC_WAREHOUSE", "", NORMAL_GOAL, vect(-222.402451, -294.757233, 1132.798462), rot(0, -24128, 0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "", NORMAL_GOAL, vect(1656.467041, -1658.624268, 357.798462), rot(0, -32800, 0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "", NORMAL_GOAL, vect(-1508.833008, 321.208252, -216.201538), rot(0, 16400, 0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "", NORMAL_GOAL | VANILLA_GOAL, vect(-222.402451,-294.757233,21132.798828), rot(0,-24128,0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Back Door", NORMAL_GOAL, vect(1656.467041, -1658.624268, 357.798462), rot(0, -32800, 0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Dumpster", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 321.208252, -216.201538), rot(0, 16400, 0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Vanilla Jock", NORMAL_GOAL | VANILLA_GOAL, vect(-222.402451,-294.757233,1132.798828), rot(0,-24128,0));
         return 22;
 
     case "03_NYC_BATTERYPARK":
         AddGoal("03_NYC_BATTERYPARK", "Harley Filben", NORMAL_GOAL, 'HarleyFilben0', PHYS_Falling);
         goal = AddGoal("03_NYC_BATTERYPARK", "Curly", NORMAL_GOAL, 'BumMale4', PHYS_Falling);
-        AddGoalActor(goal, 1, 'BumFemale2', PHYS_Falling);
-        AddGoalLocation("03_NYC_BATTERYPARK", "Jock", START_LOCATION | VANILLA_GOAL, vect(-1226.699951, 2215.864258, 400.663818), rot(0, -25672, 0));
-        AddGoalLocation("03_NYC_BATTERYPARK", "", NORMAL_GOAL | START_LOCATION, vect(-4857.345215, 3452.138916, -301.399628), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_BATTERYPARK", "", NORMAL_GOAL | START_LOCATION, vect(-2771.231689, 1412.594604, 373.603882), rot(0, 7272, 0));
-        AddGoalLocation("03_NYC_BATTERYPARK", "", NORMAL_GOAL | START_LOCATION, vect(1082.374023, 1458.807617, 334.248260), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_BATTERYPARK", "", START_LOCATION, vect(-4340.930664, 2332.365234, 244.506165), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_BATTERYPARK", "", NORMAL_GOAL | START_LOCATION, vect(-2968.101563, -1407.404419, 334.242554), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_BATTERYPARK", "", NORMAL_GOAL | START_LOCATION, vect(-1079.890625, -3412.052002, 270.581390), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_BATTERYPARK", "", NORMAL_GOAL | VANILLA_GOAL, vect(-2763.231689,1370.594604,369.799988), rot(0,7272,0));
-        AddGoalLocation("03_NYC_BATTERYPARK", "", NORMAL_GOAL | VANILLA_GOAL, vect(-4819.345215,3478.138916,-304.225006), rot(0,0,0));
+        AddGoalActor(goal, 1, 'BumFemale2', PHYS_Falling);// TODO: add locations into actor slot 2 for her
+        AddGoalLocation("03_NYC_BATTERYPARK", "Jock", START_LOCATION | VANILLA_START, vect(-1226.699951, 2215.864258, 400.663818), rot(0, -25672, 0));
+        AddGoalLocation("03_NYC_BATTERYPARK", "Castle Clinton Entrance", NORMAL_GOAL | START_LOCATION, vect(1082.374023, 1458.807617, 334.248260), rot(0, 0, 0));
+        AddGoalLocation("03_NYC_BATTERYPARK", "Ventilation System", START_LOCATION, vect(-4340.930664, 2332.365234, 244.506165), rot(0, 0, 0));
+        AddGoalLocation("03_NYC_BATTERYPARK", "Eagle Statue", NORMAL_GOAL | START_LOCATION, vect(-2968.101563, -1407.404419, 334.242554), rot(0, 0, 0));
+        AddGoalLocation("03_NYC_BATTERYPARK", "Dock", NORMAL_GOAL | START_LOCATION, vect(-1079.890625, -3412.052002, 270.581390), rot(0, 0, 0));
+        AddGoalLocation("03_NYC_BATTERYPARK", "Hut", NORMAL_GOAL | VANILLA_GOAL, vect(-2763.231689,1370.594604,369.799988), rot(0,7272,0));
+        AddGoalLocation("03_NYC_BATTERYPARK", "Subway", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(-4819.345215,3478.138916,-304.225006), rot(0,0,0));
         return 31;
 
     case "03_NYC_BROOKLYNBRIDGESTATION":
@@ -246,44 +244,43 @@ function int InitGoals(int mission, string map)
 
     case "03_NYC_AIRFIELD":
         AddGoal("03_NYC_AIRFIELD", "Terrorist with the East Gate key", NORMAL_GOAL, 'Terrorist13', PHYS_Falling);
-        AddGoalLocation("03_NYC_AIRFIELD", "", NORMAL_GOAL, vect(223.719452, 3689.905273, 15.100115), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "", NORMAL_GOAL, vect(-2103.891113, 3689.706299, 15.091076), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "", NORMAL_GOAL, vect(-2060.626465, -2013.138672, 15.090023), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "", NORMAL_GOAL, vect(729.454651, -4151.924805, 15.079981), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "", NORMAL_GOAL, vect(5215.076660, -4134.674316, 15.090023), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "", NORMAL_GOAL, vect(941.941895, 283.418152, 15.090023), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "", NORMAL_GOAL | VANILLA_GOAL, vect(-2687.128662,2320.010986,63.774998), rot(0,0,0));
+        AddGoalLocation("03_NYC_AIRFIELD", "South Gate", NORMAL_GOAL, vect(223.719452, 3689.905273, 15.100115), rot(0, 0, 0));
+        AddGoalLocation("03_NYC_AIRFIELD", "SW Security Tower", NORMAL_GOAL, vect(-2103.891113, 3689.706299, 15.091076), rot(0, 0, 0));
+        AddGoalLocation("03_NYC_AIRFIELD", "West Security Tower", NORMAL_GOAL, vect(-2060.626465, -2013.138672, 15.090023), rot(0, 0, 0));
+        AddGoalLocation("03_NYC_AIRFIELD", "NW Security Tower", NORMAL_GOAL, vect(729.454651, -4151.924805, 15.079981), rot(0, 0, 0));
+        AddGoalLocation("03_NYC_AIRFIELD", "NE Security Tower", NORMAL_GOAL, vect(5215.076660, -4134.674316, 15.090023), rot(0, 0, 0));
+        AddGoalLocation("03_NYC_AIRFIELD", "Hanger Door", NORMAL_GOAL, vect(941.941895, 283.418152, 15.090023), rot(0, 0, 0));
+        AddGoalLocation("03_NYC_AIRFIELD", "Dock", NORMAL_GOAL | VANILLA_GOAL, vect(-2687.128662,2320.010986,63.774998), rot(0,0,0));
         return 33;
 
     case "04_NYC_NSFHQ":
         AddGoal("04_NYC_NSFHQ", "Computer", NORMAL_GOAL, 'ComputerPersonal3', PHYS_Falling);
-        AddGoalLocation("04_NYC_NSFHQ", "", NORMAL_GOAL, vect(-460.091187, 1011.083496, 551.367859), rot(0, 16672, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "", NORMAL_GOAL, vect(206.654617, 1340.000000, 311.652832), rot(0, 0, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "", NORMAL_GOAL, vect(381.117371, -696.875671, 63.615902), rot(0, 32768, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "", NORMAL_GOAL, vect(42.340145, 1104.667480, 73.610352), rot(0, 0, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "", NORMAL_GOAL, vect(1290.299927, 1385.000000, -185.000000), rot(0, 16384, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "", NORMAL_GOAL, vect(-617.888855, 141.699875, -208.000000), rot(0, 16384, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "", NORMAL_GOAL | VANILLA_GOAL, vect(187.265259,315.583862,1032.054199), rot(0,16672,0));
+        AddGoalLocation("04_NYC_NSFHQ", "Third Floor", NORMAL_GOAL, vect(-460.091187, 1011.083496, 551.367859), rot(0, 16672, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Second Floor", NORMAL_GOAL, vect(206.654617, 1340.000000, 311.652832), rot(0, 0, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Garage", NORMAL_GOAL, vect(381.117371, -696.875671, 63.615902), rot(0, 32768, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Break Room", NORMAL_GOAL, vect(42.340145, 1104.667480, 73.610352), rot(0, 0, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Basement Exit", NORMAL_GOAL, vect(1290.299927, 1385.000000, -185.000000), rot(0, 16384, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Basement Entrance", NORMAL_GOAL, vect(-617.888855, 141.699875, -208.000000), rot(0, 16384, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Rooftop", NORMAL_GOAL | VANILLA_GOAL, vect(187.265259,315.583862,1032.054199), rot(0,16672,0));
         break;
 
     case "05_NYC_UNATCOMJ12LAB":
         goal = AddGoal("05_NYC_UNATCOMJ12LAB", "Paul", NORMAL_GOAL, 'PaulDenton0', PHYS_Falling);
         AddGoalActor(goal, 1, 'PaulDentonCarcass0', PHYS_Falling);
         AddGoalActor(goal, 2, 'DataLinkTrigger6', PHYS_None);
-        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "", NORMAL_GOAL | VANILLA_GOAL, vect(2177.405273,-552.487671,-213.375015), rot(0,16944,0));
-        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008,-617.352478,-224.224991), rot(0,35984,0));
-        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "", NORMAL_GOAL | VANILLA_GOAL, vect(2179.028076,-562.791992,-178.900085), rot(0,0,0));
+        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
+        goal = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
+        AddActorLocation(goal, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
         return 51;
 
     case "05_NYC_UNATCOHQ":
         AddGoal("05_NYC_UNATCOHQ", "Alex Jacobson", NORMAL_GOAL, 'AlexJacobson0', PHYS_Falling);
-        AddGoalLocation("05_NYC_UNATCOHQ", "", NORMAL_GOAL, vect(-2478.156738, -1123.645874, -16.399887), rot(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "", NORMAL_GOAL, vect(121.921074, 287.711243, 39.599487), rot(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "", NORMAL_GOAL, vect(261.019775, -403.939575, 287.600586), rot(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "", NORMAL_GOAL, vect(718.820068, 1411.137451, 287.598999), rot(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "", NORMAL_GOAL, vect(-666.268066, -460.813965, 463.598083), rot(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "", NORMAL_GOAL | VANILLA_GOAL, vect(2001.611206,-801.088379,-16.225000), rot(0,23776,0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Jail", NORMAL_GOAL, vect(-2478.156738, -1123.645874, -16.399887), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Bathroom", NORMAL_GOAL, vect(121.921074, 287.711243, 39.599487), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Manderley's Bathroom", NORMAL_GOAL, vect(261.019775, -403.939575, 287.600586), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Break Room", NORMAL_GOAL, vect(718.820068, 1411.137451, 287.598999), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "West Office", NORMAL_GOAL, vect(-666.268066, -460.813965, 463.598083), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Computer Ops", NORMAL_GOAL | VANILLA_GOAL, vect(2001.611206,-801.088379,-16.225000), rot(0,23776,0));
         return 52;
 
     case "06_HONGKONG_MJ12LAB":
@@ -299,11 +296,11 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 1, 'GoalCompleteTrigger0', PHYS_None);
         AddGoalActor(goal, 1, 'SkillAwardTrigger10', PHYS_None);*/
         AddGoal("06_HONGKONG_MJ12LAB", "Radiation Controls", NORMAL_GOAL, 'ComputerPersonal1', PHYS_Falling);
-        AddGoalLocation("06_HONGKONG_MJ12LAB", "", NORMAL_GOAL, vect(-140.163544, 1705.130127, -583.495483), rot(0, 0, 0));
-        AddGoalLocation("06_HONGKONG_MJ12LAB", "", NORMAL_GOAL, vect(-1273.699951, 803.588745, -792.499512), rot(0, 16384, 0));
-        AddGoalLocation("06_HONGKONG_MJ12LAB", "", NORMAL_GOAL, vect(-1712.699951, -809.700012, -744.500610), rot(0, 16384, 0));
-        AddGoalLocation("06_HONGKONG_MJ12LAB", "", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
-        AddGoalLocation("06_HONGKONG_MJ12LAB", "", NORMAL_GOAL | VANILLA_GOAL, vect(-723.018677,591.498901,-743.972717), rot(0,49160,0));
+        AddGoalLocation("06_HONGKONG_MJ12LAB", "Barracks", NORMAL_GOAL, vect(-140.163544, 1705.130127, -583.495483), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Chamber", NORMAL_GOAL, vect(-1273.699951, 803.588745, -792.499512), rot(0, 16384, 0));
+        AddGoalLocation("06_HONGKONG_MJ12LAB", "Lab", NORMAL_GOAL, vect(-1712.699951, -809.700012, -744.500610), rot(0, 16384, 0));
+        AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
+        AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-723.018677,591.498901,-743.972717), rot(0,49160,0));
         break;
 
     case "08_NYC_Bar":
@@ -323,10 +320,10 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 4, 'TriggerLight1', PHYS_None);
         AddGoalActor(goal, 5, 'TriggerLight2', PHYS_None);
         AddGoalActor(goal, 6, 'AmbientSoundTriggered0', PHYS_None);
-        AddGoalLocation("09_NYC_GRAVEYARD", "", NORMAL_GOAL, vect(-283.503448, -787.867920, -184.000000), rot(0, 0, -32768));
-        AddGoalLocation("09_NYC_GRAVEYARD", "", NORMAL_GOAL, vect(-766.879333, 501.505676, -88.109619), rot(0, 0, -32768));
-        AddGoalLocation("09_NYC_GRAVEYARD", "", NORMAL_GOAL, vect(-1530.000000, 845.000000, -107.000000), rot(0, 0, -32768));
-        AddGoalLocation("09_NYC_GRAVEYARD", "", NORMAL_GOAL | VANILLA_GOAL, vect(1103.000000,728.000000,48.000000), rot(0,0,-32768));
+        AddGoalLocation("09_NYC_GRAVEYARD", "Main Tunnel", NORMAL_GOAL, vect(-283.503448, -787.867920, -184.000000), rot(0, 0, -32768));
+        AddGoalLocation("09_NYC_GRAVEYARD", "Open Grave", NORMAL_GOAL, vect(-766.879333, 501.505676, -88.109619), rot(0, 0, -32768));
+        AddGoalLocation("09_NYC_GRAVEYARD", "Tunnel Ledge", NORMAL_GOAL, vect(-1530.000000, 845.000000, -107.000000), rot(0, 0, -32768));
+        AddGoalLocation("09_NYC_GRAVEYARD", "Behind Bookshelf", NORMAL_GOAL | VANILLA_GOAL, vect(1103.000000,728.000000,48.000000), rot(0,0,-32768));
         return 91;
 
     case "09_NYC_SHIPBELOW":
@@ -340,20 +337,21 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 1, 'ParticleGenerator5', PHYS_None);
         AddGoal("09_NYC_SHIPBELOW", "Weld Point", NORMAL_GOAL, 'DeusExMover32', PHYS_None);
         AddGoalActor(goal, 1, 'ParticleGenerator6', PHYS_None);
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL, vect(-3296.000000, -1664.000000, -112.000000), rot(0, 81920, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL, vect(-2480.000000, -448.000000, -144.000000), rot(0, 32768, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL, vect(-3952.000000, 768.000000, -416.000000), rot(0, 0, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL, vect(-5664.000000, -928.000000, -432.000000), rot(0, 16384, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL, vect(-4080.000000, -816.000000, -128.000000), rot(0, 32768, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL, vect(-4720.000000, 1536.000000, -144.000000), rot(0, -16384, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL, vect(-3200.000000, -48.000000, -96.000000), rot(0, 0, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL, vect(-288.000000, -432.000000, 112.000000), rot(-16384, 16384, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,1024.000000,-432.000000), rot(0,49152,0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL | VANILLA_GOAL, vect(-3680.000000,1647.000000,-416.000000), rot(0,49152,0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL | VANILLA_GOAL, vect(-6528.000000,200.000000,-448.000000), rot(0,65536,0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1664.000000,-416.000000), rot(0,81920,0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,-1024.000000,-416.000000), rot(0,16384,0));
+
+        AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Balcony", NORMAL_GOAL, vect(-3296.000000, -1664.000000, -112.000000), rot(0, 81920, 0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Hallway", NORMAL_GOAL, vect(-2480.000000, -448.000000, -144.000000), rot(0, 32768, 0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "SE Electrical Room", NORMAL_GOAL, vect(-3952.000000, 768.000000, -416.000000), rot(0, 0, 0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "South Helipad", NORMAL_GOAL, vect(-5664.000000, -928.000000, -432.000000), rot(0, 16384, 0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Storage Room", NORMAL_GOAL, vect(-4080.000000, -816.000000, -128.000000), rot(0, 32768, 0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", NORMAL_GOAL, vect(-4720.000000, 1536.000000, -144.000000), rot(0, -16384, 0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "Fan Room", NORMAL_GOAL, vect(-3200.000000, -48.000000, -96.000000), rot(0, 0, 0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "Engine Control Room", NORMAL_GOAL, vect(-288.000000, -432.000000, 112.000000), rot(-16384, 16384, 0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,1024.000000,-432.000000), rot(0,49152,0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680.000000,1647.000000,-416.000000), rot(0,49152,0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6528.000000,200.000000,-448.000000), rot(0,65536,0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1664.000000,-416.000000), rot(0,81920,0));
+        AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,-1024.000000,-416.000000), rot(0,16384,0));
         return 92;
 
     case "10_PARIS_METRO":
@@ -363,50 +361,54 @@ function int InitGoals(int mission, string map)
 
     case "11_PARIS_CATHEDRAL":
         goal = AddGoal("11_PARIS_CATHEDRAL", "Templar Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
-        AddGoalActor(goal, 1, 'GuntherHermann0', PHYS_Falling);
+        AddGoalActor(goal, 1, 'GuntherHermann0', PHYS_Falling);// TODO: add locations for Gunther
         AddGoalActor(goal, 2, 'OrdersTrigger0', PHYS_None);
         AddGoalActor(goal, 3, 'GoalCompleteTrigger0', PHYS_None);
         AddGoalActor(goal, 4, 'SkillAwardTrigger3', PHYS_None);
         AddGoalActor(goal, 5, 'FlagTrigger2', PHYS_None);
         AddGoalActor(goal, 6, 'DataLinkTrigger8', PHYS_None);
-        AddGoalLocation("11_PARIS_CATHEDRAL", "", NORMAL_GOAL, vect(2990.853516, 30.971684, -392.498993), rot(0, 16384, 0));
-        AddGoalLocation("11_PARIS_CATHEDRAL", "", NORMAL_GOAL, vect(1860.275635, -9.666374, -371.286804), rot(0, 16384, 0));
-        AddGoalLocation("11_PARIS_CATHEDRAL", "", NORMAL_GOAL, vect(1511.325317, -3204.465088, -680.498413), rot(0, 32768, 0));
-        AddGoalLocation("11_PARIS_CATHEDRAL", "", NORMAL_GOAL, vect(3480.141602, -3180.397949, -704.496704), rot(0, 0, 0));
-        AddGoalLocation("11_PARIS_CATHEDRAL", "", NORMAL_GOAL, vect(3458.506592, -2423.655029, -104.499863), rot(0, -16384, 0));
-        AddGoalLocation("11_PARIS_CATHEDRAL", "", NORMAL_GOAL, vect(2659.672852, -1515.583862, 393.494843), rot(0, 10720, 0));
-        AddGoalLocation("11_PARIS_CATHEDRAL", "", NORMAL_GOAL | VANILLA_GOAL, vect(5193.660645,-1007.544922,-838.674988), rot(0,-17088,0));
+        AddGoalLocation("11_PARIS_CATHEDRAL", "Barracks", NORMAL_GOAL, vect(2990.853516, 30.971684, -392.498993), rot(0, 16384, 0));
+        AddGoalLocation("11_PARIS_CATHEDRAL", "Chapel", NORMAL_GOAL, vect(1860.275635, -9.666374, -371.286804), rot(0, 16384, 0));
+        AddGoalLocation("11_PARIS_CATHEDRAL", "Kitchen", NORMAL_GOAL, vect(1511.325317, -3204.465088, -680.498413), rot(0, 32768, 0));
+        AddGoalLocation("11_PARIS_CATHEDRAL", "Gold Vault", NORMAL_GOAL, vect(3480.141602, -3180.397949, -704.496704), rot(0, 0, 0));
+        AddGoalLocation("11_PARIS_CATHEDRAL", "WiB Bedroom", NORMAL_GOAL, vect(3458.506592, -2423.655029, -104.499863), rot(0, -16384, 0));
+        AddGoalLocation("11_PARIS_CATHEDRAL", "Bridge", NORMAL_GOAL, vect(2659.672852, -1515.583862, 393.494843), rot(0, 10720, 0));
+        AddGoalLocation("11_PARIS_CATHEDRAL", "Basement", NORMAL_GOAL | VANILLA_GOAL, vect(5193.660645,-1007.544922,-838.674988), rot(0,-17088,0));
         break;
 
     case "12_VANDENBERG_CMD":
         AddGoal("12_VANDENBERG_CMD", "Control Station", NORMAL_GOAL, 'Keypad0', PHYS_None);
         AddGoal("12_VANDENBERG_CMD", "Control Station", NORMAL_GOAL, 'Keypad1', PHYS_None);
         AddGoalLocation("12_VANDENBERG_CMD", "Jock", START_LOCATION | VANILLA_GOAL, vect(657.233215, 2501.673096, -908.798096), rot(0, -16384, 0));
-        AddGoalLocation("12_VANDENBERG_CMD", "", NORMAL_GOAL, vect(1895.174561, 1405.394287, -1656.404175), rot(0, 32768, 0));
-        AddGoalLocation("12_VANDENBERG_CMD", "", NORMAL_GOAL, vect(444.509338, 1503.229126, -1415.007568), rot(0, -16384, 0));
-        AddGoalLocation("12_VANDENBERG_CMD", "", NORMAL_GOAL, vect(-288.769806, 1103.257813, -1984.334717), rot(0, -16384, 0));
-        AddGoalLocation("12_VANDENBERG_CMD", "", NORMAL_GOAL, vect(-1276.664063, 1168.599854, -1685.868042), rot(0, 16384, 0));
-        AddGoalLocation("12_VANDENBERG_CMD", "", START_LOCATION, vect(657.233215, 2501.673096, -908.798096), rot(0, -16384, 0));
-        AddGoalLocation("12_VANDENBERG_CMD", "", START_LOCATION, vect(6750.350586, 7763.461426, -3092.699951), rot(0, 0, 0));
-        AddGoalLocation("12_VANDENBERG_CMD", "", START_LOCATION, vect(-214.927200, 888.034485, -2043.409302), rot(0, 0, 0));
-        AddGoalLocation("12_VANDENBERG_CMD", "", START_LOCATION, vect(-1879.828003, 1820.156006, -1777.113892), rot(0, 0, 0));
-        AddGoalLocation("12_VANDENBERG_CMD", "", NORMAL_GOAL | VANILLA_GOAL, vect(-2371.028564,-96.179214,-2070.390625), rot(0,-32768,0));
-        AddGoalLocation("12_VANDENBERG_CMD", "", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
+        AddGoalLocation("12_VANDENBERG_CMD", "Command Center Second Floor", NORMAL_GOAL, vect(1895.174561, 1405.394287, -1656.404175), rot(0, 32768, 0));
+        AddGoalLocation("12_VANDENBERG_CMD", "Third Floor Elevatorw", NORMAL_GOAL, vect(444.509338, 1503.229126, -1415.007568), rot(0, -16384, 0));
+        goal = AddGoalLocation("12_VANDENBERG_CMD", "Near Pipes", NORMAL_GOAL, vect(-288.769806, 1103.257813, -1984.334717), rot(0, -16384, 0));
+        AddActorLocation(goal, PLAYER_LOCATION, vect(-214.927200, 888.034485, -2043.409302), rot(0, 0, 0));
+
+        goal = AddGoalLocation("12_VANDENBERG_CMD", "Globe Room", NORMAL_GOAL, vect(-1276.664063, 1168.599854, -1685.868042), rot(0, 16384, 0));
+        AddActorLocation(goal, PLAYER_LOCATION, vect(-1879.828003, 1820.156006, -1777.113892), rot(0, 0, 0));
+
+        goal = AddGoalLocation("12_VANDENBERG_CMD", "Roof", NORMAL_GOAL | START_LOCATION | VANILLA_START, vect(657.233215, 2501.673096, -908.798096), rot(0, -16384, 0));// TODO: location and rotation for keypad
+        AddActorLocation(goal, PLAYER_LOCATION, vect(657.233215, 2501.673096, -908.798096), rot(0, -16384, 0));
+
+        AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", START_LOCATION, vect(6750.350586, 7763.461426, -3092.699951), rot(0, 0, 0));
+        AddGoalLocation("12_VANDENBERG_CMD", "Outdoor Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(-2371.028564,-96.179214,-2070.390625), rot(0,-32768,0));
+        AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
         break;
 
     case "14_OCEANLAB_SILO":
         AddGoal("14_OCEANLAB_SILO", "Howard Strong", NORMAL_GOAL, 'HowardStrong0', PHYS_Falling);
-        AddGoalLocation("14_OCEANLAB_SILO", "", NORMAL_GOAL, vect(-220.000000, -6829.463379, 55.600639), rot(0, 0, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "", NORMAL_GOAL, vect(-259.846710, -6848.406250, 326.598969), rot(0, 0, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "", NORMAL_GOAL, vect(-271.341187, -6832.150391, 535.596741), rot(0, 0, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "", NORMAL_GOAL, vect(-266.569397, -6868.054199, 775.592590), rot(0, 0, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "", NORMAL_GOAL | VANILLA_GOAL, vect(-52.397560,-6767.679199,-320.225006), rot(0,-7512,0));
+        AddGoalLocation("14_OCEANLAB_SILO", "Third Floor", NORMAL_GOAL, vect(-220.000000, -6829.463379, 55.600639), rot(0, 0, 0));
+        AddGoalLocation("14_OCEANLAB_SILO", "Fourth Floor", NORMAL_GOAL, vect(-259.846710, -6848.406250, 326.598969), rot(0, 0, 0));
+        AddGoalLocation("14_OCEANLAB_SILO", "Fifth Floor", NORMAL_GOAL, vect(-271.341187, -6832.150391, 535.596741), rot(0, 0, 0));
+        AddGoalLocation("14_OCEANLAB_SILO", "Sixth Floor", NORMAL_GOAL, vect(-266.569397, -6868.054199, 775.592590), rot(0, 0, 0));
+        AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", NORMAL_GOAL | VANILLA_GOAL, vect(-52.397560,-6767.679199,-320.225006), rot(0,-7512,0));
         break;
 
     case "15_AREA51_BUNKER":
-        AddGoalLocation("15_AREA51_BUNKER", "Jock", START_LOCATION | VANILLA_GOAL, vect(-1778.574707, 1741.028320, -213.732849), rot(0, -12416, 0));
-        AddGoalLocation("15_AREA51_BUNKER", "", START_LOCATION, vect(-1778.574707, 1741.028320, -213.732849), rot(0, -12416, 0));
-        AddGoalLocation("15_AREA51_BUNKER", "", START_LOCATION, vect(-493.825836, 3099.697510, -512.897827), rot(0, 0, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "Jock", START_LOCATION | VANILLA_START, vect(-1778.574707, 1741.028320, -213.732849), rot(0, -12416, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "Bunker", START_LOCATION, vect(-1778.574707, 1741.028320, -213.732849), rot(0, -12416, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "Behind the Van", START_LOCATION, vect(-493.825836, 3099.697510, -512.897827), rot(0, 0, 0));
         break;
     }
 
@@ -483,8 +485,9 @@ function MoveActorsIn(int goalsToLocations[32])
     }
 
     if( dxr.flags.settings.startinglocations > 0 ) {
+        g = goalsToLocations[num_goals];
+        if(g == -1) return;
         p = player();
-        g = goalsToLocations[g];
         l("Moving player to " $ locations[g].name);
         i = PLAYER_LOCATION;
         p.SetLocation(locations[g].positions[i].pos);
@@ -497,26 +500,33 @@ function MoveActorsIn(int goalsToLocations[32])
 function bool _ChooseGoalLocations(out int goalsToLocations[32])
 {
     // TODO: check mutual_exclusions, maybe ensure things aren't too close together?
-    local int i, r, _num_locs;
+    local int i, r, _num_locs, _num_starts;
     local int availLocs[64];
+
+    _num_starts = 0;
     for(i=0; i<num_locations; i++) {
         availLocs[i] = i;
+
+        if( (START_LOCATION & locations[i].bitMask) != 0)
+            _num_starts++;
     }
     _num_locs = num_locations;
 
     // choose a starting location
     goalsToLocations[num_goals] = -1;
-    for(i=0; i<10; i++) {
-        r = rng(_num_locs);
-        if( (START_LOCATION & locations[availLocs[r]].bitMask) == 0)
-            continue;
+    if(_num_starts > 0) {
+        for(i=0; i<10; i++) {
+            r = rng(_num_locs);
+            if( (START_LOCATION & locations[availLocs[r]].bitMask) == 0)
+                continue;
 
-        goalsToLocations[num_goals] = availLocs[r];
-        _num_locs--;
-        availLocs[r] = availLocs[_num_locs];
+            goalsToLocations[num_goals] = availLocs[r];
+            _num_locs--;
+            availLocs[r] = availLocs[_num_locs];
+        }
+        if(goalsToLocations[num_goals] == -1)
+            return false;
     }
-    if(goalsToLocations[num_goals] == -1)
-        return false;
 
     // choose the goal locations
     for(i=0; i<num_goals; i++) {
