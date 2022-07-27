@@ -1,4 +1,4 @@
-class DXRMissions2 extends DXRActorsBase;
+class DXRMissions extends DXRActorsBase;
 
 struct RemoveActor {
     var string map_name;
