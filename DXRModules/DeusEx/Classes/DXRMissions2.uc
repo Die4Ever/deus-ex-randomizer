@@ -9,6 +9,7 @@ var config RemoveActor remove_actors[32];
 const NORMAL_GOAL = 1;
 const VANILLA_GOAL = 536870912;
 const START_LOCATION = 1073741824;
+const PLAYER_LOCATION = 7; // keep in sync with length of GoalLocation.positions array
 
 struct GoalActor {
     var name actorName;
@@ -32,11 +33,11 @@ struct GoalLocation {
     var string mapName;
     var string name;
     var int bitMask;
-    var GoalActorLocation positions[8];
+    var GoalActorLocation positions[8]; // keep in sync with PLAYER_LOCATION
 };
 
 struct MutualExclusion {
-    var int L1, L2;
+    var int G1, L1, G2, L2;
 };
 
 var Goal goals[32];
@@ -136,7 +137,7 @@ function int AddGoalLocation(string mapName, string name, int bitMask, vector lo
     locations[num_locations].name = name;
     locations[num_locations].bitMask = bitMask;
     for(i=0; i<ArrayCount(locations[num_locations].positions); i++) {
-        AddActorLocation(num_locations, 0, loc, r);
+        AddActorLocation(num_locations, i, loc, r);
     }
     return num_locations++;
 }
@@ -150,7 +151,7 @@ function AddMutualExclusion(int L1, int L2)
 
 function int InitGoals(int mission, string map)
 {
-    local int goal;
+    local int goal, loc;
     // return a salt for the seed, the default return at the end is fine if you only have 1 set of goals in the whole mission
     num_goals = 0;
     num_locations = 0;
@@ -167,7 +168,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("01_NYC_UNATCOISLAND", "Hut", NORMAL_GOAL, vect(-2407.206787, 205.915558, -128.899979), rot(0, 30472, 0));
         AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Base", NORMAL_GOAL, vect(2980.058105, -669.242554, 1056.577271), rot(0, 0, 0));
         if( dxr.flags.settings.goals > 0 )
-            AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", START_LOCATION | NORMAL_GOAL, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
+            AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
         break;
 
     case "02_NYC_BATTERYPARK":
@@ -179,7 +180,10 @@ function int InitGoals(int mission, string map)
 
         AddGoalLocation("02_NYC_BATTERYPARK", "Dock", START_LOCATION | VANILLA_GOAL, vect(-619.571289, -3679.116455, 255.099762), rot(0, 29856, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "", NORMAL_GOAL | START_LOCATION, vect(-4310.507813, 2237.952637, 189.843536), rot(0, 0, 0));
-        AddGoalLocation("02_NYC_BATTERYPARK", "", START_LOCATION, vect(353.434570, -1123.060547, -416.488281), rot(0, 16536, 0));
+        if(dxr.flags.settings.goals > 0) {
+            loc = AddGoalLocation("02_NYC_BATTERYPARK", "Ambrosia Vanilla", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(507.282898, -1066.344604, -403.132751), rot(0, 16536, 0));
+            AddActorLocation(loc, PLAYER_LOCATION, vect(81.434570, -1123.060547, -384.397644), rot(0, 8000, 0));
+        }
         AddGoalLocation("02_NYC_BATTERYPARK", "", NORMAL_GOAL, vect(650.060547, -989.234863, -178.095200), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "", NORMAL_GOAL, vect(58.725319, -446.887207, -416.899323), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "", NORMAL_GOAL, vect(-644.152161, -676.281738, -379.581146), rot(0, 0, 0));
@@ -190,7 +194,7 @@ function int InitGoals(int mission, string map)
         return 21;
 
     case "02_NYC_WAREHOUSE":
-        AddGoal("02_NYC_WAREHOUSE", "", NORMAL_GOAL, 'BlackHelicopter1', PHYS_Falling);
+        AddGoal("02_NYC_WAREHOUSE", "Jock", NORMAL_GOAL, 'BlackHelicopter1', PHYS_Falling);
         AddGoalLocation("02_NYC_WAREHOUSE", "", NORMAL_GOAL, vect(-222.402451, -294.757233, 1132.798462), rot(0, -24128, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "", NORMAL_GOAL, vect(1656.467041, -1658.624268, 357.798462), rot(0, -32800, 0));
@@ -200,9 +204,9 @@ function int InitGoals(int mission, string map)
         return 22;
 
     case "03_NYC_BATTERYPARK":
-        AddGoal("03_NYC_BATTERYPARK", "", NORMAL_GOAL, 'HarleyFilben0', PHYS_Falling);
-        AddGoal("03_NYC_BATTERYPARK", "", NORMAL_GOAL, 'BumMale4', PHYS_Falling);
-        AddGoal("03_NYC_BATTERYPARK", "", NORMAL_GOAL, 'BumFemale2', PHYS_Falling);
+        AddGoal("03_NYC_BATTERYPARK", "Harley Filben", NORMAL_GOAL, 'HarleyFilben0', PHYS_Falling);
+        goal = AddGoal("03_NYC_BATTERYPARK", "Curly", NORMAL_GOAL, 'BumMale4', PHYS_Falling);
+        AddGoalActor(goal, 1, 'BumFemale2', PHYS_Falling);
         AddGoalLocation("03_NYC_BATTERYPARK", "Jock", START_LOCATION | VANILLA_GOAL, vect(-1226.699951, 2215.864258, 400.663818), rot(0, -25672, 0));
         AddGoalLocation("03_NYC_BATTERYPARK", "", NORMAL_GOAL | START_LOCATION, vect(-4857.345215, 3452.138916, -301.399628), rot(0, 0, 0));
         AddGoalLocation("03_NYC_BATTERYPARK", "", NORMAL_GOAL | START_LOCATION, vect(-2771.231689, 1412.594604, 373.603882), rot(0, 7272, 0));
@@ -438,6 +442,8 @@ function PreFirstEntry()
 
     if( ArrayCount(goalsToLocations) != ArrayCount(goals) ) err("ArrayCount(goalsToLocations) != ArrayCount(goals)");
 
+    if(num_goals == 0) return;
+
     MoveActorsOut();
     ChooseGoalLocations(goalsToLocations);
     MoveActorsIn(goalsToLocations);
@@ -462,23 +468,73 @@ function MoveActorsOut()
 function MoveActorsIn(int goalsToLocations[15])
 {
     local int g, i;
-    local Actor a;
+    local #var(PlayerPawn) p;
 
-    for(g=0; g<num_goals; g++) {
-        MoveGoalToLocation(goals[g], locations[goalsToLocations[g]]);
+    if( dxr.flags.settings.goals > 0 ) {
+        for(g=0; g<num_goals; g++) {
+            MoveGoalToLocation(goals[g], locations[goalsToLocations[g]]);
+        }
     }
+
+    if( dxr.flags.settings.startinglocations > 0 ) {
+        p = player();
+        g = goalsToLocations[g];
+        l("Moving player to " $ locations[g].name);
+        i = PLAYER_LOCATION;
+        p.SetLocation(locations[g].positions[i].pos);
+        p.SetRotation(locations[g].positions[i].rot);
+        rando_start_loc = p.Location;
+        b_rando_start = true;
+    }
+}
+
+function bool _ChooseGoalLocations(out int goalsToLocations[15])
+{
+    // TODO: check mutual_exclusions, maybe ensure things aren't too close together?
+    local int i, r, _num_locs;
+    local int availLocs[64];
+    for(i=0; i<num_locations; i++) {
+        availLocs[i] = i;
+    }
+    _num_locs = num_locations;
+
+    // choose a starting location
+    goalsToLocations[num_goals] = -1;
+    for(i=0; i<10; i++) {
+        r = rng(_num_locs);
+        if( (START_LOCATION & locations[availLocs[r]].bitMask) == 0)
+            continue;
+
+        goalsToLocations[num_goals] = availLocs[r];
+        _num_locs--;
+        availLocs[r] = availLocs[_num_locs];
+    }
+    if(goalsToLocations[num_goals] == -1)
+        return false;
+
+    // choose the goal locations
+    for(i=0; i<num_goals; i++) {
+        r = rng(_num_locs);
+        goalsToLocations[i] = availLocs[r];
+        if( (goals[i].bitMask & locations[availLocs[r]].bitMask) == 0)
+            return false;
+
+        _num_locs--;
+        availLocs[r] = availLocs[_num_locs];
+    }
+    return true;
 }
 
 function ChooseGoalLocations(out int goalsToLocations[15])
 {
-    // check mutual_exclusions, maybe ensure things aren't too close together?
-    local int i;
-    for(i=0; i<ArrayCount(goalsToLocations); i++) {
-        goalsToLocations[i] = i;
+    local int attempts;
+    for(attempts=0; attempts<1000; attempts++) {
+        if(_ChooseGoalLocations(goalsToLocations)) return;
     }
+    err("ChooseGoalLocations took too many attempts!");
 }
 
-function Actor GetActor(GoalActor ga)
+function Actor GetActor(out GoalActor ga)
 {
     local Actor a;
     if( ga.actorName == '' ) return None;
@@ -492,17 +548,18 @@ function Actor GetActor(GoalActor ga)
     return None;
 }
 
-function bool MoveGoalToLocation(Goal g, GoalLocation L)
+function bool MoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local int i;
     local Actor a;
 
     // TODO: need to handle GoalLocation with different map, need to destroy actors moving out of the map, and spawn them for moving in
+    l("Moving " $ g.name $ " ("$ g.actors[0].a $") to " $ Loc.name $ " ("$ Loc.positions[0].pos $")");
 
     for(i=0; i<ArrayCount(g.actors); i++) {
         a = g.actors[i].a;
         if(a == None) continue;
-        MoveActor(a, L.positions[i].pos, L.positions[i].rot, g.actors[i].physics);
+        MoveActor(a, Loc.positions[i].pos, Loc.positions[i].rot, g.actors[i].physics);
     }
 }
 
