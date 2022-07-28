@@ -121,6 +121,7 @@ function AddGoalActor(int goalID, int index, name actorName, EPhysics physics)
 
 function int AddGoal(string mapName, string goalName, int bitMask, name actorName, EPhysics physics)
 {
+    mapName = Caps(mapName);
     goals[num_goals].mapName = mapName;
     goals[num_goals].name = goalName;
     goals[num_goals].bitMask = bitMask;
@@ -296,7 +297,7 @@ function int InitGoals(int mission, string map)
 
     case "06_HONGKONG_MJ12LAB":
         goal = AddGoal("06_HONGKONG_MJ12LAB", "Nanotech Blade ROM", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
-        /*AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// I doubt these all need to be moved
+        /*AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// TODO: fix these...
         AddGoalActor(goal, 1, 'DataLinkTrigger3', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger4', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger5', PHYS_None);
@@ -320,7 +321,7 @@ function int InitGoals(int mission, string map)
     case "08_NYC_Smug":
     case "08_NYC_Street":
     case "08_NYC_Underground":
-        // filben? dowd? greene?
+        // TODO: filben? dowd? greene?
         break;
 
     case "09_NYC_GRAVEYARD":
@@ -367,7 +368,17 @@ function int InitGoals(int mission, string map)
 
     case "10_PARIS_METRO":
     case "10_PARIS_CLUB":
-        // nicolette
+        // TODO: fix nicolette event from Mission10.uc
+        AddGoal("10_PARIS_CLUB", "Nicolette", NORMAL_GOAL, 'NicoletteDuClare0', PHYS_Falling);
+        AddGoalLocation("10_PARIS_CLUB", "Club", NORMAL_GOAL | VANILLA_GOAL, vect(-673.488708, -1385.685059, 43.097466), rot(0, 17368, 0));
+        AddGoalLocation("10_PARIS_CLUB", "Back Room TV", NORMAL_GOAL, vect(-1939.340942, -478.474091, -180.899628), rot(0, -16384, 0));
+        AddGoalLocation("10_PARIS_METRO", "Apartment", NORMAL_GOAL, vect(868.070190, 1178.463989, 507.092682), rot(0, -16384, 0));
+        AddGoalLocation("10_PARIS_METRO", "Hostel", NORMAL_GOAL, vect(2315.102295, 2511.724365, 651.103638), rot(0, 0, 0));
+        AddGoalLocation("10_PARIS_METRO", "Bakery", NORMAL_GOAL, vect(922.178833, 2382.884521, 187.105133), rot(0, 16384, 0));
+        AddGoalLocation("10_PARIS_METRO", "Stairs", NORMAL_GOAL, vect(-802.443115, 2434.175781, -132.900146), rot(0, 35000, 0));
+        AddGoalLocation("10_PARIS_METRO", "Pillars", NORMAL_GOAL, vect(-3614.988525, 2406.175293, 235.101135), rot(0, -16384, 0));
+        AddGoalLocation("10_PARIS_METRO", "Media Store", NORMAL_GOAL, vect(1006.833252, 1768.635620, 187.101196), rot(0, 0, 0));
+        AddGoalLocation("10_PARIS_METRO", "Alcove Behind Pillar", NORMAL_GOAL, vect(1924.965210, -1234.666016, 187.101776), rot(0, 0, 0));
         break;
 
     case "11_PARIS_CATHEDRAL":
@@ -585,13 +596,43 @@ function Actor GetActor(out GoalActor ga)
     return None;
 }
 
-function bool MoveGoalToLocation(Goal g, GoalLocation Loc)
+function CreateGoal(out Goal g, GoalLocation Loc)
+{
+    local NicoletteDuClare nico;
+
+    switch(g.name) {
+    case "Nicolette":
+        nico = Spawn(class'NicoletteDuClare');
+        g.actors[0].a = nico;
+        nico.BindName = "NicoletteDuClare";
+        nico.FamiliarName = "Young Woman";
+        nico.UnfamiliarName = "Young Woman";
+        nico.bInvincible = true;
+        nico.SetOrders('Dancing');
+        break;
+    }
+}
+
+function MoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local int i;
     local Actor a;
 
-    // TODO: need to handle GoalLocation with different map, need to destroy actors moving out of the map, and spawn them for moving in
     l("Moving " $ g.name $ " ("$ g.actors[0].a $") to " $ Loc.name $ " ("$ Loc.positions[0].pos $")");
+
+    if(g.mapName == dxr.localURL && Loc.mapName != dxr.localURL) {
+        // delete from map
+        for(i=0; i<ArrayCount(g.actors); i++) {
+            a = g.actors[i].a;
+            if(a == None) continue;
+            a.Event = '';
+            a.Destroy();
+        }
+        return;
+    }
+    else if(g.mapName != dxr.localURL && Loc.mapName == dxr.localURL) {
+        CreateGoal(g, Loc);
+    }
 
     for(i=0; i<ArrayCount(g.actors); i++) {
         a = g.actors[i].a;
