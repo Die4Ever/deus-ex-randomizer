@@ -101,7 +101,7 @@ function int RandomOfflineEffects() {
     viewer = "Simulated Crowd Control";
     param[0] = "1";
 
-    switch(Rand(71)) {
+    switch(Rand(82)) {
     case 0: if(Rand(2)==0){ return 0; } else { return ccEffects.doCrowdControlEvent("poison", param, viewer, 0); }
     case 1: return ccEffects.doCrowdControlEvent("glass_legs", param, viewer, 0);
     case 2: param[0] = string(Rand(20)); return ccEffects.doCrowdControlEvent("give_health", param, viewer, 0);
@@ -211,7 +211,7 @@ function int RandomOfflineEffects() {
     case 58: return ccEffects.doCrowdControlEvent("earthquake",param,viewer,0);
     case 59: return ccEffects.doCrowdControlEvent("give_full_energy",param,viewer,0);
     case 60: return ccEffects.doCrowdControlEvent("trigger_alarms",param,viewer,0);
-    case 61: return ccEffects.doCrowdControlEvent("give_wine",param,viewer,0);
+    case 61: return ccEffects.doCrowdControlEvent("give_winebottle",param,viewer,0);
     case 62: return ccEffects.doCrowdControlEvent("give_techgoggles",param,viewer,0);
 #ifdef vanilla
     case 63: return ccEffects.doCrowdControlEvent("flipped", param, viewer, 0);
@@ -223,6 +223,17 @@ function int RandomOfflineEffects() {
     case 68: return ccEffects.doCrowdControlEvent("fire_weapon", param, viewer, 0);
     case 69: return ccEffects.doCrowdControlEvent("next_item", param, viewer, 0);
     case 70: return ccEffects.doCrowdControlEvent("next_hud_color", param, viewer, 0);
+    case 71: return ccEffects.doCrowdControlEvent("spawnfriendly_medicalbot", param, viewer, 0);
+    case 72: return ccEffects.doCrowdControlEvent("spawnfriendly_repairbot", param, viewer, 0);
+    case 73: return ccEffects.doCrowdControlEvent("spawnfriendly_securitybot4", param, viewer, 0);
+    case 74: return ccEffects.doCrowdControlEvent("spawnfriendly_militarybot", param, viewer, 0);
+    case 75: return ccEffects.doCrowdControlEvent("spawnenemy_spiderbot2", param, viewer, 0);
+    case 76: return ccEffects.doCrowdControlEvent("spawnenemy_mj12commando", param, viewer, 0);
+    case 77: return ccEffects.doCrowdControlEvent("spawnenemy_securitybot4", param, viewer, 0);
+    case 78: return ccEffects.doCrowdControlEvent("spawnenemy_militarybot", param, viewer, 0);
+    case 79: return ccEffects.doCrowdControlEvent("spawnenemy_mib", param, viewer, 0);
+    case 80: return ccEffects.doCrowdControlEvent("spawnenemy_doberman", param, viewer, 0);
+    case 81: return ccEffects.doCrowdControlEvent("spawnenemy_greasel", param, viewer, 0);
 
     }
 

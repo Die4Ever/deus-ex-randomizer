@@ -87,7 +87,7 @@ public class DeusEx : SimpleTCPPack
         new Effect("Give a Rebreather", "give_rebreather", "giveitems"), //New for third Crowd Control batch
         new Effect("Give a Thermoptic Camo", "give_adaptivearmor", "giveitems"), //New for third Crowd Control batch
         new Effect("Give a HazMat Suit", "give_hazmatsuit", "giveitems"), //New for third Crowd Control batch
-        new Effect("Give a bottle of Wine", "give_wine", "giveitems"), //New for Fourth Crowd Control batch
+        new Effect("Give a bottle of Wine", "give_winebottle", "giveitems"), //New for Fourth Crowd Control batch
         new Effect("Give a set of Tech Goggles", "give_techgoggles", "giveitems"), //New for Fourth Crowd Control batch
 
         //Add/Remove Augs

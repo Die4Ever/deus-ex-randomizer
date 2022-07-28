@@ -1229,7 +1229,7 @@ function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, b
     PlayerMessage(viewer@"spawned a "$n.FamiliarName$" next to you!");
 
     //OBVIOUSLY they should get the viewer name instead of a random one if it's not in anonymous mode
-    if (ccLink.anon){
+    if (ccLink.anon || ccLink.offline){
         class'DXRNames'.static.GiveRandomName(dxr, n);
     } else {
         n.UnfamiliarName = viewer;
