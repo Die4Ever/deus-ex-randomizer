@@ -1217,11 +1217,12 @@ function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, b
 
         loc = p.Location + (radius*loc_offset);
 
-        n = Spawn(newclass,,, loc );
+        n = Spawn(newclass,,, loc,p.Rotation);
+
         if( n != None ) break;
     }
     if( n == None ) {
-        err("failed to spawn class "$newclass$" into "$loc);
+        info("failed to spawn class "$newclass$" into "$loc);
         return TempFail;
     }
     info("spawning class "$newclass);
@@ -1245,6 +1246,9 @@ function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, b
                 n.ChangeAlly(o.Alliance,-1,True);
             }
         }
+
+        //This would be cool, but it seems like robots (at least) have no aggression to enemies if they are following
+        //n.SetOrders('Following',,True);
     } else {
         n.Alliance = 'HostileCCSpawn';
         n.ChangeAlly('Player',-1,True);
