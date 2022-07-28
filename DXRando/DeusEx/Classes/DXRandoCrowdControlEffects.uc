@@ -1228,18 +1228,24 @@ function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, b
 
     PlayerMessage(viewer@"spawned a "$n.FamiliarName$" next to you!");
 
-    class'DXRNames'.static.GiveRandomName(dxr, n);
-
-    n.InitialAlliances[0].AllianceName = 'Player';
-    if (friendly){
-        n.InitialAlliances[0].AllianceLevel = 1;
+    //OBVIOUSLY they should get the viewer name instead of a random one if it's not in anonymous mode
+    if (ccLink.anon){
+        class'DXRNames'.static.GiveRandomName(dxr, n);
     } else {
-        n.InitialAlliances[0].AllianceLevel = -1;
+        n.UnfamiliarName = viewer;
+        n.FamiliarName = viewer;
     }
-    n.InitialAlliances[0].bPermanent = True;
 
-    //Maybe friendly spawned pawns should be hostile to any alliance that is currently hostile to the player?
-
+    if (friendly){
+        n.ChangeAlly('Player',1,True);
+        foreach AllActors(class'ScriptedPawn',o){
+            if (o.GetPawnAllianceType(p)==ALLIANCE_Hostile){
+                n.ChangeAlly(o.Alliance,-1,True);
+            }
+        }
+    } else {
+        n.ChangeAlly('Player',-1,True);
+    }
 
     return Success;
 }

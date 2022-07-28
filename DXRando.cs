@@ -69,7 +69,9 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Spawn hostile Spider Bot", "spawnenemy_spiderbot2","spawnpawns"), //New for fourth Crowd Control batch
         new Effect ("Spawn hostile MJ12 Commando", "spawnenemy_mj12commando","spawnpawns"), //New for fourth Crowd Control batch
         new Effect ("Spawn hostile Security Bot", "spawnenemy_securitybot4","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn friendly Security Bot", "spawnfriendly_securitybot4","spawnpawns"), //New for fourth Crowd Control batch
         new Effect ("Spawn hostile Military Bot", "spawnenemy_militarybot","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn friendly Military Bot", "spawnfriendly_militarybot","spawnpawns"), //New for fourth Crowd Control batch
         new Effect ("Spawn hostile Man in Black", "spawnenemy_mib","spawnpawns"), //New for fourth Crowd Control batch
         new Effect ("Spawn hostile Doberman", "spawnenemy_doberman","spawnpawns"), //New for fourth Crowd Control batch
         new Effect ("Spawn hostile Greasel", "spawnenemy_greasel","spawnpawns"), //New for fourth Crowd Control batch
