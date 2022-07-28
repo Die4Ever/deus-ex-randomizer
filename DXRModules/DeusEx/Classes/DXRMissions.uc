@@ -368,7 +368,6 @@ function int InitGoals(int mission, string map)
 
     case "10_PARIS_METRO":
     case "10_PARIS_CLUB":
-        // TODO: fix nicolette event from Mission10.uc
         AddGoal("10_PARIS_CLUB", "Nicolette", NORMAL_GOAL, 'NicoletteDuClare0', PHYS_Falling);
         AddGoalLocation("10_PARIS_CLUB", "Club", NORMAL_GOAL | VANILLA_GOAL, vect(-673.488708, -1385.685059, 43.097466), rot(0, 17368, 0));
         AddGoalLocation("10_PARIS_CLUB", "Back Room TV", NORMAL_GOAL, vect(-1939.340942, -478.474091, -180.899628), rot(0, -16384, 0));
@@ -602,13 +601,61 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
     switch(g.name) {
     case "Nicolette":
-        nico = Spawn(class'NicoletteDuClare');
+        nico = Spawn(class'NicoletteDuClare',, 'DXRMissions');
         g.actors[0].a = nico;
         nico.BindName = "NicoletteDuClare";
         nico.FamiliarName = "Young Woman";
         nico.UnfamiliarName = "Young Woman";
         nico.bInvincible = true;
         nico.SetOrders('Dancing');
+        break;
+    }
+}
+
+function AnyEntry()
+{
+    Super.AnyEntry();
+    SetTimer(1, true);
+}
+
+function Timer()
+{
+    local FlagBase f;
+    local NicoletteDuClare nico;
+    local BlackHelicopter chopper;
+    local ParticleGenerator gen;
+
+    Super.Timer();
+    if( dxr == None ) return;
+    f = dxr.flagbase;
+
+    switch(dxr.localURL) {
+    case "10_PARIS_METRO":
+        if (f.GetBool('MeetNicolette_Played') &&
+            !f.GetBool('NicoletteLeftClub'))
+        {
+            f.SetBool('NicoletteLeftClub', True,, 11);
+
+            foreach AllActors(class'NicoletteDuClare', nico, 'DXRMissions') {
+                nico.Event = '';
+                nico.Destroy();
+                player().ClientFlash(1,vect(2000,2000,2000));
+                gen = Spawn(class'ParticleGenerator',,, nico.Location);
+                gen.SetCollision(false, false, false);
+                gen.SetLocation(nico.Location);
+                gen.particleTexture = Texture'Effects.Smoke.SmokePuff1';
+                gen.LifeSpan = 2;
+                gen.particleDrawScale = 5;
+                gen.riseRate = 1;
+                player().PlaySound(Sound'DeusExSounds.Weapons.GasGrenadeExplode');
+            }
+
+            foreach AllActors(class'NicoletteDuClare', nico)
+                nico.EnterWorld();
+
+            foreach AllActors(class'BlackHelicopter', chopper, 'BlackHelicopter')
+                chopper.EnterWorld();
+        }
         break;
     }
 }
