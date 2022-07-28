@@ -63,7 +63,7 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Quick Load", "quick_load"), //New for fourth Crowd Control batch
 
         //Spawn Enemies/Allies
-        new Effect("Spawn Enemies/Allies","spawnpawns",ItemKind.Folder), //New for fourth batch
+        new Effect("Spawn Enemies/Allies","spawnpawns",ItemKind.Folder), //New for fourth Crowd Control batch
         new Effect ("Spawn Medical Bot", "spawnfriendly_medicalbot","spawnpawns"), //New for fourth Crowd Control batch
         new Effect ("Spawn Repair Bot", "spawnfriendly_repairbot","spawnpawns"), //New for fourth Crowd Control batch
         new Effect ("Spawn hostile Spider Bot", "spawnenemy_spiderbot2","spawnpawns"), //New for fourth Crowd Control batch
@@ -72,7 +72,6 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Spawn friendly Security Bot", "spawnfriendly_securitybot4","spawnpawns"), //New for fourth Crowd Control batch
         new Effect ("Spawn hostile Military Bot", "spawnenemy_militarybot","spawnpawns"), //New for fourth Crowd Control batch
         new Effect ("Spawn friendly Military Bot", "spawnfriendly_militarybot","spawnpawns"), //New for fourth Crowd Control batch
-        new Effect ("Spawn hostile Man in Black", "spawnenemy_mib","spawnpawns"), //New for fourth Crowd Control batch
         new Effect ("Spawn hostile Doberman", "spawnenemy_doberman","spawnpawns"), //New for fourth Crowd Control batch
         new Effect ("Spawn hostile Greasel", "spawnenemy_greasel","spawnpawns"), //New for fourth Crowd Control batch
 

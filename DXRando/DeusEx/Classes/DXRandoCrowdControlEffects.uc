@@ -1237,14 +1237,18 @@ function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, b
     }
 
     if (friendly){
+        n.Alliance = 'FriendlyCCSpawn';
         n.ChangeAlly('Player',1,True);
+        n.ChangeAlly('HostileCCSpawn',-1,True);
         foreach AllActors(class'ScriptedPawn',o){
             if (o.GetPawnAllianceType(p)==ALLIANCE_Hostile){
                 n.ChangeAlly(o.Alliance,-1,True);
             }
         }
     } else {
+        n.Alliance = 'HostileCCSpawn';
         n.ChangeAlly('Player',-1,True);
+        n.ChangeAlly('FriendlyCCSpawn',-1,True);
     }
 
     return Success;
