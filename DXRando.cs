@@ -62,6 +62,18 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Quick Save", "quick_save"), //New for fourth Crowd Control batch
         new Effect ("Quick Load", "quick_load"), //New for fourth Crowd Control batch
 
+        //Spawn Enemies/Allies
+        new Effect("Spawn Enemies/Allies","spawnpawns",ItemKind.Folder), //New for fourth batch
+        new Effect ("Spawn Medical Bot", "spawnfriendly_medicalbot","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn Repair Bot", "spawnfriendly_repairbot","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile Spider Bot", "spawnenemy_spiderbot2","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile MJ12 Commando", "spawnenemy_mj12commando","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile Security Bot", "spawnenemy_securitybot4","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile Military Bot", "spawnenemy_militarybot","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile Man in Black", "spawnenemy_mib","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile Doberman", "spawnenemy_doberman","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile Greasel", "spawnenemy_greasel","spawnpawns"), //New for fourth Crowd Control batch
+
         //Items
         new Effect("Give Items","giveitems",ItemKind.Folder), //New folder for third batch
         new Effect("Give a Medkit", "give_medkit", "giveitems"), //Moved into new folder for third batch

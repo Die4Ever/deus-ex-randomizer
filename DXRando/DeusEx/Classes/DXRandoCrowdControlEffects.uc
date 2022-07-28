@@ -624,6 +624,11 @@ function class<Augmentation> getAugClass(string type) {
     return class<Augmentation>(ccLink.ccModule.GetClassFromString(type, class'Augmentation'));
 }
 
+function class<ScriptedPawn> getScriptedPawnClass(string type) {
+    return class<ScriptedPawn>(ccLink.ccModule.GetClassFromString(type, class'ScriptedPawn'));
+}
+
+
 //"Why not just use "GivePlayerAugmentation", you ask.
 //While it works well to give the player an aug they don't
 //have, it won't actually upgrade their augs if they don't
@@ -1185,6 +1190,59 @@ function int TriggerAllAlarms(String viewer) {
 
 }
 
+function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, bool friendly, string viewer)
+{
+    local int i;
+    local ScriptedPawn n,o;
+    local float radius;
+    local vector loc, loc_offset;
+    local Inventory inv;
+    local NanoKey k1, k2;
+
+    if( p == None ) {
+        err("p == None?");
+        return TempFail;
+    }
+
+    if( newclass == None ) {
+        err("newclass == None?");
+        return Failed;
+    }
+
+    radius = p.CollisionRadius + newclass.default.CollisionRadius;
+    for(i=0; i<10; i++) {
+        loc_offset.X = 1 + FRand() * 3 * Sqrt(float(2));
+        loc_offset.Y = 1 + FRand() * 3 * Sqrt(float(2));
+        if( Rand(2)==0 ) loc_offset *= -1;
+
+        loc = p.Location + (radius*loc_offset);
+
+        n = Spawn(newclass,,, loc );
+        if( n != None ) break;
+    }
+    if( n == None ) {
+        err("failed to spawn class "$newclass$" into "$loc);
+        return TempFail;
+    }
+    info("spawning class "$newclass);
+
+    PlayerMessage(viewer@"spawned a "$n.FamiliarName$" next to you!");
+
+    class'DXRNames'.static.GiveRandomName(dxr, n);
+
+    n.InitialAlliances[0].AllianceName = 'Player';
+    if (friendly){
+        n.InitialAlliances[0].AllianceLevel = 1;
+    } else {
+        n.InitialAlliances[0].AllianceLevel = -1;
+    }
+    n.InitialAlliances[0].bPermanent = True;
+
+    //Maybe friendly spawned pawns should be hostile to any alliance that is currently hostile to the player?
+
+
+    return Success;
+}
 
 
 
@@ -1764,6 +1822,10 @@ function int doCrowdControlEventWithPrefix(string code, string param[5], string 
             return GiveAug(getAugClass(words[1]),viewer);
         case "rem":
             return RemoveAug(getAugClass(words[1]),viewer);
+        case "spawnfriendly":
+            return SpawnPawnNearPlayer(player(),getScriptedPawnClass(words[1]),True,viewer);
+        case "spawnenemy":
+            return SpawnPawnNearPlayer(player(),getScriptedPawnClass(words[1]),False,viewer);
         default:
             err("Unknown effect: "$code);
             return NotAvail;
