@@ -1109,6 +1109,7 @@ function HongKong_FirstEntry()
     local #var(Mover) m;
     local FlagTrigger ft;
     local AllianceTrigger at;
+    local DataLinkTrigger dt;
 
     switch(dxr.localURL)
     {
@@ -1196,6 +1197,10 @@ function HongKong_FirstEntry()
         }
         foreach AllActors(class'FlagTrigger', ft, 'MJ12Alert') {
             ft.Tag = 'TongHasRom';
+        }
+        foreach AllActors(class'DataLinkTrigger', dt) {
+            if(dt.name == 'DataLinkTrigger0')
+                dt.Tag = 'TongHasRom';
         }
         break;
 #ifdef injections
