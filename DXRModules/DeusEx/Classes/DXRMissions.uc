@@ -171,7 +171,6 @@ function int InitGoals(int mission, string map)
     num_mututally_exclusives = 0;
     switch(map) {
     case "01_NYC_UNATCOISLAND":
-        // need to add vanilla start locations
         AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
         // TODO: allow Leo to spawn on the dock on if the player did not spawn at unatco, need to make mutual_exclusions work first
         //AddGoalLocation("01_NYC_UNATCOISLAND", "Dock", START_LOCATION | VANILLA_START, vect(-4760.569824, 10430.811523, -280.674988), rot(0, -7040, 0));
@@ -212,6 +211,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("02_NYC_WAREHOUSE", "Dumpster", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 322, -216.201538), rot(0, 16400, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Vanilla Jock", NORMAL_GOAL | VANILLA_GOAL, vect(-222.402451,-294.757233,1132.798828), rot(0,-24128,0));
+        // TODO: generator
         return 22;
 
     case "03_NYC_BATTERYPARK":
@@ -294,6 +294,10 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("05_NYC_UNATCOHQ", "West Office", NORMAL_GOAL, vect(-666.268066, -460.813965, 463.598083), rot(0, 0, 0));
         AddGoalLocation("05_NYC_UNATCOHQ", "Computer Ops", NORMAL_GOAL | VANILLA_GOAL, vect(2001.611206,-801.088379,-16.225000), rot(0,23776,0));
         return 52;
+
+    case "06_HONGKONG_VERSALIFE":
+        // TODO: disgruntled employee and hundley
+        break;
 
     case "06_HONGKONG_MJ12LAB":
         goal = AddGoal("06_HONGKONG_MJ12LAB", "Nanotech Blade ROM", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
@@ -426,6 +430,10 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
         break;
 
+    case "14_OCEANLAB_UC":
+        // TODO: UC schematics computer
+        break;
+
     case "14_OCEANLAB_SILO":
         AddGoal("14_OCEANLAB_SILO", "Howard Strong", NORMAL_GOAL, 'HowardStrong0', PHYS_Falling);
         AddGoalLocation("14_OCEANLAB_SILO", "Third Floor", NORMAL_GOAL, vect(-220.000000, -6829.463379, 55.600639), rot(0, 0, 0));
@@ -433,6 +441,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("14_OCEANLAB_SILO", "Fifth Floor", NORMAL_GOAL, vect(-271.341187, -6832.150391, 535.596741), rot(0, 0, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Sixth Floor", NORMAL_GOAL, vect(-266.569397, -6868.054199, 775.592590), rot(0, 0, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", NORMAL_GOAL | VANILLA_GOAL, vect(-52.397560,-6767.679199,-320.225006), rot(0,-7512,0));
+        // TODO: jock
         break;
 
     case "15_AREA51_BUNKER":
