@@ -1239,6 +1239,23 @@ static function MarkBingo(DXRando dxr, coerce string eventname)
     }
 }
 
+function AddBingoScreen(CreditsWindow cw)
+{
+    local CreditsBingoWindow cbw;
+    cbw = CreditsBingoWindow(cw.winScroll.NewChild(Class'CreditsBingoWindow'));
+    cbw.SetSize(410,410);
+    cbw.FillBingoWindow(player());
+}
+
+function AddDXRCredits(CreditsWindow cw)
+{
+    cw.PrintLn();
+    cw.PrintHeader("Bingo");
+    AddBingoScreen(cw);
+    cw.PrintLn();
+
+}
+
 defaultproperties
 {
     bingo_options(0)=(event="TerroristCommander_Dead",desc="Kill the Terrorist Commander",max=1)

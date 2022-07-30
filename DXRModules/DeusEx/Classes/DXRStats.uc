@@ -396,30 +396,38 @@ function String FormatCreditsTimeStrings(String missionNum, String missionName, 
 
 }
 
+function AddMissionTimeTable(CreditsWindow cw)
+{
+    local CreditsTimerWindow ctw;
+    ctw = CreditsTimerWindow(cw.winScroll.NewChild(Class'CreditsTimerWindow'));
+    ctw.SetSize(450,450);
+    ctw.AddMissionTime("1","Liberty Island",GetMissionTimeString(1),GetCompleteMissionTimeString(1));
+    ctw.AddMissionTime("2","NYC Generator",GetMissionTimeString(2),GetCompleteMissionTimeString(2));
+    ctw.AddMissionTime("3","Airfield",GetMissionTimeString(3),GetCompleteMissionTimeString(3));
+    ctw.AddMissionTime("4","NSF HQ",GetMissionTimeString(4),GetCompleteMissionTimeString(4));
+    ctw.AddMissionTime("5","UNATCO MJ12 Base",GetMissionTimeString(5),GetCompleteMissionTimeString(5));
+    ctw.AddMissionTime("6","Hong Kong",GetMissionTimeString(6),GetCompleteMissionTimeString(6));
+    ctw.AddMissionTime("8","Return to NYC",GetMissionTimeString(8),GetCompleteMissionTimeString(8));
+    ctw.AddMissionTime("9","Superfreighter",GetMissionTimeString(9),GetCompleteMissionTimeString(9));
+    ctw.AddMissionTime("10","Paris Streets",GetMissionTimeString(10),GetCompleteMissionTimeString(10));
+    ctw.AddMissionTime("11","Cathedral",GetMissionTimeString(11),GetCompleteMissionTimeString(11));
+    ctw.AddMissionTime("12","Vandenberg",GetMissionTimeString(12),GetCompleteMissionTimeString(12));
+    ctw.AddMissionTime("14","Ocean Lab",GetMissionTimeString(14),GetCompleteMissionTimeString(14));
+    ctw.AddMissionTime("15","Area 51",GetMissionTimeString(15),GetCompleteMissionTimeString(15));
+    ctw.AddMissionTime("----","--------------","-------------","-------------");
+    ctw.AddMissionTime(" ","Total",GetTotalTimeString(),GetTotalCompleteTimeString());
+    ctw.AddMissionTime(" ","Menu Time",GetTotalMenuTimeString(),GetTotalCompleteMenuTimeString());
+
+}
+
 function AddDXRCredits(CreditsWindow cw)
 {
     local int fired,swings,jumps,deaths,burnkills,gibbedkills;
 
-    cw.PrintHeader("Mission Times");
-    cw.PrintText(" ");
-    cw.PrintHeader("Mission                  In-Game Time                  Real Time");
+    cw.PrintLn();
 
-    cw.PrintText(FormatCreditsTimeStrings("1","Liberty Island",GetMissionTimeString(1),GetCompleteMissionTimeString(1)));
-    cw.PrintText(FormatCreditsTimeStrings("2","NYC Generator",GetMissionTimeString(2),GetCompleteMissionTimeString(2)));
-    cw.PrintText(FormatCreditsTimeStrings("3","Airfield",GetMissionTimeString(3),GetCompleteMissionTimeString(3)));
-    cw.PrintText(FormatCreditsTimeStrings("4","NSF HQ",GetMissionTimeString(4),GetCompleteMissionTimeString(4)));
-    cw.PrintText(FormatCreditsTimeStrings("5","UNATCO MJ12 Base",GetMissionTimeString(5),GetCompleteMissionTimeString(5)));
-    cw.PrintText(FormatCreditsTimeStrings("6","Hong Kong",GetMissionTimeString(6),GetCompleteMissionTimeString(6)));
-    cw.PrintText(FormatCreditsTimeStrings("8","Return to NYC",GetMissionTimeString(8),GetCompleteMissionTimeString(8)));
-    cw.PrintText(FormatCreditsTimeStrings("9","Superfreighter",GetMissionTimeString(9),GetCompleteMissionTimeString(9)));
-    cw.PrintText(FormatCreditsTimeStrings("10","Paris Streets",GetMissionTimeString(10),GetCompleteMissionTimeString(10)));
-    cw.PrintText(FormatCreditsTimeStrings("11","Cathedral",GetMissionTimeString(11),GetCompleteMissionTimeString(11)));
-    cw.PrintText(FormatCreditsTimeStrings("12","Vandenberg",GetMissionTimeString(12),GetCompleteMissionTimeString(12)));
-    cw.PrintText(FormatCreditsTimeStrings("14","Ocean Lab",GetMissionTimeString(14),GetCompleteMissionTimeString(14)));
-    cw.PrintText(FormatCreditsTimeStrings("15","Area 51",GetMissionTimeString(15),GetCompleteMissionTimeString(15)));
-    cw.PrintText(FormatCreditsTimeStrings(" ","Total",GetMissionTimeString(15),GetCompleteMissionTimeString(15)));
+    AddMissionTimeTable(cw);
 
-    //cw.PrintText("Time in Menu:"@GetTotalMenuTimeString()@ "("$GetTotalCompleteMenuTimeString()$")");
     cw.PrintLn();
 
     fired = dxr.flagbase.GetInt('DXRStats_shotsfired');
