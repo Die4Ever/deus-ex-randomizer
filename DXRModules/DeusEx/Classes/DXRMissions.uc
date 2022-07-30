@@ -172,7 +172,7 @@ function int InitGoals(int mission, string map)
     switch(map) {
     case "01_NYC_UNATCOISLAND":
         AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
-        // TODO: allow Leo to spawn on the dock on if the player did not spawn at unatco, need to make mutual_exclusions work first
+        // TODO: allow Leo to spawn on the dock only if the player did not spawn at unatco, need to make mutual_exclusions work first
         //AddGoalLocation("01_NYC_UNATCOISLAND", "Dock", START_LOCATION | VANILLA_START, vect(-4760.569824, 10430.811523, -280.674988), rot(0, -7040, 0));
         AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vect(-6348.445313, 1912.637207, -111.428482), rot(0, 0, 0));
         AddGoalLocation("01_NYC_UNATCOISLAND", "Harley Filben Dock", START_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
@@ -296,7 +296,19 @@ function int InitGoals(int mission, string map)
         return 52;
 
     case "06_HONGKONG_VERSALIFE":
-        // TODO: disgruntled employee and hundley
+        // GOAL_TYPE1 is sitting
+        AddGoal("06_HONGKONG_VERSALIFE", "Gary Burkett", NORMAL_GOAL | GOAL_TYPE1, 'Male2', PHYS_Falling);
+        AddGoal("06_HONGKONG_VERSALIFE", "Data Entry Worker", NORMAL_GOAL | GOAL_TYPE1, 'Male0', PHYS_Falling);
+        AddGoal("06_HONGKONG_VERSALIFE", "John Smith", NORMAL_GOAL | GOAL_TYPE1, 'Male9', PHYS_Falling);
+        AddGoal("06_HONGKONG_VERSALIFE", "Mr. Hundly", NORMAL_GOAL, 'Businessman0', PHYS_Falling);
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Breakroom", NORMAL_GOAL | VANILLA_GOAL, vect(-952.069763, 246.924271, 207.600281), rot(0, -25708, 0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Breakroom", NORMAL_GOAL | VANILLA_GOAL, vect(-971.477234, 352.951782, 463.600586), rot(0,0,0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Cubicle", GOAL_TYPE1 | VANILLA_GOAL, vect(209.333740, 1395.673584, 466.101288), rot(0,18572,0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Corner", NORMAL_GOAL | VANILLA_GOAL, vect(-68.717262, 2165.082031, 465.039124), rot(0,15816,0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "1st Floor Cubicle", GOAL_TYPE1, vect(13.584339, 1903.127441, -48.399910), rot(0, 16384, 0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "1st Floor Water Cooler", NORMAL_GOAL, vect(846.994751, 1754.889526, -48.398872), rot(0, 30000, 0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Cubicle", GOAL_TYPE1, vect(16.111176, 1888.993774, 207.596893), rot(0,16384,0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Water Cooler", NORMAL_GOAL, vect(858.500061, 1747.315918, 207.601013), rot(0, 30000, 0));
         break;
 
     case "06_HONGKONG_MJ12LAB":
@@ -683,8 +695,11 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local int i;
     local Actor a;
+    local ScriptedPawn sp;
+    local string result;
 
-    l("Moving " $ g.name $ " ("$ g.actors[0].a $") to " $ Loc.name $ " ("$ Loc.positions[0].pos $")");
+    result = g.name $ " to " $ Loc.name;
+    l("Moving " $ result $ " ("$ Loc.positions[0].pos $")");
 
     if(g.mapName == dxr.localURL && Loc.mapName != dxr.localURL) {
         // delete from map
@@ -704,6 +719,19 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         a = g.actors[i].a;
         if(a == None) continue;
         MoveActor(a, Loc.positions[i].pos, Loc.positions[i].rot, g.actors[i].physics);
+    }
+
+    switch(dxr.localURL) {
+    case "06_HONGKONG_VERSALIFE":
+        // GOAL_TYPE1 is sitting
+        if( (Loc.bitMask & GOAL_TYPE1) != 0) {
+            for(i=0; i<ArrayCount(g.actors); i++) {
+                sp = ScriptedPawn(g.actors[i].a);
+                if(sp == None) continue;
+                sp.SetOrders('Sitting');
+            }
+        }
+        break;
     }
 }
 
