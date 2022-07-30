@@ -368,21 +368,21 @@ function AddDXRCredits(CreditsWindow cw)
 
     cw.PrintHeader("In-Game Time (Total Time)");
 
-    cw.PrintText("1 - Liberty Island:"@GetMissionTimeString(1)@"("$GetCompleteMissionTimeString(1)$")");
-    cw.PrintText("2 - NYC Generator:"@GetMissionTimeString(2)@"("$GetCompleteMissionTimeString(2)$")");
-    cw.PrintText("3 - Airfield:"@GetMissionTimeString(3)@"("$GetCompleteMissionTimeString(3)$")");
-    cw.PrintText("4 - NSF HQ:"@GetMissionTimeString(4)@"("$GetCompleteMissionTimeString(4)$")");
-    cw.PrintText("5 - UNATCO MJ12 Base:"@GetMissionTimeString(5)@"("$GetCompleteMissionTimeString(5)$")");
-    cw.PrintText("6 - Hong Kong:"@GetMissionTimeString(6)@"("$GetCompleteMissionTimeString(6)$")");
-    cw.PrintText("8 - Return to NYC:"@GetMissionTimeString(8)@"("$GetCompleteMissionTimeString(8)$")");
-    cw.PrintText("9 - Superfreighter:"@GetMissionTimeString(9)@"("$GetCompleteMissionTimeString(9)$")");
-    cw.PrintText("10 - Paris Streets:"@GetMissionTimeString(10)@"("$GetCompleteMissionTimeString(10)$")");
-    cw.PrintText("11 - Cathedral:"@GetMissionTimeString(11)@"("$GetCompleteMissionTimeString(11)$")");
-    cw.PrintText("12 - Vandenberg:"@GetMissionTimeString(12)@"("$GetCompleteMissionTimeString(12)$")");
-    cw.PrintText("14 - Ocean Lab:"@GetMissionTimeString(14)@"("$GetCompleteMissionTimeString(14)$")");
-    cw.PrintText("15 - Area 51:"@GetMissionTimeString(15)@"("$GetCompleteMissionTimeString(15)$")");
-    cw.PrintText("Total:"@GetTotalTimeString()@"("$GetTotalCompleteTimeString()$")");
-    //cw.PrintText("Time in Menu:"@GetTotalMenuTimeString()@"("$GetTotalCompleteMenuTimeString()$")");
+    cw.PrintText("1 - Liberty Island:"@GetMissionTimeString(1)@ "("$GetCompleteMissionTimeString(1)$")");
+    cw.PrintText("2 - NYC Generator:"@GetMissionTimeString(2)@ "("$GetCompleteMissionTimeString(2)$")");
+    cw.PrintText("3 - Airfield:"@GetMissionTimeString(3)@ "("$GetCompleteMissionTimeString(3)$")");
+    cw.PrintText("4 - NSF HQ:"@GetMissionTimeString(4)@ "("$GetCompleteMissionTimeString(4)$")");
+    cw.PrintText("5 - UNATCO MJ12 Base:"@GetMissionTimeString(5)@ "("$GetCompleteMissionTimeString(5)$")");
+    cw.PrintText("6 - Hong Kong:"@GetMissionTimeString(6)@ "("$GetCompleteMissionTimeString(6)$")");
+    cw.PrintText("8 - Return to NYC:"@GetMissionTimeString(8)@ "("$GetCompleteMissionTimeString(8)$")");
+    cw.PrintText("9 - Superfreighter:"@GetMissionTimeString(9)@ "("$GetCompleteMissionTimeString(9)$")");
+    cw.PrintText("10 - Paris Streets:"@GetMissionTimeString(10)@ "("$GetCompleteMissionTimeString(10)$")");
+    cw.PrintText("11 - Cathedral:"@GetMissionTimeString(11)@ "("$GetCompleteMissionTimeString(11)$")");
+    cw.PrintText("12 - Vandenberg:"@GetMissionTimeString(12)@ "("$GetCompleteMissionTimeString(12)$")");
+    cw.PrintText("14 - Ocean Lab:"@GetMissionTimeString(14)@ "("$GetCompleteMissionTimeString(14)$")");
+    cw.PrintText("15 - Area 51:"@GetMissionTimeString(15)@ "("$GetCompleteMissionTimeString(15)$")");
+    cw.PrintText("Total:"@GetTotalTimeString()@ "("$GetTotalCompleteTimeString()$")");
+    //cw.PrintText("Time in Menu:"@GetTotalMenuTimeString()@ "("$GetTotalCompleteMenuTimeString()$")");
     cw.PrintLn();
 
     fired = dxr.flagbase.GetInt('DXRStats_shotsfired');
