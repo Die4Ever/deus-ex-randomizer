@@ -1109,6 +1109,7 @@ function HongKong_FirstEntry()
     local #var(Mover) m;
     local FlagTrigger ft;
     local AllianceTrigger at;
+    local DeusExMover d;
 
     switch(dxr.localURL)
     {
@@ -1177,6 +1178,14 @@ function HongKong_FirstEntry()
             if(e.Tag=='JocksElevator')
             {
                 e.Event = '';
+            }
+        }
+        foreach AllActors(class'DeusExMover',d)
+        {
+            if(d.Tag=='DispalyCase') //They seriously left in that typo?
+            {
+                d.SetKeyframe(1,vect(0,0,-136),d.Rotation);  //Make sure the keyframe exists for it to drop into the floor
+                d.bIsDoor = true; //Mark it as a door so the troops can actually open it...
             }
         }
         break;
