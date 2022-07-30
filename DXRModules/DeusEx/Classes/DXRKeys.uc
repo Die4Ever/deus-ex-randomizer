@@ -521,7 +521,6 @@ function ApplyDoorFixes()
 
             if(door_fixes[i].bHighlight==false){
                 d.bFrobbable = false;
-                d.bBreakable = false;
                 d.bHighlight = false;
             }
         }
