@@ -171,17 +171,16 @@ function int InitGoals(int mission, string map)
     num_mututally_exclusives = 0;
     switch(map) {
     case "01_NYC_UNATCOISLAND":
-        // need to add vanilla start locations
         AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
+        // TODO: allow Leo to spawn on the dock on if the player did not spawn at unatco, need to make mutual_exclusions work first
+        //AddGoalLocation("01_NYC_UNATCOISLAND", "Dock", START_LOCATION | VANILLA_START, vect(-4760.569824, 10430.811523, -280.674988), rot(0, -7040, 0));
         AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vect(-6348.445313, 1912.637207, -111.428482), rot(0, 0, 0));
-        AddGoalLocation("01_NYC_UNATCOISLAND", "Dock", START_LOCATION | VANILLA_START, vect(-4760.569824, 10430.811523, -280.674988), rot(0, -7040, 0));
         AddGoalLocation("01_NYC_UNATCOISLAND", "Harley Filben Dock", START_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
         AddGoalLocation("01_NYC_UNATCOISLAND", "Electric Bunker", NORMAL_GOAL | START_LOCATION, vect(6552.227539, -3246.095703, -447.438049), rot(0, 0, 0));
         AddGoalLocation("01_NYC_UNATCOISLAND", "Jail", NORMAL_GOAL | START_LOCATION, vect(2127.692139, -1774.869141, -149.140366), rot(0, 0, 0));
         AddGoalLocation("01_NYC_UNATCOISLAND", "Hut", NORMAL_GOAL, vect(-2407.206787, 205.915558, -128.899979), rot(0, 30472, 0));
         AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Base", NORMAL_GOAL, vect(2980.058105, -669.242554, 1056.577271), rot(0, 0, 0));
-        if( dxr.flags.settings.goals > 0 )
-            AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
+        AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
         break;
 
     case "02_NYC_BATTERYPARK":
@@ -193,10 +192,10 @@ function int InitGoals(int mission, string map)
 
         AddGoalLocation("02_NYC_BATTERYPARK", "Dock", START_LOCATION | VANILLA_START, vect(-619.571289, -3679.116455, 255.099762), rot(0, 29856, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Ventilation system", NORMAL_GOAL | START_LOCATION, vect(-4310.507813, 2237.952637, 189.843536), rot(0, 0, 0));
-        if(dxr.flags.settings.goals > 0) {
-            loc = AddGoalLocation("02_NYC_BATTERYPARK", "Ambrosia Vanilla", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(507.282898, -1066.344604, -403.132751), rot(0, 16536, 0));
-            AddActorLocation(loc, PLAYER_LOCATION, vect(81.434570, -1123.060547, -384.397644), rot(0, 8000, 0));
-        }
+
+        loc = AddGoalLocation("02_NYC_BATTERYPARK", "Ambrosia Vanilla", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(507.282898, -1066.344604, -403.132751), rot(0, 16536, 0));
+        AddActorLocation(loc, PLAYER_LOCATION, vect(81.434570, -1123.060547, -384.397644), rot(0, 8000, 0));
+
         AddGoalLocation("02_NYC_BATTERYPARK", "In the command room", NORMAL_GOAL, vect(650.060547, -989.234863, -178.095200), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Behind the cargo", NORMAL_GOAL, vect(58.725319, -446.887207, -416.899323), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "On the desk", NORMAL_GOAL, vect(-644.152161, -676.281738, -379.581146), rot(0, 0, 0));
@@ -212,6 +211,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("02_NYC_WAREHOUSE", "Dumpster", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 322, -216.201538), rot(0, 16400, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Vanilla Jock", NORMAL_GOAL | VANILLA_GOAL, vect(-222.402451,-294.757233,1132.798828), rot(0,-24128,0));
+        // TODO: generator
         return 22;
 
     case "03_NYC_BATTERYPARK":
@@ -295,18 +295,24 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("05_NYC_UNATCOHQ", "Computer Ops", NORMAL_GOAL | VANILLA_GOAL, vect(2001.611206,-801.088379,-16.225000), rot(0,23776,0));
         return 52;
 
+    case "06_HONGKONG_VERSALIFE":
+        // TODO: disgruntled employee and hundley
+        break;
+
     case "06_HONGKONG_MJ12LAB":
         goal = AddGoal("06_HONGKONG_MJ12LAB", "Nanotech Blade ROM", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
-        /*AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// TODO: fix these...
-        AddGoalActor(goal, 1, 'DataLinkTrigger3', PHYS_None);
-        AddGoalActor(goal, 1, 'DataLinkTrigger4', PHYS_None);
-        AddGoalActor(goal, 1, 'DataLinkTrigger5', PHYS_None);
-        AddGoalActor(goal, 1, 'DataLinkTrigger6', PHYS_None);
-        AddGoalActor(goal, 1, 'DataLinkTrigger8', PHYS_None);
-        AddGoalActor(goal, 1, 'FlagTrigger0', PHYS_None);
-        AddGoalActor(goal, 1, 'FlagTrigger1', PHYS_None);
-        AddGoalActor(goal, 1, 'GoalCompleteTrigger0', PHYS_None);
-        AddGoalActor(goal, 1, 'SkillAwardTrigger10', PHYS_None);*/
+        AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_07: I have uploaded the component the Triads need to complete the sword.
+        AddGoalActor(goal, 2, 'DataLinkTrigger3', PHYS_None);// DL_Tong_07 but with Tag TongHasTheROM
+        AddGoalActor(goal, 3, 'DataLinkTrigger8', PHYS_None);// DL_Tong_08: The ROM-encoding should be in this wing of the laboratory.
+        AddGoalActor(goal, 4, 'FlagTrigger0', PHYS_None);
+        AddGoalActor(goal, 5, 'FlagTrigger1', PHYS_None);
+        AddGoalActor(goal, 6, 'GoalCompleteTrigger0', PHYS_None);
+        AddGoalActor(goal, 7, 'SkillAwardTrigger10', PHYS_None);
+
+        /*AddGoalActor(goal, 1, 'DataLinkTrigger4', PHYS_None);// DL_Tong_07
+        AddGoalActor(goal, 1, 'DataLinkTrigger5', PHYS_None);// DL_Tong_07
+        AddGoalActor(goal, 1, 'DataLinkTrigger6', PHYS_None);// DL_Tong_07*/
+
         AddGoal("06_HONGKONG_MJ12LAB", "Radiation Controls", NORMAL_GOAL, 'ComputerPersonal1', PHYS_Falling);
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Barracks", NORMAL_GOAL, vect(-140.163544, 1705.130127, -583.495483), rot(0, 0, 0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Chamber", NORMAL_GOAL, vect(-1273.699951, 803.588745, -792.499512), rot(0, 16384, 0));
@@ -424,6 +430,10 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
         break;
 
+    case "14_OCEANLAB_UC":
+        // TODO: UC schematics computer
+        break;
+
     case "14_OCEANLAB_SILO":
         AddGoal("14_OCEANLAB_SILO", "Howard Strong", NORMAL_GOAL, 'HowardStrong0', PHYS_Falling);
         AddGoalLocation("14_OCEANLAB_SILO", "Third Floor", NORMAL_GOAL, vect(-220.000000, -6829.463379, 55.600639), rot(0, 0, 0));
@@ -431,6 +441,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("14_OCEANLAB_SILO", "Fifth Floor", NORMAL_GOAL, vect(-271.341187, -6832.150391, 535.596741), rot(0, 0, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Sixth Floor", NORMAL_GOAL, vect(-266.569397, -6868.054199, 775.592590), rot(0, 0, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", NORMAL_GOAL | VANILLA_GOAL, vect(-52.397560,-6767.679199,-320.225006), rot(0,-7512,0));
+        // TODO: jock
         break;
 
     case "15_AREA51_BUNKER":
@@ -479,6 +490,8 @@ function PreFirstEntry()
     if( ArrayCount(goalsToLocations) != ArrayCount(goals) ) err("ArrayCount(goalsToLocations) != ArrayCount(goals)");
 
     if(num_goals == 0) return;
+    if(dxr.flags.settings.startinglocations <= 0 && dxr.flags.settings.goals <= 0)
+        return;
 
     MoveActorsOut();
     ChooseGoalLocations(goalsToLocations);
@@ -489,6 +502,8 @@ function MoveActorsOut()
 {
     local int g, i;
     local Actor a;
+
+    if(dxr.flags.settings.goals <= 0) return;
 
     for(g=0; g<num_goals; g++) {
         if( dxr.localURL != goals[g].mapName ) continue;
@@ -528,19 +543,23 @@ function MoveActorsIn(int goalsToLocations[32])
 function bool _ChooseGoalLocations(out int goalsToLocations[32])
 {
     // TODO: check mutual_exclusions, maybe ensure things aren't too close together?
-    // TODO: exclude VANILLA_START for goals when randomized start locations are disabled
-    // exclude VANILLA_GOAL for start locations when randomized goal locations are disabled
     local int i, r, _num_locs, _num_starts;
     local int availLocs[64];
 
+    _num_locs = 0;
     _num_starts = 0;
     for(i=0; i<num_locations; i++) {
-        availLocs[i] = i;
+        // exclude the vanilla start locations if randomized starting locations are disabled
+        if( dxr.flags.settings.startinglocations <= 0 && (VANILLA_START & locations[i].bitMask) != 0 )
+            continue;
+        // exclude the vanilla goal locations if randomized goal locations are disabled
+        if( dxr.flags.settings.goals <= 0 && (VANILLA_GOAL & locations[i].bitMask) != 0 )
+            continue;
+        availLocs[_num_locs++] = i;
 
         if( (START_LOCATION & locations[i].bitMask) != 0)
             _num_starts++;
     }
-    _num_locs = num_locations;
 
     // choose a starting location
     goalsToLocations[num_goals] = -1;

@@ -135,115 +135,118 @@ simulated function InitHints()
 
     // ~= is case insensitive equality
     switch(dxr.dxInfo.missionNumber) {
-        case 1:
-            if(map ~= "01_NYC_UNATCOIsland") {
-                if(dxr.flags.settings.passwordsrandomized > 0)
-                    AddHint("Passwords have been randomized.", "Don't even try smashthestate!");
-                if(dxr.flags.settings.goals > 0)
-                    AddHint("The location of the terrorist commander is randomized.");
-            }
-            break;
-        case 2:
-            break;
-        case 3:
-            break;
-        case 4:
-            if (map ~= "04_NYC_NSFHQ") {
-                if(dxr.flags.settings.goals > 0)
-                    AddHint("The location of the computer to open","the door on the roof is randomized.");
-            }
+    case 1:
+        if(map ~= "01_NYC_UNATCOIsland") {
+            if(dxr.flags.settings.passwordsrandomized > 0)
+                AddHint("Passwords have been randomized.", "Don't even try smashthestate!");
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The location of the terrorist commander is randomized.");
+        }
+        break;
+    case 2:
+        break;
+    case 3:
+        break;
+    case 4:
+        if (map ~= "04_NYC_NSFHQ") {
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The location of the computer to open","the door on the roof is randomized.");
+        }
 
-            break;
-        case 5:
-            if (map ~= "05_NYC_UnatcoMJ12Lab") {
-                if(dxr.flags.settings.goals > 0)
-                    AddHint("Pauls location in the lab is randomized.");
-            } else if (map ~= "05_NYC_UnatcoHQ") {
-                if(dxr.flags.settings.goals > 0)
-                    AddHint("Alex Jacobsons location in UNATCO HQ is randomized.");
-            }
+        break;
+    case 5:
+        if (map ~= "05_NYC_UnatcoMJ12Lab") {
+            if(dxr.flags.settings.goals > 0)
+                AddHint("Pauls location in the lab is randomized.");
+        } else if (map ~= "05_NYC_UnatcoHQ") {
+            if(dxr.flags.settings.goals > 0)
+                AddHint("Alex Jacobsons location in UNATCO HQ is randomized.");
+        }
 
-            break;
-        case 6:
-            if (map ~= "06_hongkong_mj12lab") {
+        break;
+    case 6:
+        if (map ~= "06_hongkong_mj12lab") {
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The location of the computer with the ROM Encoding is randomized.");
+        } else if (map ~= "06_HongKong_WanChai_Street") {
+            AddHint("The Dragon Tooth Sword is randomized, but you need to","open the case in Maggie Chow's apartment to proceed");
+        }
+        break;
+    case 8:
+        break;
+    case 9:
+        if (map ~= "09_nyc_graveyard") {
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The location of the signal jammer is randomized.");
+        } else if (map ~= "09_nyc_shipbelow") {
                 if(dxr.flags.settings.goals > 0)
-                    AddHint("The location of the computer with the ROM Encoding is randomized.");
-            } else if (map ~= "06_HongKong_WanChai_Street") {
-                AddHint("The Dragon Tooth Sword is randomized, but you need to","open the case in Maggie Chow's apartment to proceed");
-            }
-            break;
-        case 8:
-            break;
-        case 9:
-            if (map ~= "09_nyc_graveyard") {
-                if(dxr.flags.settings.goals > 0)
-                    AddHint("The location of the signal jammer is randomized.");
-            } else if (map ~= "09_nyc_shipbelow") {
-                 if(dxr.flags.settings.goals > 0)
-                    AddHint("The locations of the tri-hull weld points are randomized.");
+                AddHint("The locations of the tri-hull weld points are randomized.");
 
-            }
+        }
 
-            break;
-        case 10:
+        break;
+    case 10:
 #ifdef injections
-            if( dxr.FindModule(class'DXRBacktracking') != None ) {
-                AddHint("Randomizer has enabled extra backtracking.", "You will be able to come back here later.");
-            }
-            AddHint("There's wine everywhere in Paris,", "it can be a decent source of health and energy.");
+        if( dxr.FindModule(class'DXRBacktracking') != None ) {
+            AddHint("Randomizer has enabled extra backtracking.", "You will be able to come back here later.");
+        }
+        AddHint("There's wine everywhere in Paris,", "it can be a decent source of health and energy.");
 #else
-            AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
+        AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
 #endif
-            if(map ~= "10_Paris_Catacombs") {
-                AddHint("If you need a Hazmat suit", "Le Merchant has one for sale.");
-                AddHint("You can kill Le Merchant and loot him", "if you don't have enough money.");
-            }
-            break;
-        case 11:
-            if (map ~= "11_paris_cathedral") {
-                if(dxr.flags.settings.goals > 0)
-                    AddHint("The location of Gunther and the computer is randomized.");
-            }
+        if(map ~= "10_Paris_Catacombs") {
+            AddHint("If you need a Hazmat suit", "Le Merchant has one for sale.");
+            AddHint("You can kill Le Merchant and loot him", "if you don't have enough money.");
+        }
+        if(dxr.flags.settings.goals > 0 && (map ~= "10_paris_metro" || map ~= "10_paris_club")) {
+            AddHint("The location of Nicolette DuClare is randomized.");
+        }
+        break;
+    case 11:
+        if (map ~= "11_paris_cathedral") {
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The location of Gunther and the computer is randomized.");
+        }
 #ifdef injections
-            if( dxr.FindModule(class'DXRBacktracking') != None ) {
-                AddHint("Randomizer has enabled extra backtracking.", "You will be able to go back to previous Paris levels.");
-            }
-            AddHint("There's wine everywhere in Paris,", "it can be a decent source of health and energy.");
+        if( dxr.FindModule(class'DXRBacktracking') != None && map != "11_PARIS_EVERETT" ) {
+            AddHint("Randomizer has enabled extra backtracking.", "You will be able to go back to previous Paris levels.");
+        }
+        AddHint("There's wine everywhere in Paris,", "it can be a decent source of health and energy.");
 #else
-            AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
+        AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
 #endif
 
-            break;
-        case 12:
-            if (map ~= "12_vandenberg_cmd") {
-                if(dxr.flags.settings.goals > 0)
-                    AddHint("The locations of the power generator keypads are randomized.");
-            }
+        break;
+    case 12:
+        if (map ~= "12_vandenberg_cmd") {
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The locations of the power generator keypads are randomized.");
+        }
 #ifdef injections
-            if( dxr.FindModule(class'DXRBacktracking') != None ) {
-                AddHint("Randomizer has enabled extra backtracking.", "You will be able to come back here later.");
-            }
+        if( dxr.FindModule(class'DXRBacktracking') != None ) {
+            AddHint("Randomizer has enabled extra backtracking.", "You will be able to come back here later.");
+        }
 #endif
-            break;
-        case 14:
-            if (map ~= "14_oceanlab_silo") {
-                if(dxr.flags.settings.goals > 0)
-                    AddHint("Howard Strong is now on a random floor of the missile silo.");
-            }
+        break;
+    case 14:
+        if (map ~= "14_oceanlab_silo") {
+            if(dxr.flags.settings.goals > 0)
+                AddHint("Howard Strong is now on a random floor of the missile silo.");
+        }
 #ifdef injections
-            if( dxr.FindModule(class'DXRBacktracking') != None ) {
-                AddHint("Randomizer has enabled extra backtracking.", "You will be able to go back to Vandenberg.");
-            }
+        if( dxr.FindModule(class'DXRBacktracking') != None ) {
+            AddHint("Randomizer has enabled extra backtracking.", "You will be able to go back to Vandenberg.");
+        }
 #endif
 
-            break;
-        case 15:
+        break;
+    case 15:
 #ifdef injections
-            if( dxr.FindModule(class'DXRBacktracking') != None ) {
-                AddHint("Randomizer has enabled extra backtracking.", "You will be able to move more freely through Area 51.");
-            }
+        if( dxr.FindModule(class'DXRBacktracking') != None ) {
+            AddHint("Randomizer has enabled extra backtracking.", "You will be able to move more freely through Area 51.");
+        }
 #endif
-            break;
+        break;
     };
 }
 
