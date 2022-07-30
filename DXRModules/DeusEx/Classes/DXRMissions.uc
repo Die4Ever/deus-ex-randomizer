@@ -11,6 +11,7 @@ const GOAL_TYPE1 = 2;
 const GOAL_TYPE2 = 4;
 const GOAL_TYPE3 = 8;
 const GOAL_TYPE4 = 16;
+const SITTING_GOAL = 268435456;
 const VANILLA_GOAL = 536870912;
 const START_LOCATION = 1073741824;
 const VANILLA_START = 2147483648;
@@ -296,18 +297,17 @@ function int InitGoals(int mission, string map)
         return 52;
 
     case "06_HONGKONG_VERSALIFE":
-        // GOAL_TYPE1 is sitting
-        AddGoal("06_HONGKONG_VERSALIFE", "Gary Burkett", NORMAL_GOAL | GOAL_TYPE1, 'Male2', PHYS_Falling);
-        AddGoal("06_HONGKONG_VERSALIFE", "Data Entry Worker", NORMAL_GOAL | GOAL_TYPE1, 'Male0', PHYS_Falling);
-        AddGoal("06_HONGKONG_VERSALIFE", "John Smith", NORMAL_GOAL | GOAL_TYPE1, 'Male9', PHYS_Falling);
+        AddGoal("06_HONGKONG_VERSALIFE", "Gary Burkett", NORMAL_GOAL | SITTING_GOAL, 'Male2', PHYS_Falling);
+        AddGoal("06_HONGKONG_VERSALIFE", "Data Entry Worker", NORMAL_GOAL | SITTING_GOAL, 'Male0', PHYS_Falling);
+        AddGoal("06_HONGKONG_VERSALIFE", "John Smith", NORMAL_GOAL | SITTING_GOAL, 'Male9', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "Mr. Hundly", NORMAL_GOAL, 'Businessman0', PHYS_Falling);
         AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Breakroom", NORMAL_GOAL | VANILLA_GOAL, vect(-952.069763, 246.924271, 207.600281), rot(0, -25708, 0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Breakroom", NORMAL_GOAL | VANILLA_GOAL, vect(-971.477234, 352.951782, 463.600586), rot(0,0,0));
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Cubicle", GOAL_TYPE1 | VANILLA_GOAL, vect(209.333740, 1395.673584, 466.101288), rot(0,18572,0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Cubicle", SITTING_GOAL | VANILLA_GOAL, vect(209.333740, 1395.673584, 466.101288), rot(0,18572,0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Corner", NORMAL_GOAL | VANILLA_GOAL, vect(-68.717262, 2165.082031, 465.039124), rot(0,15816,0));
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "1st Floor Cubicle", GOAL_TYPE1, vect(13.584339, 1903.127441, -48.399910), rot(0, 16384, 0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "1st Floor Cubicle", SITTING_GOAL, vect(13.584339, 1903.127441, -48.399910), rot(0, 16384, 0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "1st Floor Water Cooler", NORMAL_GOAL, vect(846.994751, 1754.889526, -48.398872), rot(0, 30000, 0));
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Cubicle", GOAL_TYPE1, vect(16.111176, 1888.993774, 207.596893), rot(0,16384,0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Cubicle", SITTING_GOAL, vect(16.111176, 1888.993774, 207.596893), rot(0,16384,0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Water Cooler", NORMAL_GOAL, vect(858.500061, 1747.315918, 207.601013), rot(0, 30000, 0));
         break;
 
@@ -339,7 +339,17 @@ function int InitGoals(int mission, string map)
     case "08_NYC_Smug":
     case "08_NYC_Street":
     case "08_NYC_Underground":
-        // TODO: filben? dowd? greene?
+        AddGoal("08_NYC_Bar", "Harley Filben", NORMAL_GOAL, 'HarleyFilben0', PHYS_Falling);
+        goal = AddGoal("08_NYC_Bar", "Vinny", NORMAL_GOAL, 'NathanMadison0', PHYS_Falling);
+        //AddGoalActor(goal, 1, 'SandraRenton0', PHYS_Falling); TODO?
+        //AddGoalActor(goal, 2, 'CoffeeTable0', PHYS_Falling);
+        AddGoal("08_NYC_FreeClinic", "Joe Greene", NORMAL_GOAL, 'JoeGreene0', PHYS_Falling);
+        AddGoalLocation("08_NYC_Bar", "Bar Table", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-1689.125122, 337.159912, 63.599533), rot(0,-10144,0));
+        AddGoalLocation("08_NYC_Bar", "Bar", NORMAL_GOAL | VANILLA_GOAL, vect(-931.038086, -488.537109, 47.600464), rot(0,9536,0));
+        AddGoalLocation("08_NYC_FreeClinic", "Clinic", NORMAL_GOAL | VANILLA_GOAL, vect(904.356262, -1229.045166, -272.399506), rot(0,31640,0));
+        AddGoalLocation("08_NYC_Underground", "Sewers", NORMAL_GOAL, vect(1012.048462, -303.517639, -560.397888), rot(0,16384,0));
+        AddGoalLocation("08_NYC_Hotel", "Hotel", NORMAL_GOAL | SITTING_GOAL, vect(-108.541245, -2709.490479, 111.600838), rot(0,20000,0));
+        AddGoalLocation("08_NYC_Street", "Basketball Court", NORMAL_GOAL, vect(2694.934082, -2792.844971, -448.396637), rot(0,32768,0));
         break;
 
     case "09_NYC_GRAVEYARD":
@@ -628,17 +638,46 @@ function Actor GetActor(out GoalActor ga)
 
 function CreateGoal(out Goal g, GoalLocation Loc)
 {
-    local NicoletteDuClare nico;
+    local #var(prefix)ScriptedPawn sp;
 
     switch(g.name) {
     case "Nicolette":
-        nico = Spawn(class'NicoletteDuClare',, 'DXRMissions');
-        g.actors[0].a = nico;
-        nico.BindName = "NicoletteDuClare";
-        nico.FamiliarName = "Young Woman";
-        nico.UnfamiliarName = "Young Woman";
-        nico.bInvincible = true;
-        nico.SetOrders('Dancing');
+        sp = Spawn(class'#var(prefix)NicoletteDuClare',, 'DXRMissions');
+        g.actors[0].a = sp;
+        sp.BindName = "NicoletteDuClare";
+        sp.FamiliarName = "Young Woman";
+        sp.UnfamiliarName = "Young Woman";
+        sp.bInvincible = true;
+        sp.SetOrders('Dancing');
+        sp.ConBindEvents();
+        break;
+
+    case "Harley Filben":
+        // Harley Filben is also randomized in mission 3, but not across maps
+        sp = Spawn(class'#var(prefix)HarleyFilben',, 'DXRMissions');
+        g.actors[0].a = sp;
+        sp.UnfamiliarName = "Harley Filben";
+        sp.bInvincible = true;
+        sp.bImportant = true;
+        sp.SetOrders('Standing');
+        break;
+
+    case "Vinny":
+        sp = Spawn(class'#var(prefix)NathanMadison',, 'DXRMissions');
+        g.actors[0].a = sp;
+        sp.BindName = "Sailor";
+        sp.FamiliarName = "Vinny";
+        sp.UnfamiliarName = "Soldier";
+        sp.SetOrders('Standing');
+        sp.ConBindEvents();
+        break;
+
+    case "Joe Greene":
+        sp = Spawn(class'#var(prefix)JoeGreene',, 'DXRMissions');
+        g.actors[0].a = sp;
+        sp.BarkBindName = "Male";
+        sp.SetOrders('Standing');
+        sp.ConBindEvents();
         break;
     }
 }
@@ -721,17 +760,12 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         MoveActor(a, Loc.positions[i].pos, Loc.positions[i].rot, g.actors[i].physics);
     }
 
-    switch(dxr.localURL) {
-    case "06_HONGKONG_VERSALIFE":
-        // GOAL_TYPE1 is sitting
-        if( (Loc.bitMask & GOAL_TYPE1) != 0) {
-            for(i=0; i<ArrayCount(g.actors); i++) {
-                sp = ScriptedPawn(g.actors[i].a);
-                if(sp == None) continue;
-                sp.SetOrders('Sitting');
-            }
+    if( (Loc.bitMask & SITTING_GOAL) != 0) {
+        for(i=0; i<ArrayCount(g.actors); i++) {
+            sp = ScriptedPawn(g.actors[i].a);
+            if(sp == None) continue;
+            sp.SetOrders('Sitting');
         }
-        break;
     }
 }
 
@@ -758,7 +792,8 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     sp = ScriptedPawn(a);
     v = Vehicles(a);
     if( sp != None ) {
-        if( sp.Orders == 'Patrolling' ) sp.SetOrders('Wandering');
+        if( sp.Orders == 'Patrolling' || sp.Orders == 'Sitting' )
+            sp.SetOrders('Wandering');
         sp.HomeLoc = sp.Location;
         sp.HomeRot = vector(sp.Rotation);
         sp.DesiredRotation = rotation;
