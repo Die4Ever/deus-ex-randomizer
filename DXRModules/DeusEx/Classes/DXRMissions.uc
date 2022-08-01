@@ -809,6 +809,8 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
 
     sp = ScriptedPawn(a);
     v = Vehicles(a);
+    m = Mover(a);
+
     if( sp != None ) {
         if( sp.Orders == 'Patrolling' || sp.Orders == 'Sitting' )
             sp.SetOrders('Wandering');
@@ -828,12 +830,11 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
         }
         else a.bCollideWorld = true;
     }
-    else a.bCollideWorld = true;
-
-    m = Mover(a);
-    if( m != None ) {
+    else if( m != None ) {
         m.BasePos = a.Location;
         m.BaseRot = a.Rotation;
+    } else {
+        a.bCollideWorld = true;
     }
 
     return true;
