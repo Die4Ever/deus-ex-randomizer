@@ -43,7 +43,7 @@ struct GoalLocation {
 };
 
 struct MutualExclusion {
-    var int G1, L1, G2, L2;
+    var int L1, L2;
 };
 
 var Goal goals[32];
@@ -165,7 +165,7 @@ function AddMutualExclusion(int L1, int L2)
 
 function int InitGoals(int mission, string map)
 {
-    local int goal, loc;
+    local int goal, loc, loc2;
     // return a salt for the seed, the default return at the end is fine if you only have 1 set of goals in the whole mission
     num_goals = 0;
     num_locations = 0;
@@ -207,19 +207,32 @@ function int InitGoals(int mission, string map)
 
     case "02_NYC_WAREHOUSE":
         AddGoal("02_NYC_WAREHOUSE", "Jock", NORMAL_GOAL, 'BlackHelicopter1', PHYS_None);
+        AddGoalLocation("02_NYC_WAREHOUSE", "Vanilla Jock", NORMAL_GOAL | VANILLA_GOAL, vect(-222.402451,-294.757233,1132.798828), rot(0,-24128,0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Back Door", NORMAL_GOAL, vect(1656.467041, -1658.624268, 357.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Dumpster", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 322, -216.201538), rot(0, 16400, 0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Vanilla Jock", NORMAL_GOAL | VANILLA_GOAL, vect(-222.402451,-294.757233,1132.798828), rot(0,-24128,0));
-        // TODO: generator
-        /*AddGoal("02_NYC_WAREHOUSE", "Generator", GOAL_TYPE1, 'BreakableWall2', PHYS_MovingBrush);
+        loc2 = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 322, -216.201538), rot(0, 16400, 0));
+
+        goal = AddGoal("02_NYC_WAREHOUSE", "Generator", GOAL_TYPE1, 'BreakableWall2', PHYS_MovingBrush);
+        AddGoalActor(goal, 1, 'CrateExplosiveSmall0', PHYS_None);
+        AddGoalActor(goal, 2, 'CrateExplosiveSmall6', PHYS_None);
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(576.000000, -512.000000, 71.999939), rot(32768, -16384, 0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-640.000000, 1760.000000, 128.000000), rot(0,32768,-16384));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(368.000000, 1248.000000, 992.000000), rot(0,32768,-16384));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(300, -560, -120), rot(0,-16384,-16384));
+        loc = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1600.000000, 784.000000, -256.000000), rot(32768,-32768,0));
+        AddMutualExclusion(loc, loc2);// can't put Jock and the generator both in the sewers
+        // pawns run into these and break them
+        //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1360.000000, -512.000000, 528.000000), rot(32768, -16384, 0));
+        //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor Corner", GOAL_TYPE1, vect(1600, -1136.000000, 540), rot(32768, 16384, 0));
 
         AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2, 'ComputerPersonal5', PHYS_Falling);
+        AddGoal("02_NYC_WAREHOUSE", "Email Computer", GOAL_TYPE2, 'ComputerPersonal0', PHYS_Falling);
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse Computer Room", GOAL_TYPE2 | VANILLA_GOAL, vect(1277.341797, -864.810913, 311.500397), rot(0, 16712, 0));
-
-        AddGoalLocation("02_NYC_WAREHOUSE", "Roof Test", GOAL_TYPE1 | GOAL_TYPE2, vect(-1136.000000, 3264.000000, 1584.000000), rot(32768, -16384, 0));*/
+        AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE2 | VANILLA_GOAL, vect(1002.848999, -897.071167, -136.499573), rot(0, -17064, 0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Break room", GOAL_TYPE2, vect(1484.731934, -917.463257, 73.499916), rot(0,-16384,0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE2, vect(-239.501144, 1441.699951, 1151.502930), rot(0,0,0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", GOAL_TYPE2, vect(-846.480957, 919.700012, 1475.486938), rot(0,32768,0));
         return 22;
 
     case "03_NYC_BATTERYPARK":
@@ -308,8 +321,8 @@ function int InitGoals(int mission, string map)
         AddGoal("06_HONGKONG_VERSALIFE", "Data Entry Worker", NORMAL_GOAL | SITTING_GOAL, 'Male0', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "John Smith", NORMAL_GOAL | SITTING_GOAL, 'Male9', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "Mr. Hundly", NORMAL_GOAL, 'Businessman0', PHYS_Falling);
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Breakroom", NORMAL_GOAL | VANILLA_GOAL, vect(-952.069763, 246.924271, 207.600281), rot(0, -25708, 0));
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Breakroom", NORMAL_GOAL | VANILLA_GOAL, vect(-971.477234, 352.951782, 463.600586), rot(0,0,0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-952.069763, 246.924271, 207.600281), rot(0, -25708, 0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-971.477234, 352.951782, 463.600586), rot(0,0,0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Cubicle", SITTING_GOAL | VANILLA_GOAL, vect(209.333740, 1395.673584, 466.101288), rot(0,18572,0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Corner", NORMAL_GOAL | VANILLA_GOAL, vect(-68.717262, 2165.082031, 465.039124), rot(0,15816,0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "1st Floor Cubicle", SITTING_GOAL, vect(13.584339, 1903.127441, -48.399910), rot(0, 16384, 0));
@@ -582,8 +595,7 @@ function MoveActorsIn(int goalsToLocations[32])
 
 function bool _ChooseGoalLocations(out int goalsToLocations[32])
 {
-    // TODO: check mutual_exclusions, maybe ensure things aren't too close together?
-    local int i, r, _num_locs, _num_starts;
+    local int i, g1, g2, r, _num_locs, _num_starts;
     local int availLocs[64];
 
     _num_locs = 0;
@@ -627,6 +639,19 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
 
         _num_locs--;
         availLocs[r] = availLocs[_num_locs];
+    }
+
+    // check mutual exclusions
+    for(i=0; i<num_mututally_exclusives; i++) {
+        for(g1=0; g1<num_goals; g1++) {
+            // num_goals is the player start, so we use <= instead of <
+            for(g2=g1+1; g2<=num_goals; g2++) {
+                if( mutually_exclusive[i].L1 == goalsToLocations[g1] && mutually_exclusive[i].L2 == goalsToLocations[g2] )
+                    return false;
+                if( mutually_exclusive[i].L2 == goalsToLocations[g1] && mutually_exclusive[i].L1 == goalsToLocations[g2] )
+                    return false;
+            }
+        }
     }
     return true;
 }

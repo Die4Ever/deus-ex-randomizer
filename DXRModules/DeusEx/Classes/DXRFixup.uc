@@ -275,7 +275,8 @@ function PostFirstEntryMapFixes()
 
 #ifndef revision
     case "02_NYC_WAREHOUSE":
-        AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));
+        AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));// apartment
+        AddBox(class'CrateUnbreakableSmall', vect(-380.182159, 767.875000, 1072.110352));// ladder
         break;
 
     case "03_NYC_BrooklynBridgeStation":
