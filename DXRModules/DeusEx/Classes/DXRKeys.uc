@@ -126,6 +126,14 @@ function CheckConfig()
         door_fixes[i].tag = 'chamber6';
         i++;
 
+        //Make it so the exploding door doesn't become breakable
+        door_fixes[i].map = "15_area51_page";
+        door_fixes[i].tag = 'door_clone_exit';
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].bHighlight = false;
+        i++;
+
         min_lock_adjust = default.min_lock_adjust;
         max_lock_adjust = default.max_lock_adjust;
         min_door_adjust = default.min_door_adjust;
