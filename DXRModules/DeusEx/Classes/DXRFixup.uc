@@ -1250,6 +1250,7 @@ function Shipyard_FirstEntry()
         dxr.flags.f.SetInt('DXRando_WeldPointCount',5);
         UpdateWeldPointGoal(5);
 
+#ifdef vanilla
         Tag = 'FanToggle';
         foreach AllActors(class'ComputerSecurity',cs){
             if (cs.Name == 'ComputerSecurity4'){
@@ -1258,7 +1259,7 @@ function Shipyard_FirstEntry()
                 cs.specialOptions[0].TriggerText="Ventilation Fan Disabled";
             }
         }
-
+#endif
         break;
     }
 }
@@ -1624,6 +1625,7 @@ function AddDelay(Actor trigger, float time)
     trigger.Event = d.Tag;
 }
 
+#ifdef vanilla
 function ToggleFan()
 {
     local Fan1 f;
@@ -1705,11 +1707,14 @@ function ToggleFan()
         }
     }
 }
+#endif
 
 function Trigger(Actor Other, Pawn Instigator)
 {
     if (Tag=='FanToggle'){
+#ifdef vanilla
         ToggleFan();
+#endif
     }
 }
 
