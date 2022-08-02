@@ -213,3 +213,124 @@ function int HealPart(PersonaHealthRegionWindow region, optional float pointsToH
 
 	return healthAdded;
 }
+
+function bool ButtonActivated(Window buttonPressed)
+{
+	local bool bHandled;
+	local int  pointsHealed;
+
+	if (Super.ButtonActivated(buttonPressed))
+		return True;
+
+	bHandled   = True;
+
+	// Check if this is one of our Augmentation buttons
+	if (buttonPressed.IsA('PersonaHealthItemButton'))
+	{
+		SelectHealth(PersonaHealthItemButton(buttonPressed));
+	}
+	else if (buttonPressed.IsA('PersonaHealthActionButtonWindow'))
+	{
+		PushHealth();
+		pointsHealed = HealPart(regionWindows[PersonaHealthActionButtonWindow(buttonPressed).GetPartIndex()]);
+		player.PopHealth( playerHealth[0],playerHealth[1],playerHealth[2],playerHealth[3],playerHealth[4],playerHealth[5]);
+		winStatus.AddText(Sprintf(PointsHealedLabel, pointsHealed));
+
+		EnableButtons();
+	}
+	else if (buttonPressed.GetParent().IsA('PersonaHealthRegionWindow'))
+	{
+		partButtons[PersonaHealthRegionWindow(buttonPressed.GetParent()).GetPartIndex()].PressButton(IK_None);
+	}
+	else
+	{
+		switch(buttonPressed)
+		{
+			case btnHealAll:
+				//HealAllParts();
+                MakeHealAllConfirmationWindow();
+				break;
+
+			default:
+				bHandled = False;
+				break;
+		}
+	}
+
+	return bHandled;
+}
+
+function float FindTotalDamage()
+{
+	local int    regionIndex;
+	local float  damageAmount;
+
+    damageAmount = 0;
+    for(regionIndex=0; regionIndex<arrayCount(regionWindows); regionIndex++)
+    {
+        damageAmount = damageAmount + (regionWindows[regionIndex].maxHealth - regionWindows[regionIndex].currentHealth);
+    }
+
+    return damageAmount;
+
+}
+
+function int Ceil(float f)
+{
+    local int ret;
+    ret = f;
+    if( float(ret) < f )
+        ret++;
+    return ret;
+}
+
+function MakeHealAllConfirmationWindow()
+{
+    local String title;
+    local String mainText;
+    local int numMedkitsConsumed,numMedkitsAvail;
+    local float medkitHealAmount, totalDamage;
+    local MedKit medkit;
+
+  	medKit = MedKit(player.FindInventoryType(Class'MedKit'));
+	if (medKit != None) {
+		numMedkitsAvail = medKit.NumCopies;
+        medkitHealAmount = player.CalculateSkillHealAmount(medKit.healAmount);
+	} else {
+		numMedkitsAvail = 0;
+    }
+
+    totalDamage = FindTotalDamage();
+
+    numMedkitsConsumed = Ceil(totalDamage/medkitHealAmount);
+
+    title = "Heal All?";
+    mainText = "Are you sure you want to heal all?";
+
+    if (numMedkitsConsumed < numMedkitsAvail){
+        if (numMedkitsConsumed==1){
+           mainText = mainText$" This will use 1 medkit!";
+        } else {
+           mainText = mainText$" This will use "$numMedkitsConsumed$" medkits!";
+        }
+    } else if (numMedkitsConsumed == numMedkitsAvail){
+       mainText = mainText$" This will use all your medkits!";
+    } else if (numMedkitsConsumed > numMedkitsAvail){
+       mainText = mainText$" This will use all your medkits and you still won't have full health!";
+    }
+
+    root.MessageBox(title,mainText,0,False,Self);
+
+}
+
+event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
+{
+	// Destroy the msgbox!
+	root.PopWindow();
+    if (buttonNumber==0){
+        HealAllParts();
+    }
+
+	return True;
+}
+
