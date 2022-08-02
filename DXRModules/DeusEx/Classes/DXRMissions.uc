@@ -526,7 +526,6 @@ function int InitGoals(int mission, string map)
 function PreFirstEntry()
 {
     local #var(prefix)AnnaNavarre anna;
-    local int goalsToLocations[32];
     local int seed;
 
     Super.PreFirstEntry();
@@ -555,6 +554,12 @@ function PreFirstEntry()
     }
 
     SetGlobalSeed( "DXRMissions" $ seed );
+    ShuffleGoals();
+}
+
+function ShuffleGoals()
+{
+    local int goalsToLocations[32];
 
     if( ArrayCount(goalsToLocations) != ArrayCount(goals) ) err("ArrayCount(goalsToLocations) != ArrayCount(goals)");
 
@@ -881,64 +886,17 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     return true;
 }
 
-function bool MoveGoalTo(name goalName, int locNumber)
+function bool MoveGoalTo(string goalName, int locNumber)
 {
-    /*local Actor goalActor,a;
-    local ImportantLocation targetLoc;
-    local goal targetGoal;
-    local int i,locNum;
-    local bool foundGoal,foundLoc;
+    local int i;
 
-    //Find goal actor by name
-     foreach AllActors(class'Actor', a) {
-#ifdef hx
-        if( a.GetPropertyText("PrecessorName") == string(goalName) )
-#else
-        if( a.name == goalName )
-#endif
-        {
-            goalActor = a;
-            break;
+    for(i=0; i<num_goals; i++) {
+        if(goalName == goals[i].name) {
+            MoveGoalToLocation(goals[i], locations[locNumber]);
+            return true;
         }
     }
-
-    if (goalActor == None) {
-        //Couldn't find the actual goal actor
-        return False;
-    }
-    locNum = 0;
-    for(i=0; i<ArrayCount(important_locations); i++) {
-        if( dxr.localURL != important_locations[i].map_name ) continue;
-        if (locNum==locNumber){
-            targetLoc = important_locations[i];
-            foundLoc = true;
-            break;
-        }
-        locNum++;
-    }
-
-    if (foundLoc == false){
-        //Couldn't find the target location
-        return False;
-    }
-
-    for(i=0; i<ArrayCount(goals); i++) {
-        if( dxr.localURL != goals[i].map_name ) continue;
-        if (goals[i].actor_name==goalName){
-            targetGoal = goals[i];
-            foundGoal = true;
-            break;
-        }
-    }
-
-    if (foundGoal == false){
-        //Couldn't find a goal for the specified name
-        return False;
-    }
-
-    MoveActor(goalActor, targetLoc.location, targetLoc.rotation, targetGoal.physics);
-
-    return True;*/
+    return false;
 }
 
 static function bool IsCloseToStart(DXRando dxr, vector loc)

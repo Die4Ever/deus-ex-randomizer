@@ -439,7 +439,18 @@ exec function FixAugHotkeys()
     am.RefreshAugDisplay();
 }
 
-exec function MoveGoalLocation(name goalName, int locNumber)
+exec function ShuffleGoals()
+{
+    local DXRMissions missions;
+
+    foreach AllActors(class'DXRMissions',missions)
+    {
+        missions.SetGlobalSeed(FRand());
+        missions.ShuffleGoals();
+    }
+}
+
+exec function MoveGoalLocation(coerce string goalName, int locNumber)
 {
     local DXRMissions missions;
 
@@ -451,7 +462,6 @@ exec function MoveGoalLocation(name goalName, int locNumber)
             ClientMessage("Failed to move goal");
         }
     }
-
 }
 
 exec function AllPasswords()
