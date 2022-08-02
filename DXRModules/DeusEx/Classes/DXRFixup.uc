@@ -1650,6 +1650,7 @@ function ToggleFan()
                 cs.specialOptions[0].Text = "Enable Ventilation Fan";
                 cs.specialOptions[0].TriggerText="Ventilation Fan Disabled";
             }
+            break;
         }
     }
 
@@ -1668,6 +1669,9 @@ function ToggleFan()
     foreach AllActors(class'ParticleGenerator',pg){
         if (pg.Name == 'ParticleGenerator3'){
             pg.bSpewing = enable;
+            pg.bFrozen = !enable;
+            pg.proxy.bHidden=!enable;
+            break;
         }
     }
 
@@ -1679,6 +1683,7 @@ function ToggleFan()
             } else {
                 z.ZoneGravity.Z = -950;
             }
+            break;
         }
     }
 

@@ -454,6 +454,24 @@ exec function MoveGoalLocation(name goalName, int locNumber)
 
 }
 
+exec function AllPasswords()
+{
+    local Computers c;
+    local Keypad k;
+    local int i;
+
+    foreach AllActors(class'Computers',c){
+        for (i=0;i<ArrayCount(c.knownAccount);i++){
+            c.SetAccountKnown(i);
+        }
+    }
+
+    foreach AllActors(class'Keypad',k){
+        k.bCodeKnown = True;
+    }
+
+    ClientMessage("Set all account passwords to known");
+}
 
 function ChangeSong(string SongName, byte section)
 {
