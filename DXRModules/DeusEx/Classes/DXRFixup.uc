@@ -1229,6 +1229,8 @@ function HongKong_FirstEntry()
 function Shipyard_FirstEntry()
 {
     local DeusExMover m;
+    local ComputerSecurity cs;
+
     switch(dxr.localURL)
     {
 #ifdef vanilla
@@ -1247,6 +1249,16 @@ function Shipyard_FirstEntry()
         }
         dxr.flags.f.SetInt('DXRando_WeldPointCount',5);
         UpdateWeldPointGoal(5);
+
+        Tag = 'FanToggle';
+        foreach AllActors(class'ComputerSecurity',cs){
+            if (cs.Name == 'ComputerSecurity4'){
+                cs.specialOptions[0].Text = "Disable Ventilation Fan";
+                cs.specialOptions[0].TriggerEvent='FanToggle';
+                cs.specialOptions[0].TriggerText="Ventilation Fan Disabled";
+            }
+        }
+
         break;
     }
 }
@@ -1610,6 +1622,90 @@ function AddDelay(Actor trigger, float time)
     d.OutEvents[0] = trigger.Event;
     d.OutDelays[0] = time;
     trigger.Event = d.Tag;
+}
+
+function ToggleFan()
+{
+    local Fan1 f;
+    local ParticleGenerator pg;
+    local ZoneInfo z;
+    local AmbientSound as;
+    local ComputerSecurity cs;
+    local bool enable;
+
+    foreach AllActors(class'ComputerSecurity',cs){
+        if (cs.Name == 'ComputerSecurity4'){
+
+            //If you press disable, you want to disable...
+            if (cs.SpecialOptions[0].Text == "Disable Ventilation Fan"){
+                enable = False;
+            } else {
+                enable = True;
+            }
+
+            if (enable){
+                cs.specialOptions[0].Text = "Disable Ventilation Fan";
+                cs.specialOptions[0].TriggerText="Ventilation Fan Enabled"; //Unintuitive, but it prints the text before the trigger call
+            } else {
+                cs.specialOptions[0].Text = "Enable Ventilation Fan";
+                cs.specialOptions[0].TriggerText="Ventilation Fan Disabled";
+            }
+        }
+    }
+
+    //Fan1
+    foreach AllActors(class'Fan1',f){
+        if (f.Name == 'Fan1'){
+            if (enable) {
+                f.RotationRate.Yaw = 50000;
+            } else {
+                f.RotationRate.Yaw = 0;
+            }
+        }
+    }
+
+    //ParticleGenerator3
+    foreach AllActors(class'ParticleGenerator',pg){
+        if (pg.Name == 'ParticleGenerator3'){
+            pg.bSpewing = enable;
+        }
+    }
+
+    //ZoneInfo0
+    foreach AllActors(class'ZoneInfo',z){
+        if (z.Name=='ZoneInfo0') {
+            if (enable){
+                z.ZoneGravity.Z = 100;
+            } else {
+                z.ZoneGravity.Z = -950;
+            }
+        }
+    }
+
+    //AmbientSound7
+    //AmbientSound8
+    foreach AllActors(class'AmbientSound',as){
+        if (as.Name=='AmbientSound7'){
+            if (enable){
+                as.AmbientSound = Sound'Ambient.Ambient.HumTurbine2';
+            } else {
+                as.AmbientSound = None;
+            }
+        } else if (as.Name=='AmbientSound8'){
+            if (enable){
+                as.AmbientSound = Sound'Ambient.Ambient.StrongWind';
+            } else {
+                as.AmbientSound = None;
+            }
+        }
+    }
+}
+
+function Trigger(Actor Other, Pawn Instigator)
+{
+    if (Tag=='FanToggle'){
+        ToggleFan();
+    }
 }
 
 
