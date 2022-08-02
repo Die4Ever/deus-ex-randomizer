@@ -75,3 +75,81 @@ function ProcessText()
     AddDXRandoCredits();
     Super.ProcessText();
 }
+
+function Tick(float deltaTime)
+{
+	local float diff;
+
+	if (bScrolling)
+	{
+		diff = currentScrollSpeed * deltaTime;
+
+		if (diff != 0)
+		{
+			winScroll.SetPos(winScroll.x, winScroll.y - diff);
+
+			// Check to see if we've finished scrolling
+			if ((winScroll.y + winScroll.height) < 0)
+			{
+				bScrolling = False;
+				FinishedScrolling();
+            } else if (currentScrollSpeed<0 && winScroll.y > 0){
+                winScroll.SetPos(winScroll.x, 0);
+                currentScrollSpeed = 0;
+            }
+		}
+	}
+}
+
+event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
+{
+	if ( IsKeyDown( IK_Alt ) || IsKeyDown( IK_Shift ) )
+		return False;
+
+	switch( key )
+	{
+		// Decrease print rate
+		case IK_Down:
+		case IK_Minus:
+			if (currentScrollSpeed < maxScrollSpeed)
+				currentScrollSpeed += speedAdjustment;
+ 			break;
+
+
+		// Increase print rate
+		case IK_Equals:
+		case IK_Up:
+			if (currentScrollSpeed > minScrollSpeed)
+				currentScrollSpeed -= speedAdjustment;
+			break;
+
+		// Pause
+		case IK_S:
+			if (IsKeyDown(IK_Ctrl))
+				bTickEnabled = False;
+			break;
+
+		case IK_Q:
+			if (IsKeyDown(IK_Ctrl))
+				bTickEnabled = True;
+			break;
+
+		case IK_Space:
+			if (bTickEnabled)
+				bTickEnabled = False;
+			else
+				bTickEnabled = True;
+			break;
+	}
+
+	return False;
+}
+
+defaultproperties
+{
+     currentScrollSpeed=100.0000
+     scrollSpeed=100.0000
+     minScrollSpeed=-500
+     maxScrollSpeed=500
+     speedAdjustment=10
+}
