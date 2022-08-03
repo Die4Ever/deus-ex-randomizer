@@ -140,51 +140,81 @@ simulated function InitHints()
             if(dxr.flags.settings.passwordsrandomized > 0)
                 AddHint("Passwords have been randomized.", "Don't even try smashthestate!");
             if(dxr.flags.settings.goals > 0)
-                AddHint("The location of the terrorist commander is randomized.");
+                AddHint("The locations of the terrorist commander and boat are randomized.", "Check the Goal Randomization page on our Wiki.");
         }
         break;
+
     case 2:
+        if(map ~= "02_NYC_BatteryPark") {
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The location of the Ambrosia barrel is randomized.", "Check the Goal Randomization page on our Wiki.");
+        }
+        else if(map ~= "02_NYC_Warehouse") {
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The locations of the generator, computer, and Jock are randomized.", "Check the Goal Randomization page on our Wiki.");
+        }
         break;
+
     case 3:
+        switch(map) {
+        case "03_NYC_BatteryPark":
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The locations of Harley and Curly are randomized.", "Check the Goal Randomization page on our Wiki.");
+            break;
+        case "03_NYC_BrooklynBridgeStation":
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The locations of some NPCs on this map are randomized.", "Check the Goal Randomization page on our Wiki.");
+            break;
+        case "03_NYC_Airfield":
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The location of the NSF soldier with the Easy Gate key is randomized.", "Check the Goal Randomization page on our Wiki.");
+            break;
+        }
         break;
+
     case 4:
         if (map ~= "04_NYC_NSFHQ") {
             if(dxr.flags.settings.goals > 0)
-                AddHint("The location of the computer to open","the door on the roof is randomized.");
+                AddHint("The location of the computer to open the door is randomized.", "Check the Goal Randomization page on our Wiki.");
         }
-
         break;
+
     case 5:
         if (map ~= "05_NYC_UnatcoMJ12Lab") {
             if(dxr.flags.settings.goals > 0)
-                AddHint("Pauls location in the lab is randomized.");
+                AddHint("Paul's location in the lab is randomized.", "Check the Goal Randomization page on our Wiki.");
         } else if (map ~= "05_NYC_UnatcoHQ") {
             if(dxr.flags.settings.goals > 0)
-                AddHint("Alex Jacobsons location in UNATCO HQ is randomized.");
+                AddHint("Alex Jacobson's location in UNATCO HQ is randomized.", "Check the Goal Randomization page on our Wiki.");
         }
-
         break;
+
     case 6:
         if (map ~= "06_hongkong_mj12lab") {
             if(dxr.flags.settings.goals > 0)
-                AddHint("The location of the computer with the ROM Encoding is randomized.");
+                AddHint("The location of the computer with the ROM Encoding is randomized.", "Check the Goal Randomization page on our Wiki.");
         } else if (map ~= "06_HongKong_WanChai_Street") {
             AddHint("The Dragon Tooth Sword is randomized, but you need to","open the case in Maggie Chow's apartment to proceed");
+        } else if (map ~= "06_HongKong_VersaLife") {
+            AddHint("The locations of some VersaLife employees are randomized.", "Check the Goal Randomization page on our Wiki.");
         }
         break;
+
     case 8:
+        if(dxr.flags.settings.goals > 0)
+            AddHint("The locations of Filben, Greene, and Vinny are randomized.", "Check the Goal Randomization page on our Wiki.");
         break;
+
     case 9:
         if (map ~= "09_nyc_graveyard") {
             if(dxr.flags.settings.goals > 0)
                 AddHint("The location of the signal jammer is randomized.");
         } else if (map ~= "09_nyc_shipbelow") {
-                if(dxr.flags.settings.goals > 0)
+            if(dxr.flags.settings.goals > 0)
                 AddHint("The locations of the tri-hull weld points are randomized.");
-
         }
-
         break;
+
     case 10:
 #ifdef injections
         if( dxr.FindModule(class'DXRBacktracking') != None ) {
@@ -199,13 +229,14 @@ simulated function InitHints()
             AddHint("You can kill Le Merchant and loot him", "if you don't have enough money.");
         }
         if(dxr.flags.settings.goals > 0 && (map ~= "10_paris_metro" || map ~= "10_paris_club")) {
-            AddHint("The location of Nicolette DuClare is randomized.");
+            AddHint("The location of Nicolette DuClare is randomized.", "Check the Goal Randomization page on our Wiki.");
         }
         break;
+
     case 11:
         if (map ~= "11_paris_cathedral") {
             if(dxr.flags.settings.goals > 0)
-                AddHint("The location of Gunther and the computer is randomized.");
+                AddHint("The location of Gunther and the computer is randomized.", "Check the Goal Randomization page on our Wiki.");
         }
 #ifdef injections
         if( dxr.FindModule(class'DXRBacktracking') != None && map != "11_PARIS_EVERETT" ) {
@@ -215,12 +246,12 @@ simulated function InitHints()
 #else
         AddHint("There's wine everywhere in Paris,", "it can be a decent source of health.");
 #endif
-
         break;
+
     case 12:
         if (map ~= "12_vandenberg_cmd") {
             if(dxr.flags.settings.goals > 0)
-                AddHint("The locations of the power generator keypads are randomized.");
+                AddHint("The locations of the power generator keypads are randomized.", "Check the Goal Randomization page on our Wiki.");
         }
 #ifdef injections
         if( dxr.FindModule(class'DXRBacktracking') != None ) {
@@ -228,18 +259,25 @@ simulated function InitHints()
         }
 #endif
         break;
+
     case 14:
         if (map ~= "14_oceanlab_silo") {
+            if(dxr.flags.settings.goals > 0) {
+                AddHint("Howard Strong is now on a random floor of the missile silo.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("Jock will pick you up at a random location.", "Check the Goal Randomization page on our Wiki.");
+            }
+        }
+        else if (map ~= "14_OceanLab_UC") {
             if(dxr.flags.settings.goals > 0)
-                AddHint("Howard Strong is now on a random floor of the missile silo.");
+                AddHint("The location of the UC schematics computer is randomized.", "Check the Goal Randomization page on our Wiki.");
         }
 #ifdef injections
         if( dxr.FindModule(class'DXRBacktracking') != None ) {
             AddHint("Randomizer has enabled extra backtracking.", "You will be able to go back to Vandenberg.");
         }
 #endif
-
         break;
+
     case 15:
 #ifdef injections
         if( dxr.FindModule(class'DXRBacktracking') != None ) {
@@ -247,7 +285,7 @@ simulated function InitHints()
         }
 #endif
         break;
-    };
+    }
 }
 
 simulated function AddHint(string hint, optional string detail)
