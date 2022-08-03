@@ -1628,7 +1628,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
         // LAM Thrower crashes for mods with fancy physics?
         case "lamthrower":
-            if (!isVanilla()){
+            if (!#defined(vanilla)){
                 PlayerMessage("LAMThrower effect unavailable in this mod");
                 return NotAvail;
             }
@@ -1637,7 +1637,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
         // dmg_double and dmg_half require changes inside the player class
         case "dmg_double":
-            if (!isVanilla()){
+            if (!#defined(vanilla)){
                 PlayerMessage("Double Damage effect unavailable in this mod");
                 return NotAvail;
             }
@@ -1652,7 +1652,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "dmg_half":
-            if (!isVanilla()){
+            if (!#defined(vanilla)){
                 PlayerMessage("Half Damage effect unavailable in this mod");
                 return NotAvail;
             }
@@ -1666,7 +1666,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "flipped":
-            if (!isVanilla()){
+            if (!#defined(vanilla)){
                 //Changes in player class
                 PlayerMessage("Flipped effect unavailable in this mod");
                 return NotAvail;
@@ -1686,7 +1686,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             return Success;
 
         case "limp_neck":
-            if (!isVanilla()){
+            if (!#defined(vanilla)){
                 //Changes in player class
                 PlayerMessage("Limp Neck effect unavailable in this mod");
                 return NotAvail;
@@ -1705,7 +1705,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             return Success;
 
         case "barrel_roll":
-            if (!isVanilla()){
+            if (!#defined(vanilla)){
                 //Changes in player class
                 PlayerMessage("Barrel Roll effect unavailable in this mod");
                 return NotAvail;
@@ -1811,15 +1811,6 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
     }
 
     return Success;
-}
-
-function bool isVanilla(){
-#ifdef vanilla
-    return True;
-#else
-    return False;
-#endif
-
 }
 
 function int doCrowdControlEventWithPrefix(string code, string param[5], string viewer, int type) {
