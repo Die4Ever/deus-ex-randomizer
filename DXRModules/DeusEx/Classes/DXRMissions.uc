@@ -799,6 +799,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     local int i;
     local Actor a;
     local ScriptedPawn sp;
+    local #var(Mover) m;
     local string result;
 
     result = g.name $ " to " $ Loc.name;
@@ -829,6 +830,22 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             sp = ScriptedPawn(g.actors[i].a);
             if(sp == None) continue;
             sp.SetOrders('Sitting');
+        }
+    }
+
+    if(g.name == "Generator" && Loc.name != "Warehouse") {
+        a = AddBox(class'CrateUnbreakableLarge', vect(505.710449, -605, 162.091278), rot(16384,0,0));
+        a.SetCollisionSize(a.CollisionRadius * 4, a.CollisionHeight * 4);
+        a.bMovable = false;
+        a.DrawScale = 4;
+        a = AddBox(class'CrateUnbreakableLarge', vect(677.174988, -809.484558, 114.097824), rot(0,0,0));
+        a.SetCollisionSize(a.CollisionRadius * 2, a.CollisionHeight * 2);
+        a.bMovable = false;
+        a.DrawScale = 2;
+
+        foreach AllActors(class'#var(Mover)', m, 'Debris') {
+            m.Tag = '';
+            m.Event = '';
         }
     }
 }
