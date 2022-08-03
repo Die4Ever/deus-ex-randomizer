@@ -629,13 +629,13 @@ function Trigger(Actor Other, Pawn Instigator)
     }
 }
 
-function SendFlagEvent(coerce string eventname, optional bool immediate)
+function SendFlagEvent(coerce string eventname, optional bool immediate, optional string extra)
 {
     local string j;
     local class<Json> js;
     js = class'Json';
 
-    l("SendFlagEvent " $ eventname @ immediate);
+    l("SendFlagEvent " $ eventname @ immediate @ extra);
 
     if(eventname ~= "M02HostagesRescued") {// for the hotel, set by Mission02.uc
         M02HotelHostagesRescued();
@@ -652,6 +652,8 @@ function SendFlagEvent(coerce string eventname, optional bool immediate)
     js.static.Add(j, "flag", eventname);
     js.static.Add(j, "immediate", immediate);
     js.static.Add(j, "location", dxr.player.location);
+    if(extra != "")
+        js.static.Add(j, "extra", extra);
     GeneralEventData(dxr, j);
     js.static.End(j);
 
@@ -1091,6 +1093,7 @@ function ReadText(name textTag)
 {
     local string eventname;
     local PlayerDataItem data;
+    local DXRPasswords pws;
 
     l("ReadText "$textTag);
 
@@ -1147,9 +1150,21 @@ function ReadText(name textTag)
         eventname="CloneCubes";
         break;
 
+    case '06_Datacube05':// Maggie Chow's bday
+        eventname = "July 18th"; // don't break, fallthrough
     default:
-        // it's simple for a bingo event that requires reading just 1 thing
-        _MarkBingo(textTag);
+        // HACK: because names normally can't have hyphens? convert to string and use that instead
+        if(string(textTag) == "09_NYC_DOCKYARD--796967769")
+            eventname = "8675309";
+        if(eventname != "") {
+            pws = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+            if(pws != None)
+                pws.ProcessString(eventname);
+            SendFlagEvent(textTag, false, eventname);
+        } else {
+            // it's simple for a bingo event that requires reading just 1 thing
+            _MarkBingo(textTag);
+        }
         return;
     }
 
@@ -1372,7 +1387,7 @@ defaultproperties
     bingo_options(103)=(event="ManWhoWasThursday",desc="Read 4 parts of The Man Who Was Thursday",max=4)
     bingo_options(104)=(event="GreeneArticles",desc="Read 4 newspaper articles by Joe Greene",max=4)
     bingo_options(105)=(event="MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1)
-    bingo_options(106)=(event="06_Datacube_05",desc="Learn Maggie Chow's Birthday",max=1)
+    bingo_options(106)=(event="06_Datacube05",desc="Learn Maggie Chow's Birthday",max=1)
     bingo_options(107)=(event="Gray_ClassDead",desc="Kill 5 Grays",max=5)
     bingo_options(108)=(event="CloneCubes",desc="Read about the four clones in Area 51",max=4)
     bingo_options(109)=(event="blast_door_open",desc="Open the blast doors at Area 51",max=1)
