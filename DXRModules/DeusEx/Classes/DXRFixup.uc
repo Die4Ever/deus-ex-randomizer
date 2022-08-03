@@ -25,6 +25,8 @@ struct AddDatacube {
 var config AddDatacube add_datacubes[32];
 
 var int old_pawns;// used for NYC_04_CheckPaulRaid()
+var int storedWeldCount;// ship weld points
+var int storedReactorCount;// Area 51 goal
 
 function CheckConfig()
 {
@@ -791,16 +793,12 @@ function UpdateReactorGoal(int count)
 
 function Area51_CountBlueFusion()
 {
-    local int storedReactorCount;
     local int newCount;
     local DeusExGoal goal;
     goal = player().FindGoal('OverloadForceField');
     if (goal==None){
         return; //Don't do these notifications until the goal is added
     }
-
-
-    storedReactorCount = dxr.flagbase.GetInt('DXRando_ReactorCount');
 
     newCount = 4;
 
@@ -815,7 +813,7 @@ function Area51_CountBlueFusion()
 
     if (newCount!=storedReactorCount){
         //A weld point has been destroyed!
-        dxr.flags.f.SetInt('DXRando_ReactorCount',newCount);
+        storedReactorCount = newCount;
 
         switch(newCount){
             case 0:
@@ -857,11 +855,8 @@ function UpdateWeldPointGoal(int count)
 
 function NYC_09_CountWeldPoints()
 {
-    local int storedWeldCount;
     local int newWeldCount;
     local DeusExMover m;
-
-    storedWeldCount = dxr.flagbase.GetInt('DXRando_WeldPointCount');
 
     newWeldCount=0;
 
@@ -874,7 +869,7 @@ function NYC_09_CountWeldPoints()
 
     if (newWeldCount != storedWeldCount) {
         //A weld point has been destroyed!
-        dxr.flags.f.SetInt('DXRando_WeldPointCount',newWeldCount);
+        storedWeldCount = newWeldCount;
 
         switch(newWeldCount){
             case 0:
