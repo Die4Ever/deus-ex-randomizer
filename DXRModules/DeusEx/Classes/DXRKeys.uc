@@ -19,7 +19,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,0,4,2) ) {
+    if( ConfigOlderThan(2,1,0,1) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -97,6 +97,14 @@ function CheckConfig()
         door_fixes[i].doorStrength = 0.15;
         door_fixes[i].bPickable = false;
         door_fixes[i].lockStrength = 1;
+        door_fixes[i].bHighlight = true;
+        i++;
+
+        // don't randomize the catacombs exit
+        door_fixes[i].map = "10_PARIS_CATACOMBS_TUNNELS";
+        door_fixes[i].tag = 'catacombs_blastdoor02';
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].bPickable = false;
         door_fixes[i].bHighlight = true;
         i++;
 
