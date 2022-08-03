@@ -1615,6 +1615,7 @@ function Area51_FirstEntry()
     case "15_AREA51_BUNKER":
         // doors_lower is for backtracking
         AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
+        player().DeleteAllGoals();
         break;
 
     case "15_AREA51_FINAL":
