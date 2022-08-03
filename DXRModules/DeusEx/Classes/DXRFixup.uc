@@ -421,6 +421,9 @@ function TimerMapFixes()
     case "09_NYC_SHIPBELOW":
         NYC_09_CountWeldPoints();
         break;
+    case "15_AREA51_PAGE":
+        Area51_CountBlueFusion();
+        break;
     }
 }
 
@@ -763,6 +766,72 @@ function BalanceJailbreak()
     }
 
     Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915) );
+}
+
+function UpdateReactorGoal(int count)
+{
+    local string goalText;
+    local DeusExGoal goal;
+    local int bracketPos;
+    goal = player().FindGoal('OverloadForceField');
+
+    if (goal!=None){
+        goalText = goal.text;
+        bracketPos = InStr(goalText,"[");
+
+        if (bracketPos>0){ //If the extra text is already there, strip it.
+            goalText = Mid(goalText,0,bracketPos-1);
+        }
+
+        goalText = goalText$" ["$count$" remaining]";
+
+        goal.SetText(goalText);
+    }
+}
+
+function Area51_CountBlueFusion()
+{
+    local int storedReactorCount;
+    local int newCount;
+    local DeusExGoal goal;
+    goal = player().FindGoal('OverloadForceField');
+    if (goal==None){
+        return; //Don't do these notifications until the goal is added
+    }
+
+
+    storedReactorCount = dxr.flagbase.GetInt('DXRando_ReactorCount');
+
+    newCount = 4;
+
+    if (dxr.flagbase.GetBool('Node1_Frobbed'))
+        newCount--;
+    if (dxr.flagbase.GetBool('Node2_Frobbed'))
+        newCount--;
+    if (dxr.flagbase.GetBool('Node3_Frobbed'))
+        newCount--;
+    if (dxr.flagbase.GetBool('Node4_Frobbed'))
+        newCount--;
+
+    if (newCount!=storedReactorCount){
+        //A weld point has been destroyed!
+        dxr.flags.f.SetInt('DXRando_ReactorCount',newCount);
+
+        switch(newCount){
+            case 0:
+                player().ClientMessage("All Blue Fusion reactors shut down!");
+                SetTimer(0, False);  //Disable the timer now that all weld points are gone
+                break;
+            case 1:
+                player().ClientMessage("1 Blue Fusion reactor remaining");
+                break;
+            default:
+                player().ClientMessage(newCount$" Blue Fusion reactors remaining");
+                break;
+        }
+
+        UpdateReactorGoal(newCount);
+    }
 }
 
 function UpdateWeldPointGoal(int count)
@@ -1610,6 +1679,9 @@ function Area51_AnyEntry()
             else if( g.Tag == 'reactorgray2' ) g.BindName = "ReactorGray2";
         }
 #endif
+        break;
+    case "15_AREA51_PAGE":
+        SetTimer(1, True);
         break;
     }
 }
