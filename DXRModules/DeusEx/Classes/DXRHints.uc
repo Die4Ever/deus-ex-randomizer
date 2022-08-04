@@ -124,6 +124,7 @@ simulated function InitHints()
         AddHint("Melee attacks from behind do bonus damage!");
         AddHint("The flashlight (F12) can be used to attract the attention of guards");
         AddHint("Don't hoard items.", "You'll find more!");
+        AddHint("Have you looked at your Bingo Board?", "Find it at the top left of your Goals/Notes screen.");
     }
     else if(mission <= 9) {
         AddHint("Don't hoard items.", "You'll find more!");
