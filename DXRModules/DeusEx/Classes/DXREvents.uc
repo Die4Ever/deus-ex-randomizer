@@ -436,7 +436,7 @@ function ReportMissingFlag(name flag, string eventname) {
 
 function Ending_FirstEntry()
 {
-    local int ending,time;
+    local int ending;
 
     ending = 0;
 
@@ -464,8 +464,7 @@ function Ending_FirstEntry()
 
     if (ending!=0){
         //Notify of game completion with correct ending number
-        time = class'DXRStats'.static.GetTotalTime(dxr);
-        BeatGame(dxr,ending,time);
+        BeatGame(dxr,ending);
     }
 }
 
@@ -557,18 +556,15 @@ function PreTravel()
 
 function HandleBingoWinCountdown()
 {
-    local int time;
-
     //Blocked in HX for now (Blocked at the check, but here for safety as well)
     if(#defined(hx)) return;
 
     if (bingo_win_countdown > 0) {
         //Show win message
         class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds","");
-        if (bingo_win_countdown == 1) {
-            //Give it a second to send the tweet
-            time = class'DXRStats'.static.GetTotalTime(dxr);
-            BeatGame(dxr,4,time);
+        if (bingo_win_countdown == 2) {
+            //Give it 2 seconds to send the tweet
+            BeatGame(dxr,4);
         }
         bingo_win_countdown--;
     } else if (bingo_win_countdown == 0) {
@@ -838,7 +834,7 @@ static function SavedPaul(DXRando dxr, #var(PlayerPawn) player, optional int hea
     MarkBingo(dxr, "SavedPaul");
 }
 
-static function BeatGame(DXRando dxr, int ending, int time)
+static function BeatGame(DXRando dxr, int ending)
 {
     local string j;
     local class<Json> js;
@@ -846,13 +842,13 @@ static function BeatGame(DXRando dxr, int ending, int time)
 
     j = js.static.Start("BeatGame");
     js.static.Add(j, "ending", ending);
-    js.static.Add(j, "time", time);
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
     js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
     js.static.Add(j, "maxrando", dxr.flags.maxrando);
     GeneralEventData(dxr, j);
     BingoEventData(dxr, j);
     AugmentationData(dxr, j);
+    GameTimeEventData(dxr, j);
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
@@ -942,6 +938,28 @@ static function BingoEventData(DXRando dxr, out string j)
                 $ "{\"event\":\"" $ event $ "\",\"desc\":\"" $ desc $ "\",\"progress\":" $ progress $ ",\"max\":" $ max $ "}";
         }
     }
+}
+
+static function GameTimeEventData(DXRando dxr, out string j)
+{
+    local int time, realtime, i, t;
+    local DXRStats stats;
+    local class<Json> js;
+    js = class'Json';
+
+    stats = DXRStats(dxr.FindModule(class'DXRStats'));
+    if(stats == None) return;
+
+    for (i=1;i<=15;i++) {
+        t = stats.GetMissionTime(i);
+        js.static.Add(j, "mission-" $ i $ "-time", t);
+        time += t;
+        t = stats.GetCompleteMissionTime(i);
+        js.static.Add(j, "mission-" $ i $ "-realtime", t);
+        realtime += t;
+    }
+    js.static.Add(j, "time", time);
+    js.static.Add(j, "realtime", realtime);
 }
 
 static function string GetLoadoutName(DXRando dxr)
@@ -1231,9 +1249,9 @@ function _MarkBingo(coerce string eventname)
         j = js.static.Start("Bingo");
         js.static.Add(j, "newevent", eventname);
         js.static.Add(j, "location", player().Location);
-        js.static.add(j, "time", time);
         GeneralEventData(dxr, j);
         BingoEventData(dxr, j);
+        GameTimeEventData(dxr, j);
         js.static.End(j);
 
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
