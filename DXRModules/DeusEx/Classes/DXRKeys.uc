@@ -100,14 +100,6 @@ function CheckConfig()
         door_fixes[i].bHighlight = true;
         i++;
 
-        // don't randomize the catacombs exit
-        door_fixes[i].map = "10_PARIS_CATACOMBS_TUNNELS";
-        door_fixes[i].tag = 'catacombs_blastdoor02';
-        door_fixes[i].bBreakable = false;
-        door_fixes[i].bPickable = false;
-        door_fixes[i].bHighlight = true;
-        i++;
-
         // area 51 chambers, in vanilla you can't find the codes for all of these and sometimes the NanoKey you need is in one of them
         door_fixes[i].map = "15_area51_entrance";
         door_fixes[i].tag = 'chamber1';
