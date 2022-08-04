@@ -652,16 +652,20 @@ function UpdateRotation(float DeltaTime, float maxPitch)
     local DataStorage datastorage;
     local int rollAmount;
     datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+    rollAmount = int(datastorage.GetConfigKey('cc_cameraRoll'));
+
+    if(rollAmount == 0) {
+        Super.UpdateRotation(DeltaTime,maxPitch);
+        return;
+    }
 
     //Track and handle shake rotation as though we are always right-ways up
     ViewRotation = ShakeRotator;
-	Super.UpdateRotation(DeltaTime,maxPitch);
+    Super.UpdateRotation(DeltaTime,maxPitch);
     ShakeRotator = ViewRotation;
 
     //Apply any roll after figuring out (and storing) the current shake state
-    rollAmount = int(datastorage.GetConfigKey('cc_cameraRoll'));
     ViewRotation.Roll += rollAmount;
-
 }
 
 // LDDP: for Lay D Denton compatibility
