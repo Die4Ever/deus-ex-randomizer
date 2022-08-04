@@ -139,6 +139,8 @@ function PeriodicUpdates()
 
     if (decrementTimer('cc_behindTimer')) {
         player().bBehindView=False;
+        player().bCrosshairVisible = True;
+
         PlayerMessage("You re-enter your body");
     }
 
@@ -295,6 +297,11 @@ function InitOnEnter() {
     SetFloatyPhysics(isTimerActive('cc_floatyTimer'));
 
     player().bBehindView=isTimerActive('cc_behindTimer');
+    if (player().bBehindView){
+        player().bCrosshairVisible = False;
+    } else {
+        player().bCrosshairVisible = True; //Will need further logic here if adding a "hide crosshairs" effect
+    }
 
     if (0==retrieveFloatValue('cc_damageMult')) {
         storeFloatValue('cc_damageMult',1.0);
@@ -328,6 +335,7 @@ function CleanupOnExit() {
     UndoLamThrowers(); //lamthrower
     SetIcePhysics(False); //ice_physics
     player().bBehindView = False; //third_person
+    player().bCrosshairVisible = True; //Make crosshairs show up again
     SetFloatyPhysics(False);
     if (isTimerActive('cc_invertMouseTimer')) {
         player().bInvertMouse = dxr.flagbase.GetBool('cc_InvertMouseDef');
@@ -1464,6 +1472,8 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             player().bBehindView=True;
+            player().bCrosshairVisible = False;
+
             startNewTimer('cc_behindTimer');
             PlayerMessage(viewer@"gave you an out of body experience");
             break;

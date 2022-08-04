@@ -360,6 +360,17 @@ function Died(pawn Killer, name damageType, vector HitLocation)
     Super.Died(Killer,damageType,HitLocation);
 }
 
+function bool IsHighlighted(actor A)
+{
+    local bool wasBehind,highlight;
+
+    wasBehind = bBehindView;
+    bBehindView = False;
+    highlight = Super.IsHighlighted(A);
+    bBehindView = wasBehind;
+    return highlight;
+}
+
 exec function CrowdControlAnon()
 {
     local DXRCrowdControl cc;
