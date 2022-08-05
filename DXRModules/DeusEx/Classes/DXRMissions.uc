@@ -692,7 +692,11 @@ function Actor GetActor(out GoalActor ga)
     if( ga.actorName == '' ) return None;
 
     foreach AllActors(class'Actor', a) {
+#ifdef hx
+        if(a.GetPropertyText("PrecessorName") == string(ga.actorName)) {
+#else
         if(a.name == ga.actorName) {
+#endif
             ga.a = a;
             return a;
         }
@@ -755,9 +759,9 @@ function AnyEntry()
 function Timer()
 {
     local FlagBase f;
-    local NicoletteDuClare nico;
-    local BlackHelicopter chopper;
-    local ParticleGenerator gen;
+    local #var(prefix)NicoletteDuClare nico;
+    local #var(prefix)BlackHelicopter chopper;
+    local #var(prefix)ParticleGenerator gen;
 
     Super.Timer();
     if( dxr == None ) return;
@@ -770,11 +774,11 @@ function Timer()
         {
             f.SetBool('NicoletteLeftClub', True,, 11);
 
-            foreach AllActors(class'NicoletteDuClare', nico, 'DXRMissions') {
+            foreach AllActors(class'#var(prefix)NicoletteDuClare', nico, 'DXRMissions') {
                 nico.Event = '';
                 nico.Destroy();
                 player().ClientFlash(1,vect(2000,2000,2000));
-                gen = Spawn(class'ParticleGenerator',,, nico.Location);
+                gen = Spawn(class'#var(prefix)ParticleGenerator',,, nico.Location);
                 gen.SetCollision(false, false, false);
                 gen.SetLocation(nico.Location);
                 gen.particleTexture = Texture'Effects.Smoke.SmokePuff1';
@@ -784,10 +788,10 @@ function Timer()
                 player().PlaySound(Sound'DeusExSounds.Weapons.GasGrenadeExplode');
             }
 
-            foreach AllActors(class'NicoletteDuClare', nico)
+            foreach AllActors(class'#var(prefix)NicoletteDuClare', nico)
                 nico.EnterWorld();
 
-            foreach AllActors(class'BlackHelicopter', chopper, 'BlackHelicopter')
+            foreach AllActors(class'#var(prefix)BlackHelicopter', chopper, 'BlackHelicopter')
                 chopper.EnterWorld();
         }
         break;
@@ -834,11 +838,11 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 
     if(g.name == "Generator" && Loc.name != "Warehouse") {
-        a = AddBox(class'CrateUnbreakableLarge', vect(505.710449, -605, 162.091278), rot(16384,0,0));
+        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vect(505.710449, -605, 162.091278), rot(16384,0,0));
         a.SetCollisionSize(a.CollisionRadius * 4, a.CollisionHeight * 4);
         a.bMovable = false;
         a.DrawScale = 4;
-        a = AddBox(class'CrateUnbreakableLarge', vect(677.174988, -809.484558, 114.097824), rot(0,0,0));
+        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vect(677.174988, -809.484558, 114.097824), rot(0,0,0));
         a.SetCollisionSize(a.CollisionRadius * 2, a.CollisionHeight * 2);
         a.bMovable = false;
         a.DrawScale = 2;
@@ -852,10 +856,10 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
 
 function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
 {
-    local ScriptedPawn sp;
+    local #var(prefix)ScriptedPawn sp;
     local Mover m;
     local bool success, oldbCollideWorld;
-    local Vehicles v;
+    local #var(prefix)Vehicles v;
 
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
     oldbCollideWorld = a.bCollideWorld;
@@ -870,8 +874,8 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     a.SetPhysics(p);
     if(p == PHYS_None) a.bCollideWorld = oldbCollideWorld;
 
-    sp = ScriptedPawn(a);
-    v = Vehicles(a);
+    sp = #var(prefix)ScriptedPawn(a);
+    v = #var(prefix)Vehicles(a);
     m = Mover(a);
 
     if( sp != None ) {
@@ -887,11 +891,13 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
         else a.bCollideWorld = true;
     }
     else if ( v != None ) {
+#ifndef hx
         if (!v.bInWorld){
             v.WorldPosition = v.Location;
             v.SetLocation(v.Location+vect(0,0,20000));
         }
         else a.bCollideWorld = true;
+#endif
     }
     else if( m != None ) {
         m.BasePos = a.Location;
