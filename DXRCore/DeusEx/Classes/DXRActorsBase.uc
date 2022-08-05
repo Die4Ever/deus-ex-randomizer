@@ -619,10 +619,10 @@ static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rot
     return d;
 }
 
-function Containers AddBox(class<Containers> c, vector loc, optional rotator rotate)
+function #var(prefix)Containers AddBox(class<#var(prefix)Containers> c, vector loc, optional rotator rotate)
 {
-    local Containers box;
-    box = Containers(_AddActor(Self, c, loc, rotate));
+    local #var(prefix)Containers box;
+    box = #var(prefix)Containers(_AddActor(Self, c, loc, rotate));
     box.bInvincible = true;
     return box;
 }

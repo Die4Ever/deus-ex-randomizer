@@ -277,9 +277,9 @@ function PostFirstEntryMapFixes()
 
 #ifndef revision
     case "02_NYC_WAREHOUSE":
-        AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));// apartment
-        AddBox(class'CrateUnbreakableMed', vect(-389.361969, 744.039978, 1088.083618));// ladder
-        AddBox(class'CrateUnbreakableSmall', vect(-328.287048, 767.875000, 1072.113770));
+        AddBox(class'#var(prefix)CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));// apartment
+        AddBox(class'#var(prefix)CrateUnbreakableMed', vect(-389.361969, 744.039978, 1088.083618));// ladder
+        AddBox(class'#var(prefix)CrateUnbreakableSmall', vect(-328.287048, 767.875000, 1072.113770));
         break;
 
     case "03_NYC_BrooklynBridgeStation":
@@ -290,8 +290,8 @@ function PostFirstEntryMapFixes()
 
     case "03_NYC_AirfieldHeliBase":
         //crates to get back over the beginning of the level
-        _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
-        _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
+        _AddActor(Self, class'#var(prefix)CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
+        _AddActor(Self, class'#var(prefix)CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
         break;
 #endif
 
