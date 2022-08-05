@@ -25,6 +25,8 @@ struct AddDatacube {
 var config AddDatacube add_datacubes[32];
 
 var int old_pawns;// used for NYC_04_CheckPaulRaid()
+var int storedWeldCount;// ship weld points
+var int storedReactorCount;// Area 51 goal
 
 function CheckConfig()
 {
@@ -275,7 +277,9 @@ function PostFirstEntryMapFixes()
 
 #ifndef revision
     case "02_NYC_WAREHOUSE":
-        AddBox(class'CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));
+        AddBox(class'#var(prefix)CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));// apartment
+        AddBox(class'#var(prefix)CrateUnbreakableMed', vect(-389.361969, 744.039978, 1088.083618));// ladder
+        AddBox(class'#var(prefix)CrateUnbreakableSmall', vect(-328.287048, 767.875000, 1072.113770));
         break;
 
     case "03_NYC_BrooklynBridgeStation":
@@ -286,8 +290,8 @@ function PostFirstEntryMapFixes()
 
     case "03_NYC_AirfieldHeliBase":
         //crates to get back over the beginning of the level
-        _AddActor(Self, class'CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
-        _AddActor(Self, class'CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
+        _AddActor(Self, class'#var(prefix)CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
+        _AddActor(Self, class'#var(prefix)CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
         break;
 #endif
 
@@ -418,6 +422,9 @@ function TimerMapFixes()
 #endif
     case "09_NYC_SHIPBELOW":
         NYC_09_CountWeldPoints();
+        break;
+    case "15_AREA51_PAGE":
+        Area51_CountBlueFusion();
         break;
     }
 }
@@ -763,6 +770,68 @@ function BalanceJailbreak()
     Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915) );
 }
 
+function UpdateReactorGoal(int count)
+{
+    local string goalText;
+    local DeusExGoal goal;
+    local int bracketPos;
+    goal = player().FindGoal('OverloadForceField');
+
+    if (goal!=None){
+        goalText = goal.text;
+        bracketPos = InStr(goalText,"[");
+
+        if (bracketPos>0){ //If the extra text is already there, strip it.
+            goalText = Mid(goalText,0,bracketPos-1);
+        }
+
+        goalText = goalText$" ["$count$" remaining]";
+
+        goal.SetText(goalText);
+    }
+}
+
+function Area51_CountBlueFusion()
+{
+    local int newCount;
+    local DeusExGoal goal;
+    goal = player().FindGoal('OverloadForceField');
+    if (goal==None){
+        return; //Don't do these notifications until the goal is added
+    }
+
+    newCount = 4;
+
+    if (dxr.flagbase.GetBool('Node1_Frobbed'))
+        newCount--;
+    if (dxr.flagbase.GetBool('Node2_Frobbed'))
+        newCount--;
+    if (dxr.flagbase.GetBool('Node3_Frobbed'))
+        newCount--;
+    if (dxr.flagbase.GetBool('Node4_Frobbed'))
+        newCount--;
+
+    if (newCount!=storedReactorCount){
+        //A weld point has been destroyed!
+        storedReactorCount = newCount;
+
+        switch(newCount){
+            case 0:
+                player().ClientMessage("All Blue Fusion reactors shut down!");
+                SetTimer(0, False);  //Disable the timer now that all weld points are gone
+                break;
+            case 1:
+                player().ClientMessage("1 Blue Fusion reactor remaining");
+                break;
+            default:
+                player().ClientMessage(newCount$" Blue Fusion reactors remaining");
+                break;
+        }
+
+        UpdateReactorGoal(newCount);
+    }
+}
+
 function UpdateWeldPointGoal(int count)
 {
     local string goalText;
@@ -786,11 +855,8 @@ function UpdateWeldPointGoal(int count)
 
 function NYC_09_CountWeldPoints()
 {
-    local int storedWeldCount;
     local int newWeldCount;
     local DeusExMover m;
-
-    storedWeldCount = dxr.flagbase.GetInt('DXRando_WeldPointCount');
 
     newWeldCount=0;
 
@@ -803,7 +869,7 @@ function NYC_09_CountWeldPoints()
 
     if (newWeldCount != storedWeldCount) {
         //A weld point has been destroyed!
-        dxr.flags.f.SetInt('DXRando_WeldPointCount',newWeldCount);
+        storedWeldCount = newWeldCount;
 
         switch(newWeldCount){
             case 0:
@@ -1109,6 +1175,8 @@ function HongKong_FirstEntry()
     local #var(Mover) m;
     local FlagTrigger ft;
     local AllianceTrigger at;
+    local DeusExMover d;
+    local DataLinkTrigger dt;
 
     switch(dxr.localURL)
     {
@@ -1179,6 +1247,14 @@ function HongKong_FirstEntry()
                 e.Event = '';
             }
         }
+        foreach AllActors(class'DeusExMover',d)
+        {
+            if(d.Tag=='DispalyCase') //They seriously left in that typo?
+            {
+                d.SetKeyframe(1,vect(0,0,-136),d.Rotation);  //Make sure the keyframe exists for it to drop into the floor
+                d.bIsDoor = true; //Mark it as a door so the troops can actually open it...
+            }
+        }
         break;
 #endif
 
@@ -1197,6 +1273,10 @@ function HongKong_FirstEntry()
         foreach AllActors(class'FlagTrigger', ft, 'MJ12Alert') {
             ft.Tag = 'TongHasRom';
         }
+        foreach AllActors(class'DataLinkTrigger', dt) {
+            if(dt.name == 'DataLinkTrigger0')
+                dt.Tag = 'TongHasRom';
+        }
         break;
 #ifdef injections
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
@@ -1213,6 +1293,8 @@ function HongKong_FirstEntry()
 function Shipyard_FirstEntry()
 {
     local DeusExMover m;
+    local ComputerSecurity cs;
+
     switch(dxr.localURL)
     {
 #ifdef vanilla
@@ -1231,6 +1313,17 @@ function Shipyard_FirstEntry()
         }
         dxr.flags.f.SetInt('DXRando_WeldPointCount',5);
         UpdateWeldPointGoal(5);
+
+#ifdef vanilla
+        Tag = 'FanToggle';
+        foreach AllActors(class'ComputerSecurity',cs){
+            if (cs.Name == 'ComputerSecurity4'){
+                cs.specialOptions[0].Text = "Disable Ventilation Fan";
+                cs.specialOptions[0].TriggerEvent='FanToggle';
+                cs.specialOptions[0].TriggerText="Ventilation Fan Disabled";
+            }
+        }
+#endif
         break;
     }
 }
@@ -1522,6 +1615,7 @@ function Area51_FirstEntry()
     case "15_AREA51_BUNKER":
         // doors_lower is for backtracking
         AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
+        player().DeleteAllGoals();
         break;
 
     case "15_AREA51_FINAL":
@@ -1582,6 +1676,9 @@ function Area51_AnyEntry()
         }
 #endif
         break;
+    case "15_AREA51_PAGE":
+        SetTimer(1, True);
+        break;
     }
 }
 
@@ -1594,6 +1691,99 @@ function AddDelay(Actor trigger, float time)
     d.OutEvents[0] = trigger.Event;
     d.OutDelays[0] = time;
     trigger.Event = d.Tag;
+}
+
+#ifdef vanilla
+function ToggleFan()
+{
+    local Fan1 f;
+    local ParticleGenerator pg;
+    local ZoneInfo z;
+    local AmbientSound as;
+    local ComputerSecurity cs;
+    local bool enable;
+
+    foreach AllActors(class'ComputerSecurity',cs){
+        if (cs.Name == 'ComputerSecurity4'){
+
+            //If you press disable, you want to disable...
+            if (cs.SpecialOptions[0].Text == "Disable Ventilation Fan"){
+                enable = False;
+            } else {
+                enable = True;
+            }
+
+            if (enable){
+                cs.specialOptions[0].Text = "Disable Ventilation Fan";
+                cs.specialOptions[0].TriggerText="Ventilation Fan Enabled"; //Unintuitive, but it prints the text before the trigger call
+            } else {
+                cs.specialOptions[0].Text = "Enable Ventilation Fan";
+                cs.specialOptions[0].TriggerText="Ventilation Fan Disabled";
+            }
+            break;
+        }
+    }
+
+    //Fan1
+    foreach AllActors(class'Fan1',f){
+        if (f.Name == 'Fan1'){
+            if (enable) {
+                f.RotationRate.Yaw = 50000;
+            } else {
+                f.RotationRate.Yaw = 0;
+            }
+        }
+    }
+
+    //ParticleGenerator3
+    foreach AllActors(class'ParticleGenerator',pg){
+        if (pg.Name == 'ParticleGenerator3'){
+            pg.bSpewing = enable;
+            pg.bFrozen = !enable;
+            pg.proxy.bHidden=!enable;
+            break;
+        }
+    }
+
+    //ZoneInfo0
+    foreach AllActors(class'ZoneInfo',z){
+        if (z.Name=='ZoneInfo0') {
+            if (enable){
+                z.ZoneGravity.Z = 100;
+            } else {
+                z.ZoneGravity.Z = -950;
+            }
+            break;
+        }
+    }
+
+    //AmbientSound7
+    //AmbientSound8
+    foreach AllActors(class'AmbientSound',as){
+        if (as.Name=='AmbientSound7'){
+            if (enable){
+                as.AmbientSound = Sound'Ambient.Ambient.HumTurbine2';
+            } else {
+                as.AmbientSound = None;
+            }
+        } else if (as.Name=='AmbientSound8'){
+            if (enable){
+                as.AmbientSound = Sound'Ambient.Ambient.StrongWind';
+            } else {
+                as.AmbientSound = None;
+            }
+        }
+    }
+}
+#endif
+
+function Trigger(Actor Other, Pawn Instigator)
+{
+    if (Tag=='FanToggle'){
+#ifdef vanilla
+        ToggleFan();
+#endif
+    }
 }
 
 

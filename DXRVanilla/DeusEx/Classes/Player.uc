@@ -9,6 +9,8 @@ var transient string nextMap;
 var Music LevelSong;
 var byte LevelSongSection;
 
+var Rotator ShakeRotator;
+
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
 {
     // 2 spaces because destroyed item pickups do ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
@@ -358,6 +360,17 @@ function Died(pawn Killer, name damageType, vector HitLocation)
     Super.Died(Killer,damageType,HitLocation);
 }
 
+function bool IsHighlighted(actor A)
+{
+    local bool wasBehind,highlight;
+
+    wasBehind = bBehindView;
+    bBehindView = False;
+    highlight = Super.IsHighlighted(A);
+    bBehindView = wasBehind;
+    return highlight;
+}
+
 exec function CrowdControlAnon()
 {
     local DXRCrowdControl cc;
@@ -437,7 +450,18 @@ exec function FixAugHotkeys()
     am.RefreshAugDisplay();
 }
 
-exec function MoveGoalLocation(name goalName, int locNumber)
+exec function ShuffleGoals()
+{
+    local DXRMissions missions;
+
+    foreach AllActors(class'DXRMissions',missions)
+    {
+        missions.SetGlobalSeed(FRand());
+        missions.ShuffleGoals();
+    }
+}
+
+exec function MoveGoalLocation(coerce string goalName, int locNumber)
 {
     local DXRMissions missions;
 
@@ -449,9 +473,26 @@ exec function MoveGoalLocation(name goalName, int locNumber)
             ClientMessage("Failed to move goal");
         }
     }
-
 }
 
+exec function AllPasswords()
+{
+    local Computers c;
+    local Keypad k;
+    local int i;
+
+    foreach AllActors(class'Computers',c){
+        for (i=0;i<ArrayCount(c.knownAccount);i++){
+            c.SetAccountKnown(i);
+        }
+    }
+
+    foreach AllActors(class'Keypad',k){
+        k.bCodeKnown = True;
+    }
+
+    ClientMessage("Set all account passwords to known");
+}
 
 function ChangeSong(string SongName, byte section)
 {
@@ -604,6 +645,27 @@ function UpdateDynamicMusic(float deltaTime)
             }
         }
     }
+}
+
+function UpdateRotation(float DeltaTime, float maxPitch)
+{
+    local DataStorage datastorage;
+    local int rollAmount;
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+    rollAmount = int(datastorage.GetConfigKey('cc_cameraRoll'));
+
+    if(rollAmount == 0) {
+        Super.UpdateRotation(DeltaTime,maxPitch);
+        return;
+    }
+
+    //Track and handle shake rotation as though we are always right-ways up
+    ViewRotation = ShakeRotator;
+    Super.UpdateRotation(DeltaTime,maxPitch);
+    ShakeRotator = ViewRotation;
+
+    //Apply any roll after figuring out (and storing) the current shake state
+    ViewRotation.Roll += rollAmount;
 }
 
 // LDDP: for Lay D Denton compatibility

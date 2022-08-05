@@ -26,7 +26,7 @@ function DrawBrush(GC gc, Actor a)
 {
     local vector forwards, backwards;
     local float dist, boxTLX, boxTLY, boxBRX, boxBRY, width, height;
-    
+
     dist = VSize(Player.Location - a.Location);
     forwards = Player.Location + (Vector(Player.ViewRotation) * dist);
     backwards = Player.Location + (Vector(Player.ViewRotation) * (-dist));
@@ -34,7 +34,7 @@ function DrawBrush(GC gc, Actor a)
     // don't draw behind us
     if( VSize(a.Location - forwards) >= VSize(a.Location - backwards) )
         return;
-    
+
     class'FrobDisplayWindow'.static.GetActorBox(self, a, 1, boxTLX, boxTLY, boxBRX, boxBRY);
     width = boxBRX - boxTLX;
     height = boxBRY - boxTLY;
@@ -94,13 +94,13 @@ function bool ShouldDrawActor(Actor A)
 {
     if(A.bHidden)
         return false;
-    
+
     if( visionLevel >= 2 && (Inventory(A) != None || InformationDevices(A) != None || ElectronicDevices(A) != None || Containers(A) != None) )
         return true;
-    
+
     if(!A.bVisionImportant)
         return false;
-    
+
     return IsHeatSource(A) || AutoTurret(A) != None || AutoTurretGun(A) != None || SecurityCamera(A) != None;
 }
 
@@ -157,7 +157,7 @@ function DrawActor(GC gc, Actor A, vector loc)
     else if (Player.LineOfSightTo(A,true))
     {
         VisionTargetStatus = GetVisionTargetStatus(A);
-        
+
         if ((Player.Level.NetMode == NM_Standalone) || (dist < VisionLevelValue * 1.5) || (VisionTargetStatus != VISIONENEMY))
         {
             DrawGlow = 2.0;
@@ -185,17 +185,17 @@ function DrawBlinder(GC gc, Actor A)
 
     BrightDot = Normal(Vector(Player.ViewRotation)) dot Normal(A.Location - Player.Location);
     dist = VSize(A.Location - Player.Location);
-    
+
     if (dist > 3000)
         DrawGlow = 0;
     else if (dist < 300)
         DrawGlow = 1;
     else
         DrawGlow = ( 3000 - dist ) / ( 3000 - 300 );
-    
+
     // Calculate view angle in radians.
     RadianView = (Player.FovAngle / 180) * 3.141593;
-    
+
     if ((BrightDot >= Cos(RadianView)) && (DrawGlow > 0.2) && (BrightDot * DrawGlow * 0.9 > 0.2))  //DEUS_EX AMSD .75 is approximately at our view angle edge.
     {
         VisionBlinder = A;
@@ -203,7 +203,7 @@ function DrawBlinder(GC gc, Actor A)
         NewFog = vect(1000,1000,900) * BrightDot * DrawGlow * 0.9;
         OldFlash = player.DesiredFlashScale;
         OldFog = player.DesiredFlashFog * 1000;
-        
+
         // Don't add increase the player's flash above the current newflash.
         NewFlash = FMax(0,NewFlash - OldFlash);
         NewFog.X = FMax(0,NewFog.X - OldFog.X);
@@ -212,4 +212,18 @@ function DrawBlinder(GC gc, Actor A)
         player.ClientFlash(NewFlash,NewFog);
         player.IncreaseClientFlashLength(4.0*BrightDot*DrawGlow*BrightDot);
     }
+}
+
+// ----------------------------------------------------------------------
+// DrawTargetAugmentation()
+// RANDO: Changed the targeting reticule to not draw if the crosshairs are hidden
+// ----------------------------------------------------------------------
+function DrawTargetAugmentation(GC gc)
+{
+    local Weapon oldWeapon;
+    oldWeapon = Player.Weapon;
+    if(!Player.bCrosshairVisible)
+        Player.Weapon = None;
+    Super.DrawTargetAugmentation(gc);
+    Player.Weapon = oldWeapon;
 }

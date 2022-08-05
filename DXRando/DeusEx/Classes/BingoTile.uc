@@ -35,3 +35,9 @@ simulated function SetProgress(int tprogress, int tmax)
     progress = tprogress;
     max = tmax;
 }
+
+//Bingo tiles don't need to handle any key presses
+event bool VirtualKeyPressed(EInputKey key, bool bRepeat)
+{
+	return false;
+}

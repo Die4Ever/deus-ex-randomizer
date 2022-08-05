@@ -436,7 +436,7 @@ function ReportMissingFlag(name flag, string eventname) {
 
 function Ending_FirstEntry()
 {
-    local int ending,time;
+    local int ending;
 
     ending = 0;
 
@@ -464,8 +464,7 @@ function Ending_FirstEntry()
 
     if (ending!=0){
         //Notify of game completion with correct ending number
-        time = class'DXRStats'.static.GetTotalTime(dxr);
-        BeatGame(dxr,ending,time);
+        BeatGame(dxr,ending);
     }
 }
 
@@ -557,18 +556,15 @@ function PreTravel()
 
 function HandleBingoWinCountdown()
 {
-    local int time;
-
     //Blocked in HX for now (Blocked at the check, but here for safety as well)
     if(#defined(hx)) return;
 
     if (bingo_win_countdown > 0) {
         //Show win message
         class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds","");
-        if (bingo_win_countdown == 1) {
-            //Give it a second to send the tweet
-            time = class'DXRStats'.static.GetTotalTime(dxr);
-            BeatGame(dxr,4,time);
+        if (bingo_win_countdown == 2) {
+            //Give it 2 seconds to send the tweet
+            BeatGame(dxr,4);
         }
         bingo_win_countdown--;
     } else if (bingo_win_countdown == 0) {
@@ -629,13 +625,13 @@ function Trigger(Actor Other, Pawn Instigator)
     }
 }
 
-function SendFlagEvent(coerce string eventname, optional bool immediate)
+function SendFlagEvent(coerce string eventname, optional bool immediate, optional string extra)
 {
     local string j;
     local class<Json> js;
     js = class'Json';
 
-    l("SendFlagEvent " $ eventname @ immediate);
+    l("SendFlagEvent " $ eventname @ immediate @ extra);
 
     if(eventname ~= "M02HostagesRescued") {// for the hotel, set by Mission02.uc
         M02HotelHostagesRescued();
@@ -652,6 +648,8 @@ function SendFlagEvent(coerce string eventname, optional bool immediate)
     js.static.Add(j, "flag", eventname);
     js.static.Add(j, "immediate", immediate);
     js.static.Add(j, "location", dxr.player.location);
+    if(extra != "")
+        js.static.Add(j, "extra", extra);
     GeneralEventData(dxr, j);
     js.static.End(j);
 
@@ -836,7 +834,7 @@ static function SavedPaul(DXRando dxr, #var(PlayerPawn) player, optional int hea
     MarkBingo(dxr, "SavedPaul");
 }
 
-static function BeatGame(DXRando dxr, int ending, int time)
+static function BeatGame(DXRando dxr, int ending)
 {
     local string j;
     local class<Json> js;
@@ -844,13 +842,13 @@ static function BeatGame(DXRando dxr, int ending, int time)
 
     j = js.static.Start("BeatGame");
     js.static.Add(j, "ending", ending);
-    js.static.Add(j, "time", time);
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
     js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
     js.static.Add(j, "maxrando", dxr.flags.maxrando);
     GeneralEventData(dxr, j);
     BingoEventData(dxr, j);
     AugmentationData(dxr, j);
+    GameTimeEventData(dxr, j);
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
@@ -940,6 +938,28 @@ static function BingoEventData(DXRando dxr, out string j)
                 $ "{\"event\":\"" $ event $ "\",\"desc\":\"" $ desc $ "\",\"progress\":" $ progress $ ",\"max\":" $ max $ "}";
         }
     }
+}
+
+static function GameTimeEventData(DXRando dxr, out string j)
+{
+    local int time, realtime, i, t;
+    local DXRStats stats;
+    local class<Json> js;
+    js = class'Json';
+
+    stats = DXRStats(dxr.FindModule(class'DXRStats'));
+    if(stats == None) return;
+
+    for (i=1;i<=15;i++) {
+        t = stats.GetMissionTime(i);
+        js.static.Add(j, "mission-" $ i $ "-time", t);
+        time += t;
+        t = stats.GetCompleteMissionTime(i);
+        js.static.Add(j, "mission-" $ i $ "-realtime", t);
+        realtime += t;
+    }
+    js.static.Add(j, "time", time);
+    js.static.Add(j, "realtime", realtime);
 }
 
 static function string GetLoadoutName(DXRando dxr)
@@ -1091,6 +1111,7 @@ function ReadText(name textTag)
 {
     local string eventname;
     local PlayerDataItem data;
+    local DXRPasswords pws;
 
     l("ReadText "$textTag);
 
@@ -1147,9 +1168,21 @@ function ReadText(name textTag)
         eventname="CloneCubes";
         break;
 
+    case '06_Datacube05':// Maggie Chow's bday
+        eventname = "July 18th"; // don't break, fallthrough
     default:
-        // it's simple for a bingo event that requires reading just 1 thing
-        _MarkBingo(textTag);
+        // HACK: because names normally can't have hyphens? convert to string and use that instead
+        if(string(textTag) == "09_NYC_DOCKYARD--796967769")
+            eventname = "8675309";
+        if(eventname != "") {
+            pws = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+            if(pws != None)
+                pws.ProcessString(eventname);
+            SendFlagEvent(textTag, false, eventname);
+        } else {
+            // it's simple for a bingo event that requires reading just 1 thing
+            _MarkBingo(textTag);
+        }
         return;
     }
 
@@ -1216,9 +1249,9 @@ function _MarkBingo(coerce string eventname)
         j = js.static.Start("Bingo");
         js.static.Add(j, "newevent", eventname);
         js.static.Add(j, "location", player().Location);
-        js.static.add(j, "time", time);
         GeneralEventData(dxr, j);
         BingoEventData(dxr, j);
+        GameTimeEventData(dxr, j);
         js.static.End(j);
 
         class'DXRTelemetry'.static.SendEvent(dxr, player(), j);
@@ -1237,6 +1270,23 @@ static function MarkBingo(DXRando dxr, coerce string eventname)
     if(e != None) {
         e._MarkBingo(eventname);
     }
+}
+
+function AddBingoScreen(CreditsWindow cw)
+{
+    local CreditsBingoWindow cbw;
+    cbw = CreditsBingoWindow(cw.winScroll.NewChild(Class'CreditsBingoWindow'));
+    cbw.SetSize(410,410);
+    cbw.FillBingoWindow(player());
+}
+
+function AddDXRCredits(CreditsWindow cw)
+{
+    cw.PrintLn();
+    cw.PrintHeader("Bingo");
+    AddBingoScreen(cw);
+    cw.PrintLn();
+
 }
 
 defaultproperties
@@ -1355,7 +1405,7 @@ defaultproperties
     bingo_options(103)=(event="ManWhoWasThursday",desc="Read 4 parts of The Man Who Was Thursday",max=4)
     bingo_options(104)=(event="GreeneArticles",desc="Read 4 newspaper articles by Joe Greene",max=4)
     bingo_options(105)=(event="MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1)
-    bingo_options(106)=(event="06_Datacube_05",desc="Learn Maggie Chow's Birthday",max=1)
+    bingo_options(106)=(event="06_Datacube05",desc="Learn Maggie Chow's Birthday",max=1)
     bingo_options(107)=(event="Gray_ClassDead",desc="Kill 5 Grays",max=5)
     bingo_options(108)=(event="CloneCubes",desc="Read about the four clones in Area 51",max=4)
     bingo_options(109)=(event="blast_door_open",desc="Open the blast doors at Area 51",max=1)

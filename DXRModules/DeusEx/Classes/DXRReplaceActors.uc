@@ -13,32 +13,35 @@ function ReplaceActors()
         if( #var(prefix)InformationDevices(a) != None ) {
             ReplaceInformationDevice(#var(prefix)InformationDevices(a));
         }
-        if( #var(prefix)AllianceTrigger(a) != None ) {
+        else if( #var(prefix)AllianceTrigger(a) != None ) {
             ReplaceAllianceTrigger(#var(prefix)AllianceTrigger(a));
         }
-        if( #var(prefix)ClothesRack(a) != None ) {
+        else if( #var(prefix)ShakeTrigger(a) != None ) {
+            ReplaceShakeTrigger(#var(prefix)ShakeTrigger(a));
+        }
+        else if( #var(prefix)ClothesRack(a) != None ) {
             ReplaceClothesRack(#var(prefix)ClothesRack(a));
         }
-        if( #var(prefix)Toilet(a) != None ) {
+        else if( #var(prefix)Toilet(a) != None ) {
             ReplaceToilet(#var(prefix)Toilet(a));
         }
-        if( #var(prefix)Toilet2(a) != None ) {
+        else if( #var(prefix)Toilet2(a) != None ) {
             ReplaceToilet2(#var(prefix)Toilet2(a));
         }
-        if( #var(prefix)ShowerFaucet(a) != None ) {
+        else if( #var(prefix)ShowerFaucet(a) != None ) {
             ReplaceShowerFaucet(#var(prefix)ShowerFaucet(a));
         }
-        if( #var(prefix)ShipsWheel(a) != None ) {
+        else if( #var(prefix)ShipsWheel(a) != None ) {
             ReplaceShipsWheel(#var(prefix)ShipsWheel(a));
         }
-        if( #var(prefix)WaterCooler(a) != None ) {
+        else if( #var(prefix)WaterCooler(a) != None ) {
             ReplaceWaterCooler(#var(prefix)WaterCooler(a));
         }
-        if( #var(prefix)WaterFountain(a) != None ) {
+        else if( #var(prefix)WaterFountain(a) != None ) {
             ReplaceWaterFountain(#var(prefix)WaterFountain(a));
         }
 #ifdef gmdx
-        if( WeaponGEPGun(a) != None ) {
+        else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
         }
 #endif
@@ -94,6 +97,22 @@ function ReplaceAllianceTrigger(#var(prefix)AllianceTrigger a)
         n.Alliances[i].AllianceLevel = a.Alliances[i].AllianceLevel;
         n.Alliances[i].bPermanent = a.Alliances[i].bPermanent;
     }
+
+    ReplaceTrigger(a, n);
+    a.Destroy();
+}
+
+function ReplaceShakeTrigger(#var(prefix)ShakeTrigger a)
+{
+    local DXRShakeTrigger n;
+    local int i;
+    n = DXRShakeTrigger(SpawnReplacement(a, class'DXRShakeTrigger'));
+    if(n == None)
+        return;
+
+    n.shakeTime = a.shakeTime;
+    n.shakeRollMagnitude = a.shakeRollMagnitude;
+    n.shakeVertMagnitude = a.shakeVertMagnitude;
 
     ReplaceTrigger(a, n);
     a.Destroy();

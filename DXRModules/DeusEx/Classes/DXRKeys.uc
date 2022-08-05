@@ -10,6 +10,7 @@ struct door_fix {
     var float doorStrength;
     var bool bPickable;
     var float lockStrength;
+    var bool bHighlight;
 };
 var config door_fix door_fixes[32];
 
@@ -18,7 +19,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,0,0,0) ) {
+    if( ConfigOlderThan(2,1,0,3) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -37,6 +38,7 @@ function CheckConfig()
         door_fixes[i].doorStrength = 1;
         door_fixes[i].bPickable = true;
         door_fixes[i].lockStrength = 1;
+        door_fixes[i].bHighlight = true;
         i++;
         door_fixes[i] = door_fixes[i-1];
         door_fixes[i].map = "04_NYC_STREET";
@@ -53,6 +55,7 @@ function CheckConfig()
         door_fixes[i].doorStrength = 0;
         door_fixes[i].bPickable = true;
         door_fixes[i].lockStrength = 0;
+        door_fixes[i].bHighlight = true;
         i++;
 
         // just in case General Carter's door gets stuck on something
@@ -63,6 +66,16 @@ function CheckConfig()
         door_fixes[i].doorStrength = 1;
         door_fixes[i].bPickable = true;
         door_fixes[i].lockStrength = 1;
+        door_fixes[i].bHighlight = true;
+        i++;
+
+
+        //Make sure the display case isn't highlightable
+        door_fixes[i].map = "06_HONGKONG_WANCHAI_STREET";
+        door_fixes[i].tag = 'DispalyCase';
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].bHighlight = false;
         i++;
 
         // don't randomize the weld points
@@ -73,6 +86,7 @@ function CheckConfig()
         door_fixes[i].doorStrength = 0.9;
         door_fixes[i].bPickable = false;
         door_fixes[i].lockStrength = 1;
+        door_fixes[i].bHighlight = true;
         i++;
 
         // don't randomize the EMOff transmitter
@@ -83,6 +97,7 @@ function CheckConfig()
         door_fixes[i].doorStrength = 0.15;
         door_fixes[i].bPickable = false;
         door_fixes[i].lockStrength = 1;
+        door_fixes[i].bHighlight = true;
         i++;
 
         // area 51 chambers, in vanilla you can't find the codes for all of these and sometimes the NanoKey you need is in one of them
@@ -93,6 +108,7 @@ function CheckConfig()
         door_fixes[i].doorStrength = 1;
         door_fixes[i].bPickable = true;
         door_fixes[i].lockStrength = 1;
+        door_fixes[i].bHighlight = true;
         i++;
         door_fixes[i] = door_fixes[i-1];
         door_fixes[i].tag = 'chamber2';
@@ -108,6 +124,14 @@ function CheckConfig()
         i++;
         door_fixes[i] = door_fixes[i-1];
         door_fixes[i].tag = 'chamber6';
+        i++;
+
+        //Make it so the exploding door doesn't become breakable
+        door_fixes[i].map = "15_area51_page";
+        door_fixes[i].tag = 'door_clone_exit';
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].bHighlight = false;
         i++;
 
         min_lock_adjust = default.min_lock_adjust;
@@ -502,6 +526,11 @@ function ApplyDoorFixes()
                 d.minDamageThreshold = door_fixes[i].minDamageThreshold;
             if(door_fixes[i].doorStrength > 0)
                 d.doorStrength = door_fixes[i].doorStrength;
+
+            if(door_fixes[i].bHighlight==false){
+                d.bFrobbable = false;
+                d.bHighlight = false;
+            }
         }
     }
 }

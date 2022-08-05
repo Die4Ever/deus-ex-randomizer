@@ -25,6 +25,7 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
         doorStrength = FClamp(doorStrength, 0.0, 1.0);
         if (doorStrength ~= 0.0)
             BlowItUp(instigatedBy);
+            BasePos = Location;
     }
 }
 
@@ -68,3 +69,4 @@ function bool EncroachingOn( actor Other )
     }*/
     return Super.EncroachingOn(Other);
 }
+

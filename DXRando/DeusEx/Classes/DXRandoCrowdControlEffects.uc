@@ -38,6 +38,9 @@ const FloatyTimeDefault = 60;
 const FloorLavaTimeDefault = 60;
 const InvertMouseTimeDefault = 60;
 const InvertMovementTimeDefault = 60;
+const EarthquakeTimeDefault = 60;
+const CameraRollTimeDefault = 60;
+const EatBeansTimeDefault = 60;
 
 struct ZoneFriction
 {
@@ -57,6 +60,14 @@ var DXRandoCrowdControlTimer timerDisplays[32];
 
 var DXRandoCrowdControlPawn CrowdControlPawns[3];
 var int mostRecentCcPawn;
+
+var int fartSoundId;
+var int fartDuration;
+
+var int flashbangSoundId;
+var int flashbangDuration;
+
+var bool quickLoadTriggered;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////                                  CROWD CONTROL FRAMEWORK                                                 ////
@@ -128,6 +139,8 @@ function PeriodicUpdates()
 
     if (decrementTimer('cc_behindTimer')) {
         player().bBehindView=False;
+        player().bCrosshairVisible = True;
+
         PlayerMessage("You re-enter your body");
     }
 
@@ -155,14 +168,96 @@ function PeriodicUpdates()
         invertMovementControls();
     }
 
+    if (decrementTimer('cc_Earthquake')) {
+        PlayerMessage("The earthquake ends");
+        player().shaketimer=0;
+    }
+
+    //Re-apply the quake, just in case some other shake happened and ended during the timer (ie. superfreighter)
+    if (isTimerActive('cc_Earthquake')){
+        startEarthquake(getTimer('cc_Earthquake'));
+    }
+
+    if (decrementTimer('cc_RollTimer')) {
+        PlayerMessage("Your world turns rightside up again");
+        datastorage.SetConfig('cc_cameraRoll',0, 3600*12);
+        datastorage.SetConfig('cc_cameraSpin',0, 3600*12);
+    }
+
+    if (decrementTimer('cc_EatBeans')) {
+        PlayerMessage("Your stomach settles down");
+    } else if (isTimerActive('cc_EatBeans') && InGame()){
+        Fart();
+    }
+
+    if (flashbangDuration>0){
+        flashbangDuration--;
+        if (flashbangDuration==0){
+            player().StopSound(flashbangSoundId);
+            flashbangSoundId=0;
+        }
+    }
+
+    if (quickLoadTriggered){
+        quickLoadTriggered = False;
+        player().QuickLoadConfirmed();
+    }
+
+}
+
+//Start the sound and fire the clouds
+function Fart()
+{
+    local Rotator r;
+    local int i;
+
+    r = player().Rotation;
+    r.Yaw+=(32768-5000); //Fire out the behind
+
+    //Fart Sound
+    fartSoundId = player().PlaySound(sound'PushMetal',SLOT_Pain, 2,,,0.5+FRand());
+    fartDuration = Rand(3)+1; //Duration in 10ths of a second
+
+    for (i=0;i<5;i++){
+        if (Rand(2)==0){
+            Spawn(class'TearGas', player(),,player().Location,r);
+        } else {
+            Spawn(class'PoisonGas', player(),,player().Location,r);
+        }
+        r.Yaw+=2500;
+    }
+
 }
 
 function ContinuousUpdates()
 {
+    local int roll;
+    local DataStorage datastorage;
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
+
     //Lava floor logic
     if (isTimerActive('cc_floorLavaTimer') && InGame()){
         floorIsLava();
     }
+
+    //Camera Spin
+    if (bool(datastorage.GetConfigKey('cc_cameraSpin')) && InGame()){
+        roll = int(datastorage.GetConfigKey('cc_cameraRoll'));
+        roll+=110;  //This rate makes about one full rotation in a minute
+        roll = roll % 65535;
+        datastorage.SetConfig('cc_cameraRoll',roll, 3600*12);
+
+
+    }
+
+    if (fartSoundId!=0){
+        fartDuration--;
+        if (fartDuration <= 0){
+            player().StopSound(fartSoundId);
+            fartSoundId=0;
+        }
+    }
+
 
 }
 
@@ -202,6 +297,11 @@ function InitOnEnter() {
     SetFloatyPhysics(isTimerActive('cc_floatyTimer'));
 
     player().bBehindView=isTimerActive('cc_behindTimer');
+    if (player().bBehindView){
+        player().bCrosshairVisible = False;
+    } else {
+        player().bCrosshairVisible = True; //Will need further logic here if adding a "hide crosshairs" effect
+    }
 
     if (0==retrieveFloatValue('cc_damageMult')) {
         storeFloatValue('cc_damageMult',1.0);
@@ -217,6 +317,12 @@ function InitOnEnter() {
     if (isTimerActive('cc_invertMovementTimer')) {
         invertMovementControls();
     }
+
+    if (isTimerActive('cc_Earthquake')) {
+        startEarthquake(getTimer('cc_Earthquake'));
+    } else {
+        player().shaketimer=0;
+    }
 }
 
 //Effects should revert to default before exiting a level
@@ -229,6 +335,7 @@ function CleanupOnExit() {
     UndoLamThrowers(); //lamthrower
     SetIcePhysics(False); //ice_physics
     player().bBehindView = False; //third_person
+    player().bCrosshairVisible = True; //Make crosshairs show up again
     SetFloatyPhysics(False);
     if (isTimerActive('cc_invertMouseTimer')) {
         player().bInvertMouse = dxr.flagbase.GetBool('cc_InvertMouseDef');
@@ -322,6 +429,12 @@ function int getDefaultTimerTimeByName(name timerName) {
             return InvertMouseTimeDefault;
         case 'cc_invertMovementTimer':
             return InvertMovementTimeDefault;
+        case 'cc_Earthquake':
+            return EarthquakeTimeDefault;
+        case 'cc_RollTimer':
+            return CameraRollTimeDefault;
+        case 'cc_EatBeans':
+            return EatBeansTimeDefault;
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -369,6 +482,12 @@ function string getTimerLabelByName(name timerName) {
             return "Inv Mouse";
         case 'cc_invertMovementTimer':
             return "Inv Move";
+        case 'cc_Earthquake':
+            return "Quake";
+        case 'cc_RollTimer':
+            return "Camera";
+        case 'cc_EatBeans':
+            return "Beans";
 
         default:
             PlayerMessage("Unknown timer name "$timerName);
@@ -512,6 +631,11 @@ function MakeLamThrower (inventory anItem) {
 function class<Augmentation> getAugClass(string type) {
     return class<Augmentation>(ccLink.ccModule.GetClassFromString(type, class'Augmentation'));
 }
+
+function class<ScriptedPawn> getScriptedPawnClass(string type) {
+    return class<ScriptedPawn>(ccLink.ccModule.GetClassFromString(type, class'ScriptedPawn'));
+}
+
 
 //"Why not just use "GivePlayerAugmentation", you ask.
 //While it works well to give the player an aug they don't
@@ -1027,6 +1151,123 @@ function AskRandomQuestion(String viewer) {
 
 }
 
+function startEarthquake(float time) {
+    local float shakeRollMagnitude,shakeTime,shakeVertMagnitude;
+
+    shakeRollMagnitude = 2500.0;
+    shakeTime = time;
+    shakeVertMagnitude = 75.0;
+
+    player().ShakeView(shakeTime,shakeRollMagnitude,shakeVertMagnitude);
+
+}
+
+function int Earthquake(String viewer) {
+
+    startEarthquake(EarthquakeTimeDefault);
+
+    PlayerMessage(viewer@"set off an earthquake!");
+
+    return Success;
+
+}
+
+function int TriggerAllAlarms(String viewer) {
+    local int numAlarms;
+    local AlarmUnit au;
+    local SecurityCamera sc;
+
+    numAlarms = 0;
+
+    foreach AllActors(class'AlarmUnit',au){
+        numAlarms+=1;
+        au.Trigger(self,None);
+    }
+    foreach AllActors(class'SecurityCamera',sc){
+        numAlarms+=1;
+        sc.TriggerEvent(True);
+    }
+
+    if (numAlarms==0){
+        return TempFail;
+    }
+
+    PlayerMessage(viewer@"set off "$numAlarms$" alarms!");
+
+    return Success;
+
+}
+
+function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, bool friendly, string viewer)
+{
+    local int i;
+    local ScriptedPawn n,o;
+    local float radius;
+    local vector loc, loc_offset;
+    local Inventory inv;
+    local NanoKey k1, k2;
+
+    if( p == None ) {
+        err("p == None?");
+        return TempFail;
+    }
+
+    if( newclass == None ) {
+        err("newclass == None?");
+        return Failed;
+    }
+
+    radius = p.CollisionRadius + newclass.default.CollisionRadius;
+    for(i=0; i<10; i++) {
+        loc_offset.X = 1 + FRand() * 3 * Sqrt(float(2));
+        loc_offset.Y = 1 + FRand() * 3 * Sqrt(float(2));
+        if( Rand(2)==0 ) loc_offset *= -1;
+
+        loc = p.Location + (radius*loc_offset);
+
+        n = Spawn(newclass,,, loc,p.Rotation);
+
+        if( n != None ) break;
+    }
+    if( n == None ) {
+        info("failed to spawn class "$newclass$" into "$loc);
+        return TempFail;
+    }
+    info("spawning class "$newclass);
+
+    PlayerMessage(viewer@"spawned a "$n.FamiliarName$" next to you!");
+
+    //OBVIOUSLY they should get the viewer name instead of a random one if it's not in anonymous mode
+    if (ccLink.anon || ccLink.offline){
+        class'DXRNames'.static.GiveRandomName(dxr, n);
+    } else {
+        n.UnfamiliarName = viewer;
+        n.FamiliarName = viewer;
+    }
+
+    if (friendly){
+        n.Alliance = 'FriendlyCCSpawn';
+        n.ChangeAlly('Player',1,True);
+        n.ChangeAlly('HostileCCSpawn',-1,True);
+        foreach AllActors(class'ScriptedPawn',o){
+            if (o.GetPawnAllianceType(p)==ALLIANCE_Hostile){
+                n.ChangeAlly(o.Alliance,-1,True);
+            }
+        }
+
+        //This would be cool, but it seems like robots (at least) have no aggression to enemies if they are following
+        //n.SetOrders('Following',,True);
+    } else {
+        n.Alliance = 'HostileCCSpawn';
+        n.ChangeAlly('Player',-1,True);
+        n.ChangeAlly('FriendlyCCSpawn',-1,True);
+    }
+
+    return Success;
+}
+
+
+
 function bool canDropItem() {
 	local Vector X, Y, Z, dropVect;
 	local Inventory item;
@@ -1231,6 +1472,8 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             player().bBehindView=True;
+            player().bCrosshairVisible = False;
+
             startNewTimer('cc_behindTimer');
             PlayerMessage(viewer@"gave you an out of body experience");
             break;
@@ -1250,6 +1493,20 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 player().Energy = player().EnergyMax;
 
             PlayerMessage(viewer@"gave you "$i$" energy!" $ shouldSave);
+            break;
+
+        case "give_full_energy":
+
+            if (player().Energy == player().EnergyMax) {
+                return TempFail;
+            }
+            //Copied from BioelectricCell
+
+            //PlayerMessage("Recharged 10 points");
+            player().PlaySound(sound'BioElectricHiss', SLOT_None,,, 256);
+            player().Energy = player().EnergyMax;
+
+            PlayerMessage(viewer@"refilled your energy!" $ shouldSave);
             break;
 
         case "give_skillpoints":
@@ -1358,13 +1615,43 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             startNewTimer('cc_invertMovementTimer');
             break;
 
-#ifdef vanilla
+        case "earthquake":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_Earthquake')){
+                return TempFail;
+            }
+
+            startnewTimer('cc_Earthquake');
+
+            return Earthquake(viewer);
+
+        case "trigger_alarms":
+            if (!InGame()) {
+                return TempFail;
+            }
+
+            return TriggerAllAlarms(viewer);
+
+
+
         // LAM Thrower crashes for mods with fancy physics?
         case "lamthrower":
+            if (!#defined(vanilla)){
+                PlayerMessage("LAMThrower effect unavailable in this mod");
+                return NotAvail;
+            }
+
             return GiveLamThrower(viewer);
 
         // dmg_double and dmg_half require changes inside the player class
         case "dmg_double":
+            if (!#defined(vanilla)){
+                PlayerMessage("Double Damage effect unavailable in this mod");
+                return NotAvail;
+            }
+
             if (isTimerActive('cc_DifficultyTimer')) {
                 return TempFail;
             }
@@ -1373,7 +1660,13 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             PlayerMessage(viewer@"made your body extra squishy");
             startNewTimer('cc_DifficultyTimer');
             break;
+
         case "dmg_half":
+            if (!#defined(vanilla)){
+                PlayerMessage("Half Damage effect unavailable in this mod");
+                return NotAvail;
+            }
+
             if (isTimerActive('cc_DifficultyTimer')) {
                 return TempFail;
             }
@@ -1381,7 +1674,147 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             PlayerMessage(viewer@"made your body extra tough!");
             startNewTimer('cc_DifficultyTimer');
             break;
-#endif
+
+        case "flipped":
+            if (!#defined(vanilla)){
+                //Changes in player class
+                PlayerMessage("Flipped effect unavailable in this mod");
+                return NotAvail;
+            }
+
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_RollTimer')) {
+                return TempFail;
+            }
+            datastorage.SetConfig('cc_cameraRoll',32768, 3600*12);
+
+            PlayerMessage(viewer@"turned your life upside down");
+            startNewTimer('cc_RollTimer');
+
+            return Success;
+
+        case "limp_neck":
+            if (!#defined(vanilla)){
+                //Changes in player class
+                PlayerMessage("Limp Neck effect unavailable in this mod");
+                return NotAvail;
+            }
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_RollTimer')) {
+                return TempFail;
+            }
+            datastorage.SetConfig('cc_cameraRoll',16383, 3600*12);
+
+            PlayerMessage(viewer@"made your head flop to the side");
+            startNewTimer('cc_RollTimer');
+
+            return Success;
+
+        case "barrel_roll":
+            if (!#defined(vanilla)){
+                //Changes in player class
+                PlayerMessage("Barrel Roll effect unavailable in this mod");
+                return NotAvail;
+            }
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_RollTimer')) {
+                return TempFail;
+            }
+            datastorage.SetConfig('cc_cameraSpin',1, 3600*12);
+
+            PlayerMessage(viewer@"told you to do a barrel roll");
+            startNewTimer('cc_RollTimer');
+
+            return Success;
+
+        case "flashbang":
+            if (!InGame()) {
+                return TempFail;
+            }
+            player().ClientFlash(1,vect(50000,50000,50000));
+            flashbangSoundId = player().PlaySound(sound'AlarmUnitHum',SLOT_Interface, 100,False,,25);
+            flashbangDuration = 3;
+
+            PlayerMessage(viewer@"set off a flashbang!");
+
+            return Success;
+
+        case "eat_beans":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (isTimerActive('cc_EatBeans')) {
+                return TempFail;
+            }
+
+            PlayerMessage(viewer@"fed you a whole bunch of beans!");
+
+            startNewTimer('cc_EatBeans');
+
+            return Success;
+
+        case "fire_weapon":
+            if (player().InHand == None) {
+                return TempFail;
+            }
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (player().RestrictInput()) {
+                return TempFail;
+            }
+            player().Fire();
+            PlayerMessage(viewer@"made you fire your weapon!");
+            break;
+
+        case "next_item":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (player().RestrictInput()) {
+                return TempFail;
+            }
+            player().NextBeltItem();
+            PlayerMessage(viewer@"made you change your item!");
+            break;
+
+        case "next_hud_color":
+            player().NextHUDColorTheme();
+            PlayerMessage(viewer@"gave your game a fresh coat of paint");
+            break;
+
+        case "quick_load":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (player().RestrictInput()) {
+                return TempFail;
+            }
+            PlayerMessage(viewer@"is about to do a Quick Load!");
+
+            quickLoadTriggered = True;
+            break;
+
+        case "quick_save":
+            if (!InGame()) {
+                return TempFail;
+            }
+            if (player().RestrictInput()) {
+                return TempFail;
+            }
+            if (player().dataLinkPlay!=None) {
+                return TempFail;
+            }
+            PlayerMessage(viewer@"is about to Quick Save!");
+            player().QuickSave();
+            break;
+
 
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type);
@@ -1404,6 +1837,10 @@ function int doCrowdControlEventWithPrefix(string code, string param[5], string 
             return GiveAug(getAugClass(words[1]),viewer);
         case "rem":
             return RemoveAug(getAugClass(words[1]),viewer);
+        case "spawnfriendly":
+            return SpawnPawnNearPlayer(player(),getScriptedPawnClass(words[1]),True,viewer);
+        case "spawnenemy":
+            return SpawnPawnNearPlayer(player(),getScriptedPawnClass(words[1]),False,viewer);
         default:
             err("Unknown effect: "$code);
             return NotAvail;

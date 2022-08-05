@@ -101,11 +101,11 @@ function int RandomOfflineEffects() {
     viewer = "Simulated Crowd Control";
     param[0] = "1";
 
-    switch(Rand(58)) {
-    case 0: return ccEffects.doCrowdControlEvent("poison", param, viewer, 0);
+    switch(Rand(81)) {
+    case 0: if(Rand(2)==0){ return 0; } else { return ccEffects.doCrowdControlEvent("poison", param, viewer, 0); }
     case 1: return ccEffects.doCrowdControlEvent("glass_legs", param, viewer, 0);
     case 2: param[0] = string(Rand(20)); return ccEffects.doCrowdControlEvent("give_health", param, viewer, 0);
-    case 3: return ccEffects.doCrowdControlEvent("set_fire", param, viewer, 0);
+    case 3: if(Rand(2)==0){ return 0; } else {return ccEffects.doCrowdControlEvent("set_fire", param, viewer, 0);}
     case 4: return ccEffects.doCrowdControlEvent("full_heal", param, viewer, 0);
     case 5: return ccEffects.doCrowdControlEvent("disable_jump", param, viewer, 0);
     case 6: return ccEffects.doCrowdControlEvent("gotta_go_fast", param, viewer, 0);
@@ -116,16 +116,16 @@ function int RandomOfflineEffects() {
     case 11: return ccEffects.doCrowdControlEvent("matrix", param, viewer, 0);
     case 12: return ccEffects.doCrowdControlEvent("third_person", param, viewer, 0);
     case 13: param[0] = string(Rand(10)); return ccEffects.doCrowdControlEvent("give_energy", param, viewer, 0);
-    case 14: param[0] = string(Rand(50)); return ccEffects.doCrowdControlEvent("give_skillpoints", param, viewer, 0);
-    case 15: param[0] = string(Rand(50)); return ccEffects.doCrowdControlEvent("remove_skillpoints", param, viewer, 0);
+    case 14: param[0] = string(Rand(25)); return ccEffects.doCrowdControlEvent("give_skillpoints", param, viewer, 0);
+    case 15: param[0] = string(Rand(10)); return ccEffects.doCrowdControlEvent("remove_skillpoints", param, viewer, 0);
     case 16: param[0] = string(Rand(50)); return ccEffects.doCrowdControlEvent("add_credits", param, viewer, 0);
-    case 17: param[0] = string(Rand(50)); return ccEffects.doCrowdControlEvent("remove_credits", param, viewer, 0);
+    case 17: param[0] = string(Rand(25)); return ccEffects.doCrowdControlEvent("remove_credits", param, viewer, 0);
     case 18: return ccEffects.doCrowdControlEvent("ice_physics", param, viewer, 0);
     case 19: return ccEffects.doCrowdControlEvent("ask_a_question", param, viewer, 0);
     case 20: return ccEffects.doCrowdControlEvent("nudge", param, viewer, 0);
     case 21: return ccEffects.doCrowdControlEvent("swap_player_position", param, viewer, 0);
-    case 22: return ccEffects.doCrowdControlEvent("floaty_physics", param, viewer, 0);
-    case 23: return ccEffects.doCrowdControlEvent("floor_is_lava", param, viewer, 0);
+    case 22: if(Rand(2)==0){ return 0; } else {return ccEffects.doCrowdControlEvent("floaty_physics", param, viewer, 0);}
+    case 23: if(Rand(2)==0){ return 0; } else {return ccEffects.doCrowdControlEvent("floor_is_lava", param, viewer, 0);}
     case 24: return ccEffects.doCrowdControlEvent("invert_mouse", param, viewer, 0);
     case 25: return ccEffects.doCrowdControlEvent("invert_movement", param, viewer, 0);
 
@@ -208,6 +208,32 @@ function int RandomOfflineEffects() {
         case 35: return ccEffects.doCrowdControlEvent("rem_augvision", param, viewer, 0);
         }
         break;
+    case 58: return ccEffects.doCrowdControlEvent("earthquake",param,viewer,0);
+    case 59: return ccEffects.doCrowdControlEvent("give_full_energy",param,viewer,0);
+    case 60: return ccEffects.doCrowdControlEvent("trigger_alarms",param,viewer,0);
+    case 61: return ccEffects.doCrowdControlEvent("give_winebottle",param,viewer,0);
+    case 62: return ccEffects.doCrowdControlEvent("give_techgoggles",param,viewer,0);
+#ifdef vanilla
+    case 63: return ccEffects.doCrowdControlEvent("flipped", param, viewer, 0);
+    case 64: return ccEffects.doCrowdControlEvent("limp_neck", param, viewer, 0);
+    case 65: return ccEffects.doCrowdControlEvent("barrel_roll", param, viewer, 0);
+#endif
+    case 66: return ccEffects.doCrowdControlEvent("flashbang", param, viewer, 0);
+    case 67: return ccEffects.doCrowdControlEvent("eat_beans", param, viewer, 0);
+    case 68: return ccEffects.doCrowdControlEvent("fire_weapon", param, viewer, 0);
+    case 69: return ccEffects.doCrowdControlEvent("next_item", param, viewer, 0);
+    case 70: return ccEffects.doCrowdControlEvent("next_hud_color", param, viewer, 0);
+    case 71: return ccEffects.doCrowdControlEvent("spawnfriendly_medicalbot", param, viewer, 0);
+    case 72: return ccEffects.doCrowdControlEvent("spawnfriendly_repairbot", param, viewer, 0);
+    case 73: return ccEffects.doCrowdControlEvent("spawnfriendly_securitybot4", param, viewer, 0);
+    case 74: return ccEffects.doCrowdControlEvent("spawnfriendly_militarybot", param, viewer, 0);
+    case 75: return ccEffects.doCrowdControlEvent("spawnenemy_spiderbot2", param, viewer, 0);
+    case 76: return ccEffects.doCrowdControlEvent("spawnenemy_mj12commando", param, viewer, 0);
+    case 77: return ccEffects.doCrowdControlEvent("spawnenemy_securitybot4", param, viewer, 0);
+    case 78: return ccEffects.doCrowdControlEvent("spawnenemy_militarybot", param, viewer, 0);
+    case 79: return ccEffects.doCrowdControlEvent("spawnenemy_doberman", param, viewer, 0);
+    case 80: return ccEffects.doCrowdControlEvent("spawnenemy_greasel", param, viewer, 0);
+
     }
 
     return 0;

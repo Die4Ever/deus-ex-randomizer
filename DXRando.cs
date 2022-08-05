@@ -20,14 +20,14 @@ public class DeusEx : SimpleTCPPack
         new Effect("Trigger the Killswitch", "kill"),
         new Effect("Poison the Player", "poison"),
         new Effect("Glass Legs", "glass_legs"),
-        new Effect("Give Health", "give_health",new[]{"amount100"}),
+        new Effect("Give Health (x10)", "give_health",new[]{"amount100"}),
         new Effect("Set On Fire", "set_fire"),
         new Effect("Full Heal", "full_heal"),
         new Effect("Drunk Mode (1 minute)", "drunk_mode"),
         new Effect("Drop Selected Item", "drop_selected_item"),
         new Effect("Enable Matrix Mode (1 Minute)", "matrix"),
         new Effect("Give Player EMP Field (15 seconds)", "emp_field"),
-        new Effect("Give Bioelectric Energy", "give_energy",new[]{"amount100"}),
+        new Effect("Give Bioelectric Energy (x10)", "give_energy",new[]{"amount100"}),
         new Effect("Give Skill Points (x100)", "give_skillpoints",new[]{"skillpoints1000"}), //Updated text for second Crowd Control batch
         new Effect("Remove Skill  Points (x100)", "remove_skillpoints",new[]{"skillpoints1000"}), //Updated text for second Crowd Control batch
         new Effect("Disable Jump (1 minute)", "disable_jump"),
@@ -38,7 +38,7 @@ public class DeusEx : SimpleTCPPack
         new Effect("Take Double Damage (1 minute)","dmg_double"),
         new Effect("Take Half Damage (1 minute)","dmg_half"),
         new Effect("Give Credits (x100)", "add_credits",new[]{"credits1000"}), //Updated for text second Crowd Control batch
-        new Effect("Remove Credits (x100)", "remove_credits",new[]{"credits1000"}), //Updated text for second Crowd Control batch      
+        new Effect("Remove Credits (x100)", "remove_credits",new[]{"credits1000"}), //Updated text for second Crowd Control batch
         new Effect("Upgrade a Flamethrower to a LAMThrower (1 minute)", "lamthrower"),
 
         new Effect ("Ask a Question","ask_a_question"), //New for second Crowd Control batch
@@ -48,6 +48,32 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Floor is Lava","floor_is_lava"), //New for second Crowd Control batch
         new Effect ("Invert Mouse Controls","invert_mouse"), //New for second Crowd Control batch
         new Effect ("Invert Movement Controls","invert_movement"), //New for second Crowd Control batch
+        new Effect ("Earthquake","earthquake"), //New for fourth Crowd Control batch
+        new Effect ("Full Bioelectric Energy","give_full_energy"), //New for fourth Crowd Control batch
+        new Effect ("Trigger all alarms","trigger_alarms"), //New for fourth Crowd Control batch
+        new Effect ("Flip camera upside down","flipped"), //New for fourth Crowd Control batch
+        new Effect ("Flip camera sideways","limp_neck"), //New for fourth Crowd Control batch
+        new Effect ("Do a barrel roll!","barrel_roll"), //New for fourth Crowd Control batch
+        new Effect ("Set off a Flashbang", "flashbang"), //New for fourth Crowd Control batch
+        new Effect ("Eat Beans", "eat_beans"), //New for fourth Crowd Control batch
+        new Effect ("Fire the current weapon", "fire_weapon"), //New for fourth Crowd Control batch
+        new Effect ("Switch to next item", "next_item"), //New for fourth Crowd Control batch
+        new Effect ("Switch to next HUD color scheme", "next_hud_color"), //New for fourth Crowd Control batch
+        new Effect ("Quick Save", "quick_save"), //New for fourth Crowd Control batch
+        new Effect ("Quick Load", "quick_load"), //New for fourth Crowd Control batch
+
+        //Spawn Enemies/Allies
+        new Effect("Spawn Enemies/Allies","spawnpawns",ItemKind.Folder), //New for fourth Crowd Control batch
+        new Effect ("Spawn Medical Bot", "spawnfriendly_medicalbot","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn Repair Bot", "spawnfriendly_repairbot","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile Spider Bot", "spawnenemy_spiderbot2","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile MJ12 Commando", "spawnenemy_mj12commando","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile Security Bot", "spawnenemy_securitybot4","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn friendly Security Bot", "spawnfriendly_securitybot4","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile Military Bot", "spawnenemy_militarybot","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn friendly Military Bot", "spawnfriendly_militarybot","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile Doberman", "spawnenemy_doberman","spawnpawns"), //New for fourth Crowd Control batch
+        new Effect ("Spawn hostile Greasel", "spawnenemy_greasel","spawnpawns"), //New for fourth Crowd Control batch
 
         //Items
         new Effect("Give Items","giveitems",ItemKind.Folder), //New folder for third batch
@@ -60,7 +86,9 @@ public class DeusEx : SimpleTCPPack
         new Effect("Give a Rebreather", "give_rebreather", "giveitems"), //New for third Crowd Control batch
         new Effect("Give a Thermoptic Camo", "give_adaptivearmor", "giveitems"), //New for third Crowd Control batch
         new Effect("Give a HazMat Suit", "give_hazmatsuit", "giveitems"), //New for third Crowd Control batch
-                
+        new Effect("Give a bottle of Wine", "give_winebottle", "giveitems"), //New for Fourth Crowd Control batch
+        new Effect("Give a set of Tech Goggles", "give_techgoggles", "giveitems"), //New for Fourth Crowd Control batch
+
         //Add/Remove Augs
         new Effect("Add/Upgrade Augmentations","addaugs",ItemKind.Folder),
         new Effect("Remove/Downgrade Augmentations","remaugs",ItemKind.Folder),
@@ -103,7 +131,7 @@ public class DeusEx : SimpleTCPPack
         new Effect("Remove/Downgrade Targeting", "rem_augtarget", "remaugs"),
         new Effect("Remove/Downgrade Vision Enhancement", "rem_augvision", "remaugs"),
 
-        
+
         //Drop Grenades
         new Effect("Drop a live grenade","dropgrenade",ItemKind.Folder),
 
@@ -140,7 +168,7 @@ public class DeusEx : SimpleTCPPack
         new Effect("Give Gas Grenade", "give_weapongasgrenade", "giveweapon"),  //New for second Crowd Control batch
         new Effect("Give Scrambler Grenade", "give_weaponnanovirusgrenade", "giveweapon"),  //New for second Crowd Control batch
         new Effect("Give PS40","give_weaponhideagun","giveweapon"),
-        
+
         //Ammo
         new Effect("Give Ammo","giveammo",ItemKind.Folder),
 
