@@ -389,7 +389,7 @@ function int InitGoals(int mission, string map)
         return 81;
 
     case "09_NYC_GRAVEYARD":
-        goal = AddGoal("09_NYC_GRAVEYARD", "Jammer", NORMAL_GOAL, 'BreakableWall1', PHYS_Falling);
+        goal = AddGoal("09_NYC_GRAVEYARD", "Jammer", NORMAL_GOAL, 'BreakableWall1', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'SkillAwardTrigger2', PHYS_None);
         AddGoalActor(goal, 2, 'FlagTrigger0', PHYS_None);
         AddGoalActor(goal, 3, 'TriggerLight0', PHYS_None);
@@ -403,15 +403,15 @@ function int InitGoals(int mission, string map)
         return 91;
 
     case "09_NYC_SHIPBELOW":
-        goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point", NORMAL_GOAL, 'DeusExMover40', PHYS_None);
+        goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 1", NORMAL_GOAL, 'DeusExMover40', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator10', PHYS_None);
-        AddGoal("09_NYC_SHIPBELOW", "Weld Point", NORMAL_GOAL, 'DeusExMover16', PHYS_None);
+        AddGoal("09_NYC_SHIPBELOW", "Weld Point 2", NORMAL_GOAL, 'DeusExMover16', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator4', PHYS_None);
-        AddGoal("09_NYC_SHIPBELOW", "Weld Point", NORMAL_GOAL, 'DeusExMover33', PHYS_None);
+        AddGoal("09_NYC_SHIPBELOW", "Weld Point 3", NORMAL_GOAL, 'DeusExMover33', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator7', PHYS_None);
-        AddGoal("09_NYC_SHIPBELOW", "Weld Point", NORMAL_GOAL, 'DeusExMover31', PHYS_None);
+        AddGoal("09_NYC_SHIPBELOW", "Weld Point 4", NORMAL_GOAL, 'DeusExMover31', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator5', PHYS_None);
-        AddGoal("09_NYC_SHIPBELOW", "Weld Point", NORMAL_GOAL, 'DeusExMover32', PHYS_None);
+        AddGoal("09_NYC_SHIPBELOW", "Weld Point 5", NORMAL_GOAL, 'DeusExMover32', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator6', PHYS_None);
 
         AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
@@ -863,7 +863,7 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
 
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
     oldbCollideWorld = a.bCollideWorld;
-    if(p == PHYS_None) a.bCollideWorld = false;
+    if(p == PHYS_None || p == PHYS_MovingBrush) a.bCollideWorld = false;
     success = a.SetLocation(loc);
     if( success == false ) {
         a.bCollideWorld = oldbCollideWorld;
@@ -872,7 +872,7 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     }
     a.SetRotation(rotation);
     a.SetPhysics(p);
-    if(p == PHYS_None) a.bCollideWorld = oldbCollideWorld;
+    if(p == PHYS_None || p == PHYS_MovingBrush) a.bCollideWorld = oldbCollideWorld;
 
     sp = #var(prefix)ScriptedPawn(a);
     v = #var(prefix)Vehicles(a);
