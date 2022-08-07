@@ -461,7 +461,7 @@ exec function ShuffleGoals()
     }
 }
 
-exec function MoveGoalLocation(coerce string goalName, int locNumber)
+exec function MoveGoalLocation( int locNumber, coerce string goalName)
 {
     local DXRMissions missions;
 

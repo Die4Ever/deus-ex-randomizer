@@ -1100,6 +1100,8 @@ function Vandenberg_FirstEntry()
     local LogicTrigger lt;
     local ComputerSecurity comp;
     local KarkianBaby kb;
+    local DataLinkTrigger dlt;
+    local FlagTrigger ft;
 
     switch(dxr.localURL)
     {
@@ -1162,6 +1164,21 @@ function Vandenberg_FirstEntry()
             }
         }
         break;
+    case "14_OCEANLAB_UC":
+        //Make the datalink immediately trigger when you download the schematics, regardless of where the computer is
+        foreach AllActors(class'FlagTrigger',ft){
+            if (ft.name=='FlagTrigger0'){
+                ft.bTrigger = True;
+                ft.event = 'schematic2';
+            }
+        }
+        foreach AllActors(class'DataLinkTrigger',dlt){
+            if (dlt.name=='DataLinkTrigger2'){
+                dlt.Tag = 'schematic2';
+            }
+        }
+        break;
+
 #endif
     }
 }
@@ -1378,6 +1395,13 @@ function Paris_FirstEntry()
         }
         foreach AllActors(class'DeusExMover', m, 'cellar_door') {
             m.MoveTime = 1;
+        }
+        break;
+    case "10_PARIS_METRO":
+        //If neither flag is set, JC never talked to Jaime, so he just didn't bother
+        if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
+            //Need to pretend he *was* recruited, so that he doesn't spawn
+            dxr.flagbase.SetBool('JaimeRecruited',True);
         }
         break;
 #endif
