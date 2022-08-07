@@ -1641,6 +1641,7 @@ function Area51_FirstEntry()
     local DeusExMover d;
     local ComputerSecurity c;
     local Keypad k;
+    local Switch1 s;
 
 #ifdef vanilla
     switch(dxr.localURL)
@@ -1689,6 +1690,11 @@ function Area51_FirstEntry()
         foreach AllActors(class'Keypad', k) {
             if( k.validCode == "9248" )
                 k.validCode = "2242";
+        }
+        foreach AllActors(class'Switch1',s){
+            if (s.Name == 'Switch21'){
+                s.Event = 'door_page_overlook';
+            }
         }
         break;
     }
