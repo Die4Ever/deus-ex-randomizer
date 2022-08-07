@@ -15,6 +15,81 @@ function RandomDancing(Actor a)
     }
 }
 
+function PlayDressUp(Actor a,class<Actor> influencer, float rotYaw)
+{
+    local int i;
+    local Rotator r;
+
+    a.Texture = influencer.default.Texture;
+    a.Mesh = influencer.default.Mesh;
+    for (i=0;i<=7;i++){
+        a.MultiSkins[i] = influencer.default.MultiSkins[i];
+    }
+
+    if (influencer.default.Physics == PHYS_Rotating){
+        a.RotationRate = influencer.default.RotationRate;
+        a.SetPhysics(influencer.default.Physics);
+        a.bFixedRotationDir = influencer.default.bFixedRotationDir;
+    }
+
+    a.DrawScale = a.CollisionHeight / influencer.default.CollisionHeight;
+    r.Yaw = rotYaw;
+    a.SetRotation(r);
+}
+
+function RandomBobPage()
+{
+    local BobPageAugmented bob;
+    local int i;
+
+    return; //No... Not yet...
+
+    foreach AllActors(class'BobPageAugmented',bob){
+        switch(Rand(28)){
+        case 0: PlayDressUp(bob,class'Cactus1',8000); return;
+        case 1: PlayDressUp(bob,class'Mailbox',8000); return;
+        case 2: PlayDressUp(bob,class'CarWrecked',8000); return;
+        case 3: PlayDressUp(bob,class'#var(prefix)DXLogo',8000); return;
+        case 4: PlayDressUp(bob,class'HKBuddha',8000); return;
+        case 5: PlayDressUp(bob,class'Lamp1',0); return;
+        case 6: PlayDressUp(bob,class'LiquorBottle',8000); return;
+        case 7: PlayDressUp(bob,class'Microscope',0); return;
+        case 8: PlayDressUp(bob,class'Seagull',-8000); return;
+        case 9: PlayDressUp(bob,class'SignFloor',8000); return;
+        case 10: PlayDressUp(bob,class'StatueLion',8000); return;
+        case 11: PlayDressUp(bob,class'Trashbag',8000); return;
+        case 12: PlayDressUp(bob,class'Trashbag2',8000); return;
+        case 13: PlayDressUp(bob,class'TrashCan3',0); return;
+        case 14: PlayDressUp(bob,class'Basketball',8000); return;
+        case 15: PlayDressUp(bob,class'Flowers',8000); return;
+        case 16: PlayDressUp(bob,class'ChairLeather',8000); return;
+        case 17: PlayDressUp(bob,class'NYLiberty',8000); return;
+        case 18: PlayDressUp(bob,class'NYLibertyTorch',8000); return;
+        case 19: PlayDressUp(bob,class'Trophy',8000); return;
+        case 20: PlayDressUp(bob,class'MiniSub',8000); return;
+        case 21: PlayDressUp(bob,class'WaterCooler',8000); return;
+        case 22: PlayDressUp(bob,class'Mutt',-8000); return;
+        case 23: PlayDressUp(bob,class'Fish2',-8000); return;
+        case 24: PlayDressUp(bob,class'MilitaryBot',-8000); return;
+        case 25: PlayDressUp(bob,class'VendingMachine',-8000); return;
+        case 26: PlayDressUp(bob,class'Hooker1',-8000); return;
+        case 27: PlayDressUp(bob,class'ChildMale2',-8000); return;
+        }
+
+    }
+}
+
+function PreFirstEntry()
+{
+    Super.PreFirstEntry();
+    switch(dxr.localURL)
+    {
+        case "15_AREA51_PAGE":
+            RandomBobPage();
+            break;
+    }
+}
+
 function AnyEntry()
 {
     local #var(prefix)DXLogo logo;
@@ -220,6 +295,8 @@ function RandomizeCutscene()
     {
         c.bHidden = true;
     }*/
+
+    RandomBobPage();
 }
 
 function bool is_valid(string s, class<Object> o)
