@@ -261,16 +261,25 @@ function PostFirstEntryMapFixes()
     case "01_NYC_UNATCOHQ":
     case "03_NYC_UNATCOHQ":
     case "04_NYC_UNATCOHQ":
-    case "05_NYC_UNATCOHQ":
         foreach AllActors(class'RetinalScanner', r) {
             if( r.Event != 'retinal_msg_trigger' ) continue;
-            if( dxr.localURL == "05_NYC_UNATCOHQ" )
+            r.bHackable = false;
+            r.hackStrength = 0;
+            r.msgUsed = "";
+        }
+        break;
+    case "05_NYC_UNATCOHQ":
+        foreach AllActors(class'RetinalScanner', r) {
+            if( r.Event == 'retinal_msg_trigger' ){
                 r.Event = 'UN_blastdoor2';
-            else
-            {
-                r.bHackable = false;
+                r.bHackable = true;
                 r.hackStrength = 0;
-                r.msgUsed = "";
+                r.msgUsed = "Access De-/.&*% g r a n t e d";
+            } else if (r.Event == 'securitytrigger') {
+                r.Event = 'UNblastdoor';
+                r.bHackable = true;
+                r.hackStrength = 0;
+                r.msgUsed = "Access De-/.&*% g r a n t e d";
             }
         }
         break;
