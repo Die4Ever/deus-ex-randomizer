@@ -369,6 +369,16 @@ function SetWatchFlags() {
             }
         }
         break;
+    case "15_AREA51_PAGE":
+#ifdef vanilla
+        Tag = 'unbirth';
+        foreach AllActors(class'WaterZone', water) {
+            if (water.Name=='WaterZone5'){
+                water.ZonePlayerEvent = 'unbirth';
+            }
+        }
+#endif
+        break;
     }
 }
 
@@ -1413,6 +1423,9 @@ defaultproperties
     bingo_options(111)=(event="MolePeopleSlaughtered",desc="Slaughter the Mole People",max=1)
     bingo_options(112)=(event="surrender",desc="Make the NSF surrender in the Mole People tunnels",max=1)
     bingo_options(113)=(event="nanocage",desc="Open the cages in the UNATCO MJ12 Lab",max=1)
+#ifdef vanilla
+    bingo_options(114)=(event="unbirth",desc="Return to the tube that spawned you",max=1)
+#endif
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
