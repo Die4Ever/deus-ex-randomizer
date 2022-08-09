@@ -247,6 +247,7 @@ function ReadConfig()
 function AddDXRCredits(CreditsWindow cw)
 {
     local int i;
+    local string weaponName;
 
     cw.PrintHeader( dxr.flags.settings.enemiesrandomized $ "% Added Enemies");
     for(i=0; i < ArrayCount(_randomenemies); i++) {
@@ -272,7 +273,11 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintHeader("Extra Weapons For Robots");
     for(i=0; i < ArrayCount(_randombotweapons); i++) {
         if( _randombotweapons[i].type == None ) continue;
-        cw.PrintText( _randombotweapons[i].type.default.ItemName $ ": " $ FloatToString(_randombotweapons[i].chance, 1) $ "%" );
+        weaponName = _randombotweapons[i].type.default.ItemName;
+        if (InStr(weaponName,"DEFAULT WEAPON NAME")!=-1){  //Many NPC weapons don't have proper names set
+            weaponName = String(_randombotweapons[i].type.default.Class);
+        }
+        cw.PrintText( weaponName $ ": " $ FloatToString(_randombotweapons[i].chance, 1) $ "%" );
     }
     cw.PrintLn();
 }
@@ -616,8 +621,26 @@ function Timer() {
     }
 }
 
+function int GetWeaponCount(ScriptedPawn sp)
+{
+    local int i,count;
+    count=0;
+    for (i=0; i<ArrayCount(sp.InitialInventory); i++)
+    {
+        if ((sp.InitialInventory[i].Inventory != None) && (sp.InitialInventory[i].Count > 0))
+        {
+            if( ClassIsChildOf(sp.InitialInventory[i].inventory, class'Weapon') ) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+
 function RandomizeSP(ScriptedPawn p, int percent)
 {
+    local int numWeapons,i;
+
     if( p == None ) return;
 
     l("RandomizeSP("$p$", "$percent$")");
@@ -639,32 +662,49 @@ function RandomizeSP(ScriptedPawn p, int percent)
         GiveRandomMeleeWeapon(p);
         p.SetupWeapon(false);
     } else if (IsRobot(p.Class) && dxr.flags.settings.bot_weapons!=0) {
+        numWeapons = GetWeaponCount(p);
+
         //Maybe it would be better if the bots *didn't* get their baseline weapons removed?
         RemoveItem(p, class'Weapon');
         RemoveItem(p, class'Ammo');
 
-        GiveRandomBotWeapon(p, false, 2);
-        if( chance_single(50) )
-            GiveRandomBotWeapon(p, false, 2);
+        //Since bots don't have melee weapons, they should get more ammo to compensate
+        for (i=0;i<numWeapons;i++){
+            GiveRandomBotWeapon(p, false, 6); //Give as many weapons as the bot defaults with
+        }
+        if( chance_single(50) ) //Give a chance for a bonus weapon
+            GiveRandomBotWeapon(p, false, 6);
         p.SetupWeapon(false);
     }
 }
 
+//Will attempt to find a different weapon if dupes aren't allowed
 function inventory GiveRandomBotWeapon(Pawn p, optional bool allow_dupes, optional int add_ammo)
 {
     local class<DeusExWeapon> wclass;
     local Ammo a;
     local int i;
     local float r;
-    r = initchance();
-    for(i=0; i < ArrayCount(_randombotweapons); i++ ) {
-        if( _randombotweapons[i].type == None ) break;
-        if( chance( _randombotweapons[i].chance, r ) ) wclass = _randombotweapons[i].type;
-    }
-    chance_remaining(r);
+    local int findWeaponAttempts;
 
-    if( (!allow_dupes) && HasItem(p, wclass) )
-        return None;
+    findWeaponAttempts = 15;
+
+    while(findWeaponAttempts>0){
+        r = initchance();
+        for(i=0; i < ArrayCount(_randombotweapons); i++ ) {
+            if( _randombotweapons[i].type == None ) break;
+            if( chance( _randombotweapons[i].chance, r ) ) wclass = _randombotweapons[i].type;
+        }
+        chance_remaining(r);
+
+        if( (!allow_dupes) && HasItem(p, wclass) ){
+            findWeaponAttempts--;
+            wclass = None;
+        } else {
+            findWeaponAttempts = 0;
+        }
+
+    }
 
     if( wclass == None ) {
         warning("not giving a random weapon to "$p);
