@@ -176,6 +176,11 @@ function BindControls(optional string action)
     NewMenuItem("Hidden Enemies Rando %", "How many enemies to add based on hidden enemies.");
     Slider(f.settings.hiddenenemiesrandomized, 0, 1000);
 
+    NewMenuItem("", "Allow robots to get randomized weapons");
+    EnumOption("Unchanged Robot Weapons", 0, f.settings.bot_weapons);
+    EnumOption("Random Robot Weapons", 4, f.settings.bot_weapons);
+
+
     NewGroup("Skills");
     NewMenuItem("", "Disallow downgrades to prevent scouting ahead in the new game screen.");
     EnumOption("Allow Downgrades On New Game Screen", 0, f.settings.skills_disable_downgrades);

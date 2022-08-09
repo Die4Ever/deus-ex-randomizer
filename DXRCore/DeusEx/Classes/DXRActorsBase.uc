@@ -94,6 +94,11 @@ static function bool IsHuman(class<Actor> a)
     return ClassIsChildOf(a, class'#var(prefix)HumanMilitary') || ClassIsChildOf(a, class'#var(prefix)HumanThug') || ClassIsChildOf(a, class'#var(prefix)HumanCivilian');
 }
 
+static function bool IsRobot(class<Actor> a)
+{
+    return ClassIsChildOf(a, class'Robot');
+}
+
 static function bool IsCritter(Actor a)
 {
     if( #var(prefix)CleanerBot(a) != None ) return true;
