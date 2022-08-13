@@ -203,7 +203,7 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("02_NYC_BATTERYPARK", "Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia0', PHYS_Falling);
         AddGoalActor(goal, 1, 'SkillAwardTrigger0', PHYS_None);
         AddGoalActor(goal, 2, 'GoalCompleteTrigger0', PHYS_None);
-        AddGoalActor(goal, 3, 'FlagTrigger1', PHYS_None);
+        AddGoalActor(goal, 3, 'FlagTrigger1', PHYS_None); //Sets AmbrosiaTagged
         AddGoalActor(goal, 4, 'DataLinkTrigger1', PHYS_None);
 
         AddGoalLocation("02_NYC_BATTERYPARK", "Dock", START_LOCATION | VANILLA_START, vect(-619.571289, -3679.116455, 255.099762), rot(0, 29856, 0));
@@ -300,7 +300,41 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("03_NYC_AIRFIELD", "NE Security Tower", NORMAL_GOAL, vect(5215.076660, -4134.674316, 15.090023), rot(0, 0, 0));
         AddGoalLocation("03_NYC_AIRFIELD", "Hanger Door", NORMAL_GOAL, vect(941.941895, 283.418152, 15.090023), rot(0, 0, 0));
         AddGoalLocation("03_NYC_AIRFIELD", "Dock", NORMAL_GOAL | VANILLA_GOAL, vect(-2687.128662,2320.010986,63.774998), rot(0,0,0));
+
+        goal = AddGoal("03_NYC_AIRFIELD", "Ambrosia", GOAL_TYPE1, 'BarrelAmbrosia0', PHYS_Falling);
+        AddGoalActor(goal,1,'FlagTrigger0',PHYS_None); //Reduced radius, sets BoatDocksAmbrosia
+        AddGoalLocation("03_NYC_AIRFIELD", "Docks", GOAL_TYPE1 | VANILLA_GOAL, vect(-2482.986816,1924.479126,44.869865), rot(0,0,0));
+        AddGoalLocation("03_NYC_AIRFIELD", "Hangar Door", GOAL_TYPE1, vect(1069,289,45), rot(0,16328,0));
+        AddGoalLocation("03_NYC_AIRFIELD", "Near Electrical", GOAL_TYPE1, vect(5317,-2405,45), rot(0,16328,0));
+        AddGoalLocation("03_NYC_AIRFIELD", "Near Satellite", GOAL_TYPE1, vect(5317,3189,45), rot(0,16328,0));
+        AddGoalLocation("03_NYC_AIRFIELD", "Cargo Container", GOAL_TYPE1, vect(-220,3012,373), rot(0,25344,0));
+
         return 33;
+
+    case "03_NYC_AIRFIELDHELIBASE":
+        goal = AddGoal("03_NYC_AIRFIELDHELIBASE", "Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia1', PHYS_Falling);
+        AddGoalActor(goal,1,'FlagTrigger0',PHYS_None); //Reduced radius, sets HelicopterBaseAmbrosia
+
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Main Entrance", NORMAL_GOAL | VANILLA_GOAL, vect(47.421066,1102.545044,40.869644), rot(0,0,0));
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Womens Bathroom", NORMAL_GOAL, vect(1362,677,41), rot(0,32872,0));
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Office", NORMAL_GOAL, vect(-1403,215,41), rot(0,49152,0));
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Secret Room", NORMAL_GOAL, vect(-1149,626,215), rot(0,81896,0));
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Helipad", NORMAL_GOAL, vect(508,-399,192), rot(0,71560,0));
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Catwalk", NORMAL_GOAL, vect(1394,-1221,800), rot(0,71560,0));
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Break Room", NORMAL_GOAL, vect(895,1257,206), rot(0,32856,0));
+
+        return 34;
+
+    case "03_NYC_747":
+        goal = AddGoal("03_NYC_747", "Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia1', PHYS_Falling);
+        AddGoalActor(goal,1,'FlagTrigger1',PHYS_None); //Reduced radius, sets 747Ambrosia
+
+        AddGoalLocation("03_NYC_747", "Cargo", NORMAL_GOAL | VANILLA_GOAL, vect(-147.147064,-511.348846,158.870544), rot(0,15760,0));
+        AddGoalLocation("03_NYC_747", "Office", NORMAL_GOAL, vect(6,-736,339), rot(0,-32,0));
+        AddGoalLocation("03_NYC_747", "Flight Deck", NORMAL_GOAL, vect(1339,-513,484), rot(0,16480,0));
+        AddGoalLocation("03_NYC_747", "Bedroom", NORMAL_GOAL, vect(1594,-710,368), rot(0,0,0));
+
+        return 35;
 
     case "04_NYC_NSFHQ":
         AddGoal("04_NYC_NSFHQ", "Computer", NORMAL_GOAL, 'ComputerPersonal3', PHYS_Falling);
@@ -565,6 +599,7 @@ function int InitGoals(int mission, string map)
 function PreFirstEntry()
 {
     local #var(prefix)AnnaNavarre anna;
+    local FlagTrigger ft;
     local int seed;
 
     Super.PreFirstEntry();
@@ -591,7 +626,27 @@ function PreFirstEntry()
             anna.HomeRot = vector(anna.Rotation);
         }
     }
-
+    else if( dxr.localURL == "03_NYC_AIRFIELDHELIBASE" ) {
+        foreach AllActors(class'FlagTrigger',ft){
+            if (ft.Name=='FlagTrigger0'){
+                ft.SetCollisionSize(150, ft.CollisionHeight);
+            }
+        }
+    }
+    else if( dxr.localURL == "03_NYC_AIRFIELD" ) {
+        foreach AllActors(class'FlagTrigger',ft){
+            if (ft.Name=='FlagTrigger0'){
+                ft.SetCollisionSize(150, ft.CollisionHeight);
+            }
+        }
+    }
+    else if( dxr.localURL == "03_NYC_747" ) {
+        foreach AllActors(class'FlagTrigger',ft){
+            if (ft.Name=='FlagTrigger1'){
+                ft.SetCollisionSize(100, ft.CollisionHeight);
+            }
+        }
+    }
     SetGlobalSeed( "DXRMissions" $ seed );
     ShuffleGoals();
 }

@@ -74,6 +74,7 @@ function SetWatchFlags() {
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
         WatchFlag('M02BillyDone');
+        WatchFlag('AmbrosiaTagged');
         WatchFlag('MS_DL_Played', true);// this is the datalink played after dealing with the hostage situation, from Mission02.uc
 
         foreach AllActors(class'ChildMale', child) {
@@ -123,7 +124,14 @@ function SetWatchFlags() {
         WatchFlag('DXREvents_LeftOnBoat');
         break;
     case "03_NYC_AIRFIELD":
+        WatchFlag('BoatDocksAmbrosia');
         Tag = 'arctrigger';
+        break;
+    case "03_NYC_AIRFIELDHELIBASE":
+        WatchFlag('HelicopterBaseAmbrosia');
+        break;
+    case "03_NYC_747":
+        WatchFlag('747Ambrosia');
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
@@ -1241,6 +1249,12 @@ function _MarkBingo(coerce string eventname)
         case "KarkianBaby_ClassDead":
             eventname="Karkian_ClassDead";
             break;
+        case "AmbrosiaTagged":
+        case "BoatDocksAmbrosia":
+        case "HelicopterBaseAmbrosia":
+        case "747Ambrosia":
+            eventname="StolenAmbrosia";
+            break;
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
@@ -1426,6 +1440,7 @@ defaultproperties
 #ifdef vanilla
     bingo_options(114)=(event="unbirth",desc="Return to the tube that spawned you",max=1)
 #endif
+    bingo_options(115)=(event="StolenAmbrosia",desc="Find 3 stolen barrels of Ambrosia",max=3)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
