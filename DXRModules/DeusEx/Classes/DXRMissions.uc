@@ -326,13 +326,16 @@ function int InitGoals(int mission, string map)
         return 34;
 
     case "03_NYC_747":
-        goal = AddGoal("03_NYC_747", "Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia1', PHYS_Falling);
+    case "03_NYC_HANGAR":
+        goal = AddGoal("03_NYC_747", "747 Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia1', PHYS_Falling);
         AddGoalActor(goal,1,'FlagTrigger1',PHYS_None); //Reduced radius, sets 747Ambrosia
 
         AddGoalLocation("03_NYC_747", "Cargo", NORMAL_GOAL | VANILLA_GOAL, vect(-147.147064,-511.348846,158.870544), rot(0,15760,0));
         AddGoalLocation("03_NYC_747", "Office", NORMAL_GOAL, vect(6,-736,339), rot(0,-32,0));
         AddGoalLocation("03_NYC_747", "Flight Deck", NORMAL_GOAL, vect(1339,-513,484), rot(0,16480,0));
         AddGoalLocation("03_NYC_747", "Bedroom", NORMAL_GOAL, vect(1594,-710,368), rot(0,0,0));
+        AddGoalLocation("03_NYC_HANGAR", "Near Trailers", NORMAL_GOAL, vect(1867,-1318,29), rot(0,0,0));
+        AddGoalLocation("03_NYC_HANGAR", "Near Engine", NORMAL_GOAL, vect(4140,-1554,29), rot(0,32776,0));
 
         return 35;
 
@@ -810,6 +813,9 @@ function Actor GetActor(out GoalActor ga)
 function CreateGoal(out Goal g, GoalLocation Loc)
 {
     local #var(prefix)ScriptedPawn sp;
+    local BarrelAmbrosia ambrosia;
+    local FlagTrigger ft;
+    local SkillAwardTrigger st;
 
     switch(g.name) {
     case "Nicolette":
@@ -850,6 +856,34 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         sp.SetOrders('Standing');
         sp.ConBindEvents();
         break;
+
+    case "747 Ambrosia":
+        ambrosia = Spawn(class'BarrelAmbrosia',, 'DXRMissions');
+        ft = Spawn(class'FlagTrigger',, 'DXRMissions');
+        st = Spawn(class'SkillAwardTrigger',, 'DXRMissions');
+        g.actors[0].a = ambrosia;
+        g.actors[1].a = ft;
+
+        //Nothing particularly special about the barrel, all the magic is in the FlagTrigger
+        ambrosia.bPushable = False;
+
+        ft.SetCollisionSize(100,40);
+        ft.Event = 'skills';
+        ft.Tag = '747BarrelUsed';
+        ft.bInitiallyActive = True;
+        ft.bTriggerOnceOnly = True;
+        ft.bSetFlag = True;
+        ft.bTrigger = True;
+        ft.flagExpiration = -1;
+        ft.FlagName = '747Ambrosia';
+        ft.flagValue = True;
+
+        st.Tag = 'skills';
+        st.SetCollision(False,False,False);
+        st.awardMessage="Goal Accomplishment Bonus";
+        st.skillPointsAdded = 100;
+        break;
+
     }
 }
 

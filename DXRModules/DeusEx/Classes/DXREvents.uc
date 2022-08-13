@@ -130,8 +130,11 @@ function SetWatchFlags() {
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
         break;
+    case "03_NYC_HANGAR":
+        RewatchFlag('747Ambrosia');
+        break;
     case "03_NYC_747":
-        WatchFlag('747Ambrosia');
+        RewatchFlag('747Ambrosia');
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
