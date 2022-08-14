@@ -19,6 +19,7 @@ function ProcessDeusExTextTag(DeusExTextParser parser, optional TextWindow winTe
     local byte tag;
     local string updated_passwords[16];
     local int j;
+    local bool addNote;
 
     tag  = parser.GetTag();
 
@@ -36,10 +37,12 @@ function ProcessDeusExTextTag(DeusExTextParser parser, optional TextWindow winTe
 
             for(j=0; j<ArrayCount(updated_passwords); j++) {
                 if( updated_passwords[j] != "" ) {
-                    player.AddNote(text,False,True);
+                    addNote = True;
                     if(passwords != None) passwords.MarkPasswordKnown(updated_passwords[j]);
                 }
             }
+
+            if (addNote) player.AddNote(text,False,True);
 
             break;
 
