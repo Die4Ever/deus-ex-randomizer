@@ -1448,7 +1448,12 @@ function Paris_AnyEntry()
             RemoveFears(sp);
         }
         break;
-
+    case "10_PARIS_CLUB":
+        FixConversationAddNote(GetConversation('MeetCassandra'),"with a keypad back where the offices are");
+        break;
+    case "10_PARIS_CHATEAU":
+        FixConversationAddNote(GetConversation('NicoletteInStudy'),"I used to use that computer whenever I was at home");
+        break;
     case "11_PARIS_EVERETT":
         foreach AllActors(class'TobyAtanwe', toby) {
             toby.bInvincible = false;
@@ -1866,6 +1871,27 @@ static function FixConversationGiveItem(Conversation c, string fromName, Class<I
         if( t.objectName == fromName && t.giveObject == fromClass ) {
             t.objectName = string(to.name);
             t.giveObject = to;
+        }
+    }
+}
+
+static function FixConversationAddNote(Conversation c, string textSnippet)
+{
+    local ConEvent e;
+    local ConEventSpeech s;
+    local ConEventAddNote n;
+    if( c == None ) return;
+    for(e=c.eventList; e!=None; e=e.nextEvent) {
+        s = ConEventSpeech(e);
+        if( s == None ) continue;
+        if( InStr(s.conSpeech.speech,textSnippet)!=-1) {
+            n = New class'ConEventAddNote';
+            n.nextEvent = e.nextEvent;
+            e.nextEvent = n;
+            n.noteText = s.conSpeech.speech;
+
+            n.conversation = c;
+            n.eventType = ET_AddNote;
         }
     }
 }
