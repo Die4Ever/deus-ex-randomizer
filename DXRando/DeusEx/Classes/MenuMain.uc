@@ -2,6 +2,7 @@ class DXRMenuMain injects MenuMain;
 
 var float countdown;
 var int nameLen, firstSpace, secondSpace;
+var MenuUIMenuButtonWindow randoSettingsButton;
 
 #ifdef injections
 function UpdateButtonStatus()
@@ -60,4 +61,33 @@ function Tick(float DeltaTime)
     title = l $ letter $ r;
 
     winTitle.SetTitle( title );
+}
+
+function CreateMenuButtons()
+{
+    Super.CreateMenuButtons();
+
+    winButtons[3].SetWidth((buttonWidth/2)+3); //Make settings half-width
+    winButtons[3].SetButtonText(" "$ButtonNames[3]); //Need an extra space to make the text fit right
+
+    randoSettingsButton = MenuUIMenuButtonWindow(winClient.NewChild(Class'MenuUIMenuButtonWindow'));
+    randoSettingsButton.SetButtonText("Rando");
+	randoSettingsButton.SetPos(buttonXPos+(buttonWidth/2), buttonDefaults[3].y); //Put it next to the settings button
+	randoSettingsButton.SetWidth(buttonWidth/2);
+}
+
+function bool ButtonActivated( Window buttonPressed )
+{
+    local bool bHandled;
+    bHandled = Super.ButtonActivated( buttonPressed);
+
+    if (!bHandled){
+        if (buttonPressed == randoSettingsButton){
+            // Check to see if there's somewhere to go
+			ProcessMenuAction(MA_MenuScreen, Class'MenuScreenRandoOptions');
+			bHandled = True;
+        }
+    }
+
+    return bHandled;
 }

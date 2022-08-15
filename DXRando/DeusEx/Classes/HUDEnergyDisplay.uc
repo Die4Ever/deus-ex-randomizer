@@ -12,6 +12,8 @@ var Font            textfont;
 var Texture texBackground;
 var Texture texBorder;
 
+var bool hideMeter;
+
 // ----------------------------------------------------------------------
 // InitWindow()
 // ----------------------------------------------------------------------
@@ -43,7 +45,7 @@ event Tick(float deltaSeconds)
     energyUse = GetTotalEnergyUse();
     text.SetText(class'DXRInfo'.static.FloatToString(energyUse,3)$" / Sec|n"$class'DXRInfo'.static.FloatToString(GetEnergyTimeRemaining(energyUse),1)$" sec left");
 
-    SetVisibility(energyUse>0);
+    SetVisibility(!hideMeter && energyUse>0);
 }
 
 function float GetEnergyTimeRemaining(float energyUse)
@@ -170,6 +172,11 @@ event StyleChanged()
 	    theme = player.ThemeManager.GetCurrentHUDColorTheme();
 	    colName   = theme.GetColorFromName('HUDColor_NormalText');
         text.SetTextColor(colName);
+    }
+
+    //Look up whether we should always be hidden or not
+    if(player!=None && player.FlagBase!=None){
+        hideMeter = player.FlagBase.GetBool('DXREnergyMeterHidden');
     }
 }
 

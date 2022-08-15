@@ -41,6 +41,27 @@ function InitFlags()
     }
 }
 
+//MenuChoice_PasswordAutofill sends out a ChangeStyle message when adjusted
+event StyleChanged()
+{
+    local int codes_mode;
+
+    Super.StyleChanged();
+
+    codes_mode = player.FlagBase.GetInt('Rando_codes_mode');
+    if( codes_mode == 2 ) {
+        auto_codes = true;
+    } else {
+        auto_codes = false;
+    }
+    if( codes_mode >= 1 ) {
+        known_codes = true;
+    } else {
+        known_codes = false;
+    }
+
+}
+
 static function GetActorBox(Window w, actor frobTarget, float margin, out float boxTLX, out float boxTLY, out float boxBRX, out float boxBRY)
 {
     local Mover     M;
