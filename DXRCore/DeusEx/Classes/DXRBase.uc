@@ -98,7 +98,7 @@ simulated function int rng(int max)
 
 simulated function bool rngb()
 {
-    return dxr.rng(101) > 50;
+    return dxr.rng(100) < 50;
 }
 
 simulated function float rngf()
