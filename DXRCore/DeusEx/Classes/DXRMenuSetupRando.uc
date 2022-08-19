@@ -15,8 +15,6 @@ function BindControls(optional string action)
     f = InitFlags();
 
     NewGroup("General");
-    NewMenuItem("Brightness (0-255) +", "Increase the brightness of dark areas.");
-    Slider(f.brightness, 0, 255);
 
     NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes. The original game uses 400% for realistic.");
     iDifficulty = int(combatDifficulty * 100.0);

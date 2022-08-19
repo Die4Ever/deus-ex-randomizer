@@ -28,6 +28,14 @@ var int old_pawns;// used for NYC_04_CheckPaulRaid()
 var int storedWeldCount;// ship weld points
 var int storedReactorCount;// Area 51 goal
 
+struct ZoneBrightness
+{
+    var name zonename;
+    var byte brightness;
+};
+var ZoneBrightness zone_brightness[32];
+
+
 function CheckConfig()
 {
     local int i;
@@ -140,14 +148,27 @@ function CheckConfig()
     }
 }
 
+function int GetSavedBrightnessBoost()
+{
+    return int(player().ConsoleCommand("get DeusEx.MenuChoice_BrightnessBoost BrightnessBoost"));
+}
+
 function PreFirstEntry()
 {
+    local ZoneInfo Z;
+
     Super.PreFirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" PreFirstEntry()");
 
     SetSeed( "DXRFixup PreFirstEntry" );
 
-    IncreaseBrightness(dxr.flags.brightness);
+    //Save default brightnesses
+    foreach AllActors(class'ZoneInfo',Z){
+        SaveDefaultZoneBrightness(Z);
+    }
+
+    IncreaseBrightness(GetSavedBrightnessBoost());
+
     OverwriteDecorations();
     FixFlagTriggers();
     SpawnDatacubes();
@@ -171,6 +192,8 @@ function AnyEntry()
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
     SetSeed( "DXRFixup AnyEntry" );
+
+    IncreaseBrightness(GetSavedBrightnessBoost());
 
     FixSamCarter();
     SetSeed( "DXRFixup AnyEntry missions" );
@@ -470,14 +493,24 @@ simulated function FixLogTimeout(#var(PlayerPawn) p)
 function IncreaseBrightness(int brightness)
 {
     local ZoneInfo z;
-    if(brightness <= 0) return;
 
-    Level.AmbientBrightness = Clamp( int(Level.AmbientBrightness) + brightness, 0, 255 );
+    Level.AmbientBrightness = Clamp( int(GetDefaultZoneBrightness(Level)) + brightness, 0, 255 );
     //Level.Brightness += float(brightness)/100.0;
     foreach AllActors(class'ZoneInfo', z) {
         if( z == Level ) continue;
-        z.AmbientBrightness = Clamp( int(z.AmbientBrightness) + brightness, 0, 255 );
+        z.AmbientBrightness = Clamp( int(GetDefaultZoneBrightness(z)) + brightness, 0, 255 );
     }
+}
+
+static function AdjustBrightness(DeusExPlayer a, int brightness)
+{
+    local DXRFixup f;
+
+    foreach a.AllActors(class'DXRFixup',f){
+        f.IncreaseBrightness(brightness);
+    }
+
+
 }
 
 function OverwriteDecorations()
@@ -1827,6 +1860,29 @@ function Trigger(Actor Other, Pawn Instigator)
 #ifdef vanilla
         ToggleFan();
 #endif
+    }
+}
+
+function byte GetDefaultZoneBrightness(ZoneInfo z)
+{
+    local int i;
+    for(i=0; i<ArrayCount(zone_brightness); i++) {
+        if( z.name == zone_brightness[i].zonename )
+            return zone_brightness[i].brightness;
+    }
+    return 0;
+}
+
+function SaveDefaultZoneBrightness(ZoneInfo z)
+{
+    local int i;
+    if( z.AmbientBrightness ~= 0 ) return;
+    for(i=0; i<ArrayCount(zone_brightness); i++) {
+        if( zone_brightness[i].zonename == '' || z.name == zone_brightness[i].zonename ) {
+            zone_brightness[i].zonename = z.name;
+            zone_brightness[i].brightness = z.AmbientBrightness;
+            return;
+        }
     }
 }
 

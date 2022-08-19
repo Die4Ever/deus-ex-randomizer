@@ -15,6 +15,7 @@ event InitWindow()
     choices[i++]=Class'MenuChoice_EnergyDisplay';
     choices[i++]=Class'MenuChoice_PasswordAutofill';
 #endif
+    choices[i++]=Class'MenuChoice_BrightnessBoost';
 
 	Super.InitWindow();
 }
