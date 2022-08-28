@@ -4,20 +4,20 @@
 
 class MenuChoice_EnergyDisplay extends MenuChoice_VisibleHidden;
 
+var config bool bEnergyDisplayHidden;
+
 // ----------------------------------------------------------------------
 // LoadSetting()
 // ----------------------------------------------------------------------
 event InitWindow()
 {
-
     Super.InitWindow();
-
     SetActionButtonWidth(179);
 }
 
 function LoadSetting()
 {
-    SetValue(Int(player.FlagBase.GetBool('DXREnergyMeterHidden')));
+    SetValue(Int(bEnergyDisplayHidden));
 }
 
 // ----------------------------------------------------------------------
@@ -26,9 +26,13 @@ function LoadSetting()
 
 function SaveSetting()
 {
-    player.FlagBase.SetBool('DXREnergyMeterHidden',Bool(GetValue()),,999);
-
+    local HUDEnergyDisplay hud;
+    bEnergyDisplayHidden = bool(GetValue());
+    SaveConfig();
     ChangeStyle();
+    foreach AllObjects(class'HUDEnergyDisplay', hud) {
+        hud.StyleChanged();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -37,6 +41,7 @@ function SaveSetting()
 function ResetToDefault()
 {
     SetValue(0);
+    bEnergyDisplayHidden = false;
     SaveSetting();
 }
 
@@ -45,8 +50,9 @@ function ResetToDefault()
 
 defaultproperties
 {
-     defaultInfoWidth=243
-     defaultInfoPosX=203
-     HelpText="Toggles energy consumption visibility."
-     actionText="Energy Consumption"
+    bEnergyDisplayHidden=false
+    defaultInfoWidth=243
+    defaultInfoPosX=203
+    HelpText="Toggles energy consumption visibility."
+    actionText="Energy Consumption"
 }

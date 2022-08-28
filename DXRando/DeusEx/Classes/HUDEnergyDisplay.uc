@@ -29,6 +29,7 @@ event InitWindow()
 	SetSize(73, 40);
     bTickEnabled = True;
 	CreateEnergyWindow();
+    StyleChanged();
 }
 
 // ----------------------------------------------------------------------
@@ -43,7 +44,10 @@ event Tick(float deltaSeconds)
     local float energyUse;
 
     energyUse = GetTotalEnergyUse();
-    text.SetText(class'DXRInfo'.static.FloatToString(energyUse,3)$" / Sec|n"$class'DXRInfo'.static.FloatToString(GetEnergyTimeRemaining(energyUse),1)$" sec left");
+    text.SetText(
+        class'DXRInfo'.static.FloatToString(energyUse,3) $ " / Sec|n"
+        $ class'DXRInfo'.static.FloatToString(GetEnergyTimeRemaining(energyUse),1)$" sec left"
+    );
 
     SetVisibility(!hideMeter && energyUse>0);
 }
@@ -175,8 +179,8 @@ event StyleChanged()
     }
 
     //Look up whether we should always be hidden or not
-    if(player!=None && player.FlagBase!=None){
-        hideMeter = player.FlagBase.GetBool('DXREnergyMeterHidden');
+    if(player!=None){
+        hideMeter = IsDisabled();
     }
 }
 
@@ -189,6 +193,11 @@ function SetVisibility( bool bNewVisibility )
 	Show( bNewVisibility );
 }
 
+
+function bool IsDisabled()
+{
+    return bool(player.ConsoleCommand("get #var(package).MenuChoice_EnergyDisplay bEnergyDisplayHidden"));
+}
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------

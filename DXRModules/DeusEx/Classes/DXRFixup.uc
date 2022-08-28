@@ -150,10 +150,7 @@ function CheckConfig()
 
 function int GetSavedBrightnessBoost()
 {
-    local int i;
-    i= int(player().ConsoleCommand("get #var(package).MenuChoice_BrightnessBoost BrightnessBoost"));
-    err("GetSavedBrightnessBoost() "$i);
-    return i;
+    return int(player().ConsoleCommand("get #var(package).MenuChoice_BrightnessBoost BrightnessBoost"));
 }
 
 function PreFirstEntry()
