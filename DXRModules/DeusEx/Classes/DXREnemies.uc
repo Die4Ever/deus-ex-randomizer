@@ -270,16 +270,18 @@ function AddDXRCredits(CreditsWindow cw)
     }
     cw.PrintLn();
 
-    cw.PrintHeader("Extra Weapons For Robots");
-    for(i=0; i < ArrayCount(_randombotweapons); i++) {
-        if( _randombotweapons[i].type == None ) continue;
-        weaponName = _randombotweapons[i].type.default.ItemName;
-        if (InStr(weaponName,"DEFAULT WEAPON NAME")!=-1){  //Many NPC weapons don't have proper names set
-            weaponName = String(_randombotweapons[i].type.default.Class);
+    if(dxr.flags.settings.bot_weapons!=0) {
+        cw.PrintHeader("Extra Weapons For Robots");
+        for(i=0; i < ArrayCount(_randombotweapons); i++) {
+            if( _randombotweapons[i].type == None ) continue;
+            weaponName = _randombotweapons[i].type.default.ItemName;
+            if (InStr(weaponName,"DEFAULT WEAPON NAME")!=-1){  //Many NPC weapons don't have proper names set
+                weaponName = String(_randombotweapons[i].type.default.Class);
+            }
+            cw.PrintText( weaponName $ ": " $ FloatToString(_randombotweapons[i].chance, 1) $ "%" );
         }
-        cw.PrintText( weaponName $ ": " $ FloatToString(_randombotweapons[i].chance, 1) $ "%" );
+        cw.PrintLn();
     }
-    cw.PrintLn();
 }
 
 function _RandomWeaponStruct GetWeaponConfig(int i)
