@@ -1,12 +1,11 @@
 class ComputerUIWindow injects ComputerUIWindow abstract;
 
 var DXRPasswords passwords;
-var string new_passwords[16];
+var bool addNote;
 
 function ProcessDeusExText(Name textName, optional TextWindow winText)
 {
     local DXREvents e;
-    local bool addNote;
     local int i;
 
     foreach player.AllActors(class'DXREvents', e) {
@@ -15,13 +14,6 @@ function ProcessDeusExText(Name textName, optional TextWindow winText)
     foreach player.AllActors(class'DXRPasswords', passwords) { break; }
 
     Super.ProcessDeusExText(textName, winText);
-
-    for (i=0;i<ArrayCount(new_passwords);i++){
-        if (new_passwords[i]!=""){
-            addNote = True;
-            new_passwords[i]="";
-        }
-    }
 
     if (addNote){
         TryAddingNote(winText.GetText());
@@ -33,8 +25,7 @@ function ProcessDeusExTextTag(DeusExTextParser parser, optional TextWindow winTe
     local String text;
     local byte tag;
     local string updated_passwords[16];
-    local int i,j;
-    local bool addNote;
+    local int i;
 
     tag  = parser.GetTag();
 
@@ -44,23 +35,16 @@ function ProcessDeusExTextTag(DeusExTextParser parser, optional TextWindow winTe
         case 9:				// TT_PlayerName:
         case 10:			// TT_PlayerFirstName:
             text = parser.GetText();
-            if(passwords != None) passwords.ProcessString(text,updated_passwords);
+            if(passwords != None) passwords.ProcessString(text, updated_passwords);
 
             // Add the text
             if (winText != None)
                 winText.AppendText(text);
 
-            for(j=0; j<ArrayCount(updated_passwords); j++) {
-                if( updated_passwords[j] != "" ) {
+            for(i=0; i<ArrayCount(updated_passwords); i++) {
+                if( updated_passwords[i] != "" ) {
                     addNote = True;
-                    if(passwords != None) passwords.MarkPasswordKnown(updated_passwords[j]);
-                    for (i=0;i<ArrayCount(new_passwords);i++){
-                        if (new_passwords[i]==updated_passwords[j]){
-                            break; //Don't need to add it to the list if it's already there
-                        } else if (new_passwords[i]==""){
-                            new_passwords[i]=updated_passwords[j];
-                        }
-                    }
+                    passwords.MarkPasswordKnown(updated_passwords[i]);
                 }
             }
             break;
