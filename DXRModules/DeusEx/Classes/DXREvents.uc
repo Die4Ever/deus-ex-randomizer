@@ -384,7 +384,7 @@ function SetWatchFlags() {
 #ifdef vanilla
         Tag = 'unbirth';
         foreach AllActors(class'WaterZone', water) {
-            if (water.Name=='WaterZone5'){
+            if (water.Name=='WaterZone5'){// in GMDX v10 and Revision it's WaterZone0
                 water.ZonePlayerEvent = 'unbirth';
             }
         }

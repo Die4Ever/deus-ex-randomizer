@@ -4,7 +4,8 @@ var DeusExPlayer player;
 
 event Tick(float DeltaTime)
 {
-    player.ViewShake(DeltaTime);
+    if(player != None)
+        player.ViewShake(DeltaTime);
 }
 
 function Timer()
