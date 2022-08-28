@@ -32,7 +32,7 @@ function InitFlags()
     if( player == None || player.FlagBase == None ) return;
     inited = true;
 
-    codes_mode = player.FlagBase.GetInt('Rando_codes_mode');
+    codes_mode = int(player.ConsoleCommand("get #var(package).MenuChoice_PasswordAutofill codes_mode"));
     if( codes_mode == 2 ) {
         auto_codes = true;
     }
@@ -48,7 +48,7 @@ event StyleChanged()
 
     Super.StyleChanged();
 
-    codes_mode = player.FlagBase.GetInt('Rando_codes_mode');
+    codes_mode = int(player.ConsoleCommand("get #var(package).MenuChoice_PasswordAutofill codes_mode"));
     if( codes_mode == 2 ) {
         auto_codes = true;
     } else {

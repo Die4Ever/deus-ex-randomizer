@@ -27,7 +27,7 @@ function bool GetInstantSuccess(DeusExPlayer Hacker, bool bHacked)
 {
    local int codes_mode;
    if( bHacked ) return true;
-   codes_mode = Hacker.FlagBase.GetInt('Rando_codes_mode');
+   codes_mode = int(Hacker.ConsoleCommand("get #var(package).MenuChoice_PasswordAutofill codes_mode"));
    if( codes_mode == 2 && bCodeKnown ) return true;
    return false;
 }

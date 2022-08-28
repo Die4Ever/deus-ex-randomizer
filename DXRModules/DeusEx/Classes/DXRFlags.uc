@@ -22,7 +22,6 @@ var #var(flagvarprefix) int autosave;//0=off, 1=first time entering level, 2=eve
 var #var(flagvarprefix) int maxrando;
 var #var(flagvarprefix) int newgameplus_loops;
 var #var(flagvarprefix) int crowdcontrol;
-var #var(flagvarprefix) int codes_mode;
 
 var #var(flagvarprefix) int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
 
@@ -81,7 +80,6 @@ replication
     reliable if( Role==ROLE_Authority )
         f, seed, playthrough_id, flagsversion, gamemode, loadout, maxrando, newgameplus_loops,
         settings,
-        codes_mode,
         flags_loaded;
 }
 
@@ -203,7 +201,6 @@ function InitDefaults()
     autosave = 2;
     crowdcontrol = 0;
     newgameplus_loops = 0;
-    codes_mode = 2;
 
 #ifdef hx
     difficulty = 1;
@@ -214,7 +211,6 @@ function InitDefaults()
 #endif
 
 #ifndef vanilla
-    codes_mode = 0;
     autosave = 0;
 #endif
     settings = difficulty_settings[difficulty];
@@ -655,7 +651,6 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_autosave', autosave, mode, str);
     FlagInt('Rando_crowdcontrol', crowdcontrol, mode, str);
     FlagInt('Rando_loadout', loadout, mode, str);
-    FlagInt('Rando_codes_mode', codes_mode, mode, str);
     FlagInt('Rando_newgameplus_loops', newgameplus_loops, mode, str);
     FlagInt('Rando_playthrough_id', playthrough_id, mode, str);
     FlagInt('Rando_gamemode', gamemode, mode, str);
@@ -743,8 +738,6 @@ simulated function string flagNameToHumanName(name flagname){
             return "Crowd Control";
         case 'Rando_loadout':
             return "Loadout";
-        case 'Rando_codes_mode':
-            return "Autofill Passwords";
         case 'Rando_newgameplus_loops':
             return "New Game+ Loop";
         case 'Rando_playthrough_id':
@@ -992,18 +985,6 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Autosaves Only (Hardcore)";
             }
             break;
-
-
-        case 'Rando_codes_mode':
-            if (val==0) {
-                return "No Assistance";
-            } else if (val==1) {
-                return "Mark Known Passwords";
-            } else if (val==2) {
-                return "Autofill Passwords";
-            }
-            break;
-
 
         case 'Rando_passwordsrandomized':
         case 'Rando_startinglocations':

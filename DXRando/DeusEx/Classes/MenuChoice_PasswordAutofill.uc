@@ -4,6 +4,8 @@
 
 class MenuChoice_PasswordAutofill extends MenuUIChoiceEnum;
 
+var config int codes_mode;
+
 // ----------------------------------------------------------------------
 // InitWindow()
 //
@@ -12,7 +14,6 @@ class MenuChoice_PasswordAutofill extends MenuUIChoiceEnum;
 
 event InitWindow()
 {
-
     Super.InitWindow();
 
     PopulateOptions();
@@ -33,8 +34,6 @@ function PopulateOptions()
     enumText[0] = "No Assistance";
     enumText[1] = "Mark Known Passwords";
     enumText[2] = "Autofill Passwords";
-
-    //enumText[0] = "TO DO"; //Remove once actually implemented
 }
 
 // ----------------------------------------------------------------------
@@ -43,8 +42,7 @@ function PopulateOptions()
 
 function SetInitialOption()
 {
-
-    SetValue(player.FlagBase.GetInt('Rando_codes_mode'));
+    SetValue(codes_mode);
 }
 
 // ----------------------------------------------------------------------
@@ -53,10 +51,10 @@ function SetInitialOption()
 
 function SaveSetting()
 {
-    player.FlagBase.SetInt('Rando_codes_mode',GetValue(),,999);
-
+    codes_mode = GetValue();
     //Not actually a style change, but a reasonable way to tell FrobDisplayWindow to update its flag info...
     ChangeStyle();
+    SaveConfig();
 }
 
 // ----------------------------------------------------------------------
@@ -65,7 +63,7 @@ function SaveSetting()
 
 function LoadSetting()
 {
-    SetValue(player.FlagBase.GetInt('Rando_codes_mode'));
+    SetValue(codes_mode);
 }
 
 // ----------------------------------------------------------------------
@@ -74,7 +72,8 @@ function LoadSetting()
 
 function ResetToDefault()
 {
-    SetValue(2);
+    codes_mode = default.codes_mode;
+    SetValue(codes_mode);
     SaveSetting();
 }
 
@@ -83,6 +82,7 @@ function ResetToDefault()
 
 defaultproperties
 {
+     codes_mode=2;
      defaultInfoWidth=243
      defaultInfoPosX=203
      HelpText="Help with finding passwords from your notes"
