@@ -12,7 +12,7 @@ var config int BrightnessBoost;
 
 function LoadSetting()
 {
-	saveValue = BrightnessBoost+1;
+	saveValue = BrightnessBoost;
     SetValue(saveValue);
 }
 
@@ -34,6 +34,7 @@ function CancelSetting()
 function ResetToDefault()
 {
 	BrightnessBoost = int(defaultValue);
+    SetValue(BrightnessBoost);
     AdjustBrightness(BrightnessBoost);
     SaveConfig();
 }
@@ -50,9 +51,6 @@ function SetEnumerators()
 function AdjustBrightness(int newVal)
 {
     class'DXRFixup'.static.AdjustBrightness(player,newVal);
-
-    player.FlagBase.SetInt('Rando_Brightness',newVal,,999);
-	player.ConsoleCommand("FLUSH"); //Clears the texture cache, which allows the lighting to rerender
 }
 
 // ----------------------------------------------------------------------
@@ -74,7 +72,6 @@ event bool ScalePositionChanged(Window scale, int newTickPosition,
     if(bFinal){
 	    AdjustBrightness(BrightnessBoost);
         SaveConfig();
-
     }
 
 	return false;
@@ -103,5 +100,4 @@ defaultproperties
      choiceControlPosX=203
      actionText="Brightness Boost"
      HelpText="Generally increases brightness for ease of play"
-     configSetting="DeusEx.MenuChoice_BrightnessBoost BrightnessBoost"
 }

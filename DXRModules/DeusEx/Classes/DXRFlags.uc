@@ -18,7 +18,6 @@ var #var(flagvarprefix) int flagsversion;//if you load an old game with a newer 
 
 var #var(flagvarprefix) int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
 var #var(flagvarprefix) int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
-var #var(flagvarprefix) int brightness;
 var #var(flagvarprefix) int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
 var #var(flagvarprefix) int maxrando;
 var #var(flagvarprefix) int newgameplus_loops;
@@ -80,7 +79,7 @@ var int stored_version;
 replication
 {
     reliable if( Role==ROLE_Authority )
-        f, seed, playthrough_id, flagsversion, gamemode, loadout, brightness, maxrando, newgameplus_loops,
+        f, seed, playthrough_id, flagsversion, gamemode, loadout, maxrando, newgameplus_loops,
         settings,
         codes_mode,
         flags_loaded;
@@ -201,7 +200,6 @@ function InitDefaults()
     if( dxr != None ) RollSeed();
     gamemode = 0;
     loadout = 0;
-    brightness = 15;
     autosave = 2;
     crowdcontrol = 0;
     newgameplus_loops = 0;
@@ -655,7 +653,6 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_maxrando', maxrando, mode, str);
 
     FlagInt('Rando_autosave', autosave, mode, str);
-    FlagInt('Rando_brightness', brightness, mode, str);
     FlagInt('Rando_crowdcontrol', crowdcontrol, mode, str);
     FlagInt('Rando_loadout', loadout, mode, str);
     FlagInt('Rando_codes_mode', codes_mode, mode, str);
@@ -742,8 +739,6 @@ simulated function string flagNameToHumanName(name flagname){
             return "Max Rando";
         case 'Rando_autosave':
             return "Autosave";
-        case 'Rando_brightness':
-            return "Brightness";
         case 'Rando_crowdcontrol':
             return "Crowd Control";
         case 'Rando_loadout':
@@ -923,9 +918,6 @@ simulated function string flagValToHumanVal(name flagname, int val){
 
         case 'Rando_enemyrespawn':
             return val$" seconds";
-
-        case 'Rando_brightness':
-            return "+"$val;
 
         //Medbot/Repairbot cooldown and amount options
         case 'Rando_medbotcooldowns':

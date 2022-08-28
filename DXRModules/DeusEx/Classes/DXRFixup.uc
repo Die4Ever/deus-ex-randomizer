@@ -150,7 +150,10 @@ function CheckConfig()
 
 function int GetSavedBrightnessBoost()
 {
-    return int(player().ConsoleCommand("get DeusEx.MenuChoice_BrightnessBoost BrightnessBoost"));
+    local int i;
+    i= int(player().ConsoleCommand("get #var(package).MenuChoice_BrightnessBoost BrightnessBoost"));
+    err("GetSavedBrightnessBoost() "$i);
+    return i;
 }
 
 function PreFirstEntry()
@@ -166,8 +169,6 @@ function PreFirstEntry()
     foreach AllActors(class'ZoneInfo',Z){
         SaveDefaultZoneBrightness(Z);
     }
-
-    IncreaseBrightness(GetSavedBrightnessBoost());
 
     OverwriteDecorations();
     FixFlagTriggers();
@@ -500,6 +501,7 @@ function IncreaseBrightness(int brightness)
         if( z == Level ) continue;
         z.AmbientBrightness = Clamp( int(GetDefaultZoneBrightness(z)) + brightness, 0, 255 );
     }
+    player().ConsoleCommand("FLUSH"); //Clears the texture cache, which allows the lighting to rerender
 }
 
 static function AdjustBrightness(DeusExPlayer a, int brightness)
@@ -509,8 +511,6 @@ static function AdjustBrightness(DeusExPlayer a, int brightness)
     foreach a.AllActors(class'DXRFixup',f){
         f.IncreaseBrightness(brightness);
     }
-
-
 }
 
 function OverwriteDecorations()
