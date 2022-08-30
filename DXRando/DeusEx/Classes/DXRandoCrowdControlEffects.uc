@@ -1366,7 +1366,8 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
         case "kill":
             player().Died(GetCrowdControlPawn(viewer),'CrowdControl',player().Location);
             PlayerMessage(viewer@"set off your killswitch!");
-            player().MultiplayerDeathMsg(player(),False,True,viewer,"triggering your kill switch");
+            class'DXRBigMessage'.static.CreateBigMessage(player(), None, viewer$" triggered your kill switch!", "", "");
+
             break;
 
         case "glass_legs":
