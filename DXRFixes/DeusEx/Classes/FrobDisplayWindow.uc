@@ -7,6 +7,7 @@ var localized string msgShots;
 var transient bool inited;
 var transient bool auto_codes;
 var transient bool known_codes;
+var transient bool show_keys;
 
 function DrawWindow(GC gc)
 {
@@ -39,6 +40,8 @@ function InitFlags()
     if( codes_mode >= 1 ) {
         known_codes = true;
     }
+
+    show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys show_keys"));
 }
 
 //MenuChoice_PasswordAutofill sends out a ChangeStyle message when adjusted
@@ -59,6 +62,8 @@ event StyleChanged()
     } else {
         known_codes = false;
     }
+
+    show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys show_keys"));
 
 }
 
@@ -273,6 +278,16 @@ function string MoverStrInfo(Mover m, out int numLines)
             strInfo = strInfo $ CR() $ msgDamageThreshold @ dxMover.minDamageThreshold;
         else
             strInfo = strInfo $ CR() $ msgDamageThreshold @ msgInf;
+
+        if ( show_keys ){
+            if (dxMover.KeyIDNeeded != ''){
+                if (player!=None && Player.KeyRing.HasKey(dxMover.KeyIDNeeded)){
+                    strInfo = strInfo $ CR() $ "Key acquired";
+                } else {
+                    strInfo = strInfo $ CR() $ "Key unacquired";
+                }
+            }
+        }
     }
     else
     {

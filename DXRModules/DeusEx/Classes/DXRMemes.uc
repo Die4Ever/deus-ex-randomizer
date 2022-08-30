@@ -37,6 +37,29 @@ function PlayDressUp(Actor a,class<Actor> influencer, float rotYaw)
     a.SetRotation(r);
 }
 
+function RandomLiberty()
+{
+    local NYLiberty liberty;
+    local int i;
+
+    return;
+
+    foreach AllActors(class'NYLiberty',liberty){
+        switch(Rand(11)){
+        case 0: PlayDressUp(liberty,class'Cactus1',0); return;
+        case 1: PlayDressUp(liberty,class'HKBuddha',0); return;
+        case 2: PlayDressUp(liberty,class'Basketball',0); return;
+        case 3: PlayDressUp(liberty,class'#var(prefix)DXLogo',0); return;
+        case 4: PlayDressUp(liberty,class'Flowers',0); return;
+        case 5: PlayDressUp(liberty,class'Trophy',0); return;
+        case 6: PlayDressUp(liberty,class'LiquorBottle',0); return;
+        case 7: PlayDressUp(liberty,class'ChildMale2',0); return;
+        case 8: PlayDressUp(liberty,class'WaterCooler',0); return;
+        case 9: PlayDressUp(liberty,class'VendingMachine',0); return;
+        }
+    }
+}
+
 function RandomBobPage()
 {
     local BobPageAugmented bob;
@@ -86,6 +109,12 @@ function PreFirstEntry()
     {
         case "15_AREA51_PAGE":
             RandomBobPage();
+            break;
+        case "01_NYC_UNATCOIsland":
+        case "03_NYC_UNATCOIsland":
+        case "04_NYC_UNATCOIsland":
+        case "05_NYC_UNATCOIsland":
+            RandomLiberty();
             break;
     }
 }
@@ -297,6 +326,7 @@ function RandomizeCutscene()
     }*/
 
     RandomBobPage();
+    RandomLiberty();
 }
 
 function bool is_valid(string s, class<Object> o)

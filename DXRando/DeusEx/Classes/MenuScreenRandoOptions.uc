@@ -14,8 +14,13 @@ event InitWindow()
 #ifdef vanilla
     choices[i++]=Class'MenuChoice_EnergyDisplay';
     choices[i++]=Class'MenuChoice_PasswordAutofill';
+    choices[i++]=Class'MenuChoice_ShowKeys';
 #endif
     choices[i++]=Class'MenuChoice_BrightnessBoost';
+
+    //Automatic sizing to the number of entries...
+    ClientHeight = (i+1) * 40;
+    helpPosY = ClientHeight - 40;
 
 	Super.InitWindow();
 }
@@ -40,6 +45,6 @@ defaultproperties
      actionButtons(2)=(Action=AB_Reset)
      Title="Randomizer Options"
      ClientWidth=500
-     ClientHeight=200
-     helpPosY=160
+     ClientHeight=50
+     helpPosY=10
 }
