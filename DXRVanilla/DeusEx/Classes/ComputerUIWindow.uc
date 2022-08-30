@@ -8,6 +8,8 @@ function ProcessDeusExText(Name textName, optional TextWindow winText)
     local DXREvents e;
     local int i;
 
+    addNote = False;
+
     foreach player.AllActors(class'DXREvents', e) {
         e.ReadText(textName);
     }

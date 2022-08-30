@@ -6,6 +6,9 @@ var bool addNote;
 function ProcessDeusExText(Name textName, optional TextWindow winText)
 {
     local DXREvents e;
+
+    addNote = False;
+
     foreach player.AllActors(class'DXREvents', e) {
         e.ReadText(textName);
     }
