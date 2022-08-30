@@ -65,9 +65,8 @@ function RandomBobPage()
     local BobPageAugmented bob;
     local int i;
 
-    return; //No... Not yet...
-
     foreach AllActors(class'BobPageAugmented',bob){
+        SetGlobalSeed("RandomBobPage");
         switch(Rand(28)){
         case 0: PlayDressUp(bob,class'Cactus1',8000); return;
         case 1: PlayDressUp(bob,class'Mailbox',8000); return;

@@ -684,10 +684,6 @@ function MoveActorsOut()
             a = GetActor(goals[g].actors[i]);
             if(a == None) continue;
             a.bCollideWorld = false;
-            if (a.bMovable==False){
-                //Can't SetLocation if not bMovable
-                l(a.Name$" wasn't bMovable");
-            }
             a.bMovable = True;
             success = a.SetLocation(a.Location + vect(0,0,20000));
             if (!success){
@@ -874,7 +870,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         ft.bTriggerOnceOnly = True;
         ft.bSetFlag = True;
         ft.bTrigger = True;
-        ft.flagExpiration = -1;
+        ft.flagExpiration = 999;
         ft.FlagName = '747Ambrosia';
         ft.flagValue = True;
 
@@ -1001,10 +997,6 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
     oldbCollideWorld = a.bCollideWorld;
     if(p == PHYS_None || p == PHYS_MovingBrush) a.bCollideWorld = false;
-    if (a.bMovable==False){
-        //Can't SetLocation if not bMovable
-        l(a.Name$" wasn't bMovable");
-    }
     a.bMovable=True;
     success = a.SetLocation(loc);
     if( success == false ) {

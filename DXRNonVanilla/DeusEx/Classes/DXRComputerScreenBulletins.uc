@@ -65,7 +65,11 @@ function TryAddingNote(string text)
     mapname = GetMapNameStripped();
     plaintextTag = rootWindow.StringToName(mapname$"-"$ DxrCrc(text));
 
+#ifdef revision
+    note = player.GetNote(plaintextTag, "");
+#else
     note = player.GetNote(plaintextTag);
+#endif
     if (note == None)
     {
         note = player.AddNote(text,, True);
@@ -76,7 +80,7 @@ function TryAddingNote(string text)
 function SetTextTag(DeusExNote note, Name textTag)
 {
 #ifdef revision
-    note.SetTextTag(textTag, TextPackage);
+    note.SetTextTag(textTag, "");
 #elseif hx
     // do nothing
 #else
