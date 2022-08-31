@@ -42,10 +42,13 @@ function RandomLiberty()
     local NYLiberty liberty;
     local int i;
 
-    return;
-
     foreach AllActors(class'NYLiberty',liberty){
-        switch(Rand(11)){
+        SetGlobalSeed("RandomLiberty");
+
+        if ( rng(3)!=0 ) return; //33% chance of getting a random statue
+
+        //Rotation doesn't work here because the statue is static
+        switch(rng(22)){
         case 0: PlayDressUp(liberty,class'Cactus1',0); return;
         case 1: PlayDressUp(liberty,class'HKBuddha',0); return;
         case 2: PlayDressUp(liberty,class'Basketball',0); return;
@@ -56,6 +59,19 @@ function RandomLiberty()
         case 7: PlayDressUp(liberty,class'ChildMale2',0); return;
         case 8: PlayDressUp(liberty,class'WaterCooler',0); return;
         case 9: PlayDressUp(liberty,class'VendingMachine',0); return;
+        case 10: PlayDressUp(liberty,class'SodaCan',0); return;
+        case 11: PlayDressUp(liberty,class'BoneSkull',0); return;
+        case 12: PlayDressUp(liberty,class'Liquor40oz',0); return;
+        case 13: PlayDressUp(liberty,class'Barrel1',0);liberty.Skin=Texture'Barrel1Tex8'; return; //Poison barrel
+        case 14: PlayDressUp(liberty,class'Barrel1',0);liberty.Skin=Texture'Barrel1Tex11'; return; //Yellow barrel
+        case 15: PlayDressUp(liberty,class'BobPageAugmented',0); return;
+        case 16: PlayDressUp(liberty,class'JCDouble',0); return;
+        case 17: PlayDressUp(liberty,class'Tree1',0); return;
+        case 18: PlayDressUp(liberty,class'Tree2',0); return; //Tree3 looks bad, that's why it isn't here
+        case 19: PlayDressUp(liberty,class'Tree4',0); return;
+        case 20: PlayDressUp(liberty,class'Vase1',0); return;
+        case 21: PlayDressUp(liberty,class'Lamp1',0); return;
+
         }
     }
 }
@@ -67,7 +83,10 @@ function RandomBobPage()
 
     foreach AllActors(class'BobPageAugmented',bob){
         SetGlobalSeed("RandomBobPage");
-        switch(Rand(28)){
+
+        if ( rng(3)!=0 ) return; //33% chance of getting a random bob
+
+        switch(rng(28)){
         case 0: PlayDressUp(bob,class'Cactus1',8000); return;
         case 1: PlayDressUp(bob,class'Mailbox',8000); return;
         case 2: PlayDressUp(bob,class'CarWrecked',8000); return;
