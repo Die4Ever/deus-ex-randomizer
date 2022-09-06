@@ -221,6 +221,24 @@ simulated static function string FloatToString(float f, int decimal_places)
     return s;
 }
 
+simulated static function String TruncateFloat(float val, int numDec)
+{
+    local string trunc;
+    local int truncPoint;
+
+    trunc = string(val);
+    truncPoint = InStr(trunc,".");
+
+    if (truncPoint==-1){
+        return trunc;
+    }
+
+    truncPoint++; //include the decimal point...
+    truncPoint+=numDec;
+
+    return Left(trunc,truncPoint);
+}
+
 function string ActorToString( Actor a )
 {
     local string out;

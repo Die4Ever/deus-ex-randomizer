@@ -83,7 +83,7 @@ function CloseScreen(String action)
 function CreateKnownAccountsWindow()
 {
     local int codes_mode;
-    codes_mode = Player.FlagBase.GetInt('Rando_codes_mode');
+    codes_mode = int(player.ConsoleCommand("get #var(package).MenuChoice_PasswordAutofill codes_mode"));
     if( codes_mode < 1 ) return;
 
     winKnownShadow = ShadowWindow(NewChild(Class'ShadowWindow'));

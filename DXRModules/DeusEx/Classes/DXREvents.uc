@@ -74,6 +74,7 @@ function SetWatchFlags() {
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
         WatchFlag('M02BillyDone');
+        WatchFlag('AmbrosiaTagged');
         WatchFlag('MS_DL_Played', true);// this is the datalink played after dealing with the hostage situation, from Mission02.uc
 
         foreach AllActors(class'ChildMale', child) {
@@ -123,7 +124,17 @@ function SetWatchFlags() {
         WatchFlag('DXREvents_LeftOnBoat');
         break;
     case "03_NYC_AIRFIELD":
+        WatchFlag('BoatDocksAmbrosia');
         Tag = 'arctrigger';
+        break;
+    case "03_NYC_AIRFIELDHELIBASE":
+        WatchFlag('HelicopterBaseAmbrosia');
+        break;
+    case "03_NYC_HANGAR":
+        RewatchFlag('747Ambrosia');
+        break;
+    case "03_NYC_747":
+        RewatchFlag('747Ambrosia');
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
@@ -368,6 +379,16 @@ function SetWatchFlags() {
                 book.textTag = '15_Book02';  //Put that good Thursday man back where he (probably) belongs
             }
         }
+        break;
+    case "15_AREA51_PAGE":
+#ifdef vanilla
+        Tag = 'unbirth';
+        foreach AllActors(class'WaterZone', water) {
+            if (water.Name=='WaterZone5'){// in GMDX v10 and Revision it's WaterZone0
+                water.ZonePlayerEvent = 'unbirth';
+            }
+        }
+#endif
         break;
     }
 }
@@ -1231,6 +1252,12 @@ function _MarkBingo(coerce string eventname)
         case "KarkianBaby_ClassDead":
             eventname="Karkian_ClassDead";
             break;
+        case "AmbrosiaTagged":
+        case "BoatDocksAmbrosia":
+        case "HelicopterBaseAmbrosia":
+        case "747Ambrosia":
+            eventname="StolenAmbrosia";
+            break;
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
@@ -1413,6 +1440,10 @@ defaultproperties
     bingo_options(111)=(event="MolePeopleSlaughtered",desc="Slaughter the Mole People",max=1)
     bingo_options(112)=(event="surrender",desc="Make the NSF surrender in the Mole People tunnels",max=1)
     bingo_options(113)=(event="nanocage",desc="Open the cages in the UNATCO MJ12 Lab",max=1)
+#ifdef vanilla
+    bingo_options(114)=(event="unbirth",desc="Return to the tube that spawned you",max=1)
+#endif
+    bingo_options(115)=(event="StolenAmbrosia",desc="Find 3 stolen barrels of Ambrosia",max=3)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")

@@ -18,12 +18,10 @@ var #var(flagvarprefix) int flagsversion;//if you load an old game with a newer 
 
 var #var(flagvarprefix) int gamemode;//0=original, 1=rearranged, 2=horde, 3=kill bob page, 4=stick to the prod, 5=stick to the prod +, 6=how about some soy food, 7=max rando
 var #var(flagvarprefix) int loadout;//0=none, 1=stick with the prod, 2=stick with the prod plus
-var #var(flagvarprefix) int brightness;
 var #var(flagvarprefix) int autosave;//0=off, 1=first time entering level, 2=every loading screen, 3=autosave-only
 var #var(flagvarprefix) int maxrando;
 var #var(flagvarprefix) int newgameplus_loops;
 var #var(flagvarprefix) int crowdcontrol;
-var #var(flagvarprefix) int codes_mode;
 
 var #var(flagvarprefix) int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
 
@@ -38,7 +36,7 @@ struct FlagsSettings {
     var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
     var int keys_containers, infodevices_containers;
     var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized;//could be bools, but int is more flexible, especially so I don't have to change the flag type
-    var int enemiesrandomized, hiddenenemiesrandomized, enemiesshuffled, enemyrespawn, infodevices;
+    var int enemiesrandomized, hiddenenemiesrandomized, enemiesshuffled, enemyrespawn, infodevices, bot_weapons;
     var int dancingpercent;
     var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
     var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
@@ -80,9 +78,8 @@ var int stored_version;
 replication
 {
     reliable if( Role==ROLE_Authority )
-        f, seed, playthrough_id, flagsversion, gamemode, loadout, brightness, maxrando, newgameplus_loops,
+        f, seed, playthrough_id, flagsversion, gamemode, loadout, maxrando, newgameplus_loops,
         settings,
-        codes_mode,
         flags_loaded;
 }
 
@@ -201,11 +198,9 @@ function InitDefaults()
     if( dxr != None ) RollSeed();
     gamemode = 0;
     loadout = 0;
-    brightness = 15;
     autosave = 2;
     crowdcontrol = 0;
     newgameplus_loops = 0;
-    codes_mode = 2;
 
 #ifdef hx
     difficulty = 1;
@@ -216,7 +211,6 @@ function InitDefaults()
 #endif
 
 #ifndef vanilla
-    codes_mode = 0;
     autosave = 0;
 #endif
     settings = difficulty_settings[difficulty];
@@ -254,6 +248,7 @@ function CheckConfig()
         difficulty_settings[i].hiddenenemiesrandomized = 20;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 40;
+        difficulty_settings[i].bot_weapons = 0;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
         difficulty_settings[i].skills_reroll_missions = 1;
@@ -315,6 +310,7 @@ function CheckConfig()
         difficulty_settings[i].hiddenenemiesrandomized = 20;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 40;
+        difficulty_settings[i].bot_weapons = 0;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
         difficulty_settings[i].skills_reroll_missions = 5;
@@ -375,6 +371,7 @@ function CheckConfig()
         difficulty_settings[i].hiddenenemiesrandomized = 30;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
+        difficulty_settings[i].bot_weapons = 0;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
         difficulty_settings[i].skills_reroll_missions = 5;
@@ -435,6 +432,7 @@ function CheckConfig()
         difficulty_settings[i].hiddenenemiesrandomized = 40;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 70;
+        difficulty_settings[i].bot_weapons = 0;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 5;
         difficulty_settings[i].skills_reroll_missions = 5;
@@ -495,6 +493,7 @@ function CheckConfig()
         difficulty_settings[i].hiddenenemiesrandomized = 50;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 80;
+        difficulty_settings[i].bot_weapons = 0;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 5;
         difficulty_settings[i].skills_reroll_missions = 5;
@@ -650,10 +649,8 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_maxrando', maxrando, mode, str);
 
     FlagInt('Rando_autosave', autosave, mode, str);
-    FlagInt('Rando_brightness', brightness, mode, str);
     FlagInt('Rando_crowdcontrol', crowdcontrol, mode, str);
     FlagInt('Rando_loadout', loadout, mode, str);
-    FlagInt('Rando_codes_mode', codes_mode, mode, str);
     FlagInt('Rando_newgameplus_loops', newgameplus_loops, mode, str);
     FlagInt('Rando_playthrough_id', playthrough_id, mode, str);
     FlagInt('Rando_gamemode', gamemode, mode, str);
@@ -709,6 +706,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_banned_skills', settings.banned_skills, mode, str);
     FlagInt('Rando_banned_skill_level', settings.banned_skill_levels, mode, str);
     FlagInt('Rando_enemies_nonhumans', settings.enemies_nonhumans, mode, str);
+    FlagInt('Rando_bot_weapons', settings.bot_weapons, mode, str);
 
     FlagInt('Rando_swapitems', settings.swapitems, mode, str);
     FlagInt('Rando_swapcontainers', settings.swapcontainers, mode, str);
@@ -736,14 +734,10 @@ simulated function string flagNameToHumanName(name flagname){
             return "Max Rando";
         case 'Rando_autosave':
             return "Autosave";
-        case 'Rando_brightness':
-            return "Brightness";
         case 'Rando_crowdcontrol':
             return "Crowd Control";
         case 'Rando_loadout':
             return "Loadout";
-        case 'Rando_codes_mode':
-            return "Autofill Passwords";
         case 'Rando_newgameplus_loops':
             return "New Game+ Loop";
         case 'Rando_playthrough_id':
@@ -836,6 +830,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Banned Skill Levels";
         case 'Rando_enemies_nonhumans':
             return "Enemy Non-Human Chance";
+        case 'Rando_bot_weapons':
+            return "Robot Weapons";
         case 'Rando_swapitems':
             return "Swap Items";
         case 'Rando_swapcontainers':
@@ -916,9 +912,6 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_enemyrespawn':
             return val$" seconds";
 
-        case 'Rando_brightness':
-            return "+"$val;
-
         //Medbot/Repairbot cooldown and amount options
         case 'Rando_medbotcooldowns':
         case 'Rando_repairbotcooldowns':
@@ -956,6 +949,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
             break;
 
         case 'Rando_keys':
+        case 'Rando_bot_weapons':
             if (val==4){
                 return "Randomized";
             } else if (val==0){
@@ -991,18 +985,6 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Autosaves Only (Hardcore)";
             }
             break;
-
-
-        case 'Rando_codes_mode':
-            if (val==0) {
-                return "No Assistance";
-            } else if (val==1) {
-                return "Mark Known Passwords";
-            } else if (val==2) {
-                return "Autofill Passwords";
-            }
-            break;
-
 
         case 'Rando_passwordsrandomized':
         case 'Rando_startinglocations':
@@ -1316,6 +1298,7 @@ simulated function InitMaxRandoSettings()
     settings.repairbots = difficulty_settings[difficulty].repairbots;
     settings.enemiesrandomized=difficulty_settings[difficulty].enemiesrandomized;
     settings.enemies_nonhumans=difficulty_settings[difficulty].enemies_nonhumans;
+    settings.bot_weapons=difficulty_settings[difficulty].bot_weapons;
     settings.turrets_move=difficulty_settings[difficulty].turrets_move;
     settings.turrets_add=difficulty_settings[difficulty].turrets_add;
     settings.skills_reroll_missions=difficulty_settings[difficulty].skills_reroll_missions;
@@ -1384,6 +1367,12 @@ simulated function RandomizeSettings(bool forceMenuOptions)
         settings.enemyrespawn = 0;
     }
 
+    if(rngb()) {
+        settings.bot_weapons = 4;
+    } else {
+        settings.enemyrespawn = 0;
+    }
+
     MaxRandoVal(settings.turrets_move);
     MaxRandoVal(settings.turrets_add);
 
@@ -1442,6 +1431,7 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     settings.hiddenenemiesrandomized = settings.enemiesrandomized;
     settings.enemiesshuffled = 0;
     settings.enemies_nonhumans = 0;
+    settings.bot_weapons = 0;
     settings.enemyrespawn = 0;
 
     settings.turrets_move = 0;
@@ -1600,7 +1590,7 @@ function RunTests()
     testbool( chance_single(100), true, "chance_single(100)");
     testbool( chance_single(50), true, "chance_single(50) 1");
     testbool( chance_single(50), false, "chance_single(50) 2");
-    testbool( chance_single(50), false, "chance_single(50) 3");
+    testbool( chance_single(50), true, "chance_single(50) 3");
     testbool( chance_single(50), false, "chance_single(50) 4");
 
     teststring( FloatToString(0.5555, 1), "0.6", "FloatToString 1");
@@ -1639,7 +1629,7 @@ function ExtendedTests()
     for(i=0;i<10000;i++)
         if(rngb()) total++;
     // close enough?
-    testint(total, 4988, "rngb()");
+    testint(total, 4992, "rngb()");
 
     for(i=0;i<1000;i++) {
         f = rngrecip(1, 2);

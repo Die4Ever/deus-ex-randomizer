@@ -8,8 +8,7 @@ var transient DXRTelemetry telemetry;
 var transient DeusExLevelInfo dxInfo;
 var transient string localURL;
 
-var int newseed;
-var int seed;
+var int seed, tseed;
 
 var transient private int CrcTable[256]; // for string hashing to do more stable seeding
 
@@ -504,20 +503,20 @@ simulated function PlayerRespawn(#var(PlayerPawn) p)
 simulated final function int SetSeed(int s)
 {
     local int oldseed;
-    oldseed = newseed;
+    oldseed = tseed;
     //log("SetSeed old seed == "$newseed$", new seed == "$s);
-    newseed = s;
+    tseed = s;
     return oldseed;
 }
 
 simulated final function int rng(int max)
 {
-    local int gen1, gen2;
-    gen2 = 2147483643;
-    gen1 = gen2/2;
-    newseed = gen1 * newseed * 5 + gen2 + (newseed/5) * 3;
-    newseed = abs(newseed);
-    return (newseed >>> 8) % max;
+    const gen1 = 1073741821;// half of gen2, rounded down
+    const gen2 = 2147483643;
+    tseed = gen1 * tseed * 5 + gen2 + (tseed/5) * 3;
+    // in unrealscript >>> is right shift and filling the left with 0s, >> shifts but keeps the sign
+    // this means we don't need abs, which is a float function anyways
+    return (tseed >>> 8) % max;
 }
 
 
@@ -535,7 +534,7 @@ simulated final function CrcInit() {
     local int IndexBit;
     local int IndexEntry;
 
-  for (IndexEntry = 0; IndexEntry < 256; IndexEntry++) {
+    for (IndexEntry = 0; IndexEntry < 256; IndexEntry++) {
         CrcValue = IndexEntry;
 
         for (IndexBit = 8; IndexBit > 0; IndexBit--)

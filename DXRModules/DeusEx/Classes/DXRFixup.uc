@@ -28,6 +28,14 @@ var int old_pawns;// used for NYC_04_CheckPaulRaid()
 var int storedWeldCount;// ship weld points
 var int storedReactorCount;// Area 51 goal
 
+struct ZoneBrightness
+{
+    var name zonename;
+    var byte brightness;
+};
+var ZoneBrightness zone_brightness[32];
+
+
 function CheckConfig()
 {
     local int i;
@@ -140,14 +148,25 @@ function CheckConfig()
     }
 }
 
+function int GetSavedBrightnessBoost()
+{
+    return int(player().ConsoleCommand("get #var(package).MenuChoice_BrightnessBoost BrightnessBoost"));
+}
+
 function PreFirstEntry()
 {
+    local ZoneInfo Z;
+
     Super.PreFirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" PreFirstEntry()");
 
     SetSeed( "DXRFixup PreFirstEntry" );
 
-    IncreaseBrightness(dxr.flags.brightness);
+    //Save default brightnesses
+    foreach AllActors(class'ZoneInfo',Z){
+        SaveDefaultZoneBrightness(Z);
+    }
+
     OverwriteDecorations();
     FixFlagTriggers();
     SpawnDatacubes();
@@ -171,6 +190,8 @@ function AnyEntry()
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
     SetSeed( "DXRFixup AnyEntry" );
+
+    IncreaseBrightness(GetSavedBrightnessBoost());
 
     FixSamCarter();
     SetSeed( "DXRFixup AnyEntry missions" );
@@ -261,16 +282,25 @@ function PostFirstEntryMapFixes()
     case "01_NYC_UNATCOHQ":
     case "03_NYC_UNATCOHQ":
     case "04_NYC_UNATCOHQ":
-    case "05_NYC_UNATCOHQ":
         foreach AllActors(class'RetinalScanner', r) {
             if( r.Event != 'retinal_msg_trigger' ) continue;
-            if( dxr.localURL == "05_NYC_UNATCOHQ" )
+            r.bHackable = false;
+            r.hackStrength = 0;
+            r.msgUsed = "";
+        }
+        break;
+    case "05_NYC_UNATCOHQ":
+        foreach AllActors(class'RetinalScanner', r) {
+            if( r.Event == 'retinal_msg_trigger' ){
                 r.Event = 'UN_blastdoor2';
-            else
-            {
-                r.bHackable = false;
+                r.bHackable = true;
                 r.hackStrength = 0;
-                r.msgUsed = "";
+                r.msgUsed = "Access De-/.&*% g r a n t e d";
+            } else if (r.Event == 'securitytrigger') {
+                r.Event = 'UNblastdoor';
+                r.bHackable = true;
+                r.hackStrength = 0;
+                r.msgUsed = "Access De-/.&*% g r a n t e d";
             }
         }
         break;
@@ -461,13 +491,22 @@ simulated function FixLogTimeout(#var(PlayerPawn) p)
 function IncreaseBrightness(int brightness)
 {
     local ZoneInfo z;
-    if(brightness <= 0) return;
 
-    Level.AmbientBrightness = Clamp( int(Level.AmbientBrightness) + brightness, 0, 255 );
+    Level.AmbientBrightness = Clamp( int(GetDefaultZoneBrightness(Level)) + brightness, 0, 255 );
     //Level.Brightness += float(brightness)/100.0;
     foreach AllActors(class'ZoneInfo', z) {
         if( z == Level ) continue;
-        z.AmbientBrightness = Clamp( int(z.AmbientBrightness) + brightness, 0, 255 );
+        z.AmbientBrightness = Clamp( int(GetDefaultZoneBrightness(z)) + brightness, 0, 255 );
+    }
+    player().ConsoleCommand("FLUSH"); //Clears the texture cache, which allows the lighting to rerender
+}
+
+static function AdjustBrightness(DeusExPlayer a, int brightness)
+{
+    local DXRFixup f;
+
+    foreach a.AllActors(class'DXRFixup',f){
+        f.IncreaseBrightness(brightness);
     }
 }
 
@@ -1439,7 +1478,12 @@ function Paris_AnyEntry()
             RemoveFears(sp);
         }
         break;
-
+    case "10_PARIS_CLUB":
+        FixConversationAddNote(GetConversation('MeetCassandra'),"with a keypad back where the offices are");
+        break;
+    case "10_PARIS_CHATEAU":
+        FixConversationAddNote(GetConversation('NicoletteInStudy'),"I used to use that computer whenever I was at home");
+        break;
     case "11_PARIS_EVERETT":
         foreach AllActors(class'TobyAtanwe', toby) {
             toby.bInvincible = false;
@@ -1632,6 +1676,7 @@ function Area51_FirstEntry()
     local DeusExMover d;
     local ComputerSecurity c;
     local Keypad k;
+    local Switch1 s;
 
 #ifdef vanilla
     switch(dxr.localURL)
@@ -1680,6 +1725,11 @@ function Area51_FirstEntry()
         foreach AllActors(class'Keypad', k) {
             if( k.validCode == "9248" )
                 k.validCode = "2242";
+        }
+        foreach AllActors(class'Switch1',s){
+            if (s.Name == 'Switch21'){
+                s.Event = 'door_page_overlook';
+            }
         }
         break;
     }
@@ -1810,6 +1860,29 @@ function Trigger(Actor Other, Pawn Instigator)
     }
 }
 
+function byte GetDefaultZoneBrightness(ZoneInfo z)
+{
+    local int i;
+    for(i=0; i<ArrayCount(zone_brightness); i++) {
+        if( z.name == zone_brightness[i].zonename )
+            return zone_brightness[i].brightness;
+    }
+    return 0;
+}
+
+function SaveDefaultZoneBrightness(ZoneInfo z)
+{
+    local int i;
+    if( z.AmbientBrightness ~= 0 ) return;
+    for(i=0; i<ArrayCount(zone_brightness); i++) {
+        if( zone_brightness[i].zonename == '' || z.name == zone_brightness[i].zonename ) {
+            zone_brightness[i].zonename = z.name;
+            zone_brightness[i].brightness = z.AmbientBrightness;
+            return;
+        }
+    }
+}
+
 
 static function DeleteConversationFlag(Conversation c, name Name, bool Value)
 {
@@ -1851,6 +1924,27 @@ static function FixConversationGiveItem(Conversation c, string fromName, Class<I
         if( t.objectName == fromName && t.giveObject == fromClass ) {
             t.objectName = string(to.name);
             t.giveObject = to;
+        }
+    }
+}
+
+static function FixConversationAddNote(Conversation c, string textSnippet)
+{
+    local ConEvent e;
+    local ConEventSpeech s;
+    local ConEventAddNote n;
+    if( c == None ) return;
+    for(e=c.eventList; e!=None; e=e.nextEvent) {
+        s = ConEventSpeech(e);
+        if( s == None ) continue;
+        if( InStr(s.conSpeech.speech,textSnippet)!=-1) {
+            n = New class'ConEventAddNote';
+            n.nextEvent = e.nextEvent;
+            e.nextEvent = n;
+            n.noteText = s.conSpeech.speech;
+
+            n.conversation = c;
+            n.eventType = ET_AddNote;
         }
     }
 }

@@ -15,6 +15,128 @@ function RandomDancing(Actor a)
     }
 }
 
+function PlayDressUp(Actor a,class<Actor> influencer, float rotYaw)
+{
+    local int i;
+    local Rotator r;
+
+    a.Texture = influencer.default.Texture;
+    a.Mesh = influencer.default.Mesh;
+    for (i=0;i<=7;i++){
+        a.MultiSkins[i] = influencer.default.MultiSkins[i];
+    }
+
+    if (influencer.default.Physics == PHYS_Rotating){
+        a.RotationRate = influencer.default.RotationRate;
+        a.SetPhysics(influencer.default.Physics);
+        a.bFixedRotationDir = influencer.default.bFixedRotationDir;
+    }
+
+    a.DrawScale = a.CollisionHeight / influencer.default.CollisionHeight;
+    r.Yaw = rotYaw;
+    a.SetRotation(r);
+}
+
+function RandomLiberty()
+{
+    local NYLiberty liberty;
+    local int i;
+
+    foreach AllActors(class'NYLiberty',liberty){
+        SetGlobalSeed("RandomLiberty");
+
+        if ( rng(3)!=0 ) return; //33% chance of getting a random statue
+
+        //Rotation doesn't work here because the statue is static
+        switch(rng(22)){
+        case 0: PlayDressUp(liberty,class'Cactus1',0); return;
+        case 1: PlayDressUp(liberty,class'HKBuddha',0); return;
+        case 2: PlayDressUp(liberty,class'Basketball',0); return;
+        case 3: PlayDressUp(liberty,class'#var(prefix)DXLogo',0); return;
+        case 4: PlayDressUp(liberty,class'Flowers',0); return;
+        case 5: PlayDressUp(liberty,class'Trophy',0); return;
+        case 6: PlayDressUp(liberty,class'LiquorBottle',0); return;
+        case 7: PlayDressUp(liberty,class'ChildMale2',0); return;
+        case 8: PlayDressUp(liberty,class'WaterCooler',0); return;
+        case 9: PlayDressUp(liberty,class'VendingMachine',0); return;
+        case 10: PlayDressUp(liberty,class'SodaCan',0); return;
+        case 11: PlayDressUp(liberty,class'BoneSkull',0); return;
+        case 12: PlayDressUp(liberty,class'Liquor40oz',0); return;
+        case 13: PlayDressUp(liberty,class'Barrel1',0);liberty.Skin=Texture'Barrel1Tex8'; return; //Poison barrel
+        case 14: PlayDressUp(liberty,class'Barrel1',0);liberty.Skin=Texture'Barrel1Tex11'; return; //Yellow barrel
+        case 15: PlayDressUp(liberty,class'BobPageAugmented',0); return;
+        case 16: PlayDressUp(liberty,class'JCDouble',0); return;
+        case 17: PlayDressUp(liberty,class'Tree1',0); return;
+        case 18: PlayDressUp(liberty,class'Tree2',0); return; //Tree3 looks bad, that's why it isn't here
+        case 19: PlayDressUp(liberty,class'Tree4',0); return;
+        case 20: PlayDressUp(liberty,class'Vase1',0); return;
+        case 21: PlayDressUp(liberty,class'Lamp1',0); return;
+
+        }
+    }
+}
+
+function RandomBobPage()
+{
+    local BobPageAugmented bob;
+    local int i;
+
+    foreach AllActors(class'BobPageAugmented',bob){
+        SetGlobalSeed("RandomBobPage");
+
+        if ( rng(3)!=0 ) return; //33% chance of getting a random bob
+
+        switch(rng(28)){
+        case 0: PlayDressUp(bob,class'Cactus1',8000); return;
+        case 1: PlayDressUp(bob,class'Mailbox',8000); return;
+        case 2: PlayDressUp(bob,class'CarWrecked',8000); return;
+        case 3: PlayDressUp(bob,class'#var(prefix)DXLogo',8000); return;
+        case 4: PlayDressUp(bob,class'HKBuddha',8000); return;
+        case 5: PlayDressUp(bob,class'Lamp1',0); return;
+        case 6: PlayDressUp(bob,class'LiquorBottle',8000); return;
+        case 7: PlayDressUp(bob,class'Microscope',0); return;
+        case 8: PlayDressUp(bob,class'Seagull',-8000); return;
+        case 9: PlayDressUp(bob,class'SignFloor',8000); return;
+        case 10: PlayDressUp(bob,class'StatueLion',8000); return;
+        case 11: PlayDressUp(bob,class'Trashbag',8000); return;
+        case 12: PlayDressUp(bob,class'Trashbag2',8000); return;
+        case 13: PlayDressUp(bob,class'TrashCan3',0); return;
+        case 14: PlayDressUp(bob,class'Basketball',8000); return;
+        case 15: PlayDressUp(bob,class'Flowers',8000); return;
+        case 16: PlayDressUp(bob,class'ChairLeather',8000); return;
+        case 17: PlayDressUp(bob,class'NYLiberty',8000); return;
+        case 18: PlayDressUp(bob,class'NYLibertyTorch',8000); return;
+        case 19: PlayDressUp(bob,class'Trophy',8000); return;
+        case 20: PlayDressUp(bob,class'MiniSub',8000); return;
+        case 21: PlayDressUp(bob,class'WaterCooler',8000); return;
+        case 22: PlayDressUp(bob,class'Mutt',-8000); return;
+        case 23: PlayDressUp(bob,class'Fish2',-8000); return;
+        case 24: PlayDressUp(bob,class'MilitaryBot',-8000); return;
+        case 25: PlayDressUp(bob,class'VendingMachine',-8000); return;
+        case 26: PlayDressUp(bob,class'Hooker1',-8000); return;
+        case 27: PlayDressUp(bob,class'ChildMale2',-8000); return;
+        }
+
+    }
+}
+
+function PreFirstEntry()
+{
+    Super.PreFirstEntry();
+    switch(dxr.localURL)
+    {
+        case "15_AREA51_PAGE":
+            RandomBobPage();
+            break;
+        case "01_NYC_UNATCOIsland":
+        case "03_NYC_UNATCOIsland":
+        case "04_NYC_UNATCOIsland":
+        case "05_NYC_UNATCOIsland":
+            RandomLiberty();
+            break;
+    }
+}
+
 function AnyEntry()
 {
     local #var(prefix)DXLogo logo;
@@ -220,6 +342,9 @@ function RandomizeCutscene()
     {
         c.bHidden = true;
     }*/
+
+    RandomBobPage();
+    RandomLiberty();
 }
 
 function bool is_valid(string s, class<Object> o)

@@ -11,7 +11,7 @@ simulated function ActivateKeypadWindow(DeusExPlayer Hacker, bool bHacked)
    {
       keypadwindow = HUDKeypadWindow(root.InvokeUIScreen(Class'HUDKeypadWindow', True));
       root.MaskBackground(True);
-      
+
       // copy the tag data to the actual class
       if (keypadwindow != None)
       {
@@ -27,9 +27,23 @@ function bool GetInstantSuccess(DeusExPlayer Hacker, bool bHacked)
 {
    local int codes_mode;
    if( bHacked ) return true;
-   codes_mode = Hacker.FlagBase.GetInt('Rando_codes_mode');
+   codes_mode = int(Hacker.ConsoleCommand("get #var(package).MenuChoice_PasswordAutofill codes_mode"));
    if( codes_mode == 2 && bCodeKnown ) return true;
    return false;
+}
+
+function RunEvents(DeusExPlayer Player, bool bSuccess)
+{
+    super.RunEvents(Player,bSuccess);
+    if (bSuccess){
+        bCodeKnown = True;
+    }
+}
+
+function ToggleLocks(DeusExPlayer Player)
+{
+    super.ToggleLocks(Player);
+    bCodeKnown = True;
 }
 
 defaultproperties

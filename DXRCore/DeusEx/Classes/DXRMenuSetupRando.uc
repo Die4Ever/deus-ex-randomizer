@@ -15,8 +15,6 @@ function BindControls(optional string action)
     f = InitFlags();
 
     NewGroup("General");
-    NewMenuItem("Brightness (0-255) +", "Increase the brightness of dark areas.");
-    Slider(f.brightness, 0, 255);
 
     NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes. The original game uses 400% for realistic.");
     iDifficulty = int(combatDifficulty * 100.0);
@@ -129,12 +127,6 @@ function BindControls(optional string action)
     EnumOption("Unchanged", 0, f.settings.keysrando);
 
     NewGroup("Passwords");
-#ifdef injections
-    NewMenuItem("", "Help with finding passwords from your notes.");
-    EnumOption("Autofill Passwords", 2, f.codes_mode);
-    EnumOption("Mark Known Passwords", 1, f.codes_mode);
-    EnumOption("No Assistance With Passwords", 0, f.codes_mode);
-#endif
 
     NewMenuItem("Electronic Devices", "Provide additional options for keypads and electronic panels.");
     EnumOption("All Hackable", 100, f.settings.deviceshackable);
@@ -154,6 +146,7 @@ function BindControls(optional string action)
     EnumOption("Unchanged", 0, f.settings.infodevices);
 
     NewGroup("Enemies");
+
     NewMenuItem("Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.");
     Slider(f.settings.enemiesrandomized, 0, 1000);
 
@@ -176,7 +169,13 @@ function BindControls(optional string action)
     NewMenuItem("Hidden Enemies Rando %", "How many enemies to add based on hidden enemies.");
     Slider(f.settings.hiddenenemiesrandomized, 0, 1000);
 
+    NewMenuItem("", "Allow robots to get randomized weapons");
+    EnumOption("Unchanged Robot Weapons", 0, f.settings.bot_weapons);
+    EnumOption("Random Robot Weapons", 4, f.settings.bot_weapons);
+
+
     NewGroup("Skills");
+
     NewMenuItem("", "Disallow downgrades to prevent scouting ahead in the new game screen.");
     EnumOption("Allow Downgrades On New Game Screen", 0, f.settings.skills_disable_downgrades);
     EnumOption("Disallow Downgrades On New Game Screen", 5, f.settings.skills_disable_downgrades);
@@ -210,6 +209,7 @@ function BindControls(optional string action)
     Slider(f.settings.skill_value_rando, 0, 100);// this is actually a wet/dry scale, so the range should be 0 to 100%
 
     NewGroup("Items");
+
     NewMenuItem("Ammo Drops %", "Make ammo more scarce.");
     Slider(f.settings.ammo, 0, 100);
 
@@ -254,6 +254,7 @@ function BindControls(optional string action)
     EnumOption("Augmented", 100, f.settings.prison_pocket);// maybe the number could be set to the number of items to keep?
 
     NewGroup("Augmentations");
+
     NewMenuItem("Speed Aug Level", "Start the game with the Speed Enhancement augmentation.");
     Slider(f.settings.speedlevel, 0, 4);
 

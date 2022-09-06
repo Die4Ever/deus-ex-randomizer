@@ -203,7 +203,7 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("02_NYC_BATTERYPARK", "Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia0', PHYS_Falling);
         AddGoalActor(goal, 1, 'SkillAwardTrigger0', PHYS_None);
         AddGoalActor(goal, 2, 'GoalCompleteTrigger0', PHYS_None);
-        AddGoalActor(goal, 3, 'FlagTrigger1', PHYS_None);
+        AddGoalActor(goal, 3, 'FlagTrigger1', PHYS_None); //Sets AmbrosiaTagged
         AddGoalActor(goal, 4, 'DataLinkTrigger1', PHYS_None);
 
         AddGoalLocation("02_NYC_BATTERYPARK", "Dock", START_LOCATION | VANILLA_START, vect(-619.571289, -3679.116455, 255.099762), rot(0, 29856, 0));
@@ -300,7 +300,44 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("03_NYC_AIRFIELD", "NE Security Tower", NORMAL_GOAL, vect(5215.076660, -4134.674316, 15.090023), rot(0, 0, 0));
         AddGoalLocation("03_NYC_AIRFIELD", "Hanger Door", NORMAL_GOAL, vect(941.941895, 283.418152, 15.090023), rot(0, 0, 0));
         AddGoalLocation("03_NYC_AIRFIELD", "Dock", NORMAL_GOAL | VANILLA_GOAL, vect(-2687.128662,2320.010986,63.774998), rot(0,0,0));
+
+        goal = AddGoal("03_NYC_AIRFIELD", "Ambrosia", GOAL_TYPE1, 'BarrelAmbrosia0', PHYS_Falling);
+        AddGoalActor(goal,1,'FlagTrigger0',PHYS_None); //Reduced radius, sets BoatDocksAmbrosia
+        AddGoalLocation("03_NYC_AIRFIELD", "Docks", GOAL_TYPE1 | VANILLA_GOAL, vect(-2482.986816,1924.479126,44.869865), rot(0,0,0));
+        AddGoalLocation("03_NYC_AIRFIELD", "Hangar Door", GOAL_TYPE1, vect(1069,289,45), rot(0,16328,0));
+        AddGoalLocation("03_NYC_AIRFIELD", "Near Electrical", GOAL_TYPE1, vect(5317,-2405,45), rot(0,16328,0));
+        AddGoalLocation("03_NYC_AIRFIELD", "Near Satellite", GOAL_TYPE1, vect(5317,3189,45), rot(0,16328,0));
+        AddGoalLocation("03_NYC_AIRFIELD", "Cargo Container", GOAL_TYPE1, vect(-220,3012,373), rot(0,25344,0));
+
         return 33;
+
+    case "03_NYC_AIRFIELDHELIBASE":
+        goal = AddGoal("03_NYC_AIRFIELDHELIBASE", "Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia1', PHYS_Falling);
+        AddGoalActor(goal,1,'FlagTrigger0',PHYS_None); //Reduced radius, sets HelicopterBaseAmbrosia
+
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Main Entrance", NORMAL_GOAL | VANILLA_GOAL, vect(47.421066,1102.545044,40.869644), rot(0,0,0));
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Womens Bathroom", NORMAL_GOAL, vect(1362,677,41), rot(0,32872,0));
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Office", NORMAL_GOAL, vect(-1403,215,41), rot(0,49152,0));
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Secret Room", NORMAL_GOAL, vect(-1149,626,215), rot(0,81896,0));
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Helipad", NORMAL_GOAL, vect(508,-399,192), rot(0,71560,0));
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Catwalk", NORMAL_GOAL, vect(1394,-1221,800), rot(0,71560,0));
+        AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Break Room", NORMAL_GOAL, vect(895,1257,206), rot(0,32856,0));
+
+        return 34;
+
+    case "03_NYC_747":
+    case "03_NYC_HANGAR":
+        goal = AddGoal("03_NYC_747", "747 Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia1', PHYS_Falling);
+        AddGoalActor(goal,1,'FlagTrigger1',PHYS_None); //Reduced radius, sets 747Ambrosia
+
+        AddGoalLocation("03_NYC_747", "Cargo", NORMAL_GOAL | VANILLA_GOAL, vect(-147.147064,-511.348846,158.870544), rot(0,15760,0));
+        AddGoalLocation("03_NYC_747", "Office", NORMAL_GOAL, vect(6,-736,339), rot(0,-32,0));
+        AddGoalLocation("03_NYC_747", "Flight Deck", NORMAL_GOAL, vect(1339,-513,484), rot(0,16480,0));
+        AddGoalLocation("03_NYC_747", "Bedroom", NORMAL_GOAL, vect(1594,-710,368), rot(0,0,0));
+        AddGoalLocation("03_NYC_HANGAR", "Near Trailers", NORMAL_GOAL, vect(1867,-1318,29), rot(0,0,0));
+        AddGoalLocation("03_NYC_HANGAR", "Near Engine", NORMAL_GOAL, vect(4140,-1554,29), rot(0,32776,0));
+
+        return 35;
 
     case "04_NYC_NSFHQ":
         AddGoal("04_NYC_NSFHQ", "Computer", NORMAL_GOAL, 'ComputerPersonal3', PHYS_Falling);
@@ -406,29 +443,67 @@ function int InitGoals(int mission, string map)
     case "09_NYC_SHIPBELOW":
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 1", NORMAL_GOAL, 'DeusExMover40', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator10', PHYS_None);
-        AddGoal("09_NYC_SHIPBELOW", "Weld Point 2", NORMAL_GOAL, 'DeusExMover16', PHYS_MovingBrush);
+        AddGoalActor(goal, 2, 'CrateExplosiveSmall1', PHYS_None);
+        //AddGoalActor(goal, 3, 'AmbientSoundTriggered5', PHYS_None);
+        goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 2", NORMAL_GOAL, 'DeusExMover16', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator4', PHYS_None);
-        AddGoal("09_NYC_SHIPBELOW", "Weld Point 3", NORMAL_GOAL, 'DeusExMover33', PHYS_MovingBrush);
+        AddGoalActor(goal, 2, 'CrateExplosiveSmall0', PHYS_None);
+        //AddGoalActor(goal, 3, 'AmbientSoundTriggered0', PHYS_None);
+        goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 3", NORMAL_GOAL, 'DeusExMover33', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator7', PHYS_None);
-        AddGoal("09_NYC_SHIPBELOW", "Weld Point 4", NORMAL_GOAL, 'DeusExMover31', PHYS_MovingBrush);
+        AddGoalActor(goal, 2, 'CrateExplosiveSmall2', PHYS_None);
+        //AddGoalActor(goal, 3, 'AmbientSoundTriggered3', PHYS_None);
+        goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 4", NORMAL_GOAL, 'DeusExMover31', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator5', PHYS_None);
-        AddGoal("09_NYC_SHIPBELOW", "Weld Point 5", NORMAL_GOAL, 'DeusExMover32', PHYS_MovingBrush);
+        AddGoalActor(goal, 2, 'CrateExplosiveSmall4', PHYS_None);
+        //AddGoalActor(goal, 3, 'AmbientSoundTriggered1', PHYS_None);
+        goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 5", NORMAL_GOAL, 'DeusExMover32', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator6', PHYS_None);
+        AddGoalActor(goal, 2, 'CrateExplosiveSmall3', PHYS_None);
+        //AddGoalActor(goal, 3, 'AmbientSoundTriggered2', PHYS_None);
 
-        AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Balcony", NORMAL_GOAL, vect(-3296.000000, -1664.000000, -112.000000), rot(0, 81920, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Hallway", NORMAL_GOAL, vect(-2480.000000, -448.000000, -144.000000), rot(0, 32768, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "SE Electrical Room", NORMAL_GOAL, vect(-3952.000000, 768.000000, -416.000000), rot(0, 0, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "South Helipad", NORMAL_GOAL, vect(-5664.000000, -928.000000, -432.000000), rot(0, 16384, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Storage Room", NORMAL_GOAL, vect(-4080.000000, -816.000000, -128.000000), rot(0, 32768, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", NORMAL_GOAL, vect(-4720.000000, 1536.000000, -144.000000), rot(0, -16384, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "Fan Room", NORMAL_GOAL, vect(-3200.000000, -48.000000, -96.000000), rot(0, 0, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "Engine Control Room", NORMAL_GOAL, vect(-288.000000, -432.000000, 112.000000), rot(-16384, 16384, 0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,1024.000000,-432.000000), rot(0,49152,0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680.000000,1647.000000,-416.000000), rot(0,49152,0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6528.000000,200.000000,-448.000000), rot(0,65536,0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1664.000000,-416.000000), rot(0,81920,0));
-        AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,-1024.000000,-416.000000), rot(0,16384,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
+        AddActorLocation(loc, 2, vect(-378, 978, -272), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Balcony", NORMAL_GOAL, vect(-3296.000000, -1664.000000, -112.000000), rot(0, 81920, 0));
+        AddActorLocation(loc, 2, vect(-3300, -1619, -112), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Hallway", NORMAL_GOAL, vect(-2480.000000, -448.000000, -144.000000), rot(0, 32768, 0));
+        AddActorLocation(loc, 2, vect(-2522, -464, -144), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "SE Electrical Room", NORMAL_GOAL, vect(-3952.000000, 768.000000, -416.000000), rot(0, 0, 0));
+        AddActorLocation(loc, 2, vect(-3908, 766, -416), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "South Helipad", NORMAL_GOAL, vect(-5664.000000, -928.000000, -432.000000), rot(0, 16384, 0));
+        AddActorLocation(loc, 2, vect(-5664, -889, -432), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Storage Room", NORMAL_GOAL, vect(-4080.000000, -816.000000, -128.000000), rot(0, 32768, 0));
+        AddActorLocation(loc, 2, vect(-4120, -816, -128), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", NORMAL_GOAL, vect(-4720.000000, 1536.000000, -144.000000), rot(0, -16384, 0));
+        AddActorLocation(loc, 2, vect(-4717, 1501, -144), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Fan Room", NORMAL_GOAL, vect(-3200.000000, -48.000000, -96.000000), rot(0, 0, 0));
+        AddActorLocation(loc, 2, vect(-3157, -48, -96), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Control Room", NORMAL_GOAL, vect(-288.000000, -432.000000, 112.000000), rot(-16384, 16384, 0));
+        AddActorLocation(loc, 2, vect(-288, -426, 62), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,1024.000000,-432.000000), rot(0,49152,0));
+        AddActorLocation(loc, 2, vect(833.449036, 993.195618, -490.899567), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680.000000,1647.000000,-416.000000), rot(0,49152,0));
+        AddActorLocation(loc, 2, vect(-3680.022217, 1616.057861, -490.899567), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6528.000000,200.000000,-448.000000), rot(0,65536,0));
+        AddActorLocation(loc, 2, vect(-6499.218750, 200.039917, -490.899567), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1664.000000,-416.000000), rot(0,81920,0));
+        AddActorLocation(loc, 2, vect(-3296.133789, -1632.118652, -490.899567), rot(0,0,0));
+
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,-1024.000000,-416.000000), rot(0,16384,0));
+        AddActorLocation(loc, 2, vect(831.944641, -996.442627, -490.899567), rot(0,0,0));
+
         return 92;
 
     case "10_PARIS_METRO":
@@ -510,7 +585,7 @@ function int InitGoals(int mission, string map)
         AddGoal("14_OCEANLAB_SILO", "Jock Escape", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
         AddGoalLocation("14_OCEANLAB_SILO", "Vanilla Escape", GOAL_TYPE1 | VANILLA_GOAL, vect(-194.602554, -5680.964355, 1507.895020), rot(0, 0, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Sniper Tower", GOAL_TYPE1, vect(-842.344604, -3827.978027, 2039.993286), rot(0, 0, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "Water", GOAL_TYPE1, vect(-94.721497, -6812.947754, -1168.635620), rot(0, 0, 0));
+        AddGoalLocation("14_OCEANLAB_SILO", "Water", GOAL_TYPE1, vect(-80,-6667,-1168), rot(0, -13568, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
         return 142;
 
@@ -527,6 +602,7 @@ function int InitGoals(int mission, string map)
 function PreFirstEntry()
 {
     local #var(prefix)AnnaNavarre anna;
+    local FlagTrigger ft;
     local int seed;
 
     Super.PreFirstEntry();
@@ -553,7 +629,27 @@ function PreFirstEntry()
             anna.HomeRot = vector(anna.Rotation);
         }
     }
-
+    else if( dxr.localURL == "03_NYC_AIRFIELDHELIBASE" ) {
+        foreach AllActors(class'FlagTrigger',ft){
+            if (ft.Name=='FlagTrigger0'){
+                ft.SetCollisionSize(150, ft.CollisionHeight);
+            }
+        }
+    }
+    else if( dxr.localURL == "03_NYC_AIRFIELD" ) {
+        foreach AllActors(class'FlagTrigger',ft){
+            if (ft.Name=='FlagTrigger0'){
+                ft.SetCollisionSize(150, ft.CollisionHeight);
+            }
+        }
+    }
+    else if( dxr.localURL == "03_NYC_747" ) {
+        foreach AllActors(class'FlagTrigger',ft){
+            if (ft.Name=='FlagTrigger1'){
+                ft.SetCollisionSize(100, ft.CollisionHeight);
+            }
+        }
+    }
     SetGlobalSeed( "DXRMissions" $ seed );
     ShuffleGoals();
 }
@@ -577,6 +673,7 @@ function MoveActorsOut()
 {
     local int g, i;
     local Actor a;
+    local bool success;
 
     if(dxr.flags.settings.goals <= 0) return;
 
@@ -587,7 +684,11 @@ function MoveActorsOut()
             a = GetActor(goals[g].actors[i]);
             if(a == None) continue;
             a.bCollideWorld = false;
-            a.SetLocation(a.Location + vect(0,0,20000));
+            a.bMovable = True;
+            success = a.SetLocation(a.Location + vect(0,0,20000));
+            if (!success){
+                l("Failed to move "$a.Name$" out");
+            }
         }
     }
 }
@@ -708,6 +809,9 @@ function Actor GetActor(out GoalActor ga)
 function CreateGoal(out Goal g, GoalLocation Loc)
 {
     local #var(prefix)ScriptedPawn sp;
+    local BarrelAmbrosia ambrosia;
+    local FlagTrigger ft;
+    local SkillAwardTrigger st;
 
     switch(g.name) {
     case "Nicolette":
@@ -748,6 +852,34 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         sp.SetOrders('Standing');
         sp.ConBindEvents();
         break;
+
+    case "747 Ambrosia":
+        ambrosia = Spawn(class'BarrelAmbrosia',, 'DXRMissions');
+        ft = Spawn(class'FlagTrigger',, 'DXRMissions');
+        st = Spawn(class'SkillAwardTrigger',, 'DXRMissions');
+        g.actors[0].a = ambrosia;
+        g.actors[1].a = ft;
+
+        //Nothing particularly special about the barrel, all the magic is in the FlagTrigger
+        ambrosia.bPushable = False;
+
+        ft.SetCollisionSize(100,40);
+        ft.Event = 'skills';
+        ft.Tag = '747BarrelUsed';
+        ft.bInitiallyActive = True;
+        ft.bTriggerOnceOnly = True;
+        ft.bSetFlag = True;
+        ft.bTrigger = True;
+        ft.flagExpiration = 999;
+        ft.FlagName = '747Ambrosia';
+        ft.flagValue = True;
+
+        st.Tag = 'skills';
+        st.SetCollision(False,False,False);
+        st.awardMessage="Goal Accomplishment Bonus";
+        st.skillPointsAdded = 100;
+        break;
+
     }
 }
 
@@ -865,6 +997,7 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
     oldbCollideWorld = a.bCollideWorld;
     if(p == PHYS_None || p == PHYS_MovingBrush) a.bCollideWorld = false;
+    a.bMovable=True;
     success = a.SetLocation(loc);
     if( success == false ) {
         a.bCollideWorld = oldbCollideWorld;
