@@ -35,7 +35,7 @@ function bool GetInstantSuccess(DeusExPlayer Hacker, bool bHacked)
 function RunEvents(DeusExPlayer Player, bool bSuccess)
 {
     super.RunEvents(Player,bSuccess);
-    if (bSuccess){
+    if (bSuccess && !WasHacked()){
         bCodeKnown = True;
     }
 }
@@ -43,7 +43,13 @@ function RunEvents(DeusExPlayer Player, bool bSuccess)
 function ToggleLocks(DeusExPlayer Player)
 {
     super.ToggleLocks(Player);
-    bCodeKnown = True;
+    if( !WasHacked() )
+        bCodeKnown = True;
+}
+
+function bool WasHacked()
+{
+    return bHackable && hackStrength == 0.0;
 }
 
 defaultproperties
