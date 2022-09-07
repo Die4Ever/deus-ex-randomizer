@@ -891,12 +891,17 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     if( note.HasPassword(newpassword))
     {
         MarkPasswordKnown(newpassword);
-    } else if( PassInStr( note.text, newpassword ) != -1 ) {
-        MarkPasswordKnown(newpassword);
-        note.SetNewPassword(newpassword);
+        return;
     }
 
+    // if the oldpassword is inside the note's new_passwords array, that means it's a coincidental collision
     if( note.HasEitherPassword(oldpassword, newpassword) ) return false;
+
+    if( PassInStr( note.text, newpassword ) != -1 ) {
+        MarkPasswordKnown(newpassword);
+        note.SetNewPassword(newpassword);
+        return;
+    }
 #endif
     if( PassInStr( note.text, oldpassword ) == -1 ) return false;
 
