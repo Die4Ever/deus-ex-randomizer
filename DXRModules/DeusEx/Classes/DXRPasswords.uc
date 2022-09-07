@@ -891,6 +891,9 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     if( note.HasPassword(newpassword))
     {
         MarkPasswordKnown(newpassword);
+    } else if( PassInStr( note.text, newpassword ) != -1 ) {
+        MarkPasswordKnown(newpassword);
+        note.SetNewPassword(newpassword);
     }
 
     if( note.HasEitherPassword(oldpassword, newpassword) ) return false;
