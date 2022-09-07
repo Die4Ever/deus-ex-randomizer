@@ -29,7 +29,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,0,3,8) ) {
+    if( ConfigOlderThan(2,1,3,1) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
 
@@ -101,6 +101,10 @@ function CheckConfig()
         not_passwords[i++] = "of Illuminati";
         not_passwords[i++] = "Tiffany";// and then manually allow "password Tiffany" inside FixCodes()
 
+        for(i=i;i<ArrayCount(not_passwords);i++) {
+            not_passwords[i] = "";
+        }
+
         i=0;
         yes_passwords[i].map = "12_VANDENBERG_COMPUTER";
         yes_passwords[i].password = "Tiffany";
@@ -126,6 +130,10 @@ function CheckConfig()
         yes_passwords[i].password = "SECURITY";
         yes_passwords[i].search_for = "PASSWORD HAS BEEN RESET TO THE DEFAULT MJ12 AND SECURITY";
         i++;
+
+        for(i=i;i<ArrayCount(yes_passwords);i++) {
+            yes_passwords[i].map = "";
+        }
     }
     for(i=0; i<ArrayCount(datacubes_rules); i++) {
         datacubes_rules[i].map = Caps(datacubes_rules[i].map);
@@ -137,6 +145,9 @@ function CheckConfig()
     }
     for(i=num_not_passwords; i<ArrayCount(not_passwords); i++) {
         not_passwords[i] = "";
+    }
+    for(i=0; i<ArrayCount(yes_passwords); i++) {
+        yes_passwords[i].map = Caps(yes_passwords[i].map);
     }
     Super.CheckConfig();
 
@@ -495,6 +506,12 @@ function FixCodes()
         case "02_NYC_HOTEL":
             newpassword = GeneratePasscode("4321");
             ReplacePassword("count back from 4", newpassword);
+            break;
+
+        case "03_NYC_AIRFIELDHELIBASE":
+            // 747 suspension crate
+            newpassword = GeneratePasscode("9905");
+            ReplacePassword("9905", newpassword);
             break;
 
         case "09_NYC_DOCKYARD":
