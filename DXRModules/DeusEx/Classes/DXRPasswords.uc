@@ -891,7 +891,7 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     if( note.HasPassword(newpassword))
     {
         MarkPasswordKnown(newpassword);
-        return;
+        return false;
     }
 
     // if the oldpassword is inside the note's new_passwords array, that means it's a coincidental collision
@@ -900,7 +900,7 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     if( PassInStr( note.text, newpassword ) != -1 ) {
         MarkPasswordKnown(newpassword);
         note.SetNewPassword(newpassword);
-        return;
+        return false;
     }
 #endif
     if( PassInStr( note.text, oldpassword ) == -1 ) return false;
