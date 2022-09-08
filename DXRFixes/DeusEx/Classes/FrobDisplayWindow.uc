@@ -308,13 +308,15 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
     {
         if (device.hackStrength != 0.0)
             strInfo = strInfo $ FormatString(device.hackStrength * 100.0) $ "%";
-        else
+        else {
             //Should try to track if the player knew the code before hacking it
             //if (codeKnown) {
             //    strInfo = device.itemName $ ": " $ msgHacked $ " (YOU KNEW THE CODE THOUGH!)";
             //} else {
                 strInfo = device.itemName $ ": " $ msgHacked;
             //}
+            return strInfo;
+        }
     }
     else
         strInfo = strInfo $ msgInf;

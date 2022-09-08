@@ -603,6 +603,7 @@ function PreFirstEntry()
 {
     local #var(prefix)AnnaNavarre anna;
     local FlagTrigger ft;
+    local #var(prefix)Barrel1 barrel;
     local int seed;
 
     Super.PreFirstEntry();
@@ -648,6 +649,12 @@ function PreFirstEntry()
             if (ft.Name=='FlagTrigger1'){
                 ft.SetCollisionSize(100, ft.CollisionHeight);
             }
+        }
+    }
+    else if( dxr.localURL == "09_NYC_GRAVEYARD" ) {
+        foreach AllActors(class'#var(prefix)Barrel1', barrel, 'BarrelOFun') {
+            barrel.bExplosive = false;
+            barrel.Destroy();
         }
     }
     SetGlobalSeed( "DXRMissions" $ seed );
@@ -813,9 +820,11 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     local FlagTrigger ft;
     local SkillAwardTrigger st;
 
+    info("CreateGoal " $ g.name @ Loc.name);
+
     switch(g.name) {
     case "Nicolette":
-        sp = Spawn(class'#var(prefix)NicoletteDuClare',, 'DXRMissions');
+        sp = Spawn(class'#var(prefix)NicoletteDuClare',, 'DXRMissions', Loc.positions[0].pos);
         g.actors[0].a = sp;
         sp.BindName = "NicoletteDuClare";
         sp.FamiliarName = "Young Woman";
@@ -827,7 +836,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
     case "Harley Filben":
         // Harley Filben is also randomized in mission 3, but not across maps
-        sp = Spawn(class'#var(prefix)HarleyFilben',, 'DXRMissions');
+        sp = Spawn(class'#var(prefix)HarleyFilben',, 'DXRMissions', Loc.positions[0].pos);
         g.actors[0].a = sp;
         sp.UnfamiliarName = "Harley Filben";
         sp.bInvincible = true;
@@ -836,7 +845,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         break;
 
     case "Vinny":
-        sp = Spawn(class'#var(prefix)NathanMadison',, 'DXRMissions');
+        sp = Spawn(class'#var(prefix)NathanMadison',, 'DXRMissions', Loc.positions[0].pos);
         g.actors[0].a = sp;
         sp.BindName = "Sailor";
         sp.FamiliarName = "Vinny";
@@ -846,7 +855,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         break;
 
     case "Joe Greene":
-        sp = Spawn(class'#var(prefix)JoeGreene',, 'DXRMissions');
+        sp = Spawn(class'#var(prefix)JoeGreene',, 'DXRMissions', Loc.positions[0].pos);
         g.actors[0].a = sp;
         sp.BarkBindName = "Male";
         sp.SetOrders('Standing');
@@ -854,7 +863,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         break;
 
     case "747 Ambrosia":
-        ambrosia = Spawn(class'BarrelAmbrosia',, 'DXRMissions');
+        ambrosia = Spawn(class'BarrelAmbrosia',, 'DXRMissions', Loc.positions[0].pos);
         ft = Spawn(class'FlagTrigger',, 'DXRMissions');
         st = Spawn(class'SkillAwardTrigger',, 'DXRMissions');
         g.actors[0].a = ambrosia;
@@ -940,7 +949,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     local string result;
 
     result = g.name $ " to " $ Loc.name;
-    l("Moving " $ result $ " ("$ Loc.positions[0].pos $")");
+    info("Moving " $ result $ " (" $ Loc.mapName @ Loc.positions[0].pos $")");
 
     if(g.mapName == dxr.localURL && Loc.mapName != dxr.localURL) {
         // delete from map

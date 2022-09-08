@@ -7,6 +7,8 @@ var travel string level_name;
 function SetNewPassword(string password)
 {
     local int i;
+    if(password == "") return;
+
     for(i=0; i < ArrayCount(new_passwords); i++) {
         if( new_passwords[i] == "" ) {
             new_passwords[i] = password;

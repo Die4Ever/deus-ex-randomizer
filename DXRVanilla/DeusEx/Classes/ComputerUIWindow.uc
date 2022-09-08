@@ -2,6 +2,7 @@ class ComputerUIWindow injects ComputerUIWindow abstract;
 
 var DXRPasswords passwords;
 var bool addNote;
+var string updated_passwords[16];
 
 function ProcessDeusExText(Name textName, optional TextWindow winText)
 {
@@ -9,6 +10,9 @@ function ProcessDeusExText(Name textName, optional TextWindow winText)
     local int i;
 
     addNote = False;
+    for(i=0; i<ArrayCount(updated_passwords); i++) {
+        updated_passwords[i] = "";
+    }
 
     foreach player.AllActors(class'DXREvents', e) {
         e.ReadText(textName);
@@ -17,6 +21,12 @@ function ProcessDeusExText(Name textName, optional TextWindow winText)
 
     Super.ProcessDeusExText(textName, winText);
 
+    for(i=0; i<ArrayCount(updated_passwords); i++) {
+        if( updated_passwords[i] != "" ) {
+            addNote = True;
+            passwords.MarkPasswordKnown(updated_passwords[i]);
+        }
+    }
     if (addNote){
         TryAddingNote(winText.GetText());
     }
@@ -26,7 +36,6 @@ function ProcessDeusExTextTag(DeusExTextParser parser, optional TextWindow winTe
 {
     local String text;
     local byte tag;
-    local string updated_passwords[16];
     local int i;
 
     tag  = parser.GetTag();
@@ -42,13 +51,6 @@ function ProcessDeusExTextTag(DeusExTextParser parser, optional TextWindow winTe
             // Add the text
             if (winText != None)
                 winText.AppendText(text);
-
-            for(i=0; i<ArrayCount(updated_passwords); i++) {
-                if( updated_passwords[i] != "" ) {
-                    addNote = True;
-                    passwords.MarkPasswordKnown(updated_passwords[i]);
-                }
-            }
             break;
 
         default:
@@ -63,6 +65,7 @@ function TryAddingNote(string text)
     local Name plaintextTag;
     local DeusExNote note;
     local DeusExRootWindow rootWindow;
+    local int i;
 
     rootWindow = DeusExRootWindow(player.rootWindow);
 
@@ -74,6 +77,10 @@ function TryAddingNote(string text)
     {
         note = player.AddNote(text,, True);
         SetTextTag(note, plaintextTag);
+    }
+
+    for(i=0; i<ArrayCount(updated_passwords); i++) {
+        note.SetNewPassword(updated_passwords[i]);
     }
 }
 
