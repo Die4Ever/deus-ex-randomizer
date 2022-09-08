@@ -603,6 +603,7 @@ function PreFirstEntry()
 {
     local #var(prefix)AnnaNavarre anna;
     local FlagTrigger ft;
+    local #var(prefix)Barrel1 barrel;
     local int seed;
 
     Super.PreFirstEntry();
@@ -648,6 +649,12 @@ function PreFirstEntry()
             if (ft.Name=='FlagTrigger1'){
                 ft.SetCollisionSize(100, ft.CollisionHeight);
             }
+        }
+    }
+    else if( dxr.localURL == "09_NYC_GRAVEYARD" ) {
+        foreach AllActors(class'#var(prefix)Barrel1', barrel, 'BarrelOFun') {
+            barrel.bExplosive = false;
+            barrel.Destroy();
         }
     }
     SetGlobalSeed( "DXRMissions" $ seed );
@@ -813,7 +820,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     local FlagTrigger ft;
     local SkillAwardTrigger st;
 
-    l("CreateGoal " $ g.name @ Loc.name);
+    info("CreateGoal " $ g.name @ Loc.name);
 
     switch(g.name) {
     case "Nicolette":
@@ -942,7 +949,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     local string result;
 
     result = g.name $ " to " $ Loc.name;
-    l("Moving " $ result $ " (" $ Loc.mapName @ Loc.positions[0].pos $")");
+    info("Moving " $ result $ " (" $ Loc.mapName @ Loc.positions[0].pos $")");
 
     if(g.mapName == dxr.localURL && Loc.mapName != dxr.localURL) {
         // delete from map
