@@ -1341,6 +1341,10 @@ function HongKong_FirstEntry()
         }
         break;
 #endif
+    case "06_HONGKONG_WANCHAI_GARAGE":
+        foreach AllActors(class'DeusExMover',d,'secret_door'){
+            d.bFrobbable=False;
+        }
     default:
         break;
     }
