@@ -1350,6 +1350,8 @@ function Shipyard_FirstEntry()
 {
     local DeusExMover m;
     local ComputerSecurity cs;
+    local Keypad2 k;
+    local Button1 b;
 
     switch(dxr.localURL)
     {
@@ -1380,6 +1382,19 @@ function Shipyard_FirstEntry()
             }
         }
 #endif
+        break;
+    case "09_NYC_DOCKYARD":
+        foreach AllActors(class'Button1',b){
+            if (b.Tag=='Button1' && b.Event=='Lift' && b.Location.Z < 200){ //Vanilla Z is 97 for the lower button, just giving some slop in case it was changed in another mod?
+                k = Spawn(class'Keypad2',,,b.Location,b.Rotation);
+                k.validCode="8675309"; //They really like Jenny in this place
+                k.bToggleLock=False;
+                k.Event='Lift';
+                b.Event=''; //If you don't unset the event, it gets called when the button is destroyed...
+                b.Destroy();
+                break;
+            }
+        }
         break;
     }
 }
