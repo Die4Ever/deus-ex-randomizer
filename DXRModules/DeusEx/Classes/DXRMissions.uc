@@ -864,17 +864,17 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
     case "747 Ambrosia":
         ambrosia = Spawn(class'BarrelAmbrosia',, 'DXRMissions', Loc.positions[0].pos);
-        ft = Spawn(class'FlagTrigger',, 'DXRMissions');
-        st = Spawn(class'SkillAwardTrigger',, 'DXRMissions');
+        ft = Spawn(class'FlagTrigger',, '747BarrelUsed', Loc.positions[1].pos);
+        st = Spawn(class'SkillAwardTrigger',, 'skills', Loc.positions[2].pos);
         g.actors[0].a = ambrosia;
         g.actors[1].a = ft;
+        g.actors[2].a = st;
 
         //Nothing particularly special about the barrel, all the magic is in the FlagTrigger
         ambrosia.bPushable = False;
 
         ft.SetCollisionSize(100,40);
         ft.Event = 'skills';
-        ft.Tag = '747BarrelUsed';
         ft.bInitiallyActive = True;
         ft.bTriggerOnceOnly = True;
         ft.bSetFlag = True;
@@ -883,7 +883,6 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         ft.FlagName = '747Ambrosia';
         ft.flagValue = True;
 
-        st.Tag = 'skills';
         st.SetCollision(False,False,False);
         st.awardMessage="Goal Accomplishment Bonus";
         st.skillPointsAdded = 100;

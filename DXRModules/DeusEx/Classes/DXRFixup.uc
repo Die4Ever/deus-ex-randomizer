@@ -1345,6 +1345,7 @@ function HongKong_FirstEntry()
         foreach AllActors(class'DeusExMover',d,'secret_door'){
             d.bFrobbable=False;
         }
+        break;
     default:
         break;
     }
