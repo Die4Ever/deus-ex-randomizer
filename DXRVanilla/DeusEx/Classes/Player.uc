@@ -880,5 +880,6 @@ function CreateColorThemeManager()
     AddColorTheme(Class'ColorThemeMenu_Black');
     AddColorTheme(Class'ColorThemeHUD_Rando');
     AddColorTheme(Class'ColorThemeMenu_Rando');
+    AddColorTheme(Class'ColorThemeHUD_Swirl');
 }
 // ---
