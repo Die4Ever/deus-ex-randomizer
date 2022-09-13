@@ -27,7 +27,7 @@ class ColorThemeHUD_Black extends ColorThemeHUD;
 
 defaultproperties
 {
-    themeName="BLACK"
+    themeName="100% BLACK"
     bSystemTheme=True
     Colors(0)=(R=0,G=0,B=0,A=0),
     Colors(1)=(R=0,G=0,B=0,A=0),

@@ -22,7 +22,7 @@ class ColorThemeHUD_Rando extends ColorThemeHUD;
 	colors(13) = HUDColor_Cursor
 */
 
-var DeusExRootWindow rootWindow;
+var DeusExPlayer player;
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
@@ -44,8 +44,8 @@ function RandomAllColors()
     for (i=0;i<=13;i++){
         Colors[i]=RandomColor();
     }
-    if (rootWindow!=None){
-        rootWindow.ChangeStyle();
+    if (DeusExRootWindow(player.rootWindow)!=None){
+        DeusExRootWindow(player.rootWindow).ChangeStyle();
     }
 }
 
@@ -58,7 +58,7 @@ function BeginPlay()
 {
     local DeusExPlayer p;
     Super.BeginPlay();
-    foreach AllActors(class'DeusExPlayer',p){rootWindow = DeusExRootWindow(p.rootWindow); }
+    foreach AllActors(class'DeusExPlayer',p){player = p; }
     RandomAllColors();
     SetTimer(0.1,true);
 }
@@ -67,6 +67,7 @@ defaultproperties
 {
     themeName="Rando"
     bSystemTheme=True
+    bAlwaysTick=True
     Colors(0)=(R=0,G=0,B=0,A=0),
     Colors(1)=(R=0,G=0,B=0,A=0),
     Colors(2)=(R=0,G=0,B=0,A=0),

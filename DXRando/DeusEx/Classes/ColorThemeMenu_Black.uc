@@ -26,18 +26,18 @@ class ColorThemeMenu_Black extends ColorThemeMenu;
 
 defaultproperties
 {
-    themeName="BLACK"
+    themeName="100% BLACK"
     bSystemTheme=True
     Colors(0)=(R=0,G=0,B=0,A=0),
     Colors(1)=(R=0,G=0,B=0,A=0),
-    Colors(2)=(R=0,G=0,B=0,A=0),
+    Colors(2)=(R=1,G=1,B=1,A=0),
     Colors(3)=(R=0,G=0,B=0,A=0),
-    Colors(4)=(R=0,G=0,B=0,A=0),
-    Colors(5)=(R=0,G=0,B=0,A=0),
+    Colors(4)=(R=1,G=1,B=1,A=0),
+    Colors(5)=(R=1,G=1,B=1,A=0),
     Colors(6)=(R=0,G=0,B=0,A=0),
     Colors(7)=(R=0,G=0,B=0,A=0),
-    Colors(8)=(R=0,G=0,B=0,A=0),
-    Colors(9)=(R=0,G=0,B=0,A=0),
+    Colors(8)=(R=1,G=1,B=1,A=0),
+    Colors(9)=(R=1,G=1,B=1,A=0),
     Colors(10)=(R=0,G=0,B=0,A=0),
     Colors(11)=(R=0,G=0,B=0,A=0),
     Colors(12)=(R=0,G=0,B=0,A=0),

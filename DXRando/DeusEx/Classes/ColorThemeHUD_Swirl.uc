@@ -22,7 +22,7 @@ class ColorThemeHUD_Swirl extends ColorThemeHUD;
 	colors(13) = HUDColor_Cursor
 */
 
-var DeusExRootWindow rootWindow;
+var DeusExPlayer player;
 var int rgbAngle[15]; //One per theme segment
 
 // ----------------------------------------------------------------------
@@ -77,8 +77,8 @@ function UpdateAllColors()
         rgbAngle[i]=(rgbAngle[i]+1)%360;
         Colors[i]=GetColorFromAngle(rgbAngle[i]);
     }
-    if (rootWindow!=None){
-        rootWindow.ChangeStyle();
+    if (DeusExRootWindow(player.rootWindow)!=None){
+        DeusExRootWindow(player.rootWindow).ChangeStyle();
     }
 }
 
@@ -91,7 +91,7 @@ function BeginPlay()
 {
     local DeusExPlayer p;
     Super.BeginPlay();
-    foreach AllActors(class'DeusExPlayer',p){rootWindow = DeusExRootWindow(p.rootWindow); }
+    foreach AllActors(class'DeusExPlayer',p){player = p; }
     RandomAllAngles();
     SetTimer(0.1,true);
 }
@@ -100,6 +100,7 @@ defaultproperties
 {
     themeName="Swirl"
     bSystemTheme=True
+    bAlwaysTick=True
     Colors(0)=(R=0,G=0,B=0,A=0),
     Colors(1)=(R=0,G=0,B=0,A=0),
     Colors(2)=(R=0,G=0,B=0,A=0),
