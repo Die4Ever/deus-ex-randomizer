@@ -127,7 +127,7 @@ function EndPlaythrough()
     time = SystemTime();
     expired = time-1;
     for( i=0; i < ArrayCount(config_data); i++) {
-        if( ! IsData(config_data[i], time) ) continue;
+        if( ! IsCurrentData(config_data[i], time) ) continue;
         if( Right(config_data[i].key, slen) != pid ) continue;
 
         config_data[i].expiration = expired;
@@ -192,15 +192,14 @@ final function GetRange(string key, out int min, out int max)
 
 function string GetConfigKey(coerce string key)
 {
-    local int i, min, max, time;
+    local int i, min, max;
 
     GetRange(key, min, max);
-    time = SystemTime();
     key = key@playthrough_id;
 
     for( i=min; i < max; i++) {
         if( config_data[i].key == key ) {
-            if( IsData(config_data[i], time) ) {
+            if( IsData(config_data[i]) ) {
                 return config_data[i].value;
             }
             else return "";
@@ -211,7 +210,7 @@ function string GetConfigKey(coerce string key)
 
 function string GetConfigIndex(int i, optional out string key)
 {
-    if( IsData(config_data[i], SystemTime()) ) {
+    if( IsData(config_data[i]) ) {
         key = config_data[i].key;
         return config_data[i].value;
     }
@@ -220,12 +219,14 @@ function string GetConfigIndex(int i, optional out string key)
 
 function bool SetConfig(coerce string key, coerce string value, int expire_seconds)
 {
-    local int i, min, max, time, oldest, oldestcreated;
+    local int i, min, max, time, oldtime, oldest, oldestcreated;
 
     GetRange(key, min, max);
     time = SystemTime();
+    oldtime = time - 86400*30;
     key = key@playthrough_id;
 
+    // first see if we're updating a key that already exists, this will probably be the most commonly hit path, for things like game time and deaths
     for( i=min; i < max; i++) {
         if( config_data[i].key == key ) {
             if( SetKVP(config_data[i], key, value, expire_seconds, time) ) {
@@ -235,8 +236,19 @@ function bool SetConfig(coerce string key, coerce string value, int expire_secon
             else return false;
         }
     }
+    // next see if we can find a slot that expired a long time ago
     for( i=min; i < max; i++) {
-        if( ! IsData(config_data[i], time) ) {
+        if( ! IsCurrentData(config_data[i], oldtime) ) {
+            if( SetKVP(config_data[i], key, value, expire_seconds, time) ) {
+                config_dirty = true;
+                return true;
+            }
+            else return false;
+        }
+    }
+    // now try to find a slot that's currently expired
+    for( i=min; i < max; i++) {
+        if( ! IsCurrentData(config_data[i], time) ) {
             if( SetKVP(config_data[i], key, value, expire_seconds, time) ) {
                 config_dirty = true;
                 return true;
@@ -264,7 +276,16 @@ function bool SetConfig(coerce string key, coerce string value, int expire_secon
     return false;
 }
 
-final function bool IsData(KVP data, int time)
+// IsData is used for reading, and allows expired data
+final function bool IsData(KVP data)
+{
+    if( data.key == "" ) return false;
+    if( data.value == "" ) return false;
+    return true;
+}
+
+// IsCurrentData is used for writing, so expired data can be freely overwritten
+final function bool IsCurrentData(KVP data, int time)
 {
     // subtraction is more resistant to integer overflow than just doing a < operator
     if( data.expiration - time < 0 ) return false;

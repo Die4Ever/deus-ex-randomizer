@@ -1751,7 +1751,7 @@ function TestStorage()
     }
     ds.EndPlaythrough();
     for(i=0;i <3 ;i++) {
-        teststring( ds.GetConfigKey(i), "", "GetConfigKey("$i$") cleared after EndPlaythrough()");
+        teststring( ds.GetConfigKey(i), i, "GetConfigKey("$i$") not cleared after EndPlaythrough()");
     }
     ds.config_dirty = false;// don't bother writing to disk
     ds.Destroy();
