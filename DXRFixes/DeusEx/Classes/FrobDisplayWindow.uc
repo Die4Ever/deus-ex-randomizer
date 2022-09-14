@@ -281,6 +281,7 @@ function string MoverStrInfo(Mover m, out int numLines)
 
         if ( show_keys ){
             if (dxMover.KeyIDNeeded != ''){
+                numLines++;
                 if (player!=None && Player.KeyRing.HasKey(dxMover.KeyIDNeeded)){
                     strInfo = strInfo $ CR() $ "Key acquired";
                 } else {
