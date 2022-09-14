@@ -23,7 +23,7 @@ struct _loadouts
     var class<Inventory>    starting_equipment[5];
     var class<Augmentation> starting_augs[5];
     var class<Actor>        item_spawns[5];
-    var int                 item_spawns_chances[5];
+    var int                 item_spawns_chances[5];// the maximum spawned in a map, average is half
 };
 
 var _loadouts _item_sets[20];
@@ -46,7 +46,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(2,0,2,3) ) {
+    if( ConfigOlderThan(2,1,4,1) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(loadouts_order); i++) {
@@ -108,7 +108,7 @@ function CheckConfig()
 #else
         item_sets[3].starting_augs = "#var(package).AugNinja";//combines AugStealth and active AugSpeed
 #endif
-        item_sets[3].item_spawns = "WeaponShuriken,5,BioelectricCell,2";
+        item_sets[3].item_spawns = "WeaponShuriken,4,BioelectricCell,2";
 
         item_sets[4].name = "Don't Give Me the GEP Gun";
         item_sets[4].player_message = "Don't Give Me the GEP Gun";
@@ -620,7 +620,7 @@ function SpawnItems()
         chance = _item_sets[loadout].item_spawns_chances[i];
         if( chance <= 0 ) continue;
 
-        for(j=0;j<mult_items_per_level*chance*2;j++) {
+        for(j=0;j<mult_items_per_level*chance;j++) {
             if( chance_single(50) ) {
                 loc = GetRandomPositionFine();
                 a = Spawn(aclass,,, loc);
