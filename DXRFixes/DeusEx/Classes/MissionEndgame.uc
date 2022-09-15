@@ -29,7 +29,7 @@ function LoadQuotes()
     AddQuote("A BOMB!","JC DENTON");
     AddQuote("OH MY GOD! JC! A BOMB!","JOCK");
     AddQuote("I SPILL MY DRINK!","IVAN");
-    AddQuote("THANKS FOR GETTING ME IN!","MERCEDES");
+    AddQuote("THANKS FOR GETTING ME IN!","TESSA");
     AddQuote("WHAT A SHAME...","JC DENTON");
     AddQuote("YOU CAN'T FIGHT IDEAS WITH BULLETS.","LEO GOLD");
     AddQuote("WHAT AN EXPENSIVE MISTAKE YOU TURNED OUT TO BE.","WALTON SIMONS");
