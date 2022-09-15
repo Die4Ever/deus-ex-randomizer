@@ -11,18 +11,17 @@ var float lastEnableCheckDestLocTime;
     log(Self$" IncreaseAgitation "$actorInstigator$", "$AgitationLevel);
 }*/
 
-function PlayDying(name damageType, vector hitLoc)
+event Destroyed()
 {
-    local DeusExPlayer p;
+    // throw whatever remains of their inventory so it isn't lost, most applicable to MIBs and other self destructing enemies
+    ThrowInventory(true);
+    Super.Destroyed();
+}
+
+function ThrowInventory(bool gibbed)
+{
     local Inventory item, nextItem;
-    local bool gibbed, drop, melee;
-
-    gibbed = (Health < -100) && !IsA('Robot');
-
-    if( gibbed ) {
-        p = DeusExPlayer(GetPlayerPawn());
-        class'DXRStats'.static.AddGibbedKill(p);
-    }
+    local bool drop, melee;
 
     item = Inventory;
     while( item != None ) {
@@ -42,6 +41,22 @@ function PlayDying(name damageType, vector hitLoc)
         }
         item = nextItem;
     }
+}
+
+function PlayDying(name damageType, vector hitLoc)
+{
+    local DeusExPlayer p;
+    local Inventory item, nextItem;
+    local bool gibbed;
+
+    gibbed = (Health < -100) && !IsA('Robot');
+
+    if( gibbed ) {
+        p = DeusExPlayer(GetPlayerPawn());
+        class'DXRStats'.static.AddGibbedKill(p);
+    }
+
+    ThrowInventory(gibbed);
 
     Super.PlayDying(damageType, hitLoc);
 }
