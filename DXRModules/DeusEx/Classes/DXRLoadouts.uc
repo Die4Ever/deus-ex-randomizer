@@ -23,7 +23,7 @@ struct _loadouts
     var class<Inventory>    starting_equipment[5];
     var class<Augmentation> starting_augs[5];
     var class<Actor>        item_spawns[5];
-    var int                 item_spawns_chances[5];// the maximum spawned in a map, average is half
+    var int                 item_spawns_chances[5];// the % spawned in each map, max of 300%
 };
 
 var _loadouts _item_sets[20];
@@ -46,7 +46,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(2,1,4,1) ) {
+    if( ConfigOlderThan(2,1,4,3) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(loadouts_order); i++) {
@@ -108,7 +108,7 @@ function CheckConfig()
 #else
         item_sets[3].starting_augs = "#var(package).AugNinja";//combines AugStealth and active AugSpeed
 #endif
-        item_sets[3].item_spawns = "WeaponShuriken,4,BioelectricCell,2";
+        item_sets[3].item_spawns = "WeaponShuriken,150,BioelectricCell,100";
 
         item_sets[4].name = "Don't Give Me the GEP Gun";
         item_sets[4].player_message = "Don't Give Me the GEP Gun";
@@ -125,6 +125,7 @@ function CheckConfig()
         item_sets[6].bans = "Engine.Weapon";
         item_sets[6].allows = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade";
         item_sets[6].starting_equipments = "WeaponLAM,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponEMPGrenade";
+        item_sets[6].item_spawns = "WeaponLAM,50,WeaponGasGrenade,50,WeaponNanoVirusGrenade,50,WeaponEMPGrenade,50";
 
         item_sets[7].name = "No Pistols";
         item_sets[7].player_message = "No Pistols";
@@ -424,6 +425,9 @@ function NinjaAdjustWeapon(DeusExWeapon w)
         case class'WeaponShuriken':
             ws.anim_speed = 1.3;
             ws.default.anim_speed = 1.3;
+            WeaponShuriken(ws).auto_pickup = true;
+            ws.DrawScale = 2;
+            ws.SetCollisionSize(16, ws.default.CollisionHeight*2);
             break;
     }
 #endif
@@ -608,7 +612,7 @@ function SpawnItems()
     local Actor a;
     local class<Actor> aclass;
     local DXRReduceItems reducer;
-    local int i, j, chance;
+    local int i, j, chance, max;
     l("SpawnItems()");
     SetSeed("SpawnItems()");
 
@@ -620,8 +624,10 @@ function SpawnItems()
         chance = _item_sets[loadout].item_spawns_chances[i];
         if( chance <= 0 ) continue;
 
-        for(j=0;j<mult_items_per_level*chance;j++) {
-            if( chance_single(50) ) {
+        chance /= 3;
+        if(chance <= 0) chance=1;
+        for(j=0;j<mult_items_per_level*3;j++) {
+            if( chance_single(chance) ) {
                 loc = GetRandomPositionFine();
                 a = Spawn(aclass,,, loc);
                 if( reducer != None && a != None )
