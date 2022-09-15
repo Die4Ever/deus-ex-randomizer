@@ -46,7 +46,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(2,1,4,2) ) {
+    if( ConfigOlderThan(2,1,4,3) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(loadouts_order); i++) {
@@ -108,7 +108,7 @@ function CheckConfig()
 #else
         item_sets[3].starting_augs = "#var(package).AugNinja";//combines AugStealth and active AugSpeed
 #endif
-        item_sets[3].item_spawns = "WeaponShuriken,200,BioelectricCell,100";
+        item_sets[3].item_spawns = "WeaponShuriken,150,BioelectricCell,100";
 
         item_sets[4].name = "Don't Give Me the GEP Gun";
         item_sets[4].player_message = "Don't Give Me the GEP Gun";
@@ -425,6 +425,9 @@ function NinjaAdjustWeapon(DeusExWeapon w)
         case class'WeaponShuriken':
             ws.anim_speed = 1.3;
             ws.default.anim_speed = 1.3;
+            WeaponShuriken(ws).auto_pickup = true;
+            ws.DrawScale = 2;
+            ws.SetCollisionSize(16, ws.default.CollisionHeight*2);
             break;
     }
 #endif
@@ -621,10 +624,10 @@ function SpawnItems()
         chance = _item_sets[loadout].item_spawns_chances[i];
         if( chance <= 0 ) continue;
 
-        max = chance / 3;
-        if(max <= 0) max=1;
-        for(j=0;j<mult_items_per_level*max;j++) {
-            if( chance_single(3) ) {
+        chance /= 3;
+        if(chance <= 0) chance=1;
+        for(j=0;j<mult_items_per_level*3;j++) {
+            if( chance_single(chance) ) {
                 loc = GetRandomPositionFine();
                 a = Spawn(aclass,,, loc);
                 if( reducer != None && a != None )
