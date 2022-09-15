@@ -390,6 +390,7 @@ function AnyEntryMapFixes()
     case 11:
         Paris_AnyEntry();
         break;
+    case 12:
     case 14:
         Vandenberg_AnyEntry();
         break;
@@ -1515,9 +1516,23 @@ function Paris_AnyEntry()
 function Vandenberg_AnyEntry()
 {
     local DataLinkTrigger dt;
+    local MIB mib;
+    local NanoKey key;
 
     switch(dxr.localURL)
     {
+    case "12_Vandenberg_gas":
+        foreach AllActors(class'MIB', mib, 'mib_garage') {
+            key = NanoKey(mib.FindInventoryType(class'NanoKey'));
+            l(mib$" has key "$key$", "$key.KeyID$", "$key.Description);
+            if(key == None) continue;
+            if(key.KeyID != '') continue;
+            l("fixing "$key$" to garage_entrance");
+            key.KeyID = 'garage_entrance';
+            key.Description = "Garage Door";
+            key.Timer();// make sure to fix the ItemName in vanilla
+        }
+        break;
     case "14_OCEANLAB_SILO":
         foreach AllActors(class'DataLinkTrigger', dt) {
             if(dt.datalinkTag == 'DL_FrontGate') {
