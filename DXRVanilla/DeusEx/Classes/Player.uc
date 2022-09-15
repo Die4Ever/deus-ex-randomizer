@@ -479,6 +479,7 @@ exec function AllPasswords()
 {
     local Computers c;
     local Keypad k;
+    local ATM a;
     local int i;
 
     foreach AllActors(class'Computers',c){
@@ -491,6 +492,11 @@ exec function AllPasswords()
         k.bCodeKnown = True;
     }
 
+    foreach AllActors(class'ATM',a){
+        for (i=0;i<ArrayCount(a.knownAccount);i++){
+            a.SetAccountKnown(i);
+        }
+    }
     ClientMessage("Set all account passwords to known");
 }
 

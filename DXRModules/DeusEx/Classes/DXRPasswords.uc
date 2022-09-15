@@ -520,6 +520,11 @@ function FixCodes()
             ReplacePassword("8675309", newpassword);
             break;
 
+        case "11_PARIS_UNDERGROUND":
+            newpassword = GeneratePasscode("wyrdred08");
+            ReplacePassword("wyrdred0", Left(newpassword, 8) );
+            break;
+
         case "15_AREA51_PAGE":
             newpassword = GeneratePasscode("7243");
             ReplacePassword("724", Left(newpassword, 3) );
