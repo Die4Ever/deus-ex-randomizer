@@ -1311,6 +1311,14 @@ function HongKong_FirstEntry()
                 d.SetKeyframe(1,vect(0,0,-136),d.Rotation);  //Make sure the keyframe exists for it to drop into the floor
                 d.bIsDoor = true; //Mark it as a door so the troops can actually open it...
             }
+            else if(d.Tag=='JockShaftTop')
+            {
+                d.bFrobbable=True;
+            }
+            else if(d.Tag=='JockShaftBottom')
+            {
+                d.bFrobbable=True;
+            }
         }
         break;
 #endif
