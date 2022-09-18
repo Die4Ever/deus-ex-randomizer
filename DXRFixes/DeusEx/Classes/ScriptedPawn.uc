@@ -14,7 +14,8 @@ var float lastEnableCheckDestLocTime;
 event Destroyed()
 {
     // throw whatever remains of their inventory so it isn't lost, most applicable to MIBs and other self destructing enemies
-    ThrowInventory(true);
+    if(Health <=0)
+        ThrowInventory(true);
     Super.Destroyed();
 }
 
