@@ -84,5 +84,9 @@ static function string RandomNamePart(DXRando dxr, int min, int max)
         }
         if ( i == 0 ) n = Caps(n);
     }
+
+    if(InStr(Caps(n), "FAG") != -1) {
+        return RandomNamePart(dxr, min, max);
+    }
     return n;
 }
