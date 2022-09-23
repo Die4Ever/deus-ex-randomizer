@@ -903,12 +903,36 @@ function Timer()
     local #var(prefix)NicoletteDuClare nico;
     local #var(prefix)BlackHelicopter chopper;
     local #var(prefix)ParticleGenerator gen;
+    local int count;
 
     Super.Timer();
     if( dxr == None ) return;
     f = dxr.flagbase;
 
     switch(dxr.localURL) {
+    case "03_NYC_HANGAR":
+        // copied from Mission03.uc, check for Ambrosia Barrels being tagged
+        if (!f.GetBool('Barrel3Checked'))
+        {
+            if (f.GetBool('747Ambrosia'))
+            {
+                count = 1;
+                if (f.GetBool('HelicopterBaseAmbrosia'))
+                    count++;
+                if (f.GetBool('BoatDocksAmbrosia'))
+                    count++;
+
+                if (count == 1)
+                    Player().StartDataLinkTransmission("DL_TaggedOne");
+                else if (count == 2)
+                    Player().StartDataLinkTransmission("DL_TaggedTwo");
+                else if (count == 3)
+                    Player().StartDataLinkTransmission("DL_TaggedThree");
+
+                f.SetBool('Barrel3Checked', True,, 4);
+            }
+        }
+        break;
     case "10_PARIS_METRO":
         if (f.GetBool('MeetNicolette_Played') &&
             !f.GetBool('NicoletteLeftClub'))
