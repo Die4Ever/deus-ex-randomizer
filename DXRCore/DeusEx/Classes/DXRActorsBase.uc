@@ -765,6 +765,21 @@ function vector GetCloserPosition(vector target, vector current, optional float 
     return farthest;
 }
 
+function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis){
+    local Actor thing,nearestThing;
+
+    foreach AllActors(nearestClass,thing) {
+        if (nearestThing==None){
+            nearestThing = thing;
+        } else {
+            if ((VSize(nearThis.Location-thing.Location)) < (VSize(nearThis.Location-nearestThing.Location))){
+                nearestThing = thing;
+            }
+        }
+    }
+    return nearestThing;
+}
+
 //I could have fuzzy logic and allow these Is___Normal functions to have overlap? or make them more strict where some normals don't classify as any of these?
 function bool IsWallNormal(vector n)
 {
