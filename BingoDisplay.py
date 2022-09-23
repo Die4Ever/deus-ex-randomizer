@@ -2,6 +2,7 @@ import time
 import sys
 from tkinter import filedialog as fd
 from tkinter import font
+from tkinter import messagebox
 from tkinter import *
 
 BUTTON_BORDER_WIDTH = 4
@@ -9,7 +10,9 @@ BUTTON_BORDER_WIDTH_TOTAL=15*BUTTON_BORDER_WIDTH
 MAGIC_GREEN="#1e641e"
 BRIGHT_GREEN="#00FF00"
 BINGO_VARIABLE_CONFIG_NAME="bingoexport"
+BINGO_MOD_LINE_DETECT="PlayerDataItem"
 NEWLY_COMPLETED_DISPLAY_TIME=80
+WINDOW_TITLE="Deus Ex Randomizer Bingo Board"
 
 class Bingo:
 
@@ -20,6 +23,7 @@ class Bingo:
         self.tkBoardText = [[None]*5 for i in range(5)]
         self.width=500
         self.height=500
+        self.selectedMod=""
         self.initDrawnBoard()
 
     def closeWindow(self):
@@ -50,7 +54,7 @@ class Bingo:
         self.win = Tk()
         self.win.protocol("WM_DELETE_WINDOW",self.closeWindow)
         self.win.bind("<Configure>",self.resize)
-        self.win.title("Deus Ex Randomizer Bingo Board")
+        self.win.title(WINDOW_TITLE)
         self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
         self.win.config(bg="black")
         self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
@@ -67,6 +71,7 @@ class Bingo:
 
 
     def drawBoard(self):
+        self.win.title(WINDOW_TITLE+" "+self.selectedMod)
         for x in range(5):
             for y in range(5):
                 boardEntry = self.board[x][y]
@@ -118,14 +123,41 @@ class Bingo:
         self.board[bingoCoord[0]][bingoCoord[1]] = bingoItem
 
     def readBingoFile(self):
+        allLines = dict()
         try:
             bingoFile = open(self.targetFile);
             for line in bingoFile:
+                if BINGO_MOD_LINE_DETECT in line:
+                    currentMod=line.strip()
+                    allLines[currentMod]=[]
                 if line.startswith(BINGO_VARIABLE_CONFIG_NAME):
                     bingoLine = line.strip()
-                    self.parseBingoLine(bingoLine)
+                    allLines[currentMod].append(bingoLine)
+                    #self.parseBingoLine(bingoLine)
         except Exception as e:
             pass
+        
+        mods=list(allLines.keys())
+
+        if self.selectedMod not in mods:
+            self.selectedMod=""
+
+        if not self.selectedMod:
+            if len(mods)>1:
+                for mod in mods:
+                    if messagebox.askyesno("Select your mod","Do you want to use "+mod):
+                        self.selectedMod=mod
+                        break
+            elif len(mods)==1:
+                self.selectedMod=mods[0]
+            else:
+                print("No mods")
+                sys.exit(0)
+
+        if self.selectedMod:
+            for line in allLines[self.selectedMod]:
+                self.parseBingoLine(line)
+
 
 
 def findBingoFile():
@@ -135,6 +167,7 @@ def findBingoFile():
     target = fd.askopenfilename(title="Locate your DXRBingo File",filetypes=filetype)
     root.destroy()
     return target
+    
 
 #####################################################################################
 
