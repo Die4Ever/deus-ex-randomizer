@@ -71,12 +71,12 @@ class Bingo:
             for y in range(5):
                 boardEntry = self.board[x][y]
                 if boardEntry!=None and self.tkBoard[x][y]!=None:
-                    desc = boardEntry["Desc"]
-                    if boardEntry["Max"]>1:
-                        desc=desc+"\n("+str(boardEntry["Progress"])+"/"+str(boardEntry["Max"])+")"
+                    desc = boardEntry["desc"]
+                    if boardEntry["max"]>1:
+                        desc=desc+"\n("+str(boardEntry["progress"])+"/"+str(boardEntry["max"])+")"
 
                     self.tkBoardText[x][y].set(desc)
-                    if boardEntry["Progress"]>=boardEntry["Max"] and boardEntry["Max"]>0:
+                    if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
                         if self.tkBoard[x][y].cget('bg')=="black":
                             self.tkBoard[x][y].countdown=NEWLY_COMPLETED_DISPLAY_TIME
                             self.tkBoard[x][y].config(bg=BRIGHT_GREEN)
@@ -109,7 +109,7 @@ class Bingo:
         bingoItem = dict()
         for field in fields:
             split = field.split("=")
-            fieldName = split[0]
+            fieldName = split[0].lower()
             fieldVal = split[1].replace('"',"")
             if fieldVal.isdigit():
                 fieldVal = int(fieldVal)
