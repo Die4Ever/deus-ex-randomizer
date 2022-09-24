@@ -71,7 +71,7 @@ class Bingo:
 
 
     def drawBoard(self):
-        self.win.title(WINDOW_TITLE+" "+self.selectedMod)
+        self.win.title(WINDOW_TITLE+" "+translateMod(self.selectedMod))
         for x in range(5):
             for y in range(5):
                 boardEntry = self.board[x][y]
@@ -145,7 +145,7 @@ class Bingo:
         if not self.selectedMod:
             if len(mods)>1:
                 for mod in mods:
-                    if messagebox.askyesno("Select your mod","Do you want to use "+mod):
+                    if messagebox.askyesno("Select your mod","Do you want to use "+translateMod(mod)):
                         self.selectedMod=mod
                         break
             elif len(mods)==1:
@@ -167,6 +167,20 @@ def findBingoFile():
     target = fd.askopenfilename(title="Locate your DXRBingo File",filetypes=filetype)
     root.destroy()
     return target
+
+def translateMod(modName):
+    if "DeusEx" in modName:
+        return "[Deus Ex Randomizer - Vanilla]"
+    elif "GMDXRandomizer" in modName:
+        return "[GMDX Randomizer]"
+    elif "RevRandomizer" in modName:
+        return "[Revision Randomizer]"
+    elif "VMDRandomizer" in modName:
+        return "[Vanilla? Madder. Randomizer]"
+    elif "HXRandomizer" in modName:
+        return "[HX Randomizer]"
+    else:
+        return modName
     
 
 #####################################################################################
