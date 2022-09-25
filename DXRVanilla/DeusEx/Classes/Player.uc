@@ -479,6 +479,7 @@ exec function AllPasswords()
 {
     local Computers c;
     local Keypad k;
+    local ATM a;
     local int i;
 
     foreach AllActors(class'Computers',c){
@@ -491,6 +492,11 @@ exec function AllPasswords()
         k.bCodeKnown = True;
     }
 
+    foreach AllActors(class'ATM',a){
+        for (i=0;i<ArrayCount(a.knownAccount);i++){
+            a.SetAccountKnown(i);
+        }
+    }
     ClientMessage("Set all account passwords to known");
 }
 
@@ -838,5 +844,50 @@ function Bool HasTwoHandedWeapon()
 function Bool IsFiring()
 {
     return Super.IsFiring();
+}
+
+function bool IsThemeAdded(Class<ColorTheme> themeClass)
+{
+	local ColorTheme curTheme;
+	local ColorTheme prevTheme;
+	local Bool bDeleted;
+
+	bDeleted    = False;
+	curTheme = ThemeManager.FirstColorTheme;
+
+	while(curTheme != None)
+	{
+		if ((curTheme.GetThemeName() == themeClass.default.themeName) && (curTheme.IsSystemTheme() == themeClass.default.bSystemTheme) && curTheme.themeType == themeClass.default.themeType)
+		{
+			return True;
+		}
+
+		curTheme = curTheme.next;
+	}
+    return False;
+
+}
+
+function AddColorTheme(Class<ColorTheme> themeClass)
+{
+    if(IsThemeAdded(themeClass)==False){
+        ThemeManager.AddTheme(themeClass);
+    }
+}
+
+function CreateColorThemeManager()
+{
+    local ColorTheme theme;
+    Super.CreateColorThemeManager();
+
+    AddColorTheme(Class'ColorThemeHUD_HotDogStand');
+    AddColorTheme(Class'ColorThemeMenu_HotDogStand');
+    AddColorTheme(Class'ColorThemeHUD_Black');
+    AddColorTheme(Class'ColorThemeMenu_Black');
+    AddColorTheme(Class'ColorThemeHUD_Rando');
+    AddColorTheme(Class'ColorThemeMenu_Rando');
+    AddColorTheme(Class'ColorThemeHUD_Swirl');
+    AddColorTheme(Class'ColorThemeMenu_Swirl');
+
 }
 // ---

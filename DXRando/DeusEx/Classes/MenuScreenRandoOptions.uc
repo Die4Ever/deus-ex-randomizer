@@ -17,6 +17,7 @@ event InitWindow()
     choices[i++]=Class'MenuChoice_ShowKeys';
 #endif
     choices[i++]=Class'MenuChoice_BrightnessBoost';
+    choices[i++]=Class'MenuChoice_ReleasePage';  //This should probably always be the bottom option
 
     //Automatic sizing to the number of entries...
     ClientHeight = (i+1) * 40;

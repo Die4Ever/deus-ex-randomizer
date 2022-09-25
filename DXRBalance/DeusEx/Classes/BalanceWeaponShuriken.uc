@@ -1,5 +1,7 @@
 class BalanceWeaponShuriken injects WeaponShuriken;
 
+var bool auto_pickup;
+
 simulated function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed, bool bWarn)
 {
     local DeusExProjectile p;
@@ -13,6 +15,20 @@ simulated function Projectile ProjectileFire(class<projectile> ProjClass, float 
     p.Velocity *= mult;
     p.AccurateRange = float(p.AccurateRange) * mult;
     return p;
+}
+
+function Touch( actor Other )
+{
+    local DeusExPlayer p;
+    Super.Touch(Other);
+
+    if(!auto_pickup) return;
+    p = DeusExPlayer(Other);
+    if(p == None) return;
+
+    if( ! class'DXRActorsBase'.static.HasItem(p, self.class) ) return;
+    p.FrobTarget = Self;
+    p.ParseRightClick();
 }
 
 simulated function TweenDown()

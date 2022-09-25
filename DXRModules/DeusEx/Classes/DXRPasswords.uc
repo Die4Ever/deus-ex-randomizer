@@ -29,7 +29,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,1,3,1) ) {
+    if( ConfigOlderThan(2,1,4,4) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
 
@@ -73,6 +73,7 @@ function CheckConfig()
         not_passwords[i++] = "called security";
         not_passwords[i++] = "that security was";
         not_passwords[i++] = "most security";
+        not_passwords[i++] = "automated security";
         not_passwords[i++] = "attention nightshift";
         not_passwords[i++] = "research wing";
         not_passwords[i++] = "nanotech research";
@@ -518,6 +519,11 @@ function FixCodes()
             // Jenny
             newpassword = GeneratePasscode("867") $ GeneratePasscode("530") $ "9";
             ReplacePassword("8675309", newpassword);
+            break;
+
+        case "11_PARIS_UNDERGROUND":
+            newpassword = GeneratePasscode("wyrdred08");
+            ReplacePassword("wyrdred0", Left(newpassword, 8) );
             break;
 
         case "15_AREA51_PAGE":

@@ -390,6 +390,7 @@ function AnyEntryMapFixes()
     case 11:
         Paris_AnyEntry();
         break;
+    case 12:
     case 14:
         Vandenberg_AnyEntry();
         break;
@@ -1310,6 +1311,14 @@ function HongKong_FirstEntry()
                 d.SetKeyframe(1,vect(0,0,-136),d.Rotation);  //Make sure the keyframe exists for it to drop into the floor
                 d.bIsDoor = true; //Mark it as a door so the troops can actually open it...
             }
+            else if(d.Tag=='JockShaftTop')
+            {
+                d.bFrobbable=True;
+            }
+            else if(d.Tag=='JockShaftBottom')
+            {
+                d.bFrobbable=True;
+            }
         }
         break;
 #endif
@@ -1341,6 +1350,11 @@ function HongKong_FirstEntry()
         }
         break;
 #endif
+    case "06_HONGKONG_WANCHAI_GARAGE":
+        foreach AllActors(class'DeusExMover',d,'secret_door'){
+            d.bFrobbable=False;
+        }
+        break;
     default:
         break;
     }
@@ -1350,6 +1364,8 @@ function Shipyard_FirstEntry()
 {
     local DeusExMover m;
     local ComputerSecurity cs;
+    local Keypad2 k;
+    local Button1 b;
 
     switch(dxr.localURL)
     {
@@ -1380,6 +1396,19 @@ function Shipyard_FirstEntry()
             }
         }
 #endif
+        break;
+    case "09_NYC_DOCKYARD":
+        foreach AllActors(class'Button1',b){
+            if (b.Tag=='Button1' && b.Event=='Lift' && b.Location.Z < 200){ //Vanilla Z is 97 for the lower button, just giving some slop in case it was changed in another mod?
+                k = Spawn(class'Keypad2',,,b.Location,b.Rotation);
+                k.validCode="8675309"; //They really like Jenny in this place
+                k.bToggleLock=False;
+                k.Event='Lift';
+                b.Event=''; //If you don't unset the event, it gets called when the button is destroyed...
+                b.Destroy();
+                break;
+            }
+        }
         break;
     }
 }
@@ -1495,9 +1524,23 @@ function Paris_AnyEntry()
 function Vandenberg_AnyEntry()
 {
     local DataLinkTrigger dt;
+    local MIB mib;
+    local NanoKey key;
 
     switch(dxr.localURL)
     {
+    case "12_Vandenberg_gas":
+        foreach AllActors(class'MIB', mib, 'mib_garage') {
+            key = NanoKey(mib.FindInventoryType(class'NanoKey'));
+            l(mib$" has key "$key$", "$key.KeyID$", "$key.Description);
+            if(key == None) continue;
+            if(key.KeyID != '') continue;
+            l("fixing "$key$" to garage_entrance");
+            key.KeyID = 'garage_entrance';
+            key.Description = "Garage Door";
+            key.Timer();// make sure to fix the ItemName in vanilla
+        }
+        break;
     case "14_OCEANLAB_SILO":
         foreach AllActors(class'DataLinkTrigger', dt) {
             if(dt.datalinkTag == 'DL_FrontGate') {

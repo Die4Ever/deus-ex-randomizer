@@ -4,6 +4,8 @@ var bool died;
 var name watchflags[32];
 var int num_watchflags;
 var int bingo_win_countdown;
+var name rewatchflags[8];
+var int num_rewatchflags;
 
 struct BingoOption {
     var string event, desc;
@@ -393,21 +395,6 @@ function SetWatchFlags() {
     }
 }
 
-function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis){
-    local Actor thing,nearestThing;
-
-    foreach AllActors(nearestClass,thing) {
-        if (nearestThing==None){
-            nearestThing = thing;
-        } else {
-            if ((VSize(nearThis.Location-thing.Location)) < (VSize(nearThis.Location-nearestThing.Location))){
-                nearestThing = thing;
-            }
-        }
-    }
-    return nearestThing;
-}
-
 function name GetKnicksTag() {
     local FlagTrigger ft;
 
@@ -433,6 +420,8 @@ function CheckPaul() {
 }
 
 function WatchFlag(name flag, optional bool disallow_immediate) {
+    // disallow_immediate means it will still be added to the watch list, but won't be checked in the first tick
+    // this is good for flag names that get reused and need to be cleared by the MissionScript, like MS_DL_Played
     if( (!disallow_immediate) && dxr.flagbase.GetBool(flag) ) {
         SendFlagEvent(flag, true);
         return;
@@ -444,8 +433,10 @@ function WatchFlag(name flag, optional bool disallow_immediate) {
 
 //Only actually add the flag to the list if it isn't already set
 function RewatchFlag(name flag, optional bool disallow_immediate){
-    if (!dxr.flagbase.GetBool(flag)){
+    if (!dxr.flagbase.GetBool(flag)) {
         WatchFlag(flag,disallow_immediate);
+        // rewatchflags will get checked in AnyEntry so they can be removed
+        rewatchflags[num_rewatchflags++] = flag;
     }
 }
 
@@ -491,8 +482,23 @@ function Ending_FirstEntry()
 
 simulated function AnyEntry()
 {
+    local int r, w;
     Super.AnyEntry();
     SetTimer(1, true);
+
+    // any rewatch flags that were set outside of this map need to be cleared from the watch list
+    for(r=0; r<num_rewatchflags; r++) {
+        if(rewatchflags[r] == '') continue;
+        if (dxr.flagbase.GetBool(rewatchflags[r])) {
+            for(w=0; w<num_watchflags; w++) {
+                if(watchflags[w] != rewatchflags[r]) continue;
+
+                num_watchflags--;
+                watchflags[w] = watchflags[num_watchflags];
+                w--;
+            }
+        }
+    }
 }
 
 simulated function bool LeoToTheBar()

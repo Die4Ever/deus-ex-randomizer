@@ -510,6 +510,10 @@ function ApplyDoorFixes()
     local int i;
 
     foreach AllActors(class'#var(Mover)', d) {
+        // vanilla knife does 5 damage
+        if(d.minDamageThreshold <= 5)
+            d.minDamageThreshold = 0;
+
         for(i=0; i<ArrayCount(door_fixes); i++) {
             if( door_fixes[i].tag != d.Tag ) continue;
             if( dxr.localURL != door_fixes[i].map ) continue;

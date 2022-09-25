@@ -2,6 +2,7 @@ import time
 import sys
 from tkinter import filedialog as fd
 from tkinter import font
+from tkinter import messagebox
 from tkinter import *
 
 BUTTON_BORDER_WIDTH = 4
@@ -9,7 +10,9 @@ BUTTON_BORDER_WIDTH_TOTAL=15*BUTTON_BORDER_WIDTH
 MAGIC_GREEN="#1e641e"
 BRIGHT_GREEN="#00FF00"
 BINGO_VARIABLE_CONFIG_NAME="bingoexport"
+BINGO_MOD_LINE_DETECT="PlayerDataItem"
 NEWLY_COMPLETED_DISPLAY_TIME=80
+WINDOW_TITLE="Deus Ex Randomizer Bingo Board"
 
 class Bingo:
 
@@ -20,6 +23,7 @@ class Bingo:
         self.tkBoardText = [[None]*5 for i in range(5)]
         self.width=500
         self.height=500
+        self.selectedMod=""
         self.initDrawnBoard()
 
     def closeWindow(self):
@@ -50,7 +54,7 @@ class Bingo:
         self.win = Tk()
         self.win.protocol("WM_DELETE_WINDOW",self.closeWindow)
         self.win.bind("<Configure>",self.resize)
-        self.win.title("Deus Ex Randomizer Bingo Board")
+        self.win.title(WINDOW_TITLE)
         self.win.geometry(str(self.width+BUTTON_BORDER_WIDTH_TOTAL)+"x"+str(self.height+BUTTON_BORDER_WIDTH_TOTAL))
         self.win.config(bg="black")
         self.pixel = PhotoImage() #Needed to allow the button width/height to be configured in pixels
@@ -67,16 +71,17 @@ class Bingo:
 
 
     def drawBoard(self):
+        self.win.title(WINDOW_TITLE+" "+translateMod(self.selectedMod))
         for x in range(5):
             for y in range(5):
                 boardEntry = self.board[x][y]
                 if boardEntry!=None and self.tkBoard[x][y]!=None:
-                    desc = boardEntry["Desc"]
-                    if boardEntry["Max"]>1:
-                        desc=desc+"\n("+str(boardEntry["Progress"])+"/"+str(boardEntry["Max"])+")"
+                    desc = boardEntry["desc"]
+                    if boardEntry["max"]>1:
+                        desc=desc+"\n("+str(boardEntry["progress"])+"/"+str(boardEntry["max"])+")"
 
                     self.tkBoardText[x][y].set(desc)
-                    if boardEntry["Progress"]>=boardEntry["Max"] and boardEntry["Max"]>0:
+                    if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
                         if self.tkBoard[x][y].cget('bg')=="black":
                             self.tkBoard[x][y].countdown=NEWLY_COMPLETED_DISPLAY_TIME
                             self.tkBoard[x][y].config(bg=BRIGHT_GREEN)
@@ -109,7 +114,7 @@ class Bingo:
         bingoItem = dict()
         for field in fields:
             split = field.split("=")
-            fieldName = split[0]
+            fieldName = split[0].lower()
             fieldVal = split[1].replace('"',"")
             if fieldVal.isdigit():
                 fieldVal = int(fieldVal)
@@ -118,14 +123,41 @@ class Bingo:
         self.board[bingoCoord[0]][bingoCoord[1]] = bingoItem
 
     def readBingoFile(self):
+        allLines = dict()
         try:
             bingoFile = open(self.targetFile);
             for line in bingoFile:
+                if BINGO_MOD_LINE_DETECT in line:
+                    currentMod=line.strip()
+                    allLines[currentMod]=[]
                 if line.startswith(BINGO_VARIABLE_CONFIG_NAME):
                     bingoLine = line.strip()
-                    self.parseBingoLine(bingoLine)
+                    allLines[currentMod].append(bingoLine)
+                    #self.parseBingoLine(bingoLine)
         except Exception as e:
             pass
+        
+        mods=list(allLines.keys())
+
+        if self.selectedMod not in mods:
+            self.selectedMod=""
+
+        if not self.selectedMod:
+            if len(mods)>1:
+                for mod in mods:
+                    if messagebox.askyesno("Select your mod","Do you want to use "+translateMod(mod)):
+                        self.selectedMod=mod
+                        break
+            elif len(mods)==1:
+                self.selectedMod=mods[0]
+            else:
+                print("No mods")
+                sys.exit(0)
+
+        if self.selectedMod:
+            for line in allLines[self.selectedMod]:
+                self.parseBingoLine(line)
+
 
 
 def findBingoFile():
@@ -135,6 +167,21 @@ def findBingoFile():
     target = fd.askopenfilename(title="Locate your DXRBingo File",filetypes=filetype)
     root.destroy()
     return target
+
+def translateMod(modName):
+    if "DeusEx" in modName:
+        return "[Deus Ex Randomizer - Vanilla]"
+    elif "GMDXRandomizer" in modName:
+        return "[GMDX Randomizer]"
+    elif "RevRandomizer" in modName:
+        return "[Revision Randomizer]"
+    elif "VMDRandomizer" in modName:
+        return "[Vanilla? Madder. Randomizer]"
+    elif "HXRandomizer" in modName:
+        return "[HX Randomizer]"
+    else:
+        return modName
+    
 
 #####################################################################################
 
