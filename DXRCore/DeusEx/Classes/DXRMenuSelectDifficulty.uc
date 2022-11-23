@@ -41,7 +41,11 @@ function BindControls(optional string action)
         }
     }
 
-    NewMenuItem("Difficulty", "Difficulty determines the default settings for the randomizer."$BR$"Hard is recommended for Deus Ex veterans.");
+    if( "VMDR175MenuSelectDifficulty" == string(self.class.name) )
+        NewMenuItem("Randomizer Difficulty", "Difficulty determines the default settings for the randomizer."$BR$"Hard is recommended for Deus Ex veterans.");
+    else
+        NewMenuItem("Difficulty", "Difficulty determines the default settings for the randomizer."$BR$"Hard is recommended for Deus Ex veterans.");
+
     if( f.VersionIsStable() )
         i=1;
     else
