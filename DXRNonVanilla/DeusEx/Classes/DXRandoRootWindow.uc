@@ -40,9 +40,14 @@ function InvokeMenu(Class<DeusExBaseWindow> newMenu)
             newMenu = class'DXRMenuMain';
             break;
 
-        // VMD
+        // VMD 1.56
         case class'MenuSelectDifficulty':
-            newMenu = class'DXRMenuSelectDifficulty';
+            newMenu = class'VMDR156MenuSelectDifficulty';
+            break;
+
+        // VMD 1.75
+        case class'VMDMenuSelectCustomDifficulty':
+            newMenu = class'VMDR175MenuSelectDifficulty';
             break;
     }
     Super.InvokeMenu(newMenu);
