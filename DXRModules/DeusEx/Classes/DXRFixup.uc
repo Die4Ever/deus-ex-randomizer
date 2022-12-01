@@ -1755,6 +1755,7 @@ function NYC_08_AnyEntry()
 #ifdef vanilla
     case "08_NYC_SMUG":
         FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
+        FixConversationGiveItem(GetConversation('FemJCM08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
         break;
 #endif
     }
