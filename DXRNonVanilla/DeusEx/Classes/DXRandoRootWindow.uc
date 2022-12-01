@@ -44,11 +44,12 @@ function InvokeMenu(Class<DeusExBaseWindow> newMenu)
         case class'MenuSelectDifficulty':
             newMenu = class'VMDR156MenuSelectDifficulty';
             break;
-
+#ifdef vmd
         // VMD 1.75
         case class'VMDMenuSelectCustomDifficulty':
             newMenu = class'VMDR175MenuSelectDifficulty';
             break;
+#endif
     }
     Super.InvokeMenu(newMenu);
 }

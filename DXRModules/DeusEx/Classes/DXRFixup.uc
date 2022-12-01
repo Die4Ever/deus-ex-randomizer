@@ -1487,6 +1487,7 @@ function Paris_AnyEntry()
     local DXRNPCs npcs;
     local DXREnemies dxre;
     local ScriptedPawn sp;
+    local Merchant m;
     local TobyAtanwe toby;
 
     switch(dxr.localURL)
@@ -1497,6 +1498,10 @@ function Paris_AnyEntry()
         npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
         if(npcs != None) {
             sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vect(-3209.483154, 5190.826172,1199.610352), rot(0, -10000, 0), class'#var(prefix)HazMatSuit');
+            m = Merchant(sp);
+            if (m!=None){  //He should exist now, but... who knows
+                m.MakeFrench();
+            }
         }
         // give him weapons to defend himself
         dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
