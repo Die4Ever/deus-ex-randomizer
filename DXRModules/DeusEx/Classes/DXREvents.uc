@@ -626,6 +626,8 @@ function Trigger(Actor Other, Pawn Instigator)
     //Massage tag names
     if (tag=='MadeBasketM' || tag=='MadeBasketF'){
         useTag = 'MadeBasket';
+        //In order to prevent too many duplicate tweets, remove the tag after one triggering
+        tag = '';
     }else if (tag=='VandenbergDXR'){
         if (Other.tag=='bunker_door1' || Other.tag=='bunker_door2'){
             useTag = 'ActivateVandenbergBots';
