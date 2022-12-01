@@ -442,17 +442,26 @@ function TimerMapFixes()
     case "04_NYC_HOTEL":
         NYC_04_CheckPaulRaid();
         break;
+#endif
+    case "06_HONGKONG_WANCHAI_MARKET":
+        UpdateGoalWithRandoInfo('InvestigateMaggieChow');
+        break;
     case "08_NYC_STREET":
+#ifdef vanilla
         if ( dxr.flagbase.GetBool('StantonDowd_Played') )
         {
             foreach AllActors(class'BlackHelicopter', chopper, 'CopterExit')
                 chopper.EnterWorld();
             dxr.flagbase.SetBool('MS_Helicopter_Unhidden', True,, 9);
         }
-        break;
 #endif
+        UpdateGoalWithRandoInfo('FindHarleyFilben');
+        break;
     case "09_NYC_SHIPBELOW":
         NYC_09_CountWeldPoints();
+        break;
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        UpdateGoalWithRandoInfo('FindNicolette');
         break;
     case "15_AREA51_PAGE":
         Area51_CountBlueFusion();
@@ -925,6 +934,34 @@ function NYC_09_CountWeldPoints()
         }
 
         UpdateWeldPointGoal(newWeldCount);
+    }
+}
+
+function UpdateGoalWithRandoInfo(name goalName)
+{
+    local string goalText;
+    local DeusExGoal goal;
+    local int randoPos;
+    goal = player().FindGoal(goalName);
+    if (goal!=None){
+        goalText = goal.text;
+        randoPos = InStr(goalText,"Rando: ");
+
+        if (randoPos==-1){
+            switch(goalName){
+                case 'InvestigateMaggieChow':
+                    goalText = goalText$"|nRando: Open the sword container.  Finding the sword is not necessary.";
+                    break;
+                case 'FindHarleyFilben':
+                    goalText = goalText$"|nRando: Harley could be anywhere in Hell's Kitchen";
+                    break;
+                case 'FindNicolette':
+                    goalText = goalText$"|nRando: Nicolette could be anywhere in the city";
+                    break;
+            }
+            goal.SetText(goalText);
+            player().ClientMessage("Goal Updated - Check DataVault For Details",, true);
+        }
     }
 }
 
@@ -1512,6 +1549,9 @@ function Paris_AnyEntry()
             RemoveFears(sp);
         }
         break;
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        SetTimer(1.0, True); //To update the Nicolette goal description
+        break;
     case "10_PARIS_CLUB":
         FixConversationAddNote(GetConversation('MeetCassandra'),"with a keypad back where the offices are");
         break;
@@ -1656,6 +1696,7 @@ function HongKong_AnyEntry()
             }
         }
         HandleJohnSmithDeath();
+        SetTimer(1.0, True); //To handle updating the DTS goal description
         break;
 
     case "06_HONGKONG_VERSALIFE":
