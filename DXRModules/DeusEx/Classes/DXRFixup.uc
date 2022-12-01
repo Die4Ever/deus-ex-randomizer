@@ -1403,6 +1403,8 @@ function Shipyard_FirstEntry()
     local ComputerSecurity cs;
     local Keypad2 k;
     local Button1 b;
+    local WeaponGasGrenade gas;
+    local Teleporter t;
 
     switch(dxr.localURL)
     {
@@ -1432,6 +1434,20 @@ function Shipyard_FirstEntry()
                 cs.specialOptions[0].TriggerText="Ventilation Fan Disabled";
             }
         }
+
+        //Remove the stupid gas grenades that are past the level exit
+        foreach AllActors(class'Teleporter',t){
+            if (t.Tag=='ToAbove') break;
+        }
+        gas = WeaponGasGrenade(findNearestToActor(class'WeaponGasGrenade',t));
+        if (gas!=None){
+            gas.Destroy();
+        }
+        gas = WeaponGasGrenade(findNearestToActor(class'WeaponGasGrenade',t));
+        if (gas!=None){
+            gas.Destroy();
+        }
+
 #endif
         break;
     case "09_NYC_DOCKYARD":
