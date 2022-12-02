@@ -53,6 +53,7 @@ function SetWatchFlags() {
     local Toilet closestToilet;
     local BookOpen book;
     local FlagTrigger fTrigger;
+    local WIB wib;
 
     switch(dxr.localURL) {
     case "00_TrainingFinal":
@@ -287,6 +288,10 @@ function SetWatchFlags() {
         }
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
+        foreach AllActors(class'WIB',wib){
+            if(wib.BindName=="Hela")
+                wib.bImportant = true;
+        }
         WatchFlag('SilhouetteHostagesAllRescued');
         break;
     case "10_PARIS_METRO":
