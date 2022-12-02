@@ -1463,6 +1463,19 @@ function Shipyard_FirstEntry()
             }
         }
         break;
+
+    case "09_NYC_SHIPFAN":
+#ifdef vanilla
+        Tag = 'FanToggle';
+        foreach AllActors(class'ComputerSecurity',cs){
+            if (cs.Name == 'ComputerSecurity6'){
+                cs.specialOptions[0].Text = "Disable Ventilation Fan";
+                cs.specialOptions[0].TriggerEvent='FanToggle';
+                cs.specialOptions[0].TriggerText="Ventilation Fan Disabled";
+            }
+        }
+#endif
+        break;
     }
 }
 
@@ -1882,10 +1895,26 @@ function ToggleFan()
     local AmbientSound as;
     local ComputerSecurity cs;
     local bool enable;
+    local name compName;
+    local DeusExMover dxm;
+
+    //This function is now used in two maps
+    switch(dxr.localURL)
+    {
+        case "09_NYC_SHIPBELOW":
+            compName = 'ComputerSecurity4';
+            break;
+        case "09_NYC_SHIPFAN":
+            compName = 'ComputerSecurity6';
+            break;
+        default:
+            player().ClientMessage("Not in a map that understands how to toggle a fan!");
+            return;
+            break;
+    }
 
     foreach AllActors(class'ComputerSecurity',cs){
-        if (cs.Name == 'ComputerSecurity4'){
-
+        if (cs.Name == compName){
             //If you press disable, you want to disable...
             if (cs.SpecialOptions[0].Text == "Disable Ventilation Fan"){
                 enable = False;
@@ -1904,55 +1933,85 @@ function ToggleFan()
         }
     }
 
-    //Fan1
-    foreach AllActors(class'Fan1',f){
-        if (f.Name == 'Fan1'){
-            if (enable) {
-                f.RotationRate.Yaw = 50000;
-            } else {
-                f.RotationRate.Yaw = 0;
+    if (dxr.localURL=="09_NYC_SHIPBELOW"){
+        //Fan1
+        foreach AllActors(class'Fan1',f){
+            if (f.Name == 'Fan1'){
+                if (enable) {
+                    f.RotationRate.Yaw = 50000;
+                } else {
+                    f.RotationRate.Yaw = 0;
+                }
             }
         }
-    }
 
-    //ParticleGenerator3
-    foreach AllActors(class'ParticleGenerator',pg){
-        if (pg.Name == 'ParticleGenerator3'){
-            pg.bSpewing = enable;
-            pg.bFrozen = !enable;
-            pg.proxy.bHidden=!enable;
-            break;
+        //ParticleGenerator3
+        foreach AllActors(class'ParticleGenerator',pg){
+            if (pg.Name == 'ParticleGenerator3'){
+                pg.bSpewing = enable;
+                pg.bFrozen = !enable;
+                pg.proxy.bHidden=!enable;
+                break;
+            }
         }
-    }
 
-    //ZoneInfo0
-    foreach AllActors(class'ZoneInfo',z){
-        if (z.Name=='ZoneInfo0') {
-            if (enable){
-                z.ZoneGravity.Z = 100;
-            } else {
-                z.ZoneGravity.Z = -950;
+        //ZoneInfo0
+        foreach AllActors(class'ZoneInfo',z){
+            if (z.Name=='ZoneInfo0') {
+                if (enable){
+                    z.ZoneGravity.Z = 100;
+                } else {
+                    z.ZoneGravity.Z = -950;
+                }
+                break;
             }
-            break;
         }
-    }
 
-    //AmbientSound7
-    //AmbientSound8
-    foreach AllActors(class'AmbientSound',as){
-        if (as.Name=='AmbientSound7'){
-            if (enable){
-                as.AmbientSound = Sound'Ambient.Ambient.HumTurbine2';
-            } else {
-                as.AmbientSound = None;
-            }
-        } else if (as.Name=='AmbientSound8'){
-            if (enable){
-                as.AmbientSound = Sound'Ambient.Ambient.StrongWind';
-            } else {
-                as.AmbientSound = None;
+        //AmbientSound7
+        //AmbientSound8
+        foreach AllActors(class'AmbientSound',as){
+            if (as.Name=='AmbientSound7'){
+                if (enable){
+                    as.AmbientSound = Sound'Ambient.Ambient.HumTurbine2';
+                } else {
+                    as.AmbientSound = None;
+                }
+            } else if (as.Name=='AmbientSound8'){
+                if (enable){
+                    as.AmbientSound = Sound'Ambient.Ambient.StrongWind';
+                } else {
+                    as.AmbientSound = None;
+                }
             }
         }
+    } else if (dxr.localURL=="09_NYC_SHIPFAN"){
+        foreach AllActors(class'DeusExMover',dxm){
+            if (dxm.Name == 'DeusExMover1'){
+                if (enable) {
+                    dxm.RotationRate.Yaw = -20000;
+                } else {
+                    dxm.RotationRate.Yaw = 0;
+                }
+            }
+        }
+        foreach AllActors(class'AmbientSound',as){
+            if (as.Name=='AmbientSound6'){
+                if (enable){
+                    as.AmbientSound = Sound'Ambient.Ambient.FanLarge';
+                } else {
+                    as.AmbientSound = None;
+                }
+            } else if (as.Name=='AmbientSound0'){
+                if (enable){
+                    as.AmbientSound = Sound'Ambient.Ambient.MachinesLarge3';
+                } else {
+                    as.AmbientSound = None;
+                }
+            }
+        }
+
+
+
     }
 }
 #endif
