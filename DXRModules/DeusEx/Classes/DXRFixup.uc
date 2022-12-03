@@ -1508,6 +1508,7 @@ function Paris_FirstEntry()
     local DeusExMover m;
     local Trigger t;
     local Dispatcher d;
+    local ScriptedPawn sp;
 
     switch(dxr.localURL)
     {
@@ -1551,7 +1552,12 @@ function Paris_FirstEntry()
         }
         break;
 #endif
-
+    case "10_PARIS_CLUB":
+        foreach AllActors(class'ScriptedPawn',sp){
+            if (sp.BindName=="LDDPAchille" || sp.BindName=="Camille"){
+                sp.bImportant=True;
+            }
+        }
     case "11_PARIS_CATHEDRAL":
         foreach AllActors(class'GuntherHermann', g) {
             g.ChangeAlly('mj12', 1, true);

@@ -310,6 +310,7 @@ function SetWatchFlags() {
         break;
     case "10_PARIS_CLUB":
         WatchFlag('CamilleConvosDone');
+        WatchFlag('LDDPAchilleDone');
         WatchFlag('LeoToTheBar');
 
         break;
@@ -1057,6 +1058,12 @@ simulated function string tweakBingoDescription(string event, string desc)
            }
 
             break;
+        case "CamilleConvosDone":
+            if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+                return "Get info from Achille";
+            } else {
+                return desc;
+            }
         default:
             return desc;
             break;
@@ -1258,6 +1265,9 @@ function _MarkBingo(coerce string eventname)
         case "LDDPRussPaid":
         case "ClubMercedesConvo1_Done":
             eventname="ClubEntryPaid";
+            break;
+        case "LDDPAchilleDone":
+            eventname="CamilleConvosDone";
             break;
         case "GuntherKillswitch":
             eventname="GuntherHermann_Dead";
