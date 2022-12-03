@@ -239,6 +239,19 @@ simulated static function String TruncateFloat(float val, int numDec)
     return Left(trunc,truncPoint);
 }
 
+simulated static function string TrimTrailingZeros(coerce string s)
+{
+    local int dec, end;
+
+    dec = InStr(s, ".");
+    if(dec == -1) return s;
+    for(end=Len(s)-1; Mid(s, end, 1) == "0"; end--) {
+    }
+    if(Mid(s, end, 1) != ".")
+        end++;
+    return Left(s, end);
+}
+
 function string ActorToString( Actor a )
 {
     local string out;

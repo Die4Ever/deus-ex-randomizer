@@ -175,6 +175,10 @@ function BindControls(optional string action)
     EnumOption("Unchanged Robot Weapons", 0, f.settings.bot_weapons);
     EnumOption("Random Robot Weapons", 4, f.settings.bot_weapons);
 
+    NewMenuItem("", "Allow non-humans to get randomized stats");
+    EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);
+    EnumOption("Random Non-human Stats", 100, f.settings.bot_stats);
+
 
     NewGroup("Skills");
 

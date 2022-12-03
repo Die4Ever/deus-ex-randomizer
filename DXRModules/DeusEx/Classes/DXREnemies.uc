@@ -655,9 +655,11 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( p == None ) return;
 
     l("RandomizeSP("$p$", "$percent$")");
-    p.SurprisePeriod = rngrange(p.SurprisePeriod+0.1, 0.3, 1.2);
-    p.GroundSpeed = rngrange(p.GroundSpeed, 0.9, 1.1);
-    p.BaseAccuracy -= FClamp(rngf() * float(percent)/100.0, 0, 0.8);
+    if( IsHuman(p.class) || dxr.flags.settings.bot_stats>0 ) {
+        p.SurprisePeriod = rngrange(p.SurprisePeriod+0.1, 0.3, 1.2);
+        p.GroundSpeed = rngrange(p.GroundSpeed, 0.9, 1.1);
+        p.BaseAccuracy -= FClamp(rngf() * float(percent)/100.0, 0, 0.8);
+    }
 
     if( IsCritter(p) ) return; // only give random weapons to humans and robots
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
