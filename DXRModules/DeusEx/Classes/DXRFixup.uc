@@ -753,6 +753,7 @@ function Jailbreak_FirstEntry()
     local #var(PlayerPawn) p;
     local PaulDenton paul;
     local ComputerPersonal c;
+    local DeusExMover dxm;
     local int i;
 
     switch (dxr.localURL)
@@ -772,6 +773,17 @@ function Jailbreak_FirstEntry()
         foreach AllActors(class'PaulDenton', paul) {
             paul.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
         }
+
+#ifdef vanilla
+        foreach AllActors(class'DeusExMover',dxm){
+            if (dxm.Name=='DeusExMover34'){
+                //I think this filing cabinet door was supposed to
+                //be unlockable with Agent Sherman's key as well
+                dxm.KeyIDNeeded='Cabinet';
+            }
+        }
+#endif
+
         break;
 
 #ifdef vanilla
