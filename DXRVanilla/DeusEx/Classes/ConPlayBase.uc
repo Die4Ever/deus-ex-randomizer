@@ -354,9 +354,16 @@ log("  event.transferCount = " $ event.transferCount);
 	// increment the count
 	else if ((invItemTo.IsA('DeusExPickup')) && (DeusExPickup(invItemTo).bCanHaveMultipleCopies))
 	{
+
+		//RANDO: It may be possible that you can carry less of the item than the game wants to give you.
+		//Reduce the number of items to be transferred to prevent a softlock
+		if (event.transferCount > DeusExPickup(invItemTo).maxCopies) {
+			player.ClientMessage("The story wanted to give you "$event.transferCount$" "$DeusExPickup(invItemTo).ItemName$"s but you can only carry "$DeusExPickup(invItemTo).maxCopies$" - Sorry!");
+			event.transferCount = DeusExPickup(invItemTo).maxCopies;
+		}
+
 		// If the item was spawned, then it will already have a copy count of 1, so we
 		// only want to add to that if it was specified to transfer > 1 items.
-
 		if (bSpawned)
 		{
 			if (event.transferCount > 1)
@@ -364,6 +371,7 @@ log("  event.transferCount = " $ event.transferCount);
 				//RANDO: Only allow the transfer if the recipient can hold all of the items being transferred simultaneously
 				if ((DeusExPickup(invItemTo).NumCopies + event.transferCount) > DeusExPickup(invItemTo).maxCopies){
 					itemsTransferred = 0;
+					player.ClientMessage("Not enough space to receive "$event.transferCount$" "$DeusExPickup(invItemTo).ItemName$"s (Maximum: "$DeusExPickup(invItemTo).maxCopies$")");
 				} else {
 					//Minus one because we are incrementing the number of copies before giving the single actual item to be transferred
 					//This is goofy, but seems to just be how it was done
@@ -384,6 +392,7 @@ log("  event.transferCount = " $ event.transferCount);
 
 			if ((DeusExPickup(invItemTo).NumCopies + itemsTransferred) > DeusExPickup(invItemTo).MaxCopies){
 				itemsTransferred = 0;
+				player.ClientMessage("Not enough space to receive "$event.transferCount$" "$DeusExPickup(invItemTo).ItemName$"s (Maximum: "$DeusExPickup(invItemTo).maxCopies$")");
 			} else {
 				DeusExPickup(invItemTo).NumCopies += itemsTransferred;
 
