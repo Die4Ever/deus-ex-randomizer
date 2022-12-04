@@ -880,6 +880,14 @@ static function BeatGame(DXRando dxr, int ending)
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
     js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
     js.static.Add(j, "maxrando", dxr.flags.maxrando);
+
+    if (dxr.player.carriedDecoration!=None){
+        js.static.Add(j, "carriedItem", dxr.player.carriedDecoration.Class);
+    }
+    else if(dxr.player.inHand.IsA('POVCorpse')){
+        js.static.Add(j, "carriedItem", POVCorpse(dxr.player.inHand).carcClassString);
+    }
+
     GeneralEventData(dxr, j);
     BingoEventData(dxr, j);
     AugmentationData(dxr, j);
