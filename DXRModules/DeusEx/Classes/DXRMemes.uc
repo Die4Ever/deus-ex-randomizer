@@ -260,6 +260,69 @@ function PostFirstEntry()
         r.Roll = rng(65536);
         p.SetRotation( r );
     }*/
+
+    //Add Leo Gold if he made it!
+    switch(dxr.localURL)
+    {
+        case "ENDGAME1":
+        case "ENDGAME2":
+        case "ENDGAME3":
+            AddLeo();
+            break;
+    }
+}
+
+function AddLeo()
+{
+    local bool broughtLeo;
+    local bool alive;
+    local POVCorpse c;
+    local vector loc;
+    local Rotator rot;
+    local TerroristCommander leo;
+    local DeusExPlayer p;
+
+    foreach AllActors(class'DeusExPlayer',p){break;}
+
+    if (p!=None && p.inHand.IsA('POVCorpse')){
+        c = POVCorpse(p.inHand);
+
+        if (c.carcClassString == "DeusEx.TerroristCommanderCarcass"){
+            broughtLeo = true;
+            alive = c.bNotDead;
+        }
+    }
+    if (!broughtLeo){
+        return;
+    }
+    switch(dxr.localURL)
+    {
+        case "ENDGAME1":
+        case "ENDGAME2": //They actually lined these two up!
+            log("Endgame 1 or 2");
+            loc.X = 189;
+            loc.Y = -7816;
+            loc.Z = -48;
+            break;
+        case "ENDGAME3":
+            log("Endgame 3");
+            loc.X = 192;
+            loc.Y = -7813;
+            loc.Z = -48;
+            break;
+    }
+
+    if (alive){
+        rot.Yaw = 16472;
+        leo = Spawn(class'TerroristCommander',,,loc,rot);
+        leo.bImportant=False; //Don't worry buddy, you're still important - I just don't want you gone
+        leo.SetOrders('Standing','',True);
+        leo.bInvincible=True; //In case of explosions or lightning...
+    } else {
+        rot.Yaw=0;
+        Spawn(class'TerroristCommanderCarcass',,,loc,rot);
+    }
+
 }
 
 state() RotatingState {

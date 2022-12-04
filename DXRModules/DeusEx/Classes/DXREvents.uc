@@ -602,7 +602,7 @@ function HandleBingoWinCountdown()
         bingo_win_countdown--;
     } else if (bingo_win_countdown == 0) {
         //Go to bingo win ending
-        dxr.player.ConsoleCommand("OPEN 99_ENDGAME4");
+        Level.Game.SendPlayer(dxr.player,"99_EndGame4");
     }
 }
 
