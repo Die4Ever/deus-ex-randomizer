@@ -58,7 +58,6 @@ log("  event.toActor    = " $ event.toActor );
 	// scenarios).
 	//
 	// Also check to see if the item already exists in the recipient's inventory
-
 	if (event.fromActor != None)
 		invItemFrom = Pawn(event.fromActor).FindInventoryType(event.giveObject);
 
@@ -128,7 +127,6 @@ log("  event.toActor    = " $ event.toActor );
 		// player any ammo from the weapon
 		else if ((invItemTo.IsA('Weapon')) && (DeusExPlayer(event.ToActor) != None))
 		{
-
 			AmmoType = Ammo(DeusExPlayer(event.ToActor).FindInventoryType(Weapon(invItemTo).AmmoName));
 
 			if ( AmmoType != None )
@@ -182,8 +180,12 @@ log("  event.toActor    = " $ event.toActor );
 
 			// If no items were transferred, then the player's inventory is full or
 			// no more of these items can be stacked, so abort.
-			if (itemsTransferred == 0)
+			if (itemsTransferred == 0){
+				if (bSpawnedItem){
+					invItemFrom.Destroy();
+				}
 				return nextAction;
+			}
 
 			// Now destroy the originating object (which we either spawned
 			// or is sitting in the giver's inventory), but check to see if this
@@ -271,7 +273,6 @@ log("  event.toActor    = " $ event.toActor );
 		else
 		{
 			itemsTransferred = AddTransferCount(invItemFrom, invItemTo, event, Pawn(event.toActor), True);
-
 			// If no items were transferred, then the player's inventory is full or
 			// no more of these items can be stacked, so abort.
 			if (itemsTransferred == 0)
@@ -358,22 +359,22 @@ log("  event.transferCount = " $ event.transferCount);
 
 		if (bSpawned)
 		{
-			itemsTransferred = event.transferCount;
 			if (event.transferCount > 1)
 			{
-				DeusExPickup(invItemTo).NumCopies += event.transferCount - 1;
-
-				if (DeusExPickup(invItemTo).NumCopies > DeusExPickup(invItemTo).maxCopies)
-				{
-					itemsTransferred = DeusExPickup(invItemTo).maxCopies;
-					DeusExPickup(invItemTo).NumCopies = DeusExPickup(invItemTo).maxCopies;
+				//RANDO: Only allow the transfer if the recipient can hold all of the items being transferred simultaneously
+				if ((DeusExPickup(invItemTo).NumCopies + event.transferCount) > DeusExPickup(invItemTo).maxCopies){
+					itemsTransferred = 0;
+				} else {
+					//Minus one because we are incrementing the number of copies before giving the single actual item to be transferred
+					//This is goofy, but seems to just be how it was done
+					DeusExPickup(invItemTo).NumCopies += event.transferCount - 1;
+					itemsTransferred = event.transferCount;
 				}
 			}
-		}
 
 		// Wasn't spawned, so add the appropriate amount (if transferCount
 		// isn't specified, just add one).
-
+		}
 		else
 		{
 			if (event.transferCount > 0)
@@ -381,13 +382,15 @@ log("  event.transferCount = " $ event.transferCount);
 			else
 				itemsTransferred = 1;
 
-			if ((DeusExPickup(invItemTo).NumCopies + itemsTransferred) > DeusExPickup(invItemTo).MaxCopies)
-				itemsTransferred = DeusExPickup(invItemTo).MaxCopies - DeusExPickup(invItemTo).NumCopies;
+			if ((DeusExPickup(invItemTo).NumCopies + itemsTransferred) > DeusExPickup(invItemTo).MaxCopies){
+				itemsTransferred = 0;
+			} else {
+				DeusExPickup(invItemTo).NumCopies += itemsTransferred;
 
-			DeusExPickup(invItemTo).NumCopies += itemsTransferred;
-
-			if ((DeusExPickup(invItemFrom) != None) && (invItemFrom != InvItemTo))
-				DeusExPickup(invItemFrom).NumCopies -= itemsTransferred;
+				if ((DeusExPickup(invItemFrom) != None) && (invItemFrom != InvItemTo)){
+					DeusExPickup(invItemFrom).NumCopies -= itemsTransferred;
+				}
+			}
 		}
 
 		// Update the belt text

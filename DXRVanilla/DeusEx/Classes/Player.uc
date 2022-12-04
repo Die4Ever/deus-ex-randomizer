@@ -890,4 +890,38 @@ function CreateColorThemeManager()
     AddColorTheme(Class'ColorThemeMenu_Swirl');
 
 }
+
+// ----------------------------------------------------------------------
+// RemoveItemDuringConversation()
+// The only difference here is that we no longer remove the item from the inventory grid
+// ----------------------------------------------------------------------
+
+function RemoveItemDuringConversation(Inventory item)
+{
+	if (item != None)
+	{
+		// take it out of our hand
+		if (item == inHand)
+			PutInHand(None);
+
+		// Make sure it's removed from the inventory grid
+		//RemoveItemFromSlot(item);  //RANDO: How about we actually don't
+
+		// Make sure the item is deactivated!
+		if (item.IsA('DeusExWeapon'))
+		{
+			DeusExWeapon(item).ScopeOff();
+			DeusExWeapon(item).LaserOff();
+		}
+		else if (item.IsA('DeusExPickup'))
+		{
+			// turn it off if it is on
+			if (DeusExPickup(item).bActive)
+				DeusExPickup(item).Activate();
+		}
+
+		if (conPlay != None)
+			conPlay.SetInHand(None);
+	}
+}
 // ---
