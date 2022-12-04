@@ -363,6 +363,9 @@ function SetWatchFlags() {
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
         break;
+    case "14_OCEANLAB_UC":
+        WatchFlag('LeoToTheBar');
+        break;
     case "15_AREA51_BUNKER":
         WatchFlag('JockBlewUp');
         WatchFlag('blast_door_open');
