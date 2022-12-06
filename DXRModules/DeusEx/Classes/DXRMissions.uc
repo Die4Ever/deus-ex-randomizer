@@ -571,17 +571,18 @@ function int InitGoals(int mission, string map)
 
     case "14_VANDENBERG_SUB":
     case "14_OCEANLAB_LAB":
-        AddGoal("14_OCEANLAB_LAB", "Walton Simons", NORMAL_GOAL, 'WaltonSimons0', PHYS_Falling);
-        AddGoalLocation("14_OCEANLAB_LAB", "Vanilla Digger", NORMAL_GOAL | VANILLA_GOAL, vect(5294.391113,3422.380127,-1775.600830), rot(0,33056,0));
-        AddGoalLocation("14_OCEANLAB_LAB", "Construction Sidepath", NORMAL_GOAL, vect(4158,2125,-1775), rot(0,0,0));
-        AddGoalLocation("14_OCEANLAB_LAB", "Crew Module", NORMAL_GOAL, vect(3015,3532,-2233), rot(0,32000,0));
-        AddGoalLocation("14_OCEANLAB_LAB", "Greasel Lab", NORMAL_GOAL, vect(2920,454,-1486), rot(0,50000,0));
-        AddGoalLocation("14_OCEANLAB_LAB", "Outside Karkian Lab", NORMAL_GOAL, vect(116,-61,-1967), rot(0,50000,0));
-        AddGoalLocation("14_VANDENBERG_SUB", "Rooftop", NORMAL_GOAL, vect(2450,2880,776), rot(0,33080,0));
-        AddGoalLocation("14_VANDENBERG_SUB", "Sub Bay", NORMAL_GOAL, vect(5372,-1626,-1424), rot(0,-16368,0));
-        return 143;
-
     case "14_OCEANLAB_UC":
+        AddGoal("14_OCEANLAB_LAB", "Walton Simons", GOAL_TYPE1, 'WaltonSimons0', PHYS_Falling);
+        AddGoalLocation("14_OCEANLAB_LAB", "Vanilla Digger", GOAL_TYPE1 | VANILLA_GOAL, vect(5294.391113,3422.380127,-1775.600830), rot(0,33056,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Construction Sidepath", GOAL_TYPE1, vect(4158,2125,-1775), rot(0,0,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Crew Module", GOAL_TYPE1, vect(3015,3532,-2233), rot(0,32000,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Greasel Lab", GOAL_TYPE1, vect(2920,454,-1486), rot(0,50000,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Outside Karkian Lab", GOAL_TYPE1, vect(116,-61,-1967), rot(0,50000,0));
+        AddGoalLocation("14_VANDENBERG_SUB", "Rooftop", GOAL_TYPE1, vect(2450,2880,776), rot(0,33080,0));
+        AddGoalLocation("14_VANDENBERG_SUB", "Sub Bay", GOAL_TYPE1, vect(5372,-1626,-1424), rot(0,-16368,0));
+        AddGoalLocation("14_OCEANLAB_UC", "UC Entry 1", GOAL_TYPE1, vect(945,6230,-4160), rot(0,0,0));
+        AddGoalLocation("14_OCEANLAB_UC", "UC Entry 2", GOAL_TYPE1, vect(945,5250,-4160), rot(0,0,0));
+
         AddGoal("14_OCEANLAB_UC", "UC Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
         AddGoal("14_OCEANLAB_UC", "Bait Computer", NORMAL_GOAL, 'ComputerPersonal1', PHYS_Falling);
         AddGoalLocation("14_OCEANLAB_UC", "UC", NORMAL_GOAL | VANILLA_GOAL, vect(264.363281, 6605.039551, -3173.865967), rot(0,32720,0));
@@ -1021,6 +1022,7 @@ function Timer()
         break;
 
     case "14_VANDENBERG_SUB":
+    case "14_OCEANLAB_UC":
         if (!f.GetBool('RandoWaltonAppeared') && f.GetBool('DL_downloaded_Played'))
         {
 		    foreach AllActors(class'#var(prefix)WaltonSimons', Walton){
