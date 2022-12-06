@@ -569,6 +569,15 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
         return 121;
 
+    case "14_OCEANLAB_LAB":
+        AddGoal("14_OCEANLAB_LAB", "Walton Simons", NORMAL_GOAL, 'WaltonSimons0', PHYS_Falling);
+        AddGoalLocation("14_OCEANLAB_LAB", "Vanilla Digger", NORMAL_GOAL | VANILLA_GOAL, vect(5294.391113,3422.380127,-1775.600830), rot(0,33056,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Construction Sidepath", NORMAL_GOAL, vect(4158,2125,-1775), rot(0,0,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Crew Module", NORMAL_GOAL, vect(3015,3532,-2233), rot(0,32000,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Greasel Lab", NORMAL_GOAL, vect(2920,454,-1486), rot(0,50000,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Outside Karkian Lab", NORMAL_GOAL, vect(116,-61,-1967), rot(0,50000,0));
+        return 143;
+
     case "14_OCEANLAB_UC":
         AddGoal("14_OCEANLAB_UC", "UC Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
         AddGoal("14_OCEANLAB_UC", "Bait Computer", NORMAL_GOAL, 'ComputerPersonal1', PHYS_Falling);
