@@ -569,6 +569,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
         return 121;
 
+    case "14_VANDENBERG_SUB":
     case "14_OCEANLAB_LAB":
         AddGoal("14_OCEANLAB_LAB", "Walton Simons", NORMAL_GOAL, 'WaltonSimons0', PHYS_Falling);
         AddGoalLocation("14_OCEANLAB_LAB", "Vanilla Digger", NORMAL_GOAL | VANILLA_GOAL, vect(5294.391113,3422.380127,-1775.600830), rot(0,33056,0));
@@ -576,6 +577,8 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("14_OCEANLAB_LAB", "Crew Module", NORMAL_GOAL, vect(3015,3532,-2233), rot(0,32000,0));
         AddGoalLocation("14_OCEANLAB_LAB", "Greasel Lab", NORMAL_GOAL, vect(2920,454,-1486), rot(0,50000,0));
         AddGoalLocation("14_OCEANLAB_LAB", "Outside Karkian Lab", NORMAL_GOAL, vect(116,-61,-1967), rot(0,50000,0));
+        AddGoalLocation("14_VANDENBERG_SUB", "Rooftop", NORMAL_GOAL, vect(2450,2880,776), rot(0,33080,0));
+        AddGoalLocation("14_VANDENBERG_SUB", "Sub Bay", NORMAL_GOAL, vect(5372,-1626,-1424), rot(0,-16368,0));
         return 143;
 
     case "14_OCEANLAB_UC":
@@ -618,6 +621,7 @@ function PreFirstEntry()
     local #var(prefix)AnnaNavarre anna;
     local FlagTrigger ft;
     local #var(prefix)Barrel1 barrel;
+    local #var(prefix)ComputerPersonal cp;
     local int seed;
 
     Super.PreFirstEntry();
@@ -669,6 +673,12 @@ function PreFirstEntry()
         foreach AllActors(class'#var(prefix)Barrel1', barrel, 'BarrelOFun') {
             barrel.bExplosive = false;
             barrel.Destroy();
+        }
+    } else if ( dxr.localURL == "14_OCEANLAB_UC" ) {
+        foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
+            if (cp.UserList[0].UserName=="USER"){
+                cp.UserList[0].UserName="JEBAITED"; //Just to make it a bit more clear this is a bait computer
+            }
         }
     }
     SetGlobalSeed( "DXRMissions" $ seed );
@@ -833,6 +843,9 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     local BarrelAmbrosia ambrosia;
     local FlagTrigger ft;
     local SkillAwardTrigger st;
+    local OrdersTrigger ot;
+    local Inventory inv;
+    local Ammo a;
 
     info("CreateGoal " $ g.name @ Loc.name);
 
@@ -876,6 +889,37 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         sp.ConBindEvents();
         break;
 
+    case "Walton Simons":
+        sp = Spawn(class'#var(prefix)WaltonSimons',, 'DXRMissions', Loc.positions[0].pos);
+        ot = Spawn(class'OrdersTrigger',,'simonsattacks',Loc.positions[0].pos);
+        g.actors[0].a = sp;
+        g.actors[1].a = ot;
+
+        sp.BarkBindName = "WaltonSimons";
+        sp.Tag='WaltonSimons';
+        sp.SetOrders('WaitingFor');
+        sp.bInvincible=False;
+
+        //scuba in the OceanLab, probably needs to be mj12 on shore, maybe something else if in UC area?
+        if (Loc.mapName == "14_OCEANLAB_LAB"){
+            sp.SetAlliance('scuba');
+        } else if (Loc.mapName=="14_VANDENBERG_SUB"){
+            sp.SetAlliance('mj12');
+        } else if (Loc.mapName=="14_OCEANLAB_UC"){
+            sp.SetAlliance('spider');
+        }
+
+        GiveItem(sp,class'WeaponPlasmaRifle',100);
+        GiveItem(sp,class'WeaponNanoSword');
+
+        sp.ConBindEvents();
+        sp.LeaveWorld();
+
+        ot.Event='WaltonSimons';
+        ot.Orders='Attacking';
+        ot.SetCollision(False,False,False);
+
+        break;
     case "747 Ambrosia":
         ambrosia = Spawn(class'BarrelAmbrosia',, 'DXRMissions', Loc.positions[0].pos);
         ft = Spawn(class'FlagTrigger',, '747BarrelUsed', Loc.positions[1].pos);
@@ -915,6 +959,7 @@ function Timer()
 {
     local FlagBase f;
     local #var(prefix)NicoletteDuClare nico;
+    local #var(prefix)WaltonSimons Walton;
     local #var(prefix)BlackHelicopter chopper;
     local #var(prefix)ParticleGenerator gen;
     local int count;
@@ -972,6 +1017,16 @@ function Timer()
 
             foreach AllActors(class'#var(prefix)BlackHelicopter', chopper, 'BlackHelicopter')
                 chopper.EnterWorld();
+        }
+        break;
+
+    case "14_VANDENBERG_SUB":
+        if (!f.GetBool('RandoWaltonAppeared') && f.GetBool('DL_downloaded_Played'))
+        {
+		    foreach AllActors(class'#var(prefix)WaltonSimons', Walton){
+                Walton.EnterWorld();
+            }
+            f.SetBool('RandoWaltonAppeared',True,,15);
         }
         break;
     }
