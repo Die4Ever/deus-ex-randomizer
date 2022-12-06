@@ -67,8 +67,20 @@ function set_enabled(bool e, bool set_death_markers)
 {
     log(Self$": set_enabled "$e);
     enabled = e;
+    if (death_markers!=set_death_markers){
+        SetDeathMarkerVisibility(set_death_markers);
+    }
     death_markers = set_death_markers;
     SaveConfig();
+}
+
+function SetDeathMarkerVisibility(bool visible)
+{
+    local DeathMarker dm;
+
+    foreach AllActors(class'DeathMarker',dm){
+        dm.bHidden = !visible;
+    }
 }
 
 function CacheAddr( int Addr )

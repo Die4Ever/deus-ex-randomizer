@@ -444,22 +444,27 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 1", NORMAL_GOAL, 'DeusExMover40', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator10', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall1', PHYS_None);
+        AddGoalActor(goal, 3, 'DataLinkTrigger8', PHYS_None);
         //AddGoalActor(goal, 3, 'AmbientSoundTriggered5', PHYS_None);
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 2", NORMAL_GOAL, 'DeusExMover16', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator4', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall0', PHYS_None);
+        AddGoalActor(goal, 3, 'DataLinkTrigger0', PHYS_None);
         //AddGoalActor(goal, 3, 'AmbientSoundTriggered0', PHYS_None);
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 3", NORMAL_GOAL, 'DeusExMover33', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator7', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall2', PHYS_None);
+        AddGoalActor(goal, 3, 'DataLinkTrigger3', PHYS_None);
         //AddGoalActor(goal, 3, 'AmbientSoundTriggered3', PHYS_None);
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 4", NORMAL_GOAL, 'DeusExMover31', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator5', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall4', PHYS_None);
+        AddGoalActor(goal, 3, 'DataLinkTrigger1', PHYS_None);
         //AddGoalActor(goal, 3, 'AmbientSoundTriggered1', PHYS_None);
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 5", NORMAL_GOAL, 'DeusExMover32', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator6', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall3', PHYS_None);
+        AddGoalActor(goal, 3, 'DataLinkTrigger2', PHYS_None);
         //AddGoalActor(goal, 3, 'AmbientSoundTriggered2', PHYS_None);
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
