@@ -965,10 +965,12 @@ function UpdateGoalWithRandoInfo(name goalName)
                     goalText = goalText$"|nRando: Open the sword container.  Finding the sword is not necessary.";
                     break;
                 case 'FindHarleyFilben':
-                    goalText = goalText$"|nRando: Harley could be anywhere in Hell's Kitchen";
+                    if(dxr.flags.settings.goals > 0)
+                        goalText = goalText$"|nRando: Harley could be anywhere in Hell's Kitchen";
                     break;
                 case 'FindNicolette':
-                    goalText = goalText$"|nRando: Nicolette could be anywhere in the city";
+                    if(dxr.flags.settings.goals > 0)
+                        goalText = goalText$"|nRando: Nicolette could be anywhere in the city";
                     break;
             }
             goal.SetText(goalText);
