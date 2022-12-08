@@ -40,7 +40,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(2,0,3,4) ) {
+    if( ConfigOlderThan(2,1,5,4) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -115,6 +115,10 @@ function CheckConfig()
 
         add_datacubes[i].map = "09_NYC_Dockyard";
         add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
+        i++;
+
+        add_datacubes[i].map = "15_AREA51_BUNKER";
+        add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
         i++;
 
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
@@ -965,10 +969,12 @@ function UpdateGoalWithRandoInfo(name goalName)
                     goalText = goalText$"|nRando: Open the sword container.  Finding the sword is not necessary.";
                     break;
                 case 'FindHarleyFilben':
-                    goalText = goalText$"|nRando: Harley could be anywhere in Hell's Kitchen";
+                    if(dxr.flags.settings.goals > 0)
+                        goalText = goalText$"|nRando: Harley could be anywhere in Hell's Kitchen";
                     break;
                 case 'FindNicolette':
-                    goalText = goalText$"|nRando: Nicolette could be anywhere in the city";
+                    if(dxr.flags.settings.goals > 0)
+                        goalText = goalText$"|nRando: Nicolette could be anywhere in the city";
                     break;
             }
             goal.SetText(goalText);
@@ -1814,6 +1820,7 @@ function Area51_FirstEntry()
     local ComputerSecurity c;
     local Keypad k;
     local Switch1 s;
+    local SequenceTrigger st;
 
 #ifdef vanilla
     switch(dxr.localURL)
@@ -1822,6 +1829,27 @@ function Area51_FirstEntry()
         // doors_lower is for backtracking
         AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
         player().DeleteAllGoals();
+
+        //Change vent entry security computer password so it isn't pre-known
+        foreach AllActors(class'ComputerSecurity',c){
+            if (c.UserList[0].UserName=="SECURITY" && c.UserList[0].Password=="SECURITY"){
+                c.UserList[0].Password="NarutoRun"; //They can't stop all of us
+            }
+        }
+
+        //Move the vent entrance elevator to the bottom to make it slightly less convenient
+        foreach AllActors(class'SequenceTrigger',st){
+            if (st.Tag=='elevator_mtunnel_down'){
+                st.Trigger(Self,player());
+            }
+        }
+
+        //This door can get stuck if a spiderbot gets jammed into the little bot-bay
+        foreach AllActors(class'DeusExMover',d){
+            if (d.Tag=='bot_door'){
+                d.MoverEncroachType=ME_IgnoreWhenEncroach;
+            }
+        }
         break;
 
     case "15_AREA51_FINAL":
