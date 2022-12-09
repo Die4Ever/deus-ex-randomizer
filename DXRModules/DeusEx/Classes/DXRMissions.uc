@@ -1196,10 +1196,11 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
                 if( dc2 != None ){
                      dc2.plaintext = "Yusef:|n|nBest I could do was lock the bunker doors and reroute control to the security console in "$Loc.name$". Should take them a while to figure that out. If something happens, the login is \"a51\" and the password is \"xx15yz\".|n|n-Hawkins";
                      l("DXRMissions spawned "$dc2 @ dc2.plaintext @ dc1.Location);
+                     dc1.Destroy();
                 }
                 else warning("failed to spawn tower datacube at "$dc1.Location);
 
-                dc1.Destroy();
+
             }
 
         }
