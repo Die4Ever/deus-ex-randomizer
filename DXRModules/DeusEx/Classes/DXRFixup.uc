@@ -1827,6 +1827,7 @@ function Area51_FirstEntry()
     local Switch2 s2;
     local SequenceTrigger st;
     local SpecialEvent se;
+    local DataLinkTrigger dlt;
 
 #ifdef vanilla
     switch(dxr.localURL)
@@ -1869,6 +1870,20 @@ function Area51_FirstEntry()
                 break;
             }
         }
+
+        //Lock the fan entrance top door
+        foreach AllActors(class'DataLinkTrigger',dlt){
+            if (dlt.datalinkTag=='DL_Bunker_Fan'){ break;}
+        }
+        d = DeusExMover(findNearestToActor(class'DeusExMover',dlt));
+        d.bLocked=True;
+        d.bBreakable=True;
+        d.FragmentClass=Class'DeusEx.MetalFragment';
+        d.ExplodeSound1=Sound'DeusExSounds.Generic.MediumExplosion1';
+        d.ExplodeSound2=Sound'DeusExSounds.Generic.MediumExplosion2';
+        d.minDamageThreshold=25;
+        d.doorStrength = 0.20; //It's just grating on top of the vent, so it's not that strong
+
         break;
 
     case "15_AREA51_FINAL":
