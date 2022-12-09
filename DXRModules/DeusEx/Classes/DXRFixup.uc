@@ -1826,6 +1826,7 @@ function Area51_FirstEntry()
     local Switch1 s;
     local Switch2 s2;
     local SequenceTrigger st;
+    local SpecialEvent se;
 
 #ifdef vanilla
     switch(dxr.localURL)
@@ -1884,6 +1885,14 @@ function Area51_FirstEntry()
             d.bHighlight = true;
             d.bFrobbable = true;
         }
+
+        //Generator Failsafe buttons should spit out some sort of message if the coolant isn't cut
+        //start_buzz1 and start_buzz2 are the tags that get hit when the coolant isn't cut
+        se = Spawn(class'SpecialEvent',,'start_buzz1');
+        se.Message = "Coolant levels normal - Failsafe cannot be disabled";
+        se = Spawn(class'SpecialEvent',,'start_buzz2');
+        se.Message = "Coolant levels normal - Failsafe cannot be disabled";
+
         break;
 
     case "15_AREA51_ENTRANCE":
