@@ -121,6 +121,10 @@ function CheckConfig()
         add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
         i++;
 
+        add_datacubes[i].map = "15_AREA51_BUNKER";
+        add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
+        i++;
+
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
         add_datacubes[i].text = "My code is 6786";
         i++;
@@ -1820,6 +1824,7 @@ function Area51_FirstEntry()
     local ComputerSecurity c;
     local Keypad k;
     local Switch1 s;
+    local Switch2 s2;
     local SequenceTrigger st;
 
 #ifdef vanilla
@@ -1848,6 +1853,19 @@ function Area51_FirstEntry()
         foreach AllActors(class'DeusExMover',d){
             if (d.Tag=='bot_door'){
                 d.MoverEncroachType=ME_IgnoreWhenEncroach;
+            }
+        }
+
+        //Swap the button at the top of the elevator to a keypad to make this path a bit more annoying
+        foreach AllActors(class'Switch2',s2){
+            if (s2.Event=='elevator_mtunnel_up'){
+                k = Spawn(class'Keypad2',,,s2.Location,s2.Rotation);
+                k.validCode="17092019"; //September 17th, 2019 - First day of "Storm Area 51"
+                k.bToggleLock=False;
+                k.Event='elevator_mtunnel_up';
+                s2.event='';
+                s2.Destroy();
+                break;
             }
         }
         break;
