@@ -636,6 +636,12 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("15_AREA51_FINAL", "Reactor Lab", NORMAL_GOAL, vect(-3960,-3266,-1552), rot(0, 0, 0));
         AddActorLocation(loc, 1, vect(-3455,-3261,-1560), rot(0,0,0));
 
+        AddGoal("15_AREA51_BUNKER", "Area 51 Blast Door Computer", GOAL_TYPE1, 'ComputerSecurity0', PHYS_None);
+        AddGoalLocation("15_AREA51_BUNKER", "the tower", GOAL_TYPE1 | VANILLA_GOAL, vect(-1248.804321,137.393707,442.793121), rot(0, 0, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "Command 24", GOAL_TYPE1, vect(1125.200562,2887.646484,-432.319794), rot(0, 0, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "the hangar", GOAL_TYPE1, vect(1062.942261,-2496.865723,-443.252533), rot(0, 16384, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vect(-1527.608521,3280.824219,-158.588562), rot(0, -16384, 0));
+
         return 151;
     }
 
@@ -1127,6 +1133,12 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     local ScriptedPawn sp;
     local #var(Mover) m;
     local string result;
+    local #var(prefix)DataCube dc1;
+#ifdef injections
+    local #var(prefix)DataCube dc2;
+#else
+    local DXRInformationDevices dc2;
+#endif
 
     result = g.name $ " to " $ Loc.name;
     info("Moving " $ result $ " (" $ Loc.mapName @ Loc.positions[0].pos $")");
@@ -1172,6 +1184,24 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         foreach AllActors(class'#var(Mover)', m, 'Debris') {
             m.Tag = '';
             m.Event = '';
+        }
+    } else if (g.name=="Area 51 Blast Door Computer" && Loc.name != "the tower") {
+        foreach AllActors(class'#var(prefix)DataCube',dc1){
+            if(dc1.TextTag=='15_Datacube07'){
+#ifdef injections
+                dc2 = Spawn(class'#var(prefix)DataCube',,, dc1.Location, dc1.Rotation);
+#else
+                dc2 = Spawn(class'DXRInformationDevices',,, dc1.Location, dc1.Rotation);
+#endif
+                if( dc2 != None ){
+                     dc2.plaintext = "Yusef:|n|nBest I could do was lock the bunker doors and reroute control to the security console in "$Loc.name$". Should take them a while to figure that out. If something happens, the login is \"a51\" and the password is \"xx15yz\".|n|n-Hawkins";
+                     l("DXRMissions spawned "$dc2 @ dc2.plaintext @ dc1.Location);
+                }
+                else warning("failed to spawn tower datacube at "$dc1.Location);
+
+                dc1.Destroy();
+            }
+
         }
     }
 }
