@@ -6,6 +6,7 @@ var float lockoutTime;
 var string message;
 var string detail;
 var string line3;
+var string bottomText;
 var DXRHints hints;
 
 const msgY = 0.25;
@@ -25,7 +26,7 @@ static function DXRBigMessage GetCurrentBigMessage(#var(PlayerPawn) player) {
     return DXRBigMessage(root.GetTopWindow());
 }
 
-static function DXRBigMessage CreateBigMessage(#var(PlayerPawn) player, DXRHints hints, string message, string detail, string line3) {
+static function DXRBigMessage CreateBigMessage(#var(PlayerPawn) player, DXRHints hints, string message, string detail) {
     local DXRBigMessage m;
     local DeusExRootWindow root;
 
@@ -46,7 +47,6 @@ static function DXRBigMessage CreateBigMessage(#var(PlayerPawn) player, DXRHints
     {
         m.message = message;
         m.detail = detail;
-        m.line3 = line3;
         m.hints = hints;
     }
     return m;
@@ -95,10 +95,19 @@ event DrawWindow(GC gc)
         gc.DrawText( (width*0.5) - (w*0.5), cury, w, h, line3 );
     }
 
+    // blank line
+    cury += h;
+
     if (hints!=None){
-        cury = msgY * height + h * 4.0;
+        cury += h;
         gc.GetTextExtent( 0, w, h, "Press right for another hint." );
         gc.DrawText( (width*0.5) - (w*0.5), cury, w, h, "Press right for another hint." );
+    }
+
+    if(bottomText != "") {
+        cury += h;
+        gc.GetTextExtent( 0, w, h, bottomText );
+        gc.DrawText( (width*0.5) - (w*0.5), cury, w, h, bottomText );
     }
 
     Super.DrawWindow(gc);

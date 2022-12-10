@@ -354,7 +354,7 @@ simulated function int GetHint()
 simulated function ShowHint(optional int recursion)
 {
     local int hint;
-    local string deathcounter;
+    local DXRBigMessage m;
 #ifdef hx
     // for hx, the DXRBigMessage is bugged, so just disable the timer and PlayerRespawn will enable it again
     SetTimer(0, false);
@@ -368,9 +368,13 @@ simulated function ShowHint(optional int recursion)
     }
     hint = GetHint();
 
-    deathcounter = "Deaths: "$class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths');
-    if(class'DXRBigMessage'.static.CreateBigMessage(_player, self, hints[hint], details[hint], deathcounter) == None)
+    m = class'DXRBigMessage'.static.CreateBigMessage(_player, self, hints[hint], details[hint]);
+    if(m == None) {
         ShowHint(recursion++);
+        return;
+    }
+    m.line3 = "Deaths: "$class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths');
+    m.bottomText = "(Hint "$hint$" / "$numHints$", some hints are context sensitive)";
 }
 
 simulated function Timer()
