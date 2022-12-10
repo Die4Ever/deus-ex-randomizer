@@ -17,6 +17,8 @@ const START_LOCATION = 1073741824;
 const VANILLA_START = 2147483648;
 const PLAYER_LOCATION = 7; // keep in sync with length of GoalLocation.positions array
 
+var bool RandodMissionGoals;
+
 struct GoalActor {
     var name actorName;
     var EPhysics physics;
@@ -1080,10 +1082,10 @@ function Timer()
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
-        if (!f.GetBool('RandoMission1Goals')){
-            //Secondary objectives get cleared if added in pre/postFirstEntry
+        if (!RandodMissionGoals && !dxr.flagbase.GetBool('PlayerTraveling')){
+            //Secondary objectives get cleared if added in pre/postFirstEntry due to the MissionScript, the MissionsScript also clears the PlayerTraveling flag
             AddMission1Goals();
-            f.SetBool('RandoMission1Goals',True,,2);
+            RandodMissionGoals=true;
         }
         break;
     case "03_NYC_HANGAR":
