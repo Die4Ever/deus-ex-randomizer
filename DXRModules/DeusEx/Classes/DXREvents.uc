@@ -597,7 +597,7 @@ function HandleBingoWinCountdown()
 
     if (bingo_win_countdown > 0) {
         //Show win message
-        class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds","");
+        class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
         if (bingo_win_countdown == 2) {
             //Give it 2 seconds to send the tweet
             BeatGame(dxr,4);
