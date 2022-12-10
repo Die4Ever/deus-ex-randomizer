@@ -19,7 +19,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,1,0,3) ) {
+    if( ConfigOlderThan(2,1,5,5) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -328,6 +328,13 @@ function vanilla_keys_rules()
     // X > 528.007446, X < 1047.852173, Y < 436.867401, Z > -1653.906006 == storage closet
     // 1888.000000, 544.000000, -1536.000000 == glabs door, X > -414.152771 && X < 1888 && Y < 1930.014771 == before greasel labs
     // 4856.000000, 3515.999512, -1816.000000 == crew quarters door
+
+    keys_rules[i].map = "15_area51_entrance";
+    keys_rules[i].item_name = 'Factory';
+    keys_rules[i].min_pos = vect(-816, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = true;
+    i++;
 }
 
 function revision_keys_rules()

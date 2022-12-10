@@ -374,7 +374,7 @@ simulated function ShowHint(optional int recursion)
         return;
     }
     m.line3 = "Deaths: "$class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths');
-    m.bottomText = "(Hint "$hint$" / "$numHints$", some hints are context sensitive)";
+    m.bottomText = "(Hint "$hint$" / "$numHints$", many hints are context sensitive)";
 }
 
 simulated function Timer()
