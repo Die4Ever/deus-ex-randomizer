@@ -1908,6 +1908,13 @@ function Area51_FirstEntry()
         se = Spawn(class'SpecialEvent',,'start_buzz2');
         se.Message = "Coolant levels normal - Failsafe cannot be disabled";
 
+        //Increase the radius of the datalink that opens the sector 4 blast doors
+        foreach AllActors(class'DataLinkTrigger',dlt){
+            if (dlt.datalinkTag=='DL_Helios_Door2'){
+                dlt.SetCollisionSize(900,dlt.CollisionHeight);
+            }
+        }
+
         break;
 
     case "15_AREA51_ENTRANCE":
