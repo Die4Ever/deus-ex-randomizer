@@ -56,6 +56,8 @@ var config bool allow_vanilla;
 var vector rando_start_loc;
 var bool b_rando_start;
 
+var bool WaltonAppeared;
+
 function CheckConfig()
 {
     local class<Actor> a;
@@ -979,7 +981,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         GiveItem(sp,class'WeaponNanoSword');
 
         sp.ConBindEvents();
-        sp.LeaveWorld();
+        sp.bInWorld=False;
 
         ot.Event='WaltonSimons';
         ot.Orders='Attacking';
@@ -1139,12 +1141,13 @@ function Timer()
 
     case "14_VANDENBERG_SUB":
     case "14_OCEANLAB_UC":
-        if (!f.GetBool('RandoWaltonAppeared') && f.GetBool('DL_downloaded_Played'))
+        if (!WaltonAppeared && f.GetBool('DL_downloaded_Played'))
         {
-		    foreach AllActors(class'#var(prefix)WaltonSimons', Walton){
+            foreach AllActors(class'#var(prefix)WaltonSimons', Walton){
                 Walton.EnterWorld();
             }
-            f.SetBool('RandoWaltonAppeared',True,,15);
+            WaltonAppeared=True;
+
         }
         break;
     }
