@@ -648,6 +648,23 @@ function int InitGoals(int mission, string map)
     return mission+1000;
 }
 
+function AddMission1Goals()
+{
+    local DeusExGoal newGoal;
+
+    //The MeetPaul conversation would normally give you several goals.
+    //Give them manually instead of via that conversation.
+    newGoal=player().AddGoal('DefeatNSFCommandCenter',True);
+    newGoal.SetText("The NSF seem to be directing the attack from somewhere on the island.  Find the commander.");
+
+    newGoal=player().AddGoal('RescueAgent',False);
+    newGoal.SetText("One of UNATCO's top agents is being held inside the Statue.  Break him out, and he'll back you up against the NSF.");
+
+    newGoal=player().AddGoal('MeetFilben',False);
+    newGoal.SetText("Meet UNATCO informant Harley Filben at the North Docks.  He has a key to the Statue doors.");
+
+}
+
 function PreFirstEntry()
 {
     local #var(prefix)AnnaNavarre anna;
@@ -1062,6 +1079,13 @@ function Timer()
     f = dxr.flagbase;
 
     switch(dxr.localURL) {
+    case "01_NYC_UNATCOISLAND":
+        if (!f.GetBool('RandoMission1Goals')){
+            //Secondary objectives get cleared if added in pre/postFirstEntry
+            AddMission1Goals();
+            f.SetBool('RandoMission1Goals',True,,2);
+        }
+        break;
     case "03_NYC_HANGAR":
         // copied from Mission03.uc, check for Ambrosia Barrels being tagged
         if (!f.GetBool('Barrel3Checked'))
