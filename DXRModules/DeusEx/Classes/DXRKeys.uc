@@ -352,6 +352,10 @@ function RandomizeDoors()
     SetSeed( "RandomizeDoors" );
 
     foreach AllActors(class'#var(Mover)', d) {
+        // vanilla knife does 5 damage, we need to ensure that glass is always easily breakable, especially for Stick With the Prod
+        if(d.minDamageThreshold <= 5)
+            d.minDamageThreshold = 0;
+
         if( d.bPickable ) {
             d.lockStrength = FClamp(rngrange(d.lockStrength, min_lock_adjust, max_lock_adjust), 0, 1);
             d.lockStrength = int(d.lockStrength*100)/100.0;
@@ -362,7 +366,9 @@ function RandomizeDoors()
             d.doorStrength = int(d.doorStrength*100)/100.0;
             d.minDamageThreshold = rngrange(d.minDamageThreshold, min_mindmg_adjust, max_mindmg_adjust);
 #ifndef injections
-            d.minDamageThreshold = d.doorStrength * 60;
+            // without injections we can't augment the highlight window to show mindamagethreshold, so keep it simple for the player
+            if(d.minDamageThreshold>0)
+                d.minDamageThreshold = d.doorStrength * 60;
 #endif
         }
     }
@@ -510,10 +516,6 @@ function ApplyDoorFixes()
     local int i;
 
     foreach AllActors(class'#var(Mover)', d) {
-        // vanilla knife does 5 damage
-        if(d.minDamageThreshold <= 5)
-            d.minDamageThreshold = 0;
-
         for(i=0; i<ArrayCount(door_fixes); i++) {
             if( door_fixes[i].tag != d.Tag ) continue;
             if( dxr.localURL != door_fixes[i].map ) continue;
