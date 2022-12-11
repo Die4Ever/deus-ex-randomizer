@@ -138,6 +138,9 @@ function SetWatchFlags() {
         break;
     case "03_NYC_747":
         RewatchFlag('747Ambrosia');
+        WatchFlag('JuanLebedev_Unconscious');
+        WatchFlag('PlayerKilledLebedev');
+        WatchFlag('AnnaKilledLebedev');
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
@@ -1292,6 +1295,12 @@ function _MarkBingo(coerce string eventname)
         case "747Ambrosia":
             eventname="StolenAmbrosia";
             break;
+        case "PlayerKilledLebedev":
+            //Check to make sure he wasn't knocked out
+            if (dxr.flagbase.GetBool('JuanLebedev_Unconscious')) {
+                return; //Don't mark this event if knocked out
+            }
+            break;
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
@@ -1478,6 +1487,9 @@ defaultproperties
     bingo_options(114)=(event="unbirth",desc="Return to the tube that spawned you",max=1)
 #endif
     bingo_options(115)=(event="StolenAmbrosia",desc="Find 3 stolen barrels of Ambrosia",max=3)
+    bingo_options(116)=(event="AnnaKilledLebedev",desc="Let Anna kill Lebedev",max=1)
+    bingo_options(117)=(event="PlayerKilledLebedev",desc="Kill Lebedev yourself",max=1)
+    bingo_options(118)=(event="JuanLebedev_Unconscious",desc="Knock out Lebedev",max=1)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
@@ -1488,6 +1500,9 @@ defaultproperties
     mutually_exclusive(5)=(e1="Terrorist_ClassUnconscious",e2="Terrorist_ClassDead")
     mutually_exclusive(6)=(e1="MJ12Troop_ClassUnconscious",e2="MJ12Troop_ClassDead")
     mutually_exclusive(7)=(e1="MJ12Commando_ClassUnconscious",e2="MJ12Commando_ClassDead")
+    mutually_exclusive(8)=(e1="AnnaKilledLebedev",e2="PlayerKilledLebedev")
+    mutually_exclusive(9)=(e1="AnnaKilledLebedev",e2="JuanLebedev_Unconscious")
+    mutually_exclusive(10)=(e1="PlayerKilledLebedev",e2="JuanLebedev_Unconscious")
 
     bingo_win_countdown=-1
 }
