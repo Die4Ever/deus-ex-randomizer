@@ -133,6 +133,7 @@ simulated function InitHints()
     }
     else if(mission <= 14) {
         // maybe you should be hoarding items here until Area 51 lol
+        AddHint("Now might actually be a good time to hoard items.", "You might need them for the end.");
     }
     else {
         AddHint("Try not dying.");
