@@ -16,7 +16,7 @@ function BindControls(optional string action)
 
     NewGroup("General");
 
-    if( "VMDR175MenuSetupRando" != string(self.class.name) ) {
+    if( ! #defined(vmd) ) {
         NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes. The original game uses 400% for realistic.");
         iDifficulty = int(combatDifficulty * 100.0);
         Slider(iDifficulty, 0, 100000);
