@@ -1,9 +1,9 @@
 class VMDR175MenuSetupRando extends DXRMenuSetupRando;
 
+#ifdef vmd175
 function _InvokeNewGameScreen(float difficulty, DXRando dxr)
 {
     local DXRMenuScreenNewGame newGame;
-#ifdef vmd
     local VMDMenuSelectCustomDifficulty VMDNewGame;
     local VMDBufferPlayer VMP;
 
@@ -20,5 +20,5 @@ function _InvokeNewGameScreen(float difficulty, DXRando dxr)
     }
 
     Player.CombatDifficulty = Difficulty;
-#endif
 }
+#endif

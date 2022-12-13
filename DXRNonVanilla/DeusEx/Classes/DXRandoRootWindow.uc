@@ -20,10 +20,11 @@ function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, op
         case class'MenuScreenNewGame':
             newScreen = class'DXRMenuScreenNewGame';
             break;
-#endif
+
         case class'MenuSelectDifficulty':
             newScreen = class'DXRMenuSelectDifficulty';
             break;
+#endif
 
         case class'CreditsWindow':
             newScreen = class'NewGamePlusCreditsWindow';
@@ -40,11 +41,13 @@ function InvokeMenu(Class<DeusExBaseWindow> newMenu)
             newMenu = class'DXRMenuMain';
             break;
 
+#ifdef vmd
         // VMD 1.56
         case class'MenuSelectDifficulty':
             newMenu = class'VMDR156MenuSelectDifficulty';
             break;
-#ifdef vmd
+#endif
+#ifdef vmd175
         // VMD 1.75
         case class'VMDMenuSelectCustomDifficulty':
             newMenu = class'VMDR175MenuSelectDifficulty';
