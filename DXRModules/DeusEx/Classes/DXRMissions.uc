@@ -1299,6 +1299,7 @@ function bool MoveGoalTo(string goalName, int locNumber)
     for(i=0; i<num_goals; i++) {
         if(goalName == goals[i].name) {
             MoveGoalToLocation(goals[i], locations[locNumber]);
+            player().ClientMessage("Goal Location: "$locations[locNumber].name);
             return true;
         }
     }
