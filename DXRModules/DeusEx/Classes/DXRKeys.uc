@@ -19,7 +19,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,1,5,5) ) {
+    if( ConfigOlderThan(2,1,5,7) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -56,6 +56,21 @@ function CheckConfig()
         door_fixes[i].bPickable = true;
         door_fixes[i].lockStrength = 0;
         door_fixes[i].bHighlight = true;
+        i++;
+
+        // doors to the computer room
+        door_fixes[i].map = "04_NYC_NSFHQ";
+        door_fixes[i].tag = 'SlidingDoor1Move';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 20;// 0 uses a random value instead
+        door_fixes[i].doorStrength = 0.5;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].lockStrength = 0;
+        door_fixes[i].bHighlight = false;
+        i++;
+
+        door_fixes[i] = door_fixes[i-1];
+        door_fixes[i].tag = 'SlidingDoor2Move';
         i++;
 
         // just in case General Carter's door gets stuck on something
