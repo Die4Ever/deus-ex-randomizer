@@ -313,13 +313,23 @@ function PostFirstEntryMapFixes()
         }
         break;
 
-#ifndef revision
     case "02_NYC_WAREHOUSE":
-        AddBox(class'#var(prefix)CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));// apartment
-        AddBox(class'#var(prefix)CrateUnbreakableMed', vect(-389.361969, 744.039978, 1088.083618));// ladder
-        AddBox(class'#var(prefix)CrateUnbreakableSmall', vect(-328.287048, 767.875000, 1072.113770));
+        if(!#defined(revision)) {
+            AddBox(class'#var(prefix)CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));// apartment
+            AddBox(class'#var(prefix)CrateUnbreakableMed', vect(-389.361969, 744.039978, 1088.083618));// ladder
+            AddBox(class'#var(prefix)CrateUnbreakableSmall', vect(-328.287048, 767.875000, 1072.113770));
+        }
+
+        // this map is too hard
+        Spawn(class'#var(prefix)AdaptiveArmor',,, GetRandomPositionFine());
+        Spawn(class'#var(prefix)AdaptiveArmor',,, GetRandomPositionFine());
+        Spawn(class'#var(prefix)BallisticArmor',,, GetRandomPositionFine());
+        Spawn(class'#var(prefix)BallisticArmor',,, GetRandomPositionFine());
+        Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
+        Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
         break;
 
+#ifndef revision
     case "03_NYC_BrooklynBridgeStation":
         a = _AddActor(Self, class'Barrel1', vect(-27.953907, -3493.229980, 45.101418), rot(0,0,0));
         Barrel1(a).SkinColor = SC_Explosive;
@@ -1125,6 +1135,8 @@ function NYC_04_FirstEntry()
     local OrdersTrigger ot;
     local SkillAwardTrigger st;
     local BoxSmall b;
+    local HackableDevices hd;
+    local CrateUnbreakableLarge crate;
 
     switch (dxr.localURL)
     {
@@ -1153,8 +1165,15 @@ function NYC_04_FirstEntry()
 #endif
 
     case "04_NYC_NSFHQ":
-        foreach RadiusActors(class'BoxSmall', b, 100, vect(-640.699402, 66.666039, -209.364014)) {
+        foreach RadiusActors(class'#var(prefix)BoxSmall', b, 100, vect(-640.699402, 66.666039, -209.364014)) {
             b.Destroy();
+        }
+        foreach AllActors(class'#var(prefix)HackableDevices', hd) {
+            hd.hackStrength /= 3.0;
+        }
+        foreach AllActors(class'#var(prefix)CrateUnbreakableLarge', crate) {
+            crate.Event = '';
+            crate.Destroy();
         }
         break;
     }

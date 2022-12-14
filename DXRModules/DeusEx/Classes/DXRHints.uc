@@ -160,6 +160,9 @@ simulated function InitHints()
         else if(map ~= "02_NYC_Warehouse") {
             if(dxr.flags.settings.goals > 0)
                 AddHint("The locations of the generator, computer, and Jock are randomized.", "Check the Goal Randomization page on our Wiki.");
+            AddHint("There are lots of enemies here!", "Look for thermoptic camo to help.");
+            AddHint("There are lots of enemies here!", "Look for ballistic armor to help.");
+            AddHint("There are lots of enemies here!", "Look for fire extinguishers to stun enemies.");
         }
         break;
 
