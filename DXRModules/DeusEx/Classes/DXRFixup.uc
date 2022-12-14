@@ -873,11 +873,6 @@ function UpdateReactorGoal(int count)
 function Area51_CountBlueFusion()
 {
     local int newCount;
-    local DeusExGoal goal;
-    goal = player().FindGoal('OverloadForceField');
-    if (goal==None){
-        return; //Don't do these notifications until the goal is added
-    }
 
     newCount = 4;
 
@@ -891,16 +886,19 @@ function Area51_CountBlueFusion()
         newCount--;
 
     if (newCount!=storedReactorCount){
-        //A weld point has been destroyed!
+        // A fusion reactor has been shut down!
         storedReactorCount = newCount;
 
         switch(newCount){
             case 0:
                 player().ClientMessage("All Blue Fusion reactors shut down!");
-                SetTimer(0, False);  //Disable the timer now that all weld points are gone
+                SetTimer(0, False);  // Disable the timer now that all fusion reactors are shut down
                 break;
             case 1:
                 player().ClientMessage("1 Blue Fusion reactor remaining");
+                break;
+            case 4:
+                // don't alert the player at the start of the level
                 break;
             default:
                 player().ClientMessage(newCount$" Blue Fusion reactors remaining");
