@@ -29,7 +29,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,1,4,4) ) {
+    if( ConfigOlderThan(2,1,5,7) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
 
@@ -199,6 +199,7 @@ function vanilla_datacubes_rules()
     datacubes_rules[i].allow = true;
     i++;
 
+    // datacube with the password for sending the signal
     datacubes_rules[i].map = "04_NYC_NSFHQ";
     datacubes_rules[i].item_name = '04_Datacube01';
     datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -206,12 +207,12 @@ function vanilla_datacubes_rules()
     datacubes_rules[i].allow = true;
     i++;
 
-    datacubes_rules[i] = datacubes_rules[i-1];
+    // datacube with the security password, don't allow it to go in the basement
+    datacubes_rules[i].map = "04_NYC_NSFHQ";
     datacubes_rules[i].item_name = '04_Datacube02';
-    i++;
-
-    datacubes_rules[i] = datacubes_rules[i-1];
-    datacubes_rules[i].item_name = '04_Datacube02';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, 0);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
     i++;
 
     datacubes_rules[i].map = "05_NYC_UNATCOMJ12LAB";
