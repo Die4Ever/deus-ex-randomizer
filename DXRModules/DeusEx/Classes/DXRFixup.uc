@@ -978,7 +978,7 @@ function UpdateGoalWithRandoInfo(name goalName)
         if (randoPos==-1){
             switch(goalName){
                 case 'InvestigateMaggieChow':
-                    goalText = goalText$"|nRando: Open the sword container.  Finding the sword is not necessary.";
+                    goalText = goalText$"|nRando: The sword may not be in Maggie's apartment.";
                     break;
                 case 'FindHarleyFilben':
                     if(dxr.flags.settings.goals > 0)
@@ -1310,6 +1310,7 @@ function HongKong_FirstEntry()
     local AllianceTrigger at;
     local DeusExMover d;
     local DataLinkTrigger dt;
+    local ComputerSecurity cs;
 
     switch(dxr.localURL)
     {
@@ -1419,13 +1420,25 @@ function HongKong_FirstEntry()
                 dt.Tag = 'TongHasRom';
         }
         break;
-#ifdef injections
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
+#ifdef injections
         foreach AllActors(class'AllianceTrigger',at,'StoreSafe') {
             at.bPlayerOnly = true;
         }
-        break;
 #endif
+        foreach AllActors(class'DeusExMover',d){
+            if (d.Region.Zone.ZoneGroundFriction < 8) {
+                //Less than default friction should be the freezer
+                d.Tag='FreezerDoor';
+            }
+        }
+        foreach AllActors(class'ComputerSecurity',cs){
+            if (cs.UserList[0].UserName=="LUCKYMONEY"){
+                cs.Views[2].doorTag='FreezerDoor';
+            }
+        }
+        break;
+
     case "06_HONGKONG_WANCHAI_GARAGE":
         foreach AllActors(class'DeusExMover',d,'secret_door'){
             d.bFrobbable=False;

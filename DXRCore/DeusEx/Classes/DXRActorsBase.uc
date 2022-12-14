@@ -317,7 +317,7 @@ static function ThrowItem(Inventory item, float VelocityMult)
 
 function bool SkipActorBase(Actor a)
 {
-    if( (a.Owner != None) || a.bStatic || a.bHidden || a.bMovable==False )
+    if( (a.Owner != None) || a.bStatic || a.bHidden || a.bMovable==False || a.bIsSecretGoal )
         return true;
     return false;
 }

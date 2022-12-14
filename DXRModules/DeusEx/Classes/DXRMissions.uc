@@ -410,7 +410,24 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-723.018677,591.498901,-743.972717), rot(0,49160,0));
         return 62;
+    case "06_HONGKONG_WANCHAI_STREET":
+    case "06_HONGKONG_WANCHAI_CANAL":
+    case "06_HONGKONG_WANCHAI_UNDERWORLD":
+    case "06_HONGKONG_WANCHAI_MARKET":
+        goal = AddGoal("06_HONGKONG_WANCHAI_STREET", "DTS", NORMAL_GOAL, 'WeaponNanoSword0', PHYS_None);
+        AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_00: Now bring the sword to Max Chen at the Lucky Money Club
 
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's couch", NORMAL_GOAL, vect(836.923828, -1779.652588, 1706.345459), rot(0, 10816, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(257.923828, -200.652588, 1805.345459), rot(0, 10816, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vect(2293, 2728, -598), rot(0, 10808, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "with the boatperson", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vect(-1623, 3164, -393), rot(0, -49592, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
+
+        return 63;
     case "08_NYC_Bar":
     case "08_NYC_FreeClinic":
     case "08_NYC_Hotel":
@@ -908,6 +925,8 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     local Trigger t;
     local Inventory inv;
     local Ammo a;
+    local WeaponNanoSword dts;
+    local DataLinkTrigger dlt;
 
     local FlagBase f;
 
@@ -1060,6 +1079,19 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         st.skillPointsAdded = 100;
         break;
 
+    case "DTS":
+        dts = Spawn(class'WeaponNanoSword',,,Loc.positions[0].pos,Loc.positions[0].rot);
+        dlt = Spawn(class'DataLinkTrigger',,,Loc.positions[0].pos);
+
+        g.actors[0].a=dts;
+        g.actors[1].a=dlt;
+
+        dlt.SetCollision(True,False,False);
+        dlt.Tag='';
+        dlt.datalinkTag='DL_Tong_00';
+        dlt.SetCollisionSize(100,20);
+
+        break;
     }
 }
 
@@ -1155,6 +1187,23 @@ function Timer()
     }
 }
 
+function GenerateDTSHintCube(Goal g, GoalLocation Loc)
+{
+#ifdef injections
+    local #var(prefix)DataCube dc;
+    dc = Spawn(class'#var(prefix)DataCube',,, vect(-1857.841064, -158.911865, 2051.345459));
+#else
+    local DXRInformationDevices dc;
+    dc = Spawn(class'DXRInformationDevices',,, vect(-1857.841064, -158.911865, 2051.345459));
+#endif
+
+    if (dc!=None){
+        dc.plaintext = "I borrowed the sword but forgot it somewhere...  Maybe "$Loc.name$"?";
+        dc.bIsSecretGoal=True; //So it doesn't move
+    }
+
+}
+
 function MoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local int i;
@@ -1180,6 +1229,11 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             a.Event = '';
             a.Destroy();
         }
+
+        if (g.name=="DTS" && dxr.localURL == "06_HONGKONG_WANCHAI_STREET" && Loc.name!="Sword Case"){
+            GenerateDTSHintCube(g,Loc);
+        }
+
         return;
     }
     else if(g.mapName != dxr.localURL && Loc.mapName == dxr.localURL) {
@@ -1230,6 +1284,20 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
                 else warning("failed to spawn tower datacube at "$dc1.Location);
 
 
+            }
+
+        }
+    } else if (g.name=="DTS"){
+        g.actors[0].a.bIsSecretGoal=True; //We'll use this to stop it from being swapped
+        if (Loc.name!="Sword Case"){
+            g.actors[1].a.Tag=''; //Change the tag so it doesn't get hit if the case opens
+
+            //Make the datalink trigger actually bumpable
+            g.actors[1].a.SetCollision(True,False,False);
+            g.actors[1].a.SetCollisionSize(100,20);
+
+            if ( dxr.localURL == "06_HONGKONG_WANCHAI_STREET" ){
+                GenerateDTSHintCube(g,Loc);
             }
 
         }

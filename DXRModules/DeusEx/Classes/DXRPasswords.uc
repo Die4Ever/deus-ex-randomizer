@@ -610,6 +610,7 @@ function RandoInfoDevs(int percent)
 
     foreach AllActors(class'#var(prefix)InformationDevices', id)
     {
+        if( id.bIsSecretGoal ) continue;
         if( ! chance_single(percent) ) continue;
         _RandoInfoDev(id, dxr.flags.settings.infodevices_containers > 0);
     }
