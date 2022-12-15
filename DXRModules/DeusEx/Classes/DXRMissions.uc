@@ -410,6 +410,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-723.018677,591.498901,-743.972717), rot(0,49160,0));
         return 62;
+
     case "06_HONGKONG_WANCHAI_STREET":
     case "06_HONGKONG_WANCHAI_CANAL":
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
@@ -417,7 +418,7 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("06_HONGKONG_WANCHAI_STREET", "DTS", NORMAL_GOAL, 'WeaponNanoSword0', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_00: Now bring the sword to Max Chen at the Lucky Money Club
 
-        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's couch", NORMAL_GOAL, vect(836.923828, -1779.652588, 1706.345459), rot(0, 10816, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(257.923828, -200.652588, 1805.345459), rot(0, 10816, 0));
@@ -428,6 +429,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
 
         return 63;
+
     case "08_NYC_Bar":
     case "08_NYC_FreeClinic":
     case "08_NYC_Hotel":
@@ -1230,7 +1232,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             a.Destroy();
         }
 
-        if (g.name=="DTS" && dxr.localURL == "06_HONGKONG_WANCHAI_STREET" && Loc.name!="Sword Case"){
+        if (g.name=="DTS"){
             GenerateDTSHintCube(g,Loc);
         }
 
