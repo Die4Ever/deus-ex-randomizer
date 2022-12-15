@@ -5,9 +5,11 @@ const bingoHeight = 360;
 const bingoStartX = 16;
 const bingoStartY = 22;
 
-var PersonaActionButtonWindow btnReset;
+var PersonaActionButtonWindow btnReset, btnBingoInfo;
 
 var string ResetWindowHeader, ResetWindowText;
+var string InfoWindowHeader, InfoWindowText;
+var string bingoWikiUrl;
 
 function CreateControls()
 {
@@ -33,6 +35,10 @@ function CreateControls()
 
     btnReset = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
     btnReset.SetButtonText("New Board");
+
+    btnBingoInfo = PersonaActionButtonWindow(winClient.NewChild(Class'PersonaActionButtonWindow'));
+    btnBingoInfo.SetButtonText("Bingo Info");
+    btnBingoInfo.SetWindowAlignments(HALIGN_Right, VALIGN_Top,10,385);
 }
 
 // we can fit about 6 lines of text, about 14 characters wide
@@ -56,10 +62,27 @@ function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int 
 
 event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 {
-	// Destroy the msgbox!
+    local MenuUIMessageBoxWindow msgBox;
+    local string action;
+
+    msgBox = MenuUIMessageBoxWindow(msgBoxWindow);
+    if (msgBox.winText.GetText()==ResetWindowText){
+        if (buttonNumber==0){
+            action = "reset";
+        }
+    } else if (msgBox.winText.GetText()==InfoWindowText){
+        if (buttonNumber==0){
+            action="wiki";
+        }
+    }
+
+    // Destroy the msgbox!
 	root.PopWindow();
-    if (buttonNumber==0){
+
+    if (action=="reset"){
         ResetBingoBoard();
+    } else if (action=="wiki"){
+        player.ConsoleCommand("start "$bingoWikiUrl);
     }
 
 	return True;
@@ -83,6 +106,11 @@ function bool ButtonActivated( Window buttonPressed )
 
     if(buttonPressed == btnReset) {
         root.MessageBox(ResetWindowHeader,ResetWindowText,0,False,Self);
+
+        return true;
+    }
+    else if(buttonPressed == btnBingoInfo) {
+        root.MessageBox(InfoWindowHeader,InfoWindowText,0,False,Self);
 
         return true;
     }
@@ -111,4 +139,7 @@ defaultproperties
      clientBorderTextureCols=3
      ResetWindowHeader="Are you sure?"
      ResetWindowText="Are you sure you want to reset your board?  All bingo progress will be lost!"
+     InfoWindowHeader="Open Wiki?"
+     InfoWindowText="Would you like to open the DXRando Bingo Goal wiki page?"
+     bingoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/Bingo-Goals"
 }
