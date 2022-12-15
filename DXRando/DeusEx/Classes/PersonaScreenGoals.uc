@@ -41,8 +41,6 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
         handled=True;
     }
 
-
-
     if (action=="wiki"){
         player.ConsoleCommand("start "$goalRandoWikiUrl);
     }
@@ -73,6 +71,6 @@ function bool ButtonActivated( Window buttonPressed )
 defaultproperties
 {
      InfoWindowHeader="Open Wiki?"
-     InfoWindowText="Would you like to open the DXRando Goal Randomization wiki page?"
+     InfoWindowText="Would you like to open the DXRando Goal Randomization wiki page in your web browser?"
      goalRandoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/Goal-Randomization"
 }

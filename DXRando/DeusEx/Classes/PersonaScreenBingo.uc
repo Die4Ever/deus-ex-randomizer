@@ -140,6 +140,6 @@ defaultproperties
      ResetWindowHeader="Are you sure?"
      ResetWindowText="Are you sure you want to reset your board?  All bingo progress will be lost!"
      InfoWindowHeader="Open Wiki?"
-     InfoWindowText="Would you like to open the DXRando Bingo Goal wiki page?"
+     InfoWindowText="Would you like to open the DXRando Bingo Goal wiki page in your web browser?"
      bingoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/Bingo-Goals"
 }
