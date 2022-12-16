@@ -10,16 +10,16 @@ function CreateControls()
 
     Super.CreateControls();
 
-    btnBingo = PersonaActionButtonWindow(winClient.NewChild(Class'PersonaActionButtonWindow'));
+    btnBingo = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnBingo.SetButtonText("|&Bingo");
-    btnBingo.SetPos(545, 1);
+    btnBingo.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 13, 179);
     btnBingo.SetSensitivity(true);
 
     foreach player.AllActors(class'DXRando',dxr){
         if (dxr.flags.settings.goals > 0) {
-            btnGoalHints = PersonaActionButtonWindow(winClient.NewChild(Class'PersonaActionButtonWindow'));
+            btnGoalHints = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
             btnGoalHints.SetButtonText("|&Goal Randomization Info");
-            btnGoalHints.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 13, 179);
+            btnGoalHints.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 65, 179);
             btnGoalHints.SetSensitivity(true);
         }
         break;

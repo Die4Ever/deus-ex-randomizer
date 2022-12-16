@@ -42,7 +42,7 @@ simulated function InitHints()
         AddHint("Melee attacks from behind do bonus damage!");
         AddHint("The flashlight (F12) can be used to attract the attention of guards.");
         AddHint("Don't hoard items.", "You'll find more!");
-        AddHint("Have you looked at your Bingo Board?", "Find it at the top left of your Goals/Notes screen.");
+        AddHint("Have you looked at your Bingo Board?", "Find it in the middle bar of your Goals/Notes screen.");
 
         AddHint("Use everything at your disposal, like TNT crates.", "Randomizer makes this even more of a strategy/puzzle game.");
         AddHint("A vending machine can provide you with 20 health worth of food.", "Eat up!");

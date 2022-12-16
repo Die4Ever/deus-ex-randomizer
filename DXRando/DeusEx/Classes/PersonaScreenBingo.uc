@@ -13,7 +13,6 @@ var string bingoWikiUrl;
 
 function CreateControls()
 {
-    local PersonaButtonBarWindow winActionButtons;
     local int x, y, progress, max;
     local string event, desc;
     local PlayerDataItem data;
@@ -29,14 +28,11 @@ function CreateControls()
         }
     }
 
-    winActionButtons = PersonaButtonBarWindow(winClient.NewChild(Class'PersonaButtonBarWindow'));
-    winActionButtons.SetPos(10, 385);
-    winActionButtons.SetWidth(75);
-
-    btnReset = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
+    btnReset = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnReset.SetButtonText("New Board");
+    btnReset.SetWindowAlignments(HALIGN_Left, VALIGN_Top,10,385);
 
-    btnBingoInfo = PersonaActionButtonWindow(winClient.NewChild(Class'PersonaActionButtonWindow'));
+    btnBingoInfo = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnBingoInfo.SetButtonText("Bingo Info");
     btnBingoInfo.SetWindowAlignments(HALIGN_Right, VALIGN_Top,10,385);
 }

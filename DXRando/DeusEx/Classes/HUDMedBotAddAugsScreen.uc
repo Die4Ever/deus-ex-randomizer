@@ -16,17 +16,14 @@ function CreateButtons()
     winActionButtons.SetPos(346, 371);
     winActionButtons.SetWidth(150);
 
-    btnRemove = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-    btnRemove.bTranslucent = false; //This doesn't look amazing, but it covers up the weird transparency in the menu image
+    btnRemove = PersonaActionButtonWindow(winActionButtons.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnRemove.SetButtonText("|&Remove");
 
 #ifdef hx
-    InstallButton = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-    InstallButton.bTranslucent = false; //This doesn't look amazing, but it covers up the weird transparency in the menu image
+    InstallButton = PersonaActionButtonWindow(winActionButtons.NewChild(Class'DXRPersonaActionButtonWindow'));
     InstallButton.SetButtonText(InstallButtonLabel);
 #else
-    btnInstall = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-    btnInstall.bTranslucent = false; //This doesn't look amazing, but it covers up the weird transparency in the menu image
+    btnInstall = PersonaActionButtonWindow(winActionButtons.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnInstall.SetButtonText(InstallButtonLabel);
 #endif
 }

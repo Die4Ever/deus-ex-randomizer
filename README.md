@@ -51,7 +51,7 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
     * No Overpowered Weapons - bans pistols, swords, and the GEP Gun
     * By the Book - bans lockpicks and multitools
 * Max Rando - randomize the randomizer's settings!
-* An integrated Bingo board: on the Goals screen there's a Bingo button in the top right, there's also our external BingoDisplay program
+* An integrated Bingo board: on the Goals screen there's a Bingo button in the middle bar, there's also our external BingoDisplay program
 * Co-op when combined with the HX mod (Alpha)
 * making all or some of the doors that normally require a key also lockpickable and/or destructible
 * making all or some keypads hackable.
