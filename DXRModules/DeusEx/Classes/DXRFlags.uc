@@ -873,7 +873,7 @@ simulated function string flagNameToHumanName(name flagname){
         case 'Rando_bingo_freespaces':
             return "Bingo Free Spaces";
         case 'Rando_spoilers':
-            return "Spoilers";
+            return "Spoiler Buttons";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
