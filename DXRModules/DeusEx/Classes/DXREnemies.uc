@@ -366,6 +366,9 @@ function SwapScriptedPawns(int percent, bool enemies)
         if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
         if( exceptTag != '' && a.Tag == exceptTag ) continue;
         if( class'DXRMissions'.static.IsCloseToStart(dxr, a.Location) ) continue;
+#ifdef gmdx
+        if( SpiderBot2(a) != None && SpiderBot2(a).bUpsideDown ) continue;
+#endif
         temp[num++] = a;
     }
 
@@ -423,6 +426,9 @@ function RandoEnemies(int percent, int hidden_percent)
     foreach AllActors(class'ScriptedPawn', p)
     {
         if( p != None && p.bImportant ) continue;
+#ifdef gmdx
+        if( SpiderBot2(p) != None && SpiderBot2(p).bUpsideDown ) continue;
+#endif
         RandomizeSize(p);
     }
 
@@ -432,6 +438,9 @@ function RandoEnemies(int percent, int hidden_percent)
         if( IsCritter(p) ) continue;
         //if( SkipActor(p, 'ScriptedPawn') ) continue;
         //if( IsInitialEnemy(p) == False ) continue;
+#ifdef gmdx
+        if( SpiderBot2(p) != None && SpiderBot2(p).bUpsideDown ) continue;
+#endif
 
         if( HasItemSubclass(p, class'Weapon') == false ) continue;//don't randomize neutral npcs that don't already have weapons
 
@@ -646,9 +655,11 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( p == None ) return;
 
     l("RandomizeSP("$p$", "$percent$")");
-    p.SurprisePeriod = rngrange(p.SurprisePeriod+0.1, 0.3, 1.2);
-    p.GroundSpeed = rngrange(p.GroundSpeed, 0.9, 1.1);
-    p.BaseAccuracy -= FClamp(rngf() * float(percent)/100.0, 0, 0.8);
+    if( IsHuman(p.class) || dxr.flags.settings.bot_stats>0 ) {
+        p.SurprisePeriod = rngrange(p.SurprisePeriod+0.1, 0.3, 1.2);
+        p.GroundSpeed = rngrange(p.GroundSpeed, 0.9, 1.1);
+        p.BaseAccuracy -= FClamp(rngf() * float(percent)/100.0, 0, 0.8);
+    }
 
     if( IsCritter(p) ) return; // only give random weapons to humans and robots
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;

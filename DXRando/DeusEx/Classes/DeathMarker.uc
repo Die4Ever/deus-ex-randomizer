@@ -34,12 +34,12 @@ static function string DamageTypeText(string dmg, out string pre) {
         case "Flamed":
             return "burned to death";
         case "Drowned":
-            return "drowned to death";
+            return "drowned";
         case "EMP":
         case "Shocked":
             return "shocked to death";
         case "Exploded":
-            return "exploded to bits";
+            return "blown to bits";
         case "fell":
 		    return "splattered all over the floor";
         case "stomped":
@@ -54,6 +54,8 @@ static function string DamageTypeText(string dmg, out string pre) {
         case "crowdcontrol":
             pre = "";
             return "had their killswitch flipped";
+        case "Helicopter":
+            return "sliced to pieces by helicopter blades";
     }
     log("WARNING: missing DamageTypeText for "$dmg);
     return "killed";

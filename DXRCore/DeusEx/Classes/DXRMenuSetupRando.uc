@@ -16,10 +16,12 @@ function BindControls(optional string action)
 
     NewGroup("General");
 
-    NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes. The original game uses 400% for realistic.");
-    iDifficulty = int(combatDifficulty * 100.0);
-    Slider(iDifficulty, 0, 100000);
-    combatDifficulty = float(iDifficulty) / 100.0;
+    if( ! #defined(vmd) ) {
+        NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes. The original game uses 400% for realistic.");
+        iDifficulty = int(combatDifficulty * 100.0);
+        Slider(iDifficulty, 0, 100000);
+        combatDifficulty = float(iDifficulty) / 100.0;
+    }
 
 #ifndef hx
     NewMenuItem("", "Randomize starting locations on certain maps");
@@ -172,6 +174,10 @@ function BindControls(optional string action)
     NewMenuItem("", "Allow robots to get randomized weapons");
     EnumOption("Unchanged Robot Weapons", 0, f.settings.bot_weapons);
     EnumOption("Random Robot Weapons", 4, f.settings.bot_weapons);
+
+    NewMenuItem("", "Allow non-humans to get randomized stats");
+    EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);
+    EnumOption("Random Non-human Stats", 100, f.settings.bot_stats);
 
 
     NewGroup("Skills");

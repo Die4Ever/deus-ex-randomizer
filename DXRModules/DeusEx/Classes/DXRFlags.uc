@@ -36,7 +36,7 @@ struct FlagsSettings {
     var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
     var int keys_containers, infodevices_containers;
     var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized;//could be bools, but int is more flexible, especially so I don't have to change the flag type
-    var int enemiesrandomized, hiddenenemiesrandomized, enemiesshuffled, enemyrespawn, infodevices, bot_weapons;
+    var int enemiesrandomized, hiddenenemiesrandomized, enemiesshuffled, enemyrespawn, infodevices, bot_weapons, bot_stats;
     var int dancingpercent;
     var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
     var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
@@ -229,7 +229,7 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,0,2,2) ) {
+    if( ConfigOlderThan(2,1,5,3) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -249,6 +249,7 @@ function CheckConfig()
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 40;
         difficulty_settings[i].bot_weapons = 0;
+        difficulty_settings[i].bot_stats = 0;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
         difficulty_settings[i].skills_reroll_missions = 1;
@@ -295,7 +296,7 @@ function CheckConfig()
         difficulty_names[i] = "Easy";
 #ifndef hx
         difficulty_names[i] = "Normal";
-        difficulty_settings[i].CombatDifficulty = 1;
+        difficulty_settings[i].CombatDifficulty = 1.2;
 #endif
         difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyinclusive;
         difficulty_settings[i].doorsdestructible = 100;
@@ -311,6 +312,7 @@ function CheckConfig()
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 40;
         difficulty_settings[i].bot_weapons = 0;
+        difficulty_settings[i].bot_stats = 0;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
         difficulty_settings[i].skills_reroll_missions = 5;
@@ -356,7 +358,7 @@ function CheckConfig()
         difficulty_names[i] = "Medium";
 #ifndef hx
         difficulty_names[i] = "Hard";
-        difficulty_settings[i].CombatDifficulty = 1.5;
+        difficulty_settings[i].CombatDifficulty = 1.7;
 #endif
         difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
         difficulty_settings[i].doorsdestructible = 50;
@@ -372,6 +374,7 @@ function CheckConfig()
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
         difficulty_settings[i].bot_weapons = 0;
+        difficulty_settings[i].bot_stats = 0;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 0;
         difficulty_settings[i].skills_reroll_missions = 5;
@@ -417,7 +420,7 @@ function CheckConfig()
         difficulty_names[i] = "Hard";
 #ifndef hx
         difficulty_names[i] = "Extreme";
-        difficulty_settings[i].CombatDifficulty = 2;
+        difficulty_settings[i].CombatDifficulty = 2.3;
 #endif
         difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
         difficulty_settings[i].doorsdestructible = 25;
@@ -433,6 +436,7 @@ function CheckConfig()
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 70;
         difficulty_settings[i].bot_weapons = 0;
+        difficulty_settings[i].bot_stats = 0;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 5;
         difficulty_settings[i].skills_reroll_missions = 5;
@@ -494,6 +498,7 @@ function CheckConfig()
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 80;
         difficulty_settings[i].bot_weapons = 0;
+        difficulty_settings[i].bot_stats = 0;
         difficulty_settings[i].enemyrespawn = 0;
         difficulty_settings[i].skills_disable_downgrades = 5;
         difficulty_settings[i].skills_reroll_missions = 5;
@@ -577,7 +582,7 @@ simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDiffi
 {
     local string str;
 
-    str = "Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ CombatDifficulty
+    str = "Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ TrimTrailingZeros(CombatDifficulty)
 #ifdef injections
             $ ", New Game+ Loops: "$newgameplus_loops
 #endif
@@ -707,6 +712,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_banned_skill_level', settings.banned_skill_levels, mode, str);
     FlagInt('Rando_enemies_nonhumans', settings.enemies_nonhumans, mode, str);
     FlagInt('Rando_bot_weapons', settings.bot_weapons, mode, str);
+    FlagInt('Rando_bot_stats', settings.bot_stats, mode, str);
 
     FlagInt('Rando_swapitems', settings.swapitems, mode, str);
     FlagInt('Rando_swapcontainers', settings.swapcontainers, mode, str);
@@ -832,6 +838,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Enemy Non-Human Chance";
         case 'Rando_bot_weapons':
             return "Robot Weapons";
+        case 'Rando_bot_stats':
+            return "Non-human Stats";
         case 'Rando_swapitems':
             return "Swap Items";
         case 'Rando_swapcontainers':
@@ -907,6 +915,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_enemiesrandomized':
         case 'Rando_hiddenenemiesrandomized':
         case 'Rando_enemiesshuffled':
+        case 'Rando_bot_stats':
             return val$"%";
 
         case 'Rando_enemyrespawn':
@@ -1239,7 +1248,7 @@ simulated function string StringifyFlags(optional int mode)
 #endif
     if(mode == 0)
         mode = Stringifying;
-    return BindFlags(mode, "flagsversion: "$flagsversion$", difficulty: " $ CombatDifficulty);
+    return BindFlags(mode, "flagsversion: "$flagsversion$", difficulty: " $ TrimTrailingZeros(CombatDifficulty));
 }
 
 simulated function int FlagsHash()
@@ -1299,6 +1308,7 @@ simulated function InitMaxRandoSettings()
     settings.enemiesrandomized=difficulty_settings[difficulty].enemiesrandomized;
     settings.enemies_nonhumans=difficulty_settings[difficulty].enemies_nonhumans;
     settings.bot_weapons=difficulty_settings[difficulty].bot_weapons;
+    settings.bot_stats=difficulty_settings[difficulty].bot_stats;
     settings.turrets_move=difficulty_settings[difficulty].turrets_move;
     settings.turrets_add=difficulty_settings[difficulty].turrets_add;
     settings.skills_reroll_missions=difficulty_settings[difficulty].skills_reroll_missions;
@@ -1373,6 +1383,12 @@ simulated function RandomizeSettings(bool forceMenuOptions)
         settings.enemyrespawn = 0;
     }
 
+    if(rngb()) {
+        settings.bot_stats = 100;
+    } else {
+        settings.bot_stats = 0;
+    }
+
     MaxRandoVal(settings.turrets_move);
     MaxRandoVal(settings.turrets_add);
 
@@ -1432,6 +1448,7 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     settings.enemiesshuffled = 0;
     settings.enemies_nonhumans = 0;
     settings.bot_weapons = 0;
+    settings.bot_stats = 0;
     settings.enemyrespawn = 0;
 
     settings.turrets_move = 0;
@@ -1596,6 +1613,12 @@ function RunTests()
     teststring( FloatToString(0.5555, 1), "0.6", "FloatToString 1");
     teststring( FloatToString(0.5454999, 4), "0.5455", "FloatToString 2");
     teststring( FloatToString(0.5455, 2), "0.55", "FloatToString 3");
+
+    teststring( TrimTrailingZeros(FloatToString(0.5, 3)), "0.5", "TrimTrailingZeros 1");
+    teststring( TrimTrailingZeros(FloatToString(0.5, 1)), "0.5", "TrimTrailingZeros 2");
+    teststring( TrimTrailingZeros(FloatToString(1, 5)), "1", "TrimTrailingZeros 3");
+    teststring( TrimTrailingZeros(FloatToString(10, 5)), "10", "TrimTrailingZeros 4");
+    teststring( TrimTrailingZeros(FloatToString(0.01, 5)), "0.01", "TrimTrailingZeros 5");
 
     testbool( #defined(debug), false, "debug is disabled");
 }

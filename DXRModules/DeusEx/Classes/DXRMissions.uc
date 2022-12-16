@@ -17,6 +17,8 @@ const START_LOCATION = 1073741824;
 const VANILLA_START = 2147483648;
 const PLAYER_LOCATION = 7; // keep in sync with length of GoalLocation.positions array
 
+var bool RandodMissionGoals;
+
 struct GoalActor {
     var name actorName;
     var EPhysics physics;
@@ -55,6 +57,8 @@ var config bool allow_vanilla;
 
 var vector rando_start_loc;
 var bool b_rando_start;
+
+var bool WaltonAppeared;
 
 function CheckConfig()
 {
@@ -407,6 +411,25 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-723.018677,591.498901,-743.972717), rot(0,49160,0));
         return 62;
 
+    case "06_HONGKONG_WANCHAI_STREET":
+    case "06_HONGKONG_WANCHAI_CANAL":
+    case "06_HONGKONG_WANCHAI_UNDERWORLD":
+    case "06_HONGKONG_WANCHAI_MARKET":
+        goal = AddGoal("06_HONGKONG_WANCHAI_STREET", "DTS", NORMAL_GOAL, 'WeaponNanoSword0', PHYS_None);
+        AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_00: Now bring the sword to Max Chen at the Lucky Money Club
+
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's couch", NORMAL_GOAL, vect(836.923828, -1779.652588, 1706.345459), rot(0, 10816, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(257.923828, -200.652588, 1805.345459), rot(0, 10816, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vect(2293, 2728, -598), rot(0, 10808, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "with the boatperson", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vect(-1623, 3164, -393), rot(0, -49592, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
+
+        return 63;
+
     case "08_NYC_Bar":
     case "08_NYC_FreeClinic":
     case "08_NYC_Hotel":
@@ -444,22 +467,27 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 1", NORMAL_GOAL, 'DeusExMover40', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator10', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall1', PHYS_None);
+        AddGoalActor(goal, 3, 'DataLinkTrigger8', PHYS_None);
         //AddGoalActor(goal, 3, 'AmbientSoundTriggered5', PHYS_None);
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 2", NORMAL_GOAL, 'DeusExMover16', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator4', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall0', PHYS_None);
+        AddGoalActor(goal, 3, 'DataLinkTrigger0', PHYS_None);
         //AddGoalActor(goal, 3, 'AmbientSoundTriggered0', PHYS_None);
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 3", NORMAL_GOAL, 'DeusExMover33', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator7', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall2', PHYS_None);
+        AddGoalActor(goal, 3, 'DataLinkTrigger3', PHYS_None);
         //AddGoalActor(goal, 3, 'AmbientSoundTriggered3', PHYS_None);
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 4", NORMAL_GOAL, 'DeusExMover31', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator5', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall4', PHYS_None);
+        AddGoalActor(goal, 3, 'DataLinkTrigger1', PHYS_None);
         //AddGoalActor(goal, 3, 'AmbientSoundTriggered1', PHYS_None);
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 5", NORMAL_GOAL, 'DeusExMover32', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator6', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall3', PHYS_None);
+        AddGoalActor(goal, 3, 'DataLinkTrigger2', PHYS_None);
         //AddGoalActor(goal, 3, 'AmbientSoundTriggered2', PHYS_None);
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
@@ -564,7 +592,20 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
         return 121;
 
+    case "14_VANDENBERG_SUB":
+    case "14_OCEANLAB_LAB":
     case "14_OCEANLAB_UC":
+        AddGoal("14_OCEANLAB_LAB", "Walton Simons", GOAL_TYPE1, 'WaltonSimons0', PHYS_Falling);
+        AddGoalLocation("14_OCEANLAB_LAB", "Vanilla Digger", GOAL_TYPE1 | VANILLA_GOAL, vect(5294.391113,3422.380127,-1775.600830), rot(0,33056,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Construction Sidepath", GOAL_TYPE1, vect(4158,2125,-1775), rot(0,0,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Crew Module", GOAL_TYPE1, vect(3015,3532,-2233), rot(0,32000,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Greasel Lab", GOAL_TYPE1, vect(2920,454,-1486), rot(0,50000,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Outside Karkian Lab", GOAL_TYPE1, vect(116,-61,-1967), rot(0,50000,0));
+        AddGoalLocation("14_VANDENBERG_SUB", "Rooftop", GOAL_TYPE1, vect(2450,2880,776), rot(0,33080,0));
+        AddGoalLocation("14_VANDENBERG_SUB", "Sub Bay", GOAL_TYPE1, vect(5372,-1626,-1424), rot(0,-16368,0));
+        AddGoalLocation("14_OCEANLAB_UC", "UC Entry 1", GOAL_TYPE1, vect(945,6230,-4160), rot(0,0,0));
+        AddGoalLocation("14_OCEANLAB_UC", "UC Entry 2", GOAL_TYPE1, vect(945,5250,-4160), rot(0,0,0));
+
         AddGoal("14_OCEANLAB_UC", "UC Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
         AddGoal("14_OCEANLAB_UC", "Bait Computer", NORMAL_GOAL, 'ComputerPersonal1', PHYS_Falling);
         AddGoalLocation("14_OCEANLAB_UC", "UC", NORMAL_GOAL | VANILLA_GOAL, vect(264.363281, 6605.039551, -3173.865967), rot(0,32720,0));
@@ -590,13 +631,61 @@ function int InitGoals(int mission, string map)
         return 142;
 
     case "15_AREA51_BUNKER":
+    case "15_AREA51_ENTRANCE":
+    case "15_AREA51_FINAL":
         AddGoalLocation("15_AREA51_BUNKER", "Jock", START_LOCATION | VANILLA_START, vect(-1778.574707, 1741.028320, -213.732849), rot(0, -12416, 0));
         AddGoalLocation("15_AREA51_BUNKER", "Bunker", START_LOCATION, vect(-1778.574707, 1741.028320, -213.732849), rot(0, -12416, 0));
         AddGoalLocation("15_AREA51_BUNKER", "Behind the Van", START_LOCATION, vect(-493.825836, 3099.697510, -512.897827), rot(0, 0, 0));
+
+        goal = AddGoal("15_AREA51_BUNKER", "Walton Simons A51", NORMAL_GOAL, 'WaltonSimons0', PHYS_Falling);
+        AddGoalActor(goal, 1, 'Trigger0', PHYS_None); //Triggers WaltonTalks
+        AddGoalActor(goal, 2, 'OrdersTrigger1', PHYS_None); //WaltonTalks -> Conversation triggers WaltonAttacks
+        AddGoalActor(goal, 3, 'AllianceTrigger0', PHYS_None); //WaltonAttacks
+
+        loc = AddGoalLocation("15_AREA51_BUNKER", "Command 24", NORMAL_GOAL | VANILLA_GOAL, vect(1125.623779,3076.459961,-462.398041), rot(0, -33064, 0));
+        AddActorLocation(loc, 1, vect(471.648193, 2674.075439, -487.900055), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Supply Shed", NORMAL_GOAL, vect(-1563,3579,-198), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-1358,2887,-160), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Tower", NORMAL_GOAL, vect(-1136,-137,-181), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-1344,740,-160), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_BUNKER", "Hangar", NORMAL_GOAL, vect(1182,-1140,-478), rot(0, -33064, 0));
+        AddActorLocation(loc, 1, vect(781,-235,-487), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_BUNKER", "Bunker Entrance", NORMAL_GOAL, vect(3680,1875,-848), rot(0, -18224, 0));
+        AddActorLocation(loc, 1, vect(3470,1212,-800), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_ENTRANCE", "Sector 3 Access", NORMAL_GOAL, vect(-456,124,-16), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-20,80,-180), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_FINAL", "Heliowalton", NORMAL_GOAL, vect(-4400,750,-1475), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-3720,730,-1105), rot(0,0,0));
+        loc = AddGoalLocation("15_AREA51_FINAL", "Reactor Lab", NORMAL_GOAL, vect(-3960,-3266,-1552), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-3455,-3261,-1560), rot(0,0,0));
+
+        AddGoal("15_AREA51_BUNKER", "Area 51 Blast Door Computer", GOAL_TYPE1, 'ComputerSecurity0', PHYS_None);
+        AddGoalLocation("15_AREA51_BUNKER", "the tower", GOAL_TYPE1 | VANILLA_GOAL, vect(-1248.804321,137.393707,442.793121), rot(0, 0, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "Command 24", GOAL_TYPE1, vect(1125.200562,2887.646484,-432.319794), rot(0, 0, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "the hangar", GOAL_TYPE1, vect(1062.942261,-2496.865723,-443.252533), rot(0, 16384, 0));
+        AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vect(-1527.608521,3280.824219,-158.588562), rot(0, -16384, 0));
+
         return 151;
     }
 
     return mission+1000;
+}
+
+function AddMission1Goals()
+{
+    local DeusExGoal newGoal;
+
+    //The MeetPaul conversation would normally give you several goals.
+    //Give them manually instead of via that conversation.
+    newGoal=player().AddGoal('DefeatNSFCommandCenter',True);
+    newGoal.SetText("The NSF seem to be directing the attack from somewhere on the island.  Find the commander.");
+
+    newGoal=player().AddGoal('RescueAgent',False);
+    newGoal.SetText("One of UNATCO's top agents is being held inside the Statue.  Break him out, and he'll back you up against the NSF.");
+
+    newGoal=player().AddGoal('MeetFilben',False);
+    newGoal.SetText("Meet UNATCO informant Harley Filben at the North Docks.  He has a key to the Statue doors.");
+
 }
 
 function PreFirstEntry()
@@ -604,6 +693,8 @@ function PreFirstEntry()
     local #var(prefix)AnnaNavarre anna;
     local FlagTrigger ft;
     local #var(prefix)Barrel1 barrel;
+    local #var(prefix)ComputerPersonal cp;
+    local Trigger t;
     local int seed;
 
     Super.PreFirstEntry();
@@ -655,6 +746,18 @@ function PreFirstEntry()
         foreach AllActors(class'#var(prefix)Barrel1', barrel, 'BarrelOFun') {
             barrel.bExplosive = false;
             barrel.Destroy();
+        }
+    } else if ( dxr.localURL == "14_OCEANLAB_UC" ) {
+        foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
+            if (cp.UserList[0].UserName=="USER"){
+                cp.UserList[0].UserName="JEBAITED"; //Just to make it a bit more clear this is a bait computer
+            }
+        }
+    } else if ( dxr.localURL == "15_AREA51_BUNKER" ) {
+        foreach AllActors(class'Trigger',t){
+            if (t.Name=='Trigger1' || t.Name=='Trigger2'){
+                t.Destroy(); //Just rely on one trigger for Walton
+            }
         }
     }
     SetGlobalSeed( "DXRMissions" $ seed );
@@ -819,6 +922,21 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     local BarrelAmbrosia ambrosia;
     local FlagTrigger ft;
     local SkillAwardTrigger st;
+    local OrdersTrigger ot;
+    local AllianceTrigger at;
+    local Trigger t;
+    local Inventory inv;
+    local Ammo a;
+    local WeaponNanoSword dts;
+    local DataLinkTrigger dlt;
+
+    local FlagBase f;
+
+    if( dxr == None ){
+        log("Couldn't find DXRando while creating goal");
+        return;
+    }
+    f = dxr.flagbase;
 
     info("CreateGoal " $ g.name @ Loc.name);
 
@@ -862,6 +980,81 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         sp.ConBindEvents();
         break;
 
+    case "Walton Simons":
+        sp = Spawn(class'#var(prefix)WaltonSimons',, 'DXRMissions', Loc.positions[0].pos);
+        ot = Spawn(class'OrdersTrigger',,'simonsattacks',Loc.positions[0].pos);
+        g.actors[0].a = sp;
+        g.actors[1].a = ot;
+
+        sp.BarkBindName = "WaltonSimons";
+        sp.Tag='WaltonSimons';
+        sp.SetOrders('WaitingFor');
+        sp.bInvincible=False;
+
+        //scuba in the OceanLab, probably needs to be mj12 on shore, maybe something else if in UC area?
+        if (Loc.mapName == "14_OCEANLAB_LAB"){
+            sp.SetAlliance('scuba');
+        } else if (Loc.mapName=="14_VANDENBERG_SUB"){
+            sp.SetAlliance('mj12');
+        } else if (Loc.mapName=="14_OCEANLAB_UC"){
+            sp.SetAlliance('spider');
+        }
+
+        GiveItem(sp,class'WeaponPlasmaRifle',100);
+        GiveItem(sp,class'WeaponNanoSword');
+
+        sp.ConBindEvents();
+        sp.bInWorld=False;
+
+        ot.Event='WaltonSimons';
+        ot.Orders='Attacking';
+        ot.SetCollision(False,False,False);
+
+        break;
+
+    case "Walton Simons A51": //Much the same as above, but he could be dead already
+        if (f.GetBool('WaltonSimons_Dead')){
+            log("Walton Simons dead, not spawning");
+            return;
+        }
+
+        sp = Spawn(class'#var(prefix)WaltonSimons',, 'DXRMissions', Loc.positions[0].pos);
+        ot = Spawn(class'OrdersTrigger',,'WaltonTalks',Loc.positions[0].pos);
+        at = Spawn(class'AllianceTrigger',,'WaltonAttacks',Loc.positions[0].pos);
+        t = Spawn(class'Trigger',,,Loc.positions[1].pos);
+        g.actors[0].a = sp;
+        g.actors[1].a = ot;
+        g.actors[2].a = at;
+        g.actors[3].a = t;
+
+        sp.BarkBindName = "WaltonSimons";
+        sp.Tag='WaltonSimons';
+        sp.SetOrders('WaitingFor');
+        sp.bInvincible=False;
+
+        sp.SetAlliance('mj12');
+
+        GiveItem(sp,class'WeaponPlasmaRifle',100);
+        GiveItem(sp,class'WeaponNanoSword');
+        GiveItem(sp,class'WeaponLAM',3); //A bomb!
+
+        sp.ConBindEvents();
+
+        ot.Event='WaltonSimons';
+        ot.Orders='RunningTo';
+        ot.SetCollision(False,False,False);
+
+        at.Event='WaltonSimons';
+        at.Alliances[0].AllianceLevel=-1;
+        at.Alliances[0].AllianceName='Player';
+        at.Alliances[0].bPermanent=True;
+        at.SetCollision(False,False,False);
+
+        t.Event='WaltonTalks';
+        t.SetCollisionSize(1024,300);
+
+        break;
+
     case "747 Ambrosia":
         ambrosia = Spawn(class'BarrelAmbrosia',, 'DXRMissions', Loc.positions[0].pos);
         ft = Spawn(class'FlagTrigger',, '747BarrelUsed', Loc.positions[1].pos);
@@ -888,6 +1081,19 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         st.skillPointsAdded = 100;
         break;
 
+    case "DTS":
+        dts = Spawn(class'WeaponNanoSword',,,Loc.positions[0].pos,Loc.positions[0].rot);
+        dlt = Spawn(class'DataLinkTrigger',,,Loc.positions[0].pos);
+
+        g.actors[0].a=dts;
+        g.actors[1].a=dlt;
+
+        dlt.SetCollision(True,False,False);
+        dlt.Tag='';
+        dlt.datalinkTag='DL_Tong_00';
+        dlt.SetCollisionSize(100,20);
+
+        break;
     }
 }
 
@@ -901,6 +1107,7 @@ function Timer()
 {
     local FlagBase f;
     local #var(prefix)NicoletteDuClare nico;
+    local #var(prefix)WaltonSimons Walton;
     local #var(prefix)BlackHelicopter chopper;
     local #var(prefix)ParticleGenerator gen;
     local int count;
@@ -910,6 +1117,13 @@ function Timer()
     f = dxr.flagbase;
 
     switch(dxr.localURL) {
+    case "01_NYC_UNATCOISLAND":
+        if (!RandodMissionGoals && !dxr.flagbase.GetBool('PlayerTraveling')){
+            //Secondary objectives get cleared if added in pre/postFirstEntry due to the MissionScript, the MissionsScript also clears the PlayerTraveling flag
+            AddMission1Goals();
+            RandodMissionGoals=true;
+        }
+        break;
     case "03_NYC_HANGAR":
         // copied from Mission03.uc, check for Ambrosia Barrels being tagged
         if (!f.GetBool('Barrel3Checked'))
@@ -960,7 +1174,36 @@ function Timer()
                 chopper.EnterWorld();
         }
         break;
+
+    case "14_VANDENBERG_SUB":
+    case "14_OCEANLAB_UC":
+        if (!WaltonAppeared && f.GetBool('DL_downloaded_Played'))
+        {
+            foreach AllActors(class'#var(prefix)WaltonSimons', Walton){
+                Walton.EnterWorld();
+            }
+            WaltonAppeared=True;
+
+        }
+        break;
     }
+}
+
+function GenerateDTSHintCube(Goal g, GoalLocation Loc)
+{
+#ifdef injections
+    local #var(prefix)DataCube dc;
+    dc = Spawn(class'#var(prefix)DataCube',,, vect(-1857.841064, -158.911865, 2051.345459));
+#else
+    local DXRInformationDevices dc;
+    dc = Spawn(class'DXRInformationDevices',,, vect(-1857.841064, -158.911865, 2051.345459));
+#endif
+
+    if (dc!=None){
+        dc.plaintext = "I borrowed the sword but forgot it somewhere...  Maybe "$Loc.name$"?";
+        dc.bIsSecretGoal=True; //So it doesn't move
+    }
+
 }
 
 function MoveGoalToLocation(Goal g, GoalLocation Loc)
@@ -970,6 +1213,12 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     local ScriptedPawn sp;
     local #var(Mover) m;
     local string result;
+    local #var(prefix)DataCube dc1;
+#ifdef injections
+    local #var(prefix)DataCube dc2;
+#else
+    local DXRInformationDevices dc2;
+#endif
 
     result = g.name $ " to " $ Loc.name;
     info("Moving " $ result $ " (" $ Loc.mapName @ Loc.positions[0].pos $")");
@@ -982,6 +1231,11 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             a.Event = '';
             a.Destroy();
         }
+
+        if (g.name=="DTS"){
+            GenerateDTSHintCube(g,Loc);
+        }
+
         return;
     }
     else if(g.mapName != dxr.localURL && Loc.mapName == dxr.localURL) {
@@ -1015,6 +1269,39 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         foreach AllActors(class'#var(Mover)', m, 'Debris') {
             m.Tag = '';
             m.Event = '';
+        }
+    } else if (g.name=="Area 51 Blast Door Computer" && Loc.name != "the tower") {
+        foreach AllActors(class'#var(prefix)DataCube',dc1){
+            if(dc1.TextTag=='15_Datacube07'){
+#ifdef injections
+                dc2 = Spawn(class'#var(prefix)DataCube',,, dc1.Location, dc1.Rotation);
+#else
+                dc2 = Spawn(class'DXRInformationDevices',,, dc1.Location, dc1.Rotation);
+#endif
+                if( dc2 != None ){
+                     dc2.plaintext = "Yusef:|n|nBest I could do was lock the bunker doors and reroute control to the security console in "$Loc.name$". Should take them a while to figure that out. If something happens, the login is \"a51\" and the password is \"xx15yz\".|n|n-Hawkins";
+                     l("DXRMissions spawned "$dc2 @ dc2.plaintext @ dc1.Location);
+                     dc1.Destroy();
+                }
+                else warning("failed to spawn tower datacube at "$dc1.Location);
+
+
+            }
+
+        }
+    } else if (g.name=="DTS"){
+        g.actors[0].a.bIsSecretGoal=True; //We'll use this to stop it from being swapped
+        if (Loc.name!="Sword Case"){
+            g.actors[1].a.Tag=''; //Change the tag so it doesn't get hit if the case opens
+
+            //Make the datalink trigger actually bumpable
+            g.actors[1].a.SetCollision(True,False,False);
+            g.actors[1].a.SetCollisionSize(100,20);
+
+            if ( dxr.localURL == "06_HONGKONG_WANCHAI_STREET" ){
+                GenerateDTSHintCube(g,Loc);
+            }
+
         }
     }
 }
@@ -1082,6 +1369,7 @@ function bool MoveGoalTo(string goalName, int locNumber)
     for(i=0; i<num_goals; i++) {
         if(goalName == goals[i].name) {
             MoveGoalToLocation(goals[i], locations[locNumber]);
+            player().ClientMessage("Goal Location: "$locations[locNumber].name);
             return true;
         }
     }

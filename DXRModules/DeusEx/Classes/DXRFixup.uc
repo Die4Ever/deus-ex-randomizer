@@ -40,7 +40,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(2,0,3,4) ) {
+    if( ConfigOlderThan(2,1,5,4) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -115,6 +115,14 @@ function CheckConfig()
 
         add_datacubes[i].map = "09_NYC_Dockyard";
         add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
+        i++;
+
+        add_datacubes[i].map = "15_AREA51_BUNKER";
+        add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
+        i++;
+
+        add_datacubes[i].map = "15_AREA51_BUNKER";
+        add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
         i++;
 
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
@@ -305,13 +313,23 @@ function PostFirstEntryMapFixes()
         }
         break;
 
-#ifndef revision
     case "02_NYC_WAREHOUSE":
-        AddBox(class'#var(prefix)CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));// apartment
-        AddBox(class'#var(prefix)CrateUnbreakableMed', vect(-389.361969, 744.039978, 1088.083618));// ladder
-        AddBox(class'#var(prefix)CrateUnbreakableSmall', vect(-328.287048, 767.875000, 1072.113770));
+        if(!#defined(revision)) {
+            AddBox(class'#var(prefix)CrateUnbreakableSmall', vect(183.993530, 926.125000, 1162.103271));// apartment
+            AddBox(class'#var(prefix)CrateUnbreakableMed', vect(-389.361969, 744.039978, 1088.083618));// ladder
+            AddBox(class'#var(prefix)CrateUnbreakableSmall', vect(-328.287048, 767.875000, 1072.113770));
+        }
+
+        // this map is too hard
+        Spawn(class'#var(prefix)AdaptiveArmor',,, GetRandomPositionFine());
+        Spawn(class'#var(prefix)AdaptiveArmor',,, GetRandomPositionFine());
+        Spawn(class'#var(prefix)BallisticArmor',,, GetRandomPositionFine());
+        Spawn(class'#var(prefix)BallisticArmor',,, GetRandomPositionFine());
+        Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
+        Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
         break;
 
+#ifndef revision
     case "03_NYC_BrooklynBridgeStation":
         a = _AddActor(Self, class'Barrel1', vect(-27.953907, -3493.229980, 45.101418), rot(0,0,0));
         Barrel1(a).SkinColor = SC_Explosive;
@@ -442,17 +460,26 @@ function TimerMapFixes()
     case "04_NYC_HOTEL":
         NYC_04_CheckPaulRaid();
         break;
+#endif
+    case "06_HONGKONG_WANCHAI_MARKET":
+        UpdateGoalWithRandoInfo('InvestigateMaggieChow');
+        break;
     case "08_NYC_STREET":
+#ifdef vanilla
         if ( dxr.flagbase.GetBool('StantonDowd_Played') )
         {
             foreach AllActors(class'BlackHelicopter', chopper, 'CopterExit')
                 chopper.EnterWorld();
             dxr.flagbase.SetBool('MS_Helicopter_Unhidden', True,, 9);
         }
-        break;
 #endif
+        UpdateGoalWithRandoInfo('FindHarleyFilben');
+        break;
     case "09_NYC_SHIPBELOW":
         NYC_09_CountWeldPoints();
+        break;
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        UpdateGoalWithRandoInfo('FindNicolette');
         break;
     case "15_AREA51_PAGE":
         Area51_CountBlueFusion();
@@ -744,6 +771,7 @@ function Jailbreak_FirstEntry()
     local #var(PlayerPawn) p;
     local PaulDenton paul;
     local ComputerPersonal c;
+    local DeusExMover dxm;
     local int i;
 
     switch (dxr.localURL)
@@ -763,6 +791,17 @@ function Jailbreak_FirstEntry()
         foreach AllActors(class'PaulDenton', paul) {
             paul.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
         }
+
+#ifdef vanilla
+        foreach AllActors(class'DeusExMover',dxm){
+            if (dxm.Name=='DeusExMover34'){
+                //I think this filing cabinet door was supposed to
+                //be unlockable with Agent Sherman's key as well
+                dxm.KeyIDNeeded='Cabinet';
+            }
+        }
+#endif
+
         break;
 
 #ifdef vanilla
@@ -834,11 +873,6 @@ function UpdateReactorGoal(int count)
 function Area51_CountBlueFusion()
 {
     local int newCount;
-    local DeusExGoal goal;
-    goal = player().FindGoal('OverloadForceField');
-    if (goal==None){
-        return; //Don't do these notifications until the goal is added
-    }
 
     newCount = 4;
 
@@ -852,16 +886,19 @@ function Area51_CountBlueFusion()
         newCount--;
 
     if (newCount!=storedReactorCount){
-        //A weld point has been destroyed!
+        // A fusion reactor has been shut down!
         storedReactorCount = newCount;
 
         switch(newCount){
             case 0:
                 player().ClientMessage("All Blue Fusion reactors shut down!");
-                SetTimer(0, False);  //Disable the timer now that all weld points are gone
+                SetTimer(0, False);  // Disable the timer now that all fusion reactors are shut down
                 break;
             case 1:
                 player().ClientMessage("1 Blue Fusion reactor remaining");
+                break;
+            case 4:
+                // don't alert the player at the start of the level
                 break;
             default:
                 player().ClientMessage(newCount$" Blue Fusion reactors remaining");
@@ -925,6 +962,36 @@ function NYC_09_CountWeldPoints()
         }
 
         UpdateWeldPointGoal(newWeldCount);
+    }
+}
+
+function UpdateGoalWithRandoInfo(name goalName)
+{
+    local string goalText;
+    local DeusExGoal goal;
+    local int randoPos;
+    goal = player().FindGoal(goalName);
+    if (goal!=None){
+        goalText = goal.text;
+        randoPos = InStr(goalText,"Rando: ");
+
+        if (randoPos==-1){
+            switch(goalName){
+                case 'InvestigateMaggieChow':
+                    goalText = goalText$"|nRando: The sword may not be in Maggie's apartment.";
+                    break;
+                case 'FindHarleyFilben':
+                    if(dxr.flags.settings.goals > 0)
+                        goalText = goalText$"|nRando: Harley could be anywhere in Hell's Kitchen";
+                    break;
+                case 'FindNicolette':
+                    if(dxr.flags.settings.goals > 0)
+                        goalText = goalText$"|nRando: Nicolette could be anywhere in the city";
+                    break;
+            }
+            goal.SetText(goalText);
+            player().ClientMessage("Goal Updated - Check DataVault For Details",, true);
+        }
     }
 }
 
@@ -1065,7 +1132,9 @@ function NYC_04_FirstEntry()
     local FlagTrigger ft;
     local OrdersTrigger ot;
     local SkillAwardTrigger st;
-    local BoxSmall b;
+    local #var(prefix)BoxSmall b;
+    local #var(prefix)HackableDevices hd;
+    local #var(prefix)CrateUnbreakableLarge crate;
 
     switch (dxr.localURL)
     {
@@ -1094,8 +1163,15 @@ function NYC_04_FirstEntry()
 #endif
 
     case "04_NYC_NSFHQ":
-        foreach RadiusActors(class'BoxSmall', b, 100, vect(-640.699402, 66.666039, -209.364014)) {
+        foreach RadiusActors(class'#var(prefix)BoxSmall', b, 100, vect(-640.699402, 66.666039, -209.364014)) {
             b.Destroy();
+        }
+        foreach AllActors(class'#var(prefix)HackableDevices', hd) {
+            hd.hackStrength /= 3.0;
+        }
+        foreach AllActors(class'#var(prefix)CrateUnbreakableLarge', crate) {
+            crate.Event = '';
+            crate.Destroy();
         }
         break;
     }
@@ -1234,6 +1310,7 @@ function HongKong_FirstEntry()
     local AllianceTrigger at;
     local DeusExMover d;
     local DataLinkTrigger dt;
+    local ComputerSecurity cs;
 
     switch(dxr.localURL)
     {
@@ -1343,13 +1420,25 @@ function HongKong_FirstEntry()
                 dt.Tag = 'TongHasRom';
         }
         break;
-#ifdef injections
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
+#ifdef injections
         foreach AllActors(class'AllianceTrigger',at,'StoreSafe') {
             at.bPlayerOnly = true;
         }
-        break;
 #endif
+        foreach AllActors(class'DeusExMover',d){
+            if (d.Region.Zone.ZoneGroundFriction < 8) {
+                //Less than default friction should be the freezer
+                d.Tag='FreezerDoor';
+            }
+        }
+        foreach AllActors(class'ComputerSecurity',cs){
+            if (cs.UserList[0].UserName=="LUCKYMONEY"){
+                cs.Views[2].doorTag='FreezerDoor';
+            }
+        }
+        break;
+
     case "06_HONGKONG_WANCHAI_GARAGE":
         foreach AllActors(class'DeusExMover',d,'secret_door'){
             d.bFrobbable=False;
@@ -1366,6 +1455,8 @@ function Shipyard_FirstEntry()
     local ComputerSecurity cs;
     local Keypad2 k;
     local Button1 b;
+    local WeaponGasGrenade gas;
+    local Teleporter t;
 
     switch(dxr.localURL)
     {
@@ -1395,6 +1486,20 @@ function Shipyard_FirstEntry()
                 cs.specialOptions[0].TriggerText="Ventilation Fan Disabled";
             }
         }
+
+        //Remove the stupid gas grenades that are past the level exit
+        foreach AllActors(class'Teleporter',t){
+            if (t.Tag=='ToAbove') break;
+        }
+        gas = WeaponGasGrenade(findNearestToActor(class'WeaponGasGrenade',t));
+        if (gas!=None){
+            gas.Destroy();
+        }
+        gas = WeaponGasGrenade(findNearestToActor(class'WeaponGasGrenade',t));
+        if (gas!=None){
+            gas.Destroy();
+        }
+
 #endif
         break;
     case "09_NYC_DOCKYARD":
@@ -1409,6 +1514,19 @@ function Shipyard_FirstEntry()
                 break;
             }
         }
+        break;
+
+    case "09_NYC_SHIPFAN":
+#ifdef vanilla
+        Tag = 'FanToggle';
+        foreach AllActors(class'ComputerSecurity',cs){
+            if (cs.Name == 'ComputerSecurity6'){
+                cs.specialOptions[0].Text = "Disable Ventilation Fan";
+                cs.specialOptions[0].TriggerEvent='FanToggle';
+                cs.specialOptions[0].TriggerText="Ventilation Fan Disabled";
+            }
+        }
+#endif
         break;
     }
 }
@@ -1430,6 +1548,7 @@ function Paris_FirstEntry()
     local DeusExMover m;
     local Trigger t;
     local Dispatcher d;
+    local ScriptedPawn sp;
 
     switch(dxr.localURL)
     {
@@ -1473,7 +1592,12 @@ function Paris_FirstEntry()
         }
         break;
 #endif
-
+    case "10_PARIS_CLUB":
+        foreach AllActors(class'ScriptedPawn',sp){
+            if (sp.BindName=="LDDPAchille" || sp.BindName=="Camille"){
+                sp.bImportant=True;
+            }
+        }
     case "11_PARIS_CATHEDRAL":
         foreach AllActors(class'GuntherHermann', g) {
             g.ChangeAlly('mj12', 1, true);
@@ -1487,6 +1611,7 @@ function Paris_AnyEntry()
     local DXRNPCs npcs;
     local DXREnemies dxre;
     local ScriptedPawn sp;
+    local Merchant m;
     local TobyAtanwe toby;
 
     switch(dxr.localURL)
@@ -1497,6 +1622,10 @@ function Paris_AnyEntry()
         npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
         if(npcs != None) {
             sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vect(-3209.483154, 5190.826172,1199.610352), rot(0, -10000, 0), class'#var(prefix)HazMatSuit');
+            m = Merchant(sp);
+            if (m!=None){  //He should exist now, but... who knows
+                m.MakeFrench();
+            }
         }
         // give him weapons to defend himself
         dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
@@ -1506,6 +1635,9 @@ function Paris_AnyEntry()
             dxre.RandomizeSP(sp, 100);
             RemoveFears(sp);
         }
+        break;
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        SetTimer(1.0, True); //To update the Nicolette goal description
         break;
     case "10_PARIS_CLUB":
         FixConversationAddNote(GetConversation('MeetCassandra'),"with a keypad back where the offices are");
@@ -1651,6 +1783,7 @@ function HongKong_AnyEntry()
             }
         }
         HandleJohnSmithDeath();
+        SetTimer(1.0, True); //To handle updating the DTS goal description
         break;
 
     case "06_HONGKONG_VERSALIFE":
@@ -1709,6 +1842,7 @@ function NYC_08_AnyEntry()
 #ifdef vanilla
     case "08_NYC_SMUG":
         FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
+        FixConversationGiveItem(GetConversation('FemJCM08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
         break;
 #endif
     }
@@ -1720,6 +1854,10 @@ function Area51_FirstEntry()
     local ComputerSecurity c;
     local Keypad k;
     local Switch1 s;
+    local Switch2 s2;
+    local SequenceTrigger st;
+    local SpecialEvent se;
+    local DataLinkTrigger dlt;
 
 #ifdef vanilla
     switch(dxr.localURL)
@@ -1728,6 +1866,54 @@ function Area51_FirstEntry()
         // doors_lower is for backtracking
         AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
         player().DeleteAllGoals();
+
+        //Change vent entry security computer password so it isn't pre-known
+        foreach AllActors(class'ComputerSecurity',c){
+            if (c.UserList[0].UserName=="SECURITY" && c.UserList[0].Password=="SECURITY"){
+                c.UserList[0].Password="NarutoRun"; //They can't stop all of us
+            }
+        }
+
+        //Move the vent entrance elevator to the bottom to make it slightly less convenient
+        foreach AllActors(class'SequenceTrigger',st){
+            if (st.Tag=='elevator_mtunnel_down'){
+                st.Trigger(Self,player());
+            }
+        }
+
+        //This door can get stuck if a spiderbot gets jammed into the little bot-bay
+        foreach AllActors(class'DeusExMover',d){
+            if (d.Tag=='bot_door'){
+                d.MoverEncroachType=ME_IgnoreWhenEncroach;
+            }
+        }
+
+        //Swap the button at the top of the elevator to a keypad to make this path a bit more annoying
+        foreach AllActors(class'Switch2',s2){
+            if (s2.Event=='elevator_mtunnel_up'){
+                k = Spawn(class'Keypad2',,,s2.Location,s2.Rotation);
+                k.validCode="17092019"; //September 17th, 2019 - First day of "Storm Area 51"
+                k.bToggleLock=False;
+                k.Event='elevator_mtunnel_up';
+                s2.event='';
+                s2.Destroy();
+                break;
+            }
+        }
+
+        //Lock the fan entrance top door
+        foreach AllActors(class'DataLinkTrigger',dlt){
+            if (dlt.datalinkTag=='DL_Bunker_Fan'){ break;}
+        }
+        d = DeusExMover(findNearestToActor(class'DeusExMover',dlt));
+        d.bLocked=True;
+        d.bBreakable=True;
+        d.FragmentClass=Class'DeusEx.MetalFragment';
+        d.ExplodeSound1=Sound'DeusExSounds.Generic.MediumExplosion1';
+        d.ExplodeSound2=Sound'DeusExSounds.Generic.MediumExplosion2';
+        d.minDamageThreshold=25;
+        d.doorStrength = 0.20; //It's just grating on top of the vent, so it's not that strong
+
         break;
 
     case "15_AREA51_FINAL":
@@ -1744,6 +1930,21 @@ function Area51_FirstEntry()
             d.bHighlight = true;
             d.bFrobbable = true;
         }
+
+        //Generator Failsafe buttons should spit out some sort of message if the coolant isn't cut
+        //start_buzz1 and start_buzz2 are the tags that get hit when the coolant isn't cut
+        se = Spawn(class'SpecialEvent',,'start_buzz1');
+        se.Message = "Coolant levels normal - Failsafe cannot be disabled";
+        se = Spawn(class'SpecialEvent',,'start_buzz2');
+        se.Message = "Coolant levels normal - Failsafe cannot be disabled";
+
+        //Increase the radius of the datalink that opens the sector 4 blast doors
+        foreach AllActors(class'DataLinkTrigger',dlt){
+            if (dlt.datalinkTag=='DL_Helios_Door2'){
+                dlt.SetCollisionSize(900,dlt.CollisionHeight);
+            }
+        }
+
         break;
 
     case "15_AREA51_ENTRANCE":
@@ -1819,10 +2020,26 @@ function ToggleFan()
     local AmbientSound as;
     local ComputerSecurity cs;
     local bool enable;
+    local name compName;
+    local DeusExMover dxm;
+
+    //This function is now used in two maps
+    switch(dxr.localURL)
+    {
+        case "09_NYC_SHIPBELOW":
+            compName = 'ComputerSecurity4';
+            break;
+        case "09_NYC_SHIPFAN":
+            compName = 'ComputerSecurity6';
+            break;
+        default:
+            player().ClientMessage("Not in a map that understands how to toggle a fan!");
+            return;
+            break;
+    }
 
     foreach AllActors(class'ComputerSecurity',cs){
-        if (cs.Name == 'ComputerSecurity4'){
-
+        if (cs.Name == compName){
             //If you press disable, you want to disable...
             if (cs.SpecialOptions[0].Text == "Disable Ventilation Fan"){
                 enable = False;
@@ -1841,55 +2058,85 @@ function ToggleFan()
         }
     }
 
-    //Fan1
-    foreach AllActors(class'Fan1',f){
-        if (f.Name == 'Fan1'){
-            if (enable) {
-                f.RotationRate.Yaw = 50000;
-            } else {
-                f.RotationRate.Yaw = 0;
+    if (dxr.localURL=="09_NYC_SHIPBELOW"){
+        //Fan1
+        foreach AllActors(class'Fan1',f){
+            if (f.Name == 'Fan1'){
+                if (enable) {
+                    f.RotationRate.Yaw = 50000;
+                } else {
+                    f.RotationRate.Yaw = 0;
+                }
             }
         }
-    }
 
-    //ParticleGenerator3
-    foreach AllActors(class'ParticleGenerator',pg){
-        if (pg.Name == 'ParticleGenerator3'){
-            pg.bSpewing = enable;
-            pg.bFrozen = !enable;
-            pg.proxy.bHidden=!enable;
-            break;
+        //ParticleGenerator3
+        foreach AllActors(class'ParticleGenerator',pg){
+            if (pg.Name == 'ParticleGenerator3'){
+                pg.bSpewing = enable;
+                pg.bFrozen = !enable;
+                pg.proxy.bHidden=!enable;
+                break;
+            }
         }
-    }
 
-    //ZoneInfo0
-    foreach AllActors(class'ZoneInfo',z){
-        if (z.Name=='ZoneInfo0') {
-            if (enable){
-                z.ZoneGravity.Z = 100;
-            } else {
-                z.ZoneGravity.Z = -950;
+        //ZoneInfo0
+        foreach AllActors(class'ZoneInfo',z){
+            if (z.Name=='ZoneInfo0') {
+                if (enable){
+                    z.ZoneGravity.Z = 100;
+                } else {
+                    z.ZoneGravity.Z = -950;
+                }
+                break;
             }
-            break;
         }
-    }
 
-    //AmbientSound7
-    //AmbientSound8
-    foreach AllActors(class'AmbientSound',as){
-        if (as.Name=='AmbientSound7'){
-            if (enable){
-                as.AmbientSound = Sound'Ambient.Ambient.HumTurbine2';
-            } else {
-                as.AmbientSound = None;
-            }
-        } else if (as.Name=='AmbientSound8'){
-            if (enable){
-                as.AmbientSound = Sound'Ambient.Ambient.StrongWind';
-            } else {
-                as.AmbientSound = None;
+        //AmbientSound7
+        //AmbientSound8
+        foreach AllActors(class'AmbientSound',as){
+            if (as.Name=='AmbientSound7'){
+                if (enable){
+                    as.AmbientSound = Sound'Ambient.Ambient.HumTurbine2';
+                } else {
+                    as.AmbientSound = None;
+                }
+            } else if (as.Name=='AmbientSound8'){
+                if (enable){
+                    as.AmbientSound = Sound'Ambient.Ambient.StrongWind';
+                } else {
+                    as.AmbientSound = None;
+                }
             }
         }
+    } else if (dxr.localURL=="09_NYC_SHIPFAN"){
+        foreach AllActors(class'DeusExMover',dxm){
+            if (dxm.Name == 'DeusExMover1'){
+                if (enable) {
+                    dxm.RotationRate.Yaw = -20000;
+                } else {
+                    dxm.RotationRate.Yaw = 0;
+                }
+            }
+        }
+        foreach AllActors(class'AmbientSound',as){
+            if (as.Name=='AmbientSound6'){
+                if (enable){
+                    as.AmbientSound = Sound'Ambient.Ambient.FanLarge';
+                } else {
+                    as.AmbientSound = None;
+                }
+            } else if (as.Name=='AmbientSound0'){
+                if (enable){
+                    as.AmbientSound = Sound'Ambient.Ambient.MachinesLarge3';
+                } else {
+                    as.AmbientSound = None;
+                }
+            }
+        }
+
+
+
     }
 }
 #endif

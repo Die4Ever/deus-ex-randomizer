@@ -7,6 +7,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        # Must be explicit for proper pipefail support
+        shell: bash
     steps:
     - name: Checkout
       uses: actions/checkout@v3

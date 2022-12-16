@@ -51,7 +51,7 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
     * No Overpowered Weapons - bans pistols, swords, and the GEP Gun
     * By the Book - bans lockpicks and multitools
 * Max Rando - randomize the randomizer's settings!
-* An integrated Bingo board: on the Goals screen there's a Bingo button in the top right, there's also our external BingoDisplay program
+* An integrated Bingo board: on the Goals screen there's a Bingo button in the middle bar, there's also our external BingoDisplay program
 * Co-op when combined with the HX mod (Alpha)
 * making all or some of the doors that normally require a key also lockpickable and/or destructible
 * making all or some keypads hackable.
@@ -62,7 +62,7 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 * optional hardcore Autosave-Only mode, no save-scumming allowed!
 * autofill passwords options
 * [Death Markers](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Death-Markers) - see where other players have died!
-* if you opt-in to Online Features (which is disabled by default), then your in-game events will also contribute to our Twitter bot [@DxRandoActivity](https://twitter.com/DxRandoActivity)
+* if you opt-in to Online Features (which is disabled by default), then your in-game events will also contribute to our Twitter bot [@DxRandoActivity](https://twitter.com/DxRandoActivity) and [on Mastodon](https://botsin.space/@DXRandoActivity)
     * You can search these tweets by adding "from:DxRandoActivity" to your search, and make sure to choose the Latest tab, [like this](https://twitter.com/search?q=from%3ADXRandoActivity%20bingo&src=typed_query&f=live)
 
 ## New Game Menus

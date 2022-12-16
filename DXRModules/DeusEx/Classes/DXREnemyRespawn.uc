@@ -53,6 +53,9 @@ function SaveRespawn(ScriptedPawn p, out int i)
     local int a;
     if( IsCritter(p) ) return;
     if( p.bImportant || p.bInvincible || p.bHidden ) return;
+#ifdef gmdx
+    if( SpiderBot2(p) != None && SpiderBot2(p).bUpsideDown ) return;
+#endif
 
     for(a=0; a < ArrayCount(dont_respawn); a++) {
         if( p.IsA(dont_respawn[a])) return;
@@ -196,7 +199,7 @@ function ScriptedPawn Respawn(out OriginalEnemy enemy)
     p.bReactCarcass = enemy.bReactCarcass;
     p.bReactDistress = enemy.bReactDistress;
     p.bReactProjectiles = enemy.bReactProjectiles;
-    
+
     p.InitializeInventory();
     p.InitializeAlliances();
 

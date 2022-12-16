@@ -19,7 +19,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,1,0,3) ) {
+    if( ConfigOlderThan(2,1,5,7) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -56,6 +56,21 @@ function CheckConfig()
         door_fixes[i].bPickable = true;
         door_fixes[i].lockStrength = 0;
         door_fixes[i].bHighlight = true;
+        i++;
+
+        // doors to the computer room
+        door_fixes[i].map = "04_NYC_NSFHQ";
+        door_fixes[i].tag = 'SlidingDoor1Move';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 20;// 0 uses a random value instead
+        door_fixes[i].doorStrength = 0.5;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].lockStrength = 0;
+        door_fixes[i].bHighlight = false;
+        i++;
+
+        door_fixes[i] = door_fixes[i-1];
+        door_fixes[i].tag = 'SlidingDoor2Move';
         i++;
 
         // just in case General Carter's door gets stuck on something
@@ -328,6 +343,13 @@ function vanilla_keys_rules()
     // X > 528.007446, X < 1047.852173, Y < 436.867401, Z > -1653.906006 == storage closet
     // 1888.000000, 544.000000, -1536.000000 == glabs door, X > -414.152771 && X < 1888 && Y < 1930.014771 == before greasel labs
     // 4856.000000, 3515.999512, -1816.000000 == crew quarters door
+
+    keys_rules[i].map = "15_area51_entrance";
+    keys_rules[i].item_name = 'Factory';
+    keys_rules[i].min_pos = vect(-816, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = true;
+    i++;
 }
 
 function revision_keys_rules()
@@ -352,6 +374,10 @@ function RandomizeDoors()
     SetSeed( "RandomizeDoors" );
 
     foreach AllActors(class'#var(Mover)', d) {
+        // vanilla knife does 5 damage, we need to ensure that glass is always easily breakable, especially for Stick With the Prod
+        if(d.minDamageThreshold <= 5)
+            d.minDamageThreshold = 0;
+
         if( d.bPickable ) {
             d.lockStrength = FClamp(rngrange(d.lockStrength, min_lock_adjust, max_lock_adjust), 0, 1);
             d.lockStrength = int(d.lockStrength*100)/100.0;
@@ -362,7 +388,9 @@ function RandomizeDoors()
             d.doorStrength = int(d.doorStrength*100)/100.0;
             d.minDamageThreshold = rngrange(d.minDamageThreshold, min_mindmg_adjust, max_mindmg_adjust);
 #ifndef injections
-            d.minDamageThreshold = d.doorStrength * 60;
+            // without injections we can't augment the highlight window to show mindamagethreshold, so keep it simple for the player
+            if(d.minDamageThreshold>0)
+                d.minDamageThreshold = d.doorStrength * 60;
 #endif
         }
     }
@@ -510,10 +538,6 @@ function ApplyDoorFixes()
     local int i;
 
     foreach AllActors(class'#var(Mover)', d) {
-        // vanilla knife does 5 damage
-        if(d.minDamageThreshold <= 5)
-            d.minDamageThreshold = 0;
-
         for(i=0; i<ArrayCount(door_fixes); i++) {
             if( door_fixes[i].tag != d.Tag ) continue;
             if( dxr.localURL != door_fixes[i].map ) continue;

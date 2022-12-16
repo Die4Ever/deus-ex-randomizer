@@ -5,7 +5,7 @@ var int progress, max;
 event DrawWindow(GC gc)
 {
     local color c;
-    local float p;
+    local int progHeight;
 
     c.R = 255;
     c.G = 255;
@@ -24,8 +24,8 @@ event DrawWindow(GC gc)
     c.B = 30;
     gc.SetStyle(DSTY_Normal);
     gc.SetTileColor(c);
-    p = float(progress)/float(max);
-    gc.DrawPattern(0, height*(1-p), width, height*p, 0, 0, Texture'Solid');
+    progHeight = height * (float(progress)/float(max));
+    gc.DrawPattern(0, height-progHeight, width, progHeight, 0, 0, Texture'Solid');
 
     Super.DrawWindow(gc);
 }

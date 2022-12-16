@@ -53,6 +53,7 @@ function SetWatchFlags() {
     local Toilet closestToilet;
     local BookOpen book;
     local FlagTrigger fTrigger;
+    local WIB wib;
 
     switch(dxr.localURL) {
     case "00_TrainingFinal":
@@ -137,6 +138,9 @@ function SetWatchFlags() {
         break;
     case "03_NYC_747":
         RewatchFlag('747Ambrosia');
+        WatchFlag('JuanLebedev_Unconscious');
+        WatchFlag('PlayerKilledLebedev');
+        WatchFlag('AnnaKilledLebedev');
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
@@ -287,6 +291,10 @@ function SetWatchFlags() {
         }
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
+        foreach AllActors(class'WIB',wib){
+            if(wib.BindName=="Hela")
+                wib.bImportant = true;
+        }
         WatchFlag('SilhouetteHostagesAllRescued');
         break;
     case "10_PARIS_METRO":
@@ -305,6 +313,7 @@ function SetWatchFlags() {
         break;
     case "10_PARIS_CLUB":
         WatchFlag('CamilleConvosDone');
+        WatchFlag('LDDPAchilleDone');
         WatchFlag('LeoToTheBar');
 
         break;
@@ -356,6 +365,9 @@ function SetWatchFlags() {
         break;
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
+        break;
+    case "14_OCEANLAB_UC":
+        WatchFlag('LeoToTheBar');
         break;
     case "15_AREA51_BUNKER":
         WatchFlag('JockBlewUp');
@@ -588,7 +600,7 @@ function HandleBingoWinCountdown()
 
     if (bingo_win_countdown > 0) {
         //Show win message
-        class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds","");
+        class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
         if (bingo_win_countdown == 2) {
             //Give it 2 seconds to send the tweet
             BeatGame(dxr,4);
@@ -596,7 +608,7 @@ function HandleBingoWinCountdown()
         bingo_win_countdown--;
     } else if (bingo_win_countdown == 0) {
         //Go to bingo win ending
-        dxr.player.ConsoleCommand("OPEN 99_ENDGAME4");
+        Level.Game.SendPlayer(dxr.player,"99_EndGame4");
     }
 }
 
@@ -626,6 +638,8 @@ function Trigger(Actor Other, Pawn Instigator)
     //Massage tag names
     if (tag=='MadeBasketM' || tag=='MadeBasketF'){
         useTag = 'MadeBasket';
+        //In order to prevent too many duplicate tweets, remove the tag after one triggering
+        tag = '';
     }else if (tag=='VandenbergDXR'){
         if (Other.tag=='bunker_door1' || Other.tag=='bunker_door2'){
             useTag = 'ActivateVandenbergBots';
@@ -872,6 +886,14 @@ static function BeatGame(DXRando dxr, int ending)
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
     js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
     js.static.Add(j, "maxrando", dxr.flags.maxrando);
+
+    if (dxr.player.carriedDecoration!=None){
+        js.static.Add(j, "carriedItem", dxr.player.carriedDecoration.Class);
+    }
+    else if(dxr.player.inHand.IsA('POVCorpse')){
+        js.static.Add(j, "carriedItem", POVCorpse(dxr.player.inHand).carcClassString);
+    }
+
     GeneralEventData(dxr, j);
     BingoEventData(dxr, j);
     AugmentationData(dxr, j);
@@ -1050,6 +1072,12 @@ simulated function string tweakBingoDescription(string event, string desc)
            }
 
             break;
+        case "CamilleConvosDone":
+            if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+                return "Get info from Achille";
+            } else {
+                return desc;
+            }
         default:
             return desc;
             break;
@@ -1252,6 +1280,9 @@ function _MarkBingo(coerce string eventname)
         case "ClubMercedesConvo1_Done":
             eventname="ClubEntryPaid";
             break;
+        case "LDDPAchilleDone":
+            eventname="CamilleConvosDone";
+            break;
         case "GuntherKillswitch":
             eventname="GuntherHermann_Dead";
             break;
@@ -1263,6 +1294,12 @@ function _MarkBingo(coerce string eventname)
         case "HelicopterBaseAmbrosia":
         case "747Ambrosia":
             eventname="StolenAmbrosia";
+            break;
+        case "PlayerKilledLebedev":
+            //Check to make sure he wasn't knocked out
+            if (dxr.flagbase.GetBool('JuanLebedev_Unconscious')) {
+                return; //Don't mark this event if knocked out
+            }
             break;
     }
 
@@ -1450,6 +1487,9 @@ defaultproperties
     bingo_options(114)=(event="unbirth",desc="Return to the tube that spawned you",max=1)
 #endif
     bingo_options(115)=(event="StolenAmbrosia",desc="Find 3 stolen barrels of Ambrosia",max=3)
+    bingo_options(116)=(event="AnnaKilledLebedev",desc="Let Anna kill Lebedev",max=1)
+    bingo_options(117)=(event="PlayerKilledLebedev",desc="Kill Lebedev yourself",max=1)
+    bingo_options(118)=(event="JuanLebedev_Unconscious",desc="Knock out Lebedev",max=1)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
@@ -1460,6 +1500,9 @@ defaultproperties
     mutually_exclusive(5)=(e1="Terrorist_ClassUnconscious",e2="Terrorist_ClassDead")
     mutually_exclusive(6)=(e1="MJ12Troop_ClassUnconscious",e2="MJ12Troop_ClassDead")
     mutually_exclusive(7)=(e1="MJ12Commando_ClassUnconscious",e2="MJ12Commando_ClassDead")
+    mutually_exclusive(8)=(e1="AnnaKilledLebedev",e2="PlayerKilledLebedev")
+    mutually_exclusive(9)=(e1="AnnaKilledLebedev",e2="JuanLebedev_Unconscious")
+    mutually_exclusive(10)=(e1="PlayerKilledLebedev",e2="JuanLebedev_Unconscious")
 
     bingo_win_countdown=-1
 }
