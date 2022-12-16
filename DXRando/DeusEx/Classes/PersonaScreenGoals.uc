@@ -191,6 +191,7 @@ function Teleporter findOtherTeleporter(Teleporter nearThis){
 
 function generateEntranceNote(bool bSpoil)
 {
+#ifdef vanilla
 	local DeusExNote newNote;
 	local PersonaNotesEditWindow newNoteWindow;
     local String entranceList,source,dest;
@@ -243,6 +244,7 @@ function generateEntranceNote(bool bSpoil)
 	newNoteWindow = CreateNoteEditWindow(newNote);
 	newNoteWindow.Lower();
 	SetFocusWindow(newNoteWindow);
+#endif
 }
 
 function bool ButtonActivated( Window buttonPressed )
