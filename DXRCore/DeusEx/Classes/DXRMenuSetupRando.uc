@@ -48,6 +48,10 @@ function BindControls(optional string action)
     EnumOption("Enabled", 1, f.settings.bingo_freespaces);
     EnumOption("Disabled", 0, f.settings.bingo_freespaces);
 
+    NewMenuItem("Spoiler Buttons", "Allow the use of spoiler buttons (Spoilers remain hidden until you choose to view them)");
+    EnumOption("Available", 1, f.settings.spoilers);
+    EnumOption("Disallowed", 0, f.settings.spoilers);
+
     NewGroup("Medical Bots and Repair Bots");
 
     NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%)");

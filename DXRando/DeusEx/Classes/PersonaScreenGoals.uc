@@ -28,7 +28,9 @@ function CreateControls()
             btnGoalHints.SetSensitivity(true);
 
             //CreateShowSpoilersCheckbox();
-            CreateShowSpoilersButton(); //A button makes a confirmation window easier
+            if (dxr.flags.settings.spoilers==1){
+                CreateShowSpoilersButton(); //A button makes a confirmation window easier
+            }
 
         }
 
@@ -38,10 +40,12 @@ function CreateControls()
             btnEntranceLocs.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 220, 411);
             btnEntranceLocs.SetSensitivity(true);
 
-            btnEntranceSpoilers = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
-            btnEntranceSpoilers.SetButtonText("Entrance Spoilers");
-            btnEntranceSpoilers.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 300, 411);
-            btnEntranceSpoilers.SetSensitivity(true);
+            if (dxr.flags.settings.spoilers==1){
+                btnEntranceSpoilers = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
+                btnEntranceSpoilers.SetButtonText("Entrance Spoilers");
+                btnEntranceSpoilers.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 300, 411);
+                btnEntranceSpoilers.SetSensitivity(true);
+            }
         }
         break;
     }
@@ -196,9 +200,9 @@ function generateEntranceNote(bool bSpoil)
     local bool found;
 
     if (bSpoil){
-        entranceList="Entrance Spoilers: ";
+        entranceList="Entrance Rando Spoilers: ";
     } else {
-        entranceList="Entrances: ";
+        entranceList="Randomized Entrances: ";
     }
 
     foreach player.AllActors(class'DeusExLevelInfo',dxLevel){
