@@ -23,7 +23,7 @@ function CreateControls()
     foreach player.AllActors(class'DXRando',dxr){
         if (dxr.flags.settings.goals > 0) {
             btnGoalHints = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
-            btnGoalHints.SetButtonText("|&Goal Randomization Info");
+            btnGoalHints.SetButtonText("|&Goal Randomization Wiki");
             btnGoalHints.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 65, 179);
             btnGoalHints.SetSensitivity(true);
 
