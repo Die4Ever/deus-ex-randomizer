@@ -48,7 +48,13 @@ struct MutualExclusion {
     var int L1, L2;
 };
 
+struct Spoiler {
+    var string goalName;
+    var string goalLocation;
+};
+
 var Goal goals[32];
+var Spoiler spoilers[32];
 var GoalLocation locations[64];
 var MutualExclusion mutually_exclusive[20];
 var int num_goals, num_locations, num_mututally_exclusives;
@@ -116,6 +122,11 @@ function vanilla_remove_actors()
     remove_actors[i].map_name = "09_NYC_GRAVEYARD";
     remove_actors[i].actor_name = 'Barrel0';//barrel next to the transmitter thing, idk what it does but it explodes when I move it
     i++;
+}
+
+function Spoiler GetSpoiler(int goalID)
+{
+    return spoilers[goalID];
 }
 
 function AddGoalActor(int goalID, int index, name actorName, EPhysics physics)
@@ -415,7 +426,7 @@ function int InitGoals(int mission, string map)
     case "06_HONGKONG_WANCHAI_CANAL":
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
     case "06_HONGKONG_WANCHAI_MARKET":
-        goal = AddGoal("06_HONGKONG_WANCHAI_STREET", "DTS", NORMAL_GOAL, 'WeaponNanoSword0', PHYS_None);
+        goal = AddGoal("06_HONGKONG_WANCHAI_STREET", "Dragon's Tooth Sword", NORMAL_GOAL, 'WeaponNanoSword0', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_00: Now bring the sword to Max Chen at the Lucky Money Club
 
         AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
@@ -870,6 +881,9 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         if( (goals[i].bitMask & locations[availLocs[r]].bitMask) == 0)
             return false;
 
+        spoilers[i].goalName=goals[i].name;
+        spoilers[i].goalLocation=locations[availLocs[r]].name;
+
         _num_locs--;
         availLocs[r] = availLocs[_num_locs];
     }
@@ -1081,7 +1095,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         st.skillPointsAdded = 100;
         break;
 
-    case "DTS":
+    case "Dragon's Tooth Sword":
         dts = Spawn(class'WeaponNanoSword',,,Loc.positions[0].pos,Loc.positions[0].rot);
         dlt = Spawn(class'DataLinkTrigger',,,Loc.positions[0].pos);
 
@@ -1232,7 +1246,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             a.Destroy();
         }
 
-        if (g.name=="DTS"){
+        if (g.name=="Dragon's Tooth Sword"){
             GenerateDTSHintCube(g,Loc);
         }
 
@@ -1289,7 +1303,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             }
 
         }
-    } else if (g.name=="DTS"){
+    } else if (g.name=="Dragon's Tooth Sword"){
         g.actors[0].a.bIsSecretGoal=True; //We'll use this to stop it from being swapped
         if (Loc.name!="Sword Case"){
             g.actors[1].a.Tag=''; //Change the tag so it doesn't get hit if the case opens
