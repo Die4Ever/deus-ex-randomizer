@@ -1293,7 +1293,12 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
                 dc2 = Spawn(class'DXRInformationDevices',,, dc1.Location, dc1.Rotation);
 #endif
                 if( dc2 != None ){
-                     dc2.plaintext = "Yusef:|n|nBest I could do was lock the bunker doors and reroute control to the security console in "$Loc.name$". Should take them a while to figure that out. If something happens, the login is \"a51\" and the password is \"xx15yz\".|n|n-Hawkins";
+                     dc2.plaintext = "Yusef:|n|nThey've jammed all communications, even narrow band microcasts, so this is the only way I could pass a message to you.  ";
+                     dc2.plaintext = dc2.plaintext $ "I don't know who these guys are -- they're not ours, not any of ours I've ever seen at least -- but they're slaughtering us.  ";
+                     dc2.plaintext = dc2.plaintext $ "I managed to hack the first layer of the Dreamland systems, but the best I could do was lock the bunker doors and reroute control to the security console in "$Loc.name$".  ";
+                     dc2.plaintext = dc2.plaintext $ "Should take them awhile to figure that one out, and the moment they do I'll nail the first bastard that sticks his head out of the hole.  If something happens to me, the login is ";
+                     dc2.plaintext = dc2.plaintext $ "\"a51\" and the password is \"xx15yz\".|n|n";
+                     dc2.plaintext = dc2.plaintext $ "BTW, be careful -- a squad made it out before I managed to lock the doors: they headed for the warehouse and then I lost contact with them.|n|n--Hawkins";
                      l("DXRMissions spawned "$dc2 @ dc2.plaintext @ dc1.Location);
                      dc1.Destroy();
                 }
