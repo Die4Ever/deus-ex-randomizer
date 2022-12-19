@@ -160,6 +160,15 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+function Connection GetConnection(int idx, optional bool fixed)
+{
+    if (fixed){
+        return fixed_conns[idx];
+    } else {
+        return conns[idx];
+    }
+}
+
 function int GetNextTransferIdx()
 {
     local int i;

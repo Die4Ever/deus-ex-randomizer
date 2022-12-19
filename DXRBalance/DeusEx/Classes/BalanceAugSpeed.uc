@@ -1,4 +1,23 @@
 class BalanceAugSpeed injects AugSpeed;
+
+state Active
+{
+Begin:
+    Player.Energy -= 1;
+    if(Player.Energy <= 0) {
+        Player.Energy = 0;
+        Deactivate();
+    } else {
+        Player.GroundSpeed *= LevelValues[CurrentLevel];
+        Player.JumpZ *= LevelValues[CurrentLevel];
+        if ( Level.NetMode != NM_Standalone )
+        {
+            if ( Human(Player) != None )
+                Human(Player).UpdateAnimRate( LevelValues[CurrentLevel] );
+        }
+    }
+}
+
 //original went from 1.200000 up to 1.800000, I've thought about nerfing the max speed so you can't just run past all enemies, but I think that would require a large nerf and that would slow down the speedrun too much to be worth it
 //original EnergyRate is 40, might nerf it if people use it too much?
 defaultproperties

@@ -225,14 +225,24 @@ function static class<Augmentation> PickRandomAug(DXRando dxr, out int banned[50
 simulated function RandoAug(Augmentation a)
 {
     local float aug_value_wet_dry;
+    local string add_desc;
     if( dxr == None ) return;
+
+#ifdef injections
+    if( #var(prefix)AugSpeed(a) != None ) {
+        add_desc = "DXRando: Activating this aug instantly burns 1 energy in order to prevent abuse.";
+        if( InStr(a.Description, add_desc) == -1 ) {
+            a.Description = add_desc $ "|n|n" $ a.Description;
+        }
+    }
+#endif
 
     if( #var(prefix)AugSpeed(a) != None || #var(prefix)AugLight(a) != None || #var(prefix)AugHeartLung(a) != None
     || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None || AugNinja(a) != None )
         return;
 
     aug_value_wet_dry = float(dxr.flags.settings.aug_value_rando) / 100.0;
-    RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_wet_dry, a.Description);
+    RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_wet_dry, a.Description, add_desc);
 }
 
 simulated function string DescriptionLevel(Actor act, int i, out string word)
@@ -276,7 +286,8 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         return string(int(a.LevelValues[i]));
     }
     else if( a.Class == class'#var(prefix)AugHealing') {
-        word = "Healing";
+        if(#defined(injections)) word = "Max Health";
+        else word = "Healing";
         return int(a.LevelValues[i]) $ " HP";
     }
     else if( a.Class == class'#var(prefix)AugMuscle') {

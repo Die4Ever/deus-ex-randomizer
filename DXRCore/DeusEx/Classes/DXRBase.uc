@@ -162,7 +162,7 @@ simulated function float rngexp(float origmin, float origmax, float curve)
     return f;
 }
 
-simulated function bool RandoLevelValues(Actor a, float min, float max, float wet, out string Desc)
+simulated function bool RandoLevelValues(Actor a, float min, float max, float wet, out string Desc, string add_desc)
 {
     local #var(prefix)Augmentation aug;
     local #var(prefix)Skill sk;
@@ -244,6 +244,9 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     info("RandoLevelValues "$a$" = "$s);
     dxr.SetSeed( oldseed );
 
+    if(add_desc != "") {
+        s = s $ "|n|n" $ add_desc;
+    }
     if( InStr(Desc, s) == -1 ) {
         Desc = s $ "|n|n" $ Desc;
         return true;
