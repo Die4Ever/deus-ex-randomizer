@@ -89,7 +89,7 @@ Edit the `VMDSim.ini` file which is probably in `C:\Program Files (x86)\Steam\st
 
 In the `[Engine.Engine]` section, change `DefaultGame` from `DefaultGame=DeusEx.DeusExGameInfo` to `DefaultGame=VMDRandomizer.DXRandoGameInfo` and change `Root` from `Root=DeusEx.DeusExRootWindow` to `Root=VMDRandomizer.DXRandoRootWindow`
 
-VMD Randomizer is in early alpha testing and does not support all of the features that the vanilla randomizer has.
+VMD Randomizer is in beta testing and does not support all of the features that the vanilla randomizer has.
 </details>
 
 ## Installation Instructions for HX (Co-op)
@@ -109,7 +109,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 
 ## v2.0 Trailer
 
-June 22nd was Deus Ex's 22nd anniversary, and our 2nd anniversary! To celebrate, we made a new trailer!
+June 22nd 2022 was Deus Ex's 22nd anniversary, and our 2nd anniversary! To celebrate, we made a new trailer!
 
 <a href="https://youtu.be/XsoIKbn_suE" target="_blank">
 <img src="https://i.imgur.com/Rssbzpl.jpg" alt="v2.0 Trailer" height="300"/></a>
