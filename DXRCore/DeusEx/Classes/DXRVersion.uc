@@ -4,8 +4,13 @@ simulated static function CurrentVersion(optional out int major, optional out in
 {
     major=2;
     minor=2;
+<<<<<<< HEAD
     patch=3;
     build=3;//build can't be higher than 99
+=======
+    patch=2;
+    build=1;//build can't be higher than 99
+>>>>>>> 69f900e (v2.2.2 hotfix healing aug)
 }
 
 simulated static function string VersionString(optional bool full)
