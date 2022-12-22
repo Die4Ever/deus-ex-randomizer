@@ -58,6 +58,8 @@ function HealPartMax(out int points, out int amt, int max)
 {
 	local int spill;
 
+    if(points >= max) return;
+
 	points += amt;
 	spill = points - max;
 	if (spill > 0)
