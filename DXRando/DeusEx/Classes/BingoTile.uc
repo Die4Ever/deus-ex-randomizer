@@ -1,11 +1,14 @@
 class BingoTile extends ButtonWindow;
 
 var int progress, max;
+var bool activeMission;
 
 event DrawWindow(GC gc)
 {
     local color c;
     local int progHeight;
+
+    trigger a compiler error so we remember to choose some different appearance for activeMission vs not
 
     c.R = 255;
     c.G = 255;
@@ -30,10 +33,11 @@ event DrawWindow(GC gc)
     Super.DrawWindow(gc);
 }
 
-simulated function SetProgress(int tprogress, int tmax)
+simulated function SetProgress(int tprogress, int tmax, bool tactiveMission)
 {
     progress = tprogress;
     max = tmax;
+    activeMission = tactiveMission;
 }
 
 //Bingo tiles don't need to handle any key presses

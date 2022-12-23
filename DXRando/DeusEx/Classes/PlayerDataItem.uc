@@ -16,6 +16,7 @@ struct BingoSpot {
     var travel string desc;
     var travel int progress;
     var travel int max;
+    var travel int missions;// bit mask
 };
 var travel BingoSpot bingo[25];
 var transient config BingoSpot bingoexport[25];
@@ -76,12 +77,19 @@ simulated function bool MarkRead(name textTag) {
     return false;
 }
 
-simulated function GetBingoSpot(int x, int y, out string event, out string desc, out int progress, out int max)
+simulated function GetBingoSpot(int x, int y, out string event, out string desc, out int progress, out int max, out bool activeMission)
 {
+    local DXRando dxr;
+
     event = bingo[x*5+y].event;
     desc = bingo[x*5+y].desc;
     progress = bingo[x*5+y].progress;
     max = bingo[x*5+y].max;
+
+    foreach AllActors(class'DXRando', dxr) { break; }
+    if(dxr == None) return;
+
+    activeMission = class'DXREvents'.static.BingoActiveMission(dxr.dxInfo.missionNumber, bingo[x*5+y].missions);
 }
 
 simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max)

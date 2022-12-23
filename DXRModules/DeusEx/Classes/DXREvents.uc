@@ -10,6 +10,7 @@ var int num_rewatchflags;
 struct BingoOption {
     var string event, desc;
     var int max;
+    var int missions;// bit masks
 };
 var BingoOption bingo_options[200];
 
@@ -982,7 +983,7 @@ static function BingoEventData(DXRando dxr, out string j)
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
-            data.GetBingoSpot(x, y, event, desc, progress, max);
+            data.GetBingoSpot(x, y, event, desc, progress, max, false);
             j = j $ ",\"bingo-"$x$"-"$y $ "\":"
                 $ "{\"event\":\"" $ event $ "\",\"desc\":\"" $ desc $ "\",\"progress\":" $ progress $ ",\"max\":" $ max $ "}";
         }
@@ -1033,7 +1034,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
     data.ExportBingoState();
 
     // don't overwrite existing bingo
-    data.GetBingoSpot(0, 0, event, desc, progress, max);
+    data.GetBingoSpot(0, 0, event, desc, progress, max, false);
     if( event != "" ) {
         //Make sure bingo didn't get completed just before leaving a level
         CheckBingoWin(dxr,data.NumberOfBingos());
@@ -1356,17 +1357,50 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintHeader("Bingo");
     AddBingoScreen(cw);
     cw.PrintLn();
-
 }
+
+static function bool BingoActiveMission(int currentMission, int missionsMask)
+{
+    local int missionAnded;
+    if(missionsMask == 0) return true;
+    missionAnded = (1 << currentMission) & missionsMask;
+    if(missionAnded > 0) return true;
+
+#ifdef backtracking
+    // check conjoined backtracking missions
+    switch(currentMission) {
+    case 10:
+        currentMission=11;
+        break;
+    case 11:
+        currentMission=10;
+        break;
+    case 12:
+        currentMission=14;
+        break;
+    case 14:
+        currentMission=12;
+        break;
+    default:
+        return false;
+    }
+    missionAnded = (1 << currentMission) & missionsMask;
+    if(missionAnded > 0) return true;
+#endif
+
+    return false;
+}
+
+function bool
 
 defaultproperties
 {
-    bingo_options(0)=(event="TerroristCommander_Dead",desc="Kill the Terrorist Commander",max=1)
-	bingo_options(1)=(event="TiffanySavage_Dead",desc="Kill Tiffany Savage",max=1)
-	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul die",max=1)
-	bingo_options(3)=(event="JordanShea_Dead",desc="Kill Jordan Shea",max=1)
-	bingo_options(4)=(event="SandraRenton_Dead",desc="Kill Sandra Renton",max=1)
-	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1)
+    bingo_options(0)=(event="TerroristCommander_Dead",desc="Kill the Terrorist Commander",max=1, missions=2)
+	bingo_options(1)=(event="TiffanySavage_Dead",desc="Kill Tiffany Savage",max=1, missions=4096)
+	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul die",max=1, missions=16)
+	bingo_options(3)=(event="JordanShea_Dead",desc="Kill Jordan Shea",max=1, missions=276)
+	bingo_options(4)=(event="SandraRenton_Dead",desc="Kill Sandra Renton",max=1, missions=4372)
+	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1, missions=276)
 	bingo_options(6)=(event="AnnaNavarre_Dead",desc="Kill Anna Navarre",max=1)
 	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1)
 	bingo_options(8)=(event="JoJoFine_Dead",desc="Kill JoJo",max=1)
