@@ -10,14 +10,14 @@ function FillBingoWindow(#var(PlayerPawn) player)
     local int x, y, progress, max;
     local string event, desc;
     local PlayerDataItem data;
-    local bool activeMission;
+    local int bActiveMission;
 
     data = class'PlayerDataItem'.static.GiveItem(player);
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
-            data.GetBingoSpot(x, y, event, desc, progress, max, activeMission);
-            CreateBingoSpot(x, y, desc, progress, max, activeMission);
+            bActiveMission = data.GetBingoSpot(x, y, event, desc, progress, max);
+            CreateBingoSpot(x, y, desc, progress, max, bActiveMission);
         }
     }
 
@@ -25,7 +25,7 @@ function FillBingoWindow(#var(PlayerPawn) player)
 
 // we can fit about 6 lines of text, about 14 characters wide
 // probably want a new class instead of ButtonWindow, so we can turn the background into a progress bar, maybe a subclass of PersonaItemButton so the theming works correctly
-function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int max, bool activeMission)
+function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int max, int bActiveMission)
 {
     local BingoTile t;
     local int w, h;
@@ -38,6 +38,6 @@ function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int 
     h = bingoHeight/5;
     t.SetSize(w-1, h-1);
     t.SetPos(x * w + bingoStartX, y * h + bingoStartY);
-    t.SetProgress(progress, max, activeMission);
+    t.SetProgress(progress, max, bActiveMission);
     return t;
 }

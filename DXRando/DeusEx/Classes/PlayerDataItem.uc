@@ -77,7 +77,8 @@ simulated function bool MarkRead(name textTag) {
     return false;
 }
 
-simulated function GetBingoSpot(int x, int y, out string event, out string desc, out int progress, out int max, out bool activeMission)
+
+simulated function int GetBingoSpot(int x, int y, out string event, out string desc, out int progress, out int max)
 {
     local DXRando dxr;
 
@@ -87,17 +88,18 @@ simulated function GetBingoSpot(int x, int y, out string event, out string desc,
     max = bingo[x*5+y].max;
 
     foreach AllActors(class'DXRando', dxr) { break; }
-    if(dxr == None) return;
+    if(dxr == None) return 1;// 1==maybe
 
-    activeMission = class'DXREvents'.static.BingoActiveMission(dxr.dxInfo.missionNumber, bingo[x*5+y].missions);
+    return class'DXREvents'.static.BingoActiveMission(dxr.dxInfo.missionNumber, bingo[x*5+y].missions);
 }
 
-simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max)
+simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max, int missions)
 {
     bingo[x*5+y].event = event;
     bingo[x*5+y].desc = desc;
     bingo[x*5+y].progress = progress;
     bingo[x*5+y].max = max;
+    bingo[x*5+y].missions = missions;
 }
 
 simulated function bool IncrementBingoProgress(string event)
@@ -163,6 +165,7 @@ simulated function ExportBingoState()
         bingoexport[i].desc = bingo[i].desc;
         bingoexport[i].progress = bingo[i].progress;
         bingoexport[i].max = bingo[i].max;
+        bingoexport[i].missions = bingo[i].missions;
     }
     SaveConfig();
 }
