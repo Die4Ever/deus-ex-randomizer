@@ -65,7 +65,7 @@ class Bingo:
                 self.tkBoardText[x][y].set("("+str(x)+","+str(y)+")")
                 self.tkBoard[x][y]=Button(self.win,textvariable=self.tkBoardText[x][y],image=self.pixel,compound="c",width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font,fg='white',disabledforeground="white",bd=BUTTON_BORDER_WIDTH)
                 self.tkBoard[x][y]["state"]='disabled'
-                self.tkBoard[x][y].countdown=0
+                self.tkBoard[x][y].countdown=None
                 self.tkBoard[x][y].grid(column=x,row=y)
 
 
