@@ -20,6 +20,7 @@ struct BingoSpot {
 };
 var travel BingoSpot bingo[25];
 var transient config BingoSpot bingoexport[25];
+var transient config int currentMission;
 
 var travel name readTexts[50];
 
@@ -90,7 +91,8 @@ simulated function int GetBingoSpot(int x, int y, out string event, out string d
     foreach AllActors(class'DXRando', dxr) { break; }
     if(dxr == None) return 1;// 1==maybe
 
-    return class'DXREvents'.static.BingoActiveMission(dxr.dxInfo.missionNumber, bingo[x*5+y].missions);
+    currentMission = dxr.dxInfo.missionNumber;
+    return class'DXREvents'.static.BingoActiveMission(currentMission, bingo[x*5+y].missions);
 }
 
 simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max, int missions)
@@ -159,13 +161,20 @@ simulated function int NumberOfBingos()
 
 simulated function ExportBingoState()
 {
+    local DXRando dxr;
     local int i;
+
     for(i=0; i<ArrayCount(bingo); i++) {
         bingoexport[i].event = bingo[i].event;
         bingoexport[i].desc = bingo[i].desc;
         bingoexport[i].progress = bingo[i].progress;
         bingoexport[i].max = bingo[i].max;
         bingoexport[i].missions = bingo[i].missions;
+    }
+
+    foreach AllActors(class'DXRando', dxr) {
+        currentMission = dxr.dxInfo.missionNumber;
+        break;
     }
     SaveConfig();
 }
