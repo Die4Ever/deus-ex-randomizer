@@ -91,12 +91,11 @@ class Bingo:
             if tkTile.countdown is None:
                 tkTile.countdown=NEWLY_COMPLETED_DISPLAY_TIME
                 tkTile.config(bg=BRIGHT_GREEN)
+            elif(tkTile.countdown>0):
+                tkTile.countdown-=1
+                tkTile.config(bg=BRIGHT_GREEN)
             else:
-                if(tkTile.countdown>0):
-                    tkTile.countdown-=1
-                    tkTile.config(bg=BRIGHT_GREEN)
-                else:
-                    tkTile.config(bg=MAGIC_GREEN)
+                tkTile.config(bg=MAGIC_GREEN)
         elif self.bActiveMission(boardEntry['missions']):
             tkTile.config(bg="gray")
         else:
