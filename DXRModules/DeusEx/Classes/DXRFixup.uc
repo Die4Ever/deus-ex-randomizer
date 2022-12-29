@@ -40,7 +40,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(2,1,5,4) ) {
+    if( ConfigOlderThan(2,2,2,2) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -117,6 +117,7 @@ function CheckConfig()
         add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
         i++;
 
+#ifdef vanilla
         add_datacubes[i].map = "15_AREA51_BUNKER";
         add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
         i++;
@@ -124,6 +125,7 @@ function CheckConfig()
         add_datacubes[i].map = "15_AREA51_BUNKER";
         add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
         i++;
+#endif
 
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
         add_datacubes[i].text = "My code is 6786";
