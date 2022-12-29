@@ -16,10 +16,18 @@ struct BingoSpot {
     var travel string desc;
     var travel int progress;
     var travel int max;
-    var travel int missions;// bit mask
 };
 var travel BingoSpot bingo[25];
-var transient config BingoSpot bingoexport[25];
+var travel int bingo_missions_masks[25];// can't be inside the travel struct because that breaks compatibility with old saves
+
+struct BingoSpotExport {
+    var string event;
+    var string desc;
+    var int progress;
+    var int max;
+    var int missions;// bit mask
+};
+var transient config BingoSpotExport bingoexport[25];
 var transient config int currentMission;
 
 var travel name readTexts[50];
@@ -92,7 +100,7 @@ simulated function int GetBingoSpot(int x, int y, out string event, out string d
     if(dxr == None) return 1;// 1==maybe
 
     currentMission = dxr.dxInfo.missionNumber;
-    return class'DXREvents'.static.BingoActiveMission(currentMission, bingo[x*5+y].missions);
+    return class'DXREvents'.static.BingoActiveMission(currentMission, bingo_missions_masks[x*5+y]);
 }
 
 simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max, int missions)
@@ -101,7 +109,7 @@ simulated function SetBingoSpot(int x, int y, string event, string desc, int pro
     bingo[x*5+y].desc = desc;
     bingo[x*5+y].progress = progress;
     bingo[x*5+y].max = max;
-    bingo[x*5+y].missions = missions;
+    bingo_missions_masks[x*5+y] = missions;
 }
 
 simulated function bool IncrementBingoProgress(string event)
@@ -169,7 +177,7 @@ simulated function ExportBingoState()
         bingoexport[i].desc = bingo[i].desc;
         bingoexport[i].progress = bingo[i].progress;
         bingoexport[i].max = bingo[i].max;
-        bingoexport[i].missions = bingo[i].missions;
+        bingoexport[i].missions = bingo_missions_masks[i];
     }
 
     foreach AllActors(class'DXRando', dxr) {
