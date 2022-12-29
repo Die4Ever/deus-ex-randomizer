@@ -1960,6 +1960,15 @@ function Area51_FirstEntry()
             d.bHighlight = true;
             d.bFrobbable = true;
         }
+
+        //Change break room security computer password so it isn't pre-known
+        //This code isn't written anywhere, so you shouldn't have knowledge of it
+        foreach AllActors(class'ComputerSecurity',c){
+            if (c.UserList[0].UserName=="SECURITY" && c.UserList[0].Password=="SECURITY"){
+                c.UserList[0].Password="TinFoilHat";
+            }
+        }
+
         break;
 
     case "15_AREA51_PAGE":
