@@ -54,11 +54,25 @@ struct ZoneGravity
     var name zonename;
     var vector gravity;
 };
+
+struct AugEffectState
+{
+    var bool canUpgrade;
+    var bool canDowngrade;
+};
+
 var ZoneGravity zone_gravities[32];
 
 var DXRandoCrowdControlTimer timerDisplays[32];
 
 var DXRandoCrowdControlPawn CrowdControlPawns[3];
+
+var transient AugEffectState AugEffectStates[32]; //Vanilla has a 25 array, but in case mods bump it up?
+var transient bool AugEffectStatesInit;
+
+var transient bool HaveFlamethrower;
+var transient bool FlamethrowerInit;
+
 var int mostRecentCcPawn;
 
 var int fartSoundId;
@@ -186,7 +200,7 @@ function PeriodicUpdates()
 
     if (decrementTimer('cc_EatBeans')) {
         PlayerMessage("Your stomach settles down");
-    } else if (isTimerActive('cc_EatBeans') && InGame()){
+    } else if (isTimerActive('cc_EatBeans') && !InMenu()){
         Fart();
     }
 
@@ -202,7 +216,120 @@ function PeriodicUpdates()
         quickLoadTriggered = False;
         player().QuickLoadConfirmed();
     }
+}
 
+function HandleEffectSelectability()
+{
+    local Inventory anItem;
+    local bool haveFT;
+
+    //LamThrower
+    if (#defined(vanilla)){
+        anItem = player().FindInventoryType(class'WeaponFlamethrower');
+        haveFT=(anItem!=None);
+        if (haveFT!=HaveFlamethrower || !FlamethrowerInit){
+            ccLink.sendEffectSelectability("lamthrower",haveFT);
+            HaveFlamethrower=haveFT;
+        }
+        FlamethrowerInit=True;
+    }
+    HandleAugEffectSelectability("augspeed");
+    HandleAugEffectSelectability("augtarget");
+    HandleAugEffectSelectability("augcloak");
+    HandleAugEffectSelectability("augballistic");
+    HandleAugEffectSelectability("augradartrans");
+    HandleAugEffectSelectability("augshield");
+    HandleAugEffectSelectability("augenviro");
+    HandleAugEffectSelectability("augemp");
+    HandleAugEffectSelectability("augcombat");
+    HandleAugEffectSelectability("aughealing");
+    HandleAugEffectSelectability("augstealth");
+    HandleAugEffectSelectability("augmuscle");
+    HandleAugEffectSelectability("augvision");
+    HandleAugEffectSelectability("augdrone");
+    HandleAugEffectSelectability("augdefense");
+    HandleAugEffectSelectability("augaqualung");
+    HandleAugEffectSelectability("augheartlung");
+    HandleAugEffectSelectability("augpower");
+    AugEffectStatesInit=True;
+}
+
+function HandleAugEffectSelectability(string augName)
+{
+    local bool canUpgrade,canDowngrade,sendUpgradeUpdate,sendDowngradeUpdate;
+    local int augLevel,augMax, augIndex;
+    local class<Augmentation> augClass;
+
+    augClass=getAugClass(augName);
+    augIndex=getAugManagerIndex(augClass);
+    augLevel=FindAugLevel(augClass);
+    augMax=FindAugMax(augClass);
+
+    if (augLevel==-1){
+        canUpgrade=True;
+        canDowngrade=False;
+    } else if (augLevel==augMax){
+        canUpgrade=False;
+        canDowngrade=True;
+    } else {
+        canUpgrade=True;
+        canDowngrade=True;
+    }
+
+    if (!AugEffectStatesInit){
+       sendUpgradeUpdate=True;
+       sendDowngradeUpdate=True;
+    } else {
+        if (AugEffectStates[augIndex].canUpgrade!=canUpgrade){
+            sendUpgradeUpdate=True;
+        }
+
+        if (AugEffectStates[augIndex].canDowngrade!=canDowngrade){
+            sendDowngradeUpdate=True;
+        }
+    }
+
+    if (sendUpgradeUpdate){
+        ccLink.sendEffectSelectability("add_"$augName,canUpgrade);
+        AugEffectStates[augIndex].canUpgrade=canUpgrade;
+
+    }
+
+    if (sendDowngradeUpdate){
+        ccLink.sendEffectSelectability("rem_"$augName,canDowngrade);
+        AugEffectStates[augIndex].canDowngrade=canDowngrade;
+    }
+}
+
+function int getAugManagerIndex(class<Augmentation> augClass)
+{
+    local int i;
+    for (i=0;i<ArrayCount(player().AugmentationSystem.augClasses);i++){
+        if (player().AugmentationSystem.augClasses[i]==augClass){
+            return i;
+        }
+    }
+    return -1;
+}
+
+function int FindAugLevel(class<Augmentation> augClass)
+{
+    local Augmentation anAug;
+    anAug = player().AugmentationSystem.FindAugmentation(augClass);
+
+    if (anAug==None){
+        return -1;
+    } else {
+        if (anAug.bHasIt){
+            return anAug.CurrentLevel;
+        } else {
+            return -1;
+        }
+    }
+}
+function int FindAugMax(class<Augmentation> augClass)
+{
+    return augClass.default.MaxLevel;
 }
 
 //Start the sound and fire the clouds
@@ -546,7 +673,6 @@ function bool decrementTimer(name timerName) {
 
 function startNewTimer(name timerName) {
     setTimerFlag(timerName,getDefaultTimerTimeByName(timerName),True);
-
 }
 
 
@@ -918,6 +1044,13 @@ function bool InGame() {
     return True;
 }
 
+function bool InConversation() {
+    return player().conPlay!=None;
+}
+
+function bool InMenu() {
+    return !InGame() && !InConversation();
+}
 
 function int GiveLamThrower(string viewer)
 {
@@ -1747,7 +1880,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             return Success;
 
         case "eat_beans":
-            if (!InGame()) {
+            if (InMenu()) {
                 return TempFail;
             }
             if (isTimerActive('cc_EatBeans')) {
