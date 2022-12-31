@@ -980,7 +980,7 @@ function UpdateGoalWithRandoInfo(name goalName)
         if (randoPos==-1){
             switch(goalName){
                 case 'InvestigateMaggieChow':
-                    goalText = goalText$"|nRando: The sword may not be in Maggie's apartment.";
+                    goalText = goalText$"|nRando: The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.";
                     break;
                 case 'FindHarleyFilben':
                     if(dxr.flags.settings.goals > 0)
