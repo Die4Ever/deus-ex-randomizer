@@ -38,9 +38,10 @@ simulated function InitHints()
         AddHint("Skill costs reroll every "$ dxr.flags.settings.skills_reroll_missions $" missions.", "You're currently in mission "$mission$".");
     }
 
+    AddHint("Attaching a LAM or Gas Grenade to a wall can be very strong!", "Also try to lure enemies into them.");
+
     if(mission <= 5) {
         AddHint("Melee attacks from behind do bonus damage!");
-        AddHint("The flashlight (F12) can be used to attract the attention of guards.");
         AddHint("Don't hoard items.", "You'll find more!");
         AddHint("Have you looked at your Bingo Board?", "Find it in the middle bar of your Goals/Notes screen.");
 
@@ -53,6 +54,7 @@ simulated function InitHints()
 
         if(#defined(injections)) {
             AddHint("The flashlight (F12) no longer consumes energy when used.", "Go wild with it!");
+            AddHint("The flashlight (F12) can be used to attract the attention of guards.", "It doesn't cost any energy!");
             AddHint("Alcohol and medkits will heal your legs first", "if they are completely broken.");
             AddHint("You can carry 5 fire extinguishers in 1 inventory slot.", "They are very useful for stealthily killing multiple enemies.");
             AddHint("Ever tried to extinguish a fire with a toilet?", "How about a urinal or a shower?");
@@ -67,6 +69,8 @@ simulated function InitHints()
             AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
             AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
             AddHint("You can left click on items to use them without picking them up.", "Great for eating to recover health or putting on armor!");
+        } else {
+            AddHint("The flashlight (F12) can be used to attract the attention of guards.");
         }
 
         if(dxr.flags.gamemode == 1) {
@@ -205,7 +209,7 @@ simulated function InitHints()
             if(dxr.flags.settings.goals > 0)
                 AddHint("The location of the computer with the ROM Encoding is randomized.", "Check the Goal Randomization page on our Wiki.");
         } else if (map ~= "06_HongKong_WanChai_Street") {
-            AddHint("The Dragon Tooth Sword is randomized, but you need to","open the case in Maggie Chow's apartment to proceed.");
+            AddHint("The Dragon Tooth Sword is randomized.","Open the case in Maggie Chow's apartment for a hint.");
         } else if (map ~= "06_HongKong_VersaLife") {
             AddHint("The locations of some VersaLife employees are randomized.", "Check the Goal Randomization page on our Wiki.");
         }
