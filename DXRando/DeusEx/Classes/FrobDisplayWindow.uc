@@ -1,4 +1,4 @@
-class FrobDisplayWindow injects FrobDisplayWindow;
+class DXRFrobDisplayWindow injects FrobDisplayWindow;
 
 var localized string msgDamageThreshold;
 var localized string msgShot;
@@ -302,6 +302,12 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
 {
     local string strInfo;
 
+#ifdef injections
+    local Keypad k;
+#else
+    local DXRKeypad k;
+#endif
+
     numLines = 2;
 
     strInfo = device.itemName $ CR() $ msgHackStr;
@@ -322,7 +328,13 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
     else
         strInfo = strInfo $ msgInf;
 
-    if( device.IsA('Keypad') && (Keypad(device).bCodeKnown) )
+#ifdef injections
+    k=Keypad(device);
+#else
+    k=DXRKeypad(device);
+#endif
+
+    if( k!=None && (k.bCodeKnown) )
     {
         if( auto_codes ) {
             numLines = 3;
@@ -352,6 +364,7 @@ function string ComputersStrInfo(ElectronicDevices d, out int numLines)
 
     c = Computers(d);
     a = ATM(d);
+#ifdef vanilla
     if( known_codes && c != None )
     {
         if( c.HasKnownAccounts() )
@@ -366,7 +379,7 @@ function string ComputersStrInfo(ElectronicDevices d, out int numLines)
         else
             strInfo = strInfo $ CR() $ "Unknown PIN";
     }
-
+#endif
     return strInfo;
 }
 
@@ -423,7 +436,9 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     local int numTools, numShots;
     local float damage;
     local name damageType;
+#ifdef vanilla
     local DXRWeapon w;
+#endif
     local float lockStrength;
 
     dxMover = DeusExMover(m);
@@ -450,6 +465,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
             strInfo = numTools @ msgPicks;
     }
 
+#ifdef vanilla
     if ((dxMover != None) && dxMover.bLocked && dxMover.bBreakable)
     {
         w = DXRWeapon(player.inHand);
@@ -467,7 +483,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
             }
         }
     }
-
+#endif
     gc.DrawText(infoX+(infoW-barLength-2), infoY+4+(infoH-8)/numLines, barLength, ((infoH-8)/numLines)*2-2, strInfo);
 }
 

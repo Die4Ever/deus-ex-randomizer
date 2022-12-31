@@ -40,6 +40,9 @@ function ReplaceActors()
         else if( #var(prefix)WaterFountain(a) != None ) {
             ReplaceWaterFountain(#var(prefix)WaterFountain(a));
         }
+        else if( #var(prefix)Keypad(a) != None ) {
+            ReplaceKeypad(#var(prefix)Keypad(a));
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -67,6 +70,32 @@ function ReplaceInformationDevice(#var(prefix)InformationDevices a)
 #endif
     ReplaceDeusExDecoration(a, n);
 
+    a.Destroy();
+}
+
+function ReplaceKeypad(#var(prefix)Keypad a)
+{
+    local DXRKeypad n;
+
+    if(a.IsA('DXRKeypad'))
+        return;
+
+    n = DXRKeypad(SpawnReplacement(a, class'DXRKeypad'));
+    dxr.player.ClientMessage("Replacing keypad "$a.name);
+    if(n==None)
+        return;
+    dxr.player.ClientMessage("Spawned a replacement");
+    n.validCode = a.validCode;
+    n.successSound = a.successSound; //I doubt this is ever changed from default, but let's be safe
+    n.failureSound = a.failureSound; //I doubt this is ever changed from default, but let's be safe
+    n.FailEvent = a.FailEvent;
+    n.bToggleLock = a.bToggleLock;
+
+    //Make it look like the right kind of keypad
+    n.Mesh = a.Mesh;
+    n.SetCollisionSize(a.CollisionRadius,a.CollisionHeight);
+
+    ReplaceDeusExDecoration(a, n);
     a.Destroy();
 }
 

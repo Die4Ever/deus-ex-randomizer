@@ -4,6 +4,16 @@ class DXRandoRootWindow extends RevRootWindow;
 class DXRandoRootWindow extends DeusExRootWindow;
 #endif
 
+event InitWindow()
+{
+	Super.InitWindow();
+
+	hud.Destroy();
+    hud = DeusExHUD(NewChild(Class'DXRandoHUD'));
+	hud.UpdateSettings(DeusExPlayer(parentPawn));
+	hud.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
+}
+
 function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, optional bool bNoPause)
 {
     log("DXRandoRootWindow InvokeMenuScreen "$newScreen);

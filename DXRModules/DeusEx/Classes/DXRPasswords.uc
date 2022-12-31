@@ -833,7 +833,6 @@ function MarkPasswordKnown(string password)
     {
         a.SetAccountKnownByPassword(password);
     }
-
     //Check keypad logins
     foreach AllActors(class '#var(prefix)Keypad',k)
     {
@@ -841,7 +840,19 @@ function MarkPasswordKnown(string password)
             k.bCodeKnown = True;
         }
     }
+#else
+    local DXRKeypad k;
+    //Check keypad logins
+    foreach AllActors(class 'DXRKeypad',k)
+    {
+        if (password == k.validCode) {
+            k.bCodeKnown = True;
+        }
+    }
+
 #endif
+
+
 }
 
 #ifdef hx
