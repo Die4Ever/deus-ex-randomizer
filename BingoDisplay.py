@@ -87,7 +87,7 @@ class Bingo:
             desc=desc+"\n("+str(boardEntry["progress"])+"/"+str(boardEntry["max"])+")"
 
         tkText.set(desc)
-        isActive = self.bActiveMission(boardEntry['missions'])
+        isActive = self.bActiveMission(boardEntry.get('missions'))
         if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
             if tkTile.countdown is None:
                 tkTile.countdown=NEWLY_COMPLETED_DISPLAY_TIME
@@ -98,17 +98,17 @@ class Bingo:
             else:
                 tkTile.config(bg=MAGIC_GREEN)
         elif isActive:
-            tkTile.config(bg="#323232")
-        elif isActive is None:
-            tkTile.config(bg="#aaa")
+            tkTile.config(bg="#505050")
+        elif isActive is None:# None is for maybe
+            tkTile.config(bg="#303030")
         else:
-            tkTile.config(bg="black")
+            tkTile.config(bg="#000000", fg="#c8c8c8") # text color adjustment isn't working
 
 
     def bActiveMission(self, missions):
         if not missions or not self.currentMission:
-            return None# return None for maybe?
-        # maybe the UnrealScript should output the boolean instead of the mask?
+            return None# return None for maybe
+
         result = (1 << self.currentMission) & missions
         return bool(result)
 

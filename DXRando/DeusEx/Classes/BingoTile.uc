@@ -16,25 +16,25 @@ event DrawWindow(GC gc)
     SetTextColors(c, c, c, c, c, c);
 
     if(bActiveMission==2) {
-        c.R = 50;
-        c.G = 50;
-        c.B = 50;
+        c.R = 80;
+        c.G = 80;
+        c.B = 80;
         gc.SetTileColor(c);
         gc.SetStyle(DSTY_Normal);
         gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
     }
     else if(bActiveMission==1) {
-        c.R = 10;
-        c.G = 10;
-        c.B = 10;
+        c.R = 48;
+        c.G = 48;
+        c.B = 48;
         gc.SetTileColor(c);
         gc.SetStyle(DSTY_Normal);
         gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
     }
     else {
-        c.R = 1;
-        c.G = 1;
-        c.B = 1;
+        c.R = 0;
+        c.G = 0;
+        c.B = 0;
         gc.SetTileColor(c);
         gc.SetStyle(DSTY_Normal);
         gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
