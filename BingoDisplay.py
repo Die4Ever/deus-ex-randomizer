@@ -87,6 +87,7 @@ class Bingo:
             desc=desc+"\n("+str(boardEntry["progress"])+"/"+str(boardEntry["max"])+")"
 
         tkText.set(desc)
+        isActive = self.bActiveMission(boardEntry['missions'])
         if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
             if tkTile.countdown is None:
                 tkTile.countdown=NEWLY_COMPLETED_DISPLAY_TIME
@@ -96,17 +97,20 @@ class Bingo:
                 tkTile.config(bg=BRIGHT_GREEN)
             else:
                 tkTile.config(bg=MAGIC_GREEN)
-        elif self.bActiveMission(boardEntry['missions']):
-            tkTile.config(bg="gray")
+        elif isActive:
+            tkTile.config(bg="#323232")
+        elif isActive is None:
+            tkTile.config(bg="#aaa")
         else:
             tkTile.config(bg="black")
 
 
     def bActiveMission(self, missions):
-        if not missions:
+        if not missions or not self.currentMission:
             return None# return None for maybe?
         # maybe the UnrealScript should output the boolean instead of the mask?
-        return False
+        result = (1 << self.currentMission) & missions
+        return bool(result)
 
     def printBoard(self):
         for x in range(5):
