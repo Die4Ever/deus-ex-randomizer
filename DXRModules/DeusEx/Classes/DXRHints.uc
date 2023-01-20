@@ -52,6 +52,10 @@ simulated function InitHints()
         AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
         AddHint("Each type of weapon gets randomized stats!", "Make sure to check one of each type.");
 
+        if(#defined(injections) || #defined(vmd) || #defined(gmdx)) {
+            AddHint("You can left click on items to use them without picking them up.", "Great for eating to recover health or putting on armor!");
+        }
+
         if(#defined(injections)) {
             AddHint("The flashlight (F12) no longer consumes energy when used.", "Go wild with it!");
             AddHint("The flashlight (F12) can be used to attract the attention of guards.", "It doesn't cost any energy!");
@@ -68,7 +72,6 @@ simulated function InitHints()
             AddHint("Read the pop-up text on doors to see how many", "hits from your equiped weapon to break it.");
             AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
             AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
-            AddHint("You can left click on items to use them without picking them up.", "Great for eating to recover health or putting on armor!");
         } else {
             AddHint("The flashlight (F12) can be used to attract the attention of guards.");
         }
@@ -90,16 +93,18 @@ simulated function InitHints()
             AddHint("Repair bots are disabled.", "Good luck.");
         }
 
-        if (dxr.flags.settings.medbotuses==1) {
-            AddHint("Each medbot can heal you one time!","Use it wisely!");
-        } else if (dxr.flags.settings.medbotuses>1 && dxr.flags.settings.medbotuses <30) {
-            AddHint("Each medbot can heal you "$dxr.flags.settings.medbotuses$" times!","Use them wisely!");
-        }
+        if(!#defined(vmd)) {
+            if (dxr.flags.settings.medbotuses==1) {
+                AddHint("Each medbot can heal you one time!","Use it wisely!");
+            } else if (dxr.flags.settings.medbotuses>1 && dxr.flags.settings.medbotuses <30) {
+                AddHint("Each medbot can heal you "$dxr.flags.settings.medbotuses$" times!","Use them wisely!");
+            }
 
-        if (dxr.flags.settings.repairbotuses == 1) {
-            AddHint("Each repair bot can recharge you one time!","Use it wisely!");
-        } else if (dxr.flags.settings.repairbotuses>1 && dxr.flags.settings.repairbotuses <30){
-            AddHint("Each repair bot can recharge you "$dxr.flags.settings.repairbotuses$" times!","Use them wisely!");
+            if (dxr.flags.settings.repairbotuses == 1) {
+                AddHint("Each repair bot can recharge you one time!","Use it wisely!");
+            } else if (dxr.flags.settings.repairbotuses>1 && dxr.flags.settings.repairbotuses <30){
+                AddHint("Each repair bot can recharge you "$dxr.flags.settings.repairbotuses$" times!","Use them wisely!");
+            }
         }
 
         if (dxr.flags.settings.medbotcooldowns == 1) { //Individual
