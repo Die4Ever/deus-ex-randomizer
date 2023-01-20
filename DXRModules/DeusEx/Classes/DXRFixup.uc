@@ -521,9 +521,18 @@ simulated function FixLogTimeout(#var(PlayerPawn) p)
 
 simulated function FixInventory(#var(PlayerPawn) p)
 {
-    local Inventory item;
+    local Inventory item, nextItem;
+    local DXRLoadouts loadouts;
 
-    for(item=p.Inventory; item!=None; item=item.Inventory) {
+    loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+
+    for(item=p.Inventory; item!=None; item=nextItem) {
+        nextItem = item.Inventory;// save this in case we're deleting an item
+
+        if(loadouts != None && loadouts.ban(p, item)) {
+            item.Destroy();
+            continue;
+        }
         item.BecomeItem();
         item.GotoState('Idle2');
         item.SetLocation(p.Location);
