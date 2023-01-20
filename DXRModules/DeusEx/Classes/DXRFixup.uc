@@ -220,6 +220,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         FixLogTimeout(p);
 
     FixAmmoShurikenName();
+    FixInventory(p);
 }
 
 function PreTravel()
@@ -515,6 +516,18 @@ simulated function FixLogTimeout(#var(PlayerPawn) p)
 {
     if( p.GetLogTimeout() - 1 <3 ) {
         p.SetLogTimeout(10);
+    }
+}
+
+simulated function FixInventory(#var(PlayerPawn) p)
+{
+    local Inventory item;
+
+    for(item=p.Inventory; item!=None; item=item.Inventory) {
+        item.BecomeItem();
+        item.GotoState('Idle2');
+        item.SetLocation(p.Location);
+        item.SetBase(p);
     }
 }
 
