@@ -76,7 +76,7 @@ function ReplaceInformationDevice(#var(prefix)InformationDevices a)
 function ReplaceKeypad(#var(prefix)Keypad a)
 {
     local DXRKeypad n;
-
+#ifndef hx
     if(a.IsA('DXRKeypad'))
         return;
 
@@ -97,6 +97,7 @@ function ReplaceKeypad(#var(prefix)Keypad a)
 
     ReplaceDeusExDecoration(a, n);
     a.Destroy();
+#endif
 }
 
 function ReplaceGEPGun(WeaponGEPGUN a)
