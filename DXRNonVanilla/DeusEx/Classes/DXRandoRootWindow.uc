@@ -78,15 +78,19 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
             newScreen = class'DXRNetworkTerminalATM';
             break;*/
 
-        case class'HUDMedBotAddAugsScreen':
-            newScreen = class'DXRHUDMedBotAddAugsScreen';
-            break;
+#ifndef vmd
         case class'HUDMedBotHealthScreen':
             newScreen = class'DXRHUDMedBotHealthScreen';
             break;
         case class'HUDRechargeWindow':
             newScreen = class'DXRHUDRechargeWindow';
             break;
+#endif
+
+        case class'HUDMedBotAddAugsScreen':
+            newScreen = class'DXRHUDMedBotAddAugsScreen';
+            break;
+
         case class'NetworkTerminalPersonal':
             newScreen = class'DXRNetworkTerminalPersonal';
             break;

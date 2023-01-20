@@ -45,6 +45,8 @@ simulated function int GetMaxUses()
 {
     local DXRando dxr;
 
+    if(#defined(vmd)) return 0;// disabled for VMD
+
     foreach AllActors(class'DXRando', dxr){
         return dxr.flags.settings.medbotuses;
     }
