@@ -1,8 +1,10 @@
 class DXRMission15 injects Mission15;
 
-function FirstFrame()
+simulated function BeginPlay()
 {
     local int i;
+
+    Super.BeginPlay();
 
     // clear all spawners
     for(i=0; i<ArrayCount(spawnData); i++) {
@@ -16,6 +18,4 @@ function FirstFrame()
 
     spawnData[5].spawnTag='UC_spawn3';
     spawnData[8].spawnTag='UC_spawn3';
-
-    Super.FirstFrame();
 }
