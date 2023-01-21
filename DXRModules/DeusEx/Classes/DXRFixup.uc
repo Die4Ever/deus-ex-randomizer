@@ -2016,6 +2016,7 @@ function Area51_AnyEntry()
 {
     local Gray g;
     local ElectricityEmitter ee;
+    local #var(Mover) d;
 
     switch(dxr.localURL)
     {
@@ -2036,6 +2037,12 @@ function Area51_AnyEntry()
                 ee.DamageAmount /= 2;
                 ee.damageTime *= 2.0;
                 ee.randomAngle /= 2.0;
+            }
+        }
+
+        if((!#defined(revision)) && (!#defined(gmdx))) {
+            foreach AllActors(class'#var(Mover)', d, 'Page_button') {
+                d.SetLocation(vect(6152.000000, -6512.000000, -5136.000000)); // original Z was -5134
             }
         }
         break;
