@@ -29,7 +29,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,1,5,7) ) {
+    if( ConfigOlderThan(2,2,3,5) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
 
@@ -264,6 +264,20 @@ function vanilla_datacubes_rules()
     datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
     datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
     datacubes_rules[i].allow = true;
+    i++;
+
+    datacubes_rules[i].map = "15_AREA51_PAGE";
+    datacubes_rules[i].item_name = '15_Datacube18';// LAB 12 / graytest
+    datacubes_rules[i].min_pos = vect(4774.132813, -10507.679688, -5294.627441);
+    datacubes_rules[i].max_pos = vect(6394.192383, -9250.182617, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    datacubes_rules[i].map = "15_AREA51_PAGE";
+    datacubes_rules[i].item_name = '15_Datacube18';// LAB 12 / graytest
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = false;
     i++;
 }
 
@@ -635,7 +649,7 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
             continue;
         }
 #ifdef debug
-        //DebugMarkKeyPosition(inv, id.textTag);
+        //if(id.textTag == '15_Datacube18') DebugMarkKeyPosition(inv, id.textTag);
 #endif
         temp[num++] = inv;
     }
