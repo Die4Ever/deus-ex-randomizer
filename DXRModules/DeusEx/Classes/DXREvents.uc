@@ -1007,6 +1007,9 @@ static function GameTimeEventData(DXRando dxr, out string j)
         t = stats.GetCompleteMissionTime(i);
         js.static.Add(j, "mission-" $ i $ "-realtime", t);
         realtime += t;
+        t = stats.GetCompleteMissionMenuTime(i);
+        js.static.Add(j, "mission-" $ i $ "-menutime", t);
+        realtime += t;
     }
     js.static.Add(j, "time", time);
     js.static.Add(j, "realtime", realtime);
