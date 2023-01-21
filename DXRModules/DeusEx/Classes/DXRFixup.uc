@@ -534,7 +534,6 @@ simulated function FixInventory(#var(PlayerPawn) p)
             continue;
         }
         item.BecomeItem();
-        item.GotoState('Idle2');
         item.SetLocation(p.Location);
         item.SetBase(p);
     }
