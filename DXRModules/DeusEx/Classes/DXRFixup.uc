@@ -2015,6 +2015,7 @@ function Area51_FirstEntry()
 function Area51_AnyEntry()
 {
     local Gray g;
+    local ElectricityEmitter ee;
 
     switch(dxr.localURL)
     {
@@ -2026,8 +2027,17 @@ function Area51_AnyEntry()
         }
 #endif
         break;
+
     case "15_AREA51_PAGE":
         SetTimer(1, True);
+
+        foreach AllActors(class'ElectricityEmitter', ee, 'emitter_relay_room') {
+            if(ee.DamageAmount >= 30) {
+                ee.DamageAmount /= 2;
+                ee.damageTime *= 2.0;
+                ee.randomAngle /= 2.0;
+            }
+        }
         break;
     }
 }
