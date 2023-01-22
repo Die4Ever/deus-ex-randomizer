@@ -108,6 +108,8 @@ class Bingo:
     def bActiveMission(self, missions):
         if not missions or not self.currentMission:
             return None# return None for maybe
+        if self.currentMission <= 0 or self.currentMission > 30:
+            return False
 
         result = (1 << self.currentMission) & missions
         return bool(result)
@@ -123,6 +125,10 @@ class Bingo:
         return (x,y)
 
     def parseBingoLine(self,bingoLine):
+        if 'currentMission=' in bingoLine:
+            self.currentMission = int(bingoLine.split('=')[1])
+            return
+
         bingoNumber = int(bingoLine.split("[")[1].split("]")[0])
         bingoCoord = self.bingoNumberToCoord(bingoNumber)
         state = "=".join(bingoLine.split("=")[1:])[1:-1]
@@ -148,13 +154,9 @@ class Bingo:
                 if BINGO_MOD_LINE_DETECT in line:
                     currentMod=line.strip()
                     allLines[currentMod]=[]
-                elif line.startswith(BINGO_VARIABLE_CONFIG_NAME):
+                elif line.startswith(BINGO_VARIABLE_CONFIG_NAME) or line.startswith('currentMission='):
                     bingoLine = line.strip()
                     allLines[currentMod].append(bingoLine)
-                    #self.parseBingoLine(bingoLine)
-                elif 'currentMission=' in line:
-                    s = line.strip()
-                    self.currentMission = int(s.split('=')[1])
         except Exception as e:
             print(e)
             pass
