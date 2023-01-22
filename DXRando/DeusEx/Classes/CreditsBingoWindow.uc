@@ -24,7 +24,6 @@ function FillBingoWindow(#var(PlayerPawn) player)
 }
 
 // we can fit about 6 lines of text, about 14 characters wide
-// probably want a new class instead of ButtonWindow, so we can turn the background into a progress bar, maybe a subclass of PersonaItemButton so the theming works correctly
 function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int max, int bActiveMission)
 {
     local BingoTile t;

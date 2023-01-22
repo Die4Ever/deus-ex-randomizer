@@ -8,8 +8,6 @@ event DrawWindow(GC gc)
     local color c;
     local int progHeight;
 
-    //trigger a compiler error so we remember to choose some different appearance for activeMission vs not
-
     c.R = 255;
     c.G = 255;
     c.B = 255;
