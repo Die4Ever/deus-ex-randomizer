@@ -87,7 +87,7 @@ class Bingo:
             desc=desc+"\n("+str(boardEntry["progress"])+"/"+str(boardEntry["max"])+")"
 
         tkText.set(desc)
-        isActive = self.bActiveMission(boardEntry.get('missions'))
+        isActive = boardEntry.get('active', 1)
         if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
             if tkTile.countdown is None:
                 tkTile.countdown=NEWLY_COMPLETED_DISPLAY_TIME
@@ -97,22 +97,13 @@ class Bingo:
                 tkTile.config(bg=BRIGHT_GREEN)
             else:
                 tkTile.config(bg=MAGIC_GREEN)
-        elif isActive:
+        elif isActive == 2:# 2 is for active
             tkTile.config(bg="#505050")
-        elif isActive is None:# None is for maybe
+        elif isActive == 1:# 1 is for maybe
             tkTile.config(bg="#303030")
         else:
             tkTile.config(bg="#000000", fg="#c8c8c8") # text color adjustment isn't working
 
-
-    def bActiveMission(self, missions):
-        if not missions or not self.currentMission:
-            return None# return None for maybe
-        if self.currentMission <= 0 or self.currentMission > 30:
-            return False
-
-        result = (1 << self.currentMission) & missions
-        return bool(result)
 
     def printBoard(self):
         for x in range(5):
@@ -125,10 +116,6 @@ class Bingo:
         return (x,y)
 
     def parseBingoLine(self,bingoLine):
-        if 'currentMission=' in bingoLine:
-            self.currentMission = int(bingoLine.split('=')[1])
-            return
-
         bingoNumber = int(bingoLine.split("[")[1].split("]")[0])
         bingoCoord = self.bingoNumberToCoord(bingoNumber)
         state = "=".join(bingoLine.split("=")[1:])[1:-1]
@@ -154,7 +141,7 @@ class Bingo:
                 if BINGO_MOD_LINE_DETECT in line:
                     currentMod=line.strip()
                     allLines[currentMod]=[]
-                elif line.startswith(BINGO_VARIABLE_CONFIG_NAME) or line.startswith('currentMission='):
+                elif line.startswith(BINGO_VARIABLE_CONFIG_NAME):
                     bingoLine = line.strip()
                     allLines[currentMod].append(bingoLine)
         except Exception as e:
