@@ -1241,6 +1241,7 @@ function Vandenberg_FirstEntry()
     local KarkianBaby kb;
     local DataLinkTrigger dlt;
     local FlagTrigger ft;
+    local #var(Mover) door;
 
     switch(dxr.localURL)
     {
@@ -1315,6 +1316,11 @@ function Vandenberg_FirstEntry()
             if (dlt.name=='DataLinkTrigger2'){
                 dlt.Tag = 'schematic2';
             }
+        }
+
+        //This door can get stuck if a spiderbot gets jammed into the little bot-bay
+        foreach AllActors(class'#var(Mover)', door, 'Releasebots') {
+            door.MoverEncroachType=ME_IgnoreWhenEncroach;
         }
         break;
 
