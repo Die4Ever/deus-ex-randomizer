@@ -18,7 +18,16 @@ struct BingoSpot {
     var travel int max;
 };
 var travel BingoSpot bingo[25];
-var transient config BingoSpot bingoexport[25];
+var travel int bingo_missions_masks[25];// can't be inside the travel struct because that breaks compatibility with old saves
+
+struct BingoSpotExport {
+    var string event;
+    var string desc;
+    var int progress;
+    var int max;
+    var int active;// if the current mission is active, 0 is no, 1 is maybe, 2 is active
+};
+var transient config BingoSpotExport bingoexport[25];
 
 var travel name readTexts[50];
 
@@ -76,20 +85,31 @@ simulated function bool MarkRead(name textTag) {
     return false;
 }
 
-simulated function GetBingoSpot(int x, int y, out string event, out string desc, out int progress, out int max)
+
+simulated function int GetBingoSpot(int x, int y, out string event, out string desc, out int progress, out int max)
 {
+    local DXRando dxr;
+    local int currentMission;
+
     event = bingo[x*5+y].event;
     desc = bingo[x*5+y].desc;
     progress = bingo[x*5+y].progress;
     max = bingo[x*5+y].max;
+
+    foreach AllActors(class'DXRando', dxr) { break; }
+    if(dxr == None) return 1;// 1==maybe
+
+    currentMission = dxr.dxInfo.missionNumber;
+    return class'DXREvents'.static.BingoActiveMission(currentMission, bingo_missions_masks[x*5+y]);
 }
 
-simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max)
+simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max, int missions)
 {
     bingo[x*5+y].event = event;
     bingo[x*5+y].desc = desc;
     bingo[x*5+y].progress = progress;
     bingo[x*5+y].max = max;
+    bingo_missions_masks[x*5+y] = missions;
 }
 
 simulated function bool IncrementBingoProgress(string event)
@@ -149,13 +169,22 @@ simulated function int NumberOfBingos()
 
 simulated function ExportBingoState()
 {
-    local int i;
+    local DXRando dxr;
+    local int currentMission, i;
+
+    foreach AllActors(class'DXRando', dxr) {
+        currentMission = dxr.dxInfo.missionNumber;
+        break;
+    }
+
     for(i=0; i<ArrayCount(bingo); i++) {
         bingoexport[i].event = bingo[i].event;
         bingoexport[i].desc = bingo[i].desc;
         bingoexport[i].progress = bingo[i].progress;
         bingoexport[i].max = bingo[i].max;
+        bingoexport[i].active = class'DXREvents'.static.BingoActiveMission(currentMission, bingo_missions_masks[i]);
     }
+
     SaveConfig();
 }
 

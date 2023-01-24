@@ -18,6 +18,8 @@ var int ticker;
 var bool anon;
 var bool offline;
 
+var bool effectsDisabled;
+
 var int reconnectTimer;
 const ReconDefault = 5;
 
@@ -29,6 +31,11 @@ const NotAvail = 2;
 const TempFail = 3;
 
 const CrowdControlPort = 43384;
+
+const cVISIBLE=0x80;
+const cNOTVISIBLE=0x81;
+const cSELECTABLE=0x82;
+const cNOTSELECTABLE=0x83;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +49,7 @@ function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous, bo
     ccModule = cc;
     crowd_control_addr = addr;
     anon = anonymous;
+    effectsDisabled=False;
 
     //Initialize the effect class
     ccEffects = Spawn(class'DXRCrowdControlEffects');
@@ -67,6 +75,10 @@ function Timer() {
 
     ticker++;
     if (IsConnected()) {
+        if (effectsDisabled==False){
+            DisableEffectsByMod();
+            effectsDisabled=True;
+        }
         ManualReceiveBinary();
     }
 
@@ -89,7 +101,23 @@ function Timer() {
     if(offline) {
         RandomOfflineEffects();
     }
+
+    if (!offline && IsConnected()) {
+        ccEffects.HandleEffectSelectability();
+    }
+
 }
+
+function DisableEffectsByMod()
+{
+    sendEffectVisibility("lamthrower",#defined(vanilla));
+    sendEffectVisibility("dmg_double",#defined(vanilla));
+    sendEffectVisibility("dmg_half",#defined(vanilla));
+    sendEffectVisibility("flipped",#defined(vanilla));
+    sendEffectVisibility("limp_neck",#defined(vanilla));
+    sendEffectVisibility("barrel_roll",#defined(vanilla));
+}
+
 
 function int RandomOfflineEffects() {
     local string param[5];
@@ -263,6 +291,51 @@ function bool isCrowdControl(string msg) {
     return True;
 }
 
+function sendEffectVisibility(string effect, bool visible){
+    local string resp;
+    local byte respbyte[255];
+    local int i;
+    local int status;
+
+    if (visible){
+        status=cVISIBLE;
+    } else {
+        status=cNOTVISIBLE;
+    }
+
+    resp = "{\"id\":0,\"type\":1,\"status\":"$status$",\"code\":\""$effect$"\"}";
+
+    for (i=0;i<Len(resp);i++){
+        respbyte[i]=Asc(Mid(resp,i,1));
+    }
+
+    //PlayerMessage(resp);
+    SendBinary(Len(resp)+1,respbyte);
+
+}
+
+function sendEffectSelectability(string effect, bool selectable){
+    local string resp;
+    local byte respbyte[255];
+    local int i;
+    local int status;
+
+    if (selectable){
+        status=cSELECTABLE;
+    } else {
+        status=cNOTSELECTABLE;
+    }
+
+    resp = "{\"id\":0,\"type\":1,\"status\":"$status$",\"code\":\""$effect$"\"}";
+
+    for (i=0;i<Len(resp);i++){
+        respbyte[i]=Asc(Mid(resp,i,1));
+    }
+
+    //PlayerMessage(resp);
+    SendBinary(Len(resp)+1,respbyte);
+}
+
 function sendReply(int id, int status) {
     local string resp;
     local byte respbyte[255];
@@ -352,6 +425,7 @@ event Closed(){
     PlayerMessage("Crowd Control connection closed");
     ListenPort = 0;
     reconnectTimer = ReconDefault;
+    effectsDisabled=False;
 }
 
 event Destroyed(){

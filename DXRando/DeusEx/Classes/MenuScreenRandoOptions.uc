@@ -13,9 +13,9 @@ event InitWindow()
 
 #ifdef vanilla
     choices[i++]=Class'MenuChoice_EnergyDisplay';
-    choices[i++]=Class'MenuChoice_PasswordAutofill';
     choices[i++]=Class'MenuChoice_ShowKeys';
 #endif
+    choices[i++]=Class'MenuChoice_PasswordAutofill';
     choices[i++]=Class'MenuChoice_BrightnessBoost';
     choices[i++]=Class'MenuChoice_JoinDiscord';
     choices[i++]=Class'MenuChoice_ReleasePage';  //This should probably always be the bottom option

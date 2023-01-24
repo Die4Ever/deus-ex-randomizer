@@ -15,10 +15,10 @@ function UpdateRepairBotWindows()
     dxrbot = DXRRepairBot(repairBot);
 #endif
 
-#ifdef gmdx
-    Super.UpdateRepairBotWindows();
-    return;
-#endif
+    if(#defined(gmdx) || #defined(vmd)) {
+        Super.UpdateRepairBotWindows();
+        return;
+    }
 
     if (repairBot != None)
     {
@@ -31,6 +31,7 @@ function UpdateRepairBotWindows()
             } else {
                 barLabel = ReadyLabel;
             }
+            log("repairbot barLabel: "$barLabel);
             winRepairBotBarText.SetText(barLabel);
         }
         else
@@ -65,10 +66,10 @@ function UpdateInfoText()
     dxrbot = DXRRepairBot(repairBot);
 #endif
 
-#ifdef gmdx
-    Super.UpdateInfoText();
-    return;
-#endif
+    if(#defined(gmdx) || #defined(vmd)) {
+        Super.UpdateInfoText();
+        return;
+    }
 
     if (repairBot != None)
     {
@@ -89,10 +90,10 @@ function UpdateInfoText()
 
 event Tick(float deltaSeconds)
 {
-#ifdef gmdx
-    Super.Tick(deltaSeconds);
-    return;
-#endif
+    if(#defined(gmdx) || #defined(vmd)) {
+        Super.Tick(deltaSeconds);
+        return;
+    }
 
     if (lastRefresh >= refreshInterval)
     {

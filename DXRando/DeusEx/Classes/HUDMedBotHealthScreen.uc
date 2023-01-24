@@ -21,10 +21,10 @@ function UpdateMedBotDisplay()
     dxrbot = DXRMedicalBot(medBot);
 #endif
 
-#ifdef gmdx
-    Super.UpdateMedBotDisplay();
-    return;
-#endif
+    if(#defined(gmdx) || #defined(vmd)) {
+        Super.UpdateMedBotDisplay();
+        return;
+    }
 
     if (medBot != None)
     {
@@ -77,10 +77,10 @@ function UpdateMedBotDisplay()
 
 function Tick(float deltaTime)
 {
-#ifdef gmdx
-    Super.Tick(deltaTime);
-    return;
-#endif
+    if(#defined(gmdx) || #defined(vmd)) {
+        Super.Tick(deltaTime);
+        return;
+    }
 
     UpdateMedBotDisplay();
     UpdateRegionWindows();

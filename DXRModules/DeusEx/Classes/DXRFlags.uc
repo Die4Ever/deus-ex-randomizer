@@ -586,17 +586,21 @@ static function string GameModeName(int gamemode)
 
 simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDifficulty)
 {
-    local string str;
+    local string str,str2;
 
-    str = "Deus Ex Randomizer " $ VersionString() $ " seed: " $ seed $ ", difficulty: " $ TrimTrailingZeros(CombatDifficulty)
+    str = "Deus Ex Randomizer " $ VersionString() $ ", Seed: " $ seed;
+    str2= "Difficulty: " $ TrimTrailingZeros(CombatDifficulty)
 #ifdef injections
             $ ", New Game+ Loops: "$newgameplus_loops
 #endif
-            $ ", flags: " $ FlagsHash();
+            $ ", Flags: " $ FlagsHash();
 
     info(str);
-    if(p != None)
+    info(str2);
+    if(p != None){
         p.ClientMessage(str);
+        p.ClientMessage(str2);
+    }
 }
 
 simulated function LoadFlags()

@@ -1,9 +1,10 @@
 class BalanceHacking injects ComputerScreenHack;
 
 var PersonaHeaderTextWindow   hackBackground;
-var PersonaHeaderTextWindow   energyMeter;
+var TextWindow   energyMeter;
 
 var Color colWhite;
+var int energyMeterTimer;
 
 function Tick(float deltaTime)
 {
@@ -44,11 +45,32 @@ function CreateHackMessageWindow()
 	winHackMessage.SetSize(168, 47);
 	winHackMessage.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 
-	energyMeter = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
+	energyMeter = TextWindow(NewChild(Class'TextWindow'));
+    energyMeter.SetFont(Font'DeusExUI.FontMenuHeaders');
+    energyMeter.SetTextMargins(0, 0);
 	energyMeter.SetPos(22, 28);
 	energyMeter.SetSize(168, 47);
 	energyMeter.SetTextAlignments(HALIGN_Center, VALIGN_Center);
 
+    UpdateEnergyMeter();
+    if(energyMeterTimer == -1)
+        energyMeterTimer = AddTimer(0.1, true, 0, 'UpdateEnergyMeterTimer');
+}
+
+function UpdateEnergyMeterTimer(int timerID, int invocations, int clientData)
+{
+    UpdateEnergyMeter();
+}
+
+event DestroyWindow()
+{
+    Super.DestroyWindow();
+
+    if (energyMeterTimer != -1)
+    {
+        RemoveTimer(energyMeterTimer);
+        energyMeterTimer = -1;
+    }
 }
 
 function UpdateEnergyMeter()
@@ -108,4 +130,5 @@ function SetHackMessage(String newHackMessage)
 defaultproperties
 {
     colWhite=(R=255,G=255,B=255)
+    energyMeterTimer=-1
 }

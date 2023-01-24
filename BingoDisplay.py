@@ -65,7 +65,7 @@ class Bingo:
                 self.tkBoardText[x][y].set("("+str(x)+","+str(y)+")")
                 self.tkBoard[x][y]=Button(self.win,textvariable=self.tkBoardText[x][y],image=self.pixel,compound="c",width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font,fg='white',disabledforeground="white",bd=BUTTON_BORDER_WIDTH)
                 self.tkBoard[x][y]["state"]='disabled'
-                self.tkBoard[x][y].countdown=0
+                self.tkBoard[x][y].countdown=None
                 self.tkBoard[x][y].grid(column=x,row=y)
 
 
@@ -74,27 +74,36 @@ class Bingo:
         self.win.title(WINDOW_TITLE+" "+translateMod(self.selectedMod))
         for x in range(5):
             for y in range(5):
-                boardEntry = self.board[x][y]
-                if boardEntry!=None and self.tkBoard[x][y]!=None:
-                    desc = boardEntry["desc"]
-                    if boardEntry["max"]>1:
-                        desc=desc+"\n("+str(boardEntry["progress"])+"/"+str(boardEntry["max"])+")"
-
-                    self.tkBoardText[x][y].set(desc)
-                    if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
-                        if self.tkBoard[x][y].cget('bg')=="black":
-                            self.tkBoard[x][y].countdown=NEWLY_COMPLETED_DISPLAY_TIME
-                            self.tkBoard[x][y].config(bg=BRIGHT_GREEN)
-                        else:
-                            if(self.tkBoard[x][y].countdown>0):
-                                self.tkBoard[x][y].countdown-=1
-                                self.tkBoard[x][y].config(bg=BRIGHT_GREEN)
-                            else:
-                                self.tkBoard[x][y].config(bg=MAGIC_GREEN)
-                    else:
-                        self.tkBoard[x][y].config(bg="black")
+                self.drawTile(self.tkBoard[x][y], self.tkBoardText[x][y], self.board[x][y])
 
         self.win.update()
+
+    def drawTile(self, tkTile, tkText, boardEntry):
+        if boardEntry is None or tkTile is None:
+            return
+
+        desc = boardEntry["desc"]
+        if boardEntry["max"]>1:
+            desc=desc+"\n("+str(boardEntry["progress"])+"/"+str(boardEntry["max"])+")"
+
+        tkText.set(desc)
+        isActive = boardEntry.get('active', 1)
+        if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
+            if tkTile.countdown is None:
+                tkTile.countdown=NEWLY_COMPLETED_DISPLAY_TIME
+                tkTile.config(bg=BRIGHT_GREEN)
+            elif(tkTile.countdown>0):
+                tkTile.countdown-=1
+                tkTile.config(bg=BRIGHT_GREEN)
+            else:
+                tkTile.config(bg=MAGIC_GREEN)
+        elif isActive == 2:# 2 is for active
+            tkTile.config(bg="#505050")
+        elif isActive == 1:# 1 is for maybe
+            tkTile.config(bg="#303030")
+        else:
+            tkTile.config(bg="#000000", fg="#c8c8c8") # text color adjustment isn't working
+
 
     def printBoard(self):
         for x in range(5):
@@ -125,18 +134,20 @@ class Bingo:
     def readBingoFile(self):
         allLines = dict()
         try:
-            bingoFile = open(self.targetFile);
+            with open(self.targetFile) as file:
+                bingoFile = file.readlines()
+
             for line in bingoFile:
                 if BINGO_MOD_LINE_DETECT in line:
                     currentMod=line.strip()
                     allLines[currentMod]=[]
-                if line.startswith(BINGO_VARIABLE_CONFIG_NAME):
+                elif line.startswith(BINGO_VARIABLE_CONFIG_NAME):
                     bingoLine = line.strip()
                     allLines[currentMod].append(bingoLine)
-                    #self.parseBingoLine(bingoLine)
         except Exception as e:
+            print(e)
             pass
-        
+
         mods=list(allLines.keys())
 
         if self.selectedMod not in mods:
@@ -181,7 +192,7 @@ def translateMod(modName):
         return "[HX Randomizer]"
     else:
         return modName
-    
+
 
 #####################################################################################
 

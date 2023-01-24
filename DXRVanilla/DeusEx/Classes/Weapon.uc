@@ -61,7 +61,7 @@ simulated function TweenDown()
 function PlaySelect()
 {
     PlayAnim('Select',1.0*AnimSpeed(2),0.0);
-    Owner.PlaySound(SelectSound, SLOT_Misc, Pawn(Owner).SoundDampening);	
+    Owner.PlaySound(SelectSound, SLOT_Misc, Pawn(Owner).SoundDampening);
 }
 
 simulated function PlaySelectiveFiring()
@@ -104,7 +104,7 @@ simulated function PlaySelectiveFiring()
     }
 }
 
-function int GetDamage()
+function float GetDamage()
 {
     local float mult;
     // AugCombat increases our damage if hand to hand
@@ -121,6 +121,10 @@ function int GetDamage()
     mult += -2.0 * GetWeaponSkill();
 
     if( ! bInstantHit && class != class'WeaponHideAGun' )// PS40 copies its damage to the projectile...
+        // ProjectileClass is the currently loaded ammo
+        if( class<DeusExProjectile>(ProjectileClass).default.bExplodes ) {
+            mult *= 2.0 / float(GetNumHits());
+        }
         return ProjectileClass.default.Damage * mult;
 
     return HitDamage * mult;
@@ -128,6 +132,12 @@ function int GetDamage()
 
 function int GetNumHits()
 {
+    if( ProjectileClass == class'RocketFixTicks' )
+        return 4;
+    if( ProjectileClass == class'HECannisterFixTicks' )
+        return 3;
+    if( class<DeusExProjectile>(ProjectileClass).default.bExplodes )
+        return 5;
     if( bInstantHit && AreaOfEffect == AOE_Cone)
         return 5;
     if( ! bInstantHit && AreaOfEffect == AOE_Cone)
@@ -174,14 +184,14 @@ simulated function bool UpdateInfo(Object winObject)
     winInfo.AddLine();
 
     // Create the ammo buttons.  Start with the AmmoNames[] array,
-    // which is used for weapons that can use more than one 
+    // which is used for weapons that can use more than one
     // type of ammo.
 
     if (AmmoNames[0] != None)
     {
         for (i=0; i<ArrayCount(AmmoNames); i++)
         {
-            if (AmmoNames[i] != None) 
+            if (AmmoNames[i] != None)
             {
                 // Check to make sure the player has this ammo type
                 // *and* that the ammo isn't empty
@@ -211,10 +221,10 @@ simulated function bool UpdateInfo(Object winObject)
     }
     else
     {
-        // Now peer at the AmmoName variable, but only if the AmmoNames[] 
+        // Now peer at the AmmoName variable, but only if the AmmoNames[]
         // array is empty
         if ((AmmoName != class'AmmoNone') && (!bHandToHand) && (ReloadCount != 0))
-        {	
+        {
             weaponAmmo = Ammo(P.FindInventoryType(AmmoName));
 
             if (weaponAmmo != None)
@@ -237,7 +247,7 @@ simulated function bool UpdateInfo(Object winObject)
 
     // Only draw another line if we actually displayed ammo.
     if (bAmmoAvailable)
-        winInfo.AddLine();	
+        winInfo.AddLine();
 
     // Ammo loaded
     if ((AmmoName != class'AmmoNone') && (!bHandToHand) && (ReloadCount != 0))

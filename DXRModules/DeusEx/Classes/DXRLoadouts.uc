@@ -382,6 +382,8 @@ function bool ban(DeusExPlayer player, Inventory item)
         }
         return true;
     }
+
+    return false;
 }
 
 function AdjustWeapon(DeusExWeapon w)

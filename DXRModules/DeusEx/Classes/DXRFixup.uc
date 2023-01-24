@@ -40,7 +40,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(2,1,5,4) ) {
+    if( ConfigOlderThan(2,2,2,2) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -117,6 +117,7 @@ function CheckConfig()
         add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
         i++;
 
+#ifdef vanilla
         add_datacubes[i].map = "15_AREA51_BUNKER";
         add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
         i++;
@@ -124,6 +125,7 @@ function CheckConfig()
         add_datacubes[i].map = "15_AREA51_BUNKER";
         add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
         i++;
+#endif
 
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
         add_datacubes[i].text = "My code is 6786";
@@ -218,6 +220,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         FixLogTimeout(p);
 
     FixAmmoShurikenName();
+    FixInventory(p);
 }
 
 function PreTravel()
@@ -513,6 +516,26 @@ simulated function FixLogTimeout(#var(PlayerPawn) p)
 {
     if( p.GetLogTimeout() - 1 <3 ) {
         p.SetLogTimeout(10);
+    }
+}
+
+simulated function FixInventory(#var(PlayerPawn) p)
+{
+    local Inventory item, nextItem;
+    local DXRLoadouts loadouts;
+
+    loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+
+    for(item=p.Inventory; item!=None; item=nextItem) {
+        nextItem = item.Inventory;// save this in case we're deleting an item
+
+        if(loadouts != None && loadouts.ban(p, item)) {
+            item.Destroy();
+            continue;
+        }
+        item.BecomeItem();
+        item.SetLocation(p.Location);
+        item.SetBase(p);
     }
 }
 
@@ -978,7 +1001,7 @@ function UpdateGoalWithRandoInfo(name goalName)
         if (randoPos==-1){
             switch(goalName){
                 case 'InvestigateMaggieChow':
-                    goalText = goalText$"|nRando: The sword may not be in Maggie's apartment.";
+                    goalText = goalText$"|nRando: The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.";
                     break;
                 case 'FindHarleyFilben':
                     if(dxr.flags.settings.goals > 0)
@@ -1218,6 +1241,7 @@ function Vandenberg_FirstEntry()
     local KarkianBaby kb;
     local DataLinkTrigger dlt;
     local FlagTrigger ft;
+    local #var(Mover) door;
 
     switch(dxr.localURL)
     {
@@ -1292,6 +1316,11 @@ function Vandenberg_FirstEntry()
             if (dlt.name=='DataLinkTrigger2'){
                 dlt.Tag = 'schematic2';
             }
+        }
+
+        //This door can get stuck if a spiderbot gets jammed into the little bot-bay
+        foreach AllActors(class'#var(Mover)', door, 'Releasebots') {
+            door.MoverEncroachType=ME_IgnoreWhenEncroach;
         }
         break;
 
@@ -1958,6 +1987,15 @@ function Area51_FirstEntry()
             d.bHighlight = true;
             d.bFrobbable = true;
         }
+
+        //Change break room security computer password so it isn't pre-known
+        //This code isn't written anywhere, so you shouldn't have knowledge of it
+        foreach AllActors(class'ComputerSecurity',c){
+            if (c.UserList[0].UserName=="SECURITY" && c.UserList[0].Password=="SECURITY"){
+                c.UserList[0].Password="TinFoilHat";
+            }
+        }
+
         break;
 
     case "15_AREA51_PAGE":
@@ -1983,6 +2021,8 @@ function Area51_FirstEntry()
 function Area51_AnyEntry()
 {
     local Gray g;
+    local ElectricityEmitter ee;
+    local #var(Mover) d;
 
     switch(dxr.localURL)
     {
@@ -1994,8 +2034,23 @@ function Area51_AnyEntry()
         }
 #endif
         break;
+
     case "15_AREA51_PAGE":
         SetTimer(1, True);
+
+        foreach AllActors(class'ElectricityEmitter', ee, 'emitter_relay_room') {
+            if(ee.DamageAmount >= 30) {
+                ee.DamageAmount /= 2;
+                ee.damageTime *= 2.0;
+                ee.randomAngle /= 2.0;
+            }
+        }
+
+        if((!#defined(revision)) && (!#defined(gmdx))) {
+            foreach AllActors(class'#var(Mover)', d, 'Page_button') {
+                d.SetLocation(vect(6152.000000, -6512.000000, -5136.000000)); // original Z was -5134
+            }
+        }
         break;
     }
 }
