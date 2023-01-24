@@ -1854,12 +1854,6 @@ function NYC_08_AnyEntry()
 {
     local StantonDowd s;
 
-    if( dxr.localURL != "08_NYC_BAR" ) {
-#ifdef injections
-        player().ChangeSong("NYCStreets2_Music.NYCStreets2_Music", 0);
-#endif
-    }
-
     switch(dxr.localURL) {
     case "08_NYC_STREET":
         SetTimer(1.0, True);
