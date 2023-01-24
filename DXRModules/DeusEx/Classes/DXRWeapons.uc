@@ -85,10 +85,6 @@ simulated function RandoProjectile(DeusExWeapon w, out class<Projectile> p, out 
         p.default.Damage = 1.15 * new_damage;
         break;
 
-    case class'#var(prefix)Fireball':
-        p.default.Damage = new_damage;
-        break;
-
     case class'#var(prefix)Rocket':
         // fix both just in case a normal Rocket is fired somehow?
         p.default.Damage = new_damage;
@@ -110,6 +106,8 @@ simulated function RandoProjectile(DeusExWeapon w, out class<Projectile> p, out 
         break;
 
     case class'#var(prefix)Shuriken':
+    case class'#var(prefix)RocketWP':
+    case class'#var(prefix)Fireball':
         p.default.Damage = new_damage;
         break;
 
