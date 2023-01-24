@@ -472,7 +472,7 @@ function ConEvent AddSetFlag(Conversation c, ConEvent prev, string after_label, 
     f = new(c) class'ConFlagRef';
     f.flagName = StringToName(flag_name);
     f.value = value;
-    f.expiration = dxr.dxInfo.missionNumber;
+    f.expiration = dxr.dxInfo.missionNumber + 1;
     ef.flagRef = f;
 
     AddConEvent(c, prev, ef);
