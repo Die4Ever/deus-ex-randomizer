@@ -81,10 +81,8 @@ function ReplaceKeypad(#var(prefix)Keypad a)
         return;
 
     n = DXRKeypad(SpawnReplacement(a, class'DXRKeypad'));
-    dxr.player.ClientMessage("Replacing keypad "$a.name);
     if(n==None)
         return;
-    dxr.player.ClientMessage("Spawned a replacement");
     n.validCode = a.validCode;
     n.successSound = a.successSound; //I doubt this is ever changed from default, but let's be safe
     n.failureSound = a.failureSound; //I doubt this is ever changed from default, but let's be safe
