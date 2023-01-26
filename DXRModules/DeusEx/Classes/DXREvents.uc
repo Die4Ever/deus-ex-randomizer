@@ -1423,7 +1423,7 @@ defaultproperties
 	//bingo_options()=(event="Billy_Dead",desc="Kill Billy",max=1)
 	//bingo_options()=(event="MarketKid_Dead",desc="Kill Louis Pan",max=1)
 	bingo_options(19)=(event="aimee_Dead",desc="Kill Aimee",max=1,missions=1024)
-	bingo_options(20)=(event="WaltonSimons_Dead",desc="Kill Walton Simons",max=1,,missions=49152)
+	bingo_options(20)=(event="WaltonSimons_Dead",desc="Kill Walton Simons",max=1,missions=49152)
 	bingo_options(21)=(event="JoeGreene_Dead",desc="Kill Joe Greene",max=1,missions=276)
     bingo_options(22)=(event="GuntherFreed",desc="Free Gunther from jail",max=1,missions=2)
     bingo_options(23)=(event="BathroomBarks_Played",desc="Embarrass UNATCO",max=1,missions=2)
