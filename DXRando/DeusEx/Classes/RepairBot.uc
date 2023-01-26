@@ -134,6 +134,16 @@ simulated function Float GetRefreshTimeRemaining()
     return timeRemaining;
 }
 
+function Explode(vector HitLocation)
+{
+    local Pawn oldInstigator;
+
+    oldInstigator = Instigator;
+    Instigator = self;
+    Super.Explode(HitLocation);
+    Instigator = oldInstigator;
+}
+
 defaultproperties
 {
     bDetectable=false
