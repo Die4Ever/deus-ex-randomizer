@@ -109,7 +109,7 @@ function CheckConfig()
         door_fixes[i].tag = 'ShipBreech';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 55;
-        door_fixes[i].doorStrength = 0.9;
+        door_fixes[i].doorStrength = 0.5;
         door_fixes[i].bPickable = false;
         door_fixes[i].lockStrength = 1;
         door_fixes[i].bHighlight = true;
