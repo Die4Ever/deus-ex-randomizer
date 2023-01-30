@@ -28,12 +28,12 @@ var int old_pawns;// used for NYC_04_CheckPaulRaid()
 var int storedWeldCount;// ship weld points
 var int storedReactorCount;// Area 51 goal
 
-struct ZoneBrightness
+struct ZoneBrightnessData
 {
     var name zonename;
-    var byte brightness;
+    var byte brightness, saturation, hue;
 };
-var ZoneBrightness zone_brightness[32];
+var ZoneBrightnessData zone_brightness[32];
 
 
 function CheckConfig()
@@ -173,6 +173,7 @@ function PreFirstEntry()
     SetSeed( "DXRFixup PreFirstEntry" );
 
     //Save default brightnesses
+    SaveDefaultZoneBrightness(Level);
     foreach AllActors(class'ZoneInfo',Z){
         SaveDefaultZoneBrightness(Z);
     }
@@ -544,13 +545,25 @@ function IncreaseBrightness(int brightness)
 {
     local ZoneInfo z;
 
-    Level.AmbientBrightness = Clamp( int(GetDefaultZoneBrightness(Level)) + brightness, 0, 255 );
-    //Level.Brightness += float(brightness)/100.0;
+    IncreaseZoneBrightness(brightness, Level);
     foreach AllActors(class'ZoneInfo', z) {
         if( z == Level ) continue;
-        z.AmbientBrightness = Clamp( int(GetDefaultZoneBrightness(z)) + brightness, 0, 255 );
+        IncreaseZoneBrightness(brightness, z);
     }
     player().ConsoleCommand("FLUSH"); //Clears the texture cache, which allows the lighting to rerender
+}
+
+function IncreaseZoneBrightness(int brightness, ZoneInfo z)
+{
+    local ZoneBrightnessData zb;
+    local float sat_boost;
+
+    zb = GetDefaultZoneBrightness(z);
+    z.AmbientBrightness = Clamp( int(zb.brightness) + brightness, 0, 255 );
+    sat_boost = float(brightness) / 2;
+    z.AmbientSaturation = Clamp( int(zb.saturation) + sat_boost, 0, 255);
+    if(zb.brightness == 0)
+        z.AmbientSaturation = 255;
 }
 
 static function AdjustBrightness(DeusExPlayer a, int brightness)
@@ -2205,24 +2218,26 @@ function Trigger(Actor Other, Pawn Instigator)
     }
 }
 
-function byte GetDefaultZoneBrightness(ZoneInfo z)
+function ZoneBrightnessData GetDefaultZoneBrightness(ZoneInfo z)
 {
+    local ZoneBrightnessData zb;
     local int i;
     for(i=0; i<ArrayCount(zone_brightness); i++) {
         if( z.name == zone_brightness[i].zonename )
-            return zone_brightness[i].brightness;
+            return zone_brightness[i];
     }
-    return 0;
+    return zb;
 }
 
 function SaveDefaultZoneBrightness(ZoneInfo z)
 {
     local int i;
-    if( z.AmbientBrightness ~= 0 ) return;
     for(i=0; i<ArrayCount(zone_brightness); i++) {
         if( zone_brightness[i].zonename == '' || z.name == zone_brightness[i].zonename ) {
             zone_brightness[i].zonename = z.name;
             zone_brightness[i].brightness = z.AmbientBrightness;
+            zone_brightness[i].saturation = z.AmbientSaturation;
+            zone_brightness[i].hue = z.AmbientHue;
             return;
         }
     }
