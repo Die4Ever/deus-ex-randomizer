@@ -1,5 +1,9 @@
 class DXRContinuousMusic extends DXRBase;
 
+#ifdef vanilla
+#exec OBJ LOAD FILE=NYCStreets2_Music
+#endif
+
 var #var(PlayerPawn) p;
 var config Music PrevSong;
 var config byte PrevMusicMode;

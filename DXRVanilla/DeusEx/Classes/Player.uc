@@ -1,8 +1,6 @@
 class DXRPlayer injects Human;
 //class DXRPlayer shims DeusExPlayer;
 
-#exec OBJ LOAD FILE=NYCStreets2_Music
-
 var DXRando dxr;
 var DXRLoadouts loadout;
 var bool bOnLadder;
