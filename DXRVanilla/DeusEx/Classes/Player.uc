@@ -551,11 +551,14 @@ function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusic
             // this is where we've determined we can just leave the current song playing
             // note this means that the SongSection variable will not progress automatically?
             // we may actually want to favor the logic used for NYCStreets2_Music (no return, slight cut in music), so that music can resume correctly after combat/dialog?
-            SongSection = PrevSongSection;
-            return;
+            /*SongSection = PrevSongSection;
+            return;*/
+            // simpler, less error prone version of continuous music
+            NewSection = PrevSongSection;
         }
     }
 
+    musicMode = MUS_Ambient;
     _ClientSetMusic(LevelSong, NewSection, NewCdTrack, NewTransition);
 }
 
