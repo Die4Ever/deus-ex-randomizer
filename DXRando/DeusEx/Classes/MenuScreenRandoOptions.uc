@@ -11,11 +11,12 @@ event InitWindow()
 
     choices[i++]=Class'MenuChoice_Telemetry';
 
-#ifdef vanilla
-    choices[i++]=Class'MenuChoice_EnergyDisplay';
-    choices[i++]=Class'MenuChoice_ShowKeys';
-#endif
-    choices[i++]=Class'MenuChoice_ContinuousMusic';
+    if(#defined(vanilla)) {
+        choices[i++]=Class'MenuChoice_EnergyDisplay';
+        choices[i++]=Class'MenuChoice_ShowKeys';
+    }
+    if(!#defined(revision))
+        choices[i++]=Class'MenuChoice_ContinuousMusic';
     choices[i++]=Class'MenuChoice_PasswordAutofill';
     choices[i++]=Class'MenuChoice_BrightnessBoost';
     choices[i++]=Class'MenuChoice_JoinDiscord';
