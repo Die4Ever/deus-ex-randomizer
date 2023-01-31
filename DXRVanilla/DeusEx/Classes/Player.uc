@@ -10,11 +10,7 @@ var transient string nextMap;
 
 var Music LevelSong;
 var byte LevelSongSection;
-var config Music PrevSong;
-var config EMusicMode PrevMusicMode;
-var config byte PrevSongSection;
-var config byte PrevSavedSection;
-var config byte CombatSection;// used for NYCStreets2_Music
+var byte CombatSection;// used for NYCStreets2_Music
 
 var Rotator ShakeRotator;
 
@@ -511,83 +507,15 @@ exec function AllPasswords()
 function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
     Super.ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
-    RememberMusic();
 }
 
 // only called by GameInfo::PostLogin()
 function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
-    local int setting;
-    local class<MenuChoice_ContinuousMusic> c;
+    local DXRContinuousMusic cm;
     GetDXR();
-
-    // copy to LevelSong in order to support changing songs, since Level.Song is const
-    LevelSong = Level.Song;
-    LevelSongSection = Level.SongSection;
-    CombatSection = 3;
-    if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" ) {
-        LevelSong = Music'NYCStreets2_Music';
-        CombatSection = 26;// idk why but section 3 takes time to start playing the song
-    }
-
-    setting = int(ConsoleCommand("get #var(package).MenuChoice_ContinuousMusic continuous_music"));
-    c = class'MenuChoice_ContinuousMusic';
-    log("ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$") "$setting@PrevSong@LevelSong@PrevMusicMode@LevelSongSection);
-
-    // ignore complicated logic for title screen and cutscenes or if disabled, gives us a chance to reset the values stored in configs
-    if( dxr.dxInfo.missionNumber <= 0 || dxr.dxInfo.missionNumber > 50 || setting == c.default.disabled ) {
-        _ClientSetMusic(LevelSong, NewSection, NewCdTrack, NewTransition);
-        return;
-    }
-
-    // ensure musicMode defaults to ambient, to fix combat music re-entry
-    musicMode = MUS_Ambient;
-
-    // now time for fancy stuff
-    if(PrevSong == LevelSong) {
-        musicMode = PrevMusicMode;
-        savedSection = PrevSavedSection;
-        SongSection = PrevSongSection;
-        NewSection = PrevSongSection;
-        if(setting==c.default.simple) {
-            // simpler version of continuous music
-            NewSection = PrevSongSection;
-            NewTransition = MTRAN_FastFade;// default is MTRAN_Fade, quicker fade here when it's the same song
-        } else { //if(setting==c.default.advanced) {
-            // this is where we've determined we can just leave the current song playing
-            // MTRAN_None is basically the same as return here, except the Song variable gets set instead of being None, seems like less of a hack to me
-            NewTransition = MTRAN_None;
-        }
-    } else if(PrevMusicMode == MUS_Combat) {
-        NewTransition = MTRAN_SlowFade;
-    } else {
-        // does the default MTRAN_Fade even work?
-        NewTransition = MTRAN_FastFade;
-    }
-
-    // fix NYCStreets2_Music because reasons
-    if(NewSection == 3) {
-        NewSection = CombatSection;
-    }
-
-    // let us change songs immediately so we go straight to combat music if we're in combat
-    musicCheckTimer = 10;
-    musicChangeTimer = 10;
-
-    _ClientSetMusic(LevelSong, NewSection, NewCdTrack, NewTransition);
-}
-
-function RememberMusic()
-{
-    // save us writing to the config file
-    if(PrevSong == LevelSong && PrevMusicMode == musicMode && PrevSongSection == SongSection && PrevSavedSection == savedSection)
-        return;
-
-    PrevSong = LevelSong;
-    PrevMusicMode = musicMode;
-    PrevSongSection = SongSection;
-    PrevSavedSection = savedSection;
-    SaveConfig();
+    cm = DXRContinuousMusic(dxr.LoadModule(class'DXRContinuousMusic'));
+    cm.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
 }
 
 // ----------------------------------------------------------------------
@@ -616,17 +544,13 @@ function UpdateDynamicMusic(float deltaTime)
     // In multiplayer, we can come out of dying.
     if (!PlayerIsClient())
     {
-        if ((musicMode == MUS_Dying) || (musicMode == MUS_Outro)) {
-            RememberMusic();
+        if ((musicMode == MUS_Dying) || (musicMode == MUS_Outro))
             return;
-        }
     }
     else
     {
-        if (musicMode == MUS_Outro) {
-            RememberMusic();
+        if (musicMode == MUS_Outro)
             return;
-        }
     }
 
     musicCheckTimer += deltaTime;
@@ -639,7 +563,6 @@ function UpdateDynamicMusic(float deltaTime)
         if ((info != None) && (info.MissionNumber < 0))
         {
             musicMode = MUS_Outro;
-            RememberMusic();
             return;
         }
 
@@ -733,8 +656,6 @@ function UpdateDynamicMusic(float deltaTime)
             }
         }
     }
-
-    RememberMusic();
 }
 
 //=========== END OF MUSIC STUFF

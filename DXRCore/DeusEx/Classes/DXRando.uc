@@ -110,25 +110,25 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 1,8,1,3) ) {
+    if( VersionOlderThan(config_version, 2,2,4,5) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
 
-#ifdef vanilla
-        vanilla_modules();
-#elseif hx
-        hx_modules();
-#elseif gmdx
-        gmdx_modules();
-#elseif revision
-        revision_modules();
-#elseif vmd
-        vmd_modules();
-#else
-        warning("unknown mod, using default set of modules!");
-        hx_modules();
-#endif
+        if(#defined(vanilla))
+            vanilla_modules();
+        else if(#defined(hx))
+            hx_modules();
+        else if(#defined(gmdx))
+            gmdx_modules();
+        else if(#defined(revision))
+            revision_modules();
+        else if(#defined(vmd))
+            vmd_modules();
+        else {
+            warning("unknown mod, using default set of modules!");
+            hx_modules();
+        }
     }
     Super.CheckConfig();
 }
@@ -165,6 +165,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRHints";
     modules_to_load[i++] = "DXREvents";
     //modules_to_load[i++] = "DXRTestAllMaps";
+    modules_to_load[i++] = "DXRContinuousMusic";
 }
 
 function hx_modules()
@@ -221,6 +222,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXRFashion";
     modules_to_load[i++] = "DXREvents";
+    modules_to_load[i++] = "DXRContinuousMusic";
 }
 
 function revision_modules()
@@ -254,6 +256,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRReplaceActors";
     modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXREvents";
+    modules_to_load[i++] = "DXRContinuousMusic";
 }
 
 function DXRFlags LoadFlagsModule()
