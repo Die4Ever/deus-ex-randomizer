@@ -170,6 +170,7 @@ function _ReduceWeaponAmmo(Weapon w, float mult)
     local int i;
     local float tmult;
     if( w.AmmoName == None || w.PickupAmmoCount <= 0 ) return;
+    if(#var(prefix)Robot(w.Owner) != None) return;
 
     tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, w.AmmoName);
     i = Clamp(float(w.PickupAmmoCount) * tmult, 1, 1000);
@@ -182,6 +183,7 @@ function _ReduceAmmo(Ammo a, float mult)
     local int i;
     local float tmult;
     if( a.AmmoAmount <= 0 || CarriedItem(a) ) return;
+    if(#var(prefix)Robot(a.Owner) != None) return;
 
     tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, a.class.name);
     i = Clamp(float(a.AmmoAmount) * tmult, 1, 1000);
