@@ -134,8 +134,9 @@ function int GetNumHits()
 {
     if( ProjectileClass == class'RocketFixTicks' )
         return 4;
-    if( ProjectileClass == class'HECannisterFixTicks' )
+    if( ProjectileClass == class'HECannisterFixTicks' || ProjectileClass == class'PlasmaBoltFixTicks' )
         return 3;
+
     if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes )
         return 5;
     if( bInstantHit && AreaOfEffect == AOE_Cone)

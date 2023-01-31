@@ -40,7 +40,6 @@ simulated function RandoWeapon(DeusExWeapon w)
     max_weapon_dmg = float(dxr.flags.settings.max_weapon_dmg) / 100;
     new_damage = rngrange(float(w.default.HitDamage), min_weapon_dmg, max_weapon_dmg);
     w.HitDamage = int(new_damage + 0.5);
-    l(w $ " w.HitDamage: "$ w.HitDamage);
     if(w.HitDamage < 2 && w.HitDamage < w.default.HitDamage) {
         info(w $ " w.HitDamage ("$ w.HitDamage $") < 2");
         w.HitDamage = 2;
@@ -57,6 +56,7 @@ simulated function RandoWeapon(DeusExWeapon w)
     min_weapon_shottime = float(dxr.flags.settings.min_weapon_shottime) / 100;
     max_weapon_shottime = float(dxr.flags.settings.max_weapon_shottime) / 100;
     w.ShotTime = rngrange(w.default.ShotTime, min_weapon_shottime, max_weapon_shottime);
+    l(w $ " w.HitDamage: "$ w.HitDamage $ ", ShotTime: " $ w.ShotTime);
     /*f = w.default.ReloadTime * (rngf()+0.5);
     w.ReloadTime = f;
     f = float(w.default.MaxRange) * (rngf()+0.5);
@@ -86,7 +86,15 @@ simulated function RandoProjectile(DeusExWeapon w, out class<Projectile> p, out 
         break;
 
     case class'#var(prefix)PlasmaBolt':
-        p.default.Damage = ratio * 40.0;
+        p.default.Damage = ratio * 9.0;
+        class<#var(prefix)PlasmaBolt>(p).default.mpDamage = ratio * 9.0;
+        w.HitDamage = ratio * 9.0;
+        p = class'PlasmaBoltFixTicks';
+        d = p;
+    case class'PlasmaBoltFixTicks':// no break
+        p.default.Damage = ratio * 9.0;
+        class<PlasmaBoltFixTicks>(p).default.mpDamage = ratio * 9.0;
+        w.HitDamage = ratio * 9.0;
         break;
 
     case class'#var(prefix)Rocket':
