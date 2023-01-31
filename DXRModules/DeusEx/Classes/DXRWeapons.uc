@@ -87,13 +87,17 @@ simulated function RandoProjectile(DeusExWeapon w, out class<Projectile> p, out 
 
     case class'#var(prefix)PlasmaBolt':
         p.default.Damage = ratio * 9.0;
+#ifndef hx
         class<#var(prefix)PlasmaBolt>(p).default.mpDamage = ratio * 9.0;
+#endif
         w.HitDamage = ratio * 9.0;
         p = class'PlasmaBoltFixTicks';
         d = p;
     case class'PlasmaBoltFixTicks':// no break
         p.default.Damage = ratio * 9.0;
+#ifndef hx
         class<PlasmaBoltFixTicks>(p).default.mpDamage = ratio * 9.0;
+#endif
         w.HitDamage = ratio * 9.0;
         break;
 
