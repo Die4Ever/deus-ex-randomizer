@@ -883,6 +883,7 @@ function BalanceJailbreak()
         iclass = loadout.get_starting_item();
     }
 
+    // TODO: maybe random chance to spawn it on the desk or in 1 of the cabinets?
     Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915) );
 }
 

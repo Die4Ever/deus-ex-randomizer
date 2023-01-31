@@ -609,7 +609,7 @@ function int InitGoals(int mission, string map)
         AddGoal("14_OCEANLAB_LAB", "Walton Simons", GOAL_TYPE1, 'WaltonSimons0', PHYS_Falling);
         AddGoalLocation("14_OCEANLAB_LAB", "Vanilla Digger", GOAL_TYPE1 | VANILLA_GOAL, vect(5294.391113,3422.380127,-1775.600830), rot(0,33056,0));
         AddGoalLocation("14_OCEANLAB_LAB", "Construction Sidepath", GOAL_TYPE1, vect(4158,2125,-1775), rot(0,0,0));
-        AddGoalLocation("14_OCEANLAB_LAB", "Crew Module", GOAL_TYPE1, vect(3015,3532,-2233), rot(0,32000,0));
+        AddGoalLocation("14_OCEANLAB_LAB", "Crew Module", GOAL_TYPE1, vect(2380,3532,-2233), rot(0,0,0));
         AddGoalLocation("14_OCEANLAB_LAB", "Greasel Lab", GOAL_TYPE1, vect(2920,454,-1486), rot(0,50000,0));
         AddGoalLocation("14_OCEANLAB_LAB", "Outside Karkian Lab", GOAL_TYPE1, vect(116,-61,-1967), rot(0,50000,0));
         AddGoalLocation("14_VANDENBERG_SUB", "Rooftop", GOAL_TYPE1, vect(2450,2880,776), rot(0,33080,0));
@@ -637,7 +637,7 @@ function int InitGoals(int mission, string map)
         AddGoal("14_OCEANLAB_SILO", "Jock Escape", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
         AddGoalLocation("14_OCEANLAB_SILO", "Vanilla Escape", GOAL_TYPE1 | VANILLA_GOAL, vect(-194.602554, -5680.964355, 1507.895020), rot(0, 0, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Sniper Tower", GOAL_TYPE1, vect(-842.344604, -3827.978027, 2039.993286), rot(0, 0, 0));
-        AddGoalLocation("14_OCEANLAB_SILO", "Water", GOAL_TYPE1, vect(-80,-6667,-1168), rot(0, -13568, 0));
+        AddGoalLocation("14_OCEANLAB_SILO", "Cherry Picker", GOAL_TYPE1, vect(-13.000000, -6790.000000, -542.000000), rot(0, 32768, 0));
         AddGoalLocation("14_OCEANLAB_SILO", "Computer Room", GOAL_TYPE1, vect(-100.721497, -1331.947754, 904.364380), rot(0, 32768, 0));
         return 142;
 
@@ -1322,6 +1322,16 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             }
 
         }
+    } else if (g.name=="Jock Escape") {
+        if(Loc.name=="Cherry Picker") {
+            g.actors[0].a.DrawScale = 0.5;
+            g.actors[0].a.SetCollisionSize(200, 50);
+        } else {
+            g.actors[0].a.DrawScale = 1;
+            g.actors[0].a.SetCollisionSize(320, 87);
+        }
+        Vehicles(g.actors[0].a).FamiliarName="Jock Escape";
+        Vehicles(g.actors[0].a).UnFamiliarName="Jock Escape";
     }
 }
 

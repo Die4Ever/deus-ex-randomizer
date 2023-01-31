@@ -517,6 +517,7 @@ function VandSiloAnyEntry()
 {
     local FlagBase flags;
     local Conversation c;
+    local Vehicles chopper;
     flags = dxr.flagbase;
 
     // back to sub base
@@ -525,7 +526,9 @@ function VandSiloAnyEntry()
     CreateCameraInterpolationPoints( 'backtrack_path', 'backtrack_camera', vect(-500,250,0) );
 
     RemoveChoppers('backtrack_chopper');
-    BacktrackChopper('backtrack_path', 'backtrack_chopper', 'backtrack_path', "", 'backtrack_camera', "14_Vandenberg_Sub", 'InterpolationPoint39', "", vect(507, -2500, 1600), rot(0,0,0) );
+    chopper = BacktrackChopper('backtrack_path', 'backtrack_chopper', 'backtrack_path', "", 'backtrack_camera', "14_Vandenberg_Sub", 'InterpolationPoint39', "", vect(507, -2500, 1600), rot(0,0,0) );
+    chopper.FamiliarName = "Backtrack";
+    chopper.UnFamiliarName = "Backtrack";
 
     c = GetConversation('JockArea51');
     c.bDisplayOnce = false;
@@ -543,7 +546,7 @@ function RemoveChoppers(optional Name ChopperTag)
     }
 }
 
-function SpawnChopper(Name ChopperTag, Name PathTag, string BindName, vector loc, rotator rot)
+function Vehicles SpawnChopper(Name ChopperTag, Name PathTag, string BindName, vector loc, rotator rot)
 {
     local BlackHelicopter chopper;
     local bool bOldCollideWorld;
@@ -560,12 +563,14 @@ function SpawnChopper(Name ChopperTag, Name PathTag, string BindName, vector loc
 
     class'BlackHelicopter'.default.bCollideWorld = bOldCollideWorld;
     info("SpawnChopper("$ChopperTag$", "$PathTag$", "$BindName$", ("$loc$"), ("$rot$") ) spawned "$chopper);
+    return chopper;
 }
 
-function BacktrackChopper(Name event, Name ChopperTag, Name PathTag, string BindName, Name CameraPath, string DestMap, Name DestName, string DestTag, vector loc, rotator rot)
+function Vehicles BacktrackChopper(Name event, Name ChopperTag, Name PathTag, string BindName, Name CameraPath, string DestMap, Name DestName, string DestTag, vector loc, rotator rot)
 {
     local InterpolateTrigger t;
     local MapExit exit;
+    local Vehicles chopper;
 
     info("BacktrackChopper("$event$", "$ChopperTag$", "$PathTag$", "$BindName$"...)");
 
@@ -577,10 +582,10 @@ function BacktrackChopper(Name event, Name ChopperTag, Name PathTag, string Bind
         info("BacktrackChopper spawned "$t);
     }
 
-    SpawnChopper(ChopperTag, PathTag, BindName, loc, rot);
+    chopper = SpawnChopper(ChopperTag, PathTag, BindName, loc, rot);
 
     foreach AllActors(class'MapExit', exit, event)
-        return;
+        return chopper;
 
     exit = Spawn(class'MapExit',, event, loc );
     exit.SetCollision(false,false,false);
@@ -588,6 +593,7 @@ function BacktrackChopper(Name event, Name ChopperTag, Name PathTag, string Bind
     exit.bPlayTransition = true;
     exit.cameraPathTag = CameraPath;
     info("BacktrackChopper spawned "$exit);
+    return chopper;
 }
 
 function CreateInterpolationPoints(Name PathTag, vector loc)
