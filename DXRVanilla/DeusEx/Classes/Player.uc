@@ -10,10 +10,11 @@ var transient string nextMap;
 
 var Music LevelSong;
 var byte LevelSongSection;
-var config string PrevSong;
+var config Music PrevSong;
 var config EMusicMode PrevMusicMode;
 var config byte PrevSongSection;
 var config byte PrevSavedSection;
+var config byte CombatSection;// used for NYCStreets2_Music
 
 var Rotator ShakeRotator;
 
@@ -521,52 +522,68 @@ function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusic
     GetDXR();
 
     // copy to LevelSong in order to support changing songs, since Level.Song is const
-    if(LevelSong == None) {
-        LevelSong = Level.Song;
-        LevelSongSection = Level.SongSection;
-        if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" ) {
-            LevelSong = Music'NYCStreets2_Music';
-            NewSection = 0;
-        }
-    }
-
-    // ignore complicated logic for title screen and cutscenes, gives us a chance to reset the values stored in configs
-    if( dxr.dxInfo.missionNumber <= 0 || dxr.dxInfo.missionNumber > 50 ) {
-        _ClientSetMusic(LevelSong, NewSection, NewCdTrack, NewTransition);
-        return;
+    LevelSong = Level.Song;
+    LevelSongSection = Level.SongSection;
+    CombatSection = 3;
+    if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" ) {
+        LevelSong = Music'NYCStreets2_Music';
+        CombatSection = 26;// idk why but section 3 takes time to start playing the song
     }
 
     setting = int(ConsoleCommand("get #var(package).MenuChoice_ContinuousMusic continuous_music"));
     c = class'MenuChoice_ContinuousMusic';
-    if(setting!=c.default.disabled && PrevSong == string(LevelSong.Name)) {
-        // if we left the previous level in a different state, like in combat, attempt to restore what section of the song we were in for the ambient track
-        if(PrevMusicMode != MUS_Ambient) {
-            if (PrevSavedSection != 255)
-                NewSection = PrevSavedSection;
-        }
-        else if(setting==c.default.simple) {
-            // simpler version of continuous music
-            NewSection = PrevSongSection;
-            NewTransition = MTRAN_FastFade;// default is MTRAN_Fade
-        } else { //if(setting==c.default.advanced) {
-            // this is where we've determined we can just leave the current song playing
-            SongSection = PrevSongSection;
-            return;
-        }
+    log("ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$") "$setting@PrevSong@LevelSong@PrevMusicMode@LevelSongSection);
+
+    // ignore complicated logic for title screen and cutscenes or if disabled, gives us a chance to reset the values stored in configs
+    if( dxr.dxInfo.missionNumber <= 0 || dxr.dxInfo.missionNumber > 50 || setting == c.default.disabled ) {
+        _ClientSetMusic(LevelSong, NewSection, NewCdTrack, NewTransition);
+        return;
     }
 
-    // ensure musicMode starts at ambient, to fix combat music re-entry
+    // ensure musicMode defaults to ambient, to fix combat music re-entry
     musicMode = MUS_Ambient;
+
+    // now time for fancy stuff
+    if(PrevSong == LevelSong) {
+        musicMode = PrevMusicMode;
+        savedSection = PrevSavedSection;
+        SongSection = PrevSongSection;
+        NewSection = PrevSongSection;
+        if(setting==c.default.simple) {
+            // simpler version of continuous music
+            NewSection = PrevSongSection;
+            NewTransition = MTRAN_FastFade;// default is MTRAN_Fade, quicker fade here when it's the same song
+        } else { //if(setting==c.default.advanced) {
+            // this is where we've determined we can just leave the current song playing
+            // MTRAN_None is basically the same as return here, except the Song variable gets set instead of being None, seems like less of a hack to me
+            NewTransition = MTRAN_None;
+        }
+    } else if(PrevMusicMode == MUS_Combat) {
+        NewTransition = MTRAN_SlowFade;
+    } else {
+        // does the default MTRAN_Fade even work?
+        NewTransition = MTRAN_FastFade;
+    }
+
+    // fix NYCStreets2_Music because reasons
+    if(NewSection == 3) {
+        NewSection = CombatSection;
+    }
+
+    // let us change songs immediately so we go straight to combat music if we're in combat
+    musicCheckTimer = 10;
+    musicChangeTimer = 10;
+
     _ClientSetMusic(LevelSong, NewSection, NewCdTrack, NewTransition);
 }
 
 function RememberMusic()
 {
     // save us writing to the config file
-    if(PrevSong == string(LevelSong.Name) && PrevMusicMode == musicMode && PrevSongSection == SongSection && PrevSavedSection == savedSection)
+    if(PrevSong == LevelSong && PrevMusicMode == musicMode && PrevSongSection == SongSection && PrevSavedSection == savedSection)
         return;
 
-    PrevSong = string(LevelSong.Name);
+    PrevSong = LevelSong;
     PrevMusicMode = musicMode;
     PrevSongSection = SongSection;
     PrevSavedSection = savedSection;
@@ -690,7 +707,7 @@ function UpdateDynamicMusic(float deltaTime)
                     else
                         savedSection = 255;
 
-                    _ClientSetMusic(LevelSong, 3, 255, MTRAN_FastFade);
+                    _ClientSetMusic(LevelSong, CombatSection, 255, MTRAN_FastFade);
                     musicMode = MUS_Combat;
                 }
             }
