@@ -560,8 +560,13 @@ function IncreaseZoneBrightness(int brightness, ZoneInfo z)
 
     zb = GetDefaultZoneBrightness(z);
     z.AmbientBrightness = Clamp( int(zb.brightness) + brightness, 0, 255 );
+
+    // the AmbientSaturation variable is backwards for some reason
+    // increase AmbientSaturation, aka decrease the color as the brightness goes up
     sat_boost = float(brightness) / 2;
     z.AmbientSaturation = Clamp( int(zb.saturation) + sat_boost, 0, 255);
+
+    // if the zone had 0 brightness then the color wouldn't have shown, so whatever color it has we need to disable it
     if(zb.brightness == 0)
         z.AmbientSaturation = 255;
 }

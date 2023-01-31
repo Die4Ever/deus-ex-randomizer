@@ -14,6 +14,7 @@ event InitWindow()
 #ifdef vanilla
     choices[i++]=Class'MenuChoice_EnergyDisplay';
     choices[i++]=Class'MenuChoice_ShowKeys';
+    choices[i++]=Class'MenuChoice_ContinuousMusic';
 #endif
     choices[i++]=Class'MenuChoice_PasswordAutofill';
     choices[i++]=Class'MenuChoice_BrightnessBoost';

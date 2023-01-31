@@ -1,6 +1,8 @@
 class DXRPlayer injects Human;
 //class DXRPlayer shims DeusExPlayer;
 
+#exec OBJ LOAD FILE=NYCStreets2_Music
+
 var DXRando dxr;
 var DXRLoadouts loadout;
 var bool bOnLadder;
@@ -505,12 +507,6 @@ exec function AllPasswords()
 }
 
 //========= MUSIC STUFF
-function ChangeSong(string SongName, byte section)
-{
-    LevelSong = Music(DynamicLoadObject(SongName, class'Music'));
-    LevelSongSection = section;
-}
-
 function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
     Super.ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
@@ -520,6 +516,8 @@ function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusi
 // only called by GameInfo::PostLogin()
 function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
+    local int setting;
+    local class<MenuChoice_ContinuousMusic> c;
     GetDXR();
 
     // copy to LevelSong in order to support changing songs, since Level.Song is const
@@ -527,7 +525,7 @@ function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusic
         LevelSong = Level.Song;
         LevelSongSection = Level.SongSection;
         if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" ) {
-            ChangeSong("NYCStreets2_Music.NYCStreets2_Music", 0);
+            LevelSong = Music'NYCStreets2_Music';
             NewSection = 0;
         }
     }
@@ -538,26 +536,26 @@ function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusic
         return;
     }
 
-    if(PrevSong == string(LevelSong.Name)) {
+    setting = int(ConsoleCommand("get #var(package).MenuChoice_ContinuousMusic continuous_music"));
+    c = class'MenuChoice_ContinuousMusic';
+    if(setting!=c.default.disabled && PrevSong == string(LevelSong.Name)) {
         // if we left the previous level in a different state, like in combat, attempt to restore what section of the song we were in for the ambient track
         if(PrevMusicMode != MUS_Ambient) {
             if (PrevSavedSection != 255)
                 NewSection = PrevSavedSection;
         }
-        else if(PrevSong == "NYCStreets2_Music") {
-            // I think dynamically loaded songs won't carry over across maps, so we just resume playing from the same section, similar to coming out of combat/dialog
+        else if(setting==c.default.simple) {
+            // simpler version of continuous music
             NewSection = PrevSongSection;
-        } else {
+            NewTransition = MTRAN_FastFade;// default is MTRAN_Fade
+        } else { //if(setting==c.default.advanced) {
             // this is where we've determined we can just leave the current song playing
-            // note this means that the SongSection variable will not progress automatically?
-            // we may actually want to favor the logic used for NYCStreets2_Music (no return, slight cut in music), so that music can resume correctly after combat/dialog?
-            /*SongSection = PrevSongSection;
-            return;*/
-            // simpler, less error prone version of continuous music
-            NewSection = PrevSongSection;
+            SongSection = PrevSongSection;
+            return;
         }
     }
 
+    // ensure musicMode starts at ambient, to fix combat music re-entry
     musicMode = MUS_Ambient;
     _ClientSetMusic(LevelSong, NewSection, NewCdTrack, NewTransition);
 }
@@ -565,10 +563,10 @@ function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusic
 function RememberMusic()
 {
     // save us writing to the config file
-    if(PrevSong == string(Song.Name) && PrevMusicMode == musicMode && PrevSongSection == SongSection && PrevSavedSection == savedSection)
+    if(PrevSong == string(LevelSong.Name) && PrevMusicMode == musicMode && PrevSongSection == SongSection && PrevSavedSection == savedSection)
         return;
 
-    PrevSong = string(Song.Name);
+    PrevSong = string(LevelSong.Name);
     PrevMusicMode = musicMode;
     PrevSongSection = SongSection;
     PrevSavedSection = savedSection;
