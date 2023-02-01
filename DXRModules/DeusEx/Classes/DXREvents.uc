@@ -1506,7 +1506,7 @@ defaultproperties
     bingo_options(97)=(event="ChangeClothes",desc="Change clothes at 3 different clothes racks",max=3)
 #endif
     bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1,missions=8)
-    bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1,missions=17684)
+    bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1,missions=17686)
     bingo_options(100)=(event="KnowYourEnemy",desc="Read all 6 Know Your Enemy bulletins",max=6,missions=10)
     bingo_options(101)=(event="09_NYC_DOCKYARD--796967769",desc="Learn Jenny's phone number",max=1,missions=512)
     bingo_options(102)=(event="JacobsShadow",desc="Read 4 parts of Jacob's Shadow",max=4,missions=38492)
