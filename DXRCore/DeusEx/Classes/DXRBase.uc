@@ -77,6 +77,7 @@ simulated event Tick(float deltaTime);
 
 simulated event Destroyed()
 {
+    SetTimer(0, False);
     dxr = None;
     Super.Destroyed();
 }
