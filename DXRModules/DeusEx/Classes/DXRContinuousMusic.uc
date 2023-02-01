@@ -248,11 +248,6 @@ function AnyEntry()
 
 simulated event Tick(float deltaTime)
 {
-    local bool bCombat;
-    local ScriptedPawn npc;
-    local Pawn CurPawn;
-    local DeusExLevelInfo info;
-
     if (LevelSong == None)
         return;
 
@@ -278,40 +273,24 @@ simulated event Tick(float deltaTime)
     if (p.IsInState('Interpolating'))
     {
         // don't mess with the music on any of the intro maps
-        info = dxr.dxInfo;
-        if ((info != None) && (info.MissionNumber < 0))
+        if ((dxr.dxInfo != None) && (dxr.dxInfo.MissionNumber < 0))
         {
             musicMode = MUS_Outro;
             return;
         }
 
         if (musicMode != MUS_Outro)
-        {
-            _ClientSetMusic(LevelSong, 5, 255, MTRAN_FastFade);
-            musicMode = MUS_Outro;
-        }
+            EnterOutro();
     }
     else if (p.IsInState('Conversation'))
     {
         if (musicMode != MUS_Conversation)
-        {
-            // save our place in the ambient track
-            if (musicMode == MUS_Ambient)
-                p.savedSection = p.SongSection;
-            else
-                p.savedSection = 255;
-
-            _ClientSetMusic(LevelSong, 4, 255, MTRAN_Fade);
-            musicMode = MUS_Conversation;
-        }
+            EnterConversation();
     }
     else if (p.IsInState('Dying'))
     {
         if (musicMode != MUS_Dying)
-        {
-            _ClientSetMusic(LevelSong, 1, 255, MTRAN_Fade);
-            musicMode = MUS_Dying;
-        }
+            EnterDying();
     }
     else
     {
@@ -319,64 +298,100 @@ simulated event Tick(float deltaTime)
         if (musicCheckTimer >= 1.0)
         {
             musicCheckTimer = 0.0;
-            bCombat = False;
 
-            // check a 100 foot radius around me for combat
-            // XXXDEUS_EX AMSD Slow Pawn Iterator
-            //foreach RadiusActors(class'ScriptedPawn', npc, 1600)
-            for (CurPawn = Level.PawnList; CurPawn != None; CurPawn = CurPawn.NextPawn)
-            {
-                npc = ScriptedPawn(CurPawn);
-                if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
-                {
-                    if ((npc.GetStateName() == 'Attacking') && (npc.Enemy == p))
-                    {
-                        bCombat = True;
-                        break;
-                    }
-                }
-            }
-
-            if (bCombat)
+            if (InCombat())
             {
                 musicChangeTimer = 0.0;
 
                 if (musicMode != MUS_Combat)
-                {
-                    // save our place in the ambient track
-                    if (musicMode == MUS_Ambient)
-                        p.savedSection = p.SongSection;
-                    else
-                        p.savedSection = 255;
-
-                    _ClientSetMusic(LevelSong, CombatSection, 255, MTRAN_FastFade);
-                    musicMode = MUS_Combat;
-                }
+                    EnterCombat();
             }
             else if (musicMode != MUS_Ambient)
             {
                 // wait until we've been out of combat for 5 seconds before switching music
                 if (musicChangeTimer >= 5.0)
-                {
-                    // use the default ambient section for this map
-                    if (p.savedSection == 255)
-                        p.savedSection = LevelSongSection;
-
-                    // fade slower for combat transitions
-                    if (musicMode == MUS_Combat)
-                        _ClientSetMusic(LevelSong, p.savedSection, 255, MTRAN_SlowFade);
-                    else
-                        _ClientSetMusic(LevelSong, p.savedSection, 255, MTRAN_Fade);
-
-                    p.savedSection = 255;
-                    musicMode = MUS_Ambient;
-                    musicChangeTimer = 0.0;
-                }
+                    EnterAmbient();
             }
         }
     }
 
     RememberMusic();
+}
+
+function EnterOutro()
+{
+    _ClientSetMusic(LevelSong, 5, 255, MTRAN_FastFade);
+    musicMode = MUS_Outro;
+}
+
+function EnterConversation()
+{
+    // save our place in the ambient track
+    if (musicMode == MUS_Ambient)
+        p.savedSection = p.SongSection;
+    else
+        p.savedSection = 255;
+
+    _ClientSetMusic(LevelSong, 4, 255, MTRAN_Fade);
+    musicMode = MUS_Conversation;
+}
+
+function EnterDying()
+{
+    _ClientSetMusic(LevelSong, 1, 255, MTRAN_Fade);
+    musicMode = MUS_Dying;
+}
+
+function EnterCombat()
+{
+    // save our place in the ambient track
+    if (musicMode == MUS_Ambient)
+        p.savedSection = p.SongSection;
+    else
+        p.savedSection = 255;
+
+    _ClientSetMusic(LevelSong, CombatSection, 255, MTRAN_FastFade);
+    musicMode = MUS_Combat;
+}
+
+function EnterAmbient()
+{
+    // use the default ambient section for this map
+    if (p.savedSection == 255)
+        p.savedSection = LevelSongSection;
+
+    // fade slower for combat transitions
+    if (musicMode == MUS_Combat)
+        _ClientSetMusic(LevelSong, p.savedSection, 255, MTRAN_SlowFade);
+    else
+        _ClientSetMusic(LevelSong, p.savedSection, 255, MTRAN_Fade);
+
+    p.savedSection = 255;
+    musicMode = MUS_Ambient;
+    musicChangeTimer = 0.0;
+}
+
+function bool InCombat()
+{
+    local ScriptedPawn npc;
+    local Pawn CurPawn;
+
+    // check a 100 foot radius around me for combat
+    // XXXDEUS_EX AMSD Slow Pawn Iterator
+    //foreach RadiusActors(class'ScriptedPawn', npc, 1600)
+    for (CurPawn = Level.PawnList; CurPawn != None; CurPawn = CurPawn.NextPawn)
+    {
+        npc = ScriptedPawn(CurPawn);
+        if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
+        {
+            if ((npc.GetStateName() == 'Attacking') && (npc.Enemy == p))
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
