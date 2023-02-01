@@ -40,7 +40,6 @@ simulated function RandoWeapon(DeusExWeapon w)
     max_weapon_dmg = float(dxr.flags.settings.max_weapon_dmg) / 100;
     new_damage = rngrange(float(w.default.HitDamage), min_weapon_dmg, max_weapon_dmg);
     w.HitDamage = int(new_damage + 0.5);
-    l(w $ " w.HitDamage: "$ w.HitDamage);
     if(w.HitDamage < 2 && w.HitDamage < w.default.HitDamage) {
         info(w $ " w.HitDamage ("$ w.HitDamage $") < 2");
         w.HitDamage = 2;
@@ -48,6 +47,7 @@ simulated function RandoWeapon(DeusExWeapon w)
     if( #var(prefix)WeaponHideAGun(w) == None ) {
         //don't do this for the PS20/PS40 because it shares the PlasmaBolt projectile with the PlasmaRifle in a really dumb way, the PS40 code handles this itself
         //I might move this logic into an injector into DeusExProjectile, maybe in BeginPlay it could check its owner and copy the HitDamage from there?
+        RandoProjectile(w, w.ProjectileClass, w.default.ProjectileClass, new_damage);
         for(i=0; i<ArrayCount(w.ProjectileNames); i++) {
             RandoProjectile(w, w.ProjectileNames[i], w.default.ProjectileNames[i], new_damage);
         }
@@ -56,6 +56,7 @@ simulated function RandoWeapon(DeusExWeapon w)
     min_weapon_shottime = float(dxr.flags.settings.min_weapon_shottime) / 100;
     max_weapon_shottime = float(dxr.flags.settings.max_weapon_shottime) / 100;
     w.ShotTime = rngrange(w.default.ShotTime, min_weapon_shottime, max_weapon_shottime);
+    l(w $ " w.HitDamage: "$ w.HitDamage $ ", ShotTime: " $ w.ShotTime);
     /*f = w.default.ReloadTime * (rngf()+0.5);
     w.ReloadTime = f;
     f = float(w.default.MaxRange) * (rngf()+0.5);
@@ -69,44 +70,60 @@ simulated function RandoWeapon(DeusExWeapon w)
 
 simulated function RandoProjectile(DeusExWeapon w, out class<Projectile> p, out class<Projectile> d, float new_damage)
 {
+    local float ratio;
     if(p == None) return;
+
+    ratio = new_damage/float(w.default.HitDamage);
 
     switch(p) {
     case class'#var(prefix)Dart':
-        p.default.Damage = 0.6 * new_damage;
+        p.default.Damage = ratio * 15.0;
         break;
 
     case class'#var(prefix)DartFlare':
     case class'#var(prefix)DartPoison':
-        p.default.Damage = 0.2 * new_damage;
+        p.default.Damage = ratio * 5.0;
         break;
 
     case class'#var(prefix)PlasmaBolt':
-        p.default.Damage = 1.15 * new_damage;
+        p.default.Damage = ratio * 9.0;
+#ifndef hx
+        class<#var(prefix)PlasmaBolt>(p).default.mpDamage = ratio * 9.0;
+#endif
+        w.HitDamage = ratio * 9.0;
+        p = class'PlasmaBoltFixTicks';
+        d = p;
+    case class'PlasmaBoltFixTicks':// no break
+        p.default.Damage = ratio * 9.0;
+#ifndef hx
+        class<PlasmaBoltFixTicks>(p).default.mpDamage = ratio * 9.0;
+#endif
+        w.HitDamage = ratio * 9.0;
         break;
 
     case class'#var(prefix)Rocket':
         // fix both just in case a normal Rocket is fired somehow?
-        p.default.Damage = new_damage;
-        if(w.ProjectileClass == p) w.ProjectileClass = class'RocketFixTicks';
+        p.default.Damage = ratio * 300.0;
         p = class'RocketFixTicks';
         d = p;
     case class'RocketFixTicks':// no break
-        p.default.Damage = new_damage;
+        p.default.Damage = ratio * 300.0;
+        break;
+
+    case class'#var(prefix)RocketWP':
+        p.default.Damage = ratio * 300.0;
         break;
 
     case class'#var(prefix)HECannister20mm':
         // normally the damage should be * 150, but that means a 50% damage rifle could have trouble breaking many doors even with only 3 explosion ticks
-        p.default.Damage = (new_damage/float(w.default.HitDamage)) * 180.0;
-        if(w.ProjectileClass == p) w.ProjectileClass = class'HECannisterFixTicks';
+        p.default.Damage = ratio * 180.0;
         p = class'HECannisterFixTicks';
         d = p;
     case class'HECannisterFixTicks':// no break
-        p.default.Damage = (new_damage/float(w.default.HitDamage)) * 180.0;
+        p.default.Damage = ratio * 180.0;
         break;
 
     case class'#var(prefix)Shuriken':
-    case class'#var(prefix)RocketWP':
     case class'#var(prefix)Fireball':
         p.default.Damage = new_damage;
         break;

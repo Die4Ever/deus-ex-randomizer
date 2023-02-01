@@ -8,6 +8,7 @@ var transient string nextMap;
 
 var Music LevelSong;
 var byte LevelSongSection;
+var byte CombatSection;// used for NYCStreets2_Music
 
 var Rotator ShakeRotator;
 
@@ -500,11 +501,20 @@ exec function AllPasswords()
     ClientMessage("Set all account passwords to known");
 }
 
-function ChangeSong(string SongName, byte section)
+//========= MUSIC STUFF
+function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
-    LevelSong = Music(DynamicLoadObject(SongName, class'Music'));
-    LevelSongSection = section;
-    ClientSetMusic(LevelSong, LevelSongSection, 255, MTRAN_Fade);
+    log(self$": _ClientSetMusic "$NewSong@NewSection@NewCdTrack@NewTransition@savedSection);
+    Super.ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
+}
+
+// only called by GameInfo::PostLogin()
+function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
+{
+    local DXRContinuousMusic cm;
+    GetDXR();
+    cm = DXRContinuousMusic(dxr.LoadModule(class'DXRContinuousMusic'));
+    cm.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
 }
 
 // ----------------------------------------------------------------------
@@ -526,27 +536,21 @@ function UpdateDynamicMusic(float deltaTime)
     local Pawn CurPawn;
     local DeusExLevelInfo info;
 
-    // copy to LevelSong in order to support changing songs, since Level.Song is const
-    if(LevelSong == None) {
-        LevelSong = Level.Song;
-        LevelSongSection = Level.SongSection;
-    }
-
     if (LevelSong == None)
         return;
 
-   // DEUS_EX AMSD In singleplayer, do the old thing.
-   // In multiplayer, we can come out of dying.
-   if (!PlayerIsClient())
-   {
-      if ((musicMode == MUS_Dying) || (musicMode == MUS_Outro))
-         return;
-   }
-   else
-   {
-      if (musicMode == MUS_Outro)
-         return;
-   }
+    // DEUS_EX AMSD In singleplayer, do the old thing.
+    // In multiplayer, we can come out of dying.
+    if (!PlayerIsClient())
+    {
+        if ((musicMode == MUS_Dying) || (musicMode == MUS_Outro))
+            return;
+    }
+    else
+    {
+        if (musicMode == MUS_Outro)
+            return;
+    }
 
     musicCheckTimer += deltaTime;
     musicChangeTimer += deltaTime;
@@ -563,7 +567,7 @@ function UpdateDynamicMusic(float deltaTime)
 
         if (musicMode != MUS_Outro)
         {
-            ClientSetMusic(LevelSong, 5, 255, MTRAN_FastFade);
+            _ClientSetMusic(LevelSong, 5, 255, MTRAN_FastFade);
             musicMode = MUS_Outro;
         }
     }
@@ -577,7 +581,7 @@ function UpdateDynamicMusic(float deltaTime)
             else
                 savedSection = 255;
 
-            ClientSetMusic(LevelSong, 4, 255, MTRAN_Fade);
+            _ClientSetMusic(LevelSong, 4, 255, MTRAN_Fade);
             musicMode = MUS_Conversation;
         }
     }
@@ -585,7 +589,7 @@ function UpdateDynamicMusic(float deltaTime)
     {
         if (musicMode != MUS_Dying)
         {
-            ClientSetMusic(LevelSong, 1, 255, MTRAN_Fade);
+            _ClientSetMusic(LevelSong, 1, 255, MTRAN_Fade);
             musicMode = MUS_Dying;
         }
     }
@@ -625,7 +629,7 @@ function UpdateDynamicMusic(float deltaTime)
                     else
                         savedSection = 255;
 
-                    ClientSetMusic(LevelSong, 3, 255, MTRAN_FastFade);
+                    _ClientSetMusic(LevelSong, CombatSection, 255, MTRAN_FastFade);
                     musicMode = MUS_Combat;
                 }
             }
@@ -640,9 +644,9 @@ function UpdateDynamicMusic(float deltaTime)
 
                     // fade slower for combat transitions
                     if (musicMode == MUS_Combat)
-                        ClientSetMusic(LevelSong, savedSection, 255, MTRAN_SlowFade);
+                        _ClientSetMusic(LevelSong, savedSection, 255, MTRAN_SlowFade);
                     else
-                        ClientSetMusic(LevelSong, savedSection, 255, MTRAN_Fade);
+                        _ClientSetMusic(LevelSong, savedSection, 255, MTRAN_Fade);
 
                     savedSection = 255;
                     musicMode = MUS_Ambient;
@@ -652,6 +656,8 @@ function UpdateDynamicMusic(float deltaTime)
         }
     }
 }
+
+//=========== END OF MUSIC STUFF
 
 function UpdateRotation(float DeltaTime, float maxPitch)
 {

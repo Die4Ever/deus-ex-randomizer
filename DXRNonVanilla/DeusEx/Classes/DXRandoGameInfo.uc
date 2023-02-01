@@ -36,7 +36,8 @@ event PostLogin(playerpawn NewPlayer)
 {
     local #var(PlayerPawn) p;
 
-    Super.PostLogin(NewPlayer);
+    _PostLogin(NewPlayer);
+
     if( Role != ROLE_Authority ) return;
 
     p = #var(PlayerPawn)(NewPlayer);
@@ -67,4 +68,62 @@ function Killed( pawn Killer, pawn Other, name damageType )
 {
     Super.Killed(Killer, Other, damageType);
     class'DXREvents'.static.AddDeath(Other, Killer, damageType);
+}
+
+#ifdef vmd
+event _PostLogin(playerpawn NewPlayer)
+{
+    Super_PostLogin(NewPlayer);
+
+    if (DeusExPlayer(NewPlayer) != None)
+        ApplyGamemode(DeusExPlayer(NewPlayer));
+}
+#elseif gmdx
+event _PostLogin(playerpawn NewPlayer)
+{
+    Super_PostLogin(NewPlayer);
+}
+#else
+event _PostLogin(playerpawn NewPlayer)
+{
+    Super.PostLogin(NewPlayer);
+}
+#endif
+
+//
+// Called after a successful login. This is the first place
+// it is safe to call replicated functions on the PlayerPawn.
+//
+// replace the vanilla one so we can do our continuous music magic
+event Super_PostLogin( playerpawn NewPlayer )
+{
+    local Pawn P;
+    local DXRContinuousMusic cm;
+    // Start player's music.
+    cm = DXRContinuousMusic(GetDXR().LoadModule(class'DXRContinuousMusic'));
+    if(cm!=None)
+        cm.ClientSetMusic( NewPlayer, Level.Song, Level.SongSection, Level.CdTrack, MTRAN_Fade );
+    else
+        NewPlayer.ClientSetMusic( Level.Song, Level.SongSection, Level.CdTrack, MTRAN_Fade );
+
+    if ( Level.NetMode != NM_Standalone )
+    {
+        // replicate skins
+        for ( P=Level.PawnList; P!=None; P=P.NextPawn )
+            if ( P.bIsPlayer && (P != NewPlayer) )
+            {
+                if ( P.bIsMultiSkinned )
+                    NewPlayer.ClientReplicateSkins(P.MultiSkins[0], P.MultiSkins[1], P.MultiSkins[2], P.MultiSkins[3]);
+                else
+                    NewPlayer.ClientReplicateSkins(P.Skin);
+
+                if ( (P.PlayerReplicationInfo != None) && P.PlayerReplicationInfo.bWaitingPlayer && P.IsA('PlayerPawn') )
+                {
+                    if ( NewPlayer.bIsMultiSkinned )
+                        PlayerPawn(P).ClientReplicateSkins(NewPlayer.MultiSkins[0], NewPlayer.MultiSkins[1], NewPlayer.MultiSkins[2], NewPlayer.MultiSkins[3]);
+                    else
+                        PlayerPawn(P).ClientReplicateSkins(NewPlayer.Skin);
+                }
+            }
+    }
 }

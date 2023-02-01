@@ -19,7 +19,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,2,3,7) ) {
+    if( ConfigOlderThan(2,2,4,1) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -93,12 +93,23 @@ function CheckConfig()
         door_fixes[i].bHighlight = false;
         i++;
 
+        // don't break the ramp up to the ship!
+        door_fixes[i].map = "09_NYC_SHIP";
+        door_fixes[i].tag = 'ShipRamp';
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].minDamageThreshold = 60;
+        door_fixes[i].doorStrength = 1;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].lockStrength = 1;
+        door_fixes[i].bHighlight = false;
+        i++;
+
         // don't randomize the weld points
         door_fixes[i].map = "09_NYC_SHIPBELOW";
         door_fixes[i].tag = 'ShipBreech';
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 55;
-        door_fixes[i].doorStrength = 0.9;
+        door_fixes[i].doorStrength = 0.5;
         door_fixes[i].bPickable = false;
         door_fixes[i].lockStrength = 1;
         door_fixes[i].bHighlight = true;

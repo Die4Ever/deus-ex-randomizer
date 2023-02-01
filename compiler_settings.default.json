@@ -3,7 +3,7 @@
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex Rando/",
         "preproc_definitions": {
-            "vanilla":1, "singleplayer":1, "fixes":1, "mapfixes":1, "balance":1, "backtracking":1, "injections":1, "flags": 1, "prefix":"",
+            "vanilla":1, "singleplayer":1, "fixes":1, "mapfixes":1, "balance":1, "backtracking":1, "injections":1, "flags": 1, "prefix":"", "vanillamaps":1,
             "Mover":"DeusExMover", "PlayerPawn":"Human", "flagvarprefix": "", "package": "DeusEx"
         },
         "mods_paths": [ "../Lay-D-Denton-Project", "./" ],
@@ -62,7 +62,7 @@
         "source_path": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD Backup/",
         "out_dir": "C:/Program Files (x86)/Steam/steamapps/common/Deus Ex VMD/",
         "preproc_definitions": {
-            "vmd":1, "vmd157":1, "singeplayer":1, "mapfixes":1, "flags":1, "prefix":"",
+            "vmd":1, "vmd157":1, "singeplayer":1, "mapfixes":1, "flags":1, "prefix":"", "vanillamaps":1,
             "Mover":"DeusExMover", "PlayerPawn":"Human", "flagvarprefix": "", "package": "VMDRandomizer"
         },
         "mods_paths": [ "./" ],

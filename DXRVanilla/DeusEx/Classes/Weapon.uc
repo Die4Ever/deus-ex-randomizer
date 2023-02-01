@@ -120,13 +120,13 @@ function float GetDamage()
     // GetWeaponSkill returns 0.0 to -0.7 (max skill/aug)
     mult += -2.0 * GetWeaponSkill();
 
-    if( ! bInstantHit && class != class'WeaponHideAGun' )// PS40 copies its damage to the projectile...
+    if( ! bInstantHit && class != class'WeaponHideAGun' && ProjectileClass != None ) {// PS40 copies its damage to the projectile...
         // ProjectileClass is the currently loaded ammo
-        if( class<DeusExProjectile>(ProjectileClass).default.bExplodes ) {
+        if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes ) {
             mult *= 2.0 / float(GetNumHits());
         }
         return ProjectileClass.default.Damage * mult;
-
+    }
     return HitDamage * mult;
 }
 
@@ -134,9 +134,10 @@ function int GetNumHits()
 {
     if( ProjectileClass == class'RocketFixTicks' )
         return 4;
-    if( ProjectileClass == class'HECannisterFixTicks' )
+    if( ProjectileClass == class'HECannisterFixTicks' || ProjectileClass == class'PlasmaBoltFixTicks' )
         return 3;
-    if( class<DeusExProjectile>(ProjectileClass).default.bExplodes )
+
+    if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes )
         return 5;
     if( bInstantHit && AreaOfEffect == AOE_Cone)
         return 5;

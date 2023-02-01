@@ -28,12 +28,12 @@ var int old_pawns;// used for NYC_04_CheckPaulRaid()
 var int storedWeldCount;// ship weld points
 var int storedReactorCount;// Area 51 goal
 
-struct ZoneBrightness
+struct ZoneBrightnessData
 {
     var name zonename;
-    var byte brightness;
+    var byte brightness, saturation, hue;
 };
-var ZoneBrightness zone_brightness[32];
+var ZoneBrightnessData zone_brightness[32];
 
 
 function CheckConfig()
@@ -117,7 +117,7 @@ function CheckConfig()
         add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
         i++;
 
-#ifdef vanilla
+#ifdef vanillamaps
         add_datacubes[i].map = "15_AREA51_BUNKER";
         add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
         i++;
@@ -173,6 +173,7 @@ function PreFirstEntry()
     SetSeed( "DXRFixup PreFirstEntry" );
 
     //Save default brightnesses
+    SaveDefaultZoneBrightness(Level);
     foreach AllActors(class'ZoneInfo',Z){
         SaveDefaultZoneBrightness(Z);
     }
@@ -216,7 +217,7 @@ function AnyEntry()
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
-    if(#defined(vanilla))
+    if(#defined(vanillamaps))
         FixLogTimeout(p);
 
     FixAmmoShurikenName();
@@ -438,17 +439,16 @@ function AllAnyEntry()
 
 function PreTravelMapFixes()
 {
-#ifdef vanilla
     if(dxr == None) {
         warning("PreTravelMapFixes with dxr None");
         return;
     }
     switch(dxr.localURL) {
     case "04_NYC_HOTEL":
-        NYC_04_LeaveHotel();
+        if(#defined(vanilla))
+            NYC_04_LeaveHotel();
         break;
     }
-#endif
 }
 
 function TimerMapFixes()
@@ -459,31 +459,33 @@ function TimerMapFixes()
 
     switch(dxr.localURL)
     {
-#ifdef vanilla
     case "04_NYC_HOTEL":
-        NYC_04_CheckPaulRaid();
+        if(#defined(vanilla))
+            NYC_04_CheckPaulRaid();
         break;
-#endif
+
     case "06_HONGKONG_WANCHAI_MARKET":
         UpdateGoalWithRandoInfo('InvestigateMaggieChow');
         break;
+
     case "08_NYC_STREET":
-#ifdef vanilla
-        if ( dxr.flagbase.GetBool('StantonDowd_Played') )
+        if (#defined(vanillamaps) && dxr.flagbase.GetBool('StantonDowd_Played') )
         {
             foreach AllActors(class'BlackHelicopter', chopper, 'CopterExit')
                 chopper.EnterWorld();
             dxr.flagbase.SetBool('MS_Helicopter_Unhidden', True,, 9);
         }
-#endif
         UpdateGoalWithRandoInfo('FindHarleyFilben');
         break;
+
     case "09_NYC_SHIPBELOW":
         NYC_09_CountWeldPoints();
         break;
+
     case "10_PARIS_CATACOMBS_TUNNELS":
         UpdateGoalWithRandoInfo('FindNicolette');
         break;
+
     case "15_AREA51_PAGE":
         Area51_CountBlueFusion();
         break;
@@ -543,13 +545,30 @@ function IncreaseBrightness(int brightness)
 {
     local ZoneInfo z;
 
-    Level.AmbientBrightness = Clamp( int(GetDefaultZoneBrightness(Level)) + brightness, 0, 255 );
-    //Level.Brightness += float(brightness)/100.0;
+    IncreaseZoneBrightness(brightness, Level);
     foreach AllActors(class'ZoneInfo', z) {
         if( z == Level ) continue;
-        z.AmbientBrightness = Clamp( int(GetDefaultZoneBrightness(z)) + brightness, 0, 255 );
+        IncreaseZoneBrightness(brightness, z);
     }
     player().ConsoleCommand("FLUSH"); //Clears the texture cache, which allows the lighting to rerender
+}
+
+function IncreaseZoneBrightness(int brightness, ZoneInfo z)
+{
+    local ZoneBrightnessData zb;
+    local float sat_boost;
+
+    zb = GetDefaultZoneBrightness(z);
+    z.AmbientBrightness = Clamp( int(zb.brightness) + brightness, 0, 255 );
+
+    // the AmbientSaturation variable is backwards for some reason
+    // increase AmbientSaturation, aka decrease the color as the brightness goes up
+    sat_boost = float(brightness) / 2;
+    z.AmbientSaturation = Clamp( int(zb.saturation) + sat_boost, 0, 255);
+
+    // if the zone had 0 brightness then the color wouldn't have shown, so whatever color it has we need to disable it
+    if(zb.brightness == 0)
+        z.AmbientSaturation = 255;
 }
 
 static function AdjustBrightness(DeusExPlayer a, int brightness)
@@ -649,7 +668,7 @@ function NYC_02_FirstEntry()
 
     switch (dxr.localURL)
     {
-#ifdef vanilla
+#ifdef vanillamaps
     case "02_NYC_BATTERYPARK":
         foreach AllActors(class'BarrelAmbrosia', ambrosia) {
             foreach RadiusActors(class'Trigger', t, 16, ambrosia.Location) {
@@ -711,7 +730,7 @@ function Airfield_FirstEntry()
         _AddActor(Self, class'Rebreather', vect(-936.151245, -3464.031006, 293.710968), rot(0,0,0));
         break;
 
-#ifdef vanilla
+#ifdef vanillamaps
     case "03_NYC_AirfieldHeliBase":
         foreach AllActors(class'Mover',m) {
             // call the elevator at the end of the level when you open the appropriate door
@@ -766,7 +785,7 @@ function Airfield_FirstEntry()
         _AddActor(Self, class'Rebreather', vect(-2031.959473, 995.781067, 75.709816), rot(0,0,0));
         break;
 
-#ifdef vanilla
+#ifdef vanillamaps
     case "03_NYC_BROOKLYNBRIDGESTATION":
         //Put a button behind the hidden bathroom door
         //Mostly for entrance rando, but just in case
@@ -815,7 +834,7 @@ function Jailbreak_FirstEntry()
             paul.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
         }
 
-#ifdef vanilla
+#ifdef vanillamaps
         foreach AllActors(class'DeusExMover',dxm){
             if (dxm.Name=='DeusExMover34'){
                 //I think this filing cabinet door was supposed to
@@ -827,7 +846,7 @@ function Jailbreak_FirstEntry()
 
         break;
 
-#ifdef vanilla
+#ifdef vanillamaps
     case "05_NYC_UNATCOHQ":
         foreach AllActors(class'ComputerPersonal', c) {
             if( c.Name != 'ComputerPersonal3' ) continue;
@@ -869,6 +888,7 @@ function BalanceJailbreak()
         iclass = loadout.get_starting_item();
     }
 
+    // TODO: maybe random chance to spawn it on the desk or in 1 of the cabinets?
     Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915) );
 }
 
@@ -1219,7 +1239,9 @@ function NYC_04_AnyEntry()
         FixConversationFlag(GetConversation('PaulAfterAttack'), 'M04RaidDone', true, 'PaulLeftHotel', true);
         FixConversationFlag(GetConversation('PaulDuringAttack'), 'M04RaidDone', false, 'PaulLeftHotel', false);
         break;
+#endif
 
+#ifdef vanillamaps
     case "04_NYC_SMUG":
         if( dxr.flagbase.GetBool('FordSchickRescued') )
         {
@@ -1245,7 +1267,7 @@ function Vandenberg_FirstEntry()
 
     switch(dxr.localURL)
     {
-#ifdef vanilla
+#ifdef vanillamaps
     case "12_VANDENBERG_CMD":
         foreach AllActors(class'Dispatcher', d)
         {
@@ -1272,6 +1294,7 @@ function Vandenberg_FirstEntry()
             }
         }
         break;
+
     case "12_VANDENBERG_TUNNELS":
         foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
             e.BumpType = BT_PlayerBump;
@@ -1393,7 +1416,7 @@ function HongKong_FirstEntry()
 
         break;
 
-#ifdef vanilla
+#ifdef vanillamaps
     case "06_HONGKONG_WANCHAI_STREET":
         foreach AllActors(class'Button1',b)
         {
@@ -1489,7 +1512,7 @@ function Shipyard_FirstEntry()
 
     switch(dxr.localURL)
     {
-#ifdef vanilla
+#ifdef vanillamaps
     case "09_NYC_SHIP":
         foreach AllActors(class'DeusExMover', m, 'DeusExMover') {
             if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
@@ -1506,7 +1529,7 @@ function Shipyard_FirstEntry()
         dxr.flags.f.SetInt('DXRando_WeldPointCount',5);
         UpdateWeldPointGoal(5);
 
-#ifdef vanilla
+#ifdef vanillamaps
         Tag = 'FanToggle';
         foreach AllActors(class'ComputerSecurity',cs){
             if (cs.Name == 'ComputerSecurity4'){
@@ -1528,12 +1551,12 @@ function Shipyard_FirstEntry()
         if (gas!=None){
             gas.Destroy();
         }
-
 #endif
         break;
+
     case "09_NYC_DOCKYARD":
         foreach AllActors(class'Button1',b){
-            if (b.Tag=='Button1' && b.Event=='Lift' && b.Location.Z < 200){ //Vanilla Z is 97 for the lower button, just giving some slop in case it was changed in another mod?
+            if (b.Tag=='Button1' && b.Event=='Lift' && b.Location.Z < 200){ //vanilla Z is 97 for the lower button, just giving some slop in case it was changed in another mod?
                 k = Spawn(class'Keypad2',,,b.Location,b.Rotation);
                 k.validCode="8675309"; //They really like Jenny in this place
                 k.bToggleLock=False;
@@ -1546,7 +1569,7 @@ function Shipyard_FirstEntry()
         break;
 
     case "09_NYC_SHIPFAN":
-#ifdef vanilla
+#ifdef vanillamaps
         Tag = 'FanToggle';
         foreach AllActors(class'ComputerSecurity',cs){
             if (cs.Name == 'ComputerSecurity6'){
@@ -1581,7 +1604,7 @@ function Paris_FirstEntry()
 
     switch(dxr.localURL)
     {
-#ifdef vanilla
+#ifdef vanillamaps
     case "10_PARIS_CATACOMBS_TUNNELS":
         foreach AllActors(class'Trigger', t)
             if( t.Event == 'MJ12CommandoSpecial' )
@@ -1621,12 +1644,14 @@ function Paris_FirstEntry()
         }
         break;
 #endif
+
     case "10_PARIS_CLUB":
         foreach AllActors(class'ScriptedPawn',sp){
             if (sp.BindName=="LDDPAchille" || sp.BindName=="Camille"){
                 sp.bImportant=True;
             }
         }
+
     case "11_PARIS_CATHEDRAL":
         foreach AllActors(class'GuntherHermann', g) {
             g.ChangeAlly('mj12', 1, true);
@@ -1854,12 +1879,6 @@ function NYC_08_AnyEntry()
 {
     local StantonDowd s;
 
-    if( dxr.localURL != "08_NYC_BAR" ) {
-#ifdef injections
-        player().ChangeSong("NYCStreets2_Music.NYCStreets2_Music", 0);
-#endif
-    }
-
     switch(dxr.localURL) {
     case "08_NYC_STREET":
         SetTimer(1.0, True);
@@ -1868,7 +1887,7 @@ function NYC_08_AnyEntry()
         }
         break;
 
-#ifdef vanilla
+#ifdef vanillamaps
     case "08_NYC_SMUG":
         FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
         FixConversationGiveItem(GetConversation('FemJCM08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
@@ -1888,7 +1907,7 @@ function Area51_FirstEntry()
     local SpecialEvent se;
     local DataLinkTrigger dlt;
 
-#ifdef vanilla
+#ifdef vanillamaps
     switch(dxr.localURL)
     {
     case "15_AREA51_BUNKER":
@@ -2027,7 +2046,7 @@ function Area51_AnyEntry()
     switch(dxr.localURL)
     {
     case "15_AREA51_FINAL":
-#ifdef vanilla
+#ifdef vanillamaps
         foreach AllActors(class'Gray', g) {
             if( g.Tag == 'reactorgray1' ) g.BindName = "ReactorGray1";
             else if( g.Tag == 'reactorgray2' ) g.BindName = "ReactorGray2";
@@ -2066,7 +2085,7 @@ function AddDelay(Actor trigger, float time)
     trigger.Event = d.Tag;
 }
 
-#ifdef vanilla
+#ifdef vanillamaps
 function ToggleFan()
 {
     local Fan1 f;
@@ -2152,13 +2171,13 @@ function ToggleFan()
         foreach AllActors(class'AmbientSound',as){
             if (as.Name=='AmbientSound7'){
                 if (enable){
-                    as.AmbientSound = Sound'Ambient.Ambient.HumTurbine2';
+                    as.AmbientSound = Sound(DynamicLoadObject("Ambient.Ambient.HumTurbine2", class'Sound'));
                 } else {
                     as.AmbientSound = None;
                 }
             } else if (as.Name=='AmbientSound8'){
                 if (enable){
-                    as.AmbientSound = Sound'Ambient.Ambient.StrongWind';
+                    as.AmbientSound = Sound(DynamicLoadObject("Ambient.Ambient.StrongWind", class'Sound'));
                 } else {
                     as.AmbientSound = None;
                 }
@@ -2177,13 +2196,13 @@ function ToggleFan()
         foreach AllActors(class'AmbientSound',as){
             if (as.Name=='AmbientSound6'){
                 if (enable){
-                    as.AmbientSound = Sound'Ambient.Ambient.FanLarge';
+                    as.AmbientSound = Sound(DynamicLoadObject("Ambient.Ambient.FanLarge", class'Sound'));
                 } else {
                     as.AmbientSound = None;
                 }
             } else if (as.Name=='AmbientSound0'){
                 if (enable){
-                    as.AmbientSound = Sound'Ambient.Ambient.MachinesLarge3';
+                    as.AmbientSound = Sound(DynamicLoadObject("Ambient.Ambient.MachinesLarge3", class'Sound'));
                 } else {
                     as.AmbientSound = None;
                 }
@@ -2199,30 +2218,32 @@ function ToggleFan()
 function Trigger(Actor Other, Pawn Instigator)
 {
     if (Tag=='FanToggle'){
-#ifdef vanilla
+#ifdef vanillamaps
         ToggleFan();
 #endif
     }
 }
 
-function byte GetDefaultZoneBrightness(ZoneInfo z)
+function ZoneBrightnessData GetDefaultZoneBrightness(ZoneInfo z)
 {
+    local ZoneBrightnessData zb;
     local int i;
     for(i=0; i<ArrayCount(zone_brightness); i++) {
         if( z.name == zone_brightness[i].zonename )
-            return zone_brightness[i].brightness;
+            return zone_brightness[i];
     }
-    return 0;
+    return zb;
 }
 
 function SaveDefaultZoneBrightness(ZoneInfo z)
 {
     local int i;
-    if( z.AmbientBrightness ~= 0 ) return;
     for(i=0; i<ArrayCount(zone_brightness); i++) {
         if( zone_brightness[i].zonename == '' || z.name == zone_brightness[i].zonename ) {
             zone_brightness[i].zonename = z.name;
             zone_brightness[i].brightness = z.AmbientBrightness;
+            zone_brightness[i].saturation = z.AmbientSaturation;
+            zone_brightness[i].hue = z.AmbientHue;
             return;
         }
     }
