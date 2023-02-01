@@ -23,13 +23,24 @@ simulated event PreTravel()
     Super.PreTravel();
 }
 
+function Timer()
+{
+    Super.Timer();
+    RememberMusic();
+}
+
 function RememberMusic()
-{// we could do a Timer to RememberMusic if we need to?
+{
     if(p==None) return;
 
     // save us writing to the config file
     if(PrevSong == p.Song && PrevMusicMode == p.musicMode && PrevSongSection == p.SongSection && PrevSavedSection == p.savedSection)
         return;
+
+    // dying and outro don't set the savedSection, so we have to do it manually
+    if(PrevMusicMode == 0 && (p.musicMode == MUS_Dying || p.musicMode == MUS_Outro) ) {
+        p.savedSection = PrevSongSection;
+    }
 
     PrevSong = p.Song;
     PrevMusicMode = p.musicMode;
@@ -46,7 +57,7 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
     p = #var(PlayerPawn)(NewPlayer);
     setting = int(NewPlayer.ConsoleCommand("get #var(package).MenuChoice_ContinuousMusic continuous_music"));
     c = class'MenuChoice_ContinuousMusic';
-    log("ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$") "$setting@PrevSong@PrevMusicMode);
+    l("ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$") "$setting@PrevSong@PrevMusicMode);
 
 #ifdef vanilla
     // copy to LevelSong in order to support changing songs, since Level.Song is const
@@ -82,13 +93,17 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
 
     // now time for fancy stuff
     if(PrevSong == NewSong) {
+        if(PrevSavedSection == 255)
+            PrevSavedSection = NewSection;
+
         switch(PrevMusicMode) {
             case 0: p.musicMode = MUS_Ambient; break;
             case 1: p.musicMode = MUS_Combat; break;
-            case 2: p.musicMode = MUS_Conversation; break;
-            case 3: p.musicMode = MUS_Outro; break;
-            case 4: p.musicMode = MUS_Dying; break;
-            default: p.musicMode = MUS_Ambient;
+            // 2=conversation, 3=outro, 4=dying
+            default:
+                p.musicMode = MUS_Ambient;
+                PrevSongSection = PrevSavedSection;
+                break;
         }
         p.savedSection = PrevSavedSection;
         p.SongSection = PrevSongSection;
@@ -97,10 +112,12 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
             // simpler version of continuous music
             NewSection = PrevSongSection;
             NewTransition = MTRAN_FastFade;// default is MTRAN_Fade, quicker fade here when it's the same song
-        } else { //if(setting==c.default.advanced) {
+        } else if(p.musicMode == PrevMusicMode) { //if(setting==c.default.advanced) {
             // this is where we've determined we can just leave the current song playing
             // MTRAN_None is basically the same as return here, except the Song variable gets set instead of being None, seems like less of a hack to me
             NewTransition = MTRAN_None;
+        } else {
+            NewTransition = MTRAN_FastFade;
         }
     } else if(PrevMusicMode == 1) {// 1 is combat
         NewTransition = MTRAN_SlowFade;
@@ -123,4 +140,6 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
 #else
     p.ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
 #endif
+
+    SetTimer(1.0, True);
 }

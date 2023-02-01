@@ -504,6 +504,7 @@ exec function AllPasswords()
 //========= MUSIC STUFF
 function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
+    log(self$": _ClientSetMusic "$NewSong@NewSection@NewCdTrack@NewTransition@savedSection);
     Super.ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
 }
 
