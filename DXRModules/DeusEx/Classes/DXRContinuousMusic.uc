@@ -16,12 +16,21 @@ var EMusicMode musicMode;
 var float musicCheckTimer;
 var float musicChangeTimer;
 
+var byte savedCombatSection;
+var byte savedConvSection;
+
 var #var(PlayerPawn) p;
-var transient config Music PrevSong;
-var transient config byte PrevMusicMode;
-var transient config byte PrevSongSection;
-var transient config byte PrevSavedSection;
-var transient config byte CombatSection;// used for NYCStreets2_Music
+var config Music PrevSong;
+var config byte PrevMusicMode;
+var config byte PrevSongSection;
+var config byte PrevSavedSection;
+var config byte PrevSavedCombatSection;
+var config byte PrevSavedConvSection;
+
+var byte OutroSection;
+var byte DyingSection;
+var byte ConvSection;
+var byte CombatSection;// used for NYCStreets2_Music
 
 var int setting;
 var class<MenuChoice_ContinuousMusic> c;
@@ -57,7 +66,10 @@ function RememberMusic()
     if(p==None || p.Song == None) return;
 
     // save us writing to the config file
-    if(PrevSong == p.Song && PrevMusicMode == musicMode && PrevSongSection == p.SongSection && PrevSavedSection == p.savedSection)
+    if(
+        PrevSong == p.Song && PrevMusicMode == musicMode && PrevSongSection == p.SongSection && PrevSavedSection == p.savedSection
+        && PrevSavedCombatSection == savedCombatSection && PrevSavedConvSection == savedConvSection
+    )
         return;
 
     // dying and outro don't set the savedSection, so we have to do it manually
@@ -69,6 +81,8 @@ function RememberMusic()
     PrevMusicMode = musicMode;
     PrevSongSection = p.SongSection;
     PrevSavedSection = p.savedSection;
+    PrevSavedCombatSection = savedCombatSection;
+    PrevSavedConvSection = savedConvSection;
     SaveConfig();
 }
 
@@ -82,7 +96,12 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
     // copy to LevelSong in order to support changing songs, since Level.Song is const
     LevelSong = Level.Song;
     LevelSongSection = Level.SongSection;
+    DyingSection = 1;
     CombatSection = 3;
+    ConvSection = 4;
+    OutroSection = 5;
+    savedCombatSection = CombatSection;
+    savedConvSection = ConvSection;
     if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" ) {
         //LevelSong = Music'NYCStreets2_Music';
         LevelSong = Music(DynamicLoadObject("NYCStreets2_Music.NYCStreets2_Music", class'Music'));
@@ -156,9 +175,14 @@ function GetLevelSong()
     i = rng(i);
     p.ClientMessage(songs[i]);
 
+    DyingSection = 1;
     CombatSection = 3;
+    ConvSection = 4;
+    OutroSection = 5;
     LevelSong = Music(DynamicLoadObject(songs[i]$"."$songs[i], class'Music'));
     if(songs[i]=="NYCStreets2_Music") CombatSection = 26;
+    savedCombatSection = CombatSection;
+    savedConvSection = ConvSection;
     LevelSongSection = 0;
 }
 
@@ -177,7 +201,6 @@ function AnyEntry()
     NewSection = LevelSongSection;
     NewCdTrack = 255;
     NewTransition = MTRAN_Fade;
-
 
     l("AnyEntry 2: "$NewSong@NewSection@NewCdTrack@NewTransition@PrevSong@PrevSongSection@PrevSavedSection@PrevMusicMode);
 
@@ -200,6 +223,8 @@ function AnyEntry()
         }
         p.savedSection = PrevSavedSection;
         p.SongSection = PrevSongSection;
+        savedCombatSection = PrevSavedCombatSection;
+        savedConvSection = PrevSavedConvSection;
         NewSection = PrevSongSection;
         if(setting==c.default.simple) {
             // simpler version of continuous music
@@ -226,6 +251,7 @@ function AnyEntry()
     // fix NYCStreets2_Music because reasons
     if(NewSection == 3) {
         NewSection = CombatSection;
+        err("had to fix combat music");
     }
 
     _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
@@ -318,47 +344,48 @@ simulated event Tick(float deltaTime)
     RememberMusic();
 }
 
+function SaveSection()
+{
+    // save our place in the ambient track
+    if (musicMode == MUS_Ambient)
+        p.savedSection = p.SongSection;
+    if (musicMode == MUS_Combat)
+        savedCombatSection = p.SongSection;
+    if (musicMode == MUS_Conversation)
+        savedConvSection = p.SongSection;
+}
+
 function EnterOutro()
 {
-    _ClientSetMusic(LevelSong, 5, 255, MTRAN_FastFade);
+    SaveSection();
+    _ClientSetMusic(LevelSong, OutroSection, 255, MTRAN_FastFade);
     musicMode = MUS_Outro;
 }
 
 function EnterConversation()
 {
-    // save our place in the ambient track
-    if (musicMode == MUS_Ambient)
-        p.savedSection = p.SongSection;
-    else
-        p.savedSection = 255;
-
-    _ClientSetMusic(LevelSong, 4, 255, MTRAN_Fade);
+    SaveSection();
+    _ClientSetMusic(LevelSong, savedConvSection, 255, MTRAN_Fade);
     musicMode = MUS_Conversation;
 }
 
 function EnterDying()
 {
-    _ClientSetMusic(LevelSong, 1, 255, MTRAN_Fade);
+    SaveSection();
+    _ClientSetMusic(LevelSong, DyingSection, 255, MTRAN_Fade);
     musicMode = MUS_Dying;
 }
 
 function EnterCombat()
 {
-    // save our place in the ambient track
-    if (musicMode == MUS_Ambient)
-        p.savedSection = p.SongSection;
-    else
-        p.savedSection = 255;
-
-    _ClientSetMusic(LevelSong, CombatSection, 255, MTRAN_FastFade);
+    SaveSection();
+    _ClientSetMusic(LevelSong, savedCombatSection, 255, MTRAN_FastFade);
     musicMode = MUS_Combat;
 }
 
 function EnterAmbient()
 {
-    // use the default ambient section for this map
-    if (p.savedSection == 255)
-        p.savedSection = LevelSongSection;
+    SaveSection();
 
     // fade slower for combat transitions
     if (musicMode == MUS_Combat)
@@ -366,7 +393,6 @@ function EnterAmbient()
     else
         _ClientSetMusic(LevelSong, p.savedSection, 255, MTRAN_Fade);
 
-    p.savedSection = 255;
     musicMode = MUS_Ambient;
     musicChangeTimer = 0.0;
 }
@@ -402,4 +428,5 @@ function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusi
 #else
     p.ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
 #endif
+    RememberMusic();
 }
