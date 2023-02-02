@@ -110,7 +110,7 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
     }
 
     // ignore complicated logic for title screen or if disabled, gives us a chance to reset the values stored in configs
-    if( p == None || dxr == None || dxr.dxInfo.missionNumber <= -2 || setting == c.default.disabled ) {
+    if( p == None || dxr == None || setting == c.default.disabled ) {
         _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
         // really make sure we clean the config
         PrevSong = NewSong;
@@ -193,7 +193,7 @@ function AnyEntry()
     local EMusicTransition NewTransition;
 
     l("AnyEntry 1: "$p@dxr@dxr.dxInfo.missionNumber@setting);
-    if( p == None || dxr == None || dxr.dxInfo.missionNumber <= -2 || setting == c.default.disabled )
+    if( p == None || dxr == None  || setting == c.default.disabled )
         return;
 
     GetLevelSong();
@@ -207,8 +207,8 @@ function AnyEntry()
     // ensure musicMode defaults to ambient, to fix combat music re-entry
     musicMode = MUS_Ambient;
 
-    // now time for fancy stuff
-    if(PrevSong == NewSong) {
+    // now time for fancy stuff, don't attempt a smmoth transition for the title screen, we need to init the config
+    if(PrevSong == NewSong && setting != c.default.disabled && dxr.dxInfo.missionNumber > -2) {
         if(PrevSavedSection == 255)
             PrevSavedSection = NewSection;
 
