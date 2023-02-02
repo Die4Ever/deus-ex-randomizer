@@ -408,6 +408,29 @@ function RandomizeCutscene()
 
     RandomBobPage();
     RandomLiberty();
+
+    RandomizeDialog();
+}
+
+function RandomizeDialog()
+{
+    local ConSpeech s, speech[100];
+    local int i, j, num, soundID;
+    local string subtitle;
+
+    SetSeed("RandomizeDialog");
+    foreach AllObjects(class'ConSpeech', s) {
+        speech[num++] = s;
+    }
+    for(i=0;i<num;i++) {
+        j = rng(num);
+        subtitle = speech[i].speech;
+        soundID = speech[i].soundID;
+        speech[i].speech = speech[j].speech;
+        speech[i].soundID = speech[j].soundID;
+        speech[j].speech = subtitle;
+        speech[j].soundID = soundID;
+    }
 }
 
 function bool is_valid(string s, class<Object> o)
