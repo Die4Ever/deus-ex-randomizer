@@ -35,6 +35,11 @@ var byte CombatSection;// used for NYCStreets2_Music
 var int setting;
 var class<MenuChoice_ContinuousMusic> c;
 
+struct SongChoice {
+    var string song;
+    var int ambient, dying, combat, conv, outro;
+};
+
 simulated function PreBeginPlay()
 {
     Disable('Tick');
@@ -125,65 +130,102 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
     p.musicMode = MUS_Outro;
 }
 
+function SongChoice MakeSongChoice(string song, int ambient, int dying, int combat, int conv, int outro)
+{
+    local SongChoice s;
+    s.song = song;
+    s.ambient = ambient;
+    s.dying = dying;
+    s.combat = combat;
+    s.conv = conv;
+    s.outro = outro;
+    return s;
+}
+
 function GetLevelSong()
 {
-    local string songs[50];
+    local SongChoice choices[50];
+    local SongChoice s;
     local int i;
+    local bool all;
+
+    switch(dxr.localURL) {
+    case "INTRO":
+    case "ENDGAME1":
+    case "ENDGAME2":
+    case "ENDGAME3":
+    case "ENDGAME4":
+        all=true;
+    }
 
     // TODO: probably a few of these songs don't have the right sections, also we could mix up ambient vs alternative ambient for songs that have it
     // we could also use combat/conversation/outro/dying songs from different songs
-    songs[i++] = "Area51_Music";
-    songs[i++] = "Area51Bunker_Music";
-    songs[i++] = "BatteryPark_Music";
-    songs[i++] = "Credits_Music";
-    songs[i++] = "DeusExDanceMix_Music";
-    songs[i++] = "Endgame1_Music";
-    songs[i++] = "Endgame2_Music";
-    songs[i++] = "Endgame3_Music";
-    songs[i++] = "HKClub_Music";
-    songs[i++] = "HKClub2_Music";
-    songs[i++] = "HongKong_Music";
-    songs[i++] = "HongKongCanal_Music";
-    songs[i++] = "HongKongHelipad_Music";
-    songs[i++] = "Intro_Music";
-    songs[i++] = "Lebedev_Music";
-    songs[i++] = "LibertyIsland_Music";
-    songs[i++] = "MJ12_Music";
-    songs[i++] = "NavalBase_Music";
-    songs[i++] = "NYCBar2_Music";
-    songs[i++] = "NYCStreets_Music";
-    songs[i++] = "NYCStreets2_Music";
-    songs[i++] = "OceanLab_Music";
-    songs[i++] = "OceanLab2_Music";
-    songs[i++] = "ParisCathedral_Music";
-    songs[i++] = "ParisChateau_Music";
-    songs[i++] = "ParisClub_Music";
-    songs[i++] = "ParisClub2_Music";
-    songs[i++] = "Quotes_Music";
-    songs[i++] = "Title_Music";
-    songs[i++] = "Training_Music";
-    songs[i++] = "Tunnels_Music";
-    songs[i++] = "UNATCO_Music";
-    songs[i++] = "UNATCOReturn_Music";
-    songs[i++] = "Vandenberg_Music";
-    songs[i++] = "VersaLife_Music";
+    // 0=ambient, 1=dying, 2=ambient2, 3=combat, 4=conversation, 5=outro
+    choices[i++] = MakeSongChoice("Area51_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("Area51Bunker_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("BatteryPark_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("HKClub_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("HKClub2_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("HongKong_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("HongKongCanal_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("HongKongHelipad_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("Intro_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("Lebedev_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("LibertyIsland_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("MJ12_Music", 0, 1, 3, 4, 5);
+    //choices[i++] = MakeSongChoice("MJ12_Music", 2, 1, 3, 4, 5);// ambient 2? maybe this could be a conversation song instead? maybe this isn't the right way to do this because it puts MJ12_Music into the pool twice
+    choices[i++] = MakeSongChoice("NavalBase_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("NYCBar2_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("NYCStreets_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("NYCStreets2_Music", 0, 1, 26, 4, 5);
+    choices[i++] = MakeSongChoice("OceanLab_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("OceanLab2_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("ParisCathedral_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("ParisChateau_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("ParisClub_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("ParisClub2_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("Training_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("Tunnels_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("UNATCO_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("UNATCOReturn_Music", 0, 1, 3, 4, 5);
+    //choices[i++] = MakeSongChoice("UNATCOReturn_Music", 2, 1, 3, 4, 5);// ambient 2
+    choices[i++] = MakeSongChoice("Vandenberg_Music", 0, 1, 3, 4, 5);
+    choices[i++] = MakeSongChoice("VersaLife_Music", 0, 1, 3, 4, 5);
+
+    if(all) {
+        choices[i++] = MakeSongChoice("Credits_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("DeusExDanceMix_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("Endgame1_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("Endgame2_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("Endgame3_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("Quotes_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("Title_Music", 0, 1, 3, 4, 5);
+    }
 
     SetGlobalSeed(string(Level.Song.Name));// matching songs will stay matching
     if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" )
         SetGlobalSeed("NYCStreets2_Music");
 
     i = rng(i);
-    p.ClientMessage(songs[i]);
+    s = choices[i];
 
-    DyingSection = 1;
-    CombatSection = 3;
-    ConvSection = 4;
-    OutroSection = 5;
-    LevelSong = Music(DynamicLoadObject(songs[i]$"."$songs[i], class'Music'));
-    if(songs[i]=="NYCStreets2_Music") CombatSection = 26;
+    LevelSongSection = s.ambient;
+    DyingSection = s.dying;
+    CombatSection = s.combat;
+    ConvSection = s.conv;
+    OutroSection = s.outro;
+    if(all) {
+        switch(rng(5)) {
+        case 1: LevelSongSection = DyingSection; break;
+        case 2: LevelSongSection = CombatSection; break;
+        case 3: LevelSongSection = ConvSection; break;
+        case 4: LevelSongSection = OutroSection; break;
+        }
+    }
+    l("GetLevelSong() "$s.song@LevelSongSection@DyingSection@CombatSection@ConvSection@OutroSection);
+    LevelSong = Music(DynamicLoadObject(s.song$"."$s.song, class'Music'));
     savedCombatSection = CombatSection;
     savedConvSection = ConvSection;
-    LevelSongSection = 0;
 }
 
 function AnyEntry()
