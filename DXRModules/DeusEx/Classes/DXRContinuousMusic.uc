@@ -290,12 +290,6 @@ function AnyEntry()
     musicCheckTimer = 10;
     musicChangeTimer = 10;
 
-    // fix NYCStreets2_Music because reasons
-    if(NewSection == 3) {
-        NewSection = CombatSection;
-        err("had to fix combat music");
-    }
-
     _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
 
     SetTimer(1.0, True);
