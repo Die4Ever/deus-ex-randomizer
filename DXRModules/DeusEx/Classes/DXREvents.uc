@@ -922,7 +922,7 @@ static function ExtinguishFire(DXRando dxr, string extinguisher, DeusExPlayer pl
 
 static function GeneralEventData(DXRando dxr, out string j)
 {
-    local string loadout;
+    local string loadout,lang;
     local class<Json> js;
     js = class'Json';
 
@@ -938,6 +938,10 @@ static function GeneralEventData(DXRando dxr, out string j)
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
         js.static.Add(j, "loadout", loadout);
+
+    lang = GetConfig("Engine.Engine", "Language");
+    if(lang != "")
+        js.static.Add(j, "language", lang);
 }
 
 static function AugmentationData(DXRando dxr, out string j)
