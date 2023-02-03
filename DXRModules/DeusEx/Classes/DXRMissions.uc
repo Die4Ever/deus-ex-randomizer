@@ -570,7 +570,7 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Barracks", NORMAL_GOAL, vect(2990.853516, 30.971684, -392.498993), rot(0, 16384, 0));
         AddActorLocation(loc, 1, vect(2971.853516, 144.971680, -392.498993), rot(0,-8000,0));
         loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Chapel", NORMAL_GOAL, vect(1860.275635, -9.666374, -371.286804), rot(0, 16384, 0));
-        AddActorLocation(loc, 1, vect(2114.275635, -143.666382, -371.286804), rot(0, 32768, 0));
+        AddActorLocation(loc, 1, vect(2127, -143.666382, -350), rot(0, 32768, 0));
         loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Kitchen", NORMAL_GOAL, vect(1511.325317, -3204.465088, -680.498413), rot(0, 32768, 0));
         AddActorLocation(loc, 1, vect(1511.325317, -3123.465088, -680.498413), rot(0,65536,0));
         loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Gold Vault", NORMAL_GOAL, vect(3480.141602, -3180.397949, -704.496704), rot(0, 0, 0));
