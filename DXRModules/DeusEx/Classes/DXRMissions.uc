@@ -171,6 +171,37 @@ function int AddGoalLocation(string mapName, string name, int bitMask, vector lo
     return num_locations++;
 }
 
+function String generateGoalLocationList()
+{
+    local int i,j;
+    local String goalList;
+
+    goalList = "";
+
+    for (i=0;i<num_goals;i++){
+        goalList = goalList $ goals[i].name $ ":|n";
+        goalList = goalList $ "-----------------------------|n";
+
+        for (j=0;j<num_locations;j++){
+            if ((goals[i].bitMask & locations[j].bitMask) != 0) {
+                goalList = goalList $ locations[j].name $ " (" $ locations[j].mapName $ ")";
+
+                //For missions with multiple "Vanilla" locations in a single pool (eg mission 8),
+                //this isn't actually as useful as it seems otherwise.  If we added unique "Vanilla Goal"
+                //masks, it would be useful again
+                //if ((locations[j].bitMask & VANILLA_GOAL) != 0){
+                //    goalList = goalList $ " (Vanilla)";
+                //}
+                goalList = goalList $ "|n";
+            }
+        }
+        goalList = goalList $ "|n";
+
+    }
+
+    return goalList;
+}
+
 function AddMutualExclusion(int L1, int L2)
 {
     mutually_exclusive[num_mututally_exclusives].L1 = L1;
