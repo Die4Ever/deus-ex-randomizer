@@ -18,7 +18,9 @@ function CreateControls()
 
     //Get rid of the "Confirm Note Deletion" checkbox
     //It's free real estate!
+    //Instead, use the state from MenuChoice_ConfirmNoteDelete instead
     chkConfirmNoteDeletion.Hide();
+    bConfirmNoteDeletes = bool(player.ConsoleCommand("get MenuChoice_ConfirmNoteDelete confirm_delete"));
 
     btnBingo = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnBingo.SetButtonText("|&Bingo");
@@ -37,8 +39,10 @@ function CreateControls()
                 CreateShowSpoilersButton(); //A button makes a confirmation window easier
             }
 
+            //Goals is set in Revision, but not supported there
+#ifndef revision
             CreateGoalLocationsButton();
-
+#endif
         }
 
         if (dxr.flags.gamemode==1){ //Entrance Rando
