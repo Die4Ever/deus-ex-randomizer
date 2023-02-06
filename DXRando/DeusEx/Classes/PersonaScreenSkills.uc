@@ -26,8 +26,38 @@ function CreateSkillsList()
     }
 }
 
+function UpdateSwimSpeed()
+{
+    local float mult,augLevel;
+
+    if (!selectedSkill.isA('SkillSwimming')){
+        return;
+    }
+
+    if (!player.HeadRegion.Zone.bWaterZone){
+        return;
+    }
+
+    //Calculation from DeusExPlayer HeadZoneChange
+    mult = selectedSkill.LevelValues[selectedSkill.CurrentLevel];
+    if ( player.Level.NetMode == NM_Standalone )
+	{
+        player.WaterSpeed = player.Default.WaterSpeed * mult;
+    } else {
+        if (player.AugmentationSystem!=None){
+            augLevel = player.AugmentationSystem.GetAugLevelValue(class'AugAqualung');
+            if (augLevel==-1.0){
+                player.WaterSpeed = Human(player).Default.mpWaterSpeed * mult;
+            } else {
+                player.WaterSpeed = Human(player).Default.mpWaterSpeed * 2.0 * mult;
+            }
+        }
+    }
+}
+
 function UpgradeSkill()
 {
     Super.UpgradeSkill();
+    UpdateSwimSpeed();
     UpdateSkillBanned(selectedSkillButton);
 }
