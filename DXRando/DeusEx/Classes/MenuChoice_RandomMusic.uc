@@ -1,10 +1,10 @@
 //=============================================================================
-// MenuChoice_ConfirmNoteDelete
+// MenuChoice_RandomMusic
 //=============================================================================
 
-class MenuChoice_ConfirmNoteDelete extends MenuUIChoiceEnum;
+class MenuChoice_RandomMusic extends MenuUIChoiceEnum;
 
-var config bool confirm_delete;
+var config bool random_music;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -31,8 +31,8 @@ function PopulateOptions()
 {
     local int typeIndex;
 
-    enumText[0] = "Don't Confirm";
-    enumText[1] = "Confirm";
+    enumText[0] = "Not Random";
+    enumText[1] = "Random";
 }
 
 // ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ function PopulateOptions()
 
 function SetInitialOption()
 {
-    SetValue(int(confirm_delete));
+    SetValue(int(random_music));
 }
 
 // ----------------------------------------------------------------------
@@ -50,7 +50,11 @@ function SetInitialOption()
 
 function SaveSetting()
 {
-    confirm_delete = bool(GetValue());
+    random_music = bool(GetValue());
+
+    //If we want it to change music immediately,
+    //any call to do so should happen here
+
     SaveConfig();
 }
 
@@ -60,7 +64,7 @@ function SaveSetting()
 
 function LoadSetting()
 {
-    SetValue(int(confirm_delete));
+    SetValue(int(random_music));
 }
 
 // ----------------------------------------------------------------------
@@ -69,8 +73,8 @@ function LoadSetting()
 
 function ResetToDefault()
 {
-    confirm_delete = default.confirm_delete;
-    SetValue(int(confirm_delete));
+    random_music = default.random_music;
+    SetValue(int(random_music));
     SaveSetting();
 }
 
@@ -79,9 +83,9 @@ function ResetToDefault()
 
 defaultproperties
 {
-     confirm_delete=True;
+     random_music=True;
      defaultInfoWidth=243
      defaultInfoPosX=203
-     HelpText="Confirm when deleting a note"
-     actionText="Confirm Note Deletion"
+     HelpText="Randomize game music"
+     actionText="Randomize Music"
 }
