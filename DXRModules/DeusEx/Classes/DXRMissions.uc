@@ -403,6 +403,9 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
         AddActorLocation(loc, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
+        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(375,3860,-604), rot(0, 8048, 0));
+        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
+
         return 51;
 
     case "05_NYC_UNATCOHQ":
@@ -733,6 +736,8 @@ function AddMission1Goals()
 function PreFirstEntry()
 {
     local #var(prefix)AnnaNavarre anna;
+    local #var(prefix)PaulDenton paul;
+    local #var(prefix)PaulDentonCarcass paulcarc;
     local FlagTrigger ft;
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)ComputerPersonal cp;
@@ -782,6 +787,17 @@ function PreFirstEntry()
             if (ft.Name=='FlagTrigger1'){
                 ft.SetCollisionSize(100, ft.CollisionHeight);
             }
+        }
+    }
+    else if( dxr.localURL == "05_NYC_UNATCOMJ12LAB" ) {
+        foreach AllActors(class'#var(prefix)PaulDentonCarcass',paulcarc){
+            paulcarc.bInvincible=true;
+        }
+        foreach AllActors(class'#var(prefix)PaulDenton',paul){
+            paul.bDetectable=false;
+            paul.bIgnore=true;
+            paul.RaiseAlarm=RAISEALARM_Never;
+            paul.ChangeAlly('mj12',0,true,false);
         }
     }
     else if( dxr.localURL == "09_NYC_GRAVEYARD" ) {
