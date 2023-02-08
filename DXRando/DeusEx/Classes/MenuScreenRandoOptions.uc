@@ -15,12 +15,13 @@ event InitWindow()
         choices[i++]=Class'MenuChoice_EnergyDisplay';
         choices[i++]=Class'MenuChoice_ShowKeys';
     }
-    if(!#defined(revision))
+    if(!#defined(revision)) {
         choices[i++]=Class'MenuChoice_ContinuousMusic';
+        choices[i++]=Class'MenuChoice_RandomMusic';
+    }
     choices[i++]=Class'MenuChoice_PasswordAutofill';
     choices[i++]=Class'MenuChoice_BrightnessBoost';
     choices[i++]=Class'MenuChoice_ConfirmNoteDelete';
-    choices[i++]=Class'MenuChoice_RandomMusic';
     choices[i++]=Class'MenuChoice_JoinDiscord';
     choices[i++]=Class'MenuChoice_ReleasePage';  //This should probably always be the bottom option
 

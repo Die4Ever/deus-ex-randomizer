@@ -32,7 +32,6 @@ var byte DyingSection;
 var byte ConvSection;
 var byte CombatSection;// used for NYCStreets2_Music
 
-var int setting;
 var class<MenuChoice_ContinuousMusic> c;
 
 struct SongChoice {
@@ -93,10 +92,14 @@ function RememberMusic()
 
 function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
+    local bool rando_music_setting;
+    local int continuous_setting;
+
     p = #var(PlayerPawn)(NewPlayer);
-    setting = int(NewPlayer.ConsoleCommand("get #var(package).MenuChoice_ContinuousMusic continuous_music"));
+    continuous_setting = int(NewPlayer.ConsoleCommand("get #var(package).MenuChoice_ContinuousMusic continuous_music"));
+    rando_music_setting = bool(p.ConsoleCommand("get #var(package).MenuChoice_RandomMusic  random_music"));
     c = class'MenuChoice_ContinuousMusic';
-    l("ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$") "$setting@PrevSong@PrevMusicMode@dxr.dxInfo.missionNumber);
+    l("ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$") "$continuous_setting@rando_music_setting@PrevSong@PrevMusicMode@dxr.dxInfo.missionNumber);
 
     // copy to LevelSong in order to support changing songs, since Level.Song is const
     LevelSong = Level.Song;
@@ -114,8 +117,8 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
         CombatSection = 26;// idk why but section 3 takes time to start playing the song
     }
 
-    // ignore complicated logic for title screen or if disabled, gives us a chance to reset the values stored in configs
-    if( p == None || dxr == None || setting == c.default.disabled ) {
+    // ignore complicated logic if everything is disabled
+    if( p == None || dxr == None || (continuous_setting == c.default.disabled && rando_music_setting == false) ) {
         _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
         // really make sure we clean the config
         PrevSong = NewSong;
@@ -158,7 +161,7 @@ function GetLevelSong()
         all=true;
     }
 
-    // TODO: probably a few of these songs don't have the right sections, also we could mix up ambient vs alternative ambient for songs that have it
+    // TODO: we could mix up ambient vs alternative ambient for songs that have it
     // we could also use combat/conversation/outro/dying songs from different songs
     // 0=ambient, 1=dying, 2=ambient2, 3=combat, 4=conversation, 5=outro
     choices[i++] = MakeSongChoice("Area51_Music", 0, 1, 3, 4, 5);
@@ -169,7 +172,6 @@ function GetLevelSong()
     choices[i++] = MakeSongChoice("HongKong_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("HongKongCanal_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("HongKongHelipad_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("Intro_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("Lebedev_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("LibertyIsland_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("MJ12_Music", 0, 1, 3, 4, 5);
@@ -184,7 +186,6 @@ function GetLevelSong()
     choices[i++] = MakeSongChoice("ParisChateau_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("ParisClub_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("ParisClub2_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("Training_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("Tunnels_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("UNATCO_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("UNATCOReturn_Music", 0, 1, 3, 4, 5);
@@ -192,14 +193,16 @@ function GetLevelSong()
     choices[i++] = MakeSongChoice("Vandenberg_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("VersaLife_Music", 0, 1, 3, 4, 5);
 
-    if(all) {
-        choices[i++] = MakeSongChoice("Credits_Music", 0, 1, 3, 4, 5);
+    if(all) {// change all the arguments to 0 since they don't have other sections
+        choices[i++] = MakeSongChoice("Credits_Music", 0, 0, 0, 0, 0);
         choices[i++] = MakeSongChoice("DeusExDanceMix_Music", 0, 1, 3, 4, 5);
-        choices[i++] = MakeSongChoice("Endgame1_Music", 0, 1, 3, 4, 5);
-        choices[i++] = MakeSongChoice("Endgame2_Music", 0, 1, 3, 4, 5);
-        choices[i++] = MakeSongChoice("Endgame3_Music", 0, 1, 3, 4, 5);
-        choices[i++] = MakeSongChoice("Quotes_Music", 0, 1, 3, 4, 5);
-        choices[i++] = MakeSongChoice("Title_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("Endgame1_Music", 0, 0, 0, 0, 0);
+        choices[i++] = MakeSongChoice("Endgame2_Music", 0, 0, 0, 0, 0);
+        choices[i++] = MakeSongChoice("Endgame3_Music", 0, 0, 0, 0, 0);
+        choices[i++] = MakeSongChoice("Intro_Music", 0, 0, 0, 0, 0);
+        choices[i++] = MakeSongChoice("Quotes_Music", 0, 0, 0, 0, 0);
+        choices[i++] = MakeSongChoice("Title_Music", 0, 0, 0, 0, 0);
+        choices[i++] = MakeSongChoice("Training_Music", 0, 0, 0, 0, 0);
     }
 
     SetGlobalSeed(string(Level.Song.Name));// matching songs will stay matching
@@ -233,12 +236,20 @@ function AnyEntry()
     local music NewSong;
     local byte NewSection, NewCdTrack;
     local EMusicTransition NewTransition;
+    local bool rando_music_setting;
+    local int continuous_setting;
 
-    l("AnyEntry 1: "$p@dxr@dxr.dxInfo.missionNumber@setting);
-    if( p == None || dxr == None  || setting == c.default.disabled )
+    if(p == None) return;
+
+    continuous_setting = int(p.ConsoleCommand("get #var(package).MenuChoice_ContinuousMusic continuous_music"));
+    rando_music_setting = bool(p.ConsoleCommand("get #var(package).MenuChoice_RandomMusic  random_music"));
+    l("AnyEntry 1: "$p@dxr@dxr.dxInfo.missionNumber@continuous_setting@rando_music_setting);
+    if( p == None || dxr == None  || (continuous_setting == c.default.disabled && rando_music_setting==false) )
         return;
 
-    GetLevelSong();
+    if(rando_music_setting) {
+        GetLevelSong();
+    }
     NewSong = LevelSong;
     NewSection = LevelSongSection;
     NewCdTrack = 255;
@@ -250,7 +261,7 @@ function AnyEntry()
     musicMode = MUS_Ambient;
 
     // now time for fancy stuff, don't attempt a smmoth transition for the title screen, we need to init the config
-    if(PrevSong == NewSong && setting != c.default.disabled && dxr.dxInfo.missionNumber > -2) {
+    if(PrevSong == NewSong && continuous_setting != c.default.disabled && dxr.dxInfo.missionNumber > -2) {
         if(PrevSavedSection == 255)
             PrevSavedSection = NewSection;
 
@@ -268,7 +279,7 @@ function AnyEntry()
         savedCombatSection = PrevSavedCombatSection;
         savedConvSection = PrevSavedConvSection;
         NewSection = PrevSongSection;
-        if(setting==c.default.simple) {
+        if(continuous_setting==c.default.simple) {
             // simpler version of continuous music
             NewSection = PrevSongSection;
             NewTransition = MTRAN_FastFade;// default is MTRAN_Fade, quicker fade here when it's the same song
