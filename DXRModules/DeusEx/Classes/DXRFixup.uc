@@ -1585,8 +1585,20 @@ function Shipyard_FirstEntry()
 
 function Shipyard_AnyEntry()
 {
+    local #var(Mover) m;
+
     switch(dxr.localURL)
     {
+    case "09_NYC_SHIP":
+#ifdef vanillamaps
+        if(dxr.flagbase.GetBool('HelpSailor')) {
+            foreach AllActors(class'#var(Mover)', m, 'FrontDoor') {
+                m.bLocked = false;
+            }
+        }
+#endif
+        break;
+
     case "09_NYC_SHIPBELOW":
         SetTimer(1, True);
         break;

@@ -571,7 +571,7 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6528.000000,200.000000,-448.000000), rot(0,65536,0));
         AddActorLocation(loc, 2, vect(-6499.218750, 200.039917, -490.899567), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1664.000000,-416.000000), rot(0,81920,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1662.000000,-416.000000), rot(0,81920,0));
         AddActorLocation(loc, 2, vect(-3296.133789, -1632.118652, -490.899567), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,-1024.000000,-416.000000), rot(0,16384,0));
