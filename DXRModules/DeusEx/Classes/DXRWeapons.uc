@@ -1,5 +1,5 @@
 class DXRWeapons extends DXRBase;
-
+// do not change a weapon's defaults, since we use them in the calculations so this is all safe to be called multiple times
 var DXRLoadouts loadouts;
 
 function CheckConfig()
@@ -86,19 +86,19 @@ simulated function RandoProjectile(DeusExWeapon w, out class<Projectile> p, out 
         break;
 
     case class'#var(prefix)PlasmaBolt':
-        p.default.Damage = ratio * 9.0;
+        p.default.Damage = ratio * 10.0;
 #ifndef hx
-        class<#var(prefix)PlasmaBolt>(p).default.mpDamage = ratio * 9.0;
+        class<#var(prefix)PlasmaBolt>(p).default.mpDamage = ratio * 10.0;
 #endif
-        w.HitDamage = ratio * 9.0;
+        w.HitDamage = ratio * 10.0;
         p = class'PlasmaBoltFixTicks';
         d = p;
     case class'PlasmaBoltFixTicks':// no break
-        p.default.Damage = ratio * 9.0;
+        p.default.Damage = ratio * 10.0;
 #ifndef hx
-        class<PlasmaBoltFixTicks>(p).default.mpDamage = ratio * 9.0;
+        class<PlasmaBoltFixTicks>(p).default.mpDamage = ratio * 10.0;
 #endif
-        w.HitDamage = ratio * 9.0;
+        w.HitDamage = ratio * 10.0;
         break;
 
     case class'#var(prefix)Rocket':

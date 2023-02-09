@@ -36,7 +36,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,1,1,2) ) {
+    if( ConfigOlderThan(2,2,5,1) ) {
         enemy_multiplier = 1;
         min_rate_adjust = default.min_rate_adjust;
         max_rate_adjust = default.max_rate_adjust;
@@ -79,12 +79,12 @@ function CheckConfig()
         AddRandomWeapon("WeaponEMPGrenade", 5);
         AddRandomWeapon("WeaponFlamethrower", 4);
         AddRandomWeapon("WeaponGasGrenade", 5);
-        AddRandomWeapon("WeaponHideAGun", 5);
+        AddRandomWeapon("WeaponHideAGun", 3);
         AddRandomWeapon("WeaponLAM", 5);
         AddRandomWeapon("WeaponLAW", 4);
         AddRandomWeapon("WeaponNanoVirusGrenade", 5);
         AddRandomWeapon("WeaponPepperGun", 4);
-        AddRandomWeapon("WeaponPlasmaRifle", 5);
+        AddRandomWeapon("WeaponPlasmaRifle", 7);
         AddRandomWeapon("WeaponRifle", 5);
         AddRandomWeapon("WeaponSawedOffShotgun", 6);
         AddRandomWeapon("WeaponProd", 2);
