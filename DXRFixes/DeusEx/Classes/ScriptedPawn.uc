@@ -5,6 +5,7 @@ var int flareBurnTime;
 
 var int loopCounter;
 var float lastEnableCheckDestLocTime;
+var int EmpHealth;
 
 /*function IncreaseAgitation(Actor actorInstigator, optional float AgitationLevel)
 {
@@ -74,7 +75,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
         baseDamageType = damageType;
     }
 
-    Super.TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
+    _TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
 
     if (bBurnedToDeath) {
         p = DeusExPlayer(GetPlayerPawn());
@@ -84,6 +85,121 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
     if (damageType == 'FlareFlamed') {
         flareBurnTime = 3;
     }
+}
+
+// ----------------------------------------------------------------------
+// TakeDamageBase() mostly original, but modified with EmpHealth
+// ----------------------------------------------------------------------
+
+function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType,
+                        bool bPlayAnim)
+{
+    local int          actualDamage;
+    local Vector       offset;
+    local float        origHealth;
+    local EHitLocation hitPos;
+    local float        shieldMult;
+
+    // use the hitlocation to determine where the pawn is hit
+    // transform the worldspace hitlocation into objectspace
+    // in objectspace, remember X is front to back
+    // Y is side to side, and Z is top to bottom
+    offset = (hitLocation - Location) << Rotation;
+
+    if (!CanShowPain())
+        bPlayAnim = false;
+
+    // Prevent injury if the NPC is intangible
+    if (!bBlockActors && !bBlockPlayers && !bCollideActors)
+        return;
+
+    // No damage + no damage type = no reaction
+    if ((Damage <= 0) && (damageType == 'None'))
+        return;
+
+    // DXRando EmpHealth to disable shields
+    if(damageType=='EMP') EmpHealth -= Damage;
+
+    // Block certain damage types; perform special ops on others
+    if (!FilterDamageType(instigatedBy, hitLocation, offset, damageType))
+        return;
+
+    actualDamage = ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType);
+
+    // DXRando check EmpHealth
+    shieldMult = 1.0;
+    if (actualDamage > 0 && EmpHealth > 0)
+    {
+        shieldMult = ShieldDamage(damageType);
+        if (shieldMult > 0)
+            actualDamage = Max(int(actualDamage*shieldMult), 1);
+        else
+            actualDamage = 0;
+        if (shieldMult < 1.0)
+            DrawShield();
+    }
+
+    // Impart momentum, DXRando multiply momentum by damage
+    // pick the smaller between Damage and actualDamage so that stealth hits don't do insane knockback
+    // and hits absorbed by shields do less knockback
+    momentum *= FMax(2, FMin(Damage, actualDamage)) * 0.8;
+    ImpartMomentum(momentum, instigatedBy);
+
+    origHealth = Health;
+
+    hitPos = HandleDamage(actualDamage, hitLocation, offset, damageType);
+    if (!bPlayAnim || (actualDamage <= 0))
+        hitPos = HITLOC_None;
+
+    if (bCanBleed)
+        if ((damageType != 'Stunned') && (damageType != 'TearGas') && (damageType != 'HalonGas') &&
+            (damageType != 'PoisonGas') && (damageType != 'Radiation') && (damageType != 'EMP') &&
+            (damageType != 'NanoVirus') && (damageType != 'Drowned') && (damageType != 'KnockedOut') &&
+            (damageType != 'Poison') && (damageType != 'PoisonEffect'))
+            bleedRate += (origHealth-Health)/(0.3*Default.Health);  // 1/3 of default health = bleed profusely
+
+    if (CarriedDecoration != None)
+        DropDecoration();
+
+    if ((actualDamage > 0) && (damageType == 'Poison'))
+        StartPoison(Damage, instigatedBy);
+
+    if (Health <= 0)
+    {
+        ClearNextState();
+        //PlayDeathHit(actualDamage, hitLocation, damageType);
+        if ( actualDamage > mass )
+            Health = -1 * actualDamage;
+        SetEnemy(instigatedBy, 0, true);
+
+        // gib us if we get blown up
+        if (DamageType == 'Exploded')
+            Health = -10000;
+        else
+            Health = -1;
+
+        Died(instigatedBy, damageType, HitLocation);
+
+        if ((DamageType == 'Flamed') || (DamageType == 'Burned'))
+        {
+            bBurnedToDeath = true;
+            ScaleGlow *= 0.1;  // blacken the corpse
+        }
+        else
+            bBurnedToDeath = false;
+
+        return;
+    }
+
+    // play a hit sound
+    if (DamageType != 'Stunned')
+        PlayTakeHitSound(actualDamage, damageType, 1);
+
+    // DXRando don't CatchFire if the shield reduced the burning damage
+    if ((DamageType == 'Flamed') && !bOnFire && shieldMult >= 1.0)
+        CatchFire();
+
+    ReactToInjury(instigatedBy, damageType, hitPos);
 }
 
 function Died(pawn Killer, name damageType, vector HitLocation)
@@ -154,4 +270,9 @@ function PrintAlliances()
     log("PrintAlliances: "$alliance, name);
     for(i=0; i<ArrayCount(AlliancesEx); i++)
         log("PrintAlliances "$i$": " $ AlliancesEx[i].AllianceName @ AlliancesEx[i].AllianceLevel @ AlliancesEx[i].bPermanent, name);
+}
+
+defaultproperties
+{
+    EmpHealth=50
 }
