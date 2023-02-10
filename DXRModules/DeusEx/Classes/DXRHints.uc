@@ -203,8 +203,10 @@ simulated function InitHints()
 
     case 5:
         if (map ~= "05_NYC_UnatcoMJ12Lab") {
-            if(dxr.flags.settings.goals > 0)
+            if(dxr.flags.settings.goals > 0) {
                 AddHint("Paul's location in the lab is randomized.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("Your equipment could be in either", "the armory, or the surgery ward.");
+            }
         } else if (map ~= "05_NYC_UnatcoHQ") {
             if(dxr.flags.settings.goals > 0)
                 AddHint("Alex Jacobson's location in UNATCO HQ is randomized.", "Check the Goal Randomization page on our Wiki.");

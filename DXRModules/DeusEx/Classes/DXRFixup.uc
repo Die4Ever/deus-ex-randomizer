@@ -881,6 +881,8 @@ function BalanceJailbreak()
     local DXRMissions missions;
     local string PaulLocation;
 
+    SetSeed("BalanceJailbreak");
+
     // move the items instead of letting Mission05.uc do it
     p = player();
     if(dxr.flags.settings.prison_pocket <= 0 && #defined(vanillamaps)) {
@@ -937,8 +939,20 @@ function BalanceJailbreak()
         iclass = loadout.get_starting_item();
     }
 
-    // TODO: maybe random chance to spawn it on the desk or in 1 of the cabinets?
-    Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915) );
+    switch(rng(4)) {
+    case 1:// crate past the desk
+        Spawn(iclass,,, vect(-1838.230225, 1250.242676, -110.399773));
+        break;
+    case 2:// desk
+        Spawn(iclass,,, vect(-2105.412598, 1232.926758, -134.400101));
+        break;
+    case 3:// locked jail cell with medbot
+        Spawn(iclass,,, vect(-3020.846924, 910.062134, -201.399750));
+        break;
+    default:// unlocked jail cell
+        Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915));
+        break;
+    }
 }
 
 function UpdateReactorGoal(int count)
