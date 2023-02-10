@@ -432,6 +432,8 @@ function AllAnyEntry()
             hs.ChangeAlly('', 1, true);
             hs.ChangeAlly('mj12', 1, true);
             hs.ChangeAlly('spider', 1, true);
+            RemoveFears(hs);
+            hs.MinHealth = 0;
         }
         break;
     }
@@ -1263,7 +1265,10 @@ function Vandenberg_FirstEntry()
     local KarkianBaby kb;
     local DataLinkTrigger dlt;
     local FlagTrigger ft;
+    local HowardStrong hs;
     local #var(Mover) door;
+    local DXREnemies dxre;
+    local int i;
 
     switch(dxr.localURL)
     {
@@ -1347,6 +1352,40 @@ function Vandenberg_FirstEntry()
         }
         break;
 
+    case "14_Oceanlab_silo":
+        foreach AllActors(class'HowardStrong', hs) {
+            hs.ChangeAlly('', 1, true);
+            hs.ChangeAlly('mj12', 1, true);
+            hs.ChangeAlly('spider', 1, true);
+            RemoveFears(hs);
+            hs.MinHealth = 0;
+            hs.BaseAccuracy *= 0.1;
+            GiveItem(hs, class'#var(prefix)BallisticArmor');
+            dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+            if(dxre != None) {
+                dxre.GiveRandomWeapon(hs, false, 2);
+                dxre.GiveRandomMeleeWeapon(hs);
+            }
+            hs.FamiliarName = "Howard Stronger";
+            hs.UnfamiliarName = "Howard Stronger";
+            if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
+                i = 250;
+                hs.default.HealthHead = i;
+                hs.default.HealthTorso = i;
+                hs.default.HealthLegLeft = i;
+                hs.default.HealthLegRight = i;
+                hs.default.HealthArmLeft = i;
+                hs.default.HealthArmRight = i;
+                hs.HealthHead = i;
+                hs.HealthTorso = i;
+                hs.HealthLegLeft = i;
+                hs.HealthLegRight = i;
+                hs.HealthArmLeft = i;
+                hs.HealthArmRight = i;
+                hs.GenerateTotalHealth();
+            }
+        }
+        break;
 #endif
     }
 }
