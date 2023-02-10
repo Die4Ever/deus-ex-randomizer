@@ -315,6 +315,37 @@ static function ThrowItem(Inventory item, float VelocityMult)
     item.Velocity *= VelocityMult;
 }
 
+static function Inventory MoveItemTo(Inventory item, vector Location, name Tag)
+{
+    // code similar to Revision Mission05.uc
+    local Inventory nextItem;
+    local DeusExPlayer player;
+
+    // Find the next item we can process.
+    while((item != None) && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None))
+        item = item.Inventory;
+
+    if(item == None) return None;
+
+    nextItem = item.Inventory;
+
+    //== Y|y: Turn off any charged pickups we were using and remove the associated HUD.  Per Lork on the OTP forums
+    player = DeusExPlayer(item.owner);
+    if (item.IsA('ChargedPickup') && player!=None)
+        ChargedPickup(item).ChargedPickupEnd(player);
+
+    Pawn(item.Owner).DeleteInventory(item);
+
+    item.DropFrom(Location);
+    item.Tag = Tag;// so we can find the item again later
+
+    // restore any ammo amounts for a weapon to default; Y|y: except for grenades
+    if (item.IsA('Weapon') && (Weapon(item).AmmoType != None) && !item.IsA('WeaponLAM') && !item.IsA('WeaponGasGrenade') && !item.IsA('WeaponEMPGrenade') && !item.IsA('WeaponNanoVirusGrenade'))
+        Weapon(item).PickupAmmoCount = Weapon(item).Default.PickupAmmoCount;
+
+    return nextItem;
+}
+
 function bool SkipActorBase(Actor a)
 {
     if( (a.Owner != None) || a.bStatic || a.bHidden || a.bMovable==False || a.bIsSecretGoal )

@@ -821,16 +821,18 @@ function Jailbreak_FirstEntry()
     switch (dxr.localURL)
     {
     case "05_NYC_UNATCOMJ12LAB":
-        if(dxr.flags.settings.prison_pocket > 0) {
+        if(!dxr.flags.f.GetBool('MS_InventoryRemoved')) {
             p = player();
             p.HealthHead = Max(50, p.HealthHead);
-			p.HealthTorso =  Max(50, p.HealthTorso);
-			p.HealthLegLeft =  Max(50, p.HealthLegLeft);
-			p.HealthLegRight =  Max(50, p.HealthLegRight);
-			p.HealthArmLeft =  Max(50, p.HealthArmLeft);
-			p.HealthArmRight =  Max(50, p.HealthArmRight);
-			p.GenerateTotalHealth();
-            dxr.flags.f.SetBool('MS_InventoryRemoved', true,, 6);
+            p.HealthTorso =  Max(50, p.HealthTorso);
+            p.HealthLegLeft =  Max(50, p.HealthLegLeft);
+            p.HealthLegRight =  Max(50, p.HealthLegRight);
+            p.HealthArmLeft =  Max(50, p.HealthArmLeft);
+            p.HealthArmRight =  Max(50, p.HealthArmRight);
+            p.GenerateTotalHealth();
+            if(dxr.flags.settings.prison_pocket > 0 || #defined(vanillamaps))
+                dxr.flags.f.SetBool('MS_InventoryRemoved', true,, 6);
+            // we have to move the items in PostFirstEntry, otherwise they get swapped around with other things
         }
         foreach AllActors(class'PaulDenton', paul) {
             paul.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
@@ -870,8 +872,53 @@ function BalanceJailbreak()
     local class<Inventory> iclass;
     local DXREnemies e;
     local DXRLoadouts loadout;
-    local int i;
+    local int i, num;
     local float r;
+    local Inventory nextItem;
+    local SpawnPoint SP;
+    local #var(PlayerPawn) p;
+    local vector itemLocations[50];
+    local DXRMissions missions;
+    local string PaulLocation;
+
+    // move the items instead of letting Mission05.uc do it
+    p = player();
+    if(dxr.flags.settings.prison_pocket <= 0 && #defined(vanillamaps)) {
+        if(DeusExWeapon(p.inHand) != None)
+            DeusExWeapon(p.inHand).LaserOff();
+
+        PaulLocation = "Surgery Ward";
+        missions = DXRMissions(dxr.FindModule(class'DXRMissions'));
+        for(i=0;missions!=None && i<missions.num_goals;i++) {
+            if(missions.GetSpoiler(i).goalName == "Paul") {
+                PaulLocation = missions.GetSpoiler(i).goalLocation;
+            }
+        }
+        num=0;
+        if(PaulLocation == "Surgery Ward" || PaulLocation == "Greasel Pit")
+            foreach AllActors(class'SpawnPoint', SP, 'player_inv')
+                itemLocations[num++] = SP.Location;
+        else {
+            // put the items in the surgery ward
+            itemLocations[num++] = vect(2174.416504,-569.534729,-213.660309);// paul's bed
+            itemLocations[num++] = vect(2176.658936,-518.937012,-213.659302);// paul's bed
+            itemLocations[num++] = vect(1792.696533,-738.417175,-213.660248);// bed 2
+            itemLocations[num++] = vect(1794.898682,-802.133301,-213.658630);// bed 2
+            itemLocations[num++] = vect(1572.443237,-739.527649,-213.660095);// bed 1
+            itemLocations[num++] = vect(1570.557007,-801.213806,-213.660095);// bed 1
+            itemLocations[num++] = vect(1269.494019,-522.082458,-221.659180);// near ambrosia
+            itemLocations[num++] = vect(1909.302979,-376.711639,-221.660095);// desk with microscope and datacube
+            itemLocations[num++] = vect(1572.411865,-967.828735,-261.659546);// on the floor, at the wall with the monitors
+            itemLocations[num++] = vect(1642.170532,-968.813354,-261.660736);
+            itemLocations[num++] = vect(1715.513062,-965.846558,-261.657837);
+            itemLocations[num++] = vect(1782.731689,-966.754700,-261.661041);
+        }
+
+        nextItem = p.Inventory;
+        while(nextItem != None)
+            for(i=0; i<num; i++)
+                nextItem = MoveItemTo(nextItem, itemLocations[i], 'player_inv');
+    }
 
     e = DXREnemies(dxr.FindModule(class'DXREnemies'));
     if( e != None ) {
