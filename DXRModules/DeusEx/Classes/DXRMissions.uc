@@ -581,8 +581,9 @@ function int InitGoals(int mission, string map)
 
     case "10_PARIS_METRO":
     case "10_PARIS_CLUB":
+        AddGoal("10_PARIS_METRO", "Jaime", NORMAL_GOAL, 'JaimeReyes1', PHYS_Falling);
         AddGoal("10_PARIS_CLUB", "Nicolette", NORMAL_GOAL, 'NicoletteDuClare0', PHYS_Falling);
-        AddGoalLocation("10_PARIS_CLUB", "Club", NORMAL_GOAL | VANILLA_GOAL, vect(-673.488708, -1385.685059, 43.097466), rot(0, 17368, 0));
+        AddGoalLocation("10_PARIS_CLUB", "Club", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-673.488708, -1385.685059, 43.097466), rot(0, 17368, 0));
         AddGoalLocation("10_PARIS_CLUB", "Back Room TV", NORMAL_GOAL, vect(-1939.340942, -478.474091, -180.899628), rot(0, -16384, 0));
         AddGoalLocation("10_PARIS_METRO", "Apartment", NORMAL_GOAL, vect(868.070190, 1178.463989, 507.092682), rot(0, -16384, 0));
         AddGoalLocation("10_PARIS_METRO", "Hostel", NORMAL_GOAL, vect(2315.102295, 2511.724365, 651.103638), rot(0, 0, 0));
@@ -591,6 +592,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("10_PARIS_METRO", "Pillars", NORMAL_GOAL, vect(-3614.988525, 2406.175293, 235.101135), rot(0, -16384, 0));
         AddGoalLocation("10_PARIS_METRO", "Media Store", NORMAL_GOAL, vect(1006.833252, 1768.635620, 187.101196), rot(0, 0, 0));
         AddGoalLocation("10_PARIS_METRO", "Alcove Behind Pillar", NORMAL_GOAL, vect(1924.965210, -1234.666016, 187.101776), rot(0, 0, 0));
+        AddGoalLocation("10_PARIS_METRO", "Cafe", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-2300.492920, 1459.889160, 333.215088), rot(0, 0, 0));
         return 101;
 
     case "11_PARIS_CATHEDRAL":
@@ -1013,6 +1015,14 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         sp.ConBindEvents();
         break;
 
+    case "Jaime":
+        if(dxr.flagbase.GetBool('JaimeLeftBehind')) {
+            sp = Spawn(class'#var(prefix)JaimeReyes',, 'DXRMissions', Loc.positions[0].pos);
+            g.actors[0].a = sp;
+            sp.SetOrders('Standing');
+        }
+        break;
+
     case "Harley Filben":
         // Harley Filben is also randomized in mission 3, but not across maps
         sp = Spawn(class'#var(prefix)HarleyFilben',, 'DXRMissions', Loc.positions[0].pos);
@@ -1408,8 +1418,10 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     m = Mover(a);
 
     if( sp != None ) {
-        if( sp.Orders == 'Patrolling' || sp.Orders == 'Sitting' )
+        if(sp.Orders == 'Patrolling')
             sp.SetOrders('Wandering');
+        if(sp.Orders == 'Sitting')
+            sp.SetOrders('Standing');
         sp.HomeLoc = sp.Location;
         sp.HomeRot = vector(sp.Rotation);
         sp.DesiredRotation = rotation;
