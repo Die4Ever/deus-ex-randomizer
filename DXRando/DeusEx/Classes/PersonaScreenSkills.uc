@@ -38,6 +38,8 @@ function UpdateSwimSpeed()
         return;
     }
 
+    if(#defined(vmd)) return; // VMD has different calculations
+
     //Calculation from DeusExPlayer HeadZoneChange
     mult = selectedSkill.LevelValues[selectedSkill.CurrentLevel];
     if ( player.Level.NetMode == NM_Standalone )
