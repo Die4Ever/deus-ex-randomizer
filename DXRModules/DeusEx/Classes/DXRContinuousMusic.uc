@@ -16,6 +16,7 @@ var EMusicMode musicMode;
 var float musicCheckTimer;
 var float musicChangeTimer;
 
+var byte savedSection;
 var byte savedCombatSection;
 var byte savedConvSection;
 
@@ -71,20 +72,16 @@ function RememberMusic()
 
     // save us writing to the config file
     if(
-        PrevSong == p.Song && PrevMusicMode == musicMode && PrevSongSection == p.SongSection && PrevSavedSection == p.savedSection
+        PrevSong == p.Song && PrevMusicMode == musicMode && PrevSongSection == p.SongSection && PrevSavedSection == savedSection
         && PrevSavedCombatSection == savedCombatSection && PrevSavedConvSection == savedConvSection
-    )
+    ) {
         return;
-
-    // dying and outro don't set the savedSection, so we have to do it manually
-    if(PrevMusicMode == 0 && (musicMode == MUS_Dying || musicMode == MUS_Outro) ) {
-        p.savedSection = PrevSongSection;
     }
 
     PrevSong = p.Song;
     PrevMusicMode = musicMode;
     PrevSongSection = p.SongSection;
-    PrevSavedSection = p.savedSection;
+    PrevSavedSection = savedSection;
     PrevSavedCombatSection = savedCombatSection;
     PrevSavedConvSection = savedConvSection;
     SaveConfig();
@@ -153,6 +150,8 @@ function GetLevelSong()
     local bool all;
 
     switch(dxr.localURL) {
+    case "DX":
+    case "DXOnly":
     case "INTRO":
     case "ENDGAME1":
     case "ENDGAME2":
@@ -179,7 +178,7 @@ function GetLevelSong()
     choices[i++] = MakeSongChoice("NavalBase_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("NYCBar2_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("NYCStreets_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("NYCStreets2_Music", 0, 1, 26, 4, 5);
+    choices[i++] = MakeSongChoice("NYCStreets2_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("OceanLab_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("OceanLab2_Music", 0, 1, 3, 4, 5);
     choices[i++] = MakeSongChoice("ParisCathedral_Music", 0, 1, 3, 4, 5);
@@ -217,7 +216,7 @@ function GetLevelSong()
     CombatSection = s.combat;
     ConvSection = s.conv;
     OutroSection = s.outro;
-    if(all) {
+    /*if(all) {
         switch(rng(5)) {
         case 1: LevelSongSection = DyingSection; break;
         case 2: LevelSongSection = CombatSection; break;
@@ -225,8 +224,11 @@ function GetLevelSong()
         case 4: LevelSongSection = OutroSection; break;
         }
     }
+    LevelSongSection = CombatSection;
+    LevelSongSection = PrevSavedSection;*/
     l("GetLevelSong() "$s.song@LevelSongSection@DyingSection@CombatSection@ConvSection@OutroSection);
     LevelSong = Music(DynamicLoadObject(s.song$"."$s.song, class'Music'));
+    savedSection = LevelSongSection;
     savedCombatSection = CombatSection;
     savedConvSection = ConvSection;
 }
@@ -262,6 +264,7 @@ function AnyEntry()
 
     // now time for fancy stuff, don't attempt a smmoth transition for the title screen, we need to init the config
     if(PrevSong == NewSong && continuous_setting != c.default.disabled && dxr.dxInfo.missionNumber > -2) {
+        l("trying to do smooth stuff");
         if(PrevSavedSection == 255)
             PrevSavedSection = NewSection;
 
@@ -274,7 +277,7 @@ function AnyEntry()
                 PrevSongSection = PrevSavedSection;
                 break;
         }
-        p.savedSection = PrevSavedSection;
+        savedSection = PrevSavedSection;
         p.SongSection = PrevSongSection;
         savedCombatSection = PrevSavedCombatSection;
         savedConvSection = PrevSavedConvSection;
@@ -290,15 +293,17 @@ function AnyEntry()
         } else {
             NewTransition = MTRAN_FastFade;
         }
-    } else if(PrevMusicMode == 1) {// 1 is combat
+    } else if(PrevMusicMode == 1 && dxr.dxInfo.missionNumber > -2) {// 1 is combat
         NewTransition = MTRAN_SlowFade;
+        l("MTRAN_SlowFade");
     } else {
         // does the default MTRAN_Fade even work?
         NewTransition = MTRAN_FastFade;
+        l("MTRAN_FastFade");
     }
 
-    // let us change songs immediately so we go straight to combat music if we're in combat
-    musicCheckTimer = 10;
+    // we need an extra second for the song to init before we can change to combat music
+    musicCheckTimer = -1;
     musicChangeTimer = 10;
 
     _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
@@ -395,7 +400,7 @@ function SaveSection()
 {
     // save our place in the ambient track
     if (musicMode == MUS_Ambient)
-        p.savedSection = p.SongSection;
+        savedSection = p.SongSection;
     if (musicMode == MUS_Combat)
         savedCombatSection = p.SongSection;
     if (musicMode == MUS_Conversation)
@@ -436,9 +441,9 @@ function EnterAmbient()
 
     // fade slower for combat transitions
     if (musicMode == MUS_Combat)
-        _ClientSetMusic(LevelSong, p.savedSection, 255, MTRAN_SlowFade);
+        _ClientSetMusic(LevelSong, savedSection, 255, MTRAN_SlowFade);
     else
-        _ClientSetMusic(LevelSong, p.savedSection, 255, MTRAN_Fade);
+        _ClientSetMusic(LevelSong, savedSection, 255, MTRAN_Fade);
 
     musicMode = MUS_Ambient;
     musicChangeTimer = 0.0;
@@ -469,7 +474,7 @@ function bool InCombat()
 
 function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
-    l("_ClientSetMusic "$NewSong@NewSection@NewCdTrack@NewTransition@p.savedSection);
+    l("_ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$")"@savedSection@musicMode);
 #ifdef vanilla
     p._ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
 #else
