@@ -142,7 +142,7 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
     // Impart momentum, DXRando multiply momentum by damage
     // pick the smaller between Damage and actualDamage so that stealth hits don't do insane knockback
     // and hits absorbed by shields do less knockback
-    momentum *= FMax(2, FMin(Damage, actualDamage)) * 0.8;
+    momentum *= FMax(2, loge(FMin(Damage, actualDamage))*7.0);
     ImpartMomentum(momentum, instigatedBy);
 
     origHealth = Health;
