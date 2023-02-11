@@ -538,6 +538,7 @@ function bool DestroyActor( Actor d )
     return d.Destroy();
 }
 
+// only used by DXRMemes title screen? doesn't copy the tag or event or anything
 function Actor ReplaceActor(Actor oldactor, string newclassstring)
 {
     local Actor a;
@@ -663,6 +664,7 @@ function #var(prefix)Containers AddBox(class<#var(prefix)Containers> c, vector l
     return box;
 }
 
+// used by DXRReplaceActors
 function Actor SpawnReplacement(Actor a, class<Actor> newclass)
 {
     local int i;
@@ -686,6 +688,8 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     if(newactor == None) {
         err("SpawnReplacement("$a$", "$newclass$") failed");
         a.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
+        a.Tag = tag;
+        a.Event = event;
         return None;
     }
 

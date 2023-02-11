@@ -1320,8 +1320,6 @@ function Vandenberg_FirstEntry()
 {
     local ElevatorMover e;
     local Button1 b;
-    local Dispatcher d;
-    local LogicTrigger lt;
     local ComputerSecurity comp;
     local KarkianBaby kb;
     local DataLinkTrigger dlt;
@@ -1334,33 +1332,6 @@ function Vandenberg_FirstEntry()
     switch(dxr.localURL)
     {
 #ifdef vanillamaps
-    case "12_VANDENBERG_CMD":
-        foreach AllActors(class'Dispatcher', d)
-        {
-            switch(d.Tag)
-            {
-                case 'overload2':
-                    d.tag = 'overload2disp';
-                    lt = Spawn(class'LogicTrigger',,,d.Location);
-                    lt.Tag = 'overload2';
-                    lt.Event = 'overload2disp';
-                    lt.inGroup1 = 'sec_switch2';
-                    lt.inGroup2 = 'sec_switch2';
-                    lt.OneShot = True;
-                    break;
-                case 'overload1':
-                    d.tag = 'overload1disp';
-                    lt = Spawn(class'LogicTrigger',,,d.Location);
-                    lt.Tag = 'overload1';
-                    lt.Event = 'overload1disp';
-                    lt.inGroup1 = 'sec_switch1';
-                    lt.inGroup2 = 'sec_switch1';
-                    lt.OneShot = True;
-                    break;
-            }
-        }
-        break;
-
     case "12_VANDENBERG_TUNNELS":
         foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
             e.BumpType = BT_PlayerBump;

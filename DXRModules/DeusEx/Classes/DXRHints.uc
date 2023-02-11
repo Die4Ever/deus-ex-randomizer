@@ -40,6 +40,7 @@ simulated function InitHints()
 
     AddHint("Attaching a LAM or Gas Grenade to a wall can be very strong!", "Also try to lure enemies into them.");
     AddHint("Use sabot shotgun rounds to kill the little spider bots.");
+    AddHint("Grab a plasma rifle, blast everything in sight,", "then go get your items back.");
 
     if(mission <= 5) {
         AddHint("Melee attacks from behind do bonus damage!");
