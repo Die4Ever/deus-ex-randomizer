@@ -7,13 +7,6 @@ singular function SupportActor(Actor standingActor)
 		standingActor.TakeDamage(10000, None, standingActor.Location, vect(0,0,0), 'Helicopter'); //Just change the damage type
 }
 
-function BeginPlay()
-{
-    Super.BeginPlay();
-    if(CollisionRadius>default.CollisionRadius)
-        SetCollisionSize(default.CollisionRadius, CollisionHeight);
-}
-
 /////////////////////////////////////////////////////////////
 ///////////////States copied from base class/////////////////
 //////Including these allows old save games to load//////////

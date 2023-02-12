@@ -197,7 +197,8 @@ function PostFirstEntry()
 
 function AnyEntry()
 {
-    local Button1 b;
+    local #var(prefix)Vehicles v;
+    local #var(prefix)Button1 b;
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
@@ -214,9 +215,15 @@ function AnyEntry()
 
     AllAnyEntry();
 
-    foreach AllActors(class'Button1', b) {
+    foreach AllActors(class'#var(prefix)Button1', b) {
         if(b.CollisionRadius <3 && b.CollisionHeight <3)
             b.SetCollisionSize(3, 3);
+    }
+    foreach AllActors(class'#var(prefix)Vehicles', v) {
+        if(#var(prefix)BlackHelicopter(v) == None && #var(prefix)AttackHelicopter(v) == None)
+            continue;
+        if(v.CollisionRadius > 360)
+            v.SetCollisionSize(360, v.CollisionHeight);
     }
 }
 
