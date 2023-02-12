@@ -96,9 +96,6 @@ function bool ShouldDrawActor(Actor A)
     if(A.bHidden)
         return false;
 
-    if(DeusExMover(A) != None && DeusExMover(A).bHighlight)
-        return true;
-
     if( visionLevel >= 2 && (Inventory(A) != None || InformationDevices(A) != None || ElectronicDevices(A) != None || Containers(A) != None || Vehicles(A) != None) )
         return true;
 
