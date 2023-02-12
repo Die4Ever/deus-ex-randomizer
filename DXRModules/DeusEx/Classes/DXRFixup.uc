@@ -1684,6 +1684,7 @@ function Paris_FirstEntry()
     local Trigger t;
     local Dispatcher d;
     local ScriptedPawn sp;
+    local Conversation c;
 
     switch(dxr.localURL)
     {
@@ -1724,6 +1725,13 @@ function Paris_FirstEntry()
         if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
             //Need to pretend he *was* recruited, so that he doesn't spawn
             dxr.flagbase.SetBool('JaimeRecruited',True);
+        }
+        // fix the night manager sometimes trying to talk to you while you're flying away https://www.youtube.com/watch?v=PeLbKPSHSOU&t=6332s
+        c = GetConversation('MeetNightManager');
+        if(c!=None) {
+            c.bInvokeBump = false;
+            c.bInvokeSight = false;
+            c.bInvokeRadius = false;
         }
         break;
 #endif
