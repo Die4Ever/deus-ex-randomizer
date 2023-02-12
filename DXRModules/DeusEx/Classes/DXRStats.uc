@@ -4,7 +4,7 @@ function AnyEntry()
 {
     Super.AnyEntry();
 
-    l("Total time so far: "$GetTotalTimeString()$", deaths so far: "$GetDataStorageStat(dxr, 'DXRStats_deaths'));
+    l("Total time so far: "$GetTotalTimeString()$", deaths so far: "$GetDataStorageStat(dxr, "DXRStats_deaths"));
 
     SetTimer(0.1, True);
 }
@@ -41,7 +41,7 @@ function IncMissionTimer(int mission)
 {
     local string flagname;
     local name flag;
-    local int time;
+    local int time, ftime;
 
     local DataStorage datastorage;
 
@@ -58,29 +58,29 @@ function IncMissionTimer(int mission)
         //Success Path
         flagname = "DXRando_Mission"$mission$"_Timer";
         flag = StringToName(flagname);
-        time = dxr.flagbase.GetInt(flag);
-        dxr.flagbase.SetInt(flag,time+1,,999);
+        ftime = dxr.flagbase.GetInt(flag);
+        dxr.flagbase.SetInt(flag,ftime+1,,999);
 
         //Complete Time
         flagname = "DXRando_Mission"$mission$"_Complete_Timer";
-        flag = StringToName(flagname);
 
-        time = int(datastorage.GetConfigKey(flag));
-        datastorage.SetConfig(flag, time+1, 3600*24*366);
+        time = int(datastorage.GetConfigKey(flagname));
+        time = Max(time, ftime);
+        datastorage.SetConfig(flagname, time+1, 3600*24*366);
 
     } else {
         //Success Path
         flagname = "DXRando_Mission"$mission$"Menu_Timer";
         flag = StringToName(flagname);
-        time = dxr.flagbase.GetInt(flag);
-        dxr.flagbase.SetInt(flag,time+1,,999);
+        ftime = dxr.flagbase.GetInt(flag);
+        dxr.flagbase.SetInt(flag,ftime+1,,999);
 
         //Complete Time
         flagname = "DXRando_Mission"$mission$"_Complete_Menu_Timer";
-        flag = StringToName(flagname);
 
-        time = int(datastorage.GetConfigKey(flag));
-        datastorage.SetConfig(flag, time+1, 3600*24*366);
+        time = int(datastorage.GetConfigKey(flagname));
+        time = Max(time, ftime);
+        datastorage.SetConfig(flagname, time+1, 3600*24*366);
 
     }
 }
@@ -88,7 +88,6 @@ function IncMissionTimer(int mission)
 function int GetCompleteMissionTime(int mission)
 {
     local string flagname;
-    local name flag;
     local int time;
     local DataStorage datastorage;
 
@@ -99,8 +98,7 @@ function int GetCompleteMissionTime(int mission)
     datastorage = class'DataStorage'.static.GetObj(dxr);
 
     flagname = "DXRando_Mission"$mission$"_Complete_Timer";
-    flag = StringToName(flagname);
-    time = int(datastorage.GetConfigKey(flag));
+    time = int(datastorage.GetConfigKey(flagname));
 
     return time;
 }
@@ -125,7 +123,6 @@ function int GetMissionTime(int mission)
 function int GetCompleteMissionMenuTime(int mission)
 {
     local string flagname;
-    local name flag;
     local int time;
     local DataStorage datastorage;
 
@@ -136,8 +133,7 @@ function int GetCompleteMissionMenuTime(int mission)
     datastorage = class'DataStorage'.static.GetObj(dxr);
 
     flagname = "DXRando_Mission"$mission$"_Complete_Menu_Timer";
-    flag = StringToName(flagname);
-    time = int(datastorage.GetConfigKey(flag));
+    time = int(datastorage.GetConfigKey(flagname));
 
     return time;
 }
@@ -320,7 +316,7 @@ static function IncStatFlag(DeusExPlayer p, name flagname)
 
 }
 
-static function IncDataStorageStat(DeusExPlayer p, name valname)
+static function IncDataStorageStat(DeusExPlayer p, string valname)
 {
     local DataStorage datastorage;
     local int val;
@@ -344,7 +340,7 @@ static function AddJump(DeusExPlayer p)
 }
 static function AddDeath(DeusExPlayer p)
 {
-    IncDataStorageStat(p,'DXRStats_deaths');
+    IncDataStorageStat(p,"DXRStats_deaths");
 }
 
 static function AddBurnKill(DeusExPlayer p)
@@ -357,7 +353,7 @@ static function AddGibbedKill(DeusExPlayer p)
     IncStatFlag(p,'DXRStats_gibbedkills');
 }
 
-static function int GetDataStorageStat(DXRando dxr, name valname)
+static function int GetDataStorageStat(DXRando dxr, string valname)
 {
     local DataStorage datastorage;
     datastorage = class'DataStorage'.static.GetObj(dxr);
@@ -446,7 +442,7 @@ function AddDXRCredits(CreditsWindow cw)
     jumps = dxr.flagbase.GetInt('DXRStats_jumps');
     burnkills = dxr.flagbase.GetInt('DXRStats_burnkills');
     gibbedkills = dxr.flagbase.GetInt('DXRStats_gibbedkills');
-    deaths = GetDataStorageStat(dxr, 'DXRStats_deaths');
+    deaths = GetDataStorageStat(dxr, "DXRStats_deaths");
 
     cw.PrintHeader("Statistics");
 
@@ -493,6 +489,35 @@ function ExtendedTests()
 
     teststring( GetMissionTimeString(1), "00:00:00.1", "GetMissionTimeString(1)");
     teststring( GetCompleteMissionTimeWithMenusString(1), "00:00:00.2", "GetCompleteMissionTimeWithMenusString(1)");
+
+    // reset non-real-time timers
+    dxr.flagbase.SetInt('DXRando_Mission1_Timer',0,,999);
+    dxr.flagbase.SetInt('DXRando_Mission1Menu_Timer',0,,999);
+
+    // mission 1 tests again
+    testint( GetMissionTime(1), 0, "GetMissionTime(1) == 0");
+    testint( GetCompleteMissionTime(1), 1, "GetCompleteMissionTime(1) == 1");
+    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
+    testint( GetCompleteMissionMenuTime(1), 1, "GetCompleteMissionMenuTime(1) == 1");
+
+    IncMissionTimer(1);
+
+    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
+    testint( GetCompleteMissionTime(1), 2, "GetCompleteMissionTime(1) == 2");
+    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
+    testint( GetCompleteMissionMenuTime(1), 1, "GetCompleteMissionMenuTime(1) == 1");
+
+    DeusExRootWindow(player().rootWindow).hud.Hide();
+    IncMissionTimer(1);
+    DeusExRootWindow(player().rootWindow).hud.Show();
+
+    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
+    testint( GetCompleteMissionTime(1), 2, "GetCompleteMissionTime(1) == 2");
+    testint( GetMissionMenuTime(1), 1, "GetMissionMenuTime(1) == 1");
+    testint( GetCompleteMissionMenuTime(1), 2, "GetCompleteMissionMenuTime(1) == 2");
+
+    teststring( GetMissionTimeString(1), "00:00:00.1", "GetMissionTimeString(1)");
+    teststring( GetCompleteMissionTimeWithMenusString(1), "00:00:00.4", "GetCompleteMissionTimeWithMenusString(1)");
 
     // mission 12 tests
     testint( dxr.dxInfo.MissionNumber, 12, "current mission is 12 as expected");

@@ -885,7 +885,7 @@ static function BeatGame(DXRando dxr, int ending)
     j = js.static.Start("BeatGame");
     js.static.Add(j, "ending", ending);
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
-    js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
+    js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_deaths"));
     js.static.Add(j, "maxrando", dxr.flags.maxrando);
 
     if (dxr.player.carriedDecoration!=None){

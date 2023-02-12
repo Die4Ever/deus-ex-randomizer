@@ -391,7 +391,7 @@ simulated function ShowHint(optional int recursion)
         ShowHint(recursion++);
         return;
     }
-    m.line3 = "Deaths: "$class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths');
+    m.line3 = "Deaths: "$class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_deaths");
     m.bottomText = "(Hint "$hint$" / "$numHints$", many hints are context sensitive)";
 }
 
