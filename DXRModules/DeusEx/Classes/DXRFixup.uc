@@ -197,6 +197,7 @@ function PostFirstEntry()
 
 function AnyEntry()
 {
+    local Button1 b;
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
@@ -212,6 +213,11 @@ function AnyEntry()
     FixAmmoShurikenName();
 
     AllAnyEntry();
+
+    foreach AllActors(class'Button1', b) {
+        if(b.CollisionRadius <3 && b.CollisionHeight <3)
+            b.SetCollisionSize(3, 3);
+    }
 }
 
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
