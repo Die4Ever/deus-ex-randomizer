@@ -24,7 +24,7 @@ function bool IsHeatSource(Actor A)
 
 function DrawBrush(GC gc, Actor a)
 {
-    local vector forwards, backwards;
+    local vector forwards, backwards, TopLeft, BottomRight, centerLoc, radius;
     local float dist, boxTLX, boxTLY, boxBRX, boxBRY, width, height;
 
     dist = VSize(Player.Location - a.Location);
@@ -35,7 +35,8 @@ function DrawBrush(GC gc, Actor a)
     if( VSize(a.Location - forwards) >= VSize(a.Location - backwards) )
         return;
 
-    class'FrobDisplayWindow'.static.GetActorBox(self, a, 1, boxTLX, boxTLY, boxBRX, boxBRY);
+    class'FrobDisplayWindow'.static.GetActorBoundingBox(a, centerLoc, radius);
+    class'FrobDisplayWindow'.static.BoxToWindowCoords(self, 0, centerLoc, radius, boxTLX, boxTLY, boxBRX, boxBRY);
     width = boxBRX - boxTLX;
     height = boxBRY - boxTLY;
     gc.DrawPattern(boxTLX, boxTLY, width, height, 0, 0, Texture'Virus_SFX');
@@ -94,6 +95,9 @@ function bool ShouldDrawActor(Actor A)
 {
     if(A.bHidden)
         return false;
+
+    if(DeusExMover(A) != None && DeusExMover(A).bHighlight)
+        return true;
 
     if( visionLevel >= 2 && (Inventory(A) != None || InformationDevices(A) != None || ElectronicDevices(A) != None || Containers(A) != None || Vehicles(A) != None) )
         return true;

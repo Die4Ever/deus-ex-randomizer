@@ -67,32 +67,36 @@ event StyleChanged()
 
 }
 
-static function GetActorBox(Window w, actor frobTarget, float margin, out float boxTLX, out float boxTLY, out float boxBRX, out float boxBRY)
+static function GetActorBoundingBox(actor frobTarget, out vector centerLoc, out vector radius)
 {
     local Mover     M;
-    local Vector    centerLoc, v1, v2;
-    local float     boxCX, boxCY;
-    local float     x, y;
-    local int       i, j, k;
+    local Vector    TopLeft, BottomRight;
 
     // get the center of the object
     M = Mover(frobTarget);
     if (M != None)
     {
-        M.GetBoundingBox(v1, v2, False, M.KeyPos[M.KeyNum]+M.BasePos, M.KeyRot[M.KeyNum]+M.BaseRot);
-        centerLoc = v1 + (v2 - v1) * 0.5;
-        v1.X = 16;
-        v1.Y = 16;
-        v1.Z = 16;
+        M.GetBoundingBox(TopLeft, BottomRight, False, M.KeyPos[M.KeyNum]+M.BasePos, M.KeyRot[M.KeyNum]+M.BaseRot);
+        radius = (BottomRight - TopLeft) * 0.5;
+        centerLoc = BottomRight - radius;
     }
     else
     {
         centerLoc = frobTarget.Location;
-        v1.X = frobTarget.CollisionRadius;
-        v1.Y = frobTarget.CollisionRadius;
-        v1.Z = frobTarget.CollisionHeight;
+        radius.X = frobTarget.CollisionRadius;
+        radius.Y = frobTarget.CollisionRadius;
+        radius.Z = frobTarget.CollisionHeight;
     }
+}
 
+static function BoxToWindowCoords(Window w, float margin, vector centerLoc, vector radius, out float boxTLX, out float boxTLY, out float boxBRX, out float boxBRY)
+{
+    local vector    v;
+    local float     boxCX, boxCY;
+    local float     x, y;
+    local int       i, j, k;
+
+    radius *= 0.9;// is this similar to vanilla? seems close enough
     w.ConvertVectorToCoordinates(centerLoc, boxCX, boxCY);
 
     boxTLX = boxCX;
@@ -108,37 +112,42 @@ static function GetActorBox(Window w, actor frobTarget, float margin, out float 
         {
             for (k=-1; k<=1; k+=2)
             {
-                v2 = v1;
-                v2.X *= i;
-                v2.Y *= j;
-                v2.Z *= k;
-                v2.X += centerLoc.X;
-                v2.Y += centerLoc.Y;
-                v2.Z += centerLoc.Z;
+                v = radius;
+                v.X *= i;
+                v.Y *= j;
+                v.Z *= k;
+                v.X += centerLoc.X;
+                v.Y += centerLoc.Y;
+                v.Z += centerLoc.Z;
 
-                if (w.ConvertVectorToCoordinates(v2, x, y))
+                if (w.ConvertVectorToCoordinates(v, x, y))
                 {
-                    boxTLX = FMin(boxTLX, x);
-                    boxTLY = FMin(boxTLY, y);
-                    boxBRX = FMax(boxBRX, x);
-                    boxBRY = FMax(boxBRY, y);
+                    boxTLX = FMin(boxTLX, x-1);
+                    boxTLY = FMin(boxTLY, y-1);
+                    boxBRX = FMax(boxBRX, x+1);
+                    boxBRY = FMax(boxBRY, y+1);
                 }
             }
         }
-    }
-
-    if (!frobTarget.IsA('Mover'))
-    {
-        boxTLX += frobTarget.CollisionRadius / 4.0;
-        boxTLY += frobTarget.CollisionHeight / 4.0;
-        boxBRX -= frobTarget.CollisionRadius / 4.0;
-        boxBRY -= frobTarget.CollisionHeight / 4.0;
     }
 
     boxTLX = FClamp(boxTLX, margin, w.width-margin);
     boxTLY = FClamp(boxTLY, margin, w.height-margin);
     boxBRX = FClamp(boxBRX, margin, w.width-margin);
     boxBRY = FClamp(boxBRY, margin, w.height-margin);
+}
+
+static function GetActorBox(Window w, actor frobTarget, float margin, out float boxTLX, out float boxTLY, out float boxBRX, out float boxBRY)
+{
+    local Vector    centerLoc, radius;
+
+    GetActorBoundingBox(frobTarget, centerLoc, radius);
+    if(Mover(frobTarget) != None) {
+        radius.X = 18;// vanilla uses 16 for 1 foot, but then we multiply by 0.9 in BoxToWindowCoords
+        radius.Y = 18;
+        radius.Z = 18;
+    }
+    BoxToWindowCoords(w, margin, centerLoc, radius, boxTLX, boxTLY, boxBRX, boxBRY);
 }
 
 function DrawWindowBase(GC gc, actor frobTarget)
