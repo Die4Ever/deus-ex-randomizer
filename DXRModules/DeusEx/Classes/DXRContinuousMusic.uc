@@ -33,12 +33,73 @@ var byte DyingSection;
 var byte ConvSection;
 var byte CombatSection;// used for NYCStreets2_Music
 
-var class<MenuChoice_ContinuousMusic> c;
+var class<MenuChoice_ContinuousMusic> c;// for convenience, damn I'm lazy
 
 struct SongChoice {
     var string song;
     var int ambient, dying, combat, conv, outro;
+    var bool cutscene_only;
 };
+
+var config bool allowCombat;
+var config SongChoice choices[60];
+
+function CheckConfig()
+{
+    local int i;
+    if( ConfigOlderThan(2,2,5,3) ) {
+        allowCombat = default.allowCombat;
+
+        for(i=0; i<ArrayCount(choices); i++) {
+            choices[i].song = "";
+        }
+
+        i=0;
+        // TODO: we could mix up ambient vs alternative ambient for songs that have it
+        // we could also use combat/conversation/outro/dying songs from different songs
+        // 0=ambient, 1=dying, 2=ambient2, 3=combat, 4=conversation, 5=outro
+        choices[i++] = MakeSongChoice("Area51_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("Area51Bunker_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("BatteryPark_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("HKClub_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("HKClub2_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("HongKong_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("HongKongCanal_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("HongKongHelipad_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("Lebedev_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("LibertyIsland_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("MJ12_Music", 0, 1, 3, 4, 5);
+        //choices[i++] = MakeSongChoice("MJ12_Music", 2, 1, 3, 4, 5);// ambient 2? maybe this could be a conversation song instead? maybe this isn't the right way to do this because it puts MJ12_Music into the pool twice
+        choices[i++] = MakeSongChoice("NavalBase_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("NYCBar2_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("NYCStreets_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("NYCStreets2_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("OceanLab_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("OceanLab2_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("ParisCathedral_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("ParisChateau_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("ParisClub_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("ParisClub2_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("Tunnels_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("UNATCO_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("UNATCOReturn_Music", 0, 1, 3, 4, 5);
+        //choices[i++] = MakeSongChoice("UNATCOReturn_Music", 2, 1, 3, 4, 5);// ambient 2
+        choices[i++] = MakeSongChoice("Vandenberg_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("VersaLife_Music", 0, 1, 3, 4, 5);
+
+        // cutscene-only songs, change all the arguments to 0 since they don't have other sections
+        choices[i++] = MakeSongChoice("Credits_Music", 0, 0, 0, 0, 0, true);
+        choices[i++] = MakeSongChoice("DeusExDanceMix_Music", 0, 1, 3, 4, 5, true);
+        choices[i++] = MakeSongChoice("Endgame1_Music", 0, 0, 0, 0, 0, true);
+        choices[i++] = MakeSongChoice("Endgame2_Music", 0, 0, 0, 0, 0, true);
+        choices[i++] = MakeSongChoice("Endgame3_Music", 0, 0, 0, 0, 0, true);
+        choices[i++] = MakeSongChoice("Intro_Music", 0, 0, 0, 0, 0, true);
+        choices[i++] = MakeSongChoice("Quotes_Music", 0, 0, 0, 0, 0, true);
+        choices[i++] = MakeSongChoice("Title_Music", 0, 0, 0, 0, 0, true);
+        choices[i++] = MakeSongChoice("Training_Music", 0, 0, 0, 0, 0, true);
+    }
+    Super.CheckConfig();
+}
 
 simulated function PreBeginPlay()
 {
@@ -130,7 +191,7 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
     p.musicMode = MUS_Outro;
 }
 
-function SongChoice MakeSongChoice(string song, int ambient, int dying, int combat, int conv, int outro)
+function SongChoice MakeSongChoice(string song, int ambient, int dying, int combat, int conv, int outro, optional bool cutscene_only)
 {
     local SongChoice s;
     s.song = song;
@@ -139,15 +200,15 @@ function SongChoice MakeSongChoice(string song, int ambient, int dying, int comb
     s.combat = combat;
     s.conv = conv;
     s.outro = outro;
+    s.cutscene_only = cutscene_only;
     return s;
 }
 
 function GetLevelSong()
 {
-    local SongChoice choices[50];
-    local SongChoice s;
-    local int i;
-    local bool all;
+    local SongChoice tchoices[100], s;
+    local int i, j;
+    local bool cutscene;
 
     switch(dxr.localURL) {
     case "DX":
@@ -157,51 +218,15 @@ function GetLevelSong()
     case "ENDGAME2":
     case "ENDGAME3":
     case "ENDGAME4":
-        all=true;
+        cutscene=true;
     }
 
-    // TODO: we could mix up ambient vs alternative ambient for songs that have it
-    // we could also use combat/conversation/outro/dying songs from different songs
-    // 0=ambient, 1=dying, 2=ambient2, 3=combat, 4=conversation, 5=outro
-    choices[i++] = MakeSongChoice("Area51_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("Area51Bunker_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("BatteryPark_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("HKClub_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("HKClub2_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("HongKong_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("HongKongCanal_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("HongKongHelipad_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("Lebedev_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("LibertyIsland_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("MJ12_Music", 0, 1, 3, 4, 5);
-    //choices[i++] = MakeSongChoice("MJ12_Music", 2, 1, 3, 4, 5);// ambient 2? maybe this could be a conversation song instead? maybe this isn't the right way to do this because it puts MJ12_Music into the pool twice
-    choices[i++] = MakeSongChoice("NavalBase_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("NYCBar2_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("NYCStreets_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("NYCStreets2_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("OceanLab_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("OceanLab2_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("ParisCathedral_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("ParisChateau_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("ParisClub_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("ParisClub2_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("Tunnels_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("UNATCO_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("UNATCOReturn_Music", 0, 1, 3, 4, 5);
-    //choices[i++] = MakeSongChoice("UNATCOReturn_Music", 2, 1, 3, 4, 5);// ambient 2
-    choices[i++] = MakeSongChoice("Vandenberg_Music", 0, 1, 3, 4, 5);
-    choices[i++] = MakeSongChoice("VersaLife_Music", 0, 1, 3, 4, 5);
-
-    if(all) {// change all the arguments to 0 since they don't have other sections
-        choices[i++] = MakeSongChoice("Credits_Music", 0, 0, 0, 0, 0);
-        choices[i++] = MakeSongChoice("DeusExDanceMix_Music", 0, 1, 3, 4, 5);
-        choices[i++] = MakeSongChoice("Endgame1_Music", 0, 0, 0, 0, 0);
-        choices[i++] = MakeSongChoice("Endgame2_Music", 0, 0, 0, 0, 0);
-        choices[i++] = MakeSongChoice("Endgame3_Music", 0, 0, 0, 0, 0);
-        choices[i++] = MakeSongChoice("Intro_Music", 0, 0, 0, 0, 0);
-        choices[i++] = MakeSongChoice("Quotes_Music", 0, 0, 0, 0, 0);
-        choices[i++] = MakeSongChoice("Title_Music", 0, 0, 0, 0, 0);
-        choices[i++] = MakeSongChoice("Training_Music", 0, 0, 0, 0, 0);
+    // build local choices list
+    for(j=0; j<ArrayCount(choices); j++) {
+        s = choices[j];
+        if(s.song == "") continue;
+        if(s.cutscene_only && !cutscene) continue;
+        tchoices[i++] = s;
     }
 
     SetGlobalSeed(string(Level.Song.Name));// matching songs will stay matching
@@ -209,14 +234,14 @@ function GetLevelSong()
         SetGlobalSeed("NYCStreets2_Music");
 
     i = rng(i);
-    s = choices[i];
+    s = tchoices[i];
 
     LevelSongSection = s.ambient;
     DyingSection = s.dying;
     CombatSection = s.combat;
     ConvSection = s.conv;
     OutroSection = s.outro;
-    /*if(all) {
+    /*if(cutscene) {
         switch(rng(5)) {
         case 1: LevelSongSection = DyingSection; break;
         case 2: LevelSongSection = CombatSection; break;
@@ -454,6 +479,8 @@ function bool InCombat()
     local ScriptedPawn npc;
     local Pawn CurPawn;
 
+    if(!allowCombat) return false;
+
     // check a 100 foot radius around me for combat
     // XXXDEUS_EX AMSD Slow Pawn Iterator
     //foreach RadiusActors(class'ScriptedPawn', npc, 1600)
@@ -481,4 +508,9 @@ function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusi
     p.ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
 #endif
     RememberMusic();
+}
+
+defaultproperties
+{
+    allowCombat=true
 }
