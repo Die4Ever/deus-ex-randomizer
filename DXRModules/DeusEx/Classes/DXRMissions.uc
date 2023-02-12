@@ -1007,19 +1007,23 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     case "Nicolette":
         sp = Spawn(class'#var(prefix)NicoletteDuClare',, 'DXRMissions', Loc.positions[0].pos);
         g.actors[0].a = sp;
+        RemoveReactions(sp);
         sp.BindName = "NicoletteDuClare";
         sp.FamiliarName = "Young Woman";
         sp.UnfamiliarName = "Young Woman";
         sp.bInvincible = true;
         sp.SetOrders('Dancing');
         sp.ConBindEvents();
+        sp.RaiseAlarm = RAISEALARM_Never;
         break;
 
     case "Jaime":
         if(dxr.flagbase.GetBool('JaimeLeftBehind')) {
             sp = Spawn(class'#var(prefix)JaimeReyes',, 'DXRMissions', Loc.positions[0].pos);
             g.actors[0].a = sp;
+            RemoveReactions(sp);
             sp.SetOrders('Standing');
+            sp.RaiseAlarm = RAISEALARM_Never;
         }
         break;
 
