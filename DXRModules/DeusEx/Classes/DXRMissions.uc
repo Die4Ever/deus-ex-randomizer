@@ -1320,6 +1320,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     for(i=0; i<ArrayCount(g.actors); i++) {
         a = g.actors[i].a;
         if(a == None) continue;
+        a.bVisionImportant = true;
         MoveActor(a, Loc.positions[i].pos, Loc.positions[i].rot, g.actors[i].physics);
     }
 
