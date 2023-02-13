@@ -26,17 +26,19 @@ function PostBeginPlay()
 
     SetTimer(0, false);
 
-    p = Login("", "?Name=Player?Class=DeusEx.JCDentonMale", error, class'JCDentonMale');
-    p.Possess();
-    log(Self$" PostBeginPlay Login got error: "$error$", player: "$p, Name);
-
     foreach AllActors(class'DXRando', dxr) { break; }
 
     if( dxr.localURL != "12_VANDENBERG_TUNNELS" ) {
-        log("DXRandoTests loading map 12_VANDENBERG_TUNNELS", Name);
+        dxr.Destroy();
+        log("TIME: DXRandoTests loading map 12_VANDENBERG_TUNNELS", Name);
         Level.ServerTravel( "12_VANDENBERG_TUNNELS", False );
         return;
     }
+
+    log("TIME: DXRandoTests entered map 12_VANDENBERG_TUNNELS", Name);
+    p = Login("", "?Name=Player?Class=DeusEx.JCDentonMale", error, class'JCDentonMale');
+    p.Possess();
+    log(Self$" PostBeginPlay Login got error: "$error$", player: "$p, Name);
 
     SetTimer(0.1, true);
 }
