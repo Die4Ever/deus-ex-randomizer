@@ -20,6 +20,6 @@ defaultproperties
 {
     blastRadius=128
     mpBlastRadius=128
-    Damage=10
-    mpDamage=10
+    Damage=14
+    mpDamage=14
 }
