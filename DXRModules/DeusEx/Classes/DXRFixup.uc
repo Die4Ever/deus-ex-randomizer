@@ -1350,6 +1350,7 @@ function Vandenberg_FirstEntry()
             e.BumpType = BT_PlayerBump;
             e.BumpEvent = 'SC_Door3_opened';
         }
+        AddSwitch( vect(-396.634888, 2295, -2542.310547), rot(0, -16384, 0), 'SC_Door3_opened').bCollideWorld = false;
         foreach AllActors(class'Button1', b) {
             if( b.Event == 'Top' || b.Event == 'middle' || b.Event == 'Bottom' ) {
                 AddDelay(b, 5);
