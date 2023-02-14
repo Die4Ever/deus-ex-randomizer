@@ -1414,7 +1414,7 @@ function Vandenberg_FirstEntry()
             hs.FamiliarName = "Howard Stronger";
             hs.UnfamiliarName = "Howard Stronger";
             if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
-                i = 250;
+                i = 200;
                 hs.default.HealthHead = i;
                 hs.default.HealthTorso = i;
                 hs.default.HealthLegLeft = i;
