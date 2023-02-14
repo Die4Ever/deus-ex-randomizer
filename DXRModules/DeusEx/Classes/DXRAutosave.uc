@@ -106,6 +106,7 @@ function doAutosave()
     dxr.flags.f.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber,, 999);
 
     bNeedSave = false;
+    class'DXRStats'.static.IncDataStorageStat(p, "DXRStats_autosaves");
     p.SaveGame(saveSlot, saveName);
     if( interruptedDL != None ) {
         p.dataLinkPlay = interruptedDL;

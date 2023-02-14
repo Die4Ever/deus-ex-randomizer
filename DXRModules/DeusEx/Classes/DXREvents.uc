@@ -885,8 +885,11 @@ static function BeatGame(DXRando dxr, int ending)
     j = js.static.Start("BeatGame");
     js.static.Add(j, "ending", ending);
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
+    js.static.Add(j, "Autosaves", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_autosaves"));
     js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_deaths"));
+    js.static.Add(j, "LoadCount", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_loads"));
     js.static.Add(j, "maxrando", dxr.flags.maxrando);
+    js.static.Add(j, "SetSeed", dxr.flags.bSetSeed);
 
     if (dxr.player.carriedDecoration!=None){
         js.static.Add(j, "carriedItem", dxr.player.carriedDecoration.Class);
@@ -916,7 +919,7 @@ static function ExtinguishFire(DXRando dxr, string extinguisher, DeusExPlayer pl
     GeneralEventData(dxr, j);
     js.static.End(j);
 
-    class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
+    class'DXRTelemetry'.static.SendEvent(dxr, player, j);
     MarkBingo(dxr, "ExtinguishFire");
 }
 

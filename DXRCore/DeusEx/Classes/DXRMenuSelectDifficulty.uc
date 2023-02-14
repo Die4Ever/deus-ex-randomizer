@@ -100,6 +100,7 @@ function BindControls(optional string action)
     if( sseed != "" ) {
         f.seed = int(sseed);
         dxr.seed = f.seed;
+        f.bSetSeed = 1;
     } else {
         f.RollSeed();
     }

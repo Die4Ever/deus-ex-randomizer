@@ -9,6 +9,14 @@ function AnyEntry()
     SetTimer(0.1, True);
 }
 
+simulated function ReEntry(bool IsTravel)
+{
+    Super.ReEntry(IsTravel);
+    if(!IsTravel) {
+        IncDataStorageStat(player(),"DXRStats_loads");
+    }
+}
+
 //Returns true when you aren't in a menu, or in the intro, etc.
 function bool InGame() {
 #ifdef hx
@@ -406,7 +414,7 @@ function AddMissionTimeTable(CreditsWindow cw)
 
 function AddDXRCredits(CreditsWindow cw)
 {
-    local int fired,swings,jumps,deaths,burnkills,gibbedkills;
+    local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads;
 
     cw.PrintLn();
 
@@ -420,6 +428,9 @@ function AddDXRCredits(CreditsWindow cw)
     burnkills = dxr.flagbase.GetInt('DXRStats_burnkills');
     gibbedkills = dxr.flagbase.GetInt('DXRStats_gibbedkills');
     deaths = GetDataStorageStat(dxr, "DXRStats_deaths");
+    saves = player().saveCount;
+    autosaves = GetDataStorageStat(dxr, "DXRStats_autosaves");
+    loads = GetDataStorageStat(dxr, "DXRStats_loads");
 
     cw.PrintHeader("Statistics");
 
@@ -432,6 +443,8 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("Enemies Burned to Death: "$burnkills);
     cw.PrintText("Enemies Gibbed: "$gibbedkills);
     cw.PrintText("Deaths: "$deaths);
+    cw.PrintText("Saves: "$saves$" ("$autosaves$" Autosaves)");
+    cw.PrintText("Loads: "$loads);
 
     cw.PrintLn();
 }

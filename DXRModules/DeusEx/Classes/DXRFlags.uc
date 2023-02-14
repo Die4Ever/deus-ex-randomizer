@@ -24,6 +24,7 @@ var #var(flagvarprefix) int newgameplus_loops;
 var #var(flagvarprefix) int crowdcontrol;
 
 var #var(flagvarprefix) int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
+var #var(flagvarprefix) int bSetSeed;// int because all our flags are ints?
 
 
 // When adding a new flag, make sure to update BindFlags, flagNameToHumanName, flagValToHumanVal,
@@ -164,6 +165,7 @@ function RollSeed()
     seed = dxr.Crc( Rand(MaxInt) @ (FRand()*1000000) @ (Level.TimeSeconds*1000) );
     seed = abs(seed) % 1000000;
     dxr.seed = seed;
+    bSetSeed = 0;
 }
 
 #ifdef hx
@@ -176,6 +178,7 @@ function HXRollSeed()
         seed = next_seed;
         dxr.seed = seed;
         next_seed = 0;
+        bSetSeed = 1;
     }
     else {
         RollSeed();
@@ -589,6 +592,9 @@ simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDiffi
     local string str,str2;
 
     str = "Deus Ex Randomizer " $ VersionString() $ ", Seed: " $ seed;
+    if(bSetSeed > 0)
+        str = str $ " (Set Seed)";
+
     str2= "Difficulty: " $ TrimTrailingZeros(CombatDifficulty)
 #ifdef injections
             $ ", New Game+ Loops: "$newgameplus_loops
@@ -669,6 +675,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_newgameplus_loops', newgameplus_loops, mode, str);
     FlagInt('Rando_playthrough_id', playthrough_id, mode, str);
     FlagInt('Rando_gamemode', gamemode, mode, str);
+    FlagInt('Rando_setseed', bSetSeed, mode, str);
 
     if( FlagInt('Rando_difficulty', difficulty, mode, str) ) {
         settings = difficulty_settings[difficulty];
@@ -750,6 +757,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Seed";
         case 'Rando_maxrando':
             return "Max Rando";
+        case 'Rando_setseed':
+            return "Set Seed";
         case 'Rando_autosave':
             return "Autosave";
         case 'Rando_crowdcontrol':
@@ -888,6 +897,11 @@ simulated function string flagValToHumanVal(name flagname, int val){
     local string ret;
 
     switch(flagname){
+        //Basic true/false
+        case 'Rando_setseed':
+            if(val==0) return "False";
+            else return "True";
+
         //Return the straight number
         case 'Rando_seed':
         case 'Rando_playthrough_id':
