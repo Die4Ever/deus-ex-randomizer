@@ -1,4 +1,8 @@
-class DXRContinuousMusic extends DXRBase transient;
+#ifdef injections
+class DXRContinuousMusic extends DXRBase transient config(DXRMusic);
+#else
+class DXRContinuousMusic extends DXRBase transient config(#var(package)Music);
+#endif
 
 var Music LevelSong;
 var byte LevelSongSection;
