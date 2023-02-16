@@ -21,3 +21,8 @@ auto state Flying
 		LoopAnim('Fly');
 	}
 }
+
+defaultproperties
+{
+    CollisionRadius=360
+}

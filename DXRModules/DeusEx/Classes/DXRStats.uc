@@ -4,9 +4,17 @@ function AnyEntry()
 {
     Super.AnyEntry();
 
-    l("Total time so far: "$GetTotalTimeString()$", deaths so far: "$GetDataStorageStat(dxr, 'DXRStats_deaths'));
+    l("Total time so far: "$GetTotalTimeString()$", deaths so far: "$GetDataStorageStat(dxr, "DXRStats_deaths"));
 
     SetTimer(0.1, True);
+}
+
+simulated function ReEntry(bool IsTravel)
+{
+    Super.ReEntry(IsTravel);
+    if(!IsTravel) {
+        IncDataStorageStat(player(),"DXRStats_loads");
+    }
 }
 
 //Returns true when you aren't in a menu, or in the intro, etc.
@@ -39,12 +47,11 @@ function bool InGame() {
 
 function IncMissionTimer(int mission)
 {
-    local string flagname;
+    local string flagname, dataname;
     local name flag;
-    local int time;
+    local int time, ftime;
 
     local DataStorage datastorage;
-
 
     if (mission < 1) {
         return;
@@ -55,40 +62,25 @@ function IncMissionTimer(int mission)
     //Track both the "success path" time (via flags) and
     //the complete time (via datastorage)
     if (InGame()) {
-        //Success Path
         flagname = "DXRando_Mission"$mission$"_Timer";
-        flag = StringToName(flagname);
-        time = dxr.flagbase.GetInt(flag);
-        dxr.flagbase.SetInt(flag,time+1,,999);
-
-        //Complete Time
-        flagname = "DXRando_Mission"$mission$"_Complete_Timer";
-        flag = StringToName(flagname);
-
-        time = int(datastorage.GetConfigKey(flag));
-        datastorage.SetConfig(flag, time+1, 3600*24*366);
-
+        dataname = "DXRando_Mission"$mission$"_Complete_Timer";
     } else {
-        //Success Path
         flagname = "DXRando_Mission"$mission$"Menu_Timer";
-        flag = StringToName(flagname);
-        time = dxr.flagbase.GetInt(flag);
-        dxr.flagbase.SetInt(flag,time+1,,999);
-
-        //Complete Time
-        flagname = "DXRando_Mission"$mission$"_Complete_Menu_Timer";
-        flag = StringToName(flagname);
-
-        time = int(datastorage.GetConfigKey(flag));
-        datastorage.SetConfig(flag, time+1, 3600*24*366);
-
+        dataname = "DXRando_Mission"$mission$"_Complete_Menu_Timer";
     }
+
+    flag = StringToName(flagname);
+    ftime = dxr.flagbase.GetInt(flag);
+    dxr.flagbase.SetInt(flag,ftime+1,,999);
+
+    time = int(datastorage.GetConfigKey(dataname));
+    time = Max(time, ftime);
+    datastorage.SetConfig(dataname, time+1, 3600*24*366);
 }
 
 function int GetCompleteMissionTime(int mission)
 {
     local string flagname;
-    local name flag;
     local int time;
     local DataStorage datastorage;
 
@@ -99,8 +91,7 @@ function int GetCompleteMissionTime(int mission)
     datastorage = class'DataStorage'.static.GetObj(dxr);
 
     flagname = "DXRando_Mission"$mission$"_Complete_Timer";
-    flag = StringToName(flagname);
-    time = int(datastorage.GetConfigKey(flag));
+    time = int(datastorage.GetConfigKey(flagname));
 
     return time;
 }
@@ -125,7 +116,6 @@ function int GetMissionTime(int mission)
 function int GetCompleteMissionMenuTime(int mission)
 {
     local string flagname;
-    local name flag;
     local int time;
     local DataStorage datastorage;
 
@@ -136,8 +126,7 @@ function int GetCompleteMissionMenuTime(int mission)
     datastorage = class'DataStorage'.static.GetObj(dxr);
 
     flagname = "DXRando_Mission"$mission$"_Complete_Menu_Timer";
-    flag = StringToName(flagname);
-    time = int(datastorage.GetConfigKey(flag));
+    time = int(datastorage.GetConfigKey(flagname));
 
     return time;
 }
@@ -214,10 +203,11 @@ function string GetMissionMenuTimeString(int mission)
     return fmtTimeToString(time);
 }
 
-function string GetCompleteMissionTimeString(int mission)
+function string GetCompleteMissionTimeWithMenusString(int mission)
 {
     local int time;
     time = GetCompleteMissionTime(mission);
+    time += GetCompleteMissionMenuTime(mission);
     return fmtTimeToString(time);
 }
 
@@ -237,7 +227,6 @@ function String GetTotalTimeString()
     }
 
     return fmtTimeToString(totaltime);
-
 }
 
 function String GetTotalCompleteTimeString()
@@ -249,7 +238,6 @@ function String GetTotalCompleteTimeString()
     }
 
     return fmtTimeToString(totaltime);
-
 }
 
 static function int GetTotalTime(DXRando dxr)
@@ -271,14 +259,9 @@ static function int GetTotalTime(DXRando dxr)
 
 function String GetTotalMenuTimeString()
 {
-    local int i, totaltime;
-
-    for (i=1;i<=15;i++) {
-        totaltime += GetMissionMenuTime(i);
-    }
-
-    return fmtTimeToString(totaltime);
-
+    local int time;
+    time = GetTotalMenuTime(dxr);
+    return fmtTimeToString(time);
 }
 
 function String GetTotalCompleteMenuTimeString()
@@ -290,8 +273,8 @@ function String GetTotalCompleteMenuTimeString()
     }
 
     return fmtTimeToString(totaltime);
-
 }
+
 static function int GetTotalMenuTime(DXRando dxr)
 {
     local int i, totaltime;
@@ -300,7 +283,7 @@ static function int GetTotalMenuTime(DXRando dxr)
     local int time;
 
     for (i=1;i<=15;i++) {
-        flagname = "DXRando_Mission"$i$"_Menu_Timer";
+        flagname = "DXRando_Mission"$i$"Menu_Timer";
         flag = dxr.StringToName(flagname);
         time = dxr.flagbase.GetInt(flag);
         totaltime += time;
@@ -315,17 +298,16 @@ static function IncStatFlag(DeusExPlayer p, name flagname)
     local int val;
     val = p.FlagBase.GetInt(flagname);
     p.FlagBase.SetInt(flagname,val+1,,999);
-
 }
 
-static function IncDataStorageStat(DeusExPlayer p, name valname)
+static function IncDataStorageStat(DeusExPlayer p, string valname)
 {
     local DataStorage datastorage;
     local int val;
     datastorage = class'DataStorage'.static.GetObjFromPlayer(p);
     val = int(datastorage.GetConfigKey(valname));
     datastorage.SetConfig(valname, val+1, 3600*24*366);
-
+    datastorage.Flush();
 }
 
 static function AddShotFired(DeusExPlayer p)
@@ -342,7 +324,7 @@ static function AddJump(DeusExPlayer p)
 }
 static function AddDeath(DeusExPlayer p)
 {
-    IncDataStorageStat(p,'DXRStats_deaths');
+    IncDataStorageStat(p,"DXRStats_deaths");
 }
 
 static function AddBurnKill(DeusExPlayer p)
@@ -355,7 +337,7 @@ static function AddGibbedKill(DeusExPlayer p)
     IncStatFlag(p,'DXRStats_gibbedkills');
 }
 
-static function int GetDataStorageStat(DXRando dxr, name valname)
+static function int GetDataStorageStat(DXRando dxr, string valname)
 {
     local DataStorage datastorage;
     datastorage = class'DataStorage'.static.GetObj(dxr);
@@ -399,30 +381,40 @@ function String FormatCreditsTimeStrings(String missionNum, String missionName, 
 function AddMissionTimeTable(CreditsWindow cw)
 {
     local CreditsTimerWindow ctw;
+    local int i, totalTime, totalRealTime;
+
     ctw = CreditsTimerWindow(cw.winScroll.NewChild(Class'CreditsTimerWindow'));
     ctw.SetSize(450,450);
-    ctw.AddMissionTime("1","Liberty Island",GetMissionTimeString(1),GetCompleteMissionTimeString(1));
-    ctw.AddMissionTime("2","NYC Generator",GetMissionTimeString(2),GetCompleteMissionTimeString(2));
-    ctw.AddMissionTime("3","Airfield",GetMissionTimeString(3),GetCompleteMissionTimeString(3));
-    ctw.AddMissionTime("4","NSF HQ",GetMissionTimeString(4),GetCompleteMissionTimeString(4));
-    ctw.AddMissionTime("5","UNATCO MJ12 Base",GetMissionTimeString(5),GetCompleteMissionTimeString(5));
-    ctw.AddMissionTime("6","Hong Kong",GetMissionTimeString(6),GetCompleteMissionTimeString(6));
-    ctw.AddMissionTime("8","Return to NYC",GetMissionTimeString(8),GetCompleteMissionTimeString(8));
-    ctw.AddMissionTime("9","Superfreighter",GetMissionTimeString(9),GetCompleteMissionTimeString(9));
-    ctw.AddMissionTime("10","Paris Streets",GetMissionTimeString(10),GetCompleteMissionTimeString(10));
-    ctw.AddMissionTime("11","Cathedral",GetMissionTimeString(11),GetCompleteMissionTimeString(11));
-    ctw.AddMissionTime("12","Vandenberg",GetMissionTimeString(12),GetCompleteMissionTimeString(12));
-    ctw.AddMissionTime("14","Ocean Lab",GetMissionTimeString(14),GetCompleteMissionTimeString(14));
-    ctw.AddMissionTime("15","Area 51",GetMissionTimeString(15),GetCompleteMissionTimeString(15));
-    ctw.AddMissionTime("----","--------------","-------------","-------------");
-    ctw.AddMissionTime(" ","Total",GetTotalTimeString(),GetTotalCompleteTimeString());
-    ctw.AddMissionTime(" ","Menu Time",GetTotalMenuTimeString(),GetTotalCompleteMenuTimeString());
 
+    ctw.AddMissionTime("1","Liberty Island",GetMissionTimeString(1),GetCompleteMissionTimeWithMenusString(1));
+    ctw.AddMissionTime("2","NYC Generator",GetMissionTimeString(2),GetCompleteMissionTimeWithMenusString(2));
+    ctw.AddMissionTime("3","Airfield",GetMissionTimeString(3),GetCompleteMissionTimeWithMenusString(3));
+    ctw.AddMissionTime("4","NSF HQ",GetMissionTimeString(4),GetCompleteMissionTimeWithMenusString(4));
+    ctw.AddMissionTime("5","UNATCO MJ12 Base",GetMissionTimeString(5),GetCompleteMissionTimeWithMenusString(5));
+    ctw.AddMissionTime("6","Hong Kong",GetMissionTimeString(6),GetCompleteMissionTimeWithMenusString(6));
+    ctw.AddMissionTime("8","Return to NYC",GetMissionTimeString(8),GetCompleteMissionTimeWithMenusString(8));
+    ctw.AddMissionTime("9","Superfreighter",GetMissionTimeString(9),GetCompleteMissionTimeWithMenusString(9));
+    ctw.AddMissionTime("10","Paris Streets",GetMissionTimeString(10),GetCompleteMissionTimeWithMenusString(10));
+    ctw.AddMissionTime("11","Cathedral",GetMissionTimeString(11),GetCompleteMissionTimeWithMenusString(11));
+    ctw.AddMissionTime("12","Vandenberg",GetMissionTimeString(12),GetCompleteMissionTimeWithMenusString(12));
+    ctw.AddMissionTime("14","Ocean Lab",GetMissionTimeString(14),GetCompleteMissionTimeWithMenusString(14));
+    ctw.AddMissionTime("15","Area 51",GetMissionTimeString(15),GetCompleteMissionTimeWithMenusString(15));
+    ctw.AddMissionTime("----","--------------","-------------","-------------");
+    ctw.AddMissionTime(" ","Total Without Menus",GetTotalTimeString(),GetTotalCompleteTimeString());
+    ctw.AddMissionTime(" ","Total Menu Time",GetTotalMenuTimeString(),GetTotalCompleteMenuTimeString());
+
+    totalTime = GetTotalTime(dxr)+GetTotalMenuTime(dxr);
+    totalRealTime = 0;
+    for (i=1;i<=15;i++) {
+        totalRealTime += GetCompleteMissionTime(i);
+        totalRealTime += GetCompleteMissionMenuTime(i);
+    }
+    ctw.AddMissionTime(" ","Total With Menus",fmtTimeToString(totalTime),fmtTimeToString(totalRealTime));
 }
 
 function AddDXRCredits(CreditsWindow cw)
 {
-    local int fired,swings,jumps,deaths,burnkills,gibbedkills;
+    local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads;
 
     cw.PrintLn();
 
@@ -435,7 +427,10 @@ function AddDXRCredits(CreditsWindow cw)
     jumps = dxr.flagbase.GetInt('DXRStats_jumps');
     burnkills = dxr.flagbase.GetInt('DXRStats_burnkills');
     gibbedkills = dxr.flagbase.GetInt('DXRStats_gibbedkills');
-    deaths = GetDataStorageStat(dxr, 'DXRStats_deaths');
+    deaths = GetDataStorageStat(dxr, "DXRStats_deaths");
+    saves = player().saveCount;
+    autosaves = GetDataStorageStat(dxr, "DXRStats_autosaves");
+    loads = GetDataStorageStat(dxr, "DXRStats_loads");
 
     cw.PrintHeader("Statistics");
 
@@ -444,11 +439,108 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("Jumps: "$jumps);
     cw.PrintText("Nano Keys: "$player().KeyRing.GetKeyCount());
     cw.PrintText("Skill Points Earned: "$player().SkillPointsTotal);
+
     cw.PrintText("Enemies Burned to Death: "$burnkills);
     cw.PrintText("Enemies Gibbed: "$gibbedkills);
     cw.PrintText("Deaths: "$deaths);
+    cw.PrintText("Saves: "$saves$" ("$autosaves$" Autosaves)");
+    cw.PrintText("Loads: "$loads);
 
     cw.PrintLn();
+}
+
+function ExtendedTests()
+{
+    local int time, completeTime, menutime, completemenutime;
+
+    Super.ExtendedTests();
+
+    // mission 1 tests
+    testint( GetMissionTime(1), 0, "GetMissionTime(1) == 0");
+    testint( GetCompleteMissionTime(1), 0, "GetCompleteMissionTime(1) == 0");
+    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
+    testint( GetCompleteMissionMenuTime(1), 0, "GetCompleteMissionMenuTime(1) == 0");
+
+    IncMissionTimer(1);
+
+    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
+    testint( GetCompleteMissionTime(1), 1, "GetCompleteMissionTime(1) == 1");
+    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
+    testint( GetCompleteMissionMenuTime(1), 0, "GetCompleteMissionMenuTime(1) == 0");
+
+    DeusExRootWindow(player().rootWindow).hud.Hide();
+    IncMissionTimer(1);
+    DeusExRootWindow(player().rootWindow).hud.Show();
+
+    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
+    testint( GetCompleteMissionTime(1), 1, "GetCompleteMissionTime(1) == 1");
+    testint( GetMissionMenuTime(1), 1, "GetMissionMenuTime(1) == 1");
+    testint( GetCompleteMissionMenuTime(1), 1, "GetCompleteMissionMenuTime(1) == 1");
+
+    teststring( GetMissionTimeString(1), "00:00:00.1", "GetMissionTimeString(1)");
+    teststring( GetCompleteMissionTimeWithMenusString(1), "00:00:00.2", "GetCompleteMissionTimeWithMenusString(1)");
+
+    // reset non-real-time timers
+    dxr.flagbase.SetInt('DXRando_Mission1_Timer',0,,999);
+    dxr.flagbase.SetInt('DXRando_Mission1Menu_Timer',0,,999);
+
+    // mission 1 tests again
+    testint( GetMissionTime(1), 0, "GetMissionTime(1) == 0");
+    testint( GetCompleteMissionTime(1), 1, "GetCompleteMissionTime(1) == 1");
+    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
+    testint( GetCompleteMissionMenuTime(1), 1, "GetCompleteMissionMenuTime(1) == 1");
+
+    IncMissionTimer(1);
+
+    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
+    testint( GetCompleteMissionTime(1), 2, "GetCompleteMissionTime(1) == 2");
+    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
+    testint( GetCompleteMissionMenuTime(1), 1, "GetCompleteMissionMenuTime(1) == 1");
+
+    DeusExRootWindow(player().rootWindow).hud.Hide();
+    IncMissionTimer(1);
+    DeusExRootWindow(player().rootWindow).hud.Show();
+
+    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
+    testint( GetCompleteMissionTime(1), 2, "GetCompleteMissionTime(1) == 2");
+    testint( GetMissionMenuTime(1), 1, "GetMissionMenuTime(1) == 1");
+    testint( GetCompleteMissionMenuTime(1), 2, "GetCompleteMissionMenuTime(1) == 2");
+
+    teststring( GetMissionTimeString(1), "00:00:00.1", "GetMissionTimeString(1)");
+    teststring( GetCompleteMissionTimeWithMenusString(1), "00:00:00.4", "GetCompleteMissionTimeWithMenusString(1)");
+
+    // mission 12 tests
+    testint( dxr.dxInfo.MissionNumber, 12, "current mission is 12 as expected");
+
+    time = GetMissionTime(12);
+    completeTime = GetCompleteMissionTime(12);
+    menuTime = GetMissionMenuTime(12);
+    completemenutime = GetCompleteMissionMenuTime(12);
+
+    test( time > 0, "GetMissionTime(12) > 0");
+    test( completeTime > 0, "GetCompleteMissionTime(12) > 0");
+    testint( menuTime, 0, "GetMissionMenuTime(12) == 0");
+    testint( completemenutime, 0, "GetCompleteMissionMenuTime(12) == 0");
+
+    Timer();
+
+    testint( GetMissionTime(12), time + 1, "GetMissionTime(12) == time + 1");
+    testint( GetCompleteMissionTime(12), completeTime + 1, "GetCompleteMissionTime(12) == completeTime + 1");
+    testint( GetMissionMenuTime(12), 0, "GetMissionMenuTime(12) == 0");
+    testint( GetCompleteMissionMenuTime(12), 0, "GetCompleteMissionMenuTime(12) == 0");
+
+    DeusExRootWindow(player().rootWindow).hud.Hide();
+    Timer();
+    DeusExRootWindow(player().rootWindow).hud.Show();
+
+    testint( GetMissionTime(12), time + 1, "GetMissionTime(12) == time + 1");
+    testint( GetCompleteMissionTime(12), completeTime + 1, "GetCompleteMissionTime(12) == completeTime + 1");
+    testint( GetMissionMenuTime(12), 1, "GetMissionMenuTime(12) == 1");
+    testint( GetCompleteMissionMenuTime(12), 1, "GetCompleteMissionMenuTime(12) == 1");
+
+    // ensure correct key names
+    test( GetTotalTime(dxr) > 0, "GetTotalTime");
+    test( GetTotalMenuTime(dxr) > 0, "GetTotalMenuTime");
 }
 
 defaultproperties

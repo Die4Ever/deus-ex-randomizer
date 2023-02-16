@@ -1,5 +1,5 @@
 class DXRWeapons extends DXRBase;
-
+// do not change a weapon's defaults, since we use them in the calculations so this is all safe to be called multiple times
 var DXRLoadouts loadouts;
 
 function CheckConfig()
@@ -70,7 +70,7 @@ simulated function RandoWeapon(DeusExWeapon w)
 
 simulated function RandoProjectile(DeusExWeapon w, out class<Projectile> p, out class<Projectile> d, float new_damage)
 {
-    local float ratio;
+    local float ratio, f;
     if(p == None) return;
 
     ratio = new_damage/float(w.default.HitDamage);
@@ -85,20 +85,19 @@ simulated function RandoProjectile(DeusExWeapon w, out class<Projectile> p, out 
         p.default.Damage = ratio * 5.0;
         break;
 
+    // plasma, don't worry about PS40 because that gets handled in its own class
     case class'#var(prefix)PlasmaBolt':
-        p.default.Damage = ratio * 9.0;
+    case class'PlasmaBoltFixTicks':
+        f = 14;
+        p.default.Damage = ratio * f;
 #ifndef hx
-        class<#var(prefix)PlasmaBolt>(p).default.mpDamage = ratio * 9.0;
+        class'#var(prefix)PlasmaBolt'.default.mpDamage = ratio * f;
+        class'PlasmaBoltFixTicks'.default.mpDamage = ratio * f;
 #endif
-        w.HitDamage = ratio * 9.0;
         p = class'PlasmaBoltFixTicks';
         d = p;
-    case class'PlasmaBoltFixTicks':// no break
-        p.default.Damage = ratio * 9.0;
-#ifndef hx
-        class<PlasmaBoltFixTicks>(p).default.mpDamage = ratio * 9.0;
-#endif
-        w.HitDamage = ratio * 9.0;
+        p.default.Damage = ratio * f;
+        w.HitDamage = ratio * f;
         break;
 
     case class'#var(prefix)Rocket':

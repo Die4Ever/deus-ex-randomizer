@@ -15,3 +15,11 @@ Begin:
     DamageRing();
     SetTimer(0.25/float(gradualHurtSteps), True);
 }
+
+defaultproperties
+{
+    blastRadius=128
+    mpBlastRadius=128
+    Damage=14
+    mpDamage=14
+}

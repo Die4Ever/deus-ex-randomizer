@@ -40,6 +40,10 @@ simulated function InitHints()
 
     AddHint("Attaching a LAM or Gas Grenade to a wall can be very strong!", "Also try to lure enemies into them.");
     AddHint("Use sabot shotgun rounds to kill the little spider bots.");
+    AddHint("Grab a plasma rifle, blast everything in sight,", "then go get your items back.");
+    if(#defined(injections)) {
+        AddHint("Grays have strong resistance to fire and plasma,", "but it will eventually kill them!");
+    }
 
     if(mission <= 5) {
         AddHint("Melee attacks from behind do bonus damage!");
@@ -65,6 +69,7 @@ simulated function InitHints()
             AddHint("Ever tried to extinguish a fire with a toilet?", "How about a urinal or a shower?");
             AddHint("Items like ballistic armor and rebreathers now free up", "the inventory space immediately when you equip them.");
             AddHint("Items like hazmat suits and thermoptic camo now free up", "the inventory space immediately when you equip them.");
+            AddHint("Try using a hazmat suit", "against plasma, fire, and gas attacks.");
             AddHint("Hacking computers now uses 5 bioelectric energy per second.");
             AddHint("Spy Drone aug has improved speed", "and the emp blast now also does explosive damage.");
             AddHint("The PS20 has been upgraded to the PS40", "and does significantly more damage.");
@@ -202,8 +207,10 @@ simulated function InitHints()
 
     case 5:
         if (map ~= "05_NYC_UnatcoMJ12Lab") {
-            if(dxr.flags.settings.goals > 0)
+            if(dxr.flags.settings.goals > 0) {
                 AddHint("Paul's location in the lab is randomized.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("Your equipment could be in either", "the armory, or the surgery ward.");
+            }
         } else if (map ~= "05_NYC_UnatcoHQ") {
             if(dxr.flags.settings.goals > 0)
                 AddHint("Alex Jacobson's location in UNATCO HQ is randomized.", "Check the Goal Randomization page on our Wiki.");
@@ -387,7 +394,7 @@ simulated function ShowHint(optional int recursion)
         ShowHint(recursion++);
         return;
     }
-    m.line3 = "Deaths: "$class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths');
+    m.line3 = "Deaths: "$class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_deaths")$", Loads: "$class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_loads");
     m.bottomText = "(Hint "$hint$" / "$numHints$", many hints are context sensitive)";
 }
 

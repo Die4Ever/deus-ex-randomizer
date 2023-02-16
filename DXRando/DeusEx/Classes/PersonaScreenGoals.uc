@@ -1,12 +1,13 @@
 class DXRPersonaScreenGoals injects PersonaScreenGoals;
 
-var PersonaActionButtonWindow btnBingo, btnGoalHints, btnEntranceLocs, btnEntranceSpoilers, btnGoalSpoilers;
+var PersonaActionButtonWindow btnBingo, btnGoalHints, btnEntranceLocs, btnEntranceSpoilers, btnGoalSpoilers, btnGoalLocs;
 //var PersonaCheckBoxWindow  chkShowSpoilers;
 var string goalRandoWikiUrl;
 var string InfoWindowHeader, InfoWindowText;
 var string EntSpoilerWindowHeader, EntSpoilerWindowText;
 var string GoalSpoilerWindowHeader, GoalSpoilerWindowText;
 var String DisplaySpoilers;
+var String GoalLocations;
 var bool bDisplaySpoilers;
 
 function CreateControls()
@@ -14,6 +15,12 @@ function CreateControls()
     local DXRando dxr;
 
     Super.CreateControls();
+
+    //Get rid of the "Confirm Note Deletion" checkbox
+    //It's free real estate!
+    //Instead, use the state from MenuChoice_ConfirmNoteDelete instead
+    chkConfirmNoteDeletion.Hide();
+    bConfirmNoteDeletes = bool(player.ConsoleCommand("get MenuChoice_ConfirmNoteDelete confirm_delete"));
 
     btnBingo = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnBingo.SetButtonText("|&Bingo");
@@ -32,6 +39,10 @@ function CreateControls()
                 CreateShowSpoilersButton(); //A button makes a confirmation window easier
             }
 
+            //Goals is set in Revision, but not supported there
+#ifndef revision
+            CreateGoalLocationsButton();
+#endif
         }
 
         if (dxr.flags.gamemode==1){ //Entrance Rando
@@ -72,6 +83,16 @@ function CreateShowSpoilersButton()
     btnGoalSpoilers.SetButtonText(DisplaySpoilers);
     btnGoalSpoilers.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 290, 179);
     btnGoalSpoilers.SetSensitivity(true);
+
+}
+
+//Maybe this should be shifted left when not in entrance rando mode?
+function CreateGoalLocationsButton()
+{
+    btnGoalLocs = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
+    btnGoalLocs.SetButtonText(GoalLocations);
+    btnGoalLocs.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 450, 411);
+    btnGoalLocs.SetSensitivity(true);
 
 }
 
@@ -247,6 +268,33 @@ function generateEntranceNote(bool bSpoil)
 #endif
 }
 
+function generateGoalLocationNote()
+{
+    local DeusExNote newNote;
+    local PersonaNotesEditWindow newNoteWindow;
+    local DeusExLevelInfo dxLevel;
+    local String goalLocationList;
+    local DXRMissions missions;
+
+    foreach player.AllActors(class'DeusExLevelInfo',dxLevel){
+        goalLocationList = dxLevel.MissionLocation $ " (Mission "$dxLevel.missionNumber$") Possible Goal Locations:|n|n";
+        break;
+    }
+
+    //Actually get the list of goals and locations
+    foreach player.AllActors(class'DXRMissions',missions){
+        goalLocationList = goalLocationList $ missions.generateGoalLocationList();
+        break;
+    }
+
+    // Create a new note and then a window to display it in
+	newNote = player.AddNote(goalLocationList, True);
+
+	newNoteWindow = CreateNoteEditWindow(newNote);
+	newNoteWindow.Lower();
+	SetFocusWindow(newNoteWindow);
+}
+
 function bool ButtonActivated( Window buttonPressed )
 {
     if(buttonPressed == btnBingo) {
@@ -266,6 +314,9 @@ function bool ButtonActivated( Window buttonPressed )
     } else if (buttonPressed == btnGoalSpoilers) {
         root.MessageBox(GoalSpoilerWindowHeader,GoalSpoilerWindowText,0,False,Self);
         return true;
+    } else if (buttonPressed == btnGoalLocs) {
+        generateGoalLocationNote();
+        return true;
     }
     return Super.ButtonActivated(buttonPressed);
 }
@@ -280,4 +331,5 @@ defaultproperties
      GoalSpoilerWindowText="Do you want to see spoilers for the goal randomization?"
      goalRandoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/Goal-Randomization"
      DisplaySpoilers="Show Spoilers"
+     GoalLocations="Goal Locations"
 }

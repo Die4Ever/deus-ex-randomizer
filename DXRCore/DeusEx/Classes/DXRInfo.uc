@@ -255,7 +255,9 @@ simulated static function string TrimTrailingZeros(coerce string s)
 function string ActorToString( Actor a )
 {
     local string out;
-    out = a.Class.Name$"."$a.Name$"("$a.Location$") "$a.tag;
+    out = a.Class.Name$"."$a.Name$"("$a.Location$")";
+    if(a.tag != '')
+        out = out @ a.tag;
     if( a.Base != None && a.Base.Class!=class'LevelInfo' )
         out = out $ " (Base:"$a.Base.Name$")";
     return out;

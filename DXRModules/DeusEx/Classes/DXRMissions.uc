@@ -171,6 +171,37 @@ function int AddGoalLocation(string mapName, string name, int bitMask, vector lo
     return num_locations++;
 }
 
+function String generateGoalLocationList()
+{
+    local int i,j;
+    local String goalList;
+
+    goalList = "";
+
+    for (i=0;i<num_goals;i++){
+        goalList = goalList $ goals[i].name $ ":|n";
+        goalList = goalList $ "-----------------------------|n";
+
+        for (j=0;j<num_locations;j++){
+            if ((goals[i].bitMask & locations[j].bitMask) != 0) {
+                goalList = goalList $ locations[j].name $ " (" $ locations[j].mapName $ ")";
+
+                //For missions with multiple "Vanilla" locations in a single pool (eg mission 8),
+                //this isn't actually as useful as it seems otherwise.  If we added unique "Vanilla Goal"
+                //masks, it would be useful again
+                //if ((locations[j].bitMask & VANILLA_GOAL) != 0){
+                //    goalList = goalList $ " (Vanilla)";
+                //}
+                goalList = goalList $ "|n";
+            }
+        }
+        goalList = goalList $ "|n";
+
+    }
+
+    return goalList;
+}
+
 function AddMutualExclusion(int L1, int L2)
 {
     mutually_exclusive[num_mututally_exclusives].L1 = L1;
@@ -372,6 +403,9 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
         AddActorLocation(loc, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
+        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(375,3860,-604), rot(0, 8048, 0));
+        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
+
         return 51;
 
     case "05_NYC_UNATCOHQ":
@@ -537,7 +571,7 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6528.000000,200.000000,-448.000000), rot(0,65536,0));
         AddActorLocation(loc, 2, vect(-6499.218750, 200.039917, -490.899567), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1664.000000,-416.000000), rot(0,81920,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1662.000000,-416.000000), rot(0,81920,0));
         AddActorLocation(loc, 2, vect(-3296.133789, -1632.118652, -490.899567), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,-1024.000000,-416.000000), rot(0,16384,0));
@@ -547,8 +581,9 @@ function int InitGoals(int mission, string map)
 
     case "10_PARIS_METRO":
     case "10_PARIS_CLUB":
+        AddGoal("10_PARIS_METRO", "Jaime", NORMAL_GOAL, 'JaimeReyes1', PHYS_Falling);
         AddGoal("10_PARIS_CLUB", "Nicolette", NORMAL_GOAL, 'NicoletteDuClare0', PHYS_Falling);
-        AddGoalLocation("10_PARIS_CLUB", "Club", NORMAL_GOAL | VANILLA_GOAL, vect(-673.488708, -1385.685059, 43.097466), rot(0, 17368, 0));
+        AddGoalLocation("10_PARIS_CLUB", "Club", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-673.488708, -1385.685059, 43.097466), rot(0, 17368, 0));
         AddGoalLocation("10_PARIS_CLUB", "Back Room TV", NORMAL_GOAL, vect(-1939.340942, -478.474091, -180.899628), rot(0, -16384, 0));
         AddGoalLocation("10_PARIS_METRO", "Apartment", NORMAL_GOAL, vect(868.070190, 1178.463989, 507.092682), rot(0, -16384, 0));
         AddGoalLocation("10_PARIS_METRO", "Hostel", NORMAL_GOAL, vect(2315.102295, 2511.724365, 651.103638), rot(0, 0, 0));
@@ -557,6 +592,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("10_PARIS_METRO", "Pillars", NORMAL_GOAL, vect(-3614.988525, 2406.175293, 235.101135), rot(0, -16384, 0));
         AddGoalLocation("10_PARIS_METRO", "Media Store", NORMAL_GOAL, vect(1006.833252, 1768.635620, 187.101196), rot(0, 0, 0));
         AddGoalLocation("10_PARIS_METRO", "Alcove Behind Pillar", NORMAL_GOAL, vect(1924.965210, -1234.666016, 187.101776), rot(0, 0, 0));
+        AddGoalLocation("10_PARIS_METRO", "Cafe", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-2300.492920, 1459.889160, 333.215088), rot(0, 0, 0));
         return 101;
 
     case "11_PARIS_CATHEDRAL":
@@ -570,7 +606,7 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Barracks", NORMAL_GOAL, vect(2990.853516, 30.971684, -392.498993), rot(0, 16384, 0));
         AddActorLocation(loc, 1, vect(2971.853516, 144.971680, -392.498993), rot(0,-8000,0));
         loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Chapel", NORMAL_GOAL, vect(1860.275635, -9.666374, -371.286804), rot(0, 16384, 0));
-        AddActorLocation(loc, 1, vect(2114.275635, -143.666382, -371.286804), rot(0, 32768, 0));
+        AddActorLocation(loc, 1, vect(2127, -143.666382, -350), rot(0, 32768, 0));
         loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Kitchen", NORMAL_GOAL, vect(1511.325317, -3204.465088, -680.498413), rot(0, 32768, 0));
         AddActorLocation(loc, 1, vect(1511.325317, -3123.465088, -680.498413), rot(0,65536,0));
         loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Gold Vault", NORMAL_GOAL, vect(3480.141602, -3180.397949, -704.496704), rot(0, 0, 0));
@@ -702,6 +738,8 @@ function AddMission1Goals()
 function PreFirstEntry()
 {
     local #var(prefix)AnnaNavarre anna;
+    local #var(prefix)PaulDenton paul;
+    local #var(prefix)PaulDentonCarcass paulcarc;
     local FlagTrigger ft;
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)ComputerPersonal cp;
@@ -751,6 +789,17 @@ function PreFirstEntry()
             if (ft.Name=='FlagTrigger1'){
                 ft.SetCollisionSize(100, ft.CollisionHeight);
             }
+        }
+    }
+    else if( dxr.localURL == "05_NYC_UNATCOMJ12LAB" ) {
+        foreach AllActors(class'#var(prefix)PaulDentonCarcass',paulcarc){
+            paulcarc.bInvincible=true;
+        }
+        foreach AllActors(class'#var(prefix)PaulDenton',paul){
+            paul.bDetectable=false;
+            paul.bIgnore=true;
+            paul.RaiseAlarm=RAISEALARM_Never;
+            paul.ChangeAlly('mj12',0,true,false);
         }
     }
     else if( dxr.localURL == "09_NYC_GRAVEYARD" ) {
@@ -958,12 +1007,24 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     case "Nicolette":
         sp = Spawn(class'#var(prefix)NicoletteDuClare',, 'DXRMissions', Loc.positions[0].pos);
         g.actors[0].a = sp;
+        RemoveReactions(sp);
         sp.BindName = "NicoletteDuClare";
         sp.FamiliarName = "Young Woman";
         sp.UnfamiliarName = "Young Woman";
         sp.bInvincible = true;
         sp.SetOrders('Dancing');
         sp.ConBindEvents();
+        sp.RaiseAlarm = RAISEALARM_Never;
+        break;
+
+    case "Jaime":
+        if(dxr.flagbase.GetBool('JaimeLeftBehind')) {
+            sp = Spawn(class'#var(prefix)JaimeReyes',, 'DXRMissions', Loc.positions[0].pos);
+            g.actors[0].a = sp;
+            RemoveReactions(sp);
+            sp.SetOrders('Standing');
+            sp.RaiseAlarm = RAISEALARM_Never;
+        }
         break;
 
     case "Harley Filben":
@@ -1259,6 +1320,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     for(i=0; i<ArrayCount(g.actors); i++) {
         a = g.actors[i].a;
         if(a == None) continue;
+        a.bVisionImportant = true;
         MoveActor(a, Loc.positions[i].pos, Loc.positions[i].rot, g.actors[i].physics);
     }
 
@@ -1361,8 +1423,10 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     m = Mover(a);
 
     if( sp != None ) {
-        if( sp.Orders == 'Patrolling' || sp.Orders == 'Sitting' )
+        if(sp.Orders == 'Patrolling')
             sp.SetOrders('Wandering');
+        if(sp.Orders == 'Sitting')
+            sp.SetOrders('Standing');
         sp.HomeLoc = sp.Location;
         sp.HomeRot = vector(sp.Rotation);
         sp.DesiredRotation = rotation;

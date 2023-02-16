@@ -6,10 +6,6 @@ var DXRLoadouts loadout;
 var bool bOnLadder;
 var transient string nextMap;
 
-var Music LevelSong;
-var byte LevelSongSection;
-var byte CombatSection;// used for NYCStreets2_Music
-
 var Rotator ShakeRotator;
 
 function ClientMessage(coerce string msg, optional Name type, optional bool bBeep)
@@ -504,7 +500,6 @@ exec function AllPasswords()
 //========= MUSIC STUFF
 function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
-    log(self$": _ClientSetMusic "$NewSong@NewSection@NewCdTrack@NewTransition@savedSection);
     Super.ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
 }
 
@@ -515,146 +510,6 @@ function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusic
     GetDXR();
     cm = DXRContinuousMusic(dxr.LoadModule(class'DXRContinuousMusic'));
     cm.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
-}
-
-// ----------------------------------------------------------------------
-// UpdateDynamicMusic() copied from DeusExPlayer, but Level.Song was changed to LevelSong, and Level.SongSection changed to LevelSongSection
-//
-// Pattern definitions:
-//   0 - Ambient 1
-//   1 - Dying
-//   2 - Ambient 2 (optional)
-//   3 - Combat
-//   4 - Conversation
-//   5 - Outro
-// ----------------------------------------------------------------------
-
-function UpdateDynamicMusic(float deltaTime)
-{
-    local bool bCombat;
-    local ScriptedPawn npc;
-    local Pawn CurPawn;
-    local DeusExLevelInfo info;
-
-    if (LevelSong == None)
-        return;
-
-    // DEUS_EX AMSD In singleplayer, do the old thing.
-    // In multiplayer, we can come out of dying.
-    if (!PlayerIsClient())
-    {
-        if ((musicMode == MUS_Dying) || (musicMode == MUS_Outro))
-            return;
-    }
-    else
-    {
-        if (musicMode == MUS_Outro)
-            return;
-    }
-
-    musicCheckTimer += deltaTime;
-    musicChangeTimer += deltaTime;
-
-    if (IsInState('Interpolating'))
-    {
-        // don't mess with the music on any of the intro maps
-        info = GetLevelInfo();
-        if ((info != None) && (info.MissionNumber < 0))
-        {
-            musicMode = MUS_Outro;
-            return;
-        }
-
-        if (musicMode != MUS_Outro)
-        {
-            _ClientSetMusic(LevelSong, 5, 255, MTRAN_FastFade);
-            musicMode = MUS_Outro;
-        }
-    }
-    else if (IsInState('Conversation'))
-    {
-        if (musicMode != MUS_Conversation)
-        {
-            // save our place in the ambient track
-            if (musicMode == MUS_Ambient)
-                savedSection = SongSection;
-            else
-                savedSection = 255;
-
-            _ClientSetMusic(LevelSong, 4, 255, MTRAN_Fade);
-            musicMode = MUS_Conversation;
-        }
-    }
-    else if (IsInState('Dying'))
-    {
-        if (musicMode != MUS_Dying)
-        {
-            _ClientSetMusic(LevelSong, 1, 255, MTRAN_Fade);
-            musicMode = MUS_Dying;
-        }
-    }
-    else
-    {
-        // only check for combat music every second
-        if (musicCheckTimer >= 1.0)
-        {
-            musicCheckTimer = 0.0;
-            bCombat = False;
-
-            // check a 100 foot radius around me for combat
-            // XXXDEUS_EX AMSD Slow Pawn Iterator
-            //foreach RadiusActors(class'ScriptedPawn', npc, 1600)
-            for (CurPawn = Level.PawnList; CurPawn != None; CurPawn = CurPawn.NextPawn)
-            {
-                npc = ScriptedPawn(CurPawn);
-                if ((npc != None) && (VSize(npc.Location - Location) < (1600 + npc.CollisionRadius)))
-                {
-                    if ((npc.GetStateName() == 'Attacking') && (npc.Enemy == Self))
-                    {
-                        bCombat = True;
-                        break;
-                    }
-                }
-            }
-
-            if (bCombat)
-            {
-                musicChangeTimer = 0.0;
-
-                if (musicMode != MUS_Combat)
-                {
-                    // save our place in the ambient track
-                    if (musicMode == MUS_Ambient)
-                        savedSection = SongSection;
-                    else
-                        savedSection = 255;
-
-                    _ClientSetMusic(LevelSong, CombatSection, 255, MTRAN_FastFade);
-                    musicMode = MUS_Combat;
-                }
-            }
-            else if (musicMode != MUS_Ambient)
-            {
-                // wait until we've been out of combat for 5 seconds before switching music
-                if (musicChangeTimer >= 5.0)
-                {
-                    // use the default ambient section for this map
-                    if (savedSection == 255)
-                        savedSection = LevelSongSection;
-
-                    // fade slower for combat transitions
-                    if (musicMode == MUS_Combat)
-                        _ClientSetMusic(LevelSong, savedSection, 255, MTRAN_SlowFade);
-                    else
-                        _ClientSetMusic(LevelSong, savedSection, 255, MTRAN_Fade);
-
-                    savedSection = 255;
-                    musicMode = MUS_Ambient;
-                    musicChangeTimer = 0.0;
-                }
-            }
-        }
-    }
 }
 
 //=========== END OF MUSIC STUFF

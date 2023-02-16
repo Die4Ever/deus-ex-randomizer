@@ -885,8 +885,11 @@ static function BeatGame(DXRando dxr, int ending)
     j = js.static.Start("BeatGame");
     js.static.Add(j, "ending", ending);
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
-    js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, 'DXRStats_deaths'));
+    js.static.Add(j, "Autosaves", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_autosaves"));
+    js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_deaths"));
+    js.static.Add(j, "LoadCount", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_loads"));
     js.static.Add(j, "maxrando", dxr.flags.maxrando);
+    js.static.Add(j, "bSetSeed", dxr.flags.bSetSeed);
 
     if (dxr.player.carriedDecoration!=None){
         js.static.Add(j, "carriedItem", dxr.player.carriedDecoration.Class);
@@ -916,13 +919,13 @@ static function ExtinguishFire(DXRando dxr, string extinguisher, DeusExPlayer pl
     GeneralEventData(dxr, j);
     js.static.End(j);
 
-    class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
+    class'DXRTelemetry'.static.SendEvent(dxr, player, j);
     MarkBingo(dxr, "ExtinguishFire");
 }
 
 static function GeneralEventData(DXRando dxr, out string j)
 {
-    local string loadout;
+    local string loadout,lang;
     local class<Json> js;
     js = class'Json';
 
@@ -938,6 +941,10 @@ static function GeneralEventData(DXRando dxr, out string j)
     loadout = GetLoadoutName(dxr);
     if(loadout != "")
         js.static.Add(j, "loadout", loadout);
+
+    lang = GetConfig("Engine.Engine", "Language");
+    if(lang != "")
+        js.static.Add(j, "language", lang);
 }
 
 static function AugmentationData(DXRando dxr, out string j)

@@ -197,6 +197,8 @@ function PostFirstEntry()
 
 function AnyEntry()
 {
+    local #var(prefix)Vehicles v;
+    local #var(prefix)Button1 b;
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
@@ -212,6 +214,17 @@ function AnyEntry()
     FixAmmoShurikenName();
 
     AllAnyEntry();
+
+    foreach AllActors(class'#var(prefix)Button1', b) {
+        if(b.CollisionRadius <3 && b.CollisionHeight <3)
+            b.SetCollisionSize(3, 3);
+    }
+    foreach AllActors(class'#var(prefix)Vehicles', v) {
+        if(#var(prefix)BlackHelicopter(v) == None && #var(prefix)AttackHelicopter(v) == None)
+            continue;
+        if(v.CollisionRadius > 360)
+            v.SetCollisionSize(360, v.CollisionHeight);
+    }
 }
 
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
@@ -432,6 +445,8 @@ function AllAnyEntry()
             hs.ChangeAlly('', 1, true);
             hs.ChangeAlly('mj12', 1, true);
             hs.ChangeAlly('spider', 1, true);
+            RemoveFears(hs);
+            hs.MinHealth = 0;
         }
         break;
     }
@@ -819,16 +834,18 @@ function Jailbreak_FirstEntry()
     switch (dxr.localURL)
     {
     case "05_NYC_UNATCOMJ12LAB":
-        if(dxr.flags.settings.prison_pocket > 0) {
+        if(!dxr.flags.f.GetBool('MS_InventoryRemoved')) {
             p = player();
             p.HealthHead = Max(50, p.HealthHead);
-			p.HealthTorso =  Max(50, p.HealthTorso);
-			p.HealthLegLeft =  Max(50, p.HealthLegLeft);
-			p.HealthLegRight =  Max(50, p.HealthLegRight);
-			p.HealthArmLeft =  Max(50, p.HealthArmLeft);
-			p.HealthArmRight =  Max(50, p.HealthArmRight);
-			p.GenerateTotalHealth();
-            dxr.flags.f.SetBool('MS_InventoryRemoved', true,, 6);
+            p.HealthTorso =  Max(50, p.HealthTorso);
+            p.HealthLegLeft =  Max(50, p.HealthLegLeft);
+            p.HealthLegRight =  Max(50, p.HealthLegRight);
+            p.HealthArmLeft =  Max(50, p.HealthArmLeft);
+            p.HealthArmRight =  Max(50, p.HealthArmRight);
+            p.GenerateTotalHealth();
+            if(dxr.flags.settings.prison_pocket > 0 || #defined(vanillamaps))
+                dxr.flags.f.SetBool('MS_InventoryRemoved', true,, 6);
+            // we have to move the items in PostFirstEntry, otherwise they get swapped around with other things
         }
         foreach AllActors(class'PaulDenton', paul) {
             paul.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
@@ -868,8 +885,55 @@ function BalanceJailbreak()
     local class<Inventory> iclass;
     local DXREnemies e;
     local DXRLoadouts loadout;
-    local int i;
+    local int i, num;
     local float r;
+    local Inventory nextItem;
+    local SpawnPoint SP;
+    local #var(PlayerPawn) p;
+    local vector itemLocations[50];
+    local DXRMissions missions;
+    local string PaulLocation;
+
+    SetSeed("BalanceJailbreak");
+
+    // move the items instead of letting Mission05.uc do it
+    p = player();
+    if(dxr.flags.settings.prison_pocket <= 0 && #defined(vanillamaps)) {
+        if(DeusExWeapon(p.inHand) != None)
+            DeusExWeapon(p.inHand).LaserOff();
+
+        PaulLocation = "Surgery Ward";
+        missions = DXRMissions(dxr.FindModule(class'DXRMissions'));
+        for(i=0;missions!=None && i<missions.num_goals;i++) {
+            if(missions.GetSpoiler(i).goalName == "Paul") {
+                PaulLocation = missions.GetSpoiler(i).goalLocation;
+            }
+        }
+        num=0;
+        if(PaulLocation == "Surgery Ward" || PaulLocation == "Greasel Pit")
+            foreach AllActors(class'SpawnPoint', SP, 'player_inv')
+                itemLocations[num++] = SP.Location;
+        else {
+            // put the items in the surgery ward
+            itemLocations[num++] = vect(2174.416504,-569.534729,-213.660309);// paul's bed
+            itemLocations[num++] = vect(2176.658936,-518.937012,-213.659302);// paul's bed
+            itemLocations[num++] = vect(1792.696533,-738.417175,-213.660248);// bed 2
+            itemLocations[num++] = vect(1794.898682,-802.133301,-213.658630);// bed 2
+            itemLocations[num++] = vect(1572.443237,-739.527649,-213.660095);// bed 1
+            itemLocations[num++] = vect(1570.557007,-801.213806,-213.660095);// bed 1
+            itemLocations[num++] = vect(1269.494019,-522.082458,-221.659180);// near ambrosia
+            itemLocations[num++] = vect(1909.302979,-376.711639,-221.660095);// desk with microscope and datacube
+            itemLocations[num++] = vect(1572.411865,-967.828735,-261.659546);// on the floor, at the wall with the monitors
+            itemLocations[num++] = vect(1642.170532,-968.813354,-261.660736);
+            itemLocations[num++] = vect(1715.513062,-965.846558,-261.657837);
+            itemLocations[num++] = vect(1782.731689,-966.754700,-261.661041);
+        }
+
+        nextItem = p.Inventory;
+        while(nextItem != None)
+            for(i=0; i<num; i++)
+                nextItem = MoveItemTo(nextItem, itemLocations[i], 'player_inv');
+    }
 
     e = DXREnemies(dxr.FindModule(class'DXREnemies'));
     if( e != None ) {
@@ -888,8 +952,20 @@ function BalanceJailbreak()
         iclass = loadout.get_starting_item();
     }
 
-    // TODO: maybe random chance to spawn it on the desk or in 1 of the cabinets?
-    Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915) );
+    switch(rng(4)) {
+    case 1:// crate past the desk
+        Spawn(iclass,,, vect(-1838.230225, 1250.242676, -110.399773));
+        break;
+    case 2:// desk
+        Spawn(iclass,,, vect(-2105.412598, 1232.926758, -134.400101));
+        break;
+    case 3:// locked jail cell with medbot
+        Spawn(iclass,,, vect(-3020.846924, 910.062134, -201.399750));
+        break;
+    default:// unlocked jail cell
+        Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915));
+        break;
+    }
 }
 
 function UpdateReactorGoal(int count)
@@ -1257,49 +1333,24 @@ function Vandenberg_FirstEntry()
 {
     local ElevatorMover e;
     local Button1 b;
-    local Dispatcher d;
-    local LogicTrigger lt;
     local ComputerSecurity comp;
     local KarkianBaby kb;
     local DataLinkTrigger dlt;
     local FlagTrigger ft;
+    local HowardStrong hs;
     local #var(Mover) door;
+    local DXREnemies dxre;
+    local int i;
 
     switch(dxr.localURL)
     {
 #ifdef vanillamaps
-    case "12_VANDENBERG_CMD":
-        foreach AllActors(class'Dispatcher', d)
-        {
-            switch(d.Tag)
-            {
-                case 'overload2':
-                    d.tag = 'overload2disp';
-                    lt = Spawn(class'LogicTrigger',,,d.Location);
-                    lt.Tag = 'overload2';
-                    lt.Event = 'overload2disp';
-                    lt.inGroup1 = 'sec_switch2';
-                    lt.inGroup2 = 'sec_switch2';
-                    lt.OneShot = True;
-                    break;
-                case 'overload1':
-                    d.tag = 'overload1disp';
-                    lt = Spawn(class'LogicTrigger',,,d.Location);
-                    lt.Tag = 'overload1';
-                    lt.Event = 'overload1disp';
-                    lt.inGroup1 = 'sec_switch1';
-                    lt.inGroup2 = 'sec_switch1';
-                    lt.OneShot = True;
-                    break;
-            }
-        }
-        break;
-
     case "12_VANDENBERG_TUNNELS":
         foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
             e.BumpType = BT_PlayerBump;
             e.BumpEvent = 'SC_Door3_opened';
         }
+        AddSwitch( vect(-396.634888, 2295, -2542.310547), rot(0, -16384, 0), 'SC_Door3_opened').bCollideWorld = false;
         foreach AllActors(class'Button1', b) {
             if( b.Event == 'Top' || b.Event == 'middle' || b.Event == 'Bottom' ) {
                 AddDelay(b, 5);
@@ -1347,6 +1398,40 @@ function Vandenberg_FirstEntry()
         }
         break;
 
+    case "14_Oceanlab_silo":
+        foreach AllActors(class'HowardStrong', hs) {
+            hs.ChangeAlly('', 1, true);
+            hs.ChangeAlly('mj12', 1, true);
+            hs.ChangeAlly('spider', 1, true);
+            RemoveFears(hs);
+            hs.MinHealth = 0;
+            hs.BaseAccuracy *= 0.1;
+            GiveItem(hs, class'#var(prefix)BallisticArmor');
+            dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+            if(dxre != None) {
+                dxre.GiveRandomWeapon(hs, false, 2);
+                dxre.GiveRandomMeleeWeapon(hs);
+            }
+            hs.FamiliarName = "Howard Stronger";
+            hs.UnfamiliarName = "Howard Stronger";
+            if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
+                i = 200;
+                hs.default.HealthHead = i;
+                hs.default.HealthTorso = i;
+                hs.default.HealthLegLeft = i;
+                hs.default.HealthLegRight = i;
+                hs.default.HealthArmLeft = i;
+                hs.default.HealthArmRight = i;
+                hs.HealthHead = i;
+                hs.HealthTorso = i;
+                hs.HealthLegLeft = i;
+                hs.HealthLegRight = i;
+                hs.HealthArmLeft = i;
+                hs.HealthArmRight = i;
+                hs.GenerateTotalHealth();
+            }
+        }
+        break;
 #endif
     }
 }
@@ -1585,8 +1670,20 @@ function Shipyard_FirstEntry()
 
 function Shipyard_AnyEntry()
 {
+    local #var(Mover) m;
+
     switch(dxr.localURL)
     {
+    case "09_NYC_SHIP":
+#ifdef vanillamaps
+        if(dxr.flagbase.GetBool('HelpSailor')) {
+            foreach AllActors(class'#var(Mover)', m, 'FrontDoor') {
+                m.bLocked = false;
+            }
+        }
+#endif
+        break;
+
     case "09_NYC_SHIPBELOW":
         SetTimer(1, True);
         break;
@@ -1601,6 +1698,7 @@ function Paris_FirstEntry()
     local Trigger t;
     local Dispatcher d;
     local ScriptedPawn sp;
+    local Conversation c;
 
     switch(dxr.localURL)
     {
@@ -1641,6 +1739,13 @@ function Paris_FirstEntry()
         if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
             //Need to pretend he *was* recruited, so that he doesn't spawn
             dxr.flagbase.SetBool('JaimeRecruited',True);
+        }
+        // fix the night manager sometimes trying to talk to you while you're flying away https://www.youtube.com/watch?v=PeLbKPSHSOU&t=6332s
+        c = GetConversation('MeetNightManager');
+        if(c!=None) {
+            c.bInvokeBump = false;
+            c.bInvokeSight = false;
+            c.bInvokeRadius = false;
         }
         break;
 #endif

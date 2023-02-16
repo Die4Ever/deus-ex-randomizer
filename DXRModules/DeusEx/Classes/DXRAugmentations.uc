@@ -231,11 +231,18 @@ simulated function RandoAug(Augmentation a)
 #ifdef injections
     if( #var(prefix)AugSpeed(a) != None ) {
         add_desc = "DXRando: Activating this aug instantly burns 1 energy in order to prevent abuse.";
-        if( InStr(a.Description, add_desc) == -1 ) {
-            a.Description = add_desc $ "|n|n" $ a.Description;
-        }
+    }
+    else if( #var(prefix)AugVision(a) != None ) {
+        add_desc = "DXRando: At level 1 you can see characters and goals. At level 2 you can also see items, datacubes, vehicles, crates, and electronic devices.";
+    }
+    else if( #var(prefix)AugLight(a) != None ) {
+        add_desc = "DXRando: The light is much brighter and doesn't use any energy.";
     }
 #endif
+
+    if( add_desc != "" && InStr(a.Description, add_desc) == -1 ) {
+        a.Description = add_desc $ "|n|n" $ a.Description;
+    }
 
     if( #var(prefix)AugSpeed(a) != None || #var(prefix)AugLight(a) != None || #var(prefix)AugHeartLung(a) != None
     || #var(prefix)AugIFF(a) != None || #var(prefix)AugDatalink(a) != None || AugNinja(a) != None )
@@ -286,7 +293,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         return string(int(a.LevelValues[i]));
     }
     else if( a.Class == class'#var(prefix)AugHealing') {
-        if(#defined(injections)) word = "Max Health";
+        if(#defined(injections)) word = "Max Health Cap";
         else word = "Healing";
         return int(a.LevelValues[i]) $ " HP";
     }
@@ -303,6 +310,10 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
     else if( a.Class == class'#var(prefix)AugStealth') {
+        if(#defined(vmd175)) {
+            word = "Energy Cost Per Minute";
+            return string(int(a.energyRate * a.LevelValues[i] + 0.5));
+        }
         word = "Noise";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
@@ -313,9 +324,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
     else if( a.Class == class'#var(prefix)AugVision') {
         word = "See-through walls distance";
-#ifndef balance
-        if(i<2) return "--";
-#endif
+        if(!#defined(balance) && i<2) return "--";
         if(a.LevelValues[i] < 0)
             a.LevelValues[i] = 0;
         return int(a.LevelValues[i] / 16.0) $" ft";

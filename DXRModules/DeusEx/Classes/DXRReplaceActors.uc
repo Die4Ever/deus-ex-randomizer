@@ -88,6 +88,9 @@ function ReplaceKeypad(#var(prefix)Keypad a)
     n.failureSound = a.failureSound; //I doubt this is ever changed from default, but let's be safe
     n.FailEvent = a.FailEvent;
     n.bToggleLock = a.bToggleLock;
+    n.hackStrength = a.hackStrength;
+    n.initialhackStrength = a.initialhackStrength;
+    n.bHackable = a.bHackable;
 
     //Make it look like the right kind of keypad
     n.Mesh = a.Mesh;

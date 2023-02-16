@@ -408,6 +408,64 @@ function RandomizeCutscene()
 
     RandomBobPage();
     RandomLiberty();
+
+    RandomizeDialog();
+}
+
+function SwapSpeech(ConSpeech a, ConSpeech b)
+{
+    local int soundID;
+    local string subtitle;
+
+    subtitle = a.speech;
+    soundID = a.soundID;
+    a.speech = b.speech;
+    a.soundID = b.soundID;
+    b.speech = subtitle;
+    b.soundID = soundID;
+}
+
+function RandomizeDialog()
+{
+    local ConSpeech s, speech[100];
+    local int i, j, num, soundID;
+    local string subtitle;
+    //local Conversation conv;
+
+    SetSeed("RandomizeDialog");
+    foreach AllObjects(class'ConSpeech', s) {
+        speech[num++] = s;
+    }
+    for(i=0;i<num;i++) {
+        j = rng(num);
+        SwapSpeech(speech[i], speech[j]);
+    }
+
+    /*foreach AllObjects(class'Conversation', conv) {
+        RandomizeDialogConversation(conv);
+    }*/
+}
+
+function RandomizeDialogConversation(Conversation conv)
+{
+    local ConEvent co;
+    local ConEventSpeech es;
+    local ConSpeech s, speech[100];
+    local int i, j, num, soundID;
+    local string subtitle;
+
+    SetSeed("RandomizeDialogConversation "$conv.conName);
+    for(co=conv.eventList; co!=None; co=co.nextEvent) {
+        es = ConEventSpeech(co);
+        if(es==None) continue;
+        speech[num++] = es.conSpeech;
+    }
+
+    // last thing before release: do this per conversation...
+    for(i=0;i<num;i++) {
+        j = rng(num);
+        SwapSpeech(speech[i], speech[j]);
+    }
 }
 
 function bool is_valid(string s, class<Object> o)
