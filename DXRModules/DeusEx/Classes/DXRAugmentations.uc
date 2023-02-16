@@ -310,6 +310,10 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
     else if( a.Class == class'#var(prefix)AugStealth') {
+        if(#defined(vmd175)) {
+            word = "Energy Cost Per Minute";
+            return string(int(a.energyRate * a.LevelValues[i] + 0.5));
+        }
         word = "Noise";
         return int(a.LevelValues[i] * 100.0) $ "%";
     }
