@@ -1414,7 +1414,7 @@ defaultproperties
 	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1,missions=276)
 	bingo_options(6)=(event="AnnaNavarre_Dead",desc="Kill Anna Navarre",max=1,missions=56)
 	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1,missions=3072)
-	bingo_options(8)=(event="JoJoFine_Dead",desc="Kill JoJo",max=1,missions=20)
+	bingo_options(8)=(event="JoJoFine_Dead",desc="Kill JoJo",max=1,missions=256)
 	bingo_options(9)=(event="TobyAtanwe_Dead",desc="Kill Toby Atanwe",max=1,missions=2048)
 	bingo_options(10)=(event="Antoine_Dead",desc="Kill Antoine",max=1,missions=1024)
 	bingo_options(11)=(event="Chad_Dead",desc="Kill Chad",max=1,missions=1024)
