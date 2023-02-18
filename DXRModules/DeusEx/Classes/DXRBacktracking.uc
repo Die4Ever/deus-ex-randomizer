@@ -660,6 +660,7 @@ function SetDestination(NavigationPoint p, string destURL, name dest_actor_name,
     local MapExit m;
     local DynamicTeleporter t;
 
+    l("SetDestination "$p@p.tag@destURL@dest_actor_name@tag);
     m = MapExit(p);
     t = DynamicTeleporter(p);
     if( m != None )
@@ -669,12 +670,8 @@ function SetDestination(NavigationPoint p, string destURL, name dest_actor_name,
     else
         err("SetDestination failed for "$p);
 
-    if(entrancerando == None) {
+    if(entrancerando == None)
         entrancerando = DXREntranceRando(dxr.FindModule(class'DXREntranceRando'));
-        if(entrancerando != None)
-            entrancerando.LoadConns();
-    }
-    if(entrancerando != None) {
+    if(entrancerando != None)
         entrancerando.AdjustTeleporter(p);
-    }
 }
