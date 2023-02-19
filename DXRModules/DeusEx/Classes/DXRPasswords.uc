@@ -946,13 +946,16 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
 
     // if the oldpassword is inside the note's new_passwords array, that means it's a coincidental collision
     if( note.HasEitherPassword(oldpassword, newpassword) ) return false;
+#endif
 
     if( PassInStr( note.text, newpassword ) != -1 ) {
         MarkPasswordKnown(newpassword);
+#ifdef injections
         note.SetNewPassword(newpassword);
+#endif
         return false;
     }
-#endif
+
     if( PassInStr( note.text, oldpassword ) == -1 ) return false;
 
     updated++;
@@ -961,8 +964,7 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
     note.text = ReplaceText( note.text, oldpassword, " " $ newpassword $ " ", true );//spaces around the password make it so you can double click to highlight it then copy it easily
 #ifdef injections
     note.SetNewPassword(newpassword);
-#endif
-#ifdef hx
+#elseif hx
     HXUpdateNote(note.textTag, note.text, "");
 #endif
 
