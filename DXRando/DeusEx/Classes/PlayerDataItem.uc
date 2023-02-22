@@ -60,9 +60,9 @@ simulated function static ResetData(#var(PlayerPawn) p)
     n.SkillPointsAvail = o.SkillPointsAvail;
 #endif
 
+    log("spawned new "$n$" for "$p$" from "$o);
     o.Destroy();
     n.GiveTo(p);
-    log("spawned new "$n$" for "$p);
 }
 
 final function BindConn(int slot_a, int slot_b, out string val, bool writing)

@@ -66,6 +66,9 @@ function float GetTotalEnergyUse()
 	energyUse = 0;
 	energyMult = 1.0;
 
+    if(player == None || player.AugmentationSystem == None)
+        return 0;
+
 	anAug = player.AugmentationSystem.FirstAug;
 	while(anAug != None)
 	{
