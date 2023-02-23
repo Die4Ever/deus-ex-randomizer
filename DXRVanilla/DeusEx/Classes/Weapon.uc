@@ -269,30 +269,13 @@ simulated function bool UpdateInfo(Object winObject)
         winInfo.AddInfoItem("Max Ammo:", AmmoType.MaxAmmo);
 
     // base damage
-    if (AreaOfEffect == AOE_Cone)
-    {
-        if (bInstantHit)
-        {
-            if (Level.NetMode != NM_Standalone)
-                dmg = mpHitDamage * 5;
-            else
-                dmg = HitDamage * 5;
-        }
-        else
-        {
-            if (Level.NetMode != NM_Standalone)
-                dmg = mpHitDamage * 3;
-            else
-                dmg = HitDamage * 3;
-        }
-    }
+    if (Level.NetMode != NM_Standalone)
+        dmg = mpHitDamage;
     else
-    {
-        if (Level.NetMode != NM_Standalone)
-            dmg = mpHitDamage;
-        else
-            dmg = HitDamage;
-    }
+        dmg = HitDamage;
+
+    if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes )
+        dmg *= 2.0 / float(GetNumHits());
 
     str = String(dmg);
     mod = 1.0 - GetWeaponSkill();
@@ -303,6 +286,8 @@ simulated function bool UpdateInfo(Object winObject)
     }
 
     winInfo.AddInfoItem(msgInfoDamage, str, (mod != 1.0));
+
+    winInfo.AddInfoItem("Number of Hits:", string(GetNumHits()), false);
 
     // clip size
     if ((Default.ReloadCount == 0) || bHandToHand)
