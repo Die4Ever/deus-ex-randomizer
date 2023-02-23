@@ -287,7 +287,7 @@ simulated function bool UpdateInfo(Object winObject)
 
     winInfo.AddInfoItem(msgInfoDamage, str, (mod != 1.0));
 
-    winInfo.AddInfoItem("Number of Hits:", string(GetNumHits()), false);
+    winInfo.AddInfoItem("Number of Hits:", string(GetNumHits()), true);
 
     // clip size
     if ((Default.ReloadCount == 0) || bHandToHand)
