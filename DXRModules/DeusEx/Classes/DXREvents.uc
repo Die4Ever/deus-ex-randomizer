@@ -302,7 +302,7 @@ function SetWatchFlags() {
         WatchFlag('M10EnteredBakery');
         WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
-        WatchFlag('KnowsGuntherKillphrase');
+        RewatchFlag('KnowsGuntherKillphrase');
 
         foreach AllActors(class'GuntherHermann', gunther) {
             gunther.bInvincible = false;
@@ -316,6 +316,7 @@ function SetWatchFlags() {
         WatchFlag('CamilleConvosDone');
         WatchFlag('LDDPAchilleDone');
         WatchFlag('LeoToTheBar');
+        RewatchFlag('KnowsGuntherKillphrase');
 
         break;
     case "11_PARIS_CATHEDRAL":
@@ -1479,7 +1480,7 @@ defaultproperties
     bingo_options(64)=(event="FlushUrinal",desc="Use 20 urinals",max=20)
     bingo_options(65)=(event="MeetTimBaker_Played",desc="Free Tim from the Vandenberg storage room",max=1,missions=4096)
     bingo_options(66)=(event="MeetDrBernard_Played",desc="Find the man locked in the bathroom",max=1,missions=16384)
-    bingo_options(67)=(event="KnowsGuntherKillphrase",desc="Learn Gunther's Killphrase",max=1,missions=1024)
+    bingo_options(67)=(event="KnowsGuntherKillphrase",desc="Learn Gunther's Killphrase",max=1,missions=1056)
     bingo_options(68)=(event="KnowsAnnasKillphrase",desc="Learn both parts of Anna's Killphrase",max=2,missions=32)
     bingo_options(69)=(event="Area51FanShaft",desc="Jump!  You can make it!",max=1,missions=32768)
     bingo_options(70)=(event="PoliceVaultBingo",desc="Visit the Hong Kong police vault",max=1,missions=64)
