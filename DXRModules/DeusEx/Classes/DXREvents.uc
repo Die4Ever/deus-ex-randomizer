@@ -451,6 +451,8 @@ function RewatchFlag(name flag, optional bool disallow_immediate){
         WatchFlag(flag,disallow_immediate);
         // rewatchflags will get checked in AnyEntry so they can be removed
         rewatchflags[num_rewatchflags++] = flag;
+    } else {
+        l("RewatchFlag "$flag$" is already set!");
     }
 }
 
@@ -500,15 +502,22 @@ simulated function AnyEntry()
     Super.AnyEntry();
     SetTimer(1, true);
 
+    for(w=0; w<ArrayCount(watchflags); w++) {
+        l("AnyEntry watchflags["$w$"]: "$watchflags[w]);
+    }
+
     // any rewatch flags that were set outside of this map need to be cleared from the watch list
-    for(r=0; r<num_rewatchflags; r++) {
+    for(r=0; r<ArrayCount(rewatchflags); r++) {
+        l("AnyEntry rewatchflags["$r$"]: "$rewatchflags[r]);
         if(rewatchflags[r] == '') continue;
         if (dxr.flagbase.GetBool(rewatchflags[r])) {
+            l("AnyEntry rewatchflags["$r$"]: "$rewatchflags[r]$" is set!");
             for(w=0; w<num_watchflags; w++) {
                 if(watchflags[w] != rewatchflags[r]) continue;
 
                 num_watchflags--;
                 watchflags[w] = watchflags[num_watchflags];
+                watchflags[num_watchflags]='';
                 w--;
             }
         }
@@ -558,6 +567,7 @@ simulated function Timer()
                 SendFlagEvent(watchflags[i]);
                 num_watchflags--;
                 watchflags[i] = watchflags[num_watchflags];
+                watchflags[num_watchflags]='';
                 i--;
                 continue;
             }
@@ -566,6 +576,7 @@ simulated function Timer()
                 SendFlagEvent(watchflags[i]);
                 num_watchflags--;
                 watchflags[i] = watchflags[num_watchflags];
+                watchflags[num_watchflags]='';
                 i--;
                 continue;
             }
@@ -575,6 +586,7 @@ simulated function Timer()
             SendFlagEvent(watchflags[i]);
             num_watchflags--;
             watchflags[i] = watchflags[num_watchflags];
+            watchflags[num_watchflags]='';
             i--;
         }
     }
