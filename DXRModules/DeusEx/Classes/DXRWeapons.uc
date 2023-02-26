@@ -68,10 +68,10 @@ simulated function RandoWeapon(DeusExWeapon w)
     dxr.SetSeed(oldseed);
 }
 
-simulated function RandoProjectile(DeusExWeapon w, out class<Projectile> p, out class<Projectile> d, float new_damage)
+simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p, out class<Projectile> d, float new_damage)
 {
     local float ratio, f;
-    if(p == None) return;
+    if(p == None) return false;
 
     ratio = new_damage/float(w.default.HitDamage);
 
@@ -127,23 +127,37 @@ simulated function RandoProjectile(DeusExWeapon w, out class<Projectile> p, out 
         p.default.Damage = new_damage;
         break;
 
+    case class'#var(prefix)LAM':
+        p.default.Damage = ratio * 500.0;
+        break;
+
+    case class'#var(prefix)RocketLAW':
+        p.default.Damage = ratio * 1000.0;
+        break;
+
+    case class'#var(prefix)GreaselSpit':
+    case class'#var(prefix)GraySpit':
+        p.default.Damage = ratio * 8.0;
+        break;
+
+    case class'#var(prefix)RocketMini':
+        p.default.Damage = ratio * 50.0;
+        break;
+
     case class'#var(prefix)GasGrenade':
     case class'#var(prefix)TearGas':
-    case class'#var(prefix)GreaselSpit':
     case class'#var(prefix)RocketRobot':
-    case class'#var(prefix)LAM':
-    case class'#var(prefix)RocketLAW':
     case class'#var(prefix)NanoVirusGrenade':
     case class'#var(prefix)EMPGrenade':
-    case class'#var(prefix)GraySpit':
-    case class'#var(prefix)RocketMini':
         //TODO: ignore these for now
-        break;
+        return false;
 
     default:
         warning("RandoWeapon("$w$") didn't set damage for projectile "$p$", w.default.HitDamage: "$w.default.HitDamage$", new w.HitDamage: "$w.HitDamage$", p.default.Damage: "$p.default.Damage);
-        break;
+        return false;
     }
+
+    return true;
 }
 
 simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
