@@ -587,13 +587,13 @@ function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool 
 
     if(dxre != None) {
         for(i=0; i<100; i++) {
-            item = dxre.GiveRandomWeapon(player, true);
+            item = dxre.GiveRandomWeapon(None, true);
             item = _GiveRandoStartingItem(player, item, bFrob);
             if(item != None) break;
         }
 
         for(i=0; i<100; i++) {
-            item = dxre.GiveRandomMeleeWeapon(player, true);
+            item = dxre.GiveRandomMeleeWeapon(None, true);
             item = _GiveRandoStartingItem(player, item, bFrob);
             if(item != None) break;
         }
@@ -602,6 +602,7 @@ function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool 
     for(i=0; i<100; i++) {
         iclass = _GetRandomUtilityItem();
         if(iclass == None) continue;
+        if(is_banned(iclass)) continue;
         item = GiveItem(player, iclass);
         item = _GiveRandoStartingItem(player, item, bFrob);
         if(item != None) break;
