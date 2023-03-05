@@ -18,7 +18,7 @@ enum EMusicMode
 
 var EMusicMode musicMode;
 var float musicCheckTimer;
-var float musicChangeTimer;
+var config float musicChangeTimer;
 
 var byte savedSection;
 var byte savedCombatSection;
@@ -292,7 +292,7 @@ function AnyEntry()
     musicMode = MUS_Ambient;
 
     // now time for fancy stuff, don't attempt a smmoth transition for the title screen, we need to init the config
-    if(PrevSong == NewSong && continuous_setting != c.default.disabled && dxr.dxInfo.missionNumber > -2) {
+    if(PrevSong == NewSong && continuous_setting != c.default.disabled && dxr.dxInfo.missionNumber > -2 && musicChangeTimer > 1.0) {
         l("trying to do smooth stuff");
         if(PrevSavedSection == 255)
             PrevSavedSection = NewSection;
@@ -333,7 +333,7 @@ function AnyEntry()
 
     // we need an extra second for the song to init before we can change to combat music
     musicCheckTimer = -1;
-    musicChangeTimer = 10;
+    musicChangeTimer = 0;
 
     _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
 
