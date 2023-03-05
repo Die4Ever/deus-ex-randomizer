@@ -273,7 +273,7 @@ simulated function bool UpdateInfo(Object winObject)
     // base damage
     dmg = GetDamage(true);
 
-    if( class<DeusExProjectile>(ProjectileClass) == None || class<DeusExProjectile>(ProjectileClass).default.bExplodes==false )
+    if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes==false )
         dmg /= float(GetNumHits());
 
     str = String(dmg);
