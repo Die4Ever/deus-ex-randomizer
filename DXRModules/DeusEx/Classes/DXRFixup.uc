@@ -394,6 +394,11 @@ function PostFirstEntryMapFixes()
     case "09_NYC_SHIPBELOW":
         // add a tnt crate on top of the pipe, visible from the ground floor
         _AddActor(Self, class'#var(prefix)CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567), rot(0,0,0));
+        // remove big crates blocking the window to the pipe, 16 units == 1 foot
+        foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 16*4, vect(-136.125000, -743.875000, -215.899323)) {
+            c.Event = '';
+            c.Destroy();
+        }
         break;
 
     case "12_VANDENBERG_CMD":
@@ -1370,7 +1375,8 @@ function Vandenberg_FirstEntry()
         break;
 
     case "14_OCEANLAB_LAB":
-        AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');
+        if(!#defined(vmd))// button to open the door heading towards the ladder in the water
+            AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');
         foreach AllActors(class'ComputerSecurity', comp) {
             if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
                 comp.UserList[0].userName = "Oceanguard";
@@ -1607,11 +1613,11 @@ function Shipyard_FirstEntry()
 #endif
 
     case "09_NYC_SHIPBELOW":
+        // make the weld points highlightable
         foreach AllActors(class'DeusExMover', m, 'ShipBreech') {
             m.bHighlight = true;
             m.bLocked = true;
         }
-        dxr.flags.f.SetInt('DXRando_WeldPointCount',5);
         UpdateWeldPointGoal(5);
 
 #ifdef vanillamaps

@@ -627,6 +627,7 @@ static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate,
 {
     local DeusExDecoration d;
     d = DeusExDecoration( _AddActor(a, class'Switch2', loc, rotate) );
+    d.Buoyancy = 0;
     d.Event = Event;
     return d;
 }
