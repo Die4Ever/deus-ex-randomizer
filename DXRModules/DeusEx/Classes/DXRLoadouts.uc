@@ -548,12 +548,18 @@ function Inventory _GiveRandoStartingItem(#var(PlayerPawn) player, Inventory ite
 {
     local DeusExWeapon w;
 
-    if(item != None && is_banned(item.class)) {
+    if(item == None) return None;
+
+    if(is_banned(item.class)) {
         info("_RandoStartingEquipment " $item$" is banned!");
         item.Destroy();
         return None;
     }
-    if( bFrob && item != None ) item.Frob( player, None );
+
+    if( bFrob ) {
+        item.SetLocation(player.Location);
+        item.Frob( player, None );
+    }
 
     w = DeusExWeapon(item);
     if ( w != None && (w.AmmoName != None) && (w.AmmoName != Class'AmmoNone') )
@@ -587,13 +593,17 @@ function _RandoStartingEquipment(#var(PlayerPawn) player, DXREnemies dxre, bool 
 
     if(dxre != None) {
         for(i=0; i<100; i++) {
-            item = dxre.GiveRandomWeapon(None, true);
+            iclass = dxre.GiveRandomWeaponClass(player, true);
+            if(iclass == None || is_banned(iclass)) continue;
+            item = GiveItem(player, iclass);
             item = _GiveRandoStartingItem(player, item, bFrob);
             if(item != None) break;
         }
 
         for(i=0; i<100; i++) {
-            item = dxre.GiveRandomMeleeWeapon(None, true);
+            iclass = dxre.GiveRandomMeleeWeaponClass(player, false);
+            if(iclass == None || is_banned(iclass)) continue;
+            item = GiveItem(player, iclass);
             item = _GiveRandoStartingItem(player, item, bFrob);
             if(item != None) break;
         }
