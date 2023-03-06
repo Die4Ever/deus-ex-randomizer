@@ -153,8 +153,8 @@ defaultproperties
 {
     bStatic=false
     Texture=Texture'Engine.S_Corpse'
-    CollisionRadius=16
-    CollisionHeight=16
+    CollisionRadius=12
+    CollisionHeight=12
     bCollideActors=true
     bCollideWorld=false
     bBlockActors=false
