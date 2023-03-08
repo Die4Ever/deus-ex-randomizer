@@ -192,6 +192,22 @@ function vanilla_datacubes_rules()
     datacubes_rules[i].allow = true;
     i++;
 
+    // ramp code
+    datacubes_rules[i].map = "02_NYC_WAREHOUSE";
+    datacubes_rules[i].item_name = '02_Datacube09';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    // NSF righteous
+    datacubes_rules[i].map = "02_NYC_WAREHOUSE";
+    datacubes_rules[i].item_name = '02_Datacube14';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
     datacubes_rules[i].map = "03_NYC_BrooklynBridgeStation";
     datacubes_rules[i].item_name = '03_Datacube14';
     datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
