@@ -824,6 +824,14 @@ function Airfield_FirstEntry()
         // fix Jock's conversation state so he doesn't play the dialog for unatco->battery park but now plays dialog for airfield->unatco
         // DL_Airfield is "You're entering a helibase terminal below a private section of LaGuardia."
         dxr.flagbase.SetBool('DL_Airfield_Played', true,, 4);
+        if(#defined(vanillamaps)) {
+            foreach AllActors(class'#var(prefix)InformationDevices', i) {
+                if(i.imageClass == Class'Image03_747Diagram') {
+                    // move the out of bounds datacabe onto the bed of the empty room
+                    i.SetLocation(vect(1554.862549, -741.237427, 363.370605));
+                }
+            }
+        }
         break;
     }
 }
