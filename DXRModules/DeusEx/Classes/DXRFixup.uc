@@ -290,7 +290,7 @@ function PreFirstEntryMapFixes()
 function PostFirstEntryMapFixes()
 {
     local RetinalScanner r;
-    local CrateUnbreakableLarge c;
+    local #var(prefix)CrateUnbreakableLarge c;
     local DeusExMover m;
     local UNATCOTroop u;
     local Actor a;
@@ -367,7 +367,7 @@ function PostFirstEntryMapFixes()
             m.bPickable = false;
         }
         // these crates can make the basement nearly impossible to get through
-        foreach AllActors(class'CrateUnbreakableLarge', c) {
+        foreach AllActors(class'#var(prefix)CrateUnbreakableLarge', c) {
             if(c.Location.Z > -28.799877) continue;
             c.Destroy();
         }
@@ -385,7 +385,7 @@ function PostFirstEntryMapFixes()
         }
         break;
     case "09_NYC_DOCKYARD":
-        foreach RadiusActors(class'CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
+        foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
             info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
             c.Destroy();
         }
@@ -402,7 +402,7 @@ function PostFirstEntryMapFixes()
         break;
 
     case "12_VANDENBERG_CMD":
-        foreach RadiusActors(class'CrateUnbreakableLarge', c, 16, vect(570.835083, 1934.114014, -1646.114746)) {
+        foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 16, vect(570.835083, 1934.114014, -1646.114746)) {
             info("removing " $ c $ " dist: " $ VSize(c.Location - vect(570.835083, 1934.114014, -1646.114746)) );
             c.Destroy();
         }
