@@ -290,7 +290,7 @@ function PreFirstEntryMapFixes()
 function PostFirstEntryMapFixes()
 {
     local RetinalScanner r;
-    local CrateUnbreakableLarge c;
+    local #var(prefix)CrateUnbreakableLarge c;
     local DeusExMover m;
     local UNATCOTroop u;
     local Actor a;
@@ -367,7 +367,7 @@ function PostFirstEntryMapFixes()
             m.bPickable = false;
         }
         // these crates can make the basement nearly impossible to get through
-        foreach AllActors(class'CrateUnbreakableLarge', c) {
+        foreach AllActors(class'#var(prefix)CrateUnbreakableLarge', c) {
             if(c.Location.Z > -28.799877) continue;
             c.Destroy();
         }
@@ -385,7 +385,7 @@ function PostFirstEntryMapFixes()
         }
         break;
     case "09_NYC_DOCKYARD":
-        foreach RadiusActors(class'CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
+        foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
             info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
             c.Destroy();
         }
@@ -394,10 +394,15 @@ function PostFirstEntryMapFixes()
     case "09_NYC_SHIPBELOW":
         // add a tnt crate on top of the pipe, visible from the ground floor
         _AddActor(Self, class'#var(prefix)CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567), rot(0,0,0));
+        // remove big crates blocking the window to the pipe, 16 units == 1 foot
+        foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 16*4, vect(-136.125000, -743.875000, -215.899323)) {
+            c.Event = '';
+            c.Destroy();
+        }
         break;
 
     case "12_VANDENBERG_CMD":
-        foreach RadiusActors(class'CrateUnbreakableLarge', c, 16, vect(570.835083, 1934.114014, -1646.114746)) {
+        foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 16, vect(570.835083, 1934.114014, -1646.114746)) {
             info("removing " $ c $ " dist: " $ VSize(c.Location - vect(570.835083, 1934.114014, -1646.114746)) );
             c.Destroy();
         }
@@ -819,6 +824,14 @@ function Airfield_FirstEntry()
         // fix Jock's conversation state so he doesn't play the dialog for unatco->battery park but now plays dialog for airfield->unatco
         // DL_Airfield is "You're entering a helibase terminal below a private section of LaGuardia."
         dxr.flagbase.SetBool('DL_Airfield_Played', true,, 4);
+        if(#defined(vanillamaps)) {
+            foreach AllActors(class'#var(prefix)InformationDevices', i) {
+                if(i.imageClass == Class'Image03_747Diagram') {
+                    // move the out of bounds datacabe onto the bed of the empty room
+                    i.SetLocation(vect(1554.862549, -741.237427, 363.370605));
+                }
+            }
+        }
         break;
     }
 }
@@ -1370,7 +1383,8 @@ function Vandenberg_FirstEntry()
         break;
 
     case "14_OCEANLAB_LAB":
-        AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');
+        if(!#defined(vmd))// button to open the door heading towards the ladder in the water
+            AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');
         foreach AllActors(class'ComputerSecurity', comp) {
             if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
                 comp.UserList[0].userName = "Oceanguard";
@@ -1448,6 +1462,7 @@ function HongKong_FirstEntry()
     local DeusExMover d;
     local DataLinkTrigger dt;
     local ComputerSecurity cs;
+    local #var(prefix)Keypad pad;
 
     switch(dxr.localURL)
     {
@@ -1556,6 +1571,14 @@ function HongKong_FirstEntry()
             if(dt.name == 'DataLinkTrigger0')
                 dt.Tag = 'TongHasRom';
         }
+        // don't wait for M07Briefing_Played to get rid of the dummy keypad
+        foreach AllActors(class'#var(prefix)Keypad', pad)
+        {
+            if (pad.Tag == 'DummyKeypad_02')
+                pad.Destroy();
+            else if (pad.Tag == 'RealKeypad_02')
+                pad.bHidden = False;
+        }
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
 #ifdef injections
@@ -1607,11 +1630,11 @@ function Shipyard_FirstEntry()
 #endif
 
     case "09_NYC_SHIPBELOW":
+        // make the weld points highlightable
         foreach AllActors(class'DeusExMover', m, 'ShipBreech') {
             m.bHighlight = true;
             m.bLocked = true;
         }
-        dxr.flags.f.SetInt('DXRando_WeldPointCount',5);
         UpdateWeldPointGoal(5);
 
 #ifdef vanillamaps

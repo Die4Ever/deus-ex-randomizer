@@ -18,7 +18,7 @@ enum EMusicMode
 
 var EMusicMode musicMode;
 var float musicCheckTimer;
-var float musicChangeTimer;
+var config float musicChangeTimer;
 
 var byte savedSection;
 var byte savedCombatSection;
@@ -273,7 +273,7 @@ function AnyEntry()
     if(p == None) return;
 
     continuous_setting = int(p.ConsoleCommand("get #var(package).MenuChoice_ContinuousMusic continuous_music"));
-    rando_music_setting = bool(p.ConsoleCommand("get #var(package).MenuChoice_RandomMusic  random_music"));
+    rando_music_setting = bool(p.ConsoleCommand("get #var(package).MenuChoice_RandomMusic random_music"));
     l("AnyEntry 1: "$p@dxr@dxr.dxInfo.missionNumber@continuous_setting@rando_music_setting);
     if( p == None || dxr == None  || (continuous_setting == c.default.disabled && rando_music_setting==false) )
         return;
@@ -292,7 +292,7 @@ function AnyEntry()
     musicMode = MUS_Ambient;
 
     // now time for fancy stuff, don't attempt a smmoth transition for the title screen, we need to init the config
-    if(PrevSong == NewSong && continuous_setting != c.default.disabled && dxr.dxInfo.missionNumber > -2) {
+    if(PrevSong == NewSong && continuous_setting != c.default.disabled && dxr.dxInfo.missionNumber > -2 && musicChangeTimer > 1.0) {
         l("trying to do smooth stuff");
         if(PrevSavedSection == 255)
             PrevSavedSection = NewSection;
@@ -333,7 +333,7 @@ function AnyEntry()
 
     // we need an extra second for the song to init before we can change to combat music
     musicCheckTimer = -1;
-    musicChangeTimer = 10;
+    musicChangeTimer = 0;
 
     _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
 
@@ -438,43 +438,61 @@ function SaveSection()
 
 function EnterOutro()
 {
+    l("EnterOutro");
     SaveSection();
-    _ClientSetMusic(LevelSong, OutroSection, 255, MTRAN_FastFade);
     musicMode = MUS_Outro;
+    _ClientSetMusic(LevelSong, OutroSection, 255, MTRAN_FastFade);
+}
+
+function byte FixSavedSection(byte section, byte start)
+{
+    if(section == 255 || section == LevelSongSection || section == DyingSection || section == CombatSection || section == ConvSection || section == OutroSection)
+        return start;
+    return section;
 }
 
 function EnterConversation()
 {
+    l("EnterConversation");
     SaveSection();
-    _ClientSetMusic(LevelSong, savedConvSection, 255, MTRAN_Fade);
     musicMode = MUS_Conversation;
+    savedConvSection = FixSavedSection(savedConvSection, ConvSection);
+    _ClientSetMusic(LevelSong, savedConvSection, 255, MTRAN_Fade);
 }
 
 function EnterDying()
 {
+    l("EnterDying");
     SaveSection();
-    _ClientSetMusic(LevelSong, DyingSection, 255, MTRAN_Fade);
     musicMode = MUS_Dying;
+    _ClientSetMusic(LevelSong, DyingSection, 255, MTRAN_Fade);
 }
 
 function EnterCombat()
 {
+    l("EnterCombat");
     SaveSection();
-    _ClientSetMusic(LevelSong, savedCombatSection, 255, MTRAN_FastFade);
     musicMode = MUS_Combat;
+    savedCombatSection = FixSavedSection(savedCombatSection, CombatSection);
+    _ClientSetMusic(LevelSong, savedCombatSection, 255, MTRAN_FastFade);
 }
 
 function EnterAmbient()
 {
+    local EMusicMode oldMusicMode;
+    l("EnterAmbient");
     SaveSection();
 
+    oldMusicMode = musicMode;
+    musicMode = MUS_Ambient;
+    savedSection = FixSavedSection(savedSection, LevelSongSection);
+
     // fade slower for combat transitions
-    if (musicMode == MUS_Combat)
+    if (oldMusicMode == MUS_Combat)
         _ClientSetMusic(LevelSong, savedSection, 255, MTRAN_SlowFade);
     else
         _ClientSetMusic(LevelSong, savedSection, 255, MTRAN_Fade);
 
-    musicMode = MUS_Ambient;
     musicChangeTimer = 0.0;
 }
 

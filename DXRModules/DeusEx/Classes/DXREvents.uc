@@ -302,7 +302,7 @@ function SetWatchFlags() {
         WatchFlag('M10EnteredBakery');
         WatchFlag('AlleyCopSeesPlayer_Played');
         WatchFlag('assassinapartment');
-        WatchFlag('KnowsGuntherKillphrase');
+        RewatchFlag('KnowsGuntherKillphrase');
 
         foreach AllActors(class'GuntherHermann', gunther) {
             gunther.bInvincible = false;
@@ -316,6 +316,7 @@ function SetWatchFlags() {
         WatchFlag('CamilleConvosDone');
         WatchFlag('LDDPAchilleDone');
         WatchFlag('LeoToTheBar');
+        RewatchFlag('KnowsGuntherKillphrase');
 
         break;
     case "11_PARIS_CATHEDRAL":
@@ -450,6 +451,8 @@ function RewatchFlag(name flag, optional bool disallow_immediate){
         WatchFlag(flag,disallow_immediate);
         // rewatchflags will get checked in AnyEntry so they can be removed
         rewatchflags[num_rewatchflags++] = flag;
+    } else {
+        l("RewatchFlag "$flag$" is already set!");
     }
 }
 
@@ -499,15 +502,22 @@ simulated function AnyEntry()
     Super.AnyEntry();
     SetTimer(1, true);
 
+    for(w=0; w<ArrayCount(watchflags); w++) {
+        l("AnyEntry watchflags["$w$"]: "$watchflags[w]);
+    }
+
     // any rewatch flags that were set outside of this map need to be cleared from the watch list
-    for(r=0; r<num_rewatchflags; r++) {
+    for(r=0; r<ArrayCount(rewatchflags); r++) {
+        l("AnyEntry rewatchflags["$r$"]: "$rewatchflags[r]);
         if(rewatchflags[r] == '') continue;
         if (dxr.flagbase.GetBool(rewatchflags[r])) {
+            l("AnyEntry rewatchflags["$r$"]: "$rewatchflags[r]$" is set!");
             for(w=0; w<num_watchflags; w++) {
                 if(watchflags[w] != rewatchflags[r]) continue;
 
                 num_watchflags--;
                 watchflags[w] = watchflags[num_watchflags];
+                watchflags[num_watchflags]='';
                 w--;
             }
         }
@@ -557,6 +567,7 @@ simulated function Timer()
                 SendFlagEvent(watchflags[i]);
                 num_watchflags--;
                 watchflags[i] = watchflags[num_watchflags];
+                watchflags[num_watchflags]='';
                 i--;
                 continue;
             }
@@ -565,6 +576,7 @@ simulated function Timer()
                 SendFlagEvent(watchflags[i]);
                 num_watchflags--;
                 watchflags[i] = watchflags[num_watchflags];
+                watchflags[num_watchflags]='';
                 i--;
                 continue;
             }
@@ -574,6 +586,7 @@ simulated function Timer()
             SendFlagEvent(watchflags[i]);
             num_watchflags--;
             watchflags[i] = watchflags[num_watchflags];
+            watchflags[num_watchflags]='';
             i--;
         }
     }
@@ -1414,7 +1427,7 @@ defaultproperties
 	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1,missions=276)
 	bingo_options(6)=(event="AnnaNavarre_Dead",desc="Kill Anna Navarre",max=1,missions=56)
 	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1,missions=3072)
-	bingo_options(8)=(event="JoJoFine_Dead",desc="Kill JoJo",max=1,missions=20)
+	bingo_options(8)=(event="JoJoFine_Dead",desc="Kill JoJo",max=1,missions=16)
 	bingo_options(9)=(event="TobyAtanwe_Dead",desc="Kill Toby Atanwe",max=1,missions=2048)
 	bingo_options(10)=(event="Antoine_Dead",desc="Kill Antoine",max=1,missions=1024)
 	bingo_options(11)=(event="Chad_Dead",desc="Kill Chad",max=1,missions=1024)
@@ -1479,7 +1492,7 @@ defaultproperties
     bingo_options(64)=(event="FlushUrinal",desc="Use 20 urinals",max=20)
     bingo_options(65)=(event="MeetTimBaker_Played",desc="Free Tim from the Vandenberg storage room",max=1,missions=4096)
     bingo_options(66)=(event="MeetDrBernard_Played",desc="Find the man locked in the bathroom",max=1,missions=16384)
-    bingo_options(67)=(event="KnowsGuntherKillphrase",desc="Learn Gunther's Killphrase",max=1,missions=1024)
+    bingo_options(67)=(event="KnowsGuntherKillphrase",desc="Learn Gunther's Killphrase",max=1,missions=1056)
     bingo_options(68)=(event="KnowsAnnasKillphrase",desc="Learn both parts of Anna's Killphrase",max=2,missions=32)
     bingo_options(69)=(event="Area51FanShaft",desc="Jump!  You can make it!",max=1,missions=32768)
     bingo_options(70)=(event="PoliceVaultBingo",desc="Visit the Hong Kong police vault",max=1,missions=64)

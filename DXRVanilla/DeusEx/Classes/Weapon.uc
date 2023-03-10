@@ -104,7 +104,7 @@ simulated function PlaySelectiveFiring()
     }
 }
 
-function float GetDamage()
+function float GetDamage(optional bool ignore_skill)
 {
     local float mult;
     // AugCombat increases our damage if hand to hand
@@ -119,6 +119,8 @@ function float GetDamage()
     // skill also affects our damage
     // GetWeaponSkill returns 0.0 to -0.7 (max skill/aug)
     mult += -2.0 * GetWeaponSkill();
+    if(ignore_skill)
+        mult = 1.0;
 
     if( ! bInstantHit && class != class'WeaponHideAGun' && ProjectileClass != None ) {// PS40 copies its damage to the projectile...
         // ProjectileClass is the currently loaded ammo
@@ -269,30 +271,10 @@ simulated function bool UpdateInfo(Object winObject)
         winInfo.AddInfoItem("Max Ammo:", AmmoType.MaxAmmo);
 
     // base damage
-    if (AreaOfEffect == AOE_Cone)
-    {
-        if (bInstantHit)
-        {
-            if (Level.NetMode != NM_Standalone)
-                dmg = mpHitDamage * 5;
-            else
-                dmg = HitDamage * 5;
-        }
-        else
-        {
-            if (Level.NetMode != NM_Standalone)
-                dmg = mpHitDamage * 3;
-            else
-                dmg = HitDamage * 3;
-        }
-    }
-    else
-    {
-        if (Level.NetMode != NM_Standalone)
-            dmg = mpHitDamage;
-        else
-            dmg = HitDamage;
-    }
+    dmg = GetDamage(true);
+
+    if( class<DeusExProjectile>(ProjectileClass) != None && class<DeusExProjectile>(ProjectileClass).default.bExplodes==false )
+        dmg /= float(GetNumHits());
 
     str = String(dmg);
     mod = 1.0 - GetWeaponSkill();
@@ -303,6 +285,8 @@ simulated function bool UpdateInfo(Object winObject)
     }
 
     winInfo.AddInfoItem(msgInfoDamage, str, (mod != 1.0));
+
+    winInfo.AddInfoItem("Number of Hits:", string(GetNumHits()), true);
 
     // clip size
     if ((Default.ReloadCount == 0) || bHandToHand)

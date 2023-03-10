@@ -472,16 +472,16 @@ simulated function PlayerLogin(#var(PlayerPawn) p)
     }
 
     data = class'PlayerDataItem'.static.GiveItem(p);
-    info("PlayerLogin("$p$") do it, p.PlayerDataItem: " $ data $", data.local_inited: "$data.local_inited);
+    info("PlayerLogin("$p$") do it, p.PlayerDataItem: " $ data $", data.local_inited: "$data.local_inited$", mission: "$dxInfo.missionNumber);
 
 #ifdef singleplayer
     if ( flags.stored_version != 0 && flags.stored_version < VersionNumber() ) {
-        data.local_inited = true;
+        info("upgrading "$data$" from "$data.version$" to "$VersionNumber());
         data.version = VersionNumber();
     }
 #endif
 
-    if( !data.local_inited && dxInfo.missionNumber > 0 && dxInfo.missionNumber < 99 )
+    if( !data.local_inited && dxInfo.missionNumber > 0 && dxInfo.missionNumber < 98 )
     {
         for(i=0; i<num_modules; i++) {
             modules[i].PlayerLogin(p);

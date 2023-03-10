@@ -7,6 +7,7 @@ const Writing = 2;
 const Stringifying = 3;
 const Printing = 4;
 const Credits = 5;
+const Hashing = 6;
 
 //rando flags
 #ifdef hx
@@ -664,8 +665,12 @@ simulated function LoadFlags()
 
 simulated function string BindFlags(int mode, optional string str)
 {
-    if( FlagInt('Rando_seed', seed, mode, str) )
-        dxr.seed = seed;
+    if(mode != Hashing) {
+        // keep the flagshash more stable for leaderboards
+        if( FlagInt('Rando_seed', seed, mode, str) )
+            dxr.seed = seed;
+        FlagInt('Rando_playthrough_id', playthrough_id, mode, str);
+    }
 
     FlagInt('Rando_maxrando', maxrando, mode, str);
 
@@ -673,7 +678,6 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_crowdcontrol', crowdcontrol, mode, str);
     FlagInt('Rando_loadout', loadout, mode, str);
     FlagInt('Rando_newgameplus_loops', newgameplus_loops, mode, str);
-    FlagInt('Rando_playthrough_id', playthrough_id, mode, str);
     FlagInt('Rando_gamemode', gamemode, mode, str);
     FlagInt('Rando_setseed', bSetSeed, mode, str);
 
@@ -1271,7 +1275,7 @@ simulated function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
-simulated function string StringifyFlags(optional int mode)
+simulated function string StringifyFlags(int mode)
 {
         local float CombatDifficulty;
         local #var(PlayerPawn) p;
@@ -1282,15 +1286,13 @@ simulated function string StringifyFlags(optional int mode)
     if( p != None )
         CombatDifficulty = p.CombatDifficulty;
 #endif
-    if(mode == 0)
-        mode = Stringifying;
-    return BindFlags(mode, "flagsversion: "$flagsversion$", difficulty: " $ TrimTrailingZeros(CombatDifficulty));
+    return BindFlags(mode, "difficulty: " $ TrimTrailingZeros(CombatDifficulty));
 }
 
 simulated function int FlagsHash()
 {
     local int hash;
-    hash = dxr.Crc(StringifyFlags());
+    hash = dxr.Crc(StringifyFlags(Hashing));
     hash = int(abs(hash));
     return hash;
 }

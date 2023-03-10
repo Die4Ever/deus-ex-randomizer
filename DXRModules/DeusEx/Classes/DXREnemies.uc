@@ -728,10 +728,9 @@ function inventory GiveRandomBotWeapon(Pawn p, optional bool allow_dupes, option
     return GiveItem( p, wclass, add_ammo );
 }
 
-function inventory GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional int add_ammo)
+function class<Weapon> GiveRandomWeaponClass(Pawn p, optional bool allow_dupes)
 {
-    local class<DeusExWeapon> wclass;
-    local Ammo a;
+    local class<Weapon> wclass;
     local int i;
     local float r;
     r = initchance();
@@ -741,7 +740,7 @@ function inventory GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional 
     }
     chance_remaining(r);
 
-    if( (!allow_dupes) && HasItem(p, wclass) )
+    if( (!allow_dupes) && p!=None && HasItem(p, wclass) )
         return None;
 
     if( wclass == None ) {
@@ -749,17 +748,29 @@ function inventory GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional 
         return None;
     }
 
-    l("GiveRandomWeapon "$p$", "$wclass.Name$", "$add_ammo);
-    return GiveItem( p, wclass, add_ammo );
+    return wclass;
 }
 
-function inventory GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
+function inventory GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional int add_ammo)
+{
+    local class<Weapon> wclass;
+
+    wclass = GiveRandomWeaponClass(p, allow_dupes);
+
+    l("GiveRandomWeapon "$p$", "$wclass.Name$", "$add_ammo);
+    if(p!=None)
+        return GiveItem( p, wclass, add_ammo );
+    else
+        return Spawn(wclass);
+}
+
+function class<Weapon> GiveRandomMeleeWeaponClass(Pawn p, optional bool allow_dupes)
 {
     local class<Weapon> wclass;
     local int i;
     local float r;
 
-    if( (!allow_dupes) && HasMeleeWeapon(p))
+    if( (!allow_dupes) && p!=None && HasMeleeWeapon(p))
         return None;
 
     r = initchance();
@@ -773,8 +784,20 @@ function inventory GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
         }
     }
 
+    return wclass;
+}
+
+function inventory GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
+{
+    local class<Weapon> wclass;
+
+    wclass = GiveRandomMeleeWeaponClass(p, allow_dupes);
+
     l("GiveRandomMeleeWeapon "$p$", "$wclass.Name);
-    return GiveItem(p, wclass);
+    if(p!=None)
+        return GiveItem(p, wclass);
+    else
+        return Spawn(wclass);
 }
 
 function RandomizeSize(Actor a)

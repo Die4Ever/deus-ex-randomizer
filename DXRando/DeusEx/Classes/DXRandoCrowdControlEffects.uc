@@ -1319,6 +1319,8 @@ function int TriggerAllAlarms(String viewer) {
     foreach AllActors(class'SecurityCamera',sc){
         numAlarms+=1;
         sc.TriggerEvent(True);
+        sc.bPlayerSeen=True;
+        sc.lastSeenTimer=0;
     }
 
     if (numAlarms==0){
@@ -1399,7 +1401,25 @@ function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, b
     return Success;
 }
 
+function int NextHUDColorTheme(string viewer)
+{
+    local ColorTheme theme;
 
+    //Find the next theme, and wrap around to the beginning if necessary
+    theme=player().ThemeManager.GetNextThemeByType(player().ThemeManager.GetCurrentHUDColorTheme(),CTT_HUD);
+    if (theme==None){
+        theme=player().ThemeManager.GetFirstTheme(1); //1 is CTT_HUD, can't use the enum here
+    }
+
+    player().ThemeManager.SetCurrentHUDColorTheme(theme);
+    DeusExRootWindow(player().rootWindow).ChangeStyle();
+    player().HUDThemeName = player().ThemeManager.GetCurrentHUDColorTheme().GetThemeName();
+    player().SaveConfig();
+
+    PlayerMessage(viewer@"gave your game a fresh coat of paint ("$theme.GetThemeName()$")");
+
+    return Success;
+}
 
 function bool canDropItem() {
 	local Vector X, Y, Z, dropVect;
@@ -1485,6 +1505,7 @@ simulated final function #var(PlayerPawn) player()
 
 function int doCrowdControlEvent(string code, string param[5], string viewer, int type) {
     local int i;
+    local ColorTheme theme;
 
     switch(code) {
         case "poison":
@@ -1897,10 +1918,16 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             if (player().InHand == None) {
                 return TempFail;
             }
+            if (player().weapon == None) {
+                return TempFail;
+            }
             if (!InGame()) {
                 return TempFail;
             }
             if (player().RestrictInput()) {
+                return TempFail;
+            }
+            if (!player().weapon.IsInState('Idle')){
                 return TempFail;
             }
             player().Fire();
@@ -1919,8 +1946,11 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             break;
 
         case "next_hud_color":
-            player().NextHUDColorTheme();
-            PlayerMessage(viewer@"gave your game a fresh coat of paint");
+            if (player().ThemeManager==None){
+                return TempFail;
+            }
+
+            return NextHUDColorTheme(viewer);
             break;
 
         case "quick_load":

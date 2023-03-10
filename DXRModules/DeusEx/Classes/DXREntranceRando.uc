@@ -1045,6 +1045,7 @@ function LoadConns(optional int missionNum)
     }
 
     ds = class'PlayerDataItem'.static.GiveItem(Player());
+    l("LoadConns "$missionNum@ds.EntranceRandoMissionNumber@ds.numConns@numConns);
     if( ds.EntranceRandoMissionNumber == missionNum && ds.numConns > 0 ) {
         BindEntrances(ds, false);
     } else {
@@ -1103,7 +1104,7 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
     hashPos = InStr(curDest,"#");
     destTag = Caps(Mid(curDest,hashPos+1));
 
-    l("AdjustTeleporter("$p$") curDest: "$curDest$", destTag: "$destTag);
+    l("AdjustTeleporter("$p$") curDest: "$curDest$", destTag: "$destTag$", numConns: "$numConns);
 
     for (i = 0;i<numConns;i++)
     {

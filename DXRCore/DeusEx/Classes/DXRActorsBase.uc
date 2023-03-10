@@ -627,6 +627,7 @@ static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate,
 {
     local DeusExDecoration d;
     d = DeusExDecoration( _AddActor(a, class'Switch2', loc, rotate) );
+    d.Buoyancy = 0;
     d.Event = Event;
     return d;
 }
@@ -704,6 +705,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     newactor.Mass = a.Mass;
     newactor.Buoyancy = a.Buoyancy;
     newactor.Event = event;
+    newactor.bHidden = a.bHidden;
 
     for(i=0; i<ArrayCount(a.Multiskins); i++) {
         newactor.Multiskins[i] = a.Multiskins[i];

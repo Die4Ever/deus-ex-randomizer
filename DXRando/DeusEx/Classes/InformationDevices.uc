@@ -58,12 +58,18 @@ function MarkTextRead(name ttextTag)
 
 function WritePasswordsToNote(DeusExNote note)
 {
-#ifdef injections
     local int i;
-
+#ifdef injections
     for(i=0; i < ArrayCount(new_passwords) && i < ArrayCount(note.new_passwords); i++) {
         if (new_passwords[i]!="") {
             note.SetNewPassword(new_passwords[i]);
+            passwords.MarkPasswordKnown(new_passwords[i]);
+        }
+        new_passwords[i] = "";
+    }
+#else
+    for(i=0; i < ArrayCount(new_passwords); i++) {
+        if (new_passwords[i]!="") {
             passwords.MarkPasswordKnown(new_passwords[i]);
         }
         new_passwords[i] = "";

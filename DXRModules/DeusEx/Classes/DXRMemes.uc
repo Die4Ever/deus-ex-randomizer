@@ -374,7 +374,7 @@ function RandomizeCutscene()
 #ifdef revision
     _skipactor_types[i++] = class<Actor>(DynamicLoadObject("RevisionDeco.Rev_SphereLight", class'class'));
 #endif
-    SwapAll("Engine.Actor", 100);
+    SwapAll("Engine.Actor", 10);
 
     for(i=0; i<ArrayCount(_skipactor_types); i++) {
         _skipactor_types[i] = old_skips[i];
@@ -392,8 +392,15 @@ function RandomizeCutscene()
         if( a.IsA('Rev_SphereLight') ) continue;
         if( a.bHidden || DeusExPlayer(a) != None ) continue;
 
-        SetActorScale(a, float(rng(1500))/1000 + 0.3);
-        a.Fatness = rng(50) + 105;
+        if(chance_single(50))
+            SetActorScale(a, rngrange(1, 0.3, 1.7));
+        else
+            SetActorScale(a, rngrange(1, 0.8, 1.2));
+
+        if(chance_single(50))
+            a.Fatness = rng(50) + 105;
+        else
+            a.Fatness = rng(20) + 120;
     }
 
     /*foreach AllActors(class'CameraPoint', c)
@@ -437,8 +444,10 @@ function RandomizeDialog()
         speech[num++] = s;
     }
     for(i=0;i<num;i++) {
-        j = rng(num);
-        SwapSpeech(speech[i], speech[j]);
+        if(chance_single(5)) {
+            j = rng(num);
+            SwapSpeech(speech[i], speech[j]);
+        }
     }
 
     /*foreach AllObjects(class'Conversation', conv) {
