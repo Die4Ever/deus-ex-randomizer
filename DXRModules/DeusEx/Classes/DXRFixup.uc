@@ -1462,6 +1462,7 @@ function HongKong_FirstEntry()
     local DeusExMover d;
     local DataLinkTrigger dt;
     local ComputerSecurity cs;
+    local #var(prefix)Keypad pad;
 
     switch(dxr.localURL)
     {
@@ -1569,6 +1570,14 @@ function HongKong_FirstEntry()
         foreach AllActors(class'DataLinkTrigger', dt) {
             if(dt.name == 'DataLinkTrigger0')
                 dt.Tag = 'TongHasRom';
+        }
+        // don't wait for M07Briefing_Played to get rid of the dummy keypad
+        foreach AllActors(class'#var(prefix)Keypad', pad)
+        {
+            if (pad.Tag == 'DummyKeypad_02')
+                pad.Destroy();
+            else if (pad.Tag == 'RealKeypad_02')
+                pad.bHidden = False;
         }
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
