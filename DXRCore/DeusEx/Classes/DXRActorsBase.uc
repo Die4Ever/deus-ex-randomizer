@@ -705,6 +705,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     newactor.Mass = a.Mass;
     newactor.Buoyancy = a.Buoyancy;
     newactor.Event = event;
+    newactor.bHidden = a.bHidden;
 
     for(i=0; i<ArrayCount(a.Multiskins); i++) {
         newactor.Multiskins[i] = a.Multiskins[i];
