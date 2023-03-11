@@ -809,7 +809,7 @@ function PreFirstEntry()
         }
     } else if ( dxr.localURL == "14_OCEANLAB_UC" ) {
         foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
-            if (cp.UserList[0].UserName=="USER"){
+            if (cp.UserList[0].UserName=="USER" || cp.UserList[0].UserName=="UC"){
                 cp.UserList[0].UserName="JEBAITED"; //Just to make it a bit more clear this is a bait computer
             }
         }
