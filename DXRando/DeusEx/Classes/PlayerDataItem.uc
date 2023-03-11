@@ -25,7 +25,7 @@ struct BingoSpotExport {
     var string desc;
     var int progress;
     var int max;
-    var int active;// if the current mission is active, 0 is no, 1 is maybe, 2 is active
+    var int active;// if the current mission is active, -1 is impossible, 0 is no, 1 is maybe, 2 is active
 };
 var transient config BingoSpotExport bingoexport[25];
 

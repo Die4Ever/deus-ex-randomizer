@@ -1,7 +1,7 @@
 class BingoTile extends ButtonWindow;
 
 var int progress, max;
-var int bActiveMission;// 0==false, 1==maybe, 2==true
+var int bActiveMission;// -1==impossible, 0==false, 1==maybe, 2==true
 var bool isCredits;
 
 event DrawWindow(GC gc)
@@ -37,6 +37,19 @@ event DrawWindow(GC gc)
         gc.SetTileColor(c);
         gc.SetStyle(DSTY_Normal);
         gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
+    }
+    else if(bActiveMission==-1) {
+        c.R = 30;
+        c.G = 0;
+        c.B = 0;
+        gc.SetTileColor(c);
+        gc.SetStyle(DSTY_Normal);
+        gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
+
+        c.R = 200;
+        c.G = 200;
+        c.B = 200;
+        SetTextColors(c, c, c, c, c, c);
     }
     else {
         c.R = 0;

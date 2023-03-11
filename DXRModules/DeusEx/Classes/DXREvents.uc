@@ -1413,6 +1413,10 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     if(missionAnded > 0) return 2;// 2==true
 #endif
 
+    if(missionsMask < (1<<currentMission)) {
+        return -1;// impossible in future missions
+    }
+
     return 0;// 0==false
 }
 
