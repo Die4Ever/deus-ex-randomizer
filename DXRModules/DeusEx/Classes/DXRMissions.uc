@@ -769,15 +769,24 @@ function AddMission1Goals()
 function ReplaceBatteryParkSubwayTNT()
 {
     local CrateExplosiveSmall tnt;
-    local Barrel1 barrel;
+    local #var(prefix)Barrel1 barrel;
+    local class<#var(prefix)Barrel1> barrelclass;
     local bool destroyTNT;
+    local int choice;
+
+#ifdef injections
+    barrelclass = class'Barrel1';
+#else
+    barrelclass = class'DXRBarrel1';
+#endif
 
     //The front crates have their tag set to ExplosiveCrate.
     //Since we're changing their types, they should all be set off
+    choice = rng(8);
     foreach AllActors(class'CrateExplosiveSmall',tnt){
         destroyTNT = True;
         barrel = None;
-        switch(rng(8)){
+        switch(choice){
             case 0:
             case 1:
                 //Keep TNT crate - 300 explosion damage
@@ -787,24 +796,24 @@ function ReplaceBatteryParkSubwayTNT()
                 break;
             case 2:
                 //Explosive barrel - 400 explosion damage
-                barrel = Spawn(class'Barrel1',,,tnt.Location);
+                barrel = Spawn(barrelclass,,,tnt.Location);
                 barrel.SkinColor=SC_Explosive;
                 break;
             case 3:
                 //Flammable Solid barrel - 200 explosion damage
-                barrel = Spawn(class'Barrel1',,,tnt.Location);
+                barrel = Spawn(barrelclass,,,tnt.Location);
                 barrel.SkinColor=SC_FlammableSolid;
                 break;
             case 4:
             case 5:
                 //Poison Barrel
-                barrel = Spawn(class'Barrel1',,,tnt.Location);
+                barrel = Spawn(barrelclass,,,tnt.Location);
                 barrel.SkinColor=SC_Poison;
                 break;
             case 6:
             case 7:
                 //Biohazard Barrel
-                barrel = Spawn(class'Barrel1',,,tnt.Location);
+                barrel = Spawn(barrelclass,,,tnt.Location);
                 barrel.SkinColor=SC_Biohazard;
                 break;
         }

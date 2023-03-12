@@ -1,4 +1,4 @@
-class Barrel1 injects Barrel1;
+class DXRBarrel1 injects #var(prefix)Barrel1;
 
 function BeginPlay()
 {
