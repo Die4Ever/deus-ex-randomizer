@@ -989,6 +989,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
     local int i, g1, g2, r, _num_locs, _num_starts;
     local int availLocs[64], goalsOrder[64];
 
+    // build list of availLocs based on flags, also count _num_starts
     _num_locs = 0;
     _num_starts = 0;
     for(i=0; i<num_locations; i++) {
@@ -1030,10 +1031,6 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         g1 = goalsOrder[i];
         goalsOrder[i] = goalsOrder[r];
         goalsOrder[r] = g1;
-    }
-
-    for(i=0; i<num_goals; i++) {
-        l("goalsOrder "$i$" == "$goalsOrder[i]);
     }
 
     // choose the goal locations
