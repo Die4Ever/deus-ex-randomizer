@@ -967,7 +967,7 @@ function BalanceJailbreak()
         nextItem = p.Inventory;
         while(nextItem != None)
             for(i=0; i<num; i++)
-                nextItem = MoveItemTo(nextItem, itemLocations[i], 'player_inv');
+                nextItem = MoveNextItemTo(nextItem, itemLocations[i], 'player_inv');
     }
 
     e = DXREnemies(dxr.FindModule(class'DXREnemies'));
