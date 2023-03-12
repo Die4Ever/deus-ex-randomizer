@@ -743,7 +743,7 @@ function Airfield_FirstEntry()
     local Trigger t;
     local NanoKey k;
     local #var(prefix)InformationDevices i;
-    local UNATCOTroop unatco;
+    local #var(prefix)UNATCOTroop unatco;
 
     switch (dxr.localURL)
     {
@@ -788,7 +788,7 @@ function Airfield_FirstEntry()
                 t.Event = '';
             }
         }
-        foreach AllActors(class'UNATCOTroop', unatco) {
+        foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
             unatco.bHateCarcass = false;
             unatco.bHateDistress = false;
         }
@@ -847,6 +847,14 @@ function Airfield_FirstEntry()
             }
         }
         break;
+
+    case "03_NYC_UNATCOISLAND":
+        foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
+            if(unatco.BindName != "PrivateLloyd") continue;
+            unatco.FamiliarName = "Corporal Lloyd";
+            unatco.UnfamiliarName = "Corporal Lloyd";
+        }
+        break;
     }
 }
 
@@ -856,7 +864,7 @@ function Jailbreak_FirstEntry()
     local PaulDenton paul;
     local ComputerPersonal c;
     local DeusExMover dxm;
-    local UNATCOTroop lloyd;
+    local #var(prefix)UNATCOTroop lloyd;
     local DXREnemies dxre;
     local int i;
 
@@ -908,7 +916,7 @@ function Jailbreak_FirstEntry()
 #endif
 
     case "05_NYC_UNATCOISLAND":
-        foreach AllActors(class'UNATCOTroop', lloyd) {
+        foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
             if(lloyd.BindName != "PrivateLloyd") continue;
             RemoveFears(lloyd);
             lloyd.MinHealth = 0;
@@ -919,8 +927,8 @@ function Jailbreak_FirstEntry()
                 dxre.GiveRandomWeapon(lloyd, false, 2);
                 dxre.GiveRandomMeleeWeapon(lloyd);
             }
-            lloyd.FamiliarName = "Major Lloyd";
-            lloyd.UnfamiliarName = "Major Lloyd";
+            lloyd.FamiliarName = "Master Sergeant Lloyd";
+            lloyd.UnfamiliarName = "Master Sergeant Lloyd";
             if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
                 SetPawnHealth(lloyd, 200);
             }
@@ -1288,6 +1296,7 @@ function NYC_04_FirstEntry()
     local #var(prefix)BoxSmall b;
     local #var(prefix)HackableDevices hd;
     local #var(prefix)CrateUnbreakableLarge crate;
+    local #var(prefix)UNATCOTroop lloyd;
 
     switch (dxr.localURL)
     {
@@ -1325,6 +1334,15 @@ function NYC_04_FirstEntry()
         foreach AllActors(class'#var(prefix)CrateUnbreakableLarge', crate) {
             crate.Event = '';
             crate.Destroy();
+        }
+        break;
+
+    case "04_NYC_UNATCOISLAND":
+        foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
+            if(lloyd.BindName != "PrivateLloyd") continue;
+            lloyd.FamiliarName = "Sergeant Lloyd";
+            lloyd.UnfamiliarName = "Sergeant Lloyd";
+            lloyd.bImportant = true;
         }
         break;
     }
