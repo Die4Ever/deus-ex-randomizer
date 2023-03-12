@@ -423,6 +423,24 @@ function RemoveReactions(ScriptedPawn p)
     p.bReactProjectiles = false;
 }
 
+function SetPawnHealth(ScriptedPawn p, int health)
+{
+    // we need to set defaults so that GenerateTotalHealth() works properly
+    p.default.HealthHead = health;
+    p.default.HealthTorso = health;
+    p.default.HealthLegLeft = health;
+    p.default.HealthLegRight = health;
+    p.default.HealthArmLeft = health;
+    p.default.HealthArmRight = health;
+    p.HealthHead = health;
+    p.HealthTorso = health;
+    p.HealthLegLeft = health;
+    p.HealthLegRight = health;
+    p.HealthArmLeft = health;
+    p.HealthArmRight = health;
+    p.GenerateTotalHealth();
+}
+
 function bool Swap(Actor a, Actor b, optional bool retainOrders)
 {
     local vector newloc, oldloc;

@@ -842,6 +842,8 @@ function Jailbreak_FirstEntry()
     local PaulDenton paul;
     local ComputerPersonal c;
     local DeusExMover dxm;
+    local UNATCOTroop lloyd;
+    local DXREnemies dxre;
     local int i;
 
     switch (dxr.localURL)
@@ -890,6 +892,26 @@ function Jailbreak_FirstEntry()
         }
         break;
 #endif
+
+    case "05_NYC_UNATCOISLAND":
+        foreach AllActors(class'UNATCOTroop', lloyd) {
+            if(lloyd.BindName != "PrivateLloyd") continue;
+            RemoveFears(lloyd);
+            lloyd.MinHealth = 0;
+            lloyd.BaseAccuracy *= 0.1;
+            GiveItem(lloyd, class'#var(prefix)BallisticArmor');
+            dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+            if(dxre != None) {
+                dxre.GiveRandomWeapon(lloyd, false, 2);
+                dxre.GiveRandomMeleeWeapon(lloyd);
+            }
+            lloyd.FamiliarName = "Major Lloyd";
+            lloyd.UnfamiliarName = "Major Lloyd";
+            if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
+                SetPawnHealth(lloyd, 200);
+            }
+        }
+        break;
     }
 }
 
@@ -1147,7 +1169,7 @@ function NYC_04_CheckPaulRaid()
 {
     local PaulDenton paul;
     local ScriptedPawn p;
-    local int count, dead, i, pawns;
+    local int count, dead, pawns;
 
     if( ! dxr.flagbase.GetBool('M04RaidTeleportDone') ) return;
 
@@ -1162,22 +1184,7 @@ function NYC_04_CheckPaulRaid()
         if( ! paul.bInvincible ) continue;
 
         paul.bInvincible = false;
-        i = 400;
-        // we need to set defaults so that GenerateTotalHealth() works properly
-        paul.default.Health = i;
-        paul.Health = i;
-        paul.default.HealthArmLeft = i;
-        paul.HealthArmLeft = i;
-        paul.default.HealthArmRight = i;
-        paul.HealthArmRight = i;
-        paul.default.HealthHead = i;
-        paul.HealthHead = i;
-        paul.default.HealthLegLeft = i;
-        paul.HealthLegLeft = i;
-        paul.default.HealthLegRight = i;
-        paul.HealthLegRight = i;
-        paul.default.HealthTorso = i;
-        paul.HealthTorso = i;
+        SetPawnHealth(paul, 400);
         paul.ChangeAlly('Player', 1, true);
     }
 
@@ -1353,7 +1360,6 @@ function Vandenberg_FirstEntry()
     local HowardStrong hs;
     local #var(Mover) door;
     local DXREnemies dxre;
-    local int i;
 
     switch(dxr.localURL)
     {
@@ -1429,20 +1435,7 @@ function Vandenberg_FirstEntry()
             hs.FamiliarName = "Howard Stronger";
             hs.UnfamiliarName = "Howard Stronger";
             if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
-                i = 200;
-                hs.default.HealthHead = i;
-                hs.default.HealthTorso = i;
-                hs.default.HealthLegLeft = i;
-                hs.default.HealthLegRight = i;
-                hs.default.HealthArmLeft = i;
-                hs.default.HealthArmRight = i;
-                hs.HealthHead = i;
-                hs.HealthTorso = i;
-                hs.HealthLegLeft = i;
-                hs.HealthLegRight = i;
-                hs.HealthArmLeft = i;
-                hs.HealthArmRight = i;
-                hs.GenerateTotalHealth();
+                SetPawnHealth(hs, 200);
             }
         }
         break;
