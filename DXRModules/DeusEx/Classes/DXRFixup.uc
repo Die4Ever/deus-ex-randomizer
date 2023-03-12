@@ -40,7 +40,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(2,2,2,2) ) {
+    if( ConfigOlderThan(2,2,7,1) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -128,23 +128,37 @@ function CheckConfig()
 #endif
 
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
-        add_datacubes[i].text = "My code is 6786";
+        add_datacubes[i].text =
+            "Julia, I must see you -- we have to talk, about us, about this project.  I'm not sure what we're doing here anymore and Page has made... strange requests of the interface team."
+            $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
+            $ "  The code is 6786.  I love you."
+            $ "|n|nJustin";
         i++;
 
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
-        add_datacubes[i].text = "My code is 3901";
+        add_datacubes[i].text =
+            "Julia, I must see you -- we have to talk, about us, about this project.  I'm not sure what we're doing here anymore and Page has made... strange requests of the interface team."
+            $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
+            $ "  The code is 3901.  I love you."
+            $ "|n|nJohn";
         i++;
 
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
-        add_datacubes[i].text = "My code is 4322";
+        add_datacubes[i].text =
+            "Julia, I must see you -- we have to talk, about us, about this project.  I'm not sure what we're doing here anymore and Page has made... strange requests of the interface team."
+            $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
+            $ "  The code is 4322.  I love you."
+            $ "|n|nJim";
         i++;
 
         add_datacubes[i].map = "15_AREA51_PAGE";
-        add_datacubes[i].text = "UC Control Rooms code: 1234";
+        add_datacubes[i].text =
+            "The security guys found my last datacube so they changed the UC Control Rooms code to 1234. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
         i++;
 
         add_datacubes[i].map = "15_AREA51_PAGE";
-        add_datacubes[i].text = "Aquinas Router code: 6188";
+        add_datacubes[i].text =
+            "The security guys found my last datacube so they changed the Aquinas Router code to 6188. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
         i++;
     }
     Super.CheckConfig();
