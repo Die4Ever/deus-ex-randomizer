@@ -428,6 +428,9 @@ function PostFirstEntryMapFixes()
 function AnyEntryMapFixes()
 {
     switch(dxr.dxInfo.missionNumber) {
+    case 3:
+        Airfield_AnyEntry();
+        break;
     case 4:
         NYC_04_AnyEntry();
         break;
@@ -456,19 +459,7 @@ function AnyEntryMapFixes()
 
 function AllAnyEntry()
 {
-    local HowardStrong hs;
-
-    switch(dxr.localURL) {
-    case "14_Oceanlab_Silo":
-        foreach AllActors(class'HowardStrong', hs) {
-            hs.ChangeAlly('', 1, true);
-            hs.ChangeAlly('mj12', 1, true);
-            hs.ChangeAlly('spider', 1, true);
-            RemoveFears(hs);
-            hs.MinHealth = 0;
-        }
-        break;
-    }
+    // for when mapfixes isn't defined, but currently it's defined for all mods even Revision
 }
 
 function PreTravelMapFixes()
@@ -493,6 +484,10 @@ function TimerMapFixes()
 
     switch(dxr.localURL)
     {
+    case "03_NYC_747":
+        FixAnnaAmbush();
+        break;
+
     case "04_NYC_HOTEL":
         if(#defined(vanilla))
             NYC_04_CheckPaulRaid();
@@ -855,6 +850,32 @@ function Airfield_FirstEntry()
             unatco.UnfamiliarName = "Corporal Lloyd";
         }
         break;
+    }
+}
+
+function Airfield_AnyEntry()
+{
+    switch(dxr.localURL) {
+    case "03_NYC_747":
+        SetTimer(1, true);
+        break;
+    }
+}
+
+function FixAnnaAmbush()
+{
+    local #var(prefix)AnnaNavarre anna;
+    local #var(prefix)ThrownProjectile p;
+
+    foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {break;}
+
+    // if she's angry then let her blow up
+    if(anna != None && anna.GetAllianceType('player') == ALLIANCE_Hostile) anna = None;
+
+    foreach AllActors(class'#var(prefix)ThrownProjectile', p) {
+        if(!p.bProximityTriggered || !p.bStuck) continue;
+        if(p.Owner==player() && anna != None) p.SetOwner(anna);
+        if(anna == None && p.Owner!=player()) p.SetOwner(player());
     }
 }
 
@@ -1865,6 +1886,7 @@ function Vandenberg_AnyEntry()
     local DataLinkTrigger dt;
     local MIB mib;
     local NanoKey key;
+    local #var(prefix)HowardStrong hs;
 
     switch(dxr.localURL)
     {
@@ -1881,6 +1903,13 @@ function Vandenberg_AnyEntry()
         }
         break;
     case "14_OCEANLAB_SILO":
+        foreach AllActors(class'#var(prefix)HowardStrong', hs) {
+            hs.ChangeAlly('', 1, true);
+            hs.ChangeAlly('mj12', 1, true);
+            hs.ChangeAlly('spider', 1, true);
+            RemoveFears(hs);
+            hs.MinHealth = 0;
+        }
         foreach AllActors(class'DataLinkTrigger', dt) {
             if(dt.datalinkTag == 'DL_FrontGate') {
                 dt.Touch(Player());
