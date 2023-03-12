@@ -1,7 +1,11 @@
 class DXRWeapon shims DeusExWeapon abstract;
 
 var float blood_mult;
-var float anim_speed;
+var float anim_speed;// also adjusted from Ninja JC mode in DXRLoadouts
+
+var name prev_anim;
+var float prev_anim_rate;
+var float prev_weapon_skill;
 
 function PostBeginPlay()
 {
@@ -11,6 +15,38 @@ function PostBeginPlay()
     foreach AllActors(class'DXRWeapons', m) {
         m.RandoWeapon(self);
     }
+}
+
+simulated function Tick(float deltaTime)
+{
+    local float r, e;
+    Super.Tick(deltaTime);
+    if(!IsAnimating()) {
+        return;
+    }
+
+    if(AnimSequence != prev_anim || GetWeaponSkill() != prev_weapon_skill) {
+        prev_anim = AnimSequence;
+        e = 2.0;
+
+        if(AnimSequence == 'PlaceBegin' || AnimSequence == 'PlaceEnd')
+            if(AnimFrame<0.2)// skip the beginning of the animation
+                AnimFrame=0.2;
+        else if(AnimSequence == 'Shoot'
+            || AnimSequence == 'Attack' || AnimSequence == 'Attack2' || AnimSequence == 'Attack3'
+            || AnimSequence == 'Idle1' || AnimSequence == 'Idle2' || AnimSequence == 'Idle3'
+        ) {
+            e = 1.0;// these animations don't scale as much with skill
+        }
+        if(GoverningSkill == Class'SkillDemolition') {
+            anim_speed = 1.3;// why are grenades so slow?
+        }
+        prev_weapon_skill = GetWeaponSkill();
+        r = class'DXRBase'.static.pow(anim_speed + -0.2 * prev_weapon_skill, e);
+        prev_anim_rate = AnimRate * r;
+    }
+
+    AnimRate = prev_anim_rate;
 }
 
 function SpawnBlood(Vector HitLocation, Vector HitNormal)
@@ -35,72 +71,6 @@ static function SpawnExtraBlood(Actor this, Vector HitLocation, Vector HitNormal
         a.DrawScale *= mult;
         a = this.spawn(class'BloodDrop',,,HitLocation+HitNormal*4+v);
         a.DrawScale *= mult;
-    }
-}
-
-simulated function float AnimSpeed(float e)
-{
-    if( anim_speed == 1.0 ) return 1.0;
-    return class'DXRBase'.static.pow(anim_speed + -0.2 * GetWeaponSkill(), e);
-}
-
-simulated function TweenDown()
-{
-    if ( (AnimSequence != '') && (GetAnimGroup(AnimSequence) == 'Select') )
-        TweenAnim( AnimSequence, AnimFrame * 0.4 );
-    else
-    {
-        // Have the put away animation play twice as fast in multiplayer
-        if ( Level.NetMode != NM_Standalone )
-            PlayAnim('Down', 2.0*AnimSpeed(2), 0.05);
-        else
-            PlayAnim('Down', 1.0*AnimSpeed(2), 0.05);
-    }
-}
-
-function PlaySelect()
-{
-    PlayAnim('Select',1.0*AnimSpeed(2),0.0);
-    Owner.PlaySound(SelectSound, SLOT_Misc, Pawn(Owner).SoundDampening);
-}
-
-simulated function PlaySelectiveFiring()
-{
-    local Pawn aPawn;
-    local float rnd;
-    local Name anim;
-
-    anim = 'Shoot';
-
-    if (bHandToHand)
-    {
-        rnd = FRand();
-        if (rnd < 0.33)
-            anim = 'Attack';
-        else if (rnd < 0.66)
-            anim = 'Attack2';
-        else
-            anim = 'Attack3';
-    }
-
-    if (( Level.NetMode == NM_Standalone ) || ( DeusExPlayer(Owner) == DeusExPlayer(GetPlayerPawn())) )
-    {
-        if (bAutomatic)
-            LoopAnim(anim,1.0*AnimSpeed(1), 0.1);
-        else
-            PlayAnim(anim,1.0*AnimSpeed(1),0.1);
-    }
-    else if ( Role == ROLE_Authority )
-    {
-        for ( aPawn = Level.PawnList; aPawn != None; aPawn = aPawn.nextPawn )
-        {
-            if ( aPawn.IsA('DeusExPlayer') && ( DeusExPlayer(Owner) != DeusExPlayer(aPawn) ) )
-            {
-                // If they can't see the weapon, don't bother
-                if ( DeusExPlayer(aPawn).FastTrace( DeusExPlayer(aPawn).Location, Location ))
-                    DeusExPlayer(aPawn).ClientPlayAnimation( Self, anim, 0.1*AnimSpeed(1), bAutomatic );
-            }
-        }
     }
 }
 
