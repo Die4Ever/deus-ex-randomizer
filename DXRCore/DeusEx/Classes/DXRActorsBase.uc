@@ -315,11 +315,12 @@ static function ThrowItem(Inventory item, float VelocityMult)
     item.Velocity *= VelocityMult;
 }
 
-static function Inventory MoveItemTo(Inventory item, vector Location, name Tag)
+static function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
 {
     // code similar to Revision Mission05.uc
     local Inventory nextItem;
     local DeusExPlayer player;
+    local int i;
 
     // Find the next item we can process.
     while((item != None) && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None))
@@ -336,6 +337,12 @@ static function Inventory MoveItemTo(Inventory item, vector Location, name Tag)
 
     Pawn(item.Owner).DeleteInventory(item);
 
+    for(i=0; i<100; i++) {
+        if(item.SetLocation(Location)) {
+            break;
+        }
+        Location.Z += 20;
+    }
     item.DropFrom(Location);
     item.Tag = Tag;// so we can find the item again later
 
