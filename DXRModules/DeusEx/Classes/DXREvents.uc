@@ -55,6 +55,8 @@ function SetWatchFlags() {
     local BookOpen book;
     local FlagTrigger fTrigger;
     local WIB wib;
+    local ComputerPersonal cp;
+    local int i;
 
     switch(dxr.localURL) {
     case "00_TrainingFinal":
@@ -183,6 +185,21 @@ function SetWatchFlags() {
     case "05_NYC_UNATCOHQ":
         WatchFlag('KnowsAnnasKillphrase1');
         WatchFlag('KnowsAnnasKillphrase2');
+
+        foreach AllActors(class'ComputerPersonal',cp){
+            if (cp.Name=='ComputerPersonal7'){  //JC's computer
+                for (i=0;i<4 && cp.specialOptions[i].Text!="";i++){}
+                if (i<4){
+                    cp.specialOptions[i].Text="Clear Browser History";
+                    cp.specialOptions[i].TriggerText="Browser History Cleared!";
+                    cp.specialOptions[i].bTriggerOnceOnly=True;
+                    cp.specialOptions[i].TriggerEvent='BrowserHistoryCleared';
+                    cp.specialOptions[i].UserName="JCD";
+                }
+            }
+        }
+        Tag='BrowserHistoryCleared';
+
         break;
     case "06_HONGKONG_WANCHAI_CANAL":
         WatchFlag('FoundScientistBody');
@@ -1552,7 +1569,9 @@ defaultproperties
     bingo_options(116)=(event="AnnaKilledLebedev",desc="Let Anna kill Lebedev",max=1,missions=8)
     bingo_options(117)=(event="PlayerKilledLebedev",desc="Kill Lebedev yourself",max=1,missions=8)
     bingo_options(118)=(event="JuanLebedev_Unconscious",desc="Knock out Lebedev",max=1,missions=8)
-
+#ifdef vanilla
+    bingo_options(119)=(event="BrowserHistoryCleared",desc="Clear your browser history before quitting",max=1,missions=32)
+#endif
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
