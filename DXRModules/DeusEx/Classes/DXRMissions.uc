@@ -987,7 +987,7 @@ function MoveActorsIn(int goalsToLocations[32])
 function bool _ChooseGoalLocations(out int goalsToLocations[32])
 {
     local int i, g1, g2, r, _num_locs, _num_starts;
-    local int availLocs[64];
+    local int availLocs[64], goalsOrder[64];
 
     _num_locs = 0;
     _num_starts = 0;
@@ -1007,7 +1007,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
     // choose a starting location
     goalsToLocations[num_goals] = -1;
     if(_num_starts > 0) {
-        for(i=0; i<10; i++) {
+        for(i=0; i<20; i++) {
             r = rng(_num_locs);
             if( (START_LOCATION & locations[availLocs[r]].bitMask) == 0)
                 continue;
@@ -1021,9 +1021,25 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
             return false;
     }
 
-    // choose the goal locations
+    // do the goals in a random order
     for(i=0; i<num_goals; i++) {
+        goalsOrder[i] = i;
+    }
+    for(i=0; i<num_goals; i++) {
+        r = rng(num_goals);
+        g1 = goalsOrder[i];
+        goalsOrder[i] = goalsOrder[r];
+        goalsOrder[r] = g1;
+    }
+
+    for(i=0; i<num_goals; i++) {
+        l("goalsOrder "$i$" == "$goalsOrder[i]);
+    }
+
+    // choose the goal locations
+    for(g1=0; g1<num_goals; g1++) {
         r = rng(_num_locs);
+        i = goalsOrder[g1];
         goalsToLocations[i] = availLocs[r];
         if( (goals[i].bitMask & locations[availLocs[r]].bitMask) == 0)
             return false;
