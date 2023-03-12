@@ -45,6 +45,11 @@ function PreTravel()
     }
 }
 
+function Trigger(Actor Other, Pawn Instigator)
+{
+    TakeDamage(50,Instigator,Location,vect(0,0,0),'shot'); //Destroy the barrel if it is triggered
+}
+
 auto state Active
 {
 }

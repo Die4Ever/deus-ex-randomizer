@@ -766,6 +766,61 @@ function AddMission1Goals()
 
 }
 
+function ReplaceBatteryParkSubwayTNT()
+{
+    local CrateExplosiveSmall tnt;
+    local Barrel1 barrel;
+    local bool destroyTNT;
+
+    //The front crates have their tag set to ExplosiveCrate.
+    //Since we're changing their types, they should all be set off
+    foreach AllActors(class'CrateExplosiveSmall',tnt){
+        destroyTNT = True;
+        barrel = None;
+        switch(rng(8)){
+            case 0:
+            case 1:
+                //Keep TNT crate - 300 explosion damage
+                destroyTNT=False;
+                tnt.bIsSecretGoal=True;
+                tnt.Tag='ExplosiveCrate';
+                break;
+            case 2:
+                //Explosive barrel - 400 explosion damage
+                barrel = Spawn(class'Barrel1',,,tnt.Location);
+                barrel.SkinColor=SC_Explosive;
+                break;
+            case 3:
+                //Flammable Solid barrel - 200 explosion damage
+                barrel = Spawn(class'Barrel1',,,tnt.Location);
+                barrel.SkinColor=SC_FlammableSolid;
+                break;
+            case 4:
+            case 5:
+                //Poison Barrel
+                barrel = Spawn(class'Barrel1',,,tnt.Location);
+                barrel.SkinColor=SC_Poison;
+                break;
+            case 6:
+            case 7:
+                //Biohazard Barrel
+                barrel = Spawn(class'Barrel1',,,tnt.Location);
+                barrel.SkinColor=SC_Biohazard;
+                break;
+        }
+
+        if (barrel!=None){
+            barrel.bIsSecretGoal=True;
+            barrel.BeginPlay();
+            barrel.Tag='ExplosiveCrate';
+        }
+
+        if(destroyTNT){
+            tnt.destroy();
+        }
+    }
+}
+
 function PreFirstEntry()
 {
     local #var(prefix)AnnaNavarre anna;
@@ -800,6 +855,7 @@ function PreFirstEntry()
             anna.HomeLoc = anna.Location;
             anna.HomeRot = vector(anna.Rotation);
         }
+        ReplaceBatteryParkSubwayTNT();
     }
     else if( dxr.localURL == "03_NYC_AIRFIELDHELIBASE" ) {
         foreach AllActors(class'FlagTrigger',ft){
