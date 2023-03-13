@@ -339,6 +339,8 @@ simulated function RemoveRandomSkill(#var(PlayerPawn) p)
 function ExtendedTests()
 {
     local float f;
+    local class<FrobDisplayWindow> FrobDisplayWindow;
+
     Super.ExtendedTests();
 
     TestWeightedLevelValues(0.008089, 0.052143);
@@ -346,6 +348,23 @@ function ExtendedTests()
     for(f=0.01; f<2; f+=0.02) {
         TestWeightedLevelValues(f, f+0.01);
     }
+
+
+    FrobDisplayWindow = class'FrobDisplayWindow';
+#ifndef injections
+    FrobDisplayWindow = class'DXRFrobDisplayWindow';
+#endif
+    testint(FrobDisplayWindow.static.GetNumTools(0.190000, 0.188827), 2, "GetNumTools for lockpicks/multitools test 1");
+    testint(FrobDisplayWindow.static.GetNumTools(0.070000, 0.010000), 7, "GetNumTools for lockpicks/multitools test 2");
+    testint(FrobDisplayWindow.static.GetNumTools(0.060000, 0.010000), 6, "GetNumTools for lockpicks/multitools test 3");
+    testint(FrobDisplayWindow.static.GetNumTools(0.050000, 0.010000), 5, "GetNumTools for lockpicks/multitools test 4");
+    testint(FrobDisplayWindow.static.GetNumTools(0.040000, 0.010000), 4, "GetNumTools for lockpicks/multitools test 5");
+    testint(FrobDisplayWindow.static.GetNumTools(0.030000, 0.010000), 3, "GetNumTools for lockpicks/multitools test 6");
+    testint(FrobDisplayWindow.static.GetNumTools(0.020000, 0.010000), 2, "GetNumTools for lockpicks/multitools test 7");
+    testint(FrobDisplayWindow.static.GetNumTools(0.010001, 0.010000), 1, "GetNumTools for lockpicks/multitools test 8");
+    testint(FrobDisplayWindow.static.GetNumTools(0.0100001, 0.010000), 1, "GetNumTools for lockpicks/multitools test 9");
+    testint(FrobDisplayWindow.static.GetNumTools(0.010001, 0.010001), 1, "GetNumTools for lockpicks/multitools test 10");
+    testint(FrobDisplayWindow.static.GetNumTools(0.010000, 0.010000), 1, "GetNumTools for lockpicks/multitools test 11");
 }
 
 function bool TestWeightedLevelValues(float f1, float f2)
