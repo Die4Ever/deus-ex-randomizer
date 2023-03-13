@@ -459,10 +459,6 @@ function int InitGoals(int mission, string map)
     case "06_HONGKONG_WANCHAI_STREET":
     case "06_HONGKONG_WANCHAI_CANAL":
     case "06_HONGKONG_WANCHAI_MARKET":
-        SetDTSGoalLocations();
-
-        return 63;
-
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
         SetDTSGoalLocations();
         goal = AddGoal("06_HONGKONG_WANCHAI_UNDERWORLD","Max Chen",GOAL_TYPE1 | SITTING_GOAL,'MaxChen0',PHYS_FALLING);
