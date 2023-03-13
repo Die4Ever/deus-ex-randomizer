@@ -500,6 +500,9 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
     local int numTools;
     local color col;
 
+    // idk why this is slightly misaligned
+    infoY += 2;
+
     // draw a colored bar
     if (device.hackStrength != 0.0)
     {
