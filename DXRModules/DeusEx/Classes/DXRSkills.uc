@@ -339,7 +339,13 @@ simulated function RemoveRandomSkill(#var(PlayerPawn) p)
 function ExtendedTests()
 {
     local float f;
+#ifdef injections
     local class<FrobDisplayWindow> FrobDisplayWindow;
+    FrobDisplayWindow = class'FrobDisplayWindow';
+#else
+    local class<DXRFrobDisplayWindow> FrobDisplayWindow;
+    FrobDisplayWindow = class'DXRFrobDisplayWindow';
+#endif
 
     Super.ExtendedTests();
 
@@ -349,11 +355,6 @@ function ExtendedTests()
         TestWeightedLevelValues(f, f+0.01);
     }
 
-
-    FrobDisplayWindow = class'FrobDisplayWindow';
-#ifndef injections
-    FrobDisplayWindow = class'DXRFrobDisplayWindow';
-#endif
     testint(FrobDisplayWindow.static.GetNumTools(0.190000, 0.188827), 2, "GetNumTools for lockpicks/multitools test 1");
     testint(FrobDisplayWindow.static.GetNumTools(0.070000, 0.010000), 7, "GetNumTools for lockpicks/multitools test 2");
     testint(FrobDisplayWindow.static.GetNumTools(0.060000, 0.010000), 6, "GetNumTools for lockpicks/multitools test 3");
