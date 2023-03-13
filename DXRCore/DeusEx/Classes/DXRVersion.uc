@@ -4,8 +4,8 @@ simulated static function CurrentVersion(optional out int major, optional out in
 {
     major=2;
     minor=2;
-    patch=8;
-    build=0;//build can't be higher than 99
+    patch=7;
+    build=1;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)

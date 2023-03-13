@@ -1,59 +1,63 @@
-class DXRNews extends MenuUIClientWindow;
+class DXRNews extends MenuUIScreenWindow;
 
 var MenuUIScrollAreaWindow scroll;
-var Window controlsParent;
-var MenuUINormalLargeTextWindow newsheaders[5];// keep array sizes in sync with DXRTelemetry
-var MenuUINormalLargeTextWindow newstexts[5];
-var DXRTelemetry tel;
+var MenuUINormalLargeTextWindow text;
+var DXRBase callbackModule;
 
-function CreateNews(Actor a, int newX, int newY, int ClientWidth, int ClientHeight)
+event InitWindow()
+{
+    Super.InitWindow();
+}
+
+function CreateControls()
 {
     local int i;
+    Super.CreateControls();
 
-    SetPos(newX, newY);
-    SetSize(ClientWidth, ClientHeight);
-    SetBackground(Texture'Solid');
-    SetBackgroundStyle(DSTY_Normal);
-    SetTileColorRGB(0,0,0);
-    controlsParent = self;
+    winClient.SetBackground(Texture'Solid');
+    winClient.SetBackgroundStyle(DSTY_Normal);
+    winClient.SetTileColorRGB(0,0,0);
 
-    scroll = MenuUIScrollAreaWindow(controlsParent.NewChild(Class'MenuUIScrollAreaWindow'));
+    scroll = MenuUIScrollAreaWindow(winClient.NewChild(Class'MenuUIScrollAreaWindow'));
     scroll.SetPos(0, 0);
     scroll.SetSize(ClientWidth, ClientHeight);
-    scroll.EnableScrolling(false, true);
-    scroll.vScale.SetThumbStep(20);
 
-    controlsParent = scroll.clipWindow;
-    controlsParent = controlsParent.NewChild(class'MenuUIClientWindow');
-    controlsParent.SetHeight(ClientHeight+200);// init with the scrollbar so it's part of our width
-    scroll.ResizeChild();
+    text = MenuUINormalLargeTextWindow(scroll.ClipWindow.NewChild(Class'MenuUINormalLargeTextWindow'));
+    text.SetTextMargins(4, 4);
+    text.SetWordWrap(True);
+    text.SetTextAlignments(HALIGN_Left, VALIGN_Top);
+    text.SetVerticalSpacing(8);
+}
 
-    for(i=0; i<ArrayCount(newsheaders); i++) {
-        newsheaders[i] = MenuUINormalLargeTextWindow(controlsParent.NewChild(Class'MenuUINormalLargeTextWindow'));
-        newsheaders[i].SetWidth(controlsParent.width);
-        newsheaders[i].SetFont(Font'FontMenuTitle');
-        newsheaders[i].SetTextMargins(4, 8);
-        newsheaders[i].SetWordWrap(True);
-        newsheaders[i].SetTextAlignments(HALIGN_Left, VALIGN_Top);
-        newsheaders[i].SetVerticalSpacing(2);
+function Set(DXRBase callback, string newtitle, string newtext)
+{
+    callbackModule = callback;
+    SetTitle(newtitle);
+    text.SetText(newtext);
+}
 
-        newstexts[i] = MenuUINormalLargeTextWindow(controlsParent.NewChild(Class'MenuUINormalLargeTextWindow'));
-        newstexts[i].SetWidth(controlsParent.width);
-        newstexts[i].SetFont(Font'FontMenuHeaders_DS');
-        newstexts[i].SetTextMargins(12, 8);
-        newstexts[i].SetWordWrap(True);
-        newstexts[i].SetTextAlignments(HALIGN_Left, VALIGN_Top);
-        newstexts[i].SetVerticalSpacing(2);
-    }
+function Append(string newtext)
+{
+    text.AppendText(CR() $ newtext);
+}
 
-    // TODO: add a button to open in browser
+function ProcessAction(String actionKey)
+{
+    log(self@"ProcessAction"@actionKey);
+    if(callbackModule==None) return;
 
-    foreach a.AllActors(class'DXRTelemetry', tel) {
-        Set(tel);
+    switch(actionKey) {
+    case "Open Browser":
+        callbackModule.MessageBoxClicked(0, 0);
+        break;
+
+    case "Cancel":
+        callbackModule.MessageBoxClicked(1, 0);
         break;
     }
 }
 
+<<<<<<< HEAD
 function int SetText(int i, string newdate, string newheader, string newtext, int y)
 {
     if(newdate != "")
@@ -98,4 +102,18 @@ function bool HasNews()
     if(tel == None || tel.enabled == false) return false;
     if( tel.dxr.localURL == "DX" || tel.dxr.localURL == "DXONLY" ) return true;
     return false;
+=======
+function DestroyWindow()
+{
+   Super.DestroyWindow();
+}
+
+defaultproperties
+{
+    actionButtons(0)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Cancel",Key="Cancel")
+    actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Open Browser",Key="Open Browser")
+    Title="News"
+    ClientWidth=556
+    ClientHeight=283
+>>>>>>> bb61e1e (better update notifications (#248))
 }
