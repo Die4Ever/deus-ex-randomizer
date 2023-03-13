@@ -110,7 +110,7 @@ function ReceivedData(string data)
         // we probably don't want to use warning or err here because that would send to telemetry which could cause an infinite loop
         l("ERROR: HTTPReceivedData: " $ status);
     }
-    CheckNotification(j.get("notification"), j.get("message"));
+    CheckNotification(j);
     CheckDeaths(j);
 }
 
@@ -132,22 +132,29 @@ function bool CanShowNotification()
 }
 
 
-function CheckNotification(string title, string message)
+function CheckNotification(Json j)
 {
+    local DXRNews news;
+    local DeusExRootWindow r;
     local int i;
+    local string title, message;
 
     if( ! CanShowNotification() ) return;
+    title = j.get("notification");
     if( title == "" || title == last_notification ) return;
     last_notification = title;
     SaveConfig();
 
+    message = j.get("message");
     i = InStr(message, "https://");
     notification_url = Mid(message, i);
     i = InStr(notification_url, " ");
     if( i != -1 ) notification_url = Left(notification_url, i);
 
-    message = ReplaceText(message, "https://", "");
-    CreateMessageBox(title, message, 0, Self, 1);
+    message = j.get("longmsg");
+    r = DeusExRootWindow(player().rootWindow);
+    news = DXRNews(r.InvokeUIScreen(class'DXRNews'));
+    news.Set(self, title, message);
 }
 
 function MessageBoxClicked(int button, int callbackId){
