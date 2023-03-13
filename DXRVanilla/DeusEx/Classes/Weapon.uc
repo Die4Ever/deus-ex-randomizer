@@ -49,6 +49,47 @@ simulated function Tick(float deltaTime)
     AnimRate = prev_anim_rate;
 }
 
+//
+// Used to determine if we are near (and facing) a wall for placing LAMs, etc.
+// DXRando: longer distance and use EyeHeight instead of BaseEyeHeight, so you can place on floors
+simulated function bool NearWallCheck()
+{
+    local Vector StartTrace, EndTrace, HitLocation, HitNormal;
+    local Actor HitActor;
+
+    // Scripted pawns can't place LAMs
+    if (ScriptedPawn(Owner) != None)
+        return False;
+
+    // Don't let players place grenades when they have something highlighted
+    if ( Level.NetMode != NM_Standalone )
+    {
+        if ( Owner.IsA('DeusExPlayer') && (DeusExPlayer(Owner).frobTarget != None) )
+        {
+            if ( DeusExPlayer(Owner).IsFrobbable( DeusExPlayer(Owner).frobTarget ) )
+                return False;
+        }
+    }
+
+    // trace out one foot in front of the pawn
+    StartTrace = Owner.Location;
+    EndTrace = StartTrace + Vector(Pawn(Owner).ViewRotation) * 50;
+
+    StartTrace.Z += Pawn(Owner).EyeHeight;
+    EndTrace.Z += Pawn(Owner).EyeHeight;
+
+    HitActor = Trace(HitLocation, HitNormal, EndTrace, StartTrace);
+    if ((HitActor == Level) || ((HitActor != None) && HitActor.IsA('Mover')))
+    {
+        placeLocation = HitLocation;
+        placeNormal = HitNormal;
+        placeMover = Mover(HitActor);
+        return True;
+    }
+
+    return False;
+}
+
 function SpawnBlood(Vector HitLocation, Vector HitNormal)
 {
     Super.SpawnBlood(HitLocation, HitNormal);
