@@ -497,6 +497,17 @@ exec function AllPasswords()
     ClientMessage("Set all account passwords to known");
 }
 
+exec function SetSkillValues(float value)
+{
+    local Skill s;
+    local int i;
+
+    foreach AllActors(class'Skill', s) {
+        for(i=0; i<ArrayCount(s.LevelValues); i++)
+            s.LevelValues[i] = value;
+    }
+}
+
 //========= MUSIC STUFF
 function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {

@@ -238,7 +238,7 @@ function DrawWindowBase(GC gc, actor frobTarget)
     gc.DrawBox(infoX+1, infoY+1, infoW-2, infoH-2, 0, 0, 1, Texture'Solid');
 }
 
-function int Ceil(float f)
+static function int Ceil(float f)
 {
     local int ret;
     ret = f;
@@ -448,7 +448,6 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
 #ifdef vanilla
     local DXRWeapon w;
 #endif
-    local float lockStrength;
 
     dxMover = DeusExMover(m);
     // draw colored bars for each value
@@ -466,8 +465,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     // draw the absolute number of lockpicks on top of the colored bar
     if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable)
     {
-        lockStrength = Ceil(dxMover.lockStrength*100)/100.0;
-        numTools = Ceil((lockStrength / player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking')));
+        numTools = GetNumTools(dxMover.lockStrength, player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking'));
         if (numTools == 1)
             strInfo = numTools @ msgPick;
         else
@@ -500,7 +498,6 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
 {
     local string strInfo;
     local int numTools;
-    local float hackStrength;
     local color col;
 
     // draw a colored bar
@@ -515,15 +512,27 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
     // draw the absolute number of multitools on top of the colored bar
     if ((device.bHackable) && (device.hackStrength != 0.0))
     {
-        // due to the way HackableDevices uses a timer, it seems to use very slightly more tools than it's supposed to sometimes, rounding up to the next 100th of a hackStrength
-        hackStrength = Ceil(device.hackStrength*100)/100.0;
-        numTools = Ceil((hackStrength / player.SkillSystem.GetSkillLevelValue(class'SkillTech')));
+        numTools = GetNumTools(device.hackStrength, player.SkillSystem.GetSkillLevelValue(class'SkillTech'));
         if (numTools == 1)
             strInfo = numTools @ msgTool;
         else
             strInfo = numTools @ msgTools;
         gc.DrawText(infoX+(infoW-barLength-2), infoY+infoH/numLines, barLength, infoH/numLines-6, strInfo);
     }
+}
+
+static function int GetNumTools(float strength, float skill)
+{
+    local int numTools, numTicks, i;
+
+    numTicks = skill * 100;
+    for(numTools=0; !(strength ~= 0.0); numTools++) {
+        for(i=0; i<numTicks; i++) {
+            strength -= 0.01;
+            strength = FClamp(strength, 0.0, 1.0);
+        }
+    }
+    return numTools;
 }
 
 defaultproperties
