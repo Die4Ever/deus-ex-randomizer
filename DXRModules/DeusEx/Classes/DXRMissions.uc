@@ -423,7 +423,7 @@ function int InitGoals(int mission, string map)
         AddGoal("06_HONGKONG_VERSALIFE", "Gary Burkett", NORMAL_GOAL | SITTING_GOAL, 'Male2', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "Data Entry Worker", NORMAL_GOAL | SITTING_GOAL, 'Male0', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "John Smith", NORMAL_GOAL | SITTING_GOAL, 'Male9', PHYS_Falling);
-        AddGoal("06_HONGKONG_VERSALIFE", "Mr. Hundly", NORMAL_GOAL, 'Businessman0', PHYS_Falling);
+        AddGoal("06_HONGKONG_VERSALIFE", "Mr. Hundley", NORMAL_GOAL, 'Businessman0', PHYS_Falling);
         AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-952.069763, 246.924271, 207.600281), rot(0, -25708, 0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-971.477234, 352.951782, 463.600586), rot(0,0,0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Cubicle", SITTING_GOAL | VANILLA_GOAL, vect(209.333740, 1395.673584, 466.101288), rot(0,18572,0));
@@ -1434,6 +1434,8 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         a = g.actors[i].a;
         if(a == None) continue;
         a.bVisionImportant = true;
+        if(ElectronicDevices(a) != None)
+            ElectronicDevices(a).ItemName = g.name;
         MoveActor(a, Loc.positions[i].pos, Loc.positions[i].rot, g.actors[i].physics);
     }
 
@@ -1445,6 +1447,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         }
     }
 
+    // hardcoded cleanup stuff
     if(g.name == "Generator" && Loc.name != "Warehouse") {
         a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vect(505.710449, -605, 162.091278), rot(16384,0,0));
         a.SetCollisionSize(a.CollisionRadius * 4, a.CollisionHeight * 4);
