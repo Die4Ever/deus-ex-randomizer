@@ -1046,6 +1046,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         sp.UnfamiliarName = "Soldier";
         sp.SetOrders('Standing');
         sp.ConBindEvents();
+        RemoveReactions(sp);
         break;
 
     case "Joe Greene":
