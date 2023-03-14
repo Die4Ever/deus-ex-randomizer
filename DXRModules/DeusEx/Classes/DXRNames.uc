@@ -33,7 +33,7 @@ function FirstEntry()
 
 static function GiveRandomName(DXRando dxr, ScriptedPawn p)
 {
-    if( p.bImportant || p.bVisionImportant ) return;
+    if( p.bImportant ) return;
     p.UnfamiliarName = RandomName(dxr, p);
     p.FamiliarName = p.UnfamiliarName;
 }

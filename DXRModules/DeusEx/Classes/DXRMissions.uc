@@ -1432,6 +1432,8 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         a.bVisionImportant = true;
         if(ElectronicDevices(a) != None)
             ElectronicDevices(a).ItemName = g.name;
+        if(ScriptedPawn(a) != None)
+            ScriptedPawn(a).bImportant = true;
         MoveActor(a, Loc.positions[i].pos, Loc.positions[i].rot, g.actors[i].physics);
     }
 
