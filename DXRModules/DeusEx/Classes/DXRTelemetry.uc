@@ -136,7 +136,6 @@ function CheckNotification(Json j)
 {
     local DXRNews news;
     local DeusExRootWindow r;
-    local int i;
     local string title, message;
 
     if( ! CanShowNotification() ) return;
@@ -145,11 +144,7 @@ function CheckNotification(Json j)
     last_notification = title;
     SaveConfig();
 
-    message = j.get("message");
-    i = InStr(message, "https://");
-    notification_url = Mid(message, i);
-    i = InStr(notification_url, " ");
-    if( i != -1 ) notification_url = Left(notification_url, i);
+    notification_url = j.get("url");
 
     message = j.get("longmsg");
     r = DeusExRootWindow(player().rootWindow);
