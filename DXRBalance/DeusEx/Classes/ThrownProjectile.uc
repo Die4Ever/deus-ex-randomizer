@@ -1,5 +1,38 @@
 class DXRThrownProjectile shims ThrownProjectile;
 
+// scale trigger time with skill
+simulated function Tick(float deltaTime)
+{
+    local float oldSkillTime;
+    local #var(PlayerPawn) player;
+
+    oldSkillTime = skillTime;
+    Super.Tick(deltaTime);
+    player = #var(PlayerPawn)(Owner);
+    if(oldSkillTime == 0 && skillTime == 1 && player != None) {
+        skillTime = player.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
+        skillTime = 0.5 * skillTime + 1.1;
+        Player.ClientMessage(self$" skillTime: "$skillTime);
+        skillTime = FClamp(skillTime, 0.75, 1.25);
+    }
+}
+
+// scale arming time with skill
+simulated function PreBeginPlay()
+{
+    local #var(PlayerPawn) player;
+    local float f;
+
+    Super.PreBeginPlay();
+    player = #var(PlayerPawn)(Owner);
+    if(player != None) {
+        fuseLength += 4.0 * player.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
+        Player.ClientMessage(self$" fuseLength: "$fuseLength);
+        fuseLength = FClamp(fuseLength, 0.2, 5);
+    }
+}
+
+// this allows us to override GetSpawnCloudType in subclasses, in vanilla it's hardcoded to TearGas
 //
 // SpawnTearGas needs to happen on the server so the clouds are insync and damage is dealt out of them
 //
