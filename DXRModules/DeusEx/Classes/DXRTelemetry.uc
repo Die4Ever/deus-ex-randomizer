@@ -140,7 +140,7 @@ function CheckNotification(Json j)
 {
     local DXRNews news;
     local DeusExRootWindow r;
-    local string title, message;
+    local string title;
 
     if( ! CanShowNotification() ) return;
     title = j.get("notification");
@@ -150,10 +150,9 @@ function CheckNotification(Json j)
 
     notification_url = j.get("url");
 
-    message = j.get("longmsg");
     r = DeusExRootWindow(player().rootWindow);
     news = DXRNews(r.InvokeUIScreen(class'DXRNews'));
-    news.Set(self, title, message);
+    news.Set(self, title, j.get("header"), j.get("longmsg"));
 }
 
 function MessageBoxClicked(int button, int callbackId){

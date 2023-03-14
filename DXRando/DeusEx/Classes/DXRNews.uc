@@ -1,6 +1,8 @@
 class DXRNews extends MenuUIScreenWindow;
 
 var MenuUIScrollAreaWindow scroll;
+var Window controlsParent;
+var MenuUILabelWindow header;
 var MenuUINormalLargeTextWindow text;
 var DXRBase callbackModule;
 
@@ -11,7 +13,6 @@ event InitWindow()
 
 function CreateControls()
 {
-    local int i;
     Super.CreateControls();
 
     winClient.SetBackground(Texture'Solid');
@@ -21,19 +22,32 @@ function CreateControls()
     scroll = MenuUIScrollAreaWindow(winClient.NewChild(Class'MenuUIScrollAreaWindow'));
     scroll.SetPos(0, 0);
     scroll.SetSize(ClientWidth, ClientHeight);
+    scroll.vScale.SetThumbStep(20);
 
-    text = MenuUINormalLargeTextWindow(scroll.ClipWindow.NewChild(Class'MenuUINormalLargeTextWindow'));
-    text.SetTextMargins(4, 4);
+    controlsParent = scroll.clipWindow;
+    controlsParent = controlsParent.NewChild(class'MenuUIClientWindow');
+
+    header = CreateMenuLabel(0, 0, "Header", controlsParent);
+    header.SetFont(Font'FontMenuTitle');
+    header.SetTextMargins(8, 8);
+
+    text = MenuUINormalLargeTextWindow(controlsParent.NewChild(Class'MenuUINormalLargeTextWindow'));
+    text.SetPos(0, header.y + header.height + 16);
+    text.SetFont(Font'FontMenuHeaders_DS');
+    text.SetTextMargins(16, 8);
     text.SetWordWrap(True);
     text.SetTextAlignments(HALIGN_Left, VALIGN_Top);
-    text.SetVerticalSpacing(8);
+    text.SetVerticalSpacing(2);
 }
 
-function Set(DXRBase callback, string newtitle, string newtext)
+function Set(DXRBase callback, string newtitle, string newheader, string newtext)
 {
     callbackModule = callback;
     SetTitle(newtitle);
+    header.SetText(newheader);
     text.SetText(newtext);
+
+    controlsParent.SetSize(controlsParent.width, text.y + text.height);
 }
 
 function Append(string newtext)
