@@ -908,6 +908,7 @@ static function SavedPaul(DXRando dxr, #var(PlayerPawn) player, optional int hea
 
 static function BeatGame(DXRando dxr, int ending)
 {
+    local PlayerDataItem data;
     local string j;
     local class<Json> js;
     js = class'Json';
@@ -920,6 +921,8 @@ static function BeatGame(DXRando dxr, int ending)
     js.static.Add(j, "LoadCount", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_loads"));
     js.static.Add(j, "maxrando", dxr.flags.maxrando);
     js.static.Add(j, "bSetSeed", dxr.flags.bSetSeed);
+    data = class'PlayerDataItem'.static.GiveItem(dxr.player);
+    js.static.Add(j, "initial_version", data.initial_version);
 
     if (dxr.player.carriedDecoration!=None){
         js.static.Add(j, "carriedItem", dxr.player.carriedDecoration.Class);

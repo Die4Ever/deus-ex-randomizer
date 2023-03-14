@@ -1,7 +1,7 @@
 class PlayerDataItem extends Inventory config(DXRBingo);
 
 var travel bool local_inited;
-var travel int version;
+var travel int version, initial_version;
 #ifdef multiplayer
 var travel int SkillPointsTotal;
 var travel int SkillPointsAvail;
@@ -39,6 +39,7 @@ simulated function static PlayerDataItem GiveItem(#var(PlayerPawn) p)
     if( i == None )
     {
         i = p.Spawn(class'PlayerDataItem');
+        i.initial_version = class'DXRVersion'.static.VersionNumber();
         i.ExportBingoState();
         i.GiveTo(p);
         log("spawned new "$i$" for "$p);
@@ -54,7 +55,8 @@ simulated function static ResetData(#var(PlayerPawn) p)
     n.ExportBingoState();
 
     n.local_inited = o.local_inited;
-    n.version = o.version;
+    n.version = class'DXRVersion'.static.VersionNumber();
+    n.initial_version = n.version;
 #ifdef multiplayer
     n.SkillPointsTotal = o.SkillPointsTotal;
     n.SkillPointsAvail = o.SkillPointsAvail;
