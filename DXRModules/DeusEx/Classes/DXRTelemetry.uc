@@ -138,21 +138,34 @@ function bool CanShowNotification()
 
 function CheckNotification(Json j)
 {
+    local DXRNewsWindow newswindow;
     local DXRNews news;
     local DeusExRootWindow r;
     local string title;
+    local int i;
 
     if( ! CanShowNotification() ) return;
+
+    for(i=0;i<ArrayCount(newsheaders);i++) {
+        newsdates[i] = j.get("newsdate"$i);
+        newsheaders[i] = j.get("newsheader"$i);
+        newstexts[i] = j.get("newsmsg"$i);
+    }
+
+    notification_url = j.get("url");
+
+    foreach AllObjects(class'DXRNews', news) {
+        news.Set(self);
+    }
+
     title = j.get("notification");
     if( title == "" || title == last_notification ) return;
     last_notification = title;
     SaveConfig();
 
-    notification_url = j.get("url");
-
     r = DeusExRootWindow(player().rootWindow);
-    news = DXRNews(r.InvokeUIScreen(class'DXRNews'));
-    news.Set(self, title, j.get("header"), j.get("longmsg"));
+    newswindow = DXRNewsWindow(r.InvokeUIScreen(class'DXRNewsWindow'));
+    newswindow.Set(self, title);
 }
 
 function MessageBoxClicked(int button, int callbackId){
