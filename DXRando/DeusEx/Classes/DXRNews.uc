@@ -1,86 +1,101 @@
-class DXRNews extends MenuUIScreenWindow;
+class DXRNews extends MenuUIClientWindow;
 
 var MenuUIScrollAreaWindow scroll;
 var Window controlsParent;
-var MenuUILabelWindow header;
-var MenuUINormalLargeTextWindow text;
-var DXRBase callbackModule;
+var MenuUINormalLargeTextWindow newsheaders[5];// keep array sizes in sync with DXRTelemetry
+var MenuUINormalLargeTextWindow newstexts[5];
+var DXRTelemetry tel;
 
-event InitWindow()
+function CreateNews(Actor a, int newX, int newY, int ClientWidth, int ClientHeight)
 {
-    Super.InitWindow();
-}
+    local int i;
 
-function CreateControls()
-{
-    Super.CreateControls();
+    SetPos(newX, newY);
+    SetSize(ClientWidth, ClientHeight);
+    SetBackground(Texture'Solid');
+    SetBackgroundStyle(DSTY_Normal);
+    SetTileColorRGB(0,0,0);
+    controlsParent = self;
 
-    winClient.SetBackground(Texture'Solid');
-    winClient.SetBackgroundStyle(DSTY_Normal);
-    winClient.SetTileColorRGB(0,0,0);
-
-    scroll = MenuUIScrollAreaWindow(winClient.NewChild(Class'MenuUIScrollAreaWindow'));
+    scroll = MenuUIScrollAreaWindow(controlsParent.NewChild(Class'MenuUIScrollAreaWindow'));
     scroll.SetPos(0, 0);
     scroll.SetSize(ClientWidth, ClientHeight);
+    scroll.EnableScrolling(false, true);
     scroll.vScale.SetThumbStep(20);
 
     controlsParent = scroll.clipWindow;
     controlsParent = controlsParent.NewChild(class'MenuUIClientWindow');
+    controlsParent.SetHeight(ClientHeight+200);// init with the scrollbar so it's part of our width
+    scroll.ResizeChild();
 
-    header = CreateMenuLabel(0, 0, "Header", controlsParent);
-    header.SetFont(Font'FontMenuTitle');
-    header.SetTextMargins(8, 8);
+    for(i=0; i<ArrayCount(newsheaders); i++) {
+        newsheaders[i] = MenuUINormalLargeTextWindow(controlsParent.NewChild(Class'MenuUINormalLargeTextWindow'));
+        newsheaders[i].SetWidth(controlsParent.width);
+        newsheaders[i].SetFont(Font'FontMenuTitle');
+        newsheaders[i].SetTextMargins(4, 8);
+        newsheaders[i].SetWordWrap(True);
+        newsheaders[i].SetTextAlignments(HALIGN_Left, VALIGN_Top);
+        newsheaders[i].SetVerticalSpacing(2);
 
-    text = MenuUINormalLargeTextWindow(controlsParent.NewChild(Class'MenuUINormalLargeTextWindow'));
-    text.SetPos(0, header.y + header.height + 16);
-    text.SetFont(Font'FontMenuHeaders_DS');
-    text.SetTextMargins(16, 8);
-    text.SetWordWrap(True);
-    text.SetTextAlignments(HALIGN_Left, VALIGN_Top);
-    text.SetVerticalSpacing(2);
-}
+        newstexts[i] = MenuUINormalLargeTextWindow(controlsParent.NewChild(Class'MenuUINormalLargeTextWindow'));
+        newstexts[i].SetWidth(controlsParent.width);
+        newstexts[i].SetFont(Font'FontMenuHeaders_DS');
+        newstexts[i].SetTextMargins(12, 8);
+        newstexts[i].SetWordWrap(True);
+        newstexts[i].SetTextAlignments(HALIGN_Left, VALIGN_Top);
+        newstexts[i].SetVerticalSpacing(2);
+    }
 
-function Set(DXRBase callback, string newtitle, string newheader, string newtext)
-{
-    callbackModule = callback;
-    SetTitle(newtitle);
-    header.SetText(newheader);
-    text.SetText(newtext);
+    // TODO: add a button to open in browser
 
-    controlsParent.SetSize(controlsParent.width, text.y + text.height);
-}
-
-function Append(string newtext)
-{
-    text.AppendText(CR() $ newtext);
-}
-
-function ProcessAction(String actionKey)
-{
-    log(self@"ProcessAction"@actionKey);
-    if(callbackModule==None) return;
-
-    switch(actionKey) {
-    case "Open Browser":
-        callbackModule.MessageBoxClicked(0, 0);
-        break;
-
-    case "Cancel":
-        callbackModule.MessageBoxClicked(1, 0);
+    foreach a.AllActors(class'DXRTelemetry', tel) {
+        Set(tel);
         break;
     }
 }
 
-function DestroyWindow()
+function int SetText(int i, string newdate, string newheader, string newtext, int y)
 {
-   Super.DestroyWindow();
+    if(newdate != "")
+        newheader = newdate $ ": " $ newheader;
+
+    newsheaders[i].SetPos(0, y);
+    newsheaders[i].SetText(newheader);
+    newsheaders[i].ResizeChild();
+    if(newheader != "")
+        y += newsheaders[i].height;
+
+    if(newtext != "")
+        newtext = newtext $ "|n";
+    newstexts[i].SetPos(0, y);
+    newstexts[i].SetText(newtext);
+    newstexts[i].ResizeChild();
+    if(newtext != "")
+        y += newstexts[i].height;
+
+    return y;
 }
 
-defaultproperties
+function Set(DXRTelemetry tele)
 {
-    actionButtons(0)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Cancel",Key="Cancel")
-    actionButtons(1)=(Align=HALIGN_Right,Action=AB_Other,Text="|&Open Browser",Key="Open Browser")
-    Title="News"
-    ClientWidth=556
-    ClientHeight=283
+    local int i, y;
+    tel = tele;
+
+    if(tel != None) {
+        for(i=0; i<ArrayCount(newsheaders); i++) {
+            y = SetText(i, tel.newsdates[i], tel.newsheaders[i], tel.newstexts[i], y);
+        }
+        // TODO: add a button to open in browser
+    } else {
+        y = SetText(0, "", "Loading News...", "", y);
+    }
+
+    controlsParent.SetHeight(y);
+}
+
+function bool HasNews()
+{
+    if(tel == None || tel.enabled == false) return false;
+    if( tel.dxr.localURL == "DX" || tel.dxr.localURL == "DXONLY" ) return true;
+    return false;
 }

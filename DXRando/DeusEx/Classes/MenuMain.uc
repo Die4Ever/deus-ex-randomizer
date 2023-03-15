@@ -4,6 +4,8 @@ var float countdown;
 var int nameLen, firstSpace, secondSpace;
 var MenuUIMenuButtonWindow randoSettingsButton;
 
+var DXRNews news;
+
 #ifdef injections
 function UpdateButtonStatus()
 {
@@ -65,6 +67,7 @@ function Tick(float DeltaTime)
 
 function CreateMenuButtons()
 {
+    local int newsWidth;
     Super.CreateMenuButtons();
 
     winButtons[3].SetWidth((buttonWidth/2)+3); //Make settings half-width
@@ -72,8 +75,17 @@ function CreateMenuButtons()
 
     randoSettingsButton = MenuUIMenuButtonWindow(winClient.NewChild(Class'MenuUIMenuButtonWindow'));
     randoSettingsButton.SetButtonText("Rando");
-	randoSettingsButton.SetPos(buttonXPos+(buttonWidth/2), buttonDefaults[3].y); //Put it next to the settings button
-	randoSettingsButton.SetWidth(buttonWidth/2);
+    randoSettingsButton.SetPos(buttonXPos+(buttonWidth/2), buttonDefaults[3].y); //Put it next to the settings button
+    randoSettingsButton.SetWidth(buttonWidth/2);
+
+    // news
+    newsWidth = 400;
+    news = DXRNews(winClient.NewChild(class'DXRNews'));
+    news.CreateNews(player, ClientWidth, 0, newsWidth, ClientHeight - 16);
+    if(news.HasNews()) {
+        ClientWidth += newsWidth;
+        winClient.SetWidth(ClientWidth);
+    }
 }
 
 function bool ButtonActivated( Window buttonPressed )
@@ -84,8 +96,8 @@ function bool ButtonActivated( Window buttonPressed )
     if (!bHandled){
         if (buttonPressed == randoSettingsButton){
             // Check to see if there's somewhere to go
-			ProcessMenuAction(MA_MenuScreen, Class'MenuScreenRandoOptions');
-			bHandled = True;
+            ProcessMenuAction(MA_MenuScreen, Class'MenuScreenRandoOptions');
+            bHandled = True;
         }
     }
 
