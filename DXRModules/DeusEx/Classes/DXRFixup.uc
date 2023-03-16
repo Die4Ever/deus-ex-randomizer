@@ -1317,6 +1317,7 @@ function NYC_04_FirstEntry()
     local #var(prefix)BoxSmall b;
     local #var(prefix)HackableDevices hd;
     local #var(prefix)CrateUnbreakableLarge crate;
+    local #var(prefix)UNATCOTroop lloyd;
 
     switch (dxr.localURL)
     {
