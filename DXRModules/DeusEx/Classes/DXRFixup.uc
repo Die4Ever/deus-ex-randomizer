@@ -1267,11 +1267,23 @@ function NYC_04_FirstEntry()
     local #var(prefix)BoxSmall b;
     local #var(prefix)HackableDevices hd;
     local #var(prefix)CrateUnbreakableLarge crate;
+    local #var(prefix)Chair1 chair;
+    local #var(prefix)Toilet toilet;
 
     switch (dxr.localURL)
     {
 #ifdef vanilla
     case "04_NYC_HOTEL":
+        // April Fools! (and the 2nd, because of Jesus_On_Wheels' timezone, and the Randothon 2023 schedule)
+        if(Level.Month == 4 && (Level.Day == 1 || Level.Day == 2)) {
+            foreach AllActors(class'#var(prefix)Chair1', chair) {
+                chair.bHidden = true;
+                chair.sitPoint[0].Y += 4.0;
+                chair.sitPoint[0].Z -= 16.0;
+                toilet = #var(prefix)Toilet(_AddActor(chair, class'#var(prefix)Toilet', chair.Location, chair.Rotation));
+                toilet.DrawScale = 0.7;
+            }
+        }
         foreach AllActors(class'OrdersTrigger', ot, 'PaulSafe') {
             if( ot.Orders == 'Leaving' )
                 ot.Orders = 'Seeking';
