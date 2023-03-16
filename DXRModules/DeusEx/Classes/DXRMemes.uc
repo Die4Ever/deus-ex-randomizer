@@ -45,7 +45,7 @@ function RandomLiberty()
     foreach AllActors(class'NYLiberty',liberty){
         SetGlobalSeed("RandomLiberty");
 
-        if ( rng(3)!=0 ) return; //33% chance of getting a random statue
+        if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random statue
 
         //Rotation doesn't work here because the statue is static
         switch(rng(22)){
@@ -84,7 +84,7 @@ function RandomBobPage()
     foreach AllActors(class'BobPageAugmented',bob){
         SetGlobalSeed("RandomBobPage");
 
-        if ( rng(3)!=0 ) return; //33% chance of getting a random bob
+        if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random bob
 
         switch(rng(28)){
         case 0: PlayDressUp(bob,class'Cactus1',8000); return;
@@ -133,6 +133,10 @@ function PreFirstEntry()
         case "04_NYC_UNATCOIsland":
         case "05_NYC_UNATCOIsland":
             RandomLiberty();
+            break;
+        case "04_NYC_HOTEL":
+            if(IsAprilFools())
+                PaulToilet();
             break;
     }
 }
@@ -323,6 +327,29 @@ function AddLeo()
         Spawn(class'TerroristCommanderCarcass',,,loc,rot);
     }
 
+}
+
+function PaulToilet()
+{
+    local #var(prefix)PaulDenton paul;
+    local #var(prefix)Chair1 chair;
+    local #var(prefix)Toilet toilet;
+
+    foreach AllActors(class'#var(prefix)PaulDenton', paul) {
+        chair = #var(prefix)Chair1(findNearestToActor(class'#var(prefix)Chair1', paul));
+        toilet = #var(prefix)Toilet(findNearestToActor(class'#var(prefix)Toilet', paul));
+        break;
+    }
+
+    chair.Event = '';
+    chair.Destroy();
+    toilet.DrawScale = 0.7;
+    // _AddActor does good stuff to ignore collision
+    chair = #var(prefix)Chair1(_AddActor(chair, class'#var(prefix)Chair1', toilet.Location, toilet.Rotation));
+    chair.bHidden = true;
+    chair.sitPoint[0].Y += 4.0;
+
+    paul.SetLocation(chair.Location);
 }
 
 state() RotatingState {

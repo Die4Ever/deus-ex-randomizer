@@ -173,6 +173,12 @@ static function int _SystemTime(LevelInfo Level)
     return time;
 }
 
+function bool IsAprilFools()
+{
+    // April Fools! (and the 2nd, because of Jesus_On_Wheels' timezone, and the Randothon 2023 schedule)
+    return Level.Month == 4 && (Level.Day == 1 || Level.Day == 2);
+}
+
 final function int SystemTime()
 {
     return _SystemTime(Level);
