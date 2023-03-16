@@ -404,7 +404,7 @@ function RandoEnter()
     if (!flagbase.GetBool(flagName))
     {
         firstTime = True;
-        flagbase.SetBool(flagName, True,, 999);
+        flagbase.SetBool(flagName, True,, dxInfo.missionNumber+1);
     }
 
     info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL);
