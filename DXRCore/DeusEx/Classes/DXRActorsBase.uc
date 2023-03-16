@@ -731,6 +731,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     newactor.Buoyancy = a.Buoyancy;
     newactor.Event = event;
     newactor.bHidden = a.bHidden;
+    newactor.DrawScale = a.DrawScale;
 
     for(i=0; i<ArrayCount(a.Multiskins); i++) {
         newactor.Multiskins[i] = a.Multiskins[i];
