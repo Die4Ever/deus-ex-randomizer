@@ -173,6 +173,12 @@ static function int _SystemTime(LevelInfo Level)
     return time;
 }
 
+function bool IsAprilFools()
+{
+    // April Fools! (and the 2nd, because of Jesus_On_Wheels' timezone, and the Randothon 2023 schedule)
+    return Level.Month == 4 && (Level.Day == 1 || Level.Day == 2);
+}
+
 final function int SystemTime()
 {
     return _SystemTime(Level);
@@ -284,7 +290,7 @@ simulated function int FindLast(coerce string Text, coerce string search)
     return last;
 }
 
-simulated static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With, optional bool word)
+simulated static final function string ReplaceText(coerce string Text, coerce string Replace, coerce string With, optional bool word, optional int max)
 {
     local int i, replace_len;
     local string Output, capsReplace;
@@ -296,6 +302,7 @@ simulated static final function string ReplaceText(coerce string Text, coerce st
     while (i != -1) {
         Output = Output $ Left(Text, i) $ With;
         Text = Mid(Text, i + replace_len);
+        if(--max == 0) break;
         i = WordInStr( Caps(Text), capsReplace, replace_len, word);
     }
     Output = Output $ Text;

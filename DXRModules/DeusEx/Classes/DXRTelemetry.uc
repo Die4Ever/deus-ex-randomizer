@@ -11,6 +11,10 @@ var config string last_notification;
 
 var string notification_url;
 
+var string newsdates[5];
+var string newsheaders[5];
+var string newstexts[5];
+
 function CheckConfig()
 {
     if( server == "" || config_version < VersionNumber() ) {
@@ -110,7 +114,7 @@ function ReceivedData(string data)
         // we probably don't want to use warning or err here because that would send to telemetry which could cause an infinite loop
         l("ERROR: HTTPReceivedData: " $ status);
     }
-    CheckNotification(j.get("notification"), j.get("message"));
+    CheckNotification(j);
     CheckDeaths(j);
 }
 
@@ -132,22 +136,38 @@ function bool CanShowNotification()
 }
 
 
-function CheckNotification(string title, string message)
+function CheckNotification(Json j)
 {
+    local DXRNewsWindow newswindow;
+    local DXRNews news;
+    local DeusExRootWindow r;
+    local string title;
     local int i;
 
     if( ! CanShowNotification() ) return;
-    if( title == "" || title == last_notification ) return;
+    if(j.get("newsheader0") == "") return;
+
+    for(i=0;i<ArrayCount(newsheaders);i++) {
+        newsdates[i] = j.get("newsdate"$i);
+        newsheaders[i] = j.get("newsheader"$i);
+        newstexts[i] = j.get("newsmsg"$i);
+    }
+
+    notification_url = j.get("url");
+
+    foreach AllObjects(class'DXRNews', news) {
+        news.Set(self);
+    }
+
+    title = j.get("notification");
+    l("CheckNotification got title: "$title);
+    if(title == "" || title == last_notification) return;
     last_notification = title;
     SaveConfig();
 
-    i = InStr(message, "https://");
-    notification_url = Mid(message, i);
-    i = InStr(notification_url, " ");
-    if( i != -1 ) notification_url = Left(notification_url, i);
-
-    message = ReplaceText(message, "https://", "");
-    CreateMessageBox(title, message, 0, Self, 1);
+    r = DeusExRootWindow(player().rootWindow);
+    newswindow = DXRNewsWindow(r.InvokeUIScreen(class'DXRNewsWindow'));
+    newswindow.Set(self, title);
 }
 
 function MessageBoxClicked(int button, int callbackId){
@@ -225,4 +245,5 @@ function ExtendedTests()
 defaultproperties
 {
     death_markers=true
+    newsheaders(0)="Loading News..."
 }

@@ -830,7 +830,7 @@ function ShuffleGoals()
 
     if( ArrayCount(goalsToLocations) != ArrayCount(goals) ) err("ArrayCount(goalsToLocations) != ArrayCount(goals)");
 
-    if(num_goals == 0) return;
+    if(num_goals == 0 && num_locations == 0) return;
     if(dxr.flags.settings.startinglocations <= 0 && dxr.flags.settings.goals <= 0)
         return;
 
@@ -1046,6 +1046,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         sp.UnfamiliarName = "Soldier";
         sp.SetOrders('Standing');
         sp.ConBindEvents();
+        RemoveReactions(sp);
         break;
 
     case "Joe Greene":
