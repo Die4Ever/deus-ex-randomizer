@@ -145,6 +145,7 @@ function CheckNotification(Json j)
     local int i;
 
     if( ! CanShowNotification() ) return;
+    if(j.get("newsheader0") == "") return;
 
     for(i=0;i<ArrayCount(newsheaders);i++) {
         newsdates[i] = j.get("newsdate"$i);
@@ -159,7 +160,8 @@ function CheckNotification(Json j)
     }
 
     title = j.get("notification");
-    if( title == "" || title == last_notification ) return;
+    l("CheckNotification got title: "$title);
+    if(title == "" || title == last_notification) return;
     last_notification = title;
     SaveConfig();
 
