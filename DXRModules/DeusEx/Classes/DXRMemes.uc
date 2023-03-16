@@ -334,10 +334,12 @@ function PaulToilet()
     local #var(prefix)PaulDenton paul;
     local #var(prefix)Chair1 chair;
     local #var(prefix)Toilet toilet;
+    local #var(prefix)FlagTrigger ft;
 
     foreach AllActors(class'#var(prefix)PaulDenton', paul) {
         chair = #var(prefix)Chair1(findNearestToActor(class'#var(prefix)Chair1', paul));
         toilet = #var(prefix)Toilet(findNearestToActor(class'#var(prefix)Toilet', paul));
+        ft = #var(prefix)FlagTrigger(findNearestToActor(class'#var(prefix)FlagTrigger', paul));
         break;
     }
 
@@ -350,6 +352,7 @@ function PaulToilet()
     chair.sitPoint[0].Y += 4.0;
 
     paul.SetLocation(chair.Location);
+    ft.SetLocation(paul.Location);
 }
 
 state() RotatingState {
