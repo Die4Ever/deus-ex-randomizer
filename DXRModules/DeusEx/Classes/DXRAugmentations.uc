@@ -230,13 +230,13 @@ simulated function RandoAug(Augmentation a)
 
 #ifdef injections
     if( #var(prefix)AugSpeed(a) != None ) {
-        add_desc = "DXRando: Activating this aug instantly burns 1 energy in order to prevent abuse.";
+        add_desc = "DXRando: Activating this aug instantly burns 1 energy in order to prevent abuse. ";
     }
     else if( #var(prefix)AugVision(a) != None ) {
-        add_desc = "DXRando: At level 1 you can see characters and goals. At level 2 you can also see items, datacubes, vehicles, crates, and electronic devices.";
+        add_desc = "DXRando: At level 1 you can see characters and goals. At level 2 you can also see items, datacubes, vehicles, crates, and electronic devices. ";
     }
     else if( #var(prefix)AugLight(a) != None ) {
-        add_desc = "DXRando: The light is much brighter and doesn't use any energy.";
+        add_desc = "DXRando: The light is much brighter and doesn't use any energy. ";
     }
 #endif
 
@@ -249,6 +249,13 @@ simulated function RandoAug(Augmentation a)
         return;
 
     aug_value_wet_dry = float(dxr.flags.settings.aug_value_rando) / 100.0;
+    if(#var(prefix)AugVision(a) != None && aug_value_wet_dry > 0) {
+        // don't randomize vision aug strength and instead randomize its energy usage
+        // so it can be used for speedrun strategies with specific spots to check from
+        a.energyRate = int(rngrange(a.default.energyRate, 0.5, 1.5));
+        aug_value_wet_dry = 0;
+        add_desc = add_desc $ "Energy Rate: "$int(a.energyRate)$" Units/Minute";
+    }
     RandoLevelValues(a, min_aug_weaken, max_aug_str, aug_value_wet_dry, a.Description, add_desc);
 }
 
