@@ -666,8 +666,10 @@ function RandomizeSP(ScriptedPawn p, int percent)
 
 
     if( IsHuman(p.class)) {
-        RemoveItem(p, class'Weapon');
-        RemoveItem(p, class'Ammo');
+        if(!p.bImportant) {
+            RemoveItem(p, class'Weapon');
+            RemoveItem(p, class'Ammo');
+        }
 
         GiveRandomWeapon(p, false, 2);
         if( chance_single(50) )
