@@ -529,7 +529,7 @@ static function int GetNumTools(float strength, float skill)
     local int numTools, numTicks, i;
 
     numTicks = skill * 100;
-    for(numTools=0; !(strength ~= 0.0); numTools++) {
+    for(numTools=0; !(strength ~= 0.0) && numTools<100; numTools++) {
         for(i=0; i<numTicks; i++) {
             strength -= 0.01;
             strength = FClamp(strength, 0.0, 1.0);
