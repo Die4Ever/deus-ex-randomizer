@@ -145,7 +145,9 @@ function BindControls(optional string action)
 
     NewMenuItem("Electronic Devices", "Provide additional options for keypads and electronic panels.");
     EnumOption("All Hackable", 100, f.settings.deviceshackable);
+    EnumOption("Many Hackable", 75, f.settings.deviceshackable);
     EnumOption("Some Hackable", 50, f.settings.deviceshackable);
+    EnumOption("Few Hackable", 25, f.settings.deviceshackable);
     EnumOption("Unchanged", 0, f.settings.deviceshackable);
 
     NewMenuItem("Passwords", "Forces you to look for passwords and passcodes.");

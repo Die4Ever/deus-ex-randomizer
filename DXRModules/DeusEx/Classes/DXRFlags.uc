@@ -375,7 +375,7 @@ function CheckConfig()
         difficulty_settings[i].keysrando = 4;
         difficulty_settings[i].keys_containers = 0;
         difficulty_settings[i].infodevices_containers = 0;
-        difficulty_settings[i].deviceshackable = 100;
+        difficulty_settings[i].deviceshackable = 75;
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 30;
