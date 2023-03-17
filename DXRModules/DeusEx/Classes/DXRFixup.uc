@@ -1851,7 +1851,7 @@ function Paris_AnyEntry()
         if(npcs != None) {
             sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vect(-3209.483154, 5190.826172,1199.610352), rot(0, -10000, 0), class'#var(prefix)HazMatSuit');
             m = Merchant(sp);
-            if (m!=None){  //He should exist now, but... who knows
+            if (m!=None){  // CreateForcedMerchant returns None if he already existed, but we still need to call it to recreate the conversation since those are transient
                 m.MakeFrench();
             }
         }
@@ -1862,6 +1862,10 @@ function Paris_AnyEntry()
             GiveItem(sp, class'#var(prefix)WineBottle');
             dxre.RandomizeSP(sp, 100);
             RemoveFears(sp);
+            sp.ChangeAlly('Player', 0.0, false);
+            sp.MaxProvocations = 0;
+            sp.AgitationSustainTime = 3600;
+            sp.AgitationDecayRate = 0;
         }
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
