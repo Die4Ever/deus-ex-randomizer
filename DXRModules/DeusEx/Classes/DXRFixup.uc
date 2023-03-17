@@ -1372,6 +1372,14 @@ function NYC_04_FirstEntry()
 function NYC_04_AnyEntry()
 {
     local FordSchick ford;
+    local #var(prefix)AnnaNavarre anna;
+
+    DeleteConversationFlag(GetConversation('AnnaBadMama'), 'TalkedToPaulAfterMessage_Played', true);
+    if(dxr.flagbase.GetBool('NSFSignalSent')) {
+        foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
+            anna.EnterWorld();
+        }
+    }
 
     switch (dxr.localURL)
     {

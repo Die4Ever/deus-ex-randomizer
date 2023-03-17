@@ -216,6 +216,32 @@ function int InitGoals(int mission, string map)
     num_goals = 0;
     num_locations = 0;
     num_mututally_exclusives = 0;
+    if(mission == 11) mission = 10;
+    if(mission == 14) mission = 12;
+
+    // we should start grouping these by mission instead of by map, to prevent issues with crossover
+    switch(mission) {
+    case 4:
+        // GOAL_TYPE1 for the computer, 2 for Anna
+        AddGoal("04_NYC_NSFHQ", "Computer", GOAL_TYPE1, 'ComputerPersonal3', PHYS_Falling);
+        AddGoalLocation("04_NYC_NSFHQ", "Third Floor", GOAL_TYPE1, vect(-460.091187, 1011.083496, 551.367859), rot(0, 16672, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Second Floor", GOAL_TYPE1, vect(206.654617, 1340.000000, 311.652832), rot(0, 0, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Garage", GOAL_TYPE1, vect(381.117371, -696.875671, 63.615902), rot(0, 32768, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Break Room", GOAL_TYPE1, vect(42.340145, 1104.667480, 73.610352), rot(0, 0, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Basement Exit", GOAL_TYPE1, vect(1290.299927, 1385.000000, -185.000000), rot(0, 16384, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Basement Entrance", GOAL_TYPE1, vect(-617.888855, 141.699875, -208.000000), rot(0, 16384, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Rooftop", GOAL_TYPE1 | VANILLA_GOAL, vect(187.265259,315.583862,1032.054199), rot(0,16672,0));
+
+        goal = AddGoal("04_NYC_BatteryPark", "Anna Navarre", GOAL_TYPE2, 'AnnaNavarre0', PHYS_Falling);
+        AddGoalActor(goal, 1, 'AllianceTrigger11', PHYS_None); //AnnaAttacksJC
+        AddGoalLocation("04_NYC_BatteryPark", "Battery Park Subway", GOAL_TYPE2 | VANILLA_GOAL, vect(-4981.514648,2416.581787,-304.599060), rot(0,-49328,0));
+        AddGoalLocation("04_NYC_Street", "Street Barricade", GOAL_TYPE2, vect(-6353.232422,899.716797,-480.599030), rot(0,25000,0));
+        AddGoalLocation("04_NYC_Street", "Hell's Kitchen Subway", GOAL_TYPE2, vect(1370.337646,-1819.429688,-464.602142), rot(0,32768,0));
+        AddGoalLocation("04_NYC_Street", "Outside Free Clinic", GOAL_TYPE2, vect(-1500.715332,891.878662,-464.603424), rot(0,0,0));
+        AddGoalLocation("04_NYC_Hotel", "Hotel", GOAL_TYPE2, vect(30.716736,-65.753799,-16.600384), rot(0,40000,0));
+        return 4;
+    }
+
     switch(map) {
     case "01_NYC_UNATCOISLAND":
         AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
@@ -384,17 +410,6 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("03_NYC_HANGAR", "Near Engine", NORMAL_GOAL, vect(4140,-1554,29), rot(0,32776,0));
 
         return 35;
-
-    case "04_NYC_NSFHQ":
-        AddGoal("04_NYC_NSFHQ", "Computer", NORMAL_GOAL, 'ComputerPersonal3', PHYS_Falling);
-        AddGoalLocation("04_NYC_NSFHQ", "Third Floor", NORMAL_GOAL, vect(-460.091187, 1011.083496, 551.367859), rot(0, 16672, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "Second Floor", NORMAL_GOAL, vect(206.654617, 1340.000000, 311.652832), rot(0, 0, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "Garage", NORMAL_GOAL, vect(381.117371, -696.875671, 63.615902), rot(0, 32768, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "Break Room", NORMAL_GOAL, vect(42.340145, 1104.667480, 73.610352), rot(0, 0, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "Basement Exit", NORMAL_GOAL, vect(1290.299927, 1385.000000, -185.000000), rot(0, 16384, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "Basement Entrance", NORMAL_GOAL, vect(-617.888855, 141.699875, -208.000000), rot(0, 16384, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "Rooftop", NORMAL_GOAL | VANILLA_GOAL, vect(187.265259,315.583862,1032.054199), rot(0,16672,0));
-        return 41;
 
     case "05_NYC_UNATCOMJ12LAB":
         goal = AddGoal("05_NYC_UNATCOMJ12LAB", "Paul", NORMAL_GOAL, 'PaulDenton0', PHYS_Falling);
@@ -1093,7 +1108,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     local FlagTrigger ft;
     local SkillAwardTrigger st;
     local OrdersTrigger ot;
-    local AllianceTrigger at;
+    local #var(prefix)AllianceTrigger at;
     local Trigger t;
     local Inventory inv;
     local Ammo a;
@@ -1103,7 +1118,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     local FlagBase f;
 
     if( dxr == None ){
-        log("Couldn't find DXRando while creating goal");
+        l("Couldn't find DXRando while creating goal");
         return;
     }
     f = dxr.flagbase;
@@ -1111,6 +1126,32 @@ function CreateGoal(out Goal g, GoalLocation Loc)
     info("CreateGoal " $ g.name @ Loc.name);
 
     switch(g.name) {
+    case "Anna Navarre":
+        if (f.GetBool('AnnaNavarre_Dead')){
+            l("Anna Navarre dead, not spawning");
+            return;
+        }
+        sp = Spawn(class'#var(prefix)AnnaNavarre',, 'AnnaNavarre', Loc.positions[0].pos);
+        g.actors[0].a = sp;
+        sp.SetAlliance('UNATCO');
+        sp.bInvincible = false;
+        sp.SetOrders('WaitingFor');
+        at = Spawn(class'#var(prefix)AllianceTrigger',, 'AnnaAttacksJC', Loc.positions[0].pos);
+        at.Event = 'AnnaNavarre';
+        at.Alliance = 'UNATCO';
+        at.Alliances[0].AllianceName = 'Player';
+        at.Alliances[0].AllianceLevel = -1;
+        at.Alliances[0].bPermanent = true;
+        at.Alliances[1].AllianceName = 'UNATCO';
+        at.Alliances[1].AllianceLevel = 1;
+        at.Alliances[1].bPermanent = true;
+        at.SetCollision(False,False,False);
+        g.actors[1].a = at;
+        sp.ConBindEvents();
+        if(!f.GetBool('NSFSignalSent'))
+            sp.bInWorld = false;
+        break;
+
     case "Nicolette":
         sp = Spawn(class'#var(prefix)NicoletteDuClare',, 'DXRMissions', Loc.positions[0].pos);
         g.actors[0].a = sp;
@@ -1198,13 +1239,13 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
     case "Walton Simons A51": //Much the same as above, but he could be dead already
         if (f.GetBool('WaltonSimons_Dead')){
-            log("Walton Simons dead, not spawning");
+            l("Walton Simons dead, not spawning");
             return;
         }
 
         sp = Spawn(class'#var(prefix)WaltonSimons',, 'DXRMissions', Loc.positions[0].pos);
         ot = Spawn(class'OrdersTrigger',,'WaltonTalks',Loc.positions[0].pos);
-        at = Spawn(class'AllianceTrigger',,'WaltonAttacks',Loc.positions[0].pos);
+        at = Spawn(class'#var(prefix)AllianceTrigger',,'WaltonAttacks',Loc.positions[0].pos);
         t = Spawn(class'Trigger',,,Loc.positions[1].pos);
         g.actors[0].a = sp;
         g.actors[1].a = ot;
@@ -1545,6 +1586,7 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
         sp.HomeRot = vector(sp.Rotation);
         sp.DesiredRotation = rotation;
         if (!sp.bInWorld){
+            sp.SetPhysics(PHYS_None);
             sp.WorldPosition = sp.Location;
             sp.SetLocation(sp.Location+vect(0,0,20000));
         }
