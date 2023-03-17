@@ -239,7 +239,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("04_NYC_Street", "Hell's Kitchen Subway", GOAL_TYPE2, vect(1370.337646,-1819.429688,-464.602142), rot(0,32768,0));
         AddGoalLocation("04_NYC_Street", "Outside Free Clinic", GOAL_TYPE2, vect(-1500.715332,891.878662,-464.603424), rot(0,0,0));
         AddGoalLocation("04_NYC_Hotel", "Hotel", GOAL_TYPE2, vect(30.716736,-65.753799,-16.600384), rot(0,40000,0));
-        return 4;
+        return mission;
     }
 
     switch(map) {

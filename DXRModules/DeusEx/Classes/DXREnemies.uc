@@ -444,6 +444,7 @@ function RandoEnemies(int percent, int hidden_percent)
 
         if( HasItemSubclass(p, class'Weapon') == false ) continue;//don't randomize neutral npcs that don't already have weapons
 
+        if(p.bHasCloak) p.CloakThreshold = p.Health - 10;// make Anna and Walt cloak quickly
         _perc = percent;
         if(p.bHidden) _perc = hidden_percent;
 
