@@ -234,7 +234,7 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,2,0,3) ) {
+    if( ConfigOlderThan(2,2,8,3) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -299,8 +299,9 @@ function CheckConfig()
         i++;
 #endif
 
+#ifdef hx
         difficulty_names[i] = "Easy";
-#ifndef hx
+#else
         difficulty_names[i] = "Normal";
         difficulty_settings[i].CombatDifficulty = 1.2;
 #endif
@@ -362,14 +363,15 @@ function CheckConfig()
         difficulty_settings[i].spoilers = 1;
         i++;
 
+#ifdef hx
         difficulty_names[i] = "Medium";
-#ifndef hx
+#else
         difficulty_names[i] = "Hard";
         difficulty_settings[i].CombatDifficulty = 1.7;
 #endif
-        difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
-        difficulty_settings[i].doorsdestructible = 50;
-        difficulty_settings[i].doorspickable = 50;
+        difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
+        difficulty_settings[i].doorsdestructible = 40;
+        difficulty_settings[i].doorspickable = 40;
         difficulty_settings[i].keysrando = 4;
         difficulty_settings[i].keys_containers = 0;
         difficulty_settings[i].infodevices_containers = 0;
@@ -389,7 +391,7 @@ function CheckConfig()
         difficulty_settings[i].banned_skills = 5;
         difficulty_settings[i].banned_skill_levels = 5;
         difficulty_settings[i].minskill = 50;
-        difficulty_settings[i].maxskill = 300;
+        difficulty_settings[i].maxskill = 250;
         difficulty_settings[i].ammo = 70;
         difficulty_settings[i].medkits = 70;
         difficulty_settings[i].biocells = 70;
@@ -425,12 +427,13 @@ function CheckConfig()
         difficulty_settings[i].spoilers = 1;
         i++;
 
+#ifdef hx
         difficulty_names[i] = "Hard";
-#ifndef hx
+#else
         difficulty_names[i] = "Extreme";
         difficulty_settings[i].CombatDifficulty = 2.3;
 #endif
-        difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
+        difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
         difficulty_settings[i].doorsdestructible = 25;
         difficulty_settings[i].doorspickable = 25;
         difficulty_settings[i].keysrando = 4;
@@ -488,12 +491,13 @@ function CheckConfig()
         difficulty_settings[i].spoilers = 1;
         i++;
 
+#ifdef hx
         difficulty_names[i] = "DeusEx";
-#ifndef hx
+#else
         difficulty_names[i] = "Impossible";
         difficulty_settings[i].CombatDifficulty = 3;
 #endif
-        difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyexclusive;
+        difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
         difficulty_settings[i].doorsdestructible = 25;
         difficulty_settings[i].doorspickable = 25;
         difficulty_settings[i].keysrando = 4;

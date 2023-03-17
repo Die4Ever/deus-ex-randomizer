@@ -11,7 +11,7 @@ function BindControls(optional string action)
 {
     local DXRFlags f;
     local string doors_option;
-    local int iDifficulty, doors_type;
+    local int iDifficulty, doors_type, doors_exclusivity, doors_probability, door_type_prob_choice, doorsdestructible, doorspickable;
     f = InitFlags();
 
     NewGroup("General");
@@ -91,38 +91,45 @@ function BindControls(optional string action)
     NewGroup("Doors and Keys");
 
     NewMenuItem("", "Which doors to provide additional options to get through.");
-    // chop off the lowest byte just to get the type
-    doors_type = f.settings.doorsmode / 256 * 256;
-    // += 1 is a temporary value to distinguish some vs all just for the menu
-    if( f.settings.doorsdestructible + f.settings.doorspickable == 50 )
-        doors_type += 1;
-    EnumOption("Key-Only Doors", f.keyonlydoors, doors_type);
-    EnumOption("Some Key-Only Doors", f.keyonlydoors + 1, doors_type);
-    EnumOption("Undefeatable Doors", f.undefeatabledoors, doors_type);
-    EnumOption("Some Undefeatable Doors", f.undefeatabledoors + 1, doors_type);
-    EnumOption("All Doors", f.alldoors, doors_type);
-    EnumOption("Many Doors", f.alldoors + 1, doors_type);
 
-    // from the doorsmode, we only want the low byte for the temporary +1, just for the menu code
-    doors_option = int(f.settings.doorsmode % 256) $ ";" $ f.settings.doorsdestructible $ ";" $ f.settings.doorspickable;
+    doors_type = f.settings.doorsmode  & 0xffffff00;// keep it in the high bytes
+    doors_exclusivity = f.settings.doorsmode & 0xff;// just the low byte
+    doors_probability = f.settings.doorsdestructible + f.settings.doorspickable;// we'll use this for scaling later
+    if(doors_exclusivity != f.doormutuallyexclusive)
+        doors_probability /= 2;
+    door_type_prob_choice = doors_type + doors_probability;
+
+    EnumOption("Key-Only Doors", f.keyonlydoors + 100, door_type_prob_choice);
+    EnumOption("Many Key-Only Doors", f.keyonlydoors + 70, door_type_prob_choice);
+    EnumOption("Some Key-Only Doors", f.keyonlydoors + 40, door_type_prob_choice);
+    EnumOption("Few Key-Only Doors", f.keyonlydoors + 25, door_type_prob_choice);
+    EnumOption("Undefeatable Doors", f.undefeatabledoors + 100, door_type_prob_choice);
+    EnumOption("Many Undefeatable Doors", f.undefeatabledoors + 70, door_type_prob_choice);
+    EnumOption("Some Undefeatable Doors", f.undefeatabledoors + 40, door_type_prob_choice);
+    EnumOption("Few Undefeatable Doors", f.undefeatabledoors + 25, door_type_prob_choice);
+    EnumOption("All Doors", f.alldoors + 100, door_type_prob_choice);
+    EnumOption("Many Doors", f.alldoors + 70, door_type_prob_choice);
+    EnumOption("Some Doors", f.alldoors + 40, door_type_prob_choice);
+    EnumOption("Few Doors", f.alldoors + 25, door_type_prob_choice);
+
+    doorsdestructible = f.settings.doorsdestructible * 100 / doors_probability;
+    doorspickable = f.settings.doorspickable * 100 / doors_probability;
+    doors_option = doors_exclusivity $ ";" $ doorsdestructible $ ";" $ doorspickable;
+    SetTitle("doors_probability: "$doors_probability$", doors_option: "$doors_option);
     NewMenuItem("", "What to do with those doors.");
-    EnumOptionString("Breakable or Pickable", f.doormutuallyexclusive$";50;50", doors_option);
-    EnumOptionString("Breakable & Pickable", f.doormutuallyinclusive$";100;100", doors_option);
+    EnumOptionString("Breakable or Pickable", f.doormutuallyexclusive $";50;50", doors_option);
+    EnumOptionString("Breakable & Pickable", f.doormutuallyinclusive $";100;100", doors_option);
+    EnumOptionString("Breakable and/or Pickable", f.doorindependent $";100;100", doors_option);
     EnumOptionString("Breakable", f.doorindependent$";100;0", doors_option);
     EnumOptionString("Pickable", f.doorindependent$";0;100", doors_option);
     EnumOptionString("Don't Change Doors", f.doorindependent$";0;0", doors_option);
-    f.settings.doorsmode = UnpackInt(doors_option);
+    f.settings.doorsmode = UnpackInt(doors_option) + (door_type_prob_choice & 0xffffff00);
     f.settings.doorsdestructible = UnpackInt(doors_option);
     f.settings.doorspickable = UnpackInt(doors_option);
 
-    if(doors_type % 2 == 1) {
-        // remove the temporary +1 and apply the some vs all change to the chances here
-        doors_type--;
-        f.settings.doorsdestructible /= 2;
-        f.settings.doorspickable /= 2;
-    }
-    // add in the high bytes we stored earlier
-    f.settings.doorsmode += doors_type;
+    // scale the probability by our total probability before (based on All/Many/Some/etc)
+    f.settings.doorsdestructible = f.settings.doorsdestructible * 100 / doors_probability;
+    f.settings.doorspickable = f.settings.doorspickable * 100 / doors_probability;
 
     BreakLine();
 

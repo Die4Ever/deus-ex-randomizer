@@ -192,6 +192,13 @@ function BreakLine()
     while((id+1) % width != 0) id++;
 }
 
+function Indent()
+{// ensure we're not in the left column
+    local int width;
+    width = num_cols / 2;
+    if((id+1) % width == 0) id++;
+}
+
 function NewGroup(string text)
 {
     local MenuUILabelWindow winLabel;

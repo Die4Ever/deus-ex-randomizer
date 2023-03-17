@@ -19,7 +19,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,2,4,1) ) {
+    if( ConfigOlderThan(2,2,8,3) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -121,6 +121,17 @@ function CheckConfig()
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 1;
         door_fixes[i].doorStrength = 0.15;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].lockStrength = 1;
+        door_fixes[i].bHighlight = true;
+        i++;
+
+        // make chateau cellar undefeatable, if you have lenient doors rules then you won't be going down here anyways
+        door_fixes[i].map = "10_Paris_Chateau";
+        door_fixes[i].tag = 'duclare_chateau_cellar';
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].minDamageThreshold = 100;
+        door_fixes[i].doorStrength = 1;
         door_fixes[i].bPickable = false;
         door_fixes[i].lockStrength = 1;
         door_fixes[i].bHighlight = true;
