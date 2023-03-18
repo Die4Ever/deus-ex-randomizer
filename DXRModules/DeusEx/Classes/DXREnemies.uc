@@ -759,6 +759,7 @@ function inventory GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional 
     local class<Weapon> wclass;
 
     wclass = GiveRandomWeaponClass(p, allow_dupes);
+    if(wclass == None) return None;
 
     l("GiveRandomWeapon "$p$", "$wclass.Name$", "$add_ammo);
     if(p!=None)
@@ -795,6 +796,7 @@ function inventory GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
     local class<Weapon> wclass;
 
     wclass = GiveRandomMeleeWeaponClass(p, allow_dupes);
+    if(wclass == None) return None;
 
     l("GiveRandomMeleeWeapon "$p$", "$wclass.Name);
     if(p!=None)
