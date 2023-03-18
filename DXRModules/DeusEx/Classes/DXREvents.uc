@@ -520,13 +520,14 @@ simulated function AnyEntry()
     SetTimer(1, true);
 
     for(w=0; w<ArrayCount(watchflags); w++) {
-        l("AnyEntry watchflags["$w$"]: "$watchflags[w]);
+        if(watchflags[w]!='')
+            l("AnyEntry watchflags["$w$"]: "$watchflags[w]);
     }
 
     // any rewatch flags that were set outside of this map need to be cleared from the watch list
     for(r=0; r<ArrayCount(rewatchflags); r++) {
-        l("AnyEntry rewatchflags["$r$"]: "$rewatchflags[r]);
         if(rewatchflags[r] == '') continue;
+        l("AnyEntry rewatchflags["$r$"]: "$rewatchflags[r]);
         if (dxr.flagbase.GetBool(rewatchflags[r])) {
             l("AnyEntry rewatchflags["$r$"]: "$rewatchflags[r]$" is set!");
             for(w=0; w<num_watchflags; w++) {

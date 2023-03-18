@@ -3,6 +3,12 @@ class DXRAutosave extends DXRBase transient;
 var transient bool bNeedSave;
 var config float save_delay;
 
+const Disabled = 0;
+const FirstEntry = 1;
+const EveryEntry = 2;
+const Hardcore = 3;
+const ExtraSafe = 4;
+
 function CheckConfig()
 {
     if( ConfigOlderThan(1,4,8,0) ) {
@@ -24,7 +30,7 @@ function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
     l("ReEntry() " $ dxr.dxInfo.MissionNumber);
-    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave==2 && IsTravel ) {
+    if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave>=EveryEntry && dxr.flags.autosave != Hardcore && IsTravel ) {
         bNeedSave=true;
     }
 }
@@ -46,7 +52,7 @@ static function bool AllowManualSaves(DeusExPlayer player)
     local DXRFlags f;
     f = Human(player).GetDXR().flags;
     if( f == None ) return true;
-    if( f.autosave == 3 ) return false;
+    if( f.autosave == Hardcore ) return false;
     if( f.gamemode == 2 ) return false;// horde mode
     return true;
 }
@@ -58,6 +64,7 @@ function doAutosave()
     local #var(PlayerPawn) p;
     local int saveSlot;
     local int lastMission;
+    local bool isDifferentMission;
 
     if( dxr == None ) {
         info("dxr == None, doAutosave() not saving yet");
@@ -99,7 +106,9 @@ function doAutosave()
     saveName = "DXR " $ dxr.seed $ ": " $ dxr.dxInfo.MissionLocation;
     lastMission = dxr.flags.f.GetInt('Rando_lastmission');
     l("doAutosave() " $ lastMission @ dxr.dxInfo.MissionNumber @ saveName);
-    if( lastMission != 0 && dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber ) {
+
+    isDifferentMission = lastMission != 0 && dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber;
+    if( isDifferentMission || dxr.flags.autosave == ExtraSafe ) {
         saveSlot = 0;
         saveName = "DXR " $ dxr.seed $ ", Mission " $ dxr.dxInfo.MissionNumber $ ": " $ dxr.dxInfo.MissionLocation;
     }

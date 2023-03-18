@@ -16,6 +16,9 @@ function BindControls(optional string action)
     local DXRTelemetry t;
     local DXRCrowdControl cc;
     local int temp, i;
+#ifdef injections
+    local DXRAutosave autosave;
+#endif
 
     f = InitFlags();
 
@@ -62,11 +65,13 @@ function BindControls(optional string action)
 #endif
 
 #ifdef injections
+    foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
     NewMenuItem("Autosave", "Saves the game in case you die!");
-    EnumOption("Every Entry", 2, f.autosave);
-    EnumOption("First Entry", 1, f.autosave);
-    EnumOption("Autosaves-Only (Hardcore)", 3, f.autosave);
-    EnumOption("Off", 0, f.autosave);
+    EnumOption("Every Entry", autosave.EveryEntry, f.autosave);
+    EnumOption("First Entry", autosave.FirstEntry, f.autosave);
+    EnumOption("Autosaves-Only (Hardcore)", autosave.Hardcore, f.autosave);
+    EnumOption("Extra Safe (Lots of disk space)", autosave.ExtraSafe, f.autosave);
+    EnumOption("Off", autosave.Disabled, f.autosave);
 #endif
 
     NewMenuItem("Crowd Control", "Let your Twitch/YouTube/Discord viewers troll you or help you!" $BR$ "See their website crowdcontrol.live");
