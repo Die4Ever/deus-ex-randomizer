@@ -612,6 +612,9 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
 function Conversation GetConversation(Name conName)
 {
     local Conversation c;
+    if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+        conName = StringToName("FemJC"$string(conName));
+    }
     foreach AllObjects(class'Conversation', c) {
         if( c.conName == conName ) return c;
     }
