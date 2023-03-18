@@ -9,6 +9,7 @@ function PreFirstEntry()
     local DynamicTeleporter dt;
     local BlockPlayer bp;
     local MapExit exit;
+    local FlagTrigger ft;
 
     Super.PreFirstEntry();
 
@@ -75,6 +76,34 @@ function PreFirstEntry()
             dt = Spawn(class'DynamicTeleporter',,,vect(-5714.406250, -1977.827881, -1358.711304));
             SetDestination(dt, "15_area51_entrance", 'Light73');
             dt.Radius = 160;
+
+            AddSwitch(vect(-3907,-1116,-1958), rot(0, 32800, 0), 'mainblastopencheck');
+
+            //Switch triggers the doors if the Helios datalink has played (Talked to Helios)
+            ft = Spawn(class'FlagTrigger',,,vect(-3907,-1116,-1958));
+            ft.tag = 'mainblastopencheck';
+            ft.bInitiallyActive=True;
+            ft.bTriggerOnceOnly=False;
+            ft.SetCollision(false,false,false);
+            ft.FlagName='DL_Helios_Door2_Played';
+            ft.bSetFlag=False;
+            ft.flagValue=True;
+            ft.bTrigger=True;
+            ft.Event='Page_Blastdoors';
+
+            //Switch triggers the "not yet" datalink if the Helios datalink has not played (Talked to Helios)
+            ft = Spawn(class'FlagTrigger',,,vect(-3907,-1116,-1958));
+            ft.tag = 'mainblastopencheck';
+            ft.bInitiallyActive=True;
+            ft.bTriggerOnceOnly=False;
+            ft.SetCollision(false,false,false);
+            ft.FlagName='DL_Helios_Door2_Played';
+            ft.bSetFlag=False;
+            ft.flagValue=False;
+            ft.bTrigger=True;
+            ft.Event='heliosdoorfail';
+
+
             break;
 
     }
@@ -198,6 +227,9 @@ function AnyEntry()
             break;
         case "14_OCEANLAB_SILO":
             VandSiloAnyEntry();
+            break;
+        case "15_AREA51_FINAL":
+            Area51FinalAnyEntry();
             break;
     }
 }
@@ -531,6 +563,19 @@ function VandSiloAnyEntry()
     chopper.UnFamiliarName = "Backtrack";
 
     c = GetConversation('JockArea51');
+    c.bDisplayOnce = false;
+}
+
+function Area51FinalAnyEntry()
+{
+    local DataLinkTrigger dlt;
+    local Conversation c;
+
+    foreach AllActors(class'DataLinkTrigger', dlt) {
+        if( dlt.datalinkTag != 'DL_Helios_Door1' ) continue;
+        dlt.Tag = 'heliosdoorfail';
+    }
+    c = GetConversation('DL_Helios_Door1');
     c.bDisplayOnce = false;
 }
 
