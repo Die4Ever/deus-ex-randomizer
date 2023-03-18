@@ -19,9 +19,9 @@ simulated function InitHints()
 
     telem = DXRTelemetry(dxr.FindModule(class'DXRTelemetry'));
     if(telem == None || telem.enabled == false || mission < 1)
-        AddHint("Check out @DXRandoActivity on Twitter!","Make sure \"Online Features\" are enabled to show up yourself!");
+        AddHint("Check out https://botsin.space/@DXRandoActivity!","Make sure \"Online Features\" are enabled to show up yourself!");
     else
-        AddHint("Check out @DXRandoActivity on Twitter!", "We just shared your death publicly, go retweet it!");
+        AddHint("Check out https://botsin.space/@DXRandoActivity!", "We just shared your death publicly, go retweet it!");
 
     if(dxr.flags.crowdcontrol > 0) {
         AddHint("Viewers, you could've prevented this with Crowd Control.", "Or maybe you caused it.");
