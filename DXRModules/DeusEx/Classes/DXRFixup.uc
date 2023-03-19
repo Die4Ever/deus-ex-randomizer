@@ -309,6 +309,7 @@ function PostFirstEntryMapFixes()
     local UNATCOTroop u;
     local Actor a;
     local Male1 male;
+    local BlockPlayer bp;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -316,6 +317,11 @@ function PostFirstEntryMapFixes()
             m.bBreakable = false;
             m.bPickable = false;
             m.bIsDoor = false;// this prevents Floyd from opening the door
+        }
+        foreach AllActors(class'BlockPlayer', bp) {
+            if(bp.Group == 'waterblock') {
+                bp.bBlockPlayers = false;
+            }
         }
         break;
     case "01_NYC_UNATCOHQ":
@@ -399,6 +405,7 @@ function PostFirstEntryMapFixes()
         }
         break;
     case "09_NYC_DOCKYARD":
+        // this crate can block the way out of the start through the vent
         foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
             info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
             c.Destroy();
@@ -1671,6 +1678,8 @@ function Shipyard_FirstEntry()
     local Button1 b;
     local WeaponGasGrenade gas;
     local Teleporter t;
+    local BlockPlayer bp;
+    local DynamicBlockPlayer dbp;
 
     switch(dxr.localURL)
     {
@@ -1727,6 +1736,15 @@ function Shipyard_FirstEntry()
                 b.Destroy();
                 break;
             }
+        }
+        // near the start of the map to jump over the wall, from (2536.565674, 1600.856323, 251.924713) to 3982.246826
+        foreach RadiusActors(class'BlockPlayer', bp, 725, vect(3259, 1601, 252)) {
+            bp.bBlockPlayers=false;
+        }
+        // 4030.847900 to 4078.623779
+        foreach RadiusActors(class'BlockPlayer', bp, 25, vect(4055, 1602, 252)) {
+            dbp = Spawn(class'DynamicBlockPlayer',,, bp.Location + vect(0,0,200));
+            dbp.SetCollisionSize(bp.CollisionRadius, bp.CollisionHeight + 101);
         }
         break;
 
