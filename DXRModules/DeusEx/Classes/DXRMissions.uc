@@ -360,6 +360,7 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("05_NYC_UNATCOMJ12LAB", "Paul", NORMAL_GOAL, 'PaulDenton0', PHYS_Falling);
         AddGoalActor(goal, 1, 'PaulDentonCarcass0', PHYS_Falling);
         AddGoalActor(goal, 2, 'DataLinkTrigger6', PHYS_None);
+
         AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
         AddActorLocation(loc, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
@@ -371,12 +372,27 @@ function int InitGoals(int mission, string map)
     case "05_NYC_UNATCOHQ":
         AddGoal("05_NYC_UNATCOHQ", "Alex Jacobson", NORMAL_GOAL, 'AlexJacobson0', PHYS_Falling);
         AddGoal("05_NYC_UNATCOHQ", "Jaime Reyes", NORMAL_GOAL, 'JaimeReyes0', PHYS_Falling);
+
         AddGoalLocation("05_NYC_UNATCOHQ", "Jail", NORMAL_GOAL, vect(-2478.156738, -1123.645874, -16.399887), rot(0, 0, 0));
         AddGoalLocation("05_NYC_UNATCOHQ", "Bathroom", NORMAL_GOAL, vect(121.921074, 287.711243, 39.599487), rot(0, 0, 0));
         AddGoalLocation("05_NYC_UNATCOHQ", "Manderley's Bathroom", NORMAL_GOAL, vect(261.019775, -403.939575, 287.600586), rot(0, 0, 0));
         AddGoalLocation("05_NYC_UNATCOHQ", "Break Room", NORMAL_GOAL, vect(718.820068, 1411.137451, 287.598999), rot(0, 0, 0));
         AddGoalLocation("05_NYC_UNATCOHQ", "West Office", NORMAL_GOAL, vect(-666.268066, -460.813965, 463.598083), rot(0, 0, 0));
         AddGoalLocation("05_NYC_UNATCOHQ", "Computer Ops", NORMAL_GOAL | VANILLA_GOAL, vect(2001.611206,-801.088379,-16.225000), rot(0,23776,0));
+
+        // could've left the actor name blank, but this will make them easier to find with legend
+        AddGoal("05_NYC_UNATCOHQ", "Anna's Killphrase 1", GOAL_TYPE1, 'FlagTrigger0', PHYS_Falling);
+        AddGoal("05_NYC_UNATCOHQ", "Anna's Killphrase 2", GOAL_TYPE1, 'FlagTrigger1', PHYS_Falling);
+
+        AddGoalLocation("05_NYC_UNATCOHQ", "Manderley's Computer", GOAL_TYPE1 | VANILLA_GOAL, vect(285.293274, -97.416443, 306.213837), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Gunther's Computer", GOAL_TYPE1 | VANILLA_GOAL, vect(-361.564636, -1105.282837, 0.215084), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Sam's Computer", GOAL_TYPE1, vect(923.469177, -819.359863, 9.367111), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Alex's Computer", GOAL_TYPE1, vect(1058.635620, -629.008118, -10.500217), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Jaime's Computer", GOAL_TYPE1, vect(988.246399, 1035.369507, 0.215073), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Janice's Computer", GOAL_TYPE1, vect(118.116867, 399.636597, 307.363861), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "JC's Computer", GOAL_TYPE1, vect(-189.312790, 1268.172729, 314.458160), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Jail Computer", GOAL_TYPE1, vect(-1491.076782, -1207.629028, -2.499634), rot(0, 25000, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Conference Room Computer", GOAL_TYPE1, vect(79.009933, 863.868042, 296.502075), rot(0, 0, 0));
         return 52;
 
     case "06_HONGKONG_VERSALIFE":
@@ -797,7 +813,7 @@ function PreFirstEntry()
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)ComputerPersonal cp;
     local Trigger t;
-    local int seed;
+    local int seed, i;
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)OrdersTrigger ot;
 
@@ -871,6 +887,35 @@ function PreFirstEntry()
             paul.bIgnore=true;
             paul.RaiseAlarm=RAISEALARM_Never;
             paul.ChangeAlly('mj12',0,true,false);
+        }
+    }
+    else if( dxr.localURL ~= "05_NYC_UNATCOHQ" ) {
+        // jail computer
+        cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vect(-1491.076782, -1207.629028, -2.499634), rot(0, 25000, 0));
+        cp.UserList[0].userName = "KLloyd";
+        cp.UserList[0].Password = "squishy";
+
+        // conference room computer
+        cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vect(79.009933, 863.868042, 296.502075), rot(0,0,0));
+        cp.UserList[0].userName = "KLloyd";
+        cp.UserList[0].Password = "squishy";
+
+        if(dxr.flags.settings.goals > 0 && num_goals > 0 && num_locations > 0) {
+            foreach AllActors(class'#var(prefix)ComputerPersonal', cp) {
+                for(i=0; i<ArrayCount(cp.UserList); i++) {
+                    // remove demiurge, and also user and guest because they're useless anyways
+                    if(cp.UserList[i].userName ~= "demiurge" || cp.UserList[i].userName ~= "USER" || cp.UserList[i].userName ~= "GUEST") {
+                        cp.UserList[i].userName = "";
+                        cp.UserList[i].Password = "";
+                    }
+                }
+                for(i=0; i<ArrayCount(cp.specialOptions); i++) {
+                    if(cp.specialOptions[i].TriggerEvent == 'know1' || cp.specialOptions[i].TriggerEvent == 'know2') {
+                        cp.specialOptions[i].TriggerEvent = '';
+                        cp.specialOptions[i].Text = "";
+                    }
+                }
+            }
         }
     }
     else if( dxr.localURL == "09_NYC_GRAVEYARD" ) {
@@ -1424,6 +1469,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     local #var(Mover) m;
     local string result;
     local #var(prefix)DataCube dc1;
+    local #var(prefix)ComputerPersonal cp;
 #ifdef injections
     local #var(prefix)DataCube dc2;
 #else
@@ -1442,6 +1488,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             a.Destroy();
         }
 
+        // hardcoded stuff for deleted goals
         if (g.name=="Dragon's Tooth Sword"){
             GenerateDTSHintCube(g,Loc);
         }
@@ -1473,7 +1520,8 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
 
     // hardcoded cleanup stuff
     if(g.name == "Terrorist Commander" && g.actors[1].a != None) {
-        g.actors[1].a.SetCollisionSize(240, 64);//15ft wide, 4ft tall
+        // DataLinkTrigger 15ft wide, 4ft tall
+        g.actors[1].a.SetCollisionSize(240, 64);
     } else if(g.name == "Generator" && Loc.name != "Warehouse") {
         a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vect(505.710449, -605, 162.091278), rot(16384,0,0));
         a.SetCollisionSize(a.CollisionRadius * 4, a.CollisionHeight * 4);
@@ -1487,6 +1535,34 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         foreach AllActors(class'#var(Mover)', m, 'Debris') {
             m.Tag = '';
             m.Event = '';
+        }
+    } else if (g.name=="Anna's Killphrase 1" || g.name=="Anna's Killphrase 2") {
+        // insert the demiurge/archon account and add the special options
+        cp = #var(prefix)ComputerPersonal(findNearestToActor(class'#var(prefix)ComputerPersonal', g.actors[0].a));
+
+        for(i=0; i<ArrayCount(cp.UserList); i++) {
+            if(cp.UserList[i].userName != "" && cp.UserList[i].userName != "DEMIURGE")
+                continue;
+            cp.UserList[i].userName = "DEMIURGE";
+            cp.UserList[i].Password = "archon";
+            break;
+        }
+
+        for(i=0; i<ArrayCount(cp.specialOptions); i++) {
+            if(cp.specialOptions[i].TriggerEvent != '')
+                continue;
+            if (g.name=="Anna's Killphrase 1") {
+                cp.specialOptions[i].TriggerEvent = 'know1';
+                cp.specialOptions[i].Text = "Decrypt Agent ANavarre Killphrase";
+                cp.specialOptions[i].TriggerText = "Killphrase Part 1 of 2 Decrypted : 'Flatlander'";
+            } else {
+                cp.specialOptions[i].TriggerEvent = 'know2';
+                cp.specialOptions[i].Text = "Decrypt Agent ANavarre Killphrase";
+                cp.specialOptions[i].TriggerText = "Killphrase Part 2 of 2 Decrypted : 'Woman'";
+            }
+            cp.specialOptions[i].bTriggerOnceOnly = true;
+            cp.specialOptions[i].userName = "DEMIURGE";
+            break;
         }
     } else if (g.name=="Area 51 Blast Door Computer" && Loc.name != "the tower") {
         foreach AllActors(class'#var(prefix)DataCube',dc1){
@@ -1507,10 +1583,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
                      dc1.Destroy();
                 }
                 else warning("failed to spawn tower datacube at "$dc1.Location);
-
-
             }
-
         }
     } else if (g.name=="Dragon's Tooth Sword"){
         g.actors[0].a.bIsSecretGoal=True; //We'll use this to stop it from being swapped
@@ -1524,7 +1597,6 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             if ( dxr.localURL == "06_HONGKONG_WANCHAI_STREET" ){
                 GenerateDTSHintCube(g,Loc);
             }
-
         }
     } else if (g.name=="Jock Escape") {
         if(Loc.name=="Cherry Picker") {
