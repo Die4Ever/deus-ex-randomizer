@@ -116,10 +116,6 @@ function vanilla_remove_actors()
     i++;
 
     remove_actors[i].map_name = "01_NYC_unatcoisland";
-    remove_actors[i].actor_name = 'DataLinkTrigger12';//DL_Top
-    i++;
-
-    remove_actors[i].map_name = "01_NYC_unatcoisland";
     remove_actors[i].actor_name = 'DataLinkTrigger8';//DL_MissedPaul
     i++;
 
@@ -856,12 +852,22 @@ function PreFirstEntry()
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)ComputerPersonal cp;
     local Trigger t;
-    local int seed;
+    local int seed, i;
+    local Actor a;
 
     Super.PreFirstEntry();
 #ifndef revision
     seed = InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);
 #endif
+
+    foreach AllActors(class'Actor', a) {
+        for(i=0; i<ArrayCount(remove_actors); i++) {
+            if(remove_actors[i].actor_name == a.name && remove_actors[i].map_name == dxr.localURL) {
+                a.Event = '';
+                a.Destroy();
+            }
+        }
+    }
 
     if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
