@@ -867,8 +867,10 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
 
     if(victim.BindName == "PaulDenton")
         dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
-    else if(victim.BindName == "AnnaNavarre" && dxr.flagbase.GetBool('annadies'))
+    else if(victim.BindName == "AnnaNavarre" && dxr.flagbase.GetBool('annadies')) {
         _MarkBingo("AnnaKillswitch");
+        Killer = player();
+    }
 
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
 }

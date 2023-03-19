@@ -902,19 +902,15 @@ function PreFirstEntry()
 
         if(dxr.flags.settings.goals > 0 && num_goals > 0 && num_locations > 0) {
             foreach AllActors(class'#var(prefix)ComputerPersonal', cp) {
-                for(i=0; i<ArrayCount(cp.UserList); i++) {
-                    // remove demiurge, and also user and guest because they're useless anyways
-                    if(cp.UserList[i].userName ~= "demiurge" || cp.UserList[i].userName ~= "USER" || cp.UserList[i].userName ~= "GUEST") {
-                        cp.UserList[i].userName = "";
-                        cp.UserList[i].Password = "";
-                    }
-                }
-                for(i=0; i<ArrayCount(cp.specialOptions); i++) {
-                    if(cp.specialOptions[i].TriggerEvent == 'know1' || cp.specialOptions[i].TriggerEvent == 'know2') {
-                        cp.specialOptions[i].TriggerEvent = '';
-                        cp.specialOptions[i].Text = "";
-                    }
-                }
+                // remove demiurge, and also user and guest because they're useless anyways
+                RemoveComputerUser(cp, "demiurge");
+                RemoveComputerUser(cp, "USER");
+                RemoveComputerUser(cp, "GUEST");
+                RemoveComputerSpecialOption(cp, 'know1');
+                RemoveComputerSpecialOption(cp, 'know2');
+                // keep the button for Gunther's killphrase on Manderley's computer
+                if(cp.specialOptions[0].userName ~= "demiurge")
+                    cp.specialOptions[0].userName = "";
             }
         }
     }
@@ -1577,13 +1573,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         // insert the demiurge/archon account and add the special options
         cp = #var(prefix)ComputerPersonal(findNearestToActor(class'#var(prefix)ComputerPersonal', g.actors[0].a));
 
-        for(i=0; i<ArrayCount(cp.UserList); i++) {
-            if(cp.UserList[i].userName != "" && cp.UserList[i].userName != "DEMIURGE")
-                continue;
-            cp.UserList[i].userName = "DEMIURGE";
-            cp.UserList[i].Password = "archon";
-            break;
-        }
+        AddComputerUserAt(cp, "DEMIURGE", "archon", 0);
 
         for(i=0; i<ArrayCount(cp.specialOptions); i++) {
             if(cp.specialOptions[i].TriggerEvent != '')

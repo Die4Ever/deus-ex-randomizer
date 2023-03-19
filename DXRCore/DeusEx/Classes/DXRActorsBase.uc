@@ -846,6 +846,55 @@ function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis){
     return nearestThing;
 }
 
+function RemoveComputerUser(#var(prefix)Computers comp, string userName)
+{
+    local int i, num;
+    // we can't have empty slots in the middle
+    for(i=0; i<ArrayCount(comp.userList); i++) {
+        if(comp.userList[i].userName ~= userName) {
+            comp.userList[i].userName = "";
+            comp.userList[i].Password = "";
+        }
+        if(comp.userList[i].userName == "") continue;
+        if(i != num) {
+            comp.userList[num] = comp.userList[i];
+            comp.userList[i].userName = "";
+            comp.userList[i].Password = "";
+        }
+        num++;
+    }
+}
+
+function AddComputerUserAt(#var(prefix)Computers comp, string userName, string Password, int slot)
+{
+    local int i;
+
+    for(i=ArrayCount(comp.userList)-1; i>=slot; i--) {
+        comp.userList[i+1] = comp.userList[i];
+    }
+    comp.userList[slot].userName = userName;
+    comp.userList[slot].Password = Password;
+}
+
+function RemoveComputerSpecialOption(#var(prefix)Computers comp, Name TriggerEvent)
+{
+    local int i, num;
+    // we can't have empty slots in the middle
+    for(i=0; i<ArrayCount(comp.specialOptions); i++) {
+        if(comp.specialOptions[i].TriggerEvent == TriggerEvent) {
+            comp.specialOptions[i].TriggerEvent = '';
+            comp.specialOptions[i].Text = "";
+        }
+        if(comp.specialOptions[i].Text == "") continue;
+        if(i != num) {
+            comp.specialOptions[num] = comp.specialOptions[i];
+            comp.specialOptions[i].TriggerEvent = '';
+            comp.specialOptions[i].Text = "";
+        }
+        num++;
+    }
+}
+
 //I could have fuzzy logic and allow these Is___Normal functions to have overlap? or make them more strict where some normals don't classify as any of these?
 function bool IsWallNormal(vector n)
 {
