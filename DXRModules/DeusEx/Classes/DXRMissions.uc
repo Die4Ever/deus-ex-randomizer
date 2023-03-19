@@ -72,7 +72,7 @@ function CheckConfig()
     local int i;
     local string map;
 
-    if( ConfigOlderThan(2,0,3,7) ) {
+    if( ConfigOlderThan(2,2,8,4) ) {
         allow_vanilla = false;
 
         for(i=0; i<ArrayCount(remove_actors); i++) {
@@ -117,6 +117,10 @@ function vanilla_remove_actors()
 
     remove_actors[i].map_name = "01_NYC_unatcoisland";
     remove_actors[i].actor_name = 'DataLinkTrigger12';//DL_Top
+    i++;
+
+    remove_actors[i].map_name = "01_NYC_unatcoisland";
+    remove_actors[i].actor_name = 'DataLinkTrigger8';//DL_MissedPaul
     i++;
 
     remove_actors[i].map_name = "09_NYC_GRAVEYARD";
@@ -221,30 +225,9 @@ function int InitGoals(int mission, string map)
 
     // we should start grouping these by mission instead of by map, to prevent issues with crossover
     switch(mission) {
-    case 4:
-        // GOAL_TYPE1 for the computer, 2 for Anna
-        AddGoal("04_NYC_NSFHQ", "Computer", GOAL_TYPE1, 'ComputerPersonal3', PHYS_Falling);
-        AddGoalLocation("04_NYC_NSFHQ", "Third Floor", GOAL_TYPE1, vect(-460.091187, 1011.083496, 551.367859), rot(0, 16672, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "Second Floor", GOAL_TYPE1, vect(206.654617, 1340.000000, 311.652832), rot(0, 0, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "Garage", GOAL_TYPE1, vect(381.117371, -696.875671, 63.615902), rot(0, 32768, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "Break Room", GOAL_TYPE1, vect(42.340145, 1104.667480, 73.610352), rot(0, 0, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "Basement Exit", GOAL_TYPE1, vect(1290.299927, 1385.000000, -185.000000), rot(0, 16384, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "Basement Entrance", GOAL_TYPE1, vect(-617.888855, 141.699875, -208.000000), rot(0, 16384, 0));
-        AddGoalLocation("04_NYC_NSFHQ", "Rooftop", GOAL_TYPE1 | VANILLA_GOAL, vect(187.265259,315.583862,1032.054199), rot(0,16672,0));
-
-        goal = AddGoal("04_NYC_BatteryPark", "Anna Navarre", GOAL_TYPE2, 'AnnaNavarre0', PHYS_Falling);
-        AddGoalActor(goal, 1, 'AllianceTrigger11', PHYS_None); //AnnaAttacksJC
-        AddGoalLocation("04_NYC_BatteryPark", "Battery Park Subway", GOAL_TYPE2 | VANILLA_GOAL, vect(-4981.514648,2416.581787,-304.599060), rot(0,-49328,0));
-        AddGoalLocation("04_NYC_Street", "Street Barricade", GOAL_TYPE2, vect(-6353.232422,899.716797,-480.599030), rot(0,25000,0));
-        AddGoalLocation("04_NYC_Street", "Hell's Kitchen Subway", GOAL_TYPE2, vect(1370.337646,-1819.429688,-464.602142), rot(0,32768,0));
-        AddGoalLocation("04_NYC_Street", "Outside Free Clinic", GOAL_TYPE2, vect(-1500.715332,891.878662,-464.603424), rot(0,0,0));
-        AddGoalLocation("04_NYC_Hotel", "Hotel", GOAL_TYPE2, vect(30.716736,-65.753799,-16.600384), rot(0,40000,0));
-        return mission;
-    }
-
-    switch(map) {
-    case "01_NYC_UNATCOISLAND":
-        AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
+    case 1:
+        goal = AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
+        AddGoalActor(goal, 1, 'DataLinkTrigger12', PHYS_None);
         AddGoal("01_NYC_UNATCOISLAND", "Police Boat", GOAL_TYPE1, 'NYPoliceBoat0', PHYS_None);
 
         loc = AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vect(-6348.445313, 1912.637207, -111.428482), rot(0, 0, 0));
@@ -268,9 +251,30 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1 , vect(4535.585938, -10046.186523, -269.806213), rot(0, 0, 0));
         AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1 , vect(3682.585449, 231.813477, 2108.193848), rot(0, 0, 0));
         AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1 , vect(-4578.414551, 267.813477, 24.193787), rot(0, 0, 0));
+        return mission;
 
-        return 11;
+    case 4:
+        // GOAL_TYPE1 for the computer, 2 for Anna
+        AddGoal("04_NYC_NSFHQ", "Computer", GOAL_TYPE1, 'ComputerPersonal3', PHYS_Falling);
+        AddGoalLocation("04_NYC_NSFHQ", "Third Floor", GOAL_TYPE1, vect(-460.091187, 1011.083496, 551.367859), rot(0, 16672, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Second Floor", GOAL_TYPE1, vect(206.654617, 1340.000000, 311.652832), rot(0, 0, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Garage", GOAL_TYPE1, vect(381.117371, -696.875671, 63.615902), rot(0, 32768, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Break Room", GOAL_TYPE1, vect(42.340145, 1104.667480, 73.610352), rot(0, 0, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Basement Exit", GOAL_TYPE1, vect(1290.299927, 1385.000000, -185.000000), rot(0, 16384, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Basement Entrance", GOAL_TYPE1, vect(-617.888855, 141.699875, -208.000000), rot(0, 16384, 0));
+        AddGoalLocation("04_NYC_NSFHQ", "Rooftop", GOAL_TYPE1 | VANILLA_GOAL, vect(187.265259,315.583862,1032.054199), rot(0,16672,0));
 
+        goal = AddGoal("04_NYC_BatteryPark", "Anna Navarre", GOAL_TYPE2, 'AnnaNavarre0', PHYS_Falling);
+        AddGoalActor(goal, 1, 'AllianceTrigger11', PHYS_None); //AnnaAttacksJC
+        AddGoalLocation("04_NYC_BatteryPark", "Battery Park Subway", GOAL_TYPE2 | VANILLA_GOAL, vect(-4981.514648,2416.581787,-304.599060), rot(0,-49328,0));
+        AddGoalLocation("04_NYC_Street", "Street Barricade", GOAL_TYPE2, vect(-6353.232422,899.716797,-480.599030), rot(0,25000,0));
+        AddGoalLocation("04_NYC_Street", "Hell's Kitchen Subway", GOAL_TYPE2, vect(1370.337646,-1819.429688,-464.602142), rot(0,32768,0));
+        AddGoalLocation("04_NYC_Street", "Outside Free Clinic", GOAL_TYPE2, vect(-1500.715332,891.878662,-464.603424), rot(0,0,0));
+        AddGoalLocation("04_NYC_Hotel", "Hotel", GOAL_TYPE2, vect(30.716736,-65.753799,-16.600384), rot(0,40000,0));
+        return mission;
+    }
+
+    switch(map) {
     case "02_NYC_BATTERYPARK":
         goal = AddGoal("02_NYC_BATTERYPARK", "Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia0', PHYS_Falling);
         AddGoalActor(goal, 1, 'SkillAwardTrigger0', PHYS_None);
@@ -1487,7 +1491,9 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 
     // hardcoded cleanup stuff
-    if(g.name == "Generator" && Loc.name != "Warehouse") {
+    if(g.name == "Terrorist Commander" && g.actors[1].a != None) {
+        g.actors[1].a.SetCollisionSize(240, 64);//15ft wide, 4ft tall
+    } else if(g.name == "Generator" && Loc.name != "Warehouse") {
         a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vect(505.710449, -605, 162.091278), rot(16384,0,0));
         a.SetCollisionSize(a.CollisionRadius * 4, a.CollisionHeight * 4);
         a.bMovable = false;
