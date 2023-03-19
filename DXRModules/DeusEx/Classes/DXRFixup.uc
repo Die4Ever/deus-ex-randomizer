@@ -1529,6 +1529,7 @@ function HongKong_FirstEntry()
     switch(dxr.localURL)
     {
     case "06_HONGKONG_HELIBASE":
+#ifdef vanillamaps
         foreach AllActors(class'ProjectileGenerator', pg, 'purge') {
             pg.ejectSpeed = 60;
             pg.CheckTime = 2;
@@ -1554,6 +1555,7 @@ function HongKong_FirstEntry()
                 break;
             }
         }
+#endif
         break;
 
     case "06_HONGKONG_TONGBASE":
