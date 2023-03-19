@@ -17,7 +17,7 @@ var BingoOption bingo_options[200];
 struct MutualExclusion {
     var string e1, e2;
 };
-var MutualExclusion mutually_exclusive[20];
+var MutualExclusion mutually_exclusive[32];
 
 function PreFirstEntry()
 {
@@ -832,28 +832,43 @@ static function AddPlayerDeath(DXRando dxr, #var(PlayerPawn) player, optional Ac
 static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local DXRando dxr;
-
+    local DXREvents e;
     foreach victim.AllActors(class'DXRando', dxr) break;
 
-    MarkBingo(dxr, victim.BindName$"_Dead");
-    if( Killer == None || #var(PlayerPawn)(Killer) != None )
+    if(dxr != None)
+        e = DXREvents(dxr.FindModule(class'DXREvents'));
+    log(e$".AddPawnDeath "$dxr$", "$victim);
+    if(e != None)
+        e._AddPawnDeath(victim, Killer, damageType, HitLocation);
+}
+
+function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+{
+    _MarkBingo(victim.BindName$"_Dead");
+    _MarkBingo(victim.BindName$"_DeadM" $ dxr.dxInfo.missionNumber);
+    if( Killer == None || #var(PlayerPawn)(Killer) != None ) {
         if (IsHuman(victim.class) && ((damageType == "Stunned") ||
                                 (damageType == "KnockedOut") ||
 	                            (damageType == "Poison") ||
                                 (damageType == "PoisonEffect"))){
-            MarkBingo(dxr, victim.class.name$"_ClassUnconscious");
+            _MarkBingo(victim.class.name$"_ClassUnconscious");
+            _MarkBingo(victim.BindName$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
         } else {
-            MarkBingo(dxr, victim.class.name$"_ClassDead");
+            _MarkBingo(victim.class.name$"_ClassDead");
+            _MarkBingo(victim.BindName$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
         }
         if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
-            MarkBingo(dxr,"HumanStompDeath");
+            _MarkBingo("HumanStompDeath");
         }
+    }
 
     if(!victim.bImportant)
         return;
 
     if(victim.BindName == "PaulDenton")
         dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
+    else if(victim.BindName == "AnnaNavarre" && dxr.flagbase.GetBool('annadies'))
+        _MarkBingo("AnnaKillswitch");
 
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
 }
@@ -1330,9 +1345,9 @@ function _MarkBingo(coerce string eventname)
         case "LDDPAchilleDone":
             eventname="CamilleConvosDone";
             break;
-        case "GuntherKillswitch":
-            eventname="GuntherHermann_Dead";
-            break;
+        //case "GuntherKillswitch":
+            //_MarkBingo("GuntherHermann_Dead");
+            //break;
         case "KarkianBaby_ClassDead":
             eventname="Karkian_ClassDead";
             break;
@@ -1576,6 +1591,10 @@ defaultproperties
 #ifdef vanilla
     bingo_options(119)=(event="BrowserHistoryCleared",desc="Clear your browser history before quitting",max=1,missions=32)
 #endif
+    bingo_options(120)=(event="AnnaKillswitch",desc="Use Anna's Killphrase",max=1,missions=32)
+    bingo_options(121)=(event="AnnaNavarre_DeadM3",desc="Kill Anna Navarre in Mission 3",max=1,missions=8)
+    bingo_options(122)=(event="AnnaNavarre_DeadM4",desc="Kill Anna Navarre in Mission 4",max=1,missions=16)
+    bingo_options(123)=(event="AnnaNavarre_DeadM5",desc="Kill Anna Navarre in Mission 5",max=1,missions=32)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -1588,6 +1607,19 @@ defaultproperties
     mutually_exclusive(8)=(e1="AnnaKilledLebedev",e2="PlayerKilledLebedev")
     mutually_exclusive(9)=(e1="AnnaKilledLebedev",e2="JuanLebedev_Unconscious")
     mutually_exclusive(10)=(e1="PlayerKilledLebedev",e2="JuanLebedev_Unconscious")
+    mutually_exclusive(11)=(e1="AnnaNavarre_Dead",e2="AnnaKillswitch")
+    mutually_exclusive(12)=(e1="AnnaNavarre_Dead",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(13)=(e1="AnnaNavarre_Dead",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(14)=(e1="AnnaNavarre_Dead",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(15)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(16)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(17)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(18)=(e1="AnnaNavarre_DeadM3",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(19)=(e1="AnnaNavarre_DeadM3",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(20)=(e1="AnnaNavarre_DeadM4",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(21)=(e1="AnnaNavarre_DeadM4",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(22)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(23)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM4")
 
     bingo_win_countdown=-1
 }
