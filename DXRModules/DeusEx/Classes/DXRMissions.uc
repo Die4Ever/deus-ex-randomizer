@@ -1,11 +1,5 @@
 class DXRMissions extends DXRActorsBase;
 
-struct RemoveActor {
-    var string map_name;
-    var name actor_name;
-};
-var config RemoveActor remove_actors[32];
-
 const NORMAL_GOAL = 1;
 const GOAL_TYPE1 = 2;
 const GOAL_TYPE2 = 4;
@@ -68,60 +62,11 @@ var bool WaltonAppeared;
 
 function CheckConfig()
 {
-    local class<Actor> a;
-    local int i;
-    local string map;
-
     if( ConfigOlderThan(2,2,8,4) ) {
         allow_vanilla = false;
-
-        for(i=0; i<ArrayCount(remove_actors); i++) {
-            remove_actors[i].map_name = "";
-            remove_actors[i].actor_name = '';
-        }
-
-#ifndef revision
-        vanilla_remove_actors();
-#endif
-    }
-
-    for(i=0; i<ArrayCount(remove_actors); i++) {
-        remove_actors[i].map_name = Caps(remove_actors[i].map_name);
     }
 
     Super.CheckConfig();
-}
-
-function vanilla_remove_actors()
-{
-    local int i;
-    remove_actors[i].map_name = "01_NYC_unatcoisland";
-    remove_actors[i].actor_name = 'OrdersTrigger2';//the order that makes Paul run to you
-    i++;
-
-    remove_actors[i].map_name = "01_NYC_unatcoisland";
-    remove_actors[i].actor_name = 'DataLinkTrigger0';//find Paul
-    i++;
-
-    remove_actors[i].map_name = "01_NYC_unatcoisland";
-    remove_actors[i].actor_name = 'DataLinkTrigger8';//the "don't leave without talking to Paul" datalink
-    i++;
-
-    remove_actors[i].map_name = "01_NYC_unatcoisland";
-    remove_actors[i].actor_name = 'DataLinkTrigger10';//DL_MissedHermann
-    i++;
-
-    remove_actors[i].map_name = "01_NYC_unatcoisland";
-    remove_actors[i].actor_name = 'DataLinkTrigger5';//DL_NearTop
-    i++;
-
-    remove_actors[i].map_name = "01_NYC_unatcoisland";
-    remove_actors[i].actor_name = 'DataLinkTrigger8';//DL_MissedPaul
-    i++;
-
-    remove_actors[i].map_name = "09_NYC_GRAVEYARD";
-    remove_actors[i].actor_name = 'Barrel0';//barrel next to the transmitter thing, idk what it does but it explodes when I move it
-    i++;
 }
 
 function Spoiler GetSpoiler(int goalID)
@@ -852,22 +797,14 @@ function PreFirstEntry()
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)ComputerPersonal cp;
     local Trigger t;
-    local int seed, i;
-    local Actor a;
+    local int seed;
+    local #var(prefix)DataLinkTrigger dlt;
+    local #var(prefix)OrdersTrigger ot;
 
     Super.PreFirstEntry();
 #ifndef revision
     seed = InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);
 #endif
-
-    foreach AllActors(class'Actor', a) {
-        for(i=0; i<ArrayCount(remove_actors); i++) {
-            if(remove_actors[i].actor_name == a.name && remove_actors[i].map_name == dxr.localURL) {
-                a.Event = '';
-                a.Destroy();
-            }
-        }
-    }
 
     if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
@@ -878,6 +815,21 @@ function PreFirstEntry()
         dxr.flags.f.SetBool('FemJCPaulGiveWeapon_Played', true,, 2);
         dxr.flags.f.SetBool('GotFreeWeapon', true,, 2);
 #endif
+        foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'PaulRunningToPlayer') {
+            ot.Event = '';
+            ot.Destroy();
+        }
+        foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
+            switch(dlt.dataLinkTag) {
+            case 'DL_StartGame':
+            case 'DL_MissedPaul':
+            case 'DL_MissedHermann':
+            case 'DL_NearTop':
+            case 'DL_MissedPaul':
+                dlt.Event = '';
+                dlt.Destroy();
+            }
+        }
     }
     else if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
         foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
@@ -922,6 +874,7 @@ function PreFirstEntry()
         }
     }
     else if( dxr.localURL == "09_NYC_GRAVEYARD" ) {
+        // //barrel next to the transmitter thing, it explodes when I move it
         foreach AllActors(class'#var(prefix)Barrel1', barrel, 'BarrelOFun') {
             barrel.bExplosive = false;
             barrel.Destroy();
@@ -939,6 +892,28 @@ function PreFirstEntry()
             }
         }
     }
+    if(dxr.dxInfo.missionNumber == 10 || dxr.dxInfo.missionNumber == 11) {
+        // shut up, Tong!
+        foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
+            switch(dlt.dataLinkTag) {
+            case 'DL_paris_10_shaft':
+            case 'DL_paris_10_radiation':
+            case 'DL_paris_10_catacombs':
+            case 'DL_tunnels_oldplace':
+            case 'DL_tunnels_oldplace2':
+            case 'DL_tunnels_oldplace3':
+            case 'DL_metroentrance':
+            case 'DL_club_entry':
+            case 'DL_apartments':
+            case 'DL_hotel':
+            case 'DL_bakery':
+            case 'DL_entered_graveyard':
+                dlt.Event='';
+                dlt.Destroy();
+            }
+        }
+    }
+
     SetGlobalSeed( "DXRMissions" $ seed );
     ShuffleGoals();
 }
