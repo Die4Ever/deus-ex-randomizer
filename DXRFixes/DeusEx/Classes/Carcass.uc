@@ -171,8 +171,6 @@ function Frob(Actor Frobber, Inventory frobWith)
                     W.IsA('WeaponEMPGrenade') ||
                     W.IsA('WeaponLAM'))
                     W.PickupAmmoCount = 1;
-                else if (Level.NetMode == NM_Standalone)
-                    W.PickupAmmoCount = Rand(4) + 1;
             }
 
             if(item == None) {
