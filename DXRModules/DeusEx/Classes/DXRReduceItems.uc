@@ -158,7 +158,7 @@ simulated function SetAllMaxCopies(int scale)
     SetMaxCopies(class'#var(prefix)MedKit', dxr.flags.settings.medkits*scale/100 );
 }
 
-function float _GetItemMult(ItemReduction reductions[16], class<Inventory> item)
+function float _GetItemMult(ItemReduction reductions[16], class<Actor> item)
 {
     local int i;
     local float mult;
@@ -262,7 +262,7 @@ function ReduceSpawns(class<Inventory> classname, float percent)
     ReduceSpawnsInContainers(classname, percent);
 }
 
-function bool _ReduceSpawnInContainer(Containers d, class<Inventory> classname, float percent, class<Inventory> item)
+function bool _ReduceSpawnInContainer(#var(prefix)Containers d, class<Inventory> classname, float percent, class<Actor> item)
 {
     local float tperc;
 
@@ -280,11 +280,12 @@ function bool _ReduceSpawnInContainer(Containers d, class<Inventory> classname, 
 
 function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
 {
-    local Containers d;
+    local #var(prefix)Containers d;
+    local class<Inventory> contents;
 
     SetSeed( "ReduceSpawnsInContainers " $ classname.Name );
 
-    foreach AllActors(class'Containers', d)
+    foreach AllActors(class'#var(prefix)Containers', d)
     {
         if( _ReduceSpawnInContainer(d, classname, percent, d.Content3) )
             d.Content3 = None;
@@ -295,7 +296,7 @@ function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
         if( _ReduceSpawnInContainer(d, classname, percent, d.Contents) ) {
             d.Contents = d.Content3;
             if( d.Contents == None && !#defined(vmd) )
-                    d.Contents = class'Flare';
+                    d.Contents = class'#var(prefix)Flare';
         }
     }
 }
