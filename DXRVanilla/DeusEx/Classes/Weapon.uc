@@ -27,7 +27,7 @@ simulated function Tick(float deltaTime)
 
     if(AnimSequence != prev_anim || GetWeaponSkill() != prev_weapon_skill) {
         prev_anim = AnimSequence;
-        e = 2.0;
+        e = 1.8;
 
         if(AnimSequence == 'PlaceBegin' || AnimSequence == 'PlaceEnd')
             if(AnimFrame<0.2)// skip the beginning of the animation

@@ -32,8 +32,10 @@ simulated function PreBeginPlay()
     player = #var(PlayerPawn)(Owner);
     if(player != None) {
         // high skill gives the player shorter fuses
-        fuseLength += 4.0 * player.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
-        fuseLength = FClamp(fuseLength, 0.2, 5);
+        f = fuseLength;
+        fuseLength += 3.0 * player.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
+        player.ClientMessage("fuseLength: "$fuseLength$", old fuseLength: "$f);
+        fuseLength = FClamp(fuseLength, 0.2, 6);
     } else {
         // higher skill gives the enemies longer fuses
         player = #var(PlayerPawn)(GetPlayerPawn());
