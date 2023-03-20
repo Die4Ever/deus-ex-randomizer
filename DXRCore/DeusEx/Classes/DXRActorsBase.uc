@@ -314,7 +314,7 @@ static function ThrowItem(Inventory item, float VelocityMult)
     if(DeusExWeapon(item) != None)
         i = DeusExWeapon(item).PickupAmmoCount;
     item.DropFrom(loc + (VRand()*vect(32,32,16)) + vect(0,0,16) );
-    if(DeusExWeapon(item) != None)
+    if(DeusExWeapon(item) != None && DeusExWeapon(item).PickupAmmoCount < i)
         DeusExWeapon(item).PickupAmmoCount = i;
 
     // kinda copied from DeusExPlayer DropItem function
