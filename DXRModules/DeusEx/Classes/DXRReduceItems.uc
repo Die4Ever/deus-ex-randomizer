@@ -43,6 +43,14 @@ function CheckConfig()
         item_reductions[i].percent = 150;
         i++;
 
+        item_reductions[i].type = "Ammo762mm";
+        item_reductions[i].percent = 80;
+        i++;
+
+        item_reductions[i].type = "AmmoShell";
+        item_reductions[i].percent = 80;
+        i++;
+
         i=0;
         max_ammo[i].type = "Ammo10mm";
         max_ammo[i].percent = 30;
@@ -50,6 +58,14 @@ function CheckConfig()
 
         max_ammo[i].type = "AmmoPlasma";
         max_ammo[i].percent = 150;
+        i++;
+
+        max_ammo[i].type = "Ammo762mm";
+        max_ammo[i].percent = 80;
+        i++;
+
+        max_ammo[i].type = "AmmoShell";
+        max_ammo[i].percent = 80;
         i++;
     }
     Super.CheckConfig();
@@ -168,7 +184,11 @@ function _ReduceWeaponAmmo(Weapon w, float mult)
 
     mult *= _GetItemMult(item_reductions, w.AmmoName);
     tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, w.AmmoName);
+    if(Pawn(w.Owner) != None)
+        tmult *= 0.7;
     i = Clamp(float(w.PickupAmmoCount) * tmult, 1, 1000);
+    if(w.PickupAmmoCount > 1 && chance_single(30))
+        i++;// chance to round up
     l("reducing ammo in "$ActorToString(w)$" from "$w.PickupAmmoCount$" down to "$i$", tmult: "$tmult);
     w.PickupAmmoCount = i;
 }
@@ -183,6 +203,8 @@ function _ReduceAmmo(Ammo a, float mult)
     mult *= _GetItemMult(item_reductions, a.class);
     tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, a.class.name);
     i = Clamp(float(a.AmmoAmount) * tmult, 1, 1000);
+    if(a.AmmoAmount > 1 && chance_single(30))
+        i++;// chance to round up
     l("reducing ammo in "$ActorToString(a)$" from "$a.AmmoAmount$" down to "$i$", tmult: "$tmult);
     a.AmmoAmount = i;
 }
