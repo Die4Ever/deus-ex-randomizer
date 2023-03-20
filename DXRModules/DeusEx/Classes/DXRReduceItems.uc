@@ -152,11 +152,9 @@ function float _GetItemMult(ItemReduction reductions[16], class<Inventory> item)
     for(i=0; i < ArrayCount(reductions); i++) {
         if( reductions[i].type == "" ) continue;
         c = GetClassFromString(reductions[i].type, class'Inventory');
-        l("_GetItemMult ClassIsChildOf "$item@c@ ClassIsChildOf(item, c)@ reductions[i].percent);
         if( ClassIsChildOf(item, c) )
             mult *= float(reductions[i].percent) / 100.0;
     }
-    l("_GetItemMult "$item@mult);
     return mult;
 }
 
