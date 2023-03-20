@@ -298,6 +298,7 @@ static function ThrowItem(Inventory item, float VelocityMult)
 {
     local Actor a;
     local vector loc, rot;
+    local int i;
 
     a = item.Owner;
     if( Pawn(a) != None )
@@ -309,7 +310,13 @@ static function ThrowItem(Inventory item, float VelocityMult)
         loc = item.Location;
         rot = vector(item.Rotation);
     }
+    // retain PickupAmmoCount, vanilla DropFrom ditches the PickupAmmoCount because it assumes the player is doing this
+    if(DeusExWeapon(item) != None)
+        i = DeusExWeapon(item).PickupAmmoCount;
     item.DropFrom(loc + (VRand()*vect(32,32,16)) + vect(0,0,16) );
+    if(DeusExWeapon(item) != None)
+        DeusExWeapon(item).PickupAmmoCount = i;
+
     // kinda copied from DeusExPlayer DropItem function
     item.Velocity = rot * 300 + vect(0,0,220) + VRand()*32;
     item.Velocity *= VelocityMult;
