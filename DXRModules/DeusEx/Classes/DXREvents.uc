@@ -1424,34 +1424,35 @@ function AddDXRCredits(CreditsWindow cw)
 
 static function int BingoActiveMission(int currentMission, int missionsMask)
 {
-    local int missionAnded;
+    local int missionAnded, maxMission;
     if(missionsMask == 0) return 1;// 1==maybe
     missionAnded = (1 << currentMission) & missionsMask;
     if(missionAnded > 0) return 2;// 2==true
+    maxMission = currentMission;
 
 #ifdef backtracking
     // check conjoined backtracking missions
     switch(currentMission) {
     case 10:
         currentMission=11;
+        maxMission=11;
         break;
     case 11:
         currentMission=10;
         break;
     case 12:
         currentMission=14;
+        maxMission=14;
         break;
     case 14:
         currentMission=12;
         break;
-    default:
-        return 0;// 0==false
     }
     missionAnded = (1 << currentMission) & missionsMask;
     if(missionAnded > 0) return 2;// 2==true
 #endif
 
-    if(missionsMask < (1<<currentMission)) {
+    if(missionsMask < (1<<maxMission)) {
         return -1;// impossible in future missions
     }
 
