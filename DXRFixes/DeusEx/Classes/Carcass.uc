@@ -362,7 +362,7 @@ function Frob(Actor Frobber, Inventory frobWith)
             player.Energy = player.EnergyMax;
     }
 
-    Super.Frob(Frobber, frobWith);
+    Super(Carcass).Frob(Frobber, frobWith);
 
     if ((Level.Netmode != NM_Standalone) && (Player != None))
     {
