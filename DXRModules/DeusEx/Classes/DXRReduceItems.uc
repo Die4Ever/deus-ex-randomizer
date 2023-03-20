@@ -34,7 +34,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,2,5,1) ) {
+    if( ConfigOlderThan(2,2,8,4) ) {
         min_rate_adjust = default.min_rate_adjust;
         max_rate_adjust = default.max_rate_adjust;
 
@@ -60,7 +60,7 @@ function CheckConfig()
         i++;
 
         ammo_reductions[i].type = "AmmoPlasma";
-        ammo_reductions[i].percent = 120;
+        ammo_reductions[i].percent = 150;
         i++;
 
         i=0;
@@ -69,7 +69,7 @@ function CheckConfig()
         i++;
 
         max_ammo[i].type = "AmmoPlasma";
-        max_ammo[i].percent = 120;
+        max_ammo[i].percent = 150;
         i++;
     }
     Super.CheckConfig();
