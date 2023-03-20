@@ -10,10 +10,15 @@ simulated function Tick(float deltaTime)
     Super.Tick(deltaTime);
     player = #var(PlayerPawn)(Owner);
     if(oldSkillTime == 0 && skillTime == 1 && player != None) {
+        // higher skill will make the player's grenades trigger more quickly, but too quickly and it explodes when the enemy is still far from the grenade
+        // also need to consider multiple enemies running at you, the first one will trigger the grenade, so too fast and you don't get as many
         skillTime = player.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
         skillTime = 0.5 * skillTime + 1.1;
-        Player.ClientMessage(self$" skillTime: "$skillTime);
         skillTime = FClamp(skillTime, 0.75, 1.25);
+    }
+    else if(oldSkillTime == 0 && skillTime > 0 && Owner == None) {
+        // faster than vanilla, unfortunately vanilla doesn't save the triggering actor but they already factored in the skill value
+        skillTime *=  0.75;
     }
 }
 
@@ -26,9 +31,15 @@ simulated function PreBeginPlay()
     Super.PreBeginPlay();
     player = #var(PlayerPawn)(Owner);
     if(player != None) {
+        // high skill gives the player shorter fuses
         fuseLength += 4.0 * player.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
-        Player.ClientMessage(self$" fuseLength: "$fuseLength);
         fuseLength = FClamp(fuseLength, 0.2, 5);
+    } else {
+        // higher skill gives the enemies longer fuses
+        player = #var(PlayerPawn)(GetPlayerPawn());
+        if(player != None) {
+            fuseLength -= player.SkillSystem.GetSkillLevelValue(class'SkillDemolition') * 2.0 + 0.5;
+        }
     }
 }
 
