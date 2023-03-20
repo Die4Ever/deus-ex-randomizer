@@ -893,6 +893,7 @@ function Jailbreak_FirstEntry()
     local ComputerPersonal c;
     local DeusExMover dxm;
     local #var(prefix)UNATCOTroop lloyd;
+    local #var(prefix)AlexJacobson alex;
     local DXREnemies dxre;
     local int i;
 
@@ -939,6 +940,9 @@ function Jailbreak_FirstEntry()
                 c.UserList[i].userName = "anavarre";
                 c.UserList[i].password = "scryspc";
             }
+        }
+        foreach AllActors(class'#var(prefix)AlexJacobson', alex) {
+            RemoveFears(alex);
         }
         break;
 #endif
