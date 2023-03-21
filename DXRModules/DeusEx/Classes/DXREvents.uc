@@ -1347,9 +1347,6 @@ function _MarkBingo(coerce string eventname)
         case "LDDPAchilleDone":
             eventname="CamilleConvosDone";
             break;
-        //case "GuntherKillswitch":
-            //_MarkBingo("GuntherHermann_Dead");
-            //break;
         case "KarkianBaby_ClassDead":
             eventname="Karkian_ClassDead";
             break;
@@ -1591,9 +1588,7 @@ defaultproperties
     bingo_options(116)=(event="AnnaKilledLebedev",desc="Let Anna kill Lebedev",max=1,missions=8)
     bingo_options(117)=(event="PlayerKilledLebedev",desc="Kill Lebedev yourself",max=1,missions=8)
     bingo_options(118)=(event="JuanLebedev_Unconscious",desc="Knock out Lebedev",max=1,missions=8)
-#ifdef vanilla
     bingo_options(119)=(event="BrowserHistoryCleared",desc="Clear your browser history before quitting",max=1,missions=32)
-#endif
     bingo_options(120)=(event="AnnaKillswitch",desc="Use Anna's Killphrase",max=1,missions=32)
     bingo_options(121)=(event="AnnaNavarre_DeadM3",desc="Kill Anna Navarre in Mission 3",max=1,missions=8)
     bingo_options(122)=(event="AnnaNavarre_DeadM4",desc="Kill Anna Navarre in Mission 4",max=1,missions=16)

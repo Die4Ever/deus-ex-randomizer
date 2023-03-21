@@ -53,8 +53,6 @@ var GoalLocation locations[64];
 var MutualExclusion mutually_exclusive[20];
 var int num_goals, num_locations, num_mututally_exclusives;
 
-var config bool allow_vanilla;
-
 var vector rando_start_loc;
 var bool b_rando_start;
 
@@ -63,7 +61,6 @@ var bool WaltonAppeared;
 function CheckConfig()
 {
     if( ConfigOlderThan(2,2,8,4) ) {
-        allow_vanilla = false;
     }
 
     Super.CheckConfig();
@@ -436,7 +433,19 @@ function int InitGoals(int mission, string map)
     case "06_HONGKONG_WANCHAI_CANAL":
     case "06_HONGKONG_WANCHAI_MARKET":
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
-        SetDTSGoalLocations();
+        goal = AddGoal("06_HONGKONG_WANCHAI_STREET", "Dragon's Tooth Sword", NORMAL_GOAL, 'WeaponNanoSword0', PHYS_None);
+        AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_00: Now bring the sword to Max Chen at the Lucky Money Club
+
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's couch", NORMAL_GOAL, vect(836.923828, -1779.652588, 1706.345459), rot(0, 10816, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(257.923828, -200.652588, 1805.345459), rot(0, 10816, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vect(2293, 2728, -598), rot(0, 10808, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "with the boatperson", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vect(-1623, 3164, -393), rot(0, -49592, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
+
         goal = AddGoal("06_HONGKONG_WANCHAI_UNDERWORLD","Max Chen",GOAL_TYPE1 | SITTING_GOAL,'MaxChen0',PHYS_FALLING);
         AddGoalActor(goal, 1, 'TriadRedArrow5', PHYS_Falling); //Maybe I should actually find these guys by bindname?  They're "RightHandMan"
         AddGoalActor(goal, 2, 'TriadRedArrow6', PHYS_Falling);
@@ -705,23 +714,6 @@ function int InitGoals(int mission, string map)
     return mission+1000;
 }
 
-function SetDTSGoalLocations()
-{
-    local int goal;
-
-    goal = AddGoal("06_HONGKONG_WANCHAI_STREET", "Dragon's Tooth Sword", NORMAL_GOAL, 'WeaponNanoSword0', PHYS_None);
-    AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_00: Now bring the sword to Max Chen at the Lucky Money Club
-
-    AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
-    AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
-    AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's couch", NORMAL_GOAL, vect(836.923828, -1779.652588, 1706.345459), rot(0, 10816, 0));
-    AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(257.923828, -200.652588, 1805.345459), rot(0, 10816, 0));
-    AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vect(2293, 2728, -598), rot(0, 10808, 0));
-    AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "with the boatperson", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
-    AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vect(-1623, 3164, -393), rot(0, -49592, 0));
-    AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
-    AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
-}
 
 function AddMission1Goals()
 {
@@ -1027,18 +1019,15 @@ function MoveActorsIn(int goalsToLocations[32])
 function CreateAnnaKillphrasesDatacube(int goalsToLocations[32])
 {
     local int g;
-#ifdef injections
-    local #var(prefix)DataCube dc;
-#else
-    local DXRInformationDevices dc;
-#endif
-
     // put a datacube on Manderley's desk, this is for 2 different goals at once so it can't be done in MoveGoalToLocation
 #ifdef injections
+    local #var(prefix)DataCube dc;
     dc = Spawn(class'#var(prefix)DataCube',,, vect(243.288742, -104.183029, 289.368256), rot(0,0,0));
 #else
+    local DXRInformationDevices dc;
     dc = Spawn(class'DXRInformationDevices',,, vect(243.288742, -104.183029, 289.368256), rot(0,0,0));
 #endif
+
     if( dc == None ) return;
     dc.plaintext = "I've hidden Anna's killphrase like you asked.";
 
@@ -1061,7 +1050,7 @@ function CreateAnnaKillphrasesDatacube(int goalsToLocations[32])
 function bool _ChooseGoalLocations(out int goalsToLocations[32])
 {
     local int i, g1, g2, r, _num_locs, _num_starts;
-    local int availLocs[64], goalsOrder[64];
+    local int availLocs[64], goalsOrder[32];
 
     // build list of availLocs based on flags, also count _num_starts
     _num_locs = 0;

@@ -26,15 +26,12 @@ simulated function Tick(float deltaTime)
 simulated function PreBeginPlay()
 {
     local #var(PlayerPawn) player;
-    local float f;
 
     Super.PreBeginPlay();
     player = #var(PlayerPawn)(Owner);
     if(player != None) {
         // high skill gives the player shorter fuses
-        f = fuseLength;
         fuseLength += 3.0 * player.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
-        player.ClientMessage("fuseLength: "$fuseLength$", old fuseLength: "$f);
         fuseLength = FClamp(fuseLength, 0.2, 6);
     } else {
         // higher skill gives the enemies longer fuses

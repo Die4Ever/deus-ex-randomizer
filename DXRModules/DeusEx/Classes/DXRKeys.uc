@@ -390,6 +390,7 @@ function FirstEntry()
     RandomizeDoors();
     AdjustRestrictions(dxr.flags.settings.doorsmode, dxr.flags.settings.doorspickable, dxr.flags.settings.doorsdestructible, dxr.flags.settings.deviceshackable);
 
+    // copy to pairs/sets of doors
     foreach AllActors(class'#var(Mover)', d) {
         if (d.Tag == '' || d.Tag == 'DeusExMover') continue;
 
@@ -407,7 +408,7 @@ function FirstEntry()
 
 function RandomizeDoors()
 {
-    local #var(Mover) d, d2;
+    local #var(Mover) d;
 
     SetSeed( "RandomizeDoors" );
 

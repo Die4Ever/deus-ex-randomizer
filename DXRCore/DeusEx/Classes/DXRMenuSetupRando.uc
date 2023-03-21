@@ -99,11 +99,11 @@ function BindControls(optional string action)
         doors_probability /= 2;
     door_type_prob_choice = doors_type + doors_probability;
 
-    EnumOption("Key-Only Doors", f.keyonlydoors + 100, door_type_prob_choice);
+    EnumOption("All Key-Only Doors", f.keyonlydoors + 100, door_type_prob_choice);
     EnumOption("Many Key-Only Doors", f.keyonlydoors + 70, door_type_prob_choice);
     EnumOption("Some Key-Only Doors", f.keyonlydoors + 40, door_type_prob_choice);
     EnumOption("Few Key-Only Doors", f.keyonlydoors + 25, door_type_prob_choice);
-    EnumOption("Undefeatable Doors", f.undefeatabledoors + 100, door_type_prob_choice);
+    EnumOption("All Undefeatable Doors", f.undefeatabledoors + 100, door_type_prob_choice);
     EnumOption("Many Undefeatable Doors", f.undefeatabledoors + 70, door_type_prob_choice);
     EnumOption("Some Undefeatable Doors", f.undefeatabledoors + 40, door_type_prob_choice);
     EnumOption("Few Undefeatable Doors", f.undefeatabledoors + 25, door_type_prob_choice);
