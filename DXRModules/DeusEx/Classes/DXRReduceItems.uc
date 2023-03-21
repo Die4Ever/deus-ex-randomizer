@@ -5,16 +5,23 @@ struct ItemReduction {
     var int percent;
 };
 
+struct _ItemReduction {
+    var class<Actor> type;
+    var int percent;
+};
+
 var config int mission_scaling[16];
 var config ItemReduction item_reductions[16];
 var config ItemReduction max_ammo[16];
+var _ItemReduction _item_reductions[16];
+var _ItemReduction _max_ammo[16];
 
 var config float min_rate_adjust, max_rate_adjust;
 
 replication
 {
     reliable if( Role == ROLE_Authority )
-        mission_scaling, item_reductions, max_ammo, min_rate_adjust, max_rate_adjust;
+        mission_scaling, item_reductions, max_ammo, _item_reductions, _max_ammo, min_rate_adjust, max_rate_adjust;
 }
 
 function CheckConfig()
@@ -70,14 +77,13 @@ function CheckConfig()
     }
     Super.CheckConfig();
 
-    // check for errors in config
     for(i=0; i < ArrayCount(item_reductions); i++) {
         if( item_reductions[i].type == "" ) continue;
-        GetClassFromString( item_reductions[i].type, class'Inventory' );
+        _item_reductions[i].type = GetClassFromString( item_reductions[i].type, class'Inventory' );
     }
     for(i=0; i < ArrayCount(max_ammo); i++) {
         if( max_ammo[i].type == "" ) continue;
-        GetClassFromString( max_ammo[i].type, class'Ammo' );
+        _max_ammo[i].type = GetClassFromString( max_ammo[i].type, class'Ammo' );
     }
 }
 
@@ -124,7 +130,7 @@ function ReduceItem(Inventory a)
     }
     else if( #var(prefix)MedKit(a) != None ) {
         _ReduceSpawn(a, dxr.flags.settings.medkits*scale/100);
-    } else if( _GetItemMult(item_reductions, a.class) != 1.0 ) {
+    } else if( _GetItemMult(_item_reductions, a.class) != 1.0 ) {
         _ReduceSpawn(a, 1.0);
     }
 }
@@ -158,17 +164,15 @@ simulated function SetAllMaxCopies(int scale)
     SetMaxCopies(class'#var(prefix)MedKit', dxr.flags.settings.medkits*scale/100 );
 }
 
-function float _GetItemMult(ItemReduction reductions[16], class<Actor> item)
+function float _GetItemMult(_ItemReduction reductions[16], class<Actor> item)
 {
     local int i;
     local float mult;
-    local class<Actor> c;
 
     mult = 1.0;
     for(i=0; i < ArrayCount(reductions); i++) {
-        if( reductions[i].type == "" ) continue;
-        c = GetClassFromString(reductions[i].type, class'Inventory');
-        if( ClassIsChildOf(item, c) )
+        if( reductions[i].type == None ) continue;
+        if( ClassIsChildOf(item, reductions[i].type) )
             mult *= float(reductions[i].percent) / 100.0;
     }
     return mult;
@@ -182,8 +186,9 @@ function _ReduceWeaponAmmo(Weapon w, float mult)
     // don't reduce weapon PickupAmmoCount owned by Robots? does this matter?
     if(#var(prefix)Robot(w.Owner) != None) return;
 
-    mult *= _GetItemMult(item_reductions, w.AmmoName);
+    mult *= _GetItemMult(_item_reductions, w.AmmoName);
     tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, w.AmmoName);
+    // owned weapons get their PickupAmmoCount reduced a bit more, otherwise looting bodies gives too much
     if(Pawn(w.Owner) != None)
         tmult *= 0.7;
     i = Clamp(float(w.PickupAmmoCount) * tmult, 1, 1000);
@@ -200,7 +205,7 @@ function _ReduceAmmo(Ammo a, float mult)
     // don't reduce ammo owned by pawns
     if( a.AmmoAmount <= 0 || CarriedItem(a) ) return;
 
-    mult *= _GetItemMult(item_reductions, a.class);
+    mult *= _GetItemMult(_item_reductions, a.class);
     tmult = rngrangeseeded(mult, min_rate_adjust, max_rate_adjust, a.class.name);
     i = Clamp(float(a.AmmoAmount) * tmult, 1, 1000);
     if(a.AmmoAmount > 1 && chance_single(30))
@@ -236,7 +241,7 @@ function _ReduceSpawn(Inventory a, float percent)
 {
     local float tperc;
 
-    percent *= _GetItemMult(item_reductions, a.class);
+    percent *= _GetItemMult(_item_reductions, a.class);
     tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, a.class.name);
     if( !chance_single(tperc) )
     {
@@ -269,7 +274,7 @@ function bool _ReduceSpawnInContainer(#var(prefix)Containers d, class<Inventory>
     if( !ClassIsChildOf(item, classname) )
         return false;
 
-    percent *= _GetItemMult(item_reductions, item);
+    percent *= _GetItemMult(_item_reductions, item);
     tperc = rngrangeseeded(percent, min_rate_adjust, max_rate_adjust, item.name);
     if( ! chance_single(tperc) ) {
         l("_ReduceSpawnInContainer container "$ActorToString(d)$" removing "$item$", tperc: "$tperc$", percent: "$percent);
@@ -294,7 +299,7 @@ function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
             d.Content2 = d.Content3;
 
         if( _ReduceSpawnInContainer(d, classname, percent, d.Contents) ) {
-            d.Contents = d.Content3;
+            d.Contents = d.Content2;
             if( d.Contents == None && !#defined(vmd) )
                     d.Contents = class'#var(prefix)Flare';
         }
@@ -313,7 +318,7 @@ simulated function SetMaxCopies(class<DeusExPickup> type, int percent)
         if( ! p.IsA(type.name) ) continue;
 
         f = percent;
-        f *= _GetItemMult(item_reductions, p.class);
+        f *= _GetItemMult(_item_reductions, p.class);
         p.maxCopies = float(p.default.maxCopies) * f / 100.0 * 0.8;
         p.maxCopies = Clamp(p.maxCopies, 1, p.default.maxCopies*10);
         if( #defined(balance) && DeusExPlayer(p.Owner) != None && #var(prefix)FireExtinguisher(p) != None )
@@ -341,7 +346,7 @@ simulated function SetMaxAmmo(class<Ammo> type, int percent)
         if( ! a.IsA(type.name) ) continue;
 
         f = percent;
-        f *= _GetItemMult(max_ammo, a.class);
+        f *= _GetItemMult(_max_ammo, a.class);
         a.MaxAmmo = float(a.default.MaxAmmo) * f / 100.0 * 0.8;
         a.MaxAmmo = Clamp(a.MaxAmmo, 1, a.default.MaxAmmo*10);
 
@@ -410,7 +415,7 @@ simulated function PrintItemRate(CreditsWindow cw, class<Inventory> c, int perce
     if( c == class'DeusEx.AmmoNone' ) return;
 
     tperc = percent;
-    tperc *= _GetItemMult(item_reductions, c);
+    tperc *= _GetItemMult(_item_reductions, c);
     tperc = rngrangeseeded(tperc, min_rate_adjust, max_rate_adjust, c.name);
     if( ! AllowIncrease && tperc > 100 )
         tperc = Clamp( tperc, 0, 100 );
