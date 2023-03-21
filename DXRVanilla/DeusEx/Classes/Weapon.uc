@@ -39,7 +39,8 @@ simulated function Tick(float deltaTime)
             e = 1.0;// these animations don't scale as much with skill
         }
         if(GoverningSkill == Class'SkillDemolition') {
-            anim_speed = 1.3;// why are grenades so slow?
+            anim_speed = 1.1;// why are grenades so slow?
+            e = 2.0;
         }
         prev_weapon_skill = GetWeaponSkill();
         r = class'DXRBase'.static.pow(anim_speed + -0.2 * prev_weapon_skill, e);
@@ -60,16 +61,6 @@ simulated function bool NearWallCheck()
     // Scripted pawns can't place LAMs
     if (ScriptedPawn(Owner) != None)
         return False;
-
-    // Don't let players place grenades when they have something highlighted
-    if ( Level.NetMode != NM_Standalone )
-    {
-        if ( Owner.IsA('DeusExPlayer') && (DeusExPlayer(Owner).frobTarget != None) )
-        {
-            if ( DeusExPlayer(Owner).IsFrobbable( DeusExPlayer(Owner).frobTarget ) )
-                return False;
-        }
-    }
 
     // trace out one foot in front of the pawn
     StartTrace = Owner.Location;
