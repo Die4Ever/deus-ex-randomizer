@@ -876,7 +876,7 @@ function AddComputerUserAt(#var(prefix)Computers comp, string userName, string P
 {
     local int i;
 
-    for(i=ArrayCount(comp.userList)-1; i>=slot; i--) {
+    for(i=ArrayCount(comp.userList)-2; i>=slot; i--) {
         comp.userList[i+1] = comp.userList[i];
     }
     comp.userList[slot].userName = userName;
