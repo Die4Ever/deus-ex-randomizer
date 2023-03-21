@@ -541,6 +541,42 @@ function ExtendedTests()
     // ensure correct key names
     test( GetTotalTime(dxr) > 0, "GetTotalTime");
     test( GetTotalMenuTime(dxr) > 0, "GetTotalMenuTime");
+
+    TestScoring();
+}
+
+static function int ScoreRun(int time, int time_without_menus, float difficulty, int saves, int loads, int bingos, int SkillPointsTotal, int Nanokeys)
+{
+    local int i;
+    i = 100000;
+    i -= time;
+    i -= time_without_menus;
+    i += difficulty * 1000.0;
+    // TODO: also need to score randomizer difficulty separately from combat difficulty, especially for VMD
+    i -= saves * 50;
+    i -= loads * 50;
+    i += bingos * 500;
+    i += SkillPointsTotal / 2;
+    i += Nanokeys * 20;
+    return i;
+}
+
+function TestScores(int better, int worse, int testnum)
+{
+    l("TestScores "$testnum @ better $" > "$ worse);// so you can see it in UCC.log even if it passes
+    test( better > worse, "TestScores "$testnum @ better $" > "$ worse);
+}
+
+function TestScoring()
+{
+    local int better, worse, testnum;
+    better = ScoreRun(7200, 3600, 2, 5, 5, 12, 10000, 200);// slower but way less saves/loads, and did more
+    worse = ScoreRun(3600, 3000, 2, 100, 100, 5, 10000, 20);
+    TestScores(better, worse, ++testnum);
+
+    better = ScoreRun(3600, 3000, 2, 100, 100, 5, 10000, 50);
+    worse = ScoreRun(10800, 9001, 2, 50, 50, 10, 10000, 100);// too much slower to be better
+    TestScores(better, worse, ++testnum);
 }
 
 defaultproperties
