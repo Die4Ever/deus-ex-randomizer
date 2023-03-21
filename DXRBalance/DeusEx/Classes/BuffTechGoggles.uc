@@ -75,3 +75,8 @@ function ChargedPickupEnd(DeusExPlayer Player)
 
     Super(ChargedPickup).ChargedPickupEnd(Player);
 }
+
+defaultproperties
+{
+    Charge=1000
+}
