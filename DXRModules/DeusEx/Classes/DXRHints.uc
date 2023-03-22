@@ -44,7 +44,7 @@ simulated function InitHints()
     if(#defined(injections)) {
         AddHint("Grays have strong resistance to fire and plasma,", "but it will eventually kill them!");
         AddHint("Weapon animation speeds now improve with skills,", "especially grenades with Demolition skill.");
-        AddHint("Grenades can now be attached to the floor!");
+        AddHint("Grenades can now be attached to the floor", "or even on a door!");
     }
 
     if(mission <= 5) {
@@ -219,8 +219,11 @@ simulated function InitHints()
                 AddHint("Your equipment could be in either", "the armory, or the surgery ward.");
             }
         } else if (map ~= "05_NYC_UnatcoHQ") {
-            if(dxr.flags.settings.goals > 0)
+            if(dxr.flags.settings.goals > 0) {
                 AddHint("Alex Jacobson's location in UNATCO HQ is randomized.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("The locations for Anna's killphrase are randomized in UNATCO HQ.", "Check the Goal Randomization page on our Wiki.");
+                AddHint("Jaime Reyes's location in UNATCO HQ is randomized.", "Check the Goal Randomization page on our Wiki.");
+            }
         } else if (map ~= "05_NYC_UNATCOISLAND") {
             AddHint("Private Lloyd has been promoted to Master Sergeant!", "Be careful!");
         }
@@ -231,9 +234,11 @@ simulated function InitHints()
             if(dxr.flags.settings.goals > 0)
                 AddHint("The location of the computer with the ROM Encoding is randomized.", "Check the Goal Randomization page on our Wiki.");
         } else if (map ~= "06_HongKong_WanChai_Street") {
-            AddHint("The Dragon Tooth Sword is randomized.","Open the case in Maggie Chow's apartment for a hint.");
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The Dragon Tooth Sword is randomized in Hong Kong.","Open the case in Maggie Chow's apartment for a hint.");
         } else if (map ~= "06_HongKong_VersaLife") {
-            AddHint("The locations of some VersaLife employees are randomized.", "Check the Goal Randomization page on our Wiki.");
+            if(dxr.flags.settings.goals > 0)
+                AddHint("The locations of some VersaLife employees are randomized.", "Check the Goal Randomization page on our Wiki.");
         } else if (map ~= "06_HONGKONG_WANCHAI_UNDERWORLD") {
             if(dxr.flags.settings.goals > 0)
                 AddHint("The location of Max Chen in the Lucky Money Club is randomized.", "Check the Goal Randomization page on our Wiki.");
