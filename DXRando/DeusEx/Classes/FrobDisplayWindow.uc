@@ -238,15 +238,6 @@ function DrawWindowBase(GC gc, actor frobTarget)
     gc.DrawBox(infoX+1, infoY+1, infoW-2, infoH-2, 0, 0, 1, Texture'Solid');
 }
 
-static function int Ceil(float f)
-{
-    local int ret;
-    ret = f;
-    if( float(ret) < f )
-        ret++;
-    return ret;
-}
-
 function string GetStrInfo(Actor a, out int numLines)
 {
     if ( Mover(a) != None )
@@ -444,7 +435,6 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     local color col;
     local int numTools, numShots;
     local float damage;
-    local name damageType;
 #ifdef vanilla
     local DXRWeapon w;
 #endif
@@ -477,10 +467,9 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     {
         w = DXRWeapon(player.inHand);
         if( w != None ) {
-            damageType = w.WeaponDamageType();
-            damage = dxMover.CalcDamage(w.GetDamage(), damageType) * w.GetNumHits();
+            damage = dxMover.CalcDamage(w.GetDamage(), w.WeaponDamageType()) * float(w.GetNumHits());
             if( damage > 0 ) {
-                numshots = Ceil((dxMover.doorStrength / damage));
+                numshots = GetNumHits(dxMover.doorStrength, damage);
                 if( numshots == 1 )
                     strInfo = strInfo $ CR() $ numshots @ msgShot;
                 else
@@ -522,6 +511,16 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
             strInfo = numTools @ msgTools;
         gc.DrawText(infoX+(infoW-barLength-2), infoY+infoH/numLines, barLength, infoH/numLines-6, strInfo);
     }
+}
+
+static function int GetNumHits(float strength, float damage)
+{
+    local int numHits;
+    for(numHits=0; !(strength~=0.0) && numHits<1000; numHits++) {
+        strength -= damage;
+        strength = FClamp(strength, 0.0, 1.0);
+    }
+    return numHits;
 }
 
 static function int GetNumTools(float strength, float skill)

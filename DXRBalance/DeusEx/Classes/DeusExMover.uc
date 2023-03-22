@@ -25,13 +25,15 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector mo
         doorStrength = FClamp(doorStrength, 0.0, 1.0);
         if (doorStrength ~= 0.0)
             BlowItUp(instigatedBy);
-            BasePos = Location;
+        BasePos = Location;
     }
 }
 
-function float CalcDamage(float Damage, name damageType)
+function float CalcDamage(int iDamage, name damageType)
 {
-    if (Damage < minDamageThreshold) return 0;
+    local float Damage;
+    if (iDamage < minDamageThreshold) return 0;
+    Damage = float(iDamage);
 
     if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'HalonGas'))
         return 0;

@@ -214,6 +214,15 @@ simulated static function string UnpackString(out string s)
     return ret;
 }
 
+static function int Ceil(float f)
+{
+    local int ret;
+    ret = f;
+    if( float(ret) < f )
+        ret++;
+    return ret;
+}
+
 simulated static function string FloatToString(float f, int decimal_places)
 {
     local int i;

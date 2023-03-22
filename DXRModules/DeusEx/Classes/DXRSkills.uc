@@ -366,6 +366,28 @@ function ExtendedTests()
     testint(FrobDisplayWindow.static.GetNumTools(0.0100001, 0.010000), 1, "GetNumTools for lockpicks/multitools test 9");
     testint(FrobDisplayWindow.static.GetNumTools(0.010001, 0.010001), 1, "GetNumTools for lockpicks/multitools test 10");
     testint(FrobDisplayWindow.static.GetNumTools(0.010000, 0.010000), 1, "GetNumTools for lockpicks/multitools test 11");
+
+    testint(FrobDisplayWindow.static.GetNumHits(0.010000, 0.010000), 1, "GetNumHits for doors test 1");
+
+    testint(FrobDisplayWindow.static.GetNumHits(0.510000, 0.028000), 19, "GetNumHits for doors test 2");
+    testint(FrobDisplayWindow.static.GetNumHits(0.482000, 0.028000), 18, "GetNumHits for doors test 3");
+    testint(FrobDisplayWindow.static.GetNumHits(0.454000, 0.028000), 17, "GetNumHits for doors test 4");
+    testint(FrobDisplayWindow.static.GetNumHits(0.426000, 0.028000), 16, "GetNumHits for doors test 5");
+    testint(FrobDisplayWindow.static.GetNumHits(0.398000, 0.028000), 15, "GetNumHits for doors test 6");
+    testint(FrobDisplayWindow.static.GetNumHits(0.370000, 0.028000), 14, "GetNumHits for doors test 7");
+    testint(FrobDisplayWindow.static.GetNumHits(0.342000, 0.028000), 13, "GetNumHits for doors test 8");
+    testint(FrobDisplayWindow.static.GetNumHits(0.314000, 0.028000), 12, "GetNumHits for doors test 9");
+    testint(FrobDisplayWindow.static.GetNumHits(0.286000, 0.028000), 11, "GetNumHits for doors test 10");
+    testint(FrobDisplayWindow.static.GetNumHits(0.258000, 0.028000), 10, "GetNumHits for doors test 11");
+    testint(FrobDisplayWindow.static.GetNumHits(0.230000, 0.028000), 9, "GetNumHits for doors test 12");
+    testint(FrobDisplayWindow.static.GetNumHits(0.202000, 0.028000), 8, "GetNumHits for doors test 13");
+    testint(FrobDisplayWindow.static.GetNumHits(0.174000, 0.028000), 7, "GetNumHits for doors test 14");
+    testint(FrobDisplayWindow.static.GetNumHits(0.146000, 0.028000), 6, "GetNumHits for doors test 15");
+    testint(FrobDisplayWindow.static.GetNumHits(0.118000, 0.028000), 5, "GetNumHits for doors test 16");
+    testint(FrobDisplayWindow.static.GetNumHits(0.090000, 0.028000), 4, "GetNumHits for doors test 17");
+    testint(FrobDisplayWindow.static.GetNumHits(0.062000, 0.028000), 3, "GetNumHits for doors test 18");
+    testint(FrobDisplayWindow.static.GetNumHits(0.034000, 0.028000), 2, "GetNumHits for doors test 19");
+    testint(FrobDisplayWindow.static.GetNumHits(0.006000, 0.028000), 1, "GetNumHits for doors test 20");
 }
 
 function bool TestWeightedLevelValues(float f1, float f2)
