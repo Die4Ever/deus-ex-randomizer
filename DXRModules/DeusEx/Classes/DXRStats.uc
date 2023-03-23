@@ -434,6 +434,7 @@ function AddDXRCredits(CreditsWindow cw)
 
     cw.PrintHeader("Statistics");
 
+    cw.PrintHeader("Score: " $ IntCommas(ScoreRun()));
     cw.PrintText("Shots Fired: "$fired);
     cw.PrintText("Weapon Swings: "$swings);
     cw.PrintText("Jumps: "$jumps);
@@ -449,11 +450,64 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
+static function int _ScoreRun(int time, int time_without_menus, float CombatDifficulty, int rando_difficulty, int saves, int loads, int bingos, int bingospots, int SkillPointsTotal, int Nanokeys)
+{
+    local int i;
+    i = 100000;
+    i -= time;
+    i -= time_without_menus;
+    i += CombatDifficulty * 500.0;
+    i += rando_difficulty * 500;
+    i -= saves * 50;
+    i -= loads * 50;
+    i += bingos * 500;
+    i += bingospots * 50;// make sure to ignore the free space
+    i += SkillPointsTotal / 2;
+    i += Nanokeys * 20;
+    return i;
+}
+
+function int ScoreRun()
+{
+    local PlayerDataItem data;
+    local string event, desc;
+    local int x, y, progress, max, bingos, bingo_spots;
+    local int time, time_without_menus, i;
+    local #var(PlayerPawn) p;
+    p = player();
+    for (i=1;i<=15;i++) {
+        time_without_menus += GetCompleteMissionTime(i);
+        time += GetCompleteMissionMenuTime(i);
+    }
+    time += time_without_menus;
+
+    data = class'PlayerDataItem'.static.GiveItem(dxr.player);
+    bingos = data.NumberOfBingos();
+
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x, y, event, desc, progress, max);
+            if(progress >= max && event != "Free Space")
+                bingo_spots++;
+        }
+    }
+
+    return _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, GetDataStorageStat(dxr, "DXRStats_loads"), bingos, bingo_spots, p.SkillPointsTotal, p.KeyRing.GetKeyCount());
+}
+
 function ExtendedTests()
 {
     local int time, completeTime, menutime, completemenutime;
 
     Super.ExtendedTests();
+
+    teststring( IntCommas(1), "1", "IntCommas 1");
+    teststring( IntCommas(123), "123", "IntCommas 123");
+    teststring( IntCommas(1234), "1,234", "IntCommas 1,234");
+    teststring( IntCommas(-1234), "-1,234", "IntCommas -1,234");
+    teststring( IntCommas(1234567), "1,234,567", "IntCommas 1,234,567");
+    teststring( IntCommas(12345678), "12,345,678", "IntCommas 12,345,678");
+    teststring( IntCommas(1234567890), "1,234,567,890", "IntCommas 1,234,567,890");
 
     // mission 1 tests
     testint( GetMissionTime(1), 0, "GetMissionTime(1) == 0");
@@ -545,23 +599,6 @@ function ExtendedTests()
     TestScoring();
 }
 
-static function int ScoreRun(int time, int time_without_menus, float difficulty, int saves, int loads, int bingos, int bingospots, int SkillPointsTotal, int Nanokeys)
-{
-    local int i;
-    i = 100000;
-    i -= time;
-    i -= time_without_menus;
-    i += difficulty * 1000.0;
-    // TODO: also need to score randomizer difficulty separately from combat difficulty, especially for VMD
-    i -= saves * 50;
-    i -= loads * 50;
-    i += bingos * 500;
-    i += bingospots * 50;// make sure to ignore the free space
-    i += SkillPointsTotal / 2;
-    i += Nanokeys * 20;
-    return i;
-}
-
 function TestScores(int better, int worse, int testnum)
 {
     l("TestScores "$testnum @ better $" > "$ worse);// so you can see it in UCC.log even if it passes
@@ -571,12 +608,12 @@ function TestScores(int better, int worse, int testnum)
 function TestScoring()
 {
     local int better, worse, testnum;
-    better = ScoreRun(7200, 3600, 2, 5, 5, 12, 24, 10000, 200);// slower but way less saves/loads, and did more
-    worse = ScoreRun(3600, 3000, 2, 100, 100, 3, 12, 10000, 20);
+    better = _ScoreRun(7200, 3600, 2, 2, 5, 5, 12, 24, 10000, 200);// slower but way less saves/loads, and did more
+    worse = _ScoreRun(3600, 3000, 2, 2, 100, 100, 3, 12, 10000, 20);
     TestScores(better, worse, ++testnum);
 
-    better = ScoreRun(3600, 3000, 2, 100, 100, 3, 12, 10000, 50);
-    worse = ScoreRun(10800, 9001, 2, 50, 50, 10, 20, 10000, 100);// too much slower to be better
+    better = _ScoreRun(3600, 3000, 2, 2, 100, 100, 3, 12, 10000, 50);
+    worse = _ScoreRun(10800, 9001, 2, 2, 50, 50, 10, 20, 10000, 100);// too much slower to be better
     TestScores(better, worse, ++testnum);
 }
 

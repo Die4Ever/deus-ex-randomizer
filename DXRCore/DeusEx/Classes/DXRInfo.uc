@@ -223,6 +223,30 @@ static function int Ceil(float f)
     return ret;
 }
 
+static function int imod(int a, int b)
+{// % converts to float in UnrealScript
+    return a-(a/b*b);
+}
+
+static function string IntCommas(int i)
+{
+    local string s;
+    local bool negative;
+    if(i<0) {
+        negative = true;
+        i *= -1;
+    }
+    s = string(imod(i, 1000));
+    i/=1000;
+    while(i>0) {
+        s = string(imod(i, 1000)) $ "," $ s;
+        i /= 1000;
+    }
+    if(negative)
+        s = "-" $ s;
+    return s;
+}
+
 simulated static function string FloatToString(float f, int decimal_places)
 {
     local int i;

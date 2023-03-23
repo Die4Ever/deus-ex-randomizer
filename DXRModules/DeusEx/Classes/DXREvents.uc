@@ -927,20 +927,26 @@ static function SavedPaul(DXRando dxr, #var(PlayerPawn) player, optional int hea
 static function BeatGame(DXRando dxr, int ending)
 {
     local PlayerDataItem data;
+    local int score;
+    local DXRStats stats;
     local string j;
     local class<Json> js;
     js = class'Json';
 
+    stats = DXRStats(dxr.FindModule(class'DXRStats'));
+
     j = js.static.Start("BeatGame");
     js.static.Add(j, "ending", ending);
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
-    js.static.Add(j, "Autosaves", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_autosaves"));
-    js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_deaths"));
-    js.static.Add(j, "LoadCount", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_loads"));
+    js.static.Add(j, "Autosaves", stats.GetDataStorageStat(dxr, "DXRStats_autosaves"));
+    js.static.Add(j, "deaths", stats.GetDataStorageStat(dxr, "DXRStats_deaths"));
+    js.static.Add(j, "LoadCount", stats.GetDataStorageStat(dxr, "DXRStats_loads"));
     js.static.Add(j, "maxrando", dxr.flags.maxrando);
     js.static.Add(j, "bSetSeed", dxr.flags.bSetSeed);
     data = class'PlayerDataItem'.static.GiveItem(dxr.player);
     js.static.Add(j, "initial_version", data.initial_version);
+    js.static.Add(j, "combat_difficulty", dxr.player.CombatDifficulty);
+    js.static.Add(j, "rando_difficulty", dxr.flags.difficulty);
 
     if (dxr.player.carriedDecoration!=None){
         js.static.Add(j, "carriedItem", dxr.player.carriedDecoration.Class);
@@ -953,6 +959,9 @@ static function BeatGame(DXRando dxr, int ending)
     BingoEventData(dxr, j);
     AugmentationData(dxr, j);
     GameTimeEventData(dxr, j);
+
+    score = stats.ScoreRun();
+    js.static.Add(j, "score", score);
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
@@ -1050,7 +1059,7 @@ static function BingoEventData(DXRando dxr, out string j)
 
 static function GameTimeEventData(DXRando dxr, out string j)
 {
-    local int time, realtime, i, t;
+    local int time, realtime, time_without_menus, i, t;
     local DXRStats stats;
     local class<Json> js;
     js = class'Json';
@@ -1065,11 +1074,13 @@ static function GameTimeEventData(DXRando dxr, out string j)
         t = stats.GetCompleteMissionTime(i);
         js.static.Add(j, "mission-" $ i $ "-realtime", t);
         realtime += t;
+        time_without_menus += t;
         t = stats.GetCompleteMissionMenuTime(i);
         js.static.Add(j, "mission-" $ i $ "-menutime", t);
         realtime += t;
     }
     js.static.Add(j, "time", time);
+    js.static.Add(j, "timewithoutmenus", time_without_menus);
     js.static.Add(j, "realtime", realtime);
 }
 
