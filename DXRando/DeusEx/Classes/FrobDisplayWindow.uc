@@ -392,6 +392,12 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
         strInfo = player.GetDisplayName(frobTarget);
     else if (frobTarget.IsA('DeusExCarcass'))
         strInfo = DeusExCarcass(frobTarget).itemName;
+    else if (frobTarget.IsA('Ammo') && Ammo(frobTarget).AmmoAmount > 1)
+        strInfo = Inventory(frobTarget).itemName $ " (" $ Ammo(frobTarget).AmmoAmount $ ")";
+    else if (frobTarget.IsA('Pickup') && Pickup(frobTarget).NumCopies != 1)
+        strInfo = Inventory(frobTarget).itemName $ " (" $ Pickup(frobTarget).NumCopies $ ")";
+    else if (frobTarget.IsA('Weapon') && Weapon(frobTarget).PickupAmmoCount > 1)
+        strInfo = Inventory(frobTarget).itemName $ " (" $ Weapon(frobTarget).PickupAmmoCount $ ")";
     else if (frobTarget.IsA('Inventory'))
         strInfo = Inventory(frobTarget).itemName;
     else if (frobTarget.IsA('DeusExDecoration'))
