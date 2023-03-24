@@ -29,7 +29,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,2,3,5) ) {
+    if( ConfigOlderThan(2,3,0,2) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
 
@@ -97,6 +97,9 @@ function CheckConfig()
         not_passwords[i++] = "MJ12 network";
         not_passwords[i++] = "the MJ12";
         not_passwords[i++] = "Majestic 12";
+        not_passwords[i++] = "12 hours";
+        not_passwords[i++] = ":12";
+        not_passwords[i++] = "Chapter 12";
         not_passwords[i++] = "the Illuminati";
         not_passwords[i++] = "raptor-chickens";
         not_passwords[i++] = "of Illuminati";

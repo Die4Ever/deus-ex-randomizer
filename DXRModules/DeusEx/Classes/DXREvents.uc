@@ -927,7 +927,6 @@ static function SavedPaul(DXRando dxr, #var(PlayerPawn) player, optional int hea
 static function BeatGame(DXRando dxr, int ending)
 {
     local PlayerDataItem data;
-    local int score;
     local DXRStats stats;
     local string j;
     local class<Json> js;
@@ -960,8 +959,7 @@ static function BeatGame(DXRando dxr, int ending)
     AugmentationData(dxr, j);
     GameTimeEventData(dxr, j);
 
-    score = stats.ScoreRun();
-    js.static.Add(j, "score", score);
+    js.static.Add(j, "score", stats.ScoreRun());
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
