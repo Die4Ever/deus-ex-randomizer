@@ -10,6 +10,11 @@ struct MissionTimeInfo
 
 var MissionTimeInfo mission_times[20];
 
+event InitWindow()
+{
+    SetSize(default.width, default.height);
+}
+
 function AddMissionTime(string missionNum, string missionName, string successTime, string completeTime)
 {
     local int i;
@@ -50,4 +55,10 @@ event DrawWindow(GC gc)
     }
 
     Super.DrawWindow(gc);
+}
+
+defaultproperties
+{
+    width=450
+    height=450
 }

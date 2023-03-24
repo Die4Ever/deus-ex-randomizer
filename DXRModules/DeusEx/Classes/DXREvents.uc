@@ -1416,7 +1416,6 @@ function AddBingoScreen(CreditsWindow cw)
 {
     local CreditsBingoWindow cbw;
     cbw = CreditsBingoWindow(cw.winScroll.NewChild(Class'CreditsBingoWindow'));
-    cbw.SetSize(410,410);
     cbw.FillBingoWindow(player());
 }
 

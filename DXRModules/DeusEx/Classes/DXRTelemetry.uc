@@ -116,6 +116,7 @@ function ReceivedData(string data)
     }
     CheckNotification(j);
     CheckDeaths(j);
+    class'DXRStats'.static.CheckLeaderboard(dxr, j);
 }
 
 function bool CanShowNotification()

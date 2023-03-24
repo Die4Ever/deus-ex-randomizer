@@ -1,5 +1,17 @@
 class DXRStats extends DXRBase transient;
 
+struct RunInfo
+{
+    var string name;
+    var int score;
+    var int time;
+    var int seed;
+    var int flagshash;
+    var bool bSetSeed;
+};
+
+var RunInfo runs[20];
+
 function AnyEntry()
 {
     Super.AnyEntry();
@@ -384,7 +396,6 @@ function AddMissionTimeTable(CreditsWindow cw)
     local int i, totalTime, totalRealTime;
 
     ctw = CreditsTimerWindow(cw.winScroll.NewChild(Class'CreditsTimerWindow'));
-    ctw.SetSize(450,450);
 
     ctw.AddMissionTime("1","Liberty Island",GetMissionTimeString(1),GetCompleteMissionTimeWithMenusString(1));
     ctw.AddMissionTime("2","NYC Generator",GetMissionTimeString(2),GetCompleteMissionTimeWithMenusString(2));
@@ -412,9 +423,77 @@ function AddMissionTimeTable(CreditsWindow cw)
     ctw.AddMissionTime(" ","Total With Menus",fmtTimeToString(totalTime),fmtTimeToString(totalRealTime));
 }
 
+function QueryLeaderboard()
+{
+    local string j;
+    local class<Json> js;
+    js = class'Json';
+    j = js.static.Start("QueryLeaderboard");
+    js.static.Add(j, "seed", dxr.flags.seed);
+    js.static.Add(j, "flagshash", dxr.flags.FlagsHash());
+    js.static.Add(j, "bSetSeed", dxr.flags.bSetSeed);
+    js.static.End(j);
+
+    l("QueryLeaderboard(): "$j);
+    class'DXRTelemetry'.static.SendEvent(dxr, self, j);
+}
+
+function ReceivedLeaderboard(Json j)
+{
+    local int i;
+    local string vals[10];
+
+    for(i=0; i<15; i++) {
+        vals[0] = "";
+        j.get_vals("leaderboard-"$i, vals);
+        if(vals[0] == "") return;
+        runs[i].name = vals[0];
+        runs[i].score = int(vals[1]);
+        runs[i].time = int(vals[2]);
+        runs[i].seed = int(vals[3]);
+        runs[i].flagshash = int(vals[4]);
+        runs[i].bSetSeed = bool(vals[5]);
+    }
+}
+
+function DrawLeaderboard(GC gc)
+{
+    local int yPos, i;
+
+    gc.SetFont(Font'DeusExUI.FontConversationLarge');
+    for(i=0; i<ArrayCount(runs) && runs[i].name!=""; i++){
+        yPos = (i+1) * 25;
+        gc.DrawText(0,yPos,30,50, "#"$(i+1)$".");
+        gc.DrawText(30,yPos,200,50, runs[i].name);
+        gc.DrawText(250,yPos,100,50, IntCommas(runs[i].score));
+        gc.DrawText(350,yPos,100,50, fmtTimeToString(runs[i].time));
+        gc.DrawText(450,yPos,100,50, runs[i].flagshash);
+    }
+}
+
+static function CheckLeaderboard(DXRando dxr, Json j)
+{
+    local DXRStats stats;
+    if(j.get("leaderboard-0") == "") {
+        return;
+    }
+
+    stats = DXRStats(dxr.FindModule(class'DXRStats'));
+    if(stats != None)
+        stats.ReceivedLeaderboard(j);
+}
+
 function AddDXRCredits(CreditsWindow cw)
 {
     local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads;
+    local CreditsLeaderboardWindow leaderboard;
+
+    cw.PrintLn();
+
+    QueryLeaderboard();
+
+    leaderboard = CreditsLeaderboardWindow(cw.winScroll.NewChild(Class'CreditsLeaderboardWindow'));
+    leaderboard.InitStats(self);
 
     cw.PrintLn();
 
@@ -435,6 +514,7 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintHeader("Statistics");
 
     cw.PrintHeader("Score: " $ IntCommas(ScoreRun()));
+    cw.PrintText("Flagshash: " $ dxr.flags.FlagsHash());
     cw.PrintText("Shots Fired: "$fired);
     cw.PrintText("Weapon Swings: "$swings);
     cw.PrintText("Jumps: "$jumps);
@@ -508,6 +588,9 @@ function ExtendedTests()
     teststring( IntCommas(1234567), "1,234,567", "IntCommas 1,234,567");
     teststring( IntCommas(12345678), "12,345,678", "IntCommas 12,345,678");
     teststring( IntCommas(1234567890), "1,234,567,890", "IntCommas 1,234,567,890");
+    teststring( IntCommas(1000), "1,000", "IntCommas 1,000");
+    teststring( IntCommas(104000), "104,000", "IntCommas 104,000");
+    teststring( IntCommas(1000000), "1,000,000", "IntCommas 1,000,000");
 
     // mission 1 tests
     testint( GetMissionTime(1), 0, "GetMissionTime(1) == 0");
