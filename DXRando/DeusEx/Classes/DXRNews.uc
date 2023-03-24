@@ -13,7 +13,7 @@ function CreateNews(Actor a, int newX, int newY, int ClientWidth, int ClientHeig
     SetPos(newX, newY);
     SetSize(ClientWidth, ClientHeight);
     SetBackground(Texture'Solid');
-    SetBackgroundStyle(DSTY_Normal);
+    SetBackgroundStyle(DSTY_Translucent);
     SetTileColorRGB(0,0,0);
     controlsParent = self;
 

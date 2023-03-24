@@ -1019,16 +1019,26 @@ function MoveActorsIn(int goalsToLocations[32])
 function CreateAnnaKillphrasesDatacube(int goalsToLocations[32])
 {
     local int g;
-    // put a datacube on Manderley's desk, this is for 2 different goals at once so it can't be done in MoveGoalToLocation
 #ifdef injections
     local #var(prefix)DataCube dc;
-    dc = Spawn(class'#var(prefix)DataCube',,, vect(243.288742, -104.183029, 289.368256), rot(0,0,0));
 #else
     local DXRInformationDevices dc;
+#endif
+
+    //Only do this on mission 5 UNATCO HQ
+    if (dxr.localURL != "05_NYC_UNATCOHQ"){
+        return;
+    }
+
+    // put a datacube on Manderley's desk, this is for 2 different goals at once so it can't be done in MoveGoalToLocation
+#ifdef injections
+    dc = Spawn(class'#var(prefix)DataCube',,, vect(243.288742, -104.183029, 289.368256), rot(0,0,0));
+#else
     dc = Spawn(class'DXRInformationDevices',,, vect(243.288742, -104.183029, 289.368256), rot(0,0,0));
 #endif
 
     if( dc == None ) return;
+    dc.bIsSecretGoal=True; //So it doesn't get shuffled
     dc.plaintext = "I've hidden Anna's killphrase like you asked.";
 
     for(g=0; g<num_goals; g++) {
