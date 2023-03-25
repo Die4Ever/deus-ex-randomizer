@@ -211,6 +211,14 @@ function vanilla_datacubes_rules()
     datacubes_rules[i].allow = true;
     i++;
 
+    // Curly's Journal
+    datacubes_rules[i].map = "03_NYC_BatteryPark";
+    datacubes_rules[i].item_name = '03_Book06';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
     datacubes_rules[i].map = "03_NYC_BrooklynBridgeStation";
     datacubes_rules[i].item_name = '03_Datacube14';
     datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);

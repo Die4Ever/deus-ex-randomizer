@@ -764,6 +764,24 @@ function Airfield_FirstEntry()
 
         //rebreather because of #TOOCEAN connection
         _AddActor(Self, class'Rebreather', vect(-936.151245, -3464.031006, 293.710968), rot(0,0,0));
+
+        //Add some junk around the park so that there are some item locations outside of the shanty town
+        _AddActor(Self, class'Liquor40oz', vect(933.56,-3554.86,279.04), rot(0,0,0));
+        _AddActor(Self, class'Sodacan', vect(2203.28,-3558.84,279.04), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(-980.83,-3368.42,286.24), rot(0,0,0));
+        _AddActor(Self, class'Cigarettes', vect(-682.67,-3771.20,282.24), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(-2165.67,-3546.039,285.30), rot(0,0,0));
+        _AddActor(Self, class'Sodacan', vect(-2170.83,-3094.94,330.24), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(-3180.75,-3546.79,281.43), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(-2619.56,-2540.80,330.25), rot(0,0,0));
+        _AddActor(Self, class'Cigarettes', vect(-3289.43,-919.07,360.80), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(-2799.94,-922.68,361.86), rot(0,0,0));
+        _AddActor(Self, class'Sodacan', vect(800.76,1247.99,330.25), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(1352.29,2432.98,361.58), rot(0,0,0));
+        _AddActor(Self, class'Cigarettes', vect(788.50,2359.26,360.63), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(3153.26,-310.73,326.25), rot(0,0,0));
+        _AddActor(Self, class'Sodacan', vect(-2132.21,1838.89,326.25), rot(0,0,0));
+
         break;
 
 #ifdef vanillamaps
