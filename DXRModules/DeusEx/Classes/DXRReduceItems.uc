@@ -27,7 +27,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,2,8,4) ) {
+    if( ConfigOlderThan(2,3,0,2) ) {
         min_rate_adjust = default.min_rate_adjust;
         max_rate_adjust = default.max_rate_adjust;
 
@@ -80,10 +80,12 @@ function CheckConfig()
     for(i=0; i < ArrayCount(item_reductions); i++) {
         if( item_reductions[i].type == "" ) continue;
         _item_reductions[i].type = GetClassFromString( item_reductions[i].type, class'Inventory' );
+        _item_reductions[i].percent = item_reductions[i].percent;
     }
     for(i=0; i < ArrayCount(max_ammo); i++) {
         if( max_ammo[i].type == "" ) continue;
         _max_ammo[i].type = GetClassFromString( max_ammo[i].type, class'Ammo' );
+        _max_ammo[i].percent = max_ammo[i].percent;
     }
 }
 
