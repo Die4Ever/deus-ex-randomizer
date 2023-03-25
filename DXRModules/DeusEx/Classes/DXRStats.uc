@@ -589,6 +589,8 @@ function ExtendedTests()
     teststring( IntCommas(12345678), "12,345,678", "IntCommas 12,345,678");
     teststring( IntCommas(1234567890), "1,234,567,890", "IntCommas 1,234,567,890");
     teststring( IntCommas(1000), "1,000", "IntCommas 1,000");
+    teststring( IntCommas(40000), "40,000", "IntCommas 40,000");
+    teststring( IntCommas(100000), "100,000", "IntCommas 100,000");
     teststring( IntCommas(104000), "104,000", "IntCommas 104,000");
     teststring( IntCommas(1000000), "1,000,000", "IntCommas 1,000,000");
 

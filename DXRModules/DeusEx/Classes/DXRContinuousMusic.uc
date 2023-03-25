@@ -208,7 +208,7 @@ function SongChoice MakeSongChoice(string song, int ambient, int dying, int comb
     return s;
 }
 
-function GetLevelSong()
+function GetLevelSong(bool setseed)
 {
     local SongChoice tchoices[100], s;
     local int i, j;
@@ -233,9 +233,11 @@ function GetLevelSong()
         tchoices[i++] = s;
     }
 
-    SetGlobalSeed(string(Level.Song.Name));// matching songs will stay matching
-    if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" )
-        SetGlobalSeed("NYCStreets2_Music");
+    if(setseed) {
+        SetGlobalSeed(string(Level.Song.Name));// matching songs will stay matching
+        if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" )
+            SetGlobalSeed("NYCStreets2_Music");
+    }
 
     i = rng(i);
     s = tchoices[i];
@@ -264,6 +266,11 @@ function GetLevelSong()
 
 function AnyEntry()
 {
+    PlayRandomSong(true);
+}
+
+function PlayRandomSong(bool setseed)
+{
     local music NewSong;
     local byte NewSection, NewCdTrack;
     local EMusicTransition NewTransition;
@@ -279,7 +286,7 @@ function AnyEntry()
         return;
 
     if(rando_music_setting) {
-        GetLevelSong();
+        GetLevelSong(setseed);
     }
     NewSong = LevelSong;
     NewSection = LevelSongSection;
