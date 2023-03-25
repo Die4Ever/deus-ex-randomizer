@@ -982,6 +982,7 @@ function BalanceJailbreak()
     local vector itemLocations[50];
     local DXRMissions missions;
     local string PaulLocation;
+    local #var(prefix)DataLinkTrigger dlt;
 
     SetSeed("BalanceJailbreak");
 
@@ -1016,6 +1017,12 @@ function BalanceJailbreak()
             itemLocations[num++] = vect(1642.170532,-968.813354,-261.660736);
             itemLocations[num++] = vect(1715.513062,-965.846558,-261.657837);
             itemLocations[num++] = vect(1782.731689,-966.754700,-261.661041);
+
+            foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
+                if(dlt.datalinkTag != 'dl_equipment') continue;
+                dlt.SetLocation(vect(1572.443237,-739.527649,-213.660095));// bed 1
+                break;
+            }
         }
 
         nextItem = p.Inventory;
