@@ -2151,12 +2151,18 @@ function HongKong_AnyEntry()
 function NYC_08_AnyEntry()
 {
     local StantonDowd s;
+    local #var(prefix)DataLinkTrigger dt;
 
     switch(dxr.localURL) {
     case "08_NYC_STREET":
         SetTimer(1.0, True);
         foreach AllActors(class'StantonDowd', s) {
             RemoveReactions(s);
+        }
+        foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
+            if(dt.datalinkTag == 'DL_Entry') {
+                dt.Touch(Player());
+            }
         }
         break;
 
