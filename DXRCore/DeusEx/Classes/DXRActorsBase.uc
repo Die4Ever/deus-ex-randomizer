@@ -326,23 +326,24 @@ static function Inventory MoveNextItemTo(Inventory item, vector Location, name T
 {
     // code similar to Revision Mission05.uc
     local Inventory nextItem;
-    local DeusExPlayer player;
+    local #var(PlayerPawn) player;
     local int i;
 
     // Find the next item we can process.
-    while((item != None) && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None))
+    while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None))
         item = item.Inventory;
 
     if(item == None) return None;
 
     nextItem = item.Inventory;
+    player = #var(PlayerPawn)(item.owner);
 
     //== Y|y: Turn off any charged pickups we were using and remove the associated HUD.  Per Lork on the OTP forums
-    player = DeusExPlayer(item.owner);
-    if (item.IsA('ChargedPickup') && player!=None)
-        ChargedPickup(item).ChargedPickupEnd(player);
-
-    Pawn(item.Owner).DeleteInventory(item);
+    if(player != None) {
+        if (item.IsA('ChargedPickup'))
+            ChargedPickup(item).ChargedPickupEnd(player);
+        player.DeleteInventory(item);
+    }
 
     for(i=0; i<100; i++) {
         if(item.SetLocation(Location)) {

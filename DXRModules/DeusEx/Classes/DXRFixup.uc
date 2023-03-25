@@ -1018,6 +1018,7 @@ function BalanceJailbreak()
             }
         }
         num=0;
+        l("BalanceJailbreak PaulLocation == " $ PaulLocation);
         if(PaulLocation == "Surgery Ward" || PaulLocation == "Greasel Pit")
             foreach AllActors(class'SpawnPoint', SP, 'player_inv')
                 itemLocations[num++] = SP.Location;
@@ -1038,8 +1039,8 @@ function BalanceJailbreak()
 
             foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
                 if(dlt.datalinkTag != 'dl_equipment') continue;
-                dlt.SetLocation(vect(1572.443237,-739.527649,-213.660095));// bed 1
-                break;
+                dlt.bCollideWorld = false;
+                l("BalanceJailbreak moving "$dlt @ dlt.SetLocation(vect(1670.443237,-702.527649,-179.660095)) @ dlt.Location);
             }
         }
 
