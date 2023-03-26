@@ -148,8 +148,11 @@ simulated function RandoSkillLevelValues(Skill a)
     local string add_desc;
     local float skill_value_wet_dry;
 
+    if( #var(prefix)SkillWeaponHeavy(a) != None ) {// TODO: maybe make this a sliding scale?
+        add_desc = "125% or higher will allow you to move more quickly while carrying a heavy weapon.";
+    }
 #ifdef injections
-    if( #var(prefix)SkillDemolition(a) != None ) {
+    else if( #var(prefix)SkillDemolition(a) != None ) {
         add_desc = "Each level increases the number of grenades you can carry by 1.";
     }
     else if( #var(prefix)SkillComputer(a) != None ) {
@@ -191,7 +194,6 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
     else if( s.Class == class'#var(prefix)SkillEnviro' ) {
         f = s.LevelValues[i];
-        if(i>0) r="|n    ";
 
 #ifdef vanilla
         word = "Damage Reduction (Passive/HazMat/Armor)";
@@ -200,6 +202,12 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         word = "Damage Reduction (HazMat/Armor)";
 #endif
 
+        switch(i) {
+        case 0: r = "Untrained: "; break;
+        case 1: r = "|n    Trained: "; break;
+        case 2: r = "|n    Advanced: "; break;
+        case 3: r = "|n    Master: "; break;
+        }
 #ifdef vanilla
         r = r $ int( (1 - (f * 1.25 + 0.25)) * 100.0 ) $ p $ " / "; // passive is * 1.25 + 0.25
         r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
