@@ -47,10 +47,11 @@ function HitActor(Actor a)
 
 defaultproperties
 {
-     cloudRadius=160
+     cloudRadius=100
      DamageType=TearGas
      maxDrawScale=7
-     Damage=3
+     Damage=1
+     damageInterval=0.5
      CollisionRadius=2
      CollisionHeight=2
 }

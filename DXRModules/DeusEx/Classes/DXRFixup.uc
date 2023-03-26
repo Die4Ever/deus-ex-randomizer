@@ -1565,27 +1565,21 @@ function HongKong_FirstEntry()
     case "06_HONGKONG_HELIBASE":
 #ifdef vanillamaps
         foreach AllActors(class'ProjectileGenerator', pg, 'purge') {
-            pg.ejectSpeed = 60;
-            pg.CheckTime = 2;
-            pg.ProjectileLifeSpan = 5;
-            pg.spewTime = 180;
+            pg.CheckTime = 0.25;
+            pg.spewTime = 0.4;
             pg.ProjectileClass = class'PurgeGas';
             switch(pg.Name) {
             case 'ProjectileGenerator5':// left side
                 pg.SetRotation(rot(-7000, 80000, 0));
-                pg.CheckTime = 2.3;
                 break;
             case 'ProjectileGenerator2':// middle left
                 pg.SetRotation(rot(-6024, 70000, 0));
-                pg.CheckTime = 2.2;
                 break;
             case 'ProjectileGenerator3':// middle right
                 pg.SetRotation(rot(-8056, 64000, 0));
-                pg.CheckTime = 2.1;
                 break;
             case 'ProjectileGenerator7':// right side
                 pg.SetRotation(rot(-8056, 60000, 0));
-                pg.CheckTime = 2.25;
                 break;
             }
         }
