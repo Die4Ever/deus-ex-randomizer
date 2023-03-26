@@ -490,12 +490,12 @@ function AddDXRCredits(CreditsWindow cw)
 
     cw.PrintLn();
 
-    QueryLeaderboard();
-
-    leaderboard = CreditsLeaderboardWindow(cw.winScroll.NewChild(Class'CreditsLeaderboardWindow'));
-    leaderboard.InitStats(self);
-
-    cw.PrintLn();
+    if(dxr.telemetry != None && dxr.telemetry.enabled) {
+        QueryLeaderboard();
+        leaderboard = CreditsLeaderboardWindow(cw.winScroll.NewChild(Class'CreditsLeaderboardWindow'));
+        leaderboard.InitStats(self);
+        cw.PrintLn();
+    }
 
     AddMissionTimeTable(cw);
 
@@ -513,7 +513,8 @@ function AddDXRCredits(CreditsWindow cw)
 
     cw.PrintHeader("Statistics");
 
-    cw.PrintHeader("Score: " $ IntCommas(ScoreRun()));
+    if(dxr.dxInfo.missionNumber == 99)
+        cw.PrintHeader("Score: " $ IntCommas(ScoreRun()));
     cw.PrintText("Flagshash: " $ dxr.flags.FlagsHash());
     cw.PrintText("Shots Fired: "$fired);
     cw.PrintText("Weapon Swings: "$swings);
