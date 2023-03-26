@@ -534,8 +534,8 @@ static function int _ScoreRun(int time, int time_without_menus, float CombatDiff
 {
     local int i;
     i = 100000;
-    i -= time;
-    i -= time_without_menus;
+    i -= time / 10;
+    i -= time_without_menus / 10;
     i += CombatDifficulty * 500.0;
     i += rando_difficulty * 500;
     i -= saves * 50;
@@ -687,18 +687,26 @@ function ExtendedTests()
 function TestScores(int better, int worse, int testnum)
 {
     l("TestScores "$testnum @ better $" > "$ worse);// so you can see it in UCC.log even if it passes
+    test( better > 0, "TestScores "$testnum @ better $" > 0");
+    test( better < 10000000, "TestScores "$testnum @ better $" < 10000000");
+    test( worse > 0, "TestScores "$testnum @ worse $" > 0");
+    test( worse < 10000000, "TestScores "$testnum @ worse $" < 10000000");
     test( better > worse, "TestScores "$testnum @ better $" > "$ worse);
 }
 
 function TestScoring()
 {
     local int better, worse, testnum;
-    better = _ScoreRun(7200, 3600, 2, 2, 5, 5, 12, 24, 10000, 200);// slower but way less saves/loads, and did more
-    worse = _ScoreRun(3600, 3000, 2, 2, 100, 100, 3, 12, 10000, 20);
+    better = _ScoreRun(7200*10, 3600*10, 2, 2, 5, 5, 12, 24, 10000, 200);// slower but way less saves/loads, and did more
+    worse = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100, 3, 12, 10000, 20);
     TestScores(better, worse, ++testnum);
 
-    better = _ScoreRun(3600, 3000, 2, 2, 100, 100, 3, 12, 10000, 50);
-    worse = _ScoreRun(10800, 9001, 2, 2, 50, 50, 10, 20, 10000, 100);// too much slower to be better
+    better = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100, 3, 12, 10000, 50);
+    worse = _ScoreRun(10800*10, 9001*10, 2, 2, 50, 50, 9, 20, 10000, 100);// too much slower to be better
+    TestScores(better, worse, ++testnum);
+
+    better = _ScoreRun(290879, 242176, 1.7, 2, 796, 171, 12, 24, 25357, 59);// Astro
+    worse = _ScoreRun(290800, 242100, 1.7, 2, 796, 171, 10, 23, 25357, 59);// same thing but less bingos and slightly faster
     TestScores(better, worse, ++testnum);
 }
 
