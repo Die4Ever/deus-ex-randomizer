@@ -29,7 +29,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,3,0,2) ) {
+    if( ConfigOlderThan(2,3,0,3) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
 
@@ -247,6 +247,31 @@ function vanilla_datacubes_rules()
     datacubes_rules[i].min_pos = vect(-2235.248291, 1414.674072, -159.039658)-vect(8,8,8);
     datacubes_rules[i].max_pos = vect(-2235.248291, 1414.674072, -159.039658)+vect(8,8,8);
     datacubes_rules[i].allow = false;
+    i++;
+
+    // As requested, the patient has been moved to the Surgery Ward for immediate salvage of his datavault.  If you wish to observe the progress of the operation in person, the door code for surgery is 0199; or, if you wish to view the operation remotely, you may use the temporary account we've created for you: login "psherman" and password "Raven".  Please let me know if myself or my staff can provide you with any further assistance.
+    datacubes_rules[i].map = "05_NYC_UNATCOMJ12LAB";
+    datacubes_rules[i].item_name = '05_Datacube03';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    // Wednesday, 4/15: IS promises that LabNet accounts will be restored by Friday; new login is "dmoreau" with password "raptor".
+    datacubes_rules[i].map = "05_NYC_UNATCOMJ12LAB";
+    datacubes_rules[i].item_name = '05_Book01';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    // We are in the process of ghosting all network security resources to provide additional protection against possible intrusion or denial of service attacks.  Until this process is complete, all security computers will be utilizing a temporary system.
+    // Login: MJ12  Password: INVADER
+    datacubes_rules[i].map = "05_NYC_UNATCOMJ12LAB";
+    datacubes_rules[i].item_name = '05_Datacube02';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
     i++;
 
     // make sure you can get to the book without needing to jump down
