@@ -539,7 +539,7 @@ static function int _ScoreRun(int time, int time_without_menus, float CombatDiff
     i -= time_without_menus / 10;
     i += CombatDifficulty * 500.0;
     i += rando_difficulty * 500;
-    i -= saves * 50;
+    i -= saves * 10;
     i -= loads * 50;
     i += bingos * 500;
     i += bingospots * 50;// make sure to ignore the free space
