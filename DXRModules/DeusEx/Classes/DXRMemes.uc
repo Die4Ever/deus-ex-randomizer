@@ -229,7 +229,35 @@ function AnyEntry()
             // extra randomization in the intro for the lolz, ENDGAME4 doesn't have a DeusExLevelInfo object though, so it doesn't get randomized :(
             l("Memeing up "$ dxr.localURL);
             RandomizeCutscene();
+            FixEndgameEndCamera();
             break;
+    }
+}
+
+function FixEndgameEndCamera()
+{
+    local CameraPoint cp;
+    local int endCameraSeq;
+
+    switch(dxr.localURL)
+    {
+        case "ENDGAME1":
+            endCameraSeq=29;
+            break;
+        case "ENDGAME2":
+            endCameraSeq=31;
+            break;
+        case "ENDGAME3":
+            endCameraSeq=27;
+            break;
+        default:
+            return;
+    }
+
+    foreach AllActors(class'CameraPoint',cp){
+        if (cp.sequenceNum==endCameraSeq){
+            cp.timeWaitPost+=60;
+        }
     }
 }
 
