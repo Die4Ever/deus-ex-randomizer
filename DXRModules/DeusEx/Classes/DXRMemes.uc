@@ -242,13 +242,21 @@ function FixEndgameEndCamera()
     switch(dxr.localURL)
     {
         case "ENDGAME1":
-            endCameraSeq=29;
+            endCameraSeq=29; //Same in Vanilla and Revision
             break;
         case "ENDGAME2":
+#ifdef revision
+            endCameraSeq=32;
+#else
             endCameraSeq=31;
+#endif
             break;
         case "ENDGAME3":
+#ifdef revision
+            endCameraSeq=28;
+#else
             endCameraSeq=27;
+#endif
             break;
         default:
             return;
