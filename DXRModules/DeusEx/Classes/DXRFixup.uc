@@ -912,6 +912,7 @@ function Jailbreak_FirstEntry()
     local DeusExMover dxm;
     local #var(prefix)UNATCOTroop lloyd;
     local #var(prefix)AlexJacobson alex;
+    local #var(prefix)JaimeReyes j;
     local DXREnemies dxre;
     local int i;
 
@@ -961,6 +962,9 @@ function Jailbreak_FirstEntry()
         }
         foreach AllActors(class'#var(prefix)AlexJacobson', alex) {
             RemoveFears(alex);
+        }
+        foreach AllActors(class'#var(prefix)JaimeReyes', j) {
+            RemoveFears(j);
         }
         break;
 #endif
@@ -1855,6 +1859,7 @@ function Paris_FirstEntry()
     local Dispatcher d;
     local ScriptedPawn sp;
     local Conversation c;
+    local #var(prefix)JaimeReyes j;
 
     switch(dxr.localURL)
     {
@@ -1902,6 +1907,9 @@ function Paris_FirstEntry()
             c.bInvokeBump = false;
             c.bInvokeSight = false;
             c.bInvokeRadius = false;
+        }
+        foreach AllActors(class'#var(prefix)JaimeReyes', j) {
+            RemoveFears(j);
         }
         break;
 #endif
