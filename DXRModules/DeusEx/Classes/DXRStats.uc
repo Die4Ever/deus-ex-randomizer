@@ -8,6 +8,7 @@ struct RunInfo
     var int seed;
     var int flagshash;
     var bool bSetSeed;
+    var string place;// string because it can be "--"
 };
 
 var RunInfo runs[20];
@@ -432,6 +433,7 @@ function QueryLeaderboard()
     js.static.Add(j, "seed", dxr.flags.seed);
     js.static.Add(j, "flagshash", dxr.flags.FlagsHash());
     js.static.Add(j, "bSetSeed", dxr.flags.bSetSeed);
+    js.static.Add(j, "PlayerName", class'DXRActorsBase'.static.GetActorName(dxr.player));
     js.static.End(j);
 
     l("QueryLeaderboard(): "$j);
@@ -443,6 +445,8 @@ function ReceivedLeaderboard(Json j)
     local int i;
     local string vals[10];
 
+    l("ReceivedLeaderboard");
+
     for(i=0; i<15; i++) {
         vals[0] = "";
         j.get_vals("leaderboard-"$i, vals);
@@ -453,6 +457,7 @@ function ReceivedLeaderboard(Json j)
         runs[i].seed = int(vals[3]);
         runs[i].flagshash = int(vals[4]);
         runs[i].bSetSeed = bool(vals[5]);
+        runs[i].place = vals[6];
     }
 }
 
@@ -463,7 +468,7 @@ function DrawLeaderboard(GC gc)
     gc.SetFont(Font'DeusExUI.FontConversationLarge');
     for(i=0; i<ArrayCount(runs) && runs[i].name!=""; i++){
         yPos = (i+1) * 25;
-        gc.DrawText(0,yPos,30,50, "#"$(i+1)$".");
+        gc.DrawText(0,yPos,30,50, "#"$runs[i].place$".");
         gc.DrawText(30,yPos,200,50, runs[i].name);
         gc.DrawText(250,yPos,100,50, IntCommas(runs[i].score));
         gc.DrawText(350,yPos,100,50, fmtTimeToString(runs[i].time));
@@ -553,7 +558,7 @@ function int ScoreRun()
     local PlayerDataItem data;
     local string event, desc;
     local int x, y, progress, max, bingos, bingo_spots;
-    local int time, time_without_menus, i;
+    local int time, time_without_menus, i, loads, keys, score;
     local #var(PlayerPawn) p;
     p = player();
     for (i=1;i<=15;i++) {
@@ -573,7 +578,12 @@ function int ScoreRun()
         }
     }
 
-    return _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, GetDataStorageStat(dxr, "DXRStats_loads"), bingos, bingo_spots, p.SkillPointsTotal, p.KeyRing.GetKeyCount());
+    loads = GetDataStorageStat(dxr, "DXRStats_loads");
+    keys = p.KeyRing.GetKeyCount();
+
+    score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, loads, bingos, bingo_spots, p.SkillPointsTotal, keys);
+    info("_ScoreRun(" $ time @ time_without_menus @ p.CombatDifficulty @ dxr.flags.difficulty @ p.saveCount @ loads @ bingos @ bingo_spots @ p.SkillPointsTotal @ keys $ "): "$score);
+    return score;
 }
 
 function ExtendedTests()
