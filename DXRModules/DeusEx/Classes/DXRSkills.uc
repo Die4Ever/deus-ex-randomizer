@@ -153,7 +153,7 @@ simulated function RandoSkillLevelValues(Skill a)
     }
 #ifdef injections
     else if( #var(prefix)SkillDemolition(a) != None ) {
-        add_desc = "Each level increases the number of grenades you can carry by 1.";
+        add_desc = "Each level increases the number of grenades you can carry by 1. Animation speeds, defusing times, and fuse lengths are also affected by skill level.";
     }
     else if( #var(prefix)SkillComputer(a) != None ) {
         add_desc = "Hacking uses 5 bioelectric energy per second.";
