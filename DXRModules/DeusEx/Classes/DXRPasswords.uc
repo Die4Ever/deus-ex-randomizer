@@ -1,20 +1,20 @@
 class DXRPasswords extends DXRActorsBase;
 
 var transient DeusExNote lastCheckedNote;
-var config safe_rule datacubes_rules[32];
+var config safe_rule datacubes_rules[64];
 
 var int num_not_passwords;
-var config string not_passwords[64];
+var config string not_passwords[100];
 
 struct YesPassword {
     var string map;
     var string password;
     var string search_for;
 };
-var config YesPassword yes_passwords[32];
+var config YesPassword yes_passwords[64];
 
-var travel string oldpasswords[64];
-var travel string newpasswords[64];
+var travel string oldpasswords[100];
+var travel string newpasswords[100];
 var travel int passStart;
 var travel int passEnd;
 var config float min_hack_adjust, max_hack_adjust;
@@ -62,7 +62,7 @@ function CheckConfig()
         not_passwords[i++] = "SECURITY CONSOLE";
         not_passwords[i++] = "SECURITY UPGRADE";
         not_passwords[i++] = "network security";
-        not_passwords[i++] = "security computers";
+        not_passwords[i++] = "security computer";
         not_passwords[i++] = "security keypad";
         not_passwords[i++] = "the security";
         not_passwords[i++] = "bypass security";
@@ -99,6 +99,7 @@ function CheckConfig()
         not_passwords[i++] = "Majestic 12";
         not_passwords[i++] = "12 hours";
         not_passwords[i++] = ":12";
+        not_passwords[i++] = "4/12";
         not_passwords[i++] = "Chapter 12";
         not_passwords[i++] = "the Illuminati";
         not_passwords[i++] = "raptor-chickens";

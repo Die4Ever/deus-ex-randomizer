@@ -1134,7 +1134,7 @@ function Vector GetCenter(Actor test)
     return (MinVect+MaxVect)/2;
 }
 
-function int GetSafeRule(safe_rule rules[32], name item_name, vector newpos)
+function int GetSafeRule(safe_rule rules[64], name item_name, vector newpos)
 {
     local int i;
 

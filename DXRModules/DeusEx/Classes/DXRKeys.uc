@@ -1,6 +1,6 @@
 class DXRKeys extends DXRActorsBase;
 
-var config safe_rule keys_rules[32];
+var config safe_rule keys_rules[64];
 
 struct door_fix {
     var string map;
