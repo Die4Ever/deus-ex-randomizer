@@ -1075,7 +1075,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
             continue;
         availLocs[_num_locs++] = i;
 
-        if( (START_LOCATION & locations[i].bitMask) != 0)
+        if( (START_LOCATION & locations[i].bitMask) != 0 && dxr.localURL == locations[i].mapName)
             _num_starts++;
     }
 
@@ -1084,7 +1084,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
     if(_num_starts > 0) {
         for(i=0; i<20; i++) {
             r = rng(_num_locs);
-            if( (START_LOCATION & locations[availLocs[r]].bitMask) == 0)
+            if( (START_LOCATION & locations[availLocs[r]].bitMask) == 0 || dxr.localURL != locations[i].mapName)
                 continue;
 
             goalsToLocations[num_goals] = availLocs[r];
