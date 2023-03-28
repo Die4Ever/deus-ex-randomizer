@@ -428,6 +428,11 @@ function PostFirstEntryMapFixes()
             c.Destroy();
         }
         break;
+
+    case "14_OCEANLAB_LAB":
+        // ensure rebreather before greasel lab, in case the storage closet key is in the flooded area
+        _AddActor(Self, class'Rebreather', vect(1523.214111, 24.282661, -1628.287231), rot(0,0,0));
+        break;
 #endif
     }
 }
