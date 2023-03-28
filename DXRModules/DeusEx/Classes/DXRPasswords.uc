@@ -29,7 +29,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,3,0,3) ) {
+    if( ConfigOlderThan(2,3,0,4) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
 

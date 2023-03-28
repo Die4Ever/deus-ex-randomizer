@@ -40,7 +40,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(2,2,7,1) ) {
+    if( ConfigOlderThan(2,3,0,4) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -103,6 +103,10 @@ function CheckConfig()
         add_datacubes[i].map = "00_TrainingFinal";
         add_datacubes[i].text = "Many other things will be randomized when you get to the real game. In order to be prepared, check out our README and Wiki on the Deus Ex Randomizer GitHub.";
         add_datacubes[i].location = vect(6577.697266, -3884.925049, 33.369633);
+        i++;
+
+        add_datacubes[i].map = "05_NYC_UNATCOMJ12lab";
+        add_datacubes[i].text = "Agent Sherman, I've updated the demiurge password for Agent Navarre's killphrase to archon. Make sure you don't leave this datacube lying around.";
         i++;
 
         add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
