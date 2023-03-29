@@ -88,7 +88,7 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
     // plasma, don't worry about PS40 because that gets handled in its own class
     case class'#var(prefix)PlasmaBolt':
     case class'PlasmaBoltFixTicks':
-        f = 16;
+        f = 18.0;
         p.default.Damage = ratio * f;
 #ifndef hx
         class'#var(prefix)PlasmaBolt'.default.mpDamage = ratio * f;
@@ -97,7 +97,7 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
         p = class'PlasmaBoltFixTicks';
         d = p;
         p.default.Damage = ratio * f;
-        w.HitDamage = ratio * f;
+        w.HitDamage = ratio * f;// write back the weapon damage
         break;
 
     case class'#var(prefix)Rocket':

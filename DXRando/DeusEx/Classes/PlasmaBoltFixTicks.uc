@@ -19,9 +19,9 @@ Begin:
 defaultproperties
 {
     blastRadius=128
-    Damage=16
+    Damage=18
 #ifndef hx
-    mpDamage=16
+    mpDamage=18
     mpBlastRadius=128
 #endif
 }
