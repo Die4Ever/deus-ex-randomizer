@@ -99,6 +99,7 @@ static function DynamicTeleporter ReplaceTeleporter(#var(prefix)Teleporter t)
 
 defaultproperties
 {
+    bHidden=False
     bGameRelevant=True
     bCollideActors=True
     bStatic=False

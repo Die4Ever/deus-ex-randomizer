@@ -217,6 +217,7 @@ function AnyEntry()
 {
     local #var(prefix)Vehicles v;
     local #var(prefix)Button1 b;
+    local #var(prefix)Teleporter t;
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
@@ -242,6 +243,10 @@ function AnyEntry()
             continue;
         if(v.CollisionRadius > 360)
             v.SetCollisionSize(360, v.CollisionHeight);
+    }
+    foreach AllActors(class'#var(prefix)Teleporter', t) {
+        if(t.bCollideActors)
+            t.bHidden = false;
     }
 }
 
