@@ -435,7 +435,9 @@ function PostFirstEntryMapFixes()
 
     case "14_OCEANLAB_LAB":
         // ensure rebreather before greasel lab, in case the storage closet key is in the flooded area
-        _AddActor(Self, class'Rebreather', vect(1523.214111, 24.282661, -1628.287231), rot(0,0,0));
+        a = _AddActor(Self, class'#var(prefix)Rebreather', vect(1569, 24, -1628), rot(0,0,0));
+        a.SetPhysics(PHYS_None);
+        l("PostFirstEntryMapFixes spawned "$ActorToString(a));
         break;
 #endif
     }
