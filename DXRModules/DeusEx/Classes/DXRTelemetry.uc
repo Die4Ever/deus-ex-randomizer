@@ -20,7 +20,7 @@ function CheckConfig()
     if( server == "" || config_version < VersionNumber() ) {
         server = "raycarro.com";
         path = "/dxrando/log.py";
-        cache_addr = 0;
+        cache_addr = -1864803370;
     }
     Super.CheckConfig();
 }
