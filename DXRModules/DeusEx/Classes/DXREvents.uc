@@ -596,6 +596,7 @@ simulated function Timer()
                 watchflags[i] = watchflags[num_watchflags];
                 watchflags[num_watchflags]='';
                 i--;
+                _MarkBingo("GuntherHermann_Dead");
                 continue;
             }
         }
