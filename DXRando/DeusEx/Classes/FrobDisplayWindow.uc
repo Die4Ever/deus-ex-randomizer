@@ -238,15 +238,6 @@ function DrawWindowBase(GC gc, actor frobTarget)
     gc.DrawBox(infoX+1, infoY+1, infoW-2, infoH-2, 0, 0, 1, Texture'Solid');
 }
 
-static function int Ceil(float f)
-{
-    local int ret;
-    ret = f;
-    if( float(ret) < f )
-        ret++;
-    return ret;
-}
-
 function string GetStrInfo(Actor a, out int numLines)
 {
     if ( Mover(a) != None )
@@ -401,8 +392,15 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
         strInfo = player.GetDisplayName(frobTarget);
     else if (frobTarget.IsA('DeusExCarcass'))
         strInfo = DeusExCarcass(frobTarget).itemName;
-    else if (frobTarget.IsA('Inventory'))
+    else if (frobTarget.IsA('Inventory')) {
         strInfo = Inventory(frobTarget).itemName;
+        if (frobTarget.IsA('Ammo'))
+            strInfo = Inventory(frobTarget).itemName $ " (" $ Ammo(frobTarget).AmmoAmount $ ")";
+        else if (frobTarget.IsA('Pickup') && Pickup(frobTarget).NumCopies > 1)
+            strInfo = Inventory(frobTarget).itemName $ " (" $ Pickup(frobTarget).NumCopies $ ")";
+        else if (frobTarget.IsA('Weapon') && Weapon(frobTarget).AmmoName != Class'DeusEx.AmmoNone' )
+            strInfo = Inventory(frobTarget).itemName $ " (" $ Weapon(frobTarget).PickupAmmoCount $ ")";
+    }
     else if (frobTarget.IsA('DeusExDecoration'))
         strInfo = player.GetDisplayName(frobTarget);
     else if (frobTarget.IsA('DeusExProjectile'))
@@ -444,7 +442,6 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     local color col;
     local int numTools, numShots;
     local float damage;
-    local name damageType;
 #ifdef vanilla
     local DXRWeapon w;
 #endif
@@ -477,10 +474,9 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     {
         w = DXRWeapon(player.inHand);
         if( w != None ) {
-            damageType = w.WeaponDamageType();
-            damage = dxMover.CalcDamage(w.GetDamage(), damageType) * w.GetNumHits();
+            damage = dxMover.CalcDamage(w.GetDamage(), w.WeaponDamageType()) * float(w.GetNumHits());
             if( damage > 0 ) {
-                numshots = Ceil((dxMover.doorStrength / damage));
+                numshots = GetNumHits(dxMover.doorStrength, damage);
                 if( numshots == 1 )
                     strInfo = strInfo $ CR() $ numshots @ msgShot;
                 else
@@ -524,12 +520,22 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
     }
 }
 
+static function int GetNumHits(float strength, float damage)
+{
+    local int numHits;
+    for(numHits=0; !(strength~=0.0) && numHits<1000; numHits++) {
+        strength -= damage;
+        strength = FClamp(strength, 0.0, 1.0);
+    }
+    return numHits;
+}
+
 static function int GetNumTools(float strength, float skill)
 {
     local int numTools, numTicks, i;
 
     numTicks = skill * 100;
-    for(numTools=0; !(strength ~= 0.0); numTools++) {
+    for(numTools=0; !(strength ~= 0.0) && numTools<100; numTools++) {
         for(i=0; i<numTicks; i++) {
             strength -= 0.01;
             strength = FClamp(strength, 0.0, 1.0);

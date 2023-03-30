@@ -4,12 +4,12 @@
 
 class MenuScreenRandoOptions expands MenuUIScreenWindow;
 
-
 event InitWindow()
 {
     local int i;
 
     choices[i++]=Class'MenuChoice_Telemetry';
+    choices[i++]=Class'MenuChoice_ShowNews';
 
     if(#defined(vanilla)) {
         choices[i++]=Class'MenuChoice_EnergyDisplay';
@@ -18,16 +18,18 @@ event InitWindow()
     if(!#defined(revision)) {
         choices[i++]=Class'MenuChoice_ContinuousMusic';
         choices[i++]=Class'MenuChoice_RandomMusic';
+        choices[i++]=Class'MenuChoice_ChangeSong';
     }
     choices[i++]=Class'MenuChoice_PasswordAutofill';
     choices[i++]=Class'MenuChoice_BrightnessBoost';
     choices[i++]=Class'MenuChoice_ConfirmNoteDelete';
+
     choices[i++]=Class'MenuChoice_JoinDiscord';
     choices[i++]=Class'MenuChoice_ReleasePage';  //This should probably always be the bottom option
 
     //Automatic sizing to the number of entries...
-    ClientHeight = (i+1) * 40;
-    helpPosY = ClientHeight - 40;
+    ClientHeight = (i+1) * 36;
+    helpPosY = ClientHeight - 36;
 
 	Super.InitWindow();
 }
@@ -54,4 +56,5 @@ defaultproperties
      ClientWidth=500
      ClientHeight=50
      helpPosY=10
+     choiceStartY=12
 }

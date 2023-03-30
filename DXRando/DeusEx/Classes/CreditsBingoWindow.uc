@@ -5,6 +5,11 @@ const bingoHeight = 360;
 const bingoStartX = 16;
 const bingoStartY = 22;
 
+event InitWindow()
+{
+    SetSize(default.width, default.height);
+}
+
 function FillBingoWindow(#var(PlayerPawn) player)
 {
     local int x, y, progress, max;
@@ -40,4 +45,10 @@ function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int 
     t.SetProgress(progress, max, bActiveMission);
     t.isCredits = true;
     return t;
+}
+
+defaultproperties
+{
+    width=410
+    height=410
 }

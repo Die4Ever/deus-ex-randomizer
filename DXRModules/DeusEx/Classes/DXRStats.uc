@@ -1,5 +1,18 @@
 class DXRStats extends DXRBase transient;
 
+struct RunInfo
+{
+    var string name;
+    var int score;
+    var int time;
+    var int seed;
+    var int flagshash;
+    var bool bSetSeed;
+    var string place;// string because it can be "--"
+};
+
+var RunInfo runs[20];
+
 function AnyEntry()
 {
     Super.AnyEntry();
@@ -384,7 +397,6 @@ function AddMissionTimeTable(CreditsWindow cw)
     local int i, totalTime, totalRealTime;
 
     ctw = CreditsTimerWindow(cw.winScroll.NewChild(Class'CreditsTimerWindow'));
-    ctw.SetSize(450,450);
 
     ctw.AddMissionTime("1","Liberty Island",GetMissionTimeString(1),GetCompleteMissionTimeWithMenusString(1));
     ctw.AddMissionTime("2","NYC Generator",GetMissionTimeString(2),GetCompleteMissionTimeWithMenusString(2));
@@ -412,11 +424,83 @@ function AddMissionTimeTable(CreditsWindow cw)
     ctw.AddMissionTime(" ","Total With Menus",fmtTimeToString(totalTime),fmtTimeToString(totalRealTime));
 }
 
+function QueryLeaderboard()
+{
+    local string j;
+    local class<Json> js;
+    js = class'Json';
+    j = js.static.Start("QueryLeaderboard");
+    js.static.Add(j, "seed", dxr.flags.seed);
+    js.static.Add(j, "flagshash", dxr.flags.FlagsHash());
+    js.static.Add(j, "bSetSeed", dxr.flags.bSetSeed);
+    js.static.Add(j, "PlayerName", class'DXRActorsBase'.static.GetActorName(dxr.player));
+    js.static.End(j);
+
+    l("QueryLeaderboard(): "$j);
+    class'DXRTelemetry'.static.SendEvent(dxr, self, j);
+}
+
+function ReceivedLeaderboard(Json j)
+{
+    local int i;
+    local string vals[10];
+
+    l("ReceivedLeaderboard");
+
+    for(i=0; i<15; i++) {
+        vals[0] = "";
+        j.get_vals("leaderboard-"$i, vals);
+        if(vals[0] == "") return;
+        runs[i].name = vals[0];
+        runs[i].score = int(vals[1]);
+        runs[i].time = int(vals[2]);
+        runs[i].seed = int(vals[3]);
+        runs[i].flagshash = int(vals[4]);
+        runs[i].bSetSeed = bool(vals[5]);
+        runs[i].place = vals[6];
+    }
+}
+
+function DrawLeaderboard(GC gc)
+{
+    local int yPos, i;
+
+    gc.SetFont(Font'DeusExUI.FontConversationLarge');
+    for(i=0; i<ArrayCount(runs) && runs[i].name!=""; i++){
+        yPos = (i+1) * 25;
+        gc.DrawText(0,yPos,30,50, "#"$runs[i].place$".");
+        gc.DrawText(30,yPos,200,50, runs[i].name);
+        gc.DrawText(250,yPos,100,50, IntCommas(runs[i].score));
+        gc.DrawText(350,yPos,100,50, fmtTimeToString(runs[i].time));
+        gc.DrawText(450,yPos,100,50, runs[i].flagshash);
+    }
+}
+
+static function CheckLeaderboard(DXRando dxr, Json j)
+{
+    local DXRStats stats;
+    if(j.get("leaderboard-0") == "") {
+        return;
+    }
+
+    stats = DXRStats(dxr.FindModule(class'DXRStats'));
+    if(stats != None)
+        stats.ReceivedLeaderboard(j);
+}
+
 function AddDXRCredits(CreditsWindow cw)
 {
     local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads;
+    local CreditsLeaderboardWindow leaderboard;
 
     cw.PrintLn();
+
+    if(dxr.telemetry != None && dxr.telemetry.enabled) {
+        QueryLeaderboard();
+        leaderboard = CreditsLeaderboardWindow(cw.winScroll.NewChild(Class'CreditsLeaderboardWindow'));
+        leaderboard.InitStats(self);
+        cw.PrintLn();
+    }
 
     AddMissionTimeTable(cw);
 
@@ -434,6 +518,9 @@ function AddDXRCredits(CreditsWindow cw)
 
     cw.PrintHeader("Statistics");
 
+    if(dxr.dxInfo.missionNumber == 99)
+        cw.PrintHeader("Score: " $ IntCommas(ScoreRun()));
+    cw.PrintText("Flagshash: " $ dxr.flags.FlagsHash());
     cw.PrintText("Shots Fired: "$fired);
     cw.PrintText("Weapon Swings: "$swings);
     cw.PrintText("Jumps: "$jumps);
@@ -449,11 +536,74 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
+static function int _ScoreRun(int time, int time_without_menus, float CombatDifficulty, int rando_difficulty, int saves, int loads, int bingos, int bingospots, int SkillPointsTotal, int Nanokeys)
+{
+    local int i;
+    i = 100000;
+    i -= time / 10;
+    i -= time_without_menus / 10;
+    i += CombatDifficulty * 500.0;
+    i += rando_difficulty * 500;
+    i -= saves * 10;
+    i -= loads * 50;
+    i += bingos * 500;
+    i += bingospots * 50;// make sure to ignore the free space
+    i += SkillPointsTotal / 2;
+    i += Nanokeys * 20;
+    return i;
+}
+
+function int ScoreRun()
+{
+    local PlayerDataItem data;
+    local string event, desc;
+    local int x, y, progress, max, bingos, bingo_spots;
+    local int time, time_without_menus, i, loads, keys, score;
+    local #var(PlayerPawn) p;
+    p = player();
+    for (i=1;i<=15;i++) {
+        time_without_menus += GetCompleteMissionTime(i);
+        time += GetCompleteMissionMenuTime(i);
+    }
+    time += time_without_menus;
+
+    data = class'PlayerDataItem'.static.GiveItem(dxr.player);
+    bingos = data.NumberOfBingos();
+
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x, y, event, desc, progress, max);
+            if(progress >= max && event != "Free Space")
+                bingo_spots++;
+        }
+    }
+
+    loads = GetDataStorageStat(dxr, "DXRStats_loads");
+    keys = p.KeyRing.GetKeyCount();
+
+    score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, loads, bingos, bingo_spots, p.SkillPointsTotal, keys);
+    info("_ScoreRun(" $ time @ time_without_menus @ p.CombatDifficulty @ dxr.flags.difficulty @ p.saveCount @ loads @ bingos @ bingo_spots @ p.SkillPointsTotal @ keys $ "): "$score);
+    return score;
+}
+
 function ExtendedTests()
 {
     local int time, completeTime, menutime, completemenutime;
 
     Super.ExtendedTests();
+
+    teststring( IntCommas(1), "1", "IntCommas 1");
+    teststring( IntCommas(123), "123", "IntCommas 123");
+    teststring( IntCommas(1234), "1,234", "IntCommas 1,234");
+    teststring( IntCommas(-1234), "-1,234", "IntCommas -1,234");
+    teststring( IntCommas(1234567), "1,234,567", "IntCommas 1,234,567");
+    teststring( IntCommas(12345678), "12,345,678", "IntCommas 12,345,678");
+    teststring( IntCommas(1234567890), "1,234,567,890", "IntCommas 1,234,567,890");
+    teststring( IntCommas(1000), "1,000", "IntCommas 1,000");
+    teststring( IntCommas(40000), "40,000", "IntCommas 40,000");
+    teststring( IntCommas(100000), "100,000", "IntCommas 100,000");
+    teststring( IntCommas(104000), "104,000", "IntCommas 104,000");
+    teststring( IntCommas(1000000), "1,000,000", "IntCommas 1,000,000");
 
     // mission 1 tests
     testint( GetMissionTime(1), 0, "GetMissionTime(1) == 0");
@@ -541,6 +691,34 @@ function ExtendedTests()
     // ensure correct key names
     test( GetTotalTime(dxr) > 0, "GetTotalTime");
     test( GetTotalMenuTime(dxr) > 0, "GetTotalMenuTime");
+
+    TestScoring();
+}
+
+function TestScores(int better, int worse, int testnum)
+{
+    l("TestScores "$testnum @ better $" > "$ worse);// so you can see it in UCC.log even if it passes
+    test( better > 0, "TestScores "$testnum @ better $" > 0");
+    test( better < 10000000, "TestScores "$testnum @ better $" < 10000000");
+    test( worse > 0, "TestScores "$testnum @ worse $" > 0");
+    test( worse < 10000000, "TestScores "$testnum @ worse $" < 10000000");
+    test( better > worse, "TestScores "$testnum @ better $" > "$ worse);
+}
+
+function TestScoring()
+{
+    local int better, worse, testnum;
+    better = _ScoreRun(7200*10, 3600*10, 2, 2, 5, 5, 12, 24, 10000, 200);// slower but way less saves/loads, and did more
+    worse = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100, 3, 12, 10000, 20);
+    TestScores(better, worse, ++testnum);
+
+    better = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100, 3, 12, 10000, 50);
+    worse = _ScoreRun(10800*10, 9001*10, 2, 2, 50, 50, 9, 20, 10000, 100);// too much slower to be better
+    TestScores(better, worse, ++testnum);
+
+    better = _ScoreRun(290879, 242176, 1.7, 2, 796, 171, 12, 24, 25357, 59);// Astro
+    worse = _ScoreRun(290800, 242100, 1.7, 2, 796, 171, 10, 23, 25357, 59);// same thing but less bingos and slightly faster
+    TestScores(better, worse, ++testnum);
 }
 
 defaultproperties

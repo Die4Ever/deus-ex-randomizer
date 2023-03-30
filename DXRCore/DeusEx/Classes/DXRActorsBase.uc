@@ -298,6 +298,7 @@ static function ThrowItem(Inventory item, float VelocityMult)
 {
     local Actor a;
     local vector loc, rot;
+    local int i;
 
     a = item.Owner;
     if( Pawn(a) != None )
@@ -309,7 +310,13 @@ static function ThrowItem(Inventory item, float VelocityMult)
         loc = item.Location;
         rot = vector(item.Rotation);
     }
+    // retain PickupAmmoCount, vanilla DropFrom ditches the PickupAmmoCount because it assumes the player is doing this
+    if(DeusExWeapon(item) != None)
+        i = DeusExWeapon(item).PickupAmmoCount;
     item.DropFrom(loc + (VRand()*vect(32,32,16)) + vect(0,0,16) );
+    if(DeusExWeapon(item) != None && DeusExWeapon(item).PickupAmmoCount < i)
+        DeusExWeapon(item).PickupAmmoCount = i;
+
     // kinda copied from DeusExPlayer DropItem function
     item.Velocity = rot * 300 + vect(0,0,220) + VRand()*32;
     item.Velocity *= VelocityMult;
@@ -319,23 +326,24 @@ static function Inventory MoveNextItemTo(Inventory item, vector Location, name T
 {
     // code similar to Revision Mission05.uc
     local Inventory nextItem;
-    local DeusExPlayer player;
+    local #var(PlayerPawn) player;
     local int i;
 
     // Find the next item we can process.
-    while((item != None) && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None))
+    while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None))
         item = item.Inventory;
 
     if(item == None) return None;
 
     nextItem = item.Inventory;
+    player = #var(PlayerPawn)(item.owner);
 
     //== Y|y: Turn off any charged pickups we were using and remove the associated HUD.  Per Lork on the OTP forums
-    player = DeusExPlayer(item.owner);
-    if (item.IsA('ChargedPickup') && player!=None)
-        ChargedPickup(item).ChargedPickupEnd(player);
-
-    Pawn(item.Owner).DeleteInventory(item);
+    if(player != None) {
+        if (item.IsA('ChargedPickup'))
+            ChargedPickup(item).ChargedPickupEnd(player);
+        player.DeleteInventory(item);
+    }
 
     for(i=0; i<100; i++) {
         if(item.SetLocation(Location)) {
@@ -428,6 +436,24 @@ function RemoveReactions(ScriptedPawn p)
     p.bReactCarcass = false;
     p.bReactDistress = false;
     p.bReactProjectiles = false;
+}
+
+function SetPawnHealth(ScriptedPawn p, int health)
+{
+    // we need to set defaults so that GenerateTotalHealth() works properly
+    p.default.HealthHead = health;
+    p.default.HealthTorso = health;
+    p.default.HealthLegLeft = health;
+    p.default.HealthLegRight = health;
+    p.default.HealthArmLeft = health;
+    p.default.HealthArmRight = health;
+    p.HealthHead = health;
+    p.HealthTorso = health;
+    p.HealthLegLeft = health;
+    p.HealthLegRight = health;
+    p.HealthArmLeft = health;
+    p.HealthArmRight = health;
+    p.GenerateTotalHealth();
 }
 
 function bool Swap(Actor a, Actor b, optional bool retainOrders)
@@ -594,6 +620,9 @@ function Actor ReplaceActor(Actor oldactor, string newclassstring)
 function Conversation GetConversation(Name conName)
 {
     local Conversation c;
+    if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
+        conName = StringToName("FemJC"$string(conName));
+    }
     foreach AllObjects(class'Conversation', c) {
         if( c.conName == conName ) return c;
     }
@@ -713,6 +742,7 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
     newactor.Buoyancy = a.Buoyancy;
     newactor.Event = event;
     newactor.bHidden = a.bHidden;
+    newactor.DrawScale = a.DrawScale;
 
     for(i=0; i<ArrayCount(a.Multiskins); i++) {
         newactor.Multiskins[i] = a.Multiskins[i];
@@ -822,6 +852,55 @@ function Actor findNearestToActor(class<Actor> nearestClass, Actor nearThis){
         }
     }
     return nearestThing;
+}
+
+function RemoveComputerUser(#var(prefix)Computers comp, string userName)
+{
+    local int i, num;
+    // we can't have empty slots in the middle
+    for(i=0; i<ArrayCount(comp.userList); i++) {
+        if(comp.userList[i].userName ~= userName) {
+            comp.userList[i].userName = "";
+            comp.userList[i].Password = "";
+        }
+        if(comp.userList[i].userName == "") continue;
+        if(i != num) {
+            comp.userList[num] = comp.userList[i];
+            comp.userList[i].userName = "";
+            comp.userList[i].Password = "";
+        }
+        num++;
+    }
+}
+
+function AddComputerUserAt(#var(prefix)Computers comp, string userName, string Password, int slot)
+{
+    local int i;
+
+    for(i=ArrayCount(comp.userList)-2; i>=slot; i--) {
+        comp.userList[i+1] = comp.userList[i];
+    }
+    comp.userList[slot].userName = userName;
+    comp.userList[slot].Password = Password;
+}
+
+function RemoveComputerSpecialOption(#var(prefix)Computers comp, Name TriggerEvent)
+{
+    local int i, num;
+    // we can't have empty slots in the middle
+    for(i=0; i<ArrayCount(comp.specialOptions); i++) {
+        if(comp.specialOptions[i].TriggerEvent == TriggerEvent) {
+            comp.specialOptions[i].TriggerEvent = '';
+            comp.specialOptions[i].Text = "";
+        }
+        if(comp.specialOptions[i].Text == "") continue;
+        if(i != num) {
+            comp.specialOptions[num] = comp.specialOptions[i];
+            comp.specialOptions[i].TriggerEvent = '';
+            comp.specialOptions[i].Text = "";
+        }
+        num++;
+    }
 }
 
 //I could have fuzzy logic and allow these Is___Normal functions to have overlap? or make them more strict where some normals don't classify as any of these?
@@ -1055,7 +1134,7 @@ function Vector GetCenter(Actor test)
     return (MinVect+MaxVect)/2;
 }
 
-function int GetSafeRule(safe_rule rules[32], name item_name, vector newpos)
+function int GetSafeRule(safe_rule rules[64], name item_name, vector newpos)
 {
     local int i;
 

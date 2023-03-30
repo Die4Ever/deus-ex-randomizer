@@ -214,6 +214,52 @@ simulated static function string UnpackString(out string s)
     return ret;
 }
 
+static function int Ceil(float f)
+{
+    local int ret;
+    ret = f;
+    if( float(ret) < f )
+        ret++;
+    return ret;
+}
+
+static function int imod(int a, int b)
+{// % converts to float in UnrealScript
+    return a-(a/b*b);
+}
+
+static function string IntCommas(int i)
+{
+    local string s;
+    local bool negative;
+    local int j;
+    if(i<0) {
+        negative = true;
+        i *= -1;
+    }
+    j = imod(i, 1000);
+    if(i < 1000 || j >= 100)
+        s = string(j);
+    else if(j<10)
+        s = "00" $ string(j);
+    else
+        s = "0" $ string(j);
+    i/=1000;
+    while(i>0) {
+        j = imod(i, 1000);
+        if(i < 1000 || j >= 100)
+            s = string(j) $ "," $ s;
+        else if(j<10)
+            s = "00" $ string(j) $ "," $ s;
+        else
+            s = "0" $ string(j) $ "," $ s;
+        i /= 1000;
+    }
+    if(negative)
+        s = "-" $ s;
+    return s;
+}
+
 simulated static function string FloatToString(float f, int decimal_places)
 {
     local int i;

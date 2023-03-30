@@ -3,6 +3,7 @@
 
 [See the full README and trailer here](https://github.com/Die4Ever/deus-ex-randomizer#readme)
 
+Downloads are in the Assets section below or in the Installation Instructions here:
 ## Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.
 <details>
 <summary>Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder...</summary>

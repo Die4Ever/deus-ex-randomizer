@@ -13,7 +13,7 @@ function CreateNews(Actor a, int newX, int newY, int ClientWidth, int ClientHeig
     SetPos(newX, newY);
     SetSize(ClientWidth, ClientHeight);
     SetBackground(Texture'Solid');
-    SetBackgroundStyle(DSTY_Normal);
+    SetBackgroundStyle(DSTY_Translucent);
     SetTileColorRGB(0,0,0);
     controlsParent = self;
 
@@ -95,6 +95,8 @@ function Set(DXRTelemetry tele)
 
 function bool HasNews()
 {
+    if(!bool(player.ConsoleCommand("get MenuChoice_ShowNews show_news")))
+        return false;
     if(tel == None || tel.enabled == false) return false;
     if( tel.dxr.localURL == "DX" || tel.dxr.localURL == "DXONLY" ) return true;
     return false;

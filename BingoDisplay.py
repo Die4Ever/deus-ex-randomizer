@@ -101,6 +101,8 @@ class Bingo:
             tkTile.config(bg="#505050")
         elif isActive == 1:# 1 is for maybe
             tkTile.config(bg="#303030")
+        elif isActive == -1:# -1 is for impossible
+            tkTile.config(bg="#300000")
         else:
             tkTile.config(bg="#000000", fg="#c8c8c8") # text color adjustment isn't working
 
@@ -125,8 +127,10 @@ class Bingo:
             split = field.split("=")
             fieldName = split[0].lower()
             fieldVal = split[1].replace('"',"")
-            if fieldVal.isdigit():
+            try:
                 fieldVal = int(fieldVal)
+            except:
+                pass
             bingoItem[fieldName]=fieldVal
 
         self.board[bingoCoord[0]][bingoCoord[1]] = bingoItem

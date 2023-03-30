@@ -2,14 +2,10 @@ class BuffTechGoggles injects TechGoggles;
 
 function static float CalcDistance(AugVision aug)
 {
-    local float str;
-
-    str = class'AugVision'.default.LevelValues[0] + class'AugVision'.default.LevelValues[1];
     if(aug != None) {
-        str = aug.LevelValues[0] + aug.LevelValues[1];
+        return aug.LevelValues[1];
     }
-    str /= 2.0;
-    return str;
+    return class'AugVision'.default.LevelValues[1];
 }
 
 function static string CalcDescription(AugVision aug)
@@ -47,7 +43,7 @@ function UpdateHUDDisplay(DeusExPlayer Player)
         augDisplay.activeCount++;
         log("WARNING: "$self$".UpdateHUDDisplay augDisplay.activeCount == 0");
     }
-    
+
     if(augDisplay.activeCount == 1) {
         augDisplay.bVisionActive = True;
         augDisplay.visionLevel = 1;
@@ -78,4 +74,9 @@ function ChargedPickupEnd(DeusExPlayer Player)
     }
 
     Super(ChargedPickup).ChargedPickupEnd(Player);
+}
+
+defaultproperties
+{
+    Charge=1000
 }

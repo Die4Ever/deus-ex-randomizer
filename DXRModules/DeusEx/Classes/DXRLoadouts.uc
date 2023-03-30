@@ -643,8 +643,8 @@ function SpawnItems()
             if( chance_single(chance) ) {
                 loc = GetRandomPositionFine();
                 a = Spawn(aclass,,, loc);
-                if( reducer != None && a != None )
-                    reducer.ReduceItem(a);
+                if( reducer != None && Inventory(a) != None )
+                    reducer.ReduceItem(Inventory(a));
             }
         }
     }

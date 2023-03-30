@@ -229,7 +229,41 @@ function AnyEntry()
             // extra randomization in the intro for the lolz, ENDGAME4 doesn't have a DeusExLevelInfo object though, so it doesn't get randomized :(
             l("Memeing up "$ dxr.localURL);
             RandomizeCutscene();
+            FixEndgameEndCamera();
             break;
+    }
+}
+
+function FixEndgameEndCamera()
+{
+    local CameraPoint cp;
+    local int endCameraSeq;
+
+    switch(dxr.localURL)
+    {
+        case "ENDGAME1":
+            endCameraSeq=29; //Same in Vanilla and Revision
+            break;
+        case "ENDGAME2":
+            if(#defined(revision))
+                endCameraSeq=32;
+            else
+                endCameraSeq=31;
+            break;
+        case "ENDGAME3":
+            if(#defined(revision))
+                endCameraSeq=28;
+            else
+                endCameraSeq=27;
+            break;
+        default:
+            return;
+    }
+
+    foreach AllActors(class'CameraPoint',cp){
+        if (cp.sequenceNum==endCameraSeq){
+            cp.timeWaitPost+=60;
+        }
     }
 }
 
@@ -404,7 +438,7 @@ function RandomizeCutscene()
 #ifdef revision
     _skipactor_types[i++] = class<Actor>(DynamicLoadObject("RevisionDeco.Rev_SphereLight", class'class'));
 #endif
-    SwapAll("Engine.Actor", 10);
+    SwapAll("Engine.Actor", 15);
 
     for(i=0; i<ArrayCount(_skipactor_types); i++) {
         _skipactor_types[i] = old_skips[i];
@@ -474,7 +508,7 @@ function RandomizeDialog()
         speech[num++] = s;
     }
     for(i=0;i<num;i++) {
-        if(chance_single(5)) {
+        if(chance_single(7)) {
             j = rng(num);
             SwapSpeech(speech[i], speech[j]);
         }

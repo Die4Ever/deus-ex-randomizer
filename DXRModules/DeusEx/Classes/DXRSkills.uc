@@ -148,9 +148,12 @@ simulated function RandoSkillLevelValues(Skill a)
     local string add_desc;
     local float skill_value_wet_dry;
 
+    if( #var(prefix)SkillWeaponHeavy(a) != None ) {// TODO: maybe make this a sliding scale?
+        add_desc = "125% or higher will allow you to move more quickly while carrying a heavy weapon.";
+    }
 #ifdef injections
-    if( #var(prefix)SkillDemolition(a) != None ) {
-        add_desc = "Each level increases the number of grenades you can carry by 1.";
+    else if( #var(prefix)SkillDemolition(a) != None ) {
+        add_desc = "Each level increases the number of grenades you can carry by 1. Animation speeds, defusing times, and fuse lengths are also affected by skill level.";
     }
     else if( #var(prefix)SkillComputer(a) != None ) {
         add_desc = "Hacking uses 5 bioelectric energy per second.";
@@ -191,7 +194,6 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
     else if( s.Class == class'#var(prefix)SkillEnviro' ) {
         f = s.LevelValues[i];
-        if(i>0) r="|n    ";
 
 #ifdef vanilla
         word = "Damage Reduction (Passive/HazMat/Armor)";
@@ -200,6 +202,12 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
         word = "Damage Reduction (HazMat/Armor)";
 #endif
 
+        switch(i) {
+        case 0: r = "Untrained: "; break;
+        case 1: r = "|n    Trained: "; break;
+        case 2: r = "|n    Advanced: "; break;
+        case 3: r = "|n    Master: "; break;
+        }
 #ifdef vanilla
         r = r $ int( (1 - (f * 1.25 + 0.25)) * 100.0 ) $ p $ " / "; // passive is * 1.25 + 0.25
         r = r $ int( (1 - f * 0.75) * 100.0 ) $ p $ " / ";// hazmat is * 0.75
@@ -366,6 +374,28 @@ function ExtendedTests()
     testint(FrobDisplayWindow.static.GetNumTools(0.0100001, 0.010000), 1, "GetNumTools for lockpicks/multitools test 9");
     testint(FrobDisplayWindow.static.GetNumTools(0.010001, 0.010001), 1, "GetNumTools for lockpicks/multitools test 10");
     testint(FrobDisplayWindow.static.GetNumTools(0.010000, 0.010000), 1, "GetNumTools for lockpicks/multitools test 11");
+
+    testint(FrobDisplayWindow.static.GetNumHits(0.010000, 0.010000), 1, "GetNumHits for doors test 1");
+
+    testint(FrobDisplayWindow.static.GetNumHits(0.510000, 0.028000), 19, "GetNumHits for doors test 2");
+    testint(FrobDisplayWindow.static.GetNumHits(0.482000, 0.028000), 18, "GetNumHits for doors test 3");
+    testint(FrobDisplayWindow.static.GetNumHits(0.454000, 0.028000), 17, "GetNumHits for doors test 4");
+    testint(FrobDisplayWindow.static.GetNumHits(0.426000, 0.028000), 16, "GetNumHits for doors test 5");
+    testint(FrobDisplayWindow.static.GetNumHits(0.398000, 0.028000), 15, "GetNumHits for doors test 6");
+    testint(FrobDisplayWindow.static.GetNumHits(0.370000, 0.028000), 14, "GetNumHits for doors test 7");
+    testint(FrobDisplayWindow.static.GetNumHits(0.342000, 0.028000), 13, "GetNumHits for doors test 8");
+    testint(FrobDisplayWindow.static.GetNumHits(0.314000, 0.028000), 12, "GetNumHits for doors test 9");
+    testint(FrobDisplayWindow.static.GetNumHits(0.286000, 0.028000), 11, "GetNumHits for doors test 10");
+    testint(FrobDisplayWindow.static.GetNumHits(0.258000, 0.028000), 10, "GetNumHits for doors test 11");
+    testint(FrobDisplayWindow.static.GetNumHits(0.230000, 0.028000), 9, "GetNumHits for doors test 12");
+    testint(FrobDisplayWindow.static.GetNumHits(0.202000, 0.028000), 8, "GetNumHits for doors test 13");
+    testint(FrobDisplayWindow.static.GetNumHits(0.174000, 0.028000), 7, "GetNumHits for doors test 14");
+    testint(FrobDisplayWindow.static.GetNumHits(0.146000, 0.028000), 6, "GetNumHits for doors test 15");
+    testint(FrobDisplayWindow.static.GetNumHits(0.118000, 0.028000), 5, "GetNumHits for doors test 16");
+    testint(FrobDisplayWindow.static.GetNumHits(0.090000, 0.028000), 4, "GetNumHits for doors test 17");
+    testint(FrobDisplayWindow.static.GetNumHits(0.062000, 0.028000), 3, "GetNumHits for doors test 18");
+    testint(FrobDisplayWindow.static.GetNumHits(0.034000, 0.028000), 2, "GetNumHits for doors test 19");
+    testint(FrobDisplayWindow.static.GetNumHits(0.006000, 0.028000), 1, "GetNumHits for doors test 20");
 }
 
 function bool TestWeightedLevelValues(float f1, float f2)

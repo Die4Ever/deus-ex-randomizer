@@ -1,5 +1,6 @@
-class GasGrenade injects GasGrenade;
+class DXRGasGrenade injects GasGrenade;
 
+// normally in vanilla this is hard coded to TearGas, now we can override it
 function GetSpawnCloudType(out class<Cloud> GasType, out Name tDamageType)
 {
     GasType = class'TearGas';

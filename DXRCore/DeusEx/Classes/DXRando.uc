@@ -404,7 +404,7 @@ function RandoEnter()
     if (!flagbase.GetBool(flagName))
     {
         firstTime = True;
-        flagbase.SetBool(flagName, True,, 999);
+        flagbase.SetBool(flagName, True,, dxInfo.missionNumber+1);
     }
 
     info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL);
@@ -519,7 +519,7 @@ simulated final function int rng(int max)
     tseed = gen1 * tseed * 5 + gen2 + (tseed/5) * 3;
     // in unrealscript >>> is right shift and filling the left with 0s, >> shifts but keeps the sign
     // this means we don't need abs, which is a float function anyways
-    return (tseed >>> 8) % max;
+    return imod((tseed >>> 8), max);
 }
 
 

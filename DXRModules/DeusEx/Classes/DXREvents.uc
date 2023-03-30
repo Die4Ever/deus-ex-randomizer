@@ -17,7 +17,7 @@ var BingoOption bingo_options[200];
 struct MutualExclusion {
     var string e1, e2;
 };
-var MutualExclusion mutually_exclusive[20];
+var MutualExclusion mutually_exclusive[32];
 
 function PreFirstEntry()
 {
@@ -55,6 +55,8 @@ function SetWatchFlags() {
     local BookOpen book;
     local FlagTrigger fTrigger;
     local WIB wib;
+    local ComputerPersonal cp;
+    local int i;
 
     switch(dxr.localURL) {
     case "00_TrainingFinal":
@@ -183,6 +185,21 @@ function SetWatchFlags() {
     case "05_NYC_UNATCOHQ":
         WatchFlag('KnowsAnnasKillphrase1');
         WatchFlag('KnowsAnnasKillphrase2');
+
+        foreach AllActors(class'ComputerPersonal',cp){
+            if (cp.Name=='ComputerPersonal7'){  //JC's computer
+                for (i=0;i<4 && cp.specialOptions[i].Text!="";i++){}
+                if (i<4){
+                    cp.specialOptions[i].Text="Clear Browser History";
+                    cp.specialOptions[i].TriggerText="Browser History Cleared!";
+                    cp.specialOptions[i].bTriggerOnceOnly=True;
+                    cp.specialOptions[i].TriggerEvent='BrowserHistoryCleared';
+                    cp.specialOptions[i].UserName="JCD";
+                }
+            }
+        }
+        Tag='BrowserHistoryCleared';
+
         break;
     case "06_HONGKONG_WANCHAI_CANAL":
         WatchFlag('FoundScientistBody');
@@ -503,13 +520,14 @@ simulated function AnyEntry()
     SetTimer(1, true);
 
     for(w=0; w<ArrayCount(watchflags); w++) {
-        l("AnyEntry watchflags["$w$"]: "$watchflags[w]);
+        if(watchflags[w]!='')
+            l("AnyEntry watchflags["$w$"]: "$watchflags[w]);
     }
 
     // any rewatch flags that were set outside of this map need to be cleared from the watch list
     for(r=0; r<ArrayCount(rewatchflags); r++) {
-        l("AnyEntry rewatchflags["$r$"]: "$rewatchflags[r]);
         if(rewatchflags[r] == '') continue;
+        l("AnyEntry rewatchflags["$r$"]: "$rewatchflags[r]);
         if (dxr.flagbase.GetBool(rewatchflags[r])) {
             l("AnyEntry rewatchflags["$r$"]: "$rewatchflags[r]$" is set!");
             for(w=0; w<num_watchflags; w++) {
@@ -578,6 +596,7 @@ simulated function Timer()
                 watchflags[i] = watchflags[num_watchflags];
                 watchflags[num_watchflags]='';
                 i--;
+                _MarkBingo("GuntherHermann_Dead");
                 continue;
             }
         }
@@ -814,28 +833,45 @@ static function AddPlayerDeath(DXRando dxr, #var(PlayerPawn) player, optional Ac
 static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local DXRando dxr;
-
+    local DXREvents e;
     foreach victim.AllActors(class'DXRando', dxr) break;
 
-    MarkBingo(dxr, victim.BindName$"_Dead");
-    if( Killer == None || #var(PlayerPawn)(Killer) != None )
+    if(dxr != None)
+        e = DXREvents(dxr.FindModule(class'DXREvents'));
+    log(e$".AddPawnDeath "$dxr$", "$victim);
+    if(e != None)
+        e._AddPawnDeath(victim, Killer, damageType, HitLocation);
+}
+
+function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
+{
+    _MarkBingo(victim.BindName$"_Dead");
+    _MarkBingo(victim.BindName$"_DeadM" $ dxr.dxInfo.missionNumber);
+    if( Killer == None || #var(PlayerPawn)(Killer) != None ) {
         if (IsHuman(victim.class) && ((damageType == "Stunned") ||
                                 (damageType == "KnockedOut") ||
 	                            (damageType == "Poison") ||
                                 (damageType == "PoisonEffect"))){
-            MarkBingo(dxr, victim.class.name$"_ClassUnconscious");
+            _MarkBingo(victim.class.name$"_ClassUnconscious");
+            _MarkBingo(victim.BindName$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
         } else {
-            MarkBingo(dxr, victim.class.name$"_ClassDead");
+            _MarkBingo(victim.class.name$"_ClassDead");
+            _MarkBingo(victim.BindName$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
         }
         if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
-            MarkBingo(dxr,"HumanStompDeath");
+            _MarkBingo("HumanStompDeath");
         }
+    }
 
     if(!victim.bImportant)
         return;
 
     if(victim.BindName == "PaulDenton")
         dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
+    else if(victim.BindName == "AnnaNavarre" && dxr.flagbase.GetBool('annadies')) {
+        _MarkBingo("AnnaKillswitch");
+        Killer = player();
+    }
 
     _DeathEvent(dxr, victim, Killer, damageType, HitLocation, "PawnDeath");
 }
@@ -892,20 +928,25 @@ static function SavedPaul(DXRando dxr, #var(PlayerPawn) player, optional int hea
 static function BeatGame(DXRando dxr, int ending)
 {
     local PlayerDataItem data;
+    local DXRStats stats;
     local string j;
     local class<Json> js;
     js = class'Json';
 
+    stats = DXRStats(dxr.FindModule(class'DXRStats'));
+
     j = js.static.Start("BeatGame");
     js.static.Add(j, "ending", ending);
     js.static.Add(j, "SaveCount", dxr.player.saveCount);
-    js.static.Add(j, "Autosaves", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_autosaves"));
-    js.static.Add(j, "deaths", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_deaths"));
-    js.static.Add(j, "LoadCount", class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_loads"));
+    js.static.Add(j, "Autosaves", stats.GetDataStorageStat(dxr, "DXRStats_autosaves"));
+    js.static.Add(j, "deaths", stats.GetDataStorageStat(dxr, "DXRStats_deaths"));
+    js.static.Add(j, "LoadCount", stats.GetDataStorageStat(dxr, "DXRStats_loads"));
     js.static.Add(j, "maxrando", dxr.flags.maxrando);
     js.static.Add(j, "bSetSeed", dxr.flags.bSetSeed);
     data = class'PlayerDataItem'.static.GiveItem(dxr.player);
     js.static.Add(j, "initial_version", data.initial_version);
+    js.static.Add(j, "combat_difficulty", dxr.player.CombatDifficulty);
+    js.static.Add(j, "rando_difficulty", dxr.flags.difficulty);
 
     if (dxr.player.carriedDecoration!=None){
         js.static.Add(j, "carriedItem", dxr.player.carriedDecoration.Class);
@@ -918,6 +959,8 @@ static function BeatGame(DXRando dxr, int ending)
     BingoEventData(dxr, j);
     AugmentationData(dxr, j);
     GameTimeEventData(dxr, j);
+
+    js.static.Add(j, "score", stats.ScoreRun());
     js.static.End(j);
 
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
@@ -1015,7 +1058,7 @@ static function BingoEventData(DXRando dxr, out string j)
 
 static function GameTimeEventData(DXRando dxr, out string j)
 {
-    local int time, realtime, i, t;
+    local int time, realtime, time_without_menus, i, t;
     local DXRStats stats;
     local class<Json> js;
     js = class'Json';
@@ -1030,11 +1073,13 @@ static function GameTimeEventData(DXRando dxr, out string j)
         t = stats.GetCompleteMissionTime(i);
         js.static.Add(j, "mission-" $ i $ "-realtime", t);
         realtime += t;
+        time_without_menus += t;
         t = stats.GetCompleteMissionMenuTime(i);
         js.static.Add(j, "mission-" $ i $ "-menutime", t);
         realtime += t;
     }
     js.static.Add(j, "time", time);
+    js.static.Add(j, "timewithoutmenus", time_without_menus);
     js.static.Add(j, "realtime", realtime);
 }
 
@@ -1312,9 +1357,6 @@ function _MarkBingo(coerce string eventname)
         case "LDDPAchilleDone":
             eventname="CamilleConvosDone";
             break;
-        case "GuntherKillswitch":
-            eventname="GuntherHermann_Dead";
-            break;
         case "KarkianBaby_ClassDead":
             eventname="Karkian_ClassDead";
             break;
@@ -1375,7 +1417,6 @@ function AddBingoScreen(CreditsWindow cw)
 {
     local CreditsBingoWindow cbw;
     cbw = CreditsBingoWindow(cw.winScroll.NewChild(Class'CreditsBingoWindow'));
-    cbw.SetSize(410,410);
     cbw.FillBingoWindow(player());
 }
 
@@ -1389,10 +1430,11 @@ function AddDXRCredits(CreditsWindow cw)
 
 static function int BingoActiveMission(int currentMission, int missionsMask)
 {
-    local int missionAnded;
+    local int missionAnded, minMission;
     if(missionsMask == 0) return 1;// 1==maybe
     missionAnded = (1 << currentMission) & missionsMask;
     if(missionAnded > 0) return 2;// 2==true
+    minMission = currentMission;
 
 #ifdef backtracking
     // check conjoined backtracking missions
@@ -1402,19 +1444,23 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
         break;
     case 11:
         currentMission=10;
+        minMission=10;
         break;
     case 12:
         currentMission=14;
         break;
     case 14:
         currentMission=12;
+        minMission=12;
         break;
-    default:
-        return 0;// 0==false
     }
     missionAnded = (1 << currentMission) & missionsMask;
     if(missionAnded > 0) return 2;// 2==true
 #endif
+
+    if(missionsMask < (1<<minMission)) {
+        return -1;// impossible in future missions
+    }
 
     return 0;// 0==false
 }
@@ -1551,7 +1597,11 @@ defaultproperties
     bingo_options(116)=(event="AnnaKilledLebedev",desc="Let Anna kill Lebedev",max=1,missions=8)
     bingo_options(117)=(event="PlayerKilledLebedev",desc="Kill Lebedev yourself",max=1,missions=8)
     bingo_options(118)=(event="JuanLebedev_Unconscious",desc="Knock out Lebedev",max=1,missions=8)
-
+    bingo_options(119)=(event="BrowserHistoryCleared",desc="Clear your browser history before quitting",max=1,missions=32)
+    bingo_options(120)=(event="AnnaKillswitch",desc="Use Anna's Killphrase",max=1,missions=32)
+    bingo_options(121)=(event="AnnaNavarre_DeadM3",desc="Kill Anna Navarre in Mission 3",max=1,missions=8)
+    bingo_options(122)=(event="AnnaNavarre_DeadM4",desc="Kill Anna Navarre in Mission 4",max=1,missions=16)
+    bingo_options(123)=(event="AnnaNavarre_DeadM5",desc="Kill Anna Navarre in Mission 5",max=1,missions=32)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -1564,6 +1614,19 @@ defaultproperties
     mutually_exclusive(8)=(e1="AnnaKilledLebedev",e2="PlayerKilledLebedev")
     mutually_exclusive(9)=(e1="AnnaKilledLebedev",e2="JuanLebedev_Unconscious")
     mutually_exclusive(10)=(e1="PlayerKilledLebedev",e2="JuanLebedev_Unconscious")
+    mutually_exclusive(11)=(e1="AnnaNavarre_Dead",e2="AnnaKillswitch")
+    mutually_exclusive(12)=(e1="AnnaNavarre_Dead",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(13)=(e1="AnnaNavarre_Dead",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(14)=(e1="AnnaNavarre_Dead",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(15)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(16)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(17)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(18)=(e1="AnnaNavarre_DeadM3",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(19)=(e1="AnnaNavarre_DeadM3",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(20)=(e1="AnnaNavarre_DeadM4",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(21)=(e1="AnnaNavarre_DeadM4",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(22)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(23)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM4")
 
     bingo_win_countdown=-1
 }

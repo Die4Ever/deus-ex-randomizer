@@ -1,6 +1,6 @@
 class DXRKeys extends DXRActorsBase;
 
-var config safe_rule keys_rules[32];
+var config safe_rule keys_rules[64];
 
 struct door_fix {
     var string map;
@@ -19,7 +19,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,2,4,1) ) {
+    if( ConfigOlderThan(2,2,8,3) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -121,6 +121,17 @@ function CheckConfig()
         door_fixes[i].bBreakable = true;
         door_fixes[i].minDamageThreshold = 1;
         door_fixes[i].doorStrength = 0.15;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].lockStrength = 1;
+        door_fixes[i].bHighlight = true;
+        i++;
+
+        // make chateau cellar undefeatable, if you have lenient doors rules then you won't be going down here anyways
+        door_fixes[i].map = "10_Paris_Chateau";
+        door_fixes[i].tag = 'duclare_chateau_cellar';
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].minDamageThreshold = 100;
+        door_fixes[i].doorStrength = 1;
         door_fixes[i].bPickable = false;
         door_fixes[i].lockStrength = 1;
         door_fixes[i].bHighlight = true;
@@ -370,12 +381,29 @@ function revision_keys_rules()
 
 function FirstEntry()
 {
+    local #var(Mover) d, d2;
+
     Super.FirstEntry();
     if( dxr.flags.settings.keysrando == 4 || dxr.flags.settings.keysrando == 2 ) // 1 is dumb aka anywhere, 3 is copies instead of smart positioning? 5 would be something more advanced?
         MoveNanoKeys4();
 
     RandomizeDoors();
     AdjustRestrictions(dxr.flags.settings.doorsmode, dxr.flags.settings.doorspickable, dxr.flags.settings.doorsdestructible, dxr.flags.settings.deviceshackable);
+
+    // copy to pairs/sets of doors
+    foreach AllActors(class'#var(Mover)', d) {
+        if (d.Tag == '' || d.Tag == 'DeusExMover') continue;
+
+        foreach AllActors(class'#var(Mover)', d2, d.tag) {
+            if(d==d2) continue;
+            d2.minDamageThreshold = d.minDamageThreshold;
+            d2.bPickable = d.bPickable;
+            d2.lockStrength = d.lockStrength;
+            d2.initiallockStrength = d.initiallockStrength;
+            d2.bBreakable = d.bBreakable;
+            d2.doorStrength = d.doorStrength;
+        }
+    }
 }
 
 function RandomizeDoors()

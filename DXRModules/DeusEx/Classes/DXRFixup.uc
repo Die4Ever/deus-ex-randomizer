@@ -40,7 +40,7 @@ function CheckConfig()
 {
     local int i;
     local class<DeusExDecoration> c;
-    if( ConfigOlderThan(2,2,2,2) ) {
+    if( ConfigOlderThan(2,3,0,4) ) {
         for(i=0; i < ArrayCount(DecorationsOverwrites); i++) {
             DecorationsOverwrites[i].type = "";
         }
@@ -105,6 +105,10 @@ function CheckConfig()
         add_datacubes[i].location = vect(6577.697266, -3884.925049, 33.369633);
         i++;
 
+        add_datacubes[i].map = "05_NYC_UNATCOMJ12lab";
+        add_datacubes[i].text = "Agent Sherman, I've updated the demiurge password for Agent Navarre's killphrase to archon. Make sure you don't leave this datacube lying around.";
+        i++;
+
         add_datacubes[i].map = "06_HONGKONG_VERSALIFE";
         add_datacubes[i].text = "Versalife employee ID: 06288.  Use this to access the VersaLife elevator north of the market.";
         i++;
@@ -128,23 +132,37 @@ function CheckConfig()
 #endif
 
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
-        add_datacubes[i].text = "My code is 6786";
+        add_datacubes[i].text =
+            "Julia, I must see you -- we have to talk, about us, about this project.  I'm not sure what we're doing here anymore and Page has made... strange requests of the interface team."
+            $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
+            $ "  The code is 6786.  I love you."
+            $ "|n|nJustin";
         i++;
 
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
-        add_datacubes[i].text = "My code is 3901";
+        add_datacubes[i].text =
+            "Julia, I must see you -- we have to talk, about us, about this project.  I'm not sure what we're doing here anymore and Page has made... strange requests of the interface team."
+            $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
+            $ "  The code is 3901.  I love you."
+            $ "|n|nJohn";
         i++;
 
         add_datacubes[i].map = "15_AREA51_ENTRANCE";
-        add_datacubes[i].text = "My code is 4322";
+        add_datacubes[i].text =
+            "Julia, I must see you -- we have to talk, about us, about this project.  I'm not sure what we're doing here anymore and Page has made... strange requests of the interface team."
+            $ "  I would leave, but not without you.  You mean too much to me.  After the duty shift changes, come to my chamber -- it's the only place we can talk in private."
+            $ "  The code is 4322.  I love you."
+            $ "|n|nJim";
         i++;
 
         add_datacubes[i].map = "15_AREA51_PAGE";
-        add_datacubes[i].text = "UC Control Rooms code: 1234";
+        add_datacubes[i].text =
+            "The security guys found my last datacube so they changed the UC Control Rooms code to 1234. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
         i++;
 
         add_datacubes[i].map = "15_AREA51_PAGE";
-        add_datacubes[i].text = "Aquinas Router code: 6188";
+        add_datacubes[i].text =
+            "The security guys found my last datacube so they changed the Aquinas Router code to 6188. I don't know what they're so worried about, no one could make it this far into Area 51. What's the worst that could happen?";
         i++;
     }
     Super.CheckConfig();
@@ -199,6 +217,7 @@ function AnyEntry()
 {
     local #var(prefix)Vehicles v;
     local #var(prefix)Button1 b;
+    local #var(prefix)Teleporter t;
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
@@ -224,6 +243,10 @@ function AnyEntry()
             continue;
         if(v.CollisionRadius > 360)
             v.SetCollisionSize(360, v.CollisionHeight);
+    }
+    foreach AllActors(class'#var(prefix)Teleporter', t) {
+        if(t.bCollideActors)
+            t.bHidden = false;
     }
 }
 
@@ -295,6 +318,7 @@ function PostFirstEntryMapFixes()
     local UNATCOTroop u;
     local Actor a;
     local Male1 male;
+    local BlockPlayer bp;
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
@@ -302,6 +326,11 @@ function PostFirstEntryMapFixes()
             m.bBreakable = false;
             m.bPickable = false;
             m.bIsDoor = false;// this prevents Floyd from opening the door
+        }
+        foreach AllActors(class'BlockPlayer', bp) {
+            if(bp.Group == 'waterblock') {
+                bp.bBlockPlayers = false;
+            }
         }
         break;
     case "01_NYC_UNATCOHQ":
@@ -385,6 +414,7 @@ function PostFirstEntryMapFixes()
         }
         break;
     case "09_NYC_DOCKYARD":
+        // this crate can block the way out of the start through the vent
         foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
             info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
             c.Destroy();
@@ -407,6 +437,13 @@ function PostFirstEntryMapFixes()
             c.Destroy();
         }
         break;
+
+    case "14_OCEANLAB_LAB":
+        // ensure rebreather before greasel lab, in case the storage closet key is in the flooded area
+        a = _AddActor(Self, class'#var(prefix)Rebreather', vect(1569, 24, -1628), rot(0,0,0));
+        a.SetPhysics(PHYS_None);
+        l("PostFirstEntryMapFixes spawned "$ActorToString(a));
+        break;
 #endif
     }
 }
@@ -414,6 +451,9 @@ function PostFirstEntryMapFixes()
 function AnyEntryMapFixes()
 {
     switch(dxr.dxInfo.missionNumber) {
+    case 3:
+        Airfield_AnyEntry();
+        break;
     case 4:
         NYC_04_AnyEntry();
         break;
@@ -442,19 +482,7 @@ function AnyEntryMapFixes()
 
 function AllAnyEntry()
 {
-    local HowardStrong hs;
-
-    switch(dxr.localURL) {
-    case "14_Oceanlab_Silo":
-        foreach AllActors(class'HowardStrong', hs) {
-            hs.ChangeAlly('', 1, true);
-            hs.ChangeAlly('mj12', 1, true);
-            hs.ChangeAlly('spider', 1, true);
-            RemoveFears(hs);
-            hs.MinHealth = 0;
-        }
-        break;
-    }
+    // for when mapfixes isn't defined, but currently it's defined for all mods even Revision
 }
 
 function PreTravelMapFixes()
@@ -479,6 +507,10 @@ function TimerMapFixes()
 
     switch(dxr.localURL)
     {
+    case "03_NYC_747":
+        FixAnnaAmbush();
+        break;
+
     case "04_NYC_HOTEL":
         if(#defined(vanilla))
             NYC_04_CheckPaulRaid();
@@ -729,7 +761,7 @@ function Airfield_FirstEntry()
     local Trigger t;
     local NanoKey k;
     local #var(prefix)InformationDevices i;
-    local UNATCOTroop unatco;
+    local #var(prefix)UNATCOTroop unatco;
 
     switch (dxr.localURL)
     {
@@ -748,6 +780,24 @@ function Airfield_FirstEntry()
 
         //rebreather because of #TOOCEAN connection
         _AddActor(Self, class'Rebreather', vect(-936.151245, -3464.031006, 293.710968), rot(0,0,0));
+
+        //Add some junk around the park so that there are some item locations outside of the shanty town
+        _AddActor(Self, class'Liquor40oz', vect(933.56,-3554.86,279.04), rot(0,0,0));
+        _AddActor(Self, class'Sodacan', vect(2203.28,-3558.84,279.04), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(-980.83,-3368.42,286.24), rot(0,0,0));
+        _AddActor(Self, class'Cigarettes', vect(-682.67,-3771.20,282.24), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(-2165.67,-3546.039,285.30), rot(0,0,0));
+        _AddActor(Self, class'Sodacan', vect(-2170.83,-3094.94,330.24), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(-3180.75,-3546.79,281.43), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(-2619.56,-2540.80,330.25), rot(0,0,0));
+        _AddActor(Self, class'Cigarettes', vect(-3289.43,-919.07,360.80), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(-2799.94,-922.68,361.86), rot(0,0,0));
+        _AddActor(Self, class'Sodacan', vect(800.76,1247.99,330.25), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(1352.29,2432.98,361.58), rot(0,0,0));
+        _AddActor(Self, class'Cigarettes', vect(788.50,2359.26,360.63), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vect(3153.26,-310.73,326.25), rot(0,0,0));
+        _AddActor(Self, class'Sodacan', vect(-2132.21,1838.89,326.25), rot(0,0,0));
+
         break;
 
 #ifdef vanillamaps
@@ -774,7 +824,7 @@ function Airfield_FirstEntry()
                 t.Event = '';
             }
         }
-        foreach AllActors(class'UNATCOTroop', unatco) {
+        foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
             unatco.bHateCarcass = false;
             unatco.bHateDistress = false;
         }
@@ -833,6 +883,40 @@ function Airfield_FirstEntry()
             }
         }
         break;
+
+    case "03_NYC_UNATCOISLAND":
+        foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
+            if(unatco.BindName != "PrivateLloyd") continue;
+            unatco.FamiliarName = "Corporal Lloyd";
+            unatco.UnfamiliarName = "Corporal Lloyd";
+        }
+        break;
+    }
+}
+
+function Airfield_AnyEntry()
+{
+    switch(dxr.localURL) {
+    case "03_NYC_747":
+        SetTimer(1, true);
+        break;
+    }
+}
+
+function FixAnnaAmbush()
+{
+    local #var(prefix)AnnaNavarre anna;
+    local #var(prefix)ThrownProjectile p;
+
+    foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {break;}
+
+    // if she's angry then let her blow up
+    if(anna != None && anna.GetAllianceType('player') == ALLIANCE_Hostile) anna = None;
+
+    foreach AllActors(class'#var(prefix)ThrownProjectile', p) {
+        if(!p.bProximityTriggered || !p.bStuck) continue;
+        if(p.Owner==player() && anna != None) p.SetOwner(anna);
+        if(anna == None && p.Owner!=player()) p.SetOwner(player());
     }
 }
 
@@ -842,6 +926,10 @@ function Jailbreak_FirstEntry()
     local PaulDenton paul;
     local ComputerPersonal c;
     local DeusExMover dxm;
+    local #var(prefix)UNATCOTroop lloyd;
+    local #var(prefix)AlexJacobson alex;
+    local #var(prefix)JaimeReyes j;
+    local DXREnemies dxre;
     local int i;
 
     switch (dxr.localURL)
@@ -888,8 +976,34 @@ function Jailbreak_FirstEntry()
                 c.UserList[i].password = "scryspc";
             }
         }
+        foreach AllActors(class'#var(prefix)AlexJacobson', alex) {
+            RemoveFears(alex);
+        }
+        foreach AllActors(class'#var(prefix)JaimeReyes', j) {
+            RemoveFears(j);
+        }
         break;
 #endif
+
+    case "05_NYC_UNATCOISLAND":
+        foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
+            if(lloyd.BindName != "PrivateLloyd") continue;
+            RemoveFears(lloyd);
+            lloyd.MinHealth = 0;
+            lloyd.BaseAccuracy *= 0.1;
+            GiveItem(lloyd, class'#var(prefix)BallisticArmor');
+            dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+            if(dxre != None) {
+                dxre.GiveRandomWeapon(lloyd, false, 2);
+                dxre.GiveRandomMeleeWeapon(lloyd);
+            }
+            lloyd.FamiliarName = "Master Sergeant Lloyd";
+            lloyd.UnfamiliarName = "Master Sergeant Lloyd";
+            if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
+                SetPawnHealth(lloyd, 200);
+            }
+        }
+        break;
     }
 }
 
@@ -906,6 +1020,7 @@ function BalanceJailbreak()
     local vector itemLocations[50];
     local DXRMissions missions;
     local string PaulLocation;
+    local #var(prefix)DataLinkTrigger dlt;
 
     SetSeed("BalanceJailbreak");
 
@@ -923,6 +1038,7 @@ function BalanceJailbreak()
             }
         }
         num=0;
+        l("BalanceJailbreak PaulLocation == " $ PaulLocation);
         if(PaulLocation == "Surgery Ward" || PaulLocation == "Greasel Pit")
             foreach AllActors(class'SpawnPoint', SP, 'player_inv')
                 itemLocations[num++] = SP.Location;
@@ -940,6 +1056,12 @@ function BalanceJailbreak()
             itemLocations[num++] = vect(1642.170532,-968.813354,-261.660736);
             itemLocations[num++] = vect(1715.513062,-965.846558,-261.657837);
             itemLocations[num++] = vect(1782.731689,-966.754700,-261.661041);
+
+            foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
+                if(dlt.datalinkTag != 'dl_equipment') continue;
+                dlt.bCollideWorld = false;
+                l("BalanceJailbreak moving "$dlt @ dlt.SetLocation(vect(1670.443237,-702.527649,-179.660095)) @ dlt.Location);
+            }
         }
 
         nextItem = p.Inventory;
@@ -1147,7 +1269,7 @@ function NYC_04_CheckPaulRaid()
 {
     local PaulDenton paul;
     local ScriptedPawn p;
-    local int count, dead, i, pawns;
+    local int count, dead, pawns;
 
     if( ! dxr.flagbase.GetBool('M04RaidTeleportDone') ) return;
 
@@ -1162,22 +1284,7 @@ function NYC_04_CheckPaulRaid()
         if( ! paul.bInvincible ) continue;
 
         paul.bInvincible = false;
-        i = 400;
-        // we need to set defaults so that GenerateTotalHealth() works properly
-        paul.default.Health = i;
-        paul.Health = i;
-        paul.default.HealthArmLeft = i;
-        paul.HealthArmLeft = i;
-        paul.default.HealthArmRight = i;
-        paul.HealthArmRight = i;
-        paul.default.HealthHead = i;
-        paul.HealthHead = i;
-        paul.default.HealthLegLeft = i;
-        paul.HealthLegLeft = i;
-        paul.default.HealthLegRight = i;
-        paul.HealthLegRight = i;
-        paul.default.HealthTorso = i;
-        paul.HealthTorso = i;
+        SetPawnHealth(paul, 400);
         paul.ChangeAlly('Player', 1, true);
     }
 
@@ -1267,6 +1374,7 @@ function NYC_04_FirstEntry()
     local #var(prefix)BoxSmall b;
     local #var(prefix)HackableDevices hd;
     local #var(prefix)CrateUnbreakableLarge crate;
+    local #var(prefix)UNATCOTroop lloyd;
 
     switch (dxr.localURL)
     {
@@ -1306,12 +1414,29 @@ function NYC_04_FirstEntry()
             crate.Destroy();
         }
         break;
+
+    case "04_NYC_UNATCOISLAND":
+        foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
+            if(lloyd.BindName != "PrivateLloyd") continue;
+            lloyd.FamiliarName = "Sergeant Lloyd";
+            lloyd.UnfamiliarName = "Sergeant Lloyd";
+            lloyd.bImportant = true;
+        }
+        break;
     }
 }
 
 function NYC_04_AnyEntry()
 {
     local FordSchick ford;
+    local #var(prefix)AnnaNavarre anna;
+
+    DeleteConversationFlag(GetConversation('AnnaBadMama'), 'TalkedToPaulAfterMessage_Played', true);
+    if(dxr.flagbase.GetBool('NSFSignalSent')) {
+        foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
+            anna.EnterWorld();
+        }
+    }
 
     switch (dxr.localURL)
     {
@@ -1353,7 +1478,6 @@ function Vandenberg_FirstEntry()
     local HowardStrong hs;
     local #var(Mover) door;
     local DXREnemies dxre;
-    local int i;
 
     switch(dxr.localURL)
     {
@@ -1429,20 +1553,7 @@ function Vandenberg_FirstEntry()
             hs.FamiliarName = "Howard Stronger";
             hs.UnfamiliarName = "Howard Stronger";
             if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
-                i = 200;
-                hs.default.HealthHead = i;
-                hs.default.HealthTorso = i;
-                hs.default.HealthLegLeft = i;
-                hs.default.HealthLegRight = i;
-                hs.default.HealthArmLeft = i;
-                hs.default.HealthArmRight = i;
-                hs.HealthHead = i;
-                hs.HealthTorso = i;
-                hs.HealthLegLeft = i;
-                hs.HealthLegRight = i;
-                hs.HealthArmLeft = i;
-                hs.HealthArmRight = i;
-                hs.GenerateTotalHealth();
+                SetPawnHealth(hs, 200);
             }
         }
         break;
@@ -1463,9 +1574,34 @@ function HongKong_FirstEntry()
     local DataLinkTrigger dt;
     local ComputerSecurity cs;
     local #var(prefix)Keypad pad;
+    local ProjectileGenerator pg;
 
     switch(dxr.localURL)
     {
+    case "06_HONGKONG_HELIBASE":
+#ifdef vanillamaps
+        foreach AllActors(class'ProjectileGenerator', pg, 'purge') {
+            pg.CheckTime = 0.25;
+            pg.spewTime = 0.4;
+            pg.ProjectileClass = class'PurgeGas';
+            switch(pg.Name) {
+            case 'ProjectileGenerator5':// left side
+                pg.SetRotation(rot(-7000, 80000, 0));
+                break;
+            case 'ProjectileGenerator2':// middle left
+                pg.SetRotation(rot(-6024, 70000, 0));
+                break;
+            case 'ProjectileGenerator3':// middle right
+                pg.SetRotation(rot(-8056, 64000, 0));
+                break;
+            case 'ProjectileGenerator7':// right side
+                pg.SetRotation(rot(-8056, 60000, 0));
+                break;
+            }
+        }
+#endif
+        break;
+
     case "06_HONGKONG_TONGBASE":
         foreach AllActors(class'Actor', a)
         {
@@ -1617,6 +1753,8 @@ function Shipyard_FirstEntry()
     local Button1 b;
     local WeaponGasGrenade gas;
     local Teleporter t;
+    local BlockPlayer bp;
+    local DynamicBlockPlayer dbp;
 
     switch(dxr.localURL)
     {
@@ -1674,6 +1812,15 @@ function Shipyard_FirstEntry()
                 break;
             }
         }
+        // near the start of the map to jump over the wall, from (2536.565674, 1600.856323, 251.924713) to 3982.246826
+        foreach RadiusActors(class'BlockPlayer', bp, 725, vect(3259, 1601, 252)) {
+            bp.bBlockPlayers=false;
+        }
+        // 4030.847900 to 4078.623779
+        foreach RadiusActors(class'BlockPlayer', bp, 25, vect(4055, 1602, 252)) {
+            dbp = Spawn(class'DynamicBlockPlayer',,, bp.Location + vect(0,0,200));
+            dbp.SetCollisionSize(bp.CollisionRadius, bp.CollisionHeight + 101);
+        }
         break;
 
     case "09_NYC_SHIPFAN":
@@ -1722,6 +1869,7 @@ function Paris_FirstEntry()
     local Dispatcher d;
     local ScriptedPawn sp;
     local Conversation c;
+    local #var(prefix)JaimeReyes j;
 
     switch(dxr.localURL)
     {
@@ -1770,6 +1918,9 @@ function Paris_FirstEntry()
             c.bInvokeSight = false;
             c.bInvokeRadius = false;
         }
+        foreach AllActors(class'#var(prefix)JaimeReyes', j) {
+            RemoveFears(j);
+        }
         break;
 #endif
 
@@ -1805,7 +1956,7 @@ function Paris_AnyEntry()
         if(npcs != None) {
             sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vect(-3209.483154, 5190.826172,1199.610352), rot(0, -10000, 0), class'#var(prefix)HazMatSuit');
             m = Merchant(sp);
-            if (m!=None){  //He should exist now, but... who knows
+            if (m!=None){  // CreateForcedMerchant returns None if he already existed, but we still need to call it to recreate the conversation since those are transient
                 m.MakeFrench();
             }
         }
@@ -1816,6 +1967,10 @@ function Paris_AnyEntry()
             GiveItem(sp, class'#var(prefix)WineBottle');
             dxre.RandomizeSP(sp, 100);
             RemoveFears(sp);
+            sp.ChangeAlly('Player', 0.0, false);
+            sp.MaxProvocations = 0;
+            sp.AgitationSustainTime = 3600;
+            sp.AgitationDecayRate = 0;
         }
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
@@ -1840,6 +1995,7 @@ function Vandenberg_AnyEntry()
     local DataLinkTrigger dt;
     local MIB mib;
     local NanoKey key;
+    local #var(prefix)HowardStrong hs;
 
     switch(dxr.localURL)
     {
@@ -1856,6 +2012,13 @@ function Vandenberg_AnyEntry()
         }
         break;
     case "14_OCEANLAB_SILO":
+        foreach AllActors(class'#var(prefix)HowardStrong', hs) {
+            hs.ChangeAlly('', 1, true);
+            hs.ChangeAlly('mj12', 1, true);
+            hs.ChangeAlly('spider', 1, true);
+            RemoveFears(hs);
+            hs.MinHealth = 0;
+        }
         foreach AllActors(class'DataLinkTrigger', dt) {
             if(dt.datalinkTag == 'DL_FrontGate') {
                 dt.Touch(Player());
@@ -2006,6 +2169,7 @@ function HongKong_AnyEntry()
 function NYC_08_AnyEntry()
 {
     local StantonDowd s;
+    local #var(prefix)DataLinkTrigger dt;
 
     switch(dxr.localURL) {
     case "08_NYC_STREET":
@@ -2013,12 +2177,16 @@ function NYC_08_AnyEntry()
         foreach AllActors(class'StantonDowd', s) {
             RemoveReactions(s);
         }
+        foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
+            if(dt.datalinkTag == 'DL_Entry') {
+                dt.Touch(Player());
+            }
+        }
         break;
 
 #ifdef vanillamaps
     case "08_NYC_SMUG":
         FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
-        FixConversationGiveItem(GetConversation('FemJCM08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
         break;
 #endif
     }

@@ -444,6 +444,7 @@ function RandoEnemies(int percent, int hidden_percent)
 
         if( HasItemSubclass(p, class'Weapon') == false ) continue;//don't randomize neutral npcs that don't already have weapons
 
+        if(p.bHasCloak) p.CloakThreshold = p.Health - 10;// make Anna and Walt cloak quickly
         _perc = percent;
         if(p.bHidden) _perc = hidden_percent;
 
@@ -666,8 +667,10 @@ function RandomizeSP(ScriptedPawn p, int percent)
 
 
     if( IsHuman(p.class)) {
-        RemoveItem(p, class'Weapon');
-        RemoveItem(p, class'Ammo');
+        if(!p.bImportant) {
+            RemoveItem(p, class'Weapon');
+            RemoveItem(p, class'Ammo');
+        }
 
         GiveRandomWeapon(p, false, 2);
         if( chance_single(50) )
@@ -756,6 +759,7 @@ function inventory GiveRandomWeapon(Pawn p, optional bool allow_dupes, optional 
     local class<Weapon> wclass;
 
     wclass = GiveRandomWeaponClass(p, allow_dupes);
+    if(wclass == None) return None;
 
     l("GiveRandomWeapon "$p$", "$wclass.Name$", "$add_ammo);
     if(p!=None)
@@ -792,6 +796,7 @@ function inventory GiveRandomMeleeWeapon(Pawn p, optional bool allow_dupes)
     local class<Weapon> wclass;
 
     wclass = GiveRandomMeleeWeaponClass(p, allow_dupes);
+    if(wclass == None) return None;
 
     l("GiveRandomMeleeWeapon "$p$", "$wclass.Name);
     if(p!=None)

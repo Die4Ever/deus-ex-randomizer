@@ -3,9 +3,9 @@ class DXRVersion extends Info;
 simulated static function CurrentVersion(optional out int major, optional out int minor, optional out int patch, optional out int build)
 {
     major=2;
-    minor=2;
-    patch=7;
-    build=3;//build can't be higher than 99
+    minor=3;
+    patch=0;
+    build=6;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)
