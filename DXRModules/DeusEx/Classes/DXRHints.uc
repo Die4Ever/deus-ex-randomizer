@@ -398,17 +398,16 @@ simulated function ShowHint(optional int recursion)
     SetTimer(0, false);
     return;
 #endif
-
     SetTimer(15, true);
     if( recursion > 10 ) {
-        err("ShowHint reached max recursion " $ recursion);
+        log("ShowHint reached max recursion " $ recursion);
         return;
     }
     hint = GetHint();
 
     m = class'DXRBigMessage'.static.CreateBigMessage(_player, self, hints[hint], details[hint]);
     if(m == None) {
-        ShowHint(recursion++);
+        ShowHint(++recursion);
         return;
     }
     m.line3 = "Deaths: "$class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_deaths")$", Loads: "$class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_loads");

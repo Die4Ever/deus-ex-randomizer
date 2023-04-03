@@ -82,6 +82,8 @@ function UpdateEnergyMeter()
 
     p = player;
 
+    if (p==None) return;
+
     //Keep it to one decimal point
     energy = int(p.Energy);
     energydec = int((p.Energy * 10) - (energy*10));
