@@ -400,7 +400,7 @@ simulated function ShowHint(optional int recursion)
 #endif
     SetTimer(15, true);
     if( recursion > 10 ) {
-        log("ShowHint reached max recursion " $ recursion);
+        info("ShowHint reached max recursion " $ recursion);
         return;
     }
     hint = GetHint();
