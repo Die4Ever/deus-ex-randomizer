@@ -33,6 +33,8 @@ function AddDXRCreditsGeneral()
     PrintHeader("Deus Ex Randomizer");
 #endif
     PrintText("Version"@class'DXRVersion'.static.VersionString());
+    PrintText("Hold the up arrow key to slow down or go backwards");
+    PrintText("Hold the down arrow key to speed up");
     PrintLn();
     PrintHeader("Contributors");
     PrintText("Die4Ever");
@@ -93,8 +95,8 @@ function Tick(float deltaTime)
 			{
 				bScrolling = False;
 				FinishedScrolling();
-            } else if (currentScrollSpeed<0 && winScroll.y > 0){
-                winScroll.SetPos(winScroll.x, 0);
+            } else if (currentScrollSpeed<0 && winScroll.y > 300){
+                winScroll.SetPos(winScroll.x, 300);
                 currentScrollSpeed = 0;
             }
 		}
