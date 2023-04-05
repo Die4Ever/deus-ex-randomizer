@@ -739,8 +739,6 @@ function MakeAllHackable(int deviceshackable)
 {
     local #var(prefix)HackableDevices h;
 
-    if( deviceshackable <= 0 ) return;
-
     SetSeed( "MakeAllHackable" );
 
     foreach AllActors(class'#var(prefix)HackableDevices', h)
@@ -750,6 +748,12 @@ function MakeAllHackable(int deviceshackable)
             h.bHackable = true;
             h.hackStrength = FClamp(rngrange(1, min_hack_adjust, max_hack_adjust), 0, 1);
             h.hackStrength = int(h.hackStrength*100)/100.0;
+            h.initialhackStrength = h.hackStrength;
+        }
+
+        // make Helios ending slightly harder?
+        if(h.Event == 'door_helios_room') {
+            h.hackStrength = 1;
             h.initialhackStrength = h.hackStrength;
         }
     }

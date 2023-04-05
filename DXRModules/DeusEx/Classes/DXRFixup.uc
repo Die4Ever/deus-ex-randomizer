@@ -2202,7 +2202,7 @@ function Area51_FirstEntry()
     local SequenceTrigger st;
     local SpecialEvent se;
     local DataLinkTrigger dlt;
-    local #var(prefix)Button1 button;
+    local ComputerPersonal comp_per;
 
 #ifdef vanillamaps
     switch(dxr.localURL)
@@ -2330,24 +2330,14 @@ function Area51_FirstEntry()
             }
         }
 
-        // make the Helios ending a little tougher... TODO: toggle frobbability of the computer
-        foreach AllActors(class'#var(prefix)Button1', button) {
-            if(button.Event != 'test1' && button.Event != 'test2') continue;
-            button.Event = '';
-            button.Destroy();
+        // fix the Helios ending skip
+        foreach AllActors(class'ComputerPersonal', comp_per) {
+            if(comp_per.Name == 'ComputerPersonal0') {
+                comp_per.Tag = 'router_computer';
+                class'DXRTriggerEnable'.static.Create(comp_per, 'router_door', 'router_computer');
+                break;
+            }
         }
-        // replace Button1 test1 with Keypad1
-        k = Keypad(_AddActor(self, class'Keypad1', vect(6070.540527, -5785.064941, -5245.314453), rot(12500, -32768, 0)));
-        k.Event = 'test1';
-        k.validCode = "6188";// same as the door code?
-        k.hackStrength = 0.2;
-        k.initialhackStrength = 0.2;
-        // replace Button1 test2 with Keypad1
-        k = Keypad(_AddActor(self, class'Keypad1', vect(5321.440918, -5767.934082, -5245.300293), rot(13000, 0, 0)));
-        k.Event = 'test2';
-        k.validCode = "6188";
-        k.hackStrength = 0.2;
-        k.initialhackStrength = 0.2;
         break;
     }
 #endif
