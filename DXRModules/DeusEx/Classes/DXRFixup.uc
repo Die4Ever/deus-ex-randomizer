@@ -1481,6 +1481,11 @@ function Vandenberg_FirstEntry()
 
     switch(dxr.localURL)
     {
+    case "12_VANDENBERG_CMD":
+        // add goals and keypad code
+        Player().StartDataLinkTransmission("DL_no_carla");
+        break;
+
 #ifdef vanillamaps
     case "12_VANDENBERG_TUNNELS":
         foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
@@ -1992,7 +1997,6 @@ function Paris_AnyEntry()
 
 function Vandenberg_AnyEntry()
 {
-    local DataLinkTrigger dt;
     local MIB mib;
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
@@ -2019,11 +2023,7 @@ function Vandenberg_AnyEntry()
             RemoveFears(hs);
             hs.MinHealth = 0;
         }
-        foreach AllActors(class'DataLinkTrigger', dt) {
-            if(dt.datalinkTag == 'DL_FrontGate') {
-                dt.Touch(Player());
-            }
-        }
+        Player().StartDataLinkTransmission("DL_FrontGate");
         break;
     }
 }
@@ -2169,7 +2169,6 @@ function HongKong_AnyEntry()
 function NYC_08_AnyEntry()
 {
     local StantonDowd s;
-    local #var(prefix)DataLinkTrigger dt;
 
     switch(dxr.localURL) {
     case "08_NYC_STREET":
@@ -2177,11 +2176,7 @@ function NYC_08_AnyEntry()
         foreach AllActors(class'StantonDowd', s) {
             RemoveReactions(s);
         }
-        foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
-            if(dt.datalinkTag == 'DL_Entry') {
-                dt.Touch(Player());
-            }
-        }
+        Player().StartDataLinkTransmission("DL_Entry");
         break;
 
 #ifdef vanillamaps
