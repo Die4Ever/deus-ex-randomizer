@@ -711,9 +711,9 @@ defaultproperties
     groupHeaderX=-10
     groupHeaderY=-3
     background=(R=0,G=0,B=0,A=255)
-    background_style=DSTY_Translucent
-    background_texture=Texture'Solid'
+    background_style=DSTY_Modulated
+    background_texture=Texture'MaskTexture'
     help_background=(R=10,G=10,B=10,A=255)
-    help_background_style=DSTY_Translucent
-    help_background_texture=Texture'Solid'
+    help_background_style=DSTY_Modulated
+    help_background_texture=Texture'MaskTexture'
 }
