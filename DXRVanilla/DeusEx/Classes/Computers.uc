@@ -4,37 +4,37 @@ var int knownAccount[8];
 
 function bool GetAccountKnown(int userIndex)
 {
-	if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
-		return knownAccount[userIndex]==1;
+    if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
+        return knownAccount[userIndex]==1;
 
-	return False;
+    return False;
 }
 
 function SetAccountKnown(int userIndex)
 {
-	if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
+    if ((userIndex >= 0) && (userIndex < ArrayCount(userList)))
         knownAccount[userIndex]=1;
 }
 
 function SetAccountKnownByName(String username)
-{  
+{
     SetAccountKnown(GetAccountIndexByName(username));
 }
 
 function SetAccountKnownByPassword(String password)
-{  
+{
     SetAccountKnown(GetAccountIndexByPass(password));
 }
 
 function int GetAccountIndexByName(string username)
 {
     local int compIndex;
-    
-	username = Caps(username);
-	for (compIndex=0; compIndex<NumUsers(); compIndex++)
-	{
-		if (username == Caps(GetUserName(compIndex)))
-		{
+
+    username = Caps(username);
+    for (compIndex=0; compIndex<NumUsers(); compIndex++)
+    {
+        if (username == Caps(GetUserName(compIndex)))
+        {
             return compIndex;
         }
     }
@@ -44,12 +44,12 @@ function int GetAccountIndexByName(string username)
 function int GetAccountIndexByPass(string password)
 {
     local int compIndex;
-    
-	password = Caps(password);
-	for (compIndex=0; compIndex<NumUsers(); compIndex++)
-	{
-		if (password == Caps(GetPassword(compIndex)))
-		{
+
+    password = Caps(password);
+    for (compIndex=0; compIndex<NumUsers(); compIndex++)
+    {
+        if (password == Caps(GetPassword(compIndex)))
+        {
             log("Found password "$password$" in computer "$Name);
             return compIndex;
         }
@@ -60,14 +60,22 @@ function int GetAccountIndexByPass(string password)
 function bool HasKnownAccounts()
 {
     local int compIndex;
-    
-	for (compIndex=0; compIndex<NumUsers(); compIndex++)
-	{
+
+    for (compIndex=0; compIndex<NumUsers(); compIndex++)
+    {
         if (knownAccount[compIndex]==1) {
             return True;
         }
     }
     return False;
+}
+
+
+simulated function Tick(float deltaTime)
+{
+    // why are security computers so slow?
+    Super.Tick(deltaTime);
+    AnimRate = 2;
 }
 
 /////////////////////////////////////////////////////////////
@@ -81,41 +89,44 @@ function bool HasKnownAccounts()
 
 state On
 {
-	function Tick(float deltaTime)
-	{
-		Global.Tick(deltaTime);
+    function Tick(float deltaTime)
+    {
+        Global.Tick(deltaTime);
 
-		if (bOn)
-		{
-			if ((termwindow == None) && (Level.NetMode == NM_Standalone))
-         {
-				GotoState('Off');
-         }            
-         if (curFrobber == None)
-         {
+        if (!bOn) return;
+
+        if ((termwindow == None) && (Level.NetMode == NM_Standalone))
+        {
             GotoState('Off');
-         }
-         else if (VSize(curFrobber.Location - Location) > 1500)
-         {
-            log("Disabling computer "$Self$" because user "$curFrobber$" was too far away");
-			//Probably should be "GotoState('Off')" instead, but no good way to test, so I'll leave it alone.
-            curFrobber = None;
-         }
-		}
-	}
+        }
+        if (curFrobber == None)
+        {
+            GotoState('Off');
+        }
+        else if (VSize(curFrobber.Location - Location) > 150)// DXRando: reduced from 1500 down to 150
+        {
+            curFrobber.ClientMessage(ItemName$" is too far to use!");
+            termwindow.CloseScreen("EXIT");
+        }
+    }
 
 Begin:
-	if (!bOn)
-	{
-      AdditionalActivation(curFrobber);
-		bAnimating = True;
-		PlayAnim('Activate');
-		FinishAnim();
-		bOn = True;
-		bAnimating = False;
-		ChangePlayerVisibility(False);
-      TryInvoke();
-	}
+    if (!bOn)
+    {
+        AdditionalActivation(curFrobber);
+        bAnimating = True;
+        PlayAnim('Activate');
+        FinishAnim();
+        bOn = True;
+        bAnimating = False;
+        if (VSize(curFrobber.Location - Location) > 150) {// DXRando
+            curFrobber.ClientMessage(ItemName$" is too far to use!");
+            GotoState('Off');
+        } else {
+            ChangePlayerVisibility(False);
+            TryInvoke();
+        }
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -125,21 +136,21 @@ Begin:
 auto state Off
 {
 Begin:
-	if (bOn)
-	{
-      AdditionalDeactivation(curFrobber);
-		ChangePlayerVisibility(True);
-		bAnimating = True;
-		PlayAnim('Deactivate');
-		FinishAnim();
-		bOn = False;
-		bAnimating = False;
-		if (bLockedOut)
-			BeginAlarm();
+    if (bOn)
+    {
+        AdditionalDeactivation(curFrobber);
+        ChangePlayerVisibility(True);
+        bAnimating = True;
+        PlayAnim('Deactivate');
+        FinishAnim();
+        bOn = False;
+        bAnimating = False;
+        if (bLockedOut)
+            BeginAlarm();
 
-		// Resume any datalinks that may have started while we were 
-		// in the computers (don't want them to start until we pop back out)
-		ResumeDataLinks();
-      curFrobber = None;
-	}
+        // Resume any datalinks that may have started while we were
+        // in the computers (don't want them to start until we pop back out)
+        ResumeDataLinks();
+        curFrobber = None;
+    }
 }
