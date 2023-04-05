@@ -2338,6 +2338,8 @@ function Area51_FirstEntry()
                 break;
             }
         }
+        // get the password from Helios sooner
+        FixConversationAddNote(GetConversation('DL_Final_Helios06'), "Use the login");
         break;
     }
 #endif
