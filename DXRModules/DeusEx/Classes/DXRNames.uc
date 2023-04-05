@@ -3,6 +3,7 @@ class DXRNames extends DXRBase;
 function FirstEntry()
 {
     local #var(prefix)ScriptedPawn p;
+    local #var(prefix)BoneSkull skull;
 #ifdef hx
     local HXCarcass c;
 #else
@@ -24,10 +25,16 @@ function FirstEntry()
 #endif
     {
         if ( c.itemName != "Dead Body" && c.itemName != "Unconscious" && c.itemName != "Animal Carcass" )
-            return;
+            continue;
         if ( c.BindName == "PaulDentonCarcass" )
-            return;
+            continue;
         c.itemName = c.itemName $ " (" $ RandomName(dxr) $ ")";
+    }
+
+    foreach AllActors(class'#var(prefix)BoneSkull', skull) {
+        skull.ItemName = RandomName(dxr, None);
+        if(chance_single(1))
+            skull.ItemName = "Murray";
     }
 }
 
