@@ -1878,6 +1878,10 @@ function Paris_FirstEntry()
 
     switch(dxr.localURL)
     {
+    case "10_PARIS_CATACOMBS":
+        FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
+        break;
+
 #ifdef vanillamaps
     case "10_PARIS_CATACOMBS_TUNNELS":
         foreach AllActors(class'Trigger', t)
