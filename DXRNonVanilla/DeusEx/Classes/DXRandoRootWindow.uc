@@ -14,6 +14,20 @@ event InitWindow()
     hud.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
 }
 
+function bool GetNoPause(bool bNoPause) {
+    local DXRFlags flags;
+
+    if(bNoPause)
+        return true;
+
+    foreach parentPawn.AllActors(class'DXRFlags', flags) {
+        if(flags.settings.menus_pause == 0)
+            return true;
+    }
+
+    return false;
+}
+
 function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, optional bool bNoPause)
 {
     log("DXRandoRootWindow InvokeMenuScreen "$newScreen);
@@ -40,7 +54,7 @@ function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, op
             newScreen = class'NewGamePlusCreditsWindow';
             break;
     }
-    return Super.InvokeMenuScreen(newScreen, bNoPause);
+    return Super.InvokeMenuScreen(newScreen, GetNoPause(bNoPause));
 }
 
 function InvokeMenu(Class<DeusExBaseWindow> newMenu)
@@ -77,10 +91,10 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
     switch(newScreen) {
         /*case class'ATMWindow':
             newScreen = class'DXRATMWindow';
-            break;
+            break;*/
         case class'NetworkTerminalATM':
             newScreen = class'DXRNetworkTerminalATM';
-            break;*/
+            break;
 
 #ifndef vmd
         case class'HUDMedBotHealthScreen':
@@ -116,5 +130,5 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
             }
             break;
     }
-    return Super.InvokeUIScreen(newScreen, bNoPause);
+    return Super.InvokeUIScreen(newScreen, GetNoPause(bNoPause));
 }

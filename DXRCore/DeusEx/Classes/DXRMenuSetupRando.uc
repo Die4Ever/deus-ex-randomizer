@@ -52,6 +52,10 @@ function BindControls(optional string action)
     EnumOption("Available", 1, f.settings.spoilers);
     EnumOption("Disallowed", 0, f.settings.spoilers);
 
+    NewMenuItem("Menus Pause Game", "Should the game keep playing while a menu is open?");
+    EnumOption("Pause", 1, f.settings.menus_pause);
+    EnumOption("Don't Pause", 0, f.settings.menus_pause);
+
     NewGroup("Medical Bots and Repair Bots");
 
     NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%)");
