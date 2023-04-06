@@ -63,6 +63,45 @@ function PlayDying(name damageType, vector hitLoc)
     Super.PlayDying(damageType, hitLoc);
 }
 
+function Carcass SpawnCarcass()
+{
+    local vector loc;
+    local FleshFragment chunk;
+    local int i;
+    local float size;
+
+    // if we really got blown up good, gib us and don't display a carcass
+    // DXRando: apply velocity and acceleration to gibs
+    if ((Health < -100) && !IsA('Robot'))
+    {
+        size = (CollisionRadius + CollisionHeight) / 2;
+        if (size > 10.0)
+        {
+            for (i=0; i<size/4.0; i++)
+            {
+                loc.X = (1-2*FRand()) * CollisionRadius;
+                loc.Y = (1-2*FRand()) * CollisionRadius;
+                loc.Z = (1-2*FRand()) * CollisionHeight;
+                loc += Location;
+                chunk = spawn(class'FleshFragment', None,, loc);
+                if (chunk != None)
+                {
+                    chunk.DrawScale = size / 25;
+                    chunk.SetCollisionSize(chunk.CollisionRadius / chunk.DrawScale, chunk.CollisionHeight / chunk.DrawScale);
+                    chunk.bFixedRotationDir = True;
+                    chunk.RotationRate = RotRand(False);
+                    // DXRando: apply velocity and acceleration to gibs
+                    chunk.Velocity += Velocity;
+                    chunk.Acceleration += Acceleration;
+                }
+            }
+        }
+        return None;
+    }
+
+    return Super.SpawnCarcass();
+}
+
 function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType,
                         bool bPlayAnim)
 {
@@ -270,6 +309,29 @@ function PrintAlliances()
     log("PrintAlliances: "$alliance, name);
     for(i=0; i<ArrayCount(AlliancesEx); i++)
         log("PrintAlliances "$i$": " $ AlliancesEx[i].AllianceName @ AlliancesEx[i].AllianceLevel @ AlliancesEx[i].bPermanent, name);
+}
+
+state Dying
+{
+    ignores SeePlayer, EnemyNotVisible, HearNoise, KilledBy, Trigger, Bump, HitWall, HeadZoneChange, FootZoneChange, ZoneChange, Falling, WarnTarget, Died, Timer, TakeDamage;
+Begin:
+    //WaitForLanding();// DXRando: spawn the carcass immediately instead, otherwise the knockback can look funny, the carcass inherits momentum anyways
+    MoveFallingBody();
+
+    DesiredRotation.Pitch = 0;
+    DesiredRotation.Roll  = 0;
+
+    // if we don't gib, then wait for the animation to finish
+    if ((Health > -100) && !IsA('Robot'))
+        FinishAnim();
+
+    SetWeapon(None);
+
+    bHidden = True;
+
+    Acceleration = vect(0,0,0);
+    SpawnCarcass();
+    Destroy();
 }
 
 defaultproperties
