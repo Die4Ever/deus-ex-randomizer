@@ -16,10 +16,12 @@ Begin:
     SetTimer(0.25/float(gradualHurtSteps), True);
 }
 
+// vanilla MomentumTransfer is 5000
 defaultproperties
 {
     blastRadius=128
     Damage=18
+    MomentumTransfer=6000
 #ifndef hx
     mpDamage=18
     mpBlastRadius=128

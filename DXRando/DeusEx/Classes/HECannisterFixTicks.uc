@@ -15,3 +15,9 @@ Begin:
     DamageRing();
     SetTimer(0.25/float(gradualHurtSteps), True);
 }
+
+// MomentumTransfer vanilla is 40000 for some reason
+defaultproperties
+{
+    MomentumTransfer=10000
+}
