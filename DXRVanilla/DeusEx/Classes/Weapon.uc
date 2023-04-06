@@ -95,15 +95,23 @@ static function SpawnExtraBlood(Actor this, Vector HitLocation, Vector HitNormal
 
     if ((DeusExMPGame(this.Level.Game) != None) && (!DeusExMPGame(this.Level.Game).bSpawnEffects))
         return;
+    if(mult < 0.1) return;
 
-    for (i=0; i < int(mult*2.0); i++)
+    for (i=0; i < int(mult*1.5); i++)
     {
         v = VRand()*8.0*mult;
         a = this.spawn(class'BloodSpurt',,,HitLocation+HitNormal+v);
-        a.DrawScale *= mult;
+        a.DrawScale *= mult/2;
         a = this.spawn(class'BloodDrop',,,HitLocation+HitNormal*4+v);
-        a.DrawScale *= mult;
+        a.DrawScale *= mult/2;
     }
+
+    a = this.spawn(class'FleshFragment', None,, HitLocation);
+    a.DrawScale = mult / 5.0;
+    a.SetCollisionSize(a.CollisionRadius / a.DrawScale, a.CollisionHeight / a.DrawScale);
+    a.bFixedRotationDir = True;
+    a.RotationRate = RotRand(False);
+    a.Velocity = HitNormal * -1000.0;
 }
 
 function float GetDamage(optional bool ignore_skill)
