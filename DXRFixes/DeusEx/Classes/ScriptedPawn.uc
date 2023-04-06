@@ -138,6 +138,7 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
     local float        origHealth;
     local EHitLocation hitPos;
     local float        shieldMult;
+    local float        mult;
 
     // use the hitlocation to determine where the pawn is hit
     // transform the worldspace hitlocation into objectspace
@@ -181,8 +182,14 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
     // Impart momentum, DXRando multiply momentum by damage
     // pick the smaller between Damage and actualDamage so that stealth hits don't do insane knockback
     // and hits absorbed by shields do less knockback
-    momentum *= FMax(1, loge(loge(FMin(Damage, actualDamage))+1.0)*7.0);
-    ImpartMomentum(momentum, instigatedBy);
+    mult = FMin(Damage, actualDamage);
+    mult += loge(mult);
+    mult *= 0.3;
+    momentum *= FMax(mult, 0.1);
+    SetPhysics(PHYS_Falling);
+    // need to lift off the ground cause once they land and start walking that overrides their velocity
+    momentum.Z = FMax(momentum.Z, 0.4 * VSize(momentum));
+    Velocity += momentum / Mass;
 
     origHealth = Health;
 
