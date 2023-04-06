@@ -80,3 +80,6 @@ DerivedDataCache/*
 compiler_settings.json
 
 __pycache__
+
+# python virtual environment
+venv/
