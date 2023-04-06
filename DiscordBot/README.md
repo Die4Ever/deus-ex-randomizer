@@ -1,11 +1,10 @@
 # deus-ex-randomizer-discord-bot
 
 ### In Game
-<img src="https://github.com/Die4Ever/deus-ex-randomizer/DiscordBot/raw/master/media/DeusEx_Lj4DyxN1h7.png"/></a>
+![image](https://user-images.githubusercontent.com/30947252/230291061-364e6a3a-b5aa-430f-88a1-6f17a4dda685.png)
 
 ### In Discord
-<img src="https://github.com/Die4Ever/deus-ex-randomizer/DiscordBot/raw/master/media/Discord_RAFk3XUj32.png"/></a>
-
+![image](https://user-images.githubusercontent.com/30947252/230291089-3825c344-5442-4f90-832f-6fc2dc168226.png)
 
 ## Usage: 
 - Download archive from [Releases](https://github.com/Die4Ever/deus-ex-randomizer)
