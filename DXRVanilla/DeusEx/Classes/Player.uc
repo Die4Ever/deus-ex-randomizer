@@ -518,9 +518,9 @@ function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusi
 // only called by GameInfo::PostLogin()
 function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
-    local DXRContinuousMusic cm;
+    local DXRMusic cm;
     GetDXR();
-    cm = DXRContinuousMusic(dxr.LoadModule(class'DXRContinuousMusic'));
+    cm = DXRMusic(dxr.LoadModule(class'DXRMusic'));
     cm.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
 }
 

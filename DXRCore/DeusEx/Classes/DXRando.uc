@@ -110,7 +110,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 2,2,4,5) ) {
+    if( VersionOlderThan(config_version, 2,3,1,1) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -165,7 +165,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRHints";
     modules_to_load[i++] = "DXREvents";
     //modules_to_load[i++] = "DXRTestAllMaps";
-    modules_to_load[i++] = "DXRContinuousMusic";
+    modules_to_load[i++] = "DXRMusic";
 }
 
 function hx_modules()
@@ -222,7 +222,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXRFashion";
     modules_to_load[i++] = "DXREvents";
-    modules_to_load[i++] = "DXRContinuousMusic";
+    modules_to_load[i++] = "DXRMusic";
 }
 
 function revision_modules()
@@ -256,7 +256,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRReplaceActors";
     modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXREvents";
-    modules_to_load[i++] = "DXRContinuousMusic";
+    modules_to_load[i++] = "DXRMusic";
 }
 
 function DXRFlags LoadFlagsModule()
