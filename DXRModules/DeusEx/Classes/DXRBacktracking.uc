@@ -362,7 +362,7 @@ function VandGasAnyEntry()
 
     foreach AllActors(Class'DeusExMover', M, 'junkyard_doors') {
         M.bLocked = true;
-        class'DXRKeys'.static.StaticMakeDestructible(M);
+        class'DXRDoors'.static.StaticMakeDestructible(M);
         M.doorStrength = 0.1;
         M.minDamageThreshold = 1;
     }

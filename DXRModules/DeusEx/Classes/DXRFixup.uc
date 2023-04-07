@@ -1704,7 +1704,7 @@ function HongKong_FirstEntry()
             m.bPickable = false;
         }
         foreach AllActors(class'#var(Mover)', m, 'elevator_door') {
-            m.bIsDoor = true;// DXRKeys will pick this up later since we're in PreFirstEntry
+            m.bIsDoor = true;// DXRDoors will pick this up later since we're in PreFirstEntry
         }
         foreach AllActors(class'FlagTrigger', ft, 'MJ12Alert') {
             ft.Tag = 'TongHasRom';

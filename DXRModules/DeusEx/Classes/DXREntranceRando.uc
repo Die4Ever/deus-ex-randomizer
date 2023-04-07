@@ -810,8 +810,8 @@ function FixVandebergCmd()
             case 'security_tunnels':
                 d.KeyIDNeeded = 'storage_door';
             case 'door_controlroom':
-                class'DXRKeys'.static.StaticMakePickable(d);
-                class'DXRKeys'.static.StaticMakeDestructible(d);
+                class'DXRDoors'.static.StaticMakePickable(d);
+                class'DXRDoors'.static.StaticMakeDestructible(d);
                 break;
         }
     }*/

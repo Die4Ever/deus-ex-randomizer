@@ -143,6 +143,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRFixup";
     modules_to_load[i++] = "DXRBacktracking";
     modules_to_load[i++] = "DXRKeys";
+    modules_to_load[i++] = "DXRDoors";
     modules_to_load[i++] = "DXRSkills";
     modules_to_load[i++] = "DXRPasswords";
     modules_to_load[i++] = "DXRAugmentations";
@@ -176,6 +177,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRSwapItems";
     modules_to_load[i++] = "DXRFixup";
     modules_to_load[i++] = "DXRKeys";
+    modules_to_load[i++] = "DXRDoors";
     modules_to_load[i++] = "DXRSkills";
     modules_to_load[i++] = "DXRPasswords";
     modules_to_load[i++] = "DXRAugmentations";
@@ -203,6 +205,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRSwapItems";
     modules_to_load[i++] = "DXRFixup";
     modules_to_load[i++] = "DXRKeys";
+    modules_to_load[i++] = "DXRDoors";
     modules_to_load[i++] = "DXRSkills";
     modules_to_load[i++] = "DXRPasswords";
     modules_to_load[i++] = "DXRAugmentations";
@@ -238,6 +241,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRSwapItems";
     modules_to_load[i++] = "DXRFixup";
     modules_to_load[i++] = "DXRKeys";
+    modules_to_load[i++] = "DXRDoors";
     modules_to_load[i++] = "DXRSkills";
     modules_to_load[i++] = "DXRPasswords";
     modules_to_load[i++] = "DXRAugmentations";
