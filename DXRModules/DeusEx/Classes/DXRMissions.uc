@@ -650,7 +650,9 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("14_OCEANLAB_UC", "UC Entry 1", GOAL_TYPE1, vect(945,6230,-4160), rot(0,0,0));
         AddGoalLocation("14_OCEANLAB_UC", "UC Entry 2", GOAL_TYPE1, vect(945,5250,-4160), rot(0,0,0));
 
-        AddGoal("14_OCEANLAB_UC", "UC Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
+        goal = AddGoal("14_OCEANLAB_UC", "UC Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
+        AddGoalActor(goal, 1, 'DataLinkTrigger1', PHYS_None);
+        AddGoalActor(goal, 2, 'DataLinkTrigger2', PHYS_None);
         AddGoal("14_OCEANLAB_UC", "Bait Computer", NORMAL_GOAL, 'ComputerPersonal1', PHYS_Falling);
         AddGoalLocation("14_OCEANLAB_UC", "UC", NORMAL_GOAL | VANILLA_GOAL, vect(264.363281, 6605.039551, -3173.865967), rot(0,32720,0));
         AddGoalLocation("14_OCEANLAB_UC", "Bait Station", NORMAL_GOAL | VANILLA_GOAL, vect(-264.784027, 8735.982422, -2904.487549), rot(0,8816,0));
@@ -1648,6 +1650,8 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         }
         Vehicles(g.actors[0].a).FamiliarName="Jock Escape";
         Vehicles(g.actors[0].a).UnFamiliarName="Jock Escape";
+    } else if (g.name=="UC Computer" && g.actors[1].a != None) {
+        g.actors[1].a.SetCollisionSize(640, 64);
     }
 }
 
