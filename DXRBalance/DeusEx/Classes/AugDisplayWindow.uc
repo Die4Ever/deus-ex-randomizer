@@ -215,6 +215,46 @@ function DrawBlinder(GC gc, Actor A)
     }
 }
 
+function Teleporter TraceTeleporter(float checkDist, out vector HitLocation)
+{
+	local Actor target;
+	local Vector HitLoc, HitNormal, StartTrace, EndTrace;
+
+	target = None;
+
+	// figure out how far ahead we should trace
+	StartTrace = Player.Location;
+	EndTrace = Player.Location + (Vector(Player.ViewRotation) * checkDist);
+
+	// adjust for the eye height
+	StartTrace.Z += Player.BaseEyeHeight;
+	EndTrace.Z += Player.BaseEyeHeight;
+
+	// find the object that we are looking at
+	foreach Player.TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
+	{
+		if (target.IsA('Teleporter'))
+		{
+			HitLocation = HitLoc;
+            return Teleporter(target);
+		}
+	}
+
+	return None;
+}
+
+function string formatMapName(string mapName)
+{
+    local string mapNameOnly,destName;
+
+    if (InStr(mapName,"#")==-1){
+        //No # in map name, so it's probably just the map name?
+        return mapName;
+    }
+
+    return class'DXRInfo'.static.ReplaceText(mapName,"#"," (")$")";
+}
+
 // ----------------------------------------------------------------------
 // DrawTargetAugmentation()
 // RANDO: Changed the targeting reticule to not draw if the crosshairs are hidden
@@ -222,9 +262,32 @@ function DrawBlinder(GC gc, Actor A)
 function DrawTargetAugmentation(GC gc)
 {
     local Weapon oldWeapon;
+    local Teleporter tgtTeleporter;
+    local vector AimLocation;
+    local string str;
+    local float x,y,h,w, boxCX,boxCY;
+
     oldWeapon = Player.Weapon;
     if(!Player.bCrosshairVisible)
         Player.Weapon = None;
+
     Super.DrawTargetAugmentation(gc);
     Player.Weapon = oldWeapon;
+
+    // check 500 feet in front of the player
+	tgtTeleporter = TraceTeleporter(8000,AimLocation);
+
+    // display teleporter destinations
+	if (tgtTeleporter!=None && tgtTeleporter.URL!="")
+	{
+        ConvertVectorToCoordinates(tgtTeleporter.Location, boxCX, boxCY);
+		str = "To: "$formatMapName(tgtTeleporter.URL);
+		gc.SetTextColor(colWhite);
+		gc.GetTextExtent(0, w, h, str);
+		x = boxCX - w/2;
+        y=boxCY;
+		gc.DrawText(x, y, w, h, str);
+	}
+
+
 }
