@@ -1,4 +1,4 @@
-class DXRNames extends DXRBase;
+class DXRNames extends DXRBase transient;
 
 function FirstEntry()
 {

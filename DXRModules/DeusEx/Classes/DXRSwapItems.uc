@@ -1,4 +1,4 @@
-class DXRSwapItems extends DXRActorsBase;
+class DXRSwapItems extends DXRActorsBase transient;
 
 var config string swap_actors[16];
 

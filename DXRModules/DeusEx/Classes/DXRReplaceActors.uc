@@ -1,4 +1,4 @@
-class DXRReplaceActors extends DXRActorsBase;
+class DXRReplaceActors extends DXRActorsBase transient;
 
 function PostFirstEntry()
 {

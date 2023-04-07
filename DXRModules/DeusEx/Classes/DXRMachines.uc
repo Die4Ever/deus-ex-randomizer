@@ -1,4 +1,4 @@
-class DXRMachines extends DXRActorsBase;
+class DXRMachines extends DXRActorsBase transient;
 
 var config int max_turrets;
 var config int turret_move_min_distance;

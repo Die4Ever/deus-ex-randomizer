@@ -28,6 +28,7 @@ var int old_pawns;// used for NYC_04_CheckPaulRaid()
 var int storedWeldCount;// ship weld points
 var int storedReactorCount;// Area 51 goal
 
+// TODO: move brightness into a separate module so we can make DXRFixup transient
 struct ZoneBrightnessData
 {
     var name zonename;

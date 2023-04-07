@@ -1,7 +1,7 @@
 //=============================================================================
 // DXREntranceRando.
 //=============================================================================
-class DXREntranceRando expands DXRActorsBase;
+class DXREntranceRando expands DXRActorsBase transient;
 
 //Defines an edge of a map where you can transfer between maps
 //Via Teleporter or MapExit

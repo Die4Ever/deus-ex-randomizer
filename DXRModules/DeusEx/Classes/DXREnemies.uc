@@ -23,7 +23,7 @@ struct WatchEnterWorld {
     var ScriptedPawn watch, target;
 };
 
-// for hidden/not in world pawns
+// for hidden/not in world pawns, TODO: put these in a separate actor so we can make DXREnemies transient
 var WatchEnterWorld watches[100];
 var int num_watches;
 
@@ -723,7 +723,7 @@ function inventory GiveRandomBotWeapon(Pawn p, optional bool allow_dupes, option
     }
 
     if( wclass == None ) {
-        warning("not giving a random weapon to "$p);
+        warning("not giving a random weapon to bot "$p);
         return None;
     }
 

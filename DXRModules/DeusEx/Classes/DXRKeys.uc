@@ -1,4 +1,4 @@
-class DXRKeys extends DXRActorsBase;
+class DXRKeys extends DXRActorsBase transient;
 
 var config safe_rule keys_rules[64];
 

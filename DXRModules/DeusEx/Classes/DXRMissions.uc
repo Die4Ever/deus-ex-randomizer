@@ -1,4 +1,4 @@
-class DXRMissions extends DXRActorsBase;
+class DXRMissions extends DXRActorsBase transient;
 
 const NORMAL_GOAL = 1;
 const GOAL_TYPE1 = 2;
@@ -1387,9 +1387,22 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
 function AnyEntry()
 {
+    local int seed;
+    local int goalsToLocations[32];
+
+    // since DXRMissions is transient, recreate this data for the hint system
     Super.AnyEntry();
     SetTimer(1, true);
+    if(num_goals != 0 || num_locations != 0) return;
+
+#ifndef revision
+    seed = InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);
+#endif
+
+    SetGlobalSeed( "DXRMissions" $ seed );
+    ChooseGoalLocations(goalsToLocations);
 }
+
 
 function Timer()
 {
