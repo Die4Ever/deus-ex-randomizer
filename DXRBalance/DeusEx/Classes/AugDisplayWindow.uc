@@ -215,7 +215,7 @@ function DrawBlinder(GC gc, Actor A)
     }
 }
 
-function Teleporter TraceTeleporter(float checkDist, out vector HitLocation)
+function #var(prefix)Teleporter TraceTeleporter(float checkDist, out vector HitLocation)
 {
 	local Actor target;
 	local Vector HitLoc, HitNormal, StartTrace, EndTrace;
@@ -231,14 +231,29 @@ function Teleporter TraceTeleporter(float checkDist, out vector HitLocation)
 	EndTrace.Z += Player.BaseEyeHeight;
 
 	// find the object that we are looking at
-	foreach Player.TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace)
-	{
-		if (target.IsA('Teleporter'))
-		{
-			HitLocation = HitLoc;
-            return Teleporter(target);
-		}
-	}
+    //Player.ClientMessage("Starting trace");
+	foreach Player.TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace){
+        //Player.ClientMessage("Traced to "$target.Name);
+
+        if (target == Player.CarriedDecoration){
+           continue;
+        } else if (Player.IsFrobbable(target)){
+            return None;
+        } else if (target.bHidden){
+            continue;
+        } else {
+            break;
+        }
+    }
+    //Player.ClientMessage("Finishing Trace");
+
+    //Player.ClientMessage("Target is "$target.Name);
+    if (#var(prefix)Teleporter(target)!=None)
+    {
+        HitLocation = HitLoc;
+        return #var(prefix)Teleporter(target);
+    }
+
 
 	return None;
 }
@@ -262,7 +277,7 @@ function string formatMapName(string mapName)
 function DrawTargetAugmentation(GC gc)
 {
     local Weapon oldWeapon;
-    local Teleporter tgtTeleporter;
+    local #var(prefix)Teleporter tgtTeleporter;
     local vector AimLocation;
     local string str;
     local float x,y,h,w, boxCX,boxCY;
