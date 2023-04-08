@@ -915,14 +915,6 @@ function PreFirstEntry()
             barrel.bExplosive = false;
             barrel.Destroy();
         }
-    } else if ( dxr.localURL == "14_OCEANLAB_UC" ) {
-        foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
-            if (cp.UserList[0].UserName=="USER" || cp.UserList[0].UserName=="UC"){
-                cp.UserList[0].UserName="MBHaggerty";
-                cp.UserList[0].Password="Kraken";
-                cp.TextPackage = "#var(package)";
-            }
-        }
     } else if ( dxr.localURL == "15_AREA51_BUNKER" ) {
         foreach AllActors(class'Trigger',t){
             if (t.Name=='Trigger1' || t.Name=='Trigger2'){
@@ -1516,16 +1508,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     local int i;
     local Actor a;
     local ScriptedPawn sp;
-    local #var(Mover) m;
     local string result;
-    local #var(prefix)DataCube dc1;
-    local #var(prefix)ComputerPersonal cp;
-    local DXRPasswords passwords;
-#ifdef injections
-    local #var(prefix)DataCube dc2;
-#else
-    local DXRInformationDevices dc2;
-#endif
 
     result = g.name $ " to " $ Loc.name;
     info("Moving " $ result $ " (" $ Loc.mapName @ Loc.positions[0].pos $")");
@@ -1569,10 +1552,28 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         }
     }
 
+    AfterMoveGoalToLocation(g, Loc);
+}
+
+function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
+{
+    local int i;
+    local Actor a;
+    local ScriptedPawn sp;
+    local #var(Mover) m;
+    local #var(prefix)DataCube dc1;
+    local #var(prefix)ComputerPersonal cp;
+    local DXRPasswords passwords;
+#ifdef injections
+    local #var(prefix)DataCube dc2;
+#else
+    local DXRInformationDevices dc2;
+#endif
+
     if(Loc.mapName != dxr.localURL)
         return;
 
-    // hardcoded cleanup stuff
+    // hardcoded cleanup stuff for the current map
     if(g.name == "Terrorist Commander" && g.actors[1].a != None) {
         // DataLinkTrigger 15ft wide, 4ft tall
         g.actors[1].a.SetCollisionSize(240, 64);
@@ -1664,6 +1665,11 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         if(passwords != None && Loc.name != "UC") {
             passwords.ReplacePassword("on the computer at the UC,", "on the computer at the "$Loc.name$",");
         }
+    } else if (dxr.localURL=="14_OCEANLAB_UC" && g.name=="Email Computer") {// we gotta be careful with generic goal names
+        cp = #var(prefix)ComputerPersonal(g.actors[0].a);
+        cp.UserList[0].UserName="MBHaggerty";
+        cp.UserList[0].Password="Kraken";
+        cp.TextPackage = "#var(package)";
     }
 }
 
