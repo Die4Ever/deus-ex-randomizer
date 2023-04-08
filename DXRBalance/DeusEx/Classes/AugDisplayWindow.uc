@@ -282,10 +282,11 @@ function DrawTargetAugmentation(GC gc)
     local string str;
     local float x,y,h,w, boxCX,boxCY;
 
+    gc.SetFont(Font'FontMenuSmall_DS'); //This font is so much better for everything
+
     oldWeapon = Player.Weapon;
     if(!Player.bCrosshairVisible)
         Player.Weapon = None;
-
     Super.DrawTargetAugmentation(gc);
     Player.Weapon = oldWeapon;
 
@@ -296,13 +297,16 @@ function DrawTargetAugmentation(GC gc)
 	if (tgtTeleporter!=None && tgtTeleporter.URL!="")
 	{
         ConvertVectorToCoordinates(tgtTeleporter.Location, boxCX, boxCY);
-		str = "To: "$formatMapName(tgtTeleporter.URL);
-		gc.SetTextColor(colWhite);
-		gc.GetTextExtent(0, w, h, str);
-		x = boxCX - w/2;
+        str = "To: "$formatMapName(tgtTeleporter.URL);
+        gc.SetTextColor(colWhite);
+        gc.GetTextExtent(0, w, h, str);
+        x = boxCX - w/2;
         y=boxCY;
-		gc.DrawText(x, y, w, h, str);
+
+        gc.DrawText(x, y, w, h, str);
 	}
 
+    //Font is immediately changed after DrawTargetAugmentation gets called,
+    //So not necessary to "change it back" to the old font
 
 }
