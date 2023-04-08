@@ -1318,3 +1318,42 @@ function RunTests()
     not_passwords[0] = oldnot;
     num_not_passwords = old_num_not_passwords;
 }
+
+function ExtendedTests()
+{
+    local bool bHasPass;
+    local DataCube d;
+    local int oldPassStart, oldPassEnd;
+    local string prevOldPassword, prevNewPassword;
+
+    Super.ExtendedTests();
+
+    oldPassStart = passStart;
+    oldPassEnd = passEnd;
+    passStart = 0;
+    passEnd = 1;
+    prevOldPassword = oldpasswords[passStart];
+    prevNewPassword = newpasswords[passStart];
+
+    oldpasswords[passStart] = "DXRando";
+    newpasswords[passStart] = "RANDOM";
+
+    d = spawn(class'DataCube');
+    test(d != None, "spawned DataCube " $ d );
+    d.TextTag = '12_DXRandoTest01';
+    d.TextPackage = "#var(package)";
+
+    bHasPass = InfoDevsHasPass(d);
+    testbool(bHasPass, true, d $ " has password DXRando");
+
+    oldpasswords[passStart] = "UNKNOWN";
+    newpasswords[passStart] = "RANDOM";
+
+    bHasPass = InfoDevsHasPass(d);
+    testbool(bHasPass, false, d $ " doesn't have password UNKNOWN");
+
+    oldpasswords[passStart] = prevOldPassword;
+    newpasswords[passStart] = prevNewPassword;
+    passStart = oldPassStart;
+    passEnd = oldPassEnd;
+}
