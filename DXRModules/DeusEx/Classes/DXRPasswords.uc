@@ -1322,9 +1322,15 @@ function RunTests()
 function ExtendedTests()
 {
     local bool bHasPass;
-    local DataCube d;
     local int oldPassStart, oldPassEnd;
     local string prevOldPassword, prevNewPassword;
+#ifdef vanilla
+    local DataCube d;
+    d = spawn(class'DataCube',,, vect(-1549.046997, 5708.364746, -2569.889648));
+#else
+    local DXRInformationDevices d;
+    d = spawn(class'DXRInformationDevices',,, vect(-1549.046997, 5708.364746, -2569.889648));
+#endif
 
     Super.ExtendedTests();
 
@@ -1338,7 +1344,6 @@ function ExtendedTests()
     oldpasswords[passStart] = "DXRando";
     newpasswords[passStart] = "RANDOM";
 
-    d = spawn(class'DataCube');
     test(d != None, "spawned DataCube " $ d );
     d.TextTag = '12_DXRandoTest01';
     d.TextPackage = "#var(package)";
