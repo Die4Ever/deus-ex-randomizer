@@ -1591,6 +1591,19 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             m.Tag = '';
             m.Event = '';
         }
+
+        passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+        if(passwords != None && Loc.name != "UC") {
+            passwords.ReplacePassword("defend the generator in the Warehouse,", "defend the generator in the "$Loc.name$",");
+        }
+    } else if(g.name == "Generator Computer" && Loc.name != "Warehouse Computer Room") {
+        passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+        if(passwords != None && Loc.name != "UC") {
+            passwords.ReplacePassword("generator's computer in the Warehouse Computer Room.", "generator's computer in the "$Loc.name$".");
+        }
+    } else if(dxr.localURL=="02_NYC_WAREHOUSE" && g.name=="Email Computer") {
+        cp = #var(prefix)ComputerPersonal(g.actors[0].a);
+        cp.TextPackage = "#var(package)";
     } else if (g.name=="Anna's Killphrase 1" || g.name=="Anna's Killphrase 2") {
         // insert the demiurge/archon account and add the special options
         cp = #var(prefix)ComputerPersonal(findNearestToActor(class'#var(prefix)ComputerPersonal', g.actors[0].a));
