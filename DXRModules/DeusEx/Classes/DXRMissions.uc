@@ -653,9 +653,9 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("14_OCEANLAB_UC", "UC Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
         AddGoalActor(goal, 1, 'DataLinkTrigger1', PHYS_None);
         AddGoalActor(goal, 2, 'DataLinkTrigger2', PHYS_None);
-        AddGoal("14_OCEANLAB_UC", "Bait Computer", NORMAL_GOAL, 'ComputerPersonal1', PHYS_Falling);
+        AddGoal("14_OCEANLAB_UC", "Email Computer", NORMAL_GOAL, 'ComputerPersonal1', PHYS_Falling);
         AddGoalLocation("14_OCEANLAB_UC", "UC", NORMAL_GOAL | VANILLA_GOAL, vect(264.363281, 6605.039551, -3173.865967), rot(0,32720,0));
-        AddGoalLocation("14_OCEANLAB_UC", "Bait Station", NORMAL_GOAL | VANILLA_GOAL, vect(-264.784027, 8735.982422, -2904.487549), rot(0,8816,0));
+        AddGoalLocation("14_OCEANLAB_UC", "Email Station", NORMAL_GOAL | VANILLA_GOAL, vect(-264.784027, 8735.982422, -2904.487549), rot(0,8816,0));
         AddGoalLocation("14_OCEANLAB_UC", "South Wing", NORMAL_GOAL | VANILLA_GOAL, vect(-1133.915039, 6690.755371, -3800.472168), rot(0,16384,0));// non-radioactive
         AddGoalLocation("14_OCEANLAB_UC", "North Wing", NORMAL_GOAL | VANILLA_GOAL, vect(1832.621338, 6919.640137, -3764.490234), rot(0,16384,0));// outside radioactive room
         return 141;
@@ -918,7 +918,9 @@ function PreFirstEntry()
     } else if ( dxr.localURL == "14_OCEANLAB_UC" ) {
         foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
             if (cp.UserList[0].UserName=="USER" || cp.UserList[0].UserName=="UC"){
-                cp.UserList[0].UserName="JEBAITED"; //Just to make it a bit more clear this is a bait computer
+                cp.UserList[0].UserName="MBHaggerty";
+                cp.UserList[0].Password="Kraken";
+                cp.TextPackage = "#var(package)";
             }
         }
     } else if ( dxr.localURL == "15_AREA51_BUNKER" ) {
@@ -1518,6 +1520,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     local string result;
     local #var(prefix)DataCube dc1;
     local #var(prefix)ComputerPersonal cp;
+    local DXRPasswords passwords;
 #ifdef injections
     local #var(prefix)DataCube dc2;
 #else
@@ -1565,6 +1568,9 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             sp.SetOrders('Sitting');
         }
     }
+
+    if(Loc.mapName != dxr.localURL)
+        return;
 
     // hardcoded cleanup stuff
     if(g.name == "Terrorist Commander" && g.actors[1].a != None) {
@@ -1650,8 +1656,14 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         }
         Vehicles(g.actors[0].a).FamiliarName="Jock Escape";
         Vehicles(g.actors[0].a).UnFamiliarName="Jock Escape";
-    } else if (g.name=="UC Computer" && g.actors[1].a != None) {
-        g.actors[1].a.SetCollisionSize(640, 64);
+    } else if (g.name=="UC Computer") {
+        if(g.actors[1].a != None)
+            g.actors[1].a.SetCollisionSize(640, 64);
+
+        passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+        if(passwords != None && Loc.name != "UC") {
+            passwords.ReplacePassword("on the computer at the UC,", "on the computer at the "$Loc.name$",");
+        }
     }
 }
 
