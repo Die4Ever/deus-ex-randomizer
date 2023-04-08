@@ -50,7 +50,7 @@ function SetEnumerators()
 
 function AdjustBrightness(int newVal)
 {
-    class'DXRFixup'.static.AdjustBrightness(player,newVal);
+    class'DXRBrightness'.static.AdjustBrightness(player,newVal);
 }
 
 // ----------------------------------------------------------------------

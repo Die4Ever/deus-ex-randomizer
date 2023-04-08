@@ -110,7 +110,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 2,3,1,1) ) {
+    if( VersionOlderThan(config_version, 2,3,1,2) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -141,6 +141,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRSwapItems";
     //modules_to_load[i++] = "DXRAddItems";
     modules_to_load[i++] = "DXRFixup";
+    modules_to_load[i++] = "DXRBrightness";
     modules_to_load[i++] = "DXRBacktracking";
     modules_to_load[i++] = "DXRKeys";
     modules_to_load[i++] = "DXRDoors";
@@ -176,6 +177,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRMissions";
     modules_to_load[i++] = "DXRSwapItems";
     modules_to_load[i++] = "DXRFixup";
+    modules_to_load[i++] = "DXRBrightness";
     modules_to_load[i++] = "DXRKeys";
     modules_to_load[i++] = "DXRDoors";
     modules_to_load[i++] = "DXRSkills";
@@ -204,6 +206,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRMissions";
     modules_to_load[i++] = "DXRSwapItems";
     modules_to_load[i++] = "DXRFixup";
+    modules_to_load[i++] = "DXRBrightness";
     modules_to_load[i++] = "DXRKeys";
     modules_to_load[i++] = "DXRDoors";
     modules_to_load[i++] = "DXRSkills";
@@ -240,6 +243,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRMissions";
     modules_to_load[i++] = "DXRSwapItems";
     modules_to_load[i++] = "DXRFixup";
+    modules_to_load[i++] = "DXRBrightness";
     modules_to_load[i++] = "DXRKeys";
     modules_to_load[i++] = "DXRDoors";
     modules_to_load[i++] = "DXRSkills";

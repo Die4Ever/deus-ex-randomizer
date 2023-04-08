@@ -1,4 +1,4 @@
-class DXRFixup expands DXRActorsBase;
+class DXRFixup expands DXRActorsBase transient;
 
 struct DecorationsOverwrite {
     var string type;
@@ -27,14 +27,6 @@ var config AddDatacube add_datacubes[32];
 var int old_pawns;// used for NYC_04_CheckPaulRaid()
 var int storedWeldCount;// ship weld points
 var int storedReactorCount;// Area 51 goal
-
-// TODO: move brightness into a separate module so we can make DXRFixup transient
-struct ZoneBrightnessData
-{
-    var name zonename;
-    var byte brightness, saturation, hue;
-};
-var ZoneBrightnessData zone_brightness[32];
 
 
 function CheckConfig()
@@ -177,25 +169,12 @@ function CheckConfig()
     }
 }
 
-function int GetSavedBrightnessBoost()
-{
-    return int(player().ConsoleCommand("get #var(package).MenuChoice_BrightnessBoost BrightnessBoost"));
-}
-
 function PreFirstEntry()
 {
-    local ZoneInfo Z;
-
     Super.PreFirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" PreFirstEntry()");
 
     SetSeed( "DXRFixup PreFirstEntry" );
-
-    //Save default brightnesses
-    SaveDefaultZoneBrightness(Level);
-    foreach AllActors(class'ZoneInfo',Z){
-        SaveDefaultZoneBrightness(Z);
-    }
 
     OverwriteDecorations();
     FixFlagTriggers();
@@ -223,8 +202,6 @@ function AnyEntry()
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
     SetSeed( "DXRFixup AnyEntry" );
-
-    IncreaseBrightness(GetSavedBrightnessBoost());
 
     FixSamCarter();
     SetSeed( "DXRFixup AnyEntry missions" );
@@ -591,45 +568,6 @@ simulated function FixInventory(#var(PlayerPawn) p)
         item.BecomeItem();
         item.SetLocation(p.Location);
         item.SetBase(p);
-    }
-}
-
-function IncreaseBrightness(int brightness)
-{
-    local ZoneInfo z;
-
-    IncreaseZoneBrightness(brightness, Level);
-    foreach AllActors(class'ZoneInfo', z) {
-        if( z == Level ) continue;
-        IncreaseZoneBrightness(brightness, z);
-    }
-    player().ConsoleCommand("FLUSH"); //Clears the texture cache, which allows the lighting to rerender
-}
-
-function IncreaseZoneBrightness(int brightness, ZoneInfo z)
-{
-    local ZoneBrightnessData zb;
-    local float sat_boost;
-
-    zb = GetDefaultZoneBrightness(z);
-    z.AmbientBrightness = Clamp( int(zb.brightness) + brightness, 0, 255 );
-
-    // the AmbientSaturation variable is backwards for some reason
-    // increase AmbientSaturation, aka decrease the color as the brightness goes up
-    sat_boost = float(brightness) / 2;
-    z.AmbientSaturation = Clamp( int(zb.saturation) + sat_boost, 0, 255);
-
-    // if the zone had 0 brightness then the color wouldn't have shown, so whatever color it has we need to disable it
-    if(zb.brightness == 0)
-        z.AmbientSaturation = 255;
-}
-
-static function AdjustBrightness(DeusExPlayer a, int brightness)
-{
-    local DXRFixup f;
-
-    foreach a.AllActors(class'DXRFixup',f){
-        f.IncreaseBrightness(brightness);
     }
 }
 
@@ -2531,32 +2469,6 @@ function Trigger(Actor Other, Pawn Instigator)
 #endif
     }
 }
-
-function ZoneBrightnessData GetDefaultZoneBrightness(ZoneInfo z)
-{
-    local ZoneBrightnessData zb;
-    local int i;
-    for(i=0; i<ArrayCount(zone_brightness); i++) {
-        if( z.name == zone_brightness[i].zonename )
-            return zone_brightness[i];
-    }
-    return zb;
-}
-
-function SaveDefaultZoneBrightness(ZoneInfo z)
-{
-    local int i;
-    for(i=0; i<ArrayCount(zone_brightness); i++) {
-        if( zone_brightness[i].zonename == '' || z.name == zone_brightness[i].zonename ) {
-            zone_brightness[i].zonename = z.name;
-            zone_brightness[i].brightness = z.AmbientBrightness;
-            zone_brightness[i].saturation = z.AmbientSaturation;
-            zone_brightness[i].hue = z.AmbientHue;
-            return;
-        }
-    }
-}
-
 
 static function DeleteConversationFlag(Conversation c, name Name, bool Value)
 {
