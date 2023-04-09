@@ -405,8 +405,8 @@ function NinjaAdjustWeapon(DeusExWeapon w)
         case class'WeaponSword':
             ws.blood_mult = 3;
             ws.default.blood_mult = 3;
-            ws.anim_speed = 1.3;
-            ws.default.anim_speed = 1.3;
+            ws.anim_speed = 1.2;
+            ws.default.anim_speed = 1.2;
             w.ShotTime=0;
             w.default.ShotTime=0;
             w.maxRange = 110;
@@ -425,12 +425,14 @@ function NinjaAdjustWeapon(DeusExWeapon w)
             w.default.AccurateRange = 110;
             break;
         case class'WeaponShuriken':
-            ws.anim_speed = 1.3;
-            ws.default.anim_speed = 1.3;
+            ws.anim_speed = 1.1;
+            ws.default.anim_speed = 1.1;
             WeaponShuriken(ws).auto_pickup = true;
             ws.DrawScale = 2;
             ws.SetCollisionSize(16, ws.default.CollisionHeight*2);
             break;
+        default:
+            ws.blood_mult = 2;
     }
 #endif
 }

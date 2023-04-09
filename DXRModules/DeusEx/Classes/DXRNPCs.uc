@@ -1,4 +1,4 @@
-class DXRNPCs extends DXRActorsBase;
+class DXRNPCs extends DXRActorsBase transient;
 
 struct ItemPurchase
 {

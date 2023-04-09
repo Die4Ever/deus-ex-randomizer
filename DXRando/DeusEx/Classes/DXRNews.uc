@@ -12,8 +12,8 @@ function CreateNews(Actor a, int newX, int newY, int ClientWidth, int ClientHeig
 
     SetPos(newX, newY);
     SetSize(ClientWidth, ClientHeight);
-    SetBackground(Texture'Solid');
-    SetBackgroundStyle(DSTY_Translucent);
+    SetBackground(Texture'MaskTexture');
+    SetBackgroundStyle(DSTY_Modulated);
     SetTileColorRGB(0,0,0);
     controlsParent = self;
 

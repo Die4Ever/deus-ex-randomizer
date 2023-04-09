@@ -3,6 +3,28 @@ class DXRNetworkTerminal injects NetworkTerminal;
 var ComputerScreenKnownAccounts winKnownAccounts;
 var ShadowWindow                winKnownShadow;
 
+function bool GetNoPause() {
+    local DXRFlags flags;
+
+    foreach Player.AllActors(class'DXRFlags', flags) {
+        if(flags.settings.menus_pause == 0)
+            return true;
+    }
+
+    return false;
+}
+
+event InitWindow()
+{
+    Super.InitWindow();
+    if(GetNoPause()) {
+        SetBackgroundStyle(DSTY_Modulated);
+        SetBackground(Texture'MaskTexture');
+        if(Player != None)
+            Player.MakePlayerIgnored(false);
+    }
+}
+
 function ShowScreen(Class<ComputerUIWindow> newScreen)
 {
     switch(newScreen) {

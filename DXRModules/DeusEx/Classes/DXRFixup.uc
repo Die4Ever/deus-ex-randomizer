@@ -1,4 +1,4 @@
-class DXRFixup expands DXRActorsBase;
+class DXRFixup expands DXRActorsBase transient;
 
 struct DecorationsOverwrite {
     var string type;
@@ -27,13 +27,6 @@ var config AddDatacube add_datacubes[32];
 var int old_pawns;// used for NYC_04_CheckPaulRaid()
 var int storedWeldCount;// ship weld points
 var int storedReactorCount;// Area 51 goal
-
-struct ZoneBrightnessData
-{
-    var name zonename;
-    var byte brightness, saturation, hue;
-};
-var ZoneBrightnessData zone_brightness[32];
 
 
 function CheckConfig()
@@ -176,25 +169,12 @@ function CheckConfig()
     }
 }
 
-function int GetSavedBrightnessBoost()
-{
-    return int(player().ConsoleCommand("get #var(package).MenuChoice_BrightnessBoost BrightnessBoost"));
-}
-
 function PreFirstEntry()
 {
-    local ZoneInfo Z;
-
     Super.PreFirstEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" PreFirstEntry()");
 
     SetSeed( "DXRFixup PreFirstEntry" );
-
-    //Save default brightnesses
-    SaveDefaultZoneBrightness(Level);
-    foreach AllActors(class'ZoneInfo',Z){
-        SaveDefaultZoneBrightness(Z);
-    }
 
     OverwriteDecorations();
     FixFlagTriggers();
@@ -222,8 +202,6 @@ function AnyEntry()
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
     SetSeed( "DXRFixup AnyEntry" );
-
-    IncreaseBrightness(GetSavedBrightnessBoost());
 
     FixSamCarter();
     SetSeed( "DXRFixup AnyEntry missions" );
@@ -590,45 +568,6 @@ simulated function FixInventory(#var(PlayerPawn) p)
         item.BecomeItem();
         item.SetLocation(p.Location);
         item.SetBase(p);
-    }
-}
-
-function IncreaseBrightness(int brightness)
-{
-    local ZoneInfo z;
-
-    IncreaseZoneBrightness(brightness, Level);
-    foreach AllActors(class'ZoneInfo', z) {
-        if( z == Level ) continue;
-        IncreaseZoneBrightness(brightness, z);
-    }
-    player().ConsoleCommand("FLUSH"); //Clears the texture cache, which allows the lighting to rerender
-}
-
-function IncreaseZoneBrightness(int brightness, ZoneInfo z)
-{
-    local ZoneBrightnessData zb;
-    local float sat_boost;
-
-    zb = GetDefaultZoneBrightness(z);
-    z.AmbientBrightness = Clamp( int(zb.brightness) + brightness, 0, 255 );
-
-    // the AmbientSaturation variable is backwards for some reason
-    // increase AmbientSaturation, aka decrease the color as the brightness goes up
-    sat_boost = float(brightness) / 2;
-    z.AmbientSaturation = Clamp( int(zb.saturation) + sat_boost, 0, 255);
-
-    // if the zone had 0 brightness then the color wouldn't have shown, so whatever color it has we need to disable it
-    if(zb.brightness == 0)
-        z.AmbientSaturation = 255;
-}
-
-static function AdjustBrightness(DeusExPlayer a, int brightness)
-{
-    local DXRFixup f;
-
-    foreach a.AllActors(class'DXRFixup',f){
-        f.IncreaseBrightness(brightness);
     }
 }
 
@@ -1481,6 +1420,11 @@ function Vandenberg_FirstEntry()
 
     switch(dxr.localURL)
     {
+    case "12_VANDENBERG_CMD":
+        // add goals and keypad code
+        Player().StartDataLinkTransmission("DL_no_carla");
+        break;
+
 #ifdef vanillamaps
     case "12_VANDENBERG_TUNNELS":
         foreach AllActors(class'ElevatorMover', e, 'Security_door3') {
@@ -1698,7 +1642,7 @@ function HongKong_FirstEntry()
             m.bPickable = false;
         }
         foreach AllActors(class'#var(Mover)', m, 'elevator_door') {
-            m.bIsDoor = true;// DXRKeys will pick this up later since we're in PreFirstEntry
+            m.bIsDoor = true;// DXRDoors will pick this up later since we're in PreFirstEntry
         }
         foreach AllActors(class'FlagTrigger', ft, 'MJ12Alert') {
             ft.Tag = 'TongHasRom';
@@ -1873,6 +1817,10 @@ function Paris_FirstEntry()
 
     switch(dxr.localURL)
     {
+    case "10_PARIS_CATACOMBS":
+        FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
+        break;
+
 #ifdef vanillamaps
     case "10_PARIS_CATACOMBS_TUNNELS":
         foreach AllActors(class'Trigger', t)
@@ -1992,7 +1940,6 @@ function Paris_AnyEntry()
 
 function Vandenberg_AnyEntry()
 {
-    local DataLinkTrigger dt;
     local MIB mib;
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
@@ -2019,11 +1966,7 @@ function Vandenberg_AnyEntry()
             RemoveFears(hs);
             hs.MinHealth = 0;
         }
-        foreach AllActors(class'DataLinkTrigger', dt) {
-            if(dt.datalinkTag == 'DL_FrontGate') {
-                dt.Touch(Player());
-            }
-        }
+        Player().StartDataLinkTransmission("DL_FrontGate");
         break;
     }
 }
@@ -2169,7 +2112,6 @@ function HongKong_AnyEntry()
 function NYC_08_AnyEntry()
 {
     local StantonDowd s;
-    local #var(prefix)DataLinkTrigger dt;
 
     switch(dxr.localURL) {
     case "08_NYC_STREET":
@@ -2177,11 +2119,7 @@ function NYC_08_AnyEntry()
         foreach AllActors(class'StantonDowd', s) {
             RemoveReactions(s);
         }
-        foreach AllActors(class'#var(prefix)DataLinkTrigger', dt) {
-            if(dt.datalinkTag == 'DL_Entry') {
-                dt.Touch(Player());
-            }
-        }
+        Player().StartDataLinkTransmission("DL_Entry");
         break;
 
 #ifdef vanillamaps
@@ -2202,6 +2140,7 @@ function Area51_FirstEntry()
     local SequenceTrigger st;
     local SpecialEvent se;
     local DataLinkTrigger dlt;
+    local ComputerPersonal comp_per;
 
 #ifdef vanillamaps
     switch(dxr.localURL)
@@ -2328,6 +2267,17 @@ function Area51_FirstEntry()
                 s.Event = 'door_page_overlook';
             }
         }
+
+        // fix the Helios ending skip
+        foreach AllActors(class'ComputerPersonal', comp_per) {
+            if(comp_per.Name == 'ComputerPersonal0') {
+                comp_per.Tag = 'router_computer';
+                class'DXRTriggerEnable'.static.Create(comp_per, 'router_door', 'router_computer');
+                break;
+            }
+        }
+        // get the password from Helios sooner
+        FixConversationAddNote(GetConversation('DL_Final_Helios06'), "Use the login");
         break;
     }
 #endif
@@ -2519,32 +2469,6 @@ function Trigger(Actor Other, Pawn Instigator)
 #endif
     }
 }
-
-function ZoneBrightnessData GetDefaultZoneBrightness(ZoneInfo z)
-{
-    local ZoneBrightnessData zb;
-    local int i;
-    for(i=0; i<ArrayCount(zone_brightness); i++) {
-        if( z.name == zone_brightness[i].zonename )
-            return zone_brightness[i];
-    }
-    return zb;
-}
-
-function SaveDefaultZoneBrightness(ZoneInfo z)
-{
-    local int i;
-    for(i=0; i<ArrayCount(zone_brightness); i++) {
-        if( zone_brightness[i].zonename == '' || z.name == zone_brightness[i].zonename ) {
-            zone_brightness[i].zonename = z.name;
-            zone_brightness[i].brightness = z.AmbientBrightness;
-            zone_brightness[i].saturation = z.AmbientSaturation;
-            zone_brightness[i].hue = z.AmbientHue;
-            return;
-        }
-    }
-}
-
 
 static function DeleteConversationFlag(Conversation c, name Name, bool Value)
 {

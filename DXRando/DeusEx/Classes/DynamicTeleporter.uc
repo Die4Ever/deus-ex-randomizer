@@ -1,7 +1,5 @@
 class DynamicTeleporter extends #var(prefix)Teleporter;
 
-var float proxCheckTime;
-var float Radius;
 var name destName;
 
 function SetDestination(string destURL, name dest_actor_name, optional string tag)
@@ -11,19 +9,10 @@ function SetDestination(string destURL, name dest_actor_name, optional string ta
     log(Self$": SetDestination("$destURL$", "$dest_actor_name$", "$tag$") URL: "$URL$", destName: "$destName);
 }
 
-simulated function Tick(float deltaTime)
-{
-    local DeusExPlayer Player;
-    Super.Tick(deltaTime);
-    proxCheckTime += deltaTime;
-    if (proxCheckTime > 0.1)//every 100ms
-    {
-        proxCheckTime = 0;
-        foreach RadiusActors(class'DeusExPlayer', Player, Radius)
-        {
-            Touch(Player);
-        }
-    }
+event PostPostBeginPlay()
+{// PostPostBeginPlay is also called when loading saved games, so we need this for backwards compatibility
+    Super.PostPostBeginPlay();
+    SetCollision(true,false,false);
 }
 
 function Trigger(Actor Other, Pawn Instigator)
@@ -49,7 +38,6 @@ static function SetDestName(DeusExPlayer player, name destName)
 simulated function Touch( actor Other )
 {
     local DeusExPlayer p;
-    proxCheckTime = 0;
     if ( !bEnabled )
         return;
 
@@ -91,7 +79,7 @@ static function DynamicTeleporter ReplaceTeleporter(#var(prefix)Teleporter t)
         t.Disable('Trigger');
         t.SetCollision(false, false, false);
         dt.URL = t.URL;
-        dt.Radius = t.CollisionRadius;
+        dt.SetCollisionSize(t.CollisionRadius,t.CollisionHeight);
     }
     log("ReplaceTeleporter("$t$") "$dt);
     return dt;
@@ -103,5 +91,4 @@ defaultproperties
     bGameRelevant=True
     bCollideActors=True
     bStatic=False
-    Radius=160
 }

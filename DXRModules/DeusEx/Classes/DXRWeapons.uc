@@ -1,4 +1,4 @@
-class DXRWeapons extends DXRBase;
+class DXRWeapons extends DXRBase transient;
 // do not change a weapon's defaults, since we use them in the calculations so this is all safe to be called multiple times
 var DXRLoadouts loadouts;
 

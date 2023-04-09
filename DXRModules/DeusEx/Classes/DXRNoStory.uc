@@ -1,4 +1,4 @@
-class DXRNoStory expands DXRBase;
+class DXRNoStory expands DXRBase transient;
 
 function AnyEntry()
 {

@@ -70,5 +70,4 @@ defaultproperties
     PickupAmmoCount=15
     ShotTime=0.5
     ReloadCount=1
-    HitDamage=18
 }

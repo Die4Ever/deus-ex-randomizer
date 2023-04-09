@@ -32,7 +32,7 @@ function PreFirstEntry()
             }
             dt = Spawn(class'DynamicTeleporter',,'sewers_backtrack',vect(1599.971558, -4694.342773, 13.399302));
             SetDestination(dt, "10_PARIS_CATACOMBS_TUNNELS", 'AmbientSound10');
-            dt.Radius = 160;
+            dt.SetCollisionSize(160,dt.CollisionHeight);
             AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
 
             foreach AllActors(class'MapExit', exit, 'ChopperExit') {
@@ -43,7 +43,7 @@ function PreFirstEntry()
         case "11_PARIS_CATHEDRAL":
             dt = Spawn(class'DynamicTeleporter',,'cathedral_backtrack',vect(-2268.337891, 3042.279297, -866.726196));
             SetDestination(dt, "10_PARIS_CHATEAU", 'Light135');
-            dt.Radius = 160;
+            dt.SetCollisionSize(160,dt.CollisionHeight);
             foreach AllActors(class'BlockPlayer', bp) {
                 switch(bp.Name) {
                     case 'BlockPlayer90':
@@ -69,13 +69,13 @@ function PreFirstEntry()
         case "15_AREA51_ENTRANCE":
             dt = Spawn(class'DynamicTeleporter',,,vect(4384.407715, -2483.292236, -41.900017));
             SetDestination(dt, "15_area51_bunker", 'Light188');
-            dt.Radius = 160;
+            dt.SetCollisionSize(160,dt.CollisionHeight);
             break;
 
         case "15_AREA51_FINAL":
             dt = Spawn(class'DynamicTeleporter',,,vect(-5714.406250, -1977.827881, -1358.711304));
             SetDestination(dt, "15_area51_entrance", 'Light73');
-            dt.Radius = 160;
+            dt.SetCollisionSize(160,dt.CollisionHeight);
 
             AddSwitch(vect(-3907,-1116,-1958), rot(0, 32800, 0), 'mainblastopencheck');
 
@@ -362,7 +362,7 @@ function VandGasAnyEntry()
 
     foreach AllActors(Class'DeusExMover', M, 'junkyard_doors') {
         M.bLocked = true;
-        class'DXRKeys'.static.StaticMakeDestructible(M);
+        class'DXRDoors'.static.StaticMakeDestructible(M);
         M.doorStrength = 0.1;
         M.minDamageThreshold = 1;
     }

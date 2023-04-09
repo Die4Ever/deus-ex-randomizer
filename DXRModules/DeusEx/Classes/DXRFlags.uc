@@ -55,6 +55,7 @@ struct FlagsSettings {
     var int bingo_win; //Number of bingo lines to beat the game
     var int bingo_freespaces; //Number of bingo free spaces
     var int spoilers; //0=Disallowed, 1=Available
+    var int menus_pause; // 0=no pause, 1=vanilla
 };
 
 #ifdef hx
@@ -159,6 +160,13 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     Super.PlayerAnyEntry(p);
     if(!VersionIsStable())
         p.bCheatsEnabled = true;
+
+    if(difficulty_names[difficulty] == "Super Easy QA" && dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber < 99) {
+        p.ConsoleCommand("god");
+        p.ServerSetSloMo(2);
+        if(dxr.localURL == "01_NYC_UNATCOISLAND")
+            p.ConsoleCommand("legend");
+    }
 }
 
 function RollSeed()
@@ -234,7 +242,7 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,2,8,3) ) {
+    if( ConfigOlderThan(2,3,1,1) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -555,12 +563,17 @@ function CheckConfig()
         difficulty_settings[i].spoilers = 1;
         i++;
 
-#ifdef hx
         for(i=0; i<ArrayCount(difficulty_settings); i++) {
-            difficulty_settings[i].startinglocations = 0;
-            difficulty_settings[i].merchants = 0;
+            difficulty_settings[i].menus_pause = 1;
+            if(#defined(hx)) {
+                difficulty_settings[i].startinglocations = 0;
+                difficulty_settings[i].merchants = 0;
+            }
+            if(#defined(revision)) {
+                difficulty_settings[i].startinglocations = 0;
+                difficulty_settings[i].goals = 0;
+            }
         }
-#endif
 
 #ifdef noflags
         InitDefaults();
@@ -755,6 +768,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_bingo_freespaces', settings.bingo_freespaces, mode, str);
 
     FlagInt('Rando_spoilers', settings.spoilers, mode, str);
+    FlagInt('Rando_menus_pause', settings.menus_pause, mode, str);
 
     return str;
 }
@@ -895,6 +909,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Bingo Free Spaces";
         case 'Rando_spoilers':
             return "Spoiler Buttons";
+        case 'Rando_menus_pause':
+            return "Menus Pause The Game";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -1136,6 +1152,14 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Disallowed";
             } else if (val==1){
                 return "Available";
+            }
+            break;
+
+        case 'Rando_menus_pause':
+            if(val==0) {
+                return "No";
+            } else {
+                return "Yes";
             }
             break;
 

@@ -13,6 +13,7 @@ function ClientMessage(coerce string msg, optional Name type, optional bool bBee
     // 2 spaces because destroyed item pickups do ClientMessage( Item.PickupMessage @ Item.itemArticle @ Item.ItemName, 'Pickup' );
     if( msg == "  " ) return;
 
+    log("ClientMessage: "$msg, class.name);
     Super.ClientMessage(msg, type, bBeep);
     class'DXRTelemetry'.static.SendLog(GetDXR(), self, "INFO", msg);
 
@@ -517,9 +518,9 @@ function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusi
 // only called by GameInfo::PostLogin()
 function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
-    local DXRContinuousMusic cm;
+    local DXRMusic cm;
     GetDXR();
-    cm = DXRContinuousMusic(dxr.LoadModule(class'DXRContinuousMusic'));
+    cm = DXRMusic(dxr.LoadModule(class'DXRMusic'));
     cm.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
 }
 

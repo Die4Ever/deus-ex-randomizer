@@ -1,4 +1,4 @@
-class DXRMissions extends DXRActorsBase;
+class DXRMissions extends DXRActorsBase transient;
 
 const NORMAL_GOAL = 1;
 const GOAL_TYPE1 = 2;
@@ -438,8 +438,8 @@ function int InitGoals(int mission, string map)
 
         AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's couch", NORMAL_GOAL, vect(836.923828, -1779.652588, 1706.345459), rot(0, 10816, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(257.923828, -200.652588, 1805.345459), rot(0, 10816, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's bed", NORMAL_GOAL, vect(342.584808, -1802.576172, 1713.509521), rot(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(204.923828, -195.652588, 1795), rot(0, 40000, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vect(2293, 2728, -598), rot(0, 10808, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "with the boatperson", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vect(-1623, 3164, -393), rot(0, -49592, 0));
@@ -650,10 +650,12 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("14_OCEANLAB_UC", "UC Entry 1", GOAL_TYPE1, vect(945,6230,-4160), rot(0,0,0));
         AddGoalLocation("14_OCEANLAB_UC", "UC Entry 2", GOAL_TYPE1, vect(945,5250,-4160), rot(0,0,0));
 
-        AddGoal("14_OCEANLAB_UC", "UC Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
-        AddGoal("14_OCEANLAB_UC", "Bait Computer", NORMAL_GOAL, 'ComputerPersonal1', PHYS_Falling);
+        goal = AddGoal("14_OCEANLAB_UC", "UC Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
+        AddGoalActor(goal, 1, 'DataLinkTrigger1', PHYS_None);
+        AddGoalActor(goal, 2, 'DataLinkTrigger2', PHYS_None);
+        AddGoal("14_OCEANLAB_UC", "Email Computer", NORMAL_GOAL, 'ComputerPersonal1', PHYS_Falling);
         AddGoalLocation("14_OCEANLAB_UC", "UC", NORMAL_GOAL | VANILLA_GOAL, vect(264.363281, 6605.039551, -3173.865967), rot(0,32720,0));
-        AddGoalLocation("14_OCEANLAB_UC", "Bait Station", NORMAL_GOAL | VANILLA_GOAL, vect(-264.784027, 8735.982422, -2904.487549), rot(0,8816,0));
+        AddGoalLocation("14_OCEANLAB_UC", "Email Station", NORMAL_GOAL | VANILLA_GOAL, vect(-264.784027, 8735.982422, -2904.487549), rot(0,8816,0));
         AddGoalLocation("14_OCEANLAB_UC", "South Wing", NORMAL_GOAL | VANILLA_GOAL, vect(-1133.915039, 6690.755371, -3800.472168), rot(0,16384,0));// non-radioactive
         AddGoalLocation("14_OCEANLAB_UC", "North Wing", NORMAL_GOAL | VANILLA_GOAL, vect(1832.621338, 6919.640137, -3764.490234), rot(0,16384,0));// outside radioactive room
         return 141;
@@ -912,12 +914,6 @@ function PreFirstEntry()
         foreach AllActors(class'#var(prefix)Barrel1', barrel, 'BarrelOFun') {
             barrel.bExplosive = false;
             barrel.Destroy();
-        }
-    } else if ( dxr.localURL == "14_OCEANLAB_UC" ) {
-        foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
-            if (cp.UserList[0].UserName=="USER" || cp.UserList[0].UserName=="UC"){
-                cp.UserList[0].UserName="JEBAITED"; //Just to make it a bit more clear this is a bait computer
-            }
         }
     } else if ( dxr.localURL == "15_AREA51_BUNKER" ) {
         foreach AllActors(class'Trigger',t){
@@ -1387,9 +1383,22 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
 function AnyEntry()
 {
+    local int seed;
+    local int goalsToLocations[32];
+
+    // since DXRMissions is transient, recreate this data for the hint system
     Super.AnyEntry();
     SetTimer(1, true);
+    if(num_goals != 0 || num_locations != 0) return;
+
+#ifndef revision
+    seed = InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);
+#endif
+
+    SetGlobalSeed( "DXRMissions" $ seed );
+    ChooseGoalLocations(goalsToLocations);
 }
+
 
 function Timer()
 {
@@ -1499,15 +1508,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     local int i;
     local Actor a;
     local ScriptedPawn sp;
-    local #var(Mover) m;
     local string result;
-    local #var(prefix)DataCube dc1;
-    local #var(prefix)ComputerPersonal cp;
-#ifdef injections
-    local #var(prefix)DataCube dc2;
-#else
-    local DXRInformationDevices dc2;
-#endif
 
     result = g.name $ " to " $ Loc.name;
     info("Moving " $ result $ " (" $ Loc.mapName @ Loc.positions[0].pos $")");
@@ -1551,7 +1552,28 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         }
     }
 
-    // hardcoded cleanup stuff
+    AfterMoveGoalToLocation(g, Loc);
+}
+
+function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
+{
+    local int i;
+    local Actor a;
+    local ScriptedPawn sp;
+    local #var(Mover) m;
+    local #var(prefix)DataCube dc1;
+    local #var(prefix)ComputerPersonal cp;
+    local DXRPasswords passwords;
+#ifdef injections
+    local #var(prefix)DataCube dc2;
+#else
+    local DXRInformationDevices dc2;
+#endif
+
+    if(Loc.mapName != dxr.localURL)
+        return;
+
+    // hardcoded cleanup stuff for the current map
     if(g.name == "Terrorist Commander" && g.actors[1].a != None) {
         // DataLinkTrigger 15ft wide, 4ft tall
         g.actors[1].a.SetCollisionSize(240, 64);
@@ -1569,6 +1591,19 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             m.Tag = '';
             m.Event = '';
         }
+
+        passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+        if(passwords != None && Loc.name != "UC") {
+            passwords.ReplacePassword("defend the generator in the Warehouse,", "defend the generator in the "$Loc.name$",");
+        }
+    } else if(g.name == "Generator Computer" && Loc.name != "Warehouse Computer Room") {
+        passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+        if(passwords != None && Loc.name != "UC") {
+            passwords.ReplacePassword("generator's computer in the Warehouse Computer Room.", "generator's computer in the "$Loc.name$".");
+        }
+    } else if(dxr.localURL=="02_NYC_WAREHOUSE" && g.name=="Email Computer") {
+        cp = #var(prefix)ComputerPersonal(g.actors[0].a);
+        cp.TextPackage = "#var(package)";
     } else if (g.name=="Anna's Killphrase 1" || g.name=="Anna's Killphrase 2") {
         // insert the demiurge/archon account and add the special options
         cp = #var(prefix)ComputerPersonal(findNearestToActor(class'#var(prefix)ComputerPersonal', g.actors[0].a));
@@ -1635,6 +1670,19 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         }
         Vehicles(g.actors[0].a).FamiliarName="Jock Escape";
         Vehicles(g.actors[0].a).UnFamiliarName="Jock Escape";
+    } else if (g.name=="UC Computer") {
+        if(g.actors[1].a != None)
+            g.actors[1].a.SetCollisionSize(640, 64);
+
+        passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+        if(passwords != None && Loc.name != "UC") {
+            passwords.ReplacePassword("on the computer at the UC,", "on the computer at the "$Loc.name$",");
+        }
+    } else if (dxr.localURL=="14_OCEANLAB_UC" && g.name=="Email Computer") {// we gotta be careful with generic goal names
+        cp = #var(prefix)ComputerPersonal(g.actors[0].a);
+        cp.UserList[0].UserName="MBHaggerty";
+        cp.UserList[0].Password="Kraken";
+        cp.TextPackage = "#var(package)";
     }
 }
 

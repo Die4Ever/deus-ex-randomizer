@@ -110,7 +110,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 2,2,4,5) ) {
+    if( VersionOlderThan(config_version, 2,3,1,2) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -141,8 +141,10 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRSwapItems";
     //modules_to_load[i++] = "DXRAddItems";
     modules_to_load[i++] = "DXRFixup";
+    modules_to_load[i++] = "DXRBrightness";
     modules_to_load[i++] = "DXRBacktracking";
     modules_to_load[i++] = "DXRKeys";
+    modules_to_load[i++] = "DXRDoors";
     modules_to_load[i++] = "DXRSkills";
     modules_to_load[i++] = "DXRPasswords";
     modules_to_load[i++] = "DXRAugmentations";
@@ -165,7 +167,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRHints";
     modules_to_load[i++] = "DXREvents";
     //modules_to_load[i++] = "DXRTestAllMaps";
-    modules_to_load[i++] = "DXRContinuousMusic";
+    modules_to_load[i++] = "DXRMusic";
 }
 
 function hx_modules()
@@ -175,7 +177,9 @@ function hx_modules()
     modules_to_load[i++] = "DXRMissions";
     modules_to_load[i++] = "DXRSwapItems";
     modules_to_load[i++] = "DXRFixup";
+    modules_to_load[i++] = "DXRBrightness";
     modules_to_load[i++] = "DXRKeys";
+    modules_to_load[i++] = "DXRDoors";
     modules_to_load[i++] = "DXRSkills";
     modules_to_load[i++] = "DXRPasswords";
     modules_to_load[i++] = "DXRAugmentations";
@@ -202,7 +206,9 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRMissions";
     modules_to_load[i++] = "DXRSwapItems";
     modules_to_load[i++] = "DXRFixup";
+    modules_to_load[i++] = "DXRBrightness";
     modules_to_load[i++] = "DXRKeys";
+    modules_to_load[i++] = "DXRDoors";
     modules_to_load[i++] = "DXRSkills";
     modules_to_load[i++] = "DXRPasswords";
     modules_to_load[i++] = "DXRAugmentations";
@@ -222,7 +228,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXRFashion";
     modules_to_load[i++] = "DXREvents";
-    modules_to_load[i++] = "DXRContinuousMusic";
+    modules_to_load[i++] = "DXRMusic";
 }
 
 function revision_modules()
@@ -237,7 +243,9 @@ function vmd_modules()
     modules_to_load[i++] = "DXRMissions";
     modules_to_load[i++] = "DXRSwapItems";
     modules_to_load[i++] = "DXRFixup";
+    modules_to_load[i++] = "DXRBrightness";
     modules_to_load[i++] = "DXRKeys";
+    modules_to_load[i++] = "DXRDoors";
     modules_to_load[i++] = "DXRSkills";
     modules_to_load[i++] = "DXRPasswords";
     modules_to_load[i++] = "DXRAugmentations";
@@ -256,7 +264,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRReplaceActors";
     modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXREvents";
-    modules_to_load[i++] = "DXRContinuousMusic";
+    modules_to_load[i++] = "DXRMusic";
 }
 
 function DXRFlags LoadFlagsModule()

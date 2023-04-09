@@ -39,6 +39,7 @@ simulated function InitHints()
     }
 
     AddHint("Attaching a LAM or Gas Grenade to a wall can be very strong!", "Also try to lure enemies into them.");
+    AddHint("You don't trigger your own grenades.", "Setup traps without fear.");
     AddHint("Use sabot shotgun rounds to kill the little spider bots.");
     AddHint("Grab a plasma rifle, blast everything in sight,", "then go get your items back.");
     if(#defined(injections)) {
@@ -398,17 +399,16 @@ simulated function ShowHint(optional int recursion)
     SetTimer(0, false);
     return;
 #endif
-
     SetTimer(15, true);
     if( recursion > 10 ) {
-        err("ShowHint reached max recursion " $ recursion);
+        info("ShowHint reached max recursion " $ recursion);
         return;
     }
     hint = GetHint();
 
     m = class'DXRBigMessage'.static.CreateBigMessage(_player, self, hints[hint], details[hint]);
     if(m == None) {
-        ShowHint(recursion++);
+        ShowHint(++recursion);
         return;
     }
     m.line3 = "Deaths: "$class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_deaths")$", Loads: "$class'DXRStats'.static.GetDataStorageStat(dxr, "DXRStats_loads");

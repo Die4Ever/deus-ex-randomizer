@@ -1,6 +1,6 @@
 class DXRThrownProjectile shims ThrownProjectile;
 
-// scale trigger time with skill
+// scale trigger time with skill for grenades attached to walls
 simulated function Tick(float deltaTime)
 {
     local float oldSkillTime;
@@ -16,13 +16,14 @@ simulated function Tick(float deltaTime)
         skillTime = 0.5 * skillTime + 1.1;
         skillTime = FClamp(skillTime, 0.75, 1.25);
     }
-    else if(oldSkillTime == 0 && skillTime > 0 && Owner == None) {
+    else if(oldSkillTime == 0 && skillTime > 0 && player == None) {
         // faster than vanilla, unfortunately vanilla doesn't save the triggering actor but they already factored in the skill value
-        skillTime *=  0.75;
+        skillTime *=  0.6;
+        skillTime += 0.2;
     }
 }
 
-// scale arming time with skill
+// scale arming time with skill and fuse length for thrown grenades (fuseLength is used for thrown grenades, but also the SetTimer call for arming attached grenades)
 simulated function PreBeginPlay()
 {
     local #var(PlayerPawn) player;

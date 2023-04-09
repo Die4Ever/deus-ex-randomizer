@@ -1,8 +1,9 @@
-class DXRNames extends DXRBase;
+class DXRNames extends DXRBase transient;
 
 function FirstEntry()
 {
     local #var(prefix)ScriptedPawn p;
+    local #var(prefix)BoneSkull skull;
 #ifdef hx
     local HXCarcass c;
 #else
@@ -24,10 +25,16 @@ function FirstEntry()
 #endif
     {
         if ( c.itemName != "Dead Body" && c.itemName != "Unconscious" && c.itemName != "Animal Carcass" )
-            return;
+            continue;
         if ( c.BindName == "PaulDentonCarcass" )
-            return;
+            continue;
         c.itemName = c.itemName $ " (" $ RandomName(dxr) $ ")";
+    }
+
+    foreach AllActors(class'#var(prefix)BoneSkull', skull) {
+        skull.ItemName = RandomName(dxr, None);
+        if(chance_single(1))
+            skull.ItemName = "Murray";
     }
 }
 
@@ -85,7 +92,7 @@ static function string RandomNamePart(DXRando dxr, int min, int max)
         if ( i == 0 ) n = Caps(n);
     }
 
-    if(InStr(Caps(n), "FAG") != -1) {
+    if(WordInStr(Caps(n), "FAG", 3, true) != -1 || WordInStr(Caps(n), "RAPE", 4, true) != -1) {
         return RandomNamePart(dxr, min, max);
     }
     return n;

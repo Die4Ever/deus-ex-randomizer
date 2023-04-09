@@ -1,7 +1,7 @@
 #ifdef injections
-class DXRContinuousMusic extends DXRBase transient config(DXRMusic);
+class DXRMusic extends DXRBase transient config(DXRMusic);
 #else
-class DXRContinuousMusic extends DXRBase transient config(#var(package)Music);
+class DXRMusic extends DXRBase transient config(#var(package)Music);
 #endif
 
 var Music LevelSong;
@@ -211,8 +211,9 @@ function SongChoice MakeSongChoice(string song, int ambient, int dying, int comb
 function GetLevelSong(bool setseed)
 {
     local SongChoice tchoices[100], s;
-    local int i, j;
+    local int i, j, num;
     local bool cutscene;
+    local string OldSong;
 
     switch(dxr.localURL) {
     case "DX":
@@ -230,17 +231,22 @@ function GetLevelSong(bool setseed)
         s = choices[j];
         if(s.song == "") continue;
         if(s.cutscene_only && !cutscene) continue;
-        tchoices[i++] = s;
+        tchoices[num++] = s;
     }
 
     if(setseed) {
         SetGlobalSeed(string(Level.Song.Name));// matching songs will stay matching
         if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" )
             SetGlobalSeed("NYCStreets2_Music");
+    } else {
+        oldSong = string(LevelSong.Name);
     }
 
-    i = rng(i);
-    s = tchoices[i];
+    for(j=0; j<100; j++) {
+        i = rng(num);
+        s = tchoices[i];
+        if(setseed || s.song != oldSong) break;
+    }
 
     LevelSongSection = s.ambient;
     DyingSection = s.dying;

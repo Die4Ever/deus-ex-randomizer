@@ -1,4 +1,4 @@
-class DXRTestAllMaps expands DXRBase;
+class DXRTestAllMaps expands DXRBase transient;
 
 var config string maps[128];
 

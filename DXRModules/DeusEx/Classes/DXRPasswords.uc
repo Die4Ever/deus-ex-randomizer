@@ -739,8 +739,6 @@ function MakeAllHackable(int deviceshackable)
 {
     local #var(prefix)HackableDevices h;
 
-    if( deviceshackable <= 0 ) return;
-
     SetSeed( "MakeAllHackable" );
 
     foreach AllActors(class'#var(prefix)HackableDevices', h)
@@ -750,6 +748,12 @@ function MakeAllHackable(int deviceshackable)
             h.bHackable = true;
             h.hackStrength = FClamp(rngrange(1, min_hack_adjust, max_hack_adjust), 0, 1);
             h.hackStrength = int(h.hackStrength*100)/100.0;
+            h.initialhackStrength = h.hackStrength;
+        }
+
+        // make Helios ending slightly harder?
+        if(h.Event == 'door_helios_room') {
+            h.hackStrength = 1;
             h.initialhackStrength = h.hackStrength;
         }
     }
@@ -1313,4 +1317,48 @@ function RunTests()
 
     not_passwords[0] = oldnot;
     num_not_passwords = old_num_not_passwords;
+}
+
+function ExtendedTests()
+{
+    local bool bHasPass;
+    local int oldPassStart, oldPassEnd;
+    local string prevOldPassword, prevNewPassword;
+#ifdef vanilla
+    local DataCube d;
+    d = spawn(class'DataCube',,, vect(-1549.046997, 5708.364746, -2569.889648));
+#else
+    local DXRInformationDevices d;
+    d = spawn(class'DXRInformationDevices',,, vect(-1549.046997, 5708.364746, -2569.889648));
+#endif
+
+    Super.ExtendedTests();
+
+    oldPassStart = passStart;
+    oldPassEnd = passEnd;
+    passStart = 0;
+    passEnd = 1;
+    prevOldPassword = oldpasswords[passStart];
+    prevNewPassword = newpasswords[passStart];
+
+    oldpasswords[passStart] = "DXRando";
+    newpasswords[passStart] = "RANDOM";
+
+    test(d != None, "spawned DataCube " $ d );
+    d.TextTag = '12_DXRandoTest01';
+    d.TextPackage = "#var(package)";
+
+    bHasPass = InfoDevsHasPass(d);
+    testbool(bHasPass, true, d $ " has password DXRando");
+
+    oldpasswords[passStart] = "UNKNOWN";
+    newpasswords[passStart] = "RANDOM";
+
+    bHasPass = InfoDevsHasPass(d);
+    testbool(bHasPass, false, d $ " doesn't have password UNKNOWN");
+
+    oldpasswords[passStart] = prevOldPassword;
+    newpasswords[passStart] = prevNewPassword;
+    passStart = oldPassStart;
+    passEnd = oldPassEnd;
 }

@@ -98,9 +98,9 @@ event _PostLogin(playerpawn NewPlayer)
 event Super_PostLogin( playerpawn NewPlayer )
 {
     local Pawn P;
-    local DXRContinuousMusic cm;
+    local DXRMusic cm;
     // Start player's music.
-    cm = DXRContinuousMusic(GetDXR().LoadModule(class'DXRContinuousMusic'));
+    cm = DXRMusic(GetDXR().LoadModule(class'DXRMusic'));
     if(cm!=None)
         cm.ClientSetMusic( NewPlayer, Level.Song, Level.SongSection, Level.CdTrack, MTRAN_Fade );
     else

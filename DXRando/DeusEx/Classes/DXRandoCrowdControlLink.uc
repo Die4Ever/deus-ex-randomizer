@@ -52,7 +52,9 @@ function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous, bo
     effectsDisabled=False;
 
     //Initialize the effect class
-    ccEffects = Spawn(class'DXRCrowdControlEffects');
+    foreach AllActors(class'DXRCrowdControlEffects', ccEffects) { break; }
+    if(ccEffects == None)
+        ccEffects = Spawn(class'DXRCrowdControlEffects');
     ccEffects.Init(self,dxr);
 
     //Initialize the pending message buffer

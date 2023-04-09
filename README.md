@@ -8,7 +8,7 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 
 ## v2.0 Trailer
 
-<a href="https://youtu.be/XsoIKbn_suE" target="_blank">
+<a href="https://www.youtube.com/watch?v=XsoIKbn_suE&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=2" target="_blank">
 <img src="https://i.imgur.com/Rssbzpl.jpg" alt="v2.0 Trailer" height="300"/></a>
 
 ## DXRando randomizes

@@ -1,4 +1,4 @@
-class DXRMemes extends DXRActorsBase;
+class DXRMemes extends DXRActorsBase transient;
 
 var Actor rotating;
 

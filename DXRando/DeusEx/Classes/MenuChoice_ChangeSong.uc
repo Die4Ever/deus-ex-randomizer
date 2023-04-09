@@ -11,8 +11,8 @@ class MenuChoice_ChangeSong extends MenuUIChoiceAction;
 // ----------------------------------------------------------------------
 function bool ButtonActivated( Window buttonPressed )
 {
-    local DXRContinuousMusic music;
-    foreach player.AllActors(class'DXRContinuousMusic', music) {
+    local DXRMusic music;
+    foreach player.AllActors(class'DXRMusic', music) {
         music.PlayRandomSong(false);
     }
 	return True;

@@ -1,4 +1,4 @@
-class DXRCrowdControl extends DXRActorsBase;
+class DXRCrowdControl extends DXRActorsBase transient;
 
 //var config bool enabled;
 var config string crowd_control_addr;
