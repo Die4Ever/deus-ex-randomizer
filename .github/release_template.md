@@ -112,7 +112,7 @@ HXRandomizer is in early alpha testing and does not support all of the features 
 
 June 22nd 2022 was Deus Ex's 22nd anniversary, and our 2nd anniversary! To celebrate, we made a new trailer!
 
-<a href="https://youtu.be/XsoIKbn_suE" target="_blank">
+<a href="https://www.youtube.com/watch?v=XsoIKbn_suE&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=2" target="_blank">
 <img src="https://i.imgur.com/Rssbzpl.jpg" alt="v2.0 Trailer" height="300"/></a>
 
 ## Changes
