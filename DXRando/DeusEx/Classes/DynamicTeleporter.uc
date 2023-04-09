@@ -6,8 +6,13 @@ function SetDestination(string destURL, name dest_actor_name, optional string ta
 {
     URL = destURL $ "#" $ tag;
     destName = dest_actor_name;
-    SetCollision(true,false,false);
     log(Self$": SetDestination("$destURL$", "$dest_actor_name$", "$tag$") URL: "$URL$", destName: "$destName);
+}
+
+event PostPostBeginPlay()
+{// PostPostBeginPlay is also called when loading saved games, so we need this for backwards compatibility
+    Super.PostPostBeginPlay();
+    SetCollision(true,false,false);
 }
 
 function Trigger(Actor Other, Pawn Instigator)
@@ -75,7 +80,6 @@ static function DynamicTeleporter ReplaceTeleporter(#var(prefix)Teleporter t)
         t.SetCollision(false, false, false);
         dt.URL = t.URL;
         dt.SetCollisionSize(t.CollisionRadius,t.CollisionHeight);
-        dt.SetCollision(true,false,false);
     }
     log("ReplaceTeleporter("$t$") "$dt);
     return dt;
