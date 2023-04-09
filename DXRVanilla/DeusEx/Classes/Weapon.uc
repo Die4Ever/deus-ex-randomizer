@@ -27,7 +27,7 @@ simulated function Tick(float deltaTime)
 
     if(AnimSequence != prev_anim || GetWeaponSkill() != prev_weapon_skill) {
         prev_anim = AnimSequence;
-        e = 1.8;
+        e = 1.7;
 
         if(AnimSequence == 'PlaceBegin' || AnimSequence == 'PlaceEnd')
             if(AnimFrame<0.2)// skip the beginning of the animation
@@ -40,7 +40,7 @@ simulated function Tick(float deltaTime)
         }
         if(GoverningSkill == Class'SkillDemolition') {
             anim_speed = 1.1;// why are grenades so slow?
-            e = 2.0;
+            e = 1.9;
         }
         prev_weapon_skill = GetWeaponSkill();
         r = class'DXRBase'.static.pow(anim_speed + -0.2 * prev_weapon_skill, e);
@@ -101,17 +101,17 @@ static function SpawnExtraBlood(Actor this, Vector HitLocation, Vector HitNormal
     {
         v = VRand()*8.0*mult;
         a = this.spawn(class'BloodSpurt',,,HitLocation+HitNormal+v);
-        a.DrawScale *= mult/2;
+        a.DrawScale *= mult * 0.7;
         a = this.spawn(class'BloodDrop',,,HitLocation+HitNormal*4+v);
-        a.DrawScale *= mult/2;
+        a.DrawScale *= mult * 0.7;
     }
 
     a = this.spawn(class'FleshFragment', None,, HitLocation);
-    a.DrawScale = mult / 5.0;
+    a.DrawScale = mult * 0.2;
     a.SetCollisionSize(a.CollisionRadius / a.DrawScale, a.CollisionHeight / a.DrawScale);
     a.bFixedRotationDir = True;
     a.RotationRate = RotRand(False);
-    a.Velocity = HitNormal * -1000.0;
+    a.Velocity = HitNormal * -900.0;
 }
 
 function float GetDamage(optional bool ignore_skill)
