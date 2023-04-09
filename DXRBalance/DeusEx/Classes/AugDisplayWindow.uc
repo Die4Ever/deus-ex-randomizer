@@ -231,10 +231,7 @@ function #var(prefix)Teleporter TraceTeleporter(float checkDist, out vector HitL
 	EndTrace.Z += Player.BaseEyeHeight;
 
 	// find the object that we are looking at
-    //Player.ClientMessage("Starting trace");
 	foreach Player.TraceActors(class'Actor', target, HitLoc, HitNormal, EndTrace, StartTrace){
-        //Player.ClientMessage("Traced to "$target.Name);
-
         if (target == Player.CarriedDecoration){
            continue;
         } else if (Player.IsFrobbable(target)){
@@ -245,15 +242,12 @@ function #var(prefix)Teleporter TraceTeleporter(float checkDist, out vector HitL
             break;
         }
     }
-    //Player.ClientMessage("Finishing Trace");
 
-    //Player.ClientMessage("Target is "$target.Name);
     if (#var(prefix)Teleporter(target)!=None)
     {
         HitLocation = HitLoc;
         return #var(prefix)Teleporter(target);
     }
-
 
 	return None;
 }
@@ -262,6 +256,10 @@ function string formatMapName(string mapName)
 {
     local string mapNameOnly,destName;
 
+    if (InStr(mapName,"#")+1 == Len(mapName)) {
+        // # is the last character, leave it out
+        return Left(mapName, Len(mapName)-1);
+    }
     if (InStr(mapName,"#")==-1){
         //No # in map name, so it's probably just the map name?
         return mapName;
