@@ -80,7 +80,7 @@ Revision Randomizer is in early alpha testing and does not support all of the fe
 <details>
 <summary>Click to expand Vanilla? Madder. Installation Instructions...</summary>
 
-Install VMD Phase 1.5 (v1.57) from https://www.moddb.com/mods/vanilla-madder-actual-phase-1/downloads/vmd-phase-15-installer-157
+Install VMD Phase 1.75 from https://www.moddb.com/mods/vanilla-madder-actual-phase-1/downloads/vmd-phase-175-installer-175
 
 Download [the `VMDRandomizer.u` file](https://github.com/Die4Ever/deus-ex-randomizer/releases/download/VERSION)</details></details>VERSION/VMDRandomizer.u)
 
