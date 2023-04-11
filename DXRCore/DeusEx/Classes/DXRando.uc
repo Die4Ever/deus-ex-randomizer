@@ -166,7 +166,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRFashion";
     modules_to_load[i++] = "DXRHints";
     modules_to_load[i++] = "DXREvents";
-    //modules_to_load[i++] = "DXRTestAllMaps";
+    //modules_to_load[i++] = "DXRMapInfo";
     modules_to_load[i++] = "DXRMusic";
 }
 
