@@ -1,3 +1,4 @@
+ship weld points remove orders trigger?
 make healing more balanced across body parts (maybe convert it to a loop of 1 healing to each body part? or heal the weakest part? maybe only for medkits and medbots?)
 use DXRTriggerEnable for other endings
 GitHub actions for DiscordBot
