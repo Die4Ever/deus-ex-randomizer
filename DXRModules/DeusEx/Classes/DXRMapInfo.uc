@@ -173,6 +173,13 @@ static function string GetTeleporterName(string mapname, string teleportername)
         teleportername = Right(teleportername,Len(teleporterName)-8);
     }
 
+    //Sometimes they left a .dx at the end of the map name - strip that
+    if (InStr(mapname,".dx")!=-1){
+        mapname = Left(mapname,Len(mapname)-4);
+    }
+
+    mapname = Caps(mapname); //Just to be sure
+
     switch(mapname)
     {
         case "01_NYC_UNATCOHQ":
@@ -564,6 +571,8 @@ static function string GetTeleporterName(string mapname, string teleportername)
                     return "Vandenberg Main Building Tunnel Exit";
                 case "hall":
                     return "Vandenberg Control Center Exterior Entrance";
+                case "PathNode8":
+                    return "Vandenberg Helipad";
             }
         case "12_VANDENBERG_COMPUTER":
             switch(teleportername)
@@ -612,6 +621,10 @@ static function string GetTeleporterName(string mapname, string teleportername)
             {
                 case "subbay":
                     return "Ocean Lab Shoreside Sub Bay";
+                case "PlayerStart":
+                    return "Ocean Lab Shoreside Helicopter";
+                case "InterpolationPoint39":
+                    return "Ocean Lab Shoreside Rooftop Helicopter";
             }
         case "15_AREA51_BUNKER":
             switch(teleportername)

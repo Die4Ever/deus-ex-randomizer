@@ -269,11 +269,6 @@ function string formatMapName(string mapName)
     }
 
     mapNameOnly = Left(mapName, hashPos);
-    //Sometimes they left a .dx at the end of the map name - strip that
-    if (InStr(mapNameOnly,".dx")!=-1){
-        mapNameOnly = Left(mapNameOnly,Len(mapNameOnly)-4);
-    }
-    mapNameOnly = Caps(mapNameOnly); //Just to be sure
 
     teleName = Mid(mapName,hashPos+1);
 
