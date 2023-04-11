@@ -169,6 +169,10 @@ static function string PickRandomMap(DXRando dxr)
 
 static function string GetTeleporterName(string mapname, string teleportername)
 {
+    if (InStr(teleportername,"?TONAME=")!=-1){
+        teleportername = Right(teleportername,Len(teleporterName)-8);
+    }
+
     switch(mapname)
     {
         case "01_NYC_UNATCOHQ":
@@ -506,7 +510,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
         case "10_PARIS_CHATEAU":
             switch(teleportername)
             {
-                case "spiralstair":
+                case "CHATEAU_START":
                     return "DuClare Estate Front Doors";
                 case "Light135":
                     return "DuClare Estate Sewer Entrance";
@@ -528,6 +532,8 @@ static function string GetTeleporterName(string mapname, string teleportername)
                     return "Paris Streets Club Front Entrance";
                 case "paris_metro2":
                     return "Paris Streets Club Back Entrance";
+                case "PathNode447":
+                    return "Paris Streets Helicopter behind Club";
             }
         case "11_PARIS_CATHEDRAL":
             switch(teleportername)
