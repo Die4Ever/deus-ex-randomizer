@@ -223,8 +223,7 @@ function AnyEntry()
             v.SetCollisionSize(360, v.CollisionHeight);
     }
     foreach AllActors(class'#var(prefix)Teleporter', t) {
-        if(t.bCollideActors)
-            t.bHidden = false;
+        t.bHidden = !(t.bCollideActors && t.bEnabled);
     }
 }
 
