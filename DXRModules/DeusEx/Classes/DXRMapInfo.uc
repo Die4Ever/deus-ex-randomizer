@@ -437,7 +437,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "alleyin":
                     return "Canal Side Alley";
                 case "double":
-                    return "??? Somewhere in the Canal ???";
+                    return "Canal Entrance Near Old China Hand";
             }
             break;
         case "06_HONGKONG_WANCHAI_GARAGE":
