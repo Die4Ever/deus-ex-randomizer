@@ -194,6 +194,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "UN_med":
                     return "UNATCO HQ Medical Door";
             }
+            break;
         case "01_NYC_UNATCOISLAND":
         case "03_NYC_UNATCOISLAND":
         case "04_NYC_UNATCOISLAND":
@@ -204,6 +205,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "unatcoisland":
                     return "Liberty Island UNATCO Entrance";
             }
+            break;
         case "02_NYC_BAR":
         case "04_NYC_BAR":
         case "08_NYC_BAR":
@@ -214,6 +216,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "ToBarFrontEntrance":
                     return "Bar Front Door Interior";
             }
+            break;
         case "02_NYC_BATTERYPARK":
         case "03_NYC_BATTERYPARK":
         case "04_NYC_BATTERYPARK":
@@ -224,6 +227,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "BBSExit":
                     return "Battery Park underneath Phone Booth";
             }
+            break;
         case "02_NYC_FREECLINIC":
         case "08_NYC_FREECLINIC":
             switch(teleportername)
@@ -231,6 +235,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "FromStreet":
                     return "Free Clinic Interior";
             }
+            break;
         case "02_NYC_HOTEL":
         case "04_NYC_HOTEL":
         case "08_NYC_HOTEL":
@@ -241,6 +246,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "ToHotelFrontDoor":
                     return "Hotel Front Door Interior";
             }
+            break;
         case "02_NYC_SMUG":
         case "04_NYC_SMUG":
         case "08_NYC_SMUG":
@@ -251,6 +257,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "ToSmugBackDoor":
                     return "Smuggler Back Door Interior";
             }
+            break;
         case "02_NYC_STREET":
         case "04_NYC_STREET":
         case "08_NYC_STREET":
@@ -284,6 +291,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "ToStreet":
                     return "Hells Kitchen Subway";
             }
+            break;
         case "02_NYC_UNDERGROUND":
         case "04_NYC_UNDERGROUND":
         case "08_NYC_UNDERGROUND":
@@ -294,6 +302,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "ToNYCSump":
                     return "Sewer Interior inside Facility";
             }
+            break;
         case "02_NYC_WAREHOUSE":
             switch(teleportername)
             {
@@ -302,12 +311,14 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "ToWarehouseAlley":
                     return "Warehouse Alleys";
             }
+            break;
         case "03_NYC_747":
             switch(teleportername)
             {
                 case "747PassEnt":
                     return "747 Interior";
             }
+            break;
         case "03_NYC_AIRFIELD":
             switch(teleportername)
             {
@@ -318,6 +329,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "HangarExit":
                     return "Hangar Entrance Exterior";
             }
+            break;
         case "03_NYC_AIRFIELDHELIBASE":
             switch(teleportername)
             {
@@ -328,6 +340,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "FromOcean":
                     return "Sewer Entrance in Helibase";
             }
+            break;
         case "03_NYC_BROOKLYNBRIDGESTATION":
             switch(teleportername)
             {
@@ -336,6 +349,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "FromNYCStreets":
                     return "Brooklyn Bridge Station Sewer Entrance";
             }
+            break;
         case "03_NYC_HANGAR":
             switch(teleportername)
             {
@@ -344,6 +358,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "747PassExit":
                     return "Hangar Door to 747";
             }
+            break;
         case "03_NYC_MOLEPEOPLE":
             switch(teleportername)
             {
@@ -352,24 +367,28 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "SewerExit":
                     return "Mole People Bathroom";
             }
+            break;
         case "04_NYC_NSFHQ":
             switch(teleportername)
             {
                 case "ToNSFHQ":
                     return "NSF HQ";
             }
+            break;
         case "05_NYC_UNATCOMJ12LAB":
             switch(teleportername)
             {
                 case "mj12":
                     return "UNATCO MJ12 Base Entrance";
             }
+            break;
         case "06_HONGKONG_HELIBASE":
             switch(teleportername)
             {
                 case "Helibase":
                     return "MJ12 Helibase Elevator";
             }
+            break;
         case "06_HONGKONG_MJ12LAB":
             switch(teleportername)
             {
@@ -378,6 +397,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "tubeend":
                     return "MJ12 Lab Level 2 Elevator";
             }
+            break;
         case "06_HONGKONG_STORAGE":
             switch(teleportername)
             {
@@ -388,12 +408,14 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "BackDoor":
                     return "UC Canal Road Entrance";
             }
+            break;
         case "06_HONGKONG_TONGBASE":
             switch(teleportername)
             {
                 case "lab":
                     return "Tong's Base Interior";
             }
+            break;
         case "06_HONGKONG_VERSALIFE":
             switch(teleportername)
             {
@@ -402,6 +424,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "Lobby":
                     return "Versalife Interior Main Entrance";
             }
+            break;
         case "06_HONGKONG_WANCHAI_CANAL":
             switch(teleportername)
             {
@@ -416,12 +439,14 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "double":
                     return "??? Somewhere in the Canal ???";
             }
+            break;
         case "06_HONGKONG_WANCHAI_GARAGE":
             switch(teleportername)
             {
                 case "market04":
                     return "Canal Road Entrance from Market";
             }
+            break;
         case "06_HONGKONG_WANCHAI_MARKET":
             switch(teleportername)
             {
@@ -440,6 +465,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "compound":
                     return "Market Entrance from Tong's Lab";
             }
+            break;
         case "06_HONGKONG_WANCHAI_STREET":
             switch(teleportername)
             {
@@ -448,12 +474,14 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "alleyout":
                     return "Tonnochi Road Side Alley";
             }
+            break;
         case "06_HONGKONG_WANCHAI_UNDERWORLD":
             switch(teleportername)
             {
                 case "market03":
                     return "Lucky Money Entrance";
             }
+            break;
         case "09_NYC_DOCKYARD":
             switch(teleportername)
             {
@@ -464,12 +492,14 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "ExitShip":
                     return "Dockyard Exterior Front Door";
             }
+            break;
         //case "09_NYC_GRAVEYARD":
         //    switch(teleportername)
         //    {
         //        case "Entrance":
         //            return "Graveyard";
         //    }
+        //    break;
         case "09_NYC_SHIP":
             switch(teleportername)
             {
@@ -484,12 +514,14 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "FromBelow":
                     return "Superfreighter Exterior Lower Deck Stairs";
             }
+            break;
         case "09_NYC_SHIPBELOW":
             switch(teleportername)
             {
                 case "FromAbove":
                     return "Superfreighter Interior Lower Deck Stairs";
             }
+            break;
         case "09_NYC_SHIPFAN":
             switch(teleportername)
             {
@@ -500,12 +532,14 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "ToAircondDuct":
                     return "Dockyard Ventilation Air Conditioner Entrance";
             }
+            break;
         case "10_PARIS_CATACOMBS":
             switch(teleportername)
             {
                 case "spiralstair":
                     return "Paris Exterior Spiral Staircase";
             }
+            break;
         case "10_PARIS_CATACOMBS_TUNNELS":
             switch(teleportername)
             {
@@ -514,6 +548,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "ambientsound10":
                     return "Catacombs Interior Sewer Entrance";
             }
+            break;
         case "10_PARIS_CHATEAU":
             switch(teleportername)
             {
@@ -522,6 +557,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "Light135":
                     return "DuClare Estate Sewer Entrance";
             }
+            break;
         case "10_PARIS_CLUB":
             switch(teleportername)
             {
@@ -530,6 +566,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "Paris_Club2":
                     return "Porte De L'Enfer Interior Back Entrance";
             }
+            break;
         case "10_PARIS_METRO":
             switch(teleportername)
             {
@@ -542,6 +579,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "PathNode447":
                     return "Paris Streets Helicopter behind Club";
             }
+            break;
         case "11_PARIS_CATHEDRAL":
             switch(teleportername)
             {
@@ -550,18 +588,21 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "Paris_Underground":
                     return "Cathedral Metro Entrance";
             }
+            break;
         //case "11_PARIS_EVERETT":
         //    switch(teleportername)
         //    {
         //        case "Entrance":
         //            return "Everett Main Entrance";
         //    }
+        //    break;
         case "11_PARIS_UNDERGROUND":
             switch(teleportername)
             {
                 case "Paris_Underground":
                     return "Paris Metro Interior Entrance";
             }
+            break;
         case "12_VANDENBERG_CMD":
             switch(teleportername)
             {
@@ -574,12 +615,14 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "PathNode8":
                     return "Vandenberg Helipad";
             }
+            break;
         case "12_VANDENBERG_COMPUTER":
             switch(teleportername)
             {
                 case "computer":
                     return "Vandenberg Control Center Interior Entrance";
             }
+            break;
         case "12_VANDENBERG_GAS":
             switch(teleportername)
             {
@@ -588,6 +631,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "PathNode98":
                     return "Gas Station Junkyard Entrance";
             }
+            break;
         case "12_VANDENBERG_TUNNELS":
             switch(teleportername)
             {
@@ -596,6 +640,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "End":
                     return "Vandenberg Tunnel End";
             }
+            break;
         case "14_OCEANLAB_LAB":
             switch(teleportername)
             {
@@ -604,18 +649,21 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "Sunkenlab":
                     return "Ocean Lab Sub Bay";
             }
+            break;
         case "14_OCEANLAB_SILO":
             switch(teleportername)
             {
                 case "frontgate":
                     return "Silo Front Gates";
             }
+            break;
         case "14_OCEANLAB_UC":
             switch(teleportername)
             {
                 case "UC":
                     return "Ocean Lab UC Interior Entrance";
             }
+            break;
         case "14_VANDENBERG_SUB":
             switch(teleportername)
             {
@@ -626,6 +674,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "InterpolationPoint39":
                     return "Ocean Lab Shoreside Rooftop Helicopter";
             }
+            break;
         case "15_AREA51_BUNKER":
             switch(teleportername)
             {
@@ -633,6 +682,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "Light188":
                     return "Area 51 Bunker Exterior Door";
             }
+            break;
         case "15_AREA51_ENTRANCE":
             switch(teleportername)
             {
@@ -641,6 +691,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "Light73":
                     return "Area 51 Bunker Sector 2 Door to Sector 3";
             }
+            break;
         case "15_AREA51_FINAL":
             switch(teleportername)
             {
@@ -649,12 +700,14 @@ static function string GetTeleporterName(string mapname, string teleportername)
                 case "Start":
                     return "Area 51 Bunker Sector 3 Door to Sector 2";
             }
+            break;
         case "15_AREA51_BUNKER":
             switch(teleportername)
             {
                 case "page_start":
                     return "Area 51 Bunker Sector 4 Door to Sector 3";
             }
+            break;
     }
 
     return mapname$" ("$teleportername$") - Report me!";
