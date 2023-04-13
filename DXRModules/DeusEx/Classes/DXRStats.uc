@@ -6,7 +6,7 @@ struct RunInfo
     var int score;
     var int time;
     var int seed;
-    var int flagshash;
+    var string flagshash;
     var bool bSetSeed;
     var string place;// string because it can be "--"
 };
@@ -451,11 +451,11 @@ function ReceivedLeaderboard(Json j)
         vals[0] = "";
         j.get_vals("leaderboard-"$i, vals);
         if(vals[0] == "") return;
-        runs[i].name = vals[0];
+        runs[i].name = Left(vals[0], 22);
         runs[i].score = int(vals[1]);
         runs[i].time = int(vals[2]);
         runs[i].seed = int(vals[3]);
-        runs[i].flagshash = int(vals[4]);
+        runs[i].flagshash = vals[4];
         runs[i].bSetSeed = bool(vals[5]);
         runs[i].place = vals[6];
     }

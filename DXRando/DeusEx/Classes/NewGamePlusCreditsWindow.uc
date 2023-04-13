@@ -35,6 +35,7 @@ function AddDXRCreditsGeneral()
     PrintText("Version"@class'DXRVersion'.static.VersionString());
     PrintText("Hold the up arrow key to slow down or go backwards");
     PrintText("Hold the down arrow key to speed up");
+    PrintText("Press Spacebar to pause/unpause");
     PrintLn();
     PrintHeader("Contributors");
     PrintText("Die4Ever");
