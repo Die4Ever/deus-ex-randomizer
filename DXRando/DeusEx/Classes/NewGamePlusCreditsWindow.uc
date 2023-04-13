@@ -155,4 +155,6 @@ defaultproperties
      minScrollSpeed=-500
      maxScrollSpeed=500
      speedAdjustment=10
+     maxTileWidth=700
+     maxTextWidth=700
 }

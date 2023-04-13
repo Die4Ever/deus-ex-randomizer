@@ -9,6 +9,7 @@ struct RunInfo
     var string flagshash;
     var bool bSetSeed;
     var string place;// string because it can be "--"
+    var string playthrough_id;
 };
 
 var RunInfo runs[20];
@@ -458,6 +459,7 @@ function ReceivedLeaderboard(Json j)
         runs[i].flagshash = vals[4];
         runs[i].bSetSeed = bool(vals[5]);
         runs[i].place = vals[6];
+        runs[i].playthrough_id = vals[7];
     }
 }
 
@@ -473,6 +475,7 @@ function DrawLeaderboard(GC gc)
         gc.DrawText(250,yPos,100,50, IntCommas(runs[i].score));
         gc.DrawText(350,yPos,100,50, fmtTimeToString(runs[i].time));
         gc.DrawText(450,yPos,100,50, runs[i].flagshash);
+        gc.DrawText(550,yPos,100,50, runs[i].playthrough_id);
     }
 }
 

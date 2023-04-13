@@ -29,6 +29,7 @@ event DrawWindow(GC gc)
     gc.DrawText(250,yPos,150,50,"Score");
     gc.DrawText(350,yPos,100,50,"Real Time");
     gc.DrawText(450,yPos,100,50,"Flagshash");
+    gc.DrawText(550,yPos,100,50,"Playthrough");
 
     if(stats != None)
         stats.DrawLeaderboard(gc);
@@ -38,6 +39,6 @@ event DrawWindow(GC gc)
 
 defaultproperties
 {
-    width=550
+    width=650
     height=400
 }
