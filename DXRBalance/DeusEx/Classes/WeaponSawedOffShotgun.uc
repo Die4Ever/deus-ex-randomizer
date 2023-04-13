@@ -7,4 +7,5 @@ defaultproperties
     BaseAccuracy=0.6
     maxRange=2200
     AccurateRange=1000
+    AIMaxRange=300
 }

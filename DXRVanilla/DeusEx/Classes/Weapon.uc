@@ -170,6 +170,19 @@ function Fire(float value)
     Super.Fire(value);
 }
 
+function GetWeaponRanges(out float wMinRange,
+                         out float wMaxAccurateRange,
+                         out float wMaxRange)
+{
+    if(AIMaxRange <= 0) {
+        Super.GetWeaponRanges(wMinRange, wMaxAccurateRange, wMaxRange);
+        return;
+    }
+    wMinRange         = 0;
+    wMaxAccurateRange = AIMaxRange;
+    wMaxRange         = AIMaxRange;
+}
+
 //mostly copied from DeusExWeapon, but use actual values instead of default values
 simulated function bool UpdateInfo(Object winObject)
 {
