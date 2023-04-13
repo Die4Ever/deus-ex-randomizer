@@ -701,7 +701,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
                     return "Area 51 Bunker Sector 3 Door to Sector 2";
             }
             break;
-        case "15_AREA51_BUNKER":
+        case "15_AREA51_PAGE":
             switch(teleportername)
             {
                 case "page_start":
