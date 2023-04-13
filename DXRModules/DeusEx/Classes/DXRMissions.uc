@@ -446,7 +446,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
 
-        goal = AddGoal("06_HONGKONG_WANCHAI_UNDERWORLD","Max Chen",GOAL_TYPE1 | SITTING_GOAL,'MaxChen0',PHYS_FALLING);
+        goal = AddGoal("06_HONGKONG_WANCHAI_UNDERWORLD","Max Chen",GOAL_TYPE1,'MaxChen0',PHYS_FALLING);
         AddGoalActor(goal, 1, 'TriadRedArrow5', PHYS_Falling); //Maybe I should actually find these guys by bindname?  They're "RightHandMan"
         AddGoalActor(goal, 2, 'TriadRedArrow6', PHYS_Falling);
 
@@ -993,7 +993,7 @@ function MoveActorsIn(int goalsToLocations[32])
     local #var(PlayerPawn) p;
 
     g = goalsToLocations[num_goals];
-    if( dxr.flags.settings.startinglocations > 0 && g > -1 ) {
+    if( dxr.flags.settings.startinglocations > 0 && g > -1 && dxr.localURL == locations[g].mapName ) {
         p = player();
         l("Moving player to " $ locations[g].name);
         i = PLAYER_LOCATION;
@@ -1080,7 +1080,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
     if(_num_starts > 0) {
         for(i=0; i<20; i++) {
             r = rng(_num_locs);
-            if( (START_LOCATION & locations[availLocs[r]].bitMask) == 0 || dxr.localURL != locations[i].mapName)
+            if( (START_LOCATION & locations[availLocs[r]].bitMask) == 0)
                 continue;
 
             goalsToLocations[num_goals] = availLocs[r];
