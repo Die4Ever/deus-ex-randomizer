@@ -48,7 +48,7 @@ static function GiveRandomName(DXRando dxr, ScriptedPawn p)
 static function string RandomName(DXRando dxr, optional Actor a)
 {
     if ( a != None && a.IsA('#var(prefix)Robot') ) {
-        return Caps(RandomNamePart(dxr, 2,4)) $ "-" $ dxr.rng(1000);
+        return Caps(RandomNamePart(dxr, 2,4)) $ "-" $ dxr.rng(1001);
     }
 
     if( dxr.rng(2) == 0 ) {

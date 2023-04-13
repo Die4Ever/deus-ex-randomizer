@@ -28,7 +28,7 @@ function FirstEntry()
 
     SetGlobalSeed(Class.Name);
 
-    map = class'DXRTestAllMaps'.static.PickRandomMap(dxr);
+    map = class'DXRMapInfo'.static.PickRandomMap(dxr);
     //map = "01_NYC_UNATCOISLAND";
     l("Bob Page map " $ map);
     if( Caps(map) != Caps(dxr.localURL) )
@@ -59,7 +59,7 @@ function AnyEntry()
 {
     if( dxr.flags.gamemode != 3 ) return;
     Super.AnyEntry();
-    
+
     switch(dxr.dxInfo.missionNumber) {
         case 1:
             LibertyIsland_OpenWorld();

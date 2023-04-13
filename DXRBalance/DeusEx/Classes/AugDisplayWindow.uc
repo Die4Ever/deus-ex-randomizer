@@ -254,18 +254,25 @@ function #var(prefix)Teleporter TraceTeleporter(float checkDist, out vector HitL
 
 function string formatMapName(string mapName)
 {
-    local string mapNameOnly,destName;
+    local string mapNameOnly,teleName;
+    local int hashPos;
 
-    if (InStr(mapName,"#")+1 == Len(mapName)) {
+    hashPos = InStr(mapName,"#");
+
+    if (hashPos+1 == Len(mapName)) {
         // # is the last character, leave it out
-        return Left(mapName, Len(mapName)-1);
+        return class'DXRMapInfo'.static.GetTeleporterName(Left(mapName, Len(mapName)-1),"");
     }
-    if (InStr(mapName,"#")==-1){
+    if (hashPos==-1){
         //No # in map name, so it's probably just the map name?
-        return mapName;
+        return class'DXRMapInfo'.static.GetTeleporterName(mapName, "");
     }
 
-    return class'DXRInfo'.static.ReplaceText(mapName,"#"," (")$")";
+    mapNameOnly = Left(mapName, hashPos);
+
+    teleName = Mid(mapName,hashPos+1);
+
+    return class'DXRMapInfo'.static.GetTeleporterName(mapNameOnly,teleName);
 }
 
 // ----------------------------------------------------------------------
@@ -277,7 +284,7 @@ function DrawTargetAugmentation(GC gc)
     local Weapon oldWeapon;
     local #var(prefix)Teleporter tgtTeleporter;
     local vector AimLocation;
-    local string str;
+    local string str,teleDest;
     local float x,y,h,w, boxCX,boxCY;
 
     gc.SetFont(Font'FontMenuSmall_DS'); //This font is so much better for everything
@@ -295,7 +302,16 @@ function DrawTargetAugmentation(GC gc)
 	if (tgtTeleporter!=None && tgtTeleporter.URL!="")
 	{
         ConvertVectorToCoordinates(tgtTeleporter.Location, boxCX, boxCY);
-        str = "To: "$formatMapName(tgtTeleporter.URL);
+
+        teleDest = tgtTeleporter.URL;
+        if (DynamicTeleporter(tgtTeleporter)!=None){
+            if (InStr(teleDest,"#")==-1){
+                teleDest = teleDest $ "#";
+            }
+            teleDest = teleDest $ DynamicTeleporter(tgtTeleporter).destName;
+        }
+
+        str = "To: "$formatMapName(teleDest);
         gc.SetTextColor(colWhite);
         gc.GetTextExtent(0, w, h, str);
         x = boxCX - w/2;

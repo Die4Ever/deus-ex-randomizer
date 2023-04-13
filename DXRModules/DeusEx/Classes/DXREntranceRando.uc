@@ -1194,6 +1194,8 @@ function RunTests()
 
     test(min_connections_selfconnect >= 3, "min_connections_selfconnect needs to be at least 3");
     TestAllMissions(dxr.seed);
+
+    teststring( class'DXRMapInfo'.static.GetTeleporterName("01_NYC_UNATCOHQ", "ToOcean"), "01_NYC_UNATCOHQ (ToOcean) - Report me!", "GetTeleporterName" );
 }
 
 function ExtendedTests()

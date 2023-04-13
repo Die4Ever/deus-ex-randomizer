@@ -240,12 +240,12 @@ function generateEntranceNote(bool bSpoil)
         for (i=0;i<entRando.numConns;i++){
             found=False;
             if (entRando.GetConnection(i).a.mapname==entRando.dxr.localURL){
-                source = entRando.GetConnection(i).a.inTag;
-                dest = entRando.GetConnection(i).b.mapname$" - "$entRando.GetConnection(i).b.inTag;
+                source = class'DXRMapInfo'.static.GetTeleporterName(entRando.dxr.localURL,entRando.GetConnection(i).a.inTag);
+                dest = class'DXRMapInfo'.static.GetTeleporterName(entRando.GetConnection(i).b.mapname,entRando.GetConnection(i).b.inTag);
                 found=True;
             }else if (entRando.GetConnection(i).b.mapname==entRando.dxr.localURL){
-                source = entRando.GetConnection(i).b.inTag;
-                dest = entRando.GetConnection(i).a.mapname$" - "$entRando.GetConnection(i).a.inTag;
+                source = class'DXRMapInfo'.static.GetTeleporterName(entRando.dxr.localURL,entRando.GetConnection(i).b.inTag);
+                dest = class'DXRMapInfo'.static.GetTeleporterName(entRando.GetConnection(i).a.mapname,entRando.GetConnection(i).a.inTag);
                 found=True;
             }
 
