@@ -265,7 +265,7 @@ function string formatMapName(string mapName)
     }
     if (hashPos==-1){
         //No # in map name, so it's probably just the map name?
-        return class'DXRMapInfo'.static.GetTeleporterName(Left(mapName, Len(mapName)-1),"");
+        return class'DXRMapInfo'.static.GetTeleporterName(mapName, "");
     }
 
     mapNameOnly = Left(mapName, hashPos);
