@@ -182,6 +182,12 @@ static function string GetTeleporterName(string mapname, string teleportername)
 
     switch(mapname)
     {
+        case "00_TRAINING":
+            return "Training";
+        case "00_TRAININGCOMBAT":
+            return "Combat Training";
+        case "00_TRAININGFINAL":
+            return "Final Training";
         case "01_NYC_UNATCOHQ":
         case "03_NYC_UNATCOHQ":
         case "04_NYC_UNATCOHQ":
