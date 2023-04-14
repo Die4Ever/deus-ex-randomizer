@@ -1315,7 +1315,7 @@ function int TriggerAllAlarms(String viewer) {
 
     foreach AllActors(class'AlarmUnit',au){
         numAlarms+=1;
-        au.Trigger(self,None);
+        au.Trigger(self,player());
     }
     foreach AllActors(class'SecurityCamera',sc){
         numAlarms+=1;
