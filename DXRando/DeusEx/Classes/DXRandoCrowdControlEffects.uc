@@ -344,6 +344,7 @@ function Fart()
     //Fart Sound
     fartSoundId = player().PlaySound(sound'PushMetal',SLOT_Pain, 2,,,0.5+FRand());
     fartDuration = Rand(3)+1; //Duration in 10ths of a second
+    player().AISendEvent('LoudNoise', EAITYPE_Audio, 2.0, 512);
 
     for (i=0;i<5;i++){
         if (Rand(2)==0){
