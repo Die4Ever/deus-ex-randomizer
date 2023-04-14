@@ -1071,7 +1071,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
             continue;
         availLocs[_num_locs++] = i;
 
-        if( (START_LOCATION & locations[i].bitMask) != 0 && dxr.localURL == locations[i].mapName)
+        if( (START_LOCATION & locations[i].bitMask) != 0)
             _num_starts++;
     }
 
