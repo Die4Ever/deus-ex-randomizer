@@ -557,16 +557,18 @@ function AddDXRCredits(CreditsWindow cw)
 }
 
 static function int _ScoreRun(int time, int time_without_menus, float CombatDifficulty, int rando_difficulty, int saves, int loads,
-    int bingos, int bingospots, int SkillPointsTotal, int Nanokeys, int glitches)
+    int bingo_win, int bingos, int bingospots, int SkillPointsTotal, int Nanokeys, int glitches)
 {
     local int i;
     i = 100000;
-    i -= time / 10;
+    i -= time / 10;// times are in tenths of a second
     i -= time_without_menus / 10;
     i += FClamp(CombatDifficulty, 0, 8) * 500.0;
     i += rando_difficulty * 500;
     i -= saves * 10;
     i -= loads * 50;
+    if(bingo_win > 0)
+        i -= (13-bingo_win) * 5000;
     i += bingos * 500;
     i += bingospots * 50;// make sure to ignore the free space
     i += SkillPointsTotal / 2;
@@ -604,8 +606,8 @@ function int ScoreRun()
     keys = p.KeyRing.GetKeyCount();
     glitches = p.FlagBase.GetInt('DXRStats_glitches');
 
-    score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, loads, bingos, bingo_spots, p.SkillPointsTotal, keys, glitches);
-    info("_ScoreRun(" $ time @ time_without_menus @ p.CombatDifficulty @ dxr.flags.difficulty @ p.saveCount @ loads @ bingos @ bingo_spots @ p.SkillPointsTotal @ keys @ glitches $ "): "$score);
+    score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, loads, dxr.flags.settings.bingo_win, bingos, bingo_spots, p.SkillPointsTotal, keys, glitches);
+    info("_ScoreRun(" $ time @ time_without_menus @ p.CombatDifficulty @ dxr.flags.difficulty @ p.saveCount @ loads @ dxr.flags.settings.bingo_win @ bingos @ bingo_spots @ p.SkillPointsTotal @ keys @ glitches $ "): "$score);
     return score;
 }
 
@@ -731,25 +733,38 @@ function TestScores(int better, int worse, int testnum)
 function TestScoring()
 {
     local int better, worse, testnum;
-    better = _ScoreRun(7200*10, 3600*10, 2, 2, 5, 5, 12, 24, 10000, 200, 0);// slower but way less saves/loads, and did more
-    worse = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100, 3, 12, 10000, 20, 0);
+    better = _ScoreRun(7200*10, 3600*10, 2, 2, 5, 5,
+        0, 12, 24, 10000, 200, 0);// slower but way less saves/loads, and did more
+    worse = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100,
+        0, 3, 12, 10000, 20, 0);
     TestScores(better, worse, ++testnum);
 
-    better = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100, 3, 12, 10000, 50, 0);
-    worse = _ScoreRun(10800*10, 9001*10, 2, 2, 50, 50, 9, 20, 10000, 100, 0);// too much slower to be better
+    better = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100,
+        0, 3, 12, 10000, 50, 0);
+    worse = _ScoreRun(10800*10, 9001*10, 2, 2, 50, 50,
+        0, 9, 20, 10000, 100, 0);// too much slower to be better
     TestScores(better, worse, ++testnum);
 
-    better = _ScoreRun(290879, 242176, 1.7, 2, 796, 171, 12, 24, 25357, 59, 0);// Astro
-    worse = _ScoreRun(290800, 242100, 1.7, 2, 796, 171, 10, 23, 25357, 59, 0);// same thing but less bingos and slightly faster
+    better = _ScoreRun(290879, 242176, 1.7, 2, 796, 171,
+        0, 12, 24, 25357, 59, 0);// Astro
+    worse = _ScoreRun(290800, 242100, 1.7, 2, 796, 171,
+        0, 10, 23, 25357, 59, 0);// same thing but less bingos and slightly faster
     TestScores(better, worse, ++testnum);
 
-    worse = _ScoreRun(144000, 144000, 1.7, 2, 796, 171, 12, 24, 25357, 59, 100);// same thing as Astro, but only 4 hours and with glitches
+    worse = _ScoreRun(144000, 144000, 1.7, 2, 796, 171,
+        0, 12, 24, 25357, 59, 100);// same thing as Astro, but only 4 hours and with glitches
     TestScores(better, worse, ++testnum);
 
-    worse = _ScoreRun(72000, 72000, 1.2, 1, 1000, 200, 0, 0, 10000, 20, 100000);// basically an Any% speedrun, 2 hours
+    worse = _ScoreRun(72000, 72000, 1.2, 1, 1000, 200,
+        0, 0, 0, 10000, 20, 100000);// basically an Any% speedrun, 2 hours
     TestScores(better, worse, ++testnum);
 
-    worse = _ScoreRun(36000, 36000, 1.2, 1, 1000, 200, 0, 0, 10000, 20, 100000);// basically an Any% speedrun, 1 hour
+    worse = _ScoreRun(36000, 36000, 1.2, 1, 1000, 200,
+        0, 0, 0, 10000, 20, 100000);// basically an Any% speedrun, 1 hour
+    TestScores(better, worse, ++testnum);
+
+    worse = _ScoreRun(18000, 18000, 1.2, 1, 100, 50,
+        1, 1, 4, 10000, 20, 0);// quick 1 bingo_win
     TestScores(better, worse, ++testnum);
 }
 
