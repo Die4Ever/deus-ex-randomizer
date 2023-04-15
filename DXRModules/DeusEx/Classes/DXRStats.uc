@@ -23,6 +23,15 @@ function AnyEntry()
     SetTimer(0.1, True);
 }
 
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
+{
+    Super.PlayerAnyEntry(p);
+    if(p.HealthTorso <= 0 || p.HealthHead <= 0) {
+        p.ClientMessage("DEAD MAN WALKING GLITCH DETECTED!");
+        AddGlitchOffense(p);
+    }
+}
+
 simulated function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);

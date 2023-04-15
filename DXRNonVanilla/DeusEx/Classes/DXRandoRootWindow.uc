@@ -40,6 +40,21 @@ function bool GetNoPause(bool bNoPause) {
     return ret;
 }
 
+function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
+{
+    local float f;
+
+    // check for super jumps
+    f = DeusExPlayer(parentPawn).AugmentationSystem.GetAugLevelValue(class'AugSpeed');
+    f *= 1.3;// some leniency
+    if(f > 0 && parentPawn.JumpZ > parentPawn.default.JumpZ * f) {
+        DeusExPlayer(parentPawn).ClientMessage("SUPER JUMP GLITCH DETECTED!");
+        class'DXRStats'.static.AddGlitchOffense(DeusExPlayer(parentPawn));
+    }
+
+    Super.PopWindow(bNoUnpause);
+}
+
 function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, optional bool bNoPause)
 {
     log("DXRandoRootWindow InvokeMenuScreen "$newScreen);
