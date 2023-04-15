@@ -28,7 +28,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     Super.PlayerAnyEntry(p);
     if(p.HealthTorso <= 0 || p.HealthHead <= 0) {
         p.ClientMessage("DEAD MAN WALKING GLITCH DETECTED!");
-        AddGlitchOffense(p);
+        AddGlitchOffense(p, 5);// worth more than other glitches
     }
 }
 
@@ -316,11 +316,14 @@ static function int GetTotalMenuTime(DXRando dxr)
 }
 
 
-static function IncStatFlag(DeusExPlayer p, name flagname)
+static function IncStatFlag(DeusExPlayer p, name flagname, optional int add)
 {
     local int val;
+
     val = p.FlagBase.GetInt(flagname);
-    p.FlagBase.SetInt(flagname,val+1,,999);
+    if(add == 0)//optional
+        add=1;
+    p.FlagBase.SetInt(flagname, val+add, , 999);
 }
 
 static function IncDataStorageStat(DeusExPlayer p, string valname)
@@ -360,9 +363,9 @@ static function AddGibbedKill(DeusExPlayer p)
     IncStatFlag(p,'DXRStats_gibbedkills');
 }
 
-static function AddGlitchOffense(DeusExPlayer p)
+static function AddGlitchOffense(DeusExPlayer p, optional int add)
 {
-    IncStatFlag(p,'DXRStats_glitches');
+    IncStatFlag(p,'DXRStats_glitches', add);
 }
 
 static function int GetDataStorageStat(DXRando dxr, string valname)
@@ -553,13 +556,14 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
-static function int _ScoreRun(int time, int time_without_menus, float CombatDifficulty, int rando_difficulty, int saves, int loads, int bingos, int bingospots, int SkillPointsTotal, int Nanokeys)
+static function int _ScoreRun(int time, int time_without_menus, float CombatDifficulty, int rando_difficulty, int saves, int loads,
+    int bingos, int bingospots, int SkillPointsTotal, int Nanokeys, int glitches)
 {
     local int i;
     i = 100000;
     i -= time / 10;
     i -= time_without_menus / 10;
-    i += CombatDifficulty * 500.0;
+    i += FClamp(CombatDifficulty, 0, 8) * 500.0;
     i += rando_difficulty * 500;
     i -= saves * 10;
     i -= loads * 50;
@@ -567,6 +571,7 @@ static function int _ScoreRun(int time, int time_without_menus, float CombatDiff
     i += bingospots * 50;// make sure to ignore the free space
     i += SkillPointsTotal / 2;
     i += Nanokeys * 20;
+    i -= Clamp(glitches, 0, 200) * 300;
     return i;
 }
 
@@ -574,7 +579,7 @@ function int ScoreRun()
 {
     local PlayerDataItem data;
     local string event, desc;
-    local int x, y, progress, max, bingos, bingo_spots;
+    local int x, y, progress, max, bingos, bingo_spots, glitches;
     local int time, time_without_menus, i, loads, keys, score;
     local #var(PlayerPawn) p;
     p = player();
@@ -597,9 +602,10 @@ function int ScoreRun()
 
     loads = GetDataStorageStat(dxr, "DXRStats_loads");
     keys = p.KeyRing.GetKeyCount();
+    glitches = p.FlagBase.GetInt('DXRStats_glitches');
 
-    score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, loads, bingos, bingo_spots, p.SkillPointsTotal, keys);
-    info("_ScoreRun(" $ time @ time_without_menus @ p.CombatDifficulty @ dxr.flags.difficulty @ p.saveCount @ loads @ bingos @ bingo_spots @ p.SkillPointsTotal @ keys $ "): "$score);
+    score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, loads, bingos, bingo_spots, p.SkillPointsTotal, keys, glitches);
+    info("_ScoreRun(" $ time @ time_without_menus @ p.CombatDifficulty @ dxr.flags.difficulty @ p.saveCount @ loads @ bingos @ bingo_spots @ p.SkillPointsTotal @ keys @ glitches $ "): "$score);
     return score;
 }
 
@@ -725,16 +731,25 @@ function TestScores(int better, int worse, int testnum)
 function TestScoring()
 {
     local int better, worse, testnum;
-    better = _ScoreRun(7200*10, 3600*10, 2, 2, 5, 5, 12, 24, 10000, 200);// slower but way less saves/loads, and did more
-    worse = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100, 3, 12, 10000, 20);
+    better = _ScoreRun(7200*10, 3600*10, 2, 2, 5, 5, 12, 24, 10000, 200, 0);// slower but way less saves/loads, and did more
+    worse = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100, 3, 12, 10000, 20, 0);
     TestScores(better, worse, ++testnum);
 
-    better = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100, 3, 12, 10000, 50);
-    worse = _ScoreRun(10800*10, 9001*10, 2, 2, 50, 50, 9, 20, 10000, 100);// too much slower to be better
+    better = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100, 3, 12, 10000, 50, 0);
+    worse = _ScoreRun(10800*10, 9001*10, 2, 2, 50, 50, 9, 20, 10000, 100, 0);// too much slower to be better
     TestScores(better, worse, ++testnum);
 
-    better = _ScoreRun(290879, 242176, 1.7, 2, 796, 171, 12, 24, 25357, 59);// Astro
-    worse = _ScoreRun(290800, 242100, 1.7, 2, 796, 171, 10, 23, 25357, 59);// same thing but less bingos and slightly faster
+    better = _ScoreRun(290879, 242176, 1.7, 2, 796, 171, 12, 24, 25357, 59, 0);// Astro
+    worse = _ScoreRun(290800, 242100, 1.7, 2, 796, 171, 10, 23, 25357, 59, 0);// same thing but less bingos and slightly faster
+    TestScores(better, worse, ++testnum);
+
+    worse = _ScoreRun(144000, 144000, 1.7, 2, 796, 171, 12, 24, 25357, 59, 100);// same thing as Astro, but only 4 hours and with glitches
+    TestScores(better, worse, ++testnum);
+
+    worse = _ScoreRun(72000, 72000, 1.2, 1, 1000, 200, 0, 0, 10000, 20, 100000);// basically an Any% speedrun, 2 hours
+    TestScores(better, worse, ++testnum);
+
+    worse = _ScoreRun(36000, 36000, 1.2, 1, 1000, 200, 0, 0, 10000, 20, 100000);// basically an Any% speedrun, 1 hour
     TestScores(better, worse, ++testnum);
 }
 
