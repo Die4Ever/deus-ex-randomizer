@@ -119,7 +119,6 @@ function BindControls(optional string action)
     doorsdestructible = f.settings.doorsdestructible * 100 / doors_probability;
     doorspickable = f.settings.doorspickable * 100 / doors_probability;
     doors_option = doors_exclusivity $ ";" $ doorsdestructible $ ";" $ doorspickable;
-    SetTitle("doors_probability: "$doors_probability$", doors_option: "$doors_option);
     NewMenuItem("", "What to do with those doors.");
     EnumOptionString("Breakable or Pickable", f.doormutuallyexclusive $";50;50", doors_option);
     EnumOptionString("Breakable & Pickable", f.doormutuallyinclusive $";100;100", doors_option);
