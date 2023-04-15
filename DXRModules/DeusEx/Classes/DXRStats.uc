@@ -351,6 +351,11 @@ static function AddGibbedKill(DeusExPlayer p)
     IncStatFlag(p,'DXRStats_gibbedkills');
 }
 
+static function AddGlitchOffense(DeusExPlayer p)
+{
+    IncStatFlag(p,'DXRStats_glitches');
+}
+
 static function int GetDataStorageStat(DXRando dxr, string valname)
 {
     local DataStorage datastorage;

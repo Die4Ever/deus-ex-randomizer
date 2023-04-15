@@ -122,6 +122,17 @@ exec function QuickSave()
     else ClientMessage("Manual saving is not allowed in this game mode! Good Luck!",, true);
 }
 
+function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
+{
+    if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
+    if ( loadout != None && Inventory(FrobTarget) != None && loadout.ban(self, Inventory(FrobTarget)) ) {
+        FrobTarget.Destroy();
+        return false;
+    }
+
+    return Super.HandleItemPickup(FrobTarget, bSearchOnly);
+}
+
 function bool AddInventory( inventory NewItem )
 {
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
