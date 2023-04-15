@@ -16,16 +16,28 @@ event InitWindow()
 
 function bool GetNoPause(bool bNoPause) {
     local DXRFlags flags;
+    local SkilledTool tool;
+    local bool ret;
 
-    if(bNoPause)
-        return true;
+    ret = bNoPause;
 
     foreach parentPawn.AllActors(class'DXRFlags', flags) {
         if(flags.settings.menus_pause == 0)
-            return true;
+            ret = true;
     }
 
-    return false;
+    if(!ret && #defined(gmdx)) {
+        // check for using tools during paused menus
+        foreach parentPawn.AllActors(class'SkilledTool', tool) {
+            if(!tool.IsInState('UseIt')) continue;
+            if(NanoKeyRing(tool) != None) continue;
+            DeusExPlayer(parentPawn).ClientMessage("TOOL PAUSE GLITCH DETECTED!");
+            class'DXRStats'.static.AddGlitchOffense(DeusExPlayer(parentPawn));
+            break;
+        }
+    }
+
+    return ret;
 }
 
 function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, optional bool bNoPause)
