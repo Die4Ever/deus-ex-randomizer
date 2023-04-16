@@ -34,11 +34,11 @@ const LamThrowerTimeDefault = 60;
 const IceTimeDefault = 60;
 const BehindTimeDefault = 60;
 const DifficultyTimeDefault = 60;
-const FloatyTimeDefault = 60;
+const FloatyTimeDefault = 30;
 const FloorLavaTimeDefault = 60;
 const InvertMouseTimeDefault = 60;
 const InvertMovementTimeDefault = 60;
-const EarthquakeTimeDefault = 60;
+const EarthquakeTimeDefault = 30;
 const CameraRollTimeDefault = 60;
 const EatBeansTimeDefault = 60;
 

@@ -42,6 +42,7 @@ simulated function InitHints()
     AddHint("You don't trigger your own grenades.", "Setup traps without fear.");
     AddHint("Use sabot shotgun rounds to kill the little spider bots.");
     AddHint("Grab a plasma rifle, blast everything in sight,", "then go get your items back.");
+    AddHint("A plasma rifle with the laser sight mod is very strong, ", "it greatly increases the accuracy.");
     if(#defined(injections)) {
         AddHint("Grays have strong resistance to fire and plasma,", "but it will eventually kill them!");
         AddHint("Weapon animation speeds now improve with skills,", "especially grenades with Demolition skill.");
