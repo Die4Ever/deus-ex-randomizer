@@ -1,4 +1,4 @@
-class DXRAutosave extends DXRBase transient;
+class DXRAutosave extends DXRActorsBase transient;
 
 var transient bool bNeedSave;
 var config float save_delay;
@@ -11,7 +11,7 @@ const ExtraSafe = 4;
 
 function CheckConfig()
 {
-    if( ConfigOlderThan(1,4,8,0) ) {
+    if( ConfigOlderThan(2,3,4,1) ) {
         save_delay = default.save_delay;
     }
     Super.CheckConfig();
@@ -68,22 +68,34 @@ function doAutosave()
 
     if( dxr == None ) {
         info("dxr == None, doAutosave() not saving yet");
-        SetTimer(save_delay, True);
         return;
     }
 
     if( dxr.bTickEnabled ) {
         info("dxr.bTickEnabled, doAutosave() not saving yet");
-        SetTimer(save_delay, True);
         return;
     }
     if( dxr.flagbase.GetBool('PlayerTraveling') ) {
         info("waiting for PlayerTraveling to be cleared by the MissionScript, not saving yet");
-        SetTimer(save_delay, True);
         return;
     }
 
     p = player();
+
+    if(PawnIsInCombat(p)) {
+        info("waiting for Player to be out of combat, not saving yet");
+        return;
+    }
+
+    //copied from DeusExPlayer QuickSave()
+    if (
+        (dxr.dxInfo == None) || (dxr.dxInfo.MissionNumber < 0) ||
+        ((p.IsInState('Dying')) || (p.IsInState('Paralyzed')) || (p.IsInState('Interpolating'))) ||
+        /*(p.dataLinkPlay != None) ||*/ (dxr.Level.Netmode != NM_Standalone) || (p.InConversation())
+    ){
+        info("doAutosave() not saving yet");
+        return;
+    }
 
     if( p.dataLinkPlay != None ) {
         p.dataLinkPlay.AbortDataLink();
@@ -91,21 +103,9 @@ function doAutosave()
         p.dataLinkPlay = None;
     }
 
-    //copied from DeusExPlayer QuickSave()
-    if (
-        (dxr.dxInfo == None) || (dxr.dxInfo.MissionNumber < 0) ||
-        ((p.IsInState('Dying')) || (p.IsInState('Paralyzed')) || (p.IsInState('Interpolating'))) ||
-        (p.dataLinkPlay != None) || (dxr.Level.Netmode != NM_Standalone) || (p.InConversation())
-    ){
-        info("doAutosave() not saving yet");
-        SetTimer(1.0, True);
-        return;
-    }
-
     saveSlot = -3;
     saveName = "DXR " $ dxr.seed $ ": " $ dxr.dxInfo.MissionLocation;
     lastMission = dxr.flags.f.GetInt('Rando_lastmission');
-    l("doAutosave() " $ lastMission @ dxr.dxInfo.MissionNumber @ saveName);
 
     isDifferentMission = lastMission != 0 && dxr.dxInfo.MissionNumber != 0 && lastMission != dxr.dxInfo.MissionNumber;
     if( isDifferentMission || dxr.flags.autosave == ExtraSafe ) {
@@ -114,20 +114,22 @@ function doAutosave()
     }
     dxr.flags.f.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber,, 999);
 
+    info("doAutosave() " $ lastMission @ dxr.dxInfo.MissionNumber @ saveSlot @ saveName @ p.GetStateName() @ save_delay);
+    SetTimer(0, False);
     bNeedSave = false;
     class'DXRStats'.static.IncDataStorageStat(p, "DXRStats_autosaves");
     p.SaveGame(saveSlot, saveName);
+
     if( interruptedDL != None ) {
         p.dataLinkPlay = interruptedDL;
         if( interruptedDL.tag != 'dummydatalink' )
             p.ResumeDataLinks();
     }
 
-    SetTimer(0, False);
     info("doAutosave() completed, save_delay: "$save_delay);
 }
 
 defaultproperties
 {
-    save_delay=0.5
+    save_delay=0.7
 }
