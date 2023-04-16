@@ -103,7 +103,8 @@ state On
         {
             GotoState('Off');
         }
-        else if (VSize(curFrobber.Location - Location) > 150)// DXRando: reduced from 1500 down to 150
+        //else if (VSize(curFrobber.Location - Location) > 150)// DXRando: reduced from 1500 down to 150
+        else if(curFrobber.FrobTarget != self)// DXRando: reduced range from 1500
         {
             curFrobber.ClientMessage(ItemName$" is too far to use!");
             termwindow.CloseScreen("EXIT");
@@ -119,7 +120,7 @@ Begin:
         FinishAnim();
         bOn = True;
         bAnimating = False;
-        if (VSize(curFrobber.Location - Location) > 150) {// DXRando
+        if(curFrobber.FrobTarget != self) {// DXRando
             curFrobber.ClientMessage(ItemName$" is too far to use!");
             GotoState('Off');
         } else {
