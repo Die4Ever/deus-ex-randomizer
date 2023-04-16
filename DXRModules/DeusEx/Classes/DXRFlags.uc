@@ -1481,13 +1481,23 @@ simulated function RandomizeSettings(bool forceMenuOptions)
 simulated function TutorialDisableRandomization(bool enableSomeRando)
 {
     // a little bit of safe rando just to get a taste?
-    if(!enableSomeRando) {
+    if(enableSomeRando) {
+        // training final
+        settings.medbots = 100;
+        settings.repairbots = 100;
+        settings.augcans = 100;
+        settings.merchants = 100;
+    }
+    else {
         settings.swapitems = 0;
         settings.swapcontainers = 0;
         settings.deviceshackable = 0;
         settings.doorsmode = 0;
         settings.doorsdestructible = 0;
         settings.doorspickable = 0;
+        settings.medbots = -1;// -1 means vanilla, 0 means none at all
+        settings.repairbots = -1;
+        settings.augcans = 0;
     }
 
     settings.keysrando = 0;
@@ -1495,12 +1505,8 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     settings.startinglocations = 0;
     settings.goals = 0;
     settings.infodevices = 0;
-    //settings.merchants = 0;
-    settings.augcans = 0;
 
     settings.dancingpercent = 50;
-    settings.medbots = -1;
-    settings.repairbots = -1;
 
     /*settings.medbotuses = 20;
     settings.repairbotuses = 20;

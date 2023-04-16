@@ -10,10 +10,7 @@ function AnyEntry()
 {
     Super.AnyEntry();
 
-    if( dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 ) {
-        CreateRandomMerchant();
-        //LogAll('MeetKaplan');
-    }
+    CreateRandomMerchant();
 }
 
 function LogAll(name conName)
