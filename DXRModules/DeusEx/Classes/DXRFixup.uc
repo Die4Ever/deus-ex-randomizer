@@ -2102,7 +2102,7 @@ function HongKong_AnyEntry()
     switch(dxr.localURL)
     {
     case "06_HONGKONG_TONGBASE":
-        c = GetConversation('M08Briefing');// require TriadCeremony_Played and VL_UC_Destroyed and VL_Got_Schematic?
+        c = GetConversation('M08Briefing');
         c.AddFlagRef('TriadCeremony_Played', true);
         c.AddFlagRef('VL_UC_Destroyed', true);
         c.AddFlagRef('VL_Got_Schematic', true);
