@@ -2089,13 +2089,25 @@ function HongKong_AnyEntry()
     local bool boolFlag;
     local bool recruitedFlag;
     local DeusExCarcass carc;
+    local Conversation c;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
     // or if flag Have_ROM, Gordon Quick should let you into the compound? requires Have_Evidence and MaxChenConvinced
 
+    c = GetConversation('MarketLum1Barks');
+    FixConversationFlagJump(c, 'Versalife_Done', true, 'M08Briefing_Played', true);
+    c = GetConversation('MarketLum2Barks');
+    FixConversationFlagJump(c, 'Versalife_Done', true, 'M08Briefing_Played', true);
+
     switch(dxr.localURL)
     {
     case "06_HONGKONG_TONGBASE":
+        c = GetConversation('M08Briefing');// require TriadCeremony_Played and VL_UC_Destroyed and VL_Got_Schematic?
+        c.AddFlagRef('TriadCeremony_Played', true);
+        c.AddFlagRef('VL_UC_Destroyed', true);
+        c.AddFlagRef('VL_Got_Schematic', true);
+        // some infolinks could require MeetTracerTong_Played or MeetTracerTong2_Played? DL_Tong_05 and DL_Tong_06?
+
         boolFlag = dxr.flagbase.GetBool('QuickLetPlayerIn');
         foreach AllActors(class'Actor', a)
         {
@@ -2592,6 +2604,28 @@ static function FixConversationFlag(Conversation c, name fromName, bool fromValu
             return;
         }
     }
+}
+
+static function ConEventCheckFlag FixConversationFlagJump(Conversation c, name fromName, bool fromValue, name toName, bool toValue)
+{
+    local ConEvent e;
+    local ConEventCheckFlag ef, matched;
+    local ConFlagRef f;
+    if( c == None ) return None;
+    for(e = c.eventList; e!=None; e=e.nextEvent) {
+        ef = ConEventCheckFlag(e);
+        if( ef != None ) {
+            for(f = ef.flagRef; f!=None; f=f.nextFlagRef) {
+                if( f.flagName == fromName && f.value == fromValue ) {
+                    f.flagName = toName;
+                    f.value = toValue;
+                    matched = ef;
+                }
+            }
+        }
+    }
+
+    return matched;
 }
 
 static function FixConversationGiveItem(Conversation c, string fromName, Class<Inventory> fromClass, Class<Inventory> to)
