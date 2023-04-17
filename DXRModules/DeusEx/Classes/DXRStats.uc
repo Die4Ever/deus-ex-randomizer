@@ -540,7 +540,7 @@ function AddDXRCredits(CreditsWindow cw)
 
     if(dxr.dxInfo.missionNumber == 99)
         cw.PrintHeader("Score: " $ IntCommas(ScoreRun()));
-    cw.PrintText("Flagshash: " $ dxr.flags.FlagsHash());
+    cw.PrintText("Flagshash: " $ ToHex(dxr.flags.FlagsHash()));
     cw.PrintText("Shots Fired: "$fired);
     cw.PrintText("Weapon Swings: "$swings);
     cw.PrintText("Jumps: "$jumps);

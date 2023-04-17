@@ -304,6 +304,29 @@ simulated static function string TrimTrailingZeros(coerce string s)
     return Left(s, end);
 }
 
+simulated static function string ToHex(int val)
+{
+    local int t;
+    local string s;
+
+    if(val==0) return "0";
+
+    while(val!=0) {
+        t = val & 0xf;
+        val = val >>> 4;
+        switch(t) {
+        case 10: s="A"$s; break;
+        case 11: s="B"$s; break;
+        case 12: s="C"$s; break;
+        case 13: s="D"$s; break;
+        case 14: s="E"$s; break;
+        case 15: s="F"$s; break;
+        default: s = t $ s; break;
+        }
+    }
+    return s;
+}
+
 function string ActorToString( Actor a )
 {
     local string out;

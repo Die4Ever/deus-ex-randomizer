@@ -617,7 +617,7 @@ simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDiffi
 #ifdef injections
             $ ", New Game+ Loops: "$newgameplus_loops
 #endif
-            $ ", Flags: " $ FlagsHash();
+            $ ", Flags: " $ ToHex(FlagsHash());
 
     info(str);
     info(str2);
@@ -928,7 +928,6 @@ simulated function string flagValToHumanVal(name flagname, int val){
 
         //Return the straight number
         case 'Rando_seed':
-        case 'Rando_playthrough_id':
         case 'Rando_speedlevel':
         case 'Rando_medbotuses':
         case 'Rando_repairbotuses':
@@ -936,6 +935,10 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_equipment':
         case 'Rando_newgameplus_loops':
             return ""$val;
+
+        //Return the number as hex
+        case 'Rando_playthrough_id':
+            return ToHex(val);
 
         //Return the number as a percent
         case 'Rando_minskill':
@@ -1288,7 +1291,7 @@ simulated function SaveNoFlags()
 simulated function LogFlags(string prefix)
 {
     local string str;
-    str = prefix$" "$Self.Class$" - version: " $ VersionString(true) $ ", flagshash: " $ FlagsHash();
+    str = prefix$" "$Self.Class$" - version: " $ VersionString(true) $ ", flagshash: " $ FlagsHash();// this goes to telemetry as an int
     str = BindFlags(Printing, str);
     if(Len(str) > 0)
         info(prefix @ str);
@@ -1298,7 +1301,7 @@ simulated function AddDXRCredits(CreditsWindow cw)
 {
     cw.PrintHeader("DXRFlags");
 
-    cw.PrintText(VersionString() $ ", flagshash: " $ FlagsHash());
+    cw.PrintText(VersionString() $ ", flagshash: " $ ToHex(FlagsHash()));
     cw.PrintText(StringifyFlags(Credits));
     cw.PrintLn();
 }
@@ -1747,6 +1750,12 @@ function ExtendedTests()
     test( InStr(credits_text, "(ADD HUMAN READABLE NAME!)") == -1, "Credits does not contain (ADD HUMAN READABLE NAME!)");
     test( InStr(credits_text, "(Unhandled!)") == -1, "Credits does not contain (Unhandled!)");
     test( InStr(credits_text, "(Mishandled!)") == -1, "Credits does not contain (Mishandled!)");
+
+    teststring(ToHex(0), "0", "ToHex(0)");
+    teststring(ToHex(0xF), "F", "ToHex(0xF)");
+    teststring(ToHex(0x1F), "1F", "ToHex(0x1F)");
+    teststring(ToHex(0x100F), "100F", "ToHex(0x100F)");
+    teststring(ToHex(0x9001F), "9001F", "ToHex(0x9001F)");
 }
 
 function TestTime()
