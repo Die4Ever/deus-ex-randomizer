@@ -11,6 +11,11 @@ replication
         dxr, inited;
 }
 
+static function class<DXRBase> GetModuleToLoad(DXRando dxr, class<DXRBase> request)
+{
+    return request;
+}
+
 function Init(DXRando tdxr)
 {
     //l(Self$".Init()");

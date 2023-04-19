@@ -276,6 +276,7 @@ function DXRFlags LoadFlagsModule()
 function DXRBase LoadModule(class<DXRBase> moduleclass)
 {
     local DXRBase m;
+    moduleclass = moduleclass.static.GetModuleToLoad(self, moduleclass);
     l("loading module "$moduleclass);
 
     m = FindModule(moduleclass, true);
@@ -297,20 +298,23 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
     return m;
 }
 
+function DXRBase LoadModuleByString(string classstring)
+{
+    local class<Actor> c;
+    if( InStr(classstring, ".") == -1 ) {
+        classstring = "#var(package)." $ classstring;
+    }
+    c = flags.GetClassFromString(classstring, class'DXRBase');
+    return LoadModule( class<DXRBase>(c) );
+}
+
 function LoadModules()
 {
     local int i;
-    local class<Actor> c;
-    local string classstring;
 
     for( i=0; i < ArrayCount( modules_to_load ); i++ ) {
         if( modules_to_load[i] == "" ) continue;
-        classstring = modules_to_load[i];
-        if( InStr(classstring, ".") == -1 ) {
-            classstring = "#var(package)." $ classstring;
-        }
-        c = flags.GetClassFromString(classstring, class'DXRBase');
-        LoadModule( class<DXRBase>(c) );
+        LoadModuleByString(modules_to_load[i]);
     }
 
     telemetry = DXRTelemetry(FindModule(class'DXRTelemetry'));
