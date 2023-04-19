@@ -32,7 +32,7 @@ function bool GetNoPause(bool bNoPause) {
             if(!tool.IsInState('UseIt')) continue;
             if(NanoKeyRing(tool) != None) continue;
             DeusExPlayer(parentPawn).ClientMessage("TOOL PAUSE GLITCH DETECTED!");
-            class'DXRStats'.static.AddGlitchOffense(DeusExPlayer(parentPawn));
+            class'DXRStats'.static.AddCheatOffense(DeusExPlayer(parentPawn));
             break;
         }
     }
@@ -49,7 +49,7 @@ function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
     f *= 1.3;// some leniency
     if(f > 0 && parentPawn.JumpZ > parentPawn.default.JumpZ * f) {
         DeusExPlayer(parentPawn).ClientMessage("SUPER JUMP GLITCH DETECTED!");
-        class'DXRStats'.static.AddGlitchOffense(DeusExPlayer(parentPawn));
+        class'DXRStats'.static.AddCheatOffense(DeusExPlayer(parentPawn));
     }
 
     Super.PopWindow(bNoUnpause);

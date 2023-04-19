@@ -28,7 +28,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     Super.PlayerAnyEntry(p);
     if(p.HealthTorso <= 0 || p.HealthHead <= 0) {
         p.ClientMessage("DEAD MAN WALKING GLITCH DETECTED!");
-        AddGlitchOffense(p, 5);// worth more than other glitches
+        AddCheatOffense(p, 5);// worth more than other glitches
     }
 }
 
@@ -363,9 +363,9 @@ static function AddGibbedKill(DeusExPlayer p)
     IncStatFlag(p,'DXRStats_gibbedkills');
 }
 
-static function AddGlitchOffense(DeusExPlayer p, optional int add)
+static function AddCheatOffense(DeusExPlayer p, optional int add)
 {
-    IncStatFlag(p,'DXRStats_glitches', add);
+    IncStatFlag(p,'DXRStats_cheats', add);
 }
 
 static function int GetDataStorageStat(DXRando dxr, string valname)
@@ -557,7 +557,7 @@ function AddDXRCredits(CreditsWindow cw)
 }
 
 static function int _ScoreRun(int time, int time_without_menus, float CombatDifficulty, int rando_difficulty, int saves, int loads,
-    int bingo_win, int bingos, int bingospots, int SkillPointsTotal, int Nanokeys, int glitches)
+    int bingo_win, int bingos, int bingospots, int SkillPointsTotal, int Nanokeys, int cheats)
 {
     local int i;
     i = 100000;
@@ -573,7 +573,7 @@ static function int _ScoreRun(int time, int time_without_menus, float CombatDiff
     i += bingospots * 50;// make sure to ignore the free space
     i += SkillPointsTotal / 2;
     i += Nanokeys * 20;
-    i -= Clamp(glitches, 0, 100) * 300;
+    i -= Clamp(cheats, 0, 100) * 300;
     return i;
 }
 
@@ -581,7 +581,7 @@ function int ScoreRun()
 {
     local PlayerDataItem data;
     local string event, desc;
-    local int x, y, progress, max, bingos, bingo_spots, glitches;
+    local int x, y, progress, max, bingos, bingo_spots, cheats;
     local int time, time_without_menus, i, loads, keys, score;
     local #var(PlayerPawn) p;
     p = player();
@@ -604,10 +604,10 @@ function int ScoreRun()
 
     loads = GetDataStorageStat(dxr, "DXRStats_loads");
     keys = p.KeyRing.GetKeyCount();
-    glitches = p.FlagBase.GetInt('DXRStats_glitches');
+    cheats = p.FlagBase.GetInt('DXRStats_cheats');
 
-    score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, loads, dxr.flags.settings.bingo_win, bingos, bingo_spots, p.SkillPointsTotal, keys, glitches);
-    info("_ScoreRun(" $ time @ time_without_menus @ p.CombatDifficulty @ dxr.flags.difficulty @ p.saveCount @ loads @ dxr.flags.settings.bingo_win @ bingos @ bingo_spots @ p.SkillPointsTotal @ keys @ glitches $ "): "$score);
+    score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, loads, dxr.flags.settings.bingo_win, bingos, bingo_spots, p.SkillPointsTotal, keys, cheats);
+    info("_ScoreRun(" $ time @ time_without_menus @ p.CombatDifficulty @ dxr.flags.difficulty @ p.saveCount @ loads @ dxr.flags.settings.bingo_win @ bingos @ bingo_spots @ p.SkillPointsTotal @ keys @ cheats $ "): "$score);
     return score;
 }
 
@@ -728,73 +728,73 @@ function TestScoring()
     local int num, i;
     local float combat_difficulty;
     local int time, time_without_menus, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, glitches;
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats;
 
     names[num] = "1 Million Points!";
     scores[num++] = 1000000;
 
     time=72000; time_without_menus=36000; combat_difficulty=2; rando_difficulty=2; saves=5; loads=5;
-    bingo_win=0; bingos=12; bingo_spots=24; skill_points=10000; nanokeys=200; glitches=0;
+    bingo_win=0; bingos=12; bingo_spots=24; skill_points=10000; nanokeys=200; cheats=0;
     names[num] = "literal god: 1 hour, full bingo, 5 saves, 5 loads";
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, glitches);
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
     time=36000; time_without_menus=36000; combat_difficulty=2; rando_difficulty=2; saves=5; loads=5;
-    bingo_win=0; bingos=3; bingo_spots=12; skill_points=10000; nanokeys=20; glitches=0;
+    bingo_win=0; bingos=3; bingo_spots=12; skill_points=10000; nanokeys=20; cheats=0;
     names[num] = "1 hour, 3 bingos, 5 saves, 5 loads";
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, glitches);
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
     names[num] = "100k Points";
     scores[num++] = 100000;
 
     time=36000; time_without_menus=30000; combat_difficulty=2; rando_difficulty=2; saves=100; loads=100;
-    bingo_win=0; bingos=3; bingo_spots=12; skill_points=10000; nanokeys=50; glitches=0;
+    bingo_win=0; bingos=3; bingo_spots=12; skill_points=10000; nanokeys=50; cheats=0;
     names[num] = "1 hour, 3 bingos, 100 saves, 100 loads";
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, glitches);
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
     time=108000; time_without_menus=90010; combat_difficulty=2; rando_difficulty=2; saves=100; loads=100;
-    bingo_win=0; bingos=9; bingo_spots=20; skill_points=10000; nanokeys=100; glitches=0;
+    bingo_win=0; bingos=9; bingo_spots=20; skill_points=10000; nanokeys=100; cheats=0;
     names[num] = "3 hours, 9 bingos, 100 saves, 100 loads";
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, glitches);
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
     time=36000; time_without_menus=36000; combat_difficulty=1.2; rando_difficulty=1; saves=500; loads=200;
-    bingo_win=0; bingos=0; bingo_spots=0; skill_points=10000; nanokeys=20; glitches=100000;
+    bingo_win=0; bingos=0; bingo_spots=0; skill_points=10000; nanokeys=20; cheats=100000;
     names[num] = "Any% 1 hour";
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, glitches);
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
     time=290879; time_without_menus=242176; combat_difficulty=1.7; rando_difficulty=2; saves=796; loads=171;
-    bingo_win=0; bingos=12; bingo_spots=24; skill_points=25357; nanokeys=59; glitches=0;
+    bingo_win=0; bingos=12; bingo_spots=24; skill_points=25357; nanokeys=59; cheats=0;
     names[num] = "Astro: 7 hours, full bingo";
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, glitches);
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
     time=216000; time_without_menus=216000; combat_difficulty=1.7; rando_difficulty=2; saves=796; loads=171;
-    bingo_win=0; bingos=12; bingo_spots=24; skill_points=25357; nanokeys=59; glitches=35;
+    bingo_win=0; bingos=12; bingo_spots=24; skill_points=25357; nanokeys=59; cheats=35;
     names[num] = "Astro: 6 hours, but with some glitches";
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, glitches);
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
     time=290800; time_without_menus=242176; combat_difficulty=1.7; rando_difficulty=2; saves=796; loads=171;
-    bingo_win=0; bingos=10; bingo_spots=23; skill_points=25357; nanokeys=59; glitches=0;
+    bingo_win=0; bingos=10; bingo_spots=23; skill_points=25357; nanokeys=59; cheats=0;
     names[num] = "Astro: a little faster, but less bingos";
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, glitches);
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
     time=72000; time_without_menus=72000; combat_difficulty=1.2; rando_difficulty=1; saves=500; loads=200;
-    bingo_win=0; bingos=0; bingo_spots=0; skill_points=10000; nanokeys=20; glitches=100000;
+    bingo_win=0; bingos=0; bingo_spots=0; skill_points=10000; nanokeys=20; cheats=100000;
     names[num] = "Any% 2 hours";
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, glitches);
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
     time=36000; time_without_menus=36000; combat_difficulty=1.2; rando_difficulty=1; saves=50; loads=50;
-    bingo_win=1; bingos=1; bingo_spots=4; skill_points=5000; nanokeys=20; glitches=0;
+    bingo_win=1; bingos=1; bingo_spots=4; skill_points=5000; nanokeys=20; cheats=0;
     names[num] = "1 hour bingo win";
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, glitches);
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
     names[num] = "0 Points";
     scores[num++] = 0;
