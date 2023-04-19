@@ -693,25 +693,25 @@ static function string GetTeleporterName(string mapname, string teleportername)
             switch(teleportername)
             {
                 case "Start":
-                    return "Area 51 Bunker Entrance Main Door";
+                    return "Area 51 Entrance Main Door";
                 case "Light73":
-                    return "Area 51 Bunker Sector 2 Door to Sector 3";
+                    return "Area 51 Sector 2 Door from Sector 3";
             }
             break;
         case "15_AREA51_FINAL":
             switch(teleportername)
             {
                 case "final_end":
-                    return "Area 51 Bunker Sector 3 Door to Sector 4";
+                    return "Area 51 Sector 3 Door from Sector 4";
                 case "Start":
-                    return "Area 51 Bunker Sector 3 Door to Sector 2";
+                    return "Area 51 Sector 3 Door from Sector 2";
             }
             break;
         case "15_AREA51_PAGE":
             switch(teleportername)
             {
                 case "page_start":
-                    return "Area 51 Bunker Sector 4 Door to Sector 3";
+                    return "Area 51 Sector 4 Door from Sector 3";
             }
             break;
     }
