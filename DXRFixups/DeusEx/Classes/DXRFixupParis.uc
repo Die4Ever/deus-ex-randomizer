@@ -8,7 +8,28 @@ function PreFirstEntryMapFixes()
     local Dispatcher d;
     local ScriptedPawn sp;
     local Conversation c;
+    local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)JaimeReyes j;
+
+    // shut up, Tong!
+    foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
+        switch(dlt.dataLinkTag) {
+        case 'DL_paris_10_shaft':
+        case 'DL_paris_10_radiation':
+        case 'DL_paris_10_catacombs':
+        case 'DL_tunnels_oldplace':
+        case 'DL_tunnels_oldplace2':
+        case 'DL_tunnels_oldplace3':
+        case 'DL_metroentrance':
+        case 'DL_club_entry':
+        case 'DL_apartments':
+        case 'DL_hotel':
+        case 'DL_bakery':
+        case 'DL_entered_graveyard':
+            dlt.Event='';
+            dlt.Destroy();
+        }
+    }
 
     switch(dxr.localURL)
     {

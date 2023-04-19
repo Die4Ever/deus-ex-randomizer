@@ -14,7 +14,8 @@ function CheckConfig()
 function PreFirstEntryMapFixes()
 {
     local #var(PlayerPawn) p;
-    local PaulDenton paul;
+    local #var(prefix)PaulDenton paul;
+    local #var(prefix)PaulDentonCarcass paulcarc;
     local ComputerPersonal c;
     local DeusExMover dxm;
     local #var(prefix)UNATCOTroop lloyd;
@@ -39,8 +40,14 @@ function PreFirstEntryMapFixes()
                 dxr.flags.f.SetBool('MS_InventoryRemoved', true,, 6);
             // we have to move the items in PostFirstEntry, otherwise they get swapped around with other things
         }
-        foreach AllActors(class'PaulDenton', paul) {
+        foreach AllActors(class'#var(prefix)PaulDenton', paul) {
             paul.RaiseAlarm = RAISEALARM_Never;// https://www.twitch.tv/die4ever2011/clip/ReliablePerfectMarjoramDxAbomb
+            paul.bDetectable=false;
+            paul.bIgnore=true;
+            paul.ChangeAlly('mj12',0,true,false);
+        }
+        foreach AllActors(class'#var(prefix)PaulDentonCarcass',paulcarc){
+            paulcarc.bInvincible=true;
         }
 
 #ifdef vanillamaps
