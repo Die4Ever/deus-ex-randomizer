@@ -6,6 +6,8 @@ function PostFirstEntryMapFixes()
     local DeusExMover m;
     local BlockPlayer bp;
 
+    FixUNATCORetinalScanner();
+
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
         foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {

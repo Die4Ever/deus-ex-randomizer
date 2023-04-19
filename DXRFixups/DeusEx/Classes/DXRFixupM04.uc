@@ -77,6 +77,8 @@ function PostFirstEntryMapFixes()
     local #var(prefix)CrateUnbreakableLarge c;
     local DeusExMover m;
 
+    FixUNATCORetinalScanner();
+
     switch(dxr.localURL) {
     case "04_NYC_NSFHQ":
         // no cheating!

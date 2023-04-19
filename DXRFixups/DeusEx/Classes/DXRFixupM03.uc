@@ -4,6 +4,8 @@ function PostFirstEntryMapFixes()
 {
     local Actor a;
 
+    FixUNATCORetinalScanner();
+
     switch(dxr.localURL) {
 #ifndef revision
     case "03_NYC_BrooklynBridgeStation":

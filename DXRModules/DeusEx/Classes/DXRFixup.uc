@@ -135,10 +135,8 @@ function PostFirstEntry()
 {
     Super.PostFirstEntry();
 
-    if(#defined(mapfixes)) {
-        PostFirstEntryMapFixesBase();// so every module doesn't need to call Super all over the place
+    if(#defined(mapfixes))
         PostFirstEntryMapFixes();
-    }
 }
 
 function AnyEntry()
@@ -219,7 +217,20 @@ function PostFirstEntryMapFixes()
 {
 }
 
-final function PostFirstEntryMapFixesBase()
+function AnyEntryMapFixes()
+{
+}
+
+function AllAnyEntry()
+{
+    // for when mapfixes isn't defined, but currently it's defined for all mods even Revision
+}
+
+function TimerMapFixes()
+{
+}
+
+function FixUNATCORetinalScanner()
 {
     local RetinalScanner r;
 
@@ -235,19 +246,6 @@ final function PostFirstEntryMapFixesBase()
         }
         break;
     }
-}
-
-function AnyEntryMapFixes()
-{
-}
-
-function AllAnyEntry()
-{
-    // for when mapfixes isn't defined, but currently it's defined for all mods even Revision
-}
-
-function TimerMapFixes()
-{
 }
 
 function FixSamCarter()
