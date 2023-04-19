@@ -162,7 +162,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         p.bCheatsEnabled = true;
 
     if(difficulty_names[difficulty] == "Super Easy QA" && dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber < 99) {
-        p.ConsoleCommand("god");
+        p.ReducedDamageType = 'All';// god mode
         p.ServerSetSloMo(2);
         if(dxr.localURL == "01_NYC_UNATCOISLAND")
             p.ConsoleCommand("legend");

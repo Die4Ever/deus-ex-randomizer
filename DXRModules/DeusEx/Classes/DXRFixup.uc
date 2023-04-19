@@ -793,6 +793,7 @@ function Airfield_FirstEntry()
     local Mover m;
     local Actor a;
     local Trigger t;
+    local Teleporter tele;
     local NanoKey k;
     local #var(prefix)InformationDevices i;
     local #var(prefix)UNATCOTroop unatco;
@@ -887,6 +888,13 @@ function Airfield_FirstEntry()
     case "03_NYC_AIRFIELD":
         //rebreather because of #TOOCEAN connection
         _AddActor(Self, class'Rebreather', vect(-2031.959473, 995.781067, 75.709816), rot(0,0,0));
+        if(#defined(vanillamaps)) {
+            foreach AllActors(class'Teleporter', tele) {
+                if(tele.Event == 'HangarEnt') {
+                    tele.SetCollisionSize(tele.CollisionRadius, tele.CollisionHeight + 10);
+                }
+            }
+        }
         break;
 
 #ifdef vanillamaps
