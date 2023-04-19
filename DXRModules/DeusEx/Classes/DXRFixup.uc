@@ -479,6 +479,12 @@ function PostFirstEntryMapFixes()
         break;
 
 #ifndef revision
+    case "06_HONGKONG_WANCHAI_STREET":
+        a = Spawn(class'NanoKey',,, vect(1159.455444, -1196.089111, 1723.212402));
+        NanoKey(a).KeyID = 'JocksKey';
+        NanoKey(a).Description = "Jock's apartment";
+        break;
+
     case "06_HONGKONG_VERSALIFE":
         foreach AllActors(class'Male1',male){
             if (male.BindName=="Disgruntled_Guy"){
