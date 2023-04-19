@@ -693,7 +693,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
             switch(teleportername)
             {
                 case "Start":
-                    return "Area 51 Entrance Main Door";
+                    return "Area 51 Sector 2 Entrance";
                 case "Light73":
                     return "Area 51 Sector 2 Door from Sector 3";
             }
