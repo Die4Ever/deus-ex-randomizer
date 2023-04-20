@@ -22,6 +22,7 @@ function PreFirstEntryMapFixes()
     local BlockPlayer bp;
     local DynamicBlockPlayer dbp;
     local #var(prefix)OrdersTrigger ord;
+    local #var(prefix)Containers c;
 
     switch(dxr.localURL)
     {
@@ -96,6 +97,17 @@ function PreFirstEntryMapFixes()
         foreach RadiusActors(class'BlockPlayer', bp, 25, vect(4055, 1602, 252)) {
             dbp = Spawn(class'DynamicBlockPlayer',,, bp.Location + vect(0,0,200));
             dbp.SetCollisionSize(bp.CollisionRadius, bp.CollisionHeight + 101);
+        }
+
+        // ignore objects out of bounds
+        foreach RadiusActors(class'#var(prefix)Containers', c, 450, vect(4300, 1200, 31)) {
+            c.bIsSecretGoal = true;
+        }
+        foreach RadiusActors(class'#var(prefix)Containers', c, 160, vect(3823.322266, 365.613495, 36)) {
+            c.bIsSecretGoal = true;
+        }
+        foreach RadiusActors(class'#var(prefix)Containers', c, 400, vect(2274.548340, 730.766357, 31)) {
+            c.bIsSecretGoal = true;
         }
         break;
 
