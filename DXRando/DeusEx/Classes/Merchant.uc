@@ -15,6 +15,15 @@ function MakeFrench()
     CarcassType=Class'LeMerchantCarcass';
 }
 
+function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation,
+                               Vector offset, Name damageType)
+{
+    // Merchants aren't affected by radiation barrels
+    if(damageType == 'Radiation')
+        return false;
+    return Super.FilterDamageType(instigatedBy, hitLocation, offset, damageType);
+}
+
 defaultproperties
 {
     bImportant=True
@@ -28,4 +37,5 @@ defaultproperties
     HealthLegLeft=200
     HealthLegRight=200
     HealthTorso=200
+    ReducedDamageType=Radiation
 }
