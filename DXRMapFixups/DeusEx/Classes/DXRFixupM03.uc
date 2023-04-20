@@ -126,15 +126,15 @@ function PreFirstEntryMapFixes()
         SetActorScale(a, 1.3);
 
         //rebreather because of #TOOCEAN connection
-        _AddActor(Self, class'Rebreather', vect(1411.798950, 546.628845, 247.708572), rot(0,0,0));
+        Spawn(class'Rebreather',,, vect(1411.798950, 546.628845, 247.708572));
         break;
 #endif
 
     case "03_NYC_AIRFIELD":
         //rebreather because of #TOOCEAN connection
-        _AddActor(Self, class'Rebreather', vect(-2031.959473, 995.781067, 75.709816), rot(0,0,0));
+        Spawn(class'Rebreather',,, vect(-2031.959473, 995.781067, 75.709816));
         // extra spot for datacube
-        _AddActor(Self, class'PlaceholderItem', vect(5209.330566, 3690.432861, 1.299313), rot(0,0,0));
+        Spawn(class'PlaceholderItem',,, vect(5113, 3615, 1.3));
         if(#defined(vanillamaps)) {
             foreach AllActors(class'Teleporter', tele) {
                 if(tele.Event == 'HangarEnt') {

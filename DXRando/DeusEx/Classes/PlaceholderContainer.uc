@@ -4,6 +4,6 @@ class PlaceholderContainer extends #var(prefix)CrateUnbreakableMed;
 
 defaultproperties
 {
-    ItemName="Placeholder: REPORT BUG!"
+    ItemName="Randomizer Placeholder: REPORT BUG!"
     Mesh=LodMesh'DeusExItems.TestBox'
 }

@@ -4,8 +4,9 @@ class PlaceholderItem extends #var(prefix)Flare;
 
 defaultproperties
 {
-    ItemName="Placeholder: REPORT BUG!"
+    ItemName="Randomizer Placeholder: REPORT BUG!"
     Mesh=LodMesh'DeusExItems.TestBox'
-    CollisionRadius=9.300000
+    PickupViewMesh=LodMesh'DeusExItems.TestBox'
+    CollisionRadius=9.300000// copied from AmmoShell
     CollisionHeight=10.210000
 }
