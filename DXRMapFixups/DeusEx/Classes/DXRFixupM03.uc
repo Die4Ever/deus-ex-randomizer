@@ -133,6 +133,8 @@ function PreFirstEntryMapFixes()
     case "03_NYC_AIRFIELD":
         //rebreather because of #TOOCEAN connection
         _AddActor(Self, class'Rebreather', vect(-2031.959473, 995.781067, 75.709816), rot(0,0,0));
+        // extra spot for datacube
+        _AddActor(Self, class'PlaceholderItem', vect(5209.330566, 3690.432861, 1.299313), rot(0,0,0));
         if(#defined(vanillamaps)) {
             foreach AllActors(class'Teleporter', tele) {
                 if(tele.Event == 'HangarEnt') {
