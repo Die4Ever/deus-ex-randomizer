@@ -330,12 +330,12 @@ simulated final function DXRBase FindModule(class<DXRBase> moduleclass, optional
     local int i;
     for(i=0; i<num_modules; i++)
         if( modules[i] != None )
-            if( modules[i].Class == moduleclass )
+            if( ClassIsChildOf(modules[i].Class, moduleclass) )
                 return modules[i];
 
     foreach AllActors(class'DXRBase', m)
     {
-        if( m.Class == moduleclass ) {
+        if( ClassIsChildOf(m.Class, moduleclass) ) {
             if(!bSilent)
                 l("FindModule("$moduleclass$") found "$m);
             m.Init(Self);
