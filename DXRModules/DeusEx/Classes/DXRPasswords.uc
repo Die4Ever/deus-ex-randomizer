@@ -292,6 +292,14 @@ function vanilla_datacubes_rules()
     datacubes_rules[i].allow = true;
     i++;
 
+    //Ramp Code
+    datacubes_rules[i].map = "09_NYC_SHIP";
+    datacubes_rules[i].item_name = '09_Datacube14';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+    datacubes_rules[i].allow = true;
+    i++;
+
     // make sure you can get to the book without needing to jump down
     datacubes_rules[i].map = "10_PARIS_CATACOMBS";
     datacubes_rules[i].item_name = '10_Book09';
