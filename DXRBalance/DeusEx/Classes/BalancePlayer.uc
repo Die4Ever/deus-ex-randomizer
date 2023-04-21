@@ -357,6 +357,20 @@ function HealBrokenPart(out int points, out int amt)
     HealPart(points, heal);
 }
 
+function HealPart(out int points, out int amt)
+{
+    local int spill;
+
+    points += amt;
+    spill = points - default.Health;
+    if (spill > 0)
+        points = default.Health;
+    else
+        spill = 0;
+
+    amt = spill;
+}
+
 exec function ActivateAugmentation(int num)
 {
     local Augmentation anAug;

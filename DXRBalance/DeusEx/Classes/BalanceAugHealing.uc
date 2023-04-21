@@ -7,7 +7,7 @@ Begin:
 Loop:
 	Sleep(1.0);
 
-	if (Player.Health < 100)
+	if (Player.Health < Player.default.Health)
 		HealPlayer(5);
 	else
 		Deactivate();

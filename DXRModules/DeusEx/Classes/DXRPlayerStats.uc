@@ -11,6 +11,8 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
     p.default.HealthLegRight = i;
     p.default.HealthArmLeft = i;
     p.default.HealthArmRight = i;
+    p.default.Health = i;
+    p.Health = i;
 
     CapHealth(p.HealthHead, p.default.HealthHead);
     CapHealth(p.HealthTorso, p.default.HealthTorso);
