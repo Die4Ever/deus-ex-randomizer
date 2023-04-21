@@ -11,6 +11,12 @@ function CheckConfig()
     Super.CheckConfig();
 }
 
+function PartialHeal(out int health, int d)
+{
+    health = Max(d/2, health);// half default health, or keep current health
+    health = Min(health, d);// cap at the default
+}
+
 function PreFirstEntryMapFixes()
 {
     local #var(PlayerPawn) p;
@@ -29,12 +35,12 @@ function PreFirstEntryMapFixes()
     case "05_NYC_UNATCOMJ12LAB":
         if(!dxr.flags.f.GetBool('MS_InventoryRemoved')) {
             p = player();
-            p.HealthHead = Max(50, p.HealthHead);
-            p.HealthTorso =  Max(50, p.HealthTorso);
-            p.HealthLegLeft =  Max(50, p.HealthLegLeft);
-            p.HealthLegRight =  Max(50, p.HealthLegRight);
-            p.HealthArmLeft =  Max(50, p.HealthArmLeft);
-            p.HealthArmRight =  Max(50, p.HealthArmRight);
+            PartialHeal(p.HealthHead, p.default.HealthHead);
+            PartialHeal(p.HealthTorso, p.default.HealthTorso);
+            PartialHeal(p.HealthLegLeft, p.default.HealthLegLeft);
+            PartialHeal(p.HealthLegRight, p.default.HealthLegRight);
+            PartialHeal(p.HealthArmLeft, p.default.HealthArmLeft);
+            PartialHeal(p.HealthArmRight, p.default.HealthArmRight);
             p.GenerateTotalHealth();
             if(dxr.flags.settings.prison_pocket > 0 || #defined(vanillamaps))
                 dxr.flags.f.SetBool('MS_InventoryRemoved', true,, 6);

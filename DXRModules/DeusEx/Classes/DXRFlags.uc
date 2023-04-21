@@ -56,6 +56,7 @@ struct FlagsSettings {
     var int bingo_freespaces; //Number of bingo free spaces
     var int spoilers; //0=Disallowed, 1=Available
     var int menus_pause; // 0=no pause, 1=vanilla
+    var int health, energy;// normally just 100
 };
 
 #ifdef hx
@@ -307,6 +308,8 @@ function CheckConfig()
         difficulty_settings[i].bingo_win = 0;
         difficulty_settings[i].bingo_freespaces = 1;
         difficulty_settings[i].spoilers = 1;
+        difficulty_settings[i].health = 200;
+        difficulty_settings[i].energy = 200;
         i++;
 #endif
 
@@ -373,6 +376,8 @@ function CheckConfig()
         difficulty_settings[i].bingo_win = 0;
         difficulty_settings[i].bingo_freespaces = 1;
         difficulty_settings[i].spoilers = 1;
+        difficulty_settings[i].health = 100;
+        difficulty_settings[i].energy = 100;
         i++;
 
 #ifdef hx
@@ -438,6 +443,8 @@ function CheckConfig()
         difficulty_settings[i].bingo_win = 0;
         difficulty_settings[i].bingo_freespaces = 1;
         difficulty_settings[i].spoilers = 1;
+        difficulty_settings[i].health = 100;
+        difficulty_settings[i].energy = 100;
         i++;
 
 #ifdef hx
@@ -503,6 +510,8 @@ function CheckConfig()
         difficulty_settings[i].bingo_win = 0;
         difficulty_settings[i].bingo_freespaces = 1;
         difficulty_settings[i].spoilers = 1;
+        difficulty_settings[i].health = 100;
+        difficulty_settings[i].energy = 100;
         i++;
 
 #ifdef hx
@@ -568,6 +577,8 @@ function CheckConfig()
         difficulty_settings[i].bingo_win = 0;
         difficulty_settings[i].bingo_freespaces = 1;
         difficulty_settings[i].spoilers = 1;
+        difficulty_settings[i].health = 90;
+        difficulty_settings[i].energy = 80;
         i++;
 
         for(i=0; i<ArrayCount(difficulty_settings); i++) {
@@ -779,6 +790,8 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_spoilers', settings.spoilers, mode, str);
     FlagInt('Rando_menus_pause', settings.menus_pause, mode, str);
+    FlagInt('Rando_health', settings.health, mode, str);
+    FlagInt('Rando_energy', settings.energy, mode, str);
 
     return str;
 }
@@ -923,6 +936,10 @@ simulated function string flagNameToHumanName(name flagname){
             return "Spoiler Buttons";
         case 'Rando_menus_pause':
             return "Menus Pause The Game";
+        case 'Rando_health':
+            return "Player Max Health";
+        case 'Rando_energy':
+            return "Player Max Energy";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -946,6 +963,8 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_bingo_win':
         case 'Rando_equipment':
         case 'Rando_newgameplus_loops':
+        case 'Rando_health':
+        case 'Rando_energy':
             return ""$val;
 
         //Return the number as hex
@@ -1410,6 +1429,8 @@ simulated function InitMaxRandoSettings()
     settings.min_weapon_shottime=difficulty_settings[difficulty].min_weapon_shottime;
     settings.max_weapon_shottime=difficulty_settings[difficulty].max_weapon_shottime;
     settings.enemyrespawn = difficulty_settings[difficulty].enemyrespawn;
+    settings.health = difficulty_settings[difficulty].health;
+    settings.energy = difficulty_settings[difficulty].energy;
 
 }
 
@@ -1494,6 +1515,9 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     MaxRandoValPair(settings.min_weapon_shottime, settings.max_weapon_shottime);
 
     settings.aug_value_rando = 100;
+
+    settings.health += rng(100) - 50;
+    MaxRandoVal(settings.energy);
 }
 
 simulated function TutorialDisableRandomization(bool enableSomeRando)

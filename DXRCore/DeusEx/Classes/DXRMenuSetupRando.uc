@@ -23,6 +23,12 @@ function BindControls(optional string action)
         combatDifficulty = float(iDifficulty) / 100.0;
     }
 
+    NewMenuItem("Player Health", "Max health for each body part of the player.");
+    Slider(f.settings.health, 1, 10000);
+
+    NewMenuItem("Player Energy", "Max bioelectric energy for the player.");
+    Slider(f.settings.energy, 0, 10000);
+
 #ifndef hx
     NewMenuItem("", "Randomize starting locations on certain maps");
     EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations);

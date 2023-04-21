@@ -110,7 +110,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 2,3,1,2) ) {
+    if( VersionOlderThan(config_version, 2,3,4,4) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -168,6 +168,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXREvents";
     //modules_to_load[i++] = "DXRMapInfo";
     modules_to_load[i++] = "DXRMusic";
+    modules_to_load[i++] = "DXRPlayerStats";
 }
 
 function hx_modules()
@@ -197,6 +198,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRHints";
     modules_to_load[i++] = "DXRReplaceActors";
     modules_to_load[i++] = "DXREvents";
+    modules_to_load[i++] = "DXRPlayerStats";
 }
 
 function gmdx_modules()
@@ -229,6 +231,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRFashion";
     modules_to_load[i++] = "DXREvents";
     modules_to_load[i++] = "DXRMusic";
+    modules_to_load[i++] = "DXRPlayerStats";
 }
 
 function revision_modules()
@@ -265,6 +268,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXREvents";
     modules_to_load[i++] = "DXRMusic";
+    modules_to_load[i++] = "DXRPlayerStats";
 }
 
 function DXRFlags LoadFlagsModule()
