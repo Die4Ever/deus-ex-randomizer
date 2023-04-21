@@ -260,7 +260,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 20;
-        difficulty_settings[i].enemystats = 20;
+        difficulty_settings[i].enemystats = 40;
         difficulty_settings[i].hiddenenemiesrandomized = 20;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 40;
@@ -326,7 +326,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 20;
-        difficulty_settings[i].enemystats = 20;
+        difficulty_settings[i].enemystats = 40;
         difficulty_settings[i].hiddenenemiesrandomized = 20;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 40;
@@ -391,7 +391,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 30;
-        difficulty_settings[i].enemystats = 30;
+        difficulty_settings[i].enemystats = 60;
         difficulty_settings[i].hiddenenemiesrandomized = 30;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
@@ -456,7 +456,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 40;
-        difficulty_settings[i].enemystats = 40;
+        difficulty_settings[i].enemystats = 80;
         difficulty_settings[i].hiddenenemiesrandomized = 40;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 70;
@@ -521,7 +521,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 50;
-        difficulty_settings[i].enemystats = 50;
+        difficulty_settings[i].enemystats = 100;
         difficulty_settings[i].hiddenenemiesrandomized = 50;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 80;
@@ -726,7 +726,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_medkits', settings.medkits, mode, str);
     FlagInt('Rando_enemiesrandomized', settings.enemiesrandomized, mode, str);
     if(!FlagInt('Rando_enemystats', settings.enemystats, mode, str) && mode==Reading) {
-        settings.enemystats = settings.enemiesrandomized;
+        settings.enemystats = settings.enemiesrandomized * 2;
     }
     FlagInt('Rando_hiddenenemiesrandomized', settings.hiddenenemiesrandomized, mode, str);
     FlagInt('Rando_enemiesshuffled', settings.enemiesshuffled, mode, str);
