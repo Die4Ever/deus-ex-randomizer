@@ -29,6 +29,24 @@ function PostFirstEntryMapFixes()
 function PreFirstEntryMapFixes()
 {
     switch(dxr.localURL) {
+        case "01_NYC_UNATCOISLAND":
+        Spawn(class'PlaceholderItem',,, vect(2378.5,-10810.9,-857)); //Sunken Ship
+        Spawn(class'PlaceholderItem',,, vect(2436,-10709.4,-857)); //Sunken Ship
+        Spawn(class'PlaceholderContainer',,, vect(1376,-9952.5,-271)); //Harley's house
+        Spawn(class'PlaceholderItem',,, vect(2702.5,-7721.7,-229)); //On boxes near Harley
+        Spawn(class'PlaceholderItem',,, vect(2373,-5003,-69)); //Boxes near ramp to Harley
+        Spawn(class'PlaceholderItem',,, vect(-2962.8,-1355,-53)); //Boxes near front of Statue
+        Spawn(class'PlaceholderItem',,, vect(-2838.7,1359.7,-53)); //Boxes near UNATCO HQ
+        Spawn(class'PlaceholderItem',,, vect(-4433.66,3103.38,-65)); //Concrete gate support at UNATCO HQ
+        Spawn(class'PlaceholderItem',,, vect(-4834.4,3667,-105)); //Bench in front of UNATCO
+        Spawn(class'PlaceholderItem',,, vect(-2991,5328.5,-131)); //Medbot crate near starting dock
+        Spawn(class'PlaceholderItem',,, vect(7670,737.7,-130)); //Medbot crate near Harley
+        Spawn(class'PlaceholderItem',,, vect(7297,-3204.5,-373)); //Forklift in bunker
+        Spawn(class'PlaceholderItem',,, vect(8981,26.9,-64)); //Boxes out front of bunker
+        Spawn(class'PlaceholderContainer',,, vect(3163,-1298,-207)); //Backroom near jail
+        Spawn(class'PlaceholderItem',,, vect(1750.75,275.7,-117.7)); //Near display of Statue torch
+        Spawn(class'PlaceholderItem',,, vect(5830.8,-344,539)); //Near statue head
+        break;
         case "01_NYC_UNATCOHQ":
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vect(363.284149, 344.847, 50.32)); //Womens bathroom counter
