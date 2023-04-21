@@ -1,6 +1,11 @@
 class ChargedPickup merges ChargedPickup;
 // need to figure out states compatibility https://github.com/Die4Ever/deus-ex-randomizer/issues/135
 
+function PostPostBeginPlay()
+{
+    SoundVolume = 50;
+}
+
 function ChargedPickupBegin(DeusExPlayer Player)
 {
     local Human p;

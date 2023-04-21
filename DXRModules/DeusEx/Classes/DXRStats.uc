@@ -23,6 +23,15 @@ function AnyEntry()
     SetTimer(0.1, True);
 }
 
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
+{
+    Super.PlayerAnyEntry(p);
+    if(p.HealthTorso <= 0 || p.HealthHead <= 0) {
+        p.ClientMessage("DEAD MAN WALKING GLITCH DETECTED!");
+        AddCheatOffense(p, 5);// worth more than other glitches
+    }
+}
+
 simulated function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
@@ -307,11 +316,14 @@ static function int GetTotalMenuTime(DXRando dxr)
 }
 
 
-static function IncStatFlag(DeusExPlayer p, name flagname)
+static function IncStatFlag(DeusExPlayer p, name flagname, optional int add)
 {
     local int val;
+
     val = p.FlagBase.GetInt(flagname);
-    p.FlagBase.SetInt(flagname,val+1,,999);
+    if(add == 0)//optional
+        add=1;
+    p.FlagBase.SetInt(flagname, val+add, , 999);
 }
 
 static function IncDataStorageStat(DeusExPlayer p, string valname)
@@ -349,6 +361,11 @@ static function AddBurnKill(DeusExPlayer p)
 static function AddGibbedKill(DeusExPlayer p)
 {
     IncStatFlag(p,'DXRStats_gibbedkills');
+}
+
+static function AddCheatOffense(DeusExPlayer p, optional int add)
+{
+    IncStatFlag(p,'DXRStats_cheats', add);
 }
 
 static function int GetDataStorageStat(DXRando dxr, string valname)
@@ -523,7 +540,7 @@ function AddDXRCredits(CreditsWindow cw)
 
     if(dxr.dxInfo.missionNumber == 99)
         cw.PrintHeader("Score: " $ IntCommas(ScoreRun()));
-    cw.PrintText("Flagshash: " $ dxr.flags.FlagsHash());
+    cw.PrintText("Flagshash: " $ ToHex(dxr.flags.FlagsHash()));
     cw.PrintText("Shots Fired: "$fired);
     cw.PrintText("Weapon Swings: "$swings);
     cw.PrintText("Jumps: "$jumps);
@@ -539,20 +556,24 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
-static function int _ScoreRun(int time, int time_without_menus, float CombatDifficulty, int rando_difficulty, int saves, int loads, int bingos, int bingospots, int SkillPointsTotal, int Nanokeys)
+static function int _ScoreRun(int time, int time_without_menus, float CombatDifficulty, int rando_difficulty, int saves, int loads,
+    int bingo_win, int bingos, int bingospots, int SkillPointsTotal, int Nanokeys, int cheats)
 {
     local int i;
     i = 100000;
-    i -= time / 10;
+    i -= time / 10;// times are in tenths of a second
     i -= time_without_menus / 10;
-    i += CombatDifficulty * 500.0;
+    i += FClamp(CombatDifficulty, 0, 8) * 500.0;
     i += rando_difficulty * 500;
     i -= saves * 10;
     i -= loads * 50;
+    if(bingo_win > 0 && bingos >= bingo_win)
+        i -= (13-bingo_win) * 5000;
     i += bingos * 500;
     i += bingospots * 50;// make sure to ignore the free space
     i += SkillPointsTotal / 2;
     i += Nanokeys * 20;
+    i -= Clamp(cheats, 0, 100) * 300;
     return i;
 }
 
@@ -560,7 +581,7 @@ function int ScoreRun()
 {
     local PlayerDataItem data;
     local string event, desc;
-    local int x, y, progress, max, bingos, bingo_spots;
+    local int x, y, progress, max, bingos, bingo_spots, cheats;
     local int time, time_without_menus, i, loads, keys, score;
     local #var(PlayerPawn) p;
     p = player();
@@ -583,9 +604,10 @@ function int ScoreRun()
 
     loads = GetDataStorageStat(dxr, "DXRStats_loads");
     keys = p.KeyRing.GetKeyCount();
+    cheats = p.FlagBase.GetInt('DXRStats_cheats');
 
-    score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, loads, bingos, bingo_spots, p.SkillPointsTotal, keys);
-    info("_ScoreRun(" $ time @ time_without_menus @ p.CombatDifficulty @ dxr.flags.difficulty @ p.saveCount @ loads @ bingos @ bingo_spots @ p.SkillPointsTotal @ keys $ "): "$score);
+    score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, loads, dxr.flags.settings.bingo_win, bingos, bingo_spots, p.SkillPointsTotal, keys, cheats);
+    info("_ScoreRun(" $ time @ time_without_menus @ p.CombatDifficulty @ dxr.flags.difficulty @ p.saveCount @ loads @ dxr.flags.settings.bingo_win @ bingos @ bingo_spots @ p.SkillPointsTotal @ keys @ cheats $ "): "$score);
     return score;
 }
 
@@ -698,30 +720,91 @@ function ExtendedTests()
     TestScoring();
 }
 
-function TestScores(int better, int worse, int testnum)
-{
-    l("TestScores "$testnum @ better $" > "$ worse);// so you can see it in UCC.log even if it passes
-    test( better > 0, "TestScores "$testnum @ better $" > 0");
-    test( better < 10000000, "TestScores "$testnum @ better $" < 10000000");
-    test( worse > 0, "TestScores "$testnum @ worse $" > 0");
-    test( worse < 10000000, "TestScores "$testnum @ worse $" < 10000000");
-    test( better > worse, "TestScores "$testnum @ better $" > "$ worse);
-}
-
 function TestScoring()
 {
-    local int better, worse, testnum;
-    better = _ScoreRun(7200*10, 3600*10, 2, 2, 5, 5, 12, 24, 10000, 200);// slower but way less saves/loads, and did more
-    worse = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100, 3, 12, 10000, 20);
-    TestScores(better, worse, ++testnum);
+    local int scores[32];
+    local string names[32];
+    local string testname;
+    local int num, i;
+    local float combat_difficulty;
+    local int time, time_without_menus, rando_difficulty, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats;
 
-    better = _ScoreRun(3600*10, 3000*10, 2, 2, 100, 100, 3, 12, 10000, 50);
-    worse = _ScoreRun(10800*10, 9001*10, 2, 2, 50, 50, 9, 20, 10000, 100);// too much slower to be better
-    TestScores(better, worse, ++testnum);
+    names[num] = "1 Million Points!";
+    scores[num++] = 1000000;
 
-    better = _ScoreRun(290879, 242176, 1.7, 2, 796, 171, 12, 24, 25357, 59);// Astro
-    worse = _ScoreRun(290800, 242100, 1.7, 2, 796, 171, 10, 23, 25357, 59);// same thing but less bingos and slightly faster
-    TestScores(better, worse, ++testnum);
+    time=72000; time_without_menus=36000; combat_difficulty=2; rando_difficulty=2; saves=5; loads=5;
+    bingo_win=0; bingos=12; bingo_spots=24; skill_points=10000; nanokeys=200; cheats=0;
+    names[num] = "literal god: 1 hour, full bingo, 5 saves, 5 loads";
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    time=36000; time_without_menus=36000; combat_difficulty=2; rando_difficulty=2; saves=5; loads=5;
+    bingo_win=0; bingos=3; bingo_spots=12; skill_points=10000; nanokeys=20; cheats=0;
+    names[num] = "1 hour, 3 bingos, 5 saves, 5 loads";
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    names[num] = "100k Points";
+    scores[num++] = 100000;
+
+    time=36000; time_without_menus=30000; combat_difficulty=2; rando_difficulty=2; saves=100; loads=100;
+    bingo_win=0; bingos=3; bingo_spots=12; skill_points=10000; nanokeys=50; cheats=0;
+    names[num] = "1 hour, 3 bingos, 100 saves, 100 loads";
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    time=108000; time_without_menus=90010; combat_difficulty=2; rando_difficulty=2; saves=100; loads=100;
+    bingo_win=0; bingos=9; bingo_spots=20; skill_points=10000; nanokeys=100; cheats=0;
+    names[num] = "3 hours, 9 bingos, 100 saves, 100 loads";
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    time=36000; time_without_menus=36000; combat_difficulty=1.2; rando_difficulty=1; saves=500; loads=200;
+    bingo_win=0; bingos=0; bingo_spots=0; skill_points=10000; nanokeys=20; cheats=100000;
+    names[num] = "Any% 1 hour";
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    time=290879; time_without_menus=242176; combat_difficulty=1.7; rando_difficulty=2; saves=796; loads=171;
+    bingo_win=0; bingos=12; bingo_spots=24; skill_points=25357; nanokeys=59; cheats=0;
+    names[num] = "Astro: 7 hours, full bingo";
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    time=216000; time_without_menus=216000; combat_difficulty=1.7; rando_difficulty=2; saves=796; loads=171;
+    bingo_win=0; bingos=12; bingo_spots=24; skill_points=25357; nanokeys=59; cheats=35;
+    names[num] = "Astro: 6 hours, but with some glitches";
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    time=290800; time_without_menus=242176; combat_difficulty=1.7; rando_difficulty=2; saves=796; loads=171;
+    bingo_win=0; bingos=10; bingo_spots=23; skill_points=25357; nanokeys=59; cheats=0;
+    names[num] = "Astro: a little faster, but less bingos";
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    time=72000; time_without_menus=72000; combat_difficulty=1.2; rando_difficulty=1; saves=500; loads=200;
+    bingo_win=0; bingos=0; bingo_spots=0; skill_points=10000; nanokeys=20; cheats=100000;
+    names[num] = "Any% 2 hours";
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    time=36000; time_without_menus=36000; combat_difficulty=1.2; rando_difficulty=1; saves=50; loads=50;
+    bingo_win=1; bingos=1; bingo_spots=4; skill_points=5000; nanokeys=20; cheats=0;
+    names[num] = "1 hour bingo win";
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    names[num] = "0 Points";
+    scores[num++] = 0;
+
+    l("TestScoring() " $ names[0] $ ": " $ scores[0]);
+    for(i=1; i<num; i++) {
+        testname = "TestScoring() " $ names[i-1] $ ": " $ scores[i-1] $ " > " $ names[i] $ ": " $ scores[i];
+        l("TestScoring() " $ names[i] $ ": " $ scores[i]);// so you can see it in UCC.log even if it passes
+        test(scores[i-1] > scores[i], testname);
+    }
 }
 
 defaultproperties

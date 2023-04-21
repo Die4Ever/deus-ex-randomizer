@@ -947,6 +947,7 @@ static function BeatGame(DXRando dxr, int ending)
     js.static.Add(j, "initial_version", data.initial_version);
     js.static.Add(j, "combat_difficulty", dxr.player.CombatDifficulty);
     js.static.Add(j, "rando_difficulty", dxr.flags.difficulty);
+    js.static.Add(j, "cheats", dxr.player.FlagBase.GetInt('DXRStats_cheats'));
 
     if (dxr.player.carriedDecoration!=None){
         js.static.Add(j, "carriedItem", dxr.player.carriedDecoration.Class);

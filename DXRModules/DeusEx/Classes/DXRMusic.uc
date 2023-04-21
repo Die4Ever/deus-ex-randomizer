@@ -1,7 +1,7 @@
 #ifdef injections
-class DXRMusic extends DXRBase transient config(DXRMusic);
+class DXRMusic extends DXRActorsBase transient config(DXRMusic);
 #else
-class DXRMusic extends DXRBase transient config(#var(package)Music);
+class DXRMusic extends DXRActorsBase transient config(#var(package)Music);
 #endif
 
 var Music LevelSong;
@@ -516,22 +516,7 @@ function bool InCombat()
 
     if(!allowCombat) return false;
 
-    // check a 100 foot radius around me for combat
-    // XXXDEUS_EX AMSD Slow Pawn Iterator
-    //foreach RadiusActors(class'ScriptedPawn', npc, 1600)
-    for (CurPawn = Level.PawnList; CurPawn != None; CurPawn = CurPawn.NextPawn)
-    {
-        npc = ScriptedPawn(CurPawn);
-        if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
-        {
-            if ((npc.GetStateName() == 'Attacking') && (npc.Enemy == p))
-            {
-                return true;
-            }
-        }
-    }
-
-    return false;
+    return PawnIsInCombat(p);
 }
 
 function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )

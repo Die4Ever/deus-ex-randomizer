@@ -110,7 +110,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 2,3,1,2) ) {
+    if( VersionOlderThan(config_version, 2,3,4,4) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -168,6 +168,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXREvents";
     //modules_to_load[i++] = "DXRMapInfo";
     modules_to_load[i++] = "DXRMusic";
+    modules_to_load[i++] = "DXRPlayerStats";
 }
 
 function hx_modules()
@@ -197,6 +198,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRHints";
     modules_to_load[i++] = "DXRReplaceActors";
     modules_to_load[i++] = "DXREvents";
+    modules_to_load[i++] = "DXRPlayerStats";
 }
 
 function gmdx_modules()
@@ -229,6 +231,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRFashion";
     modules_to_load[i++] = "DXREvents";
     modules_to_load[i++] = "DXRMusic";
+    modules_to_load[i++] = "DXRPlayerStats";
 }
 
 function revision_modules()
@@ -265,6 +268,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXREvents";
     modules_to_load[i++] = "DXRMusic";
+    modules_to_load[i++] = "DXRPlayerStats";
 }
 
 function DXRFlags LoadFlagsModule()
@@ -276,6 +280,7 @@ function DXRFlags LoadFlagsModule()
 function DXRBase LoadModule(class<DXRBase> moduleclass)
 {
     local DXRBase m;
+    moduleclass = moduleclass.static.GetModuleToLoad(self, moduleclass);
     l("loading module "$moduleclass);
 
     m = FindModule(moduleclass, true);
@@ -297,20 +302,23 @@ function DXRBase LoadModule(class<DXRBase> moduleclass)
     return m;
 }
 
+function DXRBase LoadModuleByString(string classstring)
+{
+    local class<Actor> c;
+    if( InStr(classstring, ".") == -1 ) {
+        classstring = "#var(package)." $ classstring;
+    }
+    c = flags.GetClassFromString(classstring, class'DXRBase');
+    return LoadModule( class<DXRBase>(c) );
+}
+
 function LoadModules()
 {
     local int i;
-    local class<Actor> c;
-    local string classstring;
 
     for( i=0; i < ArrayCount( modules_to_load ); i++ ) {
         if( modules_to_load[i] == "" ) continue;
-        classstring = modules_to_load[i];
-        if( InStr(classstring, ".") == -1 ) {
-            classstring = "#var(package)." $ classstring;
-        }
-        c = flags.GetClassFromString(classstring, class'DXRBase');
-        LoadModule( class<DXRBase>(c) );
+        LoadModuleByString(modules_to_load[i]);
     }
 
     telemetry = DXRTelemetry(FindModule(class'DXRTelemetry'));

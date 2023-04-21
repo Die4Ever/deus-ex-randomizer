@@ -44,11 +44,11 @@ public class DeusEx : SimpleTCPPack
         new Effect ("Ask a Question","ask_a_question"){Price = 5,Description = "Make a dialog box appear on screen with a question while the game continues in behind!"}, //New for second Crowd Control batch
         new Effect ("Nudge","nudge"){Price = 1,Description = "Just ever so slightly... nudge... the player in a random direction"}, //New for second Crowd Control batch
         new Effect ("Swap Player with another human","swap_player_position"){Price = 40,Description = "Finds another human somewhere in the current level and swaps their position with the player!"}, //New for second Crowd Control batch
-        new Effect ("Float Away","floaty_physics"){Price = 100,Description = "Suddenly gravity feels very light and everything starts floating up into the sky...",Duration=60}, //New for second Crowd Control batch
+        new Effect ("Float Away","floaty_physics"){Price = 100,Description = "Suddenly gravity feels very light and everything starts floating up into the sky...",Duration=30}, //New for second Crowd Control batch
         new Effect ("Floor is Lava","floor_is_lava"){Price = 75,Description = "Floor is lava!  If the player doesn't keep jumping or get up on top of something, they're gonna burn!",Duration=60}, //New for second Crowd Control batch
         new Effect ("Invert Mouse Controls","invert_mouse"){Price = 20,Description = "Up is down and down is up!",Duration=60}, //New for second Crowd Control batch
         new Effect ("Invert Movement Controls","invert_movement"){Price = 20,Description = "Right is left, left is right, forwards is backwards, and backwards is forwards!",Duration=60}, //New for second Crowd Control batch
-        new Effect ("Earthquake","earthquake"){Price = 5,Description = "Set off a massive earthquake in the game!",Duration=60}, //New for fourth Crowd Control batch
+        new Effect ("Earthquake","earthquake"){Price = 25,Description = "Set off a massive earthquake in the game!",Duration=30}, //New for fourth Crowd Control batch
         new Effect ("Full Bioelectric Energy","give_full_energy"){Price = 5,Description = "Completely fill the players bioelectric energy"}, //New for fourth Crowd Control batch
         new Effect ("Trigger all alarms","trigger_alarms"){Price = 5,Description = "Set off every alarm panel and security camera in the current level to make sure all the enemies are on high alert!"}, //New for fourth Crowd Control batch
         new Effect ("Flip camera upside down","flipped"){Price = 20,Description = "Australia mode",Duration=60}, //New for fourth Crowd Control batch

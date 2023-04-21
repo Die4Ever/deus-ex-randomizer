@@ -659,7 +659,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( IsHuman(p.class) || dxr.flags.settings.bot_stats>0 ) {
         p.SurprisePeriod = rngrange(p.SurprisePeriod+0.1, 0.3, 1.2);
         p.GroundSpeed = rngrange(p.GroundSpeed, 0.9, 1.1);
-        p.BaseAccuracy -= FClamp(rngf() * float(percent)/100.0, 0, 0.8);
+        p.BaseAccuracy -= FClamp(rngf() * float(dxr.flags.settings.enemystats)/200.0, 0, 0.5);
     }
 
     if( IsCritter(p) ) return; // only give random weapons to humans and robots

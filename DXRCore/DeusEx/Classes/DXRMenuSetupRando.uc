@@ -19,9 +19,15 @@ function BindControls(optional string action)
     if( ! #defined(vmd) ) {
         NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes. The original game uses 400% for realistic.");
         iDifficulty = int(combatDifficulty * 100.0);
-        Slider(iDifficulty, 0, 100000);
+        Slider(iDifficulty, 0, 10000);
         combatDifficulty = float(iDifficulty) / 100.0;
     }
+
+    NewMenuItem("Player Health", "Max health for each body part of the player.");
+    Slider(f.settings.health, 1, 10000);
+
+    NewMenuItem("Player Energy", "Max bioelectric energy for the player.");
+    Slider(f.settings.energy, 0, 10000);
 
 #ifndef hx
     NewMenuItem("", "Randomize starting locations on certain maps");
@@ -119,7 +125,6 @@ function BindControls(optional string action)
     doorsdestructible = f.settings.doorsdestructible * 100 / doors_probability;
     doorspickable = f.settings.doorspickable * 100 / doors_probability;
     doors_option = doors_exclusivity $ ";" $ doorsdestructible $ ";" $ doorspickable;
-    SetTitle("doors_probability: "$doors_probability$", doors_option: "$doors_option);
     NewMenuItem("", "What to do with those doors.");
     EnumOptionString("Breakable or Pickable", f.doormutuallyexclusive $";50;50", doors_option);
     EnumOptionString("Breakable & Pickable", f.doormutuallyinclusive $";100;100", doors_option);
@@ -170,6 +175,9 @@ function BindControls(optional string action)
 
     NewMenuItem("Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.");
     Slider(f.settings.enemiesrandomized, 0, 1000);
+
+    NewMenuItem("Enemy Stats Boost %", "How much to boost enemy accuracy, reload speed, and aggression.");
+    Slider(f.settings.enemystats, 0, 100);
 
     NewMenuItem("Enemy Shuffling %", "Shuffle enemies around the map.");
     Slider(f.settings.enemiesshuffled, 0, 100);

@@ -375,6 +375,11 @@ function class<Inventory> get_starting_item()
 
 function bool ban(DeusExPlayer player, Inventory item)
 {
+    if(item.bDeleteMe) {
+        // we could fix by returning true here, but for now just record the offense
+        player.ClientMessage("ITEM DUPING DETECTED!");
+        class'DXRStats'.static.AddCheatOffense(player);
+    }
     if ( _is_banned( _item_sets[loadout], item.class) ) {
         if( item_sets[loadout].player_message != "" ) {
             //item.ItemName = item.ItemName $ ", " $ item_sets[loadout].player_message;

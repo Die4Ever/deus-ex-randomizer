@@ -484,6 +484,10 @@ function MenuUIEditWindow CreateEdit(int row, string label, string helptext, str
 
 function MenuUIEditWindow CreateSlider(int row, string label, string helptext, optional int deflt, optional int min, optional int max )
 {
+    if(InStr(helptexts[row], BR)==-1)
+        helptexts[row] = helptexts[row] $ BR $ min $ " to " $ max;
+    else
+        helptexts[row] = helptexts[row] $ ", " $ min $ " to " $ max;
     return CreateEdit(row, label, helptext, "-1234567890", string(deflt));
     /*local MenuUISliderButtonWindow slider;
     local vector coords;

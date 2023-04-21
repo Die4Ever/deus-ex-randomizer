@@ -34,11 +34,11 @@ const LamThrowerTimeDefault = 60;
 const IceTimeDefault = 60;
 const BehindTimeDefault = 60;
 const DifficultyTimeDefault = 60;
-const FloatyTimeDefault = 60;
+const FloatyTimeDefault = 30;
 const FloorLavaTimeDefault = 60;
 const InvertMouseTimeDefault = 60;
 const InvertMovementTimeDefault = 60;
-const EarthquakeTimeDefault = 60;
+const EarthquakeTimeDefault = 30;
 const CameraRollTimeDefault = 60;
 const EatBeansTimeDefault = 60;
 
@@ -344,6 +344,7 @@ function Fart()
     //Fart Sound
     fartSoundId = player().PlaySound(sound'PushMetal',SLOT_Pain, 2,,,0.5+FRand());
     fartDuration = Rand(3)+1; //Duration in 10ths of a second
+    player().AISendEvent('LoudNoise', EAITYPE_Audio, 2.0, 512);
 
     for (i=0;i<5;i++){
         if (Rand(2)==0){
@@ -1314,7 +1315,7 @@ function int TriggerAllAlarms(String viewer) {
 
     foreach AllActors(class'AlarmUnit',au){
         numAlarms+=1;
-        au.Trigger(self,None);
+        au.Trigger(self,player());
     }
     foreach AllActors(class'SecurityCamera',sc){
         numAlarms+=1;

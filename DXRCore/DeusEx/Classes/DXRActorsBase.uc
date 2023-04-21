@@ -456,6 +456,29 @@ function SetPawnHealth(ScriptedPawn p, int health)
     p.GenerateTotalHealth();
 }
 
+function bool PawnIsInCombat(Pawn p)
+{
+    local #var(prefix)ScriptedPawn npc;
+    local Pawn CurPawn;
+
+    // check a 100 foot radius around me for combat
+    // XXXDEUS_EX AMSD Slow Pawn Iterator
+    //foreach RadiusActors(class'ScriptedPawn', npc, 1600)
+    for (CurPawn = Level.PawnList; CurPawn != None; CurPawn = CurPawn.NextPawn)
+    {
+        npc = #var(prefix)ScriptedPawn(CurPawn);
+        if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
+        {
+            if ((npc.GetStateName() == 'Attacking') && (npc.Enemy == p))
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 function bool Swap(Actor a, Actor b, optional bool retainOrders)
 {
     local vector newloc, oldloc;

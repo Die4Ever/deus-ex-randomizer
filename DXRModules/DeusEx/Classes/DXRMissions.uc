@@ -853,35 +853,24 @@ function PreFirstEntry()
         ReplaceBatteryParkSubwayTNT();
     }
     else if( dxr.localURL == "03_NYC_AIRFIELDHELIBASE" ) {
-        foreach AllActors(class'FlagTrigger',ft){
+        foreach AllActors(class'FlagTrigger',ft){// probably ambrosia
             if (ft.Name=='FlagTrigger0'){
                 ft.SetCollisionSize(150, ft.CollisionHeight);
             }
         }
     }
     else if( dxr.localURL == "03_NYC_AIRFIELD" ) {
-        foreach AllActors(class'FlagTrigger',ft){
+        foreach AllActors(class'FlagTrigger',ft){// probably ambrosia
             if (ft.Name=='FlagTrigger0'){
                 ft.SetCollisionSize(150, ft.CollisionHeight);
             }
         }
     }
     else if( dxr.localURL == "03_NYC_747" ) {
-        foreach AllActors(class'FlagTrigger',ft){
+        foreach AllActors(class'FlagTrigger',ft){// probably ambrosia
             if (ft.Name=='FlagTrigger1'){
                 ft.SetCollisionSize(100, ft.CollisionHeight);
             }
-        }
-    }
-    else if( dxr.localURL == "05_NYC_UNATCOMJ12LAB" ) {
-        foreach AllActors(class'#var(prefix)PaulDentonCarcass',paulcarc){
-            paulcarc.bInvincible=true;
-        }
-        foreach AllActors(class'#var(prefix)PaulDenton',paul){
-            paul.bDetectable=false;
-            paul.bIgnore=true;
-            paul.RaiseAlarm=RAISEALARM_Never;
-            paul.ChangeAlly('mj12',0,true,false);
         }
     }
     else if( dxr.localURL ~= "05_NYC_UNATCOHQ" ) {
@@ -919,27 +908,6 @@ function PreFirstEntry()
         foreach AllActors(class'Trigger',t){
             if (t.Name=='Trigger1' || t.Name=='Trigger2'){
                 t.Destroy(); //Just rely on one trigger for Walton
-            }
-        }
-    }
-    if(dxr.dxInfo.missionNumber == 10 || dxr.dxInfo.missionNumber == 11) {
-        // shut up, Tong!
-        foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
-            switch(dlt.dataLinkTag) {
-            case 'DL_paris_10_shaft':
-            case 'DL_paris_10_radiation':
-            case 'DL_paris_10_catacombs':
-            case 'DL_tunnels_oldplace':
-            case 'DL_tunnels_oldplace2':
-            case 'DL_tunnels_oldplace3':
-            case 'DL_metroentrance':
-            case 'DL_club_entry':
-            case 'DL_apartments':
-            case 'DL_hotel':
-            case 'DL_bakery':
-            case 'DL_entered_graveyard':
-                dlt.Event='';
-                dlt.Destroy();
             }
         }
     }

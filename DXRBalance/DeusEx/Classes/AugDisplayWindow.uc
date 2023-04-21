@@ -286,6 +286,7 @@ function DrawTargetAugmentation(GC gc)
     local vector AimLocation;
     local string str,teleDest;
     local float x,y,h,w, boxCX,boxCY;
+    local DynamicTeleporter dynTele;
 
     gc.SetFont(Font'FontMenuSmall_DS'); //This font is so much better for everything
 
@@ -304,11 +305,13 @@ function DrawTargetAugmentation(GC gc)
         ConvertVectorToCoordinates(tgtTeleporter.Location, boxCX, boxCY);
 
         teleDest = tgtTeleporter.URL;
-        if (DynamicTeleporter(tgtTeleporter)!=None){
+        dynTele = DynamicTeleporter(tgtTeleporter);
+        if (dynTele!=None && dynTele.destName != ''){
             if (InStr(teleDest,"#")==-1){
                 teleDest = teleDest $ "#";
             }
-            teleDest = teleDest $ DynamicTeleporter(tgtTeleporter).destName;
+            teleDest = teleDest $ dynTele.destName;
+
         }
 
         str = "To: "$formatMapName(teleDest);

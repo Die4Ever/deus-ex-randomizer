@@ -1,21 +1,12 @@
-flagshash should always be shown in hex (in ClientMessages, credits, and leaderboard)
-ship weld points remove orders trigger?
-make healing more balanced across body parts (maybe convert it to a loop of 1 healing to each body part? or heal the weakest part? maybe only for medkits and medbots?)
-use DXRTriggerEnable for other endings
-GitHub actions for DiscordBot
+check gas grenades ammo
 
 allow loadouts to mess with skills? remove the config crap? loadouts give bonus points?
-is there an invisible wall in hongkong storage? right above the UC
 taking some items/ammo out of a stack but not all when full
-shrink hitboxes for robots (or don't!)
-attaching grenades to crates and decorations?
 make aquinas router door keypad unhackable maybe?
 
-manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules
-
+manually add actors to the safety checks for keys and datacubes, as an easier version of the safe_rules, basically a whitelist of actor names (and/or a quick way to generate safety rules based on actor names?)
 
 check gmdx augs list
-crowd control effects for enable all augs, and disable all augs
 add a note for every mission change?
 What if consuming the VialAmbrosia yourself gave you a full heal or something lol
 check mission 5 jailbreak in all mods

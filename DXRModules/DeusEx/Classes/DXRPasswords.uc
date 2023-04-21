@@ -29,7 +29,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,3,0,4) ) {
+    if( ConfigOlderThan(2,3,4,3) ) {
         min_hack_adjust = 0.5;
         max_hack_adjust = 1.5;
 
@@ -223,6 +223,23 @@ function vanilla_datacubes_rules()
     datacubes_rules[i].map = "03_NYC_BrooklynBridgeStation";
     datacubes_rules[i].item_name = '03_Datacube14';
     datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
+    datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
+    datacubes_rules[i].allow = true;
+    i++;
+
+    // datacube for hanger keypad
+    // disallow in security tower
+    datacubes_rules[i].map = "03_NYC_Airfield";
+    datacubes_rules[i].item_name = '03_Datacube10';
+    datacubes_rules[i].min_pos = vect(5200, 3650, 200);
+    datacubes_rules[i].max_pos = vect(999999, 999999, 9999);
+    datacubes_rules[i].allow = false;
+    i++;
+
+    // allow anywhere else past the gate
+    datacubes_rules[i].map = "03_NYC_Airfield";
+    datacubes_rules[i].item_name = '03_Datacube10';
+    datacubes_rules[i].min_pos = vect(1700, 2400, -999999);
     datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
     datacubes_rules[i].allow = true;
     i++;
@@ -702,7 +719,7 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
             continue;
         }
 #ifdef debug
-        //if(id.textTag == '15_Datacube18') DebugMarkKeyPosition(inv, id.textTag);
+        //if(id.textTag == '03_Datacube10') DebugMarkKeyPosition(inv, id.textTag);
 #endif
         temp[num++] = inv;
     }

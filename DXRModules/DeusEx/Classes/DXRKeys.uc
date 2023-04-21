@@ -5,7 +5,7 @@ var config safe_rule keys_rules[64];
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,2,8,3) ) {
+    if( ConfigOlderThan(2,3,4,2) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -49,6 +49,14 @@ function vanilla_keys_rules()
     keys_rules[i].map = "03_NYC_747";
     keys_rules[i].item_name = 'lebedevdoor';
     keys_rules[i].min_pos = vect(166, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = true;
+    i++;
+
+    // in DXRFixup we spawn an extra one anyways
+    keys_rules[i].map = "06_HONGKONG_WANCHAI_STREET";
+    keys_rules[i].item_name = 'JocksKey';
+    keys_rules[i].min_pos = vect(-99999, -99999, -99999);
     keys_rules[i].max_pos = vect(99999, 99999, 99999);
     keys_rules[i].allow = true;
     i++;
