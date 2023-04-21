@@ -56,15 +56,17 @@ struct FlagsSettings {
     var int bingo_freespaces; //Number of bingo free spaces
     var int spoilers; //0=Disallowed, 1=Available
     var int menus_pause; // 0=no pause, 1=vanilla
+
+    // leave these at the end for the automated tests
     var int health, energy;// normally just 100
 };
 
 #ifdef hx
-var config string difficulty_names[4];// Easy, Medium, Hard, DeusEx
-var config FlagsSettings difficulty_settings[4];
+var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
+var FlagsSettings difficulty_settings[4];
 #else
-var config string difficulty_names[5];// Super Easy QA, Easy, Normal, Hard, Extreme
-var config FlagsSettings difficulty_settings[5];
+var string difficulty_names[5];// Super Easy QA, Easy, Normal, Hard, Extreme
+var FlagsSettings difficulty_settings[5];
 #endif
 
 var config bool speedrun_mode;
@@ -184,7 +186,7 @@ function RollSeed()
 function HXRollSeed()
 {
     difficulty = Level.Game.Difficulty;
-    settings = difficulty_settings[difficulty];
+    SetDifficulty(difficulty);
     NewPlaythroughId();
     if( next_seed != 0 ) {
         seed = next_seed;
@@ -229,7 +231,7 @@ function InitDefaults()
 #ifndef vanilla
     autosave = 0;
 #endif
-    settings = difficulty_settings[difficulty];
+    SetDifficulty(difficulty);
 
     switch(dxr.localURL) {
     case "00_Training":
@@ -245,358 +247,357 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,3,4,4) ) {
-        // setup default difficulties
-        i=0;
+    // setup default difficulties
+    i=0;
 #ifndef hx
-        difficulty_names[i] = "Super Easy QA";
-        difficulty_settings[i].CombatDifficulty = 0;
-        difficulty_settings[i].doorsmode = alldoors + doormutuallyinclusive;
-        difficulty_settings[i].doorsdestructible = 100;
-        difficulty_settings[i].doorspickable = 100;
-        difficulty_settings[i].keysrando = 4;
-        difficulty_settings[i].keys_containers = 0;
-        difficulty_settings[i].infodevices_containers = 0;
-        difficulty_settings[i].deviceshackable = 100;
-        difficulty_settings[i].passwordsrandomized = 100;
-        difficulty_settings[i].infodevices = 100;
-        difficulty_settings[i].enemiesrandomized = 20;
-        difficulty_settings[i].enemystats = 40;
-        difficulty_settings[i].hiddenenemiesrandomized = 20;
-        difficulty_settings[i].enemiesshuffled = 100;
-        difficulty_settings[i].enemies_nonhumans = 40;
-        difficulty_settings[i].bot_weapons = 0;
-        difficulty_settings[i].bot_stats = 0;
-        difficulty_settings[i].enemyrespawn = 0;
-        difficulty_settings[i].skills_disable_downgrades = 0;
-        difficulty_settings[i].skills_reroll_missions = 1;
-        difficulty_settings[i].skills_independent_levels = 0;
-        difficulty_settings[i].banned_skills = 5;
-        difficulty_settings[i].banned_skill_levels = 5;
-        difficulty_settings[i].minskill = 1;
-        difficulty_settings[i].maxskill = 5;
-        difficulty_settings[i].ammo = 90;
-        difficulty_settings[i].medkits = 90;
-        difficulty_settings[i].biocells = 90;
-        difficulty_settings[i].lockpicks = 90;
-        difficulty_settings[i].multitools = 90;
-        difficulty_settings[i].speedlevel = 4;
-        difficulty_settings[i].startinglocations = 100;
-        difficulty_settings[i].goals = 100;
-        difficulty_settings[i].equipment = 5;
-        difficulty_settings[i].medbots = 100;
-        difficulty_settings[i].repairbots = 100;
-        difficulty_settings[i].medbotuses = 20;
-        difficulty_settings[i].repairbotuses = 20;
-        difficulty_settings[i].medbotcooldowns = 1;
-        difficulty_settings[i].repairbotcooldowns = 1;
-        difficulty_settings[i].medbotamount = 1;
-        difficulty_settings[i].repairbotamount = 1;
-        difficulty_settings[i].turrets_move = 100;
-        difficulty_settings[i].turrets_add = 50;
-        difficulty_settings[i].merchants = 100;
-        difficulty_settings[i].dancingpercent = 25;
-        difficulty_settings[i].swapitems = 100;
-        difficulty_settings[i].swapcontainers = 100;
-        difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].aug_value_rando = 100;
-        difficulty_settings[i].skill_value_rando = 100;
-        difficulty_settings[i].min_weapon_dmg = 50;
-        difficulty_settings[i].max_weapon_dmg = 150;
-        difficulty_settings[i].min_weapon_shottime = 50;
-        difficulty_settings[i].max_weapon_shottime = 150;
-        difficulty_settings[i].bingo_win = 0;
-        difficulty_settings[i].bingo_freespaces = 1;
-        difficulty_settings[i].spoilers = 1;
-        difficulty_settings[i].health = 200;
-        difficulty_settings[i].energy = 200;
-        i++;
+    difficulty_names[i] = "Super Easy QA";
+    difficulty_settings[i].CombatDifficulty = 0;
+    difficulty_settings[i].doorsmode = alldoors + doormutuallyinclusive;
+    difficulty_settings[i].doorsdestructible = 100;
+    difficulty_settings[i].doorspickable = 100;
+    difficulty_settings[i].keysrando = 4;
+    difficulty_settings[i].keys_containers = 0;
+    difficulty_settings[i].infodevices_containers = 0;
+    difficulty_settings[i].deviceshackable = 100;
+    difficulty_settings[i].passwordsrandomized = 100;
+    difficulty_settings[i].infodevices = 100;
+    difficulty_settings[i].enemiesrandomized = 20;
+    difficulty_settings[i].enemystats = 40;
+    difficulty_settings[i].hiddenenemiesrandomized = 20;
+    difficulty_settings[i].enemiesshuffled = 100;
+    difficulty_settings[i].enemies_nonhumans = 40;
+    difficulty_settings[i].bot_weapons = 0;
+    difficulty_settings[i].bot_stats = 0;
+    difficulty_settings[i].enemyrespawn = 0;
+    difficulty_settings[i].skills_disable_downgrades = 0;
+    difficulty_settings[i].skills_reroll_missions = 1;
+    difficulty_settings[i].skills_independent_levels = 0;
+    difficulty_settings[i].banned_skills = 5;
+    difficulty_settings[i].banned_skill_levels = 5;
+    difficulty_settings[i].minskill = 1;
+    difficulty_settings[i].maxskill = 5;
+    difficulty_settings[i].ammo = 90;
+    difficulty_settings[i].medkits = 90;
+    difficulty_settings[i].biocells = 90;
+    difficulty_settings[i].lockpicks = 90;
+    difficulty_settings[i].multitools = 90;
+    difficulty_settings[i].speedlevel = 4;
+    difficulty_settings[i].startinglocations = 100;
+    difficulty_settings[i].goals = 100;
+    difficulty_settings[i].equipment = 5;
+    difficulty_settings[i].medbots = 100;
+    difficulty_settings[i].repairbots = 100;
+    difficulty_settings[i].medbotuses = 20;
+    difficulty_settings[i].repairbotuses = 20;
+    difficulty_settings[i].medbotcooldowns = 1;
+    difficulty_settings[i].repairbotcooldowns = 1;
+    difficulty_settings[i].medbotamount = 1;
+    difficulty_settings[i].repairbotamount = 1;
+    difficulty_settings[i].turrets_move = 100;
+    difficulty_settings[i].turrets_add = 50;
+    difficulty_settings[i].merchants = 100;
+    difficulty_settings[i].dancingpercent = 25;
+    difficulty_settings[i].swapitems = 100;
+    difficulty_settings[i].swapcontainers = 100;
+    difficulty_settings[i].augcans = 100;
+    difficulty_settings[i].aug_value_rando = 100;
+    difficulty_settings[i].skill_value_rando = 100;
+    difficulty_settings[i].min_weapon_dmg = 50;
+    difficulty_settings[i].max_weapon_dmg = 150;
+    difficulty_settings[i].min_weapon_shottime = 50;
+    difficulty_settings[i].max_weapon_shottime = 150;
+    difficulty_settings[i].bingo_win = 0;
+    difficulty_settings[i].bingo_freespaces = 1;
+    difficulty_settings[i].spoilers = 1;
+    difficulty_settings[i].health = 200;
+    difficulty_settings[i].energy = 200;
+    i++;
 #endif
 
 #ifdef hx
-        difficulty_names[i] = "Easy";
+    difficulty_names[i] = "Easy";
 #else
-        difficulty_names[i] = "Normal";
-        difficulty_settings[i].CombatDifficulty = 1.2;
+    difficulty_names[i] = "Normal";
+    difficulty_settings[i].CombatDifficulty = 1.2;
 #endif
-        difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyinclusive;
-        difficulty_settings[i].doorsdestructible = 100;
-        difficulty_settings[i].doorspickable = 100;
-        difficulty_settings[i].keysrando = 4;
-        difficulty_settings[i].keys_containers = 0;
-        difficulty_settings[i].infodevices_containers = 0;
-        difficulty_settings[i].deviceshackable = 100;
-        difficulty_settings[i].passwordsrandomized = 100;
-        difficulty_settings[i].infodevices = 100;
-        difficulty_settings[i].enemiesrandomized = 20;
-        difficulty_settings[i].enemystats = 40;
-        difficulty_settings[i].hiddenenemiesrandomized = 20;
-        difficulty_settings[i].enemiesshuffled = 100;
-        difficulty_settings[i].enemies_nonhumans = 40;
-        difficulty_settings[i].bot_weapons = 0;
-        difficulty_settings[i].bot_stats = 0;
-        difficulty_settings[i].enemyrespawn = 0;
-        difficulty_settings[i].skills_disable_downgrades = 0;
-        difficulty_settings[i].skills_reroll_missions = 5;
-        difficulty_settings[i].skills_independent_levels = 0;
-        difficulty_settings[i].banned_skills = 3;
-        difficulty_settings[i].banned_skill_levels = 3;
-        difficulty_settings[i].minskill = 50;
-        difficulty_settings[i].maxskill = 150;
-        difficulty_settings[i].ammo = 90;
-        difficulty_settings[i].medkits = 90;
-        difficulty_settings[i].biocells = 90;
-        difficulty_settings[i].lockpicks = 90;
-        difficulty_settings[i].multitools = 90;
-        difficulty_settings[i].speedlevel = 2;
-        difficulty_settings[i].startinglocations = 100;
-        difficulty_settings[i].goals = 100;
-        difficulty_settings[i].equipment = 4;
-        difficulty_settings[i].medbots = 35;
-        difficulty_settings[i].repairbots = 35;
-        difficulty_settings[i].medbotuses = 10;
-        difficulty_settings[i].repairbotuses = 10;
-        difficulty_settings[i].medbotcooldowns = 1;
-        difficulty_settings[i].repairbotcooldowns = 1;
-        difficulty_settings[i].medbotamount = 1;
-        difficulty_settings[i].repairbotamount = 1;
-        difficulty_settings[i].turrets_move = 50;
-        difficulty_settings[i].turrets_add = 30;
-        difficulty_settings[i].merchants = 30;
-        difficulty_settings[i].dancingpercent = 25;
-        difficulty_settings[i].swapitems = 100;
-        difficulty_settings[i].swapcontainers = 100;
-        difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].aug_value_rando = 100;
-        difficulty_settings[i].skill_value_rando = 100;
-        difficulty_settings[i].min_weapon_dmg = 50;
-        difficulty_settings[i].max_weapon_dmg = 150;
-        difficulty_settings[i].min_weapon_shottime = 50;
-        difficulty_settings[i].max_weapon_shottime = 150;
-        difficulty_settings[i].bingo_win = 0;
-        difficulty_settings[i].bingo_freespaces = 1;
-        difficulty_settings[i].spoilers = 1;
-        difficulty_settings[i].health = 100;
-        difficulty_settings[i].energy = 100;
-        i++;
+    difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyinclusive;
+    difficulty_settings[i].doorsdestructible = 100;
+    difficulty_settings[i].doorspickable = 100;
+    difficulty_settings[i].keysrando = 4;
+    difficulty_settings[i].keys_containers = 0;
+    difficulty_settings[i].infodevices_containers = 0;
+    difficulty_settings[i].deviceshackable = 100;
+    difficulty_settings[i].passwordsrandomized = 100;
+    difficulty_settings[i].infodevices = 100;
+    difficulty_settings[i].enemiesrandomized = 20;
+    difficulty_settings[i].enemystats = 40;
+    difficulty_settings[i].hiddenenemiesrandomized = 20;
+    difficulty_settings[i].enemiesshuffled = 100;
+    difficulty_settings[i].enemies_nonhumans = 40;
+    difficulty_settings[i].bot_weapons = 0;
+    difficulty_settings[i].bot_stats = 0;
+    difficulty_settings[i].enemyrespawn = 0;
+    difficulty_settings[i].skills_disable_downgrades = 0;
+    difficulty_settings[i].skills_reroll_missions = 5;
+    difficulty_settings[i].skills_independent_levels = 0;
+    difficulty_settings[i].banned_skills = 3;
+    difficulty_settings[i].banned_skill_levels = 3;
+    difficulty_settings[i].minskill = 50;
+    difficulty_settings[i].maxskill = 150;
+    difficulty_settings[i].ammo = 90;
+    difficulty_settings[i].medkits = 90;
+    difficulty_settings[i].biocells = 90;
+    difficulty_settings[i].lockpicks = 90;
+    difficulty_settings[i].multitools = 90;
+    difficulty_settings[i].speedlevel = 2;
+    difficulty_settings[i].startinglocations = 100;
+    difficulty_settings[i].goals = 100;
+    difficulty_settings[i].equipment = 4;
+    difficulty_settings[i].medbots = 35;
+    difficulty_settings[i].repairbots = 35;
+    difficulty_settings[i].medbotuses = 10;
+    difficulty_settings[i].repairbotuses = 10;
+    difficulty_settings[i].medbotcooldowns = 1;
+    difficulty_settings[i].repairbotcooldowns = 1;
+    difficulty_settings[i].medbotamount = 1;
+    difficulty_settings[i].repairbotamount = 1;
+    difficulty_settings[i].turrets_move = 50;
+    difficulty_settings[i].turrets_add = 30;
+    difficulty_settings[i].merchants = 30;
+    difficulty_settings[i].dancingpercent = 25;
+    difficulty_settings[i].swapitems = 100;
+    difficulty_settings[i].swapcontainers = 100;
+    difficulty_settings[i].augcans = 100;
+    difficulty_settings[i].aug_value_rando = 100;
+    difficulty_settings[i].skill_value_rando = 100;
+    difficulty_settings[i].min_weapon_dmg = 50;
+    difficulty_settings[i].max_weapon_dmg = 150;
+    difficulty_settings[i].min_weapon_shottime = 50;
+    difficulty_settings[i].max_weapon_shottime = 150;
+    difficulty_settings[i].bingo_win = 0;
+    difficulty_settings[i].bingo_freespaces = 1;
+    difficulty_settings[i].spoilers = 1;
+    difficulty_settings[i].health = 100;
+    difficulty_settings[i].energy = 100;
+    i++;
 
 #ifdef hx
-        difficulty_names[i] = "Medium";
+    difficulty_names[i] = "Medium";
 #else
-        difficulty_names[i] = "Hard";
-        difficulty_settings[i].CombatDifficulty = 1.7;
+    difficulty_names[i] = "Hard";
+    difficulty_settings[i].CombatDifficulty = 1.7;
 #endif
-        difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
-        difficulty_settings[i].doorsdestructible = 40;
-        difficulty_settings[i].doorspickable = 40;
-        difficulty_settings[i].keysrando = 4;
-        difficulty_settings[i].keys_containers = 0;
-        difficulty_settings[i].infodevices_containers = 0;
-        difficulty_settings[i].deviceshackable = 75;
-        difficulty_settings[i].passwordsrandomized = 100;
-        difficulty_settings[i].infodevices = 100;
-        difficulty_settings[i].enemiesrandomized = 30;
-        difficulty_settings[i].enemystats = 60;
-        difficulty_settings[i].hiddenenemiesrandomized = 30;
-        difficulty_settings[i].enemiesshuffled = 100;
-        difficulty_settings[i].enemies_nonhumans = 60;
-        difficulty_settings[i].bot_weapons = 0;
-        difficulty_settings[i].bot_stats = 0;
-        difficulty_settings[i].enemyrespawn = 0;
-        difficulty_settings[i].skills_disable_downgrades = 0;
-        difficulty_settings[i].skills_reroll_missions = 5;
-        difficulty_settings[i].skills_independent_levels = 0;
-        difficulty_settings[i].banned_skills = 5;
-        difficulty_settings[i].banned_skill_levels = 5;
-        difficulty_settings[i].minskill = 50;
-        difficulty_settings[i].maxskill = 250;
-        difficulty_settings[i].ammo = 70;
-        difficulty_settings[i].medkits = 70;
-        difficulty_settings[i].biocells = 70;
-        difficulty_settings[i].lockpicks = 70;
-        difficulty_settings[i].multitools = 70;
-        difficulty_settings[i].speedlevel = 1;
-        difficulty_settings[i].startinglocations = 100;
-        difficulty_settings[i].goals = 100;
-        difficulty_settings[i].equipment = 2;
-        difficulty_settings[i].medbots = 25;
-        difficulty_settings[i].repairbots = 25;
-        difficulty_settings[i].medbotuses = 5;
-        difficulty_settings[i].repairbotuses = 5;
-        difficulty_settings[i].medbotcooldowns = 1;
-        difficulty_settings[i].repairbotcooldowns = 1;
-        difficulty_settings[i].medbotamount = 1;
-        difficulty_settings[i].repairbotamount = 1;
-        difficulty_settings[i].turrets_move = 50;
-        difficulty_settings[i].turrets_add = 70;
-        difficulty_settings[i].merchants = 30;
-        difficulty_settings[i].dancingpercent = 25;
-        difficulty_settings[i].swapitems = 100;
-        difficulty_settings[i].swapcontainers = 100;
-        difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].aug_value_rando = 100;
-        difficulty_settings[i].skill_value_rando = 100;
-        difficulty_settings[i].min_weapon_dmg = 50;
-        difficulty_settings[i].max_weapon_dmg = 150;
-        difficulty_settings[i].min_weapon_shottime = 50;
-        difficulty_settings[i].max_weapon_shottime = 150;
-        difficulty_settings[i].bingo_win = 0;
-        difficulty_settings[i].bingo_freespaces = 1;
-        difficulty_settings[i].spoilers = 1;
-        difficulty_settings[i].health = 100;
-        difficulty_settings[i].energy = 100;
-        i++;
+    difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
+    difficulty_settings[i].doorsdestructible = 40;
+    difficulty_settings[i].doorspickable = 40;
+    difficulty_settings[i].keysrando = 4;
+    difficulty_settings[i].keys_containers = 0;
+    difficulty_settings[i].infodevices_containers = 0;
+    difficulty_settings[i].deviceshackable = 75;
+    difficulty_settings[i].passwordsrandomized = 100;
+    difficulty_settings[i].infodevices = 100;
+    difficulty_settings[i].enemiesrandomized = 30;
+    difficulty_settings[i].enemystats = 60;
+    difficulty_settings[i].hiddenenemiesrandomized = 30;
+    difficulty_settings[i].enemiesshuffled = 100;
+    difficulty_settings[i].enemies_nonhumans = 60;
+    difficulty_settings[i].bot_weapons = 0;
+    difficulty_settings[i].bot_stats = 0;
+    difficulty_settings[i].enemyrespawn = 0;
+    difficulty_settings[i].skills_disable_downgrades = 0;
+    difficulty_settings[i].skills_reroll_missions = 5;
+    difficulty_settings[i].skills_independent_levels = 0;
+    difficulty_settings[i].banned_skills = 5;
+    difficulty_settings[i].banned_skill_levels = 5;
+    difficulty_settings[i].minskill = 50;
+    difficulty_settings[i].maxskill = 250;
+    difficulty_settings[i].ammo = 70;
+    difficulty_settings[i].medkits = 70;
+    difficulty_settings[i].biocells = 70;
+    difficulty_settings[i].lockpicks = 70;
+    difficulty_settings[i].multitools = 70;
+    difficulty_settings[i].speedlevel = 1;
+    difficulty_settings[i].startinglocations = 100;
+    difficulty_settings[i].goals = 100;
+    difficulty_settings[i].equipment = 2;
+    difficulty_settings[i].medbots = 25;
+    difficulty_settings[i].repairbots = 25;
+    difficulty_settings[i].medbotuses = 5;
+    difficulty_settings[i].repairbotuses = 5;
+    difficulty_settings[i].medbotcooldowns = 1;
+    difficulty_settings[i].repairbotcooldowns = 1;
+    difficulty_settings[i].medbotamount = 1;
+    difficulty_settings[i].repairbotamount = 1;
+    difficulty_settings[i].turrets_move = 50;
+    difficulty_settings[i].turrets_add = 70;
+    difficulty_settings[i].merchants = 30;
+    difficulty_settings[i].dancingpercent = 25;
+    difficulty_settings[i].swapitems = 100;
+    difficulty_settings[i].swapcontainers = 100;
+    difficulty_settings[i].augcans = 100;
+    difficulty_settings[i].aug_value_rando = 100;
+    difficulty_settings[i].skill_value_rando = 100;
+    difficulty_settings[i].min_weapon_dmg = 50;
+    difficulty_settings[i].max_weapon_dmg = 150;
+    difficulty_settings[i].min_weapon_shottime = 50;
+    difficulty_settings[i].max_weapon_shottime = 150;
+    difficulty_settings[i].bingo_win = 0;
+    difficulty_settings[i].bingo_freespaces = 1;
+    difficulty_settings[i].spoilers = 1;
+    difficulty_settings[i].health = 100;
+    difficulty_settings[i].energy = 100;
+    i++;
 
 #ifdef hx
-        difficulty_names[i] = "Hard";
+    difficulty_names[i] = "Hard";
 #else
-        difficulty_names[i] = "Extreme";
-        difficulty_settings[i].CombatDifficulty = 2.3;
+    difficulty_names[i] = "Extreme";
+    difficulty_settings[i].CombatDifficulty = 2.3;
 #endif
-        difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
-        difficulty_settings[i].doorsdestructible = 25;
-        difficulty_settings[i].doorspickable = 25;
-        difficulty_settings[i].keysrando = 4;
-        difficulty_settings[i].keys_containers = 0;
-        difficulty_settings[i].infodevices_containers = 0;
-        difficulty_settings[i].deviceshackable = 50;
-        difficulty_settings[i].passwordsrandomized = 100;
-        difficulty_settings[i].infodevices = 100;
-        difficulty_settings[i].enemiesrandomized = 40;
-        difficulty_settings[i].enemystats = 80;
-        difficulty_settings[i].hiddenenemiesrandomized = 40;
-        difficulty_settings[i].enemiesshuffled = 100;
-        difficulty_settings[i].enemies_nonhumans = 70;
-        difficulty_settings[i].bot_weapons = 0;
-        difficulty_settings[i].bot_stats = 0;
-        difficulty_settings[i].enemyrespawn = 0;
-        difficulty_settings[i].skills_disable_downgrades = 5;
-        difficulty_settings[i].skills_reroll_missions = 5;
-        difficulty_settings[i].skills_independent_levels = 100;
-        difficulty_settings[i].banned_skills = 5;
-        difficulty_settings[i].banned_skill_levels = 7;
-        difficulty_settings[i].minskill = 50;
-        difficulty_settings[i].maxskill = 300;
-        difficulty_settings[i].ammo = 60;
-        difficulty_settings[i].medkits = 60;
-        difficulty_settings[i].biocells = 50;
-        difficulty_settings[i].lockpicks = 60;
-        difficulty_settings[i].multitools = 60;
-        difficulty_settings[i].speedlevel = 1;
-        difficulty_settings[i].startinglocations = 100;
-        difficulty_settings[i].goals = 100;
-        difficulty_settings[i].equipment = 1;
-        difficulty_settings[i].medbots = 20;
-        difficulty_settings[i].repairbots = 20;
-        difficulty_settings[i].medbotuses = 3;
-        difficulty_settings[i].repairbotuses = 3;
-        difficulty_settings[i].medbotcooldowns = 1;
-        difficulty_settings[i].repairbotcooldowns = 1;
-        difficulty_settings[i].medbotamount = 1;
-        difficulty_settings[i].repairbotamount = 1;
-        difficulty_settings[i].turrets_move = 50;
-        difficulty_settings[i].turrets_add = 150;
-        difficulty_settings[i].merchants = 30;
-        difficulty_settings[i].dancingpercent = 25;
-        difficulty_settings[i].swapitems = 100;
-        difficulty_settings[i].swapcontainers = 100;
-        difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].aug_value_rando = 100;
-        difficulty_settings[i].skill_value_rando = 100;
-        difficulty_settings[i].min_weapon_dmg = 50;
-        difficulty_settings[i].max_weapon_dmg = 150;
-        difficulty_settings[i].min_weapon_shottime = 50;
-        difficulty_settings[i].max_weapon_shottime = 150;
-        difficulty_settings[i].bingo_win = 0;
-        difficulty_settings[i].bingo_freespaces = 1;
-        difficulty_settings[i].spoilers = 1;
-        difficulty_settings[i].health = 100;
-        difficulty_settings[i].energy = 100;
-        i++;
+    difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
+    difficulty_settings[i].doorsdestructible = 25;
+    difficulty_settings[i].doorspickable = 25;
+    difficulty_settings[i].keysrando = 4;
+    difficulty_settings[i].keys_containers = 0;
+    difficulty_settings[i].infodevices_containers = 0;
+    difficulty_settings[i].deviceshackable = 50;
+    difficulty_settings[i].passwordsrandomized = 100;
+    difficulty_settings[i].infodevices = 100;
+    difficulty_settings[i].enemiesrandomized = 40;
+    difficulty_settings[i].enemystats = 80;
+    difficulty_settings[i].hiddenenemiesrandomized = 40;
+    difficulty_settings[i].enemiesshuffled = 100;
+    difficulty_settings[i].enemies_nonhumans = 70;
+    difficulty_settings[i].bot_weapons = 0;
+    difficulty_settings[i].bot_stats = 0;
+    difficulty_settings[i].enemyrespawn = 0;
+    difficulty_settings[i].skills_disable_downgrades = 5;
+    difficulty_settings[i].skills_reroll_missions = 5;
+    difficulty_settings[i].skills_independent_levels = 100;
+    difficulty_settings[i].banned_skills = 5;
+    difficulty_settings[i].banned_skill_levels = 7;
+    difficulty_settings[i].minskill = 50;
+    difficulty_settings[i].maxskill = 300;
+    difficulty_settings[i].ammo = 60;
+    difficulty_settings[i].medkits = 60;
+    difficulty_settings[i].biocells = 50;
+    difficulty_settings[i].lockpicks = 60;
+    difficulty_settings[i].multitools = 60;
+    difficulty_settings[i].speedlevel = 1;
+    difficulty_settings[i].startinglocations = 100;
+    difficulty_settings[i].goals = 100;
+    difficulty_settings[i].equipment = 1;
+    difficulty_settings[i].medbots = 20;
+    difficulty_settings[i].repairbots = 20;
+    difficulty_settings[i].medbotuses = 3;
+    difficulty_settings[i].repairbotuses = 3;
+    difficulty_settings[i].medbotcooldowns = 1;
+    difficulty_settings[i].repairbotcooldowns = 1;
+    difficulty_settings[i].medbotamount = 1;
+    difficulty_settings[i].repairbotamount = 1;
+    difficulty_settings[i].turrets_move = 50;
+    difficulty_settings[i].turrets_add = 150;
+    difficulty_settings[i].merchants = 30;
+    difficulty_settings[i].dancingpercent = 25;
+    difficulty_settings[i].swapitems = 100;
+    difficulty_settings[i].swapcontainers = 100;
+    difficulty_settings[i].augcans = 100;
+    difficulty_settings[i].aug_value_rando = 100;
+    difficulty_settings[i].skill_value_rando = 100;
+    difficulty_settings[i].min_weapon_dmg = 50;
+    difficulty_settings[i].max_weapon_dmg = 150;
+    difficulty_settings[i].min_weapon_shottime = 50;
+    difficulty_settings[i].max_weapon_shottime = 150;
+    difficulty_settings[i].bingo_win = 0;
+    difficulty_settings[i].bingo_freespaces = 1;
+    difficulty_settings[i].spoilers = 1;
+    difficulty_settings[i].health = 100;
+    difficulty_settings[i].energy = 100;
+    i++;
 
 #ifdef hx
-        difficulty_names[i] = "DeusEx";
+    difficulty_names[i] = "DeusEx";
 #else
-        difficulty_names[i] = "Impossible";
-        difficulty_settings[i].CombatDifficulty = 3;
+    difficulty_names[i] = "Impossible";
+    difficulty_settings[i].CombatDifficulty = 3;
 #endif
-        difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
-        difficulty_settings[i].doorsdestructible = 25;
-        difficulty_settings[i].doorspickable = 25;
-        difficulty_settings[i].keysrando = 4;
-        difficulty_settings[i].keys_containers = 0;
-        difficulty_settings[i].infodevices_containers = 0;
-        difficulty_settings[i].deviceshackable = 50;
-        difficulty_settings[i].passwordsrandomized = 100;
-        difficulty_settings[i].infodevices = 100;
-        difficulty_settings[i].enemiesrandomized = 50;
-        difficulty_settings[i].enemystats = 100;
-        difficulty_settings[i].hiddenenemiesrandomized = 50;
-        difficulty_settings[i].enemiesshuffled = 100;
-        difficulty_settings[i].enemies_nonhumans = 80;
-        difficulty_settings[i].bot_weapons = 0;
-        difficulty_settings[i].bot_stats = 0;
-        difficulty_settings[i].enemyrespawn = 0;
-        difficulty_settings[i].skills_disable_downgrades = 5;
-        difficulty_settings[i].skills_reroll_missions = 5;
-        difficulty_settings[i].skills_independent_levels = 100;
-        difficulty_settings[i].banned_skills = 7;
-        difficulty_settings[i].banned_skill_levels = 7;
-        difficulty_settings[i].minskill = 50;
-        difficulty_settings[i].maxskill = 400;
-        difficulty_settings[i].ammo = 40;
-        difficulty_settings[i].medkits = 50;
-        difficulty_settings[i].biocells = 30;
-        difficulty_settings[i].lockpicks = 50;
-        difficulty_settings[i].multitools = 50;
-        difficulty_settings[i].speedlevel = 1;
-        difficulty_settings[i].startinglocations = 100;
-        difficulty_settings[i].goals = 100;
-        difficulty_settings[i].equipment = 1;
-        difficulty_settings[i].medbots = 15;
-        difficulty_settings[i].repairbots = 15;
-        difficulty_settings[i].medbotuses = 1;
-        difficulty_settings[i].repairbotuses = 1;
-        difficulty_settings[i].medbotcooldowns = 1;
-        difficulty_settings[i].repairbotcooldowns = 1;
-        difficulty_settings[i].medbotamount = 1;
-        difficulty_settings[i].repairbotamount = 1;
-        difficulty_settings[i].turrets_move = 50;
-        difficulty_settings[i].turrets_add = 300;
-        difficulty_settings[i].merchants = 30;
-        difficulty_settings[i].dancingpercent = 25;
-        difficulty_settings[i].swapitems = 100;
-        difficulty_settings[i].swapcontainers = 100;
-        difficulty_settings[i].augcans = 100;
-        difficulty_settings[i].aug_value_rando = 100;
-        difficulty_settings[i].skill_value_rando = 100;
-        difficulty_settings[i].min_weapon_dmg = 50;
-        difficulty_settings[i].max_weapon_dmg = 150;
-        difficulty_settings[i].min_weapon_shottime = 50;
-        difficulty_settings[i].max_weapon_shottime = 150;
-        difficulty_settings[i].bingo_win = 0;
-        difficulty_settings[i].bingo_freespaces = 1;
-        difficulty_settings[i].spoilers = 1;
-        difficulty_settings[i].health = 90;
-        difficulty_settings[i].energy = 80;
-        i++;
+    difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
+    difficulty_settings[i].doorsdestructible = 25;
+    difficulty_settings[i].doorspickable = 25;
+    difficulty_settings[i].keysrando = 4;
+    difficulty_settings[i].keys_containers = 0;
+    difficulty_settings[i].infodevices_containers = 0;
+    difficulty_settings[i].deviceshackable = 50;
+    difficulty_settings[i].passwordsrandomized = 100;
+    difficulty_settings[i].infodevices = 100;
+    difficulty_settings[i].enemiesrandomized = 50;
+    difficulty_settings[i].enemystats = 100;
+    difficulty_settings[i].hiddenenemiesrandomized = 50;
+    difficulty_settings[i].enemiesshuffled = 100;
+    difficulty_settings[i].enemies_nonhumans = 80;
+    difficulty_settings[i].bot_weapons = 0;
+    difficulty_settings[i].bot_stats = 0;
+    difficulty_settings[i].enemyrespawn = 0;
+    difficulty_settings[i].skills_disable_downgrades = 5;
+    difficulty_settings[i].skills_reroll_missions = 5;
+    difficulty_settings[i].skills_independent_levels = 100;
+    difficulty_settings[i].banned_skills = 7;
+    difficulty_settings[i].banned_skill_levels = 7;
+    difficulty_settings[i].minskill = 50;
+    difficulty_settings[i].maxskill = 400;
+    difficulty_settings[i].ammo = 40;
+    difficulty_settings[i].medkits = 50;
+    difficulty_settings[i].biocells = 30;
+    difficulty_settings[i].lockpicks = 50;
+    difficulty_settings[i].multitools = 50;
+    difficulty_settings[i].speedlevel = 1;
+    difficulty_settings[i].startinglocations = 100;
+    difficulty_settings[i].goals = 100;
+    difficulty_settings[i].equipment = 1;
+    difficulty_settings[i].medbots = 15;
+    difficulty_settings[i].repairbots = 15;
+    difficulty_settings[i].medbotuses = 1;
+    difficulty_settings[i].repairbotuses = 1;
+    difficulty_settings[i].medbotcooldowns = 1;
+    difficulty_settings[i].repairbotcooldowns = 1;
+    difficulty_settings[i].medbotamount = 1;
+    difficulty_settings[i].repairbotamount = 1;
+    difficulty_settings[i].turrets_move = 50;
+    difficulty_settings[i].turrets_add = 300;
+    difficulty_settings[i].merchants = 30;
+    difficulty_settings[i].dancingpercent = 25;
+    difficulty_settings[i].swapitems = 100;
+    difficulty_settings[i].swapcontainers = 100;
+    difficulty_settings[i].augcans = 100;
+    difficulty_settings[i].aug_value_rando = 100;
+    difficulty_settings[i].skill_value_rando = 100;
+    difficulty_settings[i].min_weapon_dmg = 50;
+    difficulty_settings[i].max_weapon_dmg = 150;
+    difficulty_settings[i].min_weapon_shottime = 50;
+    difficulty_settings[i].max_weapon_shottime = 150;
+    difficulty_settings[i].bingo_win = 0;
+    difficulty_settings[i].bingo_freespaces = 1;
+    difficulty_settings[i].spoilers = 1;
+    difficulty_settings[i].health = 90;
+    difficulty_settings[i].energy = 80;
+    i++;
 
-        for(i=0; i<ArrayCount(difficulty_settings); i++) {
-            difficulty_settings[i].menus_pause = 1;
-            if(#defined(hx)) {
-                difficulty_settings[i].startinglocations = 0;
-                difficulty_settings[i].merchants = 0;
-            }
-            if(#defined(revision)) {
-                difficulty_settings[i].startinglocations = 0;
-                difficulty_settings[i].goals = 0;
-            }
+    for(i=0; i<ArrayCount(difficulty_settings); i++) {
+        difficulty_settings[i].menus_pause = 1;
+        if(#defined(hx)) {
+            difficulty_settings[i].startinglocations = 0;
+            difficulty_settings[i].merchants = 0;
         }
+        if(#defined(revision)) {
+            difficulty_settings[i].startinglocations = 0;
+            difficulty_settings[i].goals = 0;
+        }
+    }
 
 #ifdef noflags
-        InitDefaults();
+    InitDefaults();
 #endif
-    }
+
     Super.CheckConfig();
 }
 
@@ -717,7 +718,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_setseed', bSetSeed, mode, str);
 
     if( FlagInt('Rando_difficulty', difficulty, mode, str) ) {
-        settings = difficulty_settings[difficulty];
+        SetDifficulty(difficulty);
     }
 
     FlagInt('Rando_minskill', settings.minskill, mode, str);
@@ -965,7 +966,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_newgameplus_loops':
         case 'Rando_health':
         case 'Rando_energy':
-            return ""$val;
+            return string(val);
 
         //Return the number as hex
         case 'Rando_playthrough_id':
@@ -1463,9 +1464,9 @@ simulated function RandomizeSettings(bool forceMenuOptions)
         settings.doorspickable = rng(100);
     }
 
-    /* To match the menu options, we just randomize between 0, 50, and 100 */
+    /* To match the menu options, we just randomize between 0, 25, 50, 75, and 100 */
     if (forceMenuOptions){
-        settings.deviceshackable = rng(3)*50;
+        settings.deviceshackable = rng(5)*25;
     } else {
         settings.deviceshackable = rng(100);
     }
@@ -1630,7 +1631,7 @@ function NewGamePlus()
     if(maxrando > 0) {
         // rollback settings to the default for the current difficulty
         // we only want to do this on maxrando because we want to retain the user's custom choices
-        settings = difficulty_settings[difficulty];
+        SetDifficulty(difficulty);
         ExecMaxRando();
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;
@@ -1797,6 +1798,14 @@ function ExtendedTests()
     teststring(ToHex(0x1F), "1F", "ToHex(0x1F)");
     teststring(ToHex(0x100F), "100F", "ToHex(0x100F)");
     teststring(ToHex(0x9001F), "9001F", "ToHex(0x9001F)");
+
+    SetDifficulty(0);
+    testint(settings.bingo_freespaces, 1, "SetDifficulty check bingo_freespaces");
+    testint(Settings.spoilers, 1, "SetDifficulty check spoilers");
+    testint(Settings.menus_pause, 1, "SetDifficulty check menus_pause");
+    testint(settings.health, 200, "SetDifficulty check health");
+    testint(settings.energy, 200, "SetDifficulty check energy");
+    SetDifficulty(1);
 }
 
 function TestTime()
