@@ -38,7 +38,7 @@ struct FlagsSettings {
     var int keysrando;//0=off, 1=dumb, 2=on (old smart), 3=copies, 4=smart (v1.3), 5=path finding?
     var int keys_containers, infodevices_containers;
     var int doorsmode, doorspickable, doorsdestructible, deviceshackable, passwordsrandomized;//could be bools, but int is more flexible, especially so I don't have to change the flag type
-    var int enemiesrandomized, hiddenenemiesrandomized, enemiesshuffled, enemyrespawn, infodevices, bot_weapons, bot_stats;
+    var int enemiesrandomized, hiddenenemiesrandomized, enemystats, enemiesshuffled, enemyrespawn, infodevices, bot_weapons, bot_stats;
     var int dancingpercent;
     var int skills_disable_downgrades, skills_reroll_missions, skills_independent_levels;
     var int startinglocations, goals, equipment;//equipment is a multiplier on how many items you get?
@@ -244,7 +244,7 @@ function InitDefaults()
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,3,1,1) ) {
+    if( ConfigOlderThan(2,3,4,4) ) {
         // setup default difficulties
         i=0;
 #ifndef hx
@@ -260,6 +260,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 20;
+        difficulty_settings[i].enemystats = 20;
         difficulty_settings[i].hiddenenemiesrandomized = 20;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 40;
@@ -325,6 +326,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 20;
+        difficulty_settings[i].enemystats = 20;
         difficulty_settings[i].hiddenenemiesrandomized = 20;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 40;
@@ -389,6 +391,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 30;
+        difficulty_settings[i].enemystats = 30;
         difficulty_settings[i].hiddenenemiesrandomized = 30;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 60;
@@ -453,6 +456,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 40;
+        difficulty_settings[i].enemystats = 40;
         difficulty_settings[i].hiddenenemiesrandomized = 40;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 70;
@@ -517,6 +521,7 @@ function CheckConfig()
         difficulty_settings[i].passwordsrandomized = 100;
         difficulty_settings[i].infodevices = 100;
         difficulty_settings[i].enemiesrandomized = 50;
+        difficulty_settings[i].enemystats = 50;
         difficulty_settings[i].hiddenenemiesrandomized = 50;
         difficulty_settings[i].enemiesshuffled = 100;
         difficulty_settings[i].enemies_nonhumans = 80;
@@ -720,6 +725,9 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_medkits', settings.medkits, mode, str);
     FlagInt('Rando_enemiesrandomized', settings.enemiesrandomized, mode, str);
+    if(!FlagInt('Rando_enemystats', settings.enemystats, mode, str) && mode==Reading) {
+        settings.enemystats = settings.enemiesrandomized;
+    }
     FlagInt('Rando_hiddenenemiesrandomized', settings.hiddenenemiesrandomized, mode, str);
     FlagInt('Rando_enemiesshuffled', settings.enemiesshuffled, mode, str);
     FlagInt('Rando_infodevices', settings.infodevices, mode, str);
@@ -827,6 +835,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Medkit Drops";
         case 'Rando_enemiesrandomized':
             return "Enemy Randomization";
+        case 'Rando_enemystats':
+            return "Enemy Stats Boost";
         case 'Rando_hiddenenemiesrandomized':
             return "Hidden Enemy Randomization";
         case 'Rando_enemiesshuffled':
@@ -970,6 +980,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_swapitems':
         case 'Rando_swapcontainers':
         case 'Rando_enemiesrandomized':
+        case 'Rando_enemystats':
         case 'Rando_hiddenenemiesrandomized':
         case 'Rando_enemiesshuffled':
         case 'Rando_bot_stats':
@@ -1377,6 +1388,7 @@ simulated function InitMaxRandoSettings()
     settings.medbots = difficulty_settings[difficulty].medbots;
     settings.repairbots = difficulty_settings[difficulty].repairbots;
     settings.enemiesrandomized=difficulty_settings[difficulty].enemiesrandomized;
+    settings.enemystats=difficulty_settings[difficulty].enemystats;
     settings.enemies_nonhumans=difficulty_settings[difficulty].enemies_nonhumans;
     settings.bot_weapons=difficulty_settings[difficulty].bot_weapons;
     settings.bot_stats=difficulty_settings[difficulty].bot_stats;
@@ -1439,6 +1451,7 @@ simulated function RandomizeSettings(bool forceMenuOptions)
 
     MaxRandoVal(settings.enemiesrandomized);
     settings.hiddenenemiesrandomized = settings.enemiesrandomized;
+    MaxRandoVal(settings.enemystats);
     settings.enemiesshuffled = 100;
     MaxRandoVal(settings.enemies_nonhumans);
 
@@ -1522,6 +1535,7 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
 
     settings.enemiesrandomized = 0;
     settings.hiddenenemiesrandomized = settings.enemiesrandomized;
+    settings.enemystats = 0;
     settings.enemiesshuffled = 0;
     settings.enemies_nonhumans = 0;
     settings.bot_weapons = 0;
@@ -1604,6 +1618,7 @@ function NewGamePlus()
     NewGamePlusVal(settings.minskill, 1.2, exp);
     NewGamePlusVal(settings.maxskill, 1.2, exp);
     NewGamePlusVal(settings.enemiesrandomized, 1.2, exp);
+    NewGamePlusVal(settings.enemystats, 1.2, exp);
     NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp);
     NewGamePlusVal(settings.ammo, 0.9, exp);
     NewGamePlusVal(settings.medkits, 0.8, exp);
