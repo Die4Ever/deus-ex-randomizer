@@ -29,7 +29,7 @@ function TimerMapFixes()
 
     switch(dxr.localURL)
     {
-        case "08_NYC_STREET":
+    case "08_NYC_STREET":
         if (#defined(vanillamaps) && dxr.flagbase.GetBool('StantonDowd_Played') )
         {
             foreach AllActors(class'BlackHelicopter', chopper, 'CopterExit')

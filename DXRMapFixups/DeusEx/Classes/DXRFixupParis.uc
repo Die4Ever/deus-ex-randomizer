@@ -103,10 +103,6 @@ function PreFirstEntryMapFixes()
     }
 }
 
-function PostFirstEntryMapFixes()
-{
-}
-
 function AnyEntryMapFixes()
 {
     local DXRNPCs npcs;

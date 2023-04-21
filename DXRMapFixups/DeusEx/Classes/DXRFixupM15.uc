@@ -204,10 +204,6 @@ function PreFirstEntryMapFixes()
 #endif
 }
 
-function PostFirstEntryMapFixes()
-{
-}
-
 function AnyEntryMapFixes()
 {
     local Gray g;

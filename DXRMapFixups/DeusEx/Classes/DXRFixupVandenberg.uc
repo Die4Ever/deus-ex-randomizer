@@ -155,7 +155,3 @@ function AnyEntryMapFixes()
         break;
     }
 }
-
-function TimerMapFixes()
-{
-}
