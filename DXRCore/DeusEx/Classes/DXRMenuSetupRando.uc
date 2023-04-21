@@ -19,7 +19,7 @@ function BindControls(optional string action)
     if( ! #defined(vmd) ) {
         NewMenuItem("Combat Difficulty %", "Multiply the damage the player takes. The original game uses 400% for realistic.");
         iDifficulty = int(combatDifficulty * 100.0);
-        Slider(iDifficulty, 0, 100000);
+        Slider(iDifficulty, 0, 10000);
         combatDifficulty = float(iDifficulty) / 100.0;
     }
 
@@ -169,6 +169,9 @@ function BindControls(optional string action)
 
     NewMenuItem("Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.");
     Slider(f.settings.enemiesrandomized, 0, 1000);
+
+    NewMenuItem("Enemy Stats Boost %", "How much to boost enemy accuracy, reload speed, and aggression.");
+    Slider(f.settings.enemystats, 0, 100);
 
     NewMenuItem("Enemy Shuffling %", "Shuffle enemies around the map.");
     Slider(f.settings.enemiesshuffled, 0, 100);
