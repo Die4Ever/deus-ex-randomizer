@@ -1806,6 +1806,8 @@ function ExtendedTests()
     testint(settings.health, 200, "SetDifficulty check health");
     testint(settings.energy, 200, "SetDifficulty check energy");
     SetDifficulty(1);
+    testint(settings.health, 100, "SetDifficulty check health");
+    testint(settings.energy, 100, "SetDifficulty check energy");
 }
 
 function TestTime()
