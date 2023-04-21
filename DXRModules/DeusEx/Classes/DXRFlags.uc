@@ -66,6 +66,8 @@ var config string difficulty_names[5];// Super Easy QA, Easy, Normal, Hard, Extr
 var config FlagsSettings difficulty_settings[5];
 #endif
 
+var config bool speedrun_mode;
+
 var #var(flagvarprefix) FlagsSettings settings;
 
 const undefeatabledoors = 256;//1*256;

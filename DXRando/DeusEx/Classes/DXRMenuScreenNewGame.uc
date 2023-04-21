@@ -12,6 +12,13 @@ function SetDxr(DXRando d)
 {
     dxr=d;
     flags = DXRFlags(dxr.FindModule(class'DXRFlags'));
+    if(flags.speedrun_mode)
+        actionButtons[3].btn.Show();
+    else
+        actionButtons[3].btn.Hide();
+
+    player.SkillPointsAvail = player.Default.SkillPointsAvail;
+    player.SkillPointsTotal = player.Default.SkillPointsTotal;
     CopySkills();
     PopulateSkillsList();
     UpdateSkillPoints();
@@ -132,7 +139,26 @@ function CreateSkillsListWindow()
     lstSkills.SetColumnAlignment(2, HALIGN_Left);
 }
 
+
+function ProcessAction(String actionKey)
+{
+    if (actionKey == "NEWSEED")
+    {
+        flags.RollSeed();
+        SetDxr(dxr);
+    }
+    else
+        Super.ProcessAction(actionKey);
+}
+
+function CreateActionButtons()
+{
+    Super.CreateActionButtons();
+    actionButtons[3].btn.Hide();
+}
+
 defaultproperties
 {
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel)
+    actionButtons(3)=(Align=HALIGN_Left,Action=AB_Other,Text="|&New Seed",Key="NEWSEED")
 }
