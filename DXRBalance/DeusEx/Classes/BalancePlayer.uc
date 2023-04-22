@@ -189,6 +189,17 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         newDamage*=damageMult;
     }
 
+    // show resistance, don't factor in the random rounding, so the numbers are stable and easier to read
+    pct = 1.0 - (newDamage / oldDamage);
+    if (!bCheckOnly)
+    {
+        SetDamagePercent(pct);
+    }
+    if( pct > 0 ) {
+        bReduced = True;
+        ClientFlash(0.01, vect(0, 0, 50));
+    }
+
     //
     // Reduce or increase the damage based on the combat difficulty setting, do this before SetDamagePercent for the UI display
     // because we don't want to show 100% damage reduction but then do the minimum of 1 damage
@@ -203,29 +214,12 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         oldDamage *= CombatDifficulty/2 + 0.2;
     }
 
-    // always take at least one point of damage
-    if ((newDamage <= 1) && (Damage > 0))
-        newDamage = 1;
-    if ((oldDamage <= 1) && (Damage > 0))
-        oldDamage = 1;
-
-    if(frand() < (newDamage%1.0)) {
+    if(frand() < (newDamage%1.0)) {// DXRando: random rounding, 1.9 is more likely to round up than 1.1 is
         newDamage += 0.999;
         oldDamage += 0.999;
     }
 
-    //make sure to factor the rounding into the percentage
-    pct = 1.0 - ( Float(Int(newDamage)) / Float(Int(oldDamage)) );
-    if (!bCheckOnly)
-    {
-        SetDamagePercent(pct);
-    }
-    if( pct > 0 ) {
-        bReduced = True;
-        ClientFlash(0.01, vect(0, 0, 50));
-    }
-
-    adjustedDamage = Int(newDamage);
+    adjustedDamage = Int(newDamage);// adjustedDamage is our out param
 
     return bReduced;
 }
