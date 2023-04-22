@@ -213,8 +213,6 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         newDamage += 0.999;
         oldDamage += 0.999;
     }
-    newDamage = RandomRound(newDamage);
-    oldDamage = RandomRound(oldDamage);
 
     //make sure to factor the rounding into the percentage
     pct = 1.0 - ( Float(Int(newDamage)) / Float(Int(oldDamage)) );
