@@ -81,7 +81,6 @@ function PreFirstEntryMapFixes()
         UpdateWeldPointGoal(5);
 
 #ifdef vanillamaps
-        Tag = 'FanToggle';
         foreach AllActors(class'ComputerSecurity',cs){
             if (cs.Name == 'ComputerSecurity4'){
                 cs.specialOptions[0].Text = "Disable Ventilation Fan";
@@ -141,7 +140,6 @@ function PreFirstEntryMapFixes()
 
     case "09_NYC_SHIPFAN":
 #ifdef vanillamaps
-        Tag = 'FanToggle';
         foreach AllActors(class'ComputerSecurity',cs){
             if (cs.Name == 'ComputerSecurity6'){
                 cs.specialOptions[0].Text = "Disable Ventilation Fan";
@@ -151,6 +149,7 @@ function PreFirstEntryMapFixes()
         }
 #endif
         break;
+
     case "09_NYC_GRAVEYARD":
         Spawn(class'PlaceholderItem',,, vect(-509.5,-742.88,-213)); //Tunnels
         Spawn(class'PlaceholderItem',,, vect(-1524.8,-943.9,-285.69)); //Empty Sarcophogus
@@ -208,6 +207,11 @@ function AnyEntryMapFixes()
 
     case "09_NYC_SHIPBELOW":
         SetTimer(1, True);
+        Tag = 'FanToggle';
+        break;
+
+    case "09_NYC_SHIPFAN":
+        Tag = 'FanToggle';
         break;
     }
 }
