@@ -161,8 +161,13 @@ function AddRandomEnemyType(string t, int c)
 
 function FirstEntry()
 {
+    local PlaceholderEnemy placeholder;
     Super.FirstEntry();
     SwapScriptedPawns(dxr.flags.settings.enemiesshuffled, true);
+    // delete placeholders after doing swaps but before doing clones
+    foreach AllActors(class'PlaceholderEnemy', placeholder) {
+        placeholder.Destroy();
+    }
     RandoEnemies(dxr.flags.settings.enemiesrandomized, dxr.flags.settings.hiddenenemiesrandomized);
     RandoCarcasses(dxr.flags.settings.swapitems);
 }
