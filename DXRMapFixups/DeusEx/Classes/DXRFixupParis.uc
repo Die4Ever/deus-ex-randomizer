@@ -94,7 +94,22 @@ function PreFirstEntryMapFixes()
                 sp.bImportant=True;
             }
         }
-
+        Spawn(class'PlaceholderItem',,, vect(-607.8,-1003.2,59)); //Table near Nicolette Vanilla
+        Spawn(class'PlaceholderItem',,, vect(-239.927216,499.098633,43)); //Ledge near club owner
+        Spawn(class'PlaceholderItem',,, vect(-1164.5,1207.85,-133)); //Table near biocell guy
+        Spawn(class'PlaceholderItem',,, vect(-1046,-1393,-145)); //Bathroom counter 1
+        Spawn(class'PlaceholderItem',,, vect(-1545.5,-1016.7,-145)); //Bathroom counter 2
+        Spawn(class'PlaceholderItem',,, vect(-1464,-1649.6,-197)); //Bathroom stall 1
+        Spawn(class'PlaceholderItem',,, vect(-1096.7,-847,-197)); //Bathroom stall 2
+        Spawn(class'PlaceholderItem',,, vect(-2093.7,-293,-161)); //Club back room
+        break;
+    case "11_PARIS_UNDERGROUND":
+        Spawn(class'PlaceholderItem',,, vect(2268.5,-563.7,-101)); //Near ATM
+        Spawn(class'PlaceholderItem',,, vect(408.3,768.7,-37)); //Near Mechanic
+        Spawn(class'PlaceholderItem',,, vect(-729,809.5,-1061)); //Bench at subway
+        Spawn(class'PlaceholderItem',,, vect(-733,-251,-1061)); //Bench at subway
+        Spawn(class'PlaceholderItem',,, vect(300.7,491,-1061)); //Opposite side of tracks
+        break;
     case "11_PARIS_CATHEDRAL":
         foreach AllActors(class'GuntherHermann', g) {
             g.ChangeAlly('mj12', 1, true);

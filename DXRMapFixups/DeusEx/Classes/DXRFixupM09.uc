@@ -151,6 +151,15 @@ function PreFirstEntryMapFixes()
         }
 #endif
         break;
+    case "09_NYC_GRAVEYARD":
+        Spawn(class'PlaceholderItem',,, vect(-509.5,-742.88,-213)); //Tunnels
+        Spawn(class'PlaceholderItem',,, vect(-1524.8,-943.9,-285.69)); //Empty Sarcophogus
+        Spawn(class'PlaceholderItem',,, vect(-1433.77,1161.87,-149)); //Escape tunnel
+        Spawn(class'PlaceholderItem',,, vect(-828.5,-266.1,27)); //Front of tomb
+        Spawn(class'PlaceholderItem',,, vect(-1499.35,-454.93,-293)); //Tomb stairs
+        Spawn(class'PlaceholderItem',,, vect(1108.85,808.15,71.309769)); //Secret room shelf 1
+        Spawn(class'PlaceholderItem',,, vect(1110,829.5,35.310154)); //Secret room shelf 2
+        break;
     }
 }
 

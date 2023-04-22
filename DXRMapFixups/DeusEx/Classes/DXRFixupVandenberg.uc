@@ -72,6 +72,11 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(Mover)', door, 'Releasebots') {
             door.MoverEncroachType=ME_IgnoreWhenEncroach;
         }
+
+        Spawn(class'PlaceholderItem',,, vect(1020.93,8203.4,-2864)); //Over security computer
+        Spawn(class'PlaceholderItem',,, vect(348.9,8484.63,-2913)); //Turret room
+        Spawn(class'PlaceholderItem',,, vect(1280.84,8534.17,-2913)); //Turret room
+        Spawn(class'PlaceholderItem',,, vect(1892,8754.5,-2901)); //Turret room, opposite from bait computer
         break;
 
     case "14_Oceanlab_silo":
@@ -94,6 +99,11 @@ function PreFirstEntryMapFixes()
                 SetPawnHealth(hs, 200);
             }
         }
+        break;
+    case "12_VANDENBERG_COMPUTER":
+        Spawn(class'PlaceholderItem',,, vect(579,2884,-1629)); //Table near entrance
+        Spawn(class'PlaceholderItem',,, vect(1057,2685.25,-1637)); //Table overlooking computer room
+        Spawn(class'PlaceholderItem',,, vect(1970,2883.43,-1941)); //In first floor computer room
         break;
 #endif
     }
