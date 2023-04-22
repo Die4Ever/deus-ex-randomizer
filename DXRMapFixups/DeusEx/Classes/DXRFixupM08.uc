@@ -40,3 +40,49 @@ function TimerMapFixes()
         break;
     }
 }
+
+function PreFirstEntryMapFixes()
+{
+    switch(dxr.localURL)
+    {
+        case "08_NYC_STREET":
+            AdjustRaidStartLocation();
+            break;
+    }
+}
+
+//GOTY edition has the attack force spawn in weird spots within line of sight.
+//Revert their starting locations to where they were in the original release.
+function AdjustRaidStartLocation()
+{
+    local MJ12Troop t;
+    local vector locations[10];
+    local int i;
+
+    i=0;
+
+    //In theory we could add more starting locations for the raids (basketball court, hotel)
+
+    //Alley 1 (Sandra Renton) - Vanilla Non-GOTY
+    locations[i++]=vect(-2086,-706,-426);
+    locations[i++]=vect(-2041,-761,-426);
+    locations[i++]=vect(-1886,-719,-426);
+    locations[i++]=vect(-1849,-779,-426);
+    locations[i++]=vect(-1692,-695,-426);
+
+    //Alley 2 (Road to NSF HQ) - Vanilla Non-GOTY
+    locations[i++]=vect(-1907,-1534,-434);
+    locations[i++]=vect(-1856,-1584,-434);
+    locations[i++]=vect(-1817,-1497,-441);
+    locations[i++]=vect(-1693,-1494,-452);
+    locations[i++]=vect(-1577,-1585,-438);
+
+
+   //Ambush guys are tagged with MJ12AttackForce and start out of world
+   i=0;
+   foreach AllActors(class'MJ12Troop',t,'MJ12AttackForce'){
+       t.EnterWorld();
+       t.SetLocation(locations[i++]);
+       t.LeaveWorld();
+   }
+}
