@@ -53,6 +53,20 @@ function PreFirstEntryMapFixes()
                 comp.UserList[0].Password = "Kraken";
             }
         }
+
+        Spawn(class'PlaceholderItem',,, vect(37.5,531.4,-1569)); //Secretary desk
+        Spawn(class'PlaceholderItem',,, vect(2722,226.5,-1481)); //Greasel Lab desk
+        Spawn(class'PlaceholderItem',,, vect(4097.8,395.4,-1533)); //Desk with zappy electricity near construction zone
+        Spawn(class'PlaceholderItem',,, vect(4636.1,1579.3,-1741)); //Electrical box in construction zone
+        Spawn(class'PlaceholderItem',,, vect(5359.5,3122.3,-1761)); //Construction vehicle tread
+        Spawn(class'PlaceholderItem',,, vect(3114.3,3711.2,-2549)); //Storage room in crew capsule
+
+        Spawn(class'PlaceholderContainer',,, vect(-71,775,-1599)); //Secretary desk corner
+        Spawn(class'PlaceholderContainer',,, vect(1740,156,-1599)); //Open storage room
+        Spawn(class'PlaceholderContainer',,, vect(2999,482,-1503)); //Greasel lab
+        Spawn(class'PlaceholderContainer',,, vect(1780,3725,-2483)); //Crew module bed
+        Spawn(class'PlaceholderContainer',,, vect(1733,3848,-4223)); //Corner in hall to UC
+
         break;
     case "14_OCEANLAB_UC":
         //Make the datalink immediately trigger when you download the schematics, regardless of where the computer is
