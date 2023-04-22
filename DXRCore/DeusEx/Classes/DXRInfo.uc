@@ -327,7 +327,7 @@ simulated static function string ToHex(int val)
     return s;
 }
 
-function string ActorToString( Actor a )
+static function string ActorToString( Actor a )
 {
     local string out;
     out = a.Class.Name$"."$a.Name$"("$a.Location$")";
