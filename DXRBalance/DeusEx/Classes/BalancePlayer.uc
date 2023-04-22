@@ -197,13 +197,24 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
     {
         newDamage *= CombatDifficulty;
         oldDamage *= CombatDifficulty;
-
-        // always take at least one point of damage
-        if ((newDamage <= 1) && (Damage > 0))
-            newDamage = 1;
-        if ((oldDamage <= 1) && (Damage > 0))
-            oldDamage = 1;
     }
+    else {
+        newDamage *= CombatDifficulty/2 + 0.2;
+        oldDamage *= CombatDifficulty/2 + 0.2;
+    }
+
+    // always take at least one point of damage
+    if ((newDamage <= 1) && (Damage > 0))
+        newDamage = 1;
+    if ((oldDamage <= 1) && (Damage > 0))
+        oldDamage = 1;
+
+    if(frand() < (newDamage%1.0)) {
+        newDamage += 0.999;
+        oldDamage += 0.999;
+    }
+    newDamage = RandomRound(newDamage);
+    oldDamage = RandomRound(oldDamage);
 
     //make sure to factor the rounding into the percentage
     pct = 1.0 - ( Float(Int(newDamage)) / Float(Int(oldDamage)) );
