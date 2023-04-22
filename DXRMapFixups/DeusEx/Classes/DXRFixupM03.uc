@@ -171,6 +171,15 @@ function PreFirstEntryMapFixes()
                 }
             }
         }
+        Spawn(class'PlaceholderItem',,, vect(1702,-359.8,373)); //Bathroom counter
+        Spawn(class'PlaceholderItem',,, vect(1624.15,-740.12,373)); //Guest bed headboard
+        Spawn(class'PlaceholderItem',,, vect(1412.5,-297.7,406.32)); //Closet shelf
+        Spawn(class'PlaceholderItem',,, vect(1445.97,-294.6,316.31)); //Closet floor
+        Spawn(class'PlaceholderItem',,, vect(733.2,-462.57,342.5)); //Middle seat row
+        Spawn(class'PlaceholderItem',,, vect(617.1,-511.35,342.51)); //Back row seat
+        Spawn(class'PlaceholderItem',,, vect(327.4,-524.8,342.5)); //Weird solo seating row
+        Spawn(class'PlaceholderItem',,, vect(342.4,-730.14,196.3)); //Shelf in cargo area
+        Spawn(class'PlaceholderItem',,, vect(495.4,-733.96,196.3)); //Shelf in cargo area
         break;
 
     case "03_NYC_UNATCOISLAND":
