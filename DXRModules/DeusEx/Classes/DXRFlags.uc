@@ -421,6 +421,78 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 {
     difficulty = new_difficulty;
     settings = difficulty_settings[difficulty];
+
+    if(IsRandoLite()) {
+        settings.doorsmode = 0;
+        settings.doorsdestructible = 0;
+        settings.doorspickable = 0;
+        settings.keysrando = 0;
+        settings.keys_containers = 0;
+        settings.infodevices_containers = 0;
+        settings.deviceshackable = 0;
+        settings.passwordsrandomized = 100;
+        settings.infodevices = 0;
+        settings.enemiesrandomized = 0;
+        //settings.enemystats = 0;
+        settings.hiddenenemiesrandomized = 0;
+        settings.enemiesshuffled = 0;
+        settings.enemies_nonhumans = 0;
+        settings.bot_weapons = 0;
+        //settings.bot_stats = 0;
+        settings.enemyrespawn = 0;
+        settings.skills_disable_downgrades = 0;
+        settings.skills_reroll_missions = 0;
+        settings.skills_independent_levels = 0;
+        settings.banned_skills = 0;
+        settings.banned_skill_levels = 0;
+        settings.minskill = 75;
+        settings.maxskill = 125;
+        settings.ammo = 100;
+        settings.medkits = 100;
+        settings.biocells = 100;
+        settings.lockpicks = 100;
+        settings.multitools = 100;
+        settings.speedlevel = 0;
+        settings.startinglocations = 0;
+        settings.goals = 0;
+        settings.equipment = 0;
+        settings.medbots = -1;
+        settings.repairbots = -1;
+        settings.medbotuses = 10;
+        settings.repairbotuses = 10;
+        settings.medbotcooldowns = 1;
+        settings.repairbotcooldowns = 1;
+        settings.medbotamount = 1;
+        settings.repairbotamount = 1;
+        settings.turrets_move = 0;
+        settings.turrets_add = 0;
+        //settings.merchants = 0;
+        settings.dancingpercent = 0;
+        settings.swapitems = 0;
+        settings.swapcontainers = 0;
+        settings.augcans = 100;
+        settings.aug_value_rando = 50;
+        settings.skill_value_rando = 50;
+        settings.min_weapon_dmg = 75;
+        settings.max_weapon_dmg = 125;
+        settings.min_weapon_shottime = 75;
+        settings.max_weapon_shottime = 125;
+        settings.bingo_win = 0;
+        settings.bingo_freespaces = 1;
+        settings.spoilers = 1;
+        settings.health = 100;
+        settings.energy = 100;
+    } else if(IsSeriousSam()) {
+#ifndef hx
+        settings.CombatDifficulty *= 0.1;
+#endif
+        settings.enemiesrandomized = 1000;
+        settings.hiddenenemiesrandomized = 1000;
+        settings.maxskill = Max(settings.minskill * 1.5, settings.maxskill * 0.75);
+        settings.medkits *= 1.2;
+        settings.medbots *= 2;
+        settings.health = 250;
+    }
     return settings;
 }
 
