@@ -291,7 +291,7 @@ function PlayRandomSong(bool setseed)
     if( p == None || dxr == None  || (continuous_setting == c.default.disabled && rando_music_setting==false) )
         return;
 
-    if(rando_music_setting) {
+    if(rando_music_setting && !dxr.flags.IsRandoLite()) {
         GetLevelSong(setseed);
     }
     NewSong = LevelSong;
