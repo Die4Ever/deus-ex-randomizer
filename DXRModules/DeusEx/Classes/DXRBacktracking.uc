@@ -153,7 +153,7 @@ function CheckNextMap(string nextMap)
             RetainSaves(oldMissionNum, newMissionNum, nextMap);
             break;
         default:
-            if( dxr.flags.gamemode == 3 )
+            if( dxr.flags.gamemode == 100 )// some type of open world mode? always retain saves across all missions
                 RetainSaves(oldMissionNum, newMissionNum, nextMap);
     }
 }

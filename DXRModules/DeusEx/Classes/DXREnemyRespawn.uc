@@ -38,7 +38,7 @@ function PostFirstEntry()
     Super.PostFirstEntry();
 
     if( dxr.flags.settings.enemyrespawn <= 0 ) return;
-    if( dxr.flags.gamemode != 0 && dxr.flags.gamemode != 1 ) return;
+    if( dxr.flags.IsHordeMode() ) return;
 
     time=0;
     foreach AllActors(class'ScriptedPawn', p) {
@@ -118,7 +118,7 @@ function AnyEntry()
     local int i;
     Super.AnyEntry();
 
-    if( dxr.flags.gamemode != 0 && dxr.flags.gamemode != 1 ) return;
+    if( dxr.flags.IsHordeMode() ) return;
 
     if( dxr.flags.settings.enemyrespawn <= 0 ) return;
 

@@ -23,7 +23,7 @@ function FirstEntry()
     local int i ,slot, num;
     local string map;
 
-    if( dxr.flags.gamemode != 3 ) return;
+    if( dxr.flags.gamemode != 100 ) return;
     Super.FirstEntry();
 
     SetGlobalSeed(Class.Name);
@@ -57,7 +57,7 @@ function FirstEntry()
 
 function AnyEntry()
 {
-    if( dxr.flags.gamemode != 3 ) return;
+    if( dxr.flags.gamemode != 100 ) return;
     Super.AnyEntry();
 
     switch(dxr.dxInfo.missionNumber) {

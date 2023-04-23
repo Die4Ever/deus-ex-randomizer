@@ -89,7 +89,7 @@ simulated function InitHints()
             AddHint("The flashlight (F12) can be used to attract the attention of guards.");
         }
 
-        if(dxr.flags.gamemode == 1) {
+        if(dxr.flags.IsEntranceRando()) {
             AddHint("Entrance Randomizer is enabled,", "check the wiki on our GitHub for help.");
         }
 

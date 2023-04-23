@@ -817,7 +817,7 @@ function PreFirstEntry()
     seed = InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);
 #endif
 
-    if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
+    if( dxr.localURL == "01_NYC_UNATCOISLAND" && !dxr.flags.IsRandoLite() ) {
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
         dxr.flags.f.SetBool('FemJCMeetPaul_Played', true,, 2);
         dxr.flags.f.SetBool('PaulGaveWeapon', true,, 2);
