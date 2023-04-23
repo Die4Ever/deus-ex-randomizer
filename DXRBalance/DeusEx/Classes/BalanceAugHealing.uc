@@ -58,6 +58,8 @@ function HealPartMax(out int points, out int amt, int max)
 {
     local int spill;
 
+    max = Min(max, Player.default.HealthTorso);
+
     if(points >= max) return;
 
     points += amt;

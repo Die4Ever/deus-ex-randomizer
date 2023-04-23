@@ -365,9 +365,9 @@ function HealPart(out int points, out int amt)
     local int spill;
 
     points += amt;
-    spill = points - default.Health;
+    spill = points - default.HealthTorso;
     if (spill > 0)
-        points = default.Health;
+        points = default.HealthTorso;
     else
         spill = 0;
 
