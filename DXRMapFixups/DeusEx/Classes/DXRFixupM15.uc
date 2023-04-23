@@ -229,8 +229,6 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
-        // get the password from Helios sooner
-        FixConversationAddNote(GetConversation('DL_Final_Helios06'), "Use the login");
         break;
     }
 #endif
@@ -254,19 +252,22 @@ function AnyEntryMapFixes()
         break;
 
     case "15_AREA51_PAGE":
+        // get the password from Helios sooner
+        FixConversationAddNote(GetConversation('DL_Final_Helios06'), "Use the login");
+        // timer to count the blue fusion reactors
         SetTimer(1, True);
 
         foreach AllActors(class'ElectricityEmitter', ee, 'emitter_relay_room') {
-            if(ee.DamageAmount >= 30) {
+            if(ee.DamageAmount >= 30) {// these are OP
                 ee.DamageAmount /= 2;
                 ee.damageTime *= 2.0;
                 ee.randomAngle /= 2.0;
             }
         }
 
-        if((!#defined(revision)) && (!#defined(gmdx))) {
+        if((!#defined(revision)) && (!#defined(gmdx))) {// cover the button better
             foreach AllActors(class'#var(Mover)', d, 'Page_button') {
-                d.SetLocation(vect(6152.000000, -6512.000000, -5136.000000)); // original Z was -5134
+                d.SetLocation(d.Location-vect(0,0,2)); // original Z was -5134
             }
         }
         break;
