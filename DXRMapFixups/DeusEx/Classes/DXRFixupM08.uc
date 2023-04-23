@@ -43,10 +43,22 @@ function TimerMapFixes()
 
 function PreFirstEntryMapFixes()
 {
+    local DataLinkTrigger dlt;
+
     switch(dxr.localURL)
     {
         case "08_NYC_STREET":
             AdjustRaidStartLocation();
+
+            //Since we always spawn the helicopter on the roof immediately after the conversation,
+            //the ambush should also always happen immediately after the conversation (instead of
+            //after getting explosives)
+            foreach AllActors(class'DataLinkTrigger',dlt)
+            {
+                if (dlt.CheckFlag=='PlayerHasExplosives'){
+                    dlt.CheckFlag='StantonDowd_Played';
+                }
+            }
             break;
     }
 }
@@ -81,8 +93,7 @@ function AdjustRaidStartLocation()
    //Ambush guys are tagged with MJ12AttackForce and start out of world
    i=0;
    foreach AllActors(class'MJ12Troop',t,'MJ12AttackForce'){
-       t.EnterWorld();
-       t.SetLocation(locations[i++]);
-       t.LeaveWorld();
+       t.WorldPosition = locations[i];
+       t.SetLocation(locations[i++]+vect(0,0,20000));
    }
 }
