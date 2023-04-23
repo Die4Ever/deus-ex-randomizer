@@ -11,7 +11,7 @@ function FirstEntry()
 #endif
     Super.FirstEntry();
 
-    if(dxr.flags.IsRandoLite()) return;
+    if(dxr.flags.IsReducedRando()) return;
 
     SetSeed( "DXRNames" );
 

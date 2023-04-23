@@ -123,7 +123,7 @@ function RandomBobPage()
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
-    if(dxr.flags.IsRandoLite()) return;
+    if(dxr.flags.IsReducedRando()) return;
     switch(dxr.localURL)
     {
         case "15_AREA51_PAGE":
@@ -152,7 +152,7 @@ function AnyEntry()
     local Rotator r;
     local Vector v;
     Super.AnyEntry();
-    if(dxr.flags.IsRandoLite()) return;
+    if(dxr.flags.IsReducedRando()) return;
 
     switch(dxr.localURL)
     {
@@ -276,7 +276,7 @@ function PostFirstEntry()
     local vector v;
     local rotator r;
     Super.PostFirstEntry();
-    if(dxr.flags.IsRandoLite()) return;
+    if(dxr.flags.IsReducedRando()) return;
 
     SetSeed("Memes Dancing");
 
