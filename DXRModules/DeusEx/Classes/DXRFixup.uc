@@ -183,6 +183,25 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     FixInventory(p);
 }
 
+
+function PostAnyEntry()
+{
+    local PlaceholderItem i;
+    local PlaceholderContainer c;
+    local PlaceholderEnemy e;
+    foreach AllActors(class'PlaceholderItem', i) {
+        i.Destroy();
+    }
+    foreach AllActors(class'PlaceholderContainer', c) {
+        c.Destroy();
+    }
+    // just in case DXREnemies isn't loaded
+    foreach AllActors(class'PlaceholderEnemy', e) {
+        e.Destroy();
+    }
+}
+
+
 function PreTravel()
 {
     Super.PreTravel();
