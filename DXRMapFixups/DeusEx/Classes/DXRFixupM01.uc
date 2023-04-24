@@ -29,7 +29,7 @@ function PostFirstEntryMapFixes()
 function PreFirstEntryMapFixes()
 {
     switch(dxr.localURL) {
-        case "01_NYC_UNATCOISLAND":
+    case "01_NYC_UNATCOISLAND":
         Spawn(class'PlaceholderItem',,, vect(2378.5,-10810.9,-857)); //Sunken Ship
         Spawn(class'PlaceholderItem',,, vect(2436,-10709.4,-857)); //Sunken Ship
         Spawn(class'PlaceholderContainer',,, vect(1376,-9952.5,-271)); //Harley's house
@@ -47,7 +47,8 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vect(1750.75,275.7,-117.7)); //Near display of Statue torch
         Spawn(class'PlaceholderItem',,, vect(5830.8,-344,539)); //Near statue head
         break;
-        case "01_NYC_UNATCOHQ":
+
+    case "01_NYC_UNATCOHQ":
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vect(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vect(211.227, 348.46, 50.32)); //Mens bathroom counter

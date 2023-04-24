@@ -29,6 +29,7 @@ function PreFirstEntryMapFixes()
     local ComputerSecurity cs;
     local #var(prefix)Keypad pad;
     local ProjectileGenerator pg;
+    local #var(prefix)WeaponNanoSword dts;
 
     switch(dxr.localURL)
     {
@@ -103,11 +104,13 @@ function PreFirstEntryMapFixes()
                     break;
             }
         }
-
         break;
 
-#ifdef vanillamaps
     case "06_HONGKONG_WANCHAI_STREET":
+        foreach AllActors(class'#var(prefix)WeaponNanoSword', dts) {
+            dts.bIsSecretGoal = true;// just in case you don't have DXRMissions enabled
+        }
+#ifdef vanillamaps
         foreach AllActors(class'Button1',b)
         {
             if (b.Event=='JockShaftTop')
@@ -139,8 +142,8 @@ function PreFirstEntryMapFixes()
                 d.bFrobbable=True;
             }
         }
-        break;
 #endif
+        break;
 
     case "06_HONGKONG_MJ12LAB":
         foreach AllActors(class'#var(Mover)', m, 'security_doors') {

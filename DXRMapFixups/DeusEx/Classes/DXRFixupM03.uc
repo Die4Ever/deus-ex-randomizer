@@ -183,10 +183,12 @@ function PreFirstEntryMapFixes()
         break;
 
     case "03_NYC_UNATCOISLAND":
-        foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
-            if(unatco.BindName != "PrivateLloyd") continue;
-            unatco.FamiliarName = "Corporal Lloyd";
-            unatco.UnfamiliarName = "Corporal Lloyd";
+        if(!dxr.flags.IsReducedRando()) {
+            foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
+                if(unatco.BindName != "PrivateLloyd") continue;
+                unatco.FamiliarName = "Corporal Lloyd";
+                unatco.UnfamiliarName = "Corporal Lloyd";
+            }
         }
         break;
     case "03_NYC_UNATCOHQ":
