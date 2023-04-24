@@ -23,6 +23,8 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     if(difficulty_names[difficulty] == "Super Easy QA" && dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber < 99) {
         p.ReducedDamageType = 'All';// god mode
         p.ServerSetSloMo(2);
+        p.AllWeapons();
+        p.AllAmmo();
         if(dxr.localURL == "01_NYC_UNATCOISLAND")
             p.ConsoleCommand("legend");
     }
