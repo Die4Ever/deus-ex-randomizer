@@ -93,6 +93,7 @@ function PostFirstEntry()
 {
     local int mission, scale;
     Super.PostFirstEntry();
+    if(dxr.flags.IsZeroRando()) return;
 
     mission = Clamp(dxr.dxInfo.missionNumber, 0, ArrayCount(mission_scaling)-1);
     scale = mission_scaling[mission];
@@ -140,6 +141,7 @@ function ReduceItem(Inventory a)
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
+    if(dxr.flags.IsZeroRando()) return;
     SetTimer(1.0, true);
 }
 
@@ -373,6 +375,7 @@ simulated function AddDXRCredits(CreditsWindow cw)
     local int i;
     local DXREnemies e;
     local class<DeusExWeapon> w;
+    if(dxr.flags.IsZeroRando()) return;
     cw.PrintHeader( "Items" );
 
     PrintItemRate(cw, class'Multitool', dxr.flags.settings.multitools);

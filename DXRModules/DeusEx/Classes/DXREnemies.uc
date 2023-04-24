@@ -253,6 +253,7 @@ function AddDXRCredits(CreditsWindow cw)
 {
     local int i;
     local string weaponName;
+    if(dxr.flags.IsZeroRando()) return;
 
     cw.PrintHeader( dxr.flags.settings.enemiesrandomized $ "% Added Enemies");
     for(i=0; i < ArrayCount(_randomenemies); i++) {
