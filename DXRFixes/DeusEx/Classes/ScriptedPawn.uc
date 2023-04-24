@@ -248,6 +248,154 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
     ReactToInjury(instigatedBy, damageType, hitPos);
 }
 
+// ----------------------------------------------------------------------
+// HandleDamage()
+// ----------------------------------------------------------------------
+
+function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector offset, name damageType)
+{
+    local EHitLocation hitPos;
+    local float        headOffsetZ, headOffsetY, armOffset;
+
+    // calculate our hit extents
+    headOffsetZ = CollisionHeight * 0.7;
+    headOffsetY = CollisionRadius * 0.3;
+    armOffset   = CollisionRadius * 0.35;
+
+    hitPos = HITLOC_None;
+
+    if (actualDamage > 0)
+    {
+        if (offset.z > headOffsetZ)		// head
+        {
+            // narrow the head region
+            if ((Abs(offset.x) < headOffsetY) || (Abs(offset.y) < headOffsetY))
+            {
+                // don't allow headshots with stunning weapons
+                if ((damageType == 'Stunned') || (damageType == 'KnockedOut'))
+                    HealthHead -= actualDamage * 2;// DXRando: 2x damage like torso
+                else if(HasHelmet())// DXRando: helmet good, basically a nerf to the pistol especially for late game
+                    HealthHead -= actualDamage * 6;
+                else
+                    HealthHead -= actualDamage * 8;
+                if (offset.x < 0.0)
+                    hitPos = HITLOC_HeadBack;
+                else
+                    hitPos = HITLOC_HeadFront;
+            }
+            else  // sides of head treated as torso
+            {
+                HealthTorso -= actualDamage * 2;
+                if (offset.x < 0.0)
+                    hitPos = HITLOC_TorsoBack;
+                else
+                    hitPos = HITLOC_TorsoFront;
+            }
+        }
+        else if (offset.z < 0.0)	// legs
+        {
+            if (offset.y > 0.0)
+            {
+                HealthLegRight -= actualDamage * 2;
+                if (offset.x < 0.0)
+                    hitPos = HITLOC_RightLegBack;
+                else
+                    hitPos = HITLOC_RightLegFront;
+            }
+            else
+            {
+                HealthLegLeft -= actualDamage * 2;
+                if (offset.x < 0.0)
+                    hitPos = HITLOC_LeftLegBack;
+                else
+                    hitPos = HITLOC_LeftLegFront;
+            }
+
+             // if this part is already dead, damage the adjacent part
+            if ((HealthLegRight < 0) && (HealthLegLeft > 0))
+            {
+                HealthLegLeft += HealthLegRight;
+                HealthLegRight = 0;
+            }
+            else if ((HealthLegLeft < 0) && (HealthLegRight > 0))
+            {
+                HealthLegRight += HealthLegLeft;
+                HealthLegLeft = 0;
+            }
+
+            if (HealthLegLeft < 0)
+            {
+                HealthTorso += HealthLegLeft;
+                HealthLegLeft = 0;
+            }
+            if (HealthLegRight < 0)
+            {
+                HealthTorso += HealthLegRight;
+                HealthLegRight = 0;
+            }
+        }
+        else						// arms and torso
+        {
+            if (offset.y > armOffset)
+            {
+                HealthArmRight -= actualDamage * 2;
+                if (offset.x < 0.0)
+                    hitPos = HITLOC_RightArmBack;
+                else
+                    hitPos = HITLOC_RightArmFront;
+            }
+            else if (offset.y < -armOffset)
+            {
+                HealthArmLeft -= actualDamage * 2;
+                if (offset.x < 0.0)
+                    hitPos = HITLOC_LeftArmBack;
+                else
+                    hitPos = HITLOC_LeftArmFront;
+            }
+            else
+            {
+                HealthTorso -= actualDamage * 2;
+                if (offset.x < 0.0)
+                    hitPos = HITLOC_TorsoBack;
+                else
+                    hitPos = HITLOC_TorsoFront;
+            }
+
+            // if this part is already dead, damage the adjacent part
+            if (HealthArmLeft < 0)
+            {
+                HealthTorso += HealthArmLeft;
+                HealthArmLeft = 0;
+            }
+            if (HealthArmRight < 0)
+            {
+                HealthTorso += HealthArmRight;
+                HealthArmRight = 0;
+            }
+        }
+    }
+
+    GenerateTotalHealth();
+
+    return hitPos;
+}
+
+function bool HasHelmet()
+{
+    if(Robot(self) != None) return true;
+    if(MJ12Commando(self) != None) return true;
+    if(Mesh == LodMesh'DeusExCharacters.GM_Jumpsuit') {
+        switch(MultiSkins[6]) {
+        case Texture'DeusExItems.Skins.PinkMaskTex':
+        case Texture'DeusExCharacters.Skins.GogglesTex1':
+            return false;
+        }
+        return true;
+    }
+    return false;// false gives vanilla damage
+}
+
+
 function Died(pawn Killer, name damageType, vector HitLocation)
 {
     class'DXREvents'.static.AddPawnDeath(self, Killer, damageType, HitLocation);
