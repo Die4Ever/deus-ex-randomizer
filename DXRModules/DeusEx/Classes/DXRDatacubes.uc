@@ -110,7 +110,14 @@ function vanilla_datacubes_rules()
     datacubes_rules[i].allow = true;
     i++;
 
-    // datacube with the security password, don't allow it to go in the basement
+    // datacube with the security password, don't allow it to go in the basement, you might need it to open the weird door things
+    datacubes_rules[i].map = "04_NYC_NSFHQ";
+    datacubes_rules[i].item_name = '04_Datacube02';
+    datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+    datacubes_rules[i].max_pos = vect(99999, 99999, 0);
+    datacubes_rules[i].allow = false;
+    i++;
+
     datacubes_rules[i].map = "04_NYC_NSFHQ";
     datacubes_rules[i].item_name = '04_Datacube02';
     datacubes_rules[i].min_pos = vect(-99999, -99999, 0);
