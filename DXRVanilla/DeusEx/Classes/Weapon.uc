@@ -1,5 +1,6 @@
 class DXRWeapon shims DeusExWeapon abstract;
 
+var float RelativeRange;
 var float blood_mult;
 var float anim_speed;// also adjusted from Ninja JC mode in DXRLoadouts
 
@@ -489,8 +490,110 @@ simulated function bool UpdateInfo(Object winObject)
     return True;
 }
 
+//
+// TraceFire DXRando: just wanted to do the RelativeRange fix like VMD does
+//
+simulated function TraceFire( float Accuracy )
+{
+	local vector HitLocation, HitNormal, StartTrace, EndTrace, X, Y, Z;
+	local Rotator rot;
+	local actor Other;
+	local float dist, alpha, degrade;
+	local int i, numSlugs;
+	local float volume, radius;
+
+	// make noise if we are not silenced
+	if (!bHasSilencer && !bHandToHand)
+	{
+		GetAIVolume(volume, radius);
+		Owner.AISendEvent('WeaponFire', EAITYPE_Audio, volume, radius);
+		Owner.AISendEvent('LoudNoise', EAITYPE_Audio, volume, radius);
+		if (!Owner.IsA('PlayerPawn'))
+			Owner.AISendEvent('Distress', EAITYPE_Audio, volume, radius);
+	}
+
+	GetAxes(Pawn(owner).ViewRotation,X,Y,Z);
+	StartTrace = ComputeProjectileStart(X, Y, Z);
+	AdjustedAim = pawn(owner).AdjustAim(1000000, StartTrace, 2.75*AimError, False, False);
+
+	// check to see if we are a shotgun-type weapon
+	if (AreaOfEffect == AOE_Cone)
+		numSlugs = 5;
+	else
+		numSlugs = 1;
+
+	// if there is a scope, but the player isn't using it, decrease the accuracy
+	// so there is an advantage to using the scope
+	if (bHasScope && !bZoomed)
+		Accuracy += 0.2;
+	// if the laser sight is on, make this shot dead on
+	// also, if the scope is on, zero the accuracy so the shake makes the shot inaccurate
+	else if (bLasing || bZoomed)
+		Accuracy = 0.0;
+
+    if(!bZoomed && !bHandToHand && bInstantHit && bPenetrating) Accuracy *= MaxRange / RelativeRange;// DXRando: copied from VMD
+
+	for (i=0; i<numSlugs; i++)
+	{
+      // If we have multiple slugs, then lower our accuracy a bit after the first slug so the slugs DON'T all go to the same place
+      if ((i > 0) && (Level.NetMode != NM_Standalone) && !(bHandToHand))
+         if (Accuracy < MinSpreadAcc)
+            Accuracy = MinSpreadAcc;
+
+      // Let handtohand weapons have a better swing
+      if ((bHandToHand) && (NumSlugs > 1) && (Level.NetMode != NM_Standalone))
+      {
+         StartTrace = ComputeProjectileStart(X,Y,Z);
+         StartTrace = StartTrace + (numSlugs/2 - i) * SwingOffset;
+      }
+
+      EndTrace = StartTrace + Accuracy * (FRand()-0.5)*Y*1000 + Accuracy * (FRand()-0.5)*Z*1000 ;
+      EndTrace += (FMax(1024.0, MaxRange) * vector(AdjustedAim));
+
+      Other = Pawn(Owner).TraceShot(HitLocation,HitNormal,EndTrace,StartTrace);
+
+		// randomly draw a tracer for relevant ammo types
+		// don't draw tracers if we're zoomed in with a scope - looks stupid
+      // DEUS_EX AMSD In multiplayer, draw tracers all the time.
+		if ( ((Level.NetMode == NM_Standalone) && (!bZoomed && (numSlugs == 1) && (FRand() < 0.5))) ||
+           ((Level.NetMode != NM_Standalone) && (Role == ROLE_Authority) && (numSlugs == 1)) )
+		{
+			if ((AmmoName == Class'Ammo10mm') || (AmmoName == Class'Ammo3006') ||
+				(AmmoName == Class'Ammo762mm'))
+			{
+				if (VSize(HitLocation - StartTrace) > 250)
+				{
+					rot = Rotator(EndTrace - StartTrace);
+               if ((Level.NetMode != NM_Standalone) && (Self.IsA('WeaponRifle')))
+                  Spawn(class'SniperTracer',,, StartTrace + 96 * Vector(rot), rot);
+               else
+                  Spawn(class'Tracer',,, StartTrace + 96 * Vector(rot), rot);
+				}
+			}
+		}
+
+		// check our range
+		dist = Abs(VSize(HitLocation - Owner.Location));
+
+		if (dist <= AccurateRange)		// we hit just fine
+			ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
+		else if (dist <= MaxRange)
+		{
+			// simulate gravity by lowering the bullet's hit point
+			// based on the owner's distance from the ground
+			alpha = (dist - AccurateRange) / (MaxRange - AccurateRange);
+			degrade = 0.5 * Square(alpha);
+			HitLocation.Z += degrade * (Owner.Location.Z - Owner.CollisionHeight);
+			ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
+		}
+	}
+
+	// otherwise we don't hit the target at all
+}
+
 defaultproperties
 {
     blood_mult=0
     anim_speed=1
+    RelativeRange=3750.0
 }
