@@ -456,8 +456,6 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.equipment = 0;
         settings.medbots = -1;
         settings.repairbots = -1;
-        settings.medbotuses = 10;
-        settings.repairbotuses = 10;
         settings.turrets_move = 0;
         settings.turrets_add = 0;
         settings.dancingpercent = 0;
@@ -472,8 +470,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.passwordsrandomized = 0;
             settings.enemystats = 0;
             settings.bot_stats = 0;
-            settings.minskill = 100;
-            settings.maxskill = 100;
+            settings.minskill = (settings.minskill*3 + settings.maxskill + 100) / 5;
+            settings.maxskill = settings.minskill;
             settings.augcans = 0;
             settings.aug_value_rando = 0;
             settings.skill_value_rando = 0;
@@ -488,8 +486,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.repairbotamount = 0;
         } else {
             settings.passwordsrandomized = 100;
-            settings.minskill = 75;
-            settings.maxskill = 125;
+            settings.minskill = (settings.minskill + 100) / 2;
+            settings.maxskill = (settings.maxskill + 200) / 3;
             settings.augcans = 100;
             settings.aug_value_rando = 50;
             settings.skill_value_rando = 50;

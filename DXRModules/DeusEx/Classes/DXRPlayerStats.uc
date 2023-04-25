@@ -20,9 +20,12 @@ function PlayerLogin(#var(PlayerPawn) p)
 
     i = dxr.flags.settings.energy;
     i = Max(0, i);// need at least 0 for max energy
+    p.Energy = i;
+
+    if(dxr.flags.IsZeroRando()) return;
 
     SetGlobalSeed("DXRPlayerStatsLogin");//independent of map/mission
-    p.energy = rng(75)+25;
+    p.Energy = rng(p.default.EnergyMax-25)+25;
     p.Energy = Min(p.Energy, p.default.EnergyMax);
     p.Credits = rng(200);
 }
