@@ -710,12 +710,16 @@ function CheckHelmet(ScriptedPawn p)
     switch(p.MultiSkins[6]) {
     case Texture'DeusExItems.Skins.PinkMaskTex':
     case Texture'DeusExCharacters.Skins.GogglesTex1':
-        if(chance_single(dxr.flags.settings.enemystats))
+        if(chance_single(dxr.flags.settings.enemystats)) {
             p.MultiSkins[6] = Texture'DeusExCharacters.Skins.MechanicTex3';
+        }
         break;
     default:
-        if(!chance_single(dxr.flags.settings.enemystats))
+        if(!chance_single(dxr.flags.settings.enemystats)) {
+            p.MultiSkins[5] = Texture'DeusExItems.Skins.GrayMaskTex';
             p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';
+            p.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
+        }
     }
 }
 
