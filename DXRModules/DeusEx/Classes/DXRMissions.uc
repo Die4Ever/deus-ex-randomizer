@@ -1505,7 +1505,6 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         a = g.actors[i].a;
         if(a == None) continue;
         a.bVisionImportant = true;
-        a.Group = 'DXRMissions';
         if(ElectronicDevices(a) != None)
             ElectronicDevices(a).ItemName = g.name;
         if(ScriptedPawn(a) != None)
