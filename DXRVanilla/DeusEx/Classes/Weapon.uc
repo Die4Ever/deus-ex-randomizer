@@ -491,7 +491,7 @@ simulated function bool UpdateInfo(Object winObject)
 }
 
 //
-// TraceFire DXRando: just wanted to do the RelativeRange fix like VMD does
+// TraceFire DXRando: just wanted to do the RelativeRange fix like VMD does, and fix the unscoped accuracy penalty
 //
 simulated function TraceFire( float Accuracy )
 {
@@ -522,16 +522,18 @@ simulated function TraceFire( float Accuracy )
 	else
 		numSlugs = 1;
 
+    // DXRando: fix the unscoped accuracy penalty
 	// if there is a scope, but the player isn't using it, decrease the accuracy
 	// so there is an advantage to using the scope
-	if (bHasScope && !bZoomed)
-		Accuracy += 0.2;
+	//if (bHasScope && !bZoomed)
+		//Accuracy += 0.2;
 	// if the laser sight is on, make this shot dead on
 	// also, if the scope is on, zero the accuracy so the shake makes the shot inaccurate
-	else if (bLasing || bZoomed)
+	//else if (bLasing || bZoomed)
+    if (bLasing || bZoomed)
 		Accuracy = 0.0;
 
-    if(!bZoomed && !bHandToHand && bInstantHit && bPenetrating) Accuracy *= MaxRange / RelativeRange;// DXRando: copied from VMD
+    if(!bHandToHand && bInstantHit && bPenetrating) Accuracy *= MaxRange / RelativeRange;// DXRando: copied from VMD
 
 	for (i=0; i<numSlugs; i++)
 	{
