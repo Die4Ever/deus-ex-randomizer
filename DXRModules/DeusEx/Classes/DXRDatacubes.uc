@@ -125,6 +125,7 @@ function vanilla_datacubes_rules()
     datacubes_rules[i].allow = true;
     i++;
 
+    // jail cell codes
     datacubes_rules[i].map = "05_NYC_UNATCOMJ12LAB";
     datacubes_rules[i].item_name = '05_Datacube01';// don't allow this in the locked cabinet
     datacubes_rules[i].min_pos = vect(-2235.248291, 1414.674072, -159.039658)-vect(8,8,8);
@@ -133,11 +134,18 @@ function vanilla_datacubes_rules()
     i++;
 
     // As requested, the patient has been moved to the Surgery Ward for immediate salvage of his datavault.  If you wish to observe the progress of the operation in person, the door code for surgery is 0199; or, if you wish to view the operation remotely, you may use the temporary account we've created for you: login "psherman" and password "Raven".  Please let me know if myself or my staff can provide you with any further assistance.
+    /*datacubes_rules[i].map = "05_NYC_UNATCOMJ12LAB";
+    datacubes_rules[i].item_name = '05_Datacube03';
+    datacubes_rules[i].min_pos = vect(1214.396851, -1006.870361, -99999);
+    datacubes_rules[i].max_pos = vect(2404.169922, -254.634888, 99999);
+    datacubes_rules[i].allow = false;
+    i++;*/
+
     datacubes_rules[i].map = "05_NYC_UNATCOMJ12LAB";
     datacubes_rules[i].item_name = '05_Datacube03';
     datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
     datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
-    datacubes_rules[i].allow = true;
+    datacubes_rules[i].allow = false;// actually just don't randomize this one since we mention it in the wiki
     i++;
 
     // Wednesday, 4/15: IS promises that LabNet accounts will be restored by Friday; new login is "dmoreau" with password "raptor".

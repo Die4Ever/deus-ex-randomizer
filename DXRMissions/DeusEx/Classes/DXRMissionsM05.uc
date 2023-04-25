@@ -125,6 +125,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local int i;
     local #var(prefix)ComputerPersonal cp;
+    local DXRPasswords passwords;
 
     if (g.name=="Anna's Killphrase 1" || g.name=="Anna's Killphrase 2") {
         // insert the demiurge/archon account and add the special options
@@ -137,16 +138,21 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
                 continue;
             if (g.name=="Anna's Killphrase 1") {
                 cp.specialOptions[i].TriggerEvent = 'know1';
-                cp.specialOptions[i].Text = "Decrypt Agent ANavarre Killphrase";
                 cp.specialOptions[i].TriggerText = "Killphrase Part 1 of 2 Decrypted : 'Flatlander'";
             } else {
                 cp.specialOptions[i].TriggerEvent = 'know2';
-                cp.specialOptions[i].Text = "Decrypt Agent ANavarre Killphrase";
                 cp.specialOptions[i].TriggerText = "Killphrase Part 2 of 2 Decrypted : 'Woman'";
             }
+            cp.specialOptions[i].Text = "Decrypt Agent ANavarre Killphrase";
             cp.specialOptions[i].bTriggerOnceOnly = true;
             cp.specialOptions[i].userName = "DEMIURGE";
             break;
+        }
+    }
+    else if (g.name=="Paul" && Loc.name!="Surgery Ward") {
+        passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
+        if(passwords != None) {// 05_Datacube03.txt
+            passwords.ReplacePassword("the patient has been moved to the Surgery Ward", "the patient has been moved to the "$Loc.name);
         }
     }
 }
