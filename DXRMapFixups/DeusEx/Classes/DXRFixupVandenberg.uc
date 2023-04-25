@@ -53,6 +53,20 @@ function PreFirstEntryMapFixes()
                 comp.UserList[0].Password = "Kraken";
             }
         }
+
+        Spawn(class'PlaceholderItem',,, vect(37.5,531.4,-1569)); //Secretary desk
+        Spawn(class'PlaceholderItem',,, vect(2722,226.5,-1481)); //Greasel Lab desk
+        Spawn(class'PlaceholderItem',,, vect(4097.8,395.4,-1533)); //Desk with zappy electricity near construction zone
+        Spawn(class'PlaceholderItem',,, vect(4636.1,1579.3,-1741)); //Electrical box in construction zone
+        Spawn(class'PlaceholderItem',,, vect(5359.5,3122.3,-1761)); //Construction vehicle tread
+        Spawn(class'PlaceholderItem',,, vect(3114.3,3711.2,-2549)); //Storage room in crew capsule
+
+        Spawn(class'PlaceholderContainer',,, vect(-71,775,-1599)); //Secretary desk corner
+        Spawn(class'PlaceholderContainer',,, vect(1740,156,-1599)); //Open storage room
+        Spawn(class'PlaceholderContainer',,, vect(2999,482,-1503)); //Greasel lab
+        Spawn(class'PlaceholderContainer',,, vect(1780,3725,-2483)); //Crew module bed
+        Spawn(class'PlaceholderContainer',,, vect(1733,3848,-4223)); //Corner in hall to UC
+
         break;
     case "14_OCEANLAB_UC":
         //Make the datalink immediately trigger when you download the schematics, regardless of where the computer is
@@ -72,28 +86,40 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(Mover)', door, 'Releasebots') {
             door.MoverEncroachType=ME_IgnoreWhenEncroach;
         }
+
+        Spawn(class'PlaceholderItem',,, vect(1020.93,8203.4,-2864)); //Over security computer
+        Spawn(class'PlaceholderItem',,, vect(348.9,8484.63,-2913)); //Turret room
+        Spawn(class'PlaceholderItem',,, vect(1280.84,8534.17,-2913)); //Turret room
+        Spawn(class'PlaceholderItem',,, vect(1892,8754.5,-2901)); //Turret room, opposite from bait computer
         break;
 
     case "14_Oceanlab_silo":
-        foreach AllActors(class'HowardStrong', hs) {
-            hs.ChangeAlly('', 1, true);
-            hs.ChangeAlly('mj12', 1, true);
-            hs.ChangeAlly('spider', 1, true);
-            RemoveFears(hs);
-            hs.MinHealth = 0;
-            hs.BaseAccuracy *= 0.1;
-            GiveItem(hs, class'#var(prefix)BallisticArmor');
-            dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
-            if(dxre != None) {
-                dxre.GiveRandomWeapon(hs, false, 2);
-                dxre.GiveRandomMeleeWeapon(hs);
-            }
-            hs.FamiliarName = "Howard Stronger";
-            hs.UnfamiliarName = "Howard Stronger";
-            if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
-                SetPawnHealth(hs, 200);
+        if(!dxr.flags.IsReducedRando()) {
+            foreach AllActors(class'HowardStrong', hs) {
+                hs.ChangeAlly('', 1, true);
+                hs.ChangeAlly('mj12', 1, true);
+                hs.ChangeAlly('spider', 1, true);
+                RemoveFears(hs);
+                hs.MinHealth = 0;
+                hs.BaseAccuracy *= 0.1;
+                GiveItem(hs, class'#var(prefix)BallisticArmor');
+                dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+                if(dxre != None) {
+                    dxre.GiveRandomWeapon(hs, false, 2);
+                    dxre.GiveRandomMeleeWeapon(hs);
+                }
+                hs.FamiliarName = "Howard Stronger";
+                hs.UnfamiliarName = "Howard Stronger";
+                if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
+                    SetPawnHealth(hs, 200);
+                }
             }
         }
+        break;
+    case "12_VANDENBERG_COMPUTER":
+        Spawn(class'PlaceholderItem',,, vect(579,2884,-1629)); //Table near entrance
+        Spawn(class'PlaceholderItem',,, vect(1057,2685.25,-1637)); //Table overlooking computer room
+        Spawn(class'PlaceholderItem',,, vect(1970,2883.43,-1941)); //In first floor computer room
         break;
 #endif
     }

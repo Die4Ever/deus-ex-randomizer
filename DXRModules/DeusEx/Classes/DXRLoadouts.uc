@@ -521,9 +521,6 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
     l("RandoStartingEquipment");
     SetGlobalSeed("RandoStartingEquipment");//independent of map/mission
 
-    player.energy = rng(75)+25;
-    player.Credits = rng(200);
-
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
 
     item = player.Inventory;

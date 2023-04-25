@@ -817,7 +817,7 @@ function PreFirstEntry()
     seed = InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);
 #endif
 
-    if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
+    if( dxr.localURL == "01_NYC_UNATCOISLAND" && !dxr.flags.IsReducedRando() ) {
         dxr.flags.f.SetBool('MeetPaul_Played', true,, 2);
         dxr.flags.f.SetBool('FemJCMeetPaul_Played', true,, 2);
         dxr.flags.f.SetBool('PaulGaveWeapon', true,, 2);
@@ -1505,6 +1505,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
         a = g.actors[i].a;
         if(a == None) continue;
         a.bVisionImportant = true;
+        a.bIsSecretGoal = true;
         if(ElectronicDevices(a) != None)
             ElectronicDevices(a).ItemName = g.name;
         if(ScriptedPawn(a) != None)
@@ -1545,6 +1546,19 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     if(g.name == "Terrorist Commander" && g.actors[1].a != None) {
         // DataLinkTrigger 15ft wide, 4ft tall
         g.actors[1].a.SetCollisionSize(240, 64);
+        if(Loc.name != "Top of the Statue") {
+#ifdef injections
+            dc2 = Spawn(class'#var(prefix)DataCube',,, vect(2801.546387, 171.028091, 2545.382813));
+#else
+            dc2 = Spawn(class'DXRInformationDevices',,, vect(2801.546387, 171.028091, 2545.382813));
+#endif
+            if( dc2 != None ) {
+                dc2.bIsSecretGoal = true;// don't move it
+                dc2.plaintext = "I'm gonna go for a walk to clear my head."
+                    $ "|n|nI might be anywhere, like the hut in front of the statue, hanging out with Gunther in jail, or maybe I'll even sneak past UNATCO to hang out on the dock."
+                    $ "|n|n-- Leo";
+            }
+        }
     } else if(g.name == "Generator" && Loc.name != "Warehouse") {
         a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vect(505.710449, -605, 162.091278), rot(16384,0,0));
         a.SetCollisionSize(a.CollisionRadius * 4, a.CollisionHeight * 4);

@@ -45,7 +45,7 @@ function CreateControls()
 #endif
         }
 
-        if (dxr.flags.gamemode==1){ //Entrance Rando
+        if (dxr.flags.IsEntranceRando()){
             btnEntranceLocs = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
             btnEntranceLocs.SetButtonText("Entrances");
             btnEntranceLocs.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 220, 411);

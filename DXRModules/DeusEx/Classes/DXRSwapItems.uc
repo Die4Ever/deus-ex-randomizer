@@ -77,15 +77,3 @@ function FirstEntry()
         }
     }
 }
-
-function PostAnyEntry()
-{
-    local PlaceholderItem i;
-    local PlaceholderContainer c;
-    foreach AllActors(class'PlaceholderItem', i) {
-        i.Destroy();
-    }
-    foreach AllActors(class'PlaceholderContainer', c) {
-        c.Destroy();
-    }
-}

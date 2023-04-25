@@ -53,7 +53,7 @@ static function bool AllowManualSaves(DeusExPlayer player)
     f = Human(player).GetDXR().flags;
     if( f == None ) return true;
     if( f.autosave == Hardcore ) return false;
-    if( f.gamemode == 2 ) return false;// horde mode
+    if( f.IsHordeMode() ) return false;
     return true;
 }
 

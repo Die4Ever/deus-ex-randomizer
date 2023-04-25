@@ -19,6 +19,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     local int lastUpdate, i;
     local class<Pawn> jcd;
     Super.PlayerAnyEntry(p);
+    if(dxr.flags.IsReducedRando()) return;
 
     isFemale = false;
     //if( Level.Game.Class.Name == 'JCDentonFemaleGameInfo' ) {

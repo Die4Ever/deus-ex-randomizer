@@ -5,15 +5,15 @@ state Active
 {
 Begin:
 Loop:
-	Sleep(1.0);
+    Sleep(1.0);
 
-	if (Player.Health < 100)
-		HealPlayer(5);
-	else
-		Deactivate();
+    if (NeedsHeal())
+        HealPlayer(5);
+    else
+        Deactivate();
 
-	Player.ClientFlash(0.5, vect(0, 0, 500));
-	Goto('Loop');
+    Player.ClientFlash(0.5, vect(0, 0, 500));
+    Goto('Loop');
 }
 
 function HealPlayer(int amount) {
@@ -48,26 +48,40 @@ function HealPlayer(int amount) {
 
 function HealPart(out int points, out int amt)
 {
-	local int max;
+    local int max;
 
     max = Int(LevelValues[CurrentLevel]);
-	HealPartMax(points, amt, max);
+    HealPartMax(points, amt, max);
 }
 
 function HealPartMax(out int points, out int amt, int max)
 {
-	local int spill;
+    local int spill;
+
+    max = Min(max, Player.default.HealthTorso);
 
     if(points >= max) return;
 
-	points += amt;
-	spill = points - max;
-	if (spill > 0)
-		points = max;
-	else
-		spill = 0;
+    points += amt;
+    spill = points - max;
+    if (spill > 0)
+        points = max;
+    else
+        spill = 0;
 
-	amt = spill;
+    amt = spill;
+}
+
+function bool NeedsHeal()
+{
+    local int i;
+    i = Int(LevelValues[CurrentLevel]);
+    return Player.HealthHead < Min(i, Player.default.HealthHead)
+        || Player.HealthTorso < Min(i, Player.default.HealthTorso)
+        || Player.HealthLegRight < Min(i, Player.default.HealthLegRight)
+        || Player.HealthLegLeft < Min(i, Player.default.HealthLegLeft)
+        || Player.HealthArmRight < Min(i, Player.default.HealthArmRight)
+        || Player.HealthArmLeft < Min(i, Player.default.HealthArmLeft);
 }
 
 // original values go from 5 to 40, but those controlled healing rate

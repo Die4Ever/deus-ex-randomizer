@@ -443,8 +443,8 @@ simulated function RandoMedBot(#var(prefix)MedicalBot m, int mbamount, int mbcoo
             SetGlobalSeed("MedBotAmount"); //Don't include the level name, or anything unique
         }
 
-        //Actually rando the cooldown
-        m.healAmount = rngrange(m.default.healAmount, 0.5, 1.5);
+        //Actually rando the healAmount
+        m.healAmount = rngrange(m.default.healAmount, 0.5, 1.2);
     }
 }
 
@@ -469,8 +469,8 @@ simulated function RandoRepairBot(#var(prefix)RepairBot r, int rbamount, int rbc
             SetGlobalSeed("RepairBotAmount"); //Don't include the level name, or anything unique
         }
 
-        //Actually rando the cooldown
-        r.chargeAmount = rngrange(r.default.chargeAmount, 0.5, 1.5);
+        //Actually rando the chargeAmount
+        r.chargeAmount = rngrange(r.default.chargeAmount, 0.5, 1.2);
     }
 }
 

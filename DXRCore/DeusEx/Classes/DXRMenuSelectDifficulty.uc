@@ -25,9 +25,10 @@ function BindControls(optional string action)
 #ifdef vanilla
     NewMenuItem("Game Mode", "Choose a game mode!");
     for(i=0; i<10; i++) {
-        ts = f.GameModeName(i);
+        temp = f.GameModeIdForSlot(i);
+        ts = f.GameModeName(temp);
         if(ts != "")
-            EnumOption(ts, i, f.gamemode);
+            EnumOption(ts, temp, f.gamemode);
     }
 #endif
 

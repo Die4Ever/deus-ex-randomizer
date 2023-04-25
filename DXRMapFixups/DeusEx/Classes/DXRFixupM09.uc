@@ -32,6 +32,34 @@ function PreFirstEntryMapFixes()
             if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
         }
         AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
+
+        //Add some new locations for containers and items
+        Spawn(class'PlaceholderContainer',,, vect(-3143,274,305)); //Front of ship
+        Spawn(class'PlaceholderContainer',,, vect(-3109,-73,305)); //Front of ship
+        Spawn(class'PlaceholderContainer',,, vect(-2764,186,305)); //Front of ship
+        Spawn(class'PlaceholderItem',,, vect(-3544.129150,112.244072,330.309601)); //Actual Front of ship
+        Spawn(class'PlaceholderItem',,, vect(-2538.4,38.5,283)); //Near stuff at front of ship
+        Spawn(class'PlaceholderItem',,, vect(-2554.4,-247,283)); //Near stuff at front of ship
+        Spawn(class'PlaceholderItem',,, vect(-254,557.8,302)); //Guard Post in shipping container
+        Spawn(class'PlaceholderItem',,, vect(3004.5,-453,523)); //Ship kitchen
+        Spawn(class'PlaceholderItem',,, vect(1788,107,509)); //Ship bathroom table
+        Spawn(class'PlaceholderItem',,, vect(2152,701,519)); //Ship bunkbed
+        Spawn(class'PlaceholderItem',,, vect(3000.4,511.28,526.4)); //Ship fume extractor
+        Spawn(class'PlaceholderItem',,, vect(1243,-2106,-432)); //Shipyard break room table
+        Spawn(class'PlaceholderItem',,, vect(2517.303467,-1384.390381,-250.690430)); //Shipyard showers locker 1
+        Spawn(class'PlaceholderItem',,, vect(2474.926270,-1385.917603,-250.689545)); //Shipyard showers locker 2
+        Spawn(class'PlaceholderItem',,, vect(2431.561279,-1385.172363,-250.690308)); //Shipyard showers locker 3
+        Spawn(class'PlaceholderItem',,, vect(2354.278809,-1383.854980,-250.689301)); //Shipyard showers locker 5
+        Spawn(class'PlaceholderItem',,, vect(2354,-1676,-223)); //Shipyard change room bench
+        Spawn(class'PlaceholderItem',,, vect(2605,-1839,-257)); //Shipyard bathroom stall 1
+        Spawn(class'PlaceholderItem',,, vect(2816,-1816,-257)); //Shipyard bathroom stall 2
+        Spawn(class'PlaceholderItem',,, vect(2808,-1511.5,-207)); //Shipyard bathroom sink
+        Spawn(class'PlaceholderItem',,, vect(1565.7,-994,-433.7)); //Shipyard ramp control panel
+        Spawn(class'PlaceholderItem',,, vect(3361,-1255.9,1187)); //Shipyard crane control room
+        Spawn(class'PlaceholderContainer',,, vect(-1248,-1248,-460)); //Shipyard dock near sewer entrance
+        Spawn(class'PlaceholderContainer',,, vect(-1185,-1175,-460)); //Shipyard dock near sewer entrance
+        Spawn(class'PlaceholderContainer',,, vect(3172,-1248,-460)); //Shipyard dock near maintenance ladder
+
         break;
 #endif
 
@@ -53,7 +81,6 @@ function PreFirstEntryMapFixes()
         UpdateWeldPointGoal(5);
 
 #ifdef vanillamaps
-        Tag = 'FanToggle';
         foreach AllActors(class'ComputerSecurity',cs){
             if (cs.Name == 'ComputerSecurity4'){
                 cs.specialOptions[0].Text = "Disable Ventilation Fan";
@@ -113,7 +140,6 @@ function PreFirstEntryMapFixes()
 
     case "09_NYC_SHIPFAN":
 #ifdef vanillamaps
-        Tag = 'FanToggle';
         foreach AllActors(class'ComputerSecurity',cs){
             if (cs.Name == 'ComputerSecurity6'){
                 cs.specialOptions[0].Text = "Disable Ventilation Fan";
@@ -122,6 +148,16 @@ function PreFirstEntryMapFixes()
             }
         }
 #endif
+        break;
+
+    case "09_NYC_GRAVEYARD":
+        Spawn(class'PlaceholderItem',,, vect(-509.5,-742.88,-213)); //Tunnels
+        Spawn(class'PlaceholderItem',,, vect(-1524.8,-943.9,-285.69)); //Empty Sarcophogus
+        Spawn(class'PlaceholderItem',,, vect(-1433.77,1161.87,-149)); //Escape tunnel
+        Spawn(class'PlaceholderItem',,, vect(-828.5,-266.1,27)); //Front of tomb
+        Spawn(class'PlaceholderItem',,, vect(-1499.35,-454.93,-293)); //Tomb stairs
+        Spawn(class'PlaceholderItem',,, vect(1108.85,808.15,71.309769)); //Secret room shelf 1
+        Spawn(class'PlaceholderItem',,, vect(1110,829.5,35.310154)); //Secret room shelf 2
         break;
     }
 }
@@ -171,6 +207,11 @@ function AnyEntryMapFixes()
 
     case "09_NYC_SHIPBELOW":
         SetTimer(1, True);
+        Tag = 'FanToggle';
+        break;
+
+    case "09_NYC_SHIPFAN":
+        Tag = 'FanToggle';
         break;
     }
 }

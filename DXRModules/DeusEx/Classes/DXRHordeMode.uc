@@ -228,7 +228,7 @@ function AnyEntry()
     local Inventory item;
     local int i;
 
-    if( dxr.flags.gamemode != 2 ) return;
+    if( !dxr.flags.IsHordeMode() ) return;
     Super.AnyEntry();
     if( dxr.dxInfo.missionNumber>0 && dxr.localURL != map_name ) {
         Level.Game.SendPlayer(player(), map_name);

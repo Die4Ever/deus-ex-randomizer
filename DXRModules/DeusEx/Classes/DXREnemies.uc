@@ -161,8 +161,13 @@ function AddRandomEnemyType(string t, int c)
 
 function FirstEntry()
 {
+    local PlaceholderEnemy placeholder;
     Super.FirstEntry();
     SwapScriptedPawns(dxr.flags.settings.enemiesshuffled, true);
+    // delete placeholders after doing swaps but before doing clones
+    foreach AllActors(class'PlaceholderEnemy', placeholder) {
+        placeholder.Destroy();
+    }
     RandoEnemies(dxr.flags.settings.enemiesrandomized, dxr.flags.settings.hiddenenemiesrandomized);
     RandoCarcasses(dxr.flags.settings.swapitems);
 }
@@ -248,6 +253,7 @@ function AddDXRCredits(CreditsWindow cw)
 {
     local int i;
     local string weaponName;
+    if(dxr.flags.IsZeroRando()) return;
 
     cw.PrintHeader( dxr.flags.settings.enemiesrandomized $ "% Added Enemies");
     for(i=0; i < ArrayCount(_randomenemies); i++) {
@@ -449,6 +455,7 @@ function RandoEnemies(int percent, int hidden_percent)
         if(p.bHidden) _perc = hidden_percent;
 
         if( chance_single(_perc) ) RandomizeSP(p, _perc);
+        CheckHelmet(p);
 
         if(p.bImportant && p.Tag != 'RaidingCommando') continue;
         if(p.bInvincible) continue;
@@ -482,7 +489,10 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 
     n = CloneScriptedPawn(base, newclass);
     l("new RandomEnemy("$base$", "$percent$") == "$n);
-    if( n != None ) RandomizeSP(n, percent);
+    if( n != None ) {
+        RandomizeSP(n, percent);
+        CheckHelmet(n);
+    }
     //else RandomizeSize(n);
     return n;
 }
@@ -665,7 +675,6 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( IsCritter(p) ) return; // only give random weapons to humans and robots
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
 
-
     if( IsHuman(p.class)) {
         if(!p.bImportant) {
             RemoveItem(p, class'Weapon');
@@ -691,6 +700,26 @@ function RandomizeSP(ScriptedPawn p, int percent)
         if( chance_single(50) ) //Give a chance for a bonus weapon
             GiveRandomBotWeapon(p, false, 6);
         p.SetupWeapon(false);
+    }
+}
+
+function CheckHelmet(ScriptedPawn p)
+{
+    if(p.Mesh != LodMesh'DeusExCharacters.GM_Jumpsuit')  return;
+
+    switch(p.MultiSkins[6]) {
+    case Texture'DeusExItems.Skins.PinkMaskTex':
+    case Texture'DeusExCharacters.Skins.GogglesTex1':
+        if(chance_single(dxr.flags.settings.enemystats)) {
+            p.MultiSkins[6] = Texture'DeusExCharacters.Skins.MechanicTex3';
+        }
+        break;
+    default:
+        if(!chance_single(dxr.flags.settings.enemystats)) {
+            p.MultiSkins[5] = Texture'DeusExItems.Skins.GrayMaskTex';
+            p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';
+            p.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
+        }
     }
 }
 

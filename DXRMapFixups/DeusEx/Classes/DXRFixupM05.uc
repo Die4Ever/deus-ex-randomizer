@@ -86,6 +86,23 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)JaimeReyes', j) {
             RemoveFears(j);
         }
+
+        //Spawn some placeholders for new item locations
+        Spawn(class'PlaceholderItem',,, vect(363.284149, 344.847, 50.32)); //Womens bathroom counter
+        Spawn(class'PlaceholderItem',,, vect(211.227, 348.46, 50.32)); //Mens bathroom counter
+        Spawn(class'PlaceholderItem',,, vect(982.255,1096.76,-7)); //Jaime's desk
+        Spawn(class'PlaceholderItem',,, vect(2033.8,1979.9,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vect(2148,2249,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vect(2433,1384,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vect(-307.8,-1122,-7)); //Anna's Desk
+        Spawn(class'PlaceholderItem',,, vect(-138.5,-790.1,-1.65)); //Anna's bookshelf
+        Spawn(class'PlaceholderItem',,, vect(-27,1651.5,291)); //Breakroom table
+        Spawn(class'PlaceholderItem',,, vect(602,1215.7,295)); //Kitchen Counter
+        Spawn(class'PlaceholderItem',,, vect(-672.8,1261,473)); //Upper Left Office desk
+        Spawn(class'PlaceholderContainer',,, vect(-1187,-1154,-31)); //Behind Jail Desk
+        Spawn(class'PlaceholderContainer',,, vect(2384,1669,-95)); //MJ12 Door
+        Spawn(class'PlaceholderContainer',,, vect(-383.6,1376,273)); //JC's Office
+
         break;
 #endif
 
@@ -201,36 +218,38 @@ function BalanceJailbreak()
                 nextItem = MoveNextItemTo(nextItem, itemLocations[i], 'player_inv');
     }
 
-    e = DXREnemies(dxr.FindModule(class'DXREnemies'));
-    if( e != None ) {
-        r = initchance();
-        for(i=0; i < ArrayCount(e._randommelees); i++ ) {
-            if( e._randommelees[i].type == None ) break;
-            if( chance( e._randommelees[i].chance, r ) ) iclass = e._randommelees[i].type;
+    if(!dxr.flags.IsReducedRando()) {
+        e = DXREnemies(dxr.FindModule(class'DXREnemies'));
+        if( e != None ) {
+            r = initchance();
+            for(i=0; i < ArrayCount(e._randommelees); i++ ) {
+                if( e._randommelees[i].type == None ) break;
+                if( chance( e._randommelees[i].chance, r ) ) iclass = e._randommelees[i].type;
+            }
+            chance_remaining(r);
         }
-        chance_remaining(r);
-    }
-    else iclass = class'#var(prefix)WeaponCombatKnife';
+        else iclass = class'#var(prefix)WeaponCombatKnife';
 
-    // make sure Stick With the Prod and Ninja JC can beat this
-    loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
-    if(loadout != None && loadout.is_banned(iclass)) {
-        iclass = loadout.get_starting_item();
-    }
+        // make sure Stick With the Prod and Ninja JC can beat this
+        loadout = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+        if(loadout != None && loadout.is_banned(iclass)) {
+            iclass = loadout.get_starting_item();
+        }
 
-    switch(rng(4)) {
-    case 1:// crate past the desk
-        Spawn(iclass,,, vect(-1838.230225, 1250.242676, -110.399773));
-        break;
-    case 2:// desk
-        Spawn(iclass,,, vect(-2105.412598, 1232.926758, -134.400101));
-        break;
-    case 3:// locked jail cell with medbot
-        Spawn(iclass,,, vect(-3020.846924, 910.062134, -201.399750));
-        break;
-    default:// unlocked jail cell
-        Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915));
-        break;
+        switch(rng(4)) {
+        case 1:// crate past the desk
+            Spawn(iclass,,, vect(-1838.230225, 1250.242676, -110.399773));
+            break;
+        case 2:// desk
+            Spawn(iclass,,, vect(-2105.412598, 1232.926758, -134.400101));
+            break;
+        case 3:// locked jail cell with medbot
+            Spawn(iclass,,, vect(-3020.846924, 910.062134, -201.399750));
+            break;
+        default:// unlocked jail cell
+            Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915));
+            break;
+        }
     }
 }
 

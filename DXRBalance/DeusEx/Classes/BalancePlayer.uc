@@ -189,24 +189,8 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         newDamage*=damageMult;
     }
 
-    //
-    // Reduce or increase the damage based on the combat difficulty setting, do this before SetDamagePercent for the UI display
-    // because we don't want to show 100% damage reduction but then do the minimum of 1 damage
-    if ((damageType == 'Shot') || (damageType == 'AutoShot') ||
-        damageType == 'Flamed' || damageType == 'Burned')
-    {
-        newDamage *= CombatDifficulty;
-        oldDamage *= CombatDifficulty;
-
-        // always take at least one point of damage
-        if ((newDamage <= 1) && (Damage > 0))
-            newDamage = 1;
-        if ((oldDamage <= 1) && (Damage > 0))
-            oldDamage = 1;
-    }
-
-    //make sure to factor the rounding into the percentage
-    pct = 1.0 - ( Float(Int(newDamage)) / Float(Int(oldDamage)) );
+    // show resistance, don't factor in the random rounding, so the numbers are stable and easier to read
+    pct = 1.0 - (newDamage / oldDamage);
     if (!bCheckOnly)
     {
         SetDamagePercent(pct);
@@ -216,7 +200,26 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         ClientFlash(0.01, vect(0, 0, 50));
     }
 
-    adjustedDamage = Int(newDamage);
+    //
+    // Reduce or increase the damage based on the combat difficulty setting, do this before SetDamagePercent for the UI display
+    // because we don't want to show 100% damage reduction but then do the minimum of 1 damage
+    if ((damageType == 'Shot') || (damageType == 'AutoShot') ||
+        damageType == 'Flamed' || damageType == 'Burned')
+    {
+        newDamage *= CombatDifficulty;
+        oldDamage *= CombatDifficulty;
+    }
+    else {
+        newDamage *= CombatDifficulty/2 + 0.2;
+        oldDamage *= CombatDifficulty/2 + 0.2;
+    }
+
+    if(frand() < (newDamage%1.0)) {// DXRando: random rounding, 1.9 is more likely to round up than 1.1 is
+        newDamage += 0.999;
+        oldDamage += 0.999;
+    }
+
+    adjustedDamage = Int(newDamage);// adjustedDamage is our out param
 
     return bReduced;
 }
@@ -355,6 +358,20 @@ function HealBrokenPart(out int points, out int amt)
     if( points > 0 || amt < heal ) return;
     amt -= heal;
     HealPart(points, heal);
+}
+
+function HealPart(out int points, out int amt)
+{
+    local int spill;
+
+    points += amt;
+    spill = points - default.HealthTorso;
+    if (spill > 0)
+        points = default.HealthTorso;
+    else
+        spill = 0;
+
+    amt = spill;
 }
 
 exec function ActivateAugmentation(int num)

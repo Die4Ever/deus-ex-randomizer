@@ -183,6 +183,25 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     FixInventory(p);
 }
 
+
+function PostAnyEntry()
+{
+    local PlaceholderItem i;
+    local PlaceholderContainer c;
+    local PlaceholderEnemy e;
+    foreach AllActors(class'PlaceholderItem', i) {
+        i.Destroy();
+    }
+    foreach AllActors(class'PlaceholderContainer', c) {
+        c.Destroy();
+    }
+    // just in case DXREnemies isn't loaded
+    foreach AllActors(class'PlaceholderEnemy', e) {
+        e.Destroy();
+    }
+}
+
+
 function PreTravel()
 {
     Super.PreTravel();
@@ -353,6 +372,9 @@ function SpawnDatacubes()
     local vector loc;
     local int i;
 
+    if(dxr.flags.IsReducedRando())
+        return;
+
     for(i=0; i<ArrayCount(add_datacubes); i++) {
         if( dxr.localURL != add_datacubes[i].map ) continue;
 
@@ -379,6 +401,10 @@ function UpdateGoalWithRandoInfo(name goalName)
     local string goalText;
     local DeusExGoal goal;
     local int randoPos;
+
+    if(dxr.flags.settings.goals <= 0)
+        return;
+
     goal = player().FindGoal(goalName);
     if (goal!=None){
         goalText = goal.text;
@@ -386,17 +412,15 @@ function UpdateGoalWithRandoInfo(name goalName)
 
         if (randoPos==-1){
             switch(goalName){
-                case 'InvestigateMaggieChow':
-                    goalText = goalText$"|nRando: The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.";
-                    break;
-                case 'FindHarleyFilben':
-                    if(dxr.flags.settings.goals > 0)
-                        goalText = goalText$"|nRando: Harley could be anywhere in Hell's Kitchen";
-                    break;
-                case 'FindNicolette':
-                    if(dxr.flags.settings.goals > 0)
-                        goalText = goalText$"|nRando: Nicolette could be anywhere in the city";
-                    break;
+            case 'InvestigateMaggieChow':
+                goalText = goalText$"|nRando: The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.";
+                break;
+            case 'FindHarleyFilben':
+                goalText = goalText$"|nRando: Harley could be anywhere in Hell's Kitchen";
+                break;
+            case 'FindNicolette':
+                goalText = goalText$"|nRando: Nicolette could be anywhere in the city";
+                break;
             }
             goal.SetText(goalText);
             player().ClientMessage("Goal Updated - Check DataVault For Details",, true);

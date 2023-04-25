@@ -19,8 +19,11 @@ function PreFirstEntryMapFixes()
     local SkillAwardTrigger st;
     local #var(prefix)BoxSmall b;
     local #var(prefix)HackableDevices hd;
-    local #var(prefix)CrateUnbreakableLarge crate;
     local #var(prefix)UNATCOTroop lloyd;
+    local #var(prefix)AutoTurret turret;
+    local #var(prefix)ControlPanel panel;
+    local #var(prefix)LaserTrigger laser;
+    local #var(prefix)Containers c;
 
     switch (dxr.localURL)
     {
@@ -49,32 +52,63 @@ function PreFirstEntryMapFixes()
 #endif
 
     case "04_NYC_NSFHQ":
-        foreach RadiusActors(class'#var(prefix)BoxSmall', b, 100, vect(-640.699402, 66.666039, -209.364014)) {
-            b.Destroy();
+        foreach AllActors(class'#var(prefix)AutoTurret', turret) {
+            turret.Event = '';
+            turret.Destroy();
+        }
+        foreach AllActors(class'#var(prefix)ControlPanel', panel) {
+            panel.Event = '';
+            panel.Destroy();
+        }
+        foreach AllActors(class'#var(prefix)LaserTrigger', laser) {
+            laser.Event = '';
+            laser.Destroy();
+        }
+        foreach AllActors(class'#var(prefix)Containers', c) {
+            if(#var(prefix)BoxLarge(c) != None || #var(prefix)BoxSmall(c) != None
+                || #var(prefix)CrateUnbreakableLarge(c) != None || #var(prefix)CrateUnbreakableMed(c) != None)
+            {
+                c.Event = '';
+                c.Destroy();
+            }
         }
         foreach AllActors(class'#var(prefix)HackableDevices', hd) {
             hd.hackStrength /= 3.0;
         }
-        foreach AllActors(class'#var(prefix)CrateUnbreakableLarge', crate) {
-            crate.Event = '';
-            crate.Destroy();
-        }
         break;
 
     case "04_NYC_UNATCOISLAND":
-        foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
-            if(lloyd.BindName != "PrivateLloyd") continue;
-            lloyd.FamiliarName = "Sergeant Lloyd";
-            lloyd.UnfamiliarName = "Sergeant Lloyd";
-            lloyd.bImportant = true;
+        if(!dxr.flags.IsReducedRando()) {
+            foreach AllActors(class'#var(prefix)UNATCOTroop', lloyd) {
+                if(lloyd.BindName != "PrivateLloyd") continue;
+                lloyd.FamiliarName = "Sergeant Lloyd";
+                lloyd.UnfamiliarName = "Sergeant Lloyd";
+                lloyd.bImportant = true;
+            }
         }
+        break;
+    case "04_NYC_UNATCOHQ":
+        //Spawn some placeholders for new item locations
+        Spawn(class'PlaceholderItem',,, vect(363.284149, 344.847, 50.32)); //Womens bathroom counter
+        Spawn(class'PlaceholderItem',,, vect(211.227, 348.46, 50.32)); //Mens bathroom counter
+        Spawn(class'PlaceholderItem',,, vect(982.255,1096.76,-7)); //Jaime's desk
+        Spawn(class'PlaceholderItem',,, vect(2033.8,1979.9,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vect(2148,2249,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vect(2433,1384,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vect(-307.8,-1122,-7)); //Anna's Desk
+        Spawn(class'PlaceholderItem',,, vect(-138.5,-790.1,-1.65)); //Anna's bookshelf
+        Spawn(class'PlaceholderItem',,, vect(-27,1651.5,291)); //Breakroom table
+        Spawn(class'PlaceholderItem',,, vect(602,1215.7,295)); //Kitchen Counter
+        Spawn(class'PlaceholderItem',,, vect(-672.8,1261,473)); //Upper Left Office desk
+        Spawn(class'PlaceholderContainer',,, vect(-1187,-1154,-31)); //Behind Jail Desk
+        Spawn(class'PlaceholderContainer',,, vect(2384,1669,-95)); //MJ12 Door
+        Spawn(class'PlaceholderContainer',,, vect(-383.6,1376,273)); //JC's Office
         break;
     }
 }
 
 function PostFirstEntryMapFixes()
 {
-    local #var(prefix)CrateUnbreakableLarge c;
     local DeusExMover m;
 
     FixUNATCORetinalScanner();
@@ -85,11 +119,6 @@ function PostFirstEntryMapFixes()
         foreach AllActors(class'DeusExMover', m, 'SignalComputerDoorOpen') {
             m.bBreakable = false;
             m.bPickable = false;
-        }
-        // these crates can make the basement nearly impossible to get through
-        foreach AllActors(class'#var(prefix)CrateUnbreakableLarge', c) {
-            if(c.Location.Z > -28.799877) continue;
-            c.Destroy();
         }
         break;
     }

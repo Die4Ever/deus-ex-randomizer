@@ -176,7 +176,7 @@ function BindControls(optional string action)
     NewMenuItem("Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.");
     Slider(f.settings.enemiesrandomized, 0, 1000);
 
-    NewMenuItem("Enemy Stats Boost %", "How much to boost enemy accuracy, reload speed, and aggression.");
+    NewMenuItem("Enemy Stats Boost %", "How much to boost enemy accuracy, reload speed, aggression, and helmets.");
     Slider(f.settings.enemystats, 0, 100);
 
     NewMenuItem("Enemy Shuffling %", "Shuffle enemies around the map.");

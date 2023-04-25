@@ -11,6 +11,8 @@ function FirstEntry()
 #endif
     Super.FirstEntry();
 
+    if(dxr.flags.IsReducedRando()) return;
+
     SetSeed( "DXRNames" );
 
     foreach AllActors(class'#var(prefix)ScriptedPawn', p)
