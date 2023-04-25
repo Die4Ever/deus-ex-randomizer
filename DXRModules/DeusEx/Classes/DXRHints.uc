@@ -42,7 +42,6 @@ simulated function InitHints()
     AddHint("You don't trigger your own grenades.", "Setup traps without fear.");
     AddHint("Use sabot shotgun rounds to kill the little spider bots.");
     AddHint("Grab a plasma rifle, blast everything in sight,", "then go get your items back.");
-    AddHint("A plasma rifle with the laser sight mod is very strong, ", "it greatly increases the accuracy.");
     if(dxr.flags.settings.energy != 100) {
         AddHint("Your max energy is "$dxr.flags.settings.energy$" points.", "Your energy meter shows percent relative to this value.");
     }
