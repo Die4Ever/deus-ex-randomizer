@@ -455,6 +455,7 @@ function RandoEnemies(int percent, int hidden_percent)
         if(p.bHidden) _perc = hidden_percent;
 
         if( chance_single(_perc) ) RandomizeSP(p, _perc);
+        else CheckHelmet(p);
 
         if(p.bImportant && p.Tag != 'RaidingCommando') continue;
         if(p.bInvincible) continue;
@@ -698,15 +699,22 @@ function RandomizeSP(ScriptedPawn p, int percent)
         p.SetupWeapon(false);
     }
 
-    if(p.Mesh == LodMesh'DeusExCharacters.GM_Jumpsuit' && chance_single(30)) {// chance to toggle helmet
-        switch(p.MultiSkins[6]) {
-        case Texture'DeusExItems.Skins.PinkMaskTex':
-        case Texture'DeusExCharacters.Skins.GogglesTex1':
+    CheckHelmet(p);
+}
+
+function CheckHelmet(ScriptedPawn p)
+{
+    if(p.Mesh != LodMesh'DeusExCharacters.GM_Jumpsuit')  return;
+
+    switch(p.MultiSkins[6]) {
+    case Texture'DeusExItems.Skins.PinkMaskTex':
+    case Texture'DeusExCharacters.Skins.GogglesTex1':
+        if(chance_single(dxr.flags.settings.enemystats))
             p.MultiSkins[6] = Texture'DeusExCharacters.Skins.MechanicTex3';
-            break;
-        default:
+        break;
+    default:
+        if(!chance_single(dxr.flags.settings.enemystats))
             p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';
-        }
     }
 }
 
