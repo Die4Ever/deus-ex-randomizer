@@ -455,7 +455,7 @@ function RandoEnemies(int percent, int hidden_percent)
         if(p.bHidden) _perc = hidden_percent;
 
         if( chance_single(_perc) ) RandomizeSP(p, _perc);
-        else CheckHelmet(p);
+        CheckHelmet(p);
 
         if(p.bImportant && p.Tag != 'RaidingCommando') continue;
         if(p.bInvincible) continue;
@@ -489,7 +489,10 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 
     n = CloneScriptedPawn(base, newclass);
     l("new RandomEnemy("$base$", "$percent$") == "$n);
-    if( n != None ) RandomizeSP(n, percent);
+    if( n != None ) {
+        RandomizeSP(n, percent);
+        CheckHelmet(n);
+    }
     //else RandomizeSize(n);
     return n;
 }
@@ -698,8 +701,6 @@ function RandomizeSP(ScriptedPawn p, int percent)
             GiveRandomBotWeapon(p, false, 6);
         p.SetupWeapon(false);
     }
-
-    CheckHelmet(p);
 }
 
 function CheckHelmet(ScriptedPawn p)
