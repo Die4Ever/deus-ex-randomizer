@@ -671,7 +671,6 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( IsCritter(p) ) return; // only give random weapons to humans and robots
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
 
-
     if( IsHuman(p.class)) {
         if(!p.bImportant) {
             RemoveItem(p, class'Weapon');
@@ -697,6 +696,17 @@ function RandomizeSP(ScriptedPawn p, int percent)
         if( chance_single(50) ) //Give a chance for a bonus weapon
             GiveRandomBotWeapon(p, false, 6);
         p.SetupWeapon(false);
+    }
+
+    if(p.Mesh == LodMesh'DeusExCharacters.GM_Jumpsuit' && chance_single(30)) {// chance to toggle helmet
+        switch(p.MultiSkins[6]) {
+        case Texture'DeusExItems.Skins.PinkMaskTex':
+        case Texture'DeusExCharacters.Skins.GogglesTex1':
+            p.MultiSkins[6] = Texture'DeusExCharacters.Skins.MechanicTex3';
+            break;
+        default:
+            p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';
+        }
     }
 }
 
