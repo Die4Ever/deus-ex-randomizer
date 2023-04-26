@@ -482,12 +482,17 @@ function ReceivedLeaderboard(Json j)
 
 function DrawLeaderboard(GC gc)
 {
+    local string playthrough_id;
     local int yPos, i;
 
+    playthrough_id = ToHex(dxr.flags.playthrough_id);
     gc.SetFont(Font'DeusExUI.FontConversationLarge');
     for(i=0; i<ArrayCount(runs) && runs[i].name!=""; i++){
         yPos = (i+1) * 25;
-        gc.DrawText(0,yPos,30,50, "#"$runs[i].place$".");
+        if(runs[i].playthrough_id ~= playthrough_id) {
+            gc.DrawBox(0, yPos, 650, 25, 0, 0, 1, Texture'Solid');
+        }
+        gc.DrawText(2,yPos,30,50, "#"$runs[i].place$".");
         gc.DrawText(30,yPos,200,50, runs[i].name);
         gc.DrawText(250,yPos,100,50, IntCommas(runs[i].score));
         gc.DrawText(350,yPos,100,50, fmtTimeToString(runs[i].time));
