@@ -274,6 +274,8 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
                 // don't allow headshots with stunning weapons
                 if ((damageType == 'Stunned') || (damageType == 'KnockedOut'))
                     HealthHead -= actualDamage * 2;// DXRando: 2x damage like torso
+                else if(damageType == 'Sabot')
+                    HealthHead -= actualDamage * 8;// DXRando: sabot ignores helmets, but this is still awkward with robots having heads?
                 else// DXRando: helmet good, basically a nerf to the pistol especially for late game
                     HealthHead -= actualDamage * HeadDamageMult();
                 if (offset.x < 0.0)
@@ -380,8 +382,7 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
 
 function int HeadDamageMult()
 {
-    if(Robot(self) != None) return 6;// their head is just as armored as normal, don't need much buff?
-    if(MJ12Commando(self) != None) return 6;
+    if(MJ12Commando(self) != None) return 6;// their head is just as armored as the rest of them, don't need much buff?
 
     // check for helmet
     if(Mesh == LodMesh'DeusExCharacters.GM_Jumpsuit') {
