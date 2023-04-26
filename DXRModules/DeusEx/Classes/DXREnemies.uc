@@ -672,6 +672,10 @@ function RandomizeSP(ScriptedPawn p, int percent)
         p.BaseAccuracy -= FClamp(rngf() * float(dxr.flags.settings.enemystats)/200.0, 0, 0.5);
     }
 
+    if(p.RaiseAlarm==RAISEALARM_BeforeAttacking && chance_single(dxr.flags.settings.enemystats)) {
+        p.RaiseAlarm = RAISEALARM_BeforeFleeing;
+    }
+
     if( IsCritter(p) ) return; // only give random weapons to humans and robots
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
 

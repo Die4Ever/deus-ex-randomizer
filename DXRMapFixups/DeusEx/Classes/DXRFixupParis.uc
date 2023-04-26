@@ -11,7 +11,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)JaimeReyes j;
 
-    // shut up, Tong!
+    // shut up, Tong! (reduced rando is not as focused on replays compared to normal rando)
     if(!dxr.flags.IsReducedRando()) {
         foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
             switch(dlt.dataLinkTag) {
@@ -27,6 +27,7 @@ function PreFirstEntryMapFixes()
             case 'DL_hotel':
             case 'DL_bakery':
             case 'DL_entered_graveyard':
+            case 'DL_restaurant':
                 dlt.Event='';
                 dlt.Destroy();
             }

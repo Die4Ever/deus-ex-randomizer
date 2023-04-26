@@ -27,7 +27,7 @@ struct OriginalEnemy {
     var bool bReactFutz, bReactPresence, bReactLoudNoise, bReactAlarm, bReactShot, bReactCarcass, bReactDistress, bReactProjectiles;
     var int time_died;
 };
-var OriginalEnemy enemies[128];
+var OriginalEnemy enemies[256];
 var int time;
 var config name dont_respawn[8];
 

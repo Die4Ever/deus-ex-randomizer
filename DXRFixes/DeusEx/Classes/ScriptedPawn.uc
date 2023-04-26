@@ -274,10 +274,10 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
                 // don't allow headshots with stunning weapons
                 if ((damageType == 'Stunned') || (damageType == 'KnockedOut'))
                     HealthHead -= actualDamage * 2;// DXRando: 2x damage like torso
-                else if(HasHelmet())// DXRando: helmet good, basically a nerf to the pistol especially for late game
-                    HealthHead -= actualDamage * 6;
-                else
-                    HealthHead -= actualDamage * 8;
+                else if(damageType == 'Sabot')
+                    HealthHead -= actualDamage * 8;// DXRando: sabot ignores helmets, but this is still awkward with robots having heads?
+                else// DXRando: helmet good, basically a nerf to the pistol especially for late game
+                    HealthHead -= actualDamage * HeadDamageMult();
                 if (offset.x < 0.0)
                     hitPos = HITLOC_HeadBack;
                 else
@@ -380,19 +380,20 @@ function EHitLocation HandleDamage(int actualDamage, Vector hitLocation, Vector 
     return hitPos;
 }
 
-function bool HasHelmet()
+function int HeadDamageMult()
 {
-    if(Robot(self) != None) return true;
-    if(MJ12Commando(self) != None) return true;
+    if(MJ12Commando(self) != None) return 6;// their head is just as armored as the rest of them, don't need much buff?
+
+    // check for helmet
     if(Mesh == LodMesh'DeusExCharacters.GM_Jumpsuit') {
         switch(MultiSkins[6]) {
         case Texture'DeusExItems.Skins.PinkMaskTex':
         case Texture'DeusExCharacters.Skins.GogglesTex1':
-            return false;
+            return 8;// no helmet
         }
-        return true;
+        return 4;// helmet
     }
-    return false;// false gives vanilla damage
+    return 8;// 8x gives vanilla damage
 }
 
 

@@ -154,6 +154,7 @@ function RememberMusic()
 
 function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
+    local bool changed_song, set_seed;
     local bool rando_music_setting;
     local int continuous_setting;
 
@@ -164,15 +165,18 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
     l("ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$") "$continuous_setting@rando_music_setting@PrevSong@PrevMusicMode@dxr.dxInfo.missionNumber);
 
     // copy to LevelSong in order to support changing songs, since Level.Song is const
-    LevelSong = Level.Song;
-    LevelSongSection = Level.SongSection;
+    if(LevelSong != None)
+        changed_song = true;
+    set_seed = NewSong == Level.Song;
+    LevelSong = NewSong;
+    LevelSongSection = NewSection;
     DyingSection = 1;
     CombatSection = 3;
     ConvSection = 4;
     OutroSection = 5;
     savedCombatSection = CombatSection;
     savedConvSection = ConvSection;
-    if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" ) {
+    if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" && string(NewSong) != "Credits_Music.Credits_Music" ) {
         //LevelSong = Music'NYCStreets2_Music';
         LevelSong = Music(DynamicLoadObject("NYCStreets2_Music.NYCStreets2_Music", class'Music'));
         NewSong = LevelSong;
@@ -193,6 +197,10 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
     }
 
     p.musicMode = MUS_Outro;
+
+    if(changed_song && dxr != None) {
+        PlayRandomSong(set_seed);// should we use the level's normal seed or a random seed?
+    }
 }
 
 function SongChoice MakeSongChoice(string song, int ambient, int dying, int combat, int conv, int outro, optional bool cutscene_only)
@@ -239,6 +247,7 @@ function GetLevelSong(bool setseed)
         if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" )
             SetGlobalSeed("NYCStreets2_Music");
     } else {
+        SetGlobalSeed(FRand());
         oldSong = string(LevelSong.Name);
     }
 
