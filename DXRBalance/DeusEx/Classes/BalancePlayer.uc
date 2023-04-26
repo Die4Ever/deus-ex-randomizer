@@ -1,5 +1,12 @@
 class BalancePlayer injects Human;
 
+function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
+{
+    if(damageType == 'NanoVirus')
+        damageType = 'EMP';
+    Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
+}
+
 function float AdjustCritSpots(float Damage, name damageType, vector hitLocation)
 {
     local vector offset;
