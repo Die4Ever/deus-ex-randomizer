@@ -112,32 +112,26 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local #var(prefix)DataCube dc1;
-#ifdef injections
-    local #var(prefix)DataCube dc2;
-#else
-    local DXRInformationDevices dc2;
-#endif
+    local #var(prefix)InformationDevices dc2;
+    local string dctext;
 
     if (g.name=="Area 51 Blast Door Computer" && Loc.name != "the tower") {
         foreach AllActors(class'#var(prefix)DataCube',dc1){
-            if(dc1.TextTag=='15_Datacube07'){
-#ifdef injections
-                dc2 = Spawn(class'#var(prefix)DataCube',,, dc1.Location, dc1.Rotation);
-#else
-                dc2 = Spawn(class'DXRInformationDevices',,, dc1.Location, dc1.Rotation);
-#endif
-                if( dc2 != None ){
-                     dc2.plaintext = "Yusef:|n|nThey've jammed all communications, even narrow band microcasts, so this is the only way I could pass a message to you.  ";
-                     dc2.plaintext = dc2.plaintext $ "I don't know who these guys are -- they're not ours, not any of ours I've ever seen at least -- but they're slaughtering us.  ";
-                     dc2.plaintext = dc2.plaintext $ "I managed to hack the first layer of the Dreamland systems, but the best I could do was lock the bunker doors and reroute control to the security console in "$Loc.name$".  ";
-                     dc2.plaintext = dc2.plaintext $ "Should take them awhile to figure that one out, and the moment they do I'll nail the first bastard that sticks his head out of the hole.  If something happens to me, the login is ";
-                     dc2.plaintext = dc2.plaintext $ "\"a51\" and the password is \"xx15yz\".|n|n";
-                     dc2.plaintext = dc2.plaintext $ "BTW, be careful -- a squad made it out before I managed to lock the doors: they headed for the warehouse and then I lost contact with them.|n|n--Hawkins";
-                     l("DXRMissions spawned "$dc2 @ dc2.plaintext @ dc1.Location);
-                     dc1.Destroy();
-                }
-                else warning("failed to spawn tower datacube at "$dc1.Location);
+            if(dc1.TextTag!='15_Datacube07') continue;
+
+            dctext = "Yusef:|n|nThey've jammed all communications, even narrow band microcasts, so this is the only way I could pass a message to you.  ";
+            dctext = dctext $ "I don't know who these guys are -- they're not ours, not any of ours I've ever seen at least -- but they're slaughtering us.  ";
+            dctext = dctext $ "I managed to hack the first layer of the Dreamland systems, but the best I could do was lock the bunker doors and reroute control to the security console in "$Loc.name$".  ";
+            dctext = dctext $ "Should take them awhile to figure that one out, and the moment they do I'll nail the first bastard that sticks his head out of the hole.  If something happens to me, the login is ";
+            dctext = dctext $ "\"a51\" and the password is \"xx15yz\".|n|n";
+            dctext = dctext $ "BTW, be careful -- a squad made it out before I managed to lock the doors: they headed for the warehouse and then I lost contact with them.|n|n--Hawkins";
+
+            dc2 = SpawnDatacube(dc1.Location, dc1.Rotation, dctext);
+            if( dc2 != None ){
+                l("DXRMissions spawned "$ dc2 @ dctext @ dc2.Location);
+                dc1.Destroy();
             }
+            else warning("failed to spawn tower datacube at "$dc1.Location);
         }
     }
 }

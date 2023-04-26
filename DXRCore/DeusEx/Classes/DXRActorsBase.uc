@@ -724,6 +724,26 @@ function #var(prefix)Containers AddBox(class<#var(prefix)Containers> c, vector l
     return box;
 }
 
+function #var(prefix)InformationDevices SpawnDatacube(vector loc, rotator rot, string text, optional bool dont_move)
+{
+#ifdef injections
+    local #var(prefix)DataCube dc;
+    dc = Spawn(class'#var(prefix)DataCube',,, loc, rot);
+#else
+    local DXRInformationDevices dc;
+    dc = Spawn(class'DXRInformationDevices',,, loc, rot);
+#endif
+
+    if(dc != None) {
+        dc.plaintext = text;
+        dc.bIsSecretGoal = dont_move;
+        info("SpawnDatacube "$dc$" at ("$loc$"), ("$rot$")");
+    } else {
+        warning("SpawnDatacube failed at "$loc);
+    }
+    return dc;
+}
+
 // used by DXRReplaceActors
 function Actor SpawnReplacement(Actor a, class<Actor> newclass)
 {

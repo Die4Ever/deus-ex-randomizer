@@ -52,11 +52,7 @@ function int InitGoals(int mission, string map)
 function AfterShuffleGoals(int goalsToLocations[32])
 {
     local int g;
-#ifdef injections
-    local #var(prefix)DataCube dc;
-#else
-    local DXRInformationDevices dc;
-#endif
+    local string dctext;
 
     //Only do this on mission 5 UNATCO HQ
     if (dxr.localURL != "05_NYC_UNATCOHQ"){
@@ -64,30 +60,24 @@ function AfterShuffleGoals(int goalsToLocations[32])
     }
 
     // put a datacube on Manderley's desk, this is for 2 different goals at once so it can't be done in MoveGoalToLocation
-#ifdef injections
-    dc = Spawn(class'#var(prefix)DataCube',,, vect(243.288742, -104.183029, 289.368256), rot(0,0,0));
-#else
-    dc = Spawn(class'DXRInformationDevices',,, vect(243.288742, -104.183029, 289.368256), rot(0,0,0));
-#endif
-
-    if( dc == None ) return;
-    dc.bIsSecretGoal=True; //So it doesn't get shuffled
-    dc.plaintext = "I've hidden Anna's killphrase like you asked.";
+    dctext = "I've hidden Anna's killphrase like you asked.";
 
     for(g=0; g<num_goals; g++) {
         if(goals[g].name == "Anna's Killphrase 1") {
-            dc.plaintext = dc.plaintext $ "|n|nPart 1 is on "$ locations[goalsToLocations[g]].name;
+            dctext = dctext $ "|n|nPart 1 is on "$ locations[goalsToLocations[g]].name;
             break;
         }
     }
     for(g=0; g<num_goals; g++) {
         if(goals[g].name == "Anna's Killphrase 2") {
-            dc.plaintext = dc.plaintext $ "|nPart 2 is on "$ locations[goalsToLocations[g]].name;
+            dctext = dctext $ "|nPart 2 is on "$ locations[goalsToLocations[g]].name;
             break;
         }
     }
 
-    dc.plaintext = dc.plaintext $ "|n|nBoth using the DEMIURGE username. JC will never find them!";
+    dctext = dctext $ "|n|nBoth using the DEMIURGE username. JC will never find them!";
+
+    SpawnDatacube(vect(243.288742, -104.183029, 289.368256), rot(0,0,0), dctext, true);
 }
 
 function PreFirstEntryMapFixes()

@@ -84,7 +84,7 @@ function RandoTurrets(int percent_move, int percent_add)
         c = SpawnSecurityComputer(loc, t, cam);
         if( c != None ) {
             loc = GetRandomPosition(loc, min_datacube_distance, max_datacube_distance);
-            SpawnDatacube(loc, c);
+            SpawnDatacubeForComputer(loc, c);
         }
     }
 }
@@ -329,10 +329,9 @@ function #var(prefix)ComputerSecurity SpawnSecurityComputer(vector loc, optional
     return c;
 }
 
-function #var(prefix)Datacube SpawnDatacube(vector loc, #var(prefix)ComputerSecurity c)
+function #var(prefix)InformationDevices SpawnDatacubeForComputer(vector loc, #var(prefix)ComputerSecurity c)
 {
-    local #var(prefix)Datacube d;
-#ifdef vanilla
+    local #var(prefix)InformationDevices d;
     local LocationNormal locnorm;
     local FMinMax distrange;
     locnorm.loc = loc;
@@ -342,15 +341,10 @@ function #var(prefix)Datacube SpawnDatacube(vector loc, #var(prefix)ComputerSecu
     distrange.max = 16*50;
     NearestFloor(locnorm, distrange);
 
-    d = Spawn(class'#var(prefix)Datacube',,, locnorm.loc, Rotator(locnorm.norm));
-    if( d == None ) {
-        warning("SpawnDatacube failed at "$locnorm.loc);
-        return None;
-    }
-    d.plaintext = c.UserList[0].userName $ " password is " $ c.UserList[0].Password;
+    d = SpawnDatacube(locnorm.loc, Rotator(locnorm.norm),
+        c.UserList[0].userName $ " password is " $ c.UserList[0].Password);
+#ifdef injections
     d.new_passwords[0] = c.UserList[0].Password;
-
-    info("SpawnDatacube "$d$" done at ("$locnorm.loc$"), ("$locnorm.norm$") with name: "$d.Name);
 #endif
     return d;
 }

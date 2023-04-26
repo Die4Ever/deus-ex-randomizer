@@ -95,18 +95,8 @@ function DeleteGoal(Goal g, GoalLocation Loc)
 
 function GenerateDTSHintCube(Goal g, GoalLocation Loc)
 {
-#ifdef injections
-    local #var(prefix)DataCube dc;
-    dc = Spawn(class'#var(prefix)DataCube',,, vect(-1857.841064, -158.911865, 2051.345459));
-#else
-    local DXRInformationDevices dc;
-    dc = Spawn(class'DXRInformationDevices',,, vect(-1857.841064, -158.911865, 2051.345459));
-#endif
-
-    if (dc!=None){
-        dc.plaintext = "I borrowed the sword but forgot it somewhere...  Maybe "$Loc.name$"?";
-        dc.bIsSecretGoal=True; //So it doesn't move
-    }
+    SpawnDatacube(vect(-1857.841064, -158.911865, 2051.345459), rot(0,0,0),
+        "I borrowed the sword but forgot it somewhere...  Maybe "$Loc.name$"?", true);
 }
 
 function CreateGoal(out Goal g, GoalLocation Loc)

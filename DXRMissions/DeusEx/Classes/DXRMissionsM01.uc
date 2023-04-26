@@ -97,27 +97,15 @@ function AddMission1Goals()
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
-#ifdef injections
-    local #var(prefix)DataCube dc;
-#else
-    local DXRInformationDevices dc;
-#endif
-
     if(g.name == "Terrorist Commander" && g.actors[1].a != None) {
         // DataLinkTrigger 15ft wide, 4ft tall
         g.actors[1].a.SetCollisionSize(240, 64);
         if(Loc.name != "Top of the Statue") {
-#ifdef injections
-            dc = Spawn(class'#var(prefix)DataCube',,, vect(2801.546387, 171.028091, 2545.382813));
-#else
-            dc = Spawn(class'DXRInformationDevices',,, vect(2801.546387, 171.028091, 2545.382813));
-#endif
-            if( dc != None ) {
-                dc.bIsSecretGoal = true;// don't move it
-                dc.plaintext = "I'm gonna go for a walk to clear my head."
+            SpawnDatacube(vect(2801.546387, 171.028091, 2545.382813), rot(0,0,0),
+                "I'm gonna go for a walk to clear my head."
                     $ "|n|nI might be anywhere, like the hut in front of the statue, hanging out with Gunther in jail, or maybe I'll even sneak past UNATCO to hang out on the dock."
-                    $ "|n|n-- Leo";
-            }
+                    $ "|n|n-- Leo", true
+            );
         }
     }
 }
