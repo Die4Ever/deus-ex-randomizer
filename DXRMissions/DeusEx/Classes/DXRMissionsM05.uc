@@ -94,7 +94,7 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)ComputerPersonal cp;
 
-    if( dxr.localURL ~= "05_NYC_UNATCOHQ" ) {
+    if( dxr.localURL ~= "05_NYC_UNATCOHQ" && dxr.flags.settings.goals > 0 && num_goals > 0 && num_locations > 0 ) {
         // jail computer
         cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vect(-1491.076782, -1207.629028, -2.499634), rot(0, 25000, 0));
         cp.UserList[0].userName = "KLloyd";
@@ -105,18 +105,16 @@ function PreFirstEntryMapFixes()
         cp.UserList[0].userName = "KLloyd";
         cp.UserList[0].Password = "squishy";
 
-        if(dxr.flags.settings.goals > 0 && num_goals > 0 && num_locations > 0) {
-            foreach AllActors(class'#var(prefix)ComputerPersonal', cp) {
-                // remove demiurge, and also user and guest because they're useless anyways
-                RemoveComputerUser(cp, "demiurge");
-                RemoveComputerUser(cp, "USER");
-                RemoveComputerUser(cp, "GUEST");
-                RemoveComputerSpecialOption(cp, 'know1');
-                RemoveComputerSpecialOption(cp, 'know2');
-                // keep the button for Gunther's killphrase on Manderley's computer
-                if(cp.specialOptions[0].userName ~= "demiurge")
-                    cp.specialOptions[0].userName = "";
-            }
+        foreach AllActors(class'#var(prefix)ComputerPersonal', cp) {
+            // remove demiurge, and also user and guest because they're useless anyways
+            RemoveComputerUser(cp, "demiurge");
+            RemoveComputerUser(cp, "USER");
+            RemoveComputerUser(cp, "GUEST");
+            RemoveComputerSpecialOption(cp, 'know1');
+            RemoveComputerSpecialOption(cp, 'know2');
+            // keep the button for Gunther's killphrase on Manderley's computer
+            if(cp.specialOptions[0].userName ~= "demiurge")
+                cp.specialOptions[0].userName = "";
         }
     }
 }
