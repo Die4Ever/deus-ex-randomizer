@@ -469,7 +469,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         if(IsZeroRando()) {
             seed = 0;
             dxr.seed = seed;
-            bSetSeed = true;
+            bSetSeed = 1;
             settings.passwordsrandomized = 0;
             settings.enemystats = 0;
             settings.bot_stats = 0;
