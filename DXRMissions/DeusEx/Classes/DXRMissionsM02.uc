@@ -130,7 +130,7 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)AnnaNavarre anna;
 
-    if( dxr.localURL == "02_NYC_BATTERYPARK" && num_locations > 0 ) {
+    if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
         foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
             anna.SetOrders('Standing');
             anna.SetLocation( vect(1082.845703, 1807.538818, 335.101776) );
@@ -168,12 +168,14 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         if(passwords != None && Loc.name != "UC") {
             passwords.ReplacePassword("defend the generator in the Warehouse,", "defend the generator in the "$Loc.name$",");
         }
-    } else if(g.name == "Generator Computer" && Loc.name != "Warehouse Computer Room") {
+    }
+    else if(g.name == "Generator Computer" && Loc.name != "Warehouse Computer Room") {
         passwords = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
         if(passwords != None && Loc.name != "UC") {
             passwords.ReplacePassword("generator's computer in the Warehouse Computer Room.", "generator's computer in the "$Loc.name$".");
         }
-    } else if(dxr.localURL=="02_NYC_WAREHOUSE" && g.name=="Email Computer") {
+    }
+    else if(dxr.localURL=="02_NYC_WAREHOUSE" && g.name=="Email Computer") {
         cp = #var(prefix)ComputerPersonal(g.actors[0].a);
         cp.TextPackage = "#var(package)";
     }

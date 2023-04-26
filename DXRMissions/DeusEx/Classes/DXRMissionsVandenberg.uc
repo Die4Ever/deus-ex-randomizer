@@ -128,7 +128,8 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         }
         Vehicles(g.actors[0].a).FamiliarName="Jock Escape";
         Vehicles(g.actors[0].a).UnFamiliarName="Jock Escape";
-    } else if (g.name=="UC Computer") {
+    }
+    else if (g.name=="UC Computer") {
         if(g.actors[1].a != None)
             g.actors[1].a.SetCollisionSize(640, 64);
 
@@ -136,7 +137,8 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         if(passwords != None && Loc.name != "UC") {
             passwords.ReplacePassword("on the computer at the UC,", "on the computer at the "$Loc.name$",");
         }
-    } else if (g.name=="Email Computer") {
+    }
+    else if (g.name=="Email Computer") {
         cp = #var(prefix)ComputerPersonal(g.actors[0].a);
         cp.UserList[0].UserName="MBHaggerty";
         cp.UserList[0].Password="Kraken";

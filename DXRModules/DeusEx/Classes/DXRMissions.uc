@@ -183,6 +183,10 @@ function PreFirstEntry()
     local int seed;
 
     Super.PreFirstEntry();
+
+    if(dxr.flags.settings.startinglocations <= 0 && dxr.flags.settings.goals <= 0)
+        return;
+
 #ifndef revision
     seed = InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);
 #endif
@@ -200,8 +204,6 @@ function ShuffleGoals()
     if( ArrayCount(goalsToLocations) != ArrayCount(goals) ) err("ArrayCount(goalsToLocations) != ArrayCount(goals)");
 
     if(num_goals == 0 && num_locations == 0) return;
-    if(dxr.flags.settings.startinglocations <= 0 && dxr.flags.settings.goals <= 0)
-        return;
 
     MoveActorsOut();
     ChooseGoalLocations(goalsToLocations);
@@ -370,8 +372,11 @@ function AnyEntry()
 
     // since DXRMissions is transient, recreate this data for the hint system
     Super.AnyEntry();
+    if(dxr.flags.settings.startinglocations <= 0 && dxr.flags.settings.goals <= 0)
+        return;
+
     SetTimer(1, true);
-    if(num_goals != 0 || num_locations != 0) return;
+    if(num_goals != 0 || num_locations != 0) return;// we don't need to re-InitGoals if we already have them
 
 #ifndef revision
     seed = InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);

@@ -94,7 +94,7 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)ComputerPersonal cp;
 
-    if( dxr.localURL ~= "05_NYC_UNATCOHQ" && dxr.flags.settings.goals > 0 && num_goals > 0 && num_locations > 0 ) {
+    if( dxr.localURL ~= "05_NYC_UNATCOHQ" ) {
         // jail computer
         cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vect(-1491.076782, -1207.629028, -2.499634), rot(0, 25000, 0));
         cp.UserList[0].userName = "KLloyd";
