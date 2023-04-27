@@ -9,7 +9,7 @@ function PreFirstEntryMapFixes()
     local DataLinkTrigger dlt;
     local FlagTrigger ft;
     local HowardStrong hs;
-    local #var(Mover) door;
+    local #var(DeusExPrefix)Mover door;
     local DXREnemies dxre;
 
     switch(dxr.localURL)
@@ -83,7 +83,7 @@ function PreFirstEntryMapFixes()
         }
 
         //This door can get stuck if a spiderbot gets jammed into the little bot-bay
-        foreach AllActors(class'#var(Mover)', door, 'Releasebots') {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', door, 'Releasebots') {
             door.MoverEncroachType=ME_IgnoreWhenEncroach;
         }
 

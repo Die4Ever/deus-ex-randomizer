@@ -238,7 +238,7 @@ function AnyEntryMapFixes()
 {
     local Gray g;
     local ElectricityEmitter ee;
-    local #var(Mover) d;
+    local #var(DeusExPrefix)Mover d;
 
     switch(dxr.localURL)
     {
@@ -266,7 +266,7 @@ function AnyEntryMapFixes()
         }
 
         if((!#defined(revision)) && (!#defined(gmdx))) {// cover the button better
-            foreach AllActors(class'#var(Mover)', d, 'Page_button') {
+            foreach AllActors(class'#var(DeusExPrefix)Mover', d, 'Page_button') {
                 d.SetLocation(d.Location-vect(0,0,2)); // original Z was -5134
             }
         }

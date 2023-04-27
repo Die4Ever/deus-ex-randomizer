@@ -316,7 +316,7 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
 
 function bool KeyPositionGood(#var(prefix)NanoKey k, vector newpos)
 {
-    local #var(Mover) d;
+    local #var(DeusExPrefix)Mover d;
     local float dist;
     local int i;
 
@@ -326,7 +326,7 @@ function bool KeyPositionGood(#var(prefix)NanoKey k, vector newpos)
     dist = VSize( k.Location - newpos );
     if( dist > 5000 ) return False;
 
-    foreach AllActors(class'#var(Mover)', d)
+    foreach AllActors(class'#var(DeusExPrefix)Mover', d)
     {
         if( d.KeyIDNeeded == 'None' ) continue;
         else if( d.KeyIDNeeded != k.KeyID )
