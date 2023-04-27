@@ -292,7 +292,7 @@ function AnyEntryMapFixes()
     local #var(DeusExPrefix)Mover m;
     local bool boolFlag;
     local bool recruitedFlag;
-    local DeusExCarcass carc;
+    local #var(DeusExPrefix)Carcass carc;
     local Conversation c;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
@@ -402,7 +402,7 @@ function AnyEntryMapFixes()
     case "06_HONGKONG_WANCHAI_CANAL":
         HandleJohnSmithDeath();
         if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){
-            foreach AllActors(class'DeusExCarcass', carc, 'John_Smith_Body')
+            foreach AllActors(class'#var(DeusExPrefix)Carcass', carc, 'John_Smith_Body')
                 if (carc.bHidden){
 				    carc.bHidden = False;
 #ifdef injections

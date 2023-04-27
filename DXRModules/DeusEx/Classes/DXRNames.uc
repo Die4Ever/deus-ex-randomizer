@@ -7,7 +7,7 @@ function FirstEntry()
 #ifdef hx
     local HXCarcass c;
 #else
-    local DeusExCarcass c;
+    local #var(DeusExPrefix)Carcass c;
 #endif
     Super.FirstEntry();
 
@@ -23,7 +23,7 @@ function FirstEntry()
 #ifdef hx
     foreach AllActors(class'HXCarcass', c)
 #else
-    foreach AllActors(class'DeusExCarcass', c)
+    foreach AllActors(class'#var(DeusExPrefix)Carcass', c)
 #endif
     {
         if ( c.itemName != "Dead Body" && c.itemName != "Unconscious" && c.itemName != "Animal Carcass" )

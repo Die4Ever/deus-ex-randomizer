@@ -463,12 +463,12 @@ simulated function bool IsFemaleShirtInfluencer(class<ScriptedPawn> influencer)
 
 simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1, texture coat2, texture shirt, texture pants, texture helmet, bool isJC) {
     local bool female;
-    local DeusExCarcass carcass;
-    local class<DeusExCarcass> modelCarcass;
+    local #var(DeusExPrefix)Carcass carcass;
+    local class<#var(DeusExPrefix)Carcass> modelCarcass;
     local int i;
 
     female = isFemale && isJC;
-    carcass = DeusExCarcass(p);
+    carcass = #var(DeusExPrefix)Carcass(p);
 
     if(DeusExPlayer(p) != None) {
         // LDDP: take control away from FemJC package
@@ -477,7 +477,7 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
 
     // need to exlude _F meshes, JC is fit
     if( carcass != None ) {
-        modelCarcass = class<DeusExCarcass>(model.default.CarcassType);
+        modelCarcass = class<#var(DeusExPrefix)Carcass>(model.default.CarcassType);
         carcass.Mesh = modelCarcass.default.Mesh;
         carcass.Mesh2 = modelCarcass.default.Mesh2;
         carcass.Mesh3 = modelCarcass.default.Mesh3;
@@ -524,10 +524,10 @@ simulated function ApplyOutfit(Actor p, class<ScriptedPawn> model, texture coat1
         case LodMesh'DeusExCharacters.GMK_DressShirt':
         case LodMesh'DeusExCharacters.GMK_DressShirt_F':
         case LodMesh'DeusExCharacters.GM_Suit':
-            if( DeusExCarcass(p) != None ) {
+            if( #var(DeusExPrefix)Carcass(p) != None ) {
                 p.Mesh = LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass';
-                DeusExCarcass(p).Mesh2 = LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB';
-                DeusExCarcass(p).Mesh3 = LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC';
+                #var(DeusExPrefix)Carcass(p).Mesh2 = LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB';
+                #var(DeusExPrefix)Carcass(p).Mesh3 = LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC';
             }
             else {
                 p.Mesh = LodMesh'MPCharacters.mp_jumpsuit';

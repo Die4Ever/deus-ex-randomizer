@@ -173,12 +173,12 @@ function _RandomWeaponStruct GetWeaponConfig(int i)
 
 function RandoCarcasses(int chance)
 {
-    local DeusExCarcass c;
+    local #var(DeusExPrefix)Carcass c;
     local Inventory item, nextItem;
 
     SetSeed( "RandoCarcasses" );
 
-    foreach AllActors(class'DeusExCarcass', c) {
+    foreach AllActors(class'#var(DeusExPrefix)Carcass', c) {
         if( ! chance_single(chance) ) continue;
 
         item = c.Inventory;

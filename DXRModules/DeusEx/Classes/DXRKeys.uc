@@ -240,13 +240,13 @@ function RandoKey(#var(prefix)NanoKey k)
 
 function MoveNanoKeys4()
 {
-    local DeusExCarcass carc;
+    local #var(DeusExPrefix)Carcass carc;
     local #var(prefix)NanoKey k;
 
     SetSeed( "MoveNanoKeys4" );
 
 #ifdef injections
-    foreach AllActors(class'DeusExCarcass', carc) {
+    foreach AllActors(class'#var(DeusExPrefix)Carcass', carc) {
         carc.DropKeys();
     }
 #endif

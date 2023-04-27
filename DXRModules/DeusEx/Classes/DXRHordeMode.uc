@@ -355,7 +355,7 @@ function OutOfWaveTick()
 function StartWave()
 {
     local MedicalBot mb;
-    local DeusExCarcass c;
+    local #var(DeusExPrefix)Carcass c;
     local int num_carcasses;
     local int num_items;
     local Inventory item;
@@ -363,7 +363,7 @@ function StartWave()
     foreach AllActors(class'MedicalBot', mb) {
         mb.TakeDamage(10000, mb, mb.Location, vect(0,0,0), 'Exploded');
     }
-    foreach AllActors(class'DeusExCarcass', c) {
+    foreach AllActors(class'#var(DeusExPrefix)Carcass', c) {
         num_items = 0;
         for( item = c.Inventory; item != None; item = item.Inventory) {
             if( ! IsMeleeWeapon(item) )
@@ -373,7 +373,7 @@ function StartWave()
         else num_carcasses++;
     }
     if( num_carcasses > 50 ) {
-        foreach AllActors(class'DeusExCarcass', c) {
+        foreach AllActors(class'#var(DeusExPrefix)Carcass', c) {
             //c.TakeDamage(10000, None, c.Location, vect(0,0,0), 'Exploded');
             c.Destroy();
         }

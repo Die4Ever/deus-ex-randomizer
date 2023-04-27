@@ -390,8 +390,8 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
     // TODO: Check familiar vs. unfamiliar flags
     if (frobTarget.IsA('Pawn'))
         strInfo = player.GetDisplayName(frobTarget);
-    else if (frobTarget.IsA('DeusExCarcass'))
-        strInfo = DeusExCarcass(frobTarget).itemName;
+    else if (frobTarget.IsA('#var(DeusExPrefix)Carcass'))
+        strInfo = #var(DeusExPrefix)Carcass(frobTarget).itemName;
     else if (frobTarget.IsA('Inventory')) {
         strInfo = Inventory(frobTarget).itemName;
         if (frobTarget.IsA('Ammo'))
