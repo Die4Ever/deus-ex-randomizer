@@ -2,9 +2,46 @@ class BalancePlayer injects Human;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
-    if(damageType == 'NanoVirus')
-        damageType = 'EMP';
+
+    if(damageType == 'NanoVirus') {
+        RandomizeAugStates();
+    }
     Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
+
+}
+
+function RandomizeAugStates()
+{
+    local Augmentation aug;
+    local DXRBase dxrb;
+    aug = AugmentationSystem.FirstAug;
+
+    //Find a DXRBase of some sort so we can use rngb
+    //The dxr in the player doesn't exist at the layer where
+    //this gets compiled in
+    foreach AllActors(class'DXRBase', dxrb) { break; }
+    if (dxrb == None){
+        log("ERROR: Couldn't find a DXRBase to RandomizeAugStates");
+        return;
+    }
+
+    while(aug!=None){
+
+        //Skip synthetic heart since deactivating it turns off all your augs
+        //(Maybe this could only skip it for deactivation?)
+        if (aug.bHasIt && !aug.bAlwaysActive && (AugHeartLung(aug)==None)) {
+            //if (dxr.rngb()==True){
+
+            if (dxrb.rngb()){
+                aug.Activate();
+            } else {
+                aug.Deactivate();
+            }
+        }
+
+        aug = aug.next;
+    }
+    AugmentationSystem.RefreshAugDisplay();
 }
 
 function float AdjustCritSpots(float Damage, name damageType, vector hitLocation)
