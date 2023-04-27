@@ -1,7 +1,7 @@
 //=============================================================================
 // NSFClone1Carcass.
 //=============================================================================
-class NSFClone1Carcass extends DeusExCarcass;
+class NSFClone1Carcass extends #var(DeusExPrefix)Carcass;
 
 defaultproperties
 {

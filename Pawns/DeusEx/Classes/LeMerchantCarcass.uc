@@ -1,7 +1,7 @@
 //=============================================================================
 // LeMerchantCarcass
 //=============================================================================
-class LeMerchantCarcass extends Businessman3Carcass;
+class LeMerchantCarcass extends #var(prefix)Businessman3Carcass;
 
 defaultproperties
 {

@@ -1,7 +1,7 @@
 //=============================================================================
 // NSFClone2.
 //=============================================================================
-class NSFClone2 extends Terrorist;
+class NSFClone2 extends #var(prefix)Terrorist;
 
 defaultproperties
 {

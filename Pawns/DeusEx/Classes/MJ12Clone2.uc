@@ -1,7 +1,7 @@
 //=============================================================================
 // MJ12Clone2.
 //=============================================================================
-class MJ12Clone2 extends MJ12Troop;
+class MJ12Clone2 extends #var(prefix)MJ12Troop;
 
 defaultproperties
 {
