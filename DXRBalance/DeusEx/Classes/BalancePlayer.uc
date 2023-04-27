@@ -16,23 +16,12 @@ function RandomizeAugStates()
     local DXRBase dxrb;
     aug = AugmentationSystem.FirstAug;
 
-    //Find a DXRBase of some sort so we can use rngb
-    //The dxr in the player doesn't exist at the layer where
-    //this gets compiled in
-    foreach AllActors(class'DXRBase', dxrb) { break; }
-    if (dxrb == None){
-        log("ERROR: Couldn't find a DXRBase to RandomizeAugStates");
-        return;
-    }
-
     while(aug!=None){
 
         //Skip synthetic heart since deactivating it turns off all your augs
         //(Maybe this could only skip it for deactivation?)
         if (aug.bHasIt && !aug.bAlwaysActive && (AugHeartLung(aug)==None)) {
-            //if (dxr.rngb()==True){
-
-            if (dxrb.rngb()){
+            if (rand(2)==0){
                 aug.Activate();
             } else {
                 aug.Deactivate();
