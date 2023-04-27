@@ -1,7 +1,7 @@
 //=============================================================================
 // UNATCOClone3.
 //=============================================================================
-class UNATCOClone3 extends UNATCOTroop;
+class UNATCOClone3 extends #var(prefix)UNATCOTroop;
 
 defaultproperties
 {
