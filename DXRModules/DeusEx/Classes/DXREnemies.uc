@@ -62,20 +62,46 @@ function CheckConfig()
     }
     Super.CheckConfig();
 
-    AddRandomEnemyType(class'#var(prefix)ThugMale', 5, FactionAny);
-    AddRandomEnemyType(class'#var(prefix)ThugMale2', 5, FactionAny);
-    AddRandomEnemyType(class'#var(prefix)ThugMale3', 5, FactionAny);
+
     AddRandomEnemyType(class'#var(prefix)Greasel', 4, FactionAny);
-    AddRandomEnemyType(class'#var(prefix)Gray', 2, FactionAny);
     AddRandomEnemyType(class'#var(prefix)Karkian', 2, FactionAny);
-    AddRandomEnemyType(class'#var(prefix)SpiderBot2', 2, FactionAny);//little spider
-    AddRandomEnemyType(class'#var(prefix)MilitaryBot', 2, FactionAny);
-    AddRandomEnemyType(class'#var(prefix)SpiderBot', 2, FactionAny);//big spider
     AddRandomEnemyType(class'#var(prefix)SecurityBot2', 2, FactionAny);//walker
     AddRandomEnemyType(class'#var(prefix)SecurityBot3', 2, FactionAny);//little guy from liberty island
     AddRandomEnemyType(class'#var(prefix)SecurityBot4', 2, FactionAny);//unused little guy
 
     AddRandomEnemyType(class'#var(prefix)UNATCOTroop', 10, UNATCO);
+    AddRandomEnemyType(class'UNATCOClone1', 10, UNATCO);
+    AddRandomEnemyType(class'UNATCOClone2', 10, UNATCO);
+    AddRandomEnemyType(class'UNATCOClone3', 10, UNATCO);
+    AddRandomEnemyType(class'UNATCOClone4', 10, UNATCO);
+    AddRandomEnemyType(class'#var(prefix)MilitaryBot', 2, UNATCO);
+    AddRandomEnemyType(class'#var(prefix)SpiderBot2', 1, UNATCO);//little spider
+
+    AddRandomEnemyType(class'#var(prefix)MJ12Troop', 10, MJ12);
+    AddRandomEnemyType(class'#var(prefix)MJ12Commando', 2, MJ12);
+    AddRandomEnemyType(class'MJ12Clone1', 10, MJ12);
+    AddRandomEnemyType(class'MJ12Clone2', 10, MJ12);
+    AddRandomEnemyType(class'MJ12Clone3', 10, MJ12);
+    AddRandomEnemyType(class'MJ12Clone4', 10, MJ12);
+    AddRandomEnemyType(class'#var(prefix)MilitaryBot', 2, MJ12);
+    AddRandomEnemyType(class'#var(prefix)Gray', 2, MJ12);
+    AddRandomEnemyType(class'#var(prefix)SpiderBot2', 2, MJ12);//little spider
+    AddRandomEnemyType(class'#var(prefix)SpiderBot', 2, MJ12);//big spider
+
+    AddRandomEnemyType(class'#var(prefix)Terrorist', 10, NSF);
+    AddRandomEnemyType(class'NSFClone1', 10, NSF);
+    AddRandomEnemyType(class'NSFClone2', 10, NSF);
+    AddRandomEnemyType(class'NSFClone3', 10, NSF);
+    AddRandomEnemyType(class'NSFClone4', 10, NSF);
+    AddRandomEnemyType(class'#var(prefix)ThugMale', 5, NSF);
+    AddRandomEnemyType(class'#var(prefix)ThugMale2', 5, NSF);
+    AddRandomEnemyType(class'#var(prefix)ThugMale3', 5, NSF);
+
+    AddRandomEnemyType(class'#var(prefix)Gray', 2, FactionOther);
+    AddRandomEnemyType(class'#var(prefix)ThugMale', 5, FactionOther);
+    AddRandomEnemyType(class'#var(prefix)ThugMale2', 5, FactionOther);
+    AddRandomEnemyType(class'#var(prefix)ThugMale3', 5, FactionOther);
+    AddRandomEnemyType(class'#var(prefix)SpiderBot2', 1, FactionOther);//little spider
     ReadConfig();
 }
 
@@ -152,10 +178,21 @@ function int GetFactionId(ScriptedPawn p)
     switch(p.class) {
     case class'#var(prefix)UNATCOTroop':
         return UNATCO;
+    case class'#var(prefix)MJ12Troop':
+    case class'#var(prefix)MJ12Commando':
+    case class'#var(prefix)MIB':
+    case class'#var(prefix)WIB':
+        return MJ12;
+    case class'#var(prefix)Terrorist':
+        return NSF;
     }
     switch(p.Alliance) {
     case 'UNATCO':
         return UNATCO;
+    case 'MJ12':
+        return MJ12;
+    case 'NSF':
+        return NSF;
     }
     return FactionOther;
 }
