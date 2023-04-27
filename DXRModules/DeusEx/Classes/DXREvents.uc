@@ -56,6 +56,7 @@ function SetWatchFlags() {
     local FlagTrigger fTrigger;
     local WIB wib;
     local ComputerPersonal cp;
+    local #var(prefix)Maid maid;
     local int i;
 
     switch(dxr.localURL) {
@@ -129,6 +130,9 @@ function SetWatchFlags() {
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
         break;
+    case "03_NYC_UNATCOHQ":
+        WatchFlag('SimonsAssassination');
+        break;
     case "03_NYC_AIRFIELD":
         WatchFlag('BoatDocksAmbrosia');
         Tag = 'arctrigger';
@@ -177,6 +181,9 @@ function SetWatchFlags() {
         break;
     case "04_NYC_SMUG":
         RewatchFlag('MetSmuggler');
+        break;
+    case "04_NYC_NSFHQ":
+        WatchFlag('MostWarehouseTroopsDead');
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
@@ -250,6 +257,10 @@ function SetWatchFlags() {
         Tag = 'JocksToilet';
         closestToilet.Event='JocksToilet';
 
+        foreach AllActors(class'#var(prefix)Maid',maid){
+            maid.bImportant = True;
+            maid.BarkBindName = "MaySung";
+        }
 
 
         break;
@@ -843,6 +854,24 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
         e._AddPawnDeath(victim, Killer, damageType, HitLocation);
 }
 
+function bool checkInitialAlliance(ScriptedPawn p,name allianceName, float allianceLevel)
+{
+    local int i;
+
+    for (i=0;i<8;i++){
+        if (p.InitialAlliances[i].AllianceName==allianceName &&
+            p.InitialAlliances[i].AllianceLevel==allianceLevel){
+            return True;
+        }
+    }
+    return False;
+}
+
+function bool isInitialPlayerAlly(ScriptedPawn p)
+{
+    return checkInitialAlliance(p,'Player',1.0);
+}
+
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     _MarkBingo(victim.BindName$"_Dead");
@@ -857,6 +886,16 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         } else {
             _MarkBingo(victim.class.name$"_ClassDead");
             _MarkBingo(victim.BindName$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
+
+            //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
+            if (isInitialPlayerAlly(victim) &&   //Must have initially been an ally
+                 (dxr.localURL!="04_NYC_NSFHQ" || //Not on the NSF HQ map
+                 (dxr.localURL=="04_NYC_NSFHQ" && dxr.flagbase.GetBool('DL_SimonsPissed_Played')==False))){ //Or if it is, before you send the signal (kludgy)
+                _MarkBingo("AlliesKilled");
+            } else {
+
+            }
+
         }
         if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
             _MarkBingo("HumanStompDeath");
@@ -1603,6 +1642,10 @@ defaultproperties
     bingo_options(121)=(event="AnnaNavarre_DeadM3",desc="Kill Anna Navarre in Mission 3",max=1,missions=8)
     bingo_options(122)=(event="AnnaNavarre_DeadM4",desc="Kill Anna Navarre in Mission 4",max=1,missions=16)
     bingo_options(123)=(event="AnnaNavarre_DeadM5",desc="Kill Anna Navarre in Mission 5",max=1,missions=32)
+    bingo_options(124)=(event="SimonsAssassination",desc="Let Walton lose his patience",max=1,missions=8)
+    bingo_options(125)=(event="AlliesKilled",desc="Kill 15 allies",max=15)
+    bingo_options(126)=(event="MaySung_Dead",desc="Kill Maggie Chows maid",max=1,missions=64)
+    bingo_options(127)=(event="MostWarehouseTroopsDead",desc="Eliminate the UNATCO troops defending NSF HQ",max=1,missions=16)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
