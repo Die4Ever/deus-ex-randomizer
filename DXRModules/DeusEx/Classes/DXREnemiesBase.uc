@@ -32,6 +32,7 @@ replication
 }
 
 const FactionAny = 0;
+const FactionsEnd = 5;// end of the factions list
 function int GetFactionId(ScriptedPawn p);
 function RandomizeSP(ScriptedPawn p, int percent);
 function CheckHelmet(ScriptedPawn p);
@@ -72,9 +73,15 @@ function AddRandomMelee(string t, int c)
     }
 }
 
-function AddRandomEnemyType(class<ScriptedPawn> t, int c, int faction)
+function AddRandomEnemyType(class<ScriptedPawn> t, float c, int faction)
 {
     local int i;
+    if(faction == FactionAny) {
+        for(i=faction+1; i < FactionsEnd; i++) {
+            AddRandomEnemyType(t, c, i);
+        }
+        return;
+    }
     for(i=0; i < ArrayCount(_randomenemies); i++) {
         if( _randomenemies[i].type == None ) {
             _randomenemies[i].type = t;
@@ -146,17 +153,15 @@ function ReadConfig()
 
     num=0;
     for(i=0; i < ArrayCount(_randomenemies); i++) {
-        if( _randomenemies[i].type != None ) {
-            totals[_randomenemies[num].faction] += _randomenemies[num].chance;
-            num++;
-        }
+        if( _randomenemies[i].type == None ) continue;
+        totals[_randomenemies[num].faction] += _randomenemies[num].chance;
+        num++;
     }
     for(i=0; i < num; i++) {
-        total = totals[_randomenemies[num].faction];
-        if(_randomenemies[num].faction != FactionAny)
-            total += totals[FactionAny];
+        total = totals[_randomenemies[i].faction];
+        l(_randomenemies[i].type$" before: "$_randomenemies[i].chance@total);
         _randomenemies[i].chance *= 100.0/total;
-        //l(_randomenemies[i].type$": "$_randomenemies[i].chance);
+        //l(_randomenemies[i].type$" after: "$_randomenemies[i].chance@total);
     }
 }
 
@@ -198,7 +203,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
     r = initchance();
     for(i=0; i < ArrayCount(_randomenemies); i++ ) {
         if( _randomenemies[i].type == None ) break;
-        if( _randomenemies[i].faction != faction && _randomenemies[i].faction != FactionAny ) continue;
+        if( _randomenemies[i].faction != faction ) continue;
         if( chance( _randomenemies[i].chance, r ) ) newclass = _randomenemies[i].type;
     }
 
@@ -520,7 +525,10 @@ function RunTests()
 
     total=0;
     for(i=0; i < ArrayCount(_randomenemies); i++ ) {
+        if(_randomenemies[i].type == None) continue;
         total += _randomenemies[i].chance;
+        test( _randomenemies[i].faction > FactionAny, "_randomenemies["$i$"].faction > FactionAny" );
+        test( _randomenemies[i].faction < FactionsEnd, "_randomenemies["$i$"].faction < FactionsEnd" );
     }
     //test( total <= 100, "config randomenemies chances, check total "$total);// TODO: fix this test again
     total=0;

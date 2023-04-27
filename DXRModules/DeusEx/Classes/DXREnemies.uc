@@ -1,10 +1,11 @@
 class DXREnemies extends DXREnemiesShuffle;
 
-//const FactionAny = 0;// in BAse
+//const FactionAny = 0;// in Base
 const FactionOther = 1;
 const NSF = 2;
 const UNATCO = 3;
 const MJ12 = 4;
+//const FactionsEnd = 5;// end of the factions list, defined in Base
 
 function CheckConfig()
 {
