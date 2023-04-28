@@ -115,6 +115,7 @@ function SetWatchFlags() {
         break;
     case "02_NYC_SMUG":
         WatchFlag('MetSmuggler');
+        Tag = 'botordertrigger';
         break;
     case "03_NYC_BATTERYPARK":
         foreach AllActors(class'JunkieMale',jm) {
@@ -181,6 +182,7 @@ function SetWatchFlags() {
         break;
     case "04_NYC_SMUG":
         RewatchFlag('MetSmuggler');
+        Tag = 'botordertrigger';
         break;
     case "04_NYC_NSFHQ":
         WatchFlag('MostWarehouseTroopsDead');
@@ -291,6 +293,7 @@ function SetWatchFlags() {
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
         RewatchFlag('MetSmuggler');
+        Tag = 'botordertrigger';
         break;
     case "08_NYC_BAR":
         WatchFlag('LeoToTheBar');
@@ -889,11 +892,9 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
             if (isInitialPlayerAlly(victim) &&   //Must have initially been an ally
-                 (dxr.localURL!="04_NYC_NSFHQ" || //Not on the NSF HQ map
-                 (dxr.localURL=="04_NYC_NSFHQ" && dxr.flagbase.GetBool('DL_SimonsPissed_Played')==False))){ //Or if it is, before you send the signal (kludgy)
+                 (dxr.localURL!="04_NYC_NSFHQ" || (dxr.localURL=="04_NYC_NSFHQ" && dxr.flagbase.GetBool('DL_SimonsPissed_Played')==False)) //Not on the NSF HQ map, or if it is, before you send the signal (kludgy)
+                 ){
                 _MarkBingo("AlliesKilled");
-            } else {
-
             }
 
         }
@@ -1412,6 +1413,24 @@ function _MarkBingo(coerce string eventname)
                 return; //Don't mark this event if knocked out
             }
             break;
+        case "UNATCOClone1_ClassDead":
+        case "UNATCOClone2_ClassDead":
+        case "UNATCOClone3_ClassDead":
+        case "UNATCOClone4_ClassDead":
+            eventname="UNATCOTroop_ClassDead";
+            break;
+        case "NSFClone1_ClassDead":
+        case "NSFClone2_ClassDead":
+        case "NSFClone3_ClassDead":
+        case "NSFClone4_ClassDead":
+            eventname="Terrorist_ClassDead";
+            break;
+        case "MJ12Clone1_ClassDead":
+        case "MJ12Clone2_ClassDead":
+        case "MJ12Clone3_ClassDead":
+        case "MJ12Clone4_ClassDead":
+            eventname="MJ12Troop_ClassDead";
+            break;
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
@@ -1646,6 +1665,13 @@ defaultproperties
     bingo_options(125)=(event="AlliesKilled",desc="Kill 15 allies",max=15)
     bingo_options(126)=(event="MaySung_Dead",desc="Kill Maggie Chows maid",max=1,missions=64)
     bingo_options(127)=(event="MostWarehouseTroopsDead",desc="Eliminate the UNATCO troops defending NSF HQ",max=1,missions=16)
+    bingo_options(128)=(event="CleanerBot_ClassDead",desc="Kill 5 Cleaner Bots",max=5)
+    bingo_options(129)=(event="MedicalBot_ClassDead",desc="Kill 3 Medical Bots",max=3)
+    bingo_options(130)=(event="RepairBot_ClassDead",desc="Kill 3 Repair Bots",max=3)
+    bingo_options(131)=(event="DrugDealer_Dead",desc="Kill the Drug Dealer in Brooklyn Bridge Station",max=1,missions=8)
+    bingo_options(132)=(event="botordertrigger",desc="The Smuggler is whacked-out paranoid",max=1,missions=276)
+    bingo_options(133)=(event="IgnitedPawn",desc="Set 15 people on fire",max=15)
+    bingo_options(134)=(event="GibbedPawn",desc="Blow up 15 people",max=15)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")

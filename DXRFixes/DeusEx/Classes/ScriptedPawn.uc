@@ -107,6 +107,8 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
 {
     local name baseDamageType;
     local DeusExPlayer p;
+    local Human h;
+    local bool wasOnFire;
 
     if (damageType == 'FlareFlamed') {
         baseDamageType = 'Flamed';
@@ -114,15 +116,32 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
         baseDamageType = damageType;
     }
 
+    wasOnFire=bOnFire;
+
     _TakeDamageBase(Damage,instigatedBy,hitLocation,momentum,baseDamageType,bPlayAnim);
 
+    if (!wasOnFire && bOnFire && instigatedBy==GetPlayerPawn()){
+        h = Human(GetPlayerPawn());
+        class'DXREvents'.static.MarkBingo(h.dxr,"IgnitedPawn");
+    }
+
     if (bBurnedToDeath) {
-        p = DeusExPlayer(GetPlayerPawn());
+        if (p==None){
+            p = DeusExPlayer(GetPlayerPawn());
+        }
         class'DXRStats'.static.AddBurnKill(p);
     }
 
     if (damageType == 'FlareFlamed') {
         flareBurnTime = 3;
+    }
+
+    if ((Health < -100) && !IsA('Robot'))
+	{
+        if (h==None){
+            h = Human(GetPlayerPawn());
+            class'DXREvents'.static.MarkBingo(h.dxr,"GibbedPawn");
+        }
     }
 }
 
