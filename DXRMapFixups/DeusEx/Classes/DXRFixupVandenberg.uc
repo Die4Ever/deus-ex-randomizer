@@ -11,12 +11,16 @@ function PreFirstEntryMapFixes()
     local HowardStrong hs;
     local #var(DeusExPrefix)Mover door;
     local DXREnemies dxre;
+    local #var(prefix)TracerTong tt;
 
     switch(dxr.localURL)
     {
     case "12_VANDENBERG_CMD":
         // add goals and keypad code
         Player().StartDataLinkTransmission("DL_no_carla");
+        foreach AllActors(class'#var(prefix)TracerTong', tt) {
+            RemoveFears(tt);// he looks pretty sick
+        }
         break;
 
 #ifdef vanillamaps
