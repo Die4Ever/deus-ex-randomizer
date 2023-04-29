@@ -1,5 +1,12 @@
 class AutoTurret injects AutoTurret;
 
+var float crazedTimer;
+var bool bTrackPawnsOnlyOrig;
+var bool bTrackPlayersOnlyOrig;
+var bool bActiveOrig;
+
+var float scramblerDamageMult;
+
 //DXR: don't blame the player for turrets they don't control
 function Fire()
 {
@@ -106,6 +113,19 @@ function Tick(float deltaTime)
 
     // DXRando: skip vanilla AutoTurret Tick
     Super(DeusExDecoration).Tick(deltaTime);
+
+    if (CrazedTimer > 0)
+	{
+        CrazedTimer -= deltaTime;
+		if (CrazedTimer < 0) {
+            //Revert craziness
+			CrazedTimer = 0;
+            bTrackPawnsOnly = bTrackPawnsOnlyOrig;
+            bTrackPlayersOnly = bTrackPlayersOnlyOrig;
+            bActive = bActiveOrig;
+        }
+	}
+
 
     bSwitched = False;
 
@@ -339,10 +359,67 @@ function Tick(float deltaTime)
         gun.AmbientSound = None;
 }
 
+function HandleScrambler(Pawn instigator, int damage)
+{
+    local bool bTrackPawnsDesired;
+    local bool bTrackPlayersDesired;
+    local ScriptedPawn sp;
+
+    sp = ScriptedPawn(instigator);
+
+    if (sp!=None){
+        if (sp.GetAllianceType('Player')==ALLIANCE_Hostile){
+            bTrackPawnsDesired = False;
+            bTrackPlayersDesired = True;
+        } else {
+            bTrackPawnsDesired = True;
+            bTrackPlayersDesired = False;
+        }
+    } else {
+        bTrackPawnsDesired = True;
+        bTrackPlayersDesired = False;
+    }
+
+    if (bTrackPawnsOnly == bTrackPawnsDesired && bTrackPlayersOnly == bTrackPlayersDesired){
+        //No alliance changing necessary
+        CrazedTimer += scramblerDamageMult*Damage;
+        return;
+    }
+
+    if (CrazedTimer <=0) {
+        bTrackPawnsOnlyOrig = bTrackPawnsOnly;
+        bTrackPlayersOnlyOrig = bTrackPlayersOnly;
+        bActiveOrig = bActive;
+    }
+
+    //Robots use half the damage
+    CrazedTimer += scramblerDamageMult*Damage;
+
+    if (DeusExPlayer(instigator)!=None){
+        DeusExPlayer(instigator).ClientMessage("Turret "$name$" now has a crazed timer of "$CrazedTimer);
+    }
+
+    bTrackPawnsOnly = bTrackPawnsDesired;
+    bTrackPlayersOnly = bTrackPlayersDesired;
+    bActive = True;
+
+
+}
+
 auto state Active
 {
     function TakeDamage(int Damage, Pawn EventInstigator, vector HitLocation, vector Momentum, name DamageType)
     {
+        if (DamageType == 'NanoVirus') {
+
+            HandleScrambler(EventInstigator,Damage);
+        }
+
         Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
     }
+}
+
+defaultproperties
+{
+    scramblerDamageMult = 0.5
 }

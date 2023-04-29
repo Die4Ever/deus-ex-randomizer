@@ -816,4 +816,24 @@ function RemoveItemDuringConversation(Inventory item)
 			conPlay.SetInHand(None);
 	}
 }
+
+function SetTurretState(AutoTurret turret, bool bActive, bool bDisabled)
+{
+    Super.SetTurretState(turret,bActive,bDisabled);
+
+    turret.bActiveOrig = bActive;
+}
+
+function SetTurretTrackMode(ComputerSecurity computer, AutoTurret turret, bool bTrackPlayers, bool bTrackPawns)
+{
+    Super.SetTurretTrackMode(computer,turret,bTrackPlayers,bTrackPawns);
+
+    //Using a computer will clear any craziness, just for simplicity
+    turret.bTrackPawnsOnlyOrig = bTrackPawns;
+    turret.bTrackPlayersOnlyOrig = bTrackPlayers;
+    turret.CrazedTimer = 0;
+    turret.bActive = turret.bActiveOrig;
+}
+
+
 // ---
