@@ -90,6 +90,14 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 2, vect(831.944641, -996.442627, -490.899567), rot(0,0,0));
 
         return 92;
+
+    case "09_NYC_DOCKYARD":
+        AddGoal("09_NYC_DOCKYARD", "Jock", NORMAL_GOAL, 'BlackHelicopter0', PHYS_None);
+        AddGoalLocation("09_NYC_DOCKYARD", "Roof", NORMAL_GOAL | VANILLA_GOAL, vect(3324.307617, 6731.588379, 1459.857788), rot(0, -19856, 0));
+        AddGoalLocation("09_NYC_DOCKYARD", "In Front of Ammo Storage", NORMAL_GOAL, vect(3226.842773, 2405.506348, 111.857788), rot(0, 10000, 0));
+        AddGoalLocation("09_NYC_DOCKYARD", "Inside Warehouse", NORMAL_GOAL, vect(563.842773, 4372.506348, 111.857788), rot(0, 15000, 0));
+        AddGoalLocation("09_NYC_DOCKYARD", "Sewer", NORMAL_GOAL, vect(2001.842773, 5715.506348, -164.142212), rot(0, 15000, 0));
+        return 93;
     }
 
     return mission+1000;
