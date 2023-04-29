@@ -229,6 +229,24 @@ function Tick(float DT)
     }
 }
 
+function Timer()
+{
+    Super.Timer();
+
+    if (localURL == "ENDGAME4") {
+        endgameTimer += checkTime;
+
+        if (!bQuotePrinted && endgameTimer > 15) {
+            endgameDelays[2]=60.0;
+            PrintEndgameQuote(2);
+        }
+
+        if (endgameTimer > 75) {
+            FinishCinematic();
+        }
+    }
+}
+
 
 function PrintEndgameQuote(int num)
 {

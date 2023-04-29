@@ -35,6 +35,10 @@ function IncreaseBrightness(int brightness)
 {
     local ZoneInfo z;
 
+    if (dxr.localURL == "ENDGAME4"){
+        return;  //Dance Parties don't need to be bright
+    }
+
     IncreaseZoneBrightness(brightness, Level);
     foreach AllActors(class'ZoneInfo', z) {
         if( z == Level ) continue;

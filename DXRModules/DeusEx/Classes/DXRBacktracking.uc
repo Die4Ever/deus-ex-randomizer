@@ -200,8 +200,12 @@ function AnyEntry()
     }
     foreach AllActors(class'DeusExDecoration', d)
         d.ConBindEvents();
-    foreach AllActors(class'ScriptedPawn', s)
-        s.ConBindEvents();
+
+    foreach AllActors(class'ScriptedPawn', s) {
+        if(s.BindName!="JCDenton"){ //Re-binding a JCDenton during ENDGAME4 knocks you out of camera mode and kills you
+            s.ConBindEvents();      //I don't think we *need* this ever?
+        }
+    }
 
     SetSeed("DXRBacktracking AnyEntry");// just in case we do randomized interpolationpoints
 

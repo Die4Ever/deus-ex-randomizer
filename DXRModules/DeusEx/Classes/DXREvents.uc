@@ -512,7 +512,6 @@ function Ending_FirstEntry()
         case "ENDGAME3": //Everett
             ending = 3;
             break;
-        //The dance party won't actually get hit since the rando can't run there at the moment
         case "ENDGAME4": //Dance party
             ending = 4;
             break;
@@ -648,8 +647,9 @@ function HandleBingoWinCountdown()
     if (bingo_win_countdown > 0) {
         //Show win message
         class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
-        if (bingo_win_countdown == 2) {
+        if (bingo_win_countdown == 2 && !#defined(vanilla)) {
             //Give it 2 seconds to send the tweet
+            //This is still needed outside of vanilla
             BeatGame(dxr,4);
         }
         bingo_win_countdown--;
@@ -1270,7 +1270,7 @@ function CheckBingoWin(DXRando dxr, int numBingos)
     if(#defined(hx)) return;
 
     if (dxr.flags.settings.bingo_win > 0){
-        if (numBingos >= dxr.flags.settings.bingo_win){
+        if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4"){
             info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
             bingo_win_countdown = 5;
         }
