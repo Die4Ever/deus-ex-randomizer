@@ -395,10 +395,6 @@ function HandleScrambler(Pawn instigator, int damage)
     //Robots use half the damage
     CrazedTimer += scramblerDamageMult*Damage;
 
-    if (DeusExPlayer(instigator)!=None){
-        DeusExPlayer(instigator).ClientMessage("Turret "$name$" now has a crazed timer of "$CrazedTimer);
-    }
-
     bTrackPawnsOnly = bTrackPawnsDesired;
     bTrackPlayersOnly = bTrackPlayersDesired;
     bActive = True;
