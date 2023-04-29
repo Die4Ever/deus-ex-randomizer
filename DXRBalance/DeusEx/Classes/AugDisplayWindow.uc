@@ -333,6 +333,7 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
     local AutoTurret turret;
     local AutoTurretGun gun;
     local SecurityCamera sc;
+    local ThrownProjectile tp;
 
     Super.GetTargetReticleColor(target,xcolor);
 
@@ -367,6 +368,15 @@ function GetTargetReticleColor( Actor target, out Color xcolor )
                 xcolor = colGreen;
             } else {
                 //Will trigger an alarm (hostile)
+                xcolor = colRed;
+            }
+        } else if (target.IsA('ThrownProjectile')) {
+            tp = ThrownProjectile(target);
+            if (tp.bDisabled){
+                xcolor = colWhite;
+            } else if (tp.Owner==Player) {
+                xcolor = colGreen;
+            } else {
                 xcolor = colRed;
             }
         }
