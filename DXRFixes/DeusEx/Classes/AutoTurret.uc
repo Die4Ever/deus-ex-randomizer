@@ -394,7 +394,6 @@ function HandleScrambler(Pawn instigator, int damage)
 
     //Robots use half the damage
     CrazedTimer += scramblerDamageMult*Damage;
-
     bTrackPawnsOnly = bTrackPawnsDesired;
     bTrackPlayersOnly = bTrackPlayersDesired;
     bActive = True;
@@ -417,5 +416,5 @@ auto state Active
 
 defaultproperties
 {
-     scramblerDamageMult=0.5
+     scramblerDamageMult=0.25
 }
