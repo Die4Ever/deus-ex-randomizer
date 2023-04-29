@@ -7,6 +7,49 @@ function int InitGoals(int mission, string map)
     local int goal, loc, loc2;
 
     switch(map) {
+    case "12_VANDENBERG_CMD":
+        AddGoal("12_VANDENBERG_CMD", "Backup Power Keypad", NORMAL_GOAL, 'Keypad0', PHYS_None);
+        AddGoal("12_VANDENBERG_CMD", "Backup Power Keypad", NORMAL_GOAL, 'Keypad1', PHYS_None);
+        AddGoalLocation("12_VANDENBERG_CMD", "Command Center Second Floor", NORMAL_GOAL, vect(1895.174561, 1405.394287, -1656.404175), rot(0, 32768, 0));
+        AddGoalLocation("12_VANDENBERG_CMD", "Third Floor Elevator", NORMAL_GOAL, vect(444.509338, 1503.229126, -1415.007568), rot(0, -16384, 0));
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Near Pipes", NORMAL_GOAL | START_LOCATION, vect(-288.769806, 1103.257813, -1984.334717), rot(0, -16384, 0));
+        AddActorLocation(loc, PLAYER_LOCATION, vect(-214.927200, 888.034485, -2043.409302), rot(0, 0, 0));
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Globe Room", NORMAL_GOAL | START_LOCATION, vect(-1276.664063, 1168.599854, -1685.868042), rot(0, 16384, 0));
+        AddActorLocation(loc, PLAYER_LOCATION, vect(-1879.828003, 1820.156006, -1777.113892), rot(0, 0, 0));
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Roof", NORMAL_GOAL | START_LOCATION | VANILLA_START, vect(927.361328, 2426.330811, -867.404114), rot(0, 32768, 0));
+        AddActorLocation(loc, PLAYER_LOCATION, vect(657.233215, 2501.673096, -908.798096), rot(0, -16384, 0));
+
+        AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", START_LOCATION, vect(6750.350586, 7763.461426, -3092.699951), rot(0, 0, 0));
+        AddGoalLocation("12_VANDENBERG_CMD", "Outdoor Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(-2371.028564,-96.179214,-2070.390625), rot(0,-32768,0));
+        AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
+
+        // complicated because of DXRBacktracking::VandCmdAnyEntry() to reuse the chopper
+        /*goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
+        AddGoalActor(goal, 1, 'TracerTong0', PHYS_None);
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Street Entrance", GOAL_TYPE1 | VANILLA_GOAL, vect(7014.185059, 7540.296875, -2984.704102), rot(0,-19840,0));
+        AddActorLocation(loc, 1, vect(6436.471680, 7621.873535, -3061.458740), rot(0,-27976,0));
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Courtyard", GOAL_TYPE1, vect(-371.047180, 5046.039063, -2050.704102), rot(0,-19840,0));
+        AddActorLocation(loc, 1, vect(-659.219116, 5350.891113, -2142.458740), rot(0,-27976,0));
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Comm 01 Roof", GOAL_TYPE1, vect(-1880.047119, 5382.039063, -1831.704102), rot(0,0,0));
+        AddActorLocation(loc, 1, vect(-1553.219116, 5030.891113, -1876.458740), rot(0,-14000,0));
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Command Roof", GOAL_TYPE1, vect(-2209.047119, 2820.039063, -1410.704102), rot(0,-10000,0));
+        AddActorLocation(loc, 1, vect(-1617.219116, 2778.891113, -1471.458740), rot(0,-10000,0));
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Command Hall", GOAL_TYPE1, vect(1799.313965, 1914.730225, -1934.704102), rot(0,32768,0));
+        AddActorLocation(loc, 1, vect(1412.059204, 1802.125000, -2023.458740), rot(0,-30000,0));
+
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Sniper Tower", GOAL_TYPE1, vect(-946.215820, 80.315643, -1359.704102), rot(0,32768,0));
+        AddActorLocation(loc, 1, vect(-1033.543579, 265.367859, -1569.458740), rot(0,-30000,0));*/
+
+        return 121;
+
     case "14_VANDENBERG_SUB":
     case "14_OCEANLAB_LAB":
     case "14_OCEANLAB_UC":
@@ -115,10 +158,17 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
+    local #var(prefix)OrdersTrigger ot;
     local #var(prefix)ComputerPersonal cp;
     local DXRPasswords passwords;
 
-    if (g.name=="Jock Escape") {
+    if (g.name=="Jock and Tong") {
+        foreach AllActors(class'#var(prefix)OrdersTrigger', ot, 'TongGO') {
+            ot.Orders = 'Wandering';
+            ot.ordersTag = '';
+        }
+    }
+    else if (g.name=="Jock Escape") {
         if(Loc.name=="Cherry Picker") {
             g.actors[0].a.DrawScale = 0.5;
             g.actors[0].a.SetCollisionSize(200, 50);
