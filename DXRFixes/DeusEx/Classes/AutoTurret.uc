@@ -417,5 +417,5 @@ auto state Active
 
 defaultproperties
 {
-    scramblerDamageMult = 0.5
+     scramblerDamageMult=0.5
 }
