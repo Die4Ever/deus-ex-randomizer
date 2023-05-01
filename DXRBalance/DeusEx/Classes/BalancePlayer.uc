@@ -22,9 +22,11 @@ function RandomizeAugStates()
         //(Maybe this could only skip it for deactivation?)
         if (aug.bHasIt && !aug.bAlwaysActive && (AugHeartLung(aug)==None)) {
             if (rand(2)==0){
-                aug.Activate();
-            } else {
-                aug.Deactivate();
+                if (aug.bIsActive){
+                    aug.Deactivate();
+                } else {
+                    aug.Activate();
+                }
             }
         }
 

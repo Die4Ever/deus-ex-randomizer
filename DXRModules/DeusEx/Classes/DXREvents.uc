@@ -863,7 +863,7 @@ function bool checkInitialAlliance(ScriptedPawn p,name allianceName, float allia
 
     for (i=0;i<8;i++){
         if (p.InitialAlliances[i].AllianceName==allianceName &&
-            p.InitialAlliances[i].AllianceLevel==allianceLevel){
+            p.InitialAlliances[i].AllianceLevel~=allianceLevel){
             return True;
         }
     }

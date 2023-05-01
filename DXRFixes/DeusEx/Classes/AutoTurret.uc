@@ -393,6 +393,10 @@ function HandleScrambler(Pawn instigator, int damage)
     }
 
     //Robots use half the damage
+    //Note that turrets will be hit twice for every hit,
+    //since both the base (this) and the gun can be hit,
+    //and the gun will pass the damage to the base.
+    //The scramblerDamageMult is lower to compensate for this.
     CrazedTimer += scramblerDamageMult*Damage;
     bTrackPawnsOnly = bTrackPawnsDesired;
     bTrackPlayersOnly = bTrackPlayersDesired;

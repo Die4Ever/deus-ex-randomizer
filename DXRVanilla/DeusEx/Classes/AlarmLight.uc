@@ -34,8 +34,12 @@ function SpawnDXRando(DeusExPlayer player)
     class'DeusExLevelInfo'.default.MapName = "ENDGAME4";
     class'DeusExLevelInfo'.default.missionNumber = 99;
     class'DeusExLevelInfo'.default.Script = class'MissionEndgame';
-    class'DeusExLevelInfo'.default.ConversationPackage="DeusExConversations";
     DeusExLevelInfo = Spawn(class'DeusExLevelInfo');
+
+    //These defaults probably don't need to be reset, but better safe than sorry.
+    class'DeusExLevelInfo'.default.MapName = "";
+    class'DeusExLevelInfo'.default.missionNumber = 0;
+    class'DeusExLevelInfo'.default.Script = None;
 
     //The initial call would have happened before the DXR spawned, so call it again
     player.ClientSetMusic(Level.Song,0,255,MTRAN_FastFade);
