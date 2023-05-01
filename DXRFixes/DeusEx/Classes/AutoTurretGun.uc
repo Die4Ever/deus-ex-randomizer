@@ -20,4 +20,6 @@ auto state Active
 defaultproperties
 {
      bCollideWorld=true
+     CollisionRadius=10
+     CollisionHeight=8
 }
