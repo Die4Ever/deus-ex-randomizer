@@ -402,7 +402,6 @@ function HandleScrambler(Pawn instigator, int damage)
     bTrackPlayersOnly = bTrackPlayersDesired;
     bActive = True;
 
-
 }
 
 auto state Active
@@ -420,5 +419,5 @@ auto state Active
 
 defaultproperties
 {
-     scramblerDamageMult=0.25
+     scramblerDamageMult=0.2
 }

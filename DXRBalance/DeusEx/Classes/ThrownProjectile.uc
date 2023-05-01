@@ -108,18 +108,14 @@ state Exploding
        damageAmount = (2 * Damage) / gradualHurtSteps;
 
        Super.DamageRing();
-       foreach RadiusActors(class'AutoTurretGun', gun, damageRadius) {
-           if (gun.FastTrace(gun.Location,Location)){
-               //If there is line of site between the gun and the explosion, take damage
-               damageDir = gun.Location - Location;
-               damageDir = damageDir / (FMax(1,VSize(damageDir)));
-               damageScale = 1 - FMax(0,(FMax(1,VSize(damageDir)) - gun.CollisionRadius)/DamageRadius);
-               hitLocation = gun.Location - 0.5 * (gun.CollisionHeight + gun.CollisionRadius) * damageDir;
-               momentum = MomentumTransfer / gradualHurtSteps;
+       foreach VisibleActors(class'AutoTurretGun', gun, damageRadius) {
+           damageDir = gun.Location - Location;
+           damageDir = damageDir / (FMax(1,VSize(damageDir)));
+           damageScale = 1 - FMax(0,(FMax(1,VSize(damageDir)) - gun.CollisionRadius)/DamageRadius);
+           hitLocation = gun.Location - 0.5 * (gun.CollisionHeight + gun.CollisionRadius) * damageDir;
+           momentum = MomentumTransfer / gradualHurtSteps;
 
-               gun.TakeDamage(damageScale * damageAmount, Pawn(Owner), hitLocation, (damageScale * momentum * damageDir), damageType);
-           }
-
+           gun.TakeDamage(damageScale * damageAmount, Pawn(Owner), hitLocation, (damageScale * momentum * damageDir), damageType);
        }
 
    }
