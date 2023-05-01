@@ -13,13 +13,6 @@ auto state Active
             turret.HandleScrambler(EventInstigator,Damage);
         }
 
-        //The Gun itself doesn't normally take damage since it isn't bCollideWorld
-        //Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
+        Super.TakeDamage(Damage, EventInstigator, HitLocation, Momentum, DamageType);
     }
-}
-defaultproperties
-{
-     bCollideWorld=true
-     CollisionRadius=10
-     CollisionHeight=8
 }
