@@ -381,15 +381,13 @@ function bool ban(DeusExPlayer player, Inventory item)
             player.ClientMessage(item_sets[loadout].player_message, 'Pickup', true);
         }
         return true;
-    } else {
+    } else if(item.bDeleteMe) {
         //Only try to detect duping on items that aren't banned anyway
         //Banned things will get marked for deletion, but might not be gone
         //if you frob multiple times kind of quickly, giving a false positive
-        if(item.bDeleteMe) {
-            // we could fix by returning true here, but for now just record the offense
-            player.ClientMessage("ITEM DUPING DETECTED!");
-            class'DXRStats'.static.AddCheatOffense(player);
-        }
+        // we could fix by returning true here, but for now just record the offense
+        player.ClientMessage("ITEM DUPING DETECTED!");
+        class'DXRStats'.static.AddCheatOffense(player);
     }
 
     return false;

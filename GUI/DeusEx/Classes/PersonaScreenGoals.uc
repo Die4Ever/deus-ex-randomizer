@@ -214,7 +214,7 @@ function OpenGoalRandoWikiPage()
         missionNum = missionNum$info.MissionNumber;
     }
 
-    url = class'DXRInfo'.static.ReplaceText(goalRandoWikiUrl,"<Mission>",missionNum);
+    url = sprintf(goalRandoWikiUrl, missionNum);
 
     player.ConsoleCommand("start "$url);
 }
@@ -356,7 +356,7 @@ defaultproperties
      EntSpoilerWindowText="Are you sure you want to see spoilers for the entrance randomization? This will impact your score! Click Entrances instead if you don't want to hurt your score."
      GoalSpoilerWindowHeader="Spoilers?"
      GoalSpoilerWindowText="Do you want to see spoilers for the goal randomization? This will impact your score! Click Goal Locations instead if you don't want to hurt your score."
-     goalRandoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/<Mission>-Goals"
+     goalRandoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/%s-Goals"
      DisplaySpoilers="Show Spoilers"
      GoalLocations="Goal Locations"
 }

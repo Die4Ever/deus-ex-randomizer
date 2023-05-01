@@ -326,7 +326,7 @@ function AddLeo()
 
     foreach AllActors(class'DeusExPlayer',p){break;}
 
-    if (p!=None && p.inHand!=None && p.inHand.IsA('POVCorpse')){
+    if (p!=None && POVCorpse(p.inHand)!=None){
         c = POVCorpse(p.inHand);
 
         if (c.carcClassString == "DeusEx.TerroristCommanderCarcass"){
