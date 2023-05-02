@@ -145,7 +145,7 @@ function PreFirstEntryMapFixes()
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local Actor a;
-    local #var(Mover) m;
+    local #var(DeusExPrefix)Mover m;
     local #var(prefix)ComputerPersonal cp;
     local DXRPasswords passwords;
 
@@ -159,7 +159,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         a.bMovable = false;
         a.DrawScale = 2;
 
-        foreach AllActors(class'#var(Mover)', m, 'Debris') {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'Debris') {
             m.Tag = '';
             m.Event = '';
         }

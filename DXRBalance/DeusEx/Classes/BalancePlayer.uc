@@ -2,9 +2,34 @@ class BalancePlayer injects Human;
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
-    if(damageType == 'NanoVirus')
-        damageType = 'EMP';
+
+    if(damageType == 'NanoVirus') {
+        RandomizeAugStates();
+    }
     Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
+
+}
+
+function RandomizeAugStates()
+{
+    local Augmentation aug;
+    local DXRBase dxrb;
+
+    for(aug = AugmentationSystem.FirstAug; aug!=None; aug = aug.next){
+
+        //Skip synthetic heart since deactivating it turns off all your augs
+        //(Maybe this could only skip it for deactivation?)
+        if (aug.bHasIt && !aug.bAlwaysActive && (AugHeartLung(aug)==None)) {
+            if (rand(2)==0){
+                if (aug.bIsActive){
+                    aug.Deactivate();
+                } else {
+                    aug.Activate();
+                }
+            }
+        }
+    }
+    AugmentationSystem.RefreshAugDisplay();
 }
 
 function float AdjustCritSpots(float Damage, name damageType, vector hitLocation)

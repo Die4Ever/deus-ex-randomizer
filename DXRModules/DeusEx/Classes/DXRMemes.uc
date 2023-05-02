@@ -228,7 +228,7 @@ function AnyEntry()
         case "ENDGAME3":
         case "ENDGAME4":
         //case "00_TRAINING":
-            // extra randomization in the intro for the lolz, ENDGAME4 doesn't have a DeusExLevelInfo object though, so it doesn't get randomized :(
+            // extra randomization in the intro for the lolz
             l("Memeing up "$ dxr.localURL);
             RandomizeCutscene();
             FixEndgameEndCamera();
@@ -308,6 +308,7 @@ function PostFirstEntry()
         case "ENDGAME1":
         case "ENDGAME2":
         case "ENDGAME3":
+        case "ENDGAME4":
             AddLeo();
             break;
     }
@@ -325,7 +326,7 @@ function AddLeo()
 
     foreach AllActors(class'DeusExPlayer',p){break;}
 
-    if (p!=None && p.inHand.IsA('POVCorpse')){
+    if (p!=None && POVCorpse(p.inHand)!=None){
         c = POVCorpse(p.inHand);
 
         if (c.carcClassString == "DeusEx.TerroristCommanderCarcass"){
@@ -336,6 +337,13 @@ function AddLeo()
     if (!broughtLeo){
         return;
     }
+
+    if (alive){
+        rot.Yaw = 16472;
+    } else {
+        rot.Yaw = 0;
+    }
+
     switch(dxr.localURL)
     {
         case "ENDGAME1":
@@ -351,16 +359,22 @@ function AddLeo()
             loc.Y = -7813;
             loc.Z = -48;
             break;
+        case "ENDGAME4":
+            log("Endgame 4");
+            loc.X = -736;
+            loc.Y = -22;
+            loc.Z = -32;
+
+            rot.Yaw = -8064; //Different angle in Dance Party
+            break;
     }
 
     if (alive){
-        rot.Yaw = 16472;
         leo = Spawn(class'TerroristCommander',,,loc,rot);
         leo.bImportant=False; //Don't worry buddy, you're still important - I just don't want you gone
         leo.SetOrders('Standing','',True);
         leo.bInvincible=True; //In case of explosions or lightning...
     } else {
-        rot.Yaw=0;
         Spawn(class'TerroristCommanderCarcass',,,loc,rot);
     }
 

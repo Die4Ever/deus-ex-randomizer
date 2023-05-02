@@ -9,14 +9,18 @@ function PreFirstEntryMapFixes()
     local DataLinkTrigger dlt;
     local FlagTrigger ft;
     local HowardStrong hs;
-    local #var(Mover) door;
+    local #var(DeusExPrefix)Mover door;
     local DXREnemies dxre;
+    local #var(prefix)TracerTong tt;
 
     switch(dxr.localURL)
     {
     case "12_VANDENBERG_CMD":
         // add goals and keypad code
         Player().StartDataLinkTransmission("DL_no_carla");
+        foreach AllActors(class'#var(prefix)TracerTong', tt) {
+            RemoveFears(tt);// he looks pretty sick
+        }
         break;
 
 #ifdef vanillamaps
@@ -83,7 +87,7 @@ function PreFirstEntryMapFixes()
         }
 
         //This door can get stuck if a spiderbot gets jammed into the little bot-bay
-        foreach AllActors(class'#var(Mover)', door, 'Releasebots') {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', door, 'Releasebots') {
             door.MoverEncroachType=ME_IgnoreWhenEncroach;
         }
 

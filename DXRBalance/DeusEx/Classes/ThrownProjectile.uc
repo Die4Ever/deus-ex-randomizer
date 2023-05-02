@@ -95,3 +95,29 @@ function SpawnCloud(class<Cloud> type, Name DamageType)
         gas.bFloating = True;
     gas.Instigator = Instigator;
 }
+
+state Exploding
+{
+   function DamageRing()
+   {
+       local AutoTurretGun gun;
+       local float damageRadius,damageAmount,damageScale,momentum;
+       local vector damageDir,hitLocation;
+
+       damageRadius =(blastRadius / gradualHurtSteps) * gradualHurtCounter;
+       damageAmount = (2 * Damage) / gradualHurtSteps;
+
+       Super.DamageRing();
+       foreach VisibleActors(class'AutoTurretGun', gun, damageRadius) {
+           damageDir = gun.Location - Location;
+           damageDir = damageDir / (FMax(1,VSize(damageDir)));
+           damageScale = 1 - FMax(0,(FMax(1,VSize(damageDir)) - gun.CollisionRadius)/DamageRadius);
+           hitLocation = gun.Location - 0.5 * (gun.CollisionHeight + gun.CollisionRadius) * damageDir;
+           momentum = MomentumTransfer / gradualHurtSteps;
+
+           gun.TakeDamage(damageScale * damageAmount, Pawn(Owner), hitLocation, (damageScale * momentum * damageDir), damageType);
+       }
+
+   }
+
+}

@@ -200,8 +200,12 @@ function AnyEntry()
     }
     foreach AllActors(class'DeusExDecoration', d)
         d.ConBindEvents();
-    foreach AllActors(class'ScriptedPawn', s)
-        s.ConBindEvents();
+
+    foreach AllActors(class'ScriptedPawn', s) {
+        if(s.BindName!="JCDenton"){ //Re-binding a JCDenton during ENDGAME4 knocks you out of camera mode and kills you
+            s.ConBindEvents();      //I don't think we *need* this ever?
+        }
+    }
 
     SetSeed("DXRBacktracking AnyEntry");// just in case we do randomized interpolationpoints
 
@@ -311,6 +315,8 @@ function VandCmdAnyEntry()
 {
     local InterpolateTrigger t;
     local FlagBase flags;
+    local Vehicles chopper;
+    local DXRMissions missions;
 
     foreach AllActors(class'InterpolateTrigger', t, 'mission_done') {
         t.bTriggerOnceOnly = false;
@@ -326,7 +332,11 @@ function VandCmdAnyEntry()
     if ( flags.GetBool('GaryHostageBriefing_Played') )
     {
         RemoveChoppers('Helicopter');
-        SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vect(7014.185059, 7540.296875, -2884.704102), rot(0, -19840, 0) );
+        chopper = SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vect(7014.185059, 7540.296875, -2884.704102), rot(0, -19840, 0) );
+        missions = DXRMissions(dxr.FindModule(class'DXRMissions'));
+        if(missions != None) {
+            missions.UpdateLocation(chopper);
+        }
     }
 }
 

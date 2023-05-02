@@ -327,3 +327,58 @@ function DrawTargetAugmentation(GC gc)
     //So not necessary to "change it back" to the old font
 
 }
+
+function GetTargetReticleColor( Actor target, out Color xcolor )
+{
+    local AutoTurret turret;
+    local AutoTurretGun gun;
+    local SecurityCamera sc;
+    local ThrownProjectile tp;
+
+    Super.GetTargetReticleColor(target,xcolor);
+
+    if ( Player.Level.NetMode == NM_Standalone ) {
+        if ( target.IsA('AutoTurret') || target.IsA('AutoTurretGun') ) {
+                if (target.IsA('AutoTurret')){
+                    turret = AutoTurret(target);
+                } else {
+                    gun = AutoTurretGun(target);
+                    turret = AutoTurret(gun.Owner);
+                }
+
+                if (turret.bTrackPlayersOnly==True){
+                    //Hostile
+                    xcolor = colRed;
+                } else if (turret.bTrackPawnsOnly==True){
+                    //bTrackPlayersOnly=False is implied because of first condition
+                    //Allied
+                    xcolor = colGreen;
+                } else {
+                    //Neutral
+                    xcolor = colWhite;
+                }
+
+        } else if (target.IsA('SecurityCamera')) {
+            sc = SecurityCamera(target);
+            if (!sc.bActive) {
+                //Disabled
+                xcolor = colWhite;
+            } else if (sc.bNoAlarm){
+                //Will not set off an alarm (friendly)
+                xcolor = colGreen;
+            } else {
+                //Will trigger an alarm (hostile)
+                xcolor = colRed;
+            }
+        } else if (target.IsA('ThrownProjectile')) {
+            tp = ThrownProjectile(target);
+            if (tp.bDisabled){
+                xcolor = colWhite;
+            } else if (tp.Owner==Player) {
+                xcolor = colGreen;
+            } else {
+                xcolor = colRed;
+            }
+        }
+    }
+}

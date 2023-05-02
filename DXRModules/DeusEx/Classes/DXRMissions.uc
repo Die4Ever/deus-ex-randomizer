@@ -92,6 +92,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc);
 function PreFirstEntryMapFixes();
 function MissionTimer();
 function AfterShuffleGoals(int goalsToLocations[32]);
+function UpdateLocation(Actor a);
 
 function Spoiler GetSpoiler(int goalID)
 {
@@ -392,6 +393,28 @@ function Timer()
     Super.Timer();
     if( dxr == None ) return;
     MissionTimer();
+}
+
+function _UpdateLocation(Actor a, string goalName)
+{
+    local int g, l;
+
+    // make sure locations have been chosen
+    AnyEntry();
+
+    for(g=0; g < num_goals; g++) {
+        if(spoilers[g].goalName != goalName) continue;
+        break;
+    }
+    if(g>=num_goals) return;
+    for(l=0; l < num_locations; l++) {
+        if(spoilers[g].goalLocation != locations[l].name) continue;
+        break;
+    }
+    if(l>=num_locations) return;
+
+    goals[g].actors[0].a = a;
+    MoveGoalToLocation(goals[g], locations[l]);
 }
 
 function MoveGoalToLocation(Goal g, GoalLocation Loc)

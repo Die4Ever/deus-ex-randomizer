@@ -531,7 +531,15 @@ function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusic
 {
     local DXRMusic cm;
     GetDXR();
+    if (dxr==None){ //Probably only during ENDGAME4?
+        log("Couldn't find a DXR so we can set the music");
+        return;
+    }
     cm = DXRMusic(dxr.LoadModule(class'DXRMusic'));
+    if (cm==None){
+        log("Found a DXR but no DXRMusic module to set the music");
+        return;
+    }
     cm.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
 }
 
@@ -808,4 +816,24 @@ function RemoveItemDuringConversation(Inventory item)
 			conPlay.SetInHand(None);
 	}
 }
+
+function SetTurretState(AutoTurret turret, bool bActive, bool bDisabled)
+{
+    Super.SetTurretState(turret,bActive,bDisabled);
+
+    turret.bActiveOrig = bActive;
+}
+
+function SetTurretTrackMode(ComputerSecurity computer, AutoTurret turret, bool bTrackPlayers, bool bTrackPawns)
+{
+    Super.SetTurretTrackMode(computer,turret,bTrackPlayers,bTrackPawns);
+
+    //Using a computer will clear any craziness, just for simplicity
+    turret.bTrackPawnsOnlyOrig = bTrackPawns;
+    turret.bTrackPlayersOnlyOrig = bTrackPlayers;
+    turret.CrazedTimer = 0;
+    turret.bActive = turret.bActiveOrig;
+}
+
+
 // ---

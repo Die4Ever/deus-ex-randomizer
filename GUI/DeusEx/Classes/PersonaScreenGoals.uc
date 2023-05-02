@@ -175,7 +175,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
     }
 
     if (action=="wiki"){
-        player.ConsoleCommand("start "$goalRandoWikiUrl);
+        OpenGoalRandoWikiPage();
         // Destroy the msgbox!
 	    root.PopWindow();
         return true;
@@ -193,6 +193,30 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
     }
 
     return Super.BoxOptionSelected(msgBoxWindow,buttonNumber);
+}
+
+function OpenGoalRandoWikiPage()
+{
+    local string url,missionNum;
+    local DeusExLevelInfo info;
+
+    info = player.GetLevelInfo();
+
+    if (info.MissionNumber == 10 || info.MissionNumber == 11){
+        missionNum = "Paris";
+    } else if (info.MissionNumber == 12 || info.MissionNumber == 14){
+        missionNum = "Vandenberg";
+    } else {
+        missionNum = "M";
+        if (info.MissionNumber < 10) {
+            missionNum = missionNum $ "0";
+        }
+        missionNum = missionNum$info.MissionNumber;
+    }
+
+    url = sprintf(goalRandoWikiUrl, missionNum);
+
+    player.ConsoleCommand("start "$url);
 }
 
 function Teleporter findOtherTeleporter(Teleporter nearThis){
@@ -332,7 +356,7 @@ defaultproperties
      EntSpoilerWindowText="Are you sure you want to see spoilers for the entrance randomization? This will impact your score! Click Entrances instead if you don't want to hurt your score."
      GoalSpoilerWindowHeader="Spoilers?"
      GoalSpoilerWindowText="Do you want to see spoilers for the goal randomization? This will impact your score! Click Goal Locations instead if you don't want to hurt your score."
-     goalRandoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/Goal-Randomization"
+     goalRandoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/%s-Goals"
      DisplaySpoilers="Show Spoilers"
      GoalLocations="Goal Locations"
 }

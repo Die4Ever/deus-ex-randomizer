@@ -330,7 +330,7 @@ simulated function float initchance()
 simulated function bool chance(float percent, float r)
 {
     overallchances+=percent;
-    if(overallchances>100.01) warning("chance("$percent$", "$r$") overallchances == "$overallchances);
+    if(!(overallchances>=0 && overallchances<100.01)) warning("chance("$percent$", "$r$") overallchances == "$overallchances);
     return r>= (overallchances-percent) && r< overallchances;
 }
 

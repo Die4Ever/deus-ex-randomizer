@@ -48,7 +48,7 @@ function SetWatchFlags() {
     local ScientistMale sm;
     local ZoneInfo zone;
     local SkillAwardTrigger skillAward;
-    local #var(Mover) dxm;
+    local #var(DeusExPrefix)Mover dxm;
     local LogicTrigger lTrigger;
     local WaterZone water;
     local Toilet closestToilet;
@@ -56,6 +56,7 @@ function SetWatchFlags() {
     local FlagTrigger fTrigger;
     local WIB wib;
     local ComputerPersonal cp;
+    local #var(prefix)Maid maid;
     local int i;
 
     switch(dxr.localURL) {
@@ -114,6 +115,7 @@ function SetWatchFlags() {
         break;
     case "02_NYC_SMUG":
         WatchFlag('MetSmuggler');
+        Tag = 'botordertrigger';
         break;
     case "03_NYC_BATTERYPARK":
         foreach AllActors(class'JunkieMale',jm) {
@@ -128,6 +130,9 @@ function SetWatchFlags() {
         break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
+        break;
+    case "03_NYC_UNATCOHQ":
+        WatchFlag('SimonsAssassination');
         break;
     case "03_NYC_AIRFIELD":
         WatchFlag('BoatDocksAmbrosia');
@@ -177,6 +182,10 @@ function SetWatchFlags() {
         break;
     case "04_NYC_SMUG":
         RewatchFlag('MetSmuggler');
+        Tag = 'botordertrigger';
+        break;
+    case "04_NYC_NSFHQ":
+        WatchFlag('MostWarehouseTroopsDead');
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
@@ -210,7 +219,7 @@ function SetWatchFlags() {
             fTrigger.SetCollisionSize(500, 160);
         }
 
-        foreach AllActors(class'#var(Mover)',dxm,'SecretHold'){
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'SecretHold'){
             break;
         }
         skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
@@ -238,7 +247,7 @@ function SetWatchFlags() {
         WatchFlag('M06PaidJunkie');
 
         //Find Jock's apartment door
-        foreach AllActors(class'#var(Mover)',dxm){
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
             if (dxm.KeyIDNeeded=='JocksKey'){
                 break;
             }
@@ -250,13 +259,17 @@ function SetWatchFlags() {
         Tag = 'JocksToilet';
         closestToilet.Event='JocksToilet';
 
+        foreach AllActors(class'#var(prefix)Maid',maid){
+            maid.bImportant = True;
+            maid.BarkBindName = "MaySung";
+        }
 
 
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
         Tag = 'PoliceVaultBingo';
 
-        foreach AllActors(class'#var(Mover)',dxm,'station_door_05'){
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'station_door_05'){
             break;
         }
 
@@ -280,6 +293,7 @@ function SetWatchFlags() {
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
         RewatchFlag('MetSmuggler');
+        Tag = 'botordertrigger';
         break;
     case "08_NYC_BAR":
         WatchFlag('LeoToTheBar');
@@ -402,7 +416,7 @@ function SetWatchFlags() {
         foreach AllActors(class'FlagTrigger',fTrigger,'blast_door'){
             fTrigger.Tag = 'blast_door_flag';
         }
-        foreach AllActors(class'#var(Mover)',dxm,'blast_door'){
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'blast_door'){
             dxm.Event = 'blast_door_flag';
         }
         break;
@@ -498,7 +512,6 @@ function Ending_FirstEntry()
         case "ENDGAME3": //Everett
             ending = 3;
             break;
-        //The dance party won't actually get hit since the rando can't run there at the moment
         case "ENDGAME4": //Dance party
             ending = 4;
             break;
@@ -634,8 +647,9 @@ function HandleBingoWinCountdown()
     if (bingo_win_countdown > 0) {
         //Show win message
         class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
-        if (bingo_win_countdown == 2) {
+        if (bingo_win_countdown == 2 && !#defined(vanilla)) {
             //Give it 2 seconds to send the tweet
+            //This is still needed outside of vanilla
             BeatGame(dxr,4);
         }
         bingo_win_countdown--;
@@ -843,6 +857,24 @@ static function AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optiona
         e._AddPawnDeath(victim, Killer, damageType, HitLocation);
 }
 
+function bool checkInitialAlliance(ScriptedPawn p,name allianceName, float allianceLevel)
+{
+    local int i;
+
+    for (i=0;i<8;i++){
+        if (p.InitialAlliances[i].AllianceName==allianceName &&
+            p.InitialAlliances[i].AllianceLevel~=allianceLevel){
+            return True;
+        }
+    }
+    return False;
+}
+
+function bool isInitialPlayerAlly(ScriptedPawn p)
+{
+    return checkInitialAlliance(p,'Player',1.0);
+}
+
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     _MarkBingo(victim.BindName$"_Dead");
@@ -857,6 +889,14 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         } else {
             _MarkBingo(victim.class.name$"_ClassDead");
             _MarkBingo(victim.BindName$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
+
+            //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
+            if (isInitialPlayerAlly(victim) &&   //Must have initially been an ally
+                 (dxr.localURL!="04_NYC_NSFHQ" || (dxr.localURL=="04_NYC_NSFHQ" && dxr.flagbase.GetBool('DL_SimonsPissed_Played')==False)) //Not on the NSF HQ map, or if it is, before you send the signal (kludgy)
+                 ){
+                _MarkBingo("AlliesKilled");
+            }
+
         }
         if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
             _MarkBingo("HumanStompDeath");
@@ -1230,7 +1270,7 @@ function CheckBingoWin(DXRando dxr, int numBingos)
     if(#defined(hx)) return;
 
     if (dxr.flags.settings.bingo_win > 0){
-        if (numBingos >= dxr.flags.settings.bingo_win){
+        if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4"){
             info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
             bingo_win_countdown = 5;
         }
@@ -1372,6 +1412,24 @@ function _MarkBingo(coerce string eventname)
             if (dxr.flagbase.GetBool('JuanLebedev_Unconscious')) {
                 return; //Don't mark this event if knocked out
             }
+            break;
+        case "UNATCOClone1_ClassDead":
+        case "UNATCOClone2_ClassDead":
+        case "UNATCOClone3_ClassDead":
+        case "UNATCOClone4_ClassDead":
+            eventname="UNATCOTroop_ClassDead";
+            break;
+        case "NSFClone1_ClassDead":
+        case "NSFClone2_ClassDead":
+        case "NSFClone3_ClassDead":
+        case "NSFClone4_ClassDead":
+            eventname="Terrorist_ClassDead";
+            break;
+        case "MJ12Clone1_ClassDead":
+        case "MJ12Clone2_ClassDead":
+        case "MJ12Clone3_ClassDead":
+        case "MJ12Clone4_ClassDead":
+            eventname="MJ12Troop_ClassDead";
             break;
     }
 
@@ -1603,6 +1661,17 @@ defaultproperties
     bingo_options(121)=(event="AnnaNavarre_DeadM3",desc="Kill Anna Navarre in Mission 3",max=1,missions=8)
     bingo_options(122)=(event="AnnaNavarre_DeadM4",desc="Kill Anna Navarre in Mission 4",max=1,missions=16)
     bingo_options(123)=(event="AnnaNavarre_DeadM5",desc="Kill Anna Navarre in Mission 5",max=1,missions=32)
+    bingo_options(124)=(event="SimonsAssassination",desc="Let Walton lose his patience",max=1,missions=8)
+    bingo_options(125)=(event="AlliesKilled",desc="Kill 15 allies",max=15)
+    bingo_options(126)=(event="MaySung_Dead",desc="Kill Maggie Chows maid",max=1,missions=64)
+    bingo_options(127)=(event="MostWarehouseTroopsDead",desc="Eliminate the UNATCO troops defending NSF HQ",max=1,missions=16)
+    bingo_options(128)=(event="CleanerBot_ClassDead",desc="Destroy 5 Cleaner Bots",max=5)
+    bingo_options(129)=(event="MedicalBot_ClassDead",desc="Destroy 3 Medical Bots",max=3)
+    bingo_options(130)=(event="RepairBot_ClassDead",desc="Destroy 3 Repair Bots",max=3)
+    bingo_options(131)=(event="DrugDealer_Dead",desc="Kill the Drug Dealer in Brooklyn Bridge Station",max=1,missions=8)
+    bingo_options(132)=(event="botordertrigger",desc="The Smuggler is whacked-out paranoid",max=1,missions=276)
+    bingo_options(133)=(event="IgnitedPawn",desc="Set 15 people on fire",max=15)
+    bingo_options(134)=(event="GibbedPawn",desc="Blow up 15 people",max=15)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")

@@ -191,14 +191,14 @@ function PostFirstEntryMapFixes()
 
 function AnyEntryMapFixes()
 {
-    local #var(Mover) m;
+    local #var(DeusExPrefix)Mover m;
 
     switch(dxr.localURL)
     {
     case "09_NYC_SHIP":
 #ifdef vanillamaps
         if(dxr.flagbase.GetBool('HelpSailor')) {
-            foreach AllActors(class'#var(Mover)', m, 'FrontDoor') {
+            foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'FrontDoor') {
                 m.bLocked = false;
             }
         }

@@ -21,7 +21,7 @@ function PreFirstEntryMapFixes()
     local ScriptedPawn p;
     local Button1 b;
     local ElevatorMover e;
-    local #var(Mover) m;
+    local #var(DeusExPrefix)Mover m;
     local FlagTrigger ft;
     local AllianceTrigger at;
     local DeusExMover d;
@@ -146,15 +146,15 @@ function PreFirstEntryMapFixes()
         break;
 
     case "06_HONGKONG_MJ12LAB":
-        foreach AllActors(class'#var(Mover)', m, 'security_doors') {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'security_doors') {
             m.bBreakable = false;
             m.bPickable = false;
         }
-        foreach AllActors(class'#var(Mover)', m, 'Lower_lab_doors') {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'Lower_lab_doors') {
             m.bBreakable = false;
             m.bPickable = false;
         }
-        foreach AllActors(class'#var(Mover)', m, 'elevator_door') {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'elevator_door') {
             m.bIsDoor = true;// DXRDoors will pick this up later since we're in PreFirstEntry
         }
         foreach AllActors(class'FlagTrigger', ft, 'MJ12Alert') {
@@ -289,10 +289,10 @@ function AnyEntryMapFixes()
 {
     local Actor a;
     local ScriptedPawn p;
-    local #var(Mover) m;
+    local #var(DeusExPrefix)Mover m;
     local bool boolFlag;
     local bool recruitedFlag;
-    local DeusExCarcass carc;
+    local #var(DeusExPrefix)Carcass carc;
     local Conversation c;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
@@ -392,7 +392,7 @@ function AnyEntryMapFixes()
         break;
 
     case "06_HONGKONG_WANCHAI_STREET":
-        foreach AllActors(class'#var(Mover)', m, 'JockShaftTop') {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'JockShaftTop') {
             m.bLocked = false;
             m.bHighlight = true;
         }
@@ -402,7 +402,7 @@ function AnyEntryMapFixes()
     case "06_HONGKONG_WANCHAI_CANAL":
         HandleJohnSmithDeath();
         if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){
-            foreach AllActors(class'DeusExCarcass', carc, 'John_Smith_Body')
+            foreach AllActors(class'#var(DeusExPrefix)Carcass', carc, 'John_Smith_Body')
                 if (carc.bHidden){
 				    carc.bHidden = False;
 #ifdef injections
