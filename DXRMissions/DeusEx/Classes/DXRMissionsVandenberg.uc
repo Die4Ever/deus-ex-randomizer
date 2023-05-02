@@ -27,7 +27,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
 
         // complicated because of DXRBacktracking::VandCmdAnyEntry() to reuse the chopper
-        /*goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
+        goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
         AddGoalActor(goal, 1, 'TracerTong0', PHYS_None);
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Street Entrance", GOAL_TYPE1 | VANILLA_GOAL, vect(7014.185059, 7540.296875, -2984.704102), rot(0,-19840,0));
@@ -46,7 +46,7 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 1, vect(1412.059204, 1802.125000, -2023.458740), rot(0,-30000,0));
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Sniper Tower", GOAL_TYPE1, vect(-946.215820, 80.315643, -1359.704102), rot(0,32768,0));
-        AddActorLocation(loc, 1, vect(-1033.543579, 265.367859, -1569.458740), rot(0,-30000,0));*/
+        AddActorLocation(loc, 1, vect(-1033.543579, 265.367859, -1569.458740), rot(0,-30000,0));
 
         return 121;
 
@@ -92,6 +92,11 @@ function int InitGoals(int mission, string map)
     }
 
     return mission+1000;
+}
+
+function UpdateLocation(Actor a)
+{
+    _UpdateLocation(a, "Jock and Tong");
 }
 
 function MissionTimer()
