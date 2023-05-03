@@ -91,38 +91,6 @@ function CopySkills()
         dxrs.RandoSkills(localSkills[0]);
 }
 
-/*
-function ProcessAction(String actionKey)
-{
-    local DeusExPlayer		localPlayer;
-    local String			localStartMap;
-    local String            playerName;
-
-    localPlayer   = player;
-//	localStartMap = strStartMap;
-
-    if (actionKey == "START")
-    {
-        // Make sure the name isn't blank
-        playerName = TrimSpaceS(editName.GetText());
-
-        if (playerName == "")
-        {
-            root.MessageBox(NameBlankTitle, NameBlankPrompt, 1, False, Self);
-        }
-        else
-        {
-            SaveSettings();
-
-            // DEUS_EX_DEMO
-            //
-            // Don't show the intro for the demo since that map is not available
-            localPlayer.ShowIntro(True);
-//			localPlayer.StartNewGame(localPlayer.strStartMap);
-        }
-    }
-}*/
-
 function SaveSettings()
 {
     local Inventory i;
@@ -175,13 +143,40 @@ function CreateSkillsListWindow()
 
 function ProcessAction(String actionKey)
 {
+    local DeusExPlayer		localPlayer;
+    local String			localStartMap;
+    local String            playerName;
+
+    localPlayer   = player;
+//	localStartMap = strStartMap;
+
     if (actionKey == "NEWSEED")
     {
         flags.RollSeed();
         SetDxr(dxr);
     }
+    else if (actionKey == "START")
+    {
+        // Make sure the name isn't blank
+        playerName = TrimSpaceS(editName.GetText());
+
+        if (playerName == "")
+        {
+            root.MessageBox(NameBlankTitle, NameBlankPrompt, 1, False, Self);
+        }
+        else
+        {
+            SaveSettings();
+            AddTimer(0.1, false, 0, 'Timer');// timer to wait for items to be destroyed (issue #426)
+        }
+    }
     else
         Super.ProcessAction(actionKey);
+}
+
+function Timer(int timerID, int invocations, int clientData)
+{
+    player.ShowIntro(True);
 }
 
 function CreateActionButtons()
