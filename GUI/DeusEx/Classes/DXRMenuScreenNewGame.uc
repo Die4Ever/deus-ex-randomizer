@@ -91,6 +91,38 @@ function CopySkills()
         dxrs.RandoSkills(localSkills[0]);
 }
 
+/*
+function ProcessAction(String actionKey)
+{
+    local DeusExPlayer		localPlayer;
+    local String			localStartMap;
+    local String            playerName;
+
+    localPlayer   = player;
+//	localStartMap = strStartMap;
+
+    if (actionKey == "START")
+    {
+        // Make sure the name isn't blank
+        playerName = TrimSpaceS(editName.GetText());
+
+        if (playerName == "")
+        {
+            root.MessageBox(NameBlankTitle, NameBlankPrompt, 1, False, Self);
+        }
+        else
+        {
+            SaveSettings();
+
+            // DEUS_EX_DEMO
+            //
+            // Don't show the intro for the demo since that map is not available
+            localPlayer.ShowIntro(True);
+//			localPlayer.StartNewGame(localPlayer.strStartMap);
+        }
+    }
+}*/
+
 function SaveSettings()
 {
     local Inventory i;
@@ -98,6 +130,7 @@ function SaveSettings()
     foreach player.AllActors(class'Inventory', i) {
         i.Destroy();
     }
+    player.Inventory = None;
     player.RestoreAllHealth();
     if (DeusExRootWindow(player.rootWindow) != None)
         DeusExRootWindow(player.rootWindow).ResetFlags();

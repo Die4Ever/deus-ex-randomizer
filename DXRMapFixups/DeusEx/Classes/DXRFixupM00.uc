@@ -129,3 +129,16 @@ function PostFirstEntryMapFixes()
         break;
     }
 }
+
+simulated function PlayerAnyEntry(#var(PlayerPawn) p)
+{
+    local Inventory i;
+    Super.PlayerAnyEntry(p);
+    if(dxr.localURL != "00_INTRO") return;
+
+    foreach AllActors(class'Inventory', i) {
+        if(PlayerPawn(i.Owner) != None)
+            i.Destroy();
+    }
+    p.Inventory = None;
+}
