@@ -130,7 +130,7 @@ function PreFirstEntryMapFixes()
 
         //The door closing behind you when the ambush starts sucks if you came in via the silo.
         //Just make it not close.
-        foreach AllActors(class'SequenceTrigger', st) {
+        foreach AllActors(class'SequenceTrigger', st, 'doorclose') {
             if (st.Event=='blast_door4' && st.Tag=='doorclose'){
                 st.Event = '';
                 st.Tag = 'doorclosejk';
