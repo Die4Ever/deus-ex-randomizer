@@ -127,6 +127,10 @@ function PreFirstEntryMapFixes()
 
         //rebreather because of #TOOCEAN connection
         Spawn(class'Rebreather',,, vect(1411.798950, 546.628845, 247.708572));
+
+        //Button to extend sewer platform from the other side
+        AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
+
         break;
 #endif
 
