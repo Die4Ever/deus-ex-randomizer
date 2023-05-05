@@ -510,7 +510,7 @@ function RandomizeSize(Actor a)
 
     scale = rngrange(1, 0.9, 1.1);
     SetActorScale(a, scale);
-    a.Fatness = rng(20) + 120;
+    a.Fatness += rng(10) + rng(10) - 10;
 
     if( carried != None ) {
         p.carriedDecoration = carried;

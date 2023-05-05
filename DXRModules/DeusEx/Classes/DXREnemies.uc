@@ -208,7 +208,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( IsHuman(p.class) || dxr.flags.settings.bot_stats>0 ) {
         p.SurprisePeriod = rngrange(p.SurprisePeriod+0.1, 0.3, 1.2);
         p.GroundSpeed = rngrange(p.GroundSpeed, 0.9, 1.1);
-        p.BaseAccuracy -= FClamp(rngf() * float(dxr.flags.settings.enemystats)/200.0, 0, 0.5);
+        p.BaseAccuracy -= FClamp(rngf() * float(dxr.flags.settings.enemystats)/300.0, 0, 0.3);
     }
 
     if(p.RaiseAlarm==RAISEALARM_BeforeAttacking && chance_single(dxr.flags.settings.enemystats)) {
