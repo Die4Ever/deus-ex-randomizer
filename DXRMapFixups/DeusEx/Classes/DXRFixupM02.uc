@@ -62,6 +62,14 @@ function PostFirstEntryMapFixes()
         Spawn(class'#var(prefix)BallisticArmor',,, GetRandomPositionFine());
         Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
         Spawn(class'#var(prefix)FireExtinguisher',,, GetRandomPositionFine());
+
+        class'PlaceholderEnemy'.static.Create(self,vect(782,-1452,48),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(1508,-1373,256),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(1814,-1842,48),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(-31,-1485,48),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(1121,-1095,-144),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(467,-214,-144),rot(0,0,0),'Wandering');
+
         break;
     }
 }

@@ -136,6 +136,11 @@ function PreFirstEntryMapFixes()
         foreach RadiusActors(class'#var(prefix)Containers', c, 400, vect(2274.548340, 730.766357, 31)) {
             c.bIsSecretGoal = true;
         }
+
+        class'PlaceholderEnemy'.static.Create(self,vect(3292,4792,48),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(4610,6714,1408),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(3209,2333,48),rot(0,0,0),'Wandering');
+
         break;
 
     case "09_NYC_SHIPFAN":

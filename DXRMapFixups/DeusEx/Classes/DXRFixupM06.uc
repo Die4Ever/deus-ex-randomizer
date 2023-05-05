@@ -54,6 +54,12 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
+
+        class'PlaceholderEnemy'.static.Create(self,vect(769,-520,144),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(1620,-87,144),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(-844,-359,816),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(2036,122,816),rot(0,0,0),'Wandering');
+
 #endif
         break;
 

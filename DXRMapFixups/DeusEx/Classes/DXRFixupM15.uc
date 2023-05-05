@@ -128,6 +128,10 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vect(520.26,-1482.3,-453)); //Boxes in Hangar
         Spawn(class'PlaceholderItem',,, vect(1017.5,-1842.1,-453)); //Boxes in Hangar near enemies
 
+        class'PlaceholderEnemy'.static.Create(self,vect(-2237,3225,-192),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(4234,3569,-736),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(3744,-1030,-7481),rot(0,0,0),'Wandering');
+
         break;
 
     case "15_AREA51_FINAL":
@@ -171,6 +175,10 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vect(-4253.9,771.4,-1564)); //Under staircase near Helios
         Spawn(class'PlaceholderContainer',,, vect(-3040,-4960,-1607)); //Reactor control room
 
+        class'PlaceholderEnemy'.static.Create(self,vect(-5113,-989,-1995),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(-5899,-1112,-1323),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(-4795,-1596,-1357),rot(0,0,0),'Wandering');
+
         break;
 
     case "15_AREA51_ENTRANCE":
@@ -202,6 +210,10 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vect(-404.7,1624.6,-349)); //Near corpse under cherry picker
         Spawn(class'PlaceholderItem',,, vect(18.6,1220.4,-149)); //Boxes near cherry picker
         Spawn(class'PlaceholderItem',,, vect(-1712.9,191.25,26)); //In front of ambush elevator
+
+        class'PlaceholderEnemy'.static.Create(self,vect(4623,210,-176),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(3314,2196,-176),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(-190,-694,-180),rot(0,0,0),'Wandering');
 
         break;
 
