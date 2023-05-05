@@ -57,6 +57,7 @@ function SetWatchFlags() {
     local WIB wib;
     local ComputerPersonal cp;
     local #var(prefix)Maid maid;
+    local Trigger trig;
     local int i;
 
     switch(dxr.localURL) {
@@ -317,10 +318,15 @@ function SetWatchFlags() {
         WatchFlag('GaveDowdAmbrosia');
         break;
     case "10_PARIS_CATACOMBS":
+        WatchFlag('IcarusCalls_Played');
         foreach AllActors(class'JunkieFemale', jf) {
             if(jf.BindName == "aimee")
                 jf.bImportant = true;
         }
+        trig = Spawn(class'Trigger',,, vect(-580.607361,-2248.497803,-551.895874));
+        trig.SetCollisionSize(200, 160);
+        trig.event = 'WarehouseEntered';
+        Tag = 'WarehouseEntered';
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
         foreach AllActors(class'WIB',wib){
@@ -1672,6 +1678,8 @@ defaultproperties
     bingo_options(132)=(event="botordertrigger",desc="The Smuggler is whacked-out paranoid",max=1,missions=276)
     bingo_options(133)=(event="IgnitedPawn",desc="Set 15 people on fire",max=15)
     bingo_options(134)=(event="GibbedPawn",desc="Blow up 15 people",max=15)
+    bingo_options(135)=(event="IcarusCalls_Played",desc="Take a phone call from Icarus in Paris",max=1,missions=1024)
+    bingo_options(136)=(event="WarehouseEntered",desc="Enter the underground warehouse in Paris",max=1,missions=1024)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
