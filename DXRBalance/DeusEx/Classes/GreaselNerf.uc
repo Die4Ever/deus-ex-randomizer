@@ -1,5 +1,5 @@
 class GreaselNerf injects Greasel;
-// nerf Health
+// nerf Health and BaseAccuracy
 defaultproperties
 {
     Health=80
@@ -9,4 +9,5 @@ defaultproperties
     HealthLegRight=80
     HealthArmLeft=80
     HealthArmRight=80
+    BaseAccuracy=0.2
 }
