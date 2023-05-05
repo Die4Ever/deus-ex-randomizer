@@ -170,6 +170,7 @@ function AnyEntry()
     }
     foreach AllActors(class'#var(prefix)Teleporter', t) {
         t.bHidden = !(t.bCollideActors && t.bEnabled);
+        t.DrawScale = 0.75;
     }
 }
 
