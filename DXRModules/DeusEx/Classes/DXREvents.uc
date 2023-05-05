@@ -1538,7 +1538,7 @@ defaultproperties
 	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul die",max=1,missions=16)
 	bingo_options(3)=(event="JordanShea_Dead",desc="Kill Jordan Shea",max=1,missions=276)
 	bingo_options(4)=(event="SandraRenton_Dead",desc="Kill Sandra Renton",max=1,missions=4372)
-	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1,missions=276)
+	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1,missions=20)
 	bingo_options(6)=(event="AnnaNavarre_Dead",desc="Kill Anna Navarre",max=1,missions=56)
 	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1,missions=3072)
 	bingo_options(8)=(event="JoJoFine_Dead",desc="Kill JoJo",max=1,missions=16)
