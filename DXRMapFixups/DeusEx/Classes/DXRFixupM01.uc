@@ -46,6 +46,25 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vect(3163,-1298,-207)); //Backroom near jail
         Spawn(class'PlaceholderItem',,, vect(1750.75,275.7,-117.7)); //Near display of Statue torch
         Spawn(class'PlaceholderItem',,, vect(5830.8,-344,539)); //Near statue head
+
+        class'PlaceholderEnemy'.static.Create(self,vect(-2374,543,-92),rot(0,17272,0),'Standing');
+        class'PlaceholderEnemy'.static.Create(self,vect(-1211,198,-92),rot(0,25408,0),'Standing');
+        class'PlaceholderEnemy'.static.Create(self,vect(-1843,5063,-96),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(-3020,1878,-96),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(86,3088,-96),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(2879,4083,-96),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(6500,4609,-92),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(9398,2403,-92),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(7705,-2019,79),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(6618,-1526,320),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(2842,-3539,-96),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(-1713,-5775,-92),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(1402,56,800),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(2231,985,1088),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(3777,-689,1088),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(4111,3260,512),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(-229,1438,512),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(2766,317,2528),rot(0,0,0),'Standing');
         break;
 
     case "01_NYC_UNATCOHQ":
