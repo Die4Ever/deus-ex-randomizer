@@ -75,6 +75,13 @@ function SetWatchFlags() {
                 skillAward.Event='SunkenShip';
             }
         }
+        bt = class'BingoTrigger'.static.Create(self,'BackOfStatue',vect(2503.605469,354.826355,2072.113037),40,40);
+        bt = class'BingoTrigger'.static.Create(self,'BackOfStatue',vect(2507.357178,-83.523094,2072.113037),40,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vect(-6385.640625,1441.881470,-247.901276),40,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'StatueHead',vect(6250,109,504),800,40);
+
         break;
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
@@ -133,6 +140,7 @@ function SetWatchFlags() {
         break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vect(-6385.640625,1441.881470,-247.901276),40,40);
         break;
     case "03_NYC_UNATCOHQ":
         WatchFlag('SimonsAssassination');
@@ -173,6 +181,8 @@ function SetWatchFlags() {
         break;
     case "05_NYC_UNATCOISLAND":
         Tag = 'nsfwander';// saved Miguel
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vect(-6385.640625,1441.881470,-247.901276),40,40);
+
         break;
     case "02_NYC_STREET":
         WatchFlag('AlleyBumRescued');
@@ -193,6 +203,9 @@ function SetWatchFlags() {
         break;
     case "04_NYC_UNATCOHQ":
         bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
+        break;
+    case "04_NYC_UNATCOISLAND":
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vect(-6385.640625,1441.881470,-247.901276),40,40);
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
@@ -1691,6 +1704,9 @@ defaultproperties
     bingo_options(134)=(event="GibbedPawn",desc="Blow up 15 people",max=15)
     bingo_options(135)=(event="IcarusCalls_Played",desc="Take a phone call from Icarus in Paris",max=1,missions=1024)
     bingo_options(136)=(event="AlexCloset",desc="Go into Alex's closet",max=1,missions=58)
+    bingo_options(137)=(event="BackOfStatue",desc="Climb to the balcony on the back of the statue",max=1,missions=2)
+    bingo_options(138)=(event="CommsPit",desc="Jump in the pit outside of the UNATCO comms van",max=1,missions=58)
+    bingo_options(139)=(event="StatueHead",desc="Visit the head of the Statue of Liberty",max=1,missions=2)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
