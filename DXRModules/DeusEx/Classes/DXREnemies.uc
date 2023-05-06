@@ -80,7 +80,7 @@ function CheckConfig()
 
     AddRandomEnemyType(class'#var(prefix)MJ12Troop', 10, MJ12);
     AddRandomEnemyType(class'#var(prefix)MJ12Commando', 2, MJ12);
-    AddRandomEnemyType(class'MJ12Clone1', 10, MJ12);
+    AddRandomEnemyType(class'MJ12Clone1', 7, MJ12);// MJ12 Executioner is strong
     AddRandomEnemyType(class'MJ12Clone2', 10, MJ12);
     AddRandomEnemyType(class'MJ12Clone3', 10, MJ12);
     AddRandomEnemyType(class'MJ12Clone4', 10, MJ12);

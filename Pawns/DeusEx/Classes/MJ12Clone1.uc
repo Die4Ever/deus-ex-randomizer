@@ -19,6 +19,9 @@ defaultproperties
     CollisionRadius=21
     CollisionHeight=49.875
 
+    Alliance=mj12
+    InitialAlliances(0)=(AllianceName=Player,AllianceLevel=-1,bPermanent=True)
+
     CarcassType=Class'DeusEx.MJ12Clone1Carcass'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
