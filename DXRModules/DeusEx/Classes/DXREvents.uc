@@ -1558,6 +1558,12 @@ function _MarkBingo(coerce string eventname)
         case "MJ12Clone4_ClassDead":
             eventname="MJ12Troop_ClassDead";
             break;
+        case "DXRMedicalBot_ClassDead":
+            eventname="MedicalBot_ClassDead";
+            break;
+        case "DXRRepairBot_ClassDead":
+            eventname="RepairBot_ClassDead";
+            break;
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
