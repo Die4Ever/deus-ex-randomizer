@@ -208,6 +208,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vect(-27,1651.5,291)); //Breakroom table
         Spawn(class'PlaceholderItem',,, vect(602,1215.7,295)); //Kitchen Counter
         Spawn(class'PlaceholderItem',,, vect(-672.8,1261,473)); //Upper Left Office desk
+        Spawn(class'PlaceholderItem',,, vect(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
         Spawn(class'PlaceholderContainer',,, vect(-1187,-1154,-31)); //Behind Jail Desk
         Spawn(class'PlaceholderContainer',,, vect(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vect(-383.6,1376,273)); //JC's Office
