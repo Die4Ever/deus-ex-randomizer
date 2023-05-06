@@ -58,6 +58,7 @@ function SetWatchFlags() {
     local ComputerPersonal cp;
     local #var(prefix)Maid maid;
     local Trigger trig;
+    local BingoTrigger bt;
     local int i;
 
     switch(dxr.localURL) {
@@ -78,6 +79,7 @@ function SetWatchFlags() {
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
         WatchFlag('ManBathroomBarks_Played');
+        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
         break;
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
@@ -134,6 +136,7 @@ function SetWatchFlags() {
         break;
     case "03_NYC_UNATCOHQ":
         WatchFlag('SimonsAssassination');
+        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
         break;
     case "03_NYC_AIRFIELD":
         WatchFlag('BoatDocksAmbrosia');
@@ -188,6 +191,9 @@ function SetWatchFlags() {
     case "04_NYC_NSFHQ":
         WatchFlag('MostWarehouseTroopsDead');
         break;
+    case "04_NYC_UNATCOHQ":
+        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
+        break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
         Tag = 'nanocage';
@@ -206,9 +212,13 @@ function SetWatchFlags() {
                     cp.specialOptions[i].TriggerEvent='BrowserHistoryCleared';
                     cp.specialOptions[i].UserName="JCD";
                 }
+                break;
             }
         }
-        Tag='BrowserHistoryCleared';
+
+        bt = class'BingoTrigger'.static.Create(self,'BrowserHistoryCleared',cp.Location);
+
+        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
 
         break;
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -1680,6 +1690,7 @@ defaultproperties
     bingo_options(133)=(event="IgnitedPawn",desc="Set 15 people on fire",max=15)
     bingo_options(134)=(event="GibbedPawn",desc="Blow up 15 people",max=15)
     bingo_options(135)=(event="IcarusCalls_Played",desc="Take a phone call from Icarus in Paris",max=1,missions=1024)
+    bingo_options(136)=(event="AlexCloset",desc="Go into Alex's closet",max=1,missions=58)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
