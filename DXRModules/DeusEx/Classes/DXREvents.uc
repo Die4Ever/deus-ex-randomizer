@@ -388,6 +388,7 @@ function SetWatchFlags() {
         WatchFlag('CamilleConvosDone');
         WatchFlag('LDDPAchilleDone');
         WatchFlag('LeoToTheBar');
+        WatchFlag('LouisBerates');
         RewatchFlag('KnowsGuntherKillphrase');
 
         break;
@@ -398,6 +399,24 @@ function SetWatchFlags() {
         WatchFlag('GotHelicopterInfo');
         WatchFlag('MeetAI4_Played');
         WatchFlag('DeBeersDead');
+
+        foreach AllActors(class'WaterZone',water){
+            water.ZonePlayerEvent = 'EverettAquarium';
+            break;
+        }
+        bt = class'BingoTrigger'.static.Create(self,'EverettAquarium',water.Location);
+        break;
+    case "11_PARIS_UNDERGROUND":
+        foreach AllActors(class'ZoneInfo',zone){
+            if (zone.bPainZone && zone.DamageType=='Shocked'){
+                //zone.ZonePlayerEvent = 'TrainTracks';
+                //The ZonePlayerEvent only gets triggered here if you crouch, since I guess
+                //it's based on your Location, rather than collision?  We'll use the location of the
+                //ZoneInfo for our new BingoTrigger still though.
+                break;
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'TrainTracks',zone.Location,3000,1);
         break;
     case "12_VANDENBERG_GAS":
         Tag = 'support1';  //This gets hit when you blow up the gas pumps
@@ -439,6 +458,11 @@ function SetWatchFlags() {
         break;
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1932.035522,3334.331787,-2247.888184),60,40);
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1932.035522,3334.331787,-2507.888184),60,40);
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1928.762573,3721.919189,-2507.888184),60,40);
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1928.762573,3721.919189,-2247.888184),60,40);
+
         break;
     case "14_OCEANLAB_UC":
         WatchFlag('LeoToTheBar');
@@ -467,6 +491,13 @@ function SetWatchFlags() {
                 book.textTag = '15_Book02';  //Put that good Thursday man back where he (probably) belongs
             }
         }
+
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,128),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-123),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-392),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-902),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-1152),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-1413),250,40);
         break;
     case "15_AREA51_PAGE":
 #ifdef vanilla
@@ -1723,6 +1754,11 @@ defaultproperties
     bingo_options(141)=(event="CraneTop",desc="Visit the end of both cranes onboard the superfreighter",max=2,missions=512)
     bingo_options(142)=(event="CaptainBed",desc="Jump on the superfreighter captains bed",max=1,missions=512)
     bingo_options(143)=(event="FanTop",desc="Get blown to the top of the superfreighter ventilation shaft",max=1,missions=512)
+    bingo_options(144)=(event="LouisBerates",desc="Sneak behind the Porte De L'Enfer door man",max=1,missions=1024)
+    bingo_options(145)=(event="EverettAquarium",desc="Go for a swim in Everett's aquarium",max=1,missions=2048)
+    bingo_options(146)=(event="TrainTracks",desc="Jump on to the train tracks in Paris",max=1,missions=2048)
+    bingo_options(147)=(event="OceanLabCrewChamber",desc="Visit all 4 crew chambers in the Ocean Lab",max=4,missions=16384)
+    bingo_options(148)=(event="HeliosControlArms",desc="Jump down the control arms in Helios' chamber",max=1,missions=32768)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
