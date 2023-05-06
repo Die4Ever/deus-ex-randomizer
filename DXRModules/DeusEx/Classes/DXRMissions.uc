@@ -541,6 +541,20 @@ function bool MoveGoalTo(string goalName, int locNumber)
     return false;
 }
 
+static function bool IsCloseToRandomStart(DXRando dxr, vector loc)
+{
+    local float too_close, dist;
+    local DXRMissions m;
+
+    too_close = 90*16;
+
+    m = DXRMissions(dxr.FindModule(class'DXRMissions'));
+    if( m != None && m.b_rando_start ) {
+        if ( VSize(m.rando_start_loc - loc) < too_close ) return true;
+    }
+    return false;
+}
+
 static function bool IsCloseToStart(DXRando dxr, vector loc)
 {
     local PlayerStart ps;
