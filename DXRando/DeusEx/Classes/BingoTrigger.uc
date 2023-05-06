@@ -16,16 +16,26 @@ function Touch(Actor Other)
 {
 	Super.Touch(Other);
 
-	if (IsRelevant(Other))
+	if (TriggerType!=TT_Shoot && IsRelevant(Other))
 	{
 		DoBingoThing();
 	}
+}
+
+function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation,
+						Vector momentum, name damageType)
+{
+    if (TriggerType==TT_Shoot && instigatedBy.bIsPlayer)
+	{
+        DoBingoThing();
+    }
 }
 
 
 function DoBingoThing()
 {
     local DXRando dxr;
+    local BingoTrigger bt;
 
     if (bingoEvent==""){
         return;
@@ -37,9 +47,23 @@ function DoBingoThing()
     }
 
     if (bTriggerOnceOnly) {
-        bingoEvent = "";
-        Destroy();
+        foreach AllActors(class'BingoTrigger',bt,Tag){
+            bt.SelfDestruct();
+        }
     }
+}
+
+function SelfDestruct()
+{
+    bingoEvent = "";
+    Destroy();
+}
+
+function MakeShootingTarget()
+{
+    TriggerType = TT_Shoot;
+    bProjTarget=True;
+    DamageThreshold=0;
 }
 
 static function BingoTrigger Create(Actor a, Name bingoEvent, vector loc, optional float rad, optional float height)

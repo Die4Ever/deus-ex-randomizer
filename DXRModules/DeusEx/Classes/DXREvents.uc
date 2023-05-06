@@ -59,6 +59,7 @@ function SetWatchFlags() {
     local #var(prefix)Maid maid;
     local Trigger trig;
     local BingoTrigger bt;
+    local LowerClassMale lcm;
     local int i;
 
     switch(dxr.localURL) {
@@ -248,7 +249,12 @@ function SetWatchFlags() {
         }
         skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
         skillAward.Event='BoatEngineRoom';
-        Tag='BoatEngineRoom';
+        bt = class'BingoTrigger'.static.Create(self,'BoatEngineRoom',skillAward.Location);
+
+        foreach AllActors(class'LowerClassMale',lcm,'CanalDrugDealer'){
+            break;
+        }
+        bt = class'BingoTrigger'.static.Create(self,'CanalDrugDeal',lcm.Location,200,40);
 
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
@@ -266,6 +272,12 @@ function SetWatchFlags() {
                 lcf.bImportant = true;
         }
 
+        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vect(0,438,-267),200,40);
+        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vect(220,438,-267),200,40);
+        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vect(448,438,-267),200,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'LuckyMoneyFreezer',vect(-1615,-2960,-343),200,40);
+
         break;
     case "06_HONGKONG_WANCHAI_STREET":
         WatchFlag('M06PaidJunkie');
@@ -280,8 +292,8 @@ function SetWatchFlags() {
         //Find the nearest toilet
         closestToilet = Toilet(findNearestToActor(class'Toilet',dxm));
 
-        Tag = 'JocksToilet';
         closestToilet.Event='JocksToilet';
+        bt = class'BingoTrigger'.static.Create(self,'JocksToilet',closestToilet.Location);
 
         foreach AllActors(class'#var(prefix)Maid',maid){
             maid.bImportant = True;
@@ -300,15 +312,58 @@ function SetWatchFlags() {
         skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
         skillAward.Event='PoliceVaultBingo';
 
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(445,-1032,24),80,40);  //Pottery Store
+        bt.Tag='WanChaiPottery';
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(640,-1093,200),100,40);  //Tea House
+        bt.Tag='WanChaiTea';
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(-6,-1416,40),250,40);  //Butcher (Louis Pan works for him too)
+        bt.Tag='WanChaiButcher';
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(910,-643,40),150,40);  //News Stand
+        bt.Tag='WanChaiNews';
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(632,-532,40),130,40);  //Flower Shop
+        bt.Tag='WanChaiFlowers';
+
+
         break;
     case "06_HONGKONG_TONGBASE":
-        Tag = 'TongsHotTub';
         foreach AllActors(class'WaterZone', water) {
             water.ZonePlayerEvent = 'TongsHotTub';
+            break;
         }
+        bt = class'BingoTrigger'.static.Create(self,'TongsHotTub',water.Location);
+
+        //Need to make sure these are slightly out of the wall so that explosions hit them
+        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vect(-596.3,1826,40),40,100);
+        bt.MakeShootingTarget();
+
+        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vect(-466.5,1826,40),40,100);
+        bt.MakeShootingTarget();
+
+        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vect(-337.2,1826,40),40,100);
+        bt.MakeShootingTarget();
+
         break;
     case "06_HONGKONG_HELIBASE":
-        Tag = 'purge';
+        bt = class'BingoTrigger'.static.Create(self,'purge',vect(0,0,0));
+
+        foreach AllActors(class'Trigger',trig){
+            if (trig.classProximityType==class'Basketball'){
+                break;
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'HongKongBBall',trig.Location,14,3);
+        bt.TriggerType=TT_ClassProximity;
+        bt.ClassProximityType=class'Basketball';
+
+        break;
+    case "06_HONGKONG_MJ12LAB":
+        foreach AllActors(class'ZoneInfo',zone){
+            if (zone.bFogZone){
+                zone.ZonePlayerEvent = 'HongKongGrays';
+                break;
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'HongKongGrays',zone.Location);
         break;
     case "08_NYC_STREET":
         Tag = GetKnicksTag();
@@ -1759,6 +1814,13 @@ defaultproperties
     bingo_options(146)=(event="TrainTracks",desc="Jump on to the train tracks in Paris",max=1,missions=2048)
     bingo_options(147)=(event="OceanLabCrewChamber",desc="Visit all 4 crew chambers in the Ocean Lab",max=4,missions=16384)
     bingo_options(148)=(event="HeliosControlArms",desc="Jump down the control arms in Helios' chamber",max=1,missions=32768)
+    bingo_options(149)=(event="TongTargets",desc="Use the shooting range in Tong's base",max=1,missions=64)
+    bingo_options(150)=(event="WanChaiStores",desc="Visit 4 stores in the Wan Chai market",max=4,missions=64)
+    bingo_options(151)=(event="HongKongBBall",desc="Shoot some hoops in Hong Kong",max=1,missions=64)
+    bingo_options(152)=(event="CanalDrugDeal",desc="Walk in on a drug deal in progress",max=1,missions=64)
+    bingo_options(153)=(event="HongKongGrays",desc="Enter the Hong Kong Gray enclosure",max=1,missions=64)
+    bingo_options(154)=(event="EnterQuickStop",desc="Enter the Quick Stop in Hong Kong",max=1,missions=64)
+    bingo_options(155)=(event="LuckyMoneyFreezer",desc="Enter the Lucky Money freezer",max=1,missions=64)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
