@@ -1,4 +1,4 @@
-class DXREnemiesShuffle extends DXREnemiesBase abstract;
+class DXREnemiesShuffle extends DXREnemiesPatrols abstract;
 
 function SwapItems(Pawn a, Pawn b)
 {
@@ -30,6 +30,17 @@ function SwapItems(Pawn a, Pawn b)
         if(Robot(b) != None)
             ThrowItem(item, 0.1);
     }
+}
+
+
+function SwapOrders(ScriptedPawn a, ScriptedPawn b)
+{
+    SwapNames(a.Orders, b.Orders);
+    SwapNames(a.OrderTag, b.OrderTag);
+    if(a.Orders != 'DynamicPatrolling')// we pick these up later in DXREnemiesPatrols
+        ResetOrders(a);
+    if(b.Orders != 'DynamicPatrolling')
+        ResetOrders(b);
 }
 
 function SwapScriptedPawns(int percent, bool enemies)
@@ -65,6 +76,8 @@ function SwapScriptedPawns(int percent, bool enemies)
 #ifdef gmdx
         if( SpiderBot2(a) != None && SpiderBot2(a).bUpsideDown ) continue;
 #endif
+        if(PlaceholderEnemy(a) != None && a.Orders == 'Wandering')
+            a.Orders = 'DynamicPatrolling';// we pick these up later in DXREnemiesPatrols
         temp[num++] = a;
     }
 
@@ -97,11 +110,8 @@ function SwapScriptedPawns(int percent, bool enemies)
         SwapVector(temp[i].HomeRot, temp[slot].HomeRot);
         SwapProperty(temp[i], temp[slot], "HomeExtent");
         SwapProperty(temp[i], temp[slot], "bUseHome");
-        SwapNames(temp[i].Orders, temp[slot].Orders);
-        SwapNames(temp[i].OrderTag, temp[slot].OrderTag);
         SwapProperty(temp[i], temp[slot], "RaiseAlarm");
 
-        ResetOrders(temp[i]);
-        ResetOrders(temp[slot]);
+        SwapOrders(temp[i], temp[slot]);
     }
 }

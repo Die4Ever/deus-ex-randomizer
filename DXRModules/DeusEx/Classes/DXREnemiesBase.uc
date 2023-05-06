@@ -222,13 +222,6 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
     return n;
 }
 
-function bool IsInitialEnemy(ScriptedPawn p)
-{
-    local int i;
-
-    return p.GetAllianceType( class'#var(PlayerPawn)'.default.Alliance ) == ALLIANCE_Hostile;
-}
-
 function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedPawn> newclass)
 {
     local int i;
