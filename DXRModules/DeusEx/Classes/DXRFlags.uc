@@ -788,6 +788,79 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     settings.aug_value_rando = 0;*/
 }
 
+function int ScoreFlags()
+{
+    local int score;
+
+    if(IsEntranceRando())
+        score += 100;
+    score -= settings.doorsdestructible;
+    score -= settings.doorspickable;
+    if(settings.keysrando > 0)
+        score += 100;
+    //score += settings.keys_containers;
+    //score += settings.infodevices_containers;
+    score -= settings.deviceshackable;
+    score += settings.passwordsrandomized;
+    score += settings.infodevices;
+    score += settings.enemiesrandomized;
+    score += settings.enemystats;
+    //score += settings.hiddenenemiesrandomized;
+    score += settings.enemiesshuffled;
+    score += settings.enemies_nonhumans;
+    score += settings.bot_weapons;
+    score += settings.bot_stats;
+    if(settings.enemyrespawn > 0 && settings.enemyrespawn < 1000)
+        score += 1500 - settings.enemyrespawn;
+    //settings.skills_disable_downgrades = 5;
+    //settings.skills_reroll_missions = 5;
+    //settings.skills_independent_levels = 100;
+    score += settings.banned_skills * 20;
+    score += settings.banned_skill_levels * 20;
+    score += settings.minskill * 5;
+    score += settings.maxskill * 3;
+    score -= settings.ammo;
+    score -= settings.medkits;
+    score -= settings.biocells;
+    score -= settings.lockpicks;
+    score -= settings.multitools;
+    score -= settings.speedlevel;
+    score += settings.startinglocations;
+    score += settings.goals;
+    score -= settings.equipment * 10;
+    score -= settings.medbots;
+    score -= settings.repairbots;
+    if(settings.medbotuses <= 0)
+        score -= 100;
+    score -= settings.medbotuses;
+    if(settings.repairbotuses <= 0)
+        score -= 100;
+    score -= settings.repairbotuses;
+    //settings.medbotcooldowns = 1;
+    //settings.repairbotcooldowns = 1;
+    //settings.medbotamount = 1;
+    //settings.repairbotamount = 1;
+    //settings.turrets_move = 50;
+    score += settings.turrets_add / 10;
+    //settings.merchants = 30;
+    //settings.dancingpercent = 25;
+    score += settings.swapitems;
+    score += settings.swapcontainers;
+    //settings.augcans = 100;
+    //settings.aug_value_rando = 100;
+    //settings.skill_value_rando = 100;
+    //settings.min_weapon_dmg = 50;
+    //settings.max_weapon_dmg = 150;
+    //settings.min_weapon_shottime = 50;
+    //settings.max_weapon_shottime = 150;
+    //settings.bingo_win = 0;
+    //settings.bingo_freespaces = 1;
+    //settings.spoilers = 1;
+    score -= settings.health;
+    score -= settings.energy;
+    return score * 5;// lazy multiply by 5 at the end
+}
+
 function NewGamePlus()
 {
     local #var(PlayerPawn) p;

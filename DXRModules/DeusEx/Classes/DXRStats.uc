@@ -561,15 +561,15 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
-static function int _ScoreRun(int time, int time_without_menus, float CombatDifficulty, int rando_difficulty, int saves, int loads,
+static function int _ScoreRun(int time, int time_without_menus, float CombatDifficulty, int flags_score, int saves, int loads,
     int bingo_win, int bingos, int bingospots, int SkillPointsTotal, int Nanokeys, int cheats)
 {
     local int i;
     i = 100000;
     i -= time / 10;// times are in tenths of a second
     i -= time_without_menus / 10;
-    i += FClamp(CombatDifficulty, 0, 8) * 500.0;
-    i += rando_difficulty * 500;
+    i += FClamp(CombatDifficulty, 0, 8) * 1000.0;
+    i += flags_score;
     i -= saves * 10;
     i -= loads * 50;
     if(bingo_win > 0 && bingos >= bingo_win)
@@ -586,7 +586,7 @@ function int ScoreRun()
 {
     local PlayerDataItem data;
     local string event, desc;
-    local int x, y, progress, max, bingos, bingo_spots, cheats;
+    local int x, y, progress, max, bingos, bingo_spots, cheats, flags_score;
     local int time, time_without_menus, i, loads, keys, score;
     local #var(PlayerPawn) p;
     p = player();
@@ -610,9 +610,10 @@ function int ScoreRun()
     loads = GetDataStorageStat(dxr, "DXRStats_loads");
     keys = p.KeyRing.GetKeyCount();
     cheats = p.FlagBase.GetInt('DXRStats_cheats');
+    flags_score = dxr.flags.ScoreFlags();
 
-    score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, dxr.flags.difficulty, p.saveCount, loads, dxr.flags.settings.bingo_win, bingos, bingo_spots, p.SkillPointsTotal, keys, cheats);
-    info("_ScoreRun(" $ time @ time_without_menus @ p.CombatDifficulty @ dxr.flags.difficulty @ p.saveCount @ loads @ dxr.flags.settings.bingo_win @ bingos @ bingo_spots @ p.SkillPointsTotal @ keys @ cheats $ "): "$score);
+    score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, flags_score, p.saveCount, loads, dxr.flags.settings.bingo_win, bingos, bingo_spots, p.SkillPointsTotal, keys, cheats);
+    info("_ScoreRun(" $ time @ time_without_menus @ p.CombatDifficulty @ flags_score @ p.saveCount @ loads @ dxr.flags.settings.bingo_win @ bingos @ bingo_spots @ p.SkillPointsTotal @ keys @ cheats $ "): "$score);
     return score;
 }
 
@@ -732,73 +733,113 @@ function TestScoring()
     local string testname;
     local int num, i;
     local float combat_difficulty;
-    local int time, time_without_menus, rando_difficulty, saves, loads,
+    local int time, time_without_menus, rando_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats;
+
+    dxr.flags.SetDifficulty(1);
+    testint(dxr.flags.ScoreFlags(), 3405, "score bonus for Normal");
+
+    dxr.flags.SetDifficulty(2);
+    testint(dxr.flags.ScoreFlags(), 7135, "score bonus for Hard");
+
+    dxr.flags.SetDifficulty(3);
+    testint(dxr.flags.ScoreFlags(), 9100, "score bonus for Extreme");
+
+    dxr.flags.SetDifficulty(4);
+    testint(dxr.flags.ScoreFlags(), 11735, "score bonus for Impossible");
 
     names[num] = "1 Million Points!";
     scores[num++] = 1000000;
 
+    names[num] = "literal god: 1 hour, full bingo, 5 saves, 5 loads";
     time=72000; time_without_menus=36000; combat_difficulty=2; rando_difficulty=2; saves=5; loads=5;
     bingo_win=0; bingos=12; bingo_spots=24; skill_points=10000; nanokeys=200; cheats=0;
-    names[num] = "literal god: 1 hour, full bingo, 5 saves, 5 loads";
-    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+    dxr.flags.SetDifficulty(rando_difficulty);
+    flags_score = dxr.flags.ScoreFlags();
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
+    names[num] = "1 hour, 3 bingos, 5 saves, 5 loads";
     time=36000; time_without_menus=36000; combat_difficulty=2; rando_difficulty=2; saves=5; loads=5;
     bingo_win=0; bingos=3; bingo_spots=12; skill_points=10000; nanokeys=20; cheats=0;
-    names[num] = "1 hour, 3 bingos, 5 saves, 5 loads";
-    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+    dxr.flags.SetDifficulty(rando_difficulty);
+    flags_score = dxr.flags.ScoreFlags();
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    names[num] = "1 hour, 3 bingos, 100 saves, 100 loads";
+    time=36000; time_without_menus=30000; combat_difficulty=2; rando_difficulty=2; saves=100; loads=100;
+    bingo_win=0; bingos=3; bingo_spots=12; skill_points=10000; nanokeys=50; cheats=0;
+    dxr.flags.SetDifficulty(rando_difficulty);
+    flags_score = dxr.flags.ScoreFlags();
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
     names[num] = "100k Points";
     scores[num++] = 100000;
 
-    time=36000; time_without_menus=30000; combat_difficulty=2; rando_difficulty=2; saves=100; loads=100;
-    bingo_win=0; bingos=3; bingo_spots=12; skill_points=10000; nanokeys=50; cheats=0;
-    names[num] = "1 hour, 3 bingos, 100 saves, 100 loads";
-    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
-
+    names[num] = "3 hours, 9 bingos, 100 saves, 100 loads";
     time=108000; time_without_menus=90010; combat_difficulty=2; rando_difficulty=2; saves=100; loads=100;
     bingo_win=0; bingos=9; bingo_spots=20; skill_points=10000; nanokeys=100; cheats=0;
-    names[num] = "3 hours, 9 bingos, 100 saves, 100 loads";
-    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+    dxr.flags.SetDifficulty(rando_difficulty);
+    flags_score = dxr.flags.ScoreFlags();
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
-    time=36000; time_without_menus=36000; combat_difficulty=1.2; rando_difficulty=1; saves=500; loads=200;
-    bingo_win=0; bingos=0; bingo_spots=0; skill_points=10000; nanokeys=20; cheats=100000;
-    names[num] = "Any% 1 hour";
-    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
-        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
-
+    names[num] = "Astro: 7 hours, full bingo";
     time=290879; time_without_menus=242176; combat_difficulty=1.7; rando_difficulty=2; saves=796; loads=171;
     bingo_win=0; bingos=12; bingo_spots=24; skill_points=25357; nanokeys=59; cheats=0;
-    names[num] = "Astro: 7 hours, full bingo";
-    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+    dxr.flags.SetDifficulty(rando_difficulty);
+    flags_score = dxr.flags.ScoreFlags();
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
+    names[num] = "Astro: 6 hours, but with some glitches";
     time=216000; time_without_menus=216000; combat_difficulty=1.7; rando_difficulty=2; saves=796; loads=171;
     bingo_win=0; bingos=12; bingo_spots=24; skill_points=25357; nanokeys=59; cheats=35;
-    names[num] = "Astro: 6 hours, but with some glitches";
-    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+    dxr.flags.SetDifficulty(rando_difficulty);
+    flags_score = dxr.flags.ScoreFlags();
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
+    names[num] = "Astro: a little faster, but less bingos";
     time=290800; time_without_menus=242176; combat_difficulty=1.7; rando_difficulty=2; saves=796; loads=171;
     bingo_win=0; bingos=10; bingo_spots=23; skill_points=25357; nanokeys=59; cheats=0;
-    names[num] = "Astro: a little faster, but less bingos";
-    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+    dxr.flags.SetDifficulty(rando_difficulty);
+    flags_score = dxr.flags.ScoreFlags();
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
+    names[num] = "Any% 1 hour";
+    time=36000; time_without_menus=36000; combat_difficulty=1.2; rando_difficulty=1; saves=500; loads=200;
+    bingo_win=0; bingos=0; bingo_spots=0; skill_points=10000; nanokeys=20; cheats=100000;
+    dxr.flags.SetDifficulty(rando_difficulty);
+    flags_score = dxr.flags.ScoreFlags();
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    names[num] = "Any% 2 hours";
     time=72000; time_without_menus=72000; combat_difficulty=1.2; rando_difficulty=1; saves=500; loads=200;
     bingo_win=0; bingos=0; bingo_spots=0; skill_points=10000; nanokeys=20; cheats=100000;
-    names[num] = "Any% 2 hours";
-    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+    dxr.flags.SetDifficulty(rando_difficulty);
+    flags_score = dxr.flags.ScoreFlags();
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
+    names[num] = "Any% 2 hours, Super Easy QA mode";
+    time=72000; time_without_menus=72000; combat_difficulty=0; rando_difficulty=0; saves=500; loads=200;
+    bingo_win=0; bingos=0; bingo_spots=0; skill_points=10000; nanokeys=20; cheats=100000;
+    dxr.flags.SetDifficulty(rando_difficulty);
+    flags_score = dxr.flags.ScoreFlags();
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    names[num] = "1 hour bingo win";
     time=36000; time_without_menus=36000; combat_difficulty=1.2; rando_difficulty=1; saves=50; loads=50;
     bingo_win=1; bingos=1; bingo_spots=4; skill_points=5000; nanokeys=20; cheats=0;
-    names[num] = "1 hour bingo win";
-    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, rando_difficulty, saves, loads,
+    dxr.flags.SetDifficulty(rando_difficulty);
+    flags_score = dxr.flags.ScoreFlags();
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
     names[num] = "0 Points";

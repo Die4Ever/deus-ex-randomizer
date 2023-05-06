@@ -175,6 +175,7 @@ function BindControls(optional string action)
 
     NewMenuItem("Enemy Randomization %", "How many additional enemies to add and how much to randomize their weapons.");
     Slider(f.settings.enemiesrandomized, 0, 1000);
+    f.settings.hiddenenemiesrandomized = f.settings.enemiesrandomized;
 
     NewMenuItem("Enemy Stats Boost %", "How much to boost enemy accuracy, reload speed, aggression, and helmets.");
     Slider(f.settings.enemystats, 0, 100);
@@ -193,10 +194,6 @@ function BindControls(optional string action)
 
     NewMenuItem("Add Turrets", "Randomly adds turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_add, 0, 10000);
-
-    // TODO: we can remove this once it's well tested and merge it with enemiesrandomized
-    NewMenuItem("Hidden Enemies Rando %", "How many enemies to add based on hidden enemies.");
-    Slider(f.settings.hiddenenemiesrandomized, 0, 1000);
 
     NewMenuItem("", "Allow robots to get randomized weapons");
     EnumOption("Unchanged Robot Weapons", 0, f.settings.bot_weapons);
