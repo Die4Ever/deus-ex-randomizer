@@ -36,14 +36,21 @@ function SwapScriptedPawns(int percent, bool enemies)
 {
     local ScriptedPawn temp[512];
     local ScriptedPawn a;
-    local name exceptTag;
+    local name exceptTag, exceptAlliance;
     local int num, i, slot;
 
-    SetSeed( "SwapScriptedPawns" );
     num=0;
+    if(dxr.localURL ~= "06_HONGKONG_MJ12LAB") {
+        if(enemies)
+            SwapScriptedPawns(percent, false);
+        else
+            exceptAlliance = 'Researcher';
+    }
     if(dxr.localURL ~= "14_OCEANLAB_SILO") {
         exceptTag = 'Doberman';
     }
+
+    SetSeed( "SwapScriptedPawns" );
     foreach AllActors(class'ScriptedPawn', a )
     {
         if( a.bHidden || a.bStatic ) continue;
@@ -53,6 +60,7 @@ function SwapScriptedPawns(int percent, bool enemies)
         if( !chance_single(percent) ) continue;
         if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
         if( exceptTag != '' && a.Tag == exceptTag ) continue;
+        if( exceptAlliance != '' && a.Alliance == exceptAlliance ) continue;
         if( class'DXRMissions'.static.IsCloseToStart(dxr, a.Location) ) continue;
 #ifdef gmdx
         if( SpiderBot2(a) != None && SpiderBot2(a).bUpsideDown ) continue;
