@@ -2,11 +2,41 @@ class DXREnemiesPatrols extends DXREnemiesBase transient;
 
 function GivePatrols()
 {
-    local ScriptedPawn p;
+    local ScriptedPawn p, ps[256];
+    local int num, i, b, max;
+
     l("DXREnemiesPatrols GivePatrols");
-    SetSeed("DXREnemiesPatrols");
+
+    SetSeed("DXREnemiesPatrols selection");
     foreach AllActors(class'ScriptedPawn', p) {
         if(p.Orders != 'DynamicPatrolling') continue;
+        if(chance_single(20) || num >= ArrayCount(ps)) {
+            // 20% chance to wander instead
+            p.SetOrders('Wandering');
+            continue;
+        }
+        ps[num++] = p;
+    }
+
+    l("DXREnemiesPatrols got "$num);
+    max = 20;
+    if(num > max) {
+        SetSeed("DXREnemiesPatrols reduce");
+        for(i=0; i<max; i++) {
+            b = rng(num);
+            p = ps[i];
+            ps[i] = ps[b];
+            ps[b] = p;
+        }
+        for(i=max; i<num; i++) {
+            ps[i].SetOrders('Wandering');
+        }
+        num = max;
+    }
+
+    SetSeed("DXREnemiesPatrols GivePatrols");
+    for(i=0; i<num; i++) {
+        p = ps[i];
         if(!GivePatrol(p)) {
             warning("failed to GivePatrol to "$p@p.Location);
             p.SetOrders('Wandering');
@@ -16,7 +46,7 @@ function GivePatrols()
 
 function bool GivePatrol(ScriptedPawn pawn)
 {
-    local PatrolPoint p, prev, first;
+    local DynamicPatrolPoint p, prev, first;
     local NavigationPoint nps[100], np;
     local string s;
     local int i, q, num;
@@ -82,16 +112,13 @@ function bool GivePatrol(ScriptedPawn pawn)
         if(first==None)
             first = p;
         else {
-            prev.Nextpatrol = p.Tag;
-            prev.NextPatrolPoint = p;
+            LinkPoints(prev, p);
         }
     }
 
     if(first == None) return false;
 
-    p.Nextpatrol = first.tag;
-    p.NextPatrolPoint = first;
-    l("GivePatrol "$pawn$" end "$p@p.Tag$" linking back to "$first@first.Tag);
+    LinkPoints(p, first);
 
     pawn.SetOrders('Patrolling', first.tag, false);
     pawn.FollowOrders(false);
@@ -99,8 +126,19 @@ function bool GivePatrol(ScriptedPawn pawn)
     pawn.GotoState('Patrolling', 'Patrol');
     pawn.destPoint = first;
 
-    l("GivePatrol end "$pawn);
+    l("GivePatrol "$pawn$" end "$p@p.Tag$" linking back to "$first@first.Tag);
     return true;
+}
+
+function LinkPoints(DynamicPatrolPoint prev, DynamicPatrolPoint next)
+{
+    local rotator lookAngle;
+    prev.Nextpatrol = next.Tag;
+    prev.NextPatrolPoint = next;
+
+    // set rotation, similar to Pawn::LookAtVector()
+    lookAngle = Rotator(next.Location-prev.Location);
+    prev.lookdir = 200 * vector(lookAngle);
 }
 
 function DynamicPatrolPoint CreatePoint(NavigationPoint n, Name t)

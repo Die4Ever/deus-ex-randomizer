@@ -317,7 +317,10 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     n.bReactDistress = p.bReactDistress;
     n.bReactProjectiles = p.bReactProjectiles;
 
-    n.Orders = defaultOrders;
+    if(p.bInWorld)
+        n.Orders = defaultOrders;
+    else
+        n.Orders = 'Wandering';
     n.HomeTag = 'Start';
     n.InitializeAlliances();
 
