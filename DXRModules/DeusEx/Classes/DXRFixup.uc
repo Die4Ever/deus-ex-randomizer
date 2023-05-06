@@ -135,6 +135,7 @@ function PostFirstEntry()
 {
     Super.PostFirstEntry();
 
+    CleanupPlaceholders();
     if(#defined(mapfixes))
         PostFirstEntryMapFixes();
 }
@@ -185,7 +186,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 }
 
 
-function PostAnyEntry()
+function CleanupPlaceholders()
 {
     local PlaceholderItem i;
     local PlaceholderContainer c;
