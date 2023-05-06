@@ -43,7 +43,7 @@ var config ItemChances items[32];
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,6,0,3) ) {
+    if( ConfigOlderThan(2,4,0,1) ) {
         time_between_waves = 65;
         time_before_damage = 180;
         damage_timer = 10;
@@ -53,8 +53,8 @@ function CheckConfig()
         popin_dist = 1800.0;
         skill_points_award = 2500;
         items_per_wave = 25;
-        difficulty_per_wave = 1.5;
-        difficulty_first_wave = 2;
+        difficulty_per_wave = 1.75;
+        difficulty_first_wave = 3;
         wine_bottles_per_enemy = 2;
 
         for(i=0; i < ArrayCount(enemies); i++) {
@@ -66,11 +66,37 @@ function CheckConfig()
         }
         i=0;
         enemies[i].type = "Terrorist";
-        enemies[i].chance = 10;
+        enemies[i].chance = 3;
         i++;
+        enemies[i].type = "NSFClone1";
+        enemies[i].chance = 3;
+        i++;
+        enemies[i].type = "NSFClone2";
+        enemies[i].chance = 3;
+        i++;
+        enemies[i].type = "NSFClone3";
+        enemies[i].chance = 3;
+        i++;
+        enemies[i].type = "NSFClone4";
+        enemies[i].chance = 3;
+        i++;
+
         enemies[i].type = "UNATCOTroop";
-        enemies[i].chance = 10;
+        enemies[i].chance = 3;
         i++;
+        enemies[i].type = "UNATCOClone1";
+        enemies[i].chance = 3;
+        i++;
+        enemies[i].type = "UNATCOClone2";
+        enemies[i].chance = 3;
+        i++;
+        enemies[i].type = "UNATCOClone3";
+        enemies[i].chance = 3;
+        i++;
+        enemies[i].type = "UNATCOClone4";
+        enemies[i].chance = 3;
+        i++;
+
         enemies[i].type = "ThugMale";
         enemies[i].chance = 10;
         i++;
@@ -80,18 +106,41 @@ function CheckConfig()
         enemies[i].type = "ThugMale3";
         enemies[i].chance = 10;
         i++;
+
         enemies[i].type = "MJ12Commando";
-        enemies[i].chance = 5;
+        enemies[i].chance = 6;
         enemies[i].minWave = 3;
         enemies[i].difficulty = 2.5;
         i++;
+
         enemies[i].type = "MJ12Troop";
-        enemies[i].chance = 5;
+        enemies[i].chance = 2;
         enemies[i].minWave = 2;
         enemies[i].difficulty = 2;
         i++;
-        enemies[i].type = "MIB";
+        enemies[i].type = "MJ12Clone1";
         enemies[i].chance = 2;
+        enemies[i].minWave = 3;
+        enemies[i].difficulty = 2.2;
+        i++;
+        enemies[i].type = "MJ12Clone2";
+        enemies[i].chance = 2;
+        enemies[i].minWave = 2;
+        enemies[i].difficulty = 2;
+        i++;
+        enemies[i].type = "MJ12Clone2";
+        enemies[i].chance = 2;
+        enemies[i].minWave = 2;
+        enemies[i].difficulty = 2;
+        i++;
+        enemies[i].type = "MJ12Clone2";
+        enemies[i].chance = 2;
+        enemies[i].minWave = 2;
+        enemies[i].difficulty = 2;
+        i++;
+
+        enemies[i].type = "MIB";
+        enemies[i].chance = 3;
         enemies[i].minWave = 4;
         enemies[i].difficulty = 2;
         /*i++;
