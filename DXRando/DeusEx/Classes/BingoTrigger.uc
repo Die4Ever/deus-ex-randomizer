@@ -55,6 +55,8 @@ static function BingoTrigger Create(Actor a, Name bingoEvent, vector loc, option
         bt.SetCollision(False,False,False); //Disable collision, trigger only
     }
 
+    return bt;
+
 }
 
 defaultproperties

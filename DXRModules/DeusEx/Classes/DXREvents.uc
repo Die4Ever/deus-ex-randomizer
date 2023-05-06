@@ -324,6 +324,16 @@ function SetWatchFlags() {
         break;
     case "09_NYC_SHIP":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
+
+        bt = class'BingoTrigger'.static.Create(self,'CraneControls',vect(3264,-1211,1222));
+        bt.Tag = 'Crane';
+
+        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vect(1937,0,1438),100,40);
+        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vect(-1791,1082,1423),100,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'CaptainBed',vect(2887,58,960),30,40);
+
+
         break;
     case "09_NYC_SHIPFAN":
         Tag = 'SpinningRoom';
@@ -336,6 +346,8 @@ function SetWatchFlags() {
         break;
     case "09_NYC_SHIPBELOW":
         WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
+        bt = class'BingoTrigger'.static.Create(self,'FanTop',vect(-2935,50,840),200,50);
+
         break;
     case "09_NYC_GRAVEYARD":
         WatchFlag('GaveDowdAmbrosia');
@@ -1705,8 +1717,12 @@ defaultproperties
     bingo_options(135)=(event="IcarusCalls_Played",desc="Take a phone call from Icarus in Paris",max=1,missions=1024)
     bingo_options(136)=(event="AlexCloset",desc="Go into Alex's closet",max=1,missions=58)
     bingo_options(137)=(event="BackOfStatue",desc="Climb to the balcony on the back of the statue",max=1,missions=2)
-    bingo_options(138)=(event="CommsPit",desc="Jump in the pit outside of the UNATCO comms van",max=1,missions=58)
+    bingo_options(138)=(event="CommsPit",desc="Jump in the pit outside of the UNATCO comms van 3 times",max=3,missions=58)
     bingo_options(139)=(event="StatueHead",desc="Visit the head of the Statue of Liberty",max=1,missions=2)
+    bingo_options(140)=(event="CraneControls",desc="Use the dockside crane controls",max=1,missions=512)
+    bingo_options(141)=(event="CraneTop",desc="Visit the end of both cranes onboard the superfreighter",max=2,missions=512)
+    bingo_options(142)=(event="CaptainBed",desc="Jump on the superfreighter captains bed",max=1,missions=512)
+    bingo_options(143)=(event="FanTop",desc="Get blown to the top of the superfreighter ventilation shaft",max=1,missions=512)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
