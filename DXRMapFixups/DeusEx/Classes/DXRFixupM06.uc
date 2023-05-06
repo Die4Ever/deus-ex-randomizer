@@ -254,6 +254,8 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vect(158.5,-1011.84,544.11)); //Robot alcove
         Spawn(class'PlaceholderContainer',,, vect(691.3,-358.4,-1007.9)); //Near UC
         Spawn(class'PlaceholderContainer',,, vect(174,-2862,1057)); //Near upper security computer
+
+        Spawn(class'MJ12Clone1',,, vect(819.992188, -0.852280, -67.399956));
         break;
 
     case "06_HONGKONG_WANCHAI_CANAL":

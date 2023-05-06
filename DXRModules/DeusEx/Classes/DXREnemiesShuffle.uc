@@ -61,7 +61,7 @@ function SwapScriptedPawns(int percent, bool enemies)
         if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
         if( exceptTag != '' && a.Tag == exceptTag ) continue;
         if( exceptAlliance != '' && a.Alliance == exceptAlliance ) continue;
-        if( class'DXRMissions'.static.IsCloseToStart(dxr, a.Location) ) continue;
+        if( #var(prefix)Robot(a) != None && a.Orders == 'Idle' ) continue;
 #ifdef gmdx
         if( SpiderBot2(a) != None && SpiderBot2(a).bUpsideDown ) continue;
 #endif
