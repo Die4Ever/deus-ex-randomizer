@@ -751,6 +751,20 @@ function TestScoring()
     names[num] = "1 Million Points!";
     scores[num++] = 1000000;
 
+    names[num] = "120k Points";
+    scores[num++] = 120000;
+
+    names[num] = "literal god: 1 hour, Impossible difficulty, full bingo, 5 saves, 5 loads";
+    time=72000; time_without_menus=36000; combat_difficulty=3; rando_difficulty=4; saves=5; loads=5;
+    bingo_win=0; bingos=12; bingo_spots=24; skill_points=10000; nanokeys=200; cheats=0;
+    dxr.flags.SetDifficulty(rando_difficulty);
+    flags_score = dxr.flags.ScoreFlags();
+    scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
+        bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    names[num] = "115k Points";
+    scores[num++] = 115000;
+
     names[num] = "literal god: 1 hour, full bingo, 5 saves, 5 loads";
     time=72000; time_without_menus=36000; combat_difficulty=2; rando_difficulty=2; saves=5; loads=5;
     bingo_win=0; bingos=12; bingo_spots=24; skill_points=10000; nanokeys=200; cheats=0;
