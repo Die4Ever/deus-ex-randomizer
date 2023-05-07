@@ -185,20 +185,27 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     FixInventory(p);
 }
 
+function PostAnyEntry()
+{
+    CleanupPlaceholders(true);
+}
 
-function CleanupPlaceholders()
+function CleanupPlaceholders(optional bool alert)
 {
     local PlaceholderItem i;
     local PlaceholderContainer c;
     local PlaceholderEnemy e;
     foreach AllActors(class'PlaceholderItem', i) {
+        if(alert) err("found leftover "$i);
         i.Destroy();
     }
     foreach AllActors(class'PlaceholderContainer', c) {
+        if(alert) err("found leftover "$c);
         c.Destroy();
     }
     // just in case DXREnemies isn't loaded
     foreach AllActors(class'PlaceholderEnemy', e) {
+        if(alert) err("found leftover "$e);
         e.Destroy();
     }
 }
