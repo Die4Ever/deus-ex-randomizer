@@ -43,6 +43,9 @@ function ReplaceActors()
         else if( #var(prefix)Keypad(a) != None ) {
             ReplaceKeypad(#var(prefix)Keypad(a));
         }
+        else if( #var(prefix)MissionEndgame(a) != None && !#defined(revision) && !#defined(hx) ) {
+            ReplaceMissionEndgame(#var(prefix)MissionEndgame(a));
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -365,4 +368,16 @@ var bool bPushSoundPlaying;
 // Converstion Crap
 var Float   BaseEyeHeight;
 */
+}
+
+function ReplaceMissionEndgame(#var(prefix)MissionEndgame a)
+{
+    local DXRMissionEndgame n;
+    if(DXRMissionEndgame(a) != None) return;
+
+    n = DXRMissionEndgame(SpawnReplacement(a, class'DXRMissionEndgame'));
+    if(n == None)
+        return;
+
+    a.Destroy();
 }

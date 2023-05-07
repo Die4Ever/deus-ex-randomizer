@@ -1,4 +1,4 @@
-class MissionEndgame injects MissionEndgame;
+class DXRMissionEndgame injects #var(prefix)MissionEndgame;
 
 struct EndQuote
 {
@@ -9,6 +9,13 @@ struct EndQuote
 var EndQuote quotes[80];
 var int numQuotes;
 
+#ifdef gmdx
+var name TarEndgameConvo;
+var float DelayTimer;
+#elseif revision
+var name TarEndgameConvo;
+var float DelayTimer;
+#endif
 
 //For now, this is limited to the default UnrealScript limit of 256 characters in a string
 function AddQuote(string quote, string attribution)
@@ -116,17 +123,40 @@ function LoadQuotes()
     AddQuote("YEAH, IT'S BLOOD.", "CHIEF JIM MARTIN");
 }
 
-
-function EndQuote PickRandomQuote()
+function EndQuote PickRandomQuote(int vanilla_num)
 {
     local DXRando dxr;
+    local EndQuote q;
 
-    foreach AllActors(class'DXRando',dxr)
+    foreach AllActors(class'DXRando',dxr) break;
+
+    if(dxr != None) {
+        if(dxr.flags.IsReducedRando()) {
+            q.quote = endgameQuote[vanilla_num*2];
+            q.attribution = endgameQuote[vanilla_num*2 + 1];
+            return q;
+        }
+
         return quotes[dxr.rng(numQuotes)];
+    }
 
     return quotes[Rand(numQuotes)];
 }
 
+function bool IsFemale()
+{
+#ifdef vmd
+    if ((VMDBufferPlayer(Player) != None) && (VMDBufferPlayer(Player).bAssignedFemale))
+        return true;
+#elseif vanilla
+    if ((Human(Player) != None) && (Human(Player).bMadeFemale))
+        return true;
+#endif
+    return false;
+}
+
+// DON'T DO THIS STUFF FOR HX!
+#ifndef hx
 function PostPostBeginPlay()
 {
     savedSoundVolume = SoundVolume;
@@ -185,7 +215,7 @@ function Tick(float DT)
     local bool bFemale;
     local name UseConvo;
 
-    Super.Tick(DT);
+    Super(MissionScript).Tick(DT);
 
     //LDDP, 11/3/21: Barf, part 2.
     if (TarEndgameConvo == 'Barf')
@@ -198,10 +228,7 @@ function Tick(float DT)
         {
             //LDDP, 10/26/21: Parse this on the fly, and reset flags AFTER playing the right conversation, NOT before.
             //if ((Player.FlagBase != None) && (Player.FlagBase.GetBool('LDDPJCIsFemale')))
-            if ((Human(Player) != None) && (Human(Player).bMadeFemale))
-            {
-                bFemale = true;
-            }
+            bFemale = IsFemale();
 
             // Start the conversation
             switch(LocalURL)
@@ -268,7 +295,7 @@ function PrintEndgameQuote(int num)
             quoteDisplay.displayTime = endgameDelays[num];
             quoteDisplay.SetWindowAlignments(HALIGN_Center, VALIGN_Center);
 
-            quote = PickRandomQuote();
+            quote = PickRandomQuote(num);
 
             quoteDisplay.AddMessage(quote.quote);
             quoteDisplay.AddMessage(quote.attribution);
@@ -277,3 +304,4 @@ function PrintEndgameQuote(int num)
         }
     }
 }
+#endif
