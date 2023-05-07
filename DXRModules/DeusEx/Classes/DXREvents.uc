@@ -57,6 +57,9 @@ function SetWatchFlags() {
     local WIB wib;
     local ComputerPersonal cp;
     local #var(prefix)Maid maid;
+    local Trigger trig;
+    local BingoTrigger bt;
+    local LowerClassMale lcm;
     local int i;
 
     switch(dxr.localURL) {
@@ -67,16 +70,32 @@ function SetWatchFlags() {
     case "01_NYC_UNATCOISLAND":
         WatchFlag('GuntherFreed');
         WatchFlag('GuntherRespectsPlayer');
-        Tag = 'SunkenShip';
+
         foreach AllActors(class'SkillAwardTrigger',skillAward) {
             if(skillAward.awardMessage=="Exploration Bonus" && skillAward.skillPointsAdded==50 && skillAward.Region.Zone.bWaterZone){
                 skillAward.Event='SunkenShip';
+                break;
             }
         }
+        bt = class'BingoTrigger'.static.Create(self,'SunkenShip',skillAward.Location);
+
+        bt = class'BingoTrigger'.static.Create(self,'BackOfStatue',vect(2503.605469,354.826355,2072.113037),40,40);
+        bt = class'BingoTrigger'.static.Create(self,'BackOfStatue',vect(2507.357178,-83.523094,2072.113037),40,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vect(-6385.640625,1441.881470,-247.901276),40,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'StatueHead',vect(6250,109,504),800,40);
+
         break;
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
         WatchFlag('ManBathroomBarks_Played');
+        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vect(240.180969,-385.104431,280.098511),80,40);
+        bt.MakeClassProximityTrigger(class'FlagPole');
+
+
         break;
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
@@ -98,10 +117,14 @@ function SetWatchFlags() {
         foreach AllActors(class'MapExit',m,'Boat_Exit'){
             m.Tag = 'Boat_Exit2';
         }
-        Tag = 'Boat_Exit';
+        Tag = 'Boat_Exit';  //this is a special case, since we do extra handling here
+
+
         break;
     case "02_NYC_HOTEL":
         WatchFlag('M02HostagesRescued');// for the hotel, set by Mission02.uc
+        bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vect(-630,-1955,424),150,40);
+
         break;
     case "02_NYC_UNDERGROUND":
         WatchFlag('FordSchickRescued');
@@ -115,7 +138,9 @@ function SetWatchFlags() {
         break;
     case "02_NYC_SMUG":
         WatchFlag('MetSmuggler');
-        Tag = 'botordertrigger';
+        bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vect(0,0,0));
+
         break;
     case "03_NYC_BATTERYPARK":
         foreach AllActors(class'JunkieMale',jm) {
@@ -126,17 +151,29 @@ function SetWatchFlags() {
         break;
     case "03_NYC_MOLEPEOPLE":
         WatchFlag('MolePeopleSlaughtered');
-        Tag='surrender';
+        bt = class'BingoTrigger'.static.Create(self,'surrender',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'MolePeopleWater',vect(0,-528,48),60,40);
         break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vect(-6385.640625,1441.881470,-247.901276),40,40);
         break;
     case "03_NYC_UNATCOHQ":
         WatchFlag('SimonsAssassination');
+        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
+        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vect(240.180969,-385.104431,280.098511),80,40);
+        bt.MakeClassProximityTrigger(class'FlagPole');
         break;
     case "03_NYC_AIRFIELD":
         WatchFlag('BoatDocksAmbrosia');
-        Tag = 'arctrigger';
+        bt = class'BingoTrigger'.static.Create(self,'arctrigger',vect(0,0,0));
+
+        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vect(5347.652344,-4286.462402,328),100,40);
+        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vect(584.657654,-4306.718750,328),100,40);
+        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vect(-2228.463379,-2148.080078,328),100,40);
+        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vect(-2225.839600,3800.267578,328),100,40);
+        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vect(5339.792969,3815.784912,328),100,40);
+
         break;
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
@@ -166,30 +203,45 @@ function SetWatchFlags() {
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
+        bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vect(-630,-1955,424),150,40);
         break;
     case "05_NYC_UNATCOISLAND":
-        Tag = 'nsfwander';// saved Miguel
+        bt = class'BingoTrigger'.static.Create(self,'nsfwander',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vect(-6385.640625,1441.881470,-247.901276),40,40);
+
         break;
     case "02_NYC_STREET":
         WatchFlag('AlleyBumRescued');
-        Tag = GetKnicksTag();
+        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vect(0,0,0));
+        bt.bingoEvent="MadeBasket";
         break;
     case "04_NYC_STREET":
-        Tag = GetKnicksTag();
+        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vect(0,0,0));
+        bt.bingoEvent="MadeBasket";
         break;
     case "04_NYC_BATTERYPARK":
-        Tag = 'MadeItToBP';
+        bt = class'BingoTrigger'.static.Create(self,'MadeItToBP',vect(0,0,0));
         break;
     case "04_NYC_SMUG":
         RewatchFlag('MetSmuggler');
-        Tag = 'botordertrigger';
+        bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vect(0,0,0));
         break;
     case "04_NYC_NSFHQ":
         WatchFlag('MostWarehouseTroopsDead');
         break;
+    case "04_NYC_UNATCOHQ":
+        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
+        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vect(240.180969,-385.104431,280.098511),80,40);
+        bt.MakeClassProximityTrigger(class'FlagPole');
+        break;
+    case "04_NYC_UNATCOISLAND":
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vect(-6385.640625,1441.881470,-247.901276),40,40);
+        break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
-        Tag = 'nanocage';
+        bt = class'BingoTrigger'.static.Create(self,'nanocage',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'botorders2',vect(0,0,0));
         break;
     case "05_NYC_UNATCOHQ":
         WatchFlag('KnowsAnnasKillphrase1');
@@ -205,9 +257,16 @@ function SetWatchFlags() {
                     cp.specialOptions[i].TriggerEvent='BrowserHistoryCleared';
                     cp.specialOptions[i].UserName="JCD";
                 }
+                break;
             }
         }
-        Tag='BrowserHistoryCleared';
+
+        bt = class'BingoTrigger'.static.Create(self,'BrowserHistoryCleared',cp.Location);
+
+        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vect(240.180969,-385.104431,280.098511),80,40);
+        bt.MakeClassProximityTrigger(class'FlagPole');
 
         break;
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -224,7 +283,12 @@ function SetWatchFlags() {
         }
         skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
         skillAward.Event='BoatEngineRoom';
-        Tag='BoatEngineRoom';
+        bt = class'BingoTrigger'.static.Create(self,'BoatEngineRoom',skillAward.Location);
+
+        foreach AllActors(class'LowerClassMale',lcm,'CanalDrugDealer'){
+            break;
+        }
+        bt = class'BingoTrigger'.static.Create(self,'CanalDrugDeal',lcm.Location,200,40);
 
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
@@ -242,6 +306,12 @@ function SetWatchFlags() {
                 lcf.bImportant = true;
         }
 
+        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vect(0,438,-267),200,40);
+        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vect(220,438,-267),200,40);
+        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vect(448,438,-267),200,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'LuckyMoneyFreezer',vect(-1615,-2960,-343),200,40);
+
         break;
     case "06_HONGKONG_WANCHAI_STREET":
         WatchFlag('M06PaidJunkie');
@@ -256,53 +326,112 @@ function SetWatchFlags() {
         //Find the nearest toilet
         closestToilet = Toilet(findNearestToActor(class'Toilet',dxm));
 
-        Tag = 'JocksToilet';
         closestToilet.Event='JocksToilet';
+        bt = class'BingoTrigger'.static.Create(self,'JocksToilet',closestToilet.Location);
 
         foreach AllActors(class'#var(prefix)Maid',maid){
             maid.bImportant = True;
             maid.BarkBindName = "MaySung";
         }
 
+        bt = class'BingoTrigger'.static.Create(self,'TonnochiBillboard',vect(0,550,870),300,40);
+
+
 
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
-        Tag = 'PoliceVaultBingo';
-
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'station_door_05'){
             break;
         }
 
         skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
         skillAward.Event='PoliceVaultBingo';
+        bt = class'BingoTrigger'.static.Create(self,'PoliceVaultBingo',skillAward.Location);
+
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(445,-1032,24),80,40);  //Pottery Store
+        bt.Tag='WanChaiPottery';
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(640,-1093,200),100,40);  //Tea House
+        bt.Tag='WanChaiTea';
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(-6,-1416,40),250,40);  //Butcher (Louis Pan works for him too)
+        bt.Tag='WanChaiButcher';
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(910,-643,40),150,40);  //News Stand
+        bt.Tag='WanChaiNews';
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(632,-532,40),130,40);  //Flower Shop
+        bt.Tag='WanChaiFlowers';
+
 
         break;
     case "06_HONGKONG_TONGBASE":
-        Tag = 'TongsHotTub';
         foreach AllActors(class'WaterZone', water) {
             water.ZonePlayerEvent = 'TongsHotTub';
+            break;
         }
+        bt = class'BingoTrigger'.static.Create(self,'TongsHotTub',water.Location);
+
+        //Need to make sure these are slightly out of the wall so that explosions hit them
+        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vect(-596.3,1826,40),40,100);
+        bt.MakeShootingTarget();
+
+        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vect(-466.5,1826,40),40,100);
+        bt.MakeShootingTarget();
+
+        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vect(-337.2,1826,40),40,100);
+        bt.MakeShootingTarget();
+
         break;
     case "06_HONGKONG_HELIBASE":
-        Tag = 'purge';
+        bt = class'BingoTrigger'.static.Create(self,'purge',vect(0,0,0));
+
+        foreach AllActors(class'Trigger',trig){
+            if (trig.classProximityType==class'Basketball'){
+                break;
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'HongKongBBall',trig.Location,14,3);
+        bt.MakeClassProximityTrigger(class'Basketball');
+
+        break;
+    case "06_HONGKONG_MJ12LAB":
+        foreach AllActors(class'ZoneInfo',zone){
+            if (zone.bFogZone){
+                zone.ZonePlayerEvent = 'HongKongGrays';
+                break;
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'HongKongGrays',zone.Location);
         break;
     case "08_NYC_STREET":
-        Tag = GetKnicksTag();
+        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vect(0,0,0));
+        bt.bingoEvent="MadeBasket";
         WatchFlag('StantonAmbushDefeated');
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
         RewatchFlag('MetSmuggler');
-        Tag = 'botordertrigger';
+        bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vect(0,0,0));
         break;
     case "08_NYC_BAR":
         WatchFlag('LeoToTheBar');
         break;
+    case "08_NYC_HOTEL":
+        bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vect(-630,-1955,424),150,40);
+        break;
     case "09_NYC_SHIP":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
+
+        bt = class'BingoTrigger'.static.Create(self,'CraneControls',vect(3264,-1211,1222));
+        bt.Tag = 'Crane';
+
+        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vect(1937,0,1438),100,40);
+        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vect(-1791,1082,1423),100,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'CaptainBed',vect(2887,58,960),30,40);
+
+
         break;
     case "09_NYC_SHIPFAN":
-        Tag = 'SpinningRoom';
+        bt = class'BingoTrigger'.static.Create(self,'SpinningRoom',vect(0,0,0));
         foreach AllActors(class'ZoneInfo', zone) {
             if (zone.DamageType=='Burned'){
                 zone.ZonePlayerEvent = 'SpinningRoom';
@@ -312,15 +441,21 @@ function SetWatchFlags() {
         break;
     case "09_NYC_SHIPBELOW":
         WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
+        bt = class'BingoTrigger'.static.Create(self,'FanTop',vect(-2935,50,840),200,50);
+
         break;
     case "09_NYC_GRAVEYARD":
         WatchFlag('GaveDowdAmbrosia');
         break;
     case "10_PARIS_CATACOMBS":
+        WatchFlag('IcarusCalls_Played');
         foreach AllActors(class'JunkieFemale', jf) {
             if(jf.BindName == "aimee")
                 jf.bImportant = true;
         }
+
+        bt = class'BingoTrigger'.static.Create(self,'WarehouseEntered',vect(-580.607361,-2248.497803,-551.895874),200,160);
+
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
         foreach AllActors(class'WIB',wib){
@@ -347,19 +482,40 @@ function SetWatchFlags() {
         WatchFlag('CamilleConvosDone');
         WatchFlag('LDDPAchilleDone');
         WatchFlag('LeoToTheBar');
+        WatchFlag('LouisBerates');
         RewatchFlag('KnowsGuntherKillphrase');
 
         break;
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(2019,-2256,-704),20,15);
+        bt.MakeClassProximityTrigger(class'ChefCarcass');
         break;
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');
         WatchFlag('MeetAI4_Played');
         WatchFlag('DeBeersDead');
+
+        foreach AllActors(class'WaterZone',water){
+            water.ZonePlayerEvent = 'EverettAquarium';
+            break;
+        }
+        bt = class'BingoTrigger'.static.Create(self,'EverettAquarium',water.Location);
+        break;
+    case "11_PARIS_UNDERGROUND":
+        foreach AllActors(class'ZoneInfo',zone){
+            if (zone.bPainZone && zone.DamageType=='Shocked'){
+                //zone.ZonePlayerEvent = 'TrainTracks';
+                //The ZonePlayerEvent only gets triggered here if you crouch, since I guess
+                //it's based on your Location, rather than collision?  We'll use the location of the
+                //ZoneInfo for our new BingoTrigger still though.
+                break;
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'TrainTracks',zone.Location,3000,1);
         break;
     case "12_VANDENBERG_GAS":
-        Tag = 'support1';  //This gets hit when you blow up the gas pumps
+        bt = class'BingoTrigger'.static.Create(self,'support1',vect(0,0,0)); //This gets hit when you blow up the gas pumps
         break;
     case "12_VANDENBERG_CMD":
         WatchFlag('MeetTimBaker_Played');
@@ -369,25 +525,25 @@ function SetWatchFlags() {
             }
         }
 
-        //Using a blank LogicTrigger so that we can ensure it only sends one event from each button
-        lTrigger = Spawn(class'LogicTrigger');
-        lTrigger.OneShot=True;
-        lTrigger.Tag='bunker_door1';
-        lTrigger.Event='VandenbergDXR';
-
-        lTrigger = Spawn(class'LogicTrigger');
-        lTrigger.OneShot=True;
-        lTrigger.Tag='bunker_door2';
-        lTrigger.Event='VandenbergDXR';
+        bt = class'BingoTrigger'.static.Create(self,'bunker_door1',vect(0,0,0));
+        bt.bingoEvent = "ActivateVandenbergBots";
+        bt = class'BingoTrigger'.static.Create(self,'bunker_door2',vect(50,0,0));
+        bt.bingoEvent = "ActivateVandenbergBots";
 
         foreach AllActors(class'Toilet',closestToilet){
-            closestToilet.tag='VandenbergToilet';
-            closestToilet.Event='VandenbergDXR';
+            closestToilet.Event='VandenbergToilet';
         }
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergToilet',vect(150,0,0));
 
-        Tag = 'VandenbergDXR';
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergWaterTower',vect(-1030,80,-1600),350,40);
+
         break;
-
+    case "12_VANDENBERG_TUNNELS":
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergReactorRoom',vect(-1427,3287,-2985),500,100);
+        break;
+    case "12_VANDENBERG_COMPUTER":
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergServerRoom',vect(940,2635,-1320),200,40);
+        break;
     case "14_OCEANLAB_SILO":
         WatchFlag('MeetDrBernard_Played');
         foreach AllActors(class'ScientistMale', sm) {
@@ -395,22 +551,33 @@ function SetWatchFlags() {
                 sm.bImportant = true;
             }
         }
+        bt = class'BingoTrigger'.static.Create(self,'SiloSlide',vect(25,-4350,165),40,40);
+        bt = class'BingoTrigger'.static.Create(self,'SiloWaterTower',vect(-1212,-3427,1992),200,40);
         break;
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1932.035522,3334.331787,-2247.888184),60,40);
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1932.035522,3334.331787,-2507.888184),60,40);
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1928.762573,3721.919189,-2507.888184),60,40);
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1928.762573,3721.919189,-2247.888184),60,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabGreenBeacon',vect(1543,3522,-1847),200,200);
+
         break;
     case "14_OCEANLAB_UC":
         WatchFlag('LeoToTheBar');
+        WatchFlag('PageTaunt_Played');
         break;
     case "15_AREA51_BUNKER":
         WatchFlag('JockBlewUp');
         WatchFlag('blast_door_open');
-        Tag = 'Area51FanShaft';
+
         foreach AllActors(class'ZoneInfo', zone) {
             if (zone.Tag=='fan'){
                 zone.ZonePlayerEvent = 'Area51FanShaft';
             }
         }
+        bt = class'BingoTrigger'.static.Create(self,'Area51FanShaft',vect(0,0,0));
 
         //This flag trigger actually doesn't trigger because a security computer can only trigger DeusExMovers
         foreach AllActors(class'FlagTrigger',fTrigger,'blast_door'){
@@ -426,16 +593,42 @@ function SetWatchFlags() {
                 book.textTag = '15_Book02';  //Put that good Thursday man back where he (probably) belongs
             }
         }
+
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,128),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-123),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-392),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-902),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-1152),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-1413),250,40);
         break;
     case "15_AREA51_PAGE":
 #ifdef vanilla
-        Tag = 'unbirth';
         foreach AllActors(class'WaterZone', water) {
             if (water.Name=='WaterZone5'){// in GMDX v10 and Revision it's WaterZone0
                 water.ZonePlayerEvent = 'unbirth';
             }
         }
+        bt = class'BingoTrigger'.static.Create(self,'unbirth',vect(0,0,0));
 #endif
+        bt = class'BingoTrigger'.static.Create(self,'Set_flag_helios',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'coolant_switch',vect(0,0,0));
+
+        bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vect(0,0,0));
+        bt.Tag='node1';
+        bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vect(0,0,0));
+        bt.Tag='node2';
+        bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vect(0,0,0));
+        bt.Tag='node3';
+        bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vect(0,0,0));
+        bt.Tag='node4';
+
+        bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vect(0,0,0));
+        bt.Tag='UC_shutdoor1';
+        bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vect(0,0,0));
+        bt.Tag='UC_shutdoor2';
+        bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vect(0,0,0));
+        bt.Tag='UC_shutdoor3';
+
         break;
     }
 }
@@ -682,20 +875,9 @@ function Trigger(Actor Other, Pawn Instigator)
 
     js = class'Json';
 
-    //Massage tag names
-    if (tag=='MadeBasketM' || tag=='MadeBasketF'){
-        useTag = 'MadeBasket';
-        //In order to prevent too many duplicate tweets, remove the tag after one triggering
-        tag = '';
-    }else if (tag=='VandenbergDXR'){
-        if (Other.tag=='bunker_door1' || Other.tag=='bunker_door2'){
-            useTag = 'ActivateVandenbergBots';
-        } else if (other.tag=='VandenbergToilet'){
-            useTag = 'VandenbergToilet';
-        }
-    } else {
-        useTag = tag;
-    }
+    //Leave this variable for now, in case we need to massage tags
+    //again at some point in the future
+    useTag = tag;
 
     Super.Trigger(Other, Instigator);
     l("Trigger("$Other$", "$instigator$")");
@@ -1431,6 +1613,12 @@ function _MarkBingo(coerce string eventname)
         case "MJ12Clone4_ClassDead":
             eventname="MJ12Troop_ClassDead";
             break;
+        case "DXRMedicalBot_ClassDead":
+            eventname="MedicalBot_ClassDead";
+            break;
+        case "DXRRepairBot_ClassDead":
+            eventname="RepairBot_ClassDead";
+            break;
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
@@ -1532,8 +1720,9 @@ defaultproperties
 	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul die",max=1,missions=16)
 	bingo_options(3)=(event="JordanShea_Dead",desc="Kill Jordan Shea",max=1,missions=276)
 	bingo_options(4)=(event="SandraRenton_Dead",desc="Kill Sandra Renton",max=1,missions=4372)
-	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1,missions=276)
-	bingo_options(6)=(event="AnnaNavarre_Dead",desc="Kill Anna Navarre",max=1,missions=56)
+	bingo_options(5)=(event="GilbertRenton_Dead",desc="Kill Gilbert Renton",max=1,missions=20)
+	//bingo_options()=(event="AnnaNavarre_Dead",desc="Kill Anna Navarre",max=1,missions=56)
+    bingo_options(6)=(event="WarehouseEntered",desc="Enter the underground warehouse in Paris",max=1,missions=1024)
 	bingo_options(7)=(event="GuntherHermann_Dead",desc="Kill Gunther Hermann",max=1,missions=3072)
 	bingo_options(8)=(event="JoJoFine_Dead",desc="Kill JoJo",max=1,missions=16)
 	bingo_options(9)=(event="TobyAtanwe_Dead",desc="Kill Toby Atanwe",max=1,missions=2048)
@@ -1672,6 +1861,47 @@ defaultproperties
     bingo_options(132)=(event="botordertrigger",desc="The Smuggler is whacked-out paranoid",max=1,missions=276)
     bingo_options(133)=(event="IgnitedPawn",desc="Set 15 people on fire",max=15)
     bingo_options(134)=(event="GibbedPawn",desc="Blow up 15 people",max=15)
+    bingo_options(135)=(event="IcarusCalls_Played",desc="Take a phone call from Icarus in Paris",max=1,missions=1024)
+    bingo_options(136)=(event="AlexCloset",desc="Go into Alex's closet",max=1,missions=58)
+    bingo_options(137)=(event="BackOfStatue",desc="Climb to the balcony on the back of the statue",max=1,missions=2)
+    bingo_options(138)=(event="CommsPit",desc="Check the SATCOM wiring 3 times",max=3,missions=58)
+    bingo_options(139)=(event="StatueHead",desc="Visit the head of the Statue of Liberty",max=1,missions=2)
+    bingo_options(140)=(event="CraneControls",desc="Use the dockside crane controls",max=1,missions=512)
+    bingo_options(141)=(event="CraneTop",desc="Visit the end of both cranes onboard the superfreighter",max=2,missions=512)
+    bingo_options(142)=(event="CaptainBed",desc="Jump on the superfreighter captains bed",max=1,missions=512)
+    bingo_options(143)=(event="FanTop",desc="Get blown to the top of the superfreighter ventilation shaft",max=1,missions=512)
+    bingo_options(144)=(event="LouisBerates",desc="Sneak behind the Porte De L'Enfer door man",max=1,missions=1024)
+    bingo_options(145)=(event="EverettAquarium",desc="Go for a swim in Everett's aquarium",max=1,missions=2048)
+    bingo_options(146)=(event="TrainTracks",desc="Jump on to the train tracks in Paris",max=1,missions=2048)
+    bingo_options(147)=(event="OceanLabCrewChamber",desc="Visit all 4 crew chambers in the Ocean Lab",max=4,missions=16384)
+    bingo_options(148)=(event="HeliosControlArms",desc="Jump down the control arms in Helios' chamber",max=1,missions=32768)
+    bingo_options(149)=(event="TongTargets",desc="Use the shooting range in Tong's base",max=1,missions=64)
+    bingo_options(150)=(event="WanChaiStores",desc="Visit 4 stores in the Wan Chai market",max=4,missions=64)
+    bingo_options(151)=(event="HongKongBBall",desc="Shoot some hoops in Hong Kong",max=1,missions=64)
+    bingo_options(152)=(event="CanalDrugDeal",desc="Walk in on a drug deal in progress",max=1,missions=64)
+    bingo_options(153)=(event="HongKongGrays",desc="Enter the Hong Kong Gray enclosure",max=1,missions=64)
+    bingo_options(154)=(event="EnterQuickStop",desc="Enter the Quick Stop in Hong Kong",max=1,missions=64)
+    bingo_options(155)=(event="LuckyMoneyFreezer",desc="Enter the Lucky Money freezer",max=1,missions=64)
+    bingo_options(156)=(event="TonnochiBillboard",desc="Get onto the billboard over Tonnochi road",max=1,missions=64)
+    bingo_options(157)=(event="AirfieldGuardTowers",desc="Visit 3 of the Airfield guard towers",max=3,missions=8)
+    bingo_options(158)=(event="mirrordoor",desc="Access Smuggler's secret stash",max=1,missions=276)
+    bingo_options(159)=(event="MolePeopleWater",desc="Bathe in the Mole People water supply",max=1,missions=8)
+    bingo_options(160)=(event="botorders2",desc="Alter the bot AI in the MJ12 Lab",max=1,missions=32)
+    bingo_options(161)=(event="BathroomFlags",desc="Place a flag in Manderley's bathroom 3 times",max=3,missions=58)
+    bingo_options(162)=(event="SiloSlide",desc="Take the silo slide",max=1,missions=16384)
+    bingo_options(163)=(event="SiloWaterTower",desc="Climb the water tower at the silo",max=1,missions=16384)
+    bingo_options(164)=(event="TonThirdFloor",desc="Go to the third floor of the 'Ton",max=1,missions=276)
+    bingo_options(165)=(event="Set_flag_helios",desc="Engage the Aquinas primary router",max=1,missions=32768)
+    bingo_options(166)=(event="coolant_switch",desc="Flush the reactor coolant",max=1,missions=32768)
+    bingo_options(167)=(event="BlueFusionReactors",desc="Deactivate the four blue fusion reactors",max=4,missions=32768)
+    bingo_options(168)=(event="A51UCBlocked",desc="Close the doors to 3 UCs in Area 51",max=3,missions=32768)
+    bingo_options(169)=(event="VandenbergReactorRoom",desc="Enter the reactor room in the Vandenberg tunnels",max=1,missions=4096)
+    bingo_options(170)=(event="VandenbergServerRoom",desc="Enter the server room in the Vandenberg control center",max=1,missions=4096)
+    bingo_options(171)=(event="VandenbergWaterTower",desc="Climb the water tower in Vandenberg",max=1,missions=4096)
+    bingo_options(172)=(event="Cremation",desc="Cook the cook",max=1,missions=2048)
+    bingo_options(173)=(event="OceanLabGreenBeacon",desc="Swim to the green beacon",max=1,missions=16384)
+    bingo_options(174)=(event="PageTaunt_Played",desc="Let Bob Page taunt you in the Ocean Lab",max=1,missions=16384)
+    //bingo_options()=(event="M11WaltonHolo_Played",desc="Talk to Walton Simons after defeating Gunther",max=1,missions=2048)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -1684,19 +1914,15 @@ defaultproperties
     mutually_exclusive(8)=(e1="AnnaKilledLebedev",e2="PlayerKilledLebedev")
     mutually_exclusive(9)=(e1="AnnaKilledLebedev",e2="JuanLebedev_Unconscious")
     mutually_exclusive(10)=(e1="PlayerKilledLebedev",e2="JuanLebedev_Unconscious")
-    mutually_exclusive(11)=(e1="AnnaNavarre_Dead",e2="AnnaKillswitch")
-    mutually_exclusive(12)=(e1="AnnaNavarre_Dead",e2="AnnaNavarre_DeadM3")
-    mutually_exclusive(13)=(e1="AnnaNavarre_Dead",e2="AnnaNavarre_DeadM4")
-    mutually_exclusive(14)=(e1="AnnaNavarre_Dead",e2="AnnaNavarre_DeadM5")
-    mutually_exclusive(15)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM3")
-    mutually_exclusive(16)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM4")
-    mutually_exclusive(17)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM5")
-    mutually_exclusive(18)=(e1="AnnaNavarre_DeadM3",e2="AnnaNavarre_DeadM4")
-    mutually_exclusive(19)=(e1="AnnaNavarre_DeadM3",e2="AnnaNavarre_DeadM5")
-    mutually_exclusive(20)=(e1="AnnaNavarre_DeadM4",e2="AnnaNavarre_DeadM3")
-    mutually_exclusive(21)=(e1="AnnaNavarre_DeadM4",e2="AnnaNavarre_DeadM5")
-    mutually_exclusive(22)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM3")
-    mutually_exclusive(23)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(11)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(12)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(13)=(e1="AnnaKillswitch",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(14)=(e1="AnnaNavarre_DeadM3",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(15)=(e1="AnnaNavarre_DeadM3",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(16)=(e1="AnnaNavarre_DeadM4",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(17)=(e1="AnnaNavarre_DeadM4",e2="AnnaNavarre_DeadM5")
+    mutually_exclusive(18)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM3")
+    mutually_exclusive(19)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM4")
 
     bingo_win_countdown=-1
 }

@@ -1,4 +1,4 @@
-class DXREnemiesShuffle extends DXREnemiesBase abstract;
+class DXREnemiesShuffle extends DXREnemiesPatrols abstract;
 
 function SwapItems(Pawn a, Pawn b)
 {
@@ -32,18 +32,43 @@ function SwapItems(Pawn a, Pawn b)
     }
 }
 
+
+function SwapOrders(ScriptedPawn a, ScriptedPawn b)
+{
+    SwapNames(a.Orders, b.Orders);
+    SwapNames(a.OrderTag, b.OrderTag);
+    if(a.Orders != 'DynamicPatrolling')// we pick these up later in DXREnemiesPatrols
+        ResetOrders(a);
+    if(b.Orders != 'DynamicPatrolling')
+        ResetOrders(b);
+}
+
+function bool ShouldSwap(ScriptedPawn a, ScriptedPawn b) {
+    // always ok to swap with a placeholder enemy
+    if(PlaceholderEnemy(a) != None || PlaceholderEnemy(b) != None) return true;
+    // otherwise check alliance
+    return a.GetAllianceType( b.Alliance ) != ALLIANCE_Hostile;
+}
+
 function SwapScriptedPawns(int percent, bool enemies)
 {
     local ScriptedPawn temp[512];
     local ScriptedPawn a;
-    local name exceptTag;
+    local name exceptTag, exceptAlliance;
     local int num, i, slot;
 
-    SetSeed( "SwapScriptedPawns" );
     num=0;
+    if(dxr.localURL ~= "06_HONGKONG_MJ12LAB") {
+        if(enemies)
+            SwapScriptedPawns(percent, false);
+        else
+            exceptAlliance = 'Researcher';
+    }
     if(dxr.localURL ~= "14_OCEANLAB_SILO") {
         exceptTag = 'Doberman';
     }
+
+    SetSeed( "SwapScriptedPawns" );
     foreach AllActors(class'ScriptedPawn', a )
     {
         if( a.bHidden || a.bStatic ) continue;
@@ -53,10 +78,14 @@ function SwapScriptedPawns(int percent, bool enemies)
         if( !chance_single(percent) ) continue;
         if( a.Region.Zone.bWaterZone || a.Region.Zone.bPainZone ) continue;
         if( exceptTag != '' && a.Tag == exceptTag ) continue;
-        if( class'DXRMissions'.static.IsCloseToStart(dxr, a.Location) ) continue;
+        if( exceptAlliance != '' && a.Alliance == exceptAlliance ) continue;
+        if( #var(prefix)Robot(a) != None && a.Orders == 'Idle' ) continue;
+        if( class'DXRMissions'.static.IsCloseToRandomStart(dxr, a.Location) ) continue;
 #ifdef gmdx
         if( SpiderBot2(a) != None && SpiderBot2(a).bUpsideDown ) continue;
 #endif
+        if(PlaceholderEnemy(a) != None && a.Orders == 'Wandering')
+            a.Orders = 'DynamicPatrolling';// we pick these up later in DXREnemiesPatrols
         temp[num++] = a;
     }
 
@@ -70,7 +99,11 @@ function SwapScriptedPawns(int percent, bool enemies)
         slot--;
         if(slot >= i) slot++;
 
-        if( !Swap(temp[i], temp[slot], true) ) {
+        if( ! ShouldSwap(temp[i], temp[slot]) ) {
+            continue;
+        }
+
+        if( ! Swap(temp[i], temp[slot], true) ) {
             l("SwapScriptedPawns failed swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot]));
             continue;
         }
@@ -89,11 +122,8 @@ function SwapScriptedPawns(int percent, bool enemies)
         SwapVector(temp[i].HomeRot, temp[slot].HomeRot);
         SwapProperty(temp[i], temp[slot], "HomeExtent");
         SwapProperty(temp[i], temp[slot], "bUseHome");
-        SwapNames(temp[i].Orders, temp[slot].Orders);
-        SwapNames(temp[i].OrderTag, temp[slot].OrderTag);
         SwapProperty(temp[i], temp[slot], "RaiseAlarm");
 
-        ResetOrders(temp[i]);
-        ResetOrders(temp[slot]);
+        SwapOrders(temp[i], temp[slot]);
     }
 }

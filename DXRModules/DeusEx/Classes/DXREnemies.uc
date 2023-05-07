@@ -10,11 +10,15 @@ const MJ12 = 4;
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,2,5,1) ) {
+    if( ConfigOlderThan(2,4,0,1) ) {
         enemy_multiplier = 1;
         min_rate_adjust = default.min_rate_adjust;
         max_rate_adjust = default.max_rate_adjust;
 
+        for(i=0; i < ArrayCount(randomweapons); i++ ) {
+            randomweapons[i].type = "";
+            randomweapons[i].chance = 0;
+        }
         for(i=0; i < ArrayCount(randommelees); i++ ) {
             randommelees[i].type = "";
             randommelees[i].chance = 0;
@@ -58,8 +62,7 @@ function CheckConfig()
         AddRandomBotWeapon("WeaponPlasmaRifle", 5);
         //AddRandomBotWeapon("WeaponGraySpit", 5);  //Gray Spit doesn't seem to work immediately
 
-
-        defaultOrders = 'Wandering';
+        defaultOrders = 'DynamicPatrolling';
     }
     Super.CheckConfig();
 
@@ -80,7 +83,7 @@ function CheckConfig()
 
     AddRandomEnemyType(class'#var(prefix)MJ12Troop', 10, MJ12);
     AddRandomEnemyType(class'#var(prefix)MJ12Commando', 2, MJ12);
-    AddRandomEnemyType(class'MJ12Clone1', 10, MJ12);
+    AddRandomEnemyType(class'MJ12Clone1', 7, MJ12);// MJ12 Executioner is strong
     AddRandomEnemyType(class'MJ12Clone2', 10, MJ12);
     AddRandomEnemyType(class'MJ12Clone3', 10, MJ12);
     AddRandomEnemyType(class'MJ12Clone4', 10, MJ12);
@@ -118,6 +121,7 @@ function FirstEntry()
     }
     RandoEnemies(dxr.flags.settings.enemiesrandomized, dxr.flags.settings.hiddenenemiesrandomized);
     RandoCarcasses(dxr.flags.settings.swapitems);
+    GivePatrols();
 }
 
 function RandoEnemies(int percent, int hidden_percent)
@@ -208,7 +212,8 @@ function RandomizeSP(ScriptedPawn p, int percent)
     if( IsHuman(p.class) || dxr.flags.settings.bot_stats>0 ) {
         p.SurprisePeriod = rngrange(p.SurprisePeriod+0.1, 0.3, 1.2);
         p.GroundSpeed = rngrange(p.GroundSpeed, 0.9, 1.1);
-        p.BaseAccuracy -= FClamp(rngf() * float(dxr.flags.settings.enemystats)/200.0, 0, 0.5);
+        p.BaseAccuracy -= FClamp(rngf() * float(dxr.flags.settings.enemystats)/300.0, 0, 0.3);
+        p.BaseAccuracy = FClamp(p.BaseAccuracy, 0, 2);//ensure BaseAccuracy doesn't go below 0
     }
 
     if(p.RaiseAlarm==RAISEALARM_BeforeAttacking && chance_single(dxr.flags.settings.enemystats)) {

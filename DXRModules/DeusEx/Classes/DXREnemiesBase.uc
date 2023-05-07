@@ -222,13 +222,6 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
     return n;
 }
 
-function bool IsInitialEnemy(ScriptedPawn p)
-{
-    local int i;
-
-    return p.GetAllianceType( class'#var(PlayerPawn)'.default.Alliance ) == ALLIANCE_Hostile;
-}
-
 function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedPawn> newclass)
 {
     local int i;
@@ -324,7 +317,10 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     n.bReactDistress = p.bReactDistress;
     n.bReactProjectiles = p.bReactProjectiles;
 
-    n.Orders = defaultOrders;
+    if(p.bInWorld)
+        n.Orders = defaultOrders;
+    else
+        n.Orders = 'Wandering';
     n.HomeTag = 'Start';
     n.InitializeAlliances();
 
@@ -510,7 +506,7 @@ function RandomizeSize(Actor a)
 
     scale = rngrange(1, 0.9, 1.1);
     SetActorScale(a, scale);
-    a.Fatness = rng(20) + 120;
+    a.Fatness += rng(10) + rng(10) - 10;
 
     if( carried != None ) {
         p.carriedDecoration = carried;

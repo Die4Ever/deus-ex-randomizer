@@ -195,7 +195,7 @@ function static RandomizeAugCannister(DXRando dxr, #var(prefix)AugmentationCanni
     else if(augs[1] != None)
         a.ItemName = a.ItemName $": "$ augs[1].default.AugmentationName;
 
-    if( a.AddAugs[0] == '#var(prefix)AugSpeed' || a.AddAugs[1] == '#var(prefix)AugSpeed' ) {
+    if( (a.AddAugs[0] == '#var(prefix)AugSpeed' || a.AddAugs[1] == '#var(prefix)AugSpeed') && !dxr.flags.IsReducedRando() ) {
         dxr.flags.player().ClientMessage("Speed Enhancement is in this area.",, true);
     }
 }

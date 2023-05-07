@@ -1,5 +1,5 @@
 class Gray injects Gray;
-
+// take a little bit of damage from fire and plasma, also slightly worse than perfect accuracy
 function bool FilterDamageType(Pawn instigatedBy, Vector hitLocation,
                                Vector offset, Name damageType)
 {
@@ -28,4 +28,5 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 defaultproperties
 {
     BurnPeriod=0.0
+    BaseAccuracy=0.1
 }

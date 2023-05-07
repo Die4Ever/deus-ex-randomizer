@@ -29,7 +29,7 @@ var #var(flagvarprefix) int bSetSeed;// int because all our flags are ints?
 
 
 // When adding a new flag, make sure to update BindFlags, flagNameToHumanName, flagValToHumanVal,
-// CheckConfig in subclass, and maybe ExecMaxRando if it should be included in that
+// CheckConfig in subclass, maybe ExecMaxRando if it should be included in that, ScoreFlags, and SetDifficulty for different game modes
 struct FlagsSettings {
 #ifndef hx
     var float CombatDifficulty;

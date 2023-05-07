@@ -102,8 +102,16 @@ static function bool IsRobot(class<Actor> a)
 static function bool IsCritter(Actor a)
 {
     if( #var(prefix)CleanerBot(a) != None ) return true;
+    if( #var(prefix)MedicalBot(a) != None || #var(prefix)RepairBot(a) != None || Merchant(a) != None ) return true;
     if( #var(prefix)Animal(a) == None ) return false;
     return #var(prefix)Doberman(a) == None && #var(prefix)Gray(a) == None && #var(prefix)Greasel(a) == None && #var(prefix)Karkian(a) == None;
+}
+
+function bool IsInitialEnemy(ScriptedPawn p)
+{
+    local int i;
+
+    return p.GetAllianceType( class'#var(PlayerPawn)'.default.Alliance ) == ALLIANCE_Hostile;
 }
 
 static function bool RemoveItem(Pawn p, class c)

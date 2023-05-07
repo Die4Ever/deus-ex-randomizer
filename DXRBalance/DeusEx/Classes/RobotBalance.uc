@@ -6,3 +6,8 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
     if(damageType == 'Burned') Damage *= 4;
     Super.TakeDamageBase(Damage, instigatedBy, hitLocation, momentum, damageType, bPlayAnim);
 }
+
+defaultproperties
+{
+    BaseAccuracy=0.1
+}

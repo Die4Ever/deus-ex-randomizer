@@ -26,30 +26,12 @@ function DrawWindow(GC gc)
     if( frobTarget != None ) DrawWindowBase(gc, frobTarget);
 }
 
-function InitFlags()
+function CheckAutofillSettings()
 {
     local int codes_mode;
-    if( inited ) return;
+    local DXRFlags flags;
     if( player == None || player.FlagBase == None ) return;
     inited = true;
-
-    codes_mode = int(player.ConsoleCommand("get #var(package).MenuChoice_PasswordAutofill codes_mode"));
-    if( codes_mode == 2 ) {
-        auto_codes = true;
-    }
-    if( codes_mode >= 1 ) {
-        known_codes = true;
-    }
-
-    show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys show_keys"));
-}
-
-//MenuChoice_PasswordAutofill sends out a ChangeStyle message when adjusted
-event StyleChanged()
-{
-    local int codes_mode;
-
-    Super.StyleChanged();
 
     codes_mode = int(player.ConsoleCommand("get #var(package).MenuChoice_PasswordAutofill codes_mode"));
     if( codes_mode == 2 ) {
@@ -63,8 +45,25 @@ event StyleChanged()
         known_codes = false;
     }
 
-    show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys show_keys"));
+    if(player.FlagBase.GetInt('Rando_passwordsrandomized') <= 0) {
+        auto_codes = false;
+        known_codes = false;
+    }
 
+    show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys show_keys"));
+}
+
+function InitFlags()
+{
+    if( inited ) return;
+    CheckAutofillSettings();
+}
+
+//MenuChoice_PasswordAutofill sends out a ChangeStyle message when adjusted
+event StyleChanged()
+{
+    Super.StyleChanged();
+    CheckAutofillSettings();
 }
 
 static function GetActorBoundingBox(actor frobTarget, out vector centerLoc, out vector radius)

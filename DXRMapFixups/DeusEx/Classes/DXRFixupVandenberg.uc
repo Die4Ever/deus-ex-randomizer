@@ -12,6 +12,7 @@ function PreFirstEntryMapFixes()
     local #var(DeusExPrefix)Mover door;
     local DXREnemies dxre;
     local #var(prefix)TracerTong tt;
+    local SequenceTrigger st;
 
     switch(dxr.localURL)
     {
@@ -21,6 +22,13 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)TracerTong', tt) {
             RemoveFears(tt);// he looks pretty sick
         }
+
+        class'PlaceholderEnemy'.static.Create(self,vect(-2467,866,-2000),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(-2689,4765,-2143),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(-163,7797,-2143),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(2512,6140,-2162),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(2267,643,-2000),rot(0,0,0),'Wandering');
+
         break;
 
 #ifdef vanillamaps
@@ -119,11 +127,33 @@ function PreFirstEntryMapFixes()
                 }
             }
         }
+
+        //The door closing behind you when the ambush starts sucks if you came in via the silo.
+        //Just make it not close.
+        foreach AllActors(class'SequenceTrigger', st, 'doorclose') {
+            if (st.Event=='blast_door4' && st.Tag=='doorclose'){
+                st.Event = '';
+                st.Tag = 'doorclosejk';
+                break;
+            }
+        }
+
+        class'PlaceholderEnemy'.static.Create(self,vect(-264,-6991,-553),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(-312,-6886,327),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(270,-6601,1500),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(-1257,-3472,1468),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vect(1021,-3323,1476),rot(0,0,0),'Wandering');
+
         break;
     case "12_VANDENBERG_COMPUTER":
         Spawn(class'PlaceholderItem',,, vect(579,2884,-1629)); //Table near entrance
         Spawn(class'PlaceholderItem',,, vect(1057,2685.25,-1637)); //Table overlooking computer room
         Spawn(class'PlaceholderItem',,, vect(1970,2883.43,-1941)); //In first floor computer room
+        break;
+
+    case "12_VANDENBERG_GAS":
+        class'PlaceholderEnemy'.static.Create(self,vect(635,488,-930),rot(0,0,0),'Wandering');
+
         break;
 #endif
     }

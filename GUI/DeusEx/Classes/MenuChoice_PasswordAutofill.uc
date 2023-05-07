@@ -85,6 +85,6 @@ defaultproperties
      codes_mode=2;
      defaultInfoWidth=243
      defaultInfoPosX=203
-     HelpText="Help with finding passwords from your notes"
+     HelpText="Help with finding randomized passwords from your notes."
      actionText="Password Assistance"
 }
