@@ -488,6 +488,8 @@ function SetWatchFlags() {
         break;
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(2019,-2256,-704),20,15);
+        bt.MakeClassProximityTrigger(class'ChefCarcass');
         break;
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');
@@ -525,16 +527,23 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'bunker_door1',vect(0,0,0));
         bt.bingoEvent = "ActivateVandenbergBots";
-        bt = class'BingoTrigger'.static.Create(self,'bunker_door2',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'bunker_door2',vect(50,0,0));
         bt.bingoEvent = "ActivateVandenbergBots";
 
         foreach AllActors(class'Toilet',closestToilet){
             closestToilet.Event='VandenbergToilet';
         }
-        bt = class'BingoTrigger'.static.Create(self,'VandenbergToilet',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergToilet',vect(150,0,0));
+
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergWaterTower',vect(-1030,80,-1600),350,40);
 
         break;
-
+    case "12_VANDENBERG_TUNNELS":
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergReactorRoom',vect(-1427,3287,-2985),500,100);
+        break;
+    case "12_VANDENBERG_COMPUTER":
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergServerRoom',vect(940,2635,-1320),200,40);
+        break;
     case "14_OCEANLAB_SILO":
         WatchFlag('MeetDrBernard_Played');
         foreach AllActors(class'ScientistMale', sm) {
@@ -1883,6 +1892,10 @@ defaultproperties
     bingo_options(166)=(event="coolant_switch",desc="Flush the reactor coolant",max=1,missions=32768)
     bingo_options(167)=(event="BlueFusionReactors",desc="Deactivate the four blue fusion reactors",max=4,missions=32768)
     bingo_options(168)=(event="A51UCBlocked",desc="Close the doors to 3 UCs in Area 51",max=3,missions=32768)
+    bingo_options(169)=(event="VandenbergReactorRoom",desc="Enter the reactor room in the Vandenberg tunnels",max=1,missions=4096)
+    bingo_options(170)=(event="VandenbergServerRoom",desc="Enter the server room in the Vandenberg control center",max=1,missions=4096)
+    bingo_options(171)=(event="VandenbergWaterTower",desc="Climb the water tower in Vandenberg",max=1,missions=4096)
+    bingo_options(172)=(event="Cremation",desc="Cook the cook",max=1,missions=2048)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
