@@ -66,6 +66,12 @@ function MakeShootingTarget()
     DamageThreshold=0;
 }
 
+function MakeClassProximityTrigger(class<Actor> className)
+{
+    TriggerType=TT_ClassProximity;
+    ClassProximityType=className;
+}
+
 static function BingoTrigger Create(Actor a, Name bingoEvent, vector loc, optional float rad, optional float height)
 {
     local BingoTrigger bt;
