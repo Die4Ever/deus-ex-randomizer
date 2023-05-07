@@ -136,6 +136,7 @@ function PostFirstEntry()
     Super.PostFirstEntry();
 
     CleanupPlaceholders();
+    SetSeed( "DXRFixup PostFirstEntry missions" );
     if(#defined(mapfixes))
         PostFirstEntryMapFixes();
 }
@@ -157,6 +158,7 @@ function AnyEntry()
 
     FixAmmoShurikenName();
 
+    SetSeed( "DXRFixup AllAnyEntry" );
     AllAnyEntry();
 
     foreach AllActors(class'#var(prefix)Button1', b) {
@@ -383,6 +385,8 @@ function SpawnDatacubes()
 
     if(dxr.flags.IsReducedRando())
         return;
+
+    SetSeed( "DXRFixup SpawnDatacubes" );
 
     for(i=0; i<ArrayCount(add_datacubes); i++) {
         if( dxr.localURL != add_datacubes[i].map ) continue;
