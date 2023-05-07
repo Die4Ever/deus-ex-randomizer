@@ -43,6 +43,13 @@ function SwapOrders(ScriptedPawn a, ScriptedPawn b)
         ResetOrders(b);
 }
 
+function bool ShouldSwap(ScriptedPawn a, ScriptedPawn b) {
+    // always ok to swap with a placeholder enemy
+    if(PlaceholderEnemy(a) != None || PlaceholderEnemy(b) != None) return true;
+    // otherwise check alliance
+    return a.GetAllianceType( b.Alliance ) != ALLIANCE_Hostile;
+}
+
 function SwapScriptedPawns(int percent, bool enemies)
 {
     local ScriptedPawn temp[512];
@@ -92,7 +99,11 @@ function SwapScriptedPawns(int percent, bool enemies)
         slot--;
         if(slot >= i) slot++;
 
-        if( !Swap(temp[i], temp[slot], true) ) {
+        if( ! ShouldSwap(temp[i], temp[slot]) ) {
+            continue;
+        }
+
+        if( ! Swap(temp[i], temp[slot], true) ) {
             l("SwapScriptedPawns failed swapping "$i@ActorToString(temp[i])$" with "$slot@ActorToString(temp[slot]));
             continue;
         }
