@@ -433,6 +433,16 @@ function UpdateFire()
     }
 }
 
+function Bool HasTwoHandedWeapon()
+{
+    if(bIsFemale)
+        return False;
+    if ((Weapon != None) && (Weapon.Mass >= 30))
+        return True;
+    else
+        return False;
+}
+
 // HACK: will need to improve the compiler in order to actually fix state code
 function EnableCheckDestLoc(bool bEnable)
 {
