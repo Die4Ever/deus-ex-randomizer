@@ -561,9 +561,12 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1928.762573,3721.919189,-2507.888184),60,40);
         bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1928.762573,3721.919189,-2247.888184),60,40);
 
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabGreenBeacon',vect(1543,3522,-1847),200,200);
+
         break;
     case "14_OCEANLAB_UC":
         WatchFlag('LeoToTheBar');
+        WatchFlag('PageTaunt_Played');
         break;
     case "15_AREA51_BUNKER":
         WatchFlag('JockBlewUp');
@@ -1896,6 +1899,9 @@ defaultproperties
     bingo_options(170)=(event="VandenbergServerRoom",desc="Enter the server room in the Vandenberg control center",max=1,missions=4096)
     bingo_options(171)=(event="VandenbergWaterTower",desc="Climb the water tower in Vandenberg",max=1,missions=4096)
     bingo_options(172)=(event="Cremation",desc="Cook the cook",max=1,missions=2048)
+    bingo_options(173)=(event="OceanLabGreenBeacon",desc="Swim to the green beacon",max=1,missions=16384)
+    bingo_options(174)=(event="PageTaunt_Played",desc="Let Bob Page taunt you in the Ocean Lab",max=1,missions=16384)
+    //bingo_options()=(event="M11WaltonHolo_Played",desc="Talk to Walton Simons after defeating Gunther",max=1,missions=2048)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
