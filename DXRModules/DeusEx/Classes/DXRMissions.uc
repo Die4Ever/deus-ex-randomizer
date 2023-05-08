@@ -457,11 +457,9 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 
     if( (Loc.bitMask & SITTING_GOAL) != 0) {
-        for(i=0; i<ArrayCount(g.actors); i++) {
-            sp = ScriptedPawn(g.actors[i].a);
-            if(sp == None) continue;
+        sp = ScriptedPawn(g.actors[0].a);
+        if(sp != None)
             sp.SetOrders('Sitting');
-        }
     }
 
     if(Loc.mapName == dxr.localURL)
