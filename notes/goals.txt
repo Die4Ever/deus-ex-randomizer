@@ -1,0 +1,678 @@
+167 results - 26 files
+
+M_01_Mission01_Infolink.ext:
+   42  
+   43: [GOAL: MeetPartner]
+   44  Go to the break room on Level 2 and check in with your partner, Agent Anna Navarre.
+
+  189  
+  190: [GOAL: ReportToBase (Primary)]
+  191  Report to headquarters on the west side of the island for a debriefing.
+
+  224  
+  225: [GOAL: ReportToBase (Primary)]
+  226  Report to headquarters for a debriefing.
+
+  248  
+  249: [GOAL: ReportToBase (Primary)]
+  250  Report to headquarters on the west side of the island for a debriefing.
+
+  343  
+  344: [GOAL: GetEquippedForNSFPursuit (Primary)]
+  345  See Sam Carter for equipment.
+  346  
+  347: [GOAL: MedicalCheckup (Primary)]
+  348  See Jaime Reyes for a medical exam.
+
+M_01_Mission01.ext:
+  1913  
+  1914: [GOAL: Briefing (Primary)]
+  1915  Go to Manderley's office on Level 2 for the mission briefing.
+
+  1942  
+  1943: [GOAL: MeetPartner]
+  1944  Go to the break room on Level 2 and check in with your partner, Agent Anna Navarre.
+
+  1955  
+  1956: [GOAL: Briefing (Primary)]
+  1957  Go to Manderley's office on Level 2 for the mission briefing.
+
+  2190  
+  2191: [GOAL: GetToDock (Primary)]
+  2192  Go to the South Dock and take the police boat to Manhattan.
+
+  2538  
+  2539: [GOAL: MedicalCheckup]
+  2540  See Jaime Reyes for a medical exam.
+  2541  
+  2542: [GOAL: GetEquippedForNSFPursuit]
+  2543  See Sam Carter for equipment.
+
+  3119  
+  3120: [GOAL: DefeatNSFCommandCenter (Primary)]
+  3121  The NSF seem to be directing the attack from the Statue.  Get inside and locate the threat.
+  3122  
+  3123: [GOAL: RescueAgent]
+  3124  One of UNATCO's top agents is being held inside the Statue.  Break him out, and he'll back you up against the NSF.
+  3125  
+  3126: [GOAL: MeetFilben]
+  3127  Meet UNATCO informant Harley Filben at the North Docks.  He has a key to the Statue doors.
+
+  3289  
+  3290: [GOAL: ReportToManderley (Primary)]
+  3291  Report to Manderley's office on Level 2.
+
+  4227  
+  4228: [GOAL: Briefing (Primary)]
+  4229  Go to Manderley's office on Level 2 for the mission briefing.
+
+M_02_Mission02_Infolink.ext:
+   67  
+   68: [GOAL: ReportToAnna]
+   69  Report to Agent Navarre to receive your orders.
+
+  116  
+  117: [GOAL: RescueRenton]
+  118  Investigate the hostage situation in the 'Ton Hotel, at the southeast corner of the block.  Rescue the Rentons, if they are still inside.
+
+  152  
+  153: [GOAL: LiberateBatteryParkSubway (Primary)]
+  154  Free the hostages in the Battery Park subway station, east of Castle Clinton.
+
+  315  
+  316: [GOAL: ReportToPaul (Primary)]
+  317  Report to Paul in Hell's Kitchen.
+
+  370  
+  371: [GOAL: ReportToPaul]
+  372  Report to Paul in Hell's Kitchen.
+
+M_02_Mission02.ext:
+   511  
+   512: [GOAL: FindAmbrosia]
+   513  Locate the stolen barrel of Ambrosia in Castle Clinton.
+
+   881  
+   882: [GOAL: ReportToPaul (Primary)]
+   883  Take the subway to Hell's Kitchen and report to Paul.
+
+   896  
+   897: [GOAL: LiberateBatteryParkSubway (Primary)]
+   898  Free the hostages in the Battery Park subway station, east of Castle Clinton.
+
+   956  
+   957: [GOAL: LiberateBatteryParkSubway (Primary)]
+   958  Free the hostages in the Battery Park subway station, east of Castle Clinton.
+
+  1000  
+  1001: [GOAL: ReportToPaul (Primary)]
+  1002  Report to Paul in Hell's Kitchen.
+
+  3582  
+  3583: [GOAL: HelpJaneysFriend]
+  3584  A man named Johnny took a woman into an alley west of the Underworld Bar.  Investigate the situation.
+
+  5771  
+  5772: [GOAL: InterviewLocals]
+  5773  Talk to the locals in the bar or the clinic for clues to the location of the generator.
+  5774  
+  5775: [GOAL: DestroyGenerator (Primary)]
+  5776  Find the NSF's secret generator.  Paul's team will raid the warehouse when the generator is destroyed and the EMP field goes down.
+
+M_02-03_NYShared.ext:
+  463  
+  464: [GOAL: RescueFordSchick]
+  465  Rescue Smuggler's friend Ford Schick from a secret laboratory in the sewers.  The sewers are accessed by the grates in the street.
+
+M_03_Mission03_Infolink.ext:
+  104  
+  105: [GOAL: GoToHelicopter (Primary)]
+  106  Go to the helicopter at the airfield.
+
+  124  
+  125: [GOAL: AssassinateLebedev (Primary)]
+  126  Assassinate Juan Ivanovich Lebedev.
+
+  169  
+  170: [GOAL: FindAmbrosiaBarrels]
+  171  Locate the three missing barrels of Ambrosia.  UNATCO will send a team to recover them.
+
+  216  
+  217: [GOAL: LastBarrel747]
+  218  Gain access to the 747 hangar and locate the final barrel.
+
+  226  
+  227: [GOAL: ReportToManderley (Primary)]
+  228  Report to Manderley.
+
+M_03_Mission03.ext:
+   343  
+   344: [GOAL: GoToHelicopter (Primary)]
+   345  Go to the helicopter at the airfield.
+
+   397  
+   398: [GOAL: GoToHelicopter (Primary)]
+   399  Go to the helicopter at the airfield.
+
+   444  
+   445: [GOAL: GoToHelicopter (Primary)]
+   446  Go to the helicopter at the airfield.
+
+   460  
+   461: [GOAL: GoToHelicopter (Primary)]
+   462  Go to the helicopter at the airfield.
+
+  1477  
+  1478: [GOAL: OpenFreshWater]
+  1479  Open a fresh water supply for the homeless in Brooklyn Bridge Station.  The valve is in a utility room at the north end of the train tracks that has been blocked by a cave-in.  Clear the cave-in with LAMs, find the valve, turn on the water, and report back to Charlie Fann.  The Rooks might have LAMs.
+
+  2078  
+  2079: [GOAL: TalkToCharlie]
+  2080  Talk to Charlie in the Brooklyn Bridge Station for information on the mole people.
+
+  4858  
+  4859: [GOAL: LocateAirfield (Primary)]
+  4860  Locate the airfield where the NSF has moved the Ambrosia.  Investigate the subway system, because the terrorists may be hiding underground.
+
+  5032  
+  5033: [GOAL: SeeCarter]
+  5034  Report to Sam Carter to receive your equipment.
+
+  6042  
+  6043: [GOAL: KillDealer]
+  6044  Kill the drug dealer in the Brooklyn Bridge Station for the Rooks, then inform El Rey.
+
+M_04_Mission04_Infolink.ext:
+   37  
+   38: [GOAL: SendSignal (Primary)]
+   39  Send the NSF distress signal from the satellite transmitter on the roof of NSFHQ.
+
+   51  
+   52: [GOAL: CheckOnPaul (Primary)]
+   53  Your brother's in trouble.  Go to the apartment in Hell's Kitchen and see if he needs your help.
+
+  103  
+  104: [GOAL: ReturnToPaul (Primary)]
+  105  Meet up with Paul and help him leave New York.
+
+  144  
+  145: [GOAL: SeeManderley (Primary)]
+  146  See Manderley for a debriefing.
+
+M_04_Mission04.ext:
+  2491  
+  2492: [GOAL: TellJaime]
+  2493  Tell Jaime that Walton Simons is looking for him.
+
+  3729  
+  3730: [GOAL: GoToHelipad (Primary)]
+  3731  Meet Jock at the helipad to be taken to a new assignment in Hong Kong.
+
+  4877  
+  4878: [GOAL: InvestigateNSF (Primary)]
+  4879  Investigate the captured NSF base to the west behind the bar to see if Paul is telling the truth about UNATCO.  If he is, help the rebels by sending a distress signal from the satellite transmitter.
+
+  5118  
+  5119: [GOAL: EscapeToBatteryPark (Primary)]
+  5120  Find Jock's helicopter in Battery Park, the only way out of New York not controlled by UNATCO.  The code to the Hell's Kitchen subway station is 6282.
+
+M_05_Mission05_Infolink.ext:
+   43  
+   44: [GOAL: FindEquipment]
+   45  Find the equipment taken from you when you were captured by UNATCO.
+
+   55  
+   56: [GOAL: FindPaul (Primary)]
+   57  Find your brother and access information in his datavault that Tracer Tong will need to defeat the killswitch.
+
+   66  
+   67: [GOAL: FindPaul (Primary)]
+   68  Get the datavault from your brother's body.  Tracer Tong will need it to defeat the killswitch.
+
+  116  
+  117: [GOAL: EliminateAnna (Primary)]
+  118  Eliminate Anna Navarre.
+  119  
+  120: [GOAL: GetKeyFromAlex (Primary)]
+  121  When Anna Navarre is dead, see Alex for a key to the exit.
+
+  133  
+  134: [GOAL: GetKeyFromAlex (Primary)]
+  135  See Alex for a key to the exit.
+
+  218  
+  219: [GOAL: Escape (Primary)]
+  220  Escape from the Majestic 12 facility.
+
+  248  
+  249: [GOAL: GoToHelipad (Primary)]
+  250  Escape from UNATCO and go to the helipad.
+
+M_05_Mission05.ext:
+   362  
+   363: [GOAL: EliminateAnna (Primary)]
+   364  Eliminate Anna Navarre.
+   365  
+   366: [GOAL: GetKeyFromAlex (Primary)]
+   367  When Anna Navarre is dead, see Alex for a key to the exit.
+
+  2072  
+  2073: [GOAL: FindAnnasKillprhase]
+  2074  Find Anna Navarre's killphrase.  It is stored in two pieces on two computers, each with the login "demiurge" in the password "archon".
+
+M_06-07_HK_Shared_Infolink.ext:
+   32  
+   33: [GOAL: FindTracerTong (Primary)]
+   34  Find Tracer Tong.
+
+   72  
+   73: [GOAL: DestroyUniversalConstructor (Primary)]
+   74  Destroy the Universal Constructor used for manufacturing plague virus.
+
+   92  
+   93: [GOAL: EscapeVersaLife (Primary)]
+   94  Escape the VersaLife facility through the floor of the Universal Constructor chamber.
+
+  167  
+  168: [GOAL: DeactivateWeaponLock (Primary)]
+  169  Deactivate the weapon-lock on Jock's helicopter.  The remote control-panel is on Flight Control Deck One.
+
+  232  
+  233: [GOAL: FindTracerTong (Primary)]
+  234  Find Tracer Tong somewhere in Hong Kong.
+  235  
+  236: [GOAL: CheckCompound (Primary)]
+  237  Look for clues to finding Tracer Tong at the compound that Paul used to visit, to the east of the Wan Chai market.
+
+  311  
+  312: [GOAL: ConvinceRedArrow (Primary)]
+  313  Demonstrate Maggie Chow's guilt to the Red Arrow by showing Max Chen the Dragon's Tooth sword.  Find Max Chen in the Lucky Money Club in the mall near Wan Chai Market.
+
+  325  
+  326: [GOAL: GetSword (Primary)]
+  327  Retrieve the Dragon's Tooth sword and await further instructions from Tracer Tong.
+
+  406  
+  407: [GOAL: ReportToTong2 (Primary)]
+  408  Report to Tracer Tong for information on Stanton Dowd and the Illuminati.
+
+  443  
+  444: [GOAL: UniteTriads (Primary)]
+  445  Go to the temple in Wan Chai to cement the alliance between the Triads.
+
+M_06-07_HK_Shared.ext:
+   7236  
+   7237: [GOAL: InvestigateMaggieChow (Primary)]
+   7238  Find and examine the Dragon's Tooth sword as proof regarding whether or not Maggie Chow is telling the truth.
+
+   7254  
+   7255: [GOAL: InvestigateMaggieChow (Primary)]
+   7256  Find and examine the Dragon's Tooth sword as proof regarding whether or not Maggie Chow is telling the truth.
+
+   7321  
+   7322: [GOAL: ConvinceRedArrow (Primary)]
+   7323  Reveal Maggie Chow's guilt to the Red Arrow.  Find Max Chen in the Lucky Money Club in the mall near Wan Chai Market.
+   7324  
+   7325: [GOAL: DeliverChensResponse (Primary)]
+   7326  After convincing Max Chen of Maggie Chow's deceit, return to Gordon Quick and tell him how the Red Arrow responded to the news.
+
+   7867  
+   7868: [GOAL: ReportToTong (Primary)]
+   7869  Report to Tracer Tong inside the Luminous Path compound to deliver the good news of the truce.
+   7870  
+   7871: [GOAL: HaveDrinksWithDragonHeads]
+   7872  Meet the dragon heads at the Lucky Money for drinks.
+
+   9094  
+   9095: [GOAL: InvestigatePolice]
+   9096  Find evidence in the police station in the Wan Chai Market that will settle the Triad dispute.  Bring it to Maggie Chow to earn her trust.
+
+  13004  
+  13005: [GOAL: DeliverChensResponse (Primary)]
+  13006  Tell Gordon Quick how the Red Arrow responded to the news about Maggie Chow.  He should be near the Luminous Path compound next to the Wan Chai market.
+
+  15549  
+  15550: [GOAL: VisitMaggieChow (Primary)]
+  15551  Visit Maggie Chow, at 1313 Tonnochi Road.
+
+  16896  
+  16897: [GOAL: UniteTriads (Primary)]
+  16898  Take the Dragon Tooth's sword to the temple in Wan Chai to cement the alliance between the Triads.
+
+  16930  
+  16931: [GOAL: GetVirusSchematic (Primary)]
+  16932  Gain access to the Level 2 labs at VersaLife and locate information on the structure of the plague virus.
+
+  17160  
+  17161: [GOAL: LeaveHongKong (Primary)]
+  17162  Board Jock's helicopter in the Luminous Path compound.
+
+  17333  
+  17334: [GOAL: RestoreAugmentations (Primary)]
+  17335  Go to the center of the Operating Theater so that Tracer Tong can deactivate the killswitch and restore augmentation functionality.
+
+  17495  
+  17496: [GOAL: GetROM (Primary)]
+  17497  Get the ROM-encoding for the Dragon's Tooth sword from the basement laboratories at VersaLife.
+
+M_08_Mission08_Infolink.ext:
+   59  
+   60: [GOAL: FindHarleyFilben (Primary)]
+   61  Get to the Underworld Tavern and meet with Harley Filben.
+
+  117  
+  118: [GOAL: GetBackToRoof (Primary)]
+  119  Once you obtain items from Smuggler, get back to the hotel roof and take the helicopter to Brooklyn Naval Shipyard.
+
+M_08_Mission08.ext:
+   658  
+   659: [GOAL: MeetStantonDowd (Primary)]
+   660  Meet Stanton Dowd at the Osgood & Son's storefront, near the tunnels leading to the warehouse district.
+
+   803  
+   804: [GOAL: KillGreene]
+   805  Kill the traitor, Joe Greene in the Free Clinic
+
+  3480  
+  3481: [GOAL: GetAmbrosia]
+  3482  Bring Stanton Dowd some Ambrosia to counteract the Gray Death.
+
+  3485  
+  3486: [GOAL: GetExplosives]
+  3487  See the Smuggler for explosives for scuttling the superfreighter.
+
+  3492  
+  3493: [GOAL: GetExplosives]
+  3494  See the Smuggler for explosives for scuttling the superfreighter.
+
+  3497  
+  3498: [GOAL: ScuttleShip (Primary)]
+  3499  Scuttle the PCS Wall Cloud by destroying the 5 tri-hull welds with explosives and by reversing the bilge-pump flow.  Pumping water into the bilges will destabilize the ship's weight distribution and cause the hull to split open.
+
+M_09_Mission09_Infolink.ext:
+  118  
+  119: [GOAL: GetOntoShip (Primary)]
+  120  Get onto ship
+
+  178  
+  179: [GOAL: TalkToDowd (Primary)]
+  180  Meet Stanton Dowd at his family crypt inside the graveyard.
+
+  200  
+  201: [GOAL: GetIntoSubPen (Primary)]
+  202  Enter Main building on north side of Dockyard. There may be more than one entry point.
+  203  
+  204: [GOAL: GetAmmo]
+  205  Find Ammo Storage warehouse and raid ammo bunkers for more LAMs or Rockets.
+
+  263  
+  264: [GOAL: EliminateField (Primary)]
+  265  Disable the EM disruption field that is preventing Jock from landing.  The source seems to be a small building just inside the cemetery gate.
+
+  304  
+  305: [GOAL: GetBelowDecks (Primary)]
+  306  Find a way to the lower decks.
+
+  320  
+  321: [GOAL: Escape (Primary)]
+  322  Meet Jock on the roof.  At the west end of the dock is a maintenance store to the air conditioning system.  Use the ladder inside to get into the ventilation channels and up onto the roof.
+
+  342  
+  343: [GOAL: GetOntoShip (Primary)]
+  344  Get onto Ship
+
+  369  
+  370: [GOAL: GetOntoShip (Primary)]
+  371  Get onto ship
+
+M_09_Mission09.ext:
+   761  
+   762: [GOAL: CutPower]
+   763  Cut the power to the transformers that are shorting out and electrifying the overhead walkway.  Two control panels must be shut down, one of them under the floor.
+
+  2430  
+  2431: [GOAL: FindSilhouette (Primary)]
+  2432  Take the helicopter to Paris.  Make contact with Silhouette in the Paris catacombs.
+
+M_10_Mission10_Infolink.ext:
+  177  
+  178: [GOAL: GetKeyToCrypt (Primary)]
+  179  Find Nicolette and get the key to the family crypt.
+
+  196  
+  197: [GOAL: AccessTemplarComputer (Primary)]
+  198  Access the Templar computer system so that Morgan Everett can complete work on a cure for the Gray Death.
+
+  342  
+  343: [GOAL: MeetJaime]
+  344  Meet Jaime at a cafe in building 19.
+
+  454  
+  455: [GOAL: ContactIlluminati (Primary)]
+  456  Make contact with the Illuminati in Paris, where the former Illuminati leader, Morgan Everett, is rumored to be in hiding.
+  457  
+  458: [GOAL: FindSilhouette (Primary)]
+  459  Find Silhouette's hideout in the catacombs and talk to their leader.
+
+  536  
+  537: [GOAL: FindNicolette (Primary)]
+  538  Find Nicolette DuClare.  She is known to frequent Club La Porte de l'Enfer.
+
+M_10_Mission10.ext:
+   599  
+   600: [GOAL: KillGreasels]
+   601  Kill the four greasels in the sewers, then inform the frightened woman who lives in the apartment ruins.
+
+  2460  
+  2461: [GOAL: FindNicolette (Primary)]
+  2462  Find Nicolette DuClare.  She is known to frequent Club La Porte de l'Enfer.
+
+  2749  
+  2750: [GOAL: FindNicolette (Primary)]
+  2751  Find Nicolette DuClare.  She is known to frequent Club La Porte de l'Enfer.
+
+  3052  
+  3053: [GOAL: FreeHostages]
+  3054  Free the members of Silhouette being held in Bunker 03.
+  3055  
+  3056: [GOAL: EscortHostages]
+  3057  Protect the hostages as they try to make it back to Silhouette's bunker.
+  3058  
+  3059: [GOAL: ReportToChad]
+  3060  After the rescue attempt, inform Chad of the hostages' fate.
+
+  3930  
+  3931: [GOAL: ClearMall]
+  3932  Kill the three MJ12 soldiers in the metro station next to the underground mall.  Report back to Defoe.
+
+  7401  
+  7402: [GOAL: MeetNicolette (Primary)]
+  7403  Meet Nicolette behind Club La Porte de l'Enfer.
+
+  7503  
+  7504: [GOAL: GoToCrypt (Primary)]
+  7505  Go to the family crypt in the maze behind the chateau and await instructions from Morgan Everett.
+
+  7570  
+  7571: [GOAL: FindDuClareComputer (Primary)]
+  7572  Find Beth DuClare's secret computer room, which should contain clues to the whereabouts of Morgan Everett.
+
+  8248  
+  8249: [GOAL: FindEverett (Primary)]
+  8250  Search the DuClare chateau for evidence of Morgan Everett's relationship with Beth DuClare.
+
+  8924  
+  8925: [GOAL: GetCrack]
+  8926  Get the zyme from the bakery and sell it to Renault.
+
+M_11_Mission11_Infolink.ext:
+  253  
+  254: [GOAL: RecoverGold]
+  255  Recover the gold from the Templars' cathedral, now occupied by MJ12.
+
+  283  
+  284: [GOAL: MeetTobyAtanwe (Primary)]
+  285  Meet Toby Atanwe, Everett's associate, in the metro station.
+
+  346  
+  347: [GOAL: GoToMetroStation (Primary)]
+  348  Go to the metro station and await further instructions.
+
+M_11_Mission11.ext:
+   553  
+   554: [GOAL: MeetJock (Primary)]
+   555  Meet Jock at the helipad.  Leave for Vandenberg Airforce Base.
+
+  1287  
+  1288: [GOAL: TellEverett]
+  1289  Tell Everett that Lucius DeBeers is cold.
+
+  2306  
+  2307: [GOAL: MeetJock (Primary)]
+  2308  Meet Jock at the helipad.  Leave for Vandenberg Airforce Base.
+
+  2463  
+  2464: [GOAL: TellLucius]
+  2465  Tell Lucius that Everett does not intend to revive him?
+
+  2596  
+  2597: [GOAL: KillMechanic]
+  2598  Kill the phony mechanic who infiltrated Everett's estate.
+
+M_12_Mission12_Infolink.ext:
+   70  
+   71: [GOAL: GoToCommunicationsCenter (Primary)]
+   72  Go to the communications center to gain access to Gary Savage.
+
+  150  
+  151: [GOAL: ListenToPage (Primary)]
+  152  Go to the control room to receive a communication from Bob Page.
+
+  225  
+  226: [GOAL: FindJock (Primary)]
+  227  Meet Jock at the front entrance to Vandenberg, northeast of the base.
+
+  239  
+  240: [GOAL: UplinkDaedalus (Primary)]
+  241  Uplink Daedalus to the military computers near the control room on the second floor of the command building.
+
+  253  
+  254: [GOAL: ReturnToHelicopter (Primary)]
+  255  Return to the helicopter in the junkyard.
+
+  268  
+  269: [GOAL: DestroyBots (Primary)]
+  270  Destroy the 2 MJ12 military bots and 2 MJ12 security bots.  Base will remain under lockdown until the bots are destroyed.
+  271  
+  272: [GOAL: ActivatePower]
+  273  Activate backup power for the X-51 scientists' bot security system.
+
+  331  
+  332: [GOAL: ReturnToHelicopter (Primary)]
+  333  Return to the helicopter.
+
+M_12_Mission12.ext:
+   956  
+   957: [GOAL: DestroyBots (Primary)]
+   958  Destroy the 2 MJ12 military bots and 2 MJ12 security bots.  Base will remain under lockdown until the bots are destroyed.
+   959  
+   960: [GOAL: ActivatePower]
+   961  Activate backup power for the X-51 scientists' bot security system.
+
+  1053  
+  1054: [GOAL: FixComputer (Primary)]
+  1055  Bring up the Vandenberg computer system, needed to operate the UC and to allow Everett to defend Daedalus.
+
+  1176  
+  1177: [GOAL: RescueTiffany (Primary)]
+  1178  Rescue Gary Savage's daughter, Tiffany, from the gas station where Majestic 12 is holding her.
+
+  1522  
+  1523: [GOAL: GetSchematic (Primary)]
+  1524  From the recently damaged MJ12 Ocean Lab, recover the schematic Gary Savage needs to complete a Universal Constructor.
+
+  2857  
+  2858: [GOAL: ReturnToHelicopter (Primary)]
+  2859  Return to the helicopter in the junkyard.
+
+  3283  
+  3284: [GOAL: FindGarySavage (Primary)]
+  3285  Find Gary Savage, believed to be in the control room.
+
+M_14_Mission14_Infolink.ext:
+   49  
+   50: [GOAL: MeetJock (Primary)]
+   51  Meet Jock outside the silo.
+
+   70  
+   71: [GOAL: MeetSavage (Primary)]
+   72  Meet Gary Savage and Jock on top of the sub base's command module, just onshore.
+
+  124  
+  125: [GOAL: AbortLaunch (Primary)]
+  126  Abort the launch of the nuclear missile.
+
+  215  
+  216: [GOAL: ReprogramMissile (Primary)]
+  217  Reprogram the missile to strike Area 51.
+
+  234  
+  235: [GOAL: PreventSabotage (Primary)]
+  236  Go to the launch tube and make sure MJ12 does not sabotage the missile launch.
+
+  357  
+  358: [GOAL: StealSub (Primary)]
+  359  Steal a mini-sub from the URV module submerged just offshore, then take it to the ocean lab.
+
+M_15_Mission15_Infolink.ext:
+   173  
+   174: [GOAL: PowerElevator]
+   175  Bring up the power to the elevator system in order to access Page's bunker below.
+
+   506  
+   507: [GOAL: MergeWithHelios]
+   508  (Merge with Helios AI)  Return to the Sector 3 Aquinas Hub to merge with Helios and rule earth with benevolence, wisdom, and absolute power.
+
+   557  
+   558: [GOAL: OverloadForceField]
+   559  (Join Illuminati) Bring down the four blue-fusion reactors in Page's bunker then go to the infusion control room on the upper level to cut all power to his defense systems.
+
+   839  
+   840: [GOAL: SeeHelios (Primary)]
+   841  Talk to Helios at the Aquinas Hub to gain access to Sector 4.
+
+   899  
+   900: [GOAL: KillPage]
+   901  (Join Illuminati)  Kill Bob Page and clear the way for the former Illuminati leaders to restore an age-old secret government.  Rule the world with compassion and an invisible hand alongside Morgan Everett.
+
+   917  
+   918: [GOAL: TalkToMorgan]
+   919  Gain Sector 2 access by talking to Morgan Everett at the Station 5 holographic communicator.
+
+  1198  
+  1199: [GOAL: EnterBlastDoors (Primary)]
+  1200  Get past the blast doors north of the helipad.
+  1201  
+  1202: [GOAL: PenetrateBunker (Primary)]
+  1203  Get access to the Area 51 Bunker.
+
+  1245  
+  1246: [GOAL: ReturnToReactorLab]
+  1247  (New Dark Age)  Return to the reactor lab in Sector 3 to initiate a meltdown and destroy Area 51's global communications hub.
+
+  1335  
+  1336: [GOAL: ActivateReactors]
+  1337  Go to the reactor control room.  Activate the three ion injectors, then initiate the antimatter-matter reaction.  Run.
+
+M_15_Mission15.ext:
+   266  
+   267: [GOAL: DeactivateLocks]
+   268  (Merge with Helios AI)  Deactivate the uplink locks on the Aquinas Router at the east end of Sector 4, thus allowing Helios to exchange information with your augmentations.  Together with Helios, administrate the world with absolute knowledge and reason.
+
+   414  
+   415: [GOAL: KillPage]
+   416  (Join Illuminati)  Kill Bob Page and clear the way for the former Illuminati leaders to restore an age-old secret government.  Rule the world with compassion and an invisible hand alongside Morgan Everett.
+
+  1105  
+  1106: [GOAL: DestroyArea51]
+  1107  (New Dark Age)  First go to the coolant control room at the northwest corner of Sector 4 and cut off coolant to the reactors, then return to the reactor lab in Sector 3 to finish the job.  Destroying the global communications hub will plunge the world into another dark age -- dark but perhaps free from global tyranny.
