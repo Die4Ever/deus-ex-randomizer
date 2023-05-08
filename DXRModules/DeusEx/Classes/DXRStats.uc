@@ -577,7 +577,7 @@ static function int _ScoreRun(int time, int time_without_menus, float CombatDiff
     i += bingos * 750;
     i += bingospots * 75;// make sure to ignore the free space
     i += SkillPointsTotal;
-    i += Nanokeys * 20;
+    i += Nanokeys * 20;// unique nanokeys
     i -= Clamp(cheats, 0, 100) * 300;
     return i;
 }
