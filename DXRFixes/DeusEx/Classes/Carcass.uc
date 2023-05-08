@@ -2,9 +2,15 @@ class Carcass injects DeusExCarcass;
 
 function InitFor(Actor Other)
 {
+    local int i;
     if( Other != None ) {
         DrawScale = Other.DrawScale;
         Fatness = Other.Fatness;
+        for(i=0; i<ArrayCount(MultiSkins); i++) {
+            MultiSkins[i] = Other.MultiSkins[i];
+        }
+        Acceleration = Other.Acceleration;
+        Velocity = Other.Velocity;
     }
 
     Super.InitFor(Other);

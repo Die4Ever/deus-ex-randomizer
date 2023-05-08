@@ -12,6 +12,13 @@ June 22nd 2022 was Deus Ex's 22nd anniversary, and our 2nd anniversary! To celeb
 
 [See the full README here.](https://github.com/Die4Ever/deus-ex-randomizer#readme) Also check out [our Discord!](https://discord.gg/daQVyAp2ds)
 
-## Changes
+## Major Changes
 
 *
+
+## Minor Changes
+
+<details>
+<summary>Click to expand Minor Changes</summary>
+*
+</details>

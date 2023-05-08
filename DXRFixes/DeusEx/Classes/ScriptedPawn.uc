@@ -522,7 +522,6 @@ Begin:
 
     bHidden = True;
 
-    Acceleration = vect(0,0,0);
     SpawnCarcass();
     Destroy();
 }
