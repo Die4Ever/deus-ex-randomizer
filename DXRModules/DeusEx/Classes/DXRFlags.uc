@@ -445,11 +445,6 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.skills_independent_levels = 0;
         settings.banned_skills = 0;
         settings.banned_skill_levels = 0;
-        settings.ammo = 100;
-        settings.medkits = 100;
-        settings.biocells = 100;
-        settings.lockpicks = 100;
-        settings.multitools = 100;
         settings.speedlevel = 0;
         settings.startinglocations = 0;
         settings.goals = 0;
@@ -475,6 +470,11 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.bot_stats = 0;
             settings.minskill = (settings.minskill*3 + settings.maxskill + 100) / 5;
             settings.maxskill = settings.minskill;
+            settings.ammo = 100;
+            settings.medkits = 100;
+            settings.biocells = 100;
+            settings.lockpicks = 100;
+            settings.multitools = 100;
             settings.augcans = 0;
             settings.aug_value_rando = 0;
             settings.skill_value_rando = 0;
@@ -491,6 +491,11 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.passwordsrandomized = 100;
             settings.minskill = (settings.minskill + 100) / 2;
             settings.maxskill = (settings.maxskill + 200) / 3;
+            settings.ammo = (settings.ammo + 100) / 2;
+            settings.medkits = (settings.medkits + 100) / 2;
+            settings.biocells = (settings.biocells + 100) / 2;
+            settings.lockpicks = (settings.lockpicks + 100) / 2;
+            settings.multitools = (settings.multitools + 100) / 2;
             settings.augcans = 100;
             settings.aug_value_rando = 50;
             settings.skill_value_rando = 50;
