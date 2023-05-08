@@ -221,6 +221,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
     }
 
     if( IsCritter(p) ) return; // only give random weapons to humans and robots
+    // TODO: if p.bIsFemale then give only 1 handed weapons?
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
 
     if( IsHuman(p.class)) {
@@ -273,16 +274,34 @@ function CheckHelmet(ScriptedPawn p)
 
 function AddDXRCredits(CreditsWindow cw)
 {
-    local int i;
-    local string weaponName;
+    local int i, f;
+    local string weaponName, factionName;
     if(dxr.flags.IsZeroRando()) return;
 
-    cw.PrintHeader( dxr.flags.settings.enemiesrandomized $ "% Added Enemies");
-    for(i=0; i < ArrayCount(_randomenemies); i++) {
-        if( _randomenemies[i].type == None ) continue;
-        cw.PrintText(_randomenemies[i].type.default.FamiliarName $ ": " $ FloatToString(_randomenemies[i].chance, 1) $ "%" );
+    for(f=FactionAny; f<FactionsEnd; f++) {
+        switch(f) {
+        case FactionOther:
+            factionName = "Other";
+            break;
+        case NSF:
+            factionName = "NSF";
+            break;
+        case UNATCO:
+            factionName = "UNATCO";
+            break;
+        case MJ12:
+            factionName = "MJ12";
+            break;
+        default:
+            factionName = "Faction "$f;
+        }
+        cw.PrintHeader( dxr.flags.settings.enemiesrandomized $ "% Added Enemies for "$factionName);
+        for(i=0; i < ArrayCount(_randomenemies); i++) {
+            if( _randomenemies[i].type == None || _randomenemies[i].faction != f ) continue;
+            cw.PrintText(_randomenemies[i].type.default.FamiliarName $ ": " $ FloatToString(_randomenemies[i].chance, 1) $ "%" );
+        }
+        cw.PrintLn();
     }
-    cw.PrintLn();
 
     cw.PrintHeader("Extra Weapons For Enemies");
     for(i=0; i < ArrayCount(_randomweapons); i++) {

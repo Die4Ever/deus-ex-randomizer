@@ -29,4 +29,6 @@ defaultproperties
     MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
     MultiSkins(6)=Texture'DeusExCharacters.Skins.GogglesTex1'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
+    FamiliarName="Terrorist 3"
+    UnfamiliarName="Terrorist 3"
 }
