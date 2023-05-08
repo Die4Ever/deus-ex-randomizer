@@ -254,17 +254,25 @@ function RandomizeSP(ScriptedPawn p, int percent)
 
 function CheckHelmet(ScriptedPawn p)
 {
+    local int helmet_chance;
     if(p.Mesh != LodMesh'DeusExCharacters.GM_Jumpsuit')  return;
+
+    // divide by 2 to lean towards vanilla
+    // that way the game gets harder as you progress to enemies that typically have helmets
 
     switch(p.MultiSkins[6]) {
     case Texture'DeusExItems.Skins.PinkMaskTex':
     case Texture'DeusExCharacters.Skins.GogglesTex1':
-        if(chance_single(dxr.flags.settings.enemystats)) {
+        // add helmet
+        helmet_chance = dxr.flags.settings.enemystats / 2;
+        if(chance_single(helmet_chance)) {
             p.MultiSkins[6] = Texture'DeusExCharacters.Skins.MechanicTex3';
         }
         break;
     default:
-        if(!chance_single(dxr.flags.settings.enemystats)) {
+        // remove helmet, enemystats of 0 means 50% chance to remove helmet, enemystats of 100 means 0% chance to remove helmet
+        helmet_chance = (100 - dxr.flags.settings.enemystats) / 2;
+        if(chance_single(helmet_chance)) {
             p.MultiSkins[5] = Texture'DeusExItems.Skins.GrayMaskTex';
             p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';
             p.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
