@@ -302,6 +302,8 @@ function AnyEntryMapFixes()
     local bool recruitedFlag;
     local #var(DeusExPrefix)Carcass carc;
     local Conversation c;
+    local ConEvent ce;
+    local ConEventSpeech ces;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
     // or if flag Have_ROM, Gordon Quick should let you into the compound? requires Have_Evidence and MaxChenConvinced
@@ -422,7 +424,20 @@ function AnyEntryMapFixes()
                 }
         }
         break;
+    case "06_HONGKONG_MJ12LAB":
+        c = GetConversation('MJ12Lab_BioWeapons_Overheard');
+        ce = c.eventList;
 
+        while (ce!=None && ce.eventType!=ET_End){
+            if (ce.eventType==ET_Speech){
+                ces = ConEventSpeech(ce);
+                if (ces.speakingToName=="MJ12Lab_Assistant_Level2"){
+                    ces.speakingToName="MJ12Lab_Assistant_BioWeapons";
+                }
+            }
+            ce = ce.nextEvent;
+        }
+        break;
     default:
         break;
     }
