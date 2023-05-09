@@ -488,7 +488,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.medbotamount = 0;
             settings.repairbotamount = 0;
         } else {
-            settings.passwordsrandomized = 100;
+            settings.enemystats /= 2;
             settings.minskill = (settings.minskill + 100) / 2;
             settings.maxskill = (settings.maxskill + 200) / 3;
             settings.ammo = (settings.ammo + 100) / 2;

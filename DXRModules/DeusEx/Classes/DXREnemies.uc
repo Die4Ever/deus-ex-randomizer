@@ -132,10 +132,11 @@ function RandoEnemies(int percent, int hidden_percent)
     local ScriptedPawn n;
     local ScriptedPawn newsp;
 
-    l("RandoEnemies "$percent);
+    l("RandoEnemies "$percent@hidden_percent@dxr.flags.settings.enemystats);
+    if(percent <= 0 && hidden_percent <= 0 && dxr.flags.settings.enemystats <= 0)
+        return;
 
     SetSeed( "RandoEnemies" );
-    if(percent <= 0) return;
 
     foreach AllActors(class'ScriptedPawn', p)
     {
@@ -266,7 +267,7 @@ function CheckHelmet(ScriptedPawn p)
         // add helmet
         helmet_chance = dxr.flags.settings.enemystats / 2;
         if(chance_single(helmet_chance)) {
-            p.MultiSkins[6] = Texture'DeusExCharacters.Skins.MechanicTex3';
+            p.MultiSkins[6] = Texture'#var(package).DXRando.NSFHelmet';
         }
         break;
     default:
