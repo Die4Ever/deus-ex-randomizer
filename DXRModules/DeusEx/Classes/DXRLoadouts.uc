@@ -435,7 +435,7 @@ function NinjaAdjustWeapon(DeusExWeapon w)
             ws.anim_speed = 1.1;
             ws.default.anim_speed = 1.1;
             WeaponShuriken(ws).auto_pickup = true;
-            ws.DrawScale = 2;
+            //ws.DrawScale = 2;
             ws.SetCollisionSize(16, ws.default.CollisionHeight*2);
             break;
         default:

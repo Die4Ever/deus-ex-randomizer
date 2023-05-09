@@ -13,7 +13,7 @@ defaultproperties
     HealthArmLeft=60
     HealthArmRight=60
     BaseAccuracy=0.17
-    Fatness=115
+    Fatness=120
     DrawScale=0.9
     CollisionRadius=18
     CollisionHeight=42.75
