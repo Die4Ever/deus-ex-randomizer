@@ -60,6 +60,7 @@ function SetWatchFlags() {
     local Trigger trig;
     local BingoTrigger bt;
     local LowerClassMale lcm;
+    local Greasel g;
     local int i;
 
     switch(dxr.localURL) {
@@ -399,6 +400,15 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'HongKongGrays',zone.Location);
+
+        foreach AllActors(class'Greasel',g){
+            g.bImportant = True;
+            g.BindName="JerryTheVentGreasel";
+            g.FamiliarName = "Jerry the Vent Greasel";
+            g.UnfamiliarName = "Jerry the Vent Greasel";
+        }
+        WatchFlag('JerryTheVentGreasel_Dead');
+
         break;
     case "08_NYC_STREET":
         bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vect(0,0,0));
@@ -1902,6 +1912,8 @@ defaultproperties
     bingo_options(173)=(event="OceanLabGreenBeacon",desc="Swim to the green beacon",max=1,missions=16384)
     bingo_options(174)=(event="PageTaunt_Played",desc="Let Bob Page taunt you in the Ocean Lab",max=1,missions=16384)
     //bingo_options()=(event="M11WaltonHolo_Played",desc="Talk to Walton Simons after defeating Gunther",max=1,missions=2048)
+    bingo_options(175)=(event="JerryTheVentGreasel_Dead",desc="Kill Jerry the Vent Greasel",max=1,missions=64)
+
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
