@@ -8,6 +8,7 @@ function PreFirstEntryMapFixes()
     local DeusExMover d;
     local #var(prefix)NanoKey k;
     local CrateExplosiveSmall c;
+    local Terrorist nsf;
 
     switch (dxr.localURL)
     {
@@ -27,6 +28,9 @@ function PreFirstEntryMapFixes()
             if( d.Name == 'DeusExMover19' ) {
                 d.KeyIDNeeded = 'ControlRoomDoor';
             }
+        }
+        foreach AllActors(class'Terrorist',nsf,'ShantyTerrorist'){
+            nsf.Tag = 'ShantyTerrorists';  //Restores voice lines when NSF still alive (still hard to have happen though)
         }
         k = Spawn(class'#var(prefix)NanoKey',,, vect(1574.209839, -238.380142, 339.215179));
         k.KeyID = 'ControlRoomDoor';

@@ -1886,7 +1886,7 @@ defaultproperties
     bingo_options(157)=(event="AirfieldGuardTowers",desc="Visit 3 of the Airfield guard towers",max=3,missions=8)
     bingo_options(158)=(event="mirrordoor",desc="Access Smuggler's secret stash",max=1,missions=276)
     bingo_options(159)=(event="MolePeopleWater",desc="Bathe in the Mole People water supply",max=1,missions=8)
-    bingo_options(160)=(event="botorders2",desc="Alter the bot AI in the MJ12 Lab",max=1,missions=32)
+    bingo_options(160)=(event="botorders2",desc="Alter the bot AI in the MJ12 base under UNATCO",max=1,missions=32)
     bingo_options(161)=(event="BathroomFlags",desc="Place a flag in Manderley's bathroom 3 times",max=3,missions=58)
     bingo_options(162)=(event="SiloSlide",desc="Take the silo slide",max=1,missions=16384)
     bingo_options(163)=(event="SiloWaterTower",desc="Climb the water tower at the silo",max=1,missions=16384)
