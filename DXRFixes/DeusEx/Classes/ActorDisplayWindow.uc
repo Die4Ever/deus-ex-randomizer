@@ -1,6 +1,19 @@
 class ActorDisplayWindow injects ActorDisplayWindow;
 
 var Font textfont;
+var bool bShowHidden;
+
+function SetViewClass(Class<Actor> newViewClass)
+{
+    Super.SetViewClass(newViewClass);
+    bShowHidden = true;
+}
+
+function ShowLOS(bool bShow)
+{
+    Super.ShowLOS(bShow);
+    bShowHidden = true;
+}
 
 //I just want to change the font :(
 function DrawWindow(GC gc)
@@ -48,6 +61,8 @@ function DrawWindow(GC gc)
 
     foreach player.AllActors(viewClass, trackActor)
     {
+        if(!bShowHidden && trackActor.bHidden) continue;
+
         dxMover = DeusExMover(trackActor);
         cVect.X = trackActor.CollisionRadius;
         cVect.Y = trackActor.CollisionRadius;
@@ -433,4 +448,5 @@ function DrawWindow(GC gc)
 defaultproperties
 {
     textfont=Font'DeusExUI.FontFixedWidthSmall';
+    bShowHidden=true
 }
