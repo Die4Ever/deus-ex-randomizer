@@ -1634,6 +1634,8 @@ function _MarkBingo(coerce string eventname)
             break;
         case "DXRRepairBot_ClassDead":
             eventname="RepairBot_ClassDead";
+        case "FrenchGray_ClassDead":
+            eventname="Gray_ClassDead";
             break;
     }
 

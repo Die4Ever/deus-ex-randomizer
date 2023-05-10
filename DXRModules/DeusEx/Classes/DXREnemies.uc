@@ -91,6 +91,7 @@ function CheckConfig()
     AddRandomEnemyType(class'#var(prefix)Gray', 2, MJ12);
     AddRandomEnemyType(class'#var(prefix)SpiderBot2', 2, MJ12);//little spider
     AddRandomEnemyType(class'#var(prefix)SpiderBot', 2, MJ12);//big spider
+    AddRandomEnemyType(class'FrenchGray', 1, MJ12);
 
     AddRandomEnemyType(class'#var(prefix)Terrorist', 10, NSF);
     AddRandomEnemyType(class'NSFClone1', 10, NSF);
