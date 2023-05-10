@@ -487,6 +487,12 @@ function SetWatchFlags() {
             starr.bImportant = true;// you're important to me
             starr.BindName = "Starr";
         }
+
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(-2983.597168,774.217407,312.100128),70,40);
+        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(-2984.404785,662.764954,312.100128),70,40);
+        bt.MakeClassProximityTrigger(class'ChefCarcass');
+
         break;
     case "10_PARIS_CLUB":
         WatchFlag('CamilleConvosDone');
