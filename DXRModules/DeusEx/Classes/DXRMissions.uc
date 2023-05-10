@@ -11,6 +11,8 @@ const START_LOCATION = 1073741824;
 const VANILLA_START = 2147483648;
 const PLAYER_LOCATION = 7; // keep in sync with length of GoalLocation.positions array
 
+var bool RandoMissionGoals;// only set on first entry
+
 struct GoalActor {
     var name actorName;
     var EPhysics physics;
@@ -91,6 +93,7 @@ function DeleteGoal(Goal g, GoalLocation Loc);
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc);
 function PreFirstEntryMapFixes();
 function MissionTimer();
+function AddMissionGoals();
 function AfterShuffleGoals(int goalsToLocations[32]);
 function UpdateLocation(Actor a);
 
@@ -196,6 +199,7 @@ function PreFirstEntry()
 
     SetGlobalSeed( "DXRMissions" $ seed );
     ShuffleGoals();
+    RandoMissionGoals = true;
 }
 
 function ShuffleGoals()
@@ -393,6 +397,11 @@ function Timer()
     Super.Timer();
     if( dxr == None ) return;
     MissionTimer();
+    if (RandoMissionGoals && !dxr.flagbase.GetBool('PlayerTraveling')){
+        //Secondary objectives get cleared if added in pre/postFirstEntry due to the MissionScript, the MissionsScript also clears the PlayerTraveling flag
+        AddMissionGoals();
+        RandoMissionGoals=false;
+    }
 }
 
 function _UpdateLocation(Actor a, string goalName)

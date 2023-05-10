@@ -1,5 +1,7 @@
 class DXRFixupM15 extends DXRFixup;
 
+var int storedReactorCount;// Area 51 goal
+
 function CheckConfig()
 {
     local int i;

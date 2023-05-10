@@ -24,9 +24,6 @@ struct AddDatacube {
 };
 var AddDatacube add_datacubes[32];
 
-var int storedWeldCount;// ship weld points
-var int storedReactorCount;// Area 51 goal
-
 static function class<DXRBase> GetModuleToLoad(DXRando dxr, class<DXRBase> request)
 {
     switch(dxr.dxInfo.missionNumber) {

@@ -1,5 +1,7 @@
 class DXRFixupM09 extends DXRFixup;
 
+var int storedWeldCount;// ship weld points
+
 function CheckConfig()
 {
     local int i;
