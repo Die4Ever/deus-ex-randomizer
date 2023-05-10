@@ -61,7 +61,7 @@ function DrawWindow(GC gc)
 
     foreach player.AllActors(viewClass, trackActor)
     {
-        if(!bShowHidden && trackActor.bHidden) continue;
+        if(!bShowHidden && trackActor.bHidden) continue;// DXRando: for spoilers buttons
 
         dxMover = DeusExMover(trackActor);
         cVect.X = trackActor.CollisionRadius;
@@ -418,7 +418,15 @@ function DrawWindow(GC gc)
             gc.SetTextColor(mainColor);
             gc.SetAlignments(HALIGN_Center, VALIGN_Bottom);
             gc.SetFont(textfont);
-            gc.DrawText(leftX-50, topY-140, 100+rightX-leftX, 135, GetPlayerPawn().GetItemName(String(trackActor)));
+
+            str = GetPlayerPawn().GetItemName(String(trackActor));// DXRando: we want to show a nicer name for spoilers
+            if(!bShowHidden && viewClass == class'#var(prefix)Nanokey') {
+                str = #var(prefix)Nanokey(trackActor).Description;
+            }
+            if(!bShowHidden && viewClass == class'#var(prefix)InformationDevices') {
+                str = string(#var(prefix)InformationDevices(trackActor).textTag);
+            }
+            gc.DrawText(leftX-50, topY-140, 100+rightX-leftX, 135, str);
 
             if(trackActor.Location.X < minpos.X)
                 minpos.X = trackActor.Location.X;
