@@ -406,38 +406,6 @@ function SpawnDatacubes()
     }
 }
 
-function UpdateGoalWithRandoInfo(name goalName)
-{
-    local string goalText;
-    local DeusExGoal goal;
-    local int randoPos;
-
-    if(dxr.flags.settings.goals <= 0)
-        return;
-
-    goal = player().FindGoal(goalName);
-    if (goal!=None){
-        goalText = goal.text;
-        randoPos = InStr(goalText,"Rando: ");
-
-        if (randoPos==-1){
-            switch(goalName){
-            case 'InvestigateMaggieChow':
-                goalText = goalText$"|nRando: The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.";
-                break;
-            case 'FindHarleyFilben':
-                goalText = goalText$"|nRando: Harley could be anywhere in Hell's Kitchen";
-                break;
-            case 'FindNicolette':
-                goalText = goalText$"|nRando: Nicolette could be anywhere in the city";
-                break;
-            }
-            goal.SetText(goalText);
-            player().ClientMessage("Goal Updated - Check DataVault For Details",, true);
-        }
-    }
-}
-
 function AddDelay(Actor trigger, float time)
 {
     local Dispatcher d;

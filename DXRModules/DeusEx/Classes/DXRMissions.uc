@@ -404,6 +404,23 @@ function Timer()
     }
 }
 
+function UpdateGoalWithRandoInfo(name goalName, string text)
+{
+    local string goalText;
+    local DeusExGoal goal;
+    local int randoPos;
+
+    goal = player().FindGoal(goalName);
+    if(goal == None) return;
+
+    randoPos = InStr(goal.text, "Rando: ");
+    if(randoPos != -1) return;
+
+    text = goal.text $ "|nRando: " $ text;
+    goal.SetText(text);
+    player().ClientMessage("Goal Updated - Check DataVault For Details",, true);
+}
+
 function _UpdateLocation(Actor a, string goalName)
 {
     local int g, l;

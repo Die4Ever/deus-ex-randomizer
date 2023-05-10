@@ -56,3 +56,14 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         break;
     }
 }
+
+function MissionTimer()
+{
+    switch(dxr.localURL)
+    {
+    case "08_NYC_STREET":
+        if(dxr.flags.settings.goals > 0)
+            UpdateGoalWithRandoInfo('FindHarleyFilben', "Harley could be anywhere in Hell's Kitchen");
+        break;
+    }
+}

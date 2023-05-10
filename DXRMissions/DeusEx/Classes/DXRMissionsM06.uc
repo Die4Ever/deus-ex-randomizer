@@ -86,6 +86,16 @@ function int InitGoals(int mission, string map)
     return mission+1000;
 }
 
+function MissionTimer()
+{
+    switch(dxr.localURL) {
+    case "06_HONGKONG_WANCHAI_MARKET":
+        if(dxr.flags.settings.goals > 0)
+            UpdateGoalWithRandoInfo('InvestigateMaggieChow', "The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.");
+        break;
+    }
+}
+
 function DeleteGoal(Goal g, GoalLocation Loc)
 {
     if (g.name=="Dragon's Tooth Sword"){

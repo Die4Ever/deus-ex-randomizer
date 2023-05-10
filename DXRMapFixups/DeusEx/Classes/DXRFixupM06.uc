@@ -443,16 +443,6 @@ function AnyEntryMapFixes()
     }
 }
 
-function TimerMapFixes()
-{
-    switch(dxr.localURL)
-    {
-    case "06_HONGKONG_WANCHAI_MARKET":
-        UpdateGoalWithRandoInfo('InvestigateMaggieChow');
-        break;
-    }
-}
-
 function HandleJohnSmithDeath()
 {
     if (dxr.flagbase.GetBool('Disgruntled_Guy_Dead')){ //He's already dead

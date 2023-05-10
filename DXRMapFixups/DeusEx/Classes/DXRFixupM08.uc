@@ -36,7 +36,6 @@ function TimerMapFixes()
                 chopper.EnterWorld();
             dxr.flagbase.SetBool('MS_Helicopter_Unhidden', True,, 9);
         }
-        UpdateGoalWithRandoInfo('FindHarleyFilben');
         break;
     }
 }

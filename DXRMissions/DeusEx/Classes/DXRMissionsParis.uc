@@ -88,6 +88,11 @@ function MissionTimer()
                 chopper.EnterWorld();
         }
         break;
+
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        if(dxr.flags.settings.goals > 0)
+            UpdateGoalWithRandoInfo('FindNicolette', "Nicolette could be anywhere in the city");
+        break;
     }
 }
 
