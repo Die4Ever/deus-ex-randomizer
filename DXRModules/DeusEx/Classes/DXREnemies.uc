@@ -267,7 +267,7 @@ function CheckHelmet(ScriptedPawn p)
         // add helmet
         helmet_chance = dxr.flags.settings.enemystats / 2;
         if(chance_single(helmet_chance)) {
-            p.MultiSkins[6] = Texture'#var(package).DXRando.NSFHelmet';
+            p.MultiSkins[6] = Texture'#var(package).DXRandoPawns.NSFHelmet';
         }
         break;
     default:
