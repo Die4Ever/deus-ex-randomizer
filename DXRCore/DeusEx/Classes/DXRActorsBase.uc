@@ -755,7 +755,7 @@ function #var(prefix)InformationDevices SpawnDatacube(vector loc, rotator rot, s
 }
 
 // used by DXRReplaceActors
-function Actor SpawnReplacement(Actor a, class<Actor> newclass)
+function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool dont_copy_appearance)
 {
     local int i;
     local Actor newactor;
@@ -787,18 +787,20 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
 
     newactor.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
     newactor.SetPhysics(a.Physics);
-    newactor.SetCollisionSize(a.CollisionRadius, a.CollisionHeight);
     newactor.SetBase(a.Base);
-    newactor.Texture = a.Texture;
-    newactor.Mesh = a.Mesh;
-    newactor.Mass = a.Mass;
-    newactor.Buoyancy = a.Buoyancy;
     newactor.Event = event;
     newactor.bHidden = a.bHidden;
-    newactor.DrawScale = a.DrawScale;
 
-    for(i=0; i<ArrayCount(a.Multiskins); i++) {
-        newactor.Multiskins[i] = a.Multiskins[i];
+    if(!dont_copy_appearance) {
+        newactor.SetCollisionSize(a.CollisionRadius, a.CollisionHeight);
+        newactor.DrawScale = a.DrawScale;
+        newactor.Mass = a.Mass;
+        newactor.Buoyancy = a.Buoyancy;
+        newactor.Texture = a.Texture;
+        newactor.Mesh = a.Mesh;
+        for(i=0; i<ArrayCount(a.Multiskins); i++) {
+            newactor.Multiskins[i] = a.Multiskins[i];
+        }
     }
     return newactor;
 }

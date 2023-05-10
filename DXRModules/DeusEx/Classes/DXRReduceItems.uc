@@ -296,16 +296,28 @@ function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
 
     foreach AllActors(class'#var(prefix)Containers', d)
     {
-        if( _ReduceSpawnInContainer(d, classname, percent, d.Content3) )
+        if(d.Content3 == None && d.Content2 == None && d.Contents == None)
+            continue;
+
+        if( d.Content3 != None && _ReduceSpawnInContainer(d, classname, percent, d.Content3) )
             d.Content3 = None;
 
-        if( _ReduceSpawnInContainer(d, classname, percent, d.Content2) )
-            d.Content2 = d.Content3;
+        if( d.Content2 != None && _ReduceSpawnInContainer(d, classname, percent, d.Content2) )
+            d.Content2 = None;
 
-        if( _ReduceSpawnInContainer(d, classname, percent, d.Contents) ) {
+        if( d.Contents != None && _ReduceSpawnInContainer(d, classname, percent, d.Contents) )
+            d.Contents = None;
+
+        if(d.Content2 == None)
+            d.Content2 = d.Content3;
+        if(d.Contents == None)
             d.Contents = d.Content2;
-            if( d.Contents == None && !#defined(vmd) )
-                    d.Contents = class'#var(prefix)Flare';
+
+        if(d.Contents == None) {
+            info("ReduceSpawnsInContainers downgrading "$d$" to a cardboard box");
+            SpawnReplacement(d, class'#var(prefix)BoxMedium', true);// we don't care if this succeeds or not
+            d.Event = '';
+            d.Destroy();
         }
     }
 }
