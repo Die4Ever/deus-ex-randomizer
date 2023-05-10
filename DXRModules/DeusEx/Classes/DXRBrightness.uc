@@ -21,6 +21,7 @@ function PreFirstEntry()
     //Save default brightnesses
     SaveDefaultZoneBrightness(Level);
     foreach AllActors(class'ZoneInfo',Z){
+        if(SkyZoneInfo(Z) != None) continue;
         SaveDefaultZoneBrightness(Z);
     }
 }
@@ -42,6 +43,7 @@ function IncreaseBrightness(int brightness)
     IncreaseZoneBrightness(brightness, Level);
     foreach AllActors(class'ZoneInfo', z) {
         if( z == Level ) continue;
+        if(SkyZoneInfo(z) != None) continue;
         IncreaseZoneBrightness(brightness, z);
     }
     player().ConsoleCommand("FLUSH"); //Clears the texture cache, which allows the lighting to rerender
