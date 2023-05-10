@@ -107,6 +107,11 @@ function MissionTimer()
     f = dxr.flagbase;
 
     switch(dxr.localURL) {
+    case "12_VANDENBERG_CMD":
+        if(dxr.flags.settings.goals > 0)
+            UpdateGoalWithRandoInfo('FindJock', "Jock could be anywhere around the Command Center.");
+        break;
+
     case "14_VANDENBERG_SUB":
     case "14_OCEANLAB_UC":
         if (!WaltonAppeared && f.GetBool('DL_downloaded_Played'))
@@ -117,6 +122,11 @@ function MissionTimer()
             WaltonAppeared=True;
 
         }
+        break;
+
+    case "14_OCEANLAB_SILO":
+        if(dxr.flags.settings.goals > 0)
+            UpdateGoalWithRandoInfo('MeetJock', "Jock could be anywhere around the silo.");
         break;
     }
 }

@@ -66,4 +66,7 @@ function MissionTimer()
             UpdateGoalWithRandoInfo('FindHarleyFilben', "Harley could be anywhere in Hell's Kitchen");
         break;
     }
+
+    if(dxr.flags.settings.goals > 0)
+        UpdateGoalWithRandoInfo('KillGreene', "Joe Greene could be anywhere.");
 }

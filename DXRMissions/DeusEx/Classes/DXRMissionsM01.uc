@@ -64,6 +64,15 @@ function PreFirstEntryMapFixes()
     }
 }
 
+function MissionTimer()
+{
+    switch(dxr.localURL) {
+    case "01_NYC_UNATCOHQ":
+        if(dxr.flags.settings.goals > 0)
+            UpdateGoalWithRandoInfo('GetToDock', "The boat could be anywhere.");
+    }
+}
+
 function AddMissionGoals()
 {
     local DeusExGoal newGoal;

@@ -62,6 +62,10 @@ function MissionTimer()
 
     switch(dxr.localURL) {
     case "10_PARIS_METRO":
+        if(dxr.flags.settings.goals > 0)
+            UpdateGoalWithRandoInfo('MeetJaime', "Jaime could be anywhere in Paris.");
+        UpdateGoalWithRandoInfo('GetCrack', "The zyme can be anywhere.");// not actually depedent on goals rando
+
         if (f.GetBool('MeetNicolette_Played') &&
             !f.GetBool('NicoletteLeftClub'))
         {

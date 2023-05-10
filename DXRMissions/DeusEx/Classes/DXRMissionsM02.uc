@@ -142,6 +142,15 @@ function PreFirstEntryMapFixes()
     }
 }
 
+function MissionTimer()
+{
+    switch(dxr.localURL) {
+    case "02_NYC_BATTERYPARK":
+        if(dxr.flags.settings.goals > 0)
+            UpdateGoalWithRandoInfo('FindAmbrosia', "The Ambrosia could be anywhere in Battery Park.");
+    }
+}
+
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local Actor a;
