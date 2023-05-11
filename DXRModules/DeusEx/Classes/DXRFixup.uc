@@ -399,8 +399,10 @@ function SpawnDatacubes()
 #endif
 
         if( dc != None ){
-             dc.plaintext = add_datacubes[i].text;
-             l("add_datacubes spawned "$dc @ dc.plaintext @ loc);
+            if(dxr.flags.settings.infodevices > 0)
+                GlowUp(dc);
+            dc.plaintext = add_datacubes[i].text;
+            l("add_datacubes spawned "$dc @ dc.plaintext @ loc);
         }
         else warning("failed to spawn datacube at "$loc$", text: "$add_datacubes[i].text);
     }

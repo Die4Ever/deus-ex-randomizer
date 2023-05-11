@@ -801,6 +801,11 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
         for(i=0; i<ArrayCount(a.Multiskins); i++) {
             newactor.Multiskins[i] = a.Multiskins[i];
         }
+        newactor.LightType=a.LightType;
+        newactor.LightEffect=a.LightEffect;
+        newactor.LightBrightness=a.LightBrightness;
+        newactor.LightHue=a.LightHue;
+        newactor.LightRadius=a.LightRadius;
     }
     return newactor;
 }
@@ -1232,6 +1237,15 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }
 
+function GlowUp(Actor a)
+{
+    a.LightType=LT_Steady;
+    a.LightEffect=LE_None;
+    a.LightBrightness=255;
+    a.LightHue=155;
+    a.LightRadius=10;
+}
+
 function DebugMarkKeyPosition(Actor a, coerce string id)
 {
     local ActorDisplayWindow actorDisplay;
@@ -1245,11 +1259,7 @@ function DebugMarkKeyPosition(Actor a, coerce string id)
     } else if(Inventory(a) != None) {
         Inventory(a).ItemName = id @ Inventory(a).ItemName;
     }
-    a.LightType=LT_Steady;
-    a.LightEffect=LE_WateryShimmer;
-    a.LightBrightness=255;
-    a.LightHue=155;
-    a.LightRadius=20;
+    GlowUp(a);
     debug("DebugMarkKeyPosition "$a$ " ("$a.Location$") " $ id);
 
     actorDisplay = DeusExRootWindow(player().rootWindow).actorDisplay;

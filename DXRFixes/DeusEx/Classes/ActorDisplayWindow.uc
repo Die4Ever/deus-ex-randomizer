@@ -451,6 +451,8 @@ function DrawWindow(GC gc)
                     str = DeusExDecoration(trackActor).ItemName;
                 }
             }
+            if(str == "" || str == "None")
+                str = GetPlayerPawn().GetItemName(String(trackActor));
             gc.DrawText(leftX-50, topY-140, 100+rightX-leftX, 135, str);
 
             if(trackActor.Location.X < minpos.X)

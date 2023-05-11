@@ -35,6 +35,8 @@ function PreFirstEntryMapFixes()
         k = Spawn(class'#var(prefix)NanoKey',,, vect(1574.209839, -238.380142, 339.215179));
         k.KeyID = 'ControlRoomDoor';
         k.Description = "Control Room Door Key";
+        if(dxr.flags.settings.keysrando > 0)
+            GlowUp(k);
         break;
     case "02_NYC_WAREHOUSE":
         class'PlaceholderEnemy'.static.Create(self,vect(782,-1452,48),rot(0,0,0),'Wandering');

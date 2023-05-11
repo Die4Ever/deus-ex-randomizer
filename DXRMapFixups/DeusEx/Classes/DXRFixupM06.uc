@@ -280,6 +280,8 @@ function PostFirstEntryMapFixes()
         a = Spawn(class'NanoKey',,, vect(1159.455444, -1196.089111, 1723.212402));
         NanoKey(a).KeyID = 'JocksKey';
         NanoKey(a).Description = "Jock's apartment";
+        if(dxr.flags.settings.keysrando > 0)
+            GlowUp(a);
         break;
 
     case "06_HONGKONG_VERSALIFE":

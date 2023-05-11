@@ -260,6 +260,8 @@ function MoveNanoKeys4()
 
     foreach AllActors(class'#var(prefix)NanoKey', k )
     {
+        if(!k.bHidden)
+            GlowUp(k);
         if ( SkipActorBase(k) ) continue;
         _RandoKey(k, dxr.flags.settings.keys_containers > 0);
     }
