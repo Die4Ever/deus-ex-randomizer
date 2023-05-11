@@ -748,6 +748,8 @@ function #var(prefix)InformationDevices SpawnDatacube(vector loc, rotator rot, s
         dc.plaintext = text;
         dc.bIsSecretGoal = dont_move;
         info("SpawnDatacube "$dc$" at ("$loc$"), ("$rot$")");
+        if(dxr.flags.settings.infodevices > 0)
+            GlowUp(dc);
     } else {
         warning("SpawnDatacube failed at "$loc);
     }
@@ -1241,9 +1243,9 @@ function GlowUp(Actor a)
 {
     a.LightType=LT_Steady;
     a.LightEffect=LE_None;
-    a.LightBrightness=255;
+    a.LightBrightness=160;
     a.LightHue=155;
-    a.LightRadius=10;
+    a.LightRadius=6;
 }
 
 function DebugMarkKeyPosition(Actor a, coerce string id)
