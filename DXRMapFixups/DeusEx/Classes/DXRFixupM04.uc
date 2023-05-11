@@ -24,6 +24,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ControlPanel panel;
     local #var(prefix)LaserTrigger laser;
     local #var(prefix)Containers c;
+    local #var(prefix)Karkian k;
 
     switch (dxr.localURL)
     {
@@ -74,6 +75,12 @@ function PreFirstEntryMapFixes()
         }
         foreach AllActors(class'#var(prefix)HackableDevices', hd) {
             hd.hackStrength /= 3.0;
+        }
+        if(!dxr.flags.IsReducedRando()) {
+            k = Spawn(class'#var(prefix)Karkian',,, vect(54.688416, 1208.957275, -237.351410), rot(0,32768,0));
+            k.bImportant = true;
+            k.ChangeAlly('Player', -1, false);
+            k.SetOrders('Standing');
         }
         break;
 
