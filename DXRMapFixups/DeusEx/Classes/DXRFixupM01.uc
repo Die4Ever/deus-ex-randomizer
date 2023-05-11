@@ -68,6 +68,7 @@ function PreFirstEntryMapFixes()
         break;
 
     case "01_NYC_UNATCOHQ":
+        FixUNATCOCarterCloset();
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vect(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vect(211.227, 348.46, 50.32)); //Mens bathroom counter

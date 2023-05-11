@@ -275,6 +275,21 @@ function FixUNATCORetinalScanner()
     }
 }
 
+function FixUNATCOCarterCloset()
+{
+    local Inventory i;
+    local #var(DeusExPrefix)Decoration d;
+
+    foreach RadiusActors(class'Inventory', i, 360, vect(1075, -1150, 10)) {
+        i.ItemName = "Report this as a DXRando bug";
+        i.bIsSecretGoal = true;
+    }
+    foreach RadiusActors(class'#var(DeusExPrefix)Decoration', d, 360, vect(1075, -1150, 10)) {
+        d.ItemName = "Report this as a DXRando bug";
+        d.bIsSecretGoal = true;
+    }
+}
+
 function FixSamCarter()
 {
     local SamCarter s;
