@@ -78,6 +78,7 @@ function PreFirstEntryMapFixes()
         }
         if(!dxr.flags.IsReducedRando()) {
             k = Spawn(class'#var(prefix)Karkian',,, vect(54.688416, 1208.957275, -237.351410), rot(0,32768,0));
+            k.BindName="NSFMinotaur";
             k.bImportant = true;
             k.ChangeAlly('Player', -1, false);
             k.SetOrders('Standing');
