@@ -45,6 +45,7 @@ struct MutualExclusion {
 struct Spoiler {
     var string goalName;
     var string goalLocation;
+    var string locationMapName;
 };
 
 var Goal goals[32];
@@ -323,6 +324,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
 
         spoilers[i].goalName=goals[i].name;
         spoilers[i].goalLocation=locations[availLocs[r]].name;
+        spoilers[i].locationMapName=locations[availLocs[r]].mapName;
 
         _num_locs--;
         availLocs[r] = availLocs[_num_locs];
@@ -473,8 +475,8 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     for(i=0; i<ArrayCount(g.actors); i++) {
         a = g.actors[i].a;
         if(a == None) continue;
-        a.bVisionImportant = true;
-        a.bIsSecretGoal = true;
+        a.bVisionImportant = true;// for AugVision and PersonaScreenGoals spoiler button
+        a.bIsSecretGoal = true;// to prevent swapping, also used by PersonaScreenGoals spoiler button
         if(ElectronicDevices(a) != None)
             ElectronicDevices(a).ItemName = g.name;
         if(ScriptedPawn(a) != None)

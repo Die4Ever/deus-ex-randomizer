@@ -127,6 +127,7 @@ function PopulateSpoilers()
     local DXRMissions missions;
     local PersonaHeaderTextWindow spoilerHeader;
     local PersonaGoalItemWindow spoilerWindow;
+    local ActorDisplayWindow actorDisplay;
     local int i;
     local string spoilName,spoilLoc;
 
@@ -143,7 +144,7 @@ function PopulateSpoilers()
         for(i=0;i<missions.num_goals;i++){
             spoilName = missions.GetSpoiler(i).goalName;
             spoilLoc = missions.GetSpoiler(i).goalLocation;
-            spoilLoc = Caps(Left(spoilLoc,1))$Mid(spoilLoc,1);
+            spoilLoc = spoilLoc $ " (" $ missions.GetSpoiler(i).locationMapName $ ")";
 
             spoilerWindow = PersonaGoalItemWindow(winGoals.NewChild(Class'PersonaGoalItemWindow'));
 			spoilerWindow.SetGoalProperties(True, False, spoilName $": "$spoilLoc);
@@ -151,6 +152,11 @@ function PopulateSpoilers()
 
         break;
     }
+
+#ifdef injections
+    actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
+    actorDisplay.ShowVisionImportant();
+#endif
 }
 
 /*
@@ -199,8 +205,8 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
     case KeySpoilerWindowText:
         if (buttonNumber==0) {
             class'DXRStats'.static.AddCheatOffense(player);
-            player.ShowClass(class'#var(prefix)Nanokey');
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
+            actorDisplay.SetViewClass(class'#var(prefix)Nanokey');
             actorDisplay.ShowLOS(false);
 #ifdef injections
             actorDisplay.bShowHidden = false;
@@ -211,8 +217,8 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
     case DatacubeSpoilerWindowText:
         if (buttonNumber==0) {
             class'DXRStats'.static.AddCheatOffense(player);
-            player.ShowClass(class'#var(prefix)InformationDevices');
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
+            actorDisplay.SetViewClass(class'#var(prefix)InformationDevices');
             actorDisplay.ShowLOS(false);
 #ifdef injections
             actorDisplay.bShowHidden = false;

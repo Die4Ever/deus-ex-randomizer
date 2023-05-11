@@ -1252,8 +1252,8 @@ function DebugMarkKeyPosition(Actor a, coerce string id)
     a.LightRadius=20;
     debug("DebugMarkKeyPosition "$a$ " ("$a.Location$") " $ id);
 
-    player().ShowClass(a.class);
     actorDisplay = DeusExRootWindow(player().rootWindow).actorDisplay;
+    actorDisplay.SetViewClass(a.class);
     actorDisplay.ShowLOS(false);
     actorDisplay.ShowPos(true);
 }

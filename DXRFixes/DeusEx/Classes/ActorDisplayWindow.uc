@@ -2,17 +2,28 @@ class ActorDisplayWindow injects ActorDisplayWindow;
 
 var Font textfont;
 var bool bShowHidden;
+var bool bShowOnlyVisionImportant;
 
 function SetViewClass(Class<Actor> newViewClass)
 {
     Super.SetViewClass(newViewClass);
     bShowHidden = true;
+    bShowOnlyVisionImportant = false;
 }
 
 function ShowLOS(bool bShow)
 {
     Super.ShowLOS(bShow);
     bShowHidden = true;
+    bShowOnlyVisionImportant = false;
+}
+
+function ShowVisionImportant()
+{
+    SetViewClass(class'Actor');
+    ShowLOS(false);
+    bShowHidden = false;
+    bShowOnlyVisionImportant = true;
 }
 
 //I just want to change the font :(
@@ -61,7 +72,10 @@ function DrawWindow(GC gc)
 
     foreach player.AllActors(viewClass, trackActor)
     {
-        if(!bShowHidden && trackActor.bHidden) continue;// DXRando: for spoilers buttons
+        if(!bShowHidden && trackActor.bHidden)
+            continue;// DXRando: for spoilers buttons
+        if(bShowOnlyVisionImportant && (!trackActor.bVisionImportant || !trackActor.bIsSecretGoal))
+            continue;// DXRando: for goals spoiler button
 
         dxMover = DeusExMover(trackActor);
         cVect.X = trackActor.CollisionRadius;
@@ -419,12 +433,23 @@ function DrawWindow(GC gc)
             gc.SetAlignments(HALIGN_Center, VALIGN_Bottom);
             gc.SetFont(textfont);
 
-            str = GetPlayerPawn().GetItemName(String(trackActor));// DXRando: we want to show a nicer name for spoilers
-            if(!bShowHidden && viewClass == class'#var(prefix)Nanokey') {
-                str = #var(prefix)Nanokey(trackActor).Description;
-            }
-            if(!bShowHidden && viewClass == class'#var(prefix)InformationDevices') {
-                str = string(#var(prefix)InformationDevices(trackActor).textTag);
+            str = GetPlayerPawn().GetItemName(String(trackActor));
+            if(!bShowHidden) {// DXRando: we want to show a nicer name for spoilers
+                if(#var(prefix)Nanokey(trackActor) != None) {
+                    str = #var(prefix)Nanokey(trackActor).Description;
+                }
+                else if(#var(prefix)InformationDevices(trackActor) != None) {
+                    str = string(#var(prefix)InformationDevices(trackActor).textTag);
+                }
+                else if(ScriptedPawn(trackActor) != None) {
+                    str = ScriptedPawn(trackActor).FamiliarName;
+                }
+                else if(Inventory(trackActor) != None) {
+                    str = Inventory(trackActor).ItemName;
+                }
+                else if(DeusExDecoration(trackActor) != None) {
+                    str = DeusExDecoration(trackActor).ItemName;
+                }
             }
             gc.DrawText(leftX-50, topY-140, 100+rightX-leftX, 135, str);
 
