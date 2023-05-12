@@ -506,6 +506,10 @@ function SetWatchFlags() {
         WatchFlag('GuntherKillswitch');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(2019,-2256,-704),20,15);
         bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(2076.885254,-3248.189941,-704.369995),20,15);
+        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(1578,-2286,-647),50,40);
+        bt.MakeClassProximityTrigger(class'ChefCarcass');
         break;
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');
