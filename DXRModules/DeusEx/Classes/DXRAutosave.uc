@@ -122,8 +122,12 @@ function doAutosave()
 
     if( interruptedDL != None ) {
         p.dataLinkPlay = interruptedDL;
-        if( interruptedDL.tag != 'dummydatalink' )
-            p.ResumeDataLinks();
+        if( interruptedDL.tag != 'dummydatalink' ) {
+#ifdef injections
+            interruptedDL.restarting = true;
+#endif
+            interruptedDL.ResumeDataLinks();
+        }
     }
 
     info("doAutosave() completed, save_delay: "$save_delay);
