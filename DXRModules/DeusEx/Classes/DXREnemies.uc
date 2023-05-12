@@ -66,7 +66,6 @@ function CheckConfig()
     }
     Super.CheckConfig();
 
-
     AddRandomEnemyType(class'#var(prefix)Greasel', 4, FactionAny);
     AddRandomEnemyType(class'#var(prefix)Karkian', 2, FactionAny);
     AddRandomEnemyType(class'#var(prefix)SecurityBot2', 2, FactionAny);//walker
@@ -88,10 +87,14 @@ function CheckConfig()
     AddRandomEnemyType(class'MJ12Clone3', 10, MJ12);
     AddRandomEnemyType(class'MJ12Clone4', 10, MJ12);
     AddRandomEnemyType(class'#var(prefix)MilitaryBot', 2, MJ12);
-    AddRandomEnemyType(class'#var(prefix)Gray', 2, MJ12);
     AddRandomEnemyType(class'#var(prefix)SpiderBot2', 2, MJ12);//little spider
     AddRandomEnemyType(class'#var(prefix)SpiderBot', 2, MJ12);//big spider
-    AddRandomEnemyType(class'FrenchGray', 1, MJ12);
+    if(dxr.dxInfo.missionNumber == 10 || dxr.dxInfo.missionNumber == 11) {
+        AddRandomEnemyType(class'#var(prefix)Gray', 1, MJ12);
+        AddRandomEnemyType(class'FrenchGray', 1, MJ12);
+    } else {
+        AddRandomEnemyType(class'#var(prefix)Gray', 2, MJ12);
+    }
 
     AddRandomEnemyType(class'#var(prefix)Terrorist', 10, NSF);
     AddRandomEnemyType(class'NSFClone1', 10, NSF);

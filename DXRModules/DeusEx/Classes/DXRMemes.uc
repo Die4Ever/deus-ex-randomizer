@@ -455,7 +455,7 @@ function RandomizeCutscene()
 #ifdef revision
     _skipactor_types[i++] = class<Actor>(DynamicLoadObject("RevisionDeco.Rev_SphereLight", class'class'));
 #endif
-    SwapAll("Engine.Actor", 15);
+    SwapAll("Engine.Actor", 20);
 
     for(i=0; i<ArrayCount(_skipactor_types); i++) {
         _skipactor_types[i] = old_skips[i];
@@ -525,7 +525,7 @@ function RandomizeDialog()
         speech[num++] = s;
     }
     for(i=0;i<num;i++) {
-        if(chance_single(7)) {
+        if(chance_single(10)) {
             j = rng(num);
             SwapSpeech(speech[i], speech[j]);
         }
