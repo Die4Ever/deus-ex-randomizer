@@ -189,6 +189,10 @@ function AnyEntryMapFixes()
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
 
+    if(dxr.flagbase.GetBool('schematic_downloaded') && !dxr.flagbase.GetBool('DL_downloaded_Played')) {
+        dxr.flagbase.SetBool('DL_downloaded_Played', true);
+    }
+
     switch(dxr.localURL)
     {
     case "12_Vandenberg_gas":

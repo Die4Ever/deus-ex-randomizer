@@ -114,7 +114,7 @@ function MissionTimer()
 
     case "14_VANDENBERG_SUB":
     case "14_OCEANLAB_UC":
-        if (!WaltonAppeared && f.GetBool('DL_downloaded_Played'))
+        if (!WaltonAppeared && f.GetBool('schematic_downloaded'))
         {
             foreach AllActors(class'#var(prefix)WaltonSimons', Walton){
                 Walton.EnterWorld();
