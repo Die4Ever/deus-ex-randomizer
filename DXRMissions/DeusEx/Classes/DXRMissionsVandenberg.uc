@@ -28,7 +28,7 @@ function int InitGoals(int mission, string map)
 
         // complicated because of DXRBacktracking::VandCmdAnyEntry() to reuse the chopper
         goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
-        AddGoalActor(goal, 1, 'TracerTong0', PHYS_None);
+        AddGoalActor(goal, 1, 'TracerTong0', PHYS_Falling);
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Street Entrance", GOAL_TYPE1 | VANILLA_GOAL, vect(7014.185059, 7540.296875, -2984.704102), rot(0,-19840,0));
         AddActorLocation(loc, 1, vect(6436.471680, 7621.873535, -3061.458740), rot(0,-27976,0));
