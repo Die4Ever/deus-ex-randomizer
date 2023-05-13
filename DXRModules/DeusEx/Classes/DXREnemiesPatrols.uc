@@ -152,6 +152,8 @@ function DynamicPatrolPoint CreatePoint(NavigationPoint n, Name t)
     local int i;
     local DynamicPatrolPoint p;
     p = Spawn(class'DynamicPatrolPoint',, t, n.Location);
+    if(p == None)
+        return None;
     p.pausetime = rngrange(1, 0.1, 5);
 
     for(i=0; i<16; i++) {
