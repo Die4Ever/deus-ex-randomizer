@@ -12,7 +12,7 @@ struct SongChoice {
 };
 
 var config bool allowCombat;
-var config SongChoice choices[300];
+var config SongChoice choices[300];// keep size in sync with _GetLevelSong tchoices[]
 
 function CheckConfig()
 {
@@ -279,7 +279,7 @@ function SongChoice MakeSongChoice(string song, optional int ambient, optional i
 
 function _GetLevelSong(string oldSong, out string newSong, out byte LevelSongSection, out byte DyingSection, out byte CombatSection, out byte ConvSection, out byte OutroSection)
 {
-    local SongChoice tchoices[500], s;
+    local SongChoice tchoices[300], s;
     local int i, j, num;
     local bool cutscene;
 

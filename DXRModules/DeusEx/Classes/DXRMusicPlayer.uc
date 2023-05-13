@@ -1,7 +1,7 @@
 #ifdef injections
-class DXRMusicPlayer extends DXRActorsBase transient config(DXRMusicPlayer);
+class DXRMusicPlayer extends DXRBase transient config(DXRMusicPlayer);
 #else
-class DXRMusicPlayer extends DXRActorsBase transient config(#var(package)MusicPlayer);
+class DXRMusicPlayer extends DXRBase transient config(#var(package)MusicPlayer);
 #endif
 
 // keep the config for this class small, since it's saved often
@@ -439,7 +439,7 @@ function bool InCombat()
 
     if(!allowCombat) return false;
 
-    return PawnIsInCombat(p);
+    return class'DXRActorsBase'.static.PawnIsInCombat(p);
 }
 
 function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )

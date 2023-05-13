@@ -466,7 +466,7 @@ function SetPawnHealth(ScriptedPawn p, int health)
     p.GenerateTotalHealth();
 }
 
-function bool PawnIsInCombat(Pawn p)
+static function bool PawnIsInCombat(Pawn p)
 {
     local #var(prefix)ScriptedPawn npc;
     local Pawn CurPawn;
@@ -474,7 +474,7 @@ function bool PawnIsInCombat(Pawn p)
     // check a 100 foot radius around me for combat
     // XXXDEUS_EX AMSD Slow Pawn Iterator
     //foreach RadiusActors(class'ScriptedPawn', npc, 1600)
-    for (CurPawn = Level.PawnList; CurPawn != None; CurPawn = CurPawn.NextPawn)
+    for (CurPawn = p.Level.PawnList; CurPawn != None; CurPawn = CurPawn.NextPawn)
     {
         npc = #var(prefix)ScriptedPawn(CurPawn);
         if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
