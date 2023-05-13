@@ -30,6 +30,8 @@ function CreateControls()
     btnBingo.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 13, 179);
     btnBingo.SetSensitivity(true);
 
+    CreateKeysAndDatacubesButtons();
+
     foreach player.AllActors(class'DXRando',dxr){
         if (dxr.flags.settings.goals > 0) {
             btnGoalHints = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
@@ -46,7 +48,6 @@ function CreateControls()
 #ifndef revision
             CreateGoalLocationsButton();
 #endif
-            CreateKeysAndDatacubesButtons();
         }
 
         if (dxr.flags.IsEntranceRando()){
@@ -83,12 +84,12 @@ function CreateKeysAndDatacubesButtons()
 {
     btnKeys = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnKeys.SetButtonText("Show Keys");
-    btnKeys.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 385, 206);
+    btnKeys.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 385, 2);
     btnKeys.SetSensitivity(true);
 
     btnDatacubes = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
     btnDatacubes.SetButtonText("Show Datacubes");
-    btnDatacubes.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 475, 206);
+    btnDatacubes.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 475, 2);
     btnDatacubes.SetSensitivity(true);
 }
 
