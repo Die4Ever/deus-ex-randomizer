@@ -288,9 +288,6 @@ function PlayRandomSong(bool setseed)
 
 simulated event Tick(float deltaTime)
 {
-    if(NoSections)
-        return;
-
     if (LevelSong == None)
         return;
 
@@ -312,6 +309,9 @@ simulated event Tick(float deltaTime)
 
     musicCheckTimer += deltaTime;
     musicChangeTimer += deltaTime;
+
+    if(NoSections)
+        return;
 
     if (p.IsInState('Interpolating'))
     {
