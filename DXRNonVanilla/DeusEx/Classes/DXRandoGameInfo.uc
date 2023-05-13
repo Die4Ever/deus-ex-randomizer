@@ -98,11 +98,11 @@ event _PostLogin(playerpawn NewPlayer)
 event Super_PostLogin( playerpawn NewPlayer )
 {
     local Pawn P;
-    local DXRMusic cm;
+    local DXRMusicPlayer m;
     // Start player's music.
-    cm = DXRMusic(GetDXR().LoadModule(class'DXRMusic'));
-    if(cm!=None)
-        cm.ClientSetMusic( NewPlayer, Level.Song, Level.SongSection, Level.CdTrack, MTRAN_Fade );
+    m = DXRMusicPlayer(GetDXR().LoadModule(class'DXRMusicPlayer'));
+    if(m!=None)
+        m.ClientSetMusic( NewPlayer, Level.Song, Level.SongSection, Level.CdTrack, MTRAN_Fade );
     else
         NewPlayer.ClientSetMusic( Level.Song, Level.SongSection, Level.CdTrack, MTRAN_Fade );
 

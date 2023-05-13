@@ -16,13 +16,16 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_JoinDiscord');
     CreateChoice(class'MenuChoice_ReleasePage');  //This should probably always be the bottom option*/
 
+    CreateChoice(class'MenuChoice_BrightnessBoost');
+
     if(!#defined(revision)) {
         CreateChoice(class'MenuChoice_ContinuousMusic');
         CreateChoice(class'MenuChoice_RandomMusic');
         CreateChoice(class'MenuChoice_ChangeSong');
+        CreateChoice(class'MenuChoice_UTMusic');
+        CreateChoice(class'MenuChoice_UnrealMusic');
+        CreateChoice(class'MenuChoice_DXMusic');
     }
-
-    CreateChoice(class'MenuChoice_BrightnessBoost');
 
     CreateChoice(class'MenuChoice_ShowNews');
 

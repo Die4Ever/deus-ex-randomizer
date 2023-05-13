@@ -12,10 +12,10 @@ var int seed, tseed;
 
 var transient private int CrcTable[256]; // for string hashing to do more stable seeding
 
-var transient DXRBase modules[32];
+var transient DXRBase modules[48];
 var transient int num_modules;
 
-var config string modules_to_load[31];// 1 less than the modules array, because we always load the DXRFlags module
+var config string modules_to_load[47];// 1 less than the modules array, because we always load the DXRFlags module
 var config int config_version;
 
 var transient bool runPostFirstEntry;
@@ -110,7 +110,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 2,3,4,4) ) {
+    if( VersionOlderThan(config_version, 2,4,0,2) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -168,6 +168,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXREvents";
     //modules_to_load[i++] = "DXRMapInfo";
     modules_to_load[i++] = "DXRMusic";
+    modules_to_load[i++] = "DXRMusicPlayer";
     modules_to_load[i++] = "DXRPlayerStats";
 }
 
@@ -231,6 +232,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRFashion";
     modules_to_load[i++] = "DXREvents";
     modules_to_load[i++] = "DXRMusic";
+    modules_to_load[i++] = "DXRMusicPlayer";
     modules_to_load[i++] = "DXRPlayerStats";
 }
 
@@ -268,6 +270,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRNPCs";
     modules_to_load[i++] = "DXREvents";
     modules_to_load[i++] = "DXRMusic";
+    modules_to_load[i++] = "DXRMusicPlayer";
     modules_to_load[i++] = "DXRPlayerStats";
 }
 
