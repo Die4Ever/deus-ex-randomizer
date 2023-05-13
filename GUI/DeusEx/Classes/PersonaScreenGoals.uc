@@ -130,7 +130,7 @@ function PopulateSpoilers()
     local PersonaGoalItemWindow spoilerWindow;
     local ActorDisplayWindow actorDisplay;
     local int i;
-    local string spoilName,spoilLoc;
+    local string spoilName,spoilLoc, spoilMap;
 
     foreach player.AllActors(class'DXRMissions',missions){
         // Create Goals Header
@@ -145,10 +145,12 @@ function PopulateSpoilers()
         for(i=0;i<missions.num_goals;i++){
             spoilName = missions.GetSpoiler(i).goalName;
             spoilLoc = missions.GetSpoiler(i).goalLocation;
-            spoilLoc = spoilLoc $ " (" $ missions.GetSpoiler(i).locationMapName $ ")";
+            spoilMap = missions.GetSpoiler(i).locationMapName;
+            if(spoilMap != missions.dxr.localURL)
+                spoilLoc = spoilLoc $ " (" $ spoilMap $ ")";
 
             spoilerWindow = PersonaGoalItemWindow(winGoals.NewChild(Class'PersonaGoalItemWindow'));
-			spoilerWindow.SetGoalProperties(True, False, spoilName $": "$spoilLoc);
+            spoilerWindow.SetGoalProperties(True, False, spoilName $": "$spoilLoc);
         }
 
         break;

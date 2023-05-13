@@ -481,8 +481,8 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     for(i=0; i<ArrayCount(g.actors); i++) {
         a = g.actors[i].a;
         if(a == None) continue;
-        a.bVisionImportant = true;// for AugVision and PersonaScreenGoals spoiler button
-        a.bIsSecretGoal = true;// to prevent swapping, also used by PersonaScreenGoals spoiler button
+        a.bVisionImportant = true;// for AugVision
+        a.bIsSecretGoal = true;// to prevent swapping
         if(ElectronicDevices(a) != None)
             ElectronicDevices(a).ItemName = g.name;
         if(ScriptedPawn(a) != None)

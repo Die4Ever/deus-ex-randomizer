@@ -291,7 +291,7 @@ function AddDXRCredits(CreditsWindow cw)
     local string weaponName, factionName;
     if(dxr.flags.IsZeroRando()) return;
 
-    for(f=FactionAny; f<FactionsEnd; f++) {
+    for(f=FactionAny+1; f<FactionsEnd; f++) {
         switch(f) {
         case FactionOther:
             factionName = "Other";
