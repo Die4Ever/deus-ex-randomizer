@@ -48,14 +48,17 @@ function PreFirstEntryMapFixes()
         break;
 #endif
 
-#ifdef revision
     case "02_NYC_STREET":
+#ifdef revision
         foreach AllActors(class'CrateExplosiveSmall', c) {
             l("hiding " $ c @ c.Tag @ c.Event);
             c.bHidden = true;// hide it so DXRSwapItems doesn't move it, this is supposed to be inside the plane that flies overhead
         }
-        break;
 #endif
+        foreach AllActors(class'DeusExMover', d, 'AugStore') {
+            d.bFrobbable = true;
+        }
+        break;
     }
 }
 
