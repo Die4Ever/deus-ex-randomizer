@@ -29,4 +29,6 @@ defaultproperties
     MultiSkins(5)=Texture'DeusExCharacters.Skins.MJ12TroopTex3'
     MultiSkins(6)=Texture'DeusExCharacters.Skins.MJ12TroopTex4'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
+    FamiliarName="MJ12 Troop 2"
+    UnfamiliarName="MJ12 Troop 2"
 }

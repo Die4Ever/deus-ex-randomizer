@@ -66,7 +66,6 @@ function CheckConfig()
     }
     Super.CheckConfig();
 
-
     AddRandomEnemyType(class'#var(prefix)Greasel', 4, FactionAny);
     AddRandomEnemyType(class'#var(prefix)Karkian', 2, FactionAny);
     AddRandomEnemyType(class'#var(prefix)SecurityBot2', 2, FactionAny);//walker
@@ -88,9 +87,14 @@ function CheckConfig()
     AddRandomEnemyType(class'MJ12Clone3', 10, MJ12);
     AddRandomEnemyType(class'MJ12Clone4', 10, MJ12);
     AddRandomEnemyType(class'#var(prefix)MilitaryBot', 2, MJ12);
-    AddRandomEnemyType(class'#var(prefix)Gray', 2, MJ12);
     AddRandomEnemyType(class'#var(prefix)SpiderBot2', 2, MJ12);//little spider
     AddRandomEnemyType(class'#var(prefix)SpiderBot', 2, MJ12);//big spider
+    if(dxr.dxInfo.missionNumber == 10 || dxr.dxInfo.missionNumber == 11) {
+        AddRandomEnemyType(class'#var(prefix)Gray', 1, MJ12);
+        AddRandomEnemyType(class'FrenchGray', 1, MJ12);
+    } else {
+        AddRandomEnemyType(class'#var(prefix)Gray', 2, MJ12);
+    }
 
     AddRandomEnemyType(class'#var(prefix)Terrorist', 10, NSF);
     AddRandomEnemyType(class'NSFClone1', 10, NSF);
@@ -132,10 +136,11 @@ function RandoEnemies(int percent, int hidden_percent)
     local ScriptedPawn n;
     local ScriptedPawn newsp;
 
-    l("RandoEnemies "$percent);
+    l("RandoEnemies "$percent@hidden_percent@dxr.flags.settings.enemystats);
+    if(percent <= 0 && hidden_percent <= 0 && dxr.flags.settings.enemystats <= 0)
+        return;
 
     SetSeed( "RandoEnemies" );
-    if(percent <= 0) return;
 
     foreach AllActors(class'ScriptedPawn', p)
     {
@@ -221,6 +226,7 @@ function RandomizeSP(ScriptedPawn p, int percent)
     }
 
     if( IsCritter(p) ) return; // only give random weapons to humans and robots
+    // TODO: if p.bIsFemale then give only 1 handed weapons?
     if( p.IsA('MJ12Commando') || p.IsA('WIB') ) return;
 
     if( IsHuman(p.class)) {
@@ -253,17 +259,25 @@ function RandomizeSP(ScriptedPawn p, int percent)
 
 function CheckHelmet(ScriptedPawn p)
 {
+    local int helmet_chance;
     if(p.Mesh != LodMesh'DeusExCharacters.GM_Jumpsuit')  return;
+
+    // divide by 2 to lean towards vanilla
+    // that way the game gets harder as you progress to enemies that typically have helmets
 
     switch(p.MultiSkins[6]) {
     case Texture'DeusExItems.Skins.PinkMaskTex':
     case Texture'DeusExCharacters.Skins.GogglesTex1':
-        if(chance_single(dxr.flags.settings.enemystats)) {
-            p.MultiSkins[6] = Texture'DeusExCharacters.Skins.MechanicTex3';
+        // add helmet
+        helmet_chance = dxr.flags.settings.enemystats / 2;
+        if(chance_single(helmet_chance)) {
+            p.MultiSkins[6] = Texture'#var(package).DXRandoPawns.NSFHelmet';
         }
         break;
     default:
-        if(!chance_single(dxr.flags.settings.enemystats)) {
+        // remove helmet, enemystats of 0 means 50% chance to remove helmet, enemystats of 100 means 0% chance to remove helmet
+        helmet_chance = (100 - dxr.flags.settings.enemystats) / 2;
+        if(chance_single(helmet_chance)) {
             p.MultiSkins[5] = Texture'DeusExItems.Skins.GrayMaskTex';
             p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';
             p.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
@@ -273,16 +287,34 @@ function CheckHelmet(ScriptedPawn p)
 
 function AddDXRCredits(CreditsWindow cw)
 {
-    local int i;
-    local string weaponName;
+    local int i, f;
+    local string weaponName, factionName;
     if(dxr.flags.IsZeroRando()) return;
 
-    cw.PrintHeader( dxr.flags.settings.enemiesrandomized $ "% Added Enemies");
-    for(i=0; i < ArrayCount(_randomenemies); i++) {
-        if( _randomenemies[i].type == None ) continue;
-        cw.PrintText(_randomenemies[i].type.default.FamiliarName $ ": " $ FloatToString(_randomenemies[i].chance, 1) $ "%" );
+    for(f=FactionAny+1; f<FactionsEnd; f++) {
+        switch(f) {
+        case FactionOther:
+            factionName = "Other";
+            break;
+        case NSF:
+            factionName = "NSF";
+            break;
+        case UNATCO:
+            factionName = "UNATCO";
+            break;
+        case MJ12:
+            factionName = "MJ12";
+            break;
+        default:
+            factionName = "Faction "$f;
+        }
+        cw.PrintHeader( dxr.flags.settings.enemiesrandomized $ "% Added Enemies for "$factionName);
+        for(i=0; i < ArrayCount(_randomenemies); i++) {
+            if( _randomenemies[i].type == None || _randomenemies[i].faction != f ) continue;
+            cw.PrintText(_randomenemies[i].type.default.FamiliarName $ ": " $ FloatToString(_randomenemies[i].chance, 1) $ "%" );
+        }
+        cw.PrintLn();
     }
-    cw.PrintLn();
 
     cw.PrintHeader("Extra Weapons For Enemies");
     for(i=0; i < ArrayCount(_randomweapons); i++) {

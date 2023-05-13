@@ -241,7 +241,7 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         newDamage *= CombatDifficulty;
         oldDamage *= CombatDifficulty;
     }
-    else {
+    else if (damageType != 'fell' && damageType != 'Drowned') {
         newDamage *= CombatDifficulty/2 + 0.2;
         oldDamage *= CombatDifficulty/2 + 0.2;
     }

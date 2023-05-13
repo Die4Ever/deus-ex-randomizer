@@ -13,7 +13,7 @@ defaultproperties
     HealthArmLeft=60
     HealthArmRight=60
     BaseAccuracy=0.17
-    Fatness=115
+    Fatness=120
     DrawScale=0.9
     CollisionRadius=18
     CollisionHeight=42.75
@@ -29,4 +29,6 @@ defaultproperties
     MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
     MultiSkins(6)=Texture'DeusExCharacters.Skins.GogglesTex1'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
+    FamiliarName="Terrorist 2"
+    UnfamiliarName="Terrorist 2"
 }

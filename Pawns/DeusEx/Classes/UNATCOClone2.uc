@@ -20,4 +20,6 @@ defaultproperties
     MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
     MultiSkins(6)=Texture'DeusExCharacters.Skins.UNATCOTroopTex3'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
+    FamiliarName="UNATCO Troop 2"
+    UnfamiliarName="UNATCO Troop 2"
 }

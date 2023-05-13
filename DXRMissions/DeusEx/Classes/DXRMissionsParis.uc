@@ -62,6 +62,10 @@ function MissionTimer()
 
     switch(dxr.localURL) {
     case "10_PARIS_METRO":
+        if(dxr.flags.settings.goals > 0)
+            UpdateGoalWithRandoInfo('MeetJaime', "Jaime could be anywhere in Paris.");
+        UpdateGoalWithRandoInfo('GetCrack', "The zyme can be anywhere.");// not actually depedent on goals rando
+
         if (f.GetBool('MeetNicolette_Played') &&
             !f.GetBool('NicoletteLeftClub'))
         {
@@ -87,6 +91,11 @@ function MissionTimer()
             foreach AllActors(class'#var(prefix)BlackHelicopter', chopper, 'BlackHelicopter')
                 chopper.EnterWorld();
         }
+        break;
+
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        if(dxr.flags.settings.goals > 0)
+            UpdateGoalWithRandoInfo('FindNicolette', "Nicolette could be anywhere in the city");
         break;
     }
 }

@@ -198,17 +198,25 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
             DrawShield();
     }
 
-    // Impart momentum, DXRando multiply momentum by damage
-    // pick the smaller between Damage and actualDamage so that stealth hits don't do insane knockback
-    // and hits absorbed by shields do less knockback
-    mult = FMin(Damage, actualDamage);
-    mult += loge(mult);
-    mult *= 0.3;
-    momentum *= FMax(mult, 0.1);
-    SetPhysics(PHYS_Falling);
-    // need to lift off the ground cause once they land and start walking that overrides their velocity
-    momentum.Z = FMax(momentum.Z, 0.4 * VSize(momentum));
-    Velocity += momentum / Mass;
+    if(damageType != 'Stunned' && damageType != 'TearGas' && damageType != 'HalonGas' &&
+            damageType != 'PoisonGas' && damageType != 'Radiation' && damageType != 'EMP' &&
+            damageType != 'NanoVirus' && damageType != 'Drowned' &&
+            damageType != 'Poison' && damageType != 'PoisonEffect')
+    {
+        // Impart momentum, DXRando multiply momentum by damage
+        // pick the smaller between Damage and actualDamage so that stealth hits don't do insane knockback
+        // and hits absorbed by shields do less knockback
+        mult = FMin(Damage, actualDamage);
+        mult += loge(mult);
+        mult *= 0.3;
+        if(mult > 0) {
+            momentum *= mult;
+            SetPhysics(PHYS_Falling);
+            // need to lift off the ground cause once they land and start walking that overrides their velocity
+            momentum.Z = FMax(momentum.Z, 0.4 * VSize(momentum));
+            Velocity += momentum / Mass;
+        }
+    }
 
     origHealth = Health;
 
@@ -433,6 +441,16 @@ function UpdateFire()
     }
 }
 
+function Bool HasTwoHandedWeapon()
+{
+    if(bIsFemale)
+        return False;
+    if ((Weapon != None) && (Weapon.Mass >= 30))
+        return True;
+    else
+        return False;
+}
+
 // HACK: will need to improve the compiler in order to actually fix state code
 function EnableCheckDestLoc(bool bEnable)
 {
@@ -504,7 +522,6 @@ Begin:
 
     bHidden = True;
 
-    Acceleration = vect(0,0,0);
     SpawnCarcass();
     Destroy();
 }

@@ -177,13 +177,3 @@ function AnyEntryMapFixes()
         break;
     }
 }
-
-function TimerMapFixes()
-{
-    switch(dxr.localURL)
-    {
-    case "10_PARIS_CATACOMBS_TUNNELS":
-        UpdateGoalWithRandoInfo('FindNicolette');
-        break;
-    }
-}

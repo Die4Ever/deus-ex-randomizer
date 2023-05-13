@@ -330,13 +330,13 @@ static function ThrowItem(Inventory item, float VelocityMult)
     item.Velocity *= VelocityMult;
 }
 
-static function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
+function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
 {
     // code similar to Revision Mission05.uc
     local Inventory nextItem;
     local #var(PlayerPawn) player;
     local int i;
-
+    info("MoveNextItemTo("$item@Location@Tag$")");
     // Find the next item we can process.
     while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None))
         item = item.Inventory;
@@ -345,6 +345,7 @@ static function Inventory MoveNextItemTo(Inventory item, vector Location, name T
 
     nextItem = item.Inventory;
     player = #var(PlayerPawn)(item.owner);
+    info("MoveNextItemTo found: "$item$"("$item.Location$") with owner: "$item.owner$", nextItem: "$nextItem);
 
     //== Y|y: Turn off any charged pickups we were using and remove the associated HUD.  Per Lork on the OTP forums
     if(player != None) {
@@ -361,6 +362,7 @@ static function Inventory MoveNextItemTo(Inventory item, vector Location, name T
     }
     item.DropFrom(Location);
     item.Tag = Tag;// so we can find the item again later
+    info("MoveNextItemTo "$item$" drop from: ("$Location$"), now at ("$item.Location$"), attempts: "$i);
 
     // restore any ammo amounts for a weapon to default; Y|y: except for grenades
     if (item.IsA('Weapon') && (Weapon(item).AmmoType != None) && !item.IsA('WeaponLAM') && !item.IsA('WeaponGasGrenade') && !item.IsA('WeaponEMPGrenade') && !item.IsA('WeaponNanoVirusGrenade'))
@@ -464,7 +466,7 @@ function SetPawnHealth(ScriptedPawn p, int health)
     p.GenerateTotalHealth();
 }
 
-function bool PawnIsInCombat(Pawn p)
+static function bool PawnIsInCombat(Pawn p)
 {
     local #var(prefix)ScriptedPawn npc;
     local Pawn CurPawn;
@@ -472,7 +474,7 @@ function bool PawnIsInCombat(Pawn p)
     // check a 100 foot radius around me for combat
     // XXXDEUS_EX AMSD Slow Pawn Iterator
     //foreach RadiusActors(class'ScriptedPawn', npc, 1600)
-    for (CurPawn = Level.PawnList; CurPawn != None; CurPawn = CurPawn.NextPawn)
+    for (CurPawn = p.Level.PawnList; CurPawn != None; CurPawn = CurPawn.NextPawn)
     {
         npc = #var(prefix)ScriptedPawn(CurPawn);
         if ((npc != None) && (VSize(npc.Location - p.Location) < (1600 + npc.CollisionRadius)))
@@ -746,6 +748,8 @@ function #var(prefix)InformationDevices SpawnDatacube(vector loc, rotator rot, s
         dc.plaintext = text;
         dc.bIsSecretGoal = dont_move;
         info("SpawnDatacube "$dc$" at ("$loc$"), ("$rot$")");
+        if(dxr.flags.settings.infodevices > 0)
+            GlowUp(dc);
     } else {
         warning("SpawnDatacube failed at "$loc);
     }
@@ -753,7 +757,7 @@ function #var(prefix)InformationDevices SpawnDatacube(vector loc, rotator rot, s
 }
 
 // used by DXRReplaceActors
-function Actor SpawnReplacement(Actor a, class<Actor> newclass)
+function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool dont_copy_appearance)
 {
     local int i;
     local Actor newactor;
@@ -785,18 +789,25 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass)
 
     newactor.SetCollision(bCollideActors, bBlockActors, bBlockPlayers);
     newactor.SetPhysics(a.Physics);
-    newactor.SetCollisionSize(a.CollisionRadius, a.CollisionHeight);
     newactor.SetBase(a.Base);
-    newactor.Texture = a.Texture;
-    newactor.Mesh = a.Mesh;
-    newactor.Mass = a.Mass;
-    newactor.Buoyancy = a.Buoyancy;
     newactor.Event = event;
     newactor.bHidden = a.bHidden;
-    newactor.DrawScale = a.DrawScale;
 
-    for(i=0; i<ArrayCount(a.Multiskins); i++) {
-        newactor.Multiskins[i] = a.Multiskins[i];
+    if(!dont_copy_appearance) {
+        newactor.SetCollisionSize(a.CollisionRadius, a.CollisionHeight);
+        newactor.DrawScale = a.DrawScale;
+        newactor.Mass = a.Mass;
+        newactor.Buoyancy = a.Buoyancy;
+        newactor.Texture = a.Texture;
+        newactor.Mesh = a.Mesh;
+        for(i=0; i<ArrayCount(a.Multiskins); i++) {
+            newactor.Multiskins[i] = a.Multiskins[i];
+        }
+        newactor.LightType=a.LightType;
+        newactor.LightEffect=a.LightEffect;
+        newactor.LightBrightness=a.LightBrightness;
+        newactor.LightHue=a.LightHue;
+        newactor.LightRadius=a.LightRadius;
     }
     return newactor;
 }
@@ -1228,6 +1239,15 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }
 
+function GlowUp(Actor a)
+{
+    a.LightType=LT_Steady;
+    a.LightEffect=LE_None;
+    a.LightBrightness=160;
+    a.LightHue=155;
+    a.LightRadius=6;
+}
+
 function DebugMarkKeyPosition(Actor a, coerce string id)
 {
     local ActorDisplayWindow actorDisplay;
@@ -1241,15 +1261,11 @@ function DebugMarkKeyPosition(Actor a, coerce string id)
     } else if(Inventory(a) != None) {
         Inventory(a).ItemName = id @ Inventory(a).ItemName;
     }
-    a.LightType=LT_Steady;
-    a.LightEffect=LE_WateryShimmer;
-    a.LightBrightness=255;
-    a.LightHue=155;
-    a.LightRadius=20;
+    GlowUp(a);
     debug("DebugMarkKeyPosition "$a$ " ("$a.Location$") " $ id);
 
-    player().ShowClass(a.class);
     actorDisplay = DeusExRootWindow(player().rootWindow).actorDisplay;
+    actorDisplay.SetViewClass(a.class);
     actorDisplay.ShowLOS(false);
     actorDisplay.ShowPos(true);
 }

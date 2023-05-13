@@ -529,18 +529,18 @@ function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusi
 // only called by GameInfo::PostLogin()
 function ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
-    local DXRMusic cm;
+    local DXRMusicPlayer m;
     GetDXR();
     if (dxr==None){ //Probably only during ENDGAME4?
         log("Couldn't find a DXR so we can set the music");
         return;
     }
-    cm = DXRMusic(dxr.LoadModule(class'DXRMusic'));
-    if (cm==None){
-        log("Found a DXR but no DXRMusic module to set the music");
+    m = DXRMusicPlayer(dxr.LoadModule(class'DXRMusicPlayer'));
+    if (m==None){
+        log("Found a DXR but no DXRMusicPlayer module to set the music");
         return;
     }
-    cm.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
+    m.ClientSetMusic(self, NewSong, NewSection, NewCdTrack, NewTransition);
 }
 
 //=========== END OF MUSIC STUFF

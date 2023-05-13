@@ -23,15 +23,6 @@ function AnyEntry()
     SetTimer(0.1, True);
 }
 
-simulated function PlayerAnyEntry(#var(PlayerPawn) p)
-{
-    Super.PlayerAnyEntry(p);
-    if(p.HealthTorso <= 0 || p.HealthHead <= 0) {
-        p.ClientMessage("DEAD MAN WALKING GLITCH DETECTED!");
-        AddCheatOffense(p, 5);// worth more than other glitches
-    }
-}
-
 simulated function ReEntry(bool IsTravel)
 {
     Super.ReEntry(IsTravel);
@@ -574,10 +565,10 @@ static function int _ScoreRun(int time, int time_without_menus, float CombatDiff
     i -= loads * 50;
     if(bingo_win > 0 && bingos >= bingo_win)
         i -= (13-bingo_win) * 5000;
-    i += bingos * 500;
-    i += bingospots * 50;// make sure to ignore the free space
-    i += SkillPointsTotal / 2;
-    i += Nanokeys * 20;
+    i += bingos * 750;
+    i += bingospots * 75;// make sure to ignore the free space
+    i += SkillPointsTotal;
+    i += Nanokeys * 20;// unique nanokeys
     i -= Clamp(cheats, 0, 100) * 300;
     return i;
 }
@@ -751,8 +742,8 @@ function TestScoring()
     names[num] = "1 Million Points!";
     scores[num++] = 1000000;
 
-    names[num] = "120k Points";
-    scores[num++] = 120000;
+    names[num] = "130k Points";
+    scores[num++] = 130000;
 
     names[num] = "literal god: 1 hour, Impossible difficulty, full bingo, 5 saves, 5 loads";
     time=72000; time_without_menus=36000; combat_difficulty=3; rando_difficulty=4; saves=5; loads=5;
@@ -762,8 +753,8 @@ function TestScoring()
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
-    names[num] = "115k Points";
-    scores[num++] = 115000;
+    names[num] = "125k Points";
+    scores[num++] = 125000;
 
     names[num] = "literal god: 1 hour, full bingo, 5 saves, 5 loads";
     time=72000; time_without_menus=36000; combat_difficulty=2; rando_difficulty=2; saves=5; loads=5;
@@ -772,6 +763,9 @@ function TestScoring()
     flags_score = dxr.flags.ScoreFlags();
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    names[num] = "120k Points";
+    scores[num++] = 120000;
 
     names[num] = "1 hour, 3 bingos, 5 saves, 5 loads";
     time=36000; time_without_menus=36000; combat_difficulty=2; rando_difficulty=2; saves=5; loads=5;
@@ -789,9 +783,6 @@ function TestScoring()
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
 
-    names[num] = "100k Points";
-    scores[num++] = 100000;
-
     names[num] = "3 hours, 9 bingos, 100 saves, 100 loads";
     time=108000; time_without_menus=90010; combat_difficulty=2; rando_difficulty=2; saves=100; loads=100;
     bingo_win=0; bingos=9; bingo_spots=20; skill_points=10000; nanokeys=100; cheats=0;
@@ -799,6 +790,9 @@ function TestScoring()
     flags_score = dxr.flags.ScoreFlags();
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    names[num] = "100k Points";
+    scores[num++] = 100000;
 
     names[num] = "Astro: 7 hours, full bingo";
     time=290879; time_without_menus=242176; combat_difficulty=1.7; rando_difficulty=2; saves=796; loads=171;

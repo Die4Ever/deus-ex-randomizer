@@ -1,7 +1,5 @@
 class DXRMissionsM01 extends DXRMissions;
 
-var bool RandodMissionGoals;
-
 function int InitGoals(int mission, string map)
 {
     local int goal, loc, loc2;
@@ -69,19 +67,16 @@ function PreFirstEntryMapFixes()
 function MissionTimer()
 {
     switch(dxr.localURL) {
-    case "01_NYC_UNATCOISLAND":
-        if (!RandodMissionGoals && !dxr.flagbase.GetBool('PlayerTraveling')){
-            //Secondary objectives get cleared if added in pre/postFirstEntry due to the MissionScript, the MissionsScript also clears the PlayerTraveling flag
-            AddMission1Goals();
-            RandodMissionGoals=true;
-        }
-        break;
+    case "01_NYC_UNATCOHQ":
+        if(dxr.flags.settings.goals > 0)
+            UpdateGoalWithRandoInfo('GetToDock', "The boat could be anywhere.");
     }
 }
 
-function AddMission1Goals()
+function AddMissionGoals()
 {
     local DeusExGoal newGoal;
+    if(dxr.localURL != "01_NYC_UNATCOISLAND") return;
 
     //The MeetPaul conversation would normally give you several goals.
     //Give them manually instead of via that conversation.

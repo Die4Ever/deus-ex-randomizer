@@ -60,6 +60,7 @@ function SetWatchFlags() {
     local Trigger trig;
     local BingoTrigger bt;
     local LowerClassMale lcm;
+    local Greasel g;
     local int i;
 
     switch(dxr.localURL) {
@@ -399,6 +400,15 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'HongKongGrays',zone.Location);
+
+        foreach AllActors(class'Greasel',g){
+            g.bImportant = True;
+            g.BindName="JerryTheVentGreasel";
+            g.FamiliarName = "Jerry the Vent Greasel";
+            g.UnfamiliarName = "Jerry the Vent Greasel";
+        }
+        WatchFlag('JerryTheVentGreasel_Dead');
+
         break;
     case "08_NYC_STREET":
         bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vect(0,0,0));
@@ -477,6 +487,12 @@ function SetWatchFlags() {
             starr.bImportant = true;// you're important to me
             starr.BindName = "Starr";
         }
+
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(-2983.597168,774.217407,312.100128),70,40);
+        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(-2984.404785,662.764954,312.100128),70,40);
+        bt.MakeClassProximityTrigger(class'ChefCarcass');
+
         break;
     case "10_PARIS_CLUB":
         WatchFlag('CamilleConvosDone');
@@ -489,6 +505,10 @@ function SetWatchFlags() {
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(2019,-2256,-704),20,15);
+        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(2076.885254,-3248.189941,-704.369995),20,15);
+        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(1578,-2286,-647),50,40);
         bt.MakeClassProximityTrigger(class'ChefCarcass');
         break;
     case "11_PARIS_EVERETT":
@@ -1618,6 +1638,8 @@ function _MarkBingo(coerce string eventname)
             break;
         case "DXRRepairBot_ClassDead":
             eventname="RepairBot_ClassDead";
+        case "FrenchGray_ClassDead":
+            eventname="Gray_ClassDead";
             break;
     }
 
@@ -1886,7 +1908,7 @@ defaultproperties
     bingo_options(157)=(event="AirfieldGuardTowers",desc="Visit 3 of the Airfield guard towers",max=3,missions=8)
     bingo_options(158)=(event="mirrordoor",desc="Access Smuggler's secret stash",max=1,missions=276)
     bingo_options(159)=(event="MolePeopleWater",desc="Bathe in the Mole People water supply",max=1,missions=8)
-    bingo_options(160)=(event="botorders2",desc="Alter the bot AI in the MJ12 Lab",max=1,missions=32)
+    bingo_options(160)=(event="botorders2",desc="Alter the bot AI in the MJ12 base under UNATCO",max=1,missions=32)
     bingo_options(161)=(event="BathroomFlags",desc="Place a flag in Manderley's bathroom 3 times",max=3,missions=58)
     bingo_options(162)=(event="SiloSlide",desc="Take the silo slide",max=1,missions=16384)
     bingo_options(163)=(event="SiloWaterTower",desc="Climb the water tower at the silo",max=1,missions=16384)
@@ -1902,6 +1924,8 @@ defaultproperties
     bingo_options(173)=(event="OceanLabGreenBeacon",desc="Swim to the green beacon",max=1,missions=16384)
     bingo_options(174)=(event="PageTaunt_Played",desc="Let Bob Page taunt you in the Ocean Lab",max=1,missions=16384)
     //bingo_options()=(event="M11WaltonHolo_Played",desc="Talk to Walton Simons after defeating Gunther",max=1,missions=2048)
+    bingo_options(175)=(event="JerryTheVentGreasel_Dead",desc="Kill Jerry the Vent Greasel",max=1,missions=64)
+
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")

@@ -29,3 +29,8 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector HitLocation, Vector Mo
         LifeSpan=class'AugDrone'.Default.reconstructTime-0.1;
     }
 }
+
+defaultproperties
+{
+    bEmitDanger=True
+}

@@ -5,7 +5,7 @@ var config safe_rule keys_rules[64];
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,3,4,2) ) {
+    if( ConfigOlderThan(2,4,0,2) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -24,6 +24,13 @@ function CheckConfig()
 function vanilla_keys_rules()
 {
     local int i;
+
+    keys_rules[i].map = "01_NYC_UNATCOISLAND";
+    keys_rules[i].item_name = 'UNhatchdoor';
+    keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+    keys_rules[i].max_pos = vect(999999, 999999, 999999);
+    keys_rules[i].allow = true;
+    i++;
 
     keys_rules[i].map = "03_NYC_AIRFIELD";
     keys_rules[i].item_name = 'eastgate';
@@ -253,6 +260,8 @@ function MoveNanoKeys4()
 
     foreach AllActors(class'#var(prefix)NanoKey', k )
     {
+        if(!k.bHidden)
+            GlowUp(k);
         if ( SkipActorBase(k) ) continue;
         _RandoKey(k, dxr.flags.settings.keys_containers > 0);
     }

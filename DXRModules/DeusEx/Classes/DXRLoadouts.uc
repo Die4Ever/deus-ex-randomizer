@@ -375,6 +375,8 @@ function class<Inventory> get_starting_item()
 
 function bool ban(DeusExPlayer player, Inventory item)
 {
+    local bool bFixGlitches;
+
     if ( _is_banned( _item_sets[loadout], item.class) ) {
         if( item_sets[loadout].player_message != "" ) {
             //item.ItemName = item.ItemName $ ", " $ item_sets[loadout].player_message;
@@ -382,12 +384,17 @@ function bool ban(DeusExPlayer player, Inventory item)
         }
         return true;
     } else if(item.bDeleteMe) {
-        //Only try to detect duping on items that aren't banned anyway
-        //Banned things will get marked for deletion, but might not be gone
-        //if you frob multiple times kind of quickly, giving a false positive
-        // we could fix by returning true here, but for now just record the offense
-        player.ClientMessage("ITEM DUPING DETECTED!");
-        class'DXRStats'.static.AddCheatOffense(player);
+        bFixGlitches = bool(ConsoleCommand("get #var(package).MenuChoice_FixGlitches fix_glitches"));
+        if(bFixGlitches) {
+            return true;
+        }
+        else {
+            //Only try to detect duping on items that aren't banned anyway
+            //Banned things will get marked for deletion, but might not be gone
+            //if you frob multiple times kind of quickly, giving a false positive
+            player.ClientMessage("ITEM DUPING DETECTED!");
+            class'DXRStats'.static.AddCheatOffense(player);
+        }
     }
 
     return false;
@@ -435,7 +442,7 @@ function NinjaAdjustWeapon(DeusExWeapon w)
             ws.anim_speed = 1.1;
             ws.default.anim_speed = 1.1;
             WeaponShuriken(ws).auto_pickup = true;
-            ws.DrawScale = 2;
+            //ws.DrawScale = 2;
             ws.SetCollisionSize(16, ws.default.CollisionHeight*2);
             break;
         default:

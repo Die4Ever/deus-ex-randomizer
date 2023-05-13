@@ -4,34 +4,85 @@
 
 class MenuScreenRandoOptions expands MenuUIScreenWindow;
 
-event InitWindow()
-{
-    local int i;
+var MenuUIScrollAreaWindow winScroll;
+var Window controlsParent;
 
-    choices[i++]=Class'MenuChoice_Telemetry';
-    choices[i++]=Class'MenuChoice_ShowNews';
+function CreateChoices()
+{
+    controlsParent = winClient;
+    CreateScrollWindow();
+
+    CreateChoice(class'MenuChoice_Telemetry');
+    CreateChoice(class'MenuChoice_JoinDiscord');
+    CreateChoice(class'MenuChoice_ReleasePage');  //This should probably always be the bottom option*/
+
+    CreateChoice(class'MenuChoice_BrightnessBoost');
+
+    if(!#defined(revision)) {
+        CreateChoice(class'MenuChoice_ContinuousMusic');
+        CreateChoice(class'MenuChoice_RandomMusic');
+        CreateChoice(class'MenuChoice_ChangeSong');
+        CreateChoice(class'MenuChoice_UTMusic');
+        CreateChoice(class'MenuChoice_UnrealMusic');
+        CreateChoice(class'MenuChoice_DXMusic');
+    }
+
+    CreateChoice(class'MenuChoice_ShowNews');
 
     if(#defined(vanilla)) {
-        choices[i++]=Class'MenuChoice_EnergyDisplay';
-        choices[i++]=Class'MenuChoice_ShowKeys';
+        CreateChoice(class'MenuChoice_EnergyDisplay');
+        CreateChoice(class'MenuChoice_ShowKeys');
     }
-    if(!#defined(revision)) {
-        choices[i++]=Class'MenuChoice_ContinuousMusic';
-        choices[i++]=Class'MenuChoice_RandomMusic';
-        choices[i++]=Class'MenuChoice_ChangeSong';
+
+    CreateChoice(class'MenuChoice_PasswordAutofill');
+    CreateChoice(class'MenuChoice_ConfirmNoteDelete');
+    CreateChoice(class'MenuChoice_FixGlitches');
+
+    controlsParent.SetSize(clientWidth, choiceStartY + (choiceCount * choiceVerticalGap));
+}
+
+
+function CreateScrollWindow()
+{
+    local MenuUIListWindow lstKeys;
+    local DXRNews news;
+
+    winScroll = CreateScrollAreaWindow(winClient);
+    winScroll.vScale.SetThumbStep(20);
+    winScroll.SetPos(0, 0);
+    winScroll.SetSize(ClientWidth, helpPosY);
+    winScroll.EnableScrolling(false,true);
+
+    controlsParent = winScroll.clipWindow.NewChild(class'MenuUIClientWindow');
+}
+
+function CreateChoice(Class<MenuUIChoice> choice)
+{
+    local MenuUIChoice newChoice;
+
+    if (choice == None) return;
+
+    newChoice = MenuUIChoice(controlsParent.NewChild(choice));
+    newChoice.SetPos(choiceStartX, choiceStartY + (choiceCount * choiceVerticalGap) - newChoice.buttonVerticalOffset);
+    choiceCount++;
+}
+
+// ----------------------------------------------------------------------
+// LoadSettings()
+// ----------------------------------------------------------------------
+
+function LoadSettings()
+{
+    local Window btnChoice;
+
+    btnChoice = controlsParent.GetTopChild();
+    while(btnChoice != None)
+    {
+        if (btnChoice.IsA('MenuUIChoice'))
+            MenuUIChoice(btnChoice).LoadSetting();
+
+        btnChoice = btnChoice.GetLowerSibling();
     }
-    choices[i++]=Class'MenuChoice_PasswordAutofill';
-    choices[i++]=Class'MenuChoice_BrightnessBoost';
-    choices[i++]=Class'MenuChoice_ConfirmNoteDelete';
-
-    choices[i++]=Class'MenuChoice_JoinDiscord';
-    choices[i++]=Class'MenuChoice_ReleasePage';  //This should probably always be the bottom option
-
-    //Automatic sizing to the number of entries...
-    ClientHeight = (i+1) * 36;
-    helpPosY = ClientHeight - 36;
-
-	Super.InitWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -40,8 +91,57 @@ event InitWindow()
 
 function SaveSettings()
 {
-	Super.SaveSettings();
-	player.SaveConfig();
+    local Window btnChoice;
+
+    btnChoice = controlsParent.GetTopChild();
+    while(btnChoice != None)
+    {
+        if (btnChoice.IsA('MenuUIChoice'))
+            MenuUIChoice(btnChoice).SaveSetting();
+
+        btnChoice = btnChoice.GetLowerSibling();
+    }
+
+    Super.SaveSettings();
+    player.SaveConfig();
+}
+
+// ----------------------------------------------------------------------
+// CancelScreen()
+// ----------------------------------------------------------------------
+
+function CancelScreen()
+{
+    local Window btnChoice;
+
+    btnChoice = controlsParent.GetTopChild();
+    while(btnChoice != None)
+    {
+        if (btnChoice.IsA('MenuUIChoice'))
+            MenuUIChoice(btnChoice).CancelSetting();
+
+        btnChoice = btnChoice.GetLowerSibling();
+    }
+
+    Super.CancelScreen();
+}
+
+// ----------------------------------------------------------------------
+// ResetToDefaults()
+// ----------------------------------------------------------------------
+
+function ResetToDefaults()
+{
+    local Window btnChoice;
+
+    btnChoice = controlsParent.GetTopChild();
+    while(btnChoice != None)
+    {
+        if (btnChoice.IsA('MenuUIChoice'))
+            MenuUIChoice(btnChoice).ResetToDefault();
+
+        btnChoice = btnChoice.GetLowerSibling();
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -54,7 +154,7 @@ defaultproperties
      actionButtons(2)=(Action=AB_Reset)
      Title="Randomizer Options"
      ClientWidth=500
-     ClientHeight=50
-     helpPosY=10
+     ClientHeight=400
+     helpPosY=364//helpPosY = ClientHeight - 36
      choiceStartY=12
 }

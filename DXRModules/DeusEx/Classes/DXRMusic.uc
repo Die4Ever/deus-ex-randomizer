@@ -4,58 +4,27 @@ class DXRMusic extends DXRActorsBase transient config(DXRMusic);
 class DXRMusic extends DXRActorsBase transient config(#var(package)Music);
 #endif
 
-var Music LevelSong;
-var byte LevelSongSection;
-
-enum EMusicMode
-{
-	MUS_Ambient,
-	MUS_Combat,
-	MUS_Conversation,
-	MUS_Outro,
-	MUS_Dying
-};
-
-var EMusicMode musicMode;
-var float musicCheckTimer;
-var config float musicChangeTimer;
-
-var byte savedSection;
-var byte savedCombatSection;
-var byte savedConvSection;
-
-var #var(PlayerPawn) p;
-var config Music PrevSong;
-var config byte PrevMusicMode;
-var config byte PrevSongSection;
-var config byte PrevSavedSection;
-var config byte PrevSavedCombatSection;
-var config byte PrevSavedConvSection;
-
-var byte OutroSection;
-var byte DyingSection;
-var byte ConvSection;
-var byte CombatSection;// used for NYCStreets2_Music
-
-var class<MenuChoice_ContinuousMusic> c;// for convenience, damn I'm lazy
-
 struct SongChoice {
     var string song;
     var int ambient, dying, combat, conv, outro;
     var bool cutscene_only;
+    var bool enabled;
 };
 
 var config bool allowCombat;
-var config SongChoice choices[60];
+var config SongChoice choices[300];// keep size in sync with _GetLevelSong tchoices[]
 
 function CheckConfig()
 {
-    local int i;
-    if( ConfigOlderThan(2,2,5,3) ) {
+    local int i, g;
+    local string gamesongs[100];
+
+    if( ConfigOlderThan(2,4,0,2) ) {
         allowCombat = default.allowCombat;
 
         for(i=0; i<ArrayCount(choices); i++) {
             choices[i].song = "";
+            choices[i].enabled = false;
         }
 
         i=0;
@@ -101,109 +70,199 @@ function CheckConfig()
         choices[i++] = MakeSongChoice("Quotes_Music", 0, 0, 0, 0, 0, true);
         choices[i++] = MakeSongChoice("Title_Music", 0, 0, 0, 0, 0, true);
         choices[i++] = MakeSongChoice("Training_Music", 0, 0, 0, 0, 0, true);
+
+        // Unreal Tournament songs
+        GetUTSongs(gamesongs);
+        AddGameSongs(gamesongs, i);
+
+        // Unreal
+        GetUnrealSongs(gamesongs);
+        AddGameSongs(gamesongs, i);
     }
     Super.CheckConfig();
 }
 
-simulated function PreBeginPlay()
+function GetDXSongs(out string songs[100])
 {
-    Disable('Tick');
-    Super.PreBeginPlay();
+    local int i;
+    songs[i++] = "Area51_Music";
+    songs[i++] = "Area51Bunker_Music";
+    songs[i++] = "BatteryPark_Music";
+    songs[i++] = "HKClub_Music";
+    songs[i++] = "HKClub2_Music";
+    songs[i++] = "HongKong_Music";
+    songs[i++] = "HongKongCanal_Music";
+    songs[i++] = "HongKongHelipad_Music";
+    songs[i++] = "Lebedev_Music";
+    songs[i++] = "LibertyIsland_Music";
+    songs[i++] = "MJ12_Music";
+    //choices[i++] = MakeSongChoice("MJ12_Music", 2, 1, 3, 4, 5);// ambient 2? maybe this could be a conversation song instead? maybe this isn't the right way to do this because it puts MJ12_Music into the pool twice
+    songs[i++] = "NavalBase_Music";
+    songs[i++] = "NYCBar2_Music";
+    songs[i++] = "NYCStreets_Music";
+    songs[i++] = "NYCStreets2_Music";
+    songs[i++] = "OceanLab_Music";
+    songs[i++] = "OceanLab2_Music";
+    songs[i++] = "ParisCathedral_Music";
+    songs[i++] = "ParisChateau_Music";
+    songs[i++] = "ParisClub_Music";
+    songs[i++] = "ParisClub2_Music";
+    songs[i++] = "Tunnels_Music";
+    songs[i++] = "UNATCO_Music";
+    songs[i++] = "UNATCOReturn_Music";
+    //choices[i++] = MakeSongChoice("UNATCOReturn_Music", 2, 1, 3, 4, 5);// ambient 2
+    songs[i++] = "Vandenberg_Music";
+    songs[i++] = "VersaLife_Music";
+
+    // cutscene-only songs, change all the arguments to 0 since they don't have other sections
+    songs[i++] = "Credits_Music";
+    songs[i++] = "DeusExDanceMix_Music";
+    songs[i++] = "Endgame1_Music";
+    songs[i++] = "Endgame2_Music";
+    songs[i++] = "Endgame3_Music";
+    songs[i++] = "Intro_Music";
+    songs[i++] = "Quotes_Music";
+    songs[i++] = "Title_Music";
+    songs[i++] = "Training_Music";
 }
 
-simulated event Destroyed()
+function GetUTSongs(out string songs[100])
 {
-    Disable('Tick');
-    RememberMusic();
-    Super.Destroyed();
+    local int i;
+    songs[i++] = "Botmca9";
+    songs[i++] = "Botpck10";
+    songs[i++] = "Cannon";
+    songs[i++] = "Colossus";
+    songs[i++] = "Course";
+    songs[i++] = "Credits.Trophy";
+    songs[i++] = "Ending";
+    songs[i++] = "Enigma";
+    songs[i++] = "firebr";
+    songs[i++] = "Foregone";
+    songs[i++] = "Godown";
+    songs[i++] = "Lock";
+    songs[i++] = "Mech8";
+    songs[i++] = "Mission";
+    songs[i++] = "Nether";
+    songs[i++] = "Organic";
+    songs[i++] = "Phantom";
+    songs[i++] = "Razor-ub";
+    songs[i++] = "Run";
+    songs[i++] = "SaveMe";
+    songs[i++] = "Savemeg";
+    songs[i++] = "Seeker";
+    songs[i++] = "Seeker2";
+    songs[i++] = "Skyward";
+    songs[i++] = "Strider";
+    songs[i++] = "Suprfist";
+    songs[i++] = "UnWorld2";
+    songs[i++] = "utmenu23";
+    songs[i++] = "Uttitle";
+    songs[i++] = "Wheels";
 }
 
-simulated event PreTravel()
+function GetUnrealSongs(out string songs[100])
 {
-    Disable('Tick');
-    RememberMusic();
-    Super.PreTravel();
+    local int i;
+    songs[i++] = "Boundary";
+    songs[i++] = "Chizra1";
+    songs[i++] = "Crater";
+    songs[i++] = "DigSh";
+    songs[i++] = "Dusk";
+    songs[i++] = "EndEx";
+    songs[i++] = "Ending";
+    songs[i++] = "EverSmoke";
+    songs[i++] = "Fifth";
+    songs[i++] = "Flyby";
+    songs[i++] = "Found99";
+    songs[i++] = "Fourth";
+    songs[i++] = "Gala";
+    songs[i++] = "Guardian";
+    songs[i++] = "Hub2";
+    songs[i++] = "Inter";
+    songs[i++] = "Isotoxin";
+    songs[i++] = "Journey";
+    songs[i++] = "Kran2";
+    songs[i++] = "Kran32";
+    songs[i++] = "K_vision";
+    songs[i++] = "Moroset";
+    songs[i++] = "Mountain";
+    songs[i++] = "Nali";
+    songs[i++] = "Neve";
+    songs[i++] = "Newmca13";
+    songs[i++] = "Newmca16";
+    songs[i++] = "Newmca7";
+    songs[i++] = "Newmca9";
+    songs[i++] = "Opal";
+    songs[i++] = "QueenSong";
+    songs[i++] = "Return";
+    songs[i++] = "Sacred";
+    songs[i++] = "Seti";
+    songs[i++] = "SkyTwn";
+    songs[i++] = "SpaceMarines";
+    songs[i++] = "Spire";
+    songs[i++] = "Starseek";
+    songs[i++] = "Surface";
+    songs[i++] = "Title";
+    songs[i++] = "Twilight";
+    songs[i++] = "Unreal4";
+    songs[i++] = "UTemple";
+    songs[i++] = "utend";
+    songs[i++] = "Vortex";
+    songs[i++] = "WarGate";
+    songs[i++] = "Warlord";
+    songs[i++] = "Watcher";
 }
 
-function Timer()
+function int AddGameSongs(string songs[100], out int i)
 {
-    Super.Timer();
-    RememberMusic();
-}
-
-function RememberMusic()
-{
-    if(p==None || p.Song == None) return;
-
-    // save us writing to the config file
-    if(
-        PrevSong == p.Song && PrevMusicMode == musicMode && PrevSongSection == p.SongSection && PrevSavedSection == savedSection
-        && PrevSavedCombatSection == savedCombatSection && PrevSavedConvSection == savedConvSection
-    ) {
-        return;
+    local int g;
+    for(g=0; g<ArrayCount(songs); g++) {
+        if(songs[g] == "") break;
+        choices[i] = MakeSongChoice(songs[g]);
+        choices[i].enabled = false;
+        i++;
     }
-
-    PrevSong = p.Song;
-    PrevMusicMode = musicMode;
-    PrevSongSection = p.SongSection;
-    PrevSavedSection = savedSection;
-    PrevSavedCombatSection = savedCombatSection;
-    PrevSavedConvSection = savedConvSection;
-    SaveConfig();
+    return i;
 }
 
-function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
+function SetEnabledGameSongs(string songs[100], bool enable)
 {
-    local bool changed_song, set_seed;
-    local bool rando_music_setting;
-    local int continuous_setting;
-
-    p = #var(PlayerPawn)(NewPlayer);
-    continuous_setting = int(NewPlayer.ConsoleCommand("get #var(package).MenuChoice_ContinuousMusic continuous_music"));
-    rando_music_setting = bool(p.ConsoleCommand("get #var(package).MenuChoice_RandomMusic  random_music"));
-    c = class'MenuChoice_ContinuousMusic';
-    l("ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$") "$continuous_setting@rando_music_setting@PrevSong@PrevMusicMode@dxr.dxInfo.missionNumber);
-
-    // copy to LevelSong in order to support changing songs, since Level.Song is const
-    if(LevelSong != None)
-        changed_song = true;
-    set_seed = NewSong == Level.Song;
-    LevelSong = NewSong;
-    LevelSongSection = NewSection;
-    DyingSection = 1;
-    CombatSection = 3;
-    ConvSection = 4;
-    OutroSection = 5;
-    savedCombatSection = CombatSection;
-    savedConvSection = ConvSection;
-    if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" && string(NewSong) != "Credits_Music.Credits_Music" ) {
-        //LevelSong = Music'NYCStreets2_Music';
-        LevelSong = Music(DynamicLoadObject("NYCStreets2_Music.NYCStreets2_Music", class'Music'));
-        NewSong = LevelSong;
-        CombatSection = 26;// idk why but section 3 takes time to start playing the song
-    }
-
-    // ignore complicated logic if everything is disabled
-    if( p == None || dxr == None || (continuous_setting == c.default.disabled && rando_music_setting == false) ) {
-        _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
-        // really make sure we clean the config
-        PrevSong = NewSong;
-        PrevMusicMode = 0;
-        PrevSongSection = 0;
-        PrevSavedSection = 0;
-        RememberMusic();
-        SaveConfig();
-        return;
-    }
-
-    p.musicMode = MUS_Outro;
-
-    if(changed_song && dxr != None) {
-        PlayRandomSong(set_seed);// should we use the level's normal seed or a random seed?
+    local int c, s;
+    l("SetEnabledGameSongs "$songs[0]@enable);
+    for(c=0; c<ArrayCount(choices); c++) {
+        if(choices[c].song == "") continue;
+        for(s=0; s<ArrayCount(songs); s++) {
+            if(songs[s] == "") break;
+            if(songs[s] == choices[c].song) {
+                choices[c].enabled = enable;
+                break;
+            }
+        }
     }
 }
 
-function SongChoice MakeSongChoice(string song, int ambient, int dying, int combat, int conv, int outro, optional bool cutscene_only)
+function bool AreGameSongsEnabled(string songs[100])
+{
+    local int c, s;
+    l("AreGameSongsEnabled "$songs[0]);
+    // just return the status of the first one found
+    // if people are using the GUI then they're all the same
+    // if people are manually editing the ini file, they're on their own
+    for(c=0; c<ArrayCount(choices); c++) {
+        if(choices[c].song == "") continue;
+        for(s=0; s<ArrayCount(songs); s++) {
+            if(songs[s] == "") break;
+            if(songs[s] == choices[c].song) {
+                return choices[c].enabled;
+            }
+        }
+    }
+    return false;
+}
+
+
+function SongChoice MakeSongChoice(string song, optional int ambient, optional int dying, optional int combat, optional int conv, optional int outro, optional bool cutscene_only)
 {
     local SongChoice s;
     s.song = song;
@@ -213,16 +272,18 @@ function SongChoice MakeSongChoice(string song, int ambient, int dying, int comb
     s.conv = conv;
     s.outro = outro;
     s.cutscene_only = cutscene_only;
+    s.enabled = true;
+    //s.enabled = (Music(DynamicLoadObject(s.song$"."$s.song, class'Music')) != None);
     return s;
 }
 
-function GetLevelSong(bool setseed)
+function _GetLevelSong(string oldSong, out string newSong, out byte LevelSongSection, out byte DyingSection, out byte CombatSection, out byte ConvSection, out byte OutroSection)
 {
-    local SongChoice tchoices[100], s;
+    local SongChoice tchoices[300], s;
     local int i, j, num;
     local bool cutscene;
-    local string OldSong;
 
+    // we expect the caller to handle setting the initial seed
     switch(dxr.localURL) {
     case "DX":
     case "DXOnly":
@@ -237,26 +298,19 @@ function GetLevelSong(bool setseed)
     // build local choices list
     for(j=0; j<ArrayCount(choices); j++) {
         s = choices[j];
+        if(s.enabled == false) continue;
         if(s.song == "") continue;
         if(s.cutscene_only && !cutscene) continue;
         tchoices[num++] = s;
     }
 
-    if(setseed) {
-        SetGlobalSeed(string(Level.Song.Name));// matching songs will stay matching
-        if( dxr.dxInfo.missionNumber == 8 && dxr.localURL != "08_NYC_BAR" )
-            SetGlobalSeed("NYCStreets2_Music");
-    } else {
-        SetGlobalSeed(FRand());
-        oldSong = string(LevelSong.Name);
-    }
-
     for(j=0; j<100; j++) {
         i = rng(num);
         s = tchoices[i];
-        if(setseed || s.song != oldSong) break;
+        if(s.song != oldSong) break;
     }
 
+    newSong = s.song;
     LevelSongSection = s.ambient;
     DyingSection = s.dying;
     CombatSection = s.combat;
@@ -273,270 +327,6 @@ function GetLevelSong(bool setseed)
     LevelSongSection = CombatSection;
     LevelSongSection = PrevSavedSection;*/
     l("GetLevelSong() "$s.song@LevelSongSection@DyingSection@CombatSection@ConvSection@OutroSection);
-    LevelSong = Music(DynamicLoadObject(s.song$"."$s.song, class'Music'));
-    savedSection = LevelSongSection;
-    savedCombatSection = CombatSection;
-    savedConvSection = ConvSection;
-}
-
-function AnyEntry()
-{
-    PlayRandomSong(true);
-}
-
-function PlayRandomSong(bool setseed)
-{
-    local music NewSong;
-    local byte NewSection, NewCdTrack;
-    local EMusicTransition NewTransition;
-    local bool rando_music_setting;
-    local int continuous_setting;
-
-    if(p == None) return;
-
-    continuous_setting = int(p.ConsoleCommand("get #var(package).MenuChoice_ContinuousMusic continuous_music"));
-    rando_music_setting = bool(p.ConsoleCommand("get #var(package).MenuChoice_RandomMusic random_music"));
-    l("AnyEntry 1: "$p@dxr@dxr.dxInfo.missionNumber@continuous_setting@rando_music_setting);
-    if( p == None || dxr == None  || (continuous_setting == c.default.disabled && rando_music_setting==false) )
-        return;
-
-    if(rando_music_setting && !dxr.flags.IsReducedRando()) {
-        GetLevelSong(setseed);
-    }
-    NewSong = LevelSong;
-    NewSection = LevelSongSection;
-    NewCdTrack = 255;
-    NewTransition = MTRAN_Fade;
-
-    l("AnyEntry 2: "$NewSong@NewSection@NewCdTrack@NewTransition@PrevSong@PrevSongSection@PrevSavedSection@PrevMusicMode);
-
-    // ensure musicMode defaults to ambient, to fix combat music re-entry
-    musicMode = MUS_Ambient;
-
-    // now time for fancy stuff, don't attempt a smmoth transition for the title screen, we need to init the config
-    if(PrevSong == NewSong && continuous_setting != c.default.disabled && dxr.dxInfo.missionNumber > -2 && musicChangeTimer > 1.0) {
-        l("trying to do smooth stuff");
-        if(PrevSavedSection == 255)
-            PrevSavedSection = NewSection;
-
-        switch(PrevMusicMode) {
-            case 0: musicMode = MUS_Ambient; break;
-            case 1: musicMode = MUS_Combat; break;
-            // 2=conversation, 3=outro, 4=dying
-            default:
-                musicMode = MUS_Ambient;
-                PrevSongSection = PrevSavedSection;
-                break;
-        }
-        savedSection = PrevSavedSection;
-        p.SongSection = PrevSongSection;
-        savedCombatSection = PrevSavedCombatSection;
-        savedConvSection = PrevSavedConvSection;
-        NewSection = PrevSongSection;
-        if(continuous_setting==c.default.simple) {
-            // simpler version of continuous music
-            NewSection = PrevSongSection;
-            NewTransition = MTRAN_FastFade;// default is MTRAN_Fade, quicker fade here when it's the same song
-        } else if(musicMode == PrevMusicMode) { //if(setting==c.default.advanced) {
-            // this is where we've determined we can just leave the current song playing
-            // MTRAN_None is basically the same as return here, except the Song variable gets set instead of being None, seems like less of a hack to me
-            NewTransition = MTRAN_None;
-        } else {
-            NewTransition = MTRAN_FastFade;
-        }
-    } else if(PrevMusicMode == 1 && dxr.dxInfo.missionNumber > -2) {// 1 is combat
-        NewTransition = MTRAN_SlowFade;
-        l("MTRAN_SlowFade");
-    } else {
-        // does the default MTRAN_Fade even work?
-        NewTransition = MTRAN_FastFade;
-        l("MTRAN_FastFade");
-    }
-
-    // we need an extra second for the song to init before we can change to combat music
-    musicCheckTimer = -1;
-    musicChangeTimer = 0;
-
-    _ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
-
-    SetTimer(1.0, True);
-    Enable('Tick');
-}
-
-// ----------------------------------------------------------------------
-// UpdateDynamicMusic() copied from DeusExPlayer, but Level.Song was changed to LevelSong, and Level.SongSection changed to LevelSongSection
-//
-// Pattern definitions:
-//   0 - Ambient 1
-//   1 - Dying
-//   2 - Ambient 2 (optional)
-//   3 - Combat
-//   4 - Conversation
-//   5 - Outro
-// ----------------------------------------------------------------------
-
-simulated event Tick(float deltaTime)
-{
-    if (LevelSong == None)
-        return;
-
-    if(p == None && string(Level.Game.class.name) == "DXRandoTests")
-        return;
-
-    // DEUS_EX AMSD In singleplayer, do the old thing.
-    // In multiplayer, we can come out of dying.
-    if (!p.PlayerIsClient())
-    {
-        if ((musicMode == MUS_Dying) || (musicMode == MUS_Outro))
-            return;
-    }
-    else
-    {
-        if (musicMode == MUS_Outro)
-            return;
-    }
-
-    musicCheckTimer += deltaTime;
-    musicChangeTimer += deltaTime;
-
-    if (p.IsInState('Interpolating'))
-    {
-        // don't mess with the music on any of the intro maps
-        if ((dxr.dxInfo != None) && (dxr.dxInfo.MissionNumber < 0))
-        {
-            musicMode = MUS_Outro;
-            return;
-        }
-
-        if (musicMode != MUS_Outro)
-            EnterOutro();
-    }
-    else if (p.IsInState('Conversation'))
-    {
-        if (musicMode != MUS_Conversation)
-            EnterConversation();
-    }
-    else if (p.IsInState('Dying'))
-    {
-        if (musicMode != MUS_Dying)
-            EnterDying();
-    }
-    else
-    {
-        // only check for combat music every second
-        if (musicCheckTimer >= 1.0)
-        {
-            musicCheckTimer = 0.0;
-
-            if (InCombat())
-            {
-                musicChangeTimer = 0.0;
-
-                if (musicMode != MUS_Combat)
-                    EnterCombat();
-            }
-            else if (musicMode != MUS_Ambient)
-            {
-                // wait until we've been out of combat for 5 seconds before switching music
-                if (musicChangeTimer >= 5.0)
-                    EnterAmbient();
-            }
-        }
-    }
-
-    RememberMusic();
-}
-
-function SaveSection()
-{
-    // save our place in the ambient track
-    if (musicMode == MUS_Ambient)
-        savedSection = p.SongSection;
-    if (musicMode == MUS_Combat)
-        savedCombatSection = p.SongSection;
-    if (musicMode == MUS_Conversation)
-        savedConvSection = p.SongSection;
-}
-
-function EnterOutro()
-{
-    l("EnterOutro");
-    SaveSection();
-    musicMode = MUS_Outro;
-    _ClientSetMusic(LevelSong, OutroSection, 255, MTRAN_FastFade);
-}
-
-function byte FixSavedSection(byte section, byte start)
-{
-    if(section == 255 || section == LevelSongSection || section == DyingSection || section == CombatSection || section == ConvSection || section == OutroSection)
-        return start;
-    return section;
-}
-
-function EnterConversation()
-{
-    l("EnterConversation");
-    SaveSection();
-    musicMode = MUS_Conversation;
-    savedConvSection = FixSavedSection(savedConvSection, ConvSection);
-    _ClientSetMusic(LevelSong, savedConvSection, 255, MTRAN_Fade);
-}
-
-function EnterDying()
-{
-    l("EnterDying");
-    SaveSection();
-    musicMode = MUS_Dying;
-    _ClientSetMusic(LevelSong, DyingSection, 255, MTRAN_Fade);
-}
-
-function EnterCombat()
-{
-    l("EnterCombat");
-    SaveSection();
-    musicMode = MUS_Combat;
-    savedCombatSection = FixSavedSection(savedCombatSection, CombatSection);
-    _ClientSetMusic(LevelSong, savedCombatSection, 255, MTRAN_FastFade);
-}
-
-function EnterAmbient()
-{
-    local EMusicMode oldMusicMode;
-    l("EnterAmbient");
-    SaveSection();
-
-    oldMusicMode = musicMode;
-    musicMode = MUS_Ambient;
-    savedSection = FixSavedSection(savedSection, LevelSongSection);
-
-    // fade slower for combat transitions
-    if (oldMusicMode == MUS_Combat)
-        _ClientSetMusic(LevelSong, savedSection, 255, MTRAN_SlowFade);
-    else
-        _ClientSetMusic(LevelSong, savedSection, 255, MTRAN_Fade);
-
-    musicChangeTimer = 0.0;
-}
-
-function bool InCombat()
-{
-    local ScriptedPawn npc;
-    local Pawn CurPawn;
-
-    if(!allowCombat) return false;
-
-    return PawnIsInCombat(p);
-}
-
-function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
-{
-    l("_ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$")"@savedSection@musicMode);
-#ifdef vanilla
-    p._ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
-#else
-    p.ClientSetMusic(NewSong, NewSection, NewCdTrack, NewTransition);
-#endif
-    RememberMusic();
 }
 
 defaultproperties

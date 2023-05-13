@@ -24,9 +24,6 @@ struct AddDatacube {
 };
 var AddDatacube add_datacubes[32];
 
-var int storedWeldCount;// ship weld points
-var int storedReactorCount;// Area 51 goal
-
 static function class<DXRBase> GetModuleToLoad(DXRando dxr, class<DXRBase> request)
 {
     switch(dxr.dxInfo.missionNumber) {
@@ -278,6 +275,21 @@ function FixUNATCORetinalScanner()
     }
 }
 
+function FixUNATCOCarterCloset()
+{
+    local Inventory i;
+    local #var(DeusExPrefix)Decoration d;
+
+    foreach RadiusActors(class'Inventory', i, 360, vect(1075, -1150, 10)) {
+        i.ItemName = "Report this as a DXRando bug";
+        i.bIsSecretGoal = true;
+    }
+    foreach RadiusActors(class'#var(DeusExPrefix)Decoration', d, 360, vect(1075, -1150, 10)) {
+        d.ItemName = "Report this as a DXRando bug";
+        d.bIsSecretGoal = true;
+    }
+}
+
 function FixSamCarter()
 {
     local SamCarter s;
@@ -402,42 +414,12 @@ function SpawnDatacubes()
 #endif
 
         if( dc != None ){
-             dc.plaintext = add_datacubes[i].text;
-             l("add_datacubes spawned "$dc @ dc.plaintext @ loc);
+            if(dxr.flags.settings.infodevices > 0)
+                GlowUp(dc);
+            dc.plaintext = add_datacubes[i].text;
+            l("add_datacubes spawned "$dc @ dc.plaintext @ loc);
         }
         else warning("failed to spawn datacube at "$loc$", text: "$add_datacubes[i].text);
-    }
-}
-
-function UpdateGoalWithRandoInfo(name goalName)
-{
-    local string goalText;
-    local DeusExGoal goal;
-    local int randoPos;
-
-    if(dxr.flags.settings.goals <= 0)
-        return;
-
-    goal = player().FindGoal(goalName);
-    if (goal!=None){
-        goalText = goal.text;
-        randoPos = InStr(goalText,"Rando: ");
-
-        if (randoPos==-1){
-            switch(goalName){
-            case 'InvestigateMaggieChow':
-                goalText = goalText$"|nRando: The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.";
-                break;
-            case 'FindHarleyFilben':
-                goalText = goalText$"|nRando: Harley could be anywhere in Hell's Kitchen";
-                break;
-            case 'FindNicolette':
-                goalText = goalText$"|nRando: Nicolette could be anywhere in the city";
-                break;
-            }
-            goal.SetText(goalText);
-            player().ClientMessage("Goal Updated - Check DataVault For Details",, true);
-        }
     }
 }
 

@@ -24,6 +24,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ControlPanel panel;
     local #var(prefix)LaserTrigger laser;
     local #var(prefix)Containers c;
+    local #var(prefix)Karkian k;
 
     switch (dxr.localURL)
     {
@@ -75,6 +76,13 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)HackableDevices', hd) {
             hd.hackStrength /= 3.0;
         }
+        if(!dxr.flags.IsReducedRando()) {
+            k = Spawn(class'#var(prefix)Karkian',,, vect(54.688416, 1208.957275, -237.351410), rot(0,32768,0));
+            k.BindName="NSFMinotaur";
+            k.bImportant = true;
+            k.ChangeAlly('Player', -1, false);
+            k.SetOrders('Standing');
+        }
         break;
 
     case "04_NYC_UNATCOISLAND":
@@ -88,6 +96,7 @@ function PreFirstEntryMapFixes()
         }
         break;
     case "04_NYC_UNATCOHQ":
+        FixUNATCOCarterCloset();
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vect(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vect(211.227, 348.46, 50.32)); //Mens bathroom counter

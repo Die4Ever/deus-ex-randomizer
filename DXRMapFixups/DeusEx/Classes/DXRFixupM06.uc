@@ -280,6 +280,8 @@ function PostFirstEntryMapFixes()
         a = Spawn(class'NanoKey',,, vect(1159.455444, -1196.089111, 1723.212402));
         NanoKey(a).KeyID = 'JocksKey';
         NanoKey(a).Description = "Jock's apartment";
+        if(dxr.flags.settings.keysrando > 0)
+            GlowUp(a);
         break;
 
     case "06_HONGKONG_VERSALIFE":
@@ -302,6 +304,8 @@ function AnyEntryMapFixes()
     local bool recruitedFlag;
     local #var(DeusExPrefix)Carcass carc;
     local Conversation c;
+    local ConEvent ce;
+    local ConEventSpeech ces;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
     // or if flag Have_ROM, Gordon Quick should let you into the compound? requires Have_Evidence and MaxChenConvinced
@@ -422,18 +426,21 @@ function AnyEntryMapFixes()
                 }
         }
         break;
+    case "06_HONGKONG_MJ12LAB":
+        c = GetConversation('MJ12Lab_BioWeapons_Overheard');
+        ce = c.eventList;
 
-    default:
+        while (ce!=None && ce.eventType!=ET_End){
+            if (ce.eventType==ET_Speech){
+                ces = ConEventSpeech(ce);
+                if (ces.speakingToName=="MJ12Lab_Assistant_Level2"){
+                    ces.speakingToName="MJ12Lab_Assistant_BioWeapons";
+                }
+            }
+            ce = ce.nextEvent;
+        }
         break;
-    }
-}
-
-function TimerMapFixes()
-{
-    switch(dxr.localURL)
-    {
-    case "06_HONGKONG_WANCHAI_MARKET":
-        UpdateGoalWithRandoInfo('InvestigateMaggieChow');
+    default:
         break;
     }
 }

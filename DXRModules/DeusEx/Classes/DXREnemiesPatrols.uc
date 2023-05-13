@@ -19,7 +19,7 @@ function GivePatrols()
     }
 
     l("DXREnemiesPatrols got "$num);
-    max = 20;
+    max = 25;
     if(num > max) {
         SetSeed("DXREnemiesPatrols reduce");
         for(i=0; i<max; i++) {
@@ -46,6 +46,7 @@ function GivePatrols()
 
 function bool GivePatrol(ScriptedPawn pawn)
 {
+    local #var(DeusExPrefix)Mover m;
     local DynamicPatrolPoint p, prev, first;
     local NavigationPoint nps[100], np;
     local string s;
@@ -58,6 +59,11 @@ function bool GivePatrol(ScriptedPawn pawn)
     maxradius = rngrange(750, 0.5, 1.5);
     max_z_dist = 50;
     l("GivePatrol "$pawn@pawn.Location@maxradius@max_z_dist);
+
+    foreach RadiusActors(class'#var(DeusExPrefix)Mover', m, maxradius, pawn.Location) {
+        info("GivePatrol "$pawn@pawn.Location@maxradius@max_z_dist$", bailing because of "$m);
+        return false;
+    }
 
     // collect the points we can use and figure out the center of them all
     foreach RadiusActors(class'NavigationPoint', np, maxradius, pawn.Location) {
@@ -146,6 +152,8 @@ function DynamicPatrolPoint CreatePoint(NavigationPoint n, Name t)
     local int i;
     local DynamicPatrolPoint p;
     p = Spawn(class'DynamicPatrolPoint',, t, n.Location);
+    if(p == None)
+        return None;
     p.pausetime = rngrange(1, 0.1, 5);
 
     for(i=0; i<16; i++) {

@@ -280,7 +280,7 @@ function BindControls(optional string action)
 
     NewMenuItem("JC's Prison Pocket", "Keep all your items when getting captured.");
     EnumOption("Disabled", 0, f.settings.prison_pocket);
-    //EnumOption("Unaugmented", 1, f.settings.prison_pocket);// TODO
+    //EnumOption("Unaugmented", 1, f.settings.prison_pocket);// TODO: can keep the item in the top left inventory slot, if it's 1 slot
     EnumOption("Augmented", 100, f.settings.prison_pocket);// maybe the number could be set to the number of items to keep?
 
     NewGroup("Augmentations");

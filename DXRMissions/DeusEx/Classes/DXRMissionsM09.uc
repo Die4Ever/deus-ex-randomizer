@@ -115,3 +115,9 @@ function PreFirstEntryMapFixes()
         }
     }
 }
+
+function MissionTimer()
+{
+    if(dxr.flags.settings.goals > 0)
+        UpdateGoalWithRandoInfo('Escape', "Jock could be anywhere at the dockyard.");
+}

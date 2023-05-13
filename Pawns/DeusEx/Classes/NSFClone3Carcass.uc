@@ -5,7 +5,7 @@ class NSFClone3Carcass extends #var(DeusExPrefix)Carcass;
 
 defaultproperties
 {
-    Fatness=115
+    Fatness=120
     DrawScale=0.9
 
     Mesh2=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB'

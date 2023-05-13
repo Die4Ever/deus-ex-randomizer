@@ -1,11 +1,14 @@
 class DXRPersonaScreenGoals injects PersonaScreenGoals;
 
 var PersonaActionButtonWindow btnBingo, btnGoalHints, btnEntranceLocs, btnEntranceSpoilers, btnGoalSpoilers, btnGoalLocs;
+var PersonaActionButtonWindow btnKeys, btnDatacubes;
 //var PersonaCheckBoxWindow  chkShowSpoilers;
 var string goalRandoWikiUrl;
 var string InfoWindowHeader, InfoWindowText;
 var string EntSpoilerWindowHeader, EntSpoilerWindowText;
 var string GoalSpoilerWindowHeader, GoalSpoilerWindowText;
+var string KeySpoilerWindowHeader, KeySpoilerWindowText;
+var string DatacubeSpoilerWindowHeader, DatacubeSpoilerWindowText;
 var String DisplaySpoilers;
 var String GoalLocations;
 var bool bDisplaySpoilers;
@@ -26,6 +29,8 @@ function CreateControls()
     btnBingo.SetButtonText("|&Bingo");
     btnBingo.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 13, 179);
     btnBingo.SetSensitivity(true);
+
+    CreateKeysAndDatacubesButtons();
 
     foreach player.AllActors(class'DXRando',dxr){
         if (dxr.flags.settings.goals > 0) {
@@ -75,6 +80,19 @@ function CreateShowSpoilersCheckbox()
 }
 */
 
+function CreateKeysAndDatacubesButtons()
+{
+    btnKeys = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
+    btnKeys.SetButtonText("Show Keys");
+    btnKeys.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 385, 2);
+    btnKeys.SetSensitivity(true);
+
+    btnDatacubes = PersonaActionButtonWindow(winClient.NewChild(Class'DXRPersonaActionButtonWindow'));
+    btnDatacubes.SetButtonText("Show Datacubes");
+    btnDatacubes.SetWindowAlignments(HALIGN_Left, VALIGN_Top, 475, 2);
+    btnDatacubes.SetSensitivity(true);
+}
+
 function CreateShowSpoilersButton()
 {
 	bDisplaySpoilers = False;
@@ -110,8 +128,9 @@ function PopulateSpoilers()
     local DXRMissions missions;
     local PersonaHeaderTextWindow spoilerHeader;
     local PersonaGoalItemWindow spoilerWindow;
+    local ActorDisplayWindow actorDisplay;
     local int i;
-    local string spoilName,spoilLoc;
+    local string spoilName,spoilLoc, spoilMap;
 
     foreach player.AllActors(class'DXRMissions',missions){
         // Create Goals Header
@@ -126,14 +145,22 @@ function PopulateSpoilers()
         for(i=0;i<missions.num_goals;i++){
             spoilName = missions.GetSpoiler(i).goalName;
             spoilLoc = missions.GetSpoiler(i).goalLocation;
-            spoilLoc = Caps(Left(spoilLoc,1))$Mid(spoilLoc,1);
+            spoilMap = missions.GetSpoiler(i).locationMapName;
+            if(spoilMap != missions.dxr.localURL)
+                spoilLoc = spoilLoc $ " (" $ spoilMap $ ")";
 
             spoilerWindow = PersonaGoalItemWindow(winGoals.NewChild(Class'PersonaGoalItemWindow'));
-			spoilerWindow.SetGoalProperties(True, False, spoilName $": "$spoilLoc);
+            spoilerWindow.SetGoalProperties(True, False, spoilName $": "$spoilLoc);
         }
 
         break;
     }
+
+    actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
+    actorDisplay.SetViewClass(class'DXRGoalMarker');
+    actorDisplay.ShowLOS(false);
+    if(!#defined(injections))
+        actorDisplay.ShowBindName(true);
 }
 
 /*
@@ -155,41 +182,73 @@ event bool ToggleChanged(Window button, bool bNewToggle)
 event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 {
     local MenuUIMessageBoxWindow msgBox;
+    local ActorDisplayWindow actorDisplay;
     local string action;
 
     msgBox = MenuUIMessageBoxWindow(msgBoxWindow);
-    if (msgBox.winText.GetText()==InfoWindowText){
+    switch(msgBox.winText.GetText()) {
+    case InfoWindowText:
         if (buttonNumber==0){
             action="wiki";
         }
-    } else if (msgBox.winText.GetText()==EntSpoilerWindowText){
+        break;
+
+    case EntSpoilerWindowText:
         if (buttonNumber==0){
             action="entspoilers";
             class'DXRStats'.static.AddCheatOffense(player);
         }
-    } else if (msgBox.winText.GetText()==GoalSpoilerWindowText){
+        break;
+
+    case GoalSpoilerWindowText:
         action="goalspoilers";
         bDisplaySpoilers=(buttonNumber==0);
         if(bDisplaySpoilers)
             class'DXRStats'.static.AddCheatOffense(player);
+
+    case KeySpoilerWindowText:
+        if (buttonNumber==0) {
+            class'DXRStats'.static.AddCheatOffense(player);
+            actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
+            actorDisplay.SetViewClass(class'#var(prefix)Nanokey');
+            actorDisplay.ShowLOS(false);
+#ifdef injections
+            actorDisplay.bShowHidden = false;
+#endif
+        }
+        break;
+
+    case DatacubeSpoilerWindowText:
+        if (buttonNumber==0) {
+            class'DXRStats'.static.AddCheatOffense(player);
+            actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
+            actorDisplay.SetViewClass(class'#var(prefix)InformationDevices');
+            actorDisplay.ShowLOS(false);
+#ifdef injections
+            actorDisplay.bShowHidden = false;
+#endif
+        }
+        break;
     }
 
-    if (action=="wiki"){
+    switch(action) {
+    case "wiki":
         OpenGoalRandoWikiPage();
         // Destroy the msgbox!
-	    root.PopWindow();
-        return true;
-    } else if (action=="entspoilers"){
-        // Destroy the msgbox!
-	    root.PopWindow();
-        generateEntranceNote(True);
-        return true;
-    } else if (action=="goalspoilers"){
-        // Destroy the msgbox!
-	    root.PopWindow();
-        PopulateGoals();
+        root.PopWindow();
         return true;
 
+    case "entspoilers":
+        // Destroy the msgbox!
+        root.PopWindow();
+        generateEntranceNote(True);
+        return true;
+
+    case "goalspoilers":
+        // Destroy the msgbox!
+        root.PopWindow();
+        PopulateGoals();
+        return true;
     }
 
     return Super.BoxOptionSelected(msgBoxWindow,buttonNumber);
@@ -324,27 +383,42 @@ function generateGoalLocationNote()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-    if(buttonPressed == btnBingo) {
+    switch(buttonPressed) {
+    case btnBingo:
         SaveSettings();
         root.InvokeUIScreen(class'PersonaScreenBingo');
         return true;
-    } else if(buttonPressed == btnGoalHints) {
+
+    case btnGoalHints:
         SaveSettings();
         root.MessageBox(InfoWindowHeader,InfoWindowText,0,False,Self);
         return true;
-    } else if (buttonPressed == btnEntranceLocs) {
+
+    case btnEntranceLocs:
         generateEntranceNote(False);
         return true;
-    } else if (buttonPressed == btnEntranceSpoilers) {
+
+    case btnEntranceSpoilers:
         root.MessageBox(EntSpoilerWindowHeader,EntSpoilerWindowText,0,False,Self);
         return true;
-    } else if (buttonPressed == btnGoalSpoilers) {
+
+    case btnGoalSpoilers:
         root.MessageBox(GoalSpoilerWindowHeader,GoalSpoilerWindowText,0,False,Self);
         return true;
-    } else if (buttonPressed == btnGoalLocs) {
+
+    case btnGoalLocs:
         generateGoalLocationNote();
         return true;
+
+    case btnKeys:
+        root.MessageBox(KeySpoilerWindowHeader,KeySpoilerWindowText,0,False,Self);
+        return true;
+
+    case btnDatacubes:
+        root.MessageBox(DatacubeSpoilerWindowHeader,DatacubeSpoilerWindowText,0,False,Self);
+        return true;
     }
+
     return Super.ButtonActivated(buttonPressed);
 }
 
@@ -359,4 +433,9 @@ defaultproperties
      goalRandoWikiUrl="https://github.com/Die4Ever/deus-ex-randomizer/wiki/%s-Goals"
      DisplaySpoilers="Show Spoilers"
      GoalLocations="Goal Locations"
+
+    KeySpoilerWindowHeader="Spoilers?"
+    KeySpoilerWindowText="Do you want to see spoilers for where nanokeys are? This will impact your score!"
+    DatacubeSpoilerWindowHeader="Spoilers?"
+    DatacubeSpoilerWindowText="Do you want to see spoilers for where datacubes are? This will impact your score!"
 }

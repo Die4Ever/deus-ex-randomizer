@@ -109,6 +109,34 @@ function PreFirstEntryMapFixes()
     }
 }
 
+function AddMissionGoals()
+{
+    local #var(prefix)DataLinkTrigger dlt;
+    local Inventory item;
+    local DeusExGoal newGoal;
+
+    if(dxr.localURL != "05_NYC_UNATCOMJ12LAB") return;
+
+    foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
+        if(dlt.datalinkTag == 'DL_Choice') {
+            dlt.Event='';
+            dlt.Destroy();
+        }
+    }
+    newGoal=player().AddGoal('FindPaul', true);
+    if(dxr.flagbase.GetBool('PaulDenton_Dead'))
+        newGoal.SetText("Get the datavault from your brother's body.  Tracer Tong will need it to defeat the killswitch.");
+    else
+        newGoal.SetText("Find your brother and access information in his datavault that Tracer Tong will need to defeat the killswitch.");
+
+    newGoal=player().AddGoal('FindEquipment', false);
+    l("added goal "$newGoal);
+    newGoal.SetText("Find the equipment taken from you when you were captured by UNATCO.");
+
+    item = Spawn(class'Image05_NYC_MJ12Lab');
+    item.Frob(player(), None);
+}
+
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local int i;

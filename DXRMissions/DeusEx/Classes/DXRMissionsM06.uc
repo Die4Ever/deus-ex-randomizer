@@ -86,6 +86,16 @@ function int InitGoals(int mission, string map)
     return mission+1000;
 }
 
+function MissionTimer()
+{
+    switch(dxr.localURL) {
+    case "06_HONGKONG_WANCHAI_MARKET":
+        if(dxr.flags.settings.goals > 0)
+            UpdateGoalWithRandoInfo('InvestigateMaggieChow', "The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.");
+        break;
+    }
+}
+
 function DeleteGoal(Goal g, GoalLocation Loc)
 {
     if (g.name=="Dragon's Tooth Sword"){
@@ -123,18 +133,17 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
-    if (g.name=="Dragon's Tooth Sword"){
-        g.actors[0].a.bIsSecretGoal=True; //We'll use this to stop it from being swapped
-        if (Loc.name!="Sword Case"){
+    if (g.name=="Dragon's Tooth Sword" && Loc.name!="Sword Case") {
+        if(g.actors[1].a != None) {
             g.actors[1].a.Tag=''; //Change the tag so it doesn't get hit if the case opens
 
             //Make the datalink trigger actually bumpable
             g.actors[1].a.SetCollision(True,False,False);
             g.actors[1].a.SetCollisionSize(100,20);
+        }
 
-            if ( dxr.localURL == "06_HONGKONG_WANCHAI_STREET" ){
-                GenerateDTSHintCube(g,Loc);
-            }
+        if ( dxr.localURL == "06_HONGKONG_WANCHAI_STREET" ){
+            GenerateDTSHintCube(g,Loc);
         }
     }
 }

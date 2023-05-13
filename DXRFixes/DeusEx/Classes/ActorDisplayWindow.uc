@@ -1,6 +1,50 @@
 class ActorDisplayWindow injects ActorDisplayWindow;
 
 var Font textfont;
+var bool bShowHidden;
+
+function SetViewClass(Class<Actor> newViewClass)
+{
+    Super.SetViewClass(newViewClass);
+    bShowHidden = true;
+}
+
+function ShowLOS(bool bShow)
+{
+    Super.ShowLOS(bShow);
+    bShowHidden = true;
+}
+
+function string GetActorName(Actor a)
+{
+    local string str;
+
+    // DXRando: we want to show a nicer name for spoilers
+    if(DXRGoalMarker(a) != None) {
+        str = a.BindName;
+    }
+    else if(!bShowHidden) {
+        if(#var(prefix)Nanokey(a) != None) {
+            str = #var(prefix)Nanokey(a).Description;
+        }
+        else if(#var(prefix)InformationDevices(a) != None) {
+            str = string(#var(prefix)InformationDevices(a).textTag);
+        }
+        else if(ScriptedPawn(a) != None) {
+            str = ScriptedPawn(a).FamiliarName;
+        }
+        else if(Inventory(a) != None) {
+            str = Inventory(a).ItemName;
+        }
+        else if(DeusExDecoration(a) != None) {
+            str = DeusExDecoration(a).ItemName;
+        }
+    }
+    if(str == "" || str == "None")
+        str = GetPlayerPawn().GetItemName(String(a));
+
+    return str;
+}
 
 //I just want to change the font :(
 function DrawWindow(GC gc)
@@ -48,6 +92,9 @@ function DrawWindow(GC gc)
 
     foreach player.AllActors(viewClass, trackActor)
     {
+        if(!bShowHidden && trackActor.bHidden)
+            continue;// DXRando: for spoilers buttons
+
         dxMover = DeusExMover(trackActor);
         cVect.X = trackActor.CollisionRadius;
         cVect.Y = trackActor.CollisionRadius;
@@ -403,7 +450,8 @@ function DrawWindow(GC gc)
             gc.SetTextColor(mainColor);
             gc.SetAlignments(HALIGN_Center, VALIGN_Bottom);
             gc.SetFont(textfont);
-            gc.DrawText(leftX-50, topY-140, 100+rightX-leftX, 135, GetPlayerPawn().GetItemName(String(trackActor)));
+
+            gc.DrawText(leftX-50, topY-140, 100+rightX-leftX, 135, GetActorName(trackActor));
 
             if(trackActor.Location.X < minpos.X)
                 minpos.X = trackActor.Location.X;
@@ -433,4 +481,5 @@ function DrawWindow(GC gc)
 defaultproperties
 {
     textfont=Font'DeusExUI.FontFixedWidthSmall';
+    bShowHidden=true
 }

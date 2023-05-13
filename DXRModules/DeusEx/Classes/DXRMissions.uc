@@ -11,6 +11,8 @@ const START_LOCATION = 1073741824;
 const VANILLA_START = 2147483648;
 const PLAYER_LOCATION = 7; // keep in sync with length of GoalLocation.positions array
 
+var bool RandoMissionGoals;// only set on first entry
+
 struct GoalActor {
     var name actorName;
     var EPhysics physics;
@@ -43,6 +45,7 @@ struct MutualExclusion {
 struct Spoiler {
     var string goalName;
     var string goalLocation;
+    var string locationMapName;
 };
 
 var Goal goals[32];
@@ -91,6 +94,7 @@ function DeleteGoal(Goal g, GoalLocation Loc);
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc);
 function PreFirstEntryMapFixes();
 function MissionTimer();
+function AddMissionGoals();
 function AfterShuffleGoals(int goalsToLocations[32]);
 function UpdateLocation(Actor a);
 
@@ -196,6 +200,7 @@ function PreFirstEntry()
 
     SetGlobalSeed( "DXRMissions" $ seed );
     ShuffleGoals();
+    RandoMissionGoals = true;
 }
 
 function ShuffleGoals()
@@ -241,6 +246,11 @@ function MoveActorsIn(int goalsToLocations[32])
 {
     local int g, i;
     local #var(PlayerPawn) p;
+    local DXRGoalMarker marker;
+
+    foreach AllActors(class'DXRGoalMarker', marker) {
+        marker.Destroy();
+    }
 
     g = goalsToLocations[num_goals];
     if( dxr.flags.settings.startinglocations > 0 && g > -1 && dxr.localURL == locations[g].mapName ) {
@@ -319,6 +329,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
 
         spoilers[i].goalName=goals[i].name;
         spoilers[i].goalLocation=locations[availLocs[r]].name;
+        spoilers[i].locationMapName=locations[availLocs[r]].mapName;
 
         _num_locs--;
         availLocs[r] = availLocs[_num_locs];
@@ -393,6 +404,28 @@ function Timer()
     Super.Timer();
     if( dxr == None ) return;
     MissionTimer();
+    if (RandoMissionGoals && !dxr.flagbase.GetBool('PlayerTraveling')){
+        //Secondary objectives get cleared if added in pre/postFirstEntry due to the MissionScript, the MissionsScript also clears the PlayerTraveling flag
+        AddMissionGoals();
+        RandoMissionGoals=false;
+    }
+}
+
+function UpdateGoalWithRandoInfo(name goalName, string text)
+{
+    local string goalText;
+    local DeusExGoal goal;
+    local int randoPos;
+
+    goal = player().FindGoal(goalName);
+    if(goal == None) return;
+
+    randoPos = InStr(goal.text, "Rando: ");
+    if(randoPos != -1) return;
+
+    text = goal.text $ "|nRando: " $ text;
+    goal.SetText(text);
+    player().ClientMessage("Goal Updated - Check DataVault For Details",, true);
 }
 
 function _UpdateLocation(Actor a, string goalName)
@@ -423,6 +456,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     local Actor a;
     local ScriptedPawn sp;
     local string result;
+    local DXRGoalMarker marker;
 
     result = g.name $ " to " $ Loc.name;
     info("Moving " $ result $ " (" $ Loc.mapName @ Loc.positions[0].pos $")");
@@ -447,8 +481,8 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     for(i=0; i<ArrayCount(g.actors); i++) {
         a = g.actors[i].a;
         if(a == None) continue;
-        a.bVisionImportant = true;
-        a.bIsSecretGoal = true;
+        a.bVisionImportant = true;// for AugVision
+        a.bIsSecretGoal = true;// to prevent swapping
         if(ElectronicDevices(a) != None)
             ElectronicDevices(a).ItemName = g.name;
         if(ScriptedPawn(a) != None)
@@ -457,15 +491,16 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 
     if( (Loc.bitMask & SITTING_GOAL) != 0) {
-        for(i=0; i<ArrayCount(g.actors); i++) {
-            sp = ScriptedPawn(g.actors[i].a);
-            if(sp == None) continue;
+        sp = ScriptedPawn(g.actors[0].a);
+        if(sp != None)
             sp.SetOrders('Sitting');
-        }
     }
 
-    if(Loc.mapName == dxr.localURL)
+    if(Loc.mapName == dxr.localURL) {
+        marker = Spawn(class'DXRGoalMarker',,, Loc.positions[0].pos);
+        marker.BindName = g.name $ " (" $ Loc.name $ ")";
         AfterMoveGoalToLocation(g, Loc);
+    }
 }
 
 function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
