@@ -153,10 +153,11 @@ function PopulateSpoilers()
         break;
     }
 
-#ifdef injections
     actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
-    actorDisplay.ShowVisionImportant();
-#endif
+    actorDisplay.SetViewClass(class'DXRGoalMarker');
+    actorDisplay.ShowLOS(false);
+    if(!#defined(injections))
+        actorDisplay.ShowBindName(true);
 }
 
 /*

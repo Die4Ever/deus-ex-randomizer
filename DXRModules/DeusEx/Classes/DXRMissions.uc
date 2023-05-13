@@ -246,6 +246,11 @@ function MoveActorsIn(int goalsToLocations[32])
 {
     local int g, i;
     local #var(PlayerPawn) p;
+    local DXRGoalMarker marker;
+
+    foreach AllActors(class'DXRGoalMarker', marker) {
+        marker.Destroy();
+    }
 
     g = goalsToLocations[num_goals];
     if( dxr.flags.settings.startinglocations > 0 && g > -1 && dxr.localURL == locations[g].mapName ) {
@@ -451,6 +456,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     local Actor a;
     local ScriptedPawn sp;
     local string result;
+    local DXRGoalMarker marker;
 
     result = g.name $ " to " $ Loc.name;
     info("Moving " $ result $ " (" $ Loc.mapName @ Loc.positions[0].pos $")");
@@ -490,8 +496,11 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
             sp.SetOrders('Sitting');
     }
 
-    if(Loc.mapName == dxr.localURL)
+    if(Loc.mapName == dxr.localURL) {
+        marker = Spawn(class'DXRGoalMarker',,, Loc.positions[0].pos);
+        marker.BindName = g.name $ " (" $ Loc.name $ ")";
         AfterMoveGoalToLocation(g, Loc);
+    }
 }
 
 function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
