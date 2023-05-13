@@ -32,7 +32,20 @@ function PlayerLogin(#var(PlayerPawn) p)
 
 function PlayerAnyEntry(#var(PlayerPawn) p)
 {
+    local bool bFixGlitches;
+
     SetMaxStats(p);
+
+    if(p.HealthTorso <= 0 || p.HealthHead <= 0) {
+        //bFixGlitches = bool(ConsoleCommand("get #var(package).MenuChoice_FixGlitches fix_glitches"));
+        // TODO: this one is a bit weird to fix because our code doesn't get run with the glitched load
+        if(bFixGlitches) {
+            p.TakeDamage(10000, p, p.Location, vect(0,0,0), 'Radiation');
+        } else {
+            p.ClientMessage("DEAD MAN WALKING GLITCH DETECTED!");
+            class'DXRStats'.static.AddCheatOffense(p, 5);// worth more than other glitches
+        }
+    }
 }
 
 function SetMaxStats(#var(PlayerPawn) p)

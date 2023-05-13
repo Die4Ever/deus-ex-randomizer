@@ -36,6 +36,7 @@ function CreateChoices()
 
     CreateChoice(class'MenuChoice_PasswordAutofill');
     CreateChoice(class'MenuChoice_ConfirmNoteDelete');
+    CreateChoice(class'MenuChoice_FixGlitches');
 
     controlsParent.SetSize(clientWidth, choiceStartY + (choiceCount * choiceVerticalGap));
 }
