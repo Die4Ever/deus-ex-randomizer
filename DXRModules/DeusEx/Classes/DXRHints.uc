@@ -266,6 +266,13 @@ simulated function InitHints()
         } else if (map ~= "09_nyc_shipbelow") {
             if(dxr.flags.settings.goals > 0)
                 AddHint("The locations of the tri-hull weld points are randomized.", "Check the Goal Randomization page on our Wiki.");
+        } else if (map ~= "09_nyc_dockyard") {
+            if(dxr.flags.settings.goals > 0) {
+                if(dxr.flagbase.GetBool('MS_ShipBreeched'))
+                    AddHint("The location of Jock is randomized.", "Check the Goal Randomization page on our Wiki.");
+                else
+                    AddHint("The location of Jock will be randomized.", "Check the Goal Randomization page on our Wiki.");
+            }
         }
         break;
 
@@ -304,8 +311,9 @@ simulated function InitHints()
 
     case 12:
         if (map ~= "12_vandenberg_cmd") {
-            if(dxr.flags.settings.goals > 0)
-                AddHint("The locations of the power generator keypads are randomized.", "Check the Goal Randomization page on our Wiki.");
+            if(dxr.flags.settings.goals > 0) {
+                AddHint("The locations of the power generator keypads and Jock are randomized.", "Check the Goal Randomization page on our Wiki.");
+            }
         }
 #ifdef injections
         if( dxr.FindModule(class'DXRBacktracking') != None ) {
