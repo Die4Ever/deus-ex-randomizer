@@ -114,13 +114,15 @@ function PreFirstEntryMapFixes()
             lloyd.MinHealth = 0;
             lloyd.BaseAccuracy *= 0.1;
             GiveItem(lloyd, class'#var(prefix)BallisticArmor');
-            dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
-            if(dxre != None) {
-                dxre.GiveRandomWeapon(lloyd, false, 2);
-                dxre.GiveRandomMeleeWeapon(lloyd);
+            if(!dxr.flags.IsReducedRando()) {
+                dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+                if(dxre != None) {
+                    dxre.GiveRandomWeapon(lloyd, false, 2);
+                    dxre.GiveRandomMeleeWeapon(lloyd);
+                }
+                lloyd.FamiliarName = "Master Sergeant Lloyd";
+                lloyd.UnfamiliarName = "Master Sergeant Lloyd";
             }
-            lloyd.FamiliarName = "Master Sergeant Lloyd";
-            lloyd.UnfamiliarName = "Master Sergeant Lloyd";
             if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
                 SetPawnHealth(lloyd, 200);
             }

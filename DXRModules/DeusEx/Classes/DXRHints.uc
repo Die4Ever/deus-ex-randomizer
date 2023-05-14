@@ -232,7 +232,9 @@ simulated function InitHints()
                 AddHint("Jaime Reyes's location in UNATCO HQ is randomized.", "Check the Goal Randomization page on our Wiki.");
             }
         } else if (map ~= "05_NYC_UNATCOISLAND") {
-            AddHint("Private Lloyd has been promoted to Master Sergeant!", "Be careful!");
+            if(!dxr.flags.IsReducedRando()) {
+                AddHint("Private Lloyd has been promoted to Master Sergeant!", "Be careful!");
+            }
         }
         break;
 
