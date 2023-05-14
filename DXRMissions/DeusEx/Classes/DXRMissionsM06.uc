@@ -146,4 +146,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             GenerateDTSHintCube(g,Loc);
         }
     }
+    if (g.name=="Nanotech Blade ROM" && Loc.name!="ROM Encoding Room") {
+        g.actors[3].a.SetCollisionSize(400, 100);// DL_Tong_08: The ROM-encoding should be in this wing of the laboratory.
+    }
 }
