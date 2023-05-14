@@ -22,3 +22,5 @@ June 22nd 2022 was Deus Ex's 22nd anniversary, and our 2nd anniversary! To celeb
 <summary>Click to expand Minor Changes</summary>
 *
 </details>
+
+Downloads are in the Assets section right below this line:

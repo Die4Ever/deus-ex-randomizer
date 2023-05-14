@@ -60,8 +60,10 @@ simulated function InitHints()
         AddHint("A vending machine can provide you with 20 health worth of food.", "Eat up!");
         AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them.");
         AddHint("The large metal crates are now destructible.", "They have 2000 hp.");
-        AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
-        AddHint("Each type of weapon gets randomized stats!", "Make sure to check one of each type.");
+        if(!dxr.flags.IsZeroRando())
+            AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
+        if(dxr.flags.settings.min_weapon_dmg != dxr.flags.settings.max_weapon_dmg || dxr.flags.settings.min_weapon_shottime != dxr.flags.settings.max_weapon_shottime)
+            AddHint("Each type of weapon gets randomized stats!", "Make sure to check one of each type.");
 
         if(#defined(injections) || #defined(vmd) || #defined(gmdx)) {
             AddHint("You can left click on items to use them without picking them up.", "Great for eating to recover health or putting on armor!");
@@ -145,7 +147,8 @@ simulated function InitHints()
     }
     else if(mission <= 11) {
         AddHint("Don't hoard items.", "You'll find more!");
-        AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
+        if(!dxr.flags.IsZeroRando())
+            AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
         if(#defined(injections)) {
             AddHint("Vision Enhancement Aug and Tech Goggles can now see through walls", "even at level 1, and they stack.");
             AddHint("Vision Enhancement Aug can see goal items through walls at level 2.", "Use it to see what's inside locked boxes.");
@@ -332,6 +335,7 @@ simulated function InitHints()
         break;
 
     case 15:
+        AddHint("Area 51 has great signage,", "read the signs to know where to go.");
         if (map ~= "15_AREA51_BUNKER") {
             if(dxr.flags.settings.goals > 0) {
                 AddHint("The location of Walton Simons is randomized.", "Check the Goal Randomization page on our Wiki.");
@@ -345,6 +349,7 @@ simulated function InitHints()
         }
         else if (map ~= "15_Area51_Final") {
             AddHint("You are in Sector 3.", "This is where the Aquinas Hub and Reactor Lab are.");
+            AddHint("There's a datacube with the code for the Reactor Lab.", "The mechanic there will give you the code for the Aquinas Hub.");
         }
         else if (map ~= "15_Area51_Page") {
             AddHint("You are in Sector 4 with Bob Page. This is where the", "Aquinas Router, Coolant Controls, and Blue Fusion Reactors are.");
