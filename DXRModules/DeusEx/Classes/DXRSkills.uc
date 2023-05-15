@@ -21,7 +21,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(1,6,0,5) ) {
+    if( ConfigOlderThan(2,4,0,3) ) {
         for(i=0; i < ArrayCount(SkillCostMultipliers); i++) {
             SkillCostMultipliers[i].type = "";
             SkillCostMultipliers[i].percent = 100;
@@ -48,6 +48,12 @@ function CheckConfig()
 
         SkillCostMultipliers[i].type = "SkillEnviro";
         SkillCostMultipliers[i].percent = 80;
+        SkillCostMultipliers[i].minLevel = 1;
+        SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
+        i++;
+
+        SkillCostMultipliers[i].type = "SkillComputer";
+        SkillCostMultipliers[i].percent = 140;
         SkillCostMultipliers[i].minLevel = 1;
         SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
         i++;
