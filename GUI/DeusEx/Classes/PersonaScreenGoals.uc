@@ -183,6 +183,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 {
     local MenuUIMessageBoxWindow msgBox;
     local ActorDisplayWindow actorDisplay;
+    local #var(prefix)Nanokey key;
     local string action;
 
     msgBox = MenuUIMessageBoxWindow(msgBoxWindow);
@@ -214,6 +215,12 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
             actorDisplay.ShowLOS(false);
 #ifdef injections
             actorDisplay.bShowHidden = false;
+#else
+            foreach player.AllActors(class'#var(prefix)Nanokey', key) {
+                if(key.Owner == None || !key.bHidden) continue;
+                key.SetLocation(key.Owner.Location);
+                key.SetBase(key.Owner);
+            }
 #endif
         }
         break;
