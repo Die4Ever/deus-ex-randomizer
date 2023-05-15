@@ -226,7 +226,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
 {
     local int i;
     local ScriptedPawn n;
-    local float radius;
+    local float radius, num_enemies;
     local vector loc, loc_offset;
     local Inventory inv;
     local NanoKey k1, k2;
@@ -239,10 +239,12 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     if( newclass == None ) newclass = p.class;
     newtag = StringToName(p.Tag $ "_clone");
     radius = p.CollisionRadius + newclass.default.CollisionRadius;
+    num_enemies = float(enemy_multiplier) * float(dxr.flags.settings.enemiesrandomized+100) / 100.0;
     for(i=0; i<10; i++) {
-        loc_offset.X = 1 + rngf() * 3 * Sqrt(float(enemy_multiplier+1));
-        loc_offset.Y = 1 + rngf() * 3 * Sqrt(float(enemy_multiplier+1));
-        if( chance_single(50) ) loc_offset *= -1;
+        loc_offset.X = 1 + rngf() * 3 * Sqrt(num_enemies+1.0);
+        loc_offset.Y = 1 + rngf() * 3 * Sqrt(num_enemies+1.0);
+        if( chance_single(50) ) loc_offset.X *= -1;
+        if( chance_single(50) ) loc_offset.Y *= -1;
 
         if(p.bInWorld)
             loc = p.Location + (radius*loc_offset);
