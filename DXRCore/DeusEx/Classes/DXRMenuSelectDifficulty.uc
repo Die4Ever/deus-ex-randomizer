@@ -22,7 +22,6 @@ function BindControls(optional string action)
 
     f = InitFlags();
 
-#ifdef vanilla
     NewMenuItem("Game Mode", "Choose a game mode!");
     for(i=0; i<10; i++) {
         temp = f.GameModeIdForSlot(i);
@@ -30,7 +29,6 @@ function BindControls(optional string action)
         if(ts != "")
             EnumOption(ts, temp, f.gamemode);
     }
-#endif
 
     NewMenuItem("", "Which items and augs you start with and which are banned.");
     foreach f.AllActors(class'DXRLoadouts', loadout) { break; }

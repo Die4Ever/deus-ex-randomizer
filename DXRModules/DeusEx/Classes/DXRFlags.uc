@@ -533,10 +533,12 @@ static function string GameModeName(int gamemode)
     switch(gamemode) {
     case 0:
         return "Normal Randomizer";
+#ifdef injections
     case EntranceRando:
         return "Entrance Randomization";
     case HordeMode:
         return "Horde Mode";
+#endif
     case RandoLite:
         return "Randomizer Lite";
     case ZeroRando:
