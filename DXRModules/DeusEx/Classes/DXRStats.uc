@@ -317,13 +317,15 @@ static function IncStatFlag(DeusExPlayer p, name flagname, optional int add)
     p.FlagBase.SetInt(flagname, val+add, , 999);
 }
 
-static function IncDataStorageStat(DeusExPlayer p, string valname)
+static function IncDataStorageStat(DeusExPlayer p, string valname, optional int add)
 {
     local DataStorage datastorage;
     local int val;
+    if(add == 0)//optional
+        add=1;
     datastorage = class'DataStorage'.static.GetObjFromPlayer(p);
     val = int(datastorage.GetConfigKey(valname));
-    datastorage.SetConfig(valname, val+1, 3600*24*366);
+    datastorage.SetConfig(valname, val + add, 3600*24*366);
     datastorage.Flush();
 }
 
@@ -357,6 +359,10 @@ static function AddGibbedKill(DeusExPlayer p)
 static function AddCheatOffense(DeusExPlayer p, optional int add)
 {
     IncStatFlag(p,'DXRStats_cheats', add);
+}
+static function AddSpoilerOffense(DeusExPlayer p, optional int add)
+{
+    IncDataStorageStat(p,"DXRStats_spoilers", add);
 }
 
 static function int GetDataStorageStat(DXRando dxr, string valname)
@@ -580,6 +586,7 @@ function int ScoreRun()
     loads = GetDataStorageStat(dxr, "DXRStats_loads");
     keys = p.KeyRing.GetKeyCount();
     cheats = p.FlagBase.GetInt('DXRStats_cheats');
+    cheats += GetDataStorageStat(dxr, "DXRStats_spoilers");
     flags_score = dxr.flags.ScoreFlags();
 
     score = _ScoreRun(time, time_without_menus, p.CombatDifficulty, flags_score, p.saveCount, loads, dxr.flags.settings.bingo_win, bingos, bingo_spots, p.SkillPointsTotal, keys, cheats);

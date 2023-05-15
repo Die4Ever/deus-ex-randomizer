@@ -197,7 +197,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
     case EntSpoilerWindowText:
         if (buttonNumber==0){
             action="entspoilers";
-            class'DXRStats'.static.AddCheatOffense(player);
+            class'DXRStats'.static.AddSpoilerOffense(player, 3);
         }
         break;
 
@@ -205,11 +205,11 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
         action="goalspoilers";
         bDisplaySpoilers=(buttonNumber==0);
         if(bDisplaySpoilers)
-            class'DXRStats'.static.AddCheatOffense(player);
+            class'DXRStats'.static.AddSpoilerOffense(player, 3);
 
     case KeySpoilerWindowText:
         if (buttonNumber==0) {
-            class'DXRStats'.static.AddCheatOffense(player);
+            class'DXRStats'.static.AddSpoilerOffense(player, 3);
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
             actorDisplay.SetViewClass(class'#var(prefix)Nanokey');
             actorDisplay.ShowLOS(false);
@@ -226,7 +226,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 
     case DatacubeSpoilerWindowText:
         if (buttonNumber==0) {
-            class'DXRStats'.static.AddCheatOffense(player);
+            class'DXRStats'.static.AddSpoilerOffense(player, 3);
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
             actorDisplay.SetViewClass(class'#var(prefix)InformationDevices');
             actorDisplay.ShowLOS(false);
