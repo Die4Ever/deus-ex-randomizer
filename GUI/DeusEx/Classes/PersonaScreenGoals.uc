@@ -214,14 +214,13 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
             actorDisplay.SetViewClass(class'#var(prefix)Nanokey');
             actorDisplay.ShowLOS(false);
 #ifdef injections
-            actorDisplay.bShowHidden = false;
-#else
+            actorDisplay.bUserFriendlyNames = true;
+#endif
             foreach player.AllActors(class'#var(prefix)Nanokey', key) {
                 if(key.Owner == None || !key.bHidden) continue;
                 key.SetLocation(key.Owner.Location);
                 key.SetBase(key.Owner);
             }
-#endif
         }
         break;
 
@@ -232,7 +231,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
             actorDisplay.SetViewClass(class'#var(prefix)InformationDevices');
             actorDisplay.ShowLOS(false);
 #ifdef injections
-            actorDisplay.bShowHidden = false;
+            actorDisplay.bUserFriendlyNames = true;
 #endif
         }
         break;
