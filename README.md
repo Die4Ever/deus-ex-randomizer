@@ -16,8 +16,12 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 * Medbots and repair bots (with hint datacubes near them)
 * Adding and moving turrets, cameras, security computers, and datacubes for them
 * Starting equipment, bioelectric energy, and credits
-* Moving enemies around, adding and changing enemies/characters, giving them random names and making some of them dance
+* Enemies:
+  * Moving enemies around
+  * Adding and changing enemies with randomized stats and weapons
+  * Chance to add/remove helmets for many enemies, affecting their damage resistance to their head
   * New enemies can get randomly generated patrol routes
+  * Giving them random names and making some of them dance
 * Changing the locations of items/boxes/NanoKeys/datacubes around the map
 * Passwords and passcodes
 * Exp costs for skills
@@ -30,6 +34,7 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 * The damage and firing speed of weapon types (make sure to read the description for one of each type)
 * JC's and Paul's clothes
 * Randomly adds "The Merchant"
+* Optionally randomize the song selections, with options to use songs from Unreal and Unreal Tournament
 
 ## There are also settings for
 * Crowd Control! Let your Twitch/YouTube/Discord/other viewers troll you or help you! https://crowdcontrol.live/guides/DeusEx
@@ -54,6 +59,11 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
     * No Swords - for people who think the sword and Dragon's Tooth Sword are OP
     * No Overpowered Weapons - bans pistols, swords, and the GEP Gun
     * By the Book - bans lockpicks and multitools
+* If you opt-in to Online Features (which is disabled by default, check the Rando menu)
+  * Your in-game events will also contribute to [our bot on Mastodon (which is an open source and community-run version of Twitter)](https://botsin.space/@DXRandoActivity)
+  * [Death Markers](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Death-Markers) - see where other players have died!
+  * Get notifications of new updates
+  * In-game [Leaderboard](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Leaderboard) to see everyone's high scores in the end credits
 * Max Rando - randomize the randomizer's settings!
 * An integrated Bingo board: on the Goals screen there's a Bingo button in the middle bar, there's also our external BingoDisplay program you can download from [the Releases page](https://github.com/Die4Ever/deus-ex-randomizer/releases)
 * Co-op when combined with the HX mod (Alpha)
@@ -61,13 +71,12 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 * Making all or some keypads hackable.
 * Reducing the drop rate for ammo, multitools, lockpicks, medkits, and bioelectric cells
 * Autosave
+* Smooth continuous music, even through loading screens
 * Making enemies respawn
 * Starting the game with the running speed augmentation
 * Optional hardcore Autosave-Only mode, no save-scumming allowed!
 * Option to keep the game running while menus are open, making hacking or inventory management more difficult
-* Autofill passwords options
-* [Death Markers](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Death-Markers) - see where other players have died!
-* If you opt-in to Online Features (which is disabled by default), then your in-game events will also contribute to [our bot on Mastodon (which is an open source and community-run version of Twitter)](https://botsin.space/@DXRandoActivity)
+* Assistance options like autofill for passwords passwords, and the ability to show where Nanokeys/Datacubes/goals are located.
 
 ## New Game Menus
 
