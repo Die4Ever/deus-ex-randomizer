@@ -464,10 +464,10 @@ function ReceivedLeaderboard(Json j)
         runs[i].score = int(vals[1]);
         runs[i].time = int(vals[2]);
         runs[i].seed = int(vals[3]);
-        runs[i].flagshash = vals[4];
+        runs[i].flagshash = ToHex(int(vals[4]));
         runs[i].bSetSeed = bool(vals[5]);
         runs[i].place = vals[6];
-        runs[i].playthrough_id = vals[7];
+        runs[i].playthrough_id = Caps(vals[7]);
     }
 }
 
