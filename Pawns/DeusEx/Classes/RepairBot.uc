@@ -91,7 +91,6 @@ simulated function bool CanCharge()
 {
 #ifdef hx
     // hx doesn't have replication for our randomized variables
-    local DXRando dxr;
     local DXRMachines m;
 
     if(dxr == None) {
