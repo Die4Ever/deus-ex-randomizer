@@ -96,7 +96,7 @@ If you click Next then it will use default settings based on your difficulty cho
 
 </details>
 
-## Balance Chances
+## Balance Changes
 
 DXRando features many small but impactful balance changes that can expand your tactical options.
 
