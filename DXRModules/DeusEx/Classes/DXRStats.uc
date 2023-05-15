@@ -552,27 +552,6 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintLn();
 }
 
-static function int _ScoreRun(int time, int time_without_menus, float CombatDifficulty, int flags_score, int saves, int loads,
-    int bingo_win, int bingos, int bingospots, int SkillPointsTotal, int Nanokeys, int cheats)
-{
-    local int i;
-    i = 100000;
-    i -= time / 10;// times are in tenths of a second
-    i -= time_without_menus / 10;
-    i += FClamp(CombatDifficulty, 0, 8) * 1000.0;
-    i += flags_score;
-    i -= saves * 10;
-    i -= loads * 50;
-    if(bingo_win > 0 && bingos >= bingo_win)
-        i -= (13-bingo_win) * 5000;
-    i += bingos * 750;
-    i += bingospots * 75;// make sure to ignore the free space
-    i += SkillPointsTotal;
-    i += Nanokeys * 20;// unique nanokeys
-    i -= Clamp(cheats, 0, 100) * 300;
-    return i;
-}
-
 function int ScoreRun()
 {
     local PlayerDataItem data;
@@ -608,113 +587,25 @@ function int ScoreRun()
     return score;
 }
 
-function ExtendedTests()
+static function int _ScoreRun(int time, int time_without_menus, float CombatDifficulty, int flags_score, int saves, int loads,
+    int bingo_win, int bingos, int bingospots, int SkillPointsTotal, int Nanokeys, int cheats)
 {
-    local int time, completeTime, menutime, completemenutime;
-
-    Super.ExtendedTests();
-
-    teststring( IntCommas(1), "1", "IntCommas 1");
-    teststring( IntCommas(123), "123", "IntCommas 123");
-    teststring( IntCommas(1234), "1,234", "IntCommas 1,234");
-    teststring( IntCommas(-1234), "-1,234", "IntCommas -1,234");
-    teststring( IntCommas(1234567), "1,234,567", "IntCommas 1,234,567");
-    teststring( IntCommas(12345678), "12,345,678", "IntCommas 12,345,678");
-    teststring( IntCommas(1234567890), "1,234,567,890", "IntCommas 1,234,567,890");
-    teststring( IntCommas(1000), "1,000", "IntCommas 1,000");
-    teststring( IntCommas(40000), "40,000", "IntCommas 40,000");
-    teststring( IntCommas(100000), "100,000", "IntCommas 100,000");
-    teststring( IntCommas(104000), "104,000", "IntCommas 104,000");
-    teststring( IntCommas(1000000), "1,000,000", "IntCommas 1,000,000");
-
-    // mission 1 tests
-    testint( GetMissionTime(1), 0, "GetMissionTime(1) == 0");
-    testint( GetCompleteMissionTime(1), 0, "GetCompleteMissionTime(1) == 0");
-    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
-    testint( GetCompleteMissionMenuTime(1), 0, "GetCompleteMissionMenuTime(1) == 0");
-
-    IncMissionTimer(1);
-
-    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
-    testint( GetCompleteMissionTime(1), 1, "GetCompleteMissionTime(1) == 1");
-    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
-    testint( GetCompleteMissionMenuTime(1), 0, "GetCompleteMissionMenuTime(1) == 0");
-
-    DeusExRootWindow(player().rootWindow).hud.Hide();
-    IncMissionTimer(1);
-    DeusExRootWindow(player().rootWindow).hud.Show();
-
-    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
-    testint( GetCompleteMissionTime(1), 1, "GetCompleteMissionTime(1) == 1");
-    testint( GetMissionMenuTime(1), 1, "GetMissionMenuTime(1) == 1");
-    testint( GetCompleteMissionMenuTime(1), 1, "GetCompleteMissionMenuTime(1) == 1");
-
-    teststring( GetMissionTimeString(1), "00:00:00.1", "GetMissionTimeString(1)");
-    teststring( GetCompleteMissionTimeWithMenusString(1), "00:00:00.2", "GetCompleteMissionTimeWithMenusString(1)");
-
-    // reset non-real-time timers
-    dxr.flagbase.SetInt('DXRando_Mission1_Timer',0,,999);
-    dxr.flagbase.SetInt('DXRando_Mission1Menu_Timer',0,,999);
-
-    // mission 1 tests again
-    testint( GetMissionTime(1), 0, "GetMissionTime(1) == 0");
-    testint( GetCompleteMissionTime(1), 1, "GetCompleteMissionTime(1) == 1");
-    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
-    testint( GetCompleteMissionMenuTime(1), 1, "GetCompleteMissionMenuTime(1) == 1");
-
-    IncMissionTimer(1);
-
-    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
-    testint( GetCompleteMissionTime(1), 2, "GetCompleteMissionTime(1) == 2");
-    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
-    testint( GetCompleteMissionMenuTime(1), 1, "GetCompleteMissionMenuTime(1) == 1");
-
-    DeusExRootWindow(player().rootWindow).hud.Hide();
-    IncMissionTimer(1);
-    DeusExRootWindow(player().rootWindow).hud.Show();
-
-    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
-    testint( GetCompleteMissionTime(1), 2, "GetCompleteMissionTime(1) == 2");
-    testint( GetMissionMenuTime(1), 1, "GetMissionMenuTime(1) == 1");
-    testint( GetCompleteMissionMenuTime(1), 2, "GetCompleteMissionMenuTime(1) == 2");
-
-    teststring( GetMissionTimeString(1), "00:00:00.1", "GetMissionTimeString(1)");
-    teststring( GetCompleteMissionTimeWithMenusString(1), "00:00:00.4", "GetCompleteMissionTimeWithMenusString(1)");
-
-    // mission 12 tests
-    testint( dxr.dxInfo.MissionNumber, 12, "current mission is 12 as expected");
-
-    time = GetMissionTime(12);
-    completeTime = GetCompleteMissionTime(12);
-    menuTime = GetMissionMenuTime(12);
-    completemenutime = GetCompleteMissionMenuTime(12);
-
-    test( time > 0, "GetMissionTime(12) > 0");
-    test( completeTime > 0, "GetCompleteMissionTime(12) > 0");
-    testint( menuTime, 0, "GetMissionMenuTime(12) == 0");
-    testint( completemenutime, 0, "GetCompleteMissionMenuTime(12) == 0");
-
-    Timer();
-
-    testint( GetMissionTime(12), time + 1, "GetMissionTime(12) == time + 1");
-    testint( GetCompleteMissionTime(12), completeTime + 1, "GetCompleteMissionTime(12) == completeTime + 1");
-    testint( GetMissionMenuTime(12), 0, "GetMissionMenuTime(12) == 0");
-    testint( GetCompleteMissionMenuTime(12), 0, "GetCompleteMissionMenuTime(12) == 0");
-
-    DeusExRootWindow(player().rootWindow).hud.Hide();
-    Timer();
-    DeusExRootWindow(player().rootWindow).hud.Show();
-
-    testint( GetMissionTime(12), time + 1, "GetMissionTime(12) == time + 1");
-    testint( GetCompleteMissionTime(12), completeTime + 1, "GetCompleteMissionTime(12) == completeTime + 1");
-    testint( GetMissionMenuTime(12), 1, "GetMissionMenuTime(12) == 1");
-    testint( GetCompleteMissionMenuTime(12), 1, "GetCompleteMissionMenuTime(12) == 1");
-
-    // ensure correct key names
-    test( GetTotalTime(dxr) > 0, "GetTotalTime");
-    test( GetTotalMenuTime(dxr) > 0, "GetTotalMenuTime");
-
-    TestScoring();
+    local int i;
+    i = 100000;
+    i -= time / 10;// times are in tenths of a second
+    i -= time_without_menus / 10;
+    i += FClamp(CombatDifficulty, 0, 8) * 1000.0;
+    i += flags_score;
+    i -= saves * 10;
+    i -= loads * 50;
+    if(bingo_win > 0 && bingos >= bingo_win)
+        i -= (13-bingo_win) * 5000;
+    i += bingos * 750;
+    i += bingospots * 75;// make sure to ignore the free space
+    i += SkillPointsTotal;
+    i += Nanokeys * 20;// unique nanokeys
+    i -= Clamp(cheats, 0, 100) * 300;
+    return i;
 }
 
 function TestScoring()
@@ -731,13 +622,13 @@ function TestScoring()
     testint(dxr.flags.ScoreFlags(), 3405, "score bonus for Normal");
 
     dxr.flags.SetDifficulty(2);
-    testint(dxr.flags.ScoreFlags(), 7135, "score bonus for Hard");
+    testint(dxr.flags.ScoreFlags(), 6760, "score bonus for Hard");
 
     dxr.flags.SetDifficulty(3);
-    testint(dxr.flags.ScoreFlags(), 9100, "score bonus for Extreme");
+    testint(dxr.flags.ScoreFlags(), 8350, "score bonus for Extreme");
 
     dxr.flags.SetDifficulty(4);
-    testint(dxr.flags.ScoreFlags(), 11735, "score bonus for Impossible");
+    testint(dxr.flags.ScoreFlags(), 10985, "score bonus for Impossible");
 
     names[num] = "1 Million Points!";
     scores[num++] = 1000000;
@@ -859,6 +750,115 @@ function TestScoring()
         l("TestScoring() " $ names[i] $ ": " $ scores[i]);// so you can see it in UCC.log even if it passes
         test(scores[i-1] > scores[i], testname);
     }
+}
+
+function ExtendedTests()
+{
+    local int time, completeTime, menutime, completemenutime;
+
+    Super.ExtendedTests();
+
+    teststring( IntCommas(1), "1", "IntCommas 1");
+    teststring( IntCommas(123), "123", "IntCommas 123");
+    teststring( IntCommas(1234), "1,234", "IntCommas 1,234");
+    teststring( IntCommas(-1234), "-1,234", "IntCommas -1,234");
+    teststring( IntCommas(1234567), "1,234,567", "IntCommas 1,234,567");
+    teststring( IntCommas(12345678), "12,345,678", "IntCommas 12,345,678");
+    teststring( IntCommas(1234567890), "1,234,567,890", "IntCommas 1,234,567,890");
+    teststring( IntCommas(1000), "1,000", "IntCommas 1,000");
+    teststring( IntCommas(40000), "40,000", "IntCommas 40,000");
+    teststring( IntCommas(100000), "100,000", "IntCommas 100,000");
+    teststring( IntCommas(104000), "104,000", "IntCommas 104,000");
+    teststring( IntCommas(1000000), "1,000,000", "IntCommas 1,000,000");
+
+    // mission 1 tests
+    testint( GetMissionTime(1), 0, "GetMissionTime(1) == 0");
+    testint( GetCompleteMissionTime(1), 0, "GetCompleteMissionTime(1) == 0");
+    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
+    testint( GetCompleteMissionMenuTime(1), 0, "GetCompleteMissionMenuTime(1) == 0");
+
+    IncMissionTimer(1);
+
+    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
+    testint( GetCompleteMissionTime(1), 1, "GetCompleteMissionTime(1) == 1");
+    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
+    testint( GetCompleteMissionMenuTime(1), 0, "GetCompleteMissionMenuTime(1) == 0");
+
+    DeusExRootWindow(player().rootWindow).hud.Hide();
+    IncMissionTimer(1);
+    DeusExRootWindow(player().rootWindow).hud.Show();
+
+    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
+    testint( GetCompleteMissionTime(1), 1, "GetCompleteMissionTime(1) == 1");
+    testint( GetMissionMenuTime(1), 1, "GetMissionMenuTime(1) == 1");
+    testint( GetCompleteMissionMenuTime(1), 1, "GetCompleteMissionMenuTime(1) == 1");
+
+    teststring( GetMissionTimeString(1), "00:00:00.1", "GetMissionTimeString(1)");
+    teststring( GetCompleteMissionTimeWithMenusString(1), "00:00:00.2", "GetCompleteMissionTimeWithMenusString(1)");
+
+    // reset non-real-time timers
+    dxr.flagbase.SetInt('DXRando_Mission1_Timer',0,,999);
+    dxr.flagbase.SetInt('DXRando_Mission1Menu_Timer',0,,999);
+
+    // mission 1 tests again
+    testint( GetMissionTime(1), 0, "GetMissionTime(1) == 0");
+    testint( GetCompleteMissionTime(1), 1, "GetCompleteMissionTime(1) == 1");
+    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
+    testint( GetCompleteMissionMenuTime(1), 1, "GetCompleteMissionMenuTime(1) == 1");
+
+    IncMissionTimer(1);
+
+    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
+    testint( GetCompleteMissionTime(1), 2, "GetCompleteMissionTime(1) == 2");
+    testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
+    testint( GetCompleteMissionMenuTime(1), 1, "GetCompleteMissionMenuTime(1) == 1");
+
+    DeusExRootWindow(player().rootWindow).hud.Hide();
+    IncMissionTimer(1);
+    DeusExRootWindow(player().rootWindow).hud.Show();
+
+    testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
+    testint( GetCompleteMissionTime(1), 2, "GetCompleteMissionTime(1) == 2");
+    testint( GetMissionMenuTime(1), 1, "GetMissionMenuTime(1) == 1");
+    testint( GetCompleteMissionMenuTime(1), 2, "GetCompleteMissionMenuTime(1) == 2");
+
+    teststring( GetMissionTimeString(1), "00:00:00.1", "GetMissionTimeString(1)");
+    teststring( GetCompleteMissionTimeWithMenusString(1), "00:00:00.4", "GetCompleteMissionTimeWithMenusString(1)");
+
+    // mission 12 tests
+    testint( dxr.dxInfo.MissionNumber, 12, "current mission is 12 as expected");
+
+    time = GetMissionTime(12);
+    completeTime = GetCompleteMissionTime(12);
+    menuTime = GetMissionMenuTime(12);
+    completemenutime = GetCompleteMissionMenuTime(12);
+
+    test( time > 0, "GetMissionTime(12) > 0");
+    test( completeTime > 0, "GetCompleteMissionTime(12) > 0");
+    testint( menuTime, 0, "GetMissionMenuTime(12) == 0");
+    testint( completemenutime, 0, "GetCompleteMissionMenuTime(12) == 0");
+
+    Timer();
+
+    testint( GetMissionTime(12), time + 1, "GetMissionTime(12) == time + 1");
+    testint( GetCompleteMissionTime(12), completeTime + 1, "GetCompleteMissionTime(12) == completeTime + 1");
+    testint( GetMissionMenuTime(12), 0, "GetMissionMenuTime(12) == 0");
+    testint( GetCompleteMissionMenuTime(12), 0, "GetCompleteMissionMenuTime(12) == 0");
+
+    DeusExRootWindow(player().rootWindow).hud.Hide();
+    Timer();
+    DeusExRootWindow(player().rootWindow).hud.Show();
+
+    testint( GetMissionTime(12), time + 1, "GetMissionTime(12) == time + 1");
+    testint( GetCompleteMissionTime(12), completeTime + 1, "GetCompleteMissionTime(12) == completeTime + 1");
+    testint( GetMissionMenuTime(12), 1, "GetMissionMenuTime(12) == 1");
+    testint( GetCompleteMissionMenuTime(12), 1, "GetCompleteMissionMenuTime(12) == 1");
+
+    // ensure correct key names
+    test( GetTotalTime(dxr) > 0, "GetTotalTime");
+    test( GetTotalMenuTime(dxr) > 0, "GetTotalMenuTime");
+
+    TestScoring();
 }
 
 defaultproperties

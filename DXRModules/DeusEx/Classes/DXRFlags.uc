@@ -233,7 +233,7 @@ function CheckConfig()
     difficulty_settings[i].banned_skills = 5;
     difficulty_settings[i].banned_skill_levels = 5;
     difficulty_settings[i].minskill = 50;
-    difficulty_settings[i].maxskill = 250;
+    difficulty_settings[i].maxskill = 225;
     difficulty_settings[i].ammo = 70;
     difficulty_settings[i].medkits = 70;
     difficulty_settings[i].biocells = 70;
@@ -300,7 +300,7 @@ function CheckConfig()
     difficulty_settings[i].banned_skills = 5;
     difficulty_settings[i].banned_skill_levels = 7;
     difficulty_settings[i].minskill = 50;
-    difficulty_settings[i].maxskill = 300;
+    difficulty_settings[i].maxskill = 250;
     difficulty_settings[i].ammo = 60;
     difficulty_settings[i].medkits = 60;
     difficulty_settings[i].biocells = 50;
@@ -367,7 +367,7 @@ function CheckConfig()
     difficulty_settings[i].banned_skills = 7;
     difficulty_settings[i].banned_skill_levels = 7;
     difficulty_settings[i].minskill = 50;
-    difficulty_settings[i].maxskill = 400;
+    difficulty_settings[i].maxskill = 350;
     difficulty_settings[i].ammo = 40;
     difficulty_settings[i].medkits = 50;
     difficulty_settings[i].biocells = 30;
@@ -468,7 +468,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.passwordsrandomized = 0;
             settings.enemystats = 0;
             settings.bot_stats = 0;
-            settings.minskill = (settings.minskill*3 + settings.maxskill + 100) / 5;
+            settings.minskill = (settings.minskill*3 + settings.maxskill + 125) / 5;// Hard mode == 100% skill costs
             settings.maxskill = settings.minskill;
             settings.ammo = 100;
             settings.medkits = 100;
