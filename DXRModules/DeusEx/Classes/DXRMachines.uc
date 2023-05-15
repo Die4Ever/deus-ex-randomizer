@@ -357,6 +357,7 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
     local Name medHint;
     local Name repairHint;
 
+    // TODO: get rid of this later, but still delete the old ones for now to reduce confusion for players used to previous releases
     medHint = '01_Datacube09';
     repairHint = '03_Datacube11';
 
@@ -378,21 +379,24 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
         }
     }
 
+    medHint = 'MedbotNearby';
+    repairHint = 'RepairbotNearby';
+
     SetSeed( "RandoMedBots" );
     if( chance_single(medbots) ) {
 #ifdef injections
-        SpawnBot(class'MedicalBot', medHint);
+        SpawnBot(class'MedicalBot', medHint, "Medical Bot Nearby");
 #else
-        SpawnBot(class'DXRMedicalBot', medHint);
+        SpawnBot(class'DXRMedicalBot', medHint, "Medical Bot Nearby");
 #endif
     }
 
     SetSeed( "RandoRepairBots" );
     if( chance_single(repairbots) ) {
 #ifdef injections
-        SpawnBot(class'RepairBot', repairHint);
+        SpawnBot(class'RepairBot', repairHint, "Repair Bot Nearby");
 #else
-        SpawnBot(class'DXRRepairBot', repairHint);
+        SpawnBot(class'DXRRepairBot', repairHint, "Repair Bot Nearby");
 #endif
     }
 }
@@ -468,7 +472,7 @@ simulated function RandoRepairBot(#var(prefix)RepairBot r, int rbamount, int rbc
     }
 }
 
-function Actor SpawnBot(class<Actor> c, Name datacubeTag)
+function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename)
 {
     local Actor a;
     local #var(prefix)Datacube d;
@@ -478,8 +482,11 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag)
 
     d = #var(prefix)Datacube(SpawnNewActor(class'#var(prefix)Datacube', true, a.Location, min_datacube_distance, max_datacube_distance));
     if( d == None ) return a;
+    d.TextPackage = "#var(package)";
     d.textTag = datacubeTag;
     d.bAddToVault = false;
+    d.ItemName = datacubename;
+    GlowUp(d, 89);
 
     return a;
 }

@@ -1243,12 +1243,13 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }
 
-static function GlowUp(Actor a)
+static function GlowUp(Actor a, optional byte hue)
 {
     a.LightType=LT_Steady;
     a.LightEffect=LE_None;
     a.LightBrightness=160;
-    a.LightHue=155;
+    if(hue == 0) hue = 155;
+    a.LightHue=hue;
     a.LightRadius=6;
 }
 

@@ -144,8 +144,23 @@ function Explode(vector HitLocation)
     Instigator = oldInstigator;
 }
 
+function Tick(float delta)
+{
+    Super.Tick(delta);
+
+    if(CanCharge())
+        LightHue=89;
+    else
+        LightHue=255;
+}
+
 defaultproperties
 {
     bDetectable=false
     bIgnore=true
+    LightType=LT_Steady
+    LightEffect=LE_None
+    LightBrightness=160
+    LightRadius=6
+    LightHue=89
 }
