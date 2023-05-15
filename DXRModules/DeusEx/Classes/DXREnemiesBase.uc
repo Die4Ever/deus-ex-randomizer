@@ -241,10 +241,8 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     radius = p.CollisionRadius + newclass.default.CollisionRadius;
     num_enemies = float(enemy_multiplier) * float(dxr.flags.settings.enemiesrandomized+100) / 100.0;
     for(i=0; i<10; i++) {
-        loc_offset.X = 1 + rngf() * 3 * Sqrt(num_enemies+1.0);
-        loc_offset.Y = 1 + rngf() * 3 * Sqrt(num_enemies+1.0);
-        if( chance_single(50) ) loc_offset.X *= -1;
-        if( chance_single(50) ) loc_offset.Y *= -1;
+        loc_offset.X = 1 + rngfn() * 3 * Sqrt(num_enemies+1.0);
+        loc_offset.Y = 1 + rngfn() * 3 * Sqrt(num_enemies+1.0);
 
         if(p.bInWorld)
             loc = p.Location + (radius*loc_offset);
