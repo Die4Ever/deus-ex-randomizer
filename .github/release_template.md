@@ -1,4 +1,3 @@
-
 Downloads are in the Assets section under the changelog.
 
 ## [Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks/2c9f08933d31ae0a3dbe5ddd5886f47faa36f032)
