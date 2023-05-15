@@ -5,6 +5,7 @@ class DXRMedicalBot extends #var(prefix)MedicalBot;
 #endif
 
 var travel int numUses;
+var transient DXRando dxr;
 
 replication
 {
@@ -43,15 +44,16 @@ function int HealPlayer(DeusExPlayer player)
 
 simulated function int GetMaxUses()
 {
-    local DXRando dxr;
-
     if(#defined(vmd)) return 0;// disabled for VMD
 
-    foreach AllActors(class'DXRando', dxr){
-        return dxr.flags.settings.medbotuses;
+    if(dxr == None) {
+        foreach AllActors(class'DXRando', dxr){
+            return dxr.flags.settings.medbotuses;
+        }
+        return 0;
     }
 
-    return 0;
+    return dxr.flags.settings.medbotuses;
 }
 
 simulated function int GetRemainingUses()

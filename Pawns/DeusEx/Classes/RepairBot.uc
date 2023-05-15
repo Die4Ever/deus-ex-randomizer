@@ -5,6 +5,7 @@ class DXRRepairBot extends #var(prefix)RepairBot;
 #endif
 
 var travel int numUses;
+var transient DXRando dxr;
 
 replication
 {
@@ -43,15 +44,16 @@ function int ChargePlayer(DeusExPlayer PlayerToCharge)
 
 simulated function int GetMaxUses()
 {
-    local DXRando dxr;
-
     if(#defined(vmd)) return 0;// disabled for VMD
 
-    foreach AllActors(class'DXRando', dxr){
-        return dxr.flags.settings.repairbotuses;
+    if(dxr == None) {
+        foreach AllActors(class'DXRando', dxr){
+            return dxr.flags.settings.repairbotuses;
+        }
+        return 0;
     }
 
-    return 0;
+    return dxr.flags.settings.repairbotuses;
 }
 
 simulated function int GetRemainingUses()
@@ -91,8 +93,12 @@ simulated function bool CanCharge()
     // hx doesn't have replication for our randomized variables
     local DXRando dxr;
     local DXRMachines m;
-    foreach AllActors(class'DXRando', dxr) { break; }
-    m = DXRMachines(dxr.FindModule(class'DXRMachines'));
+
+    if(dxr == None) {
+        foreach AllActors(class'DXRando', dxr) { break; }
+    }
+    if(dxr != None)
+        m = DXRMachines(dxr.FindModule(class'DXRMachines'));
     if(m != None) {
         m.RandoRepairBot(self, dxr.flags.settings.repairbotamount, dxr.flags.settings.repairbotcooldowns);
     }

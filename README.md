@@ -21,7 +21,7 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 * Changing the locations of items/boxes/NanoKeys/datacubes around the map
 * Passwords and passcodes
 * Exp costs for skills
-    * Option for rerolling every mission
+    * Option for rerolling every mission, defaults to reroll every 5 missions
     * Option for disabling the Downgrade button on the new game screen, to prevent looking ahead
 * What augmentations are in each canister
 * The strength and lockpick strength for doors
