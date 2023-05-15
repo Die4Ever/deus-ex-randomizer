@@ -619,13 +619,13 @@ function TestScoring()
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats;
 
     dxr.flags.SetDifficulty(1);
-    testint(dxr.flags.ScoreFlags(), 3405, "score bonus for Normal");
+    testint(dxr.flags.ScoreFlags(), 3705, "score bonus for Normal");
 
     dxr.flags.SetDifficulty(2);
-    testint(dxr.flags.ScoreFlags(), 6760, "score bonus for Hard");
+    testint(dxr.flags.ScoreFlags(), 6960, "score bonus for Hard");
 
     dxr.flags.SetDifficulty(3);
-    testint(dxr.flags.ScoreFlags(), 8350, "score bonus for Extreme");
+    testint(dxr.flags.ScoreFlags(), 8450, "score bonus for Extreme");
 
     dxr.flags.SetDifficulty(4);
     testint(dxr.flags.ScoreFlags(), 10985, "score bonus for Impossible");

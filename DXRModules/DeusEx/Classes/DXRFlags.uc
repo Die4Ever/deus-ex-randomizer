@@ -90,7 +90,7 @@ function CheckConfig()
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 40;
     difficulty_settings[i].bot_weapons = 0;
-    difficulty_settings[i].bot_stats = 40;
+    difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 1;
@@ -158,7 +158,7 @@ function CheckConfig()
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 40;
     difficulty_settings[i].bot_weapons = 0;
-    difficulty_settings[i].bot_stats = 40;
+    difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
@@ -225,7 +225,7 @@ function CheckConfig()
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 60;
     difficulty_settings[i].bot_weapons = 0;
-    difficulty_settings[i].bot_stats = 60;
+    difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
@@ -292,7 +292,7 @@ function CheckConfig()
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 70;
     difficulty_settings[i].bot_weapons = 0;
-    difficulty_settings[i].bot_stats = 80;
+    difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 5;
     difficulty_settings[i].skills_reroll_missions = 5;
