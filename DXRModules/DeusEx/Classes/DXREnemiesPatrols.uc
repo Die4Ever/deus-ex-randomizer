@@ -10,8 +10,8 @@ function GivePatrols()
     SetSeed("DXREnemiesPatrols selection");
     foreach AllActors(class'ScriptedPawn', p) {
         if(p.Orders != 'DynamicPatrolling') continue;
-        if(chance_single(20) || num >= ArrayCount(ps)) {
-            // 20% chance to wander instead
+        if(/*chance_single(20) ||*/ num >= ArrayCount(ps)) {
+            // 20% chance to wander instead?
             p.SetOrders('Wandering');
             continue;
         }
@@ -46,6 +46,16 @@ function GivePatrols()
 
 function bool GivePatrol(ScriptedPawn pawn)
 {
+    local int i;
+
+    for(i=0; i<10; i++) {
+        if(_GivePatrol(pawn)) return true;
+    }
+    return false;
+}
+
+function bool _GivePatrol(ScriptedPawn pawn)
+{
     local #var(DeusExPrefix)Mover m;
     local DynamicPatrolPoint p, prev, first;
     local NavigationPoint nps[100], np;
@@ -56,13 +66,19 @@ function bool GivePatrol(ScriptedPawn pawn)
     local float quadrants_farthest_dists[4];
     local vector center;// the center of the points is not always where the pawn is
 
-    maxradius = rngrange(750, 0.5, 1.5);
-    max_z_dist = 50;
+    maxradius = rngrange(750, 0.5, 1.3);
+    max_z_dist = 64;
     l("GivePatrol "$pawn@pawn.Location@maxradius@max_z_dist);
 
     foreach RadiusActors(class'#var(DeusExPrefix)Mover', m, maxradius, pawn.Location) {
-        info("GivePatrol "$pawn@pawn.Location@maxradius@max_z_dist$", bailing because of "$m);
-        return false;
+        dist = VSize(pawn.Location - m.Location);
+        dist -= 64;
+        if(dist < maxradius)
+            maxradius = dist;
+        if(maxradius < 15*16) {// 15 feet minimum?
+            l("GivePatrol bailing because of "$m);
+            return false;
+        }
     }
 
     // collect the points we can use and figure out the center of them all
@@ -98,6 +114,11 @@ function bool GivePatrol(ScriptedPawn pawn)
         //quadrants_farthest[q].DrawScale = 2;
     }
 
+    if(num < 2) {
+        l("GivePatrol not enough points found: "$num);
+        return false;
+    }
+
     // random chance to ditch 1 or 2 of the points, to step down to a triangle or straight line back and forth
     for(q=0; q<4; q++) {
         if(quadrants_farthest[q] == None) continue;
@@ -105,6 +126,22 @@ function bool GivePatrol(ScriptedPawn pawn)
             num--;
             quadrants_farthest[q] = None;
         }
+    }
+
+    // ensure our path is long enough
+    dist = 0;
+    for(q=0; q<3; q++) {
+        if(quadrants_farthest[q] == None) continue;
+        for(i=q+1; i<4; i++) {
+            if(quadrants_farthest[i] == None) continue;
+            dist += VSize(quadrants_farthest[q].Location - quadrants_farthest[i].Location);
+            break;
+        }
+    }
+
+    if(dist < 15*16) {// 15 feet?
+        l("GivePatrol patrol path too short! "$dist);
+        return false;
     }
 
     // create the DynamicPatrolPoints
@@ -122,7 +159,14 @@ function bool GivePatrol(ScriptedPawn pawn)
         }
     }
 
-    if(first == None) return false;
+    if(first == None) {
+        l("GivePatrol first == None");
+        return false;
+    }
+    if(first == p) {
+        l("GivePatrol first == p");
+        return false;
+    }
 
     LinkPoints(p, first);
 
@@ -154,7 +198,7 @@ function DynamicPatrolPoint CreatePoint(NavigationPoint n, Name t)
     p = Spawn(class'DynamicPatrolPoint',, t, n.Location);
     if(p == None)
         return None;
-    p.pausetime = rngrange(1, 0.1, 5);
+    p.pausetime = rngrange(1, 1, 6);
 
     for(i=0; i<16; i++) {
         p.upstreamPaths[i] = n.upstreamPaths[i];
