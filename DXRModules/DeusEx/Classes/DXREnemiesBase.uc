@@ -238,16 +238,20 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     }
     if( newclass == None ) newclass = p.class;
     newtag = StringToName(p.Tag $ "_clone");
-    radius = p.CollisionRadius + newclass.default.CollisionRadius;
+    radius = (p.CollisionRadius + newclass.default.CollisionRadius) * 3.0;// combined radius, and * 3 for some personal space
     num_enemies = float(enemy_multiplier) * float(dxr.flags.settings.enemiesrandomized+100) / 100.0;
+    radius *= Sqrt(num_enemies+1.0);
     for(i=0; i<10; i++) {
-        loc_offset.X = 1 + rngfn() * 3 * Sqrt(num_enemies+1.0);
-        loc_offset.Y = 1 + rngfn() * 3 * Sqrt(num_enemies+1.0);
+        // rngfn_min_dist to add a minimum distance from the 0, but also allow negative numbers
+        loc_offset.X = rngfn_min_dist(0.5);
+        loc_offset.Y = rngfn_min_dist(0.5);
+        // the combined radius of these characters, multiplied by the square root of the number of enemies
+        loc_offset *= radius;
 
         if(p.bInWorld)
-            loc = p.Location + (radius*loc_offset);
+            loc = p.Location + loc_offset;
         else
-            loc = p.WorldPosition + (radius*loc_offset);
+            loc = p.WorldPosition + loc_offset;
 
         if( p.bInWorld == true && class'DXRMissions'.static.IsCloseToStart(dxr, loc) ) {
             info("CloneScriptedPawn "$loc$" is too close to start!");
