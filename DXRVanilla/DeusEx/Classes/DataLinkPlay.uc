@@ -1,7 +1,7 @@
 class DataLinkPlay injects DataLinkPlay;
 
-var float speechFastEndTime;
-var bool restarting;
+var transient float speechFastEndTime;
+var transient bool restarting;
 
 function bool PushDataLink( Conversation queueCon )
 {

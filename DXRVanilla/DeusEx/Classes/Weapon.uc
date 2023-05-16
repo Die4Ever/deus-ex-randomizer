@@ -18,6 +18,17 @@ function PostBeginPlay()
     }
 }
 
+function BringUp()
+{
+    Super.BringUp();
+
+    // don't let NPC geps lock on to targets
+    if ((Owner != None) && !Owner.IsA('DeusExPlayer'))
+        bCanTrack = False;
+    else
+        bCanTrack = default.bCanTrack;
+}
+
 simulated function Tick(float deltaTime)
 {
     local float r, e;

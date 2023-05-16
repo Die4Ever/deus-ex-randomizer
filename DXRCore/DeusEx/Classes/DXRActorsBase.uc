@@ -325,6 +325,10 @@ static function ThrowItem(Inventory item, float VelocityMult)
     if(DeusExWeapon(item) != None && DeusExWeapon(item).PickupAmmoCount < i)
         DeusExWeapon(item).PickupAmmoCount = i;
 
+    // Nanokeys glow
+    if(NanoKey(item) != None)
+        GlowUp(item);
+
     // kinda copied from DeusExPlayer DropItem function
     item.Velocity = rot * 300 + vect(0,0,220) + VRand()*32;
     item.Velocity *= VelocityMult;
@@ -1239,12 +1243,13 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }
 
-function GlowUp(Actor a)
+static function GlowUp(Actor a, optional byte hue)
 {
     a.LightType=LT_Steady;
     a.LightEffect=LE_None;
     a.LightBrightness=160;
-    a.LightHue=155;
+    if(hue == 0) hue = 155;
+    a.LightHue=hue;
     a.LightRadius=6;
 }
 

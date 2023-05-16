@@ -2,5 +2,5 @@ class DXRTearGas injects TearGas;
 
 defaultproperties
 {
-    Damage=5
+    Damage=3// vanilla is 1
 }

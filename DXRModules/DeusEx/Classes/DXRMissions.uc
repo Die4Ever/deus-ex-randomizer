@@ -581,11 +581,16 @@ static function bool IsCloseToRandomStart(DXRando dxr, vector loc)
     local float too_close, dist;
     local DXRMissions m;
 
-    too_close = 90*16;
+    too_close = 75*16;
 
     m = DXRMissions(dxr.FindModule(class'DXRMissions'));
     if( m != None && m.b_rando_start ) {
-        if ( VSize(m.rando_start_loc - loc) < too_close ) return true;
+        if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
+            if( 160 > VSize(m.rando_start_loc - vect(1297.173096, -10257.972656, -287.428131)) )// Harley Filben Dock
+                too_close = 150 * 16;
+        }
+        dist = VSize(m.rando_start_loc - loc);
+        return dist < too_close;
     }
     return false;
 }
@@ -597,23 +602,24 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
     local float too_close, dist;
     local DXRMissions m;
 
-    too_close = 90*16;
+    too_close = 75*16;
 
     m = DXRMissions(dxr.FindModule(class'DXRMissions'));
-    if( dxr.localURL == "12_VANDENBERG_GAS" ) {
-        if ( VSize(vect(168.601334, 607.866882, -980.902832) - loc) < too_close ) return true;
+    if( dxr.localURL == "12_VANDENBERG_GAS" ) {// Tiffany
+        if ( VSize(vect(168.601334, 607.866882, -980.902832) - loc) < 75*16 ) return true;
     }
     if( m != None && m.b_rando_start ) {
-        if ( VSize(m.rando_start_loc - loc) < too_close ) return true;
-        else return false;
+        return IsCloseToRandomStart(dxr, loc);
     }
     else {
+        too_close = 120 * 16;// worst cases are 05 jail and 06 helibase?
         foreach dxr.RadiusActors(class'PlayerStart', ps, too_close, loc) {
             dist = VSize(loc-ps.location);
             if( dist < too_close ) return true;
         }
     }
 
+    too_close = 75 * 16;
     foreach dxr.RadiusActors(class'Teleporter', t, too_close, loc) {
         if( t.Tag == '' ) continue;
         dist = VSize(loc-t.location);

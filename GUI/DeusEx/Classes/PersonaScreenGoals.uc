@@ -183,6 +183,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
 {
     local MenuUIMessageBoxWindow msgBox;
     local ActorDisplayWindow actorDisplay;
+    local #var(prefix)Nanokey key;
     local string action;
 
     msgBox = MenuUIMessageBoxWindow(msgBoxWindow);
@@ -196,7 +197,7 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
     case EntSpoilerWindowText:
         if (buttonNumber==0){
             action="entspoilers";
-            class'DXRStats'.static.AddCheatOffense(player);
+            class'DXRStats'.static.AddSpoilerOffense(player, 3);
         }
         break;
 
@@ -204,28 +205,33 @@ event bool BoxOptionSelected(Window msgBoxWindow, int buttonNumber)
         action="goalspoilers";
         bDisplaySpoilers=(buttonNumber==0);
         if(bDisplaySpoilers)
-            class'DXRStats'.static.AddCheatOffense(player);
+            class'DXRStats'.static.AddSpoilerOffense(player, 3);
 
     case KeySpoilerWindowText:
         if (buttonNumber==0) {
-            class'DXRStats'.static.AddCheatOffense(player);
+            class'DXRStats'.static.AddSpoilerOffense(player, 3);
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
             actorDisplay.SetViewClass(class'#var(prefix)Nanokey');
             actorDisplay.ShowLOS(false);
 #ifdef injections
-            actorDisplay.bShowHidden = false;
+            actorDisplay.bUserFriendlyNames = true;
 #endif
+            foreach player.AllActors(class'#var(prefix)Nanokey', key) {
+                if(key.Owner == None || !key.bHidden) continue;
+                key.SetLocation(key.Owner.Location);
+                key.SetBase(key.Owner);
+            }
         }
         break;
 
     case DatacubeSpoilerWindowText:
         if (buttonNumber==0) {
-            class'DXRStats'.static.AddCheatOffense(player);
+            class'DXRStats'.static.AddSpoilerOffense(player, 3);
             actorDisplay = DeusExRootWindow(player.rootWindow).actorDisplay;
             actorDisplay.SetViewClass(class'#var(prefix)InformationDevices');
             actorDisplay.ShowLOS(false);
 #ifdef injections
-            actorDisplay.bShowHidden = false;
+            actorDisplay.bUserFriendlyNames = true;
 #endif
         }
         break;

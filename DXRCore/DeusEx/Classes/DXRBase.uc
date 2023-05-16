@@ -120,6 +120,14 @@ simulated function float rngfn()
     return rngf() * 2.0 - 1.0;
 }
 
+simulated function float rngfn_min_dist(float min_dist)
+{// -1.0 to 1.0, adding a minimum distance away from 0
+    local float f;
+    f = rngfn();
+    if(f >= 0.0) return f + min_dist;
+    else return f - min_dist;
+}
+
 simulated function float rngrange(float val, float min, float max)
 {
     local float mult, r, ret;

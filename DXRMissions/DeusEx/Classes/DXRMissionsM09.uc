@@ -118,6 +118,8 @@ function PreFirstEntryMapFixes()
 
 function MissionTimer()
 {
-    if(dxr.flags.settings.goals > 0)
+    if(dxr.flags.settings.goals > 0) {
         UpdateGoalWithRandoInfo('Escape', "Jock could be anywhere at the dockyard.");
+        UpdateGoalWithRandoInfo('ScuttleShip', "Check the map in your Images section to see where the weld points can be.");
+    }
 }

@@ -194,8 +194,11 @@ https://www.ttlg.com/forums/showthread.php?t=130419
 
 http://www.offtopicproductions.com/forum/viewtopic.php?f=36&t=10464
 
-http://www.offtopicproductions.com/tacks/HowToAddAPersonalComputer.html
+http://www.offtopicproductions.com/tacks/HowToAddAPersonalComputer.html // guide for Text imports
 
+http://www.offtopicproductions.com/tacks/index.html // guides for importing textures and stuff
+
+http://www.offtopicproductions.com/tacks/HowToAddCustomTextures.html
 
 Revision compiling:
 copy all .u files from Revision\System\ to System\

@@ -2,17 +2,20 @@ class ActorDisplayWindow injects ActorDisplayWindow;
 
 var Font textfont;
 var bool bShowHidden;
+var bool bUserFriendlyNames;
 
 function SetViewClass(Class<Actor> newViewClass)
 {
     Super.SetViewClass(newViewClass);
     bShowHidden = true;
+    bUserFriendlyNames = false;
 }
 
 function ShowLOS(bool bShow)
 {
     Super.ShowLOS(bShow);
     bShowHidden = true;
+    bUserFriendlyNames = false;
 }
 
 function string GetActorName(Actor a)
@@ -23,7 +26,7 @@ function string GetActorName(Actor a)
     if(DXRGoalMarker(a) != None) {
         str = a.BindName;
     }
-    else if(!bShowHidden) {
+    else if(bUserFriendlyNames) {
         if(#var(prefix)Nanokey(a) != None) {
             str = #var(prefix)Nanokey(a).Description;
         }

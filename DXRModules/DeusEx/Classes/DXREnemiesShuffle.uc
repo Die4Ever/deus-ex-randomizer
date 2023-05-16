@@ -37,10 +37,6 @@ function SwapOrders(ScriptedPawn a, ScriptedPawn b)
 {
     SwapNames(a.Orders, b.Orders);
     SwapNames(a.OrderTag, b.OrderTag);
-    if(a.Orders != 'DynamicPatrolling')// we pick these up later in DXREnemiesPatrols
-        ResetOrders(a);
-    if(b.Orders != 'DynamicPatrolling')
-        ResetOrders(b);
 }
 
 function bool ShouldSwap(ScriptedPawn a, ScriptedPawn b) {
@@ -125,5 +121,15 @@ function SwapScriptedPawns(int percent, bool enemies)
         SwapProperty(temp[i], temp[slot], "RaiseAlarm");
 
         SwapOrders(temp[i], temp[slot]);
+    }
+
+    for(i=0; i<num; i++) {
+        a = temp[i];
+        if(#var(prefix)MJ12Commando(a) != None && a.Orders=='Sitting') {
+            a.Orders='Standing';
+            a.OrderTag='';
+        }
+        if(a.Orders != 'DynamicPatrolling')// we pick these up later in DXREnemiesPatrols
+            ResetOrders(a);
     }
 }

@@ -96,7 +96,7 @@ defaultproperties
      numTicks=256
      startValue=0
      endValue=256
-     defaultValue=15
+     defaultValue=10
      choiceControlPosX=203
      actionText="Brightness Boost"
      HelpText="Generally increases brightness for ease of play"

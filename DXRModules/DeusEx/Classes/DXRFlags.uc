@@ -90,7 +90,7 @@ function CheckConfig()
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 40;
     difficulty_settings[i].bot_weapons = 0;
-    difficulty_settings[i].bot_stats = 40;
+    difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 1;
@@ -158,7 +158,7 @@ function CheckConfig()
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 40;
     difficulty_settings[i].bot_weapons = 0;
-    difficulty_settings[i].bot_stats = 40;
+    difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
@@ -225,7 +225,7 @@ function CheckConfig()
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 60;
     difficulty_settings[i].bot_weapons = 0;
-    difficulty_settings[i].bot_stats = 60;
+    difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
@@ -233,7 +233,7 @@ function CheckConfig()
     difficulty_settings[i].banned_skills = 5;
     difficulty_settings[i].banned_skill_levels = 5;
     difficulty_settings[i].minskill = 50;
-    difficulty_settings[i].maxskill = 250;
+    difficulty_settings[i].maxskill = 225;
     difficulty_settings[i].ammo = 70;
     difficulty_settings[i].medkits = 70;
     difficulty_settings[i].biocells = 70;
@@ -292,7 +292,7 @@ function CheckConfig()
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 70;
     difficulty_settings[i].bot_weapons = 0;
-    difficulty_settings[i].bot_stats = 80;
+    difficulty_settings[i].bot_stats = 100;
     difficulty_settings[i].enemyrespawn = 0;
     difficulty_settings[i].skills_disable_downgrades = 5;
     difficulty_settings[i].skills_reroll_missions = 5;
@@ -300,7 +300,7 @@ function CheckConfig()
     difficulty_settings[i].banned_skills = 5;
     difficulty_settings[i].banned_skill_levels = 7;
     difficulty_settings[i].minskill = 50;
-    difficulty_settings[i].maxskill = 300;
+    difficulty_settings[i].maxskill = 250;
     difficulty_settings[i].ammo = 60;
     difficulty_settings[i].medkits = 60;
     difficulty_settings[i].biocells = 50;
@@ -367,7 +367,7 @@ function CheckConfig()
     difficulty_settings[i].banned_skills = 7;
     difficulty_settings[i].banned_skill_levels = 7;
     difficulty_settings[i].minskill = 50;
-    difficulty_settings[i].maxskill = 400;
+    difficulty_settings[i].maxskill = 350;
     difficulty_settings[i].ammo = 40;
     difficulty_settings[i].medkits = 50;
     difficulty_settings[i].biocells = 30;
@@ -468,7 +468,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.passwordsrandomized = 0;
             settings.enemystats = 0;
             settings.bot_stats = 0;
-            settings.minskill = (settings.minskill*3 + settings.maxskill + 100) / 5;
+            settings.minskill = (settings.minskill*3 + settings.maxskill + 125) / 5;// Hard mode == 100% skill costs
             settings.maxskill = settings.minskill;
             settings.ammo = 100;
             settings.medkits = 100;
@@ -511,6 +511,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.enemiesrandomized = 1000;
         settings.hiddenenemiesrandomized = 1000;
         settings.maxskill = Max(settings.minskill * 1.5, settings.maxskill * 0.75);
+        settings.equipment *= 2;
         settings.medkits *= 1.2;
         settings.medbots *= 2;
         settings.health = 250;
@@ -533,10 +534,12 @@ static function string GameModeName(int gamemode)
     switch(gamemode) {
     case 0:
         return "Normal Randomizer";
+#ifdef injections
     case EntranceRando:
         return "Entrance Randomization";
     case HordeMode:
         return "Horde Mode";
+#endif
     case RandoLite:
         return "Randomizer Lite";
     case ZeroRando:
