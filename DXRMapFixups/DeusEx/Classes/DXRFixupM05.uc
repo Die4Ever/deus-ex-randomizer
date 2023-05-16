@@ -27,6 +27,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)UNATCOTroop lloyd;
     local #var(prefix)AlexJacobson alex;
     local #var(prefix)JaimeReyes j;
+    local #var(prefix)MJ12Troop mj12;
     local DXREnemies dxre;
     local int i;
 
@@ -54,6 +55,12 @@ function PreFirstEntryMapFixes()
         }
         foreach AllActors(class'#var(prefix)PaulDentonCarcass',paulcarc){
             paulcarc.bInvincible=true;
+        }
+        foreach AllActors(class'#var(prefix)MJ12Troop', mj12, 'Cellguard') {
+            mj12.bImportant = true;
+            mj12.UnfamiliarName = "Rick";
+            mj12.FamiliarName = "Rick";
+            mj12.BindName = "MJ12CellguardRick";
         }
 
 #ifdef vanillamaps
