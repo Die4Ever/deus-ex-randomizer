@@ -511,6 +511,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.enemiesrandomized = 1000;
         settings.hiddenenemiesrandomized = 1000;
         settings.maxskill = Max(settings.minskill * 1.5, settings.maxskill * 0.75);
+        settings.equipment *= 2;
         settings.medkits *= 1.2;
         settings.medbots *= 2;
         settings.health = 250;
