@@ -234,12 +234,13 @@ function SetEnabledGameSongs(string songs[100], bool enable)
         if(choices[c].song == "") continue;
         for(s=0; s<ArrayCount(songs); s++) {
             if(songs[s] == "") break;
-            if(songs[s] == choices[c].song) {
+            if(songs[s] ~= choices[c].song) {
                 choices[c].enabled = enable;
                 break;
             }
         }
     }
+    SaveConfig();
 }
 
 function bool AreGameSongsEnabled(string songs[100])
@@ -253,12 +254,30 @@ function bool AreGameSongsEnabled(string songs[100])
         if(choices[c].song == "") continue;
         for(s=0; s<ArrayCount(songs); s++) {
             if(songs[s] == "") break;
-            if(songs[s] == choices[c].song) {
+            if(songs[s] ~= choices[c].song) {
                 return choices[c].enabled;
             }
         }
     }
     return false;
+}
+
+function SetEnabledSong(string song, bool enable)
+{
+    local int c;
+    local string fullsong;
+    if(InStr(song, ".") != -1)
+        fullsong = song$"."$song;
+    else
+        fullsong = song;
+
+    info("SetEnabledSong "$song@enable);
+    for(c=0; c<ArrayCount(choices); c++) {
+        if(choices[c].song ~= song || choices[c].song ~= fullsong) {
+            choices[c].enabled = enable;
+        }
+    }
+    SaveConfig();
 }
 
 

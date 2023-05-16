@@ -22,6 +22,8 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_ContinuousMusic');
         CreateChoice(class'MenuChoice_RandomMusic');
         CreateChoice(class'MenuChoice_ChangeSong');
+        //TODO: CreateChoice(class'MenuChoice_AutoChangeSong');
+        CreateChoice(class'MenuChoice_DisableSong');
         CreateChoice(class'MenuChoice_UTMusic');
         CreateChoice(class'MenuChoice_UnrealMusic');
         CreateChoice(class'MenuChoice_DXMusic');

@@ -150,6 +150,16 @@ function AnyEntry()
     PlayRandomSong(true);
 }
 
+function string GetCurrentSongName()
+{
+    local string p, s;
+    p = string(LevelSong);
+    s = string(LevelSong.Name);
+    if(p ~= (s$"."$s))
+        return s;
+    return p;
+}
+
 function GetLevelSong(bool setseed)
 {
     local string oldSong, newSong;
@@ -161,7 +171,7 @@ function GetLevelSong(bool setseed)
             SetGlobalSeed("NYCStreets2_Music");
     } else {
         SetGlobalSeed(FRand());
-        oldSong = string(LevelSong.Name);
+        oldSong = GetCurrentSongName();
     }
 
     music = DXRMusic(dxr.FindModule(class'DXRMusic'));
