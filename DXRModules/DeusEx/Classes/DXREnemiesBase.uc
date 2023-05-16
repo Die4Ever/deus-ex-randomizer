@@ -222,6 +222,17 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
     return n;
 }
 
+function bool IsSpawnPointGood(vector loc, class<ScriptedPawn> newclass)
+{
+    local LocationNormal locnorm;
+    local FMinMax distrange;
+
+    locnorm.loc = loc;
+    distrange.min = -16 * 5;
+    distrange.max = 16 * 20;
+    return NearestFloor(locnorm, distrange);
+}
+
 function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedPawn> newclass)
 {
     local int i;
@@ -241,30 +252,45 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     radius = (p.CollisionRadius + newclass.default.CollisionRadius) * 3.0;// combined radius, and * 3 for some personal space
     num_enemies = float(enemy_multiplier) * float(dxr.flags.settings.enemiesrandomized+100) / 100.0;
     radius *= Sqrt(num_enemies+1.0);
-    for(i=0; i<10; i++) {
+    for(i=0; i<15; i++) {
         // rngfn_min_dist to add a minimum distance from the 0, but also allow negative numbers
         loc_offset.X = rngfn_min_dist(0.5);
         loc_offset.Y = rngfn_min_dist(0.5);
         // the combined radius of these characters, multiplied by the square root of the number of enemies
         loc_offset *= radius;
+        loc_offset.Z = 16;// a foot above the ground, allows them to more easily spawn on stairs?
 
         if(p.bInWorld)
             loc = p.Location + loc_offset;
         else
             loc = p.WorldPosition + loc_offset;
 
+        if(!IsSpawnPointGood(loc, newclass)) {
+            l("CloneScriptedPawn "$loc$" is no good!");
+            continue;
+        }
+
         if( p.bInWorld == true && class'DXRMissions'.static.IsCloseToStart(dxr, loc) ) {
-            info("CloneScriptedPawn "$loc$" is too close to start!");
+            l("CloneScriptedPawn "$loc$" is too close to start!");
             continue;
         }
         n = Spawn(newclass,, newtag, loc );
-        if( n != None ) break;
+        if( n != None ) {
+            if(VSize(n.Location - loc) > 160) {
+                // distance greater than 10 feet from desired location
+                warning("CloneScriptedPawn "$n@n.Location$" is too far from desired "$loc);
+                n.Destroy();
+                n = None;
+                continue;
+            }
+            else break;// we're good!
+        }
     }
     if( n == None ) {
-        l("failed to clone "$ActorToString(p)$" into class "$newclass$" into "$loc);
+        l("CloneScriptedPawn failed to clone "$ActorToString(p)$" into class "$newclass$" into "$loc);
         return None;
     }
-    l("cloning "$ActorToString(p)$" into class "$newclass$" got "$ActorToString(n));
+    l("CloneScriptedPawn "$ActorToString(p)$" into class "$newclass$" got "$ActorToString(n));
 #ifdef hx
     // HACK: HXThugMale is missing the CarcassType
     if( n.class == class'HXThugMale' && n.CarcassType == None )
