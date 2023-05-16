@@ -422,6 +422,8 @@ function RandoMedRepairBotAmountCooldowns( int mbamount, int rbamount, int mbcoo
 
 simulated function RandoMedBot(#var(prefix)MedicalBot m, int mbamount, int mbcooldown)
 {
+    local float scale;
+
     if (mbcooldown!=0){
         if (mbcooldown == 1) { //Individual
             SetSeed("MedBotCooldown"$m.name); //Seed includes level name and the unique bot name
@@ -442,12 +444,16 @@ simulated function RandoMedBot(#var(prefix)MedicalBot m, int mbamount, int mbcoo
         }
 
         //Actually rando the healAmount
-        m.healAmount = rngrange(m.default.healAmount, 0.5, 1.2);
+        scale = float(dxr.flags.settings.health) / 100.0;
+        scale = Max(scale, (scale+1.0)/2.0);
+        m.healAmount = rngrange(m.default.healAmount, 0.5 * scale, 1.2 * scale);
     }
 }
 
 simulated function RandoRepairBot(#var(prefix)RepairBot r, int rbamount, int rbcooldown)
 {
+    local float scale;
+
     if (rbcooldown!=0){
         if (rbcooldown == 1) { //Individual
             SetSeed("RepairBotCooldown"$r.name); //Seed includes level name and the unique bot name
@@ -468,7 +474,9 @@ simulated function RandoRepairBot(#var(prefix)RepairBot r, int rbamount, int rbc
         }
 
         //Actually rando the chargeAmount
-        r.chargeAmount = rngrange(r.default.chargeAmount, 0.5, 1.2);
+        scale = float(dxr.flags.settings.energy) / 100.0;
+        scale = Max(scale, (scale+1.0)/2.0);
+        r.chargeAmount = rngrange(r.default.chargeAmount, 0.5 * scale, 1.2 * scale);
     }
 }
 
