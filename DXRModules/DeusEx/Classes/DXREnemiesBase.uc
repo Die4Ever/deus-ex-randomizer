@@ -358,7 +358,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
 
     if(!p.bInWorld) {
         n.bHidden = true;
-        n.bInWorld = false;
+        n.LeaveWorld();
         if(num_watches >= ArrayCount(watches)) {
             // this can happen if someone cranks up the settings too high
             warning("num_watches >= ArrayCount(watches): "$num_watches $", "$ ArrayCount(watches));
