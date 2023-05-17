@@ -19,7 +19,7 @@ function string _GetMapName()
     log("WARNING: "$self$" failed to find DeusExLevelInfo!");
     return Caps(GetURLMap());
 }
-
+// TODO: next compatibility break, switch to using DXRInfo::StripMapName
 function string GetMapNameStripped()
 {
     local string mapname;

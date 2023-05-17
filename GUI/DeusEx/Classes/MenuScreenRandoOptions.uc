@@ -14,7 +14,8 @@ function CreateChoices()
 
     CreateChoice(class'MenuChoice_Telemetry');
     CreateChoice(class'MenuChoice_JoinDiscord');
-    CreateChoice(class'MenuChoice_ReleasePage');  //This should probably always be the bottom option*/
+    CreateChoice(class'MenuChoice_ReleasePage');  //This should probably always be the bottom option
+    // TODO: button to open Mastodon?
 
     CreateChoice(class'MenuChoice_BrightnessBoost');
 

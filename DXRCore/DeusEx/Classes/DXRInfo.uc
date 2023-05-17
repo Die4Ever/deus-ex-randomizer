@@ -197,6 +197,19 @@ simulated function name StringToName(string s)
     return GetDXR().flagbase.StringToName(s);
 }
 
+simulated static final function string StripMapName(string s)
+{
+    local string stripped;
+    local int i;
+    for(i=0; i<Len(s); i++) {
+        if(Mid(s, i, 1) == "_")
+            stripped = stripped $ Mid(s, i, 1);
+        else
+            stripped = stripped $ ToAlphaNumeric(s, i);
+    }
+    return s;
+}
+
 simulated static function string UnpackString(out string s)
 {
     local int i, l;
@@ -415,6 +428,19 @@ simulated static final function bool IsWordChar(coerce string Text, int index)
     if( c == 39 ) // apostrophe
         return true;
     return false;
+}
+
+simulated static final function string ToAlphaNumeric(coerce string Text, int index)
+{
+    local int c;
+    c = Asc(Mid(Text, index, 1));
+    if( c>=48 && c<=57) // 0-9
+        return Mid(Text, index, 1);
+    if( c>=65 && c<=90) // A-Z
+        return Mid(Text, index, 1);
+    if( c>=97 && c<=122) // a-z
+        return Mid(Text, index, 1);
+    return "-";
 }
 
 /*
