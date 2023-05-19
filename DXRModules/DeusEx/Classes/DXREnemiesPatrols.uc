@@ -168,6 +168,7 @@ function bool _GivePatrol(ScriptedPawn pawn)
         return false;
     }
 
+    first.SetMyGuy(pawn);
     LinkPoints(p, first);
 
     pawn.SetOrders('Patrolling', first.tag, false);
