@@ -432,7 +432,7 @@ simulated function RandoMedBot(#var(prefix)MedicalBot m, int mbamount, int mbcoo
         }
 
         //Actually rando the cooldown
-        m.healRefreshTime = rngrange(m.default.healRefreshTime, 0.25, 1.25);
+        m.healRefreshTime = rngrange(m.default.healRefreshTime, 0.1, 1.0);
         m.lastHealTime = -m.healRefreshTime;
     }
 
@@ -462,7 +462,7 @@ simulated function RandoRepairBot(#var(prefix)RepairBot r, int rbamount, int rbc
         }
 
         //Actually rando the cooldown
-        r.chargeRefreshTime = rngrange(r.default.chargeRefreshTime, 0.25, 1.25);
+        r.chargeRefreshTime = rngrange(r.default.chargeRefreshTime, 0.1, 1.0);
         r.lastChargeTime = -r.chargeRefreshTime;
     }
 
