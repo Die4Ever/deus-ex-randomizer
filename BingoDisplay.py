@@ -4,6 +4,7 @@ from tkinter import filedialog as fd
 from tkinter import font
 from tkinter import messagebox
 from tkinter import *
+from pathlib import Path
 
 BUTTON_BORDER_WIDTH = 4
 BUTTON_BORDER_WIDTH_TOTAL=15*BUTTON_BORDER_WIDTH
@@ -174,12 +175,34 @@ class Bingo:
                 self.parseBingoLine(line)
 
 
+def saveLastUsedBingoFile(f):
+    p = Path(f)
+    # TODO: save last used file and reuse it for getDefaultPath()
+
+def getDefaultPath():
+    checks = [
+        Path.home() / "Documents" / "Deus Ex" / "System",
+        Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "Revision" / "System",
+        Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "Revision" / "System",
+        Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+        Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+    ]
+    p:Path
+    for p in checks:
+        f:Path = p / "DXRBingo.ini"
+        if f.exists():
+            return p
+    for p in checks:
+        if p.is_dir():
+            return p
+    return None
 
 def findBingoFile():
     root = Tk()
     root.withdraw()
     filetype = (("DXRBingo File","DXRBingo.ini"),("all files","*.*"))
-    target = fd.askopenfilename(title="Locate your DXRBingo File",filetypes=filetype)
+    initdir = getDefaultPath()
+    target = fd.askopenfilename(title="Locate your DXRBingo File",filetypes=filetype, initialdir=initdir)
     root.destroy()
     return target
 
@@ -207,7 +230,7 @@ if targetFile=='':
     sys.exit(0)
 
 b = Bingo(targetFile)
-
+saveLastUsedBingoFile(targetFile)
 lastFileUpdate=0
 
 while True:
