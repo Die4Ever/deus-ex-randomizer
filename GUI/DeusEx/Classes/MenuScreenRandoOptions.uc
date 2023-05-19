@@ -14,10 +14,11 @@ function CreateChoices()
 
     CreateChoice(class'MenuChoice_Telemetry');
     CreateChoice(class'MenuChoice_JoinDiscord');
-    CreateChoice(class'MenuChoice_ReleasePage');  //This should probably always be the bottom option
+    CreateChoice(class'MenuChoice_ReleasePage');
     // TODO: button to open Mastodon?
 
     CreateChoice(class'MenuChoice_BrightnessBoost');
+    CreateChoice(class'MenuChoice_ToggleMemes');
 
     if(!#defined(revision)) {
         CreateChoice(class'MenuChoice_ContinuousMusic');

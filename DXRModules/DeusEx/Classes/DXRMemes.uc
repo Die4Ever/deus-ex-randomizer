@@ -1,5 +1,5 @@
 class DXRMemes extends DXRActorsBase transient;
-
+// make sure none of this affects speed or score, because it can be easily disabled
 var Actor rotating;
 
 function RandomDancing(Actor a)

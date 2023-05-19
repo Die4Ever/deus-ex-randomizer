@@ -17,8 +17,6 @@ function bool GetModules()
 
 function bool ButtonActivated( Window buttonPressed )
 {
-    local DXRMusic music;
-    local DXRMusicPlayer musicplayer;
     local string song;
 
     if(!GetModules()) return true;

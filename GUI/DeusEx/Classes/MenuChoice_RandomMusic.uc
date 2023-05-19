@@ -86,6 +86,6 @@ defaultproperties
      random_music=True;
      defaultInfoWidth=243
      defaultInfoPosX=203
-     HelpText="Randomize game music"
+     HelpText="Randomize game music. This is automatically disabled for Zero Rando and Rando Lite modes."
      actionText="Randomize Music"
 }
