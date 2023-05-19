@@ -238,9 +238,11 @@ while True:
         b.readBingoFile()
         #b.printBoard()
         lastFileUpdate=time.time()
-
-    if (b.isWindowOpen()):
         b.drawBoard()
     else:
+        b.win.update()
+
+    if not b.isWindowOpen():
         sys.exit(0)
 
+    time.sleep(0.01)
