@@ -377,7 +377,9 @@ function bool ban(DeusExPlayer player, Inventory item)
 {
     local bool bFixGlitches;
 
-    if ( _is_banned( _item_sets[loadout], item.class) ) {
+    if(IsMeleeWeapon(item) && Carcass(item.Owner) != None && player.FindInventoryType(item.class) != None) {
+        return true;
+    } else if ( _is_banned( _item_sets[loadout], item.class) ) {
         if( item_sets[loadout].player_message != "" ) {
             //item.ItemName = item.ItemName $ ", " $ item_sets[loadout].player_message;
             player.ClientMessage(item_sets[loadout].player_message, 'Pickup', true);

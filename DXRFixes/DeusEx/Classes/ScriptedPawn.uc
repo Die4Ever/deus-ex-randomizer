@@ -23,12 +23,14 @@ event Destroyed()
 function ThrowInventory(bool gibbed)
 {
     local Inventory item, nextItem;
-    local bool drop, melee;
+    local bool drop, melee, throw_melee;
 
+    throw_melee = bool(ConsoleCommand("get #var(package).MenuChoice_ThrowMelee throw_melee"));
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
-        melee = class'DXRActorsBase'.static.IsMeleeWeapon(item);
+        if(throw_melee)
+            melee = class'DXRActorsBase'.static.IsMeleeWeapon(item);
         drop = (item.IsA('NanoKey') && gibbed) || (melee && !gibbed) || (gibbed && item.bDisplayableInv);
         if( DeusExWeapon(item) != None && DeusExWeapon(item).bNativeAttack )
             drop = false;
