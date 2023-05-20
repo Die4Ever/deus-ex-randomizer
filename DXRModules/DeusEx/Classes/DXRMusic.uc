@@ -14,6 +14,9 @@ struct SongChoice {
 var config bool allowCombat;
 var config SongChoice choices[300];// keep size in sync with _GetLevelSong tchoices[]
 
+var string skipped_songs[10];// copied back to defaults, so they get remembered across loading screens but not when you close the program, otherwise use the disable button instead of the change song button
+var int last_skipped_song;
+
 function CheckConfig()
 {
     local int i, g;
@@ -300,7 +303,7 @@ function _GetLevelSong(string oldSong, out string newSong, out byte LevelSongSec
 {
     local SongChoice tchoices[300], s;
     local int i, j, num;
-    local bool cutscene;
+    local bool cutscene, goodSong;
 
     // we expect the caller to handle setting the initial seed
     switch(dxr.localURL) {
@@ -323,10 +326,26 @@ function _GetLevelSong(string oldSong, out string newSong, out byte LevelSongSec
         tchoices[num++] = s;
     }
 
+    // remember skipped songs
+    if(oldSong != "") {
+        last_skipped_song = last_skipped_song % ArrayCount(skipped_songs);
+        skipped_songs[last_skipped_song] = oldSong;
+        default.skipped_songs[last_skipped_song] = skipped_songs[last_skipped_song];
+        default.last_skipped_song = ++last_skipped_song;
+    }
+
+    // choose the song
     for(j=0; j<100; j++) {
         i = rng(num);
         s = tchoices[i];
-        if(s.song != oldSong) break;
+        goodSong = true;
+        for(i=0; i<ArrayCount(skipped_songs); i++) {
+            if(s.song ~= skipped_songs[i]) {
+                goodSong = false;
+                break;
+            }
+        }
+        if(goodSong) break;
     }
 
     newSong = s.song;
