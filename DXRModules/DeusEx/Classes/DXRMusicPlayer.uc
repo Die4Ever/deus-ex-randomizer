@@ -97,7 +97,7 @@ function ClientSetMusic( playerpawn NewPlayer, music NewSong, byte NewSection, b
 
     p = #var(PlayerPawn)(NewPlayer);
     continuous_setting = int(NewPlayer.ConsoleCommand("get #var(package).MenuChoice_ContinuousMusic continuous_music"));
-    rando_music_setting = bool(p.ConsoleCommand("get #var(package).MenuChoice_RandomMusic  random_music"));
+    rando_music_setting = bool(p.ConsoleCommand("get #var(package).MenuChoice_RandomMusic enabled"));
     c = class'MenuChoice_ContinuousMusic';
     l("ClientSetMusic("$NewSong@NewSection@NewCdTrack@NewTransition$") "$continuous_setting@rando_music_setting@PrevSong@PrevMusicMode@dxr.dxInfo.missionNumber);
 
@@ -216,7 +216,7 @@ function PlayRandomSong(bool setseed)
     if(p == None) return;
 
     continuous_setting = int(p.ConsoleCommand("get #var(package).MenuChoice_ContinuousMusic continuous_music"));
-    rando_music_setting = bool(p.ConsoleCommand("get #var(package).MenuChoice_RandomMusic random_music"));
+    rando_music_setting = bool(p.ConsoleCommand("get #var(package).MenuChoice_RandomMusic enabled"));
     l("AnyEntry 1: "$p@dxr@dxr.dxInfo.missionNumber@continuous_setting@rando_music_setting);
     if( p == None || dxr == None  || (continuous_setting == c.default.disabled && rando_music_setting==false) )
         return;

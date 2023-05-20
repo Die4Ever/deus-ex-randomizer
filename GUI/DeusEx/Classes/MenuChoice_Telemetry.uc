@@ -104,8 +104,8 @@ function ResetToDefault()
 
 defaultproperties
 {
-     defaultInfoWidth=243
-     defaultInfoPosX=203
-     HelpText="Death Markers, send error reports, and get notified about updates!"
-     actionText="Online Features"
+    defaultInfoWidth=243
+    defaultInfoPosX=203
+    HelpText="Death Markers, send error reports, and get notified about updates!"
+    actionText="Online Features"
 }

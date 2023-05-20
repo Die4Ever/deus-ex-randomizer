@@ -2,7 +2,7 @@
 // MenuChoice_ContinuousMusic
 //=============================================================================
 
-class MenuChoice_ContinuousMusic extends MenuUIChoiceEnum;
+class MenuChoice_ContinuousMusic extends MenuUIChoiceEnum config(DXRandoOptions);
 
 var config int continuous_music;
 var int disabled;
@@ -83,12 +83,12 @@ function ResetToDefault()
 
 defaultproperties
 {
-     continuous_music=2
-     disabled=0
-     simple=1
-     advanced=2
-     defaultInfoWidth=243
-     defaultInfoPosX=203
-     HelpText="Continue music through loading screens."
-     actionText="Continuous Music"
+    continuous_music=2
+    disabled=0
+    simple=1
+    advanced=2
+    defaultInfoWidth=243
+    defaultInfoPosX=203
+    HelpText="Continue music through loading screens."
+    actionText="Continuous Music"
 }

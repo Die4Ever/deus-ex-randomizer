@@ -2,7 +2,7 @@
 // MenuChoice_BrightnessBoost
 //=============================================================================
 
-class MenuChoice_BrightnessBoost extends MenuUIChoiceSlider;
+class MenuChoice_BrightnessBoost extends MenuUIChoiceSlider config(DXRandoOptions);
 
 var config int BrightnessBoost;
 

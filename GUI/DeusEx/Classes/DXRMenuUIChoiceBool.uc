@@ -1,23 +1,29 @@
-//=============================================================================
-// MenuChoice_EnergyDisplay
-//=============================================================================
+class DXRMenuUIChoiceBool extends MenuUIChoiceEnum config(DXRandoOptions) abstract;
 
-class MenuChoice_EnergyDisplay extends MenuChoice_VisibleHidden config(DXRandoOptions);
-
-var config bool bEnergyDisplayHidden;
+var config bool enabled;
 
 // ----------------------------------------------------------------------
-// LoadSetting()
+// InitWindow()
+//
+// Initialize the Window
 // ----------------------------------------------------------------------
+
 event InitWindow()
 {
     Super.InitWindow();
+
+    SetInitialOption();
+
     SetActionButtonWidth(179);
 }
 
-function LoadSetting()
+// ----------------------------------------------------------------------
+// SetInitialCycleType()
+// ----------------------------------------------------------------------
+
+function SetInitialOption()
 {
-    SetValue(Int(bEnergyDisplayHidden));
+    SetValue(int(enabled));
 }
 
 // ----------------------------------------------------------------------
@@ -26,22 +32,27 @@ function LoadSetting()
 
 function SaveSetting()
 {
-    local HUDEnergyDisplay hud;
-    bEnergyDisplayHidden = bool(GetValue());
+    enabled = bool(GetValue());
     SaveConfig();
-    ChangeStyle();
-    foreach AllObjects(class'HUDEnergyDisplay', hud) {
-        hud.StyleChanged();
-    }
 }
 
 // ----------------------------------------------------------------------
+// LoadSetting()
+// ----------------------------------------------------------------------
+
+function LoadSetting()
+{
+    SetValue(int(enabled));
+}
+
+// ----------------------------------------------------------------------
+// ResetToDefault
 // ----------------------------------------------------------------------
 
 function ResetToDefault()
 {
-    SetValue(0);
-    bEnergyDisplayHidden = false;
+    enabled = default.enabled;
+    SetValue(int(enabled));
     SaveSetting();
 }
 
@@ -50,9 +61,11 @@ function ResetToDefault()
 
 defaultproperties
 {
-    bEnergyDisplayHidden=false
+    enabled=True;
     defaultInfoWidth=243
     defaultInfoPosX=203
-    HelpText="Toggles energy consumption visibility."
-    actionText="Energy Consumption"
+    HelpText=""
+    actionText=""
+    enumText(0)="Disabled"
+    enumText(1)="Enabled"
 }

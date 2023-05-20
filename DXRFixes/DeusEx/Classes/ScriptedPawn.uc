@@ -25,7 +25,7 @@ function ThrowInventory(bool gibbed)
     local Inventory item, nextItem;
     local bool drop, melee, throw_melee;
 
-    throw_melee = bool(ConsoleCommand("get #var(package).MenuChoice_ThrowMelee throw_melee"));
+    throw_melee = bool(ConsoleCommand("get #var(package).MenuChoice_ThrowMelee enabled"));
     item = Inventory;
     while( item != None ) {
         nextItem = item.Inventory;
