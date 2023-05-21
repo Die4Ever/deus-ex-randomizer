@@ -14,24 +14,11 @@ var DXRTelemetry t;
 
 event InitWindow()
 {
-    Super.InitWindow();
-
     foreach player.AllActors(class'DXRTelemetry', t) { break; }
     if( t == None ) t = player.Spawn(class'DXRTelemetry');
     t.CheckConfig();
-}
 
-// ----------------------------------------------------------------------
-// PopulateCycleTypes()
-// ----------------------------------------------------------------------
-
-function PopulateOptions()
-{
-    local int typeIndex;
-
-    enumText[0] = "Disabled";
-    enumText[1] = "Enabled, Death Markers Hidden";
-    enumText[2] = "All Enabled";
+    Super.InitWindow();
 }
 
 // ----------------------------------------------------------------------
@@ -99,4 +86,7 @@ defaultproperties
 {
     HelpText="Death Markers, send error reports, and get notified about updates!"
     actionText="Online Features"
+    enumText(0)="Disabled"
+    enumText(1)="Enabled, Death Markers Hidden"
+    enumText(2)="All Enabled"
 }

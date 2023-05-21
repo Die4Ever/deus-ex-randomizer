@@ -32,8 +32,8 @@ function CancelSetting()
 // ----------------------------------------------------------------------
 
 function ResetToDefault()
-{// TODO: does the default work? delete my config and test
-	BrightnessBoost = int(defaultValue);
+{
+    BrightnessBoost = int(defaultValue);
     SetValue(BrightnessBoost);
     AdjustBrightness(BrightnessBoost);
     SaveConfig();
