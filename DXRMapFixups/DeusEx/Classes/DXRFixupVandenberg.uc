@@ -13,6 +13,7 @@ function PreFirstEntryMapFixes()
     local DXREnemies dxre;
     local #var(prefix)TracerTong tt;
     local SequenceTrigger st;
+    local #var(prefix)ShopLight sl;
 
     switch(dxr.localURL)
     {
@@ -29,6 +30,9 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vect(2512,6140,-2162),rot(0,0,0),'Wandering');
         class'PlaceholderEnemy'.static.Create(self,vect(2267,643,-2000),rot(0,0,0),'Wandering');
 
+        sl = #var(prefix)ShopLight(_AddActor(self, class'#var(prefix)ShopLight', vect(1.125000, 938.399963, -1025), rot(0, 16384, 0)));
+        sl.bInvincible = true;
+        sl.bCanBeBase = true;
         break;
 
 #ifdef vanillamaps
