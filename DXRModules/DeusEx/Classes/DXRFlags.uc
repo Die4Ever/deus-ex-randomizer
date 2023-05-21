@@ -511,6 +511,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.enemiesrandomized = 1000;
         settings.hiddenenemiesrandomized = 1000;
         settings.maxskill = Min(settings.minskill * 1.5, settings.maxskill * 0.75);
+        settings.maxskill = Max(settings.minskill * 1.2, settings.maxskill);// ensure greater than minskill
         settings.ammo = (settings.ammo + 100) / 2;
         settings.equipment *= 2;
         settings.medkits = (settings.medkits + 100) / 2;
@@ -803,7 +804,7 @@ function int ScoreFlags()
 
     if(IsEntranceRando())
         score += 100;
-    score += 1000;// constant increase to compensate for stronger doors rules
+    score += 800;// constant increase to compensate for stronger doors rules
     score -= settings.doorsdestructible * 5;
     score -= settings.doorspickable * 5;
     if(settings.keysrando > 0)
