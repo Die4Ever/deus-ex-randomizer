@@ -1,21 +1,6 @@
-class DXRMenuUIChoiceBool extends MenuUIChoiceEnum config(DXRandoOptions) abstract;
+class DXRMenuUIChoiceBool extends DXRMenuUIChoiceEnum abstract;
 
 var config bool enabled;
-
-// ----------------------------------------------------------------------
-// InitWindow()
-//
-// Initialize the Window
-// ----------------------------------------------------------------------
-
-event InitWindow()
-{
-    Super.InitWindow();
-
-    SetInitialOption();
-
-    SetActionButtonWidth(179);
-}
 
 // ----------------------------------------------------------------------
 // SetInitialCycleType()
@@ -62,10 +47,6 @@ function ResetToDefault()
 defaultproperties
 {
     enabled=True;
-    defaultInfoWidth=243
-    defaultInfoPosX=203
-    HelpText=""
-    actionText=""
     enumText(0)="Disabled"
     enumText(1)="Enabled"
 }

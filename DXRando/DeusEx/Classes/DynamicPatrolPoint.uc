@@ -28,7 +28,6 @@ function Timer()
     if(myGuy.InStasis()) {
         lastMoveTime = Level.TimeSeconds;
     } else if(VSize(lastPos - myGuy.Location) <3) {
-        log(self@ "Timer()" @ myGuy @ myGuy.Location @ Level.TimeSeconds @ lastMoveTime);
         if( (Level.TimeSeconds - lastMoveTime) > 10 ) {
             myGuy.SetOrders('Wandering',, true);
             log(self@myGuy@myGuy.Location$" dynamic patrol was stuck, set to Wandering");

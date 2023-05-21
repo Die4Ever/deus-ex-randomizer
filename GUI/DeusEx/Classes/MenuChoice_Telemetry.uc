@@ -2,7 +2,7 @@
 // MenuChoice_Telemetry
 //=============================================================================
 
-class MenuChoice_Telemetry extends MenuUIChoiceEnum;
+class MenuChoice_Telemetry extends DXRMenuUIChoiceEnum;
 
 var DXRTelemetry t;
 
@@ -14,18 +14,11 @@ var DXRTelemetry t;
 
 event InitWindow()
 {
-
     Super.InitWindow();
 
     foreach player.AllActors(class'DXRTelemetry', t) { break; }
     if( t == None ) t = player.Spawn(class'DXRTelemetry');
     t.CheckConfig();
-
-    PopulateOptions();
-
-    SetInitialOption();
-
-    SetActionButtonWidth(179);
 }
 
 // ----------------------------------------------------------------------
@@ -104,8 +97,6 @@ function ResetToDefault()
 
 defaultproperties
 {
-    defaultInfoWidth=243
-    defaultInfoPosX=203
     HelpText="Death Markers, send error reports, and get notified about updates!"
     actionText="Online Features"
 }

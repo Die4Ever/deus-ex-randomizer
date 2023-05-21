@@ -122,8 +122,13 @@ function RandomBobPage()
 
 function PreFirstEntry()
 {
+    local bool memes_enabled;
+
     Super.PreFirstEntry();
     if(dxr.flags.IsReducedRando()) return;
+    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
+    if(!memes_enabled) return;
+
     switch(dxr.localURL)
     {
         case "15_AREA51_PAGE":
@@ -151,8 +156,12 @@ function AnyEntry()
     local Actor a;
     local Rotator r;
     local Vector v;
+    local bool memes_enabled;
+
     Super.AnyEntry();
     if(dxr.flags.IsReducedRando()) return;
+    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
+    if(!memes_enabled) return;
 
     switch(dxr.localURL)
     {
@@ -275,8 +284,12 @@ function PostFirstEntry()
     local InterpolationPoint p;
     local vector v;
     local rotator r;
+    local bool memes_enabled;
+
     Super.PostFirstEntry();
     if(dxr.flags.IsReducedRando()) return;
+    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
+    if(!memes_enabled) return;
 
     SetSeed("Memes Dancing");
 

@@ -1,5 +1,5 @@
 //=============================================================================
-// MenuChoice_RandomMusic
+// MenuChoice_FixGlitches
 //=============================================================================
 
 class MenuChoice_FixGlitches extends DXRMenuUIChoiceBool;

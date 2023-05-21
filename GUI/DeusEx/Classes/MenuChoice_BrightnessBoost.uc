@@ -32,7 +32,7 @@ function CancelSetting()
 // ----------------------------------------------------------------------
 
 function ResetToDefault()
-{
+{// TODO: does the default work? delete my config and test
 	BrightnessBoost = int(defaultValue);
     SetValue(BrightnessBoost);
     AdjustBrightness(BrightnessBoost);
@@ -97,6 +97,7 @@ defaultproperties
      startValue=0
      endValue=256
      defaultValue=10
+     BrightnessBoost=10
      choiceControlPosX=203
      actionText="Brightness Boost"
      HelpText="Generally increases brightness for ease of play"
