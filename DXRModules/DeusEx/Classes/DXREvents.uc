@@ -1881,8 +1881,10 @@ defaultproperties
     bingo_options(130)=(event="RepairBot_ClassDead",desc="Destroy 3 Repair Bots",max=3)
     bingo_options(131)=(event="DrugDealer_Dead",desc="Kill the Drug Dealer in Brooklyn Bridge Station",max=1,missions=8)
     bingo_options(132)=(event="botordertrigger",desc="The Smuggler is whacked-out paranoid",max=1,missions=276)
+#ifdef injections
     bingo_options(133)=(event="IgnitedPawn",desc="Set 15 people on fire",max=15)
     bingo_options(134)=(event="GibbedPawn",desc="Blow up 15 people",max=15)
+#endif
     bingo_options(135)=(event="IcarusCalls_Played",desc="Take a phone call from Icarus in Paris",max=1,missions=1024)
     bingo_options(136)=(event="AlexCloset",desc="Go into Alex's closet",max=1,missions=58)
     bingo_options(137)=(event="BackOfStatue",desc="Climb to the balcony on the back of the statue",max=1,missions=2)
