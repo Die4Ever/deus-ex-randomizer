@@ -1,5 +1,7 @@
 class DXRFixupVandenberg extends DXRFixup;
 
+var bool M14GaryNotDone;
+
 function PreFirstEntryMapFixes()
 {
     local ElevatorMover e;
@@ -213,6 +215,11 @@ function AnyEntryMapFixes()
             key.Timer();// make sure to fix the ItemName in vanilla
         }
         break;
+
+    case "14_VANDENBERG_SUB":
+        FixSavageSkillPointsDupe();
+        break;
+
     case "14_OCEANLAB_SILO":
         foreach AllActors(class'#var(prefix)HowardStrong', hs) {
             hs.ChangeAlly('', 1, true);
@@ -223,5 +230,35 @@ function AnyEntryMapFixes()
         }
         Player().StartDataLinkTransmission("DL_FrontGate");
         break;
+    }
+}
+
+function FixSavageSkillPointsDupe()
+{
+    local Conversation c;
+    local ConEventAddSkillPoints sk;
+    local ConEvent e, prev;
+
+    c = GetConversation('GaryWaitingForSchematics');
+    if(c==None) return;
+    for(e = c.eventList; e != None; e=e.nextEvent) {
+        sk = ConEventAddSkillPoints(e);
+        if(sk != None) {
+            FixConversationDeleteEvent(sk, prev);
+        }
+        prev = e;
+    }
+
+    if(!dxr.flagbase.GetBool('M14GaryDone')) {
+        M14GaryNotDone = true;
+        SetTimer(1, true);
+    }
+}
+
+function TimerMapFixes()
+{
+    if(M14GaryNotDone && dxr.flagbase.GetBool('M14GaryDone')) {
+        M14GaryNotDone = false;
+        player().SkillPointsAdd(500);
     }
 }
