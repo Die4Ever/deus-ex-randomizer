@@ -110,7 +110,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 2,4,0,2) ) {
+    if( VersionOlderThan(config_version, 2,4,1,1) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -170,6 +170,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRMusic";
     modules_to_load[i++] = "DXRMusicPlayer";
     modules_to_load[i++] = "DXRPlayerStats";
+    modules_to_load[i++] = "DXRMutators";
 }
 
 function hx_modules()
@@ -200,6 +201,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRReplaceActors";
     modules_to_load[i++] = "DXREvents";
     modules_to_load[i++] = "DXRPlayerStats";
+    modules_to_load[i++] = "DXRMutators";
 }
 
 function gmdx_modules()
@@ -234,6 +236,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRMusic";
     modules_to_load[i++] = "DXRMusicPlayer";
     modules_to_load[i++] = "DXRPlayerStats";
+    modules_to_load[i++] = "DXRMutators";
 }
 
 function revision_modules()
@@ -272,6 +275,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRMusic";
     modules_to_load[i++] = "DXRMusicPlayer";
     modules_to_load[i++] = "DXRPlayerStats";
+    modules_to_load[i++] = "DXRMutators";
 }
 
 function DXRFlags LoadFlagsModule()

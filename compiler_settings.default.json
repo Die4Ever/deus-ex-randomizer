@@ -7,7 +7,7 @@
             "DeusExPrefix":"DeusEx", "PlayerPawn":"Human", "flagvarprefix": "", "package": "DeusEx"
         },
         "mods_paths": [ "../Lay-D-Denton-Project", "./" ],
-        "packages": [ "DeusEx" ],
+        "packages": [ "DeusEx", "DXRMutators" ],
         "verbose": false,
         "copy_if_changed": "DXRVersion.uc",
         "run_tests": true,
