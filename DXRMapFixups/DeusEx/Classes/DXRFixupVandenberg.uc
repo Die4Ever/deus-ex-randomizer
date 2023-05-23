@@ -237,16 +237,19 @@ function FixSavageSkillPointsDupe()
 {
     local Conversation c;
     local ConEventAddSkillPoints sk;
-    local ConEvent e, prev;
+    local ConEvent e, prev, next;
 
     c = GetConversation('GaryWaitingForSchematics');
     if(c==None) return;
-    for(e = c.eventList; e != None; e=e.nextEvent) {
+    for(e = c.eventList; e != None; e=next) {
+        next = e.nextEvent;// keep this when we delete e
         sk = ConEventAddSkillPoints(e);
         if(sk != None) {
             FixConversationDeleteEvent(sk, prev);
         }
-        prev = e;
+        else {
+            prev = e;
+        }
     }
 
     if(!dxr.flagbase.GetBool('M14GaryDone')) {
