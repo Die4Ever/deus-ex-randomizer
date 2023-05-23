@@ -804,16 +804,16 @@ function int ScoreFlags()
 
     if(IsEntranceRando())
         score += 100;
-    score += 800;// constant increase to compensate for stronger doors rules
-    score -= settings.doorsdestructible * 5;
-    score -= settings.doorspickable * 5;
+    //score += 500;// constant increase to compensate for stronger doors rules
+    score -= settings.doorsdestructible * 2;
+    score -= settings.doorspickable * 2;
     if(settings.keysrando > 0)
-        score += 100;
+        score += 200;
     //score += settings.keys_containers;
     //score += settings.infodevices_containers;
-    score -= settings.deviceshackable;
-    score += settings.passwordsrandomized;
-    score += settings.infodevices;
+    score -= settings.deviceshackable * 2;
+    score += settings.passwordsrandomized * 2;
+    score += settings.infodevices * 2;
     score += settings.enemiesrandomized;
     score += settings.enemystats;
     //score += settings.hiddenenemiesrandomized;
