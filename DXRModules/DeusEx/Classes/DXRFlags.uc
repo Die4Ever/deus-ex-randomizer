@@ -804,7 +804,6 @@ function int ScoreFlags()
 
     if(IsEntranceRando())
         score += 100;
-    //score += 500;// constant increase to compensate for stronger doors rules
     score -= settings.doorsdestructible * 2;
     score -= settings.doorspickable * 2;
     if(settings.keysrando > 0)
