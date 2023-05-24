@@ -422,8 +422,13 @@ function CheckConfig()
 
 function FlagsSettings SetDifficulty(int new_difficulty)
 {
+    local bool memes_enabled;
+
     difficulty = new_difficulty;
     settings = difficulty_settings[difficulty];
+
+    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
+    if(!memes_enabled) settings.dancingpercent = 0;
 
     if(IsReducedRando()) {
         settings.doorsmode = 0;

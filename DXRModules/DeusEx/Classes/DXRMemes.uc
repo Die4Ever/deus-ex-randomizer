@@ -287,17 +287,19 @@ function PostFirstEntry()
     local bool memes_enabled;
 
     Super.PostFirstEntry();
-    if(dxr.flags.IsReducedRando()) return;
-    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
-    if(!memes_enabled) return;
 
     SetSeed("Memes Dancing");
 
     foreach AllActors(class'ScriptedPawn',sp)
     {
-        //Make people dance across the world
+        //Make people dance across the world, reduced rando sets this to 0%
+        // we want to keep this in memes disabled because it could affect speed/difficulty/score/races
         RandomDancing(sp);
     }
+
+    if(dxr.flags.IsReducedRando()) return;
+    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
+    if(!memes_enabled) return;
 
     SetSeed("Memes InterpolationPoints");
 
