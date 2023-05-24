@@ -196,6 +196,7 @@ function AnyEntryMapFixes()
     local MIB mib;
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
+    local #var(prefix)GarySavage gary;
 
     if(dxr.flagbase.GetBool('schematic_downloaded') && !dxr.flagbase.GetBool('DL_downloaded_Played')) {
         dxr.flagbase.SetBool('DL_downloaded_Played', true);
@@ -218,6 +219,9 @@ function AnyEntryMapFixes()
 
     case "14_VANDENBERG_SUB":
         FixSavageSkillPointsDupe();
+        foreach AllActors(class'#var(prefix)GarySavage', gary) {
+            RemoveFears(gary);
+        }
         break;
 
     case "14_OCEANLAB_SILO":
