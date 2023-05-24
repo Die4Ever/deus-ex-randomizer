@@ -101,6 +101,7 @@ function int InitGoals(int mission, string map)
 function PreFirstEntryMapFixes()
 {
     local FlagTrigger ft;
+    local #var(prefix)Terrorist t;
 
     switch(dxr.localURL) {
     case "03_NYC_AIRFIELDHELIBASE":
@@ -116,6 +117,12 @@ function PreFirstEntryMapFixes()
             if (ft.Name=='FlagTrigger0'){
                 ft.SetCollisionSize(150, ft.CollisionHeight);
             }
+        }
+        foreach AllActors(class'#var(prefix)Terrorist', t, 'boatguard') {
+            // don't swap this guy, he has the east gate key
+            t.bVisionImportant = true;
+            t.bIsSecretGoal = true;
+            t.bImportant = true;
         }
         break;
 
