@@ -4,9 +4,9 @@ class DXRWeaponAssaultShotgun injects WeaponAssaultShotgun;
 defaultproperties
 {
     HitDamage=5
-    BaseAccuracy=0.7
+    BaseAccuracy=0.6
     maxRange=1200
-    AccurateRange=800
-    MinSpreadAcc=0.2
+    AccurateRange=900
+    MinSpreadAcc=0.15
     AIMaxRange=450
 }
