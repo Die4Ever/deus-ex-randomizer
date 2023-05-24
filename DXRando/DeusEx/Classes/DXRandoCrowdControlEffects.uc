@@ -639,8 +639,30 @@ function int getTimer(name timerName) {
     return int(datastorage.GetConfigKey(timerName));
 }
 
+function int getTimerDuration(name timerName) {
+    local int duration;
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
+
+    duration = int(datastorage.GetConfigKey(timerName$"_Duration"));
+
+    if (duration == 0) {
+        duration = getDefaultTimerTimeByName(timerName);
+    }
+
+    return duration;
+}
+
+function setTimerDuration(name timerName, int duration) {
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
+
+    if (duration==0){
+        duration = getDefaultTimerTimeByName(timerName);
+    }
+    datastorage.SetConfig(timerName$"_Duration",duration,3600*12);
+}
+
 function setTimerFlag(name timerName, int time, bool newTimer) {
-    local int expiration;
+    local int expiration, duration;
     if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
     if( time == 0 ) expiration = 1;
     else expiration = 3600*12;
@@ -650,7 +672,8 @@ function setTimerFlag(name timerName, int time, bool newTimer) {
     } else {
         //This is basically just for if you reload a game, or change maps
         if (checkForTimerDisplay(timerName) == False) {
-            addTimerDisplay(timerName,getDefaultTimerTimeByName(timerName));  //TODO: Need to save duration for reloads
+            duration = getTimerDuration(timerName);
+            addTimerDisplay(timerName,duration);
         }
     }
 }
@@ -676,6 +699,8 @@ function startNewTimer(name timerName, int duration) {
     if (duration==0){
         duration = getDefaultTimerTimeByName(timerName);
     }
+    setTimerDuration(timerName,duration);
+
     setTimerFlag(timerName,duration,True);
 }
 
@@ -1074,6 +1099,7 @@ function int GiveLamThrower(string viewer,int duration)
     if (duration==0){
         duration = LamThrowerTimeDefault;
     }
+    setTimerDuration('cc_lamthrowerTimer',duration);
     setTimerFlag('cc_lamthrowerTimer',duration,True);
     PlayerMessage(viewer@"turned your flamethrower into a LAM Thrower!");
     return Success;
