@@ -2,7 +2,7 @@
 // MenuChoice_BrightnessBoost
 //=============================================================================
 
-class MenuChoice_BrightnessBoost extends MenuUIChoiceSlider;
+class MenuChoice_BrightnessBoost extends MenuUIChoiceSlider config(DXRandoOptions);
 
 var config int BrightnessBoost;
 
@@ -33,7 +33,7 @@ function CancelSetting()
 
 function ResetToDefault()
 {
-	BrightnessBoost = int(defaultValue);
+    BrightnessBoost = int(defaultValue);
     SetValue(BrightnessBoost);
     AdjustBrightness(BrightnessBoost);
     SaveConfig();
@@ -97,6 +97,7 @@ defaultproperties
      startValue=0
      endValue=256
      defaultValue=10
+     BrightnessBoost=10
      choiceControlPosX=203
      actionText="Brightness Boost"
      HelpText="Generally increases brightness for ease of play"

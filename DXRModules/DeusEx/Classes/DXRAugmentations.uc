@@ -249,9 +249,10 @@ simulated function RandoAug(Augmentation a)
         return;
 
     aug_value_wet_dry = float(dxr.flags.settings.aug_value_rando) / 100.0;
-    if(#var(prefix)AugVision(a) != None && aug_value_wet_dry > 0) {
+    if((#var(prefix)AugVision(a) != None || #var(prefix)AugMuscle(a) != None) && aug_value_wet_dry > 0) {
         // don't randomize vision aug strength and instead randomize its energy usage
         // so it can be used for speedrun strategies with specific spots to check from
+        // aug muscle picking up heavy items is confusing when the strength is randomized, just randomize the energy cost
         a.energyRate = int(rngrange(a.default.energyRate, 0.5, 1.5));
         aug_value_wet_dry = 0;
         add_desc = add_desc $ "Energy Rate: "$int(a.energyRate)$" Units/Minute";

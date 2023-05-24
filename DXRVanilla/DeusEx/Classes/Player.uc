@@ -127,7 +127,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
     if ( loadout != None && Inventory(FrobTarget) != None && loadout.ban(self, Inventory(FrobTarget)) ) {
         FrobTarget.Destroy();
-        return false;
+        return true;
     }
 
     return Super.HandleItemPickup(FrobTarget, bSearchOnly);

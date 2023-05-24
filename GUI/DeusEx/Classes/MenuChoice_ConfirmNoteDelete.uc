@@ -2,86 +2,15 @@
 // MenuChoice_ConfirmNoteDelete
 //=============================================================================
 
-class MenuChoice_ConfirmNoteDelete extends MenuUIChoiceEnum;
-
-var config bool confirm_delete;
-
-// ----------------------------------------------------------------------
-// InitWindow()
-//
-// Initialize the Window
-// ----------------------------------------------------------------------
-
-event InitWindow()
-{
-    Super.InitWindow();
-
-    PopulateOptions();
-
-    SetInitialOption();
-
-    SetActionButtonWidth(179);
-}
-
-// ----------------------------------------------------------------------
-// PopulateCycleTypes()
-// ----------------------------------------------------------------------
-
-function PopulateOptions()
-{
-    local int typeIndex;
-
-    enumText[0] = "Don't Confirm";
-    enumText[1] = "Confirm";
-}
-
-// ----------------------------------------------------------------------
-// SetInitialCycleType()
-// ----------------------------------------------------------------------
-
-function SetInitialOption()
-{
-    SetValue(int(confirm_delete));
-}
-
-// ----------------------------------------------------------------------
-// SaveSetting()
-// ----------------------------------------------------------------------
-
-function SaveSetting()
-{
-    confirm_delete = bool(GetValue());
-    SaveConfig();
-}
-
-// ----------------------------------------------------------------------
-// LoadSetting()
-// ----------------------------------------------------------------------
-
-function LoadSetting()
-{
-    SetValue(int(confirm_delete));
-}
-
-// ----------------------------------------------------------------------
-// ResetToDefault
-// ----------------------------------------------------------------------
-
-function ResetToDefault()
-{
-    confirm_delete = default.confirm_delete;
-    SetValue(int(confirm_delete));
-    SaveSetting();
-}
-
-// ----------------------------------------------------------------------
-// ----------------------------------------------------------------------
+class MenuChoice_ConfirmNoteDelete extends DXRMenuUIChoiceBool;
 
 defaultproperties
 {
-     confirm_delete=True;
+     enabled=True;
      defaultInfoWidth=243
      defaultInfoPosX=203
      HelpText="Confirm when deleting a note"
      actionText="Confirm Note Deletion"
+     enumText(0)="Don't Confirm"
+     enumText(1)="Confirm"
 }

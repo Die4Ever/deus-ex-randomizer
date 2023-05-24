@@ -549,7 +549,7 @@ simulated function TraceFire( float Accuracy )
     for (i=0; i<numSlugs; i++)
     {
       // If we have multiple slugs, then lower our accuracy a bit after the first slug so the slugs DON'T all go to the same place
-      if ((i > 0) && (Level.NetMode != NM_Standalone) && !(bHandToHand))
+      if ((i > 0) /*&& (Level.NetMode != NM_Standalone)*/ && !(bHandToHand))
          if (Accuracy < MinSpreadAcc)
             Accuracy = MinSpreadAcc;
 
@@ -604,9 +604,12 @@ simulated function TraceFire( float Accuracy )
     // otherwise we don't hit the target at all
 }
 
+// vanilla MinSpreadAcc is 0.25, but only used in multiplayer, so really it normally acts like 0
+// we're mainly turning on MinSpreadAcc for singleplayer because of the shotguns, so we want a minimal change here of 0.05
 defaultproperties
 {
     blood_mult=0
     anim_speed=1
     RelativeRange=3750.0
+    MinSpreadAcc=0.05
 }

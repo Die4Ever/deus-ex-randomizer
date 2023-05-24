@@ -2,29 +2,12 @@
 // MenuChoice_ContinuousMusic
 //=============================================================================
 
-class MenuChoice_ContinuousMusic extends MenuUIChoiceEnum;
+class MenuChoice_ContinuousMusic extends DXRMenuUIChoiceEnum;
 
 var config int continuous_music;
 var int disabled;
 var int simple;
 var int advanced;
-
-// ----------------------------------------------------------------------
-// InitWindow()
-//
-// Initialize the Window
-// ----------------------------------------------------------------------
-
-event InitWindow()
-{
-    Super.InitWindow();
-
-    PopulateOptions();
-
-    SetInitialOption();
-
-    SetActionButtonWidth(179);
-}
 
 // ----------------------------------------------------------------------
 // PopulateCycleTypes()
@@ -83,12 +66,10 @@ function ResetToDefault()
 
 defaultproperties
 {
-     continuous_music=2
-     disabled=0
-     simple=1
-     advanced=2
-     defaultInfoWidth=243
-     defaultInfoPosX=203
-     HelpText="Continue music through loading screens."
-     actionText="Continuous Music"
+    continuous_music=2
+    disabled=0
+    simple=1
+    advanced=2
+    HelpText="Continue music through loading screens."
+    actionText="Continuous Music"
 }

@@ -163,7 +163,7 @@ defaultproperties
     Physics=PHYS_None
     DrawType=DT_Sprite
     Style=STY_Translucent
-    ScaleGlow=0.3
+    ScaleGlow=0.2
     bNoSmooth=false
     bHighlight=true
     bInvincible=true

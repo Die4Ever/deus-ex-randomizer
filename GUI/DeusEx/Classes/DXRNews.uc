@@ -95,7 +95,7 @@ function Set(DXRTelemetry tele)
 
 function bool HasNews()
 {
-    if(!bool(player.ConsoleCommand("get MenuChoice_ShowNews show_news")))
+    if(!bool(player.ConsoleCommand("get MenuChoice_ShowNews enabled")))
         return false;
     if(tel == None || tel.enabled == false) return false;
     if( tel.dxr.localURL == "DX" || tel.dxr.localURL == "DXONLY" ) return true;

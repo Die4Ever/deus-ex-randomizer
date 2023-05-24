@@ -1,5 +1,7 @@
 class DXRFixupVandenberg extends DXRFixup;
 
+var bool M14GaryNotDone;
+
 function PreFirstEntryMapFixes()
 {
     local ElevatorMover e;
@@ -13,6 +15,7 @@ function PreFirstEntryMapFixes()
     local DXREnemies dxre;
     local #var(prefix)TracerTong tt;
     local SequenceTrigger st;
+    local #var(prefix)ShopLight sl;
 
     switch(dxr.localURL)
     {
@@ -29,6 +32,9 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vect(2512,6140,-2162),rot(0,0,0),'Wandering');
         class'PlaceholderEnemy'.static.Create(self,vect(2267,643,-2000),rot(0,0,0),'Wandering');
 
+        sl = #var(prefix)ShopLight(_AddActor(self, class'#var(prefix)ShopLight', vect(1.125000, 938.399963, -1025), rot(0, 16384, 0)));
+        sl.bInvincible = true;
+        sl.bCanBeBase = true;
         break;
 
 #ifdef vanillamaps
@@ -190,6 +196,7 @@ function AnyEntryMapFixes()
     local MIB mib;
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
+    local #var(prefix)GarySavage gary;
 
     if(dxr.flagbase.GetBool('schematic_downloaded') && !dxr.flagbase.GetBool('DL_downloaded_Played')) {
         dxr.flagbase.SetBool('DL_downloaded_Played', true);
@@ -209,6 +216,14 @@ function AnyEntryMapFixes()
             key.Timer();// make sure to fix the ItemName in vanilla
         }
         break;
+
+    case "14_VANDENBERG_SUB":
+        FixSavageSkillPointsDupe();
+        foreach AllActors(class'#var(prefix)GarySavage', gary) {
+            RemoveFears(gary);
+        }
+        break;
+
     case "14_OCEANLAB_SILO":
         foreach AllActors(class'#var(prefix)HowardStrong', hs) {
             hs.ChangeAlly('', 1, true);
@@ -219,5 +234,38 @@ function AnyEntryMapFixes()
         }
         Player().StartDataLinkTransmission("DL_FrontGate");
         break;
+    }
+}
+
+function FixSavageSkillPointsDupe()
+{
+    local Conversation c;
+    local ConEventAddSkillPoints sk;
+    local ConEvent e, prev, next;
+
+    c = GetConversation('GaryWaitingForSchematics');
+    if(c==None) return;
+    for(e = c.eventList; e != None; e=next) {
+        next = e.nextEvent;// keep this when we delete e
+        sk = ConEventAddSkillPoints(e);
+        if(sk != None) {
+            FixConversationDeleteEvent(sk, prev);
+        }
+        else {
+            prev = e;
+        }
+    }
+
+    if(!dxr.flagbase.GetBool('M14GaryDone')) {
+        M14GaryNotDone = true;
+        SetTimer(1, true);
+    }
+}
+
+function TimerMapFixes()
+{
+    if(M14GaryNotDone && dxr.flagbase.GetBool('M14GaryDone')) {
+        M14GaryNotDone = false;
+        player().SkillPointsAdd(500);
     }
 }

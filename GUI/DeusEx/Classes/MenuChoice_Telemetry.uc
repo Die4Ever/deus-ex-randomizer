@@ -2,43 +2,15 @@
 // MenuChoice_Telemetry
 //=============================================================================
 
-class MenuChoice_Telemetry extends MenuUIChoiceEnum;
+class MenuChoice_Telemetry extends DXRMenuUIChoiceEnum;
 
 var DXRTelemetry t;
 
-// ----------------------------------------------------------------------
-// InitWindow()
-//
-// Initialize the Window
-// ----------------------------------------------------------------------
-
-event InitWindow()
+function DXRTelemetry GetDXRT()
 {
-
-    Super.InitWindow();
-
-    foreach player.AllActors(class'DXRTelemetry', t) { break; }
-    if( t == None ) t = player.Spawn(class'DXRTelemetry');
-    t.CheckConfig();
-
-    PopulateOptions();
-
-    SetInitialOption();
-
-    SetActionButtonWidth(179);
-}
-
-// ----------------------------------------------------------------------
-// PopulateCycleTypes()
-// ----------------------------------------------------------------------
-
-function PopulateOptions()
-{
-    local int typeIndex;
-
-    enumText[0] = "Disabled";
-    enumText[1] = "Enabled, Death Markers Hidden";
-    enumText[2] = "All Enabled";
+    if(t!=None) return t;
+    foreach player.AllActors(class'DXRTelemetry', t) { return t; }
+    return None;
 }
 
 // ----------------------------------------------------------------------
@@ -47,6 +19,8 @@ function PopulateOptions()
 
 function SetInitialOption()
 {
+    if(GetDXRT()==None) return;
+
     if(t.enabled && t.death_markers)
         SetValue(2);
     else if(t.enabled)
@@ -62,17 +36,19 @@ function SetInitialOption()
 
 function SaveSetting()
 {
-   switch(currentvalue){
-       case 2:
-           t.set_enabled(True,True);
-           break;
-       case 1:
-           t.set_enabled(True,False);
-           break;
-       case 0:
-           t.set_enabled(False,False);
-           break;
-   }
+    if(GetDXRT()==None) return;
+
+    switch(currentvalue){
+    case 2:
+        t.set_enabled(True,True);
+        break;
+    case 1:
+        t.set_enabled(True,False);
+        break;
+    case 0:
+        t.set_enabled(False,False);
+        break;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -81,6 +57,8 @@ function SaveSetting()
 
 function LoadSetting()
 {
+    if(GetDXRT()==None) return;
+
     if(t.enabled && t.death_markers)
         SetValue(2);
     else if(t.enabled)
@@ -95,8 +73,10 @@ function LoadSetting()
 
 function ResetToDefault()
 {
-   t.set_enabled(False,False);
-   LoadSetting();
+    if(GetDXRT()==None) return;
+
+    t.set_enabled(False,False);
+    LoadSetting();
 }
 
 // ----------------------------------------------------------------------
@@ -104,8 +84,9 @@ function ResetToDefault()
 
 defaultproperties
 {
-     defaultInfoWidth=243
-     defaultInfoPosX=203
-     HelpText="Death Markers, send error reports, and get notified about updates!"
-     actionText="Online Features"
+    HelpText="Death Markers, send error reports, and get notified about updates!"
+    actionText="Online Features"
+    enumText(0)="Disabled"
+    enumText(1)="Enabled, Death Markers Hidden"
+    enumText(2)="All Enabled"
 }

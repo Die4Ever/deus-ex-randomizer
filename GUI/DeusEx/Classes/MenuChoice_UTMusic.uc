@@ -2,7 +2,7 @@
 // MenuChoice_PasswordAutofill
 //=============================================================================
 
-class MenuChoice_UTMusic extends MenuUIChoiceEnum;
+class MenuChoice_UTMusic extends DXRMenuUIChoiceEnum;
 
 var DXRMusic m;
 
@@ -25,36 +25,6 @@ function SetValue(int newValue)
 {
     Super.SetValue(newValue);
     SaveSetting();
-}
-
-
-// ----------------------------------------------------------------------
-// InitWindow()
-//
-// Initialize the Window
-// ----------------------------------------------------------------------
-
-event InitWindow()
-{
-    Super.InitWindow();
-
-    PopulateOptions();
-
-    SetInitialOption();
-
-    SetActionButtonWidth(179);
-}
-
-// ----------------------------------------------------------------------
-// PopulateCycleTypes()
-// ----------------------------------------------------------------------
-
-function PopulateOptions()
-{
-    local int typeIndex;
-
-    enumText[0] = "Disabled";
-    enumText[1] = "Enabled";
 }
 
 // ----------------------------------------------------------------------
@@ -118,12 +88,12 @@ function ResetToDefault()
 
 defaultproperties
 {
-    defaultInfoWidth=243
-    defaultInfoPosX=203
 #ifdef injections
     HelpText="Ensure the UMX files are in the right place. You can also edit DXRMusic.ini for further customization."
 #else
     HelpText="Ensure the UMX files are in the right place. You can also edit #var(package)Music.ini for further customization."
 #endif
     actionText="Unreal Tournament Music"
+    enumText(0)="Disabled"
+    enumText(1)="Enabled"
 }

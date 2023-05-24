@@ -639,8 +639,30 @@ function int getTimer(name timerName) {
     return int(datastorage.GetConfigKey(timerName));
 }
 
+function int getTimerDuration(name timerName) {
+    local int duration;
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
+
+    duration = int(datastorage.GetConfigKey(timerName$"_Duration"));
+
+    if (duration == 0) {
+        duration = getDefaultTimerTimeByName(timerName);
+    }
+
+    return duration;
+}
+
+function setTimerDuration(name timerName, int duration) {
+    if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
+
+    if (duration==0){
+        duration = getDefaultTimerTimeByName(timerName);
+    }
+    datastorage.SetConfig(timerName$"_Duration",duration,3600*12);
+}
+
 function setTimerFlag(name timerName, int time, bool newTimer) {
-    local int expiration;
+    local int expiration, duration;
     if( datastorage == None ) datastorage = class'DataStorage'.static.GetObj(dxr);
     if( time == 0 ) expiration = 1;
     else expiration = 3600*12;
@@ -650,7 +672,8 @@ function setTimerFlag(name timerName, int time, bool newTimer) {
     } else {
         //This is basically just for if you reload a game, or change maps
         if (checkForTimerDisplay(timerName) == False) {
-            addTimerDisplay(timerName,getDefaultTimerTimeByName(timerName));
+            duration = getTimerDuration(timerName);
+            addTimerDisplay(timerName,duration);
         }
     }
 }
@@ -672,8 +695,13 @@ function bool decrementTimer(name timerName) {
     return false;
 }
 
-function startNewTimer(name timerName) {
-    setTimerFlag(timerName,getDefaultTimerTimeByName(timerName),True);
+function startNewTimer(name timerName, int duration) {
+    if (duration==0){
+        duration = getDefaultTimerTimeByName(timerName);
+    }
+    setTimerDuration(timerName,duration);
+
+    setTimerFlag(timerName,duration,True);
 }
 
 
@@ -1053,7 +1081,7 @@ function bool InMenu() {
     return !InGame() && !InConversation();
 }
 
-function int GiveLamThrower(string viewer)
+function int GiveLamThrower(string viewer,int duration)
 {
     local Inventory anItem;
 
@@ -1067,7 +1095,12 @@ function int GiveLamThrower(string viewer)
     }
 
     MakeLamThrower(anItem);
-    setTimerFlag('cc_lamthrowerTimer',LamThrowerTimeDefault,True);
+
+    if (duration==0){
+        duration = LamThrowerTimeDefault;
+    }
+    setTimerDuration('cc_lamthrowerTimer',duration);
+    setTimerFlag('cc_lamthrowerTimer',duration,True);
     PlayerMessage(viewer@"turned your flamethrower into a LAM Thrower!");
     return Success;
 }
@@ -1504,7 +1537,7 @@ simulated final function #var(PlayerPawn) player()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function int doCrowdControlEvent(string code, string param[5], string viewer, int type) {
+function int doCrowdControlEvent(string code, string param[5], string viewer, int type, int duration) {
     local int i;
     local ColorTheme theme;
 
@@ -1560,7 +1593,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
 
             player().JumpZ = 0;
-            startnewTimer('cc_JumpTimer');
+            startnewTimer('cc_JumpTimer',duration);
             PlayerMessage(viewer@"made your knees lock up.");
             break;
 
@@ -1570,7 +1603,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             storeFloatValue('cc_moveSpeedModifier',MoveSpeedMultiplier);
             player().Default.GroundSpeed = DefaultGroundSpeed * moveSpeedMultiplier;
-            startNewTimer('cc_SpeedTimer');
+            startNewTimer('cc_SpeedTimer',duration);
             PlayerMessage(viewer@"made you fast like Sonic!");
             break;
 
@@ -1580,7 +1613,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             storeFloatValue('cc_moveSpeedModifier',MoveSpeedDivisor);
             player().Default.GroundSpeed = DefaultGroundSpeed * moveSpeedDivisor;
-            startNewTimer('cc_SpeedTimer');
+            startNewTimer('cc_SpeedTimer',duration);
             PlayerMessage(viewer@"made you slow like a snail!");
             break;
         case "drunk_mode":
@@ -1609,7 +1642,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
         case "emp_field":
             player().bWarrenEMPField = true;
-            startNewTimer('cc_EmpTimer');
+            startNewTimer('cc_EmpTimer',duration);
             PlayerMessage(viewer@"made electronics allergic to you");
             break;
 
@@ -1619,7 +1652,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             StartMatrixMode();
-            startNewTimer('cc_MatrixModeTimer');
+            startNewTimer('cc_MatrixModeTimer',duration);
             PlayerMessage(viewer@"thinks you are The One...");
             break;
 
@@ -1630,7 +1663,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             player().bBehindView=True;
             player().bCrosshairVisible = False;
 
-            startNewTimer('cc_behindTimer');
+            startNewTimer('cc_behindTimer',duration);
             PlayerMessage(viewer@"gave you an out of body experience");
             break;
 
@@ -1690,7 +1723,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             PlayerMessage(viewer@"made the ground freeze!");
             SetIcePhysics(True);
-            startNewTimer('cc_iceTimer');
+            startNewTimer('cc_iceTimer',duration);
 
             break;
 
@@ -1724,7 +1757,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             PlayerMessage(viewer@"made you feel light as a feather");
             SetFloatyPhysics(True);
-            startNewTimer('cc_floatyTimer');
+            startNewTimer('cc_floatyTimer',duration);
 
             break;
 
@@ -1737,7 +1770,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             PlayerMessage(viewer@"turned the floor into lava!");
             lavaTick = 0;
-            startNewTimer('cc_floorLavaTimer');
+            startNewTimer('cc_floorLavaTimer',duration);
             setFloorIsLavaName(viewer);
 
             break;
@@ -1753,7 +1786,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             dxr.flagbase.SetBool('cc_InvertMouseDef',player().bInvertMouse);
 
             player().bInvertMouse = !player().bInvertMouse;
-            startNewTimer('cc_invertMouseTimer');
+            startNewTimer('cc_invertMouseTimer',duration);
 
             break;
 
@@ -1768,7 +1801,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             invertMovementControls();
 
-            startNewTimer('cc_invertMovementTimer');
+            startNewTimer('cc_invertMovementTimer',duration);
             break;
 
         case "earthquake":
@@ -1779,7 +1812,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
 
-            startnewTimer('cc_Earthquake');
+            startnewTimer('cc_Earthquake',duration);
 
             return Earthquake(viewer);
 
@@ -1799,7 +1832,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return NotAvail;
             }
 
-            return GiveLamThrower(viewer);
+            return GiveLamThrower(viewer,duration);
 
         // dmg_double and dmg_half require changes inside the player class
         case "dmg_double":
@@ -1814,7 +1847,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             storeFloatValue('cc_damageMult',2.0);
 
             PlayerMessage(viewer@"made your body extra squishy");
-            startNewTimer('cc_DifficultyTimer');
+            startNewTimer('cc_DifficultyTimer',duration);
             break;
 
         case "dmg_half":
@@ -1828,7 +1861,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             }
             storeFloatValue('cc_damageMult',0.5);
             PlayerMessage(viewer@"made your body extra tough!");
-            startNewTimer('cc_DifficultyTimer');
+            startNewTimer('cc_DifficultyTimer',duration);
             break;
 
         case "flipped":
@@ -1847,7 +1880,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             datastorage.SetConfig('cc_cameraRoll',32768, 3600*12);
 
             PlayerMessage(viewer@"turned your life upside down");
-            startNewTimer('cc_RollTimer');
+            startNewTimer('cc_RollTimer',duration);
 
             return Success;
 
@@ -1866,7 +1899,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             datastorage.SetConfig('cc_cameraRoll',16383, 3600*12);
 
             PlayerMessage(viewer@"made your head flop to the side");
-            startNewTimer('cc_RollTimer');
+            startNewTimer('cc_RollTimer',duration);
 
             return Success;
 
@@ -1885,7 +1918,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             datastorage.SetConfig('cc_cameraSpin',1, 3600*12);
 
             PlayerMessage(viewer@"told you to do a barrel roll");
-            startNewTimer('cc_RollTimer');
+            startNewTimer('cc_RollTimer',duration);
 
             return Success;
 
@@ -1911,7 +1944,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
             PlayerMessage(viewer@"fed you a whole bunch of beans!");
 
-            startNewTimer('cc_EatBeans');
+            startNewTimer('cc_EatBeans',duration);
 
             return Success;
 
@@ -1982,13 +2015,13 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
 
 
         default:
-            return doCrowdControlEventWithPrefix(code, param, viewer, type);
+            return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);
     }
 
     return Success;
 }
 
-function int doCrowdControlEventWithPrefix(string code, string param[5], string viewer, int type) {
+function int doCrowdControlEventWithPrefix(string code, string param[5], string viewer, int type, int duration) {
     local string words[8];
 
     SplitString(code, "_", words);

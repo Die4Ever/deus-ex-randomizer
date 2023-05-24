@@ -14,14 +14,19 @@ function CreateChoices()
 
     CreateChoice(class'MenuChoice_Telemetry');
     CreateChoice(class'MenuChoice_JoinDiscord');
-    CreateChoice(class'MenuChoice_ReleasePage');  //This should probably always be the bottom option*/
+    CreateChoice(class'MenuChoice_ReleasePage');
+    // TODO: button to open Mastodon?
 
     CreateChoice(class'MenuChoice_BrightnessBoost');
+    CreateChoice(class'MenuChoice_ToggleMemes');
+    // TODO: simulated crowd control strength
 
     if(!#defined(revision)) {
         CreateChoice(class'MenuChoice_ContinuousMusic');
         CreateChoice(class'MenuChoice_RandomMusic');
         CreateChoice(class'MenuChoice_ChangeSong');
+        //TODO: CreateChoice(class'MenuChoice_AutoChangeSong'); on a timer
+        CreateChoice(class'MenuChoice_DisableSong');
         CreateChoice(class'MenuChoice_UTMusic');
         CreateChoice(class'MenuChoice_UnrealMusic');
         CreateChoice(class'MenuChoice_DXMusic');
@@ -32,11 +37,13 @@ function CreateChoices()
     if(#defined(vanilla)) {
         CreateChoice(class'MenuChoice_EnergyDisplay');
         CreateChoice(class'MenuChoice_ShowKeys');
+        CreateChoice(class'MenuChoice_ThrowMelee');
     }
 
     CreateChoice(class'MenuChoice_PasswordAutofill');
     CreateChoice(class'MenuChoice_ConfirmNoteDelete');
     CreateChoice(class'MenuChoice_FixGlitches');
+    // TODO: speedrun mode for rerolls?
 
     controlsParent.SetSize(clientWidth, choiceStartY + (choiceCount * choiceVerticalGap));
 }

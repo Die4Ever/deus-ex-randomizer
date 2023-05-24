@@ -37,7 +37,7 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
     SetMaxStats(p);
 
     if(p.HealthTorso <= 0 || p.HealthHead <= 0) {
-        //bFixGlitches = bool(ConsoleCommand("get #var(package).MenuChoice_FixGlitches fix_glitches"));
+        //bFixGlitches = bool(ConsoleCommand("get #var(package).MenuChoice_FixGlitches enabled"));
         // TODO: this one is a bit weird to fix because our code doesn't get run with the glitched load
         if(bFixGlitches) {
             p.TakeDamage(10000, p, p.Location, vect(0,0,0), 'Radiation');

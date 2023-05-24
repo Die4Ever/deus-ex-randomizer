@@ -2,39 +2,9 @@
 // MenuChoice_PasswordAutofill
 //=============================================================================
 
-class MenuChoice_PasswordAutofill extends MenuUIChoiceEnum;
+class MenuChoice_PasswordAutofill extends DXRMenuUIChoiceEnum;
 
 var config int codes_mode;
-
-// ----------------------------------------------------------------------
-// InitWindow()
-//
-// Initialize the Window
-// ----------------------------------------------------------------------
-
-event InitWindow()
-{
-    Super.InitWindow();
-
-    PopulateOptions();
-
-    SetInitialOption();
-
-    SetActionButtonWidth(179);
-}
-
-// ----------------------------------------------------------------------
-// PopulateCycleTypes()
-// ----------------------------------------------------------------------
-
-function PopulateOptions()
-{
-    local int typeIndex;
-
-    enumText[0] = "No Assistance";
-    enumText[1] = "Mark Known Passwords";
-    enumText[2] = "Autofill Passwords";
-}
 
 // ----------------------------------------------------------------------
 // SetInitialCycleType()
@@ -82,9 +52,10 @@ function ResetToDefault()
 
 defaultproperties
 {
-     codes_mode=2;
-     defaultInfoWidth=243
-     defaultInfoPosX=203
-     HelpText="Help with finding randomized passwords from your notes."
-     actionText="Password Assistance"
+    codes_mode=2;
+    HelpText="Help with finding randomized passwords from your notes."
+    actionText="Password Assistance"
+    enumText(0)="No Assistance"
+    enumText(1)="Mark Known Passwords"
+    enumText(2)="Autofill Passwords"
 }

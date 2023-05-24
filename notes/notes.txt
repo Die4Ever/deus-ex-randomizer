@@ -1,4 +1,6 @@
 check gas grenades ammo
+little step for warehouse hole in wall
+loadouts score boosts?
 
 allow loadouts to mess with skills? remove the config crap? loadouts give bonus points?
 taking some items/ammo out of a stack but not all when full

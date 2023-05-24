@@ -521,6 +521,19 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
     }
 }
 
+static function FixConversationDeleteEvent(ConEvent del, ConEvent prev)
+{
+    if(del == del.Conversation.eventList) {
+        del.Conversation.eventList = del.nextEvent;
+    }
+    if(prev != None) {
+        prev.nextEvent = del.nextEvent;
+    }
+    del.Conversation = None;
+    del.nextEvent = None;
+    CriticalDelete(del);
+}
+
 defaultproperties
 {
 }

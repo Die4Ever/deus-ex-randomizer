@@ -1,5 +1,5 @@
 class DXRMemes extends DXRActorsBase transient;
-
+// make sure none of this affects speed or score, because it can be easily disabled
 var Actor rotating;
 
 function RandomDancing(Actor a)
@@ -122,8 +122,13 @@ function RandomBobPage()
 
 function PreFirstEntry()
 {
+    local bool memes_enabled;
+
     Super.PreFirstEntry();
     if(dxr.flags.IsReducedRando()) return;
+    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
+    if(!memes_enabled) return;
+
     switch(dxr.localURL)
     {
         case "15_AREA51_PAGE":
@@ -151,8 +156,12 @@ function AnyEntry()
     local Actor a;
     local Rotator r;
     local Vector v;
+    local bool memes_enabled;
+
     Super.AnyEntry();
     if(dxr.flags.IsReducedRando()) return;
+    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
+    if(!memes_enabled) return;
 
     switch(dxr.localURL)
     {
@@ -275,16 +284,22 @@ function PostFirstEntry()
     local InterpolationPoint p;
     local vector v;
     local rotator r;
+    local bool memes_enabled;
+
     Super.PostFirstEntry();
-    if(dxr.flags.IsReducedRando()) return;
 
     SetSeed("Memes Dancing");
 
     foreach AllActors(class'ScriptedPawn',sp)
     {
-        //Make people dance across the world
+        //Make people dance across the world, reduced rando sets this to 0%
+        // we want to keep this in memes disabled because it could affect speed/difficulty/score/races
         RandomDancing(sp);
     }
+
+    if(dxr.flags.IsReducedRando()) return;
+    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
+    if(!memes_enabled) return;
 
     SetSeed("Memes InterpolationPoints");
 

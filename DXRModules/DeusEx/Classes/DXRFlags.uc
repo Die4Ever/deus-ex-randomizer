@@ -422,8 +422,13 @@ function CheckConfig()
 
 function FlagsSettings SetDifficulty(int new_difficulty)
 {
+    local bool memes_enabled;
+
     difficulty = new_difficulty;
     settings = difficulty_settings[difficulty];
+
+    memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
+    if(!memes_enabled) settings.dancingpercent = 0;
 
     if(IsReducedRando()) {
         settings.doorsmode = 0;
@@ -510,10 +515,12 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 #endif
         settings.enemiesrandomized = 1000;
         settings.hiddenenemiesrandomized = 1000;
-        settings.maxskill = Max(settings.minskill * 1.5, settings.maxskill * 0.75);
+        settings.maxskill = Min(settings.minskill * 1.5, settings.maxskill * 0.75);
+        settings.maxskill = Max(settings.minskill * 1.2, settings.maxskill);// ensure greater than minskill
+        settings.ammo = (settings.ammo + 100) / 2;
         settings.equipment *= 2;
-        settings.medkits *= 1.2;
-        settings.medbots *= 2;
+        settings.medkits = (settings.medkits + 100) / 2;
+        settings.medbots = (settings.medbots + 100) / 2;
         settings.health = 250;
     }
     return settings;
@@ -802,15 +809,15 @@ function int ScoreFlags()
 
     if(IsEntranceRando())
         score += 100;
-    score -= settings.doorsdestructible;
-    score -= settings.doorspickable;
+    score -= settings.doorsdestructible * 2;
+    score -= settings.doorspickable * 2;
     if(settings.keysrando > 0)
-        score += 100;
+        score += 200;
     //score += settings.keys_containers;
     //score += settings.infodevices_containers;
-    score -= settings.deviceshackable;
-    score += settings.passwordsrandomized;
-    score += settings.infodevices;
+    score -= settings.deviceshackable * 2;
+    score += settings.passwordsrandomized * 2;
+    score += settings.infodevices * 2;
     score += settings.enemiesrandomized;
     score += settings.enemystats;
     //score += settings.hiddenenemiesrandomized;

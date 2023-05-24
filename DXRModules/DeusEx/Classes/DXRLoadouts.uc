@@ -46,7 +46,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(2,1,4,3) ) {
+    if( ConfigOlderThan(2,4,1,1) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(loadouts_order); i++) {
@@ -88,7 +88,7 @@ function CheckConfig()
         item_sets[1].allows = "WeaponProd";
         item_sets[1].starting_equipments = "WeaponProd,AmmoBattery,AmmoBattery";
         item_sets[1].starting_augs = "AugStealth,AugMuscle";
-        //item_sets[1].item_spawns = "CrateExplosiveSmall,2";
+        item_sets[1].item_spawns = "WeaponProd,30";
 
         item_sets[2].name = "Stick With the Prod Plus";
         item_sets[2].player_message = "Stick with the prod!";
@@ -96,7 +96,7 @@ function CheckConfig()
         item_sets[2].allows = "WeaponProd,WeaponEMPGrenade,WeaponGasGrenade,WeaponMiniCrossbow,AmmoDartPoison,WeaponNanoVirusGrenade,WeaponPepperGun";
         item_sets[2].starting_equipments = "WeaponProd,AmmoBattery";
         item_sets[2].starting_augs = "AugStealth,AugMuscle";
-        //item_sets[2].item_spawns = "CrateExplosiveSmall,2";
+        item_sets[2].item_spawns = "WeaponProd,30,WeaponMiniCrossbow,30";
 
         item_sets[3].name = "Ninja JC";
         item_sets[3].player_message = "I am Ninja!";
@@ -377,14 +377,16 @@ function bool ban(DeusExPlayer player, Inventory item)
 {
     local bool bFixGlitches;
 
-    if ( _is_banned( _item_sets[loadout], item.class) ) {
+    if(IsMeleeWeapon(item) && Carcass(item.Owner) != None && player.FindInventoryType(item.class) != None) {
+        return true;
+    } else if ( _is_banned( _item_sets[loadout], item.class) ) {
         if( item_sets[loadout].player_message != "" ) {
             //item.ItemName = item.ItemName $ ", " $ item_sets[loadout].player_message;
             player.ClientMessage(item_sets[loadout].player_message, 'Pickup', true);
         }
         return true;
     } else if(item.bDeleteMe) {
-        bFixGlitches = bool(ConsoleCommand("get #var(package).MenuChoice_FixGlitches fix_glitches"));
+        bFixGlitches = bool(ConsoleCommand("get #var(package).MenuChoice_FixGlitches enabled"));
         if(bFixGlitches) {
             return true;
         }
@@ -656,6 +658,7 @@ function SpawnItems()
             if( chance_single(chance) ) {
                 loc = GetRandomPositionFine();
                 a = Spawn(aclass,,, loc);
+                l("SpawnItems() spawned "$a$" at "$loc);
                 if( reducer != None && Inventory(a) != None )
                     reducer.ReduceItem(Inventory(a));
             }

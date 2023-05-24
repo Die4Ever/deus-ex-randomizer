@@ -2,7 +2,7 @@
 // MenuChoice_EnergyDisplay
 //=============================================================================
 
-class MenuChoice_EnergyDisplay extends MenuChoice_VisibleHidden;
+class MenuChoice_EnergyDisplay extends MenuChoice_VisibleHidden config(DXRandoOptions);
 
 var config bool bEnergyDisplayHidden;
 

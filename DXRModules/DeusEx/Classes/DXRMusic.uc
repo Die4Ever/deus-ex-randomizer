@@ -14,6 +14,9 @@ struct SongChoice {
 var config bool allowCombat;
 var config SongChoice choices[300];// keep size in sync with _GetLevelSong tchoices[]
 
+var string skipped_songs[10];// copied back to defaults, so they get remembered across loading screens but not when you close the program, otherwise use the disable button instead of the change song button
+var int last_skipped_song;
+
 function CheckConfig()
 {
     local int i, g;
@@ -234,12 +237,13 @@ function SetEnabledGameSongs(string songs[100], bool enable)
         if(choices[c].song == "") continue;
         for(s=0; s<ArrayCount(songs); s++) {
             if(songs[s] == "") break;
-            if(songs[s] == choices[c].song) {
+            if(songs[s] ~= choices[c].song) {
                 choices[c].enabled = enable;
                 break;
             }
         }
     }
+    SaveConfig();
 }
 
 function bool AreGameSongsEnabled(string songs[100])
@@ -253,12 +257,30 @@ function bool AreGameSongsEnabled(string songs[100])
         if(choices[c].song == "") continue;
         for(s=0; s<ArrayCount(songs); s++) {
             if(songs[s] == "") break;
-            if(songs[s] == choices[c].song) {
+            if(songs[s] ~= choices[c].song) {
                 return choices[c].enabled;
             }
         }
     }
     return false;
+}
+
+function SetEnabledSong(string song, bool enable)
+{
+    local int c;
+    local string fullsong;
+    if(InStr(song, ".") != -1)
+        fullsong = song$"."$song;
+    else
+        fullsong = song;
+
+    info("SetEnabledSong "$song@enable);
+    for(c=0; c<ArrayCount(choices); c++) {
+        if(choices[c].song ~= song || choices[c].song ~= fullsong) {
+            choices[c].enabled = enable;
+        }
+    }
+    SaveConfig();
 }
 
 
@@ -281,7 +303,7 @@ function _GetLevelSong(string oldSong, out string newSong, out byte LevelSongSec
 {
     local SongChoice tchoices[300], s;
     local int i, j, num;
-    local bool cutscene;
+    local bool cutscene, goodSong;
 
     // we expect the caller to handle setting the initial seed
     switch(dxr.localURL) {
@@ -304,10 +326,26 @@ function _GetLevelSong(string oldSong, out string newSong, out byte LevelSongSec
         tchoices[num++] = s;
     }
 
+    // remember skipped songs
+    if(oldSong != "") {
+        last_skipped_song = last_skipped_song % ArrayCount(skipped_songs);
+        skipped_songs[last_skipped_song] = oldSong;
+        default.skipped_songs[last_skipped_song] = skipped_songs[last_skipped_song];
+        default.last_skipped_song = ++last_skipped_song;
+    }
+
+    // choose the song
     for(j=0; j<100; j++) {
         i = rng(num);
         s = tchoices[i];
-        if(s.song != oldSong) break;
+        goodSong = true;
+        for(i=0; i<ArrayCount(skipped_songs); i++) {
+            if(s.song ~= skipped_songs[i]) {
+                goodSong = false;
+                break;
+            }
+        }
+        if(goodSong) break;
     }
 
     newSong = s.song;

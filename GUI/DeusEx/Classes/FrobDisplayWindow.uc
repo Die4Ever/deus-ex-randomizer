@@ -50,7 +50,7 @@ function CheckAutofillSettings()
         known_codes = false;
     }
 
-    show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys show_keys"));
+    show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys enabled"));
 }
 
 function InitFlags()

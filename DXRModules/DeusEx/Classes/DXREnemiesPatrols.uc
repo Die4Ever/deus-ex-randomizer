@@ -122,7 +122,7 @@ function bool _GivePatrol(ScriptedPawn pawn)
     // random chance to ditch 1 or 2 of the points, to step down to a triangle or straight line back and forth
     for(q=0; q<4; q++) {
         if(quadrants_farthest[q] == None) continue;
-        if(num > 2 && chance_single(10)) {
+        if(num > 2 && chance_single(10)) {// TODO: could also check the current path distance here
             num--;
             quadrants_farthest[q] = None;
         }
@@ -168,6 +168,7 @@ function bool _GivePatrol(ScriptedPawn pawn)
         return false;
     }
 
+    first.SetMyGuy(pawn);
     LinkPoints(p, first);
 
     pawn.SetOrders('Patrolling', first.tag, false);
