@@ -6,7 +6,7 @@ defaultproperties
     HitDamage=6
     BaseAccuracy=0.7
     maxRange=1000
-    AccurateRange=800
-    MinSpreadAcc=0.2
+    AccurateRange=700
+    MinSpreadAcc=0.25
     AIMaxRange=450
 }
