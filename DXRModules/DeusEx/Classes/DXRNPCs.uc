@@ -301,7 +301,7 @@ function ConEvent AddPurchaseChoices(Conversation c, ConEvent prev, ItemPurchase
     e.label = "choices";
     e.bClearScreen = true;
 
-    choice = AddChoice(e, choice, "Nevermind", "leave");
+    choice = AddChoice(e, choice, "Nevermind.", "leave");
 
     for(i=0; i<ArrayCount(items); i++) {
         if( items[i].item == None ) continue;
