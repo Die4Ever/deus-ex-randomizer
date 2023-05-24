@@ -19,12 +19,13 @@ function CreateChoices()
 
     CreateChoice(class'MenuChoice_BrightnessBoost');
     CreateChoice(class'MenuChoice_ToggleMemes');
+    // TODO: simulated crowd control strength
 
     if(!#defined(revision)) {
         CreateChoice(class'MenuChoice_ContinuousMusic');
         CreateChoice(class'MenuChoice_RandomMusic');
         CreateChoice(class'MenuChoice_ChangeSong');
-        //TODO: CreateChoice(class'MenuChoice_AutoChangeSong');
+        //TODO: CreateChoice(class'MenuChoice_AutoChangeSong'); on a timer
         CreateChoice(class'MenuChoice_DisableSong');
         CreateChoice(class'MenuChoice_UTMusic');
         CreateChoice(class'MenuChoice_UnrealMusic');
@@ -42,6 +43,7 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_PasswordAutofill');
     CreateChoice(class'MenuChoice_ConfirmNoteDelete');
     CreateChoice(class'MenuChoice_FixGlitches');
+    // TODO: speedrun mode for rerolls?
 
     controlsParent.SetSize(clientWidth, choiceStartY + (choiceCount * choiceVerticalGap));
 }

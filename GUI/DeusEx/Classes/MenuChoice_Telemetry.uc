@@ -6,19 +6,11 @@ class MenuChoice_Telemetry extends DXRMenuUIChoiceEnum;
 
 var DXRTelemetry t;
 
-// ----------------------------------------------------------------------
-// InitWindow()
-//
-// Initialize the Window
-// ----------------------------------------------------------------------
-
-event InitWindow()
+function DXRTelemetry GetDXRT()
 {
-    foreach player.AllActors(class'DXRTelemetry', t) { break; }
-    if( t == None ) t = player.Spawn(class'DXRTelemetry');
-    t.CheckConfig();
-
-    Super.InitWindow();
+    if(t!=None) return t;
+    foreach player.AllActors(class'DXRTelemetry', t) { return t; }
+    return None;
 }
 
 // ----------------------------------------------------------------------
@@ -27,6 +19,8 @@ event InitWindow()
 
 function SetInitialOption()
 {
+    if(GetDXRT()==None) return;
+
     if(t.enabled && t.death_markers)
         SetValue(2);
     else if(t.enabled)
@@ -42,17 +36,19 @@ function SetInitialOption()
 
 function SaveSetting()
 {
-   switch(currentvalue){
-       case 2:
-           t.set_enabled(True,True);
-           break;
-       case 1:
-           t.set_enabled(True,False);
-           break;
-       case 0:
-           t.set_enabled(False,False);
-           break;
-   }
+    if(GetDXRT()==None) return;
+
+    switch(currentvalue){
+    case 2:
+        t.set_enabled(True,True);
+        break;
+    case 1:
+        t.set_enabled(True,False);
+        break;
+    case 0:
+        t.set_enabled(False,False);
+        break;
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -61,6 +57,8 @@ function SaveSetting()
 
 function LoadSetting()
 {
+    if(GetDXRT()==None) return;
+
     if(t.enabled && t.death_markers)
         SetValue(2);
     else if(t.enabled)
@@ -75,8 +73,10 @@ function LoadSetting()
 
 function ResetToDefault()
 {
-   t.set_enabled(False,False);
-   LoadSetting();
+    if(GetDXRT()==None) return;
+
+    t.set_enabled(False,False);
+    LoadSetting();
 }
 
 // ----------------------------------------------------------------------
