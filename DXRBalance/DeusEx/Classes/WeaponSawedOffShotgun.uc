@@ -4,8 +4,9 @@ class DXRWeaponSawedOffShotgun injects WeaponSawedOffShotgun;
 defaultproperties
 {
     HitDamage=6
-    BaseAccuracy=0.6
-    maxRange=2200
-    AccurateRange=1000
+    BaseAccuracy=0.7
+    maxRange=1000
+    AccurateRange=800
+    MinSpreadAcc=0.2
     AIMaxRange=450
 }
