@@ -19,7 +19,7 @@ jobs:
     - name: Build installer
       run: pyinstaller installer/installer.spec
 
-    - run: Compress-Archive -Path installer/dist/* -Destination DXRando.zip
+    - run: Compress-Archive -Path dist/* -Destination DXRando.zip
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3

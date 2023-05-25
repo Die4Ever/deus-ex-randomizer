@@ -9,7 +9,7 @@ a_installer = Analysis(
     ['installer.py'],
     pathex=[],
     binaries=[],
-    datas=[ ('../*.u', 'System'), ('../*.int', 'System') ],
+    datas=[ ('../*.u', 'System'), ('../*.int', 'System'), ('../README.md', '.'), ('../LICENSE', '.') ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
