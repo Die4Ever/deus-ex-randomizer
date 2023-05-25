@@ -1,39 +1,19 @@
-import time
+import argparse
 import sys
-from tkinter import filedialog as fd
-from tkinter import font
-from tkinter import messagebox
-from tkinter import *
-from pathlib import Path
 
-class GUIBase:
-    def __init__(self):
-        self.width=480
-        self.height=500
-        self.initWindow()
-        if self.root:
-            self.root.mainloop()
+import GUI.InstallerWindow
 
-    def closeWindow(self):
-        self.root.destroy()
-        self.root=None
+parser = argparse.ArgumentParser(description='Deus Ex Randomizer')
+parser.add_argument('--version', action="store_true", help='Output version')
+#parser.add_argument('--verbose', action="store_true", help="Output way more to the console")
+args = parser.parse_args()
 
-    def isWindowOpen(self) -> bool:
-        return self.root!=None
+def GetVersion():
+    return 'v0.1'
 
-    def resize(self,event):
-        if event.widget == self.root:
-            try:
-                self.width = event.width
-                self.height = event.height
-            except Exception as e:
-                print('ERROR: in resize:', e)
+if args.version:
+    print('DXRando Installer version:', GetVersion(), file=sys.stderr)
+    print('Python version:', sys.version_info, file=sys.stderr)
+    sys.exit(0)
 
-
-class InstallerWindow(GUIBase):
-    def initWindow(self):
-        self.root = Tk()
-        self.root.title("Deus Ex Randomizer Installer/Launcher")
-        self.root.geometry(str(self.width)+"x"+str(self.height))
-
-i = InstallerWindow()
+GUI.InstallerWindow.main()

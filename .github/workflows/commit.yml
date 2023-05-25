@@ -10,5 +10,10 @@ jobs:
     steps:
     - name: Check out repository code
       uses: actions/checkout@v3
+
+    - run: pip3 install -r installer/requirements.txt 2>&1
+      shell: bash
     - name: Python check
       run: python -m compileall -q .
+    - name: Run tests
+      run: python installer/tests.py

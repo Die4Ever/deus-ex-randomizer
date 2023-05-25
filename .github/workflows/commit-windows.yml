@@ -11,13 +11,21 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v3
 
-    - name: Install Python Deps
-      run: pip3 install tk pyinstaller
+    - run: pip3 install -r installer/requirements.txt 2>&1
+      shell: bash
     - name: Python check
       run: python -m compileall -q .
+    - name: Run tests
+      run: python installer/tests.py
 
     - name: Build installer
       run: pyinstaller installer/installer.spec
+
+    # make sure we don't need the .app folder, specifically for MacOS
+    - run: rm -rf dist/dxrando/installer.app
+      shell: bash
+    - run: ./dist/dxrando/installer.exe --version 2>&1
+      shell: bash
 
     - run: Compress-Archive -Path dist/* -Destination DXRando.zip
 
