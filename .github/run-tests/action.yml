@@ -1,0 +1,30 @@
+runs:
+  using: "composite"
+  steps:
+    # we don't really care what python version we have, but maybe in the future
+    #- uses: actions/setup-python@v4
+    #  with:
+    #    python-version: '3.11'
+    #    cache: 'pip' # caching pip dependencies
+
+    - run: pip3 install -r requirements.txt 2>&1
+      shell: bash
+
+    - run: python3 -m compileall -q . 2>&1
+      shell: bash
+    - run: python3 installer/tests.py 2>&1
+      shell: bash
+    - run: echo "🍏 This job's status is ${{ job.status }}."
+      shell: bash
+
+    - name: Build
+      run: pyinstaller installer/installer.spec
+      shell: bash
+    - run: ls -lah dist
+      shell: bash
+
+    # make sure we don't need the .app folder, specifically for MacOS
+    - run: rm -rf dist/dxrando/installer.app
+      shell: bash
+    - run: ./dist/dxrando/installer --version 2>&1
+      shell: bash

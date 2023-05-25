@@ -13,22 +13,17 @@ jobs:
       with:
         ref: ${{ github.event.release.tag_name }}
 
-    - name: Install Python Deps
-      run: pip3 install tk pyinstaller
-    - name: Python check
-      run: python -m compileall -q .
-    - name: Build bingo watcher
-      run: pyinstaller BingoDisplay.py --onefile --noconsole
-    - name: dir dist
-      run: dir dist
+    - uses: ./.github/run-tests
 
-    - name: Upload Release Asset BingoDisplay.exe
-      id: upload-release-asset-bingo
+    - run: Compress-Archive -Path dist/* -Destination DXRando.zip
+
+    - name: Upload Release Asset DXRando.zip
+      id: upload-release-asset-dxrando-zip
       uses: actions/upload-release-asset@v1.0.2
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ github.event.release.upload_url }}
-        asset_path: dist/BingoDisplay.exe
-        asset_name: BingoDisplay.exe
+        asset_path: DXRando.zip
+        asset_name: DXRando.zip
         asset_content_type: application/octet-stream
