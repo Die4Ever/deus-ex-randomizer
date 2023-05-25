@@ -3,10 +3,6 @@ on: [push]
 jobs:
   build:
     runs-on: windows-latest
-    defaults:
-      run:
-        # Must be explicit for proper pipefail support
-        shell: bash
     steps:
     - name: Check out repository code
       uses: actions/checkout@v3
