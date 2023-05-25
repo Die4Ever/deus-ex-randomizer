@@ -1,0 +1,28 @@
+name: commit
+on: [push]
+jobs:
+  build:
+    runs-on: windows-latest
+    #defaults:
+      #run:
+        # Must be explicit for proper pipefail support
+        #shell: bash
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v3
+
+    - name: Install Python Deps
+      run: pip3 install tk pyinstaller
+    - name: Python check
+      run: python -m compileall -q .
+
+    - name: Build installer
+      run: pyinstaller installer/installer.spec
+
+    - run: Compress-Archive -Path installer/dist/* -Destination DXRando.zip
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: "DXRando"
+        path: DXRando.zip
