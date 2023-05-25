@@ -78,7 +78,7 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 # Windows shortcuts (To provide arguments to the compiler)
-*.lnk
+/*.lnk
 
 # Settings file for the compiler
 compiler_settings.json

@@ -13,8 +13,10 @@ jobs:
 
     - uses: ./.github/run-tests
 
+    - run: Compress-Archive -Path dist/* -Destination DXRando.zip
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: DXRando.zip
-        path: "dist/dxrando"
+        name: DXRando
+        path: "DXRando.zip"

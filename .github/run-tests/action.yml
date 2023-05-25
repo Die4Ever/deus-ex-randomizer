@@ -28,3 +28,6 @@ runs:
       shell: bash
     - run: ./dist/dxrando/installer --version 2>&1
       shell: bash
+
+    - run: cp installer/shortcuts/* ./dist/
+      shell: bash
