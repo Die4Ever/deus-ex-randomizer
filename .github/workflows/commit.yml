@@ -16,5 +16,5 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: "dist/dxrando"
-        path: DXRando.zip
+        name: DXRando.zip
+        path: "dist/dxrando"
