@@ -7,7 +7,7 @@ runs:
     #    python-version: '3.11'
     #    cache: 'pip' # caching pip dependencies
 
-    - run: pip3 install -r requirements.txt 2>&1
+    - run: pip3 install -r installer/requirements.txt 2>&1
       shell: bash
 
     - run: python3 -m compileall -q . 2>&1
