@@ -15,8 +15,12 @@ runs:
     - run: mkdir installer/3rdParty/d3d10drv
       shell: bash
 
+    # https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/tree/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs
     - run: curl -Lo installer/3rdParty/KentieDeusExe.exe "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs/Kentie's%20DeusExe.exe"
       shell: bash
+    - run: curl -Lo installer/3rdParty/Launch.exe "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs/Launch.exe"
+      shell: bash
+
     - run: curl -Lo installer/3rdParty/D3D10Drv.int "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D10Drv.int"
       shell: bash
     - run: curl -Lo installer/3rdParty/d3d10drv.dll "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv.dll"

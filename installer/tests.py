@@ -23,6 +23,7 @@ class DXRTestCase(unittest.TestCase):
 
         desiredconfig = (b'[Engine.Engine]\r\n'
             + b'DefaultGame=GMDXRandomizer.DXRandoGameInfo\r\n'
+            + b';DefaultGame=DeusEx.DeusExGameInfo\r\n'# old values are commented out
             + b'\r\n\r\n'
             + b'[Core.System]\r\nPaths=..\GMDXRandomizer\System\*.u\r\nPaths=Maps\r\nPaths=System\r\n'
         )
@@ -46,8 +47,10 @@ class DXRTestCase(unittest.TestCase):
             + b'CdPath=D:\r\n\r\n')
         desiredconfig = (b'[Engine.Engine]\r\nGameRenderDevice=D3D10Drv.D3D10RenderDevice\r\nAudioDevice=Galaxy.GalaxyAudioSubsystem\r\nNetworkDevice=IpDrv.TcpNetDriver\r\nDemoRecordingDevice=Engine.DemoRecDriver\r\nConsole=Engine.Console\r\nLanguage=VMD\r\nGameEngine=DeusEx.DeusExGameEngine\r\nEditorEngine=Editor.EditorEngine\r\nWindowedRenderDevice=SoftDrv.SoftwareRenderDevice\r\nRenderDevice=GlideDrv.GlideRenderDevice\r\n'
             + b'DefaultGame=VMDRandomizer.DXRandoGameInfo\r\n'
+            + b';DefaultGame=DeusEx.DeusExGameInfo\r\n'
             + b'DefaultServerGame=DeusEx.DeathMatchGame\r\nViewportManager=WinDrv.WindowsClient\r\nRender=RenderExt.RenderExt\r\nInput=Extension.InputExt\r\nCanvas=Engine.Canvas\r\n'
             + b'Root=VMDRandomizer.DXRandoRootWindow\r\n'
+            + b';Root=DeusEx.DeusExRootWindow\r\n'
             + b'CdPath=D:\r\n\r\n')
 
         result = Configs.ModifyConfig(origconfig,

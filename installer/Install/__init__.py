@@ -11,6 +11,10 @@ def GetConfChanges(modname):
     }
     newpath = '..\\' + modname + 'Randomizer\\System\\*.u'
     additions = {'Core.System': {'Paths': newpath}}
+    if modname == 'Rev':
+        additions['RevisionInternal.LaunchSystem'] = {'Paths': newpath}
+    if modname == 'HX':
+        changes = {}
     return (changes, additions)
 
 def GetSourcePath() -> Path:
@@ -24,9 +28,9 @@ def GetSourcePath() -> Path:
     raise RuntimeError('failed to GetSourcePath()', p)
 
 def GetPackagesPath(modname:str) -> Path:
-    # TODO: these will be split up by modname when we start using consistent filenames
+    # TODO: these source files will be split up into a separate folder for each modname when we start using consistent filenames
     p = GetSourcePath()
-    # check if compiled
+    # check if compiled python
     if ( p / 'System' / 'DeusEx.u').exists():
         return p / 'System'
 
@@ -35,20 +39,6 @@ def GetPackagesPath(modname:str) -> Path:
     if (p / 'DeusEx.u').exists():
         return p
     raise RuntimeError('failed to GetPackagesPath()', p)
-
-
-def Install(exe:Path):
-    assert exe.name == 'DeusEx.exe'
-    system:Path = exe.parent
-    assert system.name == 'System'
-
-    flavors = DetectFlavors(system)
-    print('Found flavors:', flavors)
-    if 'vanilla' in flavors:
-        InstallVanilla(system)
-    if 'vmd' in flavors:
-        CreateModConfigs(system, 'VMD', 'VMDSim')
-    EngineDllFix(system)
 
 
 def DetectFlavors(system:Path):
@@ -71,7 +61,7 @@ def DetectFlavors(system:Path):
     if (game / 'GMDXv9').is_dir():
         flavors.append('gmdx v9')
     if (game / 'GMDXvRSD').is_dir():
-        flavors.append('gmdx RSD')
+        flavors.append('gmdx rsd')
     if (game / 'GMDXv10').is_dir():
         flavors.append('gmdx v10')
     if (system / 'HX.u').exists():
@@ -84,78 +74,8 @@ def DetectFlavors(system:Path):
     return flavors
 
 
-def InstallVanilla(system:Path):
-    gameroot = system.parent
-
-    # TODO: option for Kentie's vs Han's
-    kentie = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
-    exedest:Path = system / 'DXRando.exe'
-    CopyTo(kentie, exedest)
-
-    intfile = GetSourcePath() / 'Configs' / 'DXRando.int'
-    intdest = system / 'DXRando.int'
-    CopyTo(intfile, intdest)
-
-    ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
-    inidest = system / "DXRandoDefault.ini"# I don't think Kentie cares about this file, but Han's Launchbox does
-    CopyTo(ini, inidest)
-
-    # TODO: retain old resolution choices and stuff like that, set FPSLimit and VSync properly if skipping Engine.dll speedup fix
-    configsroot = Path.home() / 'Documents' / 'Deus Ex' / 'System'
-    DXRandoini = configsroot / 'DXRando.ini'
-    if DXRandoini.exists():
-        DXRandoini.unlink()
-    CopyTo(ini, DXRandoini)
-
-    CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
-    CopyD3D10Renderer(system)
-
-
-# pretty sure this function is only good for VMD...
-def CreateModConfigs(system:Path, modname:str, exename:str):
-    exepath = system / (exename+'.exe')
-    newexename = modname+'Randomizer'
-    newexepath = system / (newexename+'.exe')
-    CopyTo(exepath, newexepath)
-
-    intfile = GetSourcePath() / 'Configs' / 'DXRando.int'
-    intdest = system / (newexename+'.int')
-    CopyTo(intfile, intdest)
-
-    (changes, additions) = GetConfChanges(modname)
-
-    # inis
-    confpath = system / (exename + 'Default.ini')
-    b = confpath.read_bytes()
-    b = Configs.ModifyConfig(b, changes, additions)
-    outconf = system / (newexename + 'Default.ini')
-    outconf.write_bytes(b)
-
-    confpath = system / (exename + '.ini')
-    if confpath.exists():
-        b = confpath.read_bytes()
-        b = Configs.ModifyConfig(b, changes, additions)
-        outconf = system / (newexename + '.ini')
-        outconf.write_bytes(b)
-
-    # User inis
-    confpath = system / (exename + 'DefUser.ini')
-    b = confpath.read_bytes()
-    b = Configs.ModifyConfig(b, changes, additions)
-    outconf = system / (newexename + 'DefUser.ini')
-    outconf.write_bytes(b)
-
-    confpath = system / (exename + 'User.ini')
-    if confpath.exists():
-        b = confpath.read_bytes()
-        b = Configs.ModifyConfig(b, changes, additions)
-        outconf = system / (newexename + 'User.ini')
-        outconf.write_bytes(b)
-
-    CopyPackageFiles(modname, system.parent, [modname+'Randomizer.u'])
-
-
 def CopyPackageFiles(modname:str, gameroot:Path, packages:list):
+    assert (gameroot / 'System').is_dir()
     if modname == 'vanilla':
         dxrandoroot = gameroot / 'DXRando'
     else:

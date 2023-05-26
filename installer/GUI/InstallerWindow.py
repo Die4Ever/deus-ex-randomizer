@@ -1,6 +1,6 @@
 from GUI import *
 from pathlib import Path
-import Install
+from Install import Install
 
 class InstallerWindow(GUIBase):
     def initWindow(self):

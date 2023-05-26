@@ -62,9 +62,12 @@ def _ReplaceConfigVals(section:str, changes:dict) -> str:
             continue
         all = d['all']
         value = d['value']
-        oldline = name+'='+value
         newval = changes[name]
+        if value == newval:
+            continue
+        oldline = name+'='+value
         newline = name+'='+newval
+        newline += '\r\n;' + oldline# save the old line as a comment
         newall = all.replace(oldline, newline)
         outsect = outsect.replace(all, newall)
 
@@ -77,5 +80,13 @@ def _AddConfigVals(section:str, additions:dict) -> str:
     if not additions:
         return section
     for (k,v) in additions.items():
-        section = k+'='+v + '\r\n' + section
+        newline = k+'='+v
+        # beginning of section doesn't have \r\n and we want to make sure this isn't commented out
+        if section.startswith(newline):
+            continue
+        if '\r\n'+newline+'\r\n' in section:
+            continue
+        if section.endswith('\r\n'+newline):
+            continue
+        section = newline + '\r\n' + section
     return section
