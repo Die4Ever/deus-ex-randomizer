@@ -141,6 +141,10 @@ function SetWatchFlags() {
         WatchFlag('MetSmuggler');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vect(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vect(0,0,0));
+        bt.Tag = 'mirrordoorout';
+        foreach AllActors(class'DeusExMover',dxm,'mirrordoor'){
+            dxm.Event='mirrordoorout';
+        }
 
         break;
     case "03_NYC_BATTERYPARK":
@@ -227,6 +231,10 @@ function SetWatchFlags() {
         RewatchFlag('MetSmuggler');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vect(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vect(0,0,0));
+        bt.Tag = 'mirrordoorout';
+        foreach AllActors(class'DeusExMover',dxm,'mirrordoor'){
+            dxm.Event='mirrordoorout';
+        }
         break;
     case "04_NYC_NSFHQ":
         WatchFlag('MostWarehouseTroopsDead');
@@ -420,6 +428,10 @@ function SetWatchFlags() {
         RewatchFlag('MetSmuggler');
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vect(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vect(0,0,0));
+        bt.Tag = 'mirrordoorout';
+        foreach AllActors(class'DeusExMover',dxm,'mirrordoor'){
+            dxm.Event='mirrordoorout';
+        }
         break;
     case "08_NYC_BAR":
         WatchFlag('LeoToTheBar');
