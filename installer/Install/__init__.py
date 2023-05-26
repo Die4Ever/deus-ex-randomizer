@@ -38,7 +38,7 @@ def InstallVanilla(p:Path):
     gameroot = system.parent
 
     # TODO: option for Kentie's vs Han's
-    kentie = GetSourcePath() / '3rdParty' / "Kentie's DeusExe.exe"
+    kentie = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
     exedest:Path = system / 'DXRando.exe'
     CopyTo(kentie, exedest)
 
