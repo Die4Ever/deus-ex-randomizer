@@ -1,5 +1,9 @@
 import time
 import sys
+import json
+import os.path
+import urllib.request
+import urllib.parse
 from tkinter import filedialog as fd
 from tkinter import font
 from tkinter import messagebox
@@ -15,6 +19,8 @@ BINGO_MOD_LINE_DETECT="PlayerDataItem"
 NEWLY_COMPLETED_DISPLAY_TIME=80
 WINDOW_TITLE="Deus Ex Randomizer Bingo Board"
 
+JSON_DEST_FILENAME="pushjson.txt"
+
 class Bingo:
 
     def __init__(self,targetFile):
@@ -25,6 +31,7 @@ class Bingo:
         self.width=500
         self.height=500
         self.selectedMod=""
+        self.prevLines=None
         self.initDrawnBoard()
 
     def closeWindow(self):
@@ -76,8 +83,6 @@ class Bingo:
         for x in range(5):
             for y in range(5):
                 self.drawTile(self.tkBoard[x][y], self.tkBoardText[x][y], self.board[x][y])
-
-        self.win.update()
 
     def drawTile(self, tkTile, tkText, boardEntry):
         if boardEntry is None or tkTile is None:
@@ -174,6 +179,51 @@ class Bingo:
             for line in allLines[self.selectedMod]:
                 self.parseBingoLine(line)
 
+        changed = (allLines!=self.prevLines)
+
+        if changed:
+            self.prevLines=allLines
+
+        return changed
+
+    def generateBingoStateJson(self):
+        board = []
+        for y in range(5):
+            for x in range(5):
+                square = dict()
+                square["x"]=x
+                square["y"]=y
+                square["name"]=self.board[x][y]["desc"]
+                if self.board[x][y]["max"]>1:
+                    square["name"]+="\n"+str(self.board[x][y]["progress"])+"/"+str(self.board[x][y]["max"])
+                square["completed"]=self.board[x][y]["progress"] >= self.board[x][y]["max"]
+                square["possible"]=self.board[x][y]["active"]!=-1
+                #print(square)
+                board.append(square)
+        #return json.dumps(board,indent=4)
+        return {"bingo":json.dumps({"bingo":board},indent=4)}
+
+    def sendBingoState(self):
+        if not os.path.isfile(JSON_DEST_FILENAME):
+            return
+
+        f = open(JSON_DEST_FILENAME,'r')
+        desturl=f.readline()
+        f.close()
+
+        if (desturl==""):
+            print("Make sure to specify where you want to push your json!")
+            return
+        
+        bingoState = self.generateBingoStateJson()
+        #print(bingoState)
+        try:
+            r = urllib.request.urlopen(desturl,data=urllib.parse.urlencode(bingoState).encode('utf-8'))
+            #print(r.status)
+            #print(r.read().decode('utf-8'))
+        except Exception as e:
+            print("Couldn't push JSON to "+desturl+" - "+str(e))
+
 
 def saveLastUsedBingoFile(f):
     p = Path(f)
@@ -235,12 +285,14 @@ lastFileUpdate=0
 
 while True:
     if (time.time()>(lastFileUpdate+1)):
-        b.readBingoFile()
+        changed = b.readBingoFile()
         #b.printBoard()
         lastFileUpdate=time.time()
-        b.drawBoard()
-    else:
-        b.win.update()
+        if (changed):
+            b.drawBoard()
+            b.sendBingoState()
+    
+    b.win.update()
 
     if not b.isWindowOpen():
         sys.exit(0)
