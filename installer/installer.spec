@@ -9,7 +9,15 @@ a_installer = Analysis(
     ['installer.py'],
     pathex=[],
     binaries=[],
-    datas=[ ('../*.u', 'System'), ('../*.int', 'System'), ('../README.md', '.'), ('../LICENSE', '.') ],
+    datas=[
+        ('../*.u', 'System'),
+        ('../*.int', 'System'),
+        ('../README.md', '.'),
+        ('../LICENSE', '.'),
+        ('Configs/*', 'Configs'),
+        ('3rdParty/*.*', '3rdParty'),
+        ('3rdParty/d3d10drv/*', '3rdParty/d3d10drv')
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
