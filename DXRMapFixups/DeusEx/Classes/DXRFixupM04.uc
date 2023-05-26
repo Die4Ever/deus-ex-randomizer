@@ -25,6 +25,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LaserTrigger laser;
     local #var(prefix)Containers c;
     local #var(prefix)Karkian k;
+    local AllianceTrigger at;
+    local BlockPlayer bp;
 
     switch (dxr.localURL)
     {
@@ -113,6 +115,17 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vect(-1187,-1154,-31)); //Behind Jail Desk
         Spawn(class'PlaceholderContainer',,, vect(2384,1669,-95)); //MJ12 Door
         Spawn(class'PlaceholderContainer',,, vect(-383.6,1376,273)); //JC's Office
+        break;
+
+    case "04_NYC_BATTERYPARK":
+        foreach AllActors(class'AllianceTrigger',at,'GuntherAttacksJC'){
+            //These default to colliding with actors, which means you can walk into them.  Oops.
+            at.SetCollision(False,False,False);
+        }
+        foreach AllActors(class'BlockPlayer',bp){
+            //Let the player free!  It's already possible to break outside of them, so just get rid of them.
+            bp.bBlockPlayers=false;
+        }
         break;
     }
 }
