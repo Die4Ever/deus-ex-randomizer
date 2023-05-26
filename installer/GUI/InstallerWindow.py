@@ -15,10 +15,12 @@ def main():
     p = fd.askopenfilename(title="Find plain DeusEx.exe", filetypes=filetypes, initialdir=initdir)
     p = Path(p)
     print(p)
+    InstallerWindow()
     # TODO: options like Kentie's DeusExe vs Han's Launchbox, whether to apply the Engine.dll speedup fix or not, checking for updates...
     # option for enabling Online Features
-    Install.Install(p)
-    #InstallerWindow()
+    flavors = Install.Install(p)
+    flavors = ', '.join(flavors)
+    messagebox.showinfo('Installation Complete!', 'Installed: ' + flavors)
 
 
 def getDefaultPath():

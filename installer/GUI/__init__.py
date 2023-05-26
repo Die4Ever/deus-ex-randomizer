@@ -14,8 +14,8 @@ class GUIBase:
         self.width=480
         self.height=500
         self.initWindow()
-        if self.root:
-            self.root.mainloop()
+        #if self.root:
+        #    self.root.mainloop()
 
     def closeWindow(self):
         self.root.destroy()

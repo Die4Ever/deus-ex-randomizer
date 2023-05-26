@@ -1,6 +1,6 @@
 from Install import *
 
-def Install(exe:Path):
+def Install(exe:Path) -> list:
     assert exe.name == 'DeusEx.exe'
     system:Path = exe.parent
     assert system.name == 'System'
@@ -22,6 +22,7 @@ def Install(exe:Path):
     if 'hx' in flavors:
         InstallHX(system)
     EngineDllFix(system)
+    return flavors
 
 
 def InstallVanilla(system:Path):
