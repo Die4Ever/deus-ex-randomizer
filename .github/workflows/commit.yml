@@ -9,6 +9,9 @@ jobs:
 
     - uses: ./.github/run-tests
 
+    - run: cp installer/shortcuts/* ./dist/
+      shell: bash
+
     - run: Compress-Archive -Path dist/* -Destination DXRando.zip
 
     - name: Upload artifacts
@@ -31,7 +34,9 @@ jobs:
 
     - uses: ./.github/run-tests
 
-    - run: zip DXRando.zip dist/*
+    # TODO: shortcuts to the installer and bingo viewer
+
+    - run: zip -r DXRando.zip dist/*
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
