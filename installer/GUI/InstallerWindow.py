@@ -29,6 +29,11 @@ class InstallerWindow(GUIBase):
         row = 0
         pad = 6
 
+        # show the path
+        l = Label(self.frame, text='Install path:\n' + str(p.parent.parent), wraplength=self.width-pad*5)
+        l.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+        row += 1
+
         self.exevar = StringVar(master=self.frame, value='Kentie')
         self.flavors = {}
 
@@ -39,7 +44,7 @@ class InstallerWindow(GUIBase):
             row+=1
             self.flavors[f] = v
             if f == 'Vanilla':
-                l = Label(self.frame, text="  Which EXE to use for vanilla:")
+                l = Label(self.frame, text="Which EXE to use for vanilla:")
                 l.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
                 row += 1
                 v = self.exevar
@@ -63,12 +68,12 @@ class InstallerWindow(GUIBase):
         # DISCORD!
         discordLink = Label(self.frame,text='discord.gg/daQVyAp2ds',width=22,height=2,font=self.linkfont, fg="Blue", cursor="hand2")
         discordLink.bind('<Button-1>', lambda *args: webbrowser.open_new('https://discord.gg/daQVyAp2ds'))
-        discordLink.grid(column=1,row=100)
+        discordLink.grid(column=1,row=100, sticky='SW', padx=pad, pady=pad)
         myTip = Hovertip(discordLink, 'Join our Discord!')
 
         # install button
         self.installButton = Button(self.frame,text='Install!',width=18,height=2,font=self.font, command=self.Install)
-        self.installButton.grid(column=1,row=101, sticky='SE', padx=pad, pady=pad)
+        self.installButton.grid(column=1,row=101, sticky='SW', padx=pad, pady=pad)
         Hovertip(self.installButton, 'Dew it!')
 
     def Install(self):

@@ -2,14 +2,14 @@ from Install import *
 from Install import _DetectFlavors
 
 def DetectFlavors(exe:Path) -> list:
-    assert exe.name == 'DeusEx.exe'
+    assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
     assert system.name == 'System'
     return _DetectFlavors(system)
 
 
 def Install(exe:Path, flavors:list, exetype:str, speedupfix:bool) -> list:
-    assert exe.name == 'DeusEx.exe'
+    assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
     assert system.name == 'System'
 
