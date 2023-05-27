@@ -1,3 +1,4 @@
+import os
 from Install import *
 from Install import _DetectFlavors
 
@@ -15,7 +16,7 @@ def Install(exe:Path, flavors:list, exetype:str, speedupfix:bool) -> list:
 
     print('Installing flavors:', flavors, exetype, speedupfix)
     if 'Vanilla' in flavors:
-        InstallVanilla(system, exetype)
+        InstallVanilla(system, exetype, speedupfix)
     if 'Vanilla? Madder.' in flavors:
         CreateModConfigs(system, 'VMD', 'VMDSim')
     if 'GMDX v9' in flavors:
@@ -34,29 +35,56 @@ def Install(exe:Path, flavors:list, exetype:str, speedupfix:bool) -> list:
     return flavors
 
 
-def InstallVanilla(system:Path, exetype:str):
+def InstallVanilla(system:Path, exetype:str, speedupfix:bool):
     gameroot = system.parent
 
+    kentie = True
     exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
     if exetype == 'Launch':
         exe_source = GetSourcePath() / '3rdParty' / "Launch.exe"
-    exedest:Path = system / 'DXRando.exe'
+        kentie = False
+    exename = 'DXRando'
+    # TODO: allow separate exe file for linux
+    # maybe I can create the SteamPlay config file needed? I think it's a .desktop file
+    if os.name == 'posix':
+        exename = 'DeusEx'
+    exedest:Path = system / (exename+'.exe')
     CopyTo(exe_source, exedest)
 
     intfile = GetSourcePath() / 'Configs' / 'DXRando.int'
-    intdest = system / 'DXRando.int'
+    intdest = system / (exename+'.int')
     CopyTo(intfile, intdest)
 
     ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
-    inidest = system / "DXRandoDefault.ini"# I don't think Kentie cares about this file, but Han's Launchbox does
-    CopyTo(ini, inidest)
+    defini_dest = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
+    CopyTo(ini, defini_dest)
 
-    # TODO: retain old resolution choices and stuff like that, set FPSLimit and VSync properly if skipping Engine.dll speedup fix
-    configsroot = Path.home() / 'Documents' / 'Deus Ex' / 'System'
-    DXRandoini = configsroot / 'DXRando.ini'
-    if DXRandoini.exists():
-        DXRandoini.unlink()
+    # TODO: retain old resolution choices and stuff like that
+    if kentie:
+        configs_dest = Path.home() / 'Documents' / 'Deus Ex' / 'System'
+    else:
+        configs_dest = system
+    DXRandoini = configs_dest / (exename+'.ini')
+    DXRandoini.parent.mkdir(parents=True, exist_ok=True)
     CopyTo(ini, DXRandoini)
+
+    changes = {}
+    if not speedupfix:
+        changes['DeusExe'] = {'FPSLimit': '120'}
+        changes['D3D10Drv.D3D10RenderDevice'] = {'FPSLimit': '120', 'VSync': 'True'}
+
+    if os.name != 'nt':
+        changes['Engine.Engine'] = {'GameRenderDevice': 'D3DDrv.D3DRenderDevice'}
+        changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
+
+    if changes:
+        b = defini_dest.read_bytes()
+        b = Configs.ModifyConfig(b, changes, additions={})
+        defini_dest.write_bytes(b)
+
+        b = DXRandoini.read_bytes()
+        b = Configs.ModifyConfig(b, changes, additions={})
+        DXRandoini.write_bytes(b)
 
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
     CopyD3D10Renderer(system)

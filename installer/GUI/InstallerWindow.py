@@ -35,6 +35,8 @@ class InstallerWindow(GUIBase):
         row += 1
 
         self.exevar = StringVar(master=self.frame, value='Kentie')
+        if os.name != 'nt':
+            self.exevar.set('Launch')
         self.flavors = {}
 
         for f in flavors:
@@ -43,7 +45,7 @@ class InstallerWindow(GUIBase):
             c.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
             row+=1
             self.flavors[f] = v
-            if f == 'Vanilla':
+            if f == 'Vanilla' and os.name == 'nt':
                 l = Label(self.frame, text="Which EXE to use for vanilla:")
                 l.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
                 row += 1
@@ -91,7 +93,7 @@ class InstallerWindow(GUIBase):
         flavors = Install.Install(self.exe, flavors, exetype, speedupfix)
         flavors = ', '.join(flavors)
         extra = ''
-        if 'Vanilla' in flavors:
+        if 'Vanilla' in flavors and os.name == 'nt':
             extra += '\nCreated DXRando.exe'
         if 'Vanilla? Madder.' in flavors:
             extra += '\nCreated VMDRandomizer.exe'
@@ -107,6 +109,8 @@ def getDefaultPath():
     checks = [
         Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
         Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+        Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
+        Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
     ]
     p:Path
     for p in checks:
