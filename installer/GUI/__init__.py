@@ -14,8 +14,10 @@ class GUIBase:
         self.width=480
         self.height=500
         self.initWindow()
-        #if self.root:
-        #    self.root.mainloop()
+        if self.root:
+            self.root.protocol("WM_DELETE_WINDOW",self.closeWindow)
+            self.root.bind("<Configure>",self.resize)
+            self.root.mainloop()
 
     def closeWindow(self):
         self.root.destroy()

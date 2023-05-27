@@ -41,17 +41,17 @@ def GetPackagesPath(modname:str) -> Path:
     raise RuntimeError('failed to GetPackagesPath()', p)
 
 
-def DetectFlavors(system:Path):
+def _DetectFlavors(system:Path):
     flavors = []
     game = system.parent
     vanilla_md5 = None
     is_vanilla = False
 
     if (game / 'VMDSim').is_dir():
-        return ['vmd']# VMD seems like it can only exist by itself
+        return ['Vanilla? Madder.']# VMD seems like it can only exist by itself
 
     if (system / 'DeusEx.u').exists():
-        flavors.append('vanilla')
+        flavors.append('Vanilla')
         vanilla_md5 = MD5((system / 'DeusEx.u').read_bytes())
         if vanilla_md5 == 'd343da03a6d311ee412dfae4b52ff975':
             is_vanilla = True
@@ -59,17 +59,17 @@ def DetectFlavors(system:Path):
             print('unknown MD5 for DeusEx.u', vanilla_md5)
 
     if (game / 'GMDXv9').is_dir():
-        flavors.append('gmdx v9')
+        flavors.append('GMDX v9')
     if (game / 'GMDXvRSD').is_dir():
-        flavors.append('gmdx rsd')
+        flavors.append('GMDX RSD')
     if (game / 'GMDXv10').is_dir():
-        flavors.append('gmdx v10')
+        flavors.append('GMDX v10')
     if (system / 'HX.u').exists():
         if not is_vanilla:
             print('WARNING: DeusEx.u file is not vanilla! This can cause issues with HX')
-        flavors.append('hx')
+        flavors.append('HX')
     if (game / 'Revision').is_dir():
-        flavors.append('revision')
+        flavors.append('Revision')
 
     return flavors
 

@@ -1,37 +1,47 @@
 from Install import *
+from Install import _DetectFlavors
 
-def Install(exe:Path) -> list:
+def DetectFlavors(exe:Path) -> list:
+    assert exe.name == 'DeusEx.exe'
+    system:Path = exe.parent
+    assert system.name == 'System'
+    return _DetectFlavors(system)
+
+
+def Install(exe:Path, flavors:list, exetype:str, speedupfix:bool) -> list:
     assert exe.name == 'DeusEx.exe'
     system:Path = exe.parent
     assert system.name == 'System'
 
-    flavors = DetectFlavors(system)
-    print('Found flavors:', flavors)
-    if 'vanilla' in flavors:
-        InstallVanilla(system)
-    if 'vmd' in flavors:
+    print('Installing flavors:', flavors, exetype, speedupfix)
+    if 'Vanilla' in flavors:
+        InstallVanilla(system, exetype)
+    if 'Vanilla? Madder.' in flavors:
         CreateModConfigs(system, 'VMD', 'VMDSim')
-    if 'gmdx v9' in flavors:
+    if 'GMDX v9' in flavors:
         InstallGMDX(system, 'GMDXv9')
-    if 'gmdx rsd' in flavors:
+    if 'GMDX RSD' in flavors:
         InstallGMDX(system, 'GMDXvRSD')
-    if 'gmdx v10' in flavors:
+    if 'GMDX v10' in flavors:
         CreateModConfigs(system, 'GMDX', 'GMDXv10')
-    if 'revision' in flavors:
+    if 'Revision' in flavors:
         InstallRevision(system)
-    if 'hx' in flavors:
+    if 'HX' in flavors:
         InstallHX(system)
-    EngineDllFix(system)
+
+    if speedupfix:
+        EngineDllFix(system)
     return flavors
 
 
-def InstallVanilla(system:Path):
+def InstallVanilla(system:Path, exetype:str):
     gameroot = system.parent
 
-    # TODO: option for Kentie's vs Han's
-    kentie = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
+    exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
+    if exetype == 'Launch':
+        exe_source = GetSourcePath() / '3rdParty' / "Launch.exe"
     exedest:Path = system / 'DXRando.exe'
-    CopyTo(kentie, exedest)
+    CopyTo(exe_source, exedest)
 
     intfile = GetSourcePath() / 'Configs' / 'DXRando.int'
     intdest = system / 'DXRando.int'
