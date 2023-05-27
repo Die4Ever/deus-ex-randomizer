@@ -90,7 +90,12 @@ class InstallerWindow(GUIBase):
         speedupfix = self.speedupfixval.get()
         flavors = Install.Install(self.exe, flavors, exetype, speedupfix)
         flavors = ', '.join(flavors)
-        messagebox.showinfo('Installation Complete!', 'Installed DXRando for: ' + flavors)
+        extra = ''
+        if 'Vanilla' in flavors:
+            extra += '\nCreated DXRando.exe'
+        if 'Vanilla? Madder.' in flavors:
+            extra += '\nCreated VMDRandomizer.exe'
+        messagebox.showinfo('Installation Complete!', 'Installed DXRando for: ' + flavors + extra)
         self.closeWindow()
 
 
