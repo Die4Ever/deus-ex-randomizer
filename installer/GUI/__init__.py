@@ -47,6 +47,9 @@ class GUIBase:
         myTip = Hovertip(entry, tooltip)
         return entry
 
+    def FixColors(self, w):
+        w.config(bg="#d9d9d9",fg="black")
+
 
 # from https://stackoverflow.com/a/68701602
 class ScrollableFrame:

@@ -34,10 +34,11 @@ jobs:
 
     - uses: ./.github/run-tests
 
-    - run: ln -s dxrando/installer "DXRando Installer"
-      working-directory: ./dist
-    - run: ln -s dxrando/BingoViewer "BingoViewer"
-      working-directory: ./dist
+    # TODO: maybe try this https://medium.com/@philipp.h/reduce-clutter-when-using-pyinstaller-in-one-directory-mode-b631b9f7f89b
+    #- run: ln -s dxrando/installer "DXRando Installer"
+    #  working-directory: ./dist
+    #- run: ln -s dxrando/BingoViewer "BingoViewer"
+    #  working-directory: ./dist
 
     - run: zip --symlinks -r DXRando.zip .
       working-directory: ./dist

@@ -46,7 +46,7 @@ def InstallVanilla(system:Path, exetype:str, speedupfix:bool):
     exename = 'DXRando'
     # TODO: allow separate exe file for linux
     # maybe I can create the SteamPlay config file needed? I think it's a .desktop file
-    if os.name == 'posix':
+    if not IsWindows():
         exename = 'DeusEx'
     exedest:Path = system / (exename+'.exe')
     CopyTo(exe_source, exedest)
@@ -73,7 +73,7 @@ def InstallVanilla(system:Path, exetype:str, speedupfix:bool):
         changes['DeusExe'] = {'FPSLimit': '120'}
         changes['D3D10Drv.D3D10RenderDevice'] = {'FPSLimit': '120', 'VSync': 'True'}
 
-    if os.name != 'nt':
+    if not IsWindows():
         changes['Engine.Engine'] = {'GameRenderDevice': 'D3DDrv.D3DRenderDevice'}
         changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
 
@@ -128,7 +128,7 @@ def CreateModConfigs(system:Path, modname:str, exename:str, in_place:bool=False)
     exepath = system / (exename+'.exe')
     newexename = modname+'Randomizer'
     newexepath = system / (newexename+'.exe')
-    if os.name != 'nt':
+    if not IsWindows():
         in_place = True
     if not in_place:
         CopyTo(exepath, newexepath)

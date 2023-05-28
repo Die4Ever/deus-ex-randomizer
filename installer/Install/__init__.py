@@ -1,6 +1,11 @@
 import hashlib
+import os
 from pathlib import Path
 import Configs
+
+def IsWindows() -> bool:
+    return os.name == 'nt'
+
 
 def GetConfChanges(modname):
     changes = {
@@ -15,6 +20,8 @@ def GetConfChanges(modname):
         additions['RevisionInternal.LaunchSystem'] = {'Paths': newpath}
     if modname == 'HX':
         changes = {}
+    #if modname == 'VMD' and not IsWindows():
+        #changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'False', 'WindowedViewportX': '1280', 'WindowedViewportY': '720'}
     return (changes, additions)
 
 def GetSourcePath() -> Path:

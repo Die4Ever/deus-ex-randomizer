@@ -1,7 +1,7 @@
 import webbrowser
 from GUI import *
 from pathlib import Path
-from Install import Install
+from Install import Install, IsWindows
 
 class InstallerWindow(GUIBase):
     def initWindow(self):
@@ -37,7 +37,7 @@ class InstallerWindow(GUIBase):
         row += 1
 
         self.exevar = StringVar(master=self.frame, value='Kentie')
-        if os.name != 'nt':
+        if not IsWindows():
             self.exevar.set('Launch')
         self.flavors = {}
 
@@ -45,22 +45,22 @@ class InstallerWindow(GUIBase):
             v = BooleanVar(master=self.frame, value=True)
             c = Checkbutton(self.frame, text="Install DXRando for "+f, variable=v)
             c.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
-            c.config(bg="#d9d9d9",fg="black")
+            self.FixColors(c)
             row+=1
             self.flavors[f] = v
-            if f == 'Vanilla' and os.name == 'nt':
+            if f == 'Vanilla' and IsWindows():
                 l = Label(self.frame, text="Which EXE to use for vanilla:")
                 l.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
                 row += 1
                 v = self.exevar
                 r = Radiobutton(self.frame, text="Kentie", variable=v, value='Kentie')
                 r.grid(column=1,row=row, sticky='SW', padx=pad*8, pady=pad)
-                r.config(bg="#d9d9d9",fg="black")
+                self.FixColors(r)
                 Hovertip(r, "Kentie's Launcher stores configs and saves in your Documents folder.")
                 row += 1
                 r = Radiobutton(self.frame, text="Hanfling's Launch", variable=v, value='Launch')
                 r.grid(column=1,row=row, sticky='SW', padx=pad*8, pady=pad)
-                r.config(bg="#d9d9d9",fg="black")
+                self.FixColors(r)
                 Hovertip(r, "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play.")
                 row += 1
 
@@ -68,6 +68,7 @@ class InstallerWindow(GUIBase):
         self.speedupfixval = BooleanVar(master=self.frame, value=True)
         self.speedupfix = Checkbutton(self.frame, text="Apply Engine.dll speedup fix", variable=self.speedupfixval)
         self.speedupfix.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+        self.FixColors(self.speedupfix)
         row+=1
 
         # TODO: option to enable telemetry? checking for updates?
@@ -98,9 +99,9 @@ class InstallerWindow(GUIBase):
         flavors = Install.Install(self.exe, flavors, exetype, speedupfix)
         flavors = ', '.join(flavors)
         extra = ''
-        if 'Vanilla' in flavors and os.name == 'nt':
+        if 'Vanilla' in flavors and IsWindows():
             extra += '\nCreated DXRando.exe'
-        if 'Vanilla? Madder.' in flavors:
+        if 'Vanilla? Madder.' in flavors and IsWindows():
             extra += '\nCreated VMDRandomizer.exe'
         messagebox.showinfo('Installation Complete!', 'Installed DXRando for: ' + flavors + extra)
         self.closeWindow()
