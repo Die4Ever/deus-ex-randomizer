@@ -100,7 +100,7 @@ runs:
       shell: bash
 
     # small test
-    - run: ./dist/DXRando/installer --version 2>&1
+    - run: ./dist/DXRando/DXRandoInstaller --version 2>&1
       shell: bash
     - run: ./dist/DXRando/BingoViewer --version 2>&1
       shell: bash
