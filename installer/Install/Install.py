@@ -5,14 +5,14 @@ from Install import _DetectFlavors
 def DetectFlavors(exe:Path) -> list:
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
-    assert system.name == 'System'
+    assert system.name.lower() == 'system'
     return _DetectFlavors(system)
 
 
 def Install(exe:Path, flavors:list, exetype:str, speedupfix:bool) -> list:
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
-    assert system.name == 'System'
+    assert system.name.lower() == 'system'
 
     print('Installing flavors:', flavors, exetype, speedupfix)
     if 'Vanilla' in flavors:
@@ -110,9 +110,9 @@ def InstallGMDX(system:Path, exename:str):
 
 
 def InstallRevision(system:Path):
-    # Revision's exe is special and calls back to Steam which calls the regular Revision.exe file
+    # Revision's exe is special and calls back to Steam which calls the regular Revision.exe file, so we pass in_place=True
     revsystem = system.parent / 'Revision' / 'System'
-    CreateModConfigs(revsystem, 'Rev', 'Revision', True)
+    CreateModConfigs(revsystem, 'Rev', 'Revision', in_place=True)
 
 
 def InstallHX(system:Path):
@@ -124,11 +124,12 @@ def InstallHX(system:Path):
     CopyTo(int_source, int_dest)
 
 
-# pretty sure this function is only good for VMD...
 def CreateModConfigs(system:Path, modname:str, exename:str, in_place:bool=False):
     exepath = system / (exename+'.exe')
     newexename = modname+'Randomizer'
     newexepath = system / (newexename+'.exe')
+    if os.name != 'nt':
+        in_place = True
     if not in_place:
         CopyTo(exepath, newexepath)
 
