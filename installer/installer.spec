@@ -52,7 +52,7 @@ a_bingo = Analysis(
     noarchive=False,
 )
 
-MERGE( (a_installer, 'installer', 'installer'), (a_bingo, 'BingoViewer', 'BingoViewer') )
+MERGE( (a_installer, 'DXRandoInstaller', 'DXRandoInstaller'), (a_bingo, 'BingoViewer', 'BingoViewer') )
 
 pyz_installer = PYZ(a_installer.pure, a_installer.zipped_data, cipher=block_cipher)
 
@@ -61,7 +61,7 @@ exe_installer = EXE(
     a_installer.scripts,
     [],
     exclude_binaries=True,
-    name='installer',
+    name='DXRandoInstaller',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

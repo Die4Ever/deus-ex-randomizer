@@ -48,7 +48,7 @@ class GUIBase:
         return entry
 
     def FixColors(self, w):
-        w.config(bg="#d9d9d9",fg="black")
+        w.config(bg="#eeeeee",fg="black")
 
 
 # from https://stackoverflow.com/a/68701602
