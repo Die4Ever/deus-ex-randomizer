@@ -73,12 +73,14 @@ runs:
     # tidy up
     - run: mkdir dist/DXRando/lib
       shell: bash
-    - run: mv dist/DXRando/*.dll dist/DXRando/lib/
+    - run: mv dist/DXRando/*.dll dist/DXRando/lib/ || true
       shell: bash
-    - run: mv dist/DXRando/*.pyd dist/DXRando/lib/
+    - run: mv dist/DXRando/*.pyd dist/DXRando/lib/ || true
       shell: bash
-    # move back the 1 dll we need
-    - run: mv dist/DXRando/lib/python*.dll dist/DXRando/
+    # move back the 1 dll/so file we need
+    - run: mv dist/DXRando/lib/python*.dll dist/DXRando/ || true
+      shell: bash
+    - run: mv dist/DXRando/lib/libpython*.so.* dist/DXRando/ || true
       shell: bash
     # small test
     - run: ./dist/DXRando/installer --version 2>&1
