@@ -19,6 +19,8 @@ class InstallerWindow(GUIBase):
         p = fd.askopenfilename(title="Find plain DeusEx.exe", filetypes=filetypes, initialdir=initdir)
         p = Path(p)
         print(p)
+        assert p.name.lower() == 'deusex.exe'
+        assert p.parent.name.lower() == 'system'
         self.exe = p
 
         flavors = Install.DetectFlavors(self.exe)
@@ -43,6 +45,7 @@ class InstallerWindow(GUIBase):
             v = BooleanVar(master=self.frame, value=True)
             c = Checkbutton(self.frame, text="Install DXRando for "+f, variable=v)
             c.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+            c.config(bg="#d9d9d9",fg="black")
             row+=1
             self.flavors[f] = v
             if f == 'Vanilla' and os.name == 'nt':
@@ -52,10 +55,12 @@ class InstallerWindow(GUIBase):
                 v = self.exevar
                 r = Radiobutton(self.frame, text="Kentie", variable=v, value='Kentie')
                 r.grid(column=1,row=row, sticky='SW', padx=pad*8, pady=pad)
+                r.config(bg="#d9d9d9",fg="black")
                 Hovertip(r, "Kentie's Launcher stores configs and saves in your Documents folder.")
                 row += 1
                 r = Radiobutton(self.frame, text="Hanfling's Launch", variable=v, value='Launch')
                 r.grid(column=1,row=row, sticky='SW', padx=pad*8, pady=pad)
+                r.config(bg="#d9d9d9",fg="black")
                 Hovertip(r, "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play.")
                 row += 1
 
