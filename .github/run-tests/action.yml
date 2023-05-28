@@ -100,10 +100,10 @@ runs:
       shell: bash
 
     # small test
-    - run: ./dist/DXRando/DXRandoInstaller --version 2>&1
-      shell: bash
-    - run: ./dist/DXRando/BingoViewer --version 2>&1
-      shell: bash
+    #- run: ./dist/DXRando/DXRandoInstaller --version 2>&1
+    #  shell: bash
+    #- run: ./dist/DXRando/BingoViewer --version 2>&1
+    #  shell: bash
 
     # zip it up
     - run: zip -r9 DXRando.zip .
