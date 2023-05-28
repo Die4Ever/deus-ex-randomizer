@@ -106,6 +106,11 @@ runs:
     #  shell: bash
 
     # zip it up
-    - run: zip -r9 DXRando.zip . || Compress-Archive -Path . -Destination DXRando.zip
+    - if: runner.os == 'Windows'
+      run: Compress-Archive -Path . -Destination DXRando.zip
       working-directory: ./dist/DXRando
-      #shell: bash
+      shell: pwsh
+    - if: runner.os != 'Windows'
+      run: zip -r9 DXRando.zip .
+      working-directory: ./dist/DXRando
+      shell: bash
