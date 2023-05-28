@@ -34,9 +34,13 @@ jobs:
 
     - uses: ./.github/run-tests
 
-    # TODO: shortcuts to the installer and bingo viewer
+    - run: ln -s dxrando/installer "DXRando Installer"
+      working-directory: ./dist
+    - run: ln -s dxrando/BingoViewer "BingoViewer"
+      working-directory: ./dist
 
-    - run: zip -r DXRando.zip dist/*
+    - run: zip --symlinks -r DXRando.zip .
+      working-directory: ./dist
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
