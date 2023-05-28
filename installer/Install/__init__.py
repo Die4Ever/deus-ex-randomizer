@@ -1,7 +1,7 @@
 import hashlib
 import os
 from pathlib import Path
-import Configs
+import Install.Config as Config
 
 def IsWindows() -> bool:
     return os.name == 'nt'
@@ -125,12 +125,12 @@ def EngineDllFix(p:Path) -> bool:
 
 def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path, changes:dict):
     bytes = defconfig.read_bytes()
-    bytes = Configs.ModifyConfig(bytes, changes)
+    bytes = Config.ModifyConfig(bytes, changes)
     outdefconfig.write_bytes(bytes)
 
     if config.exists():
         bytes = defconfig.read_bytes()
-        bytes = Configs.ModifyConfig(bytes, changes)
+        bytes = Config.ModifyConfig(bytes, changes)
         outconfig.write_bytes(bytes)
 
 

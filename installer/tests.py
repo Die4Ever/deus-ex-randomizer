@@ -9,7 +9,7 @@ if typechecks:
     install_import_hook('GUI')
 
 import Install
-import Configs
+import Install.Config as Config
 import GUI
 
 @typechecked
@@ -28,7 +28,7 @@ class DXRTestCase(unittest.TestCase):
             + b'[Core.System]\r\nPaths=..\GMDXRandomizer\System\*.u\r\nPaths=Maps\r\nPaths=System\r\n'
         )
 
-        result = Configs.ModifyConfig(origconfig,
+        result = Config.ModifyConfig(origconfig,
             {'Engine.Engine': {'DefaultGame': 'GMDXRandomizer.DXRandoGameInfo'}},#changes
             {'Core.System': {'Paths': '..\\GMDXRandomizer\\System\\*.u'}}#additions
         )
@@ -53,7 +53,7 @@ class DXRTestCase(unittest.TestCase):
             + b';Root=DeusEx.DeusExRootWindow\r\n'
             + b'CdPath=D:\r\n\r\n')
 
-        result = Configs.ModifyConfig(origconfig,
+        result = Config.ModifyConfig(origconfig,
             {'Engine.Engine': {'DefaultGame': 'VMDRandomizer.DXRandoGameInfo', 'Root': 'VMDRandomizer.DXRandoRootWindow'}},#changes
             {'Core.System': {'Paths': '..\\VMDRandomizer\\System\\*.u'}}#additions
         )

@@ -79,11 +79,11 @@ def InstallVanilla(system:Path, exetype:str, speedupfix:bool):
 
     if changes:
         b = defini_dest.read_bytes()
-        b = Configs.ModifyConfig(b, changes, additions={})
+        b = Config.ModifyConfig(b, changes, additions={})
         defini_dest.write_bytes(b)
 
         b = DXRandoini.read_bytes()
-        b = Configs.ModifyConfig(b, changes, additions={})
+        b = Config.ModifyConfig(b, changes, additions={})
         DXRandoini.write_bytes(b)
 
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
@@ -97,13 +97,13 @@ def InstallGMDX(system:Path, exename:str):
     confpath = Path.home() / 'Documents' / 'Deus Ex' / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
-        b = Configs.ModifyConfig(b, changes, additions)
+        b = Config.ModifyConfig(b, changes, additions)
         confpath.write_bytes(b)
 
     confpath = system / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
-        b = Configs.ModifyConfig(b, changes, additions)
+        b = Config.ModifyConfig(b, changes, additions)
         confpath.write_bytes(b)
 
     CopyPackageFiles('GMDX', system.parent, ['GMDXRandomizer.u'])
@@ -147,7 +147,7 @@ def ChangeModConfigs(system:Path, modname:str, exename:str, newexename:str, chan
     # inis
     confpath = system / (exename + 'Default.ini')
     b = confpath.read_bytes()
-    b = Configs.ModifyConfig(b, changes, additions)
+    b = Config.ModifyConfig(b, changes, additions)
     outconf = system / (newexename + 'Default.ini')
     if in_place:
         outconf = confpath
@@ -156,7 +156,7 @@ def ChangeModConfigs(system:Path, modname:str, exename:str, newexename:str, chan
     confpath = system / (exename + '.ini')
     if confpath.exists():
         b = confpath.read_bytes()
-        b = Configs.ModifyConfig(b, changes, additions)
+        b = Config.ModifyConfig(b, changes, additions)
         outconf = system / (newexename + '.ini')
         if in_place:
             outconf = confpath
@@ -167,7 +167,7 @@ def ChangeModConfigs(system:Path, modname:str, exename:str, newexename:str, chan
         return
     confpath = system / (exename + 'DefUser.ini')
     b = confpath.read_bytes()
-    b = Configs.ModifyConfig(b, changes, additions)
+    b = Config.ModifyConfig(b, changes, additions)
     outconf = system / (newexename + 'DefUser.ini')
     if in_place:
         outconf = confpath
@@ -176,7 +176,7 @@ def ChangeModConfigs(system:Path, modname:str, exename:str, newexename:str, chan
     confpath = system / (exename + 'User.ini')
     if confpath.exists():
         b = confpath.read_bytes()
-        b = Configs.ModifyConfig(b, changes, additions)
+        b = Config.ModifyConfig(b, changes, additions)
         outconf = system / (newexename + 'User.ini')
         if in_place:
             outconf = confpath
