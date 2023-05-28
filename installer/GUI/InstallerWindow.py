@@ -53,7 +53,7 @@ class InstallerWindow(GUIBase):
                 l.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
                 row += 1
                 v = self.exevar
-                r = Radiobutton(self.frame, text="Kentie", variable=v, value='Kentie')
+                r = Radiobutton(self.frame, text="Kentie's Launcher", variable=v, value='Kentie')
                 r.grid(column=1,row=row, sticky='SW', padx=pad*8, pady=pad)
                 self.FixColors(r)
                 Hovertip(r, "Kentie's Launcher stores configs and saves in your Documents folder.")
