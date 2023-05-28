@@ -13,7 +13,8 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: DXRando
-        path: "dist/DXRando.zip"
+        path: "dist/DXRando/DXRando.zip"
+
   linux:
     runs-on: ubuntu-latest
     defaults:
@@ -33,4 +34,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: DXRando-linux
-        path: "dist/DXRando.zip"
+        path: "dist/DXRando/DXRando.zip"
