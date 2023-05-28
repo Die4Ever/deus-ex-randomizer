@@ -1,3 +1,4 @@
+import argparse
 import time
 import sys
 import json
@@ -214,7 +215,7 @@ class Bingo:
         if (desturl==""):
             print("Make sure to specify where you want to push your json!")
             return
-        
+
         bingoState = self.generateBingoStateJson()
         #print(bingoState)
         try:
@@ -273,6 +274,18 @@ def translateMod(modName):
 
 #####################################################################################
 
+parser = argparse.ArgumentParser(description='DXRando Bingo Viewer')
+parser.add_argument('--version', action="store_true", help='Output version')
+args = parser.parse_args()
+
+def GetVersion():
+    return 'v1.0'
+
+if args.version:
+    print('DXRando Bingo Viewer version:', GetVersion(), file=sys.stderr)
+    print('Python version:', sys.version_info, file=sys.stderr)
+    sys.exit(0)
+
 
 targetFile = findBingoFile()
 
@@ -291,7 +304,7 @@ while True:
         if (changed):
             b.drawBoard()
             b.sendBingoState()
-    
+
     b.win.update()
 
     if not b.isWindowOpen():

@@ -1,5 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 from pathlib import Path
+import re
 
 block_cipher = None
 console = False
@@ -109,3 +110,27 @@ coll = COLLECT(
     upx_exclude=[],
     name='DXRando',
 )
+
+# tidy up
+print('tidying up')
+is_lib = re.compile(r'(\.dll$)|(\.so(\..+)?$)|(\.pyd$)')
+
+dxr = Path('dist') / 'DXRando'
+if not dxr.exists():
+    dxr = Path('installer') / 'dist' / 'DXRando'
+
+if (dxr / 'installer.app').exists():
+    (dxr / 'installer.app').unlink()
+
+(dxr / 'lib').mkdir(exist_ok=True)
+for f in dxr.glob('*'):
+    name = f.name.lower()
+    if not is_lib.search(name):
+        continue
+    if name.startswith('python') or name.startswith('libpython'):
+        continue# we need the main python library
+    dest = f.parent / 'lib' / f.name
+    print('renaming', f, 'to', dest)
+    f.rename(dest)
+
+print('done tidying up')

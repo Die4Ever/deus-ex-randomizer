@@ -64,26 +64,13 @@ runs:
     - name: Build
       run: pyinstaller installer/installer.spec
       shell: bash
-    - run: ls -lah dist
+    - run: du -h dist
       shell: bash
 
-    # make sure we don't need the .app folder, specifically for MacOS
-    - run: rm -rf dist/DXRando/installer.app
-      shell: bash
-    # tidy up
-    - run: mkdir dist/DXRando/lib
-      shell: bash
-    - run: mv dist/DXRando/*.dll dist/DXRando/lib/ || true
-      shell: bash
-    - run: mv dist/DXRando/*.pyd dist/DXRando/lib/ || true
-      shell: bash
-    # move back the 1 dll/so file we need
-    - run: mv dist/DXRando/lib/python*.dll dist/DXRando/ || true
-      shell: bash
-    - run: mv dist/DXRando/lib/libpython*.so.* dist/DXRando/ || true
-      shell: bash
     # small test
     - run: ./dist/DXRando/installer --version 2>&1
+      shell: bash
+    - run: ./dist/DXRando/BingoViewer --version 2>&1
       shell: bash
 
     # zip it up
