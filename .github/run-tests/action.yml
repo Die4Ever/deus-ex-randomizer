@@ -99,7 +99,7 @@ runs:
     - run: du -ha dist
       shell: bash
 
-    # small test
+    # small test, use timeouts because on windows the GUI can catch errors and a dialog box will freeze the program
     - run: timeout 30 ./dist/DXRando/DXRandoInstaller --version 2>&1
       shell: bash
     - run: timeout 30 ./dist/DXRando/BingoViewer --version 2>&1

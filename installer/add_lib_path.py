@@ -1,2 +1,6 @@
-import sys,os
-sys.path.append(os.path.join(os.getcwd(), 'lib'))
+import sys
+from pathlib import Path
+
+p = Path(__file__).resolve()
+p = p.parent / 'lib'
+sys.path.append(str(p))
