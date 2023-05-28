@@ -1,6 +1,6 @@
 # pyinstaller stuff
-installer/dist
-installer/build
+dist
+build
 installer/3rdParty
 
 # Visual Studio 2015 user specific files

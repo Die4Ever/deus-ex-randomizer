@@ -1,8 +1,14 @@
 # -*- mode: python ; coding: utf-8 -*-
-
+from pathlib import Path
 
 block_cipher = None
 console = False
+
+# unfortunately runtime_hooks is not relative to the location of the spec file, but everything else is
+if Path('add_lib_path.py').exists():
+    runtime_hooks=['add_lib_path.py']
+else:
+    runtime_hooks=['installer/add_lib_path.py']
 
 # we can also create an exe for bingo in the same folder
 a_installer = Analysis(
@@ -21,7 +27,7 @@ a_installer = Analysis(
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
-    runtime_hooks=['add_lib_path.py'],
+    runtime_hooks=runtime_hooks,
     excludes=[],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
