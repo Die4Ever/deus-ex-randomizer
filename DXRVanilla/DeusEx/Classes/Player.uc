@@ -307,14 +307,14 @@ function Landed(vector HitNormal)
                         augReduce = 15 * (augLevel+1);
                 }
 
-                dmg = Max((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
+                dmg = FMax((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
                 legLocation = Location + vect(-1,0,-1);			// damage left leg
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
 
                 legLocation = Location + vect(1,0,-1);			// damage right leg
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
 
-                dmg = Max((-0.06 * (Velocity.Z + 700)) - augReduce, 0);
+                dmg = FMax((-0.06 * (Velocity.Z + 700)) - augReduce, 0);
                 legLocation = Location + vect(0,0,1);			// damage torso
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
             }
