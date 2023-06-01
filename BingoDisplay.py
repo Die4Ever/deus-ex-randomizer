@@ -14,10 +14,10 @@ from pathlib import Path
 BUTTON_BORDER_WIDTH = 4
 BUTTON_BORDER_WIDTH_TOTAL=15*BUTTON_BORDER_WIDTH
 MAGIC_GREEN="#1e641e"
-BRIGHT_GREEN="#00FF00"
+BRIGHT_GREEN="#00CC00"
 BINGO_VARIABLE_CONFIG_NAME="bingoexport"
 BINGO_MOD_LINE_DETECT="PlayerDataItem"
-NEWLY_COMPLETED_DISPLAY_TIME=80
+NEWLY_COMPLETED_DISPLAY_TIME=2.8 # we only redraw every second, so this will keep it closer to about 3 seconds
 WINDOW_TITLE="Deus Ex Randomizer Bingo Board"
 
 JSON_DEST_FILENAME="pushjson.txt"
@@ -74,7 +74,7 @@ class Bingo:
                 self.tkBoardText[x][y].set("("+str(x)+","+str(y)+")")
                 self.tkBoard[x][y]=Button(self.win,textvariable=self.tkBoardText[x][y],image=self.pixel,compound="c",width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font,fg='white',disabledforeground="white",bd=BUTTON_BORDER_WIDTH)
                 self.tkBoard[x][y]["state"]='disabled'
-                self.tkBoard[x][y].countdown=None
+                self.tkBoard[x][y].finished_time=None
                 self.tkBoard[x][y].grid(column=x,row=y)
 
 
@@ -96,11 +96,10 @@ class Bingo:
         tkText.set(desc)
         isActive = boardEntry.get('active', 1)
         if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
-            if tkTile.countdown is None:
-                tkTile.countdown=NEWLY_COMPLETED_DISPLAY_TIME
+            if tkTile.finished_time is None:
+                tkTile.finished_time=time.time() + NEWLY_COMPLETED_DISPLAY_TIME
                 tkTile.config(bg=BRIGHT_GREEN)
-            elif(tkTile.countdown>0):
-                tkTile.countdown-=1
+            elif(tkTile.finished_time>time.time()):
                 tkTile.config(bg=BRIGHT_GREEN)
             else:
                 tkTile.config(bg=MAGIC_GREEN)
@@ -301,8 +300,8 @@ while True:
         changed = b.readBingoFile()
         #b.printBoard()
         lastFileUpdate=time.time()
+        b.drawBoard()
         if (changed):
-            b.drawBoard()
             b.sendBingoState()
 
     b.win.update()
