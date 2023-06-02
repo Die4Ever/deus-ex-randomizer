@@ -37,14 +37,14 @@ function CheckConfig()
         AddRandomWeapon("WeaponAssaultShotgun", 6);
         AddRandomWeapon("WeaponEMPGrenade", 4);
         AddRandomWeapon("WeaponFlamethrower", 4);
-        AddRandomWeapon("WeaponGasGrenade", 5);
+        AddRandomWeapon("WeaponGasGrenade", 4);
         AddRandomWeapon("WeaponHideAGun", 3);
         AddRandomWeapon("WeaponLAM", 5);
         AddRandomWeapon("WeaponLAW", 4);
         AddRandomWeapon("WeaponNanoVirusGrenade", 4);
         AddRandomWeapon("WeaponPepperGun", 2);
         AddRandomWeapon("WeaponPlasmaRifle", 7);
-        AddRandomWeapon("WeaponRifle", 5);
+        AddRandomWeapon("WeaponRifle", 6);
         AddRandomWeapon("WeaponSawedOffShotgun", 7);
         AddRandomWeapon("WeaponProd", 3);
 
