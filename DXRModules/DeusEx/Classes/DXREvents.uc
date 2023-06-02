@@ -1846,7 +1846,7 @@ defaultproperties
     bingo_options(87)=(event="SecurityBotSmall_ClassDead",desc="Destroy 15 commercial grade Security Bots",max=15)
     bingo_options(88)=(event="SpiderBot_ClassDead",desc="Destroy 15 Spider Bots",max=15)
     bingo_options(89)=(event="HumanStompDeath",desc="Stomp 3 humans to death",max=3)
-    bingo_options(90)=(event="Rat_ClassDead",desc="Kill 40 rats",max=40)
+    bingo_options(90)=(event="Rat_ClassDead",desc="Kill 30 rats",max=30)
     bingo_options(91)=(event="UNATCOTroop_ClassUnconscious",desc="Knock out 15 UNATCO Troopers",max=15)
     bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out 15 NSF Terrorists",max=15)
     bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out 25 MJ12 Troopers",max=25)
