@@ -116,6 +116,27 @@ exec function StartNewGame(String startMap)
         Level.Game.SendPlayer(Self, startMap);
 }
 
+function ShowIntro(optional bool bStartNewGame)
+{
+    local DXRMapVariants maps;
+    local string intro;
+
+    if (DeusExRootWindow(rootWindow) != None)
+        DeusExRootWindow(rootWindow).ClearWindowStack();
+
+    bStartNewGameAfterIntro = bStartNewGame;
+
+    // Make sure all augmentations are OFF before going into the intro
+    AugmentationSystem.DeactivateAll();
+
+    // Reset the player
+    intro = "00_Intro";
+    maps = DXRMapVariants(DXRFindModule(class'DXRMapVariants'));
+    if(maps != None)
+        intro = maps.VaryMap(intro);
+    Level.Game.SendPlayer(Self, intro);
+}
+
 exec function QuickSave()
 {
     if( class'DXRAutosave'.static.AllowManualSaves(self) ) Super.QuickSave();

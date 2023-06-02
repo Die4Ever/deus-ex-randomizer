@@ -5,37 +5,37 @@ function int InitGoals(int mission, string map)
 {
     local int goal, loc, loc2;
 
-    AddGoalLocation("15_AREA51_BUNKER", "Jock", START_LOCATION | VANILLA_START, vect(-1778.574707, 1741.028320, -213.732849), rot(0, -12416, 0));
-    AddGoalLocation("15_AREA51_BUNKER", "Bunker", START_LOCATION, vect(-1778.574707, 1741.028320, -213.732849), rot(0, -12416, 0));
-    AddGoalLocation("15_AREA51_BUNKER", "Behind the Van", START_LOCATION, vect(-493.825836, 3099.697510, -512.897827), rot(0, 0, 0));
+    AddGoalLocation("15_AREA51_BUNKER", "Jock", START_LOCATION | VANILLA_START, vectm(-1778.574707, 1741.028320, -213.732849), rotm(0, -12416, 0));
+    AddGoalLocation("15_AREA51_BUNKER", "Bunker", START_LOCATION, vectm(-1778.574707, 1741.028320, -213.732849), rotm(0, -12416, 0));
+    AddGoalLocation("15_AREA51_BUNKER", "Behind the Van", START_LOCATION, vectm(-493.825836, 3099.697510, -512.897827), rotm(0, 0, 0));
 
     goal = AddGoal("15_AREA51_BUNKER", "Walton Simons", NORMAL_GOAL, 'WaltonSimons0', PHYS_Falling);
     AddGoalActor(goal, 1, 'Trigger0', PHYS_None); //Triggers WaltonTalks
     AddGoalActor(goal, 2, 'OrdersTrigger1', PHYS_None); //WaltonTalks -> Conversation triggers WaltonAttacks
     AddGoalActor(goal, 3, 'AllianceTrigger0', PHYS_None); //WaltonAttacks
 
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Command 24", NORMAL_GOAL | VANILLA_GOAL, vect(1125.623779,3076.459961,-462.398041), rot(0, -33064, 0));
-    AddActorLocation(loc, 1, vect(471.648193, 2674.075439, -487.900055), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Supply Shed", NORMAL_GOAL, vect(-1563,3579,-198), rot(0, 0, 0));
-    AddActorLocation(loc, 1, vect(-1358,2887,-160), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Tower", NORMAL_GOAL, vect(-1136,-137,-181), rot(0, 0, 0));
-    AddActorLocation(loc, 1, vect(-1344,740,-160), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Hangar", NORMAL_GOAL, vect(1182,-1140,-478), rot(0, -33064, 0));
-    AddActorLocation(loc, 1, vect(781,-235,-487), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Bunker Entrance", NORMAL_GOAL, vect(3680,1875,-848), rot(0, -18224, 0));
-    AddActorLocation(loc, 1, vect(3470,1212,-800), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_ENTRANCE", "Sector 3 Access", NORMAL_GOAL, vect(-456,124,-16), rot(0, 0, 0));
-    AddActorLocation(loc, 1, vect(-20,80,-180), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_FINAL", "Heliowalton", NORMAL_GOAL, vect(-4400,750,-1475), rot(0, 0, 0));
-    AddActorLocation(loc, 1, vect(-3720,730,-1105), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_FINAL", "Reactor Lab", NORMAL_GOAL, vect(-3960,-3266,-1552), rot(0, 0, 0));
-    AddActorLocation(loc, 1, vect(-3455,-3261,-1560), rot(0,0,0));
+    loc = AddGoalLocation("15_AREA51_BUNKER", "Command 24", NORMAL_GOAL | VANILLA_GOAL, vectm(1125.623779,3076.459961,-462.398041), rotm(0, -33064, 0));
+    AddActorLocation(loc, 1, vectm(471.648193, 2674.075439, -487.900055), rotm(0,0,0));
+    loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Supply Shed", NORMAL_GOAL, vectm(-1563,3579,-198), rotm(0, 0, 0));
+    AddActorLocation(loc, 1, vectm(-1358,2887,-160), rotm(0,0,0));
+    loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Tower", NORMAL_GOAL, vectm(-1136,-137,-181), rotm(0, 0, 0));
+    AddActorLocation(loc, 1, vectm(-1344,740,-160), rotm(0,0,0));
+    loc = AddGoalLocation("15_AREA51_BUNKER", "Hangar", NORMAL_GOAL, vectm(1182,-1140,-478), rotm(0, -33064, 0));
+    AddActorLocation(loc, 1, vectm(781,-235,-487), rotm(0,0,0));
+    loc = AddGoalLocation("15_AREA51_BUNKER", "Bunker Entrance", NORMAL_GOAL, vectm(3680,1875,-848), rotm(0, -18224, 0));
+    AddActorLocation(loc, 1, vectm(3470,1212,-800), rotm(0,0,0));
+    loc = AddGoalLocation("15_AREA51_ENTRANCE", "Sector 3 Access", NORMAL_GOAL, vectm(-456,124,-16), rotm(0, 0, 0));
+    AddActorLocation(loc, 1, vectm(-20,80,-180), rotm(0,0,0));
+    loc = AddGoalLocation("15_AREA51_FINAL", "Heliowalton", NORMAL_GOAL, vectm(-4400,750,-1475), rotm(0, 0, 0));
+    AddActorLocation(loc, 1, vectm(-3720,730,-1105), rotm(0,0,0));
+    loc = AddGoalLocation("15_AREA51_FINAL", "Reactor Lab", NORMAL_GOAL, vectm(-3960,-3266,-1552), rotm(0, 0, 0));
+    AddActorLocation(loc, 1, vectm(-3455,-3261,-1560), rotm(0,0,0));
 
     AddGoal("15_AREA51_BUNKER", "Area 51 Blast Door Computer", GOAL_TYPE1, 'ComputerSecurity0', PHYS_None);
-    AddGoalLocation("15_AREA51_BUNKER", "the tower", GOAL_TYPE1 | VANILLA_GOAL, vect(-1248.804321,137.393707,442.793121), rot(0, 0, 0));
-    AddGoalLocation("15_AREA51_BUNKER", "Command 24", GOAL_TYPE1, vect(1125.200562,2887.646484,-432.319794), rot(0, 0, 0));
-    AddGoalLocation("15_AREA51_BUNKER", "the hangar", GOAL_TYPE1, vect(1062.942261,-2496.865723,-443.252533), rot(0, 16384, 0));
-    AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vect(-1527.608521,3280.824219,-158.588562), rot(0, -16384, 0));
+    AddGoalLocation("15_AREA51_BUNKER", "the tower", GOAL_TYPE1 | VANILLA_GOAL, vectm(-1248.804321,137.393707,442.793121), rotm(0, 0, 0));
+    AddGoalLocation("15_AREA51_BUNKER", "Command 24", GOAL_TYPE1, vectm(1125.200562,2887.646484,-432.319794), rotm(0, 0, 0));
+    AddGoalLocation("15_AREA51_BUNKER", "the hangar", GOAL_TYPE1, vectm(1062.942261,-2496.865723,-443.252533), rotm(0, 16384, 0));
+    AddGoalLocation("15_AREA51_BUNKER", "the supply shed", GOAL_TYPE1, vectm(-1527.608521,3280.824219,-158.588562), rotm(0, -16384, 0));
 
     return 151;
 }

@@ -11,14 +11,14 @@ function int InitGoals(int mission, string map)
         AddGoal("06_HONGKONG_VERSALIFE", "Data Entry Worker", NORMAL_GOAL | SITTING_GOAL, 'Male0', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "John Smith", NORMAL_GOAL | SITTING_GOAL, 'Male9', PHYS_Falling);
         AddGoal("06_HONGKONG_VERSALIFE", "Mr. Hundley", NORMAL_GOAL, 'Businessman0', PHYS_Falling);
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-952.069763, 246.924271, 207.600281), rot(0, -25708, 0));
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vect(-971.477234, 352.951782, 463.600586), rot(0,0,0));
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Cubicle", SITTING_GOAL | VANILLA_GOAL, vect(209.333740, 1395.673584, 466.101288), rot(0,18572,0));
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Corner", NORMAL_GOAL | VANILLA_GOAL, vect(-68.717262, 2165.082031, 465.039124), rot(0,15816,0));
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "1st Floor Cubicle", SITTING_GOAL, vect(13.584339, 1903.127441, -48.399910), rot(0, 16384, 0));
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "1st Floor Water Cooler", NORMAL_GOAL, vect(846.994751, 1754.889526, -48.398872), rot(0, 30000, 0));
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Cubicle", SITTING_GOAL, vect(16.111176, 1888.993774, 207.596893), rot(0,16384,0));
-        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Water Cooler", NORMAL_GOAL, vect(858.500061, 1747.315918, 207.601013), rot(0, 30000, 0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vectm(-952.069763, 246.924271, 207.600281), rotm(0, -25708, 0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Break room", NORMAL_GOAL | VANILLA_GOAL, vectm(-971.477234, 352.951782, 463.600586), rotm(0,0,0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Cubicle", SITTING_GOAL | VANILLA_GOAL, vectm(209.333740, 1395.673584, 466.101288), rotm(0,18572,0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "3rd Floor Corner", NORMAL_GOAL | VANILLA_GOAL, vectm(-68.717262, 2165.082031, 465.039124), rotm(0,15816,0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "1st Floor Cubicle", SITTING_GOAL, vectm(13.584339, 1903.127441, -48.399910), rotm(0, 16384, 0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "1st Floor Water Cooler", NORMAL_GOAL, vectm(846.994751, 1754.889526, -48.398872), rotm(0, 30000, 0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Cubicle", SITTING_GOAL, vectm(16.111176, 1888.993774, 207.596893), rotm(0,16384,0));
+        AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Water Cooler", NORMAL_GOAL, vectm(858.500061, 1747.315918, 207.601013), rotm(0, 30000, 0));
         return 61;
 
     case "06_HONGKONG_MJ12LAB":
@@ -36,11 +36,11 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 1, 'DataLinkTrigger6', PHYS_None);// DL_Tong_07*/
 
         AddGoal("06_HONGKONG_MJ12LAB", "Radiation Controls", NORMAL_GOAL, 'ComputerPersonal1', PHYS_Falling);
-        AddGoalLocation("06_HONGKONG_MJ12LAB", "Barracks", NORMAL_GOAL, vect(-140.163544, 1705.130127, -583.495483), rot(0, 0, 0));
-        AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Chamber", NORMAL_GOAL, vect(-1273.699951, 803.588745, -792.499512), rot(0, 16384, 0));
-        AddGoalLocation("06_HONGKONG_MJ12LAB", "Lab", NORMAL_GOAL, vect(-1712.699951, -809.700012, -744.500610), rot(0, 16384, 0));
-        AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
-        AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-723.018677,591.498901,-743.972717), rot(0,49160,0));
+        AddGoalLocation("06_HONGKONG_MJ12LAB", "Barracks", NORMAL_GOAL, vectm(-140.163544, 1705.130127, -583.495483), rotm(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Chamber", NORMAL_GOAL, vectm(-1273.699951, 803.588745, -792.499512), rotm(0, 16384, 0));
+        AddGoalLocation("06_HONGKONG_MJ12LAB", "Lab", NORMAL_GOAL, vectm(-1712.699951, -809.700012, -744.500610), rotm(0, 16384, 0));
+        AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vectm(-0.995101,-260.668579,-311.088989), rotm(0,32824,0));
+        AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vectm(-723.018677,591.498901,-743.972717), rotm(0,49160,0));
         return 62;
 
     case "06_HONGKONG_WANCHAI_STREET":
@@ -50,35 +50,35 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("06_HONGKONG_WANCHAI_STREET", "Dragon's Tooth Sword", NORMAL_GOAL, 'WeaponNanoSword0', PHYS_None);
         AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_00: Now bring the sword to Max Chen at the Lucky Money Club
 
-        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vect(-1857.841064, -158.911865, 2051.345459), rot(0, 0, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vect(-1294.841064, -1861.911865, 2190.345459), rot(0, 0, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's bed", NORMAL_GOAL, vect(342.584808, -1802.576172, 1713.509521), rot(0, 0, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vect(204.923828, -195.652588, 1795), rot(0, 40000, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vect(2293, 2728, -598), rot(0, 10808, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "with the boatperson", NORMAL_GOAL, vect(1775, 2065, -317), rot(0, 0, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vect(-1623, 3164, -393), rot(0, -49592, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
-        AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "Sword Case", NORMAL_GOAL | VANILLA_GOAL, vectm(-1857.841064, -158.911865, 2051.345459), rotm(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in Maggie's shower", NORMAL_GOAL, vectm(-1294.841064, -1861.911865, 2190.345459), rotm(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "on Jock's bed", NORMAL_GOAL, vectm(342.584808, -1802.576172, 1713.509521), rotm(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_STREET", "in the sniper nest", NORMAL_GOAL, vectm(204.923828, -195.652588, 1795), rotm(0, 40000, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the hold of the boat", NORMAL_GOAL, vectm(2293, 2728, -598), rotm(0, 10808, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "with the boatperson", NORMAL_GOAL, vectm(1775, 2065, -317), rotm(0, 0, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_CANAL", "in the Old China Hand kitchen", NORMAL_GOAL, vectm(-1623, 3164, -393), rotm(0, -49592, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vectm(-1780, -2750, -333), rotm(0, 27104, 0));
+        AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vectm(-480, -720, -107), rotm(0, -5564, 0));
 
         goal = AddGoal("06_HONGKONG_WANCHAI_UNDERWORLD","Max Chen",GOAL_TYPE1,'MaxChen0',PHYS_FALLING);
         AddGoalActor(goal, 1, 'TriadRedArrow5', PHYS_Falling); //Maybe I should actually find these guys by bindname?  They're "RightHandMan"
         AddGoalActor(goal, 2, 'TriadRedArrow6', PHYS_Falling);
 
-        loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Office",GOAL_TYPE1 | SITTING_GOAL | VANILLA_GOAL,vect(426.022644,-2469.105957,-336.399414),rot(0,0,0));
-        AddActorLocation(loc, 1, vect(488.291809, -2581.964355, -336.402618), rot(0,32620,0));
-        AddActorLocation(loc, 2, vect(484.913330,-2345.247559,-336.401306), rot(0,32620,0));
+        loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Office",GOAL_TYPE1 | SITTING_GOAL | VANILLA_GOAL,vectm(426.022644,-2469.105957,-336.399414),rotm(0,0,0));
+        AddActorLocation(loc, 1, vectm(488.291809, -2581.964355, -336.402618), rotm(0,32620,0));
+        AddActorLocation(loc, 2, vectm(484.913330,-2345.247559,-336.401306), rotm(0,32620,0));
 
-        loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Bathroom",GOAL_TYPE1,vect(-1725.911133,-565.364746,-339),rot(0,16368,0));
-        AddActorLocation(loc, 1, vect(-1794.911133,-572.364746,-339), rot(0,16368,0));
-        AddActorLocation(loc, 2, vect(-1658.911133,-568.364746,-339), rot(0,16368,0));
+        loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Bathroom",GOAL_TYPE1,vectm(-1725.911133,-565.364746,-339),rotm(0,16368,0));
+        AddActorLocation(loc, 1, vectm(-1794.911133,-572.364746,-339), rotm(0,16368,0));
+        AddActorLocation(loc, 2, vectm(-1658.911133,-568.364746,-339), rotm(0,16368,0));
 
-        loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Bar",GOAL_TYPE1,vect(-772,-2220,-144),rot(0,-16352,0));
-        AddActorLocation(loc, 1, vect(-755,-2326,-136), rot(0,16508,0));
-        AddActorLocation(loc, 2, vect(-617,-2280,-136), rot(0,32620,0));
+        loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Bar",GOAL_TYPE1,vectm(-772,-2220,-144),rotm(0,-16352,0));
+        AddActorLocation(loc, 1, vectm(-755,-2326,-136), rotm(0,16508,0));
+        AddActorLocation(loc, 2, vectm(-617,-2280,-136), rotm(0,32620,0));
 
-        loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Sailors",GOAL_TYPE1,vect(-1392,-2539,18),rot(0,-6414,0));
-        AddActorLocation(loc, 1, vect(-1161,-2550,21), rot(0,39348,0));
-        AddActorLocation(loc, 2, vect(-1204,-2758,21), rot(0,23892,0));
+        loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Sailors",GOAL_TYPE1,vectm(-1392,-2539,18),rotm(0,-6414,0));
+        AddActorLocation(loc, 1, vectm(-1161,-2550,21), rotm(0,39348,0));
+        AddActorLocation(loc, 2, vectm(-1204,-2758,21), rotm(0,23892,0));
 
         return 63;
     }
@@ -105,7 +105,7 @@ function DeleteGoal(Goal g, GoalLocation Loc)
 
 function GenerateDTSHintCube(Goal g, GoalLocation Loc)
 {
-    SpawnDatacube(vect(-1857.841064, -158.911865, 2051.345459), rot(0,0,0),
+    SpawnDatacube(vectm(-1857.841064, -158.911865, 2051.345459), rotm(0,0,0),
         "I borrowed the sword but forgot it somewhere...  Maybe "$Loc.name$"?", true);
 }
 

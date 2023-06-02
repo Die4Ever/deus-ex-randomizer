@@ -317,7 +317,7 @@ simulated static function string TrimTrailingZeros(coerce string s)
     return Left(s, end);
 }
 
-simulated static function string ToHex(int val)
+static static function string ToHex(int val)
 {
     local int t;
     local string s;
@@ -351,7 +351,7 @@ static function string ActorToString( Actor a )
     return out;
 }
 
-function bool NamesAreSimilar(coerce string a, coerce string b)
+static function bool NamesAreSimilar(coerce string a, coerce string b)
 {
     local int len_a, len_b;
     len_a = Len(a);
@@ -361,9 +361,10 @@ function bool NamesAreSimilar(coerce string a, coerce string b)
     return Left( a, len_a-2 ) == Left( b, len_a-2 );
 }
 
-simulated function int FindLast(coerce string Text, coerce string search)
+static function int FindLast(coerce string Text, coerce string search)
 {
     local int last, a, b;
+    last = -1;
     while(a != -1) {
         last = b - 1;
         a = InStr(Mid(Text, b), search);

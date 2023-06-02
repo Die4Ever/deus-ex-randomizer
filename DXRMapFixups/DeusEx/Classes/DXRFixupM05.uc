@@ -95,21 +95,21 @@ function PreFirstEntryMapFixes()
         }
 
         //Spawn some placeholders for new item locations
-        Spawn(class'PlaceholderItem',,, vect(363.284149, 344.847, 50.32)); //Womens bathroom counter
-        Spawn(class'PlaceholderItem',,, vect(211.227, 348.46, 50.32)); //Mens bathroom counter
-        Spawn(class'PlaceholderItem',,, vect(982.255,1096.76,-7)); //Jaime's desk
-        Spawn(class'PlaceholderItem',,, vect(2033.8,1979.9,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vect(2148,2249,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vect(2433,1384,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vect(-307.8,-1122,-7)); //Anna's Desk
-        Spawn(class'PlaceholderItem',,, vect(-138.5,-790.1,-1.65)); //Anna's bookshelf
-        Spawn(class'PlaceholderItem',,, vect(-27,1651.5,291)); //Breakroom table
-        Spawn(class'PlaceholderItem',,, vect(602,1215.7,295)); //Kitchen Counter
-        Spawn(class'PlaceholderItem',,, vect(-672.8,1261,473)); //Upper Left Office desk
-        Spawn(class'PlaceholderItem',,, vect(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
-        Spawn(class'PlaceholderContainer',,, vect(-1187,-1154,-31)); //Behind Jail Desk
-        Spawn(class'PlaceholderContainer',,, vect(2384,1669,-95)); //MJ12 Door
-        Spawn(class'PlaceholderContainer',,, vect(-383.6,1376,273)); //JC's Office
+        Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(982.255,1096.76,-7)); //Jaime's desk
+        Spawn(class'PlaceholderItem',,, vectm(2033.8,1979.9,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vectm(2148,2249,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vectm(-307.8,-1122,-7)); //Anna's Desk
+        Spawn(class'PlaceholderItem',,, vectm(-138.5,-790.1,-1.65)); //Anna's bookshelf
+        Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
+        Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
+        Spawn(class'PlaceholderItem',,, vectm(-672.8,1261,473)); //Upper Left Office desk
+        Spawn(class'PlaceholderItem',,, vectm(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
+        Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
+        Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
+        Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
 
         break;
 #endif
@@ -202,23 +202,23 @@ function BalanceJailbreak()
                 itemLocations[num++] = SP.Location;
         else {
             // put the items in the surgery ward
-            itemLocations[num++] = vect(2174.416504,-569.534729,-213.660309);// paul's bed
-            itemLocations[num++] = vect(2176.658936,-518.937012,-213.659302);// paul's bed
-            itemLocations[num++] = vect(1792.696533,-738.417175,-213.660248);// bed 2
-            itemLocations[num++] = vect(1794.898682,-802.133301,-213.658630);// bed 2
-            itemLocations[num++] = vect(1572.443237,-739.527649,-213.660095);// bed 1
-            itemLocations[num++] = vect(1570.557007,-801.213806,-213.660095);// bed 1
-            itemLocations[num++] = vect(1269.494019,-522.082458,-221.659180);// near ambrosia
-            itemLocations[num++] = vect(1909.302979,-376.711639,-221.660095);// desk with microscope and datacube
-            itemLocations[num++] = vect(1572.411865,-967.828735,-261.659546);// on the floor, at the wall with the monitors
-            itemLocations[num++] = vect(1642.170532,-968.813354,-261.660736);
-            itemLocations[num++] = vect(1715.513062,-965.846558,-261.657837);
-            itemLocations[num++] = vect(1782.731689,-966.754700,-261.661041);
+            itemLocations[num++] = vectm(2174.416504,-569.534729,-213.660309);// paul's bed
+            itemLocations[num++] = vectm(2176.658936,-518.937012,-213.659302);// paul's bed
+            itemLocations[num++] = vectm(1792.696533,-738.417175,-213.660248);// bed 2
+            itemLocations[num++] = vectm(1794.898682,-802.133301,-213.658630);// bed 2
+            itemLocations[num++] = vectm(1572.443237,-739.527649,-213.660095);// bed 1
+            itemLocations[num++] = vectm(1570.557007,-801.213806,-213.660095);// bed 1
+            itemLocations[num++] = vectm(1269.494019,-522.082458,-221.659180);// near ambrosia
+            itemLocations[num++] = vectm(1909.302979,-376.711639,-221.660095);// desk with microscope and datacube
+            itemLocations[num++] = vectm(1572.411865,-967.828735,-261.659546);// on the floor, at the wall with the monitors
+            itemLocations[num++] = vectm(1642.170532,-968.813354,-261.660736);
+            itemLocations[num++] = vectm(1715.513062,-965.846558,-261.657837);
+            itemLocations[num++] = vectm(1782.731689,-966.754700,-261.661041);
 
             foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
                 if(dlt.datalinkTag != 'dl_equipment') continue;
                 dlt.bCollideWorld = false;
-                l("BalanceJailbreak moving "$dlt @ dlt.SetLocation(vect(1670.443237,-702.527649,-179.660095)) @ dlt.Location);
+                l("BalanceJailbreak moving "$dlt @ dlt.SetLocation(vectm(1670.443237,-702.527649,-179.660095)) @ dlt.Location);
             }
         }
 
@@ -248,16 +248,16 @@ function BalanceJailbreak()
 
         switch(rng(4)) {
         case 1:// crate past the desk
-            Spawn(iclass,,, vect(-1838.230225, 1250.242676, -110.399773));
+            Spawn(iclass,,, vectm(-1838.230225, 1250.242676, -110.399773));
             break;
         case 2:// desk
-            Spawn(iclass,,, vect(-2105.412598, 1232.926758, -134.400101));
+            Spawn(iclass,,, vectm(-2105.412598, 1232.926758, -134.400101));
             break;
         case 3:// locked jail cell with medbot
-            Spawn(iclass,,, vect(-3020.846924, 910.062134, -201.399750));
+            Spawn(iclass,,, vectm(-3020.846924, 910.062134, -201.399750));
             break;
         default:// unlocked jail cell
-            Spawn(iclass,,, vect(-2688.502686, 1424.474731, -158.099915));
+            Spawn(iclass,,, vectm(-2688.502686, 1424.474731, -158.099915));
             break;
         }
     }

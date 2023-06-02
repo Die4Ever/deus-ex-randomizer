@@ -33,34 +33,34 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'DeusExMover', m, 'DeusExMover') {
             if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
         }
-        AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
+        AddSwitch( vectm(2534.639893, 227.583054, 339.803802), rotm(0,-32760,0), 'shipbelowdecks_door' );
 
         //Add some new locations for containers and items
-        Spawn(class'PlaceholderContainer',,, vect(-3143,274,305)); //Front of ship
-        Spawn(class'PlaceholderContainer',,, vect(-3109,-73,305)); //Front of ship
-        Spawn(class'PlaceholderContainer',,, vect(-2764,186,305)); //Front of ship
-        Spawn(class'PlaceholderItem',,, vect(-3544.129150,112.244072,330.309601)); //Actual Front of ship
-        Spawn(class'PlaceholderItem',,, vect(-2538.4,38.5,283)); //Near stuff at front of ship
-        Spawn(class'PlaceholderItem',,, vect(-2554.4,-247,283)); //Near stuff at front of ship
-        Spawn(class'PlaceholderItem',,, vect(-254,557.8,302)); //Guard Post in shipping container
-        Spawn(class'PlaceholderItem',,, vect(3004.5,-453,523)); //Ship kitchen
-        Spawn(class'PlaceholderItem',,, vect(1788,107,509)); //Ship bathroom table
-        Spawn(class'PlaceholderItem',,, vect(2152,701,519)); //Ship bunkbed
-        Spawn(class'PlaceholderItem',,, vect(3000.4,511.28,526.4)); //Ship fume extractor
-        Spawn(class'PlaceholderItem',,, vect(1243,-2106,-432)); //Shipyard break room table
-        Spawn(class'PlaceholderItem',,, vect(2517.303467,-1384.390381,-250.690430)); //Shipyard showers locker 1
-        Spawn(class'PlaceholderItem',,, vect(2474.926270,-1385.917603,-250.689545)); //Shipyard showers locker 2
-        Spawn(class'PlaceholderItem',,, vect(2431.561279,-1385.172363,-250.690308)); //Shipyard showers locker 3
-        Spawn(class'PlaceholderItem',,, vect(2354.278809,-1383.854980,-250.689301)); //Shipyard showers locker 5
-        Spawn(class'PlaceholderItem',,, vect(2354,-1676,-223)); //Shipyard change room bench
-        Spawn(class'PlaceholderItem',,, vect(2605,-1839,-257)); //Shipyard bathroom stall 1
-        Spawn(class'PlaceholderItem',,, vect(2816,-1816,-257)); //Shipyard bathroom stall 2
-        Spawn(class'PlaceholderItem',,, vect(2808,-1511.5,-207)); //Shipyard bathroom sink
-        Spawn(class'PlaceholderItem',,, vect(1565.7,-994,-433.7)); //Shipyard ramp control panel
-        Spawn(class'PlaceholderItem',,, vect(3361,-1255.9,1187)); //Shipyard crane control room
-        Spawn(class'PlaceholderContainer',,, vect(-1248,-1248,-460)); //Shipyard dock near sewer entrance
-        Spawn(class'PlaceholderContainer',,, vect(-1185,-1175,-460)); //Shipyard dock near sewer entrance
-        Spawn(class'PlaceholderContainer',,, vect(3172,-1248,-460)); //Shipyard dock near maintenance ladder
+        Spawn(class'PlaceholderContainer',,, vectm(-3143,274,305)); //Front of ship
+        Spawn(class'PlaceholderContainer',,, vectm(-3109,-73,305)); //Front of ship
+        Spawn(class'PlaceholderContainer',,, vectm(-2764,186,305)); //Front of ship
+        Spawn(class'PlaceholderItem',,, vectm(-3544.129150,112.244072,330.309601)); //Actual Front of ship
+        Spawn(class'PlaceholderItem',,, vectm(-2538.4,38.5,283)); //Near stuff at front of ship
+        Spawn(class'PlaceholderItem',,, vectm(-2554.4,-247,283)); //Near stuff at front of ship
+        Spawn(class'PlaceholderItem',,, vectm(-254,557.8,302)); //Guard Post in shipping container
+        Spawn(class'PlaceholderItem',,, vectm(3004.5,-453,523)); //Ship kitchen
+        Spawn(class'PlaceholderItem',,, vectm(1788,107,509)); //Ship bathroom table
+        Spawn(class'PlaceholderItem',,, vectm(2152,701,519)); //Ship bunkbed
+        Spawn(class'PlaceholderItem',,, vectm(3000.4,511.28,526.4)); //Ship fume extractor
+        Spawn(class'PlaceholderItem',,, vectm(1243,-2106,-432)); //Shipyard break room table
+        Spawn(class'PlaceholderItem',,, vectm(2517.303467,-1384.390381,-250.690430)); //Shipyard showers locker 1
+        Spawn(class'PlaceholderItem',,, vectm(2474.926270,-1385.917603,-250.689545)); //Shipyard showers locker 2
+        Spawn(class'PlaceholderItem',,, vectm(2431.561279,-1385.172363,-250.690308)); //Shipyard showers locker 3
+        Spawn(class'PlaceholderItem',,, vectm(2354.278809,-1383.854980,-250.689301)); //Shipyard showers locker 5
+        Spawn(class'PlaceholderItem',,, vectm(2354,-1676,-223)); //Shipyard change room bench
+        Spawn(class'PlaceholderItem',,, vectm(2605,-1839,-257)); //Shipyard bathroom stall 1
+        Spawn(class'PlaceholderItem',,, vectm(2816,-1816,-257)); //Shipyard bathroom stall 2
+        Spawn(class'PlaceholderItem',,, vectm(2808,-1511.5,-207)); //Shipyard bathroom sink
+        Spawn(class'PlaceholderItem',,, vectm(1565.7,-994,-433.7)); //Shipyard ramp control panel
+        Spawn(class'PlaceholderItem',,, vectm(3361,-1255.9,1187)); //Shipyard crane control room
+        Spawn(class'PlaceholderContainer',,, vectm(-1248,-1248,-460)); //Shipyard dock near sewer entrance
+        Spawn(class'PlaceholderContainer',,, vectm(-1185,-1175,-460)); //Shipyard dock near sewer entrance
+        Spawn(class'PlaceholderContainer',,, vectm(3172,-1248,-460)); //Shipyard dock near maintenance ladder
 
         break;
 #endif
@@ -119,29 +119,29 @@ function PreFirstEntryMapFixes()
             }
         }
         // near the start of the map to jump over the wall, from (2536.565674, 1600.856323, 251.924713) to 3982.246826
-        foreach RadiusActors(class'BlockPlayer', bp, 725, vect(3259, 1601, 252)) {
+        foreach RadiusActors(class'BlockPlayer', bp, 725, vectm(3259, 1601, 252)) {
             bp.bBlockPlayers=false;
         }
         // 4030.847900 to 4078.623779
-        foreach RadiusActors(class'BlockPlayer', bp, 25, vect(4055, 1602, 252)) {
-            dbp = Spawn(class'DynamicBlockPlayer',,, bp.Location + vect(0,0,200));
+        foreach RadiusActors(class'BlockPlayer', bp, 25, vectm(4055, 1602, 252)) {
+            dbp = Spawn(class'DynamicBlockPlayer',,, bp.Location + vectm(0,0,200));
             dbp.SetCollisionSize(bp.CollisionRadius, bp.CollisionHeight + 101);
         }
 
         // ignore objects out of bounds
-        foreach RadiusActors(class'#var(prefix)Containers', c, 450, vect(4300, 1200, 31)) {
+        foreach RadiusActors(class'#var(prefix)Containers', c, 450, vectm(4300, 1200, 31)) {
             c.bIsSecretGoal = true;
         }
-        foreach RadiusActors(class'#var(prefix)Containers', c, 160, vect(3823.322266, 365.613495, 36)) {
+        foreach RadiusActors(class'#var(prefix)Containers', c, 160, vectm(3823.322266, 365.613495, 36)) {
             c.bIsSecretGoal = true;
         }
-        foreach RadiusActors(class'#var(prefix)Containers', c, 400, vect(2274.548340, 730.766357, 31)) {
+        foreach RadiusActors(class'#var(prefix)Containers', c, 400, vectm(2274.548340, 730.766357, 31)) {
             c.bIsSecretGoal = true;
         }
 
-        class'PlaceholderEnemy'.static.Create(self,vect(3292,4792,48),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(4610,6714,1408),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(3209,2333,48),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(3292,4792,48),rotm(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(4610,6714,1408),rotm(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(3209,2333,48),rotm(0,0,0),'Wandering');
 
         break;
 
@@ -158,13 +158,13 @@ function PreFirstEntryMapFixes()
         break;
 
     case "09_NYC_GRAVEYARD":
-        Spawn(class'PlaceholderItem',,, vect(-509.5,-742.88,-213)); //Tunnels
-        Spawn(class'PlaceholderItem',,, vect(-1524.8,-943.9,-285.69)); //Empty Sarcophogus
-        Spawn(class'PlaceholderItem',,, vect(-1433.77,1161.87,-149)); //Escape tunnel
-        Spawn(class'PlaceholderItem',,, vect(-828.5,-266.1,27)); //Front of tomb
-        Spawn(class'PlaceholderItem',,, vect(-1499.35,-454.93,-293)); //Tomb stairs
-        Spawn(class'PlaceholderItem',,, vect(1108.85,808.15,71.309769)); //Secret room shelf 1
-        Spawn(class'PlaceholderItem',,, vect(1110,829.5,35.310154)); //Secret room shelf 2
+        Spawn(class'PlaceholderItem',,, vectm(-509.5,-742.88,-213)); //Tunnels
+        Spawn(class'PlaceholderItem',,, vectm(-1524.8,-943.9,-285.69)); //Empty Sarcophogus
+        Spawn(class'PlaceholderItem',,, vectm(-1433.77,1161.87,-149)); //Escape tunnel
+        Spawn(class'PlaceholderItem',,, vectm(-828.5,-266.1,27)); //Front of tomb
+        Spawn(class'PlaceholderItem',,, vectm(-1499.35,-454.93,-293)); //Tomb stairs
+        Spawn(class'PlaceholderItem',,, vectm(1108.85,808.15,71.309769)); //Secret room shelf 1
+        Spawn(class'PlaceholderItem',,, vectm(1110,829.5,35.310154)); //Secret room shelf 2
         break;
     }
 }
@@ -177,17 +177,17 @@ function PostFirstEntryMapFixes()
 #ifndef revision
     case "09_NYC_DOCKYARD":
         // this crate can block the way out of the start through the vent
-        foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 160, vect(2510.350342, 1377.569336, 103.858093)) {
-            info("removing " $ c $ " dist: " $ VSize(c.Location - vect(2510.350342, 1377.569336, 103.858093)) );
+        foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 160, vectm(2510.350342, 1377.569336, 103.858093)) {
+            info("removing " $ c $ " dist: " $ VSize(c.Location - vectm(2510.350342, 1377.569336, 103.858093)) );
             c.Destroy();
         }
         break;
 
     case "09_NYC_SHIPBELOW":
         // add a tnt crate on top of the pipe, visible from the ground floor
-        _AddActor(Self, class'#var(prefix)CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567), rot(0,0,0));
+        _AddActor(Self, class'#var(prefix)CrateExplosiveSmall', vectm(141.944641, -877.442627, -175.899567), rotm(0,0,0));
         // remove big crates blocking the window to the pipe, 16 units == 1 foot
-        foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 16*4, vect(-136.125000, -743.875000, -215.899323)) {
+        foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 16*4, vectm(-136.125000, -743.875000, -215.899323)) {
             c.Event = '';
             c.Destroy();
         }

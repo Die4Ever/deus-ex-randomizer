@@ -79,7 +79,7 @@ function PreFirstEntryMapFixes()
             hd.hackStrength /= 3.0;
         }
         if(!dxr.flags.IsReducedRando()) {
-            k = Spawn(class'#var(prefix)Karkian',,, vect(54.688416, 1208.957275, -237.351410), rot(0,32768,0));
+            k = Spawn(class'#var(prefix)Karkian',,, vectm(54.688416, 1208.957275, -237.351410), rotm(0,32768,0));
             k.BindName="NSFMinotaur";
             k.bImportant = true;
             k.ChangeAlly('Player', -1, false);
@@ -100,21 +100,21 @@ function PreFirstEntryMapFixes()
     case "04_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
         //Spawn some placeholders for new item locations
-        Spawn(class'PlaceholderItem',,, vect(363.284149, 344.847, 50.32)); //Womens bathroom counter
-        Spawn(class'PlaceholderItem',,, vect(211.227, 348.46, 50.32)); //Mens bathroom counter
-        Spawn(class'PlaceholderItem',,, vect(982.255,1096.76,-7)); //Jaime's desk
-        Spawn(class'PlaceholderItem',,, vect(2033.8,1979.9,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vect(2148,2249,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vect(2433,1384,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vect(-307.8,-1122,-7)); //Anna's Desk
-        Spawn(class'PlaceholderItem',,, vect(-138.5,-790.1,-1.65)); //Anna's bookshelf
-        Spawn(class'PlaceholderItem',,, vect(-27,1651.5,291)); //Breakroom table
-        Spawn(class'PlaceholderItem',,, vect(602,1215.7,295)); //Kitchen Counter
-        Spawn(class'PlaceholderItem',,, vect(-672.8,1261,473)); //Upper Left Office desk
-        Spawn(class'PlaceholderItem',,, vect(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
-        Spawn(class'PlaceholderContainer',,, vect(-1187,-1154,-31)); //Behind Jail Desk
-        Spawn(class'PlaceholderContainer',,, vect(2384,1669,-95)); //MJ12 Door
-        Spawn(class'PlaceholderContainer',,, vect(-383.6,1376,273)); //JC's Office
+        Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(982.255,1096.76,-7)); //Jaime's desk
+        Spawn(class'PlaceholderItem',,, vectm(2033.8,1979.9,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vectm(2148,2249,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vectm(-307.8,-1122,-7)); //Anna's Desk
+        Spawn(class'PlaceholderItem',,, vectm(-138.5,-790.1,-1.65)); //Anna's bookshelf
+        Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
+        Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
+        Spawn(class'PlaceholderItem',,, vectm(-672.8,1261,473)); //Upper Left Office desk
+        Spawn(class'PlaceholderItem',,, vectm(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
+        Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
+        Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
+        Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
         break;
 
     case "04_NYC_BATTERYPARK":

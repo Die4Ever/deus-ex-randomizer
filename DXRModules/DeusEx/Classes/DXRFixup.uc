@@ -280,11 +280,11 @@ function FixUNATCOCarterCloset()
     local Inventory i;
     local #var(DeusExPrefix)Decoration d;
 
-    foreach RadiusActors(class'Inventory', i, 360, vect(1075, -1150, 10)) {
+    foreach RadiusActors(class'Inventory', i, 360, vectm(1075, -1150, 10)) {
         i.ItemName = "Report this as a DXRando bug";
         i.bIsSecretGoal = true;
     }
-    foreach RadiusActors(class'#var(DeusExPrefix)Decoration', d, 360, vect(1075, -1150, 10)) {
+    foreach RadiusActors(class'#var(DeusExPrefix)Decoration', d, 360, vectm(1075, -1150, 10)) {
         d.ItemName = "Report this as a DXRando bug";
         d.bIsSecretGoal = true;
     }
@@ -400,6 +400,11 @@ function SpawnDatacubes()
 
     SetSeed( "DXRFixup SpawnDatacubes" );
 
+    if( dxr.localURL == "" ) {
+        warning("SpawnDatacubes() empty localURL, " $ GetURLMap());
+        return;
+    }
+
     for(i=0; i<ArrayCount(add_datacubes); i++) {
         if( dxr.localURL != add_datacubes[i].map ) continue;
 
@@ -408,9 +413,9 @@ function SpawnDatacubes()
             loc = GetRandomPosition();
 
 #ifdef injections
-        dc = Spawn(class'#var(prefix)DataCube',,, loc, rot(0,0,0));
+        dc = Spawn(class'#var(prefix)DataCube',,, loc, rotm(0,0,0));
 #else
-        dc = Spawn(class'DXRInformationDevices',,, loc, rot(0,0,0));
+        dc = Spawn(class'DXRInformationDevices',,, loc, rotm(0,0,0));
 #endif
 
         if( dc != None ){

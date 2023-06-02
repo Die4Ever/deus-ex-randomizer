@@ -70,7 +70,7 @@ function PreFirstEntryMapFixes()
     {
     case "15_AREA51_BUNKER":
         // doors_lower is for backtracking
-        AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
+        AddSwitch( vectm(4309.076660, -1230.640503, -7522.298340), rotm(0, 16384, 0), 'doors_lower');
         player().DeleteAllGoals();
 
         //Change vent entry security computer password so it isn't pre-known
@@ -120,30 +120,30 @@ function PreFirstEntryMapFixes()
         d.minDamageThreshold=25;
         d.doorStrength = 0.20; //It's just grating on top of the vent, so it's not that strong
 
-        Spawn(class'PlaceholderItem',,, vect(-1469.9,3238.7,-213)); //Storage building
-        Spawn(class'PlaceholderItem',,, vect(-1565.4,3384.8,-213)); //Back of Storage building
-        Spawn(class'PlaceholderItem',,, vect(-1160.9,256.3,-501)); //Tower basement
-        Spawn(class'PlaceholderItem',,, vect(1481,3192.7,-468)); //Command building bed
-        Spawn(class'PlaceholderItem',,, vect(923.008606,2962.796387,-482.689789)); //Command building locker
-        Spawn(class'PlaceholderItem',,, vect(1106.5,-2860.4,-165)); //Hangar building roof
-        Spawn(class'PlaceholderItem',,, vect(1104.7,-2925.7,-325)); //Hangar building next to guy who gives up
-        Spawn(class'PlaceholderItem',,, vect(520.26,-1482.3,-453)); //Boxes in Hangar
-        Spawn(class'PlaceholderItem',,, vect(1017.5,-1842.1,-453)); //Boxes in Hangar near enemies
+        Spawn(class'PlaceholderItem',,, vectm(-1469.9,3238.7,-213)); //Storage building
+        Spawn(class'PlaceholderItem',,, vectm(-1565.4,3384.8,-213)); //Back of Storage building
+        Spawn(class'PlaceholderItem',,, vectm(-1160.9,256.3,-501)); //Tower basement
+        Spawn(class'PlaceholderItem',,, vectm(1481,3192.7,-468)); //Command building bed
+        Spawn(class'PlaceholderItem',,, vectm(923.008606,2962.796387,-482.689789)); //Command building locker
+        Spawn(class'PlaceholderItem',,, vectm(1106.5,-2860.4,-165)); //Hangar building roof
+        Spawn(class'PlaceholderItem',,, vectm(1104.7,-2925.7,-325)); //Hangar building next to guy who gives up
+        Spawn(class'PlaceholderItem',,, vectm(520.26,-1482.3,-453)); //Boxes in Hangar
+        Spawn(class'PlaceholderItem',,, vectm(1017.5,-1842.1,-453)); //Boxes in Hangar near enemies
 
-        class'PlaceholderEnemy'.static.Create(self,vect(-2237,3225,-192),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(4234,3569,-736),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(3744,-1030,-7481),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-2237,3225,-192),rotm(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(4234,3569,-736),rotm(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(3744,-1030,-7481),rotm(0,0,0),'Wandering');
 
         break;
 
     case "15_AREA51_FINAL":
         // Generator_overload is the cover over the beat the game button used in speedruns
         foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
-            d.move(vect(0, 0, -1));
+            d.move(vectm(0, 0, -1));
         }
-        AddSwitch( vect(-5112.805176, -2495.639893, -1364), rot(0, 16384, 0), 'blastdoor_final');// just in case the dialog fails
-        AddSwitch( vect(-5112.805176, -2530.276123, -1364), rot(0, -16384, 0), 'blastdoor_final');// for backtracking
-        AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
+        AddSwitch( vectm(-5112.805176, -2495.639893, -1364), rotm(0, 16384, 0), 'blastdoor_final');// just in case the dialog fails
+        AddSwitch( vectm(-5112.805176, -2530.276123, -1364), rotm(0, -16384, 0), 'blastdoor_final');// for backtracking
+        AddSwitch( vectm(-3745, -1114, -1950), rotm(0,0,0), 'Page_Blastdoors' );
 
         foreach AllActors(class'DeusExMover', d, 'doors_lower') {
             d.bLocked = false;
@@ -165,21 +165,21 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        Spawn(class'PlaceholderItem',,, vect(-4185.2,-207.35,-1386)); //Helios storage room
-        Spawn(class'PlaceholderItem',,, vect(-4346.5,-1404.5,-2020)); //Storage room near sector 4 door
-        Spawn(class'PlaceholderItem',,, vect(-5828.7,-412.6,-1514)); //Storage room on stairs to sector 4
-        Spawn(class'PlaceholderItem',,, vect(-4984.8,-3713.8,-1354)); //On top of control panels near cooling pool near entrance
-        Spawn(class'PlaceholderItem',,, vect(-5242.45,-2675.55,-1364)); //Boxes right near Tong at entrance
-        Spawn(class'PlaceholderItem',,, vect(-3110.8,-4931.9,-1555)); //Reactor control room
+        Spawn(class'PlaceholderItem',,, vectm(-4185.2,-207.35,-1386)); //Helios storage room
+        Spawn(class'PlaceholderItem',,, vectm(-4346.5,-1404.5,-2020)); //Storage room near sector 4 door
+        Spawn(class'PlaceholderItem',,, vectm(-5828.7,-412.6,-1514)); //Storage room on stairs to sector 4
+        Spawn(class'PlaceholderItem',,, vectm(-4984.8,-3713.8,-1354)); //On top of control panels near cooling pool near entrance
+        Spawn(class'PlaceholderItem',,, vectm(-5242.45,-2675.55,-1364)); //Boxes right near Tong at entrance
+        Spawn(class'PlaceholderItem',,, vectm(-3110.8,-4931.9,-1555)); //Reactor control room
 
-        Spawn(class'PlaceholderContainer',,, vect(-4100,2345,-384)); //Arms under Helios
-        Spawn(class'PlaceholderContainer',,, vect(-3892,2397,1147)); //Arms under Helios
-        Spawn(class'PlaceholderContainer',,, vect(-4253.9,771.4,-1564)); //Under staircase near Helios
-        Spawn(class'PlaceholderContainer',,, vect(-3040,-4960,-1607)); //Reactor control room
+        Spawn(class'PlaceholderContainer',,, vectm(-4100,2345,-384)); //Arms under Helios
+        Spawn(class'PlaceholderContainer',,, vectm(-3892,2397,1147)); //Arms under Helios
+        Spawn(class'PlaceholderContainer',,, vectm(-4253.9,771.4,-1564)); //Under staircase near Helios
+        Spawn(class'PlaceholderContainer',,, vectm(-3040,-4960,-1607)); //Reactor control room
 
-        class'PlaceholderEnemy'.static.Create(self,vect(-5113,-989,-1995),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(-5899,-1112,-1323),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(-4795,-1596,-1357),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-5113,-989,-1995),rotm(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-5899,-1112,-1323),rotm(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-4795,-1596,-1357),rotm(0,0,0),'Wandering');
 
         break;
 
@@ -187,7 +187,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'DeusExMover', d, 'DeusExMover') {
             if( d.Name == 'DeusExMover20' ) d.Tag = 'final_door';
         }
-        AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');
+        AddSwitch( vectm(-867.193420, 244.553101, 17.622702), rotm(0, 32768, 0), 'final_door');
 
         foreach AllActors(class'DeusExMover', d, 'doors_lower') {
             d.bLocked = false;
@@ -203,19 +203,19 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        Spawn(class'PlaceholderItem',,, vect(1542.28,-2080,-349)); //Near karkians under Everett
-        Spawn(class'PlaceholderItem',,, vect(3310.14,-2512.35,10.3)); //Boxes right at entrance
-        Spawn(class'PlaceholderItem',,, vect(4022.8,-710.4,-149)); //Boxes near barracks
-        Spawn(class'PlaceholderItem',,, vect(4811,63.7,-173)); //Barracks table
-        Spawn(class'PlaceholderItem',,, vect(3262.9,1492.9,-149)); //Boxes out front of rec room
-        Spawn(class'PlaceholderItem',,, vect(3163.7,2306.2,-169)); //Rec Room ping pong table
-        Spawn(class'PlaceholderItem',,, vect(-404.7,1624.6,-349)); //Near corpse under cherry picker
-        Spawn(class'PlaceholderItem',,, vect(18.6,1220.4,-149)); //Boxes near cherry picker
-        Spawn(class'PlaceholderItem',,, vect(-1712.9,191.25,26)); //In front of ambush elevator
+        Spawn(class'PlaceholderItem',,, vectm(1542.28,-2080,-349)); //Near karkians under Everett
+        Spawn(class'PlaceholderItem',,, vectm(3310.14,-2512.35,10.3)); //Boxes right at entrance
+        Spawn(class'PlaceholderItem',,, vectm(4022.8,-710.4,-149)); //Boxes near barracks
+        Spawn(class'PlaceholderItem',,, vectm(4811,63.7,-173)); //Barracks table
+        Spawn(class'PlaceholderItem',,, vectm(3262.9,1492.9,-149)); //Boxes out front of rec room
+        Spawn(class'PlaceholderItem',,, vectm(3163.7,2306.2,-169)); //Rec Room ping pong table
+        Spawn(class'PlaceholderItem',,, vectm(-404.7,1624.6,-349)); //Near corpse under cherry picker
+        Spawn(class'PlaceholderItem',,, vectm(18.6,1220.4,-149)); //Boxes near cherry picker
+        Spawn(class'PlaceholderItem',,, vectm(-1712.9,191.25,26)); //In front of ambush elevator
 
-        class'PlaceholderEnemy'.static.Create(self,vect(4623,210,-176),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(3314,2196,-176),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(-190,-694,-180),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(4623,210,-176),rotm(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(3314,2196,-176),rotm(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-190,-694,-180),rotm(0,0,0),'Wandering');
 
         break;
 
@@ -281,7 +281,7 @@ function AnyEntryMapFixes()
 
         if((!#defined(revision)) && (!#defined(gmdx))) {// cover the button better
             foreach AllActors(class'#var(DeusExPrefix)Mover', d, 'Page_button') {
-                d.SetLocation(d.Location-vect(0,0,2)); // original Z was -5134
+                d.SetLocation(d.Location-vectm(0,0,2)); // original Z was -5134
             }
         }
         break;

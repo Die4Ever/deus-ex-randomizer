@@ -4,6 +4,7 @@ var transient DXRando dxr;
 var transient float overallchances;
 
 var transient bool inited;
+var vector coords_mult;
 
 replication
 {
@@ -20,6 +21,7 @@ function Init(DXRando tdxr)
 {
     //l(Self$".Init()");
     dxr = tdxr;
+    coords_mult = class'DXRMapVariants'.static.GetCoordsMult(GetURLMap());
     CheckConfig();
     inited = true;
 }
@@ -352,6 +354,37 @@ simulated function bool chance_remaining(int r)
 simulated function bool chance_single(float percent)
 {
     return rngf()*100.0 < percent;
+}
+
+simulated function vector vectm(float x, float y, float z)
+{
+    local vector v;
+    v.x = x;// the vect() constructor only works with constants
+    v.y = y;
+    v.z = z;
+    return v * coords_mult;
+}
+
+simulated function rotator rotm(int p, int y, int roll)
+{
+    local Rotator r;
+    // TODO: only works for X or Y mirrors
+    if(coords_mult.X < 0 && coords_mult.Y > 0) {
+        y += 16384;
+        y = imod(y, 65535) * -1;
+        y -= 16384;
+        y = imod(y, 65535);
+    }
+    else if(coords_mult.X > 0 && coords_mult.Y < 0) {
+        y += 32768;
+        y = imod(y, 65535) * -1;
+        y -= 32768;
+        y = imod(y, 65535);
+    }
+    r.Pitch = p;
+    r.Yaw = y;
+    r.Roll = roll;
+    return r;
 }
 
 final function Class<Inventory> ModifyInventoryClass( out Class<Inventory> InventoryClass )

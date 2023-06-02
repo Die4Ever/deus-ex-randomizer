@@ -148,6 +148,7 @@ def CopyD3D10Renderer(system:Path):
 
 
 def CopyTo(source:Path, dest:Path):
+    print('Copying', source, 'to', dest)
     bytes = source.read_bytes()
     dest.write_bytes(bytes)
 

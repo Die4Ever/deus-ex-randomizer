@@ -46,22 +46,22 @@ function PreFirstEntryMapFixes()
             if( t.Event == 'MJ12CommandoSpecial' )
                 t.Touch(player());// make this guy patrol instead of t-pose
 
-        AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
-        AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
+        AddSwitch( vectm(897.238892, -120.852928, -9.965580), rotm(0,0,0), 'catacombs_blastdoor02' );
+        AddSwitch( vectm(-2190.893799, 1203.199097, -6.663990), rotm(0,0,0), 'catacombs_blastdoorB' );
 
-        class'PlaceholderEnemy'.static.Create(self,vect(-362,-3444,-32),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(-743,677,-256),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(-1573,-113,-64),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(781,1156,-32),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32),rotm(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256),rotm(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64),rotm(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32),rotm(0,0,0),'Wandering');
 
         break;
 
     case "10_PARIS_CHATEAU":
         foreach AllActors(class'DeusExMover', m, 'everettsignal')
             m.Tag = 'everettsignaldoor';
-        d = Spawn(class'Dispatcher',, 'everettsignal', vect(176.275253, 4298.747559, -148.500031) );
+        d = Spawn(class'Dispatcher',, 'everettsignal', vectm(176.275253, 4298.747559, -148.500031) );
         d.OutEvents[0] = 'everettsignaldoor';
-        AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
+        AddSwitch( vectm(-769.359985, -4417.855469, -96.485504), rotm(0, 32768, 0), 'everettsignaldoor' );
 
         //speed up the secret door...
         foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
@@ -103,21 +103,21 @@ function PreFirstEntryMapFixes()
                 sp.bImportant=True;
             }
         }
-        Spawn(class'PlaceholderItem',,, vect(-607.8,-1003.2,59)); //Table near Nicolette Vanilla
-        Spawn(class'PlaceholderItem',,, vect(-239.927216,499.098633,43)); //Ledge near club owner
-        Spawn(class'PlaceholderItem',,, vect(-1164.5,1207.85,-133)); //Table near biocell guy
-        Spawn(class'PlaceholderItem',,, vect(-1046,-1393,-145)); //Bathroom counter 1
-        Spawn(class'PlaceholderItem',,, vect(-1545.5,-1016.7,-145)); //Bathroom counter 2
-        Spawn(class'PlaceholderItem',,, vect(-1464,-1649.6,-197)); //Bathroom stall 1
-        Spawn(class'PlaceholderItem',,, vect(-1096.7,-847,-197)); //Bathroom stall 2
-        Spawn(class'PlaceholderItem',,, vect(-2093.7,-293,-161)); //Club back room
+        Spawn(class'PlaceholderItem',,, vectm(-607.8,-1003.2,59)); //Table near Nicolette Vanilla
+        Spawn(class'PlaceholderItem',,, vectm(-239.927216,499.098633,43)); //Ledge near club owner
+        Spawn(class'PlaceholderItem',,, vectm(-1164.5,1207.85,-133)); //Table near biocell guy
+        Spawn(class'PlaceholderItem',,, vectm(-1046,-1393,-145)); //Bathroom counter 1
+        Spawn(class'PlaceholderItem',,, vectm(-1545.5,-1016.7,-145)); //Bathroom counter 2
+        Spawn(class'PlaceholderItem',,, vectm(-1464,-1649.6,-197)); //Bathroom stall 1
+        Spawn(class'PlaceholderItem',,, vectm(-1096.7,-847,-197)); //Bathroom stall 2
+        Spawn(class'PlaceholderItem',,, vectm(-2093.7,-293,-161)); //Club back room
         break;
     case "11_PARIS_UNDERGROUND":
-        Spawn(class'PlaceholderItem',,, vect(2268.5,-563.7,-101)); //Near ATM
-        Spawn(class'PlaceholderItem',,, vect(408.3,768.7,-37)); //Near Mechanic
-        Spawn(class'PlaceholderItem',,, vect(-729,809.5,-1061)); //Bench at subway
-        Spawn(class'PlaceholderItem',,, vect(-733,-251,-1061)); //Bench at subway
-        Spawn(class'PlaceholderItem',,, vect(300.7,491,-1061)); //Opposite side of tracks
+        Spawn(class'PlaceholderItem',,, vectm(2268.5,-563.7,-101)); //Near ATM
+        Spawn(class'PlaceholderItem',,, vectm(408.3,768.7,-37)); //Near Mechanic
+        Spawn(class'PlaceholderItem',,, vectm(-729,809.5,-1061)); //Bench at subway
+        Spawn(class'PlaceholderItem',,, vectm(-733,-251,-1061)); //Bench at subway
+        Spawn(class'PlaceholderItem',,, vectm(300.7,491,-1061)); //Opposite side of tracks
         break;
     case "11_PARIS_CATHEDRAL":
         foreach AllActors(class'GuntherHermann', g) {
@@ -142,7 +142,7 @@ function AnyEntryMapFixes()
         // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
         npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
         if(npcs != None) {
-            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vect(-3209.483154, 5190.826172,1199.610352), rot(0, -10000, 0), class'#var(prefix)HazMatSuit');
+            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vectm(-3209.483154, 5190.826172,1199.610352), rotm(0, -10000, 0), class'#var(prefix)HazMatSuit');
             m = Merchant(sp);
             if (m!=None){  // CreateForcedMerchant returns None if he already existed, but we still need to call it to recreate the conversation since those are transient
                 m.MakeFrench();

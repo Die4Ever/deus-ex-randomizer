@@ -9,15 +9,15 @@ function PostFirstEntryMapFixes()
     switch(dxr.localURL) {
 #ifndef revision
     case "03_NYC_BrooklynBridgeStation":
-        a = _AddActor(Self, class'Barrel1', vect(-27.953907, -3493.229980, 45.101418), rot(0,0,0));
+        a = _AddActor(Self, class'Barrel1', vectm(-27.953907, -3493.229980, 45.101418), rotm(0,0,0));
         Barrel1(a).SkinColor = SC_Explosive;
         a.BeginPlay();
         break;
 
     case "03_NYC_AirfieldHeliBase":
         //crates to get back over the beginning of the level
-        _AddActor(Self, class'#var(prefix)CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60), rot(0,0,0));
-        _AddActor(Self, class'#var(prefix)CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75), rot(0,0,0));
+        _AddActor(Self, class'#var(prefix)CrateUnbreakableSmall', vectm(-9463.387695, 3377.530029, 60), rotm(0,0,0));
+        _AddActor(Self, class'#var(prefix)CrateUnbreakableMed', vectm(-9461.959961, 3320.718750, 75), rotm(0,0,0));
         break;
 #endif
     }
@@ -59,24 +59,24 @@ function PreFirstEntryMapFixes()
         }
 
         //rebreather because of #TOOCEAN connection
-        _AddActor(Self, class'Rebreather', vect(-936.151245, -3464.031006, 293.710968), rot(0,0,0));
+        _AddActor(Self, class'Rebreather', vectm(-936.151245, -3464.031006, 293.710968), rotm(0,0,0));
 
         //Add some junk around the park so that there are some item locations outside of the shanty town
-        _AddActor(Self, class'Liquor40oz', vect(933.56,-3554.86,279.04), rot(0,0,0));
-        _AddActor(Self, class'Sodacan', vect(2203.28,-3558.84,279.04), rot(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vect(-980.83,-3368.42,286.24), rot(0,0,0));
-        _AddActor(Self, class'Cigarettes', vect(-682.67,-3771.20,282.24), rot(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vect(-2165.67,-3546.039,285.30), rot(0,0,0));
-        _AddActor(Self, class'Sodacan', vect(-2170.83,-3094.94,330.24), rot(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vect(-3180.75,-3546.79,281.43), rot(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vect(-2619.56,-2540.80,330.25), rot(0,0,0));
-        _AddActor(Self, class'Cigarettes', vect(-3289.43,-919.07,360.80), rot(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vect(-2799.94,-922.68,361.86), rot(0,0,0));
-        _AddActor(Self, class'Sodacan', vect(800.76,1247.99,330.25), rot(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vect(1352.29,2432.98,361.58), rot(0,0,0));
-        _AddActor(Self, class'Cigarettes', vect(788.50,2359.26,360.63), rot(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vect(3153.26,-310.73,326.25), rot(0,0,0));
-        _AddActor(Self, class'Sodacan', vect(-2132.21,1838.89,326.25), rot(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vectm(933.56,-3554.86,279.04), rotm(0,0,0));
+        _AddActor(Self, class'Sodacan', vectm(2203.28,-3558.84,279.04), rotm(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vectm(-980.83,-3368.42,286.24), rotm(0,0,0));
+        _AddActor(Self, class'Cigarettes', vectm(-682.67,-3771.20,282.24), rotm(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vectm(-2165.67,-3546.039,285.30), rotm(0,0,0));
+        _AddActor(Self, class'Sodacan', vectm(-2170.83,-3094.94,330.24), rotm(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vectm(-3180.75,-3546.79,281.43), rotm(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vectm(-2619.56,-2540.80,330.25), rotm(0,0,0));
+        _AddActor(Self, class'Cigarettes', vectm(-3289.43,-919.07,360.80), rotm(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vectm(-2799.94,-922.68,361.86), rotm(0,0,0));
+        _AddActor(Self, class'Sodacan', vectm(800.76,1247.99,330.25), rotm(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vectm(1352.29,2432.98,361.58), rotm(0,0,0));
+        _AddActor(Self, class'Cigarettes', vectm(788.50,2359.26,360.63), rotm(0,0,0));
+        _AddActor(Self, class'Liquor40oz', vectm(3153.26,-310.73,326.25), rotm(0,0,0));
+        _AddActor(Self, class'Sodacan', vectm(-2132.21,1838.89,326.25), rotm(0,0,0));
 
         break;
 
@@ -110,35 +110,35 @@ function PreFirstEntryMapFixes()
         }
 
         // Sewerdoor backtracking
-        AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
+        AddSwitch( vectm(-6878.640137, 3623.358398, 150.903931), rotm(0,0,0), 'Sewerdoor');
 
         //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
-        _AddActor(Self, class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
-        a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3105,-385,-210), rot(0,0,0));
+        _AddActor(Self, class'Valve', vectm(-3105,-385,-210), rotm(0,0,16384));
+        a = _AddActor(Self, class'DynamicBlockPlayer', vectm(-3105,-385,-210), rotm(0,0,0));
         SetActorScale(a, 1.3);
 
-        _AddActor(Self, class'Valve', vect(-3080,-395,-170), rot(0,0,16384));
-        a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3080,-395,-170), rot(0,0,0));
+        _AddActor(Self, class'Valve', vectm(-3080,-395,-170), rotm(0,0,16384));
+        a = _AddActor(Self, class'DynamicBlockPlayer', vectm(-3080,-395,-170), rotm(0,0,0));
         SetActorScale(a, 1.3);
 
-        _AddActor(Self, class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
-        a = _AddActor(Self, class'DynamicBlockPlayer', vect(-3065,-405,-130), rot(0,0,0));
+        _AddActor(Self, class'Valve', vectm(-3065,-405,-130), rotm(0,0,16384));
+        a = _AddActor(Self, class'DynamicBlockPlayer', vectm(-3065,-405,-130), rotm(0,0,0));
         SetActorScale(a, 1.3);
 
         //rebreather because of #TOOCEAN connection
-        Spawn(class'Rebreather',,, vect(1411.798950, 546.628845, 247.708572));
+        Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
 
         //Button to extend sewer platform from the other side
-        AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
+        AddSwitch( vectm(-5233.946289,3601.383545,161.851822), rotm(0, 16384, 0), 'MoveableBridge');
 
         break;
 #endif
 
     case "03_NYC_AIRFIELD":
         //rebreather because of #TOOCEAN connection
-        Spawn(class'Rebreather',,, vect(-2031.959473, 995.781067, 75.709816));
+        Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
         // extra spot for datacube
-        Spawn(class'PlaceholderItem',,, vect(5113, 3615, 1.3));
+        Spawn(class'PlaceholderItem',,, vectm(5113, 3615, 1.3));
         if(#defined(vanillamaps)) {
             foreach AllActors(class'Teleporter', tele) {
                 if(tele.Event == 'HangarEnt') {
@@ -152,14 +152,14 @@ function PreFirstEntryMapFixes()
     case "03_NYC_BROOKLYNBRIDGESTATION":
         //Put a button behind the hidden bathroom door
         //Mostly for entrance rando, but just in case
-        AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
+        AddSwitch( vectm(-1673, -1319.913574, 130.813538), rotm(0, 32767, 0), 'MoleHideoutOpened' );
         break;
 
     case "03_NYC_MOLEPEOPLE":
         foreach AllActors(class'Mover', m, 'DeusExMover') {
             if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
         }
-        AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
+        AddSwitch( vectm(3745, -2593.711914, 140.335358), rotm(0, 0, 0), 'BathroomDoor' );
         break;
 #endif
 
@@ -171,19 +171,19 @@ function PreFirstEntryMapFixes()
             foreach AllActors(class'#var(prefix)InformationDevices', i) {
                 if(i.imageClass == Class'Image03_747Diagram') {
                     // move the out of bounds datacabe onto the bed of the empty room
-                    i.SetLocation(vect(1554.862549, -741.237427, 363.370605));
+                    i.SetLocation(vectm(1554.862549, -741.237427, 363.370605));
                 }
             }
         }
-        Spawn(class'PlaceholderItem',,, vect(1702,-359.8,373)); //Bathroom counter
-        Spawn(class'PlaceholderItem',,, vect(1624.15,-740.12,373)); //Guest bed headboard
-        Spawn(class'PlaceholderItem',,, vect(1412.5,-297.7,406.32)); //Closet shelf
-        Spawn(class'PlaceholderItem',,, vect(1445.97,-294.6,316.31)); //Closet floor
-        Spawn(class'PlaceholderItem',,, vect(733.2,-462.57,342.5)); //Middle seat row
-        Spawn(class'PlaceholderItem',,, vect(617.1,-511.35,342.51)); //Back row seat
-        Spawn(class'PlaceholderItem',,, vect(327.4,-524.8,342.5)); //Weird solo seating row
-        Spawn(class'PlaceholderItem',,, vect(342.4,-730.14,196.3)); //Shelf in cargo area
-        Spawn(class'PlaceholderItem',,, vect(495.4,-733.96,196.3)); //Shelf in cargo area
+        Spawn(class'PlaceholderItem',,, vectm(1702,-359.8,373)); //Bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(1624.15,-740.12,373)); //Guest bed headboard
+        Spawn(class'PlaceholderItem',,, vectm(1412.5,-297.7,406.32)); //Closet shelf
+        Spawn(class'PlaceholderItem',,, vectm(1445.97,-294.6,316.31)); //Closet floor
+        Spawn(class'PlaceholderItem',,, vectm(733.2,-462.57,342.5)); //Middle seat row
+        Spawn(class'PlaceholderItem',,, vectm(617.1,-511.35,342.51)); //Back row seat
+        Spawn(class'PlaceholderItem',,, vectm(327.4,-524.8,342.5)); //Weird solo seating row
+        Spawn(class'PlaceholderItem',,, vectm(342.4,-730.14,196.3)); //Shelf in cargo area
+        Spawn(class'PlaceholderItem',,, vectm(495.4,-733.96,196.3)); //Shelf in cargo area
         break;
 
     case "03_NYC_UNATCOISLAND":
@@ -198,21 +198,21 @@ function PreFirstEntryMapFixes()
     case "03_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
         //Spawn some placeholders for new item locations
-        Spawn(class'PlaceholderItem',,, vect(363.284149, 344.847, 50.32)); //Womens bathroom counter
-        Spawn(class'PlaceholderItem',,, vect(211.227, 348.46, 50.32)); //Mens bathroom counter
-        Spawn(class'PlaceholderItem',,, vect(982.255,1096.76,-7)); //Jaime's desk
-        Spawn(class'PlaceholderItem',,, vect(2033.8,1979.9,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vect(2148,2249,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vect(2433,1384,-85)); //Near MJ12 Door
-        Spawn(class'PlaceholderItem',,, vect(-307.8,-1122,-7)); //Anna's Desk
-        Spawn(class'PlaceholderItem',,, vect(-138.5,-790.1,-1.65)); //Anna's bookshelf
-        Spawn(class'PlaceholderItem',,, vect(-27,1651.5,291)); //Breakroom table
-        Spawn(class'PlaceholderItem',,, vect(602,1215.7,295)); //Kitchen Counter
-        Spawn(class'PlaceholderItem',,, vect(-672.8,1261,473)); //Upper Left Office desk
-        Spawn(class'PlaceholderItem',,, vect(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
-        Spawn(class'PlaceholderContainer',,, vect(-1187,-1154,-31)); //Behind Jail Desk
-        Spawn(class'PlaceholderContainer',,, vect(2384,1669,-95)); //MJ12 Door
-        Spawn(class'PlaceholderContainer',,, vect(-383.6,1376,273)); //JC's Office
+        Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(982.255,1096.76,-7)); //Jaime's desk
+        Spawn(class'PlaceholderItem',,, vectm(2033.8,1979.9,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vectm(2148,2249,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vectm(2433,1384,-85)); //Near MJ12 Door
+        Spawn(class'PlaceholderItem',,, vectm(-307.8,-1122,-7)); //Anna's Desk
+        Spawn(class'PlaceholderItem',,, vectm(-138.5,-790.1,-1.65)); //Anna's bookshelf
+        Spawn(class'PlaceholderItem',,, vectm(-27,1651.5,291)); //Breakroom table
+        Spawn(class'PlaceholderItem',,, vectm(602,1215.7,295)); //Kitchen Counter
+        Spawn(class'PlaceholderItem',,, vectm(-672.8,1261,473)); //Upper Left Office desk
+        Spawn(class'PlaceholderItem',,, vectm(-433.128601,736.819763,314.310211)); //Weird electrical thing in closet
+        Spawn(class'PlaceholderContainer',,, vectm(-1187,-1154,-31)); //Behind Jail Desk
+        Spawn(class'PlaceholderContainer',,, vectm(2384,1669,-95)); //MJ12 Door
+        Spawn(class'PlaceholderContainer',,, vectm(-383.6,1376,273)); //JC's Office
         break;
     }
 }

@@ -16,6 +16,8 @@ check mission 5 jailbreak in all mods
 
 Needed this to run UnrealEd http://download.microsoft.com/download/vb50pro/utility/1/win98/EN-US/Msvbvm50.exe
 
+Patched editor https://coding.hanfling.de/launch/#dxstuff
+
 what does this ResetKeyboard() function do?
 
 in order to decompile VMD I had to copy VMDSim.ini to DeusEx.ini
@@ -198,7 +200,7 @@ http://www.offtopicproductions.com/forum/viewtopic.php?f=36&t=10464
 
 http://www.offtopicproductions.com/tacks/HowToAddAPersonalComputer.html // guide for Text imports
 
-http://www.offtopicproductions.com/tacks/index.html // guides for importing textures and stuff
+http://www.offtopicproductions.com/tacks/index.html // guides for importing textures and map making and stuff
 
 http://www.offtopicproductions.com/tacks/HowToAddCustomTextures.html
 

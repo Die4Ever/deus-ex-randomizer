@@ -241,7 +241,14 @@ function revision_datacubes_rules()
 
 function FirstEntry()
 {
+    local int i;
     Super.FirstEntry();
+
+    for(i=0; i<ArrayCount(datacubes_rules); i++) {
+        // do these without writing them to the config
+        datacubes_rules[i].min_pos *= coords_mult;
+        datacubes_rules[i].max_pos *= coords_mult;
+    }
 
     RandoInfoDevs(dxr.flags.settings.infodevices);
     RandoHacks();

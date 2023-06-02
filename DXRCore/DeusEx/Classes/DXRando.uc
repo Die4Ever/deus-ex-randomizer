@@ -110,7 +110,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 2,4,0,2) ) {
+    if( VersionOlderThan(config_version, 2,4,2,1) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -170,6 +170,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRMusic";
     modules_to_load[i++] = "DXRMusicPlayer";
     modules_to_load[i++] = "DXRPlayerStats";
+    modules_to_load[i++] = "DXRMapVariants";
 }
 
 function hx_modules()
@@ -426,7 +427,7 @@ function RandoEnter()
         flagbase.SetBool(flagName, True,, dxInfo.missionNumber+1);
     }
 
-    info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL);
+    info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL @ GetURLMap());
 
     if ( firstTime == true )
     {
