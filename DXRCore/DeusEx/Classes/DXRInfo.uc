@@ -184,11 +184,6 @@ final function int SystemTime()
     return _SystemTime(Level);
 }
 
-simulated static function float pow(float m, float e)
-{
-    return exp(e * loge(m) );
-}
-
 /*
 ========= STRING FUNCTIONS
 */
@@ -277,7 +272,7 @@ simulated static function string FloatToString(float f, int decimal_places)
 {
     local int i;
     local string s;
-    f += 0.5 * pow(10, -decimal_places);// round it instead of floor
+    f += 0.5 * (10 ** -decimal_places);// round it instead of floor
     s = string(f);
     i = InStr(s, ".");
     if( i != -1 ) {

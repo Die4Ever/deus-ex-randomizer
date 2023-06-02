@@ -55,7 +55,7 @@ simulated function Tick(float deltaTime)
             e = 1.9;
         }
         prev_weapon_skill = GetWeaponSkill();
-        r = class'DXRBase'.static.pow(anim_speed + -0.2 * prev_weapon_skill, e);
+        r = (anim_speed + -0.2 * prev_weapon_skill) ** e;
         prev_anim_rate = AnimRate * r;
     }
 

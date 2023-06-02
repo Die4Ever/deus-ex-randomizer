@@ -169,11 +169,11 @@ simulated function float rngexp(float origmin, float origmax, float curve)
     min = origmin;
     max = origmax;
     if(min != 0)
-        min = pow(min, 1/curve);
-    max = pow(max+1.0, 1/curve);
+        min = min ** (1/curve);
+    max = (max+1.0) ** (1/curve);
     frange = max-min;
     f = rngf()*frange + min;
-    f = pow(f, curve);
+    f = f ** curve;
     f = FClamp( f, origmin, origmax );
     return f;
 }
