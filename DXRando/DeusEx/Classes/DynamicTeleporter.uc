@@ -25,14 +25,29 @@ static function name GetToName(DeusExPlayer player)
     return player.flagbase.GetName('DynTeleport');
 }
 
+static function bool GetToPos(DeusExPlayer player, out vector pos)
+{
+    if(player.flagbase.CheckFlag('DynTeleportPos', FLAG_Vector)) {
+        pos = player.flagbase.GetVector('DynTeleportPos');
+        return true;
+    }
+    return false;
+}
+
 static function ClearTeleport(DeusExPlayer player)
 {
-    player.flagbase.SetName('DynTeleport', '',, -999);
+    player.flagbase.DeleteFlag('DynTeleport', FLAG_Name);
+    player.flagbase.DeleteFlag('DynTeleportPos', FLAG_Vector);
 }
 
 static function SetDestName(DeusExPlayer player, name destName)
 {
     player.flagbase.SetName('DynTeleport', destName,, 999);
+}
+
+static function SetDestPos(DeusExPlayer player, vector pos)
+{
+    player.flagbase.SetVector('DynTeleportPos', pos,, 999);
 }
 
 simulated function Touch( actor Other )
@@ -53,10 +68,17 @@ static function bool CheckTeleport(DeusExPlayer player)
 {
     local name toname;
     local Actor a;
+    local vector pos;
+    local bool got_pos;
 
     toname = GetToName(player);
-    if( toname == '' ) return true;
+    got_pos = GetToPos(player, pos);
+    if( toname == '' && !got_pos ) return true;
     ClearTeleport(player);
+
+    if(got_pos) {
+        return player.SetLocation(pos);
+    }
 
     foreach player.AllActors(class'Actor', a) {
         if( a.Name == toname ) {

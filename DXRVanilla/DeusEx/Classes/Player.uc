@@ -541,6 +541,28 @@ exec function SetSkillValues(float value)
     }
 }
 
+exec function Mirror()
+{
+    local string s;
+    local vector v, mult;
+
+    flagBase.SetBool('PlayerTraveling', True, True, 0);
+    v = class'DXRMapVariants'.static.GetCoordsMult(GetURLMap());
+    if(v.X==1 && v.Y==1) {
+        s = GetDXR().localURL $ "_-1_1_1.dx";
+    } else {
+        s = class'DXRMapVariants'.static.CleanupMapName(GetURLMap());
+    }
+    v = Location;
+    mult = GetDXR().flags.coords_mult;
+    v.X /= mult.X;
+    v.Y /= mult.Y;
+    v.Z /= mult.Z;
+    log("Mirror cheat "$v@GetURLMap()@s@Location@mult@v);
+    class'DynamicTeleporter'.static.SetDestPos(self, v);
+    Level.Game.SendPlayer(Self, s);
+}
+
 //========= MUSIC STUFF
 function _ClientSetMusic( music NewSong, byte NewSection, byte NewCdTrack, EMusicTransition NewTransition )
 {
