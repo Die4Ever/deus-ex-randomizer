@@ -420,7 +420,7 @@ function RandoEnter()
 
     IsTravel = flagbase.GetBool('PlayerTraveling');
 
-    flagName = flagbase.StringToName("M"$StripMapName(localURL)$"_Randomized");
+    flagName = flagbase.StringToName("M"$StripMapName(GetURLMap())$"_Randomized");
     if (!flagbase.GetBool(flagName))
     {
         firstTime = True;

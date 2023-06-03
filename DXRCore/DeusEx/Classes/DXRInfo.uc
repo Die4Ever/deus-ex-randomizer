@@ -197,10 +197,7 @@ simulated static final function string StripMapName(string s)
     local string stripped;
     local int i;
     for(i=0; i<Len(s); i++) {
-        if(Mid(s, i, 1) == "_")
-            stripped = stripped $ Mid(s, i, 1);
-        else
-            stripped = stripped $ ToAlphaNumeric(s, i);
+        stripped = stripped $ ToAlphaNumeric(s, i);
     }
     return stripped;
 }
@@ -436,7 +433,7 @@ simulated static final function string ToAlphaNumeric(coerce string Text, int in
         return Mid(Text, index, 1);
     if( c>=97 && c<=122) // a-z
         return Mid(Text, index, 1);
-    return "-";
+    return "_";
 }
 
 /*
