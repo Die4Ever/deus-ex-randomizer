@@ -166,6 +166,9 @@ static function LevelInit(DXRando dxr)
 {
     local int newMissionNum;
 
+    dxr.dxInfo.mapName = class'DXRMapVariants'.static.CleanupMapName(dxr.dxInfo.mapName);
+    dxr.localURL = Caps(dxr.dxInfo.mapName);
+
     newMissionNum = class'DXRMapInfo'.static.GetMissionNumber(dxr.localURL);
     if( newMissionNum != 0 && newMissionNum != dxr.dxInfo.missionNumber ) {
         log("LevelInit("$dxr$") dxr.localURL: "$dxr.localURL$", newMissionNum: "$ newMissionNum $", dxr.dxInfo.missionNumber: "$dxr.dxInfo.missionNumber, 'DXRBacktracking');

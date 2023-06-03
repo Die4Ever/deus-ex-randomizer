@@ -25,6 +25,25 @@ static function vector GetCoordsMult(string map)
     return vect(1,1,1);
 }
 
+static function string CleanupMapName(string mapName)
+{// do this when entering a level, called by DXRBacktracking LevelInit
+    local vector v;
+    local string s, ret;
+    v = GetCoordsMult(mapName);
+    s = "_" $ TrimTrailingZeros(v.X);
+    s = s $ "_" $ TrimTrailingZeros(v.Y);
+    s = s $ "_" $ TrimTrailingZeros(v.Z);
+    ret = ReplaceText(mapName, s, "");
+    log("CleanupMapName ReplaceText("$mapName$", "$s$", \"\") == "$ret, 'DXRMapVariants');
+    return ret;
+}
+
+function PreTravel()
+{// make the localURL match the filename, so saved data works correctly
+    Super.PreTravel();
+    dxr.dxInfo.mapName = GetURLMap();
+}
+
 simulated function FirstEntry()
 {
     local Teleporter t;
@@ -73,13 +92,15 @@ function string VaryMap(string map)
     return map $"_-1_1_1";
 }
 
-function TestCoords(string map, float x, float y, float z)
+function TestCoords(string mapName, string map, float x, float y, float z)
 {
     local vector v;
     v = GetCoordsMult(map);
     testfloat(v.X, x, map $ " X");
     testfloat(v.Y, y, map $ " Y");
     testfloat(v.Z, z, map $ " Z");
+
+    teststring(CleanupMapName(map), mapName, "CleanupMapName "$mapName);
 }
 
 function ExtendedTests()
@@ -88,12 +109,12 @@ function ExtendedTests()
     v = GetCoordsMult(GetURLMap());
     l(GetURLMap() @ v);
 
-    TestCoords("02_NYC_BatteryPark_-1_1_1.dx", -1, 1, 1);
-    TestCoords("DX.dx", 1,1,1);
-    TestCoords("02_NYC_BatteryPark.dx", 1,1,1);
-    TestCoords("02_NYC_BatteryPark_Test.dx", 1,1,1);
-    TestCoords("02_NYC_BatteryPark_1_1_1.dx", 1,1,1);
-    TestCoords("02_NYC_BatteryPark_0.1_1.2_-1.3.dx", 0.1, 1.2, -1.3);
+    TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark_-1_1_1.dx", -1, 1, 1);
+    TestCoords("DX.dx", "DX.dx", 1,1,1);
+    TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark.dx", 1,1,1);
+    TestCoords("02_NYC_BatteryPark_Test.dx", "02_NYC_BatteryPark_Test.dx", 1,1,1);
+    TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark_1_1_1.dx", 1,1,1);
+    TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark_0.1_1.2_-1.3.dx", 0.1, 1.2, -1.3);
 
     teststring(VaryURL("test#"), "test_-1_1_1#", "VaryURL");
     teststring(VaryURL("test"), "test_-1_1_1", "VaryURL");

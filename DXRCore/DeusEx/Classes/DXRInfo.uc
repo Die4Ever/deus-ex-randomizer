@@ -202,7 +202,7 @@ simulated static final function string StripMapName(string s)
         else
             stripped = stripped $ ToAlphaNumeric(s, i);
     }
-    return s;
+    return stripped;
 }
 
 simulated static function string UnpackString(out string s)
