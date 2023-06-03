@@ -174,10 +174,15 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'arctrigger',vectm(0,0,0));
 
         bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vectm(5347.652344,-4286.462402,328),100,40);
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vectm(584.657654,-4306.718750,328),100,40);
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vectm(-2228.463379,-2148.080078,328),100,40);
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vectm(-2225.839600,3800.267578,328),100,40);
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vectm(5339.792969,3815.784912,328),100,40);
+        bt.bDestroyOthers=False;
 
         break;
     case "03_NYC_AIRFIELDHELIBASE":
@@ -359,14 +364,19 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(445,-1032,24),80,40);  //Pottery Store
         bt.Tag='WanChaiPottery';
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(640,-1093,200),100,40);  //Tea House
         bt.Tag='WanChaiTea';
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(-6,-1416,40),250,40);  //Butcher (Louis Pan works for him too)
         bt.Tag='WanChaiButcher';
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(910,-643,40),150,40);  //News Stand
         bt.Tag='WanChaiNews';
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(632,-532,40),130,40);  //Flower Shop
         bt.Tag='WanChaiFlowers';
+        bt.bDestroyOthers=False;
 
 
         break;
@@ -446,7 +456,9 @@ function SetWatchFlags() {
         bt.Tag = 'Crane';
 
         bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(1937,0,1438),100,40);
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(-1791,1082,1423),100,40);
+        bt.bDestroyOthers=False;
 
         bt = class'BingoTrigger'.static.Create(self,'CaptainBed',vectm(2887,58,960),30,40);
 
@@ -647,19 +659,26 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vectm(0,0,0));
         bt.Tag='node1';
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vectm(0,0,0));
         bt.Tag='node2';
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vectm(0,0,0));
         bt.Tag='node3';
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vectm(0,0,0));
         bt.Tag='node4';
+        bt.bDestroyOthers=False;
 
         bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vectm(0,0,0));
         bt.Tag='UC_shutdoor1';
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vectm(0,0,0));
         bt.Tag='UC_shutdoor2';
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vectm(0,0,0));
         bt.Tag='UC_shutdoor3';
+        bt.bDestroyOthers=False;
 
         break;
     }

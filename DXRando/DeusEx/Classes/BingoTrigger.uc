@@ -4,6 +4,7 @@
 class BingoTrigger expands Trigger;
 
 var() String bingoEvent;
+var() bool bDestroyOthers;
 
 function Trigger(Actor Other, Pawn Instigator)
 {
@@ -47,8 +48,12 @@ function DoBingoThing()
     }
 
     if (bTriggerOnceOnly) {
-        foreach AllActors(class'BingoTrigger',bt,Tag){
-            bt.SelfDestruct();
+        if (bDestroyOthers){
+            foreach AllActors(class'BingoTrigger',bt,Tag){
+                bt.SelfDestruct();
+            }
+        } else {
+            SelfDestruct();
         }
     }
 }
@@ -93,4 +98,5 @@ defaultproperties
 {
      bingoEvent=""
      bTriggerOnceOnly=True
+     bDestroyOthers=True
 }
