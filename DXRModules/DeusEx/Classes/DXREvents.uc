@@ -1596,6 +1596,87 @@ function ReadText(name textTag)
     }
 }
 
+function string RemapBingoEvent(string eventname)
+{
+    ///////////////////////////////////////////////////////
+    ////  MAKE SURE YOU DON'T FALL THROUGH YOUR CASE!  ////
+    ///////////////////////////////////////////////////////
+
+    switch(eventname) {
+        case "ManBathroomBarks_Played":
+            return "BathroomBarks_Played";// LDDP
+        case "hostage_female_Dead":
+        case "hostage_Dead":
+            return "paris_hostage_Dead";
+        case "KnowsAnnasKillphrase1":
+        case "KnowsAnnasKillphrase2":
+            return "KnowsAnnasKillphrase";
+        case "SecurityBot3_ClassDead":
+        case "SecurityBot4_ClassDead":
+            return "SecurityBotSmall_ClassDead";
+        case "SpiderBot2_ClassDead":
+            return "SpiderBot_ClassDead";
+        case "LDDPRussPaid":
+        case "ClubMercedesConvo1_Done":
+            return "ClubEntryPaid";
+        case "LDDPAchilleDone":
+            return "CamilleConvosDone";
+        case "KarkianBaby_ClassDead":
+            return "Karkian_ClassDead";
+        case "AmbrosiaTagged":
+        case "BoatDocksAmbrosia":
+        case "HelicopterBaseAmbrosia":
+        case "747Ambrosia":
+            return "StolenAmbrosia";
+        case "PlayerKilledLebedev":
+            //Check to make sure he wasn't knocked out
+            if (dxr.flagbase.GetBool('JuanLebedev_Unconscious')) {
+                return ""; //Don't mark this event if knocked out
+            }
+            return "PlayerKilledLebedev";
+        case "UNATCOClone1_ClassDead":
+        case "UNATCOClone2_ClassDead":
+        case "UNATCOClone3_ClassDead":
+        case "UNATCOClone4_ClassDead":
+            return "UNATCOTroop_ClassDead";
+        case "NSFClone1_ClassDead":
+        case "NSFClone2_ClassDead":
+        case "NSFClone3_ClassDead":
+        case "NSFClone4_ClassDead":
+            return "Terrorist_ClassDead";
+        case "MJ12Clone1_ClassDead":
+        case "MJ12Clone2_ClassDead":
+        case "MJ12Clone3_ClassDead":
+        case "MJ12Clone4_ClassDead":
+            return "MJ12Troop_ClassDead";
+        case "UNATCOClone1_ClassUnconscious":
+        case "UNATCOClone2_ClassUnconscious":
+        case "UNATCOClone3_ClassUnconscious":
+        case "UNATCOClone4_ClassUnconscious":
+            return "UNATCOTroop_ClassUnconscious";
+        case "NSFClone1_ClassUnconscious":
+        case "NSFClone2_ClassUnconscious":
+        case "NSFClone3_ClassUnconscious":
+        case "NSFClone4_ClassUnconscious":
+            return "Terrorist_ClassUnconscious";
+        case "MJ12Clone1_ClassUnconscious":
+        case "MJ12Clone2_ClassUnconscious":
+        case "MJ12Clone3_ClassUnconscious":
+        case "MJ12Clone4_ClassUnconscious":
+            return "MJ12Troop_ClassUnconscious";
+        case "DXRMedicalBot_ClassDead":
+            return "MedicalBot_ClassDead";
+        case "DXRRepairBot_ClassDead":
+            return "RepairBot_ClassDead";
+        case "FrenchGray_ClassDead":
+            return "Gray_ClassDead";
+        default:
+            return eventname;
+    }
+    return eventname;
+
+}
+
 function _MarkBingo(coerce string eventname)
 {
     local int previousbingos, nowbingos, time;
@@ -1605,74 +1686,11 @@ function _MarkBingo(coerce string eventname)
     js = class'Json';
 
     // combine some events
-    switch(eventname) {
-        case "ManBathroomBarks_Played":
-            eventname = "BathroomBarks_Played";// LDDP
-            break;
-        case "hostage_female_Dead":
-        case "hostage_Dead":
-            eventname = "paris_hostage_Dead";
-            break;
-        case "KnowsAnnasKillphrase1":
-        case "KnowsAnnasKillphrase2":
-            eventname = "KnowsAnnasKillphrase";
-            break;
-        case "SecurityBot3_ClassDead":
-        case "SecurityBot4_ClassDead":
-            eventname = "SecurityBotSmall_ClassDead";
-            break;
-        case "SpiderBot2_ClassDead":
-            eventname="SpiderBot_ClassDead";
-            break;
-        case "LDDPRussPaid":
-        case "ClubMercedesConvo1_Done":
-            eventname="ClubEntryPaid";
-            break;
-        case "LDDPAchilleDone":
-            eventname="CamilleConvosDone";
-            break;
-        case "KarkianBaby_ClassDead":
-            eventname="Karkian_ClassDead";
-            break;
-        case "AmbrosiaTagged":
-        case "BoatDocksAmbrosia":
-        case "HelicopterBaseAmbrosia":
-        case "747Ambrosia":
-            eventname="StolenAmbrosia";
-            break;
-        case "PlayerKilledLebedev":
-            //Check to make sure he wasn't knocked out
-            if (dxr.flagbase.GetBool('JuanLebedev_Unconscious')) {
-                return; //Don't mark this event if knocked out
-            }
-            break;
-        case "UNATCOClone1_ClassDead":
-        case "UNATCOClone2_ClassDead":
-        case "UNATCOClone3_ClassDead":
-        case "UNATCOClone4_ClassDead":
-            eventname="UNATCOTroop_ClassDead";
-            break;
-        case "NSFClone1_ClassDead":
-        case "NSFClone2_ClassDead":
-        case "NSFClone3_ClassDead":
-        case "NSFClone4_ClassDead":
-            eventname="Terrorist_ClassDead";
-            break;
-        case "MJ12Clone1_ClassDead":
-        case "MJ12Clone2_ClassDead":
-        case "MJ12Clone3_ClassDead":
-        case "MJ12Clone4_ClassDead":
-            eventname="MJ12Troop_ClassDead";
-            break;
-        case "DXRMedicalBot_ClassDead":
-            eventname="MedicalBot_ClassDead";
-            break;
-        case "DXRRepairBot_ClassDead":
-            eventname="RepairBot_ClassDead";
-            break;
-        case "FrenchGray_ClassDead":
-            eventname="Gray_ClassDead";
-            break;
+    eventname=RemapBingoEvent(eventname);
+
+    //Remapping can also block an event from being marked
+    if (eventname==""){
+        return;
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
