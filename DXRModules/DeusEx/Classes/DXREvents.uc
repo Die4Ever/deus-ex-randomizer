@@ -142,7 +142,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
-        foreach AllActors(class'DeusExMover',dxm,'mirrordoor'){
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'mirrordoor'){
             dxm.Event='mirrordoorout';
         }
 
@@ -237,7 +237,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
-        foreach AllActors(class'DeusExMover',dxm,'mirrordoor'){
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'mirrordoor'){
             dxm.Event='mirrordoorout';
         }
         break;
@@ -439,7 +439,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
         bt.Tag = 'mirrordoorout';
-        foreach AllActors(class'DeusExMover',dxm,'mirrordoor'){
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'mirrordoor'){
             dxm.Event='mirrordoorout';
         }
         break;
