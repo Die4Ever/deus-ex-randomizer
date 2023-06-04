@@ -545,21 +545,28 @@ exec function Mirror()
 {
     local string s;
     local vector v, mult;
+    local DXRMapVariants maps;
 
     flagBase.SetBool('PlayerTraveling', True, True, 0);
-    v = class'DXRMapVariants'.static.GetCoordsMult(GetURLMap());
+    maps = DXRMapVariants(DXRFindModule(class'DXRMapVariants'));
+    if(maps == None) {
+        log("ERROR: Mirror cheat failed to find DXRMapVariants");
+        return;
+    }
+
+    v = maps.GetCoordsMult(GetURLMap());
     if(v.X==1 && v.Y==1) {
         s = GetDXR().localURL $ "_-1_1_1.dx";
     } else {
-        s = class'DXRMapVariants'.static.CleanupMapName(GetURLMap());
+        s = maps.CleanupMapName(GetURLMap());
     }
     v = Location;
-    mult = GetDXR().flags.coords_mult;
+    mult = maps.coords_mult;
     v.X /= mult.X;
     v.Y /= mult.Y;
     v.Z /= mult.Z;
-    log("Mirror cheat "$v@GetURLMap()@s@Location@mult@v);
     class'DynamicTeleporter'.static.SetDestPos(self, v);
+    log("Mirror cheat "$maps@v@GetURLMap()@s@Location@mult@v);
     Level.Game.SendPlayer(Self, s);
 }
 

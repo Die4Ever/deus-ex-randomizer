@@ -21,6 +21,10 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_ToggleMemes');
     // TODO: simulated crowd control strength
 
+    if(#defined(injections)) {
+        CreateChoice(class'MenuChoice_MirrorMaps');
+    }
+
     if(!#defined(revision)) {
         CreateChoice(class'MenuChoice_ContinuousMusic');
         CreateChoice(class'MenuChoice_RandomMusic');

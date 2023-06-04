@@ -371,6 +371,7 @@ simulated static final function string ReplaceText(coerce string Text, coerce st
     local string Output, capsReplace;
 
     replace_len = Len(Replace);
+    if(replace_len == 0) return Text;
     capsReplace = Caps(Replace);
 
     i = WordInStr( Caps(Text), capsReplace, replace_len, word );

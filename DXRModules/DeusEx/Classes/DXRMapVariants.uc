@@ -1,5 +1,33 @@
 class DXRMapVariants extends DXRBase transient;
 
+static function bool MirrorMapsAvailable()
+{
+    local GameDirectory mapDir;
+    local bool ret;
+    local int mapIndex;
+    local String mapFileName;
+    local vector v;
+
+    // Create our Map Directory class
+    mapDir = new(None) Class'GameDirectory';
+    mapDir.SetDirType(mapDir.EGameDirectoryTypes.GD_Maps);
+    mapDir.GetGameDirectory();
+
+    for( mapIndex=0; mapIndex<mapDir.GetDirCount(); mapIndex++)
+    {
+        mapFileName = mapDir.GetDirFilename(mapIndex);
+        v = GetCoordsMult(mapFileName);
+        if(v.X<0 || v.Y<0) {
+            ret = true;
+            break;
+        }
+    }
+
+    CriticalDelete( mapDir );
+    mapDir = None;
+    return ret;
+}
+
 static function vector GetCoordsMult(string map)
 {// DXRBase calls this in Init
     local vector v;
@@ -25,17 +53,31 @@ static function vector GetCoordsMult(string map)
     return vect(1,1,1);
 }
 
+static function string GetMapPostfix(vector v)
+{
+    local string s;
+    if(v.X!=1 || v.Y!=1 || v.Z!=1) {
+        s = "_" $ TrimTrailingZeros(v.X);
+        s = s $ "_" $ TrimTrailingZeros(v.Y);
+        s = s $ "_" $ TrimTrailingZeros(v.Z);
+    }
+    return s;
+}
+
 static function string CleanupMapName(string mapName)
 {// do this when entering a level, called by DXRBacktracking LevelInit
     local vector v;
     local string s, ret;
     v = GetCoordsMult(mapName);
-    s = "_" $ TrimTrailingZeros(v.X);
-    s = s $ "_" $ TrimTrailingZeros(v.Y);
-    s = s $ "_" $ TrimTrailingZeros(v.Z);
+    s = GetMapPostfix(v);
     ret = ReplaceText(mapName, s, "");
     log("CleanupMapName ReplaceText("$mapName$", "$s$", \"\") == "$ret, 'DXRMapVariants');
     return ret;
+}
+
+static function string GetDirtyMapName(string map, vector v)
+{
+    return map $ GetMapPostfix(v);
 }
 
 function PreTravel()
@@ -44,12 +86,15 @@ function PreTravel()
     dxr.dxInfo.mapName = GetURLMap();
 }
 
+function int GetMirrorMapsSetting()
+{
+    return int(ConsoleCommand("get #var(package).MenuChoice_MirrorMaps mirror_maps"));
+}
+
 simulated function FirstEntry()
 {
     local Teleporter t;
     local MapExit me;
-
-    player().strStartMap = VaryMap(player().strStartMap);
 
     foreach AllActors(class'Teleporter', t) {
         t.URL = VaryURL(t.URL);
@@ -57,6 +102,11 @@ simulated function FirstEntry()
     foreach AllActors(class'MapExit', me) {
         me.DestMap = VaryURL(me.DestMap);
     }
+}
+
+function PlayerAnyEntry(#var(PlayerPawn) p)
+{
+    p.strStartMap = VaryMap(p.strStartMap);
 }
 
 simulated function AnyEntry()
@@ -89,7 +139,15 @@ function string VaryURL(string url)
 
 function string VaryMap(string map)
 {
-    return map $"_-1_1_1";
+    switch(GetMirrorMapsSetting()) {
+    case class'MenuChoice_MirrorMaps'.default.mirror_only:
+        return map $"_-1_1_1";
+    case class'MenuChoice_MirrorMaps'.default.enabled:
+        SetGlobalSeed("DXRMapVariants VaryMap " $ map);
+        if(rngb())
+            return map $"_-1_1_1";
+    }
+    return map;
 }
 
 function TestCoords(string mapName, string map, float x, float y, float z)
@@ -106,6 +164,7 @@ function TestCoords(string mapName, string map, float x, float y, float z)
 function ExtendedTests()
 {
     local vector v;
+    local int oldseed;
     v = GetCoordsMult(GetURLMap());
     l(GetURLMap() @ v);
 
@@ -113,10 +172,13 @@ function ExtendedTests()
     TestCoords("DX.dx", "DX.dx", 1,1,1);
     TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark.dx", 1,1,1);
     TestCoords("02_NYC_BatteryPark_Test.dx", "02_NYC_BatteryPark_Test.dx", 1,1,1);
-    TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark_1_1_1.dx", 1,1,1);
+    TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark_1_2_1.dx", 1,2,1);
     TestCoords("02_NYC_BatteryPark.dx", "02_NYC_BatteryPark_0.1_1.2_-1.3.dx", 0.1, 1.2, -1.3);
 
+    /*oldseed = dxr.seed;
+    dxr.seed = 111;// fragile dependency on rng
     teststring(VaryURL("test#"), "test_-1_1_1#", "VaryURL");
     teststring(VaryURL("test"), "test_-1_1_1", "VaryURL");
     teststring(VaryURL("test.dx"), "test_-1_1_1.dx", "VaryURL");
+    dxr.seed = oldseed;*/
 }

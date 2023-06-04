@@ -412,6 +412,7 @@ function RandoEnter()
     local bool firstTime;
     local name flagName;
     local bool IsTravel;
+    local string map;
 
     if( flagbase == None ) {
         err("RandoEnter() flagbase == None");
@@ -420,14 +421,18 @@ function RandoEnter()
 
     IsTravel = flagbase.GetBool('PlayerTraveling');
 
-    flagName = flagbase.StringToName("M"$StripMapName(GetURLMap())$"_Randomized");
+    map = localURL;
+#ifdef injections
+    map = class'DXRMapVariants'.static.GetDirtyMapName(map, flags.coords_mult);
+#endif
+    flagName = flagbase.StringToName("M"$StripMapName(map)$"_Randomized");
     if (!flagbase.GetBool(flagName))
     {
         firstTime = True;
         flagbase.SetBool(flagName, True,, dxInfo.missionNumber+1);
     }
 
-    info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL @ GetURLMap());
+    info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL @ map @ GetURLMap());
 
     if ( firstTime == true )
     {
