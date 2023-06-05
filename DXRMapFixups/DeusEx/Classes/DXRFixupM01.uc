@@ -49,21 +49,21 @@ function PreFirstEntryMapFixes()
 
         class'PlaceholderEnemy'.static.Create(self,vectm(-2374,543,-92), 17272, 'Standing');
         class'PlaceholderEnemy'.static.Create(self,vectm(-1211,198,-92), 25408, 'Standing');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-1843,5063,-96), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-3020,1878,-96), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(86,3088,-96), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(2879,4083,-96), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(6500,4609,-92), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(9398,2403,-92), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(7705,-2019,79), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(6618,-1526,320), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(2842,-3539,-96), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-1713,-5775,-92), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(1402,56,800), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(2231,985,1088), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(3777,-689,1088), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(4111,3260,512), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-229,1438,512), 0, 'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1843,5063,-96), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-3020,1878,-96), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(86,3088,-96), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(2879,4083,-96), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(6500,4609,-92), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(9398,2403,-92), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(7705,-2019,79), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(6618,-1526,320), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(2842,-3539,-96), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1713,-5775,-92), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(1402,56,800), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(2231,985,1088), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(3777,-689,1088), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(4111,3260,512), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-229,1438,512), 0);
         class'PlaceholderEnemy'.static.Create(self,vectm(2766,317,2528), 0, 'Standing');
         break;
 

@@ -39,12 +39,12 @@ function PreFirstEntryMapFixes()
             GlowUp(k);
         break;
     case "02_NYC_WAREHOUSE":
-        class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(1814,-1842,48), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-31,-1485,48), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(1121,-1095,-144), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(467,-214,-144), 0, 'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(1814,-1842,48), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-31,-1485,48), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(1121,-1095,-144), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(467,-214,-144), 0);
         break;
 #endif
 

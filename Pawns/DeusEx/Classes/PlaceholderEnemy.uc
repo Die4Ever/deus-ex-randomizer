@@ -19,4 +19,5 @@ defaultproperties
 {
     Mesh=LodMesh'DeusExItems.TestBox'
     InitialAlliances(0)=(AllianceName=Player,AllianceLevel=-1.000000)
+    orders=DynamicPatrolling
 }

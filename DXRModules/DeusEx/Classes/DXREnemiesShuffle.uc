@@ -80,8 +80,7 @@ function SwapScriptedPawns(int percent, bool enemies)
 #ifdef gmdx
         if( SpiderBot2(a) != None && SpiderBot2(a).bUpsideDown ) continue;
 #endif
-        if(PlaceholderEnemy(a) != None && a.Orders == 'Wandering')
-            a.Orders = 'DynamicPatrolling';// we pick these up later in DXREnemiesPatrols
+
         temp[num++] = a;
     }
 

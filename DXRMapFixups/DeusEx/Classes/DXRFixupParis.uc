@@ -49,10 +49,10 @@ function PreFirstEntryMapFixes()
         AddSwitch( vectm(897.238892, -120.852928, -9.965580), rotm(0,0,0), 'catacombs_blastdoor02' );
         AddSwitch( vectm(-2190.893799, 1203.199097, -6.663990), rotm(0,0,0), 'catacombs_blastdoorB' );
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32), 0, 'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32), 0);
 
         break;
 
@@ -142,7 +142,7 @@ function AnyEntryMapFixes()
         // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
         npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
         if(npcs != None) {
-            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vectm(-3209.483154, 5190.826172,1199.610352), rotm(0, -10000, 0), class'#var(prefix)HazMatSuit');
+            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vectm(-3209.483154, 5190.826172,1199.610352), rotm(0, -10000, 0, 16384), class'#var(prefix)HazMatSuit');
             m = Merchant(sp);
             if (m!=None){  // CreateForcedMerchant returns None if he already existed, but we still need to call it to recreate the conversation since those are transient
                 m.MakeFrench();

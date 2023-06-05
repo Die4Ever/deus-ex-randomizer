@@ -369,17 +369,11 @@ simulated function vector vectm(float x, float y, float z)
 simulated function rotator rotm(int p, int y, int roll, optional int offset)
 {
     local Rotator r;
-    // TODO: only works for X or Y mirrors
-    if(coords_mult.X < 0 && coords_mult.Y > 0) {
+    // TODO: only works for X or Y mirrors, haven't tested Y mirrors
+    if( (coords_mult.X < 0 && coords_mult.Y > 0) || (coords_mult.X > 0 && coords_mult.Y < 0)) {
         y += offset;
         y = imod(y, 65535) * -1;
         y -= offset;
-        y = imod(y, 65535);
-    }
-    else if(coords_mult.X > 0 && coords_mult.Y < 0) {
-        y -= offset;
-        y = imod(y, 65535) * -1;
-        y += offset;
         y = imod(y, 65535);
     }
     r.Pitch = p;

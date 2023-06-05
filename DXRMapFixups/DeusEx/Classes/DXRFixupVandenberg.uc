@@ -26,11 +26,11 @@ function PreFirstEntryMapFixes()
             RemoveFears(tt);// he looks pretty sick
         }
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(-2467,866,-2000), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-2689,4765,-2143), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-163,7797,-2143), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(2512,6140,-2162), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(2267,643,-2000), 0, 'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-2467,866,-2000), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-2689,4765,-2143), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-163,7797,-2143), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(2512,6140,-2162), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(2267,643,-2000), 0);
 
         sl = #var(prefix)ShopLight(_AddActor(self, class'#var(prefix)ShopLight', vectm(1.125000, 938.399963, -1025), rotm(0, 16384, 0)));
         sl.bInvincible = true;
@@ -146,11 +146,11 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(-264,-6991,-553), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-312,-6886,327), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(-1257,-3472,1468), 0, 'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(1021,-3323,1476), 0, 'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-264,-6991,-553), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-312,-6886,327), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1257,-3472,1468), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(1021,-3323,1476), 0);
 
         break;
     case "12_VANDENBERG_COMPUTER":
@@ -160,7 +160,7 @@ function PreFirstEntryMapFixes()
         break;
 
     case "12_VANDENBERG_GAS":
-        class'PlaceholderEnemy'.static.Create(self,vectm(635,488,-930), 0, 'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(635,488,-930), 0);
 
         break;
 #endif
