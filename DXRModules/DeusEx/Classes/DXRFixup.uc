@@ -408,7 +408,7 @@ function SpawnDatacubes()
     for(i=0; i<ArrayCount(add_datacubes); i++) {
         if( dxr.localURL != add_datacubes[i].map ) continue;
 
-        loc = add_datacubes[i].location;
+        loc = add_datacubes[i].location * coords_mult;
         if( loc.X == 0 && loc.Y == 0 && loc.Z == 0 )
             loc = GetRandomPosition();
 
