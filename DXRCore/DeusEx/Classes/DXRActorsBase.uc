@@ -349,7 +349,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
 
     nextItem = item.Inventory;
     player = #var(PlayerPawn)(item.owner);
-    info("MoveNextItemTo found: "$item$"("$item.Location$") with owner: "$item.owner$", nextItem: "$nextItem);
+    info("MoveNextItemTo found: " $ item $ "(" $ item.Location $ ") with owner: " $ item.owner $ ", nextItem: " $ nextItem);
 
     //== Y|y: Turn off any charged pickups we were using and remove the associated HUD.  Per Lork on the OTP forums
     if(player != None) {
