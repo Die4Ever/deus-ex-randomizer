@@ -81,5 +81,5 @@ defaultproperties
     enabled=1
     mirror_only=2
     HelpText="Enable mirrored maps if you have the files downloaded for them."
-    actionText="Mirror Maps"
+    actionText="Mirror Maps (Alpha)"
 }

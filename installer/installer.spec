@@ -8,8 +8,10 @@ console = False
 # unfortunately runtime_hooks is not relative to the location of the spec file, but everything else is
 if Path('add_lib_path.py').exists():
     runtime_hooks=['add_lib_path.py']
-else:
+elif Path('installer/add_lib_path.py').exists():
     runtime_hooks=['installer/add_lib_path.py']
+else:
+    raise Exception('failed to find add_lib_path.py')
 
 # we can also create an exe for bingo in the same folder
 a_installer = Analysis(

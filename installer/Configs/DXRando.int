@@ -35,7 +35,7 @@ IDC_DetailNote=You may change these options from the game's "Preferences" window
 
 [IDDIALOG_ConfigPageFirstTime]
 IDC_ConfigPageFirstTime=
-IDC_Prompt=DXRando is starting up for the first time.  If you experience any problems, please read the release notes in the "Programs / Launch" section of the Windows "Start" menu.
+IDC_Prompt=DXRando is starting up for the first time.  If you experience any problems, please report a bug on our Github or in our Discord.
 
 [IDDIALOG_ConfigPageRenderer]
 IDC_ConfigPageRenderer=
