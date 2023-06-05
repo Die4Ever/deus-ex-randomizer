@@ -139,9 +139,9 @@ function PreFirstEntryMapFixes()
             c.bIsSecretGoal = true;
         }
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(3292,4792,48), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(4610,6714,1408), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(3209,2333,48), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(3292,4792,48));
+        class'PlaceholderEnemy'.static.Create(self,vectm(4610,6714,1408));
+        class'PlaceholderEnemy'.static.Create(self,vectm(3209,2333,48));
 
         break;
 

@@ -59,10 +59,10 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(6618,-1526,320), 0);
         class'PlaceholderEnemy'.static.Create(self,vectm(2842,-3539,-96), 0);
         class'PlaceholderEnemy'.static.Create(self,vectm(-1713,-5775,-92), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(1402,56,800), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(2231,985,1088), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(1402,56,800));
+        class'PlaceholderEnemy'.static.Create(self,vectm(2231,985,1088));
         class'PlaceholderEnemy'.static.Create(self,vectm(3777,-689,1088), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(4111,3260,512), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(4111,3260,512));
         class'PlaceholderEnemy'.static.Create(self,vectm(-229,1438,512), 0);
         class'PlaceholderEnemy'.static.Create(self,vectm(2766,317,2528), 0, 'Standing');
         break;
