@@ -55,9 +55,9 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
+        class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
         class'PlaceholderEnemy'.static.Create(self,vectm(2036,122,816));
 
 #endif

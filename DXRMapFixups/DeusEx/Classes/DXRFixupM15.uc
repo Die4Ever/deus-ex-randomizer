@@ -130,9 +130,9 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(520.26,-1482.3,-453)); //Boxes in Hangar
         Spawn(class'PlaceholderItem',,, vectm(1017.5,-1842.1,-453)); //Boxes in Hangar near enemies
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(-2237,3225,-192), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(4234,3569,-736), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(3744,-1030,-7481), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-2237,3225,-192));
+        class'PlaceholderEnemy'.static.Create(self,vectm(4234,3569,-736));
+        class'PlaceholderEnemy'.static.Create(self,vectm(3744,-1030,-7481));
 
         break;
 
@@ -177,9 +177,9 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(-4253.9,771.4,-1564)); //Under staircase near Helios
         Spawn(class'PlaceholderContainer',,, vectm(-3040,-4960,-1607)); //Reactor control room
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(-5113,-989,-1995), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(-5899,-1112,-1323), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(-4795,-1596,-1357), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-5113,-989,-1995));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-5899,-1112,-1323));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-4795,-1596,-1357));
 
         break;
 
@@ -213,9 +213,9 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(18.6,1220.4,-149)); //Boxes near cherry picker
         Spawn(class'PlaceholderItem',,, vectm(-1712.9,191.25,26)); //In front of ambush elevator
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(4623,210,-176), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(3314,2196,-176), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(-190,-694,-180), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(4623,210,-176));
+        class'PlaceholderEnemy'.static.Create(self,vectm(3314,2196,-176));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-190,-694,-180));
 
         break;
 

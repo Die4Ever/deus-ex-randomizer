@@ -49,10 +49,10 @@ function PreFirstEntryMapFixes()
         AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
         AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64), 0);
-        class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32), 0);
+        class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
+        class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
 
         break;
 
