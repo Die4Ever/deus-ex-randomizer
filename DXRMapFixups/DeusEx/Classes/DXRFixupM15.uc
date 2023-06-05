@@ -70,7 +70,7 @@ function PreFirstEntryMapFixes()
     {
     case "15_AREA51_BUNKER":
         // doors_lower is for backtracking
-        AddSwitch( vectm(4309.076660, -1230.640503, -7522.298340), rotm(0, 16384, 0), 'doors_lower');
+        AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
         player().DeleteAllGoals();
 
         //Change vent entry security computer password so it isn't pre-known
@@ -141,9 +141,9 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'DeusExMover', d, 'Generator_overload') {
             d.move(vectm(0, 0, -1));
         }
-        AddSwitch( vectm(-5112.805176, -2495.639893, -1364), rotm(0, 16384, 0), 'blastdoor_final');// just in case the dialog fails
-        AddSwitch( vectm(-5112.805176, -2530.276123, -1364), rotm(0, -16384, 0), 'blastdoor_final');// for backtracking
-        AddSwitch( vectm(-3745, -1114, -1950), rotm(0,0,0), 'Page_Blastdoors' );
+        AddSwitch( vect(-5112.805176, -2495.639893, -1364), rot(0, 16384, 0), 'blastdoor_final');// just in case the dialog fails
+        AddSwitch( vect(-5112.805176, -2530.276123, -1364), rot(0, -16384, 0), 'blastdoor_final');// for backtracking
+        AddSwitch( vect(-3745, -1114, -1950), rot(0,0,0), 'Page_Blastdoors' );
 
         foreach AllActors(class'DeusExMover', d, 'doors_lower') {
             d.bLocked = false;
@@ -187,7 +187,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'DeusExMover', d, 'DeusExMover') {
             if( d.Name == 'DeusExMover20' ) d.Tag = 'final_door';
         }
-        AddSwitch( vectm(-867.193420, 244.553101, 17.622702), rotm(0, 32768, 0), 'final_door');
+        AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');
 
         foreach AllActors(class'DeusExMover', d, 'doors_lower') {
             d.bLocked = false;

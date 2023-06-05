@@ -46,8 +46,8 @@ function PreFirstEntryMapFixes()
             if( t.Event == 'MJ12CommandoSpecial' )
                 t.Touch(player());// make this guy patrol instead of t-pose
 
-        AddSwitch( vectm(897.238892, -120.852928, -9.965580), rotm(0,0,0), 'catacombs_blastdoor02' );
-        AddSwitch( vectm(-2190.893799, 1203.199097, -6.663990), rotm(0,0,0), 'catacombs_blastdoorB' );
+        AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
+        AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
 
         class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32), 0);
         class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256), 0);
@@ -61,7 +61,7 @@ function PreFirstEntryMapFixes()
             m.Tag = 'everettsignaldoor';
         d = Spawn(class'Dispatcher',, 'everettsignal', vectm(176.275253, 4298.747559, -148.500031) );
         d.OutEvents[0] = 'everettsignaldoor';
-        AddSwitch( vectm(-769.359985, -4417.855469, -96.485504), rotm(0, 32768, 0), 'everettsignaldoor' );
+        AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
 
         //speed up the secret door...
         foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {

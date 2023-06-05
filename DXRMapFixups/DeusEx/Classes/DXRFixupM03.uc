@@ -9,15 +9,15 @@ function PostFirstEntryMapFixes()
     switch(dxr.localURL) {
 #ifndef revision
     case "03_NYC_BrooklynBridgeStation":
-        a = _AddActor(Self, class'Barrel1', vectm(-27.953907, -3493.229980, 45.101418), rotm(0,0,0));
+        a = AddActor(Self, class'Barrel1', vect(-27.953907, -3493.229980, 45.101418));
         Barrel1(a).SkinColor = SC_Explosive;
         a.BeginPlay();
         break;
 
     case "03_NYC_AirfieldHeliBase":
         //crates to get back over the beginning of the level
-        _AddActor(Self, class'#var(prefix)CrateUnbreakableSmall', vectm(-9463.387695, 3377.530029, 60), rotm(0,0,0));
-        _AddActor(Self, class'#var(prefix)CrateUnbreakableMed', vectm(-9461.959961, 3320.718750, 75), rotm(0,0,0));
+        AddActor(Self, class'#var(prefix)CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60));
+        AddActor(Self, class'#var(prefix)CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75));
         break;
 #endif
     }
@@ -59,24 +59,24 @@ function PreFirstEntryMapFixes()
         }
 
         //rebreather because of #TOOCEAN connection
-        _AddActor(Self, class'Rebreather', vectm(-936.151245, -3464.031006, 293.710968), rotm(0,0,0));
+        AddActor(Self, class'Rebreather', vect(-936.151245, -3464.031006, 293.710968));
 
         //Add some junk around the park so that there are some item locations outside of the shanty town
-        _AddActor(Self, class'Liquor40oz', vectm(933.56,-3554.86,279.04), rotm(0,0,0));
-        _AddActor(Self, class'Sodacan', vectm(2203.28,-3558.84,279.04), rotm(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vectm(-980.83,-3368.42,286.24), rotm(0,0,0));
-        _AddActor(Self, class'Cigarettes', vectm(-682.67,-3771.20,282.24), rotm(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vectm(-2165.67,-3546.039,285.30), rotm(0,0,0));
-        _AddActor(Self, class'Sodacan', vectm(-2170.83,-3094.94,330.24), rotm(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vectm(-3180.75,-3546.79,281.43), rotm(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vectm(-2619.56,-2540.80,330.25), rotm(0,0,0));
-        _AddActor(Self, class'Cigarettes', vectm(-3289.43,-919.07,360.80), rotm(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vectm(-2799.94,-922.68,361.86), rotm(0,0,0));
-        _AddActor(Self, class'Sodacan', vectm(800.76,1247.99,330.25), rotm(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vectm(1352.29,2432.98,361.58), rotm(0,0,0));
-        _AddActor(Self, class'Cigarettes', vectm(788.50,2359.26,360.63), rotm(0,0,0));
-        _AddActor(Self, class'Liquor40oz', vectm(3153.26,-310.73,326.25), rotm(0,0,0));
-        _AddActor(Self, class'Sodacan', vectm(-2132.21,1838.89,326.25), rotm(0,0,0));
+        AddActor(Self, class'Liquor40oz', vect(933.56,-3554.86,279.04));
+        AddActor(Self, class'Sodacan', vect(2203.28,-3558.84,279.04));
+        AddActor(Self, class'Liquor40oz', vect(-980.83,-3368.42,286.24));
+        AddActor(Self, class'Cigarettes', vect(-682.67,-3771.20,282.24));
+        AddActor(Self, class'Liquor40oz', vect(-2165.67,-3546.039,285.30));
+        AddActor(Self, class'Sodacan', vect(-2170.83,-3094.94,330.24));
+        AddActor(Self, class'Liquor40oz', vect(-3180.75,-3546.79,281.43));
+        AddActor(Self, class'Liquor40oz', vect(-2619.56,-2540.80,330.25));
+        AddActor(Self, class'Cigarettes', vect(-3289.43,-919.07,360.80));
+        AddActor(Self, class'Liquor40oz', vect(-2799.94,-922.68,361.86));
+        AddActor(Self, class'Sodacan', vect(800.76,1247.99,330.25));
+        AddActor(Self, class'Liquor40oz', vect(1352.29,2432.98,361.58));
+        AddActor(Self, class'Cigarettes', vect(788.50,2359.26,360.63));
+        AddActor(Self, class'Liquor40oz', vect(3153.26,-310.73,326.25));
+        AddActor(Self, class'Sodacan', vect(-2132.21,1838.89,326.25));
 
         break;
 
@@ -110,26 +110,26 @@ function PreFirstEntryMapFixes()
         }
 
         // Sewerdoor backtracking
-        AddSwitch( vectm(-6878.640137, 3623.358398, 150.903931), rotm(0,0,0), 'Sewerdoor');
+        AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
 
         //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
-        _AddActor(Self, class'Valve', vectm(-3105,-385,-210), rotm(0,0,16384));
-        a = _AddActor(Self, class'DynamicBlockPlayer', vectm(-3105,-385,-210), rotm(0,0,0));
+        AddActor(Self, class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
+        a = AddActor(Self, class'DynamicBlockPlayer', vect(-3105,-385,-210));
         SetActorScale(a, 1.3);
 
-        _AddActor(Self, class'Valve', vectm(-3080,-395,-170), rotm(0,0,16384));
-        a = _AddActor(Self, class'DynamicBlockPlayer', vectm(-3080,-395,-170), rotm(0,0,0));
+        AddActor(Self, class'Valve', vect(-3080,-395,-170), rot(0,0,16384));
+        a = AddActor(Self, class'DynamicBlockPlayer', vect(-3080,-395,-170));
         SetActorScale(a, 1.3);
 
-        _AddActor(Self, class'Valve', vectm(-3065,-405,-130), rotm(0,0,16384));
-        a = _AddActor(Self, class'DynamicBlockPlayer', vectm(-3065,-405,-130), rotm(0,0,0));
+        AddActor(Self, class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
+        a = AddActor(Self, class'DynamicBlockPlayer', vect(-3065,-405,-130));
         SetActorScale(a, 1.3);
 
         //rebreather because of #TOOCEAN connection
         Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
 
         //Button to extend sewer platform from the other side
-        AddSwitch( vectm(-5233.946289,3601.383545,161.851822), rotm(0, 16384, 0), 'MoveableBridge');
+        AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
 
         break;
 #endif
@@ -152,14 +152,14 @@ function PreFirstEntryMapFixes()
     case "03_NYC_BROOKLYNBRIDGESTATION":
         //Put a button behind the hidden bathroom door
         //Mostly for entrance rando, but just in case
-        AddSwitch( vectm(-1673, -1319.913574, 130.813538), rotm(0, 32767, 0), 'MoleHideoutOpened' );
+        AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
         break;
 
     case "03_NYC_MOLEPEOPLE":
         foreach AllActors(class'Mover', m, 'DeusExMover') {
             if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
         }
-        AddSwitch( vectm(3745, -2593.711914, 140.335358), rotm(0, 0, 0), 'BathroomDoor' );
+        AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
         break;
 #endif
 

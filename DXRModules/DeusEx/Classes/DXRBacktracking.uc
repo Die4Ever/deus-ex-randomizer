@@ -31,7 +31,7 @@ function PreFirstEntry()
             dt = Spawn(class'DynamicTeleporter',,'sewers_backtrack',vectm(1599.971558, -4694.342773, 13.399302));
             SetDestination(dt, "10_PARIS_CATACOMBS_TUNNELS", 'AmbientSound10');
             dt.SetCollisionSize(160,dt.CollisionHeight);
-            AddSwitch(vectm(1602.826904, -4318.841309, -250.365067), rotm(0, 16384, 0), 'sewers_backtrack');
+            AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
 
             foreach AllActors(class'MapExit', exit, 'ChopperExit') {
                 SetDestination(exit, "10_PARIS_CHATEAU", '', "Chateau_start");
@@ -75,7 +75,7 @@ function PreFirstEntry()
             SetDestination(dt, "15_area51_entrance", 'Light73');
             dt.SetCollisionSize(160,dt.CollisionHeight);
 
-            AddSwitch(vectm(-3907,-1116,-1958), rotm(0, 32800, 0), 'mainblastopencheck');
+            AddSwitch(vect(-3907,-1116,-1958), rot(0, 32800, 0), 'mainblastopencheck');
 
             //Switch triggers the doors if the Helios datalink has played (Talked to Helios)
             ft = Spawn(class'FlagTrigger',,,vectm(-3907,-1116,-1958));

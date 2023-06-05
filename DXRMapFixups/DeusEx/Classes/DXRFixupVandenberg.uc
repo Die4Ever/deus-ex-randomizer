@@ -32,7 +32,7 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(2512,6140,-2162), 0);
         class'PlaceholderEnemy'.static.Create(self,vectm(2267,643,-2000), 0);
 
-        sl = #var(prefix)ShopLight(_AddActor(self, class'#var(prefix)ShopLight', vectm(1.125000, 938.399963, -1025), rotm(0, 16384, 0)));
+        sl = #var(prefix)ShopLight(AddActor(self, class'#var(prefix)ShopLight', vect(1.125000, 938.399963, -1025), rot(0, 16384, 0)));
         sl.bInvincible = true;
         sl.bCanBeBase = true;
         break;
@@ -43,7 +43,7 @@ function PreFirstEntryMapFixes()
             e.BumpType = BT_PlayerBump;
             e.BumpEvent = 'SC_Door3_opened';
         }
-        AddSwitch( vectm(-396.634888, 2295, -2542.310547), rotm(0, -16384, 0), 'SC_Door3_opened').bCollideWorld = false;
+        AddSwitch( vect(-396.634888, 2295, -2542.310547), rot(0, -16384, 0), 'SC_Door3_opened').bCollideWorld = false;
         foreach AllActors(class'Button1', b) {
             if( b.Event == 'Top' || b.Event == 'middle' || b.Event == 'Bottom' ) {
                 AddDelay(b, 5);
@@ -52,8 +52,8 @@ function PreFirstEntryMapFixes()
         break;
 
     case "14_VANDENBERG_SUB":
-        AddSwitch( vectm(3790.639893, -488.639587, -369.964142), rotm(0, 32768, 0), 'Elevator1');
-        AddSwitch( vectm(3799.953613, -446.640015, -1689.817993), rotm(0, 16384, 0), 'Elevator1');
+        AddSwitch( vect(3790.639893, -488.639587, -369.964142), rot(0, 32768, 0), 'Elevator1');
+        AddSwitch( vect(3799.953613, -446.640015, -1689.817993), rot(0, 16384, 0), 'Elevator1');
 
         foreach AllActors(class'KarkianBaby',kb) {
             if(kb.BindName == "tankkarkian"){
@@ -64,7 +64,7 @@ function PreFirstEntryMapFixes()
 
     case "14_OCEANLAB_LAB":
         if(!#defined(vmd))// button to open the door heading towards the ladder in the water
-            AddSwitch( vectm(3077.360107, 497.609467, -1738.858521), rotm(0, 0, 0), 'Access');
+            AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');
         foreach AllActors(class'ComputerSecurity', comp) {
             if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
                 comp.UserList[0].userName = "Oceanguard";
@@ -183,7 +183,7 @@ function PostFirstEntryMapFixes()
 
     case "14_OCEANLAB_LAB":
         // ensure rebreather before greasel lab, in case the storage closet key is in the flooded area
-        a = _AddActor(Self, class'#var(prefix)Rebreather', vectm(1569, 24, -1628), rotm(0,0,0));
+        a = AddActor(Self, class'#var(prefix)Rebreather', vect(1569, 24, -1628));
         a.SetPhysics(PHYS_None);
         l("PostFirstEntryMapFixes spawned "$ActorToString(a));
         break;

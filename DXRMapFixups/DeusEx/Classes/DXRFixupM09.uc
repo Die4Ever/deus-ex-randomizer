@@ -33,7 +33,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'DeusExMover', m, 'DeusExMover') {
             if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
         }
-        AddSwitch( vectm(2534.639893, 227.583054, 339.803802), rotm(0,-32760,0), 'shipbelowdecks_door' );
+        AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
 
         //Add some new locations for containers and items
         Spawn(class'PlaceholderContainer',,, vectm(-3143,274,305)); //Front of ship
@@ -185,7 +185,7 @@ function PostFirstEntryMapFixes()
 
     case "09_NYC_SHIPBELOW":
         // add a tnt crate on top of the pipe, visible from the ground floor
-        _AddActor(Self, class'#var(prefix)CrateExplosiveSmall', vectm(141.944641, -877.442627, -175.899567), rotm(0,0,0));
+        AddActor(Self, class'#var(prefix)CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567));
         // remove big crates blocking the window to the pipe, 16 units == 1 foot
         foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 16*4, vectm(-136.125000, -743.875000, -215.899323)) {
             c.Event = '';
