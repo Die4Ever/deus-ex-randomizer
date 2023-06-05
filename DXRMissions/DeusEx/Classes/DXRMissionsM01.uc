@@ -96,7 +96,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         // DataLinkTrigger 15ft wide, 4ft tall
         g.actors[1].a.SetCollisionSize(240, 64);
         if(Loc.name != "Top of the Statue") {
-            SpawnDatacube(vect(2801.546387, 171.028091, 2545.382813), rot(0,0,0),
+            SpawnDatacube(vectm(2801.546387, 171.028091, 2545.382813), rotm(0,0,0),
                 "I'm gonna go for a walk to clear my head."
                     $ "|n|nI might be anywhere, like the hut in front of the statue, hanging out with Gunther in jail, or maybe I'll even sneak past UNATCO to hang out on the dock."
                     $ "|n|n-- Leo", true

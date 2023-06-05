@@ -133,8 +133,8 @@ function PreFirstEntryMapFixes()
     if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
         foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
             anna.SetOrders('Standing');
-            anna.SetLocation( vect(1082.845703, 1807.538818, 335.101776) );
-            anna.SetRotation( rot(0, -16608, 0) );
+            anna.SetLocation( vectm(1082.845703, 1807.538818, 335.101776) );
+            anna.SetRotation( rotm(0, -16608, 0, 16384) );
             anna.HomeLoc = anna.Location;
             anna.HomeRot = vector(anna.Rotation);
         }
@@ -159,11 +159,11 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local DXRPasswords passwords;
 
     if(g.name == "Generator" && Loc.name != "Warehouse") {
-        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vect(505.710449, -605, 162.091278), rot(16384,0,0));
+        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(505.710449, -605, 162.091278), rotm(16384,0,0));
         a.SetCollisionSize(a.CollisionRadius * 4, a.CollisionHeight * 4);
         a.bMovable = false;
         a.DrawScale = 4;
-        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vect(677.174988, -809.484558, 114.097824), rot(0,0,0));
+        a = AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(677.174988, -809.484558, 114.097824), rotm(0,0,0));
         a.SetCollisionSize(a.CollisionRadius * 2, a.CollisionHeight * 2);
         a.bMovable = false;
         a.DrawScale = 2;

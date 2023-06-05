@@ -349,7 +349,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
 
     nextItem = item.Inventory;
     player = #var(PlayerPawn)(item.owner);
-    info("MoveNextItemTo found: "$item$"("$item.Location$") with owner: "$item.owner$", nextItem: "$nextItem);
+    info("MoveNextItemTo found: " $ item $ "(" $ item.Location $ ") with owner: " $ item.owner $ ", nextItem: " $ nextItem);
 
     //== Y|y: Turn off any charged pickups we were using and remove the associated HUD.  Per Lork on the OTP forums
     if(player != None) {
@@ -705,8 +705,11 @@ static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate,
     return d;
 }
 
+// DON'T PASS A VECTM OR ROTM TO THIS FUNCTION! PASS A PLAIN VECT AND ROT!
 function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
 {
+    loc = vectm(loc.X, loc.Y, loc.Z);
+    rotate = rotm(rotate.pitch, rotate.yaw, rotate.roll, 16384);
     return _AddSwitch(Self, loc, rotate, Event);
 }
 
@@ -728,6 +731,32 @@ static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rot
     d.bCollideWorld = oldCollideWorld;
     c.default.bCollideWorld = oldCollideWorld;
     return d;
+}
+
+static function int GetRotationOffset(class<Actor> c)
+{
+    if(ClassIsChildOf(c, class'Pawn'))
+        return 16384;
+    return 0;
+}
+
+// DON'T PASS A VECTM OR ROTM TO THIS FUNCTION! PASS A PLAIN VECT AND ROT!
+function Actor AddActor(class<Actor> c, vector loc, optional rotator rotate, optional Actor owner, optional Name tag)
+{
+    local int offset;
+    offset = GetRotationOffset(c);
+    loc = vectm(loc.X, loc.Y, loc.Z);
+    rotate = rotm(rotate.pitch, rotate.yaw, rotate.roll, offset);
+    return _AddActor(Self, c, loc, rotate, owner, tag);
+}
+
+function Actor Spawnm(class<actor> SpawnClass, optional actor SpawnOwner, optional name SpawnTag, optional vector SpawnLocation, optional rotator SpawnRotation)
+{
+    local int offset;
+    offset = GetRotationOffset(SpawnClass);
+    SpawnLocation = vectm(SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
+    SpawnRotation = rotm(SpawnRotation.pitch, SpawnRotation.yaw, SpawnRotation.roll, offset);
+    return Spawn(SpawnClass, SpawnOwner, SpawnTag, SpawnLocation, SpawnRotation);
 }
 
 function #var(prefix)Containers AddBox(class<#var(prefix)Containers> c, vector loc, optional rotator rotate)

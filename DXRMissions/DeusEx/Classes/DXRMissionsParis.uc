@@ -106,7 +106,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
     switch(g.name) {
     case "Nicolette":
-        sp = Spawn(class'#var(prefix)NicoletteDuClare',, 'DXRMissions', Loc.positions[0].pos);
+        sp = #var(prefix)ScriptedPawn(Spawnm(class'#var(prefix)NicoletteDuClare',, 'DXRMissions', Loc.positions[0].pos));
         g.actors[0].a = sp;
         RemoveReactions(sp);
         sp.BindName = "NicoletteDuClare";
@@ -120,7 +120,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
     case "Jaime":
         if(dxr.flagbase.GetBool('JaimeLeftBehind')) {
-            sp = Spawn(class'#var(prefix)JaimeReyes',, 'DXRMissions', Loc.positions[0].pos);
+            sp = #var(prefix)ScriptedPawn(Spawnm(class'#var(prefix)JaimeReyes',, 'DXRMissions', Loc.positions[0].pos));
             g.actors[0].a = sp;
             RemoveReactions(sp);
             sp.SetOrders('Standing');

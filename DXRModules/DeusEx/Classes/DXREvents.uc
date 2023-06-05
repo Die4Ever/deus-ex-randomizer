@@ -80,20 +80,20 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'SunkenShip',skillAward.Location);
 
-        bt = class'BingoTrigger'.static.Create(self,'BackOfStatue',vect(2503.605469,354.826355,2072.113037),40,40);
-        bt = class'BingoTrigger'.static.Create(self,'BackOfStatue',vect(2507.357178,-83.523094,2072.113037),40,40);
+        bt = class'BingoTrigger'.static.Create(self,'BackOfStatue',vectm(2503.605469,354.826355,2072.113037),40,40);
+        bt = class'BingoTrigger'.static.Create(self,'BackOfStatue',vectm(2507.357178,-83.523094,2072.113037),40,40);
 
-        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vect(-6385.640625,1441.881470,-247.901276),40,40);
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
 
-        bt = class'BingoTrigger'.static.Create(self,'StatueHead',vect(6250,109,504),800,40);
+        bt = class'BingoTrigger'.static.Create(self,'StatueHead',vectm(6250,109,504),800,40);
 
         break;
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
         WatchFlag('ManBathroomBarks_Played');
-        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
+        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
 
-        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vect(240.180969,-385.104431,280.098511),80,40);
+        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
         bt.MakeClassProximityTrigger(class'FlagPole');
 
 
@@ -124,7 +124,7 @@ function SetWatchFlags() {
         break;
     case "02_NYC_HOTEL":
         WatchFlag('M02HostagesRescued');// for the hotel, set by Mission02.uc
-        bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vect(-630,-1955,424),150,40);
+        bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
 
         break;
     case "02_NYC_UNDERGROUND":
@@ -139,8 +139,12 @@ function SetWatchFlags() {
         break;
     case "02_NYC_SMUG":
         WatchFlag('MetSmuggler');
-        bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vect(0,0,0));
-        bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
+        bt.Tag = 'mirrordoorout';
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'mirrordoor'){
+            dxm.Event='mirrordoorout';
+        }
 
         break;
     case "03_NYC_BATTERYPARK":
@@ -152,28 +156,33 @@ function SetWatchFlags() {
         break;
     case "03_NYC_MOLEPEOPLE":
         WatchFlag('MolePeopleSlaughtered');
-        bt = class'BingoTrigger'.static.Create(self,'surrender',vect(0,0,0));
-        bt = class'BingoTrigger'.static.Create(self,'MolePeopleWater',vect(0,-528,48),60,40);
+        bt = class'BingoTrigger'.static.Create(self,'surrender',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'MolePeopleWater',vectm(0,-528,48),60,40);
         break;
     case "03_NYC_UNATCOISLAND":
         WatchFlag('DXREvents_LeftOnBoat');
-        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vect(-6385.640625,1441.881470,-247.901276),40,40);
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
         break;
     case "03_NYC_UNATCOHQ":
         WatchFlag('SimonsAssassination');
-        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
-        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vect(240.180969,-385.104431,280.098511),80,40);
+        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
         bt.MakeClassProximityTrigger(class'FlagPole');
         break;
     case "03_NYC_AIRFIELD":
         WatchFlag('BoatDocksAmbrosia');
-        bt = class'BingoTrigger'.static.Create(self,'arctrigger',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'arctrigger',vectm(0,0,0));
 
-        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vect(5347.652344,-4286.462402,328),100,40);
-        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vect(584.657654,-4306.718750,328),100,40);
-        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vect(-2228.463379,-2148.080078,328),100,40);
-        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vect(-2225.839600,3800.267578,328),100,40);
-        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vect(5339.792969,3815.784912,328),100,40);
+        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vectm(5347.652344,-4286.462402,328),100,40);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vectm(584.657654,-4306.718750,328),100,40);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vectm(-2228.463379,-2148.080078,328),100,40);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vectm(-2225.839600,3800.267578,328),100,40);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'AirfieldGuardTowers',vectm(5339.792969,3815.784912,328),100,40);
+        bt.bDestroyOthers=False;
 
         break;
     case "03_NYC_AIRFIELDHELIBASE":
@@ -204,45 +213,49 @@ function SetWatchFlags() {
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
-        bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vect(-630,-1955,424),150,40);
+        bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
         break;
     case "05_NYC_UNATCOISLAND":
-        bt = class'BingoTrigger'.static.Create(self,'nsfwander',vect(0,0,0));
-        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vect(-6385.640625,1441.881470,-247.901276),40,40);
+        bt = class'BingoTrigger'.static.Create(self,'nsfwander',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
 
         break;
     case "02_NYC_STREET":
         WatchFlag('AlleyBumRescued');
-        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
         bt.bingoEvent="MadeBasket";
         break;
     case "04_NYC_STREET":
-        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
         bt.bingoEvent="MadeBasket";
         break;
     case "04_NYC_BATTERYPARK":
-        bt = class'BingoTrigger'.static.Create(self,'MadeItToBP',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'MadeItToBP',vectm(0,0,0));
         break;
     case "04_NYC_SMUG":
         RewatchFlag('MetSmuggler');
-        bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vect(0,0,0));
-        bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
+        bt.Tag = 'mirrordoorout';
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'mirrordoor'){
+            dxm.Event='mirrordoorout';
+        }
         break;
     case "04_NYC_NSFHQ":
         WatchFlag('MostWarehouseTroopsDead');
         break;
     case "04_NYC_UNATCOHQ":
-        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
-        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vect(240.180969,-385.104431,280.098511),80,40);
+        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
         bt.MakeClassProximityTrigger(class'FlagPole');
         break;
     case "04_NYC_UNATCOISLAND":
-        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vect(-6385.640625,1441.881470,-247.901276),40,40);
+        bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
-        bt = class'BingoTrigger'.static.Create(self,'nanocage',vect(0,0,0));
-        bt = class'BingoTrigger'.static.Create(self,'botorders2',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'nanocage',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'botorders2',vectm(0,0,0));
         break;
     case "05_NYC_UNATCOHQ":
         WatchFlag('KnowsAnnasKillphrase1');
@@ -264,9 +277,9 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'BrowserHistoryCleared',cp.Location);
 
-        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vect(1551.508301,-820.408875,-39.901726),95,40);
+        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
 
-        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vect(240.180969,-385.104431,280.098511),80,40);
+        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
         bt.MakeClassProximityTrigger(class'FlagPole');
 
         break;
@@ -307,11 +320,11 @@ function SetWatchFlags() {
                 lcf.bImportant = true;
         }
 
-        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vect(0,438,-267),200,40);
-        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vect(220,438,-267),200,40);
-        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vect(448,438,-267),200,40);
+        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(0,438,-267),200,40);
+        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(220,438,-267),200,40);
+        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(448,438,-267),200,40);
 
-        bt = class'BingoTrigger'.static.Create(self,'LuckyMoneyFreezer',vect(-1615,-2960,-343),200,40);
+        bt = class'BingoTrigger'.static.Create(self,'LuckyMoneyFreezer',vectm(-1615,-2960,-343),200,40);
 
         break;
     case "06_HONGKONG_WANCHAI_STREET":
@@ -335,7 +348,7 @@ function SetWatchFlags() {
             maid.BarkBindName = "MaySung";
         }
 
-        bt = class'BingoTrigger'.static.Create(self,'TonnochiBillboard',vect(0,550,870),300,40);
+        bt = class'BingoTrigger'.static.Create(self,'TonnochiBillboard',vectm(0,550,870),300,40);
 
 
 
@@ -349,16 +362,21 @@ function SetWatchFlags() {
         skillAward.Event='PoliceVaultBingo';
         bt = class'BingoTrigger'.static.Create(self,'PoliceVaultBingo',skillAward.Location);
 
-        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(445,-1032,24),80,40);  //Pottery Store
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(445,-1032,24),80,40);  //Pottery Store
         bt.Tag='WanChaiPottery';
-        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(640,-1093,200),100,40);  //Tea House
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(640,-1093,200),100,40);  //Tea House
         bt.Tag='WanChaiTea';
-        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(-6,-1416,40),250,40);  //Butcher (Louis Pan works for him too)
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(-6,-1416,40),250,40);  //Butcher (Louis Pan works for him too)
         bt.Tag='WanChaiButcher';
-        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(910,-643,40),150,40);  //News Stand
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(910,-643,40),150,40);  //News Stand
         bt.Tag='WanChaiNews';
-        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vect(632,-532,40),130,40);  //Flower Shop
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(632,-532,40),130,40);  //Flower Shop
         bt.Tag='WanChaiFlowers';
+        bt.bDestroyOthers=False;
 
 
         break;
@@ -370,18 +388,18 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'TongsHotTub',water.Location);
 
         //Need to make sure these are slightly out of the wall so that explosions hit them
-        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vect(-596.3,1826,40),40,100);
+        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vectm(-596.3,1826,40),40,100);
         bt.MakeShootingTarget();
 
-        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vect(-466.5,1826,40),40,100);
+        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vectm(-466.5,1826,40),40,100);
         bt.MakeShootingTarget();
 
-        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vect(-337.2,1826,40),40,100);
+        bt = class'BingoTrigger'.static.Create(self,'TongTargets',vectm(-337.2,1826,40),40,100);
         bt.MakeShootingTarget();
 
         break;
     case "06_HONGKONG_HELIBASE":
-        bt = class'BingoTrigger'.static.Create(self,'purge',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'purge',vectm(0,0,0));
 
         foreach AllActors(class'Trigger',trig){
             if (trig.classProximityType==class'Basketball'){
@@ -411,37 +429,43 @@ function SetWatchFlags() {
 
         break;
     case "08_NYC_STREET":
-        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
         bt.bingoEvent="MadeBasket";
         WatchFlag('StantonAmbushDefeated');
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
         RewatchFlag('MetSmuggler');
-        bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vect(0,0,0));
-        bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'botordertrigger',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'mirrordoor',vectm(0,0,0));
+        bt.Tag = 'mirrordoorout';
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'mirrordoor'){
+            dxm.Event='mirrordoorout';
+        }
         break;
     case "08_NYC_BAR":
         WatchFlag('LeoToTheBar');
         break;
     case "08_NYC_HOTEL":
-        bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vect(-630,-1955,424),150,40);
+        bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
         break;
     case "09_NYC_SHIP":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
 
-        bt = class'BingoTrigger'.static.Create(self,'CraneControls',vect(3264,-1211,1222));
+        bt = class'BingoTrigger'.static.Create(self,'CraneControls',vectm(3264,-1211,1222));
         bt.Tag = 'Crane';
 
-        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vect(1937,0,1438),100,40);
-        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vect(-1791,1082,1423),100,40);
+        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(1937,0,1438),100,40);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'CraneTop',vectm(-1791,1082,1423),100,40);
+        bt.bDestroyOthers=False;
 
-        bt = class'BingoTrigger'.static.Create(self,'CaptainBed',vect(2887,58,960),30,40);
+        bt = class'BingoTrigger'.static.Create(self,'CaptainBed',vectm(2887,58,960),30,40);
 
 
         break;
     case "09_NYC_SHIPFAN":
-        bt = class'BingoTrigger'.static.Create(self,'SpinningRoom',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'SpinningRoom',vectm(0,0,0));
         foreach AllActors(class'ZoneInfo', zone) {
             if (zone.DamageType=='Burned'){
                 zone.ZonePlayerEvent = 'SpinningRoom';
@@ -451,7 +475,7 @@ function SetWatchFlags() {
         break;
     case "09_NYC_SHIPBELOW":
         WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
-        bt = class'BingoTrigger'.static.Create(self,'FanTop',vect(-2935,50,840),200,50);
+        bt = class'BingoTrigger'.static.Create(self,'FanTop',vectm(-2935,50,840),200,50);
 
         break;
     case "09_NYC_GRAVEYARD":
@@ -464,7 +488,7 @@ function SetWatchFlags() {
                 jf.bImportant = true;
         }
 
-        bt = class'BingoTrigger'.static.Create(self,'WarehouseEntered',vect(-580.607361,-2248.497803,-551.895874),200,160);
+        bt = class'BingoTrigger'.static.Create(self,'WarehouseEntered',vectm(-580.607361,-2248.497803,-551.895874),200,160);
 
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
@@ -488,9 +512,9 @@ function SetWatchFlags() {
             starr.BindName = "Starr";
         }
 
-        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(-2983.597168,774.217407,312.100128),70,40);
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2983.597168,774.217407,312.100128),70,40);
         bt.MakeClassProximityTrigger(class'ChefCarcass');
-        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(-2984.404785,662.764954,312.100128),70,40);
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2984.404785,662.764954,312.100128),70,40);
         bt.MakeClassProximityTrigger(class'ChefCarcass');
 
         break;
@@ -504,11 +528,11 @@ function SetWatchFlags() {
         break;
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
-        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(2019,-2256,-704),20,15);
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2019,-2256,-704),20,15);
         bt.MakeClassProximityTrigger(class'ChefCarcass');
-        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(2076.885254,-3248.189941,-704.369995),20,15);
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2076.885254,-3248.189941,-704.369995),20,15);
         bt.MakeClassProximityTrigger(class'ChefCarcass');
-        bt = class'BingoTrigger'.static.Create(self,'Cremation',vect(1578,-2286,-647),50,40);
+        bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(1578,-2286,-647),50,40);
         bt.MakeClassProximityTrigger(class'ChefCarcass');
         break;
     case "11_PARIS_EVERETT":
@@ -535,7 +559,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'TrainTracks',zone.Location,3000,1);
         break;
     case "12_VANDENBERG_GAS":
-        bt = class'BingoTrigger'.static.Create(self,'support1',vect(0,0,0)); //This gets hit when you blow up the gas pumps
+        bt = class'BingoTrigger'.static.Create(self,'support1',vectm(0,0,0)); //This gets hit when you blow up the gas pumps
         break;
     case "12_VANDENBERG_CMD":
         WatchFlag('MeetTimBaker_Played');
@@ -545,24 +569,24 @@ function SetWatchFlags() {
             }
         }
 
-        bt = class'BingoTrigger'.static.Create(self,'bunker_door1',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'bunker_door1',vectm(0,0,0));
         bt.bingoEvent = "ActivateVandenbergBots";
-        bt = class'BingoTrigger'.static.Create(self,'bunker_door2',vect(50,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'bunker_door2',vectm(50,0,0));
         bt.bingoEvent = "ActivateVandenbergBots";
 
         foreach AllActors(class'Toilet',closestToilet){
             closestToilet.Event='VandenbergToilet';
         }
-        bt = class'BingoTrigger'.static.Create(self,'VandenbergToilet',vect(150,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergToilet',vectm(150,0,0));
 
-        bt = class'BingoTrigger'.static.Create(self,'VandenbergWaterTower',vect(-1030,80,-1600),350,40);
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergWaterTower',vectm(-1030,80,-1600),350,40);
 
         break;
     case "12_VANDENBERG_TUNNELS":
-        bt = class'BingoTrigger'.static.Create(self,'VandenbergReactorRoom',vect(-1427,3287,-2985),500,100);
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergReactorRoom',vectm(-1427,3287,-2985),500,100);
         break;
     case "12_VANDENBERG_COMPUTER":
-        bt = class'BingoTrigger'.static.Create(self,'VandenbergServerRoom',vect(940,2635,-1320),200,40);
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergServerRoom',vectm(940,2635,-1320),200,40);
         break;
     case "14_OCEANLAB_SILO":
         WatchFlag('MeetDrBernard_Played');
@@ -571,17 +595,17 @@ function SetWatchFlags() {
                 sm.bImportant = true;
             }
         }
-        bt = class'BingoTrigger'.static.Create(self,'SiloSlide',vect(25,-4350,165),40,40);
-        bt = class'BingoTrigger'.static.Create(self,'SiloWaterTower',vect(-1212,-3427,1992),200,40);
+        bt = class'BingoTrigger'.static.Create(self,'SiloSlide',vectm(25,-4350,165),40,40);
+        bt = class'BingoTrigger'.static.Create(self,'SiloWaterTower',vectm(-1212,-3427,1992),200,40);
         break;
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
-        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1932.035522,3334.331787,-2247.888184),60,40);
-        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1932.035522,3334.331787,-2507.888184),60,40);
-        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1928.762573,3721.919189,-2507.888184),60,40);
-        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vect(1928.762573,3721.919189,-2247.888184),60,40);
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1932.035522,3334.331787,-2247.888184),60,40);
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1932.035522,3334.331787,-2507.888184),60,40);
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1928.762573,3721.919189,-2507.888184),60,40);
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1928.762573,3721.919189,-2247.888184),60,40);
 
-        bt = class'BingoTrigger'.static.Create(self,'OceanLabGreenBeacon',vect(1543,3522,-1847),200,200);
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabGreenBeacon',vectm(1543,3522,-1847),200,200);
 
         break;
     case "14_OCEANLAB_UC":
@@ -597,7 +621,7 @@ function SetWatchFlags() {
                 zone.ZonePlayerEvent = 'Area51FanShaft';
             }
         }
-        bt = class'BingoTrigger'.static.Create(self,'Area51FanShaft',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'Area51FanShaft',vectm(0,0,0));
 
         //This flag trigger actually doesn't trigger because a security computer can only trigger DeusExMovers
         foreach AllActors(class'FlagTrigger',fTrigger,'blast_door'){
@@ -614,12 +638,12 @@ function SetWatchFlags() {
             }
         }
 
-        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,128),250,40);
-        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-123),250,40);
-        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-392),250,40);
-        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-902),250,40);
-        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-1152),250,40);
-        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vect(-3995,2458,-1413),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vectm(-3995,2458,128),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vectm(-3995,2458,-123),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vectm(-3995,2458,-392),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vectm(-3995,2458,-902),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vectm(-3995,2458,-1152),250,40);
+        bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vectm(-3995,2458,-1413),250,40);
         break;
     case "15_AREA51_PAGE":
 #ifdef vanilla
@@ -628,26 +652,33 @@ function SetWatchFlags() {
                 water.ZonePlayerEvent = 'unbirth';
             }
         }
-        bt = class'BingoTrigger'.static.Create(self,'unbirth',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'unbirth',vectm(0,0,0));
 #endif
-        bt = class'BingoTrigger'.static.Create(self,'Set_flag_helios',vect(0,0,0));
-        bt = class'BingoTrigger'.static.Create(self,'coolant_switch',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'Set_flag_helios',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'coolant_switch',vectm(0,0,0));
 
-        bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vectm(0,0,0));
         bt.Tag='node1';
-        bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vect(0,0,0));
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vectm(0,0,0));
         bt.Tag='node2';
-        bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vect(0,0,0));
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vectm(0,0,0));
         bt.Tag='node3';
-        bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vect(0,0,0));
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'BlueFusionReactors',vectm(0,0,0));
         bt.Tag='node4';
+        bt.bDestroyOthers=False;
 
-        bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vect(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vectm(0,0,0));
         bt.Tag='UC_shutdoor1';
-        bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vect(0,0,0));
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vectm(0,0,0));
         bt.Tag='UC_shutdoor2';
-        bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vect(0,0,0));
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vectm(0,0,0));
         bt.Tag='UC_shutdoor3';
+        bt.bDestroyOthers=False;
 
         break;
     }
@@ -1565,6 +1596,87 @@ function ReadText(name textTag)
     }
 }
 
+function string RemapBingoEvent(string eventname)
+{
+    ///////////////////////////////////////////////////////
+    ////  MAKE SURE YOU DON'T FALL THROUGH YOUR CASE!  ////
+    ///////////////////////////////////////////////////////
+
+    switch(eventname) {
+        case "ManBathroomBarks_Played":
+            return "BathroomBarks_Played";// LDDP
+        case "hostage_female_Dead":
+        case "hostage_Dead":
+            return "paris_hostage_Dead";
+        case "KnowsAnnasKillphrase1":
+        case "KnowsAnnasKillphrase2":
+            return "KnowsAnnasKillphrase";
+        case "SecurityBot3_ClassDead":
+        case "SecurityBot4_ClassDead":
+            return "SecurityBotSmall_ClassDead";
+        case "SpiderBot2_ClassDead":
+            return "SpiderBot_ClassDead";
+        case "LDDPRussPaid":
+        case "ClubMercedesConvo1_Done":
+            return "ClubEntryPaid";
+        case "LDDPAchilleDone":
+            return "CamilleConvosDone";
+        case "KarkianBaby_ClassDead":
+            return "Karkian_ClassDead";
+        case "AmbrosiaTagged":
+        case "BoatDocksAmbrosia":
+        case "HelicopterBaseAmbrosia":
+        case "747Ambrosia":
+            return "StolenAmbrosia";
+        case "PlayerKilledLebedev":
+            //Check to make sure he wasn't knocked out
+            if (dxr.flagbase.GetBool('JuanLebedev_Unconscious')) {
+                return ""; //Don't mark this event if knocked out
+            }
+            return "PlayerKilledLebedev";
+        case "UNATCOClone1_ClassDead":
+        case "UNATCOClone2_ClassDead":
+        case "UNATCOClone3_ClassDead":
+        case "UNATCOClone4_ClassDead":
+            return "UNATCOTroop_ClassDead";
+        case "NSFClone1_ClassDead":
+        case "NSFClone2_ClassDead":
+        case "NSFClone3_ClassDead":
+        case "NSFClone4_ClassDead":
+            return "Terrorist_ClassDead";
+        case "MJ12Clone1_ClassDead":
+        case "MJ12Clone2_ClassDead":
+        case "MJ12Clone3_ClassDead":
+        case "MJ12Clone4_ClassDead":
+            return "MJ12Troop_ClassDead";
+        case "UNATCOClone1_ClassUnconscious":
+        case "UNATCOClone2_ClassUnconscious":
+        case "UNATCOClone3_ClassUnconscious":
+        case "UNATCOClone4_ClassUnconscious":
+            return "UNATCOTroop_ClassUnconscious";
+        case "NSFClone1_ClassUnconscious":
+        case "NSFClone2_ClassUnconscious":
+        case "NSFClone3_ClassUnconscious":
+        case "NSFClone4_ClassUnconscious":
+            return "Terrorist_ClassUnconscious";
+        case "MJ12Clone1_ClassUnconscious":
+        case "MJ12Clone2_ClassUnconscious":
+        case "MJ12Clone3_ClassUnconscious":
+        case "MJ12Clone4_ClassUnconscious":
+            return "MJ12Troop_ClassUnconscious";
+        case "DXRMedicalBot_ClassDead":
+            return "MedicalBot_ClassDead";
+        case "DXRRepairBot_ClassDead":
+            return "RepairBot_ClassDead";
+        case "FrenchGray_ClassDead":
+            return "Gray_ClassDead";
+        default:
+            return eventname;
+    }
+    return eventname;
+
+}
+
 function _MarkBingo(coerce string eventname)
 {
     local int previousbingos, nowbingos, time;
@@ -1574,73 +1686,11 @@ function _MarkBingo(coerce string eventname)
     js = class'Json';
 
     // combine some events
-    switch(eventname) {
-        case "ManBathroomBarks_Played":
-            eventname = "BathroomBarks_Played";// LDDP
-            break;
-        case "hostage_female_Dead":
-        case "hostage_Dead":
-            eventname = "paris_hostage_Dead";
-            break;
-        case "KnowsAnnasKillphrase1":
-        case "KnowsAnnasKillphrase2":
-            eventname = "KnowsAnnasKillphrase";
-            break;
-        case "SecurityBot3_ClassDead":
-        case "SecurityBot4_ClassDead":
-            eventname = "SecurityBotSmall_ClassDead";
-            break;
-        case "SpiderBot2_ClassDead":
-            eventname="SpiderBot_ClassDead";
-            break;
-        case "LDDPRussPaid":
-        case "ClubMercedesConvo1_Done":
-            eventname="ClubEntryPaid";
-            break;
-        case "LDDPAchilleDone":
-            eventname="CamilleConvosDone";
-            break;
-        case "KarkianBaby_ClassDead":
-            eventname="Karkian_ClassDead";
-            break;
-        case "AmbrosiaTagged":
-        case "BoatDocksAmbrosia":
-        case "HelicopterBaseAmbrosia":
-        case "747Ambrosia":
-            eventname="StolenAmbrosia";
-            break;
-        case "PlayerKilledLebedev":
-            //Check to make sure he wasn't knocked out
-            if (dxr.flagbase.GetBool('JuanLebedev_Unconscious')) {
-                return; //Don't mark this event if knocked out
-            }
-            break;
-        case "UNATCOClone1_ClassDead":
-        case "UNATCOClone2_ClassDead":
-        case "UNATCOClone3_ClassDead":
-        case "UNATCOClone4_ClassDead":
-            eventname="UNATCOTroop_ClassDead";
-            break;
-        case "NSFClone1_ClassDead":
-        case "NSFClone2_ClassDead":
-        case "NSFClone3_ClassDead":
-        case "NSFClone4_ClassDead":
-            eventname="Terrorist_ClassDead";
-            break;
-        case "MJ12Clone1_ClassDead":
-        case "MJ12Clone2_ClassDead":
-        case "MJ12Clone3_ClassDead":
-        case "MJ12Clone4_ClassDead":
-            eventname="MJ12Troop_ClassDead";
-            break;
-        case "DXRMedicalBot_ClassDead":
-            eventname="MedicalBot_ClassDead";
-            break;
-        case "DXRRepairBot_ClassDead":
-            eventname="RepairBot_ClassDead";
-        case "FrenchGray_ClassDead":
-            eventname="Gray_ClassDead";
-            break;
+    eventname=RemapBingoEvent(eventname);
+
+    //Remapping can also block an event from being marked
+    if (eventname==""){
+        return;
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
@@ -1834,7 +1884,7 @@ defaultproperties
     bingo_options(87)=(event="SecurityBotSmall_ClassDead",desc="Destroy 15 commercial grade Security Bots",max=15)
     bingo_options(88)=(event="SpiderBot_ClassDead",desc="Destroy 15 Spider Bots",max=15)
     bingo_options(89)=(event="HumanStompDeath",desc="Stomp 3 humans to death",max=3)
-    bingo_options(90)=(event="Rat_ClassDead",desc="Kill 40 rats",max=40)
+    bingo_options(90)=(event="Rat_ClassDead",desc="Kill 30 rats",max=30)
     bingo_options(91)=(event="UNATCOTroop_ClassUnconscious",desc="Knock out 15 UNATCO Troopers",max=15)
     bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out 15 NSF Terrorists",max=15)
     bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out 25 MJ12 Troopers",max=25)

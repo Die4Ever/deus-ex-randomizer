@@ -64,11 +64,9 @@ function SetdxInfo(DeusExLevelInfo i)
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL $ ", mapname: " $ i.MissionLocation);
 
-#ifdef backtracking
     // undo the damage that DXRBacktracking has done to prevent saves from being deleted
     // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
     class'DXRBacktracking'.static.LevelInit(Self);
-#endif
 
     CrcInit();
     ClearModules();
@@ -110,7 +108,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 2,4,0,2) ) {
+    if( VersionOlderThan(config_version, 2,4,2,2) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -170,6 +168,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRMusic";
     modules_to_load[i++] = "DXRMusicPlayer";
     modules_to_load[i++] = "DXRPlayerStats";
+    modules_to_load[i++] = "DXRMapVariants";
 }
 
 function hx_modules()
@@ -200,6 +199,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRReplaceActors";
     modules_to_load[i++] = "DXREvents";
     modules_to_load[i++] = "DXRPlayerStats";
+    modules_to_load[i++] = "DXRMapVariants";
 }
 
 function gmdx_modules()
@@ -234,6 +234,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRMusic";
     modules_to_load[i++] = "DXRMusicPlayer";
     modules_to_load[i++] = "DXRPlayerStats";
+    modules_to_load[i++] = "DXRMapVariants";
 }
 
 function revision_modules()
@@ -272,6 +273,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRMusic";
     modules_to_load[i++] = "DXRMusicPlayer";
     modules_to_load[i++] = "DXRPlayerStats";
+    modules_to_load[i++] = "DXRMapVariants";
 }
 
 function DXRFlags LoadFlagsModule()
@@ -411,6 +413,7 @@ function RandoEnter()
     local bool firstTime;
     local name flagName;
     local bool IsTravel;
+    local string map;
 
     if( flagbase == None ) {
         err("RandoEnter() flagbase == None");
@@ -419,14 +422,16 @@ function RandoEnter()
 
     IsTravel = flagbase.GetBool('PlayerTraveling');
 
-    flagName = flagbase.StringToName("M"$StripMapName(localURL)$"_Randomized");
+    map = localURL;
+    map = class'DXRMapVariants'.static.GetDirtyMapName(map, flags.coords_mult);
+    flagName = flagbase.StringToName("M"$StripMapName(map)$"_Randomized");
     if (!flagbase.GetBool(flagName))
     {
         firstTime = True;
         flagbase.SetBool(flagName, True,, dxInfo.missionNumber+1);
     }
 
-    info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL);
+    info("RandoEnter() firstTime: "$firstTime$", IsTravel: "$IsTravel$", seed: "$seed @ localURL @ map @ GetURLMap());
 
     if ( firstTime == true )
     {

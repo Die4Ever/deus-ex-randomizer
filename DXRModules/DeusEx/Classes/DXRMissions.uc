@@ -138,7 +138,7 @@ function int AddGoalLocation(string mapName, string name, int bitMask, vector lo
     }
 
     if(name == "" && mapName == dxr.localURL) {
-        a = Lightbulb(_AddActor(self, class'Lightbulb', loc, r));
+        a = Lightbulb(AddActor(class'Lightbulb', loc, r));
         a.bInvincible = true;
         DebugMarkKeyPosition(a, num_locations @ loc);
     }
@@ -247,6 +247,8 @@ function MoveActorsIn(int goalsToLocations[32])
     local int g, i;
     local #var(PlayerPawn) p;
     local DXRGoalMarker marker;
+    local vector loc;
+    local rotator rotate;
 
     foreach AllActors(class'DXRGoalMarker', marker) {
         marker.Destroy();
@@ -255,10 +257,14 @@ function MoveActorsIn(int goalsToLocations[32])
     g = goalsToLocations[num_goals];
     if( dxr.flags.settings.startinglocations > 0 && g > -1 && dxr.localURL == locations[g].mapName ) {
         p = player();
-        l("Moving player to " $ locations[g].name);
         i = PLAYER_LOCATION;
-        p.SetLocation(locations[g].positions[i].pos);
-        p.SetRotation(locations[g].positions[i].rot);
+        loc = locations[g].positions[i].pos;
+        rotate = locations[g].positions[i].rot;
+        loc = vectm(loc.X, loc.Y, loc.Z);
+        rotate = rotm(rotate.pitch, rotate.yaw, rotate.roll, 16384);
+        l("Moving player to " $ locations[g].name @ loc @ rotate);
+        p.SetLocation(loc);
+        p.SetRotation(rotate);
         rando_start_loc = p.Location;
         b_rando_start = true;
     }
@@ -509,6 +515,11 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     local Mover m;
     local bool success, oldbCollideWorld;
     local #var(prefix)Vehicles v;
+    local int offset;
+
+    offset = GetRotationOffset(a.class);
+    loc = vectm(loc.X, loc.Y, loc.Z);
+    rotation = rotm(rotation.pitch, rotation.yaw, rotation.roll, offset);
 
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
     oldbCollideWorld = a.bCollideWorld;
@@ -580,13 +591,16 @@ static function bool IsCloseToRandomStart(DXRando dxr, vector loc)
 {
     local float too_close, dist;
     local DXRMissions m;
+    local vector v;
 
     too_close = 75*16;
 
     m = DXRMissions(dxr.FindModule(class'DXRMissions'));
     if( m != None && m.b_rando_start ) {
         if( dxr.localURL == "01_NYC_UNATCOISLAND" ) {
-            if( 160 > VSize(m.rando_start_loc - vect(1297.173096, -10257.972656, -287.428131)) )// Harley Filben Dock
+            // Harley Filben Dock
+            v = dxr.flags.vectm(1297.173096, -10257.972656, -287.428131);
+            if( 160 > VSize(m.rando_start_loc - v) )
                 too_close = 150 * 16;
         }
         dist = VSize(m.rando_start_loc - loc);
@@ -601,12 +615,15 @@ static function bool IsCloseToStart(DXRando dxr, vector loc)
     local Teleporter t;
     local float too_close, dist;
     local DXRMissions m;
+    local vector v;
 
     too_close = 75*16;
 
     m = DXRMissions(dxr.FindModule(class'DXRMissions'));
-    if( dxr.localURL == "12_VANDENBERG_GAS" ) {// Tiffany
-        if ( VSize(vect(168.601334, 607.866882, -980.902832) - loc) < 75*16 ) return true;
+    if( dxr.localURL == "12_VANDENBERG_GAS" ) {
+        // Tiffany
+        v = dxr.flags.vectm(168.601334, 607.866882, -980.902832);
+        if ( VSize(v - loc) < 75*16 ) return true;
     }
     if( m != None && m.b_rando_start ) {
         return IsCloseToRandomStart(dxr, loc);

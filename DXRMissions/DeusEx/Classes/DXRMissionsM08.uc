@@ -27,7 +27,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
     switch(g.name) {
     case "Harley Filben":
-        sp = Spawn(class'#var(prefix)HarleyFilben',, 'DXRMissions', Loc.positions[0].pos);
+        sp = #var(prefix)ScriptedPawn(Spawnm(class'#var(prefix)HarleyFilben',, 'DXRMissions', Loc.positions[0].pos));
         g.actors[0].a = sp;
         sp.UnfamiliarName = "Harley Filben";
         sp.bInvincible = true;
@@ -37,7 +37,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         break;
 
     case "Vinny":
-        sp = Spawn(class'#var(prefix)NathanMadison',, 'DXRMissions', Loc.positions[0].pos);
+        sp = #var(prefix)ScriptedPawn(Spawnm(class'#var(prefix)NathanMadison',, 'DXRMissions', Loc.positions[0].pos));
         g.actors[0].a = sp;
         sp.BindName = "Sailor";
         sp.FamiliarName = "Vinny";
@@ -48,7 +48,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         break;
 
     case "Joe Greene":
-        sp = Spawn(class'#var(prefix)JoeGreene',, 'DXRMissions', Loc.positions[0].pos);
+        sp = #var(prefix)ScriptedPawn(Spawnm(class'#var(prefix)JoeGreene',, 'DXRMissions', Loc.positions[0].pos));
         g.actors[0].a = sp;
         sp.BarkBindName = "Male";
         sp.SetOrders('Standing');

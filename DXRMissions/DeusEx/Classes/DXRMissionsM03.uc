@@ -178,9 +178,9 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
     switch(g.name) {
     case "747 Ambrosia":
-        ambrosia = Spawn(class'BarrelAmbrosia',, 'DXRMissions', Loc.positions[0].pos);
-        ft = Spawn(class'FlagTrigger',, '747BarrelUsed', Loc.positions[1].pos);
-        st = Spawn(class'SkillAwardTrigger',, 'skills', Loc.positions[2].pos);
+        ambrosia = BarrelAmbrosia(Spawnm(class'BarrelAmbrosia',, 'DXRMissions', Loc.positions[0].pos));
+        ft = FlagTrigger(Spawnm(class'FlagTrigger',, '747BarrelUsed', Loc.positions[1].pos));
+        st = SkillAwardTrigger(Spawnm(class'SkillAwardTrigger',, 'skills', Loc.positions[2].pos));
         g.actors[0].a = ambrosia;
         g.actors[1].a = ft;
         g.actors[2].a = st;

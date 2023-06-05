@@ -1,0 +1,116 @@
+runs:
+  using: composite
+  steps:
+    # we don't really care what python version we have, but maybe in the future
+    #- uses: actions/setup-python@v4
+    #  with:
+    #    python-version: '3.11'
+    #    cache: 'pip' # caching pip dependencies
+
+    - run: pip3 install -r installer/requirements.txt 2>&1
+      shell: bash
+
+    - run: mkdir installer/3rdParty
+      shell: bash
+    - run: mkdir installer/3rdParty/d3d10drv
+      shell: bash
+    # https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/tree/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs
+    - run: >-
+        curl -Lo installer/3rdParty/KentieDeusExe.exe
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs/Kentie's%20DeusExe.exe"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/Launch.exe
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs/Launch.exe"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/D3D10Drv.int
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D10Drv.int"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv.dll
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv.dll"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/common.fxh
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/common.fxh"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/complexsurface.fx
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/complexsurface.fx"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/finalpass.fx
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/finalpass.fx"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/firstpass.fx
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/firstpass.fx"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/fogsurface.fx
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/fogsurface.fx"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/gouraudpolygon.fx
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/gouraudpolygon.fx"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/hdr.original.fx
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/hdr%20(original).fx"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/hdr.fx
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/hdr.fx"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/polyflags.fxh
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/polyflags.fxh"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/postprocessing.fxh
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/postprocessing.fxh"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/states.fxh
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/states.fxh"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/tile.fx
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/tile.fx"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/unreal_pom.fx
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/unreal_pom.fx"
+      shell: bash
+    - run: >-
+        curl -Lo installer/3rdParty/d3d10drv/unrealpool.fxh
+        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/unrealpool.fxh"
+      shell: bash
+
+    - run: python3 -m compileall -q . 2>&1
+      shell: bash
+    - run: python3 installer/tests.py 2>&1
+      shell: bash
+
+    - name: Build
+      run: pyinstaller installer/installer.spec
+      shell: bash
+    - run: du -ha dist
+      shell: bash
+
+    # small test, use timeouts because on windows the GUI can catch errors and a dialog box will freeze the program
+    - run: timeout 30 ./dist/DXRando/DXRandoInstaller --version 2>&1
+      shell: bash
+    - run: timeout 30 ./dist/DXRando/BingoViewer --version 2>&1
+      shell: bash
+
+    # zip it up
+    - if: runner.os == 'Windows'
+      run: Compress-Archive -Path ./* -Destination DXRando.zip
+      working-directory: ./dist/DXRando/
+      shell: pwsh
+    - if: runner.os != 'Windows'
+      run: zip -r9 DXRando.zip .
+      working-directory: ./dist/DXRando
+      shell: bash

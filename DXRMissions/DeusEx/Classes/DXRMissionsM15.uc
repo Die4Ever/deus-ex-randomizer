@@ -70,10 +70,10 @@ function CreateGoal(out Goal g, GoalLocation Loc)
             return;
         }
 
-        sp = Spawn(class'#var(prefix)WaltonSimons',, 'DXRMissions', Loc.positions[0].pos);
-        ot = Spawn(class'OrdersTrigger',,'WaltonTalks',Loc.positions[0].pos);
-        at = Spawn(class'#var(prefix)AllianceTrigger',,'WaltonAttacks',Loc.positions[0].pos);
-        t = Spawn(class'Trigger',,,Loc.positions[1].pos);
+        sp = #var(prefix)ScriptedPawn(Spawnm(class'#var(prefix)WaltonSimons',, 'DXRMissions', Loc.positions[0].pos));
+        ot = OrdersTrigger(Spawnm(class'OrdersTrigger',,'WaltonTalks',Loc.positions[0].pos));
+        at = #var(prefix)AllianceTrigger(Spawnm(class'#var(prefix)AllianceTrigger',,'WaltonAttacks',Loc.positions[0].pos));
+        t = Trigger(Spawnm(class'Trigger',,,Loc.positions[1].pos));
         g.actors[0].a = sp;
         g.actors[1].a = ot;
         g.actors[2].a = at;

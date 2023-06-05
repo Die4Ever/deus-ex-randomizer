@@ -138,8 +138,8 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
     switch(g.name) {
     case "Walton Simons":
-        sp = Spawn(class'#var(prefix)WaltonSimons',, 'DXRMissions', Loc.positions[0].pos);
-        ot = Spawn(class'OrdersTrigger',,'simonsattacks',Loc.positions[0].pos);
+        sp = #var(prefix)ScriptedPawn(Spawnm(class'#var(prefix)WaltonSimons',, 'DXRMissions', Loc.positions[0].pos));
+        ot = OrdersTrigger(Spawnm(class'OrdersTrigger',,'simonsattacks',Loc.positions[0].pos));
         g.actors[0].a = sp;
         g.actors[1].a = ot;
 

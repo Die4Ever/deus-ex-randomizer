@@ -1,5 +1,10 @@
+import argparse
 import time
 import sys
+import json
+import os.path
+import urllib.request
+import urllib.parse
 from tkinter import filedialog as fd
 from tkinter import font
 from tkinter import messagebox
@@ -9,11 +14,13 @@ from pathlib import Path
 BUTTON_BORDER_WIDTH = 4
 BUTTON_BORDER_WIDTH_TOTAL=15*BUTTON_BORDER_WIDTH
 MAGIC_GREEN="#1e641e"
-BRIGHT_GREEN="#00FF00"
+BRIGHT_GREEN="#00CC00"
 BINGO_VARIABLE_CONFIG_NAME="bingoexport"
 BINGO_MOD_LINE_DETECT="PlayerDataItem"
-NEWLY_COMPLETED_DISPLAY_TIME=80
+NEWLY_COMPLETED_DISPLAY_TIME=2.8 # we only redraw every second, so this will keep it closer to about 3 seconds
 WINDOW_TITLE="Deus Ex Randomizer Bingo Board"
+
+JSON_DEST_FILENAME="pushjson.txt"
 
 class Bingo:
 
@@ -25,6 +32,7 @@ class Bingo:
         self.width=500
         self.height=500
         self.selectedMod=""
+        self.prevLines=None
         self.initDrawnBoard()
 
     def closeWindow(self):
@@ -66,7 +74,7 @@ class Bingo:
                 self.tkBoardText[x][y].set("("+str(x)+","+str(y)+")")
                 self.tkBoard[x][y]=Button(self.win,textvariable=self.tkBoardText[x][y],image=self.pixel,compound="c",width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font,fg='white',disabledforeground="white",bd=BUTTON_BORDER_WIDTH)
                 self.tkBoard[x][y]["state"]='disabled'
-                self.tkBoard[x][y].countdown=None
+                self.tkBoard[x][y].finished_time=None
                 self.tkBoard[x][y].grid(column=x,row=y)
 
 
@@ -76,8 +84,6 @@ class Bingo:
         for x in range(5):
             for y in range(5):
                 self.drawTile(self.tkBoard[x][y], self.tkBoardText[x][y], self.board[x][y])
-
-        self.win.update()
 
     def drawTile(self, tkTile, tkText, boardEntry):
         if boardEntry is None or tkTile is None:
@@ -90,11 +96,10 @@ class Bingo:
         tkText.set(desc)
         isActive = boardEntry.get('active', 1)
         if boardEntry["progress"]>=boardEntry["max"] and boardEntry["max"]>0:
-            if tkTile.countdown is None:
-                tkTile.countdown=NEWLY_COMPLETED_DISPLAY_TIME
+            if tkTile.finished_time is None:
+                tkTile.finished_time=time.time() + NEWLY_COMPLETED_DISPLAY_TIME
                 tkTile.config(bg=BRIGHT_GREEN)
-            elif(tkTile.countdown>0):
-                tkTile.countdown-=1
+            elif(tkTile.finished_time>time.time()):
                 tkTile.config(bg=BRIGHT_GREEN)
             else:
                 tkTile.config(bg=MAGIC_GREEN)
@@ -174,6 +179,51 @@ class Bingo:
             for line in allLines[self.selectedMod]:
                 self.parseBingoLine(line)
 
+        changed = (allLines!=self.prevLines)
+
+        if changed:
+            self.prevLines=allLines
+
+        return changed
+
+    def generateBingoStateJson(self):
+        board = []
+        for y in range(5):
+            for x in range(5):
+                square = dict()
+                square["x"]=x
+                square["y"]=y
+                square["name"]=self.board[x][y]["desc"]
+                if self.board[x][y]["max"]>1:
+                    square["name"]+="\n"+str(self.board[x][y]["progress"])+"/"+str(self.board[x][y]["max"])
+                square["completed"]=self.board[x][y]["progress"] >= self.board[x][y]["max"]
+                square["possible"]=self.board[x][y]["active"]!=-1
+                #print(square)
+                board.append(square)
+        #return json.dumps(board,indent=4)
+        return {"bingo":json.dumps({"bingo":board},indent=4)}
+
+    def sendBingoState(self):
+        if not os.path.isfile(JSON_DEST_FILENAME):
+            return
+
+        f = open(JSON_DEST_FILENAME,'r')
+        desturl=f.readline()
+        f.close()
+
+        if (desturl==""):
+            print("Make sure to specify where you want to push your json!")
+            return
+
+        bingoState = self.generateBingoStateJson()
+        #print(bingoState)
+        try:
+            r = urllib.request.urlopen(desturl,data=urllib.parse.urlencode(bingoState).encode('utf-8'))
+            #print(r.status)
+            #print(r.read().decode('utf-8'))
+        except Exception as e:
+            print("Couldn't push JSON to "+desturl+" - "+str(e))
+
 
 def saveLastUsedBingoFile(f):
     p = Path(f)
@@ -223,6 +273,18 @@ def translateMod(modName):
 
 #####################################################################################
 
+parser = argparse.ArgumentParser(description='DXRando Bingo Viewer')
+parser.add_argument('--version', action="store_true", help='Output version')
+args = parser.parse_args()
+
+def GetVersion():
+    return 'v1.0'
+
+if args.version:
+    print('DXRando Bingo Viewer version:', GetVersion(), file=sys.stderr)
+    print('Python version:', sys.version_info, file=sys.stderr)
+    sys.exit(0)
+
 
 targetFile = findBingoFile()
 
@@ -235,12 +297,14 @@ lastFileUpdate=0
 
 while True:
     if (time.time()>(lastFileUpdate+1)):
-        b.readBingoFile()
+        changed = b.readBingoFile()
         #b.printBoard()
         lastFileUpdate=time.time()
         b.drawBoard()
-    else:
-        b.win.update()
+        if (changed):
+            b.sendBingoState()
+
+    b.win.update()
 
     if not b.isWindowOpen():
         sys.exit(0)

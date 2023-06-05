@@ -4,6 +4,7 @@ var transient DXRando dxr;
 var transient float overallchances;
 
 var transient bool inited;
+var vector coords_mult;
 
 replication
 {
@@ -20,6 +21,7 @@ function Init(DXRando tdxr)
 {
     //l(Self$".Init()");
     dxr = tdxr;
+    coords_mult = class'DXRMapVariants'.static.GetCoordsMult(GetURLMap());
     CheckConfig();
     inited = true;
 }
@@ -167,11 +169,11 @@ simulated function float rngexp(float origmin, float origmax, float curve)
     min = origmin;
     max = origmax;
     if(min != 0)
-        min = pow(min, 1/curve);
-    max = pow(max+1.0, 1/curve);
+        min = min ** (1/curve);
+    max = (max+1.0) ** (1/curve);
     frange = max-min;
     f = rngf()*frange + min;
-    f = pow(f, curve);
+    f = f ** curve;
     f = FClamp( f, origmin, origmax );
     return f;
 }
@@ -352,6 +354,32 @@ simulated function bool chance_remaining(int r)
 simulated function bool chance_single(float percent)
 {
     return rngf()*100.0 < percent;
+}
+
+simulated function vector vectm(float x, float y, float z)
+{
+    local vector v;
+    v.x = x;// the vect() constructor only works with constants
+    v.y = y;
+    v.z = z;
+    return v * coords_mult;
+}
+
+// see unreal-map-flipper for a list of offsets, scriptpawns use an offset of 16384, most other things seem to use 0
+simulated function rotator rotm(int p, int y, int roll, optional int offset)
+{
+    local Rotator r;
+    // TODO: only works for X or Y mirrors, haven't tested Y mirrors
+    if( (coords_mult.X < 0 && coords_mult.Y > 0) || (coords_mult.X > 0 && coords_mult.Y < 0)) {
+        y += offset;
+        y = imod(y, 65535) * -1;
+        y -= offset;
+        y = imod(y, 65535);
+    }
+    r.Pitch = p;
+    r.Yaw = y;
+    r.Roll = roll;
+    return r;
 }
 
 final function Class<Inventory> ModifyInventoryClass( out Class<Inventory> InventoryClass )

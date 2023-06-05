@@ -116,6 +116,27 @@ exec function StartNewGame(String startMap)
         Level.Game.SendPlayer(Self, startMap);
 }
 
+function ShowIntro(optional bool bStartNewGame)
+{
+    local DXRMapVariants maps;
+    local string intro;
+
+    if (DeusExRootWindow(rootWindow) != None)
+        DeusExRootWindow(rootWindow).ClearWindowStack();
+
+    bStartNewGameAfterIntro = bStartNewGame;
+
+    // Make sure all augmentations are OFF before going into the intro
+    AugmentationSystem.DeactivateAll();
+
+    // Reset the player
+    intro = "00_Intro";
+    maps = DXRMapVariants(DXRFindModule(class'DXRMapVariants'));
+    if(maps != None)
+        intro = maps.VaryMap(intro);
+    Level.Game.SendPlayer(Self, intro);
+}
+
 exec function QuickSave()
 {
     if( class'DXRAutosave'.static.AllowManualSaves(self) ) Super.QuickSave();
@@ -307,14 +328,14 @@ function Landed(vector HitNormal)
                         augReduce = 15 * (augLevel+1);
                 }
 
-                dmg = Max((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
+                dmg = FMax((-0.16 * (Velocity.Z + 700)) - augReduce, 0);
                 legLocation = Location + vect(-1,0,-1);			// damage left leg
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
 
                 legLocation = Location + vect(1,0,-1);			// damage right leg
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
 
-                dmg = Max((-0.06 * (Velocity.Z + 700)) - augReduce, 0);
+                dmg = FMax((-0.06 * (Velocity.Z + 700)) - augReduce, 0);
                 legLocation = Location + vect(0,0,1);			// damage torso
                 TakeDamage(dmg, None, legLocation, vect(0,0,0), 'fell');
             }
@@ -518,6 +539,35 @@ exec function SetSkillValues(float value)
         for(i=0; i<ArrayCount(s.LevelValues); i++)
             s.LevelValues[i] = value;
     }
+}
+
+exec function Mirror()
+{
+    local string s;
+    local vector v, mult;
+    local DXRMapVariants maps;
+
+    flagBase.SetBool('PlayerTraveling', True, True, 0);
+    maps = DXRMapVariants(DXRFindModule(class'DXRMapVariants'));
+    if(maps == None) {
+        log("ERROR: Mirror cheat failed to find DXRMapVariants");
+        return;
+    }
+
+    v = maps.GetCoordsMult(GetURLMap());
+    if(v.X==1 && v.Y==1) {
+        s = GetDXR().localURL $ "_-1_1_1.dx";
+    } else {
+        s = maps.CleanupMapName(GetURLMap());
+    }
+    v = Location;
+    mult = maps.coords_mult;
+    v.X /= mult.X;
+    v.Y /= mult.Y;
+    v.Z /= mult.Z;
+    class'DynamicTeleporter'.static.SetDestPos(self, v);
+    log("Mirror cheat "$maps@v@GetURLMap()@s@Location@mult@v);
+    Level.Game.SendPlayer(Self, s);
 }
 
 //========= MUSIC STUFF

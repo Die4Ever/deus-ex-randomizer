@@ -1,14 +1,38 @@
 name: commit
-on: [push]
+'on':
+  - push
+
 jobs:
-  build:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - uses: ./.github/run-tests
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: DXRando
+          path: dist/DXRando/DXRando.zip
+
+  linux:
     runs-on: ubuntu-latest
     defaults:
       run:
-        # Must be explicit for proper pipefail support
         shell: bash
     steps:
-    - name: Check out repository code
-      uses: actions/checkout@v3
-    - name: Python check
-      run: python -m compileall -q .
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - run: sudo apt-get update -y
+      - run: sudo apt-get install -y python3-tk idle3 binutils
+
+      - uses: ./.github/run-tests
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: DXRando-linux
+          path: dist/DXRando/DXRando.zip

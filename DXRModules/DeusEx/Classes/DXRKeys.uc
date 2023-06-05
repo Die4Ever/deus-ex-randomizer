@@ -230,7 +230,15 @@ function revision_keys_rules()
 
 function FirstEntry()
 {
+    local int i;
     Super.FirstEntry();
+
+    for(i=0; i<ArrayCount(keys_rules); i++) {
+        // do these without writing them to the config
+        keys_rules[i].min_pos *= coords_mult;
+        keys_rules[i].max_pos *= coords_mult;
+    }
+
     if( dxr.flags.settings.keysrando == 4 || dxr.flags.settings.keysrando == 2 ) // 1 is dumb aka anywhere, 3 is copies instead of smart positioning? 5 would be something more advanced?
         MoveNanoKeys4();
 }

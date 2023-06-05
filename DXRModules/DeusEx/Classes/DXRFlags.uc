@@ -521,7 +521,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.equipment *= 2;
         settings.medkits = (settings.medkits + 100) / 2;
         settings.medbots = (settings.medbots + 100) / 2;
-        settings.health = 250;
+        settings.health = 200;
     }
     return settings;
 }

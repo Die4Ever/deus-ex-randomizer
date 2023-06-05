@@ -1,84 +1,83 @@
 name: release
-
-on:
+'on':
   release:
-    types: [published]
+    types:
+      - published
 
 jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
       run:
-        # Must be explicit for proper pipefail support
         shell: bash
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        ref: ${{ github.event.release.tag_name }}
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: '${{ github.event.release.tag_name }}'
 
-    - name: Upload Release Asset DeusEx.u
-      id: upload-release-asset-dx
-      uses: actions/upload-release-asset@v1.0.2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: DeusEx.u
-        asset_name: DeusEx.u
-        asset_content_type: application/octet-stream
+      - name: Upload Release Asset DeusEx.u
+        id: upload-release-asset-dx
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        with:
+          upload_url: '${{ github.event.release.upload_url }}'
+          asset_path: DeusEx.u
+          asset_name: DeusEx.u
+          asset_content_type: application/octet-stream
 
-    - name: Upload Release Asset HXRandomizer.int
-      id: upload-release-asset-hx-int
-      uses: actions/upload-release-asset@v1.0.2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: HXRandomizer.int
-        asset_name: HXRandomizer.int
-        asset_content_type: application/octet-stream
+      - name: Upload Release Asset HXRandomizer.int
+        id: upload-release-asset-hx-int
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        with:
+          upload_url: '${{ github.event.release.upload_url }}'
+          asset_path: HXRandomizer.int
+          asset_name: HXRandomizer.int
+          asset_content_type: application/octet-stream
 
-    - name: Upload Release Asset HXRandomizer.u
-      id: upload-release-asset-hx-u
-      uses: actions/upload-release-asset@v1.0.2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: HXRandomizer.u
-        asset_name: HXRandomizer.u
-        asset_content_type: application/octet-stream
+      - name: Upload Release Asset HXRandomizer.u
+        id: upload-release-asset-hx-u
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        with:
+          upload_url: '${{ github.event.release.upload_url }}'
+          asset_path: HXRandomizer.u
+          asset_name: HXRandomizer.u
+          asset_content_type: application/octet-stream
 
-    - name: Upload Release Asset GMDXRandomizer.u
-      id: upload-release-asset-gmdx
-      uses: actions/upload-release-asset@v1.0.2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: GMDXRandomizer.u
-        asset_name: GMDXRandomizer.u
-        asset_content_type: application/octet-stream
+      - name: Upload Release Asset GMDXRandomizer.u
+        id: upload-release-asset-gmdx
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        with:
+          upload_url: '${{ github.event.release.upload_url }}'
+          asset_path: GMDXRandomizer.u
+          asset_name: GMDXRandomizer.u
+          asset_content_type: application/octet-stream
 
-    - name: Upload Release Asset VMDRandomizer.u
-      id: upload-release-asset-vmd
-      uses: actions/upload-release-asset@v1.0.2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: VMDRandomizer.u
-        asset_name: VMDRandomizer.u
-        asset_content_type: application/octet-stream
+      - name: Upload Release Asset VMDRandomizer.u
+        id: upload-release-asset-vmd
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        with:
+          upload_url: '${{ github.event.release.upload_url }}'
+          asset_path: VMDRandomizer.u
+          asset_name: VMDRandomizer.u
+          asset_content_type: application/octet-stream
 
-    - name: Upload Release Asset RevRandomizer.u
-      id: upload-release-asset-rev
-      uses: actions/upload-release-asset@v1.0.2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: RevRandomizer.u
-        asset_name: RevRandomizer.u
-        asset_content_type: application/octet-stream
+      - name: Upload Release Asset RevRandomizer.u
+        id: upload-release-asset-rev
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        with:
+          upload_url: '${{ github.event.release.upload_url }}'
+          asset_path: RevRandomizer.u
+          asset_name: RevRandomizer.u
+          asset_content_type: application/octet-stream

@@ -105,7 +105,7 @@ function DeleteGoal(Goal g, GoalLocation Loc)
 
 function GenerateDTSHintCube(Goal g, GoalLocation Loc)
 {
-    SpawnDatacube(vect(-1857.841064, -158.911865, 2051.345459), rot(0,0,0),
+    SpawnDatacube(vectm(-1857.841064, -158.911865, 2051.345459), rotm(0,0,0),
         "I borrowed the sword but forgot it somewhere...  Maybe "$Loc.name$"?", true);
 }
 
@@ -116,8 +116,8 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
     switch(g.name) {
     case "Dragon's Tooth Sword":
-        dts = Spawn(class'WeaponNanoSword',,,Loc.positions[0].pos,Loc.positions[0].rot);
-        dlt = Spawn(class'DataLinkTrigger',,,Loc.positions[0].pos);
+        dts = WeaponNanoSword(Spawnm(class'WeaponNanoSword',,,Loc.positions[0].pos,Loc.positions[0].rot));
+        dlt = DataLinkTrigger(Spawnm(class'DataLinkTrigger',,,Loc.positions[0].pos));
 
         g.actors[0].a=dts;
         g.actors[1].a=dlt;

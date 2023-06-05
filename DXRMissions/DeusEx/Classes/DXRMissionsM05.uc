@@ -77,7 +77,7 @@ function AfterShuffleGoals(int goalsToLocations[32])
 
     dctext = dctext $ "|n|nBoth using the DEMIURGE username. JC will never find them!";
 
-    SpawnDatacube(vect(243.288742, -104.183029, 289.368256), rot(0,0,0), dctext, true);
+    SpawnDatacube(vectm(243.288742, -104.183029, 289.368256), rotm(0,0,0), dctext, true);
 }
 
 function PreFirstEntryMapFixes()
@@ -86,12 +86,12 @@ function PreFirstEntryMapFixes()
 
     if( dxr.localURL ~= "05_NYC_UNATCOHQ" ) {
         // jail computer
-        cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vect(-1491.076782, -1207.629028, -2.499634), rot(0, 25000, 0));
+        cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vectm(-1491.076782, -1207.629028, -2.499634), rotm(0, 25000, 0));
         cp.UserList[0].userName = "KLloyd";
         cp.UserList[0].Password = "squishy";
 
         // conference room computer
-        cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vect(79.009933, 863.868042, 296.502075), rot(0,0,0));
+        cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vectm(79.009933, 863.868042, 296.502075), rotm(0,0,0));
         cp.UserList[0].userName = "KLloyd";
         cp.UserList[0].Password = "squishy";
 

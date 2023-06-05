@@ -26,13 +26,13 @@ function PreFirstEntryMapFixes()
             RemoveFears(tt);// he looks pretty sick
         }
 
-        class'PlaceholderEnemy'.static.Create(self,vect(-2467,866,-2000),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(-2689,4765,-2143),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(-163,7797,-2143),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(2512,6140,-2162),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(2267,643,-2000),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-2467,866,-2000));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-2689,4765,-2143));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-163,7797,-2143));
+        class'PlaceholderEnemy'.static.Create(self,vectm(2512,6140,-2162));
+        class'PlaceholderEnemy'.static.Create(self,vectm(2267,643,-2000));
 
-        sl = #var(prefix)ShopLight(_AddActor(self, class'#var(prefix)ShopLight', vect(1.125000, 938.399963, -1025), rot(0, 16384, 0)));
+        sl = #var(prefix)ShopLight(AddActor(class'#var(prefix)ShopLight', vect(1.125000, 938.399963, -1025), rot(0, 16384, 0)));
         sl.bInvincible = true;
         sl.bCanBeBase = true;
         break;
@@ -72,18 +72,18 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        Spawn(class'PlaceholderItem',,, vect(37.5,531.4,-1569)); //Secretary desk
-        Spawn(class'PlaceholderItem',,, vect(2722,226.5,-1481)); //Greasel Lab desk
-        Spawn(class'PlaceholderItem',,, vect(4097.8,395.4,-1533)); //Desk with zappy electricity near construction zone
-        Spawn(class'PlaceholderItem',,, vect(4636.1,1579.3,-1741)); //Electrical box in construction zone
-        Spawn(class'PlaceholderItem',,, vect(5359.5,3122.3,-1761)); //Construction vehicle tread
-        Spawn(class'PlaceholderItem',,, vect(3114.3,3711.2,-2549)); //Storage room in crew capsule
+        Spawn(class'PlaceholderItem',,, vectm(37.5,531.4,-1569)); //Secretary desk
+        Spawn(class'PlaceholderItem',,, vectm(2722,226.5,-1481)); //Greasel Lab desk
+        Spawn(class'PlaceholderItem',,, vectm(4097.8,395.4,-1533)); //Desk with zappy electricity near construction zone
+        Spawn(class'PlaceholderItem',,, vectm(4636.1,1579.3,-1741)); //Electrical box in construction zone
+        Spawn(class'PlaceholderItem',,, vectm(5359.5,3122.3,-1761)); //Construction vehicle tread
+        Spawn(class'PlaceholderItem',,, vectm(3114.3,3711.2,-2549)); //Storage room in crew capsule
 
-        Spawn(class'PlaceholderContainer',,, vect(-71,775,-1599)); //Secretary desk corner
-        Spawn(class'PlaceholderContainer',,, vect(1740,156,-1599)); //Open storage room
-        Spawn(class'PlaceholderContainer',,, vect(2999,482,-1503)); //Greasel lab
-        Spawn(class'PlaceholderContainer',,, vect(1780,3725,-2483)); //Crew module bed
-        Spawn(class'PlaceholderContainer',,, vect(1733,3848,-4223)); //Corner in hall to UC
+        Spawn(class'PlaceholderContainer',,, vectm(-71,775,-1599)); //Secretary desk corner
+        Spawn(class'PlaceholderContainer',,, vectm(1740,156,-1599)); //Open storage room
+        Spawn(class'PlaceholderContainer',,, vectm(2999,482,-1503)); //Greasel lab
+        Spawn(class'PlaceholderContainer',,, vectm(1780,3725,-2483)); //Crew module bed
+        Spawn(class'PlaceholderContainer',,, vectm(1733,3848,-4223)); //Corner in hall to UC
 
         break;
     case "14_OCEANLAB_UC":
@@ -105,10 +105,10 @@ function PreFirstEntryMapFixes()
             door.MoverEncroachType=ME_IgnoreWhenEncroach;
         }
 
-        Spawn(class'PlaceholderItem',,, vect(1020.93,8203.4,-2864)); //Over security computer
-        Spawn(class'PlaceholderItem',,, vect(348.9,8484.63,-2913)); //Turret room
-        Spawn(class'PlaceholderItem',,, vect(1280.84,8534.17,-2913)); //Turret room
-        Spawn(class'PlaceholderItem',,, vect(1892,8754.5,-2901)); //Turret room, opposite from bait computer
+        Spawn(class'PlaceholderItem',,, vectm(1020.93,8203.4,-2864)); //Over security computer
+        Spawn(class'PlaceholderItem',,, vectm(348.9,8484.63,-2913)); //Turret room
+        Spawn(class'PlaceholderItem',,, vectm(1280.84,8534.17,-2913)); //Turret room
+        Spawn(class'PlaceholderItem',,, vectm(1892,8754.5,-2901)); //Turret room, opposite from bait computer
         break;
 
     case "14_Oceanlab_silo":
@@ -146,21 +146,21 @@ function PreFirstEntryMapFixes()
             }
         }
 
-        class'PlaceholderEnemy'.static.Create(self,vect(-264,-6991,-553),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(-312,-6886,327),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(270,-6601,1500),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(-1257,-3472,1468),rot(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vect(1021,-3323,1476),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(-264,-6991,-553));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-312,-6886,327));
+        class'PlaceholderEnemy'.static.Create(self,vectm(270,-6601,1500));
+        class'PlaceholderEnemy'.static.Create(self,vectm(-1257,-3472,1468));
+        class'PlaceholderEnemy'.static.Create(self,vectm(1021,-3323,1476));
 
         break;
     case "12_VANDENBERG_COMPUTER":
-        Spawn(class'PlaceholderItem',,, vect(579,2884,-1629)); //Table near entrance
-        Spawn(class'PlaceholderItem',,, vect(1057,2685.25,-1637)); //Table overlooking computer room
-        Spawn(class'PlaceholderItem',,, vect(1970,2883.43,-1941)); //In first floor computer room
+        Spawn(class'PlaceholderItem',,, vectm(579,2884,-1629)); //Table near entrance
+        Spawn(class'PlaceholderItem',,, vectm(1057,2685.25,-1637)); //Table overlooking computer room
+        Spawn(class'PlaceholderItem',,, vectm(1970,2883.43,-1941)); //In first floor computer room
         break;
 
     case "12_VANDENBERG_GAS":
-        class'PlaceholderEnemy'.static.Create(self,vect(635,488,-930),rot(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(635,488,-930));
 
         break;
 #endif
@@ -175,15 +175,15 @@ function PostFirstEntryMapFixes()
     switch(dxr.localURL) {
 #ifndef revision
     case "12_VANDENBERG_CMD":
-        foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 16, vect(570.835083, 1934.114014, -1646.114746)) {
-            info("removing " $ c $ " dist: " $ VSize(c.Location - vect(570.835083, 1934.114014, -1646.114746)) );
+        foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 16, vectm(570.835083, 1934.114014, -1646.114746)) {
+            info("removing " $ c $ " dist: " $ VSize(c.Location - vectm(570.835083, 1934.114014, -1646.114746)) );
             c.Destroy();
         }
         break;
 
     case "14_OCEANLAB_LAB":
         // ensure rebreather before greasel lab, in case the storage closet key is in the flooded area
-        a = _AddActor(Self, class'#var(prefix)Rebreather', vect(1569, 24, -1628), rot(0,0,0));
+        a = AddActor(class'#var(prefix)Rebreather', vect(1569, 24, -1628));
         a.SetPhysics(PHYS_None);
         l("PostFirstEntryMapFixes spawned "$ActorToString(a));
         break;
@@ -196,7 +196,6 @@ function AnyEntryMapFixes()
     local MIB mib;
     local NanoKey key;
     local #var(prefix)HowardStrong hs;
-    local #var(prefix)GarySavage gary;
 
     if(dxr.flagbase.GetBool('schematic_downloaded') && !dxr.flagbase.GetBool('DL_downloaded_Played')) {
         dxr.flagbase.SetBool('DL_downloaded_Played', true);
@@ -219,9 +218,6 @@ function AnyEntryMapFixes()
 
     case "14_VANDENBERG_SUB":
         FixSavageSkillPointsDupe();
-        foreach AllActors(class'#var(prefix)GarySavage', gary) {
-            RemoveFears(gary);
-        }
         break;
 
     case "14_OCEANLAB_SILO":

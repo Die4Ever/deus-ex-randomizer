@@ -235,7 +235,7 @@ function CheckConfig()
         items[i].chance = 3;
 
         map_name = "11_paris_cathedral";
-        starting_location = vect(-3811.785156, 2170.053223, -774.903442);
+        starting_location = vectm(-3811.785156, 2170.053223, -774.903442);
         default_orders = 'Attacking';
         default_order_tag = '';
 

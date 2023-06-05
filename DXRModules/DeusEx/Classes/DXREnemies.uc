@@ -24,29 +24,29 @@ function CheckConfig()
             randommelees[i].chance = 0;
         }
 
-        AddRandomWeapon("WeaponShuriken", 12);
+        AddRandomWeapon("WeaponShuriken", 10);
         AddRandomWeapon("WeaponPistol", 5);
         AddRandomWeapon("WeaponStealthPistol", 4);
-        AddRandomWeapon("WeaponAssaultGun", 10);
-        AddRandomWeapon("WeaponMiniCrossbow", 5);
+        AddRandomWeapon("WeaponAssaultGun", 12);
+        AddRandomWeapon("WeaponMiniCrossbow", 6);
 #ifdef gmdx
         AddRandomWeapon("#var(package).GMDXGepGun", 4);
 #else
         AddRandomWeapon("WeaponGEPGun", 4);
 #endif
-        AddRandomWeapon("WeaponAssaultShotgun", 5);
-        AddRandomWeapon("WeaponEMPGrenade", 5);
+        AddRandomWeapon("WeaponAssaultShotgun", 6);
+        AddRandomWeapon("WeaponEMPGrenade", 4);
         AddRandomWeapon("WeaponFlamethrower", 4);
-        AddRandomWeapon("WeaponGasGrenade", 5);
+        AddRandomWeapon("WeaponGasGrenade", 4);
         AddRandomWeapon("WeaponHideAGun", 3);
         AddRandomWeapon("WeaponLAM", 5);
         AddRandomWeapon("WeaponLAW", 4);
-        AddRandomWeapon("WeaponNanoVirusGrenade", 5);
-        AddRandomWeapon("WeaponPepperGun", 4);
+        AddRandomWeapon("WeaponNanoVirusGrenade", 4);
+        AddRandomWeapon("WeaponPepperGun", 2);
         AddRandomWeapon("WeaponPlasmaRifle", 7);
-        AddRandomWeapon("WeaponRifle", 5);
-        AddRandomWeapon("WeaponSawedOffShotgun", 6);
-        AddRandomWeapon("WeaponProd", 2);
+        AddRandomWeapon("WeaponRifle", 6);
+        AddRandomWeapon("WeaponSawedOffShotgun", 7);
+        AddRandomWeapon("WeaponProd", 3);
 
         AddRandomMelee("WeaponBaton", 15);
         AddRandomMelee("WeaponCombatKnife", 65);

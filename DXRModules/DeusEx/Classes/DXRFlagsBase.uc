@@ -959,7 +959,7 @@ simulated function MaxRandoValPair(out int min, out int max)
 function NewGamePlusVal(out int val, float curve, float exp)
 {
     if(val > 0) {
-        val = val * pow(curve, exp);// int *= float doesn't give as good accuracy as int = int*float
+        val = val * (curve ** exp);// int *= float doesn't give as good accuracy as int = int*float
         if(val <= 0) val = 1;
     }
 }
@@ -1018,8 +1018,8 @@ function ExtendedTests()
     testint(FindLast("this is a test", " "), 9, "FindLast");
 
     dxr.SetSeed(0451);
-    testfloatrange( pow(9,4), 9*9*9*9, 0.001, "pow");
-    testfloatrange( pow(5.7,3), 5.7*5.7*5.7, 0.001, "pow");
+    testfloatrange( (9**4), 9*9*9*9, 0.001, "pow");
+    testfloatrange( (5.7**3), 5.7*5.7*5.7, 0.001, "pow");
 
     TestRngExp(0, 1, 0.5, 1.5);
 

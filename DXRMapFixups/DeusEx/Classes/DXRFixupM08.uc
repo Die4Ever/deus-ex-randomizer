@@ -75,24 +75,24 @@ function AdjustRaidStartLocation()
     //In theory we could add more starting locations for the raids (basketball court, hotel)
 
     //Alley 1 (Sandra Renton) - Vanilla Non-GOTY
-    locations[i++]=vect(-2086,-706,-426);
-    locations[i++]=vect(-2041,-761,-426);
-    locations[i++]=vect(-1886,-719,-426);
-    locations[i++]=vect(-1849,-779,-426);
-    locations[i++]=vect(-1692,-695,-426);
+    locations[i++]=vectm(-2086,-706,-426);
+    locations[i++]=vectm(-2041,-761,-426);
+    locations[i++]=vectm(-1886,-719,-426);
+    locations[i++]=vectm(-1849,-779,-426);
+    locations[i++]=vectm(-1692,-695,-426);
 
     //Alley 2 (Road to NSF HQ) - Vanilla Non-GOTY
-    locations[i++]=vect(-1907,-1534,-434);
-    locations[i++]=vect(-1856,-1584,-434);
-    locations[i++]=vect(-1817,-1497,-441);
-    locations[i++]=vect(-1693,-1494,-452);
-    locations[i++]=vect(-1577,-1585,-438);
+    locations[i++]=vectm(-1907,-1534,-434);
+    locations[i++]=vectm(-1856,-1584,-434);
+    locations[i++]=vectm(-1817,-1497,-441);
+    locations[i++]=vectm(-1693,-1494,-452);
+    locations[i++]=vectm(-1577,-1585,-438);
 
 
    //Ambush guys are tagged with MJ12AttackForce and start out of world
    i=0;
    foreach AllActors(class'MJ12Troop',t,'MJ12AttackForce'){
        t.WorldPosition = locations[i];
-       t.SetLocation(locations[i++]+vect(0,0,20000));
+       t.SetLocation(locations[i++]+vectm(0,0,20000));
    }
 }

@@ -39,12 +39,12 @@ function CreateGoal(out Goal g, GoalLocation Loc)
             l("Anna Navarre dead, not spawning");
             return;
         }
-        sp = Spawn(class'#var(prefix)AnnaNavarre',, 'AnnaNavarre', Loc.positions[0].pos);
+        sp = #var(prefix)AnnaNavarre(Spawnm(class'#var(prefix)AnnaNavarre',, 'AnnaNavarre', Loc.positions[0].pos));
         g.actors[0].a = sp;
         sp.SetAlliance('UNATCO');
         sp.bInvincible = false;
         sp.SetOrders('WaitingFor');
-        at = Spawn(class'#var(prefix)AllianceTrigger',, 'AnnaAttacksJC', Loc.positions[0].pos);
+        at = #var(prefix)AllianceTrigger(Spawnm(class'#var(prefix)AllianceTrigger',, 'AnnaAttacksJC', Loc.positions[0].pos));
         at.Event = 'AnnaNavarre';
         at.Alliance = 'UNATCO';
         at.Alliances[0].AllianceName = 'Player';

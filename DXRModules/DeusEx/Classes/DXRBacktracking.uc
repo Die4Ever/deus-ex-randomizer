@@ -1,8 +1,6 @@
 class DXRBacktracking extends DXRActorsBase transient;
 // backtracking specific fixes that might be too extreme for the more generic DXRFixup? or move the stuff from DXRFixup into here?
 
-var DXREntranceRando entrancerando;
-
 function PreFirstEntry()
 {
     local Teleporter t;
@@ -30,7 +28,7 @@ function PreFirstEntry()
                     bp.bBlockPlayers=false;
                 }
             }
-            dt = Spawn(class'DynamicTeleporter',,'sewers_backtrack',vect(1599.971558, -4694.342773, 13.399302));
+            dt = Spawn(class'DynamicTeleporter',,'sewers_backtrack',vectm(1599.971558, -4694.342773, 13.399302));
             SetDestination(dt, "10_PARIS_CATACOMBS_TUNNELS", 'AmbientSound10');
             dt.SetCollisionSize(160,dt.CollisionHeight);
             AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
@@ -41,7 +39,7 @@ function PreFirstEntry()
             break;
 
         case "11_PARIS_CATHEDRAL":
-            dt = Spawn(class'DynamicTeleporter',,'cathedral_backtrack',vect(-2268.337891, 3042.279297, -866.726196));
+            dt = Spawn(class'DynamicTeleporter',,'cathedral_backtrack',vectm(-2268.337891, 3042.279297, -866.726196));
             SetDestination(dt, "10_PARIS_CHATEAU", 'Light135');
             dt.SetCollisionSize(160,dt.CollisionHeight);
             foreach AllActors(class'BlockPlayer', bp) {
@@ -67,20 +65,20 @@ function PreFirstEntry()
             break;
 
         case "15_AREA51_ENTRANCE":
-            dt = Spawn(class'DynamicTeleporter',,,vect(4384.407715, -2483.292236, -41.900017));
+            dt = Spawn(class'DynamicTeleporter',,,vectm(4384.407715, -2483.292236, -41.900017));
             SetDestination(dt, "15_area51_bunker", 'Light188');
             dt.SetCollisionSize(160,dt.CollisionHeight);
             break;
 
         case "15_AREA51_FINAL":
-            dt = Spawn(class'DynamicTeleporter',,,vect(-5714.406250, -1977.827881, -1358.711304));
+            dt = Spawn(class'DynamicTeleporter',,,vectm(-5714.406250, -1977.827881, -1358.711304));
             SetDestination(dt, "15_area51_entrance", 'Light73');
             dt.SetCollisionSize(160,dt.CollisionHeight);
 
             AddSwitch(vect(-3907,-1116,-1958), rot(0, 32800, 0), 'mainblastopencheck');
 
             //Switch triggers the doors if the Helios datalink has played (Talked to Helios)
-            ft = Spawn(class'FlagTrigger',,,vect(-3907,-1116,-1958));
+            ft = Spawn(class'FlagTrigger',,,vectm(-3907,-1116,-1958));
             ft.tag = 'mainblastopencheck';
             ft.bInitiallyActive=True;
             ft.bTriggerOnceOnly=False;
@@ -92,7 +90,7 @@ function PreFirstEntry()
             ft.Event='Page_Blastdoors';
 
             //Switch triggers the "not yet" datalink if the Helios datalink has not played (Talked to Helios)
-            ft = Spawn(class'FlagTrigger',,,vect(-3907,-1116,-1958));
+            ft = Spawn(class'FlagTrigger',,,vectm(-3907,-1116,-1958));
             ft.tag = 'mainblastopencheck';
             ft.bInitiallyActive=True;
             ft.bTriggerOnceOnly=False;
@@ -122,8 +120,8 @@ function PostFirstEntry()
 {
     switch(dxr.localURL) {
         case "11_PARIS_CATHEDRAL":
-            AddBox(class'CrateUnbreakableSmall', vect(-2130.379639, 3345.327881, -1151.909180));
-            AddBox(class'CrateUnbreakableLarge', vect(-2234.959473, 3227.824951, -1127.913330));
+            AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(-2130.379639, 3345.327881, -1151.909180));
+            AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(-2234.959473, 3227.824951, -1127.913330));
             break;
     }
 }
@@ -167,6 +165,9 @@ function RetainSaves(int oldMissionNum, int newMissionNum, string nextMap)
 static function LevelInit(DXRando dxr)
 {
     local int newMissionNum;
+
+    dxr.dxInfo.mapName = class'DXRMapVariants'.static.CleanupMapName(dxr.dxInfo.mapName);
+    dxr.localURL = Caps(dxr.dxInfo.mapName);
 
     newMissionNum = class'DXRMapInfo'.static.GetMissionNumber(dxr.localURL);
     if( newMissionNum != 0 && newMissionNum != dxr.dxInfo.missionNumber ) {
@@ -275,13 +276,13 @@ function ParisMetroAnyEntry()
         flags.SetBool('MS_GuntherUnhidden', false,, 11);
 
         foreach AllActors(class'GuntherHermann', gunther) {
-            gunther.SetLocation( vect(3790.952637, 1990.542969, 199.763168) );
+            gunther.SetLocation( vectm(3790.952637, 1990.542969, 199.763168) );
             gunther.LeaveWorld();
         }
 
         RemoveChoppers();
 
-        SpawnChopper( 'BlackHelicopter', 'choppertrack', "Jock", vect(3134.682373, 1101.204956, 304.756897), rot(0, -24944, 0) );
+        SpawnChopper( 'BlackHelicopter', 'choppertrack', "Jock", vectm(3134.682373, 1101.204956, 304.756897), rotm(0, -24944, 0) );
     }
 
     /*if( flags.GetBool('ClubComplete') ) {
@@ -307,8 +308,8 @@ function ParisChateauAnyEntry()
 
     RemoveChoppers();
 
-    CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'Camera1', vect(-500,250,0) );
-    BacktrackChopper( 'ChopperExit', 'BlackHelicopter', 'UN_BlackHeli_Fly', "Jock", 'Camera1', "10_PARIS_METRO", 'PathNode447', "", vect(-825.793274, 1976.029297, 176.545380), rot(0, -10944, 0) );
+    CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'Camera1', vectm(-500,250,0) );
+    BacktrackChopper( 'ChopperExit', 'BlackHelicopter', 'UN_BlackHeli_Fly', "Jock", 'Camera1', "10_PARIS_METRO", 'PathNode447', "", vectm(-825.793274, 1976.029297, 176.545380), rotm(0, -10944, 0) );
 }
 
 function VandCmdAnyEntry()
@@ -332,7 +333,7 @@ function VandCmdAnyEntry()
     if ( flags.GetBool('GaryHostageBriefing_Played') )
     {
         RemoveChoppers('Helicopter');
-        chopper = SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vect(7014.185059, 7540.296875, -2884.704102), rot(0, -19840, 0) );
+        chopper = SpawnChopper( 'Helicopter', 'helicopter_path', "Jock", vectm(7014.185059, 7540.296875, -2884.704102), rotm(0, -19840, 0) );
         missions = DXRMissions(dxr.FindModule(class'DXRMissions'));
         if(missions != None) {
             missions.UpdateLocation(chopper);
@@ -359,11 +360,11 @@ function VandGasAnyEntry()
     foreach AllActors(class'BlackHelicopter', chopper, 'Heli')
         chopper.Event = 'UN_BlackHeli';
 
-    CreateInterpolationPoints( 'backtrack_exit', vect(2520.256836, -2489.873535, -1402.078857) );
-    CreateCameraInterpolationPoints( 'backtrack_exit', 'backtrack_camera', vect(-500,250,0) );
+    CreateInterpolationPoints( 'backtrack_exit', vectm(2520.256836, -2489.873535, -1402.078857) );
+    CreateCameraInterpolationPoints( 'backtrack_exit', 'backtrack_camera', vectm(-500,250,0) );
 
     // I could also give Jock a "Let's go" conversation
-    BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_CMD", 'PathNode8', "", vect(2520.256836, -2489.873535, -1402.078857), rot(0,0,0) );
+    BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_CMD", 'PathNode8', "", vectm(2520.256836, -2489.873535, -1402.078857), rotm(0,0,0) );
 
 
     // repeat flights to the sub base
@@ -372,14 +373,17 @@ function VandGasAnyEntry()
 
     foreach AllActors(Class'DeusExMover', M, 'junkyard_doors') {
         M.bLocked = true;
+#ifdef injections
         class'DXRDoors'.static.StaticMakeDestructible(M);
+#endif
+        M.bBreakable = true;
         M.doorStrength = 0.1;
         M.minDamageThreshold = 1;
     }
 
     if( flags.GetBool('MS_ChopperGasUnhidden') ) {
         RemoveChoppers('Heli');
-        SpawnChopper( 'Heli', 'UN_BlackHeli', "Jock", vect(-3207.999756, 135.342285, -905.545044), rot(0, -63104, 0) );
+        SpawnChopper( 'Heli', 'UN_BlackHeli', "Jock", vectm(-3207.999756, 135.342285, -905.545044), rotm(0, -63104, 0) );
 
         foreach AllActors(Class'DeusExMover', M, 'junkyard_doors')
             M.BlowItUp(None);
@@ -429,12 +433,12 @@ function VandSubAnyEntry()
         p.RateModifier = 0.25;
         if( p.Position > 4 ) p.bEndOfPath = true;
         if( p.Position > 2 ) continue;
-        p.SetLocation(vect(7035.433594, 3841.281250, -379.008362));
-        if( p.Position < 2 ) p.SetRotation(rot(0, -15720, 0));
+        p.SetLocation(vectm(7035.433594, 3841.281250, -379.008362));
+        if( p.Position < 2 ) p.SetRotation(rotm(0, -15720, 0));
     }
 
-    CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'backtrack_camera', vect(200,600,0) );
-    BacktrackChopper('UN_BlackHeli_Fly', 'backtrack_chopper', 'UN_BlackHeli_Fly', "", 'backtrack_camera', "12_VANDENBERG_GAS", 'PathNode98', "", vect(7035.433594, 3841.281250, -379.008362), rot(0, -15720, 0) );
+    CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'backtrack_camera', vectm(200,600,0) );
+    BacktrackChopper('UN_BlackHeli_Fly', 'backtrack_chopper', 'UN_BlackHeli_Fly', "", 'backtrack_camera', "12_VANDENBERG_GAS", 'PathNode98', "", vectm(7035.433594, 3841.281250, -379.008362), rotm(0, -15720, 0) );
 
     // need to backtrack with the sub too
     foreach AllActors(class'FlagTrigger', ft, 'flag2') {
@@ -459,7 +463,7 @@ function VandSubAnyEntry()
 
     if( flags.GetBool('DL_downloaded_Played') ) {
         RemoveChoppers('BlackHelicopter');
-        SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vect(2104.722168, 3647.967773, 896.197144), rot(0, 0, 0) );
+        SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vectm(2104.722168, 3647.967773, 896.197144), rotm(0, 0, 0) );
     }
 
     // ability to fly to the silo even after howard strong is dead
@@ -470,7 +474,7 @@ function VandSubAnyEntry()
         exit.event = '';
         exit.Destroy();
     }
-    exit = Spawn(class'MapExit',, 'SiloExit', vect(2620, 3284.822754, 743.136780) );
+    exit = Spawn(class'MapExit',, 'SiloExit', vectm(2620, 3284.822754, 743.136780) );
     SetDestination(exit, "14_Oceanlab_silo", '', "frontgate");
     exit.event = 'BlackHelicopter';
     exit.SetCollision(false,false,false);
@@ -481,7 +485,7 @@ function VandSubAnyEntry()
         t.event = '';
         t.Destroy();
     }
-    t = Spawn(class'InterpolateTrigger',, 'SiloExit', vect(2680, 3332.543213, 768.108032) );
+    t = Spawn(class'InterpolateTrigger',, 'SiloExit', vectm(2680, 3332.543213, 768.108032) );
     t.event = 'BlackHelicopter';
     t.SetCollision(false,false,false);
 }
@@ -537,13 +541,13 @@ function VandOceanLabAnyEntry()
         me.SetCollision(false,false,false);
     }
 
-    s = Spawn(class'MiniSub',, 'MiniSub', vect(186.735916, 243.355240, -2217.393555), rot(0, -16408, 0) );
+    s = Spawn(class'MiniSub',, 'MiniSub', vectm(186.735916, 243.355240, -2217.393555), rotm(0, -16408, 0) );
     s.Event = 'subexit2';
     s.bFloating = true;
     s.SetPhysics(PHYS_Swimming);
-    s.SetRotation(rot(0, -16408, 0));
-    s.DesiredRotation = rot(0, -16408, 0);
-    s.origRot = rot(0, -16408, 0);
+    s.SetRotation(rotm(0, -16408, 0));
+    s.DesiredRotation = rotm(0, -16408, 0);
+    s.origRot = rotm(0, -16408, 0);
 
     foreach AllActors(class'DataLinkTrigger', dlt) {
         if( dlt.datalinkTag != 'dl_seconddoors' ) continue;
@@ -564,11 +568,11 @@ function VandSiloAnyEntry()
 
     // back to sub base
     flags.SetBool('DL_downloaded_Played', true,, 15);
-    CreateInterpolationPoints( 'backtrack_path', vect(507, -2500, 1600) );
-    CreateCameraInterpolationPoints( 'backtrack_path', 'backtrack_camera', vect(-500,250,0) );
+    CreateInterpolationPoints( 'backtrack_path', vectm(507, -2500, 1600) );
+    CreateCameraInterpolationPoints( 'backtrack_path', 'backtrack_camera', vectm(-500,250,0) );
 
     RemoveChoppers('backtrack_chopper');
-    chopper = BacktrackChopper('backtrack_path', 'backtrack_chopper', 'backtrack_path', "", 'backtrack_camera', "14_Vandenberg_Sub", 'InterpolationPoint39', "", vect(507, -2500, 1600), rot(0,0,0) );
+    chopper = BacktrackChopper('backtrack_path', 'backtrack_chopper', 'backtrack_path', "", 'backtrack_camera', "14_Vandenberg_Sub", 'InterpolationPoint39', "", vectm(507, -2500, 1600), rotm(0,0,0) );
     chopper.FamiliarName = "Backtrack";
     chopper.UnFamiliarName = "Backtrack";
 
@@ -660,7 +664,7 @@ function CreateInterpolationPoints(Name PathTag, vector loc)
         return;// don't do anything if PathTag already exists
 
     for(i=0; i<10 ; i++) {
-        p = Spawn(class'InterpolationPoint',, PathTag, loc, rot(0,0,0) );
+        p = Spawn(class'InterpolationPoint',, PathTag, loc, rotm(0,0,0) );
         p.Position = i;
         p.RateModifier = 2;
         loc.Z += 20*i;
@@ -712,12 +716,19 @@ function ConversationFrobOnly(Conversation c)
 
 function SetDestination(NavigationPoint p, string destURL, name dest_actor_name, optional string tag)
 {
+    local DXREntranceRando entrancerando;
+    local DXRMapVariants maps;
     local MapExit m;
     local DynamicTeleporter t;
 
     l("SetDestination "$p@p.tag@destURL@dest_actor_name@tag);
+    maps = DXRMapVariants(dxr.FindModule(class'DXRMapVariants'));
+    if(maps != None)
+        destURL = maps.VaryURL(destURL);
+
     m = MapExit(p);
     t = DynamicTeleporter(p);
+#ifdef injections
     if( m != None )
         m.SetDestination(destURL, dest_actor_name, tag);
     else if( t != None )
@@ -725,8 +736,8 @@ function SetDestination(NavigationPoint p, string destURL, name dest_actor_name,
     else
         err("SetDestination failed for "$p);
 
-    if(entrancerando == None)
-        entrancerando = DXREntranceRando(dxr.FindModule(class'DXREntranceRando'));
+    entrancerando = DXREntranceRando(dxr.FindModule(class'DXREntranceRando'));
     if(entrancerando != None)
         entrancerando.AdjustTeleporter(p);
+#endif
 }

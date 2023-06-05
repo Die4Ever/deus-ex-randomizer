@@ -46,7 +46,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(2,4,1,1) ) {
+    if( ConfigOlderThan(2,4,2,1) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(loadouts_order); i++) {
@@ -137,7 +137,7 @@ function CheckConfig()
 
         item_sets[9].name = "No Overpowered Weapons";
         item_sets[9].player_message = "No Overpowered Weapons";
-        item_sets[9].bans = "WeaponSword,WeaponNanoSword,WeaponPistol,WeaponStealthPistol,WeaponGEPGun";
+        item_sets[9].bans = "WeaponSword,WeaponNanoSword,WeaponPistol,WeaponStealthPistol,WeaponGEPGun,WeaponPepperGun";
 
         item_sets[10].name = "By the Book";
         item_sets[10].player_message = "By the Book";

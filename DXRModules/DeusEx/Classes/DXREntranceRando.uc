@@ -746,7 +746,7 @@ function ApplyFixes()
     /*case "06_HONGKONG_STORAGE":
         foreach AllActors(class'WaterZone', w) {
             //if( w.Name == 'WaterZone5' || w.Name == 'WaterZone1' )
-                w.ZoneVelocity = vect(0,0,0);
+                w.ZoneVelocity = vectm(0,0,0);
         }
         break;*/
 
@@ -763,7 +763,7 @@ function ApplyFixes()
 function FixHongKongCanal()
 {
     local HKTukTuk tuktuk;
-    local Containers box;
+    local #var(prefix)Containers box;
     local DynamicBlockPlayer dbp;
     local vector loc;
     local int i;
@@ -772,10 +772,10 @@ function FixHongKongCanal()
         if( tuktuk.Name != 'HKTukTuk0' ) continue;
         tuktuk.SetCollision(false,false,false);
         tuktuk.bCollideWorld = false;
-        tuktuk.SetLocation(vect(1162.203735, 1370, -482.995361));
+        tuktuk.SetLocation(vectm(1162.203735, 1370, -482.995361));
         break;
     }
-    loc = vect(1074.268188, 1368.834106, -535);
+    loc = vectm(1074.268188, 1368.834106, -535);
     for(i=0; i < 5; i++) {
         dbp = Spawn(class'DynamicBlockPlayer',,, loc);
         dbp.SetBase(tuktuk);
@@ -784,12 +784,12 @@ function FixHongKongCanal()
         if( i == 2 )// only the middle one will collide with the box
             dbp.SetCollision(true, true, true);
         if( i == 3 )// the roof thing on the boat is a bit higher
-            dbp.SetLocation(loc+vect(0,0,16));
+            dbp.SetLocation(loc+vectm(0,0,16));
 
-        loc += vect(38, 0, 0);
+        loc += vectm(38, 0, 0);
     }
 
-    box = AddBox(class'BoxMedium', vect(1151.214355, 1370, -400));
+    box = AddBox(class'#var(prefix)BoxMedium', vectm(1151.214355, 1370, -400));
     box.bCollideWorld = false;
     box.bPushable = false;
     box.bHighlight = false;
@@ -798,7 +798,7 @@ function FixHongKongCanal()
 function FixVandebergCmd()
 {
     local DeusExMover d;
-    local Nanokey n;
+    local #var(prefix)Nanokey n;
     local DXRKeys dxrk;
 
     foreach AllActors(class'DeusExMover', d, 'security_tunnels') {
@@ -816,7 +816,7 @@ function FixVandebergCmd()
         }
     }*/
 
-    n = Spawn(class'NanoKey',,, vect(2048.289063, 4712.830078, -2052.789551) );
+    n = Spawn(class'#var(prefix)NanoKey',,, vectm(2048.289063, 4712.830078, -2052.789551) );
     n.Description = "Storage door key";
     n.KeyID = 'storage_door';
 
@@ -829,11 +829,11 @@ function FixOceanLab()
 {
     local NanoKey n;
 
-    n = Spawn(class'NanoKey',,, vect(1913.437012, 3191.914063, -2282.776855) );
+    n = Spawn(class'NanoKey',,, vectm(1913.437012, 3191.914063, -2282.776855) );
     n.Description = "Crew Module Access";
     n.KeyID = 'crewkey';
 
-    n = Spawn(class'NanoKey',,, vect(1583.074585, 462.036804, -1762.375610) );
+    n = Spawn(class'NanoKey',,, vectm(1583.074585, 462.036804, -1762.375610) );
     n.Description = "Greasel Laboratory Key";
     n.KeyID = 'Glab';
 }
@@ -1092,7 +1092,9 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
     m = MapExit(p);
     dt = DynamicTeleporter(p);
     if( dt != None ) curDest = dt.URL $ "?toname=" $ dt.destName;
+#ifdef injections
     else if( m != None && m.destName != '' ) curDest = m.DestMap $ "?toname=" $ m.destName;
+#endif
     else if( m != None )  curDest = m.DestMap;
     else if( t != None ) {
         if( ! t.bEnabled ) return None;
@@ -1103,6 +1105,7 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
 
     hashPos = InStr(curDest,"#");
     destTag = Caps(Mid(curDest,hashPos+1));
+    // TODO: DXRMapVariants
 
     l("AdjustTeleporter("$p$") curDest: "$curDest$", destTag: "$destTag$", numConns: "$numConns);
 
@@ -1133,14 +1136,18 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
                 dt.SetDestination(newMap, StringToName(newName));
             }
             else if( m != None ) {
+#ifdef injections
                 m.SetDestination(newMap, StringToName(newName));
+#endif
             }
         }
         else {
             if( dt != None )
                 dt.SetDestination(newMap, '', newTag);
+#ifdef injections
             else if( m != None )
                 m.SetDestination(newMap, '', newTag);
+#endif
             else if( t != None )
                 t.URL = newMap $ "#" $ newTag;
         }

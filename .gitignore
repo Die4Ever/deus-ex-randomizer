@@ -1,3 +1,8 @@
+# pyinstaller stuff
+dist
+build
+installer/3rdParty
+
 # Visual Studio 2015 user specific files
 .vs/
 
@@ -74,7 +79,7 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 # Windows shortcuts (To provide arguments to the compiler)
-*.lnk
+/*.lnk
 
 # Settings file for the compiler
 compiler_settings.json

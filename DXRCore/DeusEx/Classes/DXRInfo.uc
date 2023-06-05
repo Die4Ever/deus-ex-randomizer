@@ -184,11 +184,6 @@ final function int SystemTime()
     return _SystemTime(Level);
 }
 
-simulated static function float pow(float m, float e)
-{
-    return exp(e * loge(m) );
-}
-
 /*
 ========= STRING FUNCTIONS
 */
@@ -202,12 +197,9 @@ simulated static final function string StripMapName(string s)
     local string stripped;
     local int i;
     for(i=0; i<Len(s); i++) {
-        if(Mid(s, i, 1) == "_")
-            stripped = stripped $ Mid(s, i, 1);
-        else
-            stripped = stripped $ ToAlphaNumeric(s, i);
+        stripped = stripped $ ToAlphaNumeric(s, i);
     }
-    return s;
+    return stripped;
 }
 
 simulated static function string UnpackString(out string s)
@@ -277,7 +269,7 @@ simulated static function string FloatToString(float f, int decimal_places)
 {
     local int i;
     local string s;
-    f += 0.5 * pow(10, -decimal_places);// round it instead of floor
+    f += 0.5 * (10 ** -decimal_places);// round it instead of floor
     s = string(f);
     i = InStr(s, ".");
     if( i != -1 ) {
@@ -317,7 +309,7 @@ simulated static function string TrimTrailingZeros(coerce string s)
     return Left(s, end);
 }
 
-simulated static function string ToHex(int val)
+static static function string ToHex(int val)
 {
     local int t;
     local string s;
@@ -351,7 +343,7 @@ static function string ActorToString( Actor a )
     return out;
 }
 
-function bool NamesAreSimilar(coerce string a, coerce string b)
+static function bool NamesAreSimilar(coerce string a, coerce string b)
 {
     local int len_a, len_b;
     len_a = Len(a);
@@ -361,9 +353,10 @@ function bool NamesAreSimilar(coerce string a, coerce string b)
     return Left( a, len_a-2 ) == Left( b, len_a-2 );
 }
 
-simulated function int FindLast(coerce string Text, coerce string search)
+static function int FindLast(coerce string Text, coerce string search)
 {
     local int last, a, b;
+    last = -1;
     while(a != -1) {
         last = b - 1;
         a = InStr(Mid(Text, b), search);
@@ -378,6 +371,7 @@ simulated static final function string ReplaceText(coerce string Text, coerce st
     local string Output, capsReplace;
 
     replace_len = Len(Replace);
+    if(replace_len == 0) return Text;
     capsReplace = Caps(Replace);
 
     i = WordInStr( Caps(Text), capsReplace, replace_len, word );
@@ -440,7 +434,7 @@ simulated static final function string ToAlphaNumeric(coerce string Text, int in
         return Mid(Text, index, 1);
     if( c>=97 && c<=122) // a-z
         return Mid(Text, index, 1);
-    return "-";
+    return "_";
 }
 
 /*

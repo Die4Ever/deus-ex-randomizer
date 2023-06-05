@@ -445,7 +445,7 @@ simulated function RandoMedBot(#var(prefix)MedicalBot m, int mbamount, int mbcoo
 
         //Actually rando the healAmount
         scale = float(dxr.flags.settings.health) / 100.0;
-        scale = Max(scale, (scale+1.0)/2.0);
+        scale = FMax(scale, (scale+1.0)/2.0);
         m.healAmount = rngrange(m.default.healAmount, 0.5 * scale, 1.2 * scale);
     }
 }
@@ -475,7 +475,7 @@ simulated function RandoRepairBot(#var(prefix)RepairBot r, int rbamount, int rbc
 
         //Actually rando the chargeAmount
         scale = float(dxr.flags.settings.energy) / 100.0;
-        scale = Max(scale, (scale+1.0)/2.0);
+        scale = FMax(scale, (scale+1.0)/2.0);
         r.chargeAmount = rngrange(r.default.chargeAmount, 0.5 * scale, 1.2 * scale);
     }
 }
