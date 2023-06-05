@@ -763,7 +763,7 @@ function ApplyFixes()
 function FixHongKongCanal()
 {
     local HKTukTuk tuktuk;
-    local Containers box;
+    local #var(prefix)Containers box;
     local DynamicBlockPlayer dbp;
     local vector loc;
     local int i;
@@ -789,7 +789,7 @@ function FixHongKongCanal()
         loc += vectm(38, 0, 0);
     }
 
-    box = AddBox(class'BoxMedium', vectm(1151.214355, 1370, -400));
+    box = AddBox(class'#var(prefix)BoxMedium', vectm(1151.214355, 1370, -400));
     box.bCollideWorld = false;
     box.bPushable = false;
     box.bHighlight = false;
@@ -798,7 +798,7 @@ function FixHongKongCanal()
 function FixVandebergCmd()
 {
     local DeusExMover d;
-    local Nanokey n;
+    local #var(prefix)Nanokey n;
     local DXRKeys dxrk;
 
     foreach AllActors(class'DeusExMover', d, 'security_tunnels') {
@@ -816,7 +816,7 @@ function FixVandebergCmd()
         }
     }*/
 
-    n = Spawn(class'NanoKey',,, vectm(2048.289063, 4712.830078, -2052.789551) );
+    n = Spawn(class'#var(prefix)NanoKey',,, vectm(2048.289063, 4712.830078, -2052.789551) );
     n.Description = "Storage door key";
     n.KeyID = 'storage_door';
 
@@ -1092,7 +1092,9 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
     m = MapExit(p);
     dt = DynamicTeleporter(p);
     if( dt != None ) curDest = dt.URL $ "?toname=" $ dt.destName;
+#ifdef injections
     else if( m != None && m.destName != '' ) curDest = m.DestMap $ "?toname=" $ m.destName;
+#endif
     else if( m != None )  curDest = m.DestMap;
     else if( t != None ) {
         if( ! t.bEnabled ) return None;
@@ -1134,14 +1136,18 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
                 dt.SetDestination(newMap, StringToName(newName));
             }
             else if( m != None ) {
+#ifdef injections
                 m.SetDestination(newMap, StringToName(newName));
+#endif
             }
         }
         else {
             if( dt != None )
                 dt.SetDestination(newMap, '', newTag);
+#ifdef injections
             else if( m != None )
                 m.SetDestination(newMap, '', newTag);
+#endif
             else if( t != None )
                 t.URL = newMap $ "#" $ newTag;
         }

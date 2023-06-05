@@ -64,7 +64,7 @@ function SetdxInfo(DeusExLevelInfo i)
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL $ ", mapname: " $ i.MissionLocation);
 
-#ifdef backtracking
+#ifndef hx
     // undo the damage that DXRBacktracking has done to prevent saves from being deleted
     // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
     class'DXRBacktracking'.static.LevelInit(Self);
@@ -110,7 +110,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 2,4,2,1) ) {
+    if( VersionOlderThan(config_version, 2,4,2,2) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -235,6 +235,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRMusic";
     modules_to_load[i++] = "DXRMusicPlayer";
     modules_to_load[i++] = "DXRPlayerStats";
+    modules_to_load[i++] = "DXRMapVariants";
 }
 
 function revision_modules()
@@ -273,6 +274,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRMusic";
     modules_to_load[i++] = "DXRMusicPlayer";
     modules_to_load[i++] = "DXRPlayerStats";
+    modules_to_load[i++] = "DXRMapVariants";
 }
 
 function DXRFlags LoadFlagsModule()
@@ -422,9 +424,7 @@ function RandoEnter()
     IsTravel = flagbase.GetBool('PlayerTraveling');
 
     map = localURL;
-#ifdef injections
     map = class'DXRMapVariants'.static.GetDirtyMapName(map, flags.coords_mult);
-#endif
     flagName = flagbase.StringToName("M"$StripMapName(map)$"_Randomized");
     if (!flagbase.GetBool(flagName))
     {

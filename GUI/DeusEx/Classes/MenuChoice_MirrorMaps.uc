@@ -13,9 +13,7 @@ function PopulateOptions()
 {
     local bool maps_files_found;
 
-#ifdef injections
     maps_files_found = class'DXRMapVariants'.static.MirrorMapsAvailable();
-#endif
 
     if(maps_files_found) {
         HelpText = default.HelpText;

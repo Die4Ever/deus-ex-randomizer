@@ -120,8 +120,8 @@ function PostFirstEntry()
 {
     switch(dxr.localURL) {
         case "11_PARIS_CATHEDRAL":
-            AddBox(class'CrateUnbreakableSmall', vectm(-2130.379639, 3345.327881, -1151.909180));
-            AddBox(class'CrateUnbreakableLarge', vectm(-2234.959473, 3227.824951, -1127.913330));
+            AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(-2130.379639, 3345.327881, -1151.909180));
+            AddBox(class'#var(prefix)CrateUnbreakableLarge', vectm(-2234.959473, 3227.824951, -1127.913330));
             break;
     }
 }
@@ -373,7 +373,10 @@ function VandGasAnyEntry()
 
     foreach AllActors(Class'DeusExMover', M, 'junkyard_doors') {
         M.bLocked = true;
+#ifdef injections
         class'DXRDoors'.static.StaticMakeDestructible(M);
+#endif
+        M.bBreakable = true;
         M.doorStrength = 0.1;
         M.minDamageThreshold = 1;
     }
@@ -725,6 +728,7 @@ function SetDestination(NavigationPoint p, string destURL, name dest_actor_name,
 
     m = MapExit(p);
     t = DynamicTeleporter(p);
+#ifdef injections
     if( m != None )
         m.SetDestination(destURL, dest_actor_name, tag);
     else if( t != None )
@@ -735,4 +739,5 @@ function SetDestination(NavigationPoint p, string destURL, name dest_actor_name,
     entrancerando = DXREntranceRando(dxr.FindModule(class'DXREntranceRando'));
     if(entrancerando != None)
         entrancerando.AdjustTeleporter(p);
+#endif
 }
