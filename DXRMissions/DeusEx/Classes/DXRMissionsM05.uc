@@ -11,11 +11,11 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 1, 'PaulDentonCarcass0', PHYS_Falling);
         AddGoalActor(goal, 2, 'DataLinkTrigger6', PHYS_None);
 
-        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vectm(-8548.773438, 1074.370850, -20.860909), rotm(0, 0, 0));
-        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vectm(2281.708008, -617.352478, -224.400238), rotm(0,35984,0));
-        AddActorLocation(loc, 1, vectm(2177.405273, -552.487671, -200.899811), rotm(0, 16944, 0));
-        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vectm(375,3860,-604), rotm(0, 8048, 0));
-        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vectm(-4297,1083,210), rotm(0, 16392, 0));
+        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
+        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
+        AddActorLocation(loc, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
+        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(375,3860,-604), rot(0, 8048, 0));
+        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
 
         return 51;
 
@@ -23,26 +23,26 @@ function int InitGoals(int mission, string map)
         AddGoal("05_NYC_UNATCOHQ", "Alex Jacobson", NORMAL_GOAL, 'AlexJacobson0', PHYS_Falling);
         AddGoal("05_NYC_UNATCOHQ", "Jaime Reyes", NORMAL_GOAL, 'JaimeReyes0', PHYS_Falling);
 
-        AddGoalLocation("05_NYC_UNATCOHQ", "Jail", NORMAL_GOAL, vectm(-2478.156738, -1123.645874, -16.399887), rotm(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Bathroom", NORMAL_GOAL, vectm(121.921074, 287.711243, 39.599487), rotm(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Manderley's Bathroom", NORMAL_GOAL, vectm(261.019775, -403.939575, 287.600586), rotm(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Break Room", NORMAL_GOAL, vectm(718.820068, 1411.137451, 287.598999), rotm(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "West Office", NORMAL_GOAL, vectm(-666.268066, -460.813965, 463.598083), rotm(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Computer Ops", NORMAL_GOAL | VANILLA_GOAL, vectm(2001.611206,-801.088379,-16.225000), rotm(0,23776,0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Jail", NORMAL_GOAL, vect(-2478.156738, -1123.645874, -16.399887), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Bathroom", NORMAL_GOAL, vect(121.921074, 287.711243, 39.599487), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Manderley's Bathroom", NORMAL_GOAL, vect(261.019775, -403.939575, 287.600586), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Break Room", NORMAL_GOAL, vect(718.820068, 1411.137451, 287.598999), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "West Office", NORMAL_GOAL, vect(-666.268066, -460.813965, 463.598083), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Computer Ops", NORMAL_GOAL | VANILLA_GOAL, vect(2001.611206,-801.088379,-16.225000), rot(0,23776,0));
 
         // could've left the actor name blank, but this will make them easier to find with legend
         AddGoal("05_NYC_UNATCOHQ", "Anna's Killphrase 1", GOAL_TYPE1, 'FlagTrigger0', PHYS_Falling);
         AddGoal("05_NYC_UNATCOHQ", "Anna's Killphrase 2", GOAL_TYPE1, 'FlagTrigger1', PHYS_Falling);
 
-        AddGoalLocation("05_NYC_UNATCOHQ", "Manderley's Computer", GOAL_TYPE1 | VANILLA_GOAL, vectm(285.293274, -97.416443, 306.213837), rotm(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Gunther's Computer", GOAL_TYPE1 | VANILLA_GOAL, vectm(-361.564636, -1105.282837, 0.215084), rotm(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Sam's Computer", GOAL_TYPE1, vectm(923.469177, -819.359863, 9.367111), rotm(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Alex's Computer", GOAL_TYPE1, vectm(1058.635620, -629.008118, -10.500217), rotm(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Jaime's Computer", GOAL_TYPE1, vectm(988.246399, 1035.369507, 0.215073), rotm(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Janice's Computer", GOAL_TYPE1, vectm(118.116867, 399.636597, 307.363861), rotm(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "JC's Computer", GOAL_TYPE1, vectm(-189.312790, 1268.172729, 314.458160), rotm(0, 0, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Jail Computer", GOAL_TYPE1, vectm(-1491.076782, -1207.629028, -2.499634), rotm(0, 25000, 0));
-        AddGoalLocation("05_NYC_UNATCOHQ", "Conference Room Computer", GOAL_TYPE1, vectm(79.009933, 863.868042, 296.502075), rotm(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Manderley's Computer", GOAL_TYPE1 | VANILLA_GOAL, vect(285.293274, -97.416443, 306.213837), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Gunther's Computer", GOAL_TYPE1 | VANILLA_GOAL, vect(-361.564636, -1105.282837, 0.215084), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Sam's Computer", GOAL_TYPE1, vect(923.469177, -819.359863, 9.367111), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Alex's Computer", GOAL_TYPE1, vect(1058.635620, -629.008118, -10.500217), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Jaime's Computer", GOAL_TYPE1, vect(988.246399, 1035.369507, 0.215073), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Janice's Computer", GOAL_TYPE1, vect(118.116867, 399.636597, 307.363861), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "JC's Computer", GOAL_TYPE1, vect(-189.312790, 1268.172729, 314.458160), rot(0, 0, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Jail Computer", GOAL_TYPE1, vect(-1491.076782, -1207.629028, -2.499634), rot(0, 25000, 0));
+        AddGoalLocation("05_NYC_UNATCOHQ", "Conference Room Computer", GOAL_TYPE1, vect(79.009933, 863.868042, 296.502075), rot(0, 0, 0));
         return 52;
     }
 

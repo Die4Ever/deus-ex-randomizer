@@ -11,13 +11,13 @@ function int InitGoals(int mission, string map)
     //AddGoalActor(goal, 2, 'CoffeeTable0', PHYS_Falling);
     AddGoal("08_NYC_FreeClinic", "Joe Greene", NORMAL_GOAL, 'JoeGreene0', PHYS_Falling);
 
-    AddGoalLocation("08_NYC_Street", "Hotel Roof", START_LOCATION | VANILLA_START | NORMAL_GOAL, vectm(-354.250427, 795.071594, 594.411743), rotm(0, -18600, 0));
-    AddGoalLocation("08_NYC_Bar", "Bar Table", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vectm(-1689.125122, 337.159912, 63.599533), rotm(0,-10144,0));
-    AddGoalLocation("08_NYC_Bar", "Bar", NORMAL_GOAL | VANILLA_GOAL, vectm(-931.038086, -488.537109, 47.600464), rotm(0,9536,0));
-    AddGoalLocation("08_NYC_FreeClinic", "Clinic", NORMAL_GOAL | VANILLA_GOAL, vectm(904.356262, -1229.045166, -272.399506), rotm(0,31640,0));
-    AddGoalLocation("08_NYC_Underground", "Sewers", NORMAL_GOAL, vectm(591.048462, -152.517639, -560.397888), rotm(0,32768,0));
-    AddGoalLocation("08_NYC_Hotel", "Hotel", NORMAL_GOAL | SITTING_GOAL, vectm(-108.541245, -2709.490479, 111.600838), rotm(0,20000,0));
-    AddGoalLocation("08_NYC_Street", "Basketball Court", NORMAL_GOAL | START_LOCATION, vectm(2694.934082, -2792.844971, -448.396637), rotm(0,32768,0));
+    AddGoalLocation("08_NYC_Street", "Hotel Roof", START_LOCATION | VANILLA_START | NORMAL_GOAL, vect(-354.250427, 795.071594, 594.411743), rot(0, -18600, 0));
+    AddGoalLocation("08_NYC_Bar", "Bar Table", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-1689.125122, 337.159912, 63.599533), rot(0,-10144,0));
+    AddGoalLocation("08_NYC_Bar", "Bar", NORMAL_GOAL | VANILLA_GOAL, vect(-931.038086, -488.537109, 47.600464), rot(0,9536,0));
+    AddGoalLocation("08_NYC_FreeClinic", "Clinic", NORMAL_GOAL | VANILLA_GOAL, vect(904.356262, -1229.045166, -272.399506), rot(0,31640,0));
+    AddGoalLocation("08_NYC_Underground", "Sewers", NORMAL_GOAL, vect(591.048462, -152.517639, -560.397888), rot(0,32768,0));
+    AddGoalLocation("08_NYC_Hotel", "Hotel", NORMAL_GOAL | SITTING_GOAL, vect(-108.541245, -2709.490479, 111.600838), rot(0,20000,0));
+    AddGoalLocation("08_NYC_Street", "Basketball Court", NORMAL_GOAL | START_LOCATION, vect(2694.934082, -2792.844971, -448.396637), rot(0,32768,0));
     return 81;
 }
 
@@ -27,7 +27,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
 
     switch(g.name) {
     case "Harley Filben":
-        sp = Spawn(class'#var(prefix)HarleyFilben',, 'DXRMissions', Loc.positions[0].pos);
+        sp = #var(prefix)ScriptedPawn(Spawnm(class'#var(prefix)HarleyFilben',, 'DXRMissions', Loc.positions[0].pos));
         g.actors[0].a = sp;
         sp.UnfamiliarName = "Harley Filben";
         sp.bInvincible = true;
@@ -37,7 +37,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         break;
 
     case "Vinny":
-        sp = Spawn(class'#var(prefix)NathanMadison',, 'DXRMissions', Loc.positions[0].pos);
+        sp = #var(prefix)ScriptedPawn(Spawnm(class'#var(prefix)NathanMadison',, 'DXRMissions', Loc.positions[0].pos));
         g.actors[0].a = sp;
         sp.BindName = "Sailor";
         sp.FamiliarName = "Vinny";
@@ -48,7 +48,7 @@ function CreateGoal(out Goal g, GoalLocation Loc)
         break;
 
     case "Joe Greene":
-        sp = Spawn(class'#var(prefix)JoeGreene',, 'DXRMissions', Loc.positions[0].pos);
+        sp = #var(prefix)ScriptedPawn(Spawnm(class'#var(prefix)JoeGreene',, 'DXRMissions', Loc.positions[0].pos));
         g.actors[0].a = sp;
         sp.BarkBindName = "Male";
         sp.SetOrders('Standing');

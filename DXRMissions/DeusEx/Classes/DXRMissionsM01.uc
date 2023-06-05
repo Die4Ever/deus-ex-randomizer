@@ -8,27 +8,27 @@ function int InitGoals(int mission, string map)
     AddGoalActor(goal, 1, 'DataLinkTrigger12', PHYS_None);
     AddGoal("01_NYC_UNATCOISLAND", "Police Boat", GOAL_TYPE1, 'NYPoliceBoat0', PHYS_None);
 
-    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vectm(-6348.445313, 1912.637207, -111.428482), rotm(0, 0, 0));
-    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Dock", NORMAL_GOAL | VANILLA_START, vectm(-4760.569824, 10430.811523, -280.674988), rotm(0, -7040, 0));
+    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vect(-6348.445313, 1912.637207, -111.428482), rot(0, 0, 0));
+    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Dock", NORMAL_GOAL | VANILLA_START, vect(-4760.569824, 10430.811523, -280.674988), rot(0, -7040, 0));
     AddMutualExclusion(loc, loc2);
-    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Hut", NORMAL_GOAL, vectm(-2407.206787, 205.915558, -128.899979), rotm(0, 30472, 0));
-    AddMutualExclusion(loc, loc2);
-
-    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "Harley Filben Dock", START_LOCATION, vectm(1297.173096, -10257.972656, -287.428131), rotm(0, 0, 0));
-    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Electric Bunker", NORMAL_GOAL | START_LOCATION, vectm(6552.227539, -3246.095703, -447.438049), rotm(0, 0, 0));
+    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Hut", NORMAL_GOAL, vect(-2407.206787, 205.915558, -128.899979), rot(0, 30472, 0));
     AddMutualExclusion(loc, loc2);
 
-    AddGoalLocation("01_NYC_UNATCOISLAND", "Jail", NORMAL_GOAL | START_LOCATION, vectm(2127.692139, -1774.869141, -149.140366), rotm(0, 0, 0));
+    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "Harley Filben Dock", START_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
+    loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Electric Bunker", NORMAL_GOAL | START_LOCATION, vect(6552.227539, -3246.095703, -447.438049), rot(0, 0, 0));
+    AddMutualExclusion(loc, loc2);
 
-    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Base", NORMAL_GOAL, vectm(2980.058105, -669.242554, 1056.577271), rotm(0, 0, 0));
-    loc2 = AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vectm(2931.230957, 27.495235, 2527.800049), rotm(0, 14832, 0));
+    AddGoalLocation("01_NYC_UNATCOISLAND", "Jail", NORMAL_GOAL | START_LOCATION, vect(2127.692139, -1774.869141, -149.140366), rot(0, 0, 0));
+
+    loc = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Base", NORMAL_GOAL, vect(2980.058105, -669.242554, 1056.577271), rot(0, 0, 0));
+    loc2 = AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
     AddMutualExclusion(loc, loc2);
 
     //Boat locations
-    AddGoalLocation("01_nyc_unatcoisland", "South Dock", GOAL_TYPE1 | VANILLA_GOAL , vectm(-5122.414551, 10138.813477, -269.806213), rotm(0, 0, 0));
-    AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1 , vectm(4535.585938, -10046.186523, -269.806213), rotm(0, 0, 0));
-    AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1 , vectm(3682.585449, 231.813477, 2108.193848), rotm(0, 0, 0));
-    AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1 , vectm(-4578.414551, 267.813477, 24.193787), rotm(0, 0, 0));
+    AddGoalLocation("01_nyc_unatcoisland", "South Dock", GOAL_TYPE1 | VANILLA_GOAL , vect(-5122.414551, 10138.813477, -269.806213), rot(0, 0, 0));
+    AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1 , vect(4535.585938, -10046.186523, -269.806213), rot(0, 0, 0));
+    AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1 , vect(3682.585449, 231.813477, 2108.193848), rot(0, 0, 0));
+    AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1 , vect(-4578.414551, 267.813477, 24.193787), rot(0, 0, 0));
     return mission;
 }
 

@@ -247,6 +247,8 @@ function MoveActorsIn(int goalsToLocations[32])
     local int g, i;
     local #var(PlayerPawn) p;
     local DXRGoalMarker marker;
+    local vector loc;
+    local rotator rotate;
 
     foreach AllActors(class'DXRGoalMarker', marker) {
         marker.Destroy();
@@ -255,10 +257,14 @@ function MoveActorsIn(int goalsToLocations[32])
     g = goalsToLocations[num_goals];
     if( dxr.flags.settings.startinglocations > 0 && g > -1 && dxr.localURL == locations[g].mapName ) {
         p = player();
-        l("Moving player to " $ locations[g].name);
         i = PLAYER_LOCATION;
-        p.SetLocation(locations[g].positions[i].pos);
-        p.SetRotation(locations[g].positions[i].rot);
+        loc = locations[g].positions[i].pos;
+        rotate = locations[g].positions[i].rot;
+        loc = vectm(loc.X, loc.Y, loc.Z);
+        rotate = rotm(rotate.pitch, rotate.yaw, rotate.roll, 16384);
+        l("Moving player to " $ locations[g].name @ loc @ rotate);
+        p.SetLocation(loc);
+        p.SetRotation(rotate);
         rando_start_loc = p.Location;
         b_rando_start = true;
     }
@@ -509,6 +515,11 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     local Mover m;
     local bool success, oldbCollideWorld;
     local #var(prefix)Vehicles v;
+    local int offset;
+
+    offset = GetRotationOffset(a.class);
+    loc = vectm(loc.X, loc.Y, loc.Z);
+    rotation = rotm(rotation.pitch, rotation.yaw, rotation.roll, offset);
 
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
     oldbCollideWorld = a.bCollideWorld;

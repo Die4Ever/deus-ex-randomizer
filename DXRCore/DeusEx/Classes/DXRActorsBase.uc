@@ -733,16 +733,30 @@ static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rot
     return d;
 }
 
+static function int GetRotationOffset(class<Actor> c)
+{
+    if(ClassIsChildOf(c, class'Pawn'))
+        return 16384;
+    return 0;
+}
+
 // DON'T PASS A VECTM OR ROTM TO THIS FUNCTION! PASS A PLAIN VECT AND ROT!
 function Actor AddActor(class<Actor> c, vector loc, optional rotator rotate, optional Actor owner, optional Name tag)
 {
     local int offset;
-    // TODO: determine offset by class, unlike in unreal-map-flipper, we can actually check base classes here
-    if(ClassIsChildOf(c, class'Pawn'))
-        offset = 16384;
+    offset = GetRotationOffset(c);
     loc = vectm(loc.X, loc.Y, loc.Z);
     rotate = rotm(rotate.pitch, rotate.yaw, rotate.roll, offset);
     return _AddActor(Self, c, loc, rotate, owner, tag);
+}
+
+function Actor Spawnm(class<actor> SpawnClass, optional actor SpawnOwner, optional name SpawnTag, optional vector SpawnLocation, optional rotator SpawnRotation)
+{
+    local int offset;
+    offset = GetRotationOffset(SpawnClass);
+    SpawnLocation = vectm(SpawnLocation.X, SpawnLocation.Y, SpawnLocation.Z);
+    SpawnRotation = rotm(SpawnRotation.pitch, SpawnRotation.yaw, SpawnRotation.roll, offset);
+    return Spawn(SpawnClass, SpawnOwner, SpawnTag, SpawnLocation, SpawnRotation);
 }
 
 function #var(prefix)Containers AddBox(class<#var(prefix)Containers> c, vector loc, optional rotator rotate)
