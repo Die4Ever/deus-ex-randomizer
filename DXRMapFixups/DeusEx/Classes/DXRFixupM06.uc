@@ -41,16 +41,16 @@ function PreFirstEntryMapFixes()
             pg.ProjectileClass = class'PurgeGas';
             switch(pg.Name) {
             case 'ProjectileGenerator5':// left side
-                pg.SetRotation(rotm(-7000, 80000, 0));
+                pg.SetRotation(rotm(-7000, 80000, 0, 16384));
                 break;
             case 'ProjectileGenerator2':// middle left
-                pg.SetRotation(rotm(-6024, 70000, 0));
+                pg.SetRotation(rotm(-6024, 70000, 0, 16384));
                 break;
             case 'ProjectileGenerator3':// middle right
-                pg.SetRotation(rotm(-8056, 64000, 0));
+                pg.SetRotation(rotm(-8056, 64000, 0, 16384));
                 break;
             case 'ProjectileGenerator7':// right side
-                pg.SetRotation(rotm(-8056, 60000, 0));
+                pg.SetRotation(rotm(-8056, 60000, 0, 16384));
                 break;
             }
         }
