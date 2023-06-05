@@ -185,7 +185,7 @@ function PostFirstEntryMapFixes()
 
     case "09_NYC_SHIPBELOW":
         // add a tnt crate on top of the pipe, visible from the ground floor
-        AddActor(Self, class'#var(prefix)CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567));
+        AddActor(class'#var(prefix)CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567));
         // remove big crates blocking the window to the pipe, 16 units == 1 foot
         foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 16*4, vectm(-136.125000, -743.875000, -215.899323)) {
             c.Event = '';

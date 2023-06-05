@@ -32,7 +32,7 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(2512,6140,-2162), 0);
         class'PlaceholderEnemy'.static.Create(self,vectm(2267,643,-2000), 0);
 
-        sl = #var(prefix)ShopLight(AddActor(self, class'#var(prefix)ShopLight', vect(1.125000, 938.399963, -1025), rot(0, 16384, 0)));
+        sl = #var(prefix)ShopLight(AddActor(class'#var(prefix)ShopLight', vect(1.125000, 938.399963, -1025), rot(0, 16384, 0)));
         sl.bInvincible = true;
         sl.bCanBeBase = true;
         break;
@@ -183,7 +183,7 @@ function PostFirstEntryMapFixes()
 
     case "14_OCEANLAB_LAB":
         // ensure rebreather before greasel lab, in case the storage closet key is in the flooded area
-        a = AddActor(Self, class'#var(prefix)Rebreather', vect(1569, 24, -1628));
+        a = AddActor(class'#var(prefix)Rebreather', vect(1569, 24, -1628));
         a.SetPhysics(PHYS_None);
         l("PostFirstEntryMapFixes spawned "$ActorToString(a));
         break;

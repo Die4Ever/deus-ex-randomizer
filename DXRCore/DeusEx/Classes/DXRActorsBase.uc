@@ -734,7 +734,7 @@ static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rot
 }
 
 // DON'T PASS A VECTM OR ROTM TO THIS FUNCTION! PASS A PLAIN VECT AND ROT!
-function Actor AddActor(Actor a, class<Actor> c, vector loc, optional rotator rotate, optional Actor owner, optional Name tag)
+function Actor AddActor(class<Actor> c, vector loc, optional rotator rotate, optional Actor owner, optional Name tag)
 {
     local int offset;
     // TODO: determine offset by class, unlike in unreal-map-flipper, we can actually check base classes here
@@ -742,7 +742,7 @@ function Actor AddActor(Actor a, class<Actor> c, vector loc, optional rotator ro
         offset = 16384;
     loc = vectm(loc.X, loc.Y, loc.Z);
     rotate = rotm(rotate.pitch, rotate.yaw, rotate.roll, offset);
-    return _AddActor(a, c, loc, rotate, owner, tag);
+    return _AddActor(Self, c, loc, rotate, owner, tag);
 }
 
 function #var(prefix)Containers AddBox(class<#var(prefix)Containers> c, vector loc, optional rotator rotate)
