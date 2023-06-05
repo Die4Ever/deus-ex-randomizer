@@ -64,11 +64,9 @@ function SetdxInfo(DeusExLevelInfo i)
     localURL = Caps(dxInfo.mapName);
     l("SetdxInfo got localURL: " $ localURL $ ", mapname: " $ i.MissionLocation);
 
-#ifndef hx
     // undo the damage that DXRBacktracking has done to prevent saves from being deleted
     // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
     class'DXRBacktracking'.static.LevelInit(Self);
-#endif
 
     CrcInit();
     ClearModules();
@@ -201,6 +199,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRReplaceActors";
     modules_to_load[i++] = "DXREvents";
     modules_to_load[i++] = "DXRPlayerStats";
+    modules_to_load[i++] = "DXRMapVariants";
 }
 
 function gmdx_modules()
