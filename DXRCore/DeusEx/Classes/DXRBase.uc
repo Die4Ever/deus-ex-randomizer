@@ -365,20 +365,21 @@ simulated function vector vectm(float x, float y, float z)
     return v * coords_mult;
 }
 
-simulated function rotator rotm(int p, int y, int roll)
+// see unreal-map-flipper for a list of offsets, scriptpawns use an offset of 16384, most other things seem to use 0
+simulated function rotator rotm(int p, int y, int roll, optional int offset)
 {
     local Rotator r;
     // TODO: only works for X or Y mirrors
     if(coords_mult.X < 0 && coords_mult.Y > 0) {
-        y += 16384;
+        y += offset;
         y = imod(y, 65535) * -1;
-        y -= 16384;
+        y -= offset;
         y = imod(y, 65535);
     }
     else if(coords_mult.X > 0 && coords_mult.Y < 0) {
-        y += 32768;
+        y -= offset;
         y = imod(y, 65535) * -1;
-        y -= 32768;
+        y += offset;
         y = imod(y, 65535);
     }
     r.Pitch = p;

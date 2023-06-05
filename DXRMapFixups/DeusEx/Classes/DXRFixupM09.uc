@@ -139,9 +139,9 @@ function PreFirstEntryMapFixes()
             c.bIsSecretGoal = true;
         }
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(3292,4792,48),rotm(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(4610,6714,1408),rotm(0,0,0),'Wandering');
-        class'PlaceholderEnemy'.static.Create(self,vectm(3209,2333,48),rotm(0,0,0),'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(3292,4792,48), 0, 'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(4610,6714,1408), 0, 'Wandering');
+        class'PlaceholderEnemy'.static.Create(self,vectm(3209,2333,48), 0, 'Wandering');
 
         break;
 
