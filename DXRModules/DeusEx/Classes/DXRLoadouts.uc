@@ -394,7 +394,6 @@ function bool ban(DeusExPlayer player, Inventory item)
             //Only try to detect duping on items that aren't banned anyway
             //Banned things will get marked for deletion, but might not be gone
             //if you frob multiple times kind of quickly, giving a false positive
-            player.ClientMessage("ITEM DUPING DETECTED!");
             class'DXRStats'.static.AddCheatOffense(player);
         }
     }
