@@ -80,12 +80,6 @@ static function string GetDirtyMapName(string map, vector v)
     return map $ GetMapPostfix(v);
 }
 
-function PreTravel()
-{// make the localURL match the filename, so saved data works correctly
-    Super.PreTravel();
-    dxr.dxInfo.mapName = GetURLMap();
-}
-
 function int GetMirrorMapsSetting()
 {
     return int(ConsoleCommand("get #var(package).MenuChoice_MirrorMaps mirror_maps"));
@@ -120,6 +114,7 @@ function string VaryURL(string url)
     local int i, t;
 
     i = Len(url);
+    if(i==0) return url;
     t = InStr(url, "?");
     if(t != -1 && t < i)
         i = t;
@@ -132,8 +127,9 @@ function string VaryURL(string url)
 
     map = Left(url, i);
     after = Mid(url, i);
-    l("url=="$url$", map=="$map$", after=="$after);
+    l("VaryURL url=="$url$", map=="$map$", after=="$after);
     map = VaryMap(map);
+    l("VaryURL newmap=="$map);
     return map $ after;
 }
 

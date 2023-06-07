@@ -166,8 +166,8 @@ static function LevelInit(DXRando dxr)
 {
     local int newMissionNum;
 
-    dxr.dxInfo.mapName = class'DXRMapVariants'.static.CleanupMapName(dxr.dxInfo.mapName);
-    dxr.localURL = Caps(dxr.dxInfo.mapName);
+    dxr.localURL = class'DXRMapVariants'.static.CleanupMapName(dxr.dxInfo.mapName);
+    dxr.localURL = Caps(dxr.localURL);
 
     newMissionNum = class'DXRMapInfo'.static.GetMissionNumber(dxr.localURL);
     if( newMissionNum != 0 && newMissionNum != dxr.dxInfo.missionNumber ) {
