@@ -546,7 +546,6 @@ exec function Mirror()
     local string s;
     local DXRMapVariants maps;
 
-    flagBase.SetBool('PlayerTraveling', True, True, 0);
     maps = DXRMapVariants(DXRFindModule(class'DXRMapVariants'));
     if(maps == None) {
         log("ERROR: Mirror cheat failed to find DXRMapVariants");
@@ -560,6 +559,7 @@ exec function Mirror()
     }
     class'DynamicTeleporter'.static.SetDestPos(self, Location, maps.coords_mult);
     log("Mirror cheat " $ maps @ GetURLMap() @ s @ Location @ maps.coords_mult);
+    flagBase.SetBool('PlayerTraveling', True, True, 0);
     Level.Game.SendPlayer(Self, s);
 }
 

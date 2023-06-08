@@ -50,17 +50,14 @@ function InitStateMachine()
 
 function FirstFrame()
 {
-    local name flagName1, flagName2;
+    local string mapName;
+
     // because of DXRMapVariants
-    flagName1 = Player.rootWindow.StringToName("M"$localURL$"_StartupText");
-    flagName2 = Player.rootWindow.StringToName("M"$Caps(dxInfo.mapName)$"_StartupText");
-    if (flagName1 != flagName2) {
-        if( flags.GetBool(flagName1) && !flags.GetBool(flagName2) ) {
-            flags.SetBool(flagName2, True);
-        }
-    }
+    mapName = dxInfo.mapName;
+    dxInfo.mapName = class'DXRMapVariants'.static.CleanupMapName(mapName);
 
     Super.FirstFrame();
+    dxInfo.mapName = mapName;
 }
 
 function Timer()

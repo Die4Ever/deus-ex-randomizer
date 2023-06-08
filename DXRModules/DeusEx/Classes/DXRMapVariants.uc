@@ -92,7 +92,11 @@ static function string CleanupMapName(string mapName)
 
 static function string GetDirtyMapName(string map, vector v)
 {
-    return map $ GetMapPostfix(v);
+    local string post;
+    post = GetMapPostfix(v);
+    if(InStr(map, post) == -1)
+        return map $ post;
+    return map;
 }
 
 function int GetMirrorMapsSetting()
@@ -104,8 +108,10 @@ simulated function FirstEntry()
 {
     local Teleporter t;
     local MapExit me;
+    local string s;
 
-    dxr.dxInfo.mapName = StripMapName(GetDirtyMapName(dxr.dxInfo.mapName, coords_mult));
+    s = CleanupMapName(dxr.dxInfo.mapName);
+    dxr.dxInfo.mapName = GetDirtyMapName(s, coords_mult);
 
     foreach AllActors(class'Teleporter', t) {
         t.URL = VaryURL(t.URL);
@@ -117,7 +123,7 @@ simulated function FirstEntry()
 
 function PlayerAnyEntry(#var(PlayerPawn) p)
 {
-    p.strStartMap = VaryMap(p.strStartMap);
+    p.strStartMap = VaryMap(p.default.strStartMap);
 }
 
 simulated function AnyEntry()
