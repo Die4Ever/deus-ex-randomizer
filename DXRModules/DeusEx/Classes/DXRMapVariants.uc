@@ -28,6 +28,21 @@ static function bool MirrorMapsAvailable()
     return ret;
 }
 
+static function string GetVariantName(string map)
+{
+    local vector coordsMult;
+
+    coordsMult = GetCoordsMult(map);
+
+    if (coordsMult.X==1 && coordsMult.Y==1 && coordsMult.Z==1){
+        return ""; //Normal
+    } else if (coordsMult.X==-1 && coordsMult.Y==1 && coordsMult.Z==1){
+        return "Mirrored";
+    }
+
+    return coordsMult.X$","$coordsMult.Y$","$coordsMult.Z;
+}
+
 static function vector GetCoordsMult(string map)
 {// DXRBase calls this in Init
     local vector v;

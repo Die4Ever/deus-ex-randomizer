@@ -167,20 +167,9 @@ static function string PickRandomMap(DXRando dxr)
     return "";
 }
 
-static function string GetTeleporterName(string mapname, string teleportername)
+static function string GetEntranceName(string mapname, string teleportername)
 {
-    if (InStr(teleportername,"?TONAME=")!=-1){
-        teleportername = Right(teleportername,Len(teleporterName)-8);
-    }
-
-    //Sometimes they left a .dx at the end of the map name - strip that
-    if (InStr(mapname,".dx")!=-1){
-        mapname = Left(mapname,Len(mapname)-4);
-    }
-
-    mapname = Caps(mapname); //Just to be sure
-
-    switch(mapname)
+switch(mapname)
     {
         case "00_TRAINING":
             return "Training";
@@ -717,6 +706,33 @@ static function string GetTeleporterName(string mapname, string teleportername)
     }
 
     return mapname$" ("$teleportername$") - Report me!";
+}
+
+static function string GetTeleporterName(string mapname, string teleportername)
+{
+    local string finalName, variantName;
+
+    if (InStr(teleportername,"?TONAME=")!=-1){
+        teleportername = Right(teleportername,Len(teleporterName)-8);
+    }
+
+    //Sometimes they left a .dx at the end of the map name - strip that
+    if (InStr(mapname,".dx")!=-1){
+        mapname = Left(mapname,Len(mapname)-4);
+    }
+
+    mapname = Caps(mapname); //Just to be sure
+
+    variantName = class'DXRMapVariants'.static.GetVariantName(mapName);
+    mapname = class'DXRMapVariants'.static.CleanupMapName(mapname);
+
+    finalName = GetEntranceName(mapname,teleportername);
+
+    if (variantName!=""){
+        finalName = finalName@"("$variantName$")";
+    }
+
+    return finalName;
 }
 
 function RunTests()
