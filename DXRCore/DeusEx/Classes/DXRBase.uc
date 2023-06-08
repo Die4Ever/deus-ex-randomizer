@@ -21,9 +21,17 @@ function Init(DXRando tdxr)
 {
     //l(Self$".Init()");
     dxr = tdxr;
-    coords_mult = class'DXRMapVariants'.static.GetCoordsMult(GetURLMap());
+    InitCoordsMult();
     CheckConfig();
     inited = true;
+}
+
+function InitCoordsMult()
+{
+    local string m;
+    m = GetURLMap();
+    coords_mult = class'DXRMapVariants'.static.GetCoordsMult(m);
+    l("InitCoordsMult"@m@coords_mult);
 }
 
 simulated function DXRando GetDXR()
