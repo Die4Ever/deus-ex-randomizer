@@ -503,7 +503,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 
     if(Loc.mapName == dxr.localURL) {
-        marker = Spawn(class'DXRGoalMarker',,, Loc.positions[0].pos);
+        marker = DXRGoalMarker(Spawnm(class'DXRGoalMarker',,, Loc.positions[0].pos));
         marker.BindName = g.name $ " (" $ Loc.name $ ")";
         AfterMoveGoalToLocation(g, Loc);
     }
