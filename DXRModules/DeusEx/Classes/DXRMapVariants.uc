@@ -105,6 +105,8 @@ simulated function FirstEntry()
     local Teleporter t;
     local MapExit me;
 
+    dxr.dxInfo.mapName = StripMapName(GetDirtyMapName(dxr.dxInfo.mapName, coords_mult));
+
     foreach AllActors(class'Teleporter', t) {
         t.URL = VaryURL(t.URL);
     }
