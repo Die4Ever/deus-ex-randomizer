@@ -111,7 +111,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
     FixInterpolating(p);
-    if( ! class'DynamicTeleporter'.static.CheckTeleport(p) ) {
+    if( ! class'DynamicTeleporter'.static.CheckTeleport(p, coords_mult) ) {
         err("DynamicTeleporter failed");
     }
 }

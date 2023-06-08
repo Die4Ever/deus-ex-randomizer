@@ -544,7 +544,6 @@ exec function SetSkillValues(float value)
 exec function Mirror()
 {
     local string s;
-    local vector v, mult;
     local DXRMapVariants maps;
 
     flagBase.SetBool('PlayerTraveling', True, True, 0);
@@ -554,19 +553,13 @@ exec function Mirror()
         return;
     }
 
-    v = maps.GetCoordsMult(GetURLMap());
-    if(v.X==1 && v.Y==1) {
+    if(maps.coords_mult.X==1 && maps.coords_mult.Y==1) {
         s = GetDXR().localURL $ "_-1_1_1.dx";
     } else {
         s = maps.CleanupMapName(GetURLMap());
     }
-    v = Location;
-    mult = maps.coords_mult;
-    v.X /= mult.X;
-    v.Y /= mult.Y;
-    v.Z /= mult.Z;
-    class'DynamicTeleporter'.static.SetDestPos(self, v);
-    log("Mirror cheat "$maps@v@GetURLMap()@s@Location@mult@v);
+    class'DynamicTeleporter'.static.SetDestPos(self, Location, maps.coords_mult);
+    log("Mirror cheat " $ maps @ GetURLMap() @ s @ Location @ maps.coords_mult);
     Level.Game.SendPlayer(Self, s);
 }
 
