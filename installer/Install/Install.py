@@ -1,6 +1,7 @@
 import os
 from Install import *
 from Install import _DetectFlavors
+from Install import MapVariants
 
 def DetectFlavors(exe:Path) -> list:
     assert exe.name.lower() == 'deusex.exe'
@@ -9,14 +10,15 @@ def DetectFlavors(exe:Path) -> list:
     return _DetectFlavors(system)
 
 
-def Install(exe:Path, flavors:list, exetype:str, speedupfix:bool) -> list:
+def Install(exe:Path, flavors:dict, speedupfix:bool) -> list:
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
     assert system.name.lower() == 'system'
 
-    print('Installing flavors:', flavors, exetype, speedupfix)
+    print('Installing flavors:', flavors, speedupfix)
+
     if 'Vanilla' in flavors:
-        InstallVanilla(system, exetype, speedupfix)
+        InstallVanilla(system, flavors['Vanilla'], speedupfix)
     if 'Vanilla? Madder.' in flavors:
         CreateModConfigs(system, 'VMD', 'VMDSim')
     if 'GMDX v9' in flavors:
@@ -35,11 +37,12 @@ def Install(exe:Path, flavors:list, exetype:str, speedupfix:bool) -> list:
     return flavors
 
 
-def InstallVanilla(system:Path, exetype:str, speedupfix:bool):
+def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     gameroot = system.parent
 
-    kentie = True
     exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
+    exetype = settings['exetype']
+    kentie = True
     if exetype == 'Launch':
         exe_source = GetSourcePath() / '3rdParty' / "Launch.exe"
         kentie = False
@@ -90,6 +93,9 @@ def InstallVanilla(system:Path, exetype:str, speedupfix:bool):
     (dxrroot / 'Maps').mkdir(exist_ok=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
     CopyD3D10Renderer(system)
+
+    if settings.get('mirrors'):
+        MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'))
 
 
 def InstallGMDX(system:Path, exename:str):
