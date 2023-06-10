@@ -555,7 +555,7 @@ exec function Mirror()
     if(maps.coords_mult.X==1 && maps.coords_mult.Y==1) {
         s = GetDXR().localURL $ "_-1_1_1.dx";
     } else {
-        s = maps.CleanupMapName(GetURLMap());
+        s = maps.CleanupMapName(GetDXR().localURL);
     }
     class'DynamicTeleporter'.static.SetDestPos(self, Location, maps.coords_mult);
     log("Mirror cheat " $ maps @ GetURLMap() @ s @ Location @ maps.coords_mult);

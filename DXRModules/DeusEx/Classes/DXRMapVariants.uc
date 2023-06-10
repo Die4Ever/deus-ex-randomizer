@@ -158,6 +158,7 @@ function string VaryURL(string url)
 
 function string VaryMap(string map)
 {
+    map = CleanupMapName(map);
     switch(GetMirrorMapsSetting()) {
     case class'MenuChoice_MirrorMaps'.default.mirror_only:
         return map $"_-1_1_1";
