@@ -140,6 +140,8 @@ $2
 
 the output from that will fill the meat of the GetRandomActorClass function
 
+http://coding.hanfling.de/launch/ patched editor and stuff
+
 https://wiki.beyondunreal.com/Legacy:Simulated_Function
 
 http://www.hypercoop.tk/infobase/archive/unrealtech/Network.htm

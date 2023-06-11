@@ -1110,18 +1110,25 @@ function bool isInitialPlayerAlly(ScriptedPawn p)
 
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
+    local string classname;
+
     _MarkBingo(victim.BindName$"_Dead");
     _MarkBingo(victim.BindName$"_DeadM" $ dxr.dxInfo.missionNumber);
     if( Killer == None || #var(PlayerPawn)(Killer) != None ) {
+        classname = string(victim.class.name);
+        if(#defined(hx) && InStr(classname, "HX")==0) {
+            classname = Mid(classname, 2);
+        }
+
         if (IsHuman(victim.class) && ((damageType == "Stunned") ||
                                 (damageType == "KnockedOut") ||
-	                            (damageType == "Poison") ||
+                                (damageType == "Poison") ||
                                 (damageType == "PoisonEffect"))){
-            _MarkBingo(victim.class.name$"_ClassUnconscious");
-            _MarkBingo(victim.BindName$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(classname$"_ClassUnconscious");
+            _MarkBingo(classname$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
         } else {
-            _MarkBingo(victim.class.name$"_ClassDead");
-            _MarkBingo(victim.BindName$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(classname$"_ClassDead");
+            _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
             if (isInitialPlayerAlly(victim) &&   //Must have initially been an ally

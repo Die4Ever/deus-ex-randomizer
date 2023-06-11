@@ -37,10 +37,12 @@ function InitDefaults()
     seed = 0;
     NewPlaythroughId();
     if( dxr != None ) RollSeed();
-    gamemode = 0;
-    loadout = 0;
     autosave = 2;
-    crowdcontrol = 0;
+    if(!#defined(hx)) {
+        gamemode = 0;
+        loadout = 0;
+        crowdcontrol = 0;
+    }
     newgameplus_loops = 0;
 
 #ifdef hx
