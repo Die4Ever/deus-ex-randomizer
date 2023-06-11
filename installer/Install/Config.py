@@ -80,13 +80,22 @@ def _AddConfigVals(section:str, additions:dict) -> str:
     if not additions:
         return section
     for (k,v) in additions.items():
-        newline = k+'='+v
-        # beginning of section doesn't have \r\n and we want to make sure this isn't commented out
-        if section.startswith(newline):
-            continue
-        if '\r\n'+newline+'\r\n' in section:
-            continue
-        if section.endswith('\r\n'+newline):
-            continue
-        section = newline + '\r\n' + section
+        if isinstance(v, list):
+            for i in v:
+                section = _AddConfigVal(section, k, i)
+        else:
+            section = _AddConfigVal(section, k, v)
+
     return section
+
+
+def _AddConfigVal(section:str, k:str, v:str) -> str:
+    newline = k+'='+v
+    # beginning of section doesn't have \r\n and we want to make sure this isn't commented out
+    if section.startswith(newline):
+        return section
+    if '\r\n'+newline+'\r\n' in section:
+        return section
+    if section.endswith('\r\n'+newline):
+        return section
+    return newline + '\r\n' + section

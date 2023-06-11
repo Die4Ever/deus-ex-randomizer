@@ -17,20 +17,21 @@ def Install(exe:Path, flavors:dict, speedupfix:bool) -> list:
 
     print('Installing flavors:', flavors, speedupfix)
 
-    if 'Vanilla' in flavors:
-        InstallVanilla(system, flavors['Vanilla'], speedupfix)
-    if 'Vanilla? Madder.' in flavors:
-        CreateModConfigs(system, 'VMD', 'VMDSim')
-    if 'GMDX v9' in flavors:
-        InstallGMDX(system, 'GMDXv9')
-    if 'GMDX RSD' in flavors:
-        InstallGMDX(system, 'GMDXvRSD')
-    if 'GMDX v10' in flavors:
-        CreateModConfigs(system, 'GMDX', 'GMDXv10')
-    if 'Revision' in flavors:
-        InstallRevision(system)
-    if 'HX' in flavors:
-        InstallHX(system)
+    for(f, settings) in flavors.items():
+        if 'Vanilla'==f:
+            InstallVanilla(system, settings, speedupfix)
+        if 'Vanilla? Madder.'==f:
+            CreateModConfigs(system, settings, 'VMD', 'VMDSim')
+        if 'GMDX v9'==f:
+            InstallGMDX(system, settings, 'GMDXv9')
+        if 'GMDX RSD'==f:
+            InstallGMDX(system, settings, 'GMDXvRSD')
+        if 'GMDX v10'==f:
+            CreateModConfigs(system, settings, 'GMDX', 'GMDXv10')
+        if 'Revision'==f:
+            InstallRevision(system, settings)
+        if 'HX'==f:
+            InstallHX(system, settings)
 
     if speedupfix:
         EngineDllFix(system)
@@ -95,10 +96,10 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     CopyD3D10Renderer(system)
 
     if settings.get('mirrors'):
-        MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'))
+        MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
 
 
-def InstallGMDX(system:Path, exename:str):
+def InstallGMDX(system:Path, settings:dict, exename:str):
     (changes, additions) = GetConfChanges('GMDX')
     # GMDX uses absolute path shortcuts with ini files in their arguments, so it's not as simple to copy their exe
 
@@ -117,25 +118,28 @@ def InstallGMDX(system:Path, exename:str):
     CopyPackageFiles('GMDX', system.parent, ['GMDXRandomizer.u'])
 
 
-def InstallRevision(system:Path):
+def InstallRevision(system:Path, settings:dict):
     # Revision's exe is special and calls back to Steam which calls the regular Revision.exe file, so we pass in_place=True
     revsystem = system.parent / 'Revision' / 'System'
-    CreateModConfigs(revsystem, 'Rev', 'Revision', in_place=True)
+    CreateModConfigs(revsystem, settings, 'Rev', 'Revision', in_place=True)
 
 
-def InstallHX(system:Path):
+def InstallHX(system:Path, settings:dict):
     CopyPackageFiles('HX', system.parent, ['HXRandomizer.u'])
     (changes, additions) = GetConfChanges('HX')
-    ChangeModConfigs(system, 'HX', 'HX', 'HX', changes, additions, True)
+    ChangeModConfigs(system, settings, 'HX', 'HX', 'HX', changes, additions, True)
     int_source = GetPackagesPath('HX') / 'HXRandomizer.int'
     int_dest = system / 'HXRandomizer.int'
     CopyTo(int_source, int_dest)
 
 
-def CreateModConfigs(system:Path, modname:str, exename:str, in_place:bool=False):
+def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_place:bool=False):
     exepath = system / (exename+'.exe')
     newexename = modname+'Randomizer'
     newexepath = system / (newexename+'.exe')
+    modpath = system.parent / (modname+'Randomizer')
+    mapspath = modpath / 'Maps'
+    mapspath.mkdir(exist_ok=True)
     if not IsWindows():
         in_place = True
     if not in_place:
@@ -148,10 +152,13 @@ def CreateModConfigs(system:Path, modname:str, exename:str, in_place:bool=False)
     CopyPackageFiles(modname, system.parent, [modname+'Randomizer.u'])
 
     (changes, additions) = GetConfChanges(modname)
-    ChangeModConfigs(system, modname, exename, newexename, changes, additions, in_place)
+    ChangeModConfigs(system, settings, modname, exename, newexename, changes, additions, in_place)
+
+    if settings.get('mirrors'):
+        MapVariants.InstallMirrors(mapspath, settings.get('downloadcallback'), modname)
 
 
-def ChangeModConfigs(system:Path, modname:str, exename:str, newexename:str, changes:dict, additions:dict, in_place:bool=False):
+def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newexename:str, changes:dict, additions:dict, in_place:bool=False):
     # inis
     confpath = system / (exename + 'Default.ini')
     b = confpath.read_bytes()

@@ -75,10 +75,12 @@ class InstallerWindow(GUIBase):
 
         settings = { 'install': v, 'exe': exe }
 
-        if f == 'Vanilla':
+        if f in ['Vanilla', '#Vanilla? Madder.']: # TODO: VMD, needs map files and UnrealScript work
+            # install LDDP?
             v = BooleanVar(master=self.frame, value=True)
             settings['mirrors'] = v
             c = Checkbutton(self.frame, text="Download mirrored maps for "+f, variable=v)
+            Hovertip(c, "Currently requires Lay D Denton.")
             c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
             self.FixColors(c)
             row+=1

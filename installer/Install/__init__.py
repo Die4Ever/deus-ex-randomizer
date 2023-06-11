@@ -14,10 +14,12 @@ def GetConfChanges(modname):
             'Root': modname+'Randomizer.DXRandoRootWindow'
         }
     }
-    newpath = '..\\' + modname + 'Randomizer\\System\\*.u'
-    additions = {'Core.System': {'Paths': newpath}}
+    syspath = '..\\' + modname + 'Randomizer\\System\\*.u'
+    mapspath = '..\\' + modname + 'Randomizer\\Maps\\*.dx'
+    newpaths = [syspath, mapspath]
+    additions = {'Core.System': {'Paths': newpaths}}
     if modname == 'Rev':
-        additions['RevisionInternal.LaunchSystem'] = {'Paths': newpath}
+        additions['RevisionInternal.LaunchSystem'] = {'Paths': newpaths}
     if modname == 'HX':
         changes = {}
     #if modname == 'VMD' and not IsWindows():

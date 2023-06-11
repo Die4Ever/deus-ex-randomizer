@@ -3,18 +3,19 @@ import urllib.request
 import tempfile
 from zipfile import ZipFile
 
-def InstallMirrors(mapsdir: Path, downloadcallback: callable):
+def InstallMirrors(mapsdir: Path, downloadcallback: callable, flavor:str):
     tempdir = Path(tempfile.gettempdir()) / 'dxrando'
     tempdir.mkdir(exist_ok=True)
-    temp = tempdir / "dxmirrors.zip"
-    # TODO: check version and flavor
+    name = 'dx.mirrored.maps.zip'
+    if flavor == 'VMD':
+        name = 'dx.vmd.mirrored.maps.zip'
+    temp = tempdir / name
+    # TODO: check version
     if not temp.exists():
-        print('\n\ndownloading to', temp)
-        urllib.request.urlretrieve(
-            "https://github.com/Die4Ever/unreal-map-flipper/releases/latest/download/dx.mirrored.maps.zip",
-            temp, downloadcallback
-        )
-        print('done downloading to', temp)
+        url = "https://github.com/Die4Ever/unreal-map-flipper/releases/latest/download/" + name
+        print('\n\ndownloading', url, 'to', temp)
+        urllib.request.urlretrieve(url, temp, downloadcallback)
+        print('done downloading ', url, 'to', temp)
 
     with ZipFile(temp, 'r') as zip:
         maps = list(zip.infolist())
