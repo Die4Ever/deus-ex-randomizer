@@ -91,7 +91,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
         DXRandoini.write_bytes(b)
 
     dxrroot = gameroot / 'DXRando'
-    (dxrroot / 'Maps').mkdir(exist_ok=True)
+    (dxrroot / 'Maps').mkdir(exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
     CopyD3D10Renderer(system)
 
