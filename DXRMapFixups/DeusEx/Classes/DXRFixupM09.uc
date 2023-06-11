@@ -109,7 +109,7 @@ function PreFirstEntryMapFixes()
     case "09_NYC_DOCKYARD":
         foreach AllActors(class'Button1',b){
             if (b.Tag=='Button1' && b.Event=='Lift' && b.Location.Z < 200){ //vanilla Z is 97 for the lower button, just giving some slop in case it was changed in another mod?
-                k = Spawn(class'Keypad2',,,b.Location,b.Rotation);
+                k = Spawn(class'Keypad2',,,b.Location,b.Rotation);// TODO: fix rotation without screwing up the referenced rotation, maybe just +16384 will fix it?
                 k.validCode="8675309"; //They really like Jenny in this place
                 k.bToggleLock=False;
                 k.Event='Lift';

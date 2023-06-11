@@ -737,6 +737,8 @@ static function int GetRotationOffset(class<Actor> c)
 {
     if(ClassIsChildOf(c, class'Pawn'))
         return 16384;
+    if(ClassIsChildOf(c, class'Brush'))
+        return 16384;// would be 0, except they all have -1 scale now?
     return 0;
 }
 
