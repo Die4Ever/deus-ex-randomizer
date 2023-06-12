@@ -11,7 +11,7 @@ const Police = 5;
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,4,0,1) ) {
+    if( ConfigOlderThan(2,5,0,1) ) {
         enemy_multiplier = 1;
         min_rate_adjust = default.min_rate_adjust;
         max_rate_adjust = default.max_rate_adjust;
@@ -326,6 +326,9 @@ function AddDXRCredits(CreditsWindow cw)
             break;
         case MJ12:
             factionName = "MJ12";
+            break;
+        case Police:
+            factionName = "Police";
             break;
         default:
             factionName = "Faction "$f;
