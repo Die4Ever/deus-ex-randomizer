@@ -450,6 +450,6 @@ simulated function PrintItemRate(CreditsWindow cw, class<Inventory> c, int perce
 defaultproperties
 {
     bAlwaysTick=True
-    min_rate_adjust=0.5
-    max_rate_adjust=1.5
+    min_rate_adjust=0.3
+    max_rate_adjust=1.75
 }

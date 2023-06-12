@@ -571,6 +571,6 @@ function RunTests()
 
 defaultproperties
 {
-    min_rate_adjust=0.5
-    max_rate_adjust=1.5
+    min_rate_adjust=0.1
+    max_rate_adjust=3.0
 }

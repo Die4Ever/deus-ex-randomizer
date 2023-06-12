@@ -428,7 +428,8 @@ function int HeadDamageMult()
 function GotoDisabledState(name damageType, EHitLocation hitPos)
 {
     if ((damageType == 'TearGas' || damageType == 'HalonGas')
-        && Texture == Texture'DeusExCharacters.Skins.VisorTex1')
+        && Texture == Texture'DeusExCharacters.Skins.VisorTex1'
+        && Mesh == LodMesh'DeusExCharacters.GM_Jumpsuit')
         return;
     Super.GotoDisabledState(damageType, hitPos);
 }
