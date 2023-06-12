@@ -36,8 +36,8 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Courtyard", GOAL_TYPE1, vect(-371.047180, 5046.039063, -2050.704102), rot(0,-19840,0));
         AddActorLocation(loc, 1, vect(-659.219116, 5350.891113, -2142.458740), rot(0,-27976,0));
 
-        loc = AddGoalLocation("12_VANDENBERG_CMD", "Comm 01 Roof", GOAL_TYPE1, vect(-1880.047119, 5382.039063, -1831.704102), rot(0,0,0));
-        AddActorLocation(loc, 1, vect(-1553.219116, 5030.891113, -1876.458740), rot(0,-14000,0));
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Comm 01 Roof", GOAL_TYPE1, vect(-1880.047119, 5443.039063, -1831.704102), rot(0,0,0));
+        AddActorLocation(loc, 1, vect(-1581.219116, 5030.891113, -1876.458740), rot(0,-14000,0));
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Command Roof", GOAL_TYPE1, vect(-2209.047119, 2820.039063, -1410.704102), rot(0,-10000,0));
         AddActorLocation(loc, 1, vect(-1617.219116, 2778.891113, -1471.458740), rot(0,-10000,0));
