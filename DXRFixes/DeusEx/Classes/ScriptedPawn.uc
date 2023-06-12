@@ -425,6 +425,14 @@ function int HeadDamageMult()
     return 8;// 8x gives vanilla damage
 }
 
+function GotoDisabledState(name damageType, EHitLocation hitPos)
+{
+    if ((damageType == 'TearGas' || damageType == 'HalonGas')
+        && Texture == Texture'DeusExCharacters.Skins.VisorTex1')
+        return;
+    Super.GotoDisabledState(damageType, hitPos);
+}
+
 
 function Died(pawn Killer, name damageType, vector HitLocation)
 {

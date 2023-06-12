@@ -32,7 +32,7 @@ replication
 }
 
 const FactionAny = 0;
-const FactionsEnd = 5;// end of the factions list
+const FactionsEnd = 6;// end of the factions list
 function int GetFactionId(ScriptedPawn p);
 function RandomizeSP(ScriptedPawn p, int percent);
 function CheckHelmet(ScriptedPawn p);
