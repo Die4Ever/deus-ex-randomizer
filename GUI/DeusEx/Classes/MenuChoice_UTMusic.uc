@@ -5,6 +5,8 @@
 class MenuChoice_UTMusic extends DXRMenuUIChoiceEnum;
 
 var DXRMusic m;
+var int num_enabled;
+var int total;
 
 // only need to override GetGameSongs in subclasses, and default actionText
 function GetGameSongs(out string songs[100])
@@ -27,6 +29,15 @@ function SetValue(int newValue)
     SaveSetting();
 }
 
+function SetEnabledText()
+{
+    local string text;
+    text = enumText[GetValue()];
+    text = text $ " (" $ num_enabled $ "/" $ total $ ")";
+    // TODO: need a timer like MenuChoice_DisableSong
+    //btnInfo.SetButtonText(text); // wonky with the song "Ending" being in both Unreal and UT
+}
+
 // ----------------------------------------------------------------------
 // SetInitialCycleType()
 // ----------------------------------------------------------------------
@@ -38,9 +49,10 @@ function SetInitialOption()
 
     if(GetDXRMusic() != None) {
         GetGameSongs(songs);
-        bEnabled = m.AreGameSongsEnabled(songs);
+        bEnabled = m.AreGameSongsEnabled(songs, num_enabled, total);
         log(self$" SetInitialOption "$bEnabled);
         Super.SetValue(int(bEnabled));
+        SetEnabledText();
     }
 }
 
@@ -59,6 +71,11 @@ function SaveSetting()
         GetGameSongs(songs);
         m.SetEnabledGameSongs(songs, bEnabled);
         m.SaveConfig();
+        if(bEnabled)
+            num_enabled = total;
+        else
+            num_enabled = 0;
+        SetEnabledText();
     }
 }
 
