@@ -53,6 +53,7 @@ var config BanConnection BannedConnections[32];
 
 var config string dead_ends[32];
 //var config string unreachable_conns[16];
+var DXRMapVariants mapvariants;
 
 struct Dependency
 {
@@ -1105,9 +1106,12 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
 
     hashPos = InStr(curDest,"#");
     destTag = Caps(Mid(curDest,hashPos+1));
-    // TODO: DXRMapVariants
 
     l("AdjustTeleporter("$p$") curDest: "$curDest$", destTag: "$destTag$", numConns: "$numConns);
+    if(mapvariants == None)
+        mapvariants = DXRMapVariants(dxr.FindModule(class'DXRMapVariants'));
+    if(mapvariants != None)
+        curDest = mapvariants.CleanupMapName(curDest);
 
     for (i = 0;i<numConns;i++)
     {
@@ -1124,6 +1128,8 @@ function NavigationPoint AdjustTeleporter(NavigationPoint p)
         else
             continue;
 
+        if(mapvariants != None)
+            newMap = mapvariants.VaryMap(newMap);
         namePos = InStr(newTag, "?TONAME=");
         if( namePos > 0 ) err("AdjustTeleporter "$p$", newMap: "$newMap$", newTag: "$newTag$", namePos: "$namePos);
         if( namePos == 0 ) {
