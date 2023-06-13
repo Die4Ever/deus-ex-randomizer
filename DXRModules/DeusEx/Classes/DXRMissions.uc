@@ -519,7 +519,8 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
 
     offset = GetRotationOffset(a.class);
     loc = vectm(loc.X, loc.Y, loc.Z);
-    rotation = rotm(rotation.pitch, rotation.yaw, rotation.roll, offset);
+    if(Brush(a) == None)// brushes/movers get negative scaling, so their rotation doesn't need to be adjusted
+        rotation = rotm(rotation.pitch, rotation.yaw, rotation.roll, offset);
 
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
     oldbCollideWorld = a.bCollideWorld;
