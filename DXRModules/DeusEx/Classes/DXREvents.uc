@@ -968,7 +968,7 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", eventname);
     js.static.Add(j, "immediate", immediate);
-    js.static.Add(j, "location", dxr.player.location);
+    js.static.Add(j, "location", vectclean(dxr.player.location));
     if(extra != "")
         js.static.Add(j, "extra", extra);
     GeneralEventData(dxr, j);
@@ -1026,7 +1026,7 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
     }
     js.static.Add(j, "dmgtype", damageType);
     GeneralEventData(dxr, j);
-    js.static.Add(j, "location", victim.Location);
+    js.static.Add(j, "location", dxr.flags.vectclean(victim.Location));
     js.static.End(j);
     class'DXRTelemetry'.static.SendEvent(dxr, victim, j);
 }
@@ -1182,7 +1182,7 @@ static function PaulDied(DXRando dxr)
     js.static.Add(j, "victimBindName", "PaulDenton");
     js.static.Add(j, "dmgtype", "");
     GeneralEventData(dxr, j);
-    js.static.Add(j, "location", dxr.player.location);
+    js.static.Add(j, "location", dxr.flags.vectclean(dxr.player.location));
     js.static.End(j);
     dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
@@ -1255,7 +1255,7 @@ static function ExtinguishFire(DXRando dxr, string extinguisher, DeusExPlayer pl
 
     j = js.static.Start("ExtinguishFire");
     js.static.Add(j, "extinguisher", extinguisher);
-    js.static.Add(j, "location", player.Location);
+    js.static.Add(j, "location", dxr.flags.vectclean(player.Location));
     GeneralEventData(dxr, j);
     js.static.End(j);
 
@@ -1715,7 +1715,7 @@ function _MarkBingo(coerce string eventname)
 
         j = js.static.Start("Bingo");
         js.static.Add(j, "newevent", eventname);
-        js.static.Add(j, "location", player().Location);
+        js.static.Add(j, "location", vectclean(player().Location));
         GeneralEventData(dxr, j);
         BingoEventData(dxr, j);
         GameTimeEventData(dxr, j);

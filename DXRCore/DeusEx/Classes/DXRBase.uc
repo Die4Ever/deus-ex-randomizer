@@ -373,6 +373,14 @@ simulated function vector vectm(float x, float y, float z)
     return v * coords_mult;
 }
 
+simulated function vector vectclean(vector v)
+{
+    v.x /= coords_mult.x;
+    v.y /= coords_mult.y;
+    v.z /= coords_mult.z;
+    return v;
+}
+
 // see unreal-map-flipper for a list of offsets, scriptpawns use an offset of 16384, most other things seem to use 0
 simulated function rotator rotm(int p, int y, int roll, optional int offset)
 {
