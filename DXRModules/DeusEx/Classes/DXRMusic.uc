@@ -248,21 +248,23 @@ function SetEnabledGameSongs(string songs[100], bool enable)
 
 function bool AreGameSongsEnabled(string songs[100])
 {
-    local int c, s;
-    l("AreGameSongsEnabled "$songs[0]);
-    // just return the status of the first one found
-    // if people are using the GUI then they're all the same
-    // if people are manually editing the ini file, they're on their own
+    local int c, s, num_enabled, total;
+    // just return an overall status
+    for(s=0; s<ArrayCount(songs); s++) {
+        if(songs[s] == "") break;
+        total++;
+    }
     for(c=0; c<ArrayCount(choices); c++) {
         if(choices[c].song == "") continue;
         for(s=0; s<ArrayCount(songs); s++) {
             if(songs[s] == "") break;
-            if(songs[s] ~= choices[c].song) {
-                return choices[c].enabled;
+            if(songs[s] ~= choices[c].song && choices[c].enabled) {
+                num_enabled++;
             }
         }
     }
-    return false;
+    l("AreGameSongsEnabled "$songs[0] @ num_enabled @ total);
+    return num_enabled > total/3;
 }
 
 function SetEnabledSong(string song, bool enable)
