@@ -92,11 +92,13 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
 
     dxrroot = gameroot / 'DXRando'
     (dxrroot / 'Maps').mkdir(exist_ok=True, parents=True)
+    (dxrroot / 'System').mkdir(exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
     CopyD3D10Renderer(system)
 
     FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
-    CopyTo(FemJCu, dxrroot / 'System')
+    print(FemJCu, FemJCu.exists())
+    CopyTo(FemJCu, dxrroot / 'System' / 'FemJC.u')
 
     if settings.get('mirrors'):
         MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')

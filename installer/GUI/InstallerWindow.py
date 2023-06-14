@@ -2,6 +2,7 @@ import webbrowser
 from GUI import *
 from pathlib import Path
 from Install import Install, IsWindows
+import traceback
 
 class InstallerWindow(GUIBase):
     def initWindow(self):
@@ -107,6 +108,13 @@ class InstallerWindow(GUIBase):
 
 
     def Install(self):
+        try:
+            self._Install()
+        except Exception as e:
+            messagebox.showinfo('Error!', str(e) + '\n\n' + traceback.format_exc(5))
+            exit(1)
+
+    def _Install(self):
         print(self.speedupfixval.get())
         self.installButton["state"]='disabled'
 
