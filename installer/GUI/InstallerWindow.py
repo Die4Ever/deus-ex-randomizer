@@ -129,6 +129,7 @@ class InstallerWindow(GUIBase):
         if 'Vanilla? Madder.' in flavors and IsWindows():
             extra += '\nCreated VMDRandomizer.exe'
         self.root.title('DXRando Installation Complete!')
+        self.root.update()
         messagebox.showinfo('DXRando Installation Complete!', 'Installed DXRando for: ' + flavors + extra)
         self.closeWindow()
 

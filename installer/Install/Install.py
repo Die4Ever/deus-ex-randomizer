@@ -95,6 +95,9 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
     CopyD3D10Renderer(system)
 
+    FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
+    CopyTo(FemJCu, dxrroot / 'System')
+
     if settings.get('mirrors'):
         MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
 
