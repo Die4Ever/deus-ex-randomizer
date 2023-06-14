@@ -729,7 +729,7 @@ static function string GetTeleporterName(string mapname, string teleportername)
     finalName = GetEntranceName(mapname,teleportername);
 
     if (variantName!=""){
-        finalName = finalName@"("$variantName$")";
+        finalName = finalName @ "(" $ variantName $ ")";
     }
 
     return finalName;

@@ -12,6 +12,15 @@ var int EmpHealth;
     log(Self$" IncreaseAgitation "$actorInstigator$", "$AgitationLevel);
 }*/
 
+function BeginPlay()
+{
+    if(InStr(BindName, "LDDP")==0) {
+        if(!class'DXRMenuScreenNewGame'.static.HasLDDPInstalled()) {
+            Destroy();
+        }
+    }
+}
+
 event Destroyed()
 {
     // throw whatever remains of their inventory so it isn't lost, most applicable to MIBs and other self destructing enemies

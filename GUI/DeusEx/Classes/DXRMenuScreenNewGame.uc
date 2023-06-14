@@ -7,6 +7,67 @@ class DXRMenuScreenNewGame extends MenuScreenNewGame;
 var DXRando dxr;
 var DXRFlags flags;
 var config string last_player_name;
+var bool hasCheckedLDDP;
+
+static function bool HasLDDPInstalled()
+{
+    local DeusExTextParser parser;
+    local bool opened;
+
+    if(default.hasCheckedLDDP) {
+        return default.bFemaleEnabled;
+    }
+
+    //LDDP, 10/26/21: Attempt a load. If succesful, we have LDDP installed. Thus, we can flick on all the female functionality.
+    // DXRando check for a text file instead of a texture, so we can install in pieces
+    parser = new(None) Class'DeusExTextParser';
+    opened = parser.OpenText('FemJC02_Email01', "DeusExText");
+    if(opened)
+        parser.CloseText();
+    CriticalDelete(parser);
+
+    default.bFemaleEnabled = opened;
+    default.hasCheckedLDDP = true;
+    return opened;
+}
+
+event InitWindow()
+{
+    local int i;
+
+    Super(MenuUIScreenWindow).InitWindow();
+
+    bFemaleEnabled = HasLDDPInstalled();
+
+    if (bFemaleEnabled)
+    {
+        TexPortraits[0] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonMale_1", class'Texture', false));
+        TexPortraits[1] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonFemale_1", class'Texture', false));
+        TexPortraits[2] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonMale_2", class'Texture', false));
+        TexPortraits[3] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonFemale_2", class'Texture', false));
+        TexPortraits[4] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonMale_3", class'Texture', false));
+        TexPortraits[5] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonFemale_3", class'Texture', false));
+        TexPortraits[6] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonMale_4", class'Texture', false));
+        TexPortraits[7] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonFemale_4", class'Texture', false));
+        TexPortraits[8] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonMale_5", class'Texture', false));
+        TexPortraits[9] = Texture(DynamicLoadObject("FemJC.MenuPlayerSetupJCDentonFemale_5", class'Texture', false));
+    }
+
+    SaveSkillPoints();
+    ResetToDefaults();
+
+    // Need to do this because of the edit control used for
+    // saving games.
+    SetMouseFocusMode(MFOCUS_Click);
+
+    Show();
+    SetFocusWindow(editName);
+    editName.SetSelectedArea(0, Len(editName.GetText()));
+    combatDifficulty = player.Default.CombatDifficulty;
+
+    StyleChanged();
+}
+
 
 function SetDxr(DXRando d)
 {
