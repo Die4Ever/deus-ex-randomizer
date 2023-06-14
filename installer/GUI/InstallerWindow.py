@@ -86,6 +86,9 @@ class InstallerWindow(GUIBase):
             self.FixColors(c)
             row+=1
 
+        #if f == 'Vanilla':
+        #    # checkbox to install LDDP from https://github.com/LayDDentonProject/Lay-D-Denton-Project/releases/download/v1.1/Lay_D_Denton_Project_1.1.zip
+
         if f == 'Vanilla' and IsWindows():
             l = Label(self.frame, text="Which EXE to use for vanilla:")
             l.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
@@ -111,10 +114,14 @@ class InstallerWindow(GUIBase):
         try:
             self._Install()
         except Exception as e:
+            self.root.title('DXRando Installer Error!')
+            self.root.update()
             messagebox.showinfo('Error!', str(e) + '\n\n' + traceback.format_exc(5))
             exit(1)
 
     def _Install(self):
+        self.root.title('DXRando Installing...')
+        self.root.update()
         print(self.speedupfixval.get())
         self.installButton["state"]='disabled'
 

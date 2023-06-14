@@ -138,19 +138,21 @@ def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path,
 
 def CopyD3D10Renderer(system:Path):
     thirdparty = GetSourcePath() / '3rdParty'
+    print('CopyD3D10Renderer from', thirdparty, ' to ', system)
 
-    CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll')
-    CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int')
+    CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
+    CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
 
     drvdir_source = thirdparty / 'd3d10drv'
     drvdir_dest = system / 'd3d10drv'
     drvdir_dest.mkdir(exist_ok=True)
     for f in drvdir_source.glob('*'):
-        CopyTo(f, drvdir_dest / f.name)
+        CopyTo(f, drvdir_dest / f.name, True)
 
 
-def CopyTo(source:Path, dest:Path):
-    print('Copying', source, 'to', dest)
+def CopyTo(source:Path, dest:Path, silent:bool=False):
+    if not silent:
+        print('Copying', source, 'to', dest)
     bytes = source.read_bytes()
     dest.write_bytes(bytes)
 
