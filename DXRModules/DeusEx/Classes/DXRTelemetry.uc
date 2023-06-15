@@ -196,9 +196,10 @@ function CheckDeaths(Json j) {
             loc.x = float(j.at(i, 5));
             loc.y = float(j.at(i, 6));
             loc.z = float(j.at(i, 7));
+            loc = vectm(loc.x, loc.y, loc.z);
             if(death_markers) {
                 l("CheckDeaths key: "$k$" new deathmarker "$loc);
-                // New(Actor a, vector loc, string playername, string killerclass, string killer, string damagetype, int age, int numtimes)
+                //                     New(actor,loc,playername(1),killerclass(8),killer(2),damagetype(3),    int age(4), int numtimes(0))
                 class'DeathMarker'.static.New(Self, loc, j.at(i, 1), j.at(i, 8), j.at(i, 2), j.at(i, 3), int(j.at(i, 4)), int(j.at(i, 0)));
             }
         }

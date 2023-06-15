@@ -1,6 +1,7 @@
 import os
 from Install import *
 from Install import _DetectFlavors
+from Install import MapVariants
 
 def DetectFlavors(exe:Path) -> list:
     assert exe.name.lower() == 'deusex.exe'
@@ -9,37 +10,40 @@ def DetectFlavors(exe:Path) -> list:
     return _DetectFlavors(system)
 
 
-def Install(exe:Path, flavors:list, exetype:str, speedupfix:bool) -> list:
+def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
     assert system.name.lower() == 'system'
 
-    print('Installing flavors:', flavors, exetype, speedupfix)
-    if 'Vanilla' in flavors:
-        InstallVanilla(system, exetype, speedupfix)
-    if 'Vanilla? Madder.' in flavors:
-        CreateModConfigs(system, 'VMD', 'VMDSim')
-    if 'GMDX v9' in flavors:
-        InstallGMDX(system, 'GMDXv9')
-    if 'GMDX RSD' in flavors:
-        InstallGMDX(system, 'GMDXvRSD')
-    if 'GMDX v10' in flavors:
-        CreateModConfigs(system, 'GMDX', 'GMDXv10')
-    if 'Revision' in flavors:
-        InstallRevision(system)
-    if 'HX' in flavors:
-        InstallHX(system)
+    print('Installing flavors:', flavors, speedupfix)
+
+    for(f, settings) in flavors.items():
+        if 'Vanilla'==f:
+            InstallVanilla(system, settings, speedupfix)
+        if 'Vanilla? Madder.'==f:
+            CreateModConfigs(system, settings, 'VMD', 'VMDSim')
+        if 'GMDX v9'==f:
+            InstallGMDX(system, settings, 'GMDXv9')
+        if 'GMDX RSD'==f:
+            InstallGMDX(system, settings, 'GMDXvRSD')
+        if 'GMDX v10'==f:
+            CreateModConfigs(system, settings, 'GMDX', 'GMDXv10')
+        if 'Revision'==f:
+            InstallRevision(system, settings)
+        if 'HX'==f:
+            InstallHX(system, settings)
 
     if speedupfix:
         EngineDllFix(system)
     return flavors
 
 
-def InstallVanilla(system:Path, exetype:str, speedupfix:bool):
+def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     gameroot = system.parent
 
-    kentie = True
     exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
+    exetype = settings['exetype']
+    kentie = True
     if exetype == 'Launch':
         exe_source = GetSourcePath() / '3rdParty' / "Launch.exe"
         kentie = False
@@ -59,23 +63,32 @@ def InstallVanilla(system:Path, exetype:str, speedupfix:bool):
     defini_dest = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
     CopyTo(ini, defini_dest)
 
-    # TODO: retain old resolution choices and stuff like that
     if kentie:
         configs_dest = Path.home() / 'Documents' / 'Deus Ex' / 'System'
     else:
         configs_dest = system
     DXRandoini = configs_dest / (exename+'.ini')
     DXRandoini.parent.mkdir(parents=True, exist_ok=True)
-    CopyTo(ini, DXRandoini)
 
     changes = {}
+    if DXRandoini.exists():
+        oldconfig = DXRandoini.read_text()
+        oldconfig = Config.ReadConfig(oldconfig)
+        changes = Config.RetainConfigSections(
+            set(('WinDrv.WindowsClient',)),
+            oldconfig, changes
+        )
+
+    CopyTo(ini, DXRandoini)
+
     if not speedupfix:
         changes['DeusExe'] = {'FPSLimit': '120'}
         changes['D3D10Drv.D3D10RenderDevice'] = {'FPSLimit': '120', 'VSync': 'True'}
 
     if not IsWindows():
         changes['Engine.Engine'] = {'GameRenderDevice': 'D3DDrv.D3DRenderDevice'}
-        changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
+        if 'WinDrv.WindowsClient' not in changes:
+            changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
 
     if changes:
         b = defini_dest.read_bytes()
@@ -87,12 +100,19 @@ def InstallVanilla(system:Path, exetype:str, speedupfix:bool):
         DXRandoini.write_bytes(b)
 
     dxrroot = gameroot / 'DXRando'
-    (dxrroot / 'Maps').mkdir(exist_ok=True)
+    (dxrroot / 'Maps').mkdir(exist_ok=True, parents=True)
+    (dxrroot / 'System').mkdir(exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
     CopyD3D10Renderer(system)
 
+    FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
+    CopyTo(FemJCu, dxrroot / 'System' / 'FemJC.u')
 
-def InstallGMDX(system:Path, exename:str):
+    if settings.get('mirrors'):
+        MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
+
+
+def InstallGMDX(system:Path, settings:dict, exename:str):
     (changes, additions) = GetConfChanges('GMDX')
     # GMDX uses absolute path shortcuts with ini files in their arguments, so it's not as simple to copy their exe
 
@@ -111,25 +131,28 @@ def InstallGMDX(system:Path, exename:str):
     CopyPackageFiles('GMDX', system.parent, ['GMDXRandomizer.u'])
 
 
-def InstallRevision(system:Path):
+def InstallRevision(system:Path, settings:dict):
     # Revision's exe is special and calls back to Steam which calls the regular Revision.exe file, so we pass in_place=True
     revsystem = system.parent / 'Revision' / 'System'
-    CreateModConfigs(revsystem, 'Rev', 'Revision', in_place=True)
+    CreateModConfigs(revsystem, settings, 'Rev', 'Revision', in_place=True)
 
 
-def InstallHX(system:Path):
+def InstallHX(system:Path, settings:dict):
     CopyPackageFiles('HX', system.parent, ['HXRandomizer.u'])
     (changes, additions) = GetConfChanges('HX')
-    ChangeModConfigs(system, 'HX', 'HX', 'HX', changes, additions, True)
+    ChangeModConfigs(system, settings, 'HX', 'HX', 'HX', changes, additions, True)
     int_source = GetPackagesPath('HX') / 'HXRandomizer.int'
     int_dest = system / 'HXRandomizer.int'
     CopyTo(int_source, int_dest)
 
 
-def CreateModConfigs(system:Path, modname:str, exename:str, in_place:bool=False):
+def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_place:bool=False):
     exepath = system / (exename+'.exe')
     newexename = modname+'Randomizer'
     newexepath = system / (newexename+'.exe')
+    modpath = system.parent / (modname+'Randomizer')
+    mapspath = modpath / 'Maps'
+    mapspath.mkdir(exist_ok=True, parents=True)
     if not IsWindows():
         in_place = True
     if not in_place:
@@ -142,10 +165,13 @@ def CreateModConfigs(system:Path, modname:str, exename:str, in_place:bool=False)
     CopyPackageFiles(modname, system.parent, [modname+'Randomizer.u'])
 
     (changes, additions) = GetConfChanges(modname)
-    ChangeModConfigs(system, modname, exename, newexename, changes, additions, in_place)
+    ChangeModConfigs(system, settings, modname, exename, newexename, changes, additions, in_place)
+
+    if settings.get('mirrors'):
+        MapVariants.InstallMirrors(mapspath, settings.get('downloadcallback'), modname)
 
 
-def ChangeModConfigs(system:Path, modname:str, exename:str, newexename:str, changes:dict, additions:dict, in_place:bool=False):
+def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newexename:str, changes:dict, additions:dict, in_place:bool=False):
     # inis
     confpath = system / (exename + 'Default.ini')
     b = confpath.read_bytes()

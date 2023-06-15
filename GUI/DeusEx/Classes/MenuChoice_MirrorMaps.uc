@@ -18,8 +18,8 @@ function PopulateOptions()
     if(maps_files_found) {
         HelpText = default.HelpText;
         enumText[disabled] = "Mirror Maps Disabled";
-        enumText[enabled] = "Mirror Maps Enabled";
-        enumText[mirror_only] = "Only Use Mirror Maps";
+        enumText[enabled] = "50% Mirrored Maps";
+        enumText[mirror_only] = "100% Mirrored Maps";
     }
     else {
         mirror_maps = disabled;
@@ -79,5 +79,5 @@ defaultproperties
     enabled=1
     mirror_only=2
     HelpText="Enable mirrored maps if you have the files downloaded for them."
-    actionText="Mirror Maps (Alpha)"
+    actionText="Mirror Maps (Beta)"
 }

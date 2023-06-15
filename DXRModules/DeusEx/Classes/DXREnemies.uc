@@ -5,12 +5,13 @@ const FactionOther = 1;
 const NSF = 2;
 const UNATCO = 3;
 const MJ12 = 4;
-//const FactionsEnd = 5;// end of the factions list, defined in Base
+const Police = 5;
+//const FactionsEnd = 6;// end of the factions list, defined in Base
 
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,4,0,1) ) {
+    if( ConfigOlderThan(2,5,0,1) ) {
         enemy_multiplier = 1;
         min_rate_adjust = default.min_rate_adjust;
         max_rate_adjust = default.max_rate_adjust;
@@ -77,6 +78,7 @@ function CheckConfig()
     AddRandomEnemyType(class'UNATCOClone2', 10, UNATCO);
     AddRandomEnemyType(class'UNATCOClone3', 10, UNATCO);
     AddRandomEnemyType(class'UNATCOClone4', 10, UNATCO);
+    AddRandomEnemyType(class'#var(prefix)RiotCop', 5, UNATCO);
     AddRandomEnemyType(class'#var(prefix)MilitaryBot', 2, UNATCO);
     AddRandomEnemyType(class'#var(prefix)SpiderBot2', 1, UNATCO);//little spider
 
@@ -110,6 +112,10 @@ function CheckConfig()
     AddRandomEnemyType(class'#var(prefix)ThugMale2', 5, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale3', 5, FactionOther);
     AddRandomEnemyType(class'#var(prefix)SpiderBot2', 1, FactionOther);//little spider
+
+    AddRandomEnemyType(class'#var(prefix)Cop', 10, Police);
+    AddRandomEnemyType(class'#var(prefix)RiotCop', 10, Police);
+    AddRandomEnemyType(class'#var(prefix)Doberman', 5, Police);
     ReadConfig();
 }
 
@@ -195,6 +201,9 @@ function int GetFactionId(ScriptedPawn p)
         return MJ12;
     case class'#var(prefix)Terrorist':
         return NSF;
+    case class'#var(prefix)Cop':
+    case class'#var(prefix)RiotCop':
+        return Police;
     }
     switch(p.Alliance) {
     case 'UNATCO':
@@ -203,6 +212,8 @@ function int GetFactionId(ScriptedPawn p)
         return MJ12;
     case 'NSF':
         return NSF;
+    case 'Cops':
+        return Police;
     }
     return FactionOther;
 }
@@ -259,11 +270,14 @@ function RandomizeSP(ScriptedPawn p, int percent)
 
 function CheckHelmet(ScriptedPawn p)
 {
-    local int helmet_chance;
+    local int helmet_chance, visor_chance;
     if(p.Mesh != LodMesh'DeusExCharacters.GM_Jumpsuit')  return;
 
     // divide by 2 to lean towards vanilla
     // that way the game gets harder as you progress to enemies that typically have helmets
+
+    if(#defined(injections)) // visors only work in vanilla due to our change in ScriptedPawn, so leave the chance to 0 for other mods
+        visor_chance = dxr.flags.settings.enemystats / 2;
 
     switch(p.MultiSkins[6]) {
     case Texture'DeusExItems.Skins.PinkMaskTex':
@@ -271,7 +285,13 @@ function CheckHelmet(ScriptedPawn p)
         // add helmet
         helmet_chance = dxr.flags.settings.enemystats / 2;
         if(chance_single(helmet_chance)) {
-            p.MultiSkins[6] = Texture'#var(package).DXRandoPawns.NSFHelmet';
+            if(rngb())
+                p.MultiSkins[6] = Texture'#var(package).DXRandoPawns.NSFHelmet';
+            else
+                p.MultiSkins[6] = Texture'#var(package).DXRandoPawns.PlainRiotHelmet';
+            if(chance_single(visor_chance)) {
+                p.Texture = Texture'DeusExCharacters.Skins.VisorTex1';
+            }
         }
         break;
     default:
@@ -281,6 +301,8 @@ function CheckHelmet(ScriptedPawn p)
             p.MultiSkins[5] = Texture'DeusExItems.Skins.GrayMaskTex';
             p.MultiSkins[6] = Texture'DeusExItems.Skins.PinkMaskTex';
             p.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
+        } else if(chance_single(visor_chance)) {
+            p.Texture = Texture'DeusExCharacters.Skins.VisorTex1';
         }
     }
 }
@@ -304,6 +326,9 @@ function AddDXRCredits(CreditsWindow cw)
             break;
         case MJ12:
             factionName = "MJ12";
+            break;
+        case Police:
+            factionName = "Police";
             break;
         default:
             factionName = "Faction "$f;

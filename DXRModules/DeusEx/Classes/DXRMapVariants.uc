@@ -28,6 +28,21 @@ static function bool MirrorMapsAvailable()
     return ret;
 }
 
+static function string GetVariantName(string map)
+{
+    local vector coordsMult;
+
+    coordsMult = GetCoordsMult(map);
+
+    if (coordsMult.X==1 && coordsMult.Y==1 && coordsMult.Z==1){
+        return ""; //Normal
+    } else if (coordsMult.X==-1 && coordsMult.Y==1 && coordsMult.Z==1){
+        return "Mirrored";
+    }
+
+    return coordsMult.X$","$coordsMult.Y$","$coordsMult.Z;
+}
+
 static function vector GetCoordsMult(string map)
 {// DXRBase calls this in Init
     local vector v;
@@ -77,13 +92,11 @@ static function string CleanupMapName(string mapName)
 
 static function string GetDirtyMapName(string map, vector v)
 {
-    return map $ GetMapPostfix(v);
-}
-
-function PreTravel()
-{// make the localURL match the filename, so saved data works correctly
-    Super.PreTravel();
-    dxr.dxInfo.mapName = GetURLMap();
+    local string post;
+    post = GetMapPostfix(v);
+    if(InStr(map, post) == -1)
+        return map $ post;
+    return map;
 }
 
 function int GetMirrorMapsSetting()
@@ -95,6 +108,10 @@ simulated function FirstEntry()
 {
     local Teleporter t;
     local MapExit me;
+    local string s;
+
+    s = CleanupMapName(dxr.dxInfo.mapName);
+    dxr.dxInfo.mapName = GetDirtyMapName(s, coords_mult);
 
     foreach AllActors(class'Teleporter', t) {
         t.URL = VaryURL(t.URL);
@@ -106,7 +123,7 @@ simulated function FirstEntry()
 
 function PlayerAnyEntry(#var(PlayerPawn) p)
 {
-    p.strStartMap = VaryMap(p.strStartMap);
+    p.strStartMap = VaryMap(p.default.strStartMap);
 }
 
 simulated function AnyEntry()
@@ -120,6 +137,7 @@ function string VaryURL(string url)
     local int i, t;
 
     i = Len(url);
+    if(i==0) return url;
     t = InStr(url, "?");
     if(t != -1 && t < i)
         i = t;
@@ -132,13 +150,15 @@ function string VaryURL(string url)
 
     map = Left(url, i);
     after = Mid(url, i);
-    l("url=="$url$", map=="$map$", after=="$after);
+    l("VaryURL url=="$url$", map=="$map$", after=="$after);
     map = VaryMap(map);
+    l("VaryURL newmap=="$map);
     return map $ after;
 }
 
 function string VaryMap(string map)
 {
+    map = CleanupMapName(map);
     switch(GetMirrorMapsSetting()) {
     case class'MenuChoice_MirrorMaps'.default.mirror_only:
         return map $"_-1_1_1";

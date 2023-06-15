@@ -14,6 +14,7 @@ runs:
       shell: bash
     - run: mkdir installer/3rdParty/d3d10drv
       shell: bash
+
     # https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/tree/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs
     - run: >-
         curl -Lo installer/3rdParty/KentieDeusExe.exe
@@ -23,6 +24,8 @@ runs:
         curl -Lo installer/3rdParty/Launch.exe
         "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs/Launch.exe"
       shell: bash
+
+    # D3D10 stuff
     - run: >-
         curl -Lo installer/3rdParty/D3D10Drv.int
         "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D10Drv.int"
@@ -86,6 +89,12 @@ runs:
     - run: >-
         curl -Lo installer/3rdParty/d3d10drv/unrealpool.fxh
         "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/d3d10drv/unrealpool.fxh"
+      shell: bash
+
+    # LDDP minimal install
+    - run: >-
+        curl -Lo installer/3rdParty/FemJC.u
+        "https://github.com/LayDDentonProject/Lay-D-Denton-Project/releases/download/v1.1/FemJC.u"
       shell: bash
 
     - run: python3 -m compileall -q . 2>&1

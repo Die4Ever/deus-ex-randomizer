@@ -32,7 +32,7 @@ replication
 }
 
 const FactionAny = 0;
-const FactionsEnd = 5;// end of the factions list
+const FactionsEnd = 6;// end of the factions list
 function int GetFactionId(ScriptedPawn p);
 function RandomizeSP(ScriptedPawn p, int percent);
 function CheckHelmet(ScriptedPawn p);
@@ -571,6 +571,6 @@ function RunTests()
 
 defaultproperties
 {
-    min_rate_adjust=0.5
-    max_rate_adjust=1.5
+    min_rate_adjust=0.1
+    max_rate_adjust=3.0
 }

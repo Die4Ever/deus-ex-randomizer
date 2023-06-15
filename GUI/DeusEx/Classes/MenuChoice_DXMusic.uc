@@ -10,7 +10,7 @@ function ResetToDefault()
 {
     log(self$" ResetToDefault");
     SetValue(1);
-    SaveSetting();
+    _SaveSetting();
 }
 
 defaultproperties

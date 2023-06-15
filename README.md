@@ -9,7 +9,7 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 ## v2.0 Trailer
 
 <a href="https://www.youtube.com/watch?v=XsoIKbn_suE&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=2" target="_blank">
-<img src="https://i.imgur.com/Rssbzpl.jpg" alt="v2.0 Trailer" height="300"/></a>
+<img src="https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/daf30de5-fd3e-4b65-a0cf-abc7f6ac758b" alt="v2.0 Trailer" height="300"/></a>
 
 ## DXRando randomizes
 * Locations of goals, NPCs, and some starting locations

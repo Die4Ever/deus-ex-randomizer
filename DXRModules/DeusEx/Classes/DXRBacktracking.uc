@@ -111,7 +111,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     Super.PlayerAnyEntry(p);
     FixInterpolating(p);
-    if( ! class'DynamicTeleporter'.static.CheckTeleport(p) ) {
+    if( ! class'DynamicTeleporter'.static.CheckTeleport(p, coords_mult) ) {
         err("DynamicTeleporter failed");
     }
 }
@@ -166,10 +166,11 @@ static function LevelInit(DXRando dxr)
 {
     local int newMissionNum;
 
-    dxr.dxInfo.mapName = class'DXRMapVariants'.static.CleanupMapName(dxr.dxInfo.mapName);
-    dxr.localURL = Caps(dxr.dxInfo.mapName);
+    dxr.localURL = class'DXRMapVariants'.static.CleanupMapName(dxr.dxInfo.mapName);
+    dxr.localURL = Caps(dxr.localURL);
 
     newMissionNum = class'DXRMapInfo'.static.GetMissionNumber(dxr.localURL);
+    log("LevelInit" @ dxr.dxInfo.mapName @ dxr.localURL @ newMissionNum, 'DXRBacktracking');
     if( newMissionNum != 0 && newMissionNum != dxr.dxInfo.missionNumber ) {
         log("LevelInit("$dxr$") dxr.localURL: "$dxr.localURL$", newMissionNum: "$ newMissionNum $", dxr.dxInfo.missionNumber: "$dxr.dxInfo.missionNumber, 'DXRBacktracking');
         dxr.dxInfo.missionNumber = newMissionNum;

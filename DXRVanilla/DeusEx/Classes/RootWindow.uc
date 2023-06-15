@@ -28,7 +28,6 @@ function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
         parentPawn.JumpZ = parentPawn.default.JumpZ * f;
     }
     else if(f > 0 && parentPawn.JumpZ > parentPawn.default.JumpZ * f*1.3) {
-        DeusExPlayer(parentPawn).ClientMessage("SUPER JUMP GLITCH DETECTED!");
         class'DXRStats'.static.AddCheatOffense(DeusExPlayer(parentPawn));
     }
 
@@ -47,7 +46,6 @@ function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
         foreach parentPawn.AllActors(class'SkilledTool', tool) {
             if(!tool.IsInState('UseIt')) continue;
             if(NanoKeyRing(tool) != None) continue;
-            DeusExPlayer(parentPawn).ClientMessage("TOOL PAUSE GLITCH DETECTED!");
             class'DXRStats'.static.AddCheatOffense(DeusExPlayer(parentPawn));
             break;
         }

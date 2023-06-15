@@ -1,5 +1,4 @@
 check gas grenades ammo
-little step for warehouse hole in wall
 loadouts score boosts?
 
 allow loadouts to mess with skills? remove the config crap? loadouts give bonus points?
@@ -139,6 +138,8 @@ and this substitution regex
 $2
 
 the output from that will fill the meat of the GetRandomActorClass function
+
+http://coding.hanfling.de/launch/ patched editor and stuff
 
 https://wiki.beyondunreal.com/Legacy:Simulated_Function
 

@@ -503,7 +503,7 @@ function MoveGoalToLocation(Goal g, GoalLocation Loc)
     }
 
     if(Loc.mapName == dxr.localURL) {
-        marker = Spawn(class'DXRGoalMarker',,, Loc.positions[0].pos);
+        marker = DXRGoalMarker(Spawnm(class'DXRGoalMarker',,, Loc.positions[0].pos));
         marker.BindName = g.name $ " (" $ Loc.name $ ")";
         AfterMoveGoalToLocation(g, Loc);
     }
@@ -517,9 +517,11 @@ function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
     local #var(prefix)Vehicles v;
     local int offset;
 
-    offset = GetRotationOffset(a.class);
     loc = vectm(loc.X, loc.Y, loc.Z);
-    rotation = rotm(rotation.pitch, rotation.yaw, rotation.roll, offset);
+    if(Brush(a) == None) {// brushes/movers get negative scaling, so their rotation doesn't need to be adjusted
+        offset = GetRotationOffset(a.class);
+        rotation = rotm(rotation.pitch, rotation.yaw, rotation.roll, offset);
+    }
 
     l("moving " $ a $ " from (" $ a.location $ ") to (" $ loc $ ")" );
     oldbCollideWorld = a.bCollideWorld;

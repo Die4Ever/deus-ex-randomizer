@@ -99,6 +99,7 @@ function DXRInit()
     }
     l("found flagbase: "$flagbase$", Player: "$Player);
 
+    flags.InitCoordsMult();// for some reason flags is loaded too early and doesn't have the new map url
     flags.LoadFlags();
     LoadModules();
     RandoEnter();

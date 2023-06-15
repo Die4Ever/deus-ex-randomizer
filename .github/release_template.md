@@ -1,13 +1,18 @@
-Downloads are in the Assets section under the changelog.
+Download the installer in the Assets section under the changelog.
 
-## [Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks/2c9f08933d31ae0a3dbe5ddd5886f47faa36f032)
+## [Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks)
 
-## v2.0 Trailer
+## Trailers
 
-June 22nd 2022 was Deus Ex's 22nd anniversary, and our 2nd anniversary! To celebrate, we made a new trailer!
+Here's a trailer for our new Mirrored Maps feature in v2.5:
 
-<a href="https://www.youtube.com/watch?v=XsoIKbn_suE&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=2" target="_blank">
-<img src="https://i.imgur.com/Rssbzpl.jpg" alt="v2.0 Trailer" height="300"/></a>
+<a href="https://www.youtube.com/watch?v=PJOh1TqYJmU&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&pp=gAQBiAQB" target="_blank">
+<img src="https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/0884f42b-36b2-4716-9f80-6d56faee6621" alt="v2.5 Mirrored Maps Trailer" width="500"/></a>
+
+If you don't know what Deus Ex Randomizer is, then here's our old trailer which shows a breakdown of how it works:
+
+<a href="https://www.youtube.com/watch?v=XsoIKbn_suE&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch" target="_blank">
+<img src="https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/daf30de5-fd3e-4b65-a0cf-abc7f6ac758b" alt="v2.0 Trailer" width="500"/></a>
 
 [See the full README here.](https://github.com/Die4Ever/deus-ex-randomizer#readme) Also check out [our Discord!](https://discord.gg/daQVyAp2ds)
 
@@ -22,4 +27,4 @@ June 22nd 2022 was Deus Ex's 22nd anniversary, and our 2nd anniversary! To celeb
 *
 </details>
 
-Downloads are in the Assets section right below this line:
+Download is in the Assets section right below this line:

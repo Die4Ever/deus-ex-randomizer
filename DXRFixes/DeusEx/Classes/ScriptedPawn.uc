@@ -12,6 +12,16 @@ var int EmpHealth;
     log(Self$" IncreaseAgitation "$actorInstigator$", "$AgitationLevel);
 }*/
 
+function BeginPlay()
+{
+    Super.BeginPlay();
+    if(InStr(BindName, "LDDP")==0) {
+        if(!class'DXRMenuScreenNewGame'.static.HasLDDPInstalled()) {
+            Destroy();
+        }
+    }
+}
+
 event Destroyed()
 {
     // throw whatever remains of their inventory so it isn't lost, most applicable to MIBs and other self destructing enemies
@@ -423,6 +433,15 @@ function int HeadDamageMult()
         return 4;// helmet
     }
     return 8;// 8x gives vanilla damage
+}
+
+function GotoDisabledState(name damageType, EHitLocation hitPos)
+{
+    if ((damageType == 'TearGas' || damageType == 'HalonGas')
+        && Texture == Texture'DeusExCharacters.Skins.VisorTex1'
+        && Mesh == LodMesh'DeusExCharacters.GM_Jumpsuit')
+        return;
+    Super.GotoDisabledState(damageType, hitPos);
 }
 
 

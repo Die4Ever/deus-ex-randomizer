@@ -10,12 +10,20 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("05_NYC_UNATCOMJ12LAB", "Paul", NORMAL_GOAL, 'PaulDenton0', PHYS_Falling);
         AddGoalActor(goal, 1, 'PaulDentonCarcass0', PHYS_Falling);
         AddGoalActor(goal, 2, 'DataLinkTrigger6', PHYS_None);
+        AddGoalActor(goal, 3, 'SecurityCamera0', PHYS_None);
 
-        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
+        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
+        AddActorLocation(loc, 3, vect(-8162.683594, 1194.161621, 276.902924), rot(-6000, 36000, 0));
+
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
         AddActorLocation(loc, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
-        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(375,3860,-604), rot(0, 8048, 0));
-        AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
+        AddActorLocation(loc, 3, vect(1891.301514, -289.854248, -64.997406), rot(-3000, 58200, 0));
+
+        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(375,3860,-604), rot(0, 8048, 0));
+        AddActorLocation(loc, 3, vect(745.180481, 4150.960449, -477.601196), rot(-3100, 39700, 0));
+
+        loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
+        AddActorLocation(loc, 3, vect(-4289.660645, 1397.180054, 307.937073), rot(-2000, -16384, 0));
 
         return 51;
 
@@ -83,6 +91,8 @@ function AfterShuffleGoals(int goalsToLocations[32])
 function PreFirstEntryMapFixes()
 {
     local #var(prefix)ComputerPersonal cp;
+    local #var(prefix)ComputerSecurity cs;
+    local int i;
 
     if( dxr.localURL ~= "05_NYC_UNATCOHQ" ) {
         // jail computer
@@ -105,6 +115,16 @@ function PreFirstEntryMapFixes()
             // keep the button for Gunther's killphrase on Manderley's computer
             if(cp.specialOptions[0].userName ~= "demiurge")
                 cp.specialOptions[0].userName = "";
+        }
+    }
+    if( dxr.localURL ~= "05_NYC_UNATCOMJ12Lab") {
+        foreach AllActors(class'#var(prefix)ComputerSecurity', cs) {
+            if(cs.name != 'ComputerSecurity4') continue;
+            for(i=0; i<ArrayCount(cs.Views); i++) {
+                if(cs.Views[i].CameraTag != 'medcam') {
+                    cs.Views[i].titleString = "Paul Denton";
+                }
+            }
         }
     }
 }

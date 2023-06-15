@@ -80,13 +80,56 @@ def _AddConfigVals(section:str, additions:dict) -> str:
     if not additions:
         return section
     for (k,v) in additions.items():
-        newline = k+'='+v
-        # beginning of section doesn't have \r\n and we want to make sure this isn't commented out
-        if section.startswith(newline):
-            continue
-        if '\r\n'+newline+'\r\n' in section:
-            continue
-        if section.endswith('\r\n'+newline):
-            continue
-        section = newline + '\r\n' + section
+        if isinstance(v, list):
+            for i in v:
+                section = _AddConfigVal(section, k, i)
+        else:
+            section = _AddConfigVal(section, k, v)
+
     return section
+
+
+def _AddConfigVal(section:str, k:str, v:str) -> str:
+    addition = k+'='+v
+    # check all the newlines
+    for ending in ('\r\n', '\n', '\r'):
+        # beginning of section doesn't have \r\n and we want to make sure this isn't commented out
+        if section.startswith(addition + ending):
+            return section
+        if ending + addition + ending in section:
+            return section
+        if section.endswith(ending + addition):
+            return section
+
+    return addition + '\r\n' + section
+
+
+def ReadConfig(text:str):
+    sections = {}
+    for i in get_sections.finditer(text):
+        d = i.groupdict()
+        sectname = d['section']
+        content = d['sectiondata']
+        sect = {}
+        for i in get_options.finditer(content):
+            d = i.groupdict()
+            name = d['name']
+            value = d['value']
+            if name not in sect:
+                sect[name] = [value]
+            else:
+                sect[name].append(value)
+
+        sections[sectname] = sect
+    return sections
+
+
+def RetainConfigSections(names:set, orig:dict, changes:dict) -> dict:
+    for name in names:
+        if name not in orig:
+            continue
+        retain = {}
+        for (k,v) in orig[name].items():
+            retain[k] = v[0] # config parser makes everything a list, because of Paths
+        changes[name] = retain
+    return changes

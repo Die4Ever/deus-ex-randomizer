@@ -21,9 +21,17 @@ function Init(DXRando tdxr)
 {
     //l(Self$".Init()");
     dxr = tdxr;
-    coords_mult = class'DXRMapVariants'.static.GetCoordsMult(GetURLMap());
+    InitCoordsMult();
     CheckConfig();
     inited = true;
+}
+
+function InitCoordsMult()
+{
+    local string m;
+    m = GetURLMap();
+    coords_mult = class'DXRMapVariants'.static.GetCoordsMult(m);
+    l("InitCoordsMult"@m@coords_mult);
 }
 
 simulated function DXRando GetDXR()
@@ -363,6 +371,14 @@ simulated function vector vectm(float x, float y, float z)
     v.y = y;
     v.z = z;
     return v * coords_mult;
+}
+
+simulated function vector vectclean(vector v)
+{
+    v.x /= coords_mult.x;
+    v.y /= coords_mult.y;
+    v.z /= coords_mult.z;
+    return v;
 }
 
 // see unreal-map-flipper for a list of offsets, scriptpawns use an offset of 16384, most other things seem to use 0

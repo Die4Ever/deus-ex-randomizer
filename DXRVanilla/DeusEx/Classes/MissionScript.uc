@@ -3,6 +3,7 @@ class MissionScript injects MissionScript transient abstract;
 var DXRando dxr;
 
 // have to copy this whole function just to let DXRBacktracking handle the DeleteExpiredFlags
+// also use dxr.localURL instead of dxInfo.mapName because of DXRMapVariants
 function InitStateMachine()
 {
     local DeusExLevelInfo info;
@@ -32,7 +33,7 @@ function InitStateMachine()
 
             flags.SetDefaultExpiration(dxInfo.MissionNumber + 1);
 
-            localURL = Caps(dxInfo.mapName);
+            localURL = dxr.localURL;
 
             log("**** InitStateMachine() -"@player@"started mission state machine for"@localURL);
         }
@@ -45,6 +46,18 @@ function InitStateMachine()
     {
         log("**** InitStateMachine() - player not set - mission state machine NOT initialized!");
     }
+}
+
+function FirstFrame()
+{
+    local string mapName;
+
+    // because of DXRMapVariants
+    mapName = dxInfo.mapName;
+    dxInfo.mapName = class'DXRMapVariants'.static.CleanupMapName(mapName);
+
+    Super.FirstFrame();
+    dxInfo.mapName = mapName;
 }
 
 function Timer()

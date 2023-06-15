@@ -42,7 +42,6 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
         if(bFixGlitches) {
             p.TakeDamage(10000, p, p.Location, vect(0,0,0), 'Radiation');
         } else {
-            p.ClientMessage("DEAD MAN WALKING GLITCH DETECTED!");
             class'DXRStats'.static.AddCheatOffense(p, 5);// worth more than other glitches
         }
     }

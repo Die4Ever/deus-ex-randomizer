@@ -3,4 +3,5 @@ from pathlib import Path
 
 p = Path(__file__).resolve()
 p = p.parent / 'lib'
-sys.path.append(str(p))
+if p.is_dir():
+    sys.path.append(str(p))

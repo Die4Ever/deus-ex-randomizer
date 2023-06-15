@@ -45,8 +45,11 @@ static function SetDestName(DeusExPlayer player, name destName)
     player.flagbase.SetName('DynTeleport', destName,, 999);
 }
 
-static function SetDestPos(DeusExPlayer player, vector pos)
+static function SetDestPos(DeusExPlayer player, vector pos, vector coords_mult)
 {
+    pos.X /= coords_mult.X;
+    pos.Y /= coords_mult.Y;
+    pos.Z /= coords_mult.Z;
     player.flagbase.SetVector('DynTeleportPos', pos,, 999);
 }
 
@@ -64,7 +67,7 @@ simulated function Touch( actor Other )
     Super.Touch(Other);
 }
 
-static function bool CheckTeleport(DeusExPlayer player)
+static function bool CheckTeleport(DeusExPlayer player, vector coords_mult)
 {
     local name toname;
     local Actor a;
@@ -77,6 +80,7 @@ static function bool CheckTeleport(DeusExPlayer player)
     ClearTeleport(player);
 
     if(got_pos) {
+        pos *= coords_mult;
         return player.SetLocation(pos);
     }
 

@@ -968,7 +968,7 @@ function SendFlagEvent(coerce string eventname, optional bool immediate, optiona
     j = js.static.Start("Flag");
     js.static.Add(j, "flag", eventname);
     js.static.Add(j, "immediate", immediate);
-    js.static.Add(j, "location", dxr.player.location);
+    js.static.Add(j, "location", vectclean(dxr.player.location));
     if(extra != "")
         js.static.Add(j, "extra", extra);
     GeneralEventData(dxr, j);
@@ -1026,7 +1026,7 @@ static function _DeathEvent(DXRando dxr, Actor victim, Actor Killer, coerce stri
     }
     js.static.Add(j, "dmgtype", damageType);
     GeneralEventData(dxr, j);
-    js.static.Add(j, "location", victim.Location);
+    js.static.Add(j, "location", dxr.flags.vectclean(victim.Location));
     js.static.End(j);
     class'DXRTelemetry'.static.SendEvent(dxr, victim, j);
 }
@@ -1110,18 +1110,25 @@ function bool isInitialPlayerAlly(ScriptedPawn p)
 
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
+    local string classname;
+
     _MarkBingo(victim.BindName$"_Dead");
     _MarkBingo(victim.BindName$"_DeadM" $ dxr.dxInfo.missionNumber);
     if( Killer == None || #var(PlayerPawn)(Killer) != None ) {
+        classname = string(victim.class.name);
+        if(#defined(hx) && InStr(classname, "HX")==0) {
+            classname = Mid(classname, 2);
+        }
+
         if (IsHuman(victim.class) && ((damageType == "Stunned") ||
                                 (damageType == "KnockedOut") ||
-	                            (damageType == "Poison") ||
+                                (damageType == "Poison") ||
                                 (damageType == "PoisonEffect"))){
-            _MarkBingo(victim.class.name$"_ClassUnconscious");
-            _MarkBingo(victim.BindName$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(classname$"_ClassUnconscious");
+            _MarkBingo(classname$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
         } else {
-            _MarkBingo(victim.class.name$"_ClassDead");
-            _MarkBingo(victim.BindName$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
+            _MarkBingo(classname$"_ClassDead");
+            _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
             if (isInitialPlayerAlly(victim) &&   //Must have initially been an ally
@@ -1175,7 +1182,7 @@ static function PaulDied(DXRando dxr)
     js.static.Add(j, "victimBindName", "PaulDenton");
     js.static.Add(j, "dmgtype", "");
     GeneralEventData(dxr, j);
-    js.static.Add(j, "location", dxr.player.location);
+    js.static.Add(j, "location", dxr.flags.vectclean(dxr.player.location));
     js.static.End(j);
     dxr.flagbase.SetBool('DXREvents_PaulDead', true,, 999);
     class'DXRTelemetry'.static.SendEvent(dxr, dxr.player, j);
@@ -1248,7 +1255,7 @@ static function ExtinguishFire(DXRando dxr, string extinguisher, DeusExPlayer pl
 
     j = js.static.Start("ExtinguishFire");
     js.static.Add(j, "extinguisher", extinguisher);
-    js.static.Add(j, "location", player.Location);
+    js.static.Add(j, "location", dxr.flags.vectclean(player.Location));
     GeneralEventData(dxr, j);
     js.static.End(j);
 
@@ -1708,7 +1715,7 @@ function _MarkBingo(coerce string eventname)
 
         j = js.static.Start("Bingo");
         js.static.Add(j, "newevent", eventname);
-        js.static.Add(j, "location", player().Location);
+        js.static.Add(j, "location", vectclean(player().Location));
         GeneralEventData(dxr, j);
         BingoEventData(dxr, j);
         GameTimeEventData(dxr, j);

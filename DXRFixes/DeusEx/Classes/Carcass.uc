@@ -9,6 +9,7 @@ function InitFor(Actor Other)
         for(i=0; i<ArrayCount(MultiSkins); i++) {
             MultiSkins[i] = Other.MultiSkins[i];
         }
+        Texture = Other.Texture;
         Acceleration = Other.Acceleration;
         Velocity = Other.Velocity;
     }
