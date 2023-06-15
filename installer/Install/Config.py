@@ -90,15 +90,18 @@ def _AddConfigVals(section:str, additions:dict) -> str:
 
 
 def _AddConfigVal(section:str, k:str, v:str) -> str:
-    newline = k+'='+v
-    # beginning of section doesn't have \r\n and we want to make sure this isn't commented out
-    if section.startswith(newline):
-        return section
-    if '\r\n'+newline+'\r\n' in section:
-        return section
-    if section.endswith('\r\n'+newline):
-        return section
-    return newline + '\r\n' + section
+    addition = k+'='+v
+    # check all the newlines
+    for ending in ('\r\n', '\n', '\r'):
+        # beginning of section doesn't have \r\n and we want to make sure this isn't commented out
+        if section.startswith(addition + ending):
+            return section
+        if ending + addition + ending in section:
+            return section
+        if section.endswith(ending + addition):
+            return section
+
+    return addition + '\r\n' + section
 
 
 def ReadConfig(text:str):

@@ -10,7 +10,7 @@ def DetectFlavors(exe:Path) -> list:
     return _DetectFlavors(system)
 
 
-def Install(exe:Path, flavors:dict, speedupfix:bool) -> list:
+def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
     assert system.name.lower() == 'system'
@@ -106,7 +106,6 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     CopyD3D10Renderer(system)
 
     FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
-    print(FemJCu, FemJCu.exists())
     CopyTo(FemJCu, dxrroot / 'System' / 'FemJC.u')
 
     if settings.get('mirrors'):
