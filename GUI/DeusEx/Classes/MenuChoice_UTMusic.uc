@@ -26,16 +26,26 @@ function DXRMusic GetDXRMusic()
 function SetValue(int newValue)
 {
     Super.SetValue(newValue);
-    SaveSetting();
+    _SaveSetting();
 }
 
-function SetEnabledText()
+function SetNumEnabledText()
 {
     local string text;
-    text = enumText[GetValue()];
-    text = text $ " (" $ num_enabled $ "/" $ total $ ")";
-    // TODO: need a timer like MenuChoice_DisableSong
-    //btnInfo.SetButtonText(text); // wonky with the song "Ending" being in both Unreal and UT
+    //text = enumText[GetValue()];
+    text = num_enabled $ "/" $ total $ " Songs Enabled";
+    btnInfo.SetButtonText(text);
+}
+
+
+function UpdateTextTimer(int timerID, int invocations, int clientData)
+{
+    local string songs[100];
+    local bool bEnabled;
+
+    GetGameSongs(songs);
+    bEnabled = m.AreGameSongsEnabled(songs, num_enabled, total);
+    SetNumEnabledText();
 }
 
 // ----------------------------------------------------------------------
@@ -52,7 +62,8 @@ function SetInitialOption()
         bEnabled = m.AreGameSongsEnabled(songs, num_enabled, total);
         log(self$" SetInitialOption "$bEnabled);
         Super.SetValue(int(bEnabled));
-        SetEnabledText();
+        SetNumEnabledText();
+        AddTimer(0.5, true, 0, 'UpdateTextTimer');
     }
 }
 
@@ -60,7 +71,7 @@ function SetInitialOption()
 // SaveSetting()
 // ----------------------------------------------------------------------
 
-function SaveSetting()
+function _SaveSetting()
 {
     local string songs[100];
     local bool bEnabled;
@@ -75,7 +86,7 @@ function SaveSetting()
             num_enabled = total;
         else
             num_enabled = 0;
-        SetEnabledText();
+        SetNumEnabledText();
     }
 }
 
@@ -97,7 +108,7 @@ function ResetToDefault()
 {
     log(self$" ResetToDefault");
     SetValue(0);
-    SaveSetting();
+    _SaveSetting();
 }
 
 // ----------------------------------------------------------------------
