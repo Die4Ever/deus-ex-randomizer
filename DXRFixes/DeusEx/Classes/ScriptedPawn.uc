@@ -14,6 +14,7 @@ var int EmpHealth;
 
 function BeginPlay()
 {
+    Super.BeginPlay();
     if(InStr(BindName, "LDDP")==0) {
         if(!class'DXRMenuScreenNewGame'.static.HasLDDPInstalled()) {
             Destroy();

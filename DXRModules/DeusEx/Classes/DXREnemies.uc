@@ -276,7 +276,7 @@ function CheckHelmet(ScriptedPawn p)
     // divide by 2 to lean towards vanilla
     // that way the game gets harder as you progress to enemies that typically have helmets
 
-    if(#defined(injections)) // visors only work in vanilla due to our chance in ScriptedPawn, so leave the chance to 0 for other mods
+    if(#defined(injections)) // visors only work in vanilla due to our change in ScriptedPawn, so leave the chance to 0 for other mods
         visor_chance = dxr.flags.settings.enemystats / 2;
 
     switch(p.MultiSkins[6]) {
