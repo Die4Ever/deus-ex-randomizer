@@ -99,3 +99,34 @@ def _AddConfigVal(section:str, k:str, v:str) -> str:
     if section.endswith('\r\n'+newline):
         return section
     return newline + '\r\n' + section
+
+
+def ReadConfig(text:str):
+    sections = {}
+    for i in get_sections.finditer(text):
+        d = i.groupdict()
+        sectname = d['section']
+        content = d['sectiondata']
+        sect = {}
+        for i in get_options.finditer(content):
+            d = i.groupdict()
+            name = d['name']
+            value = d['value']
+            if name not in sect:
+                sect[name] = [value]
+            else:
+                sect[name].append(value)
+
+        sections[sectname] = sect
+    return sections
+
+
+def RetainConfigSections(names:set, orig:dict, changes:dict) -> dict:
+    for name in names:
+        if name not in orig:
+            continue
+        retain = {}
+        for (k,v) in orig[name].items():
+            retain[k] = v[0] # config parser makes everything a list, because of Paths
+        changes[name] = retain
+    return changes

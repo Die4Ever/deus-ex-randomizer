@@ -63,23 +63,32 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     defini_dest = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
     CopyTo(ini, defini_dest)
 
-    # TODO: retain old resolution choices and stuff like that
     if kentie:
         configs_dest = Path.home() / 'Documents' / 'Deus Ex' / 'System'
     else:
         configs_dest = system
     DXRandoini = configs_dest / (exename+'.ini')
     DXRandoini.parent.mkdir(parents=True, exist_ok=True)
-    CopyTo(ini, DXRandoini)
 
     changes = {}
+    if DXRandoini.exists():
+        oldconfig = DXRandoini.read_text()
+        oldconfig = Config.ReadConfig(oldconfig)
+        changes = Config.RetainConfigSections(
+            set(('WinDrv.WindowsClient',)),
+            oldconfig, changes
+        )
+
+    CopyTo(ini, DXRandoini)
+
     if not speedupfix:
         changes['DeusExe'] = {'FPSLimit': '120'}
         changes['D3D10Drv.D3D10RenderDevice'] = {'FPSLimit': '120', 'VSync': 'True'}
 
     if not IsWindows():
         changes['Engine.Engine'] = {'GameRenderDevice': 'D3DDrv.D3DRenderDevice'}
-        changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
+        if 'WinDrv.WindowsClient' not in changes:
+            changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
 
     if changes:
         b = defini_dest.read_bytes()
@@ -144,7 +153,7 @@ def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_pl
     newexepath = system / (newexename+'.exe')
     modpath = system.parent / (modname+'Randomizer')
     mapspath = modpath / 'Maps'
-    mapspath.mkdir(exist_ok=True)
+    mapspath.mkdir(exist_ok=True, parents=True)
     if not IsWindows():
         in_place = True
     if not in_place:

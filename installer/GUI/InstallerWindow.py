@@ -18,6 +18,10 @@ class InstallerWindow(GUIBase):
         filetypes = (('DeusEx.exe', 'DeusEx.exe'),)
         initdir = getDefaultPath()
         p = fd.askopenfilename(title="Find plain DeusEx.exe", filetypes=filetypes, initialdir=initdir)
+        if not p:
+            print('no file selected')
+            sys.exit(0)
+
         p = Path(p)
         print(p)
         assert p.name.lower() == 'deusex.exe'
