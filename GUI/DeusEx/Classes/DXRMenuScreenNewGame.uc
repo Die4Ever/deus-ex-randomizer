@@ -8,6 +8,9 @@ var DXRando dxr;
 var DXRFlags flags;
 var config string last_player_name;
 var bool hasCheckedLDDP;
+#ifndef injections
+var bool bFemaleEnabled;
+#endif
 
 static function bool HasLDDPInstalled()
 {
