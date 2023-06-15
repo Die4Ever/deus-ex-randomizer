@@ -9,6 +9,7 @@ class InstallerWindow(GUIBase):
         self.root = Tk()
         self.width = 350
         self.height = 500
+        self.lastprogress = ''
         self.root.title("Deus Ex Randomizer Installer")
         self.root.geometry(str(self.width)+"x"+str(self.height))
 
@@ -157,9 +158,10 @@ class InstallerWindow(GUIBase):
         percent = blocks / (totalsize/blocksize) * 100
         percent = '{:.0f}%'.format(percent)
         newtitle = status + ' ' + percent
-        if self.root.title() == newtitle:
+        if self.lastprogress == newtitle:
             return
         self.root.title(newtitle)
+        self.lastprogress = newtitle
         self.root.update()
 
 
