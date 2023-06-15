@@ -17,6 +17,8 @@ static function bool HasLDDPInstalled()
     local DeusExTextParser parser;
     local bool opened;
 
+    if(!#defined(injections)) return false;// just to be safe if you have a lot of mods installed in the same folder
+
     if(default.hasCheckedLDDP) {
         return default.bFemaleEnabled;
     }
