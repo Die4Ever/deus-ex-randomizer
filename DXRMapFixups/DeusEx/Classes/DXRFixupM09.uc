@@ -111,8 +111,6 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'Button1',b){
             if (b.Tag=='Button1' && b.Event=='Lift' && b.Location.Z < 200){ //vanilla Z is 97 for the lower button, just giving some slop in case it was changed in another mod?
                 rot = b.Rotation;
-                if(coords_mult.X < 0 || coords_mult.Y < 0)
-                    rot.Yaw += 32768;
                 k = Spawn(class'Keypad2',,,b.Location, rot);
                 k.validCode="8675309"; //They really like Jenny in this place
                 k.bToggleLock=False;
