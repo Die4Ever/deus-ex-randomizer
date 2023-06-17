@@ -1832,7 +1832,7 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     local int missionAnded, minMission;
     if(missionsMask == 0) return 1;// 1==maybe
     missionAnded = (1 << currentMission) & missionsMask;
-    if(missionAnded > 0) return 2;// 2==true
+    if(missionAnded != 0) return 2;// 2==true
     minMission = currentMission;
 
 #ifdef backtracking
@@ -1854,7 +1854,7 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
         break;
     }
     missionAnded = (1 << currentMission) & missionsMask;
-    if(missionAnded > 0) return 2;// 2==true
+    if(missionAnded != 0) return 2;// 2==true
 #endif
 
     if(missionsMask < (1<<minMission)) {
@@ -1862,6 +1862,34 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     }
 
     return 0;// 0==false
+}
+
+static function int NumMissionsInMask(int missionsMask)
+{// get the number of set bits, or the number of missions in a mask
+    local int num;
+
+    while(missionsMask != 0) {
+        num += int((missionsMask & 1) != 0);
+        missionsMask = missionsMask >> 1;
+    }
+    return num;
+}
+
+function RunTests()
+{
+    testint(NumMissionsInMask(0), 0, "NumMissionsInMask");
+    testint(NumMissionsInMask(1), 1, "NumMissionsInMask");
+    testint(NumMissionsInMask(2), 1, "NumMissionsInMask");
+    testint(NumMissionsInMask(3), 2, "NumMissionsInMask");
+
+    testint(NumMissionsInMask(1<<15), 1, "NumMissionsInMask");
+    testint(NumMissionsInMask((1<<15)+(1<<8)), 2, "NumMissionsInMask");
+
+    testint(BingoActiveMission(1, 0), 1, "BingoActiveMission maybe");
+    testint(BingoActiveMission(1, (1<<1)), 2, "BingoActiveMission");
+    testint(BingoActiveMission(2, (1<<1)), -1, "BingoActiveMission too late");
+    testint(BingoActiveMission(15, (1<<15)), 2, "BingoActiveMission");
+    testint(BingoActiveMission(3, (1<<15)), 0, "BingoActiveMission false");
 }
 
 // calculate missions masks with https://jsfiddle.net/2sh7xej0/1/
