@@ -1864,26 +1864,41 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     return 0;// 0==false
 }
 
-static function int NumMissionsInMask(int missionsMask)
-{// get the number of set bits, or the number of missions in a mask
-    local int num;
+static function float MissionsMaskAvailability(int currentMission, int missionsMask)
+{
+    local int num, expired, i, t;
 
-    while(missionsMask != 0) {
-        num += int((missionsMask & 1) != 0);
-        missionsMask = missionsMask >> 1;
+    if(missionsMask == 0) return 1;
+
+    for(i=1; i<currentMission; i++) {
+        t = (1<<i) & missionsMask;
+        expired += int( t != 0 );
     }
-    return num;
+    for(i=currentMission; i<15; i++) {
+        t = (1<<i) & missionsMask;
+        num += int( t != 0 );
+    }
+
+    return float(num)/float(expired+num);
 }
 
 function RunTests()
 {
-    testint(NumMissionsInMask(0), 0, "NumMissionsInMask");
-    testint(NumMissionsInMask(1), 1, "NumMissionsInMask");
-    testint(NumMissionsInMask(2), 1, "NumMissionsInMask");
-    testint(NumMissionsInMask(3), 2, "NumMissionsInMask");
+    testint(NumBitsSet(0), 0, "NumBitsSet");
+    testint(NumBitsSet(1), 1, "NumBitsSet");
+    testint(NumBitsSet(2), 1, "NumBitsSet");
+    testint(NumBitsSet(3), 2, "NumBitsSet");
 
-    testint(NumMissionsInMask(1<<15), 1, "NumMissionsInMask");
-    testint(NumMissionsInMask((1<<15)+(1<<8)), 2, "NumMissionsInMask");
+    testint(NumBitsSet(1<<15), 1, "NumBitsSet");
+    testint(NumBitsSet((1<<15)+(1<<8)), 2, "NumBitsSet");
+
+    testfloat(MissionsMaskAvailability(1, (1<<3)), 1, "MissionsMaskAvailability");
+    testfloat(MissionsMaskAvailability(5, (1<<5)), 1, "MissionsMaskAvailability");
+    testfloat(MissionsMaskAvailability(5, (1<<8)), 1, "MissionsMaskAvailability");
+
+    testfloat(MissionsMaskAvailability(5, (1<<3)+(1<<5)), 0.5, "MissionsMaskAvailability");
+    testfloat(MissionsMaskAvailability(5, (1<<3)+(1<<7)), 0.5, "MissionsMaskAvailability");
+    testfloat(MissionsMaskAvailability(5, (1<<3)+(1<<7)+(1<<10)), 2/3, "MissionsMaskAvailability");
 
     testint(BingoActiveMission(1, 0), 1, "BingoActiveMission maybe");
     testint(BingoActiveMission(1, (1<<1)), 2, "BingoActiveMission");

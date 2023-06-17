@@ -233,6 +233,18 @@ static function int imod(int a, int b)
     return a-(a/b*b);
 }
 
+static function int NumBitsSet(int mask)
+{// get the number of set bits, or the number of missions in a mask
+    local int num;
+
+    while(mask != 0) {
+        num += int((mask & 1) != 0);
+        mask = mask >> 1;
+    }
+    return num;
+}
+
+
 static function string IntCommas(int i)
 {
     local string s;
