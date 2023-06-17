@@ -80,8 +80,105 @@ function DXRBase DXRFindModule(class<DXRBase> class)
     return m;
 }
 
+function StartMapSpecificFlags(string start_map)
+{
+    switch(start_map)
+    {
+        case "08_NYC_Smug":
+            flagbase.SetBool('KnowsSmugglerPassword',true);
+            flagbase.SetBool('MetSmuggler',true);
+            break;
+        case "11_Paris_Everett":
+            //First Toby conversation happened
+            flagbase.SetBool('MeetTobyAtanwe_played',true);
+            break;
+    }
+}
+
+function string GetStartMap(int start_map_val)
+{
+    local string startMap;
+    local DXRMapVariants mapvariants;
+
+    startMap="01_NYC_UNATCOIsland";
+
+    switch(start_map_val)
+    {
+        case 0:
+            startMap="01_NYC_UNATCOIsland";
+            break;
+        case 1:
+            startMap="05_NYC_UNATCOMJ12lab";
+            break;
+        case 2:
+            startMap="06_HongKong_WanChai_Market";
+            break;
+        case 3:
+            startMap="08_NYC_Smug";
+            break;
+        case 4:
+            startMap="09_NYC_Graveyard";
+            break;
+        case 5:
+            startMap="11_Paris_Everett";
+            break;
+        case 6:
+            startMap="14_Vandenberg_Sub";
+            break;
+        default:
+            //There's always a place for you on Liberty Island
+            startMap="01_NYC_UNATCOIsland";
+            break;
+    }
+
+    foreach AllActors(class'DXRMapVariants', mapvariants) {
+        startMap = mapvariants.VaryMap(startMap);
+        break;
+    }
+
+    return startMap;
+}
+
+function int GetStartMapSkillBonus(int start_map_val)
+{
+    local int skillBonus, mission;
+    skillBonus = 1000;
+
+    switch(start_map_val)
+    {
+        case 0:
+            mission=1; //Mission 1 start, nothing
+            break;
+        case 1:
+            mission=5; //Mission 5 start
+            break;
+        case 2:
+            mission=6;
+            break;
+        case 3:
+            mission=8;
+            break;
+        case 4:
+            mission=10; //Mission 9 graveyard, basically mission 10
+            break;
+        case 5:
+            mission=12; //Mission 11 Everett, but basically mission 12
+            break;
+        case 6:
+            mission=14;
+            break;
+        default:
+            //There's always a place for you on Liberty Island
+            mission=1;
+            break;
+    }
+
+    return skillBonus * (mission-1);
+}
+
 function PostIntro()
 {
+    strStartMap = GetStartMap(flagbase.GetInt('Rando_starting_map'));
     if( flagbase.GetInt('Rando_newgameplus_loops') > 0 ) {
         bStartNewGameAfterIntro = true;
     }
@@ -91,6 +188,10 @@ function PostIntro()
 // just wrap some stuff in an if statement for flag Rando_newgameplus_loops
 exec function StartNewGame(String startMap)
 {
+    local DXRMapVariants mapvariants;
+    local string cleanMapName;
+    local int startBonus;
+
     if (DeusExRootWindow(rootWindow) != None)
         DeusExRootWindow(rootWindow).ClearWindowStack();
 
@@ -101,11 +202,25 @@ exec function StartNewGame(String startMap)
     GetDXR();
     dxr.DXRInit();
     dxr.info( Self$" StartNewGame("$startMap$") found "$dxr$", dxr.flagbase: "$dxr.flagbase$", dxr.flags.newgameplus_loops: "$dxr.flags.newgameplus_loops);
+
     if( dxr.flags.newgameplus_loops == 0 ) {
+        if (dxr.flags.settings.starting_map !=0 ){
+            //Add extra skill points to make available once you enter the game
+            startBonus = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+            SkillPointsAvail += startBonus;
+            SkillPointsTotal += startBonus;
+        }
         SaveSkillPoints();
         ResetPlayer();
     }
     DeleteSaveGameFiles();
+
+    //Have to initialize these flags after ResetPlayer, since that clears out flags
+    if (dxr.flags.settings.starting_map !=0 ){
+        cleanMapName = class'DXRMapVariants'.static.CleanupMapName(startMap);
+        StartMapSpecificFlags(cleanMapName);
+        //Add extra inventory - Handled in DXRLoadouts
+    }
 
     bStartingNewGame = True;
 

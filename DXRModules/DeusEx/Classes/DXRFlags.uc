@@ -136,6 +136,7 @@ function CheckConfig()
     difficulty_settings[i].spoilers = 1;
     difficulty_settings[i].health = 200;
     difficulty_settings[i].energy = 200;
+    difficulty_settings[i].starting_map = 0;
     i++;
 #endif
 
@@ -204,6 +205,7 @@ function CheckConfig()
     difficulty_settings[i].spoilers = 1;
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
+    difficulty_settings[i].starting_map = 0;
     i++;
 
 #ifdef hx
@@ -271,6 +273,7 @@ function CheckConfig()
     difficulty_settings[i].spoilers = 1;
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
+    difficulty_settings[i].starting_map = 0;
     i++;
 
 #ifdef hx
@@ -338,6 +341,7 @@ function CheckConfig()
     difficulty_settings[i].spoilers = 1;
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
+    difficulty_settings[i].starting_map = 0;
     i++;
 
 #ifdef hx
@@ -405,6 +409,7 @@ function CheckConfig()
     difficulty_settings[i].spoilers = 1;
     difficulty_settings[i].health = 90;
     difficulty_settings[i].energy = 80;
+    difficulty_settings[i].starting_map = 0;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {
@@ -644,7 +649,6 @@ simulated function InitMaxRandoSettings()
     settings.enemyrespawn = difficulty_settings[difficulty].enemyrespawn;
     settings.health = difficulty_settings[difficulty].health;
     settings.energy = difficulty_settings[difficulty].energy;
-
 }
 
 //Randomize the values.  If forceMenuOptions is set, we will only allow the values to be set to

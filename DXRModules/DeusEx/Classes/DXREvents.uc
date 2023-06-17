@@ -1437,16 +1437,62 @@ simulated function string tweakBingoDescription(string event, string desc)
     }
 }
 
+simulated function int GetStartingMissionMask()
+{
+    local int start_map;
+
+    start_map = dxr.flagbase.GetInt('Rando_starting_map');
+
+    switch(start_map)
+    {
+        case 0:
+            //startMap="01_NYC_UNATCOIsland";
+            return 65535;
+            break;
+        case 1:
+            //startMap="05_NYC_UNATCOMJ12lab";
+            return 65504;
+            break;
+        case 2:
+            //startMap="06_HongKong_WanChai_Market";
+            return 65472;
+            break;
+        case 3:
+            //startMap="08_NYC_Smug";
+            return 65280;
+            break;
+        case 4:
+            //startMap="09_NYC_Graveyard";
+            return 64512; //Mission 10 onwards (you're at the end of mission 9)
+            break;
+        case 5:
+            //startMap="11_Paris_Everett";
+            return 61440; //Mission 12 onwards
+            break;
+        case 6:
+            //startMap="14_Vandenberg_Sub";
+            return 49152;
+            break;
+        default:
+            //There's always a place for you on Liberty Island
+            //startMap="01_NYC_UNATCOIsland";
+            return 65535;
+            break;
+    }
+}
+
 simulated function _CreateBingoBoard(PlayerDataItem data)
 {
     local int x, y, i;
     local string event, desc;
-    local int progress, max, missions;
-    local int options[200], num_options, slot;
+    local int progress, max, missions, starting_mission_mask;
+    local int options[200], num_options, slot, free_spaces;
 
+    starting_mission_mask = GetStartingMissionMask();
     num_options = 0;
     for(x=0; x<ArrayCount(bingo_options); x++) {
         if(bingo_options[x].event == "") continue;
+        if(bingo_options[x].missions!=0 && (bingo_options[x].missions & starting_mission_mask) == 0) continue;
         options[num_options++] = x;
     }
 
@@ -1460,10 +1506,37 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
         }
     }
 
+    //Clear out the board so it is ready to be repopulated
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
-            if(num_options == 0 || (x==2 && y==2 && dxr.flags.settings.bingo_freespaces>0)) {
-                data.SetBingoSpot(x, y, "Free Space", "Free Space", 1, 1, 0);
+            data.SetBingoSpot(x, y, "", "", 0, 0, 0);
+        }
+    }
+
+    free_spaces = dxr.flags.settings.bingo_freespaces;
+    free_spaces = self.Max(free_spaces, 25 - num_options - 3);// - 3 for some variety of goal selection
+    free_spaces = Min(free_spaces, 5); // max of 5 free spaces?
+
+    //Prepopulate the board with free spaces
+    switch(free_spaces) {
+    case 5:
+        data.SetBingoSpot(0, 4, "Free Space", "Free Space", 1, 1, 0);
+    case 4:
+        data.SetBingoSpot(4, 0, "Free Space", "Free Space", 1, 1, 0);
+    case 3:
+        data.SetBingoSpot(2, 0, "Free Space", "Free Space", 1, 1, 0);
+    case 2:
+        data.SetBingoSpot(0, 2, "Free Space", "Free Space", 1, 1, 0);
+    case 1:
+        data.SetBingoSpot(2, 2, "Free Space", "Free Space", 1, 1, 0);
+    case 0:
+        break;
+    }
+
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x,y,event,desc,progress,max);
+            if(max > 0) { //Skip spaces that are already filled with something
                 continue;
             }
 
@@ -1879,10 +1952,10 @@ defaultproperties
     bingo_options(75)=(event="JocksToilet",desc="Use Jock's toilet",max=1,missions=64)
     bingo_options(76)=(event="Greasel_ClassDead",desc="Kill 5 Greasels",max=5)
     bingo_options(77)=(event="support1",desc="Blow up a gas station",max=1,missions=4096)
-    bingo_options(78)=(event="UNATCOTroop_ClassDead",desc="Kill 15 UNATCO Troopers",max=15)
-    bingo_options(79)=(event="Terrorist_ClassDead",desc="Kill 15 NSF Terrorists",max=15)
-    bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill 25 MJ12 Troopers",max=25)
-    bingo_options(81)=(event="MJ12Commando_ClassDead",desc="Kill 10 MJ12 Commandos",max=10)
+    bingo_options(78)=(event="UNATCOTroop_ClassDead",desc="Kill 15 UNATCO Troopers",max=15,missions=318)
+    bingo_options(79)=(event="Terrorist_ClassDead",desc="Kill 15 NSF Terrorists",max=15,missions=62)
+    bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill 25 MJ12 Troopers",max=25,missions=65524)
+    bingo_options(81)=(event="MJ12Commando_ClassDead",desc="Kill 10 MJ12 Commandos",max=10,missions=65524)
     bingo_options(82)=(event="Karkian_ClassDead",desc="Kill 5 Karkians",max=5)
     bingo_options(83)=(event="MilitaryBot_ClassDead",desc="Destroy 5 Military Bots",max=5)
     bingo_options(84)=(event="VandenbergToilet",desc="Use the only toilet in Vandenberg",max=1,missions=4096)
@@ -1892,10 +1965,10 @@ defaultproperties
     bingo_options(88)=(event="SpiderBot_ClassDead",desc="Destroy 15 Spider Bots",max=15)
     bingo_options(89)=(event="HumanStompDeath",desc="Stomp 3 humans to death",max=3)
     bingo_options(90)=(event="Rat_ClassDead",desc="Kill 30 rats",max=30)
-    bingo_options(91)=(event="UNATCOTroop_ClassUnconscious",desc="Knock out 15 UNATCO Troopers",max=15)
-    bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out 15 NSF Terrorists",max=15)
-    bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out 25 MJ12 Troopers",max=25)
-    bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out 2 MJ12 Commandos",max=2)
+    bingo_options(91)=(event="UNATCOTroop_ClassUnconscious",desc="Knock out 15 UNATCO Troopers",max=15,missions=318)
+    bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out 15 NSF Terrorists",max=15,missions=62)
+    bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out 25 MJ12 Troopers",max=25,missions=65524)
+    bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out 2 MJ12 Commandos",max=2,missions=65524)
     bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1,missions=64)
     bingo_options(96)=(event="ChugWater",desc="Chug water 30 times",max=30)
 #ifndef vmd

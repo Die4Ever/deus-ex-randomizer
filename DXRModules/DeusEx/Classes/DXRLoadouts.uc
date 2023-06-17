@@ -523,13 +523,19 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 {
     local Inventory item, anItem;
     local DXREnemies dxre;
-    local int i;
+    local int i, start_amount;
 
     if( dxr.flags.settings.equipment == 0 ) return;
     if( dxr.dxInfo.missionNumber == 0 ) return;
 
     l("RandoStartingEquipment");
     SetGlobalSeed("RandoStartingEquipment");//independent of map/mission
+
+    start_amount = dxr.flags.settings.equipment;
+
+    if (dxr.flags.settings.starting_map != 0){
+        start_amount += 2; //TBD if this is enough extra
+    }
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
 
@@ -553,7 +559,7 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 #endif
     AddStartingEquipment(player, respawn);
 
-    for(i=0; i < dxr.flags.settings.equipment; i++) {
+    for(i=0; i < start_amount; i++) {
         _RandoStartingEquipment(player, dxre, respawn);
     }
 }

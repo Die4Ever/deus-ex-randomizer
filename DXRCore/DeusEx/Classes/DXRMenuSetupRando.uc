@@ -39,6 +39,21 @@ function BindControls(optional string action)
     EnumOption("Randomize Goal Locations", 100, f.settings.goals);
     EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
 
+#ifdef vanilla
+    if (!class'DXRVersion'.static.VersionIsStable()){
+        //Make sure the starting map information gets updated in Player (GetStartMap)
+        //and in DXREvents (GetStartingMissionMask)
+        NewMenuItem("Starting Map", "What level you will start in");
+        EnumOption("Liberty Island", 0, f.settings.starting_map);
+        EnumOption("MJ12 Jail", 1, f.settings.starting_map);
+        EnumOption("Wan Chai Market", 2, f.settings.starting_map);
+        EnumOption("Return to NYC", 3, f.settings.starting_map);
+        EnumOption("Graveyard", 4, f.settings.starting_map);
+        EnumOption("Everett's House", 5, f.settings.starting_map);
+        EnumOption("Ocean Lab", 6, f.settings.starting_map);
+    }
+#endif
+
 #ifndef hx
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map."$BR$"If The Merchant dies then he stays dead for the rest of the game.");
     Slider(f.settings.merchants, 0, 100);
