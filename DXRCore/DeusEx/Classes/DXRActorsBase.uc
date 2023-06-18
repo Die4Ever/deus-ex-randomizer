@@ -739,6 +739,8 @@ static function int GetRotationOffset(class<Actor> c)
         return 16384;
     if(ClassIsChildOf(c, class'#var(prefix)SecurityCamera'))
         return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)Vehicles'))
+        return 16384;
     if(ClassIsChildOf(c, class'Brush')) {
         log("WARNING: GetRotationOffset for "$c$", Brushes/Movers have negative scaling so they don't need rotation adjustments!");
         return -1;
