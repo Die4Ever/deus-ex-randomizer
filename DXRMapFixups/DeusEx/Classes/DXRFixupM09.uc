@@ -27,6 +27,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Containers c;
     local Rotator rot;
     local #var(prefix)LAM lam;
+    local Switch1 s;
 
     switch(dxr.localURL)
     {
@@ -39,6 +40,13 @@ function PreFirstEntryMapFixes()
 
         //Button to open the office door
         AddSwitch( vect(2056.951904,-1792.230713,-170.444351), rot(16382, 0, 0), 'FrontDoor');
+
+        foreach AllActors(class'Switch1',s){
+            if (s.Event=='Eledoor01'){
+                s.Event='Elevator01_bottom';
+                break;
+            }
+        }
 
         //Add some new locations for containers and items
         Spawn(class'PlaceholderContainer',,, vectm(-3143,274,305)); //Front of ship
