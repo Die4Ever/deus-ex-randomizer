@@ -185,6 +185,9 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
             //First Toby conversation happened
             flagbase.SetBool('MeetTobyAtanwe_played',true);
             break;
+        case "14_Vandenberg_Sub":
+            flagbase.SetBool('Ray_dead',true);  //Save Jock!
+            break;
     }
 }
 

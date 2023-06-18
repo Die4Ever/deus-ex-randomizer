@@ -37,6 +37,9 @@ function PreFirstEntryMapFixes()
         }
         AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
 
+        //Button to open the office door
+        AddSwitch( vect(2056.951904,-1792.230713,-170.444351), rot(16382, 0, 0), 'FrontDoor');
+
         //Add some new locations for containers and items
         Spawn(class'PlaceholderContainer',,, vectm(-3143,274,305)); //Front of ship
         Spawn(class'PlaceholderContainer',,, vectm(-3109,-73,305)); //Front of ship
@@ -116,6 +119,10 @@ function PreFirstEntryMapFixes()
             lam.bCollideWorld = true;
             break;
         }
+
+        //Button to open the sewer grate from the ship side
+        AddSwitch( vect(1883.546753,6404.096191,-232.870697), rot(0, 0, 0), 'DrainGrate');
+
 
         foreach AllActors(class'Button1',b){
             if (b.Tag=='Button1' && b.Event=='Lift' && b.Location.Z < 200){ //vanilla Z is 97 for the lower button, just giving some slop in case it was changed in another mod?

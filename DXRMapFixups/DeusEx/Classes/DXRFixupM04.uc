@@ -85,6 +85,10 @@ function PreFirstEntryMapFixes()
             k.ChangeAlly('Player', -1, false);
             k.SetOrders('Standing');
         }
+
+        //Button to open basement hatch from inside
+        AddSwitch( vect(-558.536499,-426.806915,-16.069786), rot(0, 0, 0), 'BasementHatch');
+
         break;
 
     case "04_NYC_UNATCOISLAND":
