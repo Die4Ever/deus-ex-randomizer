@@ -27,7 +27,12 @@ function PlayerLogin(#var(PlayerPawn) p)
     SetGlobalSeed("DXRPlayerStatsLogin");//independent of map/mission
     p.Energy = rng(p.default.EnergyMax-25)+25;
     p.Energy = Min(p.Energy, p.default.EnergyMax);
-    p.Credits = rng(200);
+
+    p.Credits=0;
+
+    for(i=0;i<class'DXRStartMap'.static.GetStartMapMission(dxr.flags.settings.starting_map);i++){
+        p.Credits += rng(200);
+    }
 }
 
 function PlayerAnyEntry(#var(PlayerPawn) p)

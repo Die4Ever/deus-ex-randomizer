@@ -782,22 +782,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
             break;
 
         case 'Rando_starting_map':
-            switch(val){
-                case 0:
-                    return "Liberty Island";
-                case 1:
-                    return "MJ12 Jail";
-                case 2:
-                    return "Wan Chai Market";
-                case 3:
-                    return "Return to NYC";
-                case 4:
-                    return "Graveyard";
-                case 5:
-                    return "Everett's House";
-                case 6:
-                    return "Ocean Lab";
-            }
+            return class'DXRStartMap'.static.GetStartingMapName(val);
             break;
         default:
             return val $ " (Unhandled!)";

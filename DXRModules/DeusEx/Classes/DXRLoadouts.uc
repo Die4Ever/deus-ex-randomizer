@@ -534,7 +534,7 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
     start_amount = dxr.flags.settings.equipment;
 
     if (dxr.flags.settings.starting_map != 0){
-        start_amount += 2; //TBD if this is enough extra
+        start_amount += 4; //TBD if this is enough extra
     }
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
