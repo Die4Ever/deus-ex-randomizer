@@ -312,7 +312,7 @@ simulated function bool UpdateInfo(Object winObject)
         dmg /= float(GetNumHits());
 
     str = String(dmg);
-    mod = 1.0 - GetWeaponSkill();
+    mod = 1.0 - GetWeaponSkill() * 2.0;
     if (mod != 1.0)
     {
         str = str @ BuildPercentString(mod - 1.0);
