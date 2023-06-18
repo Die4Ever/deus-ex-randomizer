@@ -46,10 +46,10 @@ function BindControls(optional string action)
         EnumOption("Liberty Island", 0, f.settings.starting_map);
         EnumOption("NSF Defection", 40, f.settings.starting_map);
         EnumOption("MJ12 Jail", 50, f.settings.starting_map);
-        EnumOption("Wan Chai Market", 60, f.settings.starting_map);
-        EnumOption("Return to NYC", 80, f.settings.starting_map);
-        EnumOption("Graveyard", 90, f.settings.starting_map);
-        EnumOption("Everett's House", 110, f.settings.starting_map);
+        EnumOption("Wan Chai Market", 61, f.settings.starting_map);
+        EnumOption("Return to NYC", 81, f.settings.starting_map);
+        EnumOption("Graveyard", 99, f.settings.starting_map);
+        EnumOption("Everett's House", 119, f.settings.starting_map);
         EnumOption("Ocean Lab", 140, f.settings.starting_map);
     }
 #endif

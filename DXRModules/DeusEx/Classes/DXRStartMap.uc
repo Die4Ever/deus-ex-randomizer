@@ -14,7 +14,7 @@ static simulated function int GetStartingMissionMask(DXRando dxr)
     start_map = dxr.flagbase.GetInt('Rando_starting_map');
 
     switch(start_map)
-    {
+    {// these numbers are basically mission number * 10, with some extra for progress within the mission
         case 0:
             //startMap="01_NYC_UNATCOIsland";
             return 65535;
@@ -26,19 +26,19 @@ static simulated function int GetStartingMissionMask(DXRando dxr)
             //startMap="05_NYC_UNATCOMJ12lab";
             return 65504;
             break;
-        case 60:
+        case 61:
             //startMap="06_HongKong_WanChai_Market";
             return 65472;
             break;
-        case 80:
+        case 81:
             //startMap="08_NYC_Smug";
             return 65280;
             break;
-        case 90:
+        case 99:
             //startMap="09_NYC_Graveyard";
             return 64512; //Mission 10 onwards (you're at the end of mission 9)
             break;
-        case 110:
+        case 119:
             //startMap="11_Paris_Everett";
             return 61440; //Mission 12 onwards
             break;
@@ -63,13 +63,13 @@ static function string GetStartingMapName(int val)
             return "NSF Defection";
         case 50:
             return "MJ12 Jail";
-        case 60:
+        case 61:
             return "Wan Chai Market";
-        case 80:
+        case 81:
             return "Return to NYC";
-        case 90:
+        case 99:
             return "Graveyard";
-        case 110:
+        case 119:
             return "Everett's House";
         case 140:
             return "Ocean Lab";
@@ -96,16 +96,16 @@ static function string GetStartMap(Actor a, int start_map_val)
         case 50:
             startMap="05_NYC_UNATCOMJ12lab";
             break;
-        case 60:
+        case 61:
             startMap="06_HongKong_WanChai_Market";
             break;
-        case 80:
+        case 81:
             startMap="08_NYC_Smug";
             break;
-        case 90:
+        case 99:
             startMap="09_NYC_Graveyard";
             break;
-        case 110:
+        case 119:
             startMap="11_Paris_Everett";
             break;
         case 140:
@@ -140,16 +140,16 @@ static function int GetStartMapMission(int start_map_val)
         case 50:
             mission=5; //Mission 5 start
             break;
-        case 60:
+        case 61:
             mission=6;
             break;
-        case 80:
+        case 81:
             mission=8;
             break;
-        case 90:
+        case 99:
             mission=10; //Mission 9 graveyard, basically mission 10
             break;
-        case 110:
+        case 119:
             mission=12; //Mission 11 Everett, but basically mission 12
             break;
         case 140:
