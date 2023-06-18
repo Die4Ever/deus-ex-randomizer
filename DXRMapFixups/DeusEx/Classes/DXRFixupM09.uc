@@ -26,6 +26,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)OrdersTrigger ord;
     local #var(prefix)Containers c;
     local Rotator rot;
+    local #var(prefix)LAM lam;
 
     switch(dxr.localURL)
     {
@@ -108,6 +109,14 @@ function PreFirstEntryMapFixes()
         break;
 
     case "09_NYC_DOCKYARD":
+        foreach AllActors(class'#var(prefix)LAM', lam) {
+            if(lam.name != 'LAM2') continue;
+            lam.bCollideWorld = false;
+            lam.SetLocation(vectm(2073, 6085.963379, -235.489441));
+            lam.bCollideWorld = true;
+            break;
+        }
+
         foreach AllActors(class'Button1',b){
             if (b.Tag=='Button1' && b.Event=='Lift' && b.Location.Z < 200){ //vanilla Z is 97 for the lower button, just giving some slop in case it was changed in another mod?
                 rot = b.Rotation;
