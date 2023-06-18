@@ -202,6 +202,31 @@ function static AddRandomAugs(DXRando dxr, DeusExPlayer p, int num)
     }
 }
 
+function static bool AugCanBeUpgraded(Augmentation anAug)
+{
+    return anAug.CurrentLevel < anAug.MaxLevel;
+}
+
+function static UpgradeAug(Augmentation anAug)
+{
+    local bool wasActive;
+
+    if (!AugCanBeUpgraded(anAug)){
+        return;
+    }
+
+    wasActive=anAug.bIsActive;
+    if (anAug.bIsActive){
+        anAug.Deactivate();
+    }
+
+    anAug.CurrentLevel++;
+
+    if(wasActive){
+        anAug.Activate();
+    }
+}
+
 function static UpgradeRandomAug(DXRando dxr, DeusExPlayer p)
 {
     local class<Augmentation> augs[12];
@@ -214,7 +239,7 @@ function static UpgradeRandomAug(DXRando dxr, DeusExPlayer p)
     //Find all upgradable augs
     while(anAug != None)
     {
-        if (anAug.bHasIt && anAug.CanBeUpgraded()){
+        if (anAug.bHasIt && AugCanBeUpgraded(anAug)){
             augs[numAugs++]=anAug.class;
         }
         anAug=anAug.next;
@@ -225,16 +250,7 @@ function static UpgradeRandomAug(DXRando dxr, DeusExPlayer p)
 
     anAug = p.AugmentationSystem.FindAugmentation(augs[i]);
 
-    wasActive=anAug.bIsActive;
-    if (anAug.bIsActive){
-        anAug.Deactivate();
-    }
-
-    anAug.CurrentLevel++;
-
-    if(wasActive){
-        anAug.Activate();
-    }
+    UpgradeAug(anAug);
 }
 
 function static RandomizeAugCannister(DXRando dxr, #var(prefix)AugmentationCannister a)
