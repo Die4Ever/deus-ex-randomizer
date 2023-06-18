@@ -20,6 +20,13 @@ BINGO_MOD_LINE_DETECT="PlayerDataItem"
 NEWLY_COMPLETED_DISPLAY_TIME=2.8 # we only redraw every second, so this will keep it closer to about 3 seconds
 WINDOW_TITLE="Deus Ex Randomizer Bingo Board"
 
+if os.name == 'nt': # Windows works correctly (for once)
+    BORDER_WIDTH_SCALE=1
+    BORDER_HEIGHT_SCALE=1
+else: # Linux needs fixing
+    BORDER_WIDTH_SCALE=2.85 # idk why these numbers
+    BORDER_HEIGHT_SCALE=1.7
+
 JSON_DEST_FILENAME="pushjson.txt"
 
 class Bingo:
@@ -48,14 +55,16 @@ class Bingo:
 
     def resize(self,event):
         if event.widget == self.win:
-            self.width=event.width-BUTTON_BORDER_WIDTH_TOTAL
-            self.height=event.height-BUTTON_BORDER_WIDTH_TOTAL
+            self.width=event.width - BUTTON_BORDER_WIDTH_TOTAL * BORDER_WIDTH_SCALE
+            self.height=event.height - BUTTON_BORDER_WIDTH_TOTAL * BORDER_HEIGHT_SCALE
 
             self.font = font.Font(size=self.getFontSizeByWindowSize())
 
             for x in range(5):
                 for y in range(5):
-                    self.tkBoard[x][y].config(width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font)
+                    self.tkBoard[x][y].config(
+                        width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font
+                    )
 
 
 
@@ -72,7 +81,13 @@ class Bingo:
             for y in range(5):
                 self.tkBoardText[x][y]=StringVar()
                 self.tkBoardText[x][y].set("("+str(x)+","+str(y)+")")
-                self.tkBoard[x][y]=Button(self.win,textvariable=self.tkBoardText[x][y],image=self.pixel,compound="c",width=self.width/5,height=self.height/5,wraplength=self.width/5,font=self.font,fg='white',disabledforeground="white",bd=BUTTON_BORDER_WIDTH)
+                self.tkBoard[x][y]=Button(self.win,
+                    textvariable=self.tkBoardText[x][y],
+                    image=self.pixel,compound="c",
+                    width=self.width/5, height=self.height/5,
+                    wraplength=self.width/5, font=self.font,fg='white',
+                    disabledforeground="white", bd=BUTTON_BORDER_WIDTH
+                )
                 self.tkBoard[x][y]["state"]='disabled'
                 self.tkBoard[x][y].finished_time=None
                 self.tkBoard[x][y].grid(column=x,row=y)
@@ -236,6 +251,9 @@ def getDefaultPath():
         Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "Revision" / "System",
         Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
         Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+        # Linux
+        Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
+        Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
     ]
     p:Path
     for p in checks:
