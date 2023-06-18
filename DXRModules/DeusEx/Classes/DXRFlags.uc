@@ -811,10 +811,18 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
 
 function int ScoreFlags()
 {
-    local int score;
+    local int score, bingos;
+    local PlayerDataItem data;
+
+    data = class'PlayerDataItem'.static.GiveItem(dxr.player);
+    bingos = data.NumberOfBingos();
 
     if(IsEntranceRando())
         score += 100;
+
+    if(settings.bingo_win == 0 || bingos < settings.bingo_win) // if not a bingo win, we won by hitting the end of the game
+        score -= settings.starting_map * 120;// values for starting_map in DXRMenuSetupRando or DXRStartMap, basically mission number * 10, multiply more for score reduction
+
     score -= settings.doorsdestructible * 2;
     score -= settings.doorspickable * 2;
     if(settings.keysrando > 0)

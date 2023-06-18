@@ -607,8 +607,6 @@ static function int _ScoreRun(int time, int time_without_menus, float CombatDiff
     i -= loads * 50;
     if(bingo_win > 0 && bingos >= bingo_win)
         i -= (13-bingo_win) * 5000;
-    else// values for starting_map in DXRMenuSetupRando or DXRStartMap, basically mission number * 10, multiply more for score reduction
-        i -= dxr.flags.settings.starting_map * 120;
     i += bingos * 750;
     i += bingospots * 75;// make sure to ignore the free space
     i += SkillPointsTotal;
