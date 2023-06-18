@@ -523,7 +523,7 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 {
     local Inventory item, anItem;
     local DXREnemies dxre;
-    local int i, start_amount;
+    local int i, start_amount, numAugs, startMission;
 
     if( dxr.flags.settings.equipment == 0 ) return;
     if( dxr.dxInfo.missionNumber == 0 ) return;
@@ -534,7 +534,7 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
     start_amount = dxr.flags.settings.equipment;
 
     if (dxr.flags.settings.starting_map != 0){
-        start_amount += 4; //TBD if this is enough extra
+        start_amount += 3;
     }
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
@@ -562,6 +562,20 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
     for(i=0; i < start_amount; i++) {
         _RandoStartingEquipment(player, dxre, respawn);
     }
+
+    if (dxr.flags.settings.starting_map !=0 ){
+        startMission=class'DXRStartMap'.static.GetStartMapMission(dxr.flags.settings.starting_map);
+        numAugs = startMission / 2;
+        class'DXRAugmentations'.static.AddRandomAugs(dxr,player,numAugs);
+        for (i=0;i<startMission;i++){
+            if(i%4==0){
+                GiveItem( player, class'AugmentationUpgradeCannister' );
+            } else {
+                class'DXRAugmentations'.static.UpgradeRandomAug(dxr,player);
+            }
+        }
+    }
+
 }
 
 function Inventory _GiveRandoStartingItem(#var(PlayerPawn) player, Inventory item, bool bFrob)
