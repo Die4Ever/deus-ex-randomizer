@@ -1,53 +1,10 @@
-class MenuChoice_MirrorMaps extends DXRMenuUIChoiceEnum;
+//=============================================================================
+// MenuChoice_MirrorMaps
+//=============================================================================
+
+class MenuChoice_MirrorMaps extends MenuUIChoiceSlider config(DXRandoOptions);
 
 var config int mirror_maps;
-var int disabled;
-var int enabled;
-var int mirror_only;
-
-// ----------------------------------------------------------------------
-// PopulateCycleTypes()
-// ----------------------------------------------------------------------
-
-function PopulateOptions()
-{
-    local bool maps_files_found;
-
-    maps_files_found = class'DXRMapVariants'.static.MirrorMapsAvailable();
-
-    if(maps_files_found) {
-        HelpText = default.HelpText;
-        enumText[disabled] = "Mirror Maps Disabled";
-        enumText[enabled] = "50% Mirrored Maps";
-        enumText[mirror_only] = "100% Mirrored Maps";
-    }
-    else {
-        mirror_maps = disabled;
-        SetValue(mirror_maps);
-        SaveSetting();
-        HelpText = "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github";
-        enumText[disabled] = "Mirror Map Files Not Found";
-    }
-}
-
-// ----------------------------------------------------------------------
-// SetInitialCycleType()
-// ----------------------------------------------------------------------
-
-function SetInitialOption()
-{
-    SetValue(mirror_maps);
-}
-
-// ----------------------------------------------------------------------
-// SaveSetting()
-// ----------------------------------------------------------------------
-
-function SaveSetting()
-{
-    mirror_maps = GetValue();
-    SaveConfig();
-}
 
 // ----------------------------------------------------------------------
 // LoadSetting()
@@ -55,18 +12,91 @@ function SaveSetting()
 
 function LoadSetting()
 {
-    SetValue(mirror_maps);
+    saveValue = mirror_maps;
+    SetValue(saveValue);
 }
 
 // ----------------------------------------------------------------------
-// ResetToDefault
+// CancelSetting()
+// ----------------------------------------------------------------------
+
+function CancelSetting()
+{
+    mirror_maps = saveValue;
+    SaveConfig();
+}
+
+// ----------------------------------------------------------------------
+// ResetToDefault()
 // ----------------------------------------------------------------------
 
 function ResetToDefault()
 {
-    mirror_maps = default.mirror_maps;
+    mirror_maps = int(defaultValue);
     SetValue(mirror_maps);
-    SaveSetting();
+    SaveConfig();
+}
+
+function SetEnumerators()
+{
+    local int i;
+    local bool maps_files_found;
+
+    maps_files_found = class'DXRMapVariants'.static.MirrorMapsAvailable();
+
+    if(maps_files_found) {
+        HelpText = default.HelpText;
+        actionText = default.actionText;
+        numTicks = default.numTicks;
+        btnAction.SetButtonText(actionText);
+    }
+    else {
+        mirror_maps = 0;
+        numTicks = 0;
+        SetValue(mirror_maps);
+        SaveSetting();
+        HelpText = "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github";
+        actionText = "Mirror Map Files Not Found";
+        btnAction.SetButtonText(actionText);
+    }
+
+    for (i=0;i<numTicks;i++){
+        SetEnumeration(i, string(i)$"%");
+    }
+}
+
+// ----------------------------------------------------------------------
+// ScalePositionChanged() : Called when an ancestor scale window's
+//                          position is moved
+// ----------------------------------------------------------------------
+
+event bool ScalePositionChanged(Window scale, int newTickPosition,
+                                float newValue, bool bFinal)
+{
+    // Don't do anything while initializing as we get several
+    // ScalePositionChanged() events before LoadSetting() is called.
+
+    if (bInitializing)
+        return False;
+
+    mirror_maps = int(GetValue());
+
+    if(bFinal){
+        SaveConfig();
+    }
+
+    return false;
+}
+
+function CreateActionButton()
+{
+    Super.CreateActionButton();
+    SetActionButtonWidth(179);
+}
+
+function float GetValue()
+{
+    return int(Super.GetValue());
 }
 
 // ----------------------------------------------------------------------
@@ -74,10 +104,12 @@ function ResetToDefault()
 
 defaultproperties
 {
+    numTicks=101
+    startValue=0
+    endValue=100
+    defaultValue=0
     mirror_maps=0
-    disabled=0
-    enabled=1
-    mirror_only=2
-    HelpText="Enable mirrored maps if you have the files downloaded for them."
+    choiceControlPosX=203
     actionText="Mirror Maps (Beta)"
+    HelpText="Enable mirrored maps if you have the files downloaded for them."
 }
