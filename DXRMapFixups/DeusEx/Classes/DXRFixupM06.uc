@@ -55,6 +55,9 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //Button to make Jock fire a missile
+        AddSwitch( vect(-1537.039185,-382.395264,442), rot(0, 16384, 0), 'make_a_break');
+
         class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
         class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
         class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
