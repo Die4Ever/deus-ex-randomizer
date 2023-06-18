@@ -813,21 +813,12 @@ function int GiveAug(Class<Augmentation> giveClass, string viewer) {
     if (anAug.bHasIt)
     {
         //Upgrade scenario
-        if (!(anAug.CurrentLevel < anAug.MaxLevel)) {
+        if (!class'DXRAugmentations'.static.AugCanBeUpgraded(anAug)) {
             PlayerMessage(viewer@"wanted to upgrade "$anAug.AugmentationName$" but it cannot be upgraded any further");
             return Failed;
         }
-        wasActive = anAug.bIsActive;
-        if (anAug.bIsActive) {
-           anAug.Deactivate();
-        }
 
-        anAug.CurrentLevel++;
-
-        //Since this upgrade wasn't player initiated, it would be nice to reactivate it again for them
-        if (wasActive) {
-            anAug.Activate();
-        }
+        class'DXRAugmentations'.static.UpgradeAug(anAug);
 
         PlayerMessage(viewer@"upgraded "$anAug.AugmentationName$" to level "$anAug.CurrentLevel+1 $ shouldSave);
         return Success;
