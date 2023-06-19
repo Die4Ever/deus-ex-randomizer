@@ -121,7 +121,7 @@ static function string GetStartMap(Actor a, int start_map_val)
             startMap="06_HongKong_WanChai_Market#cargoup";// OH it's not "car goup", it's "cargo up"!
             break;
         case 81:
-            startMap="08_NYC_Smug";
+            startMap="08_NYC_Smug#ToSmugFrontDoor";
             break;
         case 99:
             startMap="09_NYC_Graveyard";
