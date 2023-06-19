@@ -7,6 +7,8 @@ var bool ran_first_frame;
 
 function Timer()
 {
+    local int starting_map;
+
 #ifdef injections
     if( ran_first_frame == false ) {
         Level.Game.SetGameSpeed(0.05);
@@ -29,7 +31,15 @@ function Timer()
     if (flags.GetBool('Intro_Played'))
     {
         flags.SetBool('Intro_Played', False,, 1);
-        player.strStartMap = class'DXRStartMap'.static.GetStartMap(self, flags.GetInt('Rando_starting_map'));
+        starting_map = flags.GetInt('Rando_starting_map');
+        if(starting_map != 0) {
+            player.strStartMap = class'DXRStartMap'.static.GetStartMap(self, starting_map);
+            log(self $ " custom starting map " $ starting_map @ player.strStartMap);
+#ifdef vmd
+            if(VMDBufferPlayer(player) != None)
+                VMDBufferPlayer(player).CampaignNewGameMap = player.strStartMap;
+#endif
+        }
         if( flags.GetInt('Rando_newgameplus_loops') > 0 ) {
             player.bStartNewGameAfterIntro = true;
         }
