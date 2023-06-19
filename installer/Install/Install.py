@@ -80,7 +80,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
         oldconfig = DXRandoini.read_text()
         oldconfig = Config.ReadConfig(oldconfig)
         changes = Config.RetainConfigSections(
-            set(('WinDrv.WindowsClient',)),
+            set(('WinDrv.WindowsClient', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry')),
             oldconfig, changes
         )
 

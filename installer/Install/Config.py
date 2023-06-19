@@ -24,6 +24,8 @@ def ModifyConfig(data:bytes, changes:dict, additions:dict) -> bytes:
     return text.encode('iso_8859_1')
 
 def _ModifyConfig(text:str, changes:dict, additions:dict) -> str:
+    changes = changes.copy()
+    additions = additions.copy()
     outtext = text
     matched = False
     for i in get_sections.finditer(text):
@@ -33,24 +35,33 @@ def _ModifyConfig(text:str, changes:dict, additions:dict) -> str:
         sect = d['section']
         content = d['sectiondata']
         if sect in changes:
-            newcontent = _ReplaceConfigVals(content, changes[sect])
+            newcontent = _ReplaceConfigVals(content, changes.pop(sect))
             newall = all.replace(content, newcontent)
             outtext = outtext.replace(all, newall)
             content = newcontent
             all = newall
         if sect in additions:
-            newcontent = _AddConfigVals(content, additions[sect])
+            newcontent = _AddConfigVals(content, additions.pop(sect))
             newall = all.replace(content, newcontent)
             outtext = outtext.replace(all, newall)
 
-    if not matched:
-        print('WARNING: _ModifyConfig failed to match!', changes, text.encode('iso_8859_1'))
+    # add any changes we didn't match on
+    leftovers = dict(**changes, **additions)
+    for k in leftovers.keys():
+        outtext += '\r\n\r\n[' + k + ']\r\n'
+        if k in changes:
+            print(changes[k])
+            outtext += _AddConfigVals('', changes[k])
+        if k in additions:
+            print(additions[k])
+            outtext += _AddConfigVals('', additions[k])
     return outtext
 
 
 def _ReplaceConfigVals(section:str, changes:dict) -> str:
     if not changes:
         return section
+    changes = changes.copy()
     outsect = section
     matched = False
 
@@ -62,7 +73,7 @@ def _ReplaceConfigVals(section:str, changes:dict) -> str:
             continue
         all = d['all']
         value = d['value']
-        newval = changes[name]
+        newval = changes.pop(name)
         if value == newval:
             continue
         oldline = name+'='+value
@@ -71,8 +82,8 @@ def _ReplaceConfigVals(section:str, changes:dict) -> str:
         newall = all.replace(oldline, newline)
         outsect = outsect.replace(all, newall)
 
-    if not matched:
-        print('WARNING: _ReplaceConfigVals failed to match!', changes, section.encode('iso_8859_1'))
+    if changes:
+        outsect = _AddConfigVals(outsect, changes)
     return outsect
 
 

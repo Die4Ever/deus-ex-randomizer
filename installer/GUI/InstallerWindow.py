@@ -130,7 +130,7 @@ class InstallerWindow(GUIBase):
             self.root.title('DXRando Installer Error!')
             self.root.update()
             print('\n\nError!')
-            print(str(e) + '\n\n' + traceback.format_exc(5))
+            print(str(e) + '\n\n' + traceback.format_exc())
             messagebox.showinfo('Error!', str(e) + '\n\n' + traceback.format_exc(5))
             exit(1)
 
