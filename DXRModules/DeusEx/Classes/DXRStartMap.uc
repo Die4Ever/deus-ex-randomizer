@@ -26,6 +26,10 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
 {
     local string m;
     p.strStartMap = GetStartMap(self, dxr.flags.settings.starting_map); // this also calls DXRMapVariants.VaryURL()
+#ifdef vmd
+    if(dxr.flags.settings.starting_map != 0)
+        p.CampaignNewGameMap = p.strStartMap;
+#endif
 }
 
 static simulated function int GetStartingMissionMask(DXRando dxr)
