@@ -588,7 +588,7 @@ simulated function TraceFire( float Accuracy )
         // check our range
         dist = Abs(VSize(HitLocation - Owner.Location));
 
-        if (dist <= AccurateRange)		// we hit just fine
+        if (dist <= AccurateRange)      // we hit just fine
             ProcessTraceHit(Other, HitLocation, HitNormal, vector(AdjustedAim),Y,Z);
         else if (dist <= MaxRange)
         {
@@ -602,6 +602,22 @@ simulated function TraceFire( float Accuracy )
     }
 
     // otherwise we don't hit the target at all
+}
+
+//Fix for "Janky Breaking Movers" (Issue #457)
+simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNormal, Vector X, Vector Y, Vector Z)
+{
+    local DeusExPlayer dxPlayer;
+
+    //Redirect hits against the level when you're highlighting a mover
+    //Hack borrowed from WCCC
+    if (Other == Level){
+        dxPlayer = DeusExPlayer(Owner);
+        if (dxPlayer != None && dxPlayer.FrobTarget.IsA('Mover')){
+            Other = dxPlayer.FrobTarget;
+        }
+    }
+    Super.ProcessTraceHit(Other,HitLocation,HitNormal,X,Y,Z);
 }
 
 // vanilla MinSpreadAcc is 0.25, but only used in multiplayer, so really it normally acts like 0
