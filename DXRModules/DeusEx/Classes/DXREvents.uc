@@ -1515,10 +1515,9 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
                 f = rngrange(1, 0.8, 1);// 80% to 100%
                 f *= MissionsMaskAvailability(starting_mission, missions);
                 max = Ceil(float(max) * f);
+                max = self.Max(max, 1);
+                desc = sprintf(desc, max);
             }
-            max = self.Max(max, 1);
-            l("_CreateBingoBoard "$desc@max);
-            desc = sprintf(desc, max);
 
             num_options--;
             options[slot] = options[num_options];
