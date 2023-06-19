@@ -22,6 +22,12 @@ function PlayerLogin(#var(PlayerPawn) p)
     StartMapSpecificFlags(p.flagbase, dxr.localURL);
 }
 
+function PlayerAnyEntry(#var(PlayerPawn) p)
+{
+    local string m;
+    p.strStartMap = GetStartMap(self, dxr.flags.settings.starting_map); // this also calls DXRMapVariants.VaryURL()
+}
+
 static simulated function int GetStartingMissionMask(DXRando dxr)
 {
     local int start_map;
@@ -112,7 +118,7 @@ static function string GetStartMap(Actor a, int start_map_val)
             startMap="05_NYC_UNATCOMJ12lab";
             break;
         case 61:
-            startMap="06_HongKong_WanChai_Market";
+            startMap="06_HongKong_WanChai_Market#cargoup";// OH it's not "car goup", it's "cargo up"!
             break;
         case 81:
             startMap="08_NYC_Smug";
@@ -133,7 +139,7 @@ static function string GetStartMap(Actor a, int start_map_val)
     }
 
     foreach a.AllActors(class'DXRMapVariants', mapvariants) {
-        startMap = mapvariants.VaryMap(startMap);
+        startMap = mapvariants.VaryURL(startMap);
         break;
     }
 

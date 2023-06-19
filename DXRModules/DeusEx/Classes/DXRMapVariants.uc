@@ -121,11 +121,6 @@ simulated function FirstEntry()
     }
 }
 
-function PlayerAnyEntry(#var(PlayerPawn) p)
-{
-    p.strStartMap = VaryMap(p.default.strStartMap);
-}
-
 simulated function AnyEntry()
 {
     l(GetURLMap() @ coords_mult);
