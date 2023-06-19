@@ -472,6 +472,14 @@ function SetWatchFlags() {
             }
         }
 
+        bt = class'BingoTrigger'.static.Create(self,'BiggestFan',vectm(0,0,0));
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
+            if (dxm.RotationRate.Yaw!=0){
+                dxm.Event='BiggestFan';
+                break;
+            }
+        }
+
         break;
     case "09_NYC_SHIPBELOW":
         WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
@@ -1980,7 +1988,7 @@ defaultproperties
     bingo_options(84)=(event="VandenbergToilet",desc="Use the only toilet in Vandenberg",max=1,missions=4096)
     bingo_options(85)=(event="BoatEngineRoom",desc="Access the engine room on the boat in the Hong Kong canals",max=1,missions=64)
     bingo_options(86)=(event="SecurityBot2_ClassDead",desc="Destroy %s Walking Security Bots",max=5)
-    bingo_options(87)=(event="SecurityBotSmall_ClassDead",desc="Destroy %s commercial grade Security Bots",max=15)
+    bingo_options(87)=(event="SecurityBotSmall_ClassDead",desc="Destroy %s commercial grade Security Bots",max=10)
     bingo_options(88)=(event="SpiderBot_ClassDead",desc="Destroy %s Spider Bots",max=15)
     bingo_options(89)=(event="HumanStompDeath",desc="Stomp %s humans to death",max=3)
     bingo_options(90)=(event="Rat_ClassDead",desc="Kill %s rats",max=30)
@@ -2076,6 +2084,7 @@ defaultproperties
     bingo_options(174)=(event="PageTaunt_Played",desc="Let Bob Page taunt you in the Ocean Lab",max=1,missions=16384)
     //bingo_options()=(event="M11WaltonHolo_Played",desc="Talk to Walton Simons after defeating Gunther",max=1,missions=2048)
     bingo_options(175)=(event="JerryTheVentGreasel_Dead",desc="Kill Jerry the Vent Greasel",max=1,missions=64)
+    bingo_options(176)=(event="BiggestFan",desc="Destroy your biggest fan",max=1,missions=512)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")

@@ -214,6 +214,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map)
             //Only possible if you started in the first level
             return start_map!=0;
             break;
+        case "MetSmuggler":
+            return start_map>=80; //Mission 8 and later starts you should already know Smuggler (see StartMapSpecificFlags)
         default:
             return False;
     }
