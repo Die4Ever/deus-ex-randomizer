@@ -80,22 +80,9 @@ function DXRBase DXRFindModule(class<DXRBase> class)
     return m;
 }
 
-function PostIntro()
-{
-    strStartMap = class'DXRStartMap'.static.GetStartMap(self,flagbase.GetInt('Rando_starting_map'));
-    if( flagbase.GetInt('Rando_newgameplus_loops') > 0 ) {
-        bStartNewGameAfterIntro = true;
-    }
-    Super.PostIntro();
-}
-
 // just wrap some stuff in an if statement for flag Rando_newgameplus_loops
 exec function StartNewGame(String startMap)
 {
-    local DXRMapVariants mapvariants;
-    local string cleanMapName;
-    local int startBonus;
-
     if (DeusExRootWindow(rootWindow) != None)
         DeusExRootWindow(rootWindow).ClearWindowStack();
 
@@ -108,23 +95,10 @@ exec function StartNewGame(String startMap)
     dxr.info( Self$" StartNewGame("$startMap$") found "$dxr$", dxr.flagbase: "$dxr.flagbase$", dxr.flags.newgameplus_loops: "$dxr.flags.newgameplus_loops);
 
     if( dxr.flags.newgameplus_loops == 0 ) {
-        if (dxr.flags.settings.starting_map !=0 ){
-            //Add extra skill points to make available once you enter the game
-            startBonus = class'DXRStartMap'.static.GetStartMapSkillBonus(dxr.flags.settings.starting_map);
-            SkillPointsAvail += startBonus;
-            SkillPointsTotal += startBonus;
-        }
         SaveSkillPoints();
         ResetPlayer();
     }
     DeleteSaveGameFiles();
-
-    //Have to initialize these flags after ResetPlayer, since that clears out flags
-    if (dxr.flags.settings.starting_map !=0 ){
-        cleanMapName = class'DXRMapVariants'.static.CleanupMapName(startMap);
-        class'DXRStartMap'.static.StartMapSpecificFlags(flagbase,cleanMapName);
-        //Add extra inventory - Handled in DXRLoadouts
-    }
 
     bStartingNewGame = True;
 

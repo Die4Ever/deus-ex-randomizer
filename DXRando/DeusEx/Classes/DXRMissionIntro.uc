@@ -29,6 +29,10 @@ function Timer()
     if (flags.GetBool('Intro_Played'))
     {
         flags.SetBool('Intro_Played', False,, 1);
+        player.strStartMap = class'DXRStartMap'.static.GetStartMap(self, flags.GetInt('Rando_starting_map'));
+        if( flags.GetInt('Rando_newgameplus_loops') > 0 ) {
+            player.bStartNewGameAfterIntro = true;
+        }
         player.PostIntro();
     }
 }

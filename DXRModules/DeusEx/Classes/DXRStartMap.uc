@@ -6,6 +6,21 @@
 
 class DXRStartMap extends DXRActorsBase;
 
+function PlayerLogin(#var(PlayerPawn) p)
+{
+    local int startBonus;
+
+    Super.PlayerLogin(p);
+
+    if (dxr.flags.settings.starting_map == 0) return;
+
+    //Add extra skill points to make available once you enter the game
+    startBonus = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+    p.SkillPointsAvail += startBonus;
+    p.SkillPointsTotal += startBonus;
+
+    StartMapSpecificFlags(p.flagbase, dxr.localURL);
+}
 
 static simulated function int GetStartingMissionMask(DXRando dxr)
 {
