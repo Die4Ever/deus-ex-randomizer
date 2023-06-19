@@ -2,6 +2,9 @@ import hashlib
 import os
 from pathlib import Path
 import Install.Config as Config
+import urllib.request
+import certifi
+import ssl
 
 def IsWindows() -> bool:
     return os.name == 'nt'
@@ -158,3 +161,15 @@ def CopyTo(source:Path, dest:Path, silent:bool=False):
 
 def MD5(bytes:bytes) -> str:
     return hashlib.md5(bytes).hexdigest()
+
+
+def DownloadFile(url, dest, callback):
+    sslcontext = ssl.create_default_context(cafile=certifi.where())
+    old_func = ssl._create_default_https_context
+    ssl._create_default_https_context = lambda : sslcontext # HACK
+
+    print('\n\ndownloading', url, 'to', dest)
+    urllib.request.urlretrieve(url, dest, callback) # "legacy interface"
+    print('done downloading ', url, 'to', dest)
+
+    ssl._create_default_https_context = old_func

@@ -1,12 +1,9 @@
 from pathlib import Path
-import urllib.request
 import tempfile
 from zipfile import ZipFile
-from Install import MD5
-import certifi
-import ssl
+from Install import MD5, DownloadFile
 
-def InstallMirrors(mapsdir: Path, downloadcallback: callable, flavor:str):
+def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
     print('\nInstallMirrors(', mapsdir, flavor, ')')
     totalmd5 = Md5Maps(mapsdir)
     if totalmd5 == 'd41d8cd98f00b204e9800998ecf8427e': # no map files found
@@ -29,24 +26,19 @@ def InstallMirrors(mapsdir: Path, downloadcallback: callable, flavor:str):
     if flavor == 'VMD':
         name = 'dx.vmd.mirrored.maps.zip'
     temp = tempdir / name
-    # TODO: check version
-    if not temp.exists():
-        sslcontext = ssl.create_default_context(cafile=certifi.where())
-        old_func = ssl._create_default_https_context
-        ssl._create_default_https_context = lambda : sslcontext # HACK
+    if temp.exists():
+        temp.unlink()
 
-        url = "https://github.com/Die4Ever/unreal-map-flipper/releases/latest/download/" + name
-        print('\n\ndownloading', url, 'to', temp)
-        urllib.request.urlretrieve(url, temp, downloadcallback) # "legacy interface"
-        print('done downloading ', url, 'to', temp)
-
-        ssl._create_default_https_context = old_func
+    # TODO: specify version
+    url = "https://github.com/Die4Ever/unreal-map-flipper/releases/latest/download/" + name
+    downloadcallback = lambda a,b,c : callback(a,b,c, status="Downloading Maps")
+    DownloadFile(url, temp, downloadcallback)
 
     with ZipFile(temp, 'r') as zip:
         maps = list(zip.infolist())
         i=0
         for f in maps:
-            downloadcallback(i, 1, len(maps), 'Extracting')
+            callback(i, 1, len(maps), 'Extracting')
             i+=1
             if f.is_dir():
                 continue
