@@ -19,7 +19,7 @@ def InstallMirrors(mapsdir: Path, downloadcallback: callable, flavor:str):
         print('overwriting mirrored maps v0.9')
     elif totalmd5 == '4a2b4cb284de0799ce0f111cfd8170fc': # v0.9.1
         print('already have mirrored maps v0.9.1')
-        #return
+        return
     else:
         print('unknown existing maps MD5:', totalmd5)
 
