@@ -124,6 +124,8 @@ function EnableButtons()
     allow_downgrade = level > 0;
     allow_downgrade = allow_downgrade && level > flags.settings.skills_disable_downgrades;
     btnDowngrade.EnableWindow(allow_downgrade);
+
+    EnableActionButton(AB_Other, True, "START");
 }
 
 // ----------------------------------------------------------------------
