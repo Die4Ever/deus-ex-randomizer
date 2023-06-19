@@ -3,6 +3,7 @@ from GUI import *
 from pathlib import Path
 from Install import Install, IsWindows
 import traceback
+import re
 
 class InstallerWindow(GUIBase):
     def initWindow(self):
@@ -38,7 +39,9 @@ class InstallerWindow(GUIBase):
         pad = 6
 
         # show the path
-        l = Label(self.frame, text='Install path:\n' + str(p.parent.parent), wraplength=self.width-pad*5)
+        pathlabel = str(p.parent.parent)
+        pathlabel = re.sub(r'(/|\\)(SteamApps)(/|\\)', '\g<1>\n\g<2>\g<3>', pathlabel, count=1, flags=re.IGNORECASE)
+        l = Label(self.frame, text='Install path:\n' + pathlabel, wraplength=self.width - pad*8)
         l.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
         row += 1
 
@@ -63,7 +66,7 @@ class InstallerWindow(GUIBase):
         myTip = Hovertip(discordLink, 'Join our Discord!')
 
         # install button
-        self.installButton = Button(self.frame,text='Install!',width=18,height=2,font=self.font, command=self.Install)
+        self.installButton = Button(self.frame,text='Install!',width=24,height=2,font=self.font, command=self.Install)
         self.installButton.grid(column=1,row=101, sticky='SW', padx=pad, pady=pad)
         Hovertip(self.installButton, 'Dew it!')
 
