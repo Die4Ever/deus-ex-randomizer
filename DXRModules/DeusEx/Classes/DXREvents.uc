@@ -1445,9 +1445,11 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
 {
     local int x, y, i;
     local string event, desc;
-    local int progress, max, missions, starting_mission_mask;
+    local int progress, max, missions, starting_mission_mask, starting_mission;
     local int options[200], num_options, slot, free_spaces;
+    local float f;
 
+    starting_mission = class'DXRStartMap'.static.GetStartMapMission(dxr.flags.settings.starting_map);
     starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(dxr);
     num_options = 0;
     for(x=0; x<ArrayCount(bingo_options); x++) {
@@ -1506,9 +1508,18 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             event = bingo_options[i].event;
             desc = bingo_options[i].desc;
             desc = tweakBingoDescription(event,desc);
-            max = bingo_options[i].max;
-            desc = sprintf(desc, max);
             missions = bingo_options[i].missions;
+            max = bingo_options[i].max;
+            // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
+            if(max > 1 && InStr(desc, "%s") != -1) {
+                f = rngrange(1, 0.8, 1);// 80% to 100%
+                f *= MissionsMaskAvailability(starting_mission, missions);
+                max = Ceil(float(max) * f);
+            }
+            max = self.Max(max, 1);
+            l("_CreateBingoBoard "$desc@max);
+            desc = sprintf(desc, max);
+
             num_options--;
             options[slot] = options[num_options];
             data.SetBingoSpot(x, y, event, desc, 0, max, missions);
@@ -1830,7 +1841,7 @@ static function float MissionsMaskAvailability(int currentMission, int missionsM
 {
     local int num, expired, i, t;
 
-    if(missionsMask == 0) return 1;
+    if(missionsMask == 0) return 1.0 - float(currentMission-1) / 15.0;
 
     for(i=1; i<currentMission; i++) {
         t = (1<<i) & missionsMask;
@@ -1861,6 +1872,10 @@ function RunTests()
     testfloat(MissionsMaskAvailability(5, (1<<3)+(1<<5)), 0.5, "MissionsMaskAvailability");
     testfloat(MissionsMaskAvailability(5, (1<<3)+(1<<7)), 0.5, "MissionsMaskAvailability");
     testfloat(MissionsMaskAvailability(5, (1<<3)+(1<<7)+(1<<10)), 2/3, "MissionsMaskAvailability");
+
+    testfloat(MissionsMaskAvailability(1, 0), 1, "MissionsMaskAvailability");
+    testfloat(MissionsMaskAvailability(6, 0), 10/15, "MissionsMaskAvailability");
+    testfloat(MissionsMaskAvailability(15, 0), 1/15, "MissionsMaskAvailability");
 
     testint(BingoActiveMission(1, 0), 1, "BingoActiveMission maybe");
     testint(BingoActiveMission(1, (1<<1)), 2, "BingoActiveMission");

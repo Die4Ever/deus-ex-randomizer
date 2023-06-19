@@ -204,7 +204,7 @@ function static AddRandomAugs(DXRando dxr, DeusExPlayer p, int num)
 
 function static bool AugCanBeUpgraded(Augmentation anAug)
 {
-    return anAug.CurrentLevel < anAug.MaxLevel;
+    return anAug.bHasIt && anAug.CurrentLevel < anAug.MaxLevel;
 }
 
 function static UpgradeAug(Augmentation anAug)
@@ -239,7 +239,7 @@ function static UpgradeRandomAug(DXRando dxr, DeusExPlayer p)
     //Find all upgradable augs
     while(anAug != None)
     {
-        if (anAug.bHasIt && AugCanBeUpgraded(anAug)){
+        if (AugCanBeUpgraded(anAug)){
             augs[numAugs++]=anAug.class;
         }
         anAug=anAug.next;
