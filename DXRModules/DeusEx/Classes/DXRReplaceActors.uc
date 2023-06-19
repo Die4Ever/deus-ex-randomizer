@@ -46,6 +46,9 @@ function ReplaceActors()
         else if( #var(prefix)MissionEndgame(a) != None && !#defined(revision) && !#defined(hx) ) {
             ReplaceMissionEndgame(#var(prefix)MissionEndgame(a));
         }
+        else if( #var(prefix)MissionIntro(a) != None ) {
+            ReplaceMissionIntro(#var(prefix)MissionIntro(a));
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -376,6 +379,18 @@ function ReplaceMissionEndgame(#var(prefix)MissionEndgame a)
     if(DXRMissionEndgame(a) != None) return;
 
     n = DXRMissionEndgame(SpawnReplacement(a, class'DXRMissionEndgame'));
+    if(n == None)
+        return;
+
+    a.Destroy();
+}
+
+function ReplaceMissionIntro(#var(prefix)MissionIntro a)
+{
+    local DXRMissionIntro n;
+    if(DXRMissionIntro(a) != None) return;
+
+    n = DXRMissionIntro(SpawnReplacement(a, class'DXRMissionIntro'));
     if(n == None)
         return;
 

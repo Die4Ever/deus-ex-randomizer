@@ -39,7 +39,6 @@ function BindControls(optional string action)
     EnumOption("Randomize Goal Locations", 100, f.settings.goals);
     EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
 
-#ifdef vanilla
     //Make sure the starting map values match those in DXRStartMap
     NewMenuItem("Starting Map", "What level you will start in");
     EnumOption("Liberty Island", 0, f.settings.starting_map);
@@ -50,7 +49,6 @@ function BindControls(optional string action)
     EnumOption("Graveyard", 99, f.settings.starting_map);
     EnumOption("Everett's House", 119, f.settings.starting_map);
     EnumOption("Ocean Lab", 140, f.settings.starting_map);
-#endif
 
 #ifndef hx
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map."$BR$"If The Merchant dies then he stays dead for the rest of the game.");
