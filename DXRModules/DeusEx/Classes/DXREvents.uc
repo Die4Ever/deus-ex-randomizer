@@ -1475,15 +1475,15 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     }
 
     free_spaces = dxr.flags.settings.bingo_freespaces;
-    free_spaces = self.Max(free_spaces, 25 - num_options - 3);// - 3 for some variety of goal selection
+    free_spaces = self.Max(free_spaces, (25+3) - num_options);// +3 to ensure some variety of goal selection
     free_spaces = Min(free_spaces, 5); // max of 5 free spaces?
 
     //Prepopulate the board with free spaces
     switch(free_spaces) {
-    case 5:
+    case 5:// all fall through
         data.SetBingoSpot(0, 4, "Free Space", "Free Space", 1, 1, 0);
     case 4:
-        data.SetBingoSpot(4, 0, "Free Space", "Free Space", 1, 1, 0);
+        data.SetBingoSpot(4, 4, "Free Space", "Free Space", 1, 1, 0);
     case 3:
         data.SetBingoSpot(2, 0, "Free Space", "Free Space", 1, 1, 0);
     case 2:
