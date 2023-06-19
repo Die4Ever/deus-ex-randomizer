@@ -121,6 +121,8 @@ class InstallerWindow(GUIBase):
         except Exception as e:
             self.root.title('DXRando Installer Error!')
             self.root.update()
+            print('\n\nError!')
+            print(str(e) + '\n\n' + traceback.format_exc(5))
             messagebox.showinfo('Error!', str(e) + '\n\n' + traceback.format_exc(5))
             exit(1)
 

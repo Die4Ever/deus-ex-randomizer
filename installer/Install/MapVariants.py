@@ -3,6 +3,8 @@ import urllib.request
 import tempfile
 from zipfile import ZipFile
 from Install import MD5
+import certifi
+import ssl
 
 def InstallMirrors(mapsdir: Path, downloadcallback: callable, flavor:str):
     print('\nInstallMirrors(', mapsdir, flavor, ')')
@@ -17,7 +19,7 @@ def InstallMirrors(mapsdir: Path, downloadcallback: callable, flavor:str):
         print('overwriting mirrored maps v0.9')
     elif totalmd5 == '4a2b4cb284de0799ce0f111cfd8170fc': # v0.9.1
         print('already have mirrored maps v0.9.1')
-        return
+        #return
     else:
         print('unknown existing maps MD5:', totalmd5)
 
@@ -29,10 +31,16 @@ def InstallMirrors(mapsdir: Path, downloadcallback: callable, flavor:str):
     temp = tempdir / name
     # TODO: check version
     if not temp.exists():
+        sslcontext = ssl.create_default_context(cafile=certifi.where())
+        old_func = ssl._create_default_https_context
+        ssl._create_default_https_context = lambda : sslcontext # HACK
+
         url = "https://github.com/Die4Ever/unreal-map-flipper/releases/latest/download/" + name
         print('\n\ndownloading', url, 'to', temp)
-        urllib.request.urlretrieve(url, temp, downloadcallback)
+        urllib.request.urlretrieve(url, temp, downloadcallback) # "legacy interface"
         print('done downloading ', url, 'to', temp)
+
+        ssl._create_default_https_context = old_func
 
     with ZipFile(temp, 'r') as zip:
         maps = list(zip.infolist())
