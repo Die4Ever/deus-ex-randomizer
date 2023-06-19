@@ -607,8 +607,8 @@ static function int _ScoreRun(int time, int time_without_menus, float CombatDiff
     i -= loads * 50;
     if(bingo_win > 0 && bingos >= bingo_win)
         i -= (13-bingo_win) * 5000;
-    i += bingos * 750;
-    i += bingospots * 75;// make sure to ignore the free space
+    i += bingos * 500;
+    i += bingospots * 150;// make sure to ignore the free space
     i += SkillPointsTotal;
     i += Nanokeys * 20;// unique nanokeys
     i -= Clamp(cheats, 0, 100) * 300;

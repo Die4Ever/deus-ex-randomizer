@@ -1481,15 +1481,15 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     //Prepopulate the board with free spaces
     switch(free_spaces) {
     case 5:// all fall through
-        data.SetBingoSpot(0, 4, "Free Space", "Free Space", 1, 1, 0);
+        data.SetBingoSpot(1, 4, "Free Space", "Free Space", 1, 1, 0);// column
     case 4:
-        data.SetBingoSpot(4, 4, "Free Space", "Free Space", 1, 1, 0);
+        data.SetBingoSpot(4, 1, "Free Space", "Free Space", 1, 1, 0);// row
     case 3:
-        data.SetBingoSpot(2, 0, "Free Space", "Free Space", 1, 1, 0);
+        data.SetBingoSpot(3, 0, "Free Space", "Free Space", 1, 1, 0);// column
     case 2:
-        data.SetBingoSpot(0, 2, "Free Space", "Free Space", 1, 1, 0);
+        data.SetBingoSpot(0, 3, "Free Space", "Free Space", 1, 1, 0);// row
     case 1:
-        data.SetBingoSpot(2, 2, "Free Space", "Free Space", 1, 1, 0);
+        data.SetBingoSpot(2, 2, "Free Space", "Free Space", 1, 1, 0);// center
     case 0:
         break;
     }
