@@ -149,6 +149,7 @@ function AnyEntry()
     SetSeed( "DXRFixup AnyEntry" );
 
     FixSamCarter();
+    FixCleanerBot();
     SetSeed( "DXRFixup AnyEntry missions" );
     if(#defined(mapfixes))
         AnyEntryMapFixes();
@@ -295,6 +296,14 @@ function FixSamCarter()
     local SamCarter s;
     foreach AllActors(class'SamCarter', s) {
         RemoveFears(s);
+    }
+}
+
+function FixCleanerBot()
+{
+    local CleanerBot cb;
+    foreach AllActors(class'CleanerBot', cb) {
+        cb.bInvincible=False;
     }
 }
 

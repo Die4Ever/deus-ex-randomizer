@@ -1,4 +1,6 @@
 import os
+import tempfile
+from zipfile import ZipFile
 from Install import *
 from Install import _DetectFlavors
 from Install import MapVariants
@@ -41,6 +43,9 @@ def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
 def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     gameroot = system.parent
 
+    if settings.get('LDDP'):
+        InstallLDDP(system, settings)
+
     exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
     exetype = settings['exetype']
     kentie = True
@@ -75,7 +80,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
         oldconfig = DXRandoini.read_text()
         oldconfig = Config.ReadConfig(oldconfig)
         changes = Config.RetainConfigSections(
-            set(('WinDrv.WindowsClient',)),
+            set(('WinDrv.WindowsClient', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry')),
             oldconfig, changes
         )
 
@@ -110,6 +115,45 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
 
     if settings.get('mirrors'):
         MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
+
+
+def InstallLDDP(system:Path, settings:dict):
+    callback = settings.get('downloadcallback')
+    tempdir = Path(tempfile.gettempdir()) / 'dxrando'
+    tempdir.mkdir(exist_ok=True)
+    name = 'Lay_D_Denton_Project_1.1.zip'
+    temp = tempdir / name
+    if temp.exists():
+        temp.unlink()
+
+    mapsdir = system.parent / 'Maps'
+
+    url = "https://github.com/LayDDentonProject/Lay-D-Denton-Project/releases/download/v1.1/" + name
+    downloadcallback = lambda a,b,c : callback(a,b,c, status="Downloading LDDP")
+    DownloadFile(url, temp, downloadcallback)
+
+    with ZipFile(temp, 'r') as zip:
+        files = list(zip.infolist())
+        i=0
+        for f in files:
+            callback(i, 1, len(files), 'Extracting LDDP')
+            i+=1
+            if f.is_dir():
+                continue
+            name = Path(f.filename).name
+            data = zip.read(f.filename)
+            if name.endswith('.u'):
+                dest = system / name
+            elif name.endswith('.dx'):
+                dest = mapsdir / name
+            else:
+                continue
+            with open(dest, 'wb') as out:
+                out.write(data)
+            print(Path(f.filename).name, f.file_size)
+
+    print('done Installing LDDP to', system, '\n')
+    temp.unlink()
 
 
 def InstallGMDX(system:Path, settings:dict, exename:str):

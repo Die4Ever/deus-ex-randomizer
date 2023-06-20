@@ -56,6 +56,7 @@ struct FlagsSettings {
     var int bingo_freespaces; //Number of bingo free spaces
     var int spoilers; //0=Disallowed, 1=Available
     var int menus_pause; // 0=no pause, 1=vanilla
+    var int starting_map;
 
     // leave these at the end for the automated tests
     var int health, energy;// normally just 100
@@ -371,6 +372,8 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_health', settings.health, mode, str);
     FlagInt('Rando_energy', settings.energy, mode, str);
 
+    FlagInt('Rando_starting_map', settings.starting_map, mode, str);
+
     return str;
 }
 
@@ -518,6 +521,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Player Max Health";
         case 'Rando_energy':
             return "Player Max Energy";
+        case 'Rando_starting_map':
+            return "Starting Map";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -776,6 +781,9 @@ simulated function string flagValToHumanVal(name flagname, int val){
             }
             break;
 
+        case 'Rando_starting_map':
+            return class'DXRStartMap'.static.GetStartingMapName(val);
+            break;
         default:
             return val $ " (Unhandled!)";
     }

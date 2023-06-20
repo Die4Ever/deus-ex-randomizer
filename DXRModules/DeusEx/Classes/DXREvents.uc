@@ -472,6 +472,14 @@ function SetWatchFlags() {
             }
         }
 
+        bt = class'BingoTrigger'.static.Create(self,'BiggestFan',vectm(0,0,0));
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
+            if (dxm.RotationRate.Yaw!=0){
+                dxm.Event='BiggestFan';
+                break;
+            }
+        }
+
         break;
     case "09_NYC_SHIPBELOW":
         WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
@@ -601,9 +609,13 @@ function SetWatchFlags() {
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
         bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1932.035522,3334.331787,-2247.888184),60,40);
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1932.035522,3334.331787,-2507.888184),60,40);
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1928.762573,3721.919189,-2507.888184),60,40);
+        bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1928.762573,3721.919189,-2247.888184),60,40);
+        bt.bDestroyOthers=False;
 
         bt = class'BingoTrigger'.static.Create(self,'OceanLabGreenBeacon',vectm(1543,3522,-1847),200,200);
 
@@ -1441,12 +1453,17 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
 {
     local int x, y, i;
     local string event, desc;
-    local int progress, max, missions;
-    local int options[200], num_options, slot;
+    local int progress, max, missions, starting_mission_mask, starting_mission;
+    local int options[200], num_options, slot, free_spaces;
+    local float f;
 
+    starting_mission = class'DXRStartMap'.static.GetStartMapMission(dxr.flags.settings.starting_map);
+    starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(dxr.flags.settings.starting_map);
     num_options = 0;
     for(x=0; x<ArrayCount(bingo_options); x++) {
         if(bingo_options[x].event == "") continue;
+        if(bingo_options[x].missions!=0 && (bingo_options[x].missions & starting_mission_mask) == 0) continue;
+        if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,dxr.flags.settings.starting_map)) continue;
         options[num_options++] = x;
     }
 
@@ -1460,10 +1477,37 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
         }
     }
 
+    //Clear out the board so it is ready to be repopulated
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
-            if(num_options == 0 || (x==2 && y==2 && dxr.flags.settings.bingo_freespaces>0)) {
-                data.SetBingoSpot(x, y, "Free Space", "Free Space", 1, 1, 0);
+            data.SetBingoSpot(x, y, "", "", 0, 0, 0);
+        }
+    }
+
+    free_spaces = dxr.flags.settings.bingo_freespaces;
+    free_spaces = self.Max(free_spaces, (25+3) - num_options);// +3 to ensure some variety of goal selection
+    free_spaces = Min(free_spaces, 5); // max of 5 free spaces?
+
+    //Prepopulate the board with free spaces
+    switch(free_spaces) {
+    case 5:// all fall through
+        data.SetBingoSpot(1, 4, "Free Space", "Free Space", 1, 1, 0);// column
+    case 4:
+        data.SetBingoSpot(4, 1, "Free Space", "Free Space", 1, 1, 0);// row
+    case 3:
+        data.SetBingoSpot(3, 0, "Free Space", "Free Space", 1, 1, 0);// column
+    case 2:
+        data.SetBingoSpot(0, 3, "Free Space", "Free Space", 1, 1, 0);// row
+    case 1:
+        data.SetBingoSpot(2, 2, "Free Space", "Free Space", 1, 1, 0);// center
+    case 0:
+        break;
+    }
+
+    for(x=0; x<5; x++) {
+        for(y=0; y<5; y++) {
+            data.GetBingoSpot(x,y,event,desc,progress,max);
+            if(max > 0) { //Skip spaces that are already filled with something
                 continue;
             }
 
@@ -1472,8 +1516,17 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             event = bingo_options[i].event;
             desc = bingo_options[i].desc;
             desc = tweakBingoDescription(event,desc);
-            max = bingo_options[i].max;
             missions = bingo_options[i].missions;
+            max = bingo_options[i].max;
+            // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
+            if(max > 1 && InStr(desc, "%s") != -1) {
+                f = rngrange(1, 0.8, 1);// 80% to 100%
+                f *= MissionsMaskAvailability(starting_mission, missions);
+                max = Ceil(float(max) * f);
+                max = self.Max(max, 1);
+                desc = sprintf(desc, max);
+            }
+
             num_options--;
             options[slot] = options[num_options];
             data.SetBingoSpot(x, y, event, desc, 0, max, missions);
@@ -1759,7 +1812,7 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     local int missionAnded, minMission;
     if(missionsMask == 0) return 1;// 1==maybe
     missionAnded = (1 << currentMission) & missionsMask;
-    if(missionAnded > 0) return 2;// 2==true
+    if(missionAnded != 0) return 2;// 2==true
     minMission = currentMission;
 
 #ifdef backtracking
@@ -1781,7 +1834,7 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
         break;
     }
     missionAnded = (1 << currentMission) & missionsMask;
-    if(missionAnded > 0) return 2;// 2==true
+    if(missionAnded != 0) return 2;// 2==true
 #endif
 
     if(missionsMask < (1<<minMission)) {
@@ -1789,6 +1842,53 @@ static function int BingoActiveMission(int currentMission, int missionsMask)
     }
 
     return 0;// 0==false
+}
+
+static function float MissionsMaskAvailability(int currentMission, int missionsMask)
+{
+    local int num, expired, i, t;
+
+    if(missionsMask == 0) return 1.0 - float(currentMission-1) / 15.0;
+
+    for(i=1; i<currentMission; i++) {
+        t = (1<<i) & missionsMask;
+        expired += int( t != 0 );
+    }
+    for(i=currentMission; i<15; i++) {
+        t = (1<<i) & missionsMask;
+        num += int( t != 0 );
+    }
+
+    return float(num)/float(expired+num);
+}
+
+function RunTests()
+{
+    testint(NumBitsSet(0), 0, "NumBitsSet");
+    testint(NumBitsSet(1), 1, "NumBitsSet");
+    testint(NumBitsSet(2), 1, "NumBitsSet");
+    testint(NumBitsSet(3), 2, "NumBitsSet");
+
+    testint(NumBitsSet(1<<15), 1, "NumBitsSet");
+    testint(NumBitsSet((1<<15)+(1<<8)), 2, "NumBitsSet");
+
+    testfloat(MissionsMaskAvailability(1, (1<<3)), 1, "MissionsMaskAvailability");
+    testfloat(MissionsMaskAvailability(5, (1<<5)), 1, "MissionsMaskAvailability");
+    testfloat(MissionsMaskAvailability(5, (1<<8)), 1, "MissionsMaskAvailability");
+
+    testfloat(MissionsMaskAvailability(5, (1<<3)+(1<<5)), 0.5, "MissionsMaskAvailability");
+    testfloat(MissionsMaskAvailability(5, (1<<3)+(1<<7)), 0.5, "MissionsMaskAvailability");
+    testfloat(MissionsMaskAvailability(5, (1<<3)+(1<<7)+(1<<10)), 2/3, "MissionsMaskAvailability");
+
+    testfloat(MissionsMaskAvailability(1, 0), 1, "MissionsMaskAvailability");
+    testfloat(MissionsMaskAvailability(6, 0), 10/15, "MissionsMaskAvailability");
+    testfloat(MissionsMaskAvailability(15, 0), 1/15, "MissionsMaskAvailability");
+
+    testint(BingoActiveMission(1, 0), 1, "BingoActiveMission maybe");
+    testint(BingoActiveMission(1, (1<<1)), 2, "BingoActiveMission");
+    testint(BingoActiveMission(2, (1<<1)), -1, "BingoActiveMission too late");
+    testint(BingoActiveMission(15, (1<<15)), 2, "BingoActiveMission");
+    testint(BingoActiveMission(3, (1<<15)), 0, "BingoActiveMission false");
 }
 
 // calculate missions masks with https://jsfiddle.net/2sh7xej0/1/
@@ -1854,7 +1954,7 @@ defaultproperties
     bingo_options(50)=(event="nsfwander",desc="Save Miguel",max=1,missions=32)
     bingo_options(51)=(event="MadeBasket",desc="Sign up for the Knicks",max=1,missions=276)
     bingo_options(52)=(event="BoughtClinicPlan",desc="Buy the full treatment plan in the clinic",max=1,missions=4)
-    bingo_options(53)=(event="ExtinguishFire",desc="Extinguish yourself with running water",max=1)
+    bingo_options(53)=(event="ExtinguishFire",desc="Extinguish yourself with running water",max=1,missions=22398)
     bingo_options(54)=(event="SubwayHostagesSaved",desc="Save both hostages in the subway",max=1,missions=4)
     bingo_options(55)=(event="HotelHostagesSaved",desc="Save all hostages in the hotel",max=1,missions=4)
     bingo_options(56)=(event="SilhouetteHostagesAllRescued",desc="Save both hostages in the catacombs",max=1,missions=1024)
@@ -1864,8 +1964,8 @@ defaultproperties
     bingo_options(60)=(event="SickMan_Dead",desc="Kill the sick man who wants to die",max=1,missions=12)
     bingo_options(61)=(event="M06PaidJunkie",desc="Help the junkie on Tonnochi Road",max=1,missions=64)
     bingo_options(62)=(event="M06BoughtVersaLife",desc="Get maps of the VersaLife building",max=1,missions=64)
-    bingo_options(63)=(event="FlushToilet",desc="Use 30 toilets",max=30)
-    bingo_options(64)=(event="FlushUrinal",desc="Use 20 urinals",max=20)
+    bingo_options(63)=(event="FlushToilet",desc="Use %s toilets",max=30,missions=8062)
+    bingo_options(64)=(event="FlushUrinal",desc="Use %s urinals",max=20,missions=22398)
     bingo_options(65)=(event="MeetTimBaker_Played",desc="Free Tim from the Vandenberg storage room",max=1,missions=4096)
     bingo_options(66)=(event="MeetDrBernard_Played",desc="Find the man locked in the bathroom",max=1,missions=16384)
     bingo_options(67)=(event="KnowsGuntherKillphrase",desc="Learn Gunther's Killphrase",max=1,missions=1056)
@@ -1873,44 +1973,44 @@ defaultproperties
     bingo_options(69)=(event="Area51FanShaft",desc="Jump!  You can make it!",max=1,missions=32768)
     bingo_options(70)=(event="PoliceVaultBingo",desc="Visit the Hong Kong police vault",max=1,missions=64)
     bingo_options(71)=(event="SunkenShip",desc="Enter the sunken ship at Liberty Island",max=1,missions=2)
-    bingo_options(72)=(event="SpinShipsWheel",desc="Spin 3 ships wheels",max=3)
+    bingo_options(72)=(event="SpinShipsWheel",desc="Spin %s ships wheels",max=3,missions=578)
     bingo_options(73)=(event="ActivateVandenbergBots",desc="Activate both of the bots at Vandenberg",max=2,missions=4096)
     bingo_options(74)=(event="TongsHotTub",desc="Take a dip in Tracer Tong's hot tub",max=1,missions=64)
     bingo_options(75)=(event="JocksToilet",desc="Use Jock's toilet",max=1,missions=64)
-    bingo_options(76)=(event="Greasel_ClassDead",desc="Kill 5 Greasels",max=5)
+    bingo_options(76)=(event="Greasel_ClassDead",desc="Kill %s Greasels",max=5)
     bingo_options(77)=(event="support1",desc="Blow up a gas station",max=1,missions=4096)
-    bingo_options(78)=(event="UNATCOTroop_ClassDead",desc="Kill 15 UNATCO Troopers",max=15)
-    bingo_options(79)=(event="Terrorist_ClassDead",desc="Kill 15 NSF Terrorists",max=15)
-    bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill 25 MJ12 Troopers",max=25)
-    bingo_options(81)=(event="MJ12Commando_ClassDead",desc="Kill 10 MJ12 Commandos",max=10)
-    bingo_options(82)=(event="Karkian_ClassDead",desc="Kill 5 Karkians",max=5)
-    bingo_options(83)=(event="MilitaryBot_ClassDead",desc="Destroy 5 Military Bots",max=5)
+    bingo_options(78)=(event="UNATCOTroop_ClassDead",desc="Kill %s UNATCO Troopers",max=15,missions=318)
+    bingo_options(79)=(event="Terrorist_ClassDead",desc="Kill %s NSF Terrorists",max=15,missions=62)
+    bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill %s MJ12 Troopers",max=25,missions=65524)
+    bingo_options(81)=(event="MJ12Commando_ClassDead",desc="Kill %s MJ12 Commandos",max=10,missions=65524)
+    bingo_options(82)=(event="Karkian_ClassDead",desc="Kill %s Karkians",max=5)
+    bingo_options(83)=(event="MilitaryBot_ClassDead",desc="Destroy %s Military Bots",max=5)
     bingo_options(84)=(event="VandenbergToilet",desc="Use the only toilet in Vandenberg",max=1,missions=4096)
     bingo_options(85)=(event="BoatEngineRoom",desc="Access the engine room on the boat in the Hong Kong canals",max=1,missions=64)
-    bingo_options(86)=(event="SecurityBot2_ClassDead",desc="Destroy 5 Walking Security Bots",max=5)
-    bingo_options(87)=(event="SecurityBotSmall_ClassDead",desc="Destroy 15 commercial grade Security Bots",max=15)
-    bingo_options(88)=(event="SpiderBot_ClassDead",desc="Destroy 15 Spider Bots",max=15)
-    bingo_options(89)=(event="HumanStompDeath",desc="Stomp 3 humans to death",max=3)
-    bingo_options(90)=(event="Rat_ClassDead",desc="Kill 30 rats",max=30)
-    bingo_options(91)=(event="UNATCOTroop_ClassUnconscious",desc="Knock out 15 UNATCO Troopers",max=15)
-    bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out 15 NSF Terrorists",max=15)
-    bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out 25 MJ12 Troopers",max=25)
-    bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out 2 MJ12 Commandos",max=2)
+    bingo_options(86)=(event="SecurityBot2_ClassDead",desc="Destroy %s Walking Security Bots",max=5)
+    bingo_options(87)=(event="SecurityBotSmall_ClassDead",desc="Destroy %s commercial grade Security Bots",max=10)
+    bingo_options(88)=(event="SpiderBot_ClassDead",desc="Destroy %s Spider Bots",max=15)
+    bingo_options(89)=(event="HumanStompDeath",desc="Stomp %s humans to death",max=3)
+    bingo_options(90)=(event="Rat_ClassDead",desc="Kill %s rats",max=30)
+    bingo_options(91)=(event="UNATCOTroop_ClassUnconscious",desc="Knock out %s UNATCO Troopers",max=15,missions=318)
+    bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out %s NSF Terrorists",max=15,missions=62)
+    bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out %s MJ12 Troopers",max=25,missions=65524)
+    bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out %s MJ12 Commandos",max=2,missions=65524)
     bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1,missions=64)
-    bingo_options(96)=(event="ChugWater",desc="Chug water 30 times",max=30)
+    bingo_options(96)=(event="ChugWater",desc="Chug water %s times",max=30,mission=40830)
 #ifndef vmd
-    bingo_options(97)=(event="ChangeClothes",desc="Change clothes at 3 different clothes racks",max=3)
+    bingo_options(97)=(event="ChangeClothes",desc="Change clothes at %s different clothes racks",max=3,missions=852)
 #endif
     bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1,missions=8)
     bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1,missions=17686)
-    bingo_options(100)=(event="KnowYourEnemy",desc="Read all 6 Know Your Enemy bulletins",max=6,missions=10)
+    bingo_options(100)=(event="KnowYourEnemy",desc="Read %s Know Your Enemy bulletins",max=6,missions=10)
     bingo_options(101)=(event="09_NYC_DOCKYARD--796967769",desc="Learn Jenny's phone number",max=1,missions=512)
-    bingo_options(102)=(event="JacobsShadow",desc="Read 4 parts of Jacob's Shadow",max=4,missions=38492)
-    bingo_options(103)=(event="ManWhoWasThursday",desc="Read 4 parts of The Man Who Was Thursday",max=4,missions=54300)
-    bingo_options(104)=(event="GreeneArticles",desc="Read 4 newspaper articles by Joe Greene",max=4,missions=270)
+    bingo_options(102)=(event="JacobsShadow",desc="Read %s parts of Jacob's Shadow",max=4,missions=38492)
+    bingo_options(103)=(event="ManWhoWasThursday",desc="Read %s parts of The Man Who Was Thursday",max=4,missions=54300)
+    bingo_options(104)=(event="GreeneArticles",desc="Read %s newspaper articles by Joe Greene",max=4,missions=270)
     bingo_options(105)=(event="MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1,missions=76)
     bingo_options(106)=(event="06_Datacube05",desc="Learn Maggie Chow's Birthday",max=1,missions=64)
-    bingo_options(107)=(event="Gray_ClassDead",desc="Kill 5 Grays",max=5)
+    bingo_options(107)=(event="Gray_ClassDead",desc="Kill %s Grays",max=5)
     bingo_options(108)=(event="CloneCubes",desc="Read about the four clones in Area 51",max=4,missions=32768)
     bingo_options(109)=(event="blast_door_open",desc="Open the blast doors at Area 51",max=1,missions=32768)
     bingo_options(110)=(event="SpinningRoom",desc="Pass through the spinning room",max=1,missions=512)
@@ -1920,7 +2020,7 @@ defaultproperties
 #ifdef vanilla
     bingo_options(114)=(event="unbirth",desc="Return to the tube that spawned you",max=1,missions=32768)
 #endif
-    bingo_options(115)=(event="StolenAmbrosia",desc="Find 3 stolen barrels of Ambrosia",max=3,missions=12)
+    bingo_options(115)=(event="StolenAmbrosia",desc="Find %s stolen barrels of Ambrosia",max=3,missions=12)
     bingo_options(116)=(event="AnnaKilledLebedev",desc="Let Anna kill Lebedev",max=1,missions=8)
     bingo_options(117)=(event="PlayerKilledLebedev",desc="Kill Lebedev yourself",max=1,missions=8)
     bingo_options(118)=(event="JuanLebedev_Unconscious",desc="Knock out Lebedev",max=1,missions=8)
@@ -1930,22 +2030,22 @@ defaultproperties
     bingo_options(122)=(event="AnnaNavarre_DeadM4",desc="Kill Anna Navarre in Mission 4",max=1,missions=16)
     bingo_options(123)=(event="AnnaNavarre_DeadM5",desc="Kill Anna Navarre in Mission 5",max=1,missions=32)
     bingo_options(124)=(event="SimonsAssassination",desc="Let Walton lose his patience",max=1,missions=8)
-    bingo_options(125)=(event="AlliesKilled",desc="Kill 15 allies",max=15)
+    bingo_options(125)=(event="AlliesKilled",desc="Kill %s allies",max=15)
     bingo_options(126)=(event="MaySung_Dead",desc="Kill Maggie Chows maid",max=1,missions=64)
     bingo_options(127)=(event="MostWarehouseTroopsDead",desc="Eliminate the UNATCO troops defending NSF HQ",max=1,missions=16)
-    bingo_options(128)=(event="CleanerBot_ClassDead",desc="Destroy 5 Cleaner Bots",max=5)
-    bingo_options(129)=(event="MedicalBot_ClassDead",desc="Destroy 3 Medical Bots",max=3)
-    bingo_options(130)=(event="RepairBot_ClassDead",desc="Destroy 3 Repair Bots",max=3)
+    bingo_options(128)=(event="CleanerBot_ClassDead",desc="Destroy %s Cleaner Bots",max=5,missions=286)
+    bingo_options(129)=(event="MedicalBot_ClassDead",desc="Destroy %s Medical Bots",max=3)
+    bingo_options(130)=(event="RepairBot_ClassDead",desc="Destroy %s Repair Bots",max=3)
     bingo_options(131)=(event="DrugDealer_Dead",desc="Kill the Drug Dealer in Brooklyn Bridge Station",max=1,missions=8)
     bingo_options(132)=(event="botordertrigger",desc="The Smuggler is whacked-out paranoid",max=1,missions=276)
 #ifdef injections
-    bingo_options(133)=(event="IgnitedPawn",desc="Set 15 people on fire",max=15)
-    bingo_options(134)=(event="GibbedPawn",desc="Blow up 15 people",max=15)
+    bingo_options(133)=(event="IgnitedPawn",desc="Set %s people on fire",max=15)
+    bingo_options(134)=(event="GibbedPawn",desc="Blow up %s people",max=15)
 #endif
     bingo_options(135)=(event="IcarusCalls_Played",desc="Take a phone call from Icarus in Paris",max=1,missions=1024)
     bingo_options(136)=(event="AlexCloset",desc="Go into Alex's closet",max=1,missions=58)
     bingo_options(137)=(event="BackOfStatue",desc="Climb to the balcony on the back of the statue",max=1,missions=2)
-    bingo_options(138)=(event="CommsPit",desc="Check the SATCOM wiring 3 times",max=3,missions=58)
+    bingo_options(138)=(event="CommsPit",desc="Check the SATCOM wiring %s times",max=3,missions=58)
     bingo_options(139)=(event="StatueHead",desc="Visit the head of the Statue of Liberty",max=1,missions=2)
     bingo_options(140)=(event="CraneControls",desc="Use the dockside crane controls",max=1,missions=512)
     bingo_options(141)=(event="CraneTop",desc="Visit the end of both cranes onboard the superfreighter",max=2,missions=512)
@@ -1954,28 +2054,28 @@ defaultproperties
     bingo_options(144)=(event="LouisBerates",desc="Sneak behind the Porte De L'Enfer door man",max=1,missions=1024)
     bingo_options(145)=(event="EverettAquarium",desc="Go for a swim in Everett's aquarium",max=1,missions=2048)
     bingo_options(146)=(event="TrainTracks",desc="Jump on to the train tracks in Paris",max=1,missions=2048)
-    bingo_options(147)=(event="OceanLabCrewChamber",desc="Visit all 4 crew chambers in the Ocean Lab",max=4,missions=16384)
+    bingo_options(147)=(event="OceanLabCrewChamber",desc="Visit all %s crew chambers in the Ocean Lab",max=4,missions=16384)
     bingo_options(148)=(event="HeliosControlArms",desc="Jump down the control arms in Helios' chamber",max=1,missions=32768)
     bingo_options(149)=(event="TongTargets",desc="Use the shooting range in Tong's base",max=1,missions=64)
-    bingo_options(150)=(event="WanChaiStores",desc="Visit 4 stores in the Wan Chai market",max=4,missions=64)
+    bingo_options(150)=(event="WanChaiStores",desc="Visit %s stores in the Wan Chai market",max=4,missions=64)
     bingo_options(151)=(event="HongKongBBall",desc="Shoot some hoops in Hong Kong",max=1,missions=64)
     bingo_options(152)=(event="CanalDrugDeal",desc="Walk in on a drug deal in progress",max=1,missions=64)
     bingo_options(153)=(event="HongKongGrays",desc="Enter the Hong Kong Gray enclosure",max=1,missions=64)
     bingo_options(154)=(event="EnterQuickStop",desc="Enter the Quick Stop in Hong Kong",max=1,missions=64)
     bingo_options(155)=(event="LuckyMoneyFreezer",desc="Enter the Lucky Money freezer",max=1,missions=64)
     bingo_options(156)=(event="TonnochiBillboard",desc="Get onto the billboard over Tonnochi road",max=1,missions=64)
-    bingo_options(157)=(event="AirfieldGuardTowers",desc="Visit 3 of the Airfield guard towers",max=3,missions=8)
+    bingo_options(157)=(event="AirfieldGuardTowers",desc="Visit %s of the Airfield guard towers",max=3,missions=8)
     bingo_options(158)=(event="mirrordoor",desc="Access Smuggler's secret stash",max=1,missions=276)
     bingo_options(159)=(event="MolePeopleWater",desc="Bathe in the Mole People water supply",max=1,missions=8)
     bingo_options(160)=(event="botorders2",desc="Alter the bot AI in the MJ12 base under UNATCO",max=1,missions=32)
-    bingo_options(161)=(event="BathroomFlags",desc="Place a flag in Manderley's bathroom 3 times",max=3,missions=58)
+    bingo_options(161)=(event="BathroomFlags",desc="Place a flag in Manderley's bathroom %s times",max=3,missions=58)
     bingo_options(162)=(event="SiloSlide",desc="Take the silo slide",max=1,missions=16384)
     bingo_options(163)=(event="SiloWaterTower",desc="Climb the water tower at the silo",max=1,missions=16384)
     bingo_options(164)=(event="TonThirdFloor",desc="Go to the third floor of the 'Ton",max=1,missions=276)
     bingo_options(165)=(event="Set_flag_helios",desc="Engage the Aquinas primary router",max=1,missions=32768)
     bingo_options(166)=(event="coolant_switch",desc="Flush the reactor coolant",max=1,missions=32768)
     bingo_options(167)=(event="BlueFusionReactors",desc="Deactivate the four blue fusion reactors",max=4,missions=32768)
-    bingo_options(168)=(event="A51UCBlocked",desc="Close the doors to 3 UCs in Area 51",max=3,missions=32768)
+    bingo_options(168)=(event="A51UCBlocked",desc="Close the doors to %s UCs in Area 51",max=3,missions=32768)
     bingo_options(169)=(event="VandenbergReactorRoom",desc="Enter the reactor room in the Vandenberg tunnels",max=1,missions=4096)
     bingo_options(170)=(event="VandenbergServerRoom",desc="Enter the server room in the Vandenberg control center",max=1,missions=4096)
     bingo_options(171)=(event="VandenbergWaterTower",desc="Climb the water tower in Vandenberg",max=1,missions=4096)
@@ -1984,6 +2084,7 @@ defaultproperties
     bingo_options(174)=(event="PageTaunt_Played",desc="Let Bob Page taunt you in the Ocean Lab",max=1,missions=16384)
     //bingo_options()=(event="M11WaltonHolo_Played",desc="Talk to Walton Simons after defeating Gunther",max=1,missions=2048)
     bingo_options(175)=(event="JerryTheVentGreasel_Dead",desc="Kill Jerry the Vent Greasel",max=1,missions=64)
+    bingo_options(176)=(event="BiggestFan",desc="Destroy your biggest fan",max=1,missions=512)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")

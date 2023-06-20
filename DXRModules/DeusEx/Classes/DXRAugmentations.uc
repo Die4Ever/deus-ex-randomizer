@@ -174,6 +174,85 @@ function static _DefaultAugsMask(DXRando dxr, out int banned[50], out int numAug
     }
 }
 
+function static AddRandomAugs(DXRando dxr, DeusExPlayer p, int num)
+{
+    local int numAugs;
+    local int banned[50];
+    local int i,j;
+    local class<Augmentation> augClass;
+    local bool augOk;
+    local Augmentation anAug;
+
+    _DefaultAugsMask(dxr, banned, numAugs);
+
+    for (i=0;i<num;i++)
+    {
+        augOk=False;
+        for (j=0;j<5&&!augOk;j++){
+            augClass = PickRandomAug(dxr, banned, numAugs);
+            anAug = p.AugmentationSystem.FindAugmentation(augClass);
+            augOk = !p.AugmentationSystem.AreSlotsFull(anAug);
+        }
+        if (augOk){
+            AddAug(p, augClass, 1);
+            log("Randomly added aug "$augClass);
+        } else {
+            log("Failed to find random aug to add");
+        }
+    }
+}
+
+function static bool AugCanBeUpgraded(Augmentation anAug)
+{
+    return anAug.bHasIt && anAug.CurrentLevel < anAug.MaxLevel;
+}
+
+function static UpgradeAug(Augmentation anAug)
+{
+    local bool wasActive;
+
+    if (!AugCanBeUpgraded(anAug)){
+        return;
+    }
+
+    wasActive=anAug.bIsActive;
+    if (anAug.bIsActive){
+        anAug.Deactivate();
+    }
+
+    anAug.CurrentLevel++;
+
+    if(wasActive){
+        anAug.Activate();
+    }
+}
+
+function static UpgradeRandomAug(DXRando dxr, DeusExPlayer p)
+{
+    local class<Augmentation> augs[12];
+    local int numAugs, i;
+    local Augmentation anAug;
+    local bool wasActive;
+
+    numAugs = 0;
+    anAug = p.AugmentationSystem.FirstAug;
+    //Find all upgradable augs
+    while(anAug != None)
+    {
+        if (AugCanBeUpgraded(anAug)){
+            augs[numAugs++]=anAug.class;
+        }
+        anAug=anAug.next;
+    }
+
+    //Pick a random aug from the list to upgrade
+    i = staticrng(dxr,numAugs);
+
+    anAug = p.AugmentationSystem.FindAugmentation(augs[i]);
+
+    UpgradeAug(anAug);
+}
+
 function static RandomizeAugCannister(DXRando dxr, #var(prefix)AugmentationCannister a)
 {
     local int numAugs;

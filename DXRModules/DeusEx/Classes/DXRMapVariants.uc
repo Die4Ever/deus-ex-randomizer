@@ -121,11 +121,6 @@ simulated function FirstEntry()
     }
 }
 
-function PlayerAnyEntry(#var(PlayerPawn) p)
-{
-    p.strStartMap = VaryMap(p.default.strStartMap);
-}
-
 simulated function AnyEntry()
 {
     l(GetURLMap() @ coords_mult);
@@ -158,15 +153,11 @@ function string VaryURL(string url)
 
 function string VaryMap(string map)
 {
+    local int chance;
     map = CleanupMapName(map);
-    switch(GetMirrorMapsSetting()) {
-    case class'MenuChoice_MirrorMaps'.default.mirror_only:
+    chance = GetMirrorMapsSetting();
+    if(chance_single(chance))
         return map $"_-1_1_1";
-    case class'MenuChoice_MirrorMaps'.default.enabled:
-        SetGlobalSeed("DXRMapVariants VaryMap " $ map);
-        if(rngb())
-            return map $"_-1_1_1";
-    }
     return map;
 }
 

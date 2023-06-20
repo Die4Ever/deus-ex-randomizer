@@ -120,6 +120,9 @@ function PreFirstEntryMapFixes()
         d.minDamageThreshold=25;
         d.doorStrength = 0.20; //It's just grating on top of the vent, so it's not that strong
 
+        //Button to open blast doors from inside
+        AddSwitch( vect(2015.894653,1390.463867,-839.793091), rot(0, -16328, 0), 'blast_door');
+
         Spawn(class'PlaceholderItem',,, vectm(-1469.9,3238.7,-213)); //Storage building
         Spawn(class'PlaceholderItem',,, vectm(-1565.4,3384.8,-213)); //Back of Storage building
         Spawn(class'PlaceholderItem',,, vectm(-1160.9,256.3,-501)); //Tower basement
@@ -188,6 +191,9 @@ function PreFirstEntryMapFixes()
             if( d.Name == 'DeusExMover20' ) d.Tag = 'final_door';
         }
         AddSwitch( vect(-867.193420, 244.553101, 17.622702), rot(0, 32768, 0), 'final_door');
+
+        //Button to call elevator to bottom of shaft
+        AddSwitch( vect(-1715.487427,493.516571,-1980.708008), rot(0, 32768, 0), 'elevator_floor2');
 
         foreach AllActors(class'DeusExMover', d, 'doors_lower') {
             d.bLocked = false;

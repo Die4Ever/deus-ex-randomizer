@@ -3,6 +3,7 @@ from GUI import *
 from pathlib import Path
 from Install import Install, IsWindows
 import traceback
+import re
 
 class InstallerWindow(GUIBase):
     def initWindow(self):
@@ -38,7 +39,9 @@ class InstallerWindow(GUIBase):
         pad = 6
 
         # show the path
-        l = Label(self.frame, text='Install path:\n' + str(p.parent.parent), wraplength=self.width-pad*5)
+        pathlabel = str(p.parent.parent)
+        pathlabel = re.sub(r'(/|\\)(SteamApps)(/|\\)', '\g<1>\n\g<2>\g<3>', pathlabel, count=1, flags=re.IGNORECASE)
+        l = Label(self.frame, text='Install path:\n' + pathlabel, wraplength=self.width - pad*8)
         l.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
         row += 1
 
@@ -63,7 +66,7 @@ class InstallerWindow(GUIBase):
         myTip = Hovertip(discordLink, 'Join our Discord!')
 
         # install button
-        self.installButton = Button(self.frame,text='Install!',width=18,height=2,font=self.font, command=self.Install)
+        self.installButton = Button(self.frame,text='Install!',width=24,height=2,font=self.font, command=self.Install)
         self.installButton.grid(column=1,row=101, sticky='SW', padx=pad, pady=pad)
         Hovertip(self.installButton, 'Dew it!')
 
@@ -81,18 +84,23 @@ class InstallerWindow(GUIBase):
 
         settings = { 'install': v, 'exe': exe }
 
-        if f in ['Vanilla', '#Vanilla? Madder.']: # TODO: VMD, needs map files and UnrealScript work
-            # install LDDP?
+        if f in ['Vanilla', '#Vanilla? Madder.']: # TODO: VMD is commented out, needs map files and UnrealScript work
             v = BooleanVar(master=self.frame, value=True)
             settings['mirrors'] = v
             c = Checkbutton(self.frame, text="Download mirrored maps for "+f, variable=v)
-            Hovertip(c, "Currently requires Lay D Denton.")
+            Hovertip(c, "Time to get lost again.")
             c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
             self.FixColors(c)
             row+=1
 
-        #if f == 'Vanilla':
-        #    # checkbox to install LDDP from https://github.com/LayDDentonProject/Lay-D-Denton-Project/releases/download/v1.1/Lay_D_Denton_Project_1.1.zip
+        if f == 'Vanilla':
+            v = BooleanVar(master=self.frame, value=False)
+            settings['LDDP'] = v
+            c = Checkbutton(self.frame, text="Install Lay D Denton Project for "+f, variable=v)
+            Hovertip(c, "What if Zelda was a girl?")
+            c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
+            self.FixColors(c)
+            row+=1
 
         if f == 'Vanilla' and IsWindows():
             l = Label(self.frame, text="Which EXE to use for vanilla:")
@@ -121,6 +129,8 @@ class InstallerWindow(GUIBase):
         except Exception as e:
             self.root.title('DXRando Installer Error!')
             self.root.update()
+            print('\n\nError!')
+            print(str(e) + '\n\n' + traceback.format_exc())
             messagebox.showinfo('Error!', str(e) + '\n\n' + traceback.format_exc(5))
             exit(1)
 
@@ -132,11 +142,13 @@ class InstallerWindow(GUIBase):
 
         flavors = {}
         v:IntVar
+        dummy = DummyCheckbox()
         for (f,v) in self.flavors.items():
             if v['install'].get():
                 flavors[f] = {
-                    'exetype': v['exe'].get() if 'exe' in v else None,
-                    'mirrors': v['mirrors'].get() if 'mirrors' in v else None,
+                    'exetype': v.get('exe', dummy).get(),
+                    'mirrors': v.get('mirrors', dummy).get(),
+                    'LDDP': v.get('LDDP', dummy).get(),
                     'downloadcallback': self.DownloadProgress,
                 }
 
@@ -159,6 +171,7 @@ class InstallerWindow(GUIBase):
         percent = '{:.0f}%'.format(percent)
         newtitle = status + ' ' + percent
         if self.lastprogress == newtitle:
+            self.root.update()
             return
         self.root.title(newtitle)
         self.lastprogress = newtitle

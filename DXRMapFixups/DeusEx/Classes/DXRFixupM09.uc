@@ -26,6 +26,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)OrdersTrigger ord;
     local #var(prefix)Containers c;
     local Rotator rot;
+    local #var(prefix)LAM lam;
+    local Switch1 s;
 
     switch(dxr.localURL)
     {
@@ -35,6 +37,16 @@ function PreFirstEntryMapFixes()
             if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
         }
         AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
+
+        //Button to open the office door
+        AddSwitch( vect(2056.951904,-1792.230713,-170.444351), rot(16382, 0, 0), 'FrontDoor');
+
+        foreach AllActors(class'Switch1',s){
+            if (s.Event=='Eledoor01'){
+                s.Event='Elevator01_bottom';
+                break;
+            }
+        }
 
         //Add some new locations for containers and items
         Spawn(class'PlaceholderContainer',,, vectm(-3143,274,305)); //Front of ship
@@ -108,11 +120,21 @@ function PreFirstEntryMapFixes()
         break;
 
     case "09_NYC_DOCKYARD":
+        foreach AllActors(class'#var(prefix)LAM', lam) {
+            if(lam.name != 'LAM2') continue;
+            lam.bCollideWorld = false;
+            lam.SetLocation(vectm(2073, 6085.963379, -235.489441));
+            lam.bCollideWorld = true;
+            break;
+        }
+
+        //Button to open the sewer grate from the ship side
+        AddSwitch( vect(1883.546753,6404.096191,-232.870697), rot(0, 0, 0), 'DrainGrate');
+
+
         foreach AllActors(class'Button1',b){
             if (b.Tag=='Button1' && b.Event=='Lift' && b.Location.Z < 200){ //vanilla Z is 97 for the lower button, just giving some slop in case it was changed in another mod?
                 rot = b.Rotation;
-                if(coords_mult.X < 0 || coords_mult.Y < 0)
-                    rot.Yaw += 32768;
                 k = Spawn(class'Keypad2',,,b.Location, rot);
                 k.validCode="8675309"; //They really like Jenny in this place
                 k.bToggleLock=False;

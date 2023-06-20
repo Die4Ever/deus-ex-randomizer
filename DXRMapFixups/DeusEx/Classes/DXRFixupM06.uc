@@ -55,6 +55,9 @@ function PreFirstEntryMapFixes()
             }
         }
 
+        //Button to make Jock fire a missile
+        AddSwitch( vect(-1537.039185,-382.395264,442), rot(0, 16384, 0), 'make_a_break');
+
         class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
         class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
         class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
@@ -234,6 +237,13 @@ function PreFirstEntryMapFixes()
         }
         break;
     case "06_HONGKONG_VERSALIFE":
+
+        ft= Spawn(class'FlagTrigger',,, vectm(128.850372,635.855957,-123)); //In front of lower elevator
+        ft.Event='VL_OnAlert';
+        ft.FlagName='Have_ROM';
+        ft.bSetFlag=False;
+        ft.bTrigger=True;
+
         Spawn(class'PlaceholderItem',,, vectm(12.36,1556.5,-51)); //1st floor front cube
         Spawn(class'PlaceholderItem',,, vectm(643.5,2139.7,-51.7)); //1st floor back cube
         Spawn(class'PlaceholderItem',,, vectm(210.94,2062.23,204.3)); //2nd floor front cube

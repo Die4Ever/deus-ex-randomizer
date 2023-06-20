@@ -51,7 +51,8 @@ class DXRTestCase(unittest.TestCase):
             + b'DefaultServerGame=DeusEx.DeathMatchGame\r\nViewportManager=WinDrv.WindowsClient\r\nRender=RenderExt.RenderExt\r\nInput=Extension.InputExt\r\nCanvas=Engine.Canvas\r\n'
             + b'Root=VMDRandomizer.DXRandoRootWindow\r\n'
             + b';Root=DeusEx.DeusExRootWindow\r\n'
-            + b'CdPath=D:\r\n\r\n')
+            + b'CdPath=D:\r\n\r\n'
+            + b'\r\n\r\n[Core.System]\r\nPaths=..\\VMDRandomizer\\System\\*.u\r\n') # leftover addition with no matched section gets added
 
         result = Config.ModifyConfig(origconfig,
             {'Engine.Engine': {'DefaultGame': 'VMDRandomizer.DXRandoGameInfo', 'Root': 'VMDRandomizer.DXRandoRootWindow'}},#changes

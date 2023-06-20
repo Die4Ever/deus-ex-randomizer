@@ -80,14 +80,6 @@ function DXRBase DXRFindModule(class<DXRBase> class)
     return m;
 }
 
-function PostIntro()
-{
-    if( flagbase.GetInt('Rando_newgameplus_loops') > 0 ) {
-        bStartNewGameAfterIntro = true;
-    }
-    Super.PostIntro();
-}
-
 // just wrap some stuff in an if statement for flag Rando_newgameplus_loops
 exec function StartNewGame(String startMap)
 {
@@ -101,6 +93,7 @@ exec function StartNewGame(String startMap)
     GetDXR();
     dxr.DXRInit();
     dxr.info( Self$" StartNewGame("$startMap$") found "$dxr$", dxr.flagbase: "$dxr.flagbase$", dxr.flags.newgameplus_loops: "$dxr.flags.newgameplus_loops);
+
     if( dxr.flags.newgameplus_loops == 0 ) {
         SaveSkillPoints();
         ResetPlayer();

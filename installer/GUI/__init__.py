@@ -103,3 +103,7 @@ def errordialog(title, msg, e=None):
     print(title, '\n', msg)
     messagebox.showerror(title, msg)
 
+
+class DummyCheckbox:
+    def get(self):
+        return False

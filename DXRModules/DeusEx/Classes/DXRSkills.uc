@@ -155,7 +155,7 @@ simulated function RandoSkillLevelValues(Skill a)
     local float skill_value_wet_dry;
 
     if( #var(prefix)SkillWeaponHeavy(a) != None ) {// TODO: maybe make this a sliding scale?
-        add_desc = "125% or higher will allow you to move more quickly while carrying a heavy weapon.";
+        add_desc = "150% or higher will allow you to move more quickly while carrying a heavy weapon.";
     }
 #ifdef injections
     else if( #var(prefix)SkillDemolition(a) != None ) {
@@ -191,7 +191,7 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
 
     if( s.Class == class'#var(prefix)SkillDemolition' || InStr(String(s.Class.Name), "#var(prefix)SkillWeapon") == 0 ) {
         word = "Damage";
-        f = -1.0 * s.LevelValues[i] + 1.0;
+        f = -2.0 * s.LevelValues[i] + 1.0;
         return int(f * 100.0) $ p;
     }
     else if( s.Class == class'#var(prefix)SkillLockpicking' || s.Class == class'#var(prefix)SkillTech' ) {

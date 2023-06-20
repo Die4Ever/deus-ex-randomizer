@@ -92,15 +92,23 @@ function AddMissionGoals()
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
-    if(g.name == "Terrorist Commander" && g.actors[1].a != None) {
+    local string text;
+
+    if(g.name == "Terrorist Commander") {
         // DataLinkTrigger 15ft wide, 4ft tall
-        g.actors[1].a.SetCollisionSize(240, 64);
+        if(g.actors[1].a != None)
+            g.actors[1].a.SetCollisionSize(240, 64);
         if(Loc.name != "Top of the Statue") {
-            SpawnDatacube(vectm(2801.546387, 171.028091, 2545.382813), rotm(0,0,0),
-                "I'm gonna go for a walk to clear my head."
-                    $ "|n|nI might be anywhere, like the hut in front of the statue, hanging out with Gunther in jail, or maybe I'll even sneak past UNATCO to hang out on the dock."
-                    $ "|n|n-- Leo", true
-            );
+            text = "I'm gonna go for a walk to clear my head."
+                $ "|n|nI might be anywhere, like the hut in front of the statue, hanging out with Gunther in jail, or maybe I'll even sneak past UNATCO to hang out on the dock.";
+        } else {
+            text = "I was thinking about going for a walk but I got lazy."
+                $ "|n|nI could've been anywhere, like the hut in front of the statue, hanging out with Gunther in jail, or maybe even snuck past UNATCO to hang out on the dock.";
         }
+        text = text $ "|n-- Leo"
+            $ "|n|nPS: You can see all my possible locations by clicking the Goal Locations button on your Goals screen."
+            $ "|nIf you get really stuck then click on Show Spoilers, Show Nanokeys, or Show Datacubes.";
+
+        SpawnDatacube(vectm(2801.546387, 171.028091, 2545.382813), rotm(0,0,0), text, true);
     }
 }

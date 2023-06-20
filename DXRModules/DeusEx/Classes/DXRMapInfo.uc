@@ -446,7 +446,7 @@ switch(mapname)
             switch(teleportername)
             {
                 case "market":
-                    return "??? Somewhere in the Market ???";
+                    return "Market Elevator from Versalife";
                 case "cargoup":
                     return "Market Elevator from Helibase";
                 case "canal01":

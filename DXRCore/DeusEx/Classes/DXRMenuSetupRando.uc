@@ -39,6 +39,17 @@ function BindControls(optional string action)
     EnumOption("Randomize Goal Locations", 100, f.settings.goals);
     EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
 
+    //Make sure the starting map values match those in DXRStartMap
+    NewMenuItem("Starting Map", "What level you will start in");
+    EnumOption("Liberty Island", 0, f.settings.starting_map);
+    EnumOption("NSF Defection", 40, f.settings.starting_map);
+    EnumOption("MJ12 Jail", 50, f.settings.starting_map);
+    EnumOption("Wan Chai Market", 61, f.settings.starting_map);
+    EnumOption("Return to NYC", 81, f.settings.starting_map);
+    EnumOption("Graveyard", 99, f.settings.starting_map);
+    EnumOption("Everett's House", 119, f.settings.starting_map);
+    EnumOption("Ocean Lab", 140, f.settings.starting_map);
+
 #ifndef hx
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map."$BR$"If The Merchant dies then he stays dead for the rest of the game.");
     Slider(f.settings.merchants, 0, 100);
@@ -50,9 +61,13 @@ function BindControls(optional string action)
     NewMenuItem("Bingo Win", "How many completed lines to instantly win");
     Slider(f.settings.bingo_win, 0, 12);
 
-    NewMenuItem("Bingo Freespace", "Should the center be a Free Space");
+    NewMenuItem("Bingo Freespace", "Should the center be a Free Space, or even more Free Spaces");
     EnumOption("Enabled", 1, f.settings.bingo_freespaces);
     EnumOption("Disabled", 0, f.settings.bingo_freespaces);
+    EnumOption("2 Free Spaces", 2, f.settings.bingo_freespaces);
+    EnumOption("3 Free Spaces", 3, f.settings.bingo_freespaces);
+    EnumOption("4 Free Spaces", 4, f.settings.bingo_freespaces);
+    EnumOption("5 Free Spaces", 5, f.settings.bingo_freespaces);
 
     NewMenuItem("Spoiler Buttons", "Allow the use of spoiler buttons (Spoilers remain hidden until you choose to view them)");
     EnumOption("Available", 1, f.settings.spoilers);
