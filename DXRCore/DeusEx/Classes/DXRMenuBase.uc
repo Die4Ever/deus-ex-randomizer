@@ -1,7 +1,7 @@
 #ifdef injections
-class DXRMenuBase expands MenuUIScreenWindow config(DXRando);
+class DXRMenuBase expands MenuUIScreenWindow;
 #else
-class DXRMenuBase expands MenuUIScreenWindow config(#var(package));
+class DXRMenuBase expands MenuUIScreenWindow;
 #endif
 
 var MenuUIInfoButtonWindow winNameBorder;
@@ -28,22 +28,20 @@ var String helptexts[128];
 var DXRando dxr;
 var DXRFlags flags;
 
-var config int config_version;
+var Texture background_texture, help_background_texture;
+var color background, help_background;
+var EDrawStyle background_style, help_background_style;
 
-var config Texture background_texture, help_background_texture;
-var config color background, help_background;
-var config EDrawStyle background_style, help_background_style;
-
-var config int num_rows;
-var config int num_cols;
-var config int col_width_even;
-var config int col_width_odd;
-var config int row_height;
-var config int padding_width;
-var config int padding_height;
-var config Font groupHeaderFont;
-var config int groupHeaderX;
-var config int groupHeaderY;
+var int num_rows;
+var int num_cols;
+var int col_width_even;
+var int col_width_odd;
+var int row_height;
+var int padding_width;
+var int padding_height;
+var Font groupHeaderFont;
+var int groupHeaderX;
+var int groupHeaderY;
 
 var string BR;// line break
 
@@ -54,8 +52,6 @@ event Init(DXRando d)
     dxr = d;
     flags = dxr.flags;
     BR = Chr(10);
-
-    CheckConfig();
 
     coords = _GetCoords(num_rows, num_cols);
     ClientWidth = coords.X;
@@ -151,29 +147,6 @@ function _InvokeNewGameScreen(float difficulty, DXRando dxr)
         newGame.SetDifficulty(difficulty);
 #endif
         newGame.SetDxr(dxr);
-    }
-}
-
-function CheckConfig()
-{
-    if( config_version < class'DXRVersion'.static.VersionNumber() ) {
-        num_rows=default.num_rows;
-        num_cols=default.num_cols;
-        col_width_odd=default.col_width_odd;
-        col_width_even=default.col_width_even;
-        row_height=default.row_height;
-        padding_width=default.padding_width;
-        padding_height=default.padding_height;
-        background=default.background;
-        help_background=default.help_background;
-        background_style=default.background_style;
-        help_background_style=default.help_background_style;
-        background_texture=default.background_texture;
-        help_background_texture=default.help_background_texture;
-
-        log(Self$": upgraded config from "$config_version$" to "$class'DXRVersion'.static.VersionNumber());
-        config_version = class'DXRVersion'.static.VersionNumber();
-        SaveConfig();
     }
 }
 

@@ -101,7 +101,7 @@ static function string GetDirtyMapName(string map, vector v)
 
 function int GetMirrorMapsSetting()
 {
-    return int(ConsoleCommand("get #var(package).MenuChoice_MirrorMaps mirror_maps"));
+    return dxr.flags.mirroredmaps;
 }
 
 simulated function FirstEntry()

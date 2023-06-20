@@ -43,6 +43,7 @@ function InitDefaults()
         gamemode = 0;
         loadout = 0;
         crowdcontrol = 0;
+        mirroredmaps = 0;
     }
     newgameplus_loops = 0;
 
