@@ -901,7 +901,7 @@ function NewGamePlus()
     local DXRSkills skills;
     local DXRWeapons weapons;
     local DXRAugmentations augs;
-    local int i;
+    local int i, bingo_win;
     local float exp;
     local bool randomStart;
 
@@ -920,6 +920,7 @@ function NewGamePlus()
     newgameplus_loops++;
     exp = 1;
     randomStart = (settings.starting_map!=0);
+    bingo_win = settings.bingo_win;
 
     // always enable maxrando when doing NG+?
     maxrando = 1;
@@ -949,6 +950,7 @@ function NewGamePlus()
     NewGamePlusVal(settings.repairbots, 0.8, exp);
     NewGamePlusVal(settings.turrets_add, 1.3, exp);
     NewGamePlusVal(settings.merchants, 0.9, exp);
+    settings.bingo_win = bingo_win;
     if (randomStart){
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr);
     }
