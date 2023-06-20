@@ -104,7 +104,7 @@ function BindControls(optional string action)
     mirrored_maps_files_found = class'DXRMapVariants'.static.MirrorMapsAvailable();
 
     if(mirrored_maps_files_found) {
-        NewMenuItem("Mirrored Maps", "Enable mirrored maps if you have the files downloaded for them.");
+        NewMenuItem("Mirrored Maps %", "Enable mirrored maps if you have the files downloaded for them.");
         f.mirroredmaps = 50;// default to 50% when files are available
         Slider(f.mirroredmaps, 0, 100);
     } else {
