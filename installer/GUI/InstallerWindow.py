@@ -97,7 +97,7 @@ class InstallerWindow(GUIBase):
             v = BooleanVar(master=self.frame, value=False)
             settings['LDDP'] = v
             c = Checkbutton(self.frame, text="Install Lay D Denton Project for "+f, variable=v)
-            Hovertip(c, "Currently requires Lay D Denton.")
+            Hovertip(c, "What if Zelda was a girl?")
             c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
             self.FixColors(c)
             row+=1
