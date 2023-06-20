@@ -15,6 +15,9 @@ def GetConfChanges(modname):
         'Engine.Engine': {
             'DefaultGame': modname+'Randomizer.DXRandoGameInfo',
             'Root': modname+'Randomizer.DXRandoRootWindow'
+        },
+        'Core.System': {
+            'SavePath': '../Save' + modname + 'Rando'
         }
     }
     syspath = '..\\' + modname + 'Randomizer\\System\\*.u'
@@ -129,6 +132,7 @@ def EngineDllFix(p:Path) -> bool:
 
 
 def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path, changes:dict):
+    print('ModifyConfig', defconfig, config, outdefconfig, outconfig)
     bytes = defconfig.read_bytes()
     bytes = Config.ModifyConfig(bytes, changes)
     outdefconfig.write_bytes(bytes)
