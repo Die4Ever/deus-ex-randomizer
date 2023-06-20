@@ -28,6 +28,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         if(dxr.localURL == "01_NYC_UNATCOISLAND")
             p.ConsoleCommand("legend");
     }
+    log("starting map is set to "$settings.starting_map);
 }
 
 function InitDefaults()
@@ -899,6 +900,7 @@ function NewGamePlus()
     local DXRAugmentations augs;
     local int i;
     local float exp;
+    local bool randomStart;
 
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
@@ -914,6 +916,7 @@ function NewGamePlus()
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
     exp = 1;
+    randomStart = (settings.starting_map!=0);
 
     // always enable maxrando when doing NG+?
     maxrando = 1;
@@ -943,6 +946,9 @@ function NewGamePlus()
     NewGamePlusVal(settings.repairbots, 0.8, exp);
     NewGamePlusVal(settings.turrets_add, 1.3, exp);
     NewGamePlusVal(settings.merchants, 0.9, exp);
+    if (randomStart){
+        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr);
+    }
 
     if (p.KeyRing != None)
     {

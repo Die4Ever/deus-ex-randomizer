@@ -233,3 +233,32 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map)
 
     return False;
 }
+
+static function int ChooseRandomStartMap(DXRando dxr)
+{
+    local int i;
+
+    i = staticrng(dxr,7);
+
+    //Should be able to legitimately return Liberty Island (even if that's as a value of 10), but needs additional special handling
+    switch(i)
+    {
+        case 0:
+            return 40;
+        case 1:
+            return 50;
+        case 2:
+            return 61;
+        case 3:
+            return 81;
+        case 4:
+            return 99;
+        case 5:
+            return 119;
+        case 6:
+            return 140;
+        default:
+            dxr.err("Random Starting Map picked value "$i$" which is unhandled!");
+            return 0; //Fall back on Liberty Island
+    }
+}
