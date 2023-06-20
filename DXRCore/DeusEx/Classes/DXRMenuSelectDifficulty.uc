@@ -103,12 +103,13 @@ function BindControls(optional string action)
 #ifdef injections
     mirrored_maps_files_found = class'DXRMapVariants'.static.MirrorMapsAvailable();
 
-    if(!mirrored_maps_files_found) {
+    if(mirrored_maps_files_found) {
         NewMenuItem("Mirrored Maps", "Enable mirrored maps if you have the files downloaded for them.");
+        f.mirroredmaps = 50;// default to 50% when files are available
         Slider(f.mirroredmaps, 0, 100);
     } else {
         NewMenuItem("", "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github");
-        EnumOption("Mirror Map Files Not Found", 0);
+        EnumOption("Mirror Map Files Not Found", 0, f.mirroredmaps);
     }
 #endif
 
