@@ -32,12 +32,8 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
 #endif
 }
 
-static simulated function int GetStartingMissionMask(DXRando dxr)
+static simulated function int GetStartingMissionMask(int start_map)
 {
-    local int start_map;
-
-    start_map = dxr.flagbase.GetInt('Rando_starting_map');
-
     switch(start_map)
     {// these numbers are basically mission number * 10, with some extra for progress within the mission
         case 0:

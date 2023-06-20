@@ -1458,7 +1458,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     local float f;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(dxr.flags.settings.starting_map);
-    starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(dxr);
+    starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(dxr.flags.settings.starting_map);
     num_options = 0;
     for(x=0; x<ArrayCount(bingo_options); x++) {
         if(bingo_options[x].event == "") continue;

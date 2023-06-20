@@ -52,12 +52,18 @@ function SetEnumerators()
     }
     else {
         mirror_maps = 0;
-        numTicks = 0;
+        endValue = 0;
+        numTicks = 1;
         SetValue(mirror_maps);
         SaveSetting();
+        btnAction.SetWidth(243);
         HelpText = "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github";
         actionText = "Mirror Map Files Not Found";
         btnAction.SetButtonText(actionText);
+        SetEnumeration(0, "Missing");
+        btnSlider.Hide();
+        btnSlider.SetTicks(numTicks, startValue, endValue);
+        return;
     }
 
     for (i=0;i<numTicks;i++){
