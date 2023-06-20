@@ -363,19 +363,19 @@ function AddLeo()
     {
         case "ENDGAME1":
         case "ENDGAME2": //They actually lined these two up!
-            log("Endgame 1 or 2");
+            l("Endgame 1 or 2");
             loc.X = 189;
             loc.Y = -7816;
             loc.Z = -48;
             break;
         case "ENDGAME3":
-            log("Endgame 3");
+            l("Endgame 3");
             loc.X = 192;
             loc.Y = -7813;
             loc.Z = -48;
             break;
         case "ENDGAME4":
-            log("Endgame 4");
+            l("Endgame 4");
             loc.X = -736;
             loc.Y = -22;
             loc.Z = -32;
@@ -583,7 +583,7 @@ function bool is_valid(string s, class<Object> o)
     if ( a.default.DrawType != DT_Mesh ) return false;
     if ( a.default.Style != STY_Normal ) return false;
 
-    log( "if ( r == i++ ) return class'" $ s $ "';" );
+    l( "if ( r == i++ ) return class'" $ s $ "';" );
     //i++;//was a global variable in my code that outputted code...
     return true;
 }

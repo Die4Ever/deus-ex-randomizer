@@ -195,9 +195,9 @@ function static AddRandomAugs(DXRando dxr, DeusExPlayer p, int num)
         }
         if (augOk){
             AddAug(p, augClass, 1);
-            log("Randomly added aug "$augClass);
+            l("Randomly added aug "$augClass);
         } else {
-            log("Failed to find random aug to add");
+            l("Failed to find random aug to add");
         }
     }
 }
@@ -293,9 +293,9 @@ function static class<Augmentation> PickRandomAug(DXRando dxr, out int banned[50
     }
     slot = i;
     if( slot >= ArrayCount(class'#var(prefix)AugmentationManager'.default.augClasses) )
-        dxr.err("PickRandomAug WTF "$slot);
+        dxr.err("PickRandomAug failed "$slot);
     aug = class'#var(prefix)AugmentationManager'.default.augClasses[slot];
-    log("Picked Aug "$ slot $"/"$numAugs$" " $ aug.Name, 'DXRAugmentations');
+    l("Picked Aug "$ slot $"/"$numAugs$" " $ aug.Name, 'DXRAugmentations');
     banned[slot] = 1;
     numAugs--;
     return aug;

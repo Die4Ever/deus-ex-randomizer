@@ -318,7 +318,7 @@ simulated function string DescriptionLevel(Actor a, int i, out string word)
     local Augmentation aug;
     local float f;
 
-    err("DXRBase DescriptionLevel failed for "$a);
+    warn("DXRBase DescriptionLevel failed for "$a);
     sk = Skill(a);
     aug = Augmentation(a);
     if(sk != None) {

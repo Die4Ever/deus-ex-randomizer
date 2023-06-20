@@ -28,7 +28,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         if(dxr.localURL == "01_NYC_UNATCOISLAND")
             p.ConsoleCommand("legend");
     }
-    log("starting map is set to "$settings.starting_map);
+    l("starting map is set to "$settings.starting_map);
 }
 
 function InitDefaults()
