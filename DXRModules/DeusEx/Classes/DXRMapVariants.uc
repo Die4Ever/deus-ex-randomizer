@@ -155,6 +155,8 @@ function string VaryMap(string map)
 {
     local int chance;
     map = CleanupMapName(map);
+    SetGlobalSeed( "VaryURL " $ Caps(map) );
+
     chance = GetMirrorMapsSetting();
     if(chance_single(chance))
         return map $"_-1_1_1";
