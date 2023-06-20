@@ -209,6 +209,7 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
         case "11_Paris_Everett":
             //First Toby conversation happened
             flagbase.SetBool('MeetTobyAtanwe_played',true);
+            flagbase.SetBool('FemJCMeetTobyAtanwe_played',true);
             break;
         case "14_Vandenberg_Sub":
             flagbase.SetBool('Ray_dead',true);  //Save Jock!

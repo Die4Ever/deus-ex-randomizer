@@ -1999,7 +1999,7 @@ defaultproperties
     bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1,missions=64)
     bingo_options(96)=(event="ChugWater",desc="Chug water %s times",max=30,mission=40830)
 #ifndef vmd
-    bingo_options(97)=(event="ChangeClothes",desc="Change clothes at %s different clothes racks",max=3)
+    bingo_options(97)=(event="ChangeClothes",desc="Change clothes at %s different clothes racks",max=3,missions=852)
 #endif
     bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1,missions=8)
     bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1,missions=17686)
