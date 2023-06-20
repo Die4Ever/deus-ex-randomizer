@@ -1,20 +1,11 @@
 class DXRAugmentations extends DXRBase transient;
 
-var config float min_aug_weaken, max_aug_str;
+var float min_aug_weaken, max_aug_str;
 
 replication
 {
     reliable if( Role==ROLE_Authority )
         min_aug_weaken, max_aug_str;
-}
-
-function CheckConfig()
-{
-    if( ConfigOlderThan(1,6,0,5) ) {
-        min_aug_weaken = default.min_aug_weaken;
-        max_aug_str = default.max_aug_str;
-    }
-    Super.CheckConfig();
 }
 
 function FirstEntry()

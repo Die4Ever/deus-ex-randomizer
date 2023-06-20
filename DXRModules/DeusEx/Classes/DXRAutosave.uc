@@ -11,8 +11,8 @@ const ExtraSafe = 4;
 
 function CheckConfig()
 {
-    if( ConfigOlderThan(2,3,4,1) ) {
-        save_delay = default.save_delay;
+    if( ConfigOlderThan(2,5,0,9) ) {
+        save_delay = 0.7;
     }
     Super.CheckConfig();
 }
@@ -131,9 +131,4 @@ function doAutosave()
     }
 
     info("doAutosave() completed, save_delay: "$save_delay);
-}
-
-defaultproperties
-{
-    save_delay=0.7
 }

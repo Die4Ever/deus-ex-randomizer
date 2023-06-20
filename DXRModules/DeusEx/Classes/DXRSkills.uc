@@ -21,16 +21,16 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,4,0,3) ) {
+    if( ConfigOlderThan(2,5,0,9) ) {
         for(i=0; i < ArrayCount(SkillCostMultipliers); i++) {
             SkillCostMultipliers[i].type = "";
             SkillCostMultipliers[i].percent = 100;
             SkillCostMultipliers[i].minLevel = 1;
             SkillCostMultipliers[i].maxLevel = ArrayCount(class'Skill'.default.Cost);
         }
-        min_skill_weaken = default.min_skill_weaken;
-        max_skill_str = default.max_skill_str;
-        skill_cost_curve = default.skill_cost_curve;
+        min_skill_weaken = 0.3;
+        max_skill_str = 1.0;
+        skill_cost_curve = 2;
 
         i=0;
 #ifdef balance
@@ -420,11 +420,4 @@ function bool TestWeightedLevelValues(float f1, float f2)
     r1 = WeightedLevelValue(1, f1, 3.5, 1, 0.75, 0, 4);
     r2 = WeightedLevelValue(2, f2, 3.5, 1, 0.75, 1, 4);
     return test(r1 < r2, "WeightedLevelValue "$f1@f2$", wet=0.75, "$r1$" < "$r2);
-}
-
-defaultproperties
-{
-    min_skill_weaken=0.3
-    max_skill_str=1.0
-    skill_cost_curve=2
 }

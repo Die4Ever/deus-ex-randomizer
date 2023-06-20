@@ -568,9 +568,3 @@ function RunTests()
     }
     testint( total, 100, "config randommelees chances, check total "$total);
 }
-
-defaultproperties
-{
-    min_rate_adjust=0.1
-    max_rate_adjust=3.0
-}

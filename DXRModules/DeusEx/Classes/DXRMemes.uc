@@ -1196,7 +1196,3 @@ function string _GetRandomActorClass()
     if ( r == i++ ) return "WineBottle";
     //if ( r == i++ ) return "WoodFragment";
 }
-
-defaultproperties
-{
-}

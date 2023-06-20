@@ -27,9 +27,9 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,5,0,1) ) {
-        min_rate_adjust = default.min_rate_adjust;
-        max_rate_adjust = default.max_rate_adjust;
+    if( ConfigOlderThan(2,5,0,9) ) {
+        min_rate_adjust = 0.3;
+        max_rate_adjust = 1.75;
 
         for(i=0; i < ArrayCount(mission_scaling); i++) {
             mission_scaling[i] = 100;
@@ -450,6 +450,4 @@ simulated function PrintItemRate(CreditsWindow cw, class<Inventory> c, int perce
 defaultproperties
 {
     bAlwaysTick=True
-    min_rate_adjust=0.3
-    max_rate_adjust=1.75
 }
