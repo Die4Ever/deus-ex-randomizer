@@ -1,6 +1,6 @@
-Download the installer in the Assets section under the changelog.
+Download `DXRandoInstaller.zip` in the Assets section under the changelog.
 
-[Manual Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks)
+If you're having an issue with the installer program: [Manual Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks)
 
 ## Trailers
 
@@ -27,4 +27,4 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
 *
 </details>
 
-Download is in the Assets section right below this line:
+Download `DXRandoInstaller.zip` in the Assets section right below this line:
