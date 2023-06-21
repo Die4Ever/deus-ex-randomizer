@@ -6,10 +6,17 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 
 ### [If the game is not running well, even for vanilla Deus Ex, see the recommended tweaks here.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks#recommended-tweaks-for-running-deus-ex-on-modern-computers)
 
-## v2.0 Trailer
+## Trailers
 
-<a href="https://www.youtube.com/watch?v=XsoIKbn_suE&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch&index=2" target="_blank">
-<img src="https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/daf30de5-fd3e-4b65-a0cf-abc7f6ac758b" alt="v2.0 Trailer" height="300"/></a>
+Here's a trailer for our new Mirrored Maps feature in v2.5:
+
+<a href="https://www.youtube.com/watch?v=-8BOLf1tskc&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch" target="_blank">
+<img src="https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/0884f42b-36b2-4716-9f80-6d56faee6621" alt="v2.5 Mirrored Maps Trailer" width="500"/></a>
+
+If you don't know what Deus Ex Randomizer is, then here's our old trailer which shows a breakdown of how it works:
+
+<a href="https://www.youtube.com/watch?v=XsoIKbn_suE&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch" target="_blank">
+<img src="https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/daf30de5-fd3e-4b65-a0cf-abc7f6ac758b" alt="v2.0 Trailer" width="500"/></a>
 
 ## DXRando randomizes
 * Locations of goals, NPCs, and some starting locations
@@ -35,6 +42,7 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 * JC's and Paul's clothes
 * Randomly adds "The Merchant"
 * Optionally randomize the song selections, with options to use songs from Unreal and Unreal Tournament
+* Option for mirrored maps, with choice of what percentage of maps should be mirrored
 
 ## There are also settings for
 * Crowd Control! Let your Twitch/YouTube/Discord/other viewers troll you or help you! https://crowdcontrol.live/guides/DeusEx
@@ -77,6 +85,7 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 * Optional hardcore Autosave-Only mode, no save-scumming allowed!
 * Option to keep the game running while menus are open, making hacking or inventory management more difficult
 * Assistance options like autofill for passwords passwords, and the ability to show where Nanokeys/Datacubes/goals are located.
+* Option to start the game at certain points like Hong Kong or Paris
 
 ## New Game Menus
 
