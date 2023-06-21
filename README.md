@@ -92,7 +92,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
 <details>
 <summary>When you click New Game, you will see this settings screen:</summary>
 
-![options](https://i.imgur.com/tMdOLY1.jpg)
+![options](https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/55ae0512-277a-4fa6-8cb3-c613e2cac63d)
 
 </details>
 
@@ -101,7 +101,16 @@ If you click Next then it will use default settings based on your difficulty cho
 <details>
 <summary>But if you click Advanced then you will see these settings:</summary>
 
-![advanced options](https://i.imgur.com/kxJyToG.jpg)
+![advanced options](https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/79ca13d6-bb9d-4bcc-81b6-73fcf3a2cd68)
+
+</details>
+
+On the main menu there's also a Rando button for a bunch of global settings, like music controls, online features, and some QoL options.
+
+<details>
+<summary>Rando settings</summary>
+
+![rando setttings](https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/f2c92ad8-131a-4dc9-8d30-89c66bdb20ab)
 
 </details>
 
