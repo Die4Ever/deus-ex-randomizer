@@ -11,7 +11,7 @@ function Frob(actor Frobber, Inventory frobWith)
         return;
     bUsing = True;
 
-    rnd = Rand(4); //make sure this matches the number of sounds below
+    rnd = Rand(5); //make sure this matches the number of sounds below
     switch(rnd){
         case 0:
             //DX Theme, Correct
@@ -32,6 +32,11 @@ function Frob(actor Frobber, Inventory frobWith)
             //Max Payne Piano, Fast
             PlaySound(sound'MaxPaynePianoFast', SLOT_Misc,,, 256);
             duration=4.5;
+            break;
+        case 4:
+            //Megalovania
+            PlaySound(sound'Megalovania', SLOT_Misc,,, 256);
+            duration=4;
             break;
         default:
             log("DXRPiano went to far this time!  Got "$rnd);
