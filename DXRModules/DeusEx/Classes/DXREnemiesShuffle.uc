@@ -68,7 +68,7 @@ function SwapScriptedPawns(int percent, bool enemies)
     foreach AllActors(class'ScriptedPawn', a )
     {
         if( a.bHidden || a.bStatic ) continue;
-        if( a.bImportant ) continue;
+        if( a.bImportant || a.bIsSecretGoal ) continue;
         if( IsCritter(a) ) continue;
         if( IsInitialEnemy(a) != enemies ) continue;
         if( !chance_single(percent) ) continue;

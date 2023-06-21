@@ -42,7 +42,7 @@ function FirstEntry()
 
 static function GiveRandomName(DXRando dxr, ScriptedPawn p)
 {
-    if( p.bImportant ) return;
+    if( p.bImportant || p.bIsSecretGoal ) return;
     p.UnfamiliarName = RandomName(dxr, p);
     p.FamiliarName = p.UnfamiliarName;
 }

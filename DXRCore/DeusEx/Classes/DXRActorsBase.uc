@@ -675,7 +675,7 @@ static function string GetActorName(Actor a)
     }
 #endif
     // bImportant ScriptedPawns don't get their names randomized
-    else if(sp != None && sp.bImportant)
+    else if(sp != None && (sp.bImportant || sp.bIsSecretGoal))
         return a.FamiliarName;
     // randomized names aren't really meaningful here so use their default name
     else if(a.default.FamiliarName != "")
