@@ -43,6 +43,9 @@ function ReplaceActors()
         else if( #var(prefix)Keypad(a) != None ) {
             ReplaceKeypad(#var(prefix)Keypad(a));
         }
+        else if( #var(prefix)WHPiano(a) != None ) {
+            ReplacePiano(#var(prefix)WHPiano(a));
+        }
         else if( #var(prefix)MissionEndgame(a) != None && !#defined(revision) && !#defined(hx) ) {
             ReplaceMissionEndgame(#var(prefix)MissionEndgame(a));
         }
@@ -105,6 +108,19 @@ function ReplaceKeypad(#var(prefix)Keypad a)
     ReplaceDeusExDecoration(a, n);
     a.Destroy();
 #endif
+}
+
+function ReplacePiano(#var(prefix)WHPiano a)
+{
+    local DXRPiano n;
+    if(a.IsA('DXRPiano'))
+        return;
+
+    n = DXRPiano(SpawnReplacement(a, class'DXRPiano'));
+    if(n==None)
+        return;
+    ReplaceDeusExDecoration(a, n);
+    a.Destroy();
 }
 
 function ReplaceGEPGun(WeaponGEPGUN a)

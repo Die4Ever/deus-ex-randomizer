@@ -4,54 +4,68 @@ function Frob(actor Frobber, Inventory frobWith)
 {
     local int rnd;
     local float duration;
+    local Sound SelectedSound;
 
     Super(WashingtonDecoration).Frob(Frobber, frobWith);
 
+#ifdef hx
+    if ( NextUseTime>Level.TimeSeconds || IsInState('Conversation') || IsInState('FirstPersonConversation') )
+        return;
+#else
     if (bUsing)
         return;
-    bUsing = True;
+#endif
 
-    rnd = Rand(6); //make sure this matches the number of sounds below
+    rnd = Rand(8); //make sure this matches the number of sounds below
     switch(rnd){
         case 0:
             //DX Theme, Correct
-            PlaySound(sound'Piano1', SLOT_Misc,,, 256);
-            duration=2.0;
+            SelectedSound = sound'Piano1';
             break;
         case 1:
             //Random Key Mashing, DX Vanilla
-            PlaySound(sound'Piano2', SLOT_Misc,,, 256);
-            duration=2.0;
+            SelectedSound = sound'Piano2';
             break;
         case 2:
             //Max Payne Piano, Slow, Learning
-            PlaySound(sound'MaxPaynePianoSlow', SLOT_Misc,,, 256);
-            duration=7.5;
+            SelectedSound = sound'MaxPaynePianoSlow';
             break;
         case 3:
             //Max Payne Piano, Fast
-            PlaySound(sound'MaxPaynePianoFast', SLOT_Misc,,, 256);
-            duration=4.5;
+            SelectedSound = sound'MaxPaynePianoFast';
             break;
         case 4:
             //Megalovania
-            PlaySound(sound'Megalovania', SLOT_Misc,,, 256);
-            duration=4.0;
+            SelectedSound = sound'Megalovania';
             break;
         case 5:
             //Song of Storms
-            PlaySound(sound'SongOfStorms', SLOT_Misc,,, 256);
-            duration=4.5;
+            SelectedSound = sound'SongOfStorms';
+            break;
+        case 6:
+            // The six arrive, the fire lights their eyes
+            SelectedSound = sound'T7GPianoBad';
+            break;
+        case 7:
+            // invited here to learn to play.... THE GAME
+            SelectedSound = sound'T7GPianoGood';
             break;
         default:
-            log("DXRPiano went to far this time!  Got "$rnd);
-            duration=-1.0;
-            break;
+            log("DXRPiano went too far this time!  Got "$rnd);
+            return;
     }
 
-    if (duration<=0){
-        bUsing=False; //Picked an invalid sound
-    } else {
-        SetTimer(duration, False);
+    if(SelectedSound == None) {
+        log("DXRPiano got an invalid sound!  Got "$rnd);
+        return;
     }
+
+    PlaySound(SelectedSound, SLOT_Misc,,, 256);
+    duration = GetSoundDuration(SelectedSound) + 0.5;
+#ifdef hx
+    NextUseTime = Level.TimeSeconds + duration;
+#else
+    bUsing = True;
+    SetTimer(duration, False);
+#endif
 }
