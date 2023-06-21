@@ -18,6 +18,7 @@ function BindControls(optional string action)
     local int temp, i;
 #ifdef injections
     local DXRAutosave autosave;
+    local bool mirrored_maps_files_found;
 #endif
 
     f = InitFlags();
@@ -99,6 +100,19 @@ function BindControls(optional string action)
         t.set_enabled(false, true);
     }
 
+#ifdef injections
+    mirrored_maps_files_found = class'DXRMapVariants'.static.MirrorMapsAvailable();
+
+    if(mirrored_maps_files_found) {
+        NewMenuItem("Mirrored Maps %", "Enable mirrored maps if you have the files downloaded for them.");
+        f.mirroredmaps = 50;// default to 50% when files are available
+        Slider(f.mirroredmaps, 0, 100);
+    } else {
+        NewMenuItem("", "Use the installer to download the mirrored map files, or go to the unreal-map-flipper Releases page on Github");
+        EnumOption("Mirror Map Files Not Found", 0, f.mirroredmaps);
+    }
+#endif
+
     NewMenuItem("Seed", "Enter a seed if you want to play the same game again.");
     sseed = EditBox("", "1234567890");
     if( sseed != "" ) {
@@ -150,11 +164,11 @@ defaultproperties
     Title="DX Rando Options"
     bUsesHelpWindow=False
     bEscapeSavesSettings=False
-    num_rows=8;
-    num_cols=2;
-    col_width_odd=160;
-    col_width_even=240;
-    row_height=20;
-    padding_width=20;
-    padding_height=10;
+    num_rows=9
+    num_cols=2
+    col_width_odd=160
+    col_width_even=240
+    row_height=20
+    padding_width=20
+    padding_height=10
 }

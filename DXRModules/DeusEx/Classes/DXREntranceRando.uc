@@ -1474,8 +1474,3 @@ function TestDependencies()
     numConns = 0;
     numFixedConns = 0;
 }
-
-defaultproperties
-{
-    min_connections_selfconnect=999
-}

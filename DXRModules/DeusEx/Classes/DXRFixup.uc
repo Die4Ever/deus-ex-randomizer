@@ -388,7 +388,7 @@ function FixFlagTriggers()
     foreach AllActors(class'FlagTrigger', f) {
         if( f.bSetFlag && f.flagExpiration == -1 ) {
             f.flagExpiration = 999;
-            log(f @ f.FlagName @ f.flagValue $" changed expiration from -1 to 999");
+            l(f @ f.FlagName @ f.flagValue $" changed expiration from -1 to 999");
         }
     }
 }

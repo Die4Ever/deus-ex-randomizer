@@ -23,6 +23,7 @@ var #var(flagvarprefix) int autosave;//0=off, 1=first time entering level, 2=eve
 var #var(flagvarprefix) int maxrando;
 var #var(flagvarprefix) int newgameplus_loops;
 var #var(flagvarprefix) int crowdcontrol;
+var #var(flagvarprefix) int mirroredmaps;
 
 var #var(flagvarprefix) int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
 var #var(flagvarprefix) int bSetSeed;// int because all our flags are ints?
@@ -294,6 +295,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_newgameplus_loops', newgameplus_loops, mode, str);
     FlagInt('Rando_gamemode', gamemode, mode, str);
     FlagInt('Rando_setseed', bSetSeed, mode, str);
+    FlagInt('Rando_mirroredmaps', mirroredmaps, mode, str);
 
     if( FlagInt('Rando_difficulty', difficulty, mode, str) ) {
         SetDifficulty(difficulty);
@@ -397,6 +399,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Playthrough ID";
         case 'Rando_gamemode':
             return "Game Mode";
+        case 'Rando_mirroredmaps':
+            return "Mirrored Maps";
         case 'Rando_difficulty':
             return "Difficulty";
         case 'Rando_minskill':
@@ -555,6 +559,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
             return ToHex(val);
 
         //Return the number as a percent
+        case 'Rando_mirroredmaps':
         case 'Rando_minskill':
         case 'Rando_maxskill':
         case 'Rando_ammo':

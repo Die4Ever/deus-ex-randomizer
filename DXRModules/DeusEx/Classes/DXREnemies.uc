@@ -11,10 +11,10 @@ const Police = 5;
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,5,0,1) ) {
+    if( ConfigOlderThan(2,5,0,9) ) {
         enemy_multiplier = 1;
-        min_rate_adjust = default.min_rate_adjust;
-        max_rate_adjust = default.max_rate_adjust;
+        min_rate_adjust = 0.1;
+        max_rate_adjust = 3.0;
 
         for(i=0; i < ArrayCount(randomweapons); i++ ) {
             randomweapons[i].type = "";

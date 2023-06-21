@@ -17,7 +17,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,2,8,3) ) {
+    if( ConfigOlderThan(2,5,0,9) ) {
         i=0;
         // SmugglersFrontDoor for all 3 maps
         door_fixes[i].map = "02_NYC_STREET";
@@ -160,12 +160,12 @@ function CheckConfig()
         door_fixes[i].bHighlight = false;
         i++;
 
-        min_lock_adjust = default.min_lock_adjust;
-        max_lock_adjust = default.max_lock_adjust;
-        min_door_adjust = default.min_door_adjust;
-        max_door_adjust = default.max_door_adjust;
-        min_mindmg_adjust = default.min_mindmg_adjust;
-        max_mindmg_adjust = default.max_mindmg_adjust;
+        min_lock_adjust=0.5;
+        max_lock_adjust=1.5;
+        min_door_adjust=0.5;
+        max_door_adjust=1.5;
+        min_mindmg_adjust=0.35;
+        max_mindmg_adjust=1.2;
     }
     for(i=0; i<ArrayCount(door_fixes); i++) {
         door_fixes[i].map = Caps(door_fixes[i].map);
@@ -439,14 +439,4 @@ static function StaticMakeDestructible(#var(DeusExPrefix)Mover d)
         d.minDamageThreshold = 60;
         d.doorStrength = 1;
     }
-}
-
-defaultproperties
-{
-    min_lock_adjust=0.5
-    max_lock_adjust=1.5
-    min_door_adjust=0.5
-    max_door_adjust=1.5
-    min_mindmg_adjust=0.35
-    max_mindmg_adjust=1.2
 }

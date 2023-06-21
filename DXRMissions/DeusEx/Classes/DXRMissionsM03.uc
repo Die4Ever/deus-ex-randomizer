@@ -126,7 +126,6 @@ function PreFirstEntryMapFixes()
             // don't swap this guy, he has the east gate key
             t.bVisionImportant = true;
             t.bIsSecretGoal = true;
-            t.bImportant = true;
         }
         break;
 

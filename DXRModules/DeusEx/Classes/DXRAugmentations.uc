@@ -1,20 +1,11 @@
 class DXRAugmentations extends DXRBase transient;
 
-var config float min_aug_weaken, max_aug_str;
+var float min_aug_weaken, max_aug_str;
 
 replication
 {
     reliable if( Role==ROLE_Authority )
         min_aug_weaken, max_aug_str;
-}
-
-function CheckConfig()
-{
-    if( ConfigOlderThan(1,6,0,5) ) {
-        min_aug_weaken = default.min_aug_weaken;
-        max_aug_str = default.max_aug_str;
-    }
-    Super.CheckConfig();
 }
 
 function FirstEntry()
@@ -195,9 +186,9 @@ function static AddRandomAugs(DXRando dxr, DeusExPlayer p, int num)
         }
         if (augOk){
             AddAug(p, augClass, 1);
-            log("Randomly added aug "$augClass);
+            dxr.l("Randomly added aug "$augClass);
         } else {
-            log("Failed to find random aug to add");
+            dxr.l("Failed to find random aug to add");
         }
     }
 }
@@ -293,9 +284,9 @@ function static class<Augmentation> PickRandomAug(DXRando dxr, out int banned[50
     }
     slot = i;
     if( slot >= ArrayCount(class'#var(prefix)AugmentationManager'.default.augClasses) )
-        dxr.err("PickRandomAug WTF "$slot);
+        dxr.err("PickRandomAug failed "$slot);
     aug = class'#var(prefix)AugmentationManager'.default.augClasses[slot];
-    log("Picked Aug "$ slot $"/"$numAugs$" " $ aug.Name, 'DXRAugmentations');
+    dxr.l("Picked Aug "$ slot $"/"$numAugs$" " $ aug.Name);
     banned[slot] = 1;
     numAugs--;
     return aug;

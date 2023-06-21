@@ -217,12 +217,13 @@ def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_pl
 
 def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newexename:str, changes:dict, additions:dict, in_place:bool=False):
     # inis
+    print('ChangeModConfigs', system, modname, exename, newexename, in_place)
     confpath = system / (exename + 'Default.ini')
     b = confpath.read_bytes()
     b = Config.ModifyConfig(b, changes, additions)
-    outconf = system / (newexename + 'Default.ini')
     if in_place:
-        outconf = confpath
+        newexename = exename
+    outconf = system / (newexename + 'Default.ini')
     outconf.write_bytes(b)
 
     confpath = system / (exename + '.ini')

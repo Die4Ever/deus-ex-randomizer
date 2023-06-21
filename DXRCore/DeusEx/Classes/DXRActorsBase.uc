@@ -1,6 +1,5 @@
 class DXRActorsBase extends DXRBase;
 
-var globalconfig string skipactor_types[6];
 var class<Actor> _skipactor_types[6];
 
 struct LocationNormal {
@@ -23,26 +22,15 @@ struct safe_rule {
 
 function CheckConfig()
 {
-    local class<Actor> temp_skipactor_types[6];
-    local int i, t;
-    if( ConfigOlderThan(1,7,5,1) ) {
-        for(i=0; i < ArrayCount(skipactor_types); i++) {
-            skipactor_types[i] = "";
-        }
-        i=0;
-        skipactor_types[i++] = "BarrelAmbrosia";
-        skipactor_types[i++] = "NanoKey";
-        if(#defined(gmdx))
-            skipactor_types[i++] = "CrateUnbreakableLarge";
-    }
-    Super.CheckConfig();
+    local int i;
 
-    //sort skipactor_types so that we only need to check until the first None
-    t=0;
-    for(i=0; i < ArrayCount(skipactor_types); i++) {
-        if( skipactor_types[i] != "" )
-            _skipactor_types[t++] = GetClassFromString(skipactor_types[i], class'Actor');
-    }
+    i=0;
+    _skipactor_types[i++] = class'#var(prefix)BarrelAmbrosia';
+    _skipactor_types[i++] = class'#var(prefix)NanoKey';
+    if(#defined(gmdx))
+        _skipactor_types[i++] = class'#var(prefix)CrateUnbreakableLarge';
+
+    Super.CheckConfig();
 }
 
 function SwapAll(string classname, float percent_chance)
@@ -687,7 +675,7 @@ static function string GetActorName(Actor a)
     }
 #endif
     // bImportant ScriptedPawns don't get their names randomized
-    else if(sp != None && sp.bImportant)
+    else if(sp != None && (sp.bImportant || sp.bIsSecretGoal))
         return a.FamiliarName;
     // randomized names aren't really meaningful here so use their default name
     else if(a.default.FamiliarName != "")
@@ -1310,8 +1298,4 @@ function DebugMarkKeyPosition(Actor a, coerce string id)
     actorDisplay.SetViewClass(a.class);
     actorDisplay.ShowLOS(false);
     actorDisplay.ShowPos(true);
-}
-
-defaultproperties
-{
 }
