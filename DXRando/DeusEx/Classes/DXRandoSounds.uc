@@ -8,3 +8,4 @@ class DXRandoSounds extends Object abstract;
 #exec AUDIO IMPORT FILE="Sounds\SongOfStorms.wav"               NAME="SongOfStorms"         GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\T7GPianoBad.wav"                NAME="T7GPianoBad"          GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\T7GPianoGood.wav"               NAME="T7GPianoGood"         GROUP="MemePiano"
+#exec AUDIO IMPORT FILE="Sounds\MonkeyIsland.wav"               NAME="MonkeyIsland"         GROUP="MemePiano"

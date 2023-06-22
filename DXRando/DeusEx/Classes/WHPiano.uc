@@ -16,7 +16,7 @@ function Frob(actor Frobber, Inventory frobWith)
         return;
 #endif
 
-    rnd = Rand(8); //make sure this matches the number of sounds below
+    rnd = Rand(9); //make sure this matches the number of sounds below
     switch(rnd){
         case 0:
             //DX Theme, Correct
@@ -49,6 +49,10 @@ function Frob(actor Frobber, Inventory frobWith)
         case 7:
             // invited here to learn to play.... THE GAME
             SelectedSound = sound'T7GPianoGood';
+            break;
+        case 8:
+            // You fight like a dairy farmer!
+            SelectedSound = sound'MonkeyIsland';
             break;
         default:
             log("DXRPiano went too far this time!  Got "$rnd);
