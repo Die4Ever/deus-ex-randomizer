@@ -16,7 +16,7 @@ function Frob(actor Frobber, Inventory frobWith)
         return;
 #endif
 
-    rnd = Rand(9); //make sure this matches the number of sounds below
+    rnd = Rand(13); //make sure this matches the number of sounds below
     switch(rnd){
         case 0:
             //DX Theme, Correct
@@ -63,6 +63,22 @@ function Frob(actor Frobber, Inventory frobWith)
             SelectedSound = sound'MonkeyIsland';
             duration = 5;
             break;
+        case 9:
+            SelectedSound = sound'BloodyTears';
+            duration = 4;
+            break;
+        case 10:
+            SelectedSound = sound'GreenHillZone';
+            duration = 6;
+            break;
+        case 11:
+            SelectedSound = sound'KirbyGreenGreens';
+            duration = 6;
+            break;
+        case 12:
+            SelectedSound = sound'MetroidItem';
+            duration = 5;
+            break;
         default:
             log("DXRPiano went too far this time!  Got "$rnd);
             return;
@@ -73,7 +89,7 @@ function Frob(actor Frobber, Inventory frobWith)
         return;
     }
 
-    PlaySound(SelectedSound, SLOT_Misc,10.0,, 256);
+    PlaySound(SelectedSound, SLOT_Misc,5.0,, 500);
     duration += 0.5;
 
 #ifdef hx
