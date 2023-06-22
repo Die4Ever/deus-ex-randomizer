@@ -21,38 +21,47 @@ function Frob(actor Frobber, Inventory frobWith)
         case 0:
             //DX Theme, Correct
             SelectedSound = sound'Piano1';
+            duration = 1.5;
             break;
         case 1:
             //Random Key Mashing, DX Vanilla
             SelectedSound = sound'Piano2';
+            duration = 1.5;
             break;
         case 2:
             //Max Payne Piano, Slow, Learning
             SelectedSound = sound'MaxPaynePianoSlow';
+            duration = 8;
             break;
         case 3:
             //Max Payne Piano, Fast
             SelectedSound = sound'MaxPaynePianoFast';
+            duration = 4;
             break;
         case 4:
             //Megalovania
             SelectedSound = sound'Megalovania';
+            duration = 3;
             break;
         case 5:
             //Song of Storms
             SelectedSound = sound'SongOfStorms';
+            duration = 4;
             break;
         case 6:
             // The six arrive, the fire lights their eyes
             SelectedSound = sound'T7GPianoBad';
+            duration = 6;
             break;
         case 7:
             // invited here to learn to play.... THE GAME
             SelectedSound = sound'T7GPianoGood';
+            duration = 7;
             break;
         case 8:
             // You fight like a dairy farmer!
             SelectedSound = sound'MonkeyIsland';
+            duration = 5;
             break;
         default:
             log("DXRPiano went too far this time!  Got "$rnd);
@@ -64,8 +73,9 @@ function Frob(actor Frobber, Inventory frobWith)
         return;
     }
 
-    PlaySound(SelectedSound, SLOT_Misc,,, 256);
-    duration = GetSoundDuration(SelectedSound) + 0.5;
+    PlaySound(SelectedSound, SLOT_Misc,10.0,, 256);
+    duration += 0.5;
+
 #ifdef hx
     NextUseTime = Level.TimeSeconds + duration;
 #else
