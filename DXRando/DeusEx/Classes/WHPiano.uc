@@ -16,7 +16,7 @@ function Frob(actor Frobber, Inventory frobWith)
         return;
 #endif
 
-    rnd = Rand(14); //make sure this matches the number of sounds below
+    rnd = Rand(15); //make sure this matches the number of sounds below
     switch(rnd){
         case 0:
             //DX Theme, Correct
@@ -82,6 +82,10 @@ function Frob(actor Frobber, Inventory frobWith)
         case 13:
             SelectedSound = sound'NeverGonnaGive';
             duration = 5;
+            break;
+        case 14:
+            SelectedSound = sound'MiiChannel';
+            duration = 7;
             break;
         default:
             log("DXRPiano went too far this time!  Got "$rnd);
