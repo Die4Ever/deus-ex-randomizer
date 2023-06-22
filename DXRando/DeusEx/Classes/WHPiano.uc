@@ -16,7 +16,7 @@ function Frob(actor Frobber, Inventory frobWith)
         return;
 #endif
 
-    rnd = Rand(13); //make sure this matches the number of sounds below
+    rnd = Rand(14); //make sure this matches the number of sounds below
     switch(rnd){
         case 0:
             //DX Theme, Correct
@@ -77,6 +77,10 @@ function Frob(actor Frobber, Inventory frobWith)
             break;
         case 12:
             SelectedSound = sound'MetroidItem';
+            duration = 5;
+            break;
+        case 13:
+            SelectedSound = sound'NeverGonnaGive';
             duration = 5;
             break;
         default:
