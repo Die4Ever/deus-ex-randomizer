@@ -1752,6 +1752,10 @@ function string RemapBingoEvent(string eventname)
             return "RepairBot_ClassDead";
         case "FrenchGray_ClassDead":
             return "Gray_ClassDead";
+        case "LiquorBottle_Activated":
+        case "Liquor40oz_Activated":
+        case "WineBottle_Activated":
+            return "DrinkAlcohol";
         default:
             return eventname;
     }
@@ -2114,6 +2118,7 @@ defaultproperties
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s HazMat Suits",max=3)
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",max=3)
+    bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",max=75)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
