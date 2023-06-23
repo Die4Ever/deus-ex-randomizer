@@ -50,6 +50,18 @@ class GUIBase:
     def FixColors(self, w):
         w.config(bg="#eeeeee",fg="black")
 
+    def SetShowHiddenFiles(self):
+        try:
+            try:
+                self.root.tk.call('tk_getOpenFile', '-foobarbaz-')
+            except TclError:
+                pass
+            # now set the magic variables accordingly
+            self.root.tk.call('set', '::tk::dialog::file::showHiddenBtn', '1')
+            self.root.tk.call('set', '::tk::dialog::file::showHiddenVar', '1')
+        except:
+            pass
+
 
 # from https://stackoverflow.com/a/68701602
 class ScrollableFrame:

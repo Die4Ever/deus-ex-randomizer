@@ -46,7 +46,8 @@ def _ModifyConfig(text:str, changes:dict, additions:dict) -> str:
             outtext = outtext.replace(all, newall)
 
     # add any changes we didn't match on
-    leftovers = dict(**changes, **additions)
+    leftovers = dict(**changes)
+    leftovers.update(**additions)
     for k in leftovers.keys():
         outtext += '\r\n\r\n[' + k + ']\r\n'
         if k in changes:
