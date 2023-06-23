@@ -83,6 +83,7 @@ function SetWatchFlags() {
     local BingoTrigger bt;
     local LowerClassMale lcm;
     local Greasel g;
+    local DamageTrigger dt;
     local int i;
 
     switch(dxr.localURL) {
@@ -325,6 +326,15 @@ function SetWatchFlags() {
             break;
         }
         bt = class'BingoTrigger'.static.Create(self,'CanalDrugDeal',lcm.Location,200,40);
+
+        foreach AllActors(class'DamageTrigger',dt){
+            if (dt.DamageType=='PoisonGas'){
+                dt.Region.Zone.ZonePlayerEvent='ToxicShip';
+                break;
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'ToxicShip',vectm(0,0,0));
+
 
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
@@ -2119,6 +2129,7 @@ defaultproperties
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s HazMat Suits",max=3)
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",max=3)
     bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",max=75)
+    bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
