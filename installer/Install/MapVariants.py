@@ -30,7 +30,7 @@ def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
         temp.unlink()
 
     # TODO: specify version
-    url = "https://github.com/Die4Ever/unreal-map-flipper/releases/latest/download/" + name
+    url = "https://github.com/Die4Ever/unreal-map-flipper/releases/download/v0.9.1/" + name
     downloadcallback = lambda a,b,c : callback(a,b,c, status="Downloading Maps")
     DownloadFile(url, temp, downloadcallback)
 
