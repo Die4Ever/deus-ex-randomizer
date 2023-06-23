@@ -117,7 +117,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
 
         bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
-        bt.MakeClassProximityTrigger(class'FlagPole');
+        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
 
         break;
@@ -190,7 +190,7 @@ function SetWatchFlags() {
         WatchFlag('SimonsAssassination');
         bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
         bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
-        bt.MakeClassProximityTrigger(class'FlagPole');
+        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
         break;
     case "03_NYC_AIRFIELD":
         WatchFlag('BoatDocksAmbrosia');
@@ -270,7 +270,7 @@ function SetWatchFlags() {
     case "04_NYC_UNATCOHQ":
         bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
         bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
-        bt.MakeClassProximityTrigger(class'FlagPole');
+        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
         break;
     case "04_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
@@ -303,7 +303,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
 
         bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
-        bt.MakeClassProximityTrigger(class'FlagPole');
+        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
         break;
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -439,7 +439,7 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'HongKongBBall',trig.Location,14,3);
-        bt.MakeClassProximityTrigger(class'Basketball');
+        bt.MakeClassProximityTrigger(class'#var(prefix)Basketball');
 
         break;
     case "06_HONGKONG_MJ12LAB":
@@ -553,9 +553,9 @@ function SetWatchFlags() {
         }
 
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2983.597168,774.217407,312.100128),70,40);
-        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2984.404785,662.764954,312.100128),70,40);
-        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
 
         break;
     case "10_PARIS_CLUB":
@@ -569,11 +569,11 @@ function SetWatchFlags() {
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2019,-2256,-704),20,15);
-        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2076.885254,-3248.189941,-704.369995),20,15);
-        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(1578,-2286,-647),50,40);
-        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
         break;
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');

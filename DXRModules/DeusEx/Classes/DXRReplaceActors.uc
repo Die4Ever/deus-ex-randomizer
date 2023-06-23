@@ -22,10 +22,10 @@ function ReplaceActors()
         else if( #var(prefix)ClothesRack(a) != None ) {
             ReplaceClothesRack(#var(prefix)ClothesRack(a));
         }
-        else if( #var(prefix)Toilet(a) != None ) {
+        else if( a.class==class'#var(prefix)Toilet') {
             ReplaceToilet(#var(prefix)Toilet(a));
         }
-        else if( #var(prefix)Toilet2(a) != None ) {
+        else if( a.class==class'#var(prefix)Toilet2') {
             ReplaceToilet2(#var(prefix)Toilet2(a));
         }
         else if( #var(prefix)ShowerFaucet(a) != None ) {
