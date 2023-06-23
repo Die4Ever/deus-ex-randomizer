@@ -19,6 +19,7 @@ class InstallerWindow(GUIBase):
 
         filetypes = (('DeusEx.exe', 'DeusEx.exe'),)
         initdir = getDefaultPath()
+        self.SetShowHiddenFiles()
         p = fd.askopenfilename(title="Find plain DeusEx.exe", filetypes=filetypes, initialdir=initdir)
         if not p:
             print('no file selected')
@@ -188,6 +189,7 @@ def getDefaultPath():
         Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
         Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
         Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
+        Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
     ]
     p:Path
     for p in checks:
