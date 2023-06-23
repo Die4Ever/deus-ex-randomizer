@@ -22,6 +22,7 @@ var MutualExclusion mutually_exclusive[32];
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
+
     switch(dxr.dxInfo.missionNumber) {
         case 99:
             Ending_FirstEntry();
@@ -34,6 +35,27 @@ function PreFirstEntry()
     }
 }
 
+function PostFirstEntry()
+{
+    Super.PostFirstEntry();
+
+     //Done here so that items you are carrying over between levels don't get hit by LogPickup
+    InitStatLogShim();
+}
+
+function InitStatLogShim()
+{
+    //I think both LocalLog and WorldLog will always be None in DeusEx, but if this makes it
+    //to another game, might need to actually see if there's a possibility of overlap here.
+    if (!((Level.Game.LocalLog!=None && Level.Game.LocalLog.IsA('DXRStatLog')) ||
+          (Level.Game.WorldLog!=None && Level.Game.WorldLog.IsA('DXRStatLog')))){
+        if (Level.Game.LocalLog==None){
+            Level.Game.LocalLog=spawn(class'DXRStatLog');
+        } else if (Level.Game.WorldLog==None){
+            Level.Game.WorldLog=spawn(class'DXRStatLog');
+        }
+    }
+}
 
 function SetWatchFlags() {
     local MapExit m;
@@ -2085,7 +2107,13 @@ defaultproperties
     //bingo_options()=(event="M11WaltonHolo_Played",desc="Talk to Walton Simons after defeating Gunther",max=1,missions=2048)
     bingo_options(175)=(event="JerryTheVentGreasel_Dead",desc="Kill Jerry the Vent Greasel",max=1,missions=64)
     bingo_options(176)=(event="BiggestFan",desc="Destroy your biggest fan",max=1,missions=512)
-
+    bingo_options(177)=(event="Sodacan_Activated",desc="Drink %s cans of soda",max=75)
+    bingo_options(178)=(event="BallisticArmor_Activated",desc="Use %s Ballistic Armors",max=3)
+    bingo_options(179)=(event="Flare_Activated",desc="Light %s flares",max=15)
+    bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1)
+    bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
+    bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s HazMat Suits",max=3)
+    bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",max=3)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -2107,6 +2135,7 @@ defaultproperties
     mutually_exclusive(17)=(e1="AnnaNavarre_DeadM4",e2="AnnaNavarre_DeadM5")
     mutually_exclusive(18)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM3")
     mutually_exclusive(19)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(20)=(e1="VialAmbrosia_Activated",e2="GaveDowdAmbrosia")
 
     bingo_win_countdown=-1
 }
