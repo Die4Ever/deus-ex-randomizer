@@ -154,7 +154,7 @@ class InstallerWindow(GUIBase):
 
         speedupfix = self.speedupfixval.get()
         flavors = Install.Install(self.exe, flavors, speedupfix)
-        flavors = ', '.join(flavors)
+        flavorstext = ', '.join(flavors.keys())
         extra = ''
         if 'Vanilla' in flavors and IsWindows():
             extra += '\nCreated DXRando.exe'
@@ -162,7 +162,7 @@ class InstallerWindow(GUIBase):
             extra += '\nCreated VMDRandomizer.exe'
         self.root.title('DXRando Installation Complete!')
         self.root.update()
-        messagebox.showinfo('DXRando Installation Complete!', 'Installed DXRando for: ' + flavors + extra)
+        messagebox.showinfo('DXRando Installation Complete!', 'Installed DXRando for: ' + flavorstext + extra)
         self.closeWindow()
 
 
