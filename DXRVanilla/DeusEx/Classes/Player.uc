@@ -871,5 +871,13 @@ function SetTurretTrackMode(ComputerSecurity computer, AutoTurret turret, bool b
     turret.bActive = turret.bActiveOrig;
 }
 
+function MakePlayerIgnored(bool bNewIgnore)
+{
+    Super.MakePlayerIgnored(bNewIgnore);
+
+    //Update ammo count in the belt
+    //This function gets called at the end of conversations, which could have given you ammo
+    DeusExRootWindow(rootWindow).hud.belt.UpdateObjectText(0);
+}
 
 // ---
