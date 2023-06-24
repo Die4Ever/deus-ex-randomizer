@@ -161,6 +161,7 @@ def InstallLDDP(system:Path, settings:dict):
 def InstallGMDX(system:Path, settings:dict, exename:str):
     game = system.parent
     (changes, additions) = GetConfChanges('GMDX')
+    Mkdir(game/'SaveGMDXRando', exist_ok=True)
     # GMDX uses absolute path shortcuts with ini files in their arguments, so it's not as simple to copy their exe
 
     confpath = Path.home() / 'Documents' / 'Deus Ex' / exename / 'System' / 'gmdx.ini'
@@ -187,6 +188,7 @@ def InstallRevision(system:Path, settings:dict):
 def InstallHX(system:Path, settings:dict):
     CopyPackageFiles('HX', system.parent, ['HXRandomizer.u'])
     (changes, additions) = GetConfChanges('HX')
+    Mkdir(game/'SaveHXRando', exist_ok=True)
     ChangeModConfigs(system, settings, 'HX', 'HX', 'HX', changes, additions, True)
     int_source = GetPackagesPath('HX') / 'HXRandomizer.int'
     int_dest = system / 'HXRandomizer.int'
@@ -212,6 +214,7 @@ def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_pl
     CopyPackageFiles(modname, system.parent, [modname+'Randomizer.u'])
 
     (changes, additions) = GetConfChanges(modname)
+    Mkdir(game/('Save'+modname+'Rando'), exist_ok=True)
     ChangeModConfigs(system, settings, modname, exename, newexename, changes, additions, in_place)
 
     if settings.get('mirrors'):

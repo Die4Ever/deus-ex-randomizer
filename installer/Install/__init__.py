@@ -26,7 +26,7 @@ def GetConfChanges(modname):
             'Root': modname+'Randomizer.DXRandoRootWindow'
         },
         'Core.System': {
-            'SavePath': '../Save' + modname + 'Rando'
+            'SavePath': '..\\Save' + modname + 'Rando'
         }
     }
     syspath = '..\\' + modname + 'Randomizer\\System\\*.u'
