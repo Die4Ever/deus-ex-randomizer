@@ -1,5 +1,17 @@
 class DXRPiano injects #var(prefix)WHPiano;
 
+var int SongPlayed[16];
+var DXRando dxr;
+
+function bool ValidSong(int i)
+{
+    if (i==1 || i==2 || i==6){
+        return False;
+    }
+
+    return True;
+}
+
 function Frob(actor Frobber, Inventory frobWith)
 {
     local int rnd;
@@ -15,6 +27,10 @@ function Frob(actor Frobber, Inventory frobWith)
     if (bUsing)
         return;
 #endif
+
+    if (dxr==None){
+        foreach AllActors(class'DXRando', dxr) {break;}
+    }
 
     rnd = Rand(16); //make sure this matches the number of sounds below
     switch(rnd){
@@ -99,6 +115,14 @@ function Frob(actor Frobber, Inventory frobWith)
     if(SelectedSound == None) {
         log("DXRPiano got an invalid sound!  Got "$rnd);
         return;
+    }
+
+    if (SongPlayed[rnd]==0){
+        SongPlayed[rnd]=1;
+        class'DXREvents'.static.MarkBingo(dxr,"PianoSong"$rnd$"Played");
+        if (ValidSong(rnd)){
+            class'DXREvents'.static.MarkBingo(dxr,"PianoSongPlayed");
+        }
     }
 
     PlaySound(SelectedSound, SLOT_Misc,5.0,, 500);

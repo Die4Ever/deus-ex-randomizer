@@ -2213,6 +2213,9 @@ defaultproperties
     bingo_options(193)=(event="DuClareBedrooms",desc="Visit both bedrooms in the DuClare Chateau",max=2,missions=1024)
     bingo_options(194)=(event="PlayPool",desc="Sink all the pool balls %s times",max=3,missions=33116)
     bingo_options(195)=(event="FireExtinguisher_Activated",desc="Use %s fire extinguishers",max=10)
+    bingo_options(196)=(event="PianoSongPlayed",desc="Play %s different songs on the piano",max=5,missions=64)
+    bingo_options(197)=(event="PianoSong0Played",desc="Play the theme song on the piano",max=1,missions=64)
+    bingo_options(198)=(event="PianoSong7Played",desc="Stauf Says...",max=1,missions=64)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -2235,6 +2238,9 @@ defaultproperties
     mutually_exclusive(18)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM3")
     mutually_exclusive(19)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM4")
     mutually_exclusive(20)=(e1="VialAmbrosia_Activated",e2="GaveDowdAmbrosia")
+    mutually_exclusive(21)=(e1="AllPianoSongsPlayed",e2="PianoSong0Played")
+    mutually_exclusive(22)=(e1="AllPianoSongsPlayed",e2="PianoSong7Played")
+    mutually_exclusive(23)=(e1="PianoSong0Played",e2="PianoSong7Played")
 
     bingo_win_countdown=-1
 }
