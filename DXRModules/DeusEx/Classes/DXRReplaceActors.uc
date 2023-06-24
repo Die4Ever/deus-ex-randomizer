@@ -55,6 +55,9 @@ function ReplaceActors()
         else if( #var(prefix)Poolball(a) != None ) {
             ReplacePoolball(#var(prefix)Poolball(a));
         }
+        else if( #var(prefix)Pinball(a) != None ) {
+            ReplacePinball(#var(prefix)Pinball(a));
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -228,6 +231,21 @@ function ReplacePoolball(#var(prefix)Poolball a)
 
     n.SkinColor = a.SkinColor;
     n.Skin = a.Skin;
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
+    a.Destroy();
+}
+
+function ReplacePinball(#var(prefix)Pinball a)
+{
+    local DXRPinball n;
+    n = DXRPinball(SpawnReplacement(a, class'DXRPinball'));
+    if(n == None)
+        return;
+
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
 #ifdef hx

@@ -2216,6 +2216,7 @@ defaultproperties
     bingo_options(196)=(event="PianoSongPlayed",desc="Play %s different songs on the piano",max=5,missions=64)
     bingo_options(197)=(event="PianoSong0Played",desc="Play the theme song on the piano",max=1,missions=64)
     bingo_options(198)=(event="PianoSong7Played",desc="Stauf Says...",max=1,missions=64)
+    bingo_options(199)=(event="PinballWizard",desc="Play %s different pinball machines",max=10,missions=37246)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
