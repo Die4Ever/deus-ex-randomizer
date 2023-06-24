@@ -13,7 +13,7 @@ struct BingoOption {
     var int max;
     var int missions;// bit masks
 };
-var BingoOption bingo_options[200];
+var BingoOption bingo_options[250];
 
 struct MutualExclusion {
     var string e1, e2;
@@ -475,7 +475,13 @@ function SetWatchFlags() {
         }
         WatchFlag('JerryTheVentGreasel_Dead');
 
+        WatchFlag('FlowersForTheLab');
         break;
+
+    case "06_HONGKONG_STORAGE":
+        WatchFlag('FlowersForTheLab');
+        break;
+
     case "08_NYC_STREET":
         bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
         bt.bingoEvent="MadeBasket";
@@ -870,12 +876,11 @@ simulated function AnyEntry()
     }
 }
 
-simulated function bool LeoToTheBar()
+simulated function bool ClassInLevel(class<Actor> className)
 {
-    local TerroristCommanderCarcass leoBody;
-    //player().ClientMessage("Looking for Leo");
+    local Actor a;
 
-    foreach AllActors(class'TerroristCommanderCarcass',leoBody){
+    foreach AllActors(className,a){
         return True;
     };
     return False;
@@ -935,7 +940,7 @@ simulated function Timer()
         }
 
         if( watchflags[i] == 'LeoToTheBar' ) {
-            if (LeoToTheBar()){
+            if (ClassInLevel(class'#var(prefix)TerroristCommanderCarcass')){
                 SendFlagEvent(watchflags[i]);
                 num_watchflags--;
                 watchflags[i] = watchflags[num_watchflags];
@@ -955,6 +960,15 @@ simulated function Timer()
             }
         } else if( watchflags[i] == 'PlayPool' ) {
             if (AllPoolBallsSunk()){
+                SendFlagEvent(watchflags[i]);
+                num_watchflags--;
+                watchflags[i] = watchflags[num_watchflags];
+                watchflags[num_watchflags]='';
+                i--;
+                continue;
+            }
+        } else if( watchflags[i] == 'FlowersForTheLab' ) {
+            if (ClassInLevel(class'#var(prefix)Flowers')){
                 SendFlagEvent(watchflags[i]);
                 num_watchflags--;
                 watchflags[i] = watchflags[num_watchflags];
@@ -2217,6 +2231,7 @@ defaultproperties
     bingo_options(197)=(event="PianoSong0Played",desc="Play the theme song on the piano",max=1,missions=64)
     bingo_options(198)=(event="PianoSong7Played",desc="Stauf Says...",max=1,missions=64)
     bingo_options(199)=(event="PinballWizard",desc="Play %s different pinball machines",max=10,missions=37246)
+    bingo_options(200)=(event="FlowersForTheLab",desc="Bring some flowers to brighten up the lab",max=1,missions=64)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
