@@ -20,20 +20,23 @@ def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
     print('Installing flavors:', flavors, speedupfix)
 
     for(f, settings) in flavors.items():
+        ret={}
         if 'Vanilla'==f:
-            InstallVanilla(system, settings, speedupfix)
+            ret = InstallVanilla(system, settings, speedupfix)
         if 'Vanilla? Madder.'==f:
-            CreateModConfigs(system, settings, 'VMD', 'VMDSim')
+            ret = CreateModConfigs(system, settings, 'VMD', 'VMDSim')
         if 'GMDX v9'==f:
-            InstallGMDX(system, settings, 'GMDXv9')
+            ret = InstallGMDX(system, settings, 'GMDXv9')
         if 'GMDX RSD'==f:
-            InstallGMDX(system, settings, 'GMDXvRSD')
+            ret = InstallGMDX(system, settings, 'GMDXvRSD')
         if 'GMDX v10'==f:
-            CreateModConfigs(system, settings, 'GMDX', 'GMDXv10')
+            ret = CreateModConfigs(system, settings, 'GMDX', 'GMDXv10')
         if 'Revision'==f:
-            InstallRevision(system, settings)
+            ret = InstallRevision(system, settings)
         if 'HX'==f:
-            InstallHX(system, settings)
+            ret =InstallHX(system, settings)
+        if ret and settings:
+            settings.update(ret)
 
     if speedupfix:
         EngineDllFix(system)
@@ -157,6 +160,7 @@ def InstallLDDP(system:Path, settings:dict):
 
 
 def InstallGMDX(system:Path, settings:dict, exename:str):
+    game = system.parent
     (changes, additions) = GetConfChanges('GMDX')
     # GMDX uses absolute path shortcuts with ini files in their arguments, so it's not as simple to copy their exe
 
@@ -166,7 +170,7 @@ def InstallGMDX(system:Path, settings:dict, exename:str):
         b = Config.ModifyConfig(b, changes, additions)
         confpath.write_bytes(b)
 
-    confpath = system / exename / 'System' / 'gmdx.ini'
+    confpath = game / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
         b = Config.ModifyConfig(b, changes, additions)
