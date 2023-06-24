@@ -56,7 +56,13 @@ function ReplaceActors()
             ReplacePoolball(#var(prefix)Poolball(a));
         }
         else if( #var(prefix)Pinball(a) != None ) {
-            ReplacePinball(#var(prefix)Pinball(a));
+            ReplaceGenericDecoration(a,class'DXRPinball');
+        }
+        else if( #var(prefix)Trashbag(a) != None ) {
+            ReplaceGenericDecoration(a,class'DXRTrashbag');
+        }
+        else if( #var(prefix)Trashbag2(a) != None ) {
+            ReplaceGenericDecoration(a,class'DXRTrashbag2');
         }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
@@ -239,17 +245,17 @@ function ReplacePoolball(#var(prefix)Poolball a)
     a.Destroy();
 }
 
-function ReplacePinball(#var(prefix)Pinball a)
+function ReplaceGenericDecoration(Actor a, class<Actor> newClass)
 {
-    local DXRPinball n;
-    n = DXRPinball(SpawnReplacement(a, class'DXRPinball'));
+    local Actor n;
+
+    n = SpawnReplacement(a, newClass);
+
     if(n == None)
         return;
 
-    // probably doesn't need this since it's all defaults
-    //ReplaceDecoration(a, n);
 #ifdef hx
-    n.PrecessorName = a.PrecessorName;
+    HXActor(n).PrecessorName = HXActor(a).PrecessorName;
 #endif
     a.Destroy();
 }

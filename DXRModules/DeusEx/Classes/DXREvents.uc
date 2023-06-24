@@ -2232,6 +2232,7 @@ defaultproperties
     bingo_options(198)=(event="PianoSong7Played",desc="Stauf Says...",max=1,missions=64)
     bingo_options(199)=(event="PinballWizard",desc="Play %s different pinball machines",max=10,missions=37246)
     bingo_options(200)=(event="FlowersForTheLab",desc="Bring some flowers to brighten up the lab",max=1,missions=64)
+    bingo_options(201)=(event="BurnTrash",desc="Burn %s bags of trash",max=25)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
