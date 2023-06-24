@@ -1,7 +1,7 @@
 from pathlib import Path
 import tempfile
 from zipfile import ZipFile
-from Install import MD5, DownloadFile
+from Install import MD5, DownloadFile, Mkdir, WriteBytes
 
 def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
     print('\nInstallMirrors(', mapsdir, flavor, ')')
@@ -21,7 +21,7 @@ def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
         print('unknown existing maps MD5:', totalmd5)
 
     tempdir = Path(tempfile.gettempdir()) / 'dxrando'
-    tempdir.mkdir(exist_ok=True)
+    Mkdir(tempdir, exist_ok=True)
     name = 'dx.mirrored.maps.zip'
     if flavor == 'VMD':
         name = 'dx.vmd.mirrored.maps.zip'
@@ -44,8 +44,8 @@ def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
                 continue
             name = Path(f.filename).name
             data = zip.read(f.filename)
-            with open(mapsdir / name, 'wb') as out:
-                out.write(data)
+            out = mapsdir / name
+            WriteBytes(out, data)
             print(Path(f.filename).name, f.file_size)
 
     print('done extracting to', mapsdir)

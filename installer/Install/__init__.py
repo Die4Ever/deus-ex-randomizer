@@ -6,6 +6,15 @@ import urllib.request
 import certifi
 import ssl
 
+dryrun = False
+def SetDryrun(val):
+    global dryrun
+    dryrun = val
+
+def GetDryrun() -> bool:
+    global dryrun
+    return dryrun
+
 def IsWindows() -> bool:
     return os.name == 'nt'
 
@@ -98,9 +107,9 @@ def CopyPackageFiles(modname:str, gameroot:Path, packages:list):
 
     packages_path = GetPackagesPath(modname)
 
-    dxrandoroot.mkdir(exist_ok=True)
+    Mkdir(dxrandoroot, exist_ok=True)
     dxrandosystem = dxrandoroot / 'System'
-    dxrandosystem.mkdir(exist_ok=True)
+    Mkdir(dxrandosystem, exist_ok=True)
 
     # need to split our package files and organize them into different folders since these always have the same names
     #packages.append('DXRandoCore.u')
@@ -123,11 +132,11 @@ def EngineDllFix(p:Path) -> bool:
         print('skipping Engine.dll speedup fix, unrecognized md5 sum:', hex)
         return False
     dllbak = p / 'Engine.dll.bak'
-    dllbak.write_bytes(bytes)
+    WriteBytes(dllbak, bytes)
     bytes = bytearray(bytes)
     for i in range(0x12ADCC, 0x12ADCF + 1):
         bytes[i] = 0
-    dll.write_bytes(bytes)
+    WriteBytes(dll, bytes)
     return True
 
 
@@ -135,12 +144,12 @@ def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path,
     print('ModifyConfig', defconfig, config, outdefconfig, outconfig)
     bytes = defconfig.read_bytes()
     bytes = Config.ModifyConfig(bytes, changes)
-    outdefconfig.write_bytes(bytes)
+    WriteBytes(outdefconfig, bytes)
 
     if config.exists():
         bytes = defconfig.read_bytes()
         bytes = Config.ModifyConfig(bytes, changes)
-        outconfig.write_bytes(bytes)
+        WriteBytes(outconfig, bytes)
 
 
 def CopyD3D10Renderer(system:Path):
@@ -152,22 +161,37 @@ def CopyD3D10Renderer(system:Path):
 
     drvdir_source = thirdparty / 'd3d10drv'
     drvdir_dest = system / 'd3d10drv'
-    drvdir_dest.mkdir(exist_ok=True)
+    Mkdir(drvdir_dest, exist_ok=True)
     for f in drvdir_source.glob('*'):
         CopyTo(f, drvdir_dest / f.name, True)
+
+
+def Mkdir(dir:Path, parents=False, exist_ok=False):
+    if GetDryrun():
+        print("dryrun would've created folder", dir)
+    else:
+        dir.mkdir(parents=parents, exist_ok=exist_ok)
+
+def WriteBytes(out:Path, data:bytes):
+    if GetDryrun():
+        print("dryrun would've written to", out)
+    else:
+        out.write_bytes(data)
 
 
 def CopyTo(source:Path, dest:Path, silent:bool=False):
     if not silent:
         print('Copying', source, 'to', dest)
     bytes = source.read_bytes()
-    dest.write_bytes(bytes)
+    WriteBytes(dest, bytes)
+
 
 def MD5(bytes:bytes) -> str:
     return hashlib.md5(bytes).hexdigest()
 
 
 def DownloadFile(url, dest, callback):
+    # still do this on dryrun because it writes to temp?
     sslcontext = ssl.create_default_context(cafile=certifi.where())
     old_func = ssl._create_default_https_context
     ssl._create_default_https_context = lambda : sslcontext # HACK

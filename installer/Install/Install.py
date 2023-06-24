@@ -76,7 +76,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     else:
         configs_dest = system
     DXRandoini = configs_dest / (exename+'.ini')
-    DXRandoini.parent.mkdir(parents=True, exist_ok=True)
+    Mkdir(DXRandoini.parent, parents=True, exist_ok=True)
 
     changes = {}
     if DXRandoini.exists():
@@ -101,11 +101,11 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     if changes:
         b = defini_dest.read_bytes()
         b = Config.ModifyConfig(b, changes, additions={})
-        defini_dest.write_bytes(b)
+        WriteBytes(defini_dest, b)
 
         b = DXRandoini.read_bytes()
         b = Config.ModifyConfig(b, changes, additions={})
-        DXRandoini.write_bytes(b)
+        WriteBytes(DXRandoini, b)
 
     dxrroot = gameroot / 'DXRando'
     (dxrroot / 'Maps').mkdir(exist_ok=True, parents=True)
@@ -123,7 +123,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
 def InstallLDDP(system:Path, settings:dict):
     callback = settings.get('downloadcallback')
     tempdir = Path(tempfile.gettempdir()) / 'dxrando'
-    tempdir.mkdir(exist_ok=True)
+    Mkdir(tempdir, exist_ok=True)
     name = 'Lay_D_Denton_Project_1.1.zip'
     temp = tempdir / name
     if temp.exists():
@@ -151,8 +151,7 @@ def InstallLDDP(system:Path, settings:dict):
                 dest = mapsdir / name
             else:
                 continue
-            with open(dest, 'wb') as out:
-                out.write(data)
+            WriteBytes(dest, data)
             print(Path(f.filename).name, f.file_size)
 
     print('done Installing LDDP to', system, '\n')
@@ -168,15 +167,15 @@ def InstallGMDX(system:Path, settings:dict, exename:str):
     if confpath.exists():
         b = confpath.read_bytes()
         b = Config.ModifyConfig(b, changes, additions)
-        confpath.write_bytes(b)
+        WriteBytes(confpath, b)
 
     confpath = game / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
         b = Config.ModifyConfig(b, changes, additions)
-        confpath.write_bytes(b)
+        WriteBytes(confpath, b)
 
-    CopyPackageFiles('GMDX', system.parent, ['GMDXRandomizer.u'])
+    CopyPackageFiles('GMDX', game, ['GMDXRandomizer.u'])
 
 
 def InstallRevision(system:Path, settings:dict):
@@ -200,7 +199,7 @@ def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_pl
     newexepath = system / (newexename+'.exe')
     modpath = system.parent / (modname+'Randomizer')
     mapspath = modpath / 'Maps'
-    mapspath.mkdir(exist_ok=True, parents=True)
+    Mkdir(mapspath, exist_ok=True, parents=True)
     if not IsWindows():
         in_place = True
     if not in_place:
@@ -228,7 +227,7 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
     if in_place:
         newexename = exename
     outconf = system / (newexename + 'Default.ini')
-    outconf.write_bytes(b)
+    WriteBytes(outconf, b)
 
     confpath = system / (exename + '.ini')
     if confpath.exists():
@@ -237,7 +236,7 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
         outconf = system / (newexename + '.ini')
         if in_place:
             outconf = confpath
-        outconf.write_bytes(b)
+        WriteBytes(outconf, b)
 
     # User inis
     if in_place:
@@ -248,7 +247,7 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
     outconf = system / (newexename + 'DefUser.ini')
     if in_place:
         outconf = confpath
-    outconf.write_bytes(b)
+    WriteBytes(outconf, b)
 
     confpath = system / (exename + 'User.ini')
     if confpath.exists():
@@ -257,4 +256,4 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
         outconf = system / (newexename + 'User.ini')
         if in_place:
             outconf = confpath
-        outconf.write_bytes(b)
+        WriteBytes(outconf, b)
