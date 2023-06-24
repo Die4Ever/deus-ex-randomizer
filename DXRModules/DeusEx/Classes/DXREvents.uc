@@ -6,6 +6,7 @@ var int num_watchflags;
 var int bingo_win_countdown;
 var name rewatchflags[8];
 var int num_rewatchflags;
+var float PoolBallHeight;
 
 struct BingoOption {
     var string event, desc;
@@ -84,6 +85,7 @@ function SetWatchFlags() {
     local LowerClassMale lcm;
     local Greasel g;
     local DamageTrigger dt;
+    local #var(prefix)Poolball ball;
     local int i;
 
     switch(dxr.localURL) {
@@ -156,6 +158,8 @@ function SetWatchFlags() {
     case "02_NYC_BAR":
         WatchFlag('JockSecondStory');
         WatchFlag('LeoToTheBar');
+        WatchFlag('PlayPool');
+        SetPoolBallHeight();
         break;
     case "02_NYC_FREECLINIC":
         WatchFlag('BoughtClinicPlan');
@@ -210,6 +214,7 @@ function SetWatchFlags() {
         break;
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
+        WatchFlag('PlayPool');
         break;
     case "03_NYC_HANGAR":
         RewatchFlag('747Ambrosia');
@@ -233,6 +238,8 @@ function SetWatchFlags() {
         break;
     case "04_NYC_BAR":
         WatchFlag('LeoToTheBar');
+        WatchFlag('PlayPool');
+        SetPoolBallHeight();
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
@@ -342,6 +349,7 @@ function SetWatchFlags() {
         WatchFlag('M07ChenSecondGive_Played');
         WatchFlag('LDDPRussPaid');
         WatchFlag('LeoToTheBar');
+        WatchFlag('PlayPool');
 
         foreach AllActors(class'Hooker1', h) {
             if(h.BindName == "ClubMercedes")
@@ -357,6 +365,14 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(448,438,-267),200,40);
 
         bt = class'BingoTrigger'.static.Create(self,'LuckyMoneyFreezer',vectm(-1615,-2960,-343),200,40);
+
+        foreach AllActors(class'#var(prefix)Poolball',ball){
+            if (ball.Region.Zone.ZoneGroundFriction>1){
+                ball.Destroy(); //There's at least one ball outside of the table.  Just destroy it for simplicity
+            }
+        }
+
+        SetPoolBallHeight();
 
         break;
     case "06_HONGKONG_WANCHAI_STREET":
@@ -477,6 +493,8 @@ function SetWatchFlags() {
         break;
     case "08_NYC_BAR":
         WatchFlag('LeoToTheBar');
+        WatchFlag('PlayPool');
+        SetPoolBallHeight();
         break;
     case "08_NYC_HOTEL":
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
@@ -568,6 +586,8 @@ function SetWatchFlags() {
         break;
     case "10_PARIS_CHATEAU":
         WatchFlag('ChateauInComputerRoom');
+        WatchFlag('ChateauInBethsRoom');
+        WatchFlag('ChateauInNicolettesRoom');
         break;
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
@@ -677,6 +697,10 @@ function SetWatchFlags() {
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'blast_door'){
             dxm.Event = 'blast_door_flag';
         }
+        break;
+    case "15_AREA51_ENTRANCE":
+        WatchFlag('PlayPool');
+        SetPoolBallHeight();
         break;
     case "15_AREA51_FINAL":
         foreach AllActors(class'BookOpen', book) {
@@ -857,6 +881,32 @@ simulated function bool LeoToTheBar()
     return False;
 }
 
+simulated function bool AllPoolBallsSunk()
+{
+    local #var(prefix)Poolball ball;
+
+    foreach AllActors(class'#var(prefix)Poolball',ball){
+        if (ball.Location.Z > PoolBallHeight){
+            return False;
+        }
+    }
+    return True;
+}
+
+simulated function SetPoolBallHeight()
+{
+    local #var(prefix)Poolball ball;
+    PoolBallHeight = 9999;
+
+    foreach AllActors(class'#var(prefix)Poolball',ball){
+        if (ball.Location.Z < PoolBallHeight){
+            PoolBallHeight = ball.Location.Z;
+        }
+    }
+
+    PoolBallHeight -= 1;
+}
+
 simulated function bool WatchGuntherKillSwitch()
 {
     local GuntherHermann gunther;
@@ -901,6 +951,15 @@ simulated function Timer()
                 watchflags[num_watchflags]='';
                 i--;
                 _MarkBingo("GuntherHermann_Dead");
+                continue;
+            }
+        } else if( watchflags[i] == 'PlayPool' ) {
+            if (AllPoolBallsSunk()){
+                SendFlagEvent(watchflags[i]);
+                num_watchflags--;
+                watchflags[i] = watchflags[num_watchflags];
+                watchflags[num_watchflags]='';
+                i--;
                 continue;
             }
         }
@@ -1775,6 +1834,9 @@ function string RemapBingoEvent(string eventname)
         case "Fish_ClassDead":
         case "Fish2_ClassDead":
             return "GoneFishing";
+        case "ChateauInBethsRoom":
+        case "ChateauInNicolettesRoom":
+            return "DuClareBedrooms";
         default:
             return eventname;
     }
@@ -2148,6 +2210,8 @@ defaultproperties
     bingo_options(190)=(event="GoneFishing",desc="Kill %s fish",max=10)
     bingo_options(191)=(event="FordSchick_Dead",desc="Kill Ford Schick",max=1,missions=276)
     bingo_options(192)=(event="ChateauInComputerRoom",desc="Find Beth's secret routing station",max=1,missions=1024)
+    bingo_options(193)=(event="DuClareBedrooms",desc="Visit both bedrooms in the DuClare Chateau",max=2,missions=1024)
+    bingo_options(194)=(event="PlayPool",desc="Sink all the pool balls %s times",max=3,missions=33116)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")

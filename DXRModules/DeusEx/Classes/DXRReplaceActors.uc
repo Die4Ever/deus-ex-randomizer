@@ -52,6 +52,9 @@ function ReplaceActors()
         else if( #var(prefix)MissionIntro(a) != None ) {
             ReplaceMissionIntro(#var(prefix)MissionIntro(a));
         }
+        else if( #var(prefix)Poolball(a) != None ) {
+            ReplacePoolball(#var(prefix)Poolball(a));
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -208,6 +211,23 @@ function ReplaceWaterCooler(#var(prefix)WaterCooler a)
     if(n == None)
         return;
 
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
+#ifdef hx
+    n.PrecessorName = a.PrecessorName;
+#endif
+    a.Destroy();
+}
+
+function ReplacePoolball(#var(prefix)Poolball a)
+{
+    local DXRPoolball n;
+    n = DXRPoolball(SpawnReplacement(a, class'DXRPoolball'));
+    if(n == None)
+        return;
+
+    n.SkinColor = a.SkinColor;
+    n.Skin = a.Skin;
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
 #ifdef hx
