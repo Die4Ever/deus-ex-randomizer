@@ -188,7 +188,7 @@ def InstallRevision(system:Path, settings:dict):
 def InstallHX(system:Path, settings:dict):
     CopyPackageFiles('HX', system.parent, ['HXRandomizer.u'])
     (changes, additions) = GetConfChanges('HX')
-    Mkdir(game/'SaveHXRando', exist_ok=True)
+    Mkdir(system.parent/'SaveHXRando', exist_ok=True)
     ChangeModConfigs(system, settings, 'HX', 'HX', 'HX', changes, additions, True)
     int_source = GetPackagesPath('HX') / 'HXRandomizer.int'
     int_dest = system / 'HXRandomizer.int'
@@ -214,7 +214,7 @@ def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_pl
     CopyPackageFiles(modname, system.parent, [modname+'Randomizer.u'])
 
     (changes, additions) = GetConfChanges(modname)
-    Mkdir(game/('Save'+modname+'Rando'), exist_ok=True)
+    Mkdir(system.parent/('Save'+modname+'Rando'), exist_ok=True)
     ChangeModConfigs(system, settings, modname, exename, newexename, changes, additions, in_place)
 
     if settings.get('mirrors'):
