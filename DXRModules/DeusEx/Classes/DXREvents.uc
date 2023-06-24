@@ -566,6 +566,9 @@ function SetWatchFlags() {
         RewatchFlag('KnowsGuntherKillphrase');
 
         break;
+    case "10_PARIS_CHATEAU":
+        WatchFlag('ChateauInComputerRoom');
+        break;
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2019,-2256,-704),20,15);
@@ -1766,6 +1769,12 @@ function string RemapBingoEvent(string eventname)
         case "Liquor40oz_Activated":
         case "WineBottle_Activated":
             return "DrinkAlcohol";
+        case "Pigeon_ClassDead":
+        case "Seagull_ClassDead":
+            return "PerformBurder";
+        case "Fish_ClassDead":
+        case "Fish2_ClassDead":
+            return "GoneFishing";
         default:
             return eventname;
     }
@@ -2130,6 +2139,15 @@ defaultproperties
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",max=3)
     bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",max=75)
     bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
+#ifdef injections
+    bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",max=10)
+#endif
+    bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",max=3)
+    bingo_options(188)=(event="Rebreather_Activated",desc="Use %s rebreathers",max=3)
+    bingo_options(189)=(event="PerformBurder",desc="Hunt %s birds",max=10)
+    bingo_options(190)=(event="GoneFishing",desc="Kill %s fish",max=10)
+    bingo_options(191)=(event="FordSchick_Dead",desc="Kill Ford Schick",max=1,missions=276)
+    bingo_options(192)=(event="ChateauInComputerRoom",desc="Find Beth's secret routing station",max=1,missions=1024)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
