@@ -1562,7 +1562,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     local int x, y, i;
     local string event, desc;
     local int progress, max, missions, starting_mission_mask, starting_mission;
-    local int options[200], num_options, slot, free_spaces;
+    local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
     local float f;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(dxr.flags.settings.starting_map);
@@ -1645,7 +1645,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     data.ExportBingoState();
 }
 
-simulated function int HandleMutualExclusion(MutualExclusion m, int options[200], int num_options) {
+simulated function int HandleMutualExclusion(MutualExclusion m, int options[ArrayCount(bingo_options)], int num_options) {
     local int a, b, overwrite;
 
     for(a=0; a<num_options; a++) {

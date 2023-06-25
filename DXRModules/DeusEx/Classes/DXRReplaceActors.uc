@@ -192,9 +192,7 @@ function ReplaceShipsWheel(#var(prefix)ShipsWheel a)
 
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
+
     a.Destroy();
 }
 
@@ -207,9 +205,7 @@ function ReplaceWaterFountain(#var(prefix)WaterFountain a)
 
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
+
     a.Destroy();
 }
 
@@ -222,9 +218,7 @@ function ReplaceWaterCooler(#var(prefix)WaterCooler a)
 
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
+
     a.Destroy();
 }
 
@@ -239,9 +233,7 @@ function ReplacePoolball(#var(prefix)Poolball a)
     n.Skin = a.Skin;
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
+
     a.Destroy();
 }
 
@@ -254,9 +246,6 @@ function ReplaceGenericDecoration(Actor a, class<Actor> newClass)
     if(n == None)
         return;
 
-#ifdef hx
-    HXActor(n).PrecessorName = HXActor(a).PrecessorName;
-#endif
     a.Destroy();
 }
 
@@ -271,9 +260,7 @@ function ReplaceToilet(#var(prefix)Toilet a)
     n.Skin = a.Skin;
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
+
     a.Destroy();
 }
 
@@ -348,9 +335,6 @@ function ReplaceTrigger(#var(prefix)Trigger a, #var(prefix)Trigger n)
     n.DamageThreshold = a.DamageThreshold;
     n.TriggerActor = a.TriggerActor;
     n.TriggerActor2 = a.TriggerActor2;
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
 }
 
 #ifdef hx
@@ -373,9 +357,6 @@ function DeusExWeapon ReplaceWeapon(DeusExWeapon a, DeusExWeapon n)
             owner.SetWeapon(n);
         }
     }
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
 }
 
 #ifdef hx
