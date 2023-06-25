@@ -5,19 +5,45 @@ from Install import *
 from Install import _DetectFlavors
 from Install import MapVariants
 
+def UnattendedInstall(installpath:str, downloadmirrors):
+    if not installpath:
+        p:Path = getDefaultPath()
+        p = p / 'DeusEx.exe'
+    else:
+        p:Path = Path(installpath)
+        if p.is_dir() and p.name == 'System':
+            p = p / 'DeusEx.exe'
+
+    assert p.exists(), str(p)
+
+    callback = lambda a,b,c, status='Downloading' : print(status, a,b,c)
+    flavors = DetectFlavors(p)
+    settings = {}
+    for f in flavors:
+        settings[f] = {'downloadcallback': callback}
+
+    if downloadmirrors and 'Vanilla' in settings:
+        settings['Vanilla']['mirrors'] = True
+
+    ret = Install(p, settings, True)
+
+
 def DetectFlavors(exe:Path) -> list:
+    assert exe.exists(), str(exe)
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
     assert system.name.lower() == 'system'
+
     return _DetectFlavors(system)
 
 
 def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
+    assert exe.exists(), str(exe)
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
     assert system.name.lower() == 'system'
 
-    print('Installing flavors:', flavors, speedupfix)
+    print('Installing flavors:', flavors, speedupfix, exe)
 
     for(f, settings) in flavors.items():
         ret={}
@@ -34,12 +60,16 @@ def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
         if 'Revision'==f:
             ret = InstallRevision(system, settings)
         if 'HX'==f:
-            ret =InstallHX(system, settings)
+            ret = InstallHX(system, settings)
         if ret and settings:
             settings.update(ret)
 
     if speedupfix:
         EngineDllFix(system)
+
+    if GetVerbose():
+        print("Install returning", flavors)
+
     return flavors
 
 
@@ -50,7 +80,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
         InstallLDDP(system, settings)
 
     exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
-    exetype = settings['exetype']
+    exetype = settings.get('exetype')
     kentie = True
     if exetype == 'Launch':
         exe_source = GetSourcePath() / '3rdParty' / "Launch.exe"
@@ -108,8 +138,8 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
         WriteBytes(DXRandoini, b)
 
     dxrroot = gameroot / 'DXRando'
-    (dxrroot / 'Maps').mkdir(exist_ok=True, parents=True)
-    (dxrroot / 'System').mkdir(exist_ok=True, parents=True)
+    Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
+    Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
     CopyD3D10Renderer(system)
 

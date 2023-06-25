@@ -1,7 +1,7 @@
 import webbrowser
 from GUI import *
 from pathlib import Path
-from Install import Install, IsWindows
+from Install import Install, IsWindows, getDefaultPath
 import traceback
 import re
 
@@ -85,7 +85,7 @@ class InstallerWindow(GUIBase):
 
         settings = { 'install': v, 'exe': exe }
 
-        if f in ['Vanilla', '#Vanilla? Madder.']: # TODO: VMD is commented out, needs map files and UnrealScript work
+        if f in ['Vanilla', '####Vanilla? Madder.']: # TODO: VMD is commented out, needs map files and UnrealScript work
             v = BooleanVar(master=self.frame, value=True)
             settings['mirrors'] = v
             c = Checkbutton(self.frame, text="Download mirrored maps for "+f, variable=v)
@@ -181,19 +181,3 @@ class InstallerWindow(GUIBase):
 
 def main():
     InstallerWindow()
-
-
-def getDefaultPath():
-    checks = [
-        Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
-        Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
-        Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
-        Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
-        Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
-    ]
-    p:Path
-    for p in checks:
-        f:Path = p / "DeusEx.exe"
-        if f.exists():
-            return p
-    return None

@@ -5,7 +5,10 @@ from Install import MD5, DownloadFile, Mkdir, WriteBytes
 
 def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
     print('\nInstallMirrors(', mapsdir, flavor, ')')
+    callback(0, 1, 1, 'Checking Maps')
     totalmd5 = Md5Maps(mapsdir)
+    callback(1, 1, 1, 'Checking Maps')
+
     if totalmd5 == 'd41d8cd98f00b204e9800998ecf8427e': # no map files found
         print('no mirrored maps found')
     elif totalmd5 == '265d1d8bef836074c28303c9326f5d35': # mirrored maps v0.7

@@ -6,8 +6,17 @@ import urllib.request
 import certifi
 import ssl
 
+verbose = False
 dryrun = False
-def SetDryrun(val):
+def SetVerbose(val:bool):
+    global verbose
+    verbose = val
+
+def GetVerbose() -> bool:
+    global verbose
+    return verbose
+
+def SetDryrun(val:bool):
     global dryrun
     dryrun = val
 
@@ -51,6 +60,23 @@ def GetSourcePath() -> Path:
         return p
     raise RuntimeError('failed to GetSourcePath()', p)
 
+
+def getDefaultPath():
+    checks = [
+        Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+        Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+        Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
+        Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
+        Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
+    ]
+    p:Path
+    for p in checks:
+        f:Path = p / "DeusEx.exe"
+        if f.exists():
+            return p
+    return None
+
+
 def GetPackagesPath(modname:str) -> Path:
     # TODO: these source files will be split up into a separate folder for each modname when we start using consistent filenames
     p = GetSourcePath()
@@ -71,14 +97,25 @@ def _DetectFlavors(system:Path):
     vanilla_md5 = None
     is_vanilla = False
 
+    deusexu_md5s = {
+        'd343da03a6d311ee412dfae4b52ff975': 'vanilla',
+        '5964bd1dcea8edb20cb1bc89881b0556': 'DXRando v2.5',
+    }
+
     if (game / 'VMDSim').is_dir():
-        return ['Vanilla? Madder.']# VMD seems like it can only exist by itself
+        flavors = ['Vanilla? Madder.']# VMD seems like it can only exist by itself
+        if GetVerbose():
+            print("_DetectFlavors", flavors)
+        return flavors
 
     if (system / 'DeusEx.u').exists():
         flavors.append('Vanilla')
         vanilla_md5 = MD5((system / 'DeusEx.u').read_bytes())
-        if vanilla_md5 == 'd343da03a6d311ee412dfae4b52ff975':
+        md5_name = deusexu_md5s.get(vanilla_md5)
+        if md5_name == 'vanilla':
             is_vanilla = True
+        elif md5_name:
+            print("found DeusEx.u", md5_name, vanilla_md5)
         else:
             print('unknown MD5 for DeusEx.u', vanilla_md5)
 
@@ -95,6 +132,8 @@ def _DetectFlavors(system:Path):
     if (game / 'Revision').is_dir():
         flavors.append('Revision')
 
+    if GetVerbose():
+        print("_DetectFlavors", flavors)
     return flavors
 
 
@@ -170,24 +209,31 @@ def Mkdir(dir:Path, parents=False, exist_ok=False):
     if GetDryrun():
         print("dryrun would've created folder", dir)
     else:
+        if GetVerbose():
+            print("creating folder", dir)
         dir.mkdir(parents=parents, exist_ok=exist_ok)
 
 def WriteBytes(out:Path, data:bytes):
     if GetDryrun():
-        print("dryrun would've written to", out)
+        print("dryrun would've written", len(data), "bytes to", out)
     else:
+        if GetVerbose():
+            print("writing", len(data), "bytes to", out)
         out.write_bytes(data)
 
 
 def CopyTo(source:Path, dest:Path, silent:bool=False):
-    if not silent:
+    if GetVerbose() or not silent:
         print('Copying', source, 'to', dest)
     bytes = source.read_bytes()
     WriteBytes(dest, bytes)
 
 
 def MD5(bytes:bytes) -> str:
-    return hashlib.md5(bytes).hexdigest()
+    ret = hashlib.md5(bytes).hexdigest()
+    if GetVerbose():
+        print("MD5 of", len(bytes), " bytes is", ret)
+    return ret
 
 
 def DownloadFile(url, dest, callback):
