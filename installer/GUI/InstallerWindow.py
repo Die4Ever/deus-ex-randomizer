@@ -22,17 +22,17 @@ class InstallerWindow(GUIBase):
         self.SetShowHiddenFiles()
         p = fd.askopenfilename(title="Find plain DeusEx.exe", filetypes=filetypes, initialdir=initdir)
         if not p:
-            print('no file selected')
+            info('no file selected')
             sys.exit(0)
 
         p = Path(p)
-        print(p)
+        info(p)
         assert p.name.lower() == 'deusex.exe'
         assert p.parent.name.lower() == 'system'
         self.exe = p
 
         flavors = Install.DetectFlavors(self.exe)
-        print(flavors)
+        info(flavors)
 
         self.font = font.Font(size=14)
         self.linkfont = font.Font(size=12, underline=True)
@@ -130,15 +130,15 @@ class InstallerWindow(GUIBase):
         except Exception as e:
             self.root.title('DXRando Installer Error!')
             self.root.update()
-            print('\n\nError!')
-            print(str(e) + '\n\n' + traceback.format_exc())
+            info('\n\nError!')
+            info(str(e) + '\n\n' + traceback.format_exc())
             messagebox.showinfo('Error!', str(e) + '\n\n' + traceback.format_exc(5))
             exit(1)
 
     def _Install(self):
         self.root.title('DXRando Installing...')
         self.root.update()
-        print(self.speedupfixval.get())
+        info(self.speedupfixval.get())
         self.installButton["state"]='disabled'
 
         flavors = {}

@@ -8,6 +8,7 @@ from tkinter import *
 from pathlib import Path
 import traceback
 from idlelib.tooltip import Hovertip
+from Install import info
 
 class GUIBase:
     def __init__(self):
@@ -32,7 +33,7 @@ class GUIBase:
                 self.width = event.width
                 self.height = event.height
             except Exception as e:
-                print('ERROR: in resize:', e)
+                info('ERROR: in resize:', e)
 
     def newInput(self, cls, label:str, tooltip:str, row:int, *args, **kargs):
         label = Label(self.win,text=label,width=22,height=2,font=self.font, anchor='e', justify='left')
@@ -112,7 +113,7 @@ class ScrollableFrame:
 def errordialog(title, msg, e=None):
     if e:
         msg += '\n' + str(e) + '\n\n' + traceback.format_exc()
-    print(title, '\n', msg)
+    info(title, '\n', msg)
     messagebox.showerror(title, msg)
 
 

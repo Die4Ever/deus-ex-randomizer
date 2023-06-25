@@ -3,7 +3,7 @@ import sys
 import traceback
 
 import GUI.InstallerWindow
-from Install import SetDryrun, SetVerbose
+from Install import SetDryrun, SetVerbose, info
 from Install.Install import UnattendedInstall
 
 parser = argparse.ArgumentParser(description='Deus Ex Randomizer')
@@ -19,8 +19,8 @@ def GetVersion():
     return 'v0.3'
 
 if args.version:
-    print('DXRando Installer version:', GetVersion(), file=sys.stderr)
-    print('Python version:', sys.version_info, file=sys.stderr)
+    info('DXRando Installer version:', GetVersion())
+    info('Python version:', sys.version_info)
     sys.exit(0)
 
 if args.verbose:
@@ -34,9 +34,9 @@ if args.unattended:
         UnattendedInstall(args.path, args.downloadmirrors)
         sys.exit(0)
     except Exception as e:
-        print('\n\nError!')
-        print(e, '\n')
-        print(traceback.format_exc())
-        print('falling back to manual install')
+        info('\n\nError!')
+        info(e, '\n')
+        info(traceback.format_exc())
+        info('falling back to manual install')
 
 GUI.InstallerWindow.main()

@@ -1,27 +1,27 @@
 from pathlib import Path
 import tempfile
 from zipfile import ZipFile
-from Install import MD5, DownloadFile, Mkdir, WriteBytes
+from Install import MD5, DownloadFile, Mkdir, WriteBytes, debug, info
 
 def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
-    print('\nInstallMirrors(', mapsdir, flavor, ')')
+    info('\nInstallMirrors(', mapsdir, flavor, ')')
     callback(0, 1, 1, 'Checking Maps')
     totalmd5 = Md5Maps(mapsdir)
     callback(1, 1, 1, 'Checking Maps')
 
     if totalmd5 == 'd41d8cd98f00b204e9800998ecf8427e': # no map files found
-        print('no mirrored maps found')
+        info('no mirrored maps found')
     elif totalmd5 == '265d1d8bef836074c28303c9326f5d35': # mirrored maps v0.7
-        print('overwriting mirrored maps v0.7')
+        info('overwriting mirrored maps v0.7')
     elif totalmd5 == '8d06331fdc7fcc6904c316bbb94a4598': # v0.8
-        print('overwriting mirrored maps v0.8')
+        info('overwriting mirrored maps v0.8')
     elif totalmd5 == '5551a03906a0f5470e2f9bd8724d59a6':
-        print('overwriting mirrored maps v0.9')
+        info('overwriting mirrored maps v0.9')
     elif totalmd5 == '4a2b4cb284de0799ce0f111cfd8170fc': # v0.9.1
-        print('already have mirrored maps v0.9.1')
+        info('already have mirrored maps v0.9.1')
         return
     else:
-        print('unknown existing maps MD5:', totalmd5)
+        info('unknown existing maps MD5:', totalmd5)
 
     tempdir = Path(tempfile.gettempdir()) / 'dxrando'
     Mkdir(tempdir, exist_ok=True)
@@ -49,9 +49,9 @@ def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
             data = zip.read(f.filename)
             out = mapsdir / name
             WriteBytes(out, data)
-            print(Path(f.filename).name, f.file_size)
+            debug(Path(f.filename).name, f.file_size)
 
-    print('done extracting to', mapsdir)
+    info('done extracting to', mapsdir)
     temp.unlink()
 
 def Md5Maps(mapsdir: Path) -> str:

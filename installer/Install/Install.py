@@ -16,7 +16,7 @@ def UnattendedInstall(installpath:str, downloadmirrors):
 
     assert p.exists(), str(p)
 
-    callback = lambda a,b,c, status='Downloading' : print(status, a,b,c)
+    callback = lambda a,b,c, status='Downloading' : debug(status, a,b,c)
     flavors = DetectFlavors(p)
     settings = {}
     for f in flavors:
@@ -43,7 +43,7 @@ def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
     system:Path = exe.parent
     assert system.name.lower() == 'system'
 
-    print('Installing flavors:', flavors, speedupfix, exe)
+    info('Installing flavors:', flavors, speedupfix, exe)
 
     for(f, settings) in flavors.items():
         ret={}
@@ -67,8 +67,7 @@ def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
     if speedupfix:
         EngineDllFix(system)
 
-    if GetVerbose():
-        print("Install returning", flavors)
+    debug("Install returning", flavors)
 
     return flavors
 
@@ -182,9 +181,9 @@ def InstallLDDP(system:Path, settings:dict):
             else:
                 continue
             WriteBytes(dest, data)
-            print(Path(f.filename).name, f.file_size)
+            debug(Path(f.filename).name, f.file_size)
 
-    print('done Installing LDDP to', system, '\n')
+    info('done Installing LDDP to', system, '\n')
     temp.unlink()
 
 
@@ -253,7 +252,7 @@ def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_pl
 
 def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newexename:str, changes:dict, additions:dict, in_place:bool=False):
     # inis
-    print('ChangeModConfigs', system, modname, exename, newexename, in_place)
+    info('ChangeModConfigs', system, modname, exename, newexename, in_place)
     confpath = system / (exename + 'Default.ini')
     b = confpath.read_bytes()
     b = Config.ModifyConfig(b, changes, additions)

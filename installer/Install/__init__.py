@@ -27,6 +27,25 @@ def GetDryrun() -> bool:
 def IsWindows() -> bool:
     return os.name == 'nt'
 
+try:
+    outfile = open('log.txt', 'w')
+except Exception as e:
+    print('ERROR writing to log.txt file', e)
+    outfile = None
+
+def debug(*args):
+    global outfile
+    if GetDryrun():
+        print(*args)
+        if outfile:
+            print(*args, file=outfile)
+
+def info(*args):
+    global outfile
+    print(*args)
+    if outfile:
+        print(*args, file=outfile)
+
 
 def GetConfChanges(modname):
     changes = {
@@ -104,8 +123,7 @@ def _DetectFlavors(system:Path):
 
     if (game / 'VMDSim').is_dir():
         flavors = ['Vanilla? Madder.']# VMD seems like it can only exist by itself
-        if GetVerbose():
-            print("_DetectFlavors", flavors)
+        debug("_DetectFlavors", flavors)
         return flavors
 
     if (system / 'DeusEx.u').exists():
@@ -115,9 +133,9 @@ def _DetectFlavors(system:Path):
         if md5_name == 'vanilla':
             is_vanilla = True
         elif md5_name:
-            print("found DeusEx.u", md5_name, vanilla_md5)
+            info("found DeusEx.u", md5_name, vanilla_md5)
         else:
-            print('unknown MD5 for DeusEx.u', vanilla_md5)
+            info('unknown MD5 for DeusEx.u', vanilla_md5)
 
     if (game / 'GMDXv9').is_dir():
         flavors.append('GMDX v9')
@@ -127,13 +145,12 @@ def _DetectFlavors(system:Path):
         flavors.append('GMDX v10')
     if (system / 'HX.u').exists():
         if not is_vanilla:
-            print('WARNING: DeusEx.u file is not vanilla! This can cause issues with HX')
+            info('WARNING: DeusEx.u file is not vanilla! This can cause issues with HX')
         flavors.append('HX')
     if (game / 'Revision').is_dir():
         flavors.append('Revision')
 
-    if GetVerbose():
-        print("_DetectFlavors", flavors)
+    debug("_DetectFlavors", flavors)
     return flavors
 
 
@@ -165,10 +182,10 @@ def EngineDllFix(p:Path) -> bool:
     bytes = dll.read_bytes()
     hex = MD5(bytes)
     if hex == '1f23c5a7e63c79457bd4c24cd14641b0':
-        print('Engine.dll speedup fix already applied')
+        info('Engine.dll speedup fix already applied')
         return True
     if hex != '0af95a7328719b1d4eb26374aad8ae9a':
-        print('skipping Engine.dll speedup fix, unrecognized md5 sum:', hex)
+        info('skipping Engine.dll speedup fix, unrecognized md5 sum:', hex)
         return False
     dllbak = p / 'Engine.dll.bak'
     WriteBytes(dllbak, bytes)
@@ -180,7 +197,7 @@ def EngineDllFix(p:Path) -> bool:
 
 
 def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path, changes:dict):
-    print('ModifyConfig', defconfig, config, outdefconfig, outconfig)
+    info('ModifyConfig', defconfig, config, outdefconfig, outconfig)
     bytes = defconfig.read_bytes()
     bytes = Config.ModifyConfig(bytes, changes)
     WriteBytes(outdefconfig, bytes)
@@ -193,7 +210,7 @@ def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path,
 
 def CopyD3D10Renderer(system:Path):
     thirdparty = GetSourcePath() / '3rdParty'
-    print('CopyD3D10Renderer from', thirdparty, ' to ', system)
+    info('CopyD3D10Renderer from', thirdparty, ' to ', system)
 
     CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
     CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
@@ -207,32 +224,29 @@ def CopyD3D10Renderer(system:Path):
 
 def Mkdir(dir:Path, parents=False, exist_ok=False):
     if GetDryrun():
-        print("dryrun would've created folder", dir)
+        info("dryrun would've created folder", dir)
     else:
-        if GetVerbose():
-            print("creating folder", dir)
+        debug("creating folder", dir)
         dir.mkdir(parents=parents, exist_ok=exist_ok)
 
 def WriteBytes(out:Path, data:bytes):
     if GetDryrun():
-        print("dryrun would've written", len(data), "bytes to", out)
+        info("dryrun would've written", len(data), "bytes to", out)
     else:
-        if GetVerbose():
-            print("writing", len(data), "bytes to", out)
+        debug("writing", len(data), "bytes to", out)
         out.write_bytes(data)
 
 
 def CopyTo(source:Path, dest:Path, silent:bool=False):
     if GetVerbose() or not silent:
-        print('Copying', source, 'to', dest)
+        info('Copying', source, 'to', dest)
     bytes = source.read_bytes()
     WriteBytes(dest, bytes)
 
 
 def MD5(bytes:bytes) -> str:
     ret = hashlib.md5(bytes).hexdigest()
-    if GetVerbose():
-        print("MD5 of", len(bytes), " bytes is", ret)
+    debug("MD5 of", len(bytes), " bytes is", ret)
     return ret
 
 
@@ -242,8 +256,8 @@ def DownloadFile(url, dest, callback):
     old_func = ssl._create_default_https_context
     ssl._create_default_https_context = lambda : sslcontext # HACK
 
-    print('\n\ndownloading', url, 'to', dest)
+    info('\n\ndownloading', url, 'to', dest)
     urllib.request.urlretrieve(url, dest, callback) # "legacy interface"
-    print('done downloading ', url, 'to', dest)
+    info('done downloading ', url, 'to', dest)
 
     ssl._create_default_https_context = old_func
