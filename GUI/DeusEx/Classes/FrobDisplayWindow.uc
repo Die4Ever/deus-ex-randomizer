@@ -45,11 +45,6 @@ function CheckAutofillSettings()
         known_codes = false;
     }
 
-    if(player.FlagBase.GetInt('Rando_passwordsrandomized') <= 0) {
-        auto_codes = false;
-        known_codes = false;
-    }
-
     show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys enabled"));
 }
 
