@@ -3,6 +3,17 @@
 //=============================================================================
 class NSFCloneAugTough1 extends Terrorist;
 
+function BeginPlay()
+{
+	Super.BeginPlay();
+
+    //Random chance of switching body texture and switching to NSFCloneAugTough1Carcass2
+    if (Rand(100) < 5){
+        MultiSkins[2]=Texture'NSFCloneAugTough1Body2';
+        CarcassType=Class'DeusEx.NSFCloneAugTough1Carcass2';
+    }
+}
+
 //This guy has a metal head, always count as a helmet
 function int HeadDamageMult()
 {
@@ -58,9 +69,9 @@ defaultproperties
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
     MultiSkins(0)=Texture'DeusExCharacters.Skins.TerroristTex0'
-    MultiSkins(1)=Texture'DeusExCharacters.Skins.SoldierTex2'
-    MultiSkins(2)=Texture'TestCharacters.DXRandoSkins.CyberNSFBody'
-    MultiSkins(3)=Texture'TestCharacters.DXRandoSkins.CyberNSFHead'
+    MultiSkins(1)=Texture'DeusExCharacters.Skins.TerroristTex2'
+    MultiSkins(2)=Texture'NSFCloneAugTough1Body'
+    MultiSkins(3)=Texture'NSFCloneAugTough1Head'
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
     MultiSkins(6)=Texture'DeusExCharacters.Skins.GogglesTex1'
