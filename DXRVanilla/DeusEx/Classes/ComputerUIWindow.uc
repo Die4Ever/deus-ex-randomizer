@@ -9,7 +9,7 @@ function ProcessDeusExText(Name textName, optional TextWindow winText)
     local DXREvents e;
     local int i;
 
-    addNote = False;
+    addNote = True;
     for(i=0; i<ArrayCount(updated_passwords); i++) {
         updated_passwords[i] = "";
     }
@@ -66,6 +66,8 @@ function TryAddingNote(string text)
     local DeusExNote note;
     local DeusExRootWindow rootWindow;
     local int i;
+
+    if(Len(text)==0) return;
 
     rootWindow = DeusExRootWindow(player.rootWindow);
 

@@ -5,38 +5,70 @@ from Install import *
 from Install import _DetectFlavors
 from Install import MapVariants
 
+def UnattendedInstall(installpath:str, downloadmirrors):
+    if not installpath:
+        p:Path = getDefaultPath()
+        p = p / 'DeusEx.exe'
+    else:
+        p:Path = Path(installpath)
+        if p.is_dir() and p.name == 'System':
+            p = p / 'DeusEx.exe'
+
+    assert p.exists(), str(p)
+
+    callback = lambda a,b,c, status='Downloading' : debug(status, a,b,c)
+    flavors = DetectFlavors(p)
+    settings = {}
+    for f in flavors:
+        settings[f] = {'downloadcallback': callback}
+
+    if downloadmirrors and 'Vanilla' in settings:
+        settings['Vanilla']['mirrors'] = True
+
+    ret = Install(p, settings, True)
+
+
 def DetectFlavors(exe:Path) -> list:
+    assert exe.exists(), str(exe)
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
     assert system.name.lower() == 'system'
+
     return _DetectFlavors(system)
 
 
 def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
+    assert exe.exists(), str(exe)
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
     assert system.name.lower() == 'system'
 
-    print('Installing flavors:', flavors, speedupfix)
+    info('Installing flavors:', flavors, speedupfix, exe)
 
     for(f, settings) in flavors.items():
+        ret={}
         if 'Vanilla'==f:
-            InstallVanilla(system, settings, speedupfix)
+            ret = InstallVanilla(system, settings, speedupfix)
         if 'Vanilla? Madder.'==f:
-            CreateModConfigs(system, settings, 'VMD', 'VMDSim')
+            ret = CreateModConfigs(system, settings, 'VMD', 'VMDSim')
         if 'GMDX v9'==f:
-            InstallGMDX(system, settings, 'GMDXv9')
+            ret = InstallGMDX(system, settings, 'GMDXv9')
         if 'GMDX RSD'==f:
-            InstallGMDX(system, settings, 'GMDXvRSD')
+            ret = InstallGMDX(system, settings, 'GMDXvRSD')
         if 'GMDX v10'==f:
-            CreateModConfigs(system, settings, 'GMDX', 'GMDXv10')
+            ret = CreateModConfigs(system, settings, 'GMDX', 'GMDXv10')
         if 'Revision'==f:
-            InstallRevision(system, settings)
+            ret = InstallRevision(system, settings)
         if 'HX'==f:
-            InstallHX(system, settings)
+            ret = InstallHX(system, settings)
+        if ret and settings:
+            settings.update(ret)
 
     if speedupfix:
         EngineDllFix(system)
+
+    debug("Install returning", flavors)
+
     return flavors
 
 
@@ -47,7 +79,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
         InstallLDDP(system, settings)
 
     exe_source = GetSourcePath() / '3rdParty' / "KentieDeusExe.exe"
-    exetype = settings['exetype']
+    exetype = settings.get('exetype')
     kentie = True
     if exetype == 'Launch':
         exe_source = GetSourcePath() / '3rdParty' / "Launch.exe"
@@ -73,7 +105,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     else:
         configs_dest = system
     DXRandoini = configs_dest / (exename+'.ini')
-    DXRandoini.parent.mkdir(parents=True, exist_ok=True)
+    Mkdir(DXRandoini.parent, parents=True, exist_ok=True)
 
     changes = {}
     if DXRandoini.exists():
@@ -98,15 +130,15 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     if changes:
         b = defini_dest.read_bytes()
         b = Config.ModifyConfig(b, changes, additions={})
-        defini_dest.write_bytes(b)
+        WriteBytes(defini_dest, b)
 
         b = DXRandoini.read_bytes()
         b = Config.ModifyConfig(b, changes, additions={})
-        DXRandoini.write_bytes(b)
+        WriteBytes(DXRandoini, b)
 
     dxrroot = gameroot / 'DXRando'
-    (dxrroot / 'Maps').mkdir(exist_ok=True, parents=True)
-    (dxrroot / 'System').mkdir(exist_ok=True, parents=True)
+    Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
+    Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
     CopyD3D10Renderer(system)
 
@@ -120,7 +152,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
 def InstallLDDP(system:Path, settings:dict):
     callback = settings.get('downloadcallback')
     tempdir = Path(tempfile.gettempdir()) / 'dxrando'
-    tempdir.mkdir(exist_ok=True)
+    Mkdir(tempdir, exist_ok=True)
     name = 'Lay_D_Denton_Project_1.1.zip'
     temp = tempdir / name
     if temp.exists():
@@ -148,31 +180,32 @@ def InstallLDDP(system:Path, settings:dict):
                 dest = mapsdir / name
             else:
                 continue
-            with open(dest, 'wb') as out:
-                out.write(data)
-            print(Path(f.filename).name, f.file_size)
+            WriteBytes(dest, data)
+            debug(Path(f.filename).name, f.file_size)
 
-    print('done Installing LDDP to', system, '\n')
+    info('done Installing LDDP to', system, '\n')
     temp.unlink()
 
 
 def InstallGMDX(system:Path, settings:dict, exename:str):
+    game = system.parent
     (changes, additions) = GetConfChanges('GMDX')
+    Mkdir(game/'SaveGMDXRando', exist_ok=True)
     # GMDX uses absolute path shortcuts with ini files in their arguments, so it's not as simple to copy their exe
 
     confpath = Path.home() / 'Documents' / 'Deus Ex' / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
         b = Config.ModifyConfig(b, changes, additions)
-        confpath.write_bytes(b)
+        WriteBytes(confpath, b)
 
-    confpath = system / exename / 'System' / 'gmdx.ini'
+    confpath = game / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
         b = Config.ModifyConfig(b, changes, additions)
-        confpath.write_bytes(b)
+        WriteBytes(confpath, b)
 
-    CopyPackageFiles('GMDX', system.parent, ['GMDXRandomizer.u'])
+    CopyPackageFiles('GMDX', game, ['GMDXRandomizer.u'])
 
 
 def InstallRevision(system:Path, settings:dict):
@@ -184,6 +217,7 @@ def InstallRevision(system:Path, settings:dict):
 def InstallHX(system:Path, settings:dict):
     CopyPackageFiles('HX', system.parent, ['HXRandomizer.u'])
     (changes, additions) = GetConfChanges('HX')
+    Mkdir(system.parent/'SaveHXRando', exist_ok=True)
     ChangeModConfigs(system, settings, 'HX', 'HX', 'HX', changes, additions, True)
     int_source = GetPackagesPath('HX') / 'HXRandomizer.int'
     int_dest = system / 'HXRandomizer.int'
@@ -196,7 +230,7 @@ def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_pl
     newexepath = system / (newexename+'.exe')
     modpath = system.parent / (modname+'Randomizer')
     mapspath = modpath / 'Maps'
-    mapspath.mkdir(exist_ok=True, parents=True)
+    Mkdir(mapspath, exist_ok=True, parents=True)
     if not IsWindows():
         in_place = True
     if not in_place:
@@ -209,6 +243,7 @@ def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_pl
     CopyPackageFiles(modname, system.parent, [modname+'Randomizer.u'])
 
     (changes, additions) = GetConfChanges(modname)
+    Mkdir(system.parent/('Save'+modname+'Rando'), exist_ok=True)
     ChangeModConfigs(system, settings, modname, exename, newexename, changes, additions, in_place)
 
     if settings.get('mirrors'):
@@ -217,14 +252,14 @@ def CreateModConfigs(system:Path, settings:dict, modname:str, exename:str, in_pl
 
 def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newexename:str, changes:dict, additions:dict, in_place:bool=False):
     # inis
-    print('ChangeModConfigs', system, modname, exename, newexename, in_place)
+    info('ChangeModConfigs', system, modname, exename, newexename, in_place)
     confpath = system / (exename + 'Default.ini')
     b = confpath.read_bytes()
     b = Config.ModifyConfig(b, changes, additions)
     if in_place:
         newexename = exename
     outconf = system / (newexename + 'Default.ini')
-    outconf.write_bytes(b)
+    WriteBytes(outconf, b)
 
     confpath = system / (exename + '.ini')
     if confpath.exists():
@@ -233,7 +268,7 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
         outconf = system / (newexename + '.ini')
         if in_place:
             outconf = confpath
-        outconf.write_bytes(b)
+        WriteBytes(outconf, b)
 
     # User inis
     if in_place:
@@ -244,7 +279,7 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
     outconf = system / (newexename + 'DefUser.ini')
     if in_place:
         outconf = confpath
-    outconf.write_bytes(b)
+    WriteBytes(outconf, b)
 
     confpath = system / (exename + 'User.ini')
     if confpath.exists():
@@ -253,4 +288,4 @@ def ChangeModConfigs(system:Path, settings:dict, modname:str, exename:str, newex
         outconf = system / (newexename + 'User.ini')
         if in_place:
             outconf = confpath
-        outconf.write_bytes(b)
+        WriteBytes(outconf, b)

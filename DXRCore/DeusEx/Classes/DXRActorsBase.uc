@@ -838,6 +838,11 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
         newactor.LightHue=a.LightHue;
         newactor.LightRadius=a.LightRadius;
     }
+
+    if(#defined(hx)){
+        newactor.SetPropertyText("PrecessorName", a.GetPropertyText("PrecessorName"));
+    }
+
     return newactor;
 }
 

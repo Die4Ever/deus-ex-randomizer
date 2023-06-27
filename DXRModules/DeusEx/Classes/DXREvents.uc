@@ -6,13 +6,14 @@ var int num_watchflags;
 var int bingo_win_countdown;
 var name rewatchflags[8];
 var int num_rewatchflags;
+var float PoolBallHeight;
 
 struct BingoOption {
     var string event, desc;
     var int max;
     var int missions;// bit masks
 };
-var BingoOption bingo_options[200];
+var BingoOption bingo_options[250];
 
 struct MutualExclusion {
     var string e1, e2;
@@ -22,6 +23,7 @@ var MutualExclusion mutually_exclusive[32];
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
+
     switch(dxr.dxInfo.missionNumber) {
         case 99:
             Ending_FirstEntry();
@@ -34,6 +36,27 @@ function PreFirstEntry()
     }
 }
 
+function PostFirstEntry()
+{
+    Super.PostFirstEntry();
+
+     //Done here so that items you are carrying over between levels don't get hit by LogPickup
+    InitStatLogShim();
+}
+
+function InitStatLogShim()
+{
+    //I think both LocalLog and WorldLog will always be None in DeusEx, but if this makes it
+    //to another game, might need to actually see if there's a possibility of overlap here.
+    if (!((Level.Game.LocalLog!=None && Level.Game.LocalLog.IsA('DXRStatLog')) ||
+          (Level.Game.WorldLog!=None && Level.Game.WorldLog.IsA('DXRStatLog')))){
+        if (Level.Game.LocalLog==None){
+            Level.Game.LocalLog=spawn(class'DXRStatLog');
+        } else if (Level.Game.WorldLog==None){
+            Level.Game.WorldLog=spawn(class'DXRStatLog');
+        }
+    }
+}
 
 function SetWatchFlags() {
     local MapExit m;
@@ -61,6 +84,8 @@ function SetWatchFlags() {
     local BingoTrigger bt;
     local LowerClassMale lcm;
     local Greasel g;
+    local DamageTrigger dt;
+    local #var(prefix)Poolball ball;
     local int i;
 
     switch(dxr.localURL) {
@@ -94,7 +119,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
 
         bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
-        bt.MakeClassProximityTrigger(class'FlagPole');
+        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
 
         break;
@@ -133,6 +158,8 @@ function SetWatchFlags() {
     case "02_NYC_BAR":
         WatchFlag('JockSecondStory');
         WatchFlag('LeoToTheBar');
+        WatchFlag('PlayPool');
+        SetPoolBallHeight();
         break;
     case "02_NYC_FREECLINIC":
         WatchFlag('BoughtClinicPlan');
@@ -167,7 +194,7 @@ function SetWatchFlags() {
         WatchFlag('SimonsAssassination');
         bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
         bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
-        bt.MakeClassProximityTrigger(class'FlagPole');
+        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
         break;
     case "03_NYC_AIRFIELD":
         WatchFlag('BoatDocksAmbrosia');
@@ -187,6 +214,7 @@ function SetWatchFlags() {
         break;
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
+        WatchFlag('PlayPool');
         break;
     case "03_NYC_HANGAR":
         RewatchFlag('747Ambrosia');
@@ -210,6 +238,8 @@ function SetWatchFlags() {
         break;
     case "04_NYC_BAR":
         WatchFlag('LeoToTheBar');
+        WatchFlag('PlayPool');
+        SetPoolBallHeight();
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
@@ -247,7 +277,7 @@ function SetWatchFlags() {
     case "04_NYC_UNATCOHQ":
         bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
         bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
-        bt.MakeClassProximityTrigger(class'FlagPole');
+        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
         break;
     case "04_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
@@ -280,7 +310,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
 
         bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
-        bt.MakeClassProximityTrigger(class'FlagPole');
+        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
         break;
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -304,12 +334,22 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'CanalDrugDeal',lcm.Location,200,40);
 
+        foreach AllActors(class'DamageTrigger',dt){
+            if (dt.DamageType=='PoisonGas'){
+                dt.Region.Zone.ZonePlayerEvent='ToxicShip';
+                break;
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'ToxicShip',vectm(0,0,0));
+
+
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
         WatchFlag('ClubMercedesConvo1_Done');
         WatchFlag('M07ChenSecondGive_Played');
         WatchFlag('LDDPRussPaid');
         WatchFlag('LeoToTheBar');
+        WatchFlag('PlayPool');
 
         foreach AllActors(class'Hooker1', h) {
             if(h.BindName == "ClubMercedes")
@@ -325,6 +365,14 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(448,438,-267),200,40);
 
         bt = class'BingoTrigger'.static.Create(self,'LuckyMoneyFreezer',vectm(-1615,-2960,-343),200,40);
+
+        foreach AllActors(class'#var(prefix)Poolball',ball){
+            if (ball.Region.Zone.ZoneGroundFriction>1){
+                ball.Destroy(); //There's at least one ball outside of the table.  Just destroy it for simplicity
+            }
+        }
+
+        SetPoolBallHeight();
 
         break;
     case "06_HONGKONG_WANCHAI_STREET":
@@ -407,7 +455,7 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'HongKongBBall',trig.Location,14,3);
-        bt.MakeClassProximityTrigger(class'Basketball');
+        bt.MakeClassProximityTrigger(class'#var(prefix)Basketball');
 
         break;
     case "06_HONGKONG_MJ12LAB":
@@ -427,7 +475,13 @@ function SetWatchFlags() {
         }
         WatchFlag('JerryTheVentGreasel_Dead');
 
+        WatchFlag('FlowersForTheLab');
         break;
+
+    case "06_HONGKONG_STORAGE":
+        WatchFlag('FlowersForTheLab');
+        break;
+
     case "08_NYC_STREET":
         bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
         bt.bingoEvent="MadeBasket";
@@ -445,6 +499,8 @@ function SetWatchFlags() {
         break;
     case "08_NYC_BAR":
         WatchFlag('LeoToTheBar');
+        WatchFlag('PlayPool');
+        SetPoolBallHeight();
         break;
     case "08_NYC_HOTEL":
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
@@ -521,9 +577,9 @@ function SetWatchFlags() {
         }
 
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2983.597168,774.217407,312.100128),70,40);
-        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2984.404785,662.764954,312.100128),70,40);
-        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
 
         break;
     case "10_PARIS_CLUB":
@@ -534,14 +590,19 @@ function SetWatchFlags() {
         RewatchFlag('KnowsGuntherKillphrase');
 
         break;
+    case "10_PARIS_CHATEAU":
+        WatchFlag('ChateauInComputerRoom');
+        WatchFlag('ChateauInBethsRoom');
+        WatchFlag('ChateauInNicolettesRoom');
+        break;
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2019,-2256,-704),20,15);
-        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2076.885254,-3248.189941,-704.369995),20,15);
-        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(1578,-2286,-647),50,40);
-        bt.MakeClassProximityTrigger(class'ChefCarcass');
+        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
         break;
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');
@@ -642,6 +703,10 @@ function SetWatchFlags() {
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'blast_door'){
             dxm.Event = 'blast_door_flag';
         }
+        break;
+    case "15_AREA51_ENTRANCE":
+        WatchFlag('PlayPool');
+        SetPoolBallHeight();
         break;
     case "15_AREA51_FINAL":
         foreach AllActors(class'BookOpen', book) {
@@ -811,15 +876,40 @@ simulated function AnyEntry()
     }
 }
 
-simulated function bool LeoToTheBar()
+simulated function bool ClassInLevel(class<Actor> className)
 {
-    local TerroristCommanderCarcass leoBody;
-    //player().ClientMessage("Looking for Leo");
+    local Actor a;
 
-    foreach AllActors(class'TerroristCommanderCarcass',leoBody){
+    foreach AllActors(className,a){
         return True;
     };
     return False;
+}
+
+simulated function bool AllPoolBallsSunk()
+{
+    local #var(prefix)Poolball ball;
+
+    foreach AllActors(class'#var(prefix)Poolball',ball){
+        if (ball.Location.Z > PoolBallHeight){
+            return False;
+        }
+    }
+    return True;
+}
+
+simulated function SetPoolBallHeight()
+{
+    local #var(prefix)Poolball ball;
+    PoolBallHeight = 9999;
+
+    foreach AllActors(class'#var(prefix)Poolball',ball){
+        if (ball.Location.Z < PoolBallHeight){
+            PoolBallHeight = ball.Location.Z;
+        }
+    }
+
+    PoolBallHeight -= 1;
 }
 
 simulated function bool WatchGuntherKillSwitch()
@@ -850,7 +940,7 @@ simulated function Timer()
         }
 
         if( watchflags[i] == 'LeoToTheBar' ) {
-            if (LeoToTheBar()){
+            if (ClassInLevel(class'#var(prefix)TerroristCommanderCarcass')){
                 SendFlagEvent(watchflags[i]);
                 num_watchflags--;
                 watchflags[i] = watchflags[num_watchflags];
@@ -866,6 +956,24 @@ simulated function Timer()
                 watchflags[num_watchflags]='';
                 i--;
                 _MarkBingo("GuntherHermann_Dead");
+                continue;
+            }
+        } else if( watchflags[i] == 'PlayPool' ) {
+            if (AllPoolBallsSunk()){
+                SendFlagEvent(watchflags[i]);
+                num_watchflags--;
+                watchflags[i] = watchflags[num_watchflags];
+                watchflags[num_watchflags]='';
+                i--;
+                continue;
+            }
+        } else if( watchflags[i] == 'FlowersForTheLab' ) {
+            if (ClassInLevel(class'#var(prefix)Flowers')){
+                SendFlagEvent(watchflags[i]);
+                num_watchflags--;
+                watchflags[i] = watchflags[num_watchflags];
+                watchflags[num_watchflags]='';
+                i--;
                 continue;
             }
         }
@@ -1454,7 +1562,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     local int x, y, i;
     local string event, desc;
     local int progress, max, missions, starting_mission_mask, starting_mission;
-    local int options[200], num_options, slot, free_spaces;
+    local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
     local float f;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(dxr.flags.settings.starting_map);
@@ -1537,7 +1645,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     data.ExportBingoState();
 }
 
-simulated function int HandleMutualExclusion(MutualExclusion m, int options[200], int num_options) {
+simulated function int HandleMutualExclusion(MutualExclusion m, int options[ArrayCount(bingo_options)], int num_options) {
     local int a, b, overwrite;
 
     for(a=0; a<num_options; a++) {
@@ -1730,6 +1838,19 @@ function string RemapBingoEvent(string eventname)
             return "RepairBot_ClassDead";
         case "FrenchGray_ClassDead":
             return "Gray_ClassDead";
+        case "LiquorBottle_Activated":
+        case "Liquor40oz_Activated":
+        case "WineBottle_Activated":
+            return "DrinkAlcohol";
+        case "Pigeon_ClassDead":
+        case "Seagull_ClassDead":
+            return "PerformBurder";
+        case "Fish_ClassDead":
+        case "Fish2_ClassDead":
+            return "GoneFishing";
+        case "ChateauInBethsRoom":
+        case "ChateauInNicolettesRoom":
+            return "DuClareBedrooms";
         default:
             return eventname;
     }
@@ -1981,8 +2102,8 @@ defaultproperties
     bingo_options(77)=(event="support1",desc="Blow up a gas station",max=1,missions=4096)
     bingo_options(78)=(event="UNATCOTroop_ClassDead",desc="Kill %s UNATCO Troopers",max=15,missions=318)
     bingo_options(79)=(event="Terrorist_ClassDead",desc="Kill %s NSF Terrorists",max=15,missions=62)
-    bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill %s MJ12 Troopers",max=25,missions=65524)
-    bingo_options(81)=(event="MJ12Commando_ClassDead",desc="Kill %s MJ12 Commandos",max=10,missions=65524)
+    bingo_options(80)=(event="MJ12Troop_ClassDead",desc="Kill %s MJ12 Troopers",max=25,missions=57204)
+    bingo_options(81)=(event="MJ12Commando_ClassDead",desc="Kill %s MJ12 Commandos",max=10,missions=57204)
     bingo_options(82)=(event="Karkian_ClassDead",desc="Kill %s Karkians",max=5)
     bingo_options(83)=(event="MilitaryBot_ClassDead",desc="Destroy %s Military Bots",max=5)
     bingo_options(84)=(event="VandenbergToilet",desc="Use the only toilet in Vandenberg",max=1,missions=4096)
@@ -1994,8 +2115,8 @@ defaultproperties
     bingo_options(90)=(event="Rat_ClassDead",desc="Kill %s rats",max=30)
     bingo_options(91)=(event="UNATCOTroop_ClassUnconscious",desc="Knock out %s UNATCO Troopers",max=15,missions=318)
     bingo_options(92)=(event="Terrorist_ClassUnconscious",desc="Knock out %s NSF Terrorists",max=15,missions=62)
-    bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out %s MJ12 Troopers",max=25,missions=65524)
-    bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out %s MJ12 Commandos",max=2,missions=65524)
+    bingo_options(93)=(event="MJ12Troop_ClassUnconscious",desc="Knock out %s MJ12 Troopers",max=25,missions=57204)
+    bingo_options(94)=(event="MJ12Commando_ClassUnconscious",desc="Knock out %s MJ12 Commandos",max=2,missions=57204)
     bingo_options(95)=(event="purge",desc="Release the gas in the MJ12 Helibase",max=1,missions=64)
     bingo_options(96)=(event="ChugWater",desc="Chug water %s times",max=30,mission=40830)
 #ifndef vmd
@@ -2085,7 +2206,33 @@ defaultproperties
     //bingo_options()=(event="M11WaltonHolo_Played",desc="Talk to Walton Simons after defeating Gunther",max=1,missions=2048)
     bingo_options(175)=(event="JerryTheVentGreasel_Dead",desc="Kill Jerry the Vent Greasel",max=1,missions=64)
     bingo_options(176)=(event="BiggestFan",desc="Destroy your biggest fan",max=1,missions=512)
-
+    bingo_options(177)=(event="Sodacan_Activated",desc="Drink %s cans of soda",max=75)
+    bingo_options(178)=(event="BallisticArmor_Activated",desc="Use %s Ballistic Armors",max=3)
+    bingo_options(179)=(event="Flare_Activated",desc="Light %s flares",max=15)
+    bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1)
+    bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
+    bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s HazMat Suits",max=3)
+    bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",max=3)
+    bingo_options(184)=(event="DrinkAlcohol",desc="Drink %s bottles of alcohol",max=75)
+    bingo_options(185)=(event="ToxicShip",desc="Enter the toxic ship",max=1,missions=64)
+#ifdef injections
+    bingo_options(186)=(event="ComputerHacked",desc="Hack %s computers",max=10)
+#endif
+    bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",max=3)
+    bingo_options(188)=(event="Rebreather_Activated",desc="Use %s rebreathers",max=3)
+    bingo_options(189)=(event="PerformBurder",desc="Hunt %s birds",max=10)
+    bingo_options(190)=(event="GoneFishing",desc="Kill %s fish",max=10)
+    bingo_options(191)=(event="FordSchick_Dead",desc="Kill Ford Schick",max=1,missions=276)
+    bingo_options(192)=(event="ChateauInComputerRoom",desc="Find Beth's secret routing station",max=1,missions=1024)
+    bingo_options(193)=(event="DuClareBedrooms",desc="Visit both bedrooms in the DuClare Chateau",max=2,missions=1024)
+    bingo_options(194)=(event="PlayPool",desc="Sink all the pool balls %s times",max=3,missions=33116)
+    bingo_options(195)=(event="FireExtinguisher_Activated",desc="Use %s fire extinguishers",max=10)
+    bingo_options(196)=(event="PianoSongPlayed",desc="Play %s different songs on the piano",max=5,missions=64)
+    bingo_options(197)=(event="PianoSong0Played",desc="Play the theme song on the piano",max=1,missions=64)
+    bingo_options(198)=(event="PianoSong7Played",desc="Stauf Says...",max=1,missions=64)
+    bingo_options(199)=(event="PinballWizard",desc="Play %s different pinball machines",max=10,missions=37246)
+    bingo_options(200)=(event="FlowersForTheLab",desc="Bring some flowers to brighten up the lab",max=1,missions=64)
+    bingo_options(201)=(event="BurnTrash",desc="Burn %s bags of trash",max=25)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -2107,6 +2254,10 @@ defaultproperties
     mutually_exclusive(17)=(e1="AnnaNavarre_DeadM4",e2="AnnaNavarre_DeadM5")
     mutually_exclusive(18)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM3")
     mutually_exclusive(19)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM4")
+    mutually_exclusive(20)=(e1="VialAmbrosia_Activated",e2="GaveDowdAmbrosia")
+    mutually_exclusive(21)=(e1="AllPianoSongsPlayed",e2="PianoSong0Played")
+    mutually_exclusive(22)=(e1="AllPianoSongsPlayed",e2="PianoSong7Played")
+    mutually_exclusive(23)=(e1="PianoSong0Played",e2="PianoSong7Played")
 
     bingo_win_countdown=-1
 }

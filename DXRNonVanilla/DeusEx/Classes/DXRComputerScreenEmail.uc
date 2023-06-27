@@ -7,7 +7,7 @@ function ProcessDeusExText(Name textName, optional TextWindow winText)
 {
     local DXREvents e;
 
-    addNote = False;
+    addNote = True;
 
     foreach player.AllActors(class'DXREvents', e) {
         e.ReadText(textName);
@@ -62,6 +62,8 @@ function TryAddingNote(string text)
     local Name plaintextTag;
     local DeusExNote note;
     local DeusExRootWindow rootWindow;
+
+    if(Len(text)==0) return;
 
     rootWindow = DeusExRootWindow(player.rootWindow);
 
