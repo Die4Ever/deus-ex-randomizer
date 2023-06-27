@@ -10,7 +10,7 @@ function BeginPlay()
     //Random chance of switching body texture and switching to NSFCloneAugTough1Carcass2
     if (Rand(100) < 5){
         MultiSkins[2]=Texture'NSFCloneAugTough1BodyNametag';
-        CarcassType=Class'DeusEx.NSFCloneAugTough1NametagCarcass';
+        CarcassType=Class'NSFCloneAugTough1NametagCarcass';
     }
 }
 

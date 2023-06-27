@@ -18,8 +18,8 @@ function BeginPlay()
 
 function GiveNametag()
 {
-    MultiSkins[2]=Texture'NSFCloneAugTough1Body2';
-    CarcassType=Class'DeusEx.NSFCloneAugTough1Carcass2';
+    //MultiSkins[2]=Texture'NSFCloneAugTough1Body2'; can't compile with missing texture, also placeholder carcass below
+    CarcassType=Class'NSFCloneAugTough1NametagCarcass';
 }
 
 //Copied straight from Walton - values definitely need to be changed

@@ -27,7 +27,7 @@ function Carcass SpawnCarcass()
 function GiveNametag()
 {
     MultiSkins[2]=Texture'NSFCloneAugStealth1BodyNametag';
-    CarcassType=Class'DeusEx.NSFCloneAugStealth1NametagCarcass';
+    CarcassType=Class'NSFCloneAugStealth1NametagCarcass';
 }
 
 function ResetSkinStyle()

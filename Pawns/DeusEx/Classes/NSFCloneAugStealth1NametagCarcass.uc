@@ -1,7 +1,7 @@
 //=============================================================================
-// NSFCloneAugStealth1Carcass.
+// NSFCloneAugStealth1NametagCarcass.
 //=============================================================================
-class NSFCloneAugStealth1Carcass extends NSFClone2Carcass;
+class NSFCloneAugStealth1NametagCarcass extends NSFClone2Carcass;
 
 defaultproperties
 {
