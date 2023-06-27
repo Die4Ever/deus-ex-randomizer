@@ -1,7 +1,7 @@
 //=============================================================================
-// NSFCloneAugTough1Carcass2.
+// NSFCloneAugTough1NametagCarcass.
 //=============================================================================
-class NSFCloneAugTough1Carcass2 extends #var(DeusExPrefix)Carcass;
+class NSFCloneAugTough1NametagCarcass extends #var(DeusExPrefix)Carcass;
 
 defaultproperties
 {
