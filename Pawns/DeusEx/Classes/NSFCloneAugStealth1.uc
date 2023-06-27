@@ -27,7 +27,7 @@ function Carcass SpawnCarcass()
 function GiveNametag()
 {
     MultiSkins[2]=Texture'NSFCloneAugStealth1BodyNametag';
-    CarcassType=Class'DeusEx.NSFCloneAugTough1Carcass2';
+    CarcassType=Class'DeusEx.NSFCloneAugStealth1NametagCarcass';
 }
 
 function ResetSkinStyle()
@@ -89,7 +89,7 @@ defaultproperties
     MinHealth=0
     bHasCloak=False
     CloakThreshold=9999;
-    CarcassType=Class'DeusEx.NSFCloneAugTough1Carcass'
+    CarcassType=Class'DeusEx.NSFCloneAugStealth1Carcass'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
     MultiSkins(0)=Texture'DeusExCharacters.Skins.TerroristTex0'
