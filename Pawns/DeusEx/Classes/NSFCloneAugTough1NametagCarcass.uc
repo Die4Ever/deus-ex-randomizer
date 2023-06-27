@@ -1,12 +1,10 @@
 //=============================================================================
 // NSFCloneAugTough1NametagCarcass.
 //=============================================================================
-class NSFCloneAugTough1NametagCarcass extends #var(DeusExPrefix)Carcass;
+class NSFCloneAugTough1NametagCarcass extends NSFClone1Carcass;
 
 defaultproperties
 {
-    Fatness=130
-
     Mesh2=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB'
     Mesh3=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
