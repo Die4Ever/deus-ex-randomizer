@@ -1,12 +1,10 @@
 //=============================================================================
 // NSFCloneAugStealth1Carcass.
 //=============================================================================
-class NSFCloneAugStealth1Carcass extends #var(DeusExPrefix)Carcass;
+class NSFCloneAugStealth1Carcass extends NSFClone2Carcass;
 
 defaultproperties
 {
-    Fatness=120
-
     Mesh2=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB'
     Mesh3=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
