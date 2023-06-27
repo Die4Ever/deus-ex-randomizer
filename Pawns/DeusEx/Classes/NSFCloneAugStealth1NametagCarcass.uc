@@ -5,7 +5,7 @@ class NSFCloneAugStealth1Carcass extends #var(DeusExPrefix)Carcass;
 
 defaultproperties
 {
-    Fatness=130
+    Fatness=120
 
     Mesh2=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB'
     Mesh3=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC'
