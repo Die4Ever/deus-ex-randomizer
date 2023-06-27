@@ -273,7 +273,8 @@ function RandomizeSP(ScriptedPawn p, int percent)
 function CheckHelmet(ScriptedPawn p)
 {
     local int helmet_chance, visor_chance;
-    if(p.Mesh != LodMesh'DeusExCharacters.GM_Jumpsuit')  return;
+    if(p.Mesh != LodMesh'DeusExCharacters.GM_Jumpsuit') return;
+    if(NSFCloneAugStealth1(p) != None || NSFCloneAugTough1(p) != None || NSFCloneAugShield1(p) != None) return;
 
     // divide by 2 to lean towards vanilla
     // that way the game gets harder as you progress to enemies that typically have helmets
