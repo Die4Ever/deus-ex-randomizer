@@ -1,7 +1,7 @@
 //=============================================================================
 // NSFCloneAugTough1.
 //=============================================================================
-class NSFCloneAugTough1 extends Terrorist;
+class NSFCloneAugTough1 extends NSFClone1;
 
 function BeginPlay()
 {
@@ -9,8 +9,8 @@ function BeginPlay()
 
     //Random chance of switching body texture and switching to NSFCloneAugTough1Carcass2
     if (Rand(100) < 5){
-        MultiSkins[2]=Texture'NSFCloneAugTough1Body2';
-        CarcassType=Class'DeusEx.NSFCloneAugTough1Carcass2';
+        MultiSkins[2]=Texture'NSFCloneAugTough1BodyNametag';
+        CarcassType=Class'DeusEx.NSFCloneAugTough1NametagCarcass';
     }
 }
 
@@ -70,10 +70,6 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 
 defaultproperties
 {
-    MinHealth=0
-    GroundSpeed=170
-    Fatness=130
-    Health=125
     CarcassType=Class'DeusEx.NSFCloneAugTough1Carcass'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'

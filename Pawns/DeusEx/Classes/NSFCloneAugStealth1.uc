@@ -1,7 +1,7 @@
 //=============================================================================
 // NSFCloneAugStealth1.
 //=============================================================================
-class NSFCloneAugStealth1 extends Terrorist;
+class NSFCloneAugStealth1 extends NSFClone2;
 
 var bool nametag;
 
@@ -26,8 +26,8 @@ function Carcass SpawnCarcass()
 
 function GiveNametag()
 {
-    MultiSkins[2]=Texture'NSFCloneAugTough1Body2';
-    CarcassType=Class'DeusEx.NSFCloneAugTough1Carcass2';
+    MultiSkins[2]=Texture'NSFCloneAugStealth1BodyNametag';
+    CarcassType=Class'DeusEx.NSFCloneAugStealth1NametagCarcass';
 }
 
 function ResetSkinStyle()
@@ -86,19 +86,19 @@ function Timer()
 
 defaultproperties
 {
-    MinHealth=0
     bHasCloak=False
     CloakThreshold=9999;
-    CarcassType=Class'DeusEx.NSFCloneAugTough1Carcass'
+
+    CarcassType=Class'DeusEx.NSFCloneAugStealth1Carcass'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
     MultiSkins(0)=Texture'DeusExCharacters.Skins.TerroristTex0'
-    MultiSkins(1)=Texture'DeusExCharacters.Skins.TerroristTex2'
-    MultiSkins(2)=Texture'NSFCloneAugTough1Body'
-    MultiSkins(3)=Texture'NSFCloneAugTough1Head'
+    MultiSkins(1)=Texture'NSFCloneAugStealth1Legs'
+    MultiSkins(2)=Texture'NSFCloneAugStealth1Body'
+    MultiSkins(3)=Texture'NSFCloneAugStealth1Head'
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
-    MultiSkins(6)=Texture'DeusExCharacters.Skins.GogglesTex1'
+    MultiSkins(6)=Texture'NSFCloneAugStealth1Goggles'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
     FamiliarName="Augmented Terrorist"
     UnfamiliarName="Augmented Terrorist"
