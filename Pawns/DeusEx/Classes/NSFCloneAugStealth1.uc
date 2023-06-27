@@ -1,7 +1,7 @@
 //=============================================================================
 // NSFCloneAugStealth1.
 //=============================================================================
-class NSFCloneAugStealth1 extends Terrorist;
+class NSFCloneAugStealth1 extends NSFClone2;
 
 var bool nametag;
 
@@ -86,9 +86,9 @@ function Timer()
 
 defaultproperties
 {
-    MinHealth=0
     bHasCloak=False
     CloakThreshold=9999;
+
     CarcassType=Class'DeusEx.NSFCloneAugStealth1Carcass'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
