@@ -43,24 +43,55 @@ function Timer()
     local int numActors, numObjects;
     local Actor a;
     local Object o, last;
-    local name names[4096];
+    local name names[4096], fixed[16], n;
     local int counts[4096], slot, i;
 
+    fixed[i++] = 'Container';
+    fixed[i++] = 'ScriptedPawn';
+    fixed[i++] = 'DeusExDecoration';
+    fixed[i++] = 'Inventory';
+    fixed[i++] = 'Skill';
+    fixed[i++] = 'SkillManager';
+    fixed[i++] = 'Augmentation';
+    fixed[i++] = 'AugmentationManager';
+    fixed[i++] = 'Carcass';
+    fixed[i++] = 'DXRInfo';
+    fixed[i++] = 'ColorTheme';
+    fixed[i++] = 'ColorThemeManager';
+
+    for(i=0; i<ArrayCount(fixed); i++) {
+        if(fixed[i] == '') continue;
+        slot = Abs(dxr.Crc( String(fixed[i]) )) % ArrayCount(names);
+        names[slot] = fixed[i];
+    }
+
     foreach AllObjects(class'Object', o) {
+        last = o;
         if( o.IsA('Actor') ) {
             numActors++;
+            //continue;
+        } else {
+            numObjects++;
             continue;
         }
-        numObjects++;
-        last = o;
-        slot = Abs(dxr.Crc( String(o.class.name) )) % ArrayCount(names);
-        if( names[slot] == '' || names[slot] == o.class.name ) {
-            names[slot] = o.class.name;
+
+        n = o.class.name;
+        for(i=0; i<ArrayCount(fixed); i++) {
+            if(fixed[i]=='') break;
+            if( o.IsA(fixed[i]) ) {
+                n = fixed[i];
+                break;
+            }
+        }
+
+        slot = Abs(dxr.Crc( String(n) )) % ArrayCount(names);
+        if( names[slot] == '' || names[slot] == n ) {
+            names[slot] = n;
             counts[slot]++;
         }
     }
 
-    info("numActors: "$numActors$", numObjects: "$numObjects$", last object: "$last);
+    err("numActors: "$numActors$", numObjects: "$numObjects$", last object: "$last);
     for(i=0; i<ArrayCount(names); i++) {
         if( names[i] == '' ) continue;
         info(names[i] @ counts[i]);
