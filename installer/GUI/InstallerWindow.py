@@ -103,7 +103,7 @@ class InstallerWindow(GUIBase):
             self.FixColors(c)
             row+=1
 
-        if f == 'Vanilla' and IsWindows():
+        if f == 'Vanilla':
             l = Label(self.frame, text="Which EXE to use for vanilla:")
             l.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
             row += 1
@@ -114,7 +114,7 @@ class InstallerWindow(GUIBase):
             Hovertip(r, "Kentie's Launcher stores configs and saves in your Documents folder.")
             row += 1
 
-            r = Radiobutton(self.frame, text="Hanfling's Launch", variable=v, value='Launch')
+            r = Radiobutton(self.frame, text="Hanfling's Launch", variable=exe, value='Launch')
             r.grid(column=1,row=row, sticky='SW', padx=pad*8, pady=pad)
             self.FixColors(r)
             Hovertip(r, "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play.")
