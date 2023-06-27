@@ -193,6 +193,7 @@ function GarbageCollection(#var(PlayerPawn) p)
     local SkillManager skillman;
     local Skill skill, nextskill;
     local ColorThemeManager thememan;
+    local ColorTheme theme, nexttheme;
 
     foreach AllActors(class'AugmentationManager', augman) {
         if(p.AugmentationSystem == augman) continue;
@@ -217,6 +218,11 @@ function GarbageCollection(#var(PlayerPawn) p)
     foreach AllActors(class'ColorThemeManager', thememan) {
         if(p.ThemeManager == thememan) continue;
         if(thememan.Owner != None && thememan.Owner != p) continue;
+
+        for(theme=thememan.FirstColorTheme; theme!=None; theme=nexttheme) {
+            nexttheme = theme.next;
+            theme.Destroy();
+        }
         thememan.Destroy();
     }
 }

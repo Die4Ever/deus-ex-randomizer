@@ -46,12 +46,21 @@ function PlayTakeHitSound(int Damage, name damageType, int Mult)
         AISendEvent('Distress', EAITYPE_Audio, volume);
 }
 
+
 function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
-                            Vector offset, Name damageType)
+                            Vector offset, Name damageType
+#ifdef revision
+                            , optional bool bTestOnly
+#endif
+                            )
 {
     local float actualDamage;
 
+#ifdef revision
+    actualDamage = Super.ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType, bTestOnly);
+#else
     actualDamage = Super.ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType);
+#endif
 
     if (damageType == 'Shot') {
         actualDamage *= 0.5;
