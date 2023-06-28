@@ -59,32 +59,32 @@ function InitStatLogShim()
 }
 
 function SetWatchFlags() {
-    local MapExit m;
-    local ChildMale child;
-    local Mechanic mechanic;
-    local JunkieFemale jf;
-    local GuntherHermann gunther;
-    local Mutt starr;// arms smuggler's dog in Paris
-    local Hooker1 h;  //Mercedes
-    local LowerClassFemale lcf; //Tessa
-    local JunkieMale jm;
-    local ScientistMale sm;
+    local #var(prefix)MapExit m;
+    local #var(prefix)ChildMale child;
+    local #var(prefix)Mechanic mechanic;
+    local #var(prefix)JunkieFemale jf;
+    local #var(prefix)GuntherHermann gunther;
+    local #var(prefix)Mutt starr;// arms smuggler's dog in Paris
+    local #var(prefix)Hooker1 h;  //Mercedes
+    local #var(prefix)LowerClassFemale lcf; //Tessa
+    local #var(prefix)JunkieMale jm;
+    local #var(prefix)ScientistMale sm;
     local ZoneInfo zone;
-    local SkillAwardTrigger skillAward;
+    local #var(prefix)SkillAwardTrigger skillAward;
     local #var(DeusExPrefix)Mover dxm;
-    local LogicTrigger lTrigger;
+    local #var(prefix)LogicTrigger lTrigger;
     local WaterZone water;
-    local Toilet closestToilet;
-    local BookOpen book;
-    local FlagTrigger fTrigger;
-    local WIB wib;
-    local ComputerPersonal cp;
+    local #var(prefix)Toilet closestToilet;
+    local #var(prefix)BookOpen book;
+    local #var(prefix)FlagTrigger fTrigger;
+    local #var(prefix)WIB wib;
+    local #var(prefix)ComputerPersonal cp;
     local #var(prefix)Maid maid;
-    local Trigger trig;
+    local #var(prefix)Trigger trig;
     local BingoTrigger bt;
-    local LowerClassMale lcm;
-    local Greasel g;
-    local DamageTrigger dt;
+    local #var(prefix)LowerClassMale lcm;
+    local #var(prefix)Greasel g;
+    local #var(prefix)DamageTrigger dt;
     local #var(prefix)Poolball ball;
     local int i;
 
@@ -97,7 +97,7 @@ function SetWatchFlags() {
         WatchFlag('GuntherFreed');
         WatchFlag('GuntherRespectsPlayer');
 
-        foreach AllActors(class'SkillAwardTrigger',skillAward) {
+        foreach AllActors(class'#var(prefix)SkillAwardTrigger',skillAward) {
             if(skillAward.awardMessage=="Exploration Bonus" && skillAward.skillPointsAdded==50 && skillAward.Region.Zone.bWaterZone){
                 skillAward.Event='SunkenShip';
                 break;
@@ -129,18 +129,18 @@ function SetWatchFlags() {
         WatchFlag('AmbrosiaTagged');
         WatchFlag('MS_DL_Played', true);// this is the datalink played after dealing with the hostage situation, from Mission02.uc
 
-        foreach AllActors(class'ChildMale', child) {
+        foreach AllActors(class'#var(prefix)ChildMale', child) {
             if(child.BindName == "Josh" || child.BindName == "Billy")
                 child.bImportant = true;
         }
 
-        foreach AllActors(class'JunkieMale',jm) {
+        foreach AllActors(class'#var(prefix)JunkieMale',jm) {
             if(jm.BindName == "SickMan"){
                 jm.bImportant = true;
             }
         }
 
-        foreach AllActors(class'MapExit',m,'Boat_Exit'){
+        foreach AllActors(class'#var(prefix)MapExit',m,'Boat_Exit'){
             m.Tag = 'Boat_Exit2';
         }
         Tag = 'Boat_Exit';  //this is a special case, since we do extra handling here
@@ -175,7 +175,7 @@ function SetWatchFlags() {
 
         break;
     case "03_NYC_BATTERYPARK":
-        foreach AllActors(class'JunkieMale',jm) {
+        foreach AllActors(class'#var(prefix)JunkieMale',jm) {
             if(jm.BindName == "SickMan"){
                 jm.bImportant = true;
             }
@@ -231,7 +231,7 @@ function SetWatchFlags() {
     case "03_NYC_HANGAR":
         WatchFlag('NiceTerrorist_Dead');// only tweet it once, not like normal PawnDeaths
 
-        foreach AllActors(class'Mechanic', mechanic) {
+        foreach AllActors(class'#var(prefix)Mechanic', mechanic) {
             if(mechanic.BindName == "Harold")
                 mechanic.bImportant = true;
         }
@@ -291,7 +291,7 @@ function SetWatchFlags() {
         WatchFlag('KnowsAnnasKillphrase1');
         WatchFlag('KnowsAnnasKillphrase2');
 
-        foreach AllActors(class'ComputerPersonal',cp){
+        foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
             if (cp.Name=='ComputerPersonal7'){  //JC's computer
                 for (i=0;i<4 && cp.specialOptions[i].Text!="";i++){}
                 if (i<4){
@@ -317,7 +317,7 @@ function SetWatchFlags() {
         WatchFlag('FoundScientistBody');
         WatchFlag('M06BoughtVersaLife');
 
-        foreach AllActors(class'FlagTrigger',fTrigger,'FoundScientist') {
+        foreach AllActors(class'#var(prefix)FlagTrigger',fTrigger,'FoundScientist') {
             // so you don't have to go right into the corner, default is 96, and 40 height
             fTrigger.SetCollisionSize(500, 160);
         }
@@ -325,16 +325,16 @@ function SetWatchFlags() {
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'SecretHold'){
             break;
         }
-        skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
+        skillAward = #var(prefix)SkillAwardTrigger(findNearestToActor(class'#var(prefix)SkillAwardTrigger',dxm));
         skillAward.Event='BoatEngineRoom';
         bt = class'BingoTrigger'.static.Create(self,'BoatEngineRoom',skillAward.Location);
 
-        foreach AllActors(class'LowerClassMale',lcm,'CanalDrugDealer'){
+        foreach AllActors(class'#var(prefix)LowerClassMale',lcm,'CanalDrugDealer'){
             break;
         }
         bt = class'BingoTrigger'.static.Create(self,'CanalDrugDeal',lcm.Location,200,40);
 
-        foreach AllActors(class'DamageTrigger',dt){
+        foreach AllActors(class'#var(prefix)DamageTrigger',dt){
             if (dt.DamageType=='PoisonGas'){
                 dt.Region.Zone.ZonePlayerEvent='ToxicShip';
                 break;
@@ -351,11 +351,11 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
 
-        foreach AllActors(class'Hooker1', h) {
+        foreach AllActors(class'#var(prefix)Hooker1', h) {
             if(h.BindName == "ClubMercedes")
                 h.bImportant = true;
         }
-        foreach AllActors(class'LowerClassFemale', lcf) {
+        foreach AllActors(class'#var(prefix)LowerClassFemale', lcf) {
             if(lcf.BindName == "ClubTessa")
                 lcf.bImportant = true;
         }
@@ -386,7 +386,7 @@ function SetWatchFlags() {
         }
 
         //Find the nearest toilet
-        closestToilet = Toilet(findNearestToActor(class'Toilet',dxm));
+        closestToilet = #var(prefix)Toilet(findNearestToActor(class'#var(prefix)Toilet',dxm));
 
         closestToilet.Event='JocksToilet';
         bt = class'BingoTrigger'.static.Create(self,'JocksToilet',closestToilet.Location);
@@ -406,7 +406,7 @@ function SetWatchFlags() {
             break;
         }
 
-        skillAward = SkillAwardTrigger(findNearestToActor(class'SkillAwardTrigger',dxm));
+        skillAward = #var(prefix)SkillAwardTrigger(findNearestToActor(class'#var(prefix)SkillAwardTrigger',dxm));
         skillAward.Event='PoliceVaultBingo';
         bt = class'BingoTrigger'.static.Create(self,'PoliceVaultBingo',skillAward.Location);
 
@@ -449,7 +449,7 @@ function SetWatchFlags() {
     case "06_HONGKONG_HELIBASE":
         bt = class'BingoTrigger'.static.Create(self,'purge',vectm(0,0,0));
 
-        foreach AllActors(class'Trigger',trig){
+        foreach AllActors(class'#var(prefix)Trigger',trig){
             if (trig.classProximityType==class'Basketball'){
                 break;
             }
@@ -467,7 +467,7 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'HongKongGrays',zone.Location);
 
-        foreach AllActors(class'Greasel',g){
+        foreach AllActors(class'#var(prefix)Greasel',g){
             g.bImportant = True;
             g.BindName="JerryTheVentGreasel";
             g.FamiliarName = "Jerry the Vent Greasel";
@@ -547,7 +547,7 @@ function SetWatchFlags() {
         break;
     case "10_PARIS_CATACOMBS":
         WatchFlag('IcarusCalls_Played');
-        foreach AllActors(class'JunkieFemale', jf) {
+        foreach AllActors(class'#var(prefix)JunkieFemale', jf) {
             if(jf.BindName == "aimee")
                 jf.bImportant = true;
         }
@@ -556,7 +556,7 @@ function SetWatchFlags() {
 
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
-        foreach AllActors(class'WIB',wib){
+        foreach AllActors(class'#var(prefix)WIB',wib){
             if(wib.BindName=="Hela")
                 wib.bImportant = true;
         }
@@ -568,10 +568,10 @@ function SetWatchFlags() {
         WatchFlag('assassinapartment');
         RewatchFlag('KnowsGuntherKillphrase');
 
-        foreach AllActors(class'GuntherHermann', gunther) {
+        foreach AllActors(class'#var(prefix)GuntherHermann', gunther) {
             gunther.bInvincible = false;
         }
-        foreach AllActors(class'Mutt', starr) {
+        foreach AllActors(class'#var(prefix)Mutt', starr) {
             starr.bImportant = true;// you're important to me
             starr.BindName = "Starr";
         }
@@ -632,7 +632,7 @@ function SetWatchFlags() {
         break;
     case "12_VANDENBERG_CMD":
         WatchFlag('MeetTimBaker_Played');
-        foreach AllActors(class'ScientistMale', sm) {
+        foreach AllActors(class'#var(prefix)ScientistMale', sm) {
             if (sm.BindName=="TimBaker"){
                 sm.bImportant = true;
             }
@@ -643,7 +643,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'bunker_door2',vectm(50,0,0));
         bt.bingoEvent = "ActivateVandenbergBots";
 
-        foreach AllActors(class'Toilet',closestToilet){
+        foreach AllActors(class'#var(prefix)Toilet',closestToilet){
             closestToilet.Event='VandenbergToilet';
         }
         bt = class'BingoTrigger'.static.Create(self,'VandenbergToilet',vectm(150,0,0));
@@ -659,7 +659,7 @@ function SetWatchFlags() {
         break;
     case "14_OCEANLAB_SILO":
         WatchFlag('MeetDrBernard_Played');
-        foreach AllActors(class'ScientistMale', sm) {
+        foreach AllActors(class'#var(prefix)ScientistMale', sm) {
             if (sm.BindName=="drbernard"){
                 sm.bImportant = true;
             }
@@ -697,7 +697,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'Area51FanShaft',vectm(0,0,0));
 
         //This flag trigger actually doesn't trigger because a security computer can only trigger DeusExMovers
-        foreach AllActors(class'FlagTrigger',fTrigger,'blast_door'){
+        foreach AllActors(class'#var(prefix)FlagTrigger',fTrigger,'blast_door'){
             fTrigger.Tag = 'blast_door_flag';
         }
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'blast_door'){
@@ -709,7 +709,7 @@ function SetWatchFlags() {
         SetPoolBallHeight();
         break;
     case "15_AREA51_FINAL":
-        foreach AllActors(class'BookOpen', book) {
+        foreach AllActors(class'#var(prefix)BookOpen', book) {
             if (book.textTag == '15_Book01'){ //This copy of Jacob's Shadow is also in _BUNKER and _ENTRANCE
                 book.textTag = '15_Book02';  //Put that good Thursday man back where he (probably) belongs
             }
@@ -762,9 +762,9 @@ function SetWatchFlags() {
 }
 
 function name GetKnicksTag() {
-    local FlagTrigger ft;
+    local #var(prefix)FlagTrigger ft;
 
-    foreach AllActors(class'FlagTrigger',ft) {
+    foreach AllActors(class'#var(prefix)FlagTrigger',ft) {
         if (ft.Event=='MadeBasketM' || ft.Event=='MadeBasketF') {
             if (dxr.flagbase.GetBool('LDDPJCIsFemale')) {
                 return 'MadeBasketF';
@@ -1025,11 +1025,11 @@ function HandleBingoWinCountdown()
 
 function bool SpecialTriggerHandling(Actor Other, Pawn Instigator)
 {
-    local MapExit m;
+    local #var(prefix)MapExit m;
     if (tag == 'Boat_Exit'){
         dxr.flagbase.SetBool('DXREvents_LeftOnBoat', true,, 999);
 
-        foreach AllActors(class'MapExit',m,'Boat_Exit2'){
+        foreach AllActors(class'#var(prefix)MapExit',m,'Boat_Exit2'){
             m.Trigger(Other,Instigator);
         }
         return true;
@@ -2123,7 +2123,9 @@ defaultproperties
     bingo_options(97)=(event="ChangeClothes",desc="Change clothes at %s different clothes racks",max=3,missions=852)
 #endif
     bingo_options(98)=(event="arctrigger",desc="Shut off the electricity at the airfield",max=1,missions=8)
+#ifndef hx
     bingo_options(99)=(event="LeoToTheBar",desc="Bring the terrorist commander to the bar",max=1,missions=17686)
+#endif
     bingo_options(100)=(event="KnowYourEnemy",desc="Read %s Know Your Enemy bulletins",max=6,missions=10)
     bingo_options(101)=(event="09_NYC_DOCKYARD--796967769",desc="Learn Jenny's phone number",max=1,missions=512)
     bingo_options(102)=(event="JacobsShadow",desc="Read %s parts of Jacob's Shadow",max=4,missions=38492)
@@ -2200,7 +2202,9 @@ defaultproperties
     bingo_options(169)=(event="VandenbergReactorRoom",desc="Enter the reactor room in the Vandenberg tunnels",max=1,missions=4096)
     bingo_options(170)=(event="VandenbergServerRoom",desc="Enter the server room in the Vandenberg control center",max=1,missions=4096)
     bingo_options(171)=(event="VandenbergWaterTower",desc="Climb the water tower in Vandenberg",max=1,missions=4096)
+#ifndef hx
     bingo_options(172)=(event="Cremation",desc="Cook the cook",max=1,missions=2048)
+#endif
     bingo_options(173)=(event="OceanLabGreenBeacon",desc="Swim to the green beacon",max=1,missions=16384)
     bingo_options(174)=(event="PageTaunt_Played",desc="Let Bob Page taunt you in the Ocean Lab",max=1,missions=16384)
     //bingo_options()=(event="M11WaltonHolo_Played",desc="Talk to Walton Simons after defeating Gunther",max=1,missions=2048)
