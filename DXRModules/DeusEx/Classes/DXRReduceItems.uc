@@ -113,6 +113,8 @@ function ReduceItem(Inventory a)
 {
     local int mission, scale;
 
+    if(a.bIsSecretGoal) return;
+
     mission = Clamp(dxr.dxInfo.missionNumber, 0, ArrayCount(mission_scaling)-1);
     scale = mission_scaling[mission];
 
@@ -264,6 +266,7 @@ function ReduceSpawns(class<Inventory> classname, float percent)
     {
         if( PlayerPawn(a) != None ) continue;
         if( PlayerPawn(a.Owner) != None ) continue;
+        if(a.bIsSecretGoal) continue;
 
         _ReduceSpawn(Inventory(a), percent);
     }
