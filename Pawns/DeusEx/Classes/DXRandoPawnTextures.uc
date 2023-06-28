@@ -14,3 +14,7 @@ class DXRandoPawnTextures extends Object abstract;
 #exec TEXTURE IMPORT NAME=NSFCloneAugStealth1Goggles FILE=Textures\NSFCloneAugStealth1Goggles.pcx GROUP=DXRandoPawns
 #exec TEXTURE IMPORT NAME=NSFCloneAugStealth1BodyNametag FILE=Textures\NSFCloneAugStealth1BodyNametag.pcx GROUP=DXRandoPawns
 #exec TEXTURE IMPORT NAME=NSFCloneAugStealth1GogglesNoglow FILE=Textures\NSFCloneAugStealth1GogglesNoglow.pcx GROUP=DXRandoPawns
+
+#exec TEXTURE IMPORT NAME=NSFCloneAugShield1Head FILE=Textures\NSFCloneAugShield1Head.pcx GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=NSFCloneAugShield1Body FILE=Textures\NSFCloneAugShield1Body.pcx GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=NSFCloneAugShield1BodyNametag FILE=Textures\NSFCloneAugShield1BodyNametag.pcx GROUP=DXRandoPawns
