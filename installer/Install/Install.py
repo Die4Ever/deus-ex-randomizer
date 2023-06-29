@@ -112,15 +112,19 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
         oldconfig = DXRandoini.read_text()
         oldconfig = Config.ReadConfig(oldconfig)
         changes = Config.RetainConfigSections(
-            set(('WinDrv.WindowsClient', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'Galaxy.GalaxyAudioSubsystem')),
+            set(('WinDrv.WindowsClient', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe')),
             oldconfig, changes
         )
 
     CopyTo(ini, DXRandoini)
 
     if not speedupfix:
-        changes['DeusExe'] = {'FPSLimit': '120'}
-        changes['D3D10Drv.D3D10RenderDevice'] = {'FPSLimit': '120', 'VSync': 'True'}
+        if 'DeusExe' not in changes:
+            changes['DeusExe'] = {}
+        changes['DeusExe'].update({'FPSLimit': '120'})
+        if 'D3D10Drv.D3D10RenderDevice' not in changes:
+            changes['D3D10Drv.D3D10RenderDevice'] = {}
+        changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '120', 'VSync': 'True'})
 
     if not IsWindows():
         changes['Engine.Engine'] = {'GameRenderDevice': 'D3DDrv.D3DRenderDevice'}
