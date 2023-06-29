@@ -1,7 +1,7 @@
 //=============================================================================
-// NSFCloneAugStealth1Carcass.
+// UNATCOCloneAugStealth1Carcass.
 //=============================================================================
-class NSFCloneAugStealth1Carcass extends NSFClone2Carcass;
+class UNATCOCloneAugStealth1Carcass extends UNATCOClone2Carcass;
 
 function InitFor(Actor Other)
 {
@@ -15,12 +15,12 @@ defaultproperties
     Mesh3=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass'
-    MultiSkins(0)=Texture'DeusExCharacters.Skins.TerroristTex0'
-    MultiSkins(1)=Texture'NSFCloneAugStealth1Legs'
-    MultiSkins(2)=Texture'NSFCloneAugStealth1Body'
-    MultiSkins(3)=Texture'NSFCloneAugStealth1HeadNoglow'
+    MultiSkins(0)=Texture'Textures\UNATCOCloneAugStealth1HeadNoglow.pcx'
+    MultiSkins(1)=Texture'Textures\UNATCOCloneAugStealth1Legs.pcx'
+    MultiSkins(2)=Texture'Textures\UNATCOCloneAugStealth1Body.pcx'
+    MultiSkins(3)=Texture'Textures\UNATCOCloneAugStealth1HeadNoglow.pcx' //this is where you need the face texture
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
-    MultiSkins(6)=Texture'NSFCloneAugStealth1GogglesNoglow'
+    MultiSkins(6)=Texture'Textures\UNATCOCloneAugStealth1Helmet'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
 }

@@ -1,13 +1,7 @@
 //=============================================================================
-// NSFCloneAugStealth1Carcass.
+// NSFCloneAugShield1NametagCarcass.
 //=============================================================================
-class NSFCloneAugStealth1Carcass extends NSFClone2Carcass;
-
-function InitFor(Actor Other)
-{
-    Super.InitFor(Other);
-    MultiSkins[6] = default.MultiSkins[6];
-}
+class NSFCloneAugShield1NametagCarcass extends NSFClone4Carcass;
 
 defaultproperties
 {
@@ -16,11 +10,11 @@ defaultproperties
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass'
     MultiSkins(0)=Texture'DeusExCharacters.Skins.TerroristTex0'
-    MultiSkins(1)=Texture'NSFCloneAugStealth1Legs'
-    MultiSkins(2)=Texture'NSFCloneAugStealth1Body'
-    MultiSkins(3)=Texture'NSFCloneAugStealth1HeadNoglow'
+    MultiSkins(1)=Texture'DeusExCharacters.Skins.TerroristTex2'
+    MultiSkins(2)=Texture'NSFCloneAugShield1NametagBody'
+    MultiSkins(3)=Texture'NSFCloneAugShield1Head'
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
-    MultiSkins(6)=Texture'NSFCloneAugStealth1GogglesNoglow'
+    MultiSkins(6)=Texture'DeusExCharacters.Skins.GogglesTex1'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
 }
