@@ -130,10 +130,9 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 
 defaultproperties
 {
-    Mesh2=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB'
-    Mesh3=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC'
+    CarcassType=Class'DeusEx.UNATCOCloneAugShield1Carcass'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
-    Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass'
+    Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
     MultiSkins(0)=Texture'Textures\UNATCOCloneAugTough1Head.pcx'
     MultiSkins(1)=Texture'DeusExCharacters.Skins.UNATCOTroopTex1'
     MultiSkins(2)=Texture'Textures\UNATCOCloneAugTough1Body.pcx'
