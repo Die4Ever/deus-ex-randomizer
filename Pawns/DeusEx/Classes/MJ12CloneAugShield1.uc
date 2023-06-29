@@ -97,7 +97,6 @@ function float ShieldDamage(name damageType)
 
 defaultproperties
 {
-    MinHealth=0
     CarcassType=Class'DeusEx.MJ12CloneAugShield1Carcass'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
