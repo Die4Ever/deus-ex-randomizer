@@ -3,6 +3,13 @@
 //=============================================================================
 class UNATCOCloneAugStealth1NametagCarcass extends UNATCOClone2Carcass;
 
+function InitFor(Actor Other)
+{
+    Super.InitFor(Other);
+    MultiSkins[6] = default.MultiSkins[6];
+}
+
+
 defaultproperties
 {
     Mesh2=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB'
