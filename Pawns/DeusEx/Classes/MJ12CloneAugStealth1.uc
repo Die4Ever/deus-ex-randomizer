@@ -42,7 +42,7 @@ function ResetSkinStyle()
     }
 }
 
-function Explode()
+function Explode(optional vector HitLocation) // argument for compatibility with Revision and VMD
 {
     local SphereEffect sphere;
     local ScorchMark s;
@@ -50,6 +50,14 @@ function Explode()
     local int i;
     local float explosionDamage;
     local float explosionRadius;
+
+#ifdef revision
+    Super.Explode();
+    return;
+#elseif vmd
+    Super.Explode();
+    return;
+#endif
 
     explosionDamage = 100;
     explosionRadius = 256;
