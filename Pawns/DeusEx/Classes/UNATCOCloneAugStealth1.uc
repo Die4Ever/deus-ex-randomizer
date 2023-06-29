@@ -149,10 +149,9 @@ defaultproperties
     bHasCloak=False
     CloakThreshold=9999;
 
-    Mesh2=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassB'
-    Mesh3=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC'
+    CarcassType=Class'DeusEx.UNATCOCloneAugStealth1Carcass'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
-    Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass'
+    Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
     MultiSkins(0)=Texture'Textures\UNATCOCloneAugStealth1Head.pcx'
     MultiSkins(1)=Texture'Textures\UNATCOCloneAugStealth1Legs.pcx'
     MultiSkins(2)=Texture'Textures\UNATCOCloneAugStealth1Body.pcx'
