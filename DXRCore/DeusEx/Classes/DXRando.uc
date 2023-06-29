@@ -66,9 +66,7 @@ function SetdxInfo(DeusExLevelInfo i)
 
     // undo the damage that DXRBacktracking has done to prevent saves from being deleted
     // must do this before the mission script is loaded, so we can't wait for finding the player and loading modules
-#ifndef hx
     class'DXRBacktracking'.static.LevelInit(Self);
-#endif
 
     CrcInit();
     ClearModules();
