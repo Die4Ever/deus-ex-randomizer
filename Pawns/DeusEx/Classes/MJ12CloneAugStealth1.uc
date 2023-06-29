@@ -149,6 +149,7 @@ defaultproperties
     bHasCloak=False
     CloakThreshold=9999;
 
+    CarcassType=Class'DeusEx.MJ12CloneAugStealth1Carcass'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
     MultiSkins(0)=Texture'Textures\MJ12CloneAugStealth1Head.pcx'
