@@ -101,9 +101,9 @@ function CheckConfig()
         AddRandomEnemyType(class'#var(prefix)Gray', 2, MJ12);
     }
     AddRandomEnemyType(class'#var(prefix)MIB', 1, MJ12);
-    AddRandomEnemyType(class'MJ12CloneAugShield1', 2, MJ12);
-    AddRandomEnemyType(class'MJ12CloneAugTough1', 2, MJ12);
-    AddRandomEnemyType(class'MJ12CloneAugStealth1', 2, MJ12);
+    AddRandomEnemyType(class'MJ12CloneAugShield1', 2.5, MJ12);
+    AddRandomEnemyType(class'MJ12CloneAugTough1', 2.5, MJ12);
+    AddRandomEnemyType(class'MJ12CloneAugStealth1', 2.5, MJ12);
 
     AddRandomEnemyType(class'#var(prefix)Terrorist', 10, NSF);
     AddRandomEnemyType(class'NSFClone1', 10, NSF);
@@ -113,9 +113,9 @@ function CheckConfig()
     AddRandomEnemyType(class'#var(prefix)ThugMale', 5, NSF);
     AddRandomEnemyType(class'#var(prefix)ThugMale2', 5, NSF);
     AddRandomEnemyType(class'#var(prefix)ThugMale3', 5, NSF);
-    AddRandomEnemyType(class'NSFCloneAugShield1', 2, NSF);
-    AddRandomEnemyType(class'NSFCloneAugTough1', 2, NSF);
-    AddRandomEnemyType(class'NSFCloneAugStealth1', 2, NSF);
+    AddRandomEnemyType(class'NSFCloneAugShield1', 1.5, NSF);
+    AddRandomEnemyType(class'NSFCloneAugTough1', 1.5, NSF);
+    AddRandomEnemyType(class'NSFCloneAugStealth1', 1.5, NSF);
 
     AddRandomEnemyType(class'#var(prefix)Gray', 2, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale', 5, FactionOther);
@@ -284,13 +284,22 @@ function CheckHelmet(ScriptedPawn p)
 {
     local int helmet_chance, visor_chance;
     if(p.Mesh != LodMesh'DeusExCharacters.GM_Jumpsuit') return;
-    if(NSFCloneAugStealth1(p) != None || NSFCloneAugTough1(p) != None || NSFCloneAugShield1(p) != None) return;
+    // tough augs don't need helmets
+    if(NSFCloneAugTough1(p) != None || UNATCOCloneAugTough1(p) != None || MJ12CloneAugTough1(p) != None) return;
 
-    // divide by 2 to lean towards vanilla
+    // divide chances by 2 to lean towards vanilla
     // that way the game gets harder as you progress to enemies that typically have helmets
 
     if(#defined(injections)) // visors only work in vanilla due to our change in ScriptedPawn, so leave the chance to 0 for other mods
         visor_chance = dxr.flags.settings.enemystats / 2;
+
+    // augs shouldn't get visors that cover their face
+    if(NSFCloneAugStealth1(p) != None || NSFCloneAugTough1(p) != None || NSFCloneAugShield1(p) != None
+        || UNATCOCloneAugStealth1(p) != None || UNATCOCloneAugTough1(p) != None || UNATCOCloneAugShield1(p) != None
+        || MJ12CloneAugStealth1(p) != None || MJ12CloneAugTough1(p) != None || MJ12CloneAugShield1(p) != None
+    ) {
+        visor_chance = 0;
+    }
 
     switch(p.MultiSkins[6]) {
     case Texture'DeusExItems.Skins.PinkMaskTex':
