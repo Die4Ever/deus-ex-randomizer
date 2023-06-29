@@ -69,7 +69,7 @@ function TryAddingNote(string text)
     local Name plaintextTag;
     local DeusExNote note;
     local DeusExRootWindow rootWindow;
-    local #var(prefix)PlayerPawn pp;
+    local #var(PlayerPawn) pp;
 
     if(Len(text)==0) return;
 
@@ -77,7 +77,7 @@ function TryAddingNote(string text)
 #ifdef hx
     pp = PlayerPawn;
 #else
-    pp = player;
+    pp = #var(PlayerPawn)(player);
 #endif
 
     rootWindow = DeusExRootWindow(pp.rootWindow);
