@@ -158,8 +158,8 @@ defaultproperties
     MultiSkins(2)=Texture'Textures\MJ12CloneAugStealth1Body.pcx'
     MultiSkins(3)=Texture'Textures\MJ12CloneAugStealth1Head.pcx' //this is where you need the face texture
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
-    MultiSkins(5)=Texture'Textures\MJ12CloneAugStealth1GogglesDark.pcx'
-    MultiSkins(6)=Texture'Textures\MJ12CloneAugStealth1Goggles.pcx'
+    MultiSkins(5)=Texture'Textures\MJ12CloneAugStealth1Goggles.pcx'
+    MultiSkins(6)=Texture'Textures\MJ12CloneAugStealth1GogglesDark.pcx'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
     FamiliarName="Augmented MJ12 Troop"
     UnfamiliarName="Augmented MJ12 Troop"
