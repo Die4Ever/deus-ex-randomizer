@@ -130,6 +130,7 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
 
 defaultproperties
 {
+    CarcassType=Class'DeusEx.MJ12CloneAugTough1Carcass'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
     MultiSkins(0)=Texture'Textures\MJ12CloneAugTough1Head.pcx'
