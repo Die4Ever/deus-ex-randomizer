@@ -21,7 +21,11 @@ function BeginPlay()
 function Carcass SpawnCarcass()
 {
     ResetSkinStyle();
-    return Super.SpawnCarcass();
+    if (bStunned)
+        return Super.SpawnCarcass();
+
+    Explode();
+    return None;
 }
 
 function GiveNametag()
@@ -36,16 +40,6 @@ function ResetSkinStyle()
     if (nametag){
         GiveNametag();
     }
-}
-
-function Carcass SpawnCarcass()
-{
-    if (bStunned)
-        return Super.SpawnCarcass();
-
-    Explode();
-
-    return None;
 }
 
 function Explode()

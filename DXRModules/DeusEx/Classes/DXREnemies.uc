@@ -81,6 +81,9 @@ function CheckConfig()
     AddRandomEnemyType(class'#var(prefix)RiotCop', 5, UNATCO);
     AddRandomEnemyType(class'#var(prefix)MilitaryBot', 2, UNATCO);
     AddRandomEnemyType(class'#var(prefix)SpiderBot2', 1, UNATCO);//little spider
+    AddRandomEnemyType(class'UNATCOCloneAugShield1', 2, UNATCO);
+    AddRandomEnemyType(class'UNATCOCloneAugTough1', 2, UNATCO);
+    AddRandomEnemyType(class'UNATCOCloneAugStealth1', 2, UNATCO);
 
     AddRandomEnemyType(class'#var(prefix)MJ12Troop', 10, MJ12);
     AddRandomEnemyType(class'#var(prefix)MJ12Commando', 2, MJ12);
@@ -98,6 +101,9 @@ function CheckConfig()
         AddRandomEnemyType(class'#var(prefix)Gray', 2, MJ12);
     }
     AddRandomEnemyType(class'#var(prefix)MIB', 1, MJ12);
+    AddRandomEnemyType(class'MJ12CloneAugShield1', 2, MJ12);
+    AddRandomEnemyType(class'MJ12CloneAugTough1', 2, MJ12);
+    AddRandomEnemyType(class'MJ12CloneAugStealth1', 2, MJ12);
 
     AddRandomEnemyType(class'#var(prefix)Terrorist', 10, NSF);
     AddRandomEnemyType(class'NSFClone1', 10, NSF);
@@ -107,6 +113,9 @@ function CheckConfig()
     AddRandomEnemyType(class'#var(prefix)ThugMale', 5, NSF);
     AddRandomEnemyType(class'#var(prefix)ThugMale2', 5, NSF);
     AddRandomEnemyType(class'#var(prefix)ThugMale3', 5, NSF);
+    AddRandomEnemyType(class'NSFCloneAugShield1', 2, NSF);
+    AddRandomEnemyType(class'NSFCloneAugTough1', 2, NSF);
+    AddRandomEnemyType(class'NSFCloneAugStealth1', 2, NSF);
 
     AddRandomEnemyType(class'#var(prefix)Gray', 2, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale', 5, FactionOther);
@@ -118,6 +127,7 @@ function CheckConfig()
     AddRandomEnemyType(class'#var(prefix)RiotCop', 10, Police);
     AddRandomEnemyType(class'#var(prefix)Doberman', 5, Police);
     AddRandomEnemyType(class'#var(prefix)SecretService', 1, Police);
+
     ReadConfig();
 }
 

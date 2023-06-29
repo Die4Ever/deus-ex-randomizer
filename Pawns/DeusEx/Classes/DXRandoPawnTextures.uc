@@ -20,7 +20,7 @@ class DXRandoPawnTextures extends Object abstract;
 
 #exec TEXTURE IMPORT NAME=NSFCloneAugShield1Head FILE=Textures\NSFCloneAugShield1Head.pcx GROUP=DXRandoPawns
 #exec TEXTURE IMPORT NAME=NSFCloneAugShield1Body FILE=Textures\NSFCloneAugShield1Body.pcx GROUP=DXRandoPawns
-#exec TEXTURE IMPORT NAME=NSFCloneAugShield1BodyNametag FILE=Textures\NSFCloneAugBodyNametag.pcx GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=NSFCloneAugShield1BodyNametag FILE=Textures\NSFCloneAugShield1BodyNametag.pcx GROUP=DXRandoPawns
 
 //UNATCO Clones
 
@@ -37,7 +37,7 @@ class DXRandoPawnTextures extends Object abstract;
 
 #exec TEXTURE IMPORT NAME=UNATCOCloneAugShield1Head FILE=Textures\UNATCOCloneAugShield1Head.pcx GROUP=DXRandoPawns
 #exec TEXTURE IMPORT NAME=UNATCOCloneAugShield1Body FILE=Textures\UNATCOCloneAugShield1Body.pcx GROUP=DXRandoPawns
-#exec TEXTURE IMPORT NAME=UNATCOCloneAugShield1BodyNametag FILE=Textures\UNATCOCloneAugBodyNametag.pcx GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=UNATCOCloneAugShield1BodyNametag FILE=Textures\UNATCOCloneAugShield1BodyNametag.pcx GROUP=DXRandoPawns
 
 //MJ12 Clones
 
@@ -56,4 +56,4 @@ class DXRandoPawnTextures extends Object abstract;
 
 #exec TEXTURE IMPORT NAME=MJ12CloneAugShield1Head FILE=Textures\MJ12CloneAugShield1Head.pcx GROUP=DXRandoPawns
 #exec TEXTURE IMPORT NAME=MJ12CloneAugShield1Body FILE=Textures\MJ12CloneAugShield1Body.pcx GROUP=DXRandoPawns
-#exec TEXTURE IMPORT NAME=MJ12CloneAugShield1BodyNametag FILE=Textures\MJ12CloneAugBodyNametag.pcx GROUP=DXRandoPawns
+#exec TEXTURE IMPORT NAME=MJ12CloneAugShield1BodyNametag FILE=Textures\MJ12CloneAugShield1BodyNametag.pcx GROUP=DXRandoPawns
