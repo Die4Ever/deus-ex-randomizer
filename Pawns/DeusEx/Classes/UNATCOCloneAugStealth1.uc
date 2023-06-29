@@ -156,7 +156,7 @@ defaultproperties
     MultiSkins(0)=Texture'Textures\UNATCOCloneAugStealth1Head.pcx'
     MultiSkins(1)=Texture'Textures\UNATCOCloneAugStealth1Legs.pcx'
     MultiSkins(2)=Texture'Textures\UNATCOCloneAugStealth1Body.pcx'
-    MultiSkins(3)=Texture'Textures\UNATCOCloneAugStealth1HeadNoglow.pcx' //this is where you need the face texture
+    MultiSkins(3)=Texture'Textures\UNATCOCloneAugStealth1Head.pcx' //this is where you need the face texture
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
     MultiSkins(6)=Texture'Textures\UNATCOCloneAugStealth1Helmet'
