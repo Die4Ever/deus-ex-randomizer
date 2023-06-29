@@ -49,6 +49,10 @@ function BindControls(optional string action)
     EnumOption("Graveyard", 99, f.settings.starting_map);
     EnumOption("Everett's House", 119, f.settings.starting_map);
     EnumOption("Ocean Lab", 140, f.settings.starting_map);
+    if(EnumOption("Random", -1)) {
+        f.SetGlobalSeed("random starting map");
+        f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f.dxr);
+    }
 
 #ifndef hx
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map."$BR$"If The Merchant dies then he stays dead for the rest of the game.");
