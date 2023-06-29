@@ -161,4 +161,6 @@ defaultproperties
     MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
     MultiSkins(6)=Texture'Textures\UNATCOCloneAugStealth1Helmet'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
+    FamiliarName="Augmented UNATCO Troop"
+    UnfamiliarName="Augmented UNATCO Troop"
 }
