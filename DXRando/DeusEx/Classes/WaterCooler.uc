@@ -65,3 +65,10 @@ simulated static function PlayDrown(Actor a)
 
     a.PlaySound(TSound, SLOT_Pain, 100,,, 1);
 }
+
+defaultproperties
+{
+#ifdef hx
+    ReuseDelay=0.4
+#endif
+}

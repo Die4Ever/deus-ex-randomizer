@@ -34,10 +34,10 @@ function ReplaceActors()
         else if( #var(prefix)ShipsWheel(a) != None ) {
             ReplaceShipsWheel(#var(prefix)ShipsWheel(a));
         }
-        else if( #var(prefix)WaterCooler(a) != None ) {
+        else if( a.class==class'#var(prefix)WaterCooler' ) {
             ReplaceWaterCooler(#var(prefix)WaterCooler(a));
         }
-        else if( #var(prefix)WaterFountain(a) != None ) {
+        else if( a.class==class'#var(prefix)WaterFountain' ) {
             ReplaceWaterFountain(#var(prefix)WaterFountain(a));
         }
         else if( #var(prefix)Keypad(a) != None ) {
@@ -64,6 +64,9 @@ function ReplaceActors()
         else if( #var(prefix)Trashbag2(a) != None ) {
             ReplaceGenericDecoration(a,class'DXRTrashbag2');
         }
+        else if( #var(prefix)ComputerPublic(a) != None ) {
+            ReplaceComputerPublic(#var(prefix)ComputerPublic(a));
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -79,7 +82,12 @@ function ReplaceInformationDevice(#var(prefix)InformationDevices a)
     if(n == None)
         return;
 
-    n.bAddToVault = a.bAddToVault;
+    if (#defined(hx)){
+        //HX bingo reading goals get marked when added to vault.  Just add all of them.
+        n.bAddToVault = True;
+    } else {
+        n.bAddToVault = a.bAddToVault;
+    }
     n.TextPackage = a.TextPackage;
     n.textTag = a.textTag;
     n.imageClass = a.imageClass;
@@ -434,6 +442,19 @@ function ReplaceMissionIntro(#var(prefix)MissionIntro a)
     n = DXRMissionIntro(SpawnReplacement(a, class'DXRMissionIntro'));
     if(n == None)
         return;
+
+    a.Destroy();
+}
+
+function ReplaceComputerPublic(#var(prefix)ComputerPublic a)
+{
+    local DXRComputerPublic n;
+
+    n = DXRComputerPublic(SpawnReplacement(a, class'DXRComputerPublic'));
+    if(n == None)
+        return;
+
+    n.bulletinTag = a.bulletinTag;
 
     a.Destroy();
 }

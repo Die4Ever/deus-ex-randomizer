@@ -1,4 +1,4 @@
-class DXRComputerScreenSpecialOptions extends ComputerScreenSpecialOptions;
+class DXRComputerScreenSpecialOptions extends #var(prefix)ComputerScreenSpecialOptions;
 
 function ActivateSpecialOption(MenuUIChoiceButton buttonPressed)
 {
@@ -26,7 +26,11 @@ function ActivateSpecialOption(MenuUIChoiceButton buttonPressed)
     if (specialIndex != -1)
     {
         // Make sure this option wasn't already triggered
+#ifdef hx
+        if (!compOwner.specialOptions[specialIndex].bAlreadyTriggered)
+#else
         if (!Computers(compOwner).specialOptions[specialIndex].bAlreadyTriggered)
+#endif
         {
             // adjust passwords, add note
             SpecialOptionTriggerAdjustPassword(specialIndex);
@@ -43,17 +47,35 @@ function SpecialOptionTriggerAdjustPassword(int specialIndex)
     local string new_passwords[16];
     local string text;
     local int i;
+    local #var(prefix)PlayerPawn pp;
+#ifdef hx
+    pp = PlayerPawn;
+#else
+    pp = player;
+#endif
 
-    foreach player.AllActors(class'DXRPasswords', passwords) { break; }
+    foreach pp.AllActors(class'DXRPasswords', passwords) { break; }
     if(passwords == None) {
         return;
     }
 
-    text = Computers(compOwner).specialOptions[specialIndex].TriggerText;
-    passwords.ProcessString(text, new_passwords);
-    Computers(compOwner).specialOptions[specialIndex].TriggerText = text;
+#ifdef hx
+        text = compOwner.specialOptions[specialIndex].TriggerText;
+#else
+        text = Computers(compOwner).specialOptions[specialIndex].TriggerText;
+#endif
 
-    note = player.AddNote(text,, True);
+    passwords.ProcessString(text, new_passwords);
+
+#ifdef hx
+    compOwner.specialOptions[specialIndex].TriggerText = text;
+    note = pp.AddNote(text,, True);
+#else
+    Computers(compOwner).specialOptions[specialIndex].TriggerText = text;
+    note = DeusExPlayer(pp).AddNote(text,, True);
+
+#endif
+
 
 #ifdef injections
     for(i=0; i < ArrayCount(new_passwords) && i < ArrayCount(note.new_passwords); i++) {

@@ -21,16 +21,16 @@ static function InitWindow(NetworkTerminal terminal)
     }
 }
 
-static function Class<ComputerUIWindow> ShowScreen(Class<ComputerUIWindow> newScreen)
+static function Class<#var(prefix)ComputerUIWindow> ShowScreen(Class<#var(prefix)ComputerUIWindow> newScreen)
 {
     switch(newScreen) {
-        case class'ComputerScreenEmail':
+        case class'#var(prefix)ComputerScreenEmail':
             newScreen = class'DXRComputerScreenEmail';
             break;
-        case class'ComputerScreenBulletins':
+        case class'#var(prefix)ComputerScreenBulletins':
             newScreen = class'DXRComputerScreenBulletins';
             break;
-        case class'ComputerScreenSpecialOptions':
+        case class'#var(prefix)ComputerScreenSpecialOptions':
             newScreen = class'DXRComputerScreenSpecialOptions';
             break;
     }
