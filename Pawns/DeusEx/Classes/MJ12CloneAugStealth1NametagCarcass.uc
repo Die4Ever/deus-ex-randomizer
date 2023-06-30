@@ -15,12 +15,12 @@ defaultproperties
     Mesh3=LodMesh'DeusExCharacters.GM_Jumpsuit_CarcassC'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit_Carcass'
-    MultiSkins(0)=Texture'Textures\MJ12CloneAugStealth1HeadNoglow.pcx'
-    MultiSkins(1)=Texture'Textures\MJ12CloneAugStealth1Legs.pcx'
-    MultiSkins(2)=Texture'Textures\MJ12CloneAugStealth1BodyNametag.pcx'
-    MultiSkins(3)=Texture'Textures\MJ12CloneAugStealth1HeadNoglow.pcx' //this is where you need the face texture
+    MultiSkins(0)=Texture'MJ12CloneAugStealth1HeadNoglow'
+    MultiSkins(1)=Texture'MJ12CloneAugStealth1Legs'
+    MultiSkins(2)=Texture'MJ12CloneAugStealth1BodyNametag'
+    MultiSkins(3)=Texture'MJ12CloneAugStealth1Head'
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
-    MultiSkins(5)=Texture'Textures\MJ12CloneAugStealth1GogglesDark.pcx'
-    MultiSkins(6)=Texture'Textures\MJ12CloneAugStealth1Goggles.pcx'
+    MultiSkins(5)=Texture'MJ12CloneAugStealth1Goggles'
+    MultiSkins(6)=Texture'MJ12CloneAugStealth1GogglesDark'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
 }

@@ -141,10 +141,10 @@ defaultproperties
     CarcassType=Class'DeusEx.MJ12CloneAugTough1Carcass'
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
-    MultiSkins(0)=Texture'Textures\MJ12CloneAugTough1Head.pcx'
+    MultiSkins(0)=Texture'MJ12CloneAugTough1Head'
     MultiSkins(1)=Texture'DeusExCharacters.Skins.MJ12TroopTex1'
-    MultiSkins(2)=Texture'Textures\MJ12CloneAugTough1Body.pcx'
-    MultiSkins(3)=Texture'Textures\MJ12CloneAugTough1Head.pcx' //this is where you put the face texture
+    MultiSkins(2)=Texture'MJ12CloneAugTough1Body'
+    MultiSkins(3)=Texture'MJ12CloneAugTough1Head'
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(5)=Texture'DeusExCharacters.Skins.MJ12TroopTex3'
     MultiSkins(6)=Texture'DeusExCharacters.Skins.MJ12TroopTex4'

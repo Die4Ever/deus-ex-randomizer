@@ -109,7 +109,7 @@ defaultproperties
     Texture=Texture'DeusExItems.Skins.PinkMaskTex'
     Mesh=LodMesh'DeusExCharacters.GM_Jumpsuit'
     MultiSkins(0)=Texture'DeusExCharacters.Skins.UNATCOTroopTex1'
-    MultiSkins(1)=Texture'DeusExCharacters.Skins.UNATCOTroopTex2'
+    MultiSkins(1)=Texture'DeusExCharacters.Skins.UNATCOTroopTex1'
     MultiSkins(2)=Texture'UNATCOCloneAugShield1Body'
     MultiSkins(3)=Texture'UNATCOCloneAugShield1Head'
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
