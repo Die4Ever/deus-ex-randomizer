@@ -160,7 +160,7 @@ defaultproperties
     MultiSkins(3)=Texture'MJ12CloneAugStealth1Head'
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(5)=Texture'MJ12CloneAugStealth1Goggles'
-    MultiSkins(6)=Texture'MJ12CloneAugStealth1GogglesDark'
+    MultiSkins(6)=Texture'MJ12CloneAugStealth1Goggles'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
     FamiliarName="Augmented MJ12 Troop"
     UnfamiliarName="Augmented MJ12 Troop"
