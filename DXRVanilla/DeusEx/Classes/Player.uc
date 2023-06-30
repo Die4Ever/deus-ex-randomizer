@@ -880,4 +880,18 @@ function MakePlayerIgnored(bool bNewIgnore)
     DeusExRootWindow(rootWindow).hud.belt.UpdateObjectText(0);
 }
 
+exec function ShowBingoWindow()
+{
+	if (RestrictInput())
+		return;
+
+   if ((Level.NetMode != NM_Standalone) && (bBeltIsMPInventory))
+   {
+      ClientMessage("Bingo screen disabled in multiplayer");
+      return;
+   }
+
+	InvokeUIScreen(Class'PersonaScreenBingo');
+}
+
 // ---
