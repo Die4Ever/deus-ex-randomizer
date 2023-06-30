@@ -429,6 +429,7 @@ function SetWatchFlags() {
 
         break;
     case "06_HONGKONG_TONGBASE":
+        WatchFlag('M07MeetJaime_Played');
         foreach AllActors(class'WaterZone', water) {
             water.ZonePlayerEvent = 'TongsHotTub';
             break;
@@ -2237,6 +2238,7 @@ defaultproperties
     bingo_options(199)=(event="PinballWizard",desc="Play %s different pinball machines",max=10,missions=37246)
     bingo_options(200)=(event="FlowersForTheLab",desc="Bring some flowers to brighten up the lab",max=1,missions=64)
     bingo_options(201)=(event="BurnTrash",desc="Burn %s bags of trash",max=25)
+    bingo_options(202)=(event="M07MeetJaime_Played",desc="Meet Jaime in Hong Kong",max=1,missions=96)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -2262,6 +2264,7 @@ defaultproperties
     mutually_exclusive(21)=(e1="AllPianoSongsPlayed",e2="PianoSong0Played")
     mutually_exclusive(22)=(e1="AllPianoSongsPlayed",e2="PianoSong7Played")
     mutually_exclusive(23)=(e1="PianoSong0Played",e2="PianoSong7Played")
+    mutually_exclusive(24)=(e1="M07MeetJaime_Played",e2="KnowsGuntherKillphrase")
 
     bingo_win_countdown=-1
 }
