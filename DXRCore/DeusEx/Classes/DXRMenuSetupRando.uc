@@ -23,22 +23,6 @@ function BindControls(optional string action)
         combatDifficulty = float(iDifficulty) / 100.0;
     }
 
-    NewMenuItem("Player Health", "Max health for each body part of the player.");
-    Slider(f.settings.health, 1, 10000);
-
-    NewMenuItem("Player Energy", "Max bioelectric energy for the player.");
-    Slider(f.settings.energy, 0, 10000);
-
-#ifndef hx
-    NewMenuItem("", "Randomize starting locations on certain maps");
-    EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations);
-    EnumOption("Unchanged Starting Locations", 0, f.settings.startinglocations);
-#endif
-
-    NewMenuItem("", "Randomize goal locations on certain maps");
-    EnumOption("Randomize Goal Locations", 100, f.settings.goals);
-    EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
-
     //Make sure the starting map values match those in DXRStartMap
     NewMenuItem("Starting Map", "What level you will start in");
     EnumOption("Liberty Island", 0, f.settings.starting_map);
@@ -54,6 +38,27 @@ function BindControls(optional string action)
         f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f.dxr);
     }
 
+    BreakLine();
+
+    NewMenuItem("Player Health", "Max health for each body part of the player.");
+    Slider(f.settings.health, 1, 10000);
+
+    NewMenuItem("Player Energy", "Max bioelectric energy for the player.");
+    Slider(f.settings.energy, 0, 10000);
+
+    BreakLine();
+
+#ifndef hx
+    NewMenuItem("", "Randomize starting locations on certain maps");
+    EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations);
+    EnumOption("Unchanged Starting Locations", 0, f.settings.startinglocations);
+#endif
+
+    NewMenuItem("", "Randomize goal locations on certain maps");
+    EnumOption("Randomize Goal Locations", 100, f.settings.goals);
+    EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
+
+    BreakLine();
 #ifndef hx
     NewMenuItem("The Merchant Chance %", "The chance for The Merchant to appear in each map."$BR$"If The Merchant dies then he stays dead for the rest of the game.");
     Slider(f.settings.merchants, 0, 100);
@@ -61,6 +66,16 @@ function BindControls(optional string action)
 
     NewMenuItem("Dancing %", "How many characters should be dancing.");
     Slider(f.settings.dancingpercent, 0, 100);
+
+    NewMenuItem("Spoiler Buttons", "Allow the use of spoiler buttons (Spoilers remain hidden until you choose to view them)");
+    EnumOption("Available", 1, f.settings.spoilers);
+    EnumOption("Disallowed", 0, f.settings.spoilers);
+
+    NewMenuItem("Menus Pause Game", "Should the game keep playing while a menu is open?");
+    EnumOption("Pause", 1, f.settings.menus_pause);
+    EnumOption("Don't Pause", 0, f.settings.menus_pause);
+
+    NewGroup("Bingo");
 
     NewMenuItem("Bingo Win", "How many completed lines to instantly win");
     Slider(f.settings.bingo_win, 0, 12);
@@ -73,13 +88,13 @@ function BindControls(optional string action)
     EnumOption("4 Free Spaces", 4, f.settings.bingo_freespaces);
     EnumOption("5 Free Spaces", 5, f.settings.bingo_freespaces);
 
-    NewMenuItem("Spoiler Buttons", "Allow the use of spoiler buttons (Spoilers remain hidden until you choose to view them)");
-    EnumOption("Available", 1, f.settings.spoilers);
-    EnumOption("Disallowed", 0, f.settings.spoilers);
-
-    NewMenuItem("Menus Pause Game", "Should the game keep playing while a menu is open?");
-    EnumOption("Pause", 1, f.settings.menus_pause);
-    EnumOption("Don't Pause", 0, f.settings.menus_pause);
+    NewMenuItem("Bingo Duration", "How many missions should the bingo goals last for?");
+    EnumOption("End of Game", 0, f.bingo_duration);
+    EnumOption("1 Mission",   1, f.bingo_duration);
+    EnumOption("2 Missions",  2, f.bingo_duration);
+    EnumOption("3 Missions",  3, f.bingo_duration);
+    EnumOption("4 Missions",  4, f.bingo_duration);
+    EnumOption("5 Missions",  5, f.bingo_duration);
 
     NewGroup("Medical Bots and Repair Bots");
 

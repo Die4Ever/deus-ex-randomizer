@@ -45,6 +45,7 @@ function InitDefaults()
         crowdcontrol = 0;
         mirroredmaps = 0;
     }
+    bingo_duration=0;
     newgameplus_loops = 0;
 
 #ifdef hx

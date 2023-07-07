@@ -1562,16 +1562,23 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
 {
     local int x, y, i;
     local string event, desc;
-    local int progress, max, missions, starting_mission_mask, starting_mission;
+    local int progress, max, missions, starting_mission_mask, starting_mission, end_mission_mask, end_mission, masked_missions;
     local int options[ArrayCount(bingo_options)], num_options, slot, free_spaces;
     local float f;
 
     starting_mission = class'DXRStartMap'.static.GetStartMapMission(dxr.flags.settings.starting_map);
     starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(dxr.flags.settings.starting_map);
+    if (dxr.flags.bingo_duration!=0){
+        end_mission = starting_mission+dxr.flags.bingo_duration-1; //The same mission is the first mission
+    } else {
+        end_mission = 15;
+    }
+    end_mission_mask = class'DXRStartMap'.static.GetEndMissionMask(end_mission);
+
     num_options = 0;
     for(x=0; x<ArrayCount(bingo_options); x++) {
         if(bingo_options[x].event == "") continue;
-        if(bingo_options[x].missions!=0 && (bingo_options[x].missions & starting_mission_mask) == 0) continue;
+        if(bingo_options[x].missions!=0 && ((bingo_options[x].missions & starting_mission_mask & end_mission_mask) == 0)) continue;
         if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,dxr.flags.settings.starting_map)) continue;
         options[num_options++] = x;
     }
@@ -1626,11 +1633,12 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             desc = bingo_options[i].desc;
             desc = tweakBingoDescription(event,desc);
             missions = bingo_options[i].missions;
+            masked_missions = missions & end_mission_mask; //Pre-mask the bingo endpoint
             max = bingo_options[i].max;
             // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
             if(max > 1 && InStr(desc, "%s") != -1) {
                 f = rngrange(1, 0.8, 1);// 80% to 100%
-                f *= MissionsMaskAvailability(starting_mission, missions);
+                f *= MissionsMaskAvailability(starting_mission, masked_missions);
                 max = Ceil(float(max) * f);
                 max = self.Max(max, 1);
                 desc = sprintf(desc, max);
