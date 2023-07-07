@@ -121,3 +121,26 @@ state Exploding
    }
 
 }
+
+auto simulated state Flying
+{
+	simulated function ProcessTouch (Actor Other, Vector HitLocation)
+	{
+		if (bStuck)
+			return;
+
+		if ((Other != instigator) && (DeusExProjectile(Other) == None) &&
+			(Other != Owner) && DeusExCarcass(Other)==None)  //Ignore carcasses
+		{
+			damagee = Other;
+			Explode(HitLocation, Normal(HitLocation-damagee.Location));
+
+         // DEUS_EX AMSD Spawn blood server side only
+         if (Role == ROLE_Authority)
+			{
+            if (damagee.IsA('Pawn') && !damagee.IsA('Robot') && bBlood)
+               SpawnBlood(HitLocation, Normal(HitLocation-damagee.Location));
+			}
+		}
+	}
+}
