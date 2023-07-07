@@ -1570,6 +1570,14 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     starting_mission_mask = class'DXRStartMap'.static.GetStartingMissionMask(dxr.flags.settings.starting_map);
     if (dxr.flags.bingo_duration!=0){
         end_mission = starting_mission+dxr.flags.bingo_duration-1; //The same mission is the first mission
+
+        //Missions 7 and 13 don't exist, so don't count them
+        if (starting_mission<7 && end_mission>=7){
+            end_mission+=1;
+        }
+        if (starting_mission<13 && end_mission>=13){
+            end_mission+=1;
+        }
     } else {
         end_mission = 15;
     }
