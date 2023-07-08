@@ -46,6 +46,7 @@ function InitDefaults()
         mirroredmaps = 0;
     }
     bingo_duration=0;
+    instant_bingo=0;
     newgameplus_loops = 0;
 
 #ifdef hx

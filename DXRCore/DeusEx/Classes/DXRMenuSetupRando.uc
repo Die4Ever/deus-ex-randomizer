@@ -80,6 +80,11 @@ function BindControls(optional string action)
     NewMenuItem("Bingo Win", "How many completed lines to instantly win");
     Slider(f.settings.bingo_win, 0, 12);
 
+    NewMenuItem("Instant Bingo", "Should bingo goals be reduced to a single occurance?");
+    EnumOption("Disabled", 0, f.instant_bingo);
+    EnumOption("Enabled", 1, f.instant_bingo);
+
+
     NewMenuItem("Bingo Freespace", "Should the center be a Free Space, or even more Free Spaces");
     EnumOption("Enabled", 1, f.settings.bingo_freespaces);
     EnumOption("Disabled", 0, f.settings.bingo_freespaces);
