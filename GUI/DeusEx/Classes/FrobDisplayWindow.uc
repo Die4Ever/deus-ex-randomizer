@@ -308,6 +308,8 @@ function string MoverStrInfo(Mover m, out int numLines)
                 numLines++;
                 if (keyAcq){
                     strInfo = strInfo $ CR() $ "KEY ACQUIRED";
+                    dxMover.bPickable=False;
+                    dxMover.msgLocked="The door is locked, but you already have the key!";
                 } else {
                     strInfo = strInfo $ CR() $ "Key unacquired";
                 }
