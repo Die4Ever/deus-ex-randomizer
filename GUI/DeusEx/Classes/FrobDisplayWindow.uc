@@ -246,38 +246,68 @@ function string GetStrInfo(Actor a, out int numLines)
     return "";
 }
 
+function bool KeyAcquired(Mover m)
+{
+    local DeusExMover dxMover;
+    dxMover = DeusExMover(m);
+    if (dxMover==None){
+        return False;
+    }
+
+    if (player!=None && Player.KeyRing.HasKey(dxMover.KeyIDNeeded)){
+        return True;
+    }
+
+    return False;
+}
+
 function string MoverStrInfo(Mover m, out int numLines)
 {
     local string strInfo;
     local DeusExMover dxMover;
+    local bool keyAcq;
 
-    numLines = 4;
+    numLines = 1;
 
     dxMover = DeusExMover(m);
     if ((dxMover != None) && dxMover.bLocked)
     {
-        strInfo = msgLocked $ CR() $ msgLockStr;
-        if (dxMover.bPickable)
-            strInfo = strInfo $ FormatString(dxMover.lockStrength * 100.0) $ "%";
-        else
-            strInfo = strInfo $ msgInf;
+        if (dxMover.KeyIDNeeded != ''){
+            if (keyAcquired(m)){
+                keyAcq = true;
+            } else {
+                keyAcq = false;
+            }
+        }
+        strInfo = msgLocked;
+        if (!(show_keys && keyAcq)) {
+            numLines++;
+            strInfo = strInfo $ CR() $ msgLockStr;
+            if (dxMover.bPickable)
+                strInfo = strInfo $ FormatString(dxMover.lockStrength * 100.0) $ "%";
+            else
+                strInfo = strInfo $ msgInf;
 
-        strInfo = strInfo $ CR() $ msgDoorStr;
-        if (dxMover.bBreakable)
-            strInfo = strInfo $ FormatString(dxMover.doorStrength * 100.0) $ "%";
-        else
-            strInfo = strInfo $ msgInf;
+            numLines++;
+            strInfo = strInfo $ CR() $ msgDoorStr;
+            if (dxMover.bBreakable)
+                strInfo = strInfo $ FormatString(dxMover.doorStrength * 100.0) $ "%";
+            else
+                strInfo = strInfo $ msgInf;
 
-        if ( dxMover.bBreakable )
-            strInfo = strInfo $ CR() $ msgDamageThreshold @ dxMover.minDamageThreshold;
-        else
-            strInfo = strInfo $ CR() $ msgDamageThreshold @ msgInf;
+            numLines++;
+            if ( dxMover.bBreakable )
+                strInfo = strInfo $ CR() $ msgDamageThreshold @ dxMover.minDamageThreshold;
+            else
+                strInfo = strInfo $ CR() $ msgDamageThreshold @ msgInf;
+
+        }
 
         if ( show_keys ){
             if (dxMover.KeyIDNeeded != ''){
                 numLines++;
-                if (player!=None && Player.KeyRing.HasKey(dxMover.KeyIDNeeded)){
-                    strInfo = strInfo $ CR() $ "Key acquired";
+                if (keyAcq){
+                    strInfo = strInfo $ CR() $ "KEY ACQUIRED";
                 } else {
                     strInfo = strInfo $ CR() $ "Key unacquired";
                 }
@@ -436,13 +466,17 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     local color col;
     local int numTools, numShots;
     local float damage;
+    local bool keyAcq;
+    local int lineNum;
 #ifdef vanilla
     local DXRWeapon w;
 #endif
 
+    keyAcq = KeyAcquired(m);
+
     dxMover = DeusExMover(m);
     // draw colored bars for each value
-    if ((dxMover != None) && dxMover.bLocked)
+    if ((dxMover != None) && dxMover.bLocked && !(show_keys && keyAcq))
     {
         gc.SetStyle(DSTY_Translucent);
         col = GetColorScaled(dxMover.lockStrength);
@@ -454,7 +488,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     }
 
     // draw the absolute number of lockpicks on top of the colored bar
-    if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable)
+    if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable && !(show_keys && keyAcq))
     {
         numTools = GetNumTools(dxMover.lockStrength, player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking'));
         if (numTools == 1)
@@ -464,7 +498,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     }
 
 #ifdef vanilla
-    if ((dxMover != None) && dxMover.bLocked && dxMover.bBreakable)
+    if ((dxMover != None) && dxMover.bLocked && dxMover.bBreakable && !(show_keys && keyAcq))
     {
         w = DXRWeapon(player.inHand);
         if( w != None ) {
@@ -482,6 +516,23 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     }
 #endif
     gc.DrawText(infoX+(infoW-barLength-2), infoY+4+(infoH-8)/numLines, barLength, ((infoH-8)/numLines)*2-2, strInfo);
+
+    //Put a green or red bar next to key status if the door is locked and has a key
+    if (show_keys && dxMover.bLocked && dxMover.KeyIDNeeded != ''){
+        gc.SetStyle(DSTY_Translucent);
+        col.r = 0;
+        col.g = 0;
+        col.b = 0;
+        if (keyAcq){
+            col.g = 255;
+            lineNum=1;
+        } else {
+            col.r = 255;
+            lineNum=4;
+        }
+        gc.SetTileColor(col);
+        gc.DrawPattern(infoX+(infoW-barLength-4), infoY+4+lineNum*(infoH-8)/numLines, barLength, ((infoH-8)/numLines)-2, 0, 0, Texture'ConWindowBackground');
+    }
 }
 
 function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY, float infoW, float infoH, int numLines)
