@@ -334,46 +334,51 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
     local DXRKeypad k;
 #endif
 
-    numLines = 2;
-
-    strInfo = device.itemName $ CR() $ msgHackStr;
-    if (device.bHackable)
-    {
-        if (device.hackStrength != 0.0)
-            strInfo = strInfo $ FormatString(device.hackStrength * 100.0) $ "%";
-        else {
-            //Should try to track if the player knew the code before hacking it
-            //if (codeKnown) {
-            //    strInfo = device.itemName $ ": " $ msgHacked $ " (YOU KNEW THE CODE THOUGH!)";
-            //} else {
-                strInfo = device.itemName $ ": " $ msgHacked;
-            //}
-            return strInfo;
-        }
-    }
-    else
-        strInfo = strInfo $ msgInf;
-
 #ifdef injections
     k=Keypad(device);
 #else
     k=DXRKeypad(device);
 #endif
 
+    numLines = 1;
+
+    strInfo = device.itemName;
+
+    if(!auto_codes || k==None || (auto_codes && k!=None && !k.bCodeKnown)){
+        numLines++;
+        strInfo = strInfo $ CR() $ msgHackStr;
+        if (device.bHackable)
+        {
+            if (device.hackStrength != 0.0)
+                strInfo = strInfo $ FormatString(device.hackStrength * 100.0) $ "%";
+            else {
+                //Should try to track if the player knew the code before hacking it
+                //if (codeKnown) {
+                //    strInfo = device.itemName $ ": " $ msgHacked $ " (YOU KNEW THE CODE THOUGH!)";
+                //} else {
+                    strInfo = device.itemName $ ": " $ msgHacked;
+                //}
+                return strInfo;
+            }
+        }
+        else
+            strInfo = strInfo $ msgInf;
+    }
+
     if( k!=None && (k.bCodeKnown) )
     {
         if( auto_codes ) {
-            numLines = 3;
-            strInfo = strInfo $ CR() $ "Code Known ("$Keypad(device).validCode$")";
+            numLines++;
+            strInfo = strInfo $ CR() $ "CODE KNOWN ("$Keypad(device).validCode$")";
         }
         else if( known_codes ) {
-            numLines = 3;
-            strInfo = strInfo $ CR() $ "Code Known";
+            numLines++;
+            strInfo = strInfo $ CR() $ "CODE KNOWN";
         }
     }
     else if( device.IsA('Keypad') && known_codes )
     {
-        numLines = 3;
+        numLines++;
         strInfo = strInfo $ CR() $ "Unknown Code";
     }
 
@@ -542,28 +547,59 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
     local string strInfo;
     local int numTools;
     local color col;
+    local int lineNum;
+#ifdef injections
+    local Keypad k;
+#else
+    local DXRKeypad k;
+#endif
 
-    // idk why this is slightly misaligned
-    infoY += 2;
+#ifdef injections
+    k=Keypad(device);
+#else
+    k=DXRKeypad(device);
+#endif
 
-    // draw a colored bar
-    if (device.hackStrength != 0.0)
-    {
-        gc.SetStyle(DSTY_Translucent);
-        col = GetColorScaled(device.hackStrength);
-        gc.SetTileColor(col);
-        gc.DrawPattern(infoX+(infoW-barLength-4), infoY+infoH/numLines, barLength*device.hackStrength, infoH/numLines-6, 0, 0, Texture'ConWindowBackground');
+    // Alignment changes based on the number of lines?
+    if ((auto_codes || known_codes) && k!=None){
+        infoY += 2;
+    }
+    if(!auto_codes || k==None || (auto_codes && k!=None && !k.bCodeKnown)){
+        // draw a colored bar
+        if (device.hackStrength != 0.0)
+        {
+            gc.SetStyle(DSTY_Translucent);
+            col = GetColorScaled(device.hackStrength);
+            gc.SetTileColor(col);
+            gc.DrawPattern(infoX+(infoW-barLength-4), infoY+infoH/numLines, barLength*device.hackStrength, infoH/numLines-5, 0, 0, Texture'ConWindowBackground');
+        }
+
+        // draw the absolute number of multitools on top of the colored bar
+        if ((device.bHackable) && (device.hackStrength != 0.0))
+        {
+            numTools = GetNumTools(device.hackStrength, player.SkillSystem.GetSkillLevelValue(class'SkillTech'));
+            if (numTools == 1)
+                strInfo = numTools @ msgTool;
+            else
+                strInfo = numTools @ msgTools;
+            gc.DrawText(infoX+(infoW-barLength-2), infoY+infoH/numLines, barLength, infoH/numLines-6, strInfo);
+        }
     }
 
-    // draw the absolute number of multitools on top of the colored bar
-    if ((device.bHackable) && (device.hackStrength != 0.0))
-    {
-        numTools = GetNumTools(device.hackStrength, player.SkillSystem.GetSkillLevelValue(class'SkillTech'));
-        if (numTools == 1)
-            strInfo = numTools @ msgTool;
-        else
-            strInfo = numTools @ msgTools;
-        gc.DrawText(infoX+(infoW-barLength-2), infoY+infoH/numLines, barLength, infoH/numLines-6, strInfo);
+    if (auto_codes && k!=None){
+        gc.SetStyle(DSTY_Translucent);
+        col.r = 0;
+        col.g = 0;
+        col.b = 0;
+        if (k.bCodeKnown){
+            col.g=255;
+            lineNum=1;
+        } else {
+            col.r=255;
+            lineNum=2;
+        }
+        gc.SetTileColor(col);
+        gc.DrawPattern(infoX+(infoW-barLength-4), infoY+lineNum*(infoH-4)/numLines, barLength, ((infoH-8)/numLines)-2, 0, 0, Texture'ConWindowBackground');
     }
 }
 
