@@ -24,7 +24,7 @@ function BindControls(optional string action)
     f = InitFlags();
 
     NewMenuItem("Game Mode", "Choose a game mode!");
-    for(i=0; i<10; i++) {
+    for(i=0; i<20; i++) {
         temp = f.GameModeIdForSlot(i);
         ts = f.GameModeName(temp);
         if(ts != "")

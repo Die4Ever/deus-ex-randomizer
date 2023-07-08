@@ -5,6 +5,8 @@ const HordeMode = 2;
 const RandoLite = 3;
 const ZeroRando = 4;
 const SeriousSam = 5;
+const SpeedrunMode = 6;
+const WaltonWare = 7;
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -520,7 +522,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.min_weapon_shottime = 75;
             settings.max_weapon_shottime = 125;
         }
-    } else if(IsSeriousSam()) {
+    }
+    else if(gamemode == SeriousSam) {
 #ifndef hx
         settings.CombatDifficulty *= 0.1;
 #endif
@@ -533,6 +536,30 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.medkits = (settings.medkits + 100) / 2;
         settings.medbots = (settings.medbots + 100) / 2;
         settings.health = 200;
+    }
+    else if(gamemode == SpeedrunMode) {
+        // same doors rules as Normal difficulty
+        settings.doorsmode = undefeatabledoors + doormutuallyinclusive;
+        settings.doorsdestructible = 100;
+        settings.doorspickable = 100;
+
+        // no banned skills
+        settings.banned_skills = 0;
+        settings.banned_skill_levels = 0;
+
+        // skill costs like Rando Lite mode
+        settings.minskill = (settings.minskill + 100) / 2;
+        settings.maxskill = (settings.maxskill + 200) / 3;
+        // but ensure maxskill cost at least 20% greater than minskill cost
+        settings.maxskill = Max(settings.minskill * 1.2, settings.maxskill);
+        // skill strength rando 80% wet/dry
+        settings.skill_value_rando = 80;
+    }
+    else if(gamemode == WaltonWare) {
+        settings.bingo_win = 1;
+        settings.bingo_freespaces = 5;
+        bingo_duration = 1;
+        instant_bingo = 1;
     }
     return settings;
 }
@@ -564,6 +591,10 @@ static function string GameModeName(int gamemode)
         return "Zero Rando";
     case SeriousSam:
         return "Serious Sam Mode";
+    case SpeedrunMode:
+        return "Speedrun Mode";
+    case WaltonWare:
+        return "Walton Ware";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -581,11 +612,6 @@ function bool IsHordeMode()
     return gamemode == HordeMode;
 }
 
-function bool IsRandoLite()
-{
-    return gamemode == RandoLite;
-}
-
 function bool IsZeroRando()
 {
     return gamemode == ZeroRando;
@@ -594,11 +620,6 @@ function bool IsZeroRando()
 function bool IsReducedRando()
 {
     return gamemode == RandoLite || gamemode == ZeroRando;
-}
-
-function bool IsSeriousSam()
-{
-    return gamemode == SeriousSam;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)

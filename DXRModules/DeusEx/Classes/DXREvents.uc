@@ -1645,13 +1645,13 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             max = bingo_options[i].max;
             // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
             if(max > 1 && InStr(desc, "%s") != -1) {
-                if (dxr.flags.instant_bingo==0){
+                if (dxr.flags.instant_bingo<=0){
                     f = rngrange(1, 0.8, 1);// 80% to 100%
                     f *= MissionsMaskAvailability(starting_mission, masked_missions) ** 1.5;
                     max = Ceil(float(max) * f);
                     max = self.Max(max, 1);
                 } else {
-                    max = 1;
+                    max = dxr.flags.instant_bingo;
                 }
                 desc = sprintf(desc, max);
             }
