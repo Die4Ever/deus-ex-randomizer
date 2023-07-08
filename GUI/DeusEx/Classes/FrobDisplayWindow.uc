@@ -369,7 +369,9 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
     {
         if( auto_codes ) {
             numLines++;
-            strInfo = strInfo $ CR() $ "CODE KNOWN ("$Keypad(device).validCode$")";
+            strInfo = strInfo $ CR() $ "CODE KNOWN ("$k.validCode$")";
+            k.bHackable = False;
+            k.msgNotHacked = "It's secure, but you already know the code!";
         }
         else if( known_codes ) {
             numLines++;
