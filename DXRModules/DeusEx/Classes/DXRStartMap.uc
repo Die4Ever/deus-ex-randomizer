@@ -265,6 +265,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map)
             return start_map>=20;
         case "M07MeetJaime_Played":
             return start_map>=60; //Have to have told Jaime to meet you in Hong Kong in mission 50a
+        case "VialAmbrosia_Activated":
+            return start_map>=96; //Have to have started before the superfreighter upper decks (Arbitrarily chose 96 as that point)
         default:
             return False;
     }
