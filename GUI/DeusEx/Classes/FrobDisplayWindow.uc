@@ -270,7 +270,7 @@ function string MoverStrInfo(Mover m, out int numLines)
     numLines = 1;
 
     dxMover = DeusExMover(m);
-    if ((dxMover != None) && dxMover.bLocked)
+    if (dxMover != None && dxMover.bLocked)
     {
         if (dxMover.KeyIDNeeded != ''){
             if (keyAcquired(m)){
@@ -303,16 +303,14 @@ function string MoverStrInfo(Mover m, out int numLines)
 
         }
 
-        if ( show_keys ){
-            if (dxMover.KeyIDNeeded != ''){
-                numLines++;
-                if (keyAcq){
-                    strInfo = strInfo $ CR() $ "KEY ACQUIRED";
-                    dxMover.bPickable=False;
-                    dxMover.msgLocked="The door is locked, but you already have the key!";
-                } else {
-                    strInfo = strInfo $ CR() $ "Key unacquired";
-                }
+        if ( show_keys && dxMover.KeyIDNeeded != ''){
+            numLines++;
+            if (keyAcq){
+                strInfo = strInfo $ CR() $ "KEY ACQUIRED";
+                dxMover.bPickable=False;
+                dxMover.msgLocked="The door is locked, but you already have the key!";
+            } else {
+                strInfo = strInfo $ CR() $ "Key unacquired";
             }
         }
     }
@@ -352,12 +350,7 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
             if (device.hackStrength != 0.0)
                 strInfo = strInfo $ FormatString(device.hackStrength * 100.0) $ "%";
             else {
-                //Should try to track if the player knew the code before hacking it
-                //if (codeKnown) {
-                //    strInfo = device.itemName $ ": " $ msgHacked $ " (YOU KNEW THE CODE THOUGH!)";
-                //} else {
-                    strInfo = device.itemName $ ": " $ msgHacked;
-                //}
+                strInfo = device.itemName $ ": " $ msgHacked;
                 return strInfo;
             }
         }

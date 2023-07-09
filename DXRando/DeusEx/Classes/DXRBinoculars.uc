@@ -1,7 +1,7 @@
 class DXRBinoculars injects #var(prefix)Binoculars;
 
 var int watchTime;
-var name lastWatched;
+var Actor lastWatched;
 
 state Activated
 {
@@ -25,13 +25,13 @@ state DeActivated
 
 simulated function Timer()
 {
-    local DeusExPlayer peeper;
+    local #var(PlayerPawn) peeper;
     local Vector HitNormal, HitLocation, StartTrace, EndTrace;
-    local Actor peepee;
+    local Actor peepee;// pronounced peep-ee, not pee-pee
     local DXRando dxr;
     local bool newPeepee;
 
-    peeper = DeusExPlayer(Owner);
+    peeper = #var(PlayerPawn)(Owner);
 
     //Peeping logic happens here
     StartTrace = peeper.Location;
@@ -51,17 +51,12 @@ simulated function Timer()
         return;
     }
 
-    if ((peepee==None && lastWatched!='') ||
-        (peepee!=None && peepee.Name!=lastWatched))
+    if (peepee!=lastWatched)
     {
-        if (peepee==None){
-            lastWatched = '';
-        } else {
-            lastWatched = peepee.Name;
-        }
+        lastWatched = peepee;
         watchTime=0;
 
-        if (lastWatched!=''){
+        if (lastWatched!=None){
             newPeepee = True;
         }
 
@@ -70,7 +65,7 @@ simulated function Timer()
     }
 
     if (newPeepee){
-        //This should probably only trigger once per thing - TODO
+        //This should probably only trigger once per thing - TODO, will probably be tracked in DXREvents and PlayerDataItem, like function ReadText(name textTag)
         class'DXREvents'.static.MarkBingo(dxr,peepee.Class.Name$"_peeped");
 
         if (ScriptedPawn(peepee)!=None){
@@ -83,6 +78,4 @@ simulated function Timer()
             class'DXREvents'.static.MarkBingo(dxr,peepee.Class.Name$"_peeptime");
         }
     }
-
-
 }
