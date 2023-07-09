@@ -46,6 +46,9 @@ function PreFirstEntryMapFixes()
         class'PlaceholderEnemy'.static.Create(self,vectm(1121,-1095,-144));
         class'PlaceholderEnemy'.static.Create(self,vectm(467,-214,-144));
         break;
+    case "02_NYC_HOTEL":
+        Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+        break;
 #endif
 
     case "02_NYC_STREET":

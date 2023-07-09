@@ -59,6 +59,9 @@ function PreFirstEntryMapFixes()
                 }
             }
             break;
+        case "08_NYC_HOTEL":
+            Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+            break;
     }
 }
 
