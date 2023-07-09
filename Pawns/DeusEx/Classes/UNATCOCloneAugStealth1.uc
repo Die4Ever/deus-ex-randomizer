@@ -107,7 +107,8 @@ function EnableCloak(bool bEnable)  // beware! called from C++
 
 	if (bEnable && !bCloakOn)
 	{
-		SetSkinStyle(STY_Translucent, Texture'WhiteStatic', -0.4); //-0.4 seems to actually be pretty stealthy
+		//Negative values like -0.4 look good on DirectX 10, but weird on Software/OpenGL.  Stick with positive values.
+		SetSkinStyle(STY_Translucent, Texture'WhiteStatic', 0.01);
 		KillShadow();
 		bCloakOn = bEnable;
 	}
