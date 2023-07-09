@@ -23,6 +23,11 @@ state DeActivated
     }
 }
 
+simulated function PreTravel()
+{
+    GoToState('DeActivated');
+}
+
 simulated function Timer()
 {
     local #var(PlayerPawn) peeper;
