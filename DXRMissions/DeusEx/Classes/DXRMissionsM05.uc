@@ -153,8 +153,11 @@ function AddMissionGoals()
     l("added goal "$newGoal);
     newGoal.SetText("Find the equipment taken from you when you were captured by UNATCO.");
 
-    item = Spawn(class'Image05_NYC_MJ12Lab');
-    item.Frob(player(), None);
+    //You might still have the image in a NG+ scenario
+    if (player().FindInventoryType(class'Image05_NYC_MJ12Lab')==None){
+        item = Spawn(class'Image05_NYC_MJ12Lab');
+        item.Frob(player(), None);
+    }
 }
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
