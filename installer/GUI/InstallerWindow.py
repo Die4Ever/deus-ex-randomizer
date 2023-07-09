@@ -1,7 +1,7 @@
 import webbrowser
 from GUI import *
 from pathlib import Path
-from Install import Install, IsWindows
+from Install import Install, IsWindows, getDefaultPath
 import traceback
 import re
 
@@ -19,19 +19,20 @@ class InstallerWindow(GUIBase):
 
         filetypes = (('DeusEx.exe', 'DeusEx.exe'),)
         initdir = getDefaultPath()
+        self.SetShowHiddenFiles()
         p = fd.askopenfilename(title="Find plain DeusEx.exe", filetypes=filetypes, initialdir=initdir)
         if not p:
-            print('no file selected')
+            info('no file selected')
             sys.exit(0)
 
         p = Path(p)
-        print(p)
+        info(p)
         assert p.name.lower() == 'deusex.exe'
         assert p.parent.name.lower() == 'system'
         self.exe = p
 
         flavors = Install.DetectFlavors(self.exe)
-        print(flavors)
+        info(flavors)
 
         self.font = font.Font(size=14)
         self.linkfont = font.Font(size=12, underline=True)
@@ -84,7 +85,7 @@ class InstallerWindow(GUIBase):
 
         settings = { 'install': v, 'exe': exe }
 
-        if f in ['Vanilla', '#Vanilla? Madder.']: # TODO: VMD is commented out, needs map files and UnrealScript work
+        if f in ['Vanilla', '####Vanilla? Madder.']: # TODO: VMD is commented out, needs map files and UnrealScript work
             v = BooleanVar(master=self.frame, value=True)
             settings['mirrors'] = v
             c = Checkbutton(self.frame, text="Download mirrored maps for "+f, variable=v)
@@ -102,7 +103,7 @@ class InstallerWindow(GUIBase):
             self.FixColors(c)
             row+=1
 
-        if f == 'Vanilla' and IsWindows():
+        if f == 'Vanilla':
             l = Label(self.frame, text="Which EXE to use for vanilla:")
             l.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
             row += 1
@@ -113,7 +114,7 @@ class InstallerWindow(GUIBase):
             Hovertip(r, "Kentie's Launcher stores configs and saves in your Documents folder.")
             row += 1
 
-            r = Radiobutton(self.frame, text="Hanfling's Launch", variable=v, value='Launch')
+            r = Radiobutton(self.frame, text="Hanfling's Launch", variable=exe, value='Launch')
             r.grid(column=1,row=row, sticky='SW', padx=pad*8, pady=pad)
             self.FixColors(r)
             Hovertip(r, "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play.")
@@ -129,15 +130,15 @@ class InstallerWindow(GUIBase):
         except Exception as e:
             self.root.title('DXRando Installer Error!')
             self.root.update()
-            print('\n\nError!')
-            print(str(e) + '\n\n' + traceback.format_exc())
+            info('\n\nError!')
+            info(str(e) + '\n\n' + traceback.format_exc())
             messagebox.showinfo('Error!', str(e) + '\n\n' + traceback.format_exc(5))
             exit(1)
 
     def _Install(self):
         self.root.title('DXRando Installing...')
         self.root.update()
-        print(self.speedupfixval.get())
+        info(self.speedupfixval.get())
         self.installButton["state"]='disabled'
 
         flavors = {}
@@ -154,7 +155,7 @@ class InstallerWindow(GUIBase):
 
         speedupfix = self.speedupfixval.get()
         flavors = Install.Install(self.exe, flavors, speedupfix)
-        flavors = ', '.join(flavors)
+        flavorstext = ', '.join(flavors.keys())
         extra = ''
         if 'Vanilla' in flavors and IsWindows():
             extra += '\nCreated DXRando.exe'
@@ -162,7 +163,7 @@ class InstallerWindow(GUIBase):
             extra += '\nCreated VMDRandomizer.exe'
         self.root.title('DXRando Installation Complete!')
         self.root.update()
-        messagebox.showinfo('DXRando Installation Complete!', 'Installed DXRando for: ' + flavors + extra)
+        messagebox.showinfo('DXRando Installation Complete!', 'Installed DXRando for: ' + flavorstext + extra)
         self.closeWindow()
 
 
@@ -180,18 +181,3 @@ class InstallerWindow(GUIBase):
 
 def main():
     InstallerWindow()
-
-
-def getDefaultPath():
-    checks = [
-        Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
-        Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
-        Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
-        Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
-    ]
-    p:Path
-    for p in checks:
-        f:Path = p / "DeusEx.exe"
-        if f.exists():
-            return p
-    return None

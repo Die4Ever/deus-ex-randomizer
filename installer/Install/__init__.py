@@ -6,8 +6,45 @@ import urllib.request
 import certifi
 import ssl
 
+verbose = False
+dryrun = False
+def SetVerbose(val:bool):
+    global verbose
+    verbose = val
+
+def GetVerbose() -> bool:
+    global verbose
+    return verbose
+
+def SetDryrun(val:bool):
+    global dryrun
+    dryrun = val
+
+def GetDryrun() -> bool:
+    global dryrun
+    return dryrun
+
 def IsWindows() -> bool:
     return os.name == 'nt'
+
+try:
+    outfile = open('log.txt', 'w')
+except Exception as e:
+    print('ERROR writing to log.txt file', e)
+    outfile = None
+
+def debug(*args):
+    global outfile
+    if GetDryrun():
+        print(*args)
+        if outfile:
+            print(*args, file=outfile)
+
+def info(*args):
+    global outfile
+    print(*args)
+    if outfile:
+        print(*args, file=outfile)
 
 
 def GetConfChanges(modname):
@@ -17,7 +54,7 @@ def GetConfChanges(modname):
             'Root': modname+'Randomizer.DXRandoRootWindow'
         },
         'Core.System': {
-            'SavePath': '../Save' + modname + 'Rando'
+            'SavePath': '..\\Save' + modname + 'Rando'
         }
     }
     syspath = '..\\' + modname + 'Randomizer\\System\\*.u'
@@ -42,6 +79,23 @@ def GetSourcePath() -> Path:
         return p
     raise RuntimeError('failed to GetSourcePath()', p)
 
+
+def getDefaultPath():
+    checks = [
+        Path("C:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+        Path("D:\\") / "Program Files (x86)" / "Steam" / "steamapps" / "common" / "Deus Ex" / "System",
+        Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
+        Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
+        Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
+    ]
+    p:Path
+    for p in checks:
+        f:Path = p / "DeusEx.exe"
+        if f.exists():
+            return p
+    return None
+
+
 def GetPackagesPath(modname:str) -> Path:
     # TODO: these source files will be split up into a separate folder for each modname when we start using consistent filenames
     p = GetSourcePath()
@@ -62,16 +116,26 @@ def _DetectFlavors(system:Path):
     vanilla_md5 = None
     is_vanilla = False
 
+    deusexu_md5s = {
+        'd343da03a6d311ee412dfae4b52ff975': 'vanilla',
+        '5964bd1dcea8edb20cb1bc89881b0556': 'DXRando v2.5',
+    }
+
     if (game / 'VMDSim').is_dir():
-        return ['Vanilla? Madder.']# VMD seems like it can only exist by itself
+        flavors = ['Vanilla? Madder.']# VMD seems like it can only exist by itself
+        debug("_DetectFlavors", flavors)
+        return flavors
 
     if (system / 'DeusEx.u').exists():
         flavors.append('Vanilla')
         vanilla_md5 = MD5((system / 'DeusEx.u').read_bytes())
-        if vanilla_md5 == 'd343da03a6d311ee412dfae4b52ff975':
+        md5_name = deusexu_md5s.get(vanilla_md5)
+        if md5_name == 'vanilla':
             is_vanilla = True
+        elif md5_name:
+            info("found DeusEx.u", md5_name, vanilla_md5)
         else:
-            print('unknown MD5 for DeusEx.u', vanilla_md5)
+            info('unknown MD5 for DeusEx.u', vanilla_md5)
 
     if (game / 'GMDXv9').is_dir():
         flavors.append('GMDX v9')
@@ -81,11 +145,12 @@ def _DetectFlavors(system:Path):
         flavors.append('GMDX v10')
     if (system / 'HX.u').exists():
         if not is_vanilla:
-            print('WARNING: DeusEx.u file is not vanilla! This can cause issues with HX')
+            info('WARNING: DeusEx.u file is not vanilla! This can cause issues with HX')
         flavors.append('HX')
     if (game / 'Revision').is_dir():
         flavors.append('Revision')
 
+    debug("_DetectFlavors", flavors)
     return flavors
 
 
@@ -98,9 +163,9 @@ def CopyPackageFiles(modname:str, gameroot:Path, packages:list):
 
     packages_path = GetPackagesPath(modname)
 
-    dxrandoroot.mkdir(exist_ok=True)
+    Mkdir(dxrandoroot, exist_ok=True)
     dxrandosystem = dxrandoroot / 'System'
-    dxrandosystem.mkdir(exist_ok=True)
+    Mkdir(dxrandosystem, exist_ok=True)
 
     # need to split our package files and organize them into different folders since these always have the same names
     #packages.append('DXRandoCore.u')
@@ -117,63 +182,82 @@ def EngineDllFix(p:Path) -> bool:
     bytes = dll.read_bytes()
     hex = MD5(bytes)
     if hex == '1f23c5a7e63c79457bd4c24cd14641b0':
-        print('Engine.dll speedup fix already applied')
+        info('Engine.dll speedup fix already applied')
         return True
     if hex != '0af95a7328719b1d4eb26374aad8ae9a':
-        print('skipping Engine.dll speedup fix, unrecognized md5 sum:', hex)
+        info('skipping Engine.dll speedup fix, unrecognized md5 sum:', hex)
         return False
     dllbak = p / 'Engine.dll.bak'
-    dllbak.write_bytes(bytes)
+    WriteBytes(dllbak, bytes)
     bytes = bytearray(bytes)
     for i in range(0x12ADCC, 0x12ADCF + 1):
         bytes[i] = 0
-    dll.write_bytes(bytes)
+    WriteBytes(dll, bytes)
     return True
 
 
 def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path, changes:dict):
-    print('ModifyConfig', defconfig, config, outdefconfig, outconfig)
+    info('ModifyConfig', defconfig, config, outdefconfig, outconfig)
     bytes = defconfig.read_bytes()
     bytes = Config.ModifyConfig(bytes, changes)
-    outdefconfig.write_bytes(bytes)
+    WriteBytes(outdefconfig, bytes)
 
     if config.exists():
         bytes = defconfig.read_bytes()
         bytes = Config.ModifyConfig(bytes, changes)
-        outconfig.write_bytes(bytes)
+        WriteBytes(outconfig, bytes)
 
 
 def CopyD3D10Renderer(system:Path):
     thirdparty = GetSourcePath() / '3rdParty'
-    print('CopyD3D10Renderer from', thirdparty, ' to ', system)
+    info('CopyD3D10Renderer from', thirdparty, ' to ', system)
 
     CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
     CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
 
     drvdir_source = thirdparty / 'd3d10drv'
     drvdir_dest = system / 'd3d10drv'
-    drvdir_dest.mkdir(exist_ok=True)
+    Mkdir(drvdir_dest, exist_ok=True)
     for f in drvdir_source.glob('*'):
         CopyTo(f, drvdir_dest / f.name, True)
 
 
+def Mkdir(dir:Path, parents=False, exist_ok=False):
+    if GetDryrun():
+        info("dryrun would've created folder", dir)
+    else:
+        debug("creating folder", dir)
+        dir.mkdir(parents=parents, exist_ok=exist_ok)
+
+def WriteBytes(out:Path, data:bytes):
+    if GetDryrun():
+        info("dryrun would've written", len(data), "bytes to", out)
+    else:
+        debug("writing", len(data), "bytes to", out)
+        out.write_bytes(data)
+
+
 def CopyTo(source:Path, dest:Path, silent:bool=False):
-    if not silent:
-        print('Copying', source, 'to', dest)
+    if GetVerbose() or not silent:
+        info('Copying', source, 'to', dest)
     bytes = source.read_bytes()
-    dest.write_bytes(bytes)
+    WriteBytes(dest, bytes)
+
 
 def MD5(bytes:bytes) -> str:
-    return hashlib.md5(bytes).hexdigest()
+    ret = hashlib.md5(bytes).hexdigest()
+    debug("MD5 of", len(bytes), " bytes is", ret)
+    return ret
 
 
 def DownloadFile(url, dest, callback):
+    # still do this on dryrun because it writes to temp?
     sslcontext = ssl.create_default_context(cafile=certifi.where())
     old_func = ssl._create_default_https_context
     ssl._create_default_https_context = lambda : sslcontext # HACK
 
-    print('\n\ndownloading', url, 'to', dest)
+    info('\n\ndownloading', url, 'to', dest)
     urllib.request.urlretrieve(url, dest, callback) # "legacy interface"
-    print('done downloading ', url, 'to', dest)
+    info('done downloading ', url, 'to', dest)
 
     ssl._create_default_https_context = old_func

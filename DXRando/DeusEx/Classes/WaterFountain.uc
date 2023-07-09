@@ -47,3 +47,10 @@ function Frob(Actor Frobber, Inventory frobWith)
         }
     }
 }
+
+defaultproperties
+{
+#ifdef hx
+    ReuseDelay=0.4
+#endif
+}

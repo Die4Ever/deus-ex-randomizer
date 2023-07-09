@@ -176,14 +176,14 @@ function FixCodes()
     }
 }
 
-function ChangeKeypadPasscode(#var(prefix)Keypad k)
+function ChangeKeypadPasscode(#var(prefix)Keypad k, bool rando)
 {
-    if( k.validCode == "718" ) {
+    if( k.validCode == "718" && rando ) {
         FixMaggieChowBday(k);
         return;
     }
     else
-        Super.ChangeKeypadPasscode(k);
+        Super.ChangeKeypadPasscode(k, rando);
 }
 
 function FixMaggieChowBday(#var(prefix)Keypad k)

@@ -45,11 +45,6 @@ function CheckAutofillSettings()
         known_codes = false;
     }
 
-    if(player.FlagBase.GetInt('Rando_passwordsrandomized') <= 0) {
-        auto_codes = false;
-        known_codes = false;
-    }
-
     show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys enabled"));
 }
 
@@ -251,41 +246,71 @@ function string GetStrInfo(Actor a, out int numLines)
     return "";
 }
 
+function bool KeyAcquired(Mover m)
+{
+    local DeusExMover dxMover;
+    dxMover = DeusExMover(m);
+    if (dxMover==None){
+        return False;
+    }
+
+    if (player!=None && Player.KeyRing.HasKey(dxMover.KeyIDNeeded)){
+        return True;
+    }
+
+    return False;
+}
+
 function string MoverStrInfo(Mover m, out int numLines)
 {
     local string strInfo;
     local DeusExMover dxMover;
+    local bool keyAcq;
 
-    numLines = 4;
+    numLines = 1;
 
     dxMover = DeusExMover(m);
-    if ((dxMover != None) && dxMover.bLocked)
+    if (dxMover != None && dxMover.bLocked)
     {
-        strInfo = msgLocked $ CR() $ msgLockStr;
-        if (dxMover.bPickable)
-            strInfo = strInfo $ FormatString(dxMover.lockStrength * 100.0) $ "%";
-        else
-            strInfo = strInfo $ msgInf;
+        if (dxMover.KeyIDNeeded != ''){
+            if (keyAcquired(m)){
+                keyAcq = true;
+            } else {
+                keyAcq = false;
+            }
+        }
+        strInfo = msgLocked;
+        if (!(show_keys && keyAcq)) {
+            numLines++;
+            strInfo = strInfo $ CR() $ msgLockStr;
+            if (dxMover.bPickable)
+                strInfo = strInfo $ FormatString(dxMover.lockStrength * 100.0) $ "%";
+            else
+                strInfo = strInfo $ msgInf;
 
-        strInfo = strInfo $ CR() $ msgDoorStr;
-        if (dxMover.bBreakable)
-            strInfo = strInfo $ FormatString(dxMover.doorStrength * 100.0) $ "%";
-        else
-            strInfo = strInfo $ msgInf;
+            numLines++;
+            strInfo = strInfo $ CR() $ msgDoorStr;
+            if (dxMover.bBreakable)
+                strInfo = strInfo $ FormatString(dxMover.doorStrength * 100.0) $ "%";
+            else
+                strInfo = strInfo $ msgInf;
 
-        if ( dxMover.bBreakable )
-            strInfo = strInfo $ CR() $ msgDamageThreshold @ dxMover.minDamageThreshold;
-        else
-            strInfo = strInfo $ CR() $ msgDamageThreshold @ msgInf;
+            numLines++;
+            if ( dxMover.bBreakable )
+                strInfo = strInfo $ CR() $ msgDamageThreshold @ dxMover.minDamageThreshold;
+            else
+                strInfo = strInfo $ CR() $ msgDamageThreshold @ msgInf;
 
-        if ( show_keys ){
-            if (dxMover.KeyIDNeeded != ''){
-                numLines++;
-                if (player!=None && Player.KeyRing.HasKey(dxMover.KeyIDNeeded)){
-                    strInfo = strInfo $ CR() $ "Key acquired";
-                } else {
-                    strInfo = strInfo $ CR() $ "Key unacquired";
-                }
+        }
+
+        if ( show_keys && dxMover.KeyIDNeeded != ''){
+            numLines++;
+            if (keyAcq){
+                strInfo = strInfo $ CR() $ "KEY ACQUIRED";
+                dxMover.bPickable=False;
+                dxMover.msgLocked="The door is locked, but you already have the key!";
+            } else {
+                strInfo = strInfo $ CR() $ "Key unacquired";
             }
         }
     }
@@ -307,46 +332,48 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
     local DXRKeypad k;
 #endif
 
-    numLines = 2;
-
-    strInfo = device.itemName $ CR() $ msgHackStr;
-    if (device.bHackable)
-    {
-        if (device.hackStrength != 0.0)
-            strInfo = strInfo $ FormatString(device.hackStrength * 100.0) $ "%";
-        else {
-            //Should try to track if the player knew the code before hacking it
-            //if (codeKnown) {
-            //    strInfo = device.itemName $ ": " $ msgHacked $ " (YOU KNEW THE CODE THOUGH!)";
-            //} else {
-                strInfo = device.itemName $ ": " $ msgHacked;
-            //}
-            return strInfo;
-        }
-    }
-    else
-        strInfo = strInfo $ msgInf;
-
 #ifdef injections
     k=Keypad(device);
 #else
     k=DXRKeypad(device);
 #endif
 
+    numLines = 1;
+
+    strInfo = device.itemName;
+
+    if(!auto_codes || k==None || (auto_codes && k!=None && !k.bCodeKnown)){
+        numLines++;
+        strInfo = strInfo $ CR() $ msgHackStr;
+        if (device.bHackable)
+        {
+            if (device.hackStrength != 0.0)
+                strInfo = strInfo $ FormatString(device.hackStrength * 100.0) $ "%";
+            else {
+                strInfo = device.itemName $ ": " $ msgHacked;
+                return strInfo;
+            }
+        }
+        else
+            strInfo = strInfo $ msgInf;
+    }
+
     if( k!=None && (k.bCodeKnown) )
     {
         if( auto_codes ) {
-            numLines = 3;
-            strInfo = strInfo $ CR() $ "Code Known ("$Keypad(device).validCode$")";
+            numLines++;
+            strInfo = strInfo $ CR() $ "CODE KNOWN ("$k.validCode$")";
+            k.bHackable = False;
+            k.msgNotHacked = "It's secure, but you already know the code!";
         }
         else if( known_codes ) {
-            numLines = 3;
-            strInfo = strInfo $ CR() $ "Code Known";
+            numLines++;
+            strInfo = strInfo $ CR() $ "CODE KNOWN";
         }
     }
     else if( device.IsA('Keypad') && known_codes )
     {
-        numLines = 3;
+        numLines++;
         strInfo = strInfo $ CR() $ "Unknown Code";
     }
 
@@ -441,13 +468,17 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     local color col;
     local int numTools, numShots;
     local float damage;
+    local bool keyAcq;
+    local int lineNum;
 #ifdef vanilla
     local DXRWeapon w;
 #endif
 
+    keyAcq = KeyAcquired(m);
+
     dxMover = DeusExMover(m);
     // draw colored bars for each value
-    if ((dxMover != None) && dxMover.bLocked)
+    if ((dxMover != None) && dxMover.bLocked && !(show_keys && keyAcq))
     {
         gc.SetStyle(DSTY_Translucent);
         col = GetColorScaled(dxMover.lockStrength);
@@ -459,7 +490,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     }
 
     // draw the absolute number of lockpicks on top of the colored bar
-    if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable)
+    if ((dxMover != None) && dxMover.bLocked && dxMover.bPickable && !(show_keys && keyAcq))
     {
         numTools = GetNumTools(dxMover.lockStrength, player.SkillSystem.GetSkillLevelValue(class'SkillLockpicking'));
         if (numTools == 1)
@@ -469,7 +500,7 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     }
 
 #ifdef vanilla
-    if ((dxMover != None) && dxMover.bLocked && dxMover.bBreakable)
+    if ((dxMover != None) && dxMover.bLocked && dxMover.bBreakable && !(show_keys && keyAcq))
     {
         w = DXRWeapon(player.inHand);
         if( w != None ) {
@@ -487,6 +518,23 @@ function MoverDrawBars(GC gc, Mover m, float infoX, float infoY, float infoW, fl
     }
 #endif
     gc.DrawText(infoX+(infoW-barLength-2), infoY+4+(infoH-8)/numLines, barLength, ((infoH-8)/numLines)*2-2, strInfo);
+
+    //Put a green or red bar next to key status if the door is locked and has a key
+    if (show_keys && dxMover.bLocked && dxMover.KeyIDNeeded != ''){
+        gc.SetStyle(DSTY_Translucent);
+        col.r = 0;
+        col.g = 0;
+        col.b = 0;
+        if (keyAcq){
+            col.g = 255;
+            lineNum=1;
+        } else {
+            col.r = 255;
+            lineNum=4;
+        }
+        gc.SetTileColor(col);
+        gc.DrawPattern(infoX+(infoW-barLength-4), infoY+4+lineNum*(infoH-8)/numLines, barLength, ((infoH-8)/numLines)-2, 0, 0, Texture'ConWindowBackground');
+    }
 }
 
 function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY, float infoW, float infoH, int numLines)
@@ -494,28 +542,59 @@ function DeviceDrawBars(GC gc, HackableDevices device, float infoX, float infoY,
     local string strInfo;
     local int numTools;
     local color col;
+    local int lineNum;
+#ifdef injections
+    local Keypad k;
+#else
+    local DXRKeypad k;
+#endif
 
-    // idk why this is slightly misaligned
-    infoY += 2;
+#ifdef injections
+    k=Keypad(device);
+#else
+    k=DXRKeypad(device);
+#endif
 
-    // draw a colored bar
-    if (device.hackStrength != 0.0)
-    {
-        gc.SetStyle(DSTY_Translucent);
-        col = GetColorScaled(device.hackStrength);
-        gc.SetTileColor(col);
-        gc.DrawPattern(infoX+(infoW-barLength-4), infoY+infoH/numLines, barLength*device.hackStrength, infoH/numLines-6, 0, 0, Texture'ConWindowBackground');
+    // Alignment changes based on the number of lines?
+    if ((auto_codes || known_codes) && k!=None){
+        infoY += 2;
+    }
+    if(!auto_codes || k==None || (auto_codes && k!=None && !k.bCodeKnown)){
+        // draw a colored bar
+        if (device.hackStrength != 0.0)
+        {
+            gc.SetStyle(DSTY_Translucent);
+            col = GetColorScaled(device.hackStrength);
+            gc.SetTileColor(col);
+            gc.DrawPattern(infoX+(infoW-barLength-4), infoY+infoH/numLines, barLength*device.hackStrength, infoH/numLines-5, 0, 0, Texture'ConWindowBackground');
+        }
+
+        // draw the absolute number of multitools on top of the colored bar
+        if ((device.bHackable) && (device.hackStrength != 0.0))
+        {
+            numTools = GetNumTools(device.hackStrength, player.SkillSystem.GetSkillLevelValue(class'SkillTech'));
+            if (numTools == 1)
+                strInfo = numTools @ msgTool;
+            else
+                strInfo = numTools @ msgTools;
+            gc.DrawText(infoX+(infoW-barLength-2), infoY+infoH/numLines, barLength, infoH/numLines-6, strInfo);
+        }
     }
 
-    // draw the absolute number of multitools on top of the colored bar
-    if ((device.bHackable) && (device.hackStrength != 0.0))
-    {
-        numTools = GetNumTools(device.hackStrength, player.SkillSystem.GetSkillLevelValue(class'SkillTech'));
-        if (numTools == 1)
-            strInfo = numTools @ msgTool;
-        else
-            strInfo = numTools @ msgTools;
-        gc.DrawText(infoX+(infoW-barLength-2), infoY+infoH/numLines, barLength, infoH/numLines-6, strInfo);
+    if (auto_codes && k!=None){
+        gc.SetStyle(DSTY_Translucent);
+        col.r = 0;
+        col.g = 0;
+        col.b = 0;
+        if (k.bCodeKnown){
+            col.g=255;
+            lineNum=1;
+        } else {
+            col.r=255;
+            lineNum=2;
+        }
+        gc.SetTileColor(col);
+        gc.DrawPattern(infoX+(infoW-barLength-4), infoY+lineNum*(infoH-4)/numLines, barLength, ((infoH-8)/numLines)-2, 0, 0, Texture'ConWindowBackground');
     }
 }
 

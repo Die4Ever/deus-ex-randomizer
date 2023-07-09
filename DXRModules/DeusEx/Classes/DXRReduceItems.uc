@@ -27,7 +27,7 @@ replication
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,5,0,9) ) {
+    if( ConfigOlderThan(2,5,1,2) ) {
         min_rate_adjust = 0.3;
         max_rate_adjust = 1.75;
 
@@ -47,7 +47,7 @@ function CheckConfig()
         i++;
 
         item_reductions[i].type = "AmmoPlasma";
-        item_reductions[i].percent = 150;
+        item_reductions[i].percent = 130;
         i++;
 
         item_reductions[i].type = "Ammo762mm";
@@ -64,7 +64,7 @@ function CheckConfig()
         i++;
 
         max_ammo[i].type = "AmmoPlasma";
-        max_ammo[i].percent = 150;
+        max_ammo[i].percent = 130;
         i++;
 
         max_ammo[i].type = "Ammo762mm";
@@ -112,6 +112,8 @@ function PostFirstEntry()
 function ReduceItem(Inventory a)
 {
     local int mission, scale;
+
+    if(a.bIsSecretGoal) return;
 
     mission = Clamp(dxr.dxInfo.missionNumber, 0, ArrayCount(mission_scaling)-1);
     scale = mission_scaling[mission];
@@ -264,6 +266,7 @@ function ReduceSpawns(class<Inventory> classname, float percent)
     {
         if( PlayerPawn(a) != None ) continue;
         if( PlayerPawn(a.Owner) != None ) continue;
+        if(a.bIsSecretGoal) continue;
 
         _ReduceSpawn(Inventory(a), percent);
     }

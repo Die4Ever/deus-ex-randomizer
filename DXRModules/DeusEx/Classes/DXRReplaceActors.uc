@@ -22,10 +22,10 @@ function ReplaceActors()
         else if( #var(prefix)ClothesRack(a) != None ) {
             ReplaceClothesRack(#var(prefix)ClothesRack(a));
         }
-        else if( #var(prefix)Toilet(a) != None ) {
+        else if( a.class==class'#var(prefix)Toilet') {
             ReplaceToilet(#var(prefix)Toilet(a));
         }
-        else if( #var(prefix)Toilet2(a) != None ) {
+        else if( a.class==class'#var(prefix)Toilet2') {
             ReplaceToilet2(#var(prefix)Toilet2(a));
         }
         else if( #var(prefix)ShowerFaucet(a) != None ) {
@@ -34,20 +34,38 @@ function ReplaceActors()
         else if( #var(prefix)ShipsWheel(a) != None ) {
             ReplaceShipsWheel(#var(prefix)ShipsWheel(a));
         }
-        else if( #var(prefix)WaterCooler(a) != None ) {
+        else if( a.class==class'#var(prefix)WaterCooler' ) {
             ReplaceWaterCooler(#var(prefix)WaterCooler(a));
         }
-        else if( #var(prefix)WaterFountain(a) != None ) {
+        else if( a.class==class'#var(prefix)WaterFountain' ) {
             ReplaceWaterFountain(#var(prefix)WaterFountain(a));
         }
         else if( #var(prefix)Keypad(a) != None ) {
             ReplaceKeypad(#var(prefix)Keypad(a));
+        }
+        else if( #var(prefix)WHPiano(a) != None ) {
+            ReplacePiano(#var(prefix)WHPiano(a));
         }
         else if( #var(prefix)MissionEndgame(a) != None && !#defined(revision) && !#defined(hx) ) {
             ReplaceMissionEndgame(#var(prefix)MissionEndgame(a));
         }
         else if( #var(prefix)MissionIntro(a) != None ) {
             ReplaceMissionIntro(#var(prefix)MissionIntro(a));
+        }
+        else if( #var(prefix)Poolball(a) != None ) {
+            ReplacePoolball(#var(prefix)Poolball(a));
+        }
+        else if( #var(prefix)Pinball(a) != None ) {
+            ReplaceGenericDecoration(a,class'DXRPinball');
+        }
+        else if( #var(prefix)Trashbag(a) != None ) {
+            ReplaceGenericDecoration(a,class'DXRTrashbag');
+        }
+        else if( #var(prefix)Trashbag2(a) != None ) {
+            ReplaceGenericDecoration(a,class'DXRTrashbag2');
+        }
+        else if( #var(prefix)ComputerPublic(a) != None ) {
+            ReplaceComputerPublic(#var(prefix)ComputerPublic(a));
         }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
@@ -64,7 +82,12 @@ function ReplaceInformationDevice(#var(prefix)InformationDevices a)
     if(n == None)
         return;
 
-    n.bAddToVault = a.bAddToVault;
+    if (#defined(hx)){
+        //HX bingo reading goals get marked when added to vault.  Just add all of them.
+        n.bAddToVault = True;
+    } else {
+        n.bAddToVault = a.bAddToVault;
+    }
     n.TextPackage = a.TextPackage;
     n.textTag = a.textTag;
     n.imageClass = a.imageClass;
@@ -105,6 +128,19 @@ function ReplaceKeypad(#var(prefix)Keypad a)
     ReplaceDeusExDecoration(a, n);
     a.Destroy();
 #endif
+}
+
+function ReplacePiano(#var(prefix)WHPiano a)
+{
+    local DXRPiano n;
+    if(a.IsA('DXRPiano'))
+        return;
+
+    n = DXRPiano(SpawnReplacement(a, class'DXRPiano'));
+    if(n==None)
+        return;
+    ReplaceDeusExDecoration(a, n);
+    a.Destroy();
 }
 
 function ReplaceGEPGun(WeaponGEPGUN a)
@@ -164,9 +200,7 @@ function ReplaceShipsWheel(#var(prefix)ShipsWheel a)
 
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
+
     a.Destroy();
 }
 
@@ -179,9 +213,7 @@ function ReplaceWaterFountain(#var(prefix)WaterFountain a)
 
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
+
     a.Destroy();
 }
 
@@ -194,9 +226,34 @@ function ReplaceWaterCooler(#var(prefix)WaterCooler a)
 
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
+
+    a.Destroy();
+}
+
+function ReplacePoolball(#var(prefix)Poolball a)
+{
+    local DXRPoolball n;
+    n = DXRPoolball(SpawnReplacement(a, class'DXRPoolball'));
+    if(n == None)
+        return;
+
+    n.SkinColor = a.SkinColor;
+    n.Skin = a.Skin;
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
+
+    a.Destroy();
+}
+
+function ReplaceGenericDecoration(Actor a, class<Actor> newClass)
+{
+    local Actor n;
+
+    n = SpawnReplacement(a, newClass);
+
+    if(n == None)
+        return;
+
     a.Destroy();
 }
 
@@ -211,9 +268,7 @@ function ReplaceToilet(#var(prefix)Toilet a)
     n.Skin = a.Skin;
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
+
     a.Destroy();
 }
 
@@ -288,9 +343,6 @@ function ReplaceTrigger(#var(prefix)Trigger a, #var(prefix)Trigger n)
     n.DamageThreshold = a.DamageThreshold;
     n.TriggerActor = a.TriggerActor;
     n.TriggerActor2 = a.TriggerActor2;
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
 }
 
 #ifdef hx
@@ -313,9 +365,6 @@ function DeusExWeapon ReplaceWeapon(DeusExWeapon a, DeusExWeapon n)
             owner.SetWeapon(n);
         }
     }
-#ifdef hx
-    n.PrecessorName = a.PrecessorName;
-#endif
 }
 
 #ifdef hx
@@ -393,6 +442,19 @@ function ReplaceMissionIntro(#var(prefix)MissionIntro a)
     n = DXRMissionIntro(SpawnReplacement(a, class'DXRMissionIntro'));
     if(n == None)
         return;
+
+    a.Destroy();
+}
+
+function ReplaceComputerPublic(#var(prefix)ComputerPublic a)
+{
+    local DXRComputerPublic n;
+
+    n = DXRComputerPublic(SpawnReplacement(a, class'DXRComputerPublic'));
+    if(n == None)
+        return;
+
+    n.bulletinTag = a.bulletinTag;
 
     a.Destroy();
 }

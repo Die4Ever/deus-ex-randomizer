@@ -77,6 +77,9 @@ function PreFirstEntryMapFixes()
 
 #ifdef vanillamaps
     case "05_NYC_UNATCOHQ":
+        // Anna's dialog depends on this flag
+        dxr.flagbase.SetBool('DL_Choice_Played', true,, 6);
+
         foreach AllActors(class'ComputerPersonal', c) {
             if( c.Name != 'ComputerPersonal3' ) continue;
             // gunther and anna's computer across from Carter

@@ -354,6 +354,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     }
     item.DropFrom(Location);
     item.Tag = Tag;// so we can find the item again later
+    item.bIsSecretGoal = true;// so they don't get deleted by DXRReduceItems
     info("MoveNextItemTo "$item$" drop from: ("$Location$"), now at ("$item.Location$"), attempts: "$i);
 
     // restore any ammo amounts for a weapon to default; Y|y: except for grenades
@@ -838,6 +839,11 @@ function Actor SpawnReplacement(Actor a, class<Actor> newclass, optional bool do
         newactor.LightHue=a.LightHue;
         newactor.LightRadius=a.LightRadius;
     }
+
+    if(#defined(hx)){
+        newactor.SetPropertyText("PrecessorName", a.GetPropertyText("PrecessorName"));
+    }
+
     return newactor;
 }
 

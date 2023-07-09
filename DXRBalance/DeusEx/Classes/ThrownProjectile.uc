@@ -96,6 +96,7 @@ function SpawnCloud(class<Cloud> type, Name DamageType)
     gas.Instigator = Instigator;
 }
 
+// DXRando: also apply damage to AutoTurretGun
 state Exploding
 {
    function DamageRing()
@@ -117,7 +118,18 @@ state Exploding
 
            gun.TakeDamage(damageScale * damageAmount, Pawn(Owner), hitLocation, (damageScale * momentum * damageDir), damageType);
        }
-
    }
+}
 
+// DXRando: Grenades will no longer immediately explode when they touch a carcass
+auto simulated state Flying
+{
+	simulated function ProcessTouch (Actor Other, Vector HitLocation)
+	{
+        if (DeusExCarcass(Other)!=None){
+            return;
+        } else {
+            Super.ProcessTouch(Other,HitLocation);
+        }
+	}
 }

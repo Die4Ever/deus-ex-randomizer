@@ -1,4 +1,4 @@
-class DXRComputerScreenEmail extends ComputerScreenEmail;
+class DXRComputerScreenEmail extends #var(prefix)ComputerScreenEmail;
 
 var DXRPasswords passwords;
 var bool addNote;
@@ -6,13 +6,20 @@ var bool addNote;
 function ProcessDeusExText(Name textName, optional TextWindow winText)
 {
     local DXREvents e;
+    local #var(prefix)PlayerPawn pp;
 
-    addNote = False;
+#ifdef hx
+    pp = PlayerPawn;
+#else
+    pp = player;
+#endif
 
-    foreach player.AllActors(class'DXREvents', e) {
+    addNote = True;
+
+    foreach pp.AllActors(class'DXREvents', e) {
         e.ReadText(textName);
     }
-    foreach player.AllActors(class'DXRPasswords', passwords) { break; }
+    foreach pp.AllActors(class'DXRPasswords', passwords) { break; }
 
     Super.ProcessDeusExText(textName, winText);
 
@@ -62,20 +69,30 @@ function TryAddingNote(string text)
     local Name plaintextTag;
     local DeusExNote note;
     local DeusExRootWindow rootWindow;
+    local #var(PlayerPawn) pp;
 
-    rootWindow = DeusExRootWindow(player.rootWindow);
+    if(Len(text)==0) return;
+
+
+#ifdef hx
+    pp = PlayerPawn;
+#else
+    pp = #var(PlayerPawn)(player);
+#endif
+
+    rootWindow = DeusExRootWindow(pp.rootWindow);
 
     mapname = GetMapNameStripped();
     plaintextTag = rootWindow.StringToName(mapname$"-"$ DxrCrc(text));
 
 #ifdef revision
-    note = player.GetNote(plaintextTag, "");
+    note = pp.GetNote(plaintextTag, "");
 #else
-    note = player.GetNote(plaintextTag);
+    note = pp.GetNote(plaintextTag);
 #endif
     if (note == None)
     {
-        note = player.AddNote(text,, True);
+        note = pp.AddNote(text,, True);
         SetTextTag(note, plaintextTag);
     }
 }
@@ -95,7 +112,11 @@ function string GetMapNameStripped()
 {
     local string mapname;
     local int i;
+#ifdef hx
+    mapname = Caps(PlayerPawn.GetLevelInfo().mapName);
+#else
     mapname = Caps(player.GetLevelInfo().mapName);
+#endif
     while( true ) {
         i = InStr(mapname, "\\");
         if( i == -1 ) break;
@@ -112,8 +133,15 @@ function string GetMapNameStripped()
 function int DxrCrc(string plaintext)
 {
     local DXRando dxr;
+    local Actor a;
 
-    foreach player.AllActors(class'DXRando', dxr) {
+#ifdef hx
+        a = PlayerPawn;
+#else
+        a = player;
+#endif
+
+    foreach a.AllActors(class'DXRando', dxr) {
         return dxr.Crc(plaintext);
     }
     return 0;

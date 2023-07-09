@@ -183,6 +183,48 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 
     FixAmmoShurikenName();
     FixInventory(p);
+    GarbageCollection(p);
+}
+
+function GarbageCollection(#var(PlayerPawn) p)
+{
+    local AugmentationManager augman;
+    local Augmentation aug, nextaug;
+    local SkillManager skillman;
+    local Skill skill, nextskill;
+    local ColorThemeManager thememan;
+    local ColorTheme theme, nexttheme;
+
+    foreach AllActors(class'AugmentationManager', augman) {
+        if(p.AugmentationSystem == augman) continue;
+        if(augman.Owner != None && augman.Owner != p) continue;
+
+        for(aug=augman.FirstAug; aug!=None; aug=nextaug) {
+            nextaug = aug.next;
+            aug.Destroy();
+        }
+        augman.Destroy();
+    }
+    foreach AllActors(class'SkillManager', skillman) {
+        if(p.SkillSystem == skillman) continue;
+        if(skillman.Owner != None && skillman.Owner != p) continue;
+
+        for(skill=skillman.FirstSkill; skill!=None; skill=nextskill) {
+            nextskill = skill.next;
+            skill.Destroy();
+        }
+        skillman.Destroy();
+    }
+    foreach AllActors(class'ColorThemeManager', thememan) {
+        if(p.ThemeManager == thememan) continue;
+        if(thememan.Owner != None && thememan.Owner != p) continue;
+
+        for(theme=thememan.FirstColorTheme; theme!=None; theme=nexttheme) {
+            nexttheme = theme.next;
+            theme.Destroy();
+        }
+        thememan.Destroy();
+    }
 }
 
 function PostAnyEntry()
@@ -282,11 +324,9 @@ function FixUNATCOCarterCloset()
     local #var(DeusExPrefix)Decoration d;
 
     foreach RadiusActors(class'Inventory', i, 360, vectm(1075, -1150, 10)) {
-        i.ItemName = "Report this as a DXRando bug";
         i.bIsSecretGoal = true;
     }
     foreach RadiusActors(class'#var(DeusExPrefix)Decoration', d, 360, vectm(1075, -1150, 10)) {
-        d.ItemName = "Report this as a DXRando bug";
         d.bIsSecretGoal = true;
     }
 }

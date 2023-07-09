@@ -75,6 +75,42 @@ static simulated function int GetStartingMissionMask(int start_map)
     }
 }
 
+//This could certainly be done a much more clever way, but this is literally good enough
+static simulated function int GetEndMissionMask(int end_mission)
+{
+    switch(end_mission){
+        case 1:
+            return 2;
+        case 2:
+            return 6;
+        case 3:
+            return 14;
+        case 4:
+            return 30;
+        case 5:
+            return 62;
+        case 6:
+            return 126;
+        case 7://Doesn't exist, fall down to 8
+        case 8:
+            return 382;
+        case 9:
+            return 894;
+        case 10:
+            return 1918;
+        case 11:
+            return 3966;
+        case 12:
+            return 8062;
+        case 13: //Doesn't exist, fall down to 14
+        case 14:
+            return 24446;
+        case 15:
+            return 57214;
+    }
+    return 57214;
+}
+
 static function string GetStartingMapName(int val)
 {
     switch(val){
@@ -223,6 +259,18 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map)
             break;
         case "MetSmuggler":
             return start_map>=80; //Mission 8 and later starts you should already know Smuggler (see StartMapSpecificFlags)
+        case "KnowsGuntherKillphrase":
+            return start_map>=60; //Have to have told Jaime to meet you in Paris in mission 5 to get Gunther's killphrase
+        case "FordSchick_Dead":
+            return start_map>=20;
+        case "M07MeetJaime_Played":
+            return start_map>=60; //Have to have told Jaime to meet you in Hong Kong in mission 50a
+        case "VialAmbrosia_Activated":
+            return start_map>=96; //Have to have started before the superfreighter upper decks (Arbitrarily chose 96 as that point)
+        case "Terrorist_ClassDead":
+        case "Terrorist_ClassUnconscious":
+        case "Terrorist_peeptime":
+            return start_map>=40; //Miguel is the only Terrorist after mission 3 - easier to just block this
         default:
             return False;
     }

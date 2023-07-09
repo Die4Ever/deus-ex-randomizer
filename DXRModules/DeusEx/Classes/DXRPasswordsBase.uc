@@ -112,6 +112,9 @@ simulated function bool UpdateString(out string str, string oldpassword, string 
     if( str == "") return false;
     if( PassInStr( str, oldpassword ) == -1 ) return false;
 
+    if(oldpassword == newpassword)
+        return false;
+
     info("found string with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
     //l(str);
     //l("---");
@@ -167,54 +170,45 @@ function RandoPasswords(int mode)
     local #var(prefix)Keypad k;
     local #var(prefix)ATM a;
     local int i;
+    local bool rando;
 
-    if( mode == 0 ) return;
+    if( mode == 0 ) rando = false;
+    else rando = true;
 
     foreach AllActors(class'#var(prefix)Computers', c)
     {
         for (i=0; i<ArrayCount(c.userList); i++)
         {
-            if (c.userList[i].password == "")
-                continue;
-
-            ChangeComputerPassword(c, i);
+            ChangeComputerPassword(c, i, rando);
         }
     }
 
     foreach AllActors(class'#var(prefix)Keypad', k)
     {
-        ChangeKeypadPasscode(k);
+        ChangeKeypadPasscode(k, rando);
     }
 
     foreach AllActors(class'#var(prefix)ATM', a)
     {
 #ifdef hx
         for (i=0; i<ArrayCount(a.ATMUserList); i++)
-        {
-            if(a.ATMUserList[i].PIN == "")
-                continue;
-
-            ChangeATMPIN(a, i);
-        }
 #else
         for (i=0; i<ArrayCount(a.userList); i++)
-        {
-            if(a.userList[i].PIN == "")
-                continue;
-
-            ChangeATMPIN(a, i);
-        }
 #endif
+        {
+            ChangeATMPIN(a, i, rando);
+        }
     }
 }
 
-function ChangeComputerPassword(#var(prefix)Computers c, int i)
+function ChangeComputerPassword(#var(prefix)Computers c, int i, bool rando)
 {
     local string oldpassword;
     local string newpassword;
     local int j;
 
     oldpassword = c.userList[i].password;
+    if(oldpassword == "") return;
 
     for (j=0; j<ArrayCount(oldpasswords); j++)
     {
@@ -225,18 +219,22 @@ function ChangeComputerPassword(#var(prefix)Computers c, int i)
     }
 
     if( Len(oldpassword) < 2 ) return;
-    newpassword = GeneratePassword(dxr, oldpassword);
+    if(rando)
+        newpassword = GeneratePassword(dxr, oldpassword);
+    else
+        newpassword = oldpassword;
     c.userList[i].password = newpassword;
     ReplacePassword(oldpassword, newpassword);
 }
 
-function ChangeKeypadPasscode(#var(prefix)Keypad k)
+function ChangeKeypadPasscode(#var(prefix)Keypad k, bool rando)
 {
     local string oldpassword;
     local string newpassword;
     local int j;
 
     oldpassword = k.validCode;
+    if(oldpassword == "") return;
 
     for (j=0; j<ArrayCount(oldpasswords); j++)
     {
@@ -247,12 +245,15 @@ function ChangeKeypadPasscode(#var(prefix)Keypad k)
     }
 
     if( Len(oldpassword) < 2 ) return;
-    newpassword = GeneratePasscode(oldpassword);
+    if(rando)
+        newpassword = GeneratePasscode(oldpassword);
+    else
+        newpassword = oldpassword;
     k.validCode = newpassword;
     ReplacePassword(oldpassword, newpassword);
 }
 
-function ChangeATMPIN(#var(prefix)ATM a, int i)
+function ChangeATMPIN(#var(prefix)ATM a, int i, bool rando)
 {
     local string oldpassword;
     local string newpassword;
@@ -263,6 +264,8 @@ function ChangeATMPIN(#var(prefix)ATM a, int i)
 #else
     oldpassword = a.userList[i].PIN;
 #endif
+
+    if(oldpassword == "") return;
 
     for (j=0; j<ArrayCount(oldpasswords); j++)
     {
@@ -277,7 +280,11 @@ function ChangeATMPIN(#var(prefix)ATM a, int i)
     }
 
     if( Len(oldpassword) < 2 ) return;
-    newpassword = GeneratePasscode(oldpassword);
+    if(rando)
+        newpassword = GeneratePasscode(oldpassword);
+    else
+        newpassword = oldpassword;
+
 #ifdef hx
     a.ATMUserList[i].PIN = newpassword;
 #else
@@ -400,6 +407,10 @@ simulated function bool UpdateGoal(DeusExGoal goal, string oldpassword, string n
     if( goal.bCompleted ) return false;
     if( PassInStr( goal.text, oldpassword ) == -1 ) return false;
 
+    MarkPasswordKnown(newpassword);
+    if(oldpassword == newpassword)
+        return false;
+
 #ifndef hx
     player().ClientMessage("Goal updated with randomized password",, true);
     DeusExRootWindow(player().rootWindow).hud.msgLog.PlayLogSound(Sound'LogGoalAdded');
@@ -412,8 +423,6 @@ simulated function bool UpdateGoal(DeusExGoal goal, string oldpassword, string n
 #ifdef hx
     HXGameInfo(Level.Game).AddNote(goal.text, false, true, '');
 #endif
-
-    MarkPasswordKnown(newpassword);
 
     return true;
 }
@@ -462,6 +471,10 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
 
     if( PassInStr( note.text, oldpassword ) == -1 ) return false;
 
+    MarkPasswordKnown(newpassword);
+    if(oldpassword == newpassword)
+        return false;
+
     updated++;
     info("found note with password " $ oldpassword $ ", replacing with newpassword " $ newpassword);
 
@@ -471,8 +484,6 @@ simulated function bool UpdateNote(DeusExNote note, string oldpassword, string n
 #elseif hx
     HXUpdateNote(note.textTag, note.text, "");
 #endif
-
-    MarkPasswordKnown(newpassword);
 
     return true;
 }

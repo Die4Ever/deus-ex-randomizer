@@ -51,6 +51,8 @@ function PreFirstEntryMapFixes()
                 st.awardMessage = "Saved Paul";
             }
         }
+
+        Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
         break;
 #endif
 

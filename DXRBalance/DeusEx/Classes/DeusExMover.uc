@@ -72,3 +72,27 @@ function bool EncroachingOn( actor Other )
     return Super.EncroachingOn(Other);
 }
 
+/*
+function Frob(Actor Frobber, Inventory frobWith)
+{
+    local bool show_keys;
+
+    show_keys = bool(DeusExPlayer(Frobber).ConsoleCommand("get DeusEx.MenuChoice_ShowKeys enabled"));
+
+    //If trying to lockpick a door that you have the key for...
+	if (show_keys && !bDone && frobWith != None && KeyIDNeeded != '')
+	{
+	    // check for the use of lockpicks
+        if (bPickable && frobWith.IsA('Lockpick') && bLocked)
+        {
+            if (DeusExPlayer(Frobber).KeyRing.HasKey(KeyIDNeeded)){
+                //Could automatically use the keyring?
+                return _Frob(Frobber,DeusExPlayer(Frobber).KeyRing);
+
+                //Could just reject you with a message saying you have the key
+            }
+        }
+    }
+    return _Frob(Frobber,frobWith);
+}
+*/

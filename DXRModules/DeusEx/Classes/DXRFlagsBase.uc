@@ -24,6 +24,8 @@ var #var(flagvarprefix) int maxrando;
 var #var(flagvarprefix) int newgameplus_loops;
 var #var(flagvarprefix) int crowdcontrol;
 var #var(flagvarprefix) int mirroredmaps;
+var #var(flagvarprefix) int bingo_duration;
+var #var(flagvarprefix) int bingo_scale;
 
 var #var(flagvarprefix) int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
 var #var(flagvarprefix) int bSetSeed;// int because all our flags are ints?
@@ -82,7 +84,7 @@ replication
 {
     reliable if( Role==ROLE_Authority )
         f, seed, playthrough_id, flagsversion, gamemode, loadout, maxrando, newgameplus_loops,
-        settings,
+        settings, bingo_duration, bingo_scale,
         flags_loaded;
 }
 
@@ -296,6 +298,8 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_gamemode', gamemode, mode, str);
     FlagInt('Rando_setseed', bSetSeed, mode, str);
     FlagInt('Rando_mirroredmaps', mirroredmaps, mode, str);
+    FlagInt('Rando_bingo_duration', bingo_duration, mode, str);
+    FlagInt('Rando_bingo_scale', bingo_scale, mode, str);
 
     if( FlagInt('Rando_difficulty', difficulty, mode, str) ) {
         SetDifficulty(difficulty);
@@ -517,6 +521,10 @@ simulated function string flagNameToHumanName(name flagname){
             return "Bingo Lines to Win";
         case 'Rando_bingo_freespaces':
             return "Bingo Free Spaces";
+        case 'Rando_bingo_duration':
+            return "Bingo Duration";
+        case 'Rando_bingo_scale':
+            return "Bingo Scale";
         case 'Rando_spoilers':
             return "Spoiler Buttons";
         case 'Rando_menus_pause':
@@ -591,6 +599,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_hiddenenemiesrandomized':
         case 'Rando_enemiesshuffled':
         case 'Rando_bot_stats':
+        case 'Rando_bingo_scale':
             return val$"%";
 
         case 'Rando_enemyrespawn':
@@ -735,6 +744,16 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Enabled";
             } else {
                 return val $ " Free Spaces";
+            }
+            break;
+
+        case 'Rando_bingo_duration':
+            if(val == 0) {
+                return "End of Game";
+            } else if(val == 1) {
+                return "1 Mission";
+            } else {
+                return val $ " Missions";
             }
             break;
 

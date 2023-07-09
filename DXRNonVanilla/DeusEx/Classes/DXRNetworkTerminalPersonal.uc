@@ -1,6 +1,6 @@
-class DXRNetworkTerminalPersonal extends NetworkTerminalPersonal;
+class DXRNetworkTerminalPersonal extends #var(prefix)NetworkTerminalPersonal;
 
-function ShowScreen(Class<ComputerUIWindow> newScreen)
+function ShowScreen(Class<#var(prefix)ComputerUIWindow> newScreen)
 {
     newScreen = class'DXRNetworkTerminal'.static.ShowScreen(newScreen);
     Super.ShowScreen(newScreen);
@@ -9,5 +9,7 @@ function ShowScreen(Class<ComputerUIWindow> newScreen)
 event InitWindow()
 {
     Super.InitWindow();
+#ifndef hx
     class'DXRNetworkTerminal'.static.InitWindow(self);
+#endif
 }
