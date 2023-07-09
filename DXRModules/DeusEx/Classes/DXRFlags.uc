@@ -560,6 +560,9 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.bingo_freespaces = 5;
         bingo_duration = 1;
         bingo_scale = 0;
+
+        SetGlobalSeed("random starting map");
+        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr);
     }
     return settings;
 }
