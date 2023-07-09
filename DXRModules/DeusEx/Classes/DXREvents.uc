@@ -1587,7 +1587,8 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
     num_options = 0;
     for(x=0; x<ArrayCount(bingo_options); x++) {
         if(bingo_options[x].event == "") continue;
-        if(bingo_options[x].missions!=0 && ((bingo_options[x].missions & starting_mission_mask & end_mission_mask) == 0)) continue;
+        masked_missions = bingo_options[x].missions & starting_mission_mask & end_mission_mask;
+        if(bingo_options[x].missions!=0 && masked_missions == 0) continue;
         if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,dxr.flags.settings.starting_map)) continue;
         options[num_options++] = x;
     }
@@ -1646,14 +1647,11 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             max = bingo_options[i].max;
             // dynamic scaling based on starting mission (not current mission due to leaderboard exploits)
             if(max > 1 && InStr(desc, "%s") != -1) {
-                if (dxr.flags.instant_bingo<=0){
-                    f = rngrange(1, 0.8, 1);// 80% to 100%
-                    f *= MissionsMaskAvailability(starting_mission, masked_missions) ** 1.5;
-                    max = Ceil(float(max) * f);
-                    max = self.Max(max, 1);
-                } else {
-                    max = dxr.flags.instant_bingo;
-                }
+                f = float(dxr.flags.bingo_scale)/100.0;
+                f = rngrange(f, 0.8, 1);// 80% to 100%
+                f *= MissionsMaskAvailability(starting_mission, masked_missions) ** 1.5;
+                max = Ceil(float(max) * f);
+                max = self.Max(max, 1);
                 desc = sprintf(desc, max);
             }
 

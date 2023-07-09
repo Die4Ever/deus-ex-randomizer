@@ -48,7 +48,7 @@ function InitDefaults()
         mirroredmaps = 0;
     }
     bingo_duration=0;
-    instant_bingo=0;
+    bingo_scale=100;
     newgameplus_loops = 0;
 
 #ifdef hx
@@ -559,7 +559,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.bingo_win = 1;
         settings.bingo_freespaces = 5;
         bingo_duration = 1;
-        instant_bingo = 1;
+        bingo_scale = 0;
     }
     return settings;
 }
