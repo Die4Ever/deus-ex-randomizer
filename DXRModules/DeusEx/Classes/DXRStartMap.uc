@@ -267,6 +267,10 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map)
             return start_map>=60; //Have to have told Jaime to meet you in Hong Kong in mission 50a
         case "VialAmbrosia_Activated":
             return start_map>=96; //Have to have started before the superfreighter upper decks (Arbitrarily chose 96 as that point)
+        case "Terrorist_ClassDead":
+        case "Terrorist_ClassUnconscious":
+        case "Terrorist_peeptime":
+            return start_map>=40; //Miguel is the only Terrorist after mission 3 - easier to just block this
         default:
             return False;
     }

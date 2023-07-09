@@ -1828,31 +1828,49 @@ function string RemapBingoEvent(string eventname)
         case "UNATCOClone2_ClassDead":
         case "UNATCOClone3_ClassDead":
         case "UNATCOClone4_ClassDead":
+        case "UNATCOCloneAugTough1_ClassDead":
+        case "UNATCOCloneAugStealth1_ClassDead":
+        case "UNATCOCloneAugShield1_ClassDead":
             return "UNATCOTroop_ClassDead";
         case "NSFClone1_ClassDead":
         case "NSFClone2_ClassDead":
         case "NSFClone3_ClassDead":
         case "NSFClone4_ClassDead":
+        case "NSFCloneAugTough1_ClassDead":
+        case "NSFCloneAugStealth1_ClassDead":
+        case "NSFCloneAugShield1_ClassDead":
             return "Terrorist_ClassDead";
         case "MJ12Clone1_ClassDead":
         case "MJ12Clone2_ClassDead":
         case "MJ12Clone3_ClassDead":
         case "MJ12Clone4_ClassDead":
+        case "MJ12CloneAugTough1_ClassDead":
+        case "MJ12CloneAugStealth1_ClassDead":
+        case "MJ12CloneAugShield1_ClassDead":
             return "MJ12Troop_ClassDead";
         case "UNATCOClone1_ClassUnconscious":
         case "UNATCOClone2_ClassUnconscious":
         case "UNATCOClone3_ClassUnconscious":
         case "UNATCOClone4_ClassUnconscious":
+        case "UNATCOCloneAugTough1_ClassUnconscious":
+        case "UNATCOCloneAugStealth1_ClassUnconscious":
+        case "UNATCOCloneAugShield1_ClassUnconscious":
             return "UNATCOTroop_ClassUnconscious";
         case "NSFClone1_ClassUnconscious":
         case "NSFClone2_ClassUnconscious":
         case "NSFClone3_ClassUnconscious":
         case "NSFClone4_ClassUnconscious":
+        case "NSFCloneAugTough1_ClassUnconscious":
+        case "NSFCloneAugStealth1_ClassUnconscious":
+        case "NSFCloneAugShield1_ClassUnconscious":
             return "Terrorist_ClassUnconscious";
         case "MJ12Clone1_ClassUnconscious":
         case "MJ12Clone2_ClassUnconscious":
         case "MJ12Clone3_ClassUnconscious":
         case "MJ12Clone4_ClassUnconscious":
+        case "MJ12CloneAugTough1_ClassUnconscious":
+        case "MJ12CloneAugStealth1_ClassUnconscious":
+        case "MJ12CloneAugShield1_ClassUnconscious":
             return "MJ12Troop_ClassUnconscious";
         case "DXRMedicalBot_ClassDead":
             return "MedicalBot_ClassDead";
@@ -1873,6 +1891,33 @@ function string RemapBingoEvent(string eventname)
         case "ChateauInBethsRoom":
         case "ChateauInNicolettesRoom":
             return "DuClareBedrooms";
+        case "NSFClone1_peeptime":
+        case "NSFClone2_peeptime":
+        case "NSFClone3_peeptime":
+        case "NSFClone4_peeptime":
+        case "NSFCloneAugTough1_peeptime":
+        case "NSFCloneAugStealth1_peeptime":
+        case "NSFCloneAugShield1_peeptime":
+            return "Terrorist_peeptime";
+        case "UNATCOClone1_peeptime":
+        case "UNATCOClone2_peeptime":
+        case "UNATCOClone3_peeptime":
+        case "UNATCOClone4_peeptime":
+        case "UNATCOCloneAugTough1_peeptime":
+        case "UNATCOCloneAugStealth1_peeptime":
+        case "UNATCOCloneAugShield1_peeptime":
+            return "UNATCOTroop_peeptime";
+        case "MJ12Clone1_peeptime":
+        case "MJ12Clone2_peeptime":
+        case "MJ12Clone3_peeptime":
+        case "MJ12Clone4_peeptime":
+        case "MJ12CloneAugTough1_peeptime":
+        case "MJ12CloneAugStealth1_peeptime":
+        case "MJ12CloneAugShield1_peeptime":
+            return "MJ12Troop_peeptime";
+        case "Pigeon_peeptime":
+        case "Seagull_peeptime":
+            return "BirdWatching";
         default:
             return eventname;
     }
@@ -2260,6 +2305,13 @@ defaultproperties
     bingo_options(200)=(event="FlowersForTheLab",desc="Bring some flowers to brighten up the lab",max=1,missions=64)
     bingo_options(201)=(event="BurnTrash",desc="Burn %s bags of trash",max=25)
     bingo_options(202)=(event="M07MeetJaime_Played",desc="Meet Jaime in Hong Kong",max=1,missions=96)
+    bingo_options(203)=(event="Terrorist_peeptime",desc="Watch Terrorists for %s seconds",max=30,missions=62)
+    bingo_options(204)=(event="UNATCOTroop_peeptime",desc="Watch UNATCO Troopers for %s seconds",max=30,missions=318)
+    bingo_options(205)=(event="MJ12Troop_peeptime",desc="Watch MJ12 Troopers for %s seconds",max=30,missions=57204)
+    bingo_options(206)=(event="MJ12Commando_peeptime",desc="Watch MJ12 Commandos for %s seconds",max=15,missions=57204)
+    bingo_options(207)=(event="PawnState_Dancing",desc="You can dance if you want to",max=1)
+    bingo_options(208)=(event="BirdWatching",desc="Watch birds for %s seconds",max=30,missions=19838)
+    bingo_options(209)=(event="NYEagleStatue_peeped",desc="Look at a bronze eagle statue",max=1,missions=28)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -2285,7 +2337,10 @@ defaultproperties
     mutually_exclusive(21)=(e1="AllPianoSongsPlayed",e2="PianoSong0Played")
     mutually_exclusive(22)=(e1="AllPianoSongsPlayed",e2="PianoSong7Played")
     mutually_exclusive(23)=(e1="PianoSong0Played",e2="PianoSong7Played")
-    mutually_exclusive(24)=(e1="M07MeetJaime_Played",e2="KnowsGuntherKillphrase")
+    mutually_exclusive(24)=(e1="UNATCOTroop_peeptime",e2="Terrorist_peeptime")
+    mutually_exclusive(25)=(e1="MJ12Troop_peeptime",e2="UNATCOTroop_peeptime")
+    mutually_exclusive(26)=(e1="MJ12Troop_peeptime",e2="Terrorist_peeptime")
+    mutually_exclusive(27)=(e1="MJ12Troop_peeptime",e2="MJ12Commando_peeptime")
 
     bingo_win_countdown=-1
 }
