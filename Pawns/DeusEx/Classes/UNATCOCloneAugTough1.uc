@@ -100,7 +100,7 @@ function PlayTakeHitSound(int Damage, name damageType, int Mult)
 
     LastPainSound = Level.TimeSeconds;
 
-    if (damageType=='shot')
+    if (damageType=='shot' || damageType=='AutoShot')
         hitSound = Sound'ArmorRicochet';
     else if (Damage <= 30)
         hitSound = HitSound1;
@@ -130,7 +130,7 @@ function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation,
     actualDamage = Super.ModifyDamage(Damage, instigatedBy, hitLocation, offset, damageType);
 #endif
 
-    if (damageType == 'Shot') {
+    if (damageType == 'Shot' || damageType == 'AutoShot') {
         actualDamage *= 0.5;
     }
     return actualDamage;
