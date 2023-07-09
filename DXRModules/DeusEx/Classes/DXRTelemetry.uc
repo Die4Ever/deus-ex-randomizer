@@ -36,6 +36,7 @@ function AnyEntry()
     p = player();
     if( p == None ) return;
     info("health: "$p.health$", HealthLegLeft: "$p.HealthLegLeft$", HealthLegRight: "$p.HealthLegRight$", HealthTorso: "$p.HealthTorso$", HealthHead: "$p.HealthHead$", HealthArmLeft: "$p.HealthArmLeft$", HealthArmRight: "$p.HealthArmRight);
+    info("renderer: " $ GetConfig("Engine.Engine", "GameRenderDevice"));
 }
 
 function Timer()
