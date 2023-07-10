@@ -30,9 +30,7 @@ function PlayerLogin(#var(PlayerPawn) p)
 
     p.Credits=0;
 
-    for(i=0;i<class'DXRStartMap'.static.GetStartMapMission(dxr.flags.settings.starting_map);i++){
-        p.Credits += rng(200);
-    }
+    class'DXRStartMap'.static.AddStartingCredits(dxr,p);
 }
 
 function PlayerAnyEntry(#var(PlayerPawn) p)

@@ -8,16 +8,12 @@ class DXRStartMap extends DXRActorsBase;
 
 function PlayerLogin(#var(PlayerPawn) p)
 {
-    local int startBonus;
-
     Super.PlayerLogin(p);
 
     if (dxr.flags.settings.starting_map == 0) return;
 
     //Add extra skill points to make available once you enter the game
-    startBonus = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
-    p.SkillPointsAvail += startBonus;
-    p.SkillPointsTotal += startBonus;
+    AddStartingSkillPoints(dxr,p);
 
     StartMapSpecificFlags(p.flagbase, dxr.localURL);
 }
@@ -305,4 +301,38 @@ static function int ChooseRandomStartMap(DXRando dxr)
             dxr.err("Random Starting Map picked value "$i$" which is unhandled!");
             return 0; //Fall back on Liberty Island
     }
+}
+
+static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
+{
+    local int i;
+    for(i=0;i<GetStartMapMission(dxr.flags.settings.starting_map);i++){
+        p.Credits += dxr.rng(200);
+    }
+}
+
+static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player)
+{
+    local int i, startMission, numAugs;
+
+    if (dxr.flags.settings.starting_map !=0 ){
+        startMission=GetStartMapMission(dxr.flags.settings.starting_map);
+        numAugs = startMission / 2;
+        class'DXRAugmentations'.static.AddRandomAugs(dxr,player,numAugs);
+        for (i=0;i<startMission;i++){
+            if(i%4==0){
+                GiveItem( player, class'AugmentationUpgradeCannister' );
+            } else {
+                class'DXRAugmentations'.static.UpgradeRandomAug(dxr,player);
+            }
+        }
+    }
+}
+
+static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
+{
+    local int startBonus;
+    startBonus = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+    p.SkillPointsAvail += startBonus;
+    p.SkillPointsTotal += startBonus;
 }

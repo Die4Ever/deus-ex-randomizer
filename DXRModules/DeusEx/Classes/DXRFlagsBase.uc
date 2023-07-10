@@ -703,12 +703,10 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Don't Reroll";
             } else if (val==1){
                 return "Reroll Every Mission";
-            } else if (val==2){
-                return "Reroll Every 2 Missions";
-            } else if (val==3){
-                return "Reroll Every 3 Missions";
-            } else if (val==5){
-                return "Reroll Every 5 Missions";
+            } else if (val>1){
+                return "Reroll Every "$val$" Missions";
+            } else{
+                return "Reroll Every "$val$" Missions (REPORT ME!)";
             }
             break;
 
