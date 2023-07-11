@@ -1521,7 +1521,9 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 simulated function CreateBingoBoard()
 {
     local PlayerDataItem data;
-    SetGlobalSeed("bingo"$FRand());
+    dxr.flags.bingoBoardRoll++;
+    dxr.flags.SaveFlags();
+    SetGlobalSeed("bingo"$dxr.flags.bingoBoardRoll);
     data = class'PlayerDataItem'.static.GiveItem(player());
     _CreateBingoBoard(data);
 }

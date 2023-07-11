@@ -50,6 +50,7 @@ function InitDefaults()
     bingo_duration=0;
     bingo_scale=100;
     newgameplus_loops = 0;
+    bingoBoardRoll = 0;
 
 #ifdef hx
     difficulty = 1;
@@ -945,6 +946,7 @@ function NewGamePlus()
     ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
+    bingoBoardRoll=0;
     exp = 1;
     randomStart = (settings.starting_map!=0);
     bingo_win = settings.bingo_win;
