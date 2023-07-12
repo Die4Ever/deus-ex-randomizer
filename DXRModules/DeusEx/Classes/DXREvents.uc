@@ -1513,7 +1513,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
         //Make sure bingo didn't get completed just before leaving a level
         CheckBingoWin(dxr,data.NumberOfBingos());
     } else {
-        SetGlobalSeed("bingo");
+        SetGlobalSeed("bingo"$dxr.flags.bingoBoardRoll);
         _CreateBingoBoard(data);
     }
 }
