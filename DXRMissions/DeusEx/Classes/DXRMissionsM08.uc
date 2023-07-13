@@ -18,6 +18,12 @@ function int InitGoals(int mission, string map)
     AddGoalLocation("08_NYC_Underground", "Sewers", NORMAL_GOAL, vect(591.048462, -152.517639, -560.397888), rot(0,32768,0));
     AddGoalLocation("08_NYC_Hotel", "Hotel", NORMAL_GOAL | SITTING_GOAL, vect(-108.541245, -2709.490479, 111.600838), rot(0,20000,0));
     AddGoalLocation("08_NYC_Street", "Basketball Court", NORMAL_GOAL | START_LOCATION, vect(2694.934082, -2792.844971, -448.396637), rot(0,32768,0));
+
+    if (dxr.flags.settings.starting_map == 81) //Mission 8 Smuggler
+    {
+        skip_rando_start = True;
+    }
+
     return 81;
 }
 

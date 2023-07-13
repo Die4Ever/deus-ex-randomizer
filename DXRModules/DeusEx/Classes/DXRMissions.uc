@@ -56,6 +56,7 @@ var int num_goals, num_locations, num_mututally_exclusives;
 
 var vector rando_start_loc;
 var bool b_rando_start;
+var bool skip_rando_start;
 
 static function class<DXRBase> GetModuleToLoad(DXRando dxr, class<DXRBase> request)
 {
@@ -255,7 +256,7 @@ function MoveActorsIn(int goalsToLocations[32])
     }
 
     g = goalsToLocations[num_goals];
-    if( dxr.flags.settings.startinglocations > 0 && g > -1 && dxr.localURL == locations[g].mapName ) {
+    if( dxr.flags.settings.startinglocations > 0 && g > -1 && dxr.localURL == locations[g].mapName && !skip_rando_start) {
         p = player();
         i = PLAYER_LOCATION;
         loc = locations[g].positions[i].pos;
