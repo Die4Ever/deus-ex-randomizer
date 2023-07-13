@@ -9,6 +9,7 @@ state Activated
     {
         Super.BeginState();
 
+        lastWatched = None;
         SetTimer(0.25,True);
     }
 }
@@ -20,6 +21,7 @@ state DeActivated
         Super.BeginState();
 
         SetTimer(0,False);
+        lastWatched = None;
     }
 }
 

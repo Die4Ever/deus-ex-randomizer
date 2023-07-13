@@ -26,7 +26,7 @@ function CheckConfig()
         }
 
         AddRandomWeapon("WeaponShuriken", 10);
-        AddRandomWeapon("WeaponPistol", 5);
+        AddRandomWeapon("WeaponPistol", 6);
         AddRandomWeapon("WeaponStealthPistol", 4);
         AddRandomWeapon("WeaponAssaultGun", 12);
         AddRandomWeapon("WeaponMiniCrossbow", 6);
@@ -44,7 +44,7 @@ function CheckConfig()
         AddRandomWeapon("WeaponLAW", 4);
         AddRandomWeapon("WeaponNanoVirusGrenade", 4);
         AddRandomWeapon("WeaponPepperGun", 2);
-        AddRandomWeapon("WeaponPlasmaRifle", 7);
+        AddRandomWeapon("WeaponPlasmaRifle", 6);
         AddRandomWeapon("WeaponRifle", 6);
         AddRandomWeapon("WeaponSawedOffShotgun", 7);
         AddRandomWeapon("WeaponProd", 3);
