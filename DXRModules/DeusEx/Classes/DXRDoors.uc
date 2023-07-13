@@ -17,7 +17,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,5,0,9) ) {
+    if( ConfigOlderThan(2,5,1,4) ) {
         i=0;
         // SmugglersFrontDoor for all 3 maps
         door_fixes[i].map = "02_NYC_STREET";
@@ -73,6 +73,13 @@ function CheckConfig()
         door_fixes[i].bHighlight = true;
         i++;
 
+        // Make sure random people don't bust down Tong's gate
+        door_fixes[i].map = "06_HONGKONG_WANCHAI_MARKET";
+        door_fixes[i].tag = 'compound_gate';
+        door_fixes[i].bBreakable = false;
+        door_fixes[i].bPickable = false;
+        door_fixes[i].bHighlight = false;
+        i++;
 
         //Make sure the display case isn't highlightable
         door_fixes[i].map = "06_HONGKONG_WANCHAI_STREET";
