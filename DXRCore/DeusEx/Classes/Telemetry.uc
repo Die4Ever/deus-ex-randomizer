@@ -120,7 +120,7 @@ function Done()
     i = Len(content[start]);
     if( i > 0 ) {
         log(Self$": coming back for "$i$" more!");
-        Browse(module.server, GetUrl(), 80, 3);
+        Browse(module.server, GetUrl(), module.port, 3);
     }
 }
 
@@ -132,7 +132,7 @@ function bool Queue(string message)
     if( slot == -1 ) return false;
     LF = Chr(10);
     content[slot] = content[slot] $ message $ LF;
-    if( running == false ) Browse(module.server, GetUrl(), 80, 3);
+    if( running == false ) Browse(module.server, GetUrl(), module.port, 3);
     return true;
 }
 

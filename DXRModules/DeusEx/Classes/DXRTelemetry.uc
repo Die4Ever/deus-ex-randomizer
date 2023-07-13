@@ -7,6 +7,7 @@ var config bool enabled, death_markers;
 var config string server;
 var config string path;
 var config int cache_addr;
+var config int port;
 var config string last_notification;
 
 var string notification_url;
@@ -18,8 +19,9 @@ var string newstexts[5];
 function CheckConfig()
 {
     if( server == "" || config_version < VersionNumber() ) {
-        server = "raycarro.com";
+        server = "mods4ever.com";
         path = "/dxrando/log.py";
+        port = 10451;
         cache_addr = -1864803370;
     }
     Super.CheckConfig();
@@ -142,9 +144,10 @@ function ReceivedData(string data)
     data = "";
     status = j.get("status");
     l("HTTPReceivedData: " $ status $ ", j.count(): " $ j.count());
-    if( InStr(status,"ERROR") >= 0 || InStr(status, "ok") == -1 ) {
+    if( true || InStr(status,"ERROR") >= 0 || InStr(status, "ok") == -1 ) {
         // we probably don't want to use warning or err here because that would send to telemetry which could cause an infinite loop
         l("ERROR: HTTPReceivedData: " $ status);
+        l(data);
     }
     CheckNotification(j);
     CheckDeaths(j);
