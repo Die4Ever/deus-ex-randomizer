@@ -353,7 +353,7 @@ function VandGasAnyEntry()
     ConversationFrobOnly(GetConversation('M12JockFinal'));
     ConversationFrobOnly(GetConversation('M12JockFinal2'));
 
-    // backtracking to CMD
+    // backtracking to CMD, TODO: disable in ReduceRando modes?
     flags.SetBool('GaryHostageBriefing_Played', true,, 15);
 
     RemoveChoppers('backtrack_chopper');
@@ -364,8 +364,10 @@ function VandGasAnyEntry()
     CreateInterpolationPoints( 'backtrack_exit', vectm(2520.256836, -2489.873535, -1402.078857) );
     CreateCameraInterpolationPoints( 'backtrack_exit', 'backtrack_camera', vectm(-500,250,0) );
 
-    // I could also give Jock a "Let's go" conversation
-    BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_CMD", 'PathNode8', "", vectm(2520.256836, -2489.873535, -1402.078857), rotm(0,0,0) );
+    if(!dxr.flags.IsZeroRando()) {
+        // I could also give Jock a "Let's go" conversation
+        BacktrackChopper('backtrack_exit', 'backtrack_chopper', 'backtrack_exit', "", 'backtrack_camera', "12_VANDENBERG_CMD", 'PathNode8', "", vectm(2520.256836, -2489.873535, -1402.078857), rotm(0,0,0) );
+    }
 
 
     // repeat flights to the sub base
@@ -421,25 +423,27 @@ function VandSubAnyEntry()
         }
     }
 
-    foreach AllActors(class'InterpolateTrigger', t, 'InterpolateTrigger')
-        if( t.Event == 'UN_BlackHeli' ) {
-            t.Event = '';
-            t.Destroy();
+    if(!dxr.flags.IsZeroRando()) {
+        foreach AllActors(class'InterpolateTrigger', t, 'InterpolateTrigger')
+            if( t.Event == 'UN_BlackHeli' ) {
+                t.Event = '';
+                t.Destroy();
+            }
+
+        RemoveChoppers('UN_BlackHeli');
+        RemoveChoppers('backtrack_chopper');
+
+        foreach AllActors(class'InterpolationPoint', p, 'UN_BlackHeli_Fly') {
+            p.RateModifier = 0.25;
+            if( p.Position > 4 ) p.bEndOfPath = true;
+            if( p.Position > 2 ) continue;
+            p.SetLocation(vectm(7035.433594, 3841.281250, -379.008362));
+            if( p.Position < 2 ) p.SetRotation(rotm(0, -15720, 0));
         }
 
-    RemoveChoppers('UN_BlackHeli');
-    RemoveChoppers('backtrack_chopper');
-
-    foreach AllActors(class'InterpolationPoint', p, 'UN_BlackHeli_Fly') {
-        p.RateModifier = 0.25;
-        if( p.Position > 4 ) p.bEndOfPath = true;
-        if( p.Position > 2 ) continue;
-        p.SetLocation(vectm(7035.433594, 3841.281250, -379.008362));
-        if( p.Position < 2 ) p.SetRotation(rotm(0, -15720, 0));
+        CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'backtrack_camera', vectm(200,600,0) );
+        BacktrackChopper('UN_BlackHeli_Fly', 'backtrack_chopper', 'UN_BlackHeli_Fly', "", 'backtrack_camera', "12_VANDENBERG_GAS", 'PathNode98', "", vectm(7035.433594, 3841.281250, -379.008362), rotm(0, -15720, 0) );
     }
-
-    CreateCameraInterpolationPoints( 'UN_BlackHeli_Fly', 'backtrack_camera', vectm(200,600,0) );
-    BacktrackChopper('UN_BlackHeli_Fly', 'backtrack_chopper', 'UN_BlackHeli_Fly', "", 'backtrack_camera', "12_VANDENBERG_GAS", 'PathNode98', "", vectm(7035.433594, 3841.281250, -379.008362), rotm(0, -15720, 0) );
 
     // need to backtrack with the sub too
     foreach AllActors(class'FlagTrigger', ft, 'flag2') {
@@ -573,9 +577,11 @@ function VandSiloAnyEntry()
     CreateCameraInterpolationPoints( 'backtrack_path', 'backtrack_camera', vectm(-500,250,0) );
 
     RemoveChoppers('backtrack_chopper');
-    chopper = BacktrackChopper('backtrack_path', 'backtrack_chopper', 'backtrack_path', "", 'backtrack_camera', "14_Vandenberg_Sub", 'InterpolationPoint39', "", vectm(507, -2500, 1600), rotm(0,0,0) );
-    chopper.FamiliarName = "Backtrack";
-    chopper.UnFamiliarName = "Backtrack";
+    if(!dxr.flags.IsZeroRando()) {
+        chopper = BacktrackChopper('backtrack_path', 'backtrack_chopper', 'backtrack_path', "", 'backtrack_camera', "14_Vandenberg_Sub", 'InterpolationPoint39', "", vectm(507, -2500, 1600), rotm(0,0,0) );
+        chopper.FamiliarName = "Backtrack";
+        chopper.UnFamiliarName = "Backtrack";
+    }
 
     c = GetConversation('JockArea51');
     c.bDisplayOnce = false;

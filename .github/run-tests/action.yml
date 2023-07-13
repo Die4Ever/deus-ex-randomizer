@@ -123,3 +123,6 @@ runs:
       run: zip -r9 DXRando.zip .
       working-directory: ./dist/DXRando
       shell: bash
+
+    - run: ls -lah dist/DXRando/DXRando.zip
+      shell: bash
