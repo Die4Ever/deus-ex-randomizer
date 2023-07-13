@@ -10,6 +10,7 @@ function PreFirstEntryMapFixes()
     local Conversation c;
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)JaimeReyes j;
+    local ZoneInfo zi;
 
     // shut up, Tong! (reduced rando is not as focused on replays compared to normal rando)
     if(!dxr.flags.IsReducedRando()) {
@@ -38,6 +39,11 @@ function PreFirstEntryMapFixes()
     {
     case "10_PARIS_CATACOMBS":
         FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
+        foreach AllActors(class'ZoneInfo',zi){
+            if (zi.DamageType=='Radiation'){
+                zi.DamagePerSec=4;
+            }
+        }
         break;
 
 #ifdef vanillamaps
