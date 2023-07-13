@@ -570,9 +570,6 @@ function SetWatchFlags() {
         WatchFlag('assassinapartment');
         RewatchFlag('KnowsGuntherKillphrase');
 
-        foreach AllActors(class'#var(prefix)GuntherHermann', gunther) {
-            gunther.bInvincible = false;
-        }
         foreach AllActors(class'#var(prefix)Mutt', starr) {
             starr.bImportant = true;// you're important to me
             starr.BindName = "Starr";
