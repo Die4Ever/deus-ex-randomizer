@@ -838,6 +838,13 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     settings.aug_value_rando = 0;*/
 }
 
+//Nothing fancy happening here, but gives a consistent place to change how we want to clamp across
+//all clamped score values (Or applying any other tweaks we might want?)
+function int ClampFlagValue(int flagval, int min, int max)
+{
+    return FClamp(flagval,min,max*2);
+}
+
 function int ScoreFlags()
 {
     local int score, bingos;
@@ -861,36 +868,36 @@ function int ScoreFlags()
         score += 200;
     //score += settings.keys_containers;
     //score += settings.infodevices_containers;
-    score -= settings.deviceshackable * 2;
-    score += settings.passwordsrandomized * 2;
-    score += settings.infodevices * 2;
-    score += settings.enemiesrandomized;
-    score += settings.enemystats;
+    score -= ClampFlagValue(settings.deviceshackable,0,100) * 2;
+    score += ClampFlagValue(settings.passwordsrandomized,0,100) * 2;
+    score += ClampFlagValue(settings.infodevices,0,100) * 2;
+    score += ClampFlagValue(settings.enemiesrandomized,0,1000);
+    score += ClampFlagValue(settings.enemystats,0,100);
     //score += settings.hiddenenemiesrandomized;
-    score += settings.enemiesshuffled;
-    score += settings.enemies_nonhumans;
+    score += ClampFlagValue(settings.enemiesshuffled,0,100);
+    score += ClampFlagValue(settings.enemies_nonhumans,0,100);
     score += settings.bot_weapons;
-    score += settings.bot_stats;
+    score += ClampFlagValue(settings.bot_stats,0,100);
     if(settings.enemyrespawn > 0 && settings.enemyrespawn < 1000)
         score += 1500 - settings.enemyrespawn;
     //settings.skills_disable_downgrades = 5;
     //settings.skills_reroll_missions = 5;
     //settings.skills_independent_levels = 100;
-    score += settings.banned_skills * 20;
-    score += settings.banned_skill_levels * 20;
-    score += settings.minskill * 5;
-    score += settings.maxskill * 3;
-    score -= settings.ammo;
-    score -= settings.medkits;
-    score -= settings.biocells;
-    score -= settings.lockpicks;
-    score -= settings.multitools;
+    score += ClampFlagValue(settings.banned_skills,0,100) * 20;
+    score += ClampFlagValue(settings.banned_skill_levels,0,100) * 20;
+    score += sqrt(settings.minskill) * 50; //Square root so the bonus tapers off as you get more extreme
+    score += sqrt(settings.maxskill) * 30; //Square root so the bonus tapers off as you get more extreme
+    score -= ClampFlagValue(settings.ammo,0,100);
+    score -= ClampFlagValue(settings.medkits,0,100);
+    score -= ClampFlagValue(settings.biocells,0,100);
+    score -= ClampFlagValue(settings.lockpicks,0,100);
+    score -= ClampFlagValue(settings.multitools,0,100);
     score -= settings.speedlevel;
     score += settings.startinglocations;
     score += settings.goals;
     score -= settings.equipment * 10;
-    score -= settings.medbots;
-    score -= settings.repairbots;
+    score -= ClampFlagValue(settings.medbots,0,100);
+    score -= ClampFlagValue(settings.repairbots,0,100);
     if(settings.medbotuses <= 0)
         score -= 100;
     score -= settings.medbotuses;
@@ -902,11 +909,11 @@ function int ScoreFlags()
     //settings.medbotamount = 1;
     //settings.repairbotamount = 1;
     //settings.turrets_move = 50;
-    score += settings.turrets_add / 10;
+    score += ClampFlagValue(settings.turrets_add,0,10000) / 10;
     //settings.merchants = 30;
     //settings.dancingpercent = 25;
-    score += settings.swapitems;
-    score += settings.swapcontainers;
+    score += ClampFlagValue(settings.swapitems,0,100);
+    score += ClampFlagValue(settings.swapcontainers,0,100);
     //settings.augcans = 100;
     //settings.aug_value_rando = 100;
     //settings.skill_value_rando = 100;
