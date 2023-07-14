@@ -954,6 +954,7 @@ function NewGamePlus()
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
     bingoBoardRoll=0;
+    p.saveCount=0;
     exp = 1;
     randomStart = (settings.starting_map!=0);
     bingo_win = settings.bingo_win;
