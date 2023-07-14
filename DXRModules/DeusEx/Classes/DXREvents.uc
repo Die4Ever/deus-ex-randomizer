@@ -1684,17 +1684,19 @@ simulated function int HandleMutualExclusion(MutualExclusion m, int options[Arra
     }
 }
 
-function CheckBingoWin(DXRando dxr, int numBingos)
+function bool CheckBingoWin(DXRando dxr, int numBingos)
 {
     //Block this in HX for now
-    if(#defined(hx)) return;
+    if(#defined(hx)) return false;
 
     if (dxr.flags.settings.bingo_win > 0){
         if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4"){
             info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
             bingo_win_countdown = 5;
+            return true;
         }
     }
+    return false;
 }
 
 function ReadText(name textTag)
