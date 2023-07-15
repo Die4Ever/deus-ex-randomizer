@@ -1038,6 +1038,7 @@ function NewGamePlus()
     f.DeleteAllFlags();
     DeusExRootWindow(p.rootWindow).ResetFlags();
     info("NewGamePlus() deleted all flags");
+    class 'DXRStartMap'.static.StartMapSpecificFlags(p.flagbase,class 'DXRStartMap'.static.GetStartMap(p,settings.starting_map)); //Re-add any specific flags
     SaveFlags();
     p.bStartNewGameAfterIntro = true;
     class'PlayerDataItem'.static.ResetData(p);
