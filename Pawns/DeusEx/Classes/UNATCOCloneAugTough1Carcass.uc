@@ -15,6 +15,6 @@ defaultproperties
     MultiSkins(3)=Texture'UNATCOCloneAugTough1Head'
     MultiSkins(4)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(5)=Texture'DeusExItems.Skins.GrayMaskTex'
-    MultiSkins(6)=Texture'DeusExCharacters.Skins.UNATCOTroopTex3'
+    MultiSkins(6)=Texture'DeusExItems.Skins.PinkMaskTex'
     MultiSkins(7)=Texture'DeusExItems.Skins.PinkMaskTex'
 }
