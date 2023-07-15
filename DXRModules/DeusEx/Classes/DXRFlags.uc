@@ -972,8 +972,7 @@ function NewGamePlus()
     }
 
     SetGlobalSeed("NewGamePlus");
-    p.CombatDifficulty *= 1.3;
-    FClamp(p.CombatDifficulty,0,15); //Anything over 15 is kind of unreasonably impossible
+    p.CombatDifficulty=FClamp(p.CombatDifficulty*1.3,0,15); //Anything over 15 is kind of unreasonably impossible
     NewGamePlusVal(settings.minskill, 1.2, exp);
     NewGamePlusVal(settings.minskill, 1.2, exp);
     NewGamePlusVal(settings.maxskill, 1.2, exp);
@@ -1038,7 +1037,6 @@ function NewGamePlus()
     f.DeleteAllFlags();
     DeusExRootWindow(p.rootWindow).ResetFlags();
     info("NewGamePlus() deleted all flags");
-    class 'DXRStartMap'.static.StartMapSpecificFlags(p.flagbase,class 'DXRStartMap'.static.GetStartMap(p,settings.starting_map)); //Re-add any specific flags
     SaveFlags();
     p.bStartNewGameAfterIntro = true;
     class'PlayerDataItem'.static.ResetData(p);

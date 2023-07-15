@@ -28,6 +28,23 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
 #endif
 }
 
+function PreFirstEntry()
+{
+    local #var(PlayerPawn) p;
+    local string startMapName;
+
+    foreach AllActors(class'#var(PlayerPawn)',p){break;}
+
+    startMapName = GetStartMap(p,dxr.flags.settings.starting_map);
+    startMapName = class'DXRMapVariants'.static.CleanupMapName(startMapName);
+    startMapName = Caps(startMapName);
+
+    if (InStr(startMapName,dxr.localURL)!=-1){
+        StartMapSpecificFlags(p.flagbase, dxr.localURL);
+    }
+
+}
+
 static simulated function int GetStartingMissionMask(int start_map)
 {
     switch(start_map)
@@ -231,16 +248,16 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
     switch(start_map)
     {
         case "08_NYC_Smug":
-            flagbase.SetBool('KnowsSmugglerPassword',true);
-            flagbase.SetBool('MetSmuggler',true);
+            flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
+            flagbase.SetBool('MetSmuggler',true,,-1);
             break;
         case "11_Paris_Everett":
             //First Toby conversation happened
-            flagbase.SetBool('MeetTobyAtanwe_played',true);
-            flagbase.SetBool('FemJCMeetTobyAtanwe_played',true);
+            flagbase.SetBool('MeetTobyAtanwe_played',true,,-1);
+            flagbase.SetBool('FemJCMeetTobyAtanwe_played',true,,-1);
             break;
         case "14_Vandenberg_Sub":
-            flagbase.SetBool('Ray_dead',true);  //Save Jock!
+            flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
             break;
     }
 }
