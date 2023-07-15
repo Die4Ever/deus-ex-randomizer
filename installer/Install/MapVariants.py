@@ -3,23 +3,30 @@ import tempfile
 from zipfile import ZipFile
 from Install import MD5, DownloadFile, Mkdir, WriteBytes, debug, info
 
+maps_versions = {
+    'd41d8cd98f00b204e9800998ecf8427e': 'none', # empty folder
+    '265d1d8bef836074c28303c9326f5d35': 'v0.7',
+    '8d06331fdc7fcc6904c316bbb94a4598': 'v0.8',
+    '5551a03906a0f5470e2f9bd8724d59a6': 'v0.9',
+    '4a2b4cb284de0799ce0f111cfd8170fc': 'v0.9.1',
+    '85578e974c9b98ea45885e3c18e902ce': 'v0.9.2',
+}
+latest_maps = 'v0.9.2'
+assert latest_maps in maps_versions.values()
+
 def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
+    global maps_versions, latest_maps
     info('\nInstallMirrors(', mapsdir, flavor, ')')
     callback(0, 1, 1, 'Checking Maps')
     totalmd5 = Md5Maps(mapsdir)
     callback(1, 1, 1, 'Checking Maps')
 
-    if totalmd5 == 'd41d8cd98f00b204e9800998ecf8427e': # no map files found
-        info('no mirrored maps found')
-    elif totalmd5 == '265d1d8bef836074c28303c9326f5d35': # mirrored maps v0.7
-        info('overwriting mirrored maps v0.7')
-    elif totalmd5 == '8d06331fdc7fcc6904c316bbb94a4598': # v0.8
-        info('overwriting mirrored maps v0.8')
-    elif totalmd5 == '5551a03906a0f5470e2f9bd8724d59a6':
-        info('overwriting mirrored maps v0.9')
-    elif totalmd5 == '4a2b4cb284de0799ce0f111cfd8170fc': # v0.9.1
-        info('already have mirrored maps v0.9.1')
+    version = maps_versions.get(totalmd5)
+    if version == latest_maps:
+        info('already have mirrored maps', version)
         return
+    elif version:
+        info('overwriting mirrored maps', version)
     else:
         info('unknown existing maps MD5:', totalmd5)
 
@@ -33,7 +40,7 @@ def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
         temp.unlink()
 
     # TODO: specify version
-    url = "https://github.com/Die4Ever/unreal-map-flipper/releases/download/v0.9.1/" + name
+    url = 'https://github.com/Die4Ever/unreal-map-flipper/releases/download/'+latest_maps+'/' + name
     downloadcallback = lambda a,b,c : callback(a,b,c, status="Downloading Maps")
     DownloadFile(url, temp, downloadcallback)
 
