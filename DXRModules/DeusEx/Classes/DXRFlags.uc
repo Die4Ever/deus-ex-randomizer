@@ -1018,6 +1018,7 @@ function NewGamePlus()
         p.SkillPointsAvail /= 2;
     }
     else p.SkillPointsAvail = 0;
+    p.SkillPointsTotal = 0; //This value doesn't seem to actually get used in vanilla, but we use it for scoring
 
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
     if( augs != None )
