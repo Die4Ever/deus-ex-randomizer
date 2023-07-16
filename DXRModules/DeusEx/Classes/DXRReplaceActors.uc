@@ -67,6 +67,12 @@ function ReplaceActors()
         else if( #var(prefix)ComputerPublic(a) != None ) {
             ReplaceComputerPublic(#var(prefix)ComputerPublic(a));
         }
+        else if( #var(prefix)Binoculars(a) != None ) {
+            ReplaceBinoculars(#var(prefix)Binoculars(a));
+        }
+        else if( #var(prefix)Containers(a) != None ) {
+            ReplaceContainerContents(#var(prefix)Containers(a));
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -74,6 +80,30 @@ function ReplaceActors()
 #endif
     }
 }
+#ifdef revision
+function class<Actor> ReplaceClassName(class<Actor> inv)
+#else
+function class<inventory> ReplaceClassName(class<inventory> inv)
+#endif
+{
+    switch(inv){
+        case class'#var(prefix)Binoculars':
+            return class'DXRBinoculars';
+        default:
+            return inv;
+    }
+    return inv;
+}
+
+function ReplaceContainerContents(#var(prefix)Containers a)
+{
+    local int i;
+
+    a.contents = ReplaceClassName(a.contents);
+    a.content2 = ReplaceClassName(a.content2);
+    a.content3 = ReplaceClassName(a.content3);
+}
+
 
 function ReplaceInformationDevice(#var(prefix)InformationDevices a)
 {
@@ -140,6 +170,19 @@ function ReplacePiano(#var(prefix)WHPiano a)
     if(n==None)
         return;
     ReplaceDeusExDecoration(a, n);
+    a.Destroy();
+}
+
+function ReplaceBinoculars(#var(prefix)Binoculars a)
+{
+    local DXRBinoculars n;
+    if(a.IsA('DXRBinoculars'))
+        return;
+
+    n = DXRBinoculars(SpawnReplacement(a, class'DXRBinoculars'));
+    if(n==None)
+        return;
+    ReplacePickup(a, n);
     a.Destroy();
 }
 
@@ -366,6 +409,26 @@ function DeusExWeapon ReplaceWeapon(DeusExWeapon a, DeusExWeapon n)
         }
     }
 }
+
+#ifdef hx
+function HXPickup ReplacePickup(HXPickup a, HXPickup n)
+#else
+function DeusExPickup ReplacePickup(DeusExPickup a, DeusExPickup n)
+#endif
+{
+    local ScriptedPawn owner;
+    local #var(PlayerPawn) player;
+    local bool bWasDrawn;
+    owner = ScriptedPawn(a.Owner);
+    player = #var(PlayerPawn)(a.Owner);
+    a.Destroy();
+    if(owner != None) {
+        GiveExistingItem(owner, n);
+    } else if (player != None) {
+        GiveExistingItem(player, n);
+    }
+}
+
 
 #ifdef hx
 function ReplaceDeusExDecoration(HXDecoration a, HXDecoration n)
