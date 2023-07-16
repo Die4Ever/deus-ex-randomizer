@@ -179,6 +179,10 @@ function Frob(actor Frobber, Inventory frobWith)
             SelectedSound = sound'SH2EndingTheme';
             duration = 7;
             break;
+        case 34:
+            SelectedSound = sound'StillAlive';
+            duration = 7;
+            break;
         default:
             log("DXRPiano went too far this time!  Got "$rnd);
             return;
