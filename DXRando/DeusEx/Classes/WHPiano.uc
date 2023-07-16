@@ -1,11 +1,11 @@
 class DXRPiano injects #var(prefix)WHPiano;
 
-var int SongPlayed[22];
+var int SongPlayed[32];
 var DXRando dxr;
 
 function bool ValidSong(int i)
 {
-    if (i==1 || i==2 || i==6){
+    if (i==1 || i==2 || i==6 || i==25){
         return False;
     }
 
@@ -32,7 +32,7 @@ function Frob(actor Frobber, Inventory frobWith)
         foreach AllActors(class'DXRando', dxr) {break;}
     }
 
-    rnd = Rand(22); //make sure this matches the number of sounds below
+    rnd = Rand(32); //make sure this matches the number of sounds below
     switch(rnd){
         case 0:
             //DX Theme, Correct
@@ -130,6 +130,46 @@ function Frob(actor Frobber, Inventory frobWith)
         case 21:
             SelectedSound = sound'FF4Battle1';
             duration = 8;
+            break;
+        case 22:
+            SelectedSound = sound'AquaticAmbience';
+            duration = 8;
+            break;
+        case 23:
+            SelectedSound = sound'ChronoTriggerTheme';
+            duration = 8;
+            break;
+        case 24:
+            SelectedSound = sound'DoomE1M1';
+            duration = 5;
+            break;
+        case 25:
+            SelectedSound = sound'DoomE1M1Wrong';
+            duration = 5;
+            break;
+        case 26:
+            SelectedSound = sound'FFVictoryFanfare';
+            duration = 5;
+            break;
+        case 27:
+            SelectedSound = sound'GangplankGalleonIntro';
+            duration = 9;
+            break;
+        case 28:
+            SelectedSound = sound'Grabbag';
+            duration = 7;
+            break;
+        case 29:
+            SelectedSound = sound'MegaManStageStart';
+            duration = 8;
+            break;
+        case 30:
+            SelectedSound = sound'MGS2MainTheme';
+            duration = 8;
+            break;
+        case 31:
+            SelectedSound = sound'Halo';
+            duration = 11;
             break;
         default:
             log("DXRPiano went too far this time!  Got "$rnd);
