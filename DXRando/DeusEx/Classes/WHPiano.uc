@@ -1,6 +1,6 @@
 class DXRPiano injects #var(prefix)WHPiano;
 
-var int SongPlayed[34];
+var int SongPlayed[35];
 var DXRando dxr;
 
 function bool ValidSong(int i)
@@ -32,7 +32,7 @@ function Frob(actor Frobber, Inventory frobWith)
         foreach AllActors(class'DXRando', dxr) {break;}
     }
 
-    rnd = Rand(34); //make sure this matches the number of sounds below
+    rnd = Rand(35); //make sure this matches the number of sounds below
     switch(rnd){
         case 0:
             //DX Theme, Correct
