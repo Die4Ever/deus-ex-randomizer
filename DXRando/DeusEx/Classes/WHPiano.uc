@@ -1,6 +1,6 @@
 class DXRPiano injects #var(prefix)WHPiano;
 
-var int SongPlayed[33];
+var int SongPlayed[34];
 var DXRando dxr;
 
 function bool ValidSong(int i)
@@ -32,7 +32,7 @@ function Frob(actor Frobber, Inventory frobWith)
         foreach AllActors(class'DXRando', dxr) {break;}
     }
 
-    rnd = Rand(33); //make sure this matches the number of sounds below
+    rnd = Rand(34); //make sure this matches the number of sounds below
     switch(rnd){
         case 0:
             //DX Theme, Correct
@@ -174,6 +174,10 @@ function Frob(actor Frobber, Inventory frobWith)
         case 32:
             SelectedSound = sound'SH2PromiseReprise';
             duration = 8;
+            break;
+        case 33:
+            SelectedSound = sound'SH2EndingTheme';
+            duration = 7;
             break;
         default:
             log("DXRPiano went too far this time!  Got "$rnd);

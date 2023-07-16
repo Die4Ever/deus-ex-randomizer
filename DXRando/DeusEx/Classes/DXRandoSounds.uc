@@ -34,5 +34,6 @@ class DXRandoSounds extends Object abstract;
 #exec AUDIO IMPORT FILE="Sounds\MGS2MainTheme.mp3"              NAME="MGS2MainTheme"        GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\Halo.mp3"                       NAME="Halo"                 GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\SH2PromiseReprise.mp3"          NAME="SH2PromiseReprise"    GROUP="MemePiano"
+#exec AUDIO IMPORT FILE="Sounds\SH2EndingTheme.mp3"             NAME="SH2EndingTheme"       GROUP="MemePiano"
 
 #exec AUDIO IMPORT FILE="Sounds\JockLetsGo.mp3"                 NAME="PocketJockLetsGo"     GROUP="DXRandoItems"
