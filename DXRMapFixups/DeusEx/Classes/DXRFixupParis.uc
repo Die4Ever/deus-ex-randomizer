@@ -41,7 +41,7 @@ function PreFirstEntryMapFixes()
         FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
         foreach AllActors(class'ZoneInfo',zi){
             if (zi.DamageType=='Radiation'){
-                zi.DamagePerSec=4;
+                zi.DamagePerSec=Clamp(7/player().CombatDifficulty, 1, 7);
             }
         }
         break;
