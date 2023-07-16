@@ -86,3 +86,9 @@ simulated function Timer()
         }
     }
 }
+
+function PostPostBeginPlay()
+{
+    Description="A pair of military binoculars.|n|n<UNATCO OPS FILE NOTE PO64-SNAP>|nHello there! The reason I invited you here is this NPC Report. I'd like for you to watch characters for the NPC Report. I'm counting on you, JC!|n-- Professor Oak|n<END NOTE>";
+
+}

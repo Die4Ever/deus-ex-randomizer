@@ -22,5 +22,6 @@ class DXRandoSounds extends Object abstract;
 #exec AUDIO IMPORT FILE="Sounds\EightMelodiesM2.mp3"            NAME="EightMelodiesM2"      GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\FurretWalk.mp3"                 NAME="FurretWalk"           GROUP="MemePiano"
 #exec AUDIO IMPORT FILE="Sounds\ProfOaksLab.mp3"                NAME="ProfOaksLab"          GROUP="MemePiano"
+#exec AUDIO IMPORT FILE="Sounds\FF4Battle1.mp3"                 NAME="FF4Battle1"           GROUP="MemePiano"
 
 #exec AUDIO IMPORT FILE="Sounds\JockLetsGo.mp3"                 NAME="PocketJockLetsGo"     GROUP="DXRandoItems"
