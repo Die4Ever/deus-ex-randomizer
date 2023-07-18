@@ -73,6 +73,9 @@ function ReplaceActors()
         else if( #var(prefix)Containers(a) != None ) {
             ReplaceContainerContents(#var(prefix)Containers(a));
         }
+        else if( #var(prefix)Faucet(a) != None ) {
+            ReplaceFaucet(#var(prefix)Faucet(a));
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -159,6 +162,24 @@ function ReplaceKeypad(#var(prefix)Keypad a)
     a.Destroy();
 #endif
 }
+
+function ReplaceFaucet(#var(prefix)Faucet a)
+{
+    local DXRFaucet n;
+    local DeusExPlayer dxp;
+    if(a.IsA('DXRFaucet'))
+        return;
+
+    n = DXRFaucet(SpawnReplacement(a, class'DXRFaucet'));
+    if(n==None)
+        return;
+    ReplaceDeusExDecoration(a, n);
+    n.bOpen = a.bOpen;
+    n.waterGen.bSpewing = a.waterGen.bSpewing;
+    n.waterGen.SoundVolume = a.waterGen.SoundVolume;
+    a.Destroy();
+}
+
 
 function ReplacePiano(#var(prefix)WHPiano a)
 {
