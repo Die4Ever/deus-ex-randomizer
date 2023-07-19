@@ -973,12 +973,11 @@ function NewGamePlus()
 
     SetGlobalSeed("NewGamePlus");
     p.CombatDifficulty=FClamp(p.CombatDifficulty*1.3,0,15); //Anything over 15 is kind of unreasonably impossible
-    NewGamePlusVal(settings.minskill, 1.2, exp);
-    NewGamePlusVal(settings.minskill, 1.2, exp);
-    NewGamePlusVal(settings.maxskill, 1.2, exp);
-    NewGamePlusVal(settings.enemiesrandomized, 1.2, exp);
-    NewGamePlusVal(settings.enemystats, 1.2, exp);
-    NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp);
+    NewGamePlusVal(settings.minskill, 1.2, exp, 1000);
+    NewGamePlusVal(settings.maxskill, 1.2, exp, 1500);
+    NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 1500);
+    NewGamePlusVal(settings.enemystats, 1.2, exp, 100);
+    NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 1500);
     NewGamePlusVal(settings.ammo, 0.9, exp);
     NewGamePlusVal(settings.medkits, 0.8, exp);
     NewGamePlusVal(settings.multitools, 0.8, exp);
@@ -986,7 +985,7 @@ function NewGamePlus()
     NewGamePlusVal(settings.biocells, 0.8, exp);
     NewGamePlusVal(settings.medbots, 0.8, exp);
     NewGamePlusVal(settings.repairbots, 0.8, exp);
-    NewGamePlusVal(settings.turrets_add, 1.3, exp);
+    NewGamePlusVal(settings.turrets_add, 1.3, exp, 1000);
     NewGamePlusVal(settings.merchants, 0.9, exp);
     settings.bingo_win = bingo_win;
     settings.bingo_freespaces = bingo_freespaces;
