@@ -148,7 +148,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
         flareBurnTime = 3;
     }
 
-    if ((Health < -100) && !IsA('Robot'))
+    if ((Health < -100) && !IsA('Robot') && !IsA('Animal'))
 	{
         if (h==None){
             h = Human(GetPlayerPawn());
