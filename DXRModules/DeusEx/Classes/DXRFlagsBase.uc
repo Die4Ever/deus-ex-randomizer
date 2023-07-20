@@ -29,7 +29,7 @@ var #var(flagvarprefix) int bingo_scale;
 
 var #var(flagvarprefix) int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
 var #var(flagvarprefix) int bSetSeed;// int because all our flags are ints?
-var #var(flagvarprefix) int bingoBoardRoll;// int because all our flags are ints?
+var #var(flagvarprefix) int bingoBoardRoll;
 
 
 // When adding a new flag, make sure to update BindFlags, flagNameToHumanName, flagValToHumanVal,

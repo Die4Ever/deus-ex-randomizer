@@ -427,3 +427,8 @@ exec function ActivateAugmentation(int num)
     if (AugmentationSystem != None)
         AugmentationSystem.ActivateAugByKey(num);
 }
+
+simulated function MoveDrone( float DeltaTime, Vector loc )
+{
+    aDrone.MoveDrone(DeltaTime, loc);// DXRando: this doesn't belong in the player...
+}
