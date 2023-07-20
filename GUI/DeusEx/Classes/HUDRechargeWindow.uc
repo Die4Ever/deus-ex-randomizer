@@ -88,6 +88,23 @@ function UpdateInfoText()
     }
 }
 
+function UpdateBioWindows()
+{
+    local float energyPercent;
+
+    if (player==None){
+        log("Player doesn't exist while updating RepairBot energy bar - probably dead?");
+        return;
+    }
+
+    energyPercent = 100.0 * (player.Energy / player.EnergyMax);
+    winBioBar.SetCurrentValue(energyPercent);
+
+    winBioBarText.SetText(Int(player.Energy)$"/"$Int(player.EnergyMax)$" Energy");
+
+    winBioInfoText.SetText(BioStatusLabel);
+}
+
 event Tick(float deltaSeconds)
 {
     if(#defined(gmdx) || #defined(vmd)) {
