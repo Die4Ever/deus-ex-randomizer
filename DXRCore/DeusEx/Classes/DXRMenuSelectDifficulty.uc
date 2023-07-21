@@ -78,6 +78,7 @@ function BindControls(optional string action)
     //EnumOption("Enabled (Anonymous)", 2, f.crowdcontrol);
     EnumOption("Enabled (Streaming)", 1, f.crowdcontrol);
     EnumOption("Offline Simulated", 3, f.crowdcontrol);
+    EnumOption("Streaming and Simulated", 4, f.crowdcontrol);
     EnumOption("Disabled", 0, f.crowdcontrol);
 
     foreach f.AllActors(class'DXRTelemetry', t) { break; }

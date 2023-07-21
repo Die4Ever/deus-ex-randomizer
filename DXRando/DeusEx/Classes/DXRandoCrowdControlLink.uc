@@ -16,6 +16,7 @@ var IpAddr addr;
 var int ticker;
 
 var bool anon;
+var bool online;
 var bool offline;
 
 var bool effectsDisabled;
@@ -45,7 +46,7 @@ const MILLISEC_TO_SEC=1000;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous, bool offline_mode)
+function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous, bool online_mode, bool offline_mode)
 {
     dxr = tdxr;
     ccModule = cc;
@@ -65,9 +66,10 @@ function Init( DXRando tdxr, DXRCrowdControl cc, string addr, bool anonymous, bo
     //Initialize the ticker
     ticker = 0;
 
+    online = online_mode;
     offline = offline_mode;
 
-    if(!offline) {
+    if(online) {
         Resolve(crowd_control_addr);
     }
     reconnectTimer = ReconDefault;
@@ -93,7 +95,7 @@ function Timer() {
     }
     //Everything below here runs once a second
 
-    if (!offline && !IsConnected()) {
+    if (online && !IsConnected()) {
         reconnectTimer-=1;
         if (reconnectTimer <= 0){
             Resolve(crowd_control_addr);
@@ -106,7 +108,7 @@ function Timer() {
         RandomOfflineEffects();
     }
 
-    if (!offline && IsConnected()) {
+    if (online && IsConnected()) {
         ccEffects.HandleEffectSelectability();
     }
 

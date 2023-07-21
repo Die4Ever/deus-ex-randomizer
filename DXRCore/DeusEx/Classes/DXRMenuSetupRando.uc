@@ -7,6 +7,7 @@ event InitWindow()
     Super.InitWindow();
 }
 
+//If changing ranges in this menu, make sure to update any clamped ranges in DXRFlags ScoreFlags function to match
 function BindControls(optional string action)
 {
     local DXRFlags f;
@@ -261,10 +262,10 @@ function BindControls(optional string action)
     BreakLine();
 
     NewMenuItem("Minimum Skill Cost %", "Minimum cost for skills in percentage of the original cost.");
-    Slider(f.settings.minskill, 0, 10000);
+    Slider(f.settings.minskill, 50, 1000);
 
     NewMenuItem("Maximum Skill Cost %", "Maximum cost for skills in percentage of the original cost.");
-    Slider(f.settings.maxskill, 0, 10000);
+    Slider(f.settings.maxskill, 50, 1000);
 
     NewMenuItem("Banned Skills %", "Chance of a skill having a cost of 99,999 points.");
     Slider(f.settings.banned_skills, 0, 100);

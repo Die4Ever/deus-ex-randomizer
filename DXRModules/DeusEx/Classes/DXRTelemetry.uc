@@ -7,6 +7,7 @@ var config bool enabled, death_markers;
 var config string server;
 var config string path;
 var config int cache_addr;
+var config int port;
 var config string last_notification;
 
 var string notification_url;
@@ -18,8 +19,9 @@ var string newstexts[5];
 function CheckConfig()
 {
     if( server == "" || config_version < VersionNumber() ) {
-        server = "raycarro.com";
+        server = "mods4ever.com";
         path = "/dxrando/log.py";
+        port = 10451;
         cache_addr = -1864803370;
     }
     Super.CheckConfig();
@@ -36,6 +38,7 @@ function AnyEntry()
     p = player();
     if( p == None ) return;
     info("health: "$p.health$", HealthLegLeft: "$p.HealthLegLeft$", HealthLegRight: "$p.HealthLegRight$", HealthTorso: "$p.HealthTorso$", HealthHead: "$p.HealthHead$", HealthArmLeft: "$p.HealthArmLeft$", HealthArmRight: "$p.HealthArmRight);
+    info("renderer: " $ GetConfig("Engine.Engine", "GameRenderDevice"));
 }
 
 function Timer()

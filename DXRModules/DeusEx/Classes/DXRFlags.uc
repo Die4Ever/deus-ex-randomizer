@@ -50,6 +50,7 @@ function InitDefaults()
     bingo_duration=0;
     bingo_scale=100;
     newgameplus_loops = 0;
+    bingoBoardRoll = 0;
 
 #ifdef hx
     difficulty = 1;
@@ -560,6 +561,9 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.bingo_freespaces = 5;
         bingo_duration = 1;
         bingo_scale = 0;
+
+        SetGlobalSeed("random starting map");
+        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr);
     }
     return settings;
 }
@@ -834,6 +838,13 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     settings.aug_value_rando = 0;*/
 }
 
+//Nothing fancy happening here, but gives a consistent place to change how we want to clamp across
+//all clamped score values (Or applying any other tweaks we might want?)
+function int ClampFlagValue(int flagval, int min, int max)
+{
+    return FClamp(flagval,min,max*2);
+}
+
 function int ScoreFlags()
 {
     local int score, bingos;
@@ -857,36 +868,36 @@ function int ScoreFlags()
         score += 200;
     //score += settings.keys_containers;
     //score += settings.infodevices_containers;
-    score -= settings.deviceshackable * 2;
-    score += settings.passwordsrandomized * 2;
-    score += settings.infodevices * 2;
-    score += settings.enemiesrandomized;
-    score += settings.enemystats;
+    score -= ClampFlagValue(settings.deviceshackable,0,100) * 2;
+    score += ClampFlagValue(settings.passwordsrandomized,0,100) * 2;
+    score += ClampFlagValue(settings.infodevices,0,100) * 2;
+    score += ClampFlagValue(settings.enemiesrandomized,0,1000);
+    score += ClampFlagValue(settings.enemystats,0,100);
     //score += settings.hiddenenemiesrandomized;
-    score += settings.enemiesshuffled;
-    score += settings.enemies_nonhumans;
+    score += ClampFlagValue(settings.enemiesshuffled,0,100);
+    score += ClampFlagValue(settings.enemies_nonhumans,0,100);
     score += settings.bot_weapons;
-    score += settings.bot_stats;
+    score += ClampFlagValue(settings.bot_stats,0,100);
     if(settings.enemyrespawn > 0 && settings.enemyrespawn < 1000)
         score += 1500 - settings.enemyrespawn;
     //settings.skills_disable_downgrades = 5;
     //settings.skills_reroll_missions = 5;
     //settings.skills_independent_levels = 100;
-    score += settings.banned_skills * 20;
-    score += settings.banned_skill_levels * 20;
-    score += settings.minskill * 5;
-    score += settings.maxskill * 3;
-    score -= settings.ammo;
-    score -= settings.medkits;
-    score -= settings.biocells;
-    score -= settings.lockpicks;
-    score -= settings.multitools;
+    score += ClampFlagValue(settings.banned_skills,0,100) * 20;
+    score += ClampFlagValue(settings.banned_skill_levels,0,100) * 20;
+    score += sqrt(settings.minskill) * 50; //Square root so the bonus tapers off as you get more extreme
+    score += sqrt(settings.maxskill) * 30; //Square root so the bonus tapers off as you get more extreme
+    score -= ClampFlagValue(settings.ammo,0,100);
+    score -= ClampFlagValue(settings.medkits,0,100);
+    score -= ClampFlagValue(settings.biocells,0,100);
+    score -= ClampFlagValue(settings.lockpicks,0,100);
+    score -= ClampFlagValue(settings.multitools,0,100);
     score -= settings.speedlevel;
     score += settings.startinglocations;
     score += settings.goals;
     score -= settings.equipment * 10;
-    score -= settings.medbots;
-    score -= settings.repairbots;
+    score -= ClampFlagValue(settings.medbots,0,100);
+    score -= ClampFlagValue(settings.repairbots,0,100);
     if(settings.medbotuses <= 0)
         score -= 100;
     score -= settings.medbotuses;
@@ -898,11 +909,11 @@ function int ScoreFlags()
     //settings.medbotamount = 1;
     //settings.repairbotamount = 1;
     //settings.turrets_move = 50;
-    score += settings.turrets_add / 10;
+    score += ClampFlagValue(settings.turrets_add,0,10000) / 10;
     //settings.merchants = 30;
     //settings.dancingpercent = 25;
-    score += settings.swapitems;
-    score += settings.swapcontainers;
+    score += ClampFlagValue(settings.swapitems,0,100);
+    score += ClampFlagValue(settings.swapcontainers,0,100);
     //settings.augcans = 100;
     //settings.aug_value_rando = 100;
     //settings.skill_value_rando = 100;
@@ -942,6 +953,8 @@ function NewGamePlus()
     ds = class'DataStorage'.static.GetObj(dxr);
     if( ds != None ) ds.playthrough_id = playthrough_id;
     newgameplus_loops++;
+    bingoBoardRoll=0;
+    p.saveCount=0;
     exp = 1;
     randomStart = (settings.starting_map!=0);
     bingo_win = settings.bingo_win;
@@ -959,13 +972,12 @@ function NewGamePlus()
     }
 
     SetGlobalSeed("NewGamePlus");
-    p.CombatDifficulty *= 1.3;
-    NewGamePlusVal(settings.minskill, 1.2, exp);
-    NewGamePlusVal(settings.minskill, 1.2, exp);
-    NewGamePlusVal(settings.maxskill, 1.2, exp);
-    NewGamePlusVal(settings.enemiesrandomized, 1.2, exp);
-    NewGamePlusVal(settings.enemystats, 1.2, exp);
-    NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp);
+    p.CombatDifficulty=FClamp(p.CombatDifficulty*1.3,0,15); //Anything over 15 is kind of unreasonably impossible
+    NewGamePlusVal(settings.minskill, 1.2, exp, 1000);
+    NewGamePlusVal(settings.maxskill, 1.2, exp, 1500);
+    NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 1500);
+    NewGamePlusVal(settings.enemystats, 1.2, exp, 100);
+    NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 1500);
     NewGamePlusVal(settings.ammo, 0.9, exp);
     NewGamePlusVal(settings.medkits, 0.8, exp);
     NewGamePlusVal(settings.multitools, 0.8, exp);
@@ -973,7 +985,7 @@ function NewGamePlus()
     NewGamePlusVal(settings.biocells, 0.8, exp);
     NewGamePlusVal(settings.medbots, 0.8, exp);
     NewGamePlusVal(settings.repairbots, 0.8, exp);
-    NewGamePlusVal(settings.turrets_add, 1.3, exp);
+    NewGamePlusVal(settings.turrets_add, 1.3, exp, 1000);
     NewGamePlusVal(settings.merchants, 0.9, exp);
     settings.bingo_win = bingo_win;
     settings.bingo_freespaces = bingo_freespaces;
@@ -1004,6 +1016,7 @@ function NewGamePlus()
         p.SkillPointsAvail /= 2;
     }
     else p.SkillPointsAvail = 0;
+    p.SkillPointsTotal = 0; //This value doesn't seem to actually get used in vanilla, but we use it for scoring
 
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
     if( augs != None )
@@ -1012,6 +1025,12 @@ function NewGamePlus()
     weapons = DXRWeapons(dxr.FindModule(class'DXRWeapons'));
     if( weapons != None )
         weapons.RemoveRandomWeapon(p);
+
+    //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
+    //Technically it should make up for levels you skipped past, so maybe?
+    class'DXRStartMap'.static.AddStartingCredits(dxr,p);
+    class'DXRStartMap'.static.AddStartingAugs(dxr,p);
+    class'DXRStartMap'.static.AddStartingSkillPoints(dxr,p);
 
     info("NewGamePlus() deleting all flags");
     f.DeleteAllFlags();

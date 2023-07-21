@@ -1,11 +1,11 @@
 class DXRPiano injects #var(prefix)WHPiano;
 
-var int SongPlayed[17];
+var int SongPlayed[38];
 var DXRando dxr;
 
 function bool ValidSong(int i)
 {
-    if (i==1 || i==2 || i==6){
+    if (i==1 || i==2 || i==6 || i==25){
         return False;
     }
 
@@ -32,7 +32,7 @@ function Frob(actor Frobber, Inventory frobWith)
         foreach AllActors(class'DXRando', dxr) {break;}
     }
 
-    rnd = Rand(17); //make sure this matches the number of sounds below
+    rnd = Rand(38); //make sure this matches the number of sounds below
     switch(rnd){
         case 0:
             //DX Theme, Correct
@@ -110,6 +110,90 @@ function Frob(actor Frobber, Inventory frobWith)
         case 16:
             SelectedSound = sound'FurElise';
             duration = 5;
+            break;
+        case 17:
+            SelectedSound = sound'EightMelodiesM1';
+            duration = 7;
+            break;
+        case 18:
+            SelectedSound = sound'EightMelodiesM2';
+            duration = 5;
+            break;
+        case 19:
+            SelectedSound = sound'FurretWalk';
+            duration = 7;
+            break;
+        case 20:
+            SelectedSound = sound'ProfOaksLab';
+            duration = 5;
+            break;
+        case 21:
+            SelectedSound = sound'FF4Battle1';
+            duration = 8;
+            break;
+        case 22:
+            SelectedSound = sound'AquaticAmbience';
+            duration = 8;
+            break;
+        case 23:
+            SelectedSound = sound'ChronoTriggerTheme';
+            duration = 8;
+            break;
+        case 24:
+            SelectedSound = sound'DoomE1M1';
+            duration = 5;
+            break;
+        case 25:
+            SelectedSound = sound'DoomE1M1Wrong';
+            duration = 5;
+            break;
+        case 26:
+            SelectedSound = sound'FFVictoryFanfare';
+            duration = 5;
+            break;
+        case 27:
+            SelectedSound = sound'GangplankGalleonIntro';
+            duration = 9;
+            break;
+        case 28:
+            SelectedSound = sound'Grabbag';
+            duration = 7;
+            break;
+        case 29:
+            SelectedSound = sound'MegaManStageStart';
+            duration = 8;
+            break;
+        case 30:
+            SelectedSound = sound'MGS2MainTheme';
+            duration = 8;
+            break;
+        case 31:
+            SelectedSound = sound'Halo';
+            duration = 11;
+            break;
+        case 32:
+            SelectedSound = sound'SH2PromiseReprise';
+            duration = 8;
+            break;
+        case 33:
+            SelectedSound = sound'SH2EndingTheme';
+            duration = 7;
+            break;
+        case 34:
+            SelectedSound = sound'StillAlive';
+            duration = 7;
+            break;
+        case 35:
+            SelectedSound = sound'DireDireDocks';
+            duration = 8;
+            break;
+        case 36:
+            SelectedSound = sound'GuilesTheme';
+            duration = 7;
+            break;
+        case 37:
+            SelectedSound = sound'TetrisThemeA';
+            duration = 8;
             break;
         default:
             log("DXRPiano went too far this time!  Got "$rnd);

@@ -9,6 +9,7 @@ state Activated
     {
         Super.BeginState();
 
+        lastWatched = None;
         SetTimer(0.25,True);
     }
 }
@@ -20,7 +21,13 @@ state DeActivated
         Super.BeginState();
 
         SetTimer(0,False);
+        lastWatched = None;
     }
+}
+
+simulated function PreTravel()
+{
+    GoToState('DeActivated');
 }
 
 simulated function Timer()
@@ -78,4 +85,10 @@ simulated function Timer()
             class'DXREvents'.static.MarkBingo(dxr,peepee.Class.Name$"_peeptime");
         }
     }
+}
+
+function PostPostBeginPlay()
+{
+    Description="A pair of military binoculars.|n|n<UNATCO OPS FILE NOTE PO64-SNAP>|nHello there! The reason I invited you here is this NPC Report. I'd like for you to watch characters for the NPC Report. I'm counting on you, JC!|n-- Professor Oak|n<END NOTE>";
+
 }

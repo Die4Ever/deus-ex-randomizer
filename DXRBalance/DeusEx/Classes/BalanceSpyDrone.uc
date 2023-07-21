@@ -1,20 +1,25 @@
 class BalanceSpyDrone injects SpyDrone;
 
-state Exploding
+simulated function MoveDrone( float DeltaTime, Vector loc )
 {
-    function DamageRing()
+    DeltaTime = FClamp(DeltaTime, 0.0001, 0.5);
+    // DXRando: moved out of the player class, make it a little easier to maneuver
+    // if the wanted velocity is zero, apply drag so we slow down gradually
+    if (VSize(loc) == 0)
     {
-        local float origDamage;
-        origDamage = Damage;
-
-        Damage = origDamage * 0.15;
-        DamageType='exploded';
-        Super.DamageRing();
-
-        Damage = origDamage * 0.5;
-        DamageType='EMP';
-        Super.DamageRing();
+        // DXRando: make this somewhat framerate independent, it's not perfect
+        Velocity *= 1.0 - DeltaTime*5.0;
     }
+    else
+    {
+        //Velocity += deltaTime * MaxSpeed * loc;
+        Velocity = MaxSpeed * loc;
+    }
+
+    // add slight bobbing
+    // DEUS_EX AMSD Only do the bobbing in singleplayer, we want stationary drones stationary.
+    //if (Level.Netmode == NM_Standalone)
+        //Velocity += deltaTime * Sin(Level.TimeSeconds * 2.0) * vect(0,0,1);
 }
 
 function TakeDamage(int Damage, Pawn instigatedBy, Vector HitLocation, Vector Momentum, name damageType)
@@ -28,9 +33,4 @@ function TakeDamage(int Damage, Pawn instigatedBy, Vector HitLocation, Vector Mo
     if (LifeSpan==10.0 && class'AugDrone'.Default.reconstructTime < 10.0){
         LifeSpan=class'AugDrone'.Default.reconstructTime-0.1;
     }
-}
-
-defaultproperties
-{
-    bEmitDanger=True
 }

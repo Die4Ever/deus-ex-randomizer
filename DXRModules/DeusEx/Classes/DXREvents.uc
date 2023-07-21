@@ -570,9 +570,6 @@ function SetWatchFlags() {
         WatchFlag('assassinapartment');
         RewatchFlag('KnowsGuntherKillphrase');
 
-        foreach AllActors(class'#var(prefix)GuntherHermann', gunther) {
-            gunther.bInvincible = false;
-        }
         foreach AllActors(class'#var(prefix)Mutt', starr) {
             starr.bImportant = true;// you're important to me
             starr.BindName = "Starr";
@@ -1513,7 +1510,7 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
         //Make sure bingo didn't get completed just before leaving a level
         CheckBingoWin(dxr,data.NumberOfBingos());
     } else {
-        SetGlobalSeed("bingo");
+        SetGlobalSeed("bingo"$dxr.flags.bingoBoardRoll);
         _CreateBingoBoard(data);
     }
 }
@@ -1521,7 +1518,9 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) player)
 simulated function CreateBingoBoard()
 {
     local PlayerDataItem data;
-    SetGlobalSeed("bingo"$FRand());
+    dxr.flags.bingoBoardRoll++;
+    dxr.flags.SaveFlags();
+    SetGlobalSeed("bingo"$dxr.flags.bingoBoardRoll);
     data = class'PlayerDataItem'.static.GiveItem(player());
     _CreateBingoBoard(data);
 }
@@ -1685,17 +1684,19 @@ simulated function int HandleMutualExclusion(MutualExclusion m, int options[Arra
     }
 }
 
-function CheckBingoWin(DXRando dxr, int numBingos)
+function bool CheckBingoWin(DXRando dxr, int numBingos)
 {
     //Block this in HX for now
-    if(#defined(hx)) return;
+    if(#defined(hx)) return false;
 
     if (dxr.flags.settings.bingo_win > 0){
         if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4"){
             info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
             bingo_win_countdown = 5;
+            return true;
         }
     }
+    return false;
 }
 
 function ReadText(name textTag)
@@ -2278,7 +2279,7 @@ defaultproperties
     bingo_options(177)=(event="Sodacan_Activated",desc="Drink %s cans of soda",max=75)
     bingo_options(178)=(event="BallisticArmor_Activated",desc="Use %s Ballistic Armors",max=3)
     bingo_options(179)=(event="Flare_Activated",desc="Light %s flares",max=15)
-    bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1)
+    bingo_options(180)=(event="VialAmbrosia_Activated",desc="Take a sip of Ambrosia",max=1,missions=56832)
     bingo_options(181)=(event="Binoculars_Activated",desc="Take a peek through binoculars",max=1)
     bingo_options(182)=(event="HazMatSuit_Activated",desc="Use %s HazMat Suits",max=3)
     bingo_options(183)=(event="AdaptiveArmor_Activated",desc="Use %s Thermoptic Camos",max=3)

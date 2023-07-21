@@ -29,6 +29,7 @@ var #var(flagvarprefix) int bingo_scale;
 
 var #var(flagvarprefix) int difficulty;// save which difficulty setting the game was started with, for nicer upgrading
 var #var(flagvarprefix) int bSetSeed;// int because all our flags are ints?
+var #var(flagvarprefix) int bingoBoardRoll;
 
 
 // When adding a new flag, make sure to update BindFlags, flagNameToHumanName, flagValToHumanVal,
@@ -297,6 +298,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_newgameplus_loops', newgameplus_loops, mode, str);
     FlagInt('Rando_gamemode', gamemode, mode, str);
     FlagInt('Rando_setseed', bSetSeed, mode, str);
+    FlagInt('Rando_bingoboardroll', bingoBoardRoll, mode, str);
     FlagInt('Rando_mirroredmaps', mirroredmaps, mode, str);
     FlagInt('Rando_bingo_duration', bingo_duration, mode, str);
     FlagInt('Rando_bingo_scale', bingo_scale, mode, str);
@@ -535,6 +537,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Player Max Energy";
         case 'Rando_starting_map':
             return "Starting Map";
+        case 'Rando_bingoboardroll':
+            return "Bingo Board Re-rolls";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -560,6 +564,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_newgameplus_loops':
         case 'Rando_health':
         case 'Rando_energy':
+        case 'Rando_bingoboardroll':
             return string(val);
 
         //Return the number as hex
@@ -703,12 +708,10 @@ simulated function string flagValToHumanVal(name flagname, int val){
                 return "Don't Reroll";
             } else if (val==1){
                 return "Reroll Every Mission";
-            } else if (val==2){
-                return "Reroll Every 2 Missions";
-            } else if (val==3){
-                return "Reroll Every 3 Missions";
-            } else if (val==5){
-                return "Reroll Every 5 Missions";
+            } else if (val>1){
+                return "Reroll Every "$val$" Missions";
+            } else{
+                return "Reroll Every "$val$" Missions (REPORT ME!)";
             }
             break;
 
@@ -988,11 +991,14 @@ simulated function MaxRandoValPair(out int min, out int max)
     }
 }
 
-function NewGamePlusVal(out int val, float curve, float exp)
+function NewGamePlusVal(out int val, float curve, float exp, optional int max)
 {
     if(val > 0) {
         val = val * (curve ** exp);// int *= float doesn't give as good accuracy as int = int*float
         if(val <= 0) val = 1;
+    }
+    if(max != 0 && val>max) {
+        val=max;
     }
 }
 

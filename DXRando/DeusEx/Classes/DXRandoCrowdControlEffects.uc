@@ -750,7 +750,9 @@ function bool IsGrenade(inventory i) {
 
 function SkillPointsRemove(int numPoints) {
     player().SkillPointsAvail -= numPoints;
-    player().SkillPointsTotal -= numPoints;
+    //Don't add to the total.  It isn't used in the base game, but we use it for scoring.
+    //These points are not lost naturally, so don't uncount them from your score
+    //player().SkillPointsTotal -= numPoints;
 
     if ((DeusExRootWindow(player().rootWindow) != None) &&
         (DeusExRootWindow(player().rootWindow).hud != None) &&
@@ -1693,6 +1695,9 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             i = Int(param[0])*100;
             PlayerMessage(viewer@"gave you "$i$" skill points" $ shouldSave);
             player().SkillPointsAdd(i);
+            //Don't add to the total.  It isn't used in the base game, but we use it for scoring.
+            //These points were not gained naturally, so don't count them towards your score
+            player().SkillPointsTotal-=i; //Undo adding the skill points to your total
             break;
 
         case "remove_skillpoints":

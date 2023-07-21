@@ -242,8 +242,9 @@ function bool DXReduceDamage(int Damage, name damageType, vector hitLocation, ou
         oldDamage *= CombatDifficulty;
     }
     else if (damageType != 'fell' && damageType != 'Drowned') {
-        newDamage *= CombatDifficulty/2 + 0.2;
-        oldDamage *= CombatDifficulty/2 + 0.2;
+        damageMult = (CombatDifficulty*0.4) + 0.5;// basically wet/dry
+        newDamage *= damageMult;
+        oldDamage *= damageMult;
     }
 
     if(frand() < (newDamage%1.0)) {// DXRando: random rounding, 1.9 is more likely to round up than 1.1 is
@@ -425,4 +426,9 @@ exec function ActivateAugmentation(int num)
 
     if (AugmentationSystem != None)
         AugmentationSystem.ActivateAugByKey(num);
+}
+
+simulated function MoveDrone( float DeltaTime, Vector loc )
+{
+    aDrone.MoveDrone(DeltaTime, loc);// DXRando: this doesn't belong in the player...
 }

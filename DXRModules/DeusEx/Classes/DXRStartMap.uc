@@ -8,16 +8,12 @@ class DXRStartMap extends DXRActorsBase;
 
 function PlayerLogin(#var(PlayerPawn) p)
 {
-    local int startBonus;
-
     Super.PlayerLogin(p);
 
     if (dxr.flags.settings.starting_map == 0) return;
 
     //Add extra skill points to make available once you enter the game
-    startBonus = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
-    p.SkillPointsAvail += startBonus;
-    p.SkillPointsTotal += startBonus;
+    AddStartingSkillPoints(dxr,p);
 
     StartMapSpecificFlags(p.flagbase, dxr.localURL);
 }
@@ -30,6 +26,23 @@ function PlayerAnyEntry(#var(PlayerPawn) p)
     if(dxr.flags.settings.starting_map != 0)
         p.CampaignNewGameMap = p.strStartMap;
 #endif
+}
+
+function PreFirstEntry()
+{
+    local #var(PlayerPawn) p;
+    local string startMapName;
+
+    foreach AllActors(class'#var(PlayerPawn)',p){break;}
+
+    startMapName = GetStartMap(p,dxr.flags.settings.starting_map);
+    startMapName = class'DXRMapVariants'.static.CleanupMapName(startMapName);
+    startMapName = Caps(startMapName);
+
+    if (InStr(startMapName,dxr.localURL)!=-1){
+        StartMapSpecificFlags(p.flagbase, dxr.localURL);
+    }
+
 }
 
 static simulated function int GetStartingMissionMask(int start_map)
@@ -235,16 +248,16 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
     switch(start_map)
     {
         case "08_NYC_Smug":
-            flagbase.SetBool('KnowsSmugglerPassword',true);
-            flagbase.SetBool('MetSmuggler',true);
+            flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
+            flagbase.SetBool('MetSmuggler',true,,-1);
             break;
         case "11_Paris_Everett":
             //First Toby conversation happened
-            flagbase.SetBool('MeetTobyAtanwe_played',true);
-            flagbase.SetBool('FemJCMeetTobyAtanwe_played',true);
+            flagbase.SetBool('MeetTobyAtanwe_played',true,,-1);
+            flagbase.SetBool('FemJCMeetTobyAtanwe_played',true,,-1);
             break;
         case "14_Vandenberg_Sub":
-            flagbase.SetBool('Ray_dead',true);  //Save Jock!
+            flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
             break;
     }
 }
@@ -305,4 +318,40 @@ static function int ChooseRandomStartMap(DXRando dxr)
             dxr.err("Random Starting Map picked value "$i$" which is unhandled!");
             return 0; //Fall back on Liberty Island
     }
+}
+
+static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
+{
+    local int i;
+    for(i=0;i<GetStartMapMission(dxr.flags.settings.starting_map);i++){
+        p.Credits += dxr.rng(200);
+    }
+}
+
+static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player)
+{
+    local int i, startMission, numAugs;
+
+    if (dxr.flags.settings.starting_map !=0 ){
+        startMission=GetStartMapMission(dxr.flags.settings.starting_map);
+        numAugs = startMission / 2;
+        class'DXRAugmentations'.static.AddRandomAugs(dxr,player,numAugs);
+        for (i=0;i<startMission;i++){
+            if(i%4==0){
+                GiveItem( player, class'AugmentationUpgradeCannister' );
+            } else {
+                class'DXRAugmentations'.static.UpgradeRandomAug(dxr,player);
+            }
+        }
+    }
+}
+
+static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
+{
+    local int startBonus;
+    startBonus = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+    p.SkillPointsAvail += startBonus;
+    //Don't add to the total.  It isn't used in the base game, but we use it for scoring.
+    //These starting points are free, so don't count them towards your score
+    //p.SkillPointsTotal += startBonus;
 }

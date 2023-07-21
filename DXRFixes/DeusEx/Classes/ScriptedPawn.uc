@@ -148,7 +148,7 @@ function TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vecto
         flareBurnTime = 3;
     }
 
-    if ((Health < -100) && !IsA('Robot'))
+    if ((Health < -100) && !IsA('Robot') && !IsA('Animal'))
 	{
         if (h==None){
             h = Human(GetPlayerPawn());
@@ -464,7 +464,8 @@ function UpdateFire()
 
 function Bool HasTwoHandedWeapon()
 {
-    if(bIsFemale)
+    if(bIsFemale || Mesh==LodMesh'DeusExCharacters.GM_DressShirt' || Mesh==LodMesh'DeusExCharacters.GM_DressShirt_S'
+       || Mesh==LodMesh'DeusExCharacters.GM_Trench_F')
         return False;
     if ((Weapon != None) && (Weapon.Mass >= 30))
         return True;

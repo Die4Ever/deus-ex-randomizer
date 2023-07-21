@@ -28,6 +28,7 @@ function PreFirstEntryMapFixes()
     local Rotator rot;
     local #var(prefix)LAM lam;
     local Switch1 s;
+    local #var(prefix)Barrel1 barrel;
 
     switch(dxr.localURL)
     {
@@ -191,6 +192,12 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-1499.35,-454.93,-293)); //Tomb stairs
         Spawn(class'PlaceholderItem',,, vectm(1108.85,808.15,71.309769)); //Secret room shelf 1
         Spawn(class'PlaceholderItem',,, vectm(1110,829.5,35.310154)); //Secret room shelf 2
+
+        // for Stick With the Prod modes, in pre so these will get shuffled
+        AddActor(class'#var(prefix)AmmoDartPoison', vect(-1508.116821,-939.598755,-293.900604));
+        barrel = #var(prefix)Barrel1(AddActor(class'#var(prefix)Barrel1', vect(-1112.480469,1120.735840,29.096186)));
+        barrel.SkinColor = SC_Explosive;
+        barrel.BeginPlay();
         break;
     }
 }
