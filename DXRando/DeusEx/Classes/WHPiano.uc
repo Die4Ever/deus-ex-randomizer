@@ -38,7 +38,6 @@ function Timer()
     bUsing = False;
     message = "";
     soundHandle = 0;
-    currentSong = -1;
 }
 
 function Frob(actor Frobber, Inventory frobWith)
