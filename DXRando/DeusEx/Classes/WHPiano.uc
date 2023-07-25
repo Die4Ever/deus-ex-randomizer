@@ -3,6 +3,10 @@ class DXRPiano injects #var(prefix)WHPiano;
 var int SongPlayed[38];
 var DXRando dxr;
 
+var #var(PlayerPawn) player;
+var string message;
+var int soundHandle, currentSong;
+
 function bool ValidSong(int i)
 {
     if (i==1 || i==2 || i==6 || i==25){
@@ -10,6 +14,31 @@ function bool ValidSong(int i)
     }
 
     return True;
+}
+
+function Timer()
+{
+    if (dxr==None){
+        foreach AllActors(class'DXRando', dxr) {break;}
+    }
+
+    if (SongPlayed[currentSong]==0){
+        SongPlayed[currentSong]=1;
+        class'DXREvents'.static.MarkBingo(dxr,"PianoSong"$currentSong$"Played");
+        if (ValidSong(currentSong)){
+            class'DXREvents'.static.MarkBingo(dxr,"PianoSongPlayed");
+        }
+    }
+
+    if(player != None) {
+        player.ClientMessage(message);
+        player = None;
+    }
+
+    bUsing = False;
+    message = "";
+    soundHandle = 0;
+    currentSong = -1;
 }
 
 function Frob(actor Frobber, Inventory frobWith)
@@ -24,16 +53,20 @@ function Frob(actor Frobber, Inventory frobWith)
     if ( NextUseTime>Level.TimeSeconds || IsInState('Conversation') || IsInState('FirstPersonConversation') )
         return;
 #else
-    if (bUsing)
-        return;
+    if (bUsing && soundHandle!=0) {
+        StopSound(soundHandle);
+    }
 #endif
 
-    if (dxr==None){
-        foreach AllActors(class'DXRando', dxr) {break;}
+    player = #var(PlayerPawn)(Frobber);
+    message = "";
+    soundHandle = 0;
+    rnd = currentSong;
+    while(rnd == currentSong) {
+        rnd = Rand(38); //make sure this matches the number of sounds below
     }
-
-    rnd = Rand(38); //make sure this matches the number of sounds below
-    switch(rnd){
+    currentSong = rnd;
+    switch(currentSong){
         case 0:
             //DX Theme, Correct
             SelectedSound = sound'Piano1';
@@ -196,30 +229,32 @@ function Frob(actor Frobber, Inventory frobWith)
             duration = 8;
             break;
         default:
-            log("DXRPiano went too far this time!  Got "$rnd);
+            log("DXRPiano went too far this time!  Got "$currentSong);
             return;
     }
 
     if(SelectedSound == None) {
-        log("DXRPiano got an invalid sound!  Got "$rnd);
+        log("DXRPiano got an invalid sound!  Got "$currentSong);
         return;
     }
 
-    if (SongPlayed[rnd]==0){
-        SongPlayed[rnd]=1;
-        class'DXREvents'.static.MarkBingo(dxr,"PianoSong"$rnd$"Played");
-        if (ValidSong(rnd)){
-            class'DXREvents'.static.MarkBingo(dxr,"PianoSongPlayed");
-        }
+    if(message == "") {
+        message = "You played " $ SelectedSound;
     }
 
-    PlaySound(SelectedSound, SLOT_Misc,5.0,, 500);
-    duration += 0.5;
+    soundHandle = PlaySound(SelectedSound, SLOT_Misc,5.0,, 500);
 
 #ifdef hx
+    duration += 0.5;
     NextUseTime = Level.TimeSeconds + duration;
 #else
+    duration = FMax(duration-0.5, 1);// some leniency
     bUsing = True;
     SetTimer(duration, False);
 #endif
+}
+
+defaultproperties
+{
+    currentSong=-1
 }
