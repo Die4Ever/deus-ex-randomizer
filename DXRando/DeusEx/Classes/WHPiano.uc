@@ -6,6 +6,8 @@ var DXRando dxr;
 var #var(PlayerPawn) player;
 var string message;
 var int soundHandle, currentSong;
+var float playTimeLeft;
+var bool broken;
 
 const BROKEN_PIANO_SONG = -2;
 
@@ -18,30 +20,49 @@ function bool ValidSong(int i)
     return True;
 }
 
-function Timer()
+simulated function Tick(float deltaTime)
 {
-    if (dxr==None){
-        foreach AllActors(class'DXRando', dxr) {break;}
-    }
+    if (bUsing){
+        playTimeLeft -= deltaTime;
+        if (playTimeLeft <= 0.0) {
+            playTimeLeft = 0.0;
+            if (dxr==None){
+                foreach AllActors(class'DXRando', dxr) {break;}
+            }
 
-    if (currentSong!=BROKEN_PIANO_SONG && SongPlayed[currentSong]==0){
-        SongPlayed[currentSong]=1;
-        class'DXREvents'.static.MarkBingo(dxr,"PianoSong"$currentSong$"Played");
-        if (ValidSong(currentSong)){
-            class'DXREvents'.static.MarkBingo(dxr,"PianoSongPlayed");
+            if (currentSong!=BROKEN_PIANO_SONG && SongPlayed[currentSong]==0){
+                SongPlayed[currentSong]=1;
+                class'DXREvents'.static.MarkBingo(dxr,"PianoSong"$currentSong$"Played");
+                if (ValidSong(currentSong)){
+                    class'DXREvents'.static.MarkBingo(dxr,"PianoSongPlayed");
+                }
+            } else if (currentSong==BROKEN_PIANO_SONG) {
+                class'DXREvents'.static.MarkBingo(dxr,"BrokenPianoPlayed");
+            }
+
+            if(player != None) {
+                player.ClientMessage(message);
+                player = None;
+            }
+
+            bUsing = False;
+            message = "";
+            soundHandle = 0;
         }
-    } else if (currentSong==BROKEN_PIANO_SONG) {
-        class'DXREvents'.static.MarkBingo(dxr,"BrokenPianoPlayed");
     }
 
-    if(player != None) {
-        player.ClientMessage(message);
-        player = None;
+    if (!broken && PianoIsBroken()){
+        broken = True;
+        bUsing = True;
+        if (soundHandle!=0){
+            StopSound(soundHandle);
+            soundHandle = 0;
+        }
+        currentSong=BROKEN_PIANO_SONG;
+        playTimeLeft = 8.0;
+        soundHandle = PlaySound(sound'MaxPaynePianoJustBroke', SLOT_Misc,5.0,, 500);
+        message = GetSongMessage(sound'MaxPaynePianoJustBroke');
     }
-
-    bUsing = False;
-    message = "";
-    soundHandle = 0;
 }
 
 function bool PianoIsBroken()
@@ -268,7 +289,7 @@ function Frob(actor Frobber, Inventory frobWith)
 #else
     duration = FMax(duration-0.5, 1);// some leniency
     bUsing = True;
-    SetTimer(duration, False);
+    playTimeLeft = duration;
 #endif
 }
 
@@ -353,6 +374,8 @@ function string GetSongMessage(Sound SelectedSound)
             return "You played Theme A from Tetris";
         case sound'MaxPayneBrokenPianoPlay':
             return "You played a broken piano";
+        case sound'MaxPaynePianoJustBroke':
+            return "You just broke a perfectly good piano";
         default:
             return "You played an unknown song - "$SelectedSound$" (REPORT ME!)";
     }
@@ -363,4 +386,6 @@ defaultproperties
     currentSong=-1
     bFlammable=True
     HitPoints=100
+    playTimeLeft=0.0
+    broken=False
 }
