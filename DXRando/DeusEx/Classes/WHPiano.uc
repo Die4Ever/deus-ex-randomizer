@@ -10,10 +10,11 @@ var float playTimeLeft;
 var bool broken;
 
 const BROKEN_PIANO_SONG = -2;
+const JUST_BROKEN_PIANO = -3;
 
 function bool ValidSong(int i)
 {
-    if (i==1 || i==2 || i==6 || i==25 || i==BROKEN_PIANO_SONG){
+    if (i==1 || i==2 || i==6 || i==25 || i==BROKEN_PIANO_SONG || i==JUST_BROKEN_PIANO){
         return False;
     }
 
@@ -30,7 +31,7 @@ simulated function Tick(float deltaTime)
                 foreach AllActors(class'DXRando', dxr) {break;}
             }
 
-            if (currentSong!=BROKEN_PIANO_SONG && SongPlayed[currentSong]==0){
+            if (!PianoIsBroken() && SongPlayed[currentSong]==0){
                 SongPlayed[currentSong]=1;
                 class'DXREvents'.static.MarkBingo(dxr,"PianoSong"$currentSong$"Played");
                 if (ValidSong(currentSong)){
@@ -58,7 +59,7 @@ simulated function Tick(float deltaTime)
             StopSound(soundHandle);
             soundHandle = 0;
         }
-        currentSong=BROKEN_PIANO_SONG;
+        currentSong=JUST_BROKEN_PIANO;
         playTimeLeft = 8.0;
         soundHandle = PlaySound(sound'MaxPaynePianoJustBroke', SLOT_Misc,5.0,, 500);
         message = GetSongMessage(sound'MaxPaynePianoJustBroke');
@@ -82,7 +83,7 @@ function Frob(actor Frobber, Inventory frobWith)
         return;
 #else
     if (bUsing && soundHandle!=0) {
-        if (currentSong!=BROKEN_PIANO_SONG){
+        if (!PianoIsBroken()){
             StopSound(soundHandle);
         } else {
             return;
