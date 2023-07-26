@@ -121,11 +121,6 @@ def _DetectFlavors(system:Path):
         '5964bd1dcea8edb20cb1bc89881b0556': 'DXRando v2.5',
     }
 
-    if (game / 'VMDSim').is_dir():
-        flavors = ['Vanilla? Madder.']# VMD seems like it can only exist by itself
-        debug("_DetectFlavors", flavors)
-        return flavors
-
     if (system / 'DeusEx.u').exists():
         flavors.append('Vanilla')
         vanilla_md5 = MD5((system / 'DeusEx.u').read_bytes())
@@ -149,6 +144,12 @@ def _DetectFlavors(system:Path):
         flavors.append('HX')
     if (game / 'Revision').is_dir():
         flavors.append('Revision')
+
+    if (game / 'VMDSim').is_dir():
+        flavors.append('Vanilla? Madder.')
+        # VMD uses the vanilla DeusEx.u path, TODO: for non-windows, force in_place=False
+        if not IsWindows() and 'Vanilla' in flavors:
+            flavors.remove('Vanilla')
 
     debug("_DetectFlavors", flavors)
     return flavors
