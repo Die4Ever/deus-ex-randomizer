@@ -8,6 +8,9 @@ var string message;
 var int soundHandle, currentSong;
 var float playTimeLeft;
 var bool broken;
+#ifdef hx
+var bool bUsing;
+#endif
 
 const BROKEN_PIANO_SONG = -2;
 const JUST_BROKEN_PIANO = -3;
@@ -283,13 +286,13 @@ function Frob(actor Frobber, Inventory frobWith)
     }
 
     soundHandle = PlaySound(SelectedSound, SLOT_Misc,5.0,, 500);
+    bUsing = True;
 
 #ifdef hx
     duration += 0.5;
     NextUseTime = Level.TimeSeconds + duration;
 #else
     duration = FMax(duration-0.5, 1);// some leniency
-    bUsing = True;
     playTimeLeft = duration;
 #endif
 }

@@ -1,4 +1,4 @@
-class DXRText extends DXText;
+class DXRText extends #var(prefix)DXText;
 
 defaultproperties
 {
