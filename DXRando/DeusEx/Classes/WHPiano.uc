@@ -322,7 +322,7 @@ function string GetSongMessage(Sound SelectedSound)
         case sound'KirbyGreenGreens':
             return "You played Green Greens from Kirby's Dreamland";
         case sound'MetroidItem':
-            return "You played the Item Acquisition Theme from Metroid";
+            return "You played the Item Acquisition Fanfare from Metroid";
         case sound'NeverGonnaGive':
             return "You played Never Gonna Give You Up by Rick Astley";
         case sound'MiiChannel':
