@@ -43,7 +43,7 @@ function AddDXRCreditsGeneral()
 
     PrintLn();
     PrintHeader("Home Page");
-    PrintText("https://github.com/Die4Ever/deus-ex-randomizer");
+    PrintText("https://mods4ever.com");
 
     PrintLn();
     PrintHeader("Discord Community");
