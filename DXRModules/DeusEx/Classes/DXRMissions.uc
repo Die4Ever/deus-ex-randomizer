@@ -424,6 +424,8 @@ function UpdateGoalWithRandoInfo(name goalName, string text)
     local DeusExGoal goal;
     local int randoPos;
 
+    if(player(true)==None) return;// don't spam HX logs
+
     goal = player().FindGoal(goalName);
     if(goal == None) return;
 

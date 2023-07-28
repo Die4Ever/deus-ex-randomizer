@@ -14,6 +14,7 @@ function CreateChoices()
 
     CreateChoice(class'MenuChoice_Telemetry');
     CreateChoice(class'MenuChoice_JoinDiscord');
+    CreateChoice(class'MenuChoice_Website');
     CreateChoice(class'MenuChoice_ReleasePage');
     // TODO: button to open Mastodon?
 

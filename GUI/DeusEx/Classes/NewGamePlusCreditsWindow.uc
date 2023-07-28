@@ -21,6 +21,12 @@ function DoNewGamePlus()
 
 function AddDXRCreditsGeneral()
 {
+    local Texture randoTextTextures[6];
+    randoTextTextures[0]=Texture'RandomizerTextCredits1';
+    randoTextTextures[1]=Texture'RandomizerTextCredits2';
+
+    PrintPicture(randoTextTextures,2,1,512,64);
+    PrintLn();
 #ifdef gmdx
     PrintHeader("Deus Ex GMDX Randomizer");
 #elseif vmd
@@ -40,10 +46,11 @@ function AddDXRCreditsGeneral()
     PrintHeader("Contributors");
     PrintText("Die4Ever");
     PrintText("TheAstropath");
+    PrintText("Silverstrings");
 
     PrintLn();
     PrintHeader("Home Page");
-    PrintText("https://github.com/Die4Ever/deus-ex-randomizer");
+    PrintText("Mods4Ever.com");
 
     PrintLn();
     PrintHeader("Discord Community");

@@ -60,11 +60,11 @@ class InstallerWindow(GUIBase):
 
         # TODO: option to enable telemetry? checking for updates?
 
-        # DISCORD!
-        discordLink = Label(self.frame,text='discord.gg/daQVyAp2ds',width=22,height=2,font=self.linkfont, fg="Blue", cursor="hand2")
-        discordLink.bind('<Button-1>', lambda *args: webbrowser.open_new('https://discord.gg/daQVyAp2ds'))
-        discordLink.grid(column=1,row=100, sticky='SW', padx=pad, pady=pad)
-        myTip = Hovertip(discordLink, 'Join our Discord!')
+        # WEBSITE!
+        webLink = Label(self.frame,text='Mods4Ever.com',width=22,height=2,font=self.linkfont, fg="Blue", cursor="hand2")
+        webLink.bind('<Button-1>', lambda *args: webbrowser.open_new('https://mods4ever.com'))
+        webLink.grid(column=1,row=100, sticky='SW', padx=pad, pady=pad)
+        myTip = Hovertip(webLink, 'Check out our website and join our Discord!')
 
         # install button
         self.installButton = Button(self.frame,text='Install!',width=24,height=2,font=self.font, command=self.Install)

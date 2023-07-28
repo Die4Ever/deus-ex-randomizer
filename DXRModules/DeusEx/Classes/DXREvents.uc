@@ -2311,6 +2311,7 @@ defaultproperties
     bingo_options(207)=(event="PawnState_Dancing",desc="You can dance if you want to",max=1)
     bingo_options(208)=(event="BirdWatching",desc="Watch birds for %s seconds",max=30,missions=19838)
     bingo_options(209)=(event="NYEagleStatue_peeped",desc="Look at a bronze eagle statue",max=1,missions=28)
+    bingo_options(210)=(event="BrokenPianoPlayed",desc="Play a broken piano",max=1,missions=64)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -2333,13 +2334,16 @@ defaultproperties
     mutually_exclusive(18)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM3")
     mutually_exclusive(19)=(e1="AnnaNavarre_DeadM5",e2="AnnaNavarre_DeadM4")
     mutually_exclusive(20)=(e1="VialAmbrosia_Activated",e2="GaveDowdAmbrosia")
-    mutually_exclusive(21)=(e1="AllPianoSongsPlayed",e2="PianoSong0Played")
-    mutually_exclusive(22)=(e1="AllPianoSongsPlayed",e2="PianoSong7Played")
+    mutually_exclusive(21)=(e1="PianoSongPlayed",e2="PianoSong0Played")
+    mutually_exclusive(22)=(e1="PianoSongPlayed",e2="PianoSong7Played")
     mutually_exclusive(23)=(e1="PianoSong0Played",e2="PianoSong7Played")
     mutually_exclusive(24)=(e1="UNATCOTroop_peeptime",e2="Terrorist_peeptime")
     mutually_exclusive(25)=(e1="MJ12Troop_peeptime",e2="UNATCOTroop_peeptime")
     mutually_exclusive(26)=(e1="MJ12Troop_peeptime",e2="Terrorist_peeptime")
     mutually_exclusive(27)=(e1="MJ12Troop_peeptime",e2="MJ12Commando_peeptime")
+    mutually_exclusive(28)=(e1="BrokenPianoPlayed",e2="PianoSongPlayed")
+    mutually_exclusive(29)=(e1="BrokenPianoPlayed",e2="PianoSong0Played")
+    mutually_exclusive(30)=(e1="BrokenPianoPlayed",e2="PianoSong7Played")
 
     bingo_win_countdown=-1
 }

@@ -52,13 +52,15 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
 * New Game+ - after beating the game play it again keeping your items, skills, and augs, but with increased difficulty and a new seed
     * Takes away 1 random augmentation, and 1 of your weapons
     * Takes away half your skill points and 5 random skill levels, so the player has to choose which ones to level up first
-* New game modes!
+* New game modes! [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Game-Modes)
     * Entrance Randomization - changes what level each teleporter takes you to, but keeps it within the same mission.
     * Horde Mode - fight for your life to see how long you can survive in the Paris Cathedral.
     * Zero Rando - great for first-time Deus Ex players to benefit from the bug fixes and QoL improvements we've made, without any randomization.
     * Randomizer Lite - randomizes some things without interfering with the immersion and mood of the game. Great for players who haven't played Deus Ex in a long time, or if you're intimidated by the full Randomizer.
     * Serious Sam mode - same as the normal game but with 10x as many enemies. The player has increased health and takes reduced damage to compensate.
-* Challenge mode loadouts!
+    * Walton Ware mode - Walton Ware mode: a game mode focused on quickly doing bingos and New Game+.
+    * Speedrun mode - speedrun with fewer resets while still being able to enjoy higher difficulties.
+* Challenge mode loadouts! [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Loadouts)
     * Stick With the Prod Pure means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts
     * Ninja JC - the only weapons allowed are throwing knives, swords, pepper spray, and grenades. You also get a Ninja Augmentation which gives you speed and stealth at the same time
@@ -126,4 +128,4 @@ The large metal crates are now destructible with 2000hp. Alcohol now fixes dead 
 
 ---
 
-Join the [discord channel for discussion](https://discord.gg/daQVyAp2ds), or follow me on [Twitter @Die4EverDM](https://twitter.com/Die4EverDM), or [on Mastodon @Die4ever@mastodon.gamedev.place](https://mastodon.gamedev.place/@Die4ever), or [@theastropath@mstdn.ca on Mastodon](https://mstdn.ca/@theastropath).
+Join the [discord channel for discussion](https://discord.gg/daQVyAp2ds), or follow me on [Twitter @Die4EverDM](https://twitter.com/Die4EverDM), or [on Mastodon @Die4ever@mastodon.gamedev.place](https://mastodon.gamedev.place/@Die4ever), or [@theastropath@mstdn.ca on Mastodon](https://mstdn.ca/@theastropath). Also check out [Mods4Ever.com](https://mods4ever.com)

@@ -85,7 +85,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
         exe_source = GetSourcePath() / '3rdParty' / "Launch.exe"
         kentie = False
     exename = 'DXRando'
-    # TODO: allow separate exe file for linux
+    # TODO: allow separate exe file for linux, use new in_place boolean setting?
     # maybe I can create the SteamPlay config file needed? I think it's a .desktop file
     if not IsWindows():
         exename = 'DeusEx'

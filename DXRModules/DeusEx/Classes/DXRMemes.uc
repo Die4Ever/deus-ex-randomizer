@@ -153,6 +153,7 @@ function AnyEntry()
     local #var(prefix)IonStormLogo islogo;
     local #var(prefix)EidosLogo elogo;
     local #var(prefix)ElectricityEmitter elec;
+    local #var(prefix)DXText text;
     local Actor a;
     local Rotator r;
     local Vector v;
@@ -229,6 +230,40 @@ function AnyEntry()
                 v.Z = 70;
                 elec.move(v);
             }
+
+
+//Add me back in once we have "Randomizer" name textures!  Just change the textures below
+            foreach AllActors(class'#var(prefix)DXText',text)
+            {
+                text.bHidden=True; //Hide all the original text
+            }
+            if (dxr.localURL=="DX"){
+                text = Spawn(class'DXRText',,,vectm(-60.979568,57.046417,-137.022430),rotm(0,32768,0));
+                text.Skin = None;
+                text = Spawn(class'DXRText',,,vectm(138.886353,57.125278,-137.022430),rotm(0,32768,0));
+                text.Skin = Texture'DeusExDeco.Skins.DXTextTex2';
+
+                // Randomizer logo
+                v = vect(10, 57.15, -177.66);// midpoint
+                text = Spawn(class'DXRText',,,vectm(v.X - 100, v.Y, v.Z),rotm(0,32768,0));
+                text.Skin = Texture'RandomizerTextTex1';  //Left half of "Randomizer" text texture
+                text = Spawn(class'DXRText',,,vectm(v.X + 100, v.Y, v.Z),rotm(0,32768,0));
+                text.Skin = Texture'RandomizerTextTex2';  //Right half of "Randomizer" text texture
+            } else if (dxr.localURL=="DXONLY"){
+                text = Spawn(class'DXRText',,,vectm(-62.015648,-55.260841,-139.022430),rotm(0,49136,0));
+                text.Skin = None;
+                text = Spawn(class'DXRText',,,vectm(-61.787956,144.605042,-139.022430),rotm(0,49136,0));
+                text.Skin = Texture'DeusExDeco.Skins.DXTextTex2';
+
+                // Randomizer logo
+                v = vect(-62, 10, -178.990417);// midpoint
+                text = Spawn(class'DXRText',,,vectm(v.X, v.Y - 100, v.Z),rotm(0,49136,0));
+                text.Skin = Texture'RandomizerTextTex1';  //Left half of "Randomizer" text texture
+                text = Spawn(class'DXRText',,,vectm(v.X, v.Y + 100, v.Z),rotm(0,49136,0));
+                text.Skin = Texture'RandomizerTextTex2';  //Right half of "Randomizer" text texture
+            }
+
+
             break;
 
         case "INTRO":
