@@ -244,7 +244,7 @@ function AnyEntry()
                 text.Skin = Texture'DeusExDeco.Skins.DXTextTex2';
 
                 // Randomizer logo
-                v = vect(0, 57.15, -177.66);// midpoint
+                v = vect(10, 57.15, -177.66);// midpoint
                 text = Spawn(class'DXRText',,,vectm(v.X - 100, v.Y, v.Z),rotm(0,32768,0));
                 text.Skin = Texture'RandomizerTextTex1';  //Left half of "Randomizer" text texture
                 text = Spawn(class'DXRText',,,vectm(v.X + 100, v.Y, v.Z),rotm(0,32768,0));
@@ -256,10 +256,10 @@ function AnyEntry()
                 text.Skin = Texture'DeusExDeco.Skins.DXTextTex2';
 
                 // Randomizer logo
-                v = vect(-62,0,-178.990417);// midpoint
+                v = vect(-62, 10, -178.990417);// midpoint
                 text = Spawn(class'DXRText',,,vectm(v.X, v.Y - 100, v.Z),rotm(0,49136,0));
                 text.Skin = Texture'RandomizerTextTex1';  //Left half of "Randomizer" text texture
-                text = Spawn(class'DXRText',,,vectm(v.X, v.Y + 100, v.Z + 0.1),rotm(0,49136,0));
+                text = Spawn(class'DXRText',,,vectm(v.X, v.Y + 100, v.Z),rotm(0,49136,0));
                 text.Skin = Texture'RandomizerTextTex2';  //Right half of "Randomizer" text texture
             }
 
