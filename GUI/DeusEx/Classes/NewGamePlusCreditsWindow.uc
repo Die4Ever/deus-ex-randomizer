@@ -46,6 +46,7 @@ function AddDXRCreditsGeneral()
     PrintHeader("Contributors");
     PrintText("Die4Ever");
     PrintText("TheAstropath");
+    PrintText("Silverstrings");
 
     PrintLn();
     PrintHeader("Home Page");
