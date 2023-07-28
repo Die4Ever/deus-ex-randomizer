@@ -50,7 +50,7 @@ function AddDXRCreditsGeneral()
 
     PrintLn();
     PrintHeader("Home Page");
-    PrintText("https://mods4ever.com");
+    PrintText("Mods4Ever.com");
 
     PrintLn();
     PrintHeader("Discord Community");
