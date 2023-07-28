@@ -242,18 +242,24 @@ function AnyEntry()
                 text.Skin = None;
                 text = Spawn(class'DXRText',,,vectm(138.886353,57.125278,-137.022430),rotm(0,32768,0));
                 text.Skin = Texture'DeusExDeco.Skins.DXTextTex2';
-                text = Spawn(class'DXRText',,,vectm(-92.566132,57.112366,-177.640106),rotm(0,32768,0));
+
+                // Randomizer logo
+                v = vect(0, 57.15, -177.66);// midpoint
+                text = Spawn(class'DXRText',,,vectm(v.X - 100, v.Y, v.Z),rotm(0,32768,0));
                 text.Skin = Texture'RandomizerTextTex1';  //Left half of "Randomizer" text texture
-                text = Spawn(class'DXRText',,,vectm(107.299881,57.191223,-177.675735),rotm(0,32768,0));
+                text = Spawn(class'DXRText',,,vectm(v.X + 100, v.Y, v.Z),rotm(0,32768,0));
                 text.Skin = Texture'RandomizerTextTex2';  //Right half of "Randomizer" text texture
             } else if (dxr.localURL=="DXONLY"){
                 text = Spawn(class'DXRText',,,vectm(-62.015648,-55.260841,-139.022430),rotm(0,49136,0));
                 text.Skin = None;
                 text = Spawn(class'DXRText',,,vectm(-61.787956,144.605042,-139.022430),rotm(0,49136,0));
                 text.Skin = Texture'DeusExDeco.Skins.DXTextTex2';
-                text = Spawn(class'DXRText',,,vectm(-63.055153,-87.412720,-178.990417),rotm(0,49136,0));
+
+                // Randomizer logo
+                v = vect(-62,0,-178.990417);// midpoint
+                text = Spawn(class'DXRText',,,vectm(v.X, v.Y - 100, v.Z),rotm(0,49136,0));
                 text.Skin = Texture'RandomizerTextTex1';  //Left half of "Randomizer" text texture
-                text = Spawn(class'DXRText',,,vectm(-61.827278,112.453339,-178.990417),rotm(0,49136,0));
+                text = Spawn(class'DXRText',,,vectm(v.X, v.Y + 100, v.Z + 0.1),rotm(0,49136,0));
                 text.Skin = Texture'RandomizerTextTex2';  //Right half of "Randomizer" text texture
             }
 
