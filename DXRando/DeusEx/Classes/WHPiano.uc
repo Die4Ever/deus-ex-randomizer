@@ -6,7 +6,7 @@ var DXRando dxr;
 var #var(PlayerPawn) player;
 var string message;
 var int soundHandle, currentSong;
-var float playTimeLeft;
+var float PlayDoneTime;
 var bool broken;
 #ifdef hx
 var bool bUsing;
@@ -27,9 +27,7 @@ function bool ValidSong(int i)
 simulated function Tick(float deltaTime)
 {
     if (bUsing){
-        playTimeLeft -= deltaTime;
-        if (playTimeLeft <= 0.0) {
-            playTimeLeft = 0.0;
+        if (PlayDoneTime<=Level.TimeSeconds) {
             if (dxr==None){
                 foreach AllActors(class'DXRando', dxr) {break;}
             }
@@ -58,12 +56,12 @@ simulated function Tick(float deltaTime)
     if (!broken && PianoIsBroken()){
         broken = True;
         bUsing = True;
-        if (soundHandle!=0){
+        if (soundHandle!=0 && Role==ROLE_Authority){
             StopSound(soundHandle);
             soundHandle = 0;
         }
         currentSong=JUST_BROKEN_PIANO;
-        playTimeLeft = 8.0;
+        PlayDoneTime = 8.0 + Level.TimeSeconds;
         soundHandle = PlaySound(sound'MaxPaynePianoJustBroke', SLOT_Misc,5.0,, 500);
         message = GetSongMessage(sound'MaxPaynePianoJustBroke');
     }
@@ -82,7 +80,7 @@ function Frob(actor Frobber, Inventory frobWith)
 
     Super(WashingtonDecoration).Frob(Frobber, frobWith);
 #ifdef hx
-    if ( NextUseTime>Level.TimeSeconds || IsInState('Conversation') || IsInState('FirstPersonConversation') )
+    if ( PlayDoneTime>Level.TimeSeconds || IsInState('Conversation') || IsInState('FirstPersonConversation') )
         return;
 #else
     if (bUsing && soundHandle!=0) {
@@ -288,13 +286,8 @@ function Frob(actor Frobber, Inventory frobWith)
     soundHandle = PlaySound(SelectedSound, SLOT_Misc,5.0,, 500);
     bUsing = True;
 
-#ifdef hx
-    duration += 0.5;
-    NextUseTime = Level.TimeSeconds + duration;
-#else
     duration = FMax(duration-0.5, 1);// some leniency
-    playTimeLeft = duration;
-#endif
+    PlayDoneTime = Level.TimeSeconds + duration;
 }
 
 function string GetSongMessage(Sound SelectedSound)
@@ -390,6 +383,6 @@ defaultproperties
     currentSong=-1
     bFlammable=True
     HitPoints=100
-    playTimeLeft=0.0
+    PlayDoneTime=0.0
     broken=False
 }
