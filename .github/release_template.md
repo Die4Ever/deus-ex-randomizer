@@ -14,7 +14,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
 <a href="https://www.youtube.com/watch?v=XsoIKbn_suE&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch" target="_blank">
 <img src="https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/daf30de5-fd3e-4b65-a0cf-abc7f6ac758b" alt="v2.0 Trailer" width="500"/></a>
 
-[See the full README here.](https://github.com/Die4Ever/deus-ex-randomizer#readme) Also check out [our Discord!](https://discord.gg/daQVyAp2ds)
+[See the full README here.](https://github.com/Die4Ever/deus-ex-randomizer#readme) Also check out [our Discord](https://discord.gg/daQVyAp2ds) and [Mods4Ever.com](https://mods4ever.com)
 
 ## Major Changes
 
