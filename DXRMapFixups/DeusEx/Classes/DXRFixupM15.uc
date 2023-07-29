@@ -154,6 +154,15 @@ function PreFirstEntryMapFixes()
             d.bFrobbable = true;
         }
 
+        //Fix the Tong Ending skip for real for real
+        foreach AllActors(class'Switch1',s){
+           if (s.Event=='destroy_generator'){
+                s.Tag='destroy_generator_switch';
+                class'DXRTriggerEnable'.static.Create(s,'Generator_overload','destroy_generator_switch');
+            }
+        }
+
+
         //Generator Failsafe buttons should spit out some sort of message if the coolant isn't cut
         //start_buzz1 and start_buzz2 are the tags that get hit when the coolant isn't cut
         se = Spawn(class'SpecialEvent',,'start_buzz1');
@@ -238,6 +247,10 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'Switch1',s){
             if (s.Name == 'Switch21'){
                 s.Event = 'door_page_overlook';
+            } else if (s.Event=='kill_page'){
+                //Fix the Illuminati ending skip
+                s.Tag='kill_page_switch';
+                class'DXRTriggerEnable'.static.Create(s,'Page_button','kill_page_switch');
             }
         }
 
@@ -249,6 +262,7 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
+
         break;
     }
 #endif
