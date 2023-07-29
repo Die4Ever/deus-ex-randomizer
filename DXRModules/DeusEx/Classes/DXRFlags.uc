@@ -862,10 +862,10 @@ function int ScoreFlags()
     else // else we won by hitting the end of the game
         score -= settings.starting_map * 120;// basically starting mission * 1200
 
-    score -= settings.doorsdestructible * 2;
-    score -= settings.doorspickable * 2;
+    score -= settings.doorsdestructible * 5;
+    score -= settings.doorspickable * 5;
     if(settings.keysrando > 0)
-        score += 200;
+        score += 500;
     //score += settings.keys_containers;
     //score += settings.infodevices_containers;
     score -= ClampFlagValue(settings.deviceshackable,0,100) * 2;
@@ -883,10 +883,11 @@ function int ScoreFlags()
     //settings.skills_disable_downgrades = 5;
     //settings.skills_reroll_missions = 5;
     //settings.skills_independent_levels = 100;
-    score += ClampFlagValue(settings.banned_skills,0,100) * 20;
-    score += ClampFlagValue(settings.banned_skill_levels,0,100) * 20;
-    score += sqrt(settings.minskill) * 50; //Square root so the bonus tapers off as you get more extreme
-    score += sqrt(settings.maxskill) * 30; //Square root so the bonus tapers off as you get more extreme
+    score += ClampFlagValue(settings.banned_skills,0,100) * 30;
+    score += ClampFlagValue(settings.banned_skill_levels,0,100) * 30;
+    score += sqrt(settings.minskill) * 60; //Square root so the bonus tapers off as you get more extreme
+    score += sqrt(settings.maxskill) * 40; //Square root so the bonus tapers off as you get more extreme
+    score += ClampFlagValue(settings.skill_value_rando, 0, 100) * 2;
     score -= ClampFlagValue(settings.ammo,0,100);
     score -= ClampFlagValue(settings.medkits,0,100);
     score -= ClampFlagValue(settings.biocells,0,100);
@@ -916,7 +917,6 @@ function int ScoreFlags()
     score += ClampFlagValue(settings.swapcontainers,0,100);
     //settings.augcans = 100;
     //settings.aug_value_rando = 100;
-    //settings.skill_value_rando = 100;
     //settings.min_weapon_dmg = 50;
     //settings.max_weapon_dmg = 150;
     //settings.min_weapon_shottime = 50;
