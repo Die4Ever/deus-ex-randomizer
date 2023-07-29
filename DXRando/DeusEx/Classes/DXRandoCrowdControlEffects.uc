@@ -1360,6 +1360,29 @@ function int TriggerAllAlarms(String viewer) {
 
 }
 
+function int SpawnNastyRat(string viewer)
+{
+    local vector spawnLoc;
+    local NastyRat nr;
+
+    spawnLoc = ccLink.ccModule.GetRandomPositionFine(,2000,10000);
+
+    nr = Spawn(class'NastyRat',,,spawnLoc);
+    if (nr==None){
+        return TempFail;
+    }
+
+    PlayerMessage(viewer@"had declared a war against rats...");
+    if (ccLink.anon || ccLink.offline){
+        class'DXRNames'.static.GiveRandomName(dxr, nr);
+    } else {
+        nr.UnfamiliarName = viewer;
+        nr.FamiliarName = viewer;
+    }
+
+    return Success;
+}
+
 function int SpawnPawnNearPlayer(DeusExPlayer p, class<ScriptedPawn> newclass, bool friendly, string viewer)
 {
     local int i;
@@ -2009,6 +2032,12 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
             player().QuickSave();
             break;
 
+        case "nasty_rat":
+            if (!InGame()) {
+                return TempFail;
+            }
+            return SpawnNastyRat(viewer);
+            break;
 
         default:
             return doCrowdControlEventWithPrefix(code, param, viewer, type, duration);

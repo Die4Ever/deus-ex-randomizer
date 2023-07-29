@@ -135,7 +135,7 @@ function int RandomOfflineEffects() {
     viewer = "Simulated Crowd Control";
     param[0] = "1";
 
-    switch(Rand(81)) {
+    switch(Rand(82)) {
     case 0: if(Rand(2)==0){ return 0; } else { return ccEffects.doCrowdControlEvent("poison", param, viewer, 0, 0); }
     case 1: return ccEffects.doCrowdControlEvent("glass_legs", param, viewer, 0, 0);
     case 2: param[0] = string(Rand(20)); return ccEffects.doCrowdControlEvent("give_health", param, viewer, 0, 0);
@@ -267,6 +267,7 @@ function int RandomOfflineEffects() {
     case 78: return ccEffects.doCrowdControlEvent("spawnenemy_militarybot", param, viewer, 0, 0);
     case 79: return ccEffects.doCrowdControlEvent("spawnenemy_doberman", param, viewer, 0, 0);
     case 80: return ccEffects.doCrowdControlEvent("spawnenemy_greasel", param, viewer, 0, 0);
+    case 81: return ccEffects.doCrowdControlEvent("nasty_rat", param, viewer, 0, 0);
 
     }
 
