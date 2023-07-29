@@ -17,6 +17,7 @@ function int InitGoals(int mission, string map)
 
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
         AddActorLocation(loc, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
+        AddActorLocation(loc, 2, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0)); //DataLinkTrigger should be centered on his carcass rather than his living location
         AddActorLocation(loc, 3, vect(1891.301514, -289.854248, -64.997406), rot(-3000, 58200, 0));
 
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(375,3860,-604), rot(0, 8048, 0));
@@ -92,6 +93,7 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)ComputerPersonal cp;
     local #var(prefix)ComputerSecurity cs;
+    local #var(prefix)DataLinkTrigger  dlt;
     local int i;
 
     if( dxr.localURL ~= "05_NYC_UNATCOHQ" ) {
@@ -124,6 +126,13 @@ function PreFirstEntryMapFixes()
                 if(cs.Views[i].CameraTag != 'medcam') {
                     cs.Views[i].titleString = "Paul Denton";
                 }
+            }
+        }
+
+        foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
+            if (dlt.Name=='DataLinkTrigger6'){
+                dlt.SetCollisionSize(200,100);
+                break;
             }
         }
     }
