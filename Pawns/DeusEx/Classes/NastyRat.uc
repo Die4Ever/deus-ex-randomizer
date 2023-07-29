@@ -9,6 +9,9 @@ class NastyRat extends Rat;
 var float CheckTime;
 var float NextThrowTime;
 
+var float ThrowFrequency;
+var float CheckFrequency;
+
 function Tick(float deltaSeconds)
 {
     local Vector HitNormal, HitLocation, ThrowPoint;
@@ -16,8 +19,12 @@ function Tick(float deltaSeconds)
     local Rotator Aim;
 
     if (CheckTime < Level.TimeSeconds) {
+        if (CheckTime == 0.0) {
+            //Don't throw a grenade the moment we spawn...
+            NextThrowTime = Level.TimeSeconds + ThrowFrequency;
+        }
 
-        CheckTime = Level.TimeSeconds + 2;
+        CheckTime = Level.TimeSeconds + CheckFrequency;
 
         if (NextThrowTime > Level.TimeSeconds){
             return;
@@ -35,7 +42,7 @@ function Tick(float deltaSeconds)
                 ThrowPoint = Location + vect(0,0,20);
                 Aim = rotator(player.Location - ThrowPoint);
                 Spawn(PickAGrenade(),,,ThrowPoint,Aim);
-                NextThrowTime = Level.TimeSeconds + 6;
+                NextThrowTime = Level.TimeSeconds + ThrowFrequency;
             }
 
         }
@@ -62,12 +69,6 @@ function class<Projectile> PickAGrenade()
     return class'GasGrenade';
 }
 
-//The rat won't be holding a weapon, so just fake it out
-function bool IsThrownWeapon(DeusExWeapon testWeapon)
-{
-	return True;
-}
-
 function bool ShouldBeStartled(Pawn startler)
 {
     return False;
@@ -77,6 +78,8 @@ defaultproperties
 {
      CheckTime=0.00000
      NextThrowTime=0.0000
+     ThrowFrequency=6.0
+     CheckFrequency=2.0
      CollisionRadius=20.000000
      CollisionHeight=17.50000
      DrawScale=4.000000
@@ -93,11 +96,11 @@ defaultproperties
      bForceStasis=False
      Restlessness=1.00000
      Wanderlust=1.00000
-     Orders=Following
+     Orders=Shadowing
      MaxStepHeight=25.00000
      BaseEyeHeight=3.000000
      JumpZ=30.000000
-     WalkingSpeed=0.18
+     WalkingSpeed=1.0
      GroundSpeed=100.000000
      WaterSpeed=24.000000
      AirSpeed=60.000000
@@ -105,4 +108,5 @@ defaultproperties
      BindName="NastyRat"
      FamiliarName="Nasty Rat"
      UnfamiliarName="Nasty Rat"
+     AttitudeToPlayer=ATTITUDE_Follow
 }
