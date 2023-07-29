@@ -18,6 +18,16 @@ function Tick(float deltaSeconds)
     local #var(PlayerPawn) player;
     local Rotator Aim;
 
+    time+=deltaSeconds;
+
+    if (time >1.0)
+    {
+        time = 0;
+        if (FRand() < 0.05){
+            PlaySound(sound'RatSqueak2', SLOT_None,,,,RandomPitch());
+        }
+    }
+
     if (CheckTime < Level.TimeSeconds) {
         if (CheckTime == 0.0) {
             //Don't throw a grenade the moment we spawn...
@@ -41,7 +51,7 @@ function Tick(float deltaSeconds)
                 //... and it has line of sight
                 ThrowPoint = Location + vect(0,0,20);
                 Aim = rotator(player.Location - ThrowPoint);
-                Spawn(PickAGrenade(),,,ThrowPoint,Aim);
+                Spawn(PickAGrenade(),self,,ThrowPoint,Aim);
                 NextThrowTime = Level.TimeSeconds + ThrowFrequency;
             }
 
@@ -72,6 +82,19 @@ function class<Projectile> PickAGrenade()
 function bool ShouldBeStartled(Pawn startler)
 {
     return False;
+}
+
+function float RandomPitch()
+{
+	return (0.25 - 0.2*FRand());
+}
+
+function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation, Vector offset, Name damageType){
+    if (instigatedBy==self && damageType=='Exploded'){
+        Damage = Damage * 0.1;
+        instigatedBy = None; //Prevents the 10x damage mult for point-blank hits
+    }
+    return Super.ModifyDamage(Damage,instigatedBy,hitlocation,offset,damageType);
 }
 
 defaultproperties
