@@ -16,6 +16,12 @@ function Tick(float deltaSeconds)
 {
     local Vector HitNormal, HitLocation, ThrowPoint;
     local #var(PlayerPawn) player;
+    local #var(prefix)Cat cat;
+    local Actor closestTarget;
+    local float closestDistance;
+    local bool closer;
+    local float distance;
+
     local Rotator Aim;
 
     time+=deltaSeconds;
@@ -40,40 +46,63 @@ function Tick(float deltaSeconds)
             return;
         }
 
-        foreach AllActors(class'#var(PlayerPawn)',player){break;}
-        if (player==None){
-            return;
+        closestDistance=999999;
+        closestTarget=None;
+
+        foreach AllActors(class'#var(PlayerPawn)',player){
+            closer=False;
+            distance = VSize(player.Location - Location);
+
+            if (closestTarget==None || distance < closestDistance){
+                if (Trace(HitLocation,HitNormal,player.Location,Location,True)==player){
+                    closestTarget = player;
+                    closestDistance = distance;
+                }
+            }
+        }
+
+        foreach AllActors(class'#var(prefix)Cat',cat){
+            closer=False;
+            distance = VSize(cat.Location - Location);
+
+            if (closestTarget==None || distance < closestDistance){
+                if (Trace(HitLocation,HitNormal,cat.Location,Location,True)==cat){
+                    closestTarget = cat;
+                    closestDistance = distance;
+                }
+            }
         }
 
         //If the rat is close...
-        if (VSize(player.Location - Location)<1000){
-            if (Trace(HitLocation,HitNormal,player.Location,Location,True)==player){
-                //... and it has line of sight
-                ThrowPoint = Location + vect(0,0,20);
-                Aim = rotator(player.Location - ThrowPoint);
-                Spawn(PickAGrenade(),self,,ThrowPoint,Aim);
-                NextThrowTime = Level.TimeSeconds + ThrowFrequency;
-            }
-
+        if (closestDistance<1000){
+            //... and it has line of sight
+            ThrowPoint = Location + vect(0,0,20);
+            Aim = rotator(closestTarget.Location - ThrowPoint);
+            Spawn(PickAGrenade(closestTarget),self,,ThrowPoint,Aim);
+            NextThrowTime = Level.TimeSeconds + ThrowFrequency;
         }
     }
 }
 
-function class<Projectile> PickAGrenade()
+function class<Projectile> PickAGrenade(Actor closestTarget)
 {
     local int i;
 
-    i = rand(4);
+    //LAMs at anything that isn't a player...
+    if (!closestTarget.IsA('#var(PlayerPawn)')){
+        return class'#var(prefix)LAM';
+    }
 
+    i = rand(4);
     switch(i){
         case 0:
-            return class'LAM';
+            return class'#var(prefix)LAM';
         case 1:
-            return class'GasGrenade';
+            return class'#var(prefix)GasGrenade';
         case 2:
-            return class'EMPGrenade';
+            return class'#var(prefix)EMPGrenade';
         case 3:
-            return class'NanoVirusGrenade';
+            return class'#var(prefix)NanoVirusGrenade';
     }
     log("ERROR:  NastyRat somehow didn't pick a valid grenade!  Rolled "$i);
     return class'GasGrenade';
