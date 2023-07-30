@@ -69,6 +69,7 @@ def GetConfChanges(modname):
         #changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'False', 'WindowedViewportX': '1280', 'WindowedViewportY': '720'}
     return (changes, additions)
 
+
 def GetSourcePath() -> Path:
     p = Path(__file__).resolve()
     p = p.parent
@@ -78,6 +79,30 @@ def GetSourcePath() -> Path:
     if (p / 'Configs').is_dir():
         return p
     raise RuntimeError('failed to GetSourcePath()', p)
+
+
+def GetDocumentsDir() -> Path:
+    if not IsWindows():
+        p = Path.home()
+        info('GetDocumentsDir() == ', p)
+        assert p.exists()
+        return p
+    try:
+        import ctypes.wintypes
+        CSIDL_PERSONAL = 5       # My Documents
+        SHGFP_TYPE_CURRENT = 0   # Get current, not default value
+        buf = ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
+        ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
+        p = Path(buf.value)
+        info('GetDocumentsDir() == ', p)
+        assert p.exists()
+        return p
+    except Exception as e:
+        info('ERROR: in GetDocumentsDir():', e)
+    p = Path.home() / 'Documents'
+    info('GetDocumentsDir() == ', p)
+    assert p.exists()
+    return p
 
 
 def getDefaultPath():
