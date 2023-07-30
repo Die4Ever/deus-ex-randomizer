@@ -2209,7 +2209,7 @@ defaultproperties
     bingo_options(105)=(event="MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1,missions=76)
     bingo_options(106)=(event="06_Datacube05",desc="Learn Maggie Chow's Birthday",max=1,missions=64)
     bingo_options(107)=(event="Gray_ClassDead",desc="Kill %s Grays",max=5)
-    bingo_options(108)=(event="CloneCubes",desc="Read about 4 clones in Area 51",max=4,missions=32768)
+    bingo_options(108)=(event="CloneCubes",desc="Read about %s clones in Area 51",max=4,missions=32768)
     bingo_options(109)=(event="blast_door_open",desc="Open the blast doors at Area 51",max=1,missions=32768)
     bingo_options(110)=(event="SpinningRoom",desc="Pass through the spinning room",max=1,missions=512)
     bingo_options(111)=(event="MolePeopleSlaughtered",desc="Slaughter the Mole People",max=1,missions=8)
