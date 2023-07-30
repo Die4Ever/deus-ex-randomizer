@@ -239,6 +239,13 @@ function PreFirstEntryMapFixes_Page()
     local Keypad k;
     local Switch1 s;
     local ComputerPersonal comp_per;
+    local int i;
+    local vector cloneCubeLoc[4];
+#ifdef injections
+    local #var(prefix)DataCube dc[4];
+#else
+    local DXRInformationDevices dc[4];
+#endif
 
     foreach AllActors(class'ComputerSecurity', c) {
         if( c.UserList[0].userName != "graytest" || c.UserList[0].Password != "Lab12" ) continue;
@@ -267,6 +274,23 @@ function PreFirstEntryMapFixes_Page()
             break;
         }
     }
+
+    //Spawn dupes of the clone cubes
+    cloneCubeLoc[0]=vectm(6197.620117,-8455.201172,-5117.649902); //Weird little window near broken door (on Page side)
+    cloneCubeLoc[1]=vectm(5663.339355,-7955.502441,-5557.624512); //On boxes outside middle level UC door
+    cloneCubeLoc[2]=vectm(6333.112305,-7241.149414,-5557.636719); //On boxes right near middle level blue fusion reactor
+    cloneCubeLoc[3]=vectm(7687.463867,-8845.201172,-5940.627441); //On control panel that has flame button in coolant area
+    for(i=0;i<4;i++){
+#ifdef injections
+        dc[i] = Spawn(class'#var(prefix)DataCube',,, cloneCubeLoc[i], rotm(0,0,0));
+#else
+        dc[i] = Spawn(class'DXRInformationDevices',,, cloneCubeLoc[i], rotm(0,0,0));
+#endif
+    }
+    dc[0].textTag='15_Datacube02';
+    dc[1].textTag='15_Datacube03';
+    dc[2].textTag='15_Datacube04';
+    dc[3].textTag='15_Datacube05';
 }
 
 function PreFirstEntryMapFixes()
