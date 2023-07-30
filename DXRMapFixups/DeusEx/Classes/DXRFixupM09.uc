@@ -9,6 +9,9 @@ function CheckConfig()
     add_datacubes[i].map = "09_NYC_Dockyard";
     add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
     i++;
+    add_datacubes[i].map = "09_NYC_Dockyard";
+    add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
+    i++;
 
     Super.CheckConfig();
 }
