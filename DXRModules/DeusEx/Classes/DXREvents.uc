@@ -1764,8 +1764,17 @@ function ReadText(name textTag)
         eventname = "July 18th"; // don't break, fallthrough
     default:
         // HACK: because names normally can't have hyphens? convert to string and use that instead
-        if(string(textTag) == "09_NYC_DOCKYARD--796967769")
-            eventname = "8675309";
+        switch(string(textTag)){
+            case "09_NYC_DOCKYARD--796967769":
+                eventname = "8675309";
+                break;
+            case "15_AREA51_PAGE--32904306":
+            case "15_AREA51_PAGE--1066683761":
+            case "15_AREA51_PAGE--1790818418":
+            case "15_AREA51_PAGE--26631873":
+                eventname="CloneCubes";
+                break;
+        }
         if(eventname != "") {
             pws = DXRPasswords(dxr.FindModule(class'DXRPasswords'));
             if(pws != None)
@@ -1774,8 +1783,8 @@ function ReadText(name textTag)
         } else {
             // it's simple for a bingo event that requires reading just 1 thing
             _MarkBingo(textTag);
+            return;
         }
-        return;
     }
 
     data = class'PlayerDataItem'.static.GiveItem(player());
@@ -2200,7 +2209,7 @@ defaultproperties
     bingo_options(105)=(event="MoonBaseNews",desc="Read news about the Lunar Mining Complex",max=1,missions=76)
     bingo_options(106)=(event="06_Datacube05",desc="Learn Maggie Chow's Birthday",max=1,missions=64)
     bingo_options(107)=(event="Gray_ClassDead",desc="Kill %s Grays",max=5)
-    bingo_options(108)=(event="CloneCubes",desc="Read about the four clones in Area 51",max=4,missions=32768)
+    bingo_options(108)=(event="CloneCubes",desc="Read about 4 clones in Area 51",max=4,missions=32768)
     bingo_options(109)=(event="blast_door_open",desc="Open the blast doors at Area 51",max=1,missions=32768)
     bingo_options(110)=(event="SpinningRoom",desc="Pass through the spinning room",max=1,missions=512)
     bingo_options(111)=(event="MolePeopleSlaughtered",desc="Slaughter the Mole People",max=1,missions=8)
