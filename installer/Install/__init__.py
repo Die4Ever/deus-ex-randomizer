@@ -1,10 +1,36 @@
-import hashlib
-import os
-from pathlib import Path
-import Install.Config as Config
-import urllib.request
-import certifi
-import ssl
+
+try:
+    outfile = open('log.txt', 'w')
+except Exception as e:
+    print('ERROR writing to log.txt file', e)
+    outfile = None
+
+def debug(*args):
+    global outfile
+    if GetDryrun():
+        print(*args)
+        if outfile:
+            print(*args, file=outfile)
+
+def info(*args):
+    global outfile
+    print(*args)
+    if outfile:
+        print(*args, file=outfile)
+
+
+
+try:
+    import hashlib
+    import os
+    from pathlib import Path
+    import Install.Config as Config
+    import urllib.request
+    import certifi
+    import ssl
+except Exception as e:
+    info('ERROR: importing', e)
+    raise
 
 verbose = False
 dryrun = False
@@ -26,26 +52,6 @@ def GetDryrun() -> bool:
 
 def IsWindows() -> bool:
     return os.name == 'nt'
-
-try:
-    outfile = open('log.txt', 'w')
-except Exception as e:
-    print('ERROR writing to log.txt file', e)
-    outfile = None
-
-def debug(*args):
-    global outfile
-    if GetDryrun():
-        print(*args)
-        if outfile:
-            print(*args, file=outfile)
-
-def info(*args):
-    global outfile
-    print(*args)
-    if outfile:
-        print(*args, file=outfile)
-
 
 def GetConfChanges(modname):
     changes = {

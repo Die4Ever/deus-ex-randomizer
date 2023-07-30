@@ -1,9 +1,13 @@
-import webbrowser
-from GUI import *
-from pathlib import Path
-from Install import Install, IsWindows, getDefaultPath
-import traceback
-import re
+try:
+    import webbrowser
+    from GUI import *
+    from pathlib import Path
+    from Install import Install, IsWindows, getDefaultPath
+    import traceback
+    import re
+except Exception as e:
+    info('ERROR: importing', e)
+    raise
 
 class InstallerWindow(GUIBase):
     def initWindow(self):

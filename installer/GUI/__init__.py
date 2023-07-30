@@ -1,14 +1,18 @@
-import os
-import time
-import sys
-from tkinter import filedialog as fd
-from tkinter import font
-from tkinter import messagebox
-from tkinter import *
-from pathlib import Path
-import traceback
-from idlelib.tooltip import Hovertip
 from Install import info
+try:
+    import os
+    import time
+    import sys
+    from tkinter import filedialog as fd
+    from tkinter import font
+    from tkinter import messagebox
+    from tkinter import *
+    from pathlib import Path
+    import traceback
+    from idlelib.tooltip import Hovertip
+except Exception as e:
+    info('ERROR: importing', e)
+    raise
 
 class GUIBase:
     def __init__(self):

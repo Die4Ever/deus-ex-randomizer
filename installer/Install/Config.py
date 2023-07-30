@@ -1,6 +1,10 @@
-from pathlib import Path
-import re
-import Install
+from Install import info, debug
+try:
+    from pathlib import Path
+    import re
+except Exception as e:
+    info('ERROR: importing', e)
+    raise
 
 # use regex, because configparser doesn't support multiple entries with the same key, like Paths
 get_sections = re.compile(
@@ -52,10 +56,10 @@ def _ModifyConfig(text:str, changes:dict, additions:dict) -> str:
     for k in leftovers.keys():
         outtext += '\r\n\r\n[' + k + ']\r\n'
         if k in changes:
-            Install.debug(changes[k])
+            debug(changes[k])
             outtext += _AddConfigVals('', changes[k])
         if k in additions:
-            Install.debug(additions[k])
+            debug(additions[k])
             outtext += _AddConfigVals('', additions[k])
     return outtext
 
