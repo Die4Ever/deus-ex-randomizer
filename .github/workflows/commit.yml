@@ -17,6 +17,12 @@ jobs:
           name: DXRando
           path: dist/DXRando/DXRando.zip
 
+      - name: Upload installer warnings
+        uses: actions/upload-artifact@v3
+        with:
+          name: installerwarnings
+          path: build/installer/warn-installer.txt
+
   linux:
     runs-on: ubuntu-latest
     defaults:
