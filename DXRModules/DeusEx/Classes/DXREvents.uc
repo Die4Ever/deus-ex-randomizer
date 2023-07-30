@@ -2050,7 +2050,7 @@ static function float MissionsMaskAvailability(int currentMission, int missionsM
         t = (1<<i) & missionsMask;
         expired += int( t != 0 );
     }
-    for(i=currentMission; i<15; i++) {
+    for(i=currentMission; i<=15; i++) {
         t = (1<<i) & missionsMask;
         num += int( t != 0 );
     }
