@@ -118,12 +118,20 @@ function float RandomPitch()
 	return (0.25 - 0.2*FRand());
 }
 
+#ifdef revision
+function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation, Vector offset, Name damageType, optional bool bTestOnly){
+#else
 function float ModifyDamage(int Damage, Pawn instigatedBy, Vector hitLocation, Vector offset, Name damageType){
+#endif
     if (instigatedBy==self && damageType=='Exploded'){
         Damage = Damage * 0.1;
         instigatedBy = None; //Prevents the 10x damage mult for point-blank hits
     }
+#ifdef revision
+    return Super.ModifyDamage(Damage,instigatedBy,hitlocation,offset,damageType,bTestOnly);
+#else
     return Super.ModifyDamage(Damage,instigatedBy,hitlocation,offset,damageType);
+#endif
 }
 
 defaultproperties
