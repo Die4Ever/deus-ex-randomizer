@@ -50,8 +50,15 @@ static simulated function int GetStartingMissionMask(int start_map)
     switch(start_map)
     {// these numbers are basically mission number * 10, with some extra for progress within the mission
         case 0:
+        case 10:
             //startMap="01_NYC_UNATCOIsland";
             return 65535;
+            break;
+        case 20:
+            return 65532;
+            break;
+        case 30:
+            return 65528;
             break;
         case 40:
             //startMap="04_NYC_UNATCOHQ"
@@ -68,6 +75,9 @@ static simulated function int GetStartingMissionMask(int start_map)
             //startMap="08_NYC_Smug";
             return 65280;
             break;
+        case 90:
+            return 65024;
+            break;
         case 99:
             //startMap="09_NYC_Graveyard";
             return 64512; //Mission 10 onwards (you're at the end of mission 9)
@@ -79,6 +89,10 @@ static simulated function int GetStartingMissionMask(int start_map)
         case 140:
             //startMap="14_Vandenberg_Sub";
             return 49152;
+            break;
+        case 150:
+            //startMap="15_Area51_Bunker";
+            return 32768;
             break;
         default:
             //There's always a place for you on Liberty Island
@@ -128,7 +142,12 @@ static function string GetStartingMapName(int val)
 {
     switch(val){
         case 0:
+        case 10:
             return "Liberty Island";
+        case 20:
+            return "NSF Generator";
+        case 30:
+            return "Hunting Lebedev";
         case 40:
             return "NSF Defection";
         case 50:
@@ -137,12 +156,16 @@ static function string GetStartingMapName(int val)
             return "Wan Chai Market";
         case 81:
             return "Return to NYC";
+        case 90:
+            return "Superfreighter";
         case 99:
             return "Graveyard";
         case 119:
             return "Everett's House";
         case 140:
             return "Ocean Lab";
+        case 150:
+            return "Area 51";
         default:
             return "UNKNOWN STARTING MAP "$val$"!";
     }
@@ -158,7 +181,14 @@ static function string GetStartMap(Actor a, int start_map_val)
     switch(start_map_val)
     {
         case 0:
+        case 10:
             startMap="01_NYC_UNATCOIsland";
+            break;
+        case 20:
+            startMap="02_NYC_BatteryPark";
+            break;
+        case 30:
+            startMap="03_NYC_UNATCOIsland";
             break;
         case 40:
             startMap="04_NYC_UNATCOHQ";
@@ -172,6 +202,9 @@ static function string GetStartMap(Actor a, int start_map_val)
         case 81:
             startMap="08_NYC_Smug#ToSmugFrontDoor";
             break;
+        case 90:
+            startMap="09_NYC_Dockyard";
+            break;
         case 99:
             startMap="09_NYC_Graveyard";
             break;
@@ -180,6 +213,9 @@ static function string GetStartMap(Actor a, int start_map_val)
             break;
         case 140:
             startMap="14_Vandenberg_Sub";
+            break;
+        case 150:
+            startMap="15_Area51_Bunker";
             break;
         default:
             //There's always a place for you on Liberty Island
@@ -202,7 +238,14 @@ static function int GetStartMapMission(int start_map_val)
     switch(start_map_val)
     {
         case 0:
+        case 10:
             mission=1; //Mission 1 start, nothing
+            break;
+        case 20:
+            mission=2;
+            break;
+        case 30:
+            mission=3;
             break;
         case 40:
             mission=4;
@@ -216,6 +259,9 @@ static function int GetStartMapMission(int start_map_val)
         case 81:
             mission=8;
             break;
+        case 90:
+            mission=9;
+            break;
         case 99:
             mission=10; //Mission 9 graveyard, basically mission 10
             break;
@@ -224,6 +270,9 @@ static function int GetStartMapMission(int start_map_val)
             break;
         case 140:
             mission=14;
+            break;
+        case 150:
+            mission=15;
             break;
         default:
             //There's always a place for you on Liberty Island
@@ -259,6 +308,9 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
         case "14_Vandenberg_Sub":
             flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
             break;
+        case "15_Area51_Bunker":
+            flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
+            break;
     }
 }
 
@@ -291,29 +343,43 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map)
     return False;
 }
 
-static function int ChooseRandomStartMap(DXRando dxr)
+static function int ChooseRandomStartMap(DXRando dxr, bool skipVanilla)
 {
     local int i;
+    local int max;
 
-    i = staticrng(dxr,7);
+    max=8;
+    if (skipVanilla){
+        max-=1;
+    }
+
+    i = staticrng(dxr,max);
+
+    if (skipVanilla){
+        i++;
+    }
 
     //Should be able to legitimately return Liberty Island (even if that's as a value of 10), but needs additional special handling
     switch(i)
     {
         case 0:
-            return 40;
+            return 10;
         case 1:
-            return 50;
+            return 40;
         case 2:
-            return 61;
+            return 50;
         case 3:
-            return 81;
+            return 61;
         case 4:
-            return 99;
+            return 81;
         case 5:
-            return 119;
+            return 99;
         case 6:
+            return 119;
+        case 7:
             return 140;
+        case 8:
+            return 150;
         default:
             dxr.err("Random Starting Map picked value "$i$" which is unhandled!");
             return 0; //Fall back on Liberty Island

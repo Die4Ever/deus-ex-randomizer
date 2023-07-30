@@ -563,7 +563,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         bingo_scale = 0;
 
         SetGlobalSeed("random starting map");
-        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr);
+        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr,False);
     }
     return settings;
 }
@@ -990,7 +990,7 @@ function NewGamePlus()
     settings.bingo_win = bingo_win;
     settings.bingo_freespaces = bingo_freespaces;
     if (randomStart){
-        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr);
+        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr,False);
     }
 
     if (p.KeyRing != None)
