@@ -70,7 +70,7 @@ exe_installer = EXE(
     [],
     exclude_binaries=True,
     name='DXRandoInstaller',
-    debug=False,
+    debug=True,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,

@@ -103,7 +103,7 @@ runs:
       shell: bash
 
     - name: Build
-      run: pyinstaller installer/installer.spec --debug=imports
+      run: pyinstaller installer/installer.spec
       shell: bash
     - run: du -ha dist
       shell: bash
