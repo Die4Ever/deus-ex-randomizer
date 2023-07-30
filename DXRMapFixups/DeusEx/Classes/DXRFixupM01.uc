@@ -28,8 +28,22 @@ function PostFirstEntryMapFixes()
 
 function PreFirstEntryMapFixes()
 {
+#ifdef injections
+    local #var(prefix)Newspaper np;
+    local class<#var(prefix)Newspaper> npClass;
+    npClass = class'#var(prefix)Newspaper';
+#else
+    local DXRInformationDevices np;
+    local class<DXRInformationDevices> npClass;
+    npClass = class'DXRInformationDevices';
+#endif
+
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
+        //Move this Joe Greene article from inside HQ to outside on the island
+        npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(7297,-3204.5,-373),rotm(0,0,0),'01_Newspaper06');//Forklift in bunker
+        npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(3163,-1298,-207),rotm(0,0,0),'01_Newspaper06');//Backroom near jail
+
         Spawn(class'PlaceholderItem',,, vectm(2378.5,-10810.9,-857)); //Sunken Ship
         Spawn(class'PlaceholderItem',,, vectm(2436,-10709.4,-857)); //Sunken Ship
         Spawn(class'PlaceholderContainer',,, vectm(1376,-9952.5,-271)); //Harley's house
@@ -41,9 +55,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(-4834.4,3667,-105)); //Bench in front of UNATCO
         Spawn(class'PlaceholderItem',,, vectm(-2991,5328.5,-131)); //Medbot crate near starting dock
         Spawn(class'PlaceholderItem',,, vectm(7670,737.7,-130)); //Medbot crate near Harley
-        Spawn(class'PlaceholderItem',,, vectm(7297,-3204.5,-373)); //Forklift in bunker
         Spawn(class'PlaceholderItem',,, vectm(8981,26.9,-64)); //Boxes out front of bunker
-        Spawn(class'PlaceholderContainer',,, vectm(3163,-1298,-207)); //Backroom near jail
         Spawn(class'PlaceholderItem',,, vectm(1750.75,275.7,-117.7)); //Near display of Statue torch
         Spawn(class'PlaceholderItem',,, vectm(5830.8,-344,539)); //Near statue head
 
@@ -69,6 +81,18 @@ function PreFirstEntryMapFixes()
 
     case "01_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
+
+#ifdef injections
+        foreach AllActors(class'#var(prefix)Newspaper',np){
+#else
+        foreach AllActors(class'DXRInformationDevices',np){
+#endif
+            //Make both Joe Greene articles in HQ the same one
+            if (np.textTag=='01_Newspaper06'){
+                np.textTag='01_Newspaper08';
+            }
+        }
+
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter

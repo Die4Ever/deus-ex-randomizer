@@ -86,14 +86,12 @@ function PreFirstEntryMapFixes()
                 st.Trigger(Self,player());
             }
         }
-
         //This door can get stuck if a spiderbot gets jammed into the little bot-bay
         foreach AllActors(class'DeusExMover',d){
             if (d.Tag=='bot_door'){
                 d.MoverEncroachType=ME_IgnoreWhenEncroach;
             }
         }
-
         //Swap the button at the top of the elevator to a keypad to make this path a bit more annoying
         foreach AllActors(class'Switch2',s2){
             if (s2.Event=='elevator_mtunnel_up'){
@@ -106,7 +104,6 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
-
         //Lock the fan entrance top door
         foreach AllActors(class'DataLinkTrigger',dlt){
             if (dlt.datalinkTag=='DL_Bunker_Fan'){ break;}
