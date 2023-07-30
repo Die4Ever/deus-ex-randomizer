@@ -102,10 +102,10 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
 
     if kentie:
         configs_dest = Path.home() / 'Documents' / 'Deus Ex' / 'System'
-        Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True)
+        Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True, parents=True)
     else:
         configs_dest = system
-        Mkdir(system.parent /'SaveDXRando', exist_ok=True)
+        Mkdir(system.parent /'SaveDXRando', exist_ok=True, parents=True)
     DXRandoini = configs_dest / (exename+'.ini')
     Mkdir(DXRandoini.parent, parents=True, exist_ok=True)
 
