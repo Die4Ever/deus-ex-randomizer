@@ -9,8 +9,10 @@ if typechecks:
     install_import_hook('GUI')
 
 import Install
+import Install.Install
 import Install.Config as Config
 import GUI
+import Install.MapVariants
 
 @typechecked
 class DXRTestCase(unittest.TestCase):

@@ -1,7 +1,11 @@
-from pathlib import Path
-import tempfile
-from zipfile import ZipFile
-from Install import MD5, DownloadFile, Mkdir, WriteBytes, debug, info
+try:
+    from pathlib import Path
+    import tempfile
+    from zipfile import ZipFile
+    from Install import MD5, DownloadFile, Mkdir, WriteBytes, debug, info
+except Exception as e:
+    info('ERROR: importing', e)
+    raise
 
 maps_versions = {
     'd41d8cd98f00b204e9800998ecf8427e': 'none', # empty folder

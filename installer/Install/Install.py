@@ -1,9 +1,13 @@
-import os
-import tempfile
-from zipfile import ZipFile
 from Install import *
-from Install import _DetectFlavors
-from Install import MapVariants
+try:
+    import os
+    import tempfile
+    from zipfile import ZipFile
+    from Install import _DetectFlavors
+    from Install import MapVariants
+except Exception as e:
+    info('ERROR: importing', e)
+    raise
 
 def UnattendedInstall(installpath:str, downloadmirrors):
     if not installpath:

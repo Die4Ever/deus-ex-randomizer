@@ -1,10 +1,14 @@
-import argparse
-import sys
-import traceback
-
-import GUI.InstallerWindow
 from Install import SetDryrun, SetVerbose, info
-from Install.Install import UnattendedInstall
+try:
+    import argparse
+    import sys
+    import traceback
+
+    import GUI.InstallerWindow
+    from Install.Install import UnattendedInstall
+except Exception as e:
+    info('ERROR: importing', e)
+    raise
 
 parser = argparse.ArgumentParser(description='Deus Ex Randomizer')
 parser.add_argument('--version', action="store_true", help='Output version')
