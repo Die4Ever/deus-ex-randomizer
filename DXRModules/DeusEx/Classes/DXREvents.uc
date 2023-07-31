@@ -18,7 +18,7 @@ var BingoOption bingo_options[250];
 struct MutualExclusion {
     var string e1, e2;
 };
-var MutualExclusion mutually_exclusive[32];
+var MutualExclusion mutually_exclusive[64];
 
 function PreFirstEntry()
 {
@@ -2353,6 +2353,7 @@ defaultproperties
     mutually_exclusive(28)=(e1="BrokenPianoPlayed",e2="PianoSongPlayed")
     mutually_exclusive(29)=(e1="BrokenPianoPlayed",e2="PianoSong0Played")
     mutually_exclusive(30)=(e1="BrokenPianoPlayed",e2="PianoSong7Played")
+    mutually_exclusive(31)=(e1="M07MeetJaime_Played",e2="KnowsGuntherKillphrase")
 
     bingo_win_countdown=-1
 }
