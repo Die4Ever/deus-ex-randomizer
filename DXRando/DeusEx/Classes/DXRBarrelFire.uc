@@ -1,4 +1,4 @@
-class DXRBarrelFire injects BarrelFire;
+class DXRBarrelFire injects #var(prefix)BarrelFire;
 
 var float lastIgniteTime;
 

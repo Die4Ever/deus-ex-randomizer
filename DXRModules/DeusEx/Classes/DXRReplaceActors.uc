@@ -70,17 +70,21 @@ function ReplaceActors()
         else if( #var(prefix)Binoculars(a) != None ) {
             ReplaceBinoculars(#var(prefix)Binoculars(a));
         }
-        else if( #var(prefix)Containers(a) != None ) {
-            ReplaceContainerContents(#var(prefix)Containers(a));
-        }
         else if( #var(prefix)Faucet(a) != None ) {
             ReplaceFaucet(#var(prefix)Faucet(a));
+        }
+        else if( #var(prefix)BarrelFire(a) != None ) {
+            ReplaceGenericDecoration(a,class'DXRBarrelFire');
         }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
         }
 #endif
+        //Leave this at the end of the list (or at least make sure there are no containers after it)
+        else if( #var(prefix)Containers(a) != None ) {
+            ReplaceContainerContents(#var(prefix)Containers(a));
+        }
     }
 }
 #ifdef revision
