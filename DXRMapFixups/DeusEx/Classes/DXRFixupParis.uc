@@ -11,6 +11,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)JaimeReyes j;
     local ZoneInfo zi;
+    local #var(prefix)DamageTrigger dt;
 
     // shut up, Tong! (reduced rando is not as focused on replays compared to normal rando)
     if(!dxr.flags.IsReducedRando()) {
@@ -128,6 +129,14 @@ function PreFirstEntryMapFixes()
     case "11_PARIS_CATHEDRAL":
         foreach AllActors(class'GuntherHermann', g) {
             g.ChangeAlly('mj12', 1, true);
+        }
+        foreach AllActors(class'#var(prefix)DamageTrigger',dt){
+            //There should only be two damage triggers in the map,
+            //but check the damage type anyway for safety
+            //This will make the fireplaces actually set you on fire
+            if(dt.DamageType=='Burned'){
+                dt.DamageType='Flamed';
+            }
         }
         break;
     }
