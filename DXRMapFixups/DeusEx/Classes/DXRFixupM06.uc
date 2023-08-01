@@ -30,6 +30,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Keypad pad;
     local ProjectileGenerator pg;
     local #var(prefix)WeaponNanoSword dts;
+    local #var(prefix)RatGenerator rg;
 
     switch(dxr.localURL)
     {
@@ -279,6 +280,8 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderContainer',,, vectm(2305.5,-512.4,-415)); //On top of cargo ship
         Spawn(class'PlaceholderContainer',,, vectm(2362.5,-333.4,-383.9)); //On top of cargo ship
         Spawn(class'PlaceholderContainer',,, vectm(2403,-777,-359)); //On top of cargo ship
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(3237,3217,-506));//Lower garage storage area
+        rg.MaxCount=3;
         break;
     default:
         break;

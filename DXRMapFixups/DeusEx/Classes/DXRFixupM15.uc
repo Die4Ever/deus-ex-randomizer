@@ -61,6 +61,7 @@ function PreFirstEntryMapFixes_Bunker()
     local Switch2 s2;
     local SequenceTrigger st;
     local DataLinkTrigger dlt;
+    local #var(prefix)RatGenerator rg;
 
     // doors_lower is for backtracking
     AddSwitch( vect(4309.076660, -1230.640503, -7522.298340), rot(0, 16384, 0), 'doors_lower');
@@ -126,6 +127,11 @@ function PreFirstEntryMapFixes_Bunker()
     class'PlaceholderEnemy'.static.Create(self,vectm(-2237,3225,-192));
     class'PlaceholderEnemy'.static.Create(self,vectm(4234,3569,-736));
     class'PlaceholderEnemy'.static.Create(self,vectm(3744,-1030,-7481));
+
+    rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(1658,2544,-522));//Behind Command 24
+    rg.MaxCount=1;
+    rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(4512,3747,-954));//Near generators inside bunker
+    rg.MaxCount=1;
 }
 
 function PreFirstEntryMapFixes_Final()

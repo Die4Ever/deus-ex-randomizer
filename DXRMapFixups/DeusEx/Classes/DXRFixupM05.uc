@@ -28,6 +28,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)AlexJacobson alex;
     local #var(prefix)JaimeReyes j;
     local #var(prefix)MJ12Troop mj12;
+    local #var(prefix)RatGenerator rg;
     local DXREnemies dxre;
     local int i;
 
@@ -137,6 +138,10 @@ function PreFirstEntryMapFixes()
                 SetPawnHealth(lloyd, 200);
             }
         }
+
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-6348,1261,-134));//Near SATCOM
+        rg.MaxCount=1;
+
         break;
     }
 }

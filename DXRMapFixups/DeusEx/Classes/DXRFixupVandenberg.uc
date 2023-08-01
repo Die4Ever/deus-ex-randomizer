@@ -16,6 +16,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)TracerTong tt;
     local SequenceTrigger st;
     local #var(prefix)ShopLight sl;
+    local #var(prefix)RatGenerator rg;
 
     switch(dxr.localURL)
     {
@@ -35,6 +36,11 @@ function PreFirstEntryMapFixes()
         sl = #var(prefix)ShopLight(AddActor(class'#var(prefix)ShopLight', vect(1.125000, 938.399963, -1025), rot(0, 16384, 0)));
         sl.bInvincible = true;
         sl.bCanBeBase = true;
+
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-1975,227,-2191));//Near generator
+        rg.MaxCount=1;
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(6578,8227,-3101));//Near guardhouse
+        rg.MaxCount=1;
         break;
 
 #ifdef vanillamaps
@@ -60,6 +66,8 @@ function PreFirstEntryMapFixes()
                 kb.BindName = "TankKharkian";
             }
         }
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(737,4193,-426));//In shoreside shed
+        rg.MaxCount=1;
         break;
 
     case "14_OCEANLAB_LAB":
@@ -161,6 +169,10 @@ function PreFirstEntryMapFixes()
 
     case "12_VANDENBERG_GAS":
         class'PlaceholderEnemy'.static.Create(self,vectm(635,488,-930));
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(1000,745,-972));//Gas Station back room
+        rg.MaxCount=1;
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-2375,-644,-993));//Under trailer near Jock
+        rg.MaxCount=1;
 
         break;
 #endif
