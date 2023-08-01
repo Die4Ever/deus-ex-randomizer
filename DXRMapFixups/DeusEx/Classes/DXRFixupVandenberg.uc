@@ -17,6 +17,7 @@ function PreFirstEntryMapFixes()
     local SequenceTrigger st;
     local #var(prefix)ShopLight sl;
     local #var(prefix)RatGenerator rg;
+    local Actor a;
 
     switch(dxr.localURL)
     {
@@ -41,6 +42,11 @@ function PreFirstEntryMapFixes()
         rg.MaxCount=1;
         rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(6578,8227,-3101));//Near guardhouse
         rg.MaxCount=1;
+
+        //Clear out items in inaccessible containers far below the earth
+        foreach RadiusActors(class'Actor', a, 250, vectm(-4350,3000,-5850)) {
+            a.Destroy();
+        }
         break;
 
 #ifdef vanillamaps
