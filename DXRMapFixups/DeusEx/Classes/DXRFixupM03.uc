@@ -42,6 +42,7 @@ function PreFirstEntryMapFixes()
     local NanoKey k;
     local #var(prefix)InformationDevices i;
     local #var(prefix)UNATCOTroop unatco;
+    local #var(prefix)WeaponModRecoil wmr;
 
     switch (dxr.localURL)
     {
@@ -197,6 +198,14 @@ function PreFirstEntryMapFixes()
         break;
     case "03_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
+
+        //Move weapon mod out of Manderley's secret (inaccessible) safe
+        foreach AllActors(class'#var(prefix)WeaponModRecoil',wmr){
+            if (wmr.Name=='WeaponModRecoil0'){
+                wmr.SetLocation(vectm(420.843567,175.866135,261.520447));
+            }
+        }
+
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
