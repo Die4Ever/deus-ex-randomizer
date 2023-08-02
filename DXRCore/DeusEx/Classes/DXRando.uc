@@ -172,6 +172,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRPlayerStats";
     modules_to_load[i++] = "DXRMapVariants";
     modules_to_load[i++] = "DXRStartMap";
+    modules_to_load[i++] = "DXRWeaponMods";
 }
 
 function hx_modules()
