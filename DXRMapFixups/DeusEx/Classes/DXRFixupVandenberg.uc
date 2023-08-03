@@ -1,6 +1,7 @@
 class DXRFixupVandenberg extends DXRFixup;
 
 var bool M14GaryNotDone;
+var bool M12GaryHostageBriefing;
 
 function PreFirstEntryMapFixes()
 {
@@ -17,6 +18,7 @@ function PreFirstEntryMapFixes()
     local SequenceTrigger st;
     local #var(prefix)ShopLight sl;
     local #var(prefix)RatGenerator rg;
+    local #var(prefix)OrdersTrigger ot;
     local Actor a;
 
     switch(dxr.localURL)
@@ -172,6 +174,12 @@ function PreFirstEntryMapFixes()
 
         break;
     case "12_VANDENBERG_COMPUTER":
+
+        foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'GaryWalksToPosition'){
+            ot.Orders='RunningTo';
+            ot.ordersTag='gary_patrol1';
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(579,2884,-1629)); //Table near entrance
         Spawn(class'PlaceholderItem',,, vectm(1057,2685.25,-1637)); //Table overlooking computer room
         Spawn(class'PlaceholderItem',,, vectm(1970,2883.43,-1941)); //In first floor computer room
@@ -252,6 +260,9 @@ function AnyEntryMapFixes()
         }
         Player().StartDataLinkTransmission("DL_FrontGate");
         break;
+    case "12_VANDENBERG_COMPUTER":
+        SetTimer(1, true);
+        break;
     }
 }
 
@@ -282,8 +293,23 @@ function FixSavageSkillPointsDupe()
 
 function TimerMapFixes()
 {
-    if(M14GaryNotDone && dxr.flagbase.GetBool('M14GaryDone')) {
-        M14GaryNotDone = false;
-        player().SkillPointsAdd(500);
+    local #var(prefix)GarySavage gary;
+    switch(dxr.localURL)
+    {
+    case "14_VANDENBERG_SUB":
+        if(M14GaryNotDone && dxr.flagbase.GetBool('M14GaryDone')) {
+            M14GaryNotDone = false;
+            player().SkillPointsAdd(500);
+        }
+        break;
+    case "12_VANDENBERG_COMPUTER":
+        //Immediately start the conversation with Gary after the message from Page
+        if (!M12GaryHostageBriefing && dxr.flagbase.GetBool('PageHostageBriefing_played') && !dxr.flagbase.GetBool('GaryHostageBriefing_played')){
+            if (player().conPlay==None){
+                foreach AllActors(class'#var(prefix)GarySavage',gary){ break;}
+                M12GaryHostageBriefing = (player().StartConversationByName('GaryHostageBriefing',gary));
+            }
+        }
+        break;
     }
 }
