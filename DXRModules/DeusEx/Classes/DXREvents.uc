@@ -2363,6 +2363,13 @@ defaultproperties
     mutually_exclusive(29)=(e1="BrokenPianoPlayed",e2="PianoSong0Played")
     mutually_exclusive(30)=(e1="BrokenPianoPlayed",e2="PianoSong7Played")
     mutually_exclusive(31)=(e1="M07MeetJaime_Played",e2="KnowsGuntherKillphrase")
+    mutually_exclusive(32)=(e1="Binoculars_Activated",e2="Terrorist_peeptime")
+    mutually_exclusive(33)=(e1="Binoculars_Activated",e2="UNATCOTroop_peeptime")
+    mutually_exclusive(34)=(e1="MJ12Troop_peeptime",e2="Binoculars_Activated")
+    mutually_exclusive(35)=(e1="Binoculars_Activated",e2="MJ12Commando_peeptime")
+    mutually_exclusive(36)=(e1="Binoculars_Activated",e2="NYEagleStatue_peeped")
+    mutually_exclusive(37)=(e1="Binoculars_Activated",e2="BirdWatching")
+    mutually_exclusive(38)=(e1="Binoculars_Activated",e2="PawnState_Dancing")
 
     bingo_win_countdown=-1
 }
