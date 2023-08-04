@@ -7,16 +7,26 @@ var bool ran_first_frame;
 
 function Timer()
 {
+local #var(prefix)BobPage bob;
+local DXRando dxr;
+
 #ifdef injections
     if( ran_first_frame == false ) {
         Level.Game.SetGameSpeed(0.05);
         SetTimer(0.075, True);
     }
-    if( ran_first_frame == true && started_conv == false ) {
-        Super.FirstFrame();
-        started_conv = true;
-        Level.Game.SetGameSpeed(1);
-        SetTimer(checkTime, True);
+    if( ran_first_frame == true && started_conv == false && player!=None ) {
+        foreach AllActors(class'#var(prefix)BobPage',bob){break;}
+        if (bob!=None){
+            Super.FirstFrame();
+            started_conv = true;
+            Level.Game.SetGameSpeed(1);
+            SetTimer(checkTime, True);
+            foreach AllActors(class'DXRando',dxr){
+                dxr.flags.SaveFlags();
+                break;
+            }
+        }
     }
 #endif
 
@@ -52,13 +62,12 @@ function InitStateMachine()
 
 function FirstFrame()
 {
-    ran_first_frame = true;
-    started_conv = false;
-
     if( flags.GetBool('Intro_Played') ) {
         log("ERROR: "$self$": Intro_Played already set before FirstFrame?");
         flags.SetBool('Intro_Played', false,, -999);
     }
+    ran_first_frame = true;
+    started_conv = false;
 }
 
 function PreTravel()
