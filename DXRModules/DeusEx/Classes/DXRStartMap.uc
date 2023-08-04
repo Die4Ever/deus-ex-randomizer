@@ -314,7 +314,7 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
     }
 }
 
-static function bool BingoGoalImpossible(string bingo_event, int start_map)
+static function bool BingoGoalImpossible(string bingo_event, int start_map, int end_mission)
 {
     switch(bingo_event)
     {
@@ -325,10 +325,16 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map)
         case "MetSmuggler":
             return start_map>=80; //Mission 8 and later starts you should already know Smuggler (see StartMapSpecificFlags)
         case "KnowsGuntherKillphrase":
+            if (end_mission < 12){
+                return True;
+            }
             return start_map>=60; //Have to have told Jaime to meet you in Paris in mission 5 to get Gunther's killphrase
         case "FordSchick_Dead":
             return start_map>=20;
         case "M07MeetJaime_Played":
+            if (end_mission < 80){
+                return True;
+            }
             return start_map>=60; //Have to have told Jaime to meet you in Hong Kong in mission 50a
         case "VialAmbrosia_Activated":
             return start_map>=96; //Have to have started before the superfreighter upper decks (Arbitrarily chose 96 as that point)

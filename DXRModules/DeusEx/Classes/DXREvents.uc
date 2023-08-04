@@ -1597,7 +1597,7 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
         if(bingo_options[x].event == "") continue;
         masked_missions = bingo_options[x].missions & starting_mission_mask & end_mission_mask;
         if(bingo_options[x].missions!=0 && masked_missions == 0) continue;
-        if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,dxr.flags.settings.starting_map)) continue;
+        if(class'DXRStartMap'.static.BingoGoalImpossible(bingo_options[x].event,dxr.flags.settings.starting_map,end_mission)) continue;
         options[num_options++] = x;
     }
 
