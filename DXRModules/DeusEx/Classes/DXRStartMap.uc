@@ -343,47 +343,67 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map)
     return False;
 }
 
-static function int ChooseRandomStartMap(DXRando dxr, bool skipVanilla)
+static function int ChooseRandomStartMap(DXRando dxr, int avoidStart)
 {
     local int i;
-    local int max;
+    local int startMap;
+    local int attempts;
 
-    max=8;
-    if (skipVanilla){
-        max-=1;
+    startMap=-1;
+    attempts=0;
+
+    //Don't try forever.  If we manage to grab the avoided map 5 times, it was meant to be.
+    while ((startMap==-1 || startMap==avoidStart) && attempts<5){
+        i = staticrng(dxr,12);
+
+        //Should be able to legitimately return Liberty Island (even if that's as a value of 10), but needs additional special handling
+        switch(i)
+        {
+            case 0:
+                startMap = 10;
+                break;
+            case 1:
+                startMap = 20;
+                break;
+            case 2:
+                startMap = 30;
+                break;
+            case 3:
+                startMap = 40;
+                break;
+            case 4:
+                startMap = 50;
+                break;
+            case 5:
+                startMap = 61;
+                break;
+            case 6:
+                startMap = 81;
+                break;
+            case 7:
+                startMap = 90;
+                break;
+            case 8:
+                startMap = 99;
+                break;
+            case 9:
+                startMap = 119;
+                break;
+            case 10:
+                startMap = 140;
+                break;
+            case 11:
+                startMap = 150;
+                break;
+            default:
+                dxr.err("Random Starting Map picked value "$i$" which is unhandled!");
+                startMap = 0; //Fall back on Liberty Island
+                break;
+        }
+        log("Start map selection attempt "$attempts$" was "$startMap);
     }
 
-    i = staticrng(dxr,max);
-
-    if (skipVanilla){
-        i++;
-    }
-
-    //Should be able to legitimately return Liberty Island (even if that's as a value of 10), but needs additional special handling
-    switch(i)
-    {
-        case 0:
-            return 10;
-        case 1:
-            return 40;
-        case 2:
-            return 50;
-        case 3:
-            return 61;
-        case 4:
-            return 81;
-        case 5:
-            return 99;
-        case 6:
-            return 119;
-        case 7:
-            return 140;
-        case 8:
-            return 150;
-        default:
-            dxr.err("Random Starting Map picked value "$i$" which is unhandled!");
-            return 0; //Fall back on Liberty Island
-    }
+    return startMap;
 }
 
 static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)

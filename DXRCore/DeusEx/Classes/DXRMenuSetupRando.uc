@@ -40,7 +40,7 @@ function BindControls(optional string action)
     EnumOption("Area 51", 150, f.settings.starting_map);
     if(EnumOption("Random", -1)) {
         f.SetGlobalSeed("random starting map");
-        f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f.dxr,True);
+        f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f.dxr,0);
     }
 
     BreakLine();

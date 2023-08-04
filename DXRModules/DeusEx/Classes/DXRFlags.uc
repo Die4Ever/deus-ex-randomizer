@@ -563,7 +563,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         bingo_scale = 0;
 
         SetGlobalSeed("random starting map");
-        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr,False);
+        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr,10);
     }
     return settings;
 }
@@ -938,7 +938,7 @@ function NewGamePlus()
     local DXRAugmentations augs;
     local int i, bingo_win,bingo_freespaces;
     local float exp;
-    local bool randomStart;
+    local int randomStart;
 
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
@@ -956,7 +956,7 @@ function NewGamePlus()
     bingoBoardRoll=0;
     p.saveCount=0;
     exp = 1;
-    randomStart = (settings.starting_map!=0);
+    randomStart = settings.starting_map;
     bingo_win = settings.bingo_win;
     bingo_freespaces = settings.bingo_freespaces;
 
@@ -989,8 +989,8 @@ function NewGamePlus()
     NewGamePlusVal(settings.merchants, 0.9, exp);
     settings.bingo_win = bingo_win;
     settings.bingo_freespaces = bingo_freespaces;
-    if (randomStart){
-        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr,False);
+    if (randomStart!=0){
+        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr,randomStart);
     }
 
     if (p.KeyRing != None)
