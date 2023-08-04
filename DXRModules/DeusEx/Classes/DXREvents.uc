@@ -1008,6 +1008,11 @@ function HandleBingoWinCountdown()
     if(#defined(hx)) return;
 
     if (bingo_win_countdown > 0) {
+        if ( Level.Netmode == NM_Standalone ) {
+            //Make it harder to get murdered during the countdown
+            Level.Game.SetGameSpeed(0.05);
+            SetTimer(0.1, true); //You would think this would be 0.05, but it's not
+        }
         //Show win message
         class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
         if (bingo_win_countdown == 2 && !#defined(vanilla)) {
@@ -1017,6 +1022,10 @@ function HandleBingoWinCountdown()
         }
         bingo_win_countdown--;
     } else if (bingo_win_countdown == 0) {
+        if ( Level.Netmode == NM_Standalone ) {
+            Level.Game.SetGameSpeed(1);
+            SetTimer(1, true);
+        }
         //Go to bingo win ending
         Level.Game.SendPlayer(dxr.player,"99_EndGame4");
     }
