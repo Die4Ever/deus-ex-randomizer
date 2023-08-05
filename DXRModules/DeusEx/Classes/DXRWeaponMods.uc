@@ -93,7 +93,8 @@ function FirstEntry()
         if (mod!=None){
             mods[i].Destroy();
         } else {
-            err("Failed to replace weapon mod "$mods[i].Name);
+            //Spawn replacement will fail if the new class is the same, so this is completely possible
+            l("Failed to replace weapon mod "$mods[i].Name$" (It might have selected the same mod type)");
         }
     }
 
