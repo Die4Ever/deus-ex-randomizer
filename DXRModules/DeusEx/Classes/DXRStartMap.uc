@@ -296,6 +296,9 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
 {
     switch(start_map)
     {
+        case "04_NYC_UNATCOHQ":
+            flagbase.SetBool('DL_SeeManderley_Played',true,,-1);
+            break;
         case "08_NYC_Smug":
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
             flagbase.SetBool('MetSmuggler',true,,-1);
