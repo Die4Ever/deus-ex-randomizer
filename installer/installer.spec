@@ -60,7 +60,7 @@ a_bingo = Analysis(
     noarchive=False,
 )
 
-MERGE( (a_installer, 'DXRandoInstaller', 'DXRandoInstaller'), (a_bingo, 'BingoViewer', 'BingoViewer') )
+#MERGE( (a_installer, 'DXRandoInstaller', 'DXRandoInstaller'), (a_bingo, 'BingoViewer', 'BingoViewer') )
 
 pyz_installer = PYZ(a_installer.pure, a_installer.zipped_data, cipher=block_cipher)
 
@@ -102,12 +102,19 @@ exe_bingo = EXE(
     entitlements_file=None,
 )
 
-coll = COLLECT(
+coll1 = COLLECT(
     exe_installer,
     a_installer.binaries,
     a_installer.zipfiles,
     a_installer.datas,
 
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='DXRando',
+)
+
+coll2 = COLLECT(
     exe_bingo,
     a_bingo.binaries,
     a_bingo.zipfiles,
@@ -116,7 +123,7 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='DXRando',
+    name='BingoViewer',
 )
 
 # tidy up

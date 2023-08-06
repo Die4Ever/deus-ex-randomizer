@@ -23,6 +23,12 @@ jobs:
           name: installerwarnings
           path: build/installer/warn-installer.txt
 
+      - name: Upload Bingo Viewer
+        uses: actions/upload-artifact@v3
+        with:
+          name: BingoViewer
+          path: dist/BingoViewer/BingoViewer.zip
+
   linux:
     runs-on: ubuntu-latest
     defaults:
