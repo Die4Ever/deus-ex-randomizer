@@ -12,6 +12,14 @@ function CheckConfig()
     add_datacubes[i].text = "Access code to the Versalife nanotech research wing: 55655.";
     i++;
 
+    add_datacubes[i].map = "06_HONGKONG_WANCHAI_MARKET";
+    add_datacubes[i].text = "This new ATM in the market is in such a convenient location for all my banking needs!|nAccount: 8326942 |nPIN: 7797 ";
+    i++;
+
+    add_datacubes[i].map = "06_HONGKONG_WANCHAI_STREET";
+    add_datacubes[i].text = "It's so handy being able to quickly grab some cash from the Quick Stop before getting to the club!|nAccount: 2332316 |nPIN: 1608 ";
+    i++;
+
     Super.CheckConfig();
 }
 
