@@ -11,7 +11,7 @@ jobs:
 
       - uses: ./.github/run-tests
 
-      - name: Upload artifacts
+      - name: Upload Installer
         uses: actions/upload-artifact@v3
         with:
           name: DXRando
@@ -43,8 +43,14 @@ jobs:
 
       - uses: ./.github/run-tests
 
-      - name: Upload artifacts
+      - name: Upload Installer
         uses: actions/upload-artifact@v3
         with:
           name: DXRando-linux
           path: dist/DXRando/DXRando.zip
+
+      - name: Upload Bingo Viewer
+        uses: actions/upload-artifact@v3
+        with:
+          name: BingoViewer-linux
+          path: dist/BingoViewer/BingoViewer.zip

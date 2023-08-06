@@ -127,6 +127,10 @@ runs:
       run: zip -r9 DXRando.zip .
       working-directory: ./dist/DXRando
       shell: bash
+    - if: runner.os != 'Windows'
+      run: zip -r9 BingoViewer.zip .
+      working-directory: ./dist/BingoViewer
+      shell: bash
 
     - run: ls -lah dist/DXRando/DXRando.zip
       shell: bash
