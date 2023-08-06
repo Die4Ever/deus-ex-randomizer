@@ -597,6 +597,15 @@ function SetWatchFlags() {
         WatchFlag('ChateauInComputerRoom');
         WatchFlag('ChateauInBethsRoom');
         WatchFlag('ChateauInNicolettesRoom');
+
+#ifdef vanilla
+        bt = class'BingoTrigger'.static.Create(self,'BethsPainting',vectm(0,0,0));
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
+            if (dxm.Name=='DeusExMover8'){
+                dxm.Event='BethsPainting';
+            }
+        }
+#endif
         break;
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
@@ -2336,6 +2345,9 @@ defaultproperties
     bingo_options(210)=(event="BrokenPianoPlayed",desc="Play a broken piano",max=1,missions=64)
     bingo_options(211)=(event="Supervisor_Paid",desc="Pay for access to the VersaLife labs",max=1,missions=64)
     bingo_options(212)=(event="ImageOpened_WaltonSimons",desc="Look at Walton Simons' nudes",max=1,missions=544)
+#ifdef vanilla
+    bingo_options(213)=(event="BethsPainting",desc="Admire Beth DuClare's favourite painting",max=1,missions=1024)
+#endif
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
