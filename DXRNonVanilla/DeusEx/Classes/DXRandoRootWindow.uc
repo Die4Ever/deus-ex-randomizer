@@ -164,6 +164,9 @@ function DeusExBaseWindow InvokeUIScreen(Class<DeusExBaseWindow> newScreen, opti
         case class'PersonaScreenGoals':
             newScreen = class'DXRPersonaScreenGoals';
             break;
+        case class'PersonaScreenImages':
+            newScreen = class'DXRPersonaScreenImages';
+            break;
         default:
             if(class<NetworkTerminal>(newScreen) != None) {
                 log("WARNING: InvokeUIScreen "$newScreen);
