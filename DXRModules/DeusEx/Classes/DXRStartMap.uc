@@ -419,7 +419,7 @@ static function AddStartingCredits(DXRando dxr, #var(PlayerPawn) p)
 {
     local int i;
     for(i=0;i<GetStartMapMission(dxr.flags.settings.starting_map);i++){
-        p.Credits += dxr.rng(200);
+        p.Credits += 100 + dxr.rng(100);
     }
 }
 

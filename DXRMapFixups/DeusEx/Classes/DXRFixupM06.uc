@@ -18,7 +18,7 @@ function CheckConfig()
 function PreFirstEntryMapFixes()
 {
     local Actor a;
-    local ScriptedPawn p;
+    local #var(prefix)ScriptedPawn p;
     local Button1 b;
     local ElevatorMover e;
     local #var(DeusExPrefix)Mover m;
@@ -31,6 +31,7 @@ function PreFirstEntryMapFixes()
     local ProjectileGenerator pg;
     local #var(prefix)WeaponNanoSword dts;
     local #var(prefix)RatGenerator rg;
+    local #var(prefix)Credits creds;
 
     switch(dxr.localURL)
     {
@@ -222,6 +223,12 @@ function PreFirstEntryMapFixes()
             at.bPlayerOnly = true;
         }
 #endif
+        foreach AllActors(class'#var(prefix)Credits',creds){
+            if (creds.numCredits==25){
+                creds.numCredits=100;
+            }
+        }
+
         foreach AllActors(class'DeusExMover',d){
             if (d.Region.Zone.ZoneGroundFriction < 8) {
                 //Less than default friction should be the freezer
@@ -251,6 +258,14 @@ function PreFirstEntryMapFixes()
         ft.bSetFlag=False;
         ft.bTrigger=True;
 
+        foreach AllActors(class'#var(prefix)ScriptedPawn',p){
+            if(p.BindName=="Supervisor01"){
+                p.FamiliarName="Mr. Hundley"; //It's spelled this way everywhere else
+                GiveItem(p,class'#var(prefix)Credits');  //He asks for 2000 credits to get into the labs
+                GiveItem(p,class'#var(prefix)Credits');  //He's probably getting a bunch of cash from other people too.
+            }
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(12.36,1556.5,-51)); //1st floor front cube
         Spawn(class'PlaceholderItem',,, vectm(643.5,2139.7,-51.7)); //1st floor back cube
         Spawn(class'PlaceholderItem',,, vectm(210.94,2062.23,204.3)); //2nd floor front cube
@@ -276,6 +291,14 @@ function PreFirstEntryMapFixes()
         break;
 
     case "06_HONGKONG_WANCHAI_CANAL":
+
+        //Give the drug dealer and pusher 100 credits each
+        foreach AllActors(class'#var(prefix)ScriptedPawn',p){
+            if (p.BindName=="Canal_Thug1" || p.BindName=="Canal_Thug2"){
+                GiveItem(p,class'#var(prefix)Credits');
+            }
+        }
+
         //Just a few that can spawn on top of the ship to maybe coax people down there?
         Spawn(class'PlaceholderContainer',,, vectm(2305.5,-512.4,-415)); //On top of cargo ship
         Spawn(class'PlaceholderContainer',,, vectm(2362.5,-333.4,-383.9)); //On top of cargo ship
