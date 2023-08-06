@@ -483,6 +483,10 @@ function SetWatchFlags() {
         WatchFlag('FlowersForTheLab');
         break;
 
+    case "06_HONGKONG_VERSALIFE":
+        WatchFlag('Supervisor_Paid');
+        break;
+
     case "08_NYC_STREET":
         bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
         bt.bingoEvent="MadeBasket";
@@ -2330,6 +2334,7 @@ defaultproperties
     bingo_options(208)=(event="BirdWatching",desc="Watch birds for %s seconds",max=30,missions=19806)
     bingo_options(209)=(event="NYEagleStatue_peeped",desc="Look at a bronze eagle statue",max=1,missions=28)
     bingo_options(210)=(event="BrokenPianoPlayed",desc="Play a broken piano",max=1,missions=64)
+    bingo_options(211)=(event="Supervisor_Paid",desc="Pay for access to the VersaLife labs",max=1,missions=64)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -2370,6 +2375,7 @@ defaultproperties
     mutually_exclusive(36)=(e1="Binoculars_Activated",e2="NYEagleStatue_peeped")
     mutually_exclusive(37)=(e1="Binoculars_Activated",e2="BirdWatching")
     mutually_exclusive(38)=(e1="Binoculars_Activated",e2="PawnState_Dancing")
+    mutually_exclusive(39)=(e1="Supervisor_Paid",e2="M06BoughtVersaLife")
 
     bingo_win_countdown=-1
 }
