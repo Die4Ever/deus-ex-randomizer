@@ -19,6 +19,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ShopLight sl;
     local #var(prefix)RatGenerator rg;
     local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)NanoKey key;
     local Actor a;
 
     switch(dxr.localURL)
@@ -49,6 +50,20 @@ function PreFirstEntryMapFixes()
         foreach RadiusActors(class'Actor', a, 250, vectm(-4350,3000,-5850)) {
             a.Destroy();
         }
+#ifdef vanillamaps
+        //Add a key to Tim's closet
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door){
+            if (door.Name=='DeusExMover28'){
+                door.KeyIDNeeded='TimsClosetKey';
+            }
+        }
+
+        key = Spawn(class'#var(prefix)NanoKey',,,vectm(-1502.665771,2130.560791,-1996.783691)); //Windowsill in Hazard Lab
+        key.KeyID='TimsClosetKey';
+        key.Description="Tim's Closet Key";
+        key.SkinColor=SC_Level3;
+        key.MultiSkins[0] = Texture'NanoKeyTex3';
+#endif
         break;
 
 #ifdef vanillamaps
