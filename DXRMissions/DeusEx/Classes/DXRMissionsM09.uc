@@ -131,7 +131,7 @@ function PreFirstEntryMapFixes()
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 {
     local #var(prefix)Keypad1 keypad;
-    local #var(prefix)SpecialEvent se;
+    local SpecialEvent se;
 
     if (g.name=="Jammer") {
         //Add a keypad to disable the jammer
@@ -142,7 +142,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         keypad.validCode="8854";
         keypad.bToggleLock=False;
 
-        se=Spawn(class'#var(prefix)SpecialEvent',,,vectm(1527,782,0));
+        se=Spawn(class'SpecialEvent',,,vectm(1527,782,0));
         se.Tag='EMOff';
         se.Message="EM Field Disabled";
         se.GoToState('DisplayMessage');
