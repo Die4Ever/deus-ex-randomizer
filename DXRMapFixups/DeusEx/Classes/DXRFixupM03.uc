@@ -138,8 +138,18 @@ function PreFirstEntryMapFixes()
     case "03_NYC_AIRFIELD":
         //rebreather because of #TOOCEAN connection
         Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
-        // extra spot for datacube
-        Spawn(class'PlaceholderItem',,, vectm(5113, 3615, 1.3));
+        // extra spots for datacube
+        Spawn(class'PlaceholderItem',,, vectm(5113,3615,1.3));        //In front of guard tower
+        Spawn(class'PlaceholderItem',,, vectm(3111,3218,275));        //Bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(3225,3193,275));        //Different Bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(2850,3448,219));        //Bathroom stall
+        Spawn(class'PlaceholderItem',,, vectm(2929,2810,91));         //Dining table
+        Spawn(class'PlaceholderItem',,, vectm(2860,3335,99));         //Kitchen Counter
+        Spawn(class'PlaceholderItem',,, vectm(3055,3300,99));         //Kitchen island
+        Spawn(class'PlaceholderItem',,, vectm(3036,3474,99));         //Next to stove
+        Spawn(class'PlaceholderItem',,, vectm(4441,3112,51));         //Base of satellite
+        Spawn(class'PlaceholderItem',,, vectm(1915,2800.6,79));       //Gate support (inside gate)
+        Spawn(class'PlaceholderItem',,, vectm(3641.339,2623.73,27));  //Steps outside barracks
         if(#defined(vanillamaps)) {
             foreach AllActors(class'Teleporter', tele) {
                 if(tele.Event == 'HangarEnt') {
