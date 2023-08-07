@@ -434,6 +434,272 @@ exec function ParseLeftClick()
     }
 }
 
+//A whole lot of copy paste just to add one "if (bDrop)" check to change the dropVect
+exec function bool DropItem(optional Inventory inv, optional bool bDrop)
+{
+	local Inventory item;
+	local Inventory previousItemInHand;
+	local Vector X, Y, Z, dropVect;
+	local float size, mult;
+	local DeusExCarcass carc;
+	local class<DeusExCarcass> carcClass;
+	local bool bDropped;
+	local bool bRemovedFromSlots;
+	local int  itemPosX, itemPosY;
+
+	bDropped = True;
+
+	if (RestrictInput())
+		return False;
+
+	if (inv == None)
+	{
+		previousItemInHand = inHand;
+		item = inHand;
+	}
+	else
+	{
+		item = inv;
+	}
+
+	if (item != None)
+	{
+		GetAxes(Rotation, X, Y, Z);
+
+        //Make dropping things from the inventory easier...
+        if (bDrop){
+            dropVect = Location;
+        } else {
+		    dropVect = Location + (CollisionRadius + 2*item.CollisionRadius) * X;
+            dropVect.Z += BaseEyeHeight;
+        }
+
+
+		// check to see if we're blocked by terrain
+		if (!FastTrace(dropVect))
+		{
+			ClientMessage(CannotDropHere);
+			return False;
+		}
+
+		// don't drop it if it's in a strange state
+		if (item.IsA('DeusExWeapon'))
+		{
+			if (!DeusExWeapon(item).IsInState('Idle') && !DeusExWeapon(item).IsInState('Idle2') &&
+				!DeusExWeapon(item).IsInState('DownWeapon') && !DeusExWeapon(item).IsInState('Reload'))
+			{
+				return False;
+			}
+			else		// make sure the scope/laser are turned off
+			{
+				DeusExWeapon(item).ScopeOff();
+				DeusExWeapon(item).LaserOff();
+			}
+		}
+
+		// Don't allow active ChargedPickups to be dropped
+		if ((item.IsA('ChargedPickup')) && (ChargedPickup(item).IsActive()))
+        {
+			return False;
+        }
+
+		// don't let us throw away the nanokeyring
+		if (item.IsA('NanoKeyRing'))
+        {
+			return False;
+        }
+
+		// take it out of our hand
+		if (item == inHand)
+			PutInHand(None);
+
+		// handle throwing pickups that stack
+		if (item.IsA('DeusExPickup'))
+		{
+			// turn it off if it is on
+			if (DeusExPickup(item).bActive)
+				DeusExPickup(item).Activate();
+
+			DeusExPickup(item).NumCopies--;
+			UpdateBeltText(item);
+
+			if (DeusExPickup(item).NumCopies > 0)
+			{
+				// put it back in our hand, but only if it was in our
+				// hand originally!!!
+				if (previousItemInHand == item)
+					PutInHand(previousItemInHand);
+
+				item = Spawn(item.Class, Owner);
+			}
+			else
+			{
+				// Keep track of this so we can undo it
+				// if necessary
+				bRemovedFromSlots = True;
+				itemPosX = item.invPosX;
+				itemPosY = item.invPosY;
+
+				// Remove it from the inventory slot grid
+				RemoveItemFromSlot(item);
+
+				// make sure we have one copy to throw!
+				DeusExPickup(item).NumCopies = 1;
+			}
+		}
+		else
+		{
+			// Keep track of this so we can undo it
+			// if necessary
+			bRemovedFromSlots = True;
+			itemPosX = item.invPosX;
+			itemPosY = item.invPosY;
+
+			// Remove it from the inventory slot grid
+			RemoveItemFromSlot(item);
+		}
+
+		// if we are highlighting something, try to place the object on the target
+		if ((FrobTarget != None) && !item.IsA('POVCorpse'))
+		{
+			item.Velocity = vect(0,0,0);
+
+			// play the correct anim
+			PlayPickupAnim(FrobTarget.Location);
+
+			// try to drop the object about one foot above the target
+			size = FrobTarget.CollisionRadius - item.CollisionRadius * 2;
+			dropVect.X = size/2 - FRand() * size;
+			dropVect.Y = size/2 - FRand() * size;
+			dropVect.Z = FrobTarget.CollisionHeight + item.CollisionHeight + 16;
+			if (FastTrace(dropVect))
+			{
+				item.DropFrom(FrobTarget.Location + dropVect);
+			}
+			else
+			{
+				ClientMessage(CannotDropHere);
+				bDropped = False;
+			}
+		}
+		else
+		{
+			// throw velocity is based on augmentation
+			if (AugmentationSystem != None)
+			{
+				mult = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
+				if (mult == -1.0)
+					mult = 1.0;
+			}
+
+			if (bDrop)
+			{
+				item.Velocity = VRand() * 30;
+
+				// play the correct anim
+				PlayPickupAnim(item.Location);
+			}
+			else
+			{
+				item.Velocity = Vector(ViewRotation) * mult * 300 + vect(0,0,220) + 40 * VRand();
+
+				// play a throw anim
+				PlayAnim('Attack',,0.1);
+			}
+
+			GetAxes(ViewRotation, X, Y, Z);
+			dropVect = Location + 0.8 * CollisionRadius * X;
+			dropVect.Z += BaseEyeHeight;
+
+			// if we are a corpse, spawn the actual carcass
+			if (item.IsA('POVCorpse'))
+			{
+				if (POVCorpse(item).carcClassString != "")
+				{
+					carcClass = class<DeusExCarcass>(DynamicLoadObject(POVCorpse(item).carcClassString, class'Class'));
+					if (carcClass != None)
+					{
+						carc = Spawn(carcClass);
+						if (carc != None)
+						{
+							carc.Mesh = carc.Mesh2;
+							carc.KillerAlliance = POVCorpse(item).KillerAlliance;
+							carc.KillerBindName = POVCorpse(item).KillerBindName;
+							carc.Alliance = POVCorpse(item).Alliance;
+							carc.bNotDead = POVCorpse(item).bNotDead;
+							carc.bEmitCarcass = POVCorpse(item).bEmitCarcass;
+							carc.CumulativeDamage = POVCorpse(item).CumulativeDamage;
+							carc.MaxDamage = POVCorpse(item).MaxDamage;
+							carc.itemName = POVCorpse(item).CorpseItemName;
+							carc.CarcassName = POVCorpse(item).CarcassName;
+							carc.Velocity = item.Velocity * 0.5;
+							item.Velocity = vect(0,0,0);
+							carc.bHidden = False;
+							carc.SetPhysics(PHYS_Falling);
+							carc.SetScaleGlow();
+							if (carc.SetLocation(dropVect))
+							{
+								// must circumvent PutInHand() since it won't allow
+								// things in hand when you're carrying a corpse
+								SetInHandPending(None);
+								item.Destroy();
+								item = None;
+							}
+							else
+								carc.bHidden = True;
+						}
+					}
+				}
+			}
+			else
+			{
+				if (FastTrace(dropVect))
+				{
+					item.DropFrom(dropVect);
+					item.bFixedRotationDir = True;
+					item.RotationRate.Pitch = (32768 - Rand(65536)) * 4.0;
+					item.RotationRate.Yaw = (32768 - Rand(65536)) * 4.0;
+				}
+			}
+		}
+
+		// if we failed to drop it, put it back inHand
+		if (item != None)
+		{
+			if (((inHand == None) || (inHandPending == None)) && (item.Physics != PHYS_Falling))
+			{
+				PutInHand(item);
+				ClientMessage(CannotDropHere);
+				bDropped = False;
+			}
+			else
+			{
+				item.Instigator = Self;
+			}
+		}
+	}
+	else if (CarriedDecoration != None)
+	{
+		DropDecoration();
+
+		// play a throw anim
+		PlayAnim('Attack',,0.1);
+	}
+
+	// If the drop failed and we removed the item from the inventory
+	// grid, then we need to stick it back where it came from so
+	// the inventory doesn't get fucked up.
+
+	if ((bRemovedFromSlots) && (item != None) && (!bDropped))
+	{
+        //DEUS_EX AMSD Use the function call for this, helps multiplayer
+        PlaceItemInSlot(item, itemPosX, itemPosY);
+	}
+
+	return bDropped;
+}
+
+
 event WalkTexture( Texture Texture, vector StepLocation, vector StepNormal )
 {
     if ( Texture!=None && Texture.Outer!=None && Texture.Outer.Name=='Ladder' ) {
