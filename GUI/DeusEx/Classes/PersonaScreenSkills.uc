@@ -59,7 +59,24 @@ function UpdateSwimSpeed()
 
 function UpgradeSkill()
 {
+    local int levelBefore;
+    local DXRando dxr;
+
+    if (selectedSkill!=None){
+        levelBefore=selectedSkill.CurrentLevel;
+    }
+
     Super.UpgradeSkill();
     UpdateSwimSpeed();
     UpdateSkillBanned(selectedSkillButton);
+
+    if (selectedSkill!=None){
+        if (selectedSkill.CurrentLevel!=levelBefore){
+            //Skill upgraded
+            foreach player.AllActors(class'DXRando',dxr){break;}
+            class'DXREvents'.static.MarkBingo(dxr,"SkillUpgraded"); //General "Upgrade x skills" kind of situation
+            class'DXREvents'.static.MarkBingo(dxr,selectedSkill.Class.Name$"Upgraded"); //Skill-specific upgrade goals
+            class'DXREvents'.static.MarkBingo(dxr,"SkillLevel"$(selectedSkill.CurrentLevel+1)); //"Get X skills to level Y" type goals
+        }
+    }
 }
