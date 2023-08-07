@@ -215,6 +215,7 @@ function SetWatchFlags() {
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
         WatchFlag('PlayPool');
+        SetPoolBallHeight();
         break;
     case "03_NYC_HANGAR":
         RewatchFlag('747Ambrosia');
