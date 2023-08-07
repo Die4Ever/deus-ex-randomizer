@@ -40,6 +40,11 @@ function PreFirstEntryMapFixes()
     local #var(prefix)WeaponNanoSword dts;
     local #var(prefix)RatGenerator rg;
     local #var(prefix)Credits creds;
+#ifdef injections
+    local #var(prefix)DataCube dc;
+#else
+    local DXRInformationDevices dc;
+#endif
 
     switch(dxr.localURL)
     {
@@ -194,6 +199,13 @@ function PreFirstEntryMapFixes()
             else if (pad.Tag == 'RealKeypad_02')
                 pad.bHidden = False;
         }
+
+#ifdef injections
+        dc = Spawn(class'#var(prefix)DataCube',,, vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0));
+#else
+        dc = Spawn(class'DXRInformationDevices',,, vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0));
+#endif
+        dc.imageClass=Class'DeusEx.Image15_GrayDisection';
 
         Spawn(class'PlaceholderItem',,, vectm(-1.95,1223.1,810.3)); //Table over entrance
         Spawn(class'PlaceholderItem',,, vectm(1022.24,-1344.15,450.3)); //Bathroom counter

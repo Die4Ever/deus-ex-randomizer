@@ -1948,6 +1948,43 @@ function string RemapBingoEvent(string eventname)
         case "Pigeon_peeptime":
         case "Seagull_peeptime":
             return "BirdWatching";
+        case "ImageOpened_TiffanyHostagePicture":
+        case "ImageOpened_JoeGreeneMIBMJ12":
+        case "ImageOpened_TerroristCommander":
+        case "ImageOpened_MilleniumMagazine":
+            return "ViewPortraits";
+        case "ImageOpened_BlueFusionDevice":
+        case "ImageOpened_UniversalConstructorComponent":
+            return "ViewSchematics";
+        case "ImageOpened_Area51Sector4":
+        case "ImageOpened_Area51Sector3":
+        case "ImageOpened_Area51Bunker":
+        case "ImageOpened_OceanLab":
+        case "ImageOpened_VandenbergSub":
+        case "ImageOpened_VandenbergCommandComplex":
+        case "ImageOpened_ParisCathedral":
+        case "ImageOpened_ParisMetroMap":
+        case "ImageOpened_ParisCatacombsTunnels":
+        case "ImageOpened_PCRSWallCloudUpperDecks":
+        case "ImageOpened_PCRSWallCloudLowerDecks":
+        case "ImageOpened_HongKongWanChaiDistrict":
+        case "ImageOpened_VersalifeBuilding":
+        case "ImageOpened_MJ12HelipadFacility":
+        case "ImageOpened_HongKongMarket":
+        case "ImageOpened_MJ12LabFacility":
+        case "ImageOpened_HongKongMJ12LabFacility":
+        case "ImageOpened_NYCAirfield":
+        case "ImageOpened_747Diagram":
+        case "ImageOpened_NYCWarehouse":
+        case "ImageOpened_LibertyIslandSatellitePhoto":
+            return "ViewMaps";
+        case "ImageOpened_GrayDisection":
+        case "ImageOpened_GreaselDisection":
+            return "ViewDissection";
+        case "ImageOpened_CathedralEntrance":
+        case "ImageOpened_ParisCatacombs":
+        case "ImageOpened_NSFHeadquarters":
+            return "ViewTouristPics";
         default:
             return eventname;
     }
@@ -2348,6 +2385,11 @@ defaultproperties
 #ifdef vanilla
     bingo_options(213)=(event="BethsPainting",desc="Admire Beth DuClare's favourite painting",max=1,missions=1024)
 #endif
+    bingo_options(214)=(event="ViewPortraits",desc="Look at %s portraits",max=2,missions=4890)
+    bingo_options(215)=(event="ViewSchematics",desc="Inspect a schematic",max=1,missions=49152)
+    bingo_options(216)=(event="ViewMaps",desc="View %s maps",max=6,missions=56686)
+    bingo_options(217)=(event="ViewDissection",desc="Have a look at a dissection report",max=1,missions=96)
+    bingo_options(218)=(event="ViewTouristPics",desc="Look at a tourist picture",max=1,missions=2576)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
