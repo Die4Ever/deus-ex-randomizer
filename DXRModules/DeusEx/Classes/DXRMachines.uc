@@ -341,7 +341,7 @@ function #var(prefix)InformationDevices SpawnDatacubeForComputer(vector loc, #va
     distrange.max = 16*50;
     NearestFloor(locnorm, distrange);
 
-    d = SpawnDatacube(locnorm.loc, Rotator(locnorm.norm),
+    d = SpawnDatacubePlaintext(locnorm.loc, Rotator(locnorm.norm),
         c.UserList[0].userName $ " password is " $ c.UserList[0].Password);
 #ifdef injections
     d.new_passwords[0] = c.UserList[0].Password;

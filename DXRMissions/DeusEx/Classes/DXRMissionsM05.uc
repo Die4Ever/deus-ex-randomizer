@@ -86,7 +86,7 @@ function AfterShuffleGoals(int goalsToLocations[32])
 
     dctext = dctext $ "|n|nBoth using the DEMIURGE username. JC will never find them!";
 
-    SpawnDatacube(vectm(243.288742, -104.183029, 289.368256), rotm(0,0,0), dctext, true);
+    SpawnDatacubePlaintext(vectm(243.288742, -104.183029, 289.368256), rotm(0,0,0), dctext, true);
 }
 
 function PreFirstEntryMapFixes()

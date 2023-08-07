@@ -764,7 +764,11 @@ function #var(prefix)Containers AddBox(class<#var(prefix)Containers> c, vector l
     return box;
 }
 
-function #var(prefix)InformationDevices SpawnDatacube(vector loc, rotator rot, string text, optional bool dont_move)
+#ifdef injections
+function #var(prefix)InformationDevices SpawnDatacube(vector loc, rotator rot, optional bool dont_move)
+#else
+function DXRInformationDevices SpawnDatacube(vector loc, rotator rot, optional bool dont_move)
+#endif
 {
 #ifdef injections
     local #var(prefix)DataCube dc;
@@ -775,13 +779,58 @@ function #var(prefix)InformationDevices SpawnDatacube(vector loc, rotator rot, s
 #endif
 
     if(dc != None) {
-        dc.plaintext = text;
         dc.bIsSecretGoal = dont_move;
         info("SpawnDatacube "$dc$" at ("$loc$"), ("$rot$")");
         if(dxr.flags.settings.infodevices > 0)
             GlowUp(dc);
     } else {
         warning("SpawnDatacube failed at "$loc);
+    }
+    return dc;
+}
+
+
+function #var(prefix)InformationDevices SpawnDatacubePlaintext(vector loc, rotator rot, string text, optional bool dont_move)
+{
+#ifdef injections
+    local #var(prefix)InformationDevices dc;
+#else
+    local DXRInformationDevices dc;
+#endif
+    dc = SpawnDatacube(loc,rot,dont_move);
+
+    if(dc != None) {
+        dc.plaintext = text;
+    }
+    return dc;
+}
+
+function #var(prefix)InformationDevices SpawnDatacubeTextTag(vector loc, rotator rot, name texttag, optional bool dont_move)
+{
+#ifdef injections
+    local #var(prefix)InformationDevices dc;
+#else
+    local DXRInformationDevices dc;
+#endif
+    dc = SpawnDatacube(loc,rot,dont_move);
+
+    if(dc != None) {
+        dc.textTag = texttag;
+    }
+    return dc;
+}
+
+function #var(prefix)InformationDevices SpawnDatacubeImage(vector loc, rotator rot, class<DataVaultImage> imageClass, optional bool dont_move)
+{
+#ifdef injections
+    local #var(prefix)InformationDevices dc;
+#else
+    local DXRInformationDevices dc;
+#endif
+    dc = SpawnDatacube(loc,rot,dont_move);
+
+    if(dc != None) {
+        dc.imageClass = imageClass;
     }
     return dc;
 }

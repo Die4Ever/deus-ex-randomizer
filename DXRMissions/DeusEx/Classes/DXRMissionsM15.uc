@@ -126,7 +126,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
             dctext = dctext $ "\"a51\" and the password is \"xx15yz\".|n|n";
             dctext = dctext $ "BTW, be careful -- a squad made it out before I managed to lock the doors: they headed for the warehouse and then I lost contact with them.|n|n--Hawkins";
 
-            dc2 = SpawnDatacube(dc1.Location, dc1.Rotation, dctext);
+            dc2 = SpawnDatacubePlaintext(dc1.Location, dc1.Rotation, dctext);
             if( dc2 != None ){
                 l("DXRMissions spawned "$ dc2 @ dctext @ dc2.Location);
                 dc1.Destroy();

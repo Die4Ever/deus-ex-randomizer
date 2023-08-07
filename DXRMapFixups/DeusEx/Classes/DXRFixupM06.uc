@@ -200,12 +200,7 @@ function PreFirstEntryMapFixes()
                 pad.bHidden = False;
         }
 
-#ifdef injections
-        dc = Spawn(class'#var(prefix)DataCube',,, vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0));
-#else
-        dc = Spawn(class'DXRInformationDevices',,, vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0));
-#endif
-        dc.imageClass=Class'DeusEx.Image15_GrayDisection';
+        SpawnDatacubeImage(vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0),Class'DeusEx.Image15_GrayDisection');
 
         Spawn(class'PlaceholderItem',,, vectm(-1.95,1223.1,810.3)); //Table over entrance
         Spawn(class'PlaceholderItem',,, vectm(1022.24,-1344.15,450.3)); //Bathroom counter
