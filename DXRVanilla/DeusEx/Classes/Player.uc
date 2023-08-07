@@ -138,13 +138,61 @@ exec function QuickSave()
 
 function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
 {
+    local bool bCanPickup;
+    local #var(DeusExPrefix)Weapon weap,ownedWeapon;
+    local int ammoAvail,ammoToAdd,ammoRemaining;
+    local class<Ammo> defAmmoClass;
+    local #var(DeusExPrefix)Ammo ownAmmo;
+    local bool isThrown;
+
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
     if ( loadout != None && Inventory(FrobTarget) != None && loadout.ban(self, Inventory(FrobTarget)) ) {
         FrobTarget.Destroy();
         return true;
     }
 
-    return Super.HandleItemPickup(FrobTarget, bSearchOnly);
+    bCanPickup = Super.HandleItemPickup(FrobTarget, bSearchOnly);
+
+    weap = #var(DeusExPrefix)Weapon(FrobTarget);
+    if (bCanPickup==False && weap!=None && weap.PickUpAmmoCount!=0){
+        ownedWeapon=#var(DeusExPrefix)Weapon(FindInventoryType(FrobTarget.Class));
+        //You can't pick up the weapon, but let's yoink the ammo
+        if (ownedWeapon==None){
+            ammoAvail = weap.PickUpAmmoCount;
+            if (weap.AmmoNames[0]==None){
+                defAmmoClass=weap.AmmoName;
+            } else {
+                defAmmoClass=weap.AmmoNames[0];
+            }
+
+            isThrown = ClassIsChildOf(weap.ProjectileClass,class'ThrownProjectile') || weap.ProjectileClass==class'Shuriken';
+
+            if (defAmmoClass!=class'#var(prefix)AmmoNone' && !isThrown){
+                ownAmmo = #var(DeusExPrefix)Ammo(FindInventoryType(defAmmoClass));
+
+                if (ownAmmo==None){
+                    ownAmmo = #var(DeusExPrefix)Ammo(Spawn(defAmmoClass));
+                    AddInventory(ownAmmo);
+                    ownAmmo.BecomeItem();
+                    ownAmmo.AmmoAmount=0;
+                    ownAmmo.GotoState('Idle2');
+                }
+
+                ammoRemaining=0;
+                ammoToAdd = ammoAvail;
+                if (ownAmmo.AmmoAmount+ammoAvail > ownAmmo.MaxAmmo) {
+                    ammoToAdd = ownAmmo.MaxAmmo - ownAmmo.AmmoAmount;
+                    ammoRemaining = ammoAvail - ammoToAdd;
+                }
+
+                ownAmmo.AddAmmo(ammoToAdd);
+                weap.PickUpAmmoCount=ammoRemaining;
+                ClientMessage("Took "$ammoToAdd$" "$ownAmmo.ItemName$" from "$weap.ItemName);
+            }
+        }
+    }
+
+    return bCanPickup;
 }
 
 function bool AddInventory( inventory NewItem )
