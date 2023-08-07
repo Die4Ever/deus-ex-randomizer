@@ -195,7 +195,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     }
 
     pickup = #var(DeusExPrefix)Pickup(FrobTarget);
-    if (pickup!=None && pickup.Owner!=Self){
+    if (pickup!=None && pickup.Owner!=Self && pickup.maxCopies>1){
         //Pickup failed
         ownedPickup=#var(DeusExPrefix)Pickup(FindInventoryType(FrobTarget.Class));
         if (ownedPickup!=None && (ownedPickup.NumCopies+pickup.NumCopies)>ownedPickup.maxCopies){
