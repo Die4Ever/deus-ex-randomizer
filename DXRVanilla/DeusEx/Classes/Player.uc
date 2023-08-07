@@ -144,6 +144,7 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     local class<Ammo> defAmmoClass;
     local #var(DeusExPrefix)Ammo ownAmmo;
     local bool isThrown;
+    local #var(DeusExPrefix)Pickup pickup,ownedPickup;
 
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
     if ( loadout != None && Inventory(FrobTarget) != None && loadout.ban(self, Inventory(FrobTarget)) ) {
@@ -188,8 +189,25 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
                 ownAmmo.AddAmmo(ammoToAdd);
                 weap.PickUpAmmoCount=ammoRemaining;
                 ClientMessage("Took "$ammoToAdd$" "$ownAmmo.ItemName$" from "$weap.ItemName);
+                UpdateBeltText(weap);
             }
         }
+    }
+
+    pickup = #var(DeusExPrefix)Pickup(FrobTarget);
+    if (pickup!=None && pickup.Owner!=Self){
+        //Pickup failed
+        ownedPickup=#var(DeusExPrefix)Pickup(FindInventoryType(FrobTarget.Class));
+        if (ownedPickup!=None && (ownedPickup.NumCopies+pickup.NumCopies)>ownedPickup.maxCopies){
+            ammoToAdd=ownedPickup.maxCopies - ownedPickup.NumCopies;
+            if (ammoToAdd!=0){
+                pickup.NumCopies = (ownedPickup.NumCopies+pickup.NumCopies)-ownedPickup.maxCopies;
+                ownedPickup.NumCopies = ownedPickup.maxCopies;
+                UpdateBeltText(ownedPickup);
+                ClientMessage("Picked up "$ammoToAdd$" of the "$pickup.ItemName);
+            }
+        }
+
     }
 
     return bCanPickup;
