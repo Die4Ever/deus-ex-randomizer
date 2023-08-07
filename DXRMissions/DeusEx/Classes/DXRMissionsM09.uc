@@ -14,10 +14,19 @@ function int InitGoals(int mission, string map)
         AddGoalActor(goal, 4, 'TriggerLight1', PHYS_None);
         AddGoalActor(goal, 5, 'TriggerLight2', PHYS_None);
         AddGoalActor(goal, 6, 'AmbientSoundTriggered0', PHYS_None);
-        AddGoalLocation("09_NYC_GRAVEYARD", "Main Tunnel", NORMAL_GOAL, vect(-283.503448, -787.867920, -184.000000), rot(0, 0, -32768));
-        AddGoalLocation("09_NYC_GRAVEYARD", "Open Grave", NORMAL_GOAL, vect(-766.879333, 501.505676, -88.109619), rot(0, 0, -32768));
-        AddGoalLocation("09_NYC_GRAVEYARD", "Tunnel Ledge", NORMAL_GOAL, vect(-1530.000000, 845.000000, -107.000000), rot(0, 0, -32768));
-        AddGoalLocation("09_NYC_GRAVEYARD", "Behind Bookshelf", NORMAL_GOAL | VANILLA_GOAL, vect(1103.000000,728.000000,48.000000), rot(0,0,-32768));
+        AddGoalActor(goal, 7, 'Keypad99', PHYS_None); //this doesn't actually exist, but will get spawned afterwards
+
+        loc=AddGoalLocation("09_NYC_GRAVEYARD", "Main Tunnel", NORMAL_GOAL, vect(-283.503448, -787.867920, -184.000000), rot(0, 0, -32768));
+        AddActorLocation(loc, 7, vect(-347.961243,-736.953247,-163.610138), rot(0,-16416,0));
+
+        loc=AddGoalLocation("09_NYC_GRAVEYARD", "Open Grave", NORMAL_GOAL, vect(-766.879333, 501.505676, -88.109619), rot(0, 0, -32768));
+        AddActorLocation(loc, 7, vect(-801.517029,480.807953,-8.614368), rot(0,16392,0));
+
+        loc=AddGoalLocation("09_NYC_GRAVEYARD", "Tunnel Ledge", NORMAL_GOAL, vect(-1530.000000, 845.000000, -107.000000), rot(0, 0, -32768));
+        AddActorLocation(loc, 7, vect(-1568.019653,909.726563,-89.847336), rot(1700,0,0));
+
+        loc=AddGoalLocation("09_NYC_GRAVEYARD", "Behind Bookshelf", NORMAL_GOAL | VANILLA_GOAL, vect(1103.000000,728.000000,48.000000), rot(0,0,-32768));
+        AddActorLocation(loc, 7, vect(1127.001465,763.400208,69.272461), rot(0,-32760,0));
         return 91;
 
     case "09_NYC_SHIPBELOW":
@@ -107,14 +116,39 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)Barrel1 barrel;
 
+
     if( dxr.localURL == "09_NYC_GRAVEYARD" ) {
         // //barrel next to the transmitter thing, it explodes when I move it
         foreach AllActors(class'#var(prefix)Barrel1', barrel, 'BarrelOFun') {
             barrel.bExplosive = false;
             barrel.Destroy();
         }
+
+        SpawnDatacubePlaintext(vectm(1102.252563,821.384338,26.370010),rotm(0,0,0),"I installed that big device you asked for, but it's really blasting out a lot of EM interference...|n|nIf an FCC inspector comes around, you can turn it off by using the code 8854 ");
     }
 }
+
+function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
+{
+    local #var(prefix)Keypad1 keypad;
+    local #var(prefix)SpecialEvent se;
+
+    if (g.name=="Jammer") {
+        //Add a keypad to disable the jammer
+        keypad=Spawn(class'#var(prefix)Keypad1',,,Loc.positions[7].pos,Loc.positions[7].rot);
+        keypad.Event='EMOff';
+        keypad.bHackable=True;
+        keypad.hackStrength=0.05;
+        keypad.validCode="8854";
+        keypad.bToggleLock=False;
+
+        se=Spawn(class'#var(prefix)SpecialEvent',,,vectm(1527,782,0));
+        se.Tag='EMOff';
+        se.Message="EM Field Disabled";
+        se.GoToState('DisplayMessage');
+    }
+}
+
 
 function MissionTimer()
 {
