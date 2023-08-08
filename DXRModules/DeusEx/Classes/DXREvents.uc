@@ -7,6 +7,7 @@ var int bingo_win_countdown;
 var name rewatchflags[8];
 var int num_rewatchflags;
 var float PoolBallHeight;
+var int NumPoolTables, PoolTablesSunk;
 
 struct BingoOption {
     var string event, desc;
@@ -159,7 +160,7 @@ function SetWatchFlags() {
         WatchFlag('JockSecondStory');
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
-        SetPoolBallHeight();
+        InitPoolBalls();
         break;
     case "02_NYC_FREECLINIC":
         WatchFlag('BoughtClinicPlan');
@@ -215,7 +216,7 @@ function SetWatchFlags() {
     case "03_NYC_AIRFIELDHELIBASE":
         WatchFlag('HelicopterBaseAmbrosia');
         WatchFlag('PlayPool');
-        SetPoolBallHeight();
+        InitPoolBalls();
         break;
     case "03_NYC_HANGAR":
         RewatchFlag('747Ambrosia');
@@ -240,7 +241,7 @@ function SetWatchFlags() {
     case "04_NYC_BAR":
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
-        SetPoolBallHeight();
+        InitPoolBalls();
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
@@ -373,7 +374,7 @@ function SetWatchFlags() {
             }
         }
 
-        SetPoolBallHeight();
+        InitPoolBalls();
 
         break;
     case "06_HONGKONG_WANCHAI_STREET":
@@ -506,7 +507,7 @@ function SetWatchFlags() {
     case "08_NYC_BAR":
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
-        SetPoolBallHeight();
+        InitPoolBalls();
         break;
     case "08_NYC_HOTEL":
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
@@ -719,7 +720,7 @@ function SetWatchFlags() {
         break;
     case "15_AREA51_ENTRANCE":
         WatchFlag('PlayPool');
-        SetPoolBallHeight();
+        InitPoolBalls();
         break;
     case "15_AREA51_FINAL":
         foreach AllActors(class'#var(prefix)BookOpen', book) {
@@ -899,26 +900,59 @@ simulated function bool ClassInLevel(class<Actor> className)
     return False;
 }
 
-simulated function bool AllPoolBallsSunk()
+simulated function int PoolBallsSunk()
 {
-    local #var(prefix)Poolball ball;
+    local #var(prefix)Poolball cue,ball;
+    local int ballsSunk,tablesSunk,freshSink,radius;
 
-    foreach AllActors(class'#var(prefix)Poolball',ball){
-        if (ball.Location.Z > PoolBallHeight){
-            return False;
+    radius=99999;
+
+    //I think Airfield is the only map with more than one,
+    //Need to make sure we only count the balls for each individual table.
+    //Those pool tables don't have anywhere for the balls to fall out, so
+    //radius can be contained.  Other tables have a hole for the balls to
+    //come out, so we want to be able to check a larger radius.
+    if (NumPoolTables>1){
+        radius = 150;
+    }
+
+    tablesSunk=0;
+    foreach AllActors(class'#var(prefix)Poolball',cue){
+        if (cue.SkinColor==SC_Cue){
+            ballsSunk=0;
+            foreach cue.RadiusActors(class'#var(prefix)Poolball',ball,radius){
+                if (ball.Location.Z <= PoolBallHeight){
+                    ballsSunk++;
+                }
+            }
+            if (ballsSunk>=16){
+                tablesSunk++;
+            }
         }
     }
-    return True;
+
+    if (tablesSunk <= PoolTablesSunk){
+        return 0;
+    }
+    freshSink = tablesSunk-PoolTablesSunk;
+    PoolTablesSunk = tablesSunk;
+
+    return freshSink;
 }
 
-simulated function SetPoolBallHeight()
+simulated function InitPoolBalls()
 {
     local #var(prefix)Poolball ball;
     PoolBallHeight = 9999;
+    NumPoolTables=0;
+    PoolTablesSunk=0;
 
     foreach AllActors(class'#var(prefix)Poolball',ball){
         if (ball.Location.Z < PoolBallHeight){
             PoolBallHeight = ball.Location.Z;
+        }
+        if (ball.SkinColor==SC_Cue){
+            NumPoolTables+=1;
         }
     }
 
@@ -939,7 +973,7 @@ simulated function bool WatchGuntherKillSwitch()
 
 simulated function Timer()
 {
-    local int i;
+    local int i,j,num;
 
     if( dxr == None || dxr.flagbase == None ) {
         return;
@@ -972,12 +1006,17 @@ simulated function Timer()
                 continue;
             }
         } else if( watchflags[i] == 'PlayPool' ) {
-            if (AllPoolBallsSunk()){
-                SendFlagEvent(watchflags[i]);
-                num_watchflags--;
-                watchflags[i] = watchflags[num_watchflags];
-                watchflags[num_watchflags]='';
-                i--;
+            num = PoolBallsSunk();
+            if (num>0){
+                for (j=0;j<num;j++){
+                    SendFlagEvent(watchflags[i]);
+                }
+                if (PoolTablesSunk >= NumPoolTables){
+                    num_watchflags--;
+                    watchflags[i] = watchflags[num_watchflags];
+                    watchflags[num_watchflags]='';
+                    i--;
+                }
                 continue;
             }
         } else if( watchflags[i] == 'FlowersForTheLab' ) {
