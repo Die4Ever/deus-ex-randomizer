@@ -611,12 +611,16 @@ function SetWatchFlags() {
         break;
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
+        WatchFlag('DL_gold_found_Played');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2019,-2256,-704),20,15);
         bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2076.885254,-3248.189941,-704.369995),20,15);
         bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
         bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(1578,-2286,-647),50,40);
         bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+
+        bt = class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(771,-808,-706),500,180);
+
         break;
     case "11_PARIS_EVERETT":
         WatchFlag('GotHelicopterInfo');
@@ -2442,6 +2446,8 @@ defaultproperties
     bingo_options(216)=(event="ViewMaps",desc="View %s maps",max=6,missions=56686)
     bingo_options(217)=(event="ViewDissection",desc="Have a look at a dissection report",max=1,missions=96)
     bingo_options(218)=(event="ViewTouristPics",desc="Look at a tourist picture",max=1,missions=2576)
+    bingo_options(219)=(event="CathedralUnderwater",desc="Swim through the underwater tunnel at the cathedral",max=1,missions=2048)
+    bingo_options(220)=(event="DL_gold_found_Played",desc="Recover the Templar gold",max=1,missions=2048)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
