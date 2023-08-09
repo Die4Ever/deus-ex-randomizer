@@ -544,6 +544,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.doorsdestructible = 100;
         settings.doorspickable = 100;
 
+        settings.deviceshackable = 100;
+
         // no banned skills
         settings.banned_skills = 0;
         settings.banned_skill_levels = 0;
