@@ -1055,24 +1055,35 @@ function PreTravel()
     SetTimer(0, false);
 }
 
+function BingoWinScreen()
+{
+    local #var(PlayerPawn) p;
+    p = player();
+    if ( Level.Netmode == NM_Standalone ) {
+        //Make it harder to get murdered during the countdown
+        Level.Game.SetGameSpeed(0.05);
+        SetTimer(0.1, true); //You would think this would be 0.05, but it's not
+    }
+    p.ReducedDamageType = 'All';// god mode
+    p.DesiredFlashScale = 0;
+    p.DesiredFlashFog = vect(0,0,0);
+    p.ShowHud(False);
+    //Show win message
+    class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
+    if (bingo_win_countdown == 2 && !#defined(vanilla)) {
+        //Give it 2 seconds to send the tweet
+        //This is still needed outside of vanilla
+        BeatGame(dxr,4);
+    }
+}
+
 function HandleBingoWinCountdown()
 {
     //Blocked in HX for now (Blocked at the check, but here for safety as well)
     if(#defined(hx)) return;
 
     if (bingo_win_countdown > 0) {
-        if ( Level.Netmode == NM_Standalone ) {
-            //Make it harder to get murdered during the countdown
-            Level.Game.SetGameSpeed(0.05);
-            SetTimer(0.1, true); //You would think this would be 0.05, but it's not
-        }
-        //Show win message
-        class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
-        if (bingo_win_countdown == 2 && !#defined(vanilla)) {
-            //Give it 2 seconds to send the tweet
-            //This is still needed outside of vanilla
-            BeatGame(dxr,4);
-        }
+        BingoWinScreen();
         bingo_win_countdown--;
     } else if (bingo_win_countdown == 0) {
         if ( Level.Netmode == NM_Standalone ) {
@@ -1755,6 +1766,7 @@ function bool CheckBingoWin(DXRando dxr, int numBingos)
         if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4"){
             info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
             bingo_win_countdown = 5;
+            BingoWinScreen();
             return true;
         }
     }
