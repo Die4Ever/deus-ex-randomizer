@@ -216,6 +216,7 @@ function ShuffleGoals()
 {
     local int goalsToLocations[32];
 
+
     if( ArrayCount(goalsToLocations) != ArrayCount(goals) ) err("ArrayCount(goalsToLocations) != ArrayCount(goals)");
 
     if(num_goals == 0 && num_locations == 0) return;
@@ -225,6 +226,21 @@ function ShuffleGoals()
     MoveActorsIn(goalsToLocations);
     // hardcoded fixes that span multiple goals
     AfterShuffleGoals(goalsToLocations);
+
+    //GenerateDebugGoalMarkers();
+
+}
+
+function GenerateDebugGoalMarkers()
+{
+    local int i;
+    local DXRGoalMarker marker;
+
+    for(i=0; i<num_locations; i++) {
+        if(dxr.localURL != locations[i].mapName) continue;
+        marker = DXRGoalMarker(Spawnm(class'DXRGoalMarker',,, locations[i].positions[0].pos));
+        marker.BindName = locations[i].name;
+    }
 }
 
 function MoveActorsOut()

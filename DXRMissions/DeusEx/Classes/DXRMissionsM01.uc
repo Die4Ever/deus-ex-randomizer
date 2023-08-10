@@ -38,6 +38,7 @@ function int InitGoalsRev(int mission, string map)
 
     goal = AddGoal("01_NYC_UNATCOISLAND", "Terrorist Commander", NORMAL_GOAL, 'TerroristCommander0', PHYS_Falling);
     AddGoalActor(goal, 1, 'DataLinkTrigger12', PHYS_None);
+    AddGoal("01_NYC_UNATCOISLAND", "Police Boat", GOAL_TYPE1, 'NYPoliceBoat0', PHYS_None);
 
     loc = AddGoalLocation("01_NYC_UNATCOISLAND", "UNATCO HQ", START_LOCATION, vect(-6146.002930, 1748.501709, -87.000000), rot(0, 0, 0));
     loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Dock", NORMAL_GOAL | VANILLA_START, vect(-4728.569824, 9358.811523, -280.674988), rot(0, -7040, 0));
@@ -55,6 +56,11 @@ function int InitGoalsRev(int mission, string map)
     loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
     AddMutualExclusion(loc, loc2);
 
+    //Boat locations
+    AddGoalLocation("01_nyc_unatcoisland", "South Dock", GOAL_TYPE1 | VANILLA_GOAL , vect(-5023.598145,9131.867188,-269.806213), rot(0, 16192, 0));
+    AddGoalLocation("01_nyc_unatcoisland", "North Dock", GOAL_TYPE1 , vect(4471, -10046.186523, -269.806213), rot(0, 16192, 0));
+    AddGoalLocation("01_nyc_unatcoisland", "Top of the Statue", GOAL_TYPE1 , vect(3682.585449, 231.813477, 2108.193848), rot(0, 16192, 0));
+    AddGoalLocation("01_nyc_unatcoisland", "Behind UNATCO", GOAL_TYPE1 , vect(-4571,135,24), rot(0, 16192, 0));
 
     return mission;
 }
