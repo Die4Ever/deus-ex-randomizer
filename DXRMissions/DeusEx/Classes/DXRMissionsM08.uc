@@ -27,6 +27,32 @@ function int InitGoals(int mission, string map)
     return 81;
 }
 
+function int InitGoalsRev(int mission, string map)
+{
+    local int goal, loc, loc2;
+
+    AddGoal("08_NYC_Bar", "Harley Filben", NORMAL_GOAL, 'HarleyFilben0', PHYS_Falling);
+    goal = AddGoal("08_NYC_Bar", "Vinny", NORMAL_GOAL, 'NathanMadison0', PHYS_Falling);
+    //AddGoalActor(goal, 1, 'SandraRenton0', PHYS_Falling); TODO: move Sandra with Vinny?
+    //AddGoalActor(goal, 2, 'CoffeeTable0', PHYS_Falling);
+    AddGoal("08_NYC_FreeClinic", "Joe Greene", NORMAL_GOAL, 'JoeGreene0', PHYS_Falling);
+
+    AddGoalLocation("08_NYC_Street", "Hotel Roof", START_LOCATION | VANILLA_START | NORMAL_GOAL, vect(-462.25,856,634.4), rot(0, -18600, 0));
+    AddGoalLocation("08_NYC_Bar", "Bar Table", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(-1394.78,727.7,95.6), rot(0,-10144,0));
+    AddGoalLocation("08_NYC_Bar", "Bar", NORMAL_GOAL | VANILLA_GOAL, vect(-556.6,-403.86,49.6), rot(0,41832,0));
+    AddGoalLocation("08_NYC_FreeClinic", "Clinic", NORMAL_GOAL | VANILLA_GOAL, vect(1293.991211,-1226.047852,-239.399506), rot(0,31640,0));
+    AddGoalLocation("08_NYC_Underground", "Sewers", NORMAL_GOAL, vect(591.048462, -152.517639, -560.397888), rot(0,32768,0));
+    AddGoalLocation("08_NYC_Hotel", "Hotel", NORMAL_GOAL | SITTING_GOAL, vect(316,-3439,111), rot(0,0,0));
+    AddGoalLocation("08_NYC_Street", "Basketball Court", NORMAL_GOAL | START_LOCATION, vect(2683.1,-1977.77,-448), rot(0,-16390,0));
+
+    if (dxr.flags.settings.starting_map == 81) //Mission 8 Smuggler
+    {
+        skip_rando_start = True;
+    }
+
+    return 81;
+}
+
 function CreateGoal(out Goal g, GoalLocation Loc)
 {
     local #var(prefix)ScriptedPawn sp;
