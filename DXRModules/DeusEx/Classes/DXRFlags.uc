@@ -425,10 +425,6 @@ function CheckConfig()
             difficulty_settings[i].startinglocations = 0;
             difficulty_settings[i].merchants = 0;
         }
-        if(#defined(revision)) {
-            difficulty_settings[i].startinglocations = 0;
-            difficulty_settings[i].goals = 0;
-        }
     }
 
     Super.CheckConfig();
