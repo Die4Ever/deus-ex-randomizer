@@ -647,6 +647,7 @@ function SetWatchFlags() {
         break;
     case "12_VANDENBERG_GAS":
         bt = class'BingoTrigger'.static.Create(self,'support1',vectm(0,0,0)); //This gets hit when you blow up the gas pumps
+        bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(984,528,-700),150,10);
         break;
     case "12_VANDENBERG_CMD":
         WatchFlag('MeetTimBaker_Played');
@@ -2041,6 +2042,12 @@ function string RemapBingoEvent(string eventname)
         case "ImageOpened_ParisCatacombs":
         case "ImageOpened_NSFHeadquarters":
             return "ViewTouristPics";
+        case "01_EmailMenu_JCD":
+        case "03_EmailMenu_JCD":
+        case "04_EmailMenu_JCD":
+        case "05_EmailMenu_JCD":
+        case "06_EmailMenu_JCDenton":
+            return "ReadJCEmail";
         default:
             return eventname;
     }
@@ -2449,6 +2456,10 @@ defaultproperties
     bingo_options(219)=(event="CathedralUnderwater",desc="Swim through the underwater tunnel at the cathedral",max=1,missions=2048)
     bingo_options(220)=(event="DL_gold_found_Played",desc="Recover the Templar gold",max=1,missions=2048)
     bingo_options(221)=(event="12_Email04",desc="Read a motivational email from Gary",max=1,missions=4096)
+    bingo_options(222)=(event="ReadJCEmail",desc="Check your email %s times",max=3,missions=122)
+    bingo_options(223)=(event="02_Email05",desc="Paul's Classic Movies",max=1,missions=4)
+    bingo_options(224)=(event="11_Book08",desc="Read Adept 34501's diary",max=1,missions=2048)
+    bingo_options(225)=(event="GasStationCeiling",desc="Access the ceiling of a gas station",max=1,missions=4096)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
