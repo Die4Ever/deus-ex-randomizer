@@ -55,6 +55,8 @@ function int InitGoalsRev(int mission, string map)
     loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Top of the Statue", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(2931.230957, 27.495235, 2527.800049), rot(0, 14832, 0));
     AddMutualExclusion(loc, loc2);
 
+
+    return mission;
 }
 
 function PreFirstEntryMapFixes()
