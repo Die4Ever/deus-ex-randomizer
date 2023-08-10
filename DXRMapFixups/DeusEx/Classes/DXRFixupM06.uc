@@ -104,6 +104,7 @@ function PreFirstEntryMapFixes()
         }
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
+    case "06_HONGKONG_WANCHAI_COMPOUND":
         foreach AllActors(class'Actor', a)
         {
             switch(string(a.Tag))
