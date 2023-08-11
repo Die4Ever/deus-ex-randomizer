@@ -105,7 +105,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Cubicle", SITTING_GOAL, vect(16.111176, 1888.993774, 207.596893), rot(0,16384,0));
         AddGoalLocation("06_HONGKONG_VERSALIFE", "2nd Floor Water Cooler", NORMAL_GOAL, vect(858.500061, 1747.315918, 207.601013), rot(0, 30000, 0));
         return 61;
-/*
+
     case "06_HONGKONG_MJ12LAB":
         goal = AddGoal("06_HONGKONG_MJ12LAB", "Nanotech Blade ROM", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
         AddGoalActor(goal, 1, 'DataLinkTrigger0', PHYS_None);// DL_Tong_07: I have uploaded the component the Triads need to complete the sword.
@@ -125,9 +125,9 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Chamber", NORMAL_GOAL, vect(-1273.699951, 803.588745, -792.499512), rot(0, 16384, 0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Lab", NORMAL_GOAL, vect(-1712.699951, -809.700012, -744.500610), rot(0, 16384, 0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
-        AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-723.018677,591.498901,-743.972717), rot(0,49160,0));
+        AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-592.426758,329.524597,-743.972717), rot(0,49160,0));
         return 62;
-
+/*
     case "06_HONGKONG_WANCHAI_STREET":
     case "06_HONGKONG_WANCHAI_CANAL":
     case "06_HONGKONG_WANCHAI_MARKET":
