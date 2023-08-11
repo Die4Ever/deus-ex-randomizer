@@ -72,7 +72,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalActor(goal, 1, 'SkillAwardTrigger0', PHYS_None);
         AddGoalActor(goal, 2, 'GoalCompleteTrigger0', PHYS_None);
         AddGoalActor(goal, 3, 'FlagTrigger1', PHYS_None); //Sets AmbrosiaTagged
-        AddGoalActor(goal, 4, 'DataLinkTrigger1', PHYS_None);
+        AddGoalActor(goal, 4, 'DataLinkTrigger15', PHYS_None);
 
         AddGoalLocation("02_NYC_BATTERYPARK", "Dock", START_LOCATION | VANILLA_START, vect(-619.571289, -3679.116455, 255.099762), rot(0, 29856, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Ventilation system", NORMAL_GOAL | START_LOCATION, vect(-4310.507813, 2237.952637, 189.843536), rot(0, 0, 0));
