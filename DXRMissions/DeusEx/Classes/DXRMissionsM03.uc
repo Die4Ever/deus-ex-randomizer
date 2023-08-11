@@ -53,7 +53,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("03_NYC_AIRFIELD", "West Security Tower", NORMAL_GOAL, vect(-2060.626465, -2013.138672, 15.090023), rot(0, 0, 0));
         AddGoalLocation("03_NYC_AIRFIELD", "NW Security Tower", NORMAL_GOAL, vect(729.454651, -4151.924805, 15.079981), rot(0, 0, 0));
         AddGoalLocation("03_NYC_AIRFIELD", "NE Security Tower", NORMAL_GOAL, vect(5215.076660, -4134.674316, 15.090023), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "Hanger Door", NORMAL_GOAL, vect(941.941895, 283.418152, 15.090023), rot(0, 0, 0));
+        AddGoalLocation("03_NYC_AIRFIELD", "Hangar Door", NORMAL_GOAL, vect(941.941895, 283.418152, 15.090023), rot(0, 0, 0));
         AddGoalLocation("03_NYC_AIRFIELD", "Dock", NORMAL_GOAL | VANILLA_GOAL, vect(-2687.128662,2320.010986,63.774998), rot(0,0,0));
 
         goal = AddGoal("03_NYC_AIRFIELD", "Ambrosia", GOAL_TYPE1, 'BarrelAmbrosia0', PHYS_Falling);
@@ -142,7 +142,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("03_NYC_BROOKLYNBRIDGESTATION", "NE Corner", NORMAL_GOAL | VANILLA_GOAL, vect(1003.048767,-2519.280762,111.775002), rot(0,13576,0));
         AddGoalLocation("03_NYC_BROOKLYNBRIDGESTATION", "NW Corner", NORMAL_GOAL | VANILLA_GOAL, vect(-988.025696,-3381.119385,111.775002), rot(0,-22608,0));
         return 32;
-/*
+
     case "03_NYC_AIRFIELD":
         AddGoal("03_NYC_AIRFIELD", "Terrorist with the East Gate key", NORMAL_GOAL, 'Terrorist13', PHYS_Falling);
         AddGoalLocation("03_NYC_AIRFIELD", "South Gate", NORMAL_GOAL, vect(223.719452, 3689.905273, 15.100115), rot(0, 0, 0));
@@ -150,7 +150,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("03_NYC_AIRFIELD", "West Security Tower", NORMAL_GOAL, vect(-2060.626465, -2013.138672, 15.090023), rot(0, 0, 0));
         AddGoalLocation("03_NYC_AIRFIELD", "NW Security Tower", NORMAL_GOAL, vect(729.454651, -4151.924805, 15.079981), rot(0, 0, 0));
         AddGoalLocation("03_NYC_AIRFIELD", "NE Security Tower", NORMAL_GOAL, vect(5215.076660, -4134.674316, 15.090023), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "Hanger Door", NORMAL_GOAL, vect(941.941895, 283.418152, 15.090023), rot(0, 0, 0));
+        AddGoalLocation("03_NYC_AIRFIELD", "Hangar Door", NORMAL_GOAL, vect(941.941895, 283.418152, 15.090023), rot(0, 0, 0));
         AddGoalLocation("03_NYC_AIRFIELD", "Dock", NORMAL_GOAL | VANILLA_GOAL, vect(-2687.128662,2320.010986,63.774998), rot(0,0,0));
 
         goal = AddGoal("03_NYC_AIRFIELD", "Ambrosia", GOAL_TYPE1, 'BarrelAmbrosia0', PHYS_Falling);
@@ -162,7 +162,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("03_NYC_AIRFIELD", "Cargo Container", GOAL_TYPE1, vect(-220,3012,373), rot(0,25344,0));
 
         return 33;
-
+/*
     case "03_NYC_AIRFIELDHELIBASE":
         goal = AddGoal("03_NYC_AIRFIELDHELIBASE", "Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia1', PHYS_Falling);
         AddGoalActor(goal,1,'FlagTrigger0',PHYS_None); //Reduced radius, sets HelicopterBaseAmbrosia
