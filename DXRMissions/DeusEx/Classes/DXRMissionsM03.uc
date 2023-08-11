@@ -126,7 +126,7 @@ function int InitGoalsRev(int mission, string map)
         loc = AddGoalLocation("03_NYC_BATTERYPARK", "Subway", NORMAL_GOAL | VANILLA_GOAL | START_LOCATION, vect(-4819.345215,3478.138916,-304.225006), rot(0,0,0));
         AddActorLocation(loc, 1, vect(-4739.345215, 3578.138916, -306), rot(0,0,0));
         return 31;
-/*
+
     case "03_NYC_BROOKLYNBRIDGESTATION":
         // GOAL_TYPE1 is only for people that can safely go up into the Rooks territory
         AddGoal("03_NYC_BROOKLYNBRIDGESTATION", "Rock (Drug Dealer)", NORMAL_GOAL, 'ThugMale13', PHYS_Falling);
@@ -142,7 +142,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("03_NYC_BROOKLYNBRIDGESTATION", "NE Corner", NORMAL_GOAL | VANILLA_GOAL, vect(1003.048767,-2519.280762,111.775002), rot(0,13576,0));
         AddGoalLocation("03_NYC_BROOKLYNBRIDGESTATION", "NW Corner", NORMAL_GOAL | VANILLA_GOAL, vect(-988.025696,-3381.119385,111.775002), rot(0,-22608,0));
         return 32;
-
+/*
     case "03_NYC_AIRFIELD":
         AddGoal("03_NYC_AIRFIELD", "Terrorist with the East Gate key", NORMAL_GOAL, 'Terrorist13', PHYS_Falling);
         AddGoalLocation("03_NYC_AIRFIELD", "South Gate", NORMAL_GOAL, vect(223.719452, 3689.905273, 15.100115), rot(0, 0, 0));
