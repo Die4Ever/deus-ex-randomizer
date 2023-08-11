@@ -109,7 +109,7 @@ function int InitGoalsRev(int mission, string map)
         // pawns run into these and break them
         //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1360.000000, -512.000000, 528.000000), rot(32768, -16384, 0));
         //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor Corner", GOAL_TYPE1, vect(1600, -1136.000000, 540), rot(32768, 16384, 0));
-
+*/
         AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2, 'ComputerPersonal5', PHYS_Falling);
         AddGoal("02_NYC_WAREHOUSE", "Email Computer", GOAL_TYPE2, 'ComputerPersonal0', PHYS_Falling);
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse Computer Room", GOAL_TYPE2 | VANILLA_GOAL, vect(1277.341797, -864.810913, 311.500397), rot(0, 16712, 0));
@@ -117,7 +117,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("02_NYC_WAREHOUSE", "Break room", GOAL_TYPE2, vect(1484.731934, -917.463257, 73.499916), rot(0,-16384,0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE2, vect(-239.501144, 1441.699951, 1151.502930), rot(0,0,0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", GOAL_TYPE2, vect(-846.480957, 919.700012, 1475.486938), rot(0,32768,0));
-*/
+
         return 22;
 
     }
