@@ -162,7 +162,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("03_NYC_AIRFIELD", "Cargo Container", GOAL_TYPE1, vect(-220,3012,373), rot(0,25344,0));
 
         return 33;
-/*
+
     case "03_NYC_AIRFIELDHELIBASE":
         goal = AddGoal("03_NYC_AIRFIELDHELIBASE", "Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia1', PHYS_Falling);
         AddGoalActor(goal,1,'FlagTrigger0',PHYS_None); //Reduced radius, sets HelicopterBaseAmbrosia
@@ -176,7 +176,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Break Room", NORMAL_GOAL, vect(895,1257,206), rot(0,32856,0));
 
         return 34;
-
+/*
     case "03_NYC_747":
     case "03_NYC_HANGAR":
         goal = AddGoal("03_NYC_747", "747 Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia1', PHYS_Falling);
