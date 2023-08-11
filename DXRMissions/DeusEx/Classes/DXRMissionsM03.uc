@@ -176,7 +176,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("03_NYC_AIRFIELDHELIBASE", "Break Room", NORMAL_GOAL, vect(895,1257,206), rot(0,32856,0));
 
         return 34;
-/*
+
     case "03_NYC_747":
     case "03_NYC_HANGAR":
         goal = AddGoal("03_NYC_747", "747 Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia1', PHYS_Falling);
@@ -190,7 +190,6 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("03_NYC_HANGAR", "Near Engine", NORMAL_GOAL, vect(4140,-1554,29), rot(0,32776,0));
 
         return 35;
-*/
     }
 
     return mission+1000;
