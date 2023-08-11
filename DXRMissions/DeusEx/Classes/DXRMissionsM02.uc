@@ -96,20 +96,19 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("02_NYC_WAREHOUSE", "Back Door", NORMAL_GOAL, vect(1656.467041, -1658.624268, 357.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Dumpster", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
         loc2 = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 360, -216.201538), rot(0, 16400, 0));
-/*
+
         goal = AddGoal("02_NYC_WAREHOUSE", "Generator", GOAL_TYPE1, 'BreakableWall2', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'CrateExplosiveSmall0', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall6', PHYS_None);
-        AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(576.000000, -512.000000, 71.999939), rot(32768, -16384, 0));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-640.000000, 1760.000000, 128.000000), rot(0,32768,-16384));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(368.000000, 1248.000000, 992.000000), rot(0,32768,-16384));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(300, -560, -120), rot(0,-16384,-16384));
-        loc = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1600.000000, 784.000000, -256.000000), rot(32768,-32768,0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(448,-560,224), rot(32768, -16384, 0));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-544,1664,16), rot(0,32768,-16384));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(304,1184,880), rot(0,32768,-16384));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(414.272583,-519.35,-272), rot(0,-16384,-16384));
+        loc = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1712,912,-112), rot(32768,-32768,0));
         AddMutualExclusion(loc, loc2);// can't put Jock and the generator both in the sewers
         // pawns run into these and break them
         //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor", GOAL_TYPE1, vect(1360.000000, -512.000000, 528.000000), rot(32768, -16384, 0));
         //AddGoalLocation("02_NYC_WAREHOUSE", "3rd Floor Corner", GOAL_TYPE1, vect(1600, -1136.000000, 540), rot(32768, 16384, 0));
-*/
         AddGoal("02_NYC_WAREHOUSE", "Generator Computer", GOAL_TYPE2, 'ComputerPersonal5', PHYS_Falling);
         AddGoal("02_NYC_WAREHOUSE", "Email Computer", GOAL_TYPE2, 'ComputerPersonal0', PHYS_Falling);
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse Computer Room", GOAL_TYPE2 | VANILLA_GOAL, vect(1277.341797, -864.810913, 311.500397), rot(0, 16712, 0));
