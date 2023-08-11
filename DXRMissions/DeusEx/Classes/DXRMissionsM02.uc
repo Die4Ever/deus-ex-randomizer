@@ -34,7 +34,7 @@ function int InitGoals(int mission, string map)
         AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Back Door", NORMAL_GOAL, vect(1656.467041, -1658.624268, 357.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Dumpster", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
-        loc2 = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 322, -216.201538), rot(0, 16400, 0));
+        loc2 = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 360, -216.201538), rot(0, 16400, 0));
 
         goal = AddGoal("02_NYC_WAREHOUSE", "Generator", GOAL_TYPE1, 'BreakableWall2', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'CrateExplosiveSmall0', PHYS_None);
@@ -87,16 +87,16 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("02_NYC_BATTERYPARK", "Subway stairs", NORMAL_GOAL, vect(-5106.205078, 1813.453003, -82.239639), rot(0, 0, 0));
         AddGoalLocation("02_NYC_BATTERYPARK", "Subway", NORMAL_GOAL, vect(-4727.703613, 3116.336670, -321.900604), rot(0, 0, 0));
         return 21;
-/*
+
     case "02_NYC_WAREHOUSE":
         // NORMAL_GOAL is Jock, GOAL_TYPE1 is the generator, GOAL_TYPE2 is the computers
-        AddGoal("02_NYC_WAREHOUSE", "Jock", NORMAL_GOAL, 'BlackHelicopter1', PHYS_None);
+        AddGoal("02_NYC_WAREHOUSE", "Jock", NORMAL_GOAL, 'JockHelicopter0', PHYS_None);
         AddGoalLocation("02_NYC_WAREHOUSE", "Vanilla Jock", NORMAL_GOAL | VANILLA_GOAL, vect(-222.402451,-294.757233,1132.798828), rot(0,-24128,0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", NORMAL_GOAL, vect(-566.249695, 305.599731, 1207.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Back Door", NORMAL_GOAL, vect(1656.467041, -1658.624268, 357.798462), rot(0, -32800, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Dumpster", NORMAL_GOAL, vect(1665.240112, 91.544250, 126.798462), rot(0, 0, 0));
-        loc2 = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 322, -216.201538), rot(0, 16400, 0));
-
+        loc2 = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", NORMAL_GOAL, vect(-1508.833008, 360, -216.201538), rot(0, 16400, 0));
+/*
         goal = AddGoal("02_NYC_WAREHOUSE", "Generator", GOAL_TYPE1, 'BreakableWall2', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'CrateExplosiveSmall0', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall6', PHYS_None);
@@ -117,8 +117,9 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("02_NYC_WAREHOUSE", "Break room", GOAL_TYPE2, vect(1484.731934, -917.463257, 73.499916), rot(0,-16384,0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE2, vect(-239.501144, 1441.699951, 1151.502930), rot(0,0,0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Holy Smokes", GOAL_TYPE2, vect(-846.480957, 919.700012, 1475.486938), rot(0,32768,0));
-        return 22;
 */
+        return 22;
+
     }
 
     return mission+1000;
@@ -191,6 +192,7 @@ function ReplaceBatteryParkSubwayTNT()
 function PreFirstEntryMapFixes()
 {
     local #var(prefix)AnnaNavarre anna;
+    local #var(prefix)InterpolateTrigger it;
 
     if( dxr.localURL == "02_NYC_BATTERYPARK" ) {
         foreach AllActors(class'#var(prefix)AnnaNavarre', anna) {
@@ -201,6 +203,14 @@ function PreFirstEntryMapFixes()
             anna.HomeRot = vector(anna.Rotation);
         }
         ReplaceBatteryParkSubwayTNT();
+    }
+
+    if (#defined(revision)){
+        if (dxr.localURL=="02_NYC_WAREHOUSE"){
+            foreach AllActors(class'#var(prefix)InterpolateTrigger',it,'FlyInTrigger'){
+                it.Destroy();
+            }
+        }
     }
 }
 
