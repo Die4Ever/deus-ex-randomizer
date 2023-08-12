@@ -68,6 +68,21 @@ function CheckConfig()
     }
 }
 
+function bool IsValidModClass(class<Actor> mod){
+    if (mod==None){ return False;}
+
+    if (!ClassIsChildOf(mod,class'#var(prefix)WeaponMod')){
+        return False;
+    }
+
+    //Mod in VMD.  Very uncommon, kind of an easter egg.  Ignore them for now
+    if (mod.name=='WeaponModEvolution'){
+        return False;
+    }
+
+    return True;
+}
+
 function FirstEntry()
 {
     local #var(prefix)WeaponMod mod;
@@ -83,6 +98,9 @@ function FirstEntry()
     i=0;
     foreach AllActors(class'#var(prefix)WeaponMod',mod)
     {
+        if (!IsValidModClass(mod.class)){
+            continue;
+        }
         if (mod.Owner==None){
             mods[i++]=mod;
         }
@@ -91,6 +109,7 @@ function FirstEntry()
     for (i=0;mods[i]!=None;i++){
         mod = #var(prefix)WeaponMod(SpawnReplacement(mods[i],PickRandomMod(),True));
         if (mod!=None){
+            l("Spawned a "$mod.name$" to replace "$mods[i].name);
             mods[i].Destroy();
         } else {
             //Spawn replacement will fail if the new class is the same, so this is completely possible
@@ -102,13 +121,13 @@ function FirstEntry()
     foreach AllActors(class'Containers',container)
     {
         //I don't know if anything has anything in contents2 or contents3, but can't hurt...
-        if(ClassIsChildOf(container.contents,class'#var(prefix)WeaponMod')){
+        if(IsValidModClass(container.contents)){
             container.contents = PickRandomMod();
         }
-        if(ClassIsChildOf(container.content2,class'#var(prefix)WeaponMod')){
+        if(IsValidModClass(container.content2)){
             container.content2 = PickRandomMod();
         }
-        if(ClassIsChildOf(container.content3,class'#var(prefix)WeaponMod')){
+        if(IsValidModClass(container.content3)){
             container.content3 = PickRandomMod();
         }
     }

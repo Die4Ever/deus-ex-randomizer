@@ -205,6 +205,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRPlayerStats";
     modules_to_load[i++] = "DXRMapVariants";
     modules_to_load[i++] = "DXRStartMap";
+    modules_to_load[i++] = "DXRWeaponMods";
 }
 
 function gmdx_modules()
@@ -241,6 +242,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRPlayerStats";
     modules_to_load[i++] = "DXRMapVariants";
     modules_to_load[i++] = "DXRStartMap";
+    modules_to_load[i++] = "DXRWeaponMods";
 }
 
 function revision_modules()
@@ -281,6 +283,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRPlayerStats";
     modules_to_load[i++] = "DXRMapVariants";
     modules_to_load[i++] = "DXRStartMap";
+    modules_to_load[i++] = "DXRWeaponMods";
 }
 
 function DXRFlags LoadFlagsModule()
