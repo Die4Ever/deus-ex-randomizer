@@ -120,29 +120,29 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("12_VANDENBERG_CMD", "Front Gate", START_LOCATION, vect(6750.350586, 7763.461426, -3092.699951), rot(0, 0, 0));
         AddGoalLocation("12_VANDENBERG_CMD", "Outdoor Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(-2371.028564,-96.179214,-2070.390625), rot(0,-32768,0));
         AddGoalLocation("12_VANDENBERG_CMD", "Command Center Power Generator", NORMAL_GOAL | VANILLA_GOAL, vect(1628.947754,1319.745483,-2014.406982), rot(0,-65536,0));
-/*
-        // complicated because of DXRBacktracking::VandCmdAnyEntry() to reuse the chopper
-        goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
+
+        // Will need handling if backtracking is implemented for Revision, since this uses a JockHelicopter
+        goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'JockHelicopter2', PHYS_None);
         AddGoalActor(goal, 1, 'TracerTong0', PHYS_Falling);
 
-        loc = AddGoalLocation("12_VANDENBERG_CMD", "Street Entrance", GOAL_TYPE1 | VANILLA_GOAL, vect(7014.185059, 7540.296875, -2984.704102), rot(0,-19840,0));
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Street Entrance", GOAL_TYPE1 | VANILLA_GOAL, vect(7040,7540,-2984), rot(0,-19840,0));
         AddActorLocation(loc, 1, vect(6436.471680, 7621.873535, -3061.458740), rot(0,-27976,0));
 
-        loc = AddGoalLocation("12_VANDENBERG_CMD", "Courtyard", GOAL_TYPE1, vect(-371.047180, 5046.039063, -2050.704102), rot(0,-19840,0));
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Courtyard", GOAL_TYPE1, vect(-371.047180, 5564, -2050.704102), rot(0,-19840,0));
         AddActorLocation(loc, 1, vect(-659.219116, 5350.891113, -2142.458740), rot(0,-27976,0));
 
-        loc = AddGoalLocation("12_VANDENBERG_CMD", "Comm 01 Roof", GOAL_TYPE1, vect(-1880.047119, 5443.039063, -1831.704102), rot(0,0,0));
-        AddActorLocation(loc, 1, vect(-1581.219116, 5030.891113, -1876.458740), rot(0,-14000,0));
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Comm 01 Roof", GOAL_TYPE1, vect(-3099,8106,-1790), rot(0,-19840,0));
+        AddActorLocation(loc, 1, vect(-2614,7817,-1922), rot(0,-14000,0));
 
-        loc = AddGoalLocation("12_VANDENBERG_CMD", "Command Roof", GOAL_TYPE1, vect(-2209.047119, 2820.039063, -1410.704102), rot(0,-10000,0));
-        AddActorLocation(loc, 1, vect(-1617.219116, 2778.891113, -1471.458740), rot(0,-10000,0));
+        loc = AddGoalLocation("12_VANDENBERG_CMD", "Command Roof", GOAL_TYPE1, vect(-2209.047119, 2820.039063, -1307), rot(0,-10000,0));
+        AddActorLocation(loc, 1, vect(-1857,3077,-1471), rot(0,0,0));
 
         //loc = AddGoalLocation("12_VANDENBERG_CMD", "Command Hall", GOAL_TYPE1, vect(1799.313965, 1914.730225, -1934.704102), rot(0,32768,0));
         //AddActorLocation(loc, 1, vect(1412.059204, 1802.125000, -2023.458740), rot(0,-30000,0));
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Sniper Tower", GOAL_TYPE1, vect(-946.215820, 80.315643, -1359.704102), rot(0,32768,0));
         AddActorLocation(loc, 1, vect(-1033.543579, 265.367859, -1569.458740), rot(0,-30000,0));
-*/
+
         return 121;
 
     case "14_VANDENBERG_SUB":
@@ -309,5 +309,19 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         cp.UserList[0].UserName="MBHaggerty";
         cp.UserList[0].Password="Kraken";
         cp.TextPackage = "#var(package)";
+    }
+}
+
+function PreFirstEntryMapFixes()
+{
+    local #var(prefix)ScriptedPawn sp;
+
+    if (#defined(revision)){
+        if (dxr.localURL=="12_VANDENBERG_CMD"){
+            foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'Helicopter'){
+                //Jock starts in the Wandering state for some reason
+                sp.SetOrders('Standing');
+            }
+        }
     }
 }
