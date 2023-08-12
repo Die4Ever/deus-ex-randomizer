@@ -144,31 +144,32 @@ function int InitGoalsRev(int mission, string map)
         AddActorLocation(loc, 1, vect(-1033.543579, 265.367859, -1569.458740), rot(0,-30000,0));
 */
         return 121;
-/*
+
     case "14_VANDENBERG_SUB":
     case "14_OCEANLAB_LAB":
     case "14_OCEANLAB_UC":
+    /*
         AddGoal("14_OCEANLAB_LAB", "Walton Simons", GOAL_TYPE1, 'WaltonSimons0', PHYS_Falling);
-        AddGoalLocation("14_OCEANLAB_LAB", "Vanilla Digger", GOAL_TYPE1 | VANILLA_GOAL, vect(5294.391113,3422.380127,-1775.600830), rot(0,33056,0));
-        AddGoalLocation("14_OCEANLAB_LAB", "Construction Sidepath", GOAL_TYPE1, vect(4158,2125,-1775), rot(0,0,0));
-        AddGoalLocation("14_OCEANLAB_LAB", "Crew Module", GOAL_TYPE1, vect(2380,3532,-2233), rot(0,0,0));
-        AddGoalLocation("14_OCEANLAB_LAB", "Greasel Lab", GOAL_TYPE1, vect(2920,454,-1486), rot(0,50000,0));
-        AddGoalLocation("14_OCEANLAB_LAB", "Outside Karkian Lab", GOAL_TYPE1, vect(116,-61,-1967), rot(0,50000,0));
-        AddGoalLocation("14_VANDENBERG_SUB", "Rooftop", GOAL_TYPE1, vect(2450,2880,776), rot(0,33080,0));
-        AddGoalLocation("14_VANDENBERG_SUB", "Sub Bay", GOAL_TYPE1, vect(5372,-1626,-1424), rot(0,-16368,0));
-        AddGoalLocation("14_OCEANLAB_UC", "UC Entry 1", GOAL_TYPE1, vect(945,6230,-4160), rot(0,0,0));
+        //AddGoalLocation("14_OCEANLAB_LAB", "Vanilla Digger", GOAL_TYPE1 | VANILLA_GOAL, vect(5294.391113,3422.380127,-1775.600830), rot(0,33056,0));
+        //AddGoalLocation("14_OCEANLAB_LAB", "Construction Sidepath", GOAL_TYPE1, vect(4158,2125,-1775), rot(0,0,0));
+        //AddGoalLocation("14_OCEANLAB_LAB", "Crew Module", GOAL_TYPE1, vect(2380,3532,-2233), rot(0,0,0));
+        //AddGoalLocation("14_OCEANLAB_LAB", "Greasel Lab", GOAL_TYPE1, vect(2920,454,-1486), rot(0,50000,0));
+        //AddGoalLocation("14_OCEANLAB_LAB", "Outside Karkian Lab", GOAL_TYPE1, vect(116,-61,-1967), rot(0,50000,0));
+        //AddGoalLocation("14_VANDENBERG_SUB", "Rooftop", GOAL_TYPE1, vect(2450,2880,776), rot(0,33080,0));
+        //AddGoalLocation("14_VANDENBERG_SUB", "Sub Bay", GOAL_TYPE1, vect(5372,-1626,-1424), rot(0,-16368,0));
+        AddGoalLocation("14_OCEANLAB_UC", "UC Entry 1", GOAL_TYPE1, vect(945,6161,-4160), rot(0,16384,0));
         AddGoalLocation("14_OCEANLAB_UC", "UC Entry 2", GOAL_TYPE1, vect(945,5189,-4160), rot(0,16384,0));
-
+    */
         goal = AddGoal("14_OCEANLAB_UC", "UC Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
         AddGoalActor(goal, 1, 'DataLinkTrigger1', PHYS_None);
         AddGoalActor(goal, 2, 'DataLinkTrigger2', PHYS_None);
         AddGoal("14_OCEANLAB_UC", "Email Computer", NORMAL_GOAL, 'ComputerPersonal1', PHYS_Falling);
-        AddGoalLocation("14_OCEANLAB_UC", "UC", NORMAL_GOAL | VANILLA_GOAL, vect(264.363281, 6605.039551, -3173.865967), rot(0,32720,0));
-        AddGoalLocation("14_OCEANLAB_UC", "Email Station", NORMAL_GOAL | VANILLA_GOAL, vect(-264.784027, 8735.982422, -2904.487549), rot(0,8816,0));
-        AddGoalLocation("14_OCEANLAB_UC", "South Wing", NORMAL_GOAL | VANILLA_GOAL, vect(-1133.915039, 6690.755371, -3800.472168), rot(0,16384,0));// non-radioactive
-        AddGoalLocation("14_OCEANLAB_UC", "North Wing", NORMAL_GOAL | VANILLA_GOAL, vect(1832.621338, 6919.640137, -3764.490234), rot(0,16384,0));// outside radioactive room
+        AddGoalLocation("14_OCEANLAB_UC", "UC", NORMAL_GOAL | VANILLA_GOAL, vect(828.280029,4830.881348,-2911.599365), rot(0,32720,0));
+        AddGoalLocation("14_OCEANLAB_UC", "Email Station", NORMAL_GOAL | VANILLA_GOAL, vect(74.924225,8542.011719,-2904.487549), rot(0,352,0));
+        AddGoalLocation("14_OCEANLAB_UC", "South Wing", NORMAL_GOAL | VANILLA_GOAL, vect(-1068.248169,6907.536133,-3800.492920), rot(0,16384,0));// non-radioactive
+        AddGoalLocation("14_OCEANLAB_UC", "North Wing", NORMAL_GOAL | VANILLA_GOAL, vect(2415.803467,7068.529785,-3740.642090), rot(0,-8000,0));// Medical room?
         return 141;
-*/
+
 
     case "14_OCEANLAB_SILO":
         AddGoal("14_OCEANLAB_SILO", "Howard Strong", NORMAL_GOAL, 'HowardStrong0', PHYS_Falling);
