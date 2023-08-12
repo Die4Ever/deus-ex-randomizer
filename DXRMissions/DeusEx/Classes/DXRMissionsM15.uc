@@ -48,29 +48,29 @@ function int InitGoalsRev(int mission, string map)
     AddGoalLocation("15_AREA51_BUNKER", "Bunker", START_LOCATION, vect(1528,-2703,-288), rot(0, 24000, 0));
     AddGoalLocation("15_AREA51_BUNKER", "Behind the Van", START_LOCATION, vect(-979.896423,3249.618408,-472.401825), rot(0, 0, 0));
 
-/*
-    goal = AddGoal("15_AREA51_BUNKER", "Walton Simons", NORMAL_GOAL, 'WaltonSimons0', PHYS_Falling);
+
+    goal = AddGoal("15_AREA51_BUNKER", "Walton Simons", NORMAL_GOAL, 'WaltonSimons1', PHYS_Falling);
     AddGoalActor(goal, 1, 'Trigger4', PHYS_None); //Triggers WaltonTalks
     AddGoalActor(goal, 2, 'OrdersTrigger3', PHYS_None); //WaltonTalks -> Conversation triggers WaltonAttacks
     AddGoalActor(goal, 3, 'AllianceTrigger1', PHYS_None); //WaltonAttacks
 
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Command 24", NORMAL_GOAL | VANILLA_GOAL, vect(1125.623779,3076.459961,-462.398041), rot(0, -33064, 0));
-    AddActorLocation(loc, 1, vect(471.648193, 2674.075439, -487.900055), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Supply Shed", NORMAL_GOAL, vect(-1563,3579,-198), rot(0, 0, 0));
-    AddActorLocation(loc, 1, vect(-1358,2887,-160), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Tower", NORMAL_GOAL, vect(-1136,-137,-181), rot(0, 0, 0));
-    AddActorLocation(loc, 1, vect(-1344,740,-160), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Hangar", NORMAL_GOAL, vect(1182,-1140,-478), rot(0, -33064, 0));
-    AddActorLocation(loc, 1, vect(781,-235,-487), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_BUNKER", "Bunker Entrance", NORMAL_GOAL, vect(3680,1875,-848), rot(0, -18224, 0));
-    AddActorLocation(loc, 1, vect(3470,1212,-800), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_ENTRANCE", "Sector 3 Access", NORMAL_GOAL, vect(-456,124,-16), rot(0, 0, 0));
-    AddActorLocation(loc, 1, vect(-20,80,-180), rot(0,0,0));
+    loc = AddGoalLocation("15_AREA51_BUNKER", "Command 24", NORMAL_GOAL | VANILLA_GOAL, vect(1390,2640,-264), rot(0, -33064, 0));
+    AddActorLocation(loc, 1, vect(353,2344,-494), rot(0,0,0));
+    loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Supply Shed", NORMAL_GOAL, vect(-782,208,-192), rot(0, 0, 0));
+    AddActorLocation(loc, 1, vect(-1772,210,-178), rot(0,0,0));
+    loc = AddGoalLocation("15_AREA51_BUNKER", "Behind Tower", NORMAL_GOAL, vect(-914,2050,-192), rot(0, 0, 0));
+    AddActorLocation(loc, 1, vect(-1598,2045,-178), rot(0,0,0));
+    loc = AddGoalLocation("15_AREA51_BUNKER", "Hangar", NORMAL_GOAL, vect(1717,-1750,-480), rot(0, -33064, 0));
+    AddActorLocation(loc, 1, vect(1147,-1129,-494), rot(0,0,0));
+    loc = AddGoalLocation("15_AREA51_BUNKER", "Bunker Entrance", NORMAL_GOAL, vect(3802,2388,-848), rot(0, -18224, 0));
+    AddActorLocation(loc, 1, vect(3079,1214,-826), rot(0,0,0));
+    loc = AddGoalLocation("15_AREA51_ENTRANCE", "Sector 3 Elevator", NORMAL_GOAL, vect(-3969.244385,703.847961,-2168.792725), rot(0, -16568, 0));
+    //AddActorLocation(loc, 1, vect(-20,80,-180), rot(0,0,0));
     loc = AddGoalLocation("15_AREA51_FINAL", "Heliowalton", NORMAL_GOAL, vect(-4400,750,-1475), rot(0, 0, 0));
     AddActorLocation(loc, 1, vect(-3720,730,-1105), rot(0,0,0));
-    loc = AddGoalLocation("15_AREA51_FINAL", "Reactor Lab", NORMAL_GOAL, vect(-3960,-3266,-1552), rot(0, 0, 0));
+    loc = AddGoalLocation("15_AREA51_FINAL", "Reactor Lab", NORMAL_GOAL, vect(-4358,-3393,-1527), rot(0, 0, 0));
     AddActorLocation(loc, 1, vect(-3455,-3261,-1560), rot(0,0,0));
-*/
+
 
     AddGoal("15_AREA51_BUNKER", "Area 51 Blast Door Computer", GOAL_TYPE1, 'ComputerSecurity4', PHYS_None);
     AddGoalLocation("15_AREA51_BUNKER", "the tower", GOAL_TYPE1 | VANILLA_GOAL, vect(-1108.649414,2037.512451,302.793121), rot(0, 65536, 0));
@@ -84,11 +84,23 @@ function int InitGoalsRev(int mission, string map)
 function PreFirstEntryMapFixes()
 {
     local Trigger t;
+    local FlagTrigger ft;
 
     if ( dxr.localURL == "15_AREA51_BUNKER" ) {
         foreach AllActors(class'Trigger',t){
             if (t.Name=='Trigger1' || t.Name=='Trigger2'){
                 t.Destroy(); //Just rely on one trigger for Walton
+            }
+        }
+    } else if (dxr.localURL=="15_AREA51_FINAL"){
+        if (#defined(revision)){
+            //Revision has a trigger in Final that makes Walton chase you down from the elevator.
+            //This moves him again, so he ends up unrandomized
+            foreach AllActors(class'FlagTrigger',ft){
+                if (ft.Event=='SimonsSequence'){
+                    ft.Event='';
+                    ft.Destroy();
+                }
             }
         }
     }
@@ -173,6 +185,23 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
                 dc1.Destroy();
             }
             else warning("failed to spawn tower datacube at "$dc1.Location);
+        }
+    }
+}
+
+function AfterShuffleGoals(int goalsToLocations[32])
+{
+    local int g;
+    local WaltonSimons walt;
+
+    //Revision can put Walt in the elevator down to Sector 3.  We need to despawn him if we don't pick that location
+    if (#defined(revision) && dxr.localURL == "15_AREA51_ENTRANCE"){
+        for(g=0; g<num_goals; g++) {
+            if(goals[g].name == "Walton Simons" && locations[goalsToLocations[g]].name!="Sector 3 Elevator") {
+                foreach AllActors(class'WaltonSimons',walt){
+                    walt.Destroy();
+                }
+            }
         }
     }
 }
