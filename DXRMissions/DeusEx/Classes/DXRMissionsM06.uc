@@ -127,7 +127,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("06_HONGKONG_MJ12LAB", "ROM Encoding Room", NORMAL_GOAL | VANILLA_GOAL, vect(-0.995101,-260.668579,-311.088989), rot(0,32824,0));
         AddGoalLocation("06_HONGKONG_MJ12LAB", "Radioactive Lab", NORMAL_GOAL | VANILLA_GOAL, vect(-592.426758,329.524597,-743.972717), rot(0,49160,0));
         return 62;
-/*
+
     case "06_HONGKONG_WANCHAI_STREET":
     case "06_HONGKONG_WANCHAI_CANAL":
     case "06_HONGKONG_WANCHAI_MARKET":
@@ -145,6 +145,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD", "in the Lucky Money freezer", NORMAL_GOAL, vect(-1780, -2750, -333), rot(0, 27104, 0));
         AddGoalLocation("06_HONGKONG_WANCHAI_MARKET", "in the police vault", NORMAL_GOAL, vect(-480, -720, -107), rot(0, -5564, 0));
 
+/*
         goal = AddGoal("06_HONGKONG_WANCHAI_UNDERWORLD","Max Chen",GOAL_TYPE1,'MaxChen0',PHYS_FALLING);
         AddGoalActor(goal, 1, 'TriadRedArrow5', PHYS_Falling); //Maybe I should actually find these guys by bindname?  They're "RightHandMan"
         AddGoalActor(goal, 2, 'TriadRedArrow6', PHYS_Falling);
@@ -164,9 +165,9 @@ function int InitGoalsRev(int mission, string map)
         loc=AddGoalLocation("06_HONGKONG_WANCHAI_UNDERWORLD","Sailors",GOAL_TYPE1,vect(-1392,-2539,18),rot(0,-6414,0));
         AddActorLocation(loc, 1, vect(-1161,-2550,21), rot(0,39348,0));
         AddActorLocation(loc, 2, vect(-1204,-2758,21), rot(0,23892,0));
-
-        return 63;
 */
+        return 63;
+
     }
 
     return mission+1000;
