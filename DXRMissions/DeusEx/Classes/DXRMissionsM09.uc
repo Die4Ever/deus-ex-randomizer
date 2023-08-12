@@ -139,78 +139,58 @@ function int InitGoalsRev(int mission, string map)
         loc=AddGoalLocation("09_NYC_GRAVEYARD", "Behind Bookshelf", NORMAL_GOAL | VANILLA_GOAL, vect(1104.000000,736.000000,48.000000), rot(0,0,-32768));
         AddActorLocation(loc, 7, vect(1127.001465,763.400208,69.272461), rot(0,-32760,0));
         return 91;
-/*
+
     case "09_NYC_SHIPBELOW":
-        goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 1", NORMAL_GOAL, 'DeusExMover40', PHYS_MovingBrush);
+        goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 1", NORMAL_GOAL, 'DeusExMover64', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator10', PHYS_None);
-        AddGoalActor(goal, 2, 'CrateExplosiveSmall1', PHYS_None);
-        AddGoalActor(goal, 3, 'DataLinkTrigger8', PHYS_None);
-        //AddGoalActor(goal, 3, 'AmbientSoundTriggered5', PHYS_None);
+        AddGoalActor(goal, 2, 'DataLinkTrigger8', PHYS_None);
+
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 2", NORMAL_GOAL, 'DeusExMover16', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator4', PHYS_None);
-        AddGoalActor(goal, 2, 'CrateExplosiveSmall0', PHYS_None);
-        AddGoalActor(goal, 3, 'DataLinkTrigger0', PHYS_None);
-        //AddGoalActor(goal, 3, 'AmbientSoundTriggered0', PHYS_None);
+        AddGoalActor(goal, 2, 'DataLinkTrigger0', PHYS_None);
+
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 3", NORMAL_GOAL, 'DeusExMover33', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator7', PHYS_None);
-        AddGoalActor(goal, 2, 'CrateExplosiveSmall2', PHYS_None);
-        AddGoalActor(goal, 3, 'DataLinkTrigger3', PHYS_None);
-        //AddGoalActor(goal, 3, 'AmbientSoundTriggered3', PHYS_None);
+        AddGoalActor(goal, 2, 'DataLinkTrigger3', PHYS_None);
+
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 4", NORMAL_GOAL, 'DeusExMover31', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator5', PHYS_None);
-        AddGoalActor(goal, 2, 'CrateExplosiveSmall4', PHYS_None);
-        AddGoalActor(goal, 3, 'DataLinkTrigger1', PHYS_None);
-        //AddGoalActor(goal, 3, 'AmbientSoundTriggered1', PHYS_None);
+        AddGoalActor(goal, 2, 'DataLinkTrigger1', PHYS_None);
+
         goal = AddGoal("09_NYC_SHIPBELOW", "Weld Point 5", NORMAL_GOAL, 'DeusExMover32', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'ParticleGenerator6', PHYS_None);
-        AddGoalActor(goal, 2, 'CrateExplosiveSmall3', PHYS_None);
-        AddGoalActor(goal, 3, 'DataLinkTrigger2', PHYS_None);
-        //AddGoalActor(goal, 3, 'AmbientSoundTriggered2', PHYS_None);
+        AddGoalActor(goal, 2, 'DataLinkTrigger2', PHYS_None);
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
-        AddActorLocation(loc, 2, vect(-378, 978, -272), rot(0,0,0));
+        //There's a door in Revision where this was in Vanilla
+        //loc = AddGoalLocation("09_NYC_SHIPBELOW", "North Engine Room", NORMAL_GOAL, vect(-384.000000, 1024.000000, -272.000000), rot(0, 49152, 0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Balcony", NORMAL_GOAL, vect(-3296.000000, -1664.000000, -112.000000), rot(0, 81920, 0));
-        AddActorLocation(loc, 2, vect(-3300, -1619, -112), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Hallway", NORMAL_GOAL, vect(-2480.000000, -448.000000, -144.000000), rot(0, 32768, 0));
-        AddActorLocation(loc, 2, vect(-2522, -464, -144), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "SE Electrical Room", NORMAL_GOAL, vect(-3952.000000, 768.000000, -416.000000), rot(0, 0, 0));
-        AddActorLocation(loc, 2, vect(-3908, 766, -416), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "South Helipad", NORMAL_GOAL, vect(-5664.000000, -928.000000, -432.000000), rot(0, 16384, 0));
-        AddActorLocation(loc, 2, vect(-5664, -889, -432), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Storage Room", NORMAL_GOAL, vect(-4080.000000, -816.000000, -128.000000), rot(0, 32768, 0));
-        AddActorLocation(loc, 2, vect(-4120, -816, -128), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", NORMAL_GOAL, vect(-4720.000000, 1536.000000, -144.000000), rot(0, -16384, 0));
-        AddActorLocation(loc, 2, vect(-4717, 1501, -144), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Fan Room", NORMAL_GOAL, vect(-3200.000000, -48.000000, -96.000000), rot(0, 0, 0));
-        AddActorLocation(loc, 2, vect(-3157, -48, -96), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Control Room", NORMAL_GOAL, vect(-288.000000, -432.000000, 112.000000), rot(-16384, 16384, 0));
-        AddActorLocation(loc, 2, vect(-288, -426, 62), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,1024.000000,-432.000000), rot(0,49152,0));
-        AddActorLocation(loc, 2, vect(833.449036, 993.195618, -490.899567), rot(0,0,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(848,1008,-416), rot(0,49152,0)); //Vanilla locations were off by a few in each dimension
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680.000000,1647.000000,-416.000000), rot(0,49152,0));
-        AddActorLocation(loc, 2, vect(-3680.022217, 1616.057861, -490.899567), rot(0,0,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680.000000,1648.000000,-416.000000), rot(0,49152,0)); //Y was -1647 before...
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6528.000000,200.000000,-448.000000), rot(0,65536,0));
-        AddActorLocation(loc, 2, vect(-6499.218750, 200.039917, -490.899567), rot(0,0,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6528.000000,192.000000,-448.000000), rot(0,65536,0));  //Y was 200 before - Rev position difference, or fix?
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1662.000000,-416.000000), rot(0,81920,0));
-        AddActorLocation(loc, 2, vect(-3296.133789, -1632.118652, -490.899567), rot(0,0,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1664.000000,-416.000000), rot(0,81920,0)); //Y was -1662 before - Rev position difference, or fix?
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,-1024.000000,-416.000000), rot(0,16384,0));
-        AddActorLocation(loc, 2, vect(831.944641, -996.442627, -490.899567), rot(0,0,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(816.000000,-1008.000000,-448.000000), rot(0,16384,0)); //Vanilla locations were off by a few in each dimension
 
         return 92;
-*/
 
     case "09_NYC_DOCKYARD":
         AddGoal("09_NYC_DOCKYARD", "Jock", NORMAL_GOAL, 'BlackHelicopter0', PHYS_None);
@@ -228,6 +208,7 @@ function int InitGoalsRev(int mission, string map)
 function PreFirstEntryMapFixes()
 {
     local #var(prefix)Barrel1 barrel;
+    local DeusExMover dxm;
     local name barrelName;
 
 
@@ -244,7 +225,44 @@ function PreFirstEntryMapFixes()
         }
 
         SpawnDatacubePlaintext(vectm(1102.252563,821.384338,26.370010),rotm(0,0,0),"I installed that big device you asked for, but it's really blasting out a lot of EM interference...|n|nIf an FCC inspector comes around, you can turn it off by using the code 8854 ");
+    } else if (dxr.localURL=="09_NYC_SHIPBELOW"){
+        if(#defined(revision)){
+            foreach AllActors(class'DeusExMover',dxm){
+                if (dxm.Name=='DeusExMover64' ||
+                    dxm.Name=='DeusExMover16' ||
+                    dxm.Name=='DeusExMover33' ||
+                    dxm.Name=='DeusExMover31' ||
+                    dxm.Name=='DeusExMover32'){
+                    dxm.bBreakable=True;
+                    dxm.minDamageThreshold=60;
+                }
+
+                if (dxm.Name=='DeusExMover64'){
+                    dxm.PrePivot=vect(-3,-2.5,7);
+                }else if (dxm.Name=='DeusExMover16'){
+                    dxm.PrePivot=vect(-2.999878,-5.500122,3);
+                }else if (dxm.Name=='DeusExMover33'){
+                    dxm.PrePivot=vect(-2.999756,-2.5,7);
+                }else if (dxm.Name=='DeusExMover31'){
+                    dxm.PrePivot=vect(-2,-2.5,7);
+                }else if (dxm.Name=='DeusExMover32'){
+                    dxm.PrePivot=vect(-3,-2.499756,-1);
+                }
+
+            }
+        }
     }
+}
+
+//The weldpoints have wildly varying prepivots
+function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
+{
+    if (a.IsA('DeusExMover')){
+        return Super.MoveActor(a,loc,rotation,p);
+    } else {
+        return Super.MoveActor(a,loc,rotation,p);
+    }
+
 }
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
