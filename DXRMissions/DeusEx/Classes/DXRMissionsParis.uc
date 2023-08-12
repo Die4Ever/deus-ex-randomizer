@@ -71,7 +71,7 @@ function int InitGoalsRev(int mission, string map)
         AddGoalLocation("10_PARIS_METRO", "Corner Near Pillar", NORMAL_GOAL, vect(2061.8,-993,223.6), rot(0, -8000, 0));
         AddGoalLocation("10_PARIS_METRO", "Cafe", NORMAL_GOAL | VANILLA_GOAL | SITTING_GOAL, vect(998,-5229.4,295.21), rot(0, 0, 0));
         return 101;
-/*
+
     case "11_PARIS_CATHEDRAL":
         goal = AddGoal("11_PARIS_CATHEDRAL", "Templar Computer", NORMAL_GOAL, 'ComputerPersonal0', PHYS_Falling);
         AddGoalActor(goal, 1, 'GuntherHermann0', PHYS_Falling);
@@ -81,22 +81,21 @@ function int InitGoalsRev(int mission, string map)
         AddGoalActor(goal, 5, 'FlagTrigger2', PHYS_None);
         AddGoalActor(goal, 6, 'DataLinkTrigger8', PHYS_None);
 
-        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Barracks", NORMAL_GOAL, vect(2990.853516, 30.971684, -392.498993), rot(0, 16384, 0));
-        AddActorLocation(loc, 1, vect(2971.853516, 144.971680, -392.498993), rot(0,-8000,0));
-        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Chapel", NORMAL_GOAL, vect(1860.275635, -9.666374, -371.286804), rot(0, 16384, 0));
-        AddActorLocation(loc, 1, vect(2127, -143.666382, -350), rot(0, 32768, 0));
-        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Kitchen", NORMAL_GOAL, vect(1511.325317, -3204.465088, -680.498413), rot(0, 32768, 0));
-        AddActorLocation(loc, 1, vect(1511.325317, -3123.465088, -680.498413), rot(0,65536,0));
-        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Gold Vault", NORMAL_GOAL, vect(3480.141602, -3180.397949, -704.496704), rot(0, 0, 0));
-        AddActorLocation(loc, 1, vect(3879.141602, -2890.397949, -704.496704), rot(0,32768,0));
-        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "WiB Bedroom", NORMAL_GOAL, vect(3458.506592, -2423.655029, -104.499863), rot(0, -16384, 0));
-        AddActorLocation(loc, 1, vect(3433.506592, -2536.655029, -104.499863), rot(0,16384,0));
-        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Bridge", NORMAL_GOAL, vect(2591.672852, -1314.583862, 365.494843), rot(0, -18000, 0));
-        AddActorLocation(loc, 1, vect(2632.672852, -1579.583862, 431.494843), rot(0,12000,0));
-        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Basement", NORMAL_GOAL | VANILLA_GOAL, vect(5193.660645,-1007.544922,-838.674988), rot(0,-17088,0));
-        AddActorLocation(loc, 1, vect(4926.411133, -627.878662, -845.294189), rot(0,45728,0));
+        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Barracks", NORMAL_GOAL, vect(4738.159668,-882.423401,247.500351), rot(0, 32768, 0));
+        AddActorLocation(loc, 1, vect(4789.892578,-801.263672,241.979095), rot(0,-16392,0));
+        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Chapel", NORMAL_GOAL, vect(3652.271240,-945.115540,268.747803), rot(0, 16384, 0));
+        AddActorLocation(loc, 1, vect(3724,-1341,278), rot(0, -16384, 0));
+        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Kitchen", NORMAL_GOAL, vect(3630,-4502,-40), rot(0, 32768, 0));
+        AddActorLocation(loc, 1, vect(3516,-4530,-52), rot(0,65536,0));
+        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Gold Vault", NORMAL_GOAL, vect(5263,-4120,-64), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(5175,-4216,-100), rot(0,16392,0));
+        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "WiB Bedroom", NORMAL_GOAL, vect(5262.339844,-3395.224121,535.498474), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(5243.958984,-3493.718506,539.100281), rot(0,16384,0));
+        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Bridge", NORMAL_GOAL, vect(4463.660645,-2195.544922,1034.499390), rot(0, -16392, 0));
+        AddActorLocation(loc, 1, vect(4240.411133,-1804.878662,1061.705811), rot(0,-16392,0));
+        loc = AddGoalLocation("11_PARIS_CATHEDRAL", "Basement", NORMAL_GOAL | VANILLA_GOAL, vect(7101.660645,-2043.54492,-198.500610), rot(0,-17088,0));
+        AddActorLocation(loc, 1, vect(6718.411,-1571.88,-205.294), rot(0,45728,0));
         return 111;
-*/
     }
 
     return mission+1000;
