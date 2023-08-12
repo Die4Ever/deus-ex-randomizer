@@ -180,15 +180,15 @@ function int InitGoalsRev(int mission, string map)
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Control Room", NORMAL_GOAL, vect(-288.000000, -432.000000, 112.000000), rot(-16384, 16384, 0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(848,1008,-416), rot(0,49152,0)); //Vanilla locations were off by a few in each dimension
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(848,1024,-416), rot(0,49152,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680.000000,1648.000000,-416.000000), rot(0,49152,0)); //Y was -1647 before...
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680.000000,1648.000000,-416.000000), rot(0,49152,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6528.000000,192.000000,-448.000000), rot(0,65536,0));  //Y was 200 before - Rev position difference, or fix?
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6528.000000,192.000000,-448.000000), rot(0,65536,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1664.000000,-416.000000), rot(0,81920,0)); //Y was -1662 before - Rev position difference, or fix?
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1664.000000,-416.000000), rot(0,81920,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(816.000000,-1008.000000,-448.000000), rot(0,16384,0)); //Vanilla locations were off by a few in each dimension
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(816.000000,-1024.000000,-416.000000), rot(0,16384,0));
 
         return 92;
 
@@ -233,10 +233,18 @@ function PreFirstEntryMapFixes()
                     dxm.Name=='DeusExMover33' ||
                     dxm.Name=='DeusExMover31' ||
                     dxm.Name=='DeusExMover32'){
+                    //The two locations in the engine room are unbreakable until you open
+                    //the doors to their magic boxes, presumably to get around movers
+                    //taking explosion damage through walls.  Since we're shuffling everything,
+                    //fuck that.  Also those ones were inexplicably stronger, so make them all
+                    //the same strength.
                     dxm.bBreakable=True;
                     dxm.minDamageThreshold=60;
                 }
 
+                //Adjust the prepivots of all the movers to the values set in vanilla
+                //They seem to be using the exact same brushes, so there's no good reason
+                //to be different, as far as I can tell
                 if (dxm.Name=='DeusExMover64'){
                     dxm.PrePivot=vect(-3,-2.5,7);
                 }else if (dxm.Name=='DeusExMover16'){
@@ -252,17 +260,6 @@ function PreFirstEntryMapFixes()
             }
         }
     }
-}
-
-//The weldpoints have wildly varying prepivots
-function bool MoveActor(Actor a, vector loc, rotator rotation, EPhysics p)
-{
-    if (a.IsA('DeusExMover')){
-        return Super.MoveActor(a,loc,rotation,p);
-    } else {
-        return Super.MoveActor(a,loc,rotation,p);
-    }
-
 }
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
