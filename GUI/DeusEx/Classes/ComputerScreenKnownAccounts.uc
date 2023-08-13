@@ -71,6 +71,9 @@ function ChangeSelectedAccount()
         if (DXRNetworkTerminalPersonal(winTerm)!=None){
             DXRNetworkTerminalPersonal(winTerm).LogInAs(user,pass);
         }
+        if (DXRNetworkTerminalSecurity(winTerm)!=None){
+            DXRNetworkTerminalSecurity(winTerm).LogInAs(user,pass);
+        }
 #endif
     }
 }
@@ -91,9 +94,15 @@ function bool GetAccountKnown(Computers comp, ATM atm, int i, out string usernam
         return true;
     }
 #else
-    if( comp != None && DXRComputerPersonal(comp)!=None && DXRComputerPersonal(comp).GetAccountKnown(i) ){
-        password = Caps(DXRComputerPersonal(comp).GetPassword(i));
-        return true;
+    if( comp != None ) {
+        if ( DXRComputerPersonal(comp)!=None && DXRComputerPersonal(comp).GetAccountKnown(i) ){
+            password = Caps(DXRComputerPersonal(comp).GetPassword(i));
+            return true;
+        }
+        if ( DXRComputerSecurity(comp)!=None && DXRComputerSecurity(comp).GetAccountKnown(i) ){
+            password = Caps(DXRComputerSecurity(comp).GetPassword(i));
+            return true;
+        }
     }
 #endif
     password = "";

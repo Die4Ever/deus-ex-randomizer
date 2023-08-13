@@ -366,6 +366,7 @@ function MarkPasswordKnown(string password)
 #else
     local DXRKeypad k;
     local DXRComputerPersonal cp;
+    local DXRComputerSecurity cs;
     //Check keypad logins
     foreach AllActors(class 'DXRKeypad',k)
     {
@@ -376,6 +377,10 @@ function MarkPasswordKnown(string password)
     foreach AllActors(class 'DXRComputerPersonal',cp)
     {
         cp.SetAccountKnownByPassword(password);
+    }
+    foreach AllActors(class 'DXRComputerSecurity',cs)
+    {
+        cs.SetAccountKnownByPassword(password);
     }
 
 #endif

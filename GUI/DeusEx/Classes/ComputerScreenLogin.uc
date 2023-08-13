@@ -22,6 +22,9 @@ function CloseScreen(String action)
     if(DXRNetworkTerminalPersonal(winTerm)!=None){
         DXRNetworkTerminalPersonal(winTerm).CloseKnownAccountsWindow();
     }
+    if(DXRNetworkTerminalSecurity(winTerm)!=None){
+        DXRNetworkTerminalSecurity(winTerm).CloseKnownAccountsWindow();
+    }
 #endif
 
 	Super.CloseScreen(action);
@@ -36,6 +39,9 @@ function SetNetworkTerminal(NetworkTerminal newTerm)
 #else
     if(DXRNetworkTerminalPersonal(winTerm)!=None){
         DXRNetworkTerminalPersonal(winTerm).CreateKnownAccountsWindow();
+    }
+    if(DXRNetworkTerminalSecurity(winTerm)!=None){
+        DXRNetworkTerminalSecurity(winTerm).CreateKnownAccountsWindow();
     }
 #endif
 }

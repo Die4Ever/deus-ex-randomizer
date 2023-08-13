@@ -72,6 +72,9 @@ function ReplaceActors()
         else if( #var(prefix)ComputerPersonal(a) != None ) {
             ReplaceComputerPersonal(#var(prefix)ComputerPersonal(a));
         }
+        else if( #var(prefix)ComputerSecurity(a) != None ) {
+            ReplaceComputerSecurity(#var(prefix)ComputerSecurity(a));
+        }
 #endif
         else if( #var(prefix)Binoculars(a) != None ) {
             ReplaceBinoculars(#var(prefix)Binoculars(a));
@@ -556,12 +559,34 @@ function ReplaceComputerPublic(#var(prefix)ComputerPublic a)
 function ReplaceComputerPersonal(#var(prefix)ComputerPersonal a)
 {
     local DXRComputerPersonal n;
+    local int i;
 
     n = DXRComputerPersonal(SpawnReplacement(a, class'DXRComputerPersonal'));
     if(n == None)
         return;
 
     ReplaceComputers(a,n);
+
+    a.Destroy();
+}
+
+function ReplaceComputerSecurity(#var(prefix)ComputerSecurity a)
+{
+    local DXRComputerSecurity n;
+    local int i;
+
+    n = DXRComputerSecurity(SpawnReplacement(a, class'DXRComputerSecurity'));
+    if(n == None)
+        return;
+
+    ReplaceComputers(a,n);
+
+    for (i=0;i<ArrayCount(n.Views);i++){
+        n.Views[i].titleString=a.Views[i].titleString;
+        n.Views[i].cameraTag=a.Views[i].cameraTag;
+        n.Views[i].turretTag=a.Views[i].turretTag;
+        n.Views[i].doorTag=a.Views[i].doorTag;
+    }
 
     a.Destroy();
 }

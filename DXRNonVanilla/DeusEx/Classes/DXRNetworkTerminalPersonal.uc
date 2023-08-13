@@ -74,16 +74,6 @@ function LogInAs(String user, String pass)
         else
             login.SetFocusWindow(login.editPassword);
     }
-    else if (winComputer.IsA('ComputerScreenATM'))
-    {
-        atm = ComputerScreenAtm(winComputer);
-        atm.editAccount.SetText(user);
-        atm.editPIN.SetText(pass);
-        if(pass != "")
-            atm.ProcessLogin();
-        else
-            atm.SetFocusWindow(atm.editPIN);
-    }
 
     userName = user;
 }
