@@ -72,6 +72,25 @@ function bool HasKnownAccounts()
     }
     return False;
 }
+
+#ifdef hx
+//To simplify making this compile cleanly...
+function int NumUsers()
+{
+    return 0;
+}
+
+function string GetPassword(int userIndex)
+{
+    return "";
+}
+
+function string GetUserName(int userIndex)
+{
+    return "";
+}
+#endif
+
 defaultproperties
 {
      terminalType=Class'#var(package).DXRNetworkTerminalSecurity'

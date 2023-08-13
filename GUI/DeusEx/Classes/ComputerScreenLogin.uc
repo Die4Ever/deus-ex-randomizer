@@ -1,4 +1,4 @@
-class DXRComputerScreenLogin injects ComputerScreenLogin;
+class DXRComputerScreenLogin injects #var(prefix)ComputerScreenLogin;
 
 function CloseScreen(String action)
 {
@@ -30,7 +30,7 @@ function CloseScreen(String action)
 	Super.CloseScreen(action);
 }
 
-function SetNetworkTerminal(NetworkTerminal newTerm)
+function SetNetworkTerminal(#var(prefix)NetworkTerminal newTerm)
 {
 	Super.SetNetworkTerminal(newTerm);
 

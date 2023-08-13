@@ -1,4 +1,8 @@
+#ifdef hx
+class DXRNetworkTerminalATM extends HXNetworkTerminalATM;
+#else
 class DXRNetworkTerminalATM extends #var(prefix)ATMWindow;
+#endif
 
 var ComputerScreenKnownAccounts winKnownAccounts;
 var ShadowWindow                winKnownShadow;
@@ -62,11 +66,11 @@ function CloseKnownAccountsWindow()
 
 function LogInAs(String user, String pass)
 {
-    local ComputerScreenATM atm;
+    local #var(prefix)ComputerScreenATM atm;
 
-    if (winComputer.IsA('ComputerScreenATM'))
+    if (winComputer.IsA('#var(prefix)ComputerScreenATM'))
     {
-        atm = ComputerScreenAtm(winComputer);
+        atm = #var(prefix)ComputerScreenAtm(winComputer);
         atm.editAccount.SetText(user);
         atm.editPIN.SetText(pass);
         if(pass != "")
@@ -89,5 +93,7 @@ function ShowScreen(Class<#var(prefix)ComputerUIWindow> newScreen)
 event InitWindow()
 {
     Super.InitWindow();
+#ifndef hx
     class'DXRNetworkTerminal'.static.InitWindow(self);
+#endif
 }

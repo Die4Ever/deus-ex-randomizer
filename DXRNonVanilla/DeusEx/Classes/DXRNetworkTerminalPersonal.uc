@@ -62,11 +62,11 @@ function CloseKnownAccountsWindow()
 
 function LogInAs(String user, String pass)
 {
-    local ComputerScreenLogin login;
+    local #var(prefix)ComputerScreenLogin login;
 
     if (winComputer.IsA('ComputerScreenLogin'))
     {
-        login = ComputerScreenLogin(winComputer);
+        login = #var(prefix)ComputerScreenLogin(winComputer);
         login.editUserName.SetText(user);
         login.editPassword.SetText(pass);
         if(pass != "")

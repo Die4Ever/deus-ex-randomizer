@@ -603,11 +603,13 @@ function ReplaceATM(#var(prefix)ATM a)
     if(n == None)
         return;
 
+#ifndef hx
     for (i=0;i<ArrayCount(n.userList);i++){
         n.userList[i].accountNumber=a.userList[i].accountNumber;
         n.userList[i].PIN=a.userList[i].PIN;
         n.userList[i].balance=a.userList[i].balance;
     }
+#endif
 
     n.lockoutDelay=a.lockoutDelay;
 

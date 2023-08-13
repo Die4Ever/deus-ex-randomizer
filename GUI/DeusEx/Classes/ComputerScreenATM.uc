@@ -1,4 +1,4 @@
-class DXRComputerScreenATM injects ComputerScreenATM;
+class DXRComputerScreenATM injects #var(prefix)ComputerScreenATM;
 
 function CloseScreen(String action)
 {
@@ -26,7 +26,7 @@ function CloseScreen(String action)
 	Super.CloseScreen(action);
 }
 
-function SetNetworkTerminal(NetworkTerminal newTerm)
+function SetNetworkTerminal(#var(prefix)NetworkTerminal newTerm)
 {
 	Super.SetNetworkTerminal(newTerm);
 

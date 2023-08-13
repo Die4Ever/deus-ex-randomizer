@@ -68,6 +68,7 @@ function bool HasKnownAccounts()
     return False;
 }
 
+#ifndef hx
 //Copied from vanilla, but now with a different UI screen
 function Frob(Actor Frobber, Inventory frobWith)
 {
@@ -111,3 +112,4 @@ function Frob(Actor Frobber, Inventory frobWith)
 		}
 	}
 }
+#endif
