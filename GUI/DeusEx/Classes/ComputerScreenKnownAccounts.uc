@@ -58,15 +58,21 @@ function CreateChangeAccountButton()
 function ChangeSelectedAccount()
 {
     local string user,pass;
-    
+
     user = lstAccounts.GetField(lstAccounts.GetSelectedRow(),0);
     pass = lstAccounts.GetField(lstAccounts.GetSelectedRow(),1);
 
     if( pass == msgKnownPass || pass == msgUnknownPass )
         pass = "";
-
-    if (winTerm != None)
+    if (winTerm != None){
+#ifdef injections
         winTerm.LogInAs(user,pass);
+#else
+        if (DXRNetworkTerminalPersonal(winTerm)!=None){
+            DXRNetworkTerminalPersonal(winTerm).LogInAs(user,pass);
+        }
+#endif
+    }
 }
 
 function bool GetAccountKnown(Computers comp, ATM atm, int i, out string username, out string password)
@@ -75,7 +81,7 @@ function bool GetAccountKnown(Computers comp, ATM atm, int i, out string usernam
         username = Caps(comp.GetUserName(i));
     else if( atm != None )
         username = Caps(atm.GetAccountNumber(i));
-    
+#ifdef injections
     if( comp != None && comp.GetAccountKnown(i) ) {
         password = Caps(comp.GetPassword(i));
         return true;
@@ -84,6 +90,12 @@ function bool GetAccountKnown(Computers comp, ATM atm, int i, out string usernam
         password = Caps(atm.GetPIN(i));
         return true;
     }
+#else
+    if( comp != None && DXRComputerPersonal(comp)!=None && DXRComputerPersonal(comp).GetAccountKnown(i) ){
+        password = Caps(DXRComputerPersonal(comp).GetPassword(i));
+        return true;
+    }
+#endif
     password = "";
     return false;
 }
@@ -115,7 +127,7 @@ function SetCompOwner(ElectronicDevices newCompOwner)
             password = msgKnownPass;
         else if( !known )
             password = msgUnknownPass;
-        
+
         lstAccounts.AddRow(username$";"$password);
 
         if (Caps(winTerm.GetUserName()) == username)

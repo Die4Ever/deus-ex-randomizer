@@ -67,6 +67,12 @@ function ReplaceActors()
         else if( #var(prefix)ComputerPublic(a) != None ) {
             ReplaceComputerPublic(#var(prefix)ComputerPublic(a));
         }
+#ifdef revision
+        //Just haven't tested this outside of Revision yet
+        else if( #var(prefix)ComputerPersonal(a) != None ) {
+            ReplaceComputerPersonal(#var(prefix)ComputerPersonal(a));
+        }
+#endif
         else if( #var(prefix)Binoculars(a) != None ) {
             ReplaceBinoculars(#var(prefix)Binoculars(a));
         }
@@ -545,4 +551,56 @@ function ReplaceComputerPublic(#var(prefix)ComputerPublic a)
     n.bulletinTag = a.bulletinTag;
 
     a.Destroy();
+}
+
+function ReplaceComputerPersonal(#var(prefix)ComputerPersonal a)
+{
+    local DXRComputerPersonal n;
+
+    n = DXRComputerPersonal(SpawnReplacement(a, class'DXRComputerPersonal'));
+    if(n == None)
+        return;
+
+    ReplaceComputers(a,n);
+
+    a.Destroy();
+}
+
+function ReplaceComputers(#var(prefix)Computers a, #var(prefix)Computers n)
+{
+    local int i;
+
+    for(i=0;i<ArrayCount(n.specialOptions);i++){
+        n.specialOptions[i].Text=a.specialOptions[i].Text;
+        n.specialOptions[i].TriggerText=a.specialOptions[i].TriggerText;
+        n.specialOptions[i].userName=a.specialOptions[i].userName;
+        n.specialOptions[i].TriggerEvent=a.specialOptions[i].TriggerEvent;
+        n.specialOptions[i].UnTriggerEvent=a.specialOptions[i].UnTriggerEvent;
+        n.specialOptions[i].bTriggerOnceOnly=a.specialOptions[i].bTriggerOnceOnly;
+        n.specialOptions[i].bAlreadyTriggered=a.specialOptions[i].bAlreadyTriggered;
+    }
+
+    for(i=0;i<ArrayCount(n.userList);i++){
+        n.userList[i].userName=a.userList[i].userName;
+        n.userList[i].password=a.userList[i].password;
+        n.userList[i].accessLevel=a.userList[i].accessLevel;
+    }
+
+    n.bOn = a.bOn;
+    n.bAnimating=a.bAnimating;
+    n.bLockedOut=a.bLockedOut;
+    n.lockoutDelay=a.lockoutDelay;
+    n.lockoutTime=a.lockoutTime;
+    n.lastHackTime=a.lastHackTime;
+    n.msgLockedOut=a.msgLockedOut;
+    n.nodeName=a.nodeName;
+    n.titleString=a.titleString;
+    n.titleTexture=a.titleTexture;
+    n.TextPackage=a.TextPackage;
+
+    n.ComputerNode=a.ComputerNode;
+
+    n.lastAlarmTime=a.lastAlarmTime;
+    n.alarmTimeout=a.alarmTimeout;
+    n.CompInUseMsg=a.CompInUseMsg;
 }
