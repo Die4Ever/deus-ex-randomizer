@@ -63,7 +63,7 @@ function CloseKnownAccountsWindow()
 function LogInAs(String user, String pass)
 {
     local ComputerScreenLogin login;
-    local ComputerScreenATM atm;
+
     if (winComputer.IsA('ComputerScreenLogin'))
     {
         login = ComputerScreenLogin(winComputer);

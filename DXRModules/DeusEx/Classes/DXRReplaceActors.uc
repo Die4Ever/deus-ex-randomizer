@@ -75,6 +75,9 @@ function ReplaceActors()
         else if( #var(prefix)ComputerSecurity(a) != None ) {
             ReplaceComputerSecurity(#var(prefix)ComputerSecurity(a));
         }
+        else if( #var(prefix)ATM(a) != None ) {
+            ReplaceATM(#var(prefix)ATM(a));
+        }
 #endif
         else if( #var(prefix)Binoculars(a) != None ) {
             ReplaceBinoculars(#var(prefix)Binoculars(a));
@@ -587,6 +590,26 @@ function ReplaceComputerSecurity(#var(prefix)ComputerSecurity a)
         n.Views[i].turretTag=a.Views[i].turretTag;
         n.Views[i].doorTag=a.Views[i].doorTag;
     }
+
+    a.Destroy();
+}
+
+function ReplaceATM(#var(prefix)ATM a)
+{
+    local DXRATM n;
+    local int i;
+
+    n = DXRATM(SpawnReplacement(a, class'DXRATM'));
+    if(n == None)
+        return;
+
+    for (i=0;i<ArrayCount(n.userList);i++){
+        n.userList[i].accountNumber=a.userList[i].accountNumber;
+        n.userList[i].PIN=a.userList[i].PIN;
+        n.userList[i].balance=a.userList[i].balance;
+    }
+
+    n.lockoutDelay=a.lockoutDelay;
 
     a.Destroy();
 }

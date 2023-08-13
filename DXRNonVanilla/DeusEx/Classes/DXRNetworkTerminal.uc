@@ -36,6 +36,9 @@ static function Class<#var(prefix)ComputerUIWindow> ShowScreen(Class<#var(prefix
         case class'#var(prefix)ComputerScreenLogin':
             newScreen = class'DXRComputerScreenLogin';
             break;
+        case class'#var(prefix)ComputerScreenATM':
+            newScreen = class'DXRComputerScreenATM';
+            break;
     }
     return newScreen;
 }
