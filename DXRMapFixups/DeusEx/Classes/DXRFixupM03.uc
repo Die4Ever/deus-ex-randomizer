@@ -43,6 +43,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)InformationDevices i;
     local #var(prefix)UNATCOTroop unatco;
     local #var(prefix)WeaponModRecoil wmr;
+    local #var(prefix)Terrorist terror;
 
     switch (dxr.localURL)
     {
@@ -171,6 +172,14 @@ function PreFirstEntryMapFixes()
             if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
         }
         AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
+
+        //The Leader can go hostile so easily... just make that not possible
+        foreach AllActors(class'Terrorist',terror){
+            if (terror.BindName=="TerroristLeader"){
+                terror.ChangeAlly('Player',0,True);//Permanently neutral
+                break;
+            }
+        }
         break;
 #endif
 
