@@ -307,9 +307,16 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
             //First Toby conversation happened
             flagbase.SetBool('MeetTobyAtanwe_played',true,,-1);
             flagbase.SetBool('FemJCMeetTobyAtanwe_played',true,,-1);
+
+            //Make sure Sandra spawns at the gas station
+            flagbase.SetBool('SandraWentToCalifornia',true,,-1);
             break;
         case "14_Vandenberg_Sub":
             flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
+
+            //Make sure Sandra spawns at the gas station (In case you backtrack - shouldn't matter, but...)
+            flagbase.SetBool('SandraWentToCalifornia',true,,-1);
+
             break;
         case "15_Area51_Bunker":
             flagbase.SetBool('Ray_dead',true,,-1);  //Save Jock!
