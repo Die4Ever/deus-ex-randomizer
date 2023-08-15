@@ -92,15 +92,13 @@ function PreFirstEntryMapFixes()
                 t.Destroy(); //Just rely on one trigger for Walton
             }
         }
-    } else if (dxr.localURL=="15_AREA51_FINAL"){
-        if (#defined(revision)){
-            //Revision has a trigger in Final that makes Walton chase you down from the elevator.
-            //This moves him again, so he ends up unrandomized
-            foreach AllActors(class'FlagTrigger',ft){
-                if (ft.Event=='SimonsSequence'){
-                    ft.Event='';
-                    ft.Destroy();
-                }
+    } else if (dxr.localURL=="15_AREA51_FINAL" && #defined(revision)){
+        //Revision has a trigger in Final that makes Walton chase you down from the elevator.
+        //This moves him again, so he ends up unrandomized
+        foreach AllActors(class'FlagTrigger',ft){
+            if (ft.Event=='SimonsSequence'){
+                ft.Event='';
+                ft.Destroy();
             }
         }
     }

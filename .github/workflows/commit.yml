@@ -20,7 +20,7 @@ jobs:
       - name: Upload installer warnings
         uses: actions/upload-artifact@v3
         with:
-          name: installerwarnings
+          name: installerwarnings.txt
           path: build/installer/warn-installer.txt
 
       - name: Upload Bingo Viewer
@@ -48,6 +48,12 @@ jobs:
         with:
           name: DXRando-linux
           path: dist/DXRando/DXRando.zip
+
+      - name: Upload installer warnings
+        uses: actions/upload-artifact@v3
+        with:
+          name: installerwarningslinux.txt
+          path: build/installer/warn-installer.txt
 
       - name: Upload Bingo Viewer
         uses: actions/upload-artifact@v3

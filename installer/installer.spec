@@ -126,20 +126,16 @@ coll2 = COLLECT(
     name='BingoViewer',
 )
 
-# tidy up
-if IsWindows():
-    print('tidying up')
+def DoCleanup(folder):
+    print('tidying up', folder)
     is_lib = re.compile(r'(\.dll$)|(\.so(\..+)?$)|(\.pyd$)')
 
-    dxr = Path('dist') / 'DXRando'
-    if not dxr.exists():
-        dxr = Path('installer') / 'dist' / 'DXRando'
+    for f in folder.glob('*.app'):
+        if f.is_file():
+            f.unlink()
 
-    if (dxr / 'installer.app').exists():
-        (dxr / 'installer.app').unlink()
-
-    (dxr / 'lib').mkdir(exist_ok=True)
-    for f in dxr.glob('*'):
+    (folder / 'lib').mkdir(exist_ok=True)
+    for f in folder.glob('*'):
         name = f.name.lower()
         if not is_lib.search(name):
             continue
@@ -148,5 +144,22 @@ if IsWindows():
         dest = f.parent / 'lib' / f.name
         print('renaming', f, 'to', dest)
         f.rename(dest)
+
+    print('done tidying up', folder)
+
+# tidy up
+if IsWindows():
+    print('tidying up')
+    is_lib = re.compile(r'(\.dll$)|(\.so(\..+)?$)|(\.pyd$)')
+
+    dxr = Path('dist') / 'DXRando'
+    if not dxr.exists():
+        dxr = Path('installer') / 'dist' / 'DXRando'
+    DoCleanup(dxr)
+
+    bingo = Path('dist') / 'BingoViewer'
+    if not bingo.exists():
+        bingo = Path('installer') / 'dist' / 'BingoViewer'
+    DoCleanup(bingo)
 
     print('done tidying up')
