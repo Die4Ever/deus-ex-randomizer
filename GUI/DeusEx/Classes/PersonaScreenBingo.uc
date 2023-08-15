@@ -55,6 +55,7 @@ function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int 
     t.SetSize(w-1, h-1);
     t.SetPos(x * w + bingoStartX, y * h + bingoStartY);
     t.SetProgress(progress, max, bActiveMission);
+    t.SetHelpText("This is my help message!"); //This will need to be populated per bingo goal
     return t;
 }
 
@@ -98,6 +99,24 @@ function bool ResetBingoBoard()
     return true;
 }
 
+function ShowBingoGoalHelp( Window bingoTile )
+{
+    local BingoTile bt;
+    local BingoHintMsgBox msgbox;
+
+    bt=BingoTile(bingoTile);
+
+    if(bt==None){
+        //Don't know how we got here, but might as well check
+        return;
+    }
+    msgbox = BingoHintMsgBox(root.PushWindow(class'BingoHintMsgBox',False));
+    msgbox.SetTitle(bt.GetText());
+    msgbox.SetMessageText(bt.GetHelpText());
+    msgbox.SetMode(1);
+    msgbox.SetNotifyWindow(Self);
+}
+
 function bool ButtonActivated( Window buttonPressed )
 {
     local int val;
@@ -112,6 +131,11 @@ function bool ButtonActivated( Window buttonPressed )
 
         return true;
     }
+    else if(BingoTile(buttonPressed)!=None){
+        ShowBingoGoalHelp(buttonPressed);
+        return true;
+    }
+
     return Super.ButtonActivated(buttonPressed);
 }
 
