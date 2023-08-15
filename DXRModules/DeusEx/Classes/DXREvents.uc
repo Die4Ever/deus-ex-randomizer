@@ -2433,7 +2433,7 @@ defaultproperties
     bingo_options(198)=(event="PianoSong7Played",desc="Stauf Says...",max=1,missions=64)
     bingo_options(199)=(event="PinballWizard",desc="Play %s different pinball machines",max=10,missions=37246)
     bingo_options(200)=(event="FlowersForTheLab",desc="Bring some flowers to brighten up the lab",max=1,missions=64)
-    bingo_options(201)=(event="BurnTrash",desc="Burn %s bags of trash",max=25)
+    bingo_options(201)=(event="BurnTrash",desc="Burn %s bags of trash",max=25,missions=57182)
     bingo_options(202)=(event="M07MeetJaime_Played",desc="Meet Jaime in Hong Kong",max=1,missions=96)
     bingo_options(203)=(event="Terrorist_peeptime",desc="Watch Terrorists for %s seconds",max=30,missions=62)
     bingo_options(204)=(event="UNATCOTroop_peeptime",desc="Watch UNATCO Troopers for %s seconds",max=30,missions=318)
