@@ -316,12 +316,10 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)ScriptedPawn sp;
 
-    if (#defined(revision)){
-        if (dxr.localURL=="12_VANDENBERG_CMD"){
-            foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'Helicopter'){
-                //Jock starts in the Wandering state for some reason
-                sp.SetOrders('Standing');
-            }
+    if (#defined(revision) && dxr.localURL=="12_VANDENBERG_CMD"){
+        foreach AllActors(class'#var(prefix)ScriptedPawn',sp,'Helicopter'){
+            //Jock starts in the Wandering state for some reason
+            sp.SetOrders('Standing');
         }
     }
 }

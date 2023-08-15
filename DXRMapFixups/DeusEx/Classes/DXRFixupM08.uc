@@ -72,7 +72,7 @@ function PreFirstEntryMapFixes()
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
             break;
         case "08_NYC_BAR":
-            npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1171.976440,250.575806,53.729687),rotm(0,0,0),'08_Newspaper01'); //Table near where Harley is in Vanilla
+            npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1171.976440,250.575806,53.729687),rotm(0,0,0),'08_Newspaper01'); //Joe Greene article, table near where Harley is in Vanilla
             break;
     }
 }

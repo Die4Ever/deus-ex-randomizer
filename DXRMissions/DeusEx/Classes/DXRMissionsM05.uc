@@ -150,13 +150,11 @@ function AfterShuffleGoals(int goalsToLocations[32])
             SpawnDatacubePlaintext(vectm(243.288742, -104.183029, 289.368256), rotm(0,0,0), dctext, true);
         }
 
-    } else if (dxr.localURL == "05_NYC_UNATCOMJ12LAB") {
-        if (#defined(revision)){
-            //For some reason shuffling Paul's body stops it from being destroyed by the mission script
-            if (!player().flagbase.GetBool('PaulDenton_Dead')){
-                foreach AllActors(class'PaulDentonCarcass',paulbody){
-                    paulbody.Destroy();
-                }
+    } else if (dxr.localURL == "05_NYC_UNATCOMJ12LAB" && #defined(revision)){
+        //For some reason shuffling Paul's body stops it from being destroyed by the mission script
+        if (!player().flagbase.GetBool('PaulDenton_Dead')){
+            foreach AllActors(class'PaulDentonCarcass',paulbody){
+                paulbody.Destroy();
             }
         }
     }

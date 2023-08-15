@@ -204,11 +204,9 @@ function PreFirstEntryMapFixes()
         ReplaceBatteryParkSubwayTNT();
     }
 
-    if (#defined(revision)){
-        if (dxr.localURL=="02_NYC_WAREHOUSE"){
-            foreach AllActors(class'#var(prefix)InterpolateTrigger',it,'FlyInTrigger'){
-                it.Destroy();
-            }
+    if (#defined(revision) && dxr.localURL=="02_NYC_WAREHOUSE"){
+        foreach AllActors(class'#var(prefix)InterpolateTrigger',it,'FlyInTrigger'){
+            it.Destroy();
         }
     }
 }
