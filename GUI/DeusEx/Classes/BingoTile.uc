@@ -87,8 +87,11 @@ simulated function string GetHelpText()
     local string helpmsg;
 
     helpmsg=helpText;
-    helpmsg=helpmsg$"|n|n";
-    helpmsg=helpmsg$progress$"/"$max;
+
+    if (max>1){
+        helpmsg=helpmsg$"|n|n";
+        helpmsg=helpmsg$"Progress: "$progress$"/"$max;
+    }
 
     return helpmsg;
 }

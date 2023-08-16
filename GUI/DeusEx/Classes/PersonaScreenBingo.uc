@@ -113,7 +113,6 @@ function ShowBingoGoalHelp( Window bingoTile )
     msgbox = BingoHintMsgBox(root.PushWindow(class'BingoHintMsgBox',False));
     msgbox.SetTitle(bt.GetText());
     msgbox.SetMessageText(bt.GetHelpText());
-    msgbox.SetMode(1);
     msgbox.SetNotifyWindow(Self);
 }
 
