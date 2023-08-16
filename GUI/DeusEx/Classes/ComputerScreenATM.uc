@@ -7,34 +7,21 @@ function CloseScreen(String action)
     if (action=="LOGIN")
     {
         //Mark the account as known
-#ifdef injections
-        ATM(compOwner).SetAccountKnownByName(editAccount.GetText());
-#else
-        DXRATM(compOwner).SetAccountKnownByName(editAccount.GetText());
-
-#endif
+        #var(injectsprefix)ATM(compOwner).SetAccountKnownByName(editAccount.GetText());
     }
 
-#ifdef injections
-    winTerm.CloseKnownAccountsWindow();
-#else
-    if(DXRNetworkTerminalATM(winTerm)!=None){
-        DXRNetworkTerminalATM(winTerm).CloseKnownAccountsWindow();
+    if(#var(injectsprefix)NetworkTerminalATM(winTerm)!=None){
+        #var(injectsprefix)NetworkTerminalATM(winTerm).CloseKnownAccountsWindow();
     }
-#endif
 
-	Super.CloseScreen(action);
+    Super.CloseScreen(action);
 }
 
 function SetNetworkTerminal(#var(prefix)NetworkTerminal newTerm)
 {
 	Super.SetNetworkTerminal(newTerm);
 
-#ifdef injections
-    winTerm.CreateKnownAccountsWindow();
-#else
-    if(DXRNetworkTerminalATM(winTerm)!=None){
-        DXRNetworkTerminalATM(winTerm).CreateKnownAccountsWindow();
+    if(#var(injectsprefix)NetworkTerminalATM(winTerm)!=None){
+        #var(injectsprefix)NetworkTerminalATM(winTerm).CreateKnownAccountsWindow();
     }
-#endif
 }

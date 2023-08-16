@@ -49,11 +49,7 @@ function CalcTrace(float deltaTime)
             //This helps with the Vandenberg computer room, the electricity in the Aquinas Substation
             //and the Hong Kong Helibase (and many more)
             if (HitActor.IsA('#var(PlayerPawn)')){
-#ifdef hx
-                damageAmt = Clamp(damageAmount / (HXGameInfo(Level.Game).CombatDifficulty),1,damageAmount);
-#else
                 damageAmt = Clamp(damageAmount / (#var(PlayerPawn)(HitActor).CombatDifficulty),1,damageAmount);
-#endif
             }
 
             HitActor.TakeDamage(damageAmt, Instigator, HitLocation, vect(0,0,0), 'Shocked');
