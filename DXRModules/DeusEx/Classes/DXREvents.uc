@@ -2190,52 +2190,99 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             }
             return msg;
         case "GuntherFreed":
+            return "Free Gunther from the makeshift jail on Liberty Island.  The jail is just inside the base of the statue.";
         case "BathroomBarks_Played":
+            return "Enter the wrong bathroom in UNATCO HQ on your first visit.";
         case "GotHelicopterInfo":
+            return "Help Jock locate the bomb planted in his helicopter by killing the fake mechanic.";
         case "JoshFed":
+            return "Give Josh some soy food or a candy bar.  Josh is a kid located on the docks of Battery Park.";
         case "M02BillyDone":
+            return "Give Billy some soy food or a candy bar.  Billy is a kid located in the kiosk of Castle Clinton.";
         case "FordSchickRescued":
+            return "Rescue Ford Schick from the MJ12 lab in the sewers under New York, on your first visit to Hell's Kitchen.  The key to the sewers can be gotten from Smuggler";
         case "NiceTerrorist_Dead":
+            return "Kill a friendly NSF trooper in the LaGuardia hangar.";
         case "M10EnteredBakery":
+            return "Enter the bakery in the streets of Paris.  The bakery can be found across the street from the Metro.";
         case "FreshWaterOpened":
+            return "Fix the fresh water supply in Brooklyn Bridge Station.  The water valves are behind some collapsed rubble.";
         case "assassinapartment":
+            return "Visit the apartment in Paris that has Starr the dog inside.  This apartment is over top of the media store, but is accessed from the opposite side of the building.";
         case "GaveRentonGun":
+            return "Give Gilbert Renton a gun when he is trying to protect his daughter from JoJo Fine, before the ambush.";
         case "DXREvents_LeftOnBoat":
+            return "After destroying the NSF generator, return to Battery Park and take the boat back to UNATCO.";
         case "AlleyBumRescued":
+            return "On your first visit to Battery Park, rescue the bum being mugged on the basketball court.  The court can be found behind the subway station.";
         case "FoundScientistBody":
+            return "Enter the collapsed tunnel under the canals and find the scientist body.  The tunnel can be accessed through the vents in the freezer of the Old China Hand.";
         case "ClubEntryPaid":
+            return "Give Mercedes and Tessa (the two women waiting outside the Lucky Money) money to get into the club.";
         case "M08WarnedSmuggler":
+            return "After talking to Stanton Dowd, talk to Smuggler and warn him of the impending UNATCO raid.";
         case "ShipPowerCut":
+            return "Help the electrician on the superfreighter by disabling the electrical panels under the electrical room.";
         case "CamilleConvosDone":
+            return "Talk to Camille the Paris cage dancer and get all the information you can.";
         case "MeetAI4_Played":
+            return "Talk to Morpheus, the prototype AI locked away in Everett's house.";
         case "DL_Flooded_Played":
+            return "Swim outside of the Ocean Lab and enter the flooded section through the hole blasted in the underside of the structure.";
         case "JockSecondStory":
+            return "Buy two beers from Jordan Shea and give them to Jock in the Underworld bar.";
         case "M07ChenSecondGive_Played":
+            return "After the triad meeting in the temple, meet the leaders in the Lucky Money and receive the gifted bottles of wine from each Dragon Head.";
         case "DeBeersDead":
+            return "Kill Lucius DeBeers in Everett's House.  You can do so either by destroying him or shutting off his bio support with the computer next to him";
         case "StantonAmbushDefeated":
+            return "Defend Stanton Dowd from the MJ12 ambush after talking to him.";
         case "SmugglerDied":
+            return "Let Smuggler die by not warning him of the UNATCO raid.";
         case "GaveDowdAmbrosia":
+            return "Find a vial of ambrosia on the upper decks of the superfreighter and bring to to Stanton Dowd in the graveyard.";
         case "JockBlewUp":
+            return "Don't kill the fake mechanic at Everett's house so that Jock dies when you arrive in Area 51.";
         case "SavedPaul":
+            return "Save Paul during the ambush on the 'Ton hotel.";
         case "nsfwander":
+            return "Escort Miguel, the captured NSF troop, out of the MJ12 base underneath UNATCO HQ.";
         case "MadeBasket":
+            return "Throw the basketball into the net in Hell's Kitchen.";
         case "BoughtClinicPlan":
+            return "On your first visit to Hell's Kitchen, go to the free clinic and buy the full treatment plan from the doctors.";
         case "ExtinguishFire":
+            return "When you're on fire, put yourself out by using a shower, sink, toilet, or urinal.";
         case "SubwayHostagesSaved":
+            return "Ensure both hostages in the Battery Park subway station escape on the train.";
         case "HotelHostagesSaved":
+            return "Rescue the hostages on the top floor of the 'Ton as well as Gilbert Renton.";
         case "SilhouetteHostagesAllRescued":
+            return "Save both hostages in the Paris catacombs and escort them to safety in the Silhouette hideout.";
         case "JosephManderley_Dead":
+            return "Kill Manderley while escaping from UNATCO.";
         case "MadeItToBP":
+            return "After the raid on the 'Ton hotel, escape to Gunther's roadblock in Battery Park.";
         case "MetSmuggler":
+            return "Talk to Smuggler in his Hell's Kitchen hideout.";
         case "SickMan_Dead":
+            return "Kill the junkie in Battery Park who asks for someone to kill him.  He is typically found near the East Coast Memorial (the eagle statue and large plaques)";
         case "M06PaidJunkie":
+            return "Visit the junkie living on the floor under construction below Maggie Chow's apartment.  Give her money.";
         case "M06BoughtVersaLife":
+            return "Buy the maps of Versalife from the guy in the Old China Hand bar, by the canal";
         case "FlushToilet":
+            return "Find and flush enough different toilets.  Note that toilets in places that you revisit (like UNATCO HQ) will count again on each visit";
         case "FlushUrinal":
+            return "Find and flush enough different urinals.  Note that urinals in places that you revisit (like UNATCO HQ) will count again on each visit";
         case "MeetTimBaker_Played":
+            return "Enter the storage room in Vandenberg near the Hazard Lab and talk to Tim Baker.";
         case "MeetDrBernard_Played":
+            return "Find Dr. Bernard, the scientist locked in the bathroom at the silo.";
         case "KnowsGuntherKillphrase":
+            return "Learn Gunther's killphrase from Jaime in Paris.  Note that he will only meet you in Paris if you ask him to stay with UNATCO while you escape from the MJ12 base.";
         case "KnowsAnnasKillphrase":
+            return "Learn both parts of Anna's killphrase in UNATCO HQ after escaping from the MJ12 lab.  The killphrase is split across two computers in HQ.  There will be a datacube on Manderley's desk with hints to the location of the parts of the killphrase.";
         case "Area51FanShaft":
         case "PoliceVaultBingo":
         case "SunkenShip":
