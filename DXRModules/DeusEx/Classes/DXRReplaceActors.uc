@@ -67,8 +67,7 @@ function ReplaceActors()
         else if( #var(prefix)ComputerPublic(a) != None ) {
             ReplaceComputerPublic(#var(prefix)ComputerPublic(a));
         }
-#ifdef revision
-        //Just haven't tested this outside of Revision yet
+#ifndef hx
         else if( #var(prefix)ComputerPersonal(a) != None ) {
             ReplaceComputerPersonal(#var(prefix)ComputerPersonal(a));
         }
