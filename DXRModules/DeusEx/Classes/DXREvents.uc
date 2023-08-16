@@ -2110,6 +2110,294 @@ static function MarkBingo(DXRando dxr, coerce string eventname)
     }
 }
 
+static simulated function string GetBingoGoalHelpText(string event,int mission)
+{
+    local string msg;
+    switch(event){
+        case "TerroristCommander_Dead":
+            return "Kill Leo Gold, the terrorist commander on Liberty Island";
+        case "TiffanySavage_Dead":
+            return "Let Tiffany Savage die (or kill her yourself).  She is being held hostage at the gas station";
+        case "PaulDenton_Dead":
+            return "Let Paul Denton die (or kill him yourself) during the ambush on the hotel";
+        case "JordanShea_Dead":
+            return "Kill Jordan Shea, the bartender at the Underworld bar in New York";
+        case "SandraRenton_Dead":
+            msg = "Kill Sandra Renton (or let her die).  ";
+            if (mission<=2){
+                msg=msg$"  She can be found in an alley next to the Underworld bar in New York";
+            } else if (mission<=4){
+                msg=msg$"  She can be found inside the hotel";
+            } else if (mission<=8){
+                msg=msg$"  She can be found in the Underworld bar";
+            } else if (mission<=12){
+                msg=msg$"  She can be found outside the gas station";
+            }
+            return msg;
+        case "GilbertRenton_Dead":
+            return "Kill Gilbert Renton.  He can be found behind the front desk in the 'Ton hotel";
+        case "AnnaNavarre_Dead":
+            return "Kill Anna Navarre.  ";
+            if (mission<=3){
+                msg=msg$"She can be found on the 747";
+            } else if (mission<=4){
+                msg=msg$"She can be found somewhere in New York after sending the NSF signal";
+            } else if (mission<=5){
+                msg=msg$"She can be found at the exit to UNATCO HQ";
+            }
+        case "WarehouseEntered":
+            return "Enter the underground warehouse in Paris.  This warehouse is located in the building across the street from the entrance to the Catacombs.";
+        case "GuntherHermann_Dead":
+            return "Kill Gunther.  He can be found guarding a computer somewhere in the cathedral in Paris.";
+        case "JoJoFine_Dead":
+            return "Kill Jojo Fine (or let him get killed).  He can be found in the 'Ton hotel before the ambush";
+        case "TobyAtanwe_Dead":
+            return "Kill Toby Atanwe, who is Morgan Everett's assistant.  He can be killed once you arrive at Everett's house";
+        case "Antoine_Dead":
+            return "Kill Antoine in the Paris club.  He can be found at a table in a back corner of the club selling bioelectric cells";
+        case "Chad_Dead":
+            return "Kill Chad Dumier.  He can be found in the Silhouette hideout in the Paris catacombs";
+        case "paris_hostage_Dead":
+            return "Kill both of the hostages in the Paris catacombs.  They can be found locked in the centre of the catacombs bunker occupied by MJ12.";
+        case "Hela_Dead":
+            return "Kill Hela, the woman in black leading the MJ12 force in the Paris catacombs";
+        case "Renault_Dead":
+            return "Kill Renault in the Paris hostel.  He is the man who asks you to steal zyme and will buy it from you";
+        case "Labrat_Bum_Dead":
+            return "Kill the bum locked up in the Hong Kong MJ12 lab, or let him be killed.";
+        case "DXRNPCs1_Dead":
+            return "Kill The Merchant.  He will randomly spawn in levels according to your chosen game settings.  Keep in mind that once you kill him, he will no longer appear for the rest of your run!";
+        case "lemerchant_Dead":
+            return "Kill Le Merchant.  He spawns near where you first land in Paris.  He's a different guy!";
+        case "Harold_Dead":
+            return "Kill Harold the mechanic.  He can be found working underneath the 747 in the LaGuardia hangar.";
+        case "aimee_Dead":
+            return "Kill Aimee, the woman worrying about her cats in Paris.  She can be found near where you first land in Paris.";
+        case "WaltonSimons_Dead":
+            msg="Kill Walton Simons.  ";
+            if (mission<=14){
+                msg=msg$"He can be found hunting you down somewhere in or around the Ocean Lab.";
+            } else if (mission==15){
+                msg=msg$"He can be found hunting you down somewhere in Area 51.";
+            }
+            return msg;
+        case "JoeGreene_Dead":
+            msg= "Kill Joe Greene, the reporter poking around in New York.  ";
+            if (mission<=2){
+                msg=msg$"He can be found in the Underworld bar.";
+            }else if (mission<=8){
+                msg=msg$"He can be found somewhere in New York after you return from Hong Kong.";
+            }
+            return msg;
+        case "GuntherFreed":
+        case "BathroomBarks_Played":
+        case "GotHelicopterInfo":
+        case "JoshFed":
+        case "M02BillyDone":
+        case "FordSchickRescued":
+        case "NiceTerrorist_Dead":
+        case "M10EnteredBakery":
+        case "FreshWaterOpened":
+        case "assassinapartment":
+        case "GaveRentonGun":
+        case "DXREvents_LeftOnBoat":
+        case "AlleyBumRescued":
+        case "FoundScientistBody":
+        case "ClubEntryPaid":
+        case "M08WarnedSmuggler":
+        case "ShipPowerCut":
+        case "CamilleConvosDone":
+        case "MeetAI4_Played":
+        case "DL_Flooded_Played":
+        case "JockSecondStory":
+        case "M07ChenSecondGive_Played":
+        case "DeBeersDead":
+        case "StantonAmbushDefeated":
+        case "SmugglerDied":
+        case "GaveDowdAmbrosia":
+        case "JockBlewUp":
+        case "SavedPaul":
+        case "nsfwander":
+        case "MadeBasket":
+        case "BoughtClinicPlan":
+        case "ExtinguishFire":
+        case "SubwayHostagesSaved":
+        case "HotelHostagesSaved":
+        case "SilhouetteHostagesAllRescued":
+        case "JosephManderley_Dead":
+        case "MadeItToBP":
+        case "MetSmuggler":
+        case "SickMan_Dead":
+        case "M06PaidJunkie":
+        case "M06BoughtVersaLife":
+        case "FlushToilet":
+        case "FlushUrinal":
+        case "MeetTimBaker_Played":
+        case "MeetDrBernard_Played":
+        case "KnowsGuntherKillphrase":
+        case "KnowsAnnasKillphrase":
+        case "Area51FanShaft":
+        case "PoliceVaultBingo":
+        case "SunkenShip":
+        case "SpinShipsWheel":
+        case "ActivateVandenbergBots":
+        case "TongsHotTub":
+        case "JocksToilet":
+        case "Greasel_ClassDead":
+        case "support1":
+        case "UNATCOTroop_ClassDead":
+        case "Terrorist_ClassDead":
+        case "MJ12Troop_ClassDead":
+        case "MJ12Commando_ClassDead":
+        case "Karkian_ClassDead":
+        case "MilitaryBot_ClassDead":
+        case "VandenbergToilet":
+        case "BoatEngineRoom":
+        case "SecurityBot2_ClassDead":
+        case "SecurityBotSmall_ClassDead":
+        case "SpiderBot_ClassDead":
+        case "HumanStompDeath":
+        case "Rat_ClassDead":
+        case "UNATCOTroop_ClassUnconscious":
+        case "Terrorist_ClassUnconscious":
+        case "MJ12Troop_ClassUnconscious":
+        case "MJ12Commando_ClassUnconscious":
+        case "purge":
+        case "ChugWater":
+        case "ChangeClothes":
+        case "arctrigger":
+        case "LeoToTheBar":
+        case "KnowYourEnemy":
+        case "09_NYC_DOCKYARD--796967769":
+        case "JacobsShadow":
+        case "ManWhoWasThursday":
+        case "GreeneArticles":
+        case "MoonBaseNews":
+        case "06_Datacube05":
+        case "Gray_ClassDead":
+        case "CloneCubes":
+        case "blast_door_open":
+        case "SpinningRoom":
+        case "MolePeopleSlaughtered":
+        case "surrender":
+        case "nanocage":
+        case "unbirth":
+        case "StolenAmbrosia":
+        case "AnnaKilledLebedev":
+        case "PlayerKilledLebedev":
+        case "JuanLebedev_Unconscious":
+        case "BrowserHistoryCleared":
+        case "AnnaKillswitch":
+        case "AnnaNavarre_DeadM3":
+        case "AnnaNavarre_DeadM4":
+        case "AnnaNavarre_DeadM5":
+        case "SimonsAssassination":
+        case "AlliesKilled":
+        case "MaySung_Dead":
+        case "MostWarehouseTroopsDead":
+        case "CleanerBot_ClassDead":
+        case "MedicalBot_ClassDead":
+        case "RepairBot_ClassDead":
+        case "DrugDealer_Dead":
+        case "botordertrigger":
+        case "IgnitedPawn":
+        case "GibbedPawn":
+        case "IcarusCalls_Played":
+        case "AlexCloset":
+        case "BackOfStatue":
+        case "CommsPit":
+        case "StatueHead":
+        case "CraneControls":
+        case "CraneTop":
+        case "CaptainBed":
+        case "FanTop":
+        case "LouisBerates":
+        case "EverettAquarium":
+        case "TrainTracks":
+        case "OceanLabCrewChamber":
+        case "HeliosControlArms":
+        case "TongTargets":
+        case "WanChaiStores":
+        case "HongKongBBall":
+        case "CanalDrugDeal":
+        case "HongKongGrays":
+        case "EnterQuickStop":
+        case "LuckyMoneyFreezer":
+        case "TonnochiBillboard":
+        case "AirfieldGuardTowers":
+        case "mirrordoor":
+        case "MolePeopleWater":
+        case "botorders2":
+        case "BathroomFlags":
+        case "SiloSlide":
+        case "SiloWaterTower":
+        case "TonThirdFloor":
+        case "Set_flag_helios":
+        case "coolant_switch":
+        case "BlueFusionReactors":
+        case "A51UCBlocked":
+        case "VandenbergReactorRoom":
+        case "VandenbergServerRoom":
+        case "VandenbergWaterTower":
+        case "Cremation":
+        case "OceanLabGreenBeacon":
+        case "PageTaunt_Played":
+        case "JerryTheVentGreasel_Dead":
+        case "BiggestFan":
+        case "Sodacan_Activated":
+        case "BallisticArmor_Activated":
+        case "Flare_Activated":
+        case "VialAmbrosia_Activated":
+        case "Binoculars_Activated":
+        case "HazMatSuit_Activated":
+        case "AdaptiveArmor_Activated":
+        case "DrinkAlcohol":
+        case "ToxicShip":
+        case "ComputerHacked":
+        case "TechGoggles_Activated":
+        case "Rebreather_Activated":
+        case "PerformBurder":
+        case "GoneFishing":
+        case "FordSchick_Dead":
+        case "ChateauInComputerRoom":
+        case "DuClareBedrooms":
+        case "PlayPool":
+        case "FireExtinguisher_Activated":
+        case "PianoSongPlayed":
+        case "PianoSong0Played":
+        case "PianoSong7Played":
+        case "PinballWizard":
+        case "FlowersForTheLab":
+        case "BurnTrash":
+        case "M07MeetJaime_Played":
+        case "Terrorist_peeptime":
+        case "UNATCOTroop_peeptime":
+        case "MJ12Troop_peeptime":
+        case "MJ12Commando_peeptime":
+        case "PawnState_Dancing":
+        case "BirdWatching":
+        case "NYEagleStatue_peeped":
+        case "BrokenPianoPlayed":
+        case "Supervisor_Paid":
+        case "ImageOpened_WaltonSimons":
+        case "BethsPainting":
+        case "ViewPortraits":
+        case "ViewSchematics":
+        case "ViewMaps":
+        case "ViewDissection":
+        case "ViewTouristPics":
+        case "CathedralUnderwater":
+        case "DL_gold_found_Played":
+        case "12_Email04":
+        case "ReadJCEmail":
+        case "02_Email05":
+        case "11_Book08":
+        case "GasStationCeiling":
+        default:
+            return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
+    }
+}
+
 function AddBingoScreen(CreditsWindow cw)
 {
     local CreditsBingoWindow cbw;

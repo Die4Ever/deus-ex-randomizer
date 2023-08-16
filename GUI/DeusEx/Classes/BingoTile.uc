@@ -77,9 +77,9 @@ event DrawWindow(GC gc)
     Super.DrawWindow(gc);
 }
 
-simulated function SetHelpText(string helpmsg)
+simulated function SetHelpText(string event, int mission)
 {
-    helpText = helpmsg;
+    helpText = class'DXREvents'.static.GetBingoGoalHelpText(event,mission);
 }
 
 simulated function string GetHelpText()
