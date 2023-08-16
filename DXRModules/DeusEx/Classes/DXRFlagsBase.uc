@@ -66,8 +66,6 @@ struct FlagsSettings {
     var int health, energy;// normally just 100
 };
 
-var config bool speedrun_mode;
-
 var #var(flagvarprefix) FlagsSettings settings;
 
 const undefeatabledoors = 256;//1*256;

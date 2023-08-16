@@ -78,7 +78,7 @@ function SetDxr(DXRando d)
 {
     dxr=d;
     flags = DXRFlags(dxr.FindModule(class'DXRFlags'));
-    if(flags.speedrun_mode)
+    if(flags.IsSpeedrunMode())
         actionButtons[3].btn.Show();
     else
         actionButtons[3].btn.Hide();

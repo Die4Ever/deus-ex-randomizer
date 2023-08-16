@@ -534,7 +534,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.medbots = (settings.medbots + 100) / 2;
         settings.health = 200;
     }
-    else if(gamemode == SpeedrunMode) {
+    else if(IsSpeedrunMode()) {
         // same doors rules as Normal difficulty
         settings.doorsmode = undefeatabledoors + doormutuallyinclusive;
         settings.doorsdestructible = 100;
@@ -622,6 +622,11 @@ function bool IsZeroRando()
 function bool IsReducedRando()
 {
     return gamemode == RandoLite || gamemode == ZeroRando;
+}
+
+function bool IsSpeedrunMode()
+{
+    return gamemode == SpeedrunMode;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
