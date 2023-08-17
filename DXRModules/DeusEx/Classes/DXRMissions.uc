@@ -459,7 +459,7 @@ function UpdateGoalWithRandoInfo(name goalName, string text)
     player().ClientMessage("Goal Updated - Check DataVault For Details",, true);
 }
 
-function _UpdateLocation(Actor a, string goalName)
+function int _UpdateLocation(Actor a, string goalName)
 {
     local int g, l;
 
@@ -470,15 +470,16 @@ function _UpdateLocation(Actor a, string goalName)
         if(spoilers[g].goalName != goalName) continue;
         break;
     }
-    if(g>=num_goals) return;
+    if(g>=num_goals) return -1;
     for(l=0; l < num_locations; l++) {
         if(spoilers[g].goalLocation != locations[l].name) continue;
         break;
     }
-    if(l>=num_locations) return;
+    if(l>=num_locations) return -1;
 
     goals[g].actors[0].a = a;
     MoveGoalToLocation(goals[g], locations[l]);
+    return g;
 }
 
 function MoveGoalToLocation(Goal g, GoalLocation Loc)

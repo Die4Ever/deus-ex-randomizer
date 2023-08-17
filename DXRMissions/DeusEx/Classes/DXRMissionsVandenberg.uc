@@ -28,7 +28,7 @@ function int InitGoals(int mission, string map)
 
         // complicated because of DXRBacktracking::VandCmdAnyEntry() to reuse the chopper
         goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'BlackHelicopter0', PHYS_None);
-        AddGoalActor(goal, 1, 'TracerTong0', PHYS_Falling);
+        AddGoalActor(goal, 1, 'TracerTong0', PHYS_None);
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Street Entrance", GOAL_TYPE1 | VANILLA_GOAL, vect(7014.185059, 7540.296875, -2984.704102), rot(0,-19840,0));
         AddActorLocation(loc, 1, vect(6436.471680, 7621.873535, -3061.458740), rot(0,-27976,0));
@@ -37,7 +37,7 @@ function int InitGoals(int mission, string map)
         AddActorLocation(loc, 1, vect(-659.219116, 5350.891113, -2142.458740), rot(0,-27976,0));
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Comm 01 Roof", GOAL_TYPE1, vect(-1880.047119, 5443.039063, -1831.704102), rot(0,0,0));
-        AddActorLocation(loc, 1, vect(-1581.219116, 5030.891113, -1876.458740), rot(0,-14000,0));
+        AddActorLocation(loc, 1, vect(-1581.219116, 5030.891113, -1910), rot(0,-14000,0));
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Command Roof", GOAL_TYPE1, vect(-2209.047119, 2820.039063, -1410.704102), rot(0,-10000,0));
         AddActorLocation(loc, 1, vect(-1617.219116, 2778.891113, -1471.458740), rot(0,-10000,0));
@@ -123,7 +123,7 @@ function int InitGoalsRev(int mission, string map)
 
         // Will need handling if backtracking is implemented for Revision, since this uses a JockHelicopter
         goal = AddGoal("12_VANDENBERG_CMD", "Jock and Tong", GOAL_TYPE1, 'JockHelicopter2', PHYS_None);
-        AddGoalActor(goal, 1, 'TracerTong0', PHYS_Falling);
+        AddGoalActor(goal, 1, 'TracerTong0', PHYS_None);
 
         loc = AddGoalLocation("12_VANDENBERG_CMD", "Street Entrance", GOAL_TYPE1 | VANILLA_GOAL, vect(7040,7540,-2984), rot(0,-19840,0));
         AddActorLocation(loc, 1, vect(6436.471680, 7621.873535, -3061.458740), rot(0,-27976,0));
