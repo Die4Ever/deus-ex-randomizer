@@ -2284,76 +2284,213 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "KnowsAnnasKillphrase":
             return "Learn both parts of Anna's killphrase in UNATCO HQ after escaping from the MJ12 lab.  The killphrase is split across two computers in HQ.  There will be a datacube on Manderley's desk with hints to the location of the parts of the killphrase.";
         case "Area51FanShaft":
+            return "In Area 51, jump down the ventilation shaft inside the hangar.";
         case "PoliceVaultBingo":
+            return "Enter the police vault in the Wan Chai Market.";
         case "SunkenShip":
+            return "Enter the ship that has sunk off the North Dock of Liberty Island (Near Harley Filben)";
         case "SpinShipsWheel":
+            msg="Spin enough ships wheels.  ";
+            if (mission<=1){
+                msg=msg$"There is a ships wheel on the wall of the hut Harley Filben is in.";
+            }else if (mission<=6){
+                msg=msg$"There is a ships wheel on the smugglers ship in the Wan Chai canals, as well as on the wall of the Boat Persons house (off the side of the canal)";
+            }else if (mission<=9){
+                msg=msg$"There is a ships wheel on the bridge of the Superfreighter.";
+            }
+            return msg;
         case "ActivateVandenbergBots":
+            return "Activate both military bots in Vandenberg.  The two generator keypads must be activated before you can enter the building.";
         case "TongsHotTub":
+            return "Jump into the tub of water in Tracer Tong's hideout.";
         case "JocksToilet":
+            return "Use the toilet in Jock's Tonnochi Road apartment.  The bathroom is behind a sliding door next to the kitchen.";
         case "Greasel_ClassDead":
+            return "Kill enough greasels.  You must kill the greasels yourself.";
         case "support1":
+            return "Blow up the gas station.";
         case "UNATCOTroop_ClassDead":
+            return "Kill enough UNATCO Troopers.  You must kill them yourself.";
         case "Terrorist_ClassDead":
+            return "Kill enough NSF Troops.  You must kill them yourself.";
         case "MJ12Troop_ClassDead":
+            return "Kill enough MJ12 Troopers.  You must kill them yourself.";
         case "MJ12Commando_ClassDead":
+            return "Kill enough MJ12 Commandos.  You must kill them yourself.";
         case "Karkian_ClassDead":
+            return "Kill enough karkians.  You must kill them yourself.";
         case "MilitaryBot_ClassDead":
+            return "Destroy enough military bots.  You must destroy them yourself.  Disabling them with EMP grenades does not count.";
         case "VandenbergToilet":
+            return "Use the one toilet in Vandenberg.  It is located inside the Comm building outside.";
         case "BoatEngineRoom":
+            return "Enter the small room at the back of the smugglers boat in the Hong Kong canals.  The room can be accessed by using one of the hanging lanterns near the back of the boat.";
         case "SecurityBot2_ClassDead":
+            return "Destroy enough of the two legged walking security bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "SecurityBotSmall_ClassDead":
+            return "Destroy enough of the smaller, treaded security bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "SpiderBot_ClassDead":
+            return "Destroy enough spider bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "HumanStompDeath":
+            return "Jump on enough humans heads until they die.  Note that people will not take stomp damage unless they are hostile to you, so you may need to hit them first to make them angry.";
         case "Rat_ClassDead":
+            return "Kill enough rats.";
         case "UNATCOTroop_ClassUnconscious":
+            return "Knock out enough UNATCO Troopers.  You can knock them out with things like the baton, prod, or tranq darts.";
         case "Terrorist_ClassUnconscious":
+            return "Knock out enough NSF Troops.  You can knock them out with things like the baton, prod, or tranq darts.";
         case "MJ12Troop_ClassUnconscious":
+            return "Knock out enough MJ12 Troopers.  You can knock them out with things like the baton, prod, or tranq darts.";
         case "MJ12Commando_ClassUnconscious":
+            return "Knock out enough MJ12 Commandos.  You can knock them out with things like the baton, prod, or tranq darts.";
         case "purge":
+            return "Use the keypad in the vents of the Hong Kong MJ12 Helibase to release poison gas into the barracks.";
         case "ChugWater":
+            return "Drink the entire contents of a water fountain or water cooler as quickly as possible.";
         case "ChangeClothes":
+            return "Use hanging clothes to change your appearance!";
         case "arctrigger":
+            return "Disable the arcing electricity in the corner of the LaGuardia airfield.";
         case "LeoToTheBar":
+            return "Bring the body of Leo Gold (The terrorist commander from Liberty Island) to any bar in the game (New York, Hong Kong, Paris) and set him down.  You can also bring him to the bottom of the Ocean Lab, since it is under many BARs of pressure.";
         case "KnowYourEnemy":
+            return "Read enough 'Know Your Enemy' articles on the public computer in the UNATCO break room.";
         case "09_NYC_DOCKYARD--796967769":
+            return "Find Jenny's number (867-5309) somewhere in the outer area of the Brooklyn Naval Yards on a datacube.";
         case "JacobsShadow":
+            msg="Read enough chapters of Jacob's Shadow.  ";
+            if (mission<=2){
+                msg=msg$"There is a chapter in the MJ12 sewer base in Hell's Kitchen.";
+            } else if (mission<=3){
+                msg=msg$"There is a chapter in the LaGuardia Helibase.";
+            } else if (mission<=4){
+                msg=msg$"There is a chapter in the 'Ton hotel.";
+            } else if (mission<=6){
+                msg=msg$"There is a chapter in the Wan Chai Market.";
+            } else if (mission<=9){
+                msg=msg$"There is a chapter in the lower decks of the Superfreighter.";
+            } else if (mission<=10){
+                msg=msg$"There is a chapter in the DuClare Chateau.";
+            } else if (mission<=12){
+                msg=msg$"There is a chapter in Vandenberg Command and the Computer area.";
+            } else if (mission<=15){
+                msg=msg$"There is a chapter in Area 51 on the surface, in Sector 2, and in Sector 3.";
+            }
+            return msg;
         case "ManWhoWasThursday":
+            msg="Read enough chapters of The Man Who Was Thursday.  ";
+            if (mission<=2){
+                msg=msg$"There is a chapter inside the 'Ton hotel and in the sewers.";
+            } else if (mission<=3){
+                msg=msg$"There is a chapter in the LaGuardia helibase.";
+            } else if (mission<=4){
+                msg=msg$"There is a chapter inside the 'Ton hotel.";
+            } else if (mission<=10){
+                msg=msg$"There is a chapter in the streets before entering the Paris catacombs.";
+            } else if (mission<=12){
+                msg=msg$"There is a chapter in Vandenberg Command.";
+            } else if (mission<=14){
+                msg=msg$"There is a chapter in the Ocean Lab.";
+            } else if (mission<=15){
+                msg=msg$"There is a chapter in Sector 3 of Area 51.";
+            }
+            return msg;
         case "GreeneArticles":
+            msg="Read enough news articles written by Joe Greene of the Midnight Sun.  ";
+            if (mission<=1){
+                msg=msg$"There are two different articles on Liberty Island and in UNATCO HQ.";
+            } else if (mission<=2){
+                msg=msg$"There is an article somewhere around the NSF warehouse as well as in the Underworld bar.";
+            } else if (mission<=3){
+                msg=msg$"There is a single article in Brooklyn Bridge Station, in the helibase, and in the 747.";
+            } else if (mission<=8){
+                msg=msg$"There is an article in the streets of Hell's Kitchen.";
+            }
+            return msg;
         case "MoonBaseNews":
+            msg="Read an article talking about the mining complex located on the moon.  ";
+            if (mission<=2){
+                msg=msg$"There is an article in the streets of Hell's Kitchen.";
+            } else if (mission<=3){
+                msg=msg$"There is an article in the LaGuardia Helibase.";
+            } else if (mission<=6){
+                msg=msg$"There is an article in the Wan Chai Market as well as the Lucky Money.";
+            }
+            return msg;
         case "06_Datacube05":
+            return "Find the datacube on Tonnochi Road from Louis Pan reminding Maggie that he will never forget her birthday again.";
         case "Gray_ClassDead":
+            return "Kill enough Grays.  You must kill them yourself.";
         case "CloneCubes":
+            return "Read enough datacubes regarding the cloning projects at Area 51.  There are 8 datacubes scattered through Sector 4 of Area 51.";
         case "blast_door_open":
+            return "Open the main blast doors of the Area 51 bunker by finding the security computer somewhere on the surface.";
         case "SpinningRoom":
+            return "Pass through the center of the spinning room in the ventilation system of the Brooklyn Naval Yards.";
         case "MolePeopleSlaughtered":
+            return "Kill most of the friendly mole people in the tunnels leading to Lebedev's private terminal at LaGuardia.";
         case "surrender":
+            return "Find the leader of the NSF in the mole people tunnels and let him surrender.";
         case "nanocage":
+            return "Open the greasel cages in the MJ12 lab underneath UNATCO HQ.";
         case "unbirth":
+            return "Find the cloning tank in Sector 4 of Area 51 that does not have a lid and go swimming in it.";
         case "StolenAmbrosia":
+            msg="Find enough stolen barrels of ambrosia.  ";
+            if (mission<=2){
+                msg=msg$"There is a barrel of ambrosia somewhere in Battery Park.";
+            } else if (mission<=3){
+                msg=msg$"There are three barrels of ambrosia.  One is in the LaGuardia helibase.  One is in the airfield.  One is either in the hangar or on the 747.";
+            }
+            return msg;
         case "AnnaKilledLebedev":
+            return "Let Anna kill Lebedev by walking away without killing him yourself.";
         case "PlayerKilledLebedev":
+            return "Murder Juan Lebedev on the 747 of your own volition.";
         case "JuanLebedev_Unconscious":
+            return "Knock Lebedev out instead of killing him.";
         case "BrowserHistoryCleared":
+            return "While escaping UNATCO, log into the computer in your office and clear your browser history.";
         case "AnnaKillswitch":
+            return "After finding the pieces of Anna's killphrase, actually use it against her.";
         case "AnnaNavarre_DeadM3":
+            return "Kill Anna Navarre on the 747.";
         case "AnnaNavarre_DeadM4":
+            return "Kill Anna Navarre after sending the signal for the NSF but before being captured by UNATCO.";
         case "AnnaNavarre_DeadM5":
+            return "Kill Anna Navarre in UNATCO HQ.";
         case "SimonsAssassination":
+            return "Watch Walton Simons' full interrogation of the captured NSF soldiers.";
         case "AlliesKilled":
+            return "Kill enough people who were originally your ally";
         case "MaySung_Dead":
+            return "Kill May Sung, Maggie Chow's maid.";
         case "MostWarehouseTroopsDead":
+            return "Kill most of the UNATCO Troops securing the NSF HQ.  This can be done before sending the signal for the NSF or after.";
         case "CleanerBot_ClassDead":
+            return "Destroy enough cleaner bots.  Disabling them with EMP does not count.";
         case "MedicalBot_ClassDead":
+            return "Destroy enough medical bots.  Disabling them with EMP does not count.";
         case "RepairBot_ClassDead":
+            return "Destroy enough repair bots.  Disabling them with EMP does not count.";
         case "DrugDealer_Dead":
+            return "Kill Rock, the drug dealer who lives in Brooklyn Bridge station.";
         case "botordertrigger":
+            return "Set off the laser tripwires in Smuggler's hideout.";
         case "IgnitedPawn":
+            return "Set enough people on fire.";
         case "GibbedPawn":
+            return "Blow up enough people.  If they turn into chunks of meat, it counts.";
         case "IcarusCalls_Played":
+            return "Answer the phone in the building across from the entrance to the catacombs in Paris.";
         case "AlexCloset":
+            return "Enter Alex Jacobson's storage closet in UNATCO HQ.  The code to the door can be found in his email during the first mission.";
         case "BackOfStatue":
+            return "Climb out along the balcony ledges of the Statue of Liberty and go around to the side facing UNATCO HQ.";
         case "CommsPit":
+            return "Enter the pit outside of UNATCO HQ enough times.";
         case "StatueHead":
+            return "Walk up to where the head of the Statue of Liberty is being displayed.";
         case "CraneControls":
         case "CraneTop":
         case "CaptainBed":
