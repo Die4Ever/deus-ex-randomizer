@@ -88,6 +88,8 @@ simulated function string GetHelpText()
 
     helpmsg=helpText;
 
+    //Display the list of missions the goal is possible in...
+
     if (max>1){
         helpmsg=helpmsg$"|n|n";
         helpmsg=helpmsg$"Progress: "$progress$"/"$max;

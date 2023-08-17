@@ -2114,6 +2114,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
 {
     local string msg;
     switch(event){
+        case "Free Space":
+            return "Don't worry about it!  This one's free!";
         case "TerroristCommander_Dead":
             return "Kill Leo Gold, the terrorist commander on Liberty Island";
         case "TiffanySavage_Dead":
@@ -2492,91 +2494,197 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "StatueHead":
             return "Walk up to where the head of the Statue of Liberty is being displayed.";
         case "CraneControls":
+            return "Move the crane next to the Superfreighter (inside the dock) by going up the elevator on the dockside and hitting the button at the top.";
         case "CraneTop":
+            return "Walk to the ends of the two cranes that are on the deck of the Superfreighter itself.";
         case "CaptainBed":
+            return "Enter the captain's quarters on the Superfreighter and jump on his bed.";
         case "FanTop":
+            return "Enter the ventilation shaft in the lower decks of the Superfreighter and let yourself get blown to the top of the shaft.";
         case "LouisBerates":
+            return "Sneak behind the doorman of the Porte De L'Enfer, the club in Paris.";
         case "EverettAquarium":
+            return "Enter the aquarium in Morgan Everett's house.";
         case "TrainTracks":
+            return "Jump onto the train tracks in Paris.";
         case "OceanLabCrewChamber":
+            return "Visit enough of the crew chambers in the Ocean Lab.";
         case "HeliosControlArms":
+            return "Jump down onto the arms sticking out of the wall below where you talk to Helios in Area 51.";
         case "TongTargets":
+            return "Shoot at the targets in the shooting range in Tracer Tong's hideout.";
         case "WanChaiStores":
+            return "Visit enough of the stores in the Wan Chai market by walking up to them.";
         case "HongKongBBall":
+            return "Throw the basketball into the net on the rooftop of the MJ12 helibase in Hong Kong.";
         case "CanalDrugDeal":
+            return "Find the two people making a drug deal in the Hong Kong canals and listen in.";
         case "HongKongGrays":
+            return "Enter the enclosure in the Hong Kong MJ12 Lab containing the grays.";
         case "EnterQuickStop":
+            return "Enter the Quick Stop convenience store outside of the Lucky Money in Hong Kong.";
         case "LuckyMoneyFreezer":
+            return "Enter the freezer in the back of the Lucky Money club in Hong Kong.";
         case "TonnochiBillboard":
+            return "Jump onto the 'Big Top Cigarettes' billboard hanging above the entrance in Tonnochi Road.  This sign has a big picture of a clown on it, and says 'NO JOKE' at the top.";
         case "AirfieldGuardTowers":
+            return "Enter the top floor of enough of the guard towers in the corners of the LaGuardia airfield.";
         case "mirrordoor":
+            return "Open (or destroy) the mirror acting as the door to the secret stash in Smuggler's hideout.";
         case "MolePeopleWater":
+            return "Find the pool of water in the Mole People tunnels and jump into it.";
         case "botorders2":
+            return "Use the security computer in the upper floor of the MJ12 Robot Maintenance facility to alter the AI of the security bots.";
         case "BathroomFlags":
+            return "Place a flag in Manderley's bathroom enough times.  This can only be done once per visit.";
         case "SiloSlide":
+            return "When entering the missile silo, open the vent in the floor and go down the slide that drops you into the water underneath the missile.";
         case "SiloWaterTower":
+            return "Go to the top of the water tower at the missile silo.";
         case "TonThirdFloor":
+            return "Climb up the elevator shaft in the 'Ton hotel to the third floor.";
         case "Set_flag_helios":
+            return "Enter the Aquinas Control Room in sector 4 of Area 51 and engage the primary router by pressing the buttons on each side of the room and using the computer.";
         case "coolant_switch":
+            return "Flush the reactor coolant in the coolant area on the bottom floor of Sector 4 of Area 51.";
         case "BlueFusionReactors":
+            return "Deactivate all four of the blue fusion reactors in Sector 4 of Area 51.  Alex will give you three of the four digits of the code and you have to guess the last one.";
         case "A51UCBlocked":
+            return "Close the doors to enough of the UCs in Sector 4 of Area 51.";
         case "VandenbergReactorRoom":
+            return "Enter the flooded reactor room in the tunnels underneath Vandenberg.";
         case "VandenbergServerRoom":
+            return "Enter the locked server room in the computer section of Vandenberg.";
         case "VandenbergWaterTower":
+            return "Climb to the top of the water tower at the back of Vandenberg.";
         case "Cremation":
+            return "Kill (or knock out) a chef in Paris, then throw his body either into a fireplace or onto a stovetop.";
         case "OceanLabGreenBeacon":
+            return "Swim to the green beacon on top of the Ocean Lab crew module.  The green beacon can be seen out the window of the sub bay of the lab itself.";
         case "PageTaunt_Played":
+            return "After recovering the schematics for the Universal Constructor at the bottom of the Ocean Lab, talk to Bob Page on the communicator on the way out.";
         case "JerryTheVentGreasel_Dead":
+            return "Kill the greasel in the vents over the main hall of the MJ12 Lab in Hong Kong.  His name is Jerry and he is a good boy.";
         case "BiggestFan":
+            return "Destroy the large fan in the ventilation ducts of the Brooklyn Naval Yards.";
         case "Sodacan_Activated":
+            return "Chug enough cans of soda.";
         case "BallisticArmor_Activated":
+            return "Equip enough ballistic armour.";
         case "Flare_Activated":
+            return "Light enough flares.";
         case "VialAmbrosia_Activated":
+            return "After finding the vial of ambrosia somewhere on the upper decks of the superfreighter, drink it instead of saving it for Stanton Dowd.";
         case "Binoculars_Activated":
+            return "Find and use a pair of binoculars.";
         case "HazMatSuit_Activated":
+            return "Use enough hazmat suits.";
         case "AdaptiveArmor_Activated":
+            return "Wear enough thermoptic camo.";
         case "DrinkAlcohol":
+            return "Get absolutely tanked and drink enough alcohol.  This can be liquor, a forty, or wine.";
         case "ToxicShip":
+            return "Find and enter the low, flat boat in the Hong Kong canals.  Note that the interior of the boat is filled with toxic gas.";
         case "ComputerHacked":
+            return "Use your computer skills to hack enough computers.";
         case "TechGoggles_Activated":
+            return "Wear enough pairs of tech goggles.";
         case "Rebreather_Activated":
+            return "Equip enough rebreathers.";
         case "PerformBurder":
+            return "Kill enough birds.  These can be either pigeons or seagulls.";
         case "GoneFishing":
+            return "Kill enough fish.";
         case "FordSchick_Dead":
+            return "Kill Ford Schick.  Note that you can do this after rescuing him.";
         case "ChateauInComputerRoom":
+            return "Make your way down to Beth DuClare's computer station in the basement of the DuClare chateau.";
         case "DuClareBedrooms":
+            return "Enter both Beth and Nicolette's bedrooms in the DuClare chateau.";
         case "PlayPool":
+            return "Sink all 16 balls on enough different pool tables.";
         case "FireExtinguisher_Activated":
+            return "Use enough fire extinguishers.";
         case "PianoSongPlayed":
+            return "Play enough different songs on a piano.";
         case "PianoSong0Played":
+            return "Play the Deus Ex theme song on a piano.  The song needs to be played correctly and all the way through.";
         case "PianoSong7Played":
+            return "Play 'The Game' from The 7th Guest on a piano.   The song needs to be played correctly and all the way through.";
         case "PinballWizard":
+            msg="Play enough different pinball machines.  ";
+            if (mission<=1){
+                msg=msg$"There is a machine in Alex's office as well as the break room.";
+            } else if (mission<=2){
+                msg=msg$"There is a machine in the Underworld bar in Hell's Kitchen.";
+            } else if (mission<=3){
+                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ, two machines in the LaGuardia helibase break room, and one in the Airfield barracks.";
+            } else if (mission<=4){
+                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ, as well as one in the Underworld bar in Hell's Kitchen.";
+            } else if (mission<=5){
+                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ.";
+            } else if (mission<=6){
+                msg=msg$"There is a machine in the MJ12 Helibase, one in the MJ12 Lab barracks, one in the Old China Hand, and one in the Lucky Money.";
+            } else if (mission<=8){
+                msg=msg$"There is a machine in the Underworld bar in Hell's Kitchen.";
+            } else if (mission<=12){
+                msg=msg$"There is a machine in the Comms building in Vandenberg.";
+            } else if (mission<=15){
+                msg=msg$"There is a machine in the Comm building on the surface, and another one in the break room of Area 51.";
+            }
+            return msg;
         case "FlowersForTheLab":
+            return "Bring some flowers into either level of the Hong Kong MJ12 lab and set them down.";
         case "BurnTrash":
+            return "Set enough bags of trash on fire and let them burn until they are destroyed.";
         case "M07MeetJaime_Played":
+            return "Meet Jaime in Tracer Tong's hideout in Hong Kong.  Note that he will only meet you in Hong Kong if you ask him to meet you there while you escape from the MJ12 base under UNATCO.";
         case "Terrorist_peeptime":
+            return "Watch NSF Troops through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "UNATCOTroop_peeptime":
+            return "Watch UNATCO Troopers through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "MJ12Troop_peeptime":
+            return "Watch MJ12 Troopers through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "MJ12Commando_peeptime":
+            return "Watch MJ12 Commandos through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "PawnState_Dancing":
+            return "Watch someone dance through a pair of binoculars.";
         case "BirdWatching":
+            return "Watch birds through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "NYEagleStatue_peeped":
+            return "Look at the bronze eagle statue in Battery Park through a pair of binoculars.";
         case "BrokenPianoPlayed":
+            return "Damage a piano enough that it will no longer work, then try to play it.";
         case "Supervisor_Paid":
+            return "Pay Mr. Hundley for access to the MJ12 Lab in Hong Kong.";
         case "ImageOpened_WaltonSimons":
+            return "Find and look at the image displaying Walton Simons' augmentations.";
         case "BethsPainting":
+            return "Open (or destroy) the painting in Beth DuClare's bedroom in the DuClare chateau.";
         case "ViewPortraits":
+            return "Find and view enough portraits.  These include the picture of Leo Gold (the terrorist commander), the magazine cover showing Bob Page, the image of Joe Greene, and the image of Tiffany Savage.";
         case "ViewSchematics":
+            return "Find and view enough schematics.  These include the schematic of the Universal Contructor and the schematic of the blue fusion reactors.";
         case "ViewMaps":
+            return "Find and view enough maps of different areas.";
         case "ViewDissection":
+            return "Find and view enough images of dissections.  This includes the images of a greasel and a gray being dissected.";
         case "ViewTouristPics":
+            return "Find and view enough tourist pictures of places.  This includes images of the entrance to the cathedral, images of the catacombs, and the image of the NSF headquarters.";
         case "CathedralUnderwater":
+            return "Swim through the underwater tunnel that leads to the Paris cathedral.";
         case "DL_gold_found_Played":
+            return "Find the templar gold in the basement of the Paris cathedral.";
         case "12_Email04":
+            return "Read the email from Gary Savage with the subject line 'We Must Stand'.  This can be found on the computer in the reception area of the main Vandenberg building, as well as inside the computer area of Vandenberg.";
         case "ReadJCEmail":
+            return "Check your email enough times.  This can be done either in UNATCO HQ or in Tracer Tong's hideout.";
         case "02_Email05":
+            return "Read Paul's emails and find out what classic movies he has ordered.";
         case "11_Book08":
+            return "Read the diary of Adept 34501, the Woman in Black living in the Paris cathedral.";
         case "GasStationCeiling":
+            return "Enter the ceiling of the gas station from the roof.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
