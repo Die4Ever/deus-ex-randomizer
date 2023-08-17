@@ -110,7 +110,7 @@ function CheckConfig()
 {
     local int i;
 
-    if( VersionOlderThan(config_version, 2,5,0,5) ) {
+    if( VersionOlderThan(config_version, 2,5,2,0) ) {
         for(i=0; i < ArrayCount(modules_to_load); i++) {
             modules_to_load[i] = "";
         }
@@ -172,6 +172,7 @@ function vanilla_modules()
     modules_to_load[i++] = "DXRPlayerStats";
     modules_to_load[i++] = "DXRMapVariants";
     modules_to_load[i++] = "DXRStartMap";
+    modules_to_load[i++] = "DXRWeaponMods";
 }
 
 function hx_modules()
@@ -204,6 +205,7 @@ function hx_modules()
     modules_to_load[i++] = "DXRPlayerStats";
     modules_to_load[i++] = "DXRMapVariants";
     modules_to_load[i++] = "DXRStartMap";
+    modules_to_load[i++] = "DXRWeaponMods";
 }
 
 function gmdx_modules()
@@ -240,6 +242,7 @@ function gmdx_modules()
     modules_to_load[i++] = "DXRPlayerStats";
     modules_to_load[i++] = "DXRMapVariants";
     modules_to_load[i++] = "DXRStartMap";
+    modules_to_load[i++] = "DXRWeaponMods";
 }
 
 function revision_modules()
@@ -280,6 +283,7 @@ function vmd_modules()
     modules_to_load[i++] = "DXRPlayerStats";
     modules_to_load[i++] = "DXRMapVariants";
     modules_to_load[i++] = "DXRStartMap";
+    modules_to_load[i++] = "DXRWeaponMods";
 }
 
 function DXRFlags LoadFlagsModule()

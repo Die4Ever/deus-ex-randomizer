@@ -1,6 +1,7 @@
 class DXRFixupVandenberg extends DXRFixup;
 
 var bool M14GaryNotDone;
+var bool M12GaryHostageBriefing;
 
 function PreFirstEntryMapFixes()
 {
@@ -16,6 +17,10 @@ function PreFirstEntryMapFixes()
     local #var(prefix)TracerTong tt;
     local SequenceTrigger st;
     local #var(prefix)ShopLight sl;
+    local #var(prefix)RatGenerator rg;
+    local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)NanoKey key;
+    local Actor a;
 
     switch(dxr.localURL)
     {
@@ -35,6 +40,30 @@ function PreFirstEntryMapFixes()
         sl = #var(prefix)ShopLight(AddActor(class'#var(prefix)ShopLight', vect(1.125000, 938.399963, -1025), rot(0, 16384, 0)));
         sl.bInvincible = true;
         sl.bCanBeBase = true;
+
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-1975,227,-2191));//Near generator
+        rg.MaxCount=1;
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(6578,8227,-3101));//Near guardhouse
+        rg.MaxCount=1;
+
+        //Clear out items in inaccessible containers far below the earth
+        foreach RadiusActors(class'Actor', a, 250, vectm(-4350,3000,-5850)) {
+            a.Destroy();
+        }
+#ifdef vanillamaps
+        //Add a key to Tim's closet
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door){
+            if (door.Name=='DeusExMover28'){
+                door.KeyIDNeeded='TimsClosetKey';
+            }
+        }
+
+        key = Spawn(class'#var(prefix)NanoKey',,,vectm(-1502.665771,2130.560791,-1996.783691)); //Windowsill in Hazard Lab
+        key.KeyID='TimsClosetKey';
+        key.Description="Tim's Closet Key";
+        key.SkinColor=SC_Level3;
+        key.MultiSkins[0] = Texture'NanoKeyTex3';
+#endif
         break;
 
 #ifdef vanillamaps
@@ -52,14 +81,20 @@ function PreFirstEntryMapFixes()
         break;
 
     case "14_VANDENBERG_SUB":
+        //Elevator down to lower level
         AddSwitch( vect(3790.639893, -488.639587, -369.964142), rot(0, 32768, 0), 'Elevator1');
         AddSwitch( vect(3799.953613, -446.640015, -1689.817993), rot(0, 16384, 0), 'Elevator1');
+
+        //Door into base from shore (inside)
+        AddSwitch( vect(2279.640137,3638.638184,-398.255676), rot(0, -16384, 0), 'door_base');
 
         foreach AllActors(class'KarkianBaby',kb) {
             if(kb.BindName == "tankkarkian"){
                 kb.BindName = "TankKharkian";
             }
         }
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(737,4193,-426));//In shoreside shed
+        rg.MaxCount=1;
         break;
 
     case "14_OCEANLAB_LAB":
@@ -154,6 +189,12 @@ function PreFirstEntryMapFixes()
 
         break;
     case "12_VANDENBERG_COMPUTER":
+
+        foreach AllActors(class'#var(prefix)OrdersTrigger',ot,'GaryWalksToPosition'){
+            ot.Orders='RunningTo';
+            ot.ordersTag='gary_patrol1';
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(579,2884,-1629)); //Table near entrance
         Spawn(class'PlaceholderItem',,, vectm(1057,2685.25,-1637)); //Table overlooking computer room
         Spawn(class'PlaceholderItem',,, vectm(1970,2883.43,-1941)); //In first floor computer room
@@ -161,6 +202,10 @@ function PreFirstEntryMapFixes()
 
     case "12_VANDENBERG_GAS":
         class'PlaceholderEnemy'.static.Create(self,vectm(635,488,-930));
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(1000,745,-972));//Gas Station back room
+        rg.MaxCount=1;
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-2375,-644,-993));//Under trailer near Jock
+        rg.MaxCount=1;
 
         break;
 #endif
@@ -230,6 +275,9 @@ function AnyEntryMapFixes()
         }
         Player().StartDataLinkTransmission("DL_FrontGate");
         break;
+    case "12_VANDENBERG_COMPUTER":
+        SetTimer(1, true);
+        break;
     }
 }
 
@@ -260,8 +308,23 @@ function FixSavageSkillPointsDupe()
 
 function TimerMapFixes()
 {
-    if(M14GaryNotDone && dxr.flagbase.GetBool('M14GaryDone')) {
-        M14GaryNotDone = false;
-        player().SkillPointsAdd(500);
+    local #var(prefix)GarySavage gary;
+    switch(dxr.localURL)
+    {
+    case "14_VANDENBERG_SUB":
+        if(M14GaryNotDone && dxr.flagbase.GetBool('M14GaryDone')) {
+            M14GaryNotDone = false;
+            player().SkillPointsAdd(500);
+        }
+        break;
+    case "12_VANDENBERG_COMPUTER":
+        //Immediately start the conversation with Gary after the message from Page
+        if (!M12GaryHostageBriefing && dxr.flagbase.GetBool('PageHostageBriefing_played') && !dxr.flagbase.GetBool('GaryHostageBriefing_played')){
+            if (player().conPlay==None){
+                foreach AllActors(class'#var(prefix)GarySavage',gary){ break;}
+                M12GaryHostageBriefing = (player().StartConversationByName('GaryHostageBriefing',gary));
+            }
+        }
+        break;
     }
 }

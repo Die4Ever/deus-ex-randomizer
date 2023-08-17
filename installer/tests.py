@@ -9,11 +9,18 @@ if typechecks:
     install_import_hook('GUI')
 
 import Install
+import Install.Install
 import Install.Config as Config
 import GUI
+import Install.MapVariants
 
 @typechecked
 class DXRTestCase(unittest.TestCase):
+    def test_documents(self):
+        d = Install.GetDocumentsDir()
+        self.assertTrue(d.exists(), str(d) + ' exists')
+
+
     def test_config(self):
         origconfig = (b'[Engine.Engine]\r\n'
             + b'DefaultGame=DeusEx.DeusExGameInfo\r\n'

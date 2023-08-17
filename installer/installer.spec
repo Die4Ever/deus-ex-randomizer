@@ -60,7 +60,7 @@ a_bingo = Analysis(
     noarchive=False,
 )
 
-MERGE( (a_installer, 'DXRandoInstaller', 'DXRandoInstaller'), (a_bingo, 'BingoViewer', 'BingoViewer') )
+#MERGE( (a_installer, 'DXRandoInstaller', 'DXRandoInstaller'), (a_bingo, 'BingoViewer', 'BingoViewer') )
 
 pyz_installer = PYZ(a_installer.pure, a_installer.zipped_data, cipher=block_cipher)
 
@@ -70,7 +70,7 @@ exe_installer = EXE(
     [],
     exclude_binaries=True,
     name='DXRandoInstaller',
-    debug=False,
+    debug=True,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
@@ -102,12 +102,19 @@ exe_bingo = EXE(
     entitlements_file=None,
 )
 
-coll = COLLECT(
+coll1 = COLLECT(
     exe_installer,
     a_installer.binaries,
     a_installer.zipfiles,
     a_installer.datas,
 
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='DXRando',
+)
+
+coll2 = COLLECT(
     exe_bingo,
     a_bingo.binaries,
     a_bingo.zipfiles,
@@ -116,8 +123,29 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='DXRando',
+    name='BingoViewer',
 )
+
+def DoCleanup(folder):
+    print('tidying up', folder)
+    is_lib = re.compile(r'(\.dll$)|(\.so(\..+)?$)|(\.pyd$)')
+
+    for f in folder.glob('*.app'):
+        if f.is_file():
+            f.unlink()
+
+    (folder / 'lib').mkdir(exist_ok=True)
+    for f in folder.glob('*'):
+        name = f.name.lower()
+        if not is_lib.search(name):
+            continue
+        if name.startswith('python') or name.startswith('libpython'):
+            continue# we need the main python library
+        dest = f.parent / 'lib' / f.name
+        print('renaming', f, 'to', dest)
+        f.rename(dest)
+
+    print('done tidying up', folder)
 
 # tidy up
 if IsWindows():
@@ -127,19 +155,11 @@ if IsWindows():
     dxr = Path('dist') / 'DXRando'
     if not dxr.exists():
         dxr = Path('installer') / 'dist' / 'DXRando'
+    DoCleanup(dxr)
 
-    if (dxr / 'installer.app').exists():
-        (dxr / 'installer.app').unlink()
-
-    (dxr / 'lib').mkdir(exist_ok=True)
-    for f in dxr.glob('*'):
-        name = f.name.lower()
-        if not is_lib.search(name):
-            continue
-        if name.startswith('python') or name.startswith('libpython'):
-            continue# we need the main python library
-        dest = f.parent / 'lib' / f.name
-        print('renaming', f, 'to', dest)
-        f.rename(dest)
+    bingo = Path('dist') / 'BingoViewer'
+    if not bingo.exists():
+        bingo = Path('installer') / 'dist' / 'BingoViewer'
+    DoCleanup(bingo)
 
     print('done tidying up')

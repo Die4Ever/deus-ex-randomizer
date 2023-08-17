@@ -1,9 +1,13 @@
-import os
-import tempfile
-from zipfile import ZipFile
 from Install import *
-from Install import _DetectFlavors
-from Install import MapVariants
+try:
+    import os
+    import tempfile
+    from zipfile import ZipFile
+    from Install import _DetectFlavors
+    from Install import MapVariants
+except Exception as e:
+    info('ERROR: importing', e)
+    raise
 
 def UnattendedInstall(installpath:str, downloadmirrors):
     if not installpath:
@@ -101,11 +105,11 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     CopyTo(ini, defini_dest)
 
     if kentie:
-        configs_dest = Path.home() / 'Documents' / 'Deus Ex' / 'System'
-        Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True)
+        configs_dest = GetDocumentsDir() / 'Deus Ex' / 'System'
+        Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True, parents=True)
     else:
         configs_dest = system
-        Mkdir(system.parent /'SaveDXRando', exist_ok=True)
+        Mkdir(system.parent /'SaveDXRando', exist_ok=True, parents=True)
     DXRandoini = configs_dest / (exename+'.ini')
     Mkdir(DXRandoini.parent, parents=True, exist_ok=True)
 
@@ -199,7 +203,7 @@ def InstallGMDX(system:Path, settings:dict, exename:str):
     Mkdir(game/'SaveGMDXRando', exist_ok=True)
     # GMDX uses absolute path shortcuts with ini files in their arguments, so it's not as simple to copy their exe
 
-    confpath = Path.home() / 'Documents' / 'Deus Ex' / exename / 'System' / 'gmdx.ini'
+    confpath = GetDocumentsDir() / 'Deus Ex' / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
         b = Config.ModifyConfig(b, changes, additions)

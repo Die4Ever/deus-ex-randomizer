@@ -8,6 +8,7 @@ function CalcTrace(float deltaTime)
     local actor target;
     local int texFlags;
     local name texName, texGroup;
+    local int damageAmt;
 
     if (!bHiddenBeam)
     {
@@ -42,7 +43,16 @@ function CalcTrace(float deltaTime)
         // shock whatever gets in the beam
         if ((HitActor != None) && (lastDamageTime >= damageTime))
         {
-            HitActor.TakeDamage(damageAmount, Instigator, HitLocation, vect(0,0,0), 'Shocked');
+            damageAmt = damageAmount;
+
+            //Scale damage for the player, since they get a combat difficulty multiplier
+            //This helps with the Vandenberg computer room, the electricity in the Aquinas Substation
+            //and the Hong Kong Helibase (and many more)
+            if (HitActor.IsA('#var(PlayerPawn)')){
+                damageAmt = Clamp(damageAmount / (#var(PlayerPawn)(HitActor).CombatDifficulty),1,damageAmount);
+            }
+
+            HitActor.TakeDamage(damageAmt, Instigator, HitLocation, vect(0,0,0), 'Shocked');
             lastDamageTime = 0;
         }
 

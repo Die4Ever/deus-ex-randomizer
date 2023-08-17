@@ -108,10 +108,13 @@ runs:
     - run: du -ha dist
       shell: bash
 
+    - run: cat build/installer/warn-installer.txt
+      shell: bash
+
     # small test, use timeouts because on windows the GUI can catch errors and a dialog box will freeze the program
     - run: timeout 30 ./dist/DXRando/DXRandoInstaller --version 2>&1
       shell: bash
-    - run: timeout 30 ./dist/DXRando/BingoViewer --version 2>&1
+    - run: timeout 30 ./dist/BingoViewer/BingoViewer --version 2>&1
       shell: bash
 
     # zip it up
@@ -119,9 +122,17 @@ runs:
       run: Compress-Archive -Path ./* -Destination DXRando.zip
       working-directory: ./dist/DXRando/
       shell: pwsh
+    - if: runner.os == 'Windows'
+      run: Compress-Archive -Path ./* -Destination BingoViewer.zip
+      working-directory: ./dist/BingoViewer/
+      shell: pwsh
     - if: runner.os != 'Windows'
       run: zip -r9 DXRando.zip .
       working-directory: ./dist/DXRando
+      shell: bash
+    - if: runner.os != 'Windows'
+      run: zip -r9 BingoViewer.zip .
+      working-directory: ./dist/BingoViewer
       shell: bash
 
     - run: ls -lah dist/DXRando/DXRando.zip

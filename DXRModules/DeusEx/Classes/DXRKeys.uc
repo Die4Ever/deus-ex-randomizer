@@ -5,7 +5,7 @@ var config safe_rule keys_rules[64];
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,4,0,2) ) {
+    if( ConfigOlderThan(2,5,2,0) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -124,6 +124,16 @@ function vanilla_keys_rules()
     keys_rules[i].max_pos = vect(99999, 99999, 99999);
     keys_rules[i].allow = true;
     i++;
+
+    //This key is added in DXRFixupVandenberg
+    //Allow anywhere from the Hazard Lab to the front guardhouse
+    keys_rules[i].map = "12_VANDENBERG_CMD";
+    keys_rules[i].item_name = 'TimsClosetKey';
+    keys_rules[i].min_pos = vect(-2398.429688,2211.012695,-99999);
+    keys_rules[i].max_pos = vect(7217.410156,8535.856445,99999);
+    keys_rules[i].allow = true;
+    i++;
+
 
     //disallow the crew quarters
     keys_rules[i].map = "14_oceanlab_lab";

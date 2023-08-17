@@ -27,16 +27,20 @@ function BindControls(optional string action)
     //Make sure the starting map values match those in DXRStartMap
     NewMenuItem("Starting Map", "What level you will start in");
     EnumOption("Liberty Island", 0, f.settings.starting_map);
+    EnumOption("NSF Generator", 20, f.settings.starting_map);
+    EnumOption("Hunting Lebedev", 30, f.settings.starting_map);
     EnumOption("NSF Defection", 40, f.settings.starting_map);
     EnumOption("MJ12 Jail", 50, f.settings.starting_map);
     EnumOption("Wan Chai Market", 61, f.settings.starting_map);
     EnumOption("Return to NYC", 81, f.settings.starting_map);
+    EnumOption("Superfreighter", 90, f.settings.starting_map);
     EnumOption("Graveyard", 99, f.settings.starting_map);
     EnumOption("Everett's House", 119, f.settings.starting_map);
     EnumOption("Ocean Lab", 140, f.settings.starting_map);
+    EnumOption("Area 51", 150, f.settings.starting_map);
     if(EnumOption("Random", -1)) {
         f.SetGlobalSeed("random starting map");
-        f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f.dxr);
+        f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f.dxr,0);
     }
 
     BreakLine();

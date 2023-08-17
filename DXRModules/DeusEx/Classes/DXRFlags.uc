@@ -425,10 +425,6 @@ function CheckConfig()
             difficulty_settings[i].startinglocations = 0;
             difficulty_settings[i].merchants = 0;
         }
-        if(#defined(revision)) {
-            difficulty_settings[i].startinglocations = 0;
-            difficulty_settings[i].goals = 0;
-        }
     }
 
     Super.CheckConfig();
@@ -538,11 +534,13 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.medbots = (settings.medbots + 100) / 2;
         settings.health = 200;
     }
-    else if(gamemode == SpeedrunMode) {
+    else if(IsSpeedrunMode()) {
         // same doors rules as Normal difficulty
         settings.doorsmode = undefeatabledoors + doormutuallyinclusive;
         settings.doorsdestructible = 100;
         settings.doorspickable = 100;
+
+        settings.deviceshackable = 100;
 
         // no banned skills
         settings.banned_skills = 0;
@@ -563,7 +561,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         bingo_scale = 0;
 
         SetGlobalSeed("random starting map");
-        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr);
+        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr,10);
     }
     return settings;
 }
@@ -624,6 +622,11 @@ function bool IsZeroRando()
 function bool IsReducedRando()
 {
     return gamemode == RandoLite || gamemode == ZeroRando;
+}
+
+function bool IsSpeedrunMode()
+{
+    return gamemode == SpeedrunMode;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
@@ -938,7 +941,7 @@ function NewGamePlus()
     local DXRAugmentations augs;
     local int i, bingo_win,bingo_freespaces;
     local float exp;
-    local bool randomStart;
+    local int randomStart;
 
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
@@ -956,7 +959,7 @@ function NewGamePlus()
     bingoBoardRoll=0;
     p.saveCount=0;
     exp = 1;
-    randomStart = (settings.starting_map!=0);
+    randomStart = settings.starting_map;
     bingo_win = settings.bingo_win;
     bingo_freespaces = settings.bingo_freespaces;
 
@@ -989,8 +992,8 @@ function NewGamePlus()
     NewGamePlusVal(settings.merchants, 0.9, exp);
     settings.bingo_win = bingo_win;
     settings.bingo_freespaces = bingo_freespaces;
-    if (randomStart){
-        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr);
+    if (randomStart!=0){
+        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr,randomStart);
     }
 
     if (p.KeyRing != None)

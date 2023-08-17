@@ -9,6 +9,15 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey k;
     local CrateExplosiveSmall c;
     local Terrorist nsf;
+#ifdef injections
+    local #var(prefix)Newspaper np;
+    local class<#var(prefix)Newspaper> npClass;
+    npClass = class'#var(prefix)Newspaper';
+#else
+    local DXRInformationDevices np;
+    local class<DXRInformationDevices> npClass;
+    npClass = class'DXRInformationDevices';
+#endif
 
     switch (dxr.localURL)
     {
@@ -39,6 +48,9 @@ function PreFirstEntryMapFixes()
             GlowUp(k);
         break;
     case "02_NYC_WAREHOUSE":
+        npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(1700.929810,-519.988037,57.729870),rotm(0,0,0),'02_Newspaper06'); //Joe Greene article, table in room next to break room (near bathrooms)
+        npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1727.644775,2479.614990,1745.724976),rotm(0,0,0),'02_Newspaper06'); //Next to apartment(?) door on rooftops, near elevator
+
         class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
         class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));
         class'PlaceholderEnemy'.static.Create(self,vectm(1814,-1842,48));

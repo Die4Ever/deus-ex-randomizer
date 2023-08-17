@@ -42,6 +42,8 @@ function PreFirstEntryMapFixes()
     local NanoKey k;
     local #var(prefix)InformationDevices i;
     local #var(prefix)UNATCOTroop unatco;
+    local #var(prefix)WeaponModRecoil wmr;
+    local #var(prefix)Terrorist terror;
 
     switch (dxr.localURL)
     {
@@ -137,8 +139,18 @@ function PreFirstEntryMapFixes()
     case "03_NYC_AIRFIELD":
         //rebreather because of #TOOCEAN connection
         Spawn(class'Rebreather',,, vectm(-2031.959473, 995.781067, 75.709816));
-        // extra spot for datacube
-        Spawn(class'PlaceholderItem',,, vectm(5113, 3615, 1.3));
+        // extra spots for datacube
+        Spawn(class'PlaceholderItem',,, vectm(5113,3615,1.3));        //In front of guard tower
+        Spawn(class'PlaceholderItem',,, vectm(3111,3218,275));        //Bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(3225,3193,275));        //Different Bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(2850,3448,219));        //Bathroom stall
+        Spawn(class'PlaceholderItem',,, vectm(2929,2810,91));         //Dining table
+        Spawn(class'PlaceholderItem',,, vectm(2860,3335,99));         //Kitchen Counter
+        Spawn(class'PlaceholderItem',,, vectm(3055,3300,99));         //Kitchen island
+        Spawn(class'PlaceholderItem',,, vectm(3036,3474,99));         //Next to stove
+        Spawn(class'PlaceholderItem',,, vectm(4441,3112,51));         //Base of satellite
+        Spawn(class'PlaceholderItem',,, vectm(1915,2800.6,79));       //Gate support (inside gate)
+        Spawn(class'PlaceholderItem',,, vectm(3641.339,2623.73,27));  //Steps outside barracks
         if(#defined(vanillamaps)) {
             foreach AllActors(class'Teleporter', tele) {
                 if(tele.Event == 'HangarEnt') {
@@ -160,6 +172,14 @@ function PreFirstEntryMapFixes()
             if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
         }
         AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
+
+        //The Leader can go hostile so easily... just make that not possible
+        foreach AllActors(class'Terrorist',terror){
+            if (terror.BindName=="TerroristLeader"){
+                terror.ChangeAlly('Player',0,True);//Permanently neutral
+                break;
+            }
+        }
         break;
 #endif
 
@@ -197,6 +217,14 @@ function PreFirstEntryMapFixes()
         break;
     case "03_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
+
+        //Move weapon mod out of Manderley's secret (inaccessible) safe
+        foreach AllActors(class'#var(prefix)WeaponModRecoil',wmr){
+            if (wmr.Name=='WeaponModRecoil0'){
+                wmr.SetLocation(vectm(420.843567,175.866135,261.520447));
+            }
+        }
+
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter

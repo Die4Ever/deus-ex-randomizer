@@ -43,6 +43,15 @@ function TimerMapFixes()
 function PreFirstEntryMapFixes()
 {
     local DataLinkTrigger dlt;
+#ifdef injections
+    local #var(prefix)Newspaper np;
+    local class<#var(prefix)Newspaper> npClass;
+    npClass = class'#var(prefix)Newspaper';
+#else
+    local DXRInformationDevices np;
+    local class<DXRInformationDevices> npClass;
+    npClass = class'DXRInformationDevices';
+#endif
 
     switch(dxr.localURL)
     {
@@ -61,6 +70,9 @@ function PreFirstEntryMapFixes()
             break;
         case "08_NYC_HOTEL":
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+            break;
+        case "08_NYC_BAR":
+            npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1171.976440,250.575806,53.729687),rotm(0,0,0),'08_Newspaper01'); //Joe Greene article, table near where Harley is in Vanilla
             break;
     }
 }

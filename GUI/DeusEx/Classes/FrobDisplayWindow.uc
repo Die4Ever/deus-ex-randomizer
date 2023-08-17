@@ -383,17 +383,22 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
 function string ComputersStrInfo(ElectronicDevices d, out int numLines)
 {
     local Computers c;
-    local ATM a;
+    local #var(injectsprefix)ATM a;
     local string strInfo;
+    local bool code_known;
 
     strInfo = player.GetDisplayName(d);
 
     c = Computers(d);
-    a = ATM(d);
-#ifdef vanilla
+    a = #var(injectsprefix)ATM(d);
     if( known_codes && c != None )
     {
-        if( c.HasKnownAccounts() )
+        if( #var(injectsprefix)ComputerPersonal(c) != None )
+            code_known = #var(injectsprefix)ComputerPersonal(c).HasKnownAccounts();
+        if( #var(injectsprefix)ComputerSecurity(c) != None )
+            code_known = #var(injectsprefix)ComputerSecurity(c).HasKnownAccounts();
+
+        if( code_known )
             strInfo = strInfo $ CR() $ "Password Known";
         else
             strInfo = strInfo $ CR() $ "Unknown Password";
@@ -405,7 +410,6 @@ function string ComputersStrInfo(ElectronicDevices d, out int numLines)
         else
             strInfo = strInfo $ CR() $ "Unknown PIN";
     }
-#endif
     return strInfo;
 }
 

@@ -7,16 +7,30 @@ var bool ran_first_frame;
 
 function Timer()
 {
+local #var(prefix)BobPage bob;
+local DXRando dxr;
+
 #ifdef injections
     if( ran_first_frame == false ) {
         Level.Game.SetGameSpeed(0.05);
         SetTimer(0.075, True);
     }
-    if( ran_first_frame == true && started_conv == false ) {
-        Super.FirstFrame();
-        started_conv = true;
-        Level.Game.SetGameSpeed(1);
-        SetTimer(checkTime, True);
+    if( ran_first_frame == true && started_conv == false && player!=None  && player.CanStartConversation() ) {
+        foreach AllActors(class'#var(prefix)BobPage',bob){break;}
+        if (bob!=None){
+            Super.FirstFrame();
+            started_conv = true;
+            Level.Game.SetGameSpeed(1);
+            SetTimer(checkTime, True);
+            foreach AllActors(class'DXRando',dxr){
+                dxr.flags.SaveFlags();
+                break;
+            }
+        }
+    } else {
+        if (!player.CanStartConversation()){
+            log("ERROR: "$Self$": Unable to start intro conversation...  State: "$player.GetStateName()$"  Physics: "$player.Physics);
+        }
     }
 #endif
 
@@ -26,7 +40,7 @@ function Timer()
     // to the next map (which will either be the main menu map or
     // the first game mission if we're starting a new game.
 
-    if (flags.GetBool('Intro_Played'))
+    if (player!=None && flags.GetBool('Intro_Played'))
     {
         flags.SetBool('Intro_Played', False,, 1);
         if( flags.GetInt('Rando_newgameplus_loops') > 0 ) {
@@ -52,13 +66,12 @@ function InitStateMachine()
 
 function FirstFrame()
 {
-    ran_first_frame = true;
-    started_conv = false;
-
     if( flags.GetBool('Intro_Played') ) {
         log("ERROR: "$self$": Intro_Played already set before FirstFrame?");
         flags.SetBool('Intro_Played', false,, -999);
     }
+    ran_first_frame = true;
+    started_conv = false;
 }
 
 function PreTravel()

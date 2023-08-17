@@ -90,6 +90,7 @@ static function class<DXRBase> GetModuleToLoad(DXRando dxr, class<DXRBase> reque
 }
 
 function int InitGoals(int mission, string map);// return a salt for the seed, the default return at the end is fine if you only have 1 set of goals in the whole mission
+function int InitGoalsRev(int mission, string map);// return a salt for the seed, the default return at the end is fine if you only have 1 set of goals in the whole mission
 function CreateGoal(out Goal g, GoalLocation Loc);
 function DeleteGoal(Goal g, GoalLocation Loc);
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc);
@@ -184,6 +185,15 @@ function AddMutualExclusion(int L1, int L2)
     num_mututally_exclusives++;
 }
 
+function int InitGoalsByMod(int mission, string map)
+{
+    if (#defined(revision)){
+        return InitGoalsRev(dxr.dxInfo.missionNumber, dxr.localURL);
+    } else {
+        return InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);
+    }
+}
+
 function PreFirstEntry()
 {
     local int seed;
@@ -193,9 +203,7 @@ function PreFirstEntry()
     if(dxr.flags.settings.startinglocations <= 0 && dxr.flags.settings.goals <= 0)
         return;
 
-#ifndef revision
-    seed = InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);
-#endif
+    seed = InitGoalsByMod(dxr.dxInfo.missionNumber, dxr.localURL);
 
     PreFirstEntryMapFixes();
 
@@ -208,6 +216,7 @@ function ShuffleGoals()
 {
     local int goalsToLocations[32];
 
+
     if( ArrayCount(goalsToLocations) != ArrayCount(goals) ) err("ArrayCount(goalsToLocations) != ArrayCount(goals)");
 
     if(num_goals == 0 && num_locations == 0) return;
@@ -217,6 +226,21 @@ function ShuffleGoals()
     MoveActorsIn(goalsToLocations);
     // hardcoded fixes that span multiple goals
     AfterShuffleGoals(goalsToLocations);
+
+    //GenerateDebugGoalMarkers();
+
+}
+
+function GenerateDebugGoalMarkers()
+{
+    local int i;
+    local DXRGoalMarker marker;
+
+    for(i=0; i<num_locations; i++) {
+        if(dxr.localURL != locations[i].mapName) continue;
+        marker = DXRGoalMarker(Spawnm(class'DXRGoalMarker',,, locations[i].positions[0].pos));
+        marker.BindName = locations[i].name;
+    }
 }
 
 function MoveActorsOut()
@@ -397,9 +421,7 @@ function AnyEntry()
     SetTimer(1, true);
     if(num_goals != 0 || num_locations != 0) return;// we don't need to re-InitGoals if we already have them
 
-#ifndef revision
-    seed = InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);
-#endif
+    seed = InitGoalsByMod(dxr.dxInfo.missionNumber, dxr.localURL);
 
     SetGlobalSeed( "DXRMissions" $ seed );
     ChooseGoalLocations(goalsToLocations);
@@ -437,7 +459,7 @@ function UpdateGoalWithRandoInfo(name goalName, string text)
     player().ClientMessage("Goal Updated - Check DataVault For Details",, true);
 }
 
-function _UpdateLocation(Actor a, string goalName)
+function int _UpdateLocation(Actor a, string goalName)
 {
     local int g, l;
 
@@ -448,15 +470,16 @@ function _UpdateLocation(Actor a, string goalName)
         if(spoilers[g].goalName != goalName) continue;
         break;
     }
-    if(g>=num_goals) return;
+    if(g>=num_goals) return -1;
     for(l=0; l < num_locations; l++) {
         if(spoilers[g].goalLocation != locations[l].name) continue;
         break;
     }
-    if(l>=num_locations) return;
+    if(l>=num_locations) return -1;
 
     goals[g].actors[0].a = a;
     MoveGoalToLocation(goals[g], locations[l]);
+    return g;
 }
 
 function MoveGoalToLocation(Goal g, GoalLocation Loc)

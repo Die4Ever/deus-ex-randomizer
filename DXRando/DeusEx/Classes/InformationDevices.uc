@@ -56,6 +56,36 @@ function MarkTextRead(name ttextTag)
     }
 }
 
+function MakeOver(class<Actor> influencer)
+{
+    local int i;
+    SetCollisionSize(influencer.default.CollisionRadius, influencer.default.CollisionHeight);
+    DrawScale = influencer.default.DrawScale;
+    Mass = influencer.default.Mass;
+    Buoyancy = influencer.default.Buoyancy;
+    Texture = influencer.default.Texture;
+    Mesh = influencer.default.Mesh;
+    for(i=0; i<ArrayCount(influencer.default.Multiskins); i++) {
+        Multiskins[i] = influencer.default.Multiskins[i];
+    }
+}
+
+static function Actor SpawnInfoDevice(Actor a, class<Actor> id, Vector loc, Rotator rot, name textTag)
+{
+#ifdef injections
+    local InformationDevices device;
+    device = InformationDevices(a.Spawn(id,,, loc, rot));
+#else
+    local DXRInformationDevices device;
+    device = a.Spawn(class'DXRInformationDevices',,, loc, rot);
+    device.MakeOver(id);
+#endif
+
+    device.textTag = textTag;
+
+    return device;
+}
+
 function WritePasswordsToNote(DeusExNote note)
 {
     local int i;

@@ -66,6 +66,22 @@ function Destroyed()
     Super.Destroyed();
 }
 
+//Toss the item, but not very hard
+function TossItem(Inventory inv, DeusExPlayer Frobber){
+    local float xVel,yVel;
+    local vector velocity;
+
+    DeleteInventory(inv);
+    class'DXRActorsBase'.static.ThrowItem(inv, 0.5);
+    inv.SetLocation( Location + vect(0,0,20));
+
+    velocity.X = ((FRand() - 0.5) * 2);
+    velocity.Y = ((FRand() - 0.5) * 2);
+    velocity.Z = 1;
+
+    inv.Velocity *= velocity;
+}
+
 // Frob stuff...
 // ----------------------------------------------------------------------
 // Frob()
@@ -256,8 +272,12 @@ function Frob(Actor Frobber, Inventory frobWith)
                     // and the player can't pickup this weapon, so the player at least knows
                     // if he empties some inventory he can get something potentially cooler
                     // than he already has.
-                    if ((W == None) && (!player.FindInventorySlot(item, True)))
+                    if ((W == None) && (!player.FindInventorySlot(item, True))){
                         P.ClientMessage(Sprintf(Player.InventoryFull, item.itemName));
+
+                        //Also toss the item out of the carcass
+                        TossItem(item,player);
+                    }
 
                     // Only destroy the weapon if the player already has it.
                     if (W != None)
@@ -303,6 +323,8 @@ function Frob(Actor Frobber, Inventory frobWith)
                         else
                         {
                             P.ClientMessage(Sprintf(msgCannotPickup, invItem.itemName));
+                            //Also toss the item out of the carcass
+                            TossItem(item,player);
                         }
                     }
                     else
@@ -336,6 +358,8 @@ function Frob(Actor Frobber, Inventory frobWith)
 
                             P.ClientMessage(Item.PickupMessage @ Item.itemArticle @ Item.itemName, 'Pickup');
                             PlaySound(Item.PickupSound);
+                        } else {
+                            TossItem(item,player);
                         }
                     }
                     else

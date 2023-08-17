@@ -365,12 +365,28 @@ function MarkPasswordKnown(string password)
     }
 #else
     local DXRKeypad k;
+    local DXRComputerPersonal cp;
+    local DXRComputerSecurity cs;
+    local DXRATM atm;
+
     //Check keypad logins
     foreach AllActors(class 'DXRKeypad',k)
     {
         if (password == k.validCode) {
             k.bCodeKnown = True;
         }
+    }
+    foreach AllActors(class 'DXRComputerPersonal',cp)
+    {
+        cp.SetAccountKnownByPassword(password);
+    }
+    foreach AllActors(class 'DXRComputerSecurity',cs)
+    {
+        cs.SetAccountKnownByPassword(password);
+    }
+    foreach AllActors(class 'DXRATM',atm)
+    {
+        atm.SetAccountKnownByPassword(password);
     }
 
 #endif

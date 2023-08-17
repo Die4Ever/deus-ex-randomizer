@@ -11,11 +11,23 @@ jobs:
 
       - uses: ./.github/run-tests
 
-      - name: Upload artifacts
+      - name: Upload Installer
         uses: actions/upload-artifact@v3
         with:
           name: DXRando
           path: dist/DXRando/DXRando.zip
+
+      - name: Upload installer warnings
+        uses: actions/upload-artifact@v3
+        with:
+          name: installerwarnings.txt
+          path: build/installer/warn-installer.txt
+
+      - name: Upload Bingo Viewer
+        uses: actions/upload-artifact@v3
+        with:
+          name: BingoViewer
+          path: dist/BingoViewer/BingoViewer.zip
 
   linux:
     runs-on: ubuntu-latest
@@ -31,8 +43,20 @@ jobs:
 
       - uses: ./.github/run-tests
 
-      - name: Upload artifacts
+      - name: Upload Installer
         uses: actions/upload-artifact@v3
         with:
           name: DXRando-linux
           path: dist/DXRando/DXRando.zip
+
+      - name: Upload installer warnings
+        uses: actions/upload-artifact@v3
+        with:
+          name: installerwarningslinux.txt
+          path: build/installer/warn-installer.txt
+
+      - name: Upload Bingo Viewer
+        uses: actions/upload-artifact@v3
+        with:
+          name: BingoViewer-linux
+          path: dist/BingoViewer/BingoViewer.zip

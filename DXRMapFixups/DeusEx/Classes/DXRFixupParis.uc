@@ -11,6 +11,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)JaimeReyes j;
     local ZoneInfo zi;
+    local #var(prefix)DamageTrigger dt;
+    local #var(prefix)ComputerSecurity cs;
 
     // shut up, Tong! (reduced rando is not as focused on replays compared to normal rando)
     if(!dxr.flags.IsReducedRando()) {
@@ -128,6 +130,27 @@ function PreFirstEntryMapFixes()
     case "11_PARIS_CATHEDRAL":
         foreach AllActors(class'GuntherHermann', g) {
             g.ChangeAlly('mj12', 1, true);
+        }
+        foreach AllActors(class'#var(prefix)DamageTrigger',dt){
+            //There should only be two damage triggers in the map,
+            //but check the damage type anyway for safety
+            //This will make the fireplaces actually set you on fire
+            if(dt.DamageType=='Burned'){
+                dt.DamageType='Flamed';
+            }
+        }
+        break;
+    case "11_PARIS_EVERETT":
+        foreach AllActors(class'#var(prefix)ComputerSecurity',cs){
+            if (cs.specialOptions[1].Text=="Nanotech Containment Field 002"){
+                //This option isn't actually hooked up to anything.  The fields are on the normal security screen.
+                cs.specialOptions[0].Text="";
+                cs.specialOptions[0].TriggerEvent='';
+                cs.specialOptions[0].TriggerText="";
+                cs.specialOptions[1].Text="";
+                cs.specialOptions[1].TriggerEvent='';
+                cs.specialOptions[1].TriggerText="";
+            }
         }
         break;
     }

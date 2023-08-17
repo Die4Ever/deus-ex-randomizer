@@ -26,7 +26,7 @@ function CreateControls()
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
             bActiveMission = data.GetBingoSpot(x, y, event, desc, progress, max);
-            CreateBingoSpot(x, y, desc, progress, max, bActiveMission);
+            CreateBingoSpot(x, y, desc, progress, max, event, bActiveMission);
         }
     }
 
@@ -41,7 +41,7 @@ function CreateControls()
 
 // we can fit about 6 lines of text, about 14 characters wide
 // probably want a new class instead of ButtonWindow, so we can turn the background into a progress bar, maybe a subclass of PersonaItemButton so the theming works correctly
-function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int max, int bActiveMission)
+function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int max, string event, int bActiveMission)
 {
     local BingoTile t;
     local int w, h;
@@ -55,6 +55,7 @@ function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int 
     t.SetSize(w-1, h-1);
     t.SetPos(x * w + bingoStartX, y * h + bingoStartY);
     t.SetProgress(progress, max, bActiveMission);
+    t.SetHelpText(event,player.GetLevelInfo().MissionNumber);
     return t;
 }
 
@@ -98,6 +99,23 @@ function bool ResetBingoBoard()
     return true;
 }
 
+function ShowBingoGoalHelp( Window bingoTile )
+{
+    local BingoTile bt;
+    local BingoHintMsgBox msgbox;
+
+    bt=BingoTile(bingoTile);
+
+    if(bt==None){
+        //Don't know how we got here, but might as well check
+        return;
+    }
+    msgbox = BingoHintMsgBox(root.PushWindow(class'BingoHintMsgBox',False));
+    msgbox.SetTitle(bt.GetText());
+    msgbox.SetMessageText(bt.GetHelpText());
+    msgbox.SetNotifyWindow(Self);
+}
+
 function bool ButtonActivated( Window buttonPressed )
 {
     local int val;
@@ -112,6 +130,11 @@ function bool ButtonActivated( Window buttonPressed )
 
         return true;
     }
+    else if(BingoTile(buttonPressed)!=None){
+        ShowBingoGoalHelp(buttonPressed);
+        return true;
+    }
+
     return Super.ButtonActivated(buttonPressed);
 }
 

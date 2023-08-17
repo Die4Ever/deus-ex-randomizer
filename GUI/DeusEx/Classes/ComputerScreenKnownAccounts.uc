@@ -1,4 +1,4 @@
-class ComputerScreenKnownAccounts extends ComputerScreenHackAccounts;
+class ComputerScreenKnownAccounts extends #var(prefix)ComputerScreenHackAccounts;
 
 var bool bShowPasswords;
 var localized string msgKnownPass;
@@ -58,24 +58,38 @@ function CreateChangeAccountButton()
 function ChangeSelectedAccount()
 {
     local string user,pass;
-    
+
     user = lstAccounts.GetField(lstAccounts.GetSelectedRow(),0);
     pass = lstAccounts.GetField(lstAccounts.GetSelectedRow(),1);
 
     if( pass == msgKnownPass || pass == msgUnknownPass )
         pass = "";
-
-    if (winTerm != None)
+    if (winTerm != None){
+#ifdef injections
         winTerm.LogInAs(user,pass);
+#else
+        if (DXRNetworkTerminalPersonal(winTerm)!=None){
+            DXRNetworkTerminalPersonal(winTerm).LogInAs(user,pass);
+        }
+        if (DXRNetworkTerminalSecurity(winTerm)!=None){
+            DXRNetworkTerminalSecurity(winTerm).LogInAs(user,pass);
+        }
+        if (DXRNetworkTerminalATM(winTerm)!=None){
+            DXRNetworkTerminalATM(winTerm).LogInAs(user,pass);
+        }
+#endif
+    }
 }
 
-function bool GetAccountKnown(Computers comp, ATM atm, int i, out string username, out string password)
+function bool GetAccountKnown(#var(prefix)Computers comp, #var(prefix)ATM atm, int i, out string username, out string password)
 {
+#ifndef hx
     if( comp != None )
         username = Caps(comp.GetUserName(i));
     else if( atm != None )
         username = Caps(atm.GetAccountNumber(i));
-    
+#endif
+#ifdef injections
     if( comp != None && comp.GetAccountKnown(i) ) {
         password = Caps(comp.GetPassword(i));
         return true;
@@ -84,27 +98,47 @@ function bool GetAccountKnown(Computers comp, ATM atm, int i, out string usernam
         password = Caps(atm.GetPIN(i));
         return true;
     }
+#else
+    if( comp != None ) {
+        if ( DXRComputerPersonal(comp)!=None && DXRComputerPersonal(comp).GetAccountKnown(i) ){
+            password = Caps(DXRComputerPersonal(comp).GetPassword(i));
+            return true;
+        }
+        if ( DXRComputerSecurity(comp)!=None && DXRComputerSecurity(comp).GetAccountKnown(i) ){
+            password = Caps(DXRComputerSecurity(comp).GetPassword(i));
+            return true;
+        }
+    }
+    if( atm != None ) {
+        if ( DXRATM(atm)!=None && DXRATM(atm).GetAccountKnown(i) ) {
+            password = Caps(DXRATM(atm).GetPIN(i));
+            return true;
+        }
+    }
+#endif
     password = "";
     return false;
 }
 
-function SetCompOwner(ElectronicDevices newCompOwner)
+function SetCompOwner(#var(prefix)ElectronicDevices newCompOwner)
 {
     local int compIndex;
     local int rowId;
     local int userRowIndex;
-    local ATM atm;
+    local #var(prefix)ATM atm;
     local int numUsers;
     local string username, password;
     local bool known;
 
-    compOwner = Computers(newCompOwner);
-    atm = ATM(newCompOwner);
+    compOwner = #var(prefix)Computers(newCompOwner);
+    atm = #var(prefix)ATM(newCompOwner);
 
+#ifndef hx
     if( compOwner != None )
         numUsers = compOwner.NumUsers();
     else if( atm != None )
         numUsers = atm.NumUsers();
+#endif
 
     // Loop through the names and add them to our listbox
     for (compIndex=0; compIndex<numUsers; compIndex++)
@@ -115,11 +149,13 @@ function SetCompOwner(ElectronicDevices newCompOwner)
             password = msgKnownPass;
         else if( !known )
             password = msgUnknownPass;
-        
+
         lstAccounts.AddRow(username$";"$password);
 
+#ifndef hx
         if (Caps(winTerm.GetUserName()) == username)
             userRowIndex = compIndex;
+#endif
     }
 
     // Select the row that matches the current user

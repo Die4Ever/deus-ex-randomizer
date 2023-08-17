@@ -12,13 +12,21 @@ function CheckConfig()
     add_datacubes[i].text = "Access code to the Versalife nanotech research wing: 55655.";
     i++;
 
+    add_datacubes[i].map = "06_HONGKONG_WANCHAI_MARKET";
+    add_datacubes[i].text = "This new ATM in the market is in such a convenient location for all my banking needs!|nAccount: 8326942 |nPIN: 7797 ";
+    i++;
+
+    add_datacubes[i].map = "06_HONGKONG_WANCHAI_STREET";
+    add_datacubes[i].text = "It's so handy being able to quickly grab some cash from the Quick Stop before getting to the club!|nAccount: 2332316 |nPIN: 1608 ";
+    i++;
+
     Super.CheckConfig();
 }
 
 function PreFirstEntryMapFixes()
 {
     local Actor a;
-    local ScriptedPawn p;
+    local #var(prefix)ScriptedPawn p;
     local Button1 b;
     local ElevatorMover e;
     local #var(DeusExPrefix)Mover m;
@@ -30,6 +38,13 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Keypad pad;
     local ProjectileGenerator pg;
     local #var(prefix)WeaponNanoSword dts;
+    local #var(prefix)RatGenerator rg;
+    local #var(prefix)Credits creds;
+#ifdef injections
+    local #var(prefix)DataCube dc;
+#else
+    local DXRInformationDevices dc;
+#endif
 
     switch(dxr.localURL)
     {
@@ -89,6 +104,7 @@ function PreFirstEntryMapFixes()
         }
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
+    case "06_HONGKONG_WANCHAI_COMPOUND":
         foreach AllActors(class'Actor', a)
         {
             switch(string(a.Tag))
@@ -185,6 +201,8 @@ function PreFirstEntryMapFixes()
                 pad.bHidden = False;
         }
 
+        SpawnDatacubeImage(vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0),Class'DeusEx.Image15_GrayDisection');
+
         Spawn(class'PlaceholderItem',,, vectm(-1.95,1223.1,810.3)); //Table over entrance
         Spawn(class'PlaceholderItem',,, vectm(1022.24,-1344.15,450.3)); //Bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(1519.6,-1251,442.3)); //Conference room side table
@@ -221,6 +239,12 @@ function PreFirstEntryMapFixes()
             at.bPlayerOnly = true;
         }
 #endif
+        foreach AllActors(class'#var(prefix)Credits',creds){
+            if (creds.numCredits==25){
+                creds.numCredits=100;
+            }
+        }
+
         foreach AllActors(class'DeusExMover',d){
             if (d.Region.Zone.ZoneGroundFriction < 8) {
                 //Less than default friction should be the freezer
@@ -250,6 +274,14 @@ function PreFirstEntryMapFixes()
         ft.bSetFlag=False;
         ft.bTrigger=True;
 
+        foreach AllActors(class'#var(prefix)ScriptedPawn',p){
+            if(p.BindName=="Supervisor01"){
+                p.FamiliarName="Mr. Hundley"; //It's spelled this way everywhere else
+                GiveItem(p,class'#var(prefix)Credits');  //He asks for 2000 credits to get into the labs
+                GiveItem(p,class'#var(prefix)Credits');  //He's probably getting a bunch of cash from other people too.
+            }
+        }
+
         Spawn(class'PlaceholderItem',,, vectm(12.36,1556.5,-51)); //1st floor front cube
         Spawn(class'PlaceholderItem',,, vectm(643.5,2139.7,-51.7)); //1st floor back cube
         Spawn(class'PlaceholderItem',,, vectm(210.94,2062.23,204.3)); //2nd floor front cube
@@ -275,10 +307,20 @@ function PreFirstEntryMapFixes()
         break;
 
     case "06_HONGKONG_WANCHAI_CANAL":
+
+        //Give the drug dealer and pusher 100 credits each
+        foreach AllActors(class'#var(prefix)ScriptedPawn',p){
+            if (p.BindName=="Canal_Thug1" || p.BindName=="Canal_Thug2"){
+                GiveItem(p,class'#var(prefix)Credits');
+            }
+        }
+
         //Just a few that can spawn on top of the ship to maybe coax people down there?
         Spawn(class'PlaceholderContainer',,, vectm(2305.5,-512.4,-415)); //On top of cargo ship
         Spawn(class'PlaceholderContainer',,, vectm(2362.5,-333.4,-383.9)); //On top of cargo ship
         Spawn(class'PlaceholderContainer',,, vectm(2403,-777,-359)); //On top of cargo ship
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(3237,3217,-506));//Lower garage storage area
+        rg.MaxCount=3;
         break;
     default:
         break;

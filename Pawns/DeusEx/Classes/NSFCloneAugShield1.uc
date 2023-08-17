@@ -26,7 +26,7 @@ function float ShieldDamage(name damageType)
 {
 	// handle special damage types
 	if ((damageType == 'Flamed') || (damageType == 'Burned') || (damageType == 'Stunned'))
-		return 0.0;
+		return 0.1;
 	else if ((damageType == 'TearGas') || (damageType == 'PoisonGas') || (damageType == 'HalonGas') ||
 			(damageType == 'Radiation') || (damageType == 'Shocked') || (damageType == 'Poison') ||
 	        (damageType == 'PoisonEffect'))

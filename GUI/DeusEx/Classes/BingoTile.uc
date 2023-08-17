@@ -1,6 +1,7 @@
 class BingoTile extends ButtonWindow;
 
 var int progress, max;
+var string helpText;
 var int bActiveMission;// -1==impossible, 0==false, 1==maybe, 2==true
 var bool isCredits;
 
@@ -74,6 +75,25 @@ event DrawWindow(GC gc)
     gc.DrawPattern(0, height-progHeight, width, progHeight, 0, 0, Texture'Solid');
 
     Super.DrawWindow(gc);
+}
+
+simulated function SetHelpText(string event, int mission)
+{
+    helpText = class'DXREvents'.static.GetBingoGoalHelpText(event,mission);
+}
+
+simulated function string GetHelpText()
+{
+    local string helpmsg;
+
+    helpmsg=helpText;
+
+    if (max>1){
+        helpmsg=helpmsg$"|n|n";
+        helpmsg=helpmsg$"Progress: "$progress$"/"$max;
+    }
+
+    return helpmsg;
 }
 
 simulated function SetProgress(int tprogress, int tmax, int tactiveMission)

@@ -67,20 +67,35 @@ function ReplaceActors()
         else if( #var(prefix)ComputerPublic(a) != None ) {
             ReplaceComputerPublic(#var(prefix)ComputerPublic(a));
         }
+#ifndef hx
+        else if( #var(prefix)ComputerPersonal(a) != None ) {
+            ReplaceComputerPersonal(#var(prefix)ComputerPersonal(a));
+        }
+        else if( #var(prefix)ComputerSecurity(a) != None ) {
+            ReplaceComputerSecurity(#var(prefix)ComputerSecurity(a));
+        }
+        else if( #var(prefix)ATM(a) != None ) {
+            ReplaceATM(#var(prefix)ATM(a));
+        }
+#endif
         else if( #var(prefix)Binoculars(a) != None ) {
             ReplaceBinoculars(#var(prefix)Binoculars(a));
         }
-        else if( #var(prefix)Containers(a) != None ) {
-            ReplaceContainerContents(#var(prefix)Containers(a));
-        }
         else if( #var(prefix)Faucet(a) != None ) {
             ReplaceFaucet(#var(prefix)Faucet(a));
+        }
+        else if( #var(prefix)BarrelFire(a) != None ) {
+            ReplaceGenericDecoration(a,class'DXRBarrelFire');
         }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
         }
 #endif
+        //Leave this at the end of the list (or at least make sure there are no containers after it)
+        else if( #var(prefix)Containers(a) != None ) {
+            ReplaceContainerContents(#var(prefix)Containers(a));
+        }
     }
 }
 #ifdef revision
@@ -541,4 +556,100 @@ function ReplaceComputerPublic(#var(prefix)ComputerPublic a)
     n.bulletinTag = a.bulletinTag;
 
     a.Destroy();
+}
+
+function ReplaceComputerPersonal(#var(prefix)ComputerPersonal a)
+{
+    local DXRComputerPersonal n;
+    local int i;
+
+    n = DXRComputerPersonal(SpawnReplacement(a, class'DXRComputerPersonal'));
+    if(n == None)
+        return;
+
+    ReplaceComputers(a,n);
+
+    a.Destroy();
+}
+
+function ReplaceComputerSecurity(#var(prefix)ComputerSecurity a)
+{
+    local DXRComputerSecurity n;
+    local int i;
+
+    n = DXRComputerSecurity(SpawnReplacement(a, class'DXRComputerSecurity'));
+    if(n == None)
+        return;
+
+    ReplaceComputers(a,n);
+
+    for (i=0;i<ArrayCount(n.Views);i++){
+        n.Views[i].titleString=a.Views[i].titleString;
+        n.Views[i].cameraTag=a.Views[i].cameraTag;
+        n.Views[i].turretTag=a.Views[i].turretTag;
+        n.Views[i].doorTag=a.Views[i].doorTag;
+    }
+
+    a.Destroy();
+}
+
+function ReplaceATM(#var(prefix)ATM a)
+{
+    local DXRATM n;
+    local int i;
+
+    n = DXRATM(SpawnReplacement(a, class'DXRATM'));
+    if(n == None)
+        return;
+
+#ifndef hx
+    for (i=0;i<ArrayCount(n.userList);i++){
+        n.userList[i].accountNumber=a.userList[i].accountNumber;
+        n.userList[i].PIN=a.userList[i].PIN;
+        n.userList[i].balance=a.userList[i].balance;
+    }
+#endif
+
+    n.lockoutDelay=a.lockoutDelay;
+
+    a.Destroy();
+}
+
+function ReplaceComputers(#var(prefix)Computers a, #var(prefix)Computers n)
+{
+    local int i;
+
+    for(i=0;i<ArrayCount(n.specialOptions);i++){
+        n.specialOptions[i].Text=a.specialOptions[i].Text;
+        n.specialOptions[i].TriggerText=a.specialOptions[i].TriggerText;
+        n.specialOptions[i].userName=a.specialOptions[i].userName;
+        n.specialOptions[i].TriggerEvent=a.specialOptions[i].TriggerEvent;
+        n.specialOptions[i].UnTriggerEvent=a.specialOptions[i].UnTriggerEvent;
+        n.specialOptions[i].bTriggerOnceOnly=a.specialOptions[i].bTriggerOnceOnly;
+        n.specialOptions[i].bAlreadyTriggered=a.specialOptions[i].bAlreadyTriggered;
+    }
+
+    for(i=0;i<ArrayCount(n.userList);i++){
+        n.userList[i].userName=a.userList[i].userName;
+        n.userList[i].password=a.userList[i].password;
+        n.userList[i].accessLevel=a.userList[i].accessLevel;
+    }
+
+    n.bOn = a.bOn;
+    n.bAnimating=a.bAnimating;
+    n.bLockedOut=a.bLockedOut;
+    n.lockoutDelay=a.lockoutDelay;
+    n.lockoutTime=a.lockoutTime;
+    n.lastHackTime=a.lastHackTime;
+    n.msgLockedOut=a.msgLockedOut;
+    n.nodeName=a.nodeName;
+    n.titleString=a.titleString;
+    n.titleTexture=a.titleTexture;
+    n.TextPackage=a.TextPackage;
+
+    n.ComputerNode=a.ComputerNode;
+
+    n.lastAlarmTime=a.lastAlarmTime;
+    n.alarmTimeout=a.alarmTimeout;
+    n.CompInUseMsg=a.CompInUseMsg;
 }

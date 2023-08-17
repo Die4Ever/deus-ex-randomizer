@@ -325,6 +325,10 @@ function CheckHelmet(ScriptedPawn p)
             p.Texture = Texture'DeusExItems.Skins.PinkMaskTex';
         } else if(chance_single(visor_chance)) {
             p.Texture = Texture'DeusExCharacters.Skins.VisorTex1';
+            if(p.MultiSkins[6]==Texture'DeusExCharacters.Skins.MJ12TroopTex4'){
+                //Remove the vanilla goggles if they get a visor
+                p.MultiSkins[6]=Texture'#var(package).DXRandoPawns.MJ12TroopTex4NoGoggles';
+            }
         }
     }
 }

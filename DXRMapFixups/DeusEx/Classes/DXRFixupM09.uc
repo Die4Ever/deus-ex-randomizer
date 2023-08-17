@@ -9,6 +9,9 @@ function CheckConfig()
     add_datacubes[i].map = "09_NYC_Dockyard";
     add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
     i++;
+    add_datacubes[i].map = "09_NYC_Dockyard";
+    add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
+    i++;
 
     Super.CheckConfig();
 }
@@ -29,6 +32,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)LAM lam;
     local Switch1 s;
     local #var(prefix)Barrel1 barrel;
+    local #var(prefix)RatGenerator rg;
 
     switch(dxr.localURL)
     {
@@ -48,6 +52,9 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
+
+        rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-738,-1412,-474));//Near sewer grate
+        rg.MaxCount=1;
 
         //Add some new locations for containers and items
         Spawn(class'PlaceholderContainer',,, vectm(-3143,274,305)); //Front of ship
