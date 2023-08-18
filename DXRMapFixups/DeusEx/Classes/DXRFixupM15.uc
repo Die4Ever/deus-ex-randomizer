@@ -114,6 +114,8 @@ function PreFirstEntryMapFixes_Bunker()
     //Button to open blast doors from inside
     AddSwitch( vect(2015.894653,1390.463867,-839.793091), rot(0, -16328, 0), 'blast_door');
 
+    Spawn(class'#var(prefix)LiquorBottle',,, vectm(1005.13,2961.26,-480)); //Liquor in a locker, so every mission has alcohol
+
     Spawn(class'PlaceholderItem',,, vectm(-1469.9,3238.7,-213)); //Storage building
     Spawn(class'PlaceholderItem',,, vectm(-1565.4,3384.8,-213)); //Back of Storage building
     Spawn(class'PlaceholderItem',,, vectm(-1160.9,256.3,-501)); //Tower basement
@@ -222,6 +224,9 @@ function PreFirstEntryMapFixes_Entrance()
             c.UserList[0].Password="TinFoilHat";
         }
     }
+
+    Spawn(class'#var(prefix)Liquor40oz',,, vectm(4585,72,-174)); //Beers on the table in the sleeping quarters
+    Spawn(class'#var(prefix)Liquor40oz',,, vectm(4611,27,-174));
 
     Spawn(class'PlaceholderItem',,, vectm(1542.28,-2080,-349)); //Near karkians under Everett
     Spawn(class'PlaceholderItem',,, vectm(3310.14,-2512.35,10.3)); //Boxes right at entrance
