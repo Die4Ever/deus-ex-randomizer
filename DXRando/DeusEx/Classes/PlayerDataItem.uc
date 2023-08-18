@@ -102,7 +102,7 @@ simulated function int GetBingoSpot(int x, int y, out string event, out string d
     if(dxr == None) return 1;// 1==maybe
 
     currentMission = dxr.dxInfo.missionNumber;
-    return class'DXREvents'.static.BingoActiveMission(currentMission, bingo_missions_masks[x*5+y]);
+    return class'DXREvents'.static.BingoActiveMission(currentMission, GetBingoMissionMask(x,y));
 }
 
 simulated function SetBingoSpot(int x, int y, string event, string desc, int progress, int max, int missions)
@@ -112,6 +112,11 @@ simulated function SetBingoSpot(int x, int y, string event, string desc, int pro
     bingo[x*5+y].progress = progress;
     bingo[x*5+y].max = max;
     bingo_missions_masks[x*5+y] = missions;
+}
+
+simulated function int GetBingoMissionMask(int x, int y)
+{
+    return bingo_missions_masks[x*5+y];
 }
 
 simulated function bool IncrementBingoProgress(string event)

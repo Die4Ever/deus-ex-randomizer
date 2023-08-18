@@ -2,6 +2,7 @@ class BingoTile extends ButtonWindow;
 
 var int progress, max;
 var string helpText;
+var int missions;
 var int bActiveMission;// -1==impossible, 0==false, 1==maybe, 2==true
 var bool isCredits;
 
@@ -82,6 +83,34 @@ simulated function SetHelpText(string event, int mission)
     helpText = class'DXREvents'.static.GetBingoGoalHelpText(event,mission);
 }
 
+simulated function string GenerateMissionString()
+{
+    local int i,t,num;
+    local string msg;
+
+    if (missions==0){
+        return "Missions: All";
+    }
+
+    msg="";
+    for (i=1;i<=15;i++){
+        t=(1<<i) & missions;
+        if (t!=0){
+            msg=msg$i$", ";
+            num++;
+        }
+    }
+
+    msg = Left(msg,len(msg)-2);
+    if(num>1){
+        msg="Missions: "$msg;
+    } else {
+        msg="Mission: "$msg;
+    }
+
+    return msg;
+}
+
 simulated function string GetHelpText()
 {
     local string helpmsg;
@@ -89,6 +118,7 @@ simulated function string GetHelpText()
     helpmsg=helpText;
 
     //Display the list of missions the goal is possible in...
+    helpmsg=helpmsg$"|n|n"$GenerateMissionString();
 
     if (max>1){
         helpmsg=helpmsg$"|n|n";
@@ -96,6 +126,11 @@ simulated function string GetHelpText()
     }
 
     return helpmsg;
+}
+
+simulated function SetMissions(int missionmask)
+{
+    missions = missionmask;
 }
 
 simulated function SetProgress(int tprogress, int tmax, int tactiveMission)
