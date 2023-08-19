@@ -87,6 +87,7 @@ function SetWatchFlags() {
     local #var(prefix)Greasel g;
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)Poolball ball;
+    local #var(prefix)DataLinkTrigger dlt;
     local int i;
 
     switch(dxr.localURL) {
@@ -635,6 +636,12 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(771,-808,-706),500,180);
 
         bt = class'BingoTrigger'.static.Create(self,'secretdoor01',vectm(0,0,0));
+
+        foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
+            if (dlt.datalinkTag=='DL_knightslibrary'){
+                bt = class'BingoTrigger'.static.Create(self,'CathedralLibrary',dlt.Location,dlt.CollisionRadius,dlt.CollisionHeight);
+            }
+        }
 
         break;
     case "11_PARIS_EVERETT":
@@ -2717,6 +2724,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Use the DuClare dumbwaiter between the kitchen and Beth's room.";
         case "secretdoor01":
             return "Twist the flickering light in the Cathedral and open the secret door.";
+        case "CathedralLibrary":
+            return "Enter the library in the Cathedral.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3072,10 +3081,11 @@ defaultproperties
     bingo_options(223)=(event="02_Email05",desc="Paul's Classic Movies",max=1,missions=4)
     bingo_options(224)=(event="11_Book08",desc="Read Adept 34501's diary",max=1,missions=2048)
     bingo_options(225)=(event="GasStationCeiling",desc="Access the ceiling of a gas station",max=1,missions=4096)
-    bingo_options(226)=(event="NicoletteHouseTour",desc="Get a tour of Chateau DuClare from Nicolette",max=5,missions=1024)
+    bingo_options(226)=(event="NicoletteHouseTour",desc="Get a tour of %s parts of Chateau DuClare from Nicolette",max=5,missions=1024)
     bingo_options(227)=(event="nico_fireplace",desc="Access Nicolette's secret stash",max=1,missions=1024)
     bingo_options(228)=(event="dumbwaiter",desc="Not so dumb now!",max=1,missions=1024)
-    bingo_options(229)=(event="secretdoor01",desc="Open the secret door in the cathedral",max=1,missions=1024)
+    bingo_options(229)=(event="secretdoor01",desc="Open the secret door in the cathedral",max=1,missions=2048)
+    bingo_options(230)=(event="CathedralLibrary",desc="Worth its weight in gold",max=1,missions=2048)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
