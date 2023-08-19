@@ -600,6 +600,19 @@ function SetWatchFlags() {
         WatchFlag('ChateauInBethsRoom');
         WatchFlag('ChateauInNicolettesRoom');
 
+        //Nicolette's House Tour
+        WatchFlag('NicoletteInUnderground_Played');
+        WatchFlag('NicoletteInUnderground2_Played');
+        WatchFlag('NicoletteInStudy_Played');
+        WatchFlag('NicoletteInLivingRoom_Played');
+        WatchFlag('NicoletteInKeyRoom_Played');
+        WatchFlag('NicoletteInGarden_Played');
+        WatchFlag('NicoletteInGarden2_Played');
+        WatchFlag('NicoletteInBethsRoom_Played');
+
+        bt = class'BingoTrigger'.static.Create(self,'nico_fireplace',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'dumbwaiter',vectm(0,0,0));
+
 #ifdef vanilla
         bt = class'BingoTrigger'.static.Create(self,'BethsPainting',vectm(0,0,0));
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
@@ -620,6 +633,8 @@ function SetWatchFlags() {
         bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
 
         bt = class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(771,-808,-706),500,180);
+
+        bt = class'BingoTrigger'.static.Create(self,'secretdoor01',vectm(0,0,0));
 
         break;
     case "11_PARIS_EVERETT":
@@ -2048,6 +2063,15 @@ function string RemapBingoEvent(string eventname)
         case "05_EmailMenu_JCD":
         case "06_EmailMenu_JCDenton":
             return "ReadJCEmail";
+        case "NicoletteInUnderground_Played":
+        case "NicoletteInUnderground2_Played":
+        case "NicoletteInStudy_Played":
+        case "NicoletteInLivingRoom_Played":
+        case "NicoletteInKeyRoom_Played":
+        case "NicoletteInGarden_Played":
+        case "NicoletteInGarden2_Played":
+        case "NicoletteInBethsRoom_Played":
+            return "NicoletteHouseTour";
         default:
             return eventname;
     }
@@ -2685,6 +2709,14 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Read the diary of Adept 34501, the Woman in Black living in the Paris cathedral.";
         case "GasStationCeiling":
             return "Enter the ceiling of the gas station from the roof.";
+        case "NicoletteHouseTour":
+            return "Escort Nicolette around the Chateau and let her tell you about it.  Potential points of interest include the study, the living room, the upper hallway, Beth's room, the basement, near the back door, and by the maze.";
+        case "nico_fireplace":
+            return "Access the secret stash behind the fireplace in Nicolette's bedroom in the Chateau.";
+        case "dumbwaiter":
+            return "Use the DuClare dumbwaiter between the kitchen and Beth's room.";
+        case "secretdoor01":
+            return "Twist the flickering light in the Cathedral and open the secret door.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3040,6 +3072,10 @@ defaultproperties
     bingo_options(223)=(event="02_Email05",desc="Paul's Classic Movies",max=1,missions=4)
     bingo_options(224)=(event="11_Book08",desc="Read Adept 34501's diary",max=1,missions=2048)
     bingo_options(225)=(event="GasStationCeiling",desc="Access the ceiling of a gas station",max=1,missions=4096)
+    bingo_options(226)=(event="NicoletteHouseTour",desc="Get a tour of Chateau DuClare from Nicolette",max=5,missions=1024)
+    bingo_options(227)=(event="nico_fireplace",desc="Access Nicolette's secret stash",max=1,missions=1024)
+    bingo_options(228)=(event="dumbwaiter",desc="Not so dumb now!",max=1,missions=1024)
+    bingo_options(229)=(event="secretdoor01",desc="Open the secret door in the cathedral",max=1,missions=1024)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
