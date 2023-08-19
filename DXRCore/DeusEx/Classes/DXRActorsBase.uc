@@ -766,11 +766,7 @@ function #var(prefix)Containers AddBox(class<#var(prefix)Containers> c, vector l
     return box;
 }
 
-#ifdef injections
-function #var(prefix)InformationDevices SpawnDatacube(vector loc, rotator rot, optional bool dont_move)
-#else
-function DXRInformationDevices SpawnDatacube(vector loc, rotator rot, optional bool dont_move)
-#endif
+function #var(injectsprefix)InformationDevices SpawnDatacube(vector loc, rotator rot, optional bool dont_move)
 {
 #ifdef injections
     local #var(prefix)DataCube dc;
@@ -792,13 +788,10 @@ function DXRInformationDevices SpawnDatacube(vector loc, rotator rot, optional b
 }
 
 
-function #var(prefix)InformationDevices SpawnDatacubePlaintext(vector loc, rotator rot, string text, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacubePlaintext(vector loc, rotator rot, string text, optional bool dont_move)
 {
-#ifdef injections
-    local #var(prefix)InformationDevices dc;
-#else
-    local DXRInformationDevices dc;
-#endif
+    local #var(injectsprefix)InformationDevices dc;
+
     dc = SpawnDatacube(loc,rot,dont_move);
 
     if(dc != None) {
@@ -807,13 +800,10 @@ function #var(prefix)InformationDevices SpawnDatacubePlaintext(vector loc, rotat
     return dc;
 }
 
-function #var(prefix)InformationDevices SpawnDatacubeTextTag(vector loc, rotator rot, name texttag, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacubeTextTag(vector loc, rotator rot, name texttag, optional bool dont_move)
 {
-#ifdef injections
-    local #var(prefix)InformationDevices dc;
-#else
-    local DXRInformationDevices dc;
-#endif
+    local #var(injectsprefix)InformationDevices dc;
+
     dc = SpawnDatacube(loc,rot,dont_move);
 
     if(dc != None) {
@@ -822,13 +812,10 @@ function #var(prefix)InformationDevices SpawnDatacubeTextTag(vector loc, rotator
     return dc;
 }
 
-function #var(prefix)InformationDevices SpawnDatacubeImage(vector loc, rotator rot, class<DataVaultImage> imageClass, optional bool dont_move)
+function #var(injectsprefix)InformationDevices SpawnDatacubeImage(vector loc, rotator rot, class<DataVaultImage> imageClass, optional bool dont_move)
 {
-#ifdef injections
-    local #var(prefix)InformationDevices dc;
-#else
-    local DXRInformationDevices dc;
-#endif
+    local #var(injectsprefix)InformationDevices dc;
+
     dc = SpawnDatacube(loc,rot,dont_move);
 
     if(dc != None) {
