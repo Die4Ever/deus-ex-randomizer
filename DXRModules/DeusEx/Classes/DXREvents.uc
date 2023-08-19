@@ -550,6 +550,9 @@ function SetWatchFlags() {
         WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
         bt = class'BingoTrigger'.static.Create(self,'FanTop',vectm(-2935,50,840),200,50);
 
+        WatchFlag('WatchKeys_Locker1');
+        WatchFlag('WatchKeys_Locker2');
+
         break;
     case "09_NYC_GRAVEYARD":
         WatchFlag('GaveDowdAmbrosia');
@@ -2097,6 +2100,9 @@ function string RemapBingoEvent(string eventname)
         case "WatchKeys_nico_room":
         case "WatchKeys_duclare_chateau":
             return "DuClareKeys";
+        case "WatchKeys_Locker1":
+        case "WatchKeys_Locker2":
+            return "ShipLockerKeys";
         default:
             return eventname;
     }
@@ -2744,6 +2750,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Twist the flickering light in the Cathedral and open the secret door.";
         case "CathedralLibrary":
             return "Enter the library in the Cathedral.";
+        case "DuClareKeys":
+            return "Find enough different keys around Chateau DuClare.  Keys include the key to Beths Room, Nicolettes Room, and to the Basement";
+        case "ShipLockerKeys":
+            return "Find keys to the lockers on the lower decks of the superfreighter.  The lockers are inside the building underneath the helipad.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3105,6 +3115,7 @@ defaultproperties
     bingo_options(229)=(event="secretdoor01",desc="Open the secret door in the cathedral",max=1,missions=2048)
     bingo_options(230)=(event="CathedralLibrary",desc="Worth its weight in gold",max=1,missions=2048)
     bingo_options(231)=(event="DuClareKeys",desc="Collect %s different keys around Chateau DuClare",max=3,missions=1024)
+    bingo_options(232)=(event="ShipLockerKeys",desc="Collect %s locker keys inside the superfreighter",max=2,missions=512)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
