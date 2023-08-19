@@ -33,7 +33,6 @@ function PreFirstEntryMapFixes()
     local Switch1 s;
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)RatGenerator rg;
-    local DeusExDecoration d;
 
     switch(dxr.localURL)
     {
@@ -55,8 +54,7 @@ function PreFirstEntryMapFixes()
         }
 
         //A button *behind* the elevator that sends it up, since it's possible to fall back there and live...
-        d=AddSwitch( vect(2905.517578,-1641.676270,-430.253693), rot(0,0,0), 'Elevator01_top' );
-        d.UnfamiliarName="Ramisme's Escape Button";
+        AddSwitch( vect(2905.517578,-1641.676270,-430.253693), rot(0,0,0), 'Elevator01_top', "Ramisme's Escape Button");
 
         rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-738,-1412,-474));//Near sewer grate
         rg.MaxCount=1;

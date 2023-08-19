@@ -685,21 +685,23 @@ static function string GetActorName(Actor a)
     return string(a.class.name);
 }
 
-static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate, name Event)
+static function DeusExDecoration _AddSwitch(Actor a, vector loc, rotator rotate, name Event, optional string description)
 {
     local DeusExDecoration d;
     d = DeusExDecoration( _AddActor(a, class'Switch2', loc, rotate) );
     d.Buoyancy = 0;
     d.Event = Event;
+    d.FamiliarName=description;
+    d.UnfamiliarName=description;
     return d;
 }
 
 // DON'T PASS A VECTM OR ROTM TO THIS FUNCTION! PASS A PLAIN VECT AND ROT!
-function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event)
+function DeusExDecoration AddSwitch(vector loc, rotator rotate, name Event, optional string description)
 {
     loc = vectm(loc.X, loc.Y, loc.Z);
     rotate = rotm(rotate.pitch, rotate.yaw, rotate.roll, 16384);
-    return _AddSwitch(Self, loc, rotate, Event);
+    return _AddSwitch(Self, loc, rotate, Event, description);
 }
 
 static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rotate, optional Actor owner, optional Name tag)
