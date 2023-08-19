@@ -2858,6 +2858,20 @@ function RunTests()
     testint(BingoActiveMission(3, (1<<15)), 0, "BingoActiveMission false");
 }
 
+function ExtendedTests()
+{
+    local string helpText;
+    local int i;
+
+    //Make sure all bingo goals have help text
+    for (i=0;i<ArrayCount(bingo_options);i++){
+        if (bingo_options[i].event!=""){
+            helpText = GetBingoGoalHelpText(bingo_options[i].event,0);
+            test( InStr(helpText, "Unable to find help text for event") == -1, "Bingo Goal "$bingo_options[i].event$" does not have help text!");
+        }
+    }
+}
+
 // calculate missions masks with https://jsfiddle.net/2sh7xej0/1/
 defaultproperties
 {
