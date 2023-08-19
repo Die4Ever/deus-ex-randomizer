@@ -30,6 +30,12 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         if(dxr.localURL == "01_NYC_UNATCOISLAND")
             p.ConsoleCommand("legend");
     }
+
+    //Disable achievements for Revision Rando, as requested
+    if(#defined(revision)){
+        f.SetBool('AchievementsDisabled', true,, 999);
+    }
+
     l("starting map is set to "$settings.starting_map);
 }
 
