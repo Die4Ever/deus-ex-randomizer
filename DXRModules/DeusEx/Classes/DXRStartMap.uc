@@ -82,6 +82,10 @@ static simulated function int GetStartingMissionMask(int start_map)
             //startMap="09_NYC_Graveyard";
             return 64512; //Mission 10 onwards (you're at the end of mission 9)
             break;
+        case 109:
+            //startMap="10_Paris_Chateau";
+            return 64512; //Mission 10 onwards (but mark most mission 10 goals as impossilbe)
+            break;
         case 119:
             //startMap="11_Paris_Everett";
             return 61440; //Mission 12 onwards
@@ -160,6 +164,8 @@ static function string GetStartingMapName(int val)
             return "Superfreighter";
         case 99:
             return "Graveyard";
+        case 109:
+            return "Chateau DuClare";
         case 119:
             return "Everett's House";
         case 140:
@@ -207,6 +213,9 @@ static function string GetStartMap(Actor a, int start_map_val)
             break;
         case 99:
             startMap="09_NYC_Graveyard";
+            break;
+        case 109:
+            startMap="10_Paris_Chateau";
             break;
         case 119:
             startMap="11_Paris_Everett";
@@ -265,6 +274,9 @@ static function int GetStartMapMission(int start_map_val)
         case 99:
             mission=10; //Mission 9 graveyard, basically mission 10
             break;
+        case 109:
+            mission=11; //Mission 10 Chateau, but basically mission 11
+            break;
         case 119:
             mission=12; //Mission 11 Everett, but basically mission 12
             break;
@@ -302,6 +314,10 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
         case "08_NYC_Smug":
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
             flagbase.SetBool('MetSmuggler',true,,-1);
+            break;
+        case "10_Paris_Chateau":
+            //Make sure Sandra spawns at the gas station
+            flagbase.SetBool('SandraWentToCalifornia',true,,-1);
             break;
         case "11_Paris_Everett":
             //First Toby conversation happened
@@ -352,6 +368,21 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "Terrorist_ClassUnconscious":
         case "Terrorist_peeptime":
             return start_map>=40; //Miguel is the only Terrorist after mission 3 - easier to just block this
+        case "WarehouseEntered":
+        case "Antoine_Dead":
+        case "Chad_Dead":
+        case "paris_hostage_Dead":
+        case "Hela_Dead":
+        case "Renault_Dead":
+        case "lemerchant_Dead":
+        case "aimee_Dead":
+        case "M10EnteredBakery":
+        case "assassinapartment":
+        case "CamilleConvosDone":
+        case "SilhouetteHostagesAllRescued":
+        case "LouisBerates":
+        case "IcarusCalls_Played":
+            return start_map>100; //All these early Paris things - if we were to add a "Streets" starting location, this would need to be split more accurately
         default:
             return False;
     }
@@ -370,7 +401,7 @@ static function int ChooseRandomStartMap(DXRando dxr, int avoidStart)
 
     //Don't try forever.  If we manage to grab the avoided map 5 times, it was meant to be.
     while ((startMap==-1 || startMap==avoidStart) && attempts<5){
-        i = staticrng(dxr,12);
+        i = staticrng(dxr,13);
 
         //Should be able to legitimately return Liberty Island (even if that's as a value of 10), but needs additional special handling
         switch(i)
@@ -403,12 +434,15 @@ static function int ChooseRandomStartMap(DXRando dxr, int avoidStart)
                 startMap = 99;
                 break;
             case 9:
-                startMap = 119;
+                startMap = 109;
                 break;
             case 10:
-                startMap = 140;
+                startMap = 119;
                 break;
             case 11:
+                startMap = 140;
+                break;
+            case 12:
                 startMap = 150;
                 break;
             default:
