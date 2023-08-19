@@ -611,6 +611,11 @@ function SetWatchFlags() {
         WatchFlag('NicoletteInGarden2_Played');
         WatchFlag('NicoletteInBethsRoom_Played');
 
+        //NanoKeys
+        WatchFlag('WatchKeys_beth_room');
+        WatchFlag('WatchKeys_nico_room');
+        WatchFlag('WatchKeys_duclare_chateau');
+
         bt = class'BingoTrigger'.static.Create(self,'nico_fireplace',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'dumbwaiter',vectm(0,0,0));
 
@@ -998,9 +1003,28 @@ simulated function bool WatchGuntherKillSwitch()
     return False;
 }
 
+simulated function bool CheckForNanoKey(String keyID)
+{
+
+    local name keyName;
+
+    if (player()==None){
+        return False;
+    }
+
+    if (player().KeyRing==None){
+        return False;
+    }
+
+    keyName = StringToName(keyID);
+
+    return player().KeyRing.HasKey(keyName);
+}
+
 simulated function Timer()
 {
     local int i,j,num;
+    local bool FlagTriggered;
 
     if( dxr == None || dxr.flagbase == None ) {
         return;
@@ -1013,24 +1037,15 @@ simulated function Timer()
             continue;
         }
 
+        FlagTriggered=False;
         if( watchflags[i] == 'LeoToTheBar' ) {
             if (ClassInLevel(class'#var(prefix)TerroristCommanderCarcass')){
-                SendFlagEvent(watchflags[i]);
-                num_watchflags--;
-                watchflags[i] = watchflags[num_watchflags];
-                watchflags[num_watchflags]='';
-                i--;
-                continue;
+                FlagTriggered=True;
             }
         } else if( watchflags[i] == 'GuntherKillswitch' ) {
             if (WatchGuntherKillSwitch()){
-                SendFlagEvent(watchflags[i]);
-                num_watchflags--;
-                watchflags[i] = watchflags[num_watchflags];
-                watchflags[num_watchflags]='';
-                i--;
+                FlagTriggered=True;
                 _MarkBingo("GuntherHermann_Dead");
-                continue;
             }
         } else if( watchflags[i] == 'PlayPool' ) {
             num = PoolBallsSunk();
@@ -1048,16 +1063,15 @@ simulated function Timer()
             }
         } else if( watchflags[i] == 'FlowersForTheLab' ) {
             if (ClassInLevel(class'#var(prefix)Flowers')){
-                SendFlagEvent(watchflags[i]);
-                num_watchflags--;
-                watchflags[i] = watchflags[num_watchflags];
-                watchflags[num_watchflags]='';
-                i--;
-                continue;
+                FlagTriggered=True;
+            }
+        } else if (InStr(watchflags[i],"WatchKeys_")!=-1) {
+            if (CheckForNanoKey(Mid(watchflags[i],10))){
+                FlagTriggered=True;
             }
         }
 
-        if( dxr.flagbase.GetBool(watchflags[i]) ) {
+        if( dxr.flagbase.GetBool(watchflags[i]) || FlagTriggered ) {
             SendFlagEvent(watchflags[i]);
             num_watchflags--;
             watchflags[i] = watchflags[num_watchflags];
@@ -2079,6 +2093,10 @@ function string RemapBingoEvent(string eventname)
         case "NicoletteInGarden2_Played":
         case "NicoletteInBethsRoom_Played":
             return "NicoletteHouseTour";
+        case "WatchKeys_beth_room":
+        case "WatchKeys_nico_room":
+        case "WatchKeys_duclare_chateau":
+            return "DuClareKeys";
         default:
             return eventname;
     }
@@ -3086,6 +3104,7 @@ defaultproperties
     bingo_options(228)=(event="dumbwaiter",desc="Not so dumb now!",max=1,missions=1024)
     bingo_options(229)=(event="secretdoor01",desc="Open the secret door in the cathedral",max=1,missions=2048)
     bingo_options(230)=(event="CathedralLibrary",desc="Worth its weight in gold",max=1,missions=2048)
+    bingo_options(231)=(event="DuClareKeys",desc="Collect %s different keys around Chateau DuClare",max=3,missions=1024)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
