@@ -15,7 +15,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: DXRando
-          path: dist/DXRando/DXRando.zip
+          path: dist/DXRandoInstaller.exe
 
       - name: Upload installer warnings
         uses: actions/upload-artifact@v3
@@ -27,7 +27,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: BingoViewer
-          path: dist/BingoViewer/BingoViewer.zip
+          path: dist/BingoViewer.exe
 
   linux:
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: DXRando-linux
-          path: dist/DXRando/DXRando.zip
+          path: dist/DXRandoInstaller
 
       - name: Upload installer warnings
         uses: actions/upload-artifact@v3
@@ -59,4 +59,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: BingoViewer-linux
-          path: dist/BingoViewer/BingoViewer.zip
+          path: dist/BingoViewer

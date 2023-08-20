@@ -13,21 +13,21 @@ jobs:
 
       - uses: ./.github/run-tests
 
-      - name: Upload Release Asset DXRando.zip
-        id: upload-release-asset-dxrando-zip
+      - name: Upload Release Asset DXRando
+        id: upload-release-asset-dxrando
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/DXRando/DXRando.zip
-          asset_name: DXRandoInstaller.zip
+          file: dist/DXRandoInstaller.exe
+          asset_name: DXRandoInstaller.exe
 
-      - name: Upload Release Asset BingoViewer.zip
-        id: upload-release-asset-bingoviewer-zip
+      - name: Upload Release Asset BingoViewer
+        id: upload-release-asset-bingoviewer
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/BingoViewer/BingoViewer.zip
-          asset_name: BingoViewer.zip
+          file: dist/BingoViewer.exe
+          asset_name: BingoViewer.exe
 
   linux:
     runs-on: ubuntu-latest
@@ -43,18 +43,18 @@ jobs:
 
       - uses: ./.github/run-tests
 
-      - name: Upload Release Asset DXRando.zip
-        id: upload-release-asset-dxrando-zip
+      - name: Upload Release Asset DXRando
+        id: upload-release-asset-dxrando
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/DXRando/DXRando.zip
-          asset_name: DXRandoInstaller-Linux.zip
+          file: dist/DXRandoInstaller
+          asset_name: DXRandoInstaller-Linux
 
-      - name: Upload Release Asset BingoViewer.zip
-        id: upload-release-asset-bingoviewer-zip
+      - name: Upload Release Asset BingoViewer
+        id: upload-release-asset-bingoviewer
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/BingoViewer/BingoViewer.zip
-          asset_name: BingoViewer-Linux.zip
+          file: dist/BingoViewer
+          asset_name: BingoViewer-Linux

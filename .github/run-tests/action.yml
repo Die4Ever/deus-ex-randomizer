@@ -2,10 +2,10 @@ runs:
   using: composite
   steps:
     # we don't really care what python version we have, but maybe in the future
-    #- uses: actions/setup-python@v4
-    #  with:
-    #    python-version: '3.11'
-    #    cache: 'pip' # caching pip dependencies
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+        cache: 'pip' # caching pip dependencies
 
     - run: pip3 install -r installer/requirements.txt 2>&1
       shell: bash
@@ -118,22 +118,22 @@ runs:
       shell: bash
 
     # zip it up
-    - if: runner.os == 'Windows'
-      run: Compress-Archive -Path ./* -Destination DXRando.zip
-      working-directory: ./dist/DXRando/
-      shell: pwsh
-    - if: runner.os == 'Windows'
-      run: Compress-Archive -Path ./* -Destination BingoViewer.zip
-      working-directory: ./dist/BingoViewer/
-      shell: pwsh
-    - if: runner.os != 'Windows'
-      run: zip -r9 DXRando.zip .
-      working-directory: ./dist/DXRando
-      shell: bash
-    - if: runner.os != 'Windows'
-      run: zip -r9 BingoViewer.zip .
-      working-directory: ./dist/BingoViewer
-      shell: bash
+    # - if: runner.os == 'Windows'
+    #   run: Compress-Archive -Path ./* -Destination DXRando.zip
+    #   working-directory: ./dist/DXRando/
+    #   shell: pwsh
+    # - if: runner.os == 'Windows'
+    #   run: Compress-Archive -Path ./* -Destination BingoViewer.zip
+    #   working-directory: ./dist/BingoViewer/
+    #   shell: pwsh
+    # - if: runner.os != 'Windows'
+    #   run: zip -r9 DXRando.zip .
+    #   working-directory: ./dist/DXRando
+    #   shell: bash
+    # - if: runner.os != 'Windows'
+    #   run: zip -r9 BingoViewer.zip .
+    #   working-directory: ./dist/BingoViewer
+    #   shell: bash
 
-    - run: ls -lah dist/DXRando/DXRando.zip
+    - run: ls -lah dist/
       shell: bash
