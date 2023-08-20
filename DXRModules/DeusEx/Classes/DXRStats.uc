@@ -16,9 +16,32 @@ var RunInfo runs[20];
 
 function AnyEntry()
 {
+    local int i, missions[16], total;
+    local string msg;
     Super.AnyEntry();
 
-    l("Total time so far: "$GetTotalTimeString()$", deaths so far: "$GetDataStorageStat(dxr, "DXRStats_deaths"));
+    if(dxr.flags.IsSpeedrunMode()) {
+        for(i=1; i<ArrayCount(missions); i++) {
+            missions[i] = GetCompleteMissionTime(i);
+            missions[i] += GetCompleteMissionMenuTime(i);
+            total += missions[i];
+        }
+
+        // don't do this for mission 1 since the time will be 0 lol
+        if(dxr.dxInfo.MissionNumber > 1 && dxr.dxInfo.MissionNumber <= 15 && missions[dxr.dxInfo.MissionNumber] == 0) {
+            msg = "Total IGT: " $ fmtTimeToString(total);
+            for(i=dxr.dxInfo.MissionNumber-1; i>0; i--) {
+                if(missions[i] > 0) {
+                    msg = msg $ ", Mission " $i$ ": " $ fmtTimeToString(missions[i]);
+                    break;
+                }
+            }
+            msg = msg $ ", Deaths: " $ GetDataStorageStat(dxr, "DXRStats_deaths");
+            player().ClientMessage(msg);
+        }
+    } else {
+        l("Total time so far: "$GetTotalTimeString()$", deaths so far: "$GetDataStorageStat(dxr, "DXRStats_deaths"));
+    }
 
     SetTimer(0.1, True);
 }
