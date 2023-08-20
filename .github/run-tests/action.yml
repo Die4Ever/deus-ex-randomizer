@@ -112,9 +112,9 @@ runs:
       shell: bash
 
     # small test, use timeouts because on windows the GUI can catch errors and a dialog box will freeze the program
-    - run: timeout 30 ./dist/DXRando/DXRandoInstaller --version 2>&1
+    - run: timeout 30 ./dist/DXRandoInstaller --version 2>&1
       shell: bash
-    - run: timeout 30 ./dist/BingoViewer/BingoViewer --version 2>&1
+    - run: timeout 30 ./dist/BingoViewer --version 2>&1
       shell: bash
 
     # zip it up
