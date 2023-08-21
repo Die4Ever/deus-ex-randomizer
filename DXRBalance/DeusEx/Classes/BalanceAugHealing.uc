@@ -8,7 +8,7 @@ Loop:
     Sleep(1.0);
 
     if (NeedsHeal())
-        HealPlayer(5);
+        HealPlayer(6); // 6 health at a time because 6 body parts
     else
         Deactivate();
 
@@ -20,19 +20,14 @@ function HealPlayer(int amount) {
     local int origHealAmount;
     origHealAmount = amount;
 
-    HealPart(Player.HealthHead, amount);
-    HealPart(Player.HealthTorso, amount);
-
-    // fix broken limbs after the head and torso (I don't want to buff healing aug too much? but I also don't want lower levels to be preferable due to them healing more evenly?)
-    HealPartMax(Player.HealthLegRight, amount, 1);
-    HealPartMax(Player.HealthLegLeft, amount, 1);
-    HealPartMax(Player.HealthArmRight, amount, 1);
-    HealPartMax(Player.HealthArmLeft, amount, 1);
-
-    HealPart(Player.HealthLegRight, amount);
-    HealPart(Player.HealthLegLeft, amount);
-    HealPart(Player.HealthArmRight, amount);
-    HealPart(Player.HealthArmLeft, amount);
+    while(amount > 0 && NeedsHeal()) {
+        HealPartOne(Player.HealthHead, amount);
+        HealPartOne(Player.HealthTorso, amount);
+        HealPartOne(Player.HealthLegRight, amount);
+        HealPartOne(Player.HealthLegLeft, amount);
+        HealPartOne(Player.HealthArmRight, amount);
+        HealPartOne(Player.HealthArmLeft, amount);
+    }
 
     Player.GenerateTotalHealth();
 
@@ -54,13 +49,20 @@ function HealPart(out int points, out int amt)
     HealPartMax(points, amt, max);
 }
 
+function HealPartOne(out int points, out int amt)
+{
+    HealPartMax(points, amt, points+1);
+}
+
 function HealPartMax(out int points, out int amt, int max)
 {
     local int spill;
 
     max = Min(max, Player.default.HealthTorso);
+    max = Min(max, LevelValues[CurrentLevel]);
 
     if(points >= max) return;
+    if(amt <= 0) return;
 
     points += amt;
     spill = points - max;
@@ -84,11 +86,12 @@ function bool NeedsHeal()
         || Player.HealthArmLeft < Min(i, Player.default.HealthArmLeft);
 }
 
-// original values go from 5 to 40, but those controlled healing rate
+// original values go from 5 to 40, but those controlled healing rate, EnergyRate of 120
 defaultproperties
 {
-     LevelValues(0)=35
-     LevelValues(1)=50
-     LevelValues(2)=65
-     LevelValues(3)=80
+     EnergyRate=140
+     LevelValues(0)=25
+     LevelValues(1)=40
+     LevelValues(2)=55
+     LevelValues(3)=70
 }
