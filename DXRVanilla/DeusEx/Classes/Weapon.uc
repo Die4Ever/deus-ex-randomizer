@@ -620,6 +620,15 @@ simulated function ProcessTraceHit(Actor Other, Vector HitLocation, Vector HitNo
     Super.ProcessTraceHit(Other,HitLocation,HitNormal,X,Y,Z);
 }
 
+function TravelPostAccept()
+{
+    Super.TravelPostAccept();
+
+    if (IsA('WeaponPlasmaRifle')){
+        FireSound = Default.FireSound;
+    }
+}
+
 // vanilla MinSpreadAcc is 0.25, but only used in multiplayer, so really it normally acts like 0
 // we're mainly turning on MinSpreadAcc for singleplayer because of the shotguns, so we want a minimal change here of 0.05
 defaultproperties
