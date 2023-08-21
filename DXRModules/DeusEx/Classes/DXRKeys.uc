@@ -5,7 +5,7 @@ var config safe_rule keys_rules[64];
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,5,2,0) ) {
+    if( ConfigOlderThan(2,5,2,4) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -235,7 +235,57 @@ function vanilla_keys_rules()
 
 function revision_keys_rules()
 {
-    // TODO
+    local int i;
+
+    keys_rules[i].map = "01_NYC_UNATCOISLAND";
+    keys_rules[i].item_name = 'UNhatchdoor';
+    keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+    keys_rules[i].max_pos = vect(999999, 999999, 999999);
+    keys_rules[i].allow = true;
+    i++;
+
+    keys_rules[i].map = "03_NYC_747";
+    keys_rules[i].item_name = 'lebedevdoor';
+    keys_rules[i].min_pos = vect(340, -312, 140);//ban the annoying spot behind the crates
+    keys_rules[i].max_pos = vect(380, -280, 185);
+    keys_rules[i].allow = false;
+    i++;
+
+    keys_rules[i].map = "03_NYC_747";
+    keys_rules[i].item_name = 'lebedevdoor';
+    keys_rules[i].min_pos = vect(166, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = true;
+    i++;
+
+    // in DXRFixup we spawn an extra one anyways
+    keys_rules[i].map = "06_HONGKONG_WANCHAI_STREET";
+    keys_rules[i].item_name = 'JocksKey';
+    keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = true;
+    i++;
+
+    keys_rules[i].map = "10_Paris_Chateau";
+    keys_rules[i].item_name = 'duclare_chateau';
+    keys_rules[i].min_pos = vect(-99999, -99999, -125);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = true;
+    i++;
+
+    keys_rules[i].map = "15_Area51_Page";
+    keys_rules[i].item_name = 'exit_doors';
+    keys_rules[i].min_pos = vect(-605.78,1140.87,212.5);
+    keys_rules[i].max_pos = vect(2059.9,-1583.3,313);
+    keys_rules[i].allow = true;
+    i++;
+
+    keys_rules[i].map = "15_Area51_Page";
+    keys_rules[i].item_name = 'exit_doors';
+    keys_rules[i].min_pos = vect(-192,-1810,202);
+    keys_rules[i].max_pos = vect(-2392.5,22.78,350);
+    keys_rules[i].allow = true;
+    i++;
 }
 
 function FirstEntry()
