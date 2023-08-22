@@ -22,7 +22,7 @@ function CheckConfig()
     local int i, g;
     local string gamesongs[100];
 
-    if( ConfigOlderThan(2,5,0,1) ) {
+    if( ConfigOlderThan(2,5,2,5) ) {
         allowCombat = default.allowCombat;
 
         for(i=0; i<ArrayCount(choices); i++) {
@@ -47,7 +47,7 @@ function CheckConfig()
         choices[i++] = MakeSongChoice("MJ12_Music", 0, 1, 3, 4, 5);
         //choices[i++] = MakeSongChoice("MJ12_Music", 2, 1, 3, 4, 5);// ambient 2? maybe this could be a conversation song instead? maybe this isn't the right way to do this because it puts MJ12_Music into the pool twice
         choices[i++] = MakeSongChoice("NavalBase_Music", 0, 1, 3, 4, 5);
-        choices[i++] = MakeSongChoice("NYCBar2_Music", 0, 1, 3, 4, 5);
+        choices[i++] = MakeSongChoice("NYCBar2_Music", 0, 0, 0, 0, 0);// no sections because it sounds janky when switching
         choices[i++] = MakeSongChoice("NYCStreets_Music", 0, 1, 3, 4, 5);
         choices[i++] = MakeSongChoice("NYCStreets2_Music", 0, 1, 3, 4, 5);
         choices[i++] = MakeSongChoice("OceanLab_Music", 0, 1, 3, 4, 5);
