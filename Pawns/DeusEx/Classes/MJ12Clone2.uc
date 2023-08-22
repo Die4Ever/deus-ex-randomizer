@@ -1,7 +1,7 @@
 //=============================================================================
 // MJ12Clone2.
 //=============================================================================
-class MJ12Clone2 extends #var(prefix)MJ12Troop;
+class MJ12Clone2 extends DXRMJ12TroopBase;
 // buff BaseAccuracy, nerf Health
 defaultproperties
 {

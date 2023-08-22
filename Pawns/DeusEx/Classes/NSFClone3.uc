@@ -1,7 +1,7 @@
 //=============================================================================
 // NSFClone3.
 //=============================================================================
-class NSFClone3 extends #var(prefix)Terrorist;
+class NSFClone3 extends DXRTerroristBase;
 // buff MinHealth, nerf Health
 defaultproperties
 {

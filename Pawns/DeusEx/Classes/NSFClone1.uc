@@ -1,7 +1,7 @@
 //=============================================================================
 // NSFClone1.
 //=============================================================================
-class NSFClone1 extends #var(prefix)Terrorist;
+class NSFClone1 extends DXRTerroristBase;
 // buff MinHealth, nerf GroundSpeed
 defaultproperties
 {

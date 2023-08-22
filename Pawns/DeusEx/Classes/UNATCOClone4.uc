@@ -1,7 +1,7 @@
 //=============================================================================
 // UNATCOClone4.
 //=============================================================================
-class UNATCOClone4 extends #var(prefix)UNATCOTroop;
+class UNATCOClone4 extends DXRUNATCOTroopBase;
 // buff Health, nerf BaseAccuracy
 defaultproperties
 {

@@ -1,7 +1,7 @@
 //=============================================================================
 // NSFClone4.
 //=============================================================================
-class NSFClone4 extends #var(prefix)Terrorist;
+class NSFClone4 extends DXRTerroristBase;
 // tong, buff GroundSpeed, nerf BaseAccuracy
 defaultproperties
 {

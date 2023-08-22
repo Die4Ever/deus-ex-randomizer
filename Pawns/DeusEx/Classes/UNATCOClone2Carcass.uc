@@ -1,7 +1,7 @@
 //=============================================================================
 // UNATCOClone2Carcass.
 //=============================================================================
-class UNATCOClone2Carcass extends #var(DeusExPrefix)Carcass;
+class UNATCOClone2Carcass extends DXRandoCarcass;
 
 defaultproperties
 {
