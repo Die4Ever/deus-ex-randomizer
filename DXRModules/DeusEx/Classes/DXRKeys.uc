@@ -244,6 +244,20 @@ function revision_keys_rules()
     keys_rules[i].allow = true;
     i++;
 
+    keys_rules[i].map = "03_NYC_AIRFIELD";
+    keys_rules[i].item_name = 'eastgate';
+    keys_rules[i].min_pos = vect(1915, 2332, -999999);
+    keys_rules[i].max_pos = vect(5579, 4031, 999999);
+    keys_rules[i].allow = false;
+    i++;
+
+    keys_rules[i].map = "03_NYC_AIRFIELD";
+    keys_rules[i].item_name = 'eastgate';
+    keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+    keys_rules[i].max_pos = vect(999999, 999999, 999999);
+    keys_rules[i].allow = true;
+    i++;
+
     keys_rules[i].map = "03_NYC_747";
     keys_rules[i].item_name = 'lebedevdoor';
     keys_rules[i].min_pos = vect(340, -312, 140);//ban the annoying spot behind the crates
@@ -269,6 +283,63 @@ function revision_keys_rules()
     keys_rules[i].map = "10_Paris_Chateau";
     keys_rules[i].item_name = 'duclare_chateau';
     keys_rules[i].min_pos = vect(-99999, -99999, -125);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = true;
+    i++;
+
+    keys_rules[i].map = "11_Paris_Cathedral";
+    keys_rules[i].item_name = 'cath_maindoors';
+    keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = true;
+    i++;
+
+    keys_rules[i].map = "11_Paris_Cathedral";
+    keys_rules[i].item_name = 'cathedralgatekey';
+    keys_rules[i].min_pos = vect(-99999, -2664, -99999);
+    keys_rules[i].max_pos = vect(-3614, 99999, 99999);
+    keys_rules[i].allow = true;
+    i++;
+
+    keys_rules[i].map = "11_Paris_Cathedral";
+    keys_rules[i].item_name = 'cathedralgatekey';
+    keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = false;
+    i++;
+
+    //disallow this weird locked room under water
+    keys_rules[i].map = "12_Vandenberg_Tunnels";
+    keys_rules[i].item_name = 'control_room';
+    keys_rules[i].min_pos = vect(-3521.955078, 3413.110352, -3246.771729);
+    keys_rules[i].max_pos = vect(-2844.053467, 3756.776855, -3097.210205);
+    keys_rules[i].allow = false;
+    i++;
+
+    keys_rules[i].map = "12_Vandenberg_Tunnels";
+    keys_rules[i].item_name = 'maintenancekey';
+    keys_rules[i].min_pos = vect(-3521.955078, 3413.110352, -3246.771729);
+    keys_rules[i].max_pos = vect(-2844.053467, 3756.776855, -3097.210205);
+    keys_rules[i].allow = false;
+    i++;
+
+    keys_rules[i].map = "12_Vandenberg_Tunnels";
+    keys_rules[i].item_name = 'control_room';
+    keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = true;
+    i++;
+
+    keys_rules[i].map = "12_Vandenberg_Tunnels";
+    keys_rules[i].item_name = 'maintenancekey';
+    keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = true;
+    i++;
+
+    keys_rules[i].map = "15_area51_entrance";
+    keys_rules[i].item_name = 'Factory';
+    keys_rules[i].min_pos = vect(-3000, -99999, -99999);
     keys_rules[i].max_pos = vect(99999, 99999, 99999);
     keys_rules[i].allow = true;
     i++;
