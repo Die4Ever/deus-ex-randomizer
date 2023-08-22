@@ -150,6 +150,7 @@ function AnyEntry()
 
     FixSamCarter();
     FixCleanerBot();
+    FixRevisionJock();
     SetSeed( "DXRFixup AnyEntry missions" );
     if(#defined(mapfixes))
         AnyEntryMapFixes();
@@ -337,6 +338,16 @@ function FixSamCarter()
     foreach AllActors(class'SamCarter', s) {
         RemoveFears(s);
     }
+}
+
+function FixRevisionJock()
+{
+#ifdef revision
+    local JockHelicopter jock;
+    foreach AllActors(class'JockHelicopter',jock){
+        jock.bImportant=true;
+    }
+#endif
 }
 
 function FixCleanerBot()
