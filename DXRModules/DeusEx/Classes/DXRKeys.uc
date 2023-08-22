@@ -5,7 +5,7 @@ var config safe_rule keys_rules[64];
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,5,2,4) ) {
+    if( ConfigOlderThan(2,5,2,5) ) {
         for(i=0; i<ArrayCount(keys_rules); i++) {
             keys_rules[i].map = "";
         }
@@ -335,6 +335,106 @@ function revision_keys_rules()
     keys_rules[i].min_pos = vect(-99999, -99999, -99999);
     keys_rules[i].max_pos = vect(99999, 99999, 99999);
     keys_rules[i].allow = true;
+    i++;
+
+    //disallow the crew quarters
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'crewkey';
+    keys_rules[i].min_pos = vect(-99999, 3034, -99999);
+    keys_rules[i].max_pos = vect(3633, 99999, 99999);
+    keys_rules[i].allow = false;
+    i++;
+
+    //disallow west (smaller X) of the flooded area
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'crewkey';
+    keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+    keys_rules[i].max_pos = vect(-414.152771, 99999, 99999);
+    keys_rules[i].allow = false;
+    i++;
+
+    //allow anything to the west (smaller X) of the crew quarters, except for the flooded area
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'crewkey';
+    keys_rules[i].min_pos = vect(-414.152771, -99999, -99999);
+    keys_rules[i].max_pos = vect(4856, 99999, 99999);
+    keys_rules[i].allow = true;
+    i++;
+
+    //disallow flooded area
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'olstorage';
+    keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+    keys_rules[i].max_pos = vect(-414.152771, 99999, 99999);
+    keys_rules[i].allow = false;
+    i++;
+
+    //disallow flooded area
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'Glab';
+    keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+    keys_rules[i].max_pos = vect(-414.152771, 99999, 99999);
+    keys_rules[i].allow = false;
+    i++;
+
+    //disallow storage closet
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'olstorage';
+    keys_rules[i].min_pos = vect(528.007446, -99999, -1653.906006);
+    keys_rules[i].max_pos = vect(1047.852173, 436.867401, 99999);
+    keys_rules[i].allow = false;
+    i++;
+
+    //disallow below storage
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'Glab';
+    keys_rules[i].min_pos = vect(500, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, -1644.895142);
+    keys_rules[i].allow = false;
+    i++;
+
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'olstorage';
+    keys_rules[i].min_pos = vect(500, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, -1644.895142);
+    keys_rules[i].allow = false;
+    i++;
+
+    //disallow east of greasel lab door
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'Glab';
+    keys_rules[i].min_pos = vect(1879, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = false;
+    i++;
+
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'olstorage';
+    keys_rules[i].min_pos = vect(1879, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = false;
+    i++;
+
+    //allow before greasel lab
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'olstorage';
+    keys_rules[i].min_pos = vect(-414.152771, -99999, -99999);
+    keys_rules[i].max_pos = vect(1888, 1930.014771, 99999);
+    keys_rules[i].allow = true;
+    i++;
+
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'NeoCarcharod';
+    keys_rules[i].min_pos = vect(-99999, -99999, -2400);
+    keys_rules[i].max_pos = vect(512, 0, 99999);
+    keys_rules[i].allow = true;
+    i++;
+
+    keys_rules[i].map = "14_oceanlab_lab";
+    keys_rules[i].item_name = 'NeoCarcharod';
+    keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+    keys_rules[i].max_pos = vect(99999, 99999, 99999);
+    keys_rules[i].allow = false;
     i++;
 
     keys_rules[i].map = "15_area51_entrance";
