@@ -42,12 +42,14 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 function InitDefaults()
 {
     InitVersion();
-
-    seed = 0;
-    NewPlaythroughId();
-    if( dxr != None ) RollSeed();
-    autosave = 2;
     if(!#defined(hx)) {
+        seed = 0;
+        NewPlaythroughId();
+        if( dxr != None) {
+            RollSeed();
+        }
+        autosave = 2;
+
         gamemode = 0;
         loadout = 0;
         crowdcontrol = 0;
