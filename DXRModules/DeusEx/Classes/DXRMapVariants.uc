@@ -99,6 +99,19 @@ static function string GetDirtyMapName(string map, vector v)
     return map;
 }
 
+
+static function bool IsRevisionMaps()
+{
+    if(!#defined(revision)){
+        return False;
+    }
+
+    //Check to see if Revision is using Revision or Vanilla maps...
+    //TODO!
+
+    return True;
+}
+
 function int GetMirrorMapsSetting()
 {
     return dxr.flags.mirroredmaps;
