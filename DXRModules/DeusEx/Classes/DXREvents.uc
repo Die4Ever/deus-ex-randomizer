@@ -92,7 +92,7 @@ function SetWatchFlags() {
 
     local bool RevisionMaps;
 
-    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps();
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     switch(dxr.localURL) {
     case "00_TrainingFinal":
