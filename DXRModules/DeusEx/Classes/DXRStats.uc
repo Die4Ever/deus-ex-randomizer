@@ -27,7 +27,6 @@ function AnyEntry()
             total += missions[i];
         }
 
-        // don't do this for mission 1 since the time will be 0 lol
         if(dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber <= 15) {
             msg = "Total IGT: " $ fmtTimeToString(total);
             for(i=dxr.dxInfo.MissionNumber; i>0; i--) {
