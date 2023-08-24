@@ -28,9 +28,9 @@ function AnyEntry()
         }
 
         // don't do this for mission 1 since the time will be 0 lol
-        if(dxr.dxInfo.MissionNumber > 1 && dxr.dxInfo.MissionNumber <= 15 && missions[dxr.dxInfo.MissionNumber] == 0) {
+        if(dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber <= 15) {
             msg = "Total IGT: " $ fmtTimeToString(total);
-            for(i=dxr.dxInfo.MissionNumber-1; i>0; i--) {
+            for(i=dxr.dxInfo.MissionNumber; i>0; i--) {
                 if(missions[i] > 0) {
                     msg = msg $ ", Mission " $i$ ": " $ fmtTimeToString(missions[i]);
                     break;
