@@ -87,7 +87,12 @@ function SetWatchFlags() {
     local #var(prefix)Greasel g;
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)Poolball ball;
+    local #var(prefix)DataLinkTrigger dlt;
     local int i;
+
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     switch(dxr.localURL) {
     case "00_TrainingFinal":
@@ -117,9 +122,13 @@ function SetWatchFlags() {
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
         WatchFlag('ManBathroomBarks_Played');
-        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
-
-        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+        if(RevisionMaps){
+            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
+            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
+        } else {
+            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+        }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
 
@@ -193,9 +202,15 @@ function SetWatchFlags() {
         break;
     case "03_NYC_UNATCOHQ":
         WatchFlag('SimonsAssassination');
-        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
-        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+        if(RevisionMaps){
+            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
+            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
+        } else {
+            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+        }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
+
         break;
     case "03_NYC_AIRFIELD":
         WatchFlag('BoatDocksAmbrosia');
@@ -277,8 +292,13 @@ function SetWatchFlags() {
         WatchFlag('MostWarehouseTroopsDead');
         break;
     case "04_NYC_UNATCOHQ":
-        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
-        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+        if(RevisionMaps){
+            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
+            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
+        } else {
+            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+        }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
         break;
     case "04_NYC_UNATCOISLAND":
@@ -309,9 +329,13 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'BrowserHistoryCleared',cp.Location);
 
-        bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
-
-        bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+        if(RevisionMaps){
+            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
+            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
+        } else {
+            bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
+            bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+        }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
         break;
@@ -362,9 +386,9 @@ function SetWatchFlags() {
                 lcf.bImportant = true;
         }
 
-        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(0,438,-267),200,40);
-        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(220,438,-267),200,40);
-        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(448,438,-267),200,40);
+        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(0,438,-267),180,40);
+        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(220,438,-267),180,40);
+        bt = class'BingoTrigger'.static.Create(self,'EnterQuickStop',vectm(448,438,-267),180,40);
 
         bt = class'BingoTrigger'.static.Create(self,'LuckyMoneyFreezer',vectm(-1615,-2960,-343),200,40);
 
@@ -549,6 +573,9 @@ function SetWatchFlags() {
         WatchFlag('ShipPowerCut');// sparks of electricity come off that thing like lightning!
         bt = class'BingoTrigger'.static.Create(self,'FanTop',vectm(-2935,50,840),200,50);
 
+        WatchFlag('WatchKeys_Locker1');
+        WatchFlag('WatchKeys_Locker2');
+
         break;
     case "09_NYC_GRAVEYARD":
         WatchFlag('GaveDowdAmbrosia');
@@ -600,6 +627,24 @@ function SetWatchFlags() {
         WatchFlag('ChateauInBethsRoom');
         WatchFlag('ChateauInNicolettesRoom');
 
+        //Nicolette's House Tour
+        WatchFlag('NicoletteInUnderground_Played');
+        WatchFlag('NicoletteInUnderground2_Played');
+        WatchFlag('NicoletteInStudy_Played');
+        WatchFlag('NicoletteInLivingRoom_Played');
+        WatchFlag('NicoletteInKeyRoom_Played');
+        WatchFlag('NicoletteInGarden_Played');
+        WatchFlag('NicoletteInGarden2_Played');
+        WatchFlag('NicoletteInBethsRoom_Played');
+
+        //NanoKeys
+        WatchFlag('WatchKeys_beth_room');
+        WatchFlag('WatchKeys_nico_room');
+        WatchFlag('WatchKeys_duclare_chateau');
+
+        bt = class'BingoTrigger'.static.Create(self,'nico_fireplace',vectm(0,0,0));
+        bt = class'BingoTrigger'.static.Create(self,'dumbwaiter',vectm(0,0,0));
+
 #ifdef vanilla
         bt = class'BingoTrigger'.static.Create(self,'BethsPainting',vectm(0,0,0));
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
@@ -620,6 +665,14 @@ function SetWatchFlags() {
         bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
 
         bt = class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(771,-808,-706),500,180);
+
+        bt = class'BingoTrigger'.static.Create(self,'secretdoor01',vectm(0,0,0));
+
+        foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
+            if (dlt.datalinkTag=='DL_knightslibrary'){
+                bt = class'BingoTrigger'.static.Create(self,'CathedralLibrary',dlt.Location,dlt.CollisionRadius,dlt.CollisionHeight);
+            }
+        }
 
         break;
     case "11_PARIS_EVERETT":
@@ -647,7 +700,11 @@ function SetWatchFlags() {
         break;
     case "12_VANDENBERG_GAS":
         bt = class'BingoTrigger'.static.Create(self,'support1',vectm(0,0,0)); //This gets hit when you blow up the gas pumps
-        bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(984,528,-700),150,10);
+        if (RevisionMaps){
+            bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(1222,1078,-700),150,10);
+        } else {
+            bt = class'BingoTrigger'.static.Create(self,'GasStationCeiling',vectm(984,528,-700),150,10);
+        }
         break;
     case "12_VANDENBERG_CMD":
         WatchFlag('MeetTimBaker_Played');
@@ -684,7 +741,7 @@ function SetWatchFlags() {
             }
         }
         bt = class'BingoTrigger'.static.Create(self,'SiloSlide',vectm(25,-4350,165),40,40);
-        bt = class'BingoTrigger'.static.Create(self,'SiloWaterTower',vectm(-1212,-3427,1992),200,40);
+        bt = class'BingoTrigger'.static.Create(self,'SiloWaterTower',vectm(-1212,-3427,1992),240,40);
         break;
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
@@ -694,9 +751,13 @@ function SetWatchFlags() {
         bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1928.762573,3721.919189,-2507.888184),60,40);
         bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1928.762573,3721.919189,-2247.888184),60,40);
-        bt.bDestroyOthers=False;
-
+        if (RevisionMaps){
+            bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(2056,3825,-2212),75,80);
+            bt.bDestroyOthers=False;
+        } else {
+            bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1928.762573,3721.919189,-2247.888184),60,40);
+            bt.bDestroyOthers=False;
+        }
         bt = class'BingoTrigger'.static.Create(self,'OceanLabGreenBeacon',vectm(1543,3522,-1847),200,200);
 
         break;
@@ -976,9 +1037,28 @@ simulated function bool WatchGuntherKillSwitch()
     return False;
 }
 
+simulated function bool CheckForNanoKey(String keyID)
+{
+
+    local name keyName;
+
+    if (player()==None){
+        return False;
+    }
+
+    if (player().KeyRing==None){
+        return False;
+    }
+
+    keyName = StringToName(keyID);
+
+    return player().KeyRing.HasKey(keyName);
+}
+
 simulated function Timer()
 {
     local int i,j,num;
+    local bool FlagTriggered;
 
     if( dxr == None || dxr.flagbase == None ) {
         return;
@@ -991,24 +1071,15 @@ simulated function Timer()
             continue;
         }
 
+        FlagTriggered=False;
         if( watchflags[i] == 'LeoToTheBar' ) {
             if (ClassInLevel(class'#var(prefix)TerroristCommanderCarcass')){
-                SendFlagEvent(watchflags[i]);
-                num_watchflags--;
-                watchflags[i] = watchflags[num_watchflags];
-                watchflags[num_watchflags]='';
-                i--;
-                continue;
+                FlagTriggered=True;
             }
         } else if( watchflags[i] == 'GuntherKillswitch' ) {
             if (WatchGuntherKillSwitch()){
-                SendFlagEvent(watchflags[i]);
-                num_watchflags--;
-                watchflags[i] = watchflags[num_watchflags];
-                watchflags[num_watchflags]='';
-                i--;
+                FlagTriggered=True;
                 _MarkBingo("GuntherHermann_Dead");
-                continue;
             }
         } else if( watchflags[i] == 'PlayPool' ) {
             num = PoolBallsSunk();
@@ -1026,16 +1097,15 @@ simulated function Timer()
             }
         } else if( watchflags[i] == 'FlowersForTheLab' ) {
             if (ClassInLevel(class'#var(prefix)Flowers')){
-                SendFlagEvent(watchflags[i]);
-                num_watchflags--;
-                watchflags[i] = watchflags[num_watchflags];
-                watchflags[num_watchflags]='';
-                i--;
-                continue;
+                FlagTriggered=True;
+            }
+        } else if (InStr(watchflags[i],"WatchKeys_")!=-1) {
+            if (CheckForNanoKey(Mid(watchflags[i],10))){
+                FlagTriggered=True;
             }
         }
 
-        if( dxr.flagbase.GetBool(watchflags[i]) ) {
+        if( dxr.flagbase.GetBool(watchflags[i]) || FlagTriggered ) {
             SendFlagEvent(watchflags[i]);
             num_watchflags--;
             watchflags[i] = watchflags[num_watchflags];
@@ -2048,6 +2118,22 @@ function string RemapBingoEvent(string eventname)
         case "05_EmailMenu_JCD":
         case "06_EmailMenu_JCDenton":
             return "ReadJCEmail";
+        case "NicoletteInUnderground_Played":
+        case "NicoletteInUnderground2_Played":
+        case "NicoletteInStudy_Played":
+        case "NicoletteInLivingRoom_Played":
+        case "NicoletteInKeyRoom_Played":
+        case "NicoletteInGarden_Played":
+        case "NicoletteInGarden2_Played":
+        case "NicoletteInBethsRoom_Played":
+            return "NicoletteHouseTour";
+        case "WatchKeys_beth_room":
+        case "WatchKeys_nico_room":
+        case "WatchKeys_duclare_chateau":
+            return "DuClareKeys";
+        case "WatchKeys_Locker1":
+        case "WatchKeys_Locker2":
+            return "ShipLockerKeys";
         default:
             return eventname;
     }
@@ -2114,6 +2200,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
 {
     local string msg;
     switch(event){
+        case "Free Space":
+            return "Don't worry about it!  This one's free!";
         case "TerroristCommander_Dead":
             return "Kill Leo Gold, the terrorist commander on Liberty Island";
         case "TiffanySavage_Dead":
@@ -2284,162 +2372,419 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "KnowsAnnasKillphrase":
             return "Learn both parts of Anna's killphrase in UNATCO HQ after escaping from the MJ12 lab.  The killphrase is split across two computers in HQ.  There will be a datacube on Manderley's desk with hints to the location of the parts of the killphrase.";
         case "Area51FanShaft":
+            return "In Area 51, jump down the ventilation shaft inside the hangar.";
         case "PoliceVaultBingo":
+            return "Enter the police vault in the Wan Chai Market.";
         case "SunkenShip":
+            return "Enter the ship that has sunk off the North Dock of Liberty Island (Near Harley Filben)";
         case "SpinShipsWheel":
+            msg="Spin enough ships wheels.  ";
+            if (mission<=1){
+                msg=msg$"There is a ships wheel on the wall of the hut Harley Filben is in.";
+            }else if (mission<=6){
+                msg=msg$"There is a ships wheel on the smugglers ship in the Wan Chai canals, as well as on the wall of the Boat Persons house (off the side of the canal)";
+            }else if (mission<=9){
+                msg=msg$"There is a ships wheel on the bridge of the Superfreighter.";
+            }
+            return msg;
         case "ActivateVandenbergBots":
+            return "Activate both military bots in Vandenberg.  The two generator keypads must be activated before you can enter the building.";
         case "TongsHotTub":
+            return "Jump into the tub of water in Tracer Tong's hideout.";
         case "JocksToilet":
+            return "Use the toilet in Jock's Tonnochi Road apartment.  The bathroom is behind a sliding door next to the kitchen.";
         case "Greasel_ClassDead":
+            return "Kill enough greasels.  You must kill the greasels yourself.";
         case "support1":
+            return "Blow up the gas station.";
         case "UNATCOTroop_ClassDead":
+            return "Kill enough UNATCO Troopers.  You must kill them yourself.";
         case "Terrorist_ClassDead":
+            return "Kill enough NSF Troops.  You must kill them yourself.";
         case "MJ12Troop_ClassDead":
+            return "Kill enough MJ12 Troopers.  You must kill them yourself.";
         case "MJ12Commando_ClassDead":
+            return "Kill enough MJ12 Commandos.  You must kill them yourself.";
         case "Karkian_ClassDead":
+            return "Kill enough karkians.  You must kill them yourself.";
         case "MilitaryBot_ClassDead":
+            return "Destroy enough military bots.  You must destroy them yourself.  Disabling them with EMP grenades does not count.";
         case "VandenbergToilet":
+            return "Use the one toilet in Vandenberg.  It is located inside the Comm building outside.";
         case "BoatEngineRoom":
+            return "Enter the small room at the back of the smugglers boat in the Hong Kong canals.  The room can be accessed by using one of the hanging lanterns near the back of the boat.";
         case "SecurityBot2_ClassDead":
+            return "Destroy enough of the two legged walking security bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "SecurityBotSmall_ClassDead":
+            return "Destroy enough of the smaller, treaded security bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "SpiderBot_ClassDead":
+            return "Destroy enough spider bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "HumanStompDeath":
+            return "Jump on enough humans heads until they die.  Note that people will not take stomp damage unless they are hostile to you, so you may need to hit them first to make them angry.";
         case "Rat_ClassDead":
+            return "Kill enough rats.";
         case "UNATCOTroop_ClassUnconscious":
+            return "Knock out enough UNATCO Troopers.  You can knock them out with things like the baton, prod, or tranq darts.";
         case "Terrorist_ClassUnconscious":
+            return "Knock out enough NSF Troops.  You can knock them out with things like the baton, prod, or tranq darts.";
         case "MJ12Troop_ClassUnconscious":
+            return "Knock out enough MJ12 Troopers.  You can knock them out with things like the baton, prod, or tranq darts.";
         case "MJ12Commando_ClassUnconscious":
+            return "Knock out enough MJ12 Commandos.  You can knock them out with things like the baton, prod, or tranq darts.";
         case "purge":
+            return "Use the keypad in the vents of the Hong Kong MJ12 Helibase to release poison gas into the barracks.";
         case "ChugWater":
+            return "Drink the entire contents of a water fountain or water cooler as quickly as possible.";
         case "ChangeClothes":
+            return "Use hanging clothes to change your appearance!";
         case "arctrigger":
+            return "Disable the arcing electricity in the corner of the LaGuardia airfield.";
         case "LeoToTheBar":
+            return "Bring the body of Leo Gold (The terrorist commander from Liberty Island) to any bar in the game (New York, Hong Kong, Paris) and set him down.  You can also bring him to the bottom of the Ocean Lab, since it is under many BARs of pressure.";
         case "KnowYourEnemy":
+            return "Read enough 'Know Your Enemy' articles on the public computer in the UNATCO break room.";
         case "09_NYC_DOCKYARD--796967769":
+            return "Find Jenny's number (867-5309) somewhere in the outer area of the Brooklyn Naval Yards on a datacube.";
         case "JacobsShadow":
+            msg="Read enough chapters of Jacob's Shadow.  ";
+            if (mission<=2){
+                msg=msg$"There is a chapter in the MJ12 sewer base in Hell's Kitchen.";
+            } else if (mission<=3){
+                msg=msg$"There is a chapter in the LaGuardia Helibase.";
+            } else if (mission<=4){
+                msg=msg$"There is a chapter in the 'Ton hotel.";
+            } else if (mission<=6){
+                msg=msg$"There is a chapter in the Wan Chai Market.";
+            } else if (mission<=9){
+                msg=msg$"There is a chapter in the lower decks of the Superfreighter.";
+            } else if (mission<=10){
+                msg=msg$"There is a chapter in the DuClare Chateau.";
+            } else if (mission<=12){
+                msg=msg$"There is a chapter in Vandenberg Command and the Computer area.";
+            } else if (mission<=15){
+                msg=msg$"There is a chapter in Area 51 on the surface, in Sector 2, and in Sector 3.";
+            }
+            return msg;
         case "ManWhoWasThursday":
+            msg="Read enough chapters of The Man Who Was Thursday.  ";
+            if (mission<=2){
+                msg=msg$"There is a chapter inside the 'Ton hotel and in the sewers.";
+            } else if (mission<=3){
+                msg=msg$"There is a chapter in the LaGuardia helibase.";
+            } else if (mission<=4){
+                msg=msg$"There is a chapter inside the 'Ton hotel.";
+            } else if (mission<=10){
+                msg=msg$"There is a chapter in the streets before entering the Paris catacombs.";
+            } else if (mission<=12){
+                msg=msg$"There is a chapter in Vandenberg Command.";
+            } else if (mission<=14){
+                msg=msg$"There is a chapter in the Ocean Lab.";
+            } else if (mission<=15){
+                msg=msg$"There is a chapter in Sector 3 of Area 51.";
+            }
+            return msg;
         case "GreeneArticles":
+            msg="Read enough news articles written by Joe Greene of the Midnight Sun.  ";
+            if (mission<=1){
+                msg=msg$"There are two different articles on Liberty Island and in UNATCO HQ.";
+            } else if (mission<=2){
+                msg=msg$"There is an article somewhere around the NSF warehouse as well as in the Underworld bar.";
+            } else if (mission<=3){
+                msg=msg$"There is a single article in Brooklyn Bridge Station, in the helibase, and in the 747.";
+            } else if (mission<=8){
+                msg=msg$"There is an article in the streets of Hell's Kitchen.";
+            }
+            return msg;
         case "MoonBaseNews":
+            msg="Read an article talking about the mining complex located on the moon.  ";
+            if (mission<=2){
+                msg=msg$"There is an article in the streets of Hell's Kitchen.";
+            } else if (mission<=3){
+                msg=msg$"There is an article in the LaGuardia Helibase.";
+            } else if (mission<=6){
+                msg=msg$"There is an article in the Wan Chai Market as well as the Lucky Money.";
+            }
+            return msg;
         case "06_Datacube05":
+            return "Find the datacube on Tonnochi Road from Louis Pan reminding Maggie that he will never forget her birthday again.";
         case "Gray_ClassDead":
+            return "Kill enough Grays.  You must kill them yourself.";
         case "CloneCubes":
+            return "Read enough datacubes regarding the cloning projects at Area 51.  There are 8 datacubes scattered through Sector 4 of Area 51.";
         case "blast_door_open":
+            return "Open the main blast doors of the Area 51 bunker by finding the security computer somewhere on the surface.";
         case "SpinningRoom":
+            return "Pass through the center of the spinning room in the ventilation system of the Brooklyn Naval Yards.";
         case "MolePeopleSlaughtered":
+            return "Kill most of the friendly mole people in the tunnels leading to Lebedev's private terminal at LaGuardia.";
         case "surrender":
+            return "Find the leader of the NSF in the mole people tunnels and let him surrender.";
         case "nanocage":
+            return "Open the greasel cages in the MJ12 lab underneath UNATCO HQ.";
         case "unbirth":
+            return "Find the cloning tank in Sector 4 of Area 51 that does not have a lid and go swimming in it.";
         case "StolenAmbrosia":
+            msg="Find enough stolen barrels of ambrosia.  ";
+            if (mission<=2){
+                msg=msg$"There is a barrel of ambrosia somewhere in Battery Park.";
+            } else if (mission<=3){
+                msg=msg$"There are three barrels of ambrosia.  One is in the LaGuardia helibase.  One is in the airfield.  One is either in the hangar or on the 747.";
+            }
+            return msg;
         case "AnnaKilledLebedev":
+            return "Let Anna kill Lebedev by walking away without killing him yourself.";
         case "PlayerKilledLebedev":
+            return "Murder Juan Lebedev on the 747 of your own volition.";
         case "JuanLebedev_Unconscious":
+            return "Knock Lebedev out instead of killing him.";
         case "BrowserHistoryCleared":
+            return "While escaping UNATCO, log into the computer in your office and clear your browser history.";
         case "AnnaKillswitch":
+            return "After finding the pieces of Anna's killphrase, actually use it against her.";
         case "AnnaNavarre_DeadM3":
+            return "Kill Anna Navarre on the 747.";
         case "AnnaNavarre_DeadM4":
+            return "Kill Anna Navarre after sending the signal for the NSF but before being captured by UNATCO.";
         case "AnnaNavarre_DeadM5":
+            return "Kill Anna Navarre in UNATCO HQ.";
         case "SimonsAssassination":
+            return "Watch Walton Simons' full interrogation of the captured NSF soldiers.";
         case "AlliesKilled":
+            return "Kill enough people who were originally your ally";
         case "MaySung_Dead":
+            return "Kill May Sung, Maggie Chow's maid.";
         case "MostWarehouseTroopsDead":
+            return "Kill most of the UNATCO Troops securing the NSF HQ.  This can be done before sending the signal for the NSF or after.";
         case "CleanerBot_ClassDead":
+            return "Destroy enough cleaner bots.  Disabling them with EMP does not count.";
         case "MedicalBot_ClassDead":
+            return "Destroy enough medical bots.  Disabling them with EMP does not count.";
         case "RepairBot_ClassDead":
+            return "Destroy enough repair bots.  Disabling them with EMP does not count.";
         case "DrugDealer_Dead":
+            return "Kill Rock, the drug dealer who lives in Brooklyn Bridge station.";
         case "botordertrigger":
+            return "Set off the laser tripwires in Smuggler's hideout.";
         case "IgnitedPawn":
+            return "Set enough people on fire.";
         case "GibbedPawn":
+            return "Blow up enough people.  If they turn into chunks of meat, it counts.";
         case "IcarusCalls_Played":
+            return "Answer the phone in the building across from the entrance to the catacombs in Paris.";
         case "AlexCloset":
+            return "Enter Alex Jacobson's storage closet in UNATCO HQ.  The code to the door can be found in his email during the first mission.";
         case "BackOfStatue":
+            return "Climb out along the balcony ledges of the Statue of Liberty and go around to the side facing UNATCO HQ.";
         case "CommsPit":
+            return "Enter the pit outside of UNATCO HQ enough times.";
         case "StatueHead":
+            return "Walk up to where the head of the Statue of Liberty is being displayed.";
         case "CraneControls":
+            return "Move the crane next to the Superfreighter (inside the dock) by going up the elevator on the dockside and hitting the button at the top.";
         case "CraneTop":
+            return "Walk to the ends of the two cranes that are on the deck of the Superfreighter itself.";
         case "CaptainBed":
+            return "Enter the captain's quarters on the Superfreighter and jump on his bed.";
         case "FanTop":
+            return "Enter the ventilation shaft in the lower decks of the Superfreighter and let yourself get blown to the top of the shaft.";
         case "LouisBerates":
+            return "Sneak behind the doorman of the Porte De L'Enfer, the club in Paris.";
         case "EverettAquarium":
+            return "Enter the aquarium in Morgan Everett's house.";
         case "TrainTracks":
+            return "Jump onto the train tracks in Paris.";
         case "OceanLabCrewChamber":
+            return "Visit enough of the crew chambers in the Ocean Lab.";
         case "HeliosControlArms":
+            return "Jump down onto the arms sticking out of the wall below where you talk to Helios in Area 51.";
         case "TongTargets":
+            return "Shoot at the targets in the shooting range in Tracer Tong's hideout.";
         case "WanChaiStores":
+            return "Visit enough of the stores in the Wan Chai market by walking up to them.";
         case "HongKongBBall":
+            return "Throw the basketball into the net on the rooftop of the MJ12 helibase in Hong Kong.";
         case "CanalDrugDeal":
+            return "Find the two people making a drug deal in the Hong Kong canals and listen in.";
         case "HongKongGrays":
+            return "Enter the enclosure in the Hong Kong MJ12 Lab containing the grays.";
         case "EnterQuickStop":
+            return "Enter the Quick Stop convenience store outside of the Lucky Money in Hong Kong.";
         case "LuckyMoneyFreezer":
+            return "Enter the freezer in the back of the Lucky Money club in Hong Kong.";
         case "TonnochiBillboard":
+            return "Jump onto the 'Big Top Cigarettes' billboard hanging above the entrance in Tonnochi Road.  This sign has a big picture of a clown on it, and says 'NO JOKE' at the top.";
         case "AirfieldGuardTowers":
+            return "Enter the top floor of enough of the guard towers in the corners of the LaGuardia airfield.";
         case "mirrordoor":
+            return "Open (or destroy) the mirror acting as the door to the secret stash in Smuggler's hideout.";
         case "MolePeopleWater":
+            return "Find the pool of water in the Mole People tunnels and jump into it.";
         case "botorders2":
+            return "Use the security computer in the upper floor of the MJ12 Robot Maintenance facility to alter the AI of the security bots.";
         case "BathroomFlags":
+            return "Place a flag in Manderley's bathroom enough times.  This can only be done once per visit.";
         case "SiloSlide":
+            return "When entering the missile silo, open the vent in the floor and go down the slide that drops you into the water underneath the missile.";
         case "SiloWaterTower":
+            return "Go to the top of the water tower at the missile silo.";
         case "TonThirdFloor":
+            return "Climb up the elevator shaft in the 'Ton hotel to the third floor.";
         case "Set_flag_helios":
+            return "Enter the Aquinas Control Room in sector 4 of Area 51 and engage the primary router by pressing the buttons on each side of the room and using the computer.";
         case "coolant_switch":
+            return "Flush the reactor coolant in the coolant area on the bottom floor of Sector 4 of Area 51.";
         case "BlueFusionReactors":
+            return "Deactivate all four of the blue fusion reactors in Sector 4 of Area 51.  Alex will give you three of the four digits of the code and you have to guess the last one.";
         case "A51UCBlocked":
+            return "Close the doors to enough of the UCs in Sector 4 of Area 51.";
         case "VandenbergReactorRoom":
+            return "Enter the flooded reactor room in the tunnels underneath Vandenberg.";
         case "VandenbergServerRoom":
+            return "Enter the locked server room in the computer section of Vandenberg.";
         case "VandenbergWaterTower":
+            return "Climb to the top of the water tower at the back of Vandenberg.";
         case "Cremation":
+            return "Kill (or knock out) a chef in Paris, then throw his body either into a fireplace or onto a stovetop.";
         case "OceanLabGreenBeacon":
+            return "Swim to the green beacon on top of the Ocean Lab crew module.  The green beacon can be seen out the window of the sub bay of the lab itself.";
         case "PageTaunt_Played":
+            return "After recovering the schematics for the Universal Constructor at the bottom of the Ocean Lab, talk to Bob Page on the communicator on the way out.";
         case "JerryTheVentGreasel_Dead":
+            return "Kill the greasel in the vents over the main hall of the MJ12 Lab in Hong Kong.  His name is Jerry and he is a good boy.";
         case "BiggestFan":
+            return "Destroy the large fan in the ventilation ducts of the Brooklyn Naval Yards.";
         case "Sodacan_Activated":
+            return "Chug enough cans of soda.";
         case "BallisticArmor_Activated":
+            return "Equip enough ballistic armour.";
         case "Flare_Activated":
+            return "Light enough flares.";
         case "VialAmbrosia_Activated":
+            return "After finding the vial of ambrosia somewhere on the upper decks of the superfreighter, drink it instead of saving it for Stanton Dowd.";
         case "Binoculars_Activated":
+            return "Find and use a pair of binoculars.";
         case "HazMatSuit_Activated":
+            return "Use enough hazmat suits.";
         case "AdaptiveArmor_Activated":
+            return "Wear enough thermoptic camo.";
         case "DrinkAlcohol":
+            return "Get absolutely tanked and drink enough alcohol.  This can be liquor, a forty, or wine.";
         case "ToxicShip":
+            return "Find and enter the low, flat boat in the Hong Kong canals.  Note that the interior of the boat is filled with toxic gas.";
         case "ComputerHacked":
+            return "Use your computer skills to hack enough computers.";
         case "TechGoggles_Activated":
+            return "Wear enough pairs of tech goggles.";
         case "Rebreather_Activated":
+            return "Equip enough rebreathers.";
         case "PerformBurder":
+            return "Kill enough birds.  These can be either pigeons or seagulls.";
         case "GoneFishing":
+            return "Kill enough fish.";
         case "FordSchick_Dead":
+            return "Kill Ford Schick.  Note that you can do this after rescuing him.";
         case "ChateauInComputerRoom":
+            return "Make your way down to Beth DuClare's computer station in the basement of the DuClare chateau.";
         case "DuClareBedrooms":
+            return "Enter both Beth and Nicolette's bedrooms in the DuClare chateau.";
         case "PlayPool":
+            return "Sink all 16 balls on enough different pool tables.";
         case "FireExtinguisher_Activated":
+            return "Use enough fire extinguishers.";
         case "PianoSongPlayed":
+            return "Play enough different songs on a piano.";
         case "PianoSong0Played":
+            return "Play the Deus Ex theme song on a piano.  The song needs to be played correctly and all the way through.";
         case "PianoSong7Played":
+            return "Play 'The Game' from The 7th Guest on a piano.   The song needs to be played correctly and all the way through.";
         case "PinballWizard":
+            msg="Play enough different pinball machines.  ";
+            if (mission<=1){
+                msg=msg$"There is a machine in Alex's office as well as the break room.";
+            } else if (mission<=2){
+                msg=msg$"There is a machine in the Underworld bar in Hell's Kitchen.";
+            } else if (mission<=3){
+                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ, two machines in the LaGuardia helibase break room, and one in the Airfield barracks.";
+            } else if (mission<=4){
+                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ, as well as one in the Underworld bar in Hell's Kitchen.";
+            } else if (mission<=5){
+                msg=msg$"There is a machine in Alex's office and the break room of UNATCO HQ.";
+            } else if (mission<=6){
+                msg=msg$"There is a machine in the MJ12 Helibase, one in the MJ12 Lab barracks, one in the Old China Hand, and one in the Lucky Money.";
+            } else if (mission<=8){
+                msg=msg$"There is a machine in the Underworld bar in Hell's Kitchen.";
+            } else if (mission<=12){
+                msg=msg$"There is a machine in the Comms building in Vandenberg.";
+            } else if (mission<=15){
+                msg=msg$"There is a machine in the Comm building on the surface, and another one in the break room of Area 51.";
+            }
+            return msg;
         case "FlowersForTheLab":
+            return "Bring some flowers into either level of the Hong Kong MJ12 lab and set them down.";
         case "BurnTrash":
+            return "Set enough bags of trash on fire and let them burn until they are destroyed.";
         case "M07MeetJaime_Played":
+            return "Meet Jaime in Tracer Tong's hideout in Hong Kong.  Note that he will only meet you in Hong Kong if you ask him to meet you there while you escape from the MJ12 base under UNATCO.";
         case "Terrorist_peeptime":
+            return "Watch NSF Troops through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "UNATCOTroop_peeptime":
+            return "Watch UNATCO Troopers through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "MJ12Troop_peeptime":
+            return "Watch MJ12 Troopers through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "MJ12Commando_peeptime":
+            return "Watch MJ12 Commandos through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "PawnState_Dancing":
+            return "Watch someone dance through a pair of binoculars.";
         case "BirdWatching":
+            return "Watch birds through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "NYEagleStatue_peeped":
+            return "Look at the bronze eagle statue in Battery Park through a pair of binoculars.";
         case "BrokenPianoPlayed":
+            return "Damage a piano enough that it will no longer work, then try to play it.";
         case "Supervisor_Paid":
+            return "Pay Mr. Hundley for access to the MJ12 Lab in Hong Kong.";
         case "ImageOpened_WaltonSimons":
+            return "Find and look at the image displaying Walton Simons' augmentations.";
         case "BethsPainting":
+            return "Open (or destroy) the painting in Beth DuClare's bedroom in the DuClare chateau.";
         case "ViewPortraits":
+            return "Find and view enough portraits.  These include the picture of Leo Gold (the terrorist commander), the magazine cover showing Bob Page, the image of Joe Greene, and the image of Tiffany Savage.";
         case "ViewSchematics":
+            return "Find and view enough schematics.  These include the schematic of the Universal Contructor and the schematic of the blue fusion reactors.";
         case "ViewMaps":
+            return "Find and view enough maps of different areas.";
         case "ViewDissection":
+            return "Find and view enough images of dissections.  This includes the images of a greasel and a gray being dissected.";
         case "ViewTouristPics":
+            return "Find and view enough tourist pictures of places.  This includes images of the entrance to the cathedral, images of the catacombs, and the image of the NSF headquarters.";
         case "CathedralUnderwater":
+            return "Swim through the underwater tunnel that leads to the Paris cathedral.";
         case "DL_gold_found_Played":
+            return "Find the templar gold in the basement of the Paris cathedral.";
         case "12_Email04":
+            return "Read the email from Gary Savage with the subject line 'We Must Stand'.  This can be found on the computer in the reception area of the main Vandenberg building, as well as inside the computer area of Vandenberg.";
         case "ReadJCEmail":
+            return "Check your email enough times.  This can be done either in UNATCO HQ or in Tracer Tong's hideout.";
         case "02_Email05":
+            return "Read Paul's emails and find out what classic movies he has ordered.";
         case "11_Book08":
+            return "Read the diary of Adept 34501, the Woman in Black living in the Paris cathedral.";
         case "GasStationCeiling":
+            return "Enter the ceiling of the gas station from the roof.";
+        case "NicoletteHouseTour":
+            return "Escort Nicolette around the Chateau and let her tell you about it.  Potential points of interest include the study, the living room, the upper hallway, Beth's room, the basement, near the back door, and by the maze.";
+        case "nico_fireplace":
+            return "Access the secret stash behind the fireplace in Nicolette's bedroom in the Chateau.";
+        case "dumbwaiter":
+            return "Use the DuClare dumbwaiter between the kitchen and Beth's room.";
+        case "secretdoor01":
+            return "Twist the flickering light in the Cathedral and open the secret door.";
+        case "CathedralLibrary":
+            return "Enter the library in the Cathedral.";
+        case "DuClareKeys":
+            return "Find enough different keys around Chateau DuClare.  Keys include the key to Beths Room, Nicolettes Room, and to the Basement";
+        case "ShipLockerKeys":
+            return "Find keys to the lockers on the lower decks of the superfreighter.  The lockers are inside the building underneath the helipad.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2542,6 +2887,20 @@ function RunTests()
     testint(BingoActiveMission(2, (1<<1)), -1, "BingoActiveMission too late");
     testint(BingoActiveMission(15, (1<<15)), 2, "BingoActiveMission");
     testint(BingoActiveMission(3, (1<<15)), 0, "BingoActiveMission false");
+}
+
+function ExtendedTests()
+{
+    local string helpText;
+    local int i;
+
+    //Make sure all bingo goals have help text
+    for (i=0;i<ArrayCount(bingo_options);i++){
+        if (bingo_options[i].event!=""){
+            helpText = GetBingoGoalHelpText(bingo_options[i].event,0);
+            test( InStr(helpText, "Unable to find help text for event") == -1, "Bingo Goal "$bingo_options[i].event$" does not have help text!");
+        }
+    }
 }
 
 // calculate missions masks with https://jsfiddle.net/2sh7xej0/1/
@@ -2795,6 +3154,13 @@ defaultproperties
     bingo_options(223)=(event="02_Email05",desc="Paul's Classic Movies",max=1,missions=4)
     bingo_options(224)=(event="11_Book08",desc="Read Adept 34501's diary",max=1,missions=2048)
     bingo_options(225)=(event="GasStationCeiling",desc="Access the ceiling of a gas station",max=1,missions=4096)
+    bingo_options(226)=(event="NicoletteHouseTour",desc="Get a tour of %s parts of Chateau DuClare from Nicolette",max=5,missions=1024)
+    bingo_options(227)=(event="nico_fireplace",desc="Access Nicolette's secret stash",max=1,missions=1024)
+    bingo_options(228)=(event="dumbwaiter",desc="Not so dumb now!",max=1,missions=1024)
+    bingo_options(229)=(event="secretdoor01",desc="Open the secret door in the cathedral",max=1,missions=2048)
+    bingo_options(230)=(event="CathedralLibrary",desc="Worth its weight in gold",max=1,missions=2048)
+    bingo_options(231)=(event="DuClareKeys",desc="Collect %s different keys around Chateau DuClare",max=3,missions=1024)
+    bingo_options(232)=(event="ShipLockerKeys",desc="Collect %s locker keys inside the superfreighter",max=2,missions=512)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")

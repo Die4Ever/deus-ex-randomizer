@@ -1,7 +1,7 @@
 //=============================================================================
 // UNATCOClone1.
 //=============================================================================
-class UNATCOClone1 extends #var(prefix)UNATCOTroop;
+class UNATCOClone1 extends DXRUNATCOTroopBase;
 // buff GroundSpeed, nerf Health
 defaultproperties
 {

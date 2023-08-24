@@ -4,7 +4,7 @@
 // This is (at least for now) intended to only be spawned as a Crowd Control
 // effect (simulated or real).
 //=============================================================================
-class NastyRat extends Rat;
+class NastyRat extends #var(prefix)Rat;
 
 var float CheckTime;
 var float NextThrowTime;

@@ -42,7 +42,7 @@ function RandoTurrets(int percent_move, int percent_add)
 {
     local #var(prefix)AutoTurret t;
     local #var(prefix)SecurityCamera cam;
-    local #var(prefix)ComputerSecurity c;
+    local #var(injectsprefix)ComputerSecurity c;
     local int i, hostile_turrets, t_max_turrets;
     local vector loc;
 
@@ -295,9 +295,9 @@ function #var(prefix)SecurityCamera SpawnCamera(vector loc)
     return c;
 }
 
-function #var(prefix)ComputerSecurity SpawnSecurityComputer(vector loc, optional #var(prefix)AutoTurret t, optional #var(prefix)SecurityCamera cam)
+function #var(injectsprefix)ComputerSecurity SpawnSecurityComputer(vector loc, optional #var(prefix)AutoTurret t, optional #var(prefix)SecurityCamera cam)
 {
-    local #var(prefix)ComputerSecurity c;
+    local #var(injectsprefix)ComputerSecurity c;
     local LocationNormal locnorm;
     local int i;
     local FMinMax distrange;
@@ -311,7 +311,7 @@ function #var(prefix)ComputerSecurity SpawnSecurityComputer(vector loc, optional
     distrange.max = 16*75;
     NearestWallSearchZ(locnorm, distrange, 16*3, locnorm.loc, 2);
 
-    c = Spawn(class'#var(prefix)ComputerSecurity',,, locnorm.loc, Rotator(locnorm.norm));
+    c = Spawn(class'#var(injectsprefix)ComputerSecurity',,, locnorm.loc, Rotator(locnorm.norm));
     if( c == None ) {
         warning("SpawnSecurityComputer failed at "$locnorm.loc);
         return None;
@@ -322,16 +322,16 @@ function #var(prefix)ComputerSecurity SpawnSecurityComputer(vector loc, optional
     if( t != None ) {
         c.Views[0].TurretTag = t.Tag;
     }
-    c.UserList[0].userName = ReplaceText(String(c.Name), "ComputerSecurity", "Comp");
+    c.UserList[0].userName = ReplaceText(String(c.Name), "#var(injectsprefix)ComputerSecurity", "Comp");
     c.itemName = c.UserList[0].userName;
     c.UserList[0].Password = class'DXRPasswords'.static.GeneratePassword(dxr, dxr.localURL @ String(c.Name) );
     info("SpawnSecurityComputer "$c.UserList[0].userName$" done at ("$loc$"), ("$rotation$") with password: "$c.UserList[0].Password );
     return c;
 }
 
-function #var(prefix)InformationDevices SpawnDatacubeForComputer(vector loc, #var(prefix)ComputerSecurity c)
+function #var(injectsprefix)InformationDevices SpawnDatacubeForComputer(vector loc, #var(injectsprefix)ComputerSecurity c)
 {
-    local #var(prefix)InformationDevices d;
+    local #var(injectsprefix)InformationDevices d;
     local LocationNormal locnorm;
     local FMinMax distrange;
     locnorm.loc = loc;
@@ -343,9 +343,9 @@ function #var(prefix)InformationDevices SpawnDatacubeForComputer(vector loc, #va
 
     d = SpawnDatacubePlaintext(locnorm.loc, Rotator(locnorm.norm),
         c.UserList[0].userName $ " password is " $ c.UserList[0].Password);
-#ifdef injections
+
     d.new_passwords[0] = c.UserList[0].Password;
-#endif
+
     return d;
 }
 

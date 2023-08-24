@@ -191,8 +191,10 @@ function BalanceJailbreak()
     SetSeed("BalanceJailbreak");
 
     // move the items instead of letting Mission05.uc do it
+    // Revision also removes ammo and credits, and spawns special weapons from Paul if you saved him
+    // This logic will cause that to not happen (for now)
     p = player();
-    if(dxr.flags.settings.prison_pocket <= 0 && #defined(vanillamaps)) {
+    if(dxr.flags.settings.prison_pocket <= 0) {
         if(DeusExWeapon(p.inHand) != None)
             DeusExWeapon(p.inHand).LaserOff();
 

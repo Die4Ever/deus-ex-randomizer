@@ -33,7 +33,6 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
     info("got DXRFashion_LastUpdate: "$lastUpdate);
     if (lastUpdate < dxr.dxInfo.MissionNumber || lastUpdate > dxr.dxInfo.MissionNumber + 2) {
         RandomizeClothes(player());
-        p.ClientMessage("Time for a change of clothes...");
     }
 
     GetDressed();

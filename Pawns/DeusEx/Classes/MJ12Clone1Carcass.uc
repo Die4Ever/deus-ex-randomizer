@@ -1,7 +1,7 @@
 //=============================================================================
 // MJ12Clone1Carcass.
 //=============================================================================
-class MJ12Clone1Carcass extends #var(DeusExPrefix)Carcass;
+class MJ12Clone1Carcass extends DXRandoCarcass;
 
 defaultproperties
 {

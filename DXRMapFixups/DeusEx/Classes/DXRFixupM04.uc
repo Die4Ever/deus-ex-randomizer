@@ -157,6 +157,9 @@ function AnyEntryMapFixes()
 {
     local FordSchick ford;
     local #var(prefix)AnnaNavarre anna;
+#ifdef revision
+    local DXRKeypad k;
+#endif
 
     DeleteConversationFlag(GetConversation('AnnaBadMama'), 'TalkedToPaulAfterMessage_Played', true);
     if(dxr.flagbase.GetBool('NSFSignalSent')) {
@@ -188,6 +191,17 @@ function AnyEntryMapFixes()
         {
             foreach AllActors(class'FordSchick', ford)
                 ford.EnterWorld();
+        }
+        break;
+#endif
+
+#ifdef revision
+    case "04_NYC_STREET":
+        if( dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played') )
+        {
+            foreach AllActors(class'DXRKeypad',k,'SubKeypad'){
+                k.SetCollision(true);
+            }
         }
         break;
 #endif

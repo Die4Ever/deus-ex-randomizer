@@ -1,7 +1,7 @@
 //=============================================================================
 // NSFClone4Carcass.
 //=============================================================================
-class NSFClone4Carcass extends #var(DeusExPrefix)Carcass;
+class NSFClone4Carcass extends DXRandoCarcass;
 
 defaultproperties
 {

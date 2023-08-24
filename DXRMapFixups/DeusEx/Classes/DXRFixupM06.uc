@@ -333,7 +333,6 @@ function PostFirstEntryMapFixes()
     local Male1 male;
 
     switch(dxr.localURL) {
-#ifndef revision
     case "06_HONGKONG_WANCHAI_STREET":
         a = Spawn(class'NanoKey',,, vectm(1159.455444, -1196.089111, 1723.212402));
         NanoKey(a).KeyID = 'JocksKey';
@@ -341,7 +340,7 @@ function PostFirstEntryMapFixes()
         if(dxr.flags.settings.keysrando > 0)
             GlowUp(a);
         break;
-
+#ifndef revision
     case "06_HONGKONG_VERSALIFE":
         foreach AllActors(class'Male1',male){
             if (male.BindName=="Disgruntled_Guy"){

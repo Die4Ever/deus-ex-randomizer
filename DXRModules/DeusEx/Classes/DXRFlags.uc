@@ -30,18 +30,26 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
         if(dxr.localURL == "01_NYC_UNATCOISLAND")
             p.ConsoleCommand("legend");
     }
+
+    //Disable achievements for Revision Rando, as requested
+    if(#defined(revision)){
+        f.SetBool('AchievementsDisabled', true,, 999);
+    }
+
     l("starting map is set to "$settings.starting_map);
 }
 
 function InitDefaults()
 {
     InitVersion();
-
-    seed = 0;
-    NewPlaythroughId();
-    if( dxr != None ) RollSeed();
-    autosave = 2;
     if(!#defined(hx)) {
+        seed = 0;
+        NewPlaythroughId();
+        if( dxr != None) {
+            RollSeed();
+        }
+        autosave = 2;
+
         gamemode = 0;
         loadout = 0;
         crowdcontrol = 0;

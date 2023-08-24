@@ -238,8 +238,8 @@ function string GetStrInfo(Actor a, out int numLines)
         return MoverStrInfo(Mover(a), numLines);
     else if ( HackableDevices(a) != None )
         return DeviceStrInfo(HackableDevices(a), numLines);
-    else if ( Computers(a) != None || ATM(a) != None )
-        return ComputersStrInfo(ElectronicDevices(a), numLines);
+    else if ( #var(prefix)Computers(a) != None || #var(prefix)ATM(a) != None )
+        return ComputersStrInfo(#var(prefix)ElectronicDevices(a), numLines);
     else if (!a.bStatic && player.bObjectNames)
         return OtherStrInfo(a, numLines);
 
@@ -380,16 +380,16 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
     return strInfo;
 }
 
-function string ComputersStrInfo(ElectronicDevices d, out int numLines)
+function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLines)
 {
-    local Computers c;
+    local #var(prefix)Computers c;
     local #var(injectsprefix)ATM a;
     local string strInfo;
     local bool code_known;
 
     strInfo = player.GetDisplayName(d);
 
-    c = Computers(d);
+    c = #var(prefix)Computers(d);
     a = #var(injectsprefix)ATM(d);
     if( known_codes && c != None )
     {

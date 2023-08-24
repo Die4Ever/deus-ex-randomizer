@@ -206,6 +206,7 @@ function ReplacePiano(#var(prefix)WHPiano a)
     if(n==None)
         return;
     ReplaceDeusExDecoration(a, n);
+    n.HitPoints=n.Default.HitPoints; //Since the new piano has more hitpoints than the original...
     a.Destroy();
 }
 

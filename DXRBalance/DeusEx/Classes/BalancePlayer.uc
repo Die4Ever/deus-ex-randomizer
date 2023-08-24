@@ -333,18 +333,18 @@ function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, op
         // Heal by 3 regions via multiplayer game
         if (( Level.NetMode == NM_DedicatedServer ) || ( Level.NetMode == NM_ListenServer ))
         {
-         // DEUS_EX AMSD If legs broken, heal them a little bit first
-         if (HealthLegLeft == 0)
-         {
-            aha2 = adjustedHealAmount;
-            if (aha2 >= 5)
-               aha2 = 5;
-            tempaha = aha2;
-            adjustedHealAmount = adjustedHealAmount - aha2;
-            HealPart(HealthLegLeft, aha2);
-            HealPart(HealthLegRight,tempaha);
+            // DEUS_EX AMSD If legs broken, heal them a little bit first
+            if (HealthLegLeft == 0)
+            {
+                aha2 = adjustedHealAmount;
+                if (aha2 >= 5)
+                    aha2 = 5;
+                tempaha = aha2;
+                adjustedHealAmount = adjustedHealAmount - aha2;
+                HealPart(HealthLegLeft, aha2);
+                HealPart(HealthLegRight,tempaha);
                 mpMsgServerFlags = mpMsgServerFlags & (~MPSERVERFLAG_LostLegs);
-         }
+            }
             HealPart(HealthHead, adjustedHealAmount);
 
             if ( adjustedHealAmount > 0 )
@@ -364,7 +364,18 @@ function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, op
         }
         else
         {
-            if( bUseMedicineSkill || bFixLegs ) {
+            // balanced healing, issue #406
+            if( adjustedHealAmount >= 18 ) {
+                aha2 = adjustedHealAmount / 10;// use most of it for the balanced heal, the rest for normal healing behavior
+                aha2 = Max(aha2, 3);
+                _HealPart(HealthHead, adjustedHealAmount, aha2);
+                _HealPart(HealthTorso, adjustedHealAmount, aha2);
+                _HealPart(HealthLegRight, adjustedHealAmount, aha2);
+                _HealPart(HealthLegLeft, adjustedHealAmount, aha2);
+                _HealPart(HealthArmRight, adjustedHealAmount, aha2);
+                _HealPart(HealthArmLeft, adjustedHealAmount, aha2);
+            }
+            else if( bUseMedicineSkill || bFixLegs ) {
                 HealBrokenPart(HealthLegRight, adjustedHealAmount);
                 HealBrokenPart(HealthLegLeft, adjustedHealAmount);
             }
@@ -384,27 +395,37 @@ function int _HealPlayer(int baseHealPoints, optional Bool bUseMedicineSkill, op
     return adjustedHealAmount;
 }
 
-function HealBrokenPart(out int points, out int amt)
+function int HealBrokenPart(out int points, out int amt)
 {
     local int heal;
     heal = 1;
-    if( points > 0 || amt < heal ) return;
+    if( points > 0 || amt < heal ) return 0;
     amt -= heal;
-    HealPart(points, heal);
+    return _HealPart(points, heal, 1);
 }
 
-function HealPart(out int points, out int amt)
+function int _HealPart(out int points, out int amt, int max)
 {
-    local int spill;
+    local int spill, healed;
 
-    points += amt;
+    max = Min(amt, max);
+
+    points += max;
     spill = points - default.HealthTorso;
     if (spill > 0)
         points = default.HealthTorso;
     else
         spill = 0;
 
-    amt = spill;
+    healed = max - spill;
+    amt -= healed;
+    return healed;
+}
+
+function HealPart(out int points, out int amt)
+{
+    // override the original function, we can't change the function signature when overriding
+    _HealPart(points, amt, amt);
 }
 
 exec function ActivateAugmentation(int num)

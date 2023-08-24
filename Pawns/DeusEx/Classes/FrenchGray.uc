@@ -3,6 +3,11 @@
 //=============================================================================
 class FrenchGray extends #var(prefix)Gray;
 
+function bool Facelift(bool bOn)
+{
+    return false;
+}
+
 defaultproperties
 {
     FamiliarName="Gris"

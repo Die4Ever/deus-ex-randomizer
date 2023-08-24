@@ -3,15 +3,17 @@ from pathlib import Path
 import re
 import os
 
+block_cipher = None
+console = False
+onefile = True
+
+
 def IsWindows() -> bool:
     return os.name == 'nt'
 
-block_cipher = None
-console = False
-
 # unfortunately runtime_hooks is not relative to the location of the spec file, but everything else is
 runtime_hooks = []
-if IsWindows():
+if IsWindows() and not onefile:
     if Path('add_lib_path.py').exists():
         runtime_hooks=['add_lib_path.py']
     elif Path('installer/add_lib_path.py').exists():
@@ -64,11 +66,14 @@ a_bingo = Analysis(
 
 pyz_installer = PYZ(a_installer.pure, a_installer.zipped_data, cipher=block_cipher)
 
+installer_includes = [a_installer.scripts]
+if onefile:
+    installer_includes = [a_installer.scripts,a_installer.binaries,a_installer.zipfiles,a_installer.datas,]
+
 exe_installer = EXE(
     pyz_installer,
-    a_installer.scripts,
+    *installer_includes,
     [],
-    exclude_binaries=True,
     name='DXRandoInstaller',
     debug=True,
     bootloader_ignore_signals=False,
@@ -80,15 +85,19 @@ exe_installer = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    exclude_binaries=(not onefile),
 )
 
 pyz_bingo = PYZ(a_bingo.pure, a_bingo.zipped_data, cipher=block_cipher)
 
+bingo_includes = [a_bingo.scripts]
+if onefile:
+    bingo_includes = [a_bingo.scripts,a_bingo.binaries,a_bingo.zipfiles,a_bingo.datas,]
+
 exe_bingo = EXE(
     pyz_bingo,
-    a_bingo.scripts,
+    *bingo_includes,
     [],
-    exclude_binaries=True,
     name='BingoViewer',
     debug=False,
     bootloader_ignore_signals=False,
@@ -100,31 +109,33 @@ exe_bingo = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    exclude_binaries=(not onefile),
 )
 
-coll1 = COLLECT(
-    exe_installer,
-    a_installer.binaries,
-    a_installer.zipfiles,
-    a_installer.datas,
+if not onefile:
+    coll1 = COLLECT(
+        exe_installer,
+        a_installer.binaries,
+        a_installer.zipfiles,
+        a_installer.datas,
 
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    name='DXRando',
-)
+        strip=False,
+        upx=True,
+        upx_exclude=[],
+        name='DXRando',
+    )
 
-coll2 = COLLECT(
-    exe_bingo,
-    a_bingo.binaries,
-    a_bingo.zipfiles,
-    a_bingo.datas,
+    coll2 = COLLECT(
+        exe_bingo,
+        a_bingo.binaries,
+        a_bingo.zipfiles,
+        a_bingo.datas,
 
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    name='BingoViewer',
-)
+        strip=False,
+        upx=True,
+        upx_exclude=[],
+        name='BingoViewer',
+    )
 
 def DoCleanup(folder):
     print('tidying up', folder)
@@ -148,7 +159,7 @@ def DoCleanup(folder):
     print('done tidying up', folder)
 
 # tidy up
-if IsWindows():
+if IsWindows() and not onefile:
     print('tidying up')
     is_lib = re.compile(r'(\.dll$)|(\.so(\..+)?$)|(\.pyd$)')
 

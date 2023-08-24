@@ -29,14 +29,14 @@ function PostBeginPlay()
     ItemName="PS40";
     Description="The PS40 is a disposable, plasma-based weapon developed by an unknown security organization as a next generation stealth pistol."
         $ "  Unfortunately, the necessity of maintaining a small physical profile restricts the weapon to a single shot."
-        $ "  Despite its limited functionality, the PS40 can be lethal at close range.";
+        $ "  Despite its limited functionality, the PS40 can be lethal.";
     beltDescription="PS40";
 }
 
 defaultproperties
 {
-    HitDamage=200
+    HitDamage=100
     ItemName="PS40"
-    Description="The PS40 is a disposable, plasma-based weapon developed by an unknown security organization as a next generation stealth pistol.  Unfortunately, the necessity of maintaining a small physical profile restricts the weapon to a single shot.  Despite its limited functionality, the PS40 can be lethal at close range."
+    Description="The PS40 is a disposable, plasma-based weapon developed by an unknown security organization as a next generation stealth pistol.  Unfortunately, the necessity of maintaining a small physical profile restricts the weapon to a single shot.  Despite its limited functionality, the PS40 can be lethal."
     beltDescription="PS40"
 }

@@ -35,6 +35,7 @@ function BindControls(optional string action)
     EnumOption("Return to NYC", 81, f.settings.starting_map);
     EnumOption("Superfreighter", 90, f.settings.starting_map);
     EnumOption("Graveyard", 99, f.settings.starting_map);
+    EnumOption("Chateau DuClare", 109, f.settings.starting_map);
     EnumOption("Everett's House", 119, f.settings.starting_map);
     EnumOption("Ocean Lab", 140, f.settings.starting_map);
     EnumOption("Area 51", 150, f.settings.starting_map);
