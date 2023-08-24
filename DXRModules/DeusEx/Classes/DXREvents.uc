@@ -445,13 +445,18 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(-6,-1416,40),250,40);  //Butcher (Louis Pan works for him too)
         bt.Tag='WanChaiButcher';
         bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(910,-643,40),150,40);  //News Stand
-        bt.Tag='WanChaiNews';
-        bt.bDestroyOthers=False;
-        bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(632,-532,40),130,40);  //Flower Shop
-        bt.Tag='WanChaiFlowers';
-        bt.bDestroyOthers=False;
-
+        if (RevisionMaps){
+            bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(1040,-266,40),100,40);  //Souvenir Shop
+            bt.Tag='WanChaiSouvenir';
+            bt.bDestroyOthers=False;
+        } else {
+            bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(910,-643,40),150,40);  //News Stand
+            bt.Tag='WanChaiNews';
+            bt.bDestroyOthers=False;
+            bt = class'BingoTrigger'.static.Create(self,'WanChaiStores',vectm(632,-532,40),130,40);  //Flower Shop
+            bt.Tag='WanChaiFlowers';
+            bt.bDestroyOthers=False;
+        }
 
         break;
     case "06_HONGKONG_TONGBASE":
@@ -607,12 +612,15 @@ function SetWatchFlags() {
             starr.bImportant = true;// you're important to me
             starr.BindName = "Starr";
         }
-
-        bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2983.597168,774.217407,312.100128),70,40);
-        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-        bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2984.404785,662.764954,312.100128),70,40);
-        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-
+        if(RevisionMaps){
+            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(217,-5306,328),50,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+        } else {
+            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2983.597168,774.217407,312.100128),70,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2984.404785,662.764954,312.100128),70,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+        }
         break;
     case "10_PARIS_CLUB":
         WatchFlag('CamilleConvosDone');
@@ -657,15 +665,27 @@ function SetWatchFlags() {
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
         WatchFlag('DL_gold_found_Played');
-        bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2019,-2256,-704),20,15);
-        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-        bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2076.885254,-3248.189941,-704.369995),20,15);
-        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-        bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(1578,-2286,-647),50,40);
-        bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
 
-        bt = class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(771,-808,-706),500,180);
 
+        if (RevisionMaps){
+            bt = class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(2614,-2103,-120),500,180);
+            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(3811,-3200,-64),20,15);
+            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(3869,-4256,-64),20,15);
+            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(3387,-3233,-7.9),50,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(4100,-3469,-6.9),50,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+        } else {
+            bt = class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(771,-808,-706),500,180);
+            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2019,-2256,-704),20,15);
+            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(2076.885254,-3248.189941,-704.369995),20,15);
+            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(1578,-2286,-647),50,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+        }
         bt = class'BingoTrigger'.static.Create(self,'secretdoor01',vectm(0,0,0));
 
         foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
