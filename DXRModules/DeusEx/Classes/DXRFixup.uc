@@ -398,6 +398,7 @@ simulated function FixInventory(#var(PlayerPawn) p)
 {
     local Inventory item, nextItem;
     local DXRLoadouts loadouts;
+    local int slots[64], x, y;// leave room for up to an 8x8 inventory
 
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
 
@@ -411,6 +412,18 @@ simulated function FixInventory(#var(PlayerPawn) p)
         item.BecomeItem();
         item.SetLocation(p.Location);
         item.SetBase(p);
+
+        if(!item.bDisplayableInv) continue;// don't check for inventory overlap
+        if(item.invPosX < 0 || item.invPosY < 0) continue;
+
+        for(x = item.invPosX; x < item.invPosX + item.invSlotsX; x++) {
+            for(y = item.invPosY; y < item.invPosY + item.invSlotsY; y++) {
+                if(slots[x*8 + y] > 0) {
+                    err("inventory overlap at (" $ x $ ", " $ y $ ") " $ item);
+                }
+                slots[x*8 + y]++;
+            }
+        }
     }
 }
 
