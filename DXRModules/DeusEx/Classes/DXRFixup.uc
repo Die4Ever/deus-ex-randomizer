@@ -151,6 +151,7 @@ function AnyEntry()
     FixSamCarter();
     FixCleanerBot();
     FixRevisionJock();
+    FixRevisionDecorativeInventory();
     SetSeed( "DXRFixup AnyEntry missions" );
     if(#defined(mapfixes))
         AnyEntryMapFixes();
@@ -346,6 +347,20 @@ function FixRevisionJock()
     local JockHelicopter jock;
     foreach AllActors(class'JockHelicopter',jock){
         jock.bImportant=true;
+    }
+#endif
+}
+
+function FixRevisionDecorativeInventory()
+{
+#ifdef revision
+    local Inventory i;
+
+    foreach AllActors(class'Inventory',i){
+        if (i.CollisionRadius==0 && i.CollisionHeight==0){
+            log("Making "$i$" grabbable by restoring it's original collision size");
+            i.SetCollisionSize(i.default.CollisionRadius,i.default.CollisionHeight);
+        }
     }
 #endif
 }
