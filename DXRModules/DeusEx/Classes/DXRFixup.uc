@@ -65,7 +65,7 @@ function CheckConfig()
     i=0;
     DecorationsOverwrites[i].type = "CrateUnbreakableLarge";
     DecorationsOverwrites[i].bInvincible = false;
-    DecorationsOverwrites[i].HitPoints = 2000;
+    DecorationsOverwrites[i].HitPoints = 500;
     DecorationsOverwrites[i].minDamageThreshold = 0;
     c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
     DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
