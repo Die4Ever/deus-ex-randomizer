@@ -412,6 +412,7 @@ function bool CanInstantLeftClick(DeusExPickup item)
     if (item.bActivatable==False) return false;
     if (item.GetStateName()=='Activated') return false;
     if (item.Owner == self) return false;// we already own the item?
+    if (item.bDeleteMe) return false;// just in case!
 
     if (Binoculars(item)!=None) return false; //Unzooming requires left clicking the binocs again
     return true;
