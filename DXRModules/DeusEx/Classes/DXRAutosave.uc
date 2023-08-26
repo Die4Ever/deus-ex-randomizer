@@ -3,6 +3,7 @@ class DXRAutosave extends DXRActorsBase transient;
 var transient bool bNeedSave;
 var config float save_delay;
 var transient float save_timer;
+var transient int autosave_combat;
 
 const Disabled = 0;
 const FirstEntry = 1;
@@ -17,6 +18,7 @@ function CheckConfig()
     }
     Super.CheckConfig();
     Disable('Tick');
+    autosave_combat = int(ConsoleCommand("get #var(package).MenuChoice_AutosaveCombat autosave_combat"));
 }
 
 function PreFirstEntry()
@@ -48,7 +50,7 @@ function NeedSave()
     bNeedSave = true;
     save_timer = save_delay;
     Enable('Tick');
-    if(!PawnIsInCombat(player()))
+    if(autosave_combat>0 || !PawnIsInCombat(player()))
         SetGameSpeed(0);
 }
 
@@ -124,7 +126,7 @@ function doAutosave()
 
     p = player();
 
-    if(PawnIsInCombat(p)) {
+    if(autosave_combat<=0 && PawnIsInCombat(p)) {
         info("waiting for Player to be out of combat, not saving yet");
         SetGameSpeed(1);
         return;
