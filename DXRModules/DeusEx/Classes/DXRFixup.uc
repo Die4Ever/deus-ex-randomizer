@@ -142,7 +142,6 @@ function AnyEntry()
 {
     local #var(prefix)Vehicles v;
     local #var(prefix)Button1 b;
-    local #var(prefix)Teleporter t;
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
@@ -171,8 +170,19 @@ function AnyEntry()
         if(v.CollisionRadius > 360)
             v.SetCollisionSize(360, v.CollisionHeight);
     }
+
+    ShowTeleporters();
+}
+
+function ShowTeleporters()
+{
+    local #var(prefix)Teleporter t;
+    local int show_teleporters;
+
+    show_teleporters = int(ConsoleCommand("get #var(package).MenuChoice_ShowTeleporters show_teleporters"));
+
     foreach AllActors(class'#var(prefix)Teleporter', t) {
-        t.bHidden = !(t.bCollideActors && t.bEnabled);
+        t.bHidden = !(t.bCollideActors && t.bEnabled && show_teleporters>0);
         t.DrawScale = 0.75;
     }
 }
