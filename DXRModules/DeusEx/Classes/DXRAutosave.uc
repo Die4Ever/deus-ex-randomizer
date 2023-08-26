@@ -65,7 +65,7 @@ function SetGameSpeed(float s)
     Level.Game.GameReplicationInfo.SaveConfig();
 
     // we need the mission script to clear PlayerTraveling
-    if(s < 0.5) s /= 2;// might as well run the timer faster?
+    if(s <= 0.1) s /= 2;// might as well run the timer faster?
     foreach AllActors(class'MissionScript', mission) {
         mission.SetTimer(mission.checkTime * s, true);
     }
@@ -73,8 +73,8 @@ function SetGameSpeed(float s)
 
 function Tick(float delta)
 {
+    save_timer -= delta / Level.Game.GameSpeed;
     if(bNeedSave) {
-        save_timer -= delta / Level.Game.GameSpeed;
         if(save_timer <= 0) {
             doAutosave();
         }
@@ -83,7 +83,6 @@ function Tick(float delta)
         SetGameSpeed(1);
         Disable('Tick');
     } else {
-        save_timer -= delta / Level.Game.GameSpeed;
         SetGameSpeed(0.2);
     }
 }
