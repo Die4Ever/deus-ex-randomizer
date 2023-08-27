@@ -13,12 +13,17 @@ const ExtraSafe = 4;
 
 function CheckConfig()
 {
-    if( ConfigOlderThan(2,5,2,7) ) {
-        save_delay = 0.5;
+    if( ConfigOlderThan(2,5,2,9) ) {
+        save_delay = 0.1;
     }
     Super.CheckConfig();
-    Disable('Tick');
     autosave_combat = int(ConsoleCommand("get #var(package).MenuChoice_AutosaveCombat autosave_combat"));
+}
+
+function BeginPlay()
+{
+    Super.BeginPlay();
+    Disable('Tick');
 }
 
 function PreFirstEntry()
@@ -75,7 +80,9 @@ function SetGameSpeed(float s)
 
 function Tick(float delta)
 {
-    save_timer -= delta / Level.Game.GameSpeed;
+    delta /= Level.Game.GameSpeed;
+    delta = FClamp(delta, 0.01, 0.05);// a single slow frame should not expire the timer by itself
+    save_timer -= delta;
     if(bNeedSave) {
         if(save_timer <= 0) {
             doAutosave();
@@ -85,7 +92,7 @@ function Tick(float delta)
         SetGameSpeed(1);
         Disable('Tick');
     } else {
-        SetGameSpeed(0.2);
+        SetGameSpeed(0);
     }
 }
 
