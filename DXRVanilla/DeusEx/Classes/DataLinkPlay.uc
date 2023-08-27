@@ -3,6 +3,8 @@ class DataLinkPlay injects DataLinkPlay;
 var transient float speechFastEndTime;
 var transient bool restarting;
 
+var DatalinkTrigger dataLinkTriggerQueue[16];
+
 function bool PushDataLink( Conversation queueCon )
 {
     // queue up the incoming message
@@ -107,7 +109,7 @@ state WaitForSpeech
     // has finished.  We want to play the next event.
     function Timer()
     {
-        dolog("Timer GotoState WaitForSpeech SpeechFinished");
+        //dolog("Timer GotoState WaitForSpeech SpeechFinished");
         GotoState( 'WaitForSpeech', 'SpeechFinished' );
     }
 
@@ -159,14 +161,14 @@ Begin:
 
 function Timer()
 {
-    dolog("start Timer");
+    //dolog("start Timer");
     Super.Timer();
-    dolog("end Timer");
+    //dolog("end Timer");
 }
 
 function dolog(string m)
 {
-    log(self@con.conName@GetStateName()@m);
+    log(self@con.conName@GetStateName()@datalinkTrigger@datalinkTrigger.datalinkTag@m);
 }
 
 function SetInterruptedFlag()
@@ -192,21 +194,88 @@ function SetPlayedFlag()
 
 function ActorDestroyed(Actor destroyedActor)
 {
-    dolog("ActorDestroyed" @ destroyedActor);
+    //dolog("ActorDestroyed" @ destroyedActor);
     Super.ActorDestroyed(destroyedActor);
 }
 
 function JumpToConversation( Conversation jumpCon, String startLabel )
 {
-    dolog("JumpToConversation" @ jumpCon.conName @ startLabel);
+    //dolog("JumpToConversation" @ jumpCon.conName @ startLabel);
     Super.JumpToConversation(jumpCon, startLabel);
 }
 
 function EEventAction SetupEventSpeech( ConEventSpeech event, out String nextLabel )
 {
-    dolog("SetupEventSpeech" @ event @ nextLabel);
+    //dolog("SetupEventSpeech" @ event @ nextLabel);
     return Super.SetupEventSpeech(event, nextLabel);
 }
+
+/*
+function Bool FireNextDataLink()
+{
+    local Bool bResult;
+
+    dolog("FireNextDataLink");
+    bResult = False;
+
+    con      = PopDataLink();
+    startCon = con;
+
+    if ( con != None )
+    {
+        if(!StartConversation(player, invokeActor)) {
+            dolog("FireNextDataLink failed");
+            InsertDataLink(con);
+            startCon = None;
+            con = None;
+            return false;
+        }
+        bResult = True;
+    }
+
+    return bResult;
+}
+*/
+
+function SetTrigger(DataLinkTrigger newDatalinkTrigger)
+{
+    local int i;
+    dolog("SetTrigger " $ newDatalinkTrigger);
+    /*Super.SetTrigger(newDatalinkTrigger);
+
+    if(newDatalinkTrigger.datalinkTag == con.conName || newDatalinkTrigger.datalinkTag == startCon.conName) {
+        datalinkTrigger = newDatalinkTrigger;
+        return;
+    }*/
+
+    for(i=0; i<ArrayCount(dataLinkTriggerQueue); i++) {
+        if(dataLinkTriggerQueue[i] == None) {
+            dataLinkTriggerQueue[i] = newDatalinkTrigger;
+            break;
+        }
+        if(dataLinkTriggerQueue[i] == newDatalinkTrigger) {
+            break;
+        }
+    }
+}
+
+function NotifyDatalinkTrigger()
+{
+    local int i;
+    dolog("NotifyDatalinkTrigger");
+    //if(datalinkTrigger.datalinkTag == con.conName)
+    //Super.NotifyDatalinkTrigger();
+    for(i=0; i<ArrayCount(dataLinkTriggerQueue); i++) {
+        if(dataLinkTriggerQueue[i] == None) {
+            continue;
+        }
+        if(dataLinkTriggerQueue[i].datalinkTag == startCon.conName) {
+            dataLinkTriggerQueue[i].DatalinkFinished();
+            dataLinkTriggerQueue[i] = None;
+        }
+    }
+}
+
 
 defaultproperties
 {
