@@ -1230,3 +1230,15 @@ exec function ShowBingoWindow()
 }
 
 // ---
+
+
+function Bool StartDataLinkTransmission(
+	String datalinkName,
+	Optional DataLinkTrigger datalinkTrigger)
+{
+    local bool ret;
+    log(self@"StartDataLinkTransmission"@ datalinkName @ datalinkTrigger);
+    ret = Super.StartDataLinkTransmission(datalinkName, datalinkTrigger);
+    log(self@"StartDataLinkTransmission"@ datalinkName @ datalinkTrigger @ ret);
+    return ret;
+}

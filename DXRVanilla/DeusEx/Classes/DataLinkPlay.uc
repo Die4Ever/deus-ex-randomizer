@@ -33,8 +33,14 @@ function Bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
 {
     local Actor tempActor;
 
-    if ( Super(ConPlayBase).StartConversation(newPlayer, newInvokeActor, bForcePlay) == False )
+    dolog("StartConversation");
+
+    if ( Super(ConPlayBase).StartConversation(newPlayer, newInvokeActor, bForcePlay) == False ) {
+        dolog("StartConversation Super got false");
         return False;
+    }
+
+    dolog("StartConversation Super got true");
 
     // Create the DataLink display if necessary.  If it already exists,
     // then we're presently in a DataLink and need to queue this one up
@@ -48,8 +54,9 @@ function Bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
     // In these cases we'll just queue it up instead
 
     if ( ( dataLink == None ) &&
-        ((player.conPlay == None) && (NetworkTerminal(rootWindow.GetTopWindow()) == None)))
+        ((player.conPlay == None) /*&& (NetworkTerminal(rootWindow.GetTopWindow()) == None)*/))
     {
+        dolog("StartConversation queuing");
         lastSpeechTextLength = 0;
         bEndTransmission = False;
         eventTimer = 0;
@@ -61,8 +68,11 @@ function Bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
     }
     else
     {
+        dolog("StartConversation return True;");
         return True;
     }
+
+    dolog("StartConversation doing stuff and setting timer");
 
     // Grab the first event!
     currentEvent = con.eventList;
@@ -73,13 +83,12 @@ function Bool StartConversation(DeusExPlayer newPlayer, optional Actor newInvoke
 
     // Play a sound and wait a few seconds before starting
     datalink.ShowTextCursor(False);
+    bStartTransmission = True;
     if(restarting) {
-        bStartTransmission = True;
         restarting = false;
         SetTimer(0.05, True);
     } else {
         player.PlaySound(startSound, SLOT_None);
-        bStartTransmission = True;
         SetTimer(blinkRate, True);
     }
     return True;
@@ -98,6 +107,7 @@ state WaitForSpeech
     // has finished.  We want to play the next event.
     function Timer()
     {
+        dolog("Timer GotoState WaitForSpeech SpeechFinished");
         GotoState( 'WaitForSpeech', 'SpeechFinished' );
     }
 
@@ -144,6 +154,58 @@ Begin:
     }
 
     Goto('Idle');
+}
+
+
+function Timer()
+{
+    dolog("start Timer");
+    Super.Timer();
+    dolog("end Timer");
+}
+
+function dolog(string m)
+{
+    log(self@con.conName@GetStateName()@m);
+}
+
+function SetInterruptedFlag()
+{
+    dolog("SetInterruptedFlag");
+    Super.SetInterruptedFlag();
+}
+
+
+function TerminateConversation(optional bool bContinueSpeech, optional bool bNoPlayedFlag)
+{
+    dolog("TerminateConversation" @ bContinueSpeech @ bNoPlayedFlag);
+    Super.TerminateConversation(bContinueSpeech, bNoPlayedFlag);
+}
+
+
+function SetPlayedFlag()
+{
+    dolog("SetPlayedFlag");
+    Super.SetPlayedFlag();
+}
+
+
+function ActorDestroyed(Actor destroyedActor)
+{
+    dolog("ActorDestroyed" @ destroyedActor);
+    Super.ActorDestroyed(destroyedActor);
+}
+
+function JumpToConversation( Conversation jumpCon, String startLabel )
+{
+    dolog("JumpToConversation" @ jumpCon.conName @ startLabel);
+    Super.JumpToConversation(jumpCon, startLabel);
+}
+
+function EEventAction SetupEventSpeech( ConEventSpeech event, out String nextLabel )
+{
+    dolog("SetupEventSpeech" @ event @ nextLabel);
+    return Super.SetupEventSpeech(event, nextLabel);
 }
 
 defaultproperties

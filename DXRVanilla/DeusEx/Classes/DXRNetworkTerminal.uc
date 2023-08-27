@@ -94,6 +94,7 @@ function LogInAs(String user, String pass)
 
 function CloseScreen(String action)
 {
+    log(self@"CloseScreen"@action);
     if ((action == "LOGIN") && (winKnownAccounts != None))
     {
         CloseKnownAccountsWindow();

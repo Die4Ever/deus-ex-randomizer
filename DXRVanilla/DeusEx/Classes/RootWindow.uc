@@ -51,7 +51,7 @@ function DeusExBaseWindow PopWindow(optional Bool bNoUnpause)
         }
     }
 
-    _PopWindow(bNoUnpause);
+    log(self@"PopWindow" @ GetTopWindow() @ _PopWindow(bNoUnpause));
 }
 
 function DeusExBaseWindow InvokeMenuScreen(Class<DeusExBaseWindow> newScreen, optional bool bNoPause)
