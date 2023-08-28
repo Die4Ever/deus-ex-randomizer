@@ -7,6 +7,9 @@ var(Display) mesh Mesh3; // mesh for floating carcass
 
 simulated function PreBeginPlay()
 {
-    SetMesh2(Mesh2);
-    SetMesh3(Mesh3);
+    Super.PreBeginPlay();
+    if(Mesh2 != None)
+        SetMesh2(Mesh2);
+    if(Mesh3 != None)
+        SetMesh3(Mesh3);
 }
