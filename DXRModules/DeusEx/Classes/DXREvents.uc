@@ -2340,7 +2340,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "JockSecondStory":
             return "Buy two beers from Jordan Shea and give them to Jock in the Underworld bar.";
         case "M07ChenSecondGive_Played":
-            return "After the triad meeting in the temple, meet the leaders in the Lucky Money and receive the gifted bottles of wine from each Dragon Head.";
+            return "After the triad meeting in the temple, meet the leaders in the Lucky Money and receive all the gifted bottles of wine from each Dragon Head.";
         case "DeBeersDead":
             return "Kill Lucius DeBeers in Everett's House.  You can do so either by destroying him or shutting off his bio support with the computer next to him";
         case "StantonAmbushDefeated":
