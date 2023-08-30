@@ -96,7 +96,7 @@ function bool ShouldDrawActor(Actor A)
     if(A.bHidden)
         return false;
 
-    if( visionLevel >= 2 && (Inventory(A) != None || InformationDevices(A) != None || ElectronicDevices(A) != None || Containers(A) != None || Vehicles(A) != None) )
+    if( Inventory(A) != None || InformationDevices(A) != None || ElectronicDevices(A) != None || Containers(A) != None || Vehicles(A) != None )
         return true;
 
     if(!A.bVisionImportant)
