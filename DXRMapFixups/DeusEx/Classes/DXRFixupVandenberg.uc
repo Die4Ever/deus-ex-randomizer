@@ -155,16 +155,16 @@ function PreFirstEntryMapFixes()
                 RemoveFears(hs);
                 hs.MinHealth = 0;
                 hs.BaseAccuracy *= 0.1;
+
                 GiveItem(hs, class'#var(prefix)BallisticArmor');
-                if(!dxr.flags.IsReducedRando()) {
-                    dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
-                    if(dxre != None) {
-                        dxre.GiveRandomWeapon(hs, false, 2);
-                        dxre.GiveRandomMeleeWeapon(hs);
-                    }
-                    hs.FamiliarName = "Howard Stronger";
-                    hs.UnfamiliarName = "Howard Stronger";
+                dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+                if(dxre != None) {
+                    dxre.GiveRandomWeapon(hs, false, 2);
+                    dxre.GiveRandomMeleeWeapon(hs);
                 }
+                hs.FamiliarName = "Howard Stronger";
+                hs.UnfamiliarName = "Howard Stronger";
+
                 if(!#defined(vmd)) {// vmd allows AI to equip armor, so maybe he doesn't need the health boost?
                     SetPawnHealth(hs, 200);
                 }
