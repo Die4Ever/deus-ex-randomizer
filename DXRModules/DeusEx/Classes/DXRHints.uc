@@ -59,7 +59,7 @@ simulated function InitHints()
         AddHint("Use everything at your disposal, like TNT crates.", "Randomizer makes this even more of a strategy/puzzle game.");
         AddHint("A vending machine can provide you with 20 health worth of food.", "Eat up!");
         AddHint("Pepper spray and fire extinguishers can incapacitate an enemy", "letting you sneak past them.");
-        AddHint("The large metal crates are now destructible.", "They have 2000 hp.");
+        AddHint("The large metal crates are now destructible.", "They have 500 hp.");
         if(!dxr.flags.IsZeroRando())
             AddHint("Make sure to read the descriptions for skills, augs, and items.", "Randomizer adds some extra info.");
         if(dxr.flags.settings.min_weapon_dmg != dxr.flags.settings.max_weapon_dmg || dxr.flags.settings.min_weapon_shottime != dxr.flags.settings.max_weapon_shottime)

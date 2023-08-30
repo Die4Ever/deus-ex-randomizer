@@ -43,6 +43,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
 * Randomly adds "The Merchant"
 * Optionally randomize the song selections, with options to use songs from Unreal and Unreal Tournament
 * Option for mirrored maps, with choice of what percentage of maps should be mirrored
+* Randomize the types of weapon mods
 
 ## There are also settings for
 * Crowd Control! Let your Twitch/YouTube/Discord/other viewers troll you or help you! https://crowdcontrol.live/guides/DeusEx

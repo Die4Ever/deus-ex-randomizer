@@ -404,12 +404,14 @@ simulated function FixLogTimeout(#var(PlayerPawn) p)
     }
 }
 
-simulated function FixInventory(#var(PlayerPawn) p)
+simulated function bool FixInventory(#var(PlayerPawn) p)
 {
     local Inventory item, nextItem;
     local DXRLoadouts loadouts;
     local int slots[64], x, y;// leave room for up to an 8x8 inventory
+    local bool good;
 
+    good = true;
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
 
     for(item=p.Inventory; item!=None; item=nextItem) {
@@ -430,11 +432,14 @@ simulated function FixInventory(#var(PlayerPawn) p)
             for(y = item.invPosY; y < item.invPosY + item.invSlotsY; y++) {
                 if(slots[x*8 + y] > 0) {
                     err("inventory overlap at (" $ x $ ", " $ y $ ") " $ item);
+                    good = false;
                 }
                 slots[x*8 + y]++;
             }
         }
     }
+
+    return good;
 }
 
 function OverwriteDecorations()
