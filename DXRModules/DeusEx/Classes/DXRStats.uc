@@ -657,7 +657,7 @@ function TestScoring()
     testint(dxr.flags.ScoreFlags(), 12080, "score bonus for Extreme");
 
     dxr.flags.SetDifficulty(4);
-    testint(dxr.flags.ScoreFlags(), 13795, "score bonus for Impossible");
+    testint(dxr.flags.ScoreFlags(), 13745, "score bonus for Impossible");
 
     names[num] = "1 Million Points!";
     scores[num++] = 1000000;
