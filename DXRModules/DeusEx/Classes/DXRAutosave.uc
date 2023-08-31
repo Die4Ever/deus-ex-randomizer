@@ -2,6 +2,8 @@ class DXRAutosave extends DXRActorsBase transient;
 
 var transient bool bNeedSave;
 var config float save_delay;
+var transient float save_timer;
+var transient int autosave_combat;
 
 const Disabled = 0;
 const FirstEntry = 1;
@@ -11,18 +13,25 @@ const ExtraSafe = 4;
 
 function CheckConfig()
 {
-    if( ConfigOlderThan(2,5,0,9) ) {
-        save_delay = 0.7;
+    if( ConfigOlderThan(2,5,2,9) ) {
+        save_delay = 0.1;
     }
     Super.CheckConfig();
+    autosave_combat = int(ConsoleCommand("get #var(package).MenuChoice_AutosaveCombat autosave_combat"));
 }
 
-function PostFirstEntry()
+function BeginPlay()
 {
-    Super.PostFirstEntry();
-    l("PostFirstEntry() " $ dxr.dxInfo.MissionNumber);
+    Super.BeginPlay();
+    Disable('Tick');
+}
+
+function PreFirstEntry()
+{
+    Super.PreFirstEntry();
+    l("PreFirstEntry() " $ dxr.dxInfo.MissionNumber);
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave > 0 ) {
-        bNeedSave=true;
+        NeedSave();
     }
 }
 
@@ -31,20 +40,60 @@ function ReEntry(bool IsTravel)
     Super.ReEntry(IsTravel);
     l("ReEntry() " $ dxr.dxInfo.MissionNumber);
     if( dxr.dxInfo != None && dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber < 98 && dxr.flags.autosave>=EveryEntry && dxr.flags.autosave != Hardcore && IsTravel ) {
-        bNeedSave=true;
+        NeedSave();
     }
 }
 
 function PostAnyEntry()
 {
-    if( bNeedSave )
-        SetTimer(save_delay, True);
+    if(bNeedSave)
+        NeedSave();
 }
 
-function Timer()
+function NeedSave()
 {
-    if( bNeedSave )
-        doAutosave();
+    bNeedSave = true;
+    save_timer = save_delay;
+    Enable('Tick');
+    if(autosave_combat>0 || !PawnIsInCombat(player()))
+        SetGameSpeed(0);
+}
+
+function SetGameSpeed(float s)
+{
+    local MissionScript mission;
+
+    s = FMax(s, 0.01);// ServerSetSloMo only goes down to 0.1
+    if(s == Level.Game.GameSpeed) return;
+    Level.Game.GameSpeed = s;
+    Level.TimeDilation = s;
+    Level.Game.SetTimer(s, true);
+    Level.Game.SaveConfig();
+    Level.Game.GameReplicationInfo.SaveConfig();
+
+    // we need the mission script to clear PlayerTraveling
+    if(s <= 0.1) s /= 2;// might as well run the timer faster?
+    foreach AllActors(class'MissionScript', mission) {
+        mission.SetTimer(mission.checkTime * s, true);
+    }
+}
+
+function Tick(float delta)
+{
+    delta /= Level.Game.GameSpeed;
+    delta = FClamp(delta, 0.01, 0.05);// a single slow frame should not expire the timer by itself
+    save_timer -= delta;
+    if(bNeedSave) {
+        if(save_timer <= 0) {
+            doAutosave();
+        }
+    }
+    else if(save_timer <= 0) {
+        SetGameSpeed(1);
+        Disable('Tick');
+    } else {
+        SetGameSpeed(0);
+    }
 }
 
 static function bool AllowManualSaves(DeusExPlayer player)
@@ -66,6 +115,8 @@ function doAutosave()
     local int lastMission;
     local bool isDifferentMission;
 
+    save_timer = save_delay;
+
     if( dxr == None ) {
         info("dxr == None, doAutosave() not saving yet");
         return;
@@ -82,8 +133,9 @@ function doAutosave()
 
     p = player();
 
-    if(PawnIsInCombat(p)) {
+    if(autosave_combat<=0 && PawnIsInCombat(p)) {
         info("waiting for Player to be out of combat, not saving yet");
+        SetGameSpeed(1);
         return;
     }
 
@@ -115,10 +167,11 @@ function doAutosave()
     dxr.flags.f.SetInt('Rando_lastmission', dxr.dxInfo.MissionNumber,, 999);
 
     info("doAutosave() " $ lastMission @ dxr.dxInfo.MissionNumber @ saveSlot @ saveName @ p.GetStateName() @ save_delay);
-    SetTimer(0, False);
     bNeedSave = false;
+    SetGameSpeed(1);
     class'DXRStats'.static.IncDataStorageStat(p, "DXRStats_autosaves");
     p.SaveGame(saveSlot, saveName);
+    SetGameSpeed(0);
 
     if( interruptedDL != None ) {
         p.dataLinkPlay = interruptedDL;

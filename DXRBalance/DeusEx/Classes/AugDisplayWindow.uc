@@ -96,7 +96,7 @@ function bool ShouldDrawActor(Actor A)
     if(A.bHidden)
         return false;
 
-    if( visionLevel >= 2 && (Inventory(A) != None || InformationDevices(A) != None || ElectronicDevices(A) != None || Containers(A) != None || Vehicles(A) != None) )
+    if( Inventory(A) != None || InformationDevices(A) != None || ElectronicDevices(A) != None || Containers(A) != None || Vehicles(A) != None )
         return true;
 
     if(!A.bVisionImportant)
@@ -287,6 +287,7 @@ function DrawTargetAugmentation(GC gc)
     local string str,teleDest;
     local float x,y,h,w, boxCX,boxCY;
     local DynamicTeleporter dynTele;
+    local int show_teleporters;
 
     gc.SetFont(Font'FontMenuSmall_DS'); //This font is so much better for everything
 
@@ -297,7 +298,10 @@ function DrawTargetAugmentation(GC gc)
     Player.Weapon = oldWeapon;
 
     // check 500 feet in front of the player
-	tgtTeleporter = TraceTeleporter(8000,AimLocation);
+    show_teleporters = int(Player.ConsoleCommand("get #var(package).MenuChoice_ShowTeleporters show_teleporters"));
+    if(show_teleporters > 1) {
+	    tgtTeleporter = TraceTeleporter(8000,AimLocation);
+    }
 
     // display teleporter destinations
 	if (tgtTeleporter!=None && tgtTeleporter.URL!="")

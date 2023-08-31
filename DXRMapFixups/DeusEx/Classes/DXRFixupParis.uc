@@ -167,27 +167,29 @@ function AnyEntryMapFixes()
     switch(dxr.localURL)
     {
     case "10_PARIS_CATACOMBS":
-        // spawn Le Merchant with a hazmat suit because there's no guarantee of one before the highly radioactive area
-        // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
-        npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
-        if(npcs != None) {
-            sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vectm(-3209.483154, 5190.826172,1199.610352), rotm(0, -10000, 0, 16384), class'#var(prefix)HazMatSuit');
-            m = Merchant(sp);
-            if (m!=None){  // CreateForcedMerchant returns None if he already existed, but we still need to call it to recreate the conversation since those are transient
-                m.MakeFrench();
+        if(!dxr.flags.IsReducedRando()) {
+            // spawn Le Merchant with a hazmat suit because there's no guarantee of one before the highly radioactive area
+            // we need to do this in AnyEntry because we need to recreate the conversation objects since they're transient
+            npcs = DXRNPCs(dxr.FindModule(class'DXRNPCs'));
+            if(npcs != None) {
+                sp = npcs.CreateForcedMerchant("Le Merchant", 'lemerchant', vectm(-3209.483154, 5190.826172,1199.610352), rotm(0, -10000, 0, 16384), class'#var(prefix)HazMatSuit');
+                m = Merchant(sp);
+                if (m!=None){  // CreateForcedMerchant returns None if he already existed, but we still need to call it to recreate the conversation since those are transient
+                    m.MakeFrench();
+                }
             }
-        }
-        // give him weapons to defend himself
-        dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
-        if(dxre != None && sp != None) {
-            sp.bKeepWeaponDrawn = true;
-            GiveItem(sp, class'#var(prefix)WineBottle');
-            dxre.RandomizeSP(sp, 100);
-            RemoveFears(sp);
-            sp.ChangeAlly('Player', 0.0, false);
-            sp.MaxProvocations = 0;
-            sp.AgitationSustainTime = 3600;
-            sp.AgitationDecayRate = 0;
+            // give him weapons to defend himself
+            dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));
+            if(dxre != None && sp != None) {
+                sp.bKeepWeaponDrawn = true;
+                GiveItem(sp, class'#var(prefix)WineBottle');
+                dxre.RandomizeSP(sp, 100);
+                RemoveFears(sp);
+                sp.ChangeAlly('Player', 0.0, false);
+                sp.MaxProvocations = 0;
+                sp.AgitationSustainTime = 3600;
+                sp.AgitationDecayRate = 0;
+            }
         }
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":

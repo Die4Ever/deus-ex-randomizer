@@ -36,6 +36,7 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_ShowNews');
 
     if(#defined(vanilla)) {
+        CreateChoice(class'MenuChoice_AutosaveCombat');
         CreateChoice(class'MenuChoice_EnergyDisplay');
         CreateChoice(class'MenuChoice_ShowKeys');
         CreateChoice(class'MenuChoice_ThrowMelee');
@@ -44,7 +45,7 @@ function CreateChoices()
     CreateChoice(class'MenuChoice_PasswordAutofill');
     CreateChoice(class'MenuChoice_ConfirmNoteDelete');
     CreateChoice(class'MenuChoice_FixGlitches');
-    // TODO: speedrun mode for rerolls?
+    CreateChoice(class'MenuChoice_ShowTeleporters');
 
     controlsParent.SetSize(clientWidth, choiceStartY + (choiceCount * choiceVerticalGap));
 }

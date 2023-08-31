@@ -291,7 +291,7 @@ function CheckHelmet(ScriptedPawn p)
     // that way the game gets harder as you progress to enemies that typically have helmets
 
     if(#defined(injections)) // visors only work in vanilla due to our change in ScriptedPawn, so leave the chance to 0 for other mods
-        visor_chance = dxr.flags.settings.enemystats / 2;
+        visor_chance = dxr.flags.settings.enemystats / 3;
 
     // augs shouldn't get visors that cover their face
     if(NSFCloneAugStealth1(p) != None || NSFCloneAugTough1(p) != None || NSFCloneAugShield1(p) != None

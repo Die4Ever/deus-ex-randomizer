@@ -48,7 +48,7 @@ function CalcTrace(float deltaTime)
             //Scale damage for the player, since they get a combat difficulty multiplier
             //This helps with the Vandenberg computer room, the electricity in the Aquinas Substation
             //and the Hong Kong Helibase (and many more)
-            if (HitActor.IsA('#var(PlayerPawn)')){
+            if (HitActor.IsA('#var(PlayerPawn)') && damageAmt > 0){
                 damageAmt = Clamp(damageAmount / (#var(PlayerPawn)(HitActor).CombatDifficulty),1,damageAmount);
             }
 

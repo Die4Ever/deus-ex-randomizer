@@ -96,15 +96,15 @@ function ResetToDefaults()
     // force the player to type in a name, it makes Death Markers more fun!
     editName.SetText(last_player_name);
 
-    player.SkillPointsAvail = player.Default.SkillPointsAvail;
-    player.SkillPointsTotal = player.Default.SkillPointsTotal;
-
     portraitIndex = 0;
     btnPortrait.SetBackground(texPortraits[portraitIndex]);
 
     // if skills_disable_downgrades is enabled then we don't want to allow the player to ResetToDefaults as a workaround
     // SetDxr will still init the skills
     if( flags != None && flags.settings.skills_disable_downgrades == 0 ) {
+        player.SkillPointsAvail = player.Default.SkillPointsAvail;
+        player.SkillPointsTotal = player.Default.SkillPointsTotal;
+
         CopySkills();
         PopulateSkillsList();
         UpdateSkillPoints();

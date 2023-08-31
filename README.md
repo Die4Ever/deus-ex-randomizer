@@ -45,6 +45,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
 * Randomly adds "The Merchant"
 * Optionally randomize the song selections, with options to use songs from Unreal and Unreal Tournament
 * Option for mirrored maps, with choice of what percentage of maps should be mirrored
+* Randomize the types of weapon mods
 
 ## There are also settings for
 * Crowd Control! Let your Twitch/YouTube/Discord/other viewers troll you or help you! https://crowdcontrol.live/guides/DeusEx
@@ -55,7 +56,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
 * New game modes! [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Game-Modes)
     * Entrance Randomization - changes what level each teleporter takes you to, but keeps it within the same mission.
     * Horde Mode - fight for your life to see how long you can survive in the Paris Cathedral.
-    * Zero Rando - great for first-time Deus Ex players to benefit from the bug fixes and QoL improvements we've made, without any randomization.
+    * Zero Rando - great for first-time Deus Ex players to benefit from the bug fixes, QoL improvements, and balance changes we've made, without any randomization.
     * Randomizer Lite - randomizes some things without interfering with the immersion and mood of the game. Great for players who haven't played Deus Ex in a long time, or if you're intimidated by the full Randomizer.
     * Serious Sam mode - same as the normal game but with 10x as many enemies. The player has increased health and takes reduced damage to compensate.
     * Walton Ware mode - Walton Ware mode: a game mode focused on quickly doing bingos and New Game+.

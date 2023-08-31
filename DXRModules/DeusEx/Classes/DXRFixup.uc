@@ -65,7 +65,7 @@ function CheckConfig()
     i=0;
     DecorationsOverwrites[i].type = "CrateUnbreakableLarge";
     DecorationsOverwrites[i].bInvincible = false;
-    DecorationsOverwrites[i].HitPoints = 2000;
+    DecorationsOverwrites[i].HitPoints = 500;
     DecorationsOverwrites[i].minDamageThreshold = 0;
     c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
     DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
@@ -142,7 +142,6 @@ function AnyEntry()
 {
     local #var(prefix)Vehicles v;
     local #var(prefix)Button1 b;
-    local #var(prefix)Teleporter t;
     Super.AnyEntry();
     l( "mission " $ dxr.dxInfo.missionNumber @ dxr.localURL$" AnyEntry()");
 
@@ -151,6 +150,7 @@ function AnyEntry()
     FixSamCarter();
     FixCleanerBot();
     FixRevisionJock();
+    FixRevisionDecorativeInventory();
     SetSeed( "DXRFixup AnyEntry missions" );
     if(#defined(mapfixes))
         AnyEntryMapFixes();
@@ -170,8 +170,19 @@ function AnyEntry()
         if(v.CollisionRadius > 360)
             v.SetCollisionSize(360, v.CollisionHeight);
     }
+
+    ShowTeleporters();
+}
+
+function ShowTeleporters()
+{
+    local #var(prefix)Teleporter t;
+    local int show_teleporters;
+
+    show_teleporters = int(ConsoleCommand("get #var(package).MenuChoice_ShowTeleporters show_teleporters"));
+
     foreach AllActors(class'#var(prefix)Teleporter', t) {
-        t.bHidden = !(t.bCollideActors && t.bEnabled);
+        t.bHidden = !(t.bCollideActors && t.bEnabled && show_teleporters>0);
         t.DrawScale = 0.75;
     }
 }
@@ -350,6 +361,20 @@ function FixRevisionJock()
 #endif
 }
 
+function FixRevisionDecorativeInventory()
+{
+#ifdef revision
+    local Inventory i;
+
+    foreach AllActors(class'Inventory',i){
+        if (i.CollisionRadius==0 && i.CollisionHeight==0){
+            log("Making "$i$" grabbable by restoring it's original collision size");
+            i.SetCollisionSize(i.default.CollisionRadius,i.default.CollisionHeight);
+        }
+    }
+#endif
+}
+
 function FixCleanerBot()
 {
     local CleanerBot cb;
@@ -379,11 +404,14 @@ simulated function FixLogTimeout(#var(PlayerPawn) p)
     }
 }
 
-simulated function FixInventory(#var(PlayerPawn) p)
+simulated function bool FixInventory(#var(PlayerPawn) p)
 {
     local Inventory item, nextItem;
     local DXRLoadouts loadouts;
+    local int slots[64], x, y;// leave room for up to an 8x8 inventory
+    local bool good;
 
+    good = true;
     loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
 
     for(item=p.Inventory; item!=None; item=nextItem) {
@@ -396,7 +424,22 @@ simulated function FixInventory(#var(PlayerPawn) p)
         item.BecomeItem();
         item.SetLocation(p.Location);
         item.SetBase(p);
+
+        if(!item.bDisplayableInv) continue;// don't check for inventory overlap
+        if(item.invPosX < 0 || item.invPosY < 0) continue;
+
+        for(x = item.invPosX; x < item.invPosX + item.invSlotsX; x++) {
+            for(y = item.invPosY; y < item.invPosY + item.invSlotsY; y++) {
+                if(slots[x*8 + y] > 0) {
+                    err("inventory overlap at (" $ x $ ", " $ y $ ") " $ item);
+                    good = false;
+                }
+                slots[x*8 + y]++;
+            }
+        }
     }
+
+    return good;
 }
 
 function OverwriteDecorations()

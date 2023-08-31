@@ -375,7 +375,7 @@ function CheckConfig()
     difficulty_settings[i].passwordsrandomized = 100;
     difficulty_settings[i].infodevices = 100;
     difficulty_settings[i].enemiesrandomized = 50;
-    difficulty_settings[i].enemystats = 100;
+    difficulty_settings[i].enemystats = 90;
     difficulty_settings[i].hiddenenemiesrandomized = 50;
     difficulty_settings[i].enemiesshuffled = 100;
     difficulty_settings[i].enemies_nonhumans = 80;

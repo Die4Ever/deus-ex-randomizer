@@ -2,6 +2,7 @@ class DataLinkPlay injects DataLinkPlay;
 
 var transient float speechFastEndTime;
 var transient bool restarting;
+var DataLinkTrigger dataLinkTriggerQueue[16];
 
 function bool PushDataLink( Conversation queueCon )
 {
@@ -145,6 +146,40 @@ Begin:
 
     Goto('Idle');
 }
+
+// fix for issue with getting overwritten even when failing to play, then calling datalinkTrigger.DatalinkFinished() with the wrong datalinkTrigger
+// https://www.youtube.com/clip/UgkxHMQ1A0QuuXX9TURsxzDU5BF632aDr1cm
+// https://discord.com/channels/823629359931195394/823629734457114654/1145385071721840660
+function SetTrigger(DataLinkTrigger newDatalinkTrigger)
+{
+    local int i;
+
+    for(i=0; i<ArrayCount(dataLinkTriggerQueue); i++) {
+        if(dataLinkTriggerQueue[i] == None) {
+            dataLinkTriggerQueue[i] = newDatalinkTrigger;
+            break;
+        }
+        if(dataLinkTriggerQueue[i] == newDatalinkTrigger) {
+            break;
+        }
+    }
+}
+
+function NotifyDatalinkTrigger()
+{
+    local int i;
+
+    for(i=0; i<ArrayCount(dataLinkTriggerQueue); i++) {
+        if(dataLinkTriggerQueue[i] == None) {
+            continue;
+        }
+        if(dataLinkTriggerQueue[i].datalinkTag == startCon.conName) {
+            dataLinkTriggerQueue[i].DatalinkFinished();
+            dataLinkTriggerQueue[i] = None;
+        }
+    }
+}
+
 
 defaultproperties
 {

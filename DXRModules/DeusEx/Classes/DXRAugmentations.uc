@@ -303,7 +303,7 @@ simulated function RandoAug(Augmentation a)
         add_desc = "DXRando: Activating this aug instantly burns 1 energy in order to prevent abuse. ";
     }
     else if( #var(prefix)AugVision(a) != None ) {
-        add_desc = "DXRando: At level 1 you can see characters and goals. At level 2 you can also see items, datacubes, vehicles, crates, and electronic devices. ";
+        add_desc = "DXRando: You can see characters, goals, items, datacubes, vehicles, crates, and electronic devices through walls. ";
     }
     else if( #var(prefix)AugLight(a) != None ) {
         add_desc = "DXRando: The light is much brighter and doesn't use any energy. ";
