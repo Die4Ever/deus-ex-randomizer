@@ -20,6 +20,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/DXRandoInstaller.exe
           asset_name: DXRandoInstaller.exe
+          tag: ${{ github.ref }}
 
       - name: Upload Release Asset BingoViewer
         id: upload-release-asset-bingoviewer
@@ -28,6 +29,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/BingoViewer.exe
           asset_name: BingoViewer.exe
+          tag: ${{ github.ref }}
 
   linux:
     runs-on: ubuntu-latest
@@ -50,6 +52,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/DXRandoInstaller
           asset_name: DXRandoInstaller-Linux
+          tag: ${{ github.ref }}
 
       - name: Upload Release Asset BingoViewer
         id: upload-release-asset-bingoviewer
@@ -58,3 +61,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: dist/BingoViewer
           asset_name: BingoViewer-Linux
+          tag: ${{ github.ref }}
