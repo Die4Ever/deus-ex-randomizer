@@ -13,34 +13,22 @@ struct RunInfo
 };
 
 var RunInfo runs[20];
+var int missions_times[16];
+var int missions_menu_times[16];
 
 function AnyEntry()
 {
-    local int i, missions[16], total;
-    local string msg;
+    local int i;
+    local DeusExHUD hud;
+    local HUDSpeedrunSplits splits;
     Super.AnyEntry();
 
-    if(dxr.flags.IsSpeedrunMode()) {
-        for(i=1; i<ArrayCount(missions); i++) {
-            missions[i] = GetCompleteMissionTime(i);
-            missions[i] += GetCompleteMissionMenuTime(i);
-            total += missions[i];
-        }
-
-        if(dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber <= 15) {
-            msg = "Total IGT: " $ fmtTimeToString(total);
-            for(i=dxr.dxInfo.MissionNumber; i>0; i--) {
-                if(missions[i] > 0) {
-                    msg = msg $ ", Mission " $i$ ": " $ fmtTimeToString(missions[i]);
-                    break;
-                }
-            }
-            msg = msg $ ", Deaths: " $ GetDataStorageStat(dxr, "DXRStats_deaths");
-            player().ClientMessage(msg);
-        }
-    } else {
-        l("Total time so far: "$GetTotalTimeString()$", deaths so far: "$GetDataStorageStat(dxr, "DXRStats_deaths"));
+    for(i=1; i<ArrayCount(missions_times); i++) {
+        missions_times[i] = GetCompleteMissionTime(i);
+        missions_menu_times[i] = GetCompleteMissionMenuTime(i);
     }
+    hud = DeusExRootWindow(player().rootWindow).hud;
+    hud.splits.InitStats(self);
 
     SetTimer(0.1, True);
 }
@@ -86,6 +74,7 @@ function IncMissionTimer(int mission)
     local string flagname, dataname;
     local name flag;
     local int time, ftime;
+    local bool bInGame;
 
     local DataStorage datastorage;
 
@@ -97,7 +86,8 @@ function IncMissionTimer(int mission)
 
     //Track both the "success path" time (via flags) and
     //the complete time (via datastorage)
-    if (InGame()) {
+    bInGame = InGame();
+    if (bInGame) {
         flagname = "DXRando_Mission"$mission$"_Timer";
         dataname = "DXRando_Mission"$mission$"_Complete_Timer";
     } else {
@@ -112,6 +102,14 @@ function IncMissionTimer(int mission)
     time = int(datastorage.GetConfigKey(dataname));
     time = Max(time, ftime);
     datastorage.SetConfig(dataname, time+1, 3600*24*366);
+
+    if(mission >= 0 && mission < ArrayCount(missions_times)) {
+        if(bInGame) {
+            missions_times[mission] = time;
+        } else {
+            missions_menu_times[mission] = time;
+        }
+    }
 }
 
 function int GetCompleteMissionTime(int mission)

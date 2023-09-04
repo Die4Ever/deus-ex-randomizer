@@ -1,4 +1,6 @@
-Download `DXRandoInstaller.exe` in the Assets section under the changelog.
+Download `DXRandoInstaller.exe` in the Assets section under the changelog. It is safe to update in the middle of a playthrough.
+
+For Nvidia users, setting ultra low latency mode for DXRando.exe can help performance.
 
 If you're having an issue with the installer program: [Manual Installation Instructions for Vanilla, Lay D Denton, GMDX, Revision, HX co-op, and Vanilla? Madder.](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Installation-Instructions-and-performance-tweaks)
 
