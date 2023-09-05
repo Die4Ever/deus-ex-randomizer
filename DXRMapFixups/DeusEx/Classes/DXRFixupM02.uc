@@ -9,6 +9,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey k;
     local CrateExplosiveSmall c;
     local Terrorist nsf;
+    local #var(prefix)BoxSmall bs;
+    local #var(prefix)Keypad2 kp;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
@@ -50,6 +52,19 @@ function PreFirstEntryMapFixes()
     case "02_NYC_WAREHOUSE":
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(1700.929810,-519.988037,57.729870),rotm(0,0,0),'02_Newspaper06'); //Joe Greene article, table in room next to break room (near bathrooms)
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1727.644775,2479.614990,1745.724976),rotm(0,0,0),'02_Newspaper06'); //Next to apartment(?) door on rooftops, near elevator
+
+        //Remove the small boxes in the sewers near the ladder so that bigger boxes don't shuffle into those spots
+        foreach AllActors(class'DeusExMover',d,'DrainGrate'){break;}
+        foreach d.RadiusActors(class'#var(prefix)BoxSmall',bs,800){bs.Destroy();}
+
+        //A switch in the sewer swimming path to allow backtracking
+        AddSwitch( vect(-1518.989136,278.541260,-439.973816), rot(0, 2768, 0), 'DrainGrate');
+
+       //A keypad in the sewer walking path to allow backtracking
+        kp = Spawn(class'Keypad2',,,vectm(-622.685,497.4295,-60.437), rotm(0,-49192,0));
+        kp.validCode="2577";
+        kp.bToggleLock=False;
+        kp.Event='DoorToWarehouse';
 
         class'PlaceholderEnemy'.static.Create(self,vectm(782,-1452,48));
         class'PlaceholderEnemy'.static.Create(self,vectm(1508,-1373,256));
