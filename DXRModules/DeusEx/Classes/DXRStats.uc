@@ -191,7 +191,7 @@ function Timer()
 
 }
 
-static function string fmtTimeToString(int time, optional bool hidehours, optional bool hidetenths)
+static function string fmtTimeToString(int time, optional bool hidehours, optional bool hidetenths, optional bool bShort)
 {
     local int hours,minutes,seconds,tenths,remain;
     local string timestr;
@@ -206,7 +206,7 @@ static function string fmtTimeToString(int time, optional bool hidehours, option
     hours = (remain - minutes)/60;
 
     if(hours>0 || !hidehours) {
-        if (hours < 10) {
+        if (hours < 10 && !bShort) {
             timestr="0";
         }
         timestr=timestr$hours$":";

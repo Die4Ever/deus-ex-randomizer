@@ -7,6 +7,7 @@ var DeusExPlayer    player;
 var DXRStats        stats;
 
 var config Font  textfont;
+var config int windowWidth, windowHeight;
 var config Color colorBackground, colorText, colorBehind, colorBehindLosingTime, colorBehindGainingTime, colorAhead, colorAheadLosingTime, colorAheadGainingTime, colorBest, colorBestBehind, colorBestAhead;
 
 var config int PB[16];
@@ -14,6 +15,7 @@ var config int Golds[16];
 
 var int balanced_splits[16], balanced_splits_totals[16];
 var int PB_total, sum_of_bests;
+var float left_col, center_col, text_height;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -71,7 +73,6 @@ function InitStats(DXRStats newstats)
                 PB[i] = time;
             }
         }
-        SaveConfig();
     }
     SaveConfig();
 
@@ -92,7 +93,7 @@ function InitStats(DXRStats newstats)
     msg = msg $ ", Deaths: " $ stats.GetDataStorageStat(stats.dxr, "DXRStats_deaths");
     player.ClientMessage(msg);
 
-    SetSize(160, 130);
+    SetSize(windowWidth, windowHeight);
     StyleChanged();
 }
 
@@ -140,70 +141,73 @@ function DrawWindow(GC gc)
 
     // drawing text
     x = 8;
-    h = gc.GetFontHeight();
+    y = 4;
+    if(left_col == 0) {
+        gc.GetTextExtent(0, left_col, text_height, "MXXii");
+        gc.GetTextExtent(0, center_col, text_height, "+00:00");
+    }
+    h = text_height;
 
     // previous split
     if(prev > 0) {
-        if(prev<10) msg = "M0" $ prev;
-        else msg = "M" $ prev;
-        gc.SetTextColor(colorText);
-        gc.DrawText(x, y, width, h, msg);
-        gc.GetTextExtent(0, w, f, msg);
-
         time = cur_totals[prev] - balanced_splits_totals[prev];
         t = prevTime - balanced_splits[prev];
-        msg = " " $ fmtTimeDiff(time);
-        gc.SetTextColor(GetCmpColor(time, t, prevTime, Golds[prev]));
-        gc.DrawText(x + w, y, width - w, h, msg);
-        gc.GetTextExtent(0, w2, f, msg);
-        w += w2;
+        msg = fmtTimeDiff(time);
 
-        msg = " " $ stats.fmtTimeToString(cur_totals[prev], false, true);
-        gc.DrawText(x + w, y, width - w, h, msg);
+        s = fmtTime(cur_totals[prev]);
+        DrawTextLine(gc, MissionName(prev), msg, GetCmpColor(time, t, prevTime, Golds[prev]), x, y, s);
     }
     y += h;
 
-    // current split, showing balanced PB time
-    if(cur<10) msg = "M0" $ cur;
-    else msg = "M" $ cur;
-    msg = msg $ "     " $ stats.fmtTimeToString(balanced_splits_totals[cur], false, true);
-    gc.SetTextColor(colorText);
-    gc.DrawText(x, y, width, h, msg);
+    // current/upcoming split, showing balanced PB time
+    msg = fmtTime(balanced_splits_totals[cur]);
+    DrawTextLine(gc, MissionName(cur), msg, colorText, x, y);
     y += h;
 
     // next split
     if(next > 0) {
-        if(next<10) msg = "M0" $ next;
-        else msg = "M" $ next;
-        msg = msg $ "     " $ stats.fmtTimeToString(balanced_splits_totals[next], false, true);
-        gc.SetTextColor(colorText);
-        gc.DrawText(x, y, width, h, msg);
+        msg = fmtTime(balanced_splits_totals[next]);
+        DrawTextLine(gc, MissionName(next), msg, colorText, x, y);
     }
     y += h;
 
-    // current segment comparison
-    msg = "SEG: " $ stats.fmtTimeToString(curTime, true, true) $ " / " $ stats.fmtTimeToString(balanced_splits[cur], true, true);
+    // current segment time with comparison
+    msg = fmtTimeSeg(curTime);
+    s = "/ " $ fmtTimeSeg(balanced_splits[cur]);
     t = curTime - balanced_splits[cur];
-    gc.SetTextColor(GetCmpColor(t, 0));
-    gc.DrawText(x, y, width, h, msg);
+    DrawTextLine(gc, "SEG:", msg, GetCmpColor(t, 0), x, y, s);
     y += h;
 
     // current overall time
-    msg = "CUR: " $ stats.fmtTimeToString(total, false, true);
     time = cur_totals[prev] - balanced_splits_totals[prev];
-    gc.SetTextColor(GetCmpColor(time, t));
-    gc.DrawText(x, y, width, h, msg);
+    msg = fmtTime(total);
+    DrawTextLine(gc, "CUR:", msg, GetCmpColor(time, t), x, y);
     y += h;
 
-    // PB and SOB
+    // PB time
+    msg = fmtTime(PB_total);
+    DrawTextLine(gc, "PB:", msg, colorText, x, y);
+    y += h;
+}
+
+function string MissionName(int mission)
+{
+    if(mission < 10) return "M0" $ mission;
+    else return "M" $ mission;
+}
+
+function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, optional string extra)
+{
     gc.SetTextColor(colorText);
-    msg = "PB:  " $ stats.fmtTimeToString(PB_total, false, true);
-    gc.DrawText(x, y, width, h, msg);
-    y += h;
+    gc.DrawText(x, y, width - x, text_height, header);
+    gc.SetTextColor(c);
+    x += left_col;
+    gc.DrawText(x, y, width - x, text_height, msg);
 
-    /*msg = "SOB: " $ stats.fmtTimeToString(sum_of_bests, false, true);
-    gc.DrawText(x, y, width, h, msg);
-    y += h;*/
+    if(extra == "") return;
+
+    x += center_col;
+    gc.DrawText(x, y, width - x, text_height, " " $ extra);
 }
 
 function Color GetCmpColor(int overall_diff, int diff, optional int segtime, optional int gold)
@@ -222,6 +226,16 @@ function Color GetCmpColor(int overall_diff, int diff, optional int segtime, opt
     return colorText;
 }
 
+function string fmtTimeSeg(int time)
+{
+    return stats.fmtTimeToString(time, true, true, true);
+}
+
+function string fmtTime(int time)
+{
+    return stats.fmtTimeToString(time, false, true, true);
+}
+
 function string fmtTimeDiff(int diff)
 {
     if(diff <= 0) return "-" $ stats.fmtTimeToString(-diff, true, true);
@@ -230,7 +244,7 @@ function string fmtTimeDiff(int diff)
 
 function int BalancedSplit(int m)
 {
-    local int balanced_split_time, i;
+    local int balanced_split_time;
     local float ratio_of_game;
 
     ratio_of_game = float(Golds[m]) / float(sum_of_bests);
@@ -260,7 +274,9 @@ function DrawBackground(GC gc)
 
 defaultproperties
 {
-    textfont=Font'FontComputer8x20_B';
+    windowWidth=150
+    windowHeight=80
+    textfont=Font'DeusExUI.FontMenuHeaders_DS';
     colorBackground=(R=0,G=0,B=0,A=100)
     colorText=(R=255,G=255,B=255,A=255)
 
