@@ -21,6 +21,7 @@ function AnyEntry()
     local int i;
     local DeusExHUD hud;
     local HUDSpeedrunSplits splits;
+
     Super.AnyEntry();
 
     for(i=1; i<ArrayCount(missions_times); i++) {
@@ -28,7 +29,13 @@ function AnyEntry()
         missions_menu_times[i] = GetCompleteMissionMenuTime(i);
     }
     hud = DeusExRootWindow(player().rootWindow).hud;
+#ifdef injections
     hud.splits.InitStats(self);
+#elseif hx
+    // do nothing
+#else
+    DXRandoHUD(hud).splits.InitStats(self);
+#endif
 
     SetTimer(0.1, True);
 }
