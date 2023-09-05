@@ -103,7 +103,7 @@ runs:
         curl -Lo dxvk.tar.gz
         "https://github.com/doitsujin/dxvk/releases/download/v2.3/dxvk-2.3.tar.gz"
       shell: bash
-    - run: tar -xf xdxvk.tar.gz
+    - run: tar -xf dxvk.tar.gz
       shell: bash
     - run: mkdir installer/3rdParty/dxvk/
       shell: bash
