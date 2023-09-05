@@ -16,7 +16,6 @@ class InstallerWindow(GUIBase):
         self.height = 500
         self.lastprogress = ''
         self.root.title("Deus Ex Randomizer Installer")
-        self.root.geometry(str(self.width)+"x"+str(self.height))
 
         scroll = ScrollableFrame(self.root, width=self.width, height=self.height, mousescroll=1)
         self.frame = scroll.frame
@@ -62,6 +61,17 @@ class InstallerWindow(GUIBase):
         self.FixColors(self.speedupfix)
         row+=1
 
+        # DXVK is also global
+        if IsWindows():
+            self.dxvkval = BooleanVar(master=self.frame, value=True)
+            self.dxvk = Checkbutton(self.frame, text="Apply DXVK fix", variable=self.dxvkval)
+            self.dxvk.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+            Hovertip(self.dxvk, "DXVK can fix performance issues on modern systems by using Vulkan.")
+            self.FixColors(self.dxvk)
+            row+=1
+        else:
+            self.dxvkval = DummyCheckbox()
+
         # TODO: option to enable telemetry? checking for updates?
 
         # WEBSITE!
@@ -74,6 +84,8 @@ class InstallerWindow(GUIBase):
         self.installButton = Button(self.frame,text='Install!',width=24,height=2,font=self.font, command=self.Install)
         self.installButton.grid(column=1,row=101, sticky='SW', padx=pad, pady=pad)
         Hovertip(self.installButton, 'Dew it!')
+
+        self.root.geometry(str(self.width)+"x"+str(self.height))
 
 
     def InitFlavorSettings(self, f: str, row, pad) -> int:
@@ -158,7 +170,8 @@ class InstallerWindow(GUIBase):
                 }
 
         speedupfix = self.speedupfixval.get()
-        flavors = Install.Install(self.exe, flavors, speedupfix)
+        dxvk = self.dxvkval.get()
+        flavors = Install.Install(self.exe, flavors, speedupfix, dxvk)
         flavorstext = ', '.join(flavors.keys())
         extra = ''
         if 'Vanilla' in flavors and IsWindows():

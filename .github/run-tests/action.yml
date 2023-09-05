@@ -10,11 +10,9 @@ runs:
     - run: pip3 install -r installer/requirements.txt 2>&1
       shell: bash
 
+    # download launchers
     - run: mkdir installer/3rdParty
       shell: bash
-    - run: mkdir installer/3rdParty/d3d10drv
-      shell: bash
-
     # https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/tree/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs
     - run: >-
         curl -Lo installer/3rdParty/KentieDeusExe.exe
@@ -25,7 +23,10 @@ runs:
         "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs/Launch.exe"
       shell: bash
 
-    # D3D10 stuff
+    # download D3D10 stuff
+    - run: mkdir installer/3rdParty/d3d10drv
+      shell: bash
+
     - run: >-
         curl -Lo installer/3rdParty/D3D10Drv.int
         "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D10Drv.int"
@@ -96,6 +97,19 @@ runs:
         curl -Lo installer/3rdParty/FemJC.u
         "https://github.com/LayDDentonProject/Lay-D-Denton-Project/releases/download/v1.1/FemJC.u"
       shell: bash
+
+    # download DXVK 32bit, the extracted folder has the version number in it like dxvk-2.3
+    - run: >-
+        curl -Lo dxvk.tar.gz
+        "https://github.com/doitsujin/dxvk/releases/download/v2.3/dxvk-2.3.tar.gz"
+      shell: bash
+    - run: tar -xf xdxvk.tar.gz
+      shell: bash
+    - run: mkdir installer/3rdParty/dxvk/
+      shell: bash
+    - run: cp dxvk-*/x32/* installer/3rdParty/dxvk/
+      shell: bash
+
 
     - run: python3 -m compileall -q . 2>&1
       shell: bash

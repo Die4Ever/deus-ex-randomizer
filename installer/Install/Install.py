@@ -29,7 +29,7 @@ def UnattendedInstall(installpath:str, downloadmirrors):
     if downloadmirrors and 'Vanilla' in settings:
         settings['Vanilla']['mirrors'] = True
 
-    ret = Install(p, settings, True)
+    ret = Install(p, settings, speedupfix=True, dxvk=IsWindows())
 
 
 def DetectFlavors(exe:Path) -> list:
@@ -41,7 +41,7 @@ def DetectFlavors(exe:Path) -> list:
     return _DetectFlavors(system)
 
 
-def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
+def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool) -> dict:
     assert exe.exists(), str(exe)
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
@@ -70,6 +70,9 @@ def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
 
     if speedupfix:
         EngineDllFix(system)
+
+    if dxvk:
+        CopyDXVK(system)
 
     debug("Install returning", flavors)
 
