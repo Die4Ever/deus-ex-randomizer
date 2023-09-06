@@ -10,6 +10,8 @@ var config Font  textfont;
 var config int windowWidth, windowHeight;
 var config Color colorBackground, colorText, colorBehind, colorBehindLosingTime, colorBehindGainingTime, colorAhead, colorAheadLosingTime, colorAheadGainingTime, colorBest, colorBestBehind, colorBestAhead;
 
+var config bool enabled, minimal;
+
 var config int PB[16];
 var config int Golds[16];
 
@@ -43,7 +45,6 @@ function InitStats(DXRStats newstats)
     }
 
     curMission = stats.dxr.dxInfo.MissionNumber;
-    Show();
 
     for(i=1; i<=15; i++) {
         PB_total += PB[i];
@@ -59,6 +60,23 @@ function InitStats(DXRStats newstats)
     }
 
     total = TotalTime();
+
+    msg = "Total IGT: " $ stats.fmtTimeToString(total);
+    for(i=Min(15,curMission); i>0; i--) {
+        time = stats.missions_times[i];
+        time += stats.missions_menu_times[i];
+        if(time > 0) {
+            msg = msg $ ", Mission " $i$ ": " $ stats.fmtTimeToString(time);
+            break;
+        }
+    }
+    msg = msg $ ", Deaths: " $ stats.GetDataStorageStat(stats.dxr, "DXRStats_deaths");
+    player.ClientMessage(msg);
+
+    if(!enabled) {
+        Hide();
+        return;
+    }
 
     if(curMission == 99) {
         // write back new PBs and Golds
@@ -81,18 +99,7 @@ function InitStats(DXRStats newstats)
         return;
     }
 
-    msg = "Total IGT: " $ stats.fmtTimeToString(total);
-    for(i=curMission; i>0; i--) {
-        time = stats.missions_times[i];
-        time += stats.missions_menu_times[i];
-        if(time > 0) {
-            msg = msg $ ", Mission " $i$ ": " $ stats.fmtTimeToString(time);
-            break;
-        }
-    }
-    msg = msg $ ", Deaths: " $ stats.GetDataStorageStat(stats.dxr, "DXRStats_deaths");
-    player.ClientMessage(msg);
-
+    Show();
     SetSize(windowWidth, windowHeight);
     StyleChanged();
 }
@@ -149,7 +156,7 @@ function DrawWindow(GC gc)
     h = text_height;
 
     // previous split
-    if(prev > 0) {
+    if(prev > 0 && !minimal) {
         time = cur_totals[prev] - balanced_splits_totals[prev];
         t = prevTime - balanced_splits[prev];
         msg = fmtTimeDiff(time);
@@ -160,22 +167,25 @@ function DrawWindow(GC gc)
     y += h;
 
     // current/upcoming split, showing balanced PB time
-    msg = fmtTime(balanced_splits_totals[cur]);
-    DrawTextLine(gc, MissionName(cur), msg, colorText, x, y);
+    if(!minimal) {
+        msg = fmtTime(balanced_splits_totals[cur]);
+        DrawTextLine(gc, MissionName(cur), msg, colorText, x, y);
+    }
     y += h;
 
     // next split
-    if(next > 0) {
+    if(next > 0 && !minimal) {
         msg = fmtTime(balanced_splits_totals[next]);
         DrawTextLine(gc, MissionName(next), msg, colorText, x, y);
     }
     y += h;
 
+    if(minimal) y += h;
     // current segment time with comparison
     msg = fmtTimeSeg(curTime);
     s = "/ " $ fmtTimeSeg(balanced_splits[cur]);
     t = curTime - balanced_splits[cur];
-    DrawTextLine(gc, "SEG:", msg, GetCmpColor(t, 0), x, y, s);
+    DrawTextLine(gc, "SEG:", msg, GetCmpColor(t, t), x, y, s);
     y += h;
 
     // current overall time
@@ -185,8 +195,10 @@ function DrawWindow(GC gc)
     y += h;
 
     // PB time
-    msg = fmtTime(PB_total);
-    DrawTextLine(gc, "PB:", msg, colorText, x, y);
+    if(!minimal) {
+        msg = fmtTime(PB_total);
+        DrawTextLine(gc, "PB:", msg, colorText, x, y);
+    }
     y += h;
 }
 
@@ -274,6 +286,7 @@ function DrawBackground(GC gc)
 
 defaultproperties
 {
+    enabled=true
     windowWidth=150
     windowHeight=80
     textfont=Font'DeusExUI.FontMenuHeaders_DS';
