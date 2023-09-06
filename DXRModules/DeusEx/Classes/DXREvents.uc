@@ -88,6 +88,7 @@ function SetWatchFlags() {
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)Poolball ball;
     local #var(prefix)DataLinkTrigger dlt;
+    local #var(prefix)Female2 f;
     local int i;
 
     local bool RevisionMaps;
@@ -122,6 +123,7 @@ function SetWatchFlags() {
     case "01_NYC_UNATCOHQ":
         WatchFlag('BathroomBarks_Played');
         WatchFlag('ManBathroomBarks_Played');
+        WatchFlag('Shannon_Dead');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
@@ -131,6 +133,12 @@ function SetWatchFlags() {
         }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
+        foreach AllActors(class'#var(prefix)Female2',f) {
+            if(f.BindName == "Shannon"){
+                f.bImportant = true;
+                f.bInvincible = false;
+            }
+        }
 
         break;
     case "02_NYC_BATTERYPARK":
@@ -202,6 +210,7 @@ function SetWatchFlags() {
         break;
     case "03_NYC_UNATCOHQ":
         WatchFlag('SimonsAssassination');
+        WatchFlag('Shannon_Dead');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
@@ -210,6 +219,13 @@ function SetWatchFlags() {
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
         }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
+
+        foreach AllActors(class'#var(prefix)Female2',f) {
+            if(f.BindName == "Shannon"){
+                f.bImportant = true;
+                f.bInvincible = false;
+            }
+        }
 
         break;
     case "03_NYC_AIRFIELD":
@@ -292,6 +308,7 @@ function SetWatchFlags() {
         WatchFlag('MostWarehouseTroopsDead');
         break;
     case "04_NYC_UNATCOHQ":
+        WatchFlag('Shannon_Dead');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
@@ -300,6 +317,14 @@ function SetWatchFlags() {
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
         }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
+
+        foreach AllActors(class'#var(prefix)Female2',f) {
+            if(f.BindName == "Shannon"){
+                f.bImportant = true;
+                f.bInvincible = false;
+            }
+        }
+
         break;
     case "04_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
@@ -312,6 +337,7 @@ function SetWatchFlags() {
     case "05_NYC_UNATCOHQ":
         WatchFlag('KnowsAnnasKillphrase1');
         WatchFlag('KnowsAnnasKillphrase2');
+        WatchFlag('Shannon_Dead');
 
         foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
             if (cp.Name=='ComputerPersonal7'){  //JC's computer
@@ -337,6 +363,13 @@ function SetWatchFlags() {
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
         }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
+
+        foreach AllActors(class'#var(prefix)Female2',f) {
+            if(f.BindName == "Shannon"){
+                f.bImportant = true;
+                f.bInvincible = false;
+            }
+        }
 
         break;
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -2816,6 +2849,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Rent a companion for the night from the Mamasan in the Lucky Money club.";
         case "Sailor_ClassDeadM6":
             return "Kill enough of the sailors on the top floor of the Lucky Money club.";
+        case "Shannon_Dead":
+            return "Kill Shannon in UNATCO HQ as retribution for her thieving ways.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3197,6 +3232,7 @@ defaultproperties
     bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy! (%s)",max=100,missions=36478)
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some companionship",max=1,missions=64)
     bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I spilled %s drinks!",max=5,missions=64)
+    bingo_options(238)=(event="Shannon_Dead",desc="Kill the thief in UNATCO",max=1,missions=58)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
