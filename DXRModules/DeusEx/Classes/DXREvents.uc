@@ -376,6 +376,7 @@ function SetWatchFlags() {
         WatchFlag('LDDPRussPaid');
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
+        WatchFlag('M06JCHasDate');
 
         foreach AllActors(class'#var(prefix)Hooker1', h) {
             if(h.BindName == "ClubMercedes")
@@ -2811,6 +2812,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Empty enough soda vending machines.";
         case "VendingMachineDispense_Candy":
             return "Dispense enough candy bars from vending machines.";
+        case "M06JCHasDate":
+            return "Rent a companion for the night from the Mamasan in the Lucky Money club.";
+        case "Sailor_ClassDeadM6":
+            return "Kill enough of the sailors on the top floor of the Lucky Money club.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3187,9 +3192,11 @@ defaultproperties
     bingo_options(230)=(event="CathedralLibrary",desc="Worth its weight in gold",max=1,missions=2048)
     bingo_options(231)=(event="DuClareKeys",desc="Collect %s different keys around Chateau DuClare",max=3,missions=1024)
     bingo_options(232)=(event="ShipLockerKeys",desc="Collect %s locker keys inside the superfreighter",max=2,missions=512)
-    bingo_options(233)=(event="VendingMachineEmpty",desc="All Sold Out!",max=18,missions=36734)
-    bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange!",max=12,missions=36734)
-    bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy!",max=100,missions=36478)
+    bingo_options(233)=(event="VendingMachineEmpty",desc="All Sold Out! (%s)",max=18,missions=36734)
+    bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange! (%s)",max=12,missions=36734)
+    bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy! (%s)",max=100,missions=36478)
+    bingo_options(236)=(event="M06JCHasDate",desc="Pay for some companionship",max=1,missions=64)
+    bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I spilled %s drinks!",max=5,missions=64)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
