@@ -45,7 +45,6 @@ function InitStats(DXRStats newstats)
     }
 
     curMission = stats.dxr.dxInfo.MissionNumber;
-    Show();
 
     for(i=1; i<=15; i++) {
         PB_total += PB[i];
@@ -62,13 +61,8 @@ function InitStats(DXRStats newstats)
 
     total = TotalTime();
 
-    if(curMission < 1 || curMission > 15) {
-        Hide();
-        return;
-    }
-
     msg = "Total IGT: " $ stats.fmtTimeToString(total);
-    for(i=curMission; i>0; i--) {
+    for(i=Min(15,curMission); i>0; i--) {
         time = stats.missions_times[i];
         time += stats.missions_menu_times[i];
         if(time > 0) {
@@ -100,6 +94,12 @@ function InitStats(DXRStats newstats)
     }
     SaveConfig();
 
+    if(curMission < 1 || curMission > 15) {
+        Hide();
+        return;
+    }
+
+    Show();
     SetSize(windowWidth, windowHeight);
     StyleChanged();
 }
