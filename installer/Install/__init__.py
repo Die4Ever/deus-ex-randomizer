@@ -254,12 +254,16 @@ def CopyD3D10Renderer(system:Path):
         CopyTo(f, drvdir_dest / f.name, True)
 
 
-def CopyDXVK(system:Path):
+def CopyDXVK(system:Path, install:bool):
     dir = GetSourcePath() / '3rdParty' / 'dxvk'
     info('CopyDXVK from', dir, ' to ', system)
     num = 0
     for f in dir.glob('*'):
-        CopyTo(f, system / f.name)
+        dest = system / f.name
+        if install:
+            CopyTo(f, dest)
+        elif dest.exists():
+            dest.unlink(True)
         num += 1
     assert num > 0, 'Found '+str(num)+' DXVK files'
 

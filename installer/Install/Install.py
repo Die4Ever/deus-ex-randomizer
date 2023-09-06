@@ -71,8 +71,7 @@ def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool) -> dict:
     if speedupfix:
         EngineDllFix(system)
 
-    if dxvk:
-        CopyDXVK(system)
+    CopyDXVK(system, dxvk)
 
     debug("Install returning", flavors)
 
