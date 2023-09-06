@@ -64,7 +64,7 @@ class InstallerWindow(GUIBase):
         # DXVK is also global
         if IsWindows():
             self.dxvkval = BooleanVar(master=self.frame, value=True)
-            self.dxvk = Checkbutton(self.frame, text="Apply DXVK fix", variable=self.dxvkval)
+            self.dxvk = Checkbutton(self.frame, text="Apply DXVK fix for modern computers", variable=self.dxvkval)
             self.dxvk.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
             Hovertip(self.dxvk, "DXVK can fix performance issues on modern systems by using Vulkan.")
             self.FixColors(self.dxvk)
