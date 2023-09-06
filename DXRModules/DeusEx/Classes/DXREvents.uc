@@ -2805,6 +2805,12 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Find enough different keys around Chateau DuClare.  Keys include the key to Beths Room, Nicolettes Room, and to the Basement";
         case "ShipLockerKeys":
             return "Find keys to the lockers on the lower decks of the superfreighter.  The lockers are inside the building underneath the helipad.";
+        case "VendingMachineEmpty":
+            return "Empty enough vending machines of any type.";
+        case "VendingMachineEmpty_Drink":
+            return "Empty enough soda vending machines.";
+        case "VendingMachineDispense_Candy":
+            return "Dispense enough candy bars from vending machines.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3181,6 +3187,9 @@ defaultproperties
     bingo_options(230)=(event="CathedralLibrary",desc="Worth its weight in gold",max=1,missions=2048)
     bingo_options(231)=(event="DuClareKeys",desc="Collect %s different keys around Chateau DuClare",max=3,missions=1024)
     bingo_options(232)=(event="ShipLockerKeys",desc="Collect %s locker keys inside the superfreighter",max=2,missions=512)
+    bingo_options(233)=(event="VendingMachineEmpty",desc="All Sold Out!",max=18,missions=36734)
+    bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange!",max=12,missions=36734)
+    bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy!",max=100,missions=36478)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -3222,6 +3231,9 @@ defaultproperties
     mutually_exclusive(37)=(e1="Binoculars_Activated",e2="BirdWatching")
     mutually_exclusive(38)=(e1="Binoculars_Activated",e2="PawnState_Dancing")
     mutually_exclusive(39)=(e1="Supervisor_Paid",e2="M06BoughtVersaLife")
+    mutually_exclusive(40)=(e1="VendingMachineEmpty",e2="VendingMachineEmpty_Drink")
+    mutually_exclusive(41)=(e1="VendingMachineEmpty",e2="VendingMachineDispense_Candy")
+    mutually_exclusive(42)=(e1="VendingMachineEmpty_Drink",e2="VendingMachineDispense_Candy")
 
     bingo_win_countdown=-1
 }
