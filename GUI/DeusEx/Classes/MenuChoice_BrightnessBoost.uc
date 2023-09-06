@@ -44,7 +44,7 @@ function SetEnumerators()
     local int i;
 
     for (i=0;i<numTicks;i++){
-	    SetEnumeration(i, string(i));
+	    SetEnumeration(i, "+" $ string(i));
     }
 }
 
@@ -96,9 +96,9 @@ defaultproperties
      numTicks=256
      startValue=0
      endValue=256
-     defaultValue=10
-     BrightnessBoost=10
+     defaultValue=5
+     BrightnessBoost=5
      choiceControlPosX=203
      actionText="Brightness Boost"
-     HelpText="Generally increases brightness for ease of play"
+     HelpText="Generally increases brightness for ease of play. Last-ditch effort since it can affect AI too."
 }
