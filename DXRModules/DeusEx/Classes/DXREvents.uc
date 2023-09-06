@@ -2188,6 +2188,33 @@ function string RemapBingoEvent(string eventname)
         case "WatchKeys_Locker1":
         case "WatchKeys_Locker2":
             return "ShipLockerKeys";
+        case "TechSergeantKaplan_Dead":
+        case "Mole_Dead":
+        case "JordanShea_Dead":
+        case "Doctor1_Dead":
+        case "Veteran_Dead":
+        case "jughead_Dead":
+        case "drugdealer_Dead":
+        case "Harold_Dead":
+        case "Shannon_Dead":
+        case "Sven_Dead":
+        case "supervisor01_Dead":
+        case "Canal_Pilot_Dead":
+        case "Canal_Bartender_Dead":
+        case "MarketBum1_Dead":
+        case "ClubDoorGirl_Dead":
+        case "Mamasan_Dead":
+        case "ClubBartender_Dead":
+        case "bums_Dead":
+        case "Camille_Dead":
+        case "Jean_Dead":
+        case "Michelle_Dead":
+        case "Antoine_Dead":
+        case "Jocques_Dead":
+        case "Kristi_Dead":
+        case "HotelBartender_Dead":
+            _MarkBingo("DestroyCapitalism"); //Split into another event, but still return this one as-is
+            return eventname;
         default:
             return eventname;
     }
@@ -2851,6 +2878,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Kill enough of the sailors on the top floor of the Lucky Money club.";
         case "Shannon_Dead":
             return "Kill Shannon in UNATCO HQ as retribution for her thieving ways.";
+        case "DestroyCapitalism":
+            return "Kill enough people who are willing to sell you goods in exchange for money.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3233,6 +3262,7 @@ defaultproperties
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some companionship",max=1,missions=64)
     bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I spilled %s drinks!",max=5,missions=64)
     bingo_options(238)=(event="Shannon_Dead",desc="Kill the thief in UNATCO",max=1,missions=58)
+    bingo_options(239)=(event="DestroyCapitalism",desc="MUST. CRUSH. %s CAPITALISTS.",max=10,missions=1406)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
