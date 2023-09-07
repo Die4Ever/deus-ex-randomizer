@@ -174,6 +174,7 @@ class InstallerWindow(GUIBase):
                     'exetype': v.get('exe', dummy).get(),
                     'mirrors': v.get('mirrors', dummy).get(),
                     'LDDP': v.get('LDDP', dummy).get(),
+                    'OpenGL2': v.get('OpenGL2', dummy).get(),
                     'downloadcallback': self.DownloadProgress,
                 }
 

@@ -154,12 +154,20 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
     CopyD3DRenderers(system)
 
+    Ogl = system/'OpenGLDrv.dll'
+    backupOgl = system/'OpenGLDrv.orig.dll'
     if settings.get('OpenGL2'):
-        dest = system/'OpenGLDrv.dll'
-        backup = system/'OpenGLDrv.orig.dll'
-        if dest.exists() and not backup.exists():
-            dest.rename(backup)
-        CopyTo(GetSourcePath() / '3rdParty' /'OpenGLDrv.dll', dest)
+        if Ogl.exists() and not backupOgl.exists():
+            Ogl.rename(backupOgl)
+        CopyTo(GetSourcePath() / '3rdParty' /'OpenGLDrv.dll', Ogl)
+    elif backupOgl.exists():
+        currMd5 = ''
+        if Ogl.exists():
+            currMd5 = MD5(Ogl.read_bytes())
+        backupMd5 = MD5(backupOgl.read_bytes())
+        info('reverting', Ogl, currMd5, 'to', backupOgl, backupMd5)
+        CopyTo(backupOgl, Ogl)
+
 
     FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
     CopyTo(FemJCu, dxrroot / 'System' / 'FemJC.u')
