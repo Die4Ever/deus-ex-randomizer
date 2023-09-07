@@ -1196,9 +1196,12 @@ function BingoWinScreen()
     p.ReducedDamageType = 'All';// god mode
     p.DesiredFlashScale = 0;
     p.DesiredFlashFog = vect(0,0,0);
-    p.ShowHud(False);
-    //Show win message
-    class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
+
+    if(InGame()) {
+        p.ShowHud(False);
+        //Show win message
+        class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
+    }
     if (bingo_win_countdown == 2 && !#defined(vanilla)) {
         //Give it 2 seconds to send the tweet
         //This is still needed outside of vanilla
