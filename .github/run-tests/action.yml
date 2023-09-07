@@ -44,7 +44,7 @@ runs:
       shell: bash
     - run: unzip dxglr21.zip
       shell: bash
-    - run: cp dxglr21/OpenGLDrv.dll installer/3rdParty/OpenGLDrv.dll
+    - run: cp OpenGLDrv.dll installer/3rdParty/OpenGLDrv.dll
       shell: bash
 
     # download D3D10 stuff
