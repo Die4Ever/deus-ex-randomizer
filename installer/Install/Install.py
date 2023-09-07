@@ -152,7 +152,14 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
     Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
-    CopyD3D10Renderer(system)
+    CopyD3DRenderers(system)
+
+    if settings.get('OpenGL2'):
+        dest = system/'OpenGLDrv.dll'
+        backup = system/'OpenGLDrv.orig.dll'
+        if dest.exists() and not backup.exists():
+            dest.rename(backup)
+        CopyTo(GetSourcePath() / '3rdParty' /'OpenGLDrv.dll', dest)
 
     FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
     CopyTo(FemJCu, dxrroot / 'System' / 'FemJC.u')

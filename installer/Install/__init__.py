@@ -7,7 +7,7 @@ except Exception as e:
 
 def debug(*args):
     global outfile
-    if GetDryrun():
+    if GetVerbose():
         print(*args)
         if outfile:
             print(*args, file=outfile)
@@ -240,9 +240,13 @@ def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path,
         WriteBytes(outconfig, bytes)
 
 
-def CopyD3D10Renderer(system:Path):
+def CopyD3DRenderers(system:Path):
     thirdparty = GetSourcePath() / '3rdParty'
-    info('CopyD3D10Renderer from', thirdparty, ' to ', system)
+    info('CopyD3DRenderers from', thirdparty, ' to ', system)
+
+    CopyTo(thirdparty/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
+    CopyTo(thirdparty/'D3D9Drv.hut', system/'D3D9Drv.hut', True)
+    CopyTo(thirdparty/'D3D9Drv.int', system/'D3D9Drv.int', True)
 
     CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
     CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)

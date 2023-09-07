@@ -136,6 +136,14 @@ class InstallerWindow(GUIBase):
             Hovertip(r, "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play.")
             row += 1
 
+            v = BooleanVar(master=self.frame, value=False)
+            settings['OpenGL2'] = v
+            c = Checkbutton(self.frame, text="Updated OpenGL 2.0 Renderer", variable=v)
+            Hovertip(c, "Updated OpenGL Renderer for modern systems. An alternative to using D3D10 or D3D9.")
+            c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
+            self.FixColors(c)
+            row+=1
+
         self.flavors[f] = settings
         return row
 
