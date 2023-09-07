@@ -210,15 +210,26 @@ function string MissionName(int mission)
 
 function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, optional string extra)
 {
+    local float w, h;
+
     gc.SetTextColor(colorText);
     gc.DrawText(x, y, width - x, text_height, header);
     gc.SetTextColor(c);
+
+    gc.GetTextExtent(0, w, h, header);
+    left_col = FMax(left_col, w);
+    text_height = FMax(text_height, h);
     x += left_col;
+
     gc.DrawText(x, y, width - x, text_height, msg);
 
     if(extra == "") return;
 
+    gc.GetTextExtent(0, w, h, msg);
+    center_col = FMax(center_col, w);
+    text_height = FMax(text_height, h);
     x += center_col;
+
     gc.DrawText(x, y, width - x, text_height, " " $ extra);
 }
 
@@ -287,7 +298,7 @@ function DrawBackground(GC gc)
 defaultproperties
 {
     enabled=true
-    windowWidth=150
+    windowWidth=165
     windowHeight=80
     textfont=Font'DeusExUI.FontMenuHeaders_DS';
     colorBackground=(R=0,G=0,B=0,A=100)
