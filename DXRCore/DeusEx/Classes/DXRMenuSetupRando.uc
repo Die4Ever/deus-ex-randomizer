@@ -86,7 +86,7 @@ function BindControls(optional string action)
     NewMenuItem("Bingo Win", "How many completed lines to instantly win");
     Slider(f.settings.bingo_win, 0, 12);
 
-    NewMenuItem("Bingo Scale", "How difficult should bingo goals be?");
+    NewMenuItem("Bingo Scale %", "How difficult should bingo goals be?");
     Slider(f.bingo_scale, 0, 100);
 
     NewMenuItem("Bingo Freespace", "Should the center be a Free Space, or even more Free Spaces");
