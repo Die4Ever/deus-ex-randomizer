@@ -89,9 +89,15 @@ def GetSourcePath() -> Path:
 
 def GetDocumentsDir() -> Path:
     if not IsWindows():
-        p = Path.home()
+        p = Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'
         info('GetDocumentsDir() == ', p)
-        assert p.exists()
+        if p.exists():
+            p = p /'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'
+            info('GetDocumentsDir() == ', p)
+            Mkdir(p, True, True)
+        else:
+            p = Path.home()
+        assert p.exists(), str(p)
         return p
     try:
         import ctypes.wintypes
