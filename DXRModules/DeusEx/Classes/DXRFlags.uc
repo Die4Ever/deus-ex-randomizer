@@ -568,6 +568,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         bingo_duration = 1;
         bingo_scale = 0;
 
+        l("applying walton ware, DXRando: " $ dxr @ dxr.seed);
         SetGlobalSeed("random starting map");
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr,10);
     }
