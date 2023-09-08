@@ -2883,6 +2883,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Kill Shannon in UNATCO HQ as retribution for her thieving ways.";
         case "DestroyCapitalism":
             return "Kill enough people who are willing to sell you goods in exchange for money.";
+        case "Canal_Cop_Dead":
+            return "Kill one of the Chinese Military in the Hong Kong canals standing near the entrance to Tonnochi Road.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3266,6 +3268,7 @@ defaultproperties
     bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I spilled %s drinks!",max=5,missions=64)
     bingo_options(238)=(event="Shannon_Dead",desc="Kill the thief in UNATCO",max=1,missions=58)
     bingo_options(239)=(event="DestroyCapitalism",desc="MUST. CRUSH. %s CAPITALISTS.",max=10,missions=1406)
+    bingo_options(240)=(event="Canal_Cop_Dead",desc="Not advisable to visit the canals at night",max=1,missions=64)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
