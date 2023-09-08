@@ -14,6 +14,7 @@ maps_versions = {
     '5551a03906a0f5470e2f9bd8724d59a6': 'v0.9',
     '4a2b4cb284de0799ce0f111cfd8170fc': 'v0.9.1',
     '85578e974c9b98ea45885e3c18e902ce': 'v0.9.2',
+    '98868b03741c10027bcbeec0f7e290a2': 'v0.9.2', # TODO: am I doing something different on Linux or does my Windows computer just have a stray file in there?
 }
 latest_maps = 'v0.9.2'
 assert latest_maps in maps_versions.values()
