@@ -27,7 +27,8 @@ state DeActivated
 
 simulated function PreTravel()
 {
-    GoToState('DeActivated');
+    if(Owner != None && GetStateName() == 'Activated')
+        GoToState('DeActivated');
 }
 
 simulated function Timer()
