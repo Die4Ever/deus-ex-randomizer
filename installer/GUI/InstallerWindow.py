@@ -96,8 +96,6 @@ class InstallerWindow(GUIBase):
         row+=1
 
         exe = StringVar(master=self.frame, value='Kentie')
-        if not IsWindows():
-            exe.set('Launch')
 
         settings = { 'install': v, 'exe': exe }
 

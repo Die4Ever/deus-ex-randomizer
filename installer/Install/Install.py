@@ -133,7 +133,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
         if 'D3D10Drv.D3D10RenderDevice' not in changes:
             changes['D3D10Drv.D3D10RenderDevice'] = {}
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '120', 'VSync': 'True'})
-    else: # ensure we don't retain bad settings from old configs
+    elif exename == 'DeusEx': # ensure we don't retain bad settings from old vanilla configs since we use the same exe file name?
         if 'DeusExe' not in changes:
             changes['DeusExe'] = {}
         changes['DeusExe'].update({'FPSLimit': '0'})
