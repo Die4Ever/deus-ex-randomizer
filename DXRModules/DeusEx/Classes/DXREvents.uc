@@ -3372,7 +3372,7 @@ defaultproperties
     bingo_options(242)=(event="FightSkeletons",desc="Destroy %s skeleton parts",max=10,missions=19536)
     bingo_options(243)=(event="TrophyHunter",desc="Trophy Hunter (%s)",max=10,missions=1146)
     bingo_options(244)=(event="SlippingHazard",desc="Create %s potential slipping hazards",max=5,missions=894)
-    bingo_options(244)=(event="Dehydrated",desc="Stay dehydrated %s times",max=15,missions=40830)
+    bingo_options(245)=(event="Dehydrated",desc="Stay dehydrated %s times",max=15,missions=40830)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
