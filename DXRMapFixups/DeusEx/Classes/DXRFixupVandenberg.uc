@@ -321,7 +321,11 @@ function TimerMapFixes()
         if (!M12GaryHostageBriefing && dxr.flagbase.GetBool('PageHostageBriefing_played') && !dxr.flagbase.GetBool('GaryHostageBriefing_played')){
             if (player().conPlay==None){
                 foreach AllActors(class'#var(prefix)GarySavage',gary){ break;}
-                M12GaryHostageBriefing = (player().StartConversationByName('GaryHostageBriefing',gary));
+                if (dxr.FlagBase.GetBool('LDDPJCIsFemale')){
+                    M12GaryHostageBriefing = (player().StartConversationByName('FemJCGaryHostageBriefing',gary));
+                } else {
+                    M12GaryHostageBriefing = (player().StartConversationByName('GaryHostageBriefing',gary));
+                }
             }
         }
         break;
