@@ -1,3 +1,4 @@
+from pathlib import Path
 import unittest
 from unittest import case
 from typeguard import typechecked, install_import_hook
@@ -17,7 +18,7 @@ import Install.MapVariants
 @typechecked
 class DXRTestCase(unittest.TestCase):
     def test_documents(self):
-        d = Install.GetDocumentsDir()
+        d = Install.GetDocumentsDir(Path.home())
         self.assertTrue(d.exists(), str(d) + ' exists')
 
 
