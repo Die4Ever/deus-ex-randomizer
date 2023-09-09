@@ -1521,6 +1521,11 @@ function bool isInitialPlayerAlly(ScriptedPawn p)
     return checkInitialAlliance(p,'Player',1.0);
 }
 
+function bool isInitialPlayerEnemy(ScriptedPawn p)
+{
+    return checkInitialAlliance(p,'Player',-1.0);
+}
+
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local string classname;
@@ -1544,7 +1549,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
-            if (isInitialPlayerAlly(victim) &&   //Must have initially been an ally
+            if (!isInitialPlayerEnemy(victim) &&   //Must have not been an enemy initially
                  (dxr.localURL!="04_NYC_NSFHQ" || (dxr.localURL=="04_NYC_NSFHQ" && dxr.flagbase.GetBool('DL_SimonsPissed_Played')==False)) //Not on the NSF HQ map, or if it is, before you send the signal (kludgy)
                  ){
                 _MarkBingo("AlliesKilled");
@@ -2723,7 +2728,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "SimonsAssassination":
             return "Watch Walton Simons' full interrogation of the captured NSF soldiers.";
         case "AlliesKilled":
-            return "Kill enough people who were originally your ally";
+            return "Kill enough people who do not actively hate you (This should be most people who show as green on the crosshairs)";
         case "MaySung_Dead":
             return "Kill May Sung, Maggie Chow's maid.";
         case "MostWarehouseTroopsDead":
@@ -3243,7 +3248,7 @@ defaultproperties
     bingo_options(122)=(event="AnnaNavarre_DeadM4",desc="Kill Anna Navarre in Mission 4",max=1,missions=16)
     bingo_options(123)=(event="AnnaNavarre_DeadM5",desc="Kill Anna Navarre in Mission 5",max=1,missions=32)
     bingo_options(124)=(event="SimonsAssassination",desc="Let Walton lose his patience",max=1,missions=8)
-    bingo_options(125)=(event="AlliesKilled",desc="Kill %s allies",max=15)
+    bingo_options(125)=(event="AlliesKilled",desc="Kill %s innocents",max=15)
     bingo_options(126)=(event="MaySung_Dead",desc="Kill Maggie Chows maid",max=1,missions=64)
     bingo_options(127)=(event="MostWarehouseTroopsDead",desc="Eliminate the UNATCO troops defending NSF HQ",max=1,missions=16)
     bingo_options(128)=(event="CleanerBot_ClassDead",desc="Destroy %s Cleaner Bots",max=5,missions=286)
