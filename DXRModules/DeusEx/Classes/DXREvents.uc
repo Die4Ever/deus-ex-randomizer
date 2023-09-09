@@ -30,42 +30,28 @@ var int num_watched_actors;
 
 function AddWatchedActor(Actor a,String eventName)
 {
-    local int i;
-
     if (num_watched_actors>=ArrayCount(actor_watch)){
         err("Watched Actor list length exceeded!");
         return;
     }
 
-    for (i=0;i<ArrayCount(actor_watch);i++){
-        if (actor_watch[i].BingoEvent==""){
-            actor_watch[i].a = a;
-            actor_watch[i].BingoEvent=eventName;
-            num_watched_actors++;
-            break;
-        }
-    }
+    actor_watch[num_watched_actors].a = a;
+    actor_watch[num_watched_actors].BingoEvent=eventName;
+    num_watched_actors++;
 }
 
-function CheckWatchedActors(){
+function CheckWatchedActors() {
     local int i;
 
-    if (num_watched_actors==0){
-        return;
-    }
+    for (i=0;i<num_watched_actors;i++){
+        //I think this reference keeps the actor from actually being destroyed, so just watch for bDeleteMe
+        if (actor_watch[i].a != None && !actor_watch[i].a.bDeleteMe) continue;
 
-    for (i=0;i<ArrayCount(actor_watch);i++){
-        if (actor_watch[i].BingoEvent!=""){
-
-            //I think this reference keeps the actor from actually being destroyed, so just watch for bDeleteMe
-            if (actor_watch[i].a==None || actor_watch[i].a.bDeleteMe==True){
-                _MarkBingo(actor_watch[i].BingoEvent);
-                actor_watch[i].BingoEvent="";
-                actor_watch[i].a=None;
-                num_watched_actors--;
-            }
-
-        }
+        _MarkBingo(actor_watch[i].BingoEvent);
+        num_watched_actors--;
+        actor_watch[i].BingoEvent = actor_watch[num_watched_actors].BingoEvent;
+        actor_watch[i].a = actor_watch[num_watched_actors].a;
+        i--;// recheck this slot on the next iteration
     }
 }
 
@@ -3087,7 +3073,7 @@ function ExtendedTests()
 // calculate missions masks with https://jsfiddle.net/2sh7xej0/1/
 defaultproperties
 {
-    bingo_options(0)=(event="TerroristCommander_Dead",desc="Kill the Terrorist Commander",max=1,missions=2)
+bingo_options(0)=(event="TerroristCommander_Dead",desc="Kill the Terrorist Commander",max=1,missions=2)
 	bingo_options(1)=(event="TiffanySavage_Dead",desc="Kill Tiffany Savage",max=1,missions=4096)
 	bingo_options(2)=(event="PaulDenton_Dead",desc="Let Paul die",max=1,missions=16)
 	bingo_options(3)=(event="JordanShea_Dead",desc="Kill Jordan Shea",max=1,missions=276)
