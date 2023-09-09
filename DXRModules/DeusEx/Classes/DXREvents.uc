@@ -21,6 +21,54 @@ struct MutualExclusion {
 };
 var MutualExclusion mutually_exclusive[64];
 
+struct ActorWatchItem {
+    var Actor a;
+    var String BingoEvent;
+};
+var ActorWatchItem actor_watch[50];
+var int num_watched_actors;
+
+function AddWatchedActor(Actor a,String eventName)
+{
+    local int i;
+
+    if (num_watched_actors>=ArrayCount(actor_watch)){
+        err("Watched Actor list length exceeded!");
+        return;
+    }
+
+    for (i=0;i<ArrayCount(actor_watch);i++){
+        if (actor_watch[i].BingoEvent==""){
+            actor_watch[i].a = a;
+            actor_watch[i].BingoEvent=eventName;
+            num_watched_actors++;
+            break;
+        }
+    }
+}
+
+function CheckWatchedActors(){
+    local int i;
+
+    if (num_watched_actors==0){
+        return;
+    }
+
+    for (i=0;i<ArrayCount(actor_watch);i++){
+        if (actor_watch[i].BingoEvent!=""){
+
+            //I think this reference keeps the actor from actually being destroyed, so just watch for bDeleteMe
+            if (actor_watch[i].a==None || actor_watch[i].a.bDeleteMe==True){
+                _MarkBingo(actor_watch[i].BingoEvent);
+                actor_watch[i].BingoEvent="";
+                actor_watch[i].a=None;
+                num_watched_actors--;
+            }
+
+        }
+    }
+}
+
 function PreFirstEntry()
 {
     Super.PreFirstEntry();
@@ -59,6 +107,28 @@ function InitStatLogShim()
     }
 }
 
+function WatchActors()
+{
+    local #var(prefix)Lamp lamp;
+    local #var(prefix)BoneFemur femur;
+    local #var(prefix)BoneSkull skull;
+    local #var(prefix)Trophy trophy;
+
+    foreach AllActors(class'#var(prefix)Lamp',lamp){
+        AddWatchedActor(lamp,"LightVandalism");
+    }
+    foreach AllActors(class'#var(prefix)BoneFemur',femur){
+        AddWatchedActor(femur,"FightSkeletons");
+    }
+    foreach AllActors(class'#var(prefix)BoneSkull',skull){
+        AddWatchedActor(skull,"FightSkeletons");
+    }
+    foreach AllActors(class'#var(prefix)Trophy',trophy){
+        AddWatchedActor(trophy,"TrophyHunter");
+    }
+
+}
+
 function SetWatchFlags() {
     local #var(prefix)MapExit m;
     local #var(prefix)ChildMale child;
@@ -94,6 +164,9 @@ function SetWatchFlags() {
     local bool RevisionMaps;
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+
+    //General checks
+    WatchActors();
 
     switch(dxr.localURL) {
     case "00_TrainingFinal":
@@ -1117,6 +1190,8 @@ simulated function Timer()
     if( dxr == None || dxr.flagbase == None ) {
         return;
     }
+
+    CheckWatchedActors();
 
     for(i=0; i<num_watchflags; i++) {
         if(watchflags[i] == '') break;
@@ -2885,6 +2960,12 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Kill enough people who are willing to sell you goods in exchange for money.";
         case "Canal_Cop_Dead":
             return "Kill one of the Chinese Military in the Hong Kong canals standing near the entrance to Tonnochi Road.";
+        case "LightVandalism":
+            return "Destroy enough lamps (Desk, standing, or table) throughout the game.";
+        case "FightSkeletons":
+            return "Destroy enough femurs or skulls.  Don't let the skeletons rise up!";
+        case "TrophyHunter":
+            return "Destroy enough trophies.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3269,6 +3350,10 @@ defaultproperties
     bingo_options(238)=(event="Shannon_Dead",desc="Kill the thief in UNATCO",max=1,missions=58)
     bingo_options(239)=(event="DestroyCapitalism",desc="MUST. CRUSH. %s CAPITALISTS.",max=10,missions=1406)
     bingo_options(240)=(event="Canal_Cop_Dead",desc="Not advisable to visit the canals at night",max=1,missions=64)
+    bingo_options(241)=(event="LightVandalism",desc="Perform %s acts of light vandalism",max=25,missions=3966)
+    bingo_options(242)=(event="FightSkeletons",desc="Destroy %s skeleton parts",max=10,missions=19536)
+    bingo_options(243)=(event="TrophyHunter",desc="Trophy Hunter (%s)",max=10,missions=1146)
+
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
