@@ -99,9 +99,28 @@ function WatchActors()
     local #var(prefix)BoneFemur femur;
     local #var(prefix)BoneSkull skull;
     local #var(prefix)Trophy trophy;
+    local #var(prefix)PoolTableLight poolLight;
+    local #var(prefix)HKMarketLight hangingLight;
+    local #var(prefix)ShopLight shopLight;
+    local #var(prefix)SignFloor signFloor;
+    local #var(prefix)WaterCooler cooler;
+    local #var(prefix)WaterFountain fountain;
+    local #var(prefix)Chandelier chandelier;
 
     foreach AllActors(class'#var(prefix)Lamp',lamp){
         AddWatchedActor(lamp,"LightVandalism");
+    }
+    foreach AllActors(class'#var(prefix)PoolTableLight',poolLight){
+        AddWatchedActor(poolLight,"LightVandalism");
+    }
+    foreach AllActors(class'#var(prefix)HKMarketLight',hangingLight){
+        AddWatchedActor(hangingLight,"LightVandalism");
+    }
+    foreach AllActors(class'#var(prefix)ShopLight',shopLight){
+        AddWatchedActor(shopLight,"LightVandalism");
+    }
+    foreach AllActors(class'#var(prefix)Chandelier',chandelier){
+        AddWatchedActor(chandelier,"LightVandalism");
     }
     foreach AllActors(class'#var(prefix)BoneFemur',femur){
         AddWatchedActor(femur,"FightSkeletons");
@@ -111,6 +130,15 @@ function WatchActors()
     }
     foreach AllActors(class'#var(prefix)Trophy',trophy){
         AddWatchedActor(trophy,"TrophyHunter");
+    }
+    foreach AllActors(class'#var(prefix)SignFloor',signFloor){
+        AddWatchedActor(signFloor,"SlippingHazard");
+    }
+    foreach AllActors(class'#var(prefix)WaterCooler',cooler){
+        AddWatchedActor(cooler,"Dehydrated");
+    }
+    foreach AllActors(class'#var(prefix)WaterFountain',fountain){
+        AddWatchedActor(fountain,"Dehydrated");
     }
 
 }
@@ -2947,11 +2975,15 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "Canal_Cop_Dead":
             return "Kill one of the Chinese Military in the Hong Kong canals standing near the entrance to Tonnochi Road.";
         case "LightVandalism":
-            return "Destroy enough lamps (Desk, standing, or table) throughout the game.";
+            return "Destroy enough lamps throughout the game.  This might be chandeliers, desk lamps, hanging lights, pool table lights, standing lamps, or table lamps";
         case "FightSkeletons":
             return "Destroy enough femurs or skulls.  Don't let the skeletons rise up!";
         case "TrophyHunter":
             return "Destroy enough trophies.";
+        case "SlippingHazard":
+            return "Destroy enough 'Wet Floor' signs, leaving the area unmarked and dangerous.";
+        case "Dehydrated":
+            return "Destroy enough water coolers or water fountains.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3336,9 +3368,11 @@ defaultproperties
     bingo_options(238)=(event="Shannon_Dead",desc="Kill the thief in UNATCO",max=1,missions=58)
     bingo_options(239)=(event="DestroyCapitalism",desc="MUST. CRUSH. %s CAPITALISTS.",max=10,missions=1406)
     bingo_options(240)=(event="Canal_Cop_Dead",desc="Not advisable to visit the canals at night",max=1,missions=64)
-    bingo_options(241)=(event="LightVandalism",desc="Perform %s acts of light vandalism",max=25,missions=3966)
+    bingo_options(241)=(event="LightVandalism",desc="Perform %s acts of light vandalism",max=40,missions=57214)
     bingo_options(242)=(event="FightSkeletons",desc="Destroy %s skeleton parts",max=10,missions=19536)
     bingo_options(243)=(event="TrophyHunter",desc="Trophy Hunter (%s)",max=10,missions=1146)
+    bingo_options(244)=(event="SlippingHazard",desc="Create %s potential slipping hazards",max=5,missions=894)
+    bingo_options(244)=(event="Dehydrated",desc="Stay dehydrated %s times",max=15,missions=40830)
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
