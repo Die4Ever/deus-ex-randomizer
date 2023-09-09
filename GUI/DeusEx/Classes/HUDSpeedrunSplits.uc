@@ -17,7 +17,7 @@ var config int Golds[16];
 
 var int balanced_splits[16], balanced_splits_totals[16];
 var int PB_total, sum_of_bests;
-var float left_col, center_col, text_height;
+var float left_col, center_col, text_height, x_pos, y_pos;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -100,8 +100,26 @@ function InitStats(DXRStats newstats)
     }
 
     Show();
-    SetSize(windowWidth, windowHeight);
     StyleChanged();
+}
+
+function UpdatePos()
+{
+    local float hudWidth, hudHeight, beltWidth, beltHeight;
+
+#ifdef injections
+    local DeusExHUD hud;
+    hud = DeusExRootWindow(GetRootWindow()).hud;
+#else
+    local DXRandoHUD hud;
+    hud = DXRandoHUD(DeusExRootWindow(GetRootWindow()).hud);
+#endif
+
+    if (hud != None) {
+        if(hud.belt != None) beltHeight = hud.belt.height;
+    }
+    x_pos = 0;
+    y_pos = GetRootWindow().height - beltHeight - windowHeight - 8;
 }
 
 function DrawWindow(GC gc)
@@ -113,6 +131,7 @@ function DrawWindow(GC gc)
 
     if(stats == None) return;
 
+    UpdatePos();
     Super.DrawWindow(gc);
     gc.SetFont(textfont);
 
@@ -212,8 +231,11 @@ function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, o
 {
     local float w, h;
 
+    x += x_pos;
+    y += y_pos;
+
     gc.SetTextColor(colorText);
-    gc.DrawText(x, y, width - x, text_height, header);
+    gc.DrawText(x, y, windowWidth - x, text_height, header);
     gc.SetTextColor(c);
 
     gc.GetTextExtent(0, w, h, header);
@@ -221,7 +243,7 @@ function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, o
     text_height = FMax(text_height, h);
     x += left_col;
 
-    gc.DrawText(x, y, width - x, text_height, msg);
+    gc.DrawText(x, y, windowWidth - x, text_height, msg);
 
     if(extra == "") return;
 
@@ -230,7 +252,7 @@ function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, o
     text_height = FMax(text_height, h);
     x += center_col;
 
-    gc.DrawText(x, y, width - x, text_height, " " $ extra);
+    gc.DrawText(x, y, windowWidth - x, text_height, " " $ extra);
 }
 
 function Color GetCmpColor(int overall_diff, int diff, optional int segtime, optional int gold)
@@ -289,7 +311,7 @@ function DrawBackground(GC gc)
 {
     gc.SetStyle(backgroundDrawStyle);
     gc.SetTileColor(colorBackground);
-    gc.DrawPattern(0, 0, width, height, 0, 0, Texture'Solid');
+    gc.DrawPattern(x_pos, y_pos, windowWidth, windowHeight, 0, 0, Texture'Solid');
 }
 
 // ----------------------------------------------------------------------

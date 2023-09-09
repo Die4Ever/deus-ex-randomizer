@@ -19,7 +19,7 @@ var int missions_menu_times[16];
 function AnyEntry()
 {
     local int i;
-    local DeusExHUD hud;
+    local DeusExRootWindow root;
     local HUDSpeedrunSplits splits;
 
     Super.AnyEntry();
@@ -28,14 +28,18 @@ function AnyEntry()
         missions_times[i] = GetCompleteMissionTime(i);
         missions_menu_times[i] = GetCompleteMissionMenuTime(i);
     }
-    hud = DeusExRootWindow(player().rootWindow).hud;
+
+    root = DeusExRootWindow(player().rootWindow);
+    if(root != None) {
 #ifdef injections
-    hud.splits.InitStats(self);
+        splits = root.splits;
 #elseif hx
-    // do nothing
+        // do nothing
 #else
-    DXRandoHUD(hud).splits.InitStats(self);
+        splits = DXRandoRootWindow(root).splits;
 #endif
+        if(splits != None) splits.InitStats(self);
+    }
 
     SetTimer(0.1, True);
 }

@@ -4,6 +4,8 @@ class DXRandoRootWindow extends RevRootWindow;
 class DXRandoRootWindow extends DeusExRootWindow;
 #endif
 
+var HUDSpeedrunSplits splits;
+
 event InitWindow()
 {
     Super.InitWindow();
@@ -12,8 +14,17 @@ event InitWindow()
     hud = DeusExHUD(NewChild(Class'DXRandoHUD'));
     hud.UpdateSettings(DeusExPlayer(parentPawn));
     hud.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
+
+    splits = HUDSpeedrunSplits(NewChild(Class'HUDSpeedrunSplits'));
+    splits.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
 }
 
+event DescendantRemoved(Window descendant)
+{
+    Super.DescendantRemoved(descendant);
+    if ( descendant == splits )
+        splits = None;
+}
 
 function bool GetNoPause(bool bNoPause) {
     local DXRFlags flags;
