@@ -87,11 +87,12 @@ def GetSourcePath() -> Path:
     raise RuntimeError('failed to GetSourcePath()', p)
 
 
-def GetDocumentsDir() -> Path:
+def GetDocumentsDir(system:Path) -> Path:
     if not IsWindows():
-        p = Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'
-        info('GetDocumentsDir() == ', p)
-        if p.exists():
+        if 'Steam' in system.parts:
+            idx = system.parts.index('Steam')
+            p = system.parents[idx]
+            info('GetDocumentsDir() == ', p)
             p = p /'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'
             info('GetDocumentsDir() == ', p)
             Mkdir(p, True, True)

@@ -107,7 +107,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     CopyTo(ini, defini_dest)
 
     if kentie:
-        configs_dest = GetDocumentsDir() / 'Deus Ex' / 'System'
+        configs_dest = GetDocumentsDir(system) / 'Deus Ex' / 'System'
         Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True, parents=True)
     else:
         configs_dest = system
@@ -227,7 +227,7 @@ def InstallGMDX(system:Path, settings:dict, exename:str):
     Mkdir(game/'SaveGMDXRando', exist_ok=True)
     # GMDX uses absolute path shortcuts with ini files in their arguments, so it's not as simple to copy their exe
 
-    confpath = GetDocumentsDir() / 'Deus Ex' / exename / 'System' / 'gmdx.ini'
+    confpath = GetDocumentsDir(system) / 'Deus Ex' / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
         b = Config.ModifyConfig(b, changes, additions)
