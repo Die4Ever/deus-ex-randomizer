@@ -13,7 +13,6 @@ struct FMinMax {
 };
 
 struct safe_rule {
-    var string map;
     var name item_name;
     var vector min_pos;
     var vector max_pos;
@@ -1269,13 +1268,36 @@ function Vector GetCenter(Actor test)
     return (MinVect+MaxVect)/2;
 }
 
-function int GetSafeRule(safe_rule rules[64], name item_name, vector newpos)
+function safe_rule FixSafeRule(safe_rule r)
+{
+    local float a, b;
+    r.min_pos *= coords_mult;
+    r.max_pos *= coords_mult;
+
+    a = FMin(r.min_pos.X, r.max_pos.X);
+    b = FMax(r.min_pos.X, r.max_pos.X);
+    r.min_pos.X = a;
+    r.max_pos.X = b;
+
+    a = FMin(r.min_pos.Y, r.max_pos.Y);
+    b = FMax(r.min_pos.Y, r.max_pos.Y);
+    r.min_pos.Y = a;
+    r.max_pos.Y = b;
+
+    a = FMin(r.min_pos.Z, r.max_pos.Z);
+    b = FMax(r.min_pos.Z, r.max_pos.Z);
+    r.min_pos.Z = a;
+    r.max_pos.Z = b;
+
+    return r;
+}
+
+function int GetSafeRule(safe_rule rules[16], name item_name, vector newpos)
 {
     local int i;
 
     for(i=0; i<ArrayCount(rules); i++) {
         if( item_name != rules[i].item_name ) continue;
-        if( dxr.localURL != rules[i].map ) continue;
         if( AnyGreater( rules[i].min_pos, newpos ) ) continue;
         if( AnyGreater( newpos, rules[i].max_pos ) ) continue;
         return i;
@@ -1322,11 +1344,11 @@ static function GlowUp(Actor a, optional byte hue)
     a.LightRadius=6;
 }
 
-function DebugMarkKeyPosition(Actor a, coerce string id)
+function DebugMarkKeyActor(Actor a, coerce string id)
 {
     local ActorDisplayWindow actorDisplay;
     if( ! #defined(debug)) {
-        err("Don't call DebugMarkKeyPosition without debug mode! Add debug to the compiler_settings.default.json file");
+        err("Don't call DebugMarkKeyActor without debug mode! Add debug to the compiler_settings.default.json file");
         return;
     }
 
@@ -1334,12 +1356,28 @@ function DebugMarkKeyPosition(Actor a, coerce string id)
         DeusExDecoration(a).ItemName = id @ DeusExDecoration(a).ItemName;
     } else if(Inventory(a) != None) {
         Inventory(a).ItemName = id @ Inventory(a).ItemName;
+    } else if(DXRGoalMarker(a) != None) {
+        a.BindName = id;
+        a.bHidden = False;
     }
     GlowUp(a);
-    debug("DebugMarkKeyPosition "$a$ " ("$a.Location$") " $ id);
+    debug("DebugMarkKeyActor "$a$ " ("$a.Location$") " $ id);
 
     actorDisplay = DeusExRootWindow(player().rootWindow).actorDisplay;
     actorDisplay.SetViewClass(a.class);
     actorDisplay.ShowLOS(false);
     actorDisplay.ShowPos(true);
+}
+
+function DebugMarkKeyPosition(vector pos, coerce string id)
+{
+    local ActorDisplayWindow actorDisplay;
+    local Actor a;
+    if( ! #defined(debug)) {
+        err("Don't call DebugMarkKeyActor without debug mode! Add debug to the compiler_settings.default.json file");
+        return;
+    }
+
+    a = Spawn(class'DXRGoalMarker',,,pos);
+    DebugMarkKeyActor(a, id);
 }
