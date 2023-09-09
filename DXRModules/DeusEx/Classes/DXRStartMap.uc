@@ -358,10 +358,10 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "FordSchick_Dead":
             return start_map>=20;
         case "M07MeetJaime_Played":
-            if (end_mission < 80){
+            if (end_mission < 8){
                 return True;
             }
-            return start_map>=60; //Have to have told Jaime to meet you in Hong Kong in mission 50a
+            return start_map>=60; //Have to have told Jaime to meet you in Hong Kong in mission 5
         case "VialAmbrosia_Activated":
             return start_map>=96; //Have to have started before the superfreighter upper decks (Arbitrarily chose 96 as that point)
         case "Terrorist_ClassDead":
@@ -383,6 +383,12 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "LouisBerates":
         case "IcarusCalls_Played":
             return start_map>100; //All these early Paris things - if we were to add a "Streets" starting location, this would need to be split more accurately
+        case "PresentForManderley":
+            //Have to be able to get Juan from mission 3 and bring him to the start of mission 4
+            if (end_mission < 4){
+                return True;
+            }
+            return start_map>40;
         default:
             return False;
     }

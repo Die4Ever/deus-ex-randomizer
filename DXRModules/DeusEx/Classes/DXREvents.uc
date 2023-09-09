@@ -399,12 +399,26 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
+            bt = class'BingoTrigger'.static.Create(self,'PresentForManderley',vectm(960,234,297),350,60);
+            bt.MakeClassProximityTrigger(class'#var(prefix)JuanLebedevCarcass');
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
+            bt = class'BingoTrigger'.static.Create(self,'PresentForManderley',vectm(220,4,280),300,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)JuanLebedevCarcass');
         }
-        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
+
+        if(RevisionMaps){
+
+        } else {
+            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2983.597168,774.217407,312.100128),70,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2984.404785,662.764954,312.100128),70,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
+        }
         foreach AllActors(class'#var(prefix)Female2',f) {
             if(f.BindName == "Shannon"){
                 f.bImportant = true;
@@ -2652,7 +2666,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             } else if (mission<=4){
                 msg=msg$"There is a chapter inside the 'Ton hotel.";
             } else if (mission<=10){
-                msg=msg$"There is a chapter in the streets before entering the Paris catacombs.";
+                msg=msg$"There is a chapter in the streets and buildings before entering the Paris catacombs.";
             } else if (mission<=12){
                 msg=msg$"There is a chapter in Vandenberg Command.";
             } else if (mission<=14){
@@ -2989,6 +3003,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Destroy enough 'Wet Floor' signs, leaving the area unmarked and dangerous.";
         case "Dehydrated":
             return "Destroy enough water coolers or water fountains.";
+        case "PresentForManderley":
+            return "Bring Juan Lebedev back to Manderley's office.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3378,7 +3394,9 @@ defaultproperties
     bingo_options(243)=(event="TrophyHunter",desc="Trophy Hunter (%s)",max=10,missions=1146)
     bingo_options(244)=(event="SlippingHazard",desc="Create %s potential slipping hazards",max=5,missions=894)
     bingo_options(245)=(event="Dehydrated",desc="Stay dehydrated %s times",max=15,missions=40830)
-
+#ifndef vmd
+    bingo_options(246)=(event="PresentForManderley",desc="Bring a present to Manderley",max=1,missions=24)
+#endif
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
