@@ -1,6 +1,5 @@
 class DXRFlagsNGPMaxRando extends DXRFlagsBase transient;
 
-
 simulated function ExecMaxRando()
 {
     // set local seed
@@ -223,9 +222,6 @@ function NewGamePlus()
     p.DeleteAllNotes();
     p.DeleteAllGoals();
     p.ResetConversationHistory();
-    p.SetInHandPending(None);
-    p.SetInHand(None);
-    p.bInHandTransition = False;
     p.RestoreAllHealth();
     ClearDataVaultImages();
 
@@ -242,7 +238,7 @@ function NewGamePlus()
     if( augs != None )
         augs.RemoveRandomAug(p);
 
-    // TODO: do this in the intro instead of in the credits?
+    ClearInHand(p);
     RemoveRandomWeapon(p);
 
     //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
@@ -259,6 +255,17 @@ function NewGamePlus()
     p.bStartNewGameAfterIntro = true;
     class'PlayerDataItem'.static.ResetData(p);
     Level.Game.SendPlayer(p, "00_intro");
+}
+
+simulated function ClearInHand(#var(PlayerPawn) p)
+{
+    p.SetInHand(None);
+    p.SetInHandPending(None);
+    p.bInHandTransition = False;
+    p.LastinHand = None;
+    p.ClientinHandPending = None;
+    p.inHandPending = None;
+    p.inHand = None;
 }
 
 simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
