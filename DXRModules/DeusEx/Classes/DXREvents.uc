@@ -298,6 +298,7 @@ function SetWatchFlags() {
     case "03_NYC_UNATCOHQ":
         WatchFlag('SimonsAssassination');
         WatchFlag('Shannon_Dead');
+        WatchFlag('MeetWalton_Played');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
@@ -396,6 +397,7 @@ function SetWatchFlags() {
         break;
     case "04_NYC_UNATCOHQ":
         WatchFlag('Shannon_Dead');
+        WatchFlag('M04MeetWalton_Played');
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
@@ -439,6 +441,8 @@ function SetWatchFlags() {
         WatchFlag('KnowsAnnasKillphrase1');
         WatchFlag('KnowsAnnasKillphrase2');
         WatchFlag('Shannon_Dead');
+        WatchFlag('M05WaltonAlone_Played');
+        WatchFlag('M05MeetManderley_Played');
 
         foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
             if (cp.Name=='ComputerPersonal7'){  //JC's computer
@@ -800,7 +804,7 @@ function SetWatchFlags() {
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
         WatchFlag('DL_gold_found_Played');
-
+        WatchFlag('M11WaltonHolo_Played');
 
         if (RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'CathedralUnderwater',vectm(2614,-2103,-120),500,180);
@@ -900,6 +904,8 @@ function SetWatchFlags() {
         break;
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
+        RewatchFlag('WaltonShowdown_Played');
+
         bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1932.035522,3334.331787,-2247.888184),60,40);
         bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1932.035522,3334.331787,-2507.888184),60,40);
@@ -919,10 +925,15 @@ function SetWatchFlags() {
     case "14_OCEANLAB_UC":
         WatchFlag('LeoToTheBar');
         WatchFlag('PageTaunt_Played');
+        RewatchFlag('WaltonShowdown_Played');
+        break;
+    case "14_VANDENBERG_SUB":
+        RewatchFlag('WaltonShowdown_Played');
         break;
     case "15_AREA51_BUNKER":
         WatchFlag('JockBlewUp');
         WatchFlag('blast_door_open');
+        RewatchFlag('WaltonBadass_Played');
 
         foreach AllActors(class'ZoneInfo', zone) {
             if (zone.Tag=='fan'){
@@ -941,9 +952,11 @@ function SetWatchFlags() {
         break;
     case "15_AREA51_ENTRANCE":
         WatchFlag('PlayPool');
+        RewatchFlag('WaltonBadass_Played');
         InitPoolBalls();
         break;
     case "15_AREA51_FINAL":
+        RewatchFlag('WaltonBadass_Played');
         foreach AllActors(class'#var(prefix)BookOpen', book) {
             if (book.textTag == '15_Book01'){ //This copy of Jacob's Shadow is also in _BUNKER and _ENTRANCE
                 book.textTag = '15_Book02';  //Put that good Thursday man back where he (probably) belongs
@@ -2326,6 +2339,14 @@ function string RemapBingoEvent(string eventname)
         case "HotelBartender_Dead":
             _MarkBingo("DestroyCapitalism"); //Split into another event, but still return this one as-is
             return eventname;
+        case "MeetWalton_Played":
+        case "M04MeetWalton_Played":
+        case "M05WaltonAlone_Played":
+        case "M05MeetManderley_Played":
+        case "M11WaltonHolo_Played":
+        case "WaltonShowdown_Played":
+        case "WaltonBadass_Played":
+            return "WaltonConvos";
         default:
             return eventname;
     }
@@ -2666,7 +2687,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             } else if (mission<=4){
                 msg=msg$"There is a chapter inside the 'Ton hotel.";
             } else if (mission<=10){
-                msg=msg$"There is a chapter in the streets and buildings before entering the Paris catacombs.";
+                msg=msg$"There is a chapter in Denfert-Rochereau square, the streets and buildings before entering the Paris catacombs.";
             } else if (mission<=12){
                 msg=msg$"There is a chapter in Vandenberg Command.";
             } else if (mission<=14){
@@ -3005,6 +3026,22 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Destroy enough water coolers or water fountains.";
         case "PresentForManderley":
             return "Bring Juan Lebedev back to Manderley's office.";
+        case "WaltonConvos":
+            msg="Have enough conversations with Walton Simons.  ";
+            if (mission<=3){
+                msg=msg$"He can be found in Manderley's office after destroying the generator.";
+            } else if (mission<=4){
+                msg=msg$"He can be found in the UNATCO break room talking with Jaime Reyes.";
+            } else if (mission<=5){
+                msg=msg$"He can be found talking with Manderley via hologram.";
+            } else if (mission<=11){
+                msg=msg$"He can be found as a hologram in the basement of the cathedral after killing Gunther.";
+            } else if (mission<=14){
+                msg=msg$"He can be found somewhere around the Ocean Lab after retrieving the Universal Constructor schematics.";
+            } else if (mission<=15){
+                msg=msg$"He can be found somewhere around Area 51.";
+            }
+            return msg;
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3397,6 +3434,7 @@ defaultproperties
 #ifndef vmd
     bingo_options(246)=(event="PresentForManderley",desc="Bring a present to Manderley",max=1,missions=24)
 #endif
+    bingo_options(247)=(event="WaltonConvos",desc="Have %s conversations with Walton Simons",max=3,missions=51256)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
