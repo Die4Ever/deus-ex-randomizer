@@ -25,7 +25,7 @@ struct ActorWatchItem {
     var Actor a;
     var String BingoEvent;
 };
-var ActorWatchItem actor_watch[50];
+var ActorWatchItem actor_watch[75];
 var int num_watched_actors;
 
 function AddWatchedActor(Actor a,String eventName)
