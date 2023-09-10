@@ -941,6 +941,20 @@ function int ScoreFlags()
     return score * 5;// lazy multiply by 5 at the end
 }
 
+function ClearDataVaultImages()
+{
+    local DataVaultImage image;
+
+    while (player().FirstImage!=None){
+        image = player().FirstImage;
+        player().FirstImage=image.nextImage;
+        //Theoretically if we were being more discriminating with the image deletion,
+        //we'd want to also fix the prevImage value, but since we're just trashing
+        //everything, it's unnecessary
+        image.Destroy();
+    }
+}
+
 function NewGamePlus()
 {
     local #var(PlayerPawn) p;
@@ -1020,6 +1034,7 @@ function NewGamePlus()
     p.SetInHand(None);
     p.bInHandTransition = False;
     p.RestoreAllHealth();
+    ClearDataVaultImages();
 
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( skills != None ) {
