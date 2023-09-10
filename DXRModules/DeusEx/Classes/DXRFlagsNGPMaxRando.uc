@@ -154,7 +154,6 @@ function NewGamePlus()
     local #var(PlayerPawn) p;
     local DataStorage ds;
     local DXRSkills skills;
-    local DXRWeapons weapons;
     local DXRAugmentations augs;
     local int i, bingo_win,bingo_freespaces;
     local float exp;
@@ -244,9 +243,7 @@ function NewGamePlus()
         augs.RemoveRandomAug(p);
 
     // TODO: do this in the intro instead of in the credits?
-    weapons = DXRWeapons(dxr.FindModule(class'DXRWeapons'));
-    if( weapons != None )
-        weapons.RemoveRandomWeapon(p);
+    RemoveRandomWeapon(p);
 
     //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
     //Technically it should make up for levels you skipped past, so maybe?
@@ -262,4 +259,27 @@ function NewGamePlus()
     p.bStartNewGameAfterIntro = true;
     class'PlayerDataItem'.static.ResetData(p);
     Level.Game.SendPlayer(p, "00_intro");
+}
+
+simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
+{
+    local Inventory i, next;
+    local Weapon weaps[64];
+    local int numWeaps, slot;
+
+    for( i = p.Inventory; i != None; i = next ) {
+        next = i.Inventory;
+        if( Weapon(i) == None ) continue;
+        weaps[numWeaps++] = Weapon(i);
+    }
+
+    // don't take the player's only weapon
+    if( numWeaps <= 1 ) return;
+
+    SetSeed( "RemoveRandomWeapon " $ numWeaps );
+
+    slot = rng(numWeaps);
+    info("RemoveRandomWeapon("$p$") Removing weapon "$weaps[slot]$", numWeaps was "$numWeaps);
+    p.DeleteInventory(weaps[slot]);
+    weaps[slot].Destroy();
 }
