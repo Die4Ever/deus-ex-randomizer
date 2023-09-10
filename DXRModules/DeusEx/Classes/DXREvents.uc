@@ -255,6 +255,12 @@ function SetWatchFlags() {
         }
         Tag = 'Boat_Exit';  //this is a special case, since we do extra handling here
 
+        foreach AllActors(class'#var(DeusExPrefix)Mover', dxm) {
+            if (dxm.KeyIDNeeded=='CCSafe'){
+                dxm.Event='CrackSafe';
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
 
         break;
     case "02_NYC_HOTEL":
@@ -283,6 +289,14 @@ function SetWatchFlags() {
             dxm.Event='mirrordoorout';
         }
 
+        break;
+    case "02_NYC_WAREHOUSE":
+        foreach AllActors(class'#var(DeusExPrefix)Mover', dxm) {
+            if (dxm.Name=='DeusExMover25'){
+                dxm.Event='CrackSafe';
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
         break;
     case "03_NYC_BATTERYPARK":
         foreach AllActors(class'#var(prefix)JunkieMale',jm) {
@@ -698,6 +712,14 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'DockBlastDoors',vectm(0,0,0));
         bt.Tag = 'BlastDoor3';
         bt.bDestroyOthers=False;
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover', dxm) {
+            if (dxm.Name=='DeusExMover25'){
+                dxm.Event='CrackSafe';
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
+
         break;
     case "09_NYC_SHIP":
         bt = class'BingoTrigger'.static.Create(self,'CraneControls',vectm(3264,-1211,1222));
@@ -711,6 +733,13 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'CaptainBed',vectm(2887,58,960),30,40);
 
         bt = class'BingoTrigger'.static.Create(self,'ShipsBridge',vectm(1892,120,936),200,40);
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover', dxm) {
+            if (dxm.Name=='DeusExMover25'){
+                dxm.Event='CrackSafe';
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
 
         break;
     case "09_NYC_SHIPFAN":
@@ -740,6 +769,14 @@ function SetWatchFlags() {
         break;
     case "09_NYC_GRAVEYARD":
         WatchFlag('GaveDowdAmbrosia');
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover', dxm) {
+            if (dxm.Name=='DeusExMover25'){
+                dxm.Event='CrackSafe';
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
+
         break;
     case "10_PARIS_CATACOMBS":
         WatchFlag('IcarusCalls_Played');
@@ -3087,6 +3124,14 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Destroy enough hanging slaughtered chickens or pigs.";
         case "FamilySquabbleWrapUpGilbertDead_Played":
             return "Talk to Sandra Renton after Gilbert and JoJo both die.  He was a good man...  What a rotten way to die.";
+        case "CrackSafe":
+            msg="Open enough safes throughout the game.  ";
+            if (mission<=2){
+                msg=msg$"There is a safe in the control room under Castle Clinton, and another one in the basement office of the NSF Warehouse.";
+            } else if (mission<=9){
+                msg=msg$"There is a safe in the office in the dockyard, one on the upper decks of the superfreighter, and one in Dowd's mausoleum.";
+            }
+            return msg;
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3485,6 +3530,7 @@ defaultproperties
     bingo_options(250)=(event="ShipsBridge",desc="Enter the bridge of the superfreighter",max=1,missions=512)
     bingo_options(251)=(event="BeatTheMeat",desc="Beat the meat %s times",max=15,missions=2624)
     bingo_options(252)=(event="FamilySquabbleWrapUpGilbertDead_Played",desc="What a shame",max=1,missions=16)
+    bingo_options(253)=(event="CrackSafe",desc="Crack %s safes",max=3,missions=516)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
