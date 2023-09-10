@@ -5,6 +5,10 @@ var config float save_delay;
 var transient float save_timer;
 var transient int autosave_combat;
 
+var vector player_pos;
+var rotator player_rot;
+var bool set_player_pos;
+
 const Disabled = 0;
 const FirstEntry = 1;
 const EveryEntry = 2;
@@ -55,8 +59,13 @@ function NeedSave()
     bNeedSave = true;
     save_timer = save_delay;
     Enable('Tick');
-    if(autosave_combat>0 || !PawnIsInCombat(player()))
+    if(autosave_combat>0 || !PawnIsInCombat(player())) {
+        autosave_combat = 1;// we're all in on this autosave because of the player rotation
+        player_pos = player().Location;
+        player_rot = player().ViewRotation;
+        set_player_pos = true;
         SetGameSpeed(0);
+    }
 }
 
 function SetGameSpeed(float s)
@@ -78,11 +87,20 @@ function SetGameSpeed(float s)
     }
 }
 
+function FixPos()
+{
+    if(set_player_pos) {
+        player().SetLocation(player_pos);
+        player().ViewRotation = player_rot;
+    }
+}
+
 function Tick(float delta)
 {
     delta /= Level.Game.GameSpeed;
     delta = FClamp(delta, 0.01, 0.05);// a single slow frame should not expire the timer by itself
     save_timer -= delta;
+    FixPos();
     if(bNeedSave) {
         if(save_timer <= 0) {
             doAutosave();
