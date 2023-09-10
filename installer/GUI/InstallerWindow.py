@@ -2,7 +2,7 @@ try:
     import webbrowser
     from GUI import *
     from pathlib import Path
-    from Install import Install, IsWindows, getDefaultPath
+    from Install import Install, IsWindows, CheckVulkan, getDefaultPath
     import traceback
     import re
 except Exception as e:
@@ -16,6 +16,8 @@ class InstallerWindow(GUIBase):
         self.height = 500
         self.lastprogress = ''
         self.root.title("Deus Ex Randomizer Installer")
+
+        dxvk_default = IsWindows() and CheckVulkan()
 
         scroll = ScrollableFrame(self.root, width=self.width, height=self.height, mousescroll=1)
         self.frame = scroll.frame
@@ -58,12 +60,13 @@ class InstallerWindow(GUIBase):
         self.speedupfixval = BooleanVar(master=self.frame, value=True)
         self.speedupfix = Checkbutton(self.frame, text="Apply Engine.dll speedup fix", variable=self.speedupfixval)
         self.speedupfix.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+        Hovertip(self.speedupfix, "Fixes issues with high frame rates.")
         self.FixColors(self.speedupfix)
         row+=1
 
         # DXVK is also global
         if IsWindows():
-            self.dxvkval = BooleanVar(master=self.frame, value=IsWindows())
+            self.dxvkval = BooleanVar(master=self.frame, value=dxvk_default)
             self.dxvk = Checkbutton(self.frame, text="Apply DXVK fix for modern computers", variable=self.dxvkval)
             self.dxvk.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
             Hovertip(self.dxvk, "DXVK can fix performance issues on modern systems by using Vulkan.")
@@ -71,6 +74,13 @@ class InstallerWindow(GUIBase):
             row+=1
         else:
             self.dxvkval = DummyCheckbox()
+
+        self.ogl2val = BooleanVar(master=self.frame, value=dxvk_default)
+        self.ogl2 = Checkbutton(self.frame, text="Updated OpenGL 2.0 Renderer", variable=self.ogl2val)
+        Hovertip(self.ogl2, "Updated OpenGL Renderer for modern systems. An alternative to using D3D10 or D3D9.")
+        self.ogl2.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+        self.FixColors(self.ogl2)
+        row+=1
 
         # TODO: option to enable telemetry? checking for updates?
 
@@ -134,14 +144,6 @@ class InstallerWindow(GUIBase):
             Hovertip(r, "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play.")
             row += 1
 
-            v = BooleanVar(master=self.frame, value=False)
-            settings['OpenGL2'] = v
-            c = Checkbutton(self.frame, text="Updated OpenGL 2.0 Renderer", variable=v)
-            Hovertip(c, "Updated OpenGL Renderer for modern systems. An alternative to using D3D10 or D3D9.")
-            c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
-            self.FixColors(c)
-            row+=1
-
         self.flavors[f] = settings
         return row
 
@@ -172,13 +174,13 @@ class InstallerWindow(GUIBase):
                     'exetype': v.get('exe', dummy).get(),
                     'mirrors': v.get('mirrors', dummy).get(),
                     'LDDP': v.get('LDDP', dummy).get(),
-                    'OpenGL2': v.get('OpenGL2', dummy).get(),
                     'downloadcallback': self.DownloadProgress,
                 }
 
         speedupfix = self.speedupfixval.get()
         dxvk = self.dxvkval.get()
-        flavors = Install.Install(self.exe, flavors, speedupfix, dxvk)
+        ogl2 = self.ogl2val.get()
+        flavors = Install.Install(self.exe, flavors, speedupfix, dxvk, ogl2)
         flavorstext = ', '.join(flavors.keys())
         extra = ''
         if 'Vanilla' in flavors and IsWindows():

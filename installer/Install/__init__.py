@@ -28,6 +28,7 @@ try:
     import urllib.request
     import certifi
     import ssl
+    import subprocess
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -52,6 +53,19 @@ def GetDryrun() -> bool:
 
 def IsWindows() -> bool:
     return os.name == 'nt'
+
+def CheckVulkan() -> bool:
+    try:
+        info('CheckVulkan')
+        ret = subprocess.run(['vulkaninfo', '--summary'], text=True, capture_output=True, timeout=30)
+        debug(ret.stdout)
+        debug(ret.stderr)
+        info('CheckVulkan got:', not ret.returncode)
+        return not ret.returncode
+    except Exception as e:
+        info(e)
+        return False
+
 
 def GetConfChanges(modname):
     changes = {
@@ -277,6 +291,21 @@ def CopyDXVK(system:Path, install:bool):
             dest.unlink(True)
         num += 1
     assert num > 0, 'Found '+str(num)+' DXVK files'
+
+def InstallOGL2(system:Path, install:bool):
+    Ogl = system/'OpenGLDrv.dll'
+    backupOgl = system/'OpenGLDrv.orig.dll'
+    if install:
+        if Ogl.exists() and not backupOgl.exists():
+            Ogl.rename(backupOgl)
+        CopyTo(GetSourcePath() / '3rdParty' /'OpenGLDrv.dll', Ogl)
+    elif backupOgl.exists():
+        currMd5 = ''
+        if Ogl.exists():
+            currMd5 = MD5(Ogl.read_bytes())
+        backupMd5 = MD5(backupOgl.read_bytes())
+        info('reverting', Ogl, currMd5, 'to', backupOgl, backupMd5)
+        CopyTo(backupOgl, Ogl)
 
 
 def Mkdir(dir:Path, parents=False, exist_ok=False):

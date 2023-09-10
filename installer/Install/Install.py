@@ -29,7 +29,9 @@ def UnattendedInstall(installpath:str, downloadmirrors):
     if downloadmirrors and 'Vanilla' in settings:
         settings['Vanilla']['mirrors'] = True
 
-    ret = Install(p, settings, speedupfix=True, dxvk=IsWindows())
+    dxvk_default = IsWindows() and CheckVulkan()
+
+    ret = Install(p, settings, speedupfix=True, dxvk=dxvk_default, ogl2=dxvk_default)
 
 
 def DetectFlavors(exe:Path) -> list:
@@ -41,7 +43,7 @@ def DetectFlavors(exe:Path) -> list:
     return _DetectFlavors(system)
 
 
-def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool) -> dict:
+def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, ogl2:bool=False) -> dict:
     assert exe.exists(), str(exe)
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
@@ -72,6 +74,7 @@ def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool) -> dict:
         EngineDllFix(system)
 
     CopyDXVK(system, dxvk)
+    InstallOGL2(system, ogl2)
 
     debug("Install returning", flavors)
 
@@ -160,21 +163,6 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
     CopyD3DRenderers(system)
-
-    Ogl = system/'OpenGLDrv.dll'
-    backupOgl = system/'OpenGLDrv.orig.dll'
-    if settings.get('OpenGL2'):
-        if Ogl.exists() and not backupOgl.exists():
-            Ogl.rename(backupOgl)
-        CopyTo(GetSourcePath() / '3rdParty' /'OpenGLDrv.dll', Ogl)
-    elif backupOgl.exists():
-        currMd5 = ''
-        if Ogl.exists():
-            currMd5 = MD5(Ogl.read_bytes())
-        backupMd5 = MD5(backupOgl.read_bytes())
-        info('reverting', Ogl, currMd5, 'to', backupOgl, backupMd5)
-        CopyTo(backupOgl, Ogl)
-
 
     FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
     CopyTo(FemJCu, dxrroot / 'System' / 'FemJC.u')
