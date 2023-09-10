@@ -14,7 +14,7 @@ struct BingoOption {
     var int max;
     var int missions;// bit masks
 };
-var BingoOption bingo_options[250];
+var BingoOption bingo_options[300];
 
 struct MutualExclusion {
     var string e1, e2;
@@ -106,6 +106,8 @@ function WatchActors()
     local #var(prefix)WaterCooler cooler;
     local #var(prefix)WaterFountain fountain;
     local #var(prefix)Chandelier chandelier;
+    local #var(prefix)HangingChicken chicken;
+    local #var(prefix)HKHangingPig pig;
 
     foreach AllActors(class'#var(prefix)Lamp',lamp){
         AddWatchedActor(lamp,"LightVandalism");
@@ -137,8 +139,11 @@ function WatchActors()
     foreach AllActors(class'#var(prefix)WaterCooler',cooler){
         AddWatchedActor(cooler,"Dehydrated");
     }
-    foreach AllActors(class'#var(prefix)WaterFountain',fountain){
-        AddWatchedActor(fountain,"Dehydrated");
+    foreach AllActors(class'#var(prefix)HangingChicken',chicken){
+        AddWatchedActor(chicken,"BeatTheMeat");
+    }
+    foreach AllActors(class'#var(prefix)HKHangingPig',pig){
+        AddWatchedActor(pig,"BeatTheMeat");
     }
 
 }
@@ -364,6 +369,7 @@ function SetWatchFlags() {
         break;
     case "04_NYC_HOTEL":
         WatchFlag('GaveRentonGun');
+        WatchFlag('FamilySquabbleWrapUpGilbertDead_Played');
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
         break;
     case "05_NYC_UNATCOISLAND":
@@ -682,6 +688,16 @@ function SetWatchFlags() {
         break;
     case "09_NYC_DOCKYARD":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
+
+        bt = class'BingoTrigger'.static.Create(self,'DockBlastDoors',vectm(0,0,0));
+        bt.Tag = 'BlastDoor1';
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'DockBlastDoors',vectm(0,0,0));
+        bt.Tag = 'BlastDoor2';
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'DockBlastDoors',vectm(0,0,0));
+        bt.Tag = 'BlastDoor3';
+        bt.bDestroyOthers=False;
         break;
     case "09_NYC_SHIP":
         bt = class'BingoTrigger'.static.Create(self,'CraneControls',vectm(3264,-1211,1222));
@@ -694,6 +710,7 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'CaptainBed',vectm(2887,58,960),30,40);
 
+        bt = class'BingoTrigger'.static.Create(self,'ShipsBridge',vectm(1892,120,936),200,40);
 
         break;
     case "09_NYC_SHIPFAN":
@@ -929,6 +946,10 @@ function SetWatchFlags() {
         break;
     case "14_VANDENBERG_SUB":
         RewatchFlag('WaltonShowdown_Played');
+
+        //Same location in Revision and Vanilla
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabShed',vectm(618.923523,4063.243896,-391.901031),160,40);
+
         break;
     case "15_AREA51_BUNKER":
         WatchFlag('JockBlewUp');
@@ -3056,6 +3077,16 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
                 msg=msg$"He can be found somewhere around Area 51.";
             }
             return msg;
+        case "OceanLabShed":
+            return "Enter the small square storage building on shore, near the main pedestal leading up to the Ocean Lab sub base.";
+        case "DockBlastDoors":
+            return "Open enough of the blast doors inside the ammunition storage warehouse in the dockyard.";
+        case "ShipsBridge":
+            return "Enter the bridge on the top deck of the superfreighter.";
+        case "BeatTheMeat":
+            return "Destroy enough hanging slaughtered chickens or pigs.";
+        case "FamilySquabbleWrapUpGilbertDead_Played":
+            return "Talk to Sandra Renton after Gilbert and JoJo both die.  He was a good man...  What a rotten way to die.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3449,6 +3480,11 @@ defaultproperties
     bingo_options(246)=(event="PresentForManderley",desc="Bring a present to Manderley",max=1,missions=24)
 #endif
     bingo_options(247)=(event="WaltonConvos",desc="Have %s conversations with Walton Simons",max=3,missions=51256)
+    bingo_options(248)=(event="OceanLabShed",desc="Enter the shed on shore at the Ocean Lab",max=1,missions=16384)
+    bingo_options(249)=(event="DockBlastDoors",desc="Open %s bunker blast doors in the dockyard",max=3,missions=512)
+    bingo_options(250)=(event="ShipsBridge",desc="Enter the bridge of the superfreighter",max=1,missions=512)
+    bingo_options(251)=(event="BeatTheMeat",desc="Beat the meat %s times",max=15,missions=2624)
+    bingo_options(252)=(event="FamilySquabbleWrapUpGilbertDead_Played",desc="What a shame",max=1,missions=16)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -3493,6 +3529,9 @@ defaultproperties
     mutually_exclusive(40)=(e1="VendingMachineEmpty",e2="VendingMachineEmpty_Drink")
     mutually_exclusive(41)=(e1="VendingMachineEmpty",e2="VendingMachineDispense_Candy")
     mutually_exclusive(42)=(e1="VendingMachineEmpty_Drink",e2="VendingMachineDispense_Candy")
+    mutually_exclusive(43)=(e1="ShipsBridge",e2="SpinShipsWheel")
+    mutually_exclusive(44)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="GilbertRenton_Dead")
+    mutually_exclusive(45)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="JoJoFine_Dead")
 
     bingo_win_countdown=-1
 }

@@ -170,8 +170,8 @@ function AnyEntryMapFixes()
 
     switch (dxr.localURL)
     {
-#ifdef vanilla
     case "04_NYC_HOTEL":
+#ifdef vanilla
         NYC_04_CheckPaulUndead();
         if( ! dxr.flagbase.GetBool('PaulDenton_Dead') )
             SetTimer(1, True);
@@ -182,8 +182,10 @@ function AnyEntryMapFixes()
         // conversations are transient, so they need to be fixed in AnyEntry
         FixConversationFlag(GetConversation('PaulAfterAttack'), 'M04RaidDone', true, 'PaulLeftHotel', true);
         FixConversationFlag(GetConversation('PaulDuringAttack'), 'M04RaidDone', false, 'PaulLeftHotel', false);
-        break;
 #endif
+        DeleteConversationFlag(GetConversation('FamilySquabbleWrapUpGilbertDead'), 'PlayerKilledRenton', false);
+        FixConversationFlag(GetConversation('SandraMadAtPlayer'), 'PlayerKilledRenton', true, 'AlwaysFalse', true);
+        break;
 
 #ifdef vanillamaps
     case "04_NYC_SMUG":
