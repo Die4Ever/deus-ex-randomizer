@@ -506,13 +506,6 @@ function bool InGame() {
         return False;
     }
 
-    //Consider it in-game if a big message is up...
-    if (DeusExRootWindow(player().rootWindow).GetTopWindow()!=None){
-        if (DeusExRootWindow(player().rootWindow).GetTopWindow().IsA('DXRBigMessage')){
-            return True;
-        }
-    }
-
     if (None == DeusExRootWindow(player().rootWindow).hud) {
         return False;
     }

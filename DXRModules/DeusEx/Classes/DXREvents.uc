@@ -1303,6 +1303,8 @@ function PreTravel()
 function BingoWinScreen()
 {
     local #var(PlayerPawn) p;
+    local bool showMsg;
+
     p = player();
     if ( Level.Netmode == NM_Standalone ) {
         //Make it harder to get murdered during the countdown
@@ -1313,7 +1315,19 @@ function BingoWinScreen()
     p.DesiredFlashScale = 0;
     p.DesiredFlashFog = vect(0,0,0);
 
-    if(InGame()) {
+    showMsg=False;
+    if (InGame()){
+        showMsg=True;
+    } else {
+        //Consider it in-game if a big message is up...
+        if (DeusExRootWindow(p.rootWindow).GetTopWindow()!=None){
+            if (DeusExRootWindow(p.rootWindow).GetTopWindow().IsA('DXRBigMessage')){
+                showMsg = True;
+            }
+        }
+    }
+
+    if(showMsg) {
         p.ShowHud(False);
         //Show win message
         class'DXRBigMessage'.static.CreateBigMessage(dxr.player,None,"Congratulations!  You finished your bingo!","Game ending in "$bingo_win_countdown$" seconds");
