@@ -81,6 +81,7 @@ function SetGameSpeed(float s)
 
     s = FMax(s, 0.01);// ServerSetSloMo only goes down to 0.1
     if(s == Level.Game.GameSpeed) return;
+    l("SetGameSpeed " @ s);
     Level.Game.GameSpeed = s;
     Level.TimeDilation = s;
     Level.Game.SetTimer(s, true);
@@ -125,10 +126,10 @@ function Tick(float delta)
         }
     }
     else if(save_timer <= 0) {
-        if(Level.Game.GameSpeed == old_game_speed)
+        if(Level.Game.GameSpeed == 1)// TODO: figure out what's wrong with using old_game_speed instead of 1
             Disable('Tick');
-        FixPlayer(Level.Game.GameSpeed == old_game_speed);
-        SetGameSpeed(old_game_speed);
+        FixPlayer(Level.Game.GameSpeed == 1);
+        SetGameSpeed(1);
     } else {
         SetGameSpeed(0);
     }
@@ -206,7 +207,7 @@ function doAutosave()
 
     info("doAutosave() " $ lastMission @ dxr.dxInfo.MissionNumber @ saveSlot @ saveName @ p.GetStateName() @ save_delay);
     bNeedSave = false;
-    SetGameSpeed(old_game_speed);
+    SetGameSpeed(1);// TODO: figure out what's wrong with using old_game_speed instead of 1
     class'DXRStats'.static.IncDataStorageStat(p, "DXRStats_autosaves");
     p.SaveGame(saveSlot, saveName);
     SetGameSpeed(0);
