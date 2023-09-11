@@ -75,7 +75,8 @@ class InstallerWindow(GUIBase):
         else:
             self.dxvkval = DummyCheckbox()
 
-        self.ogl2val = BooleanVar(master=self.frame, value=dxvk_default)
+        useOgl2 = dxvk_default or not IsWindows()
+        self.ogl2val = BooleanVar(master=self.frame, value=useOgl2)
         self.ogl2 = Checkbutton(self.frame, text="Updated OpenGL 2.0 Renderer", variable=self.ogl2val)
         Hovertip(self.ogl2, "Updated OpenGL Renderer for modern systems. An alternative to using D3D10 or D3D9.")
         self.ogl2.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)

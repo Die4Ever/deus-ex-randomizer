@@ -1374,7 +1374,7 @@ function DebugMarkKeyPosition(vector pos, coerce string id)
     local ActorDisplayWindow actorDisplay;
     local Actor a;
     if( ! #defined(debug)) {
-        err("Don't call DebugMarkKeyActor without debug mode! Add debug to the compiler_settings.default.json file");
+        err("Don't call DebugMarkKeyPosition without debug mode! Add debug to the compiler_settings.default.json file");
         return;
     }
 
