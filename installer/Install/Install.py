@@ -43,7 +43,7 @@ def DetectFlavors(exe:Path) -> list:
     return _DetectFlavors(system)
 
 
-def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, ogl2:bool=False) -> dict:
+def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, OGL2:bool=False) -> dict:
     assert exe.exists(), str(exe)
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
@@ -54,7 +54,7 @@ def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, ogl2:bool=False)
     for(f, settings) in flavors.items():
         ret={}
         if 'Vanilla'==f:
-            ret = InstallVanilla(system, settings, speedupfix)
+            ret = InstallVanilla(system, settings, speedupfix, Vulkan=dxvk, OGL2=OGL2)
         if 'Vanilla? Madder.'==f:
             ret = CreateModConfigs(system, settings, 'VMD', 'VMDSim')
         if 'GMDX v9'==f:
@@ -74,14 +74,14 @@ def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, ogl2:bool=False)
         EngineDllFix(system)
 
     CopyDXVK(system, dxvk)
-    InstallOGL2(system, ogl2)
+    InstallOGL2(system, OGL2)
 
     debug("Install returning", flavors)
 
     return flavors
 
 
-def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
+def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL2:bool):
     gameroot = system.parent
 
     if settings.get('LDDP'):
@@ -144,8 +144,13 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
             changes['D3D10Drv.D3D10RenderDevice'] = {}
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '0', 'VSync': 'False'})
 
-    if not IsWindows():
-        changes['Engine.Engine'] = {'GameRenderDevice': 'D3DDrv.D3DRenderDevice'}
+    if IsWindows() and not Vulkan:
+        changes['Engine.Engine'] = {'GameRenderDevice': 'D3D9Drv.D3D9RenderDevice'}
+    elif not IsWindows():
+        if OGL2:
+            changes['Engine.Engine'] = {'GameRenderDevice': 'OpenGLDrv.OpenGLRenderDevice'}
+        else:
+            changes['Engine.Engine'] = {'GameRenderDevice': 'D3D9Drv.D3D9RenderDevice'}
         if 'WinDrv.WindowsClient' not in changes:
             changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
 
