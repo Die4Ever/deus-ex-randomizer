@@ -3603,6 +3603,7 @@ defaultproperties
     mutually_exclusive(43)=(e1="ShipsBridge",e2="SpinShipsWheel")
     mutually_exclusive(44)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="GilbertRenton_Dead")
     mutually_exclusive(45)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="JoJoFine_Dead")
+    mutually_exclusive(46)=(e1="Cremation",e2="Chef_ClassDead")
 
     bingo_win_countdown=-1
 }
