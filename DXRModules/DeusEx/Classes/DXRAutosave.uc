@@ -5,6 +5,11 @@ var config float save_delay;
 var transient float save_timer;
 var transient int autosave_combat;
 
+var vector player_pos;
+var rotator player_rot;
+var bool set_player_pos;
+var float old_game_speed;
+
 const Disabled = 0;
 const FirstEntry = 1;
 const EveryEntry = 2;
@@ -55,16 +60,28 @@ function NeedSave()
     bNeedSave = true;
     save_timer = save_delay;
     Enable('Tick');
-    if(autosave_combat>0 || !PawnIsInCombat(player()))
+    if(old_game_speed==0) {
+        old_game_speed = Level.Game.GameSpeed;
+    }
+    if(autosave_combat>0 || !PawnIsInCombat(player())) {
+        autosave_combat = 1;// we're all in on this autosave because of the player rotation
+        if(!set_player_pos) {
+            set_player_pos = true;
+            player_pos = player().Location;
+            player_rot = player().ViewRotation;
+        }
         SetGameSpeed(0);
+    }
 }
 
 function SetGameSpeed(float s)
 {
     local MissionScript mission;
+    local int i;
 
     s = FMax(s, 0.01);// ServerSetSloMo only goes down to 0.1
     if(s == Level.Game.GameSpeed) return;
+    l("SetGameSpeed " @ s);
     Level.Game.GameSpeed = s;
     Level.TimeDilation = s;
     Level.Game.SetTimer(s, true);
@@ -75,6 +92,25 @@ function SetGameSpeed(float s)
     if(s <= 0.1) s /= 2;// might as well run the timer faster?
     foreach AllActors(class'MissionScript', mission) {
         mission.SetTimer(mission.checkTime * s, true);
+        i++;
+    }
+    // if no mission script found, clean up the traveling flag
+    if(i==0 && dxr.flagbase.GetBool('PlayerTraveling')) {
+        info("no missionscript found in " $ dxr.localURL);
+        dxr.flagbase.SetBool('PlayerTraveling', false);
+    }
+}
+
+function FixPlayer(optional bool pos)
+{
+    local #var(PlayerPawn) p;
+
+    if(set_player_pos) {
+        p=player();
+        if(pos) p.SetLocation(player_pos);
+        p.ViewRotation = player_rot;
+        p.Velocity = vect(0,0,0);
+        p.Acceleration = vect(0,0,0);
     }
 }
 
@@ -83,14 +119,17 @@ function Tick(float delta)
     delta /= Level.Game.GameSpeed;
     delta = FClamp(delta, 0.01, 0.05);// a single slow frame should not expire the timer by itself
     save_timer -= delta;
+    FixPlayer();
     if(bNeedSave) {
         if(save_timer <= 0) {
             doAutosave();
         }
     }
     else if(save_timer <= 0) {
+        if(Level.Game.GameSpeed == 1)// TODO: figure out what's wrong with using old_game_speed instead of 1
+            Disable('Tick');
+        FixPlayer(Level.Game.GameSpeed == 1);
         SetGameSpeed(1);
-        Disable('Tick');
     } else {
         SetGameSpeed(0);
     }
@@ -168,7 +207,7 @@ function doAutosave()
 
     info("doAutosave() " $ lastMission @ dxr.dxInfo.MissionNumber @ saveSlot @ saveName @ p.GetStateName() @ save_delay);
     bNeedSave = false;
-    SetGameSpeed(1);
+    SetGameSpeed(1);// TODO: figure out what's wrong with using old_game_speed instead of 1
     class'DXRStats'.static.IncDataStorageStat(p, "DXRStats_autosaves");
     p.SaveGame(saveSlot, saveName);
     SetGameSpeed(0);

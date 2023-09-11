@@ -1,4 +1,4 @@
-from Install import SetDryrun, SetVerbose, info
+from Install import GetSourcePath, SetDryrun, SetVerbose, info, debug
 try:
     import argparse
     import sys
@@ -20,18 +20,21 @@ parser.add_argument('--verbose', action="store_true", help="Output way more to t
 args = parser.parse_args()
 
 def GetVersion():
-    return 'v0.3'
-
-if args.version:
-    info('DXRando Installer version:', GetVersion())
-    info('Python version:', sys.version_info)
-    sys.exit(0)
+    return 'v0.4'
 
 if args.verbose:
     SetVerbose(True)
 
 if args.dryrun:
     SetDryrun(True)
+
+if args.version:
+    thirdparty = GetSourcePath() / '3rdParty'
+    for f in thirdparty.rglob('*'):
+        debug(f)
+    info('DXRando Installer version:', GetVersion())
+    info('Python version:', sys.version_info)
+    sys.exit(0)
 
 if args.unattended:
     try:

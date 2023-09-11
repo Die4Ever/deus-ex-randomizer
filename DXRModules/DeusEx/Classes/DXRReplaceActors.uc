@@ -87,6 +87,9 @@ function ReplaceActors()
         else if( #var(prefix)BarrelFire(a) != None ) {
             ReplaceGenericDecoration(a,class'DXRBarrelFire');
         }
+        else if( a.class==class'#var(prefix)VendingMachine' ) {
+            ReplaceVendingMachine(#var(prefix)VendingMachine(a));
+        }
 #ifdef gmdx
         else if( WeaponGEPGun(a) != None ) {
             ReplaceGepGun(WeaponGEPGun(a));
@@ -304,6 +307,21 @@ function ReplaceWaterCooler(#var(prefix)WaterCooler a)
     if(n == None)
         return;
 
+    // probably doesn't need this since it's all defaults
+    //ReplaceDecoration(a, n);
+
+    a.Destroy();
+}
+
+function ReplaceVendingMachine(#var(prefix)VendingMachine a)
+{
+    local DXRVendingMachine n;
+    n = DXRVendingMachine(SpawnReplacement(a, class'DXRVendingMachine'));
+    if(n == None)
+        return;
+
+    n.SkinColor=a.SkinColor;
+    n.BeginPlay();
     // probably doesn't need this since it's all defaults
     //ReplaceDecoration(a, n);
 

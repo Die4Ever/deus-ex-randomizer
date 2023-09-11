@@ -159,25 +159,3 @@ simulated function bool RandoProjectile(DeusExWeapon w, out class<Projectile> p,
 
     return true;
 }
-
-simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
-{
-    local Inventory i;
-    local Weapon weaps[64];
-    local int numWeaps, slot;
-
-    for( i = p.Inventory; i != None; i = i.Inventory ) {
-        if( Weapon(i) == None ) continue;
-        weaps[numWeaps++] = Weapon(i);
-    }
-
-    // don't take the player's only weapon
-    if( numWeaps <= 1 ) return;
-
-    SetSeed( "RemoveRandomWeapon " $ numWeaps );
-
-    slot = rng(numWeaps);
-    info("RemoveRandomWeapon("$p$") Removing weapon "$weaps[slot]$", numWeaps was "$numWeaps);
-    p.DeleteInventory(weaps[slot]);
-    weaps[slot].Destroy();
-}

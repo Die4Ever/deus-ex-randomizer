@@ -142,7 +142,7 @@ function int AddGoalLocation(string mapName, string name, int bitMask, vector lo
     if(name == "" && mapName == dxr.localURL) {
         a = Lightbulb(AddActor(class'Lightbulb', loc, r));
         a.bInvincible = true;
-        DebugMarkKeyPosition(a, num_locations @ loc);
+        DebugMarkKeyActor(a, num_locations @ loc);
     }
     return num_locations++;
 }

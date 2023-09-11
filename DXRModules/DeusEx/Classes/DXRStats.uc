@@ -13,33 +13,32 @@ struct RunInfo
 };
 
 var RunInfo runs[20];
+var int missions_times[16];
+var int missions_menu_times[16];
 
 function AnyEntry()
 {
-    local int i, missions[16], total;
-    local string msg;
+    local int i;
+    local DeusExRootWindow root;
+    local HUDSpeedrunSplits splits;
+
     Super.AnyEntry();
 
-    if(dxr.flags.IsSpeedrunMode()) {
-        for(i=1; i<ArrayCount(missions); i++) {
-            missions[i] = GetCompleteMissionTime(i);
-            missions[i] += GetCompleteMissionMenuTime(i);
-            total += missions[i];
-        }
+    for(i=1; i<ArrayCount(missions_times); i++) {
+        missions_times[i] = GetCompleteMissionTime(i);
+        missions_menu_times[i] = GetCompleteMissionMenuTime(i);
+    }
 
-        if(dxr.dxInfo.MissionNumber > 0 && dxr.dxInfo.MissionNumber <= 15) {
-            msg = "Total IGT: " $ fmtTimeToString(total);
-            for(i=dxr.dxInfo.MissionNumber; i>0; i--) {
-                if(missions[i] > 0) {
-                    msg = msg $ ", Mission " $i$ ": " $ fmtTimeToString(missions[i]);
-                    break;
-                }
-            }
-            msg = msg $ ", Deaths: " $ GetDataStorageStat(dxr, "DXRStats_deaths");
-            player().ClientMessage(msg);
-        }
-    } else {
-        l("Total time so far: "$GetTotalTimeString()$", deaths so far: "$GetDataStorageStat(dxr, "DXRStats_deaths"));
+    root = DeusExRootWindow(player().rootWindow);
+    if(root != None) {
+#ifdef injections
+        splits = root.splits;
+#elseif hx
+        // do nothing
+#else
+        splits = DXRandoRootWindow(root).splits;
+#endif
+        if(splits != None) splits.InitStats(self);
     }
 
     SetTimer(0.1, True);
@@ -53,39 +52,12 @@ simulated function ReEntry(bool IsTravel)
     }
 }
 
-//Returns true when you aren't in a menu, or in the intro, etc.
-function bool InGame() {
-#ifdef hx
-    return true;
-#endif
-
-    if( player() == None )
-        return false;
-
-    if (player().InConversation()) {
-        return True;
-    }
-
-    if (None == DeusExRootWindow(player().rootWindow)) {
-        return False;
-    }
-
-    if (None == DeusExRootWindow(player().rootWindow).hud) {
-        return False;
-    }
-
-    if (!DeusExRootWindow(player().rootWindow).hud.isVisible()){
-        return False;
-    }
-
-    return True;
-}
-
 function IncMissionTimer(int mission)
 {
     local string flagname, dataname;
     local name flag;
     local int time, ftime;
+    local bool bInGame;
 
     local DataStorage datastorage;
 
@@ -97,7 +69,8 @@ function IncMissionTimer(int mission)
 
     //Track both the "success path" time (via flags) and
     //the complete time (via datastorage)
-    if (InGame()) {
+    bInGame = InGame();
+    if (bInGame) {
         flagname = "DXRando_Mission"$mission$"_Timer";
         dataname = "DXRando_Mission"$mission$"_Complete_Timer";
     } else {
@@ -112,6 +85,14 @@ function IncMissionTimer(int mission)
     time = int(datastorage.GetConfigKey(dataname));
     time = Max(time, ftime);
     datastorage.SetConfig(dataname, time+1, 3600*24*366);
+
+    if(mission >= 0 && mission < ArrayCount(missions_times)) {
+        if(bInGame) {
+            missions_times[mission] = time;
+        } else {
+            missions_menu_times[mission] = time;
+        }
+    }
 }
 
 function int GetCompleteMissionTime(int mission)
@@ -193,7 +174,7 @@ function Timer()
 
 }
 
-static function string fmtTimeToString(int time)
+static function string fmtTimeToString(int time, optional bool hidehours, optional bool hidetenths, optional bool bShort)
 {
     local int hours,minutes,seconds,tenths,remain;
     local string timestr;
@@ -207,10 +188,12 @@ static function string fmtTimeToString(int time)
 
     hours = (remain - minutes)/60;
 
-    if (hours < 10) {
-        timestr="0";
+    if(hours>0 || !hidehours) {
+        if (hours < 10 && !bShort) {
+            timestr="0";
+        }
+        timestr=timestr$hours$":";
     }
-    timestr=timestr$hours$":";
 
     if (minutes < 10) {
         timestr=timestr$"0";
@@ -220,7 +203,10 @@ static function string fmtTimeToString(int time)
     if (seconds < 10) {
         timestr=timestr$"0";
     }
-    timestr=timestr$seconds$"."$tenths;
+    timestr=timestr$seconds;
+    if(!hidetenths) {
+        timestr = timestr $ "."$tenths;
+    }
 
     return timestr;
 }

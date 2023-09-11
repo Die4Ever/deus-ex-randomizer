@@ -7,7 +7,7 @@ except Exception as e:
 
 def debug(*args):
     global outfile
-    if GetDryrun():
+    if GetVerbose():
         print(*args)
         if outfile:
             print(*args, file=outfile)
@@ -28,6 +28,7 @@ try:
     import urllib.request
     import certifi
     import ssl
+    import subprocess
 except Exception as e:
     info('ERROR: importing', e)
     raise
@@ -52,6 +53,21 @@ def GetDryrun() -> bool:
 
 def IsWindows() -> bool:
     return os.name == 'nt'
+
+def CheckVulkan() -> bool:
+    if not IsWindows():
+        return False # no easy way to detect Vulkan on Linux, they don't need DXVK anyways
+    try:
+        info('CheckVulkan')
+        ret = subprocess.run(['vulkaninfo', '--summary'], text=True, capture_output=True, timeout=30)
+        debug(ret.stdout)
+        debug(ret.stderr)
+        info('CheckVulkan got:', not ret.returncode)
+        return not ret.returncode
+    except Exception as e:
+        info(e)
+        return False
+
 
 def GetConfChanges(modname):
     changes = {
@@ -87,11 +103,18 @@ def GetSourcePath() -> Path:
     raise RuntimeError('failed to GetSourcePath()', p)
 
 
-def GetDocumentsDir() -> Path:
+def GetDocumentsDir(system:Path) -> Path:
     if not IsWindows():
-        p = Path.home()
-        info('GetDocumentsDir() == ', p)
-        assert p.exists()
+        if 'Steam' in system.parts:
+            idx = system.parts.index('Steam')
+            p = system.parents[idx]
+            info('GetDocumentsDir() == ', p)
+            p = p /'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'
+            info('GetDocumentsDir() == ', p)
+            Mkdir(p, True, True)
+        else:
+            p = Path.home()
+        assert p.exists(), str(p)
         return p
     try:
         import ctypes.wintypes
@@ -240,9 +263,13 @@ def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path,
         WriteBytes(outconfig, bytes)
 
 
-def CopyD3D10Renderer(system:Path):
+def CopyD3DRenderers(system:Path):
     thirdparty = GetSourcePath() / '3rdParty'
-    info('CopyD3D10Renderer from', thirdparty, ' to ', system)
+    info('CopyD3DRenderers from', thirdparty, ' to ', system)
+
+    CopyTo(thirdparty/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
+    CopyTo(thirdparty/'D3D9Drv.hut', system/'D3D9Drv.hut', True)
+    CopyTo(thirdparty/'D3D9Drv.int', system/'D3D9Drv.int', True)
 
     CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
     CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
@@ -252,6 +279,35 @@ def CopyD3D10Renderer(system:Path):
     Mkdir(drvdir_dest, exist_ok=True)
     for f in drvdir_source.glob('*'):
         CopyTo(f, drvdir_dest / f.name, True)
+
+
+def CopyDXVK(system:Path, install:bool):
+    dir = GetSourcePath() / '3rdParty' / 'dxvk'
+    info('CopyDXVK from', dir, ' to ', system)
+    num = 0
+    for f in dir.glob('*'):
+        dest = system / f.name
+        if install:
+            CopyTo(f, dest)
+        elif dest.exists():
+            dest.unlink(True)
+        num += 1
+    assert num > 0, 'Found '+str(num)+' DXVK files'
+
+def InstallOGL2(system:Path, install:bool):
+    Ogl = system/'OpenGLDrv.dll'
+    backupOgl = system/'OpenGLDrv.orig.dll'
+    if install:
+        if Ogl.exists() and not backupOgl.exists():
+            Ogl.rename(backupOgl)
+        CopyTo(GetSourcePath() / '3rdParty' /'OpenGLDrv.dll', Ogl)
+    elif backupOgl.exists():
+        currMd5 = ''
+        if Ogl.exists():
+            currMd5 = MD5(Ogl.read_bytes())
+        backupMd5 = MD5(backupOgl.read_bytes())
+        info('reverting', Ogl, currMd5, 'to', backupOgl, backupMd5)
+        CopyTo(backupOgl, Ogl)
 
 
 def Mkdir(dir:Path, parents=False, exist_ok=False):

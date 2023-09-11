@@ -13,9 +13,11 @@ maps_versions = {
     '8d06331fdc7fcc6904c316bbb94a4598': 'v0.8',
     '5551a03906a0f5470e2f9bd8724d59a6': 'v0.9',
     '4a2b4cb284de0799ce0f111cfd8170fc': 'v0.9.1',
-    '85578e974c9b98ea45885e3c18e902ce': 'v0.9.2',
+    '3aee6ad2d9f88286b9ab105fb18109e2': 'v0.9.2', # after changing Md5Maps function
+    'c6bd4612828f025bdcd4cfd25655b4a3': 'v0.9.3',
+    '3b678c5b4f4b7fcd26f2c30ffec14770': 'v0.9.4',
 }
-latest_maps = 'v0.9.2'
+latest_maps = 'v0.9.4'
 assert latest_maps in maps_versions.values()
 
 def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
@@ -27,10 +29,10 @@ def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
 
     version = maps_versions.get(totalmd5)
     if version == latest_maps:
-        info('already have mirrored maps', version)
+        info('already have mirrored maps', version, totalmd5)
         return
     elif version:
-        info('overwriting mirrored maps', version)
+        info('overwriting mirrored maps', version, totalmd5)
     else:
         info('unknown existing maps MD5:', totalmd5)
 
@@ -66,8 +68,13 @@ def InstallMirrors(mapsdir: Path, callback: callable, flavor:str):
     temp.unlink()
 
 def Md5Maps(mapsdir: Path) -> str:
-    md5s = ''
-    for f in mapsdir.glob('*_-1_1_1.dx'):
+    Md5sArr = []
+    for f in mapsdir.glob('*.dx'):
         data = f.read_bytes()
-        md5s += MD5(data)
-    return MD5(md5s.encode('utf-8'))
+        t = MD5(data)
+        debug('MD5 of map', f.name, t)
+        Md5sArr.append(t)
+    Md5sArr.sort()
+    Md5sStr = ','.join(Md5sArr)
+    debug('Md5Maps all hashes', Md5sStr)
+    return MD5(Md5sStr.encode('utf-8'))

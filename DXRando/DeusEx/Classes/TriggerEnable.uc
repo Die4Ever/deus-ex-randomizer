@@ -31,6 +31,9 @@ static function DXRTriggerEnable Create(Actor a, Name tag, Name Event)
     foreach t.AllActors(class'Actor', a, Event) {
         a.SetCollision(false, a.bBlockActors, a.bBlockPlayers);
     }
+    if(#defined(debug)) {
+        t.Trigger(None, None);
+    }
     return t;
 }
 

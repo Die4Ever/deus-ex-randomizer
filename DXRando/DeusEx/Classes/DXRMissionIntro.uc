@@ -29,7 +29,7 @@ local DXRando dxr;
         }
     } else {
         if (!player.CanStartConversation()){
-            log("ERROR: "$Self$": Unable to start intro conversation...  State: "$player.GetStateName()$"  Physics: "$player.Physics);
+            log("WARNING: "$Self$": Unable to start intro conversation...  State: "$player.GetStateName()$"  Physics: "$player.Physics);
         }
     }
 #endif

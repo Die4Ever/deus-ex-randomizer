@@ -29,7 +29,9 @@ def UnattendedInstall(installpath:str, downloadmirrors):
     if downloadmirrors and 'Vanilla' in settings:
         settings['Vanilla']['mirrors'] = True
 
-    ret = Install(p, settings, True)
+    dxvk_default = IsWindows() and CheckVulkan()
+
+    ret = Install(p, settings, speedupfix=True, dxvk=dxvk_default, ogl2=dxvk_default)
 
 
 def DetectFlavors(exe:Path) -> list:
@@ -41,7 +43,7 @@ def DetectFlavors(exe:Path) -> list:
     return _DetectFlavors(system)
 
 
-def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
+def Install(exe:Path, flavors:dict, speedupfix:bool, dxvk:bool, OGL2:bool=False) -> dict:
     assert exe.exists(), str(exe)
     assert exe.name.lower() == 'deusex.exe'
     system:Path = exe.parent
@@ -52,7 +54,7 @@ def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
     for(f, settings) in flavors.items():
         ret={}
         if 'Vanilla'==f:
-            ret = InstallVanilla(system, settings, speedupfix)
+            ret = InstallVanilla(system, settings, speedupfix, Vulkan=dxvk, OGL2=OGL2)
         if 'Vanilla? Madder.'==f:
             ret = CreateModConfigs(system, settings, 'VMD', 'VMDSim')
         if 'GMDX v9'==f:
@@ -71,12 +73,15 @@ def Install(exe:Path, flavors:dict, speedupfix:bool) -> dict:
     if speedupfix:
         EngineDllFix(system)
 
+    CopyDXVK(system, dxvk)
+    InstallOGL2(system, OGL2)
+
     debug("Install returning", flavors)
 
     return flavors
 
 
-def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
+def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL2:bool):
     gameroot = system.parent
 
     if settings.get('LDDP'):
@@ -105,7 +110,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     CopyTo(ini, defini_dest)
 
     if kentie:
-        configs_dest = GetDocumentsDir() / 'Deus Ex' / 'System'
+        configs_dest = GetDocumentsDir(system) / 'Deus Ex' / 'System'
         Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True, parents=True)
     else:
         configs_dest = system
@@ -131,9 +136,21 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
         if 'D3D10Drv.D3D10RenderDevice' not in changes:
             changes['D3D10Drv.D3D10RenderDevice'] = {}
         changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '120', 'VSync': 'True'})
+    elif exename == 'DeusEx': # ensure we don't retain bad settings from old vanilla configs since we use the same exe file name?
+        if 'DeusExe' not in changes:
+            changes['DeusExe'] = {}
+        changes['DeusExe'].update({'FPSLimit': '0'})
+        if 'D3D10Drv.D3D10RenderDevice' not in changes:
+            changes['D3D10Drv.D3D10RenderDevice'] = {}
+        changes['D3D10Drv.D3D10RenderDevice'].update({'FPSLimit': '0', 'VSync': 'False'})
 
-    if not IsWindows():
-        changes['Engine.Engine'] = {'GameRenderDevice': 'D3DDrv.D3DRenderDevice'}
+    if IsWindows() and not Vulkan:
+        changes['Engine.Engine'] = {'GameRenderDevice': 'D3D9Drv.D3D9RenderDevice'}
+    elif not IsWindows():
+        if OGL2:
+            changes['Engine.Engine'] = {'GameRenderDevice': 'OpenGLDrv.OpenGLRenderDevice'}
+        else:
+            changes['Engine.Engine'] = {'GameRenderDevice': 'D3D9Drv.D3D9RenderDevice'}
         if 'WinDrv.WindowsClient' not in changes:
             changes['WinDrv.WindowsClient'] = {'StartupFullscreen': 'True'}
 
@@ -150,7 +167,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool):
     Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
     Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
-    CopyD3D10Renderer(system)
+    CopyD3DRenderers(system)
 
     FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
     CopyTo(FemJCu, dxrroot / 'System' / 'FemJC.u')
@@ -203,7 +220,7 @@ def InstallGMDX(system:Path, settings:dict, exename:str):
     Mkdir(game/'SaveGMDXRando', exist_ok=True)
     # GMDX uses absolute path shortcuts with ini files in their arguments, so it's not as simple to copy their exe
 
-    confpath = GetDocumentsDir() / 'Deus Ex' / exename / 'System' / 'gmdx.ini'
+    confpath = GetDocumentsDir(system) / 'Deus Ex' / exename / 'System' / 'gmdx.ini'
     if confpath.exists():
         b = confpath.read_bytes()
         b = Config.ModifyConfig(b, changes, additions)

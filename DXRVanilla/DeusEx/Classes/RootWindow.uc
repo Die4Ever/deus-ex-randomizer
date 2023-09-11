@@ -1,6 +1,23 @@
 class DXRandoRootWindow merges DeusExRootWindow;
 // merges because DeusExRootWindow depends on int entries
 
+var HUDSpeedrunSplits splits;
+
+event InitWindow()
+{
+    _InitWindow();
+
+    splits = HUDSpeedrunSplits(NewChild(Class'HUDSpeedrunSplits'));
+    splits.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
+}
+
+event DescendantRemoved(Window descendant)
+{
+    _DescendantRemoved(descendant);
+    if ( descendant == splits )
+        splits = None;
+}
+
 function bool GetNoPause(bool bNoPause) {
     local DXRFlags flags;
 

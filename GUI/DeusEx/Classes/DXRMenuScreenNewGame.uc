@@ -167,6 +167,7 @@ function SaveSettings()
         i.Destroy();
     }
     player.Inventory = None;
+    dxr.flags.ClearInHand(#var(PlayerPawn)(player));
     player.RestoreAllHealth();
     if (DeusExRootWindow(player.rootWindow) != None)
         DeusExRootWindow(player.rootWindow).ResetFlags();
@@ -235,7 +236,7 @@ function ProcessAction(String actionKey)
         else
         {
             SaveSettings();
-            AddTimer(0.1, false, 0, 'Timer');// timer to wait for items to be destroyed (issue #426)
+            AddTimer(0.11, false, 0, 'Timer');// timer to wait for items to be destroyed (issue #426), deletes happen every 100ms? probably don't need this anymore with our new ClearInHand() function
         }
     }
     else

@@ -489,6 +489,34 @@ simulated function MessageBoxClicked(int button, int callbackId) {
     //OK = 2
 }
 
+//Returns true when you aren't in a menu, or in the intro, etc.
+function bool InGame() {
+#ifdef hx
+    return true;
+#endif
+
+    if( player() == None )
+        return false;
+
+    if (player().InConversation()) {
+        return True;
+    }
+
+    if (None == DeusExRootWindow(player().rootWindow)) {
+        return False;
+    }
+
+    if (None == DeusExRootWindow(player().rootWindow).hud) {
+        return False;
+    }
+
+    if (!DeusExRootWindow(player().rootWindow).hud.isVisible()){
+        return False;
+    }
+
+    return True;
+}
+
 simulated function AddDXRCredits(CreditsWindow cw)
 {
 }

@@ -57,12 +57,7 @@ function BindControls(optional string action)
     for( i=i; i < ArrayCount(f.difficulty_names); i++ ) {
         if( f.difficulty_names[i] == "" ) continue;
         EnumOption(f.difficulty_names[i], i, f.difficulty);
-    }
-#ifndef hx
-    // TODO: menus for HX?
-    if(writing)
-        difficulty = f.SetDifficulty(f.difficulty).CombatDifficulty;
-#endif
+    }// we write the difficulty and gamemode after setting the seed...
 
 #ifdef injections
     foreach f.AllActors(class'DXRAutosave', autosave) { break; }// need an object to access consts
@@ -125,6 +120,10 @@ function BindControls(optional string action)
     }
 
     if(writing) {
+#ifndef hx
+        // we write the difficulty and gamemode after setting the seed, TODO: menus for HX?
+        difficulty = f.SetDifficulty(f.difficulty).CombatDifficulty;
+#endif
         if( action == "ADVANCED" ) NewGameSetup(difficulty);
         else if( action == "MAXRANDO" ) {
             f.ExecMaxRando();

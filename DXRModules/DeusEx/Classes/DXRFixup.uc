@@ -101,6 +101,19 @@ function CheckConfig()
     DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
     DecorationsOverwrites[i].bPushable = c.default.bPushable;
 
+    i=0;
+    DecorationsOverwrites[i].type = "CrateUnbreakableMed";
+    DecorationsOverwrites[i].bInvincible = false;
+    DecorationsOverwrites[i].HitPoints = 500;
+    DecorationsOverwrites[i].minDamageThreshold = 0;
+    c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+    DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+    DecorationsOverwrites[i].Flammability = c.default.Flammability;
+    DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+    DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+    DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+    DecorationsOverwrites[i].bPushable = c.default.bPushable;
+
     Super.CheckConfig();
 
     for(i=0; i<ArrayCount(DecorationsOverwrites); i++) {
@@ -531,15 +544,21 @@ function SpawnDatacubes()
     }
 }
 
-function AddDelay(Actor trigger, float time)
+
+function AddDelayEvent(Name tag, Name event, float time)
 {
     local Dispatcher d;
+    d = Spawn(class'Dispatcher',, tag);
+    d.OutEvents[0] = event;
+    d.OutDelays[0] = time;
+}
+
+function AddDelay(Actor trigger, float time)
+{
     local name tagname;
     tagname = StringToName( "dxr_delay_" $ trigger.Event );
-    d = Spawn(class'Dispatcher', trigger, tagname);
-    d.OutEvents[0] = trigger.Event;
-    d.OutDelays[0] = time;
-    trigger.Event = d.Tag;
+    AddDelayEvent(tagname, trigger.Event, time);
+    trigger.Event = tagname;
 }
 
 static function DeleteConversationFlag(Conversation c, name Name, bool Value)

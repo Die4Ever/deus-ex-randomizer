@@ -10,7 +10,7 @@ event InitWindow()
 
 #ifndef vmd
     frobDisplay.Destroy();
-	frobDisplay = FrobDisplayWindow(NewChild(Class'DXRFrobDisplayWindow'));
-	frobDisplay.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
+    frobDisplay = FrobDisplayWindow(NewChild(Class'DXRFrobDisplayWindow'));
+    frobDisplay.SetWindowAlignments(HALIGN_Full, VALIGN_Full);
 #endif
 }

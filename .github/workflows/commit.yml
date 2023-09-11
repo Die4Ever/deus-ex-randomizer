@@ -1,6 +1,7 @@
 name: commit
-'on':
-  - push
+on:
+  push:
+    paths: ['*', 'installer/**', '.github/**']
 
 jobs:
   windows:

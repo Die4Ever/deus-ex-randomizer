@@ -2,7 +2,7 @@ try:
     import webbrowser
     from GUI import *
     from pathlib import Path
-    from Install import Install, IsWindows, getDefaultPath
+    from Install import Install, IsWindows, CheckVulkan, getDefaultPath
     import traceback
     import re
 except Exception as e:
@@ -16,7 +16,9 @@ class InstallerWindow(GUIBase):
         self.height = 500
         self.lastprogress = ''
         self.root.title("Deus Ex Randomizer Installer")
-        self.root.geometry(str(self.width)+"x"+str(self.height))
+
+        dxvk_default = CheckVulkan()# this takes a second or so
+        ogl2_default = dxvk_default or not IsWindows()
 
         scroll = ScrollableFrame(self.root, width=self.width, height=self.height, mousescroll=1)
         self.frame = scroll.frame
@@ -59,7 +61,26 @@ class InstallerWindow(GUIBase):
         self.speedupfixval = BooleanVar(master=self.frame, value=True)
         self.speedupfix = Checkbutton(self.frame, text="Apply Engine.dll speedup fix", variable=self.speedupfixval)
         self.speedupfix.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+        Hovertip(self.speedupfix, "Fixes issues with high frame rates.")
         self.FixColors(self.speedupfix)
+        row+=1
+
+        # DXVK is also global
+        if IsWindows():
+            self.dxvkval = BooleanVar(master=self.frame, value=dxvk_default)
+            self.dxvk = Checkbutton(self.frame, text="Apply DXVK fix for modern computers", variable=self.dxvkval)
+            self.dxvk.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+            Hovertip(self.dxvk, "DXVK can fix performance issues on modern systems by using Vulkan.")
+            self.FixColors(self.dxvk)
+            row+=1
+        else:
+            self.dxvkval = DummyCheckbox()
+
+        self.ogl2val = BooleanVar(master=self.frame, value=ogl2_default)
+        self.ogl2 = Checkbutton(self.frame, text="Updated OpenGL 2.0 Renderer", variable=self.ogl2val)
+        Hovertip(self.ogl2, "Updated OpenGL Renderer for modern systems. An alternative to using D3D10 or D3D9.")
+        self.ogl2.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
+        self.FixColors(self.ogl2)
         row+=1
 
         # TODO: option to enable telemetry? checking for updates?
@@ -75,6 +96,8 @@ class InstallerWindow(GUIBase):
         self.installButton.grid(column=1,row=101, sticky='SW', padx=pad, pady=pad)
         Hovertip(self.installButton, 'Dew it!')
 
+        self.root.geometry(str(self.width)+"x"+str(self.height))
+
 
     def InitFlavorSettings(self, f: str, row, pad) -> int:
         v = BooleanVar(master=self.frame, value=True)
@@ -84,8 +107,6 @@ class InstallerWindow(GUIBase):
         row+=1
 
         exe = StringVar(master=self.frame, value='Kentie')
-        if not IsWindows():
-            exe.set('Launch')
 
         settings = { 'install': v, 'exe': exe }
 
@@ -93,7 +114,7 @@ class InstallerWindow(GUIBase):
             v = BooleanVar(master=self.frame, value=True)
             settings['mirrors'] = v
             c = Checkbutton(self.frame, text="Download mirrored maps for "+f, variable=v)
-            Hovertip(c, "Time to get lost again.")
+            Hovertip(c, "Time to get lost again. (This will check if you already have them.)")
             c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
             self.FixColors(c)
             row+=1
@@ -158,7 +179,9 @@ class InstallerWindow(GUIBase):
                 }
 
         speedupfix = self.speedupfixval.get()
-        flavors = Install.Install(self.exe, flavors, speedupfix)
+        dxvk = self.dxvkval.get()
+        ogl2 = self.ogl2val.get()
+        flavors = Install.Install(self.exe, flavors, speedupfix, dxvk, ogl2)
         flavorstext = ', '.join(flavors.keys())
         extra = ''
         if 'Vanilla' in flavors and IsWindows():

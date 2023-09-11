@@ -5,6 +5,7 @@ import json
 import os.path
 import urllib.request
 import urllib.parse
+import re
 from tkinter import filedialog as fd
 from tkinter import font
 from tkinter import messagebox
@@ -40,6 +41,7 @@ class Bingo:
         self.height=500
         self.selectedMod=""
         self.prevLines=None
+        self.bingoLineMatch = re.compile(r'bingoexport\[(?P<key>\d+)\]=\(Event="(?P<event>.*)",Desc="(?P<desc>.*)",Progress=(?P<progress>\d+),Max=(?P<max>\d+),Active=(?P<active>\d+)\)')
         self.initDrawnBoard()
 
     def closeWindow(self):
@@ -139,20 +141,19 @@ class Bingo:
         return (x,y)
 
     def parseBingoLine(self,bingoLine):
-        bingoNumber = int(bingoLine.split("[")[1].split("]")[0])
+        bingoMatches=self.bingoLineMatch.match(bingoLine)
+        if (bingoMatches==None):
+            return
+        
+        bingoNumber=int(bingoMatches.group('key'))
         bingoCoord = self.bingoNumberToCoord(bingoNumber)
-        state = "=".join(bingoLine.split("=")[1:])[1:-1]
-        fields = state.split(",")
+
         bingoItem = dict()
-        for field in fields:
-            split = field.split("=")
-            fieldName = split[0].lower()
-            fieldVal = split[1].replace('"',"")
-            try:
-                fieldVal = int(fieldVal)
-            except:
-                pass
-            bingoItem[fieldName]=fieldVal
+        bingoItem["event"]=bingoMatches.group('event')
+        bingoItem["desc"]=bingoMatches.group('desc')
+        bingoItem["progress"]=int(bingoMatches.group('progress'))
+        bingoItem["max"]=int(bingoMatches.group('max'))
+        bingoItem["active"]=int(bingoMatches.group('active'))
 
         self.board[bingoCoord[0]][bingoCoord[1]] = bingoItem
 
