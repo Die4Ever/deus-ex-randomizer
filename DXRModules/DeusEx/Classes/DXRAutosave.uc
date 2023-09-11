@@ -61,9 +61,11 @@ function NeedSave()
     Enable('Tick');
     if(autosave_combat>0 || !PawnIsInCombat(player())) {
         autosave_combat = 1;// we're all in on this autosave because of the player rotation
-        player_pos = player().Location;
-        player_rot = player().ViewRotation;
-        set_player_pos = true;
+        if(!set_player_pos) {
+            set_player_pos = true;
+            player_pos = player().Location;
+            player_rot = player().ViewRotation;
+        }
         SetGameSpeed(0);
     }
 }
@@ -87,11 +89,16 @@ function SetGameSpeed(float s)
     }
 }
 
-function FixPos()
+function FixPlayer(optional bool pos)
 {
+    local #var(PlayerPawn) p;
+
     if(set_player_pos) {
-        player().SetLocation(player_pos);
-        player().ViewRotation = player_rot;
+        p=player();
+        if(pos) p.SetLocation(player_pos);
+        p.ViewRotation = player_rot;
+        p.Velocity = vect(0,0,0);
+        p.Acceleration = vect(0,0,0);
     }
 }
 
@@ -100,15 +107,17 @@ function Tick(float delta)
     delta /= Level.Game.GameSpeed;
     delta = FClamp(delta, 0.01, 0.05);// a single slow frame should not expire the timer by itself
     save_timer -= delta;
-    FixPos();
+    FixPlayer();
     if(bNeedSave) {
         if(save_timer <= 0) {
             doAutosave();
         }
     }
     else if(save_timer <= 0) {
+        if(Level.Game.GameSpeed == 1)
+            Disable('Tick');
+        FixPlayer(Level.Game.GameSpeed == 1);
         SetGameSpeed(1);
-        Disable('Tick');
     } else {
         SetGameSpeed(0);
     }
