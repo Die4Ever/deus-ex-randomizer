@@ -33,6 +33,7 @@ function PreFirstEntryMapFixes()
     local Switch1 s;
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)RatGenerator rg;
+    local #var(prefix)FlagTrigger ft;
 
     switch(dxr.localURL)
     {
@@ -208,6 +209,26 @@ function PreFirstEntryMapFixes()
         barrel = #var(prefix)Barrel1(AddActor(class'#var(prefix)Barrel1', vect(-1112.480469,1120.735840,29.096186)));
         barrel.SkinColor = SC_Explosive;
         barrel.BeginPlay();
+
+        // just in case the gate keeper gets stuck, or if you wanna go fast!
+        foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'CheckGateFlag') {
+            ft.FlagName = 'RingForService_Played';
+            ft.SetCollision(false,false,false);
+            ft.SetCollisionSize(0,0);
+        }
+        foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'MakeGateOpen') {
+            ft.SetCollision(false,false,false);
+            ft.SetCollisionSize(0,0);
+        }
+
+        // allow jumping over the fence better, these are near the cars and the gatekeeper
+        foreach RadiusActors(class'BlockPlayer', bp, 385, vectm(682.616821, 1052.459473, 291.541748)) {
+            bp.bBlockPlayers = false;
+        }
+        // these are on the other side towards the tombstones
+        foreach RadiusActors(class'BlockPlayer', bp, 150, vectm(255.896591, 976.539551, 291.541748)) {
+            bp.bBlockPlayers = false;
+        }
         break;
     }
 }

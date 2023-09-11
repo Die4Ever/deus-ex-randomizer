@@ -544,15 +544,21 @@ function SpawnDatacubes()
     }
 }
 
-function AddDelay(Actor trigger, float time)
+
+function AddDelayEvent(Name tag, Name event, float time)
 {
     local Dispatcher d;
+    d = Spawn(class'Dispatcher',, tag);
+    d.OutEvents[0] = event;
+    d.OutDelays[0] = time;
+}
+
+function AddDelay(Actor trigger, float time)
+{
     local name tagname;
     tagname = StringToName( "dxr_delay_" $ trigger.Event );
-    d = Spawn(class'Dispatcher', trigger, tagname);
-    d.OutEvents[0] = trigger.Event;
-    d.OutDelays[0] = time;
-    trigger.Event = d.Tag;
+    AddDelayEvent(tagname, trigger.Event, time);
+    trigger.Event = tagname;
 }
 
 static function DeleteConversationFlag(Conversation c, name Name, bool Value)
