@@ -583,7 +583,8 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'TonnochiBillboard',vectm(0,550,870),300,40);
 
-
+        bt = class'BingoTrigger'.static.Create(self,'MaggieCanFly',vectm(-30,-1950,1400),600,40);
+        bt.MakeClassProximityTrigger(class'#var(prefix)MaggieChowCarcass');
 
         break;
     case "06_HONGKONG_WANCHAI_MARKET":
@@ -3138,6 +3139,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return msg;
         case "CliffSacrifice":
             return "Throw a corpse off of the cliffs in Vandenberg.";
+        case "MaggieCanFly":
+            return "Throw Maggie Chow out of her apartment window.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3538,6 +3541,7 @@ defaultproperties
     bingo_options(252)=(event="FamilySquabbleWrapUpGilbertDead_Played",desc="What a shame",max=1,missions=16)
     bingo_options(253)=(event="CrackSafe",desc="Crack %s safes",max=3,missions=516)
     bingo_options(254)=(event="CliffSacrifice",desc="Sacrifice a body off of a cliff",max=1,missions=4096)
+    bingo_options(255)=(event="MaggieCanFly",desc="Teach Maggie Chow how to fly",max=1,missions=64)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
