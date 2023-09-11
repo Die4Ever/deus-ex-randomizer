@@ -18,17 +18,32 @@ var FlagsSettings difficulty_settings[5];
 
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 {
+#ifdef injections
+    local DXRAutosave autosave;
+#endif
+
     Super.PlayerAnyEntry(p);
     if(!VersionIsStable())
         p.bCheatsEnabled = true;
 
     if(difficulty_names[difficulty] == "Super Easy QA" && dxr.dxInfo.missionNumber > 0 && dxr.dxInfo.missionNumber < 99) {
         p.ReducedDamageType = 'All';// god mode
-        p.ServerSetSloMo(2);
         p.AllWeapons();
         p.AllAmmo();
-        if(dxr.localURL == "01_NYC_UNATCOISLAND")
+        if(dxr.localURL == "01_NYC_UNATCOISLAND") {
             p.ConsoleCommand("legend");
+        }
+
+#ifdef injections
+        autosave = DXRAutosave(dxr.FindModule(class'DXRAutosave'));
+        if(autosave == None || !autosave.bNeedSave) {
+            p.ServerSetSloMo(2);
+        } else {
+            autosave.old_game_speed = 2;
+        }
+#else
+        p.ServerSetSloMo(2);
+#endif
     }
 
     //Disable achievements for Revision Rando, as requested

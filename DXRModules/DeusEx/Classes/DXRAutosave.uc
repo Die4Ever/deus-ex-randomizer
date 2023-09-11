@@ -8,6 +8,7 @@ var transient int autosave_combat;
 var vector player_pos;
 var rotator player_rot;
 var bool set_player_pos;
+var float old_game_speed;
 
 const Disabled = 0;
 const FirstEntry = 1;
@@ -59,6 +60,9 @@ function NeedSave()
     bNeedSave = true;
     save_timer = save_delay;
     Enable('Tick');
+    if(old_game_speed==0) {
+        old_game_speed = Level.Game.GameSpeed;
+    }
     if(autosave_combat>0 || !PawnIsInCombat(player())) {
         autosave_combat = 1;// we're all in on this autosave because of the player rotation
         if(!set_player_pos) {
@@ -73,6 +77,7 @@ function NeedSave()
 function SetGameSpeed(float s)
 {
     local MissionScript mission;
+    local int i;
 
     s = FMax(s, 0.01);// ServerSetSloMo only goes down to 0.1
     if(s == Level.Game.GameSpeed) return;
@@ -86,6 +91,12 @@ function SetGameSpeed(float s)
     if(s <= 0.1) s /= 2;// might as well run the timer faster?
     foreach AllActors(class'MissionScript', mission) {
         mission.SetTimer(mission.checkTime * s, true);
+        i++;
+    }
+    // if no mission script found, clean up the traveling flag
+    if(i==0 && dxr.flagbase.GetBool('PlayerTraveling')) {
+        info("no missionscript found in " $ dxr.localURL);
+        dxr.flagbase.SetBool('PlayerTraveling', false);
     }
 }
 
@@ -114,10 +125,10 @@ function Tick(float delta)
         }
     }
     else if(save_timer <= 0) {
-        if(Level.Game.GameSpeed == 1)
+        if(Level.Game.GameSpeed == old_game_speed)
             Disable('Tick');
-        FixPlayer(Level.Game.GameSpeed == 1);
-        SetGameSpeed(1);
+        FixPlayer(Level.Game.GameSpeed == old_game_speed);
+        SetGameSpeed(old_game_speed);
     } else {
         SetGameSpeed(0);
     }
@@ -195,7 +206,7 @@ function doAutosave()
 
     info("doAutosave() " $ lastMission @ dxr.dxInfo.MissionNumber @ saveSlot @ saveName @ p.GetStateName() @ save_delay);
     bNeedSave = false;
-    SetGameSpeed(1);
+    SetGameSpeed(old_game_speed);
     class'DXRStats'.static.IncDataStorageStat(p, "DXRStats_autosaves");
     p.SaveGame(saveSlot, saveName);
     SetGameSpeed(0);

@@ -113,7 +113,7 @@ class InstallerWindow(GUIBase):
             v = BooleanVar(master=self.frame, value=True)
             settings['mirrors'] = v
             c = Checkbutton(self.frame, text="Download mirrored maps for "+f, variable=v)
-            Hovertip(c, "Time to get lost again.")
+            Hovertip(c, "Time to get lost again. (This will check if you already have them.)")
             c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
             self.FixColors(c)
             row+=1

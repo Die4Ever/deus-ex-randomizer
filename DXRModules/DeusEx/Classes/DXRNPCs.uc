@@ -194,7 +194,7 @@ function ScriptedPawn CreateMerchant(string name, Name bindname, ItemPurchase it
             break;
         }
     }
-    if(list == None) err(dxr.localURL $ " list == None");
+    if(dxr.dxInfo.missionNumber >= 1 && dxr.dxInfo.missionNumber <= 15 && list == None) err(dxr.localURL $ " list == None");
 
     // old class for backwards compatibility
     foreach AllActors(class'#var(prefix)Businessman3', oldnpc, bindname) {
