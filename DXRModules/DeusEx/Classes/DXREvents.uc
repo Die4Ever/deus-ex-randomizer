@@ -943,6 +943,8 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'CliffSacrifice',vectm(1915,2795,-3900),10000,40);
         bt.MakeClassProximityTrigger(class'#var(DeusExPrefix)Carcass');
 
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergShaft',vectm(1442.694580,1303.784180,-1755),110,10);
+
 
         break;
     case "12_VANDENBERG_TUNNELS":
@@ -2424,6 +2426,9 @@ function string RemapBingoEvent(string eventname)
         case "WaltonShowdown_Played":
         case "WaltonBadass_Played":
             return "WaltonConvos";
+        case "ScientistMale_ClassDead":
+        case "ScientistFemale_ClassDead":
+            return "ScienceIsForNerds";
         default:
             return eventname;
     }
@@ -3141,6 +3146,12 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Throw a corpse off of the cliffs in Vandenberg.";
         case "MaggieCanFly":
             return "Throw Maggie Chow out of her apartment window.";
+        case "VandenbergShaft":
+            return "Jump down the shaft leading from the third floor to the first floor, down to near the indoor generator.";
+        case "ScienceIsForNerds":
+            return "Scientists think they're so much smarter than you.  Show them how smart your weapons are and kill enough of those nerds.";
+        case "Chef_ClassDead":
+            return "Do what needs to be done and kill a chef.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3542,6 +3553,9 @@ defaultproperties
     bingo_options(253)=(event="CrackSafe",desc="Crack %s safes",max=3,missions=516)
     bingo_options(254)=(event="CliffSacrifice",desc="Sacrifice a body off of a cliff",max=1,missions=4096)
     bingo_options(255)=(event="MaggieCanFly",desc="Teach Maggie Chow how to fly",max=1,missions=64)
+    bingo_options(256)=(event="VandenbergShaft",desc="Jump down the Vandenberg shaft",max=1,missions=4096)
+    bingo_options(257)=(event="ScienceIsForNerds",desc="Science is for nerds (%s)",max=10,missions=20576)
+    bingo_options(258)=(event="Chef_ClassDead",desc="My Name Chef",max=1,missions=3072)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
