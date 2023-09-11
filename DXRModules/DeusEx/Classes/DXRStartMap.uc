@@ -388,7 +388,7 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
             if (end_mission < 4){
                 return True;
             }
-            return start_map>40;
+            return start_map>=40;
         default:
             return False;
     }
