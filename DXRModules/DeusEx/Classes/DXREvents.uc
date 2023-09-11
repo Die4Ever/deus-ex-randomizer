@@ -432,15 +432,6 @@ function SetWatchFlags() {
             bt.MakeClassProximityTrigger(class'#var(prefix)JuanLebedevCarcass');
         }
 
-
-        if(RevisionMaps){
-
-        } else {
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2983.597168,774.217407,312.100128),70,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2984.404785,662.764954,312.100128),70,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-        }
         foreach AllActors(class'#var(prefix)Female2',f) {
             if(f.BindName == "Shannon"){
                 f.bImportant = true;
