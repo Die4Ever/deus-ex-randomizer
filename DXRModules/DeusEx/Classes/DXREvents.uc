@@ -2781,13 +2781,13 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "GreeneArticles":
             msg="Read enough news articles written by Joe Greene of the Midnight Sun.  ";
             if (mission<=1){
-                msg=msg$"There are two different articles on Liberty Island and in UNATCO HQ.";
+                msg=msg$"There's one on Liberty Island, and one in UNATCO HQ.";
             } else if (mission<=2){
-                msg=msg$"There is an article somewhere around the NSF warehouse as well as in the Underworld bar.";
+                msg=msg$"There is an article somewhere around the NSF warehouse.";
             } else if (mission<=3){
-                msg=msg$"There is a single article in Brooklyn Bridge Station, in the helibase, and in the 747.";
+                msg=msg$"There are 3 copies of the same article: in Brooklyn Bridge Station, in the helibase, and in the 747.";
             } else if (mission<=8){
-                msg=msg$"There is an article in the streets of Hell's Kitchen.";
+                msg=msg$"There is an article in the streets of Hell's Kitchen and in the bar.";
             }
             return msg;
         case "MoonBaseNews":

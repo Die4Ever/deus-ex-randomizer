@@ -55,6 +55,8 @@ def IsWindows() -> bool:
     return os.name == 'nt'
 
 def CheckVulkan() -> bool:
+    if not IsWindows():
+        return False # no easy way to detect Vulkan on Linux, they don't need DXVK anyways
     try:
         info('CheckVulkan')
         ret = subprocess.run(['vulkaninfo', '--summary'], text=True, capture_output=True, timeout=30)

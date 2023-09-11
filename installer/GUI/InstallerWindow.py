@@ -17,7 +17,8 @@ class InstallerWindow(GUIBase):
         self.lastprogress = ''
         self.root.title("Deus Ex Randomizer Installer")
 
-        dxvk_default = IsWindows() and CheckVulkan()
+        dxvk_default = CheckVulkan()# this takes a second or so
+        ogl2_default = dxvk_default or not IsWindows()
 
         scroll = ScrollableFrame(self.root, width=self.width, height=self.height, mousescroll=1)
         self.frame = scroll.frame
@@ -75,8 +76,7 @@ class InstallerWindow(GUIBase):
         else:
             self.dxvkval = DummyCheckbox()
 
-        useOgl2 = dxvk_default or not IsWindows()
-        self.ogl2val = BooleanVar(master=self.frame, value=useOgl2)
+        self.ogl2val = BooleanVar(master=self.frame, value=ogl2_default)
         self.ogl2 = Checkbutton(self.frame, text="Updated OpenGL 2.0 Renderer", variable=self.ogl2val)
         Hovertip(self.ogl2, "Updated OpenGL Renderer for modern systems. An alternative to using D3D10 or D3D9.")
         self.ogl2.grid(column=1,row=row, sticky='SW', padx=pad, pady=pad)
