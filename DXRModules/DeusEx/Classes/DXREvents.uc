@@ -939,6 +939,10 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'VandenbergWaterTower',vectm(-1030,80,-1600),350,40);
 
+        bt = class'BingoTrigger'.static.Create(self,'CliffSacrifice',vectm(1915,2795,-3900),10000,40);
+        bt.MakeClassProximityTrigger(class'#var(DeusExPrefix)Carcass');
+
+
         break;
     case "12_VANDENBERG_TUNNELS":
         bt = class'BingoTrigger'.static.Create(self,'VandenbergReactorRoom',vectm(-1427,3287,-2985),500,100);
@@ -3132,6 +3136,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
                 msg=msg$"There is a safe in the office in the dockyard, one on the upper decks of the superfreighter, and one in Dowd's mausoleum.";
             }
             return msg;
+        case "CliffSacrifice":
+            return "Throw a corpse off of the cliffs in Vandenberg.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3531,6 +3537,7 @@ defaultproperties
     bingo_options(251)=(event="BeatTheMeat",desc="Beat the meat %s times",max=15,missions=2624)
     bingo_options(252)=(event="FamilySquabbleWrapUpGilbertDead_Played",desc="What a shame",max=1,missions=16)
     bingo_options(253)=(event="CrackSafe",desc="Crack %s safes",max=3,missions=516)
+    bingo_options(254)=(event="CliffSacrifice",desc="Sacrifice a body off of a cliff",max=1,missions=4096)
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
