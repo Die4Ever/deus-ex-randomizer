@@ -6,18 +6,26 @@ class HUDSpeedrunSplits expands HUDBaseWindow config(DXRSplits);
 var DeusExPlayer    player;
 var DXRStats        stats;
 
+var config int version;
 var config Font  textfont;
-var config int windowWidth, windowHeight;
+
 var config Color colorBackground, colorText, colorBehind, colorBehindLosingTime, colorBehindGainingTime, colorAhead, colorAheadLosingTime, colorAheadGainingTime, colorBest, colorBestBehind, colorBestAhead;
 
-var config bool enabled, minimal;
+var config bool enabled, showPrevprev, showPrev, showCurrentMission, showNext, showSeg, showCur, showPB;
 
 var config int PB[16];
 var config int Golds[16];
 
+var config string title, subtitle, footer;
+var string ttitle, tsubtitle, tfooter;
+
 var int balanced_splits[16], balanced_splits_totals[16];
 var int PB_total, sum_of_bests;
-var float left_col, center_col, text_height, x_pos, y_pos;
+
+var float left_col, center_col, text_height, ty_pos;
+var float windowWidth, windowHeight;
+
+var config float x_pos, y_pos;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -29,12 +37,19 @@ event InitWindow()
 
     player = DeusExPlayer(DeusExRootWindow(GetRootWindow()).parentPawn);
     Hide();
+
+    if(class'DXRVersion'.static.VersionOlderThan(version, 2,5,3,7)) {
+        version = class'DXRVersion'.static.VersionNumber();
+        x_pos = 0;
+        y_pos = 0;
+        SaveConfig();
+    }
 }
 
 function InitStats(DXRStats newstats)
 {
     local int i, t, total, curMission, time;
-    local string msg;
+    local string msg, difficulty;
     local bool bNewPB;
 
     stats = newstats;
@@ -44,6 +59,10 @@ function InitStats(DXRStats newstats)
         return;
     }
 
+    difficulty = stats.dxr.flags.DifficultyName(stats.dxr.flags.difficulty);
+    ttitle = sprintf(title, difficulty);
+    tsubtitle = sprintf(subtitle, difficulty);
+    tfooter = sprintf(footer, difficulty);
     curMission = stats.dxr.dxInfo.MissionNumber;
 
     for(i=1; i<=15; i++) {
@@ -118,14 +137,13 @@ function UpdatePos()
     if (hud != None) {
         if(hud.belt != None) beltHeight = hud.belt.height;
     }
-    x_pos = 0;
-    y_pos = GetRootWindow().height - beltHeight - windowHeight - 8;
+    ty_pos = GetRootWindow().height - beltHeight - windowHeight - 8 - y_pos;
 }
 
 function DrawWindow(GC gc)
 {
-    local int i, t, prev, prevTime, prevDiff, cur, curTime, next, nextTime, time, total;
-    local float x, y, w, h, f, w2;
+    local int i, t, prev, prevTime, prevprev, prevprevTime, cur, curTime, next, nextTime, time, total;
+    local float x, y, f, h;
     local int cur_totals[16];
     local string msg, s;
 
@@ -157,6 +175,16 @@ function DrawWindow(GC gc)
         }
     }
 
+    for(i=prev-1; i>=1; i--) {
+        time = stats.missions_times[i];
+        time += stats.missions_menu_times[i];
+        if(time > 0) {
+            prevprev = i;
+            prevprevTime = time;
+            break;
+        }
+    }
+
     for(i=cur+1; i<=15; i++) {
         if(balanced_splits[i] > 0) {
             next = i;
@@ -168,57 +196,107 @@ function DrawWindow(GC gc)
     // drawing text
     x = 8;
     y = 4;
+
+    // some init
     if(left_col == 0) {
         gc.GetTextExtent(0, left_col, text_height, "MXXii");
         gc.GetTextExtent(0, center_col, text_height, "+00:00");
+        // full window width
+        gc.GetTextExtent(0, windowWidth, text_height, "MXXii +00:00 8:88:88 ");
+        gc.GetTextExtent(0, f, text_height, ttitle);
+        windowWidth = FMax(f, windowWidth);
+        gc.GetTextExtent(0, f, text_height, tsubtitle $"XX");
+        windowWidth = FMax(f, windowWidth);
+        gc.GetTextExtent(0, f, text_height, tfooter $"XX");
+        windowWidth = FMax(f, windowWidth);
     }
     h = text_height;
 
+    gc.SetTextColor(colorText);
+    if(ttitle!="") {
+        gc.DrawText(x+x_pos, y+ty_pos, width - x, text_height, ttitle);
+        y += h;
+    }
+    if(tsubtitle!="") {
+        gc.DrawText(x+x_pos, y+ty_pos, width - x, text_height, tsubtitle);
+        y += h;
+    }
+
+    // prevprev split
+    if(prevprev > 0 && showPrevprev) {
+        time = cur_totals[prevprev] - balanced_splits_totals[prevprev];
+        t = prevprevTime - balanced_splits[prevprev];
+        msg = fmtTimeDiff(time);
+
+        s = fmtTime(cur_totals[prevprev]);
+        DrawTextLine(gc, MissionName(prevprev), msg, GetCmpColor(time, t, prevprevTime, Golds[prevprev]), x, y, s);
+        y += h;
+    } else if(showPrevprev) {
+        DrawTextLine(gc, "-", "", colorText, x, y);
+        y += h;
+    }
+
     // previous split
-    if(prev > 0 && !minimal) {
+    if(prev > 0 && showPrev) {
         time = cur_totals[prev] - balanced_splits_totals[prev];
         t = prevTime - balanced_splits[prev];
         msg = fmtTimeDiff(time);
 
         s = fmtTime(cur_totals[prev]);
         DrawTextLine(gc, MissionName(prev), msg, GetCmpColor(time, t, prevTime, Golds[prev]), x, y, s);
+        y += h;
+    } else if(showPrev) {
+        DrawTextLine(gc, "-", "", colorText, x, y);
+        y += h;
     }
-    y += h;
 
     // current/upcoming split, showing balanced PB time
-    if(!minimal) {
+    if(showCurrentMission) {
         msg = fmtTime(balanced_splits_totals[cur]);
         DrawTextLine(gc, MissionName(cur), msg, colorText, x, y);
+        y += h;
     }
-    y += h;
 
     // next split
-    if(next > 0 && !minimal) {
+    if(next > 0 && showNext) {
         msg = fmtTime(balanced_splits_totals[next]);
         DrawTextLine(gc, MissionName(next), msg, colorText, x, y);
+        y += h;
+    } else if(showNext) {
+        DrawTextLine(gc, "-", "", colorText, x, y);
+        y += h;
     }
-    y += h;
 
-    if(minimal) y += h;
     // current segment time with comparison
-    msg = fmtTimeSeg(curTime);
-    s = "/ " $ fmtTimeSeg(balanced_splits[cur]);
-    t = curTime - balanced_splits[cur];
-    DrawTextLine(gc, "SEG:", msg, GetCmpColor(t, t), x, y, s);
-    y += h;
+    if(showSeg) {
+        msg = fmtTimeSeg(curTime);
+        s = "/ " $ fmtTimeSeg(balanced_splits[cur]);
+        t = curTime - balanced_splits[cur];
+        DrawTextLine(gc, "SEG:", msg, GetCmpColor(t, t), x, y, s);
+        y += h;
+    }
 
     // current overall time
-    time = cur_totals[prev] - balanced_splits_totals[prev];
-    msg = fmtTime(total);
-    DrawTextLine(gc, "CUR:", msg, GetCmpColor(time, t), x, y);
-    y += h;
+    if(showCur) {
+        time = cur_totals[prev] - balanced_splits_totals[prev];
+        msg = fmtTime(total);
+        DrawTextLine(gc, "CUR:", msg, GetCmpColor(time, t), x, y);
+        y += h;
+    }
 
     // PB time
-    if(!minimal) {
+    if(showPB) {
         msg = fmtTime(PB_total);
         DrawTextLine(gc, "PB:", msg, colorText, x, y);
+        y += h;
     }
-    y += h;
+
+    if(tfooter != "") {
+        gc.SetTextColor(colorText);
+        gc.DrawText(x+x_pos, y+ty_pos, width - x, text_height, tfooter);
+        y += h;
+    }
+    windowHeight = y;
 }
 
 function string MissionName(int mission)
@@ -232,10 +310,10 @@ function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, o
     local float w, h;
 
     x += x_pos;
-    y += y_pos;
+    y += ty_pos;
 
     gc.SetTextColor(colorText);
-    gc.DrawText(x, y, windowWidth - x, text_height, header);
+    gc.DrawText(x, y, width - x, text_height, header);
     gc.SetTextColor(c);
 
     gc.GetTextExtent(0, w, h, header);
@@ -243,7 +321,7 @@ function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, o
     text_height = FMax(text_height, h);
     x += left_col;
 
-    gc.DrawText(x, y, windowWidth - x, text_height, msg);
+    gc.DrawText(x, y, width - x, text_height, msg);
 
     if(extra == "") return;
 
@@ -252,7 +330,7 @@ function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, o
     text_height = FMax(text_height, h);
     x += center_col;
 
-    gc.DrawText(x, y, windowWidth - x, text_height, " " $ extra);
+    gc.DrawText(x, y, width - x, text_height, " " $ extra);
 }
 
 function Color GetCmpColor(int overall_diff, int diff, optional int segtime, optional int gold)
@@ -311,7 +389,7 @@ function DrawBackground(GC gc)
 {
     gc.SetStyle(backgroundDrawStyle);
     gc.SetTileColor(colorBackground);
-    gc.DrawPattern(x_pos, y_pos, windowWidth, windowHeight, 0, 0, Texture'Solid');
+    gc.DrawPattern(x_pos, ty_pos, windowWidth, windowHeight, 0, 0, Texture'Solid');
 }
 
 // ----------------------------------------------------------------------
@@ -320,8 +398,14 @@ function DrawBackground(GC gc)
 defaultproperties
 {
     enabled=true
-    windowWidth=165
-    windowHeight=80
+    showPrevprev=false
+    showPrev=true
+    showCurrentMission=true
+    showNext=true
+    showSeg=true
+    showCur=true
+    showPB=true
+
     textfont=Font'DeusExUI.FontMenuHeaders_DS';
     colorBackground=(R=0,G=0,B=0,A=100)
     colorText=(R=255,G=255,B=255,A=255)
@@ -337,4 +421,8 @@ defaultproperties
     colorBest=(R=216,G=175,B=31,A=255)
     colorBestBehind=(R=216,G=175,B=31,A=255)
     colorBestAhead=(R=216,G=175,B=31,A=255)
+
+    title="Deus Ex Randomizer"
+    subtitle="%s Speedrun"
+    footer=""
 }

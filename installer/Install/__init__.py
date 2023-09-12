@@ -270,6 +270,7 @@ def CopyD3DRenderers(system:Path):
 
     CopyTo(thirdparty/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
     #CopyTo(thirdparty/'D3D9Drv.hut', system/'D3D9Drv.hut', True)
+    (system/'D3D9Drv.hut').unlink(True)# this file seems to slow down opening the kentie config page?
     CopyTo(source/'Configs'/'D3D9Drv.int', system/'D3D9Drv.int', True)
 
     CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
