@@ -28,14 +28,14 @@ runs:
         curl -Lo installer/3rdParty/D3D9Drv.dll
         "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D9Drv.dll"
       shell: bash
-    - run: >-
-        curl -Lo installer/3rdParty/D3D9Drv.hut
-        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D9Drv.hut"
-      shell: bash
-    - run: >-
-        curl -Lo installer/3rdParty/D3D9Drv.int
-        "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D9Drv.int"
-      shell: bash
+    #- run: >-
+    #    curl -Lo installer/3rdParty/D3D9Drv.hut
+    #    "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D9Drv.hut"
+    #  shell: bash
+    #- run: >-
+    #    curl -Lo installer/3rdParty/D3D9Drv.int
+    #    "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/D3D9Drv.int"
+    #  shell: bash
 
     # download and extract OpenGL 2.0 https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/tree/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/CommunityUpdateFileArchiveDXPC/OpenGL
     - run: >-
