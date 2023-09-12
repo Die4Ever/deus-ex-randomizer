@@ -1646,7 +1646,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
-            if (!isInitialPlayerEnemy(victim) &&   //Must have not been an enemy initially
+            if (!isInitialPlayerEnemy(victim) && !IsCritter(victim) &&  //Must have not been an enemy initially
                  (dxr.localURL!="04_NYC_NSFHQ" || (dxr.localURL=="04_NYC_NSFHQ" && dxr.flagbase.GetBool('DL_SimonsPissed_Played')==False)) //Not on the NSF HQ map, or if it is, before you send the signal (kludgy)
                  ){
                 _MarkBingo("AlliesKilled");
