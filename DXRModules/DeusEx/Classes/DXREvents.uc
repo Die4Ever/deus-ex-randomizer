@@ -1988,6 +1988,8 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
         options[num_options++] = x;
     }
 
+    l("_CreateBingoBoard found " $ num_options $ " options");
+
     for(x=0; x<ArrayCount(mutually_exclusive); x++) {
         if(mutually_exclusive[x].e1 == "") continue;
 
@@ -1997,6 +1999,8 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             options[slot] = options[num_options];
         }
     }
+
+    l("_CreateBingoBoard have " $ num_options $ " options remaining after mutual exclusions");
 
     //Clear out the board so it is ready to be repopulated
     for(x=0; x<5; x++) {
