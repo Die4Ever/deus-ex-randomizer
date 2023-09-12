@@ -109,6 +109,8 @@ function MissionTimer()
 function AddMissionGoals()
 {
     local DeusExGoal newGoal;
+    local Inventory item;
+
     if(dxr.localURL != "01_NYC_UNATCOISLAND") return;
 
     //The MeetPaul conversation would normally give you several goals.
@@ -121,6 +123,12 @@ function AddMissionGoals()
 
     newGoal=player().AddGoal('MeetFilben',False);
     newGoal.SetText("Meet UNATCO informant Harley Filben at the North Docks.  He has a key to the Statue doors.");
+
+    if (player().FindInventoryType(class'Image01_LibertyIsland')==None){
+        item = Spawn(class'Image01_LibertyIsland');
+        item.Frob(player(), None);
+    }
+
 }
 
 function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
