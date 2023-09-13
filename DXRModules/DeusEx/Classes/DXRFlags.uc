@@ -585,6 +585,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     else if(gamemode == WaltonWare) {
         settings.bingo_win = 1;
         settings.bingo_freespaces = 5;
+        settings.skills_reroll_missions = 0;// no rerolls since after the menu screen you would immediately get a reroll depending what mission you start in
         settings.banned_skills = 0;// need computer skill for hacking
         bingo_duration = 1;
         bingo_scale = 0;
