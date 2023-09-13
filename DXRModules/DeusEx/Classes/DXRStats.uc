@@ -634,22 +634,22 @@ function TestScoring()
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats;
 
     dxr.flags.SetDifficulty(1);
-    testint(dxr.flags.ScoreFlags(), 4570, "score bonus for Normal");
+    testint(dxr.flags.ScoreFlags(), 4870, "score bonus for Normal");
 
     dxr.flags.SetDifficulty(2);
-    testint(dxr.flags.ScoreFlags(), 9980, "score bonus for Hard");
+    testint(dxr.flags.ScoreFlags(), 10580, "score bonus for Hard");
 
     dxr.flags.SetDifficulty(3);
-    testint(dxr.flags.ScoreFlags(), 12080, "score bonus for Extreme");
+    testint(dxr.flags.ScoreFlags(), 12680, "score bonus for Extreme");
 
     dxr.flags.SetDifficulty(4);
-    testint(dxr.flags.ScoreFlags(), 13745, "score bonus for Impossible");
+    testint(dxr.flags.ScoreFlags(), 14645, "score bonus for Impossible");
 
     names[num] = "1 Million Points!";
     scores[num++] = 1000000;
 
-    names[num] = "130k Points";
-    scores[num++] = 130000;
+    names[num] = "140k Points";
+    scores[num++] = 140000;
 
     names[num] = "literal god: 1 hour, Impossible difficulty, full bingo, 5 saves, 5 loads";
     time=72000; time_without_menus=36000; combat_difficulty=3; rando_difficulty=4; saves=5; loads=5;
@@ -658,6 +658,9 @@ function TestScoring()
     flags_score = dxr.flags.ScoreFlags();
     scores[num++] = _ScoreRun(time, time_without_menus, combat_difficulty, flags_score, saves, loads,
         bingo_win, bingos, bingo_spots, skill_points, nanokeys, cheats);
+
+    names[num] = "130k Points";
+    scores[num++] = 130000;
 
     names[num] = "literal god: 1 hour, full bingo, 5 saves, 5 loads";
     time=72000; time_without_menus=36000; combat_difficulty=2; rando_difficulty=2; saves=5; loads=5;
