@@ -263,7 +263,7 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     local SkillCostMultiplier scm;
     local class<Skill> c;
 
-    if( chance_single(dxr.flags.settings.banned_skill_levels) ) {
+    if( i>0 && chance_single(dxr.flags.settings.banned_skill_levels) ) {
         l( aSkill.Class.Name $ " lvl: "$(i+1)$" is banned");
         aSkill.Cost[i] = 99999;
         return;
