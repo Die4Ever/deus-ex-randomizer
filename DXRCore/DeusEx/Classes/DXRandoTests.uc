@@ -30,7 +30,7 @@ function PostBeginPlay()
 
     if( dxr.localURL != "12_VANDENBERG_TUNNELS" ) {
         dxr.Destroy();
-        log("ERROR: TIME: DXRandoTests loading map 12_VANDENBERG_TUNNELS", Name);
+        log("TIME: DXRandoTests loading map 12_VANDENBERG_TUNNELS", Name);
         Level.ServerTravel( "12_VANDENBERG_TUNNELS", False );
         return;
     }
