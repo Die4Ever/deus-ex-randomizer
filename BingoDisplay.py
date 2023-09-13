@@ -1,10 +1,7 @@
 import argparse
 import time
 import sys
-import json
 import os.path
-import urllib.request
-import urllib.parse
 import re
 from tkinter import filedialog as fd
 from tkinter import font
@@ -144,7 +141,7 @@ class Bingo:
         bingoMatches=self.bingoLineMatch.match(bingoLine)
         if (bingoMatches==None):
             return
-        
+
         bingoNumber=int(bingoMatches.group('key'))
         bingoCoord = self.bingoNumberToCoord(bingoNumber)
 
@@ -216,29 +213,29 @@ class Bingo:
                 square["possible"]=self.board[x][y]["active"]!=-1
                 #print(square)
                 board.append(square)
-        #return json.dumps(board,indent=4)
-        return {"bingo":json.dumps({"bingo":board},indent=4)}
+        #return {"bingo":json.dumps({"bingo":board},indent=4)}
 
     def sendBingoState(self):
-        if not os.path.isfile(JSON_DEST_FILENAME):
-            return
+        pass
+        # if not os.path.isfile(JSON_DEST_FILENAME):
+        #     return
 
-        f = open(JSON_DEST_FILENAME,'r')
-        desturl=f.readline()
-        f.close()
+        # f = open(JSON_DEST_FILENAME,'r')
+        # desturl=f.readline()
+        # f.close()
 
-        if (desturl==""):
-            print("Make sure to specify where you want to push your json!")
-            return
+        # if (desturl==""):
+        #     print("Make sure to specify where you want to push your json!")
+        #     return
 
-        bingoState = self.generateBingoStateJson()
-        #print(bingoState)
-        try:
-            r = urllib.request.urlopen(desturl,data=urllib.parse.urlencode(bingoState).encode('utf-8'))
-            #print(r.status)
-            #print(r.read().decode('utf-8'))
-        except Exception as e:
-            print("Couldn't push JSON to "+desturl+" - "+str(e))
+        # bingoState = self.generateBingoStateJson()
+        # #print(bingoState)
+        # try:
+        #     r = urllib.request.urlopen(desturl,data=urllib.parse.urlencode(bingoState).encode('utf-8'))
+        #     #print(r.status)
+        #     #print(r.read().decode('utf-8'))
+        # except Exception as e:
+        #     print("Couldn't push JSON to "+desturl+" - "+str(e))
 
 
 def saveLastUsedBingoFile(f):
