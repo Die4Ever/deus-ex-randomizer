@@ -498,7 +498,7 @@ function DrawLeaderboard(GC gc)
             gc.DrawBox(0, yPos, 650, 25, 0, 0, 1, Texture'Solid');
         }
         gc.DrawText(2,yPos,30,50, "#"$runs[i].place$".");
-        gc.DrawText(30,yPos,200,50, runs[i].name);
+        gc.DrawText(40,yPos,200,50, runs[i].name);
         gc.DrawText(250,yPos,100,50, IntCommas(runs[i].score));
         gc.DrawText(350,yPos,100,50, fmtTimeToString(runs[i].time));
         gc.DrawText(450,yPos,100,50, runs[i].flagshash);

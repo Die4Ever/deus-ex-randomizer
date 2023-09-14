@@ -383,6 +383,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
         case "LouisBerates":
         case "IcarusCalls_Played":
             return start_map>100; //All these early Paris things - if we were to add a "Streets" starting location, this would need to be split more accurately
+        case "ManWhoWasThursday":// in 10_Paris_Catacombs, and then 12_Vandenberg_Cmd, but nothing in M11
+            return start_map > 100 && end_mission <= 11;
         case "PresentForManderley":
             //Have to be able to get Juan from mission 3 and bring him to the start of mission 4
             if (end_mission < 4){
