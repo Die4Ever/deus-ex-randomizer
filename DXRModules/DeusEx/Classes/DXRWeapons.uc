@@ -34,6 +34,10 @@ simulated function RandoWeapon(DeusExWeapon w)
     if( dxr == None ) return;
     oldseed = SetGlobalSeed("RandoWeapon " $ w.class.name);
 
+    if(!dxr.flags.IsZeroRando() && WeaponHideAGun(w) != None) {
+        WeaponHideAGun(w).UpgradeToPS40();
+    }
+
     if( loadouts != None ) loadouts.AdjustWeapon(w);
 
     min_weapon_dmg = float(dxr.flags.settings.min_weapon_dmg) / 100;

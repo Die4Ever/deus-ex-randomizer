@@ -6,12 +6,14 @@ var DataLinkTrigger dataLinkTriggerQueue[16];
 
 function bool PushDataLink( Conversation queueCon )
 {
+    local bool bZeroRando;
     // queue up the incoming message
     if(Super.PushDataLink(queueCon) == false)
         return false;
 
+    bZeroRando = Human(player).bZeroRando;
     // make our timer shorter
-    if(speechFastEndTime > Level.Timeseconds + 0.1 && currentEvent != None)
+    if(!bZeroRando && speechFastEndTime > Level.Timeseconds + 0.1 && currentEvent != None)
         SetTimer(speechFastEndTime - Level.Timeseconds, false);
 
     return true;
@@ -131,7 +133,7 @@ Begin:
     {
         PlaySpeech( ConEventSpeech(currentEvent).conSpeech.soundID );
 
-        if(HaveQueued() == false) {
+        if(HaveQueued() == false || Human(player).bZeroRando) {
             // Add two seconds to the sound since there seems to be a slight lag
             SetTimer( con.GetSpeechLength(ConEventSpeech(currentEvent).conSpeech.soundID), False );
         } else {
