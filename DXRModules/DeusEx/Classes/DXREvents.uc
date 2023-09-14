@@ -139,6 +139,9 @@ function WatchActors()
     foreach AllActors(class'#var(prefix)WaterCooler',cooler){
         AddWatchedActor(cooler,"Dehydrated");
     }
+    foreach AllActors(class'#var(prefix)WaterFountain',fountain){
+        AddWatchedActor(fountain,"Dehydrated");
+    }
     foreach AllActors(class'#var(prefix)HangingChicken',chicken){
         AddWatchedActor(chicken,"BeatTheMeat");
     }
