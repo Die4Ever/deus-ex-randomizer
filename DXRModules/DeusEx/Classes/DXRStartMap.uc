@@ -315,6 +315,10 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
             flagbase.SetBool('MetSmuggler',true,,-1);
             break;
+        case "09_NYC_Dockyard":
+            flagbase.SetBool('M08WarnedSmuggler',true,,-1);
+            flagbase.SetBool('DL_BadNews_Played',true,,-1);
+            break;
         case "10_Paris_Chateau":
             //Make sure Sandra spawns at the gas station
             flagbase.SetBool('SandraWentToCalifornia',true,,-1);
@@ -391,6 +395,11 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
                 return True;
             }
             return start_map>=40;
+        case "SmugglerDied":
+            if (end_mission < 9){
+                return True;
+            }
+            return start_map>=90;
         default:
             return False;
     }
