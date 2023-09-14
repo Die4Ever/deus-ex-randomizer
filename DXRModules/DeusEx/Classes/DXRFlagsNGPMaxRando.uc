@@ -15,7 +15,9 @@ simulated function ExecMaxRando()
 simulated function InitMaxRandoSettings()
 {
     local FlagsSettings difficulty_settings;
+    local MoreFlagsSettings more_difficulty_settings;
     difficulty_settings = DXRFlags(self).GetDifficulty(difficulty);
+    more_difficulty_settings = DXRFlags(self).GetMoreDifficulty(difficulty);
 
     settings.merchants = difficulty_settings.merchants;
     settings.dancingpercent = difficulty_settings.dancingpercent;

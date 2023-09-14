@@ -11,9 +11,11 @@ const WaltonWare = 7;
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
 var FlagsSettings difficulty_settings[4];
+var MoreFlagsSettings more_difficulty_settings[4];
 #else
 var string difficulty_names[5];// Super Easy QA, Easy, Normal, Hard, Extreme
 var FlagsSettings difficulty_settings[5];
+var MoreFlagsSettings more_difficulty_settings[5];
 #endif
 
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
@@ -167,6 +169,7 @@ function CheckConfig()
     difficulty_settings[i].health = 200;
     difficulty_settings[i].energy = 200;
     difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     i++;
 #endif
 
@@ -236,6 +239,7 @@ function CheckConfig()
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     i++;
 
 #ifdef hx
@@ -304,6 +308,7 @@ function CheckConfig()
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     i++;
 
 #ifdef hx
@@ -372,6 +377,7 @@ function CheckConfig()
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     i++;
 
 #ifdef hx
@@ -440,6 +446,7 @@ function CheckConfig()
     difficulty_settings[i].health = 90;
     difficulty_settings[i].energy = 80;
     difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {
@@ -457,6 +464,10 @@ function FlagsSettings GetDifficulty(int diff)
 {
     return difficulty_settings[diff];
 }
+function MoreFlagsSettings GetMoreDifficulty(int diff)
+{
+    return more_difficulty_settings[diff];
+}
 
 function FlagsSettings SetDifficulty(int new_difficulty)
 {
@@ -464,6 +475,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 
     difficulty = new_difficulty;
     settings = difficulty_settings[difficulty];
+    moresettings = more_difficulty_settings[difficulty];
 
     memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
     if(!memes_enabled) settings.dancingpercent = 0;
@@ -504,6 +516,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.spoilers = 1;
         settings.health = 100;
         settings.energy = 100;
+        moresettings.grenadeswap = 0;
         if(IsZeroRando()) {
             seed = 0;
             dxr.seed = seed;

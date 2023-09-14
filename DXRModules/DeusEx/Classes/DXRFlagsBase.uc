@@ -66,7 +66,12 @@ struct FlagsSettings {
     var int health, energy;// normally just 100
 };
 
+struct MoreFlagsSettings{
+    var int grenadeswap;
+};
+
 var #var(flagvarprefix) FlagsSettings settings;
+var #var(flagvarprefix) MoreFlagsSettings moresettings;
 
 const undefeatabledoors = 256;//1*256;
 const alldoors = 512;//2*256;
@@ -379,6 +384,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_energy', settings.energy, mode, str);
 
     FlagInt('Rando_starting_map', settings.starting_map, mode, str);
+    FlagInt('Rando_grenadeswap', moresettings.grenadeswap, mode, str);
 
     return str;
 }
@@ -537,6 +543,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Starting Map";
         case 'Rando_bingoboardroll':
             return "Bingo Board Re-rolls";
+        case 'Rando_grenadeswap':
+            return "Grenades";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -603,6 +611,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_enemiesshuffled':
         case 'Rando_bot_stats':
         case 'Rando_bingo_scale':
+        case 'Rando_grenadeswap':
             return val$"%";
 
         case 'Rando_enemyrespawn':

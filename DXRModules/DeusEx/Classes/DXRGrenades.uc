@@ -1,7 +1,7 @@
 class DXRGrenades extends DXRActorsBase transient;
 
 struct RandomGrenadeStruct { var class<#var(prefix)ThrownProjectile> type; var float chance; };
-var RandomGrenadeStruct randomgrens[8];
+var RandomGrenadeStruct randomgrens[4];
 
 var config float min_rate_adjust, max_rate_adjust;
 
@@ -94,7 +94,7 @@ function FirstEntry()
     i=0;
     foreach AllActors(class'#var(prefix)ThrownProjectile',gren)
     {
-        if (gren.Owner==None){
+        if (gren.Owner==None && chance_single(dxr.flags.moresettings.grenadeswap)) {
             grens[i++]=gren;
         }
     }
@@ -114,7 +114,20 @@ function FirstEntry()
     }
 }
 
+simulated function AddDXRCredits(CreditsWindow cw)
+{
+    local int i;
+    local DXREnemies e;
+    local class<DeusExWeapon> w;
+    if(dxr.flags.IsZeroRando()) return;
+    cw.PrintHeader( "Grenade Types" );
+    for (i=0;i<ArrayCount(randomgrens);i++){
+        cw.PrintText( randomgrens[i].Type.default.ItemName $ " : " $ FloatToString(randomgrens[i].chance, 1) $ "%" );
+    }
 
+    cw.PrintLn();
+    cw.PrintLn();
+}
 
 defaultproperties
 {

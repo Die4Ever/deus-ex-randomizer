@@ -307,6 +307,9 @@ function BindControls(optional string action)
     NewMenuItem("Swap Containers %", "The chance for container positions to be swapped.");
     Slider(f.settings.swapcontainers, 0, 100);
 
+    NewMenuItem("Swap Grenades %", "The chance for grenades on walls to have their type randomized.");
+    Slider(f.moresettings.grenadeswap, 0, 100);
+
     BreakLine();
     NewMenuItem("Min Weapon Damage %", "The minmum damage for weapons.");
     Slider(f.settings.min_weapon_dmg, 0, 500);
