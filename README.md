@@ -60,7 +60,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
     * Randomizer Lite - randomizes some things without interfering with the immersion and mood of the game. Great for players who haven't played Deus Ex in a long time, or if you're intimidated by the full Randomizer.
     * Serious Sam mode - same as the normal game but with 10x as many enemies. The player has increased health and takes reduced damage to compensate.
     * Walton Ware mode - Walton Ware mode: a game mode focused on quickly doing bingos and New Game+.
-    * Speedrun mode - speedrun with fewer resets while still being able to enjoy higher difficulties.
+    * Speedrun mode - speedrun with fewer resets while still being able to enjoy higher difficulties. And a built in splits viewers!
 * Challenge mode loadouts! [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Loadouts)
     * Stick With the Prod Pure means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts

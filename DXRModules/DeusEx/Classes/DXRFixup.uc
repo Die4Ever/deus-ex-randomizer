@@ -101,7 +101,7 @@ function CheckConfig()
     DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
     DecorationsOverwrites[i].bPushable = c.default.bPushable;
 
-    i=0;
+    i++;
     DecorationsOverwrites[i].type = "CrateUnbreakableMed";
     DecorationsOverwrites[i].bInvincible = false;
     DecorationsOverwrites[i].HitPoints = 500;
