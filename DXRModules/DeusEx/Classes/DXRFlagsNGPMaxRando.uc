@@ -191,8 +191,8 @@ function NewGamePlus()
 
     SetGlobalSeed("NewGamePlus");
     p.CombatDifficulty=FClamp(p.CombatDifficulty*1.3,0,15); //Anything over 15 is kind of unreasonably impossible
-    NewGamePlusVal(settings.minskill, 1.1, exp, 10, 1000);
-    NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 1500);
+    NewGamePlusVal(settings.minskill, 1.1, exp, 10, 500);
+    NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 1000);
     NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000);
     NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100);
     NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000);
