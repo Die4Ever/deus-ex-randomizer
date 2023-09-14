@@ -264,12 +264,14 @@ def ModifyConfig(defconfig:Path, config:Path, outdefconfig:Path, outconfig:Path,
 
 
 def CopyD3DRenderers(system:Path):
-    thirdparty = GetSourcePath() / '3rdParty'
+    source = GetSourcePath()
+    thirdparty = source / '3rdParty'
     info('CopyD3DRenderers from', thirdparty, ' to ', system)
 
     CopyTo(thirdparty/'D3D9Drv.dll', system/'D3D9Drv.dll', True)
-    CopyTo(thirdparty/'D3D9Drv.hut', system/'D3D9Drv.hut', True)
-    CopyTo(thirdparty/'D3D9Drv.int', system/'D3D9Drv.int', True)
+    #CopyTo(thirdparty/'D3D9Drv.hut', system/'D3D9Drv.hut', True)
+    (system/'D3D9Drv.hut').unlink(True)# this file seems to slow down opening the kentie config page?
+    CopyTo(source/'Configs'/'D3D9Drv.int', system/'D3D9Drv.int', True)
 
     CopyTo(thirdparty/'d3d10drv.dll', system/'d3d10drv.dll', True)
     CopyTo(thirdparty/'D3D10Drv.int', system/'D3D10Drv.int', True)
@@ -290,6 +292,7 @@ def CopyDXVK(system:Path, install:bool):
         if install:
             CopyTo(f, dest)
         elif dest.exists():
+            debug('DXVK deleting', dest)
             dest.unlink(True)
         num += 1
     assert num > 0, 'Found '+str(num)+' DXVK files'

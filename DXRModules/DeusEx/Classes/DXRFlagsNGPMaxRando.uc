@@ -191,20 +191,20 @@ function NewGamePlus()
 
     SetGlobalSeed("NewGamePlus");
     p.CombatDifficulty=FClamp(p.CombatDifficulty*1.3,0,15); //Anything over 15 is kind of unreasonably impossible
-    NewGamePlusVal(settings.minskill, 1.2, exp, 1000);
-    NewGamePlusVal(settings.maxskill, 1.2, exp, 1500);
-    NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 1500);
-    NewGamePlusVal(settings.enemystats, 1.2, exp, 100);
-    NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 1500);
-    NewGamePlusVal(settings.ammo, 0.9, exp);
-    NewGamePlusVal(settings.medkits, 0.8, exp);
-    NewGamePlusVal(settings.multitools, 0.8, exp);
-    NewGamePlusVal(settings.lockpicks, 0.8, exp);
-    NewGamePlusVal(settings.biocells, 0.8, exp);
-    NewGamePlusVal(settings.medbots, 0.8, exp);
-    NewGamePlusVal(settings.repairbots, 0.8, exp);
-    NewGamePlusVal(settings.turrets_add, 1.3, exp, 1000);
-    NewGamePlusVal(settings.merchants, 0.9, exp);
+    NewGamePlusVal(settings.minskill, 1.1, exp, 10, 1000);
+    NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 1500);
+    NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000);
+    NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100);
+    NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000);
+    NewGamePlusVal(settings.ammo, 0.9, exp, 5, 100);
+    NewGamePlusVal(settings.medkits, 0.9, exp, 5, 100);
+    NewGamePlusVal(settings.multitools, 0.9, exp, 5, 100);
+    NewGamePlusVal(settings.lockpicks, 0.9, exp, 5, 100);
+    NewGamePlusVal(settings.biocells, 0.9, exp, 5, 100);
+    NewGamePlusVal(settings.medbots, 0.9, exp, 3, 100);
+    NewGamePlusVal(settings.repairbots, 0.9, exp, 3, 100);
+    NewGamePlusVal(settings.turrets_add, 1.3, exp, 3, 1000);
+    NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100);
     settings.bingo_win = bingo_win;
     settings.bingo_freespaces = bingo_freespaces;
     if (randomStart!=0){
@@ -289,4 +289,63 @@ simulated function RemoveRandomWeapon(#var(PlayerPawn) p)
     info("RemoveRandomWeapon("$p$") Removing weapon "$weaps[slot]$", numWeaps was "$numWeaps);
     p.DeleteInventory(weaps[slot]);
     weaps[slot].Destroy();
+}
+
+simulated function MaxRandoVal(out int val)
+{
+    val = rngrecip(val, 2);
+}
+
+simulated function MaxRandoValPair(out int min, out int max)
+{
+    local int i;
+
+    MaxRandoVal(min);
+    MaxRandoVal(max);
+
+    if(min > max) {
+        i = min;
+        min = max;
+        max = i;
+    } else if(min == max) {
+        min--;
+        max++;
+    }
+}
+
+function NewGamePlusVal(out int val, float curve, float exp, int min, int max)
+{
+    val = val * (curve ** exp);// int *= float doesn't give as good accuracy as int = int*float
+    val = Self.Min(val, max);
+    val = Self.Max(val, min);
+}
+
+function ExtendedTests()
+{
+    local int val;
+    Super.ExtendedTests();
+
+    val = 5;
+    NewGamePlusVal(val, 1.2, 3, 1, 100);
+    testint(val, 8, "NewGamePlusVal 1.2 goes up");
+
+    val = 5;
+    NewGamePlusVal(val, 0.8, 3, 1, 100);
+    testint(val, 2, "NewGamePlusVal 1.2 goes down");
+
+    val = 5;
+    NewGamePlusVal(val, 0.8, 3, 5, 100);
+    testint(val, 5, "NewGamePlusVal with minimum stays the same"); // can't explain that!
+
+    val = 5;
+    NewGamePlusVal(val, 1.2, 3, 1, 5);
+    testint(val, 5, "NewGamePlusVal 1.2 with maximum");
+
+    val = 0;
+    NewGamePlusVal(val, 1.2, 3, -10, 100);
+    testint(val, 0, "NewGamePlusVal 1.2 val==0");
+
+    val = -5;
+    NewGamePlusVal(val, 1.2, 3, -6, 100);
+    testint(val, -6, "NewGamePlusVal 1.2 negative value");
 }

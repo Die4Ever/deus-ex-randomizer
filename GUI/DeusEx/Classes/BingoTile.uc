@@ -121,7 +121,7 @@ simulated function string GetHelpText()
     helpmsg=helpmsg$"|n|n"$GenerateMissionString();
 
     if (max>1){
-        helpmsg=helpmsg$"|n|n";
+        helpmsg=helpmsg$"|n";
         helpmsg=helpmsg$"Progress: "$progress$"/"$max;
     }
 

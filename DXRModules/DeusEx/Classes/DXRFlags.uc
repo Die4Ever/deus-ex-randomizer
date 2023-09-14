@@ -127,7 +127,7 @@ function CheckConfig()
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 1;
     difficulty_settings[i].skills_independent_levels = 0;
-    difficulty_settings[i].banned_skills = 5;
+    difficulty_settings[i].banned_skills = 10;
     difficulty_settings[i].banned_skill_levels = 5;
     difficulty_settings[i].minskill = 1;
     difficulty_settings[i].maxskill = 5;
@@ -196,7 +196,7 @@ function CheckConfig()
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 0;
-    difficulty_settings[i].banned_skills = 3;
+    difficulty_settings[i].banned_skills = 5;
     difficulty_settings[i].banned_skill_levels = 3;
     difficulty_settings[i].minskill = 50;
     difficulty_settings[i].maxskill = 150;
@@ -264,7 +264,7 @@ function CheckConfig()
     difficulty_settings[i].skills_disable_downgrades = 0;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 0;
-    difficulty_settings[i].banned_skills = 5;
+    difficulty_settings[i].banned_skills = 9;
     difficulty_settings[i].banned_skill_levels = 5;
     difficulty_settings[i].minskill = 50;
     difficulty_settings[i].maxskill = 225;
@@ -332,7 +332,7 @@ function CheckConfig()
     difficulty_settings[i].skills_disable_downgrades = 5;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 100;
-    difficulty_settings[i].banned_skills = 5;
+    difficulty_settings[i].banned_skills = 9;
     difficulty_settings[i].banned_skill_levels = 7;
     difficulty_settings[i].minskill = 50;
     difficulty_settings[i].maxskill = 250;
@@ -400,7 +400,7 @@ function CheckConfig()
     difficulty_settings[i].skills_disable_downgrades = 5;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 100;
-    difficulty_settings[i].banned_skills = 7;
+    difficulty_settings[i].banned_skills = 13;
     difficulty_settings[i].banned_skill_levels = 7;
     difficulty_settings[i].minskill = 50;
     difficulty_settings[i].maxskill = 350;
@@ -585,6 +585,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
     else if(gamemode == WaltonWare) {
         settings.bingo_win = 1;
         settings.bingo_freespaces = 5;
+        settings.skills_reroll_missions = 0;// no rerolls since after the menu screen you would immediately get a reroll depending what mission you start in
+        settings.banned_skills = 0;// need computer skill for hacking
         bingo_duration = 1;
         bingo_scale = 0;
 

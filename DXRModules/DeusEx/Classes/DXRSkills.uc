@@ -113,7 +113,7 @@ simulated function RandoSkills(Skill aSkill)
         SetGlobalSeed("RandoSkills");
     else {
         if( dxr.dxInfo != None )
-            mission_group = dxr.dxInfo.missionNumber;
+            mission_group = dxr.dxInfo.missionNumber;// TODO: new game screen should use the starting mission if it isn't 1
         mission_group = Clamp(mission_group, 1, 1000) / dxr.flags.settings.skills_reroll_missions;
         SetGlobalSeed("RandoSkills " $ mission_group);
     }
@@ -263,7 +263,7 @@ simulated function RandoSkillLevel(Skill aSkill, int i, float parent_percent)
     local SkillCostMultiplier scm;
     local class<Skill> c;
 
-    if( chance_single(dxr.flags.settings.banned_skill_levels) ) {
+    if( i>0 && chance_single(dxr.flags.settings.banned_skill_levels) ) {
         l( aSkill.Class.Name $ " lvl: "$(i+1)$" is banned");
         aSkill.Cost[i] = 99999;
         return;

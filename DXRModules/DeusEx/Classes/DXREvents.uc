@@ -139,6 +139,9 @@ function WatchActors()
     foreach AllActors(class'#var(prefix)WaterCooler',cooler){
         AddWatchedActor(cooler,"Dehydrated");
     }
+    foreach AllActors(class'#var(prefix)WaterFountain',fountain){
+        AddWatchedActor(fountain,"Dehydrated");
+    }
     foreach AllActors(class'#var(prefix)HangingChicken',chicken){
         AddWatchedActor(chicken,"BeatTheMeat");
     }
@@ -432,15 +435,6 @@ function SetWatchFlags() {
             bt.MakeClassProximityTrigger(class'#var(prefix)JuanLebedevCarcass');
         }
 
-
-        if(RevisionMaps){
-
-        } else {
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2983.597168,774.217407,312.100128),70,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-            bt = class'BingoTrigger'.static.Create(self,'Cremation',vectm(-2984.404785,662.764954,312.100128),70,40);
-            bt.MakeClassProximityTrigger(class'#var(prefix)ChefCarcass');
-        }
         foreach AllActors(class'#var(prefix)Female2',f) {
             if(f.BindName == "Shannon"){
                 f.bImportant = true;
@@ -1655,7 +1649,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             _MarkBingo(classname$"_ClassDeadM" $ dxr.dxInfo.missionNumber);
 
             //Were they an ally?  Skip on NSF HQ, because that's kind of a bait
-            if (!isInitialPlayerEnemy(victim) &&   //Must have not been an enemy initially
+            if (!isInitialPlayerEnemy(victim) && !IsCritter(victim) &&  //Must have not been an enemy initially
                  (dxr.localURL!="04_NYC_NSFHQ" || (dxr.localURL=="04_NYC_NSFHQ" && dxr.flagbase.GetBool('DL_SimonsPissed_Played')==False)) //Not on the NSF HQ map, or if it is, before you send the signal (kludgy)
                  ){
                 _MarkBingo("AlliesKilled");
@@ -1997,6 +1991,8 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
         options[num_options++] = x;
     }
 
+    l("_CreateBingoBoard found " $ num_options $ " options");
+
     for(x=0; x<ArrayCount(mutually_exclusive); x++) {
         if(mutually_exclusive[x].e1 == "") continue;
 
@@ -2006,6 +2002,8 @@ simulated function _CreateBingoBoard(PlayerDataItem data)
             options[slot] = options[num_options];
         }
     }
+
+    l("_CreateBingoBoard have " $ num_options $ " options remaining after mutual exclusions");
 
     //Clear out the board so it is ready to be repopulated
     for(x=0; x<5; x++) {
@@ -2416,6 +2414,7 @@ function string RemapBingoEvent(string eventname)
         case "Jocques_Dead":
         case "Kristi_Dead":
         case "HotelBartender_Dead":
+        case "MetroTechnician_Dead":
             _MarkBingo("DestroyCapitalism"); //Split into another event, but still return this one as-is
             return eventname;
         case "MeetWalton_Played":
@@ -3093,7 +3092,33 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "Shannon_Dead":
             return "Kill Shannon in UNATCO HQ as retribution for her thieving ways.";
         case "DestroyCapitalism":
-            return "Kill enough people who are willing to sell you goods in exchange for money.";
+            msg = "Kill enough people willing to sell you goods in exchange for money.  ";
+            if (mission<=1){
+                msg=msg$"Tech Sergeant Kaplan and the woman in the hut on the North Dock both absolutely deserve it.";
+            } else if (mission<=2){
+                msg=msg$"Jordan Shea in the bar and the doctor in the Free Clinic both deserve it.";
+            } else if (mission<=3){
+                msg=msg$"There is a veteran in Battery Park, El Rey and Rock in Brooklyn Bridge Station, and Harold in the hangar.  They all deserve it.";
+            } else if (mission<=4){
+                msg=msg$"Jordan Shea deserves it.";
+            } else if (mission<=5){
+                msg=msg$"Sven the mechanic and Shannon both deserve it.";
+            } else if (mission<=6){
+                //msg=msg$"Hong Kong is overflowing with capitalist pigs.  ";
+                msg=msg$"In the VersaLife offices, you can eliminate Mr. Hundley.  ";
+                msg=msg$"In the canals, you must end the life of the Old China Hand bartender, the man selling maps there, and the smuggler on the boat.  ";
+                msg=msg$"In the Lucky Money, you must eliminate the bartender, the mamasan selling escorts, and the doorgirl.";
+            } else if (mission<=8){
+                msg=msg$"Jordan Shea needs to go.";
+            } else if (mission<=10){
+                //msg=msg$"Paris is filled with filthy capitalists.  ";
+                msg=msg$"In the catacombs, the man in Vault 2 needs to go.  ";
+                msg=msg$"In the Champs D'Elysees streets, you must end the hostel bartender and Kristi in the cafe.  ";
+                msg=msg$"In the club, you can annihilate Camille the dancer, Jean the male bartender, Michelle the female bartender, Antoine the biocell seller, and Jocques the worker in the back room.  ";
+            } else if (mission<=11){
+                msg=msg$"The technician in the metro station needs to be stopped.";
+            }
+            return msg;
         case "Canal_Cop_Dead":
             return "Kill one of the Chinese Military in the Hong Kong canals standing near the entrance to Tonnochi Road.";
         case "LightVandalism":
@@ -3532,9 +3557,9 @@ defaultproperties
     bingo_options(234)=(event="VendingMachineEmpty_Drink",desc="I Wanted Orange! (%s)",max=12,missions=36734)
     bingo_options(235)=(event="VendingMachineDispense_Candy",desc="Ooh, a piece of candy! (%s)",max=100,missions=36478)
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=64)
-    bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I spilled %s drinks!",max=5,missions=64)
+    bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",max=5,missions=64)
     bingo_options(238)=(event="Shannon_Dead",desc="Kill the thief in UNATCO",max=1,missions=58)
-    bingo_options(239)=(event="DestroyCapitalism",desc="MUST. CRUSH. %s CAPITALISTS.",max=10,missions=1406)
+    bingo_options(239)=(event="DestroyCapitalism",desc="MUST. CRUSH. %s CAPITALISTS.",max=10,missions=3454)
     bingo_options(240)=(event="Canal_Cop_Dead",desc="Not advisable to visit the canals at night",max=1,missions=64)
     bingo_options(241)=(event="LightVandalism",desc="Perform %s acts of light vandalism",max=40,missions=57214)
     bingo_options(242)=(event="FightSkeletons",desc="Destroy %s skeleton parts",max=10,missions=19536)

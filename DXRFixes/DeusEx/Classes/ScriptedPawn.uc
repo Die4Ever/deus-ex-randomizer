@@ -210,7 +210,7 @@ function _TakeDamageBase(int Damage, Pawn instigatedBy, Vector hitlocation, Vect
             DrawShield();
     }
 
-    if(damageType != 'Stunned' && damageType != 'TearGas' && damageType != 'HalonGas' &&
+    if(!bInvincible && damageType != 'Stunned' && damageType != 'TearGas' && damageType != 'HalonGas' &&
             damageType != 'PoisonGas' && damageType != 'Radiation' && damageType != 'EMP' &&
             damageType != 'NanoVirus' && damageType != 'Drowned' &&
             damageType != 'Poison' && damageType != 'PoisonEffect')

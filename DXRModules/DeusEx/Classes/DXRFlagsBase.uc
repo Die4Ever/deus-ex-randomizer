@@ -967,39 +967,6 @@ function InitVersion()
     flagsversion = VersionNumber();
 }
 
-simulated function MaxRandoVal(out int val)
-{
-    val = rngrecip(val, 2);
-}
-
-simulated function MaxRandoValPair(out int min, out int max)
-{
-    local int i;
-
-    MaxRandoVal(min);
-    MaxRandoVal(max);
-
-    if(min > max) {
-        i = min;
-        min = max;
-        max = i;
-    } else if(min == max) {
-        min--;
-        max++;
-    }
-}
-
-function NewGamePlusVal(out int val, float curve, float exp, optional int max)
-{
-    if(val > 0) {
-        val = val * (curve ** exp);// int *= float doesn't give as good accuracy as int = int*float
-        if(val <= 0) val = 1;
-    }
-    if(max != 0 && val>max) {
-        val=max;
-    }
-}
-
 function RunTests()
 {
     local int i, t;
