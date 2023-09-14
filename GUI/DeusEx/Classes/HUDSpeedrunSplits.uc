@@ -22,7 +22,9 @@ var string ttitle, tsubtitle, tfooter;
 var int balanced_splits[16], balanced_splits_totals[16];
 var int PB_total, sum_of_bests;
 
-var float left_col, center_col, text_height, ty_pos;
+var config string split_names[16];
+
+var float left_col, left_col_small, center_col, text_height, ty_pos;
 var float windowWidth, windowHeight;
 
 var config float x_pos, y_pos;
@@ -140,10 +142,38 @@ function UpdatePos()
     ty_pos = GetRootWindow().height - beltHeight - windowHeight - 8 - y_pos;
 }
 
+function InitSizes(GC gc)
+{
+    local int i;
+    local float f;
+    local string s;
+
+    for(i=0; i<ArrayCount(split_names); i++) {
+        s = MissionName(i) $ " ";
+        gc.GetTextExtent(0, f, text_height, s);
+        left_col = FMax(left_col, f);
+    }
+
+    gc.GetTextExtent(0, left_col_small, text_height, "M88: ");
+
+    gc.GetTextExtent(0, center_col, text_height, "+00:00");
+
+    // full window width
+    gc.GetTextExtent(0, windowWidth, text_height, " +00:00 8:88:88 ");
+    windowWidth += left_col;
+
+    gc.GetTextExtent(0, f, text_height, ttitle);
+    windowWidth = FMax(f, windowWidth);
+    gc.GetTextExtent(0, f, text_height, tsubtitle $"XX");
+    windowWidth = FMax(f, windowWidth);
+    gc.GetTextExtent(0, f, text_height, tfooter $"XX");
+    windowWidth = FMax(f, windowWidth);
+}
+
 function DrawWindow(GC gc)
 {
     local int i, t, prev, prevTime, prevprev, prevprevTime, cur, curTime, next, nextTime, time, total;
-    local float x, y, f, h;
+    local float x, y, h;
     local int cur_totals[16];
     local string msg, s;
 
@@ -197,30 +227,22 @@ function DrawWindow(GC gc)
     x = 8;
     y = 4;
 
-    // some init
     if(left_col == 0) {
-        gc.GetTextExtent(0, left_col, text_height, "MXXii");
-        gc.GetTextExtent(0, center_col, text_height, "+00:00");
-        // full window width
-        gc.GetTextExtent(0, windowWidth, text_height, "MXXii +00:00 8:88:88 ");
-        gc.GetTextExtent(0, f, text_height, ttitle);
-        windowWidth = FMax(f, windowWidth);
-        gc.GetTextExtent(0, f, text_height, tsubtitle $"XX");
-        windowWidth = FMax(f, windowWidth);
-        gc.GetTextExtent(0, f, text_height, tfooter $"XX");
-        windowWidth = FMax(f, windowWidth);
+        InitSizes(gc);
     }
     h = text_height;
 
     gc.SetTextColor(colorText);
+    gc.SetAlignments(HALIGN_Center, VALIGN_Center);
     if(ttitle!="") {
-        gc.DrawText(x+x_pos, y+ty_pos, width - x, text_height, ttitle);
+        gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, ttitle);
         y += h;
     }
     if(tsubtitle!="") {
-        gc.DrawText(x+x_pos, y+ty_pos, width - x, text_height, tsubtitle);
+        gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, tsubtitle);
         y += h;
     }
+    gc.SetAlignments(HALIGN_Left, VALIGN_Center);
 
     // prevprev split
     if(prevprev > 0 && showPrevprev) {
@@ -230,9 +252,6 @@ function DrawWindow(GC gc)
 
         s = fmtTime(cur_totals[prevprev]);
         DrawTextLine(gc, MissionName(prevprev), msg, GetCmpColor(time, t, prevprevTime, Golds[prevprev]), x, y, s);
-        y += h;
-    } else if(showPrevprev) {
-        DrawTextLine(gc, "-", "", colorText, x, y);
         y += h;
     }
 
@@ -245,25 +264,19 @@ function DrawWindow(GC gc)
         s = fmtTime(cur_totals[prev]);
         DrawTextLine(gc, MissionName(prev), msg, GetCmpColor(time, t, prevTime, Golds[prev]), x, y, s);
         y += h;
-    } else if(showPrev) {
-        DrawTextLine(gc, "-", "", colorText, x, y);
-        y += h;
     }
 
     // current/upcoming split, showing balanced PB time
     if(showCurrentMission) {
         msg = fmtTime(balanced_splits_totals[cur]);
-        DrawTextLine(gc, MissionName(cur), msg, colorText, x, y);
+        DrawTextLine(gc, MissionName(cur), "", colorText, x, y, msg);
         y += h;
     }
 
     // next split
     if(next > 0 && showNext) {
         msg = fmtTime(balanced_splits_totals[next]);
-        DrawTextLine(gc, MissionName(next), msg, colorText, x, y);
-        y += h;
-    } else if(showNext) {
-        DrawTextLine(gc, "-", "", colorText, x, y);
+        DrawTextLine(gc, MissionName(next), "", colorText, x, y, msg);
         y += h;
     }
 
@@ -272,7 +285,7 @@ function DrawWindow(GC gc)
         msg = fmtTimeSeg(curTime);
         s = "/ " $ fmtTimeSeg(balanced_splits[cur]);
         t = curTime - balanced_splits[cur];
-        DrawTextLine(gc, "SEG:", msg, GetCmpColor(t, t), x, y, s);
+        DrawTextLine(gc, "SEG:", msg, GetCmpColor(t, t), x, y, s, true);
         y += h;
     }
 
@@ -280,18 +293,19 @@ function DrawWindow(GC gc)
     if(showCur) {
         time = cur_totals[prev] - balanced_splits_totals[prev];
         msg = fmtTime(total);
-        DrawTextLine(gc, "CUR:", msg, GetCmpColor(time, t), x, y);
+        DrawTextLine(gc, "CUR:", msg, GetCmpColor(time, t), x, y, "", true);
         y += h;
     }
 
     // PB time
     if(showPB) {
         msg = fmtTime(PB_total);
-        DrawTextLine(gc, "PB:", msg, colorText, x, y);
+        DrawTextLine(gc, "PB:", msg, colorText, x, y, "", true);
         y += h;
     }
 
     if(tfooter != "") {
+        gc.SetAlignments(HALIGN_Center, VALIGN_Center);
         gc.SetTextColor(colorText);
         gc.DrawText(x+x_pos, y+ty_pos, width - x, text_height, tfooter);
         y += h;
@@ -301,13 +315,14 @@ function DrawWindow(GC gc)
 
 function string MissionName(int mission)
 {
+    if(split_names[mission] != "") return split_names[mission];
     if(mission < 10) return "M0" $ mission;
     else return "M" $ mission;
 }
 
-function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, optional string extra)
+function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, optional string extra, optional bool small)
 {
-    local float w, h;
+    local float w, h, column;
 
     x += x_pos;
     y += ty_pos;
@@ -317,9 +332,14 @@ function DrawTextLine(GC gc, string header, string msg, Color c, int x, int y, o
     gc.SetTextColor(c);
 
     gc.GetTextExtent(0, w, h, header);
-    left_col = FMax(left_col, w);
     text_height = FMax(text_height, h);
-    x += left_col;
+    if(small) {
+        left_col_small = FMax(left_col_small, w);
+        x += left_col_small;
+    } else {
+        left_col = FMax(left_col, w);
+        x += left_col;
+    }
 
     gc.DrawText(x, y, width - x, text_height, msg);
 
@@ -361,8 +381,8 @@ function string fmtTime(int time)
 
 function string fmtTimeDiff(int diff)
 {
-    if(diff <= 0) return "-" $ stats.fmtTimeToString(-diff, true, true);
-    return "+" $ stats.fmtTimeToString(diff, true, true);
+    if(diff <= 0) return "-" $ stats.fmtTimeToString(-diff, true, true, true);
+    return "+" $ stats.fmtTimeToString(diff, true, true, true);
 }
 
 function int BalancedSplit(int m)
@@ -425,4 +445,18 @@ defaultproperties
     title="Deus Ex Randomizer"
     subtitle="%s Speedrun"
     footer=""
+
+    split_names(1)="Liberty Island"
+    split_names(2)="Generator"
+    split_names(3)="Airfield"
+    split_names(4)="Paul"
+    split_names(5)="Jail"
+    split_names(6)="Hong Kong"
+    split_names(8)="Finding Dowd"
+    split_names(9)="Ship"
+    split_names(10)="Paris"
+    split_names(11)="Cathedral"
+    split_names(12)="Vandenberg"
+    split_names(14)="Silo"
+    split_names(15)="Area 51"
 }
