@@ -40,10 +40,7 @@ function SwapOrders(ScriptedPawn a, ScriptedPawn b)
 }
 
 function bool ShouldSwap(ScriptedPawn a, ScriptedPawn b) {
-    // always ok to swap with a placeholder enemy
-    if(PlaceholderEnemy(a) != None || PlaceholderEnemy(b) != None) return true;
-    // otherwise check alliance
-    return a.GetAllianceType( b.Alliance ) != ALLIANCE_Hostile;
+    return a.Alliance == b.Alliance || a.Alliance == '' || b.Alliance == '';
 }
 
 function SwapScriptedPawns(int percent, bool enemies)
