@@ -11,7 +11,7 @@ var config Font  textfont;
 
 var config Color colorBackground, colorText, colorBehind, colorBehindLosingTime, colorBehindGainingTime, colorAhead, colorAheadLosingTime, colorAheadGainingTime, colorBest, colorBestBehind, colorBestAhead;
 
-var config bool enabled, showPrevprev, showPrev, showCurrentMission, showNext, showSeg, showCur, showPB;
+var config bool enabled, showPrevprev, showPrev, showCurrentMission, showNext, showSeg, showCur, showPB, showSpeed;
 
 var config int PB[16];
 var config int Golds[16];
@@ -28,6 +28,7 @@ var float left_col, left_col_small, center_col, text_height, ty_pos;
 var float windowWidth, windowHeight;
 
 var config float x_pos, y_pos;
+var float prevSpeed, avgSpeed, lastTime;
 
 // ----------------------------------------------------------------------
 // InitWindow()
@@ -48,10 +49,56 @@ event InitWindow()
     }
 }
 
+function string ReplaceVariables(string s)
+{
+    local string t;
+    local DXRando dxr;
+    local DXRFlags f;
+    local DXRLoadouts loadouts;
+    local int i, id;
+
+    dxr = stats.dxr;
+    f = dxr.flags;
+
+    t = f.DifficultyName(f.difficulty) $"";
+    s = f.ReplaceText(s, "%difficulty", t);
+
+    t = stats.GetDataStorageStat(dxr, "DXRStats_loads") $"";
+    s = f.ReplaceText(s, "%loads", t);
+
+    t = stats.GetDataStorageStat(dxr, "DXRStats_deaths") $"";
+    s = f.ReplaceText(s, "%deaths", t);
+
+    t = stats.ToHex(f.FlagsHash());
+    s = f.ReplaceText(s, "%flagshash", t);
+
+    t = f.VersionString(true);
+    s = f.ReplaceText(s, "%version", t);
+
+    t = f.seed $"";
+    s = f.ReplaceText(s, "%seed", t);
+
+    t = f.mirroredmaps $ "%";
+    s = f.ReplaceText(s, "%mirroredmaps", t);
+
+    loadouts = DXRLoadouts(dxr.FindModule(class'DXRLoadouts'));
+    t = "All Items Allowed";
+    if(loadouts != None) {
+        id = loadouts.GetIdForSlot(f.loadout);
+        t = loadouts.GetName(id);
+    }
+    s = f.ReplaceText(s, "%loadout", t);
+
+    t = player.TruePlayerName;
+    s = f.ReplaceText(s, "%playername", t);
+
+    return s;
+}
+
 function InitStats(DXRStats newstats)
 {
     local int i, t, total, curMission, time;
-    local string msg, difficulty;
+    local string msg;
     local bool bNewPB;
 
     stats = newstats;
@@ -61,10 +108,9 @@ function InitStats(DXRStats newstats)
         return;
     }
 
-    difficulty = stats.dxr.flags.DifficultyName(stats.dxr.flags.difficulty);
-    ttitle = sprintf(title, difficulty);
-    tsubtitle = sprintf(subtitle, difficulty);
-    tfooter = sprintf(footer, difficulty);
+    ttitle = ReplaceVariables(title);
+    tsubtitle = ReplaceVariables(subtitle);
+    tfooter = ReplaceVariables(footer);
     curMission = stats.dxr.dxInfo.MissionNumber;
 
     for(i=1; i<=15; i++) {
@@ -173,7 +219,7 @@ function InitSizes(GC gc)
 function DrawWindow(GC gc)
 {
     local int i, t, prev, prevTime, prevprev, prevprevTime, cur, curTime, next, nextTime, time, total;
-    local float x, y, h;
+    local float x, y, h, f, delta;
     local int cur_totals[16];
     local string msg, s;
 
@@ -304,10 +350,25 @@ function DrawWindow(GC gc)
         y += h;
     }
 
+    if(showSpeed) {
+        delta = player.Level.TimeSeconds - lastTime;
+        delta *= 4.0;
+        lastTime = player.Level.TimeSeconds;
+
+        f = VSize(player.Velocity * vect(1,1,0));
+        avgSpeed -= avgSpeed * delta;
+        avgSpeed += f * delta;
+        msg = stats.FloatToString(FMax(f, prevSpeed), 1);
+        s = stats.FloatToString(avgSpeed, 1);
+        prevSpeed = f;
+        DrawTextLine(gc, "SPD:", msg, colorText, x, y, s, true);
+        y += h;
+    }
+
     if(tfooter != "") {
         gc.SetAlignments(HALIGN_Center, VALIGN_Center);
         gc.SetTextColor(colorText);
-        gc.DrawText(x+x_pos, y+ty_pos, width - x, text_height, tfooter);
+        gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, tfooter);
         y += h;
     }
     windowHeight = y;
@@ -425,6 +486,7 @@ defaultproperties
     showSeg=true
     showCur=true
     showPB=true
+    showSpeed=true
 
     textfont=Font'DeusExUI.FontMenuHeaders_DS';
     colorBackground=(R=0,G=0,B=0,A=100)
@@ -443,7 +505,7 @@ defaultproperties
     colorBestAhead=(R=216,G=175,B=31,A=255)
 
     title="Deus Ex Randomizer"
-    subtitle="%s Speedrun"
+    subtitle="%version %difficulty Speedrun"
     footer=""
 
     split_names(1)="Liberty Island"
