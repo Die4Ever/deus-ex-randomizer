@@ -219,7 +219,7 @@ function CheckConfig()
     difficulty_settings[i].repairbotamount = 1;
     difficulty_settings[i].turrets_move = 50;
     difficulty_settings[i].turrets_add = 30;
-    difficulty_settings[i].merchants = 30;
+    difficulty_settings[i].merchants = 25;
     difficulty_settings[i].dancingpercent = 25;
     difficulty_settings[i].swapitems = 100;
     difficulty_settings[i].swapcontainers = 100;
@@ -287,7 +287,7 @@ function CheckConfig()
     difficulty_settings[i].repairbotamount = 1;
     difficulty_settings[i].turrets_move = 50;
     difficulty_settings[i].turrets_add = 70;
-    difficulty_settings[i].merchants = 30;
+    difficulty_settings[i].merchants = 25;
     difficulty_settings[i].dancingpercent = 25;
     difficulty_settings[i].swapitems = 100;
     difficulty_settings[i].swapcontainers = 100;
@@ -355,7 +355,7 @@ function CheckConfig()
     difficulty_settings[i].repairbotamount = 1;
     difficulty_settings[i].turrets_move = 50;
     difficulty_settings[i].turrets_add = 150;
-    difficulty_settings[i].merchants = 30;
+    difficulty_settings[i].merchants = 25;
     difficulty_settings[i].dancingpercent = 25;
     difficulty_settings[i].swapitems = 100;
     difficulty_settings[i].swapcontainers = 100;
@@ -423,7 +423,7 @@ function CheckConfig()
     difficulty_settings[i].repairbotamount = 1;
     difficulty_settings[i].turrets_move = 50;
     difficulty_settings[i].turrets_add = 300;
-    difficulty_settings[i].merchants = 30;
+    difficulty_settings[i].merchants = 25;
     difficulty_settings[i].dancingpercent = 25;
     difficulty_settings[i].swapitems = 100;
     difficulty_settings[i].swapcontainers = 100;
