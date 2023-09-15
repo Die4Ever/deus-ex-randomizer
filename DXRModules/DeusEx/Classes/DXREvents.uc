@@ -3138,7 +3138,19 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             }
             return msg;
         case "TrophyHunter":
-            return "Destroy enough trophies.";
+            msg = "Destroy enough trophies.  ";
+            if (mission<=1){
+                msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).";
+            } else if (mission<=3){
+                msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).  Several can also be found in the LaGuardia Helibase.";
+            } else if (mission<=5){ //Mission 4 and 5 both only have trophies at HQ
+                msg=msg$"Multiple trophies can be found in UNATCO HQ (in the offices and above ground).";
+            } else if (mission<=6){
+                msg=msg$"There are many trophies in Hong Kong.  One can be found in the Helibase, another one around the canals, and one on Tonnochi Road";
+            } else if (mission<=10){
+                msg=msg$"There is a trophy in Chateau DuClare.";
+            }
+            return msg;
         case "SlippingHazard":
             return "Destroy enough 'Wet Floor' signs, leaving the area unmarked and dangerous.";
         case "Dehydrated":
@@ -3189,6 +3201,14 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Scientists think they're so much smarter than you.  Show them how smart your weapons are and kill enough of those nerds.";
         case "Chef_ClassDead":
             return "Do what needs to be done and kill a chef.";
+        case "un_PrezMeadPic_peepedtex":
+            return "Look closely at a picture of President Mead using a pair of binoculars.  This can be found in UNATCO HQ (both above and below ground).";
+        case "un_bboard_peepedtex":
+            return "Look at the bulletin board in the UNATCO HQ break room through a pair of binoculars.";
+        case "DrtyPriceSign_A_peepedtex":
+            return "Check the gas prices through a pair of binoculars at the abandoned Vandenberg Gas Station.";
+        case "GS_MedKit_01_peepedtex":
+            return "Use a pair of binoculars to find a representation of the Red Cross (A red cross on a white background) in the Vandenberg Gas Station.  Improper use of the emblem is a violation of the Geneva Conventions.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3593,6 +3613,13 @@ defaultproperties
     bingo_options(256)=(event="VandenbergShaft",desc="Jump down the Vandenberg shaft",max=1,missions=4096)
     bingo_options(257)=(event="ScienceIsForNerds",desc="Science is for nerds (%s)",max=10,missions=20576)
     bingo_options(258)=(event="Chef_ClassDead",desc="My Name Chef",max=1,missions=3072)
+#ifdef vanilla
+    //Need to check if these textures are named the same in Revision
+    bingo_options(259)=(event="un_PrezMeadPic_peepedtex",desc="Have a look at the anime president",max=1,missions=58)
+    bingo_options(260)=(event="un_bboard_peepedtex",desc="Check the bulletin board at UNATCO HQ",max=1,missions=58)
+    bingo_options(261)=(event="DrtyPriceSign_A_peepedtex",desc="Check the gas prices in Vandenberg",max=1,missions=4096)
+    bingo_options(262)=(event="GS_MedKit_01_peepedtex",desc="Spot a war crime",max=1,missions=4096)
+#endif
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
