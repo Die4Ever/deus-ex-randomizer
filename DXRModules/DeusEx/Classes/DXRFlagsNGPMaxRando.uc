@@ -227,6 +227,7 @@ function NewGamePlus()
     p.RestoreAllHealth();
     ClearDataVaultImages();
 
+    l("NewGamePlus skill points was "$p.SkillPointsAvail);
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( skills != None ) {
         for(i=0; i<5; i++)
@@ -235,6 +236,7 @@ function NewGamePlus()
     }
     else p.SkillPointsAvail = 0;
     p.SkillPointsTotal = 0; //This value doesn't seem to actually get used in vanilla, but we use it for scoring
+    l("NewGamePlus skill points is now "$p.SkillPointsAvail);
 
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
     if( augs != None )

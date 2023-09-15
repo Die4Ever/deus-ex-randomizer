@@ -503,6 +503,7 @@ static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
 {
     local int startBonus;
     startBonus = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+    log("AddStartingSkillPoints before "$ p.SkillPointsAvail $ ", bonus: "$ startBonus $", after: " $ (p.SkillPointsAvail + startBonus));
     p.SkillPointsAvail += startBonus;
     //Don't add to the total.  It isn't used in the base game, but we use it for scoring.
     //These starting points are free, so don't count them towards your score

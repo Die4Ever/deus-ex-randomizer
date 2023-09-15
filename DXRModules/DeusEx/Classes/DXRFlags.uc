@@ -25,8 +25,10 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 #endif
 
     Super.PlayerAnyEntry(p);
+#ifdef injections
     p.bZeroRando = IsZeroRando();
     p.bReducedRando = IsReducedRando();
+#endif
 
     if(!VersionIsStable())
         p.bCheatsEnabled = true;

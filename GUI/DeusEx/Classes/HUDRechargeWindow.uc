@@ -92,8 +92,8 @@ function UpdateBioWindows()
 {
     local float energyPercent;
 
-    if (player==None){
-        log("Player doesn't exist while updating RepairBot energy bar - probably dead?");
+    if (repairBot==None || player==None){
+        log("Player or RepairBot doesn't exist while updating RepairBot energy bar - probably dead?");
         return;
     }
 
@@ -109,6 +109,14 @@ event Tick(float deltaSeconds)
 {
     if(#defined(gmdx) || #defined(vmd)) {
         Super.Tick(deltaSeconds);
+        return;
+    }
+
+    if(repairBot == None || repairBot.bDeleteMe || player == None || player.bDeleteMe) {
+        player = None;
+        repairBot = None;
+        DestroyWindow();
+        root.PopWindow();
         return;
     }
 
