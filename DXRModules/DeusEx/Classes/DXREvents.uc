@@ -3124,7 +3124,19 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "LightVandalism":
             return "Destroy enough lamps throughout the game.  This might be chandeliers, desk lamps, hanging lights, pool table lights, standing lamps, or table lamps";
         case "FightSkeletons":
-            return "Destroy enough femurs or skulls.  Don't let the skeletons rise up!";
+            msg = "Destroy enough femurs or skulls.  Don't let the skeletons rise up!  ";
+            if (mission<=4){
+                msg=msg$"A skull can be found in the NSF HQ.";
+            } else if (mission<=6){
+                msg=msg$"A skull can be found in the Hong Kong VersaLife level 1 labs, as well as in Tracer Tong's hideout and in the Wan Chai Market.";
+            } else if (mission<=10){
+                msg=msg$"The Paris catacombs are just completely loaded with skulls and femurs.";
+            } else if (mission<=11){
+                msg=msg$"A skull can be found in the Cathedral.";
+            } else if (mission<=14){
+                msg=msg$"Several skulls and femurs can be found in the main portion of the Ocean Lab.";
+            }
+            return msg;
         case "TrophyHunter":
             return "Destroy enough trophies.";
         case "SlippingHazard":
