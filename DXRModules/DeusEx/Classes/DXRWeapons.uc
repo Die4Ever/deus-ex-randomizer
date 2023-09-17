@@ -34,15 +34,16 @@ simulated function RandoWeapon(DeusExWeapon w)
     if( dxr == None ) return;
     oldseed = SetGlobalSeed("RandoWeapon " $ w.class.name);
 
-    if(!dxr.flags.IsZeroRando() && WeaponHideAGun(w) != None) {
-        WeaponHideAGun(w).UpgradeToPS40();
-    }
-
     if( loadouts != None ) loadouts.AdjustWeapon(w);
 
     min_weapon_dmg = float(dxr.flags.settings.min_weapon_dmg) / 100;
     max_weapon_dmg = float(dxr.flags.settings.max_weapon_dmg) / 100;
-    new_damage = rngrange(float(w.default.HitDamage), min_weapon_dmg, max_weapon_dmg);
+
+    new_damage = w.default.HitDamage;
+    if(!dxr.flags.IsZeroRando() && WeaponHideAGun(w) != None) {
+        new_damage = WeaponHideAGun(w).UpgradeToPS40();
+    }
+    new_damage = rngrange(new_damage, min_weapon_dmg, max_weapon_dmg);
     w.HitDamage = int(new_damage + 0.5);
     if(w.HitDamage < 2 && w.HitDamage < w.default.HitDamage) {
         info(w $ " w.HitDamage ("$ w.HitDamage $") < 2");

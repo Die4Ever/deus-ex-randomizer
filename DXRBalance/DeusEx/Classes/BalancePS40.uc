@@ -23,7 +23,7 @@ function Projectile ProjectileFire(class<projectile> ProjClass, float ProjSpeed,
     return proj;
 }
 
-function UpgradeToPS40()
+function int UpgradeToPS40()
 {
     ItemName="PS40";
     Description="The PS40 is a disposable, plasma-based weapon developed by an unknown security organization as a next generation stealth pistol."
@@ -31,6 +31,7 @@ function UpgradeToPS40()
         $ "  Despite its limited functionality, the PS40 can be lethal.";
     beltDescription="PS40";
     HitDamage=100;
+    return HitDamage;
 }
 
 defaultproperties
