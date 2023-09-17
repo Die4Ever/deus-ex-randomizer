@@ -421,6 +421,7 @@ function bool CanInstantLeftClick(DeusExPickup item)
 exec function ParseLeftClick()
 {
     local DeusExPickup item;
+    local int i;
     Super.ParseLeftClick();
     item = DeusExPickup(FrobTarget);
     if (item != None && CanInstantLeftClick(item))
@@ -432,7 +433,13 @@ exec function ParseLeftClick()
         item.bDisplayableInv = false;
         item.Inventory = Inventory;
         Inventory = item;
-        item.Activate();
+        if(FireExtinguisher(item) != None) {
+            // this was buggy with multiple, but it doesn't make sense and wouldn't be useful to use multiple at once anyways
+            item.NumCopies = 1;
+        }
+        for(i=item.NumCopies; i > 0; i--) {
+            item.Activate();
+        }
         FrobTarget = None;
     }
 }
