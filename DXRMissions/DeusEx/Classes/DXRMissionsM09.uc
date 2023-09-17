@@ -269,7 +269,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 
     if (g.name=="Jammer") {
         //Add a keypad to disable the jammer
-        keypad=Spawn(class'#var(prefix)Keypad1',,,Loc.positions[7].pos,Loc.positions[7].rot);
+        keypad = #var(prefix)Keypad1(AddActor(class'#var(prefix)Keypad1',Loc.positions[7].pos,Loc.positions[7].rot));
         keypad.Event='EMOff';
         keypad.bHackable=True;
         keypad.hackStrength=0.05;
