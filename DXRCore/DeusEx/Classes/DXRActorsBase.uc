@@ -723,11 +723,15 @@ static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rot
     return d;
 }
 
+//DO NOT ASSUME THIS LIST IS COMPLETE!
+//THIS IS UPDATED AS WE ENCOUNTER ISSUES!
+//IF SOMETHING ISN'T LISTED HERE AND ISN'T ROTATING CORRECTLY, GET IN THE EDITOR AND DOUBLE CHECK!
+//YOU CAN ALSO CHECK THE LIST IN THE unreal-map-flipper REPOSITORY INSIDE MapLibs/actor.py AND LOOK AT THE classes_rot_offsets DICTIONARY!
 static function int GetRotationOffset(class<Actor> c)
 {
     if(ClassIsChildOf(c, class'Pawn'))
         return 16384;
-    if(ClassIsChildOf(c, class'#var(prefix)SecurityCamera'))
+    if(ClassIsChildOf(c, class'#var(prefix)HackableDevices'))
         return 16384;
     if(ClassIsChildOf(c, class'#var(prefix)Vehicles'))
         return 16384;
