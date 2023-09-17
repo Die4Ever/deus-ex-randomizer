@@ -448,8 +448,16 @@ function SetWatchFlags() {
         break;
     case "05_NYC_UNATCOMJ12LAB":
         CheckPaul();
+        WatchFlag('WatchKeys_cabinet');
+        WatchFlag('MiguelLeaving');
         bt = class'BingoTrigger'.static.Create(self,'nanocage',vectm(0,0,0));
         bt = class'BingoTrigger'.static.Create(self,'botorders2',vectm(0,0,0));
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'Beastdoor'){
+            dxm.Event='KarkianDoorsBingo';
+        }
+        bt = class'BingoTrigger'.static.Create(self,'KarkianDoorsBingo',vectm(0,0,0));
+
         break;
     case "05_NYC_UNATCOHQ":
         WatchFlag('KnowsAnnasKillphrase1');
@@ -3224,6 +3232,12 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Check the gas prices through a pair of binoculars at the abandoned Vandenberg Gas Station.";
         case "GS_MedKit_01_peepedtex":
             return "Use a pair of binoculars to find a representation of the Red Cross (A red cross on a white background) in the Vandenberg Gas Station.  Improper use of the emblem is a violation of the Geneva Conventions.";
+        case "WatchKeys_cabinet":
+            return "Find the key that opens the filing cabinets in the back of the greasel lab in the MJ12 base underneath UNATCO.  This is typically held by whoever is sitting at the desk in the back part of that lab.";
+        case "MiguelLeaving":
+            return "Tell Miguel that he can slip out on his own.  He definitely can't, but he doesn't know that.";
+        case "KarkianDoorsBingo":
+            return "Open the doors to the karkian cage near the surgery ward in the MJ12 base underneath UNATCO.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3635,6 +3649,11 @@ defaultproperties
     bingo_options(261)=(event="DrtyPriceSign_A_peepedtex",desc="Check the gas prices in Vandenberg",max=1,missions=4096)
     bingo_options(262)=(event="GS_MedKit_01_peepedtex",desc="Spot a war crime",max=1,missions=4096)
 #endif
+    bingo_options(263)=(event="WatchKeys_cabinet",desc="Find the keys to the MIB filing cabinet",max=1,missions=32)
+    bingo_options(264)=(event="MiguelLeaving",desc="Miguel can make it on his own",max=1,missions=32)
+    bingo_options(265)=(event="KarkianDoorsBingo",desc="Open the Karkian cage in the MJ12 Lab",max=1,missions=32)
+
+
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
     mutually_exclusive(1)=(e1="JockBlewUp",e2="GotHelicopterInfo")
@@ -3683,6 +3702,7 @@ defaultproperties
     mutually_exclusive(44)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="GilbertRenton_Dead")
     mutually_exclusive(45)=(e1="FamilySquabbleWrapUpGilbertDead_Played",e2="JoJoFine_Dead")
     mutually_exclusive(46)=(e1="Cremation",e2="Chef_ClassDead")
+    mutually_exclusive(47)=(e1="nsfwander",e2="MiguelLeaving")
 
     bingo_win_countdown=-1
 }
