@@ -3,19 +3,27 @@ class BingoHintMsgBox extends MenuUIMessageBoxWindow;
 #exec TEXTURE IMPORT FILE="Textures\BingoHintBoxBackground_1.pcx"	NAME="BingoHintBoxBackground_1"	GROUP="DXRandoUI" MIPS=Off
 #exec TEXTURE IMPORT FILE="Textures\BingoHintBoxBackground_2.pcx"	NAME="BingoHintBoxBackground_2"	GROUP="DXRandoUI" MIPS=Off
 
+var PersonaScrollAreaWindow winScroll;
+
 event InitWindow()
 {
 	Super.InitWindow();
 
 	btnOK = winButtonBar.AddButton(btnLabelOK, HALIGN_Right);
+
 	numButtons = 1;
 	SetFocusWindow(btnOK);
 }
 
 function CreateTextWindow()
 {
-	winText = CreateMenuHeader(21, 13, "", winClient);
-	winText.SetTextAlignments(HALIGN_Left, VALIGN_Center);
+    winScroll = PersonaScrollAreaWindow(winClient.NewChild(Class'PersonaScrollAreaWindow'));
+    winText = MenuUIHeaderWindow(winScroll.ClipWindow.NewChild(Class'MenuUIHeaderWindow'));
+
+    winScroll.SetPos(12, 13);
+    winScroll.SetSize(490,95);
+
+    winText.SetTextAlignments(HALIGN_Left, VALIGN_Center);
 	winText.SetFont(Font'FontMenuHeaders_DS');
 	winText.SetWindowAlignments(HALIGN_Full, VALIGN_Full, textBorderX, textBorderY);
 }

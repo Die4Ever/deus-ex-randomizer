@@ -2393,6 +2393,7 @@ function string RemapBingoEvent(string eventname)
         case "Mole_Dead":
         case "JordanShea_Dead":
         case "Doctor1_Dead":
+        case "Doctor2_Dead":
         case "Veteran_Dead":
         case "jughead_Dead":
         case "drugdealer_Dead":
@@ -2415,6 +2416,16 @@ function string RemapBingoEvent(string eventname)
         case "Kristi_Dead":
         case "HotelBartender_Dead":
         case "MetroTechnician_Dead":
+        case "lemerchant_Dead":
+        case "DXRNPCs1_Dead":
+        case "MarketWaiter_Dead":
+        case "Sally_Dead":
+        case "Pimp_Dead":
+        case "Bum_M_Dead":
+        case "Renault_Dead":
+        case "Louis_Dead":
+        case "Defoe_Dead":
+        case "Cassandra_Dead":
             _MarkBingo("DestroyCapitalism"); //Split into another event, but still return this one as-is
             return eventname;
         case "MeetWalton_Played":
@@ -3092,11 +3103,11 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "Shannon_Dead":
             return "Kill Shannon in UNATCO HQ as retribution for her thieving ways.";
         case "DestroyCapitalism":
-            msg = "Kill enough people willing to sell you goods in exchange for money.  ";
+            msg = "Kill enough people willing to sell you goods in exchange for money.|nThe Merchant may be elusive, but he must be eliminated when spotted.|n|n";
             if (mission<=1){
                 msg=msg$"Tech Sergeant Kaplan and the woman in the hut on the North Dock both absolutely deserve it.";
             } else if (mission<=2){
-                msg=msg$"Jordan Shea in the bar and the doctor in the Free Clinic both deserve it.";
+                msg=msg$"Jordan Shea and Sally in the bar, the doctors in the Free Clinic, and the pimp in the alleys deserve it.";
             } else if (mission<=3){
                 msg=msg$"There is a veteran in Battery Park, El Rey and Rock in Brooklyn Bridge Station, and Harold in the hangar.  They all deserve it.";
             } else if (mission<=4){
@@ -3104,19 +3115,23 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             } else if (mission<=5){
                 msg=msg$"Sven the mechanic and Shannon both deserve it.";
             } else if (mission<=6){
-                //msg=msg$"Hong Kong is overflowing with capitalist pigs.  ";
-                msg=msg$"In the VersaLife offices, you can eliminate Mr. Hundley.  ";
-                msg=msg$"In the canals, you must end the life of the Old China Hand bartender, the man selling maps there, and the smuggler on the boat.  ";
-                msg=msg$"In the Lucky Money, you must eliminate the bartender, the mamasan selling escorts, and the doorgirl.";
+                msg=msg$"Hong Kong is overflowing with capitalist pigs:|n";
+                msg=msg$" - The tea house waiter in the market needs to go.|n";
+                msg=msg$" - In the VersaLife offices, you can eliminate Mr. Hundley.|n";
+                msg=msg$" - In the canals, you must end the life of the Old China Hand bartender, the man selling maps there, and the smuggler on the boat.|n";
+                msg=msg$" - In the Lucky Money, you must eliminate the bartender, the mamasan selling escorts, and the doorgirl.";
             } else if (mission<=8){
                 msg=msg$"Jordan Shea needs to go.";
             } else if (mission<=10){
-                //msg=msg$"Paris is filled with filthy capitalists.  ";
-                msg=msg$"In the catacombs, the man in Vault 2 needs to go.  ";
-                msg=msg$"In the Champs D'Elysees streets, you must end the hostel bartender and Kristi in the cafe.  ";
-                msg=msg$"In the club, you can annihilate Camille the dancer, Jean the male bartender, Michelle the female bartender, Antoine the biocell seller, and Jocques the worker in the back room.  ";
+                msg=msg$"Paris is filled with filthy capitalists:|n";
+                msg=msg$" - Before the catacombs, you must eliminate Le Merchant and Defoe the arms dealer.|n";
+                msg=msg$" - In the catacombs, the man in Vault 2 needs to go.|n";
+                msg=msg$" - In the Champs D'Elysees streets, you must end the hostel bartender, Renault the drug dealer, and Kristi in the cafe.|n";
+                msg=msg$" - In the club, you can annihilate Camille the dancer, Jean the male bartender, Michelle the female bartender, Antoine the biocell seller, Louis the doorman, Cassandra the woman offering to sell information, and Jocques the worker in the back room.  ";
             } else if (mission<=11){
                 msg=msg$"The technician in the metro station needs to be stopped.";
+            } else if (mission<=12){
+                msg=msg$"The bum living at the Vandenberg gas station deserves it.";
             }
             return msg;
         case "Canal_Cop_Dead":
@@ -3591,7 +3606,7 @@ defaultproperties
     bingo_options(236)=(event="M06JCHasDate",desc="Pay for some company",max=1,missions=64)
     bingo_options(237)=(event="Sailor_ClassDeadM6",desc="I SPILL %s DRINKS!",max=5,missions=64)
     bingo_options(238)=(event="Shannon_Dead",desc="Kill the thief in UNATCO",max=1,missions=58)
-    bingo_options(239)=(event="DestroyCapitalism",desc="MUST. CRUSH. %s CAPITALISTS.",max=10,missions=3454)
+    bingo_options(239)=(event="DestroyCapitalism",desc="MUST. CRUSH. %s CAPITALISTS.",max=10,missions=7550)
     bingo_options(240)=(event="Canal_Cop_Dead",desc="Not advisable to visit the canals at night",max=1,missions=64)
     bingo_options(241)=(event="LightVandalism",desc="Perform %s acts of light vandalism",max=40,missions=57214)
     bingo_options(242)=(event="FightSkeletons",desc="Destroy %s skeleton parts",max=10,missions=19536)
