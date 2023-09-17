@@ -111,3 +111,9 @@ function PreFirstEntryMapFixes()
         break;
     }
 }
+
+function AnyEntryMapFixes()
+{
+    DeleteConversationFlag(GetConversation('FemJCGuntherRescued'), 'GuntherFreed', true);
+    DeleteConversationFlag(GetConversation('GuntherRescued'), 'GuntherFreed', true);
+}
