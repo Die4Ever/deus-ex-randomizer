@@ -550,4 +550,5 @@ Begin:
 defaultproperties
 {
     EmpHealth=50
+    FearSustainTime=15
 }
