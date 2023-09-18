@@ -996,6 +996,7 @@ function SetWatchFlags() {
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
         RewatchFlag('WaltonShowdown_Played');
+        WatchFlag('DL_SecondDoors_Played');
 
         bt = class'BingoTrigger'.static.Create(self,'OceanLabCrewChamber',vectm(1932.035522,3334.331787,-2247.888184),60,40);
         bt.bDestroyOthers=False;
@@ -3288,6 +3289,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Dive to the propeller at the back of the superfreighter.";
         case "ShipNamePlate":
             return "Use binoculars to check the name marked on the side of the superfreighter";
+        case "DL_SecondDoors_Played":
+            return "You need to open them.|n|nTry to leave the Ocean Lab while the sub-bay doors are closed.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3709,6 +3712,8 @@ defaultproperties
 #ifdef vanilla
     bingo_options(270)=(event="ShipNamePlate",desc="Check the name on the super freighter",max=1,missions=512)
 #endif
+    bingo_options(271)=(event="DL_SecondDoors_Played",desc="The sub-bay doors are closed",max=1,missions=16384)
+
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
