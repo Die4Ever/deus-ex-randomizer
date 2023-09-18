@@ -367,6 +367,12 @@ function SetWatchFlags() {
         WatchFlag('JuanLebedev_Unconscious');
         WatchFlag('PlayerKilledLebedev');
         WatchFlag('AnnaKilledLebedev');
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'field001'){
+            dxm.Event='SuspensionCrate';
+        }
+        bt = class'BingoTrigger'.static.Create(self,'SuspensionCrate',vectm(0,0,0));
+
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         WatchFlag('FreshWaterOpened');
@@ -457,6 +463,11 @@ function SetWatchFlags() {
             dxm.Event='KarkianDoorsBingo';
         }
         bt = class'BingoTrigger'.static.Create(self,'KarkianDoorsBingo',vectm(0,0,0));
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'field002'){
+            dxm.Event='SuspensionCrate';
+        }
+        bt = class'BingoTrigger'.static.Create(self,'SuspensionCrate',vectm(0,0,0));
 
         break;
     case "05_NYC_UNATCOHQ":
@@ -744,6 +755,10 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
 
+        bt = class'BingoTrigger'.static.Create(self,'ShipRamp',vectm(0,0,0));
+
+        bt = class'BingoTrigger'.static.Create(self,'SuperfreighterProp',vectm(2969,78,-1120),225,225);
+
         break;
     case "09_NYC_SHIPFAN":
         bt = class'BingoTrigger'.static.Create(self,'SpinningRoom',vectm(0,0,0));
@@ -901,6 +916,19 @@ function SetWatchFlags() {
             break;
         }
         bt = class'BingoTrigger'.static.Create(self,'EverettAquarium',water.Location);
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'field001'){
+            dxm.Event='SuspensionCrate';
+        }
+        bt = class'BingoTrigger'.static.Create(self,'SuspensionCrate',vectm(0,0,0));
+        bt.bDestroyOthers=False;
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'field002'){
+            dxm.Event='SuspensionCrate';
+        }
+        bt = class'BingoTrigger'.static.Create(self,'SuspensionCrate',vectm(0,0,0));
+        bt.bDestroyOthers=False;
+
         break;
     case "11_PARIS_UNDERGROUND":
         foreach AllActors(class'ZoneInfo',zone){
@@ -2447,6 +2475,10 @@ function string RemapBingoEvent(string eventname)
         case "ScientistMale_ClassDead":
         case "ScientistFemale_ClassDead":
             return "ScienceIsForNerds";
+        case "ShipNamePlate_B_peepedtex":
+        case "ShipNamePlate_C_peepedtex":
+        case "ShipNamePlate_D_peepedtex":
+            return "ShipNamePlate";
         default:
             return eventname;
     }
@@ -3238,6 +3270,24 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Tell Miguel that he can slip out on his own.  He definitely can't, but he doesn't know that.";
         case "KarkianDoorsBingo":
             return "Open the doors to the karkian cage near the surgery ward in the MJ12 base underneath UNATCO.";
+        case "SuspensionCrate":
+            msg = "Open enough suspension crates.  These are the square containers with force fields sealing them.|n|n";
+            if (mission<=3){
+                msg = msg $ "There is a suspension crate on Lebedev's plane.";
+            } else if (mission<=5){
+                msg = msg $ "There is a suspension crate in the back of the greasel lab at the MJ12 base under UNATCO.";
+            } else if (mission<=11){
+                msg = msg $ "There are two suspension crates in Everett's lab.";
+            }
+            return msg;
+        case "ScubaDiver_ClassDead":
+            return "Kill enough SCUBA divers in and around the Ocean Lab.";
+        case "ShipRamp":
+            return "Raise the ramp to get on board the superfreighter.";
+        case "SuperfreighterProp":
+            return "Dive to the propeller at the back of the superfreighter.";
+        case "ShipNamePlate":
+            return "Use binoculars to check the name marked on the side of the superfreighter";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3652,7 +3702,13 @@ defaultproperties
     bingo_options(263)=(event="WatchKeys_cabinet",desc="Find the keys to the MIB filing cabinet",max=1,missions=32)
     bingo_options(264)=(event="MiguelLeaving",desc="Miguel can make it on his own",max=1,missions=32)
     bingo_options(265)=(event="KarkianDoorsBingo",desc="Open the Karkian cage in the MJ12 Lab",max=1,missions=32)
-
+    bingo_options(266)=(event="SuspensionCrate",desc="Open %s Suspension Crates",max=3,missions=2088)
+    bingo_options(267)=(event="ScubaDiver_ClassDead",desc="Kill %s SCUBA Divers",max=3,missions=16384)
+    bingo_options(268)=(event="ShipRamp",desc="Raise the ramp to the super freighter",max=1,missions=512)
+    bingo_options(269)=(event="SuperfreighterProp",desc="Props to you",max=1,missions=512)
+#ifdef vanilla
+    bingo_options(270)=(event="ShipNamePlate",desc="Check the name on the super freighter",max=1,missions=512)
+#endif
 
 
     mutually_exclusive(0)=(e1="PaulDenton_Dead",e2="SavedPaul")
