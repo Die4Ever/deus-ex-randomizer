@@ -40,9 +40,11 @@ simulated function RandoWeapon(DeusExWeapon w)
     max_weapon_dmg = float(dxr.flags.settings.max_weapon_dmg) / 100;
 
     new_damage = w.default.HitDamage;
+#ifdef injections
     if(!dxr.flags.IsZeroRando() && WeaponHideAGun(w) != None) {
         new_damage = WeaponHideAGun(w).UpgradeToPS40();
     }
+#endif
     new_damage = rngrange(new_damage, min_weapon_dmg, max_weapon_dmg);
     w.HitDamage = int(new_damage + 0.5);
     if(w.HitDamage < 2 && w.HitDamage < w.default.HitDamage) {

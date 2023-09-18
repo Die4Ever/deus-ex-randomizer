@@ -68,6 +68,8 @@ struct FlagsSettings {
 
 struct MoreFlagsSettings{
     var int grenadeswap;
+
+    var int remove_paris_mj12;// keep this at the end for automated tests
 };
 
 var #var(flagvarprefix) FlagsSettings settings;
@@ -336,6 +338,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_dancingpercent', settings.dancingpercent, mode, str);
     FlagInt('Rando_doorsmode', settings.doorsmode, mode, str);
     FlagInt('Rando_enemyrespawn', settings.enemyrespawn, mode, str);
+    FlagInt('Rando_grenadeswap', moresettings.remove_paris_mj12, mode, str);
 
     FlagInt('Rando_skills_disable_downgrades', settings.skills_disable_downgrades, mode, str);
     FlagInt('Rando_skills_reroll_missions', settings.skills_reroll_missions, mode, str);
@@ -1079,12 +1082,14 @@ function ExtendedTests()
     teststring(ToHex(0x9001F), "9001F", "ToHex(0x9001F)");
 
     gamemode = 0;
+    moresettings.remove_paris_mj12 = 50;
     SetDifficulty(0);
     testint(settings.bingo_freespaces, 1, "SetDifficulty check bingo_freespaces");
     testint(Settings.spoilers, 1, "SetDifficulty check spoilers");
     testint(Settings.menus_pause, 1, "SetDifficulty check menus_pause");
     testint(settings.health, 200, "SetDifficulty check health");
     testint(settings.energy, 200, "SetDifficulty check energy");
+    testint(moresettings.remove_paris_mj12, 0, "SetDifficulty check remove_paris_mj12");
     SetDifficulty(1);
     testint(settings.health, 100, "SetDifficulty check health");
     testint(settings.energy, 100, "SetDifficulty check energy");
