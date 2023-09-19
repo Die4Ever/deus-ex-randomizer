@@ -2480,6 +2480,8 @@ function string RemapBingoEvent(string eventname)
         case "ShipNamePlate_C_peepedtex":
         case "ShipNamePlate_D_peepedtex":
             return "ShipNamePlate";
+        case "UNATCOHQ_BulletinBoard_Cork_peepedtex":
+            return "un_bboard_peepedtex";
         default:
             return eventname;
     }
@@ -3695,13 +3697,10 @@ defaultproperties
     bingo_options(256)=(event="VandenbergShaft",desc="Jump down the Vandenberg shaft",max=1,missions=4096)
     bingo_options(257)=(event="ScienceIsForNerds",desc="Science is for nerds (%s)",max=10,missions=20576)
     bingo_options(258)=(event="Chef_ClassDead",desc="My Name Chef",max=1,missions=3072)
-#ifdef vanilla
-    //Need to check if these textures are named the same in Revision
     bingo_options(259)=(event="un_PrezMeadPic_peepedtex",desc="Have a look at the anime president",max=1,missions=58)
     bingo_options(260)=(event="un_bboard_peepedtex",desc="Check the bulletin board at UNATCO HQ",max=1,missions=58)
     bingo_options(261)=(event="DrtyPriceSign_A_peepedtex",desc="Check the gas prices in Vandenberg",max=1,missions=4096)
     bingo_options(262)=(event="GS_MedKit_01_peepedtex",desc="Spot a war crime",max=1,missions=4096)
-#endif
     bingo_options(263)=(event="WatchKeys_cabinet",desc="Find the keys to the MIB filing cabinet",max=1,missions=32)
     bingo_options(264)=(event="MiguelLeaving",desc="Miguel can make it on his own",max=1,missions=32)
     bingo_options(265)=(event="KarkianDoorsBingo",desc="Open the Karkian cage in the MJ12 Lab",max=1,missions=32)
@@ -3709,9 +3708,7 @@ defaultproperties
     bingo_options(267)=(event="ScubaDiver_ClassDead",desc="Kill %s SCUBA Divers",max=3,missions=16384)
     bingo_options(268)=(event="ShipRamp",desc="Raise the ramp to the super freighter",max=1,missions=512)
     bingo_options(269)=(event="SuperfreighterProp",desc="Props to you",max=1,missions=512)
-#ifdef vanilla
     bingo_options(270)=(event="ShipNamePlate",desc="Check the name on the super freighter",max=1,missions=512)
-#endif
     bingo_options(271)=(event="DL_SecondDoors_Played",desc="The sub-bay doors are closed",max=1,missions=16384)
 
 
