@@ -106,7 +106,10 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
     num = 0;
     for(i=0; i<ArrayCount(items) ; i++) {
         if(items[i].item == None) continue;
-        items[num++] = items[i];
+        iclass = items[i].item;
+        items[i].item = None;
+        items[num] = items[i];
+        items[num++].item = iclass;
     }
 
     // limit to 4
