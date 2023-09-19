@@ -219,6 +219,12 @@ function vanilla_keys_rules()
 
     case "15_area51_entrance":
         keys_rules[i].item_name = 'Factory';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, -237);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'Factory';
         keys_rules[i].min_pos = vect(-816, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
