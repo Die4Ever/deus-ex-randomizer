@@ -55,7 +55,14 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
-
+    case "02_NYC_WAREHOUSE":
+        //Anywhere in or immediately around the actual warehouse
+        keys_rules[i].item_name = 'WarehouseBasementStorage';
+        keys_rules[i].min_pos = vect(-620, -1885, -99999);
+        keys_rules[i].max_pos = vect(2017, -366, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
     case "03_NYC_AIRFIELD":
         keys_rules[i].item_name = 'eastgate';
         keys_rules[i].min_pos = vect(1915, 2332, -999999);
@@ -282,6 +289,15 @@ function revision_keys_rules()
         keys_rules[i].item_name = 'KioskDoors';
         keys_rules[i].min_pos = vect(-999999, -999999, 320);
         keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "02_NYC_WAREHOUSE":
+        //Anywhere in or immediately around the actual warehouse
+        keys_rules[i].item_name = 'WarehouseBasementStorage';
+        keys_rules[i].min_pos = vect(-692, -1894, -99999);
+        keys_rules[i].max_pos = vect(2025, 315, 99999);
         keys_rules[i].allow = true;
         i++;
         break;
