@@ -190,6 +190,16 @@ function vanilla_keys_rules()
         i++;
         break;
 
+    case "14_VANDENBERG_SUB":
+        //This key is also on the guy who patrols outside the mushroom stump on shore,
+        //so this one, normally in the shed, can go anywhere?
+        keys_rules[i].item_name = 'Sub_base';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "14_oceanlab_lab":
         //disallow the crew quarters
         keys_rules[i].item_name = 'crewkey';
