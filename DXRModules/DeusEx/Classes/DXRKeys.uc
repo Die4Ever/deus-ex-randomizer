@@ -116,6 +116,14 @@ function vanilla_keys_rules()
         i++;
         break;
 
+    case "10_Paris_Catacombs":
+        keys_rules[i].item_name = 'cata_officedoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "10_Paris_Chateau":
         keys_rules[i].item_name = 'duclare_chateau';
         keys_rules[i].min_pos = vect(-99999, -99999, -125);
@@ -351,6 +359,14 @@ function revision_keys_rules()
         keys_rules[i].item_name = 'SubjectDoors';
         keys_rules[i].min_pos = vect(-1787, -903, -775);
         keys_rules[i].max_pos = vect(-877, 519, -378);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "10_Paris_Catacombs":
+        keys_rules[i].item_name = 'cata_officedoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
         break;
