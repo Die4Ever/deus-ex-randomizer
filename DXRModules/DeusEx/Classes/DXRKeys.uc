@@ -100,6 +100,14 @@ function vanilla_keys_rules()
         i++;
         break;
 
+    case "06_HONGKONG_MJ12LAB":
+        keys_rules[i].item_name = 'SubjectDoors';
+        keys_rules[i].min_pos = vect(-1787, -903, -775);
+        keys_rules[i].max_pos = vect(-877, 519, -378);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "06_HONGKONG_STORAGE":
         keys_rules[i].item_name = 'NanoContainmentDoor';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
@@ -335,6 +343,14 @@ function revision_keys_rules()
         keys_rules[i].item_name = 'JocksKey';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "06_HONGKONG_MJ12LAB":
+        keys_rules[i].item_name = 'SubjectDoors';
+        keys_rules[i].min_pos = vect(-1787, -903, -775);
+        keys_rules[i].max_pos = vect(-877, 519, -378);
         keys_rules[i].allow = true;
         i++;
         break;
