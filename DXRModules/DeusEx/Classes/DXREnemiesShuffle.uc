@@ -40,25 +40,39 @@ function SwapOrders(ScriptedPawn a, ScriptedPawn b)
 }
 
 function bool ShouldSwap(ScriptedPawn a, ScriptedPawn b) {
-    return a.Alliance == b.Alliance || a.Alliance == '' || b.Alliance == '';
+    // always ok to swap with a placeholder enemy
+    if(PlaceholderEnemy(a) != None || PlaceholderEnemy(b) != None) return true;
+    // otherwise check alliance
+    return a.GetAllianceType( b.Alliance ) != ALLIANCE_Hostile;
 }
 
 function SwapScriptedPawns(int percent, bool enemies)
 {
     local ScriptedPawn temp[512];
     local ScriptedPawn a;
-    local name exceptTag, exceptAlliance;
+    local name exceptTag, exceptAlliance, keepTagName;
+    local bool keepTags;
     local int num, i, slot;
 
     num=0;
-    if(dxr.localURL ~= "06_HONGKONG_MJ12LAB") {
+    switch(dxr.localURL) {
+    case "06_HONGKONG_MJ12LAB":
         if(enemies)
             SwapScriptedPawns(percent, false);
         else
             exceptAlliance = 'Researcher';
-    }
-    if(dxr.localURL ~= "14_OCEANLAB_SILO") {
+        break;
+
+    case "08_NYC_STREET":
+        keepTags = true;
+        break;
+
+    case "12_VANDENBERG_CMD":
+        keepTagName = 'enemy_bot';// 12_VANDENBERG_CMD fix, see Mission12.uc https://discord.com/channels/823629359931195394/823629360929046530/974454774034497567
+        break;
+    case "14_OCEANLAB_SILO":
         exceptTag = 'Doberman';
+        break;
     }
 
     SetSeed( "SwapScriptedPawns" );
@@ -102,7 +116,7 @@ function SwapScriptedPawns(int percent, bool enemies)
 
         // TODO: swap non-weapons/ammo inventory, only need to swap nanokeys?
         SwapItems(temp[i], temp[slot]);
-        if( temp[i].Tag != 'enemy_bot' && temp[slot].Tag != 'enemy_bot' ) // 12_VANDENBERG_CMD fix, see Mission12.uc https://discord.com/channels/823629359931195394/823629360929046530/974454774034497567
+        if( !keepTags && temp[i].Tag != keepTagName && temp[slot].Tag != keepTagName )
             SwapNames(temp[i].Tag, temp[slot].Tag);
         SwapNames(temp[i].Event, temp[slot].Event);
         SwapNames(temp[i].AlarmTag, temp[slot].AlarmTag);
