@@ -198,6 +198,16 @@ function vanilla_keys_rules()
         keys_rules[i].max_pos = vect(99999,99999,99999);
         keys_rules[i].allow = true;
         i++;
+
+        //This key would normally be inside the shed itself, but now it can be anywhere,
+        //there is a button inside to open the door out, and placeholders inside to incentivize
+        //trying to get in
+        keys_rules[i].item_name = 'shed';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
+        keys_rules[i].allow = true;
+        i++;
+
         break;
 
     case "14_oceanlab_lab":
@@ -450,6 +460,17 @@ function revision_keys_rules()
         i++;
         break;
 
+    case "14_Vandenberg_Sub":
+        //This key would normally be inside the shed itself, but now it can be anywhere,
+        //there is a button inside to open the door out, and placeholders inside to incentivize
+        //trying to get in
+        keys_rules[i].item_name = 'shed';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        break;
     case "14_oceanlab_lab":
         //disallow the crew quarters
         keys_rules[i].item_name = 'crewkey';

@@ -95,6 +95,20 @@ function PreFirstEntryMapFixes()
         }
         rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(737,4193,-426));//In shoreside shed
         rg.MaxCount=1;
+
+        Spawn(class'PlaceholderItem',,, vectm(755,4183,-421)); //Shed
+        Spawn(class'PlaceholderItem',,, vectm(755,4101,-421)); //Shed
+        Spawn(class'PlaceholderItem',,, vectm(462,4042,-421)); //Shed
+        Spawn(class'PlaceholderItem',,, vectm(462,3986,-421)); //Shed
+        Spawn(class'PlaceholderItem',,, vectm(462,3939,-421)); //Shed
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door){
+            if(door.KeyIDNeeded=='shed'){
+                door.Tag='ShedDoor';
+            }
+        }
+        AddSwitch( vect(654.545,3889.5397,-367.262), rot(0, 16384, 0), 'ShedDoor');
+
         break;
 
     case "14_OCEANLAB_LAB":
