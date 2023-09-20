@@ -365,7 +365,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
 
 function bool SkipActorBase(Actor a)
 {
-    if( (a.Owner != None) || a.bStatic || a.bHidden || a.bMovable==False || a.bIsSecretGoal )
+    if( a.Owner != None || a.bStatic || a.bHidden || a.bMovable==False || a.bIsSecretGoal || a.bDeleteMe )
         return true;
     return false;
 }

@@ -330,7 +330,7 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
     }
 
     l("datacube "$id$" got num "$num$" with "$bads$" unsafe positions");
-    slot=rng(num+1);//+1 for the vanilla location
+    slot=rng(num+1);//+1 for the vanilla location, since we're not in the list
     if(slot==0) {
         l("not swapping infodevice "$ActorToString(id));
         return;

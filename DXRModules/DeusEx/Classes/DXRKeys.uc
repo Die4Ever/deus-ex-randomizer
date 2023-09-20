@@ -589,7 +589,7 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
 
     for(tries=0; tries<5; tries++) {
         if(vanilla_good) {
-            slot=rng(num+1);// +1 for vanilla
+            slot=rng(num+1);// +1 for vanilla, since we're not in the list
             if(slot==0) {
                 info("not swapping key "$k.KeyID$", num: "$num);
                 break;

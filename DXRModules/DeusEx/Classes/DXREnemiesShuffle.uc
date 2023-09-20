@@ -83,13 +83,11 @@ function SwapScriptedPawns(int percent, bool enemies)
 
     l("SwapScriptedPawns num: "$num);
     for(i=0; i<num; i++) {
-        slot=rng(num);// -1 because we skip ourself, but +1 for vanilla
-        if(slot==0) {
+        slot=rng(num);
+        if(slot==i) {// we're in the list too
             l("not swapping "$ActorToString(temp[i]));
             continue;
         }
-        slot--;
-        if(slot >= i) slot++;
 
         if( ! ShouldSwap(temp[i], temp[slot]) ) {
             continue;
