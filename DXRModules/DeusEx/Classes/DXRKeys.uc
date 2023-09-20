@@ -38,6 +38,13 @@ function vanilla_keys_rules()
         keys_rules[i].max_pos = vect(999999, 999999, 999999);
         keys_rules[i].allow = true;
         i++;
+
+        keys_rules[i].item_name = 'UNOfficeDoorKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+
         break;
 
     case "02_NYC_BATTERYPARK":
@@ -299,6 +306,13 @@ function revision_keys_rules()
         keys_rules[i].max_pos = vect(999999, 999999, 999999);
         keys_rules[i].allow = true;
         i++;
+
+        keys_rules[i].item_name = 'UNOfficeDoorKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+
         break;
 
     case "02_NYC_BATTERYPARK":
