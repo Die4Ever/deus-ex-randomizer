@@ -207,6 +207,12 @@ function PreFirstEntryMapFixes()
         rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-2375,-644,-993));//Under trailer near Jock
         rg.MaxCount=1;
 
+        Spawn(class'PlaceholderItem',,, vectm(-366,-2276,-1553)); //Under collapsed bridge
+        Spawn(class'PlaceholderItem',,, vectm(-394,-1645,-1565)); //Near bridge pillar
+        Spawn(class'PlaceholderItem',,, vectm(-88,-2087,-1553)); //Collapsed bridge road surface
+        Spawn(class'PlaceholderItem',,, vectm(909,-2474,-1551)); //Wrecked car
+        Spawn(class'PlaceholderItem',,, vectm(-3152,-2780,-1364)); //Ledge near original key
+
         break;
 #endif
     }
