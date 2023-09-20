@@ -40,6 +40,22 @@ function vanilla_keys_rules()
         i++;
         break;
 
+    case "02_NYC_BATTERYPARK":
+        //Anywhere above ground
+        keys_rules[i].item_name = 'KioskDoors';
+        keys_rules[i].min_pos = vect(-999999, -999999, 320);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+
+        //Anything below the control room
+        keys_rules[i].item_name = 'ControlRoomDoor';
+        keys_rules[i].min_pos = vect(-999999, -999999, -99999);
+        keys_rules[i].max_pos = vect(999999, 999999, -232);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "03_NYC_AIRFIELD":
         keys_rules[i].item_name = 'eastgate';
         keys_rules[i].min_pos = vect(1915, 2332, -999999);
@@ -257,6 +273,14 @@ function revision_keys_rules()
     case "01_NYC_UNATCOHQ":
         keys_rules[i].item_name = 'JaimeClosetKey';
         keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "02_NYC_BATTERYPARK":
+        keys_rules[i].item_name = 'KioskDoors';
+        keys_rules[i].min_pos = vect(-999999, -999999, 320);
         keys_rules[i].max_pos = vect(999999, 999999, 999999);
         keys_rules[i].allow = true;
         i++;
