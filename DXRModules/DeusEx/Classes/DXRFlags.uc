@@ -599,6 +599,8 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.maxskill = Max(settings.minskill * 1.2, settings.maxskill);
         // skill strength rando 80% wet/dry
         settings.skill_value_rando = 80;
+        // at least level 1 speed aug
+        settings.speedlevel = Max(settings.speedlevel, 1);
     }
     else if(gamemode == WaltonWare) {
         settings.bingo_win = 1;
