@@ -32,6 +32,14 @@ function vanilla_keys_rules()
         i++;
         break;
 
+    case "01_NYC_UNATCOHQ":
+        keys_rules[i].item_name = 'JaimeClosetKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "03_NYC_AIRFIELD":
         keys_rules[i].item_name = 'eastgate';
         keys_rules[i].min_pos = vect(1915, 2332, -999999);
@@ -240,6 +248,14 @@ function revision_keys_rules()
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
         keys_rules[i].item_name = 'UNhatchdoor';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "01_NYC_UNATCOHQ":
+        keys_rules[i].item_name = 'JaimeClosetKey';
         keys_rules[i].min_pos = vect(-999999, -999999, -999999);
         keys_rules[i].max_pos = vect(999999, 999999, 999999);
         keys_rules[i].allow = true;
