@@ -519,6 +519,7 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
     local Inventory a;
     local Containers c;
     local int num, slot, tries;
+    local bool vanilla_good;
 
 #ifndef injections
     k.ItemName = k.default.ItemName $ " (" $ k.Description $ ")";
@@ -556,13 +557,23 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
         }
     }
 
+    if(num == 0) {
+        warning("no other safe spots found for " $ k @ k.KeyID);
+        return;
+    }
+    vanilla_good = KeyPositionGood(k, k.Location);
+
     for(tries=0; tries<5; tries++) {
-        slot=rng(num+1);// +1 for vanilla
-        if(slot==0) {
-            info("not swapping key "$k.KeyID$", num: "$num);
-            break;
+        if(vanilla_good) {
+            slot=rng(num+1);// +1 for vanilla
+            if(slot==0) {
+                info("not swapping key "$k.KeyID$", num: "$num);
+                break;
+            }
+            slot--;
+        } else {
+            slot=rng(num);// vanilla is not good
         }
-        slot--;
         info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot] $" ("$temp[slot].Location$")");
         // Swap argument A is more lenient with collision than argument B
         if( Swap(temp[slot], k) ) break;
