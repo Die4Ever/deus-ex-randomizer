@@ -13,12 +13,12 @@ This is a mod for the original Deus Ex that takes everything and shuffles it all
 Here's a trailer for our new Mirrored Maps feature in v2.5:
 
 <a href="https://www.youtube.com/watch?v=-8BOLf1tskc&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch" target="_blank">
-<img src="https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/0884f42b-36b2-4716-9f80-6d56faee6621" alt="v2.5 Mirrored Maps Trailer" width="500"/></a>
+<img src="https://img.youtube.com/vi/-8BOLf1tskc/0.jpg" alt="v2.5 Mirrored Maps Trailer" width="500"/></a>
 
 If you don't know what Deus Ex Randomizer is, then here's our old trailer which shows a breakdown of how it works:
 
 <a href="https://www.youtube.com/watch?v=XsoIKbn_suE&list=PLZIQTa_kwZhBksj7UzcahPiRaHk87fWch" target="_blank">
-<img src="https://github.com/Die4Ever/deus-ex-randomizer/assets/30947252/daf30de5-fd3e-4b65-a0cf-abc7f6ac758b" alt="v2.0 Trailer" width="500"/></a>
+<img src="https://img.youtube.com/vi/XsoIKbn_suE/0.jpg" alt="v2.0 Trailer" width="500"/></a>
 
 ## DXRando randomizes
 * Locations of goals, NPCs, and some starting locations
