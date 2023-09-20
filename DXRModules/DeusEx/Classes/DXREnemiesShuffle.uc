@@ -43,7 +43,7 @@ function bool ShouldSwap(ScriptedPawn a, ScriptedPawn b) {
     // always ok to swap with a placeholder enemy
     if(PlaceholderEnemy(a) != None || PlaceholderEnemy(b) != None) return true;
     // otherwise check alliance
-    return a.GetAllianceType( b.Alliance ) != ALLIANCE_Hostile;
+    return a.GetAllianceType( b.Alliance ) != ALLIANCE_Hostile && b.GetAllianceType( a.Alliance ) != ALLIANCE_Hostile;
 }
 
 function SwapScriptedPawns(int percent, bool enemies)
@@ -70,6 +70,7 @@ function SwapScriptedPawns(int percent, bool enemies)
     case "12_VANDENBERG_CMD":
         keepTagName = 'enemy_bot';// 12_VANDENBERG_CMD fix, see Mission12.uc https://discord.com/channels/823629359931195394/823629360929046530/974454774034497567
         break;
+
     case "14_OCEANLAB_SILO":
         exceptTag = 'Doberman';
         break;
