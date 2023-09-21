@@ -145,6 +145,13 @@ function vanilla_keys_rules()
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
+
+        //Since you can get into beth's room via the dumbwaiter, this key could go anywhere above ground
+        keys_rules[i].item_name = 'beth_room';
+        keys_rules[i].min_pos = vect(-99999, -99999, -125);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
         break;
 
     case "11_Paris_Cathedral":
@@ -388,6 +395,14 @@ function revision_keys_rules()
         i++;
         break;
 
+    case "04_NYC_NSFHQ":
+        keys_rules[i].item_name = 'BasementDoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, 0);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "06_HONGKONG_WANCHAI_STREET":
         // in DXRFixup we spawn an extra one anyways
         keys_rules[i].item_name = 'JocksKey';
@@ -419,6 +434,14 @@ function revision_keys_rules()
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
+
+        //Since you can get into beth's room via the dumbwaiter, this key could go anywhere above ground
+        keys_rules[i].item_name = 'beth_room';
+        keys_rules[i].min_pos = vect(-99999, -99999, -125);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
         break;
 
     case "11_Paris_Cathedral":
