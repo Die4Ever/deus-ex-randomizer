@@ -319,6 +319,14 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+
+    case "15_area51_final":
+        keys_rules[i].item_name = 'door_lower';
+        keys_rules[i].min_pos = vect(-5655, -5190, -1700);
+        keys_rules[i].max_pos = vect(-2376, -2527, -534);
+        keys_rules[i].allow = true;
+        i++;
+        break;
     }
 }
 
