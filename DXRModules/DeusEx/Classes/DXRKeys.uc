@@ -375,6 +375,14 @@ function revision_keys_rules()
         i++;
         break;
 
+    case "03_NYC_MOLEPEOPLE":
+        keys_rules[i].item_name = 'MoleRestroomKey';
+        keys_rules[i].min_pos = vect(-99999, -99999, -999999);
+        keys_rules[i].max_pos = vect(1500, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "03_NYC_AIRFIELD":
         keys_rules[i].item_name = 'eastgate';
         keys_rules[i].min_pos = vect(1915, 2332, -999999);
