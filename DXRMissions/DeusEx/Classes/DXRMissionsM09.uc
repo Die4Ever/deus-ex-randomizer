@@ -68,7 +68,7 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "SE Electrical Room", NORMAL_GOAL, vect(-3950, 740, -352), rot(0, 0, 0));
         AddActorLocation(loc, 2, vect(-3908, 766, -416), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "South Helipad", NORMAL_GOAL, vect(-5664, -926, -420), rot(0, 16384, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "South Helipad", NORMAL_GOAL, vect(-5664, -926, -418), rot(0, 16384, 0));
         AddActorLocation(loc, 2, vect(-5664, -889, -432), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Storage Room", NORMAL_GOAL, vect(-4082, -816, -128), rot(0, 32768, 0));
@@ -83,13 +83,13 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Control Room", NORMAL_GOAL, vect(-288.000000, -432.000000, 112.000000), rot(-16384, 16384, 0));
         AddActorLocation(loc, 2, vect(-288, -426, 62), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,1024.000000,-432.000000), rot(0,49152,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832, 1022, -430), rot(0,49152,0));
         AddActorLocation(loc, 2, vect(833.449036, 993.195618, -490.899567), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680.000000,1647.000000,-416.000000), rot(0,49152,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680, 1647, -402), rot(0,49152,0));
         AddActorLocation(loc, 2, vect(-3680.022217, 1616.057861, -490.899567), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6526, 200, -420), rot(0,65536,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6526, 200, -418), rot(0,65536,0));
         AddActorLocation(loc, 2, vect(-6499.218750, 200.039917, -490.899567), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1662.000000,-416.000000), rot(0,81920,0));
@@ -260,6 +260,15 @@ function PreFirstEntryMapFixes()
 
             }
         } else {
+            foreach AllActors(class'DeusExMover',dxm){
+                if (dxm.Name=='DeusExMover40' ||
+                    dxm.Name=='DeusExMover16' ||
+                    dxm.Name=='DeusExMover33' ||
+                    dxm.Name=='DeusExMover31' ||
+                    dxm.Name=='DeusExMover32'){
+                    dxm.PrePivot=vect(-3,-2.5,5);
+                }
+            }
             a = Spawnm(class'DynamicBlockMonsters',,, vect(-3926.773438, 739.635742, -456.895294));
             a.SetCollisionSize(100, 64);
         }

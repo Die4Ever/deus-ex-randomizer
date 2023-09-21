@@ -64,7 +64,7 @@ function SwapScriptedPawns(int percent, bool enemies)
         break;
 
     case "08_NYC_STREET":
-        keepTags = true;
+        keepTags = true;// fix M08 street unatco troops spawning early https://github.com/Die4Ever/deus-ex-randomizer/issues/522
         break;
 
     case "12_VANDENBERG_CMD":
