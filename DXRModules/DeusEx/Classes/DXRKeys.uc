@@ -106,6 +106,35 @@ function vanilla_keys_rules()
         i++;
         break;
 
+    case "06_HONGKONG_HELIBASE":
+        // Not allowed on the rooftop
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(-99999, -99999, 760);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Not allowed in the barracks
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(725, -663, 93);
+        keys_rules[i].max_pos = vect(1783, 916, 347);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Not allowed in the locked flight deck
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(1191,575,600);
+        keys_rules[i].max_pos = vect(1525,800,697);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "06_HONGKONG_WANCHAI_STREET":
         // in DXRFixup we spawn an extra one anyways
         keys_rules[i].item_name = 'JocksKey';
@@ -127,6 +156,14 @@ function vanilla_keys_rules()
         keys_rules[i].item_name = 'NanoContainmentDoor';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "09_NYC_DOCKYARD":
+        keys_rules[i].item_name = 'WeaponWarehouse';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
         keys_rules[i].allow = true;
         i++;
         break;
@@ -419,6 +456,35 @@ function revision_keys_rules()
         i++;
         break;
 
+    case "06_HONGKONG_HELIBASE":
+        // Not allowed on the rooftop
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(-99999, -99999, 760);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Not allowed in the barracks
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(725, -663, 93);
+        keys_rules[i].max_pos = vect(1783, 1200, 347);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Not allowed in the locked flight deck
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(1191,575,600);
+        keys_rules[i].max_pos = vect(1525,800,697);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "06_HONGKONG_WANCHAI_STREET":
         // in DXRFixup we spawn an extra one anyways
         keys_rules[i].item_name = 'JocksKey';
@@ -432,6 +498,14 @@ function revision_keys_rules()
         keys_rules[i].item_name = 'SubjectDoors';
         keys_rules[i].min_pos = vect(-1787, -903, -775);
         keys_rules[i].max_pos = vect(-877, 519, -378);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "09_NYC_DOCKYARD":
+        keys_rules[i].item_name = 'WeaponWarehouse';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
         keys_rules[i].allow = true;
         i++;
         break;

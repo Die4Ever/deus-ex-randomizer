@@ -34,6 +34,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)RatGenerator rg;
     local #var(prefix)FlagTrigger ft;
+    local #var(prefix)NanoKey key;
 
     switch(dxr.localURL)
     {
@@ -138,6 +139,13 @@ function PreFirstEntryMapFixes()
             lam.SetLocation(vectm(2073, 6085.963379, -235.489441));
             lam.bCollideWorld = true;
             break;
+        }
+
+        //They put the key ID in the tag for some reason
+        foreach AllActors(class'#var(prefix)NanoKey',key,'SupplyRoom'){
+            if (key.keyID==''){
+                key.keyID='SupplyRoom';
+            }
         }
 
         //Button to open the sewer grate from the ship side
