@@ -27,6 +27,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Karkian k;
     local AllianceTrigger at;
     local BlockPlayer bp;
+    local #var(DeusExPrefix)Mover door;
 
     switch (dxr.localURL)
     {
@@ -80,6 +81,11 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)HackableDevices', hd) {
             hd.hackStrength /= 3.0;
         }
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door,'ExitDoor'){
+            door.KeyIDNeeded='BasementDoor';
+        }
+
         if(!dxr.flags.IsReducedRando()) {
             k = Spawn(class'#var(prefix)Karkian',,, vectm(54.688416, 1208.957275, -237.351410), rotm(0,32768,0));
             k.BindName="NSFMinotaur";
