@@ -254,6 +254,16 @@ function CreateActionButtons()
     actionButtons[3].btn.Hide();
 }
 
+function GiveTip()
+{
+    // DXRando: disable this because we think it's more confusing than helpful?
+    /*if ((Human(Player) == None) || (!Human(Player).bGaveNewGameTips))
+    {
+        root.MessageBox(CheckboxTipHeader, CheckboxTipText, 1, False, Self);
+    }*/
+}
+
+
 defaultproperties
 {
     actionButtons(0)=(Align=HALIGN_Left,Action=AB_Cancel)
