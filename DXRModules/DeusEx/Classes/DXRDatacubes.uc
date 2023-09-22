@@ -175,6 +175,15 @@ function vanilla_datacubes_rules()
         i++;
         break;
 
+    case "03_NYC_AIRFIELDHELIBASE":
+        //etodd computer password
+        datacubes_rules[i].item_name = '03_Datacube12';
+        datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
+        datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
     case "03_NYC_747":
         //Suspension crate code
         datacubes_rules[i].item_name = '03_Datacube13';
@@ -182,6 +191,16 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
         datacubes_rules[i].allow = true;
         i++;
+        break;
+
+    case "04_NYC_HOTEL":
+        //Paul's computer password
+        datacubes_rules[i].item_name = '02_Datacube05';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, -2300, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
         break;
 
     case "04_NYC_NSFHQ":
