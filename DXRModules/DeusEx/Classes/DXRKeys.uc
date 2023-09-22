@@ -396,8 +396,25 @@ function revision_keys_rules()
         break;
 
     case "02_NYC_BATTERYPARK":
+        //Anywhere above ground
         keys_rules[i].item_name = 'KioskDoors';
         keys_rules[i].min_pos = vect(-999999, -999999, 320);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+
+        //Anywhere underground
+        keys_rules[i].item_name = 'LoadingBay';
+        keys_rules[i].min_pos = vect(-999999, -999999, -99999);
+        keys_rules[i].max_pos = vect(999999, 999999, 320);
+        keys_rules[i].allow = true;
+        i++;
+
+        break;
+
+    case "02_NYC_STREET":
+        keys_rules[i].item_name = 'SewerKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -99999);
         keys_rules[i].max_pos = vect(999999, 999999, 999999);
         keys_rules[i].allow = true;
         i++;
@@ -412,10 +429,26 @@ function revision_keys_rules()
         i++;
         break;
 
+    case "03_NYC_UNATCOHQ":
+        keys_rules[i].item_name = 'UNcloset';
+        keys_rules[i].min_pos = vect(-99999, -99999, -999999);
+        keys_rules[i].max_pos = vect(99999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "03_NYC_MOLEPEOPLE":
         keys_rules[i].item_name = 'MoleRestroomKey';
         keys_rules[i].min_pos = vect(-99999, -99999, -999999);
         keys_rules[i].max_pos = vect(1500, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "03_NYC_AIRFIELDHELIBASE":
+        keys_rules[i].item_name = 'Sewerdoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, -999999);
+        keys_rules[i].max_pos = vect(-6950, 999999, 999999);
         keys_rules[i].allow = true;
         i++;
         break;
@@ -448,12 +481,27 @@ function revision_keys_rules()
         i++;
         break;
 
+    case "04_NYC_UNATCOHQ":
+        keys_rules[i].item_name = 'UNcloset';
+        keys_rules[i].min_pos = vect(-99999, -99999, -999999);
+        keys_rules[i].max_pos = vect(99999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "04_NYC_NSFHQ":
         keys_rules[i].item_name = 'BasementDoor';
         keys_rules[i].min_pos = vect(-99999, -99999, 0);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
+
+        keys_rules[i].item_name = 'NYCSewer';
+        keys_rules[i].min_pos = vect(-99999, -99999, -30);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
         break;
 
     case "06_HONGKONG_HELIBASE":
@@ -513,6 +561,15 @@ function revision_keys_rules()
     case "10_Paris_Catacombs":
         keys_rules[i].item_name = 'cata_officedoor';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "10_Paris_Club":
+        //Anywhere except behind the back door
+        keys_rules[i].item_name = 'club_maindoors';
+        keys_rules[i].min_pos = vect(-2124, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
@@ -693,6 +750,29 @@ function revision_keys_rules()
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
+        break;
+
+    case "15_area51_bunker":
+        keys_rules[i].item_name = 'tower';
+        keys_rules[i].min_pos = vect(-1608, -1637, -99999);
+        keys_rules[i].max_pos = vect(-745, 2462, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'tower';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "15_area51_final":
+        keys_rules[i].item_name = 'door_lower';
+        keys_rules[i].min_pos = vect(-7000, -7000, -1700);
+        keys_rules[i].max_pos = vect(-2000, -2200, -534);
+        keys_rules[i].allow = true;
+        i++;
+
         break;
 
     case "15_Area51_Page":
