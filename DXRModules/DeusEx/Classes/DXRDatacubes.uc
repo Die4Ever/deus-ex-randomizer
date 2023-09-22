@@ -263,6 +263,47 @@ function vanilla_datacubes_rules()
         i++;
         break;
 
+    case "06_HONGKONG_HELIBASE":
+        //Security login
+        datacubes_rules[i].item_name = '06_Datacube18';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "06_HONGKONG_WANCHAI_STREET":
+        //"Insurgent"
+        datacubes_rules[i].item_name = '06_Book16';
+        datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
+        datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Tai-Fun and Insurgent
+        datacubes_rules[i].item_name = '06_Datacube21';
+        datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
+        datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "09_NYC_DOCKYARD":
+        //Walton Simons login
+        datacubes_rules[i].item_name = '09_Datacube11';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //USFEMA login
+        datacubes_rules[i].item_name = '09_Datacube12';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
     case "09_NYC_SHIP":
         //Ramp Code
         datacubes_rules[i].item_name = '09_Datacube14';
@@ -284,6 +325,38 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999); //top floor
         datacubes_rules[i].max_pos = vect(99999, 99999, 1956.809082);
         datacubes_rules[i].allow = false;
+        i++;
+
+        //Login for the security system in the bunker warehouse
+        datacubes_rules[i].item_name = '10_Datacube12';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "10_PARIS_CLUB":
+        // Storage room code - main area of the club
+        datacubes_rules[i].item_name = '10_Datacube07';
+        datacubes_rules[i].min_pos = vect(-1350, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //back office
+        datacubes_rules[i].item_name = '10_Datacube07';
+        datacubes_rules[i].min_pos = vect(-2100,-1290,-99999);
+        datacubes_rules[i].max_pos = vect(-1652,-820,99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "11_PARIS_EVERETT":
+        // Lucius DeBeers login
+        datacubes_rules[i].item_name = '11_Datacube01';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
         i++;
         break;
 
