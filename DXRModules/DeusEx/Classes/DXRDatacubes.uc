@@ -51,6 +51,73 @@ function vanilla_datacubes_rules()
         i++;
         break;
 
+    case "01_NYC_UNATCOHQ":
+        // Manderley's password
+        datacubes_rules[i].item_name = '01_Datacube01';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "02_NYC_BATTERYPARK":
+        // Castle Clinton underground access code - needs to be above ground
+        datacubes_rules[i].item_name = '02_Datacube15';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, 320);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        break;
+
+    case "02_NYC_UNDERGROUND":
+        // East Hatch Code
+        datacubes_rules[i].item_name = '02_Datacube03';
+        datacubes_rules[i].min_pos = vect(1960, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Other door code
+        datacubes_rules[i].item_name = '02_Datacube06';
+        datacubes_rules[i].min_pos = vect(1960, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Security Code that lets you rotate the bridge
+        datacubes_rules[i].item_name = '02_Datacube11';
+        datacubes_rules[i].min_pos = vect(-1350, -99999, -670);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Computer login
+        datacubes_rules[i].item_name = '02_Datacube02';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(-1350, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        break;
+
+    case "02_NYC_HOTEL":
+        // The code to Paul's bookshelf stash
+        datacubes_rules[i].item_name = '02_Datacube07';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, -2540, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Paul's computer password
+        datacubes_rules[i].item_name = '02_Datacube05';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, -2300, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        break;
+
     case "02_NYC_WAREHOUSE":
         // ramp code
         datacubes_rules[i].item_name = '02_Datacube09';
@@ -61,6 +128,13 @@ function vanilla_datacubes_rules()
 
         // NSF righteous
         datacubes_rules[i].item_name = '02_Datacube14';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        // TFRASE ValleyForge
+        datacubes_rules[i].item_name = '02_Datacube18';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
@@ -96,6 +170,15 @@ function vanilla_datacubes_rules()
         // allow anywhere else past the gate
         datacubes_rules[i].item_name = '03_Datacube10';
         datacubes_rules[i].min_pos = vect(1700, 2400, -999999);
+        datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "03_NYC_747":
+        //Suspension crate code
+        datacubes_rules[i].item_name = '03_Datacube13';
+        datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
         datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
         datacubes_rules[i].allow = true;
         i++;
@@ -329,7 +412,7 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
         }
     }
 
-    l("datacube "$id$" got num "$num$" with "$bads$" unsafe positions");
+    l("DatacubePositionCheck datacube "$id$" got num "$num$" with "$bads$" unsafe positions in map "$dxr.localurl);
     slot=rng(num+1);//+1 for the vanilla location, since we're not in the list
     if(slot==0) {
         l("not swapping infodevice "$ActorToString(id));
