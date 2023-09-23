@@ -3093,7 +3093,13 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "ViewSchematics":
             return "Find and view enough schematics.  These include the schematic of the Universal Contructor and the schematic of the blue fusion reactors.";
         case "ViewMaps":
-            return "Find and view enough maps of different areas.";
+            msg = "Find and view enough maps of different areas.";
+
+            if (mission<=1){
+                msg = msg $ "|n|nPaul has a map of Liberty Island available for you before you find the terrorist commander.";
+            }
+
+            return msg;
         case "ViewDissection":
             return "Find and view enough images of dissections.  This includes the images of a greasel and a gray being dissected.";
         case "ViewTouristPics":
