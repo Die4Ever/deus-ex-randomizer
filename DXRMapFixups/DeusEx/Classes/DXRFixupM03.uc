@@ -1,5 +1,16 @@
 class DXRFixupM03 extends DXRFixup;
 
+function CheckConfig()
+{
+    local int i;
+
+    add_datacubes[i].map = "03_NYC_UNATCOHQ";
+    add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+    i++;
+
+    Super.CheckConfig();
+}
+
 function PostFirstEntryMapFixes()
 {
     local Actor a;

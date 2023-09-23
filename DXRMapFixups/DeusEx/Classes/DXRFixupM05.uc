@@ -8,6 +8,10 @@ function CheckConfig()
     add_datacubes[i].text = "Agent Sherman, I've updated the demiurge password for Agent Navarre's killphrase to archon. Make sure you don't leave this datacube lying around.";
     i++;
 
+    add_datacubes[i].map = "05_NYC_UNATCOHQ";
+    add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+    i++;
+
     Super.CheckConfig();
 }
 

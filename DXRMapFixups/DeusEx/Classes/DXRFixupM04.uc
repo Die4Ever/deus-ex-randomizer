@@ -2,6 +2,17 @@ class DXRFixupM04 extends DXRFixup;
 
 var int old_pawns;// used for NYC_04_CheckPaulRaid()
 
+function CheckConfig()
+{
+    local int i;
+
+    add_datacubes[i].map = "04_NYC_UNATCOHQ";
+    add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+    i++;
+
+    Super.CheckConfig();
+}
+
 function PreTravelMapFixes()
 {
     switch(dxr.localURL) {
