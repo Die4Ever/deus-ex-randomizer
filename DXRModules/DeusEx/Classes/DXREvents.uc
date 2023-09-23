@@ -2630,7 +2630,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "M02BillyDone":
             return "Give Billy some soy food or a candy bar.  Billy is a kid located in the kiosk of Castle Clinton.";
         case "FordSchickRescued":
-            return "Rescue Ford Schick from the MJ12 lab in the sewers under New York, on your first visit to Hell's Kitchen.  The key to the sewers can be gotten from Smuggler";
+            return "Rescue Ford Schick from the MJ12 lab in the sewers under New York on your first visit to Hell's Kitchen.  The key to the sewers can be gotten from Smuggler";
         case "NiceTerrorist_Dead":
             return "Kill a friendly NSF trooper in the LaGuardia hangar.";
         case "M10EnteredBakery":
@@ -2638,7 +2638,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "FreshWaterOpened":
             return "Fix the fresh water supply in Brooklyn Bridge Station.  The water valves are behind some collapsed rubble.";
         case "assassinapartment":
-            return "Visit the apartment in Paris that has Starr the dog inside.  This apartment is over top of the media store, but is accessed from the opposite side of the building.";
+            return "Visit the apartment in Paris that has Starr the dog inside.  This apartment is over top of the media store, but is accessed from the opposite side of the building near where Jock picks you up.";
         case "GaveRentonGun":
             return "Give Gilbert Renton a gun when he is trying to protect his daughter from JoJo Fine, before the ambush.";
         case "DXREvents_LeftOnBoat":
@@ -2682,7 +2682,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "BoughtClinicPlan":
             return "On your first visit to Hell's Kitchen, go to the free clinic and buy the full treatment plan from the doctors.";
         case "ExtinguishFire":
-            return "When you're on fire, put yourself out by using a shower, sink, toilet, or urinal.";
+            return "When you're on fire, put yourself out by using a shower, sink, toilet, or urinal.  You can light yourself on fire with WP Rockets or by jumping onto a burning barrel.";
         case "SubwayHostagesSaved":
             return "Ensure both hostages in the Battery Park subway station escape on the train.";
         case "HotelHostagesSaved":
@@ -2730,7 +2730,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             }
             return msg;
         case "ActivateVandenbergBots":
-            return "Activate both military bots in Vandenberg.  The two generator keypads must be activated before you can enter the building.";
+            return "Activate both military bots in Vandenberg.  The two generator keypads must be activated before you can enter the building that the milbots are inside.";
         case "TongsHotTub":
             return "Jump into the tub of water in Tracer Tong's hideout.";
         case "JocksToilet":
@@ -2964,7 +2964,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "botorders2":
             return "Use the security computer in the upper floor of the MJ12 Robot Maintenance facility to alter the AI of the security bots.";
         case "BathroomFlags":
-            return "Place a flag in Manderley's bathroom enough times.  This can only be done once per visit.";
+            return "Place a flag in Manderley's bathroom enough times.  This can only be done once per visit. I'm sure this is how you get to the secret ending!";
         case "SiloSlide":
             return "When entering the missile silo, open the vent in the floor and go down the slide that drops you into the water underneath the missile.";
         case "SiloWaterTower":
@@ -2988,9 +2988,9 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "Cremation":
             return "Kill (or knock out) a chef in Paris, then throw his body either into a fireplace or onto a stovetop.";
         case "OceanLabGreenBeacon":
-            return "Swim to the green beacon on top of the Ocean Lab crew module.  The green beacon can be seen out the window of the sub bay of the lab itself.";
+            return "Swim to the green beacon on top of the Ocean Lab crew module.  The green beacon can be seen out the window of the sub bay on the ocean floor.";
         case "PageTaunt_Played":
-            return "After recovering the schematics for the Universal Constructor at the bottom of the Ocean Lab, talk to Bob Page on the communicator on the way out.";
+            return "After recovering the schematics for the Universal Constructor below the Ocean Lab, talk to Bob Page on the communicator before leaving.";
         case "JerryTheVentGreasel_Dead":
             return "Kill the greasel in the vents over the main hall of the MJ12 Lab in Hong Kong.  His name is Jerry and he is a good boy.";
         case "BiggestFan":
@@ -3190,9 +3190,9 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             } else if (mission<=10){
                 msg=msg$"The Paris catacombs are just completely loaded with skulls and femurs.";
             } else if (mission<=11){
-                msg=msg$"A skull can be found in the Cathedral.";
+                msg=msg$"A skull can be found underwater at the Cathedral.";
             } else if (mission<=14){
-                msg=msg$"Several skulls and femurs can be found in the main portion of the Ocean Lab.";
+                msg=msg$"Several skulls and femurs can be found in the OceanLab on the ocean floor.";
             }
             return msg;
         case "TrophyHunter":
@@ -3210,7 +3210,25 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             }
             return msg;
         case "SlippingHazard":
-            return "Destroy enough 'Wet Floor' signs, leaving the area unmarked and dangerous.";
+            msg = "Destroy enough 'Wet Floor' signs, leaving the area unmarked and dangerous.";
+            if (mission<=1){
+                msg = msg$"  There are signs in UNATCO HQ.";
+            } else if (mission<=2){
+                msg = msg$"  There is a sign in the hotel.";
+            } else if (mission<=3){
+                msg = msg$"  There are signs in UNATCO HQ.";
+            } else if (mission<=4){
+                msg = msg$"  There are signs in UNATCO HQ, and another one in the hotel.";
+            } else if (mission<=5){
+                msg = msg$"  There are signs in UNATCO HQ.";
+            } else if (mission<=6){
+                msg = msg$"  There is a sign in the MJ12 Helibase and on Tonnochi road.";
+            } else if (mission<=8){
+                msg = msg$"  There is a sign in the hotel.";
+            } else if (mission<=9){
+                msg = msg$"  There are signs on the lower decks of the superfreighter.";
+            }
+            return msg;
         case "Dehydrated":
             return "Destroy enough water coolers or water fountains.";
         case "PresentForManderley":
