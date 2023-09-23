@@ -387,6 +387,81 @@ function vanilla_datacubes_rules()
         i++;
         break;
 
+    case "14_VANDENBERG_SUB":
+        //Code for URV Bay doors - anywhere offshore
+        datacubes_rules[i].item_name = '14_Datacube01';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 2000, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Upper area onshore
+        datacubes_rules[i].item_name = '14_Datacube01';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -150);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "14_OCEANLAB_SILO":
+        //Code for missile launch controls - anywhere above ground
+        datacubes_rules[i].item_name = '14_Datacube05';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, 1415);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //underground, outside of the actual silo
+        datacubes_rules[i].item_name = '14_Datacube05';
+        datacubes_rules[i].min_pos = vect(-99999, -3610, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 1415);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "14_OCEANLAB_LAB":
+        //OCEANGUARD code to open sub bay doors.  This is SUPER IMPORTANT.  This needs to not fuck up.
+        //Intent is for it to be able to spawn anywhere from the sub bay up to and including the storage room, but not the locked one
+
+        //Exclude Locked storage room
+        datacubes_rules[i].item_name = '14_Datacube06';
+        datacubes_rules[i].min_pos = vect(598,-178,-1635);
+        datacubes_rules[i].max_pos = vect(976,322,-1457);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Between Sub Bay and door to Greasel Lab, top floor
+        datacubes_rules[i].item_name = '14_Datacube06';
+        datacubes_rules[i].min_pos = vect(-260, -240, -1637);
+        datacubes_rules[i].max_pos = vect(1879, 960, -1457);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //All floors of that main central building with the sub bay
+        datacubes_rules[i].item_name = '14_Datacube06';
+        datacubes_rules[i].min_pos = vect(-230,-221,-2535);
+        datacubes_rules[i].max_pos = vect(464,1431,-1448);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Explicitly exclude EVERYTHING else for safety
+        datacubes_rules[i].item_name = '14_Datacube06';
+        datacubes_rules[i].min_pos = vect(-99999,-99999,-99999);
+        datacubes_rules[i].max_pos = vect(99999,99999,99999);
+        datacubes_rules[i].allow = false;
+        i++;
+        break;
+
+    case "14_OCEANLAB_UC":
+        //Code for walkway security computer - could go anywhere except for across the bridge (which has no loose items)
+        datacubes_rules[i].item_name = '14_Datacube03';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        break;
+
     case "15_AREA51_PAGE":
         datacubes_rules[i].item_name = '15_Datacube18';// LAB 12 / graytest
         datacubes_rules[i].min_pos = vect(4774.132813, -10507.679688, -5294.627441);
@@ -398,6 +473,15 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = false;
+        i++;
+        break;
+
+    case "15_AREA51_FINAL":
+        //Code for stairwell blastdoor
+        datacubes_rules[i].item_name = '15_Datacube08';
+        datacubes_rules[i].min_pos = vect(-5655, -5190, -1700);
+        datacubes_rules[i].max_pos = vect(-2376, -2527, -534);
+        datacubes_rules[i].allow = true;
         i++;
         break;
     }
