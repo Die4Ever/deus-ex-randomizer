@@ -356,6 +356,18 @@ function FixUNATCOCarterCloset()
     }
 }
 
+function FixAlexsEmail()
+{
+    local #var(prefix)ComputerPersonal cp;
+
+    foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
+        if (cp.UserList[0].UserName=="ajacobson" && cp.UserList[1].UserName==""){
+            cp.TextPackage = "#var(package)";
+            break;
+        }
+    }
+}
+
 function FixSamCarter()
 {
     local SamCarter s;

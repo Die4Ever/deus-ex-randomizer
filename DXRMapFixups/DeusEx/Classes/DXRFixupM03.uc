@@ -239,6 +239,7 @@ function PreFirstEntryMapFixes()
         break;
     case "03_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
+        FixAlexsEmail();
 
         //Move weapon mod out of Manderley's secret (inaccessible) safe
         foreach AllActors(class'#var(prefix)WeaponModRecoil',wmr){

@@ -82,6 +82,8 @@ function PreFirstEntryMapFixes()
 
 #ifdef vanillamaps
     case "05_NYC_UNATCOHQ":
+        FixAlexsEmail();
+
         // Anna's dialog depends on this flag
         dxr.flagbase.SetBool('DL_Choice_Played', true,, 6);
 
