@@ -242,6 +242,8 @@ function AddMissionGoals()
     //You might still have the image in a NG+ scenario
     if (player().FindInventoryType(class'Image05_NYC_MJ12Lab')==None){
         item = Spawn(class'Image05_NYC_MJ12Lab');
+        item.ItemName=class'Image05_NYC_MJ12Lab'.Default.imageDescription;
+        item.ItemArticle="-";
         item.Frob(player(), None);
     }
 }
