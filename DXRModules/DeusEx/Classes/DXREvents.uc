@@ -2456,6 +2456,7 @@ function string RemapBingoEvent(string eventname)
         case "Louis_Dead":
         case "Defoe_Dead":
         case "Cassandra_Dead":
+        case "ClubBouncer_Dead":
             _MarkBingo("DestroyCapitalism"); //Split into another event, but still return this one as-is
             return eventname;
         case "MeetWalton_Played":
@@ -3161,7 +3162,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
                 msg=msg$" - The tea house waiter in the market needs to go.|n";
                 msg=msg$" - In the VersaLife offices, you can eliminate Mr. Hundley.|n";
                 msg=msg$" - In the canals, you must end the life of the Old China Hand bartender, the man selling maps there, and the smuggler on the boat.|n";
-                msg=msg$" - In the Lucky Money, you must eliminate the bartender, the mamasan selling escorts, and the doorgirl.";
+                msg=msg$" - In the Lucky Money, you must eliminate the bartender, the bouncer, the mamasan selling escorts, and the doorgirl.";
             } else if (mission<=8){
                 msg=msg$"Jordan Shea needs to go.";
             } else if (mission<=10){
