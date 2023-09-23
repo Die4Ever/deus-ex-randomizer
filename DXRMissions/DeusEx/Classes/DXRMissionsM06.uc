@@ -1,5 +1,7 @@
 class DXRMissionsM06 extends DXRMissions;
 
+var bool M08Briefing;
+
 
 function int InitGoals(int mission, string map)
 {
@@ -174,10 +176,30 @@ function int InitGoalsRev(int mission, string map)
 
 function MissionTimer()
 {
+    local #var(prefix)TracerTong tong;
+
     switch(dxr.localURL) {
     case "06_HONGKONG_WANCHAI_MARKET":
         if(dxr.flags.settings.goals > 0)
             UpdateGoalWithRandoInfo('InvestigateMaggieChow', "The sword may not be in Maggie's apartment, instead there will be a Datacube with a hint.");
+        break;
+    case "06_HONGKONG_TONGBASE":
+        //Immediately start M08Briefing after M07Briefing, if possible
+        if (!M08Briefing && dxr.flagbase.GetBool('M07Briefing_played') && !dxr.flagbase.GetBool('M08Briefing_played')){
+            if (player().conPlay==None){
+                foreach AllActors(class'#var(prefix)TracerTong',tong){ break;}
+
+                //Ensure we have line of sight and are reasonably close, otherwise this looks really dumb
+                //(Particularly if you did this the expected way with multiple visits)
+                if (VSize(tong.Location-player().Location) <= 180 && FastTrace(tong.Location,player().Location)){
+                    if (dxr.FlagBase.GetBool('LDDPJCIsFemale')){
+                        M08Briefing = (player().StartConversationByName('FemJCM08Briefing',tong));
+                    } else {
+                        M08Briefing = (player().StartConversationByName('M08Briefing',tong));
+                    }
+                }
+            }
+        }
         break;
     }
 }
