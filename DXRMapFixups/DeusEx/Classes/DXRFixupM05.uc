@@ -33,6 +33,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)JaimeReyes j;
     local #var(prefix)MJ12Troop mj12;
     local #var(prefix)RatGenerator rg;
+    local #var(prefix)NanoKey k;
     local DXREnemies dxre;
     local int i;
 
@@ -103,6 +104,12 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)JaimeReyes', j) {
             RemoveFears(j);
         }
+
+        k = Spawn(class'#var(prefix)NanoKey',,, vectm(420,195,333));
+        k.KeyID = 'UNOfficeDoorKey';
+        k.Description = "UNATCO Office Door Key";
+        if(dxr.flags.settings.keysrando > 0)
+            GlowUp(k);
 
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter

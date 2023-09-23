@@ -106,6 +106,14 @@ function vanilla_keys_rules()
         i++;
         break;
 
+    case "05_NYC_UNATCOHQ":
+        keys_rules[i].item_name = 'UNOfficeDoorKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "06_HONGKONG_HELIBASE":
         // Not allowed on the rooftop
         keys_rules[i].item_name = 'LockerMasterKey';
