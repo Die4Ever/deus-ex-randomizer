@@ -148,6 +148,8 @@ function FixCodes()
 
     switch(dxr.localURL) {
         case "02_NYC_HOTEL":
+        case "04_NYC_HOTEL":
+        case "08_NYC_HOTEL":
             newpassword = GeneratePasscode("4321");
             ReplacePassword("count back from 4", newpassword);
             break;

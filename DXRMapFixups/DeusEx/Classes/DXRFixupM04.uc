@@ -54,6 +54,13 @@ function PreFirstEntryMapFixes()
         }
 
         Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+
+        SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+        Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
+        Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
+        Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
+        Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
         break;
 #endif
 

@@ -201,6 +201,13 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = true;
         i++;
 
+        // The code to Paul's bookshelf stash
+        datacubes_rules[i].item_name = '02_Datacube07';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, -2540, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
         break;
 
     case "04_NYC_NSFHQ":
@@ -284,6 +291,14 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].item_name = '06_Datacube21';
         datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
         datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+    case "08_NYC_HOTEL":
+        // The code to Paul's bookshelf stash
+        datacubes_rules[i].item_name = '02_Datacube07';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, -2540, 99999);
         datacubes_rules[i].allow = true;
         i++;
         break;
