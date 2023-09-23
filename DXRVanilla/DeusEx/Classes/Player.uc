@@ -569,109 +569,84 @@ exec function bool DropItem(optional Inventory inv, optional bool bDrop)
 			RemoveItemFromSlot(item);
 		}
 
-		// if we are highlighting something, try to place the object on the target
-		if ((FrobTarget != None) && !item.IsA('POVCorpse'))
-		{
-			item.Velocity = vect(0,0,0);
+        // throw velocity is based on augmentation
+        if (AugmentationSystem != None)
+        {
+            mult = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
+            if (mult == -1.0)
+                mult = 1.0;
+        }
 
-			// play the correct anim
-			PlayPickupAnim(FrobTarget.Location);
+        if (bDrop)
+        {
+            item.Velocity = VRand() * 30;
 
-			// try to drop the object about one foot above the target
-			size = FrobTarget.CollisionRadius - item.CollisionRadius * 2;
-			dropVect.X = size/2 - FRand() * size;
-			dropVect.Y = size/2 - FRand() * size;
-			dropVect.Z = FrobTarget.CollisionHeight + item.CollisionHeight + 16;
-			if (FastTrace(dropVect))
-			{
-				item.DropFrom(FrobTarget.Location + dropVect);
-			}
-			else
-			{
-				ClientMessage(CannotDropHere);
-				bDropped = False;
-			}
-		}
-		else
-		{
-			// throw velocity is based on augmentation
-			if (AugmentationSystem != None)
-			{
-				mult = AugmentationSystem.GetAugLevelValue(class'AugMuscle');
-				if (mult == -1.0)
-					mult = 1.0;
-			}
+            // play the correct anim
+            PlayPickupAnim(item.Location);
+        }
+        else
+        {
+            item.Velocity = Vector(ViewRotation) * mult * 300 + vect(0,0,220) + 40 * VRand();
 
-			if (bDrop)
-			{
-				item.Velocity = VRand() * 30;
+            // play a throw anim
+            PlayAnim('Attack',,0.1);
+        }
 
-				// play the correct anim
-				PlayPickupAnim(item.Location);
-			}
-			else
-			{
-				item.Velocity = Vector(ViewRotation) * mult * 300 + vect(0,0,220) + 40 * VRand();
+        GetAxes(ViewRotation, X, Y, Z);
+        dropVect = Location + 0.8 * CollisionRadius * X;
+        dropVect.Z += BaseEyeHeight;
 
-				// play a throw anim
-				PlayAnim('Attack',,0.1);
-			}
+        // if we are a corpse, spawn the actual carcass
+        if (item.IsA('POVCorpse'))
+        {
+            if (POVCorpse(item).carcClassString != "")
+            {
+                carcClass = class<DeusExCarcass>(DynamicLoadObject(POVCorpse(item).carcClassString, class'Class'));
+                if (carcClass != None)
+                {
+                    carc = Spawn(carcClass);
+                    if (carc != None)
+                    {
+                        carc.Mesh = carc.Mesh2;
+                        carc.KillerAlliance = POVCorpse(item).KillerAlliance;
+                        carc.KillerBindName = POVCorpse(item).KillerBindName;
+                        carc.Alliance = POVCorpse(item).Alliance;
+                        carc.bNotDead = POVCorpse(item).bNotDead;
+                        carc.bEmitCarcass = POVCorpse(item).bEmitCarcass;
+                        carc.CumulativeDamage = POVCorpse(item).CumulativeDamage;
+                        carc.MaxDamage = POVCorpse(item).MaxDamage;
+                        carc.itemName = POVCorpse(item).CorpseItemName;
+                        carc.CarcassName = POVCorpse(item).CarcassName;
+                        carc.Velocity = item.Velocity * 0.5;
+                        item.Velocity = vect(0,0,0);
+                        carc.bHidden = False;
+                        carc.SetPhysics(PHYS_Falling);
+                        carc.SetScaleGlow();
+                        if (carc.SetLocation(dropVect))
+                        {
+                            // must circumvent PutInHand() since it won't allow
+                            // things in hand when you're carrying a corpse
+                            SetInHandPending(None);
+                            item.Destroy();
+                            item = None;
+                        }
+                        else
+                            carc.bHidden = True;
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (FastTrace(dropVect))
+            {
+                item.DropFrom(dropVect);
+                item.bFixedRotationDir = True;
+                item.RotationRate.Pitch = (32768 - Rand(65536)) * 4.0;
+                item.RotationRate.Yaw = (32768 - Rand(65536)) * 4.0;
+            }
+        }
 
-			GetAxes(ViewRotation, X, Y, Z);
-			dropVect = Location + 0.8 * CollisionRadius * X;
-			dropVect.Z += BaseEyeHeight;
-
-			// if we are a corpse, spawn the actual carcass
-			if (item.IsA('POVCorpse'))
-			{
-				if (POVCorpse(item).carcClassString != "")
-				{
-					carcClass = class<DeusExCarcass>(DynamicLoadObject(POVCorpse(item).carcClassString, class'Class'));
-					if (carcClass != None)
-					{
-						carc = Spawn(carcClass);
-						if (carc != None)
-						{
-							carc.Mesh = carc.Mesh2;
-							carc.KillerAlliance = POVCorpse(item).KillerAlliance;
-							carc.KillerBindName = POVCorpse(item).KillerBindName;
-							carc.Alliance = POVCorpse(item).Alliance;
-							carc.bNotDead = POVCorpse(item).bNotDead;
-							carc.bEmitCarcass = POVCorpse(item).bEmitCarcass;
-							carc.CumulativeDamage = POVCorpse(item).CumulativeDamage;
-							carc.MaxDamage = POVCorpse(item).MaxDamage;
-							carc.itemName = POVCorpse(item).CorpseItemName;
-							carc.CarcassName = POVCorpse(item).CarcassName;
-							carc.Velocity = item.Velocity * 0.5;
-							item.Velocity = vect(0,0,0);
-							carc.bHidden = False;
-							carc.SetPhysics(PHYS_Falling);
-							carc.SetScaleGlow();
-							if (carc.SetLocation(dropVect))
-							{
-								// must circumvent PutInHand() since it won't allow
-								// things in hand when you're carrying a corpse
-								SetInHandPending(None);
-								item.Destroy();
-								item = None;
-							}
-							else
-								carc.bHidden = True;
-						}
-					}
-				}
-			}
-			else
-			{
-				if (FastTrace(dropVect))
-				{
-					item.DropFrom(dropVect);
-					item.bFixedRotationDir = True;
-					item.RotationRate.Pitch = (32768 - Rand(65536)) * 4.0;
-					item.RotationRate.Yaw = (32768 - Rand(65536)) * 4.0;
-				}
-			}
-		}
 
 		// if we failed to drop it, put it back inHand
 		if (item != None)
