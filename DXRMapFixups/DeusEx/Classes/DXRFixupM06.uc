@@ -40,6 +40,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)WeaponNanoSword dts;
     local #var(prefix)RatGenerator rg;
     local #var(prefix)Credits creds;
+    local #var(prefix)Greasel g;
 #ifdef injections
     local #var(prefix)DataCube dc;
 #else
@@ -199,6 +200,13 @@ function PreFirstEntryMapFixes()
                 pad.Destroy();
             else if (pad.Tag == 'RealKeypad_02')
                 pad.bHidden = False;
+        }
+
+        foreach AllActors(class'#var(prefix)Greasel',g){
+            g.bImportant = True;
+            g.BindName="JerryTheVentGreasel";
+            g.FamiliarName = "Jerry the Vent Greasel";
+            g.UnfamiliarName = "Jerry the Vent Greasel";
         }
 
         SpawnDatacubeImage(vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0),Class'DeusEx.Image15_GrayDisection');

@@ -176,7 +176,6 @@ function SetWatchFlags() {
     local #var(prefix)Trigger trig;
     local BingoTrigger bt;
     local #var(prefix)LowerClassMale lcm;
-    local #var(prefix)Greasel g;
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)Poolball ball;
     local #var(prefix)DataLinkTrigger dlt;
@@ -672,12 +671,6 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'HongKongGrays',zone.Location);
 
-        foreach AllActors(class'#var(prefix)Greasel',g){
-            g.bImportant = True;
-            g.BindName="JerryTheVentGreasel";
-            g.FamiliarName = "Jerry the Vent Greasel";
-            g.UnfamiliarName = "Jerry the Vent Greasel";
-        }
         WatchFlag('JerryTheVentGreasel_Dead');
 
         WatchFlag('FlowersForTheLab');
