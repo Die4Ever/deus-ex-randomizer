@@ -2658,7 +2658,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "MeetAI4_Played":
             return "Talk to Morpheus, the prototype AI locked away in Everett's house.";
         case "DL_Flooded_Played":
-            return "Swim outside of the Ocean Lab and enter the flooded section through the hole blasted in the underside of the structure.";
+            return "Swim outside of the Ocean Lab on the ocean floor and enter the flooded section through the hole blasted in the underside of the structure.  There is a flickering light above the hole you need to enter.";
         case "JockSecondStory":
             return "Buy two beers from Jordan Shea and give them to Jock in the Underworld bar.";
         case "M07ChenSecondGive_Played":
@@ -2724,7 +2724,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             if (mission<=1){
                 msg=msg$"There is a ships wheel on the wall of the hut Harley Filben is in.";
             }else if (mission<=6){
-                msg=msg$"There is a ships wheel on the smugglers ship in the Wan Chai canals, as well as on the wall of the Boat Persons house (off the side of the canal)";
+                msg=msg$"There is a ships wheel on the smuggler's ship in the Wan Chai canals, as well as on the wall of the Boat Persons house (off the side of the canal)";
             }else if (mission<=9){
                 msg=msg$"There is a ships wheel on the bridge of the Superfreighter.";
             }
