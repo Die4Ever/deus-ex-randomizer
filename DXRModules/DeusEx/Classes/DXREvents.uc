@@ -2573,7 +2573,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             } else if (mission<=4){
                 msg=msg$"She can be found somewhere in New York after sending the NSF signal";
             } else if (mission<=5){
-                msg=msg$"She can be found at the exit to UNATCO HQ";
+                msg=msg$"She can be found at the exit of UNATCO HQ";
             }
         case "WarehouseEntered":
             return "Enter the underground warehouse in Paris.  This warehouse is located in the building across the street from the entrance to the Catacombs.";
@@ -2588,7 +2588,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "Chad_Dead":
             return "Kill Chad Dumier.  He can be found in the Silhouette hideout in the Paris catacombs";
         case "paris_hostage_Dead":
-            return "Kill both of the hostages in the Paris catacombs.  They can be found locked in the centre of the catacombs bunker occupied by MJ12.";
+            return "Let both of the hostages in the Paris catacombs die (whether you do it yourself or not).  They can be found locked in the centre of the catacombs bunker occupied by MJ12.";
         case "Hela_Dead":
             return "Kill Hela, the woman in black leading the MJ12 force in the Paris catacombs";
         case "Renault_Dead":
@@ -2668,7 +2668,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "StantonAmbushDefeated":
             return "Defend Stanton Dowd from the MJ12 ambush after talking to him.";
         case "SmugglerDied":
-            return "Let Smuggler die by not warning him of the UNATCO raid.";
+            return "Let Smuggler die by not warning him of the UNATCO raid.  This can be done either by not talking to him at all, or not warning him of the raid if you talk to him after talking to Dowd.";
         case "GaveDowdAmbrosia":
             return "Find a vial of ambrosia on the upper decks of the superfreighter and bring to to Stanton Dowd in the graveyard.";
         case "JockBlewUp":
@@ -2682,7 +2682,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "BoughtClinicPlan":
             return "On your first visit to Hell's Kitchen, go to the free clinic and buy the full treatment plan from the doctors.";
         case "ExtinguishFire":
-            return "When you're on fire, put yourself out by using a shower, sink, toilet, or urinal.  You can light yourself on fire with WP Rockets or by jumping onto a burning barrel.";
+            return "Put yourself out by using a shower, sink, toilet, or urinal while on fire.  You can light yourself on fire with WP Rockets or by jumping onto a burning barrel.";
         case "SubwayHostagesSaved":
             return "Ensure both hostages in the Battery Park subway station escape on the train.";
         case "HotelHostagesSaved":
