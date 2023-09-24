@@ -966,6 +966,9 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'CliffSacrifice',vectm(1915,2795,-3900),10000,40);
         bt.MakeClassProximityTrigger(class'#var(DeusExPrefix)Carcass');
 
+        bt = class'BingoTrigger'.static.Create(self,'CliffSacrifice',vectm(-190,-1350,-2760),8000,40);
+        bt.MakeClassProximityTrigger(class'#var(DeusExPrefix)Carcass');
+
         bt = class'BingoTrigger'.static.Create(self,'VandenbergShaft',vectm(1442.694580,1303.784180,-1755),110,10);
 
 
@@ -2754,7 +2757,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "VandenbergToilet":
             return "Use the one toilet in Vandenberg.  It is located inside the Comm building outside.";
         case "BoatEngineRoom":
-            return "Enter the small room at the back of the smugglers boat in the Hong Kong canals.  The room can be accessed by using one of the hanging lanterns near the back of the boat.";
+            return "Enter the small room at the back of the smuggler's boat in the Hong Kong canals.  The room can be accessed by using one of the hanging lanterns near the back of the boat.";
         case "SecurityBot2_ClassDead":
             return "Destroy enough of the two legged walking security bots.  You must destroy them yourself and disabling them with EMP does not count.";
         case "SecurityBotSmall_ClassDead":
@@ -3126,7 +3129,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "dumbwaiter":
             return "Use the DuClare dumbwaiter between the kitchen and Beth's room.";
         case "secretdoor01":
-            return "Twist the flickering light in the Cathedral and open the secret door.";
+            return "Twist the pulsating light in the Cathedral and open the secret door.";
         case "CathedralLibrary":
             return "Enter the library in the Cathedral.";
         case "DuClareKeys":
