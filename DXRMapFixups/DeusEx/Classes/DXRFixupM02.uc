@@ -103,6 +103,9 @@ function PreFirstEntryMapFixes()
             d.bFrobbable = true;
         }
         break;
+    case "02_NYC_BAR":
+        Spawn(class'BarDancer',,,vectm(-1475,-580,48),rotm(0,25000,0));
+        break;
     }
 }
 

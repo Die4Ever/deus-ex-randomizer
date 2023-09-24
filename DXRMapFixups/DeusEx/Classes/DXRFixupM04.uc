@@ -159,6 +159,9 @@ function PreFirstEntryMapFixes()
             bp.bBlockPlayers=false;
         }
         break;
+    case "04_NYC_BAR":
+        Spawn(class'BarDancer',,,vectm(-1440,340,48),rotm(0,-16348,0));
+        break;
     }
 }
 

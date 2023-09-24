@@ -3079,7 +3079,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "MJ12Commando_peeptime":
             return "Watch MJ12 Commandos through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "PawnState_Dancing":
-            return "Watch someone dance through a pair of binoculars.";
+            return "Watch someone dance through a pair of binoculars.  There should be someone vibing in a bar or club.";
         case "BirdWatching":
             return "Watch birds through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "NYEagleStatue_peeped":
@@ -3662,7 +3662,7 @@ defaultproperties
     bingo_options(204)=(event="UNATCOTroop_peeptime",desc="Watch UNATCO Troopers for %s seconds",max=30,missions=318)
     bingo_options(205)=(event="MJ12Troop_peeptime",desc="Watch MJ12 Troopers for %s seconds",max=30,missions=57204)
     bingo_options(206)=(event="MJ12Commando_peeptime",desc="Watch MJ12 Commandos for %s seconds",max=15,missions=56384)
-    bingo_options(207)=(event="PawnState_Dancing",desc="You can dance if you want to",max=1)
+    bingo_options(207)=(event="PawnState_Dancing",desc="You can dance if you want to",max=1,missions=1364)
     bingo_options(208)=(event="BirdWatching",desc="Watch birds for %s seconds",max=30,missions=19806)
     bingo_options(209)=(event="NYEagleStatue_peeped",desc="Look at a bronze eagle statue",max=1,missions=28)
     bingo_options(210)=(event="BrokenPianoPlayed",desc="Play a broken piano",max=1,missions=64)
