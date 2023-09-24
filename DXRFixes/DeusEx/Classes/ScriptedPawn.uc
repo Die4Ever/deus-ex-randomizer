@@ -562,6 +562,34 @@ function bool IsProjectileDangerous(DeusExProjectile projectile)
     return Super.IsProjectileDangerous(projectile);
 }
 
+function SupportActor(Actor standingActor)
+{
+    local float  zVelocity;
+	local float  baseMass;
+	local float  standingMass;
+	local vector damagePoint;
+	local float  damage;
+
+    //Friendly stomp logic
+    if (WillTakeStompDamage(standingActor)==false){
+        if (!((Physics == PHYS_Swimming) && Region.Zone.bWaterZone)){
+            standingMass = FMax(1, standingActor.Mass);
+            baseMass     = FMax(1, Mass);
+            zVelocity    = standingActor.Velocity.Z;
+            damagePoint  = Location + vect(0,0,1)*(CollisionHeight-1);
+            damage       = (1 - (standingMass/baseMass) * (zVelocity/100));
+
+            //a reasonable stomp does about 3-5 damage, then 1.5 each instance you
+            //stay on top of them.  Filter out those repeat damages, only deal damage
+            //when you actively take a good ol' stomp on 'em.
+            if ((zVelocity*standingMass < -7500) && (damage > 3)){
+                TakeDamage(damage, standingActor.Instigator, damagePoint, 0.2*standingActor.Velocity, 'stomped');
+            }
+        }
+    }
+    Super.SupportActor(standingActor);
+}
+
 defaultproperties
 {
     EmpHealth=50
