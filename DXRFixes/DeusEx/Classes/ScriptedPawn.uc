@@ -547,6 +547,21 @@ Begin:
     Destroy();
 }
 
+function bool IsProjectileDangerous(DeusExProjectile projectile)
+{
+    //If they're mostly immune, don't consider it a threat
+    if (ShieldDamage(projectile.damageType)<0.25){
+        return False;
+    }
+
+    //Same deal here
+    if (ModifyDamage(100,self,vect(0,0,0),vect(0,0,0),projectile.damageType)<=25){
+        return False;
+    }
+
+    return Super.IsProjectileDangerous(projectile);
+}
+
 defaultproperties
 {
     EmpHealth=50
