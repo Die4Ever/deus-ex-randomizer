@@ -30,6 +30,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Containers c;
     local Rotator rot;
     local #var(prefix)LAM lam;
+    local #var(prefix)GasGrenade gasgren;
     local Switch1 s;
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)RatGenerator rg;
@@ -140,6 +141,21 @@ function PreFirstEntryMapFixes()
             lam.bCollideWorld = true;
             break;
         }
+
+#ifdef vanillamaps
+        foreach AllActors(class'#var(prefix)GasGrenade',gasgren) {
+            //This one has falling physics normally, so just fix it
+            //It can fall out of position before the physics get fixed, so put it back
+            if (gasgren.name=='GasGrenade0'){
+                gasgren.SetPhysics(PHYS_None);
+                gasgren.bCollideWorld = false;
+                gasgren.SetRotation(rotm(0,-16472,0,GetRotationOffset(gasgren.Class)));
+                gasgren.SetLocation(vectm(1602.174,2470.3386,-431.6885));
+                gasgren.bCollideWorld = true;
+                break;
+            }
+        }
+#endif
 
         //They put the key ID in the tag for some reason
         foreach AllActors(class'#var(prefix)NanoKey',key,'SupplyRoom'){
