@@ -569,6 +569,8 @@ function SupportActor(Actor standingActor)
 	local float  standingMass;
 	local vector damagePoint;
 	local float  damage;
+	local vector newVelocity;
+	local float  angle;
 
     //Friendly stomp logic
     if (WillTakeStompDamage(standingActor)==false && PlayerPawn(standingActor)!=None){
@@ -588,7 +590,22 @@ function SupportActor(Actor standingActor)
             }
         }
     }
-    Super.SupportActor(standingActor);
+
+    //ScriptedPawns can't stomp other ScriptedPawns
+    if (ScriptedPawn(standingActor)==None){
+        Super.SupportActor(standingActor);
+    } else {
+        //Still bounce them off
+        angle = FRand()*Pi*2;
+        newVelocity.X = cos(angle);
+        newVelocity.Y = sin(angle);
+        newVelocity.Z = 0;
+        newVelocity *= FRand()*25 + 25;
+        newVelocity += standingActor.Velocity;
+        newVelocity.Z = 50;
+        standingActor.Velocity = newVelocity;
+        standingActor.SetPhysics(PHYS_Falling);
+    }
 }
 
 defaultproperties
