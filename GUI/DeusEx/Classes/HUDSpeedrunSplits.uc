@@ -11,10 +11,11 @@ var config Font  textfont;
 
 var config Color colorBackground, colorText, colorBehind, colorBehindLosingTime, colorBehindGainingTime, colorAhead, colorAheadLosingTime, colorAheadGainingTime, colorBest, colorBestBehind, colorBestAhead;
 
-var config bool enabled, showPrevprev, showPrev, showCurrentMission, showNext, showSeg, showCur, showPB, showSpeed;
+var config bool enabled, showPrevprev, showPrev, showCurrentMission, showNext, showSeg, showCur, showPB, showSpeed, showAllSplits;
 
 var config int PB[16];
 var config int Golds[16];
+var config byte alwaysShowSplit[16];
 
 var config string title, subtitle, footer;
 var string ttitle, tsubtitle, tfooter;
@@ -218,9 +219,8 @@ function InitSizes(GC gc)
 
 function DrawWindow(GC gc)
 {
-    local int i, t, prev, prevTime, prevprev, prevprevTime, cur, curTime, next, nextTime, time, total;
-    local float x, y, h, f, delta;
-    local int cur_totals[16];
+    local int i, t, prev, prevprev, cur, curTime, next, time, total, prevTotal;
+    local float x, y, f, delta;
     local string msg, s;
 
     if(stats == None) return;
@@ -234,20 +234,12 @@ function DrawWindow(GC gc)
     curTime = stats.missions_times[cur];
     curTime += stats.missions_menu_times[cur];
 
-    for(i=1; i<ArrayCount(cur_totals); i++) {
-        for(t=i; t<ArrayCount(cur_totals); t++) {
-            cur_totals[t] += stats.missions_times[i];
-            cur_totals[t] += stats.missions_menu_times[i];
-        }
-    }
-
-    for(i=cur-1; i>=1; i--) {
+    for(i=1; i<cur; i++) {
         time = stats.missions_times[i];
         time += stats.missions_menu_times[i];
         if(time > 0) {
+            prevTotal += time;
             prev = i;
-            prevTime = time;
-            break;
         }
     }
 
@@ -256,7 +248,6 @@ function DrawWindow(GC gc)
         time += stats.missions_menu_times[i];
         if(time > 0) {
             prevprev = i;
-            prevprevTime = time;
             break;
         }
     }
@@ -264,7 +255,6 @@ function DrawWindow(GC gc)
     for(i=cur+1; i<=15; i++) {
         if(balanced_splits[i] > 0) {
             next = i;
-            nextTime = balanced_splits[next];
             break;
         }
     }
@@ -276,54 +266,30 @@ function DrawWindow(GC gc)
     if(left_col == 0) {
         InitSizes(gc);
     }
-    h = text_height;
 
     gc.SetTextColor(colorText);
     gc.SetAlignments(HALIGN_Center, VALIGN_Center);
     if(ttitle!="") {
         gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, ttitle);
-        y += h;
+        y += text_height;
     }
     if(tsubtitle!="") {
         gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, tsubtitle);
-        y += h;
+        y += text_height;
     }
     gc.SetAlignments(HALIGN_Left, VALIGN_Center);
 
-    // prevprev split
-    if(prevprev > 0 && showPrevprev) {
-        time = cur_totals[prevprev] - balanced_splits_totals[prevprev];
-        t = prevprevTime - balanced_splits[prevprev];
-        msg = fmtTimeDiff(time);
-
-        s = fmtTime(cur_totals[prevprev]);
-        DrawTextLine(gc, MissionName(prevprev), msg, GetCmpColor(time, t, prevprevTime, Golds[prevprev]), x, y, s);
-        y += h;
-    }
-
-    // previous split
-    if(prev > 0 && showPrev) {
-        time = cur_totals[prev] - balanced_splits_totals[prev];
-        t = prevTime - balanced_splits[prev];
-        msg = fmtTimeDiff(time);
-
-        s = fmtTime(cur_totals[prev]);
-        DrawTextLine(gc, MissionName(prev), msg, GetCmpColor(time, t, prevTime, Golds[prev]), x, y, s);
-        y += h;
-    }
-
-    // current/upcoming split, showing balanced PB time
-    if(showCurrentMission) {
-        msg = fmtTime(balanced_splits_totals[cur]);
-        DrawTextLine(gc, MissionName(cur), "", colorText, x, y, msg);
-        y += h;
-    }
-
-    // next split
-    if(next > 0 && showNext) {
-        msg = fmtTime(balanced_splits_totals[next]);
-        DrawTextLine(gc, MissionName(next), "", colorText, x, y, msg);
-        y += h;
+    for(i=1; i<ArrayCount(Golds); i++) {
+        if(showAllSplits
+        || (alwaysShowSplit[i] != 0)
+        || (i == prevprev && showPrevprev)
+        || (i == prev && showPrev)
+        || (i == cur && showCurrentMission)
+        || (i == next && showNext)
+        || (i == ArrayCount(Golds)-1 && showPB)
+        ) {
+            y = DrawSplit(gc, i, x, y);
+        }
     }
 
     // current segment time with comparison
@@ -332,22 +298,16 @@ function DrawWindow(GC gc)
         s = "/ " $ fmtTimeSeg(balanced_splits[cur]);
         t = curTime - balanced_splits[cur];
         DrawTextLine(gc, "SEG:", msg, GetCmpColor(t, t), x, y, s, true);
-        y += h;
+        y += text_height;
     }
 
     // current overall time
     if(showCur) {
-        time = cur_totals[prev] - balanced_splits_totals[prev];
+        time = prevTotal - balanced_splits_totals[prev];
+        t = curTime - balanced_splits[cur];
         msg = fmtTime(total);
         DrawTextLine(gc, "CUR:", msg, GetCmpColor(time, t), x, y, "", true);
-        y += h;
-    }
-
-    // PB time
-    if(showPB) {
-        msg = fmtTime(PB_total);
-        DrawTextLine(gc, "PB:", msg, colorText, x, y, "", true);
-        y += h;
+        y += text_height;
     }
 
     if(showSpeed) {
@@ -362,16 +322,55 @@ function DrawWindow(GC gc)
         s = stats.FloatToString(avgSpeed, 1);
         prevSpeed = f;
         DrawTextLine(gc, "SPD:", msg, colorText, x, y, s, true);
-        y += h;
+        y += text_height;
     }
 
     if(tfooter != "") {
         gc.SetAlignments(HALIGN_Center, VALIGN_Center);
         gc.SetTextColor(colorText);
         gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, tfooter);
-        y += h;
+        y += text_height;
     }
     windowHeight = y;
+}
+
+function int DrawSplit(GC gc, int mission, int x, int y)
+{
+    local int time, total, i, diff, totalDiff;
+    local string sDiff, sTime;
+
+    time = stats.missions_times[mission];
+    time += stats.missions_menu_times[mission];
+
+    if(mission == stats.dxr.dxInfo.MissionNumber) {
+        // current split
+        sTime = fmtTime(balanced_splits_totals[mission]);
+        DrawTextLine(gc, MissionName(mission), "", colorText, x, y, sTime);
+    }
+    else if(time > 0) {
+        // past split
+        for(i=1; i<=mission; i++) {
+            total += stats.missions_times[i];
+            total += stats.missions_menu_times[i];
+        }
+        totalDiff = total - balanced_splits_totals[mission];
+        diff = time - balanced_splits[mission];
+        sDiff = fmtTimeDiff(totalDiff);
+
+        sTime = fmtTime(total);
+        DrawTextLine(gc, MissionName(mission), sDiff, GetCmpColor(totalDiff, diff, time, Golds[mission]), x, y, sTime);
+    }
+    else if(balanced_splits[mission] > 0) {
+        // future split
+        sTime = fmtTime(balanced_splits_totals[mission]);
+        DrawTextLine(gc, MissionName(mission), "", colorText, x, y, sTime);
+    }
+    else {
+        // not a real split
+        return y;
+    }
+
+    return y + text_height;
 }
 
 function string MissionName(int mission)
@@ -487,6 +486,7 @@ defaultproperties
     showCur=true
     showPB=true
     showSpeed=true
+    showAllSplits=false
 
     textfont=Font'DeusExUI.FontMenuHeaders_DS';
     colorBackground=(R=0,G=0,B=0,A=100)
