@@ -571,7 +571,7 @@ function SupportActor(Actor standingActor)
 	local float  damage;
 
     //Friendly stomp logic
-    if (WillTakeStompDamage(standingActor)==false){
+    if (WillTakeStompDamage(standingActor)==false && PlayerPawn(standingActor)!=None){
         if (!((Physics == PHYS_Swimming) && Region.Zone.bWaterZone)){
             standingMass = FMax(1, standingActor.Mass);
             baseMass     = FMax(1, Mass);
@@ -579,10 +579,11 @@ function SupportActor(Actor standingActor)
             damagePoint  = Location + vect(0,0,1)*(CollisionHeight-1);
             damage       = (1 - (standingMass/baseMass) * (zVelocity/100));
 
-            //a reasonable stomp does about 3-5 damage, then 1.5 each instance you
-            //stay on top of them.  Filter out those repeat damages, only deal damage
-            //when you actively take a good ol' stomp on 'em.
-            if ((zVelocity*standingMass < -7500) && (damage > 3)){
+            //Bouncing around on top of someone's head happens at around -55 zVelocity.  Giving some slop,
+            // -75 seems like a reasonable cut off point for determining if it was an intentional stomp.
+            //Human mass (which determines the standingMass) is 150.  10000 is a nice number though, so we'll
+            //go with -66 being the cutoff point instead.
+            if ((zVelocity*standingMass <= -10000)){
                 TakeDamage(damage, standingActor.Instigator, damagePoint, 0.2*standingActor.Velocity, 'stomped');
             }
         }
