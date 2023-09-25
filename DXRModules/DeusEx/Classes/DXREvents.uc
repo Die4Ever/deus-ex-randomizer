@@ -25,7 +25,7 @@ struct ActorWatchItem {
     var Actor a;
     var String BingoEvent;
 };
-var ActorWatchItem actor_watch[75];
+var ActorWatchItem actor_watch[100];
 var int num_watched_actors;
 
 function AddWatchedActor(Actor a,String eventName)
@@ -108,6 +108,7 @@ function WatchActors()
     local #var(prefix)Chandelier chandelier;
     local #var(prefix)HangingChicken chicken;
     local #var(prefix)HKHangingPig pig;
+    local #var(prefix)BarrelVirus virus;
 
     foreach AllActors(class'#var(prefix)Lamp',lamp){
         AddWatchedActor(lamp,"LightVandalism");
@@ -147,6 +148,9 @@ function WatchActors()
     }
     foreach AllActors(class'#var(prefix)HKHangingPig',pig){
         AddWatchedActor(pig,"BeatTheMeat");
+    }
+    foreach AllActors(class'#var(prefix)BarrelVirus',virus){
+        AddWatchedActor(virus,"WhyContainIt");
     }
 
 }
@@ -3314,6 +3318,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Use binoculars to check the name marked on the side of the superfreighter";
         case "DL_SecondDoors_Played":
             return "You need to open them.|n|nTry to leave the Ocean Lab while the sub-bay doors are closed.";
+        case "WhyContainIt":
+            return "Destroy a barrel of the gray death virus.  Barrels can be found around the Vandenberg command building, in the Sub Base, and around the Universal Constructor under the Ocean Lab.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3731,6 +3737,7 @@ defaultproperties
     bingo_options(269)=(event="SuperfreighterProp",desc="Props to you",max=1,missions=512)
     bingo_options(270)=(event="ShipNamePlate",desc="Check the name on the super freighter",max=1,missions=512)
     bingo_options(271)=(event="DL_SecondDoors_Played",desc="The sub-bay doors are closed",max=1,missions=16384)
+    bingo_options(272)=(event="WhyContainIt",desc="Why contain it?",max=1,missions=20480)
 
 
 
