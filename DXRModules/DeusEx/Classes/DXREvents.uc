@@ -717,6 +717,7 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,GetKnicksTag(),vectm(0,0,0));
         bt.bingoEvent="MadeBasket";
         WatchFlag('StantonAmbushDefeated');
+        WatchFlag('GreenKnowsAboutDowd');
         break;
     case "08_NYC_SMUG":
         WatchFlag('M08WarnedSmuggler');
@@ -731,10 +732,16 @@ function SetWatchFlags() {
     case "08_NYC_BAR":
         WatchFlag('LeoToTheBar');
         WatchFlag('PlayPool');
+        WatchFlag('GreenKnowsAboutDowd');
+        WatchFlag('SheaKnowsAboutDowd');
         InitPoolBalls();
         break;
     case "08_NYC_HOTEL":
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
+        WatchFlag('GreenKnowsAboutDowd');
+        break;
+    case "08_NYC_UNDERGROUND":
+        WatchFlag('GreenKnowsAboutDowd');
         break;
     case "09_NYC_DOCKYARD":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
@@ -2519,6 +2526,9 @@ function string RemapBingoEvent(string eventname)
             return "ShipNamePlate";
         case "UNATCOHQ_BulletinBoard_Cork_peepedtex":
             return "un_bboard_peepedtex";
+        case "SheaKnowsAboutDowd":
+        case "GreenKnowsAboutDowd":
+            return "SnitchDowd";
         default:
             return eventname;
     }
@@ -3368,6 +3378,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Check Manderley's holomail messages enough times on different visits.";
         case "LetMeIn":
             return "Try to enter the door below the UNATCO Medical office without authorization.";
+        case "08_Bulletin02":
+            return "Read your wanted poster on a public news terminal when returning to New York.";
+        case "SnitchDowd":
+            return "Ask Joe Greene or Jordan Shea about Stanton Dowd.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3792,6 +3806,8 @@ defaultproperties
     bingo_options(276)=(event="15_Email02",desc="The truth is out there",max=1,missions=32768)
     bingo_options(277)=(event="ManderleyMail",desc="Check Manderley's holomail %s times",max=2,missions=58)
     bingo_options(278)=(event="LetMeIn",desc="Let me in!",max=1,missions=26)
+    bingo_options(279)=(event="08_Bulletin02",desc="Most Wanted",max=1,missions=256)
+    bingo_options(280)=(event="SnitchDowd",desc="Snitches get stitches",max=1,missions=256)
 
 
 
