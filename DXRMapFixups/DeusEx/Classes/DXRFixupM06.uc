@@ -613,7 +613,7 @@ function HandleJohnSmithDeath()
     }
 
     if (!dxr.flagbase.GetBool('Supervisor01_Dead') &&
-        dxr.flagbase.GetBool('HaveROM') &&
+        dxr.flagbase.GetBool('Have_ROM') &&
         !dxr.flagbase.GetBool('Disgruntled_Guy_Return_Played'))
     {
         dxr.flagbase.SetBool('Disgruntled_Guy_Dead',true);
