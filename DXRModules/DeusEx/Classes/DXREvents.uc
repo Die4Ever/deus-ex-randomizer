@@ -109,6 +109,7 @@ function WatchActors()
     local #var(prefix)HangingChicken chicken;
     local #var(prefix)HKHangingPig pig;
     local #var(prefix)BarrelVirus virus;
+    local #var(prefix)Mailbox mail;
 
     foreach AllActors(class'#var(prefix)Lamp',lamp){
         AddWatchedActor(lamp,"LightVandalism");
@@ -151,6 +152,9 @@ function WatchActors()
     }
     foreach AllActors(class'#var(prefix)BarrelVirus',virus){
         AddWatchedActor(virus,"WhyContainIt");
+    }
+    foreach AllActors(class'#var(prefix)Mailbox',mail){
+        AddWatchedActor(mail,"MailModels");
     }
 
 }
@@ -3320,6 +3324,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "You need to open them.|n|nTry to leave the Ocean Lab while the sub-bay doors are closed.";
         case "WhyContainIt":
             return "Destroy a barrel of the gray death virus.  Barrels can be found around the Vandenberg command building, in the Sub Base, and around the Universal Constructor under the Ocean Lab.";
+        case "MailModels":
+            return "Destroy enough mailboxes.  They can be found in the streets of New York.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3738,6 +3744,7 @@ defaultproperties
     bingo_options(270)=(event="ShipNamePlate",desc="Check the name on the super freighter",max=1,missions=512)
     bingo_options(271)=(event="DL_SecondDoors_Played",desc="The sub-bay doors are closed",max=1,missions=16384)
     bingo_options(272)=(event="WhyContainIt",desc="Why contain it?",max=1,missions=20480)
+    bingo_options(273)=(event="MailModels",desc="But why mail models? (%s)",max=3,missions=276)
 
 
 
