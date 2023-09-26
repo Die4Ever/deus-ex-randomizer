@@ -242,6 +242,12 @@ function SetWatchFlags() {
             }
         }
 
+        bt = class'BingoTrigger'.static.Create(self,'ManderleyMail',vectm(0,0,0));
+        bt.Tag = 'holoswitch';
+
+        bt = class'BingoTrigger'.static.Create(self,'LetMeIn',vectm(0,0,0));
+        bt.Tag = 'retinal_msg_trigger';
+
         break;
     case "02_NYC_BATTERYPARK":
         WatchFlag('JoshFed');
@@ -343,6 +349,12 @@ function SetWatchFlags() {
                 f.bInvincible = false;
             }
         }
+
+        bt = class'BingoTrigger'.static.Create(self,'ManderleyMail',vectm(0,0,0));
+        bt.Tag = 'holoswitch';
+
+        bt = class'BingoTrigger'.static.Create(self,'LetMeIn',vectm(0,0,0));
+        bt.Tag = 'retinal_msg_trigger';
 
         break;
     case "03_NYC_AIRFIELD":
@@ -455,6 +467,12 @@ function SetWatchFlags() {
             }
         }
 
+        bt = class'BingoTrigger'.static.Create(self,'ManderleyMail',vectm(0,0,0));
+        bt.Tag = 'NoMessage';
+
+        bt = class'BingoTrigger'.static.Create(self,'LetMeIn',vectm(0,0,0));
+        bt.Tag = 'retinal_msg_trigger';
+
         break;
     case "04_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'CommsPit',vectm(-6385.640625,1441.881470,-247.901276),40,40);
@@ -515,6 +533,9 @@ function SetWatchFlags() {
                 f.bInvincible = false;
             }
         }
+
+        bt = class'BingoTrigger'.static.Create(self,'ManderleyMail',vectm(0,0,0));
+        bt.Tag = 'holoswitch';
 
         break;
     case "06_HONGKONG_WANCHAI_CANAL":
@@ -2205,6 +2226,17 @@ function ReadText(name textTag)
         eventname="CloneCubes";
         break;
 
+    case '01_Book01':
+    case '01_Book02':
+    case '01_Book03':
+    case '01_Book04':
+    case '01_Book05':
+    case '01_Book06':
+    case '01_Book07':
+    case '01_Book08':
+        eventname="UNATCOHandbook";
+        break;
+
     case '06_Datacube05':// Maggie Chow's bday
         eventname = "July 18th"; // don't break, fallthrough
     default:
@@ -3326,6 +3358,16 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Destroy a barrel of the gray death virus.  Barrels can be found around the Vandenberg command building, in the Sub Base, and around the Universal Constructor under the Ocean Lab.";
         case "MailModels":
             return "Destroy enough mailboxes.  They can be found in the streets of New York.";
+        case "UNATCOHandbook":
+            return "Find and read enough UNATCO Handbooks scattered around HQ.";
+        case "02_Book06":
+            return "Read a guide to basic firearm safety.  Smuggler likes to keep a copy of this lying around somewhere.";
+        case "15_Email02":
+            return "Read an email discussing the true origin of the Grays.  This can be found on a computer in Sector 3 of Area 51.";
+        case "ManderleyMail":
+            return "Check Manderley's holomail messages enough times on different visits.";
+        case "LetMeIn":
+            return "Try to enter the door below the UNATCO Medical office without authorization.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3745,6 +3787,12 @@ defaultproperties
     bingo_options(271)=(event="DL_SecondDoors_Played",desc="The sub-bay doors are closed",max=1,missions=16384)
     bingo_options(272)=(event="WhyContainIt",desc="Why contain it?",max=1,missions=20480)
     bingo_options(273)=(event="MailModels",desc="But why mail models? (%s)",max=3,missions=276)
+    bingo_options(274)=(event="UNATCOHandbook",desc="Rules and Regulations (%s)",max=4,missions=26)
+    bingo_options(275)=(event="02_Book06",desc="Learn basic firearm safety",max=1,missions=276)
+    bingo_options(276)=(event="15_Email02",desc="The truth is out there",max=1,missions=32768)
+    bingo_options(277)=(event="ManderleyMail",desc="Check Manderley's holomail %s times",max=2,missions=58)
+    bingo_options(278)=(event="LetMeIn",desc="Let me in!",max=1,missions=26)
+
 
 
 
