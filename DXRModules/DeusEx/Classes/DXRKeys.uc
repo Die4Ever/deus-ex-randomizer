@@ -77,6 +77,13 @@ function vanilla_keys_rules()
         keys_rules[i].allow = false;
         i++;
 
+        // disallow anything below ground level, like the sewers or water area
+        keys_rules[i].item_name = 'eastgate';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, -55);
+        keys_rules[i].allow = false;
+        i++;
+
         keys_rules[i].item_name = 'eastgate';
         keys_rules[i].min_pos = vect(-999999, -999999, -999999);
         keys_rules[i].max_pos = vect(999999, 999999, 999999);

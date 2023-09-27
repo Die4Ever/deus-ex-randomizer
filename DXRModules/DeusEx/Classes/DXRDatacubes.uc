@@ -167,6 +167,13 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = false;
         i++;
 
+        // disallow below ground level, like the sewers or water area
+        datacubes_rules[i].item_name = '03_Datacube10';
+        datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
+        datacubes_rules[i].max_pos = vect(999999, 999999, -55);
+        datacubes_rules[i].allow = false;
+        i++;
+
         // allow anywhere else past the gate
         datacubes_rules[i].item_name = '03_Datacube10';
         datacubes_rules[i].min_pos = vect(1700, 2400, -999999);
