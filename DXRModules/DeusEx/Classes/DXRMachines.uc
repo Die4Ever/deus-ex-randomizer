@@ -488,6 +488,9 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename)
     a = SpawnNewActor(c, false);
     if( a == None ) return None;
 
+    // spawn with large collision to ensure enough space, then slightly shrink after to make them easier to get around
+    #var(prefix)Robot(a).SetBasedPawnSize(a.CollisionRadius * 0.8, a.CollisionHeight * 0.7);
+
     d = #var(prefix)Datacube(SpawnNewActor(class'#var(prefix)Datacube', true, a.Location, min_datacube_distance, max_datacube_distance));
     if( d == None ) return a;
     d.TextPackage = "#var(package)";
