@@ -286,6 +286,9 @@ function SetWatchFlags() {
         break;
     case "02_NYC_UNDERGROUND":
         WatchFlag('FordSchickRescued');
+
+        bt = class'BingoTrigger'.static.Create(self,'SewerSurfin',vectm(-50,-125,-1000),750,40);
+        bt.MakeClassProximityTrigger(class'#var(prefix)JoeGreeneCarcass');
         break;
     case "02_NYC_BAR":
         WatchFlag('JockSecondStory');
@@ -413,6 +416,10 @@ function SetWatchFlags() {
         WatchFlag('GaveRentonGun');
         WatchFlag('FamilySquabbleWrapUpGilbertDead_Played');
         bt = class'BingoTrigger'.static.Create(self,'TonThirdFloor',vectm(-630,-1955,424),150,40);
+        break;
+    case "04_NYC_UNDERGROUND":
+        bt = class'BingoTrigger'.static.Create(self,'SewerSurfin',vectm(-50,-125,-1000),750,40);
+        bt.MakeClassProximityTrigger(class'#var(prefix)JoeGreeneCarcass');
         break;
     case "05_NYC_UNATCOISLAND":
         bt = class'BingoTrigger'.static.Create(self,'nsfwander',vectm(0,0,0));
@@ -742,6 +749,8 @@ function SetWatchFlags() {
         break;
     case "08_NYC_UNDERGROUND":
         WatchFlag('GreenKnowsAboutDowd');
+        bt = class'BingoTrigger'.static.Create(self,'SewerSurfin',vectm(-50,-125,-1000),750,40);
+        bt.MakeClassProximityTrigger(class'#var(prefix)JoeGreeneCarcass');
         break;
     case "09_NYC_DOCKYARD":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
@@ -3382,6 +3391,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Read your wanted poster on a public news terminal when returning to New York.";
         case "SnitchDowd":
             return "Ask Joe Greene or Jordan Shea about Stanton Dowd.";
+        case "SewerSurfin":
+            return "Throw Joe Greene's body into the water in the New York sewers, like the rat he is.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3808,6 +3819,7 @@ defaultproperties
     bingo_options(278)=(event="LetMeIn",desc="Let me in!",max=1,missions=26)
     bingo_options(279)=(event="08_Bulletin02",desc="Most Wanted",max=1,missions=256)
     bingo_options(280)=(event="SnitchDowd",desc="Snitches get stitches",max=1,missions=256)
+    bingo_options(281)=(event="SewerSurfin",desc="Sewer Surfin'",max=1,missions=276)
 
 
 
