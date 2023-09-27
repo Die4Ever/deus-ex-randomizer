@@ -335,7 +335,7 @@ function PreFirstEntryMapFixes()
         break;
     case "06_HONGKONG_VERSALIFE":
 
-        ft= Spawn(class'FlagTrigger',,, vectm(128.850372,635.855957,-123)); //In front of lower elevator
+        ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(128.850372,635.855957,-123)); //In front of lower elevator
         ft.Event='VL_OnAlert';
         ft.FlagName='Have_ROM';
         ft.bSetFlag=False;
