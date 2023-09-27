@@ -421,13 +421,18 @@ function bool CanInstantLeftClick(DeusExPickup item)
 exec function ParseLeftClick()
 {
     local DeusExPickup item;
+    local Actor A;
     local int i;
+
     Super.ParseLeftClick();
     item = DeusExPickup(FrobTarget);
     if (item != None && CanInstantLeftClick(item))
     {
+        foreach item.BasedActors(class'Actor', A)
+            A.SetBase(None);
         // So that any effects get applied to you
         item.SetOwner(self);
+        item.SetBase(self);
         // add to the player's inventory, so ChargedPickups travel across maps
         item.BecomeItem();
         item.bDisplayableInv = false;
