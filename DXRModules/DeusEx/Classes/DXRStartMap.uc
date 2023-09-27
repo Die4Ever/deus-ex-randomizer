@@ -106,6 +106,17 @@ static simulated function int GetStartingMissionMask(int start_map)
     }
 }
 
+static simulated function int GetMaybeMissionMask(int start_map)
+{
+    switch(start_map)
+    {// these numbers are basically mission number * 10, with some extra for progress within the mission
+        case 119:
+            //startMap="11_Paris_Everett";
+            return 1 << 11; //maybe Mission 11, for Everett's stuff
+    }
+    return 0;
+}
+
 //This could certainly be done a much more clever way, but this is literally good enough
 static simulated function int GetEndMissionMask(int end_mission)
 {
@@ -405,6 +416,23 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
     }
 
     return False;
+}
+
+
+static function bool BingoGoalPossible(string bingo_event, int start_map, int end_mission)
+{
+    switch(start_map) {
+    case 119:
+        switch(bingo_event) {
+        case "TobyAtanwe_Dead":
+        case "MeetAI4_Played":
+        case "DeBeersDead":
+            return true;
+        }
+        break;
+    }
+
+    return false;
 }
 
 static function int ChooseRandomStartMap(DXRando dxr, int avoidStart)
