@@ -491,26 +491,32 @@ simulated function MessageBoxClicked(int button, int callbackId) {
 
 //Returns true when you aren't in a menu, or in the intro, etc.
 function bool InGame() {
+    local #var(PlayerPawn) p;
+    local DeusExRootWindow root;
 #ifdef hx
     return true;
 #endif
 
-    if( player() == None )
+    p = player();
+
+    if( p == None )
         return false;
 
-    if (player().InConversation()) {
+    if (p.InConversation()) {
         return True;
     }
 
-    if (None == DeusExRootWindow(player().rootWindow)) {
+    root = DeusExRootWindow(p.rootWindow);
+
+    if (None == root) {
         return False;
     }
 
-    if (None == DeusExRootWindow(player().rootWindow).hud) {
+    if (root.GetTopWindow() != None) {
         return False;
     }
 
-    if (!DeusExRootWindow(player().rootWindow).hud.isVisible()){
+    if (root.bUIPaused) {
         return False;
     }
 

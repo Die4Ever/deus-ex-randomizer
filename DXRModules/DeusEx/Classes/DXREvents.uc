@@ -1461,10 +1461,8 @@ function BingoWinScreen()
         showMsg=True;
     } else {
         //Consider it in-game if a big message is up...
-        if (DeusExRootWindow(p.rootWindow).GetTopWindow()!=None){
-            if (DeusExRootWindow(p.rootWindow).GetTopWindow().IsA('DXRBigMessage')){
-                showMsg = True;
-            }
+        if (DXRBigMessage(DeusExRootWindow(p.rootWindow).GetTopWindow()) != None){
+            showMsg = True;
         }
     }
 
