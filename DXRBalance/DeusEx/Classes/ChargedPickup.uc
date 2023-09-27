@@ -36,3 +36,9 @@ function bool HandlePickupQuery( inventory Item )
         return false;
     return Super.HandlePickupQuery(Item);
 }
+
+// default Charge was 2000, which is used for hazmats and rebreathers
+defaultproperties
+{
+    Charge=1500
+}
