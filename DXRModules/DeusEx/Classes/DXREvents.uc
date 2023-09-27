@@ -110,6 +110,7 @@ function WatchActors()
     local #var(prefix)HKHangingPig pig;
     local #var(prefix)BarrelVirus virus;
     local #var(prefix)Mailbox mail;
+    local #var(prefix)CigaretteMachine cigVending;
 
     foreach AllActors(class'#var(prefix)Lamp',lamp){
         AddWatchedActor(lamp,"LightVandalism");
@@ -155,6 +156,9 @@ function WatchActors()
     }
     foreach AllActors(class'#var(prefix)Mailbox',mail){
         AddWatchedActor(mail,"MailModels");
+    }
+    foreach AllActors(class'#var(prefix)CigaretteMachine',cigVending){
+        AddWatchedActor(cigVending,"SmokingKills");
     }
 
 }
@@ -3393,6 +3397,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Ask Joe Greene or Jordan Shea about Stanton Dowd.";
         case "SewerSurfin":
             return "Throw Joe Greene's body into the water in the New York sewers, like the rat he is.";
+        case "SmokingKills":
+            return "Destroy enough cigarette vending machines.  Smoking kills!";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3820,6 +3826,7 @@ defaultproperties
     bingo_options(279)=(event="08_Bulletin02",desc="Most Wanted",max=1,missions=256)
     bingo_options(280)=(event="SnitchDowd",desc="Snitches get stitches",max=1,missions=256)
     bingo_options(281)=(event="SewerSurfin",desc="Sewer Surfin'",max=1,missions=276)
+    bingo_options(282)=(event="SmokingKills",desc="Smoking Kills (%s)",max=5,missions=3420)
 
 
 
