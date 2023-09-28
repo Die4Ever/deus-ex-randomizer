@@ -822,6 +822,12 @@ function SetWatchFlags() {
             }
         }
 #endif
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'field002'){
+            dxm.Event='SuspensionCrate';
+        }
+        bt = class'BingoTrigger'.static.Create(self,'SuspensionCrate',vectm(0,0,0));
+
         break;
     case "11_PARIS_CATHEDRAL":
         WatchFlag('GuntherKillswitch');
@@ -2250,6 +2256,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
                 msg = msg $ "There is a suspension crate on Lebedev's plane.";
             } else if (mission<=5){
                 msg = msg $ "There is a suspension crate in the back of the greasel lab at the MJ12 base under UNATCO.";
+            } else if (mission<=10){
+                msg = msg $ "There is a suspension crate in the basement of Chateau DuClare.";
             } else if (mission<=11){
                 msg = msg $ "There are two suspension crates in Everett's lab.";
             }
@@ -2598,7 +2606,7 @@ defaultproperties
     bingo_options(263)=(event="WatchKeys_cabinet",desc="Find the keys to the MIB filing cabinet",max=1,missions=32)
     bingo_options(264)=(event="MiguelLeaving",desc="Miguel can make it on his own",max=1,missions=32)
     bingo_options(265)=(event="KarkianDoorsBingo",desc="Open the Karkian cage in the MJ12 Lab",max=1,missions=32)
-    bingo_options(266)=(event="SuspensionCrate",desc="Open %s Suspension Crates",max=3,missions=2088)
+    bingo_options(266)=(event="SuspensionCrate",desc="Open %s Suspension Crates",max=3,missions=3112)
     bingo_options(267)=(event="ScubaDiver_ClassDead",desc="Kill %s SCUBA Divers",max=3,missions=16384)
     bingo_options(268)=(event="ShipRamp",desc="Raise the ramp to the super freighter",max=1,missions=512)
     bingo_options(269)=(event="SuperfreighterProp",desc="Props to you",max=1,missions=512)
