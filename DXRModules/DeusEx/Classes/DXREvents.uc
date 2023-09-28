@@ -1929,7 +1929,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "coolant_switch":
             return "Flush the reactor coolant in the coolant area on the bottom floor of Sector 4 of Area 51.";
         case "BlueFusionReactors":
-            return "Deactivate all four of the blue fusion reactors in Sector 4 of Area 51.  Alex will give you three of the four digits of the code and you have to guess the last one.";
+            return "Deactivate blue fusion reactors in Sector 4 of Area 51.  Alex will give you three of the four digits of the code and you have to guess the last one.";
         case "A51UCBlocked":
             return "Close the doors to enough of the UCs in Sector 4 of Area 51.";
         case "VandenbergReactorRoom":
@@ -2490,7 +2490,7 @@ defaultproperties
     bingo_options(164)=(event="TonThirdFloor",desc="Go to the third floor of the 'Ton",max=1,missions=276)
     bingo_options(165)=(event="Set_flag_helios",desc="Engage the Aquinas primary router",max=1,missions=32768)
     bingo_options(166)=(event="coolant_switch",desc="Flush the reactor coolant",max=1,missions=32768)
-    bingo_options(167)=(event="BlueFusionReactors",desc="Deactivate the four blue fusion reactors",max=4,missions=32768)
+    bingo_options(167)=(event="BlueFusionReactors",desc="Deactivate %s blue fusion reactors",max=4,missions=32768)
     bingo_options(168)=(event="A51UCBlocked",desc="Close the doors to %s UCs in Area 51",max=3,missions=32768)
     bingo_options(169)=(event="VandenbergReactorRoom",desc="Enter the reactor room in the Vandenberg tunnels",max=1,missions=4096)
     bingo_options(170)=(event="VandenbergServerRoom",desc="Enter the server room in the Vandenberg control center",max=1,missions=4096)
