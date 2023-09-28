@@ -510,6 +510,11 @@ function Actor _SpawnNewActor(class<Actor> c, bool jitter, vector target, float 
         loc = GetRandomPositionFine(target, mindist, maxdist);
     else
         loc = GetRandomPosition(target, mindist, maxdist);
+
+    if(!CheckFreeSpace(loc, c.default.CollisionRadius * 2 + player().CollisionRadius, c.default.CollisionHeight * 2)) {
+        info("_SpawnNewActor no free space for " $ c @ loc);
+        return None;
+    }
     a = Spawn(c,,, loc );
 
     if( ScriptedPawn(a) != None ) class'DXRNames'.static.GiveRandomName(dxr, ScriptedPawn(a) );
@@ -524,7 +529,7 @@ function Actor SpawnNewActor(class<Actor> c, bool jitter, optional vector target
     local Actor a;
     local int i;
 
-    for(i=0; i<10; i++) {
+    for(i=0; i<20; i++) {
         a = _SpawnNewActor(c, jitter, target, mindist, maxdist);
         if( a != None ) return a;
     }

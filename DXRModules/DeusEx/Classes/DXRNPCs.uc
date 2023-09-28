@@ -234,11 +234,14 @@ function vector GetRandomMerchantPosition()
     local vector loc;
     local int i;
 
-    for(i=0; i<10; i++) {
+    for(i=0; i<20; i++) {
         loc = GetRandomPosition();
         d = None;
         foreach RadiusActors(class'DeusExMover', d, 150.0, loc) {
             break;
+        }
+        if(!CheckFreeSpace(loc, player().CollisionRadius * 4, player().CollisionHeight * 2)) {
+            continue;
         }
         if( d == None ) return loc;
     }

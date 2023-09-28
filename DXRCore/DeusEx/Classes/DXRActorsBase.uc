@@ -921,6 +921,29 @@ static function SetActorScale(Actor a, float scale)
     a.DrawScale = scale;
 }
 
+function bool CheckFreeSpace(out vector loc, float radius, float height)
+{
+    local bool success;
+
+    SetCollisionSize(radius, height);
+    SetCollision(true, true, true);
+    bCollideWhenPlacing = true;
+    bCollideWorld = true;
+
+    success = SetLocation(loc);
+
+    SetCollision(false, false, false);
+    bCollideWhenPlacing = false;
+    bCollideWorld = false;
+
+    if(!success || VSize(Location - loc) > 128) {
+        l("CheckFreeSpace failed for " $ loc);
+        return false;
+    }
+    loc = Location;
+    return true;
+}
+
 function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain)
 {
     local PathNode temp[4096];
