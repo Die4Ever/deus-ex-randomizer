@@ -71,6 +71,53 @@ function WatchActors()
 
 }
 
+function AddPhoneTriggers(bool isRevision)
+{
+    local #var(prefix)Phone p;
+    local BingoTrigger bt;
+    local int i;
+
+    //Spawn invisible phones for the payphones
+    switch(dxr.localURL) {
+    case "02_NYC_STREET":
+    case "04_NYC_STREET":
+    case "08_NYC_STREET":
+        if (!isRevision){
+            p = Spawn(class'PayPhone',,,vectm(1117,1969,-430)); //Near Osgoode and Son's
+            p = Spawn(class'PayPhone',,,vectm(-1314,944,-430)); //Near Free Clinic
+        }
+        break;
+    case "02_NYC_BAR":
+    case "04_NYC_BAR":
+    case "08_NYC_BAR":
+        if (!isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2624,624,72)); //Near the bathroom
+        }
+        break;
+    case "02_NYC_FREECLINIC":
+    case "08_NYC_FREECLINIC":
+        if (!isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-215,752,-254));  //In the front lobby
+        }
+        break;
+    case "03_NYC_BROOKLYNBRIDGESTATION":
+        if (!isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-660,-1854,435));  //Upper floor, near El Rey
+            p = Spawn(class'PayPhone',,,vectm(-660,-1806,435));
+        }
+        break;
+    }
+    i=0;
+    foreach AllActors(class'#var(prefix)Phone',p){
+        bt = class'BingoTrigger'.static.Create(self,'PhoneCall',vectm(0,0,0));
+        bt.bDestroyOthers=False;
+        bt.tag=StringToName("PhoneCall"$i);
+        p.event=StringToName("PhoneCall"$i);
+        i++;
+    }
+
+}
+
 function SetWatchFlags() {
     local #var(prefix)MapExit m;
     local #var(prefix)ChildMale child;
@@ -108,6 +155,7 @@ function SetWatchFlags() {
 
     //General checks
     WatchActors();
+    AddPhoneTriggers(RevisionMaps);
 
     switch(dxr.localURL) {
     case "00_TrainingFinal":
@@ -2294,6 +2342,29 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Throw Joe Greene's body into the water in the New York sewers, like the rat he is.";
         case "SmokingKills":
             return "Destroy enough cigarette vending machines.  Smoking kills!";
+        case "PhoneCall":
+            msg = "Make phone calls on enough different phones (Either desk phones or pay phones).";
+            if (mission<=1){
+                msg=msg$"|n|nThere is a desk phone on Janice's desk in UNATCO HQ.";
+            } else if (mission <=2){
+                msg=msg$"|n|nThere is a desk phone and a pay phone in the Free Clinic.  There are two payphones in the streets.  There is a payphone in the back of the bar.";
+            } else if (mission <=3){
+                msg=msg$"|n|nThere is a desk phone on Janice's desk in UNATCO HQ.  There are two desk phones in offices in the LaGuardia Helibase.";
+            } else if (mission <=4){
+                msg=msg$"|n|nThere is a desk phone on Janice's desk in UNATCO HQ.  There are two payphones in the streets.  There is a payphone in the back of the bar.";
+            } else if (mission <=5){
+                msg=msg$"|n|nThere is a desk phone on Janice's desk in UNATCO HQ.";
+            } else if (mission <=6){
+                msg=msg$"|n|nThere is a desk phone in the Luminous Path Compound in the Wan Chai Market.";
+                msg=msg$"|nThere is a desk phone at the front desk of Queen's Tower on Tonnochi Road.";
+                msg=msg$"|nThere is a desk phone on the conference table in the Lucky Money.";
+                msg=msg$"|nThere is a desk phone in the conference room on the first level of the MJ12 Lab under VersaLife.";
+            } else if (mission <=8){
+                msg=msg$"|n|nThere is a desk phone and a pay phone in the Free Clinic.  There are two payphones in the streets.  There is a payphone in the back of the bar.";
+            } else if (mission<=10){
+                msg=msg$"|n|nThere is a desk phone in the office across the street from the entrance to the catacombs in Denfert-Rochereau.";
+            }
+            return msg;
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2623,6 +2694,7 @@ defaultproperties
     bingo_options(280)=(event="SnitchDowd",desc="Snitches get stitches",max=1,missions=256)
     bingo_options(281)=(event="SewerSurfin",desc="Sewer Surfin'",max=1,missions=276)
     bingo_options(282)=(event="SmokingKills",desc="Smoking Kills (%s)",max=5,missions=3420)
+    bingo_options(283)=(event="PhoneCall",desc="Make %s phone calls",max=5,missions=1406)
 
 
 
