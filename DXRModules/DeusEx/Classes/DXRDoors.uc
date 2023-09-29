@@ -17,7 +17,7 @@ var config float min_lock_adjust, max_lock_adjust, min_door_adjust, max_door_adj
 function CheckConfig()
 {
     local int i;
-    if( ConfigOlderThan(2,5,2,3) ) {
+    if( ConfigOlderThan(2,5,4,3) ) {
         i=0;
         // SmugglersFrontDoor for all 3 maps
         door_fixes[i].map = "02_NYC_STREET";
@@ -174,6 +174,23 @@ function CheckConfig()
         door_fixes[i].minDamageThreshold = 1;
         door_fixes[i].doorStrength = 0.1;
         door_fixes[i].bHighlight = true;
+        i++;
+
+        // Always make smugglers stash highlightable and breakable
+        door_fixes[i].map = "02_NYC_SMUG";
+        door_fixes[i].tag = 'mirrordoor';
+        door_fixes[i].bBreakable = true;
+        door_fixes[i].minDamageThreshold = 5;
+        door_fixes[i].doorStrength = 0.6;
+        door_fixes[i].bHighlight = true;
+        i++;
+
+        door_fixes[i]=door_fixes[i-1];
+        door_fixes[i].map = "04_NYC_SMUG";
+        i++;
+
+        door_fixes[i]=door_fixes[i-1];
+        door_fixes[i].map = "08_NYC_SMUG";
         i++;
 
         min_lock_adjust=0.5;
