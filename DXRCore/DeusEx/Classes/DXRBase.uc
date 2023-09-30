@@ -107,6 +107,16 @@ simulated function int SetGlobalSeed(coerce string name)
     return dxr.SetSeed( dxr.seed + dxr.Crc(name) );
 }
 
+simulated function int BranchSeed(coerce string name)
+{
+    return dxr.SetSeed( dxr.Crc(dxr.seed $ name $ dxr.tseed) );
+}
+
+simulated function int ReapplySeed(int oldSeed)
+{
+    return dxr.SetSeed(oldSeed);
+}
+
 simulated function int rng(int max)
 {
     return dxr.rng(max);
@@ -162,12 +172,12 @@ simulated function float rngrangeseeded(float val, float min, float max, coerce 
 {
     local float mult, r, ret;
     local int oldseed;
-    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(classname) );//manually set the seed to avoid using the level name in the seed
+    oldseed = SetGlobalSeed(classname);
     mult = max - min;
     r = rngf();
     ret = val * (r * mult + min);
     //l("rngrange r: "$r$", mult: "$mult$", min: "$min$", max: "$max$", val: "$val$", return: "$ret);
-    dxr.SetSeed(oldseed);
+    ReapplySeed(oldseed);
     return ret;
 }
 
@@ -266,7 +276,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     s = "(DXRando) " $ word $ ":|n    " $ s;
 
     info("RandoLevelValues "$a$" = "$s);
-    dxr.SetSeed( oldseed );
+    ReapplySeed( oldseed );
 
     if(add_desc != "") {
         s = s $ "|n|n" $ add_desc;
@@ -518,6 +528,10 @@ function bool InGame() {
 
     if (root.bUIPaused) {
         return False;
+    }
+
+    if (root.hud.conWindow != None && root.hud.conWindow.IsVisible()) {
+        return false;
     }
 
     return True;

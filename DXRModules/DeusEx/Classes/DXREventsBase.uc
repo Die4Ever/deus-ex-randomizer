@@ -361,8 +361,8 @@ function BingoWinScreen()
     p = player();
     if ( Level.Netmode == NM_Standalone ) {
         //Make it harder to get murdered during the countdown
-        Level.Game.SetGameSpeed(0.05);
-        SetTimer(0.1, true); //You would think this would be 0.05, but it's not
+        Level.Game.SetGameSpeed(0.1);
+        SetTimer(0.1, true);
     }
     p.ReducedDamageType = 'All';// god mode
     p.DesiredFlashScale = 0;
