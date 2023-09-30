@@ -58,7 +58,7 @@ function SpawnTearGas()
     if ( Role < ROLE_Authority )
         return;
 
-    for (i=0; i<blastRadius/36; i++)
+    for (i=0; i<blastRadius/34; i++)// DXRando: divide by 34 instead of 36 to make it slightly denser?
     {
         if (FRand() < 0.9)
         {
@@ -123,11 +123,27 @@ state Exploding
    }
 }
 
-// DXRando: Grenades will no longer immediately explode when they touch a carcass
+// DXRando: Grenades will no longer immediately explode when they touch a carcass, attached grenades get bigger blast radius and damage according to demo skill
 auto simulated state Flying
 {
-	simulated function ProcessTouch (Actor Other, Vector HitLocation)
-	{
+    simulated function Explode(vector HitLocation, vector HitNormal)
+    {
+        local DeusExPlayer p;
+        local float f;
+
+        p = DeusExPlayer(Owner);
+        if(bProximityTriggered && p != None) {
+            f = p.SkillSystem.GetSkillLevelValue(class'SkillDemolition') * -1;
+            f = loge(f + 2.9);// loge(~2.72) == 1
+            f = FMax(f, 1.01);
+            blastRadius *= f;
+            Damage *= f;
+        }
+        Super.Explode(HitLocation, HitNormal);
+    }
+
+    simulated function ProcessTouch (Actor Other, Vector HitLocation)
+    {
         if (DeusExCarcass(Other)!=None){
             return;
         } else {

@@ -49,6 +49,7 @@ simulated function InitHints()
         AddHint("Grays have strong resistance to fire and plasma,", "but it will eventually kill them!");
         AddHint("Weapon animation speeds now improve with skills,", "especially grenades with Demolition skill.");
         AddHint("Grenades can now be attached to the floor", "or even on a door!");
+        AddHint("Attaching a grenade to a wall increases its", "blast radius and damage, especially with high skill.");
     }
 
     if(mission <= 5) {
