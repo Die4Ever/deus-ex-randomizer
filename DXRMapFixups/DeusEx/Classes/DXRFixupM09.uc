@@ -35,6 +35,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)RatGenerator rg;
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)NanoKey key;
+    local #var(prefix)BeamTrigger beam;
 
     switch(dxr.localURL)
     {
@@ -152,6 +153,12 @@ function PreFirstEntryMapFixes()
                 gasgren.SetLocation(vectm(1602.174,2470.3386,-431.6885));
                 gasgren.bCollideWorld = true;
                 break;
+            }
+        }
+
+        foreach AllActors(class'#var(prefix)BeamTrigger',beam){
+            if (beam.Event=='BotDrop'){
+                beam.Tag='TunnelTrigger';
             }
         }
 #endif

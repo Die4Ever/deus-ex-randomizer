@@ -732,6 +732,21 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'CrackSafe',vectm(0,0,0));
 
+        bt = class'BingoTrigger'.static.Create(self,'DockyardLaser',vectm(0,0,0));
+        bt.Tag = 'TunnelTrigger';
+        bt.bDestroyOthers=False;
+        bt.bUntrigger=True;
+
+        bt = class'BingoTrigger'.static.Create(self,'DockyardLaser',vectm(0,0,0));
+        bt.Tag = 'WarehouseTunnel';
+        bt.bDestroyOthers=False;
+        bt.bUntrigger=True;
+
+        bt = class'BingoTrigger'.static.Create(self,'DockyardLaser',vectm(0,0,0));
+        bt.Tag = 'AmmoTunnel';
+        bt.bDestroyOthers=False;
+        bt.bUntrigger=True;
+
         break;
     case "09_NYC_SHIP":
         bt = class'BingoTrigger'.static.Create(self,'CraneControls',vectm(3264,-1211,1222));
@@ -2412,6 +2427,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Open enough of the sleeping pods in the entrance to the Area 51 bunker.";
         case "Area51SteamValve":
             return "Close the steam valves in the maintenance tunnels under the floors of the entrance to the Area 51 bunker.";
+        case "DockyardLaser":
+            return "Deactivate enough of the laser grids in the sewers underneath the dockyards";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2745,6 +2762,7 @@ defaultproperties
     bingo_options(284)=(event="Area51ElevatorPower",desc="Power the elevator in Area 51",max=1,missions=32768)
     bingo_options(285)=(event="Area51SleepingPod",desc="Open %s sleeping pods in Area 51",max=4,missions=32768)
     bingo_options(286)=(event="Area51SteamValve",desc="Close %s steam valves in Area 51",max=2,missions=32768)
+    bingo_options(287)=(event="DockyardLaser",desc="Deactivate %s laser grids under the dockyard",max=3,missions=512)
 
 
 
