@@ -152,6 +152,7 @@ function SetWatchFlags() {
     local #var(prefix)Poolball ball;
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)Female2 f;
+    local #var(prefix)Fan1 fan1;
     local int i;
 
     local bool RevisionMaps;
@@ -1061,6 +1062,8 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'SiloSlide',vectm(25,-4350,165),40,40);
         bt = class'BingoTrigger'.static.Create(self,'SiloWaterTower',vectm(-1212,-3427,1992),240,40);
+        bt = class'BingoTrigger'.static.Create(self,'SiloAttic',vectm(-2060,-6270,1825),200,40);
+
         break;
     case "14_OCEANLAB_LAB":
         WatchFlag('DL_Flooded_Played');
@@ -1082,18 +1085,37 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'OceanLabGreenBeacon',vectm(1543,3522,-1847),200,200);
 
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabFloodedStoreRoom',vectm(-540,360,-1745),150,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'OceanLabMedBay',vectm(2395,425,-1745),225,80);
+
+
+
         break;
     case "14_OCEANLAB_UC":
         WatchFlag('LeoToTheBar');
         WatchFlag('PageTaunt_Played');
         RewatchFlag('WaltonShowdown_Played');
         bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(860,6758,-3175),40,40);
+
+        foreach AllActors(class'#var(prefix)Fan1',fan1){
+            AddWatchedActor(fan1,"UCVentilation");
+        }
         break;
     case "14_VANDENBERG_SUB":
         RewatchFlag('WaltonShowdown_Played');
 
         //Same location in Revision and Vanilla
         bt = class'BingoTrigger'.static.Create(self,'OceanLabShed',vectm(618.923523,4063.243896,-391.901031),160,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'SubBaseSatellite',vectm(2717.3,3874.84,1342),100,100);
+        bt.MakeShootingTarget();
+
+        bt = class'BingoTrigger'.static.Create(self,'SubBaseSatellite',vectm(2817,3771,1571),100,100);
+        bt.MakeShootingTarget();
+
+        bt = class'BingoTrigger'.static.Create(self,'SubBaseSatellite',vectm(2817,3965,1839),100,100);
+        bt.MakeShootingTarget();
 
         break;
     case "15_AREA51_BUNKER":
@@ -2535,6 +2557,16 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Disable enough electrical panels in the computer room of Vandenberg.  There's very little risk!";
         case "VandenbergGasSwim":
             return "Go swimming in the water around the base of the two gas tanks outside of the Vandenberg command center.";
+        case "SiloAttic":
+            return "Enter the attic in the building outside the fence at the silo.";
+        case "SubBaseSatellite":
+            return "Shoot one of the satellite dishes on the tower on top of the sub base on shore in California.";
+        case "UCVentilation":
+            return "Destroy enough ventilation fans near the Universal Contructor under the Ocean Lab.";
+        case "OceanLabFloodedStoreRoom":
+            return "Swim along the ocean floor to the locked and flooded storage room from in the Ocean Lab";
+        case "OceanLabMedBay":
+            return "Enter the med bay in the Ocean Lab.  This room is flooded and off the side of the Karkian Lab.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2886,6 +2918,11 @@ defaultproperties
     bingo_options(302)=(event="EnterUC",desc="Enter %s Universal Constructors",max=3,missions=53248)
     bingo_options(303)=(event="VandenbergComputerElec",desc="Disable %s electrical panels in the Vandenberg computer room",max=2,missions=4096)
     bingo_options(304)=(event="VandenbergGasSwim",desc="Swim around the Vandenberg gas tanks",max=1,missions=4096)
+    bingo_options(305)=(event="SiloAttic",desc="Enter the attic at the Silo",max=1,missions=16384)
+    bingo_options(306)=(event="SubBaseSatellite",desc="Shoot a satellite dish at the sub base",max=1,missions=16384)
+    bingo_options(307)=(event="UCVentilation",desc="Destroy %s ventilation fans in the Ocean Lab",max=6,missions=16384)
+    bingo_options(308)=(event="OceanLabFloodedStoreRoom",desc="Swim to the locked store room in the Ocean Lab",max=1,missions=16384)
+    bingo_options(309)=(event="OceanLabMedBay",desc="Enter the flooded med bay in the Ocean Lab",max=1,missions=16384)
 
 
 
