@@ -1076,6 +1076,8 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'power_dispatcher',vectm(0,0,0));
         bt.bingoEvent = "Area51ElevatorPower";
 
+        bt = class'BingoTrigger'.static.Create(self,'A51CommBuildingBasement',vectm(984,2788,-750),100,40);
+
         break;
     case "15_AREA51_ENTRANCE":
         WatchFlag('PlayPool');
@@ -2436,6 +2438,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Close the steam valves in the maintenance tunnels under the floors of the entrance to the Area 51 bunker.";
         case "DockyardLaser":
             return "Deactivate enough of the laser grids in the sewers underneath the dockyards";
+        case "A51CommBuildingBasement":
+            return "Go into the hatch in the Command 24 building in Area 51 and enter the basement.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2770,6 +2774,7 @@ defaultproperties
     bingo_options(285)=(event="Area51SleepingPod",desc="Open %s sleeping pods in Area 51",max=4,missions=32768)
     bingo_options(286)=(event="Area51SteamValve",desc="Close %s steam valves in Area 51",max=2,missions=32768)
     bingo_options(287)=(event="DockyardLaser",desc="Deactivate %s laser grids under the dockyard",max=3,missions=512)
+    bingo_options(288)=(event="A51CommBuildingBasement",desc="Enter the basement of the Area 51 Command building",max=1,missions=32768)
 
 
 
