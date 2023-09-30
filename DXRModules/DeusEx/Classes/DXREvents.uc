@@ -1061,6 +1061,7 @@ function SetWatchFlags() {
         WatchFlag('JockBlewUp');
         WatchFlag('blast_door_open');
         RewatchFlag('WaltonBadass_Played');
+        WatchFlag('MeetScaredSoldier_Played');
 
         foreach AllActors(class'ZoneInfo', zone) {
             if (zone.Tag=='fan'){
@@ -2468,6 +2469,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Read an email from Captain Zhao's daughter on his computer on the superfreighter.";
         case "Titanic":
             return "Stand on the rail at the front of the superfreighter and hold your arms out...  It feels like you're flying!";
+        case "MeetScaredSoldier_Played":
+            return "Talk to Xander, the sole surviving soldier hiding out in the building inside the hangar in Area 51.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2809,6 +2812,8 @@ defaultproperties
     bingo_options(292)=(event="A51SeparationSwim",desc="Swim in the Area 51 separation tank",max=1,missions=32768)
     bingo_options(293)=(event="09_Email08",desc="Daddy Zhao",max=1,missions=512)
     bingo_options(294)=(event="Titanic",desc="I'm flying, Jack!",max=1,missions=512)
+    bingo_options(295)=(event="MeetScaredSoldier_Played",desc="Talk to the surviving Area 51 soldier",max=1,missions=32768)
+
 
 
 
