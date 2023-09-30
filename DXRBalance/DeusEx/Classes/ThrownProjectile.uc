@@ -18,24 +18,26 @@ simulated function Tick(float deltaTime)
     }
     else if(oldSkillTime == 0 && skillTime > 0 && player == None) {
         // faster than vanilla, unfortunately vanilla doesn't save the triggering actor but they already factored in the skill value
-        skillTime *=  0.6;
-        skillTime += 0.2;
+        skillTime = loge(skillTime);
+        skillTime += 0.85;
+        log("DXRThrownProjectile Tick " $ self @ skillTime);
     }
 }
 
-// scale arming time with skill and fuse length for thrown grenades (fuseLength is used for thrown grenades, but also the SetTimer call for arming attached grenades)
+
 simulated function PreBeginPlay()
 {
+    // based on the player's skill: scale arming time for player attached grenades, and fuse length for thrown grenades (fuseLength is used for thrown grenades, but also the SetTimer call for arming attached grenades)
     local #var(PlayerPawn) player;
 
     Super.PreBeginPlay();
     player = #var(PlayerPawn)(Owner);
     if(player != None) {
-        // high skill gives the player shorter fuses
+        // high skill gives the player faster arming time for attached grenades, and fuse time for thrown grenades
         fuseLength += 3.0 * player.SkillSystem.GetSkillLevelValue(class'SkillDemolition');
         fuseLength = FClamp(fuseLength, 0.2, 6);
-    } else {
-        // higher skill gives the enemies longer fuses
+    } else if(!bProximityTriggered) {
+        // higher skill gives the enemies longer fuses for thrown grenades
         player = #var(PlayerPawn)(GetPlayerPawn());
         if(player != None) {
             fuseLength -= player.SkillSystem.GetSkillLevelValue(class'SkillDemolition') * 2.0 + 0.5;
