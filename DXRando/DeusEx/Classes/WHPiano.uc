@@ -61,7 +61,7 @@ simulated function Tick(float deltaTime)
             soundHandle = 0;
         }
         currentSong=JUST_BROKEN_PIANO;
-        PlayDoneTime = 8.0 + Level.TimeSeconds;
+        PlayDoneTime = 1.0 + Level.TimeSeconds;
         soundHandle = PlaySound(sound'MaxPaynePianoJustBroke', SLOT_Misc,5.0,, 500);
         message = GetSongMessage(sound'MaxPaynePianoJustBroke');
     }
