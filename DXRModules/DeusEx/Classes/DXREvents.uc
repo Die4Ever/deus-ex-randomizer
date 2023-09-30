@@ -2444,6 +2444,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Go into the hatch in the Command 24 building in Area 51 and enter the basement.";
         case "FreighterHelipad":
             return "Walk up onto the helipad in the lower decks of the superfreighter.";
+        case "11_Bulletin01":
+            return "Read about the cathedral on a public computer.  These can be found on the streets near the metro, as well as inside the metro.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2780,6 +2782,7 @@ defaultproperties
     bingo_options(287)=(event="DockyardLaser",desc="Deactivate %s laser grids under the dockyard",max=3,missions=512)
     bingo_options(288)=(event="A51CommBuildingBasement",desc="Enter the basement of the Area 51 Command building",max=1,missions=32768)
     bingo_options(289)=(event="FreighterHelipad",desc="Walk on the helipad inside the superfreighter",max=1,missions=512)
+    bingo_options(290)=(event="11_Bulletin01",desc="Learn about the Cathedral",max=1,missions=2048)
 
 
 
