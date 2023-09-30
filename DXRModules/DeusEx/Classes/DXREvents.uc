@@ -777,6 +777,8 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'SuperfreighterProp',vectm(2969,78,-1120),225,225);
 
+        bt = class'BingoTrigger'.static.Create(self,'Titanic',vectm(-3555,110,360),100,40);
+
         break;
     case "09_NYC_SHIPFAN":
         bt = class'BingoTrigger'.static.Create(self,'SpinningRoom',vectm(0,0,0));
@@ -2462,6 +2464,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Enter the explosives locker in Area 51.  This is the locked room on the staircase leading down from Helios towards Sector 4.";
         case "A51SeparationSwim":
             return "Go swimming in the tall cylindrical separation tank in Sector 3 of Area 51.";
+        case "09_Email08":
+            return "Read an email from Captain Zhao's daughter on his computer on the superfreighter.";
+        case "Titanic":
+            return "Stand on the rail at the front of the superfreighter and hold your arms out...  It feels like you're flying!";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2801,6 +2807,8 @@ defaultproperties
     bingo_options(290)=(event="11_Bulletin01",desc="Learn about the Cathedral",max=1,missions=2048)
     bingo_options(291)=(event="A51ExplosiveLocker",desc="Enter the explosives locker in Area 51",max=1,missions=32768)
     bingo_options(292)=(event="A51SeparationSwim",desc="Swim in the Area 51 separation tank",max=1,missions=32768)
+    bingo_options(293)=(event="09_Email08",desc="Daddy Zhao",max=1,missions=512)
+    bingo_options(294)=(event="Titanic",desc="I'm flying, Jack!",max=1,missions=512)
 
 
 
