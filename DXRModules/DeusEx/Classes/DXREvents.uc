@@ -802,6 +802,8 @@ function SetWatchFlags() {
         WatchFlag('WatchKeys_Locker1');
         WatchFlag('WatchKeys_Locker2');
 
+        bt = class'BingoTrigger'.static.Create(self,'FreighterHelipad',vectm(-5516,142,-180),500,40);
+
         break;
     case "09_NYC_GRAVEYARD":
         WatchFlag('GaveDowdAmbrosia');
@@ -2440,6 +2442,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Deactivate enough of the laser grids in the sewers underneath the dockyards";
         case "A51CommBuildingBasement":
             return "Go into the hatch in the Command 24 building in Area 51 and enter the basement.";
+        case "FreighterHelipad":
+            return "Walk up onto the helipad in the lower decks of the superfreighter.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2775,6 +2779,7 @@ defaultproperties
     bingo_options(286)=(event="Area51SteamValve",desc="Close %s steam valves in Area 51",max=2,missions=32768)
     bingo_options(287)=(event="DockyardLaser",desc="Deactivate %s laser grids under the dockyard",max=3,missions=512)
     bingo_options(288)=(event="A51CommBuildingBasement",desc="Enter the basement of the Area 51 Command building",max=1,missions=32768)
+    bingo_options(289)=(event="FreighterHelipad",desc="Walk on the helipad inside the superfreighter",max=1,missions=512)
 
 
 
