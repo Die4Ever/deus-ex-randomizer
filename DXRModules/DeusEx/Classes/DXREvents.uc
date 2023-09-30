@@ -106,6 +106,11 @@ function AddPhoneTriggers(bool isRevision)
             p = Spawn(class'PayPhone',,,vectm(-660,-1806,435));
         }
         break;
+    case "09_NYC_DOCKYARD":
+        if (!isRevision){
+            p=Spawn(class'#var(prefix)Phone',,,vectm(2333,2153,53),rotm(0,5688,0));
+        }
+        break;
     }
     i=0;
     foreach AllActors(class'#var(prefix)Phone',p){
@@ -2417,6 +2422,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
                 msg=msg$"|nThere is a desk phone in the conference room on the first level of the MJ12 Lab under VersaLife.";
             } else if (mission <=8){
                 msg=msg$"|n|nThere is a desk phone and a pay phone in the Free Clinic.  There are two payphones in the streets.  There is a payphone in the back of the bar.";
+            } else if (mission <=9){
+                msg=msg$"|n|nThere is a desk phone in an office in the dockyard.";
             } else if (mission<=10){
                 msg=msg$"|n|nThere is a desk phone in the office across the street from the entrance to the catacombs in Denfert-Rochereau.";
             }
@@ -2758,7 +2765,7 @@ defaultproperties
     bingo_options(280)=(event="SnitchDowd",desc="Snitches get stitches",max=1,missions=256)
     bingo_options(281)=(event="SewerSurfin",desc="Sewer Surfin'",max=1,missions=276)
     bingo_options(282)=(event="SmokingKills",desc="Smoking Kills (%s)",max=5,missions=3420)
-    bingo_options(283)=(event="PhoneCall",desc="Make %s phone calls",max=5,missions=1406)
+    bingo_options(283)=(event="PhoneCall",desc="Make %s phone calls",max=5,missions=1918)
     bingo_options(284)=(event="Area51ElevatorPower",desc="Power the elevator in Area 51",max=1,missions=32768)
     bingo_options(285)=(event="Area51SleepingPod",desc="Open %s sleeping pods in Area 51",max=4,missions=32768)
     bingo_options(286)=(event="Area51SteamValve",desc="Close %s steam valves in Area 51",max=2,missions=32768)
