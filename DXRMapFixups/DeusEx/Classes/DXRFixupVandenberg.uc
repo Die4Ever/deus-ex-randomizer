@@ -20,6 +20,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)RatGenerator rg;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)NanoKey key;
+    local #var(prefix)DamageTrigger dt;
     local Actor a;
 
     switch(dxr.localURL)
@@ -49,6 +50,12 @@ function PreFirstEntryMapFixes()
         //Clear out items in inaccessible containers far below the earth
         foreach RadiusActors(class'Actor', a, 250, vectm(-4350,3000,-5850)) {
             a.Destroy();
+        }
+
+        foreach AllActors(class'#var(prefix)DamageTrigger',dt){
+            if (dt.DamageType=='Shocked'){
+                dt.Tag='lab_water';
+            }
         }
 #ifdef vanillamaps
         //Add a key to Tim's closet

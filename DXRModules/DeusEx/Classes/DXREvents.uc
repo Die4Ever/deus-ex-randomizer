@@ -1014,13 +1014,43 @@ function SetWatchFlags() {
 
         bt = class'BingoTrigger'.static.Create(self,'VandenbergShaft',vectm(1442.694580,1303.784180,-1755),110,10);
 
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergAntenna',vectm(1800,2590,344.44),40,60);
+        bt.MakeShootingTarget();
+
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergHazLab',vectm(0,0,0));
+        bt.bUntrigger=True;
+        bt.Tag='lab_water';
+
+        foreach AllActors(class'WaterZone', water) {
+            if (RevisionMaps && water.Name=='WaterZone2'){
+                water.ZonePlayerEvent = 'VandenbergGasSwim';
+            } else if (!RevisionMaps && water.Name=='WaterZone0'){
+                water.ZonePlayerEvent = 'VandenbergGasSwim';
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergGasSwim',vectm(0,0,0));
+
 
         break;
     case "12_VANDENBERG_TUNNELS":
+        WatchFlag('WatchKeys_maintenancekey');
         bt = class'BingoTrigger'.static.Create(self,'VandenbergReactorRoom',vectm(-1427,3287,-2985),500,100);
         break;
     case "12_VANDENBERG_COMPUTER":
         bt = class'BingoTrigger'.static.Create(self,'VandenbergServerRoom',vectm(940,2635,-1320),200,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(1135,2360,-2138),40,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergComputerElec',vectm(0,0,0));
+        bt.bUntrigger=True;
+        bt.Tag='level1_emitter';
+        bt.bDestroyOthers=False;
+
+        bt = class'BingoTrigger'.static.Create(self,'VandenbergComputerElec',vectm(0,0,0));
+        bt.bUntrigger=True;
+        bt.Tag='level3_emitter';
+        bt.bDestroyOthers=False;
+
         break;
     case "14_OCEANLAB_SILO":
         WatchFlag('MeetDrBernard_Played');
@@ -1057,6 +1087,7 @@ function SetWatchFlags() {
         WatchFlag('LeoToTheBar');
         WatchFlag('PageTaunt_Played');
         RewatchFlag('WaltonShowdown_Played');
+        bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(860,6758,-3175),40,40);
         break;
     case "14_VANDENBERG_SUB":
         RewatchFlag('WaltonShowdown_Played');
@@ -1194,6 +1225,13 @@ function SetWatchFlags() {
         bt.bDestroyOthers=False;
         bt = class'BingoTrigger'.static.Create(self,'A51UCBlocked',vectm(0,0,0));
         bt.Tag='UC_shutdoor3';
+        bt.bDestroyOthers=False;
+
+        bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(5743,-9272,-5578),40,40);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(8628,-7267,-5970),40,40);
+        bt.bDestroyOthers=False;
+        bt = class'BingoTrigger'.static.Create(self,'EnterUC',vectm(7235,-8823,-5134),40,40);
         bt.bDestroyOthers=False;
 
         break;
@@ -2485,6 +2523,18 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Enter the store display case in the street leading up to the cathedral.";
         case "WIB_ClassDeadM11":
             return "Kill Adept 34501, the Woman in Black living in the cathedral.";
+        case "VandenbergAntenna":
+            return "Shoot the tip of the antenna on top of the command center at the Vandenberg Air Force Base.";
+        case "VandenbergHazLab":
+            return "Enter the Hazard Lab in Vandenberg and disable the electricity that is making the water hazardous.";
+        case "WatchKeys_maintenancekey":
+            return "Find the maintenance key in the tunnels underneath Vandenberg.";
+        case "EnterUC":
+            return "Step into enough Universal Constructors throughout the game.  There are five available:|n - One in the computer section of Vandenberg|n - One in the bottom of the Ocean Lab|n - Three in the very bottom of Area 51";
+        case "VandenbergComputerElec":
+            return "Disable enough electrical panels in the computer room of Vandenberg.  There's very little risk!";
+        case "VandenbergGasSwim":
+            return "Go swimming in the water around the base of the two gas tanks outside of the Vandenberg command center.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2830,6 +2880,12 @@ defaultproperties
     bingo_options(296)=(event="DockyardTrailer",desc="Enter a trailer in the dockyards",max=1,missions=512)
     bingo_options(297)=(event="CathedralDisplayCase",desc="Enter the display case outside the cathedral",max=1,missions=2048)
     bingo_options(298)=(event="WIB_ClassDeadM11",desc="Kill Adept 34501",max=1,missions=2048)
+    bingo_options(299)=(event="VandenbergAntenna",desc="Shoot the tip of the antenna in Vandenberg",max=1,missions=4096)
+    bingo_options(300)=(event="VandenbergHazLab",desc="Shut off the electricity in the Hazard Lab",max=1,missions=4096)
+    bingo_options(301)=(event="WatchKeys_maintenancekey",desc="Find the Vandenberg tunnel maintenance key",max=1,missions=4096)
+    bingo_options(302)=(event="EnterUC",desc="Enter %s Universal Constructors",max=3,missions=53248)
+    bingo_options(303)=(event="VandenbergComputerElec",desc="Disable %s electrical panels in the Vandenberg computer room",max=2,missions=4096)
+    bingo_options(304)=(event="VandenbergGasSwim",desc="Swim around the Vandenberg gas tanks",max=1,missions=4096)
 
 
 

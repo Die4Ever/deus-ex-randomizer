@@ -14,7 +14,7 @@ struct BingoOption {
     var int max;
     var int missions;// bit masks
 };
-var BingoOption bingo_options[300];
+var BingoOption bingo_options[350];
 
 struct MutualExclusion {
     var string e1, e2;
