@@ -850,6 +850,7 @@ function int ScoreFlags()
     //settings.spoilers = 1;
     score -= settings.health;
     score -= settings.energy;
+    score -= moresettings.remove_paris_mj12;
     return score * 5;// lazy multiply by 5 at the end
 }
 
