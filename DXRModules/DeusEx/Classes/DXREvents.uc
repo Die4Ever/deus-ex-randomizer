@@ -1052,11 +1052,52 @@ function SetWatchFlags() {
         foreach AllActors(class'#var(DeusExPrefix)Mover',dxm,'blast_door'){
             dxm.Event = 'blast_door_flag';
         }
+
+        bt = class'BingoTrigger'.static.Create(self,'power_dispatcher',vectm(0,0,0));
+        bt.bingoEvent = "Area51ElevatorPower";
+
         break;
     case "15_AREA51_ENTRANCE":
         WatchFlag('PlayPool');
         RewatchFlag('WaltonBadass_Played');
         InitPoolBalls();
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',dxm){
+            if (dxm.tag=='chamber1'){
+                dxm.event='sleeppod1';
+            } else if (dxm.tag=='chamber3'){
+                dxm.event='sleeppod2';
+            } else if (dxm.tag=='chamber4'){
+                dxm.event='sleeppod3';
+            } else if (dxm.tag=='chamber5'){
+                dxm.event='sleeppod4';
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'sleeppod1',vectm(0,0,0));
+        bt.bingoEvent = "Area51SleepingPod";
+        bt.bDestroyOthers=False;
+
+        bt = class'BingoTrigger'.static.Create(self,'sleeppod2',vectm(0,0,0));
+        bt.bingoEvent = "Area51SleepingPod";
+        bt.bDestroyOthers=False;
+
+        bt = class'BingoTrigger'.static.Create(self,'sleeppod3',vectm(0,0,0));
+        bt.bingoEvent = "Area51SleepingPod";
+        bt.bDestroyOthers=False;
+
+        bt = class'BingoTrigger'.static.Create(self,'sleeppod4',vectm(0,0,0));
+        bt.bingoEvent = "Area51SleepingPod";
+        bt.bDestroyOthers=False;
+
+
+        bt = class'BingoTrigger'.static.Create(self,'steam1',vectm(0,0,0));
+        bt.bingoEvent = "Area51SteamValve";
+        bt.bDestroyOthers=False;
+
+        bt = class'BingoTrigger'.static.Create(self,'Steam2',vectm(0,0,0));
+        bt.bingoEvent = "Area51SteamValve";
+        bt.bDestroyOthers=False;
+
         break;
     case "15_AREA51_FINAL":
         RewatchFlag('WaltonBadass_Played');
@@ -2365,6 +2406,12 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
                 msg=msg$"|n|nThere is a desk phone in the office across the street from the entrance to the catacombs in Denfert-Rochereau.";
             }
             return msg;
+        case "Area51ElevatorPower":
+            return "Enter the main blast doors of the Area 51 bunker and turn on the power to the elevator.";
+        case "Area51SleepingPod":
+            return "Open enough of the sleeping pods in the entrance to the Area 51 bunker.";
+        case "Area51SteamValve":
+            return "Close the steam valves in the maintenance tunnels under the floors of the entrance to the Area 51 bunker.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2695,6 +2742,10 @@ defaultproperties
     bingo_options(281)=(event="SewerSurfin",desc="Sewer Surfin'",max=1,missions=276)
     bingo_options(282)=(event="SmokingKills",desc="Smoking Kills (%s)",max=5,missions=3420)
     bingo_options(283)=(event="PhoneCall",desc="Make %s phone calls",max=5,missions=1406)
+    bingo_options(284)=(event="Area51ElevatorPower",desc="Power the elevator in Area 51",max=1,missions=32768)
+    bingo_options(285)=(event="Area51SleepingPod",desc="Open %s sleeping pods in Area 51",max=4,missions=32768)
+    bingo_options(286)=(event="Area51SteamValve",desc="Close %s steam valves in Area 51",max=2,missions=32768)
+
 
 
 
