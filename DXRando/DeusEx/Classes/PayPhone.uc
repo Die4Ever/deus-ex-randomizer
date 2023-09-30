@@ -1,4 +1,4 @@
-class PayPhone extends Phone;
+class PayPhone extends #var(prefix)Phone;
 
 defaultproperties
 {
