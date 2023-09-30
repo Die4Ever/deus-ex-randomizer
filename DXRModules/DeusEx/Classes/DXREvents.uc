@@ -931,6 +931,10 @@ function SetWatchFlags() {
         }
         bt = class'BingoTrigger'.static.Create(self,'secretdoor01',vectm(0,0,0));
 
+        bt = class'BingoTrigger'.static.Create(self,'CathedralDisplayCase',vectm(-6335,305,-565),40,40);
+        bt = class'BingoTrigger'.static.Create(self,'CathedralDisplayCase',vectm(-6428,305,-565),40,40);
+
+
         foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
             if (dlt.datalinkTag=='DL_knightslibrary'){
                 bt = class'BingoTrigger'.static.Create(self,'CathedralLibrary',dlt.Location,dlt.CollisionRadius,dlt.CollisionHeight);
@@ -2477,6 +2481,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Talk to Xander, the sole surviving soldier hiding out in the building inside the hangar in Area 51.";
         case "DockyardTrailer":
             return "Enter one of the trailers parked in the dockyards.  There is a key to open the trailers somewhere in the dockyards.";
+        case "CathedralDisplayCase":
+            return "Enter the store display case in the street leading up to the cathedral.";
+        case "WIB_ClassDeadM11":
+            return "Kill Adept 34501, the Woman in Black living in the cathedral.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2820,6 +2828,8 @@ defaultproperties
     bingo_options(294)=(event="Titanic",desc="I'm flying, Jack!",max=1,missions=512)
     bingo_options(295)=(event="MeetScaredSoldier_Played",desc="Talk to the surviving Area 51 soldier",max=1,missions=32768)
     bingo_options(296)=(event="DockyardTrailer",desc="Enter a trailer in the dockyards",max=1,missions=512)
+    bingo_options(297)=(event="CathedralDisplayCase",desc="Enter the display case outside the cathedral",max=1,missions=2048)
+    bingo_options(298)=(event="WIB_ClassDeadM11",desc="Kill Adept 34501",max=1,missions=2048)
 
 
 
