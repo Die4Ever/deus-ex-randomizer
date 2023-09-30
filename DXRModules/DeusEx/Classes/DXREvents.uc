@@ -1137,6 +1137,18 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vectm(-3995,2458,-902),250,40);
         bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vectm(-3995,2458,-1152),250,40);
         bt = class'BingoTrigger'.static.Create(self,'HeliosControlArms',vectm(-3995,2458,-1413),250,40);
+
+        bt = class'BingoTrigger'.static.Create(self,'A51ExplosiveLocker',vectm(-5845,-385,-1485),150,40);
+
+        foreach AllActors(class'WaterZone', water) {
+            if (RevisionMaps && water.Name=='WaterZone3'){ //Revision has a second tank
+                water.ZonePlayerEvent = 'A51SeparationSwim';
+            } else if (water.Name=='WaterZone2'){
+                water.ZonePlayerEvent = 'A51SeparationSwim';
+            }
+        }
+        bt = class'BingoTrigger'.static.Create(self,'A51SeparationSwim',vectm(0,0,0));
+
         break;
     case "15_AREA51_PAGE":
 #ifdef vanilla
@@ -2446,6 +2458,10 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Walk up onto the helipad in the lower decks of the superfreighter.";
         case "11_Bulletin01":
             return "Read about the cathedral on a public computer.  These can be found on the streets near the metro, as well as inside the metro.";
+        case "A51ExplosiveLocker":
+            return "Enter the explosives locker in Area 51.  This is the locked room on the staircase leading down from Helios towards Sector 4.";
+        case "A51SeparationSwim":
+            return "Go swimming in the tall cylindrical separation tank in Sector 3 of Area 51.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2783,6 +2799,8 @@ defaultproperties
     bingo_options(288)=(event="A51CommBuildingBasement",desc="Enter the basement of the Area 51 Command building",max=1,missions=32768)
     bingo_options(289)=(event="FreighterHelipad",desc="Walk on the helipad inside the superfreighter",max=1,missions=512)
     bingo_options(290)=(event="11_Bulletin01",desc="Learn about the Cathedral",max=1,missions=2048)
+    bingo_options(291)=(event="A51ExplosiveLocker",desc="Enter the explosives locker in Area 51",max=1,missions=32768)
+    bingo_options(292)=(event="A51SeparationSwim",desc="Swim in the Area 51 separation tank",max=1,missions=32768)
 
 
 
