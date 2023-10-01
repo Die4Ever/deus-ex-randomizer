@@ -139,15 +139,19 @@ simulated function RandomizeSettings(bool forceMenuOptions)
 function ClearDataVaultImages()
 {
     local DataVaultImage image;
+    local #var(PlayerPawn) p;
 
-    while (player().FirstImage!=None){
-        image = player().FirstImage;
-        player().FirstImage=image.nextImage;
+    p = player();
+    while (p.FirstImage!=None){
+        image = p.FirstImage;
+        p.FirstImage=image.nextImage;
         //Theoretically if we were being more discriminating with the image deletion,
         //we'd want to also fix the prevImage value, but since we're just trashing
         //everything, it's unnecessary
         image.Destroy();
     }
+
+    class'DXRActorsBase'.static.RemoveItem(p, class'#var(prefix)DataVaultImage');
 }
 
 function NewGamePlus()
