@@ -7,7 +7,7 @@ var int bingo_win_countdown;
 var name rewatchflags[8];
 var int num_rewatchflags;
 var float PoolBallHeight;
-var int NumPoolTables, PoolTablesSunk;
+var int NumPoolTables, PoolTablesSunk, BallsPerTable;
 
 struct BingoOption {
     var string event, desc;
@@ -224,7 +224,7 @@ simulated function int PoolBallsSunk()
                     ballsSunk++;
                 }
             }
-            if (ballsSunk>=16){
+            if (ballsSunk>=BallsPerTable){
                 tablesSunk++;
             }
         }
@@ -254,6 +254,8 @@ simulated function InitPoolBalls()
             NumPoolTables+=1;
         }
     }
+
+    BallsPerTable = 16; //Default number - Lucky Money has less
 
     PoolBallHeight -= 1;
 }

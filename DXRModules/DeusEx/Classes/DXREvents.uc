@@ -572,6 +572,7 @@ function SetWatchFlags() {
         }
 
         InitPoolBalls();
+        BallsPerTable=14; //This table is missing some balls
 
         break;
     case "06_HONGKONG_WANCHAI_STREET":
