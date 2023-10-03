@@ -2,6 +2,7 @@ class DXRBinoculars injects #var(prefix)Binoculars;
 
 var int watchTime;
 var Actor lastWatched;
+var name lastWatchedTex;
 
 state Activated
 {
@@ -36,8 +37,12 @@ simulated function Timer()
     local #var(PlayerPawn) peeper;
     local Vector HitNormal, HitLocation, StartTrace, EndTrace;
     local Actor peepee;// pronounced peep-ee, not pee-pee
+    local Actor target;
     local DXRando dxr;
-    local bool newPeepee;
+    local bool newPeepee, newPeepTex;
+    local name texName,texGroup;
+    local int flags, i;
+
 
     peeper = #var(PlayerPawn)(Owner);
 
@@ -49,7 +54,26 @@ simulated function Timer()
     //which is basically the worst case scenario
     EndTrace = StartTrace + 20000 * Vector(peeper.ViewRotation);
 
-    peepee = Trace(HitLocation, HitNormal, EndTrace, StartTrace, True);
+    target=None;
+
+    //peepee = Trace(HitLocation, HitNormal, EndTrace, StartTrace, True);
+    foreach TraceTexture(class'Actor',target,texName,texGroup,flags,HitLocation,HitNormal,EndTrace,StartTrace){
+        if (((target.DrawType == DT_None) || target.bHidden) && target!=Level)
+        {
+            // Keep tracing past invisible things
+        }
+        else if (target==Level && (((flags&0x00000004)!=0) || ((flags&0x00000001)!=0)))
+        {
+            //Skip invisible or translucent masked textures
+            //It won't actually trace beyond the level, it seems, so this doesn't actually help
+        }
+        else
+        {
+            peepee = target;
+            break;
+        }
+    }
+
 
     //peeper.ClientMessage("Peeping "$peepee.Name$" in state "$peepee.GetStateName());
 
@@ -59,26 +83,45 @@ simulated function Timer()
         return;
     }
 
-    if (peepee!=lastWatched)
+    if(peepee.IsA('LevelInfo')){
+        peepee=None;
+    }
+
+    if (peepee!=None && peepee!=lastWatched)
     {
         lastWatched = peepee;
+        lastWatchedTex = '';
         watchTime=0;
 
         if (lastWatched!=None){
             newPeepee = True;
+            newPeepTex = False;
         }
+    } else if (peepee==None && texName!=lastWatchedTex) {
+        lastWatchedTex=texName;
+        lastWatched=peepee;
+        watchTime=0;
 
+        if (lastWatchedTex!=''){
+            newPeepee = False;
+            newPeepTex = True;
+        }
     } else {
         newPeepee = False;
+        newPeepTex = False;
     }
 
     if (newPeepee){
+        //peeper.ClientMessage("New peeped actor is "$peepee.class.Name);
         //This should probably only trigger once per thing - TODO, will probably be tracked in DXREvents and PlayerDataItem, like function ReadText(name textTag)
         class'DXREvents'.static.MarkBingo(dxr,peepee.Class.Name$"_peeped");
 
         if (ScriptedPawn(peepee)!=None){
             class'DXREvents'.static.MarkBingo(dxr,"PawnState_"$peepee.GetStateName());
         }
+    } else if (newPeepTex) {
+        //peeper.ClientMessage("New peeped texture is "$lastWatchedTex);
+        class'DXREvents'.static.MarkBingo(dxr,lastWatchedTex$"_peepedtex");
     } else {
         watchTime++;
         if(watchTime>=4){

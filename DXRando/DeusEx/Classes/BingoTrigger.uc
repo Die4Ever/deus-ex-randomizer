@@ -5,12 +5,20 @@ class BingoTrigger expands Trigger;
 
 var() String bingoEvent;
 var() bool bDestroyOthers;
+var() bool bUntrigger;
 
 function Trigger(Actor Other, Pawn Instigator)
 {
 	Super.Trigger(Other, Instigator);
     DoBingoThing();
+}
 
+function Untrigger(Actor Other, Pawn Instigator)
+{
+	Super.Untrigger(Other, Instigator);
+    if (bUntrigger){
+        DoBingoThing();
+    }
 }
 
 function Touch(Actor Other)
@@ -99,4 +107,5 @@ defaultproperties
      bingoEvent=""
      bTriggerOnceOnly=True
      bDestroyOthers=True
+     bUntrigger=False
 }

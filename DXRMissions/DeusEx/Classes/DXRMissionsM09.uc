@@ -65,16 +65,16 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps Hallway", NORMAL_GOAL, vect(-2480.000000, -448.000000, -144.000000), rot(0, 32768, 0));
         AddActorLocation(loc, 2, vect(-2522, -464, -144), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "SE Electrical Room", NORMAL_GOAL, vect(-3952.000000, 768.000000, -416.000000), rot(0, 0, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "SE Electrical Room", NORMAL_GOAL, vect(-3950, 740, -352), rot(0, 0, 0));
         AddActorLocation(loc, 2, vect(-3908, 766, -416), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "South Helipad", NORMAL_GOAL, vect(-5664.000000, -928.000000, -432.000000), rot(0, 16384, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "South Helipad", NORMAL_GOAL, vect(-5664, -926, -418), rot(0, 16384, 0));
         AddActorLocation(loc, 2, vect(-5664, -889, -432), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Storage Room", NORMAL_GOAL, vect(-4080.000000, -816.000000, -128.000000), rot(0, 32768, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Storage Room", NORMAL_GOAL, vect(-4082, -816, -128), rot(0, 32768, 0));
         AddActorLocation(loc, 2, vect(-4120, -816, -128), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", NORMAL_GOAL, vect(-4720.000000, 1536.000000, -144.000000), rot(0, -16384, 0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "Helipad Air Control", NORMAL_GOAL, vect(-4752, 1536, -144), rot(0, -16384, 0));
         AddActorLocation(loc, 2, vect(-4717, 1501, -144), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Fan Room", NORMAL_GOAL, vect(-3200.000000, -48.000000, -96.000000), rot(0, 0, 0));
@@ -83,19 +83,19 @@ function int InitGoals(int mission, string map)
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Engine Control Room", NORMAL_GOAL, vect(-288.000000, -432.000000, 112.000000), rot(-16384, 16384, 0));
         AddActorLocation(loc, 2, vect(-288, -426, 62), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,1024.000000,-432.000000), rot(0,49152,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832, 1022, -430), rot(0,49152,0));
         AddActorLocation(loc, 2, vect(833.449036, 993.195618, -490.899567), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680.000000,1647.000000,-416.000000), rot(0,49152,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "NE Electical Room", NORMAL_GOAL | VANILLA_GOAL, vect(-3680, 1647, -402), rot(0,49152,0));
         AddActorLocation(loc, 2, vect(-3680.022217, 1616.057861, -490.899567), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6528.000000,200.000000,-448.000000), rot(0,65536,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "East Helipad", NORMAL_GOAL | VANILLA_GOAL, vect(-6526, 200, -418), rot(0,65536,0));
         AddActorLocation(loc, 2, vect(-6499.218750, 200.039917, -490.899567), rot(0,0,0));
 
         loc = AddGoalLocation("09_NYC_SHIPBELOW", "Bilge Pumps", NORMAL_GOAL | VANILLA_GOAL, vect(-3296.000000,-1662.000000,-416.000000), rot(0,81920,0));
         AddActorLocation(loc, 2, vect(-3296.133789, -1632.118652, -490.899567), rot(0,0,0));
 
-        loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832.000000,-1024.000000,-416.000000), rot(0,16384,0));
+        loc = AddGoalLocation("09_NYC_SHIPBELOW", "SW Engine Room", NORMAL_GOAL | VANILLA_GOAL, vect(832, -1024, -400), rot(0,16384,0));
         AddActorLocation(loc, 2, vect(831.944641, -996.442627, -490.899567), rot(0,0,0));
 
         return 92;
@@ -209,6 +209,7 @@ function PreFirstEntryMapFixes()
 {
     local #var(prefix)Barrel1 barrel;
     local DeusExMover dxm;
+    local Actor a;
     local name barrelName;
 
 
@@ -258,6 +259,18 @@ function PreFirstEntryMapFixes()
                 }
 
             }
+        } else {
+            foreach AllActors(class'DeusExMover',dxm){
+                if (dxm.Name=='DeusExMover40' ||
+                    dxm.Name=='DeusExMover16' ||
+                    dxm.Name=='DeusExMover33' ||
+                    dxm.Name=='DeusExMover31' ||
+                    dxm.Name=='DeusExMover32'){
+                    dxm.PrePivot=vect(-3,-2.5,5);
+                }
+            }
+            a = Spawnm(class'DynamicBlockMonsters',,, vect(-3926.773438, 739.635742, -456.895294));
+            a.SetCollisionSize(100, 64);
         }
     }
 }
@@ -269,7 +282,7 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
 
     if (g.name=="Jammer") {
         //Add a keypad to disable the jammer
-        keypad=Spawn(class'#var(prefix)Keypad1',,,Loc.positions[7].pos,Loc.positions[7].rot);
+        keypad = #var(prefix)Keypad1(AddActor(class'#var(prefix)Keypad1',Loc.positions[7].pos,Loc.positions[7].rot));
         keypad.Event='EMOff';
         keypad.bHackable=True;
         keypad.hackStrength=0.05;

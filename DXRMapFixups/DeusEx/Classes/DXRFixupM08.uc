@@ -70,9 +70,17 @@ function PreFirstEntryMapFixes()
             break;
         case "08_NYC_HOTEL":
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+            SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+            Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
+            Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
+            Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
+            Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
+            Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
             break;
         case "08_NYC_BAR":
             npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1171.976440,250.575806,53.729687),rotm(0,0,0),'08_Newspaper01'); //Joe Greene article, table near where Harley is in Vanilla
+            Spawn(class'BarDancer',,,vectm(-2150,-500,48),rotm(0,0,0));
+
             break;
     }
 }

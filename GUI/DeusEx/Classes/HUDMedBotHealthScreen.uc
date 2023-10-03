@@ -82,6 +82,13 @@ function Tick(float deltaTime)
         return;
     }
 
+    if(medBot == None || medBot.bDeleteMe || player == None || player.bDeleteMe) {
+        player = None;
+        medBot = None;
+        DestroyWindow();
+        return;
+    }
+
     UpdateMedBotDisplay();
     UpdateRegionWindows();
 }

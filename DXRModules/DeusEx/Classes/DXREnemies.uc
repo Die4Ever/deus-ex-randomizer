@@ -134,7 +134,19 @@ function CheckConfig()
 function FirstEntry()
 {
     local PlaceholderEnemy placeholder;
+    local #var(prefix)ScriptedPawn sp;
+
     Super.FirstEntry();
+
+    if(dxr.localURL == "10_PARIS_METRO" && dxr.flags.moresettings.remove_paris_mj12 > 0) {
+        foreach AllActors(class'#var(prefix)ScriptedPawn', sp) {
+            if(sp.Alliance=='mj12' && chance_single(dxr.flags.moresettings.remove_paris_mj12)) {
+                sp.Event='';
+                sp.bHidden=true;
+                sp.Destroy();
+            }
+        }
+    }
 
     SwapScriptedPawns(dxr.flags.settings.enemiesshuffled, true);
     // delete placeholders after doing swaps but before doing clones

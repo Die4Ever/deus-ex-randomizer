@@ -1,13 +1,13 @@
 class BalancePlayer injects Human;
 
+var travel bool bZeroRando, bReducedRando;
+
 function TakeDamage(int Damage, Pawn instigatedBy, Vector hitlocation, Vector momentum, name damageType)
 {
-
     if(damageType == 'NanoVirus') {
         RandomizeAugStates();
     }
     Super.TakeDamage(Damage, instigatedBy, hitlocation, momentum, damageType);
-
 }
 
 function RandomizeAugStates()

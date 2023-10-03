@@ -8,12 +8,12 @@ var int energyMeterTimer;
 
 function Tick(float deltaTime)
 {
-    local DeusExPlayer p;
+    local Human p;
     if (bHacking)
     {
-        p = DeusExPlayer(winTerm.compOwner.Owner);
-        if( p == None ) p = Player;// ATMs don't set the Owner
-        if( p != None ) {
+        p = Human(winTerm.compOwner.Owner);
+        if( p == None ) p = Human(Player);// ATMs don't set the Owner
+        if( p != None && !p.bZeroRando ) {
             p.Energy -= deltaTime * 5.0;
             if( p.Energy <= 0 ) {
                 p.Energy = 0;
@@ -32,6 +32,8 @@ function Tick(float deltaTime)
 
 function CreateHackMessageWindow()
 {
+    local Human p;
+    p = Human(winTerm.compOwner.Owner);
 
 	hackBackground = PersonaHeaderTextWindow(NewChild(Class'PersonaHeaderTextWindow'));
 	hackBackground.SetPos(22, 19);
@@ -51,6 +53,10 @@ function CreateHackMessageWindow()
 	energyMeter.SetPos(22, 28);
 	energyMeter.SetSize(168, 47);
 	energyMeter.SetTextAlignments(HALIGN_Center, VALIGN_Center);
+
+    if(p == None || p.bZeroRando) {
+        energyMeter.Hide();
+    }
 
     UpdateEnergyMeter();
     if(energyMeterTimer == -1)
@@ -75,14 +81,14 @@ event DestroyWindow()
 
 function UpdateEnergyMeter()
 {
-    local DeusExPlayer p;
+    local Human p;
     local int energy,energydec,req,reqdec;
     local float reqEnergy;
     local string msg;
 
-    p = player;
+    p = Human(player);
 
-    if (p==None) return;
+    if (p==None || p.bZeroRando) return;
 
     //Keep it to one decimal point
     energy = int(p.Energy);

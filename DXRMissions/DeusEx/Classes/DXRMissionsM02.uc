@@ -39,10 +39,12 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("02_NYC_WAREHOUSE", "Generator", GOAL_TYPE1, 'BreakableWall2', PHYS_MovingBrush);
         AddGoalActor(goal, 1, 'CrateExplosiveSmall0', PHYS_None);
         AddGoalActor(goal, 2, 'CrateExplosiveSmall6', PHYS_None);
+        AddGoalActor(goal, 3, 'AmbientSoundTriggered0', PHYS_None);
+        AddGoalActor(goal, 4, 'AmbientSoundTriggered1', PHYS_None);
         AddGoalLocation("02_NYC_WAREHOUSE", "Warehouse", GOAL_TYPE1 | VANILLA_GOAL, vect(576.000000, -512.000000, 71.999939), rot(32768, -16384, 0));
         AddGoalLocation("02_NYC_WAREHOUSE", "Alley", GOAL_TYPE1, vect(-640.000000, 1760.000000, 128.000000), rot(0,32768,-16384));
         AddGoalLocation("02_NYC_WAREHOUSE", "Apartment", GOAL_TYPE1, vect(368.000000, 1248.000000, 992.000000), rot(0,32768,-16384));
-        AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(300, -560, -120), rot(0,-16384,-16384));
+        AddGoalLocation("02_NYC_WAREHOUSE", "Basement", GOAL_TYPE1, vect(224, -512, -192), rot(0,-16384,-16384));
         loc = AddGoalLocation("02_NYC_WAREHOUSE", "Sewer", GOAL_TYPE1, vect(-1600.000000, 784.000000, -256.000000), rot(32768,-32768,0));
         AddMutualExclusion(loc, loc2);// can't put Jock and the generator both in the sewers
         // pawns run into these and break them

@@ -92,6 +92,7 @@ function FirstEntry()
     local int i;
 
     Super.FirstEntry();
+    if(dxr.flags.IsZeroRando()) return;
 
     SetSeed("RandoWeaponMods");
 

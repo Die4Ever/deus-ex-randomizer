@@ -317,6 +317,7 @@ function PostFirstEntry()
 {
     local ScriptedPawn sp;
     local InterpolationPoint p;
+    local LuciusDeBeers lucius;
     local vector v;
     local rotator r;
     local bool memes_enabled;
@@ -361,6 +362,12 @@ function PostFirstEntry()
         case "ENDGAME4":
             AddLeo();
             break;
+    }
+
+    if(#defined(injections) && !dxr.flags.IsReducedRando()) {
+        foreach AllActors(class'LuciusDeBeers', lucius) {
+            lucius.bInvincible = false;
+        }
     }
 }
 

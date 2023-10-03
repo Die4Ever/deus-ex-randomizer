@@ -770,6 +770,7 @@ function TestScoring()
 function ExtendedTests()
 {
     local int time, completeTime, menutime, completemenutime;
+    local DeusExRootWindow root;
 
     Super.ExtendedTests();
 
@@ -786,7 +787,9 @@ function ExtendedTests()
     teststring( IntCommas(104000), "104,000", "IntCommas 104,000");
     teststring( IntCommas(1000000), "1,000,000", "IntCommas 1,000,000");
 
+    root = DeusExRootWindow(player().rootWindow);
     // mission 1 tests
+    root.bUIPaused = false;
     testint( GetMissionTime(1), 0, "GetMissionTime(1) == 0");
     testint( GetCompleteMissionTime(1), 0, "GetCompleteMissionTime(1) == 0");
     testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
@@ -799,9 +802,9 @@ function ExtendedTests()
     testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
     testint( GetCompleteMissionMenuTime(1), 0, "GetCompleteMissionMenuTime(1) == 0");
 
-    DeusExRootWindow(player().rootWindow).hud.Hide();
+    root.bUIPaused = true;
     IncMissionTimer(1);
-    DeusExRootWindow(player().rootWindow).hud.Show();
+    root.bUIPaused = false;
 
     testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
     testint( GetCompleteMissionTime(1), 1, "GetCompleteMissionTime(1) == 1");
@@ -828,9 +831,9 @@ function ExtendedTests()
     testint( GetMissionMenuTime(1), 0, "GetMissionMenuTime(1) == 0");
     testint( GetCompleteMissionMenuTime(1), 1, "GetCompleteMissionMenuTime(1) == 1");
 
-    DeusExRootWindow(player().rootWindow).hud.Hide();
+    root.bUIPaused = true;
     IncMissionTimer(1);
-    DeusExRootWindow(player().rootWindow).hud.Show();
+    root.bUIPaused = false;
 
     testint( GetMissionTime(1), 1, "GetMissionTime(1) == 1");
     testint( GetCompleteMissionTime(1), 2, "GetCompleteMissionTime(1) == 2");
@@ -860,9 +863,9 @@ function ExtendedTests()
     testint( GetMissionMenuTime(12), 0, "GetMissionMenuTime(12) == 0");
     testint( GetCompleteMissionMenuTime(12), 0, "GetCompleteMissionMenuTime(12) == 0");
 
-    DeusExRootWindow(player().rootWindow).hud.Hide();
+    root.bUIPaused = true;
     Timer();
-    DeusExRootWindow(player().rootWindow).hud.Show();
+    root.bUIPaused = false;
 
     testint( GetMissionTime(12), time + 1, "GetMissionTime(12) == time + 1");
     testint( GetCompleteMissionTime(12), completeTime + 1, "GetCompleteMissionTime(12) == completeTime + 1");

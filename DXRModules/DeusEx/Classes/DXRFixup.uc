@@ -114,6 +114,32 @@ function CheckConfig()
     DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
     DecorationsOverwrites[i].bPushable = c.default.bPushable;
 
+    i++;
+    DecorationsOverwrites[i].type = "BarrelVirus";
+    DecorationsOverwrites[i].bInvincible = false;
+    DecorationsOverwrites[i].HitPoints = 100;
+    DecorationsOverwrites[i].minDamageThreshold = 0;
+    c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+    DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+    DecorationsOverwrites[i].Flammability = c.default.Flammability;
+    DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+    DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+    DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+    DecorationsOverwrites[i].bPushable = c.default.bPushable;
+
+    i++;
+    DecorationsOverwrites[i].type = "CigaretteMachine";
+    DecorationsOverwrites[i].bInvincible = false;
+    DecorationsOverwrites[i].HitPoints = 100;
+    DecorationsOverwrites[i].minDamageThreshold = 0;
+    c = class<DeusExDecoration>(GetClassFromString(DecorationsOverwrites[i].type, class'DeusExDecoration'));
+    DecorationsOverwrites[i].bFlammable = c.default.bFlammable;
+    DecorationsOverwrites[i].Flammability = c.default.Flammability;
+    DecorationsOverwrites[i].bExplosive = c.default.bExplosive;
+    DecorationsOverwrites[i].explosionDamage = c.default.explosionDamage;
+    DecorationsOverwrites[i].explosionRadius = c.default.explosionRadius;
+    DecorationsOverwrites[i].bPushable = c.default.bPushable;
+
     Super.CheckConfig();
 
     for(i=0; i<ArrayCount(DecorationsOverwrites); i++) {
@@ -353,6 +379,18 @@ function FixUNATCOCarterCloset()
     }
     foreach RadiusActors(class'#var(DeusExPrefix)Decoration', d, 360, vectm(1075, -1150, 10)) {
         d.bIsSecretGoal = true;
+    }
+}
+
+function FixAlexsEmail()
+{
+    local #var(prefix)ComputerPersonal cp;
+
+    foreach AllActors(class'#var(prefix)ComputerPersonal',cp){
+        if (cp.UserList[0].UserName=="ajacobson" && cp.UserList[1].UserName==""){
+            cp.TextPackage = "#var(package)";
+            break;
+        }
     }
 }
 

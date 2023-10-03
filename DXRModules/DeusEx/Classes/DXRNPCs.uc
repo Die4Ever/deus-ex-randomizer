@@ -73,9 +73,12 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
     classes[i++] = class'#var(prefix)Rebreather';
     num=i;
 
+    if(chance_single(30)) items[forced++].item = class'#var(prefix)Medkit';
+    if(chance_single(30)) items[forced++].item = class'#var(prefix)BioelectricCell';
+
     // randomize cost for forced items
     for(i=0; i<forced; i++) {
-        items[i].price = rngrange(1500, 0.2, 1.5);
+        items[i].price = rngrange(1000, 0.3, 2);
     }
 
     // randomize list
@@ -89,7 +92,7 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
         chance_remaining(r);
 
         items[i].item = iclass;
-        items[i].price = rngrange(1500, 0.2, 1.5);
+        items[i].price = rngrange(1000, 0.3, 2);
     }
 
     // remove duplicates
@@ -103,7 +106,10 @@ function RandomizeItems(out ItemPurchase items[8], optional int forced)
     num = 0;
     for(i=0; i<ArrayCount(items) ; i++) {
         if(items[i].item == None) continue;
-        items[num++] = items[i];
+        iclass = items[i].item;
+        items[i].item = None;
+        items[num] = items[i];
+        items[num++].item = iclass;
     }
 
     // limit to 4
@@ -228,11 +234,14 @@ function vector GetRandomMerchantPosition()
     local vector loc;
     local int i;
 
-    for(i=0; i<10; i++) {
+    for(i=0; i<20; i++) {
         loc = GetRandomPosition();
         d = None;
         foreach RadiusActors(class'DeusExMover', d, 150.0, loc) {
             break;
+        }
+        if(!CheckFreeSpace(loc, player().CollisionRadius * 4, player().CollisionHeight * 2)) {
+            continue;
         }
         if( d == None ) return loc;
     }

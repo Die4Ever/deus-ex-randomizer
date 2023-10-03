@@ -106,6 +106,17 @@ static simulated function int GetStartingMissionMask(int start_map)
     }
 }
 
+static simulated function int GetMaybeMissionMask(int start_map)
+{
+    switch(start_map)
+    {// these numbers are basically mission number * 10, with some extra for progress within the mission
+        case 119:
+            //startMap="11_Paris_Everett";
+            return 1 << 11; //maybe Mission 11, for Everett's stuff
+    }
+    return 0;
+}
+
 //This could certainly be done a much more clever way, but this is literally good enough
 static simulated function int GetEndMissionMask(int end_mission)
 {
@@ -315,6 +326,10 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
             flagbase.SetBool('KnowsSmugglerPassword',true,,-1);
             flagbase.SetBool('MetSmuggler',true,,-1);
             break;
+        case "09_NYC_Dockyard":
+            flagbase.SetBool('M08WarnedSmuggler',true,,-1);
+            flagbase.SetBool('DL_BadNews_Played',true,,-1);
+            break;
         case "10_Paris_Chateau":
             //Make sure Sandra spawns at the gas station
             flagbase.SetBool('SandraWentToCalifornia',true,,-1);
@@ -391,11 +406,33 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
                 return True;
             }
             return start_map>=40;
+        case "SmugglerDied":
+            if (end_mission < 9){
+                return True;
+            }
+            return start_map>=90;
         default:
             return False;
     }
 
     return False;
+}
+
+
+static function bool BingoGoalPossible(string bingo_event, int start_map, int end_mission)
+{
+    switch(start_map) {
+    case 119:
+        switch(bingo_event) {
+        case "TobyAtanwe_Dead":
+        case "MeetAI4_Played":
+        case "DeBeersDead":
+            return true;
+        }
+        break;
+    }
+
+    return false;
 }
 
 static function int ChooseRandomStartMap(DXRando dxr, int avoidStart)
@@ -494,6 +531,7 @@ static function AddStartingSkillPoints(DXRando dxr, #var(PlayerPawn) p)
 {
     local int startBonus;
     startBonus = GetStartMapSkillBonus(dxr.flags.settings.starting_map);
+    log("AddStartingSkillPoints before "$ p.SkillPointsAvail $ ", bonus: "$ startBonus $", after: " $ (p.SkillPointsAvail + startBonus));
     p.SkillPointsAvail += startBonus;
     //Don't add to the total.  It isn't used in the base game, but we use it for scoring.
     //These starting points are free, so don't count them towards your score

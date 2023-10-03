@@ -2,6 +2,7 @@
 // HealingItem.
 //=============================================================================
 class HealingItem extends DeusExPickup;
+// base class for alcohol
 
 var int health;
 var float energy;
@@ -12,25 +13,27 @@ function DoHeal(DeusExPlayer player)
     local int i;
     local float f;
     local string message;
+    local bool balance;
 
     if (player == None) return;
 
     player.drugEffectTimer += drugEffect;
+    balance = ! Human(player).bZeroRando;
 
     if( health > 0 ) {
-        i = Human(player)._HealPlayer(health, false, true);
+        i = Human(player)._HealPlayer(health, false, balance);// balance bool used for heal legs
         message = "Healed "$ i $" point";
         if(i > 1)
             message = message $ "s";
     }
 
     f = FMin( energy, player.EnergyMax - player.Energy);
-    if( f > 0 ) {
+    if( f > 0 && balance ) {
         if( Len(message) > 0 )
             message = message $ ", recharged ";
         else
             message = "Recharged ";
-        
+
         player.Energy += f;
         message = message $ int(f) $ " point";
         if( int(f) > 1 )
@@ -51,7 +54,7 @@ state Activated
     function BeginState()
     {
         local DeusExPlayer player;
-        
+
         Super.BeginState();
 
         player = DeusExPlayer(Owner);

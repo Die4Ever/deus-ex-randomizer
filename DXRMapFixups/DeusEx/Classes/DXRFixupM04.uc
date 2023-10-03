@@ -2,6 +2,17 @@ class DXRFixupM04 extends DXRFixup;
 
 var int old_pawns;// used for NYC_04_CheckPaulRaid()
 
+function CheckConfig()
+{
+    local int i;
+
+    add_datacubes[i].map = "04_NYC_UNATCOHQ";
+    add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+    i++;
+
+    Super.CheckConfig();
+}
+
 function PreTravelMapFixes()
 {
     switch(dxr.localURL) {
@@ -27,6 +38,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Karkian k;
     local AllianceTrigger at;
     local BlockPlayer bp;
+    local #var(DeusExPrefix)Mover door;
 
     switch (dxr.localURL)
     {
@@ -53,6 +65,13 @@ function PreFirstEntryMapFixes()
         }
 
         Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+
+        SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+        Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
+        Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
+        Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
+        Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
         break;
 #endif
 
@@ -80,6 +99,11 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)HackableDevices', hd) {
             hd.hackStrength /= 3.0;
         }
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door,'ExitDoor'){
+            door.KeyIDNeeded='BasementDoor';
+        }
+
         if(!dxr.flags.IsReducedRando()) {
             k = Spawn(class'#var(prefix)Karkian',,, vectm(54.688416, 1208.957275, -237.351410), rotm(0,32768,0));
             k.BindName="NSFMinotaur";
@@ -105,6 +129,8 @@ function PreFirstEntryMapFixes()
         break;
     case "04_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
+        FixAlexsEmail();
+
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter
         Spawn(class'PlaceholderItem',,, vectm(211.227, 348.46, 50.32)); //Mens bathroom counter
@@ -132,6 +158,9 @@ function PreFirstEntryMapFixes()
             //Let the player free!  It's already possible to break outside of them, so just get rid of them.
             bp.bBlockPlayers=false;
         }
+        break;
+    case "04_NYC_BAR":
+        Spawn(class'BarDancer',,,vectm(-1440,340,48),rotm(0,-16348,0));
         break;
     }
 }

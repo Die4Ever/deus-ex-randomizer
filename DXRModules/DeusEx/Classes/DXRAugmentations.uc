@@ -355,6 +355,9 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
     }
     else if( a.Class == class'#var(prefix)AugBallistic' || a.Class == class'#var(prefix)AugEMP' || a.Class == class'#var(prefix)AugEnviro' || a.Class == class'#var(prefix)AugShield') {
         word = "Damage Reduction";
+        if(a.LevelValues[i] < 0) {
+            a.LevelValues[i] = 0;
+        }
         return int( (1.0 - a.LevelValues[i]) * 100.0 ) $ "%";
     }
     else if( a.Class == class'#var(prefix)AugCloak' || a.Class == class'#var(prefix)AugRadarTrans') {
@@ -411,6 +414,9 @@ simulated function string DescriptionLevel(Actor act, int i, out string word)
 #ifdef gmdx
     else if( a.Class == class'AugBallisticPassive') {
         word = "Damage Reduction";
+        if(a.LevelValues[i] < 0) {
+            a.LevelValues[i] = 0;
+        }
         return int( (1.0 - a.LevelValues[i]) * 100.0 ) $ "%";
     }
     else if( a.Class == class'AugIcarus' || a.Class == class'AugEnergyTransfer' || a.Class.Name == 'AugMetabolism' || a.Class.Name == 'AugAimbot' ) {

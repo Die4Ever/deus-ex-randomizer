@@ -1,8 +1,27 @@
 class DXRPersonaScreenImages injects PersonaScreenImages;
 
-function SetImage(DataVaultImage newImage)
+function ClearViewedImageFlags()
 {
-	local string bingoName;
+    local DataVaultImage image;
+    local int listIndex;
+    local int rowId;
+
+    for(listIndex=0; listIndex<lstImages.GetNumRows(); listIndex++)
+    {
+        rowId = lstImages.IndexToRowId(listIndex);
+
+        if (lstImages.GetFieldValue(rowId, 2) > 0)
+        {
+            image = DataVaultImage(lstImages.GetRowClientObject(rowId));
+            MarkViewed(image);
+        }
+    }
+}
+
+
+function MarkViewed(DataVaultImage newImage)
+{
+    local string bingoName;
     local DXRando dxr;
 
     if (newImage!=None && newImage.bPlayerViewedImage==False){
@@ -19,6 +38,4 @@ function SetImage(DataVaultImage newImage)
 
         newImage.bPlayerViewedImage = True;
     }
-
-    Super.SetImage(newImage);
 }

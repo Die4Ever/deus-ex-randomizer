@@ -11,9 +11,11 @@ const WaltonWare = 7;
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
 var FlagsSettings difficulty_settings[4];
+var MoreFlagsSettings more_difficulty_settings[4];
 #else
 var string difficulty_names[5];// Super Easy QA, Easy, Normal, Hard, Extreme
 var FlagsSettings difficulty_settings[5];
+var MoreFlagsSettings more_difficulty_settings[5];
 #endif
 
 simulated function PlayerAnyEntry(#var(PlayerPawn) p)
@@ -23,6 +25,11 @@ simulated function PlayerAnyEntry(#var(PlayerPawn) p)
 #endif
 
     Super.PlayerAnyEntry(p);
+#ifdef injections
+    p.bZeroRando = IsZeroRando();
+    p.bReducedRando = IsReducedRando();
+#endif
+
     if(!VersionIsStable())
         p.bCheatsEnabled = true;
 
@@ -167,6 +174,7 @@ function CheckConfig()
     difficulty_settings[i].health = 200;
     difficulty_settings[i].energy = 200;
     difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     i++;
 #endif
 
@@ -219,7 +227,7 @@ function CheckConfig()
     difficulty_settings[i].repairbotamount = 1;
     difficulty_settings[i].turrets_move = 50;
     difficulty_settings[i].turrets_add = 30;
-    difficulty_settings[i].merchants = 30;
+    difficulty_settings[i].merchants = 25;
     difficulty_settings[i].dancingpercent = 25;
     difficulty_settings[i].swapitems = 100;
     difficulty_settings[i].swapcontainers = 100;
@@ -236,6 +244,7 @@ function CheckConfig()
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     i++;
 
 #ifdef hx
@@ -287,7 +296,7 @@ function CheckConfig()
     difficulty_settings[i].repairbotamount = 1;
     difficulty_settings[i].turrets_move = 50;
     difficulty_settings[i].turrets_add = 70;
-    difficulty_settings[i].merchants = 30;
+    difficulty_settings[i].merchants = 25;
     difficulty_settings[i].dancingpercent = 25;
     difficulty_settings[i].swapitems = 100;
     difficulty_settings[i].swapcontainers = 100;
@@ -304,6 +313,7 @@ function CheckConfig()
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     i++;
 
 #ifdef hx
@@ -355,7 +365,7 @@ function CheckConfig()
     difficulty_settings[i].repairbotamount = 1;
     difficulty_settings[i].turrets_move = 50;
     difficulty_settings[i].turrets_add = 150;
-    difficulty_settings[i].merchants = 30;
+    difficulty_settings[i].merchants = 25;
     difficulty_settings[i].dancingpercent = 25;
     difficulty_settings[i].swapitems = 100;
     difficulty_settings[i].swapcontainers = 100;
@@ -372,6 +382,7 @@ function CheckConfig()
     difficulty_settings[i].health = 100;
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     i++;
 
 #ifdef hx
@@ -423,7 +434,7 @@ function CheckConfig()
     difficulty_settings[i].repairbotamount = 1;
     difficulty_settings[i].turrets_move = 50;
     difficulty_settings[i].turrets_add = 300;
-    difficulty_settings[i].merchants = 30;
+    difficulty_settings[i].merchants = 25;
     difficulty_settings[i].dancingpercent = 25;
     difficulty_settings[i].swapitems = 100;
     difficulty_settings[i].swapcontainers = 100;
@@ -440,6 +451,7 @@ function CheckConfig()
     difficulty_settings[i].health = 90;
     difficulty_settings[i].energy = 80;
     difficulty_settings[i].starting_map = 0;
+    more_difficulty_settings[i].grenadeswap = 100;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {
@@ -457,6 +469,10 @@ function FlagsSettings GetDifficulty(int diff)
 {
     return difficulty_settings[diff];
 }
+function MoreFlagsSettings GetMoreDifficulty(int diff)
+{
+    return more_difficulty_settings[diff];
+}
 
 function FlagsSettings SetDifficulty(int new_difficulty)
 {
@@ -464,6 +480,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 
     difficulty = new_difficulty;
     settings = difficulty_settings[difficulty];
+    moresettings = more_difficulty_settings[difficulty];
 
     memes_enabled = bool(ConsoleCommand("get #var(package).MenuChoice_ToggleMemes enabled"));
     if(!memes_enabled) settings.dancingpercent = 0;
@@ -504,6 +521,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.spoilers = 1;
         settings.health = 100;
         settings.energy = 100;
+        moresettings.grenadeswap = 0;
         if(IsZeroRando()) {
             seed = 0;
             dxr.seed = seed;
@@ -581,12 +599,15 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.maxskill = Max(settings.minskill * 1.2, settings.maxskill);
         // skill strength rando 80% wet/dry
         settings.skill_value_rando = 80;
+        // at least level 1 speed aug
+        settings.speedlevel = Max(settings.speedlevel, 1);
     }
     else if(gamemode == WaltonWare) {
         settings.bingo_win = 1;
         settings.bingo_freespaces = 5;
         settings.skills_reroll_missions = 0;// no rerolls since after the menu screen you would immediately get a reroll depending what mission you start in
         settings.banned_skills = 0;// need computer skill for hacking
+        settings.prison_pocket = 100; //Keep your items in mission 5
         bingo_duration = 1;
         bingo_scale = 0;
 
@@ -829,6 +850,7 @@ function int ScoreFlags()
     //settings.spoilers = 1;
     score -= settings.health;
     score -= settings.energy;
+    score -= moresettings.remove_paris_mj12;
     return score * 5;// lazy multiply by 5 at the end
 }
 

@@ -111,3 +111,46 @@ function PreFirstEntryMapFixes()
         break;
     }
 }
+
+function AnyEntryMapFixes()
+{
+    local Conversation c;
+    local ConEvent ce,before,after;
+    local ConEventSpeech ces;
+    local name conName;
+    local string afterTextLine;
+
+    DeleteConversationFlag(GetConversation('GuntherRescued'), 'GuntherFreed', true);
+
+    //Cut out the dialog for Paul giving you equipment
+    c = GetConversation('MeetPaul');
+    ce = c.eventList;
+
+    //Should this actually be seeded?
+    if (rand(2)==0){
+        afterTextLine="I get the idea.  What's the first move?";
+    } else {
+        afterTextLine="Great.  What's the first move?";
+    }
+
+    while (ce!=None){
+        if (ce.eventType==ET_Speech){
+            ces = ConEventSpeech(ce);
+            if (InStr(ces.conSpeech.speech,"NSF took one of our agents hostage")!=-1){
+                before = ce;
+            }
+            if (InStr(ces.conSpeech.speech,afterTextLine)!=-1){
+                after = ce;
+            }
+            if (before!=None && after!=None){
+                break;
+            }
+        }
+        ce = ce.nextEvent;
+    }
+
+    //Just in case something went wrong
+    if (before!=None && after!=None){
+        before.nextEvent = after;
+    }
+}

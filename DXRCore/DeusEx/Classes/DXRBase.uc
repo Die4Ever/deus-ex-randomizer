@@ -107,6 +107,16 @@ simulated function int SetGlobalSeed(coerce string name)
     return dxr.SetSeed( dxr.seed + dxr.Crc(name) );
 }
 
+simulated function int BranchSeed(coerce string name)
+{
+    return dxr.SetSeed( dxr.Crc(dxr.seed $ name $ dxr.tseed) );
+}
+
+simulated function int ReapplySeed(int oldSeed)
+{
+    return dxr.SetSeed(oldSeed);
+}
+
 simulated function int rng(int max)
 {
     return dxr.rng(max);
@@ -162,12 +172,12 @@ simulated function float rngrangeseeded(float val, float min, float max, coerce 
 {
     local float mult, r, ret;
     local int oldseed;
-    oldseed = dxr.SetSeed( dxr.seed + dxr.Crc(classname) );//manually set the seed to avoid using the level name in the seed
+    oldseed = SetGlobalSeed(classname);
     mult = max - min;
     r = rngf();
     ret = val * (r * mult + min);
     //l("rngrange r: "$r$", mult: "$mult$", min: "$min$", max: "$max$", val: "$val$", return: "$ret);
-    dxr.SetSeed(oldseed);
+    ReapplySeed(oldseed);
     return ret;
 }
 
@@ -266,7 +276,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
     s = "(DXRando) " $ word $ ":|n    " $ s;
 
     info("RandoLevelValues "$a$" = "$s);
-    dxr.SetSeed( oldseed );
+    ReapplySeed( oldseed );
 
     if(add_desc != "") {
         s = s $ "|n|n" $ add_desc;
@@ -491,27 +501,37 @@ simulated function MessageBoxClicked(int button, int callbackId) {
 
 //Returns true when you aren't in a menu, or in the intro, etc.
 function bool InGame() {
+    local #var(PlayerPawn) p;
+    local DeusExRootWindow root;
 #ifdef hx
     return true;
 #endif
 
-    if( player() == None )
+    p = player();
+
+    if( p == None )
         return false;
 
-    if (player().InConversation()) {
+    if (p.InConversation()) {
         return True;
     }
 
-    if (None == DeusExRootWindow(player().rootWindow)) {
+    root = DeusExRootWindow(p.rootWindow);
+
+    if (None == root) {
         return False;
     }
 
-    if (None == DeusExRootWindow(player().rootWindow).hud) {
+    if (root.GetTopWindow() != None) {
         return False;
     }
 
-    if (!DeusExRootWindow(player().rootWindow).hud.isVisible()){
+    if (root.bUIPaused) {
         return False;
+    }
+
+    if (root.hud.conWindow != None && root.hud.conWindow.IsVisible()) {
+        return false;
     }
 
     return True;

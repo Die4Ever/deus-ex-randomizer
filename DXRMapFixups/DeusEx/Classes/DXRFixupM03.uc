@@ -1,5 +1,16 @@
 class DXRFixupM03 extends DXRFixup;
 
+function CheckConfig()
+{
+    local int i;
+
+    add_datacubes[i].map = "03_NYC_UNATCOHQ";
+    add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+    i++;
+
+    Super.CheckConfig();
+}
+
 function PostFirstEntryMapFixes()
 {
     local Actor a;
@@ -180,6 +191,17 @@ function PreFirstEntryMapFixes()
                 break;
             }
         }
+
+        Spawn(class'PlaceholderItem',,, vectm(-73,-497.98,42.3)); //Water supply
+        Spawn(class'PlaceholderItem',,, vectm(-486,206,26)); //Under ramps
+        Spawn(class'PlaceholderItem',,, vectm(461,206,26)); //Under Ramp 2
+        Spawn(class'PlaceholderItem',,, vectm(395,830,74)); //Around Pillars
+        Spawn(class'PlaceholderItem',,, vectm(-2,633,74));//More pillars
+        Spawn(class'PlaceholderItem',,, vectm(-465,562,74));//Even more pillars
+        Spawn(class'PlaceholderItem',,, vectm(-659,990,107)); //Pillar stairs
+        Spawn(class'PlaceholderItem',,, vectm(661,1000,107)); //other side pillar stairs
+        Spawn(class'PlaceholderItem',,, vectm(-919,-94,11)); //Other side ramp
+        Spawn(class'PlaceholderItem',,, vectm(1222,88,11)); //Near start, but bad side
         break;
 #endif
 
@@ -217,6 +239,7 @@ function PreFirstEntryMapFixes()
         break;
     case "03_NYC_UNATCOHQ":
         FixUNATCOCarterCloset();
+        FixAlexsEmail();
 
         //Move weapon mod out of Manderley's secret (inaccessible) safe
         foreach AllActors(class'#var(prefix)WeaponModRecoil',wmr){
@@ -247,9 +270,40 @@ function PreFirstEntryMapFixes()
 
 function AnyEntryMapFixes()
 {
+    local #var(prefix)Phone phone;
+    local Conversation c;
+    local ConEvent ce;
+    local ConEventSpeech ces;
+
     switch(dxr.localURL) {
     case "03_NYC_747":
         SetTimer(1, true);
+        break;
+
+    case "03_NYC_AIRFIELDHELIBASE":
+        //Restore this cut phone conversation
+        c = GetConversation('OverhearLebedev');
+        c.conOwnerName="LebedevPhone";
+        c.bInvokeRadius=True;
+        c.radiusDistance=200;
+        foreach AllActors(class'#var(prefix)Phone',phone){
+            if (phone.name=='Phone1'){
+                phone.BindName="LebedevPhone";
+                break;
+            }
+        }
+
+        ce = c.eventList;
+        while (ce!=None){
+            if (ce.eventType==ET_Speech){
+                ces = ConEventSpeech(ce);
+                ces.speaker=phone;
+                ces.speakingTo=phone;
+            }
+            ce = ce.nextEvent;
+        }
+
+        phone.ConBindEvents();
         break;
     }
 }

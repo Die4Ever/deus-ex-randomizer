@@ -15,7 +15,9 @@ simulated function ExecMaxRando()
 simulated function InitMaxRandoSettings()
 {
     local FlagsSettings difficulty_settings;
+    local MoreFlagsSettings more_difficulty_settings;
     difficulty_settings = DXRFlags(self).GetDifficulty(difficulty);
+    more_difficulty_settings = DXRFlags(self).GetMoreDifficulty(difficulty);
 
     settings.merchants = difficulty_settings.merchants;
     settings.dancingpercent = difficulty_settings.dancingpercent;
@@ -137,15 +139,19 @@ simulated function RandomizeSettings(bool forceMenuOptions)
 function ClearDataVaultImages()
 {
     local DataVaultImage image;
+    local #var(PlayerPawn) p;
 
-    while (player().FirstImage!=None){
-        image = player().FirstImage;
-        player().FirstImage=image.nextImage;
+    p = player();
+    while (p.FirstImage!=None){
+        image = p.FirstImage;
+        p.FirstImage=image.nextImage;
         //Theoretically if we were being more discriminating with the image deletion,
         //we'd want to also fix the prevImage value, but since we're just trashing
         //everything, it's unnecessary
         image.Destroy();
     }
+
+    class'DXRActorsBase'.static.RemoveItem(p, class'#var(prefix)DataVaultImage');
 }
 
 function NewGamePlus()
@@ -191,8 +197,8 @@ function NewGamePlus()
 
     SetGlobalSeed("NewGamePlus");
     p.CombatDifficulty=FClamp(p.CombatDifficulty*1.3,0,15); //Anything over 15 is kind of unreasonably impossible
-    NewGamePlusVal(settings.minskill, 1.1, exp, 10, 1000);
-    NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 1500);
+    NewGamePlusVal(settings.minskill, 1.1, exp, 10, 500);
+    NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 1000);
     NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000);
     NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100);
     NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000);
@@ -225,6 +231,7 @@ function NewGamePlus()
     p.RestoreAllHealth();
     ClearDataVaultImages();
 
+    l("NewGamePlus skill points was "$p.SkillPointsAvail);
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( skills != None ) {
         for(i=0; i<5; i++)
@@ -233,6 +240,7 @@ function NewGamePlus()
     }
     else p.SkillPointsAvail = 0;
     p.SkillPointsTotal = 0; //This value doesn't seem to actually get used in vanilla, but we use it for scoring
+    l("NewGamePlus skill points is now "$p.SkillPointsAvail);
 
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
     if( augs != None )

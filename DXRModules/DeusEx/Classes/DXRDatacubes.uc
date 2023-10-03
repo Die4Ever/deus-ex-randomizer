@@ -51,6 +51,73 @@ function vanilla_datacubes_rules()
         i++;
         break;
 
+    case "01_NYC_UNATCOHQ":
+        // Manderley's password
+        datacubes_rules[i].item_name = '01_Datacube01';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "02_NYC_BATTERYPARK":
+        // Castle Clinton underground access code - needs to be above ground
+        datacubes_rules[i].item_name = '02_Datacube15';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, 320);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        break;
+
+    case "02_NYC_UNDERGROUND":
+        // East Hatch Code
+        datacubes_rules[i].item_name = '02_Datacube03';
+        datacubes_rules[i].min_pos = vect(1960, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Other door code
+        datacubes_rules[i].item_name = '02_Datacube06';
+        datacubes_rules[i].min_pos = vect(1960, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Security Code that lets you rotate the bridge
+        datacubes_rules[i].item_name = '02_Datacube11';
+        datacubes_rules[i].min_pos = vect(-1350, -99999, -670);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Computer login
+        datacubes_rules[i].item_name = '02_Datacube02';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(-1350, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        break;
+
+    case "02_NYC_HOTEL":
+        // The code to Paul's bookshelf stash
+        datacubes_rules[i].item_name = '02_Datacube07';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, -2540, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Paul's computer password
+        datacubes_rules[i].item_name = '02_Datacube05';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, -2300, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        break;
+
     case "02_NYC_WAREHOUSE":
         // ramp code
         datacubes_rules[i].item_name = '02_Datacube09';
@@ -61,6 +128,13 @@ function vanilla_datacubes_rules()
 
         // NSF righteous
         datacubes_rules[i].item_name = '02_Datacube14';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        // TFRASE ValleyForge
+        datacubes_rules[i].item_name = '02_Datacube18';
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = true;
@@ -93,12 +167,54 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].allow = false;
         i++;
 
+        // disallow below ground level, like the sewers or water area
+        datacubes_rules[i].item_name = '03_Datacube10';
+        datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
+        datacubes_rules[i].max_pos = vect(999999, 999999, -55);
+        datacubes_rules[i].allow = false;
+        i++;
+
         // allow anywhere else past the gate
         datacubes_rules[i].item_name = '03_Datacube10';
         datacubes_rules[i].min_pos = vect(1700, 2400, -999999);
         datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
         datacubes_rules[i].allow = true;
         i++;
+        break;
+
+    case "03_NYC_AIRFIELDHELIBASE":
+        //etodd computer password
+        datacubes_rules[i].item_name = '03_Datacube12';
+        datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
+        datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "03_NYC_747":
+        //Suspension crate code
+        datacubes_rules[i].item_name = '03_Datacube13';
+        datacubes_rules[i].min_pos = vect(-999999, -999999, -999999);
+        datacubes_rules[i].max_pos = vect(999999, 999999, 999999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "04_NYC_HOTEL":
+        //Paul's computer password
+        datacubes_rules[i].item_name = '02_Datacube05';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, -2300, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        // The code to Paul's bookshelf stash
+        datacubes_rules[i].item_name = '02_Datacube07';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, -2540, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
         break;
 
     case "04_NYC_NSFHQ":
@@ -161,6 +277,55 @@ function vanilla_datacubes_rules()
         i++;
         break;
 
+    case "06_HONGKONG_HELIBASE":
+        //Security login
+        datacubes_rules[i].item_name = '06_Datacube18';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "06_HONGKONG_WANCHAI_STREET":
+        //"Insurgent"
+        datacubes_rules[i].item_name = '06_Book16';
+        datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
+        datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Tai-Fun and Insurgent
+        datacubes_rules[i].item_name = '06_Datacube21';
+        datacubes_rules[i].min_pos = vect(-1336,-1910,1950);
+        datacubes_rules[i].max_pos = vect(-116,-447,2311);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+    case "08_NYC_HOTEL":
+        // The code to Paul's bookshelf stash
+        datacubes_rules[i].item_name = '02_Datacube07';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, -2540, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "09_NYC_DOCKYARD":
+        //Walton Simons login
+        datacubes_rules[i].item_name = '09_Datacube11';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //USFEMA login
+        datacubes_rules[i].item_name = '09_Datacube12';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
     case "09_NYC_SHIP":
         //Ramp Code
         datacubes_rules[i].item_name = '09_Datacube14';
@@ -182,6 +347,38 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999); //top floor
         datacubes_rules[i].max_pos = vect(99999, 99999, 1956.809082);
         datacubes_rules[i].allow = false;
+        i++;
+
+        //Login for the security system in the bunker warehouse
+        datacubes_rules[i].item_name = '10_Datacube12';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "10_PARIS_CLUB":
+        // Storage room code - main area of the club
+        datacubes_rules[i].item_name = '10_Datacube07';
+        datacubes_rules[i].min_pos = vect(-1350, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //back office
+        datacubes_rules[i].item_name = '10_Datacube07';
+        datacubes_rules[i].min_pos = vect(-2100,-1290,-99999);
+        datacubes_rules[i].max_pos = vect(-1652,-820,99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "11_PARIS_EVERETT":
+        // Lucius DeBeers login
+        datacubes_rules[i].item_name = '11_Datacube01';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
         i++;
         break;
 
@@ -212,6 +409,81 @@ function vanilla_datacubes_rules()
         i++;
         break;
 
+    case "14_VANDENBERG_SUB":
+        //Code for URV Bay doors - anywhere offshore
+        datacubes_rules[i].item_name = '14_Datacube01';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 2000, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Upper area onshore
+        datacubes_rules[i].item_name = '14_Datacube01';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -150);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "14_OCEANLAB_SILO":
+        //Code for missile launch controls - anywhere above ground
+        datacubes_rules[i].item_name = '14_Datacube05';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, 1415);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //underground, outside of the actual silo
+        datacubes_rules[i].item_name = '14_Datacube05';
+        datacubes_rules[i].min_pos = vect(-99999, -3610, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 1415);
+        datacubes_rules[i].allow = true;
+        i++;
+        break;
+
+    case "14_OCEANLAB_LAB":
+        //OCEANGUARD code to open sub bay doors.  This is SUPER IMPORTANT.  This needs to not fuck up.
+        //Intent is for it to be able to spawn anywhere from the sub bay up to and including the storage room, but not the locked one
+
+        //Exclude Locked storage room
+        datacubes_rules[i].item_name = '14_Datacube06';
+        datacubes_rules[i].min_pos = vect(598,-178,-1635);
+        datacubes_rules[i].max_pos = vect(976,322,-1457);
+        datacubes_rules[i].allow = false;
+        i++;
+
+        //Between Sub Bay and door to Greasel Lab, top floor
+        datacubes_rules[i].item_name = '14_Datacube06';
+        datacubes_rules[i].min_pos = vect(-260, -240, -1637);
+        datacubes_rules[i].max_pos = vect(1879, 960, -1457);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //All floors of that main central building with the sub bay
+        datacubes_rules[i].item_name = '14_Datacube06';
+        datacubes_rules[i].min_pos = vect(-230,-221,-2535);
+        datacubes_rules[i].max_pos = vect(464,1431,-1448);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        //Explicitly exclude EVERYTHING else for safety
+        datacubes_rules[i].item_name = '14_Datacube06';
+        datacubes_rules[i].min_pos = vect(-99999,-99999,-99999);
+        datacubes_rules[i].max_pos = vect(99999,99999,99999);
+        datacubes_rules[i].allow = false;
+        i++;
+        break;
+
+    case "14_OCEANLAB_UC":
+        //Code for walkway security computer - could go anywhere except for across the bridge (which has no loose items)
+        datacubes_rules[i].item_name = '14_Datacube03';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = true;
+        i++;
+
+        break;
+
     case "15_AREA51_PAGE":
         datacubes_rules[i].item_name = '15_Datacube18';// LAB 12 / graytest
         datacubes_rules[i].min_pos = vect(4774.132813, -10507.679688, -5294.627441);
@@ -223,6 +495,15 @@ function vanilla_datacubes_rules()
         datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
         datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
         datacubes_rules[i].allow = false;
+        i++;
+        break;
+
+    case "15_AREA51_FINAL":
+        //Code for stairwell blastdoor
+        datacubes_rules[i].item_name = '15_Datacube08';
+        datacubes_rules[i].min_pos = vect(-5655, -5190, -1700);
+        datacubes_rules[i].max_pos = vect(-2376, -2527, -534);
+        datacubes_rules[i].allow = true;
         i++;
         break;
     }
@@ -329,8 +610,8 @@ function _RandoInfoDev(#var(prefix)InformationDevices id, bool containers)
         }
     }
 
-    l("datacube "$id$" got num "$num$" with "$bads$" unsafe positions");
-    slot=rng(num+1);//+1 for the vanilla location
+    l("DatacubePositionCheck datacube "$id$" got num "$num$" with "$bads$" unsafe positions in map "$dxr.localurl);
+    slot=rng(num+1);//+1 for the vanilla location, since we're not in the list
     if(slot==0) {
         l("not swapping infodevice "$ActorToString(id));
         return;

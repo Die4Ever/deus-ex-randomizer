@@ -208,3 +208,12 @@ function AnyEntryMapFixes()
         break;
     }
 }
+
+function PostFirstEntryMapFixes()
+{
+    switch(dxr.localURL) {
+    case "11_PARIS_CATHEDRAL":
+        AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(-3570.950684, 2238.034668, -783.901367));// right at the start
+        break;
+    }
+}

@@ -488,6 +488,9 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename)
     a = SpawnNewActor(c, false);
     if( a == None ) return None;
 
+    // spawn with large collision to ensure enough space, then slightly shrink after to make them easier to get around
+    #var(prefix)Robot(a).SetBasedPawnSize(a.CollisionRadius * 0.8, a.CollisionHeight * 0.7);
+
     d = #var(prefix)Datacube(SpawnNewActor(class'#var(prefix)Datacube', true, a.Location, min_datacube_distance, max_datacube_distance));
     if( d == None ) return a;
     d.TextPackage = "#var(package)";
@@ -507,6 +510,11 @@ function Actor _SpawnNewActor(class<Actor> c, bool jitter, vector target, float 
         loc = GetRandomPositionFine(target, mindist, maxdist);
     else
         loc = GetRandomPosition(target, mindist, maxdist);
+
+    if(!CheckFreeSpace(loc, c.default.CollisionRadius * 2 + player().CollisionRadius, c.default.CollisionHeight * 2)) {
+        info("_SpawnNewActor no free space for " $ c @ loc);
+        return None;
+    }
     a = Spawn(c,,, loc );
 
     if( ScriptedPawn(a) != None ) class'DXRNames'.static.GiveRandomName(dxr, ScriptedPawn(a) );
@@ -521,7 +529,7 @@ function Actor SpawnNewActor(class<Actor> c, bool jitter, optional vector target
     local Actor a;
     local int i;
 
-    for(i=0; i<10; i++) {
+    for(i=0; i<20; i++) {
         a = _SpawnNewActor(c, jitter, target, mindist, maxdist);
         if( a != None ) return a;
     }

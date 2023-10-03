@@ -8,6 +8,10 @@ function CheckConfig()
     add_datacubes[i].text = "Agent Sherman, I've updated the demiurge password for Agent Navarre's killphrase to archon. Make sure you don't leave this datacube lying around.";
     i++;
 
+    add_datacubes[i].map = "05_NYC_UNATCOHQ";
+    add_datacubes[i].text = "Note to self:|nUsername: JCD|nPassword: bionicman ";
+    i++;
+
     Super.CheckConfig();
 }
 
@@ -29,6 +33,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)JaimeReyes j;
     local #var(prefix)MJ12Troop mj12;
     local #var(prefix)RatGenerator rg;
+    local #var(prefix)NanoKey k;
     local DXREnemies dxre;
     local int i;
 
@@ -78,6 +83,8 @@ function PreFirstEntryMapFixes()
 
 #ifdef vanillamaps
     case "05_NYC_UNATCOHQ":
+        FixAlexsEmail();
+
         // Anna's dialog depends on this flag
         dxr.flagbase.SetBool('DL_Choice_Played', true,, 6);
 
@@ -97,6 +104,12 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)JaimeReyes', j) {
             RemoveFears(j);
         }
+
+        k = Spawn(class'#var(prefix)NanoKey',,, vectm(420,195,333));
+        k.KeyID = 'UNOfficeDoorKey';
+        k.Description = "UNATCO Office Door Key";
+        if(dxr.flags.settings.keysrando > 0)
+            GlowUp(k);
 
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter

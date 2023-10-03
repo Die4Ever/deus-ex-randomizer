@@ -67,6 +67,7 @@ function NeedSave()
         autosave_combat = 1;// we're all in on this autosave because of the player rotation
         if(!set_player_pos) {
             set_player_pos = true;
+            class'DynamicTeleporter'.static.CheckTeleport(player(), coords_mult);
             player_pos = player().Location;
             player_rot = player().ViewRotation;
         }

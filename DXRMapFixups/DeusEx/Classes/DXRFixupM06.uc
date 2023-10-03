@@ -30,8 +30,7 @@ function PreFirstEntryMapFixes()
     local Button1 b;
     local ElevatorMover e;
     local #var(DeusExPrefix)Mover m;
-    local FlagTrigger ft;
-    local AllianceTrigger at;
+    local #var(prefix)AllianceTrigger at;
     local DeusExMover d;
     local DataLinkTrigger dt;
     local ComputerSecurity cs;
@@ -40,6 +39,11 @@ function PreFirstEntryMapFixes()
     local #var(prefix)WeaponNanoSword dts;
     local #var(prefix)RatGenerator rg;
     local #var(prefix)Credits creds;
+    local #var(prefix)Greasel g;
+    local #var(prefix)FlagTrigger ft;
+    local #var(prefix)OrdersTrigger ot;
+    local #var(prefix)TriadRedArrow bouncer;
+
 #ifdef injections
     local #var(prefix)DataCube dc;
 #else
@@ -185,7 +189,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'elevator_door') {
             m.bIsDoor = true;// DXRDoors will pick this up later since we're in PreFirstEntry
         }
-        foreach AllActors(class'FlagTrigger', ft, 'MJ12Alert') {
+        foreach AllActors(class'#var(prefix)FlagTrigger', ft, 'MJ12Alert') {
             ft.Tag = 'TongHasRom';
         }
         foreach AllActors(class'DataLinkTrigger', dt) {
@@ -199,6 +203,13 @@ function PreFirstEntryMapFixes()
                 pad.Destroy();
             else if (pad.Tag == 'RealKeypad_02')
                 pad.bHidden = False;
+        }
+
+        foreach AllActors(class'#var(prefix)Greasel',g){
+            g.bImportant = True;
+            g.BindName="JerryTheVentGreasel";
+            g.FamiliarName = "Jerry the Vent Greasel";
+            g.UnfamiliarName = "Jerry the Vent Greasel";
         }
 
         SpawnDatacubeImage(vectm(-1194.700195,-789.460266,-750.628357), rotm(0,0,0),Class'DeusEx.Image15_GrayDisection');
@@ -235,7 +246,7 @@ function PreFirstEntryMapFixes()
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
 #ifdef injections
-        foreach AllActors(class'AllianceTrigger',at,'StoreSafe') {
+        foreach AllActors(class'#var(prefix)AllianceTrigger',at,'StoreSafe') {
             at.bPlayerOnly = true;
         }
 #endif
@@ -259,6 +270,62 @@ function PreFirstEntryMapFixes()
 
         //A switch inside the freezer to open it back up... just in case
         AddSwitch( vect(-1560.144409,-3166.475098,-315.504028), rot(0,16408,0), 'FreezerDoor');
+
+
+        //Restore bouncer conversation....
+
+        //Remove the flag trigger that says you paid as soon as you walk in the door...
+        //The doorgirl conversation sets the flag appropriately
+        foreach AllActors(class'#var(prefix)FlagTrigger',ft){
+            if (ft.bSetFlag==True && ft.FlagName=='PaidForLuckyMoney'){
+                ft.Destroy();
+                break;
+            }
+        }
+
+        ft=Spawn(class'#var(prefix)FlagTrigger',,,vectm(-1024,-1019,-343));
+        ft.bSetFlag=False;
+        ft.bTrigger=True;
+        ft.FlagName='PaidForLuckyMoney';
+        ft.flagValue=False;
+        ft.Event='BouncerGonnaGetcha';
+
+        ft=Spawn(class'#var(prefix)FlagTrigger');
+        ft.SetCollision(False,False,False);
+        ft.Tag='BouncerGonnaGetcha';
+        ft.bSetFlag=True;
+        ft.bTrigger=False;
+        ft.FlagName='BouncerComing';
+        ft.flagValue=True;
+
+        ot=Spawn(class'#var(prefix)OrdersTrigger');
+        ot.Tag='BouncerGonnaGetcha';
+        ot.Event='ClubBouncer'; //Need to make sure one of these guys is actually labeled as such...
+        ot.SetCollision(False,False,False);
+        ot.Orders='RunningTo';
+
+        ot=Spawn(class'#var(prefix)OrdersTrigger');
+        ot.Tag='BouncerStartAttacking';
+        ot.Event='ClubBouncer'; //Need to make sure one of these guys is actually labeled as such...
+        ot.SetCollision(False,False,False);
+        ot.Orders='Attacking';
+
+        at = Spawn(class'#var(prefix)AllianceTrigger');
+        at.Tag='BouncerStartAttacking';
+        at.Event='ClubBouncer';
+        at.SetCollision(False,False,False);
+        at.Alliance='RedArrow';
+        at.Alliances[0].AllianceLevel=-1;
+        at.Alliances[0].AllianceName='Player';
+        at.Alliances[0].bPermanent=False;
+
+        foreach AllActors(class'#var(prefix)TriadRedArrow',bouncer){
+            if (bouncer.BindName=="ClubBouncer" && bouncer.Location.Z > -150){
+                bouncer.Tag = 'ClubBouncer';
+                break;
+            }
+        }
+
         break;
 
     case "06_HONGKONG_WANCHAI_GARAGE":
@@ -268,7 +335,7 @@ function PreFirstEntryMapFixes()
         break;
     case "06_HONGKONG_VERSALIFE":
 
-        ft= Spawn(class'FlagTrigger',,, vectm(128.850372,635.855957,-123)); //In front of lower elevator
+        ft= Spawn(class'#var(prefix)FlagTrigger',,, vectm(128.850372,635.855957,-123)); //In front of lower elevator
         ft.Event='VL_OnAlert';
         ft.FlagName='Have_ROM';
         ft.bSetFlag=False;
@@ -363,6 +430,8 @@ function AnyEntryMapFixes()
     local Conversation c;
     local ConEvent ce;
     local ConEventSpeech ces;
+    local ConEventSetFlag cesf;
+    local ConEventTrigger cet;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
     // or if flag Have_ROM, Gordon Quick should let you into the compound? requires Have_Evidence and MaxChenConvinced
@@ -497,6 +566,41 @@ function AnyEntryMapFixes()
             ce = ce.nextEvent;
         }
         break;
+    case "06_HONGKONG_WANCHAI_UNDERWORLD":
+        c = GetConversation('BouncerPissed');
+        c.bInvokeRadius=True;
+        c.radiusDistance=180;
+
+        ce = c.eventList;
+        while (ce!=None){
+            if (ce.eventType==ET_Speech){
+                ces = ConEventSpeech(ce);
+                if (InStr(ces.conSpeech.speech,"Don't try that again")!=-1){
+                    //Spawn a ConEventSetFlag to set "PaidForLuckyMoney", insert it between this and it's next event
+                    cesf = new(c) class'ConEventSetFlag';
+                    cesf.eventType=ET_SetFlag;
+                    cesf.label="PaidForLuckyMoneyTrue";
+                    cesf.flagRef = new(c) class'ConFlagRef';
+                    cesf.flagRef.flagName='PaidForLuckyMoney';
+                    cesf.flagRef.value=True;
+                    cesf.flagRef.expiration=7;
+                    cesf.nextEvent = ces.nextEvent;
+                    ces.nextEvent = cesf;
+
+                }
+                if (InStr(ces.conSpeech.speech,"Your choice.")!=-1){
+                    //Spawn a ConEventTrigger to hit an alliance trigger or something so he starts attacking, insert between this and next event
+                    cet = new(c) class'ConEventTrigger';
+                    cet.eventType=ET_Trigger;
+                    cet.triggerTag = 'BouncerStartAttacking';
+                    cet.nextEvent = ces.nextEvent;
+                    ces.nextEvent = cet;
+                }
+            }
+            ce = ce.nextEvent;
+        }
+
+        break;
     default:
         break;
     }
@@ -509,7 +613,7 @@ function HandleJohnSmithDeath()
     }
 
     if (!dxr.flagbase.GetBool('Supervisor01_Dead') &&
-        dxr.flagbase.GetBool('HaveROM') &&
+        dxr.flagbase.GetBool('Have_ROM') &&
         !dxr.flagbase.GetBool('Disgruntled_Guy_Return_Played'))
     {
         dxr.flagbase.SetBool('Disgruntled_Guy_Dead',true);

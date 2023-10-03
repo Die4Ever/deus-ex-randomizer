@@ -547,7 +547,69 @@ Begin:
     Destroy();
 }
 
+function bool IsProjectileDangerous(DeusExProjectile projectile)
+{
+    //If they're mostly immune, don't consider it a threat
+    if (ShieldDamage(projectile.damageType)<0.25){
+        return False;
+    }
+
+    //Same deal here
+    if (ModifyDamage(100,self,vect(0,0,0),vect(0,0,0),projectile.damageType)<=25){
+        return False;
+    }
+
+    return Super.IsProjectileDangerous(projectile);
+}
+
+function SupportActor(Actor standingActor)
+{
+    local float  zVelocity;
+	local float  baseMass;
+	local float  standingMass;
+	local vector damagePoint;
+	local float  damage;
+	local vector newVelocity;
+	local float  angle;
+
+    //Friendly stomp logic
+    if (WillTakeStompDamage(standingActor)==false && PlayerPawn(standingActor)!=None){
+        if (!((Physics == PHYS_Swimming) && Region.Zone.bWaterZone)){
+            standingMass = FMax(1, standingActor.Mass);
+            baseMass     = FMax(1, Mass);
+            zVelocity    = standingActor.Velocity.Z;
+            damagePoint  = Location + vect(0,0,1)*(CollisionHeight-1);
+            damage       = (1 - (standingMass/baseMass) * (zVelocity/100));
+
+            //Bouncing around on top of someone's head happens at around -55 zVelocity.  Giving some slop,
+            // -75 seems like a reasonable cut off point for determining if it was an intentional stomp.
+            //Human mass (which determines the standingMass) is 150.  10000 is a nice number though, so we'll
+            //go with -66 being the cutoff point instead.
+            if ((zVelocity*standingMass <= -10000)){
+                TakeDamage(damage, standingActor.Instigator, damagePoint, 0.2*standingActor.Velocity, 'stomped');
+            }
+        }
+    }
+
+    //ScriptedPawns can't stomp other ScriptedPawns
+    if (ScriptedPawn(standingActor)==None){
+        Super.SupportActor(standingActor);
+    } else {
+        //Still bounce them off
+        angle = FRand()*Pi*2;
+        newVelocity.X = cos(angle);
+        newVelocity.Y = sin(angle);
+        newVelocity.Z = 0;
+        newVelocity *= FRand()*25 + 25;
+        newVelocity += standingActor.Velocity;
+        newVelocity.Z = 50;
+        standingActor.Velocity = newVelocity;
+        standingActor.SetPhysics(PHYS_Falling);
+    }
+}
+
 defaultproperties
 {
     EmpHealth=50
+    FearSustainTime=15
 }

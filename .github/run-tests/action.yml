@@ -141,7 +141,7 @@ runs:
       shell: bash
 
     - name: Build
-      run: pyinstaller installer/installer.spec
+      run: pyinstaller --clean installer/installer.spec
       shell: bash
     - run: du -ha dist
       shell: bash

@@ -20,6 +20,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)RatGenerator rg;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)NanoKey key;
+    local #var(prefix)DamageTrigger dt;
     local Actor a;
 
     switch(dxr.localURL)
@@ -49,6 +50,12 @@ function PreFirstEntryMapFixes()
         //Clear out items in inaccessible containers far below the earth
         foreach RadiusActors(class'Actor', a, 250, vectm(-4350,3000,-5850)) {
             a.Destroy();
+        }
+
+        foreach AllActors(class'#var(prefix)DamageTrigger',dt){
+            if (dt.DamageType=='Shocked'){
+                dt.Tag='lab_water';
+            }
         }
 #ifdef vanillamaps
         //Add a key to Tim's closet
@@ -95,6 +102,20 @@ function PreFirstEntryMapFixes()
         }
         rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(737,4193,-426));//In shoreside shed
         rg.MaxCount=1;
+
+        Spawn(class'PlaceholderItem',,, vectm(755,4183,-421)); //Shed
+        Spawn(class'PlaceholderItem',,, vectm(755,4101,-421)); //Shed
+        Spawn(class'PlaceholderItem',,, vectm(462,4042,-421)); //Shed
+        Spawn(class'PlaceholderItem',,, vectm(462,3986,-421)); //Shed
+        Spawn(class'PlaceholderItem',,, vectm(462,3939,-421)); //Shed
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door){
+            if(door.KeyIDNeeded=='shed'){
+                door.Tag='ShedDoor';
+            }
+        }
+        AddSwitch( vect(654.545,3889.5397,-367.262), rot(0, 16384, 0), 'ShedDoor');
+
         break;
 
     case "14_OCEANLAB_LAB":
@@ -206,6 +227,12 @@ function PreFirstEntryMapFixes()
         rg.MaxCount=1;
         rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-2375,-644,-993));//Under trailer near Jock
         rg.MaxCount=1;
+
+        Spawn(class'PlaceholderItem',,, vectm(-366,-2276,-1553)); //Under collapsed bridge
+        Spawn(class'PlaceholderItem',,, vectm(-394,-1645,-1565)); //Near bridge pillar
+        Spawn(class'PlaceholderItem',,, vectm(-88,-2087,-1553)); //Collapsed bridge road surface
+        Spawn(class'PlaceholderItem',,, vectm(909,-2474,-1551)); //Wrecked car
+        Spawn(class'PlaceholderItem',,, vectm(-3152,-2780,-1364)); //Ledge near original key
 
         break;
 #endif

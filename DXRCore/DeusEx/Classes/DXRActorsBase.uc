@@ -365,7 +365,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
 
 function bool SkipActorBase(Actor a)
 {
-    if( (a.Owner != None) || a.bStatic || a.bHidden || a.bMovable==False || a.bIsSecretGoal )
+    if( a.Owner != None || a.bStatic || a.bHidden || a.bMovable==False || a.bIsSecretGoal || a.bDeleteMe )
         return true;
     return false;
 }
@@ -723,13 +723,19 @@ static function Actor _AddActor(Actor a, class<Actor> c, vector loc, rotator rot
     return d;
 }
 
+//DO NOT ASSUME THIS LIST IS COMPLETE!
+//THIS IS UPDATED AS WE ENCOUNTER ISSUES!
+//IF SOMETHING ISN'T LISTED HERE AND ISN'T ROTATING CORRECTLY, GET IN THE EDITOR AND DOUBLE CHECK!
+//YOU CAN ALSO CHECK THE LIST IN THE unreal-map-flipper REPOSITORY INSIDE MapLibs/actor.py AND LOOK AT THE classes_rot_offsets DICTIONARY!
 static function int GetRotationOffset(class<Actor> c)
 {
     if(ClassIsChildOf(c, class'Pawn'))
         return 16384;
-    if(ClassIsChildOf(c, class'#var(prefix)SecurityCamera'))
+    if(ClassIsChildOf(c, class'#var(prefix)HackableDevices'))
         return 16384;
     if(ClassIsChildOf(c, class'#var(prefix)Vehicles'))
+        return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)ThrownProjectile'))
         return 16384;
     if(ClassIsChildOf(c, class'Brush')) {
         log("WARNING: GetRotationOffset for "$c$", Brushes/Movers have negative scaling so they don't need rotation adjustments!");
@@ -913,6 +919,29 @@ static function SetActorScale(Actor a, float scale)
     a.SetLocation(newloc);
     a.SetCollisionSize(a.CollisionRadius, a.CollisionHeight / a.DrawScale * scale);
     a.DrawScale = scale;
+}
+
+function bool CheckFreeSpace(out vector loc, float radius, float height)
+{
+    local bool success;
+
+    SetCollisionSize(radius, height);
+    SetCollision(true, true, true);
+    bCollideWhenPlacing = true;
+    bCollideWorld = true;
+
+    success = SetLocation(loc);
+
+    SetCollision(false, false, false);
+    bCollideWhenPlacing = false;
+    bCollideWorld = false;
+
+    if(!success || VSize(Location - loc) > 128) {
+        l("CheckFreeSpace failed for " $ loc);
+        return false;
+    }
+    loc = Location;
+    return true;
 }
 
 function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain)

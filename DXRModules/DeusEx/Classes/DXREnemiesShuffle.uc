@@ -43,25 +43,37 @@ function bool ShouldSwap(ScriptedPawn a, ScriptedPawn b) {
     // always ok to swap with a placeholder enemy
     if(PlaceholderEnemy(a) != None || PlaceholderEnemy(b) != None) return true;
     // otherwise check alliance
-    return a.GetAllianceType( b.Alliance ) != ALLIANCE_Hostile;
+    return a.GetAllianceType( b.Alliance ) != ALLIANCE_Hostile && b.GetAllianceType( a.Alliance ) != ALLIANCE_Hostile;
 }
 
 function SwapScriptedPawns(int percent, bool enemies)
 {
     local ScriptedPawn temp[512];
     local ScriptedPawn a;
-    local name exceptTag, exceptAlliance;
+    local name exceptTag, exceptAlliance, keepTagName;
+    local bool keepTags;
     local int num, i, slot;
 
     num=0;
-    if(dxr.localURL ~= "06_HONGKONG_MJ12LAB") {
+    switch(dxr.localURL) {
+    case "06_HONGKONG_MJ12LAB":
         if(enemies)
             SwapScriptedPawns(percent, false);
         else
             exceptAlliance = 'Researcher';
-    }
-    if(dxr.localURL ~= "14_OCEANLAB_SILO") {
+        break;
+
+    case "08_NYC_STREET":
+        keepTags = true;// fix M08 street unatco troops spawning early https://github.com/Die4Ever/deus-ex-randomizer/issues/522
+        break;
+
+    case "12_VANDENBERG_CMD":
+        keepTagName = 'enemy_bot';// 12_VANDENBERG_CMD fix, see Mission12.uc https://discord.com/channels/823629359931195394/823629360929046530/974454774034497567
+        break;
+
+    case "14_OCEANLAB_SILO":
         exceptTag = 'Doberman';
+        break;
     }
 
     SetSeed( "SwapScriptedPawns" );
@@ -86,13 +98,11 @@ function SwapScriptedPawns(int percent, bool enemies)
 
     l("SwapScriptedPawns num: "$num);
     for(i=0; i<num; i++) {
-        slot=rng(num);// -1 because we skip ourself, but +1 for vanilla
-        if(slot==0) {
+        slot=rng(num);
+        if(slot==i) {// we're in the list too
             l("not swapping "$ActorToString(temp[i]));
             continue;
         }
-        slot--;
-        if(slot >= i) slot++;
 
         if( ! ShouldSwap(temp[i], temp[slot]) ) {
             continue;
@@ -107,7 +117,7 @@ function SwapScriptedPawns(int percent, bool enemies)
 
         // TODO: swap non-weapons/ammo inventory, only need to swap nanokeys?
         SwapItems(temp[i], temp[slot]);
-        if( temp[i].Tag != 'enemy_bot' && temp[slot].Tag != 'enemy_bot' ) // 12_VANDENBERG_CMD fix, see Mission12.uc https://discord.com/channels/823629359931195394/823629360929046530/974454774034497567
+        if( !keepTags && temp[i].Tag != keepTagName && temp[slot].Tag != keepTagName )
             SwapNames(temp[i].Tag, temp[slot].Tag);
         SwapNames(temp[i].Event, temp[slot].Event);
         SwapNames(temp[i].AlarmTag, temp[slot].AlarmTag);

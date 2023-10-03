@@ -86,5 +86,5 @@ function Destroyed()
 
 defaultproperties
 {
-     bInvincible=False;
+     bInvincible=True;
 }

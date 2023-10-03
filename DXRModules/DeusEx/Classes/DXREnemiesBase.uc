@@ -197,7 +197,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
 {
     local class<ScriptedPawn> newclass;
     local ScriptedPawn n;
-    local int i, faction;
+    local int i, faction, oldSeed;
     local float r;
     faction = GetFactionId(base);
     r = initchance();
@@ -212,6 +212,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
     if( newclass == None && IsHuman(base.class) == false && chance_single(dxr.flags.settings.enemies_nonhumans)==false ) return None;
     if( IsHuman(newclass) == false && chance_single(dxr.flags.settings.enemies_nonhumans)==false ) return None;
 
+    oldSeed = BranchSeed(base $ newclass);
     n = CloneScriptedPawn(base, newclass);
     l("new RandomEnemy("$base$", "$percent$") == "$n);
     if( n != None ) {
@@ -219,6 +220,7 @@ function ScriptedPawn RandomEnemy(ScriptedPawn base, int percent)
         CheckHelmet(n);
     }
     //else RandomizeSize(n);
+    ReapplySeed(oldSeed);
     return n;
 }
 
@@ -248,11 +250,18 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
         return None;
     }
     if( newclass == None ) newclass = p.class;
+
+    loc = p.Location;
+    if(!IsSpawnPointGood(loc, newclass) || (p.bInWorld == true && class'DXRMissions'.static.IsCloseToStart(dxr, loc))) {
+        l("CloneScriptedPawn "$p$" is in a bad spot for cloning");
+        return None;
+    }
+
     newtag = StringToName(p.Tag $ "_clone");
     radius = (p.CollisionRadius + newclass.default.CollisionRadius) * 3.0;// combined radius, and * 3 for some personal space
     num_enemies = float(enemy_multiplier) * float(dxr.flags.settings.enemiesrandomized+100) / 100.0;
     radius *= Sqrt(num_enemies+1.0);
-    for(i=0; i<15; i++) {
+    for(i=0; i<20; i++) {
         // rngfn_min_dist to add a minimum distance from the 0, but also allow negative numbers
         loc_offset.X = rngfn_min_dist(0.5);
         loc_offset.Y = rngfn_min_dist(0.5);

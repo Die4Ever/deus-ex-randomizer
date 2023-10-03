@@ -9,8 +9,7 @@ function CheckConfig()
     add_datacubes[i].map = "09_NYC_Dockyard";
     add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
     i++;
-    add_datacubes[i].map = "09_NYC_Dockyard";
-    add_datacubes[i].text = "Jenny I've got your number|nI need to make you mine|nJenny don't change your number|n 8675309";// DXRPasswords doesn't recognize |n as a wordstop
+    add_datacubes[i] = add_datacubes[i-1];// dupe
     i++;
 
     Super.CheckConfig();
@@ -30,10 +29,13 @@ function PreFirstEntryMapFixes()
     local #var(prefix)Containers c;
     local Rotator rot;
     local #var(prefix)LAM lam;
+    local #var(prefix)GasGrenade gasgren;
     local Switch1 s;
     local #var(prefix)Barrel1 barrel;
     local #var(prefix)RatGenerator rg;
     local #var(prefix)FlagTrigger ft;
+    local #var(prefix)NanoKey key;
+    local #var(prefix)BeamTrigger beam;
 
     switch(dxr.localURL)
     {
@@ -138,6 +140,34 @@ function PreFirstEntryMapFixes()
             lam.SetLocation(vectm(2073, 6085.963379, -235.489441));
             lam.bCollideWorld = true;
             break;
+        }
+
+#ifdef vanillamaps
+        foreach AllActors(class'#var(prefix)GasGrenade',gasgren) {
+            //This one has falling physics normally, so just fix it
+            //It can fall out of position before the physics get fixed, so put it back
+            if (gasgren.name=='GasGrenade0'){
+                gasgren.SetPhysics(PHYS_None);
+                gasgren.bCollideWorld = false;
+                gasgren.SetRotation(rotm(0,-16472,0,GetRotationOffset(gasgren.Class)));
+                gasgren.SetLocation(vectm(1602.174,2470.3386,-431.6885));
+                gasgren.bCollideWorld = true;
+                break;
+            }
+        }
+
+        foreach AllActors(class'#var(prefix)BeamTrigger',beam){
+            if (beam.Event=='BotDrop'){
+                beam.Tag='TunnelTrigger';
+            }
+        }
+#endif
+
+        //They put the key ID in the tag for some reason
+        foreach AllActors(class'#var(prefix)NanoKey',key,'SupplyRoom'){
+            if (key.keyID==''){
+                key.keyID='SupplyRoom';
+            }
         }
 
         //Button to open the sewer grate from the ship side

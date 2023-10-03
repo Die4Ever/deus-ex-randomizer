@@ -32,10 +32,55 @@ function vanilla_keys_rules()
         i++;
         break;
 
+    case "01_NYC_UNATCOHQ":
+        keys_rules[i].item_name = 'JaimeClosetKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].item_name = 'UNOfficeDoorKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+
+        break;
+
+    case "02_NYC_BATTERYPARK":
+        //Anywhere above ground
+        keys_rules[i].item_name = 'KioskDoors';
+        keys_rules[i].min_pos = vect(-999999, -999999, 320);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+
+        //Anything below the control room
+        keys_rules[i].item_name = 'ControlRoomDoor';
+        keys_rules[i].min_pos = vect(-999999, -999999, -99999);
+        keys_rules[i].max_pos = vect(999999, 999999, -232);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+    case "02_NYC_WAREHOUSE":
+        //Anywhere in or immediately around the actual warehouse
+        keys_rules[i].item_name = 'WarehouseBasementStorage';
+        keys_rules[i].min_pos = vect(-620, -1885, -99999);
+        keys_rules[i].max_pos = vect(2017, -366, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
     case "03_NYC_AIRFIELD":
         keys_rules[i].item_name = 'eastgate';
         keys_rules[i].min_pos = vect(1915, 2332, -999999);
         keys_rules[i].max_pos = vect(5579, 4031, 999999);
+        keys_rules[i].allow = false;
+        i++;
+
+        // disallow anything below ground level, like the sewers or water area
+        keys_rules[i].item_name = 'eastgate';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, -55);
         keys_rules[i].allow = false;
         i++;
 
@@ -60,11 +105,64 @@ function vanilla_keys_rules()
         i++;
         break;
 
+    case "04_NYC_NSFHQ":
+        keys_rules[i].item_name = 'BasementDoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, 0);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "05_NYC_UNATCOHQ":
+        keys_rules[i].item_name = 'UNOfficeDoorKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "06_HONGKONG_HELIBASE":
+        // Not allowed on the rooftop
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(-99999, -99999, 760);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Not allowed in the barracks
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(725, -663, 93);
+        keys_rules[i].max_pos = vect(1783, 916, 347);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Not allowed in the locked flight deck
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(1191,575,600);
+        keys_rules[i].max_pos = vect(1525,800,697);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "06_HONGKONG_WANCHAI_STREET":
         // in DXRFixup we spawn an extra one anyways
         keys_rules[i].item_name = 'JocksKey';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "06_HONGKONG_MJ12LAB":
+        keys_rules[i].item_name = 'SubjectDoors';
+        keys_rules[i].min_pos = vect(-1787, -903, -775);
+        keys_rules[i].max_pos = vect(-877, 519, -378);
         keys_rules[i].allow = true;
         i++;
         break;
@@ -77,8 +175,31 @@ function vanilla_keys_rules()
         i++;
         break;
 
+    case "09_NYC_DOCKYARD":
+        keys_rules[i].item_name = 'WeaponWarehouse';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "10_Paris_Catacombs":
+        keys_rules[i].item_name = 'cata_officedoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "10_Paris_Chateau":
         keys_rules[i].item_name = 'duclare_chateau';
+        keys_rules[i].min_pos = vect(-99999, -99999, -125);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        //Since you can get into beth's room via the dumbwaiter, this key could go anywhere above ground
+        keys_rules[i].item_name = 'beth_room';
         keys_rules[i].min_pos = vect(-99999, -99999, -125);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
@@ -134,6 +255,26 @@ function vanilla_keys_rules()
         keys_rules[i].max_pos = vect(7217.410156,8535.856445,99999);
         keys_rules[i].allow = true;
         i++;
+        break;
+
+    case "14_VANDENBERG_SUB":
+        //This key is also on the guy who patrols outside the mushroom stump on shore,
+        //so this one, normally in the shed, can go anywhere?
+        keys_rules[i].item_name = 'Sub_base';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        //This key would normally be inside the shed itself, but now it can be anywhere,
+        //there is a button inside to open the door out, and placeholders inside to incentivize
+        //trying to get in
+        keys_rules[i].item_name = 'shed';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
+        keys_rules[i].allow = true;
+        i++;
+
         break;
 
     case "14_oceanlab_lab":
@@ -219,8 +360,22 @@ function vanilla_keys_rules()
 
     case "15_area51_entrance":
         keys_rules[i].item_name = 'Factory';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, -237);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'Factory';
         keys_rules[i].min_pos = vect(-816, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "15_area51_final":
+        keys_rules[i].item_name = 'door_lower';
+        keys_rules[i].min_pos = vect(-5655, -5190, -1700);
+        keys_rules[i].max_pos = vect(-2376, -2527, -534);
         keys_rules[i].allow = true;
         i++;
         break;
@@ -236,6 +391,79 @@ function revision_keys_rules()
         keys_rules[i].item_name = 'UNhatchdoor';
         keys_rules[i].min_pos = vect(-999999, -999999, -999999);
         keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "01_NYC_UNATCOHQ":
+        keys_rules[i].item_name = 'JaimeClosetKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].item_name = 'UNOfficeDoorKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+
+        break;
+
+    case "02_NYC_BATTERYPARK":
+        //Anywhere above ground
+        keys_rules[i].item_name = 'KioskDoors';
+        keys_rules[i].min_pos = vect(-999999, -999999, 320);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+
+        //Anywhere underground
+        keys_rules[i].item_name = 'LoadingBay';
+        keys_rules[i].min_pos = vect(-999999, -999999, -99999);
+        keys_rules[i].max_pos = vect(999999, 999999, 320);
+        keys_rules[i].allow = true;
+        i++;
+
+        break;
+
+    case "02_NYC_STREET":
+        keys_rules[i].item_name = 'SewerKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -99999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "02_NYC_WAREHOUSE":
+        //Anywhere in or immediately around the actual warehouse
+        keys_rules[i].item_name = 'WarehouseBasementStorage';
+        keys_rules[i].min_pos = vect(-692, -1894, -99999);
+        keys_rules[i].max_pos = vect(2025, 315, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "03_NYC_UNATCOHQ":
+        keys_rules[i].item_name = 'UNcloset';
+        keys_rules[i].min_pos = vect(-99999, -99999, -999999);
+        keys_rules[i].max_pos = vect(99999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "03_NYC_MOLEPEOPLE":
+        keys_rules[i].item_name = 'MoleRestroomKey';
+        keys_rules[i].min_pos = vect(-99999, -99999, -999999);
+        keys_rules[i].max_pos = vect(1500, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "03_NYC_AIRFIELDHELIBASE":
+        keys_rules[i].item_name = 'Sewerdoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, -999999);
+        keys_rules[i].max_pos = vect(-6950, 999999, 999999);
         keys_rules[i].allow = true;
         i++;
         break;
@@ -268,10 +496,95 @@ function revision_keys_rules()
         i++;
         break;
 
+    case "04_NYC_UNATCOHQ":
+        keys_rules[i].item_name = 'UNcloset';
+        keys_rules[i].min_pos = vect(-99999, -99999, -999999);
+        keys_rules[i].max_pos = vect(99999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "04_NYC_NSFHQ":
+        keys_rules[i].item_name = 'BasementDoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, 0);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        keys_rules[i].item_name = 'NYCSewer';
+        keys_rules[i].min_pos = vect(-99999, -99999, -30);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        break;
+
+    case "06_HONGKONG_HELIBASE":
+        // Not allowed on the rooftop
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(-99999, -99999, 760);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Not allowed in the barracks
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(725, -663, 93);
+        keys_rules[i].max_pos = vect(1783, 1200, 347);
+        keys_rules[i].allow = false;
+        i++;
+
+        //Not allowed in the locked flight deck
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(1191,575,600);
+        keys_rules[i].max_pos = vect(1525,800,697);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'LockerMasterKey';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "06_HONGKONG_WANCHAI_STREET":
         // in DXRFixup we spawn an extra one anyways
         keys_rules[i].item_name = 'JocksKey';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "06_HONGKONG_MJ12LAB":
+        keys_rules[i].item_name = 'SubjectDoors';
+        keys_rules[i].min_pos = vect(-1787, -903, -775);
+        keys_rules[i].max_pos = vect(-877, 519, -378);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "09_NYC_DOCKYARD":
+        keys_rules[i].item_name = 'WeaponWarehouse';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "10_Paris_Catacombs":
+        keys_rules[i].item_name = 'cata_officedoor';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "10_Paris_Club":
+        //Anywhere except behind the back door
+        keys_rules[i].item_name = 'club_maindoors';
+        keys_rules[i].min_pos = vect(-2124, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
@@ -283,6 +596,14 @@ function revision_keys_rules()
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
+
+        //Since you can get into beth's room via the dumbwaiter, this key could go anywhere above ground
+        keys_rules[i].item_name = 'beth_room';
+        keys_rules[i].min_pos = vect(-99999, -99999, -125);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+
         break;
 
     case "11_Paris_Cathedral":
@@ -332,6 +653,17 @@ function revision_keys_rules()
         i++;
         break;
 
+    case "14_Vandenberg_Sub":
+        //This key would normally be inside the shed itself, but now it can be anywhere,
+        //there is a button inside to open the door out, and placeholders inside to incentivize
+        //trying to get in
+        keys_rules[i].item_name = 'shed';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
+        keys_rules[i].allow = true;
+        i++;
+
+        break;
     case "14_oceanlab_lab":
         //disallow the crew quarters
         keys_rules[i].item_name = 'crewkey';
@@ -423,10 +755,39 @@ function revision_keys_rules()
 
     case "15_area51_entrance":
         keys_rules[i].item_name = 'Factory';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, -305);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'Factory';
         keys_rules[i].min_pos = vect(-3000, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
+        break;
+
+    case "15_area51_bunker":
+        keys_rules[i].item_name = 'tower';
+        keys_rules[i].min_pos = vect(-1608, -1637, -99999);
+        keys_rules[i].max_pos = vect(-745, 2462, 99999);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'tower';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "15_area51_final":
+        keys_rules[i].item_name = 'door_lower';
+        keys_rules[i].min_pos = vect(-7000, -7000, -1700);
+        keys_rules[i].max_pos = vect(-2000, -2200, -534);
+        keys_rules[i].allow = true;
+        i++;
+
         break;
 
     case "15_Area51_Page":
@@ -491,6 +852,7 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
     local Inventory a;
     local Containers c;
     local int num, slot, tries;
+    local bool vanilla_good;
 
 #ifndef injections
     k.ItemName = k.default.ItemName $ " (" $ k.Description $ ")";
@@ -528,13 +890,23 @@ function _RandoKey(#var(prefix)NanoKey k, bool containers)
         }
     }
 
+    if(num == 0) {
+        warning("no other safe spots found for " $ k @ k.KeyID);
+        return;
+    }
+    vanilla_good = KeyPositionGood(k, k.Location);
+
     for(tries=0; tries<5; tries++) {
-        slot=rng(num+1);// +1 for vanilla
-        if(slot==0) {
-            info("not swapping key "$k.KeyID$", num: "$num);
-            break;
+        if(vanilla_good) {
+            slot=rng(num+1);// +1 for vanilla, since we're not in the list
+            if(slot==0) {
+                info("not swapping key "$k.KeyID$", num: "$num);
+                break;
+            }
+            slot--;
+        } else {
+            slot=rng(num);// vanilla is not good
         }
-        slot--;
         info("key "$k.KeyID$" got num: "$num$", slot: "$slot$", actor: "$temp[slot] $" ("$temp[slot].Location$")");
         // Swap argument A is more lenient with collision than argument B
         if( Swap(temp[slot], k) ) break;

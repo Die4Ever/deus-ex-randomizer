@@ -11,6 +11,7 @@ function PreFirstEntryMapFixes()
     local Terrorist nsf;
     local #var(prefix)BoxSmall bs;
     local #var(prefix)Keypad2 kp;
+    local #var(prefix)TAD tad;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
@@ -75,6 +76,19 @@ function PreFirstEntryMapFixes()
         break;
     case "02_NYC_HOTEL":
         Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+
+        //Restore answering machine message, but in mission 2 (conversation is in mission 3);
+        //tad=Spawn(class'#var(prefix)TAD',,, vectm(-290,-2380,115),rotm(0,0,0));
+        //tad.BindName="AnsweringMachine";
+        //CreateAnsweringMachineConversation(tad);
+        //tad.ConBindEvents();
+
+
+        Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
+        Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
+        Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
+        Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
+        Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
         break;
 #endif
 
@@ -89,7 +103,60 @@ function PreFirstEntryMapFixes()
             d.bFrobbable = true;
         }
         break;
+    case "02_NYC_BAR":
+        Spawn(class'BarDancer',,,vectm(-1475,-580,48),rotm(0,25000,0));
+        break;
     }
+}
+
+function CreateAnsweringMachineConversation(Actor tad)
+{
+    local Conversation con;
+    local ConEvent ce;
+    local ConEventSpeech ces;
+    local ConItem conItem;
+    local ConversationList list;
+
+    con = new(level) class'Conversation';
+    con.conName='AnsweringMachineMessage';
+    con.CreatedBy="AnsweringMachineMessage";
+    con.conOwnerName="AnsweringMachine";
+    con.bGenerateAudioNames=false;
+    con.bInvokeFrob=true;
+    con.bFirstPerson=true;
+    con.bNonInteractive=true;
+    con.audioPackageName="Mission03";
+
+    ces = new(con) class'ConEventSpeech';
+    con.eventList = ces;
+    ces.eventType=ET_Speech;
+    ces.conversation=con;
+    ces.speaker=tad;
+    ces.speakerName="";
+    ces.speakingTo=tad;
+    ces.speechFont=SF_Normal;
+    ces.conSpeech = new(con) class'ConSpeech';
+    ces.conSpeech.speech="Paul, I know you said no phone messages, but South Street's going up in smoke.  We'll have to meet at the subway station.";
+    ces.conSpeech.soundID=69; //Yes, really
+
+    player().ClientMessage("Speech audio: "$con.GetSpeechAudio(69));
+
+    ce = new(con) class'ConEventEnd';
+    ce.eventType=ET_End;
+    ces.nextEvent=ce;
+    ce.conversation=con;
+
+    conItem = new(Level) class'ConItem';
+    conItem.conObject = con;
+
+    foreach AllObjects(class'ConversationList', list) {
+        if( list.conversations != None ) {
+            conItem.next = list.conversations;
+            list.conversations = conItem;
+            break;
+        }
+    }
+
 }
 
 function PostFirstEntryMapFixes()

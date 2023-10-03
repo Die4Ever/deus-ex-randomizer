@@ -26,6 +26,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
 
 <details>
 <summary>Click to expand Minor Changes</summary>
+
 *
 </details>
 
