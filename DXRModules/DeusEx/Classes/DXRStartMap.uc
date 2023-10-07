@@ -308,7 +308,7 @@ static function int GetStartMapMission(int start_map_val)
 static function int GetStartMapSkillBonus(int start_map_val)
 {
     local int skillBonus, mission;
-    skillBonus = 1000;
+    skillBonus = 1200;
 
     mission = GetStartMapMission(start_map_val);
 
