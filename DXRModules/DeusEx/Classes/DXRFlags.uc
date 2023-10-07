@@ -521,7 +521,6 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.spoilers = 1;
         settings.health = 100;
         settings.energy = 100;
-        moresettings.grenadeswap = 0;
         if(IsZeroRando()) {
             seed = 0;
             dxr.seed = seed;
@@ -548,6 +547,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
             settings.repairbotcooldowns = 0;
             settings.medbotamount = 0;
             settings.repairbotamount = 0;
+            moresettings.grenadeswap = 0;
         } else {
             settings.enemystats /= 2;
             settings.minskill = (settings.minskill + 100) / 2;

@@ -17,6 +17,7 @@ function class<#var(prefix)ThrownProjectile> PickRandomGrenade()
     for (i=0;i<ArrayCount(randomgrens);i++){
         if(chance(randomgrens[i].chance,r)) newgren = randomgrens[i].type;
     }
+    chance_remaining(r);
 
     if (newgren==None){
         //Shouldn't happen, but...
@@ -87,7 +88,7 @@ function FirstEntry()
     local int i;
 
     Super.FirstEntry();
-    if(dxr.flags.IsZeroRando()) return;
+    if(dxr.flags.moresettings.grenadeswap <= 0) return;
 
     SetSeed("RandoGrenades");
 
