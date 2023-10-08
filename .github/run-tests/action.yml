@@ -21,6 +21,8 @@ runs:
     - run: >-
         curl -Lo /installer/3rdParty/DeusExe.u
         "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/DeusExe.u"
+      shell: bash
+
     - run: >-
         curl -Lo installer/3rdParty/Launch.exe
         "https://github.com/Defaultplayer001/Deus-Ex-Universe-Community-Update-/raw/master/%5B1.0%5D%20Deus%20Ex%20-%20Windows-Linux-macOS-Android/DXCU%20Installer%20Source/Mods/Community%20Update/System/Alternative%20EXEs/Launch.exe"
