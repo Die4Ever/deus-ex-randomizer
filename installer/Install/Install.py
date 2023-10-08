@@ -110,6 +110,8 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
     CopyTo(ini, defini_dest)
 
     if kentie:
+        DeusExeU = GetSourcePath() / '3rdParty' / 'DeusExe.u'
+        CopyTo(DeusExeU, system / 'DeusExe.u')
         configs_dest = GetDocumentsDir(system) / 'Deus Ex' / 'System'
         Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True, parents=True)
     else:
