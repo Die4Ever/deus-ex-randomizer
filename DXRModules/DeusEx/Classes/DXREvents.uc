@@ -10,6 +10,7 @@ function WatchActors()
     local #var(prefix)PoolTableLight poolLight;
     local #var(prefix)HKMarketLight hangingLight;
     local #var(prefix)ShopLight shopLight;
+    local #var(prefix)HangingShopLight hangShopLight;
     local #var(prefix)SignFloor signFloor;
     local #var(prefix)WaterCooler cooler;
     local #var(prefix)WaterFountain fountain;
@@ -31,6 +32,9 @@ function WatchActors()
     }
     foreach AllActors(class'#var(prefix)ShopLight',shopLight){
         AddWatchedActor(shopLight,"LightVandalism");
+    }
+    foreach AllActors(class'#var(prefix)HangingShopLight',hangShopLight){
+        AddWatchedActor(hangShopLight,"LightVandalism");
     }
     foreach AllActors(class'#var(prefix)Chandelier',chandelier){
         AddWatchedActor(chandelier,"LightVandalism");
