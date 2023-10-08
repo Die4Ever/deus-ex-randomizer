@@ -43,6 +43,7 @@ function TimerMapFixes()
 function PreFirstEntryMapFixes()
 {
     local DataLinkTrigger dlt;
+    local #var(prefix)NanoKey k;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
@@ -71,6 +72,20 @@ function PreFirstEntryMapFixes()
         case "08_NYC_HOTEL":
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
             SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74));
+            k.KeyID = 'CrackRoom';
+            k.Description = "'Ton Hotel, North Room Key";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(k);
+
+            k = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180));
+            k.KeyID = 'Apartment';
+            k.Description = "Apartment key";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(k);
+
+
             Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
             Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
