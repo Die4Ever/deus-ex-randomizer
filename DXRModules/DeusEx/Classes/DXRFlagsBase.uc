@@ -198,8 +198,15 @@ function HXRollSeed()
 #endif
 
 function NewPlaythroughId() {
+    local DataStorage ds;
     playthrough_id = class'DataStorage'.static._SystemTime(Level);
-    playthrough_id += (Rand(MaxInt) & 0xffff0000) + dxr.Crc(Level.TimeSeconds) * 65536;
+    playthrough_id += Rand(MaxInt) + dxr.Crc(Level.TimeSeconds) * 65536;
+
+    ds = class'DataStorage'.static.GetObj(dxr);
+    if( ds != None && ds.HasPlaythroughId(playthrough_id) ) {
+        l("repeat playthrough id " $ playthrough_id);
+        NewPlaythroughId();
+    }
 }
 
 function CheckConfig()

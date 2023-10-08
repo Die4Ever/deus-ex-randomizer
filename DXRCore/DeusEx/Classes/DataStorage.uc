@@ -135,6 +135,21 @@ function EndPlaythrough()
     }
 }
 
+function bool HasPlaythroughId(int tplaythrough_id)
+{
+    local string pid;
+    local int i, slen;
+    pid = " " $ tplaythrough_id;
+    slen = Len(pid);
+
+    for( i=0; i < ArrayCount(config_data); i++) {
+        if( Right(config_data[i].key, slen) == pid ) {
+            return true;
+        }
+    }
+    return false;
+}
+
 simulated function static DataStorage GetObj(DXRando dxr)
 {
     local DataStorage d;
@@ -144,7 +159,10 @@ simulated function static DataStorage GetObj(DXRando dxr)
 
     d = dxr.ds;
 
-    if( d == None ) {
+    if(d == None) {
+        foreach dxr.AllActors(class'DataStorage', d) { break; }
+    }
+    if(d == None) {
         d = dxr.Spawn(class'DataStorage');
         d.CheckConfig();
         dxr.ds = d;
