@@ -240,6 +240,16 @@ function PreFirstEntryMapFixes_Entrance()
         }
     }
 
+    //Make the floor hatch near Morgan easier to get into
+    //If you make this breakable, the explosion right next
+    //to it will destroy it every time.  Maybe it could
+    //only become breakable after the explosion happens?
+    foreach AllActors(class'DeusExMover', d) {
+        if (d.name=='DeusExMover13'){
+            d.lockStrength=0.25;
+        }
+    }
+
     Spawn(class'#var(prefix)Liquor40oz',,, vectm(4585,72,-174)); //Beers on the table in the sleeping quarters
     Spawn(class'#var(prefix)Liquor40oz',,, vectm(4611,27,-174));
 
