@@ -50,7 +50,7 @@ function PreFirstEntryMapFixes()
     local Actor a;
     local Trigger t;
     local Teleporter tele;
-    local NanoKey k;
+    local #var(prefix)NanoKey k;
     local #var(prefix)InformationDevices i;
     local #var(prefix)UNATCOTroop unatco;
     local #var(prefix)WeaponModRecoil wmr;
@@ -59,7 +59,7 @@ function PreFirstEntryMapFixes()
     switch (dxr.localURL)
     {
     case "03_NYC_BATTERYPARK":
-        foreach AllActors(class'NanoKey', k) {
+        foreach AllActors(class'#var(prefix)NanoKey', k) {
             // unnamed key normally unreachable
             if( k.KeyID == '' || k.KeyID == 'KioskDoors' ) {
                 k.Destroy();
