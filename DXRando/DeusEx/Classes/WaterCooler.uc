@@ -66,6 +66,17 @@ simulated static function PlayDrown(Actor a)
     a.PlaySound(TSound, SLOT_Pain, 100,,, 1);
 }
 
+function Destroyed()
+{
+    local DXRando dxr;
+
+    foreach AllActors(class'DXRando', dxr) {
+        class'DXREvents'.static.MarkBingo(dxr,"Dehydrated");
+    }
+
+    Super.Destroyed();
+}
+
 defaultproperties
 {
 #ifdef hx

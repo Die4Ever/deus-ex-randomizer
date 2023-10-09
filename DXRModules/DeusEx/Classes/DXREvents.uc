@@ -39,23 +39,11 @@ function WatchActors()
     foreach AllActors(class'#var(prefix)Chandelier',chandelier){
         AddWatchedActor(chandelier,"LightVandalism");
     }
-    foreach AllActors(class'#var(prefix)BoneFemur',femur){
-        AddWatchedActor(femur,"FightSkeletons");
-    }
-    foreach AllActors(class'#var(prefix)BoneSkull',skull){
-        AddWatchedActor(skull,"FightSkeletons");
-    }
     foreach AllActors(class'#var(prefix)Trophy',trophy){
         AddWatchedActor(trophy,"TrophyHunter");
     }
     foreach AllActors(class'#var(prefix)SignFloor',signFloor){
         AddWatchedActor(signFloor,"SlippingHazard");
-    }
-    foreach AllActors(class'#var(prefix)WaterCooler',cooler){
-        AddWatchedActor(cooler,"Dehydrated");
-    }
-    foreach AllActors(class'#var(prefix)WaterFountain',fountain){
-        AddWatchedActor(fountain,"Dehydrated");
     }
     foreach AllActors(class'#var(prefix)HangingChicken',chicken){
         AddWatchedActor(chicken,"BeatTheMeat");

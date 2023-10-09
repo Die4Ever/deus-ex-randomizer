@@ -87,6 +87,12 @@ function ReplaceActors()
         else if( #var(prefix)BarrelFire(a) != None ) {
             ReplaceGenericDecoration(a,class'DXRBarrelFire');
         }
+        else if( #var(prefix)BoneSkull(a) != None ) {
+            ReplaceGenericDecoration(a,class'DXRSkull');
+        }
+        else if( #var(prefix)BoneFemur(a) != None ) {
+            ReplaceGenericDecoration(a,class'DXRFemur');
+        }
         else if( a.class==class'#var(prefix)VendingMachine' ) {
             ReplaceVendingMachine(#var(prefix)VendingMachine(a));
         }
@@ -348,6 +354,16 @@ function ReplaceGenericDecoration(Actor a, class<Actor> newClass)
     local Actor n;
 
     n = SpawnReplacement(a, newClass);
+
+#ifdef hx
+    if (HXDecoration(a)!=None){
+        ReplaceDeusExDecoration(HXDecoration(a),HXDecoration(n));
+    }
+#else
+    if (DeusExDecoration(a)!=None){
+        ReplaceDeusExDecoration(DeusExDecoration(a),DeusExDecoration(n));
+    }
+#endif
 
     if(n == None)
         return;
