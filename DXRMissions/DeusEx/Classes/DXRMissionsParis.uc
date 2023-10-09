@@ -64,6 +64,14 @@ function int InitGoalsRev(int mission, string map)
     local int goal, loc, loc2;
 
     switch(map) {
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        AddGoal("10_PARIS_CATACOMBS_TUNNELS", "Agent Hela", NORMAL_GOAL, 'AgentHela0', PHYS_Falling);
+        AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker", NORMAL_GOAL | VANILLA_GOAL, vect(705.049500,-3805.679932,-278.812622), rot(0, 16384, 0));
+        AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Upper Level Ladder Side", NORMAL_GOAL, vect(-245,-2881,-32), rot(0, 0, 0));
+        AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Side Room", NORMAL_GOAL, vect(1102,-3028,-288), rot(0, -35404, 0));
+        AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Front of Bunker Side", NORMAL_GOAL, vect(-500,600,-264), rot(0, -25956, 0));
+        AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Front of Bunker Upper Level", NORMAL_GOAL, vect(-1480,-90,-64), rot(0, 0, 0));
+        return 102;
     case "10_PARIS_METRO":
     case "10_PARIS_CLUB":
         AddGoal("10_PARIS_METRO", "Jaime", NORMAL_GOAL, 'JaimeReyes1', PHYS_Falling);
@@ -208,9 +216,10 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
     local DXREnemiesPatrols patrol;
 
     if (g.name=="Agent Hela"){
-        if (Loc.Name=="Back of Bunker" ||
-            Loc.Name=="Front of Bunker Side" ||
-            Loc.Name=="Front of Bunker Upper Level"){
+        if (Loc.Name=="Back of Bunker" ||   //Vanilla
+            Loc.Name=="Front of Bunker Side" ||   //Vanilla
+            Loc.Name=="Front of Bunker Upper Level"|| //Vanilla
+            Loc.Name=="Back of Bunker Side Room"){ //Revision
 
             foreach AllActors(class'DXREnemiesPatrols',patrol){break;}
             patrol.GivePatrol(#var(prefix)ScriptedPawn(g.actors[0].a));
