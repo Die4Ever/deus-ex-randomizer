@@ -9,7 +9,7 @@ function int InitGoals(int mission, string map)
     case "10_PARIS_CATACOMBS_TUNNELS":
         AddGoal("10_PARIS_CATACOMBS_TUNNELS", "Agent Hela", NORMAL_GOAL, 'WIB0', PHYS_Falling);
         AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker", NORMAL_GOAL | VANILLA_GOAL, vect(705.735596,-3802.420410,-281.812622), rot(0, 16384, 0));
-        AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Upper Level", NORMAL_GOAL, vect(923,-2907,-32), rot(0, 31936, 0));
+        AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Upper Level Ladder Side", NORMAL_GOAL, vect(923,-2907,-32), rot(0, 31936, 0));
         AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Upper Level Stair Side", NORMAL_GOAL, vect(-290,-2475,-32), rot(0, 0, 0));
         AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Front of Bunker Side", NORMAL_GOAL, vect(-637,745,-256), rot(0, -16640, 0));
         AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Front of Bunker Upper Level", NORMAL_GOAL, vect(-1635,-82,-64), rot(0, 0, 0));
@@ -195,12 +195,28 @@ function PreFirstEntryMapFixes()
 
     if( dxr.localURL == "10_PARIS_CATACOMBS_TUNNELS" ) {
         foreach AllActors(class'#var(prefix)WIB', hela) {
-            hela.SetOrders('Standing');
-
             key = #var(prefix)NanoKey(GiveItem(hela,class'#var(prefix)NanoKey'));
             key.Description="Catacombs Sewer Entry Key";
             key.keyId='catacombs_blastdoor02';
             break;
         }
+    }
+}
+
+function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
+{
+    local DXREnemiesPatrols patrol;
+
+    if (g.name=="Agent Hela"){
+        if (Loc.Name=="Back of Bunker" ||
+            Loc.Name=="Front of Bunker Side" ||
+            Loc.Name=="Front of Bunker Upper Level"){
+
+            foreach AllActors(class'DXREnemiesPatrols',patrol){break;}
+            patrol.GivePatrol(#var(prefix)ScriptedPawn(g.actors[0].a));
+        } else {
+            #var(prefix)ScriptedPawn(g.actors[0].a).SetOrders('Standing');
+        }
+
     }
 }
