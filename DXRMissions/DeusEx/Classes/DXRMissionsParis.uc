@@ -6,6 +6,14 @@ function int InitGoals(int mission, string map)
     local int goal, loc, loc2;
 
     switch(map) {
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        AddGoal("10_PARIS_CATACOMBS_TUNNELS", "Agent Hela", NORMAL_GOAL, 'WIB0', PHYS_Falling);
+        AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker", NORMAL_GOAL | VANILLA_GOAL, vect(705.735596,-3802.420410,-281.812622), rot(0, 16384, 0));
+        AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Upper Level", NORMAL_GOAL, vect(923,-2907,-32), rot(0, 31936, 0));
+        AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Upper Level Stair Side", NORMAL_GOAL, vect(-290,-2475,-32), rot(0, 0, 0));
+        AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Front of Bunker Side", NORMAL_GOAL, vect(-637,745,-256), rot(0, -16640, 0));
+        AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Front of Bunker Upper Level", NORMAL_GOAL, vect(-1635,-82,-64), rot(0, 0, 0));
+        return 102;
     case "10_PARIS_METRO":
     case "10_PARIS_CLUB":
         AddGoal("10_PARIS_METRO", "Jaime", NORMAL_GOAL, 'JaimeReyes1', PHYS_Falling);
@@ -177,5 +185,22 @@ function CreateGoal(out Goal g, GoalLocation Loc)
             sp.RaiseAlarm = RAISEALARM_Never;
         }
         break;
+    }
+}
+
+function PreFirstEntryMapFixes()
+{
+    local #var(prefix)WIB hela;
+    local #var(prefix)NanoKey key;
+
+    if( dxr.localURL == "10_PARIS_CATACOMBS_TUNNELS" ) {
+        foreach AllActors(class'#var(prefix)WIB', hela) {
+            hela.SetOrders('Standing');
+
+            key = #var(prefix)NanoKey(GiveItem(hela,class'#var(prefix)NanoKey'));
+            key.Description="Catacombs Sewer Entry Key";
+            key.keyId='catacombs_blastdoor02';
+            break;
+        }
     }
 }
