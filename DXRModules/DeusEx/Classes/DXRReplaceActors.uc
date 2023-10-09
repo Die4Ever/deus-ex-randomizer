@@ -355,15 +355,9 @@ function ReplaceGenericDecoration(Actor a, class<Actor> newClass)
 
     n = SpawnReplacement(a, newClass);
 
-#ifdef hx
-    if (HXDecoration(a)!=None){
-        ReplaceDeusExDecoration(HXDecoration(a),HXDecoration(n));
+    if (#var(DeusExPrefix)Decoration(a)!=None){
+        ReplaceDeusExDecoration(#var(DeusExPrefix)Decoration(a),#var(DeusExPrefix)Decoration(n));
     }
-#else
-    if (DeusExDecoration(a)!=None){
-        ReplaceDeusExDecoration(DeusExDecoration(a),DeusExDecoration(n));
-    }
-#endif
 
     if(n == None)
         return;
@@ -459,11 +453,7 @@ function ReplaceTrigger(#var(prefix)Trigger a, #var(prefix)Trigger n)
     n.TriggerActor2 = a.TriggerActor2;
 }
 
-#ifdef hx
-function HXWeapon ReplaceWeapon(HXWeapon a, HXWeapon n)
-#else
-function DeusExWeapon ReplaceWeapon(DeusExWeapon a, DeusExWeapon n)
-#endif
+function #var(DeusExPrefix)Weapon ReplaceWeapon(#var(DeusExPrefix)Weapon a, #var(DeusExPrefix)Weapon n)
 {
     local ScriptedPawn owner;
     local bool bWasDrawn;
@@ -481,11 +471,7 @@ function DeusExWeapon ReplaceWeapon(DeusExWeapon a, DeusExWeapon n)
     }
 }
 
-#ifdef hx
-function HXPickup ReplacePickup(HXPickup a, HXPickup n)
-#else
-function DeusExPickup ReplacePickup(DeusExPickup a, DeusExPickup n)
-#endif
+function #var(DeusExPrefix)Pickup ReplacePickup(#var(DeusExPrefix)Pickup a, #var(DeusExPrefix)Pickup n)
 {
     local ScriptedPawn owner;
     local #var(PlayerPawn) player;
@@ -501,11 +487,7 @@ function DeusExPickup ReplacePickup(DeusExPickup a, DeusExPickup n)
 }
 
 
-#ifdef hx
-function ReplaceDeusExDecoration(HXDecoration a, HXDecoration n)
-#else
-function ReplaceDeusExDecoration(DeusExDecoration a, DeusExDecoration n)
-#endif
+function ReplaceDeusExDecoration(#var(DeusExPrefix)Decoration a, #var(DeusExPrefix)Decoration n)
 {
 #ifdef hx
     n.PrecessorName = a.PrecessorName;
