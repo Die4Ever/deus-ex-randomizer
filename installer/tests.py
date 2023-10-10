@@ -18,6 +18,10 @@ import Install.MapVariants
 @typechecked
 class DXRTestCase(unittest.TestCase):
     def test_documents(self):
+        system = Path('/home/deck/.local/share/Steam/steamapps/common/Deus Ex/System/')
+        d = Install.GetSteamPlayDocuments(system)
+        self.assertEqual(d, Path('/home/deck/.local/share/Steam/steamapps/compatdata/6910/pfx/drive_c/users/steamuser/Documents/'), 'GetSteamPlayDocuments')
+
         d = Install.GetDocumentsDir(Path.home())
         self.assertTrue(d.exists(), str(d) + ' exists')
 
