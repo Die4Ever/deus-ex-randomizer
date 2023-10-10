@@ -2485,16 +2485,14 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Destroy enough cigarette vending machines.  Smoking kills!";
         case "PhoneCall":
             msg = "Make phone calls on enough different phones (Either desk phones or pay phones).";
-            if (mission<=1){
-                msg=msg$"|n|nThere is a desk phone on Janice's desk in UNATCO HQ.";
-            } else if (mission <=2){
+            if (mission <=2){
                 msg=msg$"|n|nThere is a desk phone and a pay phone in the Free Clinic.  There are two payphones in the streets.  There is a payphone in the back of the bar.";
             } else if (mission <=3){
                 msg=msg$"|n|nThere is a desk phone on Janice's desk in UNATCO HQ.  There are two desk phones in offices in the LaGuardia Helibase.";
             } else if (mission <=4){
                 msg=msg$"|n|nThere is a desk phone on Janice's desk in UNATCO HQ.  There are two payphones in the streets.  There is a payphone in the back of the bar.";
             } else if (mission <=5){
-                msg=msg$"|n|nThere is a desk phone on Janice's desk in UNATCO HQ.";
+                msg=msg$"|n|nThere is a desk phone on Sam's desk in UNATCO HQ.";
             } else if (mission <=6){
                 msg=msg$"|n|nThere is a desk phone in the Luminous Path Compound in the Wan Chai Market.";
                 msg=msg$"|nThere is a desk phone at the front desk of Queen's Tower on Tonnochi Road.";
@@ -2889,7 +2887,7 @@ defaultproperties
     bingo_options(280)=(event="SnitchDowd",desc="Snitches get stitches",max=1,missions=256)
     bingo_options(281)=(event="SewerSurfin",desc="Sewer Surfin'",max=1,missions=276)
     bingo_options(282)=(event="SmokingKills",desc="Smoking Kills (%s)",max=5,missions=3420)
-    bingo_options(283)=(event="PhoneCall",desc="Make %s phone calls",max=5,missions=1918)
+    bingo_options(283)=(event="PhoneCall",desc="Make %s phone calls",max=5,missions=1916)
     bingo_options(284)=(event="Area51ElevatorPower",desc="Power the elevator in Area 51",max=1,missions=32768)
     bingo_options(285)=(event="Area51SleepingPod",desc="Open %s sleeping pods in Area 51",max=4,missions=32768)
     bingo_options(286)=(event="Area51SteamValve",desc="Close %s steam valves in Area 51",max=2,missions=32768)
