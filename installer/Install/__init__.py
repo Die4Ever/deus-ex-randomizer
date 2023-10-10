@@ -106,7 +106,8 @@ def GetSourcePath() -> Path:
 def GetSteamPlayDocuments(system:Path) -> Path:
     if 'Steam' in system.parts:
         idx = system.parts.index('Steam')
-        p = system.parents[-idx -1] # parents array is backwards
+        idx = len(system.parents) - idx - 1 # parents array is backwards
+        p = system.parents[idx]
         info('GetSteamPlayDocuments() == ', p)
         p = p /'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'
         info('GetSteamPlayDocuments() == ', p)
