@@ -760,6 +760,8 @@ simulated function TutorialDisableRandomization(bool enableSomeRando)
     settings.max_weapon_shottime = 100;
 
     settings.aug_value_rando = 0;*/
+
+    moresettings.grenadeswap = 0;
 }
 
 //Nothing fancy happening here, but gives a consistent place to change how we want to clamp across
