@@ -128,6 +128,8 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
             set(('WinDrv.WindowsClient', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe')),
             oldconfig, changes
         )
+    elif not Vulkan and IsWindows():
+        changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '80'}
 
     CopyTo(ini, DXRandoini)
 
