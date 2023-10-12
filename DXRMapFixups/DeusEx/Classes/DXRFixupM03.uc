@@ -50,7 +50,7 @@ function PreFirstEntryMapFixes()
     local Actor a;
     local Trigger t;
     local Teleporter tele;
-    local NanoKey k;
+    local #var(prefix)NanoKey k;
     local #var(prefix)InformationDevices i;
     local #var(prefix)UNATCOTroop unatco;
     local #var(prefix)WeaponModRecoil wmr;
@@ -59,7 +59,7 @@ function PreFirstEntryMapFixes()
     switch (dxr.localURL)
     {
     case "03_NYC_BATTERYPARK":
-        foreach AllActors(class'NanoKey', k) {
+        foreach AllActors(class'#var(prefix)NanoKey', k) {
             // unnamed key normally unreachable
             if( k.KeyID == '' || k.KeyID == 'KioskDoors' ) {
                 k.Destroy();
@@ -247,6 +247,12 @@ function PreFirstEntryMapFixes()
                 wmr.SetLocation(vectm(420.843567,175.866135,261.520447));
             }
         }
+
+        k = Spawn(class'#var(prefix)NanoKey',,, vectm(965,900,-28));
+        k.KeyID = 'JaimeClosetKey';
+        k.Description = "MedLab Closet Key Code";
+        if(dxr.flags.settings.keysrando > 0)
+            GlowUp(k);
 
         //Spawn some placeholders for new item locations
         Spawn(class'PlaceholderItem',,, vectm(363.284149, 344.847, 50.32)); //Womens bathroom counter

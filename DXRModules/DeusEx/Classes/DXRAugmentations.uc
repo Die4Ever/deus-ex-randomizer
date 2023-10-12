@@ -96,6 +96,7 @@ static function RemoveAug(DeusExPlayer player, Augmentation aug)
 
     aug.Deactivate();
     aug.bHasIt = False;
+    aug.CurrentLevel=0;
 
     // Manage our AugLocs[] array
     player.AugmentationSystem.AugLocs[aug.AugmentationLocation].augCount--;

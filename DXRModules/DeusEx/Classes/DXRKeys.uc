@@ -70,6 +70,20 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
+    case "02_NYC_HOTEL":
+        keys_rules[i].item_name = 'CrackRoom';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(816, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+    case "03_NYC_UNATCOHQ":
+        keys_rules[i].item_name = 'JaimeClosetKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
     case "03_NYC_AIRFIELD":
         keys_rules[i].item_name = 'eastgate';
         keys_rules[i].min_pos = vect(1915, 2332, -999999);
@@ -112,9 +126,32 @@ function vanilla_keys_rules()
         keys_rules[i].allow = true;
         i++;
         break;
-
+    case "04_NYC_UNATCOHQ":
+        keys_rules[i].item_name = 'JaimeClosetKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+    case "04_NYC_HOTEL":
+        keys_rules[i].item_name = 'Apartment';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, -2540, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        keys_rules[i].item_name = 'CrackRoom';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(816, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
     case "05_NYC_UNATCOHQ":
         keys_rules[i].item_name = 'UNOfficeDoorKey';
+        keys_rules[i].min_pos = vect(-999999, -999999, -999999);
+        keys_rules[i].max_pos = vect(999999, 999999, 999999);
+        keys_rules[i].allow = true;
+        i++;
+        keys_rules[i].item_name = 'JaimeClosetKey';
         keys_rules[i].min_pos = vect(-999999, -999999, -999999);
         keys_rules[i].max_pos = vect(999999, 999999, 999999);
         keys_rules[i].allow = true;
@@ -171,6 +208,19 @@ function vanilla_keys_rules()
         keys_rules[i].item_name = 'NanoContainmentDoor';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);
         keys_rules[i].max_pos = vect(99999, 99999, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
+    case "08_NYC_HOTEL":
+        keys_rules[i].item_name = 'Apartment';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(99999, -2540, 99999);
+        keys_rules[i].allow = true;
+        i++;
+        keys_rules[i].item_name = 'CrackRoom';
+        keys_rules[i].min_pos = vect(-99999, -99999, -99999);
+        keys_rules[i].max_pos = vect(816, 99999, 99999);
         keys_rules[i].allow = true;
         i++;
         break;

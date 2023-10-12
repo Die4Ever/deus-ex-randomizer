@@ -46,7 +46,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(2,4,2,1) ) {
+    if( ConfigOlderThan(2,5,4,5) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(loadouts_order); i++) {
@@ -147,27 +147,27 @@ function CheckConfig()
         i=0;
 
         randomitems[i].type = "Medkit";
-        randomitems[i].chance = 9;
+        randomitems[i].chance = 10;
         i++;
 
         randomitems[i].type = "Lockpick";
-        randomitems[i].chance = 9;
+        randomitems[i].chance = 11;
         i++;
 
         randomitems[i].type = "Multitool";
-        randomitems[i].chance = 9;
+        randomitems[i].chance = 11;
         i++;
 
         randomitems[i].type = "Flare";
-        randomitems[i].chance = 9;
+        randomitems[i].chance = 7;
         i++;
 
         randomitems[i].type = "FireExtinguisher";
-        randomitems[i].chance = 9;
+        randomitems[i].chance = 8;
         i++;
 
         randomitems[i].type = "SoyFood";
-        randomitems[i].chance = 9;
+        randomitems[i].chance = 7;
         i++;
 
         randomitems[i].type = "TechGoggles";
@@ -179,7 +179,7 @@ function CheckConfig()
         i++;
 
         randomitems[i].type = "BioelectricCell";
-        randomitems[i].chance = 9;
+        randomitems[i].chance = 11;
         i++;
 
         randomitems[i].type = "BallisticArmor";
@@ -187,7 +187,7 @@ function CheckConfig()
         i++;
 
         randomitems[i].type = "WineBottle";
-        randomitems[i].chance = 9;
+        randomitems[i].chance = 7;
         i++;
     }
     Super.CheckConfig();
@@ -533,8 +533,8 @@ function RandoStartingEquipment(#var(PlayerPawn) player, bool respawn)
 
     start_amount = dxr.flags.settings.equipment;
 
-    if (dxr.flags.settings.starting_map != 0){
-        start_amount += 3;
+    if (dxr.flags.settings.starting_map != 0) {
+        start_amount += 1 + dxr.flags.settings.starting_map / 30;
     }
 
     dxre = DXREnemies(dxr.FindModule(class'DXREnemies'));

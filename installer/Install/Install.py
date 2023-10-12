@@ -110,6 +110,8 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
     CopyTo(ini, defini_dest)
 
     if kentie:
+        DeusExeU = GetSourcePath() / '3rdParty' / 'DeusExe.u'
+        CopyTo(DeusExeU, system / 'DeusExe.u')
         configs_dest = GetDocumentsDir(system) / 'Deus Ex' / 'System'
         Mkdir(configs_dest.parent /'SaveDXRando', exist_ok=True, parents=True)
     else:
@@ -126,6 +128,8 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
             set(('WinDrv.WindowsClient', 'DeusEx.DXRFlags', 'DeusEx.DXRTelemetry', 'Galaxy.GalaxyAudioSubsystem', 'DeusExe')),
             oldconfig, changes
         )
+    elif not Vulkan and IsWindows():
+        changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '80'}
 
     CopyTo(ini, DXRandoini)
 

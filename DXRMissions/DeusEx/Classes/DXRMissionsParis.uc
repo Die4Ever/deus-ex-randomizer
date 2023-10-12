@@ -6,6 +6,19 @@ function int InitGoals(int mission, string map)
     local int goal, loc, loc2;
 
     switch(map) {
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        AddGoal("10_PARIS_CATACOMBS_TUNNELS", "Agent Hela", NORMAL_GOAL, 'WIB0', PHYS_Falling);
+        loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker", NORMAL_GOAL | VANILLA_GOAL, vect(705.735596,-3802.420410,-281.812622), rot(0, 16384, 0));
+        AddActorLocation(loc, 1, vect(802,-3736,-284), rot(0,0,0));
+        loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Upper Level Ladder Side", NORMAL_GOAL, vect(923,-2907,-32), rot(0, 31936, 0));
+        AddActorLocation(loc, 1, vect(880,-2980,-44), rot(0,0,0));
+        loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Upper Level Stair Side", NORMAL_GOAL, vect(-290,-2475,-32), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-240,-2420,-44), rot(0,0,0));
+        loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Front of Bunker Side", NORMAL_GOAL, vect(-637,745,-256), rot(0, -16640, 0));
+        AddActorLocation(loc, 1, vect(-440,730,-300), rot(0,0,0));
+        loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Front of Bunker Upper Level", NORMAL_GOAL, vect(-1635,-82,-64), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-1640,-257,-82), rot(0,0,0));
+        return 102;
     case "10_PARIS_METRO":
     case "10_PARIS_CLUB":
         AddGoal("10_PARIS_METRO", "Jaime", NORMAL_GOAL, 'JaimeReyes1', PHYS_Falling);
@@ -56,6 +69,19 @@ function int InitGoalsRev(int mission, string map)
     local int goal, loc, loc2;
 
     switch(map) {
+    case "10_PARIS_CATACOMBS_TUNNELS":
+        AddGoal("10_PARIS_CATACOMBS_TUNNELS", "Agent Hela", NORMAL_GOAL, 'AgentHela0', PHYS_Falling);
+        loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker", NORMAL_GOAL | VANILLA_GOAL, vect(705.049500,-3805.679932,-278.812622), rot(0, 16384, 0));
+        AddActorLocation(loc, 1, vect(795,-3725,-284), rot(0,0,0));
+        loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Upper Level Ladder Side", NORMAL_GOAL, vect(-245,-2881,-32), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-227,-2481,-28), rot(0,0,0));
+        loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Side Room", NORMAL_GOAL, vect(1102,-3028,-288), rot(0, -35404, 0));
+        AddActorLocation(loc, 1, vect(955,-2630,-330), rot(0,0,0));
+        loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Front of Bunker Side", NORMAL_GOAL, vect(-500,600,-264), rot(0, -25956, 0));
+        AddActorLocation(loc, 1, vect(-775,675,-300), rot(0,0,0));
+        loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Front of Bunker Upper Level", NORMAL_GOAL, vect(-1480,-90,-64), rot(0, 0, 0));
+        AddActorLocation(loc, 1, vect(-1668,65,-108), rot(0,0,0));
+        return 102;
     case "10_PARIS_METRO":
     case "10_PARIS_CLUB":
         AddGoal("10_PARIS_METRO", "Jaime", NORMAL_GOAL, 'JaimeReyes1', PHYS_Falling);
@@ -177,5 +203,48 @@ function CreateGoal(out Goal g, GoalLocation Loc)
             sp.RaiseAlarm = RAISEALARM_Never;
         }
         break;
+    }
+}
+
+function PreFirstEntryMapFixes()
+{
+    local #var(prefix)WIB hela;
+    local #var(prefix)NanoKey key;
+
+    if( dxr.localURL == "10_PARIS_CATACOMBS_TUNNELS" ) {
+        foreach AllActors(class'#var(prefix)WIB', hela) {
+            key = #var(prefix)NanoKey(GiveItem(hela,class'#var(prefix)NanoKey'));
+            key.Description="Catacombs Sewer Entry Key";
+            key.keyId='catacombs_blastdoor02';
+            break;
+        }
+    }
+}
+
+function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
+{
+    local DXREnemiesPatrols patrol;
+    local #var(prefix)NanoKey key;
+
+    if (g.name=="Agent Hela"){
+        if (Loc.Name=="Back of Bunker" ||   //Vanilla
+            Loc.Name=="Front of Bunker Side" ||   //Vanilla
+            Loc.Name=="Front of Bunker Upper Level"|| //Vanilla
+            Loc.Name=="Back of Bunker Side Room"){ //Revision
+
+            foreach AllActors(class'DXREnemiesPatrols',patrol){break;}
+            patrol.GivePatrol(#var(prefix)ScriptedPawn(g.actors[0].a));
+        } else {
+            #var(prefix)ScriptedPawn(g.actors[0].a).SetOrders('Standing');
+        }
+
+        //Create the sneakable bonus key near Hela
+        key=#var(prefix)NanoKey(Spawnm(class'#var(prefix)NanoKey',,,Loc.positions[1].pos));
+        key.Description="Catacombs Sewer Entry Key";
+        key.keyId='catacombs_blastdoor02';
+        key.bIsSecretGoal=true;
+        if(dxr.flags.settings.keysrando > 0)
+            GlowUp(key);
+
     }
 }

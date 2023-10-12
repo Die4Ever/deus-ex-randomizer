@@ -103,14 +103,20 @@ def GetSourcePath() -> Path:
     raise RuntimeError('failed to GetSourcePath()', p)
 
 
+def GetSteamPlayDocuments(system:Path) -> Path:
+    if 'Steam' in system.parts:
+        idx = system.parts.index('Steam')
+        idx = len(system.parents) - idx - 1 # parents array is backwards
+        p = system.parents[idx]
+        info('GetSteamPlayDocuments() == ', p)
+        p = p /'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'
+        info('GetSteamPlayDocuments() == ', p)
+        return p
+
 def GetDocumentsDir(system:Path) -> Path:
     if not IsWindows():
         if 'Steam' in system.parts:
-            idx = system.parts.index('Steam')
-            p = system.parents[idx]
-            info('GetDocumentsDir() == ', p)
-            p = p /'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'
-            info('GetDocumentsDir() == ', p)
+            p = GetSteamPlayDocuments(system)
             Mkdir(p, True, True)
         else:
             p = Path.home()

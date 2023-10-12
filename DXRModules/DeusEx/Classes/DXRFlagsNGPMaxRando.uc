@@ -151,7 +151,7 @@ function ClearDataVaultImages()
         image.Destroy();
     }
 
-    class'DXRActorsBase'.static.RemoveItem(p, class'#var(prefix)DataVaultImage');
+    class'DXRActorsBase'.static.RemoveItem(p, class'DataVaultImage');
 }
 
 function NewGamePlus()

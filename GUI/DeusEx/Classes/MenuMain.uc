@@ -68,6 +68,8 @@ function Tick(float DeltaTime)
 function CreateMenuButtons()
 {
     local int newsWidth;
+
+    ButtonNames[4] = "Rando Training";
     Super.CreateMenuButtons();
 
     winButtons[3].SetWidth((buttonWidth/2)+3); //Make settings half-width

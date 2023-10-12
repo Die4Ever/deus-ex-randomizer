@@ -626,7 +626,10 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
 
     _MarkBingo(victim.BindName$"_Dead");
     _MarkBingo(victim.BindName$"_DeadM" $ dxr.dxInfo.missionNumber);
-    if( Killer == None || #var(PlayerPawn)(Killer) != None ) {
+
+    //Burned doesn't track who set them on fire...
+    //The intent here is to only mark bingo for kills done by the player
+    if( (Killer == None  && damageType=="Burned") || #var(PlayerPawn)(Killer) != None ) {
         classname = string(victim.class.name);
         if(#defined(hx) && InStr(classname, "HX")==0) {
             classname = Mid(classname, 2);

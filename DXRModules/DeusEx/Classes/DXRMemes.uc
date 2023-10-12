@@ -364,7 +364,7 @@ function PostFirstEntry()
             break;
     }
 
-    if(#defined(injections) && !dxr.flags.IsReducedRando()) {
+    if(#defined(injections)) {
         foreach AllActors(class'LuciusDeBeers', lucius) {
             lucius.bInvincible = false;
         }

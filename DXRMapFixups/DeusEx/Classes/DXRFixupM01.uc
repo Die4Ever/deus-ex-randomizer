@@ -126,8 +126,8 @@ function AnyEntryMapFixes()
     c = GetConversation('MeetPaul');
     ce = c.eventList;
 
-    //Should this actually be seeded?
-    if (rand(2)==0){
+    SetSeed("MeetPaul");
+    if (rngb()){
         afterTextLine="I get the idea.  What's the first move?";
     } else {
         afterTextLine="Great.  What's the first move?";

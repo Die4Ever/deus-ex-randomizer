@@ -48,6 +48,17 @@ function Frob(Actor Frobber, Inventory frobWith)
     }
 }
 
+function Destroyed()
+{
+    local DXRando dxr;
+
+    foreach AllActors(class'DXRando', dxr) {
+        class'DXREvents'.static.MarkBingo(dxr,"Dehydrated");
+    }
+
+    Super.Destroyed();
+}
+
 defaultproperties
 {
 #ifdef hx
