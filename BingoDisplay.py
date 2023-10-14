@@ -256,6 +256,7 @@ def getDefaultPath():
         Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
         Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
         Path.home() /'.local'/'share'/'Steam'/'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'/'Deus Ex'/'System',
+        Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
     ]
     p:Path
     for p in checks:
