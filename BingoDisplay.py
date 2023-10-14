@@ -38,7 +38,10 @@ class Bingo:
         self.height=500
         self.selectedMod=""
         self.prevLines=None
-        self.bingoLineMatch = re.compile(r'bingoexport\[(?P<key>\d+)\]=\(Event="(?P<event>.*)",Desc="(?P<desc>.*)",Progress=(?P<progress>\d+),Max=(?P<max>\d+),Active=(?P<active>\d+)\)')
+        self.bingoLineMatch = re.compile(
+            r'bingoexport\[(?P<key>\d+)\]=\(Event="(?P<event>.*)",Desc="(?P<desc>.*)",Progress=(?P<progress>\d+),Max=(?P<max>\d+),Active=(?P<active>\d+)\)',
+            re.IGNORECASE
+        )
         self.initDrawnBoard()
 
     def closeWindow(self):
