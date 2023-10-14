@@ -190,6 +190,9 @@ function SetWatchFlags() {
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+
+            bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            bt.MakePeepable();
         }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
@@ -301,6 +304,9 @@ function SetWatchFlags() {
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+
+            bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            bt.MakePeepable();
         }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
@@ -423,6 +429,9 @@ function SetWatchFlags() {
             bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
             bt = class'BingoTrigger'.static.Create(self,'PresentForManderley',vectm(220,4,280),300,40);
             bt.MakeClassProximityTrigger(class'#var(prefix)JuanLebedevCarcass');
+
+            bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            bt.MakePeepable();
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -489,6 +498,9 @@ function SetWatchFlags() {
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+
+            bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            bt.MakePeepable();
         }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 

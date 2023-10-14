@@ -6,6 +6,7 @@ class BingoTrigger expands Trigger;
 var() String bingoEvent;
 var() bool bDestroyOthers;
 var() bool bUntrigger;
+var() bool bPeepable;
 
 function Trigger(Actor Other, Pawn Instigator)
 {
@@ -29,6 +30,13 @@ function Touch(Actor Other)
 	{
 		DoBingoThing();
 	}
+}
+
+function Peep()
+{
+    if (bPeepable){
+        DoBingoThing();
+    }
 }
 
 function TakeDamage( int Damage, Pawn instigatedBy, Vector hitlocation,
@@ -85,6 +93,12 @@ function MakeClassProximityTrigger(class<Actor> className)
     ClassProximityType=className;
 }
 
+function MakePeepable()
+{
+    bPeepable=True;
+    SetCollision(True,False,False);
+}
+
 static function BingoTrigger Create(Actor a, Name bingoEvent, vector loc, optional float rad, optional float height)
 {
     local BingoTrigger bt;
@@ -108,4 +122,5 @@ defaultproperties
      bTriggerOnceOnly=True
      bDestroyOthers=True
      bUntrigger=False
+     bPeepable=False
 }
