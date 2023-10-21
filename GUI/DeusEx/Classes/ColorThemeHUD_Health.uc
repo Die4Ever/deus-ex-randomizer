@@ -33,7 +33,7 @@ function FindHealthColour(float health)
     local int i;
     local Color healthColour;
 
-    if (player!=None && player.RootWindow!=None){
+    if (health > 0 && player!=None && player.RootWindow!=None){
         healthColour = player.rootWindow.GetColorScaled(health/100.0);
     } else {
         healthColour.r=255;
@@ -51,9 +51,12 @@ function FindHealthColour(float health)
 
 function SetUIColour()
 {
+    local float critHealth;
     if (player!=None){
+        critHealth = (player.HealthHead + player.HealthTorso)/2.0;
         player.GenerateTotalHealth();
-        FindHealthColour(player.Health);
+
+        FindHealthColour(MIN(player.Health,critHealth));
     } else {
         FindHealthColour(0);
     }
