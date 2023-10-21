@@ -52,7 +52,7 @@ function CreateChangeAccountButton()
     winActionButtons.FillAllSpace(False);
 
     btnChangeAccount = PersonaActionButtonWindow(winActionButtons.NewChild(Class'PersonaActionButtonWindow'));
-    btnChangeAccount.SetButtonText("Login");
+    btnChangeAccount.SetButtonText("Logi|&n");
 }
 
 function ChangeSelectedAccount()
