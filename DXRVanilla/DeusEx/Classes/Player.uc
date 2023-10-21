@@ -1138,6 +1138,9 @@ function CreateColorThemeManager()
     AddColorTheme(Class'ColorThemeMenu_Rando');
     AddColorTheme(Class'ColorThemeHUD_Swirl');
     AddColorTheme(Class'ColorThemeMenu_Swirl');
+    AddColorTheme(Class'ColorThemeHUD_Health');
+    AddColorTheme(Class'ColorThemeMenu_Health');
+
 
 }
 
