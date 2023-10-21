@@ -23,6 +23,7 @@ class ColorThemeHUD_Rando extends ColorThemeHUD;
 */
 
 var DeusExPlayer player;
+var float UpdateTime;
 
 // ----------------------------------------------------------------------
 // ----------------------------------------------------------------------
@@ -60,7 +61,7 @@ function BeginPlay()
     Super.BeginPlay();
     foreach AllActors(class'DeusExPlayer',p){player = p; }
     RandomAllColors();
-    SetTimer(0.1,true);
+    SetTimer(UpdateTime,true);
 }
 
 defaultproperties
@@ -68,6 +69,7 @@ defaultproperties
     themeName="Rando"
     bSystemTheme=True
     bAlwaysTick=True
+    UpdateTime=0.5
     Colors(0)=(R=0,G=0,B=0,A=0),
     Colors(1)=(R=0,G=0,B=0,A=0),
     Colors(2)=(R=0,G=0,B=0,A=0),
