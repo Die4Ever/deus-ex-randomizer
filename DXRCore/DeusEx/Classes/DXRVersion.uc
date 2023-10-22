@@ -4,8 +4,8 @@ simulated static function CurrentVersion(optional out int major, optional out in
 {
     major=2;
     minor=5;
-    patch=4;
-    build=7;//build can't be higher than 99
+    patch=5;
+    build=0;//build can't be higher than 99
 }
 
 simulated static function string VersionString(optional bool full)
@@ -13,7 +13,7 @@ simulated static function string VersionString(optional bool full)
     local int major,minor,patch,build;
     local string status;
 
-    status = "";
+    status = "Alpha";
 
     if(status!="") {
         status = " " $ status;
