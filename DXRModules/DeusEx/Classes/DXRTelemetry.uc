@@ -196,7 +196,7 @@ function CheckNotification(Json j)
 
     title = j.get("notification");
     l("CheckNotification got title: "$title);
-    if(title == "" || title == last_notification) return;
+    if(title == "") return;
     last_notification = title;
     SaveConfig();
 
