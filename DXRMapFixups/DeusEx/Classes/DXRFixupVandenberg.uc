@@ -70,6 +70,14 @@ function PreFirstEntryMapFixes()
         key.Description="Tim's Closet Key";
         key.SkinColor=SC_Level3;
         key.MultiSkins[0] = Texture'NanoKeyTex3';
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door){
+            if(door.name=='DeusExMover15'){
+                door.Tag='CmdBackDoor';
+            }
+        }
+        AddSwitch( vect(-278.854828,657.390503,-1977.144531), rot(0, 16384, 0), 'CmdBackDoor');
+
 #endif
         break;
 
