@@ -105,12 +105,19 @@ function AddPhoneTriggers(bool isRevision)
         break;
     }
     i=0;
+
     foreach AllActors(class'#var(prefix)Phone',p){
-        bt = class'BingoTrigger'.static.Create(self,'PhoneCall',vectm(0,0,0));
-        bt.bDestroyOthers=False;
-        bt.tag=StringToName("PhoneCall"$i);
-        p.event=StringToName("PhoneCall"$i);
-        i++;
+        switch(p.BindName){
+            case "AI_phonecall_paris01":
+                break; //Covered by the Icarus call flag - IcarusCalls_Played
+            default:
+                bt = class'BingoTrigger'.static.Create(self,'PhoneCall',vectm(0,0,0));
+                bt.bDestroyOthers=False;
+                bt.tag=StringToName("PhoneCall"$i);
+                p.event=StringToName("PhoneCall"$i);
+                i++;
+                break;
+        }
     }
 
 }
@@ -1691,6 +1698,9 @@ function string RemapBingoEvent(string eventname)
         case "SheaKnowsAboutDowd":
         case "GreenKnowsAboutDowd":
             return "SnitchDowd";
+        case "IcarusCalls_Played":
+            _MarkBingo("PhoneCall"); //It's a phone call!
+            return eventname;
         default:
             return eventname;
     }
