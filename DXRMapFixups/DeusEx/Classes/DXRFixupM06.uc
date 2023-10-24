@@ -567,6 +567,10 @@ function AnyEntryMapFixes()
         }
         break;
     case "06_HONGKONG_WANCHAI_UNDERWORLD":
+
+        //Let FemJC pay for a date if she wants
+        DeleteConversationFlag( GetConversation('MamasanConvos'), 'LDDPMaleCont4FJC', true);
+
         c = GetConversation('BouncerPissed');
         c.bInvokeRadius=True;
         c.radiusDistance=180;
