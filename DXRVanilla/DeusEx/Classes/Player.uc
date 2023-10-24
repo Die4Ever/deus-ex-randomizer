@@ -145,11 +145,29 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     local #var(DeusExPrefix)Ammo ownAmmo;
     local bool isThrown;
     local #var(DeusExPrefix)Pickup pickup,ownedPickup;
+    local #var(prefix)WeaponMod mod;
 
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
     if ( loadout != None && Inventory(FrobTarget) != None && loadout.ban(self, Inventory(FrobTarget)) ) {
         FrobTarget.Destroy();
         return true;
+    }
+
+    //Try to apply the mod being picked up to the currently held weapon
+    if (bool(ConsoleCommand("get #var(package).MenuChoice_AutoWeaponMods enabled"))){
+        mod = #var(prefix)WeaponMod(FrobTarget);
+        if (mod!=None){
+            weap = #var(DeusExPrefix)Weapon(inHand);
+            if (weap!=None){
+                if (mod.CanUpgradeWeapon(weap)){
+                    mod.ApplyMod(weap);
+                    ClientMessage(mod.ItemName$" applied to "$weap.ItemName);
+                    mod.DestroyMod();
+                    return true;
+
+                }
+            }
+        }
     }
 
     bCanPickup = Super.HandleItemPickup(FrobTarget, bSearchOnly);
