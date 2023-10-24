@@ -1708,7 +1708,7 @@ function string RemapBingoEvent(string eventname)
 
 }
 
-static simulated function string GetBingoGoalHelpText(string event,int mission)
+static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
 {
     local string msg;
     switch(event){
@@ -1818,7 +1818,15 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "FoundScientistBody":
             return "Enter the collapsed tunnel under the canals and find the scientist body.  The tunnel can be accessed through the vents in the freezer of the Old China Hand.";
         case "ClubEntryPaid":
-            return "Give Mercedes and Tessa (the two women waiting outside the Lucky Money) money to get into the club.";
+           if (FemJC) {
+#ifdef revision
+               return "Let Noah, the man waiting outside the Lucky Money, pay to get you into the club";
+#else
+               return "Let Russ, the man waiting outside the Lucky Money, pay to get you into the club";
+#endif
+           } else {
+               return "Give Mercedes and Tessa (the two women waiting outside the Lucky Money) money to get into the club.";
+           }
         case "M08WarnedSmuggler":
             return "After talking to Stanton Dowd, talk to Smuggler and warn him of the impending UNATCO raid.";
         case "ShipPowerCut":
@@ -2593,8 +2601,10 @@ function ExtendedTests()
     //Make sure all bingo goals have help text
     for (i=0;i<ArrayCount(bingo_options);i++){
         if (bingo_options[i].event!=""){
-            helpText = GetBingoGoalHelpText(bingo_options[i].event,0);
-            test( InStr(helpText, "Unable to find help text for event") == -1, "Bingo Goal "$bingo_options[i].event$" does not have help text!");
+            helpText = GetBingoGoalHelpText(bingo_options[i].event,0,False);
+            test( InStr(helpText, "Unable to find help text for event") == -1, "Bingo Goal "$bingo_options[i].event$" does not have male JC help text!");
+            helpText = GetBingoGoalHelpText(bingo_options[i].event,0,True);
+            test( InStr(helpText, "Unable to find help text for event") == -1, "Bingo Goal "$bingo_options[i].event$" does not have female JC help text!");
         }
     }
 }
