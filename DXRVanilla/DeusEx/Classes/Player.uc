@@ -154,7 +154,8 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     }
 
     //Try to apply the mod being picked up to the currently held weapon
-    if (bool(ConsoleCommand("get #var(package).MenuChoice_AutoWeaponMods enabled"))){
+    //Does not happen in Zero Rando
+    if (!dxr.flags.IsZeroRando() && bool(ConsoleCommand("get #var(package).MenuChoice_AutoWeaponMods enabled"))){
         mod = #var(prefix)WeaponMod(FrobTarget);
         if (mod!=None){
             weap = #var(DeusExPrefix)Weapon(inHand);
