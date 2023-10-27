@@ -10,6 +10,7 @@ function PostFirstEntryMapFixes()
 
     switch(dxr.localURL) {
     case "01_NYC_UNATCOISLAND":
+        AddBox(class'#var(prefix)CrateUnbreakableSmall', vectm(6720.866211, -3346.700684, -445.899597));// electrical hut
         foreach AllActors(class'DeusExMover', m, 'UN_maindoor') {
             m.bBreakable = false;
             m.bPickable = false;
@@ -83,10 +84,11 @@ function PreFirstEntryMapFixes()
         FixUNATCOCarterCloset();
 
 #ifdef injections
-        foreach AllActors(class'#var(prefix)Newspaper',np){
+        foreach AllActors(class'#var(prefix)Newspaper',np)
 #else
-        foreach AllActors(class'DXRInformationDevices',np){
+        foreach AllActors(class'DXRInformationDevices',np)
 #endif
+        {
             //Make both Joe Greene articles in HQ the same one
             if (np.textTag=='01_Newspaper06'){
                 np.textTag='01_Newspaper08';
