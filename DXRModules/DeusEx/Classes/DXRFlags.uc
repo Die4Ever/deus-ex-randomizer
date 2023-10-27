@@ -602,7 +602,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         // at least level 1 speed aug
         settings.speedlevel = Max(settings.speedlevel, 1);
     }
-    else if(gamemode == WaltonWare) {
+    else if(IsWaltonWare()) {
         settings.bingo_win = 1;
         settings.bingo_freespaces = 5;
         settings.skills_reroll_missions = 0;// no rerolls since after the menu screen you would immediately get a reroll depending what mission you start in
@@ -679,6 +679,11 @@ function bool IsReducedRando()
 function bool IsSpeedrunMode()
 {
     return gamemode == SpeedrunMode;
+}
+
+function bool IsWaltonWare()
+{
+    return gamemode == WaltonWare;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)

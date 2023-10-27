@@ -712,17 +712,20 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
     }
 }
 
-static function FixConversationDeleteEvent(ConEvent del, ConEvent prev)
+static function ConEvent FixConversationDeleteEvent(ConEvent del, ConEvent prev)
 {
+    local ConEvent next;
     if(del == del.Conversation.eventList) {
         del.Conversation.eventList = del.nextEvent;
     }
     if(prev != None) {
         prev.nextEvent = del.nextEvent;
     }
+    next = del.nextEvent;
     del.Conversation = None;
     del.nextEvent = None;
     CriticalDelete(del);
+    return next;
 }
 
 defaultproperties
