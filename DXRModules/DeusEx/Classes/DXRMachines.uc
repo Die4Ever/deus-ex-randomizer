@@ -1,32 +1,29 @@
 class DXRMachines extends DXRActorsBase transient;
 
-var config int max_turrets;
-var config int turret_move_min_distance;
-var config int turret_move_max_distance;
-var config int max_datacube_distance;
-var config int min_datacube_distance;
-var config int camera_swing_angle;
-var config int camera_fov;
-var config int camera_range;
-var config int camera_swing_period;
-var config int camera_ceiling_pitch;
+var int max_turrets;
+var int turret_move_min_distance;
+var int turret_move_max_distance;
+var int max_datacube_distance;
+var int min_datacube_distance;
+var int camera_swing_angle;
+var int camera_fov;
+var int camera_range;
+var int camera_swing_period;
+var int camera_ceiling_pitch;
 
 function CheckConfig()
 {
-    local int i;
-    local class<Actor> a;
-    if( ConfigOlderThan(2,0,1,4) ) {
-        max_turrets = 4;
-        turret_move_min_distance = 10*16;
-        turret_move_max_distance = 500*16;
-        max_datacube_distance = 200*16;
-        min_datacube_distance = 75*16;
-        camera_swing_angle = 8192;
-        camera_fov = 6000;//default is 4096
-        camera_range = 150*16;//default is 1024 aka 64 feet
-        camera_swing_period = 8;//seconds?
-        camera_ceiling_pitch = -4000;//the angle to look down when against a ceiling
-    }
+    max_turrets = 4;
+    turret_move_min_distance = 10*16;
+    turret_move_max_distance = 500*16;
+    max_datacube_distance = 200*16;
+    min_datacube_distance = 75*16;
+    camera_swing_angle = 8192;
+    camera_fov = 5000;//default is 4096
+    camera_range = 120*16;//default is 1024 aka 64 feet
+    camera_swing_period = 8;//seconds?
+    camera_ceiling_pitch = -4000;//the angle to look down when against a ceiling
+
     Super.CheckConfig();
 }
 
@@ -289,7 +286,7 @@ function #var(prefix)SecurityCamera SpawnCamera(vector loc)
     c.swingPeriod = camera_swing_period;
     c.cameraFOV = camera_fov;
     c.cameraRange = camera_range;
-    c.triggerDelay /= 2;
+    c.triggerDelay *= 0.7;
     class'DXRPasswords'.static.RandoHackable(dxr, c);
     info("SpawnCamera "$c$" done at ("$loc$"), ("$rotation$")");
     return c;
