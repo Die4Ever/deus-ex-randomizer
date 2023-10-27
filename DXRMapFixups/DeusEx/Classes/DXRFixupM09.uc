@@ -272,7 +272,7 @@ function PostFirstEntryMapFixes()
     case "09_NYC_DOCKYARD":
         // this crate can block the way out of the start through the vent
         foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 160, vectm(2510.350342, 1377.569336, 103.858093)) {
-            info("removing " $ c $ " dist: " $ VSize(c.Location - vectm(2510.350342, 1377.569336, 103.858093)) );
+            l("removing " $ c $ " dist: " $ VSize(c.Location - vectm(2510.350342, 1377.569336, 103.858093)) );
             c.Destroy();
         }
         break;

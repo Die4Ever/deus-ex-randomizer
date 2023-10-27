@@ -48,7 +48,7 @@ simulated function RandoWeapon(DeusExWeapon w)
     new_damage = rngrange(new_damage, min_weapon_dmg, max_weapon_dmg);
     w.HitDamage = int(new_damage + 0.5);
     if(w.HitDamage < 2 && w.HitDamage < w.default.HitDamage) {
-        info(w $ " w.HitDamage ("$ w.HitDamage $") < 2");
+        l(w $ " w.HitDamage ("$ w.HitDamage $") < 2");
         w.HitDamage = 2;
     }
     if( #var(prefix)WeaponHideAGun(w) == None ) {
