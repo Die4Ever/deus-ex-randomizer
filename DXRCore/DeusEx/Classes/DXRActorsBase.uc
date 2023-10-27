@@ -327,7 +327,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     local Inventory nextItem;
     local #var(PlayerPawn) player;
     local int i;
-    info("MoveNextItemTo("$item@Location@Tag$")");
+    l("MoveNextItemTo("$item@Location@Tag$")");
     // Find the next item we can process.
     while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None))
         item = item.Inventory;
@@ -336,7 +336,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
 
     nextItem = item.Inventory;
     player = #var(PlayerPawn)(item.owner);
-    info("MoveNextItemTo found: " $ item $ "(" $ item.Location $ ") with owner: " $ item.owner $ ", nextItem: " $ nextItem);
+    l("MoveNextItemTo found: " $ item $ "(" $ item.Location $ ") with owner: " $ item.owner $ ", nextItem: " $ nextItem);
 
     //== Y|y: Turn off any charged pickups we were using and remove the associated HUD.  Per Lork on the OTP forums
     if(player != None) {
@@ -354,7 +354,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     item.DropFrom(Location);
     item.Tag = Tag;// so we can find the item again later
     item.bIsSecretGoal = true;// so they don't get deleted by DXRReduceItems
-    info("MoveNextItemTo "$item$" drop from: ("$Location$"), now at ("$item.Location$"), attempts: "$i);
+    l("MoveNextItemTo "$item$" drop from: ("$Location$"), now at ("$item.Location$"), attempts: "$i);
 
     // restore any ammo amounts for a weapon to default; Y|y: except for grenades
     if (item.IsA('Weapon') && (Weapon(item).AmmoType != None) && !item.IsA('WeaponLAM') && !item.IsA('WeaponGasGrenade') && !item.IsA('WeaponEMPGrenade') && !item.IsA('WeaponNanoVirusGrenade'))
