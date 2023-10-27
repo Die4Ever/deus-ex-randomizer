@@ -153,8 +153,8 @@ function #var(prefix)AutoTurret SpawnTurret(vector loc)
     t.bActive = false;
     t.bTrackPawnsOnly = false;
     t.bTrackPlayersOnly = true;
-    t.maxRange *= 3;
-    t.fireRate *= 0.8;// lower numbers are stronger
+    t.maxRange = t.maxRange * 2;
+    t.fireRate *= 0.85;// lower numbers are stronger
     t.gunAccuracy *= 0.8;// lower numbers are stronger
     class'DXRPasswords'.static.RandoHackable(dxr, t.gun);
     info("SpawnTurret "$t$" done at ("$loc$"), ("$rotation$")");
