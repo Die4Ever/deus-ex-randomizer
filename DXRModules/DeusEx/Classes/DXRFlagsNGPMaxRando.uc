@@ -248,6 +248,7 @@ function NewGamePlus()
 
     ClearInHand(p);
     RemoveRandomWeapon(p);
+    MaxMultipleItems(p, 3);
 
     //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
     //Technically it should make up for levels you skipped past, so maybe?
@@ -263,6 +264,24 @@ function NewGamePlus()
     p.bStartNewGameAfterIntro = true;
     class'PlayerDataItem'.static.ResetData(p);
     Level.Game.SendPlayer(p, "00_intro");
+}
+
+simulated function MaxMultipleItems(#var(PlayerPawn) p, int maxcopies)
+{
+    local Inventory i, i2, next;
+    local int num;
+
+    for(i=p.Inventory; i!=None; i=i.Inventory) {
+        num=1;
+        for(i2=i.Inventory; i2!=None; i2=next) {
+            next = i2.Inventory;
+            if(i2.class.name != i.class.name) continue;
+            num++;
+            if(num > maxcopies) {
+                i2.Destroy();
+            }
+        }
+    }
 }
 
 simulated function ClearInHand(#var(PlayerPawn) p)
