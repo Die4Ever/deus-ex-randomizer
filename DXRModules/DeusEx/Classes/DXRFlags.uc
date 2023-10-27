@@ -577,7 +577,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.ammo = (settings.ammo + 100) / 2;
         settings.equipment *= 2;
         settings.medkits = (settings.medkits + 100) / 2;
-        settings.medbots = (settings.medbots + 100) / 2;
+        settings.medbots *= 2;
         settings.health = 200;
     }
     else if(IsSpeedrunMode()) {
@@ -648,7 +648,7 @@ static function string GameModeName(int gamemode)
     case SpeedrunMode:
         return "Speedrun Mode";
     case WaltonWare:
-        return "Walton Ware";
+        return "WaltonWare";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
