@@ -123,6 +123,9 @@ function PreFirstEntryMapFixes()
             if(door.KeyIDNeeded=='shed'){
                 door.Tag='ShedDoor';
             }
+            if (door.Tag=='Elevator1'){
+                door.MoverEncroachType=ME_CrushWhenEncroach;
+            }
         }
         AddSwitch( vect(654.545,3889.5397,-367.262), rot(0, 16384, 0), 'ShedDoor');
 
