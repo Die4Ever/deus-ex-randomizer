@@ -21,6 +21,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)NanoKey key;
     local #var(prefix)DamageTrigger dt;
+    local #var(prefix)BeamTrigger bt;
+    local OnceOnlyTrigger oot;
     local Actor a;
 
     switch(dxr.localURL)
@@ -168,6 +170,14 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(DeusExPrefix)Mover', door, 'Releasebots') {
             door.MoverEncroachType=ME_IgnoreWhenEncroach;
         }
+
+        foreach AllActors(class'#var(prefix)BeamTrigger',bt,'Lasertrip'){
+            bt.Event='ReleasebotsOnce';
+        }
+
+        oot=Spawn(class'OnceOnlyTrigger');
+        oot.Event='Releasebots';
+        oot.Tag='ReleasebotsOnce';
 
         Spawn(class'PlaceholderItem',,, vectm(1020.93,8203.4,-2864)); //Over security computer
         Spawn(class'PlaceholderItem',,, vectm(348.9,8484.63,-2913)); //Turret room
