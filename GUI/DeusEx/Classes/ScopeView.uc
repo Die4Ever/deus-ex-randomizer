@@ -1,4 +1,8 @@
-class ScopeView injects DeusExScopeView;
+#ifdef revision
+class DXRScopeView extends RevScopeView;
+#else
+class DXRScopeView injects DeusExScopeView;
+#endif
 
 var int watchTime;
 var Actor lastWatched;
@@ -50,7 +54,6 @@ function ActivateView(int newFOV, bool bNewBinocs, bool bInstant)
 {
     Super.ActivateView(newFOV,bNewBinocs,bInstant);
     if (bViewVisible){
-        Player.ClientMessage("Scope view activated");
         lastWatched = None;
         //SetTimer(0.25,True);
         watchTimerId=AddTimer(0.25,true,0,'PeepTimer');
@@ -61,7 +64,6 @@ function DeactivateView()
 {
     Super.DeactivateView();
     if (!bViewVisible){
-        Player.ClientMessage("Scope view deactivated");
         //SetTimer(0,False);
         RemoveTimer(watchTimerId);
         watchTimerId=0;

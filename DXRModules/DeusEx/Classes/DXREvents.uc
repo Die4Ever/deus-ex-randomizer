@@ -2246,19 +2246,19 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "M07MeetJaime_Played":
             return "Meet Jaime in Tracer Tong's hideout in Hong Kong.  Note that he will only meet you in Hong Kong if you ask him to meet you there while you escape from the MJ12 base under UNATCO.";
         case "Terrorist_peeptime":
-            return "Watch NSF Troops through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch NSF Troops through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "UNATCOTroop_peeptime":
-            return "Watch UNATCO Troopers through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch UNATCO Troopers through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "MJ12Troop_peeptime":
-            return "Watch MJ12 Troopers through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch MJ12 Troopers through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "MJ12Commando_peeptime":
-            return "Watch MJ12 Commandos through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch MJ12 Commandos through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "PawnState_Dancing":
-            return "Watch someone dance through a pair of binoculars.  There should be someone vibing in a bar or club.";
+            return "Watch someone dance through a pair of binoculars or a scope.  There should be someone vibing in a bar or club.";
         case "BirdWatching":
-            return "Watch birds through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch birds through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "NYEagleStatue_peeped":
-            return "Look at the bronze eagle statue in Battery Park through a pair of binoculars.";
+            return "Look at the bronze eagle statue in Battery Park through a pair of binoculars or a scope.";
         case "BrokenPianoPlayed":
             return "Damage a piano enough that it will no longer work, then try to play it.";
         case "Supervisor_Paid":
@@ -2456,13 +2456,13 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Chef_ClassDead":
             return "Do what needs to be done and kill a chef.";
         case "un_PrezMeadPic_peepedtex":
-            return "Look closely at a picture of President Mead using a pair of binoculars.  This can be found in UNATCO HQ (both above and below ground).";
+            return "Look closely at a picture of President Mead using a pair of binoculars or a scope.  This can be found in UNATCO HQ (both above and below ground).";
         case "un_bboard_peepedtex":
-            return "Look at the bulletin board in the UNATCO HQ break room through a pair of binoculars.";
+            return "Look at the bulletin board in the UNATCO HQ break room through a pair of binoculars or a scope.";
         case "DrtyPriceSign_A_peepedtex":
-            return "Check the gas prices through a pair of binoculars at the abandoned Vandenberg Gas Station.";
+            return "Check the gas prices through a pair of binoculars or a scope at the abandoned Vandenberg Gas Station.";
         case "GS_MedKit_01_peepedtex":
-            return "Use a pair of binoculars to find a representation of the Red Cross (A red cross on a white background) in the Vandenberg Gas Station.  Improper use of the emblem is a violation of the Geneva Conventions.";
+            return "Use a pair of binoculars or a scope to find a representation of the Red Cross (A red cross on a white background) in the Vandenberg Gas Station.  Improper use of the emblem is a violation of the Geneva Conventions.";
         case "WatchKeys_cabinet":
             return "Find the key that opens the filing cabinets in the back of the greasel lab in the MJ12 base underneath UNATCO.  This is typically held by whoever is sitting at the desk in the back part of that lab.";
         case "MiguelLeaving":
@@ -2488,7 +2488,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "SuperfreighterProp":
             return "Dive to the propeller at the back of the superfreighter.";
         case "ShipNamePlate":
-            return "Use binoculars to check the name marked on the side of the superfreighter";
+            return "Use binoculars or a scope to check the name marked on the side of the superfreighter";
         case "DL_SecondDoors_Played":
             return "You need to open them.|n|nTry to leave the Ocean Lab while the sub-bay doors are closed.";
         case "WhyContainIt":

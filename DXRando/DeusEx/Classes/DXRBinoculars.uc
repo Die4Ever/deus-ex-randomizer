@@ -10,8 +10,12 @@ state Activated
     {
         Super.BeginState();
 
-        lastWatched = None;
-        SetTimer(0.25,True);
+        //Only use this logic when we don't replace
+        //the ScopeView with DXRandoRootWindow
+        if(#defined(hx)){
+            lastWatched = None;
+            SetTimer(0.25,True);
+        }
     }
 }
 
@@ -21,8 +25,10 @@ state DeActivated
     {
         Super.BeginState();
 
-        SetTimer(0,False);
-        lastWatched = None;
+        if (#defined(hx)){
+            SetTimer(0,False);
+            lastWatched = None;
+        }
     }
 }
 
