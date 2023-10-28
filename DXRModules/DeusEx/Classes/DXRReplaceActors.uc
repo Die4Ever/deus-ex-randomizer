@@ -78,9 +78,11 @@ function ReplaceActors()
             ReplaceATM(#var(prefix)ATM(a));
         }
 #endif
+#ifdef hx
         else if( #var(prefix)Binoculars(a) != None ) {
             ReplaceBinoculars(#var(prefix)Binoculars(a));
         }
+#endif
         else if( #var(prefix)Faucet(a) != None ) {
             ReplaceFaucet(#var(prefix)Faucet(a));
         }
@@ -114,8 +116,10 @@ function class<inventory> ReplaceClassName(class<inventory> inv)
 #endif
 {
     switch(inv){
+#ifdef hx
         case class'#var(prefix)Binoculars':
             return class'DXRBinoculars';
+#endif
         default:
             return inv;
     }
