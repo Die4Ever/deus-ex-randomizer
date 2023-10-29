@@ -102,6 +102,10 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)JaimeReyes', j) {
             RemoveFears(j);
         }
+
+        // make the apartment stairs less hidden, not safe to have stairs without a light!
+        CandleabraLight(vect(1825.758057, 1481.900024, 576.077698), rot(0, 16384, 0));
+        CandleabraLight(vect(1162.240112, 1481.900024, 879.068848), rot(0, 16384, 0));
         break;
 #endif
 

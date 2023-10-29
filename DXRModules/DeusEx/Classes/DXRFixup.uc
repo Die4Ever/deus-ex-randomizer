@@ -625,6 +625,27 @@ function AddDelay(Actor trigger, float time)
     trigger.Event = tagname;
 }
 
+function Actor CandleabraLight(vector pos, rotator r)
+{
+    local Actor c, light;
+    local vector diff;
+
+    c = AddActor(class'WHRedCandleabra', pos, r);
+    c.SetPhysics(PHYS_None);
+
+    diff = vect(-3.1, 6.7, 13.9) >> r;
+    light = AddActor(class'LightBulb', pos+diff, rot(0, 0, 0));
+    light.LightBrightness = 50;
+    light.LightRadius = 16;
+
+    diff = vect(-3.1, -7, 13.9) >> r;
+    light = AddActor(class'LightBulb', pos+diff, rot(0, 0, 0));
+    light.LightBrightness = 50;
+    light.LightRadius = 16;
+
+    return c;
+}
+
 static function DeleteConversationFlag(Conversation c, name Name, bool Value)
 {
     local ConFlagRef f, prev;
