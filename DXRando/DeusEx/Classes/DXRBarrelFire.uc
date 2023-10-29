@@ -31,11 +31,27 @@ function DamageOtherReal(Actor Other,bool supporting)
 singular function SupportActor(Actor Other)
 {
 	DamageOtherReal(Other,True);
-	Super.SupportActor(Other);
+	Super(Containers).SupportActor(Other);
 }
 
 singular function Bump(Actor Other)
 {
 	DamageOtherReal(Other,False);
-	Super.Bump(Other);
+	Super(Containers).Bump(Other);
+}
+
+function Tick(float delta)
+{
+    if( (Pawn(Base) != None) && (Pawn(Base).CarriedDecoration == self) ) {
+        DamageOtherReal(Base, False);
+    }
+
+    Super.Tick(delta);
+}
+
+// same as Barrel1
+defaultproperties
+{
+    Mass=80
+    Buoyancy=90
 }
