@@ -36,6 +36,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)NanoKey key;
     local #var(prefix)BeamTrigger beam;
+    local OnceOnlyTrigger oot;
 
     switch(dxr.localURL)
     {
@@ -159,8 +160,13 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)BeamTrigger',beam){
             if (beam.Event=='BotDrop'){
                 beam.Tag='TunnelTrigger';
+                beam.Event='BotDropOnce';
             }
         }
+
+        oot=Spawn(class'OnceOnlyTrigger');
+        oot.Event='BotDrop';
+        oot.Tag='BotDropOnce';
 #endif
 
         //They put the key ID in the tag for some reason
