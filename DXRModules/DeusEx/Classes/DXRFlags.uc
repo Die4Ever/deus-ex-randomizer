@@ -620,6 +620,9 @@ function FlagsSettings SetDifficulty(int new_difficulty)
 
 function string DifficultyName(int diff)
 {
+    if (diff>=ArrayCount(difficulty_names)){
+        return "INVALID DIFFICULTY "$diff;
+    }
     return difficulty_names[diff];
 }
 

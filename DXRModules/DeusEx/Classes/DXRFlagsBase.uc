@@ -736,9 +736,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
             break;
 
         case 'Rando_difficulty':
-            if (val<4){
-                return DifficultyName(val);
-            }
+            return DifficultyName(val);
             break;
 
         case 'Rando_gamemode':
