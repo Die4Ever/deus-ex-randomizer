@@ -132,6 +132,11 @@ function PreFirstEntryMapFixes()
                 case "PoliceVault":
                     a.SetCollision(False,False,False);
                     break;
+                case "MarketMonk01":
+                    //He was meant to be out of world until the ceremony, apparently
+                    //If he isn't, he can get in the way of Gordon teleporting into positon
+                    #var(prefix)ScriptedPawn(a).LeaveWorld();
+                    break;
                 default:
                     break;
             }
@@ -432,6 +437,7 @@ function AnyEntryMapFixes()
     local ConEventSpeech ces;
     local ConEventSetFlag cesf;
     local ConEventTrigger cet;
+    local #var(prefix)Pigeon pigeon;
 
     // if flag Have_ROM, set flags Have_Evidence and KnowsAboutNanoSword?
     // or if flag Have_ROM, Gordon Quick should let you into the compound? requires Have_Evidence and MaxChenConvinced
@@ -516,6 +522,15 @@ function AnyEntryMapFixes()
                 case "GordonQuick":
 
                     ScriptedPawn(a).ChangeAlly('Player',1,False);
+                    break;
+                case "MonkReadyForCeremony":
+                case "QuickInTemple":
+                case "ChenInTemple":
+                    //Pigeons can also interfere with a teleport, so make sure the move points
+                    //are clear of pigeons as well.  These will be replaced by the PigeonGenerator
+                    foreach RadiusActors(class'#var(prefix)Pigeon',pigeon,60,a.Location){
+                        pigeon.Destroy();
+                    }
                     break;
             }
         }
