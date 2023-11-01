@@ -15,10 +15,12 @@ function PreFirstEntryMapFixes()
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
+    local #var(prefix)Datacube dc;
     npClass = class'#var(prefix)Newspaper';
 #else
     local DXRInformationDevices np;
     local class<DXRInformationDevices> npClass;
+    local DXRInformationDevices dc;
     npClass = class'DXRInformationDevices';
 #endif
 
@@ -105,6 +107,28 @@ function PreFirstEntryMapFixes()
         break;
     case "02_NYC_BAR":
         Spawn(class'BarDancer',,,vectm(-1475,-580,48),rotm(0,25000,0));
+        break;
+
+    case "02_NYC_UNDERGROUND":
+#ifdef injections
+        foreach AllActors(class'#var(prefix)Datacube',dc){
+#else
+        foreach AllActors(class'DXRInformationDevices',dc){
+#endif
+            if (dc.texttag=='02_Datacube03'){ //Move datacube from underwater...
+                dc.SetLocation(vectm(2026.021118,-572.896851,-506.561584)); //On top of keypad lockbox
+                break;
+            }
+        }
+
+        Spawn(class'PlaceholderItem',,, vectm(2644,-630,-405)); //Weird little ledge near pipe and bodies
+        Spawn(class'PlaceholderItem',,, vectm(2678.5,-340.3,-413)); //On pipe near bodies
+        Spawn(class'PlaceholderItem',,, vectm(-1534,119,-821)); //Path to Schick, 1
+        Spawn(class'PlaceholderItem',,, vectm(-2192,122,-821)); //Path to Schick, 2
+        Spawn(class'PlaceholderItem',,, vectm(-3399,1471,-948)); //Schick Lab shelf
+        Spawn(class'PlaceholderItem',,, vectm(-3593,1620,-961)); //Schick Fume Hood
+        Spawn(class'PlaceholderItem',,, vectm(-4264,982,-981)); //Barracks bed
+        Spawn(class'PlaceholderItem',,, vectm(-173,850,-322)); //Guard Room Table
         break;
     }
 }
