@@ -2326,13 +2326,13 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "DestroyCapitalism":
             msg = "Kill enough people willing to sell you goods in exchange for money.|nThe Merchant may be elusive, but he must be eliminated when spotted.|n|n";
             if (mission<=1){
-                msg=msg$"Tech Sergeant Kaplan and the woman in the hut on the North Dock both absolutely deserve it.";
+                msg=msg$"Tech Sergeant Kaplan and the woman in the hut on the North Dock both absolutely deserve it.  Shannon is also acting suspicious.";
             } else if (mission<=2){
                 msg=msg$"Jordan Shea and Sally in the bar, the doctors in the Free Clinic, and the pimp in the alleys deserve it.";
             } else if (mission<=3){
-                msg=msg$"There is a veteran in Battery Park, El Rey and Rock in Brooklyn Bridge Station, and Harold in the hangar.  They all deserve it.";
+                msg=msg$"There is a veteran in Battery Park, El Rey and Rock in Brooklyn Bridge Station, and Harold in the hangar.  They all deserve it.  Shannon seems like she might be up to something too.";
             } else if (mission<=4){
-                msg=msg$"Jordan Shea deserves it.";
+                msg=msg$"Jordan Shea and Shannon deserve it.";
             } else if (mission<=5){
                 msg=msg$"Sven the mechanic and Shannon both deserve it.";
             } else if (mission<=6){
