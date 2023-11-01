@@ -187,6 +187,7 @@ function PreFirstEntry()
     OverwriteDecorations();
     FixFlagTriggers();
     SpawnDatacubes();
+    AntiEpilepsy();
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
     if(#defined(mapfixes))
@@ -608,6 +609,23 @@ function SpawnDatacubes()
     }
 }
 
+function AntiEpilepsy()
+{
+    local Light l;
+
+    if (!bool(ConsoleCommand("get #var(package).MenuChoice_Epilepsy enabled"))){
+        return;
+    }
+
+
+    foreach AllActors(class'Light',l){
+        if (l.LightType==LT_Strobe){
+            l.LightType=LT_Pulse;
+        } else if (l.LightType==LT_Flicker){
+            l.LightType=LT_Pulse;
+        }
+    }
+}
 
 function AddDelayEvent(Name tag, Name event, float time)
 {
