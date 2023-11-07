@@ -357,7 +357,6 @@ function SetWatchFlags() {
         break;
     case "03_NYC_747":
         RewatchFlag('747Ambrosia');
-        WatchFlag('JuanLebedev_Unconscious');
         WatchFlag('PlayerKilledLebedev');
         WatchFlag('AnnaKilledLebedev');
 

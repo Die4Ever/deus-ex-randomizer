@@ -623,9 +623,24 @@ function bool isInitialPlayerEnemy(ScriptedPawn p)
 function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coerce string damageType, optional vector HitLocation)
 {
     local string classname;
+    local bool dead;
 
-    _MarkBingo(victim.BindName$"_Dead");
-    _MarkBingo(victim.BindName$"_DeadM" $ dxr.dxInfo.missionNumber);
+    if (IsHuman(victim.class) && ((damageType == "Stunned") ||
+                        (damageType == "KnockedOut") ||
+                        (damageType == "Poison") ||
+                        (damageType == "PoisonEffect"))){
+        dead = false;
+    } else {
+        dead = true;
+    }
+
+    if (dead){
+        _MarkBingo(victim.BindName$"_Dead");
+        _MarkBingo(victim.BindName$"_DeadM" $ dxr.dxInfo.missionNumber);
+    } else {
+        _MarkBingo(victim.BindName$"_Unconscious");
+        _MarkBingo(victim.BindName$"_UnconsciousM" $ dxr.dxInfo.missionNumber);
+    }
 
     //Burned doesn't track who set them on fire...
     //The intent here is to only mark bingo for kills done by the player
@@ -635,10 +650,7 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
             classname = Mid(classname, 2);
         }
 
-        if (IsHuman(victim.class) && ((damageType == "Stunned") ||
-                                (damageType == "KnockedOut") ||
-                                (damageType == "Poison") ||
-                                (damageType == "PoisonEffect"))){
+        if (!dead){
             _MarkBingo(classname$"_ClassUnconscious");
             _MarkBingo(classname$"_ClassUnconsciousM" $ dxr.dxInfo.missionNumber);
         } else {
