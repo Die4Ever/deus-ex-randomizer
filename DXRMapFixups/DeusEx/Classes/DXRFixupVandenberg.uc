@@ -24,6 +24,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BeamTrigger bt;
     local OnceOnlyTrigger oot;
     local Actor a;
+    local #var(prefix)PigeonGenerator pg;
+    local #var(prefix)FishGenerator fg;
 
     switch(dxr.localURL)
     {
@@ -59,6 +61,10 @@ function PreFirstEntryMapFixes()
                 dt.Tag='lab_water';
             }
         }
+
+        pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(2065,2785,-871));//CMD Rooftop
+        pg.MaxCount=3;
+
 #ifdef vanillamaps
         //Add a key to Tim's closet
         foreach AllActors(class'#var(DeusExPrefix)Mover',door){
@@ -128,6 +134,9 @@ function PreFirstEntryMapFixes()
             }
         }
         AddSwitch( vect(654.545,3889.5397,-367.262), rot(0, 16384, 0), 'ShedDoor');
+
+        fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(5657,-1847,-1377));//Near tunnel to sub bay
+        fg.ActiveArea=20000; //Long line of sight on this one...  Want it to trigger early
 
         break;
 

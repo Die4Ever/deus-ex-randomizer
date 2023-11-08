@@ -33,6 +33,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)JaimeReyes j;
     local #var(prefix)MJ12Troop mj12;
     local #var(prefix)RatGenerator rg;
+    local #var(prefix)PigeonGenerator pg;
     local #var(prefix)NanoKey k;
     local DXREnemies dxre;
     local int i;
@@ -160,6 +161,9 @@ function PreFirstEntryMapFixes()
 
         rg=Spawn(class'#var(prefix)RatGenerator',,, vectm(-6348,1261,-134));//Near SATCOM
         rg.MaxCount=1;
+
+        pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(-4685,2875,-124));//Outside the front door
+        pg.MaxCount=3;
 
         break;
     }

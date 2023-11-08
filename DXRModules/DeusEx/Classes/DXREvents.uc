@@ -2820,8 +2820,8 @@ defaultproperties
 #endif
     bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",max=3,missions=54346)
     bingo_options(188)=(event="Rebreather_Activated",desc="Use %s rebreathers",max=3,missions=55400)
-    bingo_options(189)=(event="PerformBurder",desc="Hunt %s birds",max=10,missions=19806)
-    bingo_options(190)=(event="GoneFishing",desc="Kill %s fish",max=10,missions=18506)
+    bingo_options(189)=(event="PerformBurder",desc="Hunt %s birds",max=10,missions=24446)
+    bingo_options(190)=(event="GoneFishing",desc="Kill %s fish",max=10,missions=18510)
     bingo_options(191)=(event="FordSchick_Dead",desc="Kill Ford Schick",max=1,missions=276)
     bingo_options(192)=(event="ChateauInComputerRoom",desc="Find Beth's secret routing station",max=1,missions=1024)
     bingo_options(193)=(event="DuClareBedrooms",desc="Visit both bedrooms in the DuClare Chateau",max=2,missions=1024)

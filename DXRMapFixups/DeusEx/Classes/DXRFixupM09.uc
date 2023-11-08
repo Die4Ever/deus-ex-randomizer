@@ -37,6 +37,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)NanoKey key;
     local #var(prefix)BeamTrigger beam;
     local OnceOnlyTrigger oot;
+    local #var(prefix)PigeonGenerator pg;
 
     switch(dxr.localURL)
     {
@@ -212,6 +213,9 @@ function PreFirstEntryMapFixes()
         foreach RadiusActors(class'#var(prefix)Containers', c, 400, vectm(2274.548340, 730.766357, 31)) {
             c.bIsSecretGoal = true;
         }
+
+        pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(3941,6625,1385));//Rooftop, near vent entrance
+        pg.MaxCount=3;
 
         class'PlaceholderEnemy'.static.Create(self,vectm(3292,4792,48));
         class'PlaceholderEnemy'.static.Create(self,vectm(4610,6714,1408));

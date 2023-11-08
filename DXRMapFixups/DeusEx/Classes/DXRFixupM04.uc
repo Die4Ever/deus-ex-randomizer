@@ -40,6 +40,7 @@ function PreFirstEntryMapFixes()
     local BlockPlayer bp;
     local #var(DeusExPrefix)Mover door;
     local #var(prefix)NanoKey key;
+    local #var(prefix)PigeonGenerator pg;
 
     switch (dxr.localURL)
     {
@@ -180,6 +181,10 @@ function PreFirstEntryMapFixes()
         break;
     case "04_NYC_BAR":
         Spawn(class'BarDancer',,,vectm(-1440,340,48),rotm(0,-16348,0));
+        break;
+    case "04_NYC_STREET":
+        pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(-1849,286,-487));//Near free clinic
+        pg.MaxCount=3;
         break;
     }
 }

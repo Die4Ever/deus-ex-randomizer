@@ -44,6 +44,7 @@ function PreFirstEntryMapFixes()
 {
     local DataLinkTrigger dlt;
     local #var(prefix)NanoKey k;
+    local #var(prefix)PigeonGenerator pg;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
@@ -68,6 +69,9 @@ function PreFirstEntryMapFixes()
                     dlt.CheckFlag='StantonDowd_Played';
                 }
             }
+
+            pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(-2102,1942,-503));//In park
+            pg.MaxCount=3;
             break;
         case "08_NYC_HOTEL":
             Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table

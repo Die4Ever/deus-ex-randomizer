@@ -12,6 +12,8 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BoxSmall bs;
     local #var(prefix)Keypad2 kp;
     local #var(prefix)TAD tad;
+    local #var(prefix)FishGenerator fg;
+    local #var(prefix)PigeonGenerator pg;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
@@ -51,6 +53,10 @@ function PreFirstEntryMapFixes()
         k.Description = "Control Room Door Key";
         if(dxr.flags.settings.keysrando > 0)
             GlowUp(k);
+
+        fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
+        fg.ActiveArea=2000;
+
         break;
     case "02_NYC_WAREHOUSE":
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(1700.929810,-519.988037,57.729870),rotm(0,0,0),'02_Newspaper06'); //Joe Greene article, table in room next to break room (near bathrooms)
@@ -104,6 +110,10 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'DeusExMover', d, 'AugStore') {
             d.bFrobbable = true;
         }
+
+        pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(2404,-1318,-487));//Near Smuggler
+        pg.MaxCount=3;
+
         break;
     case "02_NYC_BAR":
         Spawn(class'BarDancer',,,vectm(-1475,-580,48),rotm(0,25000,0));
