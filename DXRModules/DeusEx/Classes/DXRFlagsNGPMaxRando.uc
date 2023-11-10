@@ -214,7 +214,7 @@ function NewGamePlus()
     settings.bingo_win = bingo_win;
     settings.bingo_freespaces = bingo_freespaces;
     if (randomStart!=0){
-        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr,randomStart);
+        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, randomStart);
     }
 
     if (p.KeyRing != None)
@@ -349,7 +349,9 @@ function NewGamePlusVal(out int val, float curve, float exp, int min, int max)
 
 function ExtendedTests()
 {
-    local int val;
+    local int val, i, oldSeed;
+    local string s;
+
     Super.ExtendedTests();
 
     val = 5;
@@ -375,4 +377,13 @@ function ExtendedTests()
     val = -5;
     NewGamePlusVal(val, 1.2, 3, -6, 100);
     testint(val, -6, "NewGamePlusVal 1.2 negative value");
+
+    oldSeed = dxr.seed;
+    dxr.seed = 123456;
+    for(i=0; i<100; i++) {
+        dxr.seed = 123456 + i;
+        s = s @ class'DXRStartMap'.static.ChooseRandomStartMap(self, -1);
+    }
+    test(true, "DXRStartMap " $ s);
+    dxr.seed = oldSeed;
 }

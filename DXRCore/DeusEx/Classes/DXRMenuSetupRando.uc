@@ -40,8 +40,7 @@ function BindControls(optional string action)
     EnumOption("Ocean Lab", 140, f.settings.starting_map);
     EnumOption("Area 51", 150, f.settings.starting_map);
     if(EnumOption("Random", -1)) {
-        f.SetGlobalSeed("random starting map");
-        f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f.dxr,0);
+        f.settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(f, 0);
     }
 
     BreakLine();
