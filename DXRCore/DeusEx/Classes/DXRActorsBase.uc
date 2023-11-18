@@ -741,6 +741,13 @@ static function int GetRotationOffset(class<Actor> c)
         return 16384;
     if(ClassIsChildOf(c, class'#var(prefix)WeaponNanoSword'))
         return 10755;
+    if(ClassIsChildOf(c, class'#var(prefix)ComputerSecurity'))
+        return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)ComputerPublic'))
+        return 16384;
+    //ComputerPersonal is fine without this, so just leave it commented out
+    //if(ClassIsChildOf(c, class'#var(prefix)ComputerPersonal'))
+    //    return 32768;
     if(ClassIsChildOf(c, class'Brush')) {
         log("WARNING: GetRotationOffset for "$c$", Brushes/Movers have negative scaling so they don't need rotation adjustments!");
         return -1;
