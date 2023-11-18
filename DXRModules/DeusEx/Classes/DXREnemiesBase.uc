@@ -243,7 +243,7 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
     local vector loc, loc_offset;
     local Inventory inv;
     local NanoKey k1, k2;
-    local name newtag;
+    local name newtag, oldAlliance;
 
     if( p == None ) {
         l("p == None?");
@@ -308,9 +308,16 @@ function ScriptedPawn CloneScriptedPawn(ScriptedPawn p, optional class<ScriptedP
 
     if( IsHuman(p.class) && IsHuman(n.class) && p.BarkBindName != "" && n.BarkBindName == "" ) n.BarkBindName = p.BarkBindName;
     class'DXRNames'.static.GiveRandomName(dxr, n);
+    oldAlliance = n.Alliance;
     n.Alliance = p.Alliance;
+    if(oldAlliance != '') {
+        n.ChangeAlly(oldAlliance, 0, false);
+    }
     for(i=0; i<ArrayCount(n.InitialAlliances); i++ )
     {
+        if(n.InitialAlliances[i].AllianceName != '') {
+            n.ChangeAlly(n.InitialAlliances[i].AllianceName, 0, false);
+        }
         n.InitialAlliances[i] = p.InitialAlliances[i];
     }
 
