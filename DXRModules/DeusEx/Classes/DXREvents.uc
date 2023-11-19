@@ -1700,6 +1700,9 @@ function string RemapBingoEvent(string eventname)
         case "IcarusCalls_Played":
             _MarkBingo("PhoneCall"); //It's a phone call!
             return eventname;
+        case "Doberman_peeptime":
+        case "Mutt_peeptime":
+            return "WatchDogs";
         default:
             return eventname;
     }
@@ -2483,7 +2486,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "ScubaDiver_ClassDead":
             return "Kill enough SCUBA divers in and around the Ocean Lab.";
         case "ShipRamp":
-            return "Raise the ramp to get on board the superfreighter.";
+            return "Raise the ramp to get on board the superfreighter from the docks.  There is a keypad on a box next to the ramp that raises it.";
         case "SuperfreighterProp":
             return "Dive to the propeller at the back of the superfreighter.";
         case "ShipNamePlate":
@@ -2587,6 +2590,12 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Swim along the ocean floor to the locked and flooded storage room from in the Ocean Lab";
         case "OceanLabMedBay":
             return "Enter the med bay in the Ocean Lab.  This room is flooded and off the side of the Karkian Lab.";
+        case "WatchDogs":
+            return "Watch dogs through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+        case "Cat_peeptime":
+            return "Watch cats through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+        case "Binoculars_peeptime":
+            return "Watch binoculars through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2945,6 +2954,9 @@ defaultproperties
     bingo_options(307)=(event="UCVentilation",desc="Destroy %s ventilation fans in the Ocean Lab",max=6,missions=16384)
     bingo_options(308)=(event="OceanLabFloodedStoreRoom",desc="Swim to the locked store room in the Ocean Lab",max=1,missions=16384)
     bingo_options(309)=(event="OceanLabMedBay",desc="Enter the flooded med bay in the Ocean Lab",max=1,missions=16384)
+    bingo_options(310)=(event="WatchDogs",desc="Watch Dogs (%s seconds)",max=15,missions=21604)
+    bingo_options(311)=(event="Cat_peeptime",desc="Look at that kitty! (%s seconds)",max=15,missions=7256)
+    bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",max=15)
 
 
 
