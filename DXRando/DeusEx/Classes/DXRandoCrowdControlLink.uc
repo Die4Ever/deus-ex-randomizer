@@ -129,8 +129,8 @@ function int RandomOfflineEffects() {
     local string param[5];
     local string viewer;
 
-    // only 2% chance for an effect, each second
-    if(FRand() > 0.02) return 0;
+    // only 1.5% chance for an effect, each second
+    if(FRand() > 0.015) return 0;
 
     viewer = "Simulated Crowd Control";
     param[0] = "1";
