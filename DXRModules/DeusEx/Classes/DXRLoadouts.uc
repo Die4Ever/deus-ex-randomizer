@@ -46,7 +46,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(2,5,4,5) ) {
+    if( ConfigOlderThan(2,5,5,2) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(loadouts_order); i++) {
@@ -101,7 +101,7 @@ function CheckConfig()
         item_sets[3].name = "Ninja JC";
         item_sets[3].player_message = "I am Ninja!";
         item_sets[3].bans = "Engine.Weapon";
-        item_sets[3].allows = "WeaponSword,WeaponNanoSword,WeaponShuriken,WeaponEMPGrenade,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponPepperGun,WeaponLAM";
+        item_sets[3].allows = "WeaponSword,WeaponNanoSword,WeaponShuriken,WeaponEMPGrenade,WeaponGasGrenade,WeaponNanoVirusGrenade,WeaponPepperGun,WeaponLAM,WeaponMiniCrossbow,WeaponCombatKnife";
         item_sets[3].starting_equipments = "WeaponShuriken,WeaponSword,AmmoShuriken";
 #ifdef vanilla
         item_sets[3].starting_augs = "AugNinja";//combines AugStealth and active AugSpeed
