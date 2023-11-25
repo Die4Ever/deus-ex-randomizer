@@ -197,8 +197,8 @@ function NewGamePlus()
 
     SetGlobalSeed("NewGamePlus");
     p.CombatDifficulty=FClamp(p.CombatDifficulty*1.3,0,15); //Anything over 15 is kind of unreasonably impossible
-    NewGamePlusVal(settings.minskill, 1.1, exp, 10, 500);
-    NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 1000);
+    NewGamePlusVal(settings.minskill, 1.1, exp, 10, 400);
+    NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 700);
     NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000);
     NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100);
     NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000);
@@ -234,9 +234,9 @@ function NewGamePlus()
     l("NewGamePlus skill points was "$p.SkillPointsAvail);
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( skills != None ) {
-        for(i=0; i<5; i++)
+        for(i=0; i<3; i++)
             skills.DowngradeRandomSkill(p);
-        p.SkillPointsAvail /= 2;
+        p.SkillPointsAvail = p.SkillPointsAvail * 0.75;
     }
     else p.SkillPointsAvail = 0;
     p.SkillPointsTotal = 0; //This value doesn't seem to actually get used in vanilla, but we use it for scoring
