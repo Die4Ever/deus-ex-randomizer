@@ -106,8 +106,32 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
     CopyTo(intfile, intdest)
 
     ini = GetSourcePath() / 'Configs' / "DXRandoDefault.ini"
+    VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, ini)
+
+    # also fix vanilla stuff
+    if exename != 'DeusEx' and settings.get('FixVanilla'):
+        exedest:Path = system / 'DeusEx.exe'
+        CopyTo(exe_source, exedest)
+        ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
+        VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, ini)
+
+    dxrroot = gameroot / 'DXRando'
+    Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
+    Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
+    CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
+    CopyPackageFiles(None, gameroot, ['DeusExe.u']) # kentie needs this, copy it into the regular System folder
+    CopyD3DRenderers(system)
+
+    FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
+    CopyTo(FemJCu, dxrroot / 'System' / 'FemJC.u')
+
+    if settings.get('mirrors'):
+        MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
+
+
+def VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, sourceINI):
     defini_dest = system / (exename+'Default.ini') # I don't think Kentie cares about this file, but Han's Launchbox does
-    CopyTo(ini, defini_dest)
+    CopyTo(sourceINI, defini_dest)
 
     if kentie:
         DeusExeU = GetSourcePath() / '3rdParty' / 'DeusExe.u'
@@ -131,7 +155,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
     elif not Vulkan and IsWindows():
         changes['Galaxy.GalaxyAudioSubsystem'] = {'Latency': '80'}
 
-    CopyTo(ini, DXRandoini)
+    CopyTo(sourceINI, DXRandoini)
 
     if not speedupfix:
         if 'DeusExe' not in changes:
@@ -166,18 +190,6 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
         b = DXRandoini.read_bytes()
         b = Config.ModifyConfig(b, changes, additions={})
         WriteBytes(DXRandoini, b)
-
-    dxrroot = gameroot / 'DXRando'
-    Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
-    Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
-    CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
-    CopyD3DRenderers(system)
-
-    FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
-    CopyTo(FemJCu, dxrroot / 'System' / 'FemJC.u')
-
-    if settings.get('mirrors'):
-        MapVariants.InstallMirrors(dxrroot / 'Maps', settings.get('downloadcallback'), 'Vanilla')
 
 
 def InstallLDDP(system:Path, settings:dict):
