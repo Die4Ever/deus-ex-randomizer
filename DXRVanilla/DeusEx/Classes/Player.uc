@@ -157,16 +157,13 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     //Does not happen in Zero Rando
     if (!dxr.flags.IsZeroRando() && bool(ConsoleCommand("get #var(package).MenuChoice_AutoWeaponMods enabled"))){
         mod = #var(prefix)WeaponMod(FrobTarget);
-        if (mod!=None){
-            weap = #var(DeusExPrefix)Weapon(inHand);
-            if (weap!=None){
-                if (mod.CanUpgradeWeapon(weap)){
-                    mod.ApplyMod(weap);
-                    ClientMessage(mod.ItemName$" applied to "$weap.ItemName);
-                    mod.DestroyMod();
-                    return true;
-
-                }
+        weap = #var(DeusExPrefix)Weapon(inHand);
+        if (mod!=None && weap!=None){
+            if (mod.CanUpgradeWeapon(weap)){
+                mod.ApplyMod(weap);
+                ClientMessage(mod.ItemName$" applied to "$weap.ItemName);
+                mod.DestroyMod();
+                return true;
             }
         }
     }

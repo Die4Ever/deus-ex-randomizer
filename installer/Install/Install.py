@@ -113,7 +113,7 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
         exedest:Path = system / 'DeusEx.exe'
         CopyTo(exe_source, exedest)
         ini = GetSourcePath() / 'Configs' / "DeusExDefault.ini"
-        VanillaFixConfigs(system, exename, kentie, Vulkan, OGL2, speedupfix, ini)
+        VanillaFixConfigs(system, 'DeusEx', kentie, Vulkan, OGL2, speedupfix, ini)
 
     dxrroot = gameroot / 'DXRando'
     Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
