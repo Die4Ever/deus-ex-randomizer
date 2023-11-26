@@ -519,9 +519,10 @@ static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player)
 
     if (dxr.flags.settings.starting_map !=0 ){
         startMission=GetStartMapMission(dxr.flags.settings.starting_map);
-        numAugs = startMission / 2;
+        numAugs = startMission * 0.4;
         class'DXRAugmentations'.static.AddRandomAugs(dxr,player,numAugs);
-        for (i=0;i<startMission;i++){
+
+        for (i=0; i<numAugs; i++){
             if(i%4==0){
                 GiveItem( player, class'AugmentationUpgradeCannister' );
             } else {
