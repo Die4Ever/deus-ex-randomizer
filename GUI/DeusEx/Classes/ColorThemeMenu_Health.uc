@@ -52,7 +52,7 @@ function SetUIColour()
 {
     local float critHealth;
     if (player!=None){
-        critHealth = (player.HealthHead + player.HealthTorso)/2.0;
+        critHealth = MIN(player.HealthHead, player.HealthTorso);
         player.GenerateTotalHealth();
 
         FindHealthColour(MIN(player.Health,critHealth));
