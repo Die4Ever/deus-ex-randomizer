@@ -20,7 +20,7 @@ function CheckConfig()
     min_datacube_distance = 75*16;
     camera_swing_angle = 8192;
     camera_fov = 5000;//default is 4096
-    camera_range = 120*16;//default is 1024 aka 64 feet
+    camera_range = 100*16;//default is 1024 aka 64 feet
     camera_swing_period = 8;//seconds?
     camera_ceiling_pitch = -4000;//the angle to look down when against a ceiling
 
@@ -154,7 +154,7 @@ function #var(prefix)AutoTurret SpawnTurret(vector loc)
     t.bTrackPawnsOnly = false;
     t.bTrackPlayersOnly = true;
     t.maxRange = t.maxRange * 2;
-    t.fireRate *= 0.85;// lower numbers are stronger
+    t.fireRate *= 0.9;// lower numbers are stronger
     t.gunAccuracy *= 0.8;// lower numbers are stronger
     class'DXRPasswords'.static.RandoHackable(dxr, t.gun);
     info("SpawnTurret "$t$" done at ("$loc$"), ("$rotation$")");
@@ -286,7 +286,7 @@ function #var(prefix)SecurityCamera SpawnCamera(vector loc)
     c.swingPeriod = camera_swing_period;
     c.cameraFOV = camera_fov;
     c.cameraRange = camera_range;
-    c.triggerDelay *= 0.7;
+    c.triggerDelay *= 0.75;
     class'DXRPasswords'.static.RandoHackable(dxr, c);
     info("SpawnCamera "$c$" done at ("$loc$"), ("$rotation$")");
     return c;
