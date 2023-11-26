@@ -40,8 +40,9 @@ simulated function PreBeginPlay()
         // higher skill gives the enemies longer fuses for thrown grenades
         player = #var(PlayerPawn)(GetPlayerPawn());
         if(player != None) {
-            fuseLength -= player.SkillSystem.GetSkillLevelValue(class'SkillDemolition') * 2.0 + 0.5;
+            fuseLength -= player.SkillSystem.GetSkillLevelValue(class'SkillDemolition') * 0.5 + 0.5;
         }
+        fuseLength = FClamp(fuseLength, 0.2, 6);
     }
 }
 
