@@ -119,8 +119,11 @@ def InstallVanilla(system:Path, settings:dict, speedupfix:bool, Vulkan:bool, OGL
     Mkdir((dxrroot / 'Maps'), exist_ok=True, parents=True)
     Mkdir((dxrroot / 'System'), exist_ok=True, parents=True)
     CopyPackageFiles('vanilla', gameroot, ['DeusEx.u'])
-    CopyPackageFiles(None, gameroot, ['DeusExe.u']) # kentie needs this, copy it into the regular System folder
     CopyD3DRenderers(system)
+
+    if kentie: # kentie needs this, copy it into the regular System folder, doesn't hurt if you don't need it
+        deusexeu = GetSourcePath() / '3rdParty' / "DeusExe.u"
+        CopyTo(deusexeu, system / 'DeusExe.u')
 
     FemJCu = GetSourcePath() / '3rdParty' / "FemJC.u"
     CopyTo(FemJCu, dxrroot / 'System' / 'FemJC.u')
