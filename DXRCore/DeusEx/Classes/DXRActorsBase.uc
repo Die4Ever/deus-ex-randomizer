@@ -986,10 +986,10 @@ function vector JitterPosition(vector loc)
     return loc;
 }
 
-function vector GetRandomPositionFine(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain)
+function vector GetRandomPositionFine(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain, optional bool allowSky)
 {
     local vector loc;
-    loc = GetRandomPosition(target, mindist, maxdist, allowWater, allowPain);
+    loc = GetRandomPosition(target, mindist, maxdist, allowWater, allowPain, allowSky);
     loc = JitterPosition(loc);
     return loc;
 }
