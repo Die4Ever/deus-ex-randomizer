@@ -955,7 +955,7 @@ function bool CheckFreeSpace(out vector loc, float radius, float height)
     return true;
 }
 
-function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain)
+function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain, optional bool allowSky)
 {
     local PathNode temp[4096];
     local PathNode p;
@@ -966,6 +966,7 @@ function vector GetRandomPosition(optional vector target, optional float mindist
         maxdist = 9999999;
 
     foreach AllActors(class'PathNode', p) {
+        if( (!allowSky) && p.Region.Zone.IsA('SkyZoneInfo') ) continue;
         if( (!allowWater) && p.Region.Zone.bWaterZone ) continue;
         if( (!allowPain) && (p.Region.Zone.bKillZone || p.Region.Zone.bPainZone ) ) continue;
         dist = VSize(p.Location-target);
