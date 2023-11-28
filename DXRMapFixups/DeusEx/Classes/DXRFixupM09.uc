@@ -17,7 +17,7 @@ function CheckConfig()
 
 function PreFirstEntryMapFixes()
 {
-    local DeusExMover m;
+    local #var(DeusExPrefix)Mover m;
     local ComputerSecurity cs;
     local Keypad2 k;
     local Button1 b;
@@ -43,7 +43,7 @@ function PreFirstEntryMapFixes()
     {
 #ifdef vanillamaps
     case "09_NYC_SHIP":
-        foreach AllActors(class'DeusExMover', m, 'DeusExMover') {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'DeusExMover') {
             if( m.Name == 'DeusExMover7' ) m.Tag = 'shipbelowdecks_door';
         }
         AddSwitch( vect(2534.639893, 227.583054, 339.803802), rot(0,-32760,0), 'shipbelowdecks_door' );
@@ -96,10 +96,24 @@ function PreFirstEntryMapFixes()
 
     case "09_NYC_SHIPBELOW":
         // make the weld points highlightable
-        foreach AllActors(class'DeusExMover', m, 'ShipBreech') {
+        foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'ShipBreech') {
             m.bHighlight = true;
             m.bLocked = true;
         }
+
+        // locked storage closet overlooking the helipad
+        foreach AllActors(class'#var(DeusExPrefix)Mover', m, 'AugSafe') {
+            m.KeyIDNeeded = 'AugSafe';
+            m.bHighlight = true;
+            m.bFrobbable = true;
+            m.bLocked = true;
+        }
+        key = Spawn(class'#var(prefix)NanoKey',,, vectm(-5330.727539, 326.412018, -426.790955));
+        key.KeyID = 'AugSafe';
+        key.Description = "Ship's Storage Closet Key";
+        if(dxr.flags.settings.keysrando > 0)
+            GlowUp(key);
+
         // remove the orders triggers that cause guys to attack when destroying weld points
         foreach AllActors(class'#var(prefix)OrdersTrigger', ord, 'wall1') {
             ord.Event = '';
@@ -290,6 +304,8 @@ function PostFirstEntryMapFixes()
     case "09_NYC_SHIPBELOW":
         // add a tnt crate on top of the pipe, visible from the ground floor
         AddActor(class'#var(prefix)CrateExplosiveSmall', vect(141.944641, -877.442627, -175.899567));
+        // add a tnt crate in the locked storage closet overlooking the helipad
+        AddActor(class'#var(prefix)CrateExplosiveSmall', vect(-4185.878906, -357.704376, -239.899658));
         // remove big crates blocking the window to the pipe, 16 units == 1 foot
         foreach RadiusActors(class'#var(prefix)CrateUnbreakableLarge', c, 16*4, vectm(-136.125000, -743.875000, -215.899323)) {
             c.Event = '';
