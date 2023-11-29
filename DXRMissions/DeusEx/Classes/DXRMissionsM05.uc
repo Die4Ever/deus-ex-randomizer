@@ -222,7 +222,6 @@ function AddMissionGoals()
     local DeusExGoal newGoal;
 
     if(dxr.localURL != "05_NYC_UNATCOMJ12LAB") return;
-    if(dxr.flags.IsReducedRando()) return;
 
     foreach AllActors(class'#var(prefix)DataLinkTrigger', dlt) {
         if(dlt.datalinkTag == 'DL_Choice') {

@@ -108,7 +108,6 @@ function AddMissionGoals()
 {
     local DeusExGoal newGoal;
     if(dxr.localURL != "01_NYC_UNATCOISLAND") return;
-    if(dxr.flags.IsReducedRando()) return;
 
     //The MeetPaul conversation would normally give you several goals.
     //Give them manually instead of via that conversation.
