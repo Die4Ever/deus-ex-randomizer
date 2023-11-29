@@ -152,7 +152,7 @@ class InstallerWindow(GUIBase):
             v = BooleanVar(master=self.frame, value=True)
             settings['FixVanilla'] = v
             c = Checkbutton(self.frame, text="Also apply fixes for vanilla", variable=v)
-            Hovertip(c, "Also apply all the fixes for DeusEx.exe, so you can play without Randomizer's changes.")
+            Hovertip(c, "Also apply all the fixes for DeusEx.exe, so you can play without Randomizer's changes.\nThis is like a \"Zero Changes\" mode as opposed to DXRando's \"Zero Rando\" mode.")
             c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
             self.FixColors(c)
             row+=1
