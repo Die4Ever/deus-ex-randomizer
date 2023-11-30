@@ -652,8 +652,10 @@ static function string GameModeName(int gamemode)
         return "Speedrun Mode";
     case WaltonWare:
         return "WaltonWare";
+#ifdef injections
     case WaltonWareEntranceRando:
         return "WaltonWare Entrance Rando";
+#endif
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
