@@ -174,7 +174,10 @@ function CheckConfig()
         randomitems[i].chance = 9;
         i++;
 
-        randomitems[i].type = "#var(injectsprefix)Binoculars";
+        if(#defined(hx))
+            randomitems[i].type = "#var(injectsprefix)Binoculars";
+        else
+            randomitems[i].type = "Binoculars";
         randomitems[i].chance = 10;
         i++;
 
