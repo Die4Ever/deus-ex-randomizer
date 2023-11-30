@@ -327,7 +327,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     local Inventory nextItem;
     local #var(PlayerPawn) player;
     local int i;
-    info("MoveNextItemTo("$item@Location@Tag$")");
+    l("MoveNextItemTo("$item@Location@Tag$")");
     // Find the next item we can process.
     while(item != None && (item.IsA('NanoKeyRing') || (!item.bDisplayableInv) || Ammo(item) != None))
         item = item.Inventory;
@@ -336,7 +336,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
 
     nextItem = item.Inventory;
     player = #var(PlayerPawn)(item.owner);
-    info("MoveNextItemTo found: " $ item $ "(" $ item.Location $ ") with owner: " $ item.owner $ ", nextItem: " $ nextItem);
+    l("MoveNextItemTo found: " $ item $ "(" $ item.Location $ ") with owner: " $ item.owner $ ", nextItem: " $ nextItem);
 
     //== Y|y: Turn off any charged pickups we were using and remove the associated HUD.  Per Lork on the OTP forums
     if(player != None) {
@@ -354,7 +354,7 @@ function Inventory MoveNextItemTo(Inventory item, vector Location, name Tag)
     item.DropFrom(Location);
     item.Tag = Tag;// so we can find the item again later
     item.bIsSecretGoal = true;// so they don't get deleted by DXRReduceItems
-    info("MoveNextItemTo "$item$" drop from: ("$Location$"), now at ("$item.Location$"), attempts: "$i);
+    l("MoveNextItemTo "$item$" drop from: ("$Location$"), now at ("$item.Location$"), attempts: "$i);
 
     // restore any ammo amounts for a weapon to default; Y|y: except for grenades
     if (item.IsA('Weapon') && (Weapon(item).AmmoType != None) && !item.IsA('WeaponLAM') && !item.IsA('WeaponGasGrenade') && !item.IsA('WeaponEMPGrenade') && !item.IsA('WeaponNanoVirusGrenade'))
@@ -737,6 +737,17 @@ static function int GetRotationOffset(class<Actor> c)
         return 16384;
     if(ClassIsChildOf(c, class'#var(prefix)ThrownProjectile'))
         return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)WHRedCandleabra'))
+        return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)WeaponNanoSword'))
+        return 10755;
+    if(ClassIsChildOf(c, class'#var(prefix)ComputerSecurity'))
+        return 16384;
+    if(ClassIsChildOf(c, class'#var(prefix)ComputerPublic'))
+        return 16384;
+    //ComputerPersonal is fine without this, so just leave it commented out
+    //if(ClassIsChildOf(c, class'#var(prefix)ComputerPersonal'))
+    //    return 32768;
     if(ClassIsChildOf(c, class'Brush')) {
         log("WARNING: GetRotationOffset for "$c$", Brushes/Movers have negative scaling so they don't need rotation adjustments!");
         return -1;
@@ -944,7 +955,7 @@ function bool CheckFreeSpace(out vector loc, float radius, float height)
     return true;
 }
 
-function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain)
+function vector GetRandomPosition(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain, optional bool allowSky)
 {
     local PathNode temp[4096];
     local PathNode p;
@@ -955,6 +966,7 @@ function vector GetRandomPosition(optional vector target, optional float mindist
         maxdist = 9999999;
 
     foreach AllActors(class'PathNode', p) {
+        if( (!allowSky) && p.Region.Zone.IsA('SkyZoneInfo') ) continue;
         if( (!allowWater) && p.Region.Zone.bWaterZone ) continue;
         if( (!allowPain) && (p.Region.Zone.bKillZone || p.Region.Zone.bPainZone ) ) continue;
         dist = VSize(p.Location-target);
@@ -974,10 +986,10 @@ function vector JitterPosition(vector loc)
     return loc;
 }
 
-function vector GetRandomPositionFine(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain)
+function vector GetRandomPositionFine(optional vector target, optional float mindist, optional float maxdist, optional bool allowWater, optional bool allowPain, optional bool allowSky)
 {
     local vector loc;
-    loc = GetRandomPosition(target, mindist, maxdist, allowWater, allowPain);
+    loc = GetRandomPosition(target, mindist, maxdist, allowWater, allowPain, allowSky);
     loc = JitterPosition(loc);
     return loc;
 }
@@ -1363,13 +1375,14 @@ function bool PositionIsSafeLenient(Vector oldloc, Actor test, Vector newloc)
     return _PositionIsSafeOctant(oldloc, GetCenter(test), newloc);
 }
 
-static function GlowUp(Actor a, optional byte hue)
+static function GlowUp(Actor a, optional byte hue, optional byte saturation)
 {
     a.LightType=LT_Steady;
     a.LightEffect=LE_None;
     a.LightBrightness=160;
     if(hue == 0) hue = 155;
     a.LightHue=hue;
+    if(saturation !=0) a.LightSaturation=saturation;
     a.LightRadius=6;
 }
 

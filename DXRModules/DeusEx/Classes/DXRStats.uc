@@ -609,6 +609,8 @@ static function int _ScoreRun(int time, int time_without_menus, float CombatDiff
     i = 100000;
     i -= time / 10;// times are in tenths of a second
     i -= time_without_menus / 10;
+    i = Max(i, 0);// "time bonus" shouldn't go below 0
+
     i += FClamp(CombatDifficulty, 0, 8) * 1000.0;
     i += flags_score;
     i -= saves * 10;

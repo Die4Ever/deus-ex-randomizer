@@ -15,6 +15,10 @@ event InitWindow()
     hud.UpdateSettings(DeusExPlayer(parentPawn));
     hud.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
 
+    scopeView.Destroy();
+    scopeView=DeusExScopeView(NewChild(class'DXRScopeView',False));
+    scopeView.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
+
     splits = HUDSpeedrunSplits(NewChild(Class'HUDSpeedrunSplits'));
     splits.SetWindowAlignments(HALIGN_Full, VALIGN_Full, 0, 0);
 }

@@ -21,7 +21,11 @@ function PreFirstEntryMapFixes()
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)NanoKey key;
     local #var(prefix)DamageTrigger dt;
+    local #var(prefix)BeamTrigger bt;
+    local OnceOnlyTrigger oot;
     local Actor a;
+    local #var(prefix)PigeonGenerator pg;
+    local #var(prefix)FishGenerator fg;
 
     switch(dxr.localURL)
     {
@@ -57,6 +61,10 @@ function PreFirstEntryMapFixes()
                 dt.Tag='lab_water';
             }
         }
+
+        pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(2065,2785,-871));//CMD Rooftop
+        pg.MaxCount=3;
+
 #ifdef vanillamaps
         //Add a key to Tim's closet
         foreach AllActors(class'#var(DeusExPrefix)Mover',door){
@@ -70,6 +78,14 @@ function PreFirstEntryMapFixes()
         key.Description="Tim's Closet Key";
         key.SkinColor=SC_Level3;
         key.MultiSkins[0] = Texture'NanoKeyTex3';
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door){
+            if(door.name=='DeusExMover15'){
+                door.Tag='CmdBackDoor';
+            }
+        }
+        AddSwitch( vect(-278.854828,657.390503,-1977.144531), rot(0, 16384, 0), 'CmdBackDoor');
+
 #endif
         break;
 
@@ -113,14 +129,34 @@ function PreFirstEntryMapFixes()
             if(door.KeyIDNeeded=='shed'){
                 door.Tag='ShedDoor';
             }
+            if (door.Tag=='Elevator1'){
+                door.MoverEncroachType=ME_CrushWhenEncroach;
+            }
         }
         AddSwitch( vect(654.545,3889.5397,-367.262), rot(0, 16384, 0), 'ShedDoor');
+
+        fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(5657,-1847,-1377));//Near tunnel to sub bay
+        fg.ActiveArea=20000; //Long line of sight on this one...  Want it to trigger early
 
         break;
 
     case "14_OCEANLAB_LAB":
         if(!#defined(vmd))// button to open the door heading towards the ladder in the water
             AddSwitch( vect(3077.360107, 497.609467, -1738.858521), rot(0, 0, 0), 'Access');
+
+        foreach AllActors(class'#var(DeusExPrefix)Mover',door){
+            if(door.KeyIDNeeded=='crewkey'){
+                door.Tag = 'crewkey';
+            }
+            if(door.KeyIDNeeded=='Glab'){
+                door.Tag = 'Glab';
+            }
+        }
+        // backtracking button for crew module
+        AddSwitch( vect(4888.692871, 3537.360107, -1753.115845), rot(0, 16384, 0), 'crewkey').bCollideWorld = false;
+        // backtracking button for greasel lab
+        AddSwitch( vect(1893.359985, 491.932892, -1535.522339), rot(0, 0, 0), 'Glab');
+
         foreach AllActors(class'ComputerSecurity', comp) {
             if( comp.UserList[0].userName == "Kraken" && comp.UserList[0].Password == "Oceanguard" ) {
                 comp.UserList[0].userName = "Oceanguard";
@@ -160,6 +196,14 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(DeusExPrefix)Mover', door, 'Releasebots') {
             door.MoverEncroachType=ME_IgnoreWhenEncroach;
         }
+
+        foreach AllActors(class'#var(prefix)BeamTrigger',bt,'Lasertrip'){
+            bt.Event='ReleasebotsOnce';
+        }
+
+        oot=Spawn(class'OnceOnlyTrigger');
+        oot.Event='Releasebots';
+        oot.Tag='ReleasebotsOnce';
 
         Spawn(class'PlaceholderItem',,, vectm(1020.93,8203.4,-2864)); //Over security computer
         Spawn(class'PlaceholderItem',,, vectm(348.9,8484.63,-2913)); //Turret room

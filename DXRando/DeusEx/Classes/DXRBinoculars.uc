@@ -10,8 +10,12 @@ state Activated
     {
         Super.BeginState();
 
-        lastWatched = None;
-        SetTimer(0.25,True);
+        //Only use this logic when we don't replace
+        //the ScopeView with DXRandoRootWindow
+        if(#defined(hx)){
+            lastWatched = None;
+            SetTimer(0.25,True);
+        }
     }
 }
 
@@ -21,8 +25,10 @@ state DeActivated
     {
         Super.BeginState();
 
-        SetTimer(0,False);
-        lastWatched = None;
+        if (#defined(hx)){
+            SetTimer(0,False);
+            lastWatched = None;
+        }
     }
 }
 
@@ -58,7 +64,11 @@ simulated function Timer()
 
     //peepee = Trace(HitLocation, HitNormal, EndTrace, StartTrace, True);
     foreach TraceTexture(class'Actor',target,texName,texGroup,flags,HitLocation,HitNormal,EndTrace,StartTrace){
-        if (((target.DrawType == DT_None) || target.bHidden) && target!=Level)
+        if (BingoTrigger(target)!=None && BingoTrigger(target).bPeepable){
+            peepee = target;
+            break;
+        }
+        else if (((target.DrawType == DT_None) || target.bHidden) && target!=Level)
         {
             // Keep tracing past invisible things
         }
@@ -118,6 +128,10 @@ simulated function Timer()
 
         if (ScriptedPawn(peepee)!=None){
             class'DXREvents'.static.MarkBingo(dxr,"PawnState_"$peepee.GetStateName());
+        }
+
+        if (BingoTrigger(peepee)!=None){
+            BingoTrigger(peepee).Peep();
         }
     } else if (newPeepTex) {
         //peeper.ClientMessage("New peeped texture is "$lastWatchedTex);

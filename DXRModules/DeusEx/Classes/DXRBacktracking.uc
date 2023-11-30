@@ -31,7 +31,9 @@ function PreFirstEntry()
             dt = Spawn(class'DynamicTeleporter',,'sewers_backtrack',vectm(1599.971558, -4694.342773, 13.399302));
             SetDestination(dt, "10_PARIS_CATACOMBS_TUNNELS", 'AmbientSound10');
             dt.SetCollisionSize(160,dt.CollisionHeight);
-            AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
+            if(!dxr.flags.IsZeroRando()) {
+                AddSwitch(vect(1602.826904, -4318.841309, -250.365067), rot(0, 16384, 0), 'sewers_backtrack');
+            }
 
             foreach AllActors(class'MapExit', exit, 'ChopperExit') {
                 SetDestination(exit, "10_PARIS_CHATEAU", '', "Chateau_start");
@@ -272,7 +274,7 @@ function ParisMetroAnyEntry()
             nicolette.Destroy();
     }
 
-    if( flags.GetBool('JockReady_Played') ) {
+    if( flags.GetBool('JockReady_Played') && !dxr.flags.IsReducedRando() ) {
         flags.SetBool('JockReady_Played', false,, 11);
         flags.SetBool('MS_GuntherUnhidden', false,, 11);
 
@@ -297,6 +299,8 @@ function ParisChateauAnyEntry()
     local InterpolateTrigger t;
     local FlagBase flags;
 
+    if(dxr.flags.IsReducedRando()) return;
+
     flags = dxr.flagbase;
     flags.SetBool('NicoletteReadyToLeave', true,, 12);
     flags.SetBool('NicoletteOutside_Played', true,, 12);
@@ -319,6 +323,8 @@ function VandCmdAnyEntry()
     local FlagBase flags;
     local Vehicles chopper;
     local DXRMissions missions;
+
+    if(dxr.flags.IsReducedRando()) return;
 
     foreach AllActors(class'InterpolateTrigger', t, 'mission_done') {
         t.bTriggerOnceOnly = false;
@@ -348,6 +354,9 @@ function VandGasAnyEntry()
     local InterpolateTrigger t;
     local DeusExMover M;
     local FlagBase flags;
+
+    if(dxr.flags.IsReducedRando()) return;
+
     flags = dxr.flagbase;
 
     ConversationFrobOnly(GetConversation('M12JockFinal'));
@@ -400,7 +409,11 @@ function VandSubAnyEntry()
     local FlagBase flags;
     local DataLinkTrigger dt;
     local Conversation c;
+    local ConEvent e, nextEvent;
     local MapExit exit;
+
+    if(dxr.flags.IsReducedRando()) return;
+
     flags = dxr.flagbase;
 
     // backtracking to gas station
@@ -456,9 +469,21 @@ function VandSubAnyEntry()
     foreach AllActors(class'InterpolateTrigger', t, 'ChopperExit')
         t.bTriggerOnceOnly = false;
 
-    if( flags.GetBool('DL_downloaded_Played') ) {
+    if( flags.GetBool('DL_downloaded_Played') || dxr.flags.IsWaltonWare() ) {
         RemoveChoppers('BlackHelicopter');
         SpawnChopper( 'BlackHelicopter', 'Jockpath', "Jock", vectm(2104.722168, 3647.967773, 896.197144), rotm(0, 0, 0) );
+    }
+
+    // don't need to talk to Gary
+    c = GetConversation('JockBarks');
+    for(e=c.eventList; e!=None; e=nextEvent) {
+        nextEvent = e.nextEvent;
+        if(e.label == "Go" || ConEventTrigger(e) != None) {
+            c.eventList = e;
+            break;
+        } else {
+            class'DXRFixup'.static.FixConversationDeleteEvent(e, None);
+        }
     }
 
     // ability to fly to the silo even after howard strong is dead
@@ -494,6 +519,8 @@ function VandOceanLabAnyEntry()
     local DataLinkTrigger dlt;
     local MapExit me;
     local Conversation c;
+
+    if(dxr.flags.IsReducedRando()) return;
 
     // fix shared tags https://github.com/Die4Ever/deus-ex-randomizer/issues/224
     foreach AllActors(class'Actor', a) {
@@ -559,6 +586,9 @@ function VandSiloAnyEntry()
     local FlagBase flags;
     local Conversation c;
     local Vehicles chopper;
+
+    if(dxr.flags.IsReducedRando()) return;
+
     flags = dxr.flagbase;
 
     // back to sub base

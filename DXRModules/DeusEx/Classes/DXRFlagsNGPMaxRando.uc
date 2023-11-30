@@ -197,8 +197,8 @@ function NewGamePlus()
 
     SetGlobalSeed("NewGamePlus");
     p.CombatDifficulty=FClamp(p.CombatDifficulty*1.3,0,15); //Anything over 15 is kind of unreasonably impossible
-    NewGamePlusVal(settings.minskill, 1.1, exp, 10, 500);
-    NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 1000);
+    NewGamePlusVal(settings.minskill, 1.1, exp, 10, 400);
+    NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 700);
     NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000);
     NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100);
     NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000);
@@ -214,7 +214,7 @@ function NewGamePlus()
     settings.bingo_win = bingo_win;
     settings.bingo_freespaces = bingo_freespaces;
     if (randomStart!=0){
-        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr,randomStart);
+        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, randomStart);
     }
 
     if (p.KeyRing != None)
@@ -234,9 +234,9 @@ function NewGamePlus()
     l("NewGamePlus skill points was "$p.SkillPointsAvail);
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( skills != None ) {
-        for(i=0; i<5; i++)
+        for(i=0; i<3; i++)
             skills.DowngradeRandomSkill(p);
-        p.SkillPointsAvail /= 2;
+        p.SkillPointsAvail = p.SkillPointsAvail * 0.75;
     }
     else p.SkillPointsAvail = 0;
     p.SkillPointsTotal = 0; //This value doesn't seem to actually get used in vanilla, but we use it for scoring
@@ -248,6 +248,7 @@ function NewGamePlus()
 
     ClearInHand(p);
     RemoveRandomWeapon(p);
+    MaxMultipleItems(p, 5);
 
     //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
     //Technically it should make up for levels you skipped past, so maybe?
@@ -263,6 +264,24 @@ function NewGamePlus()
     p.bStartNewGameAfterIntro = true;
     class'PlayerDataItem'.static.ResetData(p);
     Level.Game.SendPlayer(p, "00_intro");
+}
+
+simulated function MaxMultipleItems(#var(PlayerPawn) p, int maxcopies)
+{
+    local Inventory i, i2, next;
+    local int num;
+
+    for(i=p.Inventory; i!=None; i=i.Inventory) {
+        num=1;
+        for(i2=i.Inventory; i2!=None; i2=next) {
+            next = i2.Inventory;
+            if(i2.class.name != i.class.name) continue;
+            num++;
+            if(num > maxcopies) {
+                i2.Destroy();
+            }
+        }
+    }
 }
 
 simulated function ClearInHand(#var(PlayerPawn) p)
@@ -330,7 +349,9 @@ function NewGamePlusVal(out int val, float curve, float exp, int min, int max)
 
 function ExtendedTests()
 {
-    local int val;
+    local int val, i, oldSeed;
+    local string s;
+
     Super.ExtendedTests();
 
     val = 5;
@@ -356,4 +377,13 @@ function ExtendedTests()
     val = -5;
     NewGamePlusVal(val, 1.2, 3, -6, 100);
     testint(val, -6, "NewGamePlusVal 1.2 negative value");
+
+    oldSeed = dxr.seed;
+    dxr.seed = 123456;
+    for(i=0; i<100; i++) {
+        dxr.seed = 123456 + i;
+        s = s @ class'DXRStartMap'.static.ChooseRandomStartMap(self, -1);
+    }
+    test(true, "DXRStartMap " $ s);
+    dxr.seed = oldSeed;
 }

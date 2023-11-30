@@ -233,6 +233,20 @@ function vanilla_keys_rules()
         i++;
         break;
 
+    case "09_NYC_SHIPBELOW":
+        keys_rules[i].item_name = 'AugSafe';
+        keys_rules[i].min_pos = vect(-4412.145996, -406.970917, -252.789581);
+        keys_rules[i].max_pos = vect(-4160.986816, -157.038147, -99.209251);
+        keys_rules[i].allow = false;
+        i++;
+
+        keys_rules[i].item_name = 'AugSafe';
+        keys_rules[i].min_pos = vect(-99999,-99999,-99999);
+        keys_rules[i].max_pos = vect(99999,99999,99999);
+        keys_rules[i].allow = true;
+        i++;
+        break;
+
     case "10_Paris_Catacombs":
         keys_rules[i].item_name = 'cata_officedoor';
         keys_rules[i].min_pos = vect(-99999, -99999, -99999);

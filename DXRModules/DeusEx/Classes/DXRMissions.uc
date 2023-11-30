@@ -435,7 +435,9 @@ function Timer()
     MissionTimer();
     if (RandoMissionGoals && !dxr.flagbase.GetBool('PlayerTraveling')){
         //Secondary objectives get cleared if added in pre/postFirstEntry due to the MissionScript, the MissionsScript also clears the PlayerTraveling flag
-        AddMissionGoals();
+        if(!dxr.flags.IsReducedRando()) {
+            AddMissionGoals();
+        }
         RandoMissionGoals=false;
     }
 }

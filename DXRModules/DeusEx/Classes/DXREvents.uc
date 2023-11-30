@@ -105,12 +105,19 @@ function AddPhoneTriggers(bool isRevision)
         break;
     }
     i=0;
+
     foreach AllActors(class'#var(prefix)Phone',p){
-        bt = class'BingoTrigger'.static.Create(self,'PhoneCall',vectm(0,0,0));
-        bt.bDestroyOthers=False;
-        bt.tag=StringToName("PhoneCall"$i);
-        p.event=StringToName("PhoneCall"$i);
-        i++;
+        switch(p.BindName){
+            case "AI_phonecall_paris01":
+                break; //Covered by the Icarus call flag - IcarusCalls_Played
+            default:
+                bt = class'BingoTrigger'.static.Create(self,'PhoneCall',vectm(0,0,0));
+                bt.bDestroyOthers=False;
+                bt.tag=StringToName("PhoneCall"$i);
+                p.event=StringToName("PhoneCall"$i);
+                i++;
+                break;
+        }
     }
 
 }
@@ -190,6 +197,9 @@ function SetWatchFlags() {
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+
+            bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            bt.MakePeepable();
         }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
@@ -301,6 +311,9 @@ function SetWatchFlags() {
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+
+            bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            bt.MakePeepable();
         }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
@@ -344,7 +357,6 @@ function SetWatchFlags() {
         break;
     case "03_NYC_747":
         RewatchFlag('747Ambrosia');
-        WatchFlag('JuanLebedev_Unconscious');
         WatchFlag('PlayerKilledLebedev');
         WatchFlag('AnnaKilledLebedev');
 
@@ -423,6 +435,9 @@ function SetWatchFlags() {
             bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
             bt = class'BingoTrigger'.static.Create(self,'PresentForManderley',vectm(220,4,280),300,40);
             bt.MakeClassProximityTrigger(class'#var(prefix)JuanLebedevCarcass');
+
+            bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            bt.MakePeepable();
         }
 
         foreach AllActors(class'#var(prefix)Female2',f) {
@@ -489,6 +504,9 @@ function SetWatchFlags() {
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+
+            bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
+            bt.MakePeepable();
         }
         bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
@@ -1679,6 +1697,12 @@ function string RemapBingoEvent(string eventname)
         case "SheaKnowsAboutDowd":
         case "GreenKnowsAboutDowd":
             return "SnitchDowd";
+        case "IcarusCalls_Played":
+            _MarkBingo("PhoneCall"); //It's a phone call!
+            return eventname;
+        case "Doberman_peeptime":
+        case "Mutt_peeptime":
+            return "WatchDogs";
         default:
             return eventname;
     }
@@ -1686,7 +1710,7 @@ function string RemapBingoEvent(string eventname)
 
 }
 
-static simulated function string GetBingoGoalHelpText(string event,int mission)
+static simulated function string GetBingoGoalHelpText(string event,int mission, bool FemJC)
 {
     local string msg;
     switch(event){
@@ -1796,7 +1820,15 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "FoundScientistBody":
             return "Enter the collapsed tunnel under the canals and find the scientist body.  The tunnel can be accessed through the vents in the freezer of the Old China Hand.";
         case "ClubEntryPaid":
-            return "Give Mercedes and Tessa (the two women waiting outside the Lucky Money) money to get into the club.";
+           if (FemJC) {
+#ifdef revision
+               return "Let Noah, the man waiting outside the Lucky Money, pay to get you into the club";
+#else
+               return "Let Russ, the man waiting outside the Lucky Money, pay to get you into the club";
+#endif
+           } else {
+               return "Give Mercedes and Tessa (the two women waiting outside the Lucky Money) money to get into the club.";
+           }
         case "M08WarnedSmuggler":
             return "After talking to Stanton Dowd, talk to Smuggler and warn him of the impending UNATCO raid.";
         case "ShipPowerCut":
@@ -2216,19 +2248,19 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "M07MeetJaime_Played":
             return "Meet Jaime in Tracer Tong's hideout in Hong Kong.  Note that he will only meet you in Hong Kong if you ask him to meet you there while you escape from the MJ12 base under UNATCO.";
         case "Terrorist_peeptime":
-            return "Watch NSF Troops through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch NSF Troops through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "UNATCOTroop_peeptime":
-            return "Watch UNATCO Troopers through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch UNATCO Troopers through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "MJ12Troop_peeptime":
-            return "Watch MJ12 Troopers through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch MJ12 Troopers through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "MJ12Commando_peeptime":
-            return "Watch MJ12 Commandos through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch MJ12 Commandos through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "PawnState_Dancing":
-            return "Watch someone dance through a pair of binoculars.  There should be someone vibing in a bar or club.";
+            return "Watch someone dance through a pair of binoculars or a scope.  There should be someone vibing in a bar or club.";
         case "BirdWatching":
-            return "Watch birds through binoculars for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+            return "Watch birds through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "NYEagleStatue_peeped":
-            return "Look at the bronze eagle statue in Battery Park through a pair of binoculars.";
+            return "Look at the bronze eagle statue in Battery Park through a pair of binoculars or a scope.";
         case "BrokenPianoPlayed":
             return "Damage a piano enough that it will no longer work, then try to play it.";
         case "Supervisor_Paid":
@@ -2296,13 +2328,13 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "DestroyCapitalism":
             msg = "Kill enough people willing to sell you goods in exchange for money.|nThe Merchant may be elusive, but he must be eliminated when spotted.|n|n";
             if (mission<=1){
-                msg=msg$"Tech Sergeant Kaplan and the woman in the hut on the North Dock both absolutely deserve it.";
+                msg=msg$"Tech Sergeant Kaplan and the woman in the hut on the North Dock both absolutely deserve it.  Shannon is also acting suspicious.";
             } else if (mission<=2){
                 msg=msg$"Jordan Shea and Sally in the bar, the doctors in the Free Clinic, and the pimp in the alleys deserve it.";
             } else if (mission<=3){
-                msg=msg$"There is a veteran in Battery Park, El Rey and Rock in Brooklyn Bridge Station, and Harold in the hangar.  They all deserve it.";
+                msg=msg$"There is a veteran in Battery Park, El Rey and Rock in Brooklyn Bridge Station, and Harold in the hangar.  They all deserve it.  Shannon seems like she might be up to something too.";
             } else if (mission<=4){
-                msg=msg$"Jordan Shea deserves it.";
+                msg=msg$"Jordan Shea and Shannon deserve it.";
             } else if (mission<=5){
                 msg=msg$"Sven the mechanic and Shannon both deserve it.";
             } else if (mission<=6){
@@ -2426,13 +2458,13 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "Chef_ClassDead":
             return "Do what needs to be done and kill a chef.";
         case "un_PrezMeadPic_peepedtex":
-            return "Look closely at a picture of President Mead using a pair of binoculars.  This can be found in UNATCO HQ (both above and below ground).";
+            return "Look closely at a picture of President Mead using a pair of binoculars or a scope.  This can be found in UNATCO HQ (both above and below ground).";
         case "un_bboard_peepedtex":
-            return "Look at the bulletin board in the UNATCO HQ break room through a pair of binoculars.";
+            return "Look at the bulletin board in the UNATCO HQ break room through a pair of binoculars or a scope.";
         case "DrtyPriceSign_A_peepedtex":
-            return "Check the gas prices through a pair of binoculars at the abandoned Vandenberg Gas Station.";
+            return "Check the gas prices through a pair of binoculars or a scope at the abandoned Vandenberg Gas Station.";
         case "GS_MedKit_01_peepedtex":
-            return "Use a pair of binoculars to find a representation of the Red Cross (A red cross on a white background) in the Vandenberg Gas Station.  Improper use of the emblem is a violation of the Geneva Conventions.";
+            return "Use a pair of binoculars or a scope to find a representation of the Red Cross (A red cross on a white background) in the Vandenberg Gas Station.  Improper use of the emblem is a violation of the Geneva Conventions.";
         case "WatchKeys_cabinet":
             return "Find the key that opens the filing cabinets in the back of the greasel lab in the MJ12 base underneath UNATCO.  This is typically held by whoever is sitting at the desk in the back part of that lab.";
         case "MiguelLeaving":
@@ -2454,11 +2486,11 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
         case "ScubaDiver_ClassDead":
             return "Kill enough SCUBA divers in and around the Ocean Lab.";
         case "ShipRamp":
-            return "Raise the ramp to get on board the superfreighter.";
+            return "Raise the ramp to get on board the superfreighter from the docks.  There is a keypad on a box next to the ramp that raises it.";
         case "SuperfreighterProp":
             return "Dive to the propeller at the back of the superfreighter.";
         case "ShipNamePlate":
-            return "Use binoculars to check the name marked on the side of the superfreighter";
+            return "Use binoculars or a scope to check the name marked on the side of the superfreighter";
         case "DL_SecondDoors_Played":
             return "You need to open them.|n|nTry to leave the Ocean Lab while the sub-bay doors are closed.";
         case "WhyContainIt":
@@ -2558,6 +2590,12 @@ static simulated function string GetBingoGoalHelpText(string event,int mission)
             return "Swim along the ocean floor to the locked and flooded storage room from in the Ocean Lab";
         case "OceanLabMedBay":
             return "Enter the med bay in the Ocean Lab.  This room is flooded and off the side of the Karkian Lab.";
+        case "WatchDogs":
+            return "Watch dogs through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+        case "Cat_peeptime":
+            return "Watch cats through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+        case "Binoculars_peeptime":
+            return "Watch binoculars through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -2571,8 +2609,10 @@ function ExtendedTests()
     //Make sure all bingo goals have help text
     for (i=0;i<ArrayCount(bingo_options);i++){
         if (bingo_options[i].event!=""){
-            helpText = GetBingoGoalHelpText(bingo_options[i].event,0);
-            test( InStr(helpText, "Unable to find help text for event") == -1, "Bingo Goal "$bingo_options[i].event$" does not have help text!");
+            helpText = GetBingoGoalHelpText(bingo_options[i].event,0,False);
+            test( InStr(helpText, "Unable to find help text for event") == -1, "Bingo Goal "$bingo_options[i].event$" does not have male JC help text!");
+            helpText = GetBingoGoalHelpText(bingo_options[i].event,0,True);
+            test( InStr(helpText, "Unable to find help text for event") == -1, "Bingo Goal "$bingo_options[i].event$" does not have female JC help text!");
         }
     }
 }
@@ -2789,8 +2829,8 @@ defaultproperties
 #endif
     bingo_options(187)=(event="TechGoggles_Activated",desc="Use %s tech goggles",max=3,missions=54346)
     bingo_options(188)=(event="Rebreather_Activated",desc="Use %s rebreathers",max=3,missions=55400)
-    bingo_options(189)=(event="PerformBurder",desc="Hunt %s birds",max=10,missions=19806)
-    bingo_options(190)=(event="GoneFishing",desc="Kill %s fish",max=10,missions=18506)
+    bingo_options(189)=(event="PerformBurder",desc="Hunt %s birds",max=10,missions=24446)
+    bingo_options(190)=(event="GoneFishing",desc="Kill %s fish",max=10,missions=18510)
     bingo_options(191)=(event="FordSchick_Dead",desc="Kill Ford Schick",max=1,missions=276)
     bingo_options(192)=(event="ChateauInComputerRoom",desc="Find Beth's secret routing station",max=1,missions=1024)
     bingo_options(193)=(event="DuClareBedrooms",desc="Visit both bedrooms in the DuClare Chateau",max=2,missions=1024)
@@ -2914,6 +2954,9 @@ defaultproperties
     bingo_options(307)=(event="UCVentilation",desc="Destroy %s ventilation fans in the Ocean Lab",max=6,missions=16384)
     bingo_options(308)=(event="OceanLabFloodedStoreRoom",desc="Swim to the locked store room in the Ocean Lab",max=1,missions=16384)
     bingo_options(309)=(event="OceanLabMedBay",desc="Enter the flooded med bay in the Ocean Lab",max=1,missions=16384)
+    bingo_options(310)=(event="WatchDogs",desc="Watch Dogs (%s seconds)",max=15,missions=21604)
+    bingo_options(311)=(event="Cat_peeptime",desc="Look at that kitty! (%s seconds)",max=15,missions=7256)
+    bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",max=15)
 
 
 

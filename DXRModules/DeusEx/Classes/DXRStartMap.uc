@@ -411,6 +411,8 @@ static function bool BingoGoalImpossible(string bingo_event, int start_map, int 
                 return True;
             }
             return start_map>=90;
+        case "PhoneCall":
+            return start_map>100; //Last phone is in the building before the catacombs (Where Icarus calls)
         default:
             return False;
     }
@@ -435,7 +437,7 @@ static function bool BingoGoalPossible(string bingo_event, int start_map, int en
     return false;
 }
 
-static function int ChooseRandomStartMap(DXRando dxr, int avoidStart)
+static function int ChooseRandomStartMap(DXRBase m, int avoidStart)
 {
     local int i;
     local int startMap;
@@ -443,10 +445,12 @@ static function int ChooseRandomStartMap(DXRando dxr, int avoidStart)
 
     startMap=-1;
     attempts=0;
+    m.SetGlobalSeed("randomstartmap");
+    m.rng(1);// HACK: dummy roll to shuffle the CRC to improve rng, we should do this automatically next compatibility break
 
     //Don't try forever.  If we manage to grab the avoided map 5 times, it was meant to be.
     while ((startMap==-1 || startMap==avoidStart) && attempts<5){
-        i = staticrng(dxr,13);
+        i = m.rng(13);
 
         //Should be able to legitimately return Liberty Island (even if that's as a value of 10), but needs additional special handling
         switch(i)
@@ -491,11 +495,11 @@ static function int ChooseRandomStartMap(DXRando dxr, int avoidStart)
                 startMap = 150;
                 break;
             default:
-                dxr.err("Random Starting Map picked value "$i$" which is unhandled!");
+                m.err("Random Starting Map picked value "$i$" which is unhandled!");
                 startMap = 0; //Fall back on Liberty Island
                 break;
         }
-        log("Start map selection attempt "$attempts$" was "$startMap);
+        m.l("Start map selection attempt "$attempts$" was "$startMap);
     }
 
     return startMap;
@@ -515,9 +519,10 @@ static function AddStartingAugs(DXRando dxr, #var(PlayerPawn) player)
 
     if (dxr.flags.settings.starting_map !=0 ){
         startMission=GetStartMapMission(dxr.flags.settings.starting_map);
-        numAugs = startMission / 2;
+        numAugs = startMission * 0.4;
         class'DXRAugmentations'.static.AddRandomAugs(dxr,player,numAugs);
-        for (i=0;i<startMission;i++){
+
+        for (i=0; i<numAugs; i++){
             if(i%4==0){
                 GiveItem( player, class'AugmentationUpgradeCannister' );
             } else {

@@ -25,6 +25,9 @@ var int PB_total, sum_of_bests;
 
 var config string split_names[16];
 
+var config string splitNotes[16];
+var string notes;
+
 var float left_col, left_col_small, center_col, text_height, ty_pos;
 var float windowWidth, windowHeight;
 
@@ -113,6 +116,7 @@ function InitStats(DXRStats newstats)
     tsubtitle = ReplaceVariables(subtitle);
     tfooter = ReplaceVariables(footer);
     curMission = stats.dxr.dxInfo.MissionNumber;
+    notes = class'DXRInfo'.static.ReplaceText(splitNotes[curMission], "|n", CR());
 
     for(i=1; i<=15; i++) {
         PB_total += PB[i];
@@ -268,7 +272,7 @@ function DrawWindow(GC gc)
     }
 
     gc.SetTextColor(colorText);
-    gc.SetAlignments(HALIGN_Center, VALIGN_Center);
+    gc.SetAlignments(HALIGN_Center, VALIGN_Top);
     if(ttitle!="") {
         gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, ttitle);
         y += text_height;
@@ -277,7 +281,7 @@ function DrawWindow(GC gc)
         gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, tsubtitle);
         y += text_height;
     }
-    gc.SetAlignments(HALIGN_Left, VALIGN_Center);
+    gc.SetAlignments(HALIGN_Left, VALIGN_Top);
 
     for(i=1; i<ArrayCount(Golds); i++) {
         if(showAllSplits
@@ -326,12 +330,22 @@ function DrawWindow(GC gc)
     }
 
     if(tfooter != "") {
-        gc.SetAlignments(HALIGN_Center, VALIGN_Center);
+        gc.SetAlignments(HALIGN_Center, VALIGN_Top);
         gc.SetTextColor(colorText);
         gc.DrawText(x+x_pos, y+ty_pos, windowWidth - x, text_height, tfooter);
         y += text_height;
     }
     windowHeight = y;
+
+    // draw notes
+    if(notes != "") {
+        y = 4;
+        x = windowWidth + 8;
+
+        gc.SetAlignments(HALIGN_Left, VALIGN_Top);
+        gc.SetTextColor(colorText);
+        gc.DrawText(x+x_pos, y+ty_pos, windowWidth, windowHeight, notes);
+    }
 }
 
 function int DrawSplit(GC gc, int mission, int x, int y)
@@ -521,4 +535,7 @@ defaultproperties
     split_names(12)="Vandenberg"
     split_names(14)="Silo"
     split_names(15)="Area 51"
+
+    splitNotes(1)="UNATCO start: no Leo at Paul or hut|nHarley start: no Leo at electric bunker|nTop start: no Leo at base of statue"
+    splitNotes(14)="Howard 6th floor: no Jock at vanilla"
 }

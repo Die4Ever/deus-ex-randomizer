@@ -1,7 +1,10 @@
 import argparse
 import time
 import sys
+import json
 import os.path
+import urllib.request
+import urllib.parse
 import re
 from tkinter import filedialog as fd
 from tkinter import font
@@ -38,7 +41,10 @@ class Bingo:
         self.height=500
         self.selectedMod=""
         self.prevLines=None
-        self.bingoLineMatch = re.compile(r'bingoexport\[(?P<key>\d+)\]=\(Event="(?P<event>.*)",Desc="(?P<desc>.*)",Progress=(?P<progress>\d+),Max=(?P<max>\d+),Active=(?P<active>\d+)\)')
+        self.bingoLineMatch = re.compile(
+            r'bingoexport\[(?P<key>\d+)\]=\(Event="(?P<event>.*)",Desc="(?P<desc>.*)",Progress=(?P<progress>\d+),Max=(?P<max>\d+),Active=(?P<active>\d+)\)',
+            re.IGNORECASE
+        )
         self.initDrawnBoard()
 
     def closeWindow(self):
@@ -141,7 +147,7 @@ class Bingo:
         bingoMatches=self.bingoLineMatch.match(bingoLine)
         if (bingoMatches==None):
             return
-
+        
         bingoNumber=int(bingoMatches.group('key'))
         bingoCoord = self.bingoNumberToCoord(bingoNumber)
 
@@ -157,8 +163,12 @@ class Bingo:
     def readBingoFile(self):
         allLines = dict()
         try:
-            with open(self.targetFile) as file:
-                bingoFile = file.readlines()
+            try:
+                with open(self.targetFile) as file:
+                    bingoFile = file.readlines()
+            except Exception as e:
+                print("Couldn't read file, ignoring - "+str(e));
+                return False
 
             for line in bingoFile:
                 if BINGO_MOD_LINE_DETECT in line:
@@ -213,29 +223,29 @@ class Bingo:
                 square["possible"]=self.board[x][y]["active"]!=-1
                 #print(square)
                 board.append(square)
-        #return {"bingo":json.dumps({"bingo":board},indent=4)}
+        #return json.dumps(board,indent=4)
+        return {"bingo":json.dumps({"bingo":board},indent=4)}
 
     def sendBingoState(self):
-        pass
-        # if not os.path.isfile(JSON_DEST_FILENAME):
-        #     return
+        if not os.path.isfile(JSON_DEST_FILENAME):
+            return
 
-        # f = open(JSON_DEST_FILENAME,'r')
-        # desturl=f.readline()
-        # f.close()
+        f = open(JSON_DEST_FILENAME,'r')
+        desturl=f.readline()
+        f.close()
 
-        # if (desturl==""):
-        #     print("Make sure to specify where you want to push your json!")
-        #     return
+        if (desturl==""):
+            print("Make sure to specify where you want to push your json!")
+            return
 
-        # bingoState = self.generateBingoStateJson()
-        # #print(bingoState)
-        # try:
-        #     r = urllib.request.urlopen(desturl,data=urllib.parse.urlencode(bingoState).encode('utf-8'))
-        #     #print(r.status)
-        #     #print(r.read().decode('utf-8'))
-        # except Exception as e:
-        #     print("Couldn't push JSON to "+desturl+" - "+str(e))
+        bingoState = self.generateBingoStateJson()
+        #print(bingoState)
+        try:
+            r = urllib.request.urlopen(desturl,data=urllib.parse.urlencode(bingoState).encode('utf-8'))
+            #print(r.status)
+            #print(r.read().decode('utf-8'))
+        except Exception as e:
+            print("Couldn't push JSON to "+desturl+" - "+str(e))
 
 
 def saveLastUsedBingoFile(f):
@@ -252,6 +262,8 @@ def getDefaultPath():
         # Linux
         Path.home() /'snap'/'steam'/'common'/'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
         Path.home() /'.steam'/'steam'/'SteamApps'/'common'/'Deus Ex'/'System',
+        Path.home() /'.local'/'share'/'Steam'/'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'/'Deus Ex'/'System',
+        Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
     ]
     p:Path
     for p in checks:

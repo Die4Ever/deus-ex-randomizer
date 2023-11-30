@@ -145,11 +145,27 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
     local #var(DeusExPrefix)Ammo ownAmmo;
     local bool isThrown;
     local #var(DeusExPrefix)Pickup pickup,ownedPickup;
+    local #var(prefix)WeaponMod mod;
 
     if( loadout == None ) loadout = DXRLoadouts(DXRFindModule(class'DXRLoadouts'));
     if ( loadout != None && Inventory(FrobTarget) != None && loadout.ban(self, Inventory(FrobTarget)) ) {
         FrobTarget.Destroy();
         return true;
+    }
+
+    //Try to apply the mod being picked up to the currently held weapon
+    //Does not happen in Zero Rando
+    if (!dxr.flags.IsZeroRando() && bool(ConsoleCommand("get #var(package).MenuChoice_AutoWeaponMods enabled"))){
+        mod = #var(prefix)WeaponMod(FrobTarget);
+        weap = #var(DeusExPrefix)Weapon(inHand);
+        if (mod!=None && weap!=None){
+            if (mod.CanUpgradeWeapon(weap)){
+                mod.ApplyMod(weap);
+                ClientMessage(mod.ItemName$" applied to "$weap.ItemName);
+                mod.DestroyMod();
+                return true;
+            }
+        }
     }
 
     bCanPickup = Super.HandleItemPickup(FrobTarget, bSearchOnly);
@@ -1138,6 +1154,9 @@ function CreateColorThemeManager()
     AddColorTheme(Class'ColorThemeMenu_Rando');
     AddColorTheme(Class'ColorThemeHUD_Swirl');
     AddColorTheme(Class'ColorThemeMenu_Swirl');
+    AddColorTheme(Class'ColorThemeHUD_Health');
+    AddColorTheme(Class'ColorThemeMenu_Health');
+
 
 }
 

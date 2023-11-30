@@ -12,13 +12,17 @@ function PreFirstEntryMapFixes()
     local #var(prefix)BoxSmall bs;
     local #var(prefix)Keypad2 kp;
     local #var(prefix)TAD tad;
+    local #var(prefix)FishGenerator fg;
+    local #var(prefix)PigeonGenerator pg;
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
+    local #var(prefix)Datacube dc;
     npClass = class'#var(prefix)Newspaper';
 #else
     local DXRInformationDevices np;
     local class<DXRInformationDevices> npClass;
+    local DXRInformationDevices dc;
     npClass = class'DXRInformationDevices';
 #endif
 
@@ -49,6 +53,10 @@ function PreFirstEntryMapFixes()
         k.Description = "Control Room Door Key";
         if(dxr.flags.settings.keysrando > 0)
             GlowUp(k);
+
+        fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
+        fg.ActiveArea=2000;
+
         break;
     case "02_NYC_WAREHOUSE":
         npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(1700.929810,-519.988037,57.729870),rotm(0,0,0),'02_Newspaper06'); //Joe Greene article, table in room next to break room (near bathrooms)
@@ -102,9 +110,35 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'DeusExMover', d, 'AugStore') {
             d.bFrobbable = true;
         }
+
+        pg=Spawn(class'#var(prefix)PigeonGenerator',,, vectm(2404,-1318,-487));//Near Smuggler
+        pg.MaxCount=3;
+
         break;
     case "02_NYC_BAR":
         Spawn(class'BarDancer',,,vectm(-1475,-580,48),rotm(0,25000,0));
+        break;
+
+    case "02_NYC_UNDERGROUND":
+#ifdef injections
+        foreach AllActors(class'#var(prefix)Datacube',dc){
+#else
+        foreach AllActors(class'DXRInformationDevices',dc){
+#endif
+            if (dc.texttag=='02_Datacube03'){ //Move datacube from underwater...
+                dc.SetLocation(vectm(2026.021118,-572.896851,-506.561584)); //On top of keypad lockbox
+                break;
+            }
+        }
+
+        Spawn(class'PlaceholderItem',,, vectm(2644,-630,-405)); //Weird little ledge near pipe and bodies
+        Spawn(class'PlaceholderItem',,, vectm(2678.5,-340.3,-413)); //On pipe near bodies
+        Spawn(class'PlaceholderItem',,, vectm(-1534,119,-821)); //Path to Schick, 1
+        Spawn(class'PlaceholderItem',,, vectm(-2192,122,-821)); //Path to Schick, 2
+        Spawn(class'PlaceholderItem',,, vectm(-3399,1471,-948)); //Schick Lab shelf
+        Spawn(class'PlaceholderItem',,, vectm(-3593,1620,-961)); //Schick Fume Hood
+        Spawn(class'PlaceholderItem',,, vectm(-4264,982,-981)); //Barracks bed
+        Spawn(class'PlaceholderItem',,, vectm(-173,850,-322)); //Guard Room Table
         break;
     }
 }

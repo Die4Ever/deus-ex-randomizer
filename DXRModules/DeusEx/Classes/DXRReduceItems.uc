@@ -317,7 +317,7 @@ function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
             d.Contents = d.Content2;
 
         if(d.Contents == None) {
-            info("ReduceSpawnsInContainers downgrading "$d$" to a cardboard box");
+            l("ReduceSpawnsInContainers downgrading "$d$" to a cardboard box");
             SpawnReplacement(d, class'#var(prefix)BoxMedium', true);// we don't care if this succeeds or not
             d.Event = '';
             d.Destroy();

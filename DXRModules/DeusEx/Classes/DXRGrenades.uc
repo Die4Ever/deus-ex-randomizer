@@ -47,10 +47,10 @@ function CheckConfig()
 
     Super.CheckConfig();
 
-    AddRandomGrenade(class'#var(prefix)EMPGrenade',5);        //1 through the game
+    AddRandomGrenade(class'#var(prefix)EMPGrenade',10);        //1 through the game
     AddRandomGrenade(class'#var(prefix)GasGrenade',10);       //9 through the game
-    AddRandomGrenade(class'#var(prefix)LAM',20);              //18 through the game
-    AddRandomGrenade(class'#var(prefix)NanoVirusGrenade',5);  //0 through the game
+    AddRandomGrenade(class'#var(prefix)LAM',15);              //18 through the game
+    AddRandomGrenade(class'#var(prefix)NanoVirusGrenade',8);  //0 through the game
 
     //Scale to 100%
     total=0;
@@ -64,17 +64,23 @@ function CheckConfig()
     }
 }
 
-function #var(prefix)ThrownProjectile SpawnNewPlantedGrenade(class<#var(prefix)ThrownProjectile> type, Vector loc, Rotator rot)
+function #var(prefix)ThrownProjectile SpawnNewPlantedGrenade(class<#var(prefix)ThrownProjectile> type,
+                                                             Vector loc,
+                                                             Rotator rot,
+                                                             name tag,
+                                                             name event,
+                                                             Actor owner)
 {
     local #var(prefix)ThrownProjectile gren;
 
-    gren = Spawn(type,,,loc,rot);
+    gren = Spawn(type,owner,tag,loc,rot);
 
     gren.PlayAnim('Open');
     gren.SetPhysics(PHYS_None);
     gren.bBounce = False;
     gren.bProximityTriggered = True;
     gren.bStuck = True;
+    gren.event = event;
 
     return gren;
 }
@@ -86,6 +92,8 @@ function FirstEntry()
     local Vector loc;
     local Rotator rot;
     local int i;
+    local name oldTag,oldEvent;
+    local Actor oldOwner;
 
     Super.FirstEntry();
     if(dxr.flags.moresettings.grenadeswap <= 0) return;
@@ -103,9 +111,12 @@ function FirstEntry()
     for (i=0;grens[i]!=None;i++){
         loc = grens[i].Location;
         rot = grens[i].Rotation;
+        oldTag = grens[i].tag;
+        oldEvent=grens[i].event;
+        oldOwner=grens[i].owner;
         grens[i].Destroy();
 
-        gren = SpawnNewPlantedGrenade(PickRandomGrenade(),loc,rot);
+        gren = SpawnNewPlantedGrenade(PickRandomGrenade(),loc,rot,oldTag,oldEvent,oldOwner);
 
         if (gren!=None){
             l("Spawned a new grenade "$gren.name);

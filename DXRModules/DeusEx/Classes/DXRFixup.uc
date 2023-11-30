@@ -187,6 +187,7 @@ function PreFirstEntry()
     OverwriteDecorations();
     FixFlagTriggers();
     SpawnDatacubes();
+    AntiEpilepsy();
 
     SetSeed( "DXRFixup PreFirstEntry missions" );
     if(#defined(mapfixes))
@@ -608,6 +609,23 @@ function SpawnDatacubes()
     }
 }
 
+function AntiEpilepsy()
+{
+    local Light l;
+
+    if (!bool(ConsoleCommand("get #var(package).MenuChoice_Epilepsy enabled"))){
+        return;
+    }
+
+
+    foreach AllActors(class'Light',l){
+        if (l.LightType==LT_Strobe){
+            l.LightType=LT_Pulse;
+        } else if (l.LightType==LT_Flicker){
+            l.LightType=LT_Pulse;
+        }
+    }
+}
 
 function AddDelayEvent(Name tag, Name event, float time)
 {
@@ -623,6 +641,27 @@ function AddDelay(Actor trigger, float time)
     tagname = StringToName( "dxr_delay_" $ trigger.Event );
     AddDelayEvent(tagname, trigger.Event, time);
     trigger.Event = tagname;
+}
+
+function Actor CandleabraLight(vector pos, rotator r)
+{
+    local Actor c, light;
+    local vector diff;
+
+    c = AddActor(class'WHRedCandleabra', pos, r);
+    c.SetPhysics(PHYS_None);
+
+    diff = vect(-3.1, 6.7, 13.9) >> r;
+    light = AddActor(class'LightBulb', pos+diff, rot(0, 0, 0));
+    light.LightBrightness = 50;
+    light.LightRadius = 16;
+
+    diff = vect(-3.1, -7, 13.9) >> r;
+    light = AddActor(class'LightBulb', pos+diff, rot(0, 0, 0));
+    light.LightBrightness = 50;
+    light.LightRadius = 16;
+
+    return c;
 }
 
 static function DeleteConversationFlag(Conversation c, name Name, bool Value)
@@ -712,17 +751,20 @@ static function FixConversationAddNote(Conversation c, string textSnippet)
     }
 }
 
-static function FixConversationDeleteEvent(ConEvent del, ConEvent prev)
+static function ConEvent FixConversationDeleteEvent(ConEvent del, ConEvent prev)
 {
+    local ConEvent next;
     if(del == del.Conversation.eventList) {
         del.Conversation.eventList = del.nextEvent;
     }
     if(prev != None) {
         prev.nextEvent = del.nextEvent;
     }
+    next = del.nextEvent;
     del.Conversation = None;
     del.nextEvent = None;
     CriticalDelete(del);
+    return next;
 }
 
 defaultproperties

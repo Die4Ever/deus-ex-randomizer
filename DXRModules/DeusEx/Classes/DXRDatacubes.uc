@@ -286,6 +286,14 @@ function vanilla_datacubes_rules()
         i++;
         break;
 
+    case "06_HONGKONG_WANCHAI_MARKET":
+        datacubes_rules[i].item_name = '06_Datacube22';
+        datacubes_rules[i].min_pos = vect(-99999, -99999, -99999);
+        datacubes_rules[i].max_pos = vect(99999, 99999, 99999);
+        datacubes_rules[i].allow = false;
+        i++;
+        break;
+
     case "06_HONGKONG_WANCHAI_STREET":
         //"Insurgent"
         datacubes_rules[i].item_name = '06_Book16';

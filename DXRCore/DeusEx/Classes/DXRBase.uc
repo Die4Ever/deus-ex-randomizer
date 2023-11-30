@@ -56,7 +56,7 @@ simulated function ReEntry(bool IsTravel);
 
 simulated function bool CheckLogin(#var(PlayerPawn) player)
 {
-    info("CheckLogin("$player$"), inited: "$inited$", dxr.flagbase: "$dxr.flagbase$", dxr.flags.flags_loaded: "$dxr.flags.flags_loaded$", player.SkillSystem: "$player.SkillSystem$", player.SkillSystem.FirstSkill: "$player.SkillSystem.FirstSkill);
+    l("CheckLogin("$player$"), inited: "$inited$", dxr.flagbase: "$dxr.flagbase$", dxr.flags.flags_loaded: "$dxr.flags.flags_loaded$", player.SkillSystem: "$player.SkillSystem$", player.SkillSystem.FirstSkill: "$player.SkillSystem.FirstSkill);
     if( inited == false ) return false;
     if( player == None ) return false;
     if( player.SkillSystem == None ) return false;
@@ -275,7 +275,7 @@ simulated function bool RandoLevelValues(Actor a, float min, float max, float we
 
     s = "(DXRando) " $ word $ ":|n    " $ s;
 
-    info("RandoLevelValues "$a$" = "$s);
+    l("RandoLevelValues "$a$" = "$s);
     ReapplySeed( oldseed );
 
     if(add_desc != "") {
@@ -433,7 +433,7 @@ simulated function CreateMessageBox( String msgTitle, String msgText, int msgBox
 
     local DXRMessageBoxWindow msgBox;
 
-    info(module$" CreateMessageBox "$msgTitle$" - "$msgText);
+    l(module$" CreateMessageBox "$msgTitle$" - "$msgText);
 
     msgBox = DXRMessageBoxWindow(DeusExRootWindow(player().rootWindow).PushWindow(Class'DXRMessageBoxWindow', False, noPause ));
     msgBox.SetTitle(msgTitle);
@@ -451,7 +451,7 @@ simulated function CreateCustomMessageBox (String msgTitle, String msgText, int 
                                  DXRBase module, int id, optional bool noPause) {
     local DXRMessageBoxWindow msgBox;
 
-    info(module$" CreateCustomMessageBox "$msgTitle$" - "$msgText);
+    l(module$" CreateCustomMessageBox "$msgTitle$" - "$msgText);
 
     msgBox = DXRMessageBoxWindow(DeusExRootWindow(player().rootWindow).PushWindow(Class'DXRMessageBoxWindow', False, noPause ));
     msgBox.SetTitle(msgTitle);

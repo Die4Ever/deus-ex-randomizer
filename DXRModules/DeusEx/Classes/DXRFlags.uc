@@ -7,6 +7,7 @@ const ZeroRando = 4;
 const SeriousSam = 5;
 const SpeedrunMode = 6;
 const WaltonWare = 7;
+const WaltonWareEntranceRando = 8;
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -577,7 +578,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.ammo = (settings.ammo + 100) / 2;
         settings.equipment *= 2;
         settings.medkits = (settings.medkits + 100) / 2;
-        settings.medbots = (settings.medbots + 100) / 2;
+        settings.medbots *= 2;
         settings.health = 200;
     }
     else if(IsSpeedrunMode()) {
@@ -602,7 +603,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         // at least level 1 speed aug
         settings.speedlevel = Max(settings.speedlevel, 1);
     }
-    else if(gamemode == WaltonWare) {
+    else if(IsWaltonWare()) {
         settings.bingo_win = 1;
         settings.bingo_freespaces = 5;
         settings.skills_reroll_missions = 0;// no rerolls since after the menu screen you would immediately get a reroll depending what mission you start in
@@ -611,15 +612,17 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         bingo_duration = 1;
         bingo_scale = 0;
 
-        l("applying walton ware, DXRando: " $ dxr @ dxr.seed);
-        SetGlobalSeed("random starting map");
-        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(dxr,10);
+        l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
+        settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, 10);
     }
     return settings;
 }
 
 function string DifficultyName(int diff)
 {
+    if (diff>=ArrayCount(difficulty_names)){
+        return "INVALID DIFFICULTY "$diff;
+    }
     return difficulty_names[diff];
 }
 
@@ -648,7 +651,11 @@ static function string GameModeName(int gamemode)
     case SpeedrunMode:
         return "Speedrun Mode";
     case WaltonWare:
-        return "Walton Ware";
+        return "WaltonWare";
+#ifdef injections
+    case WaltonWareEntranceRando:
+        return "WaltonWare Entrance Rando";
+#endif
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -658,7 +665,7 @@ static function string GameModeName(int gamemode)
 
 function bool IsEntranceRando()
 {
-    return gamemode == EntranceRando;
+    return gamemode == EntranceRando || gamemode == WaltonWareEntranceRando;
 }
 
 function bool IsHordeMode()
@@ -679,6 +686,11 @@ function bool IsReducedRando()
 function bool IsSpeedrunMode()
 {
     return gamemode == SpeedrunMode;
+}
+
+function bool IsWaltonWare()
+{
+    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)

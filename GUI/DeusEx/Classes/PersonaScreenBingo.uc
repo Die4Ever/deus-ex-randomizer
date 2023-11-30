@@ -17,16 +17,18 @@ function CreateControls()
     local string event, desc;
     local PlayerDataItem data;
     local int bActiveMission;
+    local bool femJC;
 
     Super.CreateControls();
     CreateTitleWindow(9,   5, "That's a Bingo!");
 
     data = class'PlayerDataItem'.static.GiveItem(#var(PlayerPawn)(player));
+    femJC=player.flagbase.GetBool('LDDPJCIsFemale');
 
     for(x=0; x<5; x++) {
         for(y=0; y<5; y++) {
             bActiveMission = data.GetBingoSpot(x, y, event, desc, progress, max);
-            CreateBingoSpot(x, y, desc, progress, max, event, bActiveMission,data.GetBingoMissionMask(x,y));
+            CreateBingoSpot(x, y, desc, progress, max, event, bActiveMission,data.GetBingoMissionMask(x,y),femJC);
         }
     }
 
@@ -41,7 +43,7 @@ function CreateControls()
 
 // we can fit about 6 lines of text, about 14 characters wide
 // probably want a new class instead of ButtonWindow, so we can turn the background into a progress bar, maybe a subclass of PersonaItemButton so the theming works correctly
-function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int max, string event, int bActiveMission, int missions)
+function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int max, string event, int bActiveMission, int missions, bool femJC)
 {
     local BingoTile t;
     local int w, h;
@@ -55,7 +57,7 @@ function BingoTile CreateBingoSpot(int x, int y, string text, int progress, int 
     t.SetSize(w-1, h-1);
     t.SetPos(x * w + bingoStartX, y * h + bingoStartY);
     t.SetProgress(progress, max, bActiveMission);
-    t.SetHelpText(event,player.GetLevelInfo().MissionNumber);
+    t.SetHelpText(event,player.GetLevelInfo().MissionNumber,femJC);
     t.SetMissions(missions);
     return t;
 }

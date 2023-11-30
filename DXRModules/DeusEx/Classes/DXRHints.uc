@@ -80,7 +80,7 @@ simulated function InitHints()
             AddHint("Items like hazmat suits and thermoptic camo now free up", "the inventory space immediately when you equip them.");
             AddHint("Try using a hazmat suit", "against plasma, fire, and gas attacks.");
             AddHint("Hacking computers now uses 5 bioelectric energy per second.");
-            AddHint("Spy Drone aug has improved speed", "and the emp blast now also does explosive damage.");
+            AddHint("Spy Drone aug has improved speed", "and it's easier to control.");
             AddHint("The PS20 has been upgraded to the PS40", "and does significantly more damage.");
             AddHint("Flare darts now set enemies on fire for 3 seconds.");
             AddHint("Thowing knives deal more damage,", "and their speed and range increase with your low-tech skill.");

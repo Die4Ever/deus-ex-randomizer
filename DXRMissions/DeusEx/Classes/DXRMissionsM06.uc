@@ -177,6 +177,7 @@ function int InitGoalsRev(int mission, string map)
 function MissionTimer()
 {
     local #var(prefix)TracerTong tong;
+    local bool ready_for_m08;
 
     switch(dxr.localURL) {
     case "06_HONGKONG_WANCHAI_MARKET":
@@ -185,7 +186,9 @@ function MissionTimer()
         break;
     case "06_HONGKONG_TONGBASE":
         //Immediately start M08Briefing after M07Briefing, if possible
-        if (!M08Briefing && dxr.flagbase.GetBool('M07Briefing_played') && !dxr.flagbase.GetBool('M08Briefing_played')){
+        ready_for_m08 = !M08Briefing && dxr.flagbase.GetBool('M07Briefing_played') && !dxr.flagbase.GetBool('M08Briefing_played');
+        ready_for_m08 = ready_for_m08 && dxr.flagbase.GetBool('TriadCeremony_Played') && dxr.flagbase.GetBool('VL_UC_Destroyed') && dxr.flagbase.GetBool('VL_Got_Schematic');
+        if (ready_for_m08){
             if (player().conPlay==None){
                 foreach AllActors(class'#var(prefix)TracerTong',tong){ break;}
 

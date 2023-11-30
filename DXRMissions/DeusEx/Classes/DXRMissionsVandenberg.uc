@@ -310,6 +310,9 @@ function AfterMoveGoalToLocation(Goal g, GoalLocation Loc)
         cp.UserList[0].Password="Kraken";
         cp.TextPackage = "#var(package)";
     }
+    else if (g.name=="Backup Power Keypad") {
+        GlowUp(g.actors[0].a, 255);
+    }
 }
 
 function PreFirstEntryMapFixes()

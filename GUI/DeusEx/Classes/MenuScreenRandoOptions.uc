@@ -40,6 +40,8 @@ function CreateChoices()
         CreateChoice(class'MenuChoice_EnergyDisplay');
         CreateChoice(class'MenuChoice_ShowKeys');
         CreateChoice(class'MenuChoice_ThrowMelee');
+        CreateChoice(class'MenuChoice_AutoWeaponMods');
+        CreateChoice(class'MenuChoice_Epilepsy');
     }
 
     CreateChoice(class'MenuChoice_PasswordAutofill');

@@ -55,6 +55,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)UNATCOTroop unatco;
     local #var(prefix)WeaponModRecoil wmr;
     local #var(prefix)Terrorist terror;
+    local #var(prefix)FishGenerator fg;
 
     switch (dxr.localURL)
     {
@@ -70,6 +71,9 @@ function PreFirstEntryMapFixes()
                 i.bAddToVault = true;
             }
         }
+
+        fg=Spawn(class'#var(prefix)FishGenerator',,, vectm(-1274,-3892,177));//Near Boat dock
+        fg.ActiveArea=2000;
 
         //rebreather because of #TOOCEAN connection
         AddActor(class'Rebreather', vect(-936.151245, -3464.031006, 293.710968));

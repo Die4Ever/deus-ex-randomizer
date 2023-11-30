@@ -219,8 +219,10 @@ def CopyPackageFiles(modname:str, gameroot:Path, packages:list):
     assert (gameroot / 'System').is_dir()
     if modname == 'vanilla':
         dxrandoroot = gameroot / 'DXRando'
-    else:
+    elif modname:
         dxrandoroot = gameroot / (modname+'Randomizer')
+    else:
+        dxrandoroot = gameroot
 
     packages_path = GetPackagesPath(modname)
 

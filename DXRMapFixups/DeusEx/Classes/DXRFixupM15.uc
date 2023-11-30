@@ -276,6 +276,8 @@ function PreFirstEntryMapFixes_Page()
     local Switch1 s;
     local ComputerPersonal comp_per;
     local int i;
+    local #var(prefix)DataLinkTrigger dlt;
+    local #var(prefix)FlagTrigger ft;
     local vector cloneCubeLoc[4];
     local string cloneCubeText[4];
 
@@ -319,6 +321,27 @@ function PreFirstEntryMapFixes_Page()
     for(i=0;i<4;i++){
         SpawnDatacubePlaintext(cloneCubeLoc[i],rotm(0,0,0),cloneCubeText[i]);
     }
+
+    //Add a switch to manually trigger the infolink that gives you the Helios computer password
+    AddSwitch( vect(5635.609375,-5352.036133,-5240.890625), rot(0, 0, 0), 'PasswordCallReset', "Forgot your Password?");
+
+    ft=Spawn(class'#var(prefix)FlagTrigger');
+    ft.bSetFlag=True;  //Setting both of these means it will set the flag
+    ft.bTrigger=True;  //and then trigger the event after the flag is set
+    ft.flagName='DL_Final_Helios06_Played';
+    ft.flagValue=False;
+    ft.Event='PasswordCall';
+    ft.Tag='PasswordCallReset';
+    ft.SetCollision(false,false,false);
+
+    //Make sure the datalink trigger has a unique tag to get hit
+    foreach AllActors(class'#var(prefix)DataLinkTrigger',dlt){
+        if (dlt.datalinkTag=='DL_Final_Helios06'){
+            dlt.Tag='PasswordCall';
+            break;
+        }
+    }
+
 }
 
 function PreFirstEntryMapFixes()

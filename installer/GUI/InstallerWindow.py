@@ -110,6 +110,7 @@ class InstallerWindow(GUIBase):
 
         settings = { 'install': v, 'exe': exe }
 
+        # mirrored maps
         if f in ['Vanilla', '####Vanilla? Madder.']: # TODO: VMD is commented out, needs map files and UnrealScript work
             v = BooleanVar(master=self.frame, value=True)
             settings['mirrors'] = v
@@ -119,6 +120,7 @@ class InstallerWindow(GUIBase):
             self.FixColors(c)
             row+=1
 
+        # LDDP
         if f == 'Vanilla':
             v = BooleanVar(master=self.frame, value=False)
             settings['LDDP'] = v
@@ -144,6 +146,16 @@ class InstallerWindow(GUIBase):
             self.FixColors(r)
             Hovertip(r, "Hanfling's Launch stored configs and saves in the game directory.\nIf your game is in Program Files, then the game might require admin permissions to play.")
             row += 1
+
+        # "Zero Changes" mode fixes
+        if f == 'Vanilla' and IsWindows():
+            v = BooleanVar(master=self.frame, value=True)
+            settings['FixVanilla'] = v
+            c = Checkbutton(self.frame, text="Also apply fixes for vanilla", variable=v)
+            Hovertip(c, "Also apply all the fixes for DeusEx.exe, so you can play without Randomizer's changes.\nThis is like a \"Zero Changes\" mode as opposed to DXRando's \"Zero Rando\" mode.")
+            c.grid(column=1,row=row, sticky='SW', padx=pad*4, pady=pad)
+            self.FixColors(c)
+            row+=1
 
         self.flavors[f] = settings
         return row
@@ -175,6 +187,7 @@ class InstallerWindow(GUIBase):
                     'exetype': v.get('exe', dummy).get(),
                     'mirrors': v.get('mirrors', dummy).get(),
                     'LDDP': v.get('LDDP', dummy).get(),
+                    'FixVanilla': v.get('FixVanilla', dummy).get(),
                     'downloadcallback': self.DownloadProgress,
                 }
 
