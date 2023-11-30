@@ -66,7 +66,7 @@ If you don't know what Deus Ex Randomizer is, then here's our old trailer which 
 * Challenge mode loadouts! [(Wiki page)](https://github.com/Die4Ever/deus-ex-randomizer/wiki/Loadouts)
     * Stick With the Prod Pure means the only weapon you get is the stun prod (hint: throw a crate straight up into the air to break it)
         * Stick With the Prod Plus also allows EMP grenades, gas grenades, scramble grenades, pepper gun, and tranq darts
-    * Ninja JC - the only weapons allowed are throwing knives, swords, pepper spray, and grenades. You also get a Ninja Augmentation which gives you speed and stealth at the same time
+    * Ninja JC - the only weapons allowed are throwing knives, swords, pepper spray, grenades, knife, and mini-crossbow. You also get a Ninja Augmentation which gives you speed and stealth at the same time
     * Don't Give Me the GEP Gun - bans the GEP gun
     * Freeman Mode - only weapon allowed is the crowbar
     * Grenades Only
