@@ -248,7 +248,7 @@ function NewGamePlus()
 
     ClearInHand(p);
     RemoveRandomWeapon(p);
-    MaxMultipleItems(p, 3);
+    MaxMultipleItems(p, 5);
 
     //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
     //Technically it should make up for levels you skipped past, so maybe?
