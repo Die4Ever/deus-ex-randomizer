@@ -7,6 +7,7 @@ const ZeroRando = 4;
 const SeriousSam = 5;
 const SpeedrunMode = 6;
 const WaltonWare = 7;
+const WaltonWareEntranceRando = 8;
 
 #ifdef hx
 var string difficulty_names[4];// Easy, Medium, Hard, DeusEx
@@ -651,6 +652,8 @@ static function string GameModeName(int gamemode)
         return "Speedrun Mode";
     case WaltonWare:
         return "WaltonWare";
+    case WaltonWareEntranceRando:
+        return "WaltonWare Entrance Rando";
     }
     //EnumOption("Kill Bob Page (Alpha)", 3, f.gamemode);
     //EnumOption("How About Some Soy Food?", 6, f.gamemode);
@@ -660,7 +663,7 @@ static function string GameModeName(int gamemode)
 
 function bool IsEntranceRando()
 {
-    return gamemode == EntranceRando;
+    return gamemode == EntranceRando || gamemode == WaltonWareEntranceRando;
 }
 
 function bool IsHordeMode()
@@ -685,7 +688,7 @@ function bool IsSpeedrunMode()
 
 function bool IsWaltonWare()
 {
-    return gamemode == WaltonWare;
+    return gamemode == WaltonWare || gamemode == WaltonWareEntranceRando;
 }
 
 simulated function AddDXRCredits(CreditsWindow cw)
