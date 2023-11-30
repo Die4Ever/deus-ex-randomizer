@@ -46,7 +46,7 @@ function CheckConfig()
     local string temp;
     local int i, s;
     local class<Actor> a;
-    if( ConfigOlderThan(2,5,5,2) ) {
+    if( ConfigOlderThan(2,5,5,6) ) {
         mult_items_per_level = 1;
 
         for(i=0; i < ArrayCount(loadouts_order); i++) {
@@ -174,7 +174,7 @@ function CheckConfig()
         randomitems[i].chance = 9;
         i++;
 
-        randomitems[i].type = "Binoculars";
+        randomitems[i].type = "#var(injectsprefix)Binoculars";
         randomitems[i].chance = 10;
         i++;
 
