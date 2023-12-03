@@ -20,6 +20,7 @@ function WatchActors()
     local #var(prefix)BarrelVirus virus;
     local #var(prefix)Mailbox mail;
     local #var(prefix)CigaretteMachine cigVending;
+    local #var(prefix)Lightbulb bulb;
 
     foreach AllActors(class'#var(prefix)Lamp',lamp){
         AddWatchedActor(lamp,"LightVandalism");
@@ -38,6 +39,9 @@ function WatchActors()
     }
     foreach AllActors(class'#var(prefix)Chandelier',chandelier){
         AddWatchedActor(chandelier,"LightVandalism");
+    }
+    foreach AllActors(class'#var(prefix)Lightbulb',bulb){
+        AddWatchedActor(bulb,"LightVandalism");
     }
     foreach AllActors(class'#var(prefix)Trophy',trophy){
         AddWatchedActor(trophy,"TrophyHunter");
