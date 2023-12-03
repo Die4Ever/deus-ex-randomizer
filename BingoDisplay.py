@@ -216,6 +216,8 @@ class Bingo:
                 square = dict()
                 square["x"]=x
                 square["y"]=y
+                if self.board[x][y]==None:
+                    return {}
                 square["name"]=self.board[x][y]["desc"]
                 if self.board[x][y]["max"]>1:
                     square["name"]+="\n"+str(self.board[x][y]["progress"])+"/"+str(self.board[x][y]["max"])

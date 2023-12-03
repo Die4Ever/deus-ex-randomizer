@@ -66,7 +66,10 @@ function WatchActors()
 function AddPhoneTriggers(bool isRevision)
 {
     local #var(prefix)Phone p;
-    local BingoTrigger bt;
+    local #var(prefix)WHPhone wp;
+#ifdef revision
+    local RevPhone rp;
+#endif
     local int i;
 
     //Spawn invisible phones for the payphones
@@ -111,15 +114,43 @@ function AddPhoneTriggers(bool isRevision)
             case "AI_phonecall_paris01":
                 break; //Covered by the Icarus call flag - IcarusCalls_Played
             default:
-                bt = class'BingoTrigger'.static.Create(self,'PhoneCall',vectm(0,0,0));
-                bt.bDestroyOthers=False;
-                bt.tag=StringToName("PhoneCall"$i);
-                p.event=StringToName("PhoneCall"$i);
+                CreatePhoneTrigger(p,i);
                 i++;
                 break;
         }
     }
+    foreach AllActors(class'#var(prefix)WHPhone',wp){
+        switch(p.BindName){
+            case "AI_phonecall_paris01":
+                break; //Covered by the Icarus call flag - IcarusCalls_Played
+            default:
+                CreatePhoneTrigger(wp,i);
+                i++;
+                break;
+        }
+    }
+#ifdef revision
+    foreach AllActors(class'RevPhone',rp){
+        switch(p.BindName){
+            case "AI_phonecall_paris01":
+                break; //Covered by the Icarus call flag - IcarusCalls_Played
+            default:
+                CreatePhoneTrigger(rp,i);
+                i++;
+                break;
+        }
+    }
+#endif
+}
 
+function CreatePhoneTrigger(Actor phone, int num)
+{
+    local BingoTrigger bt;
+
+    bt = class'BingoTrigger'.static.Create(self,'PhoneCall',phone.Location);
+    bt.bDestroyOthers=False;
+    bt.tag=StringToName("PhoneCall"$num);
+    phone.event=StringToName("PhoneCall"$num);
 }
 
 function SetWatchFlags() {
