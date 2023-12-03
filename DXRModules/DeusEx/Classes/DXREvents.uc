@@ -74,31 +74,140 @@ function AddPhoneTriggers(bool isRevision)
 
     //Spawn invisible phones for the payphones
     switch(dxr.localURL) {
+    case "01_NYC_UNATCOISLAND":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-3999.9, 9039,-222)); //South Dock
+            p = Spawn(class'PayPhone',,,vectm(-3839.9, 9039, -222)); //South Dock
+        }
+        break;
     case "02_NYC_STREET":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-1219.22, 776.7, -431.58)); //Outside Free Clinic
+            p = Spawn(class'PayPhone',,,vectm(-1216.45, 1014.59, -431.58)); //Outside Free Clinic
+            p = Spawn(class'PayPhone',,,vectm(3523, -3280.4, -431)); //Outside Nutella Store
+            p = Spawn(class'PayPhone',,,vectm(3523, -3424.59, -431)); //Outside Nutella Store
+            p = Spawn(class'PayPhone',,,vectm(3651, -1583.93, -435.40)); //Near bus stop
+            p = Spawn(class'PayPhone',,,vectm(3651, -1763.33, -430.23)); //Near bus stop (Tipped over)
+            p = Spawn(class'PayPhone',,,vectm(1952.04, 2508.99, -432.5)); //Near Osgoode and Son's
+            p = Spawn(class'PayPhone',,,vectm(1599.67, 2508.99, -432.5)); //Near Osgoode and Son's
+            //break;
+        } else {
+            p = Spawn(class'PayPhone',,,vectm(1117,1969,-430)); //Near Osgoode and Son's
+            p = Spawn(class'PayPhone',,,vectm(-1314,944,-430)); //Near Free Clinic
+        }
+        break;
     case "04_NYC_STREET":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-1219.22, 776.7, -431.58)); //Outside Free Clinic
+            p = Spawn(class'PayPhone',,,vectm(-1216.45, 1014.59, -431.58)); //Outside Free Clinic
+            p = Spawn(class'PayPhone',,,vectm(3523, -3280.4, -431)); //Outside Nutella Store
+            p = Spawn(class'PayPhone',,,vectm(3523, -3424.59, -431)); //Outside Nutella Store
+            p = Spawn(class'PayPhone',,,vectm(3676.9, -1577.22, -490.4)); //Near bus stop (Tipped Over)
+            p = Spawn(class'PayPhone',,,vectm(3650, -1764.06, -430)); //Near bus stop (Tipped Over)
+            p = Spawn(class'PayPhone',,,vectm(1949.62, 2509, -431)); //Near Osgoode and Son's
+            p = Spawn(class'PayPhone',,,vectm(1597.67, 2509, -431)); //Near Osgoode and Son's
+        } else {
+            p = Spawn(class'PayPhone',,,vectm(1117,1969,-430)); //Near Osgoode and Son's
+            p = Spawn(class'PayPhone',,,vectm(-1314,944,-430)); //Near Free Clinic
+        }
+        break;
     case "08_NYC_STREET":
-        if (!isRevision){
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-1219.22, 776.7, -431.58)); //Outside Free Clinic
+            p = Spawn(class'PayPhone',,,vectm(-1216.45, 1014.59, -431.58)); //Outside Free Clinic
+            p = Spawn(class'PayPhone',,,vectm(3522, -3280, -431)); //Outside Nutella Store
+            p = Spawn(class'PayPhone',,,vectm(3522, -3424.4, -431)); //Outside Nutella Store
+            p = Spawn(class'PayPhone',,,vectm(3676.9, -1577.22, -490.4)); //Near bus stop (Tipped Over)
+            p = Spawn(class'PayPhone',,,vectm(3650, -1764.06, -430)); //Near bus stop (Tipped Over)
+            p = Spawn(class'PayPhone',,,vectm(1899.19, 2513.20, -486.25)); //Near Osgoode and Son's (Tipped over)
+            p = Spawn(class'PayPhone',,,vectm(1592.46, 2495.74, -433.14)); //Near Osgoode and Son's (Tipped over)
+        } else {
             p = Spawn(class'PayPhone',,,vectm(1117,1969,-430)); //Near Osgoode and Son's
             p = Spawn(class'PayPhone',,,vectm(-1314,944,-430)); //Near Free Clinic
         }
         break;
     case "02_NYC_BAR":
-    case "04_NYC_BAR":
-    case "08_NYC_BAR":
-        if (!isRevision){
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, 15.8, 75)); //Near the bathroom
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, -96.4, 75)); //Near the bathroom
+        } else{
             p = Spawn(class'PayPhone',,,vectm(-2624,624,72)); //Near the bathroom
         }
         break;
+    case "04_NYC_BAR":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, 15.8, 75)); //Near the bathroom
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, -96.4, 75)); //Near the bathroom
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, -40.4, 75)); //Near the bathroom
+        } else{
+            p = Spawn(class'PayPhone',,,vectm(-2624,624,72)); //Near the bathroom
+        }
+        break;
+    case "08_NYC_BAR":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, 15.1, 74)); //Near the bathroom
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, -40.83, 74)); //Near the bathroom
+            p = Spawn(class'PayPhone',,,vectm(-2667.1, -96.66, 74)); //Near the bathroom
+        } else{
+            p = Spawn(class'PayPhone',,,vectm(-2624,624,72)); //Near the bathroom
+        }
+        break;
+
     case "02_NYC_FREECLINIC":
     case "08_NYC_FREECLINIC":
         if (!isRevision){
             p = Spawn(class'PayPhone',,,vectm(-215,752,-254));  //In the front lobby
+        } else {
+            p = Spawn(class'PayPhone',,,vectm(-203.12, 752.87,-251.78));  //In the front lobby
+        }
+        break;
+
+    case "02_NYC_BATTERYPARK":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2707.23, -171, 400)); //Near Shanty town
+            p = Spawn(class'PayPhone',,,vectm(-3108.31, -171, 400)); //Near Shanty town
+            p = Spawn(class'PayPhone',,,vectm(-3584.65, -171, 400)); //Near Shanty town
+            p = Spawn(class'PayPhone',,,vectm(883, 639, 417.47)); //In Castle Clinton
+            p = Spawn(class'PayPhone',,,vectm(882.97, 520, 415.65)); //In Castle Clinton
+        }
+        break;
+    case "03_NYC_BATTERYPARK":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2708.68, -171, 400)); //Near Shanty town
+            p = Spawn(class'PayPhone',,,vectm(-3108.13, -171, 400)); //Near Shanty town
+        }
+        break;
+    case "04_NYC_BATTERYPARK":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-2709.1, -171, 400)); //Near Shanty town
+            p = Spawn(class'PayPhone',,,vectm(-3108.44, -171, 400)); //Near Shanty town
         }
         break;
     case "03_NYC_BROOKLYNBRIDGESTATION":
         if (!isRevision){
             p = Spawn(class'PayPhone',,,vectm(-660,-1854,435));  //Upper floor, near El Rey
             p = Spawn(class'PayPhone',,,vectm(-660,-1806,435));
+        } else {
+            p = Spawn(class'PayPhone',,,vectm(-669, -1855.67, 433.5));  //Upper floor, near El Rey
+            p = Spawn(class'PayPhone',,,vectm(-669, -1807.72, 433.5));
+        }
+        break;
+    case "04_NYC_NSFHQ":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(-1641.06, -4912.54, 80));  //Near Checkpoint
+            p = Spawn(class'PayPhone',,,vectm(-1641.06, -5041.04, 80));
+        }
+        break;
+
+    case "06_HONGKONG_WANCHAI_COMPOUND":
+        if (isRevision){ //This map only exists in revision, but might as well check
+            p = Spawn(class'PayPhone',,,vectm(-671.12, 2528.5, 84));  //Near Entrance
+            p = Spawn(class'PayPhone',,,vectm(561.36, 2421, 84));  //Near Entrance
+            p = Spawn(class'PayPhone',,,vectm(656.89, 2421, 84));  //Near Entrance
+            p = Spawn(class'PayPhone',,,vectm(-465.27, 5266.2, 66.5));  //Covered Area
+            p = Spawn(class'PayPhone',,,vectm(-465.27, 5218.72, 66.5));  //Covered Area
+            p = Spawn(class'PayPhone',,,vectm(-1147, 4295.44, 66));  //Between Buildings
+            p = Spawn(class'PayPhone',,,vectm(-1147, 4215.07, 66));  //Between Buildings
         }
         break;
     case "09_NYC_DOCKYARD":
@@ -106,6 +215,18 @@ function AddPhoneTriggers(bool isRevision)
             p=Spawn(class'#var(prefix)Phone',,,vectm(2333,2153,53),rotm(0,5688,0));
         }
         break;
+
+    case "10_PARIS_CATACOMBS_METRO":
+        if (isRevision){ //Another Revision-only map
+            p = Spawn(class'PayPhone',,,vectm(974.99, -2581.45, -555));  //In the ATM+ area
+            p = Spawn(class'PayPhone',,,vectm(974.99, -2504.94, -553));
+            //There might be two missing here, but I couldn't find them
+        }
+    case "11_PARIS_UNDERGROUND":
+        if (isRevision){
+            p = Spawn(class'PayPhone',,,vectm(620.99, 304.67, 15.75));
+            p = Spawn(class'PayPhone',,,vectm(617, 464.96, 15.75));
+        }
     }
     i=0;
 
