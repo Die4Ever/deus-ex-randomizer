@@ -61,6 +61,7 @@ struct FlagsSettings {
     var int spoilers; //0=Disallowed, 1=Available
     var int menus_pause; // 0=no pause, 1=vanilla
     var int starting_map;
+    var int newgameplus_scalar;
 
     // leave these at the end for the automated tests
     var int health, energy;// normally just 100
@@ -308,6 +309,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_crowdcontrol', crowdcontrol, mode, str);
     FlagInt('Rando_loadout', loadout, mode, str);
     FlagInt('Rando_newgameplus_loops', newgameplus_loops, mode, str);
+    FlagInt('Rando_newgameplus_scalar', newgameplus_scalar, mode, str);
     FlagInt('Rando_gamemode', gamemode, mode, str);
     FlagInt('Rando_setseed', bSetSeed, mode, str);
     FlagInt('Rando_bingoboardroll', bingoBoardRoll, mode, str);
@@ -415,6 +417,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Loadout";
         case 'Rando_newgameplus_loops':
             return "New Game+ Loop";
+        case 'Rando_newgameplus_scalar':
+            return "NewGame+ scalar"
         case 'Rando_playthrough_id':
             return "Playthrough ID";
         case 'Rando_gamemode':
@@ -625,6 +629,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_removeparismj12':
         case 'Rando_bingo_scale':
         case 'Rando_grenadeswap':
+        case 'flagValToHumanVal':
             return val$"%";
 
         case 'Rando_enemyrespawn':
