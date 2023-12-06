@@ -230,6 +230,7 @@ function AnyEntry()
     FixCleanerBot();
     FixRevisionJock();
     FixRevisionDecorativeInventory();
+    FixInvalidBindNames();
     SetSeed( "DXRFixup AnyEntry missions" );
     if(#defined(mapfixes))
         AnyEntryMapFixes();
@@ -531,6 +532,21 @@ simulated function bool FixInventory(#var(PlayerPawn) p)
     }
 
     return good;
+}
+
+
+//Remove characters that shouldn't be allowed in bindnames (since they are often converted into a name)
+function FixInvalidBindNames()
+{
+    local #var(prefix)ScriptedPawn sp;
+
+    foreach AllActors(class'ScriptedPawn',sp){
+        if (InStr(sp.BindName," ")!=-1){
+            sp.BindName=class'DXRInfo'.static.ReplaceText(sp.BindName," ","");
+            sp.ConBindEvents();
+            warning("FixInvalidBindNames: Fixed "$sp.Name$" bindname, removing a space.  BindName is now '"$sp.BindName$"'");
+        }
+    }
 }
 
 function OverwriteDecorations()
