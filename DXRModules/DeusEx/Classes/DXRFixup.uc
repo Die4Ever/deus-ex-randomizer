@@ -542,7 +542,7 @@ function FixInvalidBindNames()
 
     foreach AllActors(class'ScriptedPawn',sp){
         if (InStr(sp.BindName," ")!=-1){
-            sp.BindName=class'DXRInfo'.static.ReplaceText(sp.BindName," ","");
+            sp.BindName=ReplaceText(sp.BindName," ","");
             sp.ConBindEvents();
             warning("FixInvalidBindNames: Fixed "$sp.Name$" bindname, removing a space.  BindName is now '"$sp.BindName$"'");
         }
