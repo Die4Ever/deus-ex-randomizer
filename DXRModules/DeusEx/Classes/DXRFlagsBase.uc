@@ -68,7 +68,7 @@ struct FlagsSettings {
 
 struct MoreFlagsSettings{
     var int grenadeswap;
-    var int newgameplus_scalar;
+    var int newgameplus_curve_scalar;
 
     var int remove_paris_mj12;// keep this at the end for automated tests
 };
@@ -397,7 +397,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_starting_map', settings.starting_map, mode, str);
     FlagInt('Rando_grenadeswap', moresettings.grenadeswap, mode, str);
 
-    FlagInt('Rando_newgameplus_scalar', moresettings.newgameplus_scalar, mode, str);
+    FlagInt('Rando_newgameplus_curve_scalar', moresettings.newgameplus_curve_scalar, mode, str);
 
     return str;
 }
@@ -418,7 +418,7 @@ simulated function string flagNameToHumanName(name flagname){
             return "Loadout";
         case 'Rando_newgameplus_loops':
             return "New Game+ Loop";
-        case 'Rando_newgameplus_scalar':
+        case 'Rando_newgameplus_curve_scalar':
             return "NewGame+ Scalar";
         case 'Rando_playthrough_id':
             return "Playthrough ID";
@@ -630,7 +630,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_removeparismj12':
         case 'Rando_bingo_scale':
         case 'Rando_grenadeswap':
-        case 'Rando_newgameplus_scalar':
+        case 'Rando_newgameplus_curve_scalar':
             return val$"%";
 
         case 'Rando_enemyrespawn':
