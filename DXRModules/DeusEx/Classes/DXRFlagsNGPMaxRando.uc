@@ -196,21 +196,21 @@ function NewGamePlus()
     }
 
     SetGlobalSeed("NewGamePlus");
-    p.CombatDifficulty=FClamp(p.CombatDifficulty*1.3,0,15); //Anything over 15 is kind of unreasonably impossible
-    NewGamePlusVal(settings.minskill, 1.1, exp, 10, 400);
-    NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 700);
-    NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000);
-    NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100);
-    NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000);
-    NewGamePlusVal(settings.ammo, 0.9, exp, 5, 100);
-    NewGamePlusVal(settings.medkits, 0.9, exp, 5, 100);
-    NewGamePlusVal(settings.multitools, 0.9, exp, 5, 100);
-    NewGamePlusVal(settings.lockpicks, 0.9, exp, 5, 100);
-    NewGamePlusVal(settings.biocells, 0.9, exp, 5, 100);
-    NewGamePlusVal(settings.medbots, 0.9, exp, 3, 100);
-    NewGamePlusVal(settings.repairbots, 0.9, exp, 3, 100);
-    NewGamePlusVal(settings.turrets_add, 1.3, exp, 3, 1000);
-    NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100);
+    p.CombatDifficulty=FClamp(p.CombatDifficulty * 1.3 * moresettings.newgameplus_scalar / 100.0, 0, 15);
+    NewGamePlusVal(settings.minskill, 1.1 * moresettings.newgameplus_scalar / 100.0, exp, 10, 400);
+    NewGamePlusVal(settings.maxskill, 1.1 * moresettings.newgameplus_scalar / 100.0, exp, 10, 700);
+    NewGamePlusVal(settings.enemiesrandomized, 1.2 * moresettings.newgameplus_scalar / 100.0, exp, 10, 1000);
+    NewGamePlusVal(settings.enemystats, 1.2 * moresettings.newgameplus_scalar / 100.0, exp, 5, 100);
+    NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2 * moresettings.newgameplus_scalar / 100.0, exp, 10, 1000);
+    NewGamePlusVal(settings.ammo, 0.9 * moresettings.newgameplus_scalar / 100.0, exp, 5, 100);
+    NewGamePlusVal(settings.medkits, 0.9 * moresettings.newgameplus_scalar / 100.0, exp, 5, 100);
+    NewGamePlusVal(settings.multitools, 0.9 * moresettings.newgameplus_scalar / 100.0, exp, 5, 100);
+    NewGamePlusVal(settings.lockpicks, 0.9 * moresettings.newgameplus_scalar / 100.0, exp, 5, 100);
+    NewGamePlusVal(settings.biocells, 0.9 * moresettings.newgameplus_scalar / 100.0, exp, 5, 100);
+    NewGamePlusVal(settings.medbots, 0.9 * moresettings.newgameplus_scalar / 100.0, exp, 3, 100);
+    NewGamePlusVal(settings.repairbots, 0.9 * moresettings.newgameplus_scalar / 100.0, exp, 3, 100);
+    NewGamePlusVal(settings.turrets_add, 1.3 * moresettings.newgameplus_scalar / 100.0, exp, 3, 1000);
+    NewGamePlusVal(settings.merchants, 0.9 * moresettings.newgameplus_scalar / 100.0, exp, 5, 100);
     settings.bingo_win = bingo_win;
     settings.bingo_freespaces = bingo_freespaces;
     if (randomStart!=0){

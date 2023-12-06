@@ -80,6 +80,9 @@ function BindControls(optional string action)
     EnumOption("Pause", 1, f.settings.menus_pause);
     EnumOption("Don't Pause", 0, f.settings.menus_pause);
 
+    NewMenuItem("NewGame+ Scaling %", "foobar");
+    Slider(f.moresettings.newgameplus_scalar, 1, 200);
+
     NewGroup("Bingo");
 
     NewMenuItem("Bingo Win", "How many completed lines to instantly win");

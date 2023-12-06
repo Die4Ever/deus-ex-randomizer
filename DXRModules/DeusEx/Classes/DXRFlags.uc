@@ -176,6 +176,7 @@ function CheckConfig()
     difficulty_settings[i].energy = 200;
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].newgameplus_scalar = 100;
     i++;
 #endif
 
@@ -246,6 +247,7 @@ function CheckConfig()
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].newgameplus_scalar = 100;
     i++;
 
 #ifdef hx
@@ -315,6 +317,7 @@ function CheckConfig()
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].newgameplus_scalar = 100;
     i++;
 
 #ifdef hx
@@ -384,6 +387,7 @@ function CheckConfig()
     difficulty_settings[i].energy = 100;
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].newgameplus_scalar = 100;
     i++;
 
 #ifdef hx
@@ -453,6 +457,7 @@ function CheckConfig()
     difficulty_settings[i].energy = 80;
     difficulty_settings[i].starting_map = 0;
     more_difficulty_settings[i].grenadeswap = 100;
+    more_difficulty_settings[i].newgameplus_scalar = 100;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {
