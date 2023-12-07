@@ -616,6 +616,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.prison_pocket = 100; //Keep your items in mission 5
         bingo_duration = 1;
         bingo_scale = 0;
+        moresettings.newgameplus_curve_scalar = 50;
 
         l("applying WaltonWare, DXRando: " $ dxr @ dxr.seed);
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, 10);

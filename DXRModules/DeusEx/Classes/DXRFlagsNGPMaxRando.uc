@@ -160,10 +160,11 @@ function NewGamePlus()
     local DataStorage ds;
     local DXRSkills skills;
     local DXRAugmentations augs;
-    local int i, bingo_win,bingo_freespaces;
+    local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar;
+    local float CombatDifficulty;
     local float exp;
     local int randomStart;
-    local int newgameplus_curve_scalar;
+    local int oldseed;
 
     if( flagsversion == 0 ) {
         warning("NewGamePlus() flagsversion == 0");
@@ -182,24 +183,28 @@ function NewGamePlus()
     p.saveCount=0;
     exp = 1;
     randomStart = settings.starting_map;
-    bingo_win = settings.bingo_win;
-    bingo_freespaces = settings.bingo_freespaces;
-    newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
 
     // always enable maxrando when doing NG+?
     maxrando = 1;
     if(maxrando > 0) {
         // rollback settings to the default for the current difficulty
         // we only want to do this on maxrando because we want to retain the user's custom choices
-        SetDifficulty(difficulty);
+        bingo_win = settings.bingo_win;
+        bingo_freespaces = settings.bingo_freespaces;
+        newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
+        CombatDifficulty = p.CombatDifficulty;
         ExecMaxRando();
+        settings.bingo_win = bingo_win;
+        settings.bingo_freespaces = bingo_freespaces;
+        moresettings.newgameplus_curve_scalar = newgameplus_curve_scalar;
+        SetDifficulty(difficulty);
+
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;
     }
 
-    SetGlobalSeed("NewGamePlus");
-    moresettings.newgameplus_curve_scalar = newgameplus_curve_scalar;
-    NewGamePlusValFloat(p.CombatDifficulty, 1.3, 1, 0, 15); //Anything over 15 is kind of unreasonably impossible
+    oldseed = dxr.SetSeed(seed - newgameplus_loops);
+    NewGamePlusValFloat(p.CombatDifficulty, 1.3, exp, 0, 15); // Anything over 15 is kind of unreasonably impossible
     NewGamePlusValInt(settings.minskill, 1.1, exp, 10, 400);
     NewGamePlusValInt(settings.maxskill, 1.1, exp, 10, 700);
     NewGamePlusValInt(settings.enemiesrandomized, 1.2, exp, 10, 1000);
@@ -214,8 +219,9 @@ function NewGamePlus()
     NewGamePlusValInt(settings.repairbots, 0.9, exp, 3, 100);
     NewGamePlusValInt(settings.turrets_add, 1.3, exp, 3, 1000);
     NewGamePlusValInt(settings.merchants, 0.9, exp, 5, 100);
-    settings.bingo_win = bingo_win;
-    settings.bingo_freespaces = bingo_freespaces;
+    dxr.SetSeed(oldseed);
+
+    SetGlobalSeed("NewGamePlus");
     if (randomStart!=0){
         settings.starting_map = class'DXRStartMap'.static.ChooseRandomStartMap(self, randomStart);
     }
@@ -345,14 +351,14 @@ simulated function MaxRandoValPair(out int min, out int max)
 
 function NewGamePlusValInt(out int val, float curve, float exp, int min, int max)
 {
-    curve = 1.0 + ((curve - 1.0) * float(moresettings.newgameplus_curve_scalar) / 100.0);
+    curve = 1.0 + ((curve - 1.0) * float(moresettings.newgameplus_curve_scalar) / 100.0) + (rngfn() * 0.1);
     val = val * curve ** exp; // int *= float doesn't give as good accuracy as int = int*float
     val = Clamp(val, min, max);
 }
 
 function NewGamePlusValFloat(out float val, float curve, float exp, float min, float max)
 {
-    curve = 1.0 + ((curve - 1.0) * float(moresettings.newgameplus_curve_scalar) / 100.0);
+    curve = 1.0 + ((curve - 1.0) * float(moresettings.newgameplus_curve_scalar) / 100.0) + (rngfn() * 0.1);
     val = val * curve ** exp;
     val = FClamp(val, min, max);
 }
