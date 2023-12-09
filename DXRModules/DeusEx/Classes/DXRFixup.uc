@@ -540,7 +540,7 @@ function FixInvalidBindNames()
 {
     local #var(prefix)ScriptedPawn sp;
 
-    foreach AllActors(class'ScriptedPawn',sp){
+    foreach AllActors(class'#var(prefix)ScriptedPawn',sp){
         if (InStr(sp.BindName," ")!=-1){
             sp.BindName=ReplaceText(sp.BindName," ","");
             sp.ConBindEvents();
