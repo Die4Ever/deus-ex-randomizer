@@ -2753,7 +2753,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Binoculars_peeptime":
             return "Watch binoculars through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "roof_elevator":
-            return "Use the roof elevator in the Champs D'Elysees right at the start.  There will be a book nearby with the code for the keypad.";
+            return "Use the roof elevator in Denfert-Rochereau right at the start.  There will be a book nearby with the code for the keypad.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3115,7 +3115,7 @@ defaultproperties
     bingo_options(310)=(event="WatchDogs",desc="Watch Dogs (%s seconds)",max=15,missions=21604)
     bingo_options(311)=(event="Cat_peeptime",desc="Look at that kitty! (%s seconds)",max=15,missions=7256)
     bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",max=15)
-    bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Champs D'Elysees streets",max=1,missions=1024)
+    bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert-Rochereau",max=1,missions=1024)
 
 
 
