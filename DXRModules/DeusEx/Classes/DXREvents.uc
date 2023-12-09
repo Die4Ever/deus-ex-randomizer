@@ -350,14 +350,15 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
             bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
             bt.MakePeepable();
         }
-        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
         foreach AllActors(class'#var(prefix)Female2',f) {
             if(f.BindName == "Shannon"){
@@ -464,14 +465,15 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
             bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
             bt.MakePeepable();
         }
-        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
         foreach AllActors(class'#var(prefix)Female2',f) {
             if(f.BindName == "Shannon"){
@@ -657,14 +659,15 @@ function SetWatchFlags() {
         if(RevisionMaps){
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1725,-1062,-40),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(1130,-150,310),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
         } else {
             bt = class'BingoTrigger'.static.Create(self,'AlexCloset',vectm(1551.508301,-820.408875,-39.901726),95,40);
             bt = class'BingoTrigger'.static.Create(self,'BathroomFlags',vectm(240.180969,-385.104431,280.098511),80,40);
+            bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
             bt = class'BingoTrigger'.static.Create(self,'un_bboard_peepedtex',vectm(497,1660,317.7),80,40);
             bt.MakePeepable();
         }
-        bt.MakeClassProximityTrigger(class'#var(prefix)FlagPole');
 
         foreach AllActors(class'#var(prefix)Female2',f) {
             if(f.BindName == "Shannon"){
@@ -3115,7 +3118,7 @@ defaultproperties
     bingo_options(310)=(event="WatchDogs",desc="Watch Dogs (%s seconds)",max=15,missions=21604)
     bingo_options(311)=(event="Cat_peeptime",desc="Look at that kitty! (%s seconds)",max=15,missions=7256)
     bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",max=15)
-    bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert-Rochereau",max=1,missions=1024)
+    bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Denfert - Rochereau",max=1,missions=1024)
 
 
 
