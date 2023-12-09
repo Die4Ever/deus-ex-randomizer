@@ -419,7 +419,7 @@ simulated function string flagNameToHumanName(name flagname){
         case 'Rando_newgameplus_loops':
             return "New Game+ Loop";
         case 'Rando_newgameplus_curve_scalar':
-            return "NewGame+ Curve Scalar";
+            return "New Game+ Curve Scalar";
         case 'Rando_playthrough_id':
             return "Playthrough ID";
         case 'Rando_gamemode':
