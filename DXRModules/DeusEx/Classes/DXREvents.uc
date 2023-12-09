@@ -2753,7 +2753,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "Binoculars_peeptime":
             return "Watch binoculars through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "roof_elevator":
-            return "Use the roof elevator in the Champs D'Elysees right at the start.";
+            return "Use the roof elevator in the Champs D'Elysees right at the start.  There will be a book nearby with the code for the keypad.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
