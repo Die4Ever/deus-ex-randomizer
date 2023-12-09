@@ -187,7 +187,12 @@ function AddMutualExclusion(int L1, int L2)
 
 function int InitGoalsByMod(int mission, string map)
 {
-    if (#defined(revision)){
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    l("InitGoalsByMod: Using Revision Maps? "$RevisionMaps);
+
+    if (RevisionMaps){
         return InitGoalsRev(dxr.dxInfo.missionNumber, dxr.localURL);
     } else {
         return InitGoals(dxr.dxInfo.missionNumber, dxr.localURL);

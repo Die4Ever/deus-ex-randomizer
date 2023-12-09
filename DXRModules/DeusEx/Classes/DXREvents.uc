@@ -314,6 +314,9 @@ function SetWatchFlags() {
 
     RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
+    //For debugging purposes - can probably remove later
+    l("SetWatchFlags: Setting flag watches and bingo locations based on Revision maps? "$RevisionMaps);
+
     //General checks
     WatchActors();
     AddPhoneTriggers(RevisionMaps);
