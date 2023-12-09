@@ -998,7 +998,7 @@ function SetWatchFlags() {
         }
 
         bt = class'BingoTrigger'.static.Create(self,'WarehouseEntered',vectm(-580.607361,-2248.497803,-551.895874),200,160);
-
+        bt = class'BingoTrigger'.static.Create(self,'roof_elevator',vect(0,0,0));
         break;
     case "10_PARIS_CATACOMBS_TUNNELS":
         foreach AllActors(class'#var(prefix)WIB',wib){
@@ -2752,6 +2752,8 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             return "Watch cats through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
         case "Binoculars_peeptime":
             return "Watch binoculars through binoculars or a scope for enough time.  Note that this will only count in full second increments, so you need to keep the crosshairs centered!";
+        case "roof_elevator":
+            return "Use the roof elevator in the Champs D'Elysees right at the start.";
         default:
             return "Unable to find help text for event '"$event$"'|nReport this to the developers!";
     }
@@ -3113,6 +3115,7 @@ defaultproperties
     bingo_options(310)=(event="WatchDogs",desc="Watch Dogs (%s seconds)",max=15,missions=21604)
     bingo_options(311)=(event="Cat_peeptime",desc="Look at that kitty! (%s seconds)",max=15,missions=7256)
     bingo_options(312)=(event="Binoculars_peeptime",desc="Who Watches the Watchers? (%s seconds)",max=15)
+    bingo_options(313)=(event="roof_elevator",desc="Use the roof elevator in Champs D'Elysees streets",max=1,missions=1024)
 
 
 
