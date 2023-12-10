@@ -408,5 +408,5 @@ function ExtendedTests()
     fval = NewGamePlusVal(50.0, 1.01, 3, 0, 100);
     test(fval > 50.0, "NewGamePlusVal doesn't switch from increasing to decreasing);
 
-    dxr.seed = oldSeed;
+    dxr.SetSeed(oldSeed);
 }
