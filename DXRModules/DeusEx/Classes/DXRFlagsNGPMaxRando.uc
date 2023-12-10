@@ -403,10 +403,10 @@ function ExtendedTests()
     oldSeed = dxr.SetSeed(9876); // first two rngfn values are: 0.759380, -0.177720
 
     fval = NewGamePlusVal(50.0, 0.99, 3, 0, 100);
-    test(fval < 50.0, "NewGamePlusVal doesn't switch from decreasing to increasing);
+    test(fval < 50.0, "NewGamePlusVal doesn't switch from decreasing to increasing");
 
     fval = NewGamePlusVal(50.0, 1.01, 3, 0, 100);
-    test(fval > 50.0, "NewGamePlusVal doesn't switch from increasing to decreasing);
+    test(fval > 50.0, "NewGamePlusVal doesn't switch from increasing to decreasing");
 
     dxr.SetSeed(oldSeed);
 }
