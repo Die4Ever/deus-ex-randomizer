@@ -2284,7 +2284,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
         case "TongTargets":
             return "Shoot at the targets in the shooting range in Tracer Tong's hideout.";
         case "WanChaiStores":
-            return "Visit enough of the stores in the Wan Chai market by walking up to them.";
+            return "Visit all of the stores in the Wan Chai market by walking up to them.";
         case "HongKongBBall":
             return "Throw the basketball into the net on the rooftop of the MJ12 helibase in Hong Kong.";
         case "CanalDrugDeal":
@@ -2949,7 +2949,7 @@ defaultproperties
     bingo_options(147)=(event="OceanLabCrewChamber",desc="Visit %s crew chambers in the Ocean Lab",max=4,missions=16384)
     bingo_options(148)=(event="HeliosControlArms",desc="Jump down the control arms in Helios' chamber",max=1,missions=32768)
     bingo_options(149)=(event="TongTargets",desc="Use the shooting range in Tong's base",max=1,missions=64)
-    bingo_options(150)=(event="WanChaiStores",desc="Visit %s stores in the Wan Chai market",max=4,missions=64)
+    bingo_options(150)=(event="WanChaiStores",desc="Visit all of the stores in the Wan Chai market",max=4,missions=64)
     bingo_options(151)=(event="HongKongBBall",desc="Shoot some hoops in Hong Kong",max=1,missions=64)
     bingo_options(152)=(event="CanalDrugDeal",desc="Walk in on a drug deal in progress",max=1,missions=64)
     bingo_options(153)=(event="HongKongGrays",desc="Enter the Hong Kong Gray enclosure",max=1,missions=64)
