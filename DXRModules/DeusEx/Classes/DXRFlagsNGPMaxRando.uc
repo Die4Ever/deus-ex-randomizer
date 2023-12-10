@@ -161,7 +161,6 @@ function NewGamePlus()
     local DXRSkills skills;
     local DXRAugmentations augs;
     local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar;
-    local float CombatDifficulty;
     local float exp;
     local int randomStart;
     local int oldseed;
@@ -192,7 +191,6 @@ function NewGamePlus()
         bingo_win = settings.bingo_win;
         bingo_freespaces = settings.bingo_freespaces;
         newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
-        CombatDifficulty = p.CombatDifficulty;
         SetDifficulty(difficulty);
         ExecMaxRando();
         settings.bingo_win = bingo_win;
@@ -204,6 +202,8 @@ function NewGamePlus()
     }
 
     dxr.SetSeed(seed - newgameplus_loops);
+    p.CombatDifficulty = DXRFlags(self).GetDifficulty(difficulty).CombatDifficulty;
+
     p.CombatDifficulty = NewGamePlusVal(p.CombatDifficulty, 1.3, exp, 0, 15); // Anything over 15 is kind of unreasonably impossible
     settings.minskill = NewGamePlusVal(settings.minskill, 1.1, exp, 10, 400);
     settings.maxskill = NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 700);
