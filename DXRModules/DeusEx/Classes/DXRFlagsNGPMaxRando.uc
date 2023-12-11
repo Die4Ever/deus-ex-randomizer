@@ -160,7 +160,7 @@ function NewGamePlus()
     local DataStorage ds;
     local DXRSkills skills;
     local DXRAugmentations augs;
-    local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar;
+    local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar, newgameplus_max_item_carryover;
     local float exp;
     local int randomStart;
     local int oldseed;
@@ -191,11 +191,13 @@ function NewGamePlus()
         bingo_win = settings.bingo_win;
         bingo_freespaces = settings.bingo_freespaces;
         newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
+        newgameplus_max_item_carryover = moresettings.newgameplus_max_item_carryover;
         SetDifficulty(difficulty);
         ExecMaxRando();
         settings.bingo_win = bingo_win;
         settings.bingo_freespaces = bingo_freespaces;
         moresettings.newgameplus_curve_scalar = newgameplus_curve_scalar;
+        moresettings.newgameplus_max_item_carryover = newgameplus_max_item_carryover;
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;
@@ -261,7 +263,7 @@ function NewGamePlus()
 
     ClearInHand(p);
     RemoveRandomWeapon(p);
-    MaxMultipleItems(p, 5);
+    MaxMultipleItems(p, moresettings.newgameplus_max_item_carryover);
 
     //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
     //Technically it should make up for levels you skipped past, so maybe?

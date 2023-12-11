@@ -80,9 +80,6 @@ function BindControls(optional string action)
     EnumOption("Pause", 1, f.settings.menus_pause);
     EnumOption("Don't Pause", 0, f.settings.menus_pause);
 
-    NewMenuItem("New Game+ Scaling %", "Scales the curve of New Game+ changes over successive loops.");
-    Slider(f.moresettings.newgameplus_curve_scalar, 0, 200);
-
     NewGroup("Bingo");
 
     NewMenuItem("Bingo Win", "How many completed lines to instantly win");
@@ -344,6 +341,13 @@ function BindControls(optional string action)
 
     NewMenuItem("Aug Strength Rando %", "How much to randomize the strength of augmentations.");
     Slider(f.settings.aug_value_rando, 0, 100);// this is a wet/dry scale, 0 to 100%
+
+    NewGroup("New Game+");
+
+    NewMenuItem("Scaling %", "Scales the curve of New Game+ changes over successive loops.");
+    Slider(f.moresettings.newgameplus_curve_scalar, 0, 200);
+    NewMenuItem("Max Item Carryover", "Maximum number of the same item that can carry over between loops, not including stackable items.");
+    Slider(f.moresettings.newgameplus_max_item_carryover, 0, 30);
 
     if( action == "NEXT" ) _InvokeNewGameScreen(combatDifficulty, InitDxr());
     if( action == "RANDOMIZE" ) RandomizeOptions(f);

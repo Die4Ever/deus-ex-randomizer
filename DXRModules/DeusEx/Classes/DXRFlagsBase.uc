@@ -69,6 +69,7 @@ struct FlagsSettings {
 struct MoreFlagsSettings{
     var int grenadeswap;
     var int newgameplus_curve_scalar;
+    var int newgameplus_max_item_carryover;
 
     var int remove_paris_mj12;// keep this at the end for automated tests
 };
@@ -398,6 +399,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_grenadeswap', moresettings.grenadeswap, mode, str);
 
     FlagInt('Rando_newgameplus_curve_scalar', moresettings.newgameplus_curve_scalar, mode, str);
+    FlagInt('Rando_newgameplus_max_item_carryover', moresettings.newgameplus_max_item_carryover, mode, str);
 
     return str;
 }
@@ -418,8 +420,6 @@ simulated function string flagNameToHumanName(name flagname){
             return "Loadout";
         case 'Rando_newgameplus_loops':
             return "New Game+ Loop";
-        case 'Rando_newgameplus_curve_scalar':
-            return "New Game+ Curve Scalar";
         case 'Rando_playthrough_id':
             return "Playthrough ID";
         case 'Rando_gamemode':
@@ -562,6 +562,10 @@ simulated function string flagNameToHumanName(name flagname){
             return "Bingo Board Re-rolls";
         case 'Rando_grenadeswap':
             return "Grenades";
+        case 'Rando_newgameplus_curve_scalar':
+            return "New Game+ Curve Scalar";
+        case 'Rando_newgameplus_max_item_carryover':
+            return "New Game+ Max Item Carryover";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -588,6 +592,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_health':
         case 'Rando_energy':
         case 'Rando_bingoboardroll':
+        case 'Rando_newgameplus_max_item_carryover':
             return string(val);
 
         //Return the number as hex
