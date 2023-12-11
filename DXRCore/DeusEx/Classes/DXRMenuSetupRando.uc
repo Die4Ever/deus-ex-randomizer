@@ -80,6 +80,9 @@ function BindControls(optional string action)
     EnumOption("Pause", 1, f.settings.menus_pause);
     EnumOption("Don't Pause", 0, f.settings.menus_pause);
 
+    NewMenuItem("New Game+ Scaling %", "Scales the curve of New Game+ changes over successive loops.");
+    Slider(f.moresettings.newgameplus_curve_scalar, 0, 200);
+
     NewGroup("Bingo");
 
     NewMenuItem("Bingo Win", "How many completed lines to instantly win");
