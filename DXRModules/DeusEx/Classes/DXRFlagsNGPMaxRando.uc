@@ -201,7 +201,7 @@ function NewGamePlus()
         exp = newgameplus_loops;
     }
 
-    dxr.SetSeed(seed - newgameplus_loops);
+    dxr.SetSeed("NG+ curve tweak " $ (seed - newgameplus_loops));
     p.CombatDifficulty = DXRFlags(self).GetDifficulty(difficulty).CombatDifficulty;
 
     p.CombatDifficulty = NewGamePlusVal(p.CombatDifficulty, 1.3, exp, 0, 15); // Anything over 15 is kind of unreasonably impossible
