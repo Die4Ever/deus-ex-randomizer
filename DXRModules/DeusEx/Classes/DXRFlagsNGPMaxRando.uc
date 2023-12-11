@@ -201,7 +201,7 @@ function NewGamePlus()
         exp = newgameplus_loops;
     }
 
-    dxr.SetSeed("NG+ curve tweak " $ (seed - newgameplus_loops));
+    dxr.SetSeed(dxr.Crc("NG+ curve tweak " $ (seed - newgameplus_loops)));
     p.CombatDifficulty = DXRFlags(self).GetDifficulty(difficulty).CombatDifficulty;
 
     p.CombatDifficulty = NewGamePlusVal(p.CombatDifficulty, 1.3, exp, 0, 15); // Anything over 15 is kind of unreasonably impossible
@@ -351,10 +351,12 @@ simulated function MaxRandoValPair(out int min, out int max)
 function float NewGamePlusVal(float val, float curve, float exp, float min, float max)
 {
     local bool increases;
+    local float tweak;
 
     increases = curve > 1.0;
 
-    curve = 1.0 + ((curve - 1.0) * float(moresettings.newgameplus_curve_scalar) / 100.0) + (rngfn() * 0.1);
+    tweak = rngfn() * 0.045;
+    curve = 1.0 + ((curve - 1.0) * float(moresettings.newgameplus_curve_scalar) / 100.0) + tweak;
     if (increases) {
         curve = FMax(curve, 1.02);
     } else {
