@@ -375,8 +375,12 @@ function ExtendedTests()
 
     Super.ExtendedTests();
 
+    oldSeed = dxr.seed;
+    dxr.seed = 123456;
+    SetGlobalSeed("NG+ tests");
+
     val = NewGamePlusVal(5, 1.2, 3, 1, 100);
-    testint(val, 8, "NewGamePlusVal 1.2 goes up");
+    testint(val, 7, "NewGamePlusVal 1.2 goes up");
 
     val = NewGamePlusVal(5, 0.8, 3, 1, 100);
     testint(val, 2, "NewGamePlusVal 1.2 goes down");
@@ -393,8 +397,6 @@ function ExtendedTests()
     val = NewGamePlusVal(-5, 1.2, 3, -6, 100);
     testint(val, -6, "NewGamePlusVal 1.2 negative value");
 
-    oldSeed = dxr.seed;
-    dxr.seed = 123456;
     for(i=0; i<100; i++) {
         dxr.seed = 123456 + i;
         s = s @ class'DXRStartMap'.static.ChooseRandomStartMap(self, -1);
