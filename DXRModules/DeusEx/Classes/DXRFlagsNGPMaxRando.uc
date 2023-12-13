@@ -202,7 +202,12 @@ function NewGamePlus()
     }
 
     dxr.SetSeed(dxr.Crc("NG+ curve tweak " $ (seed - newgameplus_loops)));
+#ifdef hx
+    p.CombatDifficulty = 3;// I don't think NG+ works in HX anyways?
+#else
     p.CombatDifficulty = DXRFlags(self).GetDifficulty(difficulty).CombatDifficulty;
+#endif
+
 
     p.CombatDifficulty = NewGamePlusVal(p.CombatDifficulty, 1.3, exp, 0, 15); // Anything over 15 is kind of unreasonably impossible
     settings.minskill = NewGamePlusVal(settings.minskill, 1.1, exp, 10, 400);
