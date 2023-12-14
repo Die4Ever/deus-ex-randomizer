@@ -41,11 +41,14 @@ function PreFirstEntryMapFixes()
     local #var(DeusExPrefix)Mover door;
     local #var(prefix)NanoKey key;
     local #var(prefix)PigeonGenerator pg;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch (dxr.localURL)
     {
-#ifdef vanilla
     case "04_NYC_HOTEL":
+#ifdef vanilla
         foreach AllActors(class'OrdersTrigger', ot, 'PaulSafe') {
             if( ot.Orders == 'Leaving' )
                 ot.Orders = 'Seeking';
@@ -65,29 +68,31 @@ function PreFirstEntryMapFixes()
                 st.awardMessage = "Saved Paul";
             }
         }
-
-        Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
-
-        key = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74));
-        key.KeyID = 'CrackRoom';
-        key.Description = "'Ton Hotel, North Room Key";
-        if(dxr.flags.settings.keysrando > 0)
-            GlowUp(key);
-
-        key = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180));
-        key.KeyID = 'Apartment';
-        key.Description = "Apartment key";
-        if(dxr.flags.settings.keysrando > 0)
-            GlowUp(key);
-
-        SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
-        Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
-        Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
-        Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
-        Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
-        Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
-        break;
 #endif
+
+        if (VanillaMaps){
+            Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+
+            key = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74));
+            key.KeyID = 'CrackRoom';
+            key.Description = "'Ton Hotel, North Room Key";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(key);
+
+            key = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180));
+            key.KeyID = 'Apartment';
+            key.Description = "Apartment key";
+            if(dxr.flags.settings.keysrando > 0)
+                GlowUp(key);
+
+            SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+            Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
+            Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
+            Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
+            Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
+            Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
+        }
+        break;
 
     case "04_NYC_NSFHQ":
         foreach AllActors(class'#var(prefix)AutoTurret', turret) {
@@ -213,6 +218,11 @@ function AnyEntryMapFixes()
 #ifdef revision
     local DXRKeypad k;
 #endif
+    local bool RevisionMaps;
+    local bool VanillaMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     DeleteConversationFlag(GetConversation('AnnaBadMama'), 'TalkedToPaulAfterMessage_Played', true);
     if(dxr.flagbase.GetBool('NSFSignalSent')) {
@@ -240,19 +250,19 @@ function AnyEntryMapFixes()
         FixConversationFlag(GetConversation('SandraMadAtPlayer'), 'PlayerKilledRenton', true, 'AlwaysFalse', true);
         break;
 
-#ifdef vanillamaps
     case "04_NYC_SMUG":
-        if( dxr.flagbase.GetBool('FordSchickRescued') )
-        {
-            foreach AllActors(class'FordSchick', ford)
-                ford.EnterWorld();
+        if(VanillaMaps){
+            if( dxr.flagbase.GetBool('FordSchickRescued') )
+            {
+                foreach AllActors(class'FordSchick', ford)
+                    ford.EnterWorld();
+            }
         }
         break;
-#endif
 
 #ifdef revision
     case "04_NYC_STREET":
-        if( dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played') )
+        if( dxr.flagbase.GetBool('TalkedToPaulAfterMessage_Played') && RevisionMaps )
         {
             foreach AllActors(class'DXRKeypad',k,'SubKeypad'){
                 k.SetCollision(true);

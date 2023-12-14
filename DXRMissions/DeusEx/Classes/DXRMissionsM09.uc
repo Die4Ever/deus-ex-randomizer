@@ -211,11 +211,13 @@ function PreFirstEntryMapFixes()
     local DeusExMover dxm;
     local Actor a;
     local name barrelName;
+    local bool RevisionMaps;
 
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     if( dxr.localURL == "09_NYC_GRAVEYARD" ) {
         // //barrel next to the transmitter thing, it explodes when I move it
-        if(#defined(revision)){
+        if(RevisionMaps){
             barrelName='EMOff';
         } else {
             barrelName='BarrelOFun';
@@ -227,7 +229,7 @@ function PreFirstEntryMapFixes()
 
         SpawnDatacubePlaintext(vectm(1102.252563,821.384338,26.370010),rotm(0,0,0),"I installed that big device you asked for, but it's really blasting out a lot of EM interference...|n|nIf an FCC inspector comes around, you can turn it off by using the code 8854 ");
     } else if (dxr.localURL=="09_NYC_SHIPBELOW"){
-        if(#defined(revision)){
+        if(RevisionMaps){
             foreach AllActors(class'DeusExMover',dxm){
                 if (dxm.Name=='DeusExMover64' ||
                     dxm.Name=='DeusExMover16' ||

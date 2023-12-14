@@ -13,6 +13,9 @@ function PreFirstEntryMapFixes()
     local ZoneInfo zi;
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)ComputerSecurity cs;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     // shut up, Tong! (reduced rando is not as focused on replays compared to normal rando)
     if(!dxr.flags.IsReducedRando()) {
@@ -48,66 +51,69 @@ function PreFirstEntryMapFixes()
         }
         break;
 
-#ifdef vanillamaps
     case "10_PARIS_CATACOMBS_TUNNELS":
-        foreach AllActors(class'Trigger', t)
-            if( t.Event == 'MJ12CommandoSpecial' )
-                t.Touch(player());// make this guy patrol instead of t-pose
+        if (VanillaMaps){
+            foreach AllActors(class'Trigger', t)
+                if( t.Event == 'MJ12CommandoSpecial' )
+                    t.Touch(player());// make this guy patrol instead of t-pose
 
-        AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
-        AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
+            AddSwitch( vect(897.238892, -120.852928, -9.965580), rot(0,0,0), 'catacombs_blastdoor02' );
+            AddSwitch( vect(-2190.893799, 1203.199097, -6.663990), rot(0,0,0), 'catacombs_blastdoorB' );
 
-        class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32));
-        class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
-        class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
-        class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
-
+            class'PlaceholderEnemy'.static.Create(self,vectm(-362,-3444,-32));
+            class'PlaceholderEnemy'.static.Create(self,vectm(-743,677,-256));
+            class'PlaceholderEnemy'.static.Create(self,vectm(-1573,-113,-64));
+            class'PlaceholderEnemy'.static.Create(self,vectm(781,1156,-32));
+        }
         break;
 
     case "10_PARIS_CHATEAU":
-        foreach AllActors(class'DeusExMover', m, 'everettsignal')
-            m.Tag = 'everettsignaldoor';
-        d = Spawn(class'Dispatcher',, 'everettsignal', vectm(176.275253, 4298.747559, -148.500031) );
-        d.OutEvents[0] = 'everettsignaldoor';
-        AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
+        if (VanillaMaps){
+            foreach AllActors(class'DeusExMover', m, 'everettsignal')
+                m.Tag = 'everettsignaldoor';
+            d = Spawn(class'Dispatcher',, 'everettsignal', vectm(176.275253, 4298.747559, -148.500031) );
+            d.OutEvents[0] = 'everettsignaldoor';
+            AddSwitch( vect(-769.359985, -4417.855469, -96.485504), rot(0, 32768, 0), 'everettsignaldoor' );
 
-        //speed up the secret door...
-        foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
-            d.OutDelays[1] = 0;
-            d.OutDelays[2] = 0;
-            d.OutDelays[3] = 0;
-            d.OutEvents[2] = '';
-            d.OutEvents[3] = '';
-        }
-        foreach AllActors(class'DeusExMover', m, 'secret_candle') {
-            m.MoveTime = 0.5;
-        }
-        foreach AllActors(class'DeusExMover', m, 'cellar_door') {
-            m.MoveTime = 1;
+            //speed up the secret door...
+            foreach AllActors(class'Dispatcher', d, 'cellar_doordispatcher') {
+                d.OutDelays[1] = 0;
+                d.OutDelays[2] = 0;
+                d.OutDelays[3] = 0;
+                d.OutEvents[2] = '';
+                d.OutEvents[3] = '';
+            }
+            foreach AllActors(class'DeusExMover', m, 'secret_candle') {
+                m.MoveTime = 0.5;
+            }
+            foreach AllActors(class'DeusExMover', m, 'cellar_door') {
+                m.MoveTime = 1;
+            }
         }
         break;
     case "10_PARIS_METRO":
-        //If neither flag is set, JC never talked to Jaime, so he just didn't bother
-        if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
-            //Need to pretend he *was* recruited, so that he doesn't spawn
-            dxr.flagbase.SetBool('JaimeRecruited',True);
-        }
-        // fix the night manager sometimes trying to talk to you while you're flying away https://www.youtube.com/watch?v=PeLbKPSHSOU&t=6332s
-        c = GetConversation('MeetNightManager');
-        if(c!=None) {
-            c.bInvokeBump = false;
-            c.bInvokeSight = false;
-            c.bInvokeRadius = false;
-        }
-        foreach AllActors(class'#var(prefix)JaimeReyes', j) {
-            RemoveFears(j);
-        }
+        if (VanillaMaps){
+            //If neither flag is set, JC never talked to Jaime, so he just didn't bother
+            if (!dxr.flagbase.GetBool('JaimeRecruited') && !dxr.flagbase.GetBool('JaimeLeftBehind')){
+                //Need to pretend he *was* recruited, so that he doesn't spawn
+                dxr.flagbase.SetBool('JaimeRecruited',True);
+            }
+            // fix the night manager sometimes trying to talk to you while you're flying away https://www.youtube.com/watch?v=PeLbKPSHSOU&t=6332s
+            c = GetConversation('MeetNightManager');
+            if(c!=None) {
+                c.bInvokeBump = false;
+                c.bInvokeSight = false;
+                c.bInvokeRadius = false;
+            }
+            foreach AllActors(class'#var(prefix)JaimeReyes', j) {
+                RemoveFears(j);
+            }
 
-        // make the apartment stairs less hidden, not safe to have stairs without a light!
-        CandleabraLight(vect(1825.758057, 1481.900024, 576.077698), rot(0, 16384, 0));
-        CandleabraLight(vect(1162.240112, 1481.900024, 879.068848), rot(0, 16384, 0));
+            // make the apartment stairs less hidden, not safe to have stairs without a light!
+            CandleabraLight(vect(1825.758057, 1481.900024, 576.077698), rot(0, 16384, 0));
+            CandleabraLight(vect(1162.240112, 1481.900024, 879.068848), rot(0, 16384, 0));
+        }
         break;
-#endif
 
     case "10_PARIS_CLUB":
         foreach AllActors(class'ScriptedPawn',sp){

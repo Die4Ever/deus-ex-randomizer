@@ -123,6 +123,9 @@ function AfterShuffleGoals(int goalsToLocations[32])
     local int g;
     local string dctext;
     local PaulDentonCarcass paulbody;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     //Only do this on mission 5 UNATCO HQ
     if (dxr.localURL == "05_NYC_UNATCOHQ"){
@@ -144,13 +147,13 @@ function AfterShuffleGoals(int goalsToLocations[32])
 
         dctext = dctext $ "|n|nBoth using the DEMIURGE username. JC will never find them!";
 
-        if (#defined(revision)){
+        if (RevisionMaps){
             SpawnDatacubePlaintext(vectm(1130.502441,195.451401,321.369446), rotm(0,0,0), dctext, true);
         } else {
             SpawnDatacubePlaintext(vectm(243.288742, -104.183029, 289.368256), rotm(0,0,0), dctext, true);
         }
 
-    } else if (dxr.localURL == "05_NYC_UNATCOMJ12LAB" && #defined(revision)){
+    } else if (dxr.localURL == "05_NYC_UNATCOMJ12LAB" && RevisionMaps){
         //For some reason shuffling Paul's body stops it from being destroyed by the mission script
         if (!player().flagbase.GetBool('PaulDenton_Dead')){
             foreach AllActors(class'PaulDentonCarcass',paulbody){
@@ -166,17 +169,20 @@ function PreFirstEntryMapFixes()
     local #var(prefix)ComputerSecurity cs;
     local #var(prefix)DataLinkTrigger  dlt;
     local int i;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     if( dxr.localURL ~= "05_NYC_UNATCOHQ" ) {
         // jail computer
-        if (!#defined(revision)){
+        if (!RevisionMaps){
             cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vectm(-1491.076782, -1207.629028, -2.499634), rotm(0, 25000, 0));
             cp.UserList[0].userName = "KLloyd";
             cp.UserList[0].Password = "squishy";
         }
 
         // conference room computer
-        if (#defined(revision)){
+        if (RevisionMaps){
             cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vectm(32.709930,878.123413,291.501068), rotm(0,0,0));
         } else {
             cp = Spawn(class'#var(prefix)ComputerPersonal',, 'DXRMissions', vectm(79.009933, 863.868042, 296.502075), rotm(0,0,0));

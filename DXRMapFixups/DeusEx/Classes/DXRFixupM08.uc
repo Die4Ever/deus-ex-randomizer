@@ -3,6 +3,9 @@ class DXRFixupM08 extends DXRFixup;
 function AnyEntryMapFixes()
 {
     local StantonDowd s;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     Super.AnyEntryMapFixes();
 
@@ -15,22 +18,25 @@ function AnyEntryMapFixes()
         Player().StartDataLinkTransmission("DL_Entry");
         break;
 
-#ifdef vanillamaps
     case "08_NYC_SMUG":
-        FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
+        if (VanillaMaps){
+            FixConversationGiveItem(GetConversation('M08MeetFordSchick'), "AugmentationUpgrade", None, class'AugmentationUpgradeCannister');
+        }
         break;
-#endif
     }
 }
 
 function TimerMapFixes()
 {
     local BlackHelicopter chopper;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch(dxr.localURL)
     {
     case "08_NYC_STREET":
-        if (#defined(vanillamaps) && dxr.flagbase.GetBool('StantonDowd_Played') )
+        if (VanillaMaps && dxr.flagbase.GetBool('StantonDowd_Played') )
         {
             foreach AllActors(class'BlackHelicopter', chopper, 'CopterExit')
                 chopper.EnterWorld();
@@ -45,6 +51,8 @@ function PreFirstEntryMapFixes()
     local DataLinkTrigger dlt;
     local #var(prefix)NanoKey k;
     local #var(prefix)PigeonGenerator pg;
+    local bool VanillaMaps;
+
 #ifdef injections
     local #var(prefix)Newspaper np;
     local class<#var(prefix)Newspaper> npClass;
@@ -54,6 +62,8 @@ function PreFirstEntryMapFixes()
     local class<DXRInformationDevices> npClass;
     npClass = class'DXRInformationDevices';
 #endif
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch(dxr.localURL)
     {
@@ -74,27 +84,29 @@ function PreFirstEntryMapFixes()
             pg.MaxCount=3;
             break;
         case "08_NYC_HOTEL":
-            Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
-            SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
+            if (VanillaMaps){
+                Spawn(class'#var(prefix)Binoculars',,, vectm(-610.374573,-3221.998779,94.160065)); //Paul's bedside table
+                SpawnDatacubeTextTag(vectm(-840,-2920,85), rotm(0,0,0), '02_Datacube07',False); //Paul's stash code, in closet
 
-            k = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74));
-            k.KeyID = 'CrackRoom';
-            k.Description = "'Ton Hotel, North Room Key";
-            if(dxr.flags.settings.keysrando > 0)
-                GlowUp(k);
+                k = Spawn(class'#var(prefix)NanoKey',,, vectm(-967,-1240,-74));
+                k.KeyID = 'CrackRoom';
+                k.Description = "'Ton Hotel, North Room Key";
+                if(dxr.flags.settings.keysrando > 0)
+                    GlowUp(k);
 
-            k = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180));
-            k.KeyID = 'Apartment';
-            k.Description = "Apartment key";
-            if(dxr.flags.settings.keysrando > 0)
-                GlowUp(k);
+                k = Spawn(class'#var(prefix)NanoKey',,, vectm(-845,-2920,180));
+                k.KeyID = 'Apartment';
+                k.Description = "Apartment key";
+                if(dxr.flags.settings.keysrando > 0)
+                    GlowUp(k);
 
 
-            Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
-            Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
-            Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
-            Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
-            Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
+                Spawn(class'PlaceholderItem',,, vectm(-732,-2628,75)); //Actual closet
+                Spawn(class'PlaceholderItem',,, vectm(-732,-2712,75)); //Actual closet
+                Spawn(class'PlaceholderItem',,, vectm(-129,-3038,127)); //Bathroom counter
+                Spawn(class'PlaceholderItem',,, vectm(15,-2972,123)); //Kitchen counter
+                Spawn(class'PlaceholderItem',,, vectm(-853,-3148,75)); //Crack next to Paul's bed
+            }
             break;
         case "08_NYC_BAR":
             npClass.static.SpawnInfoDevice(self,class'#var(prefix)NewspaperOpen',vectm(-1171.976440,250.575806,53.729687),rotm(0,0,0),'08_Newspaper01'); //Joe Greene article, table near where Harley is in Vanilla

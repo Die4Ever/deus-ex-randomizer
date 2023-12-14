@@ -6,15 +6,15 @@ function CheckConfig()
 {
     local int i;
 
-#ifdef vanillamaps
-    add_datacubes[i].map = "15_AREA51_BUNKER";
-    add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
-    i++;
+    if (class'DXRMapVariants'.static.IsVanillaMaps(player())){
+        add_datacubes[i].map = "15_AREA51_BUNKER";
+        add_datacubes[i].text = "Security Personnel:|nDue to the the threat of a mass civilian raid of Area 51, we have updated the ventilation security system.|n|nUser: SECURITY |nPassword: NarutoRun |n|nBe on the lookout for civilians running with their arms swept behind their backs...";
+        i++;
 
-    add_datacubes[i].map = "15_AREA51_BUNKER";
-    add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
-    i++;
-#endif
+        add_datacubes[i].map = "15_AREA51_BUNKER";
+        add_datacubes[i].text = "Security Personnel:|nFor increased ventilation system security, we have replaced the elevator button with a keypad.  The code is 17092019.  Do not share the code with anyone and destroy this datacube after reading.";
+        i++;
+    }
 
     add_datacubes[i].map = "15_AREA51_ENTRANCE";
     add_datacubes[i].text =
@@ -346,26 +346,26 @@ function PreFirstEntryMapFixes_Page()
 
 function PreFirstEntryMapFixes()
 {
-#ifdef vanillamaps
-    switch(dxr.localURL)
-    {
-    case "15_AREA51_BUNKER":
-        PreFirstEntryMapFixes_Bunker();
-        break;
+    if (class'DXRMapVariants'.static.IsVanillaMaps(player())){
+        switch(dxr.localURL)
+        {
+        case "15_AREA51_BUNKER":
+            PreFirstEntryMapFixes_Bunker();
+            break;
 
-    case "15_AREA51_FINAL":
-        PreFirstEntryMapFixes_Final();
-        break;
+        case "15_AREA51_FINAL":
+            PreFirstEntryMapFixes_Final();
+            break;
 
-    case "15_AREA51_ENTRANCE":
-        PreFirstEntryMapFixes_Entrance();
-        break;
+        case "15_AREA51_ENTRANCE":
+            PreFirstEntryMapFixes_Entrance();
+            break;
 
-    case "15_AREA51_PAGE":
-        PreFirstEntryMapFixes_Page();
-        break;
+        case "15_AREA51_PAGE":
+            PreFirstEntryMapFixes_Page();
+            break;
+        }
     }
-#endif
 }
 
 function AnyEntryMapFixes()
@@ -373,16 +373,21 @@ function AnyEntryMapFixes()
     local Gray g;
     local ElectricityEmitter ee;
     local #var(DeusExPrefix)Mover d;
+    local bool RevisionMaps;
+    local bool VanillaMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch(dxr.localURL)
     {
     case "15_AREA51_FINAL":
-#ifdef vanillamaps
-        foreach AllActors(class'Gray', g) {
-            if( g.Tag == 'reactorgray1' ) g.BindName = "ReactorGray1";
-            else if( g.Tag == 'reactorgray2' ) g.BindName = "ReactorGray2";
+        if (VanillaMaps){
+            foreach AllActors(class'Gray', g) {
+                if( g.Tag == 'reactorgray1' ) g.BindName = "ReactorGray1";
+                else if( g.Tag == 'reactorgray2' ) g.BindName = "ReactorGray2";
+            }
         }
-#endif
         break;
 
     case "15_AREA51_PAGE":
@@ -399,7 +404,7 @@ function AnyEntryMapFixes()
             }
         }
 
-        if((!#defined(revision)) && (!#defined(gmdx))) {// cover the button better
+        if((!RevisionMaps) && (!#defined(gmdx))) {// cover the button better
             foreach AllActors(class'#var(DeusExPrefix)Mover', d, 'Page_button') {
                 d.SetLocation(d.Location-vectm(0,0,2)); // original Z was -5134
             }

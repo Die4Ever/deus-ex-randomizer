@@ -284,6 +284,9 @@ function FixEndgameEndCamera()
 {
     local CameraPoint cp;
     local int endCameraSeq;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     switch(dxr.localURL)
     {
@@ -291,13 +294,13 @@ function FixEndgameEndCamera()
             endCameraSeq=29; //Same in Vanilla and Revision
             break;
         case "ENDGAME2":
-            if(#defined(revision))
+            if(RevisionMaps)
                 endCameraSeq=32;
             else
                 endCameraSeq=31;
             break;
         case "ENDGAME3":
-            if(#defined(revision))
+            if(RevisionMaps)
                 endCameraSeq=28;
             else
                 endCameraSeq=27;

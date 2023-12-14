@@ -124,6 +124,13 @@ static function bool IsRevisionMaps(#var(PlayerPawn) player)
 #endif
 }
 
+static function bool IsVanillaMaps(#var(PlayerPawn) player)
+{
+    if(#defined(vanillamaps)) return true;
+    if(#defined(revision)) return !IsRevisionMaps(player);
+    return false;
+}
+
 function int GetMirrorMapsSetting()
 {
     return dxr.flags.mirroredmaps;

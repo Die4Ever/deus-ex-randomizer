@@ -43,6 +43,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)FlagTrigger ft;
     local #var(prefix)OrdersTrigger ot;
     local #var(prefix)TriadRedArrow bouncer;
+    local bool VanillaMaps;
 
 #ifdef injections
     local #var(prefix)DataCube dc;
@@ -50,42 +51,43 @@ function PreFirstEntryMapFixes()
     local DXRInformationDevices dc;
 #endif
 
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
+
     switch(dxr.localURL)
     {
     case "06_HONGKONG_HELIBASE":
-#ifdef vanillamaps
-        foreach AllActors(class'ProjectileGenerator', pg, 'purge') {
-            pg.CheckTime = 0.25;
-            pg.spewTime = 0.4;
-            pg.ProjectileClass = class'PurgeGas';
-            switch(pg.Name) {
-            case 'ProjectileGenerator5':// left side
-                pg.SetRotation(rotm(-7000, 80000, 0, 16384));
-                break;
-            case 'ProjectileGenerator2':// middle left
-                pg.SetRotation(rotm(-6024, 70000, 0, 16384));
-                break;
-            case 'ProjectileGenerator3':// middle right
-                pg.SetRotation(rotm(-8056, 64000, 0, 16384));
-                break;
-            case 'ProjectileGenerator7':// right side
-                pg.SetRotation(rotm(-8056, 60000, 0, 16384));
+        if (VanillaMaps){
+            foreach AllActors(class'ProjectileGenerator', pg, 'purge') {
+                pg.CheckTime = 0.25;
+                pg.spewTime = 0.4;
+                pg.ProjectileClass = class'PurgeGas';
+                switch(pg.Name) {
+                case 'ProjectileGenerator5':// left side
+                    pg.SetRotation(rotm(-7000, 80000, 0, 16384));
+                    break;
+                case 'ProjectileGenerator2':// middle left
+                    pg.SetRotation(rotm(-6024, 70000, 0, 16384));
+                    break;
+                case 'ProjectileGenerator3':// middle right
+                    pg.SetRotation(rotm(-8056, 64000, 0, 16384));
+                    break;
+                case 'ProjectileGenerator7':// right side
+                    pg.SetRotation(rotm(-8056, 60000, 0, 16384));
+                    break;
+                }
+            }
+
+            //Make the elevator doors trigger Jock firing a missile
+            foreach AllActors(class'#var(DeusExPrefix)Mover',m,'elevator_door'){
+                m.Event='make_a_break';
                 break;
             }
+
+            class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
+            class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
+            class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
+            class'PlaceholderEnemy'.static.Create(self,vectm(2036,122,816));
         }
-
-        //Make the elevator doors trigger Jock firing a missile
-        foreach AllActors(class'#var(DeusExPrefix)Mover',m,'elevator_door'){
-            m.Event='make_a_break';
-            break;
-        }
-
-        class'PlaceholderEnemy'.static.Create(self,vectm(769,-520,144));
-        class'PlaceholderEnemy'.static.Create(self,vectm(1620,-87,144));
-        class'PlaceholderEnemy'.static.Create(self,vectm(-844,-359,816));
-        class'PlaceholderEnemy'.static.Create(self,vectm(2036,122,816));
-
-#endif
         break;
 
     case "06_HONGKONG_TONGBASE":
@@ -147,39 +149,39 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'#var(prefix)WeaponNanoSword', dts) {
             dts.bIsSecretGoal = true;// just in case you don't have DXRMissions enabled
         }
-#ifdef vanillamaps
-        foreach AllActors(class'Button1',b)
-        {
-            if (b.Event=='JockShaftTop')
+        if (VanillaMaps){
+            foreach AllActors(class'Button1',b)
             {
-                b.Event='JocksElevatorTop';
+                if (b.Event=='JockShaftTop')
+                {
+                    b.Event='JocksElevatorTop';
+                }
             }
-        }
 
-        foreach AllActors(class'ElevatorMover',e)
-        {
-            if(e.Tag=='JocksElevator')
+            foreach AllActors(class'ElevatorMover',e)
             {
-                e.Event = '';
+                if(e.Tag=='JocksElevator')
+                {
+                    e.Event = '';
+                }
+            }
+            foreach AllActors(class'DeusExMover',d)
+            {
+                if(d.Tag=='DispalyCase') //They seriously left in that typo?
+                {
+                    d.SetKeyframe(1,vectm(0,0,-136),d.Rotation);  //Make sure the keyframe exists for it to drop into the floor
+                    d.bIsDoor = true; //Mark it as a door so the troops can actually open it...
+                }
+                else if(d.Tag=='JockShaftTop')
+                {
+                    d.bFrobbable=True;
+                }
+                else if(d.Tag=='JockShaftBottom')
+                {
+                    d.bFrobbable=True;
+                }
             }
         }
-        foreach AllActors(class'DeusExMover',d)
-        {
-            if(d.Tag=='DispalyCase') //They seriously left in that typo?
-            {
-                d.SetKeyframe(1,vectm(0,0,-136),d.Rotation);  //Make sure the keyframe exists for it to drop into the floor
-                d.bIsDoor = true; //Mark it as a door so the troops can actually open it...
-            }
-            else if(d.Tag=='JockShaftTop')
-            {
-                d.bFrobbable=True;
-            }
-            else if(d.Tag=='JockShaftBottom')
-            {
-                d.bFrobbable=True;
-            }
-        }
-#endif
         break;
 
     case "06_HONGKONG_MJ12LAB":
@@ -412,7 +414,6 @@ function PostFirstEntryMapFixes()
         if(dxr.flags.settings.keysrando > 0)
             GlowUp(a);
         break;
-#ifndef revision
     case "06_HONGKONG_VERSALIFE":
         foreach AllActors(class'Male1',male){
             if (male.BindName=="Disgruntled_Guy"){
@@ -420,7 +421,6 @@ function PostFirstEntryMapFixes()
             }
         }
         break;
-#endif
     }
 }
 

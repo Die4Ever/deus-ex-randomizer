@@ -14,23 +14,28 @@ function CheckConfig()
 function PostFirstEntryMapFixes()
 {
     local Actor a;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     FixUNATCORetinalScanner();
 
     switch(dxr.localURL) {
-#ifndef revision
     case "03_NYC_BrooklynBridgeStation":
-        a = AddActor(class'Barrel1', vect(-27.953907, -3493.229980, 45.101418));
-        Barrel1(a).SkinColor = SC_Explosive;
-        a.BeginPlay();
+        if (!RevisionMaps){
+            a = AddActor(class'Barrel1', vect(-27.953907, -3493.229980, 45.101418));
+            Barrel1(a).SkinColor = SC_Explosive;
+            a.BeginPlay();
+        }
         break;
 
     case "03_NYC_AirfieldHeliBase":
-        //crates to get back over the beginning of the level
-        AddActor(class'#var(prefix)CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60));
-        AddActor(class'#var(prefix)CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75));
+        if (!RevisionMaps){
+            //crates to get back over the beginning of the level
+            AddActor(class'#var(prefix)CrateUnbreakableSmall', vect(-9463.387695, 3377.530029, 60));
+            AddActor(class'#var(prefix)CrateUnbreakableMed', vect(-9461.959961, 3320.718750, 75));
+        }
         break;
-#endif
     }
 }
 
@@ -56,6 +61,9 @@ function PreFirstEntryMapFixes()
     local #var(prefix)WeaponModRecoil wmr;
     local #var(prefix)Terrorist terror;
     local #var(prefix)FishGenerator fg;
+    local bool VanillaMaps;
+
+    VanillaMaps = class'DXRMapVariants'.static.IsVanillaMaps(player());
 
     switch (dxr.localURL)
     {
@@ -97,59 +105,58 @@ function PreFirstEntryMapFixes()
 
         break;
 
-#ifdef vanillamaps
     case "03_NYC_AirfieldHeliBase":
-        foreach AllActors(class'Mover',m) {
-            // call the elevator at the end of the level when you open the appropriate door
-            if (m.Tag == 'BasementDoorOpen')
-            {
-                m.Event = 'BasementFloor';
+        if (VanillaMaps){
+            foreach AllActors(class'Mover',m) {
+                // call the elevator at the end of the level when you open the appropriate door
+                if (m.Tag == 'BasementDoorOpen')
+                {
+                    m.Event = 'BasementFloor';
+                }
+                else if (m.Tag == 'GroundDoorOpen')
+                {
+                    m.Event = 'GroundLevel';
+                }
+                // sewer door backtracking so we can make a switch for this
+                else if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
+                {
+                    m.Tag = 'Sewerdoor';
+                }
             }
-            else if (m.Tag == 'GroundDoorOpen')
-            {
-                m.Event = 'GroundLevel';
+            foreach AllActors(class'Trigger', t) {
+                //disable the platforms that fall when you step on them
+                if( t.Name == 'Trigger0' || t.Name == 'Trigger1' ) {
+                    t.Event = '';
+                }
             }
-            // sewer door backtracking so we can make a switch for this
-            else if ( DeusExMover(m) != None && DeusExMover(m).KeyIDNeeded == 'Sewerdoor')
-            {
-                m.Tag = 'Sewerdoor';
+            foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
+                unatco.bHateCarcass = false;
+                unatco.bHateDistress = false;
             }
+
+            // Sewerdoor backtracking
+            AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
+
+            //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
+            AddActor(class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
+            a = AddActor(class'DynamicBlockPlayer', vect(-3105,-385,-210));
+            SetActorScale(a, 1.3);
+
+            AddActor(class'Valve', vect(-3080,-395,-170), rot(0,0,16384));
+            a = AddActor(class'DynamicBlockPlayer', vect(-3080,-395,-170));
+            SetActorScale(a, 1.3);
+
+            AddActor(class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
+            a = AddActor(class'DynamicBlockPlayer', vect(-3065,-405,-130));
+            SetActorScale(a, 1.3);
+
+            //rebreather because of #TOOCEAN connection
+            Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
+
+            //Button to extend sewer platform from the other side
+            AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
         }
-        foreach AllActors(class'Trigger', t) {
-            //disable the platforms that fall when you step on them
-            if( t.Name == 'Trigger0' || t.Name == 'Trigger1' ) {
-                t.Event = '';
-            }
-        }
-        foreach AllActors(class'#var(prefix)UNATCOTroop', unatco) {
-            unatco.bHateCarcass = false;
-            unatco.bHateDistress = false;
-        }
-
-        // Sewerdoor backtracking
-        AddSwitch( vect(-6878.640137, 3623.358398, 150.903931), rot(0,0,0), 'Sewerdoor');
-
-        //stepping stone valves out of the water, I could make the collision radius a little wider even if it isn't realistic?
-        AddActor(class'Valve', vect(-3105,-385,-210), rot(0,0,16384));
-        a = AddActor(class'DynamicBlockPlayer', vect(-3105,-385,-210));
-        SetActorScale(a, 1.3);
-
-        AddActor(class'Valve', vect(-3080,-395,-170), rot(0,0,16384));
-        a = AddActor(class'DynamicBlockPlayer', vect(-3080,-395,-170));
-        SetActorScale(a, 1.3);
-
-        AddActor(class'Valve', vect(-3065,-405,-130), rot(0,0,16384));
-        a = AddActor(class'DynamicBlockPlayer', vect(-3065,-405,-130));
-        SetActorScale(a, 1.3);
-
-        //rebreather because of #TOOCEAN connection
-        Spawn(class'Rebreather',,, vectm(1411.798950, 546.628845, 247.708572));
-
-        //Button to extend sewer platform from the other side
-        AddSwitch( vect(-5233.946289,3601.383545,161.851822), rot(0, 16384, 0), 'MoveableBridge');
-
         break;
-#endif
 
     case "03_NYC_AIRFIELD":
         //rebreather because of #TOOCEAN connection
@@ -166,7 +173,7 @@ function PreFirstEntryMapFixes()
         Spawn(class'PlaceholderItem',,, vectm(4441,3112,51));         //Base of satellite
         Spawn(class'PlaceholderItem',,, vectm(1915,2800.6,79));       //Gate support (inside gate)
         Spawn(class'PlaceholderItem',,, vectm(3641.339,2623.73,27));  //Steps outside barracks
-        if(#defined(vanillamaps)) {
+        if(VanillaMaps) {
             foreach AllActors(class'Teleporter', tele) {
                 if(tele.Event == 'HangarEnt') {
                     tele.SetCollisionSize(tele.CollisionRadius, tele.CollisionHeight + 10);
@@ -175,45 +182,47 @@ function PreFirstEntryMapFixes()
         }
         break;
 
-#ifdef vanillamaps
     case "03_NYC_BROOKLYNBRIDGESTATION":
-        //Put a button behind the hidden bathroom door
-        //Mostly for entrance rando, but just in case
-        AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
+        if (VanillaMaps){
+            //Put a button behind the hidden bathroom door
+            //Mostly for entrance rando, but just in case
+            AddSwitch( vect(-1673, -1319.913574, 130.813538), rot(0, 32767, 0), 'MoleHideoutOpened' );
+        }
         break;
 
     case "03_NYC_MOLEPEOPLE":
-        foreach AllActors(class'Mover', m, 'DeusExMover') {
-            if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
-        }
-        AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
-
-        //The Leader can go hostile so easily... just make that not possible
-        foreach AllActors(class'Terrorist',terror){
-            if (terror.BindName=="TerroristLeader"){
-                terror.ChangeAlly('Player',0,True);//Permanently neutral
-                break;
+        if (VanillaMaps){
+            foreach AllActors(class'Mover', m, 'DeusExMover') {
+                if( m.Name == 'DeusExMover65' ) m.Tag = 'BathroomDoor';
             }
-        }
+            AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
 
-        Spawn(class'PlaceholderItem',,, vectm(-73,-497.98,42.3)); //Water supply
-        Spawn(class'PlaceholderItem',,, vectm(-486,206,26)); //Under ramps
-        Spawn(class'PlaceholderItem',,, vectm(461,206,26)); //Under Ramp 2
-        Spawn(class'PlaceholderItem',,, vectm(395,830,74)); //Around Pillars
-        Spawn(class'PlaceholderItem',,, vectm(-2,633,74));//More pillars
-        Spawn(class'PlaceholderItem',,, vectm(-465,562,74));//Even more pillars
-        Spawn(class'PlaceholderItem',,, vectm(-659,990,107)); //Pillar stairs
-        Spawn(class'PlaceholderItem',,, vectm(661,1000,107)); //other side pillar stairs
-        Spawn(class'PlaceholderItem',,, vectm(-919,-94,11)); //Other side ramp
-        Spawn(class'PlaceholderItem',,, vectm(1222,88,11)); //Near start, but bad side
+            //The Leader can go hostile so easily... just make that not possible
+            foreach AllActors(class'Terrorist',terror){
+                if (terror.BindName=="TerroristLeader"){
+                    terror.ChangeAlly('Player',0,True);//Permanently neutral
+                    break;
+                }
+            }
+
+            Spawn(class'PlaceholderItem',,, vectm(-73,-497.98,42.3)); //Water supply
+            Spawn(class'PlaceholderItem',,, vectm(-486,206,26)); //Under ramps
+            Spawn(class'PlaceholderItem',,, vectm(461,206,26)); //Under Ramp 2
+            Spawn(class'PlaceholderItem',,, vectm(395,830,74)); //Around Pillars
+            Spawn(class'PlaceholderItem',,, vectm(-2,633,74));//More pillars
+            Spawn(class'PlaceholderItem',,, vectm(-465,562,74));//Even more pillars
+            Spawn(class'PlaceholderItem',,, vectm(-659,990,107)); //Pillar stairs
+            Spawn(class'PlaceholderItem',,, vectm(661,1000,107)); //other side pillar stairs
+            Spawn(class'PlaceholderItem',,, vectm(-919,-94,11)); //Other side ramp
+            Spawn(class'PlaceholderItem',,, vectm(1222,88,11)); //Near start, but bad side
+        }
         break;
-#endif
 
     case "03_NYC_747":
         // fix Jock's conversation state so he doesn't play the dialog for unatco->battery park but now plays dialog for airfield->unatco
         // DL_Airfield is "You're entering a helibase terminal below a private section of LaGuardia."
         dxr.flagbase.SetBool('DL_Airfield_Played', true,, 4);
-        if(#defined(vanillamaps)) {
+        if(VanillaMaps) {
             foreach AllActors(class'#var(prefix)InformationDevices', i) {
                 if(i.imageClass == Class'Image03_747Diagram') {
                     // move the out of bounds datacabe onto the bed of the empty room
