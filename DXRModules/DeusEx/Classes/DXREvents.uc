@@ -196,15 +196,6 @@ function AddPhoneTriggers(bool isRevision)
             p = Spawn(class'PayPhone',,,vectm(-669, -1807.72, 433.5));
         }
         break;
-    case "03_NYC_AIRFIELDHELIBASE":
-#ifdef revision
-        foreach AllActors(class'RevPhone',rp){
-            if (rp.Name=='RevPhone1'){
-                rp.BindName="LebPhone";
-            }
-        }
-#endif
-        break;
     case "04_NYC_NSFHQ":
         if (isRevision){
             p = Spawn(class'PayPhone',,,vectm(-1641.06, -4912.54, 80));  //Near Checkpoint
@@ -268,9 +259,6 @@ function AddPhoneTriggers(bool isRevision)
         switch(rp.BindName){
             case "AI_phonecall_paris01":
                 break; //Covered by the Icarus call flag - IcarusCalls_Played
-            case "LebPhone":
-                rp.BindName="";
-                break;
             default:
                 CreatePhoneTrigger(rp,i);
                 i++;
