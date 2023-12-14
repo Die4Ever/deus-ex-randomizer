@@ -293,6 +293,9 @@ function AnyEntryMapFixes()
     local Conversation c;
     local ConEvent ce;
     local ConEventSpeech ces;
+    local bool RevisionMaps;
+
+    RevisionMaps = class'DXRMapVariants'.static.IsRevisionMaps(player());
 
     switch(dxr.localURL) {
     case "03_NYC_747":
@@ -300,29 +303,31 @@ function AnyEntryMapFixes()
         break;
 
     case "03_NYC_AIRFIELDHELIBASE":
-        //Restore this cut phone conversation
-        c = GetConversation('OverhearLebedev');
-        c.conOwnerName="LebedevPhone";
-        c.bInvokeRadius=True;
-        c.radiusDistance=200;
-        foreach AllActors(class'#var(prefix)Phone',phone){
-            if (phone.name=='Phone1'){
-                phone.BindName="LebedevPhone";
-                break;
+        if (!RevisionMaps){
+            //Restore this cut phone conversation
+            c = GetConversation('OverhearLebedev');
+            c.conOwnerName="LebedevPhone";
+            c.bInvokeRadius=True;
+            c.radiusDistance=200;
+            foreach AllActors(class'#var(prefix)Phone',phone){
+                if (phone.name=='Phone1'){
+                    phone.BindName="LebedevPhone";
+                    break;
+                }
             }
-        }
 
-        ce = c.eventList;
-        while (ce!=None){
-            if (ce.eventType==ET_Speech){
-                ces = ConEventSpeech(ce);
-                ces.speaker=phone;
-                ces.speakingTo=phone;
+            ce = c.eventList;
+            while (ce!=None){
+                if (ce.eventType==ET_Speech){
+                    ces = ConEventSpeech(ce);
+                    ces.speaker=phone;
+                    ces.speakingTo=phone;
+                }
+                ce = ce.nextEvent;
             }
-            ce = ce.nextEvent;
-        }
 
-        phone.ConBindEvents();
+            phone.ConBindEvents();
+        }
         break;
     }
 }
