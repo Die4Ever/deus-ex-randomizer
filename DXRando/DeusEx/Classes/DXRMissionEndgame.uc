@@ -1,3 +1,9 @@
+#ifdef revision
+class DXRandoGameInfo extends RevGameInfo config;
+#else
+class DXRandoGameInfo extends DeusExGameInfo config;
+#endif
+
 class DXRMissionEndgame injects #var(prefix)MissionEndgame;
 
 struct EndQuote
@@ -258,6 +264,8 @@ function Tick(float DT)
 
 function Timer()
 {
+    local DeusExPlayer p;
+
     Super.Timer();
 
     if (localURL == "ENDGAME4") {
@@ -270,6 +278,7 @@ function Timer()
 
         if (endgameTimer > 75) {
             FinishCinematic();
+            SpawnDXRando(p);
         }
     }
 }

@@ -46,7 +46,7 @@ function ReplaceActors()
         else if( #var(prefix)WHPiano(a) != None ) {
             ReplacePiano(#var(prefix)WHPiano(a));
         }
-        else if( #var(prefix)MissionEndgame(a) != None && !#defined(revision) && !#defined(hx) ) {
+        else if( #var(prefix)MissionEndgame(a) != None && !#defined(hx) ) {
             ReplaceMissionEndgame(#var(prefix)MissionEndgame(a));
         }
         else if( #var(prefix)MissionIntro(a) != None ) {
