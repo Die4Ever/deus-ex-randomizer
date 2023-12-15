@@ -6,10 +6,10 @@ simulated function Tick(float deltaTime)
 	local float sizeMult;
 
 	// don't Super.Tick() becuase we don't want gravity to affect the stream
-    // Super(DeusExProjectile).Tick(deltaTime);
-	time += deltaTime;
+    Super(DeusExProjectile).Tick(deltaTime);
+	time += 10 * deltaTime;
 
-	value = 1.0+time;
+	value = 1.0 + time;
 	if (MinDrawScale > 0)
 		sizeMult = MaxDrawScale/MinDrawScale;
 	else
