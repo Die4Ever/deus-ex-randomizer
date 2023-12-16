@@ -8,6 +8,7 @@ var transient bool inited;
 var transient bool auto_codes;
 var transient bool known_codes;
 var transient bool show_keys;
+var transient bool auto_weapon_mods;
 
 function DrawWindow(GC gc)
 {
@@ -26,10 +27,11 @@ function DrawWindow(GC gc)
     if( frobTarget != None ) DrawWindowBase(gc, frobTarget);
 }
 
-function CheckAutofillSettings()
+function CheckSettings()
 {
     local int codes_mode;
-    local DXRFlags flags;
+    local DXRando dxr;
+
     if( player == None || player.FlagBase == None ) return;
     inited = true;
 
@@ -46,19 +48,24 @@ function CheckAutofillSettings()
     }
 
     show_keys = bool(player.ConsoleCommand("get #var(package).MenuChoice_ShowKeys enabled"));
+
+    foreach player.AllActors(class'DXRando',dxr){break;}
+    if (dxr==None) return;
+
+    auto_weapon_mods = !dxr.flags.IsZeroRando() && bool(player.ConsoleCommand("get #var(package).MenuChoice_AutoWeaponMods enabled"));
 }
 
 function InitFlags()
 {
     if( inited ) return;
-    CheckAutofillSettings();
+    CheckSettings();
 }
 
 //MenuChoice_PasswordAutofill sends out a ChangeStyle message when adjusted
 event StyleChanged()
 {
     Super.StyleChanged();
-    CheckAutofillSettings();
+    CheckSettings();
 }
 
 static function GetActorBoundingBox(actor frobTarget, out vector centerLoc, out vector radius)
@@ -413,6 +420,19 @@ function string ComputersStrInfo(#var(prefix)ElectronicDevices d, out int numLin
     return strInfo;
 }
 
+function bool WeaponModAutoApply(WeaponMod wm)
+{
+    if (wm==None) return False;
+    if (player.InHand==None) return False;
+    if (player.InHand.IsA('DeusExWeapon')==False) return False;
+    if (wm.CanUpgradeWeapon(DeusExWeapon(player.InHand))==False) return False;
+    if (auto_weapon_mods==False) return False;
+
+    return True;
+
+}
+
+
 function string OtherStrInfo(Actor frobTarget, out int numLines)
 {
     local string strInfo;
@@ -434,6 +454,9 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
             strInfo = Inventory(frobTarget).itemName $ " (Left Cick to Activate)";
         else if (Human(player).CanInstantLeftClick(DeusExPickup(frobTarget)))
             strInfo = Inventory(frobTarget).itemName $ " (Left Cick to Consume)";
+        else if (WeaponModAutoApply(WeaponMod(frobTarget)))
+            strInfo = Inventory(frobTarget).itemName $ CR() $ "Auto applies to current weapon";
+
     }
     else if (frobTarget.IsA('DeusExDecoration'))
         strInfo = player.GetDisplayName(frobTarget);
