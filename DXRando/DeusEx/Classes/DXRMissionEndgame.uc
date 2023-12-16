@@ -1,9 +1,4 @@
 #ifdef revision
-class DXRandoGameInfo extends RevGameInfo config;
-#else
-class DXRandoGameInfo extends DeusExGameInfo config;
-#endif
-
 class DXRMissionEndgame injects #var(prefix)MissionEndgame;
 
 struct EndQuote
