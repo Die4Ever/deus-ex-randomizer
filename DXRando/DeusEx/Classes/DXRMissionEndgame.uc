@@ -1,4 +1,3 @@
-#ifdef revision
 class DXRMissionEndgame injects #var(prefix)MissionEndgame;
 
 struct EndQuote
