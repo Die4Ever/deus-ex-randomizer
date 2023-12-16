@@ -430,6 +430,10 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
             strInfo = Inventory(frobTarget).itemName $ " (" $ Pickup(frobTarget).NumCopies $ ")";
         else if (frobTarget.IsA('Weapon') && Weapon(frobTarget).AmmoName != Class'DeusEx.AmmoNone' )
             strInfo = Inventory(frobTarget).itemName $ " (" $ Weapon(frobTarget).PickupAmmoCount $ ")";
+        else if (frobTarget.IsA('ChargedPickup')) //Inherently bActivatable
+            strInfo = Inventory(frobTarget).itemName $ " (Left Cick to Activate)";
+        else if (Inventory(frobTarget).bActivatable)
+            strInfo = Inventory(frobTarget).itemName $ " (Left Cick to Consume)";
     }
     else if (frobTarget.IsA('DeusExDecoration'))
         strInfo = player.GetDisplayName(frobTarget);
