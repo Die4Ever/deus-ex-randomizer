@@ -318,6 +318,7 @@ function _GetLevelSong(string oldSong, out string newSong, out byte LevelSongSec
     case "ENDGAME2":
     case "ENDGAME3":
     case "ENDGAME4":
+    case "ENDGAME4REV":
         cutscene=true;
     }
 

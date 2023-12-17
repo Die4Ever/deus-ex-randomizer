@@ -19,6 +19,12 @@ function DXRando GetDXR()
         break;
 
     dxr = Spawn(class'DXRando');
+
+    //Fix Endgame4, if that's where we are...
+    if (#defined(revision) && DeusExLevelInfo.MapName=="Endgame4"){
+        DeusExLevelInfo.MapName="ENDGAME4REV";
+    }
+
     dxr.SetdxInfo(DeusExLevelInfo);
     log("GetDXR(), dxr: "$dxr, self.name);
     return dxr;
@@ -35,10 +41,21 @@ event InitGame( String Options, out String Error )
 event PostLogin(playerpawn NewPlayer)
 {
     local #var(PlayerPawn) p;
+    local bool hasLevelInfo;
+    local DeusExLevelInfo dxLevelInfo;
 
     _PostLogin(NewPlayer);
 
     if( Role != ROLE_Authority ) return;
+
+    if (#defined(revision) && InStr(Caps(Level.GetLocalURL()),"99_ENDGAME4")!=-1){
+        hasLevelInfo = False;
+        foreach AllActors(class'DeusExLevelInfo',dxLevelInfo){hasLevelInfo=True;}
+        if (!hasLevelInfo){
+            dxLevelInfo=SpawnDXLevelInfo();
+            dxr.SetdxInfo(dxLevelInfo);
+        }
+    }
 
     p = #var(PlayerPawn)(NewPlayer);
 
@@ -126,4 +143,23 @@ event Super_PostLogin( playerpawn NewPlayer )
                 }
             }
     }
+}
+
+function DeusExLevelInfo SpawnDXLevelInfo()
+{
+    local DeusExLevelInfo DeusExLevelInfo;
+
+    class'DeusExLevelInfo'.default.MapName = "ENDGAME4REV";
+    class'DeusExLevelInfo'.default.missionNumber = 99;
+    class'DeusExLevelInfo'.default.Script = class'DXRMissionEndgame';
+    DeusExLevelInfo = Spawn(class'DeusExLevelInfo');
+
+    //These defaults probably don't need to be reset, but better safe than sorry.
+    class'DeusExLevelInfo'.default.MapName = "";
+    class'DeusExLevelInfo'.default.missionNumber = 0;
+    class'DeusExLevelInfo'.default.Script = None;
+
+    log("SpawnDXLevelInfo() "$ self.name);
+
+    return DeusExLevelInfo;
 }

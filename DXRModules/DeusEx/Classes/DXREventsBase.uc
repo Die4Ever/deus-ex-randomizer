@@ -147,6 +147,7 @@ function Ending_FirstEntry()
             ending = 3;
             break;
         case "ENDGAME4": //Dance party
+        case "ENDGAME4REV": //Dance party
             ending = 4;
             break;
         default:
@@ -1077,7 +1078,7 @@ function bool CheckBingoWin(DXRando dxr, int numBingos)
     if(#defined(hx)) return false;
 
     if (dxr.flags.settings.bingo_win > 0){
-        if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4"){
+        if (numBingos >= dxr.flags.settings.bingo_win && dxr.LocalURL!="ENDGAME4" && dxr.LocalURL!="ENDGAME4REV"){
             info("Number of bingos: "$numBingos$" has exceeded the bingo win threshold! "$dxr.flags.settings.bingo_win);
             bingo_win_countdown = 5;
             BingoWinScreen();

@@ -36,7 +36,7 @@ function IncreaseBrightness(int brightness)
 {
     local ZoneInfo z;
 
-    if (dxr.localURL == "ENDGAME4"){
+    if (dxr.localURL == "ENDGAME4" || dxr.localURL == "ENDGAME4REV"){
         return;  //Dance Parties don't need to be bright
     }
 

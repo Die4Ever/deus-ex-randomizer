@@ -271,6 +271,7 @@ function AnyEntry()
         case "ENDGAME2":
         case "ENDGAME3":
         case "ENDGAME4":
+        case "ENDGAME4REV":
         //case "00_TRAINING":
             // extra randomization in the intro for the lolz
             l("Memeing up "$ dxr.localURL);
@@ -363,6 +364,7 @@ function PostFirstEntry()
         case "ENDGAME2":
         case "ENDGAME3":
         case "ENDGAME4":
+        case "ENDGAME4REV":
             AddLeo();
             break;
     }
@@ -420,6 +422,7 @@ function AddLeo()
             loc.Z = -48;
             break;
         case "ENDGAME4":
+        case "ENDGAME4REV":
             l("Endgame 4");
             loc.X = -736;
             loc.Y = -22;
