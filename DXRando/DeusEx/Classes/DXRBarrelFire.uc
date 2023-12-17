@@ -54,11 +54,8 @@ function Destroyed()
 {
 	local Rotator rot;
 	local Vector loc;
-    local DXRFireballShrinking fireball;
 	local TrashPaper trash;
-    local int i, j, numRings, fbPerRing;
-    local float MaxDrawScale;
-    local float radians, radianDelta, radius, radiusDelta;
+    local int i;
 
     log("!FastTrace(loc) = " $ !FastTrace(loc));
 
@@ -67,7 +64,7 @@ function Destroyed()
     loc += Location;
 
     if (!FastTrace(loc)) {
-        for (i=0; i<2; i++)
+        for (i=0; i<3; i++)
         {
             if (FRand() < 0.75)
             {
@@ -83,39 +80,14 @@ function Destroyed()
                     trash.rot.Yaw = 0;
                     trash.dir = VRand() * 20 + vect(20,20,0);
                     trash.dir.Z = 0;
+
+                    if (FRand() < 0.41)
+                    {
+                        trash.GotoState('Burning');
+                    }
                 }
             }
         }
-    }
-
-    // I fell into numRings rings of fire
-
-    numRings = 2;
-    fbPerRing = 6;
-    MaxDrawScale = 0.005 * CollisionRadius;
-    radius = 0.55 * CollisionRadius;
-
-    radiusDelta = radius / numRings;
-    radianDelta = 6.2831853071 / fbPerRing;
-    for (i = 0; i < numRings; i++) {
-        radians = i * radianDelta / numRings; // rotate the initial angle so we don't just get numRings radial lines
-        for (j = 0; j < fbPerRing; j++) {
-            loc = Location;
-            loc.X += Cos(radians) * radius;
-            loc.Y += Sin(radians) * radius;
-            loc.Z += /*0.95 **/ CollisionHeight;
-
-            fireball = Spawn(class'DXRFireballShrinking',,, loc);
-            if (fireball != None) {
-                fireball.speed = 0;
-                fireball.MaxSpeed = 0;
-                fireball.MaxDrawScale = MaxDrawScale;
-            }
-
-            radians += radianDelta;
-        }
-
-        radius -= radiusDelta;
     }
 
     Super.Destroyed();
