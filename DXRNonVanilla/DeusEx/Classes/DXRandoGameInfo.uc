@@ -7,6 +7,8 @@ class DXRandoGameInfo extends DeusExGameInfo config;
 // HXRando has its own custom GameInfo
 
 var DXRando dxr;
+var Inventory stolenInventory;
+var AugmentationManager stolenAugs;
 
 function DXRando GetDXR()
 {
@@ -33,6 +35,8 @@ function DXRando GetDXR()
 event InitGame( String Options, out String Error )
 {
     Super.InitGame(Options, Error);
+
+    stolenInventory = None;
 
     log("InitGame DXR", self.name);
     GetDXR();
@@ -85,6 +89,22 @@ function Killed( pawn Killer, pawn Other, name damageType )
 {
     Super.Killed(Killer, Other, damageType);
     class'DXREvents'.static.AddDeath(Other, Killer, damageType);
+}
+
+function SendPlayer( PlayerPawn aPlayer, string URL )
+{
+    if (#defined(revision)){
+        if (stolenInventory!=None){
+            aPlayer.Inventory = stolenInventory;
+            stolenInventory = None;
+        }
+        if (stolenAugs!=None){
+            DeusExPlayer(aPlayer).AugmentationSystem = stolenAugs;
+            stolenAugs = None;
+        }
+    }
+
+    Super.SendPlayer(aPlayer,URL);
 }
 
 #ifdef vmd

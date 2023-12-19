@@ -53,6 +53,9 @@ function ReplaceActors()
         else if( RevisionMissionEndgame(a) != None) {
             ReplaceRevMissionEndgame(RevisionMissionEndgame(a));
         }
+        else if( RevisionMissionIntro(a) != None) {
+            ReplaceRevMissionIntro(RevisionMissionIntro(a));
+        }
 #endif
         else if( #var(prefix)MissionIntro(a) != None ) {
             ReplaceMissionIntro(#var(prefix)MissionIntro(a));
@@ -587,6 +590,20 @@ function ReplaceRevMissionEndgame(RevisionMissionEndgame a)
         a.Destroy();
     }
 }
+
+function ReplaceRevMissionIntro(RevisionMissionIntro a)
+{
+    local DXRRevMissionIntro n;
+
+    if(DXRRevMissionIntro(a) != None) return;
+
+    n = DXRRevMissionIntro(SpawnReplacement(a, class'DXRRevMissionIntro'));
+    if(n == None)
+        return;
+
+    a.Destroy();
+}
+
 #endif
 
 function ReplaceMissionIntro(#var(prefix)MissionIntro a)
