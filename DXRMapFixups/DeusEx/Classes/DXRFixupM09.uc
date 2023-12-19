@@ -19,7 +19,7 @@ function PreFirstEntryMapFixes()
 {
     local #var(DeusExPrefix)Mover m;
     local ComputerSecurity cs;
-    local Keypad2 k;
+    local #var(prefix)Keypad2 k;
     local Button1 b;
     local WeaponGasGrenade gas;
     local Teleporter t;
@@ -200,7 +200,7 @@ function PreFirstEntryMapFixes()
         foreach AllActors(class'Button1',b){
             if (b.Tag=='Button1' && b.Event=='Lift' && b.Location.Z < 200){ //vanilla Z is 97 for the lower button, just giving some slop in case it was changed in another mod?
                 rot = b.Rotation;
-                k = Spawn(class'Keypad2',,,b.Location, rot);
+                k = Spawn(class'#var(prefix)Keypad2',,,b.Location, rot);
                 k.validCode="8675309"; //They really like Jenny in this place
                 k.bToggleLock=False;
                 k.Event='Lift';

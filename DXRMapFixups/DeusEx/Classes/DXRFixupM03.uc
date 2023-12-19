@@ -198,7 +198,7 @@ function PreFirstEntryMapFixes()
             AddSwitch( vect(3745, -2593.711914, 140.335358), rot(0, 0, 0), 'BathroomDoor' );
 
             //The Leader can go hostile so easily... just make that not possible
-            foreach AllActors(class'Terrorist',terror){
+            foreach AllActors(class'#var(prefix)Terrorist',terror){
                 if (terror.BindName=="TerroristLeader"){
                     terror.ChangeAlly('Player',0,True);//Permanently neutral
                     break;
