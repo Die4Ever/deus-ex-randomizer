@@ -147,7 +147,7 @@ class Bingo:
         bingoMatches=self.bingoLineMatch.match(bingoLine)
         if (bingoMatches==None):
             return
-        
+
         bingoNumber=int(bingoMatches.group('key'))
         bingoCoord = self.bingoNumberToCoord(bingoNumber)
 
@@ -267,11 +267,17 @@ def getDefaultPath():
         Path.home() /'.local'/'share'/'Steam'/'steamapps'/'compatdata'/'6910'/'pfx'/'drive_c'/'users'/'steamuser'/'Documents'/'Deus Ex'/'System',
         Path.home() /'.local'/'share'/'Steam'/'steamapps'/'common'/'Deus Ex'/'System',
     ]
-    p:Path
+
+    modified_times = {}
     for p in checks:
         f:Path = p / "DXRBingo.ini"
         if f.exists():
-            return p
+            modified_times[p] = os.path.getmtime(f)
+    sorted_paths = sorted(modified_times.keys(), key=lambda f: modified_times[f])
+
+    if len(sorted_paths) > 0:
+        return sorted_paths[-1]
+    p:Path
     for p in checks:
         if p.is_dir():
             return p
