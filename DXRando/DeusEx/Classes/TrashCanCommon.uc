@@ -56,9 +56,9 @@ static function DestroyTrashCan(Containers trashcan)
         }
 
 		// maybe spawn a rat
-		if (FRand() < 0.14)
+		if (!trashcan.Region.Zone.bWaterZone && FRand() < 0.14)
 		{
-			loc = trashcan.Location;
+            loc = trashcan.Location;
 			loc.Z -= trashcan.CollisionHeight;
 			vermin = trashcan.Spawn(class'Rat',,, loc);
 			if (vermin != None)
