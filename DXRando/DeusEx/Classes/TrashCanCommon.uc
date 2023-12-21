@@ -49,7 +49,8 @@ static function DestroyTrashCan(Containers trashcan)
             if (trashbag != None) {
                 scale = trashcan.CollisionRadius / 24.0; // the biggest trashcans have a radius of 24
                 if (scale < 1.0)
-                    scale = FMin(scale * 1.3, 1.0); // it looks weird if trashbags get too small
+                    scale = (scale  + 1.0) / 2.0; // it looks weird if trashbags get too small
+
                 trashbag.SetCollisionSize(trashbag.CollisionRadius * scale, trashbag.CollisionHeight * scale);
                 trashbag.drawScale *= scale;
             }
