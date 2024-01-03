@@ -70,6 +70,7 @@ struct MoreFlagsSettings{
     var int grenadeswap;
     var int newgameplus_curve_scalar;
     var int newgameplus_max_item_carryover;
+    var int newgameplus_num_removed_weapons;
 
     var int remove_paris_mj12;// keep this at the end for automated tests
 };
@@ -400,6 +401,7 @@ simulated function string BindFlags(int mode, optional string str)
 
     FlagInt('Rando_newgameplus_curve_scalar', moresettings.newgameplus_curve_scalar, mode, str);
     FlagInt('Rando_newgameplus_max_item_carryover', moresettings.newgameplus_max_item_carryover, mode, str);
+    FlagInt('Rando_num_removed_weapons', moresettings.newgameplus_num_removed_weapons, mode, str);
 
     return str;
 }
@@ -566,6 +568,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "New Game+ Curve Scalar";
         case 'Rando_newgameplus_max_item_carryover':
             return "New Game+ Max Item Carryover";
+        case 'Rando_num_removed_weapons':
+            return "New Game+ Removed Weapons Per Loop";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -593,6 +597,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_energy':
         case 'Rando_bingoboardroll':
         case 'Rando_newgameplus_max_item_carryover':
+        case 'Rando_num_removed_weapons':
             return string(val);
 
         //Return the number as hex
@@ -846,7 +851,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
     return val $ " (Mishandled!)";
 }
 
-// returns true is read was successful
+// returns true if read was successful
 simulated function bool FlagInt(name flagname, out int val, int mode, out string str)
 {
     if( mode == 0 ) {

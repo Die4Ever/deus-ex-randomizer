@@ -178,6 +178,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].newgameplus_max_item_carryover = 5;
+    more_difficulty_settings[i].newgameplus_num_removed_weapons = 1;
     i++;
 #endif
 
@@ -250,6 +251,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].newgameplus_max_item_carryover = 5;
+    more_difficulty_settings[i].newgameplus_num_removed_weapons = 1;
     i++;
 
 #ifdef hx
@@ -321,6 +323,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].newgameplus_max_item_carryover = 5;
+    more_difficulty_settings[i].newgameplus_num_removed_weapons = 1;
     i++;
 
 #ifdef hx
@@ -392,6 +395,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].newgameplus_max_item_carryover = 5;
+    more_difficulty_settings[i].newgameplus_num_removed_weapons = 1;
     i++;
 
 #ifdef hx
@@ -463,6 +467,7 @@ function CheckConfig()
     more_difficulty_settings[i].grenadeswap = 100;
     more_difficulty_settings[i].newgameplus_curve_scalar = 100;
     more_difficulty_settings[i].newgameplus_max_item_carryover = 5;
+    more_difficulty_settings[i].newgameplus_num_removed_weapons = 1;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {
