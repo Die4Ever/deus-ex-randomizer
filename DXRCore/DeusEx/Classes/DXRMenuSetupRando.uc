@@ -350,6 +350,8 @@ function BindControls(optional string action)
     Slider(f.moresettings.newgameplus_max_item_carryover, 0, 30);
     NewMenuItem("Weapons Removed", "Number of weapons removed per loop.");
     Slider(f.moresettings.newgameplus_num_removed_weapons, 0, 30); // I wonder what the maximum number of weapons you can hold actually is
+    NewMenuItem("Augmentations Removed", "Number of augmentations removed per loop.");
+    Slider(f.moresettings.newgameplus_num_removed_augs, 0, 8);
 
     if( action == "NEXT" ) _InvokeNewGameScreen(combatDifficulty, InitDxr());
     if( action == "RANDOMIZE" ) RandomizeOptions(f);
