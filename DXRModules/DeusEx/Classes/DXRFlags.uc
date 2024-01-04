@@ -180,6 +180,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_max_item_carryover = 5;
     more_difficulty_settings[i].newgameplus_num_removed_weapons = 1;
     more_difficulty_settings[i].newgameplus_num_removed_augs = 1;
+    more_difficulty_settings[i].newgameplus_num_skill_downgrades = 3;
     i++;
 #endif
 
@@ -254,6 +255,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_max_item_carryover = 5;
     more_difficulty_settings[i].newgameplus_num_removed_weapons = 1;
     more_difficulty_settings[i].newgameplus_num_removed_augs = 1;
+    more_difficulty_settings[i].newgameplus_num_skill_downgrades = 3;
     i++;
 
 #ifdef hx
@@ -327,6 +329,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_max_item_carryover = 5;
     more_difficulty_settings[i].newgameplus_num_removed_weapons = 1;
     more_difficulty_settings[i].newgameplus_num_removed_augs = 1;
+    more_difficulty_settings[i].newgameplus_num_skill_downgrades = 3;
     i++;
 
 #ifdef hx
@@ -400,6 +403,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_max_item_carryover = 5;
     more_difficulty_settings[i].newgameplus_num_removed_weapons = 1;
     more_difficulty_settings[i].newgameplus_num_removed_augs = 1;
+    more_difficulty_settings[i].newgameplus_num_skill_downgrades = 3;
     i++;
 
 #ifdef hx
@@ -473,6 +477,7 @@ function CheckConfig()
     more_difficulty_settings[i].newgameplus_max_item_carryover = 5;
     more_difficulty_settings[i].newgameplus_num_removed_weapons = 1;
     more_difficulty_settings[i].newgameplus_num_removed_augs = 1;
+    more_difficulty_settings[i].newgameplus_num_skill_downgrades = 3;
     i++;
 
     for(i=0; i<ArrayCount(difficulty_settings); i++) {

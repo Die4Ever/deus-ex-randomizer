@@ -160,7 +160,9 @@ function NewGamePlus()
     local DataStorage ds;
     local DXRSkills skills;
     local DXRAugmentations augs;
-    local int i, bingo_win, bingo_freespaces, newgameplus_curve_scalar, newgameplus_max_item_carryover, newgameplus_num_removed_weapons, newgameplus_num_removed_augs;
+    local int i;
+    local int bingo_win, bingo_freespaces;
+    local int newgameplus_curve_scalar, newgameplus_max_item_carryover, newgameplus_num_removed_weapons, newgameplus_num_removed_augs, newgameplus_num_skill_downgrades;
     local float exp;
     local int randomStart;
     local int oldseed;
@@ -194,6 +196,7 @@ function NewGamePlus()
         newgameplus_max_item_carryover = moresettings.newgameplus_max_item_carryover;
         newgameplus_num_removed_weapons = moresettings.newgameplus_num_removed_weapons;
         newgameplus_num_removed_augs = moresettings.newgameplus_num_removed_augs;
+        newgameplus_num_skill_downgrades = moresettings.newgameplus_num_skill_downgrades;
         SetDifficulty(difficulty);
         ExecMaxRando();
         settings.bingo_win = bingo_win;
@@ -202,6 +205,7 @@ function NewGamePlus()
         moresettings.newgameplus_max_item_carryover = newgameplus_max_item_carryover;
         moresettings.newgameplus_num_removed_weapons = newgameplus_num_removed_weapons;
         moresettings.newgameplus_num_removed_augs = newgameplus_num_removed_augs;
+        moresettings.newgameplus_num_skill_downgrades = newgameplus_num_skill_downgrades;
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;
@@ -253,7 +257,7 @@ function NewGamePlus()
     l("NewGamePlus skill points was "$p.SkillPointsAvail);
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( skills != None ) {
-        for(i=0; i<3; i++)
+        for(i = 0; i < newgameplus_num_skill_downgrades; i++)
             skills.DowngradeRandomSkill(p);
         p.SkillPointsAvail = p.SkillPointsAvail * 0.75;
     }
