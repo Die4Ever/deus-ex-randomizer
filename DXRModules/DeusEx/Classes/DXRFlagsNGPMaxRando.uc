@@ -270,10 +270,11 @@ function NewGamePlus()
         if( augs != None )
             augs.RemoveRandomAug(p);
 
+    MaxMultipleItems(p, moresettings.newgameplus_max_item_carryover);
+
     ClearInHand(p);
     for (i = 0; i < newgameplus_num_removed_weapons; i++)
         RemoveRandomWeapon(p);
-    MaxMultipleItems(p, moresettings.newgameplus_max_item_carryover);
 
     //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
     //Technically it should make up for levels you skipped past, so maybe?
