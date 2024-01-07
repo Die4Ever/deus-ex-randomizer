@@ -348,12 +348,12 @@ function BindControls(optional string action)
     Slider(f.moresettings.newgameplus_curve_scalar, 0, 200);
     NewMenuItem("Max Item Carryover", "Maximum number of the same item that can carry over between loops, not including stackable items.");
     Slider(f.moresettings.newgameplus_max_item_carryover, 0, 30);
-    NewMenuItem("Weapons Removed", "Number of weapons removed per loop.");
-    Slider(f.moresettings.newgameplus_num_removed_weapons, 0, 30); // I wonder what the maximum number of weapons you can hold actually is
-    NewMenuItem("Augmentations Removed", "Number of augmentations removed per loop.");
-    Slider(f.moresettings.newgameplus_num_removed_augs, 0, 8);
     NewMenuItem("Skill Downgrades", "Number of skill level downgrades per loop.");
     Slider(f.moresettings.newgameplus_num_skill_downgrades, 0, 33);
+    NewMenuItem("Augmentations Removed", "Number of augmentations removed per loop.");
+    Slider(f.moresettings.newgameplus_num_removed_augs, 0, 8);
+    NewMenuItem("Weapons Removed", "Number of weapons removed per loop.");
+    Slider(f.moresettings.newgameplus_num_removed_weapons, 0, 30); // I believe the maximum number of weapons that can be carried is actually 18
 
     if( action == "NEXT" ) _InvokeNewGameScreen(combatDifficulty, InitDxr());
     if( action == "RANDOMIZE" ) RandomizeOptions(f);
