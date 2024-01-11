@@ -2518,6 +2518,7 @@ static simulated function string GetBingoGoalHelpText(string event,int mission, 
             } else if (mission<=12){
                 msg=msg$"The bum living at the Vandenberg gas station deserves it.";
             }
+            msg = msg$"|n|n(It's a Simpsons reference)";
             return msg;
         case "Canal_Cop_Dead":
             return "Kill one of the Chinese Military in the Hong Kong canals standing near the entrance to Tonnochi Road.";

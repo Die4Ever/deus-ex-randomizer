@@ -42,7 +42,7 @@ class Bingo:
         self.selectedMod=""
         self.prevLines=None
         self.bingoLineMatch = re.compile(
-            r'bingoexport\[(?P<key>\d+)\]=\(Event="(?P<event>.*)",Desc="(?P<desc>.*)",Progress=(?P<progress>\d+),Max=(?P<max>\d+),Active=(?P<active>\d+)\)',
+            r'bingoexport\[(?P<key>\d+)\]=\(Event="(?P<event>.*)",Desc="(?P<desc>.*)",Progress=(?P<progress>\d+),Max=(?P<max>\d+),Active=(?P<active>-?\d+)\)',
             re.IGNORECASE
         )
         self.initDrawnBoard()
@@ -147,7 +147,7 @@ class Bingo:
         bingoMatches=self.bingoLineMatch.match(bingoLine)
         if (bingoMatches==None):
             return
-        
+
         bingoNumber=int(bingoMatches.group('key'))
         bingoCoord = self.bingoNumberToCoord(bingoNumber)
 
