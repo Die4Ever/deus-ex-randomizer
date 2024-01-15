@@ -9,6 +9,36 @@ static function DestroyTrashCan(Containers trashcan)
     local Containers trashbag;
     local float scale;
 
+    // maybe spawn a trashbag
+    if (FRand() < 0.42)
+    {
+        loc = trashcan.Location;
+        if (FRand() < 0.71)
+            trashbag = trashcan.Spawn(class'Trashbag',,, loc);
+        else
+            trashbag = trashcan.Spawn(class'Trashbag2',,, loc);
+
+        if (trashbag != None)
+        {
+            scale = trashcan.CollisionRadius / 24.0; // the biggest trashcans have a radius of 24
+            if (scale < 1.0)
+                scale = (scale  + 1.0) / 2.0; // it looks weird if trashbags get too small
+
+            trashbag.SetCollisionSize(trashbag.CollisionRadius * scale, trashbag.CollisionHeight * scale);
+            trashbag.drawScale *= scale;
+        }
+    }
+
+    // maybe spawn a rat
+    if (!trashcan.Region.Zone.bWaterZone && FRand() < 0.14)
+    {
+        loc = trashcan.Location;
+        loc.Z -= trashcan.CollisionHeight;
+        vermin = trashcan.Spawn(class'Rat',,, loc);
+        if (vermin != None)
+            vermin.bTransient = true;
+    }
+
 	// trace down to see if we are sitting on the ground
 	loc = vect(0,0,0);
 	loc.Z -= trashcan.CollisionHeight + 8.0;
@@ -36,34 +66,6 @@ static function DestroyTrashCan(Containers trashcan)
 					trash.dir.Z = 0;
 				}
 			}
-		}
-
-        // maybe spawn a trashbag
-		if (FRand() < 0.42) {
-			loc = trashcan.Location;
-            if (FRand() < 0.67)
-                trashbag = trashcan.Spawn(class'Trashbag',,, loc);
-            else
-                trashbag = trashcan.Spawn(class'Trashbag2',,, loc);
-
-            if (trashbag != None) {
-                scale = trashcan.CollisionRadius / 24.0; // the biggest trashcans have a radius of 24
-                if (scale < 1.0)
-                    scale = (scale  + 1.0) / 2.0; // it looks weird if trashbags get too small
-
-                trashbag.SetCollisionSize(trashbag.CollisionRadius * scale, trashbag.CollisionHeight * scale);
-                trashbag.drawScale *= scale;
-            }
-        }
-
-		// maybe spawn a rat
-		if (!trashcan.Region.Zone.bWaterZone && FRand() < 0.14)
-		{
-            loc = trashcan.Location;
-			loc.Z -= trashcan.CollisionHeight;
-			vermin = trashcan.Spawn(class'Rat',,, loc);
-			if (vermin != None)
-				vermin.bTransient = true;
 		}
 	}
 }
