@@ -1,6 +1,6 @@
 class TrashCanCommon extends DXRBase;
 
-static function DestroyTrashCan(Containers trashcan)
+static function DestroyTrashCan(Containers trashcan, class<Containers> trashBagType)
 {
     local int i;
 	local Vector loc;
@@ -13,20 +13,20 @@ static function DestroyTrashCan(Containers trashcan)
     if (FRand() < 0.42)
     {
         loc = trashcan.Location;
-        if (FRand() < 0.71)
-            trashbag = trashcan.Spawn(class'Trashbag',,, loc);
-        else
-            trashbag = trashcan.Spawn(class'Trashbag2',,, loc);
+        trashbag = trashcan.Spawn(trashBagType,,, loc);
 
-        if (trashbag != None)
-        {
+        if (trashBagType == class'TrashBag')
             scale = trashcan.CollisionRadius / 24.0; // the biggest trashcans have a radius of 24
-            if (scale < 1.0)
-                scale = (scale  + 1.0) / 2.0; // it looks weird if trashbags get too small
+        else if (trashBagType == class'TrashBag2')
+            scale = trashcan.CollisionRadius / 14.86; // the smallest trashcan has a radius of 14.86
+        else
+            scale = 1.0;
 
-            trashbag.SetCollisionSize(trashbag.CollisionRadius * scale, trashbag.CollisionHeight * scale);
-            trashbag.drawScale *= scale;
-        }
+        if (scale < 1.0)
+            scale += (1.0 - scale) * 0.4; // it looks weird if trashbags get too small
+
+        trashbag.SetCollisionSize(trashbag.CollisionRadius * scale, trashbag.CollisionHeight * scale);
+        trashbag.drawScale *= scale;
     }
 
     // maybe spawn a rat
