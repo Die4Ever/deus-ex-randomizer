@@ -7,30 +7,37 @@ static function DestroyTrashCan(Containers trashcan, class<Containers> trashBagT
 	local TrashPaper trash;
 	local Rat vermin;
     local Containers trashbag;
-    local float scale;
+    local float scale, scaleCorrection;
 
     // maybe spawn a trashbag
-    if (FRand() < 0.42)
+    if (FRand() < 0.8)
     {
         loc = trashcan.Location;
+        // trashbag = trashcan.Spawn(trashBagType,,, loc);
         trashbag = trashcan.Spawn(trashBagType,,, loc);
 
-        if (trashBagType == class'TrashBag')
-            scale = trashcan.CollisionRadius / 24.0; // the biggest trashcans have a radius of 24
-        else if (trashBagType == class'TrashBag2')
-            scale = trashcan.CollisionRadius / 14.86; // the smallest trashcan has a radius of 14.86
-        else
-            scale = 1.0;
+		scale = 1.0;
+        // trashbags that are too big look weird when dropped, but ones whose
+        // default radius is smaller are fine, at least with vanilla ratios
+		if (trashbag.default.CollisionRadius > trashcan.default.CollisionRadius)
+		{
+            // get the proportional difference in their default radii
+			scaleCorrection = 1.0 - (trashcan.default.CollisionRadius / trashbag.default.CollisionRadius);
+            // square the difference so that larger differences have a reatively larger effect, then reduce it a bit
+			scaleCorrection = 0.875 * scaleCorrection * scaleCorrection;
+            // subtract the reduced difference from the starting scale
+			scale -= scaleCorrection;
+		}
+        // scale the trashbag scale by how much the trashcan has been scaled
+		scale *= trashcan.CollisionRadius / trashcan.default.CollisionRadius;
 
-        if (scale < 1.0)
-            scale += (1.0 - scale) * 0.4; // it looks weird if trashbags get too small
-
-        trashbag.SetCollisionSize(trashbag.CollisionRadius * scale, trashbag.CollisionHeight * scale);
+        // scale the trashbag by the final scale value
+		trashbag.SetCollisionSize(trashbag.CollisionRadius * scale, trashbag.CollisionHeight * scale);
         trashbag.drawScale *= scale;
     }
 
     // maybe spawn a rat
-    if (!trashcan.Region.Zone.bWaterZone && FRand() < 0.14)
+    if (!trashcan.Region.Zone.bWaterZone && FRand() < 0.4)
     {
         loc = trashcan.Location;
         loc.Z -= trashcan.CollisionHeight;
@@ -44,7 +51,7 @@ static function DestroyTrashCan(Containers trashcan, class<Containers> trashBagT
 	loc.Z -= trashcan.CollisionHeight + 8.0;
 	loc += trashcan.Location;
 
-	// only generate trash if we are on the ground
+	// only generate trashpaper if we're on the ground
 	if (!trashcan.FastTrace(loc))
 	{
 		// maybe spawn some paper
