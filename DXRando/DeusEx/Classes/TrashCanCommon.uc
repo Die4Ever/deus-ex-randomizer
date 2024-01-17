@@ -2,9 +2,7 @@ class TrashCanCommon extends DXRBase;
 
 static function DestroyTrashCan(Containers trashcan, class<Containers> trashBagType)
 {
-    local int i;
 	local Vector loc;
-	local TrashPaper trash;
 	local Rat vermin;
     local Containers trashbag;
     local float scale, scaleCorrection;
@@ -12,8 +10,10 @@ static function DestroyTrashCan(Containers trashcan, class<Containers> trashBagT
     // maybe spawn a trashbag
     if (FRand() < 0.8)
     {
+        // less likely maybe spawn some trashpaper (50% chance of at least one)
+        generateTrash(trashcan, 0.16);
+
         loc = trashcan.Location;
-        // trashbag = trashcan.Spawn(trashBagType,,, loc);
         trashbag = trashcan.Spawn(trashBagType,,, loc);
 
 		scale = 1.0;
@@ -35,9 +35,14 @@ static function DestroyTrashCan(Containers trashcan, class<Containers> trashBagT
 		trashbag.SetCollisionSize(trashbag.CollisionRadius * scale, trashbag.CollisionHeight * scale);
         trashbag.drawScale *= scale;
     }
+    else
+    {
+        // more likely maybe spawn some trashpaper (94% chance of at least one)
+        generateTrash(trashcan, 0.5);
+    }
 
-    // maybe spawn a rat
-    if (!trashcan.Region.Zone.bWaterZone && FRand() < 0.4)
+    // maybe spawn a rat, but not if underwater
+    if (!trashcan.Region.Zone.bWaterZone && FRand() < 0.5)
     {
         loc = trashcan.Location;
         loc.Z -= trashcan.CollisionHeight;
@@ -45,8 +50,15 @@ static function DestroyTrashCan(Containers trashcan, class<Containers> trashBagT
         if (vermin != None)
             vermin.bTransient = true;
     }
+}
 
-	// trace down to see if we are sitting on the ground
+static function generateTrash(Containers trashcan, float probability)
+{
+	local Vector loc;
+    local int i;
+	local TrashPaper trash;
+
+    // trace down to see if we are sitting on the ground
 	loc = vect(0,0,0);
 	loc.Z -= trashcan.CollisionHeight + 8.0;
 	loc += trashcan.Location;
@@ -54,10 +66,9 @@ static function DestroyTrashCan(Containers trashcan, class<Containers> trashBagT
 	// only generate trashpaper if we're on the ground
 	if (!trashcan.FastTrace(loc))
 	{
-		// maybe spawn some paper
 		for (i=0; i<4; i++)
 		{
-			if (FRand() < 0.75)
+			if (FRand() < probability)
 			{
 				loc = trashcan.Location;
 				loc.X += (trashcan.CollisionRadius / 2) - FRand() * trashcan.CollisionRadius;
