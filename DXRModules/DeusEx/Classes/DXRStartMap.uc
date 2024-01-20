@@ -329,6 +329,7 @@ static function StartMapSpecificFlags(FlagBase flagbase, string start_map)
         case "09_NYC_Dockyard":
             flagbase.SetBool('M08WarnedSmuggler',true,,-1);
             flagbase.SetBool('DL_BadNews_Played',true,,-1);
+            flagbase.SetBool('HelpSailor',true,,-1);
             break;
         case "10_Paris_Chateau":
             //Make sure Sandra spawns at the gas station
