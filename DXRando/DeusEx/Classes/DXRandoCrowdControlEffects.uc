@@ -151,6 +151,10 @@ function PeriodicUpdates()
         PlayerMessage("The ground thaws");
     }
 
+    if (isTimerActive('cc_behindTimer')){
+        player().bBehindView=True;
+        player().bCrosshairVisible=False;
+    }
     if (decrementTimer('cc_behindTimer')) {
         player().bBehindView=False;
         player().bCrosshairVisible = True;
