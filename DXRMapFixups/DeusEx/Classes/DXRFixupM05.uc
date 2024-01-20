@@ -35,6 +35,7 @@ function PreFirstEntryMapFixes()
     local #var(prefix)RatGenerator rg;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)NanoKey k;
+    local #var(prefix)SpawnPoint sp;
     local DXREnemies dxre;
     local int i;
     local bool VanillaMaps;
@@ -235,7 +236,31 @@ function BalanceJailbreak()
         l("BalanceJailbreak PaulLocation == " $ PaulLocation);
         if(PaulLocation == "Surgery Ward" || PaulLocation == "Greasel Pit")
             foreach AllActors(class'SpawnPoint', SP, 'player_inv')
-                itemLocations[num++] = SP.Location;
+                //Adjust item spawnpoints in armoury - specifically, move things off the top shelf
+                switch(sp.Name){
+                    case 'SpawnPoint24':
+                        itemLocations[num++] = vectm(-8551,1061,-197);
+                        break;
+                    case 'SpawnPoint12':
+                        itemLocations[num++] = vectm(-8542,1410,-148);
+                        break;
+                    case 'SpawnPoint10':
+                        itemLocations[num++] = vectm(-8642,1410,-148);
+                        break;
+                    case 'SpawnPoint11':
+                        itemLocations[num++] = vectm(-8636,1410,-197);
+                        break;
+                    case 'SpawnPoint22':
+                        itemLocations[num++] = vectm(-8554,1057,-148);
+                        break;
+                    case 'SpawnPoint23':
+                        itemLocations[num++] = vectm(-8655,1056,-148);
+                        break;
+                    default:
+                        itemLocations[num++] = SP.Location;
+                        break;
+                }
+
         else {
             // put the items in the surgery ward
             itemLocations[num++] = vectm(2174.416504,-569.534729,-213.660309);// paul's bed
