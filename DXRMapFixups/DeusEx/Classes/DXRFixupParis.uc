@@ -173,6 +173,11 @@ function AnyEntryMapFixes()
     local ScriptedPawn sp;
     local Merchant m;
     local TobyAtanwe toby;
+    local Conversation c;
+    local ConEvent ce, cePrev;
+    local ConEventSpeech ces;
+    local ConEventSetFlag cesf;
+    local ConEventAddSkillPoints ceasp;
 
     switch(dxr.localURL)
     {
@@ -210,6 +215,46 @@ function AnyEntryMapFixes()
         break;
     case "10_PARIS_CHATEAU":
         FixConversationAddNote(GetConversation('NicoletteInStudy'),"I used to use that computer whenever I was at home");
+        break;
+    case "11_PARIS_UNDERGROUND":
+        //Add a flag change to Toby's conversation so it sets MS_PlayerTeleported to false if you choose the "take me with you" option
+        //This will let you choose to stay or go.
+        c = GetConversation('MeetTobyAtanwe');
+        ce = c.eventList;
+        cePrev=ce;
+        while(ce!=None){
+            if (ce.eventType==ET_Speech){
+                ces = ConEventSpeech(ce);
+                if (InStr(ces.conSpeech.speech,"Step a little closer")!=-1){
+                    //Spawn a ConEventSetFlag to set "MS_LetTobyTakeYou_Rando", insert it between this and it's next event
+                    cesf = new(c) class'ConEventSetFlag';
+                    cesf.eventType=ET_SetFlag;
+                    cesf.label="LetTobyTakeYou";
+                    cesf.flagRef = new(c) class'ConFlagRef';
+                    cesf.flagRef.flagName='MS_LetTobyTakeYou_Rando';
+                    cesf.flagRef.value=True;
+                    cesf.flagRef.expiration=12;
+                    cesf.nextEvent = ces.nextEvent;
+                    ces.nextEvent = cesf;
+                }
+            } else if (ce.eventType==ET_AddSkillPoints){
+                ceasp = ConEventAddSkillPoints(ce);
+                cePrev.nextEvent = ce.nextEvent; //Remove the event from its current position
+                ce.nextEvent=None;
+                ce=cePrev;
+            }
+
+            cePrev=ce;
+            ce=ce.nextEvent;
+        }
+
+        //Assuming we found both the "correct" conversation ending and the skill point trigger,
+        //insert the skill point trigger after setting the "actually take me" flag
+        if (cesf!=None && ceasp!=None){
+            ceasp.nextEvent = cesf.nextEvent;
+            cesf.nextEvent = ceasp;
+        }
+
         break;
     case "11_PARIS_EVERETT":
         foreach AllActors(class'TobyAtanwe', toby) {
