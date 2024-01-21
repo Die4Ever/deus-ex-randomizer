@@ -231,6 +231,7 @@ function AnyEntry()
     FixRevisionJock();
     FixRevisionDecorativeInventory();
     FixInvalidBindNames();
+    ScaleZoneDamage();
     SetSeed( "DXRFixup AnyEntry missions" );
     if(#defined(mapfixes))
         AnyEntryMapFixes();
@@ -545,6 +546,22 @@ function FixInvalidBindNames()
             sp.BindName=ReplaceText(sp.BindName," ","");
             sp.ConBindEvents();
             warning("FixInvalidBindNames: Fixed "$sp.Name$" bindname, removing a space.  BindName is now '"$sp.BindName$"'");
+        }
+    }
+}
+
+//Scale the damage done by zones to counteract the damage scaling from CombatDifficulty
+function ScaleZoneDamage()
+{
+    local ZoneInfo z;
+
+    if(!#defined(vanilla)){
+        return;
+    }
+
+    foreach AllActors(class'ZoneInfo',z){
+        if (z.bPainZone){
+            z.DamagePerSec=Clamp((z.DamagePerSec+1)/player().CombatDifficulty,1,(z.DamagePerSec+1));
         }
     }
 }

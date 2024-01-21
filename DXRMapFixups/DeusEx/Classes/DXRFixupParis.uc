@@ -10,7 +10,6 @@ function PreFirstEntryMapFixes()
     local Conversation c;
     local #var(prefix)DataLinkTrigger dlt;
     local #var(prefix)JaimeReyes j;
-    local ZoneInfo zi;
     local #var(prefix)DamageTrigger dt;
     local #var(prefix)ComputerSecurity cs;
     local bool VanillaMaps;
@@ -44,11 +43,6 @@ function PreFirstEntryMapFixes()
     {
     case "10_PARIS_CATACOMBS":
         FixConversationAddNote(GetConversation('MeetAimee'), "Stupid, stupid, stupid password.");
-        foreach AllActors(class'ZoneInfo',zi){
-            if (zi.DamageType=='Radiation'){
-                zi.DamagePerSec=Clamp(7/player().CombatDifficulty, 1, 7);
-            }
-        }
         break;
 
     case "10_PARIS_CATACOMBS_TUNNELS":
