@@ -162,7 +162,6 @@ function NewGamePlus()
     local DXRAugmentations augs;
     local int i;
     local int bingo_win, bingo_freespaces;
-    local int newgameplus_curve_scalar, newgameplus_max_item_carryover, newgameplus_num_skill_downgrades, newgameplus_num_removed_augs, newgameplus_num_removed_weapons;
     local float exp;
     local int randomStart;
     local int oldseed;
@@ -192,20 +191,10 @@ function NewGamePlus()
         // we only want to do this on maxrando because we want to retain the user's custom choices
         bingo_win = settings.bingo_win;
         bingo_freespaces = settings.bingo_freespaces;
-        newgameplus_curve_scalar = moresettings.newgameplus_curve_scalar;
-        newgameplus_max_item_carryover = moresettings.newgameplus_max_item_carryover;
-        newgameplus_num_skill_downgrades = moresettings.newgameplus_num_skill_downgrades;
-        newgameplus_num_removed_augs = moresettings.newgameplus_num_removed_augs;
-        newgameplus_num_removed_weapons = moresettings.newgameplus_num_removed_weapons;
         SetDifficulty(difficulty);
         ExecMaxRando();
         settings.bingo_win = bingo_win;
         settings.bingo_freespaces = bingo_freespaces;
-        moresettings.newgameplus_curve_scalar = newgameplus_curve_scalar;
-        moresettings.newgameplus_max_item_carryover = newgameplus_max_item_carryover;
-        moresettings.newgameplus_num_skill_downgrades = newgameplus_num_skill_downgrades;
-        moresettings.newgameplus_num_removed_augs = newgameplus_num_removed_augs;
-        moresettings.newgameplus_num_removed_weapons = newgameplus_num_removed_weapons;
 
         // increase difficulty on each flag like exp = newgameplus_loops; x *= 1.2 ^ exp;
         exp = newgameplus_loops;
@@ -266,11 +255,11 @@ function NewGamePlus()
     l("NewGamePlus skill points is now "$p.SkillPointsAvail);
 
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
-    for (i = 0; i < moresettings.newgameplus_num_removed_augs; i++)
+    for (i = 0; i < newgameplus_num_removed_augs; i++)
         if( augs != None )
             augs.RemoveRandomAug(p);
 
-    MaxMultipleItems(p, moresettings.newgameplus_max_item_carryover);
+    MaxMultipleItems(p, newgameplus_max_item_carryover);
 
     ClearInHand(p);
     for (i = 0; i < newgameplus_num_removed_weapons; i++)
@@ -299,12 +288,16 @@ simulated function MaxMultipleItems(#var(PlayerPawn) p, int maxcopies)
 
     for(i=p.Inventory; i!=None; i=i.Inventory) {
         num=1;
-        for(i2=i.Inventory; i2!=None; i2=next) {
+        for(i2=i; i2!=None; i2=next) {
             next = i2.Inventory;
             if(i2.class.name != i.class.name) continue;
             num++;
             if(num > maxcopies) {
-                i2.Destroy();
+                if (Weapon(i2) != None) {
+                    RemoveRandomWeapon(p);
+                } else {
+                    i2.Destroy();
+                }
             }
         }
     }

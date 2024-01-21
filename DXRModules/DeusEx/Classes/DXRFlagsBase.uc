@@ -31,6 +31,11 @@ var #var(flagvarprefix) int difficulty;// save which difficulty setting the game
 var #var(flagvarprefix) int bSetSeed;// int because all our flags are ints?
 var #var(flagvarprefix) int bingoBoardRoll;
 
+var #var(flagvarprefix) int newgameplus_max_item_carryover;
+var #var(flagvarprefix) int newgameplus_num_skill_downgrades;
+var #var(flagvarprefix) int newgameplus_num_removed_augs;
+var #var(flagvarprefix) int newgameplus_num_removed_weapons;
+
 
 // When adding a new flag, make sure to update BindFlags, flagNameToHumanName, flagValToHumanVal,
 // CheckConfig in subclass, maybe ExecMaxRando if it should be included in that, ScoreFlags, and SetDifficulty for different game modes
@@ -69,10 +74,6 @@ struct FlagsSettings {
 struct MoreFlagsSettings{
     var int grenadeswap;
     var int newgameplus_curve_scalar;
-    var int newgameplus_max_item_carryover;
-    var int newgameplus_num_skill_downgrades;
-    var int newgameplus_num_removed_augs;
-    var int newgameplus_num_removed_weapons;
 
     var int remove_paris_mj12;// keep this at the end for automated tests
 };
@@ -402,10 +403,10 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_grenadeswap', moresettings.grenadeswap, mode, str);
 
     FlagInt('Rando_newgameplus_curve_scalar', moresettings.newgameplus_curve_scalar, mode, str);
-    FlagInt('Rando_newgameplus_max_item_carryover', moresettings.newgameplus_max_item_carryover, mode, str);
-    FlagInt('Rando_num_skill_downgrades', moresettings.newgameplus_num_skill_downgrades, mode, str);
-    FlagInt('Rando_num_removed_augs', moresettings.newgameplus_num_removed_augs, mode, str);
-    FlagInt('Rando_num_removed_weapons', moresettings.newgameplus_num_removed_weapons, mode, str);
+    FlagInt('Rando_newgameplus_max_item_carryover', newgameplus_max_item_carryover, mode, str);
+    FlagInt('Rando_num_skill_downgrades', newgameplus_num_skill_downgrades, mode, str);
+    FlagInt('Rando_num_removed_augs', newgameplus_num_removed_augs, mode, str);
+    FlagInt('Rando_num_removed_weapons', newgameplus_num_removed_weapons, mode, str);
 
     return str;
 }
