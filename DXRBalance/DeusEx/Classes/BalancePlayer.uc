@@ -280,6 +280,8 @@ function CatchFire( Pawn burner )
 simulated function DrugEffects(float deltaTime)
 {
     local float olddrugEffectTimer;
+    local DeusExRootWindow root;
+    local bool wasActive;
 
     // set a cap on the effect strength separately from the duration
     olddrugEffectTimer = drugEffectTimer;
@@ -288,9 +290,25 @@ simulated function DrugEffects(float deltaTime)
 
     // calculate duration myself
     drugEffectTimer = FMin(olddrugEffectTimer, 120.0 );
+    wasActive = (drugEffectTimer>0);
     drugEffectTimer -= deltaTime * 1.5;
-    if (drugEffectTimer < 0)
+    if (drugEffectTimer < 0) {
         drugEffectTimer = 0;
+        if (wasActive){
+            //This theoretically fixes the issue where the game stays zoomed in
+            //after being drunk until you switch what's in your hands
+            root = DeusExRootWindow(rootWindow);
+            if ((root != None) && (root.hud != None))
+            {
+                if (root.hud.background != None)
+                {
+                    root.hud.SetBackground(None);
+                    root.hud.SetBackgroundStyle(DSTY_Normal);
+                    DesiredFOV = Default.DesiredFOV;
+                }
+            }
+        }
+    }
 }
 
 // ----------------------------------------------------------------------

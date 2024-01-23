@@ -151,6 +151,10 @@ function PeriodicUpdates()
         PlayerMessage("The ground thaws");
     }
 
+    if (isTimerActive('cc_behindTimer')){
+        player().bBehindView=True;
+        player().bCrosshairVisible=False;
+    }
     if (decrementTimer('cc_behindTimer')) {
         player().bBehindView=False;
         player().bCrosshairVisible = True;
@@ -174,7 +178,7 @@ function PeriodicUpdates()
 
     if (decrementTimer('cc_invertMouseTimer')) {
         PlayerMessage("Your mouse controls return to normal");
-        player().bInvertMouse = dxr.flagbase.GetBool('cc_InvertMouseDef');
+        player().bInvertMouse = bool(datastorage.GetConfigKey('cc_InvertMouseDef'));
     }
 
     if (decrementTimer('cc_invertMovementTimer')) {
@@ -396,6 +400,7 @@ function ContinuousUpdates()
 //Make sure to do that here
 function InitOnEnter() {
     local inventory anItem;
+    datastorage = class'DataStorage'.static.GetObjFromPlayer(self);
 
     if (getTimer('cc_MatrixModeTimer') > 0) {
         StartMatrixMode();
@@ -439,7 +444,7 @@ function InitOnEnter() {
     }
 
     if (isTimerActive('cc_invertMouseTimer')) {
-        player().bInvertMouse = !dxr.flagbase.GetBool('cc_InvertMouseDef');
+        player().bInvertMouse = !bool(datastorage.GetConfigKey('cc_InvertMouseDef'));
     }
 
     if (isTimerActive('cc_invertMovementTimer')) {
@@ -466,7 +471,7 @@ function CleanupOnExit() {
     player().bCrosshairVisible = True; //Make crosshairs show up again
     SetFloatyPhysics(False);
     if (isTimerActive('cc_invertMouseTimer')) {
-        player().bInvertMouse = dxr.flagbase.GetBool('cc_InvertMouseDef');
+        player().bInvertMouse = bool(datastorage.GetConfigKey('cc_InvertMouseDef'));
     }
 
     if (isTimerActive('cc_invertMovementTimer')) {
@@ -1802,7 +1807,7 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             PlayerMessage(viewer@"inverted your mouse!");
-            dxr.flagbase.SetBool('cc_InvertMouseDef',player().bInvertMouse);
+            datastorage.SetConfig('cc_InvertMouseDef',player().bInvertMouse, 3600*12);
 
             player().bInvertMouse = !player().bInvertMouse;
             startNewTimer('cc_invertMouseTimer',duration);

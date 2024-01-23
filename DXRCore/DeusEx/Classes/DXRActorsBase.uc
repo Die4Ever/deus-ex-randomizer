@@ -245,7 +245,14 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
             if( pickup.bCanHaveMultipleCopies && pickup.NumCopies < pickup.MaxCopies ) {
                 pickup.NumCopies++;
                 item.Destroy();
+                if( player != None )
+                    player.UpdateBeltText(pickup);
                 return pickup;
+            } else if (pickup.bCanHaveMultipleCopies && pickup.NumCopies >= pickup.MaxCopies) {
+                //Player has some, but can't get more.  Don't try to pick it up or set them as the base.
+                //Disown the player entirely, otherwise if they try to pick it up again, it will follow them
+                item.SetOwner(None);
+                return item;
             }
         }
     }

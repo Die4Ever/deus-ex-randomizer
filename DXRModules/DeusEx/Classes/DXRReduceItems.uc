@@ -299,6 +299,11 @@ function ReduceSpawnsInContainers(class<Inventory> classname, float percent)
 
     foreach AllActors(class'#var(prefix)Containers', d)
     {
+
+        if (#var(PlayerPawn)(d.base)!=None){
+            continue; //Skip boxes the player might have carried across levels
+        }
+
         if(d.Content3 == None && d.Content2 == None && d.Contents == None)
             continue;
 

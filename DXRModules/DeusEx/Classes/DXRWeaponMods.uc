@@ -121,6 +121,9 @@ function FirstEntry()
     //Technically any decoration can contain objects, but I think DX only puts them in containers
     foreach AllActors(class'Containers',container)
     {
+        if (#var(PlayerPawn)(container.base)!=None){
+            continue; //Skip boxes the player might have carried across levels
+        }
         //I don't know if anything has anything in contents2 or contents3, but can't hurt...
         if(IsValidModClass(container.contents)){
             container.contents = PickRandomMod();
