@@ -280,7 +280,6 @@ function NewGamePlus()
     class'PlayerDataItem'.static.ResetData(p);
     Level.Game.SendPlayer(p, "00_intro");
 }
-
 simulated function MaxMultipleItems(#var(PlayerPawn) p, int maxcopies)
 {
     local Inventory i, i2, next;
@@ -288,16 +287,12 @@ simulated function MaxMultipleItems(#var(PlayerPawn) p, int maxcopies)
 
     for(i=p.Inventory; i!=None; i=i.Inventory) {
         num=1;
-        for(i2=i; i2!=None; i2=next) {
+        for(i2=i.Inventory; i2!=None; i2=next) {
             next = i2.Inventory;
             if(i2.class.name != i.class.name) continue;
             num++;
             if(num > maxcopies) {
-                if (Weapon(i2) != None) {
-                    RemoveRandomWeapon(p);
-                } else {
-                    i2.Destroy();
-                }
+                i2.Destroy();
             }
         }
     }
