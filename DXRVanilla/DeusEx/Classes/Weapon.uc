@@ -27,6 +27,11 @@ function BringUp()
         bCanTrack = False;
     else
         bCanTrack = default.bCanTrack;
+
+    if (bool(ConsoleCommand("get #var(package).MenuChoice_AutoLaser enabled"))){
+        //LaserOn already checks to see if it has a laser, so just call it
+        LaserOn();
+    }
 }
 
 simulated function Tick(float deltaTime)
