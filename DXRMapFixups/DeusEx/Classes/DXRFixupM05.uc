@@ -35,7 +35,6 @@ function PreFirstEntryMapFixes()
     local #var(prefix)RatGenerator rg;
     local #var(prefix)PigeonGenerator pg;
     local #var(prefix)NanoKey k;
-    local #var(prefix)SpawnPoint sp;
     local DXREnemies dxre;
     local int i;
     local bool VanillaMaps;

@@ -1,10 +1,10 @@
 class TrashCanCommon extends DXRBase;
 
-static function DestroyTrashCan(Containers trashcan, class<Containers> trashBagType)
+static function DestroyTrashCan(#var(prefix)Containers trashcan, class<#var(prefix)Containers> trashBagType)
 {
 	local Vector loc;
-	local Rat vermin;
-    local Containers trashbag;
+	local #var(prefix)Rat vermin;
+    local #var(prefix)Containers trashbag;
     local float scale, scaleCorrection;
 
     // maybe spawn a trashbag
@@ -48,18 +48,18 @@ static function DestroyTrashCan(Containers trashcan, class<Containers> trashBagT
         {
             loc = trashcan.Location;
             loc.Z -= trashcan.CollisionHeight;
-            vermin = trashcan.Spawn(class'Rat',,, loc);
+            vermin = trashcan.Spawn(class'#var(prefix)Rat',,, loc);
             if (vermin != None)
                 vermin.bTransient = true;
         }
     }
 }
 
-static function GenerateTrashPaper(Containers trashcan, float probability)
+static function GenerateTrashPaper(#var(prefix)Containers trashcan, float probability)
 {
 	local Vector loc;
     local int i;
-	local TrashPaper trashPaper;
+	local #var(prefix)TrashPaper trashPaper;
 
     // trace down to see if we are sitting on the ground
 	loc = vect(0,0,0);
@@ -77,7 +77,7 @@ static function GenerateTrashPaper(Containers trashcan, float probability)
 				loc.X += (trashcan.CollisionRadius / 2) - FRand() * trashcan.CollisionRadius;
 				loc.Y += (trashcan.CollisionRadius / 2) - FRand() * trashcan.CollisionRadius;
 				loc.Z += (trashcan.CollisionHeight / 2) - FRand() * trashcan.CollisionHeight;
-				trashPaper = trashcan.Spawn(class'TrashPaper',,, loc);
+				trashPaper = trashcan.Spawn(class'#var(prefix)TrashPaper',,, loc);
 				if (trashPaper != None)
 				{
 					trashPaper.SetPhysics(PHYS_Rolling);
