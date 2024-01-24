@@ -245,7 +245,7 @@ function NewGamePlus()
     l("NewGamePlus skill points was "$p.SkillPointsAvail);
     skills = DXRSkills(dxr.FindModule(class'DXRSkills'));
     if( skills != None ) {
-        for(i=0; i<3; i++)
+        for(i = 0; i < newgameplus_num_skill_downgrades; i++)
             skills.DowngradeRandomSkill(p);
         p.SkillPointsAvail = p.SkillPointsAvail * 0.75;
     }
@@ -254,12 +254,15 @@ function NewGamePlus()
     l("NewGamePlus skill points is now "$p.SkillPointsAvail);
 
     augs = DXRAugmentations(dxr.FindModule(class'DXRAugmentations'));
-    if( augs != None )
-        augs.RemoveRandomAug(p);
+    for (i = 0; i < newgameplus_num_removed_augs; i++)
+        if( augs != None )
+            augs.RemoveRandomAug(p);
+
+    MaxMultipleItems(p, newgameplus_max_item_carryover);
 
     ClearInHand(p);
-    RemoveRandomWeapon(p);
-    MaxMultipleItems(p, 5);
+    for (i = 0; i < newgameplus_num_removed_weapons; i++)
+        RemoveRandomWeapon(p);
 
     //Should you actually get fresh augs and credits on a NG+ non-vanilla start map?
     //Technically it should make up for levels you skipped past, so maybe?
@@ -276,7 +279,6 @@ function NewGamePlus()
     class'PlayerDataItem'.static.ResetData(p);
     Level.Game.SendPlayer(p, "00_intro");
 }
-
 simulated function MaxMultipleItems(#var(PlayerPawn) p, int maxcopies)
 {
     local Inventory i, i2, next;

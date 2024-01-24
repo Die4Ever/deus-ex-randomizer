@@ -31,6 +31,11 @@ var #var(flagvarprefix) int difficulty;// save which difficulty setting the game
 var #var(flagvarprefix) int bSetSeed;// int because all our flags are ints?
 var #var(flagvarprefix) int bingoBoardRoll;
 
+var #var(flagvarprefix) int newgameplus_max_item_carryover;
+var #var(flagvarprefix) int newgameplus_num_skill_downgrades;
+var #var(flagvarprefix) int newgameplus_num_removed_augs;
+var #var(flagvarprefix) int newgameplus_num_removed_weapons;
+
 
 // When adding a new flag, make sure to update BindFlags, flagNameToHumanName, flagValToHumanVal,
 // CheckConfig in subclass, maybe ExecMaxRando if it should be included in that, ScoreFlags, and SetDifficulty for different game modes
@@ -398,6 +403,10 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_grenadeswap', moresettings.grenadeswap, mode, str);
 
     FlagInt('Rando_newgameplus_curve_scalar', moresettings.newgameplus_curve_scalar, mode, str);
+    FlagInt('Rando_newgameplus_max_item_carryover', newgameplus_max_item_carryover, mode, str);
+    FlagInt('Rando_num_skill_downgrades', newgameplus_num_skill_downgrades, mode, str);
+    FlagInt('Rando_num_removed_augs', newgameplus_num_removed_augs, mode, str);
+    FlagInt('Rando_num_removed_weapons', newgameplus_num_removed_weapons, mode, str);
 
     return str;
 }
@@ -418,8 +427,6 @@ simulated function string flagNameToHumanName(name flagname){
             return "Loadout";
         case 'Rando_newgameplus_loops':
             return "New Game+ Loop";
-        case 'Rando_newgameplus_curve_scalar':
-            return "New Game+ Curve Scalar";
         case 'Rando_playthrough_id':
             return "Playthrough ID";
         case 'Rando_gamemode':
@@ -562,6 +569,16 @@ simulated function string flagNameToHumanName(name flagname){
             return "Bingo Board Re-rolls";
         case 'Rando_grenadeswap':
             return "Grenades";
+        case 'Rando_newgameplus_curve_scalar':
+            return "New Game+ Curve Scalar";
+        case 'Rando_newgameplus_max_item_carryover':
+            return "New Game+ Max Item Carryover";
+        case 'Rando_num_skill_downgrades':
+            return "New Game+ Downgraded Skill Levels Per Loop";
+        case 'Rando_num_removed_augs':
+            return "New Game+ Removed Augmentations Per Loop";
+        case 'Rando_num_removed_weapons':
+            return "New Game+ Removed Weapons Per Loop";
         default:
             return flagname $ "(ADD HUMAN READABLE NAME!)"; //Showing the raw flag name will stand out more
     }
@@ -588,6 +605,10 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_health':
         case 'Rando_energy':
         case 'Rando_bingoboardroll':
+        case 'Rando_newgameplus_max_item_carryover':
+        case 'Rando_num_skill_downgrades':
+        case 'Rando_num_removed_augs':
+        case 'Rando_num_removed_weapons':
             return string(val);
 
         //Return the number as hex
@@ -841,7 +862,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
     return val $ " (Mishandled!)";
 }
 
-// returns true is read was successful
+// returns true if read was successful
 simulated function bool FlagInt(name flagname, out int val, int mode, out string str)
 {
     if( mode == 0 ) {

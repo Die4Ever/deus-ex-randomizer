@@ -83,6 +83,12 @@ function InitDefaults()
     newgameplus_loops = 0;
     bingoBoardRoll = 0;
 
+    newgameplus_max_item_carryover = 5;
+    newgameplus_num_skill_downgrades = 3;
+    newgameplus_num_removed_augs = 1;
+    newgameplus_num_removed_weapons = 1;
+
+
 #ifdef hx
     difficulty = 1;
     maxrando = 1;
