@@ -160,8 +160,7 @@ function NewGamePlus()
     local DataStorage ds;
     local DXRSkills skills;
     local DXRAugmentations augs;
-    local int i;
-    local int bingo_win, bingo_freespaces;
+    local int i, bingo_win, bingo_freespaces;
     local float exp;
     local int randomStart;
     local int oldseed;
@@ -208,21 +207,21 @@ function NewGamePlus()
 #endif
 
 
-    p.CombatDifficulty = NewGamePlusVal(p.CombatDifficulty, 1.3, exp, 0, 15); // Anything over 15 is kind of unreasonably impossible
-    settings.minskill = NewGamePlusVal(settings.minskill, 1.1, exp, 10, 400);
-    settings.maxskill = NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 700);
-    settings.enemiesrandomized = NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000);
-    settings.enemystats = NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100);
-    settings.hiddenenemiesrandomized = NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000);
-    settings.ammo = NewGamePlusVal(settings.ammo, 0.9, exp, 5, 100);
-    settings.medkits = NewGamePlusVal(settings.medkits, 0.9, exp, 5, 100);
-    settings.multitools = NewGamePlusVal(settings.multitools, 0.9, exp, 5, 100);
-    settings.lockpicks = NewGamePlusVal(settings.lockpicks, 0.9, exp, 5, 100);
-    settings.biocells = NewGamePlusVal(settings.biocells, 0.9, exp, 5, 100);
-    settings.medbots = NewGamePlusVal(settings.medbots, 0.9, exp, 3, 100);
-    settings.repairbots = NewGamePlusVal(settings.repairbots, 0.9, exp, 3, 100);
-    settings.turrets_add = NewGamePlusVal(settings.turrets_add, 1.3, exp, 3, 1000);
-    settings.merchants = NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100);
+    p.CombatDifficulty = NewGamePlusVal(p.CombatDifficulty, 1.3, exp, 0, 15, False); // Anything over 15 is kind of unreasonably impossible
+    settings.minskill = NewGamePlusVal(settings.minskill, 1.1, exp, 10, 400, True);
+    settings.maxskill = NewGamePlusVal(settings.maxskill, 1.1, exp, 10, 700, True);
+    settings.enemiesrandomized = NewGamePlusVal(settings.enemiesrandomized, 1.2, exp, 10, 1000, True);
+    settings.enemystats = NewGamePlusVal(settings.enemystats, 1.2, exp, 5, 100, True);
+    settings.hiddenenemiesrandomized = NewGamePlusVal(settings.hiddenenemiesrandomized, 1.2, exp, 10, 1000, True);
+    settings.ammo = NewGamePlusVal(settings.ammo, 0.9, exp, 5, 100, True);
+    settings.medkits = NewGamePlusVal(settings.medkits, 0.9, exp, 5, 100, True);
+    settings.multitools = NewGamePlusVal(settings.multitools, 0.9, exp, 5, 100, True);
+    settings.lockpicks = NewGamePlusVal(settings.lockpicks, 0.9, exp, 5, 100, True);
+    settings.biocells = NewGamePlusVal(settings.biocells, 0.9, exp, 5, 100, True);
+    settings.medbots = NewGamePlusVal(settings.medbots, 0.9, exp, 3, 100, True);
+    settings.repairbots = NewGamePlusVal(settings.repairbots, 0.9, exp, 3, 100, True);
+    settings.turrets_add = NewGamePlusVal(settings.turrets_add, 1.3, exp, 3, 1000, True);
+    settings.merchants = NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100, True);
 
     SetGlobalSeed("NewGamePlus");
     if (randomStart!=0){
@@ -354,15 +353,20 @@ simulated function MaxRandoValPair(out int min, out int max)
     }
 }
 
-function float NewGamePlusVal(float val, float curve, float exp, float min, float max)
+function float NewGamePlusVal(float val, float curve, float exp, float min, float max, bool doTweak)
 {
     local bool increases;
     local float tweak;
 
     increases = curve > 1.0;
 
-    tweak = rngfn() * 0.045;
-    curve = 1.0 + ((curve - 1.0) * float(moresettings.newgameplus_curve_scalar) / 100.0) + tweak;
+    curve = (curve - 1.0) * float(moresettings.newgameplus_curve_scalar) / 100.0; // chop off 1 and scale the rest based on the scalar setting
+    if (doTweak) {
+        tweak = rngfn() * curve * 0.3; // generate a tweak with a range based on the scaled curve
+        curve += tweak;
+    }
+    curve += 1.0; // restore the 1
+
     if (increases) {
         curve = FMax(curve, 1.02);
     } else {
@@ -385,22 +389,22 @@ function ExtendedTests()
     dxr.seed = 123456;
     SetGlobalSeed("NG+ tests");
 
-    val = NewGamePlusVal(5, 1.2, 3, 1, 100);
-    testint(val, 7, "NewGamePlusVal 1.2 goes up");
+    val = NewGamePlusVal(5, 1.2, 3, 1, 100, False);
+    test(val > 5, "NewGamePlusVal 1.2 goes up");
 
-    val = NewGamePlusVal(5, 0.8, 3, 1, 100);
-    testint(val, 2, "NewGamePlusVal 1.2 goes down");
+    val = NewGamePlusVal(5, 0.8, 3, 1, 100, False);
+    test(val < 5, "NewGamePlusVal 1.2 goes down");
 
-    val = NewGamePlusVal(5, 0.8, 3, 5, 100);
+    val = NewGamePlusVal(5, 0.8, 3, 5, 100, False);
     testint(val, 5, "NewGamePlusVal with minimum stays the same"); // can't explain that!
 
-    val = NewGamePlusVal(5, 1.2, 3, 1, 5);
+    val = NewGamePlusVal(5, 1.2, 3, 1, 5, False);
     testint(val, 5, "NewGamePlusVal 1.2 with maximum");
 
-    val = NewGamePlusVal(0, 1.2, 3, -10, 100);
+    val = NewGamePlusVal(0, 1.2, 3, -10, 100, False);
     testint(val, 0, "NewGamePlusVal 1.2 val==0");
 
-    val = NewGamePlusVal(-5, 1.2, 3, -6, 100);
+    val = NewGamePlusVal(-5, 1.2, 3, -6, 100, False);
     testint(val, -6, "NewGamePlusVal 1.2 negative value");
 
     for(i=0; i<100; i++) {
@@ -412,10 +416,10 @@ function ExtendedTests()
 
     oldSeed = dxr.SetSeed(9876); // first two rngfn values are: 0.759380, -0.177720
 
-    fval = NewGamePlusVal(50.0, 0.99, 3, 0, 100);
+    fval = NewGamePlusVal(50.0, 0.99, 3, 0, 100, True);
     test(fval < 50.0, "NewGamePlusVal doesn't switch from decreasing to increasing");
 
-    fval = NewGamePlusVal(50.0, 1.01, 3, 0, 100);
+    fval = NewGamePlusVal(50.0, 1.01, 3, 0, 100, True);
     test(fval > 50.0, "NewGamePlusVal doesn't switch from increasing to decreasing");
 
     dxr.SetSeed(oldSeed);
