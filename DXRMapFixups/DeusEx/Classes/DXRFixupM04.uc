@@ -134,6 +134,17 @@ function PreFirstEntryMapFixes()
         //Button to open basement hatch from inside
         AddSwitch( vect(-558.536499,-426.806915,-16.069786), rot(0, 0, 0), 'BasementHatch');
 
+        if (VanillaMaps){
+            //One window on the roof doesn't have a FlagTrigger to make UNATCO hate you.  Add it back.
+            ft = Spawn(class'FlagTrigger',,,vectm(233.9,693.64,1016.1));
+            ft.SetCollisionSize(128,40);
+            ft.bSetFlag=False;
+            ft.bTrigger=True;
+            ft.FlagName='NSFSignalSent';
+            ft.flagValue=True;
+            ft.Event='UNATCOHatesPlayer';
+        }
+
         break;
 
     case "04_NYC_UNATCOISLAND":
