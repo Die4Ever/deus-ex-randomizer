@@ -34,7 +34,7 @@ function PreFirstEntryMapFixes()
     {
     case "12_VANDENBERG_CMD":
         // add goals and keypad code
-        Player().StartDataLinkTransmission("DL_no_carla");
+
         foreach AllActors(class'#var(prefix)TracerTong', tt) {
             RemoveFears(tt);// he looks pretty sick
         }
@@ -359,6 +359,9 @@ function AnyEntryMapFixes()
         break;
     case "12_VANDENBERG_COMPUTER":
         SetTimer(1, true);
+        break;
+    case "12_VANDENBERG_CMD":
+        Player().StartDataLinkTransmission("DL_no_carla");
         break;
     }
 }
