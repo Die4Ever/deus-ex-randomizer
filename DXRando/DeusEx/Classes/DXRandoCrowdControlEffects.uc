@@ -1278,7 +1278,10 @@ function bool swapPlayer(string viewer) {
         return false;
     }
 
-    ccLink.ccModule.Swap(player(),a);
+    if (ccLink.ccModule.Swap(player(),a)==false){
+        return false;
+    }
+
     player().ViewRotation = player().Rotation;
     PlayerMessage(viewer@"thought you would look better if you were where"@a.FamiliarName@"was");
 
@@ -1771,12 +1774,18 @@ function int doCrowdControlEvent(string code, string param[5], string viewer, in
                 return TempFail;
             }
             if (swapPlayer(viewer) == false) {
-                return Failed;
+                return TempFail;
             }
             break;
 
         case "floaty_physics":
             if (isTimerActive('cc_floatyTimer')) {
+                return TempFail;
+            }
+             //Floaty physics can interrupt conversations
+             //which can result in keys not getting transferred
+             //or flags not getting set right.  Just don't allow it.
+            if (InConversation()){
                 return TempFail;
             }
             PlayerMessage(viewer@"made you feel light as a feather");
