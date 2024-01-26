@@ -195,16 +195,23 @@ function int InitGoalsRev(int mission, string map)
     return mission+1000;
 }
 
+function AnyEntry()
+{
+    Super.AnyEntry();
+
+    switch(dxr.localURL) {
+    case "03_NYC_BATTERYPARK":
+        Player().StartDataLinkTransmission("dl_batterypark");
+        break;
+    }
+}
+
 function PreFirstEntryMapFixes()
 {
     local FlagTrigger ft;
     local #var(prefix)Terrorist t;
 
     switch(dxr.localURL) {
-    case "03_NYC_BATTERYPARK":
-        Player().StartDataLinkTransmission("dl_batterypark");
-        break;
-
     case "03_NYC_AIRFIELDHELIBASE":
         foreach AllActors(class'FlagTrigger',ft){// probably ambrosia
             if (ft.Name=='FlagTrigger0'){
