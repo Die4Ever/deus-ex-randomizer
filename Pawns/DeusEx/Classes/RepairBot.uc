@@ -77,9 +77,9 @@ simulated function string GetRemainingUsesStr()
     uses = GetRemainingUses();
 
     if (uses == 1) {
-        msg = " (1 Charge Left)";
+        msg = " (1 Charge)";
     } else {
-        msg = " ("$uses$" Charges Left)";
+        msg = " ("$uses$" Charges)";
     }
 
     return msg;
