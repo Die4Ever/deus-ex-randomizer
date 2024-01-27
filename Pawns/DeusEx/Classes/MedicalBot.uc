@@ -18,12 +18,19 @@ function PostBeginPlay()
 {
     Super.PostBeginPlay();
     healMaxTimes = GetMaxUses();
+    SetName();
 }
 
 function StandStill()
 {
     Super.StandStill();
     SetPropertyText("lowerThreshold", "0");// RSD
+}
+#else
+function PostBeginPlay()
+{
+    Super.PostBeginPlay();
+    SetName();
 }
 #endif
 
@@ -38,6 +45,8 @@ function int HealPlayer(DeusExPlayer player)
 #endif
 
     numUses++;
+
+    SetName();
 
     return healAmount;
 }
@@ -69,13 +78,19 @@ simulated function string GetRemainingUsesStr()
     uses = GetRemainingUses();
 
     if (uses == 1) {
-        msg = " (1 Heal Left)";
+        msg = " (1 Heal)";
     } else {
-        msg = " ("$uses$" Heals Left)";
+        msg = " ("$uses$" Heals)";
     }
 
     return msg;
 
+}
+
+function SetName()
+{
+    FamiliarName = "Medical Bot"$GetRemainingUsesStr();
+    UnfamiliarName = FamiliarName;
 }
 
 simulated function bool HasLimitedUses()

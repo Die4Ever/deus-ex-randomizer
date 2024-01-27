@@ -25,6 +25,12 @@ function StandStill()
     Super.StandStill();
     SetPropertyText("lowerThreshold", "0");// RSD
 }
+#else
+function PostBeginPlay()
+{
+    Super.PostBeginPlay();
+    SetName();
+}
 #endif
 
 function int ChargePlayer(DeusExPlayer PlayerToCharge)
@@ -38,6 +44,8 @@ function int ChargePlayer(DeusExPlayer PlayerToCharge)
 #endif
 
     numUses++;
+
+    SetName();
 
     return chargeAmount;
 }
@@ -75,6 +83,12 @@ simulated function string GetRemainingUsesStr()
     }
 
     return msg;
+}
+
+function SetName()
+{
+    FamiliarName = "Repair Bot"$GetRemainingUsesStr();
+    UnfamiliarName = FamiliarName;
 }
 
 simulated function bool HasLimitedUses()
