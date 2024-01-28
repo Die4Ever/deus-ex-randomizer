@@ -78,9 +78,9 @@ simulated function string GetRemainingUsesStr()
     uses = GetRemainingUses();
 
     if (uses == 1) {
-        msg = " (1 Heal)";
+        msg = " (1 Heal Left)";
     } else {
-        msg = " ("$uses$" Heals)";
+        msg = " ("$uses$" Heals Left)";
     }
 
     return msg;
@@ -89,7 +89,11 @@ simulated function string GetRemainingUsesStr()
 
 function SetName()
 {
-    FamiliarName = "Medical Bot"$GetRemainingUsesStr();
+    if (HealsRemaining()) {
+        FamiliarName = default.FamiliarName$GetRemainingUsesStr();
+    } else {
+        FamiliarName = "Drained "$default.FamiliarName;
+    }
     UnfamiliarName = FamiliarName;
 }
 

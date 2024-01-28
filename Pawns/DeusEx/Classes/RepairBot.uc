@@ -77,9 +77,9 @@ simulated function string GetRemainingUsesStr()
     uses = GetRemainingUses();
 
     if (uses == 1) {
-        msg = " (1 Charge)";
+        msg = " (1 Charge Left)";
     } else {
-        msg = " ("$uses$" Charges)";
+        msg = " ("$uses$" Charges Left)";
     }
 
     return msg;
@@ -87,7 +87,11 @@ simulated function string GetRemainingUsesStr()
 
 function SetName()
 {
-    FamiliarName = "Repair Bot"$GetRemainingUsesStr();
+    if (ChargesRemaining()) {
+        FamiliarName = default.FamiliarName$GetRemainingUsesStr();
+    } else {
+        FamiliarName = "Drained "$default.FamiliarName;
+    }
     UnfamiliarName = FamiliarName;
 }
 
