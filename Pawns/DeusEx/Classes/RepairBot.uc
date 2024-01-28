@@ -153,10 +153,17 @@ function Tick(float delta)
 {
     Super.Tick(delta);
 
-    if(CanCharge())
+    if(CanCharge()){
         LightHue=89;
-    else
+        LightType=LT_Steady;    
+    } else {
         LightHue=255;
+        if (HasLimitedUses() && ChargesRemaining()){
+            LightType=LT_Pulse;
+        } else {
+            LightType=LT_Steady;
+        }
+    }
 }
 
 defaultproperties
@@ -168,4 +175,5 @@ defaultproperties
     LightBrightness=160
     LightRadius=6
     LightHue=89
+    LightPeriod=25
 }
