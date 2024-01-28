@@ -155,7 +155,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 5;
     difficulty_settings[i].medbots = 100;
-    more_difficulty_settings[i].empty_medbots = 0;
+    more_difficulty_settings[i].empty_medbots = 100;
     difficulty_settings[i].repairbots = 100;
     difficulty_settings[i].medbotuses = 20;
     difficulty_settings[i].repairbotuses = 20;
@@ -227,7 +227,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 4;
     difficulty_settings[i].medbots = 35;
-    more_difficulty_settings[i].empty_medbots = 0;
+    more_difficulty_settings[i].empty_medbots = 15;
     difficulty_settings[i].repairbots = 35;
     difficulty_settings[i].medbotuses = 10;
     difficulty_settings[i].repairbotuses = 10;
@@ -298,7 +298,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 2;
     difficulty_settings[i].medbots = 27;
-    more_difficulty_settings[i].empty_medbots = 0;
+    more_difficulty_settings[i].empty_medbots = 15;
     difficulty_settings[i].repairbots = 27;
     difficulty_settings[i].medbotuses = 5;
     difficulty_settings[i].repairbotuses = 5;
@@ -369,7 +369,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 1;
     difficulty_settings[i].medbots = 25;
-    more_difficulty_settings[i].empty_medbots = 0;
+    more_difficulty_settings[i].empty_medbots = 15;
     difficulty_settings[i].repairbots = 25;
     difficulty_settings[i].medbotuses = 2;
     difficulty_settings[i].repairbotuses = 2;
@@ -440,7 +440,7 @@ function CheckConfig()
     difficulty_settings[i].goals = 100;
     difficulty_settings[i].equipment = 1;
     difficulty_settings[i].medbots = 20;
-    more_difficulty_settings[i].empty_medbots = 0;
+    more_difficulty_settings[i].empty_medbots = 15;
     difficulty_settings[i].repairbots = 20;
     difficulty_settings[i].medbotuses = 1;
     difficulty_settings[i].repairbotuses = 1;
