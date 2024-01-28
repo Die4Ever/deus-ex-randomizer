@@ -87,4 +87,7 @@ function Destroyed()
 defaultproperties
 {
      bInvincible=True;
+     bHighlight=True;
+     minDamageThreshold=20;
+     HitPoints=75;
 }
