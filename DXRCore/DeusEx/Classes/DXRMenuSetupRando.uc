@@ -25,7 +25,7 @@ function BindControls(optional string action)
     }
 
     //Make sure the starting map values match those in DXRStartMap
-    NewMenuItem("Starting Map", "What level you will start in");
+    NewMenuItem("Starting Map", "What level you will start in.");
     EnumOption("Liberty Island", 0, f.settings.starting_map);
     EnumOption("NSF Generator", 20, f.settings.starting_map);
     EnumOption("Hunting Lebedev", 30, f.settings.starting_map);
@@ -54,12 +54,12 @@ function BindControls(optional string action)
     BreakLine();
 
 #ifndef hx
-    NewMenuItem("", "Randomize starting locations on certain maps");
+    NewMenuItem("", "Randomize starting locations on certain maps.");
     EnumOption("Randomize Starting Locations", 100, f.settings.startinglocations);
     EnumOption("Unchanged Starting Locations", 0, f.settings.startinglocations);
 #endif
 
-    NewMenuItem("", "Randomize goal locations on certain maps");
+    NewMenuItem("", "Randomize goal locations on certain maps.");
     EnumOption("Randomize Goal Locations", 100, f.settings.goals);
     EnumOption("Unchanged Goal Locations", 0, f.settings.goals);
 
@@ -72,7 +72,7 @@ function BindControls(optional string action)
     NewMenuItem("Dancing %", "How many characters should be dancing.");
     Slider(f.settings.dancingpercent, 0, 100);
 
-    NewMenuItem("Spoiler Buttons", "Allow the use of spoiler buttons (Spoilers remain hidden until you choose to view them)");
+    NewMenuItem("Spoiler Buttons", "Allow the use of spoiler buttons (Spoilers remain hidden until you choose to view them).");
     EnumOption("Available", 1, f.settings.spoilers);
     EnumOption("Disallowed", 0, f.settings.spoilers);
 
@@ -82,13 +82,13 @@ function BindControls(optional string action)
 
     NewGroup("Bingo");
 
-    NewMenuItem("Bingo Win", "How many completed lines to instantly win");
+    NewMenuItem("Bingo Win", "How many completed lines to instantly win.");
     Slider(f.settings.bingo_win, 0, 12);
 
     NewMenuItem("Bingo Scale %", "How difficult should bingo goals be?");
     Slider(f.bingo_scale, 0, 100);
 
-    NewMenuItem("Bingo Freespace", "Should the center be a Free Space, or even more Free Spaces");
+    NewMenuItem("Bingo Freespace", "Should the center be a Free Space, or even more Free Spaces.");
     EnumOption("Enabled", 1, f.settings.bingo_freespaces);
     EnumOption("Disabled", 0, f.settings.bingo_freespaces);
     EnumOption("2 Free Spaces", 2, f.settings.bingo_freespaces);
@@ -106,36 +106,39 @@ function BindControls(optional string action)
 
     NewGroup("Medical Bots and Repair Bots");
 
-    NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%)");
+    NewMenuItem("Medbots %", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%).");
     Slider(f.settings.medbots, -1, 100);
 
-    NewMenuItem("Repair Bots", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%)");
+    NewMenuItem("Drained Medbots %", "Percentage chance for a zero-use medbot to spawn when a regular one doesn't.");
+    Slider(f.moresettings.empty_medbots, 0, 100);
+
+    NewMenuItem("Repair Bots %", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%).");
     Slider(f.settings.repairbots, -1, 100);
 
     if(!#defined(vmd)) {
-        NewMenuItem("Medbot Uses", "Number of times you can use an individual medbot to heal");
+        NewMenuItem("Medbot Uses", "Number of times you can use an individual medbot to heal.");
         Slider(f.settings.medbotuses, 0, 10);
 
-        NewMenuItem("Repair Bot Uses", "Number of times you can use an individual repair bot to restore energy");
+        NewMenuItem("Repair Bot Uses", "Number of times you can use an individual repair bot to restore energy.");
         Slider(f.settings.repairbotuses, 0, 10);
     }
 
-    NewMenuItem("Medbot Cooldowns", "Individual: Each Medbot has its own healing cooldown."$BR$"Global: All Medbots have the same cooldown");
+    NewMenuItem("Medbot Cooldowns", "Individual: Each Medbot has its own healing cooldown."$BR$"Global: All Medbots have the same cooldown.");
     EnumOption("Unchanged", 0, f.settings.medbotcooldowns);
     EnumOption("Individual", 1, f.settings.medbotcooldowns);
     EnumOption("Global", 2, f.settings.medbotcooldowns);
 
-    NewMenuItem("Repair Bot Cooldowns", "Individual: Each Repair Bot has its own charge cooldown."$BR$"Global: All Repair Bots have the same cooldown");
+    NewMenuItem("Repair Bot Cooldowns", "Individual: Each Repair Bot has its own charge cooldown."$BR$"Global: All Repair Bots have the same cooldown.");
     EnumOption("Unchanged", 0, f.settings.repairbotcooldowns);
     EnumOption("Individual", 1, f.settings.repairbotcooldowns);
     EnumOption("Global", 2, f.settings.repairbotcooldowns);
 
-    NewMenuItem("Medbot Heal Amount", "Individual: Each Medbot has its own healing amount."$BR$"Global: All Medbots have the same amount");
+    NewMenuItem("Medbot Heal Amount", "Individual: Each Medbot has its own healing amount."$BR$"Global: All Medbots have the same amount.");
     EnumOption("Unchanged", 0, f.settings.medbotamount);
     EnumOption("Individual", 1, f.settings.medbotamount);
     EnumOption("Global", 2, f.settings.medbotamount);
 
-    NewMenuItem("Repair Bot Charge Amount", "Individual: Each Repair Bot has its own charge amount."$BR$"Global: All Repair Bots have the same amount");
+    NewMenuItem("Repair Bot Charge Amount", "Individual: Each Repair Bot has its own charge amount."$BR$"Global: All Repair Bots have the same amount.");
     EnumOption("Unchanged", 0, f.settings.repairbotamount);
     EnumOption("Individual", 1, f.settings.repairbotamount);
     EnumOption("Global", 2, f.settings.repairbotamount);
@@ -228,7 +231,7 @@ function BindControls(optional string action)
     NewMenuItem("Non-Human Chance %", "Reduce the chance of new enemies being non-humans.");
     Slider(f.settings.enemies_nonhumans, 0, 100);
 
-    NewMenuItem("Enemy Respawn Seconds", "(Beta) How many seconds for enemies to respawn. Leave blank or 0 to disable");
+    NewMenuItem("Enemy Respawn Seconds", "(Beta) How many seconds for enemies to respawn. Leave blank or 0 to disable.");
     Slider(f.settings.enemyrespawn, 0, 10000);
 
     NewMenuItem("Move Turrets", "Randomizes locations of turrets, cameras, and security computers for them.");
@@ -237,11 +240,11 @@ function BindControls(optional string action)
     NewMenuItem("Add Turrets", "Randomly adds turrets, cameras, and security computers for them.");
     Slider(f.settings.turrets_add, 0, 10000);
 
-    NewMenuItem("", "Allow robots to get randomized weapons");
+    NewMenuItem("", "Allow robots to get randomized weapons.");
     EnumOption("Unchanged Robot Weapons", 0, f.settings.bot_weapons);
     EnumOption("Random Robot Weapons", 4, f.settings.bot_weapons);
 
-    NewMenuItem("", "Allow non-humans to get randomized stats");
+    NewMenuItem("", "Allow non-humans to get randomized stats.");
     EnumOption("Unchanged Non-human Stats", 0, f.settings.bot_stats);
     EnumOption("Random Non-human Stats", 100, f.settings.bot_stats);
 
@@ -300,7 +303,7 @@ function BindControls(optional string action)
     NewMenuItem("Medkit Drops %", "Make medkits more scarce.");
     Slider(f.settings.medkits, 0, 100);
 
-    NewMenuItem("Starting Equipment", "How many random items you start with");
+    NewMenuItem("Starting Equipment", "How many random items you start with.");
     Slider(f.settings.equipment, 0, 10);
 
     NewMenuItem("Swap Items %", "The chance for item positions to be swapped.");

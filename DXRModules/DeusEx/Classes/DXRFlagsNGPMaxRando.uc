@@ -61,6 +61,7 @@ simulated function RandomizeSettings(bool forceMenuOptions)
     MaxRandoVal(settings.merchants);
     MaxRandoVal(settings.dancingpercent);
     MaxRandoVal(settings.medbots);
+    moresettings.empty_medbots = (settings.medbots + 1) / 2;
     MaxRandoVal(settings.repairbots);
 
     settings.medbotuses = rng(7) + 1;
@@ -219,6 +220,7 @@ function NewGamePlus()
     settings.lockpicks = NewGamePlusVal(settings.lockpicks, 0.9, exp, 5, 100, True);
     settings.biocells = NewGamePlusVal(settings.biocells, 0.9, exp, 5, 100, True);
     settings.medbots = NewGamePlusVal(settings.medbots, 0.9, exp, 3, 100, True);
+    moresettings.empty_medbots = NewGamePlusVal(moresettings.empty_medbots, 0.96, exp, 3, 100, True);
     settings.repairbots = NewGamePlusVal(settings.repairbots, 0.9, exp, 3, 100, True);
     settings.turrets_add = NewGamePlusVal(settings.turrets_add, 1.3, exp, 3, 1000, True);
     settings.merchants = NewGamePlusVal(settings.merchants, 0.9, exp, 5, 100, True);

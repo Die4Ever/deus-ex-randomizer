@@ -30,7 +30,7 @@ function CheckConfig()
 function FirstEntry()
 {
     Super.FirstEntry();
-    RandoMedBotsRepairBots(dxr.flags.settings.medbots, dxr.flags.settings.repairbots);
+    RandoMedBotsRepairBots(dxr.flags.settings.medbots, dxr.flags.moresettings.empty_medbots, dxr.flags.settings.repairbots);
     RandoMedRepairBotAmountCooldowns(dxr.flags.settings.medbotamount,dxr.flags.settings.repairbotamount,dxr.flags.settings.medbotcooldowns,dxr.flags.settings.repairbotcooldowns);
     RandoTurrets(dxr.flags.settings.turrets_move, dxr.flags.settings.turrets_add);
 }
@@ -346,7 +346,7 @@ function #var(injectsprefix)InformationDevices SpawnDatacubeForComputer(vector l
     return d;
 }
 
-function RandoMedBotsRepairBots(int medbots, int repairbots)
+function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
 {
     local #var(prefix)RepairBot r;
     local #var(prefix)MedicalBot m;
@@ -388,16 +388,16 @@ function RandoMedBotsRepairBots(int medbots, int repairbots)
 #ifdef injections
         if( chance_single(medbots) ) {
             SpawnBot(class'MedicalBot', medHint, "Medical Bot Nearby");
-        } else if ( chance_single(medbots) ) {
-            mb = MedicalBot(SpawnBot(class'MedicalBot', medHint, "Medical Bot Nearby"));
+        } else if ( chance_single(empty_medbots) ) {
+            mb = MedicalBot(SpawnBot(class'MedicalBot', medHint, "Drained Medical Bot Nearby"));
             mb.numUses = mb.GetMaxUses();
             mb.SetName();
         }
 #else
         if( chance_single(medbots) ) {
             SpawnBot(class'DXRMedicalBot', medHint, "Medical Bot Nearby");
-        } else if ( chance_single(medbots) ) {
-            mb = DXRMedicalBot(SpawnBot(class'DXRMedicalBot', medHint, "Medical Bot Nearby"));
+        } else if (( chance_single(empty_medbots)) ) {
+            mb = DXRMedicalBot(SpawnBot(class'DXRMedicalBot', medHint, "Drained Medical Bot Nearby"));
             mb.numUses = mb.GetMaxUses();
             mb.SetName();
         }
