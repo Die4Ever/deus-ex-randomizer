@@ -88,7 +88,7 @@ function BindControls(optional string action)
     NewMenuItem("Bingo Scale %", "How difficult should bingo goals be?");
     Slider(f.bingo_scale, 0, 100);
 
-    NewMenuItem("Bingo Freespace", "Should the center be a Free Space, or even more Free Spaces.");
+    NewMenuItem("Bingo Freespace", "Should the center be a Free Space, or even more Free Spaces?");
     EnumOption("Enabled", 1, f.settings.bingo_freespaces);
     EnumOption("Disabled", 0, f.settings.bingo_freespaces);
     EnumOption("2 Free Spaces", 2, f.settings.bingo_freespaces);
@@ -106,13 +106,13 @@ function BindControls(optional string action)
 
     NewGroup("Medical Bots and Repair Bots");
 
-    NewMenuItem("Medbots %", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%).");
+    NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%).");
     Slider(f.settings.medbots, -1, 100);
 
-    NewMenuItem("Augmentation Bots %", "Percentage chance for a zero-heals medbot to spawn when a regular one doesn't.");
+    NewMenuItem("Augmentation Bots", "Percentage chance for a zero-heals medbot to spawn when a regular one doesn't.");
     Slider(f.moresettings.empty_medbots, 0, 100);
 
-    NewMenuItem("Repair Bots %", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%).");
+    NewMenuItem("Repair Bots", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%).");
     Slider(f.settings.repairbots, -1, 100);
 
     if(!#defined(vmd)) {
