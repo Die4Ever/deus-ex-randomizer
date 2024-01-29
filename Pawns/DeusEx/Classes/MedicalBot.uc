@@ -142,7 +142,7 @@ function Tick(float delta)
 
     if(CanHeal()){
         LightHue=89;
-        LightType=LT_Steady;    
+        LightType=LT_Steady;
     } else {
         LightHue=255;
         if (HasLimitedUses() && HealsRemaining()){
