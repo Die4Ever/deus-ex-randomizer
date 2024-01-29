@@ -25,11 +25,6 @@ function StandStill()
     Super.StandStill();
     SetPropertyText("lowerThreshold", "0");// RSD
 }
-#else
-function PostBeginPlay()
-{
-    Super.PostBeginPlay();
-}
 #endif
 
 function int ChargePlayer(DeusExPlayer PlayerToCharge)
@@ -160,7 +155,7 @@ function Tick(float delta)
 
     if(CanCharge()){
         LightHue=89;
-        LightType=LT_Steady;    
+        LightType=LT_Steady;
     } else {
         LightHue=255;
         if (HasLimitedUses() && ChargesRemaining()){
