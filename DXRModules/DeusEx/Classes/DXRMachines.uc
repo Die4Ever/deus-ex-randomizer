@@ -393,7 +393,7 @@ function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
         } else if ( chance_single(empty_medbots) ) {
             mb = MedicalBot(SpawnBot(class'MedicalBot', repairHint, "Augmentation Bot Nearby"));
             mb.augsOnly = true;
-            mb.MultiSkins[0] = Texture'AugBot';
+            mb.MultiSkins[0] = Texture'AugBotTex1';
         }
 #else
         if( chance_single(medbots) ) {
@@ -401,7 +401,7 @@ function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
         } else if (( chance_single(empty_medbots)) ) {
             mb = DXRMedicalBot(SpawnBot(class'DXRMedicalBot', repairHint, "Augmentation Bot Nearby"));
             mb.augsOnly = true;
-            mb.MultiSkins[0] = Texture'AugBot';
+            mb.MultiSkins[0] = Texture'AugBotTex1';
         }
 #endif
 
