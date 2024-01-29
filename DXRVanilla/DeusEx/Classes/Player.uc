@@ -162,6 +162,9 @@ function bool HandleItemPickup(Actor FrobTarget, optional bool bSearchOnly)
             if (mod.CanUpgradeWeapon(weap)){
                 mod.ApplyMod(weap);
                 ClientMessage(mod.ItemName$" applied to "$weap.ItemName);
+                if (mod.IsA('WeaponModLaser') && bool(ConsoleCommand("get #var(package).MenuChoice_AutoLaser enabled"))){
+                    weap.LaserOn();
+                }
                 mod.DestroyMod();
                 return true;
             }
