@@ -3,6 +3,7 @@ class DXRFrobDisplayWindow injects FrobDisplayWindow;
 var localized string msgDamageThreshold;
 var localized string msgShot;
 var localized string msgShots;
+var localized string msgHitPoints;
 
 var transient bool inited;
 var transient bool auto_codes;
@@ -216,8 +217,8 @@ function DrawWindowBase(GC gc, actor frobTarget)
     if( ActorHasBars(frobTarget) )
         infoW += barLength + 2;
     infoH += 8;
-    infoX = FClamp(infoX, infoW/2+10, width-10-infoW/2);
-    infoY = FClamp(infoY, infoH/2+10, height-10-infoH/2);
+    infoX = width / 2;
+    infoY = height / 2;
 
     // draw a dark background
     gc.SetStyle(DSTY_Modulated);
@@ -266,6 +267,73 @@ function bool KeyAcquired(Mover m)
     }
 
     return False;
+}
+
+function int CalcDecoDamage(int iDamage, name damageType, #var(DeusExPrefix)Decoration deco)
+{
+    if (iDamage < deco.minDamageThreshold) return 0;
+
+    if ((DamageType == 'TearGas') || (DamageType == 'PoisonGas') || (DamageType == 'Radiation'))
+        return 0;
+
+    if ((DamageType == 'EMP') || (DamageType == 'NanoVirus') || (DamageType == 'Shocked'))
+        return 0;
+
+    if (DamageType == 'HalonGas')
+        return 0;
+
+    if ((DamageType == 'Burned') || (DamageType == 'Flamed'))
+    {
+        if (deco.bExplosive)	// blow up if we are hit by fire
+            return 99999;
+    }
+
+    return iDamage;
+}
+
+function string DXDecoStrInfo(#var(DeusExPrefix)Decoration deco, out int numLines)
+{
+    local string strInfo;
+    local float damage;
+    local int  numShots;
+#ifdef vanilla
+    local DXRWeapon w;
+#endif
+
+    if (deco.bInvincible || deco.bStatic){
+        //Mostly just annoying showing infinite on everything
+        //strInfo = strInfo $ CR() $ msgHitPoints @ msgInf;
+        //numLines++;
+        return strInfo;
+    } else {
+        strInfo = strInfo $ CR() $ msgDamageThreshold @ deco.minDamageThreshold;
+        numLines++;
+        strInfo = strInfo $ CR() $ msgHitPoints @ deco.HitPoints;
+        numLines++;
+
+#ifdef vanilla
+        w = DXRWeapon(player.inHand);
+        if( w != None ) {
+            damage = CalcDecoDamage(w.GetDamage(), w.WeaponDamageType() ,deco)* float(w.GetNumHits());
+            if( damage > 0 ) {
+                numshots = deco.HitPoints/damage;
+                if (deco.HitPoints % damage != 0){
+                    numshots++;
+                }
+
+                if( numshots == 1 )
+                    strInfo = strInfo $ " (" $ numshots @ msgShot $ ")";
+                else
+                    strInfo = strInfo $ " (" $ numshots @ msgShots $ ")";
+            } else {
+                strInfo = strInfo $ " (" $ msgInf @ msgShots $ ")";
+            }
+        }
+#endif
+    }
+
+    return strInfo;
+
 }
 
 function string MoverStrInfo(Mover m, out int numLines)
@@ -384,6 +452,10 @@ function string DeviceStrInfo(HackableDevices device, out int numLines)
         strInfo = strInfo $ CR() $ "Unknown Code";
     }
 
+#ifndef hx
+    strInfo = strInfo $ DXDecoStrInfo(device,numLines);
+#endif
+
     return strInfo;
 }
 
@@ -460,7 +532,7 @@ function string OtherStrInfo(Actor frobTarget, out int numLines)
 #endif
     }
     else if (frobTarget.IsA('DeusExDecoration'))
-        strInfo = player.GetDisplayName(frobTarget);
+        strInfo = player.GetDisplayName(frobTarget) $ DXDecoStrInfo(#var(DeusExPrefix)Decoration(frobTarget),numLines);
     else if (frobTarget.IsA('DeusExProjectile'))
         strInfo = DeusExProjectile(frobTarget).itemName;
     else
@@ -659,4 +731,5 @@ defaultproperties
     msgDamageThreshold="Min Dmg:"
     msgShot="shot"
     msgShots="shots"
+    msgHitPoints="Hit Points:"
 }
