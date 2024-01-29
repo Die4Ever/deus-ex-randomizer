@@ -29,7 +29,6 @@ function StandStill()
 function PostBeginPlay()
 {
     Super.PostBeginPlay();
-    SetName();
 }
 #endif
 
@@ -44,8 +43,6 @@ function int ChargePlayer(DeusExPlayer PlayerToCharge)
 #endif
 
     numUses++;
-
-    SetName();
 
     return chargeAmount;
 }
@@ -83,12 +80,6 @@ simulated function string GetRemainingUsesStr()
     }
 
     return msg;
-}
-
-function SetName()
-{
-    FamiliarName = default.FamiliarName$GetRemainingUsesStr();
-    UnfamiliarName = FamiliarName;
 }
 
 simulated function bool HasLimitedUses()
