@@ -385,23 +385,25 @@ function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
     repairHint = 'RepairbotNearby';
 
     SetSeed( "RandoMedBots" );
+
+
+    // at what point is duplicating code better than a pile of preprocessor conditionals?
+    if( chance_single(medbots) ) {
 #ifdef injections
-        if( chance_single(medbots) ) {
-            SpawnBot(class'MedicalBot', medHint, "Medical Bot Nearby");
-        } else if ( chance_single(empty_medbots) ) {
-            mb = MedicalBot(SpawnBot(class'MedicalBot', medHint, "Drained Medical Bot Nearby"));
-            mb.numUses = mb.GetMaxUses();
-            mb.SetName();
-        }
+        SpawnBot(class'MedicalBot', medHint, "Medical Bot Nearby");
 #else
-        if( chance_single(medbots) ) {
-            SpawnBot(class'DXRMedicalBot', medHint, "Medical Bot Nearby");
-        } else if (( chance_single(empty_medbots)) ) {
-            mb = DXRMedicalBot(SpawnBot(class'DXRMedicalBot', medHint, "Drained Medical Bot Nearby"));
-            mb.numUses = mb.GetMaxUses();
-            mb.SetName();
-        }
+        SpawnBot(class'DXRMedicalBot', medHint, "Medical Bot Nearby");
 #endif
+    } else if ( chance_single(empty_medbots) ) {
+#ifdef injections
+        mb = MedicalBot(SpawnBot(class'MedicalBot', medHint, "Augmentation Bot Nearby"));
+#else
+        mb = DXRMedicalBot(SpawnBot(class'DXRMedicalBot', medHint, "Augmentation Bot Nearby"));
+#endif
+        mb.augsOnly = true;
+        mb.SetName();
+        mb.MultiSkins[0] = Texture'AugBot';
+    }
 
     SetSeed( "RandoRepairBots" );
     if( chance_single(repairbots) ) {

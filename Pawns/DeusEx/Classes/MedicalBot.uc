@@ -1,4 +1,5 @@
 #ifdef injections
+
 class DXRMedicalBot merges MedicalBot;
 #else
 class DXRMedicalBot extends #var(prefix)MedicalBot;
@@ -6,6 +7,7 @@ class DXRMedicalBot extends #var(prefix)MedicalBot;
 
 var travel int numUses;
 var transient DXRando dxr;
+var bool augsOnly;
 
 replication
 {
@@ -67,7 +69,10 @@ simulated function int GetMaxUses()
 
 simulated function int GetRemainingUses()
 {
-    return (GetMaxUses() - numUses);
+    if (augsOnly)
+        return 0;
+    else
+        return (GetMaxUses() - numUses);
 }
 
 simulated function string GetRemainingUsesStr()
@@ -89,22 +94,21 @@ simulated function string GetRemainingUsesStr()
 
 function SetName()
 {
-    if (HealsRemaining()) {
+    if (augsOnly)
+        FamiliarName = "Augmentation Bot";
+    else
         FamiliarName = default.FamiliarName$GetRemainingUsesStr();
-    } else {
-        FamiliarName = "Drained "$default.FamiliarName;
-    }
     UnfamiliarName = FamiliarName;
 }
 
 simulated function bool HasLimitedUses()
 {
-     return (GetMaxUses() != 0);
+     return (GetMaxUses() != 0 || augsOnly);
 }
 
 simulated function bool HealsRemaining()
 {
-    return GetRemainingUses()!=0;
+    return GetRemainingUses() > 0;
 }
 
 simulated function bool CanHeal()

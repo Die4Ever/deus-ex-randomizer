@@ -87,11 +87,7 @@ simulated function string GetRemainingUsesStr()
 
 function SetName()
 {
-    if (ChargesRemaining()) {
-        FamiliarName = default.FamiliarName$GetRemainingUsesStr();
-    } else {
-        FamiliarName = "Drained "$default.FamiliarName;
-    }
+    FamiliarName = default.FamiliarName$GetRemainingUsesStr();
     UnfamiliarName = FamiliarName;
 }
 
