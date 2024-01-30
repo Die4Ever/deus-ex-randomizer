@@ -498,7 +498,7 @@ simulated function string flagNameToHumanName(name flagname){
         case 'Rando_medbots':
             return "Medbots";
         case 'Rando_empty_medbots':
-            return "Augmentation Bot";
+            return "Augmentation Bots";
         case 'Rando_repairbots':
             return "Repairbots";
         case 'Rando_medbotuses':
