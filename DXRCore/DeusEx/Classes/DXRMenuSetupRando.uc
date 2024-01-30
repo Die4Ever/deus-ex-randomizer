@@ -106,10 +106,10 @@ function BindControls(optional string action)
 
     NewGroup("Medical Bots and Repair Bots");
 
-    NewMenuItem("Medbots", "Percentage chance for a medbot to spawn in a map (vanilla is about 14%).");
+    NewMenuItem("Medbots", "Percentage chance for a medbot to spawnz in a map (vanilla is about 14%).");
     Slider(f.settings.medbots, -1, 100);
 
-    NewMenuItem("Augmentation Bots", "Percentage chance for a zero-heals medbot to spawn when a regular one doesn't.");
+    NewMenuItem("AugBots", "Percentage chance for a zero-heals medbot to spawn in a map if a regular one doesn't.");
     Slider(f.moresettings.empty_medbots, 0, 100);
 
     NewMenuItem("Repair Bots", "Percentage chance for a repair bot to spawn in a map (vanilla is about 14%).");
