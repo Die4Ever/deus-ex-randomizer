@@ -354,11 +354,6 @@ function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
     local Name medHint;
     local Name augHint;
     local Name repairHint;
-#ifdef injections
-    local MedicalBot mb;
-#else
-    local DXRMedicalBot mb;
-#endif
 
     // TODO: get rid of this later, but still delete the old ones for now to reduce confusion for players used to previous releases
     medHint = '01_Datacube09';
@@ -387,21 +382,12 @@ function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
     repairHint = 'RepairbotNearby';
 
     SetSeed( "RandoMedBots" );
-#ifdef injections
-        if( chance_single(medbots) ) {
-            SpawnBot(class'MedicalBot', medHint, "Medical Bot Nearby");
-        } else if ( chance_single(empty_medbots) ) {
-            mb = MedicalBot(SpawnBot(class'MedicalBot', augHint, "Augmentation Bot Nearby"));
-            mb.MakeAugsOnly();
-        }
-#else
-        if( chance_single(medbots) ) {
-            SpawnBot(class'DXRMedicalBot', medHint, "Medical Bot Nearby");
-        } else if (( chance_single(empty_medbots)) ) {
-            mb = DXRMedicalBot(SpawnBot(class'DXRMedicalBot', augHint, "Augmentation Bot Nearby"));
-            mb.MakeAugsOnly();
-        }
-#endif
+    if( chance_single(medbots) ) {
+        SpawnBot(class'#var(prefix)MedicalBot', medHint, "Medical Bot Nearby");
+    } else if ( chance_single(empty_medbots) ) {
+        m = MedicalBot(SpawnBot(class'#var(prefix)MedicalBot', augHint, "Augmentation Bot Nearby"));
+        m.MakeAugsOnly();
+    }
 
     SetSeed( "RandoRepairBots" );
     if( chance_single(repairbots) ) {
