@@ -10,6 +10,7 @@ class DXRandoText extends object abstract;
 
 #exec DEUSEXTEXT IMPORT FILE=Text\MedbotNearby.txt
 #exec DEUSEXTEXT IMPORT FILE=Text\RepairbotNearby.txt
+#exec DEUSEXTEXT IMPORT FILE=Text\AugbotNearby.txt
 
 #exec DEUSEXTEXT IMPORT FILE=Text\03_EmailMenu_ajacobson.txt
 #exec DEUSEXTEXT IMPORT FILE=Text\04_EmailMenu_ajacobson.txt
