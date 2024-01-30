@@ -392,16 +392,14 @@ function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
             SpawnBot(class'MedicalBot', medHint, "Medical Bot Nearby");
         } else if ( chance_single(empty_medbots) ) {
             mb = MedicalBot(SpawnBot(class'MedicalBot', augHint, "Augmentation Bot Nearby"));
-            mb.augsOnly = true;
-            mb.MultiSkins[0] = Texture'AugBotTex1';
+            mb.MakeAugsOnly();
         }
 #else
         if( chance_single(medbots) ) {
             SpawnBot(class'DXRMedicalBot', medHint, "Medical Bot Nearby");
         } else if (( chance_single(empty_medbots)) ) {
             mb = DXRMedicalBot(SpawnBot(class'DXRMedicalBot', augHint, "Augmentation Bot Nearby"));
-            mb.augsOnly = true;
-            mb.MultiSkins[0] = Texture'AugBotTex1';
+            mb.MakeAugsOnly();
         }
 #endif
 

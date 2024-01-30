@@ -141,6 +141,12 @@ function Explode(vector HitLocation)
     Instigator = oldInstigator;
 }
 
+function MakeAugsOnly()
+{
+    augsOnly = true;
+    MultiSkins[0] = Texture'AugBotTex1';
+}
+
 function Tick(float delta)
 {
     Super.Tick(delta);
