@@ -853,7 +853,7 @@ function int ScoreFlags()
     score += settings.goals;
     score -= settings.equipment * 10;
     score -= ClampFlagValue(settings.medbots,0,100);
-    // TODO: add score change for empty medbots
+    score -= ClampFlagValue(moresettings.empty_medbots,0,100) / 2;
     score -= ClampFlagValue(settings.repairbots,0,100);
     if(settings.medbotuses <= 0)
         score -= 100;
