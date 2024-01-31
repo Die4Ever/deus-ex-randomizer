@@ -386,7 +386,7 @@ function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
     if( chance_single(medbots) ) {
         SpawnBot(class'#var(injectsprefix)MedicalBot', medHint, "Medical Bot Nearby");
     } else if ( chance_single(empty_medbots) ) {
-        ab = MedicalBot(SpawnBot(class'#var(injectsprefix)MedicalBot', augHint, "Augmentation Bot Nearby"));
+        ab = #var(injectsprefix)MedicalBot(SpawnBot(class'#var(injectsprefix)MedicalBot', augHint, "Augmentation Bot Nearby"));
         ab.MakeAugsOnly();
     }
 
