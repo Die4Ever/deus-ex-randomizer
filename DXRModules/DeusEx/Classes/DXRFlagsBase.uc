@@ -74,6 +74,7 @@ struct FlagsSettings {
 struct MoreFlagsSettings{
     var int grenadeswap;
     var int newgameplus_curve_scalar;
+    var int empty_medbots;
 
     var int remove_paris_mj12;// keep this at the end for automated tests
 };
@@ -361,6 +362,7 @@ simulated function string BindFlags(int mode, optional string str)
     FlagInt('Rando_equipment', settings.equipment, mode, str);
 
     FlagInt('Rando_medbots', settings.medbots, mode, str);
+    FlagInt('Rando_empty_medbots', moresettings.empty_medbots, mode, str);
     FlagInt('Rando_repairbots', settings.repairbots, mode, str);
     FlagInt('Rando_medbotuses', settings.medbotuses, mode, str);
     FlagInt('Rando_repairbotuses', settings.repairbotuses, mode, str);
@@ -495,6 +497,8 @@ simulated function string flagNameToHumanName(name flagname){
             return "Starting Equipment Amount";
         case 'Rando_medbots':
             return "Medbots";
+        case 'Rando_empty_medbots':
+            return "Augmentation Bots";
         case 'Rando_repairbots':
             return "Repairbots";
         case 'Rando_medbotuses':
@@ -625,6 +629,7 @@ simulated function string flagValToHumanVal(name flagname, int val){
         case 'Rando_biocells':
         case 'Rando_deviceshackable':
         case 'Rando_medbots':
+        case 'Rando_empty_medbots':
         case 'Rando_repairbots':
         case 'Rando_medkits':
         case 'Rando_dancingpercent':
