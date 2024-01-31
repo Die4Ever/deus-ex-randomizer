@@ -351,6 +351,7 @@ function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
     local #var(prefix)RepairBot r;
     local #var(prefix)MedicalBot m;
     local #var(prefix)Datacube d;
+    local #var(injectsprefix)MedicalBot ab;
     local Name medHint;
     local Name augHint;
     local Name repairHint;
@@ -385,8 +386,8 @@ function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
     if( chance_single(medbots) ) {
         SpawnBot(class'#var(injectsprefix)MedicalBot', medHint, "Medical Bot Nearby");
     } else if ( chance_single(empty_medbots) ) {
-        m = MedicalBot(SpawnBot(class'#var(prefix)MedicalBot', augHint, "Augmentation Bot Nearby"));
-        m.MakeAugsOnly();
+        ab = MedicalBot(SpawnBot(class'#var(injectsprefix)MedicalBot', augHint, "Augmentation Bot Nearby"));
+        ab.MakeAugsOnly();
     }
 
     SetSeed( "RandoRepairBots" );
