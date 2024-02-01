@@ -136,6 +136,11 @@ function PreFirstEntryMapFixes()
                 if (door.Tag=='Elevator1'){
                     door.MoverEncroachType=ME_CrushWhenEncroach;
                 }
+                if(door.Tag=='sub_doors'){
+                    door.bLocked = true;
+                    door.bHighlight = true;
+                    door.bFrobbable = true;
+                }
             }
             AddSwitch( vect(654.545,3889.5397,-367.262), rot(0, 16384, 0), 'ShedDoor');
 
