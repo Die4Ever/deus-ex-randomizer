@@ -120,6 +120,71 @@ function RandomBobPage()
     }
 }
 
+//These need a bit more manual fiddling than the others since you are so much closer to them, including underneath
+function RandomMJ12Globe()
+{
+    local Earth earth;
+    local int i;
+
+    foreach AllActors(class'Earth',earth){
+        SetGlobalSeed("RandomGlobe");
+
+        earth.bIsSecretGoal=True;
+
+        if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random globe
+
+        switch(rng(10)){
+        case 0: 
+            PlayDressUp(earth,class'Basketball',0);
+            earth.SetRotation(rotm(8000,0,7000)); //Give it a bit of tilt for more drama
+            earth.DrawScale = earth.DrawScale * 2;
+            break;
+        case 1: 
+            PlayDressUp(earth,class'BoneSkull',0);
+            earth.SetRotation(rotm(0,32765,-5000)); //Slightly tilted down
+            break;
+        case 2: 
+            PlayDressUp(earth,class'Liquor40oz',0);
+            earth.DrawScale = earth.DrawScale * 2;
+            earth.SetRotation(rotm(0,16000,12000));
+            break;
+        case 3: 
+            PlayDressUp(earth,class'#var(prefix)DXLogo',0);
+            earth.DrawScale = earth.DrawScale * 3;
+            break;
+        case 4: 
+            PlayDressUp(earth,class'SodaCan',0);
+            earth.SetRotation(rotm(6000,16000,12000));
+            break;
+        case 5: //Does this one even look good?
+            PlayDressUp(earth,class'BoneFemur',0); 
+            earth.DrawScale = earth.DrawScale * 0.25;
+            earth.SetRotation(rotm(0,16000,12000));
+            break;
+        case 6: 
+            PlayDressUp(earth,class'ChildMale2',24000); 
+            earth.DrawScale = earth.DrawScale * 1.5;
+            break;
+        case 7: 
+            PlayDressUp(earth,class'Trophy',0); 
+            break;
+        case 8: 
+            PlayDressUp(earth,class'GrayCarcass',0); 
+            earth.DrawScale = earth.DrawScale * 0.25;
+            earth.SetRotation(rotm(-16385,20000,0));
+            break;
+        case 9: 
+            PlayDressUp(earth,class'Mutt',24000); 
+            earth.DrawScale = earth.DrawScale * 1.5;
+            break;
+        }
+
+        earth.RotationRate = rot(0,-750,0);
+
+        return;
+    }
+}
+
 function PreFirstEntry()
 {
     local bool memes_enabled;
@@ -143,6 +208,9 @@ function PreFirstEntry()
         case "04_NYC_HOTEL":
             if(IsAprilFools())
                 PaulToilet();
+            break;
+        case "06_HONGKONG_MJ12LAB":
+            RandomMJ12Globe();
             break;
     }
 }
@@ -515,6 +583,7 @@ function RandomizeCutscene()
     i=0;
     _skipactor_types[i++] = class'DeusExPlayer';
     _skipactor_types[i++] = class'Mover';
+    _skipactor_types[i++] = class'Earth';
 #ifdef revision
     _skipactor_types[i++] = class<Actor>(DynamicLoadObject("RevisionDeco.Rev_SphereLight", class'class'));
 #endif
@@ -532,6 +601,7 @@ function RandomizeCutscene()
     foreach AllActors(class'Actor', a)
     {
         if( Mover(a) != None ) continue;
+        if( Earth(a) != None ) continue;
         if( #var(prefix)BreakableGlass(a) != None ) continue;
         if( a.IsA('Rev_SphereLight') ) continue;
         if( a.bHidden || DeusExPlayer(a) != None ) continue;
@@ -559,6 +629,7 @@ function RandomizeCutscene()
 
     RandomBobPage();
     RandomLiberty();
+    RandomMJ12Globe();
 
     RandomizeDialog();
 }
