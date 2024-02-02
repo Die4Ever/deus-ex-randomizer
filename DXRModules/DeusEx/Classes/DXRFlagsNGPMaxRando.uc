@@ -279,6 +279,7 @@ function NewGamePlus()
     class'PlayerDataItem'.static.ResetData(p);
     Level.Game.SendPlayer(p, "00_intro");
 }
+
 simulated function MaxMultipleItems(#var(PlayerPawn) p, int maxcopies)
 {
     local Inventory i, i2, next;

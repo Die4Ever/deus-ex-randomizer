@@ -77,7 +77,7 @@ function PreFirstEntryMapFixes()
             //A switch in the sewer swimming path to allow backtracking
             AddSwitch( vect(-1518.989136,278.541260,-439.973816), rot(0, 2768, 0), 'DrainGrate');
 
-        //A keypad in the sewer walking path to allow backtracking
+            //A keypad in the sewer walking path to allow backtracking
             kp = Spawn(class'#var(prefix)Keypad2',,,vectm(-622.685,497.4295,-60.437), rotm(0,-49192,0));
             kp.validCode="2577";
             kp.bToggleLock=False;
