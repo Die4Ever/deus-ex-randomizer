@@ -1,5 +1,4 @@
 #ifdef injections
-
 class DXRMedicalBot merges MedicalBot;
 #else
 class DXRMedicalBot extends #var(prefix)MedicalBot;
