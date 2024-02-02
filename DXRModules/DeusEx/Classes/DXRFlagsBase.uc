@@ -233,7 +233,7 @@ simulated function DisplayRandoInfoMessage(#var(PlayerPawn) p, float CombatDiffi
     if(bSetSeed > 0)
         str = str $ " (Set Seed)";
 
-    str2= "Difficulty: " $ TrimTrailingZeros(CombatDifficulty)
+    str2= "Difficulty: " $ class'DXRInfo'.static.FloatToString(CombatDifficulty, 3)
 #ifdef injections
             $ ", New Game+ Loops: "$newgameplus_loops
 #endif
