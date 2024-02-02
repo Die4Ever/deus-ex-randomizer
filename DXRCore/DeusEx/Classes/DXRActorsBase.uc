@@ -269,6 +269,7 @@ static function Inventory GiveExistingItem(Pawn p, Inventory item, optional int 
 
     if( player != None ) {
         player.FrobTarget = item;
+        item.SetOwner(None);// just in case the right click fails
         player.ParseRightClick();
     } else {
         item.GiveTo(p);
