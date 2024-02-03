@@ -6,6 +6,7 @@ class DXRRepairBot extends #var(prefix)RepairBot;
 
 var travel int numUses;
 var transient DXRando dxr;
+var string baseName;
 
 replication
 {
@@ -27,6 +28,12 @@ function StandStill()
 }
 #endif
 
+function updateName()
+{
+    familiarName = baseName $ GetRemainingUsesStr();
+    unfamiliarName = familiarName;
+}
+
 function int ChargePlayer(DeusExPlayer PlayerToCharge)
 {
     local int chargeAmount;
@@ -38,6 +45,8 @@ function int ChargePlayer(DeusExPlayer PlayerToCharge)
 #endif
 
     numUses++;
+
+    updateName();
 
     return chargeAmount;
 }
@@ -68,7 +77,9 @@ simulated function string GetRemainingUsesStr()
 
     uses = GetRemainingUses();
 
-    if (uses == 1) {
+    if (uses == 0) {
+        msg = " (No Charges Left)";
+    } else if (uses == 1) {
         msg = " (1 Charge Left)";
     } else {
         msg = " ("$uses$" Charges Left)";
@@ -152,6 +163,11 @@ function Explode(vector HitLocation)
 function Tick(float delta)
 {
     Super.Tick(delta);
+
+    if (basename == "" && familiarName != "") {
+        baseName = familiarName;
+        updateName();
+    }
 
     if(CanCharge()){
         LightHue=89;

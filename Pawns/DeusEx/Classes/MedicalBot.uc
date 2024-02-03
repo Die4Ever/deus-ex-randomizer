@@ -7,6 +7,7 @@ class DXRMedicalBot extends #var(prefix)MedicalBot;
 var travel int numUses;
 var transient DXRando dxr;
 var bool augsOnly;
+var string baseName;
 
 replication
 {
@@ -28,6 +29,12 @@ function StandStill()
 }
 #endif
 
+function updateName()
+{
+    familiarName = baseName $ GetRemainingUsesStr();
+    unfamiliarName = familiarName;
+}
+
 function int HealPlayer(DeusExPlayer player)
 {
     local int healAmount;
@@ -39,6 +46,8 @@ function int HealPlayer(DeusExPlayer player)
 #endif
 
     numUses++;
+
+    updateName();
 
     return healAmount;
 }
@@ -72,7 +81,9 @@ simulated function string GetRemainingUsesStr()
 
     uses = GetRemainingUses();
 
-    if (uses == 1) {
+    if (uses == 0) {
+        return " (No Heals Left)";
+    } else if (uses == 1) {
         msg = " (1 Heal Left)";
     } else {
         msg = " ("$uses$" Heals Left)";
@@ -149,6 +160,11 @@ function MakeAugsOnly()
 function Tick(float delta)
 {
     Super.Tick(delta);
+
+    if (!augsOnly && baseName == "" && familiarName != "") {
+        baseName = familiarName;
+        updateName();
+    }
 
     if(CanHeal()){
         LightHue=89;
