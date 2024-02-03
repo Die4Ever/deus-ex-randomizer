@@ -273,6 +273,13 @@ function PreFirstEntryMapFixes()
                 ot.ordersTag='gary_patrol1';
             }
 
+            //Show the strength of the fan grill
+            foreach AllActors(class'#var(DeusExPrefix)Mover',door,'BreakableWall'){
+                door.bHighlight = true;
+                door.bLocked=true;
+                door.bPickable=false;
+            }
+
             Spawn(class'PlaceholderItem',,, vectm(579,2884,-1629)); //Table near entrance
             Spawn(class'PlaceholderItem',,, vectm(1057,2685.25,-1637)); //Table overlooking computer room
             Spawn(class'PlaceholderItem',,, vectm(1970,2883.43,-1941)); //In first floor computer room
