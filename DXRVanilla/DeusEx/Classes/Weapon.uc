@@ -37,10 +37,7 @@ function BringUp()
 simulated function Tick(float deltaTime)
 {
     local float r, e;
-    local name AnimBefore;
-    local bool grenHack;
 
-    AnimBefore = AnimSequence;
     if (ClipCount < ReloadCount)
 	{
         // Are we dealing with a grenade?
@@ -54,21 +51,19 @@ simulated function Tick(float deltaTime)
             //issue #519
             if (IsAnimating() && (AnimSequence=='Attack' || AnimSequence=='Attack2' || AnimSequence=='Attack3'))
             {
-                grenHack=True;
+                if (!bNearWall && NearWallCheck()){
+                    //The throw animation is about to be canceled by a place animation
+                    AmmoType.AddAmmo(1); //Give the ammo back
+                    bDestroyOnFinish=False; //Make sure it isn't destroyed afterwards
+                    if (DeusExPlayer(Owner)!=None){
+                        DeusExPlayer(Owner).UpdateBeltText(Self);
+                    }
+                }
             }
         }
     }
 
     Super.Tick(deltaTime);
-
-    if (grenHack && AnimSequence!=AnimBefore){
-        //The throw animation got canceled by a place animation
-        AmmoType.AddAmmo(1); //Give the ammo back
-        bDestroyOnFinish=False; //Make sure it isn't destroyed afterwards
-        if (DeusExPlayer(Owner)!=None){
-            DeusExPlayer(Owner).UpdateBeltText(Self);
-        }
-    }
 
     if(!IsAnimating()) {
         return;
