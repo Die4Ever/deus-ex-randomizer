@@ -133,7 +133,7 @@ function RandomMJ12Globe()
 
         if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random globe
 
-        switch(rng(10)){
+        switch(rng(16)){
         case 0: 
             PlayDressUp(earth,class'Basketball',0);
             earth.SetRotation(rotm(8000,0,7000)); //Give it a bit of tilt for more drama
@@ -175,6 +175,28 @@ function RandomMJ12Globe()
             break;
         case 9: 
             PlayDressUp(earth,class'Mutt',24000); 
+            earth.DrawScale = earth.DrawScale * 1.5;
+            break;
+        case 10:
+            PlayDressUp(earth,class'IonStormLogo',-20000);
+            earth.DrawScale = earth.DrawScale * 8;
+            break;
+        case 11:
+            PlayDressUp(earth,class'EidosLogo',-20000);
+            earth.DrawScale = earth.DrawScale * 0.4;
+            break;
+        case 12:
+            PlayDressUp(earth,class'HKTukTuk',-20000);
+            earth.DrawScale = earth.DrawScale * 0.6;
+            break;
+        case 13:
+            PlayDressUp(earth,class'CarWrecked',-20000);
+            break;
+        case 14:
+            PlayDressUp(earth,class'MiniSub',-20000);
+            break;
+        case 15:
+            PlayDressUp(earth,class'JCDouble',24000);
             earth.DrawScale = earth.DrawScale * 1.5;
             break;
         }
