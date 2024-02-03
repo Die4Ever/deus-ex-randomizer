@@ -160,12 +160,12 @@ function Explode(vector HitLocation)
 
 function Tick(float delta)
 {
+    Super.Tick(delta);
+
     if (basename == "" && familiarName != "") {
         baseName = familiarName;
         updateName();
     }
-
-    Super.Tick(delta);
 
     if(CanCharge()){
         LightHue=89;
