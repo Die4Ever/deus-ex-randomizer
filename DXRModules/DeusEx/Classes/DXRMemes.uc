@@ -136,7 +136,7 @@ function RandomMJ12Globe()
         startRot = earth.Rotation;
         scaleMult=1.0;
 
-        //if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random globe
+        if ( rng(3)!=0 && !IsAprilFools() ) return; //33% chance of getting a random globe
 
         switch(rng(16)){
         case 0: 
