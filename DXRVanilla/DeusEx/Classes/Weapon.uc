@@ -38,6 +38,31 @@ simulated function Tick(float deltaTime)
 {
     local float r, e;
 
+    if (ClipCount < ReloadCount)
+	{
+        // Are we dealing with a grenade?
+        if (bHandToHand && (ProjectileClass != None) && (!Self.IsA('WeaponShuriken')))
+        {
+            //Check if we were in the process of throwing it
+            //Ammo gets consumed at the start of the animation, but the projectile is only spawned
+            //when the animation completely finishes.  If it is interrupted, the projectile won't
+            //be spawned.  The animation can be easily canceled if you get near a wall and the
+            //grenade PlaceBegin and PlaceEnd animations play.  We need to catch that to fix
+            //issue #519
+            if (IsAnimating() && (AnimSequence=='Attack' || AnimSequence=='Attack2' || AnimSequence=='Attack3'))
+            {
+                if (!bNearWall && NearWallCheck()){
+                    //The throw animation is about to be canceled by a place animation
+                    AmmoType.AddAmmo(1); //Give the ammo back
+                    bDestroyOnFinish=False; //Make sure it isn't destroyed afterwards
+                    if (DeusExPlayer(Owner)!=None){
+                        DeusExPlayer(Owner).UpdateBeltText(Self);
+                    }
+                }
+            }
+        }
+    }
+
     Super.Tick(deltaTime);
 
     if(!IsAnimating()) {
@@ -76,9 +101,6 @@ simulated function bool NearWallCheck()
 {
     local Vector StartTrace, EndTrace, HitLocation, HitNormal;
     local Actor HitActor;
-
-    // don't start the near wall animation if throwing
-    if(GetStateName() == 'NormalFire') return bNearWall;
 
     // Scripted pawns can't place LAMs
     if (ScriptedPawn(Owner) != None)
