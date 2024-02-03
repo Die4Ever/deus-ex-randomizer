@@ -528,6 +528,7 @@ function FlagsSettings SetDifficulty(int new_difficulty)
         settings.equipment = 0;
         settings.medbots = -1;
         settings.repairbots = -1;
+        more_difficulty_settings.empty_medbots = 0;
         settings.turrets_move = 0;
         settings.turrets_add = 0;
         settings.dancingpercent = 0;
