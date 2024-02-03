@@ -172,6 +172,7 @@ function AnyEntryMapFixes()
     local ConEventSpeech ces;
     local ConEventSetFlag cesf;
     local ConEventAddSkillPoints ceasp;
+    local ConEventTransferObject ceto;
 
     switch(dxr.localURL)
     {
@@ -209,6 +210,27 @@ function AnyEntryMapFixes()
         break;
     case "10_PARIS_CHATEAU":
         FixConversationAddNote(GetConversation('NicoletteInStudy'),"I used to use that computer whenever I was at home");
+        break;
+    case "10_PARIS_METRO":
+        //Tong gives you a map of the streets when you enter via the subway
+        c = GetConversation('DL_military');
+        ce = c.eventList;
+        cePrev=ce;
+        while(ce!=None){
+            if (ce.eventType==ET_Speech && ce.nextEvent.eventType==ET_End){
+                ceto = new(c) class'ConEventTransferObject';
+                ceto.eventType=ET_TransferObject;
+                ceto.label="TransferMetroMap";
+                ceto.objectName="Image10_Paris_Metro";
+                ceto.giveObject=class'Image10_Paris_Metro';
+                ceto.toName="JCDenton";
+                ceto.fromName="TracerTong";
+                ceto.transferCount=1;
+                ceto.nextEvent=ce.nextEvent;
+                ce.nextEvent=ceto;
+            }
+            ce=ce.nextEvent;
+        }
         break;
     case "11_PARIS_UNDERGROUND":
         //Add a flag change to Toby's conversation so it sets MS_PlayerTeleported to false if you choose the "take me with you" option
