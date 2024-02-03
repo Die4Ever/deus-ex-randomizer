@@ -81,7 +81,9 @@ simulated function string GetRemainingUsesStr()
 
     uses = GetRemainingUses();
 
-    if (uses == 1) {
+    if (uses == 0) {
+        return " (No Heals Left)";
+    } else if (uses == 1) {
         msg = " (1 Heal Left)";
     } else {
         msg = " ("$uses$" Heals Left)";
