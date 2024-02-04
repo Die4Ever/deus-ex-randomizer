@@ -891,6 +891,9 @@ function SetWatchFlags() {
         bt = class'BingoTrigger'.static.Create(self,'SewerSurfin',vectm(-50,-125,-1000),750,40);
         bt.MakeClassProximityTrigger(class'#var(prefix)JoeGreeneCarcass');
         break;
+    case "08_NYC_FREECLINIC":
+        WatchFlag('GreenKnowsAboutDowd');
+        break;
     case "09_NYC_DOCKYARD":
         ReportMissingFlag('M08WarnedSmuggler', "SmugglerDied");
 
