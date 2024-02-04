@@ -13,3 +13,7 @@ class DXRandoImageTextures extends Object abstract;
 #exec TEXTURE IMPORT FILE="Textures\Image10_Paris_Metro_2.pcx"		    	NAME="Image10_Paris_Metro_2"			GROUP="DXRandoImages" MIPS=Off FLAGS=2
 #exec TEXTURE IMPORT FILE="Textures\Image10_Paris_Metro_3.pcx"		    	NAME="Image10_Paris_Metro_3"			GROUP="DXRandoImages" MIPS=Off FLAGS=2
 #exec TEXTURE IMPORT FILE="Textures\Image10_Paris_Metro_4.pcx"			    NAME="Image10_Paris_Metro_4"			GROUP="DXRandoImages" MIPS=Off FLAGS=2
+
+#exec TEXTURE IMPORT FILE="Textures\Image05_NYC_MJ12Lab_1.pcx"		    	NAME="Image05_NYC_MJ12Lab_1"			GROUP="DXRandoImages" MIPS=Off FLAGS=2
+#exec TEXTURE IMPORT FILE="Textures\Image05_NYC_MJ12Lab_2.pcx"		    	NAME="Image05_NYC_MJ12Lab_2"			GROUP="DXRandoImages" MIPS=Off FLAGS=2
+#exec TEXTURE IMPORT FILE="Textures\Image05_NYC_MJ12Lab_3.pcx"			    NAME="Image05_NYC_MJ12Lab_3"			GROUP="DXRandoImages" MIPS=Off FLAGS=2
