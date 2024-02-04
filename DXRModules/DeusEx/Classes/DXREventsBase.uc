@@ -671,6 +671,12 @@ function _AddPawnDeath(ScriptedPawn victim, optional Actor Killer, optional coer
         if (damageType=="stomped" && IsHuman(victim.class)){ //If you stomp a human to death...
             _MarkBingo("HumanStompDeath");
         }
+    } else {
+        if (!dead) {
+            class'DXRStats'.static.AddKnockOutByOther(player());
+        } else {
+            class'DXRStats'.static.AddKillByOther(player());
+        }
     }
 
     if(!victim.bImportant)

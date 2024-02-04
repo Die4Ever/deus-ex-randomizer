@@ -374,6 +374,16 @@ static function AddKnockOut(DeusExPlayer p)
     IncStatFlag(p,'DXRStats_knockouts');
 }
 
+static function AddKillByOther(DeusExPlayer p)
+{
+    IncStatFlag(p,'DXRStats_kills_by_other');
+}
+
+static function AddKnockOutByOther(DeusExPlayer p)
+{
+    IncStatFlag(p,'DXRStats_knockouts_by_other');
+}
+
 static function AddCheatOffense(DeusExPlayer p, optional int add)
 {
     IncStatFlag(p,'DXRStats_cheats', add);
@@ -530,7 +540,7 @@ static function CheckLeaderboard(DXRando dxr, Json j)
 
 function AddDXRCredits(CreditsWindow cw)
 {
-    local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads,kills,kos;
+    local int fired,swings,jumps,deaths,burnkills,gibbedkills,saves,autosaves,loads,kills,kos,killsByOther,kosByOther;
     local CreditsLeaderboardWindow leaderboard;
 
     cw.PrintLn();
@@ -553,6 +563,8 @@ function AddDXRCredits(CreditsWindow cw)
     gibbedkills = dxr.flagbase.GetInt('DXRStats_gibbedkills');
     kills = dxr.flagbase.GetInt('DXRStats_kills');
     kos = dxr.flagbase.GetInt('DXRStats_knockouts');
+    killsByOther = dxr.flagbase.GetInt('DXRStats_kills_by_other');
+    kosByOther = dxr.flagbase.GetInt('DXRStats_knockouts_by_other');
     deaths = GetDataStorageStat(dxr, "DXRStats_deaths");
     saves = player().saveCount;
     autosaves = GetDataStorageStat(dxr, "DXRStats_autosaves");
@@ -569,8 +581,10 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("Nano Keys: "$player().KeyRing.GetKeyCount());
     cw.PrintText("Skill Points Earned: "$player().SkillPointsTotal);
 
-    cw.PrintText("Enemies Killed: "$kills);
-    cw.PrintText("Enemies Knocked Out: "$kos);
+    cw.PrintText("NPCs Killed by JC: "$kills);
+    cw.PrintText("NPCs Knocked Out by JC: "$kos);
+    cw.PrintText("Total NPC Deaths: "$(kills + killsByOther));
+    cw.PrintText("Total NPCs Knocked Out: "$(kos + kosByOther));
     cw.PrintText("Enemies Burned to Death: "$burnkills);
     cw.PrintText("Enemies Gibbed: "$gibbedkills);
     cw.PrintText("Deaths: "$deaths);
