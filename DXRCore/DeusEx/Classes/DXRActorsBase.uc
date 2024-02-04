@@ -934,9 +934,10 @@ static function SetActorScale(Actor a, float scale)
 {
     local Vector newloc;
 
+    scale *= a.DrawScale;
     newloc = a.Location + ( (a.CollisionHeight*scale - a.CollisionHeight*a.DrawScale) * vect(0,0,1) );
+    a.SetCollisionSize(a.CollisionRadius / a.DrawScale * scale, a.CollisionHeight / a.DrawScale * scale);
     a.SetLocation(newloc);
-    a.SetCollisionSize(a.CollisionRadius, a.CollisionHeight / a.DrawScale * scale);
     a.DrawScale = scale;
 }
 
