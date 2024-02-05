@@ -31,11 +31,22 @@ struct GoalActorLocation {
     var rotator rot;
 };
 
+struct MapImageGoalMarkers {
+    var class<DataVaultImage> image;
+    var string    goalName;
+    var int    locNum;
+    var String markerLetter;
+    var String helpText;
+    var int    posX;
+    var int    posY;
+};
+
 struct GoalLocation {
     var string mapName;
     var string name;
     var int bitMask;
     var GoalActorLocation positions[8]; // keep in sync with PLAYER_LOCATION
+    var MapImageGoalMarkers mapMarker;
 };
 
 struct MutualExclusion {
@@ -49,22 +60,12 @@ struct Spoiler {
     var int locationId;
 };
 
-struct MapImageGoalMarkers {
-    var class<DataVaultImage> image;
-    var int    goalId;
-    var int    locNum;
-    var String markerLetter;
-    var String helpText;
-    var int    posX;
-    var int    posY;
-};
 
 var Goal goals[32];
 var Spoiler spoilers[32];
 var GoalLocation locations[64];
 var MutualExclusion mutually_exclusive[20];
-var MapImageGoalMarkers mapMarkers[32];
-var int num_goals, num_locations, num_mututally_exclusives, num_map_markers;
+var int num_goals, num_locations, num_mututally_exclusives;
 
 var vector rando_start_loc;
 var bool b_rando_start;
@@ -190,24 +191,22 @@ function String generateGoalLocationList()
     return goalList;
 }
 
-function AddMapMarker(class<DataVaultImage> image, int posX, int posY, String markerLetter, int goalId, int locNum, String helpText)
+function AddMapMarker(class<DataVaultImage> image, int posX, int posY, String markerLetter, string goalName, int locNum, String helpText)
 {
-    mapMarkers[num_map_markers].image=image;
-    mapMarkers[num_map_markers].goalId=goalId;
-    mapMarkers[num_map_markers].locNum=locNum;
-    mapMarkers[num_map_markers].markerLetter=markerLetter;
-    mapMarkers[num_map_markers].helpText=helpText;
-    mapMarkers[num_map_markers].posX=posX;
-    mapMarkers[num_map_markers].posY=posY;
-
-    num_map_markers++;
+    locations[locNum].mapMarker.image=image;
+    locations[locNum].mapMarker.goalName=goalName;
+    locations[locNum].mapMarker.locNum=locNum;
+    locations[locNum].mapMarker.markerLetter=markerLetter;
+    locations[locNum].mapMarker.helpText=helpText;
+    locations[locNum].mapMarker.posX=posX;
+    locations[locNum].mapMarker.posY=posY;
 }
 
 function bool MapHasGoalMarkers(class<DataVaultImage> image)
 {
     local int i;
-    for (i=0;i<num_map_markers;i++){
-        if (mapMarkers[i].image==image){
+    for (i=0;i<num_locations;i++){
+        if (locations[i].mapMarker.image==image){
             return True;
         }
     }
@@ -217,13 +216,13 @@ function bool MapHasGoalMarkers(class<DataVaultImage> image)
 function int PopulateMapMarkerNotes(class<DataVaultImage> image, out DXRDataVaultMapImageNote notes[32])
 {
     local int i,numNotes;
-    for (i=0;i<num_map_markers;i++){
-        if (mapMarkers[i].image==image){
-            notes[numNotes].noteText=mapMarkers[i].markerLetter;
-            notes[numNotes].posX=mapMarkers[i].posX;
-            notes[numNotes].posY=mapMarkers[i].posY;
-            notes[numNotes].HelpTitle=GetSpoiler(mapMarkers[i].goalId).goalName;
-            notes[numNotes].HelpText=mapMarkers[i].helpText;
+    for (i=0;i<num_locations;i++){
+        if (locations[i].mapMarker.image==image){
+            notes[numNotes].noteText=locations[i].mapMarker.markerLetter;
+            notes[numNotes].posX=locations[i].mapMarker.posX;
+            notes[numNotes].posY=locations[i].mapMarker.posY;
+            notes[numNotes].HelpTitle=locations[i].mapMarker.goalName;
+            notes[numNotes].HelpText=locations[i].mapMarker.helpText;
             notes[numNotes].bExpanded=True;
             numNotes++;
         }
@@ -233,14 +232,19 @@ function int PopulateMapMarkerNotes(class<DataVaultImage> image, out DXRDataVaul
 
 function int PopulateMapMarkerSpoilers(class<DataVaultImage> image, out DXRDataVaultMapImageNote notes[32])
 {
-    local int i,numNotes;
-    for (i=0;i<num_map_markers;i++){
-        if (mapMarkers[i].image==image && mapMarkers[i].locNum==GetSpoiler(mapMarkers[i].goalId).locationId){
-            notes[numNotes].noteText=mapMarkers[i].markerLetter;
-            notes[numNotes].posX=mapMarkers[i].posX;
-            notes[numNotes].posY=mapMarkers[i].posY;
-            notes[numNotes].HelpTitle=GetSpoiler(mapMarkers[i].goalId).goalName;
-            notes[numNotes].HelpText=mapMarkers[i].helpText;
+    local int i,goalLoc,numNotes;
+    local string goalName;
+
+    for (i=0;i<num_goals;i++){
+        goalLoc = GetSpoiler(i).locationId;
+        goalName = GetSpoiler(i).goalName;
+
+        if (locations[goalLoc].mapMarker.image==image){
+            notes[numNotes].noteText=locations[goalLoc].mapMarker.markerLetter;
+            notes[numNotes].posX=locations[goalLoc].mapMarker.posX;
+            notes[numNotes].posY=locations[goalLoc].mapMarker.posY;
+            notes[numNotes].HelpTitle=goalName;
+            notes[numNotes].HelpText=locations[goalLoc].mapMarker.helpText;
             notes[numNotes].bExpanded=True;
             numNotes++;
         }

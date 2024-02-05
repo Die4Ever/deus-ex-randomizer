@@ -14,21 +14,21 @@ function int InitGoals(int mission, string map)
 
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Armory", NORMAL_GOAL, vect(-8548.773438, 1074.370850, -20.860909), rot(0, 0, 0));
         AddActorLocation(loc, 3, vect(-8162.683594, 1194.161621, 276.902924), rot(-6000, 36000, 0));
-        AddMapMarker(class'Image05_NYC_MJ12Lab',33,289,"P",goal, loc,"Paul can be located on the second floor of the armory.  If Paul is in this location, your equipment will be located in the surgery ward.");
+        AddMapMarker(class'Image05_NYC_MJ12Lab',33,289,"P","Paul", loc,"Paul can be located on the second floor of the armory.  If Paul is in this location, your equipment will be located in the surgery ward.");
 
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Surgery Ward", NORMAL_GOAL | VANILLA_GOAL, vect(2281.708008, -617.352478, -224.400238), rot(0,35984,0));
         AddActorLocation(loc, 1, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0));
         AddActorLocation(loc, 2, vect(2177.405273, -552.487671, -200.899811), rot(0, 16944, 0)); //DataLinkTrigger should be centered on his carcass rather than his living location
         AddActorLocation(loc, 3, vect(1891.301514, -289.854248, -64.997406), rot(-3000, 58200, 0));
-        AddMapMarker(class'Image05_NYC_MJ12Lab',379,96,"P",goal, loc,"Paul can be located in the surgery ward.  This is the vanilla location.  If Paul is in this location, your equipment will be located in the armory.");
+        AddMapMarker(class'Image05_NYC_MJ12Lab',379,96,"P","Paul", loc,"Paul can be located in the surgery ward.  This is the vanilla location.  If Paul is in this location, your equipment will be located in the armory.");
 
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Greasel Pit", NORMAL_GOAL, vect(375,3860,-604), rot(0, 8048, 0));
         AddActorLocation(loc, 3, vect(745.180481, 4150.960449, -477.601196), rot(-3100, 39700, 0));
-        AddMapMarker(class'Image05_NYC_MJ12Lab',325,226,"P",goal, loc,"Paul can be located in the greasel pit accessed through the vent on the back wall of the nanotech lab.  If Paul is in this location, your equipment will be located in the armory.");
+        AddMapMarker(class'Image05_NYC_MJ12Lab',325,226,"P","Paul", loc,"Paul can be located in the greasel pit accessed through the vent on the back wall of the nanotech lab.  If Paul is in this location, your equipment will be located in the armory.");
 
         loc = AddGoalLocation("05_NYC_UNATCOMJ12LAB", "Robotics Bay Office", NORMAL_GOAL, vect(-4297,1083,210), rot(0, 16392, 0));
         AddActorLocation(loc, 3, vect(-4289.660645, 1397.180054, 307.937073), rot(-2000, -16384, 0));
-        AddMapMarker(class'Image05_NYC_MJ12Lab',171,286,"P",goal, loc,"Paul can be located in the office on the third floor of the robotics bay.  If Paul is in this location, your equipment will be located in the surgery ward.");
+        AddMapMarker(class'Image05_NYC_MJ12Lab',171,286,"P","Paul", loc,"Paul can be located in the office on the third floor of the robotics bay.  If Paul is in this location, your equipment will be located in the surgery ward.");
 
         return 51;
 
