@@ -48,21 +48,33 @@ function int InitGoals(int mission, string map)
 
     case "03_NYC_AIRFIELD":
         AddGoal("03_NYC_AIRFIELD", "Terrorist with the East Gate key", NORMAL_GOAL, 'Terrorist13', PHYS_Falling);
-        AddGoalLocation("03_NYC_AIRFIELD", "South Gate", NORMAL_GOAL, vect(223.719452, 3689.905273, 15.100115), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "SW Security Tower", NORMAL_GOAL, vect(-2103.891113, 3689.706299, 15.091076), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "West Security Tower", NORMAL_GOAL, vect(-2060.626465, -2013.138672, 15.090023), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "NW Security Tower", NORMAL_GOAL, vect(729.454651, -4151.924805, 15.079981), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "NE Security Tower", NORMAL_GOAL, vect(5215.076660, -4134.674316, 15.090023), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "Hangar Door", NORMAL_GOAL, vect(941.941895, 283.418152, 15.090023), rot(0, 0, 0));
-        AddGoalLocation("03_NYC_AIRFIELD", "Dock", NORMAL_GOAL | VANILLA_GOAL, vect(-2687.128662,2320.010986,63.774998), rot(0,0,0));
+        loc=AddGoalLocation("03_NYC_AIRFIELD", "South Gate", NORMAL_GOAL, vect(223.719452, 3689.905273, 15.100115), rot(0, 0, 0));
+        AddMapMarker(class'Image03_NYC_Airfield',324,270,"K","East Gate Key", loc,"The terrorist with the key to the East Gate can be located at the South Gate in the airfield.");
+        loc=AddGoalLocation("03_NYC_AIRFIELD", "SW Security Tower", NORMAL_GOAL, vect(-2103.891113, 3689.706299, 15.091076), rot(0, 0, 0));
+        AddMapMarker(class'Image03_NYC_Airfield',303,361,"K","East Gate Key", loc,"The terrorist with the key to the East Gate can be located outside the South West Security Tower in the airfield.");
+        loc=AddGoalLocation("03_NYC_AIRFIELD", "West Security Tower", NORMAL_GOAL, vect(-2060.626465, -2013.138672, 15.090023), rot(0, 0, 0));
+        AddMapMarker(class'Image03_NYC_Airfield',100,290,"K","East Gate Key", loc,"The terrorist with the key to the East Gate can be located outside the West Security Tower in the airfield.");
+        loc=AddGoalLocation("03_NYC_AIRFIELD", "NW Security Tower", NORMAL_GOAL, vect(729.454651, -4151.924805, 15.079981), rot(0, 0, 0));
+        AddMapMarker(class'Image03_NYC_Airfield',79,162,"K","East Gate Key", loc,"The terrorist with the key to the East Gate can be located outside the North West Security Tower in the airfield.");
+        loc=AddGoalLocation("03_NYC_AIRFIELD", "NE Security Tower", NORMAL_GOAL, vect(5215.076660, -4134.674316, 15.090023), rot(0, 0, 0));
+        AddMapMarker(class'Image03_NYC_Airfield',128,49,"K","East Gate Key", loc,"The terrorist with the key to the East Gate can be located outside the North East Security Tower in the airfield.");
+        loc=AddGoalLocation("03_NYC_AIRFIELD", "Hangar Door", NORMAL_GOAL, vect(941.941895, 283.418152, 15.090023), rot(0, 0, 0));
+        AddMapMarker(class'Image03_NYC_Airfield',232,213,"K","East Gate Key", loc,"The terrorist with the key to the East Gate can be located outside the hangar doors in the airfield.");
+        loc=AddGoalLocation("03_NYC_AIRFIELD", "Dock", NORMAL_GOAL | VANILLA_GOAL, vect(-2687.128662,2320.010986,63.774998), rot(0,0,0));
+        AddMapMarker(class'Image03_NYC_Airfield',257,354,"K","East Gate Key", loc,"The terrorist with the key to the East Gate can be located on the docks at the airfield.  This is the vanilla location.");
 
         goal = AddGoal("03_NYC_AIRFIELD", "Ambrosia", GOAL_TYPE1, 'BarrelAmbrosia0', PHYS_Falling);
         AddGoalActor(goal,1,'FlagTrigger0',PHYS_None); //Reduced radius, sets BoatDocksAmbrosia
-        AddGoalLocation("03_NYC_AIRFIELD", "Docks", GOAL_TYPE1 | VANILLA_GOAL, vect(-2482.986816,1924.479126,44.869865), rot(0,0,0));
-        AddGoalLocation("03_NYC_AIRFIELD", "Hangar Door", GOAL_TYPE1, vect(1069,289,45), rot(0,16328,0));
-        AddGoalLocation("03_NYC_AIRFIELD", "Near Electrical", GOAL_TYPE1, vect(5317,-2405,45), rot(0,16328,0));
-        AddGoalLocation("03_NYC_AIRFIELD", "Near Satellite", GOAL_TYPE1, vect(5317,3189,45), rot(0,16328,0));
-        AddGoalLocation("03_NYC_AIRFIELD", "Cargo Container", GOAL_TYPE1, vect(-220,3012,373), rot(0,25344,0));
+        loc=AddGoalLocation("03_NYC_AIRFIELD", "Docks", GOAL_TYPE1 | VANILLA_GOAL, vect(-2482.986816,1924.479126,44.869865), rot(0,0,0));
+        AddMapMarker(class'Image03_NYC_Airfield',241,354,"A","Ambrosia", loc,"A barrel of Ambrosia can be located on the docks in the airfield.  This is a vanilla location.");
+        loc=AddGoalLocation("03_NYC_AIRFIELD", "Hangar Door", GOAL_TYPE1, vect(1069,289,45), rot(0,16328,0));
+        AddMapMarker(class'Image03_NYC_Airfield',213,204,"A","Ambrosia", loc,"A barrel of Ambrosia can be located in the airfield in front of the main hangar doors.");
+        loc=AddGoalLocation("03_NYC_AIRFIELD", "Near Electrical", GOAL_TYPE1, vect(5317,-2405,45), rot(0,16328,0));
+        AddMapMarker(class'Image03_NYC_Airfield',172,55,"A","Ambrosia", loc,"A barrel of Ambrosia can be located near the electrical area in the airfield.");
+        loc=AddGoalLocation("03_NYC_AIRFIELD", "Near Satellite", GOAL_TYPE1, vect(5317,3189,45), rot(0,16328,0));
+        AddMapMarker(class'Image03_NYC_Airfield',339,106,"A","Ambrosia", loc,"A barrel of Ambrosia can be located near the satellite dish in the airfield, outside the barracks.");
+        loc=AddGoalLocation("03_NYC_AIRFIELD", "Cargo Container", GOAL_TYPE1, vect(-220,3012,373), rot(0,25344,0));
+        AddMapMarker(class'Image03_NYC_Airfield',298,280,"A","Ambrosia", loc,"A barrel of Ambrosia can be located inside a cargo container in the airfield.");
 
         return 33;
 
@@ -85,12 +97,18 @@ function int InitGoals(int mission, string map)
         goal = AddGoal("03_NYC_747", "747 Ambrosia", NORMAL_GOAL, 'BarrelAmbrosia1', PHYS_Falling);
         AddGoalActor(goal,1,'FlagTrigger1',PHYS_None); //Reduced radius, sets 747Ambrosia
 
-        AddGoalLocation("03_NYC_747", "Cargo", NORMAL_GOAL | VANILLA_GOAL, vect(-147.147064,-511.348846,158.870544), rot(0,15760,0));
-        AddGoalLocation("03_NYC_747", "Office", NORMAL_GOAL, vect(6,-736,339), rot(0,-32,0));
-        AddGoalLocation("03_NYC_747", "Flight Deck", NORMAL_GOAL, vect(1339,-513,484), rot(0,16480,0));
-        AddGoalLocation("03_NYC_747", "Bedroom", NORMAL_GOAL, vect(1594,-710,368), rot(0,0,0));
-        AddGoalLocation("03_NYC_HANGAR", "Near Trailers", NORMAL_GOAL, vect(1867,-1318,29), rot(0,0,0));
-        AddGoalLocation("03_NYC_HANGAR", "Near Engine", NORMAL_GOAL, vect(4140,-1554,29), rot(0,32776,0));
+        loc=AddGoalLocation("03_NYC_747", "Cargo", NORMAL_GOAL | VANILLA_GOAL, vect(-147.147064,-511.348846,158.870544), rot(0,15760,0));
+        AddMapMarker(class'Image03_747Diagram',34,66,"A","Ambrosia", loc,"A barrel of Ambrosia can be located in the cargo hold of the 747.  This is one of the vanilla Ambrosia locations.");
+        loc=AddGoalLocation("03_NYC_747", "Office", NORMAL_GOAL, vect(6,-736,339), rot(0,-32,0));
+        AddMapMarker(class'Image03_747Diagram',89,163,"A","Ambrosia", loc,"A barrel of Ambrosia can be located in the office on board the 747.");
+        loc=AddGoalLocation("03_NYC_747", "Flight Deck", NORMAL_GOAL, vect(1339,-513,484), rot(0,16480,0));
+        AddMapMarker(class'Image03_747Diagram',298,321,"A","Ambrosia", loc,"A barrel of Ambrosia can be located on the flight deck of the 747.");
+        loc=AddGoalLocation("03_NYC_747", "Bedroom", NORMAL_GOAL, vect(1594,-710,368), rot(0,0,0));
+        AddMapMarker(class'Image03_747Diagram',355,169,"A","Ambrosia", loc,"A barrel of Ambrosia can be located in the bedroom of the 747.");
+        loc=AddGoalLocation("03_NYC_HANGAR", "Near Trailers", NORMAL_GOAL, vect(1867,-1318,29), rot(0,0,0));
+        AddMapMarker(class'Image03_NYC_Airfield',230,155,"A","Ambrosia", loc,"A barrel of Ambrosia can be located near some trailers inside the hangar.");
+        loc=AddGoalLocation("03_NYC_HANGAR", "Near Engine", NORMAL_GOAL, vect(4140,-1554,29), rot(0,32776,0));
+        AddMapMarker(class'Image03_NYC_Airfield',225,76,"A","Ambrosia", loc,"A barrel of Ambrosia can be located near the engine of the 747 inside the hangar.");
 
         return 35;
     }
