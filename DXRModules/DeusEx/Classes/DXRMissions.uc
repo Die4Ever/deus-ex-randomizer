@@ -46,13 +46,25 @@ struct Spoiler {
     var string goalName;
     var string goalLocation;
     var string locationMapName;
+    var int locationId;
+};
+
+struct MapImageGoalMarkers {
+    var class<DataVaultImage> image;
+    var int    goalId;
+    var int    locNum;
+    var String markerLetter;
+    var String helpText;
+    var int    posX;
+    var int    posY;
 };
 
 var Goal goals[32];
 var Spoiler spoilers[32];
 var GoalLocation locations[64];
 var MutualExclusion mutually_exclusive[20];
-var int num_goals, num_locations, num_mututally_exclusives;
+var MapImageGoalMarkers mapMarkers[32];
+var int num_goals, num_locations, num_mututally_exclusives, num_map_markers;
 
 var vector rando_start_loc;
 var bool b_rando_start;
@@ -177,6 +189,64 @@ function String generateGoalLocationList()
 
     return goalList;
 }
+
+function AddMapMarker(class<DataVaultImage> image, int posX, int posY, String markerLetter, int goalId, int locNum, String helpText)
+{
+    mapMarkers[num_map_markers].image=image;
+    mapMarkers[num_map_markers].goalId=goalId;
+    mapMarkers[num_map_markers].locNum=locNum;
+    mapMarkers[num_map_markers].markerLetter=markerLetter;
+    mapMarkers[num_map_markers].helpText=helpText;
+    mapMarkers[num_map_markers].posX=posX;
+    mapMarkers[num_map_markers].posY=posY;
+
+    num_map_markers++;
+}
+
+function bool MapHasGoalMarkers(class<DataVaultImage> image)
+{
+    local int i;
+    for (i=0;i<num_map_markers;i++){
+        if (mapMarkers[i].image==image){
+            return True;
+        }
+    }
+    return False;
+}
+
+function int PopulateMapMarkerNotes(class<DataVaultImage> image, out DXRDataVaultMapImageNote notes[32])
+{
+    local int i,numNotes;
+    for (i=0;i<num_map_markers;i++){
+        if (mapMarkers[i].image==image){
+            notes[numNotes].noteText=mapMarkers[i].markerLetter;
+            notes[numNotes].posX=mapMarkers[i].posX;
+            notes[numNotes].posY=mapMarkers[i].posY;
+            notes[numNotes].HelpTitle=GetSpoiler(mapMarkers[i].goalId).goalName;
+            notes[numNotes].HelpText=mapMarkers[i].helpText;
+            notes[numNotes].bExpanded=True;
+            numNotes++;
+        }
+    }
+    return numNotes;
+}
+
+function int PopulateMapMarkerSpoilers(class<DataVaultImage> image, out DXRDataVaultMapImageNote notes[32])
+{
+    local int i,numNotes;
+    for (i=0;i<num_map_markers;i++){
+        if (mapMarkers[i].image==image && mapMarkers[i].locNum==GetSpoiler(mapMarkers[i].goalId).locationId){
+            notes[numNotes].noteText=mapMarkers[i].markerLetter;
+            notes[numNotes].posX=mapMarkers[i].posX;
+            notes[numNotes].posY=mapMarkers[i].posY;
+            notes[numNotes].HelpText=mapMarkers[i].helpText;
+            notes[numNotes].bExpanded=True;
+            numNotes++;
+        }
+    }
+    return numNotes;
+}
+
 
 function AddMutualExclusion(int L1, int L2)
 {
@@ -366,6 +436,7 @@ function bool _ChooseGoalLocations(out int goalsToLocations[32])
         spoilers[i].goalName=goals[i].name;
         spoilers[i].goalLocation=locations[availLocs[r]].name;
         spoilers[i].locationMapName=locations[availLocs[r]].mapName;
+        spoilers[i].locationId=availLocs[r];
 
         _num_locs--;
         availLocs[r] = availLocs[_num_locs];
