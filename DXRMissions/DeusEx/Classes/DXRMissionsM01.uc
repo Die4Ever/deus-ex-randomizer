@@ -20,7 +20,7 @@ function int InitGoals(int mission, string map)
     loc = AddGoalLocation("01_NYC_UNATCOISLAND", "Harley Filben Dock", START_LOCATION, vect(1297.173096, -10257.972656, -287.428131), rot(0, 0, 0));
     loc2 = AddGoalLocation("01_NYC_UNATCOISLAND", "Electric Bunker", NORMAL_GOAL | START_LOCATION, vect(6552.227539, -3246.095703, -447.438049), rot(0, 0, 0));
     AddMutualExclusion(loc, loc2);
-    AddMapMarker(class'Image01_LibertyIsland',318,140,"L","Terrorist Commander",loc2,"Leo Gold, the terrorist commander, can be located in the back of the small bunker next to the statue.  He is behind the malfunctioning electrical box.");
+    AddMapMarker(class'Image01_LibertyIsland',318,140,"L","Terrorist Commander",loc2,"Leo Gold, the terrorist commander, can be located in the back of the small bunker next to the statue.  He would be behind the malfunctioning electrical box.");
 
     loc=AddGoalLocation("01_NYC_UNATCOISLAND", "Jail", NORMAL_GOAL | START_LOCATION, vect(2127.692139, -1774.869141, -149.140366), rot(0, 0, 0));
     AddMapMarker(class'Image01_LibertyIsland',235,147,"L","Terrorist Commander", loc,"Leo Gold, the terrorist commander, can be located inside the jail cell where Gunther is locked up.");
