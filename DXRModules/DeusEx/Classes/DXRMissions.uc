@@ -239,6 +239,7 @@ function int PopulateMapMarkerSpoilers(class<DataVaultImage> image, out DXRDataV
             notes[numNotes].noteText=mapMarkers[i].markerLetter;
             notes[numNotes].posX=mapMarkers[i].posX;
             notes[numNotes].posY=mapMarkers[i].posY;
+            notes[numNotes].HelpTitle=GetSpoiler(mapMarkers[i].goalId).goalName;
             notes[numNotes].HelpText=mapMarkers[i].helpText;
             notes[numNotes].bExpanded=True;
             numNotes++;
