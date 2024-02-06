@@ -10,14 +10,19 @@ function int InitGoals(int mission, string map)
         AddGoal("10_PARIS_CATACOMBS_TUNNELS", "Agent Hela", NORMAL_GOAL, 'WIB0', PHYS_Falling);
         loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker", NORMAL_GOAL | VANILLA_GOAL, vect(705.735596,-3802.420410,-281.812622), rot(0, 16384, 0));
         AddActorLocation(loc, 1, vect(802,-3736,-284), rot(0,0,0));
+        AddMapMarker(class'Image10_Paris_CatacombsTunnels',59,155,"H","Agent Hela", loc,"Agent Hela can be located in her nest at the back of the MJ12 bunker.  She will have a copy of the sewer key with her.  This is her vanilla location.");
         loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Upper Level Ladder Side", NORMAL_GOAL, vect(923,-2907,-32), rot(0, 31936, 0));
         AddActorLocation(loc, 1, vect(880,-2980,-44), rot(0,0,0));
+        AddMapMarker(class'Image10_Paris_CatacombsTunnels',97,137,"H","Agent Hela", loc,"Agent Hela can be located on the upper level at back of the MJ12 bunker, on the side with the ladder.  She will have a copy of the sewer key with her.");
         loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Back of Bunker Upper Level Stair Side", NORMAL_GOAL, vect(-290,-2475,-32), rot(0, 0, 0));
         AddActorLocation(loc, 1, vect(-240,-2420,-44), rot(0,0,0));
+        AddMapMarker(class'Image10_Paris_CatacombsTunnels',97,195,"H","Agent Hela", loc,"Agent Hela can be located on the upper level at back of the MJ12 bunker, on the side with the stairs.  She will have a copy of the sewer key with her.");
         loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Front of Bunker Side", NORMAL_GOAL, vect(-637,745,-256), rot(0, -16640, 0));
         AddActorLocation(loc, 1, vect(-440,730,-300), rot(0,0,0));
+        AddMapMarker(class'Image10_Paris_CatacombsTunnels',248,205,"H","Agent Hela", loc,"Agent Hela can be located in the room off to the side at the front of the MJ12 bunker.  She will have a copy of the sewer key with her.");
         loc=AddGoalLocation("10_PARIS_CATACOMBS_TUNNELS", "Front of Bunker Upper Level", NORMAL_GOAL, vect(-1635,-82,-64), rot(0, 0, 0));
         AddActorLocation(loc, 1, vect(-1640,-257,-82), rot(0,0,0));
+        AddMapMarker(class'Image10_Paris_CatacombsTunnels',211,244,"H","Agent Hela", loc,"Agent Hela can be located in the room up the ramp at the front of the MJ12 bunker.  She will have a copy of the sewer key with her.");
         return 102;
     case "10_PARIS_METRO":
     case "10_PARIS_CLUB":
