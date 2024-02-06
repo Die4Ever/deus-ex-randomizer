@@ -95,7 +95,7 @@ function CheckConfig()
     AddRandomEnemyType(class'#var(prefix)MilitaryBot', 2, MJ12);
     AddRandomEnemyType(class'#var(prefix)SpiderBot2', 2, MJ12);//little spider
     AddRandomEnemyType(class'#var(prefix)SpiderBot', 2, MJ12);//big spider
-    AddRandomEnemyType(class'#var(prefix)GrayBaby', 2, MJ12);
+    AddRandomEnemyType(class'GrayBaby', 1, MJ12);
     if(dxr.dxInfo.missionNumber == 10 || dxr.dxInfo.missionNumber == 11) {
         AddRandomEnemyType(class'#var(prefix)Gray', 1, MJ12);
         AddRandomEnemyType(class'FrenchGray', 1, MJ12);
@@ -120,7 +120,7 @@ function CheckConfig()
     AddRandomEnemyType(class'NSFCloneAugStealth1', 1.5, NSF);
 
     AddRandomEnemyType(class'#var(prefix)Gray', 1, FactionOther);
-    AddRandomEnemyType(class'#var(prefix)GrayBaby', 1, FactionOther);
+    AddRandomEnemyType(class'GrayBaby', 1, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale', 5, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale2', 5, FactionOther);
     AddRandomEnemyType(class'#var(prefix)ThugMale3', 5, FactionOther);
