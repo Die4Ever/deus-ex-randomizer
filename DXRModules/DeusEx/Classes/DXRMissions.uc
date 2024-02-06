@@ -8,7 +8,7 @@ const GOAL_TYPE4 = 16;
 const SITTING_GOAL = 268435456;
 const VANILLA_GOAL = 536870912;
 const START_LOCATION = 1073741824;
-const VANILLA_START = 2147483648;
+const VANILLA_START = -2147483648;
 const PLAYER_LOCATION = 7; // keep in sync with length of GoalLocation.positions array
 
 var bool RandoMissionGoals;// only set on first entry
@@ -760,4 +760,8 @@ function RunTests()
 {
     local int i, total;
     Super.RunTests();
+
+    i = NORMAL_GOAL | VANILLA_START;
+    testint(i, -2147483647, "NORMAL_GOAL | VANILLA_START");
+    testint(i & SITTING_GOAL, 0, "Leo dock not sitting goal");
 }

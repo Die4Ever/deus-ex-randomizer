@@ -1,4 +1,4 @@
-class TrashCanCommon extends DXRBase;
+class TrashCanCommon extends DXRBase abstract;
 
 static function DestroyTrashCan(#var(prefix)Containers trashcan, class<#var(prefix)Containers> trashBagType)
 {
