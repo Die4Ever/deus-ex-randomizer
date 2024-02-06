@@ -1,7 +1,7 @@
 //=============================================================================
 // GrayBaby.
 //=============================================================================
-class GrayBaby extends Gray;
+class GrayBaby extends #var(prefix)Gray;
 
 defaultproperties
 {
