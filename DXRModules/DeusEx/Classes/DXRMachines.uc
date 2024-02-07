@@ -384,19 +384,15 @@ function RandoMedBotsRepairBots(int medbots, int empty_medbots, int repairbots)
 
     SetSeed( "RandoMedBots" );
     if( chance_single(medbots) ) {
-        SpawnBot(class'#var(injectsprefix)MedicalBot', medHint, "Medical Bot Nearby");
+        SpawnBot(class'#var(injectsprefix)MedicalBot', medHint, "Medical Bot Nearby", 89);
     } else if ( chance_single(empty_medbots) ) {
-        ab = #var(injectsprefix)MedicalBot(SpawnBot(class'#var(injectsprefix)MedicalBot', augHint, "Augmentation Bot Nearby"));
+        ab = #var(injectsprefix)MedicalBot(SpawnBot(class'#var(injectsprefix)MedicalBot', augHint, "Augmentation Bot Nearby", 255));
         ab.MakeAugsOnly();
     }
 
     SetSeed( "RandoRepairBots" );
     if( chance_single(repairbots) ) {
-#ifdef injections
-        SpawnBot(class'RepairBot', repairHint, "Repair Bot Nearby");
-#else
-        SpawnBot(class'DXRRepairBot', repairHint, "Repair Bot Nearby");
-#endif
+        SpawnBot(class'#var(injectsprefix)RepairBot', repairHint, "Repair Bot Nearby", 89);
     }
 }
 
@@ -479,7 +475,7 @@ simulated function RandoRepairBot(#var(prefix)RepairBot r, int rbamount, int rbc
     }
 }
 
-function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename)
+function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename, int datacubehue)
 {
     local Actor a;
     local #var(prefix)Datacube d;
@@ -496,7 +492,7 @@ function Actor SpawnBot(class<Actor> c, Name datacubeTag, string datacubename)
     d.textTag = datacubeTag;
     d.bAddToVault = false;
     d.ItemName = datacubename;
-    GlowUp(d, 89);
+    GlowUp(d, datacubehue);
 
     return a;
 }
