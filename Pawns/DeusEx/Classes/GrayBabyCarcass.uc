@@ -1,7 +1,7 @@
 //=============================================================================
 // GrayBabyCarcass.
 //=============================================================================
-class GrayBabyCarcass extends DeusExCarcass;
+class GrayBabyCarcass extends #var(DeusExPrefix)Carcass;
 
 defaultproperties
 {
