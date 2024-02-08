@@ -585,8 +585,8 @@ function AddDXRCredits(CreditsWindow cw)
     cw.PrintText("NPCs Knocked Out by JC: "$kos);
     cw.PrintText("Total NPC Deaths: "$(kills + killsByOther));
     cw.PrintText("Total NPCs Knocked Out: "$(kos + kosByOther));
-    cw.PrintText("Enemies Burned to Death: "$burnkills);
-    cw.PrintText("Enemies Gibbed: "$gibbedkills);
+    cw.PrintText("Total NPCs Burned to Death: "$burnkills);
+    cw.PrintText("Total NPCs Gibbed: "$gibbedkills);
     cw.PrintText("Deaths: "$deaths);
     cw.PrintText("Saves: "$saves$" ("$autosaves$" Autosaves)");
     cw.PrintText("Loads: "$loads);
