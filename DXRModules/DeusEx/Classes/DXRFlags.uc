@@ -191,7 +191,7 @@ function CheckConfig()
     difficulty_names[i] = "Easy";
 #else
     difficulty_names[i] = "Normal";
-    difficulty_settings[i].CombatDifficulty = 1.2;
+    difficulty_settings[i].CombatDifficulty = 1.3;
 #endif
     difficulty_settings[i].doorsmode = undefeatabledoors + doormutuallyinclusive;
     difficulty_settings[i].doorsdestructible = 100;
@@ -262,7 +262,7 @@ function CheckConfig()
     difficulty_names[i] = "Medium";
 #else
     difficulty_names[i] = "Hard";
-    difficulty_settings[i].CombatDifficulty = 1.7;
+    difficulty_settings[i].CombatDifficulty = 2;
 #endif
     difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
     difficulty_settings[i].doorsdestructible = 40;
@@ -333,7 +333,7 @@ function CheckConfig()
     difficulty_names[i] = "Hard";
 #else
     difficulty_names[i] = "Extreme";
-    difficulty_settings[i].CombatDifficulty = 2.3;
+    difficulty_settings[i].CombatDifficulty = 3;
 #endif
     difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
     difficulty_settings[i].doorsdestructible = 25;
@@ -359,7 +359,7 @@ function CheckConfig()
     difficulty_settings[i].banned_skill_levels = 7;
     difficulty_settings[i].minskill = 50;
     difficulty_settings[i].maxskill = 250;
-    difficulty_settings[i].ammo = 60;
+    difficulty_settings[i].ammo = 65;
     difficulty_settings[i].medkits = 60;
     difficulty_settings[i].biocells = 50;
     difficulty_settings[i].lockpicks = 60;
@@ -404,7 +404,7 @@ function CheckConfig()
     difficulty_names[i] = "DeusEx";
 #else
     difficulty_names[i] = "Impossible";
-    difficulty_settings[i].CombatDifficulty = 3;
+    difficulty_settings[i].CombatDifficulty = 4;
 #endif
     difficulty_settings[i].doorsmode = undefeatabledoors + doorindependent;
     difficulty_settings[i].doorsdestructible = 25;
@@ -426,13 +426,13 @@ function CheckConfig()
     difficulty_settings[i].skills_disable_downgrades = 5;
     difficulty_settings[i].skills_reroll_missions = 5;
     difficulty_settings[i].skills_independent_levels = 100;
-    difficulty_settings[i].banned_skills = 13;
-    difficulty_settings[i].banned_skill_levels = 7;
+    difficulty_settings[i].banned_skills = 9;
+    difficulty_settings[i].banned_skill_levels = 9;
     difficulty_settings[i].minskill = 50;
-    difficulty_settings[i].maxskill = 350;
-    difficulty_settings[i].ammo = 40;
+    difficulty_settings[i].maxskill = 300;
+    difficulty_settings[i].ammo = 50;
     difficulty_settings[i].medkits = 50;
-    difficulty_settings[i].biocells = 30;
+    difficulty_settings[i].biocells = 40;
     difficulty_settings[i].lockpicks = 50;
     difficulty_settings[i].multitools = 50;
     difficulty_settings[i].speedlevel = 1;
